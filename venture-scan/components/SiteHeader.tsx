@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AuthNav } from "@/components/AuthNav";
+import { BrandLogo } from "@/components/BrandLogo";
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { useI18n } from "@/lib/i18n/context";
 import type { MessageKey } from "@/lib/i18n/messages";
@@ -45,12 +46,19 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-white/8 bg-ink/85 backdrop-blur-md">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
-        <Link href="/" className="group flex min-w-0 shrink items-baseline gap-2" onClick={close}>
-          <span className="font-display text-xl tracking-tight text-foam transition group-hover:text-white sm:text-2xl">
-            VentureScan
-          </span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-celadon md:inline">
-            live ledger
+        <Link
+          href="/"
+          className="group flex min-w-0 shrink items-center gap-2.5"
+          onClick={close}
+        >
+          <BrandLogo size={36} className="h-8 w-8 sm:h-9 sm:w-9" />
+          <span className="flex min-w-0 flex-col leading-none">
+            <span className="font-display text-xl tracking-tight text-foam transition group-hover:text-white sm:text-2xl">
+              VentureScan
+            </span>
+            <span className="mt-0.5 hidden font-mono text-[10px] uppercase tracking-[0.2em] text-celadon md:inline">
+              live ledger
+            </span>
           </span>
         </Link>
 

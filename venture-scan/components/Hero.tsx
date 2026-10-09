@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useI18n } from "@/lib/i18n/context";
 
 export function Hero({ count }: { count: number }) {
@@ -10,9 +11,12 @@ export function Hero({ count }: { count: number }) {
     <section className="relative overflow-hidden">
       <div className="mesh" aria-hidden />
       <div className="relative mx-auto flex min-h-[68vh] w-full max-w-6xl flex-col justify-end px-4 pb-12 pt-14 sm:min-h-[72vh] sm:px-6 sm:pb-20 sm:pt-28">
-        <p className="animate-rise font-mono text-[10px] uppercase tracking-[0.24em] text-celadon sm:text-[11px] sm:tracking-[0.28em]">
-          {t("hero.kicker")}
-        </p>
+        <div className="animate-rise flex items-center gap-3 sm:gap-4">
+          <BrandLogo size={72} className="h-14 w-14 shadow-panel sm:h-[4.5rem] sm:w-[4.5rem]" />
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-celadon sm:text-[11px] sm:tracking-[0.28em]">
+            {t("hero.kicker")}
+          </p>
+        </div>
         <h1 className="animate-rise mt-3 max-w-3xl font-display text-[2.75rem] leading-[1.05] text-foam sm:mt-4 sm:text-7xl [animation-delay:80ms]">
           VentureScan
         </h1>

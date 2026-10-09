@@ -28,6 +28,10 @@ export const metadata: Metadata = {
   title: "VentureScan — worldwide startup ideas & fundraising",
   description:
     "Scan worldwide startup ideas and fundraising events. Browse idea name, model, team, industry, funding, website, socials, and go-forward plays.",
+  icons: {
+    icon: [{ url: "/favicon.png", type: "image/png", sizes: "32x32" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "64x64" }],
+  },
 };
 
 export const viewport: Viewport = {
