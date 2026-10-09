@@ -8,6 +8,7 @@ import { fetchDaily } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeIdea } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
 
@@ -23,7 +24,7 @@ type State =
     };
 
 export function DailyRecommendation() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [state, setState] = useState<State>({ status: "loading" });
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export function DailyRecommendation() {
   }
 
   const { day, idea, match } = state;
+  const view = localizeIdea(idea, locale);
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -98,12 +100,12 @@ export function DailyRecommendation() {
         {t("today.dateLabel", { day })}
       </p>
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-        <h1 className="font-display text-3xl text-foam sm:text-5xl">{idea.name}</h1>
+        <h1 className="font-display text-3xl text-foam sm:text-5xl">{view.name}</h1>
         <span className="w-fit rounded-full border border-celadon/40 bg-celadon/15 px-3 py-1 font-mono text-sm text-celadon">
           {match.score}% match
         </span>
       </div>
-      <p className="mt-4 text-base leading-relaxed text-mist">{idea.description}</p>
+      <p className="mt-4 text-base leading-relaxed text-mist">{view.description}</p>
 
       <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist">
         <span className="inline-flex items-center gap-1.5">
@@ -116,7 +118,7 @@ export function DailyRecommendation() {
           {idea.teamCity ? ` · ${idea.teamCity}` : ""}
         </span>
         <span>
-          {idea.industry} / {idea.sector}
+          {view.industry} / {view.sector}
         </span>
         <span>
           {idea.fundraisingSecured

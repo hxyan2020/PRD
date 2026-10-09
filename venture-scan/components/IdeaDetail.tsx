@@ -8,6 +8,7 @@ import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, socialLabel, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeIdea } from "@/lib/i18n/localize-idea";
 import type { StartupIdea } from "@/lib/types";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -20,7 +21,8 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 export function IdeaDetail({ idea }: { idea: StartupIdea }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const view = localizeIdea(idea, locale);
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -30,19 +32,19 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
 
       <header className="mt-6 animate-rise">
         <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-celadon">
-          {idea.industry} · {idea.sector}
+          {view.industry} · {view.sector}
         </p>
-        <h1 className="mt-3 font-display text-4xl text-foam sm:text-5xl">{idea.name}</h1>
-        <p className="mt-4 text-base leading-relaxed text-mist">{idea.description}</p>
+        <h1 className="mt-3 font-display text-4xl text-foam sm:text-5xl">{view.name}</h1>
+        <p className="mt-4 text-base leading-relaxed text-mist">{view.description}</p>
       </header>
 
       <dl className="mt-10 animate-rise [animation-delay:100ms]">
-        <Row label={t("dossier.name")}>{idea.name}</Row>
+        <Row label={t("dossier.name")}>{view.name}</Row>
         <Row label={t("dossier.description")}>
-          <p>{idea.description}</p>
+          <p>{view.description}</p>
           <p className="mt-3 text-mist">
             <span className="text-foam">{t("dossier.howMoney")} </span>
-            {idea.businessModel}
+            {view.businessModel}
           </p>
         </Row>
         <Row label={t("dossier.location")}>
@@ -57,22 +59,22 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
           </span>
         </Row>
         <Row label={t("dossier.teamSize")}>{t("common.people", { count: idea.teamSize })}</Row>
-        <Row label={t("dossier.industry")}>{idea.industry}</Row>
-        <Row label={t("dossier.sector")}>{idea.sector}</Row>
+        <Row label={t("dossier.industry")}>{view.industry}</Row>
+        <Row label={t("dossier.sector")}>{view.sector}</Row>
         <Row label={t("dossier.fundraising")}>
           {idea.fundraisingSecured ? (
             <span>
               {t("common.yes")} — {idea.fundingStage ?? "secured"}
               {idea.fundingAmountUsd != null ? ` · ${formatMoney(idea.fundingAmountUsd)}` : ""}
-              {idea.fundingRoundNote ? (
-                <span className="mt-1 block text-mist">{idea.fundingRoundNote}</span>
+              {view.fundingRoundNote ? (
+                <span className="mt-1 block text-mist">{view.fundingRoundNote}</span>
               ) : null}
             </span>
           ) : (
             <span>
               {t("common.notYet")}
-              {idea.fundingRoundNote ? (
-                <span className="mt-1 block text-mist">{idea.fundingRoundNote}</span>
+              {view.fundingRoundNote ? (
+                <span className="mt-1 block text-mist">{view.fundingRoundNote}</span>
               ) : null}
             </span>
           )}
@@ -105,7 +107,7 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
         </Row>
         <Row label={t("dossier.goForward")}>
           <p className="font-medium text-foam">{t(strategyMessageKey(idea.goForward.strategy))}</p>
-          <p className="mt-2 text-mist">{idea.goForward.summary}</p>
+          <p className="mt-2 text-mist">{view.goForward.summary}</p>
         </Row>
       </dl>
 
@@ -120,7 +122,7 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
 
       <IdeaSourceMedia idea={idea} />
 
-      <IdeaChatbot idea={idea} />
+      <IdeaChatbot idea={view} />
     </article>
   );
 }

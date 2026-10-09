@@ -1,0 +1,182 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit Exchange",
+    "description": "Doğrulanmış mercan resifi restorasyon sonuçlarını tokenleştiren ve otellere, sigortacılara ve kıyı yönetimlerine karbonla ilişkili biyoçeşitlilik kredileri satan bir pazar yeri. Saha ortakları sensör ve dalış kayıtlarını yükler; ReefCredit ticaret edilebilir sertifikalar çıkarır.",
+    "businessModel": "Kredi satışlarında %8–12 işlem ücreti artı tatil köyleri ve belediye alıcılarına satılan doğrulama panoları için SaaS koltukları.",
+    "industry": "İklim Teknolojisi",
+    "sector": "Mavi Ekonomi / Biyoçeşitlilik Kredileri",
+    "fundingRoundNote": "Turizm LP’li bölgesel iklim fonu liderliğinde",
+    "goForwardSummary": "Kıyı şehrinizde franchise doğrulama merkezi olmayı teklif edin—dalış ortağı onboarding’ini yürütün ve yerel otellere kredi satın; ana platform takas işlemlerini yönetsin."
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift Nursing AI",
+    "description": "Gece hastane servisleri için ortam ses asistanı: hemşire notlarını taslaklar, vital konuşmalarından bozulma riskini işaretler ve sabah ekibine yapılandırılmış brifing verir. Personel sıkıntısı çeken akut bakım üniteleri için tasarlandı.",
+    "businessModel": "Hastane sistemlerine satılan yatak başına yıllık lisans; premium katmanda EHR yazma bağlayıcıları yer alır.",
+    "industry": "Sağlık Teknolojisi",
+    "sector": "Hastane İş Akışı Yapay Zekâsı",
+    "fundingRoundNote": "Hastane sistemi stratejik ortak yatırımı",
+    "goForwardSummary": "Asya özel hastane zincirleri için temel gece servisi iş akışını kopyalayın; dil paketlerini (JP/KR/ZH) yerelleştirin ve İngilizce charting’in zaten olduğu YOBilerden başlayın."
+  },
+  "kiln-microfactory": {
+    "name": "Kiln Microfactory",
+    "description": "Tasarımcıların CAD yükleyip malzeme seçerek makine sahibi olmadan aynı hafta küçük parti üretim almasını sağlayan paylaşımlı mahalle seramik + metal 3D baskı mikro fabrikaları. Indie donanım markaları ve mimarlık stüdyolarını hedefler.",
+    "businessModel": "Makine kullanım ücretleri + malzeme marjı + isteğe bağlı tasarım-üretim concierge retainer’ları.",
+    "industry": "Üretim",
+    "sector": "Dağıtık İmalat",
+    "fundingRoundNote": "€1.2M melek turu toplanıyor",
+    "goForwardSummary": "Yazılım yığınlarını kullanarak şehrinizde bir mikro fabrika bayini franchise edin—Kiln’in iş zamanlayıcısını ve malzeme fiyatlandırmasını lisanslarken yerel tasarımcı ilişkilerini siz yönetin."
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack Coldchain",
+    "description": "Küçük üretici ürün toplayıcıları için güneş destekli modüler soğuk odalar ve IoT bozulma sensörleri. Çiftçiler sandık başına slot kiralar; alıcılar WhatsApp + uygulama ile kalite güvenceli tedarik pencereleri alır.",
+    "businessModel": "Donanım kiralama + sandık başına soğuk depolama ücretleri + alıcılar lot ayırttığında pazar yeri take-rate’i.",
+    "industry": "Tarım Teknolojisi",
+    "sector": "Soğuk Zincir Lojistiği",
+    "fundingRoundNote": "DFI + iklim büyüme özkaynağı",
+    "goForwardSummary": "Kurucu ekipten Güneydoğu Asya veya Güney Asya lisanslı operatör olarak iş birliği isteyin—yerel güneş EPC ortaklarıyla sandık kiralama modelini çoğaltın."
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop Companion",
+    "description": "Yalnız yaşayan yaşlılar için günlük check-in yapan, anomali kalıplarında aileyi uyaran ve yerel bakıcı ziyaretleri ayarlayan tablet + giyilebilir yardımcı. Ses öncelikli UX ve düşük sürtünmeli aile panolarına vurgu.",
+    "businessModel": "Hane başına aylık abonelik; bakıcı ajansları lead yönlendirme ve kadro araçları için öder.",
+    "industry": "Sağlık Teknolojisi",
+    "sector": "Yaşlı Bakımı / Tüketici",
+    "fundingRoundNote": "Telekom + sigortacı kurumsal girişim yatırımı",
+    "goForwardSummary": "Aynı yığını farklı bir yaş grubuna sunun—yurtdışındaki ebeveynlere bakan genç uzaktan çalışanlar—veya yurtdışında yaşlısı olan çalışanlar için kurumsal EAP faydası olarak yeniden paketleyin."
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane Freight",
+    "description": "Sınır ötesi KOBİ ihracatçıları için gümrük paketlerini, konşimentoları ve uyum izlerini otomatik oluşturan yapay zekâ dokümantasyon katmanı. WhatsApp belge bırakımları ve yaygın ERP’lerle entegre olur.",
+    "businessModel": "Sevkiyat başına SaaS ücreti + ortak underwriter’larla premium uyum sigortası upsell’i.",
+    "industry": "Lojistik Teknolojisi",
+    "sector": "Ticaret Uyum SaaS",
+    "fundingRoundNote": "Hindistan–Orta Doğu koridoru yatırımcıları",
+    "goForwardSummary": "Son KOBİ logoları için doğrudan rekabet etmek yerine pazarınızdaki freight forwarder ve bankalara white-label uyum middleware’i olarak sunun."
+  },
+  "playpane-classroom": {
+    "name": "PlayPane Classroom",
+    "description": "Okul sonrası programlar için öğretmen panosuna senkron fiziksel STEM kitleri. Çocuklar elektronik projeler kurar; uygulama ustalığı izler ve sonraki kitleri önerir. Birleşik Krallık academy trust’larında güçlü tutunma.",
+    "businessModel": "Kit donanım marjı + okullara ve franchise dershanelere satılan yıllık sınıf yazılım koltukları.",
+    "industry": "Eğitim Teknolojisi",
+    "sector": "K-12 Uygulamalı Öğrenme",
+    "fundingRoundNote": "Açık £2.5M tur",
+    "goForwardSummary": "Asya zenginleştirme merkezleri için kit + pano modelini kopyalayın; müfredatı olimpiyat yollarına yerelleştirin ve dershane franchise ağları üzerinden satın."
+  },
+  "voltpath-depot": {
+    "name": "VoltPath Depot",
+    "description": "Standart paketler kullanan last-mile teslimat filoları için batarya değişim depoları. Kuryeler iki dakikadan kısa sürede değiştirir; VoltPath paket envanterine sahiptir ve lojistik markalarına energy-as-a-service satar.",
+    "businessModel": "Değişim başına ücretler + aylık filo SLA sözleşmeleri; ikinci ömür paket satışlarından artık değer.",
+    "industry": "Mobilite",
+    "sector": "EV Batarya Altyapısı",
+    "fundingRoundNote": "Ride-hailing stratejik + altyapı PE",
+    "goForwardSummary": "Şehrinizde franchise depo operatörü olmayı teklif edin—VoltPath paket ve yazılım sağlar; siz arazi ve kurye sözleşmelerini güvenceye alın."
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft Ads",
+    "description": "Bir ürün URL’sini Meta, TikTok ve Xiaohongshu için yerelleştirilmiş kreatif paketlere dönüştüren üretken reklam stüdyosu—pazar bazında iddia dili uyum kontrolleriyle birlikte.",
+    "businessModel": "Ajanslar için koltuk tabanlı SaaS + render hacmi için kullanım kredileri; kurumsal SSO planları.",
+    "industry": "Pazarlama Teknolojisi",
+    "sector": "Kreatif Otomasyon",
+    "fundingRoundNote": "Asya GTM melekleriyle Kuzey Amerika seed",
+    "goForwardSummary": "Dikey bir niş çıkarın—ör. yalnızca güzellik D2C—Xiaohongshu’ya özgü şablonlarla ve o kategoride zaten uzmanlaşmış ajanslara satın."
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor Legal Ops",
+    "description": "Butik göçmenlik ve vize hukuk büroları için iş akışı OS’i: müvekkil kabulü, belge kontrol listeleri, son tarih takvimleri ve şifreli müvekkil sohbeti. Avukatların daha fazla danışmanlık süresi faturalaması için idari saatleri azaltır.",
+    "businessModel": "Avukat başına aylık SaaS; premium e-imza ve resmi form doldurucular eklenti olarak.",
+    "industry": "Hukuk Teknolojisi",
+    "sector": "Pratik Yönetimi",
+    "fundingRoundNote": "Bootstrapped + friends/family",
+    "goForwardSummary": "Kurucu ekipten APAC reseller’ları olarak iş birliği isteyin—Harbor’ı yerel göçmenlik danışmanlığı ağınızla paketleyin ve MRR paylaşın."
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "İnek olmadan dondurma ve krema için sütle özdeş proteinler üreten hassas fermantasyon girişimi. Daha temiz Scope 3 anlatıları arayan CPG markalarına B2B malzeme satıyor.",
+    "businessModel": "Hacim kademeli malzeme tedarik sözleşmeleri; özel formülasyonlar için ortak geliştirme ücretleri.",
+    "industry": "Gıda Teknolojisi",
+    "sector": "Alternatif Proteinler",
+    "fundingRoundNote": "Avrupa food-tech büyüme sendikası",
+    "goForwardSummary": "Bitmiş protein ithal etmek yerine bölgesel bir tesis için fermantasyon suşu + süreç IP’sini lisanslayın—yerel bir CPG co-packer ile ortak olun."
+  },
+  "meshpay-remit": {
+    "name": "MeshPay Remit",
+    "description": "Brezilya ile Afrika koridorları arasında yerel banka ortakları ve stablecoin takası kullanan düşük ücretli havale rayları. Diaspora e-ticaret satıcıları için mikro-tüccar ödemelerine odaklanır.",
+    "businessModel": "FX + transfer ücreti spreadi; takas bakiyelerinde float getirisi; pazar yeri entegrasyonları için API ücretleri.",
+    "industry": "FinTech",
+    "sector": "Sınır Ötesi Ödemeler",
+    "fundingRoundNote": "LatAm fintech + Afrika odaklı fon",
+    "goForwardSummary": "Aynı tüccar-ödeme konumlandırmasıyla Asya–Afrika havale hatları (ör. Singapur/HK → Doğu Afrika) için koridor tasarımını kopyalayın."
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire Mesh Sensors",
+    "description": "Kırsal yangın kuşaklarında erken ısı imzalarını ve duman sütunlarını tespit eden düşük güç mesh sensörleri ve uydu uplink’leri. Uyarılar yerel CFA/SES panolarına ve sigortacı zarar modellerine akar.",
+    "businessModel": "Konseylere ve kamu hizmetlerine satılan donanım + yıllık izleme SaaS; sigortacılara veri lisanslama.",
+    "industry": "İklim Teknolojisi",
+    "sector": "Orman Yangını Tespiti",
+    "fundingRoundNote": "İklim melekleri + afet-teknoloji hibe yığını",
+    "goForwardSummary": "Mesh + uyarı yığınını Güneydoğu Asya turbalık yangın koridorlarına taşıyın; yerel telekom LoRaWAN ortaklarıyla eşleştirin."
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok Energy Retrofit",
+    "description": "Geleneksel Kore avlu evleri için tasarlanmış modüler yalıtım ve ısı pompası kitleri; sübvansiyonlu finansman ve belediye indirim evrak otomasyonuyla satılır.",
+    "businessModel": "Kit marjı + kurulum ortağı take-rate’i + müteahhitlere satılan indirim başvuru SaaS’i.",
+    "industry": "İklim Teknolojisi",
+    "sector": "Konut Retrofit",
+    "fundingRoundNote": "Kore yeşil banka ortak yatırımı",
+    "goForwardSummary": "Önce ikincil Kore şehirlerinde kurulum ekiplerini franchise edin, ardından kitleri Japon ahşap konut stoğuna uyarlayın."
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier Carbon Ledger",
+    "description": "Fransız lüks maison’ları için Scope-3 muhasebe OS’i; tedarikçi atölyelerini, malzemeleri ve lojistiği CSRD raporlaması için denetime hazır karbon defterlerine eşler.",
+    "businessModel": "Kurumsal SaaS koltukları + SKU başına ayak izi hesaplama kredileri; denetçi ortak satış gelir paylaşımı.",
+    "industry": "İklim Teknolojisi",
+    "sector": "ESG / Tedarik Zinciri",
+    "fundingRoundNote": "Avrupa iklim büyümesi + moda stratejikleri",
+    "goForwardSummary": "Yalnızca ready-to-wear SKU modülü çıkarın ve tam maison kurulumunu karşılayamayan orta segment markalara satın."
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado Voice POS",
+    "description": "Meksika tienda’ları ve sokak satıcıları için ses öncelikli satış noktası: İspanyolca envanter ve satışları söyleyin, WhatsApp makbuzlarıyla senkronlayın ve mikro işletme sermayesi hatları açın.",
+    "businessModel": "Donanım kit marjı + aylık SaaS + banka ortaklarıyla gömülü kredide faiz paylaşımı.",
+    "industry": "FinTech",
+    "sector": "KOBİ Ödemeleri / Embedded Finance",
+    "fundingRoundNote": "LatAm fintech sendikası",
+    "goForwardSummary": "Sesli POS UX’ini yerel telekom cüzdanlarıyla Bahasa/Tagalog enformel perakende koridorları için yeniden kullanın."
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic Triage",
+    "description": "Township hastalarını doğru klinik kuyruğuna yönlendiren WhatsApp + USSD triyaj botları; Cape Town metro klinikleri için hemşire panoları ve ambulans ETA paylaşımıyla.",
+    "businessModel": "Klinik başına SaaS + il sağlık sistemi lisansları; isteğe bağlı telehealth upsell’i.",
+    "industry": "Sağlık Teknolojisi",
+    "sector": "Birincil Bakım Erişimi",
+    "fundingRoundNote": "Çok illi rollout için $3.2M toplanıyor",
+    "goForwardSummary": "Doğu Afrika dağıtım operatörü olarak ortak olun—USSD akışlarını ve klinik entegrasyonlarını yerelleştirirken Cape Clinic çekirdek motoru elinde tutsun."
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "Nordik filolardan EV paketlerini uzaktan teşhis ve şebeke yardımcı hizmet teklifleriyle modüler ev ve kabin depolamasına dönüştürür.",
+    "businessModel": "Paket yenileme marjı + aylık energy-as-a-service; şebeke hizmetleri gelir paylaşımı.",
+    "industry": "Enerji",
+    "sector": "Batarya Döngüselliği",
+    "fundingRoundNote": "Nordik endüstriyel + iklim PE",
+    "goForwardSummary": "AB ikinci ömür uyum yolları arayan Asyalı EV OEM’lere BMS + teşhis yığınını lisanslayın."
+  },
+  "saigon-microgrid-coops": {
+    "name": "Saigon Microgrid Co-ops",
+    "description": "Vietnam sanayi parkları için çatıları havuzlayan, enerji kredilerini on-chain lite ile takas eden ve DPPA kuralları altında fazlayı şebekeye satan güneş + depolama kooperatifleri.",
+    "businessModel": "Proje geliştirme ücretleri + süregelen kooperatif yönetimi SaaS + enerji ticaret spreadi.",
+    "industry": "İklim Teknolojisi",
+    "sector": "Dağıtık Enerji",
+    "fundingRoundNote": "SEA iklim fonu + sanayi parkı LP’leri",
+    "goForwardSummary": "Kooperatif kurulum playbook’larını ikincil Vietnam şehirlerine ve Kamboçya sınır parklarına franchise edin."
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "İsrailli deep-tech girişimleri için SBOM, bulut yanlış yapılandırma ve red-team bulgularını Series A due diligence için yönetim kurulu hazır risk skorlarına eşleyen sürekli güvenlik hattı.",
+    "businessModel": "Mühendis başına SaaS + premium pen-test kredileri; VC due diligence white-label planları.",
+    "industry": "Siber Güvenlik",
+    "sector": "DevSecOps / GRC",
+    "fundingRoundNote": "Siber melekler + ABD kurumsal stratejikler",
+    "goForwardSummary": "Her girişim logosunun peşinden koşmak yerine bölgesel VC’lere ve kurumsal girişim kollarına due diligence white-label paketini satın."
+  }
+}

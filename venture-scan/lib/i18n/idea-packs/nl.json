@@ -1,0 +1,182 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit Exchange",
+    "description": "Een marketplace die geverifieerde resultaten van koraalrifherstel tokeniseert en koolstof-aangrenzende biodiversiteitskredieten verkoopt aan hotels, verzekeraars en kustoverheden. Veldpartners uploaden sensor- en duiklogs; ReefCredit geeft verhandelbare certificaten uit.",
+    "businessModel": "Neemt 8–12% transactiekosten op kredietverkopen plus SaaS-seats voor verificatiedashboards aan resorts en gemeentelijke kopers.",
+    "industry": "Klimaattech",
+    "sector": "Blauwe economie / biodiversiteitskredieten",
+    "fundingRoundNote": "Geleid door regionaal klimaatfonds met toerisme-LP’s",
+    "goForwardSummary": "Bied aan om de franchise-verificatiehub in jouw kuststad te worden—onboard duikpartners en verkoop kredieten aan lokale hotels terwijl het moederplatform de afwikkeling verzorgt."
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift Nursing AI",
+    "description": "Ambient voice-assistent voor nachtdiensten in ziekenhuizen die verpleegkundige notities opstelt, verslechteringsrisico signaleert uit gesprekken over vitale waarden, en een gestructureerde briefing aan het ochtendteam overhandigt. Gebouwd voor acute afdelingen met personeelstekorten.",
+    "businessModel": "Jaarlijkse licentie per bed aan ziekenhuissystemen; premium tier inclusief EHR-write-back-connectors.",
+    "industry": "Healthtech",
+    "sector": "Ziekenhuisworkflow-AI",
+    "fundingRoundNote": "Strategische co-investering van een ziekenhuissysteem",
+    "goForwardSummary": "Kopieer de nachtzaal-workflow voor Aziatische private ziekenhuisketens; lokaliseer taalpacks (JP/KR/ZH) en begin bij IC’s waar al in het Engels wordt gedocumenteerd."
+  },
+  "kiln-microfactory": {
+    "name": "Kiln Microfactory",
+    "description": "Gedeelde buurt-microfabrieken voor keramiek- en metaal-3D-print waar designers CAD uploaden, materialen kiezen en dezelfde week kleine series krijgen zonder machines te bezitten. Gericht op indie-hardwaremerken en architectuurstudio’s.",
+    "businessModel": "Machinegebruikskosten + materiaalmarge + optionele design-to-manufacture-concierge-retainers.",
+    "industry": "Productie",
+    "sector": "Gedistribueerde fabricage",
+    "fundingRoundNote": "Angelronde van €1.2M in ophalen",
+    "goForwardSummary": "Franchise een microfabriek-bay in jouw stad met hun softwarestack—beheer lokale designerrelaties en licentieer Kilns job scheduler en materiaalprijzen."
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack Coldchain",
+    "description": "Zonnegesteunde modulaire koelruimtes en IoT-bederfssensoren voor aggregators van kleinschalige telers. Boeren huren slots per krat; kopers krijgen kwaliteitsgezekerde leveringsvensters via WhatsApp + app.",
+    "businessModel": "Hardwarelease + koelopslagkosten per krat + marketplace take-rate wanneer kopers lots boeken.",
+    "industry": "AgriTech",
+    "sector": "Koudeketenlogistiek",
+    "fundingRoundNote": "DFI’s + klimaat-growth equity",
+    "goForwardSummary": "Vraag het founding team om samenwerking als gelicentieerde operator in Zuidoost-Azië of Zuid-Azië—repliceer het kratverhuurmodel met lokale solar-EPC-partners."
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop Companion",
+    "description": "Tablet- + wearable-companion die dagelijkse check-ins doet voor alleenwonende senioren, familie waarschuwt bij anomaliepatronen en lokale zorgbezoeken boekt. Nadruk op voice-first UX en wrijvingsarme familiedashboards.",
+    "businessModel": "Maandelijks abonnement per huishouden; zorgbureaus betalen voor lead-referrals en roosterttools.",
+    "industry": "Healthtech",
+    "sector": "Ouderenzorg / consument",
+    "fundingRoundNote": "Corporate venture van telco + verzekeraar",
+    "goForwardSummary": "Bied dezelfde stack aan een andere leeftijdsgroep—jonge remote workers die ouders in het buitenland verzorgen—of herbundle als corporate EAP-benefit voor medewerkers met overseas elders."
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane Freight",
+    "description": "AI-documentatielaag die automatisch douanepakketten, cognossementen en compliance-trails bouwt voor grensoverschrijdende mkb-exporteurs. Integreert met WhatsApp-documentdrops en gangbare ERP’s.",
+    "businessModel": "SaaS-fee per zending + premium compliance-verzekering-upsell met partner-underwriters.",
+    "industry": "Logistieke tech",
+    "sector": "Trade-compliance-SaaS",
+    "fundingRoundNote": "Investeerders in de India–Midden-Oosten-corridor",
+    "goForwardSummary": "Bied het aan als white-label compliance-middleware aan expediteurs en banken in jouw markt in plaats van direct te concurreren om eind-mkb-logo’s."
+  },
+  "playpane-classroom": {
+    "name": "PlayPane Classroom",
+    "description": "Fysieke STEM-kits gesynchroniseerd met een docentendashboard voor naschoolse programma’s. Kinderen bouwen elektronicaprojecten; de app volgt mastery en beveelt volgende kits aan. Sterke voet aan de grond bij Britse academy trusts.",
+    "businessModel": "Hardwaremarge op kits + jaarlijkse classroom-softwareseats aan scholen en franchise-bijlescentra.",
+    "industry": "EdTech",
+    "sector": "K-12 hands-on leren",
+    "fundingRoundNote": "Open ronde van £2.5M",
+    "goForwardSummary": "Kopieer het kit-plus-dashboardmodel voor Aziatische enrichment-centra; lokaliseer curriculum naar olympiade-trajecten en verkoop via tutoring-franchisenetwerken."
+  },
+  "voltpath-depot": {
+    "name": "VoltPath Depot",
+    "description": "Batterijwisseldepots voor last-mile-bezorgvloten met gestandaardiseerde packs. Koeriers wisselen in minder dan twee minuten; VoltPath bezit de pack-inventaris en verkoopt energy-as-a-service aan logistieke merken.",
+    "businessModel": "Kosten per swap + maandelijkse vloot-SLA-contracten; restwaarde uit second-life pack-verkopen.",
+    "industry": "Mobiliteit",
+    "sector": "EV-batterijinfrastructuur",
+    "fundingRoundNote": "Ride-hailing strategisch + infrastructure PE",
+    "goForwardSummary": "Bied aan om franchise-depotoperator in jouw stad te worden—VoltPath levert packs en software; jij regelt grond en koeriercontracten."
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft Ads",
+    "description": "Generatieve ad-studio die een product-URL omzet in gelokaliseerde creative packs voor Meta, TikTok en Xiaohongshu—compleet met compliance-checks voor claimtaal per markt.",
+    "businessModel": "Seat-based SaaS voor agencies + usage credits voor render-volume; enterprise SSO-plannen.",
+    "industry": "MarTech",
+    "sector": "Creative automation",
+    "fundingRoundNote": "Noord-Amerika seed met Asia GTM-angels",
+    "goForwardSummary": "Spin een verticale niche uit—bijv. alleen beauty D2C—met Xiaohongshu-native templates en verkoop aan agencies die al in die categorie specialiseren."
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor Legal Ops",
+    "description": "Workflow-OS voor boutique immigratie- en visakantoren: client intake, documentchecklists, deadlinekalenders en versleutelde client chat. Snijdt admin-uren zodat advocaten meer adviesuren factureren.",
+    "businessModel": "Maandelijks SaaS per advocaat; premium e-signature en overheidsformulier-fillers als add-ons.",
+    "industry": "Legal Tech",
+    "sector": "Praktijkmanagement",
+    "fundingRoundNote": "Bootstrapped + friends/family",
+    "goForwardSummary": "Vraag het founding team om samenwerking als APAC-reseller—bundle Harbor met jouw lokale immigratieadviesnetwerk en deel MRR."
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "Precision-fermentatie-startup die zuivelidentieke eiwitten produceert voor ijs en creamers zonder koeien. Verkoopt B2B-ingrediënten aan CPG-merken die schonere Scope 3-narratieven zoeken.",
+    "businessModel": "Ingrediëntleveringscontracten met volumetiers; co-developmentfees voor maatwerkformuleringen.",
+    "industry": "Food Tech",
+    "sector": "Alternatieve eiwitten",
+    "fundingRoundNote": "Europees food-tech growth-syndicaat",
+    "goForwardSummary": "Licentieer de fermentatiestam + process-IP voor een regionale fabriek in plaats van afgewerkt eiwit te importeren—partner met een lokale CPG co-packer."
+  },
+  "meshpay-remit": {
+    "name": "MeshPay Remit",
+    "description": "Lage-fee remittance-rails via lokale bankpartners en stablecoin-settlement tussen Brazilië en Afrikaanse corridors. Focus op micro-merchant payouts voor diaspora e-commerce-verkopers.",
+    "businessModel": "FX- + transferfeespread; float-yield op settlement-saldi; API-fees voor marketplace-integraties.",
+    "industry": "FinTech",
+    "sector": "Grensoverschrijdende betalingen",
+    "fundingRoundNote": "LatAm-fintech + Afrika-gericht fonds",
+    "goForwardSummary": "Kopieer het corridorontwerp voor Azië–Afrika remittance-lanes (bijv. Singapore/HK → Oost-Afrika) met dezelfde merchant-payout-positionering."
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire Mesh Sensors",
+    "description": "Low-power mesh-sensoren en satellietuplinks die vroege warmtesignaturen en rookpluimen detecteren in landelijke brandzones. Alerts voeden lokale CFA/SES-dashboards en verzekeraarsverliesmodellen.",
+    "businessModel": "Hardware + jaarlijks monitoring-SaaS aan gemeenten en utilities; datalicenties aan verzekeraars.",
+    "industry": "Klimaattech",
+    "sector": "Bosbranddetectie",
+    "fundingRoundNote": "Klimaatangels + disaster-tech grantstack",
+    "goForwardSummary": "Port de mesh- + alertstack naar Zuidoost-Aziatische veenbrandcorridors, gekoppeld aan lokale telco LoRaWAN-partners."
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok Energy Retrofit",
+    "description": "Modulaire isolatie- en warmtepompkits ontworpen voor traditionele Koreaanse binnenplaatshuizen, verkocht met gesubsidieerde financiering en automatisering van gemeentelijke rebate-papierwerk.",
+    "businessModel": "Kitmarge + take-rate van installatiepartners + SaaS voor rebate-indiening aan aannemers.",
+    "industry": "Klimaattech",
+    "sector": "Residentiële retrofit",
+    "fundingRoundNote": "Co-investering Koreaanse green bank",
+    "goForwardSummary": "Franchise installatieploegen eerst in secundaire Koreaanse steden, pas daarna kits aan voor Japanse houtbouw."
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier Carbon Ledger",
+    "description": "Scope-3 accounting-OS voor Franse luxemaisons dat leveranciersateliers, materialen en logistiek in auditklare carbon ledgers voor CSRD-rapportage brengt.",
+    "businessModel": "Enterprise SaaS-seats + footprint-berekeningscredits per SKU; auditor co-sell revenue share.",
+    "industry": "Klimaattech",
+    "sector": "ESG / supply chain",
+    "fundingRoundNote": "Europees klimaatgrowth + fashion strategics",
+    "goForwardSummary": "Spin een ready-to-wear-only SKU-module uit en verkoop die aan mid-market merken die volledige maison-deployments niet kunnen betalen."
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado Voice POS",
+    "description": "Voice-first point-of-sale voor Mexicaanse tiendas en straatverkopers: spreek inventaris en verkopen in het Spaans, sync WhatsApp-bonnen en ontgrendel micro-werkkapitaallijnen.",
+    "businessModel": "Hardwarekitmarge + maandelijks SaaS + renteaandeel op embedded credit met bankpartners.",
+    "industry": "FinTech",
+    "sector": "Mkb-betalingen / embedded finance",
+    "fundingRoundNote": "LatAm-fintech syndicaat",
+    "goForwardSummary": "Hergebruik de voice-POS UX voor informele retailcorridors in Bahasa/Tagalog met lokale telco-wallets."
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic Triage",
+    "description": "WhatsApp- + USSD-triagebots die township-patiënten naar de juiste kliniekwachtrij leiden, met verpleegkundigendashboards en ambulance-ETA-deling voor klinieken in de Kaapstad-metro.",
+    "businessModel": "SaaS per kliniek + licenties aan provinciale gezondheidssystemen; optionele telehealth-upsell.",
+    "industry": "Healthtech",
+    "sector": "Toegang tot eerstelijnszorg",
+    "fundingRoundNote": "Haalt $3.2M op voor multi-provinciale uitrol",
+    "goForwardSummary": "Partner als Oost-Afrika-deploymentoperator—lokaliseer USSD-flows en kliniekintegraties terwijl Cape Clinic de core-engine behoudt."
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "Hergebruikt EV-packs van Noordse vloten tot modulaire woning- en cabinopslag met remote diagnostiek en biedingen op grid ancillary services.",
+    "businessModel": "Pack-refurbmarge + maandelijks energy-as-a-service; revenue share uit grid services.",
+    "industry": "Energie",
+    "sector": "Batterijcirculariteit",
+    "fundingRoundNote": "Noordse industrie + klimaat-PE",
+    "goForwardSummary": "Licentieer de BMS- + diagnostiekstack aan Aziatische EV-OEM’s die EU second-life compliance-paden zoeken."
+  },
+  "saigon-microgrid-coops": {
+    "name": "Saigon Microgrid Co-ops",
+    "description": "Zonne- + opslagcoöps voor Vietnamese industrieterreinen die daken poolen, energiecredits on-chain lite afwikkelen en surplus onder DPPA-regels aan het net verkopen.",
+    "businessModel": "Projectontwikkelingsfees + doorlopend co-op-management-SaaS + energy-trading-spread.",
+    "industry": "Klimaattech",
+    "sector": "Gedistribueerde energie",
+    "fundingRoundNote": "SEA-klimaatfonds + industrieterrein-LP’s",
+    "goForwardSummary": "Franchise co-op-vormingsplaybooks naar secundaire Vietnamese steden en Cambodjaanse grensparken."
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "Continue security-pipeline voor Israëlische deep-tech startups die SBOM, cloud-misconfig en red-team findings vertaalt naar board-klare risk scores voor Series A-diligence.",
+    "businessModel": "SaaS per engineer + premium pen-test credits; VC-diligence white-label plannen.",
+    "industry": "Cybersecurity",
+    "sector": "DevSecOps / GRC",
+    "fundingRoundNote": "Cyberangels + US enterprise strategics",
+    "goForwardSummary": "Verkoop het diligence white-label pack aan regionale VC’s en corporate venture-armen in plaats van elk startuplogo na te jagen."
+  }
+}

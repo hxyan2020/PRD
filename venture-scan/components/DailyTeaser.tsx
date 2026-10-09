@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchDaily } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeIdea } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 
 export function DailyTeaser() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [ready, setReady] = useState(false);
   const [title, setTitle] = useState<string | null>(null);
   const [score, setScore] = useState<number | null>(null);
@@ -24,7 +25,7 @@ export function DailyTeaser() {
       try {
         const daily = await fetchDaily(profile);
         if (!daily || cancelled) return;
-        setTitle(daily.idea.name);
+        setTitle(localizeIdea(daily.idea, locale).name);
         setScore(daily.match.score);
       } catch {
         // Teaser is optional.
@@ -33,7 +34,7 @@ export function DailyTeaser() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 pb-6 sm:px-6">

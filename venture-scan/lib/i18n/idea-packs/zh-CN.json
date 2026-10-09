@@ -1,0 +1,182 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit 交易所",
+    "description": "将经验证的珊瑚礁修复成果代币化，并向酒店、保险公司与沿海政府出售类碳生物多样性信用的市场。现场合作方上传传感器与潜水日志；ReefCredit 签发可交易证书。",
+    "businessModel": "信用销售收取 8–12% 交易费，并向度假村与市政买家出售验证看板 SaaS 席位。",
+    "industry": "气候科技",
+    "sector": "蓝色经济 / 生物多样性信用",
+    "fundingRoundNote": "由区域气候基金领投，旅游类 LP 参与",
+    "goForwardSummary": "争取成为您所在沿海城市的特许验证中心——负责潜水合作方入驻，并向本地酒店销售信用，结算由母平台处理。"
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift 护理 AI",
+    "description": "面向夜间病房的环境语音助手：自动起草护理记录，从生命体征交谈中标出恶化风险，并向早班团队交接结构化简报。为人力紧张的急症护理单元而建。",
+    "businessModel": "按床位向医院集团出售年费许可；高级版含 EHR 回写连接器。",
+    "industry": "健康科技",
+    "sector": "医院工作流 AI",
+    "fundingRoundNote": "医院系统战略联合投资",
+    "goForwardSummary": "将核心夜班病房工作流复制到亚洲私立医院连锁；本地化语言包（日/韩/中），并从已有英文病历的 ICU 起步。"
+  },
+  "kiln-microfactory": {
+    "name": "Kiln 微工厂",
+    "description": "社区共享的陶瓷与金属 3D 打印微工厂：设计师上传 CAD、选择材料，无需自有设备即可在当周完成小批量生产。面向独立硬件品牌与建筑工作室。",
+    "businessModel": "设备利用率费用 + 材料加价 + 可选的设计到制造礼宾顾问年费。",
+    "industry": "制造业",
+    "sector": "分布式制造",
+    "fundingRoundNote": "正在募集 €1.2M 天使轮",
+    "goForwardSummary": "用其软件栈在您所在城市开设特许微工厂工位——掌握本地设计师关系，同时授权使用 Kiln 的任务调度与材料定价。"
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack 冷链",
+    "description": "面向小农农产品集货商的太阳能模块化冷库与 IoT 变质传感器。农户按箱租用仓位；买家通过 WhatsApp 与应用获得质量有保障的供货窗口。",
+    "businessModel": "硬件租赁 + 按箱冷藏费 + 买家预订批次时的市场抽成。",
+    "industry": "农业科技",
+    "sector": "冷链物流",
+    "fundingRoundNote": "开发性金融机构 + 气候成长型股权",
+    "goForwardSummary": "向创始团队申请成为其东南亚或南亚授权运营商——与本地太阳能 EPC 合作伙伴复制按箱租赁模式。"
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop 陪伴",
+    "description": "平板与可穿戴陪伴设备，为独居老人进行每日签到，在异常模式时提醒家人，并预约本地照护上门。强调语音优先体验与低摩擦的家庭看板。",
+    "businessModel": "按家庭月度订阅；照护机构为线索推荐与排班工具付费。",
+    "industry": "健康科技",
+    "sector": "养老照护 / 消费端",
+    "fundingRoundNote": "电信与保险公司企业风投",
+    "goForwardSummary": "将同一技术栈提供给另一年龄群体——在海外远程工作、需照料父母的年轻人——或重新打包为企业 EAP 福利，服务有海外长辈的员工。"
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane 货运",
+    "description": "AI 单证层，为跨境中小出口商自动生成海关包、提单与合规轨迹。对接 WhatsApp 文档投递与常见 ERP。",
+    "businessModel": "按票 SaaS 费用 + 与合作承保方的高级合规保险追加销售。",
+    "industry": "物流科技",
+    "sector": "贸易合规 SaaS",
+    "fundingRoundNote": "印度–中东走廊投资者",
+    "goForwardSummary": "在您所在市场作为白标合规中间件卖给货代与银行，而非直接争夺终端中小企业客户。"
+  },
+  "playpane-classroom": {
+    "name": "PlayPane 课堂",
+    "description": "与教师看板同步的实体 STEM 套件，用于课后项目。孩子动手做电子项目；应用跟踪掌握度并推荐下一套件。在英国学院信托学校有稳固立足点。",
+    "businessModel": "套件硬件利润 + 向学校与特许辅导中心出售的年度课堂软件席位。",
+    "industry": "教育科技",
+    "sector": "K-12 动手学习",
+    "fundingRoundNote": "开放 £2.5M 融资轮",
+    "goForwardSummary": "将套件 + 看板模式复制到亚洲素质拓展中心；按竞赛路径（奥赛）本地化课程，并通过辅导特许网络销售。"
+  },
+  "voltpath-depot": {
+    "name": "VoltPath 换电站",
+    "description": "面向跨城末端配送车队、使用标准化电池包的换电枢纽。骑手两分钟内完成更换；VoltPath 持有电池库存，并向物流品牌出售能源即服务。",
+    "businessModel": "按次换电费 + 车队月度 SLA 合同；二手电池残值销售。",
+    "industry": "出行科技",
+    "sector": "电动车电池基础设施",
+    "fundingRoundNote": "网约车战略投资 + 基础设施私募股权",
+    "goForwardSummary": "争取成为您所在城市的特许换电站运营商——VoltPath 供应电池与软件；您负责场地与骑手合同。"
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft 广告",
+    "description": "生成式广告工作室：输入产品 URL，即可产出面向 Meta、TikTok 与小红书的本地化创意包，并含各市场宣称用语合规检查。",
+    "businessModel": "面向代理商的按席位 SaaS + 渲染用量积分；企业 SSO 方案。",
+    "industry": "营销科技",
+    "sector": "创意自动化",
+    "fundingRoundNote": "北美种子轮，含亚洲 GTM 天使",
+    "goForwardSummary": "拆出垂直细分——例如仅美妆 D2C——用原生小红书模板，卖给已专注该品类的代理商。"
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor 法律运营",
+    "description": "面向精品移民与签证律所的工作流操作系统：客户接待、文件清单、截止日期日历与加密客户聊天。减少行政工时，让律师更多计费咨询时间。",
+    "businessModel": "按律师月度 SaaS；高级电子签名与政府表格填写器作为附加项。",
+    "industry": "法律科技",
+    "sector": "律所实务管理",
+    "fundingRoundNote": "自力更生 + 亲友轮",
+    "goForwardSummary": "向创始团队申请成为其亚太转售商——将 Harbor 与您本地移民咨询网络捆绑，并分享 MRR。"
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "精准发酵初创，生产与乳品相同的蛋白质，用于冰淇淋与奶精，无需养牛。向寻求更清晰 Scope 3 叙事的 CPG 品牌出售 B2B 原料。",
+    "businessModel": "按量阶梯的原料供应合同；定制配方的联合开发费用。",
+    "industry": "食品科技",
+    "sector": "替代蛋白",
+    "fundingRoundNote": "欧洲食品科技成长辛迪加",
+    "goForwardSummary": "授权发酵菌株与工艺 IP 建设区域工厂，而非进口成品蛋白——与本地 CPG 代工厂合作。"
+  },
+  "meshpay-remit": {
+    "name": "MeshPay 汇款",
+    "description": "利用本地银行合作方与稳定币结算，在巴西与非洲走廊之间提供低费用汇款通道。聚焦侨民电商卖家的微商户出款。",
+    "businessModel": "外汇与转账费差价；结算余额浮存收益；市场对接 API 费用。",
+    "industry": "金融科技",
+    "sector": "跨境支付",
+    "fundingRoundNote": "拉美金融科技 + 聚焦非洲的基金",
+    "goForwardSummary": "将走廊设计复制到亚洲–非洲汇款通道（如新加坡/香港 → 东非），沿用同一商户出款定位。"
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire 网状传感器",
+    "description": "低功耗网状传感器与卫星上行链路，在农村火险带早期探测热特征与烟羽。告警接入本地 CFA/SES 看板与保险公司损失模型。",
+    "businessModel": "硬件 + 向市政与公用事业出售的年度监测 SaaS；向保险公司授权数据。",
+    "industry": "气候科技",
+    "sector": "野火探测",
+    "fundingRoundNote": "气候天使 + 灾害科技资助组合",
+    "goForwardSummary": "将网状 + 告警技术栈移植到东南亚泥炭火走廊，并与本地电信 LoRaWAN 合作方配对。"
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok 节能改造",
+    "description": "专为韩国传统庭院住宅设计的模块化保温与热泵套件，配套补贴融资与市政返利文书自动化。",
+    "businessModel": "套件利润 + 安装合作方抽成 + 向承包商出售的返利申报 SaaS。",
+    "industry": "气候科技",
+    "sector": "住宅节能改造",
+    "fundingRoundNote": "韩国绿色银行联合投资",
+    "goForwardSummary": "先在韩国二线城市特许安装团队，再将套件适配日本木结构存量住宅。"
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier 碳台账",
+    "description": "面向法国奢侈品世家的 Scope-3 核算操作系统，将供应商工坊、材料与物流映射为可审计的碳台账，用于 CSRD 报告。",
+    "businessModel": "企业 SaaS 席位 + 按 SKU 足迹计算积分；与审计机构联合销售收入分成。",
+    "industry": "气候科技",
+    "sector": "ESG / 供应链",
+    "fundingRoundNote": "欧洲气候成长 + 时尚战略投资方",
+    "goForwardSummary": "拆出仅成衣的 SKU 模块，卖给负担不起完整世家部署的中端品牌。"
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado 语音 POS",
+    "description": "面向墨西哥小店与街头摊贩的语音优先收银：用西班牙语说出库存与销售，同步 WhatsApp 收据，并解锁微型营运资金额度。",
+    "businessModel": "硬件套件利润 + 月度 SaaS + 与银行合作方的嵌入式信贷利息分成。",
+    "industry": "金融科技",
+    "sector": "中小企业支付 / 嵌入式金融",
+    "fundingRoundNote": "拉美金融科技辛迪加",
+    "goForwardSummary": "将语音 POS 体验复用于印尼语/他加禄语非正式零售走廊，对接本地电信钱包。"
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic 分诊",
+    "description": "WhatsApp + USSD 分诊机器人，将乡镇患者导流到正确诊所队列，并为开普敦都会区诊所提供护士看板与救护车 ETA 共享。",
+    "businessModel": "按诊所 SaaS + 省级卫生系统许可；可选远程医疗追加销售。",
+    "industry": "健康科技",
+    "sector": "基层医疗可及性",
+    "fundingRoundNote": "正在为多省推广募集 $3.2M",
+    "goForwardSummary": "作为东非部署运营商合作——本地化 USSD 流程与诊所对接，核心引擎仍由 Cape Clinic 持有。"
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "将北欧车队淘汰的电动车电池包改造为模块化家用与小屋储能，并提供远程诊断与电网辅助服务竞价。",
+    "businessModel": "电池翻新利润 + 月度能源即服务；电网服务收入分成。",
+    "industry": "能源",
+    "sector": "电池循环利用",
+    "fundingRoundNote": "北欧工业 + 气候私募股权",
+    "goForwardSummary": "将 BMS + 诊断技术栈授权给寻求欧盟二手寿命合规路径的亚洲电动车 OEM。"
+  },
+  "saigon-microgrid-coops": {
+    "name": "西贡微电网合作社",
+    "description": "面向越南工业园的太阳能 + 储能合作社：汇集屋顶资源，以轻量链上方式结算能源信用，并按 DPPA 规则向电网出售余电。",
+    "businessModel": "项目开发费 + 持续合作社管理 SaaS + 能源交易价差。",
+    "industry": "气候科技",
+    "sector": "分布式能源",
+    "fundingRoundNote": "东南亚气候基金 + 工业园 LP",
+    "goForwardSummary": "将合作社组建手册特许推广到越南二线城市与柬埔寨边境园区。"
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "面向以色列深科技初创的持续安全流水线：将 SBOM、云配置错误与红队发现映射为董事会可读的风险评分，用于 A 轮尽调。",
+    "businessModel": "按工程师 SaaS + 高级渗透测试积分；VC 尽调白标方案。",
+    "industry": "网络安全",
+    "sector": "DevSecOps / GRC",
+    "fundingRoundNote": "网络安全天使 + 美国企业战略方",
+    "goForwardSummary": "将尽调白标包卖给区域 VC 与企业风投部门，而非追逐每一个初创品牌。"
+  }
+}

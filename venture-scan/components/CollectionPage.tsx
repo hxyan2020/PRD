@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { listUserCollection, removeFromCollection } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeIdea } from "@/lib/i18n/localize-idea";
 import type { CollectionItem } from "@/lib/types";
 
 export function CollectionPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [items, setItems] = useState<CollectionItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
@@ -79,7 +80,9 @@ export function CollectionPage() {
         <p className="mt-10 text-sm text-mist">{t("collection.empty")}</p>
       ) : (
         <ul className="mt-10 divide-y divide-white/10 border-t border-white/10">
-          {items.map((item) => (
+          {items.map((item) => {
+            const view = localizeIdea(item.idea, locale);
+            return (
             <li key={item.id} className="py-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -87,10 +90,10 @@ export function CollectionPage() {
                     href={`/ideas/${item.ideaSlug}`}
                     className="font-display text-2xl text-foam hover:text-white"
                   >
-                    {item.idea.name}
+                    {view.name}
                   </Link>
                   <p className="mt-1 text-xs text-mist">
-                    {item.idea.industry} · {item.idea.sector}
+                    {view.industry} · {view.sector}
                     {item.match ? ` · ${t("ledger.match", { score: item.match.score })}` : ""}
                   </p>
                   {item.match?.matched[0] ? (
@@ -115,7 +118,8 @@ export function CollectionPage() {
                 </button>
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </div>

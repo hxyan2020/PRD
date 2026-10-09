@@ -1,0 +1,39 @@
+import { describe, expect, it } from "vitest";
+import { SEED_IDEAS } from "../seed-ideas";
+import { LOCALES } from "./locales";
+import { ideaPackCoverage, localizeIdea, localizeIdeaFieldLabel } from "./localize-idea";
+
+describe("localizeIdea", () => {
+  it("keeps English ideas unchanged for en", () => {
+    const idea = SEED_IDEAS[0];
+    expect(localizeIdea(idea, "en")).toBe(idea);
+  });
+
+  it("translates zh-CN idea copy for every seed idea", () => {
+    for (const idea of SEED_IDEAS) {
+      const view = localizeIdea(idea, "zh-CN");
+      expect(view.description).not.toBe(idea.description);
+      expect(view.description.length).toBeGreaterThan(10);
+      expect(view.goForward.summary).not.toBe(idea.goForward.summary);
+      expect(view.industry).not.toBe(idea.industry);
+      // slug/id stay canonical
+      expect(view.slug).toBe(idea.slug);
+      expect(view.id).toBe(idea.id);
+    }
+  });
+
+  it("covers all locales with translated descriptions", () => {
+    for (const locale of LOCALES) {
+      if (locale.code === "en") continue;
+      const { total, translated } = ideaPackCoverage(locale.code);
+      expect(total).toBe(SEED_IDEAS.length);
+      expect(translated).toBe(SEED_IDEAS.length);
+    }
+  });
+
+  it("localizes industry filter labels while preserving English option values", () => {
+    const label = localizeIdeaFieldLabel("industry", "Climate Tech", "zh-CN");
+    expect(label).not.toBe("Climate Tech");
+    expect(label.length).toBeGreaterThan(0);
+  });
+});

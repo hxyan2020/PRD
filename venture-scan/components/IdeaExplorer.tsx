@@ -7,6 +7,7 @@ import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeIdea, localizeIdeaFieldLabel } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
 
@@ -23,7 +24,7 @@ export function IdeaExplorer({
   initialIdeas: StartupIdea[];
   meta: Meta;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [q, setQ] = useState("");
   const [industry, setIndustry] = useState("");
   const [sector, setSector] = useState("");
@@ -66,6 +67,7 @@ export function IdeaExplorer({
       if (fundraising === "no" && idea.fundraisingSecured) return false;
       if (q) {
         const needle = q.toLowerCase();
+        const view = localizeIdea(idea, locale);
         const hay = [
           idea.name,
           idea.description,
@@ -73,6 +75,10 @@ export function IdeaExplorer({
           idea.sector,
           idea.teamCountry,
           ...idea.tags,
+          view.name,
+          view.description,
+          view.industry,
+          view.sector,
         ]
           .join(" ")
           .toLowerCase();
@@ -87,7 +93,7 @@ export function IdeaExplorer({
       );
     }
     return rows;
-  }, [ideas, q, industry, sector, country, fundraising, sortByMatch, matches]);
+  }, [ideas, q, industry, sector, country, fundraising, sortByMatch, matches, locale]);
 
   async function rescan() {
     setScanning(true);
@@ -168,7 +174,7 @@ export function IdeaExplorer({
           <option value="">{t("ledger.allIndustries")}</option>
           {meta.industries.map((v) => (
             <option key={v} value={v}>
-              {v}
+              {localizeIdeaFieldLabel("industry", v, locale)}
             </option>
           ))}
         </select>
@@ -207,7 +213,7 @@ export function IdeaExplorer({
           <option value="">{t("ledger.allSectors")}</option>
           {meta.sectors.map((v) => (
             <option key={v} value={v}>
-              {v}
+              {localizeIdeaFieldLabel("sector", v, locale)}
             </option>
           ))}
         </select>
@@ -219,6 +225,7 @@ export function IdeaExplorer({
       <ul className="mt-8 divide-y divide-white/10 border-t border-white/10">
         {filtered.map((idea, idx) => {
           const match = matches[idea.slug];
+          const view = localizeIdea(idea, locale);
           return (
             <li
               key={idea.id}
@@ -230,7 +237,7 @@ export function IdeaExplorer({
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-display text-xl text-foam transition group-hover:text-white sm:text-2xl">
-                        {idea.name}
+                        {view.name}
                       </h3>
                       <span
                         className={`font-mono text-[10px] uppercase tracking-[0.16em] ${
@@ -248,7 +255,7 @@ export function IdeaExplorer({
                       ) : null}
                     </div>
                     <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-relaxed text-mist">
-                      {idea.description}
+                      {view.description}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist/90">
                       <span className="inline-flex items-center gap-1.5">
@@ -262,7 +269,7 @@ export function IdeaExplorer({
                       </span>
                       <span>{t("common.people", { count: idea.teamSize })}</span>
                       <span>
-                        {idea.industry} / {idea.sector}
+                        {view.industry} / {view.sector}
                       </span>
                       {idea.fundraisingSecured ? (
                         <span>{formatMoney(idea.fundingAmountUsd)}</span>

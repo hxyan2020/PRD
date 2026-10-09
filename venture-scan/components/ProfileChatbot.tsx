@@ -9,6 +9,7 @@ import {
   type ChatStepId,
 } from "@/lib/chat-guardrails";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeIdea } from "@/lib/i18n/localize-idea";
 import type { MessageKey } from "@/lib/i18n/messages";
 import {
   clearProfileStorage,
@@ -37,7 +38,7 @@ const STEP_DEFS: { id: ChatStepId; promptKey: MessageKey }[] = [
 type Ranked = { idea: StartupIdea; match: IdeaMatch };
 
 export function ProfileChatbot() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [profile, setProfile] = useState<UserProfile>(() => emptyProfile());
   const [stepIndex, setStepIndex] = useState(0);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -341,16 +342,18 @@ export function ProfileChatbot() {
           ) : null}
 
           <ul className="mt-4 divide-y divide-white/10">
-            {topMatches.map(({ idea, match }) => (
+            {topMatches.map(({ idea, match }) => {
+              const view = localizeIdea(idea, locale);
+              return (
               <li key={idea.id} className="py-3">
                 <Link href={`/ideas/${idea.slug}`} className="group block">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h3 className="font-display text-xl text-foam group-hover:text-white">
-                        {idea.name}
+                        {view.name}
                       </h3>
                       <p className="mt-1 text-xs text-mist">
-                        {idea.industry} · {idea.sector}
+                        {view.industry} · {view.sector}
                       </p>
                     </div>
                     <ScorePill score={match.score} />
@@ -367,7 +370,8 @@ export function ProfileChatbot() {
                   ) : null}
                 </Link>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
       </aside>
