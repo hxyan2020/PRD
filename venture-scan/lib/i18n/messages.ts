@@ -103,6 +103,17 @@ const en = {
   "match.redirect.generic":
     "I noticed we drifted a bit — let's stay on this question so I can build an accurate match profile.",
 
+  "ideaChat.kicker": "Idea desk",
+  "ideaChat.title": "Ask about {name}",
+  "ideaChat.body":
+    "Ask follow-up questions about this dossier. Every reply includes the data sources it used.",
+  "ideaChat.welcome":
+    "I'm the dossier assistant for {name}. Ask about funding, team, business model, go-forward play, or where the data came from — I'll cite sources in every answer.",
+  "ideaChat.placeholder": "Ask a question about {name}…",
+  "ideaChat.send": "Ask",
+  "ideaChat.sources": "Data sources",
+  "ideaChat.loading": "Loading idea chatbot…",
+
   "today.kicker": "Today's recommendation",
   "today.needTitle": "Build a profile first",
   "today.needBody":
@@ -290,6 +301,15 @@ const zhCN: Dict = {
     "快完成了——你最感兴趣的领域？用逗号分隔即可（健康科技、气候、金融科技…）。",
   "match.redirect.markets": "不着急。偏好的市场或国家，用逗号分隔——或输入 skip 跳过。",
   "match.redirect.generic": "我们好像聊偏了一点——先回到这个问题，方便我建立准确的匹配画像。",
+  "ideaChat.kicker": "创意问答",
+  "ideaChat.title": "询问 {name}",
+  "ideaChat.body": "可继续追问这份档案；每次回复都会标明所用数据源。",
+  "ideaChat.welcome":
+    "我是 {name} 的档案助手。可问融资、团队、商业模式、前进路径或数据来源——每次回答都会附上来源。",
+  "ideaChat.placeholder": "关于 {name} 提问…",
+  "ideaChat.send": "提问",
+  "ideaChat.sources": "数据来源",
+  "ideaChat.loading": "加载创意问答…",
   "today.kicker": "今日推荐",
   "today.needTitle": "请先建立画像",
   "today.needBody": "每日推荐需要你的技能、专业、当前业务与兴趣领域，才能打分并展示匹配与差距。",
