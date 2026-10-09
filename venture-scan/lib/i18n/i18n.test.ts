@@ -21,4 +21,17 @@ describe("i18n", () => {
   it("falls back to English for missing keys via en baseline", () => {
     expect(translate("nl", "footer.chips")).toBeTruthy();
   });
+
+  it("translates at least 95% of keys per locale (≤8 intentional English cognates)", () => {
+    const enKeys = Object.keys(MESSAGES.en) as (keyof typeof MESSAGES.en)[];
+    const maxStillEn = 8;
+    for (const locale of LOCALES) {
+      if (locale.code === "en") continue;
+      const dict = MESSAGES[locale.code];
+      const stillEn = enKeys.filter((k) => dict[k] === MESSAGES.en[k]).length;
+      const coverage = Math.round(((enKeys.length - stillEn) / enKeys.length) * 100);
+      expect(stillEn).toBeLessThanOrEqual(maxStillEn);
+      expect(coverage).toBeGreaterThanOrEqual(95);
+    }
+  });
 });

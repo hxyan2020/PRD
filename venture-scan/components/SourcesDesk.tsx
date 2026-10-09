@@ -17,17 +17,9 @@ import { useI18n } from "@/lib/i18n/context";
 
 const HEALTH_ORDER: SourceHealth[] = ["healthy", "degraded", "stale", "offline"];
 
-const KIND_LABEL: Record<DataSource["kind"], string> = {
-  news: "News",
-  registry: "Registry",
-  fundraising: "Fundraising",
-  community: "Community",
-  government: "Government",
-  aggregator: "Aggregator",
-};
-
 export function SourcesDesk() {
   const { t } = useI18n();
+  const kindLabel = (kind: DataSource["kind"]) => t(`sourceKind.${kind}`);
   const [region, setRegion] = useState("all");
   const [health, setHealth] = useState<"all" | SourceHealth>("all");
   const [q, setQ] = useState("");
@@ -169,7 +161,7 @@ export function SourcesDesk() {
                     <h3 className="font-display text-xl text-foam">{source.name}</h3>
                     <HealthBadge health={status} label={t(`sources.health.${status}`)} />
                     <span className="rounded-md border border-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-mist">
-                      {KIND_LABEL[source.kind]}
+                      {kindLabel(source.kind)}
                     </span>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-mist">
@@ -217,7 +209,7 @@ export function SourcesDesk() {
                     {t("sources.lastSourced")}
                   </p>
                   <p className="mt-1 text-sm text-foam">
-                    {relativeTime(source.lastSourcedAt, now)}
+                    {relativeTime(source.lastSourcedAt, now, t)}
                   </p>
                   <p className="mt-0.5 font-mono text-[10px] text-mist/70">
                     {new Date(source.lastSourcedAt).toISOString().replace(".000Z", "Z")}

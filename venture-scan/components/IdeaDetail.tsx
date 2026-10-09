@@ -1,10 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
 import { IdeaChatbot } from "@/components/IdeaChatbot";
 import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
 import { countryToFlagCode } from "@/lib/flag-codes";
-import { formatMoney, socialLabel, strategyLabel } from "@/lib/format";
+import { formatMoney, socialLabel, strategyMessageKey } from "@/lib/format";
+import { useI18n } from "@/lib/i18n/context";
 import type { StartupIdea } from "@/lib/types";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -17,10 +20,12 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 export function IdeaDetail({ idea }: { idea: StartupIdea }) {
+  const { t } = useI18n();
+
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <Link href="/#ideas" className="text-sm text-mist hover:text-foam">
-        ← Back to ledger
+        {t("dossier.back")}
       </Link>
 
       <header className="mt-6 animate-rise">
@@ -32,15 +37,15 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
       </header>
 
       <dl className="mt-10 animate-rise [animation-delay:100ms]">
-        <Row label="(i) Idea name">{idea.name}</Row>
-        <Row label="(ii) Full description">
+        <Row label={t("dossier.name")}>{idea.name}</Row>
+        <Row label={t("dossier.description")}>
           <p>{idea.description}</p>
           <p className="mt-3 text-mist">
-            <span className="text-foam">How it makes money: </span>
+            <span className="text-foam">{t("dossier.howMoney")} </span>
             {idea.businessModel}
           </p>
         </Row>
-        <Row label="(iii) Team location">
+        <Row label={t("dossier.location")}>
           <span className="inline-flex items-center gap-1.5">
             <Flag
               code={countryToFlagCode(idea.teamCountry) ?? ""}
@@ -51,13 +56,13 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
             {idea.teamCity ? ` · ${idea.teamCity}` : ""}
           </span>
         </Row>
-        <Row label="(iv) Team size">{idea.teamSize} people</Row>
-        <Row label="(v) Industry">{idea.industry}</Row>
-        <Row label="(vi) Sector">{idea.sector}</Row>
-        <Row label="(vii) Fundraising secured?">
+        <Row label={t("dossier.teamSize")}>{t("common.people", { count: idea.teamSize })}</Row>
+        <Row label={t("dossier.industry")}>{idea.industry}</Row>
+        <Row label={t("dossier.sector")}>{idea.sector}</Row>
+        <Row label={t("dossier.fundraising")}>
           {idea.fundraisingSecured ? (
             <span>
-              Yes — {idea.fundingStage ?? "secured"}
+              {t("common.yes")} — {idea.fundingStage ?? "secured"}
               {idea.fundingAmountUsd != null ? ` · ${formatMoney(idea.fundingAmountUsd)}` : ""}
               {idea.fundingRoundNote ? (
                 <span className="mt-1 block text-mist">{idea.fundingRoundNote}</span>
@@ -65,14 +70,14 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
             </span>
           ) : (
             <span>
-              Not yet
+              {t("common.notYet")}
               {idea.fundingRoundNote ? (
                 <span className="mt-1 block text-mist">{idea.fundingRoundNote}</span>
               ) : null}
             </span>
           )}
         </Row>
-        <Row label="(viii) Official website">
+        <Row label={t("dossier.website")}>
           <a
             href={idea.website}
             target="_blank"
@@ -82,7 +87,7 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
             {idea.website}
           </a>
         </Row>
-        <Row label="(ix) Social media">
+        <Row label={t("dossier.social")}>
           <ul className="flex flex-col gap-1.5">
             {idea.social.map((s) => (
               <li key={`${s.platform}-${s.handle}`}>
@@ -98,8 +103,8 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
             ))}
           </ul>
         </Row>
-        <Row label="(x) Go-forward play">
-          <p className="font-medium text-foam">{strategyLabel(idea.goForward.strategy)}</p>
+        <Row label={t("dossier.goForward")}>
+          <p className="font-medium text-foam">{t(strategyMessageKey(idea.goForward.strategy))}</p>
           <p className="mt-2 text-mist">{idea.goForward.summary}</p>
         </Row>
       </dl>
@@ -109,7 +114,8 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
       </div>
 
       <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-mist/70">
-        Source {idea.source} · scanned {new Date(idea.scannedAt).toLocaleString()}
+        {t("common.source")} {idea.source} · {t("common.scanned")}{" "}
+        {new Date(idea.scannedAt).toLocaleString()}
       </p>
 
       <IdeaSourceMedia idea={idea} />

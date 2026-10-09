@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { Flag } from "@/components/Flag";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
-import { formatMoney, strategyLabel } from "@/lib/format";
+import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
@@ -260,7 +260,7 @@ export function IdeaExplorer({
                         {idea.teamCountry}
                         {idea.teamCity ? ` · ${idea.teamCity}` : ""}
                       </span>
-                      <span>{idea.teamSize} people</span>
+                      <span>{t("common.people", { count: idea.teamSize })}</span>
                       <span>
                         {idea.industry} / {idea.sector}
                       </span>
@@ -274,7 +274,7 @@ export function IdeaExplorer({
                       {t("ledger.goForward")}
                     </span>
                     <br />
-                    {strategyLabel(idea.goForward.strategy)}
+                    {t(strategyMessageKey(idea.goForward.strategy))}
                   </p>
                 </div>
               </Link>

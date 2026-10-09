@@ -5,23 +5,29 @@ import { Flag } from "@/components/Flag";
 import { withBase } from "@/lib/base-path";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { relativeTime } from "@/lib/format";
+// relativeTime uses optional t() for localized ages
 import { relatedSourcesForIdea } from "@/lib/idea-sources";
 import { useI18n } from "@/lib/i18n/context";
 import { attachMediaToSources } from "@/lib/source-media";
 import type { StartupIdea } from "@/lib/types";
 
-const KIND_LABEL: Record<string, string> = {
-  news: "News",
-  registry: "Registry",
-  fundraising: "Fundraising",
-  community: "Community",
-  government: "Government",
-  aggregator: "Aggregator",
-};
-
 export function IdeaSourceMedia({ idea }: { idea: StartupIdea }) {
   const { t } = useI18n();
   const items = attachMediaToSources(relatedSourcesForIdea(idea, "overview", 6));
+  const kindLabel = (kind: string) => {
+    const key = `sourceKind.${kind}` as
+      | "sourceKind.news"
+      | "sourceKind.registry"
+      | "sourceKind.fundraising"
+      | "sourceKind.community"
+      | "sourceKind.government"
+      | "sourceKind.aggregator";
+    try {
+      return t(key);
+    } catch {
+      return kind;
+    }
+  };
 
   if (items.length === 0) return null;
 
@@ -82,7 +88,7 @@ export function IdeaSourceMedia({ idea }: { idea: StartupIdea }) {
                 <span className="flex flex-wrap items-center gap-2">
                   <span className="truncate font-medium text-foam">{source.name}</span>
                   <span className="rounded-md border border-white/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-mist">
-                    {KIND_LABEL[source.kind] ?? source.kind}
+                    {kindLabel(source.kind)}
                   </span>
                 </span>
                 <span className="mt-1 line-clamp-2 text-xs leading-relaxed text-mist">
@@ -103,7 +109,7 @@ export function IdeaSourceMedia({ idea }: { idea: StartupIdea }) {
                   </span>
                   <span aria-hidden>·</span>
                   <span>
-                    {t("sources.lastSourced")} {relativeTime(source.lastSourcedAt)}
+                    {t("sources.lastSourced")} {relativeTime(source.lastSourcedAt, Date.now(), t)}
                   </span>
                 </span>
               </span>

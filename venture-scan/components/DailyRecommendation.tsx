@@ -6,7 +6,7 @@ import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
 import { fetchDaily } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
-import { formatMoney, strategyLabel } from "@/lib/format";
+import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
@@ -120,10 +120,12 @@ export function DailyRecommendation() {
         </span>
         <span>
           {idea.fundraisingSecured
-            ? `Funded · ${formatMoney(idea.fundingAmountUsd)}`
-            : "Fundraising open"}
+            ? t("ledger.funded", { stage: formatMoney(idea.fundingAmountUsd) })
+            : t("ledger.open")}
         </span>
-        <span>Play: {strategyLabel(idea.goForward.strategy)}</span>
+        <span>
+          {t("common.play")}: {t(strategyMessageKey(idea.goForward.strategy))}
+        </span>
       </div>
 
       <section className="mt-10 animate-rise">
