@@ -130,25 +130,25 @@
   ];
 
   const TAROT_POSITIONS = [
-    { id: "past", label: "Past / 过去", hint: "What shaped this moment" },
-    { id: "present", label: "Present / 现在", hint: "The heart of the matter" },
-    { id: "path", label: "Path / 指引", hint: "Counsel for the road ahead" },
+    { id: "past", label: "Past / 过去", hint: "What shaped this moment", hintZh: "塑成此刻的来路" },
+    { id: "present", label: "Present / 现在", hint: "The heart of the matter", hintZh: "事情的核心" },
+    { id: "path", label: "Path / 指引", hint: "Counsel for the road ahead", hintZh: "前路的忠告" },
   ];
 
   // ——— MBTI ———
   const MBTI_QUESTIONS = [
-    { id: "ei1", dim: "EI", text: "At a gathering, you usually…", a: { label: "Feel energized talking with many people", side: "E" }, b: { label: "Prefer a few deep conversations—or quiet", side: "I" } },
-    { id: "ei2", dim: "EI", text: "After a long day, you recharge by…", a: { label: "Going out or messaging friends", side: "E" }, b: { label: "Being alone with your thoughts", side: "I" } },
-    { id: "ei3", dim: "EI", text: "When solving a problem, you tend to…", a: { label: "Think out loud with others", side: "E" }, b: { label: "Work it through privately first", side: "I" } },
-    { id: "sn1", dim: "SN", text: "You trust information that is…", a: { label: "Concrete, proven, and present-focused", side: "S" }, b: { label: "Pattern-based, future possibilities", side: "N" } },
-    { id: "sn2", dim: "SN", text: "You prefer instructions that are…", a: { label: "Step-by-step and practical", side: "S" }, b: { label: "Big-picture with room to invent", side: "N" } },
-    { id: "sn3", dim: "SN", text: "In conversation you notice…", a: { label: "Facts, details, and what was said", side: "S" }, b: { label: "Meanings, metaphors, and what was implied", side: "N" } },
-    { id: "tf1", dim: "TF", text: "A tough decision is better when you…", a: { label: "Weigh logic and consistent principles", side: "T" }, b: { label: "Weigh people, harmony, and values", side: "F" } },
-    { id: "tf2", dim: "TF", text: "Feedback you give tends to be…", a: { label: "Direct and truth-first", side: "T" }, b: { label: "Careful of feelings and encouragement", side: "F" } },
-    { id: "tf3", dim: "TF", text: "You are more convinced by…", a: { label: "A clear analysis", side: "T" }, b: { label: "A sincere personal story", side: "F" } },
-    { id: "jp1", dim: "JP", text: "Your ideal weekend is…", a: { label: "Planned with a satisfying checklist", side: "J" }, b: { label: "Open, flexible, see what happens", side: "P" } },
-    { id: "jp2", dim: "JP", text: "Deadlines make you…", a: { label: "Finish early and tidy loose ends", side: "J" }, b: { label: "Do your best work near the edge", side: "P" } },
-    { id: "jp3", dim: "JP", text: "You feel better when…", a: { label: "Decisions are made and settled", side: "J" }, b: { label: "Options stay open a little longer", side: "P" } },
+    { id: "ei1", dim: "EI", text: "At a gathering, you usually…", textZh: "在聚会中，你通常……", a: { label: "Feel energized talking with many people", labelZh: "和许多人交谈会更有能量", side: "E" }, b: { label: "Prefer a few deep conversations—or quiet", labelZh: "更想要少数深谈——或安静", side: "I" } },
+    { id: "ei2", dim: "EI", text: "After a long day, you recharge by…", textZh: "漫长一天之后，你靠……充电", a: { label: "Going out or messaging friends", labelZh: "外出或和朋友聊天", side: "E" }, b: { label: "Being alone with your thoughts", labelZh: "独自待着、整理思绪", side: "I" } },
+    { id: "ei3", dim: "EI", text: "When solving a problem, you tend to…", textZh: "解决问题时，你倾向……", a: { label: "Think out loud with others", labelZh: "和别人一起大声想", side: "E" }, b: { label: "Work it through privately first", labelZh: "先自己想清楚", side: "I" } },
+    { id: "sn1", dim: "SN", text: "You trust information that is…", textZh: "你更信任这样的信息……", a: { label: "Concrete, proven, and present-focused", labelZh: "具体、可验证、着眼当下", side: "S" }, b: { label: "Pattern-based, future possibilities", labelZh: "看模式、看未来可能", side: "N" } },
+    { id: "sn2", dim: "SN", text: "You prefer instructions that are…", textZh: "你更喜欢这样的说明……", a: { label: "Step-by-step and practical", labelZh: "一步一步、很实用", side: "S" }, b: { label: "Big-picture with room to invent", labelZh: "大方向清楚、留白可创造", side: "N" } },
+    { id: "sn3", dim: "SN", text: "In conversation you notice…", textZh: "聊天时你更容易注意到……", a: { label: "Facts, details, and what was said", labelZh: "事实、细节和原话", side: "S" }, b: { label: "Meanings, metaphors, and what was implied", labelZh: "含义、隐喻和言外之意", side: "N" } },
+    { id: "tf1", dim: "TF", text: "A tough decision is better when you…", textZh: "艰难决定时，更好的做法是……", a: { label: "Weigh logic and consistent principles", labelZh: "权衡逻辑与一贯原则", side: "T" }, b: { label: "Weigh people, harmony, and values", labelZh: "权衡人际、和谐与价值观", side: "F" } },
+    { id: "tf2", dim: "TF", text: "Feedback you give tends to be…", textZh: "你给出的反馈通常……", a: { label: "Direct and truth-first", labelZh: "直接、真相优先", side: "T" }, b: { label: "Careful of feelings and encouragement", labelZh: "顾及感受并鼓励对方", side: "F" } },
+    { id: "tf3", dim: "TF", text: "You are more convinced by…", textZh: "更能说服你的是……", a: { label: "A clear analysis", labelZh: "清晰的分析", side: "T" }, b: { label: "A sincere personal story", labelZh: "真诚的个人故事", side: "F" } },
+    { id: "jp1", dim: "JP", text: "Your ideal weekend is…", textZh: "理想的周末是……", a: { label: "Planned with a satisfying checklist", labelZh: "有计划、清单完成很爽", side: "J" }, b: { label: "Open, flexible, see what happens", labelZh: "开放弹性、走着瞧", side: "P" } },
+    { id: "jp2", dim: "JP", text: "Deadlines make you…", textZh: "面对截止日期，你会……", a: { label: "Finish early and tidy loose ends", labelZh: "提前完成并收尾", side: "J" }, b: { label: "Do your best work near the edge", labelZh: "临近节点才发挥最佳", side: "P" } },
+    { id: "jp3", dim: "JP", text: "You feel better when…", textZh: "什么时候你感觉更好……", a: { label: "Decisions are made and settled", labelZh: "决定已做、事情尘埃落定", side: "J" }, b: { label: "Options stay open a little longer", labelZh: "选项再多留一会儿", side: "P" } },
   ];
 
   const MBTI_TYPES = {

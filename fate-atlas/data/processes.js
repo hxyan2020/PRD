@@ -78,6 +78,29 @@
 
   const ANIMALS = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
   const ELEMENTS = ["Wood", "Fire", "Earth", "Metal", "Water"];
+  /** Popular East Asian blood-type stereotype tags — cultural folklore only. */
+  const BLOOD_TYPE_TRAITS = {
+    A: {
+      title: "Type A",
+      lean: "careful · orderly · considerate",
+      note: "Popular stereotype: conscientious, reserved under stress, values harmony.",
+    },
+    B: {
+      title: "Type B",
+      lean: "curious · independent · flexible",
+      note: "Popular stereotype: creative, goes own way, dislikes rigid rules.",
+    },
+    O: {
+      title: "Type O",
+      lean: "outgoing · decisive · energetic",
+      note: "Popular stereotype: goal-driven, sociable, sometimes impatient.",
+    },
+    AB: {
+      title: "Type AB",
+      lean: "complex · dual · analytical",
+      note: "Popular stereotype: mixes A and B traits; thoughtful and hard to categorize.",
+    },
+  };
   const RUNES = [
     { name: "Fehu", gloss: "movable wealth, beginning energy" },
     { name: "Uruz", gloss: "vital strength, recovery" },
@@ -97,6 +120,22 @@
       steps: ["intent", "birth", "ritual", "result"],
       ritualLabel: "Charting the heavens…",
       cta: "Read my fate",
+    },
+    blood: {
+      id: "blood",
+      label: "Blood type reading",
+      blurb: "Choose an ABO blood type. Popular East Asian personality tags are shown as cultural stereotypes — not medical fate.",
+      steps: ["intent", "blood", "ritual", "result"],
+      ritualLabel: "Reading the type…",
+      cta: "Read my type",
+    },
+    name: {
+      id: "name",
+      label: "Name reading",
+      blurb: "Enter a name. Letters and stroke-style counts become a symbolic signature in this tradition’s spirit.",
+      steps: ["intent", "name", "ritual", "result"],
+      ritualLabel: "Weighing the name…",
+      cta: "Read the name",
     },
     cast: {
       id: "cast",
@@ -164,8 +203,21 @@
     },
   };
 
+  /** Hard overrides by method id (beats keyword heuristics). */
+  const ID_PROCESS = {
+    "blood-type": "blood",
+    seimei: "name",
+    sanmeigaku: "name",
+    taksa: "name",
+    abjad: "name",
+    "kabbalah-numerology": "name",
+    jafr: "name",
+  };
+
   /** Keyword → process id (first match wins). */
   const KEYWORD_MAP = [
+    [/blood type|ketsueki|abo blood/i, "blood"],
+    [/name divination|seimei|sanmei|naming astrology|abjad|gematria|jafr/i, "name"],
     [/tarot|lenormand|kipper|sibilla|cartomancy|baraja|oracle card|parrot/i, "cards"],
     [/rune|ogham|futhorc|futhark/i, "cast"],
     [/i ching|zhou yi|hexagram|liu yao|plum blossom|qimen|liu ren|ling qi/i, "cast"],
@@ -175,25 +227,58 @@
     [/pendulum|dowsing|istikh/i, "pendulum"],
     [/almanac|rokuy|zeri|day select|weekday|tongshu|nekath|weton|pawukon|maramataka|moon night|ben ming|tojeong/i, "day"],
     [/palm|face|physiognom|mian xiang|shou xiang|samudrika|grapholog|mole|nail|vastu|feng shui|kasō|kaso|house|grave|aura|handwriting|seal|metoposcop|bone palm|form/i, "form"],
-    [/bazi|zi wei|astrology|jyotish|vedic|saju|horary|zodiac|numerolog|abjad|gematria|birth|pillar|hora|mahabote|taksa|decan|firdaria|human design|astrocart|biorhythm|blood type|name divination|seimei|sanmei|nine star|sukuy|panchanga|manazil|mazalot|tonalpohualli|tzolk|wata|zurhai|tibetan astro/i, "birth"],
+    [/bazi|zi wei|astrology|jyotish|vedic|saju|horary|zodiac|numerolog|birth|pillar|hora|mahabote|decan|firdaria|human design|astrocart|biorhythm|nine star|sukuy|panchanga|manazil|mazalot|tonalpohualli|tzolk|wata|zurhai|tibetan astro/i, "birth"],
     [/dream|scry|smoke|cloud|fire|water|wax|lead|egg|apple|augur|haruspic|scapul|crab|spider|fox|star twinkl|scintill|vision|shaman|tent|incub/i, "omen"],
   ];
 
-  function processForMethod(method) {
-    const hay = `${method.name} ${method.summary} ${method.region || ""}`;
-    for (const [re, id] of KEYWORD_MAP) {
-      if (re.test(hay)) return PROCESSES[id];
+  function ti(key, fallback) {
+    if (window.FatumI18n) {
+      const v = window.FatumI18n.t(key);
+      if (v && v !== key) return v;
     }
-    if (method.type === "Fate") return PROCESSES.birth;
-    if (method.type === "Form") return PROCESSES.form;
-    return PROCESSES.omen;
+    return fallback;
+  }
+
+  function localizeProcess(proc) {
+    if (!proc) return proc;
+    const id = proc.id;
+    const labelKey = `process.label.${proc.label}`;
+    return {
+      ...proc,
+      label: ti(labelKey, proc.label),
+      cta: ti(`process.cta.${id}`, proc.cta),
+      ritualLabel: ti(`process.ritual.${id}`, proc.ritualLabel),
+      blurb: proc.blurb,
+    };
+  }
+
+  function processForMethod(method) {
+    let proc = null;
+    if (method && method.id && ID_PROCESS[method.id]) {
+      proc = PROCESSES[ID_PROCESS[method.id]];
+    }
+    if (!proc) {
+      const hay = `${method.name} ${method.summary} ${method.region || ""}`;
+      for (const [re, id] of KEYWORD_MAP) {
+        if (re.test(hay)) {
+          proc = PROCESSES[id];
+          break;
+        }
+      }
+    }
+    if (!proc) {
+      if (method.type === "Fate") proc = PROCESSES.birth;
+      else if (method.type === "Form") proc = PROCESSES.form;
+      else proc = PROCESSES.omen;
+    }
+    return localizeProcess(proc);
   }
 
   /**
    * Photo upload guidance for methods that read from imageable subjects.
    * Returns null when upload is not relevant.
    */
-  function photoSubjectFor(method) {
+  function photoSubjectForRaw(method) {
     const hay = `${method.name} ${method.summary} ${method.region || ""}`;
     if (/palm|chiromanc|shou xiang|shouxiang|mogu|bone palm|hand line/i.test(hay)) {
       return {
@@ -286,6 +371,95 @@
       };
     }
     return null;
+  }
+
+  function localizePhoto(photo) {
+    if (!photo) return null;
+    const loc = window.FatumI18n ? window.FatumI18n.getLocale() : "en";
+    if (!String(loc || "").startsWith("zh")) return photo;
+    const hant = String(loc).startsWith("zh-Hant");
+    const ZH = {
+      palm: {
+        label: hant ? "上傳手掌照片" : "上传手掌照片",
+        hint: hant
+          ? "使用你想解讀的那隻手。光線充足、掌心張開、手指略分開。避免重度濾鏡。"
+          : "使用你想解读的那只手。光线充足、掌心张开、手指略分开。避免重度滤镜。",
+        placeholderTrait: hant
+          ? "例如：生命線深、感情線清晰、金星丘明顯…"
+          : "例如：生命线深、感情线清晰、金星丘明显…",
+      },
+      face: {
+        label: hant ? "上傳面部照片" : "上传面部照片",
+        hint: hant
+          ? "正面肖像、光線均勻、表情自然。頭髮勿遮住關鍵部位。"
+          : "正面肖像、光线均匀、表情自然。头发勿遮住关键部位。",
+        placeholderTrait: hant
+          ? "例如：額寬、顴骨高、眼睛深邃…"
+          : "例如：额宽、颧骨高、眼睛深邃…",
+      },
+      mole: {
+        label: hant ? "上傳顯示痣的照片" : "上传显示痣的照片",
+        hint: hant ? "清楚框出部位（臉、頸、手等）。" : "清楚框出部位（脸、颈、手等）。",
+        placeholderTrait: hant
+          ? "例如：左頰痣、眉旁凸起深色痣…"
+          : "例如：左颊痣、眉旁凸起深色痣…",
+      },
+      nails: {
+        label: hant ? "上傳指甲／手部照片" : "上传指甲／手部照片",
+        hint: hant ? "自然指甲、光線清楚最佳。" : "自然指甲、光线清楚最佳。",
+        placeholderTrait: hant
+          ? "例如：杏仁形、月牙淡、縱向紋…"
+          : "例如：杏仁形、月牙淡、纵向纹…",
+      },
+      body: {
+        label: hant ? "上傳身體標記解讀用照片" : "上传身体标记解读用照片",
+        hint: hant
+          ? "手、臉或你想考量的部位。請保持尊重與清晰。"
+          : "手、脸或你想考量的部位。请保持尊重与清晰。",
+        placeholderTrait: hant
+          ? "例如：手指長、眉有標記、步態特別…"
+          : "例如：手指长、眉有标记、步态特别…",
+      },
+      place: {
+        label: hant ? "上傳場所／平面圖照片" : "上传场所／平面图照片",
+        hint: hant
+          ? "平面草圖、入口或房間照片。若知方位，標出北向更佳。"
+          : "平面草图、入口或房间照片。若知方位，标出北向更佳。",
+        placeholderTrait: hant
+          ? "例如：南向門、東南角雜亂、L 形地塊…"
+          : "例如：南向门、东南角杂乱、L 形地块…",
+      },
+      writing: {
+        label: hant ? "上傳字跡／印章照片" : "上传字迹／印章照片",
+        hint: hant
+          ? "清楚掃描或拍攝字跡樣本或印痕。"
+          : "清楚扫描或拍摄字迹样本或印痕。",
+        placeholderTrait: hant
+          ? "例如：右斜字體、力道重、環圈開…"
+          : "例如：右斜字体、力道重、环圈开…",
+      },
+      aura: {
+        label: hant ? "可選：上傳肖像作為氣場焦點" : "可选：上传肖像作为气场焦点",
+        hint: hant
+          ? "平靜肖像有助你心中握住對象（僅象徵解讀）。"
+          : "平静肖像有助你心中握住对象（仅象征解读）。",
+        placeholderTrait: hant
+          ? "例如：感到金邊、肩旁灰重…"
+          : "例如：感到金边、肩旁灰重…",
+      },
+      form: {
+        label: hant ? "可選：上傳參考照片" : "可选：上传参考照片",
+        hint: hant ? "任何清晰的形相圖像。" : "任何清晰的形相图像。",
+        placeholderTrait: hant ? "描述主要特質…" : "描述主要特质…",
+      },
+    };
+    const z = ZH[photo.id];
+    if (!z) return photo;
+    return { ...photo, ...z };
+  }
+
+  function photoSubjectForLocalized(method) {
+    return localizePhoto(photoSubjectForRaw(method));
   }
 
   function hashSeed(str) {
@@ -396,6 +570,52 @@
         `Sign band: ${sign}; animal: ${animal} (${element}).`,
         `Life-path number (digit reduction): ${path}.`,
       ];
+    } else if (process.id === "blood") {
+      const raw = String(input.bloodType || "A").toUpperCase();
+      const key = BLOOD_TYPE_TRAITS[raw] ? raw : "A";
+      const trait = BLOOD_TYPE_TRAITS[key];
+      const focus = String(input.question || "").trim();
+      reading.title = trait.title;
+      reading.result = `ABO type selected: ${key} · popular lean “${trait.lean}”`;
+      reading.explain = [
+        `In the popular East Asian blood-type personality frame used with ${method.name}, type ${key} is stereotyped as ${trait.lean}.`,
+        trait.note,
+        "ABO type is a real antigen system for medicine; it is not a validated determinant of personality or destiny. This reading is cultural folklore for reflection only.",
+        focus ? `You asked the counsel to speak to: “${focus}”.` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      reading.details = [
+        `Blood type chosen: ${key}.`,
+        `Stereotype lean (folklore): ${trait.lean}.`,
+        "Not a medical or psychological assessment.",
+      ];
+      tone = key === "A" ? "caution" : key === "O" ? "bright" : key === "B" ? "mixed" : "deep";
+      reading.tone = tone;
+    } else if (process.id === "name") {
+      const nameIn = String(input.personName || input.question || "Seeker").trim() || "Seeker";
+      const letters = nameIn.replace(/[^\p{L}\p{N}]/gu, "");
+      const count = [...letters].length || nameIn.length;
+      const vowelish = (letters.match(/[aeiouａｅｉｏｕあいうえお]/gi) || []).length;
+      const path = ((count % 9) || 9);
+      const focus = String(input.question || "").trim();
+      reading.title = `${nameIn} · name number ${path}`;
+      reading.result = `Name signature: “${nameIn}” · letter/character count ${count} · reduced number ${path}`;
+      reading.explain = [
+        `Name rites in the spirit of ${method.name} weigh sounds, strokes, or letter totals as symbolic tags.`,
+        `Here “${nameIn}” yields count ${count} and a digit-style name number ${path} (with ${vowelish} vowel-like marks noted).`,
+        "This is an educational name-weighing toy — not a guarantee about character, marriage, or fortune.",
+        focus && focus !== nameIn ? `Focus held: “${focus}”.` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      reading.details = [
+        `Name entered: ${nameIn}.`,
+        `Count: ${count}; name number: ${path}.`,
+        `Styled after ${method.name}.`,
+      ];
+      tone = path <= 3 ? "bright" : path >= 7 ? "deep" : "mixed";
+      reading.tone = tone;
     } else if (process.id === "cards") {
       const deck = TAROT_LIKE.slice();
       const cards = [];
@@ -536,6 +756,22 @@
         "Do not re-ask the same question hoping for the opposite swing.",
         "Do not let a simulated yes/no override medical, legal, financial, or safety judgment.",
       ];
+    } else if (process.id === "blood") {
+      reading.doList = [
+        "If a stereotype resonates, name the behavior you already choose — not the antigen — that makes it useful.",
+        "Keep medical blood-type facts separate from personality folklore.",
+      ];
+      reading.dontList = [
+        "Do not use ABO type to hire, date, or exclude people.",
+        "Do not treat this as a medical, genetic, or psychological diagnosis.",
+      ];
+    } else if (process.id === "name") {
+      reading.doList = [
+        "If the name number sparks an idea, translate it into one concrete habit you can test this week.",
+      ];
+      reading.dontList = [
+        "Do not rename yourself or others solely because a toy calculation looked unlucky.",
+      ];
     } else if (process.id === "day") {
       reading.doList.unshift(
         reading.tone === "caution" || reading.tone === "mixed"
@@ -557,6 +793,6 @@
 
   window.FATE_PROCESSES = PROCESSES;
   window.fateProcessForMethod = processForMethod;
-  window.fatePhotoSubjectFor = photoSubjectFor;
+  window.fatePhotoSubjectFor = photoSubjectForLocalized;
   window.fateGenerateReading = generateReading;
 })();

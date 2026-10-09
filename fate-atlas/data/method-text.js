@@ -84,6 +84,14 @@
     return out.trim();
   }
 
+  function methodI18nPack(loc) {
+    const root = window.FATE_METHOD_I18N || {};
+    if (root[loc]) return root[loc];
+    if (String(loc || "").startsWith("zh-Hant") && root["zh-Hant"]) return root["zh-Hant"];
+    if (String(loc || "").startsWith("zh") && root["zh-Hans"]) return root["zh-Hans"];
+    return null;
+  }
+
   function field(method, fieldName) {
     if (!method) return "";
     const loc = locale();
@@ -95,6 +103,15 @@
     if (method.guided) {
       const gKey = `method.${method.guided}.${fieldName}`;
       if (has(gKey)) return t(gKey);
+    }
+
+    // Bulk Chinese packs (all atlas rites)
+    const pack = methodI18nPack(loc);
+    if (pack && id && pack[id] && pack[id][fieldName]) {
+      return String(pack[id][fieldName]);
+    }
+    if (method.guided && pack && pack[method.guided] && pack[method.guided][fieldName]) {
+      return String(pack[method.guided][fieldName]);
     }
 
     let value = method[fieldName] || "";
@@ -116,10 +133,20 @@
     return value || method[fieldName] || "";
   }
 
+  function explanation(method) {
+    if (!method) return "";
+    if (window.FatumExplanations && typeof window.FatumExplanations.for === "function") {
+      const text = window.FatumExplanations.for(method, locale());
+      if (text) return scrubForeignScripts(String(text), locale());
+    }
+    return field(method, "summary") || method.summary || "";
+  }
+
   function localize(method) {
     return {
       name: field(method, "name"),
       summary: field(method, "summary"),
+      explanation: explanation(method),
       region: field(method, "region") || method.region || "",
       source: scrubForeignScripts(pickBilingual(method.source || "", locale()), locale()) || method.source || "",
     };
@@ -154,6 +181,7 @@
   window.FatumMethodText = {
     localize,
     field,
+    explanation,
     processLabel,
     pickBilingual,
     scrubForeignScripts,

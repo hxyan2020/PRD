@@ -1,10 +1,36 @@
 /**
  * Country catalog keys → ISO 3166-1 alpha-2 for flags & Intl.DisplayNames.
  * Ancient regions map to successor-state flags + an emblem glyph.
- * Flag images: flagcdn.com (with emoji fallback).
+ * Flag images: self-hosted PNGs under assets/flags/ (emoji fallback only).
  */
 (function () {
   "use strict";
+
+  function flagAssetBase() {
+    try {
+      const scripts = document.getElementsByTagName("script");
+      for (let i = scripts.length - 1; i >= 0; i--) {
+        const src = scripts[i].src || "";
+        if (/\/data\/countries\.js(\?|$)/.test(src)) {
+          return src.replace(/data\/countries\.js(\?.*)?$/, "assets/flags/");
+        }
+      }
+    } catch (_) {}
+    try {
+      return new URL("assets/flags/", window.location.href).href;
+    } catch (_) {
+      return "assets/flags/";
+    }
+  }
+
+  function flagUrls(code) {
+    const cc = String(code || "").toLowerCase().replace(/[^a-z]/g, "");
+    const base = flagAssetBase();
+    return {
+      src: `${base}${cc}.png`,
+      srcset: `${base}${cc}-2x.png 2x`,
+    };
+  }
 
   const COUNTRY_ISO = {
     Algeria: "DZ",
@@ -161,12 +187,18 @@
 
   function flagImgHTML(code, alt) {
     const cc = (code || "").toUpperCase();
+    const safeAlt = escapeHTML(alt || cc || "");
     if (!cc || cc.length !== 2) {
-      return `<span class="flag-icon" title="${escapeHTML(alt || "")}"><span class="flag-emoji" aria-hidden="true">🏳️</span></span>`;
+      return `<span class="flag-icon flag-icon--empty" title="${safeAlt}" aria-hidden="true"></span>`;
     }
-    const emoji = flagEmoji(cc);
-    const safeAlt = escapeHTML(alt || cc);
-    return `<span class="flag-icon" title="${safeAlt}"><span class="flag-emoji" aria-hidden="true">${emoji}</span></span>`;
+    const key = cc.toLowerCase();
+    const inline = (window.FATE_FLAG_DATA && window.FATE_FLAG_DATA[key]) || "";
+    const u = flagUrls(cc);
+    // Prefer inline data-URI (no network); fall back to same-origin PNG assets.
+    // Never use emoji regional indicators — they render as "US"/"NG"/"CA" letters.
+    const src = inline || u.src;
+    const srcset = inline ? "" : ` srcset="${u.srcset}"`;
+    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${src}"${srcset} width="28" height="21" alt="" decoding="async" /></span>`;
   }
 
   function localizedCountryName(name, locale) {
@@ -276,19 +308,9 @@
     return `<span class="picker-flags">${html}</span>`;
   }
 
-  function optionFlagsPrefix(countries, region) {
-    // Plain-text emoji prefix for native <option> elements
-    const ancient = ancientForRegion(region);
-    const codes = [];
-    if (ancient?.code) codes.push(ancient.code);
-    (countries || []).forEach((n) => {
-      const c = countryCode(n);
-      if (c && !codes.includes(c)) codes.push(c);
-    });
-    return codes
-      .slice(0, 3)
-      .map((c) => flagEmoji(c))
-      .join("");
+  /** @deprecated Never use emoji flags in UI — they become "US"/"CA" letters. */
+  function optionFlagsPrefix() {
+    return "";
   }
 
   window.FatumCountries = {
