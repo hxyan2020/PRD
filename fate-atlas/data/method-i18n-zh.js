@@ -125,13 +125,13 @@
     },
     "bazi": {
       "name": "八字（四柱命理）",
-      "summary": "以年、月、日、时四柱的天干地支，推演性情、运势与流年。",
+      "summary": "年月日时四柱天干地支，围绕日主五行旺衰来论命。",
       "region": "中国",
       "source": "Wikipedia · Chinese fortune telling; Sekai Fortune"
     },
     "ziwei": {
       "name": "紫微斗数",
-      "summary": "将诸星安入十二宫，排盘以观终身格局与流年时机。",
+      "summary": "紫微斗数将主星安入十二宫，用以论终身运势、关系与时机。",
       "region": "中国",
       "source": "Sekai Fortune"
     },
@@ -191,25 +191,25 @@
     },
     "chenggu": {
       "name": "称骨算命",
-      "summary": "按生肖“骨重”累加，对照命运诗赋。",
+      "summary": "称骨算命按出生年、月、日、时折算「骨重」，再对照命运诗断。",
       "region": "中国",
       "source": "Sekai Fortune; Plutto"
     },
     "chinese-zodiac": {
       "name": "生肖（十二属相）",
-      "summary": "依出生年属相与五行周期，解读性情与合冲。",
+      "summary": "按出生年份生肖及其五行循环，论性情、合冲与流年主题。",
       "region": "东亚",
       "source": "Sekai Fortune"
     },
     "benmingnian": {
       "name": "本命年（犯太岁）",
-      "summary": "生肖年轮回之年，强调与太岁冲克的民俗应对。",
+      "summary": "本命年是生肖轮回之年——传统上论与太岁相冲，需谨慎行事。",
       "region": "中国",
       "source": "Sekai Fortune"
     },
     "tongshu": {
       "name": "通书择日",
-      "summary": "黄历／通书择嫁娶、出行、安葬、开业等吉日。",
+      "summary": "黄历／通书为婚嫁、出行、安葬、开市等事选择宜忌之日。",
       "region": "中国",
       "source": "Sekai Fortune"
     },
@@ -257,13 +257,13 @@
     },
     "tieban": {
       "name": "铁板神数",
-      "summary": "铁板神数：以数理排盘求终身细批（传统术数）。",
+      "summary": "铁板神数相传出于宋代谱系，把出生数据化为数码与诗断。",
       "region": "中国",
       "source": "Plutto"
     },
     "qizheng": {
       "name": "七政四余",
-      "summary": "七政四余星命：行星与杂曜排盘。",
+      "summary": "七政四余以日月五星七政，加四余影点，论命运与时机。",
       "region": "中国",
       "source": "Sekai Fortune"
     },
@@ -1249,13 +1249,13 @@
     },
     "bazi": {
       "name": "八字（四柱命理）",
-      "summary": "以年、月、日、时四柱的天干地支，推演性情、運勢与流年。",
+      "summary": "年月日時四柱天干地支，圍繞日主五行旺衰來論命。",
       "region": "中國",
       "source": "Wikipedia · Chinese fortune telling; Sekai Fortune"
     },
     "ziwei": {
       "name": "紫微斗數",
-      "summary": "將诸星安入十二宫，排盘以觀终身格局与流年时机。",
+      "summary": "紫微斗数將主星安入十二宫，用以论終身運勢、關係与時機。",
       "region": "中國",
       "source": "Sekai Fortune"
     },
@@ -1315,25 +1315,25 @@
     },
     "chenggu": {
       "name": "称骨算命",
-      "summary": "按生肖“骨重”累加，對照命運诗赋。",
+      "summary": "稱骨算命按出生年、月、日、时折算「骨重」，再對照命運詩斷。",
       "region": "中國",
       "source": "Sekai Fortune; Plutto"
     },
     "chinese-zodiac": {
       "name": "生肖（十二属相）",
-      "summary": "依出生年属相与五行周期，解讀性情与合冲。",
+      "summary": "按出生年份生肖及其五行循環，论性情、合沖与流年主題。",
       "region": "東亞",
       "source": "Sekai Fortune"
     },
     "benmingnian": {
       "name": "本命年（犯太歲）",
-      "summary": "生肖年轮回之年，强调与太歲冲克的民俗應對。",
+      "summary": "本命年是生肖輪迴之年——傳統上论與太歲相沖，需謹慎行事。",
       "region": "中國",
       "source": "Sekai Fortune"
     },
     "tongshu": {
       "name": "通書择日",
-      "summary": "黄历／通書择嫁娶、出行、安葬、開業等吉日。",
+      "summary": "黃曆／通書為婚嫁、出行、安葬、開市等事選擇宜忌之日。",
       "region": "中國",
       "source": "Sekai Fortune"
     },
@@ -1381,13 +1381,13 @@
     },
     "tieban": {
       "name": "鐵板神數",
-      "summary": "鐵板神數：以數理排盘求终身细批（傳統術數）。",
+      "summary": "鐵板神數相傳出於宋代譜系，把出生数据化為數碼与詩斷。",
       "region": "中國",
       "source": "Plutto"
     },
     "qizheng": {
       "name": "七政四余",
-      "summary": "七政四余星命：行星与杂曜排盘。",
+      "summary": "七政四餘以日月五星七政，加四餘影點，論命運与時機。",
       "region": "中國",
       "source": "Sekai Fortune"
     },

@@ -38,6 +38,7 @@
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
     if (window.FatumAfricaOracles?.has?.(method.id)) return "africa";
+    if (window.FatumChinaDestiny?.has?.(method.id)) return "china";
     return null;
   }
 
@@ -161,6 +162,23 @@
         casting: false,
       };
     }
+    if (kind === "china") {
+      const rite = window.FatumChinaDestiny.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "birth", "cast", "result"],
+        question: "",
+        cast: {},
+        birthDate: "",
+        birthYear: "",
+        targetYear: String(new Date().getFullYear()),
+        hourIndex: 0,
+        gender: "unspecified",
+        activity: "travel",
+        dayDate: "",
+        casting: false,
+      };
+    }
     return base;
   }
 
@@ -225,6 +243,15 @@
       }
       if (state.kind === "africa") {
         const how = window.FatumAfricaOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
+      if (state.kind === "china") {
+        const how = window.FatumChinaDestiny?.howFor?.(state.method.id);
         const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
         return {
           label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
@@ -306,6 +333,7 @@
       else if (state.kind === "tarot") renderTarot();
       else if (state.kind === "mbti") renderMbti();
       else if (state.kind === "africa") renderAfrica();
+      else if (state.kind === "china") renderChina();
       return;
     }
     renderGeneric();
@@ -907,6 +935,289 @@
     }, 900);
   }
 
+  // ——— Chinese destiny oracles ———
+  function chinaZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function chinaStageHTML(rite, casting) {
+    const viz = rite.viz;
+    const cast = state.cast || {};
+    const anim = casting ? " is-casting" : "";
+    if (viz === "bazi-pillars") {
+      const pillars = cast.pillars || [
+        { label: "Y", stem: "·", branch: "·" },
+        { label: "M", stem: "·", branch: "·" },
+        { label: "D", stem: "·", branch: "·" },
+        { label: "H", stem: "·", branch: "·" },
+      ];
+      return `<div class="china-stage china-stage--bazi${anim}"><div class="bazi-row">${pillars
+        .map(
+          (p, i) =>
+            `<div class="bazi-pillar" style="--i:${i}"><em>${escapeHTML(p.label)}</em><strong>${escapeHTML(p.stem || "·")}</strong><span>${escapeHTML(p.branch || "·")}</span></div>`
+        )
+        .join("")}</div></div>`;
+    }
+    if (viz === "ziwei-palaces") {
+      const palace = cast.palace ? (chinaZh() ? cast.palace.zh : cast.palace.en) : "·";
+      const star = cast.star ? (chinaZh() ? cast.star.zh : cast.star.en) : "·";
+      return `<div class="china-stage china-stage--ziwei${anim}"><div class="ziwei-grid">${Array.from({ length: 12 }, (_, i) => `<span class="ziwei-cell${cast.palace && i === 0 ? " is-on" : ""}" style="--i:${i}"></span>`).join("")}</div>
+        <p class="china-stage__hint">${escapeHTML(star)} · ${escapeHTML(palace)}</p></div>`;
+    }
+    if (viz === "zodiac-ring") {
+      const a = cast.animal;
+      const name = a ? (chinaZh() ? a.zh : a.en) : "·";
+      return `<div class="china-stage china-stage--zodiac${anim}"><div class="zodiac-ring">${Array.from({ length: 12 }, (_, i) => `<span class="zodiac-pip${a && a.idx === i ? " is-on" : ""}" style="--i:${i}"></span>`).join("")}</div>
+        <p class="china-stage__hint">${escapeHTML(name)}${cast.year ? " · " + cast.year : ""}</p></div>`;
+    }
+    if (viz === "taisui") {
+      const b = cast.birthA ? (chinaZh() ? cast.birthA.zh : cast.birthA.en) : "·";
+      const y = cast.yearA ? (chinaZh() ? cast.yearA.zh : cast.yearA.en) : "·";
+      return `<div class="china-stage china-stage--taisui${anim}"><div class="taisui-compare"><span>${escapeHTML(b)}</span><i>⇄</i><span>${escapeHTML(y)}</span></div>
+        <p class="china-stage__hint">${escapeHTML(cast.status || "")}</p></div>`;
+    }
+    if (viz === "almanac") {
+      const v = cast.verdict ? (chinaZh() ? cast.verdict.zh : cast.verdict.en) : "·";
+      return `<div class="china-stage china-stage--almanac${anim}"><div class="almanac-seal">${escapeHTML(v)}</div>
+        <p class="china-stage__hint">${escapeHTML(cast.day || "")}</p></div>`;
+    }
+    if (viz === "iron-plate") {
+      const digits = cast.digits || [0, 0, 0, 0, 0, 0];
+      return `<div class="china-stage china-stage--iron${anim}"><div class="iron-digits">${digits
+        .map((d, i) => `<span style="--i:${i}">${d}</span>`)
+        .join("")}</div>
+        <p class="china-stage__hint">${escapeHTML(cast.verse || "")}</p></div>`;
+    }
+    if (viz === "qizheng-board") {
+      const govs = cast.governors || [];
+      return `<div class="china-stage china-stage--qizheng${anim}"><div class="qizheng-board">${govs
+        .map((g, i) => `<span class="gov${cast.lead === g.name ? " is-lead" : ""}" style="--i:${i}">${escapeHTML(g.name)}</span>`)
+        .join("")}</div></div>`;
+    }
+    if (viz === "bone-scale") {
+      return `<div class="china-stage china-stage--bones${anim}"><div class="bone-scale"><span class="bone-pan bone-pan--l"></span><span class="bone-beam"></span><span class="bone-pan bone-pan--r"></span></div>
+        <p class="china-stage__hint">${escapeHTML(cast.poem?.w || "")}</p></div>`;
+    }
+    return `<div class="china-stage${anim}"></div>`;
+  }
+
+  function renderChina() {
+    const rite = window.FatumChinaDestiny.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumChinaDestiny.howFor(state.method.id);
+    const text = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = chinaZh();
+
+    if (step === "intent") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Asia")} · ${escapeHTML(text.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || text.summary || "")}</p>
+        ${riteExplanationHTML(state.method, text)}
+        ${howItWorksHTML(state.method, { id: "china", label: "China destiny" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "你要问什么？" : "What do you ask?")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "birth") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入出生日期" : "Enter birth date")}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthDate") || "Birth date")}</label>
+        <input type="date" id="r-birth" value="${escapeHTML(state.birthDate || "")}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "hour") {
+      const hours = zh
+        ? ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+        : ["Zi", "Chou", "Yin", "Mao", "Chen", "Si", "Wu", "Wei", "Shen", "You", "Xu", "Hai"];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择时辰" : "Choose birth hour")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "十二时辰补全时柱。" : "Twelve double-hours complete the hour pillar.")}</p>
+        <div class="africa-choice-row">
+          ${hours.map((h, i) => `<button type="button" class="africa-choice${state.hourIndex === i ? " is-on" : ""}" data-action="china-hour" data-hour="${i}">${escapeHTML(h)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "gender") {
+      const opts = [
+        { id: "yang", en: "Yang chart flag", zh: "阳盘标记" },
+        { id: "yin", en: "Yin chart flag", zh: "阴盘标记" },
+        { id: "unspecified", en: "Unspecified", zh: "不标注" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "标注性别传统" : "Note gender tradition")}</h3>
+        <div class="africa-choice-row">
+          ${opts.map((o) => `<button type="button" class="africa-choice${state.gender === o.id ? " is-on" : ""}" data-action="china-gender" data-gender="${o.id}">${escapeHTML(zh ? o.zh : o.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "year" || step === "birthyear") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入出生年" : "Enter birth year")}</h3>
+        <div class="field"><label for="r-year">${escapeHTML(zh ? "出生年" : "Birth year")}</label>
+        <input type="number" id="r-year" min="1900" max="2100" value="${escapeHTML(state.birthYear || "")}" placeholder="1990" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "yearcheck") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "设定所问之年" : "Set the year in view")}</h3>
+        <div class="field"><label for="r-target-year">${escapeHTML(zh ? "流年" : "Target year")}</label>
+        <input type="number" id="r-target-year" min="1900" max="2100" value="${escapeHTML(state.targetYear || "")}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "activity") {
+      const acts = [
+        { id: "travel", en: "Travel", zh: "出行" },
+        { id: "marriage", en: "Marriage / contract", zh: "婚嫁／签约" },
+        { id: "open", en: "Open business", zh: "开市" },
+        { id: "move", en: "Moving house", zh: "移徙" },
+        { id: "bury", en: "Burial / ancestor", zh: "安葬／祭祀" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择事宜" : "Choose an activity")}</h3>
+        <div class="africa-choice-row">
+          ${acts.map((a) => `<button type="button" class="africa-choice${state.activity === a.id ? " is-on" : ""}" data-action="china-activity" data-activity="${a.id}">${escapeHTML(zh ? a.zh : a.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "daypick") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "点选候选日" : "Pick a candidate day")}</h3>
+        <div class="field"><label for="r-day">${escapeHTML(zh ? "日期" : "Date")}</label>
+        <input type="date" id="r-day" value="${escapeHTML(state.dayDate || "")}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "animal" || step === "digits" || step === "governors" || step === "bones") {
+      const idx = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      // Pre-build cast preview for animal step
+      if (step === "animal" && !state.cast?.animal && state.birthYear) {
+        const preview = window.FatumChinaDestiny.runCast(state.method.id, {
+          birthYear: state.birthYear,
+          nonce: state.nonce,
+          question: "",
+        });
+        state.cast = preview.vizData || {};
+      }
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${chinaStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (
+      step === "pillars" ||
+      step === "palaces" ||
+      step === "clash" ||
+      step === "verdict" ||
+      step === "ironplate" ||
+      step === "skyboard" ||
+      step === "poem" ||
+      step === "cast"
+    ) {
+      const cta = window.FatumChinaDestiny.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(state.question ? (zh ? `问题：「${state.question}」` : `Holding: “${state.question}”`) : "")}</p>
+        ${chinaStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="china-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+    }
+  }
+
+  function doChinaCast() {
+    const rite = window.FatumChinaDestiny.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumChinaDestiny.runCast(state.method.id, {
+        question: state.question,
+        nonce: state.nonce,
+        birthDate: state.birthDate,
+        birthYear: state.birthYear,
+        targetYear: state.targetYear,
+        hourIndex: state.hourIndex,
+        gender: state.gender,
+        activity: state.activity,
+        dayDate: state.dayDate,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -1201,6 +1512,13 @@
             return rite ? africaStageHTML(rite, false) : "";
           })()
         : "";
+    const chinaExtra =
+      r.kind === "china" && state.kind === "china"
+        ? (() => {
+            const rite = window.FatumChinaDestiny?.get?.(state.method.id);
+            return rite ? chinaStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -1208,13 +1526,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra;
+            : africaExtra || chinaExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -1522,7 +1840,7 @@
         const f = body.querySelector("#r-focus");
         state.focus = (f?.value || "").trim();
       }
-      if (step === "birth" && state.kind === "africa") {
+      if (step === "birth" && (state.kind === "africa" || state.kind === "china")) {
         const b = body.querySelector("#r-birth");
         state.birthDate = (b?.value || "").trim();
         if (!state.birthDate) return fail(b);
@@ -1531,6 +1849,27 @@
         const L = body.querySelector("#r-letters");
         state.letters = (L?.value || "").trim().toUpperCase();
         if (!state.letters) return fail(L);
+      }
+      if (state.kind === "china") {
+        if (step === "year" || step === "birthyear") {
+          const y = body.querySelector("#r-year");
+          state.birthYear = String(y?.value || "").trim();
+          if (!state.birthYear) return fail(y);
+        }
+        if (step === "yearcheck") {
+          const y = body.querySelector("#r-target-year");
+          state.targetYear = String(y?.value || "").trim();
+          if (!state.targetYear) return fail(y);
+        }
+        if (step === "daypick") {
+          const d = body.querySelector("#r-day");
+          state.dayDate = (d?.value || "").trim();
+          if (!state.dayDate) return fail(d);
+        }
+        const chinaCast = ["pillars", "palaces", "clash", "verdict", "ironplate", "skyboard", "poem", "cast"];
+        if (chinaCast.includes(step)) return;
+        const next = state.steps[state.stepIndex + 1];
+        if (next === "result") return doChinaCast();
       }
       // Africa cast-like steps are user-driven
       if (step === "cast" || step === "bowls" || step === "count" || step === "chart" || step === "dream" || step === "rising" || step === "spin") return;
@@ -1640,6 +1979,19 @@
     }
     if (action === "africa-dial") {
       state.dialLetter = el.dataset.letter || "A";
+      return render();
+    }
+    if (action === "china-cast") return doChinaCast();
+    if (action === "china-hour") {
+      state.hourIndex = Number(el.dataset.hour || 0);
+      return render();
+    }
+    if (action === "china-gender") {
+      state.gender = el.dataset.gender || "unspecified";
+      return render();
+    }
+    if (action === "china-activity") {
+      state.activity = el.dataset.activity || "travel";
       return render();
     }
     if (action === "mbti-pick") return mbtiPick(el.dataset.side);
