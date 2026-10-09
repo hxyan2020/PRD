@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/context";
 
 type User = { id: string; email: string };
 
 export function AuthNav() {
   const router = useRouter();
+  const { t } = useI18n();
   const [user, setUser] = useState<User | null | undefined>(undefined);
 
   useEffect(() => {
@@ -41,10 +43,10 @@ export function AuthNav() {
     return (
       <>
         <Link href="/login" className="hover:text-foam">
-          Log in
+          {t("nav.login")}
         </Link>
         <Link href="/register" className="hover:text-foam">
-          Register
+          {t("nav.register")}
         </Link>
       </>
     );
@@ -53,13 +55,13 @@ export function AuthNav() {
   return (
     <>
       <Link href="/collection" className="hover:text-foam">
-        Collection
+        {t("nav.collection")}
       </Link>
       <span className="hidden max-w-[10rem] truncate text-xs text-mist/80 sm:inline" title={user.email}>
         {user.email}
       </span>
       <button type="button" onClick={() => void logout()} className="hover:text-foam">
-        Log out
+        {t("nav.logout")}
       </button>
     </>
   );

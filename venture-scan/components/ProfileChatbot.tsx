@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useI18n } from "@/lib/i18n/context";
+import type { MessageKey } from "@/lib/i18n/messages";
 import {
   clearProfileStorage,
   emptyProfile,
@@ -24,40 +26,19 @@ type StepId =
   | "markets"
   | "done";
 
-const STEPS: { id: StepId; prompt: string }[] = [
-  {
-    id: "name",
-    prompt: "Hi — I'm the VentureScan matcher. What should I call you?",
-  },
-  {
-    id: "skills",
-    prompt:
-      "What skills do you bring? List a few, separated by commas (e.g. product, sales, Python, supply chain).",
-  },
-  {
-    id: "major",
-    prompt: "What's your major or academic / professional background?",
-  },
-  {
-    id: "business",
-    prompt:
-      "What is your current business, job, or venture focus? (If none yet, say what you're exploring.)",
-  },
-  {
-    id: "domains",
-    prompt:
-      "Which domains interest you most? Comma-separated (e.g. health tech, climate, fintech, edtech).",
-  },
-  {
-    id: "markets",
-    prompt:
-      "Any preferred markets or countries? Comma-separated, or type skip.",
-  },
+const STEP_DEFS: { id: StepId; promptKey: MessageKey }[] = [
+  { id: "name", promptKey: "match.step.name" },
+  { id: "skills", promptKey: "match.step.skills" },
+  { id: "major", promptKey: "match.step.major" },
+  { id: "business", promptKey: "match.step.business" },
+  { id: "domains", promptKey: "match.step.domains" },
+  { id: "markets", promptKey: "match.step.markets" },
 ];
 
 type Ranked = { idea: StartupIdea; match: IdeaMatch };
 
 export function ProfileChatbot() {
+  const { t } = useI18n();
   const [profile, setProfile] = useState<UserProfile>(() => emptyProfile());
   const [stepIndex, setStepIndex] = useState(0);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -69,14 +50,14 @@ export function ProfileChatbot() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const step = STEPS[stepIndex] ?? null;
-  const complete = stepIndex >= STEPS.length;
+  const step = STEP_DEFS[stepIndex] ?? null;
+  const complete = stepIndex >= STEP_DEFS.length;
 
   useEffect(() => {
     const saved = loadProfileFromStorage();
     if (saved && isProfileReady(saved)) {
       setProfile(saved);
-      setStepIndex(STEPS.length);
+      setStepIndex(STEP_DEFS.length);
       setMessages([
         {
           id: "welcome-saved",
@@ -95,7 +76,7 @@ export function ProfileChatbot() {
         {
           id: "welcome",
           role: "bot",
-          text: STEPS[0].prompt,
+          text: t(STEP_DEFS[0].promptKey),
         },
       ]);
     }
@@ -176,13 +157,13 @@ export function ProfileChatbot() {
     setProfile(nextProfile);
     setStepIndex(nextIndex);
 
-    if (nextIndex < STEPS.length) {
+    if (nextIndex < STEP_DEFS.length) {
       setMessages((prev) => [
         ...prev,
         {
           id: `b-${Date.now()}`,
           role: "bot",
-          text: STEPS[nextIndex].prompt,
+          text: t(STEP_DEFS[nextIndex].promptKey),
         },
       ]);
       queueMicrotask(() => inputRef.current?.focus());
@@ -217,7 +198,7 @@ export function ProfileChatbot() {
       {
         id: `welcome-${Date.now()}`,
         role: "bot",
-        text: STEPS[0].prompt,
+        text: t(STEP_DEFS[0].promptKey),
       },
     ]);
     queueMicrotask(() => inputRef.current?.focus());
@@ -226,7 +207,7 @@ export function ProfileChatbot() {
   if (!hydrated) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-sm text-mist sm:px-6">
-        Loading matcher…
+        {t("match.loading")}
       </div>
     );
   }
@@ -236,12 +217,10 @@ export function ProfileChatbot() {
       <section className="flex min-h-[70vh] flex-col rounded-2xl border border-white/10 bg-ink-2/60 shadow-panel">
         <div className="border-b border-white/10 px-5 py-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
-            Profile chatbot
+            {t("match.kicker")}
           </p>
-          <h1 className="mt-1 font-display text-3xl text-foam">Build your match profile</h1>
-          <p className="mt-2 text-sm text-mist">
-            Skills, major, current business, interested domains — then we score each sourced idea.
-          </p>
+          <h1 className="mt-1 font-display text-3xl text-foam">{t("match.title")}</h1>
+          <p className="mt-2 text-sm text-mist">{t("match.body")}</p>
         </div>
 
         <div className="flex-1 space-y-3 overflow-y-auto px-5 py-5">
@@ -274,24 +253,24 @@ export function ProfileChatbot() {
                 className="field"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your answer…"
-                aria-label="Chat answer"
+                placeholder={t("match.placeholder")}
+                aria-label={t("match.placeholder")}
                 autoComplete="off"
               />
               <button type="submit" className="btn-primary shrink-0">
-                Send
+                {t("match.send")}
               </button>
             </form>
           ) : (
             <div className="flex flex-wrap gap-2">
               <button type="button" className="btn-primary" onClick={() => void runMatch(profile)}>
-                {ranking ? "Scoring…" : "Rematch ideas"}
+                {ranking ? t("match.scoring") : t("match.rematch")}
               </button>
               <button type="button" className="btn-ghost" onClick={resetChat}>
-                Rebuild profile
+                {t("match.rebuild")}
               </button>
               <Link href="/#ideas" className="btn-ghost">
-                View ledger
+                {t("match.viewLedger")}
               </Link>
             </div>
           )}
@@ -302,18 +281,18 @@ export function ProfileChatbot() {
       <aside className="space-y-4">
         <div className="rounded-2xl border border-white/10 bg-ink-2/60 p-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">
-            Your profile
+            {t("match.profile")}
           </p>
           <dl className="mt-3 space-y-3 text-sm">
-            <ProfileRow label="Name" value={profile.displayName || "—"} />
+            <ProfileRow label={t("match.name")} value={profile.displayName || "—"} />
             <ProfileRow
-              label="Skills"
+              label={t("match.skills")}
               value={profile.skills.length ? profile.skills.join(", ") : "—"}
             />
-            <ProfileRow label="Major" value={profile.major || "—"} />
-            <ProfileRow label="Current business" value={profile.currentBusiness || "—"} />
+            <ProfileRow label={t("match.major")} value={profile.major || "—"} />
+            <ProfileRow label={t("match.business")} value={profile.currentBusiness || "—"} />
             <ProfileRow
-              label="Interested domains"
+              label={t("match.domains")}
               value={
                 profile.interestedDomains.length
                   ? profile.interestedDomains.join(", ")
@@ -321,7 +300,7 @@ export function ProfileChatbot() {
               }
             />
             <ProfileRow
-              label="Preferred markets"
+              label={t("match.markets")}
               value={
                 profile.preferredMarkets.length
                   ? profile.preferredMarkets.join(", ")
@@ -335,19 +314,17 @@ export function ProfileChatbot() {
           <div className="flex items-baseline justify-between gap-3">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
-                Matching scores
+                {t("match.scores")}
               </p>
-              <h2 className="mt-1 font-display text-2xl text-foam">Top fits</h2>
+              <h2 className="mt-1 font-display text-2xl text-foam">{t("match.topFits")}</h2>
             </div>
             <span className="font-mono text-[11px] text-mist">
-              {ranking ? "…" : `${ranked.length || 0} scored`}
+              {ranking ? "…" : `${ranked.length || 0}`}
             </span>
           </div>
 
           {!complete && !ranked.length ? (
-            <p className="mt-4 text-sm text-mist">
-              Finish the chat and I'll rank every entrepreneurial idea against your profile.
-            </p>
+            <p className="mt-4 text-sm text-mist">{t("match.finishHint")}</p>
           ) : null}
 
           <ul className="mt-4 divide-y divide-white/10">

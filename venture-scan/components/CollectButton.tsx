@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
 
@@ -12,6 +13,7 @@ export function CollectButton({
   idea: StartupIdea;
   match?: IdeaMatch | null;
 }) {
+  const { t } = useI18n();
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -55,11 +57,7 @@ export function CollectButton({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not save");
       setSaved(true);
-      setMessage(
-        data.item?.match
-          ? "Saved idea + matching analysis to your collection."
-          : "Saved idea to your collection.",
-      );
+      setMessage(data.item?.match ? t("collect.savedBoth") : t("collect.savedIdea"));
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Could not save");
     } finally {
@@ -79,7 +77,7 @@ export function CollectButton({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not remove");
       setSaved(false);
-      setMessage("Removed from collection.");
+      setMessage(t("collect.removed"));
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Could not remove");
     } finally {
@@ -93,9 +91,9 @@ export function CollectButton({
     return (
       <p className="text-sm text-mist">
         <Link href="/login" className="text-celadon hover:underline">
-          Log in
+          {t("nav.login")}
         </Link>{" "}
-        to collect this idea and its matching analysis.
+        {t("collect.loginPrompt")}
       </p>
     );
   }
@@ -104,11 +102,11 @@ export function CollectButton({
     <div className="space-y-2">
       {saved ? (
         <button type="button" className="btn-ghost" disabled={busy} onClick={() => void remove()}>
-          {busy ? "Updating…" : "Remove from collection"}
+          {busy ? t("collect.updating") : t("collect.remove")}
         </button>
       ) : (
         <button type="button" className="btn-primary" disabled={busy} onClick={() => void collect()}>
-          {busy ? "Saving…" : "Collect idea + match"}
+          {busy ? t("collect.saving") : t("collect.save")}
         </button>
       )}
       {message ? <p className="text-xs text-mist">{message}</p> : null}

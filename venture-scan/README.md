@@ -27,6 +27,10 @@ Visit `/today` for the most-matched idea of the day. Each pick lists matched dim
 
 Register / log in with email and password (`/register`, `/login`). Collect ideas and their matching analysis into `/collection` via `POST /api/collection`.
 
+## Languages
+
+UI chrome is available in 18 major languages via the header language picker (national flag icons). Choice is saved in localStorage; Arabic uses RTL.
+
 ## Run locally
 
 ```bash

@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 
 export function DailyTeaser() {
+  const { t } = useI18n();
   const [ready, setReady] = useState(false);
   const [title, setTitle] = useState<string | null>(null);
   const [score, setScore] = useState<number | null>(null);
@@ -43,24 +45,22 @@ export function DailyTeaser() {
       <div className="flex flex-col gap-3 border-y border-white/10 py-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
-            Everyday recommendation
+            {t("teaser.kicker")}
           </p>
           <p className="mt-1 text-sm text-mist">
             {ready && title ? (
-              <>
-                Today's best match:{" "}
-                <span className="text-foam">
-                  {title}
-                  {score != null ? ` · ${score}%` : ""}
-                </span>
-              </>
+              <span>
+                {t("teaser.ready", {
+                  title: `${title}${score != null ? ` · ${score}%` : ""}`,
+                })}
+              </span>
             ) : (
-              "See your highest-matched idea, with clear matches, gaps, and how to close them."
+              t("teaser.needProfile")
             )}
           </p>
         </div>
         <Link href={ready ? "/today" : "/match"} className="btn-ghost shrink-0">
-          {ready ? "Open today's pick" : "Build profile first"}
+          {ready ? t("teaser.open") : t("teaser.build")}
         </Link>
       </div>
     </section>

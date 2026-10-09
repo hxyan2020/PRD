@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/Providers";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 
@@ -33,10 +34,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
-        <div className="grain" aria-hidden />
-        <SiteHeader />
-        <main className="relative z-10">{children}</main>
-        <SiteFooter />
+        <Providers>
+          <div className="grain" aria-hidden />
+          <SiteHeader />
+          <main className="relative z-10">{children}</main>
+          <SiteFooter />
+        </Providers>
       </body>
     </html>
   );

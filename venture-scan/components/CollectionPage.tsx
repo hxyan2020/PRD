@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/context";
 import type { CollectionItem } from "@/lib/types";
 
 export function CollectionPage() {
+  const { t } = useI18n();
   const [items, setItems] = useState<CollectionItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
@@ -43,14 +45,14 @@ export function CollectionPage() {
   if (needLogin) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <h1 className="font-display text-4xl text-foam">Your collection</h1>
-        <p className="mt-4 text-sm text-mist">Log in to save and review collected ideas.</p>
+        <h1 className="font-display text-4xl text-foam">{t("collection.title")}</h1>
+        <p className="mt-4 text-sm text-mist">{t("collection.needLogin")}</p>
         <div className="mt-6 flex gap-3">
           <Link href="/login" className="btn-primary">
-            Log in
+            {t("nav.login")}
           </Link>
           <Link href="/register" className="btn-ghost">
-            Register
+            {t("nav.register")}
           </Link>
         </div>
       </div>
@@ -64,7 +66,7 @@ export function CollectionPage() {
   if (!items) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-sm text-mist sm:px-6">
-        Loading collection…
+        {t("collection.loading")}
       </div>
     );
   }
@@ -72,18 +74,13 @@ export function CollectionPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-celadon">
-        Saved for you
+        {t("collection.kicker")}
       </p>
-      <h1 className="mt-3 font-display text-4xl text-foam">Collection</h1>
-      <p className="mt-3 text-sm text-mist">
-        Ideas you've collected, including matching analysis when a profile was available.
-      </p>
+      <h1 className="mt-3 font-display text-4xl text-foam">{t("collection.title")}</h1>
+      <p className="mt-3 text-sm text-mist">{t("collection.body")}</p>
 
       {items.length === 0 ? (
-        <p className="mt-10 text-sm text-mist">
-          Nothing saved yet. Open an idea or today's pick and tap{" "}
-          <span className="text-foam">Collect idea + match</span>.
-        </p>
+        <p className="mt-10 text-sm text-mist">{t("collection.empty")}</p>
       ) : (
         <ul className="mt-10 divide-y divide-white/10 border-t border-white/10">
           {items.map((item) => (
@@ -98,16 +95,18 @@ export function CollectionPage() {
                   </Link>
                   <p className="mt-1 text-xs text-mist">
                     {item.idea.industry} · {item.idea.sector}
-                    {item.match ? ` · Match ${item.match.score}%` : ""}
+                    {item.match ? ` · ${t("ledger.match", { score: item.match.score })}` : ""}
                   </p>
                   {item.match?.matched[0] ? (
                     <p className="mt-2 text-xs text-celadon">
-                      Matched · {item.match.matched[0].dimension}: {item.match.matched[0].detail}
+                      {t("today.matched")} · {item.match.matched[0].dimension}:{" "}
+                      {item.match.matched[0].detail}
                     </p>
                   ) : null}
                   {item.match?.gaps[0] ? (
                     <p className="mt-1 text-xs text-mist">
-                      Gap · {item.match.gaps[0].dimension}: {item.match.gaps[0].closeGap}
+                      {t("today.gaps")} · {item.match.gaps[0].dimension}:{" "}
+                      {item.match.gaps[0].closeGap}
                     </p>
                   ) : null}
                 </div>
@@ -116,7 +115,7 @@ export function CollectionPage() {
                   className="btn-ghost shrink-0 self-start"
                   onClick={() => void remove(item.ideaSlug)}
                 >
-                  Remove
+                  {t("collection.remove")}
                 </button>
               </div>
             </li>

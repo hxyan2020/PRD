@@ -27,6 +27,10 @@ export default function MethodologyPage() {
           <span className="text-foam">Collect</span> — log in with email and password, then save
           ideas plus matching analysis into your personal collection.
         </li>
+        <li>
+          <span className="text-foam">Languages</span> — switch the UI among major world languages
+          with a flag icon language picker in the header.
+        </li>
       </ol>
       <p className="mt-8 text-sm text-mist">
         Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal,

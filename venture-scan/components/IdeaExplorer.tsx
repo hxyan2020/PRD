@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
+import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
 
@@ -19,6 +20,7 @@ export function IdeaExplorer({
   initialIdeas: StartupIdea[];
   meta: Meta;
 }) {
+  const { t } = useI18n();
   const [q, setQ] = useState("");
   const [industry, setIndustry] = useState("");
   const [sector, setSector] = useState("");
@@ -118,17 +120,16 @@ export function IdeaExplorer({
     <section id="ideas" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
       <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-3xl text-foam sm:text-4xl">Idea ledger</h2>
+          <h2 className="font-display text-3xl text-foam sm:text-4xl">{t("ledger.title")}</h2>
           <p className="mt-2 max-w-xl text-sm text-mist">
-            Each entry includes name, description, team, industry, sector, fundraising, website,
-            socials, and a suggested go-forward play.
-            {hasMatches ? " Sorted by your chatbot profile match score." : ""}
+            {t("ledger.body")}
+            {hasMatches ? t("ledger.sorted") : ""}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           {!hasMatches ? (
             <Link href="/match" className="btn-primary shrink-0">
-              Build match profile
+              {t("ledger.buildProfile")}
             </Link>
           ) : (
             <button
@@ -136,7 +137,7 @@ export function IdeaExplorer({
               className="btn-ghost shrink-0"
               onClick={() => setSortByMatch((v) => !v)}
             >
-              {sortByMatch ? "Sort: match score" : "Sort: recent scan"}
+              {sortByMatch ? t("ledger.sortMatch") : t("ledger.sortRecent")}
             </button>
           )}
           <button
@@ -145,7 +146,7 @@ export function IdeaExplorer({
             onClick={rescan}
             disabled={scanning}
           >
-            {scanning ? "Scanning…" : "Run scan"}
+            {scanning ? t("ledger.scanning") : t("ledger.scan")}
           </button>
         </div>
       </div>
@@ -157,18 +158,18 @@ export function IdeaExplorer({
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <input
           className="field lg:col-span-2"
-          placeholder="Search ideas, industries, countries…"
+          placeholder={t("ledger.search")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          aria-label="Search ideas"
+          aria-label={t("ledger.search")}
         />
         <select
           className="field"
           value={industry}
           onChange={(e) => setIndustry(e.target.value)}
-          aria-label="Filter by industry"
+          aria-label={t("ledger.allIndustries")}
         >
-          <option value="">All industries</option>
+          <option value="">{t("ledger.allIndustries")}</option>
           {meta.industries.map((v) => (
             <option key={v} value={v}>
               {v}
@@ -179,9 +180,9 @@ export function IdeaExplorer({
           className="field"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
-          aria-label="Filter by country"
+          aria-label={t("ledger.allCountries")}
         >
-          <option value="">All countries</option>
+          <option value="">{t("ledger.allCountries")}</option>
           {meta.countries.map((v) => (
             <option key={v} value={v}>
               {v}
@@ -192,11 +193,11 @@ export function IdeaExplorer({
           className="field"
           value={fundraising}
           onChange={(e) => setFundraising(e.target.value as "all" | "yes" | "no")}
-          aria-label="Filter by fundraising"
+          aria-label={t("ledger.fundAll")}
         >
-          <option value="all">Fundraising: all</option>
-          <option value="yes">Fundraising secured</option>
-          <option value="no">Not yet funded</option>
+          <option value="all">{t("ledger.fundAll")}</option>
+          <option value="yes">{t("ledger.fundYes")}</option>
+          <option value="no">{t("ledger.fundNo")}</option>
         </select>
       </div>
 
@@ -205,9 +206,9 @@ export function IdeaExplorer({
           className="field max-w-full sm:max-w-xs"
           value={sector}
           onChange={(e) => setSector(e.target.value)}
-          aria-label="Filter by sector"
+          aria-label={t("ledger.allSectors")}
         >
-          <option value="">All sectors</option>
+          <option value="">{t("ledger.allSectors")}</option>
           {meta.sectors.map((v) => (
             <option key={v} value={v}>
               {v}
@@ -215,7 +216,7 @@ export function IdeaExplorer({
           ))}
         </select>
         <p className="self-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
-          {pending ? "Updating…" : `${filtered.length} shown`}
+          {pending ? "…" : t("ledger.shown", { count: filtered.length })}
         </p>
       </div>
 
@@ -241,12 +242,12 @@ export function IdeaExplorer({
                         }`}
                       >
                         {idea.fundraisingSecured
-                          ? `Funded · ${idea.fundingStage ?? "secured"}`
-                          : "Fundraising open"}
+                          ? t("ledger.funded", { stage: idea.fundingStage ?? "secured" })
+                          : t("ledger.open")}
                       </span>
                       {match ? (
                         <span className="rounded-full border border-celadon/30 bg-celadon/10 px-2 py-0.5 font-mono text-[10px] text-celadon">
-                          Match {match.score}%
+                          {t("ledger.match", { score: match.score })}
                         </span>
                       ) : null}
                     </div>
@@ -269,7 +270,7 @@ export function IdeaExplorer({
                   </div>
                   <p className="shrink-0 max-w-xs text-xs leading-relaxed text-mist sm:text-right">
                     <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">
-                      Go forward
+                      {t("ledger.goForward")}
                     </span>
                     <br />
                     {strategyLabel(idea.goForward.strategy)}
@@ -280,7 +281,7 @@ export function IdeaExplorer({
           );
         })}
         {filtered.length === 0 ? (
-          <li className="py-12 text-center text-sm text-mist">No ideas match these filters.</li>
+          <li className="py-12 text-center text-sm text-mist">{t("ledger.empty")}</li>
         ) : null}
       </ul>
     </section>

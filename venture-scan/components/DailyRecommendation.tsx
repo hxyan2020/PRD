@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CollectButton } from "@/components/CollectButton";
 import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
+import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
 
@@ -19,6 +20,7 @@ type State =
     };
 
 export function DailyRecommendation() {
+  const { t } = useI18n();
   const [state, setState] = useState<State>({ status: "loading" });
 
   useEffect(() => {
@@ -62,7 +64,7 @@ export function DailyRecommendation() {
   if (state.status === "loading") {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-sm text-mist sm:px-6">
-        Choosing today's best-matched idea…
+        {t("today.loading")}
       </div>
     );
   }
@@ -71,15 +73,12 @@ export function DailyRecommendation() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
         <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-celadon">
-          Today's recommendation
+          {t("today.kicker")}
         </p>
-        <h1 className="mt-3 font-display text-4xl text-foam">Build a profile first</h1>
-        <p className="mt-4 text-sm leading-relaxed text-mist">
-          The daily pick needs your skills, major, current business, and interested domains so we
-          can score every idea and show matches vs gaps.
-        </p>
+        <h1 className="mt-3 font-display text-4xl text-foam">{t("today.needTitle")}</h1>
+        <p className="mt-4 text-sm leading-relaxed text-mist">{t("today.needBody")}</p>
         <Link href="/match" className="btn-primary mt-8 inline-flex">
-          Open match chatbot
+          {t("today.openMatch")}
         </Link>
       </div>
     );
@@ -98,7 +97,7 @@ export function DailyRecommendation() {
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-celadon">
-        Today's recommendation · {day}
+        {t("today.dateLabel", { day })}
       </p>
       <div className="mt-3 flex flex-wrap items-end justify-between gap-3">
         <h1 className="font-display text-4xl text-foam sm:text-5xl">{idea.name}</h1>
@@ -125,35 +124,34 @@ export function DailyRecommendation() {
       </div>
 
       <section className="mt-10 animate-rise">
-        <h2 className="font-display text-2xl text-foam">Where you matched</h2>
+        <h2 className="font-display text-2xl text-foam">{t("today.matched")}</h2>
         {match.matched.length ? (
           <ul className="mt-4 space-y-3">
             {match.matched.map((point) => (
-              <MatchRow key={point.dimension} point={point} />
+              <MatchRow key={point.dimension} point={point} matchedLabel={t("today.matched")} />
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-sm text-mist">
-            No strong matches yet — close the gaps below to raise today's score.
-          </p>
+          <p className="mt-3 text-sm text-mist">{t("today.noMatch")}</p>
         )}
       </section>
 
       <section className="mt-10 animate-rise [animation-delay:80ms]">
-        <h2 className="font-display text-2xl text-foam">Where the gap is</h2>
-        <p className="mt-2 text-sm text-mist">
-          Each gap includes a concrete action to close it.
-        </p>
+        <h2 className="font-display text-2xl text-foam">{t("today.gaps")}</h2>
+        <p className="mt-2 text-sm text-mist">{t("today.gapsHint")}</p>
         {match.gaps.length ? (
           <ul className="mt-4 space-y-4">
             {match.gaps.map((gap) => (
-              <GapRow key={gap.dimension} gap={gap} />
+              <GapRow
+                key={gap.dimension}
+                gap={gap}
+                gapLabel={t("today.gaps")}
+                closeLabel={t("today.closeIt")}
+              />
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-sm text-celadon">
-            No material gaps on the scored dimensions — you're tightly aligned today.
-          </p>
+          <p className="mt-3 text-sm text-celadon">{t("today.noGaps")}</p>
         )}
       </section>
 
@@ -161,13 +159,13 @@ export function DailyRecommendation() {
         <CollectButton idea={idea} match={match} />
         <div className="flex flex-wrap gap-3">
           <Link href={`/ideas/${idea.slug}`} className="btn-ghost">
-            Open full dossier
+            {t("today.dossier")}
           </Link>
           <Link href="/match" className="btn-ghost">
-            Update profile
+            {t("today.updateProfile")}
           </Link>
           <Link href="/collection" className="btn-ghost">
-            View collection
+            {t("today.collection")}
           </Link>
         </div>
       </div>
@@ -175,26 +173,34 @@ export function DailyRecommendation() {
   );
 }
 
-function MatchRow({ point }: { point: MatchPoint }) {
+function MatchRow({ point, matchedLabel }: { point: MatchPoint; matchedLabel: string }) {
   return (
     <li className="rounded-xl border border-celadon/25 bg-celadon/10 px-4 py-3">
       <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">
-        Matched · {point.dimension}
+        {matchedLabel} · {point.dimension}
       </p>
       <p className="mt-1 text-sm leading-relaxed text-foam">{point.detail}</p>
     </li>
   );
 }
 
-function GapRow({ gap }: { gap: GapPoint }) {
+function GapRow({
+  gap,
+  gapLabel,
+  closeLabel,
+}: {
+  gap: GapPoint;
+  gapLabel: string;
+  closeLabel: string;
+}) {
   return (
     <li className="rounded-xl border border-copper/30 bg-copper/10 px-4 py-3">
       <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-copper">
-        Gap · {gap.dimension}
+        {gapLabel} · {gap.dimension}
       </p>
       <p className="mt-1 text-sm leading-relaxed text-foam">{gap.detail}</p>
       <p className="mt-2 text-sm leading-relaxed text-mist">
-        <span className="font-medium text-foam">Close it: </span>
+        <span className="font-medium text-foam">{closeLabel} </span>
         {gap.closeGap}
       </p>
     </li>
