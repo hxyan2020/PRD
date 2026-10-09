@@ -6,6 +6,25 @@
   "use strict";
 
   /** Reflective frames — symbolic prompts, not event forecasts. */
+  function procZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+  function procHant() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh-Hant");
+    } catch (_) {
+      return false;
+    }
+  }
+  function procT(hans, hant, en) {
+    if (procZh()) return procHant() ? hant || hans : hans;
+    return en;
+  }
+
   const EXPLAIN_FRAMES = {
     bright: [
       "In many omen traditions, a bright lean invites clarity and forward motion — as a mirror, not a guarantee.",
@@ -26,6 +45,50 @@
       "The pattern turns inward: the useful work may be clarifying the question itself.",
       "Deep leanings invite revision of an old pattern — reflection before spectacle.",
       "This draw behaves like a mirror more than a map; notice the feeling under the ask.",
+    ],
+  };
+  const EXPLAIN_FRAMES_ZH = {
+    bright: [
+      "许多征兆传统里，明亮倾向邀请清晰与向前——当作镜子，不是保证。",
+      "格局读起来支持你判断里已在成形的开端。",
+      "象征场域偏开放：优先你能用不迷信的话解释清楚的那一步。",
+    ],
+    mixed: [
+      "格局混杂：两股拉力都看得见。传统常把它当作刻意择一的提醒。",
+      "含糊本身就是讯息——不是藏着一个等你解出来的“是”。",
+      "混杂征兆通常要你用白话说出取舍。",
+    ],
+    caution: [
+      "倾向谨慎：放慢会绑死的决定；先守护已奏效的事。",
+      "征兆里的谨慎是“别急着打结”，不是“永远别再行动”。",
+      "格局提醒你提防匆忙与诱人捷径——先核实再承诺。",
+    ],
+    deep: [
+      "格局转向内在：有用的工作或许是先把问题本身问清楚。",
+      "深向倾向邀请修订旧模式——先反思，再表演。",
+      "这次抽取更像镜子而非地图；留意问题底下的感受。",
+    ],
+  };
+  const EXPLAIN_FRAMES_HANT = {
+    bright: [
+      "許多徵兆傳統裡，明亮傾向邀請清晰與向前——當作鏡子，不是保證。",
+      "格局讀起來支持你判斷裡已在成形的開端。",
+      "象徵場域偏開放：優先你能用不迷信的話解釋清楚的那一步。",
+    ],
+    mixed: [
+      "格局混雜：兩股拉力都看得見。傳統常把它當作刻意擇一的提醒。",
+      "含糊本身就是訊息——不是藏著一個等你解出來的「是」。",
+      "混雜徵兆通常要你用白話說出取捨。",
+    ],
+    caution: [
+      "傾向謹慎：放慢會綁死的決定；先守護已奏效的事。",
+      "徵兆裡的謹慎是「別急著打結」，不是「永遠別再行動」。",
+      "格局提醒你提防匆忙與誘人捷徑——先核實再承諾。",
+    ],
+    deep: [
+      "格局轉向內在：有用的工作或許是先把問題本身問清楚。",
+      "深向傾向邀請修訂舊模式——先反思，再表演。",
+      "這次抽取更像鏡子而非地圖；留意問題底下的感受。",
     ],
   };
 
@@ -102,14 +165,14 @@
     },
   };
   const RUNES = [
-    { name: "Fehu", gloss: "movable wealth, beginning energy" },
-    { name: "Uruz", gloss: "vital strength, recovery" },
-    { name: "Thurisaz", gloss: "threshold force, necessary conflict" },
-    { name: "Ansuz", gloss: "message, breath, counsel" },
-    { name: "Raidho", gloss: "journey, right ordering" },
-    { name: "Kenaz", gloss: "torch, craft, revelation" },
-    { name: "Gebo", gloss: "gift, exchange, bond" },
-    { name: "Wunjo", gloss: "joy, belonging" },
+    { name: "Fehu", nameZh: "费胡", gloss: "movable wealth, beginning energy", glossZh: "可移动的财富、起始能量", glossHant: "可移動的財富、起始能量" },
+    { name: "Uruz", nameZh: "乌鲁兹", gloss: "vital strength, recovery", glossZh: "生命力、恢复", glossHant: "生命力、恢復" },
+    { name: "Thurisaz", nameZh: "图里萨兹", gloss: "threshold force, necessary conflict", glossZh: "门槛之力、必要冲突", glossHant: "門檻之力、必要衝突" },
+    { name: "Ansuz", nameZh: "安苏兹", gloss: "message, breath, counsel", glossZh: "讯息、气息、建言", glossHant: "訊息、氣息、建言" },
+    { name: "Raidho", nameZh: "莱多", gloss: "journey, right ordering", glossZh: "旅程、正当秩序", glossHant: "旅程、正當秩序" },
+    { name: "Kenaz", nameZh: "凯纳兹", gloss: "torch, craft, revelation", glossZh: "火把、手艺、启示", glossHant: "火把、手藝、啟示" },
+    { name: "Gebo", nameZh: "盖博", gloss: "gift, exchange, bond", glossZh: "礼物、交换、纽带", glossHant: "禮物、交換、紐帶" },
+    { name: "Wunjo", nameZh: "温乔", gloss: "joy, belonging", glossZh: "喜悦、归属", glossHant: "喜悅、歸屬" },
   ];
 
   const PROCESSES = {
@@ -643,10 +706,25 @@
     } else if (process.id === "cast" && /rune|ogham|futhorc|futhark/i.test(method.name + method.summary)) {
       const r1 = pick(rng, RUNES);
       const r2 = pick(rng, RUNES);
-      reading.title = `${r1.name} · ${r2.name}`;
-      reading.result = `Cast staves: ${r1.name} and ${r2.name}`;
-      reading.explain = `${r1.name}: ${r1.gloss}. ${r2.name}: ${r2.gloss}. Gloss meanings are common modern study keywords — not guaranteed historical one-word translations.`;
-      reading.details = [`${r1.name}: ${r1.gloss}`, `${r2.name}: ${r2.gloss}`];
+      const n1 = procZh() ? r1.nameZh || r1.name : r1.name;
+      const n2 = procZh() ? r2.nameZh || r2.name : r2.name;
+      const g1 = procT(r1.glossZh, r1.glossHant, r1.gloss);
+      const g2 = procT(r2.glossZh, r2.glossHant, r2.gloss);
+      reading.title = `${n1} · ${n2}`;
+      reading.result = procT(
+        `抽到符文：${n1}（${g1}）与 ${n2}（${g2}）。合起来提醒你：把技能／启示用在能带来归属与喜悦的一步上——不是在回答“何时”，而是问你愿不愿先做那一步。`,
+        `抽到符文：${n1}（${g1}）與 ${n2}（${g2}）。合起來提醒你：把技能／啟示用在能帶來歸屬與喜悅的一步上——不是在回答「何時」，而是問你願不願先做那一步。`,
+        `Drawn staves: ${n1} (${g1}) and ${n2} (${g2}). Together they cue: put craft/insight into one step that can bring belonging or joy — not an answer to “when,” but a question of whether you’ll take that step.`
+      );
+      reading.explain = procT(
+        `${n1}：${g1}。${n2}：${g2}。这些是常见的现代研习关键词，不是保证的历史一字译。结合你的问题读：符文给的是行动主题，不是日期或命运时刻表。`,
+        `${n1}：${g1}。${n2}：${g2}。這些是常見的現代研習關鍵詞，不是保證的歷史一字譯。結合你的問題讀：符文給的是行動主題，不是日期或命運時刻表。`,
+        `${n1}: ${g1}. ${n2}: ${g2}. Gloss meanings are common modern study keywords — not guaranteed historical one-word translations. Read beside your question: runes give an action theme, not a date or fate timetable.`
+      );
+      reading.details = [
+        procT(`符文一：${n1} — ${g1}`, `符文一：${n1} — ${g1}`, `Stave 1: ${n1} — ${g1}`),
+        procT(`符文二：${n2} — ${g2}`, `符文二：${n2} — ${g2}`, `Stave 2: ${n2} — ${g2}`),
+      ];
     } else if (process.id === "cast") {
       const faces = Math.floor(rng() * 8) + 1;
       reading.title = `Pattern ${faces}`;
@@ -732,16 +810,36 @@
       reading.details = [omen, `Symbolic field of ${method.name}.`];
     }
 
-    const frame = pick(rng, EXPLAIN_FRAMES[tone] || EXPLAIN_FRAMES.mixed);
+    const framePack = procZh() ? (procHant() ? EXPLAIN_FRAMES_HANT : EXPLAIN_FRAMES_ZH) : EXPLAIN_FRAMES;
+    const frame = pick(rng, framePack[tone] || framePack.mixed);
     reading.explain = `${reading.explain} ${frame}`.trim();
     const interpretBody =
       process.id === "pendulum"
-        ? `Notice your body's reaction to “${reading.title}”. If you immediately want a redo, the useful data may be that urge — not the swing.`
+        ? procT(
+            `留意身体对「${reading.title}」的反应。若你立刻想重问，有用的信息可能是那股冲动——不是指针本身。`,
+            `留意身體對「${reading.title}」的反應。若你立刻想重問，有用的資訊可能是那股衝動——不是指針本身。`,
+            `Notice your body's reaction to “${reading.title}”. If you immediately want a redo, the useful data may be that urge — not the swing.`
+          )
         : process.id === "form"
-          ? `Relate the noted trait to your focus without leaping to fixed character claims. Ask: what behavior would make this reading useful even if the symbols are wrong?`
-          : `Use the ${tone} lean as a lens on the matter you named — then test any action against ordinary evidence.`;
+          ? procT(
+              `把记下的特征与你的焦点对照，不要跳到固定性格结论。问自己：即便符号错了，怎样的行为仍会让这次解读有用？`,
+              `把記下的特徵與你的焦點對照，不要跳到固定性格結論。問自己：即便符號錯了，怎樣的行為仍會讓這次解讀有用？`,
+              `Relate the noted trait to your focus without leaping to fixed character claims. Ask: what behavior would make this reading useful even if the symbols are wrong?`
+            )
+          : process.id === "cast" && /rune|ogham|futhorc|futhark/i.test(method.name + method.summary)
+            ? procT(
+                `你问的是「${q || "未写明的事"}」。符文给的是主题与态度，不是日期表。把标题里的两符关键词，翻译成你今天能做的一步；再用日常证据核对——尤其别把“何时”类问题交给抽签。`,
+                `你問的是「${q || "未寫明的事"}」。符文給的是主題與態度，不是日期表。把標題裡的兩符關鍵詞，翻譯成你今天能做的一步；再用日常證據核對——尤其別把「何時」類問題交給抽籤。`,
+                `You asked about “${q || "an unnamed matter"}”. Runes give theme and stance, not a timetable. Turn the two stave keywords into one step you can take today; then check ordinary evidence — especially do not hand “when” questions to lots.`
+              )
+            : procT(
+                `把「${tone}」倾向当作你所问之事的透镜，然后用日常证据检验任何行动。`,
+                `把「${tone}」傾向當作你所問之事的透鏡，然後用日常證據檢驗任何行動。`,
+                `Use the ${tone} lean as a lens on the matter you named — then test any action against ordinary evidence.`
+              );
 
-    reading.interpret = RM ? RM.interpretWithQuestion(q, interpretBody) : interpretBody;
+    // Avoid double bilingual lead: write a single-locale interpret paragraph.
+    reading.interpret = interpretBody;
     const guide = RM ? RM.reflectiveGuidance(tone) : { doList: [], dontList: [] };
     reading.doList = guide.doList.slice();
     reading.dontList = guide.dontList.slice();
@@ -749,43 +847,96 @@
     // Process-specific do/don't overlays (still non-predictive)
     if (process.id === "pendulum") {
       reading.doList = [
-        `If you keep the “${reading.title}”, write one reversible next step that would still make sense without the pendulum.`,
-        "Rephrase the question once so it is truly binary and about something you control.",
+        procT(
+          `若保留「${reading.title}」，写下一个没有钟摆也说得通的可逆下一步。`,
+          `若保留「${reading.title}」，寫下一個沒有鐘擺也說得通的可逆下一步。`,
+          `If you keep the “${reading.title}”, write one reversible next step that would still make sense without the pendulum.`
+        ),
+        procT(
+          "把问题改写成真正二元、且关于你能控制之事的问法。",
+          "把問題改寫成真正二元、且關於你能控制之事的問法。",
+          "Rephrase the question once so it is truly binary and about something you control."
+        ),
       ];
       reading.dontList = [
-        "Do not re-ask the same question hoping for the opposite swing.",
-        "Do not let a simulated yes/no override medical, legal, financial, or safety judgment.",
+        procT("不要为了相反答案而反复重问同一问题。", "不要為了相反答案而反覆重問同一問題。", "Do not re-ask the same question hoping for the opposite swing."),
+        procT(
+          "不要让模拟是／否压过医疗、法律、财务或安全判断。",
+          "不要讓模擬是／否壓過醫療、法律、財務或安全判斷。",
+          "Do not let a simulated yes/no override medical, legal, financial, or safety judgment."
+        ),
       ];
     } else if (process.id === "blood") {
       reading.doList = [
-        "If a stereotype resonates, name the behavior you already choose — not the antigen — that makes it useful.",
-        "Keep medical blood-type facts separate from personality folklore.",
+        procT(
+          "若刻板印象有共鸣，点名你已在选择的行为——不是抗原——让它变得有用。",
+          "若刻板印象有共鳴，點名你已在選擇的行為——不是抗原——讓它變得有用。",
+          "If a stereotype resonates, name the behavior you already choose — not the antigen — that makes it useful."
+        ),
+        procT("把医学血型事实与性格民俗分开。", "把醫學血型事實與性格民俗分開。", "Keep medical blood-type facts separate from personality folklore."),
       ];
       reading.dontList = [
-        "Do not use ABO type to hire, date, or exclude people.",
-        "Do not treat this as a medical, genetic, or psychological diagnosis.",
+        procT("不要用 ABO 血型招聘、相亲或排斥他人。", "不要用 ABO 血型招聘、相親或排斥他人。", "Do not use ABO type to hire, date, or exclude people."),
+        procT("不要把这当作医疗、遗传或心理诊断。", "不要把這當作醫療、遺傳或心理診斷。", "Do not treat this as a medical, genetic, or psychological diagnosis."),
       ];
     } else if (process.id === "name") {
       reading.doList = [
-        "If the name number sparks an idea, translate it into one concrete habit you can test this week.",
+        procT(
+          "若姓名数触发想法，把它译成这周能试验的一个具体习惯。",
+          "若姓名數觸發想法，把它譯成這週能試驗的一個具體習慣。",
+          "If the name number sparks an idea, translate it into one concrete habit you can test this week."
+        ),
       ];
       reading.dontList = [
-        "Do not rename yourself or others solely because a toy calculation looked unlucky.",
+        procT("不要只因玩具计算“不吉”就改名或要求他人改名。", "不要只因玩具計算「不吉」就改名或要求他人改名。", "Do not rename yourself or others solely because a toy calculation looked unlucky."),
       ];
     } else if (process.id === "day") {
       reading.doList.unshift(
         reading.tone === "caution" || reading.tone === "mixed"
-          ? "If the day matters, keep plans flexible and verify logistics independently of the almanac lean."
-          : "If you proceed, still confirm times, travel, and commitments with ordinary sources."
+          ? procT(
+              "若这天重要，保持计划弹性，并用通书以外的方式核实后勤。",
+              "若這天重要，保持計劃彈性，並用通書以外的方式核實後勤。",
+              "If the day matters, keep plans flexible and verify logistics independently of the almanac lean."
+            )
+          : procT(
+              "若继续推进，仍要用普通来源确认时间、出行与承诺。",
+              "若繼續推進，仍要用普通來源確認時間、出行與承諾。",
+              "If you proceed, still confirm times, travel, and commitments with ordinary sources."
+            )
       );
-      reading.dontList.unshift("Do not cancel necessary care or obligations solely because a simulated lean looks inauspicious.");
+      reading.dontList.unshift(
+        procT(
+          "不要只因模拟倾向不吉就取消必要的照护或义务。",
+          "不要只因模擬傾向不吉就取消必要的照護或義務。",
+          "Do not cancel necessary care or obligations solely because a simulated lean looks inauspicious."
+        )
+      );
     } else if (process.id === "cards") {
-      reading.doList.unshift("Name one real fact from your life that matches each card’s theme before acting.");
-      reading.dontList.unshift("Do not treat the Path card as a dated prediction.");
+      reading.doList.unshift(
+        procT("行动前，为每张牌的主题点出一个真实生活事实。", "行動前，為每張牌的主題點出一個真實生活事實。", "Name one real fact from your life that matches each card’s theme before acting.")
+      );
+      reading.dontList.unshift(
+        procT("不要把“指引”牌当成带日期的预言。", "不要把「指引」牌當成帶日期的預言。", "Do not treat the Path card as a dated prediction.")
+      );
+    } else if (process.id === "cast" && /rune|ogham|futhorc|futhark/i.test(method.name + method.summary) && q) {
+      reading.doList.unshift(
+        procT(
+          `围绕「${q}」，把两符关键词写成今天可做的一步（可逆、可核实）。`,
+          `圍繞「${q}」，把兩符關鍵詞寫成今天可做的一步（可逆、可核實）。`,
+          `Around “${q}”, turn the two stave keywords into one reversible, checkable step today.`
+        )
+      );
+      reading.dontList.unshift(
+        procT(
+          "不要向符文索取准确日期或“何时一定发生”。",
+          "不要向符文索取準確日期或「何時一定發生」。",
+          "Do not demand an exact date or “when it must happen” from runes."
+        )
+      );
     }
 
     if (q) {
-      reading.details.unshift(`Your input: “${q}”`);
+      reading.details.unshift(procT(`你的问题：「${q}」`, `你的問題：「${q}」`, `Your input: “${q}”`));
     }
 
     return RM ? RM.structuredReading(reading) : reading;
