@@ -35,6 +35,7 @@
   function guidedKind(method) {
     if (method.guided) return method.guided;
     if (window.FatumChinaClassic?.has?.(method.id)) return "classic";
+    if (window.FatumChinaForm?.has?.(method.id)) return "formchina";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -133,6 +134,25 @@
         casting: false,
       };
     }
+    if (kind === "formchina") {
+      const rite = window.FatumChinaForm.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "site", "facing", "qi", "result"],
+        question: "",
+        focus: "",
+        cast: {},
+        site: "home",
+        facing: "S",
+        gua: 1,
+        period: "9",
+        faceZone: "forehead",
+        hand: "active",
+        palmLine: "life",
+        bodyZone: "face",
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -223,6 +243,15 @@
       }
       if (state.kind === "classic") {
         const how = window.FatumChinaClassic?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
+      if (state.kind === "formchina") {
+        const how = window.FatumChinaForm?.howFor?.(state.method.id);
         const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
         return {
           label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
@@ -355,6 +384,7 @@
       else if (state.kind === "africa") renderAfrica();
       else if (state.kind === "china") renderChina();
       else if (state.kind === "classic") renderClassic();
+      else if (state.kind === "formchina") renderFormChina();
       return;
     }
     renderGeneric();
@@ -1515,6 +1545,405 @@
     }, 900);
   }
 
+  // ——— Chinese form / feng shui / physiognomy ———
+  function formZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function formStageHTML(rite, casting) {
+    const viz = rite.viz;
+    const cast = state.cast || {};
+    const anim = casting ? " is-casting" : "";
+    const zh = formZh();
+    if (viz === "fengshui-qi") {
+      const face = cast.facing?.id || state.facing || "S";
+      return `<div class="form-stage form-stage--fengshui${anim}" data-facing="${escapeHTML(face)}">
+        <div class="fs-compass"><span class="fs-n">N</span><span class="fs-e">E</span><span class="fs-s">S</span><span class="fs-w">W</span>
+          <i class="fs-arrow" style="--rot:${face === "N" ? 0 : face === "E" ? 90 : face === "S" ? 180 : 270}deg"></i>
+        </div>
+        <p class="form-stage__hint">${escapeHTML(cast.flow || (zh ? "气机流动…" : "Qi flowing…"))}</p></div>`;
+    }
+    if (viz === "bazhai-map") {
+      const dirs = ["NW", "N", "NE", "W", "·", "E", "SW", "S", "SE"];
+      const best = cast.best || "";
+      const caution = cast.caution || "";
+      return `<div class="form-stage form-stage--bazhai${anim}"><div class="bz-grid">${dirs
+        .map((d) => {
+          const cls = d === best ? " is-best" : d === caution ? " is-caution" : "";
+          return `<span class="bz-cell${cls}">${escapeHTML(d)}</span>`;
+        })
+        .join("")}</div>
+        <p class="form-stage__hint">${escapeHTML(
+          cast.gua ? (zh ? `${cast.gua.zh || ""}命` : `${cast.gua.en || ""} gua`) : zh ? "八宅平面" : "Eight Mansions plan"
+        )}</p></div>`;
+    }
+    if (viz === "flying-star") {
+      const cells = Array.from({ length: 9 }, (_, i) => i + 1);
+      const hit = Number(cast.palace || 0);
+      const sname = cast.star ? (zh ? cast.star.zh : cast.star.en) : "";
+      return `<div class="form-stage form-stage--flystar${anim}"><div class="fly-grid">${cells
+        .map((n) => `<span class="fly-cell${n === hit ? " is-hit" : ""}">${n === hit && cast.star ? escapeHTML(String(cast.star.n)) : n}</span>`)
+        .join("")}</div>
+        <p class="form-stage__hint">${escapeHTML(sname || (zh ? `${state.period || "9"}运` : `Period ${state.period || "9"}`))}</p></div>`;
+    }
+    if (viz === "mianxiang") {
+      const zone = cast.zone?.id || state.faceZone || "forehead";
+      return `<div class="form-stage form-stage--face${anim}" data-zone="${escapeHTML(zone)}">
+        <div class="face-sil"><i class="fz fz-forehead"></i><i class="fz fz-brows"></i><i class="fz fz-eyes"></i><i class="fz fz-nose"></i><i class="fz fz-mouth"></i></div>
+        <p class="form-stage__hint">${escapeHTML(
+          cast.zone ? (zh ? cast.zone.zh : cast.zone.en) : zh ? "面部宫位" : "Face palace"
+        )}</p></div>`;
+    }
+    if (viz === "shouxiang") {
+      const line = cast.line?.id || state.palmLine || "life";
+      return `<div class="form-stage form-stage--palm${anim}" data-line="${escapeHTML(line)}">
+        <div class="palm-sil"><i class="pl pl-life"></i><i class="pl pl-head"></i><i class="pl pl-heart"></i><i class="pl pl-fate"></i></div>
+        <p class="form-stage__hint">${escapeHTML(
+          cast.mount || (cast.line ? (zh ? cast.line.zh : cast.line.en) : zh ? "掌纹" : "Palm lines")
+        )}</p></div>`;
+    }
+    if (viz === "mogu") {
+      return `<div class="form-stage form-stage--mogu${anim}">
+        <div class="bone-hand"><i></i><i></i><i></i><i></i><i></i></div>
+        <p class="form-stage__hint">${escapeHTML(cast.tag?.t || (zh ? "骨感…" : "Bone feel…"))}</p></div>`;
+    }
+    if (viz === "mole") {
+      const zone = cast.zone?.id || state.bodyZone || "face";
+      return `<div class="form-stage form-stage--mole${anim}" data-zone="${escapeHTML(zone)}">
+        <div class="body-sil"><i class="mole-dot"></i></div>
+        <p class="form-stage__hint">${escapeHTML(
+          cast.tone || (cast.zone ? (zh ? cast.zone.zh : cast.zone.en) : zh ? "痣位" : "Mole zone")
+        )}</p></div>`;
+    }
+    return `<div class="form-stage${anim}"></div>`;
+  }
+
+  function renderFormChina() {
+    const rite = window.FatumChinaForm.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumChinaForm.howFor(state.method.id);
+    const text = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = formZh();
+
+    if (step === "intent") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Asia")} · ${escapeHTML(text.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || text.summary || "")}</p>
+        ${riteExplanationHTML(state.method, text)}
+        ${howItWorksHTML(state.method, { id: "formchina", label: "Form & physiognomy" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "site") {
+      const sites = [
+        { id: "home", en: "Home", zh: "住宅" },
+        { id: "shop", en: "Shop", zh: "店铺" },
+        { id: "desk", en: "Desk / office", zh: "书桌／办公室" },
+        { id: "studio", en: "Studio", zh: "工作室室" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "点名场所" : "Name the site")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "选择你要读的尺度。" : "Pick the scale you want read.")}</p>
+        <div class="africa-choice-row">
+          ${sites.map((s) => `<button type="button" class="africa-choice${state.site === s.id ? " is-on" : ""}" data-action="form-site" data-site="${s.id}">${escapeHTML(zh ? s.zh : s.en)}</button>`).join("")}
+        </div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "你关心什么？（可选）" : "What concerns you? (optional)")}</label>
+        <textarea id="r-question" rows="2" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "facing") {
+      const faces = [
+        { id: "N", en: "North", zh: "北" },
+        { id: "E", en: "East", zh: "东" },
+        { id: "S", en: "South", zh: "南" },
+        { id: "W", en: "West", zh: "西" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "设定朝向" : "Set the facing")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "主要开口朝哪边？" : "Which way does the main opening look?")}</p>
+        ${formStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${faces.map((f) => `<button type="button" class="africa-choice${state.facing === f.id ? " is-on" : ""}" data-action="form-facing" data-facing="${f.id}">${escapeHTML(zh ? f.zh : f.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "gua") {
+      const guas = [
+        { n: 1, en: "Kan 1", zh: "坎 1" },
+        { n: 2, en: "Kun 2", zh: "坤 2" },
+        { n: 3, en: "Zhen 3", zh: "震 3" },
+        { n: 4, en: "Xun 4", zh: "巽 4" },
+        { n: 6, en: "Qian 6", zh: "乾 6" },
+        { n: 7, en: "Dui 7", zh: "兑 7" },
+        { n: 8, en: "Gen 8", zh: "艮 8" },
+        { n: 9, en: "Li 9", zh: "离 9" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择命卦" : "Pick a personal gua")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "教学用卦数（无 5）。" : "Teaching gua numbers (skip 5).")}</p>
+        <div class="africa-choice-row">
+          ${guas.map((g) => `<button type="button" class="africa-choice${Number(state.gua) === g.n ? " is-on" : ""}" data-action="form-gua" data-gua="${g.n}">${escapeHTML(zh ? g.zh : g.en)}</button>`).join("")}
+        </div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "你关心什么？（可选）" : "What concerns you? (optional)")}</label>
+        <textarea id="r-question" rows="2" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "sectors") {
+      const idx = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "查看宅位" : "See house sectors"))}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${formStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "period") {
+      const periods = [
+        { id: "8", en: "Period 8", zh: "八运" },
+        { id: "9", en: "Period 9", zh: "九运" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择运局视角" : "Choose a period lens")}</h3>
+        <div class="africa-choice-row">
+          ${periods.map((p) => `<button type="button" class="africa-choice${state.period === p.id ? " is-on" : ""}" data-action="form-period" data-period="${p.id}">${escapeHTML(zh ? p.zh : p.en)}</button>`).join("")}
+        </div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "你关心什么？（可选）" : "What concerns you? (optional)")}</label>
+        <textarea id="r-question" rows="2" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "chart") {
+      const idx = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "打开星盘" : "Open the star chart"))}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${formStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "focus") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "说出焦点" : "Name your focus")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "事业、亲属、健康忧虑——只留一个。" : "Career, kin, health worry — one theme.")}</p>
+        <div class="field"><label for="r-focus">${escapeHTML(zh ? "焦点" : "Focus")}</label>
+        <input type="text" id="r-focus" maxlength="120" value="${escapeHTML(state.focus || "")}" placeholder="${escapeHTML(zh ? "例如：事业升迁" : "e.g. career promotion")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "补充问题（可选）" : "Optional question")}</label>
+        <textarea id="r-question" rows="2" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "facezones") {
+      const zones = [
+        { id: "forehead", en: "Forehead", zh: "额" },
+        { id: "brows", en: "Brows", zh: "眉" },
+        { id: "eyes", en: "Eyes", zh: "目" },
+        { id: "nose", en: "Nose", zh: "鼻" },
+        { id: "mouth", en: "Mouth", zh: "口" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择面部区域" : "Choose a face zone")}</h3>
+        ${formStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${zones.map((z) => `<button type="button" class="africa-choice${state.faceZone === z.id ? " is-on" : ""}" data-action="form-facezone" data-zone="${z.id}">${escapeHTML(zh ? z.zh : z.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "hand") {
+      const hands =
+        state.method.id === "mogu"
+          ? [
+              { id: "left", en: "Left", zh: "左手" },
+              { id: "right", en: "Right", zh: "右手" },
+            ]
+          : [
+              { id: "active", en: "Active hand", zh: "主动手" },
+              { id: "passive", en: "Passive hand", zh: "被动手" },
+            ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? (state.method.id === "mogu" ? "出示手" : "选择哪只手") : state.method.id === "mogu" ? "Present a hand" : "Choose which hand")}</h3>
+        ${formStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${hands.map((h) => `<button type="button" class="africa-choice${state.hand === h.id ? " is-on" : ""}" data-action="form-hand" data-hand="${h.id}">${escapeHTML(zh ? h.zh : h.en)}</button>`).join("")}
+        </div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "你关心什么？（可选）" : "What concerns you? (optional)")}</label>
+        <textarea id="r-question" rows="2" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "lines") {
+      const lines = [
+        { id: "life", en: "Life line", zh: "生命线" },
+        { id: "head", en: "Head line", zh: "智慧线" },
+        { id: "heart", en: "Heart line", zh: "感情线" },
+        { id: "fate", en: "Fate line", zh: "事业线" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "描一条主线" : "Trace a major line")}</h3>
+        ${formStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${lines.map((l) => `<button type="button" class="africa-choice${state.palmLine === l.id ? " is-on" : ""}" data-action="form-line" data-line="${l.id}">${escapeHTML(zh ? l.zh : l.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "bones") {
+      const idx = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "绘出骨架" : "Map the bone frame"))}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${formStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "bodyzone") {
+      const zones = [
+        { id: "face", en: "Face", zh: "面部" },
+        { id: "neck", en: "Neck", zh: "颈项" },
+        { id: "hand", en: "Hand", zh: "手部" },
+        { id: "shoulder", en: "Shoulder", zh: "肩背" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择身体区域" : "Pick a body zone")}</h3>
+        ${formStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${zones.map((z) => `<button type="button" class="africa-choice${state.bodyZone === z.id ? " is-on" : ""}" data-action="form-bodyzone" data-zone="${z.id}">${escapeHTML(zh ? z.zh : z.en)}</button>`).join("")}
+        </div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "你关心什么？（可选）" : "What concerns you? (optional)")}</label>
+        <textarea id="r-question" rows="2" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "molepick") {
+      const idx = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "标记痣点" : "Mark the mole"))}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${formStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "qi" || step === "map" || step === "stars" || step === "palace" || step === "mounts" || step === "structure" || step === "omen") {
+      const cta = window.FatumChinaForm.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(
+          state.question || state.focus
+            ? zh
+              ? `持念：「${state.question || state.focus}」`
+              : `Holding: “${state.question || state.focus}”`
+            : ""
+        )}</p>
+        ${formStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="form-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+    }
+  }
+
+  function doFormChinaCast() {
+    const rite = window.FatumChinaForm.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumChinaForm.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        nonce: state.nonce,
+        site: state.site,
+        facing: state.facing,
+        gua: state.gua,
+        period: state.period,
+        faceZone: state.faceZone,
+        hand: state.hand,
+        palmLine: state.palmLine,
+        bodyZone: state.bodyZone,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -1823,6 +2252,13 @@
             return rite ? classicStageHTML(rite, false) : "";
           })()
         : "";
+    const formExtra =
+      r.kind === "formchina" && state.kind === "formchina"
+        ? (() => {
+            const rite = window.FatumChinaForm?.get?.(state.method.id);
+            return rite ? formStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -1830,13 +2266,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -2206,8 +2642,32 @@
         ];
         if (classicCast.includes(step)) return;
       }
+      if (state.kind === "formchina") {
+        if (step === "site" || step === "gua" || step === "period" || step === "hand" || step === "bodyzone" || step === "focus") {
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        if (step === "focus") {
+          const f = body.querySelector("#r-focus");
+          state.focus = (f?.value || "").trim();
+        }
+        const formCast = ["qi", "map", "stars", "palace", "mounts", "structure", "omen"];
+        if (formCast.includes(step)) return;
+      }
       // Africa cast-like steps are user-driven
-      if (step === "cast" || step === "bowls" || step === "count" || step === "chart" || step === "dream" || step === "rising" || step === "spin") return;
+      if (
+        state.kind === "africa" &&
+        (step === "cast" ||
+          step === "bowls" ||
+          step === "count" ||
+          step === "chart" ||
+          step === "dream" ||
+          step === "rising" ||
+          step === "spin")
+      )
+        return;
+      if (state.kind !== "africa" && state.kind !== "formchina" && (step === "cast" || step === "bowls" || step === "count" || step === "dream" || step === "rising" || step === "spin"))
+        return;
       if (state.stepIndex < state.steps.length - 1) {
         state.stepIndex += 1;
         // skip auto for cast/reveal/quiz — user drives
@@ -2318,6 +2778,39 @@
     }
     if (action === "china-cast") return doChinaCast();
     if (action === "classic-cast") return doClassicCast();
+    if (action === "form-cast") return doFormChinaCast();
+    if (action === "form-site") {
+      state.site = el.dataset.site || "home";
+      return render();
+    }
+    if (action === "form-facing") {
+      state.facing = el.dataset.facing || "S";
+      return render();
+    }
+    if (action === "form-gua") {
+      state.gua = Number(el.dataset.gua || 1);
+      return render();
+    }
+    if (action === "form-period") {
+      state.period = el.dataset.period || "9";
+      return render();
+    }
+    if (action === "form-facezone") {
+      state.faceZone = el.dataset.zone || "forehead";
+      return render();
+    }
+    if (action === "form-hand") {
+      state.hand = el.dataset.hand || "active";
+      return render();
+    }
+    if (action === "form-line") {
+      state.palmLine = el.dataset.line || "life";
+      return render();
+    }
+    if (action === "form-bodyzone") {
+      state.bodyZone = el.dataset.zone || "face";
+      return render();
+    }
     if (action === "classic-sight") {
       state.sight = el.dataset.sight || "plum";
       return render();
