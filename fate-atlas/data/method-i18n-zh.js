@@ -299,73 +299,73 @@
     },
     "omikuji": {
       "name": "御神签",
-      "summary": "在神社抽取编号签文，得吉凶等级与劝诫短诗。",
+      "summary": "神社随机抽取的签文——从大吉到凶，并附简短劝诫。",
       "region": "日本",
       "source": "Sekai Fortune; Plutto"
     },
     "onmyodo": {
-      "name": "阴阳道",
-      "summary": "日本阴阳道：结合历注、方位与仪式禁忌。",
+      "name": "阴阳道通书",
+      "summary": "平安阴阳寮历注——论日辰、方位禁忌（方忌）与历注指引。",
       "region": "日本",
       "source": "Plutto"
     },
     "rokuyo": {
       "name": "六曜",
-      "summary": "六曜日程：先胜、友引、先负等日运标签。",
+      "summary": "六曜循环六个日签——大安、赤口、先胜、友引、先负、佛灭——仍常用于婚嫁与开事。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "seimei": {
       "name": "姓名判断",
-      "summary": "依姓名用字数理判断吉凶倾向。",
+      "summary": "依姓名笔画数理论吉凶主题——是字形数理，不是对人的贬损。",
       "region": "日本／中国",
       "source": "Sekai Fortune; Plutto"
     },
     "sanmeigaku": {
       "name": "算命学（日本）",
-      "summary": "日本算命学：生辰与九星等框架。",
+      "summary": "日本现代命理流派，依生辰干支与五行论格局。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "shichu": {
       "name": "四柱推命",
-      "summary": "日本四柱推命。",
+      "summary": "日本的四柱命理流派——以年月日时四柱论性情与时机。",
       "region": "日本",
       "source": "Plutto"
     },
     "nine-star-ki": {
       "name": "九星气学",
-      "summary": "九星气学：年／月九星方位与运势。",
+      "summary": "以出生与月份九星（1–9）论方位、时机与年运主题。",
       "region": "日本／中国",
       "source": "Sekai Fortune; Plutto"
     },
     "futomani": {
       "name": "太占",
-      "summary": "太占：日本古代卜筮传统。",
-      "region": "Shinto 日本",
+      "summary": "古代神道骨卜——灼烤肩胛至裂纹成兆（仅教育模拟，无真实灼烧）。",
+      "region": "神道日本",
       "source": "Sekai Fortune; Wikipedia Methods of divination"
     },
     "kiboku": {
-      "name": "灼骨占",
-      "summary": "灼骨取兆的日本／东亚灼卜。",
+      "name": "灼骨龟卜",
+      "summary": "加热龟甲取裂纹兆——与大陆甲骨传统相关（仅教育模拟）。",
       "region": "古代日本",
       "source": "Sekai Fortune"
     },
     "kaso": {
       "name": "家相",
-      "summary": "家相：日本住宅方位与格局宜忌。",
+      "summary": "依日本住宅平面与坐向论家运——与风水相关而自成系统。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "chabashira": {
       "name": "茶柱占",
-      "summary": "茶柱：茶杯直立茶梗被视为吉兆的民俗。",
+      "summary": "茶杯中茶梗直立的民俗吉兆——常被视为好运之日的信号。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "sukuyo": {
       "name": "宿曜",
-      "summary": "宿曜：印度—日本宿曜占星传统。",
+      "summary": "日本密教占星——以二十七宿与宿曜从生辰论合参与时机。",
       "region": "日本／印度",
       "source": "Sekai Fortune"
     },
@@ -1422,74 +1422,74 @@
       "source": "Plutto"
     },
     "omikuji": {
-      "name": "御神签",
-      "summary": "在神社抽取编号签文，得吉凶等级与劝诫短诗。",
+      "name": "御神籤",
+      "summary": "神社隨機抽取的籤文——從大吉到凶，並附簡短勸誡。",
       "region": "日本",
       "source": "Sekai Fortune; Plutto"
     },
     "onmyodo": {
-      "name": "陰陽道",
-      "summary": "日本陰陽道：结合历注、方位与儀式禁忌。",
+      "name": "陰陽道通書",
+      "summary": "平安陰陽寮曆註——論日辰、方位禁忌（方忌）與曆註指引。",
       "region": "日本",
       "source": "Plutto"
     },
     "rokuyo": {
       "name": "六曜",
-      "summary": "六曜日程：先胜、友引、先负等日运標签。",
+      "summary": "六曜循環六個日籤——大安、赤口、先勝、友引、先負、佛滅——仍常用於婚嫁與開事。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "seimei": {
-      "name": "姓名判断",
-      "summary": "依姓名用字數理判断吉凶倾向。",
+      "name": "姓名判斷",
+      "summary": "依姓名筆畫數理論吉凶主題——是字形數理，不是對人的貶損。",
       "region": "日本／中國",
       "source": "Sekai Fortune; Plutto"
     },
     "sanmeigaku": {
       "name": "算命學（日本）",
-      "summary": "日本算命學：生辰与九星等框架。",
+      "summary": "日本現代命理流派，依生辰干支與五行論格局。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "shichu": {
       "name": "四柱推命",
-      "summary": "日本四柱推命。",
+      "summary": "日本的四柱命理流派——以年月日時四柱論性情與時機。",
       "region": "日本",
       "source": "Plutto"
     },
     "nine-star-ki": {
-      "name": "九星气學",
-      "summary": "九星气學：年／月九星方位与運勢。",
+      "name": "九星氣學",
+      "summary": "以出生與月份九星（1–9）論方位、時機與年運主題。",
       "region": "日本／中國",
       "source": "Sekai Fortune; Plutto"
     },
     "futomani": {
       "name": "太占",
-      "summary": "太占：日本古代卜筮傳統。",
-      "region": "Shinto 日本",
+      "summary": "古代神道骨卜——灼烤肩胛至裂紋成兆（僅教育模擬，無真實灼燒）。",
+      "region": "神道日本",
       "source": "Sekai Fortune; Wikipedia Methods of divination"
     },
     "kiboku": {
-      "name": "灼骨占",
-      "summary": "灼骨取兆的日本／東亞灼卜。",
+      "name": "灼骨龜卜",
+      "summary": "加熱龜甲取裂紋兆——與大陸甲骨傳統相關（僅教育模擬）。",
       "region": "古代日本",
       "source": "Sekai Fortune"
     },
     "kaso": {
       "name": "家相",
-      "summary": "家相：日本住宅方位与格局宜忌。",
+      "summary": "依日本住宅平面與坐向論家運——與風水相關而自成系統。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "chabashira": {
       "name": "茶柱占",
-      "summary": "茶柱：茶杯直立茶梗被视為吉兆的民俗。",
+      "summary": "茶杯中茶梗直立的民俗吉兆——常被視為好運之日的信號。",
       "region": "日本",
       "source": "Sekai Fortune"
     },
     "sukuyo": {
       "name": "宿曜",
-      "summary": "宿曜：印度—日本宿曜占星傳統。",
+      "summary": "日本密教占星——以二十七宿與宿曜從生辰論合參與時機。",
       "region": "日本／印度",
       "source": "Sekai Fortune"
     },
