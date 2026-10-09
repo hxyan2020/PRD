@@ -761,25 +761,25 @@
     },
     "scrying": {
       "name": "水晶／镜观视",
-      "summary": "凝视水晶、镜面或朦胧介质中的形状，以激发象征联想。",
+      "summary": "水晶／镜占在抛光表面中寻视图像——柔焦指引，不是字面看见。",
       "region": "欧洲／古代Egypt",
       "source": "Sekai Fortune; Plutto"
     },
     "tasseography-tea": {
       "name": "茶叶占",
-      "summary": "解读茶杯底部茶叶残渣形成的图案。",
+      "summary": "茶叶占解读杯底叶形——民俗指引论消息、出行与关系。",
       "region": "UK／中国",
       "source": "Sekai Fortune; Plutto"
     },
     "dowsing": {
       "name": "卜杖探寻",
-      "summary": "以卜杖或摆锤的运动作是非／方位提示（易受意动效应影响）。",
+      "summary": "寻物／摆锤以棍或摆动作是／否与定位主题——早见于德国矿冶；留意意动效应。",
       "region": "欧洲",
       "source": "Sekai Fortune; Plutto"
     },
     "ceromancy": {
       "name": "蜡占",
-      "summary": "观察熔化蜡滴入水中的形状以作象征解读。",
+      "summary": "蜡占将熔蜡倒入水中，以冷却形状作兆（教学倾倒——无真实热蜡）。",
       "region": "欧洲",
       "source": "Sekai Fortune"
     },
@@ -827,73 +827,73 @@
     },
     "slavic-folk": {
       "name": "斯拉夫民俗占",
-      "summary": "斯拉夫民俗预兆、节庆与家户仪式。",
+      "summary": "斯拉夫民俗占汇集岁末与仲夏仪轨——镜、花环、鸡啄与十字路口倾听。",
       "region": "斯拉夫",
       "source": "RusArtNet; Plutto; Pskov folklore studies"
     },
     "russian-svyatki": {
       "name": "俄罗斯圣周期间占",
-      "summary": "俄罗斯圣诞期间的民俗预兆与姑娘姻缘游戏。",
+      "summary": "俄罗斯圣周期占用圣诞季的火、烛影、水中锡／蜡与婚恋兆。",
       "region": "俄罗斯",
       "source": "RusArtNet fortune-telling traditions"
     },
     "baltic-finnic": {
       "name": "波罗的—芬兰民俗占",
-      "summary": "波罗的—芬兰语族地区的民俗征兆传统。",
+      "summary": "波罗的／芬兰－乌戈尔民俗占以季节签、梦与自然兆遍及北缘。",
       "region": "波罗的／芬兰语族",
       "source": "Plutto"
     },
     "mordovian": {
       "name": "莫尔多瓦民俗占",
-      "summary": "莫尔多瓦民俗占问与节庆预兆。",
+      "summary": "莫尔多瓦婚恋占用圣诞仪轨——枕下面包、蒙眼马、柴数与鞋列。",
       "region": "Mordovia (Finno-Ugric)",
       "source": "Devyatkina · Finno-Ugric world"
     },
     "apple-peel": {
       "name": "苹果皮占",
-      "summary": "削下的苹果皮形状，被解读为未来恋人姓名的首字母或姻缘征兆。",
+      "summary": "苹果皮占以长皮形状论未来姓氏首字母或恋人——西方万圣节民俗游玩。",
       "region": "西方万圣节民俗",
       "source": "Sekai Fortune"
     },
     "oomancy": {
       "name": "卵占",
-      "summary": "观察卵清在水中的形状作征兆。",
+      "summary": "卵占将蛋白滴入水中，以羽状形态作兆（教学模拟）。",
       "region": "欧洲／美洲s／亚洲",
       "source": "Sekai Fortune"
     },
     "nephomancy": {
       "name": "云占",
-      "summary": "观云形状作象征解读。",
+      "summary": "云占以云形作兆——古代观天延入欧洲民俗。",
       "region": "古代world → 民俗 欧洲",
       "source": "Sekai Fortune"
     },
     "capnomancy": {
       "name": "烟占",
-      "summary": "观烟柱与烟雾形态作征兆。",
+      "summary": "烟占以升起的香烟或祭烟作兆——仅教学烟向。",
       "region": "古代world",
       "source": "Sekai Fortune"
     },
     "pyromancy": {
       "name": "火占",
-      "summary": "观火焰跳跃与爆裂作征兆。",
+      "summary": "火占解读焰尖闪烁、噼啪与颜色——炉火与祭火作指引。",
       "region": "古代world／民俗",
       "source": "Sekai Fortune"
     },
     "hydromancy": {
       "name": "水占",
-      "summary": "观水面波纹、倒影或投物作征兆。",
+      "summary": "水占以水面涟漪、倒影与颜色作兆——盆水与泉观。",
       "region": "古代欧洲／Middle East",
       "source": "Sekai Fortune"
     },
     "domino": {
       "name": "骨牌占",
-      "summary": "抽取或排列骨牌，按点数组合作答。",
+      "summary": "多米诺占抽取背面朝上的骨牌，以点数对作指引。",
       "region": "欧洲／中国",
       "source": "Sekai Fortune"
     },
     "dream-interp": {
       "name": "解梦",
-      "summary": "按传统象征码解读梦象，作为反思提示而非事件预报。",
+      "summary": "解梦解读自发或孵梦中的象征——几乎每种文化都有梦书传统。",
       "region": "Worldwide",
       "source": "Sekai Fortune; Oracle Traditions"
     },
@@ -1885,25 +1885,25 @@
     },
     "scrying": {
       "name": "水晶／镜觀视",
-      "summary": "凝视水晶、镜面或朦胧介質中的形状，以激發象征联想。",
+      "summary": "水晶／鏡占在拋光表面中尋視圖像——柔焦指引，不是字面看見。",
       "region": "欧洲／古代Egypt",
       "source": "Sekai Fortune; Plutto"
     },
     "tasseography-tea": {
       "name": "茶叶占",
-      "summary": "解讀茶杯底部茶叶残渣形成的圖案。",
+      "summary": "茶葉占解讀杯底葉形——民俗指引論消息、出行與關係。",
       "region": "UK／中國",
       "source": "Sekai Fortune; Plutto"
     },
     "dowsing": {
       "name": "卜杖探寻",
-      "summary": "以卜杖或摆锤的运动作是非／方位提示（易受意动效應影响）。",
+      "summary": "尋物／擺錘以棍或擺動作是／否與定位主題——早見於德國礦冶；留意意動效應。",
       "region": "欧洲",
       "source": "Sekai Fortune; Plutto"
     },
     "ceromancy": {
       "name": "蜡占",
-      "summary": "觀察熔化蜡滴入水中的形状以作象征解讀。",
+      "summary": "蠟占將熔蠟倒入水中，以冷卻形狀作兆（教學傾倒——無真實熱蠟）。",
       "region": "欧洲",
       "source": "Sekai Fortune"
     },
@@ -1951,73 +1951,73 @@
     },
     "slavic-folk": {
       "name": "斯拉夫民俗占",
-      "summary": "斯拉夫民俗预兆、節庆与家户儀式。",
+      "summary": "斯拉夫民俗占匯集歲末與仲夏儀軌——鏡、花環、雞啄與十字路口傾聽。",
       "region": "斯拉夫",
       "source": "RusArtNet; Plutto; Pskov folklore studies"
     },
     "russian-svyatki": {
       "name": "俄罗斯聖周期间占",
-      "summary": "俄罗斯聖诞期间的民俗预兆与姑娘姻缘游戲。",
+      "summary": "俄羅斯聖週期占用聖誕季的火、燭影、水中錫／蠟與婚戀兆。",
       "region": "俄罗斯",
       "source": "RusArtNet fortune-telling traditions"
     },
     "baltic-finnic": {
       "name": "波罗的—芬蘭民俗占",
-      "summary": "波罗的—芬蘭語族地區的民俗征兆傳統。",
+      "summary": "波羅的／芬蘭－烏戈爾民俗占以季節籤、夢與自然兆遍及北緣。",
       "region": "波罗的／芬蘭語族",
       "source": "Plutto"
     },
     "mordovian": {
       "name": "莫尔多瓦民俗占",
-      "summary": "莫尔多瓦民俗占問与節庆预兆。",
+      "summary": "莫爾多瓦婚戀占用聖誕儀軌——枕下面包、蒙眼馬、柴數與鞋列。",
       "region": "Mordovia (Finno-Ugric)",
       "source": "Devyatkina · Finno-Ugric world"
     },
     "apple-peel": {
       "name": "苹果皮占",
-      "summary": "削下的苹果皮形状，被解讀為未來恋人姓名的首字母或姻缘征兆。",
+      "summary": "蘋果皮占以長皮形狀論未來姓氏首字母或戀人——西方萬聖節民俗遊玩。",
       "region": "西方万聖節民俗",
       "source": "Sekai Fortune"
     },
     "oomancy": {
       "name": "卵占",
-      "summary": "觀察卵清在水中的形状作征兆。",
+      "summary": "卵占將蛋白滴入水中，以羽狀形態作兆（教學模擬）。",
       "region": "欧洲／美洲s／亚洲",
       "source": "Sekai Fortune"
     },
     "nephomancy": {
       "name": "雲占",
-      "summary": "觀雲形状作象征解讀。",
+      "summary": "雲占以雲形作兆——古代觀天延入歐洲民俗。",
       "region": "古代world → 民俗 欧洲",
       "source": "Sekai Fortune"
     },
     "capnomancy": {
       "name": "烟占",
-      "summary": "觀烟柱与烟霧形態作征兆。",
+      "summary": "煙占以升起的香煙或祭煙作兆——僅教學煙向。",
       "region": "古代world",
       "source": "Sekai Fortune"
     },
     "pyromancy": {
       "name": "火占",
-      "summary": "觀火焰跳跃与爆裂作征兆。",
+      "summary": "火占解讀焰尖閃爍、噼啪與顏色——爐火與祭火作指引。",
       "region": "古代world／民俗",
       "source": "Sekai Fortune"
     },
     "hydromancy": {
       "name": "水占",
-      "summary": "觀水面波纹、倒影或投物作征兆。",
+      "summary": "水占以水面漣漪、倒影與顏色作兆——盆水與泉觀。",
       "region": "古代欧洲／Middle East",
       "source": "Sekai Fortune"
     },
     "domino": {
       "name": "骨牌占",
-      "summary": "抽取或排列骨牌，按點數组合作答。",
+      "summary": "多米諾占抽取背面朝上的骨牌，以點數對作指引。",
       "region": "欧洲／中國",
       "source": "Sekai Fortune"
     },
     "dream-interp": {
       "name": "解夢",
-      "summary": "按傳統象征码解讀夢象，作為反思提示而非事件预報。",
+      "summary": "解夢解讀自發或孵夢中的象徵——幾乎每種文化都有夢書傳統。",
       "region": "Worldwide",
       "source": "Sekai Fortune; Oracle Traditions"
     },
