@@ -5351,3 +5351,129 @@ body:not(.studio-open) .hero__content {
 .form-stage--mole[data-zone="neck"] .mole-dot { top: 1.85rem; left: 1.4rem; }
 .form-stage--mole[data-zone="hand"] .mole-dot { top: 3.6rem; left: -0.15rem; }
 .form-stage--mole[data-zone="shoulder"] .mole-dot { top: 2.15rem; left: 2.55rem; }
+
+/* ——— Korea / Vietnam oracle stages ——— */
+.kv-stage {
+  position: relative;
+  margin: 1.1rem 0 1.35rem;
+  min-height: 7rem;
+  border-radius: 1rem;
+  background:
+    radial-gradient(ellipse at 70% 25%, rgba(180, 70, 80, 0.14), transparent 55%),
+    linear-gradient(160deg, #241618 0%, #120c0e 100%);
+  border: 1px solid rgba(212, 150, 140, 0.28);
+  padding: 1rem;
+  overflow: hidden;
+}
+.kv-stage__hint {
+  margin: 0.65rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+  text-align: center;
+  color: #f0d8d4;
+}
+.kv-stage.is-casting .kv-pillar,
+.kv-stage.is-casting .kv-scroll,
+.kv-stage.is-casting .kv-hap__score,
+.kv-stage.is-casting .kv-cung-cell.is-hit,
+.kv-stage.is-casting .kv-book {
+  animation: africa-toss 0.85s ease-in-out infinite;
+}
+
+.kv-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.45rem;
+}
+.kv-pillar {
+  text-align: center;
+  padding: 0.5rem 0.2rem;
+  border-radius: 0.4rem;
+  background: #3a2428;
+  border: 1px solid rgba(212, 150, 140, 0.35);
+  color: #f3e6e0;
+}
+.kv-pillar em { display: block; font-style: normal; font-size: 0.7rem; opacity: 0.75; }
+.kv-pillar strong { display: block; font-size: 1.25rem; color: #e8b8a8; }
+
+.kv-scroll {
+  width: 4.5rem;
+  height: 5.5rem;
+  margin: 0.25rem auto;
+  border-radius: 0.35rem;
+  background: linear-gradient(180deg, #f0e0c8, #d4b896);
+  border: 1px solid #a8845a;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.25);
+}
+.kv-scroll__num {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #5a3020;
+}
+
+.kv-hap {
+  position: relative;
+  width: 7.5rem;
+  height: 5.5rem;
+  margin: 0.25rem auto;
+}
+.kv-ring {
+  position: absolute;
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 184, 168, 0.55);
+  top: 0.6rem;
+}
+.kv-ring--a { left: 0.4rem; background: rgba(180, 70, 80, 0.2); }
+.kv-ring--b { right: 0.4rem; background: rgba(100, 120, 180, 0.2); }
+.kv-hap__score {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -40%);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f0d8d4;
+}
+
+.kv-cung {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.3rem;
+  max-width: 12rem;
+  margin: 0 auto;
+}
+.kv-cung-cell {
+  aspect-ratio: 1;
+  border-radius: 0.3rem;
+  background: #3a2428;
+  border: 1px solid rgba(212, 150, 140, 0.25);
+  display: grid;
+  place-items: center;
+  color: #e8b8a8;
+  font-size: 0.85rem;
+}
+.kv-cung-cell.is-hit {
+  background: #5a3038;
+  border-color: #e8b8a8;
+  font-weight: 700;
+}
+
+.kv-book {
+  width: 5.5rem;
+  height: 4.2rem;
+  margin: 0.5rem auto;
+  border-radius: 0.2rem 0.45rem 0.45rem 0.2rem;
+  background:
+    linear-gradient(90deg, #3a2418 0 0.35rem, transparent 0.35rem),
+    linear-gradient(180deg, #c9a66b, #8b5a2b);
+  border: 1px solid #e8c98a;
+  display: grid;
+  place-items: center;
+  color: #2a1c14;
+  font-weight: 700;
+}
+.kv-book__page { font-size: 1.1rem; }

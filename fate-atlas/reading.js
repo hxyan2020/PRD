@@ -36,6 +36,7 @@
     if (method.guided) return method.guided;
     if (window.FatumChinaClassic?.has?.(method.id)) return "classic";
     if (window.FatumChinaForm?.has?.(method.id)) return "formchina";
+    if (window.FatumKoreaVietnam?.has?.(method.id)) return "koreavn";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -153,6 +154,22 @@
         casting: false,
       };
     }
+    if (kind === "koreavn") {
+      const rite = window.FatumKoreaVietnam.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "birth", "sajuHour", "sijusin", "result"],
+        question: "",
+        focus: "",
+        cast: {},
+        birthDate: "",
+        birthYear: "",
+        partnerBirth: "",
+        hourIndex: 0,
+        gender: "unspecified",
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -252,6 +269,15 @@
       }
       if (state.kind === "formchina") {
         const how = window.FatumChinaForm?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
+      if (state.kind === "koreavn") {
+        const how = window.FatumKoreaVietnam?.howFor?.(state.method.id);
         const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
         return {
           label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
@@ -385,6 +411,7 @@
       else if (state.kind === "china") renderChina();
       else if (state.kind === "classic") renderClassic();
       else if (state.kind === "formchina") renderFormChina();
+      else if (state.kind === "koreavn") renderKoreaVietnam();
       return;
     }
     renderGeneric();
@@ -1944,6 +1971,257 @@
     }, 900);
   }
 
+  // ——— Korean / Vietnamese destiny & Kiều ———
+  function koreavnZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function koreavnStageHTML(rite, casting) {
+    const viz = rite.viz;
+    const cast = state.cast || {};
+    const anim = casting ? " is-casting" : "";
+    const zh = koreavnZh();
+    if (viz === "saju-board" || viz === "tutru-board") {
+      const cols = [
+        { k: zh ? "年" : "Y", v: cast.yearP || "··" },
+        { k: zh ? "月" : "M", v: cast.monthP || "··" },
+        { k: zh ? "日" : "D", v: cast.dayP || "··" },
+        { k: zh ? "时" : "H", v: cast.hourP || "··" },
+      ];
+      return `<div class="kv-stage kv-stage--pillars${anim}"><div class="kv-pillars">${cols
+        .map((c, i) => `<span class="kv-pillar" style="--i:${i}"><em>${escapeHTML(c.k)}</em><strong>${escapeHTML(c.v)}</strong></span>`)
+        .join("")}</div>
+        <p class="kv-stage__hint">${escapeHTML(
+          cast.god ? (zh ? cast.god.zh : cast.god.en) : cast.tag?.t || (zh ? "四柱" : "Pillars")
+        )}</p></div>`;
+    }
+    if (viz === "tojeong-scroll") {
+      return `<div class="kv-stage kv-stage--scroll${anim}"><div class="kv-scroll"><span class="kv-scroll__num">${escapeHTML(
+        String(cast.code || "·")
+      )}</span></div>
+        <p class="kv-stage__hint">${escapeHTML(
+          cast.lot ? (zh ? cast.lot.zh : cast.lot.en) : zh ? "年签…" : "Year lot…"
+        )}</p></div>`;
+    }
+    if (viz === "gunghap-rings") {
+      return `<div class="kv-stage kv-stage--hap${anim}"><div class="kv-hap"><i class="kv-ring kv-ring--a"></i><i class="kv-ring kv-ring--b"></i><span class="kv-hap__score">${escapeHTML(
+        String(cast.score || "·")
+      )}</span></div>
+        <p class="kv-stage__hint">${escapeHTML(
+          cast.band ? (zh ? cast.band.zh : cast.band.en) : zh ? "合盘…" : "Harmony…"
+        )}</p></div>`;
+    }
+    if (viz === "tuvi-cung") {
+      const cells = Array.from({ length: 12 }, (_, i) => i);
+      const hit = cast.cung ? CUNG_INDEX_SAFE(cast.cung) : -1;
+      return `<div class="kv-stage kv-stage--cung${anim}"><div class="kv-cung">${cells
+        .map((i) => `<span class="kv-cung-cell${i === hit ? " is-hit" : ""}">${i === hit ? "★" : ""}</span>`)
+        .join("")}</div>
+        <p class="kv-stage__hint">${escapeHTML(
+          cast.cung ? (zh ? cast.cung.zh : cast.cung.en) : cast.star || (zh ? "十二宫" : "Twelve cung")
+        )}</p></div>`;
+    }
+    if (viz === "kieu-book") {
+      return `<div class="kv-stage kv-stage--book${anim}"><div class="kv-book"><span class="kv-book__page">${escapeHTML(
+        String(cast.page || "…")
+      )}</span></div>
+        <p class="kv-stage__hint">${escapeHTML(
+          cast.verse ? (zh ? cast.verse.zh : cast.verse.en) : zh ? "翻开翘传…" : "Opening Kiều…"
+        )}</p></div>`;
+    }
+    return `<div class="kv-stage${anim}"></div>`;
+  }
+
+  function CUNG_INDEX_SAFE(cung) {
+    const names = ["Mệnh", "Quan", "Tài", "Phu", "Phúc", "Self", "Career", "Wealth", "Partner", "Fortune", "命", "官", "财", "夫", "福"];
+    const en = String(cung?.en || "");
+    if (/Mệnh|Self/i.test(en)) return 0;
+    if (/Quan|Career/i.test(en)) return 3;
+    if (/Tài|Wealth/i.test(en)) return 5;
+    if (/Phu|Partner/i.test(en)) return 7;
+    if (/Phúc|Fortune/i.test(en)) return 10;
+    return Math.abs((en.charCodeAt(0) || 0) % 12);
+  }
+
+  function renderKoreaVietnam() {
+    const rite = window.FatumKoreaVietnam.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumKoreaVietnam.howFor(state.method.id);
+    const text = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = koreavnZh();
+
+    if (step === "intent") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Asia")} · ${escapeHTML(text.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || text.summary || "")}</p>
+        ${riteExplanationHTML(state.method, text)}
+        ${howItWorksHTML(state.method, { id: "koreavn", label: "Korea / Vietnam" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "抱定问题" : "Hold your question")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "birth" || step === "selfbirth") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(
+          step === "selfbirth" ? (zh ? "你的出生日期" : "Your birth date") : zh ? "输入出生日期" : "Enter birth date"
+        )}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthDate") || "Birth date")}</label>
+        <input type="date" id="r-birth" value="${escapeHTML(state.birthDate || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "焦点（可选）" : "Focus (optional)")}</label>
+        <input type="text" id="r-question" maxlength="120" value="${escapeHTML(state.question || "")}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "partnerbirth") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "对方出生日期" : "Partner birth date")}</h3>
+        <div class="field"><label for="r-partner">${escapeHTML(zh ? "对方日期" : "Partner date")}</label>
+        <input type="date" id="r-partner" value="${escapeHTML(state.partnerBirth || "")}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "birthyear") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入出生年" : "Enter birth year")}</h3>
+        <div class="field"><label for="r-year">${escapeHTML(zh ? "出生年" : "Birth year")}</label>
+        <input type="number" id="r-year" min="1900" max="2100" value="${escapeHTML(state.birthYear || "")}" placeholder="1990" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "你关心什么？（可选）" : "What concerns you? (optional)")}</label>
+        <textarea id="r-question" rows="2" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "sajuHour" || step === "canchi") {
+      const hours = zh
+        ? ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+        : ["Zi", "Chou", "Yin", "Mao", "Chen", "Si", "Wu", "Wei", "Shen", "You", "Xu", "Hai"];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(
+          step === "canchi" ? (zh ? "设定干支时辰" : "Set Can Chi hour") : zh ? "选择时柱" : "Choose the hour pillar"
+        )}</h3>
+        <div class="africa-choice-row">
+          ${hours.map((h, i) => `<button type="button" class="africa-choice${Number(state.hourIndex) === i ? " is-on" : ""}" data-action="kv-hour" data-hour="${i}">${escapeHTML(h)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "tuviGender") {
+      const opts = [
+        { id: "yang", en: "Yang chart flag", zh: "阳盘标记" },
+        { id: "yin", en: "Yin chart flag", zh: "阴盘标记" },
+        { id: "unspecified", en: "Unspecified", zh: "不标注" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "标注性别传统" : "Note gender tradition")}</h3>
+        <div class="africa-choice-row">
+          ${opts.map((o) => `<button type="button" class="africa-choice${state.gender === o.id ? " is-on" : ""}" data-action="kv-gender" data-gender="${o.id}">${escapeHTML(zh ? o.zh : o.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "tojeongLot" || step === "openKieu") {
+      const idx = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${koreavnStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "sijusin" || step === "almanac" || step === "hapscore" || step === "tutruPillars" || step === "cungBan" || step === "versePick") {
+      const cta = window.FatumKoreaVietnam.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(
+          state.question
+            ? zh
+              ? `持念：「${state.question}」`
+              : `Holding: “${state.question}”`
+            : ""
+        )}</p>
+        ${koreavnStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="kv-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+    }
+  }
+
+  function doKoreaVietnamCast() {
+    const rite = window.FatumKoreaVietnam.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumKoreaVietnam.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        nonce: state.nonce,
+        birthDate: state.birthDate,
+        birthYear: state.birthYear,
+        partnerBirth: state.partnerBirth,
+        hourIndex: state.hourIndex,
+        gender: state.gender,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -2259,6 +2537,13 @@
             return rite ? formStageHTML(rite, false) : "";
           })()
         : "";
+    const kvExtra =
+      r.kind === "koreavn" && state.kind === "koreavn"
+        ? (() => {
+            const rite = window.FatumKoreaVietnam?.get?.(state.method.id);
+            return rite ? koreavnStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -2266,13 +2551,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -2654,6 +2939,29 @@
         const formCast = ["qi", "map", "stars", "palace", "mounts", "structure", "omen"];
         if (formCast.includes(step)) return;
       }
+      if (state.kind === "koreavn") {
+        if (step === "birth" || step === "selfbirth") {
+          const b = body.querySelector("#r-birth");
+          state.birthDate = (b?.value || "").trim();
+          if (!state.birthDate) return fail(b);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        if (step === "partnerbirth") {
+          const p = body.querySelector("#r-partner");
+          state.partnerBirth = (p?.value || "").trim();
+          if (!state.partnerBirth) return fail(p);
+        }
+        if (step === "birthyear") {
+          const y = body.querySelector("#r-year");
+          state.birthYear = String(y?.value || "").trim();
+          if (!state.birthYear) return fail(y);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        const kvCast = ["sijusin", "almanac", "hapscore", "tutruPillars", "cungBan", "versePick"];
+        if (kvCast.includes(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -2779,6 +3087,15 @@
     if (action === "china-cast") return doChinaCast();
     if (action === "classic-cast") return doClassicCast();
     if (action === "form-cast") return doFormChinaCast();
+    if (action === "kv-cast") return doKoreaVietnamCast();
+    if (action === "kv-hour") {
+      state.hourIndex = Number(el.dataset.hour || 0);
+      return render();
+    }
+    if (action === "kv-gender") {
+      state.gender = el.dataset.gender || "unspecified";
+      return render();
+    }
     if (action === "form-site") {
       state.site = el.dataset.site || "home";
       return render();
