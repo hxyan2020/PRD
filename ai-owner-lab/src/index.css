@@ -3284,7 +3284,7 @@ button.notebook-category-badge.on {
   display: block;
   padding: 0;
   background: transparent;
-  color: inherit;
+  color: #e7eef3;
   font: inherit;
   white-space: inherit;
 }
@@ -3300,98 +3300,110 @@ button.notebook-category-badge.on {
   font-size: 0.9em;
 }
 
-/* Syntax colors (hljs tokens) — OWNLAB dark code theme */
-.notebook-rich .hljs-keyword,
-.notebook-quote .hljs-keyword,
-.rte-editor .hljs-keyword,
-.notebook-rich .hljs-selector-tag,
-.notebook-quote .hljs-selector-tag,
-.rte-editor .hljs-selector-tag {
+/* Syntax colors — scoped under code blocks so tokens beat base code color */
+.rte-editor pre.notebook-code-block .hljs-keyword,
+.notebook-rich pre.notebook-code-block .hljs-keyword,
+.notebook-quote pre.notebook-code-block .hljs-keyword,
+.rte-editor pre.notebook-code-block .hljs-selector-tag,
+.notebook-rich pre.notebook-code-block .hljs-selector-tag,
+.notebook-quote pre.notebook-code-block .hljs-selector-tag {
   color: #7dd3fc;
 }
 
-.notebook-rich .hljs-built_in,
-.notebook-quote .hljs-built_in,
-.rte-editor .hljs-built_in,
-.notebook-rich .hljs-type,
-.notebook-quote .hljs-type,
-.rte-editor .hljs-type {
+.rte-editor pre.notebook-code-block .hljs-built_in,
+.notebook-rich pre.notebook-code-block .hljs-built_in,
+.notebook-quote pre.notebook-code-block .hljs-built_in,
+.rte-editor pre.notebook-code-block .hljs-type,
+.notebook-rich pre.notebook-code-block .hljs-type,
+.notebook-quote pre.notebook-code-block .hljs-type {
   color: #5eead4;
 }
 
-.notebook-rich .hljs-string,
-.notebook-quote .hljs-string,
-.rte-editor .hljs-string,
-.notebook-rich .hljs-attr,
-.notebook-quote .hljs-attr,
-.rte-editor .hljs-attr,
-.notebook-rich .hljs-attribute,
-.notebook-quote .hljs-attribute,
-.rte-editor .hljs-attribute {
+.rte-editor pre.notebook-code-block .hljs-attr,
+.notebook-rich pre.notebook-code-block .hljs-attr,
+.notebook-quote pre.notebook-code-block .hljs-attr,
+.rte-editor pre.notebook-code-block .hljs-attribute,
+.notebook-rich pre.notebook-code-block .hljs-attribute,
+.notebook-quote pre.notebook-code-block .hljs-attribute {
+  color: #5eead4;
+}
+
+.rte-editor pre.notebook-code-block .hljs-string,
+.notebook-rich pre.notebook-code-block .hljs-string,
+.notebook-quote pre.notebook-code-block .hljs-string {
   color: #86efac;
 }
 
-.notebook-rich .hljs-number,
-.notebook-quote .hljs-number,
-.rte-editor .hljs-number,
-.notebook-rich .hljs-literal,
-.notebook-quote .hljs-literal,
-.rte-editor .hljs-literal {
+.rte-editor pre.notebook-code-block .hljs-number,
+.notebook-rich pre.notebook-code-block .hljs-number,
+.notebook-quote pre.notebook-code-block .hljs-number,
+.rte-editor pre.notebook-code-block .hljs-literal,
+.notebook-rich pre.notebook-code-block .hljs-literal,
+.notebook-quote pre.notebook-code-block .hljs-literal {
   color: #fbbf24;
 }
 
-.notebook-rich .hljs-comment,
-.notebook-quote .hljs-comment,
-.rte-editor .hljs-comment,
-.notebook-rich .hljs-quote,
-.notebook-quote .hljs-quote,
-.rte-editor .hljs-quote {
+.rte-editor pre.notebook-code-block .hljs-bullet,
+.notebook-rich pre.notebook-code-block .hljs-bullet,
+.notebook-quote pre.notebook-code-block .hljs-bullet,
+.rte-editor pre.notebook-code-block .hljs-symbol,
+.notebook-rich pre.notebook-code-block .hljs-symbol,
+.notebook-quote pre.notebook-code-block .hljs-symbol {
+  color: #fda4af;
+}
+
+.rte-editor pre.notebook-code-block .hljs-comment,
+.notebook-rich pre.notebook-code-block .hljs-comment,
+.notebook-quote pre.notebook-code-block .hljs-comment,
+.rte-editor pre.notebook-code-block .hljs-quote,
+.notebook-rich pre.notebook-code-block .hljs-quote,
+.notebook-quote pre.notebook-code-block .hljs-quote {
   color: #8aa0ad;
   font-style: italic;
 }
 
-.notebook-rich .hljs-title,
-.notebook-quote .hljs-title,
-.rte-editor .hljs-title,
-.notebook-rich .hljs-title.function_,
-.notebook-quote .hljs-title.function_,
-.rte-editor .hljs-title.function_,
-.notebook-rich .hljs-section,
-.notebook-quote .hljs-section,
-.rte-editor .hljs-section {
+.rte-editor pre.notebook-code-block .hljs-title,
+.notebook-rich pre.notebook-code-block .hljs-title,
+.notebook-quote pre.notebook-code-block .hljs-title,
+.rte-editor pre.notebook-code-block .hljs-title.function_,
+.notebook-rich pre.notebook-code-block .hljs-title.function_,
+.notebook-quote pre.notebook-code-block .hljs-title.function_,
+.rte-editor pre.notebook-code-block .hljs-section,
+.notebook-rich pre.notebook-code-block .hljs-section,
+.notebook-quote pre.notebook-code-block .hljs-section {
   color: #c4b5fd;
 }
 
-.notebook-rich .hljs-meta,
-.notebook-quote .hljs-meta,
-.rte-editor .hljs-meta,
-.notebook-rich .hljs-name,
-.notebook-quote .hljs-name,
-.rte-editor .hljs-name,
-.notebook-rich .hljs-tag,
-.notebook-quote .hljs-tag,
-.rte-editor .hljs-tag {
+.rte-editor pre.notebook-code-block .hljs-meta,
+.notebook-rich pre.notebook-code-block .hljs-meta,
+.notebook-quote pre.notebook-code-block .hljs-meta,
+.rte-editor pre.notebook-code-block .hljs-name,
+.notebook-rich pre.notebook-code-block .hljs-name,
+.notebook-quote pre.notebook-code-block .hljs-name,
+.rte-editor pre.notebook-code-block .hljs-tag,
+.notebook-rich pre.notebook-code-block .hljs-tag,
+.notebook-quote pre.notebook-code-block .hljs-tag {
   color: #fda4af;
 }
 
-.notebook-rich .hljs-variable,
-.notebook-quote .hljs-variable,
-.rte-editor .hljs-variable,
-.notebook-rich .hljs-template-variable,
-.notebook-quote .hljs-template-variable,
-.rte-editor .hljs-template-variable,
-.notebook-rich .hljs-params,
-.notebook-quote .hljs-params,
-.rte-editor .hljs-params {
+.rte-editor pre.notebook-code-block .hljs-variable,
+.notebook-rich pre.notebook-code-block .hljs-variable,
+.notebook-quote pre.notebook-code-block .hljs-variable,
+.rte-editor pre.notebook-code-block .hljs-template-variable,
+.notebook-rich pre.notebook-code-block .hljs-template-variable,
+.notebook-quote pre.notebook-code-block .hljs-template-variable,
+.rte-editor pre.notebook-code-block .hljs-params,
+.notebook-rich pre.notebook-code-block .hljs-params,
+.notebook-quote pre.notebook-code-block .hljs-params {
   color: #fde68a;
 }
 
-.notebook-rich .hljs-punctuation,
-.notebook-quote .hljs-punctuation,
-.rte-editor .hljs-punctuation,
-.notebook-rich .hljs-operator,
-.notebook-quote .hljs-operator,
-.rte-editor .hljs-operator {
+.rte-editor pre.notebook-code-block .hljs-punctuation,
+.notebook-rich pre.notebook-code-block .hljs-punctuation,
+.notebook-quote pre.notebook-code-block .hljs-punctuation,
+.rte-editor pre.notebook-code-block .hljs-operator,
+.notebook-rich pre.notebook-code-block .hljs-operator,
+.notebook-quote pre.notebook-code-block .hljs-operator {
   color: #cbd5e1;
 }
 

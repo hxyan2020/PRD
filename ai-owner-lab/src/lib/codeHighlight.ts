@@ -91,59 +91,86 @@ export function escapeHtml(text: string): string {
     .replace(/"/g, '&quot;')
 }
 
+function detectLangFromEl(el: Element): string {
+  return (
+    normalizeCodeLanguage(
+      el.getAttribute('data-lang') ||
+        el.closest('pre')?.getAttribute('data-lang') ||
+        [...el.classList].find((c) => c.startsWith('language-'))?.slice('language-'.length) ||
+        [...(el.closest('pre')?.classList || [])]
+          .find((c) => c.startsWith('language-'))
+          ?.slice('language-'.length),
+    ) || 'plaintext'
+  )
+}
+
+function ensureCodeChild(pre: HTMLElement): HTMLElement {
+  const existing = pre.querySelector(':scope > code')
+  if (existing) return existing as HTMLElement
+  const code = document.createElement('code')
+  code.textContent = pre.textContent || ''
+  pre.replaceChildren(code)
+  return code
+}
+
+function paintCodeElement(code: HTMLElement, lang: string) {
+  const source = code.textContent || ''
+  code.innerHTML = highlightCode(source, lang)
+  code.classList.add('hljs', `language-${lang}`)
+  code.setAttribute('data-lang', lang)
+  const pre = code.closest('pre')
+  if (pre) {
+    pre.classList.add('notebook-code-block', `language-${lang}`)
+    pre.setAttribute('data-lang', lang)
+  }
+}
+
 /**
- * Apply syntax highlighting to <pre><code> / <code> nodes inside a DOM root.
- * Safe to call after sanitizeHtml.
+ * Apply syntax highlighting to <pre>/<code> nodes inside a DOM root.
+ * Safe to call after sanitizeHtml. Handles bare <pre> (no <code> child).
  */
 export function highlightCodeBlocksInElement(root: ParentNode) {
-  const blocks = root.querySelectorAll('pre code, code.notebook-code, code[class*="language-"]')
-  blocks.forEach((node) => {
-    const code = node as HTMLElement
-    // Skip nested code inside already-processed pre>code (query may hit both)
-    if (code.tagName === 'CODE' && code.parentElement?.tagName !== 'PRE' && !code.classList.contains('notebook-code')) {
-      // inline code — leave as plain escaped text
-      return
-    }
-    const lang =
-      normalizeCodeLanguage(
-        code.getAttribute('data-lang') ||
-          code.closest('pre')?.getAttribute('data-lang') ||
-          [...code.classList].find((c) => c.startsWith('language-'))?.slice('language-'.length) ||
-          [...(code.closest('pre')?.classList || [])]
-            .find((c) => c.startsWith('language-'))
-            ?.slice('language-'.length),
-      ) || 'plaintext'
+  const pres = root.querySelectorAll(
+    'pre.notebook-code-block, pre[data-lang], pre[class*="language-"]',
+  )
+  pres.forEach((node) => {
+    const pre = node as HTMLElement
+    const code = ensureCodeChild(pre)
+    paintCodeElement(code, detectLangFromEl(pre) || detectLangFromEl(code))
+  })
 
-    const source = code.textContent || ''
-    code.innerHTML = highlightCode(source, lang)
-    code.classList.add('hljs')
-    code.classList.add(`language-${lang}`)
-    code.setAttribute('data-lang', lang)
-    const pre = code.closest('pre')
-    if (pre) {
-      pre.classList.add('notebook-code-block')
-      pre.setAttribute('data-lang', lang)
-    }
+  // Inline / leftover code blocks not already covered via pre.
+  root.querySelectorAll('code.notebook-code, code[class*="language-"]').forEach((node) => {
+    const code = node as HTMLElement
+    if (code.closest('pre')) return
+    paintCodeElement(code, detectLangFromEl(code))
   })
 }
 
 /** Sanitize-friendly: collapse highlighted spans back to plain text in code blocks. */
 export function plainifyCodeBlocksInElement(root: ParentNode) {
-  root.querySelectorAll('pre code, code.notebook-code').forEach((node) => {
-    const code = node as HTMLElement
-    const lang = normalizeCodeLanguage(
-      code.getAttribute('data-lang') ||
-        code.closest('pre')?.getAttribute('data-lang') ||
-        [...code.classList].find((c) => c.startsWith('language-'))?.slice('language-'.length),
-    )
-    const text = code.textContent || ''
-    code.replaceChildren(document.createTextNode(text))
-    code.className = `language-${lang}`
-    code.setAttribute('data-lang', lang)
-    const pre = code.closest('pre')
-    if (pre) {
+  root
+    .querySelectorAll('pre.notebook-code-block, pre[data-lang], pre[class*="language-"]')
+    .forEach((node) => {
+      const pre = node as HTMLElement
+      const lang = detectLangFromEl(pre)
+      const text = pre.textContent || ''
+      const code = document.createElement('code')
+      code.className = `language-${lang}`
+      code.setAttribute('data-lang', lang)
+      code.textContent = text
+      pre.replaceChildren(code)
       pre.className = `notebook-code-block language-${lang}`
       pre.setAttribute('data-lang', lang)
-    }
+    })
+
+  root.querySelectorAll('code.notebook-code, code[class*="language-"]').forEach((node) => {
+    const code = node as HTMLElement
+    if (code.closest('pre')) return
+    const lang = detectLangFromEl(code)
+    const text = code.textContent || ''
+    code.replaceChildren(document.createTextNode(text))
+    code.className = `notebook-code language-${lang}`
+    code.setAttribute('data-lang', lang)
   })
 }

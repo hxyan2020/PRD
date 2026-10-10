@@ -1,5 +1,10 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
-import { CODE_LANGUAGES, type CodeLanguageId } from '../lib/codeHighlight'
+import {
+  CODE_LANGUAGES,
+  highlightCodeBlocksInElement,
+  plainifyCodeBlocksInElement,
+  type CodeLanguageId,
+} from '../lib/codeHighlight'
 import { sanitizeHtml } from '../lib/sanitizeHtml'
 import { fileToNoteImageDataUrl, isAllowedImageMime } from '../lib/noteImage'
 import { clearHighlightInRange, highlightRange } from '../lib/rangeHighlight'
@@ -231,6 +236,10 @@ export function RichTextEditor({
       el.innerHTML = value || ''
       lastHtml.current = value
     }
+    // Show language colors when the editor is not being typed in.
+    if (document.activeElement !== el) {
+      highlightCodeBlocksInElement(el)
+    }
   }, [value])
 
   useEffect(() => {
@@ -280,12 +289,28 @@ export function RichTextEditor({
     onChange(html)
   }
 
+  function paintCodeColors() {
+    const el = editorRef.current
+    if (!el) return
+    highlightCodeBlocksInElement(el)
+  }
+
+  function prepareCodeForEditing() {
+    const el = editorRef.current
+    if (!el) return
+    plainifyCodeBlocksInElement(el)
+  }
+
   function withFocus(action: () => void) {
     restoreSelection()
     editorRef.current?.focus()
+    prepareCodeForEditing()
+    restoreSelection()
     action()
     emitChange()
     captureSelection()
+    // Re-apply colors after structural inserts (table / code) when caret left the block.
+    if (!selectionInsideCode(editorRef.current)) paintCodeColors()
   }
 
   async function insertImageFile(file: Blob) {
@@ -551,7 +576,22 @@ export function RichTextEditor({
               aria-label={t('editorCodeLanguage')}
               onMouseDown={() => captureSelection()}
               onFocus={() => captureSelection()}
-              onChange={(e) => setCodeLanguage(e.target.value as CodeLanguageId)}
+              onChange={(e) => {
+                const next = e.target.value as CodeLanguageId
+                setCodeLanguage(next)
+                // If caret is inside a code block, retarget its language and recolor.
+                withFocus(() => {
+                  const block = selectionInsideCode(editorRef.current)
+                  if (!block) return
+                  const pre = block.tagName === 'PRE' ? block : block.closest('pre') || block
+                  pre.setAttribute('data-lang', next)
+                  pre.className = `notebook-code-block language-${next}`
+                  const code = pre.querySelector('code') || pre
+                  code.setAttribute('data-lang', next)
+                  code.className = `language-${next}`
+                })
+                paintCodeColors()
+              }}
             >
               {CODE_LANGUAGES.map((lang) => (
                 <option key={lang.id} value={lang.id}>
@@ -569,14 +609,15 @@ export function RichTextEditor({
               e.preventDefault()
               captureSelection()
             }}
-            onClick={() =>
+            onClick={() => {
               withFocus(() =>
                 insertHtmlAtSelection(
                   sanitizeHtml(buildCodeBlockHtml(codeLanguage)),
                   editorRef.current,
                 ),
               )
-            }
+              paintCodeColors()
+            }}
           >
             {'</>'}
           </button>
@@ -657,16 +698,24 @@ export function RichTextEditor({
           aria-label={ariaLabel || placeholder}
           aria-describedby={empty ? placeholderId : undefined}
           suppressContentEditableWarning
+          onFocus={() => {
+            prepareCodeForEditing()
+            captureSelection()
+          }}
           onInput={() => {
             captureSelection()
             emitChange()
           }}
-          onBlur={emitChange}
+          onBlur={() => {
+            emitChange()
+            paintCodeColors()
+          }}
           onKeyUp={captureSelection}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && selectionInsideCode(editorRef.current)) {
               e.preventDefault()
               // Keep newlines inside code blocks instead of splitting the <pre>.
+              prepareCodeForEditing()
               runCommand('insertText', '\n')
               emitChange()
               captureSelection()
@@ -675,6 +724,7 @@ export function RichTextEditor({
             if (e.key !== 'Tab') return
             if (selectionInsideCode(editorRef.current)) {
               e.preventDefault()
+              prepareCodeForEditing()
               runCommand('insertText', '  ')
               emitChange()
               captureSelection()
