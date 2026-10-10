@@ -21,6 +21,26 @@ for (let i = arrStart; i < src.length; i++) {
 }
 if (arrEnd < 0) throw new Error("DATA_SOURCES array end not found");
 const DATA_SOURCES = Function(`"use strict"; return (${src.slice(arrStart, arrEnd + 1)});`)();
+const flagSrc = readFileSync(new URL("../lib/flag-codes.ts", import.meta.url), "utf8");
+const flagMatch = flagSrc.match(/const COUNTRY_TO_ISO[^=]*=\s*(\{[\s\S]*?\});/);
+const COUNTRY_TO_ISO = Function(`"use strict"; return (${flagMatch[1]});`)();
+const ALL_COUNTRIES = [...new Set(DATA_SOURCES.flatMap((s) => s.countries))].sort((a, b) => a.localeCompare(b));
+
+
+function withCountries(pack, locale, countries, countryToIso) {
+  const map = {};
+  for (const name of countries) {
+    if (locale === "en") { map[name] = name; continue; }
+    const iso = countryToIso[name];
+    if (!iso) { map[name] = name; continue; }
+    try {
+      map[name] = new Intl.DisplayNames([locale], { type: "region" }).of(iso.toUpperCase()) || name;
+    } catch {
+      map[name] = name;
+    }
+  }
+  return { ...pack, countries: map };
+}
 
 mkdirSync(new URL("../lib/i18n/source-packs", import.meta.url), { recursive: true });
 
@@ -40,7 +60,7 @@ function write(locale, pack) {
   console.log(locale, Object.keys(pack.regions).length, Object.keys(pack.sources).length);
 }
 
-write("en", { regions: enRegions, sources: enSources });
+write("en", withCountries({ regions: enRegions, sources: enSources }, "en", ALL_COUNTRIES, COUNTRY_TO_ISO));
 
 const zhCN = {
   regions: {
@@ -115,7 +135,7 @@ const zhCN = {
     dealstreetasia: { description: "亚洲私募市场交易、融资与投资人动态。" },
   },
 };
-write("zh-CN", zhCN);
+write("zh-CN", withCountries(zhCN, "zh-CN", ALL_COUNTRIES, COUNTRY_TO_ISO));
 
 const zhTW = {
   regions: {
@@ -190,7 +210,7 @@ const zhTW = {
     dealstreetasia: { description: "亞洲私募市場交易、募資與投資人動態。" },
   },
 };
-write("zh-TW", zhTW);
+write("zh-TW", withCountries(zhTW, "zh-TW", ALL_COUNTRIES, COUNTRY_TO_ISO));
 
 // For other locales: start from Spanish-quality map then adapt; load from sibling JSON fragments.
 const other = JSON.parse(readFileSync(new URL("./source-pack-locales.json", import.meta.url), "utf8"));
@@ -202,5 +222,5 @@ for (const [locale, pack] of Object.entries(other)) {
   for (const id of Object.keys(enSources)) {
     if (!pack.sources[id]?.description) throw new Error(`${locale} missing source ${id}`);
   }
-  write(locale, pack);
+  write(locale, withCountries(pack, locale, ALL_COUNTRIES, COUNTRY_TO_ISO));
 }

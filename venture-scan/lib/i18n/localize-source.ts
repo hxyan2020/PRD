@@ -23,6 +23,7 @@ import packNl from "./source-packs/nl.json";
 type SourceContent = { description: string; notes?: string };
 type SourcePack = {
   regions: Record<string, string>;
+  countries: Record<string, string>;
   sources: Record<string, SourceContent>;
 };
 
@@ -78,7 +79,11 @@ function displayName(
 }
 
 export function localizeCountry(country: string, locale: LocaleCode): string {
-  if (locale === "en" || !country) return country;
+  if (!country) return country;
+  if (locale === "en") return country;
+  const pack = SOURCE_PACKS[locale] ?? SOURCE_PACKS.en;
+  const fromPack = pack.countries?.[country] ?? SOURCE_PACKS.en.countries?.[country];
+  if (fromPack) return fromPack;
   const iso = countryToFlagCode(country);
   if (!iso) return country;
   return displayName(locale, "region", iso.toUpperCase()) ?? country;

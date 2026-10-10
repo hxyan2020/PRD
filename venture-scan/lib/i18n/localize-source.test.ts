@@ -38,7 +38,22 @@ describe("localizeSource", () => {
 
   it("localizes country, language, and region helpers", () => {
     expect(localizeCountry("United States", "zh-CN")).toBe("美国");
+    expect(localizeCountry("China", "zh-CN")).toBe("中国");
+    expect(localizeCountry("United Kingdom", "zh-TW")).toBe("英國");
     expect(localizeLanguage("English / Arabic", "zh-CN")).toBe("英语 / 阿拉伯语");
     expect(localizeRegion("Global / North America", "zh-CN")).toBe("全球 / 北美");
+  });
+
+  it("has a country label for every covered market in every locale", () => {
+    const countries = [...new Set(DATA_SOURCES.flatMap((s) => s.countries))];
+    for (const locale of LOCALES) {
+      for (const country of countries) {
+        const label = localizeCountry(country, locale.code);
+        expect(label, `${locale.code}.${country}`).toBeTruthy();
+        if (locale.code === "zh-CN") {
+          expect(label).not.toBe(country);
+        }
+      }
+    }
   });
 });

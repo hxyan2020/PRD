@@ -30,13 +30,18 @@ export function SourcesDesk() {
   const [q, setQ] = useState("");
   const now = useMemo(() => Date.now(), []);
   const summary = useMemo(() => sourcesSummary(now), [now]);
-  const countries = useMemo(() => allCoveredCountries(), []);
+  const countries = useMemo(() => {
+    const list = allCoveredCountries();
+    return [...list].sort((a, b) =>
+      localizeCountry(a, locale).localeCompare(localizeCountry(b, locale), locale),
+    );
+  }, [locale]);
   const regions = useMemo(
     () =>
       [...new Set(DATA_SOURCES.map((s) => s.region))].sort((a, b) =>
-        a.localeCompare(b),
+        localizeRegion(a, locale).localeCompare(localizeRegion(b, locale), locale),
       ),
-    [],
+    [locale],
   );
 
   const filtered = useMemo(() => {
