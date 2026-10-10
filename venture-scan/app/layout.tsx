@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { withBase } from "@/lib/base-path";
 
 const display = Instrument_Serif({
   subsets: ["latin"],
@@ -30,14 +31,14 @@ export const metadata: Metadata = {
     "Scan worldwide startup ideas and fundraising events. Browse idea name, model, team, industry, funding, website, socials, and go-forward plays.",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "16x16 32x32" },
-      { url: "/favicon-16.png", type: "image/png", sizes: "16x16" },
-      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
-      { url: "/logo-192.png", type: "image/png", sizes: "192x192" },
-      { url: "/logo-512.png", type: "image/png", sizes: "512x512" },
+      { url: withBase("/favicon.ico"), sizes: "16x16 32x32" },
+      { url: withBase("/favicon-16.png"), type: "image/png", sizes: "16x16" },
+      { url: withBase("/favicon.png"), type: "image/png", sizes: "32x32" },
+      { url: withBase("/logo-192.png"), type: "image/png", sizes: "192x192" },
+      { url: withBase("/logo-512.png"), type: "image/png", sizes: "512x512" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
-    shortcut: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: withBase("/apple-touch-icon.png"), sizes: "180x180" }],
+    shortcut: [{ url: withBase("/favicon.png"), type: "image/png" }],
   },
 };
 
