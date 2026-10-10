@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { sanitizeHtml } from '../lib/sanitizeHtml'
 import { fileToNoteImageDataUrl, isAllowedImageMime } from '../lib/noteImage'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -18,14 +18,7 @@ const HIGHLIGHTS = [
   { value: '#bae6fd', labelKey: 'editorHighlightBlue' as const },
   { value: '#fecdd3', labelKey: 'editorHighlightRose' as const },
   { value: '#e9d5ff', labelKey: 'editorHighlightViolet' as const },
-  { value: 'transparent', labelKey: 'editorHighlightNone' as const },
 ]
-
-function applyHighlight(color: string) {
-  // Chrome/Safari prefer hiliteColor; Firefox uses backColor.
-  const ok = document.execCommand('hiliteColor', false, color)
-  if (!ok) document.execCommand('backColor', false, color)
-}
 
 const SIZES = [
   { value: '3', labelKey: 'editorSizeNormal' as const },
@@ -53,6 +46,75 @@ function hasVisibleContent(html: string): boolean {
   return Boolean(html.replace(/<br\s*\/?>|&nbsp;|\s|<\/?[^>]+>/gi, '').trim())
 }
 
+function wrapSelectionWithMark(color: string) {
+  const selection = window.getSelection()
+  if (!selection || !selection.rangeCount || selection.isCollapsed) return false
+  const range = selection.getRangeAt(0)
+  const mark = document.createElement('mark')
+  mark.style.backgroundColor = color
+  mark.style.color = 'inherit'
+  try {
+    range.surroundContents(mark)
+  } catch {
+    const fragment = range.extractContents()
+    mark.appendChild(fragment)
+    range.insertNode(mark)
+  }
+  selection.removeAllRanges()
+  const next = document.createRange()
+  next.selectNodeContents(mark)
+  selection.addRange(next)
+  return true
+}
+
+function clearHighlightInSelection() {
+  const selection = window.getSelection()
+  if (!selection || !selection.rangeCount || selection.isCollapsed) {
+    runCommand('hiliteColor', 'transparent')
+    runCommand('backColor', 'transparent')
+    return
+  }
+  const range = selection.getRangeAt(0)
+  const root =
+    range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
+      ? (range.commonAncestorContainer as HTMLElement)
+      : range.commonAncestorContainer.parentElement
+  if (!root) return
+  const marks = root.closest('.rte-editor')?.querySelectorAll('mark') ?? []
+  marks.forEach((mark) => {
+    if (!selection.containsNode(mark, true)) return
+    const parent = mark.parentNode
+    if (!parent) return
+    while (mark.firstChild) parent.insertBefore(mark.firstChild, mark)
+    parent.removeChild(mark)
+  })
+  runCommand('hiliteColor', 'transparent')
+  runCommand('backColor', 'transparent')
+}
+
+function applyHighlightColor(color: string) {
+  if (color === 'transparent') {
+    clearHighlightInSelection()
+    return
+  }
+  // Prefer native commands when a live selection exists.
+  const before = window.getSelection()?.toString() ?? ''
+  let applied = document.execCommand('hiliteColor', false, color)
+  if (!applied) applied = document.execCommand('backColor', false, color)
+  const afterHtmlHasColor = (() => {
+    const node = window.getSelection()?.anchorNode
+    const el =
+      node?.nodeType === Node.ELEMENT_NODE
+        ? (node as HTMLElement)
+        : node?.parentElement
+    const editor = el?.closest('.rte-editor')
+    return Boolean(editor && editor.innerHTML.toLowerCase().includes(color.toLowerCase()))
+  })()
+  if (!applied || (!afterHtmlHasColor && before)) {
+    wrapSelectionWithMark(color)
+  }
+}
+
 export function RichTextEditor({
   value,
   onChange,
@@ -64,6 +126,7 @@ export function RichTextEditor({
   const { t } = useLanguage()
   const editorRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const savedRange = useRef<Range | null>(null)
   const lastHtml = useRef(value)
   const placeholderId = useId()
   const [imageError, setImageError] = useState<string | null>(null)
@@ -89,7 +152,32 @@ export function RichTextEditor({
     const sel = window.getSelection()
     sel?.removeAllRanges()
     sel?.addRange(range)
+    savedRange.current = range.cloneRange()
   }, [autoFocus])
+
+  function captureSelection() {
+    const editor = editorRef.current
+    const selection = window.getSelection()
+    if (!editor || !selection || !selection.rangeCount) return
+    const range = selection.getRangeAt(0)
+    if (!editor.contains(range.commonAncestorContainer)) return
+    savedRange.current = range.cloneRange()
+  }
+
+  function restoreSelection(): boolean {
+    const editor = editorRef.current
+    const range = savedRange.current
+    if (!editor || !range) return false
+    editor.focus()
+    const selection = window.getSelection()
+    selection?.removeAllRanges()
+    try {
+      selection?.addRange(range)
+      return Boolean(selection && !selection.isCollapsed)
+    } catch {
+      return false
+    }
+  }
 
   function emitChange() {
     const el = editorRef.current
@@ -101,9 +189,11 @@ export function RichTextEditor({
   }
 
   function withFocus(action: () => void) {
+    restoreSelection()
     editorRef.current?.focus()
     action()
     emitChange()
+    captureSelection()
   }
 
   async function insertImageFile(file: Blob) {
@@ -119,7 +209,6 @@ export function RichTextEditor({
         const safe = sanitizeHtml(
           `<img src="${dataUrl}" alt="" style="max-width: 100%; height: auto" />`,
         )
-        // insertHTML keeps surrounding text; fallback for older engines
         if (!document.execCommand('insertHTML', false, safe)) {
           const el = editorRef.current
           if (!el) return
@@ -206,7 +295,8 @@ export function RichTextEditor({
             className="rte-select"
             defaultValue="3"
             aria-label={t('editorFontSize')}
-            onMouseDown={(e) => e.stopPropagation()}
+            onMouseDown={() => captureSelection()}
+            onFocus={() => captureSelection()}
             onChange={(e) => {
               const size = e.target.value
               withFocus(() => runCommand('fontSize', size))
@@ -225,7 +315,8 @@ export function RichTextEditor({
             className="rte-select"
             defaultValue={COLORS[0].value}
             aria-label={t('editorTextColor')}
-            onMouseDown={(e) => e.stopPropagation()}
+            onMouseDown={() => captureSelection()}
+            onFocus={() => captureSelection()}
             onChange={(e) => {
               const color = e.target.value
               withFocus(() => runCommand('foreColor', color))
@@ -238,25 +329,40 @@ export function RichTextEditor({
             ))}
           </select>
         </label>
-        <label className="rte-select-wrap">
-          <span className="sr-only">{t('editorHighlight')}</span>
-          <select
-            className="rte-select rte-select-highlight"
-            defaultValue={HIGHLIGHTS[0].value}
-            aria-label={t('editorHighlight')}
-            onMouseDown={(e) => e.stopPropagation()}
-            onChange={(e) => {
-              const color = e.target.value
-              withFocus(() => applyHighlight(color))
+        <div
+          className="rte-highlight-swatches"
+          role="group"
+          aria-label={t('editorHighlight')}
+        >
+          {HIGHLIGHTS.map((color) => (
+            <button
+              key={color.value}
+              type="button"
+              className="rte-highlight-swatch"
+              title={t(color.labelKey)}
+              aria-label={t(color.labelKey)}
+              style={{ '--hl-swatch': color.value } as CSSProperties}
+              onMouseDown={(e) => {
+                e.preventDefault()
+                captureSelection()
+              }}
+              onClick={() => withFocus(() => applyHighlightColor(color.value))}
+            />
+          ))}
+          <button
+            type="button"
+            className="rte-highlight-swatch none"
+            title={t('editorHighlightNone')}
+            aria-label={t('editorHighlightNone')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              captureSelection()
             }}
+            onClick={() => withFocus(() => applyHighlightColor('transparent'))}
           >
-            {HIGHLIGHTS.map((color) => (
-              <option key={color.value} value={color.value}>
-                {t(color.labelKey)}
-              </option>
-            ))}
-          </select>
-        </label>
+            /
+          </button>
+        </div>
         <span className="rte-sep" aria-hidden="true" />
         <button
           type="button"
@@ -334,8 +440,14 @@ export function RichTextEditor({
           aria-label={ariaLabel || placeholder}
           aria-describedby={empty ? placeholderId : undefined}
           suppressContentEditableWarning
-          onInput={emitChange}
+          onInput={() => {
+            captureSelection()
+            emitChange()
+          }}
           onBlur={emitChange}
+          onKeyUp={captureSelection}
+          onMouseUp={captureSelection}
+          onSelect={captureSelection}
           onPaste={(e) => {
             const items = e.clipboardData?.items
             const imageItems = items
@@ -355,6 +467,7 @@ export function RichTextEditor({
             const text = e.clipboardData.getData('text/plain')
             runCommand('insertText', text)
             emitChange()
+            captureSelection()
           }}
         />
       </div>

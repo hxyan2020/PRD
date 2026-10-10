@@ -2921,8 +2921,44 @@ button.notebook-category-badge.on {
   -webkit-box-decoration-break: clone;
 }
 
-.rte-select-highlight {
-  min-width: 7.5rem;
+.rte-highlight-swatches {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: #fff;
+}
+
+.rte-highlight-swatch {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(11, 31, 42, 0.18);
+  background: var(--hl-swatch, #fde68a);
+  padding: 0;
+  cursor: pointer;
+}
+
+.rte-highlight-swatch:hover,
+.rte-highlight-swatch:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+.rte-highlight-swatch.none {
+  background:
+    linear-gradient(
+      135deg,
+      transparent calc(50% - 1px),
+      #b91c1c 0,
+      #b91c1c calc(50% + 1px),
+      transparent 0
+    ),
+    #fff;
+  color: transparent;
+  font-size: 0;
 }
 
 .rte-editor img,
