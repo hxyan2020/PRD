@@ -1,11 +1,18 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RichTextEditor } from '../components/RichTextEditor'
-import { formatTimestamp, useNotebook, type NotebookEntry } from '../hooks/useNotebook'
+import {
+  formatTimestamp,
+  useNotebook,
+  type NotebookCategory,
+  type NotebookEntry,
+} from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
+import type { UiKey } from '../i18n/ui'
 import { htmlToPlainText, isBlankHtml, sanitizeHtml } from '../lib/sanitizeHtml'
 
 type NotebookSort = 'created' | 'edited' | 'alpha'
+type CategoryFilter = 'all' | 'none' | string
 
 const SORT_STORAGE_KEY = 'ownlab-notebook-sort'
 
@@ -63,51 +70,123 @@ function sortEntries(entries: NotebookEntry[], sort: NotebookSort, lang: 'en' | 
       return bTime - aTime
     })
   }
-  // created — newest first
   return list.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   )
 }
 
-function entrySearchText(entry: NotebookEntry): string {
+function entrySearchText(entry: NotebookEntry, categories: NotebookCategory[]): string {
+  const names = (entry.categoryIds ?? [])
+    .map((id) => categories.find((c) => c.id === id)?.name ?? '')
+    .join(' ')
   const parts = [
     entry.title ?? '',
     htmlToPlainText(entry.selectedText) || entry.selectedText,
     entry.explanation ? htmlToPlainText(entry.explanation) || entry.explanation : '',
+    names,
   ]
   return parts.join('\n').toLowerCase()
 }
 
-function filterEntries(entries: NotebookEntry[], query: string): NotebookEntry[] {
+function filterEntries(
+  entries: NotebookEntry[],
+  query: string,
+  categoryFilter: CategoryFilter,
+  categories: NotebookCategory[],
+): NotebookEntry[] {
+  let list = entries
+  if (categoryFilter === 'none') {
+    list = list.filter((e) => !e.categoryIds?.length)
+  } else if (categoryFilter !== 'all') {
+    list = list.filter((e) => e.categoryIds?.includes(categoryFilter))
+  }
+
   const tokens = query
     .toLowerCase()
     .split(/\s+/)
     .map((t) => t.trim())
     .filter(Boolean)
-  if (!tokens.length) return entries
-  return entries.filter((entry) => {
-    const haystack = entrySearchText(entry)
+  if (!tokens.length) return list
+  return list.filter((entry) => {
+    const haystack = entrySearchText(entry, categories)
     return tokens.every((token) => haystack.includes(token))
   })
 }
 
+function toggleId(ids: string[], id: string): string[] {
+  return ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]
+}
+
+function CategoryPicker({
+  categories,
+  selectedIds,
+  onChange,
+  t,
+}: {
+  categories: NotebookCategory[]
+  selectedIds: string[]
+  onChange: (ids: string[]) => void
+  t: (key: UiKey) => string
+}) {
+  if (!categories.length) {
+    return <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
+  }
+  return (
+    <div className="notebook-category-picker" role="group" aria-label={t('noteCategoriesLabel')}>
+      {categories.map((cat) => {
+        const checked = selectedIds.includes(cat.id)
+        return (
+          <label key={cat.id} className={`notebook-category-option${checked ? ' on' : ''}`}>
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={() => onChange(toggleId(selectedIds, cat.id))}
+            />
+            <span>{cat.name}</span>
+          </label>
+        )
+      })}
+    </div>
+  )
+}
+
 export function Notebook() {
-  const { entries, count, addNote, updateEntry, removeEntry, clearAll } = useNotebook()
+  const {
+    entries,
+    categories,
+    count,
+    addNote,
+    updateEntry,
+    removeEntry,
+    clearAll,
+    addCategory,
+    removeCategory,
+  } = useNotebook()
   const { lang, t } = useLanguage()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
   const [draftExplanation, setDraftExplanation] = useState('')
+  const [draftCategoryIds, setDraftCategoryIds] = useState<string[]>([])
   const [newTitle, setNewTitle] = useState('')
   const [newNote, setNewNote] = useState('')
+  const [newCategoryIds, setNewCategoryIds] = useState<string[]>([])
   const [composerOpen, setComposerOpen] = useState(true)
   const [sort, setSort] = useState<NotebookSort>(() => readSort())
   const [query, setQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
+  const [newCategoryName, setNewCategoryName] = useState('')
+
+  const categoryMap = useMemo(() => {
+    const map = new Map<string, NotebookCategory>()
+    for (const cat of categories) map.set(cat.id, cat)
+    return map
+  }, [categories])
 
   const visibleEntries = useMemo(() => {
-    const filtered = filterEntries(entries, query)
+    const filtered = filterEntries(entries, query, categoryFilter, categories)
     return sortEntries(filtered, sort, lang)
-  }, [entries, query, sort, lang])
+  }, [entries, query, categoryFilter, categories, sort, lang])
 
   function changeSort(next: NotebookSort) {
     setSort(next)
@@ -123,6 +202,7 @@ export function Notebook() {
     setDraftTitle(entry.title ?? '')
     setDraftText(entry.selectedText)
     setDraftExplanation(entry.explanation ?? '')
+    setDraftCategoryIds([...(entry.categoryIds ?? [])])
   }
 
   function cancelEdit() {
@@ -130,6 +210,7 @@ export function Notebook() {
     setDraftTitle('')
     setDraftText('')
     setDraftExplanation('')
+    setDraftCategoryIds([])
   }
 
   function saveEdit(entry: NotebookEntry) {
@@ -138,8 +219,13 @@ export function Notebook() {
     if (entry.type === 'note' ? isBlankHtml(selectedText) : !selectedText) return
     const patch =
       entry.type === 'explanation'
-        ? { title: draftTitle, selectedText, explanation: draftExplanation }
-        : { title: draftTitle, selectedText }
+        ? {
+            title: draftTitle,
+            selectedText,
+            explanation: draftExplanation,
+            categoryIds: draftCategoryIds,
+          }
+        : { title: draftTitle, selectedText, categoryIds: draftCategoryIds }
     const updated = updateEntry(entry.id, patch)
     if (updated) cancelEdit()
   }
@@ -147,14 +233,34 @@ export function Notebook() {
   function createNote() {
     const html = sanitizeHtml(newNote).trim()
     if (isBlankHtml(html)) return
-    const created = addNote({ text: html, title: newTitle })
+    const created = addNote({
+      text: html,
+      title: newTitle,
+      categoryIds: newCategoryIds,
+    })
     if (!created) return
     setNewTitle('')
     setNewNote('')
+    setNewCategoryIds([])
     setComposerOpen(true)
   }
 
+  function createCategory() {
+    const created = addCategory(newCategoryName)
+    if (!created) return
+    setNewCategoryName('')
+  }
+
+  function onDeleteCategory(cat: NotebookCategory) {
+    if (!window.confirm(t('deleteCategoryConfirm', { name: cat.name }))) return
+    removeCategory(cat.id)
+    if (categoryFilter === cat.id) setCategoryFilter('all')
+    setNewCategoryIds((ids) => ids.filter((id) => id !== cat.id))
+    setDraftCategoryIds((ids) => ids.filter((id) => id !== cat.id))
+  }
+
   const canCreate = !isBlankHtml(newNote)
+  const filtering = Boolean(query.trim()) || categoryFilter !== 'all'
 
   return (
     <div className="page">
@@ -164,7 +270,7 @@ export function Notebook() {
         <p className="section-lede">{t('notebookLede')}</p>
         <div className="notebook-toolbar">
           <p className="notebook-count">
-            {query.trim() && count > 0
+            {filtering && count > 0
               ? t('searchShowing', { shown: visibleEntries.length, total: count })
               : `${count} ${count === 1 ? t('note') : t('notes')}`}
           </p>
@@ -197,6 +303,82 @@ export function Notebook() {
         </div>
       </header>
 
+      <section className="notebook-categories" aria-label={t('manageCategories')}>
+        <div className="notebook-composer-head">
+          <h2>{t('categories')}</h2>
+        </div>
+        <div className="notebook-category-create">
+          <input
+            type="text"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            placeholder={t('categoryNamePlaceholder')}
+            maxLength={40}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                createCategory()
+              }
+            }}
+          />
+          <button
+            type="button"
+            className="btn primary"
+            disabled={!newCategoryName.trim()}
+            onClick={createCategory}
+          >
+            {t('addCategory')}
+          </button>
+        </div>
+        {categories.length ? (
+          <ul className="notebook-category-list">
+            {categories.map((cat) => (
+              <li key={cat.id}>
+                <span className="notebook-category-chip">{cat.name}</span>
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={() => onDeleteCategory(cat)}
+                  aria-label={`${t('deleteCategory')}: ${cat.name}`}
+                >
+                  {t('delete')}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
+        )}
+        {count > 0 ? (
+          <div className="notebook-category-filters" role="toolbar" aria-label={t('categories')}>
+            <button
+              type="button"
+              className={`notebook-filter-chip${categoryFilter === 'all' ? ' on' : ''}`}
+              onClick={() => setCategoryFilter('all')}
+            >
+              {t('filterAllCategories')}
+            </button>
+            <button
+              type="button"
+              className={`notebook-filter-chip${categoryFilter === 'none' ? ' on' : ''}`}
+              onClick={() => setCategoryFilter('none')}
+            >
+              {t('filterUncategorized')}
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`notebook-filter-chip${categoryFilter === cat.id ? ' on' : ''}`}
+                onClick={() => setCategoryFilter(cat.id)}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </section>
+
       <section className="notebook-composer" aria-label={t('newNote')}>
         <div className="notebook-composer-head">
           <h2>{t('newNote')}</h2>
@@ -220,6 +402,15 @@ export function Notebook() {
                 autoFocus={entries.length === 0}
               />
             </label>
+            <div className="notebook-field">
+              <span className="notebook-field-label">{t('noteCategoriesLabel')}</span>
+              <CategoryPicker
+                categories={categories}
+                selectedIds={newCategoryIds}
+                onChange={setNewCategoryIds}
+                t={t}
+              />
+            </div>
             <div className="notebook-field">
               <span className="notebook-field-label">{t('noteBodyLabel')}</span>
               <RichTextEditor
@@ -246,6 +437,7 @@ export function Notebook() {
                     setComposerOpen(false)
                     setNewTitle('')
                     setNewNote('')
+                    setNewCategoryIds([])
                   }}
                 >
                   {t('cancelEdit')}
@@ -277,6 +469,9 @@ export function Notebook() {
             const editing = editingId === entry.id
             const editBlank =
               entry.type === 'note' ? isBlankHtml(draftText) : !draftText.trim()
+            const entryCategories = (entry.categoryIds ?? [])
+              .map((id) => categoryMap.get(id))
+              .filter((c): c is NotebookCategory => Boolean(c))
             return (
               <li key={entry.id} className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}`}>
                 <div className="notebook-meta">
@@ -287,6 +482,13 @@ export function Notebook() {
                     </span>
                   ) : null}
                   <span className="notebook-type">{typeLabel(entry.type, t)}</span>
+                  {entryCategories.length
+                    ? entryCategories.map((cat) => (
+                        <span key={cat.id} className="notebook-category-badge">
+                          {cat.name}
+                        </span>
+                      ))
+                    : null}
                   {entry.sourceLabel && entry.type !== 'note' ? (
                     entry.sourcePath ? (
                       <Link to={entry.sourcePath}>{entry.sourceLabel}</Link>
@@ -311,6 +513,15 @@ export function Notebook() {
                         autoFocus
                       />
                     </label>
+                    <div className="notebook-field">
+                      <span className="notebook-field-label">{t('noteCategoriesLabel')}</span>
+                      <CategoryPicker
+                        categories={categories}
+                        selectedIds={draftCategoryIds}
+                        onChange={setDraftCategoryIds}
+                        t={t}
+                      />
+                    </div>
                     {entry.type === 'note' ? (
                       <div className="notebook-field">
                         <span className="notebook-field-label">{t('noteBodyLabel')}</span>

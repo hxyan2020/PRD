@@ -3,6 +3,12 @@ import { notebookStore } from './notebookStore'
 
 export type NotebookEntryType = 'clip' | 'explanation' | 'note'
 
+export interface NotebookCategory {
+  id: string
+  name: string
+  createdAt: string
+}
+
 export interface NotebookEntry {
   id: string
   createdAt: string
@@ -11,6 +17,7 @@ export interface NotebookEntry {
   title?: string
   selectedText: string
   explanation?: string
+  categoryIds?: string[]
   sourceLabel?: string
   sourcePath?: string
   model?: string
@@ -18,13 +25,22 @@ export interface NotebookEntry {
 
 export function useNotebook() {
   const [entries, setEntries] = useState<NotebookEntry[]>(() => notebookStore.get())
+  const [categories, setCategories] = useState<NotebookCategory[]>(() =>
+    notebookStore.getCategories(),
+  )
 
   useEffect(() => {
-    return notebookStore.subscribe(setEntries)
+    const unsubEntries = notebookStore.subscribe(setEntries)
+    const unsubCategories = notebookStore.subscribeCategories(setCategories)
+    return () => {
+      unsubEntries()
+      unsubCategories()
+    }
   }, [])
 
   return {
     entries,
+    categories,
     count: entries.length,
     addClip: notebookStore.addClip,
     addExplanation: notebookStore.addExplanation,
@@ -32,6 +48,9 @@ export function useNotebook() {
     updateEntry: notebookStore.update,
     removeEntry: notebookStore.remove,
     clearAll: notebookStore.clear,
+    addCategory: notebookStore.addCategory,
+    renameCategory: notebookStore.renameCategory,
+    removeCategory: notebookStore.removeCategory,
   }
 }
 

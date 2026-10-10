@@ -1,10 +1,13 @@
-import type { NotebookEntry } from './useNotebook'
+import type { NotebookCategory, NotebookEntry } from './useNotebook'
 
 const STORAGE_KEY = 'ownlab-notebook-v1'
+const CATEGORY_STORAGE_KEY = 'ownlab-notebook-categories-v1'
 
-type Listener = (entries: NotebookEntry[]) => void
+type EntryListener = (entries: NotebookEntry[]) => void
+type CategoryListener = (categories: NotebookCategory[]) => void
 
-const listeners = new Set<Listener>()
+const entryListeners = new Set<EntryListener>()
+const categoryListeners = new Set<CategoryListener>()
 
 function read(): NotebookEntry[] {
   try {
@@ -25,31 +28,68 @@ function write(entries: NotebookEntry[]) {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   )
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
-  listeners.forEach((listener) => listener(sorted))
+  entryListeners.forEach((listener) => listener(sorted))
 }
 
-function uid() {
-  return `nb_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
+function readCategories(): NotebookCategory[] {
+  try {
+    const raw = localStorage.getItem(CATEGORY_STORAGE_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as NotebookCategory[]
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .filter((c) => c && typeof c.id === 'string' && typeof c.name === 'string')
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+  } catch {
+    return []
+  }
+}
+
+function writeCategories(categories: NotebookCategory[]) {
+  const sorted = [...categories].sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+  )
+  localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
+  categoryListeners.forEach((listener) => listener(sorted))
+}
+
+function uid(prefix: string) {
+  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
+}
+
+function normalizeCategoryIds(ids: string[] | undefined): string[] | undefined {
+  if (!ids?.length) return undefined
+  const unique = [...new Set(ids.filter(Boolean))]
+  return unique.length ? unique : undefined
 }
 
 export const notebookStore = {
   get: read,
-  subscribe(listener: Listener) {
-    listeners.add(listener)
+  getCategories: readCategories,
+  subscribe(listener: EntryListener) {
+    entryListeners.add(listener)
     return () => {
-      listeners.delete(listener)
+      entryListeners.delete(listener)
+    }
+  },
+  subscribeCategories(listener: CategoryListener) {
+    categoryListeners.add(listener)
+    return () => {
+      categoryListeners.delete(listener)
     }
   },
   addClip(input: {
     selectedText: string
     sourceLabel?: string
     sourcePath?: string
+    categoryIds?: string[]
   }) {
     const entry: NotebookEntry = {
-      id: uid(),
+      id: uid('nb'),
       createdAt: new Date().toISOString(),
       type: 'clip',
       selectedText: input.selectedText.trim(),
+      categoryIds: normalizeCategoryIds(input.categoryIds),
       sourceLabel: input.sourceLabel,
       sourcePath: input.sourcePath,
     }
@@ -62,13 +102,15 @@ export const notebookStore = {
     sourceLabel?: string
     sourcePath?: string
     model?: string
+    categoryIds?: string[]
   }) {
     const entry: NotebookEntry = {
-      id: uid(),
+      id: uid('nb'),
       createdAt: new Date().toISOString(),
       type: 'explanation',
       selectedText: input.selectedText.trim(),
       explanation: input.explanation.trim(),
+      categoryIds: normalizeCategoryIds(input.categoryIds),
       sourceLabel: input.sourceLabel,
       sourcePath: input.sourcePath,
       model: input.model,
@@ -76,17 +118,17 @@ export const notebookStore = {
     write([entry, ...read()])
     return entry
   },
-  addNote(input: { text: string; title?: string }) {
-    // Caller may pass sanitized HTML; empty check is done upstream via plain text.
+  addNote(input: { text: string; title?: string; categoryIds?: string[] }) {
     const text = input.text.trim()
     if (!text) return null
     const title = input.title?.trim() || undefined
     const entry: NotebookEntry = {
-      id: uid(),
+      id: uid('nb'),
       createdAt: new Date().toISOString(),
       type: 'note',
       title,
       selectedText: text,
+      categoryIds: normalizeCategoryIds(input.categoryIds),
       sourceLabel: 'Notebook',
     }
     write([entry, ...read()])
@@ -98,6 +140,7 @@ export const notebookStore = {
       title?: string
       selectedText?: string
       explanation?: string
+      categoryIds?: string[]
     },
   ) {
     const entries = read()
@@ -120,10 +163,16 @@ export const notebookStore = {
       title = next || undefined
     }
 
+    const categoryIds =
+      patch.categoryIds !== undefined
+        ? normalizeCategoryIds(patch.categoryIds)
+        : current.categoryIds
+
     const updated: NotebookEntry = {
       ...current,
       title,
       selectedText,
+      categoryIds,
       explanation: current.type === 'explanation' ? explanation ?? '' : explanation,
       updatedAt: new Date().toISOString(),
     }
@@ -137,6 +186,55 @@ export const notebookStore = {
   },
   clear() {
     write([])
+    writeCategories([])
+  },
+  addCategory(name: string) {
+    const trimmed = name.trim()
+    if (!trimmed) return null
+    const existing = readCategories()
+    if (existing.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
+      return existing.find((c) => c.name.toLowerCase() === trimmed.toLowerCase()) ?? null
+    }
+    const category: NotebookCategory = {
+      id: uid('cat'),
+      name: trimmed,
+      createdAt: new Date().toISOString(),
+    }
+    writeCategories([...existing, category])
+    return category
+  },
+  renameCategory(id: string, name: string) {
+    const trimmed = name.trim()
+    if (!trimmed) return null
+    const categories = readCategories()
+    const index = categories.findIndex((c) => c.id === id)
+    if (index < 0) return null
+    if (
+      categories.some((c) => c.id !== id && c.name.toLowerCase() === trimmed.toLowerCase())
+    ) {
+      return null
+    }
+    const updated = { ...categories[index], name: trimmed }
+    const next = [...categories]
+    next[index] = updated
+    writeCategories(next)
+    return updated
+  },
+  removeCategory(id: string) {
+    writeCategories(readCategories().filter((c) => c.id !== id))
+    // Detach from notes that used this category.
+    const entries = read()
+    let changed = false
+    const next = entries.map((entry) => {
+      if (!entry.categoryIds?.includes(id)) return entry
+      changed = true
+      return {
+        ...entry,
+        categoryIds: normalizeCategoryIds(entry.categoryIds.filter((cid) => cid !== id)),
+        updatedAt: new Date().toISOString(),
+      }
+    })
+    if (changed) write(next)
   },
 }
 
@@ -144,7 +242,11 @@ if (typeof window !== 'undefined') {
   window.addEventListener('storage', (event) => {
     if (event.key === STORAGE_KEY) {
       const entries = read()
-      listeners.forEach((listener) => listener(entries))
+      entryListeners.forEach((listener) => listener(entries))
+    }
+    if (event.key === CATEGORY_STORAGE_KEY) {
+      const categories = readCategories()
+      categoryListeners.forEach((listener) => listener(categories))
     }
   })
 }
