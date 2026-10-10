@@ -60,7 +60,9 @@ function CategoryColorSwatches({
 }
 
 type NotebookSort = 'created' | 'edited' | 'alpha'
-type CategoryFilter = 'all' | 'none' | string
+/** Empty = all notes. Includes `UNCATEGORIZED_FILTER` and/or category ids (OR match). */
+type CategoryFilterSelection = string[]
+const UNCATEGORIZED_FILTER = '__uncategorized__'
 
 const SORT_STORAGE_KEY = 'ownlab-notebook-sort'
 
@@ -139,14 +141,18 @@ function entrySearchText(entry: NotebookEntry, categories: NotebookCategory[]): 
 function filterEntries(
   entries: NotebookEntry[],
   query: string,
-  categoryFilter: CategoryFilter,
+  categoryFilter: CategoryFilterSelection,
   categories: NotebookCategory[],
 ): NotebookEntry[] {
   let list = entries
-  if (categoryFilter === 'none') {
-    list = list.filter((e) => !e.categoryIds?.length)
-  } else if (categoryFilter !== 'all') {
-    list = list.filter((e) => e.categoryIds?.includes(categoryFilter))
+  if (categoryFilter.length) {
+    const wantUncategorized = categoryFilter.includes(UNCATEGORIZED_FILTER)
+    const wantedIds = categoryFilter.filter((id) => id !== UNCATEGORIZED_FILTER)
+    list = list.filter((entry) => {
+      const ids = entry.categoryIds ?? []
+      if (wantUncategorized && ids.length === 0) return true
+      return wantedIds.some((id) => ids.includes(id))
+    })
   }
 
   const tokens = query
@@ -159,6 +165,13 @@ function filterEntries(
     const haystack = entrySearchText(entry, categories)
     return tokens.every((token) => haystack.includes(token))
   })
+}
+
+function toggleCategoryFilter(
+  current: CategoryFilterSelection,
+  id: string,
+): CategoryFilterSelection {
+  return current.includes(id) ? current.filter((x) => x !== id) : [...current, id]
 }
 
 function toggleId(ids: string[], id: string): string[] {
@@ -231,7 +244,7 @@ export function Notebook() {
   const [composerOpen, setComposerOpen] = useState(true)
   const [sort, setSort] = useState<NotebookSort>(() => readSort())
   const [query, setQuery] = useState('')
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [newCategoryColor, setNewCategoryColor] = useState<CategoryColorId>(() =>
     nextCategoryColor([]),
@@ -327,9 +340,14 @@ export function Notebook() {
   function onDeleteCategory(cat: NotebookCategory) {
     if (!window.confirm(t('deleteCategoryConfirm', { name: cat.name }))) return
     removeCategory(cat.id)
-    if (categoryFilter === cat.id) setCategoryFilter('all')
+    setCategoryFilter((ids) => ids.filter((id) => id !== cat.id))
     setNewCategoryIds((ids) => ids.filter((id) => id !== cat.id))
     setDraftCategoryIds((ids) => ids.filter((id) => id !== cat.id))
+  }
+
+  function filterByCategoryId(id: string) {
+    setView('notes')
+    setCategoryFilter([id])
   }
 
   function moveToDustbin(id: string) {
@@ -346,9 +364,10 @@ export function Notebook() {
   }
 
   const canCreate = !isBlankHtml(newNote)
+  const categoryFiltering = categoryFilter.length > 0
   const filtering =
     view === 'notes'
-      ? Boolean(query.trim()) || categoryFilter !== 'all'
+      ? Boolean(query.trim()) || categoryFiltering
       : Boolean(query.trim())
 
   return (
@@ -556,36 +575,6 @@ export function Notebook() {
         ) : (
           <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
         )}
-        {count > 0 ? (
-          <div className="notebook-category-filters" role="toolbar" aria-label={t('categories')}>
-            <button
-              type="button"
-              className={`notebook-filter-chip${categoryFilter === 'all' ? ' on' : ''}`}
-              onClick={() => setCategoryFilter('all')}
-            >
-              {t('filterAllCategories')}
-            </button>
-            <button
-              type="button"
-              className={`notebook-filter-chip${categoryFilter === 'none' ? ' on' : ''}`}
-              onClick={() => setCategoryFilter('none')}
-            >
-              {t('filterUncategorized')}
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                className={`notebook-filter-chip colored${categoryFilter === cat.id ? ' on' : ''}`}
-                style={categoryColorStyle(cat.color) as CSSProperties}
-                onClick={() => setCategoryFilter(cat.id)}
-              >
-                <span className="category-dot" aria-hidden="true" />
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        ) : null}
       </section>
 
       <section className="notebook-composer" aria-label={t('newNote')}>
@@ -657,6 +646,62 @@ export function Notebook() {
         ) : null}
       </section>
 
+      {count > 0 || categories.length > 0 ? (
+        <section className="notebook-filter-bar" aria-label={t('filterByCategory')}>
+          <div className="notebook-filter-bar-head">
+            <h2>{t('filterByCategory')}</h2>
+            {categoryFiltering ? (
+              <button
+                type="button"
+                className="btn ghost"
+                onClick={() => setCategoryFilter([])}
+              >
+                {t('clearCategoryFilter')}
+              </button>
+            ) : null}
+          </div>
+          <p className="notebook-filter-hint">{t('filterByCategoryHint')}</p>
+          <div className="notebook-category-filters" role="toolbar" aria-label={t('filterByCategory')}>
+            <button
+              type="button"
+              className={`notebook-filter-chip${!categoryFiltering ? ' on' : ''}`}
+              aria-pressed={!categoryFiltering}
+              onClick={() => setCategoryFilter([])}
+            >
+              {t('filterAllCategories')}
+            </button>
+            <button
+              type="button"
+              className={`notebook-filter-chip${
+                categoryFilter.includes(UNCATEGORIZED_FILTER) ? ' on' : ''
+              }`}
+              aria-pressed={categoryFilter.includes(UNCATEGORIZED_FILTER)}
+              onClick={() =>
+                setCategoryFilter((ids) => toggleCategoryFilter(ids, UNCATEGORIZED_FILTER))
+              }
+            >
+              {t('filterUncategorized')}
+            </button>
+            {categories.map((cat) => {
+              const on = categoryFilter.includes(cat.id)
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  className={`notebook-filter-chip colored${on ? ' on' : ''}`}
+                  style={categoryColorStyle(cat.color) as CSSProperties}
+                  aria-pressed={on}
+                  onClick={() => setCategoryFilter((ids) => toggleCategoryFilter(ids, cat.id))}
+                >
+                  <span className="category-dot" aria-hidden="true" />
+                  {cat.name}
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
+
       {entries.length === 0 ? (
         <div className="callout">
           <h2>{t('emptyNotebook')}</h2>
@@ -670,7 +715,12 @@ export function Notebook() {
       ) : visibleEntries.length === 0 ? (
         <div className="callout">
           <h2>{t('searchNoResults')}</h2>
-          <p>{t('searchNotesPlaceholder')}</p>
+          <p>{categoryFiltering ? t('filterNoResults') : t('searchNotesPlaceholder')}</p>
+          {categoryFiltering ? (
+            <button type="button" className="btn ghost" onClick={() => setCategoryFilter([])}>
+              {t('clearCategoryFilter')}
+            </button>
+          ) : null}
         </div>
       ) : (
         <ol className="notebook-timeline">
@@ -693,14 +743,20 @@ export function Notebook() {
                   <span className="notebook-type">{typeLabel(entry.type, t)}</span>
                   {entryCategories.length
                     ? entryCategories.map((cat) => (
-                        <span
+                        <button
                           key={cat.id}
-                          className="notebook-category-badge"
+                          type="button"
+                          className={`notebook-category-badge filterable${
+                            categoryFilter.includes(cat.id) ? ' on' : ''
+                          }`}
                           style={categoryColorStyle(cat.color) as CSSProperties}
+                          title={t('filterByThisCategory', { name: cat.name })}
+                          aria-label={t('filterByThisCategory', { name: cat.name })}
+                          onClick={() => filterByCategoryId(cat.id)}
                         >
                           <span className="category-dot" aria-hidden="true" />
                           {cat.name}
-                        </span>
+                        </button>
                       ))
                     : null}
                   {entry.sourceLabel && entry.type !== 'note' ? (
