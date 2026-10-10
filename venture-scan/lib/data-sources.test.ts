@@ -37,23 +37,38 @@ describe("data sources registry", () => {
   });
 
   it("computes health from last sourced age", () => {
-    const now = Date.parse("2026-10-09T12:00:00.000Z");
+    const now = Date.parse("2026-10-10T12:00:00.000Z");
     const healthy = DATA_SOURCES.find((s) => s.id === "techcrunch")!;
     const degraded = DATA_SOURCES.find((s) => s.id === "startup-india")!;
-    const offline = DATA_SOURCES.find((s) => s.id === "offline-probe")!;
     expect(sourceHealth(healthy, now)).toBe("healthy");
     expect(sourceHealth(degraded, now)).toBe("degraded");
-    expect(sourceHealth(offline, now)).toBe("offline");
+    expect(
+      sourceHealth({ ...healthy, notes: "Connector disabled — offline" }, now),
+    ).toBe("offline");
   });
 
   it("summarizes desk totals", () => {
-    const summary = sourcesSummary(Date.parse("2026-10-09T12:00:00.000Z"));
+    const summary = sourcesSummary(Date.parse("2026-10-10T12:00:00.000Z"));
     expect(summary.total).toBe(DATA_SOURCES.length);
     expect(summary.countries.length).toBeGreaterThan(30);
     expect(summary.healthCounts.healthy + summary.healthCounts.degraded + summary.healthCounts.stale + summary.healthCounts.offline).toBe(
       summary.total,
     );
+    expect(summary.healthCounts.healthy).toBeGreaterThanOrEqual(28);
+    expect(summary.healthCounts.offline).toBe(0);
     expect(summary.lastSourcedAt).toBeTruthy();
+  });
+
+  it("has no retired example.com or dead registry hosts", () => {
+    for (const source of DATA_SOURCES) {
+      expect(source.url).not.toMatch(/example\.com/i);
+      expect(source.logoDomain).not.toMatch(/example\.com/i);
+      expect(source.url).not.toMatch(/startupbase\.com\.br/i);
+      expect(source.url).not.toMatch(/nordicstartupnews\.com/i);
+      expect(source.url).not.toMatch(/disrupt-africa\.com/i);
+    }
+    expect(DATA_SOURCES.some((s) => s.id === "dealstreetasia")).toBe(true);
+    expect(DATA_SOURCES.some((s) => s.id === "offline-probe")).toBe(false);
   });
 
   it("keeps unique source ids and required fields", () => {

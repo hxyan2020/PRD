@@ -30,7 +30,7 @@ export function relatedSourcesForIdea(
           ? ["news", "fundraising", "aggregator", "government"]
           : ["news", "fundraising", "aggregator", "community"];
 
-  const scored = DATA_SOURCES.filter((s) => s.id !== "offline-probe").map((source) => {
+  const scored = DATA_SOURCES.map((source) => {
     let score = 0;
     if (source.countries.includes(idea.teamCountry)) score += 5;
     if (preferredKind.includes(source.kind)) score += 3;

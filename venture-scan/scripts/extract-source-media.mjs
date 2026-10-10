@@ -150,13 +150,6 @@ function copyLocalLogo(source) {
 }
 
 async function extractOne(source) {
-  if (source.id === "offline-probe") {
-    const fallback = copyLocalLogo(source);
-    return fallback
-      ? { id: source.id, name: source.name, ...fallback, imageUrl: null }
-      : null;
-  }
-
   const candidates = [tryOgImage, tryIconHorse, tryGoogleFavicon];
   for (const attempt of candidates) {
     const result = await attempt(source);

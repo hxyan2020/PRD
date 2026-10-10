@@ -21,7 +21,7 @@ export function PlatformLogo({ sourceId, name, className }: PlatformLogoProps) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={sourceId === "offline-probe" ? svg : png}
+        src={png}
         alt=""
         width={36}
         height={36}

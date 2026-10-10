@@ -19,7 +19,7 @@
   },
   "36kr": {
     "id": "36kr",
-    "name": "36氪",
+    "name": "36\u6c2a",
     "file": "36kr.png",
     "kind": "icon",
     "bytes": 879,
@@ -35,6 +35,15 @@
     "imageUrl": "https://icon.horse/icon/kr-asia.com",
     "contentType": "image/png"
   },
+  "techinasia": {
+    "id": "techinasia",
+    "name": "Tech in Asia",
+    "file": "techinasia.png",
+    "kind": "logo-fallback",
+    "bytes": 1426,
+    "imageUrl": "https://icon.horse/icon/techinasia.com",
+    "contentType": "image/png"
+  },
   "nikkei-asia": {
     "id": "nikkei-asia",
     "name": "Nikkei Asia",
@@ -46,7 +55,7 @@
   },
   "platum": {
     "id": "platum",
-    "name": "플래텀 (Platum)",
+    "name": "\ud50c\ub798\ud140 (Platum)",
     "file": "platum.jpg",
     "kind": "og",
     "bytes": 72087,
@@ -100,7 +109,7 @@
   },
   "gruenderszene": {
     "id": "gruenderszene",
-    "name": "Gründerszene",
+    "name": "Gr\u00fcnderszene",
     "file": "gruenderszene.png",
     "kind": "favicon",
     "bytes": 891,
@@ -112,8 +121,8 @@
     "name": "AfricArena / Disrupt Africa",
     "file": "africarena.png",
     "kind": "icon",
-    "bytes": 41910,
-    "imageUrl": "https://icon.horse/icon/disrupt-africa.com",
+    "bytes": 19366,
+    "imageUrl": "https://icon.horse/icon/disruptafrica.com",
     "contentType": "image/png"
   },
   "wamda": {
@@ -136,11 +145,11 @@
   },
   "startupbase-br": {
     "id": "startupbase-br",
-    "name": "StartupBase / Distrito",
+    "name": "Distrito",
     "file": "startupbase-br.png",
     "kind": "icon",
-    "bytes": 4267,
-    "imageUrl": "https://icon.horse/icon/startupbase.com.br",
+    "bytes": 1369,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=distrito.me&sz=128",
     "contentType": "image/png"
   },
   "israel-tech": {
@@ -199,11 +208,11 @@
   },
   "nordic-startup-news": {
     "id": "nordic-startup-news",
-    "name": "Nordic Startup News / Breakit",
+    "name": "Breakit",
     "file": "nordic-startup-news.png",
     "kind": "icon",
-    "bytes": 2302,
-    "imageUrl": "https://icon.horse/icon/nordicstartupnews.com",
+    "bytes": 6913,
+    "imageUrl": "https://icon.horse/icon/breakit.se",
     "contentType": "image/png"
   },
   "webrazzi": {
@@ -260,12 +269,13 @@
     "imageUrl": "https://icon.horse/icon/startupchile.org",
     "contentType": "image/png"
   },
-  "offline-probe": {
-    "id": "offline-probe",
-    "name": "Legacy XML dump (retired)",
-    "file": "offline-probe.svg",
-    "kind": "logo-fallback",
-    "bytes": 284,
-    "imageUrl": null
+  "dealstreetasia": {
+    "id": "dealstreetasia",
+    "name": "DealStreetAsia",
+    "file": "dealstreetasia.png",
+    "kind": "icon",
+    "bytes": 402,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=dealstreetasia.com&sz=128",
+    "contentType": "image/png"
   }
 }
