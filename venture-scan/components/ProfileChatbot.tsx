@@ -153,13 +153,15 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
 
     const assessment = assessAnswer(step.id, answer);
     if (!assessment.ok) {
+      // Redirect copy already re-asks the current step — do not append the
+      // original prompt or the bot repeats the same question twice.
       const redirectKey = redirectMessageKey(step.id, assessment.kind);
       setMessages((prev) => [
         ...prev,
         {
           id: `b-redirect-${Date.now()}`,
           role: "bot",
-          text: `${t(redirectKey)}\n\n${t(step.promptKey)}`,
+          text: t(redirectKey),
         },
       ]);
       queueMicrotask(() => inputRef.current?.focus());

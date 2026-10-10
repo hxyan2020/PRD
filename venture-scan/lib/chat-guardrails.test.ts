@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { assessAnswer } from "./chat-guardrails";
+import { assessAnswer, redirectMessageKey } from "./chat-guardrails";
+import { translate } from "./i18n/messages";
 
 describe("assessAnswer", () => {
   it("rejects greetings on the name step so Hi is not stored as a name", () => {
@@ -31,5 +32,21 @@ describe("assessAnswer", () => {
     expect(assessAnswer("major", "ok").ok).toBe(false);
     expect(assessAnswer("business", "exploring climate startups").ok).toBe(true);
     expect(assessAnswer("domains", "health tech, climate").ok).toBe(true);
+  });
+});
+
+describe("redirect replies", () => {
+  it("uses a self-contained redirect so the step prompt is not repeated", () => {
+    const assessment = assessAnswer("name", "hi");
+    expect(assessment.ok).toBe(false);
+    if (assessment.ok) return;
+    const key = redirectMessageKey("name", assessment.kind);
+    const redirect = translate("zh-CN", key);
+    const prompt = translate("zh-CN", "match.step.name");
+    expect(redirect).toBeTruthy();
+    expect(redirect).not.toContain(prompt);
+    // Redirect already re-asks; concatenating prompt would duplicate the ask.
+    expect(`${redirect}\n\n${prompt}`).toContain(prompt);
+    expect(redirect.split("怎么称呼你").length).toBeLessThanOrEqual(2);
   });
 });
