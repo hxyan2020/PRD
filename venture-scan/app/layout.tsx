@@ -29,8 +29,13 @@ export const metadata: Metadata = {
   description:
     "Scan worldwide startup ideas and fundraising events. Browse idea name, model, team, industry, funding, website, socials, and go-forward plays.",
   icons: {
-    icon: [{ url: "/favicon.png", type: "image/png", sizes: "32x32" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
+      { url: "/logo-192.png", type: "image/png", sizes: "192x192" },
+    ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "64x64" }],
+    shortcut: [{ url: "/favicon.png", type: "image/png" }],
   },
 };
 
@@ -38,6 +43,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#3d9b7a",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
