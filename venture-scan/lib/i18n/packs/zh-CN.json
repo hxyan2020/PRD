@@ -47,7 +47,7 @@
   "time.hoursAgo": "{count} 小时前",
   "time.daysAgo": "{count} 天前",
   "hero.kicker": "全球创业创意与融资记录",
-  "hero.body": "扫描全球创业创意与融资事件，存入数据库并在前端展示，帮你决定下一步。",
+  "hero.body": "全球创业与融资事件的新鲜信号，以及你的下一步",
   "hero.browse": "浏览 {count} 个创意",
   "hero.today": "今日推荐",
   "hero.match": "聊天匹配",

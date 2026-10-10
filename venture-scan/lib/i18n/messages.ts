@@ -75,7 +75,7 @@ const en = {
 
   "hero.kicker": "Worldwide startup ideas + fundraising",
   "hero.body":
-    "Fresh signals from startups and fundraising events worldwide—stored in a database and surfaced with the fields you need to decide your next move.",
+    "Fresh signals from startups and fundraising events worldwide and your next steps",
   "hero.browse": "Browse {count} ideas",
   "hero.today": "Today's pick",
   "hero.match": "Match with chatbot",

@@ -47,7 +47,7 @@
   "time.hoursAgo": "{count} 小時前",
   "time.daysAgo": "{count} 天前",
   "hero.kicker": "全球創業構想與募資紀錄",
-  "hero.body": "掃描全球創業構想與募資事件，存入資料庫並在前端呈現，協助你決定下一步。",
+  "hero.body": "全球創業與募資事件的新鮮訊號，以及你的下一步",
   "hero.browse": "瀏覽 {count} 個構想",
   "hero.today": "今日推薦",
   "hero.match": "聊天匹配",
