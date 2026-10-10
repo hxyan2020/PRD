@@ -12,7 +12,7 @@ import {
 import { useLanguage } from '../i18n/LanguageContext'
 import type { UiKey } from '../i18n/ui'
 import { categoryColorStyle } from '../lib/categoryColors'
-import { htmlToPlainText, isBlankHtml, sanitizeHtml } from '../lib/sanitizeHtml'
+import { htmlToPlainText, isBlankHtml, renderNoteHtml, sanitizeHtml } from '../lib/sanitizeHtml'
 
 type NotebookSort = 'created' | 'edited' | 'alpha'
 /** Empty = all notes. Includes `UNCATEGORIZED_FILTER` and/or category ids (OR match). */
@@ -38,7 +38,7 @@ function NoteBody({ html, className }: { html: string; className?: string }) {
   return (
     <blockquote
       className={`${className ?? ''} notebook-rich`.trim()}
-      dangerouslySetInnerHTML={{ __html: sanitizeHtml(html) }}
+      dangerouslySetInnerHTML={{ __html: renderNoteHtml(html) }}
     />
   )
 }

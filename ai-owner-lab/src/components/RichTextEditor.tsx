@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+import { CODE_LANGUAGES, type CodeLanguageId } from '../lib/codeHighlight'
 import { sanitizeHtml } from '../lib/sanitizeHtml'
 import { fileToNoteImageDataUrl, isAllowedImageMime } from '../lib/noteImage'
 import { clearHighlightInRange, highlightRange } from '../lib/rangeHighlight'
@@ -119,8 +120,73 @@ function applyList(editor: HTMLElement | null, tag: 'UL' | 'OL') {
 
 function hasVisibleContent(html: string): boolean {
   if (!html) return false
-  if (/<img\b/i.test(html)) return true
+  if (/<(img|table|pre|code)\b/i.test(html)) return true
   return Boolean(html.replace(/<br\s*\/?>|&nbsp;|\s|<\/?[^>]+>/gi, '').trim())
+}
+
+function buildTableHtml(rows: number, cols: number): string {
+  const safeRows = Math.min(12, Math.max(2, rows))
+  const safeCols = Math.min(8, Math.max(2, cols))
+  const header = Array.from({ length: safeCols }, (_, i) => `<th>H${i + 1}</th>`).join('')
+  const body = Array.from({ length: safeRows - 1 }, () => {
+    const cells = Array.from({ length: safeCols }, () => '<td><br></td>').join('')
+    return `<tr>${cells}</tr>`
+  }).join('')
+  return `<table class="notebook-table"><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table><p><br></p>`
+}
+
+function buildCodeBlockHtml(language: CodeLanguageId, sample = ''): string {
+  const lang = language || 'plaintext'
+  const body = sample || (lang === 'plaintext' ? '// code' : sampleForLanguage(lang))
+  return `<pre class="notebook-code-block language-${lang}" data-lang="${lang}"><code class="language-${lang}" data-lang="${lang}">${escapeForInsert(body)}</code></pre><p><br></p>`
+}
+
+function escapeForInsert(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
+function sampleForLanguage(lang: string): string {
+  switch (lang) {
+    case 'python':
+      return 'def hello(name: str) -> str:\n    return f"hi {name}"'
+    case 'sql':
+      return 'SELECT id, name\nFROM users\nWHERE active = TRUE;'
+    case 'yaml':
+      return 'service: ownlab\nreplicas: 3\nenv:\n  - name: MODE\n    value: prod'
+    case 'html':
+      return '<section class="card">\n  <h2>Title</h2>\n</section>'
+    case 'javascript':
+    case 'typescript':
+      return "const total = items.reduce((sum, n) => sum + n, 0)\nconsole.log(total)"
+    case 'json':
+      return '{\n  "status": "ok",\n  "count": 3\n}'
+    case 'css':
+      return '.card {\n  padding: 1rem;\n  border-radius: 0.5rem;\n}'
+    case 'bash':
+      return 'npm run build\nrsync -av dist/ ./ownlab/'
+    case 'markdown':
+      return '# Heading\n\n- item one\n- item two'
+    default:
+      return '// code'
+  }
+}
+
+function insertHtmlAtSelection(html: string, editor: HTMLElement | null) {
+  if (!document.execCommand('insertHTML', false, html) && editor) {
+    editor.insertAdjacentHTML('beforeend', html)
+  }
+}
+
+function selectionInsideCode(editor: HTMLElement | null): HTMLElement | null {
+  const selection = window.getSelection()
+  if (!editor || !selection || !selection.rangeCount) return null
+  const node = selection.getRangeAt(0).startContainer
+  const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
+  const code = el?.closest('pre, code')
+  return code && editor.contains(code) ? (code as HTMLElement) : null
 }
 
 function applyHighlightColor(color: string, editor: HTMLElement | null) {
@@ -154,6 +220,9 @@ export function RichTextEditor({
   const placeholderId = useId()
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
+  const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
+  const [tableRows, setTableRows] = useState(3)
+  const [tableCols, setTableCols] = useState(3)
 
   useEffect(() => {
     const el = editorRef.current
@@ -417,6 +486,101 @@ export function RichTextEditor({
           </button>
         </div>
         <span className="rte-sep" aria-hidden="true" />
+        <div className="rte-table-controls" role="group" aria-label={t('editorInsertTable')}>
+          <label className="rte-select-wrap rte-table-size">
+            <span className="sr-only">{t('editorTableRows')}</span>
+            <select
+              className="rte-select"
+              value={tableRows}
+              aria-label={t('editorTableRows')}
+              onMouseDown={() => captureSelection()}
+              onFocus={() => captureSelection()}
+              onChange={(e) => setTableRows(Number(e.target.value))}
+            >
+              {[2, 3, 4, 5, 6].map((n) => (
+                <option key={n} value={n}>
+                  {n}×
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="rte-select-wrap rte-table-size">
+            <span className="sr-only">{t('editorTableCols')}</span>
+            <select
+              className="rte-select"
+              value={tableCols}
+              aria-label={t('editorTableCols')}
+              onMouseDown={() => captureSelection()}
+              onFocus={() => captureSelection()}
+              onChange={(e) => setTableCols(Number(e.target.value))}
+            >
+              {[2, 3, 4, 5, 6].map((n) => (
+                <option key={n} value={n}>
+                  ×{n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="rte-btn"
+            title={t('editorInsertTable')}
+            aria-label={t('editorInsertTable')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              captureSelection()
+            }}
+            onClick={() =>
+              withFocus(() =>
+                insertHtmlAtSelection(
+                  sanitizeHtml(buildTableHtml(tableRows, tableCols)),
+                  editorRef.current,
+                ),
+              )
+            }
+          >
+            ▦
+          </button>
+        </div>
+        <div className="rte-code-controls" role="group" aria-label={t('editorInsertCode')}>
+          <label className="rte-select-wrap">
+            <span className="sr-only">{t('editorCodeLanguage')}</span>
+            <select
+              className="rte-select rte-code-lang"
+              value={codeLanguage}
+              aria-label={t('editorCodeLanguage')}
+              onMouseDown={() => captureSelection()}
+              onFocus={() => captureSelection()}
+              onChange={(e) => setCodeLanguage(e.target.value as CodeLanguageId)}
+            >
+              {CODE_LANGUAGES.map((lang) => (
+                <option key={lang.id} value={lang.id}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="rte-btn"
+            title={t('editorInsertCode')}
+            aria-label={t('editorInsertCode')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              captureSelection()
+            }}
+            onClick={() =>
+              withFocus(() =>
+                insertHtmlAtSelection(
+                  sanitizeHtml(buildCodeBlockHtml(codeLanguage)),
+                  editorRef.current,
+                ),
+              )
+            }
+          >
+            {'</>'}
+          </button>
+        </div>
         <button
           type="button"
           className="rte-btn rte-btn-image"
@@ -500,7 +664,22 @@ export function RichTextEditor({
           onBlur={emitChange}
           onKeyUp={captureSelection}
           onKeyDown={(e) => {
+            if (e.key === 'Enter' && selectionInsideCode(editorRef.current)) {
+              e.preventDefault()
+              // Keep newlines inside code blocks instead of splitting the <pre>.
+              runCommand('insertText', '\n')
+              emitChange()
+              captureSelection()
+              return
+            }
             if (e.key !== 'Tab') return
+            if (selectionInsideCode(editorRef.current)) {
+              e.preventDefault()
+              runCommand('insertText', '  ')
+              emitChange()
+              captureSelection()
+              return
+            }
             const items = selectedListItems(editorRef.current)
             if (!items.length) return
             e.preventDefault()

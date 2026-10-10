@@ -3189,6 +3189,212 @@ button.notebook-category-badge.on {
   background: rgba(255, 255, 255, 0.7);
 }
 
+.rte-table-controls,
+.rte-code-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.rte-table-size .rte-select {
+  min-width: 3.1rem;
+  padding-inline: 0.25rem;
+}
+
+.rte-code-lang {
+  min-width: 6.5rem;
+}
+
+.rte-editor table.notebook-table,
+.notebook-rich table.notebook-table,
+.notebook-quote table.notebook-table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.92rem;
+  background: #fff;
+}
+
+.rte-editor table.notebook-table th,
+.rte-editor table.notebook-table td,
+.notebook-rich table.notebook-table th,
+.notebook-rich table.notebook-table td,
+.notebook-quote table.notebook-table th,
+.notebook-quote table.notebook-table td {
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.6rem;
+  vertical-align: top;
+  min-width: 3rem;
+}
+
+.rte-editor table.notebook-table th,
+.notebook-rich table.notebook-table th,
+.notebook-quote table.notebook-table th {
+  background: rgba(13, 148, 136, 0.1);
+  color: var(--teal-deep);
+  font-weight: 800;
+  text-align: left;
+}
+
+.rte-editor table.notebook-table tr:nth-child(even) td,
+.notebook-rich table.notebook-table tr:nth-child(even) td,
+.notebook-quote table.notebook-table tr:nth-child(even) td {
+  background: rgba(245, 248, 250, 0.75);
+}
+
+.rte-editor pre.notebook-code-block,
+.notebook-rich pre.notebook-code-block,
+.notebook-quote pre.notebook-code-block {
+  position: relative;
+  margin: 0.75rem 0;
+  padding: 0.85rem 0.9rem 0.9rem;
+  overflow-x: auto;
+  border-radius: 0.4rem;
+  border: 1px solid #1f3340;
+  background: #12202a;
+  color: #e7eef3;
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.rte-editor pre.notebook-code-block::before,
+.notebook-rich pre.notebook-code-block::before,
+.notebook-quote pre.notebook-code-block::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0.35rem;
+  right: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #9fb3c1;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rte-editor pre.notebook-code-block code,
+.notebook-rich pre.notebook-code-block code,
+.notebook-quote pre.notebook-code-block code {
+  display: block;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: inherit;
+}
+
+.rte-editor code.notebook-code,
+.notebook-rich code.notebook-code,
+.notebook-quote code.notebook-code {
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+  background: rgba(13, 148, 136, 0.12);
+  color: var(--teal-deep);
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+/* Syntax colors (hljs tokens) — OWNLAB dark code theme */
+.notebook-rich .hljs-keyword,
+.notebook-quote .hljs-keyword,
+.rte-editor .hljs-keyword,
+.notebook-rich .hljs-selector-tag,
+.notebook-quote .hljs-selector-tag,
+.rte-editor .hljs-selector-tag {
+  color: #7dd3fc;
+}
+
+.notebook-rich .hljs-built_in,
+.notebook-quote .hljs-built_in,
+.rte-editor .hljs-built_in,
+.notebook-rich .hljs-type,
+.notebook-quote .hljs-type,
+.rte-editor .hljs-type {
+  color: #5eead4;
+}
+
+.notebook-rich .hljs-string,
+.notebook-quote .hljs-string,
+.rte-editor .hljs-string,
+.notebook-rich .hljs-attr,
+.notebook-quote .hljs-attr,
+.rte-editor .hljs-attr,
+.notebook-rich .hljs-attribute,
+.notebook-quote .hljs-attribute,
+.rte-editor .hljs-attribute {
+  color: #86efac;
+}
+
+.notebook-rich .hljs-number,
+.notebook-quote .hljs-number,
+.rte-editor .hljs-number,
+.notebook-rich .hljs-literal,
+.notebook-quote .hljs-literal,
+.rte-editor .hljs-literal {
+  color: #fbbf24;
+}
+
+.notebook-rich .hljs-comment,
+.notebook-quote .hljs-comment,
+.rte-editor .hljs-comment,
+.notebook-rich .hljs-quote,
+.notebook-quote .hljs-quote,
+.rte-editor .hljs-quote {
+  color: #8aa0ad;
+  font-style: italic;
+}
+
+.notebook-rich .hljs-title,
+.notebook-quote .hljs-title,
+.rte-editor .hljs-title,
+.notebook-rich .hljs-title.function_,
+.notebook-quote .hljs-title.function_,
+.rte-editor .hljs-title.function_,
+.notebook-rich .hljs-section,
+.notebook-quote .hljs-section,
+.rte-editor .hljs-section {
+  color: #c4b5fd;
+}
+
+.notebook-rich .hljs-meta,
+.notebook-quote .hljs-meta,
+.rte-editor .hljs-meta,
+.notebook-rich .hljs-name,
+.notebook-quote .hljs-name,
+.rte-editor .hljs-name,
+.notebook-rich .hljs-tag,
+.notebook-quote .hljs-tag,
+.rte-editor .hljs-tag {
+  color: #fda4af;
+}
+
+.notebook-rich .hljs-variable,
+.notebook-quote .hljs-variable,
+.rte-editor .hljs-variable,
+.notebook-rich .hljs-template-variable,
+.notebook-quote .hljs-template-variable,
+.rte-editor .hljs-template-variable,
+.notebook-rich .hljs-params,
+.notebook-quote .hljs-params,
+.rte-editor .hljs-params {
+  color: #fde68a;
+}
+
+.notebook-rich .hljs-punctuation,
+.notebook-quote .hljs-punctuation,
+.rte-editor .hljs-punctuation,
+.notebook-rich .hljs-operator,
+.notebook-quote .hljs-operator,
+.rte-editor .hljs-operator {
+  color: #cbd5e1;
+}
+
 .notebook-rich {
   white-space: normal;
 }
