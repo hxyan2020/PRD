@@ -1,3 +1,9 @@
+import {
+  getCategoryColor,
+  isCategoryColorId,
+  nextCategoryColor,
+  type CategoryColorId,
+} from '../lib/categoryColors'
 import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
 const STORAGE_KEY = 'ownlab-notebook-v1'
@@ -62,15 +68,36 @@ function writeTrash(trash: TrashedNotebookEntry[]) {
   trashListeners.forEach((listener) => listener(sorted))
 }
 
+function normalizeCategory(raw: Partial<NotebookCategory>, usedColors: Array<string | undefined>): NotebookCategory | null {
+  if (!raw || typeof raw.id !== 'string' || typeof raw.name !== 'string') return null
+  const color = isCategoryColorId(raw.color)
+    ? raw.color
+    : nextCategoryColor(usedColors)
+  return {
+    id: raw.id,
+    name: raw.name,
+    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : new Date().toISOString(),
+    color,
+  }
+}
+
 function readCategories(): NotebookCategory[] {
   try {
     const raw = localStorage.getItem(CATEGORY_STORAGE_KEY)
     if (!raw) return []
-    const parsed = JSON.parse(raw) as NotebookCategory[]
+    const parsed = JSON.parse(raw) as Partial<NotebookCategory>[]
     if (!Array.isArray(parsed)) return []
-    return parsed
-      .filter((c) => c && typeof c.id === 'string' && typeof c.name === 'string')
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+    const used: Array<string | undefined> = []
+    const normalized: NotebookCategory[] = []
+    for (const item of parsed) {
+      const cat = normalizeCategory(item, used)
+      if (!cat) continue
+      used.push(cat.color)
+      normalized.push(cat)
+    }
+    return normalized.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+    )
   } catch {
     return []
   }
@@ -267,7 +294,7 @@ export const notebookStore = {
     }
     write([])
   },
-  addCategory(name: string) {
+  addCategory(name: string, color?: CategoryColorId) {
     const trimmed = name.trim()
     if (!trimmed) return null
     const existing = readCategories()
@@ -278,6 +305,9 @@ export const notebookStore = {
       id: uid('cat'),
       name: trimmed,
       createdAt: new Date().toISOString(),
+      color: isCategoryColorId(color)
+        ? color
+        : nextCategoryColor(existing.map((c) => c.color)),
     }
     writeCategories([...existing, category])
     return category
@@ -294,6 +324,17 @@ export const notebookStore = {
       return null
     }
     const updated = { ...categories[index], name: trimmed }
+    const next = [...categories]
+    next[index] = updated
+    writeCategories(next)
+    return updated
+  },
+  setCategoryColor(id: string, color: CategoryColorId) {
+    if (!isCategoryColorId(color)) return null
+    const categories = readCategories()
+    const index = categories.findIndex((c) => c.id === id)
+    if (index < 0) return null
+    const updated = { ...categories[index], color: getCategoryColor(color).id }
     const next = [...categories]
     next[index] = updated
     writeCategories(next)

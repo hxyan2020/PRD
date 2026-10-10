@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { CategoryColorId } from '../lib/categoryColors'
 import { notebookStore } from './notebookStore'
 
 export type NotebookEntryType = 'clip' | 'explanation' | 'note'
@@ -7,6 +8,7 @@ export interface NotebookCategory {
   id: string
   name: string
   createdAt: string
+  color: CategoryColorId
 }
 
 export interface NotebookEntry {
@@ -59,6 +61,7 @@ export function useNotebook() {
     restoreEntry: notebookStore.restore,
     addCategory: notebookStore.addCategory,
     renameCategory: notebookStore.renameCategory,
+    setCategoryColor: notebookStore.setCategoryColor,
     removeCategory: notebookStore.removeCategory,
   }
 }

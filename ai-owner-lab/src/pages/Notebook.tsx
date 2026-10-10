@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { RichTextEditor } from '../components/RichTextEditor'
 import {
@@ -10,7 +10,54 @@ import {
 } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
 import type { UiKey } from '../i18n/ui'
+import {
+  CATEGORY_COLORS,
+  categoryColorStyle,
+  nextCategoryColor,
+  type CategoryColorId,
+} from '../lib/categoryColors'
 import { htmlToPlainText, isBlankHtml, sanitizeHtml } from '../lib/sanitizeHtml'
+
+const COLOR_LABEL_KEY: Record<CategoryColorId, UiKey> = {
+  teal: 'colorTeal',
+  amber: 'colorAmber',
+  rose: 'colorRose',
+  blue: 'colorBlue',
+  green: 'colorGreen',
+  slate: 'colorSlate',
+  orange: 'colorOrange',
+  violet: 'colorViolet',
+}
+
+function CategoryColorSwatches({
+  value,
+  onChange,
+  label,
+  t,
+}: {
+  value: CategoryColorId
+  onChange: (color: CategoryColorId) => void
+  label: string
+  t: (key: UiKey) => string
+}) {
+  return (
+    <div className="category-color-swatches" role="radiogroup" aria-label={label}>
+      {CATEGORY_COLORS.map((color) => (
+        <button
+          key={color.id}
+          type="button"
+          role="radio"
+          aria-checked={value === color.id}
+          className={`category-color-swatch${value === color.id ? ' on' : ''}`}
+          style={{ '--cat-swatch': color.swatch } as CSSProperties}
+          title={t(COLOR_LABEL_KEY[color.id])}
+          aria-label={t(COLOR_LABEL_KEY[color.id])}
+          onClick={() => onChange(color.id)}
+        />
+      ))}
+    </div>
+  )
+}
 
 type NotebookSort = 'created' | 'edited' | 'alpha'
 type CategoryFilter = 'all' | 'none' | string
@@ -137,12 +184,17 @@ function CategoryPicker({
       {categories.map((cat) => {
         const checked = selectedIds.includes(cat.id)
         return (
-          <label key={cat.id} className={`notebook-category-option${checked ? ' on' : ''}`}>
+          <label
+            key={cat.id}
+            className={`notebook-category-option${checked ? ' on' : ''}`}
+            style={categoryColorStyle(cat.color) as CSSProperties}
+          >
             <input
               type="checkbox"
               checked={checked}
               onChange={() => onChange(toggleId(selectedIds, cat.id))}
             />
+            <span className="category-dot" aria-hidden="true" />
             <span>{cat.name}</span>
           </label>
         )
@@ -163,6 +215,7 @@ export function Notebook() {
     removeEntry,
     restoreEntry,
     addCategory,
+    setCategoryColor,
     removeCategory,
   } = useNotebook()
   const { lang, t } = useLanguage()
@@ -180,6 +233,9 @@ export function Notebook() {
   const [query, setQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
   const [newCategoryName, setNewCategoryName] = useState('')
+  const [newCategoryColor, setNewCategoryColor] = useState<CategoryColorId>(() =>
+    nextCategoryColor([]),
+  )
   const [recoverToast, setRecoverToast] = useState(false)
 
   const categoryMap = useMemo(() => {
@@ -262,9 +318,10 @@ export function Notebook() {
   }
 
   function createCategory() {
-    const created = addCategory(newCategoryName)
+    const created = addCategory(newCategoryName, newCategoryColor)
     if (!created) return
     setNewCategoryName('')
+    setNewCategoryColor(nextCategoryColor([...categories.map((c) => c.color), created.color]))
   }
 
   function onDeleteCategory(cat: NotebookCategory) {
@@ -399,7 +456,12 @@ export function Notebook() {
                     <span className="notebook-type">{typeLabel(entry.type, t)}</span>
                     {entryCategories.length
                       ? entryCategories.map((cat) => (
-                          <span key={cat.id} className="notebook-category-badge">
+                          <span
+                            key={cat.id}
+                            className="notebook-category-badge"
+                            style={categoryColorStyle(cat.color) as CSSProperties}
+                          >
+                            <span className="category-dot" aria-hidden="true" />
                             {cat.name}
                           </span>
                         ))
@@ -457,11 +519,29 @@ export function Notebook() {
             {t('addCategory')}
           </button>
         </div>
+        <div className="notebook-category-color-row">
+          <span className="notebook-field-label">{t('categoryColor')}</span>
+          <CategoryColorSwatches
+            value={newCategoryColor}
+            onChange={setNewCategoryColor}
+            label={t('chooseCategoryColor')}
+            t={t}
+          />
+        </div>
         {categories.length ? (
           <ul className="notebook-category-list">
             {categories.map((cat) => (
-              <li key={cat.id}>
-                <span className="notebook-category-chip">{cat.name}</span>
+              <li key={cat.id} style={categoryColorStyle(cat.color) as CSSProperties}>
+                <span className="notebook-category-chip">
+                  <span className="category-dot" aria-hidden="true" />
+                  {cat.name}
+                </span>
+                <CategoryColorSwatches
+                  value={cat.color}
+                  onChange={(color) => setCategoryColor(cat.id, color)}
+                  label={`${t('chooseCategoryColor')}: ${cat.name}`}
+                  t={t}
+                />
                 <button
                   type="button"
                   className="btn ghost"
@@ -496,9 +576,11 @@ export function Notebook() {
               <button
                 key={cat.id}
                 type="button"
-                className={`notebook-filter-chip${categoryFilter === cat.id ? ' on' : ''}`}
+                className={`notebook-filter-chip colored${categoryFilter === cat.id ? ' on' : ''}`}
+                style={categoryColorStyle(cat.color) as CSSProperties}
                 onClick={() => setCategoryFilter(cat.id)}
               >
+                <span className="category-dot" aria-hidden="true" />
                 {cat.name}
               </button>
             ))}
@@ -611,7 +693,12 @@ export function Notebook() {
                   <span className="notebook-type">{typeLabel(entry.type, t)}</span>
                   {entryCategories.length
                     ? entryCategories.map((cat) => (
-                        <span key={cat.id} className="notebook-category-badge">
+                        <span
+                          key={cat.id}
+                          className="notebook-category-badge"
+                          style={categoryColorStyle(cat.color) as CSSProperties}
+                        >
+                          <span className="category-dot" aria-hidden="true" />
                           {cat.name}
                         </span>
                       ))
