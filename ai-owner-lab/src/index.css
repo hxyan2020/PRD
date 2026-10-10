@@ -1753,6 +1753,11 @@ body.menu-open {
   color: #d7fff8;
 }
 
+.selection-action.highlight {
+  background: rgba(253, 230, 138, 0.22);
+  color: #fde68a;
+}
+
 .selection-action:hover,
 .selection-action:focus-visible {
   background: rgba(245, 248, 250, 0.16);
@@ -1762,6 +1767,11 @@ body.menu-open {
 .selection-action.ai:hover,
 .selection-action.ai:focus-visible {
   background: rgba(13, 148, 136, 0.42);
+}
+
+.selection-action.highlight:hover,
+.selection-action.highlight:focus-visible {
+  background: rgba(253, 230, 138, 0.34);
 }
 
 @media (max-width: 960px) {
@@ -2898,6 +2908,21 @@ button.notebook-category-badge.on {
 .rte-editor p,
 .notebook-rich p {
   margin: 0 0 0.45rem;
+}
+
+.rte-editor mark,
+.notebook-rich mark,
+.notebook-quote mark {
+  background: #fde68a;
+  color: inherit;
+  border-radius: 0.15rem;
+  padding: 0.05em 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.rte-select-highlight {
+  min-width: 7.5rem;
 }
 
 .rte-editor img,

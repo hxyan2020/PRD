@@ -21,6 +21,7 @@ const ALLOWED_TAGS = new Set([
   'H3',
   'IMG',
   'FIGURE',
+  'MARK',
 ])
 
 const ALLOWED_STYLES = new Set([

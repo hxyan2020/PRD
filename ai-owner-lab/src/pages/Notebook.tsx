@@ -416,7 +416,11 @@ export function Notebook() {
                 .map((id) => categoryMap.get(id))
                 .filter((c): c is NotebookCategory => Boolean(c))
               return (
-                <li key={entry.id} className={`notebook-entry ${entry.type} dustbin-entry`}>
+                <li
+                  key={entry.id}
+                  data-entry-id={entry.id}
+                  className={`notebook-entry ${entry.type} dustbin-entry`}
+                >
                   <div className="notebook-meta">
                     <time dateTime={entry.deletedAt}>
                       {t('deletedAt')} {formatTimestamp(entry.deletedAt, lang)}
@@ -666,7 +670,11 @@ export function Notebook() {
               .map((id) => categoryMap.get(id))
               .filter((c): c is NotebookCategory => Boolean(c))
             return (
-              <li key={entry.id} className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}`}>
+              <li
+                key={entry.id}
+                data-entry-id={entry.id}
+                className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}`}
+              >
                 <div className="notebook-meta">
                   <time dateTime={entry.createdAt}>{formatTimestamp(entry.createdAt, lang)}</time>
                   {entry.updatedAt ? (

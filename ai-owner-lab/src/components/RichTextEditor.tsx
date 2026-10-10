@@ -12,6 +12,21 @@ const COLORS = [
   { value: '#6d28d9', labelKey: 'editorColorViolet' as const },
 ]
 
+const HIGHLIGHTS = [
+  { value: '#fde68a', labelKey: 'editorHighlightYellow' as const },
+  { value: '#bbf7d0', labelKey: 'editorHighlightGreen' as const },
+  { value: '#bae6fd', labelKey: 'editorHighlightBlue' as const },
+  { value: '#fecdd3', labelKey: 'editorHighlightRose' as const },
+  { value: '#e9d5ff', labelKey: 'editorHighlightViolet' as const },
+  { value: 'transparent', labelKey: 'editorHighlightNone' as const },
+]
+
+function applyHighlight(color: string) {
+  // Chrome/Safari prefer hiliteColor; Firefox uses backColor.
+  const ok = document.execCommand('hiliteColor', false, color)
+  if (!ok) document.execCommand('backColor', false, color)
+}
+
 const SIZES = [
   { value: '3', labelKey: 'editorSizeNormal' as const },
   { value: '2', labelKey: 'editorSizeSmall' as const },
@@ -217,6 +232,25 @@ export function RichTextEditor({
             }}
           >
             {COLORS.map((color) => (
+              <option key={color.value} value={color.value}>
+                {t(color.labelKey)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="rte-select-wrap">
+          <span className="sr-only">{t('editorHighlight')}</span>
+          <select
+            className="rte-select rte-select-highlight"
+            defaultValue={HIGHLIGHTS[0].value}
+            aria-label={t('editorHighlight')}
+            onMouseDown={(e) => e.stopPropagation()}
+            onChange={(e) => {
+              const color = e.target.value
+              withFocus(() => applyHighlight(color))
+            }}
+          >
+            {HIGHLIGHTS.map((color) => (
               <option key={color.value} value={color.value}>
                 {t(color.labelKey)}
               </option>
