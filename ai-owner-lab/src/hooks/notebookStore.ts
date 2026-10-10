@@ -1,17 +1,27 @@
 import { isCategoryColorId, nextCategoryColor } from '../lib/categoryColors'
+import {
+  IDB_KEYS,
+  idbGet,
+  idbGetMeta,
+  idbSet,
+  idbSetMeta,
+  isPersistenceQuotaExceeded,
+} from '../lib/notebookPersistence'
 import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
-const STORAGE_KEY = 'ownlab-notebook-v1'
-const TRASH_STORAGE_KEY = 'ownlab-notebook-trash-v1'
-const CATEGORY_STORAGE_KEY = 'ownlab-notebook-categories-v1'
+const LS_ENTRIES = 'ownlab-notebook-v1'
+const LS_TRASH = 'ownlab-notebook-trash-v1'
+const LS_CATEGORIES = 'ownlab-notebook-categories-v1'
 
 type EntryListener = (entries: NotebookEntry[]) => void
 type TrashListener = (trash: TrashedNotebookEntry[]) => void
 type CategoryListener = (categories: NotebookCategory[]) => void
+type ReadyListener = () => void
 
 const entryListeners = new Set<EntryListener>()
 const trashListeners = new Set<TrashListener>()
 const categoryListeners = new Set<CategoryListener>()
+const readyListeners = new Set<ReadyListener>()
 
 export type NotebookStorageErrorCode = 'quota' | 'unknown'
 
@@ -25,78 +35,63 @@ export class NotebookStorageError extends Error {
   }
 }
 
-function isQuotaExceeded(err: unknown): boolean {
-  if (!err || typeof err !== 'object') return false
-  const e = err as { name?: string; code?: number; message?: string }
-  if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') return true
-  // Legacy WebKit / IE codes
-  if (e.code === 22 || e.code === 1014) return true
-  return /quota/i.test(e.message ?? '')
+type Cache = {
+  entries: NotebookEntry[]
+  trash: TrashedNotebookEntry[]
+  categories: NotebookCategory[]
 }
 
-function persistLocalStorage(key: string, value: string) {
-  try {
-    localStorage.setItem(key, value)
-  } catch (err) {
-    throw new NotebookStorageError(isQuotaExceeded(err) ? 'quota' : 'unknown')
-  }
+const cache: Cache = {
+  entries: [],
+  trash: [],
+  categories: [],
 }
 
-function read(): NotebookEntry[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as NotebookEntry[]
-    if (!Array.isArray(parsed)) return []
-    return parsed.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-  } catch {
-    return []
-  }
-}
+let ready = false
+let readyPromise: Promise<void> | null = null
 
-function write(entries: NotebookEntry[]) {
-  const sorted = [...entries].sort(
+function sortEntries(entries: NotebookEntry[]): NotebookEntry[] {
+  return [...entries].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   )
-  persistLocalStorage(STORAGE_KEY, JSON.stringify(sorted))
-  entryListeners.forEach((listener) => listener(sorted))
 }
 
-function readTrash(): TrashedNotebookEntry[] {
-  try {
-    const raw = localStorage.getItem(TRASH_STORAGE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as TrashedNotebookEntry[]
-    if (!Array.isArray(parsed)) return []
-    return parsed
-      .filter(
-        (e) =>
-          e &&
-          typeof e.id === 'string' &&
-          typeof e.selectedText === 'string' &&
-          typeof e.deletedAt === 'string',
-      )
-      .sort((a, b) => new Date(b.deletedAt).getTime() - new Date(a.deletedAt).getTime())
-  } catch {
-    return []
-  }
-}
-
-function writeTrash(trash: TrashedNotebookEntry[]) {
-  const sorted = [...trash].sort(
+function sortTrash(trash: TrashedNotebookEntry[]): TrashedNotebookEntry[] {
+  return [...trash].sort(
     (a, b) => new Date(b.deletedAt).getTime() - new Date(a.deletedAt).getTime(),
   )
-  persistLocalStorage(TRASH_STORAGE_KEY, JSON.stringify(sorted))
-  trashListeners.forEach((listener) => listener(sorted))
 }
 
-function normalizeCategory(raw: Partial<NotebookCategory>, usedColors: Array<string | undefined>): NotebookCategory | null {
+function sortCategories(categories: NotebookCategory[]): NotebookCategory[] {
+  return [...categories].sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+  )
+}
+
+function parseEntries(raw: unknown): NotebookEntry[] {
+  if (!Array.isArray(raw)) return []
+  return sortEntries(raw as NotebookEntry[])
+}
+
+function parseTrash(raw: unknown): TrashedNotebookEntry[] {
+  if (!Array.isArray(raw)) return []
+  return sortTrash(
+    (raw as TrashedNotebookEntry[]).filter(
+      (e) =>
+        e &&
+        typeof e.id === 'string' &&
+        typeof e.selectedText === 'string' &&
+        typeof e.deletedAt === 'string',
+    ),
+  )
+}
+
+function normalizeCategory(
+  raw: Partial<NotebookCategory>,
+  usedColors: Array<string | undefined>,
+): NotebookCategory | null {
   if (!raw || typeof raw.id !== 'string' || typeof raw.name !== 'string') return null
-  const color = isCategoryColorId(raw.color)
-    ? raw.color
-    : nextCategoryColor(usedColors)
+  const color = isCategoryColorId(raw.color) ? raw.color : nextCategoryColor(usedColors)
   return {
     id: raw.id,
     name: raw.name,
@@ -105,43 +100,161 @@ function normalizeCategory(raw: Partial<NotebookCategory>, usedColors: Array<str
   }
 }
 
-function readCategories(): NotebookCategory[] {
+function parseCategories(raw: unknown): NotebookCategory[] {
+  if (!Array.isArray(raw)) return []
+  const used: Array<string | undefined> = []
+  const normalized: NotebookCategory[] = []
+  for (const item of raw as Partial<NotebookCategory>[]) {
+    const cat = normalizeCategory(item, used)
+    if (!cat) continue
+    used.push(cat.color)
+    normalized.push(cat)
+  }
+  return sortCategories(normalized)
+}
+
+function readLocalStorageJson(key: string): unknown {
   try {
-    const raw = localStorage.getItem(CATEGORY_STORAGE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as Partial<NotebookCategory>[]
-    if (!Array.isArray(parsed)) return []
-    const used: Array<string | undefined> = []
-    const normalized: NotebookCategory[] = []
-    let needsPersist = false
-    for (const item of parsed) {
-      const cat = normalizeCategory(item, used)
-      if (!cat) continue
-      if (!isCategoryColorId(item.color)) needsPersist = true
-      used.push(cat.color)
-      normalized.push(cat)
-    }
-    const sorted = normalized.sort((a, b) =>
-      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
-    )
-    if (needsPersist) {
-      try {
-        persistLocalStorage(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
-      } catch {
-        /* best-effort migration; keep in-memory colors */
-      }
-    }
-    return sorted
+    const raw = localStorage.getItem(key)
+    if (!raw) return undefined
+    return JSON.parse(raw) as unknown
   } catch {
-    return []
+    return undefined
   }
 }
 
-function writeCategories(categories: NotebookCategory[]) {
-  const sorted = [...categories].sort((a, b) =>
-    a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
-  )
-  persistLocalStorage(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
+function clearLocalStorageNotebookKeys() {
+  try {
+    localStorage.removeItem(LS_ENTRIES)
+    localStorage.removeItem(LS_TRASH)
+    localStorage.removeItem(LS_CATEGORIES)
+  } catch {
+    /* ignore */
+  }
+}
+
+async function persistKey(key: typeof IDB_KEYS.entries | typeof IDB_KEYS.trash | typeof IDB_KEYS.categories, value: unknown) {
+  try {
+    await idbSet(key, value)
+  } catch (err) {
+    throw new NotebookStorageError(isPersistenceQuotaExceeded(err) ? 'quota' : 'unknown')
+  }
+}
+
+async function hydrate(): Promise<void> {
+  let entries: NotebookEntry[] = []
+  let trash: TrashedNotebookEntry[] = []
+  let categories: NotebookCategory[] = []
+
+  try {
+    const meta = await idbGetMeta()
+    const idbEntries = await idbGet<NotebookEntry[]>(IDB_KEYS.entries)
+    const idbTrash = await idbGet<TrashedNotebookEntry[]>(IDB_KEYS.trash)
+    const idbCategories = await idbGet<NotebookCategory[]>(IDB_KEYS.categories)
+
+    const hasIdb =
+      idbEntries !== undefined || idbTrash !== undefined || idbCategories !== undefined || Boolean(meta)
+
+    if (hasIdb) {
+      entries = parseEntries(idbEntries ?? [])
+      trash = parseTrash(idbTrash ?? [])
+      categories = parseCategories(idbCategories ?? [])
+    } else {
+      // First launch on IndexedDB: migrate any legacy localStorage notebook.
+      entries = parseEntries(readLocalStorageJson(LS_ENTRIES))
+      trash = parseTrash(readLocalStorageJson(LS_TRASH))
+      categories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
+      const hadLocalData = entries.length > 0 || trash.length > 0 || categories.length > 0
+      await persistKey(IDB_KEYS.entries, entries)
+      await persistKey(IDB_KEYS.trash, trash)
+      await persistKey(IDB_KEYS.categories, categories)
+      await idbSetMeta({
+        storageBackend: 'indexeddb',
+        migratedFromLocalStorageAt: hadLocalData ? new Date().toISOString() : undefined,
+      })
+      clearLocalStorageNotebookKeys()
+      if (hadLocalData) (cache as Cache & { _migrated?: boolean })._migrated = true
+    }
+
+    // If IDB already existed but localStorage still has newer/orphan data (partial
+    // prior migrate), merge by id without dropping either side.
+    const lsEntries = parseEntries(readLocalStorageJson(LS_ENTRIES))
+    const lsTrash = parseTrash(readLocalStorageJson(LS_TRASH))
+    const lsCategories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
+    if (lsEntries.length || lsTrash.length || lsCategories.length) {
+      const entryIds = new Set(entries.map((e) => e.id))
+      const mergedEntries = sortEntries([
+        ...entries,
+        ...lsEntries.filter((e) => e?.id && !entryIds.has(e.id)),
+      ])
+      const trashIds = new Set(trash.map((e) => e.id))
+      const mergedTrash = sortTrash([
+        ...trash,
+        ...lsTrash.filter((e) => e?.id && !trashIds.has(e.id)),
+      ])
+      const catIds = new Set(categories.map((c) => c.id))
+      const mergedCategories = sortCategories([
+        ...categories,
+        ...lsCategories.filter((c) => c?.id && !catIds.has(c.id)),
+      ])
+      entries = mergedEntries
+      trash = mergedTrash
+      categories = mergedCategories
+      await persistKey(IDB_KEYS.entries, entries)
+      await persistKey(IDB_KEYS.trash, trash)
+      await persistKey(IDB_KEYS.categories, categories)
+      clearLocalStorageNotebookKeys()
+      ;(cache as Cache & { _migrated?: boolean })._migrated = true
+    }
+  } catch {
+    // Fall back to whatever localStorage still has if IDB is blocked.
+    entries = parseEntries(readLocalStorageJson(LS_ENTRIES))
+    trash = parseTrash(readLocalStorageJson(LS_TRASH))
+    categories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
+  }
+
+  cache.entries = entries
+  cache.trash = trash
+  cache.categories = categories
+  ready = true
+  entryListeners.forEach((listener) => listener(cache.entries))
+  trashListeners.forEach((listener) => listener(cache.trash))
+  categoryListeners.forEach((listener) => listener(cache.categories))
+  readyListeners.forEach((listener) => listener())
+}
+
+function ensureReady(): Promise<void> {
+  if (ready) return Promise.resolve()
+  if (!readyPromise) readyPromise = hydrate()
+  return readyPromise
+}
+
+// Kick off hydration as soon as the module loads in the browser.
+if (typeof window !== 'undefined') {
+  void ensureReady()
+}
+
+async function writeEntries(entries: NotebookEntry[]) {
+  await ensureReady()
+  const sorted = sortEntries(entries)
+  await persistKey(IDB_KEYS.entries, sorted)
+  cache.entries = sorted
+  entryListeners.forEach((listener) => listener(sorted))
+}
+
+async function writeTrash(trash: TrashedNotebookEntry[]) {
+  await ensureReady()
+  const sorted = sortTrash(trash)
+  await persistKey(IDB_KEYS.trash, sorted)
+  cache.trash = sorted
+  trashListeners.forEach((listener) => listener(sorted))
+}
+
+async function writeCategories(categories: NotebookCategory[]) {
+  await ensureReady()
+  const sorted = sortCategories(categories)
+  await persistKey(IDB_KEYS.categories, sorted)
+  cache.categories = sorted
   categoryListeners.forEach((listener) => listener(sorted))
 }
 
@@ -155,10 +268,29 @@ function normalizeCategoryIds(ids: string[] | undefined): string[] | undefined {
   return unique.length ? unique : undefined
 }
 
+const MIGRATION_BANNER_KEY = 'ownlab-notebook-idb-banner-seen'
+
 export const notebookStore = {
-  get: read,
-  getTrash: readTrash,
-  getCategories: readCategories,
+  ready: ensureReady,
+  isReady: () => ready,
+  get: () => cache.entries,
+  getTrash: () => cache.trash,
+  getCategories: () => cache.categories,
+  /** True once after a localStorage → IndexedDB migration (for a one-time UI notice). */
+  consumeMigrationNotice(): boolean {
+    try {
+      if (localStorage.getItem(MIGRATION_BANNER_KEY) === '1') return false
+      // Only show if we actually cleared/migrated LS data this session or earlier.
+      // Flag is set when hydrate wrote meta.migratedFromLocalStorageAt for the first time,
+      // or when merge-from-LS ran. We detect via meta asynchronously in hydrate and
+      // stash a session hint on cache.
+      if (!(cache as Cache & { _migrated?: boolean })._migrated) return false
+      localStorage.setItem(MIGRATION_BANNER_KEY, '1')
+      return true
+    } catch {
+      return false
+    }
+  },
   subscribe(listener: EntryListener) {
     entryListeners.add(listener)
     return () => {
@@ -177,12 +309,20 @@ export const notebookStore = {
       categoryListeners.delete(listener)
     }
   },
-  addClip(input: {
+  subscribeReady(listener: ReadyListener) {
+    readyListeners.add(listener)
+    if (ready) listener()
+    return () => {
+      readyListeners.delete(listener)
+    }
+  },
+  async addClip(input: {
     selectedText: string
     sourceLabel?: string
     sourcePath?: string
     categoryIds?: string[]
   }) {
+    await ensureReady()
     const entry: NotebookEntry = {
       id: uid('nb'),
       createdAt: new Date().toISOString(),
@@ -192,10 +332,10 @@ export const notebookStore = {
       sourceLabel: input.sourceLabel,
       sourcePath: input.sourcePath,
     }
-    write([entry, ...read()])
+    await writeEntries([entry, ...cache.entries])
     return entry
   },
-  addExplanation(input: {
+  async addExplanation(input: {
     selectedText: string
     explanation: string
     sourceLabel?: string
@@ -203,6 +343,7 @@ export const notebookStore = {
     model?: string
     categoryIds?: string[]
   }) {
+    await ensureReady()
     const entry: NotebookEntry = {
       id: uid('nb'),
       createdAt: new Date().toISOString(),
@@ -214,10 +355,11 @@ export const notebookStore = {
       sourcePath: input.sourcePath,
       model: input.model,
     }
-    write([entry, ...read()])
+    await writeEntries([entry, ...cache.entries])
     return entry
   },
-  addNote(input: { text: string; title?: string; categoryIds?: string[] }) {
+  async addNote(input: { text: string; title?: string; categoryIds?: string[] }) {
+    await ensureReady()
     const text = input.text.trim()
     if (!text) return null
     const title = input.title?.trim() || undefined
@@ -230,10 +372,10 @@ export const notebookStore = {
       categoryIds: normalizeCategoryIds(input.categoryIds),
       sourceLabel: 'Notebook',
     }
-    write([entry, ...read()])
+    await writeEntries([entry, ...cache.entries])
     return entry
   },
-  update(
+  async update(
     id: string,
     patch: {
       title?: string
@@ -242,7 +384,8 @@ export const notebookStore = {
       categoryIds?: string[]
     },
   ) {
-    const entries = read()
+    await ensureReady()
+    const entries = cache.entries
     const index = entries.findIndex((e) => e.id === id)
     if (index < 0) return null
     const current = entries[index]
@@ -277,22 +420,23 @@ export const notebookStore = {
     }
     const next = [...entries]
     next[index] = updated
-    write(next)
+    await writeEntries(next)
     return updated
   },
-  remove(id: string) {
-    const entries = read()
+  async remove(id: string) {
+    await ensureReady()
+    const entries = cache.entries
     const entry = entries.find((e) => e.id === id)
     if (!entry) return null
     const deletedAt = new Date().toISOString()
     const trashed: TrashedNotebookEntry = { ...entry, deletedAt }
-    // Keep forever — never auto-purge. Replace any prior trash copy of same id.
-    writeTrash([trashed, ...readTrash().filter((e) => e.id !== id)])
-    write(entries.filter((e) => e.id !== id))
+    await writeTrash([trashed, ...cache.trash.filter((e) => e.id !== id)])
+    await writeEntries(entries.filter((e) => e.id !== id))
     return trashed
   },
-  restore(id: string) {
-    const trash = readTrash()
+  async restore(id: string) {
+    await ensureReady()
+    const trash = cache.trash
     const index = trash.findIndex((e) => e.id === id)
     if (index < 0) return null
     const trashed = trash[index]
@@ -309,29 +453,29 @@ export const notebookStore = {
       sourcePath: trashed.sourcePath,
       model: trashed.model,
     }
-    writeTrash(trash.filter((e) => e.id !== id))
-    // If an active note somehow shares the id, keep the restored content under a new id.
-    const active = read()
+    await writeTrash(trash.filter((e) => e.id !== id))
+    const active = cache.entries
     if (active.some((e) => e.id === restored.id)) {
       restored.id = uid('nb')
     }
-    write([restored, ...active])
+    await writeEntries([restored, ...active])
     return restored
   },
-  clear() {
-    // Soft-clear: move every note into the dustbin so nothing is lost.
+  async clear() {
+    await ensureReady()
     const now = new Date().toISOString()
-    const moving = read().map((entry) => ({ ...entry, deletedAt: now }))
+    const moving = cache.entries.map((entry) => ({ ...entry, deletedAt: now }))
     if (moving.length) {
-      const keep = readTrash().filter((t) => !moving.some((m) => m.id === t.id))
-      writeTrash([...moving, ...keep])
+      const keep = cache.trash.filter((t) => !moving.some((m) => m.id === t.id))
+      await writeTrash([...moving, ...keep])
     }
-    write([])
+    await writeEntries([])
   },
-  addCategory(name: string) {
+  async addCategory(name: string) {
+    await ensureReady()
     const trimmed = name.trim()
     if (!trimmed) return null
-    const existing = readCategories()
+    const existing = cache.categories
     if (existing.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
       return existing.find((c) => c.name.toLowerCase() === trimmed.toLowerCase()) ?? null
     }
@@ -339,16 +483,16 @@ export const notebookStore = {
       id: uid('cat'),
       name: trimmed,
       createdAt: new Date().toISOString(),
-      // Prefer a color not already used; if all are taken, reuse the least-used.
       color: nextCategoryColor(existing.map((c) => c.color)),
     }
-    writeCategories([...existing, category])
+    await writeCategories([...existing, category])
     return category
   },
-  renameCategory(id: string, name: string) {
+  async renameCategory(id: string, name: string) {
+    await ensureReady()
     const trimmed = name.trim()
     if (!trimmed) return null
-    const categories = readCategories()
+    const categories = cache.categories
     const index = categories.findIndex((c) => c.id === id)
     if (index < 0) return null
     if (
@@ -359,13 +503,13 @@ export const notebookStore = {
     const updated = { ...categories[index], name: trimmed }
     const next = [...categories]
     next[index] = updated
-    writeCategories(next)
+    await writeCategories(next)
     return updated
   },
-  removeCategory(id: string) {
-    writeCategories(readCategories().filter((c) => c.id !== id))
-    // Detach from notes that used this category.
-    const entries = read()
+  async removeCategory(id: string) {
+    await ensureReady()
+    await writeCategories(cache.categories.filter((c) => c.id !== id))
+    const entries = cache.entries
     let changed = false
     const next = entries.map((entry) => {
       if (!entry.categoryIds?.includes(id)) return entry
@@ -376,23 +520,6 @@ export const notebookStore = {
         updatedAt: new Date().toISOString(),
       }
     })
-    if (changed) write(next)
+    if (changed) await writeEntries(next)
   },
-}
-
-if (typeof window !== 'undefined') {
-  window.addEventListener('storage', (event) => {
-    if (event.key === STORAGE_KEY) {
-      const entries = read()
-      entryListeners.forEach((listener) => listener(entries))
-    }
-    if (event.key === TRASH_STORAGE_KEY) {
-      const trash = readTrash()
-      trashListeners.forEach((listener) => listener(trash))
-    }
-    if (event.key === CATEGORY_STORAGE_KEY) {
-      const categories = readCategories()
-      categoryListeners.forEach((listener) => listener(categories))
-    }
-  })
 }

@@ -30,6 +30,7 @@ export interface TrashedNotebookEntry extends NotebookEntry {
 }
 
 export function useNotebook() {
+  const [ready, setReady] = useState(() => notebookStore.isReady())
   const [entries, setEntries] = useState<NotebookEntry[]>(() => notebookStore.get())
   const [trash, setTrash] = useState<TrashedNotebookEntry[]>(() => notebookStore.getTrash())
   const [categories, setCategories] = useState<NotebookCategory[]>(() =>
@@ -40,14 +41,23 @@ export function useNotebook() {
     const unsubEntries = notebookStore.subscribe(setEntries)
     const unsubTrash = notebookStore.subscribeTrash(setTrash)
     const unsubCategories = notebookStore.subscribeCategories(setCategories)
+    const unsubReady = notebookStore.subscribeReady(() => {
+      setReady(true)
+      setEntries(notebookStore.get())
+      setTrash(notebookStore.getTrash())
+      setCategories(notebookStore.getCategories())
+    })
+    void notebookStore.ready()
     return () => {
       unsubEntries()
       unsubTrash()
       unsubCategories()
+      unsubReady()
     }
   }, [])
 
   return {
+    ready,
     entries,
     trash,
     categories,

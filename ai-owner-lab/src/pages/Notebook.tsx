@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { NoteTree } from '../components/NoteTree'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
-import { NotebookStorageError } from '../hooks/notebookStore'
+import { NotebookStorageError, notebookStore } from '../hooks/notebookStore'
 import {
   formatTimestamp,
   useNotebook,
@@ -174,6 +174,7 @@ function CategoryPicker({
 
 export function Notebook() {
   const {
+    ready,
     entries,
     trash,
     categories,
@@ -203,10 +204,19 @@ export function Notebook() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [recoverToast, setRecoverToast] = useState(false)
+  const [storageToast, setStorageToast] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
+
+  useEffect(() => {
+    if (!ready) return
+    if (notebookStore.consumeMigrationNotice()) {
+      setStorageToast(true)
+      window.setTimeout(() => setStorageToast(false), 5200)
+    }
+  }, [ready])
 
   const categoryMap = useMemo(() => {
     const map = new Map<string, NotebookCategory>()
@@ -269,7 +279,7 @@ export function Notebook() {
     setDraftCategoryIds([])
   }
 
-  function saveEdit(entry: NotebookEntry) {
+  async function saveEdit(entry: NotebookEntry) {
     try {
       const selectedText =
         entry.type === 'note'
@@ -285,7 +295,7 @@ export function Notebook() {
               categoryIds: draftCategoryIds,
             }
           : { title: draftTitle, selectedText, categoryIds: draftCategoryIds }
-      const updated = updateEntry(entry.id, patch)
+      const updated = await updateEntry(entry.id, patch)
       if (updated) cancelEdit()
     } catch (err) {
       const message =
@@ -296,7 +306,7 @@ export function Notebook() {
     }
   }
 
-  function createNote() {
+  async function createNote() {
     setComposerError(null)
     try {
       // Prefer live contentEditable HTML — React state can lag behind the DOM.
@@ -308,7 +318,7 @@ export function Notebook() {
         composerEditorRef.current?.focus()
         return
       }
-      const created = addNote({
+      const created = await addNote({
         text: html,
         title: newTitle,
         categoryIds: newCategoryIds,
@@ -331,15 +341,25 @@ export function Notebook() {
     }
   }
 
-  function createCategory() {
-    const created = addCategory(newCategoryName)
-    if (!created) return
-    setNewCategoryName('')
+  async function createCategory() {
+    try {
+      const created = await addCategory(newCategoryName)
+      if (!created) return
+      setNewCategoryName('')
+    } catch (err) {
+      const message =
+        err instanceof NotebookStorageError && err.code === 'quota'
+          ? t('notebookStorageFull')
+          : t('noteSaveFailed')
+      window.alert(message)
+    }
   }
 
   function onDeleteCategory(cat: NotebookCategory) {
     if (!window.confirm(t('deleteCategoryConfirm', { name: cat.name }))) return
-    removeCategory(cat.id)
+    void removeCategory(cat.id).catch(() => {
+      window.alert(t('noteSaveFailed'))
+    })
     setCategoryFilter((ids) => ids.filter((id) => id !== cat.id))
     setNewCategoryIds((ids) => ids.filter((id) => id !== cat.id))
     setDraftCategoryIds((ids) => ids.filter((id) => id !== cat.id))
@@ -364,17 +384,31 @@ export function Notebook() {
   }
 
   function moveToDustbin(id: string) {
-    removeEntry(id)
+    void removeEntry(id).catch((err) => {
+      const message =
+        err instanceof NotebookStorageError && err.code === 'quota'
+          ? t('notebookStorageFull')
+          : t('noteSaveFailed')
+      window.alert(message)
+    })
     if (editingId === id) cancelEdit()
     if (openedNoteId === id) setOpenedNoteId(null)
   }
 
-  function recoverFromDustbin(entry: TrashedNotebookEntry) {
-    const restored = restoreEntry(entry.id)
-    if (!restored) return
-    setRecoverToast(true)
-    window.setTimeout(() => setRecoverToast(false), 2200)
-    setView('notes')
+  async function recoverFromDustbin(entry: TrashedNotebookEntry) {
+    try {
+      const restored = await restoreEntry(entry.id)
+      if (!restored) return
+      setRecoverToast(true)
+      window.setTimeout(() => setRecoverToast(false), 2200)
+      setView('notes')
+    } catch (err) {
+      const message =
+        err instanceof NotebookStorageError && err.code === 'quota'
+          ? t('notebookStorageFull')
+          : t('noteSaveFailed')
+      window.alert(message)
+    }
   }
 
   const categoryFiltering = categoryFilter.length > 0
@@ -459,6 +493,11 @@ export function Notebook() {
       {recoverToast ? (
         <p className="notebook-toast" role="status">
           {t('recoveredToNotebook')}
+        </p>
+      ) : null}
+      {storageToast ? (
+        <p className="notebook-toast" role="status">
+          {t('notebookStorageUpgraded')}
         </p>
       ) : null}
 

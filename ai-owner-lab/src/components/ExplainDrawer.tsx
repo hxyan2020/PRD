@@ -117,15 +117,21 @@ export function ExplainDrawer({
 
   function saveToNotebook() {
     if (!latestAssistant || busy || isAnimating) return
-    notebook.addExplanation({
-      selectedText,
-      explanation: latestAssistant,
-      sourceLabel,
-      sourcePath,
-      model,
-    })
-    setSavedFlash(true)
-    window.setTimeout(() => setSavedFlash(false), 2000)
+    void notebook
+      .addExplanation({
+        selectedText,
+        explanation: latestAssistant,
+        sourceLabel,
+        sourcePath,
+        model,
+      })
+      .then(() => {
+        setSavedFlash(true)
+        window.setTimeout(() => setSavedFlash(false), 2000)
+      })
+      .catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : 'Could not save to notebook')
+      })
   }
 
   function persistSettings() {

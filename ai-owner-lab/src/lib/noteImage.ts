@@ -1,5 +1,6 @@
-const MAX_EDGE = 1280
-const MAX_BYTES = 1_400_000
+const MAX_EDGE = 960
+/** Soft cap for notebook images stored as data URLs inside IndexedDB notes. */
+const MAX_BYTES = 550_000
 const ACCEPTED = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'])
 
 export function isAllowedImageMime(type: string): boolean {
@@ -58,7 +59,7 @@ function blobToDataUrl(blob: Blob): Promise<string> {
   })
 }
 
-/** Resize/compress a local image for notebook localStorage (data URL). */
+/** Resize/compress a local image for notebook storage (data URL). */
 export async function fileToNoteImageDataUrl(file: Blob): Promise<string> {
   const mime = (file.type || '').toLowerCase()
   if (!isAllowedImageMime(mime)) {
@@ -80,23 +81,37 @@ export async function fileToNoteImageDataUrl(file: Blob): Promise<string> {
   canvas.height = height
   const ctx = canvas.getContext('2d')
   if (!ctx) throw new Error('Could not process image')
+  // White fill so JPEG doesn't turn transparent PNG areas black.
+  ctx.fillStyle = '#ffffff'
+  ctx.fillRect(0, 0, width, height)
   ctx.drawImage(img, 0, 0, width, height)
 
-  const preferPng = mime === 'image/png' || mime === 'image/webp'
-  let outType = preferPng ? 'image/png' : 'image/jpeg'
-  let quality = 0.86
+  // Prefer JPEG for diagrams/screenshots — much smaller than PNG in notes.
+  let outType = 'image/jpeg'
+  let quality = 0.78
   let blob = await canvasToBlob(canvas, outType, quality)
 
-  // Fall back to JPEG if PNG stays huge.
-  if (blob.size > MAX_BYTES && outType === 'image/png') {
-    outType = 'image/jpeg'
-    quality = 0.82
+  while (blob.size > MAX_BYTES && quality > 0.4) {
+    quality -= 0.08
     blob = await canvasToBlob(canvas, outType, quality)
   }
 
-  while (blob.size > MAX_BYTES && quality > 0.45 && outType === 'image/jpeg') {
-    quality -= 0.08
+  // Last resort: shrink dimensions further.
+  if (blob.size > MAX_BYTES) {
+    const shrink = Math.sqrt(MAX_BYTES / blob.size) * 0.92
+    const w2 = Math.max(1, Math.round(width * shrink))
+    const h2 = Math.max(1, Math.round(height * shrink))
+    canvas.width = w2
+    canvas.height = h2
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, w2, h2)
+    ctx.drawImage(img, 0, 0, w2, h2)
+    quality = 0.72
     blob = await canvasToBlob(canvas, outType, quality)
+    while (blob.size > MAX_BYTES && quality > 0.38) {
+      quality -= 0.08
+      blob = await canvasToBlob(canvas, outType, quality)
+    }
   }
 
   if (blob.size > MAX_BYTES) throw new Error('Image is too large')

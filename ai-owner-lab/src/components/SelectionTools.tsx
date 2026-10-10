@@ -128,15 +128,25 @@ export function SelectionTools() {
 
   function saveClip() {
     if (!toolbar) return
-    notebook.addClip({
-      selectedText: toolbar.text,
-      sourceLabel: source.label,
-      sourcePath: source.path,
-    })
-    setFlash(t('savedToNotebook'))
+    const text = toolbar.text
+    const label = source.label
+    const path = source.path
     setToolbar(null)
     window.getSelection()?.removeAllRanges()
-    window.setTimeout(() => setFlash(''), 1800)
+    void notebook
+      .addClip({
+        selectedText: text,
+        sourceLabel: label,
+        sourcePath: path,
+      })
+      .then(() => {
+        setFlash(t('savedToNotebook'))
+        window.setTimeout(() => setFlash(''), 1800)
+      })
+      .catch(() => {
+        setFlash(t('noteSaveFailed'))
+        window.setTimeout(() => setFlash(''), 2200)
+      })
   }
 
   function openExplain() {
@@ -151,11 +161,18 @@ export function SelectionTools() {
     if (!toolbar?.canHighlightNote) return
     const result = highlightSelectionInNotebookQuote('#fde68a')
     if (!result) return
-    const updated = notebook.updateEntry(result.entryId, { selectedText: result.html })
-    if (!updated) return
-    setFlash(t('highlightedInNote'))
     setToolbar(null)
-    window.setTimeout(() => setFlash(''), 1800)
+    void notebook
+      .updateEntry(result.entryId, { selectedText: result.html })
+      .then((updated) => {
+        if (!updated) return
+        setFlash(t('highlightedInNote'))
+        window.setTimeout(() => setFlash(''), 1800)
+      })
+      .catch(() => {
+        setFlash(t('noteSaveFailed'))
+        window.setTimeout(() => setFlash(''), 2200)
+      })
   }
 
   return (

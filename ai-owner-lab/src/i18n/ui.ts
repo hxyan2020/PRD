@@ -136,7 +136,9 @@ const en = {
   noteEmptyBody: 'Write something in the note before adding it.',
   noteSaveFailed: 'Could not save this note. Try again.',
   notebookStorageFull:
-    'Browser storage is full. Delete older notes or pictures, then try again.',
+    'Browser storage is full. Delete older notes or large pictures (dustbin helps), then try again.',
+  notebookStorageUpgraded:
+    'Notes now use larger browser storage (IndexedDB). Your existing notes were migrated automatically.',
   noteTitleLabel: 'Title',
   noteTitlePlaceholder: 'Add a title…',
   noteBodyLabel: 'Note',
@@ -396,7 +398,8 @@ const zh: Record<UiKey, string> = {
   createNote: '添加笔记',
   noteEmptyBody: '请先填写笔记内容再添加。',
   noteSaveFailed: '无法保存这条笔记，请重试。',
-  notebookStorageFull: '浏览器存储已满。请删除一些旧笔记或图片后再试。',
+  notebookStorageFull: '浏览器存储已满。请删除一些旧笔记或大图片（可先移入废纸篓）后再试。',
+  notebookStorageUpgraded: '笔记已升级到更大的浏览器存储（IndexedDB），现有笔记已自动迁移。',
   noteTitleLabel: '标题',
   noteTitlePlaceholder: '添加标题…',
   noteBodyLabel: '笔记内容',

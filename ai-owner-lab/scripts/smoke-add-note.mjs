@@ -1,5 +1,5 @@
 /**
- * Smoke-test notebook add-note: happy path + quota-full error surfacing.
+ * Smoke-test notebook add-note against IndexedDB-backed storage.
  */
 import { chromium } from 'playwright-core'
 import fs from 'node:fs'
@@ -9,110 +9,132 @@ const BASE = process.env.OWNLAB_URL || 'http://127.0.0.1:5173/PRD/ownlab/'
 const OUT = process.env.ARTIFACT_DIR || '/opt/cursor/artifacts'
 fs.mkdirSync(OUT, { recursive: true })
 
-const browser = await chromium.launch({
-  executablePath:
+function chromePath() {
+  return (
     process.env.PLAYWRIGHT_CHROMIUM_PATH ||
     [
       '/home/ubuntu/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome',
       '/home/ubuntu/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome',
-    ].find((p) => fs.existsSync(p)),
-  headless: true,
-})
+    ].find((p) => fs.existsSync(p))
+  )
+}
 
+async function clearNotebookStorage(page) {
+  await page.evaluate(async () => {
+    localStorage.removeItem('ownlab-notebook-v1')
+    localStorage.removeItem('ownlab-notebook-trash-v1')
+    localStorage.removeItem('ownlab-notebook-categories-v1')
+    localStorage.removeItem('ownlab-notebook-idb-banner-seen')
+    await new Promise((resolve, reject) => {
+      const req = indexedDB.deleteDatabase('ownlab-notebook-db')
+      req.onsuccess = () => resolve()
+      req.onerror = () => reject(req.error || new Error('idb delete failed'))
+      req.onblocked = () => resolve()
+    })
+  })
+}
+
+const browser = await chromium.launch({ executablePath: chromePath(), headless: true })
 const page = await browser.newPage()
 const errors = []
 page.on('pageerror', (e) => errors.push(String(e)))
 
 await page.goto(`${BASE}#/notebook`, { waitUntil: 'networkidle' })
-await page.waitForSelector('.notebook-composer .rte-editor')
-
-// Clear any existing notebook storage for a clean run.
-await page.evaluate(() => {
-  localStorage.removeItem('ownlab-notebook-v1')
-  localStorage.removeItem('ownlab-notebook-trash-v1')
-})
+await clearNotebookStorage(page)
 await page.reload({ waitUntil: 'networkidle' })
 await page.waitForSelector('.notebook-composer .rte-editor')
 
+// --- Happy path ---
 const editor = page.locator('.notebook-composer .rte-editor')
 await editor.click()
 await page.keyboard.type('Add-note smoke test ' + Date.now())
-
 const before = await page.locator('.notebook-timeline .notebook-entry').count()
 await page.getByRole('button', { name: 'Add note' }).click()
-await page.waitForTimeout(400)
-
+await page.waitForFunction(
+  (n) => document.querySelectorAll('.notebook-timeline .notebook-entry').length >= n,
+  before + 1,
+  { timeout: 5000 },
+)
 const after = await page.locator('.notebook-timeline .notebook-entry').count()
 const happy = after === before + 1
 await page.screenshot({ path: path.join(OUT, 'add-note-happy.png'), fullPage: true })
 
-// Force quota failure on next write.
-await page.evaluate(() => {
-  const real = Storage.prototype.setItem
-  Storage.prototype.setItem = function (key, value) {
-    if (String(key).startsWith('ownlab-notebook')) {
-      const err = new DOMException('Quota exceeded', 'QuotaExceededError')
-      throw err
-    }
-    return real.call(this, key, value)
-  }
-})
-
+// --- Large note that would stress old localStorage (~5MB) ---
+const largeBody = 'Diagram block '.repeat(80_000) // ~1.1MB text
 await editor.click()
-await page.keyboard.type('Quota pressure note')
-await page.getByRole('button', { name: 'Add note' }).click()
-await page.waitForSelector('.notebook-composer-error', { timeout: 3000 })
-const errText = await page.locator('.notebook-composer-error').innerText()
-const quotaOk = /storage is full/i.test(errText)
-await page.screenshot({ path: path.join(OUT, 'add-note-quota-error.png'), fullPage: true })
-
-// Stale-state path: put HTML in the live editor without going through React onChange.
-await page.evaluate(() => {
+await page.evaluate((text) => {
   const el = document.querySelector('.notebook-composer .rte-editor')
-  if (!el) throw new Error('missing editor')
-  el.innerHTML = '<p>Live DOM flush note ' + Date.now() + '</p>'
-})
-// Restore setItem for a successful save after flush.
+  el.innerHTML = `<p>${text}</p>`
+}, largeBody)
+await page.getByRole('button', { name: 'Add note' }).click()
+await page.waitForTimeout(800)
+const largeCount = await page.locator('.notebook-timeline .notebook-entry').count()
+const largeOk = largeCount >= after + 1
+const lsEntries = await page.evaluate(() => localStorage.getItem('ownlab-notebook-v1'))
+const idbHasEntries = await page.evaluate(
+  () =>
+    new Promise((resolve, reject) => {
+      const req = indexedDB.open('ownlab-notebook-db')
+      req.onerror = () => reject(req.error)
+      req.onsuccess = () => {
+        const db = req.result
+        const tx = db.transaction('kv', 'readonly')
+        const get = tx.objectStore('kv').get('entries')
+        get.onsuccess = () => {
+          const val = get.result
+          db.close()
+          resolve(Array.isArray(val) && val.length > 0)
+        }
+        get.onerror = () => reject(get.error)
+      }
+    }),
+)
+const usesIdb = idbHasEntries && lsEntries === null
+await page.screenshot({ path: path.join(OUT, 'add-note-large-idb.png'), fullPage: true })
+
+// --- Migrate legacy localStorage ---
+await clearNotebookStorage(page)
 await page.evaluate(() => {
-  // Best-effort: reload prototype if we can detect patch — use a fresh page write via native.
+  localStorage.setItem(
+    'ownlab-notebook-v1',
+    JSON.stringify([
+      {
+        id: 'nb_legacy_1',
+        createdAt: new Date().toISOString(),
+        type: 'note',
+        title: 'Legacy LS note',
+        selectedText: '<p>Migrated from localStorage</p>',
+        sourceLabel: 'Notebook',
+      },
+    ]),
+  )
 })
-// Re-open a fresh page context for flush test so storage works.
-await browser.close()
+await page.reload({ waitUntil: 'networkidle' })
+await page.waitForSelector('.notebook-composer .rte-editor')
+await page.waitForTimeout(500)
+const migratedVisible = await page.getByText('Legacy LS note').count()
+const lsCleared = await page.evaluate(() => localStorage.getItem('ownlab-notebook-v1') === null)
+const migrateOk = migratedVisible > 0 && lsCleared
+await page.screenshot({ path: path.join(OUT, 'add-note-migrated.png'), fullPage: true })
 
-const browser2 = await chromium.launch({
-  executablePath:
-    process.env.PLAYWRIGHT_CHROMIUM_PATH ||
-    [
-      '/home/ubuntu/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome',
-      '/home/ubuntu/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome',
-    ].find((p) => fs.existsSync(p)),
-  headless: true,
-})
-const page2 = await browser2.newPage()
-await page2.goto(`${BASE}#/notebook`, { waitUntil: 'networkidle' })
-await page2.evaluate(() => {
-  localStorage.removeItem('ownlab-notebook-v1')
-  localStorage.removeItem('ownlab-notebook-trash-v1')
-})
-await page2.reload({ waitUntil: 'networkidle' })
-await page2.waitForSelector('.notebook-composer .rte-editor')
-
-// Seed React state empty, DOM full — simulate desync by setting DOM after mount
-// without input events, then click Add note (flush should still save).
-await page2.evaluate(() => {
+// --- Live DOM flush ---
+await clearNotebookStorage(page)
+await page.reload({ waitUntil: 'networkidle' })
+await page.waitForSelector('.notebook-composer .rte-editor')
+await page.evaluate(() => {
   const el = document.querySelector('.notebook-composer .rte-editor')
   el.innerHTML = '<p>Flushed from live DOM ' + Date.now() + '</p>'
 })
-const before2 = await page2.locator('.notebook-timeline .notebook-entry').count()
-await page2.getByRole('button', { name: 'Add note' }).click()
-await page2.waitForTimeout(500)
-const after2 = await page2.locator('.notebook-timeline .notebook-entry').count()
+const before2 = await page.locator('.notebook-timeline .notebook-entry').count()
+await page.getByRole('button', { name: 'Add note' }).click()
+await page.waitForTimeout(500)
+const after2 = await page.locator('.notebook-timeline .notebook-entry').count()
 const flushOk = after2 === before2 + 1
-await page2.screenshot({ path: path.join(OUT, 'add-note-dom-flush.png'), fullPage: true })
+await page.screenshot({ path: path.join(OUT, 'add-note-dom-flush.png'), fullPage: true })
 
-await browser2.close()
+await browser.close()
 
-const report = { happy, quotaOk, flushOk, errText, pageErrors: errors }
+const report = { happy, largeOk, usesIdb, migrateOk, flushOk, pageErrors: errors }
 fs.writeFileSync(path.join(OUT, 'add-note-smoke.json'), JSON.stringify(report, null, 2))
 console.log(JSON.stringify(report, null, 2))
-if (!happy || !quotaOk || !flushOk) process.exit(1)
+if (!happy || !largeOk || !usesIdb || !migrateOk || !flushOk) process.exit(1)
