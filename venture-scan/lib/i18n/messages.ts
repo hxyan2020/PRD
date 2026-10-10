@@ -23,7 +23,6 @@ const en = {
   "nav.today": "Today",
   "nav.ideas": "Ideas",
   "nav.match": "Match",
-  "nav.method": "Method",
   "nav.sources": "Sources",
   "nav.login": "Log in",
   "nav.register": "Register",
@@ -228,41 +227,6 @@ const en = {
   "collect.savedBoth": "Saved idea + matching analysis to your collection.",
   "collect.savedIdea": "Saved idea to your collection.",
   "collect.removed": "Removed from collection.",
-
-  "method.title": "How VentureScan works",
-  "method.scanLabel": "Scan",
-  "method.scan":
-    "ingest worldwide startup ideas and fundraising signals from a curated feed (pluggable for live APIs).",
-  "method.storeLabel": "Store",
-  "method.store":
-    "normalize each idea into SQLite with the ten required fields (name through go-forward play).",
-  "method.surfaceLabel": "Surface",
-  "method.surface":
-    "browse and filter on the frontend; open any entry for the full dossier with brand/cover images extracted from related data sources, plus an idea chatbot that answers follow-ups and cites those desks on every reply.",
-  "method.matchLabel": "Match",
-  "method.match":
-    "on Today, a chatbot collects skills, major, current business, and interested domains, then scores every idea against that profile. If a reply drifts off the question, it gently steers you back before moving on.",
-  "method.dailyLabel": "Daily pick",
-  "method.daily":
-    "each day we recommend your highest-matched idea and list where you matched, where the gap is, and how to close it.",
-  "method.collectLabel": "Collect",
-  "method.collect":
-    "log in with email and password, then save ideas plus matching analysis into your personal collection.",
-  "method.languagesLabel": "Languages",
-  "method.languages":
-    "switch the UI among major world languages with a flag icon language picker in the header.",
-  "method.mobileLabel": "Mobile",
-  "method.mobile":
-    "sticky header + hamburger menu, larger tap targets, and stacked layouts tuned for phones.",
-  "method.sourcesLabel": "Sources",
-  "method.sourcesBefore": "the",
-  "method.sourcesLink": "data sources desk",
-  "method.sourcesAfter":
-    "lists every connector, countries covered, last sourced time, and health status (including multilingual desks).",
-  "method.urlLabel": "Permanent URL",
-  "method.url": "published at",
-  "method.seed":
-    "Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal, food, energy, cyber, and fintech teams across Singapore, US, Germany, Kenya, Japan, India, UK, Indonesia, Canada, UAE, Netherlands, Brazil, Australia, South Korea, France, Mexico, South Africa, Sweden, Vietnam, and Israel.",
 
   "sources.kicker": "Ingest desk",
   "sources.title": "Data sources",

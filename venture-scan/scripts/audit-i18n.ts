@@ -55,7 +55,6 @@ const prefixes = [
   "auth.",
   "collection.",
   "collect.",
-  "method.",
   "sources.",
   "lang.",
 ];

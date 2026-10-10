@@ -10,14 +10,13 @@ import type { MessageKey } from "@/lib/i18n/messages";
 
 type NavKey = Extract<
   MessageKey,
-  "nav.today" | "nav.ideas" | "nav.sources" | "nav.method"
+  "nav.today" | "nav.ideas" | "nav.sources"
 >;
 
 const NAV_LINKS: { href: string; key: NavKey }[] = [
   { href: "/today", key: "nav.today" },
   { href: "/#ideas", key: "nav.ideas" },
   { href: "/sources", key: "nav.sources" },
-  { href: "/methodology", key: "nav.method" },
 ];
 
 export function SiteHeader() {
