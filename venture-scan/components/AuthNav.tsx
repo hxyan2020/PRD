@@ -1,35 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { authLogout, authMe } from "@/lib/client-api";
+import { authMe } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 
 type User = { id: string; email: string };
 
 export function AuthNav({ stacked = false }: { stacked?: boolean }) {
-  const router = useRouter();
   const { t } = useI18n();
   const [user, setUser] = useState<User | null | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
-    void (async () => {
+    async function load() {
       const me = await authMe();
       if (!cancelled) setUser(me);
-    })();
+    }
+    void load();
+    function onAuth() {
+      void load();
+    }
+    window.addEventListener("venturescan:auth", onAuth);
     return () => {
       cancelled = true;
+      window.removeEventListener("venturescan:auth", onAuth);
     };
   }, []);
-
-  async function logout() {
-    await authLogout();
-    setUser(null);
-    router.push("/");
-    router.refresh();
-  }
 
   const linkClass = stacked
     ? "rounded-xl px-3 py-3 text-foam hover:bg-white/5"
@@ -41,21 +38,16 @@ export function AuthNav({ stacked = false }: { stacked?: boolean }) {
 
   if (!user) {
     return (
-      <div className={stacked ? "flex flex-col gap-1" : "contents"}>
-        <Link href="/login" className={linkClass}>
-          {t("nav.login")}
-        </Link>
-        <Link href="/register" className={linkClass}>
-          {t("nav.register")}
-        </Link>
-      </div>
+      <Link href="/account" className={linkClass}>
+        {t("nav.register")}
+      </Link>
     );
   }
 
   return (
     <div className={stacked ? "flex flex-col gap-1" : "contents"}>
-      <Link href="/collection" className={linkClass}>
-        {t("nav.collection")}
+      <Link href="/account" className={linkClass} title={user.email}>
+        {t("nav.account")}
       </Link>
       {!stacked ? (
         <span
@@ -67,13 +59,6 @@ export function AuthNav({ stacked = false }: { stacked?: boolean }) {
       ) : (
         <span className="px-3 py-1 text-xs text-mist/80">{user.email}</span>
       )}
-      <button
-        type="button"
-        onClick={() => void logout()}
-        className={stacked ? `${linkClass} text-start` : "hover:text-foam"}
-      >
-        {t("nav.logout")}
-      </button>
     </div>
   );
 }

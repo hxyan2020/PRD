@@ -45,10 +45,7 @@ export function CollectionPage() {
         <h1 className="font-display text-4xl text-foam">{t("collection.title")}</h1>
         <p className="mt-4 text-sm text-mist">{t("collection.needLogin")}</p>
         <div className="mt-6 flex gap-3">
-          <Link href="/login" className="btn-primary">
-            {t("nav.login")}
-          </Link>
-          <Link href="/register" className="btn-ghost">
+          <Link href="/account" className="btn-primary">
             {t("nav.register")}
           </Link>
         </div>

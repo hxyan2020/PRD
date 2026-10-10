@@ -26,6 +26,7 @@ const en = {
   "nav.sources": "Sources",
   "nav.login": "Log in",
   "nav.register": "Register",
+  "nav.account": "Account",
   "nav.collection": "Collection",
   "nav.logout": "Log out",
   "nav.language": "Language",
@@ -208,6 +209,9 @@ const en = {
   "auth.wait": "Please wait…",
   "auth.noAccount": "No account yet?",
   "auth.hasAccount": "Already registered?",
+  "auth.signedInKicker": "Signed in",
+  "auth.signedInTitle": "You're logged in",
+  "auth.signedInBody": "Manage your session, open your collection, or sign out.",
 
   "collection.kicker": "Saved for you",
   "collection.title": "Collection",

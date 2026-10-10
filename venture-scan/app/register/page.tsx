@@ -1,10 +1,12 @@
-import { AuthForm } from "@/components/AuthForm";
+"use client";
 
-export const metadata = {
-  title: "Register · VentureScan",
-  description: "Create an account with email and password to collect ideas and matching analysis.",
-};
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
-  return <AuthForm mode="register" />;
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/account");
+  }, [router]);
+  return null;
 }

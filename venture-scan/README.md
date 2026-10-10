@@ -21,7 +21,7 @@ Visit `/today` for the most-matched idea of the day. If you have no profile yet,
 
 ## Auth + collection
 
-Register / log in with email and password (`/register`, `/login`). Collect ideas and their matching analysis into `/collection` via `POST /api/collection`.
+Register / log in with email and password (`/account` — register when signed out, session when signed in; `/login` and `/register` redirect there). Collect ideas and their matching analysis into `/collection` via `POST /api/collection`.
 
 ## Languages
 

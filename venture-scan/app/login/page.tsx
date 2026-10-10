@@ -1,10 +1,12 @@
-import { AuthForm } from "@/components/AuthForm";
+"use client";
 
-export const metadata = {
-  title: "Log in · VentureScan",
-  description: "Log in with email and password to collect ideas and matching analysis.",
-};
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  return <AuthForm mode="login" />;
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/account?mode=login");
+  }, [router]);
+  return null;
 }

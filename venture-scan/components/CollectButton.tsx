@@ -80,8 +80,8 @@ export function CollectButton({
   if (!loggedIn) {
     return (
       <p className="text-sm text-mist">
-        <Link href="/login" className="text-celadon hover:underline">
-          {t("nav.login")}
+        <Link href="/account" className="text-celadon hover:underline">
+          {t("nav.register")}
         </Link>{" "}
         {t("collect.loginPrompt")}
       </p>
