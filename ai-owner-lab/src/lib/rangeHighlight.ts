@@ -11,7 +11,7 @@ export function getTextNodesInRange(range: Range): Text[] {
   let node = walker.nextNode()
   while (node) {
     const text = node as Text
-    if (textLength(text) > 0 && rangeIntersectsNode(range, text)) {
+    if (isMeaningfulText(text) && rangeIntersectsNode(range, text)) {
       nodes.push(text)
     }
     node = walker.nextNode()
@@ -21,7 +21,8 @@ export function getTextNodesInRange(range: Range): Text[] {
   if (
     !nodes.length &&
     range.startContainer.nodeType === Node.TEXT_NODE &&
-    range.startContainer === range.endContainer
+    range.startContainer === range.endContainer &&
+    isMeaningfulText(range.startContainer as Text)
   ) {
     nodes.push(range.startContainer as Text)
   }
@@ -30,6 +31,10 @@ export function getTextNodesInRange(range: Range): Text[] {
 
 function textLength(node: Text): number {
   return (node.nodeValue || '').replace(/\u200b/g, '').length
+}
+
+function isMeaningfulText(node: Text): boolean {
+  return Boolean((node.nodeValue || '').replace(/\u200b/g, '').trim())
 }
 
 function rangeIntersectsNode(range: Range, node: Node): boolean {
