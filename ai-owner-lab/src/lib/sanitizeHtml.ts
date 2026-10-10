@@ -22,6 +22,7 @@ const ALLOWED_TAGS = new Set([
   'IMG',
   'FIGURE',
   'MARK',
+  'BLOCKQUOTE',
 ])
 
 const ALLOWED_STYLES = new Set([
@@ -40,6 +41,9 @@ const ALLOWED_STYLES = new Set([
   'margin-right',
   'margin-bottom',
   'margin-left',
+  'padding-left',
+  'list-style-type',
+  'list-style',
 ])
 
 function sanitizeStyle(style: string): string {
@@ -116,6 +120,9 @@ export function sanitizeHtml(input: string): string {
           sanitizeImg(el)
           continue
         }
+        if (el.tagName === 'LI' || el.tagName === 'UL' || el.tagName === 'OL') {
+          // Keep nested lists intact; only drop junk attrs.
+        }
         for (const attr of Array.from(el.attributes)) {
           const name = attr.name.toLowerCase()
           if (name === 'style') {
@@ -129,6 +136,12 @@ export function sanitizeHtml(input: string): string {
           }
         }
         walk(el)
+        // Browsers may wrap indented lists in blockquote; unwrap, keep nested ul/ol.
+        if (el.tagName === 'BLOCKQUOTE' && el.parentNode) {
+          const parent = el.parentNode
+          while (el.firstChild) parent.insertBefore(el.firstChild, el)
+          parent.removeChild(el)
+        }
       } else if (child.nodeType === Node.COMMENT_NODE) {
         child.parentNode?.removeChild(child)
       }

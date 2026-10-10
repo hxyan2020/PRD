@@ -2887,22 +2887,59 @@ button.notebook-category-badge.on {
 }
 
 .rte-editor ul,
-.notebook-rich ul {
-  margin: 0.35rem 0 0.35rem 1.2rem;
-  padding: 0;
+.notebook-rich ul,
+.notebook-quote ul {
+  margin: 0.25rem 0 0.25rem 1.15rem;
+  padding-left: 0.45rem;
   list-style: disc;
 }
 
 .rte-editor ol,
-.notebook-rich ol {
-  margin: 0.35rem 0 0.35rem 1.2rem;
-  padding: 0;
+.notebook-rich ol,
+.notebook-quote ol {
+  margin: 0.25rem 0 0.25rem 1.15rem;
+  padding-left: 0.45rem;
   list-style: decimal;
 }
 
 .rte-editor li,
-.notebook-rich li {
+.notebook-rich li,
+.notebook-quote li {
   margin: 0.15rem 0;
+}
+
+.rte-editor li > ul,
+.rte-editor li > ol,
+.notebook-rich li > ul,
+.notebook-rich li > ol,
+.notebook-quote li > ul,
+.notebook-quote li > ol {
+  margin-top: 0.2rem;
+  margin-bottom: 0.15rem;
+}
+
+.rte-editor ul ul,
+.notebook-rich ul ul,
+.notebook-quote ul ul {
+  list-style: circle;
+}
+
+.rte-editor ul ul ul,
+.notebook-rich ul ul ul,
+.notebook-quote ul ul ul {
+  list-style: square;
+}
+
+.rte-editor ol ol,
+.notebook-rich ol ol,
+.notebook-quote ol ol {
+  list-style: lower-alpha;
+}
+
+.rte-editor ol ol ol,
+.notebook-rich ol ol ol,
+.notebook-quote ol ol ol {
+  list-style: lower-roman;
 }
 
 .rte-editor p,

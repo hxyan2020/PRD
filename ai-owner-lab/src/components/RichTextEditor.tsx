@@ -40,6 +40,82 @@ function runCommand(command: string, value?: string) {
   document.execCommand(command, false, value)
 }
 
+function closestListItem(node: Node | null): HTMLLIElement | null {
+  const el = node?.nodeType === Node.ELEMENT_NODE ? (node as Element) : node?.parentElement
+  return el?.closest('li') ?? null
+}
+
+function selectedListItems(editor: HTMLElement | null): HTMLLIElement[] {
+  const selection = window.getSelection()
+  if (!editor || !selection || !selection.rangeCount) return []
+  const range = selection.getRangeAt(0)
+  const startLi = closestListItem(range.startContainer)
+  if (selection.isCollapsed) return startLi && editor.contains(startLi) ? [startLi] : []
+  const items = [...editor.querySelectorAll('li')].filter((li) => {
+    try {
+      return selection.containsNode(li, true)
+    } catch {
+      return false
+    }
+  })
+  if (items.length) return items
+  return startLi && editor.contains(startLi) ? [startLi] : []
+}
+
+function lastChildList(li: HTMLLIElement): HTMLElement | null {
+  const last = li.lastElementChild
+  if (last && (last.tagName === 'UL' || last.tagName === 'OL')) return last as HTMLElement
+  return null
+}
+
+function nestListItems(items: HTMLLIElement[], tag: 'UL' | 'OL') {
+  for (const li of items) {
+    const prev = li.previousElementSibling
+    if (!prev || prev.tagName !== 'LI') continue
+    const parentLi = prev as HTMLLIElement
+    let nested = lastChildList(parentLi)
+    if (!nested) {
+      nested = document.createElement(tag.toLowerCase())
+      parentLi.appendChild(nested)
+    }
+    nested.appendChild(li)
+  }
+}
+
+function unnestListItems(items: HTMLLIElement[]) {
+  // Outermost last so moving one doesn't skip siblings.
+  for (const li of [...items].reverse()) {
+    const list = li.parentElement
+    if (!list || (list.tagName !== 'UL' && list.tagName !== 'OL')) continue
+    const parentLi = list.parentElement
+    if (!parentLi || parentLi.tagName !== 'LI') {
+      runCommand('outdent')
+      continue
+    }
+    parentLi.after(li)
+    if (!list.children.length) list.remove()
+  }
+}
+
+function applyList(editor: HTMLElement | null, tag: 'UL' | 'OL') {
+  const items = selectedListItems(editor)
+  if (!items.length) {
+    runCommand(tag === 'UL' ? 'insertUnorderedList' : 'insertOrderedList')
+    return
+  }
+  const alreadyThisType = items.every((li) => li.parentElement?.tagName === tag)
+  const canNest = items.some((li) => li.previousElementSibling?.tagName === 'LI')
+  if (alreadyThisType && canNest) {
+    nestListItems(items, tag)
+    return
+  }
+  if (!alreadyThisType && canNest) {
+    nestListItems(items, tag)
+    return
+  }
+  runCommand(tag === 'UL' ? 'insertUnorderedList' : 'insertOrderedList')
+}
+
 function hasVisibleContent(html: string): boolean {
   if (!html) return false
   if (/<img\b/i.test(html)) return true
@@ -281,7 +357,7 @@ export function RichTextEditor({
           title={t('editorBullet')}
           aria-label={t('editorBullet')}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => withFocus(() => runCommand('insertUnorderedList'))}
+          onClick={() => withFocus(() => applyList(editorRef.current, 'UL'))}
         >
           •≡
         </button>
@@ -291,9 +367,35 @@ export function RichTextEditor({
           title={t('editorNumbered')}
           aria-label={t('editorNumbered')}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => withFocus(() => runCommand('insertOrderedList'))}
+          onClick={() => withFocus(() => applyList(editorRef.current, 'OL'))}
         >
           1.
+        </button>
+        <button
+          type="button"
+          className="rte-btn"
+          title={`${t('editorIndent')} (Tab)`}
+          aria-label={t('editorIndent')}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() =>
+            withFocus(() => {
+              const items = selectedListItems(editorRef.current)
+              const tag = items[0]?.parentElement?.tagName === 'OL' ? 'OL' : 'UL'
+              nestListItems(items, tag)
+            })
+          }
+        >
+          ⇥
+        </button>
+        <button
+          type="button"
+          className="rte-btn"
+          title={`${t('editorOutdent')} (Shift+Tab)`}
+          aria-label={t('editorOutdent')}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => withFocus(() => unnestListItems(selectedListItems(editorRef.current)))}
+        >
+          ⇤
         </button>
         <span className="rte-sep" aria-hidden="true" />
         <label className="rte-select-wrap">
@@ -453,6 +555,17 @@ export function RichTextEditor({
           }}
           onBlur={emitChange}
           onKeyUp={captureSelection}
+          onKeyDown={(e) => {
+            if (e.key !== 'Tab') return
+            const items = selectedListItems(editorRef.current)
+            if (!items.length) return
+            e.preventDefault()
+            captureSelection()
+            withFocus(() => {
+              if (e.shiftKey) unnestListItems(items)
+              else nestListItems(items, items[0]?.parentElement?.tagName === 'OL' ? 'OL' : 'UL')
+            })
+          }}
           onMouseUp={captureSelection}
           onSelect={captureSelection}
           onPaste={(e) => {
