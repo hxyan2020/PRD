@@ -1,0 +1,127 @@
+{
+  "regions": {
+    "Africa": "Africa",
+    "Asia": "Asia",
+    "Asia-Pacific": "Asia-Pacifico",
+    "Brazil": "Brasile",
+    "DACH": "DACH",
+    "Europe": "Europa",
+    "Francophone Europe / Africa": "Europa francofona / Africa",
+    "Global": "Globale",
+    "Global / AI": "Globale / IA",
+    "Global / North America": "Globale / Nord America",
+    "Global South": "Sud globale",
+    "Greater China": "Grande Cina",
+    "India": "India",
+    "Israel": "Israele",
+    "Korea": "Corea",
+    "Latin America": "America Latina",
+    "MENA": "MENA",
+    "Nordics": "Nordici",
+    "Oceania": "Oceania",
+    "South Asia": "Asia meridionale",
+    "Southern Cone": "Cono Sud",
+    "Türkiye / Eastern Europe": "Turchia / Europa orientale",
+    "Vietnam": "Vietnam",
+    "West Africa": "Africa occidentale"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "Filo globale di notizie su startup e fundraising."
+    },
+    "crunchbase-news": {
+      "description": "Annunci di round e attività degli investitori."
+    },
+    "36kr": {
+      "description": "Copertura in cinese di startup e hard-tech."
+    },
+    "krasia": {
+      "description": "Intelligence startup del Sud-est e dell'Est Asia."
+    },
+    "techinasia": {
+      "description": "Funding e prodotti startup in Asia-Pacifico."
+    },
+    "nikkei-asia": {
+      "description": "Copertura business e venture APAC di Nikkei."
+    },
+    "platum": {
+      "description": "Desk coreano di startup e funding."
+    },
+    "yourstory": {
+      "description": "Storie di imprenditorialità e funding incentrate sull'India."
+    },
+    "startup-india": {
+      "description": "Registro governativo e segnali di riconoscimento per startup indiane.",
+      "notes": "Sync batch ogni 48 ore"
+    },
+    "sifted": {
+      "description": "Copertura europea di startup e deep-tech fundraising."
+    },
+    "eu-startups": {
+      "description": "Aggregatore paneuropeo di notizie startup."
+    },
+    "les-echos-start": {
+      "description": "Desk francofono di startup e scale-up."
+    },
+    "gruenderszene": {
+      "description": "Copertura in tedesco di founder e funding."
+    },
+    "africarena": {
+      "description": "Reportage venture ed ecosistema in Africa."
+    },
+    "wamda": {
+      "description": "Desk MENA di imprenditorialità e funding."
+    },
+    "contxto": {
+      "description": "Copertura LatAm di startup e venture capital."
+    },
+    "startupbase-br": {
+      "description": "Mappa, ranking e intelligence dell'ecosistema brasiliano.",
+      "notes": "Crawl del registro ogni 24 ore"
+    },
+    "israel-tech": {
+      "description": "Segnali di funding deep-tech e cybersecurity israeliani."
+    },
+    "afrilabs": {
+      "description": "Community africana di founder e investitori.",
+      "notes": "Digest community ogni 12 ore"
+    },
+    "pitchbook-public": {
+      "description": "Brief pubblici di fundraising e note di mercato."
+    },
+    "venturebeat": {
+      "description": "Copertura prodotto/funding di startup AI ed enterprise."
+    },
+    "rest-of-world": {
+      "description": "Storie tech fuori dalla Silicon Valley."
+    },
+    "startupdaily-au": {
+      "description": "Desk startup e mercati di capitale AU/NZ."
+    },
+    "nordic-startup-news": {
+      "description": "Copertura nordica di startup da Stoccolma."
+    },
+    "webrazzi": {
+      "description": "Desk turco di tech e funding startup."
+    },
+    "vnexpress-startup": {
+      "description": "Reportage vietnamiti su startup ed economia digitale."
+    },
+    "technode": {
+      "description": "Feed bilingue sino-globale di tech e venture."
+    },
+    "pulse-ng": {
+      "description": "Copertura del capitale startup in Africa occidentale e meridionale."
+    },
+    "inc42": {
+      "description": "Segnali indiani di funding e policy per startup."
+    },
+    "startupchile": {
+      "description": "Feed di acceleratori e programmi LatAm.",
+      "notes": "Sync programmi ogni 24 ore"
+    },
+    "dealstreetasia": {
+      "description": "Deal di mercati privati, fundraising e attività investitori in Asia."
+    }
+  }
+}

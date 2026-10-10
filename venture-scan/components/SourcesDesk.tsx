@@ -14,11 +14,16 @@ import { PlatformLogo } from "@/components/PlatformLogo";
 import { relativeTime } from "@/lib/format";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  localizeCountry,
+  localizeRegion,
+  localizeSource,
+} from "@/lib/i18n/localize-source";
 
 const HEALTH_ORDER: SourceHealth[] = ["healthy", "degraded", "stale", "offline"];
 
 export function SourcesDesk() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const kindLabel = (kind: DataSource["kind"]) => t(`sourceKind.${kind}`);
   const [region, setRegion] = useState("all");
   const [health, setHealth] = useState<"all" | SourceHealth>("all");
@@ -41,14 +46,19 @@ export function SourcesDesk() {
       if (health !== "all" && h !== health) return false;
       if (region !== "all" && source.region !== region) return false;
       if (!needle) return true;
+      const view = localizeSource(source, locale);
       const hay = [
         source.name,
         source.language,
+        view.language,
         source.languageNative ?? "",
         source.region,
+        view.region,
         source.description,
+        view.description,
         source.kind,
         ...source.countries,
+        ...view.countries,
       ]
         .join(" ")
         .toLowerCase();
@@ -59,7 +69,7 @@ export function SourcesDesk() {
       if (ha !== hb) return ha - hb;
       return b.lastSourcedAt.localeCompare(a.lastSourcedAt);
     });
-  }, [q, region, health, now]);
+  }, [q, region, health, now, locale]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -95,15 +105,18 @@ export function SourcesDesk() {
         <h2 className="font-display text-2xl text-foam">{t("sources.coverage")}</h2>
         <p className="mt-2 text-sm text-mist">{t("sources.coverageBody")}</p>
         <ul className="mt-4 flex flex-wrap gap-2">
-          {countries.map((country) => (
-            <li
-              key={country}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-black/10 bg-black/[0.03] px-2.5 py-1.5 text-xs text-foam"
-            >
-              <Flag code={countryToFlagCode(country) ?? ""} title={country} size="sm" />
-              {country}
-            </li>
-          ))}
+          {countries.map((country) => {
+            const label = localizeCountry(country, locale);
+            return (
+              <li
+                key={country}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-black/10 bg-black/[0.03] px-2.5 py-1.5 text-xs text-foam"
+              >
+                <Flag code={countryToFlagCode(country) ?? ""} title={label} size="sm" />
+                {label}
+              </li>
+            );
+          })}
         </ul>
       </section>
 
@@ -124,7 +137,7 @@ export function SourcesDesk() {
           <option value="all">{t("sources.allRegions")}</option>
           {regions.map((r) => (
             <option key={r} value={r}>
-              {r}
+              {localizeRegion(r, locale)}
             </option>
           ))}
         </select>
@@ -149,6 +162,7 @@ export function SourcesDesk() {
       <ul className="mt-6 space-y-3">
         {filtered.map((source) => {
           const status = sourceHealth(source, now);
+          const view = localizeSource(source, locale);
           return (
             <li
               key={source.id}
@@ -165,7 +179,7 @@ export function SourcesDesk() {
                     </span>
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-mist">
-                    {source.description}
+                    {view.description}
                   </p>
                   <dl className="mt-3 grid gap-2 text-xs text-mist sm:grid-cols-2">
                     <div>
@@ -173,7 +187,7 @@ export function SourcesDesk() {
                         {t("sources.language")}
                       </dt>
                       <dd className="mt-0.5 text-foam">
-                        {source.language}
+                        {view.language}
                         {source.languageNative ? ` · ${source.languageNative}` : ""}
                       </dd>
                     </div>
@@ -181,27 +195,30 @@ export function SourcesDesk() {
                       <dt className="font-mono uppercase tracking-[0.14em] text-mist/70">
                         {t("sources.region")}
                       </dt>
-                      <dd className="mt-0.5 text-foam">{source.region}</dd>
+                      <dd className="mt-0.5 text-foam">{view.region}</dd>
                     </div>
                     <div className="sm:col-span-2">
                       <dt className="font-mono uppercase tracking-[0.14em] text-mist/70">
                         {t("sources.countries")}
                       </dt>
                       <dd className="mt-1 flex flex-wrap gap-1.5">
-                        {source.countries.map((c) => (
-                          <span
-                            key={c}
-                            className="inline-flex items-center gap-1.5 rounded-md bg-black/[0.04] px-2 py-1 text-foam"
-                          >
-                            <Flag code={countryToFlagCode(c) ?? ""} title={c} size="sm" />
-                            <span>{c}</span>
-                          </span>
-                        ))}
+                        {source.countries.map((c, i) => {
+                          const label = view.countries[i] ?? localizeCountry(c, locale);
+                          return (
+                            <span
+                              key={c}
+                              className="inline-flex items-center gap-1.5 rounded-md bg-black/[0.04] px-2 py-1 text-foam"
+                            >
+                              <Flag code={countryToFlagCode(c) ?? ""} title={label} size="sm" />
+                              <span>{label}</span>
+                            </span>
+                          );
+                        })}
                       </dd>
                     </div>
                   </dl>
-                  {source.notes ? (
-                    <p className="mt-3 text-xs text-copper">{source.notes}</p>
+                  {view.notes ? (
+                    <p className="mt-3 text-xs text-copper">{view.notes}</p>
                   ) : null}
                 </div>
                 <div className="shrink-0 rounded-xl border border-black/8 bg-black/[0.03] px-3 py-2 sm:min-w-[160px] sm:text-right">

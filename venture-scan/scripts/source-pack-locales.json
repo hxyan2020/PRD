@@ -1,0 +1,1907 @@
+{
+  "ja": {
+    "regions": {
+      "Africa": "アフリカ",
+      "Asia": "アジア",
+      "Asia-Pacific": "アジア太平洋",
+      "Brazil": "ブラジル",
+      "DACH": "DACH",
+      "Europe": "ヨーロッパ",
+      "Francophone Europe / Africa": "フランス語圏ヨーロッパ / アフリカ",
+      "Global": "グローバル",
+      "Global / AI": "グローバル / AI",
+      "Global / North America": "グローバル / 北米",
+      "Global South": "グローバル・サウス",
+      "Greater China": "グレーターチャイナ",
+      "India": "インド",
+      "Israel": "イスラエル",
+      "Korea": "韓国",
+      "Latin America": "ラテンアメリカ",
+      "MENA": "中東・北アフリカ",
+      "Nordics": "北欧",
+      "Oceania": "オセアニア",
+      "South Asia": "南アジア",
+      "Southern Cone": "南部諸国",
+      "Türkiye / Eastern Europe": "トルコ / 東欧",
+      "Vietnam": "ベトナム",
+      "West Africa": "西アフリカ"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "世界のスタートアップと資金調達ニュース。"
+      },
+      "crunchbase-news": {
+        "description": "ラウンド発表と投資家動向フィード。"
+      },
+      "36kr": {
+        "description": "中国語のスタートアップとハードテック報道。"
+      },
+      "krasia": {
+        "description": "東南・東アジアのスタートアップ情報。"
+      },
+      "techinasia": {
+        "description": "アジア太平洋の資金調達とプロダクト報道。"
+      },
+      "nikkei-asia": {
+        "description": "日経によるアジア太平洋のビジネス・ベンチャー報道。"
+      },
+      "platum": {
+        "description": "韓国スタートアップと資金調達デスク。"
+      },
+      "yourstory": {
+        "description": "インド中心の起業と資金調達ストーリー。"
+      },
+      "startup-india": {
+        "description": "インドスタートアップの政府登録・認定シグナル。",
+        "notes": "48時間ごとのバッチ同期"
+      },
+      "sifted": {
+        "description": "欧州スタートアップとディープテック資金調達報道。"
+      },
+      "eu-startups": {
+        "description": "欧州横断のスタートアップニュース集約。"
+      },
+      "les-echos-start": {
+        "description": "フランス語のスタートアップ／スケールアップデスク。"
+      },
+      "gruenderszene": {
+        "description": "ドイツ語の創業者と資金調達報道。"
+      },
+      "africarena": {
+        "description": "アフリカのベンチャーとエコシステム報道。"
+      },
+      "wamda": {
+        "description": "MENAの起業と資金調達デスク。"
+      },
+      "contxto": {
+        "description": "ラテンアメリカのスタートアップとVC報道。"
+      },
+      "startupbase-br": {
+        "description": "ブラジルのスタートアップ地図・ランキング・生態系情報。",
+        "notes": "レジストリを24時間ごとにクロール"
+      },
+      "israel-tech": {
+        "description": "イスラエルのディープテックとサイバーセキュリティ資金シグナル。"
+      },
+      "afrilabs": {
+        "description": "アフリカの創業者・投資家ディールフローコミュニティ。",
+        "notes": "コミュニティダイジェストは12時間ごと"
+      },
+      "pitchbook-public": {
+        "description": "公開の資金調達ブリーフと市場ノート。"
+      },
+      "venturebeat": {
+        "description": "AIとエンタープライズのプロダクト／資金調達報道。"
+      },
+      "rest-of-world": {
+        "description": "シリコンバレー以外のテクノロジーストーリー。"
+      },
+      "startupdaily-au": {
+        "description": "豪州・NZのスタートアップと資本市場デスク。"
+      },
+      "nordic-startup-news": {
+        "description": "ストックホルム発の北欧スタートアップ報道。"
+      },
+      "webrazzi": {
+        "description": "トルコ語のテックと資金調達デスク。"
+      },
+      "vnexpress-startup": {
+        "description": "ベトナムのスタートアップとデジタル経済報道。"
+      },
+      "technode": {
+        "description": "中国と世界をつなぐバイリンガルテック／ベンチャーフィード。"
+      },
+      "pulse-ng": {
+        "description": "西・南部アフリカのスタートアップ資本報道。"
+      },
+      "inc42": {
+        "description": "インドの資金調達と政策シグナル。"
+      },
+      "startupchile": {
+        "description": "ラテンアメリカのアクセラレーターとエコシステムプログラム。",
+        "notes": "プログラムバッチを24時間ごとに同期"
+      },
+      "dealstreetasia": {
+        "description": "アジアのプライベートマーケット取引・資金調達・投資家動向。"
+      }
+    }
+  },
+  "ko": {
+    "regions": {
+      "Africa": "아프리카",
+      "Asia": "아시아",
+      "Asia-Pacific": "아시아태평양",
+      "Brazil": "브라질",
+      "DACH": "DACH",
+      "Europe": "유럽",
+      "Francophone Europe / Africa": "불어권 유럽 / 아프리카",
+      "Global": "글로벌",
+      "Global / AI": "글로벌 / AI",
+      "Global / North America": "글로벌 / 북미",
+      "Global South": "글로벌 사우스",
+      "Greater China": "중화권",
+      "India": "인도",
+      "Israel": "이스라엘",
+      "Korea": "한국",
+      "Latin America": "라틴아메리카",
+      "MENA": "중동·북아프리카",
+      "Nordics": "북유럽",
+      "Oceania": "오세아니아",
+      "South Asia": "남아시아",
+      "Southern Cone": "남부 원뿔",
+      "Türkiye / Eastern Europe": "튀르kiye / 동유럽",
+      "Vietnam": "베트남",
+      "West Africa": "서아프리카"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "글로벌 스타트업·펀딩 뉴스 와이어."
+      },
+      "crunchbase-news": {
+        "description": "라운드 발표와 투자자 활동 피드."
+      },
+      "36kr": {
+        "description": "중국어 스타트업·하드테크 보도."
+      },
+      "krasia": {
+        "description": "동남아·동아시아 스타트업 인텔리전스."
+      },
+      "techinasia": {
+        "description": "아태 스타트업 펀딩·제품 보도."
+      },
+      "nikkei-asia": {
+        "description": "닛케이의 아태 비즈니스·벤처 보도."
+      },
+      "platum": {
+        "description": "한국 스타트업·펀딩 데스크."
+      },
+      "yourstory": {
+        "description": "인도 중심 창업·펀딩 스토리."
+      },
+      "startup-india": {
+        "description": "인도 스타트업 정부 등록·인증 신호.",
+        "notes": "48시간마다 배치 동기화"
+      },
+      "sifted": {
+        "description": "유럽 스타트업·딥테크 펀딩 보도."
+      },
+      "eu-startups": {
+        "description": "범유럽 스타트업 뉴스 애그리게이터."
+      },
+      "les-echos-start": {
+        "description": "프랑스어 스타트업·스케일업 데스크."
+      },
+      "gruenderszene": {
+        "description": "독일어 창업자·펀딩 보도."
+      },
+      "africarena": {
+        "description": "아프리카 벤처·생태계 보도."
+      },
+      "wamda": {
+        "description": "MENA 창업·펀딩 데스크."
+      },
+      "contxto": {
+        "description": "라틴아메리카 스타트업·VC 보도."
+      },
+      "startupbase-br": {
+        "description": "브라질 스타트업 지도·랭킹·생태계 인텔.",
+        "notes": "레지스트리 24시간마다 크롤"
+      },
+      "israel-tech": {
+        "description": "이스라엘 딥테크·사이버보안 펀딩 신호."
+      },
+      "afrilabs": {
+        "description": "아프리카 창업자·투자자 딜플로우 커뮤니티.",
+        "notes": "커뮤니티 다이제스트 12시간마다"
+      },
+      "pitchbook-public": {
+        "description": "공개 펀딩 브리프와 시장 노트."
+      },
+      "venturebeat": {
+        "description": "AI·엔터프라이즈 제품/펀딩 보도."
+      },
+      "rest-of-world": {
+        "description": "실리콘밸리 밖의 테크 스토리."
+      },
+      "startupdaily-au": {
+        "description": "호주·뉴질랜드 스타트업·자본시장 데스크."
+      },
+      "nordic-startup-news": {
+        "description": "스톡홀름발 북유럽 스타트업·테크 보도."
+      },
+      "webrazzi": {
+        "description": "터키어 테크·스타트업 펀딩 데스크."
+      },
+      "vnexpress-startup": {
+        "description": "베트남 스타트업·디지털 경제 보도."
+      },
+      "technode": {
+        "description": "중·글로벌 이중언어 테크·벤처 피드."
+      },
+      "pulse-ng": {
+        "description": "서·남부 아프리카 스타트업 자본 보도."
+      },
+      "inc42": {
+        "description": "인도 스타트업 펀딩·정책 신호."
+      },
+      "startupchile": {
+        "description": "라틴아메리카 액셀러레이터·생태계 프로그램.",
+        "notes": "프로그램 배치 24시간마다 동기화"
+      },
+      "dealstreetasia": {
+        "description": "아시아 사모시장 딜·펀딩·투자자 활동."
+      }
+    }
+  },
+  "es": {
+    "regions": {
+      "Africa": "África",
+      "Asia": "Asia",
+      "Asia-Pacific": "Asia-Pacífico",
+      "Brazil": "Brasil",
+      "DACH": "DACH",
+      "Europe": "Europa",
+      "Francophone Europe / Africa": "Europa francófona / África",
+      "Global": "Global",
+      "Global / AI": "Global / IA",
+      "Global / North America": "Global / Norteamérica",
+      "Global South": "Sur Global",
+      "Greater China": "Gran China",
+      "India": "India",
+      "Israel": "Israel",
+      "Korea": "Corea",
+      "Latin America": "América Latina",
+      "MENA": "MENA",
+      "Nordics": "Nórdicos",
+      "Oceania": "Oceanía",
+      "South Asia": "Asia del Sur",
+      "Southern Cone": "Cono Sur",
+      "Türkiye / Eastern Europe": "Turquía / Europa del Este",
+      "Vietnam": "Vietnam",
+      "West Africa": "África Occidental"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Cable global de noticias de startups y fundraising."
+      },
+      "crunchbase-news": {
+        "description": "Anuncios de rondas y actividad de inversores."
+      },
+      "36kr": {
+        "description": "Cobertura en chino de startups y hard-tech."
+      },
+      "krasia": {
+        "description": "Inteligencia de startups del Sudeste y Este de Asia."
+      },
+      "techinasia": {
+        "description": "Financiación y producto de startups en Asia-Pacífico."
+      },
+      "nikkei-asia": {
+        "description": "Cobertura de negocios y venture de Nikkei en APAC."
+      },
+      "platum": {
+        "description": "Escritorio coreano de startups y funding."
+      },
+      "yourstory": {
+        "description": "Historias de emprendimiento y funding centradas en India."
+      },
+      "startup-india": {
+        "description": "Registro gubernamental y señales de reconocimiento para startups indias.",
+        "notes": "Sincronización por lotes cada 48 h"
+      },
+      "sifted": {
+        "description": "Cobertura europea de startups y deep-tech fundraising."
+      },
+      "eu-startups": {
+        "description": "Agregador paneuropeo de noticias de startups."
+      },
+      "les-echos-start": {
+        "description": "Escritorio francófono de startups y scale-ups."
+      },
+      "gruenderszene": {
+        "description": "Cobertura en alemán de fundadores y funding."
+      },
+      "africarena": {
+        "description": "Reportes de venture y ecosistema en África."
+      },
+      "wamda": {
+        "description": "Escritorio MENA de emprendimiento y funding."
+      },
+      "contxto": {
+        "description": "Cobertura LatAm de startups y capital de riesgo."
+      },
+      "startupbase-br": {
+        "description": "Mapa, rankings e inteligencia del ecosistema brasileño.",
+        "notes": "Crawl del registro cada 24 h"
+      },
+      "israel-tech": {
+        "description": "Señales de funding en deep-tech y ciberseguridad israelí."
+      },
+      "afrilabs": {
+        "description": "Comunidad africana de fundadores e inversores.",
+        "notes": "Resumen comunitario cada 12 h"
+      },
+      "pitchbook-public": {
+        "description": "Briefs públicos de fundraising y notas de mercado."
+      },
+      "venturebeat": {
+        "description": "Cobertura de producto/funding de startups de IA y enterprise."
+      },
+      "rest-of-world": {
+        "description": "Historias tecnológicas fuera de Silicon Valley."
+      },
+      "startupdaily-au": {
+        "description": "Escritorio de startups y mercados de capital de Australia y NZ."
+      },
+      "nordic-startup-news": {
+        "description": "Cobertura nórdica de startups y scale-ups desde Estocolmo."
+      },
+      "webrazzi": {
+        "description": "Escritorio turco de tech y funding de startups."
+      },
+      "vnexpress-startup": {
+        "description": "Reportes vietnamitas de startups y economía digital."
+      },
+      "technode": {
+        "description": "Feed bilingüe sino-global de tech y venture."
+      },
+      "pulse-ng": {
+        "description": "Cobertura de capital startup en África Occidental y del Sur."
+      },
+      "inc42": {
+        "description": "Señales indias de funding y política para startups."
+      },
+      "startupchile": {
+        "description": "Feed de aceleradoras y programas LatAm.",
+        "notes": "Sincronización de programas cada 24 h"
+      },
+      "dealstreetasia": {
+        "description": "Deals de mercados privados, fundraising y actividad de inversores en Asia."
+      }
+    }
+  },
+  "fr": {
+    "regions": {
+      "Africa": "Afrique",
+      "Asia": "Asie",
+      "Asia-Pacific": "Asie-Pacifique",
+      "Brazil": "Brésil",
+      "DACH": "DACH",
+      "Europe": "Europe",
+      "Francophone Europe / Africa": "Europe francophone / Afrique",
+      "Global": "Mondial",
+      "Global / AI": "Mondial / IA",
+      "Global / North America": "Mondial / Amérique du Nord",
+      "Global South": "Sud global",
+      "Greater China": "Grande Chine",
+      "India": "Inde",
+      "Israel": "Israël",
+      "Korea": "Corée",
+      "Latin America": "Amérique latine",
+      "MENA": "MENA",
+      "Nordics": "Pays nordiques",
+      "Oceania": "Océanie",
+      "South Asia": "Asie du Sud",
+      "Southern Cone": "Cône Sud",
+      "Türkiye / Eastern Europe": "Turquie / Europe de l'Est",
+      "Vietnam": "Viêt Nam",
+      "West Africa": "Afrique de l'Ouest"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Fil mondial d'actualités startups et levées de fonds."
+      },
+      "crunchbase-news": {
+        "description": "Annonces de tours et activité des investisseurs."
+      },
+      "36kr": {
+        "description": "Couverture chinoise des startups et du hard-tech."
+      },
+      "krasia": {
+        "description": "Intelligence startups en Asie du Sud-Est et de l'Est."
+      },
+      "techinasia": {
+        "description": "Financement et produits startups en Asie-Pacifique."
+      },
+      "nikkei-asia": {
+        "description": "Couverture business et venture APAC de Nikkei."
+      },
+      "platum": {
+        "description": "Bureau coréen startups et funding."
+      },
+      "yourstory": {
+        "description": "Histoires d'entrepreneuriat et de funding centrées sur l'Inde."
+      },
+      "startup-india": {
+        "description": "Registre gouvernemental et signaux de reconnaissance pour startups indiennes.",
+        "notes": "Sync par lots toutes les 48 h"
+      },
+      "sifted": {
+        "description": "Couverture européenne startups et deep-tech fundraising."
+      },
+      "eu-startups": {
+        "description": "Agrégateur paneuropéen d'actualités startups."
+      },
+      "les-echos-start": {
+        "description": "Bureau francophone startups et scale-ups."
+      },
+      "gruenderszene": {
+        "description": "Couverture allemande des fondateurs et du funding."
+      },
+      "africarena": {
+        "description": "Reportages venture et écosystème en Afrique."
+      },
+      "wamda": {
+        "description": "Bureau MENA entrepreneuriat et funding."
+      },
+      "contxto": {
+        "description": "Couverture LatAm startups et capital-risque."
+      },
+      "startupbase-br": {
+        "description": "Carte, classements et intelligence de l'écosystème brésilien.",
+        "notes": "Crawl du registre toutes les 24 h"
+      },
+      "israel-tech": {
+        "description": "Signaux de funding deep-tech et cybersécurité israéliens."
+      },
+      "afrilabs": {
+        "description": "Communauté africaine de fondateurs et investisseurs.",
+        "notes": "Digest communautaire toutes les 12 h"
+      },
+      "pitchbook-public": {
+        "description": "Briefs publics de fundraising et notes de marché."
+      },
+      "venturebeat": {
+        "description": "Couverture produit/funding IA et enterprise."
+      },
+      "rest-of-world": {
+        "description": "Histoires tech hors Silicon Valley."
+      },
+      "startupdaily-au": {
+        "description": "Bureau startups et marchés de capitaux AU/NZ."
+      },
+      "nordic-startup-news": {
+        "description": "Couverture nordique startups depuis Stockholm."
+      },
+      "webrazzi": {
+        "description": "Bureau turc tech et funding startups."
+      },
+      "vnexpress-startup": {
+        "description": "Reportages vietnamiens startups et économie numérique."
+      },
+      "technode": {
+        "description": "Flux bilingue sino-mondial tech et venture."
+      },
+      "pulse-ng": {
+        "description": "Couverture du capital startup en Afrique de l'Ouest et du Sud."
+      },
+      "inc42": {
+        "description": "Signaux indiens de funding et de politique."
+      },
+      "startupchile": {
+        "description": "Flux d'accélérateurs et programmes LatAm.",
+        "notes": "Sync des programmes toutes les 24 h"
+      },
+      "dealstreetasia": {
+        "description": "Deals private market, fundraising et activité investisseurs en Asie."
+      }
+    }
+  },
+  "de": {
+    "regions": {
+      "Africa": "Afrika",
+      "Asia": "Asien",
+      "Asia-Pacific": "Asien-Pazifik",
+      "Brazil": "Brasilien",
+      "DACH": "DACH",
+      "Europe": "Europa",
+      "Francophone Europe / Africa": "Frankophones Europa / Afrika",
+      "Global": "Global",
+      "Global / AI": "Global / KI",
+      "Global / North America": "Global / Nordamerika",
+      "Global South": "Globaler Süden",
+      "Greater China": "Greater China",
+      "India": "Indien",
+      "Israel": "Israel",
+      "Korea": "Korea",
+      "Latin America": "Lateinamerika",
+      "MENA": "MENA",
+      "Nordics": "Nordics",
+      "Oceania": "Ozeanien",
+      "South Asia": "Südasien",
+      "Southern Cone": "Südkegel",
+      "Türkiye / Eastern Europe": "Türkei / Osteuropa",
+      "Vietnam": "Vietnam",
+      "West Africa": "Westafrika"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Globale Startup- und Fundraising-Nachrichten."
+      },
+      "crunchbase-news": {
+        "description": "Rundenankündigungen und Investoraktivität."
+      },
+      "36kr": {
+        "description": "Chinesischsprachige Startup- und Hard-Tech-Berichterstattung."
+      },
+      "krasia": {
+        "description": "Startup-Intelligence für Südost- und Ostasien."
+      },
+      "techinasia": {
+        "description": "APAC-Startup-Funding und Produktberichte."
+      },
+      "nikkei-asia": {
+        "description": "APAC-Business- und Venture-Berichterstattung von Nikkei."
+      },
+      "platum": {
+        "description": "Koreanischer Startup- und Funding-Desk."
+      },
+      "yourstory": {
+        "description": "Indien-fokussierte Entrepreneurship- und Funding-Stories."
+      },
+      "startup-india": {
+        "description": "Behördliche Register- und Anerkennungssignale für indische Startups.",
+        "notes": "Batch-Sync alle 48 Std."
+      },
+      "sifted": {
+        "description": "Europäische Startup- und Deep-Tech-Fundraising-Berichterstattung."
+      },
+      "eu-startups": {
+        "description": "Paneuropäischer Startup-News-Aggregator."
+      },
+      "les-echos-start": {
+        "description": "Französischsprachiger Startup- und Scale-up-Desk."
+      },
+      "gruenderszene": {
+        "description": "Deutschsprachige Founder- und Funding-Berichterstattung."
+      },
+      "africarena": {
+        "description": "Afrikanische Venture- und Ökosystem-Berichte."
+      },
+      "wamda": {
+        "description": "MENA-Entrepreneurship- und Funding-Desk."
+      },
+      "contxto": {
+        "description": "LatAm-Startup- und VC-Berichterstattung."
+      },
+      "startupbase-br": {
+        "description": "Brasilianische Startup-Karte, Rankings und Ökosystem-Intelligence.",
+        "notes": "Registry-Crawl alle 24 Std."
+      },
+      "israel-tech": {
+        "description": "Israelische Deep-Tech- und Cybersecurity-Funding-Signale."
+      },
+      "afrilabs": {
+        "description": "Afrikanische Founder- und Investor-Dealflow-Community.",
+        "notes": "Community-Digest alle 12 Std."
+      },
+      "pitchbook-public": {
+        "description": "Öffentliche Fundraising-Briefs und Marktnotizen."
+      },
+      "venturebeat": {
+        "description": "KI- und Enterprise-Startup Produkt-/Funding-Berichterstattung."
+      },
+      "rest-of-world": {
+        "description": "Technologiegeschichten außerhalb Silicon Valley."
+      },
+      "startupdaily-au": {
+        "description": "Australischer und NZ Startup- und Kapitalmarktdesk."
+      },
+      "nordic-startup-news": {
+        "description": "Nordische Startup-, Tech- und Scale-up-Berichterstattung aus Stockholm."
+      },
+      "webrazzi": {
+        "description": "Türkischsprachiger Tech- und Startup-Funding-Desk."
+      },
+      "vnexpress-startup": {
+        "description": "Vietnamesische Startup- und Digitalwirtschaftsberichte."
+      },
+      "technode": {
+        "description": "Sino-globaler bilingualer Tech- und Venture-Feed."
+      },
+      "pulse-ng": {
+        "description": "Startup-Kapitalberichterstattung West- und Südliches Afrika."
+      },
+      "inc42": {
+        "description": "Indische Startup-Funding- und Politiksignale."
+      },
+      "startupchile": {
+        "description": "LatAm-Accelerator- und Ökosystemprogramm-Feed.",
+        "notes": "Programm-Batch-Sync alle 24 Std."
+      },
+      "dealstreetasia": {
+        "description": "Asiatische Private-Market-Deals, Fundraising und Investoraktivität."
+      }
+    }
+  },
+  "pt-BR": {
+    "regions": {
+      "Africa": "África",
+      "Asia": "Ásia",
+      "Asia-Pacific": "Ásia-Pacífico",
+      "Brazil": "Brasil",
+      "DACH": "DACH",
+      "Europe": "Europa",
+      "Francophone Europe / Africa": "Europa francófona / África",
+      "Global": "Global",
+      "Global / AI": "Global / IA",
+      "Global / North America": "Global / América do Norte",
+      "Global South": "Sul Global",
+      "Greater China": "Grande China",
+      "India": "Índia",
+      "Israel": "Israel",
+      "Korea": "Coreia",
+      "Latin America": "América Latina",
+      "MENA": "MENA",
+      "Nordics": "Nórdicos",
+      "Oceania": "Oceania",
+      "South Asia": "Ásia do Sul",
+      "Southern Cone": "Cone Sul",
+      "Türkiye / Eastern Europe": "Turquia / Europa Oriental",
+      "Vietnam": "Vietnã",
+      "West Africa": "África Ocidental"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Wire global de notícias de startups e fundraising."
+      },
+      "crunchbase-news": {
+        "description": "Anúncios de rodadas e atividade de investidores."
+      },
+      "36kr": {
+        "description": "Cobertura em chinês de startups e hard-tech."
+      },
+      "krasia": {
+        "description": "Inteligência de startups do Sudeste e Leste Asiático."
+      },
+      "techinasia": {
+        "description": "Funding e produto de startups na Ásia-Pacífico."
+      },
+      "nikkei-asia": {
+        "description": "Cobertura de negócios e venture APAC da Nikkei."
+      },
+      "platum": {
+        "description": "Mesa coreana de startups e funding."
+      },
+      "yourstory": {
+        "description": "Histórias de empreendedorismo e funding focadas na Índia."
+      },
+      "startup-india": {
+        "description": "Registro governamental e sinais de reconhecimento para startups indianas.",
+        "notes": "Sincronização em lote a cada 48 h"
+      },
+      "sifted": {
+        "description": "Cobertura europeia de startups e deep-tech fundraising."
+      },
+      "eu-startups": {
+        "description": "Agregador pan-europeu de notícias de startups."
+      },
+      "les-echos-start": {
+        "description": "Mesa francófona de startups e scale-ups."
+      },
+      "gruenderszene": {
+        "description": "Cobertura em alemão de fundadores e funding."
+      },
+      "africarena": {
+        "description": "Reportagens de venture e ecossistema na África."
+      },
+      "wamda": {
+        "description": "Mesa MENA de empreendedorismo e funding."
+      },
+      "contxto": {
+        "description": "Cobertura LatAm de startups e venture capital."
+      },
+      "startupbase-br": {
+        "description": "Mapa, rankings e inteligência do ecossistema brasileiro.",
+        "notes": "Crawl do registro a cada 24 h"
+      },
+      "israel-tech": {
+        "description": "Sinais de funding em deep-tech e cibersegurança israelenses."
+      },
+      "afrilabs": {
+        "description": "Comunidade africana de fundadores e investidores.",
+        "notes": "Digest comunitário a cada 12 h"
+      },
+      "pitchbook-public": {
+        "description": "Briefs públicos de fundraising e notas de mercado."
+      },
+      "venturebeat": {
+        "description": "Cobertura de produto/funding de startups de IA e enterprise."
+      },
+      "rest-of-world": {
+        "description": "Histórias de tecnologia fora do Silicon Valley."
+      },
+      "startupdaily-au": {
+        "description": "Mesa de startups e mercados de capital AU/NZ."
+      },
+      "nordic-startup-news": {
+        "description": "Cobertura nórdica de startups a partir de Estocolmo."
+      },
+      "webrazzi": {
+        "description": "Mesa turca de tech e funding de startups."
+      },
+      "vnexpress-startup": {
+        "description": "Reportagens vietnamitas de startups e economia digital."
+      },
+      "technode": {
+        "description": "Feed bilíngue sino-global de tech e venture."
+      },
+      "pulse-ng": {
+        "description": "Cobertura de capital startup na África Ocidental e do Sul."
+      },
+      "inc42": {
+        "description": "Sinais indianos de funding e política para startups."
+      },
+      "startupchile": {
+        "description": "Feed de aceleradoras e programas LatAm.",
+        "notes": "Sincronização de programas a cada 24 h"
+      },
+      "dealstreetasia": {
+        "description": "Deals de mercados privados, fundraising e atividade de investidores na Ásia."
+      }
+    }
+  },
+  "it": {
+    "regions": {
+      "Africa": "Africa",
+      "Asia": "Asia",
+      "Asia-Pacific": "Asia-Pacifico",
+      "Brazil": "Brasile",
+      "DACH": "DACH",
+      "Europe": "Europa",
+      "Francophone Europe / Africa": "Europa francofona / Africa",
+      "Global": "Globale",
+      "Global / AI": "Globale / IA",
+      "Global / North America": "Globale / Nord America",
+      "Global South": "Sud globale",
+      "Greater China": "Grande Cina",
+      "India": "India",
+      "Israel": "Israele",
+      "Korea": "Corea",
+      "Latin America": "America Latina",
+      "MENA": "MENA",
+      "Nordics": "Nordici",
+      "Oceania": "Oceania",
+      "South Asia": "Asia meridionale",
+      "Southern Cone": "Cono Sud",
+      "Türkiye / Eastern Europe": "Turchia / Europa orientale",
+      "Vietnam": "Vietnam",
+      "West Africa": "Africa occidentale"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Filo globale di notizie su startup e fundraising."
+      },
+      "crunchbase-news": {
+        "description": "Annunci di round e attività degli investitori."
+      },
+      "36kr": {
+        "description": "Copertura in cinese di startup e hard-tech."
+      },
+      "krasia": {
+        "description": "Intelligence startup del Sud-est e dell'Est Asia."
+      },
+      "techinasia": {
+        "description": "Funding e prodotti startup in Asia-Pacifico."
+      },
+      "nikkei-asia": {
+        "description": "Copertura business e venture APAC di Nikkei."
+      },
+      "platum": {
+        "description": "Desk coreano di startup e funding."
+      },
+      "yourstory": {
+        "description": "Storie di imprenditorialità e funding incentrate sull'India."
+      },
+      "startup-india": {
+        "description": "Registro governativo e segnali di riconoscimento per startup indiane.",
+        "notes": "Sync batch ogni 48 ore"
+      },
+      "sifted": {
+        "description": "Copertura europea di startup e deep-tech fundraising."
+      },
+      "eu-startups": {
+        "description": "Aggregatore paneuropeo di notizie startup."
+      },
+      "les-echos-start": {
+        "description": "Desk francofono di startup e scale-up."
+      },
+      "gruenderszene": {
+        "description": "Copertura in tedesco di founder e funding."
+      },
+      "africarena": {
+        "description": "Reportage venture ed ecosistema in Africa."
+      },
+      "wamda": {
+        "description": "Desk MENA di imprenditorialità e funding."
+      },
+      "contxto": {
+        "description": "Copertura LatAm di startup e venture capital."
+      },
+      "startupbase-br": {
+        "description": "Mappa, ranking e intelligence dell'ecosistema brasiliano.",
+        "notes": "Crawl del registro ogni 24 ore"
+      },
+      "israel-tech": {
+        "description": "Segnali di funding deep-tech e cybersecurity israeliani."
+      },
+      "afrilabs": {
+        "description": "Community africana di founder e investitori.",
+        "notes": "Digest community ogni 12 ore"
+      },
+      "pitchbook-public": {
+        "description": "Brief pubblici di fundraising e note di mercato."
+      },
+      "venturebeat": {
+        "description": "Copertura prodotto/funding di startup AI ed enterprise."
+      },
+      "rest-of-world": {
+        "description": "Storie tech fuori dalla Silicon Valley."
+      },
+      "startupdaily-au": {
+        "description": "Desk startup e mercati di capitale AU/NZ."
+      },
+      "nordic-startup-news": {
+        "description": "Copertura nordica di startup da Stoccolma."
+      },
+      "webrazzi": {
+        "description": "Desk turco di tech e funding startup."
+      },
+      "vnexpress-startup": {
+        "description": "Reportage vietnamiti su startup ed economia digitale."
+      },
+      "technode": {
+        "description": "Feed bilingue sino-globale di tech e venture."
+      },
+      "pulse-ng": {
+        "description": "Copertura del capitale startup in Africa occidentale e meridionale."
+      },
+      "inc42": {
+        "description": "Segnali indiani di funding e policy per startup."
+      },
+      "startupchile": {
+        "description": "Feed di acceleratori e programmi LatAm.",
+        "notes": "Sync programmi ogni 24 ore"
+      },
+      "dealstreetasia": {
+        "description": "Deal di mercati privati, fundraising e attività investitori in Asia."
+      }
+    }
+  },
+  "nl": {
+    "regions": {
+      "Africa": "Afrika",
+      "Asia": "Azië",
+      "Asia-Pacific": "Azië-Pacific",
+      "Brazil": "Brazilië",
+      "DACH": "DACH",
+      "Europe": "Europa",
+      "Francophone Europe / Africa": "Francofoon Europa / Afrika",
+      "Global": "Wereldwijd",
+      "Global / AI": "Wereldwijd / AI",
+      "Global / North America": "Wereldwijd / Noord-Amerika",
+      "Global South": "Mondiale Zuiden",
+      "Greater China": "Groter China",
+      "India": "India",
+      "Israel": "Israël",
+      "Korea": "Korea",
+      "Latin America": "Latijns-Amerika",
+      "MENA": "MENA",
+      "Nordics": "Noordse landen",
+      "Oceania": "Oceanië",
+      "South Asia": "Zuid-Azië",
+      "Southern Cone": "Zuidelijke kegel",
+      "Türkiye / Eastern Europe": "Turkije / Oost-Europa",
+      "Vietnam": "Vietnam",
+      "West Africa": "West-Afrika"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Wereldwijde startup- en fundraisingnieuwsdraad."
+      },
+      "crunchbase-news": {
+        "description": "Rondeaankondigingen en investeerdersactiviteit."
+      },
+      "36kr": {
+        "description": "Chineestalige startup- en hard-techverslaggeving."
+      },
+      "krasia": {
+        "description": "Startup-intelligence voor Zuidoost- en Oost-Azië."
+      },
+      "techinasia": {
+        "description": "APAC-startupfunding en productverslaggeving."
+      },
+      "nikkei-asia": {
+        "description": "APAC business- en ventureverslaggeving van Nikkei."
+      },
+      "platum": {
+        "description": "Koreaanse startup- en fundingdesk."
+      },
+      "yourstory": {
+        "description": "India-gerichte entrepreneurship- en fundingverhalen."
+      },
+      "startup-india": {
+        "description": "Overheidsregister en erkenningssignalen voor Indiase startups.",
+        "notes": "Batchsynchronisatie elke 48 uur"
+      },
+      "sifted": {
+        "description": "Europese startup- en deep-techfundraisingverslaggeving."
+      },
+      "eu-startups": {
+        "description": "Paneuropese aggregator van startupnieuws."
+      },
+      "les-echos-start": {
+        "description": "Franstalige startup- en scale-updesk."
+      },
+      "gruenderszene": {
+        "description": "Duitstalige founder- en fundingverslaggeving."
+      },
+      "africarena": {
+        "description": "Afrikaanse venture- en ecosysteemverslagen."
+      },
+      "wamda": {
+        "description": "MENA-entrepreneurship- en fundingdesk."
+      },
+      "contxto": {
+        "description": "LatAm-startup- en vc-verslaggeving."
+      },
+      "startupbase-br": {
+        "description": "Braziliaanse startupkaart, rankings en ecosysteemintelligence.",
+        "notes": "Registercrawl elke 24 uur"
+      },
+      "israel-tech": {
+        "description": "Israëlische deep-tech- en cybersecurityfundingsignalen."
+      },
+      "afrilabs": {
+        "description": "Afrikaanse founder- en investeerderdealflowcommunity.",
+        "notes": "Communitydigest elke 12 uur"
+      },
+      "pitchbook-public": {
+        "description": "Openbare fundraisingbriefs en marktnotities."
+      },
+      "venturebeat": {
+        "description": "AI- en enterprise-startup product-/fundingverslaggeving."
+      },
+      "rest-of-world": {
+        "description": "Technologieverhalen buiten Silicon Valley."
+      },
+      "startupdaily-au": {
+        "description": "Australische en NZ startup- en kapitaalmarktdesk."
+      },
+      "nordic-startup-news": {
+        "description": "Noordse startupverslaggeving vanuit Stockholm."
+      },
+      "webrazzi": {
+        "description": "Turkstalige tech- en startupfundingdesk."
+      },
+      "vnexpress-startup": {
+        "description": "Vietnamese startup- en digitale-economieverslagen."
+      },
+      "technode": {
+        "description": "Sino-globale tweetalige tech- en venturefeed."
+      },
+      "pulse-ng": {
+        "description": "Startupkapitaalverslaggeving West- en Zuidelijk Afrika."
+      },
+      "inc42": {
+        "description": "Indiase startupfunding- en beleidssignalen."
+      },
+      "startupchile": {
+        "description": "LatAm-accelerator- en ecosysteemprogrammfeed.",
+        "notes": "Programmabatchsync elke 24 uur"
+      },
+      "dealstreetasia": {
+        "description": "Aziatische private-marketdeals, fundraising en investeerdersactiviteit."
+      }
+    }
+  },
+  "tr": {
+    "regions": {
+      "Africa": "Afrika",
+      "Asia": "Asya",
+      "Asia-Pacific": "Asya-Pasifik",
+      "Brazil": "Brezilya",
+      "DACH": "DACH",
+      "Europe": "Avrupa",
+      "Francophone Europe / Africa": "Frankofon Avrupa / Afrika",
+      "Global": "Küresel",
+      "Global / AI": "Küresel / Yapay zekâ",
+      "Global / North America": "Küresel / Kuzey Amerika",
+      "Global South": "Küresel Güney",
+      "Greater China": "Büyük Çin",
+      "India": "Hindistan",
+      "Israel": "İsrail",
+      "Korea": "Kore",
+      "Latin America": "Latin Amerika",
+      "MENA": "MENA",
+      "Nordics": "İskandinavya",
+      "Oceania": "Okyanusya",
+      "South Asia": "Güney Asya",
+      "Southern Cone": "Güney Koni",
+      "Türkiye / Eastern Europe": "Türkiye / Doğu Avrupa",
+      "Vietnam": "Vietnam",
+      "West Africa": "Batı Afrika"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Küresel girişim ve fonlama haber teli."
+      },
+      "crunchbase-news": {
+        "description": "Tur duyuruları ve yatırımcı etkinliği."
+      },
+      "36kr": {
+        "description": "Çince girişim ve hard-tech haberciliği."
+      },
+      "krasia": {
+        "description": "Güneydoğu ve Doğu Asya girişim istihbaratı."
+      },
+      "techinasia": {
+        "description": "Asya-Pasifik girişim fonlama ve ürün haberciliği."
+      },
+      "nikkei-asia": {
+        "description": "Nikkei'den APAC iş ve girişim haberciliği."
+      },
+      "platum": {
+        "description": "Kore girişim ve fonlama masası."
+      },
+      "yourstory": {
+        "description": "Hindistan odaklı girişimcilik ve fonlama hikâyeleri."
+      },
+      "startup-india": {
+        "description": "Hint girişimler için devlet kaydı ve tanınma sinyalleri.",
+        "notes": "48 saatte bir toplu senkron"
+      },
+      "sifted": {
+        "description": "Avrupa girişim ve deep-tech fonlama haberciliği."
+      },
+      "eu-startups": {
+        "description": "Avrupa çapında girişim haber toplayıcısı."
+      },
+      "les-echos-start": {
+        "description": "Fransızca girişim ve scale-up masası."
+      },
+      "gruenderszene": {
+        "description": "Almanca kurucu ve fonlama haberciliği."
+      },
+      "africarena": {
+        "description": "Afrika girişim ve ekosistem raporlaması."
+      },
+      "wamda": {
+        "description": "MENA girişimcilik ve fonlama masası."
+      },
+      "contxto": {
+        "description": "LatAm girişim ve risk sermayesi haberciliği."
+      },
+      "startupbase-br": {
+        "description": "Brezilya girişim haritası, sıralamalar ve ekosistem istihbaratı.",
+        "notes": "Kayıt tarama her 24 saatte"
+      },
+      "israel-tech": {
+        "description": "İsrail deep-tech ve siber güvenlik fonlama sinyalleri."
+      },
+      "afrilabs": {
+        "description": "Afrikalı kurucu ve yatırımcı deal flow topluluğu.",
+        "notes": "Topluluk özeti her 12 saatte"
+      },
+      "pitchbook-public": {
+        "description": "Kamuya açık fonlama briefleri ve piyasa notları."
+      },
+      "venturebeat": {
+        "description": "YZ ve kurumsal girişim ürün/fonlama haberciliği."
+      },
+      "rest-of-world": {
+        "description": "Silikon Vadisi dışındaki teknoloji hikâyeleri."
+      },
+      "startupdaily-au": {
+        "description": "Avustralya ve Yeni Zelanda girişim ve sermaye piyasası masası."
+      },
+      "nordic-startup-news": {
+        "description": "Stockholm'den Kuzey Avrupa girişim haberciliği."
+      },
+      "webrazzi": {
+        "description": "Türkçe teknoloji ve girişim fonlama masası."
+      },
+      "vnexpress-startup": {
+        "description": "Vietnam girişim ve dijital ekonomi raporları."
+      },
+      "technode": {
+        "description": "Çin-küresel çift dilli teknoloji ve girişim akışı."
+      },
+      "pulse-ng": {
+        "description": "Batı ve Güney Afrika girişim sermayesi haberciliği."
+      },
+      "inc42": {
+        "description": "Hint girişim fonlama ve politika sinyalleri."
+      },
+      "startupchile": {
+        "description": "LatAm hızlandırıcı ve ekosistem program akışı.",
+        "notes": "Program toplu senkron her 24 saatte"
+      },
+      "dealstreetasia": {
+        "description": "Asya özel piyasa işlemleri, fonlama ve yatırımcı etkinliği."
+      }
+    }
+  },
+  "id": {
+    "regions": {
+      "Africa": "Afrika",
+      "Asia": "Asia",
+      "Asia-Pacific": "Asia-Pasifik",
+      "Brazil": "Brasil",
+      "DACH": "DACH",
+      "Europe": "Eropa",
+      "Francophone Europe / Africa": "Eropa Frankofon / Afrika",
+      "Global": "Global",
+      "Global / AI": "Global / AI",
+      "Global / North America": "Global / Amerika Utara",
+      "Global South": "Global Selatan",
+      "Greater China": "Tiongkok Raya",
+      "India": "India",
+      "Israel": "Israel",
+      "Korea": "Korea",
+      "Latin America": "Amerika Latin",
+      "MENA": "MENA",
+      "Nordics": "Nordik",
+      "Oceania": "Oseania",
+      "South Asia": "Asia Selatan",
+      "Southern Cone": "Kerucut Selatan",
+      "Türkiye / Eastern Europe": "Turki / Eropa Timur",
+      "Vietnam": "Vietnam",
+      "West Africa": "Afrika Barat"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Kabel berita startup dan penggalangan dana global."
+      },
+      "crunchbase-news": {
+        "description": "Pengumuman putaran dan aktivitas investor."
+      },
+      "36kr": {
+        "description": "Liputan startup dan hard-tech berbahasa Mandarin."
+      },
+      "krasia": {
+        "description": "Intelijen startup Asia Tenggara dan Timur."
+      },
+      "techinasia": {
+        "description": "Liputan pendanaan dan produk startup Asia-Pasifik."
+      },
+      "nikkei-asia": {
+        "description": "Liputan bisnis dan venture APAC dari Nikkei."
+      },
+      "platum": {
+        "description": "Meja startup dan pendanaan Korea."
+      },
+      "yourstory": {
+        "description": "Cerita kewirausahaan dan pendanaan berfokus India."
+      },
+      "startup-india": {
+        "description": "Registri pemerintah dan sinyal pengakuan untuk startup India.",
+        "notes": "Sinkronisasi batch setiap 48 jam"
+      },
+      "sifted": {
+        "description": "Liputan startup dan deep-tech fundraising Eropa."
+      },
+      "eu-startups": {
+        "description": "Agregator berita startup pan-Eropa."
+      },
+      "les-echos-start": {
+        "description": "Meja startup dan scale-up berbahasa Prancis."
+      },
+      "gruenderszene": {
+        "description": "Liputan founder dan pendanaan berbahasa Jerman."
+      },
+      "africarena": {
+        "description": "Laporan venture dan ekosistem Afrika."
+      },
+      "wamda": {
+        "description": "Meja kewirausahaan dan pendanaan MENA."
+      },
+      "contxto": {
+        "description": "Liputan startup dan VC Amerika Latin."
+      },
+      "startupbase-br": {
+        "description": "Peta, peringkat, dan intelijen ekosistem Brasil.",
+        "notes": "Crawl registri setiap 24 jam"
+      },
+      "israel-tech": {
+        "description": "Sinyal pendanaan deep-tech dan keamanan siber Israel."
+      },
+      "afrilabs": {
+        "description": "Komunitas founder dan investor Afrika.",
+        "notes": "Ringkasan komunitas setiap 12 jam"
+      },
+      "pitchbook-public": {
+        "description": "Brief penggalangan dana publik dan catatan pasar."
+      },
+      "venturebeat": {
+        "description": "Liputan produk/pendanaan startup AI dan enterprise."
+      },
+      "rest-of-world": {
+        "description": "Cerita teknologi di luar Silicon Valley."
+      },
+      "startupdaily-au": {
+        "description": "Meja startup dan pasar modal Australia/NZ."
+      },
+      "nordic-startup-news": {
+        "description": "Liputan startup Nordik dari Stockholm."
+      },
+      "webrazzi": {
+        "description": "Meja tech dan pendanaan startup berbahasa Turki."
+      },
+      "vnexpress-startup": {
+        "description": "Laporan startup dan ekonomi digital Vietnam."
+      },
+      "technode": {
+        "description": "Umpan tech dan venture bilingual Tiongkok-global."
+      },
+      "pulse-ng": {
+        "description": "Liputan modal startup Afrika Barat dan Selatan."
+      },
+      "inc42": {
+        "description": "Sinyal pendanaan dan kebijakan startup India."
+      },
+      "startupchile": {
+        "description": "Umpan akselerator dan program ekosistem LatAm.",
+        "notes": "Sinkronisasi program setiap 24 jam"
+      },
+      "dealstreetasia": {
+        "description": "Deal pasar swasta Asia, penggalangan dana, dan aktivitas investor."
+      }
+    }
+  },
+  "vi": {
+    "regions": {
+      "Africa": "Châu Phi",
+      "Asia": "Châu Á",
+      "Asia-Pacific": "Châu Á–Thái Bình Dương",
+      "Brazil": "Brazil",
+      "DACH": "DACH",
+      "Europe": "Châu Âu",
+      "Francophone Europe / Africa": "Châu Âu Pháp ngữ / Châu Phi",
+      "Global": "Toàn cầu",
+      "Global / AI": "Toàn cầu / AI",
+      "Global / North America": "Toàn cầu / Bắc Mỹ",
+      "Global South": "Phương Nam toàn cầu",
+      "Greater China": "Đại Trung Hoa",
+      "India": "Ấn Độ",
+      "Israel": "Israel",
+      "Korea": "Hàn Quốc",
+      "Latin America": "Mỹ Latinh",
+      "MENA": "MENA",
+      "Nordics": "Bắc Âu",
+      "Oceania": "Châu Đại Dương",
+      "South Asia": "Nam Á",
+      "Southern Cone": "Nón Nam",
+      "Türkiye / Eastern Europe": "Thổ Nhĩ Kỳ / Đông Âu",
+      "Vietnam": "Việt Nam",
+      "West Africa": "Tây Phi"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Dây tin toàn cầu về startup và gọi vốn."
+      },
+      "crunchbase-news": {
+        "description": "Thông báo vòng gọi vốn và hoạt động nhà đầu tư."
+      },
+      "36kr": {
+        "description": "Tin startup và hard-tech tiếng Trung."
+      },
+      "krasia": {
+        "description": "Tình báo startup Đông Nam Á và Đông Á."
+      },
+      "techinasia": {
+        "description": "Tin gọi vốn và sản phẩm startup châu Á–Thái Bình Dương."
+      },
+      "nikkei-asia": {
+        "description": "Tin kinh doanh và venture APAC từ Nikkei."
+      },
+      "platum": {
+        "description": "Bàn startup và gọi vốn Hàn Quốc."
+      },
+      "yourstory": {
+        "description": "Câu chuyện khởi nghiệp và gọi vốn tập trung vào Ấn Độ."
+      },
+      "startup-india": {
+        "description": "Đăng ký chính phủ và tín hiệu công nhận cho startup Ấn Độ.",
+        "notes": "Đồng bộ hàng loạt mỗi 48 giờ"
+      },
+      "sifted": {
+        "description": "Tin startup và deep-tech gọi vốn châu Âu."
+      },
+      "eu-startups": {
+        "description": "Trình tổng hợp tin startup toàn châu Âu."
+      },
+      "les-echos-start": {
+        "description": "Bàn startup và scale-up tiếng Pháp."
+      },
+      "gruenderszene": {
+        "description": "Tin nhà sáng lập và gọi vốn tiếng Đức."
+      },
+      "africarena": {
+        "description": "Báo cáo venture và hệ sinh thái châu Phi."
+      },
+      "wamda": {
+        "description": "Bàn khởi nghiệp và gọi vốn MENA."
+      },
+      "contxto": {
+        "description": "Tin startup và VC Mỹ Latinh."
+      },
+      "startupbase-br": {
+        "description": "Bản đồ, xếp hạng và tình báo hệ sinh thái Brazil.",
+        "notes": "Quét sổ đăng ký mỗi 24 giờ"
+      },
+      "israel-tech": {
+        "description": "Tín hiệu gọi vốn deep-tech và an ninh mạng Israel."
+      },
+      "afrilabs": {
+        "description": "Cộng đồng founder và nhà đầu tư châu Phi.",
+        "notes": "Bản tin cộng đồng mỗi 12 giờ"
+      },
+      "pitchbook-public": {
+        "description": "Bản tóm tắt gọi vốn công khai và ghi chú thị trường."
+      },
+      "venturebeat": {
+        "description": "Tin sản phẩm/gọi vốn startup AI và doanh nghiệp."
+      },
+      "rest-of-world": {
+        "description": "Câu chuyện công nghệ ngoài Thung lũng Silicon."
+      },
+      "startupdaily-au": {
+        "description": "Bàn startup và thị trường vốn Úc/NZ."
+      },
+      "nordic-startup-news": {
+        "description": "Tin startup Bắc Âu từ Stockholm."
+      },
+      "webrazzi": {
+        "description": "Bàn công nghệ và gọi vốn startup tiếng Thổ Nhĩ Kỳ."
+      },
+      "vnexpress-startup": {
+        "description": "Báo cáo startup và kinh tế số Việt Nam."
+      },
+      "technode": {
+        "description": "Nguồn tin song ngữ Trung–toàn cầu về tech và venture."
+      },
+      "pulse-ng": {
+        "description": "Tin vốn startup Tây và Nam Phi."
+      },
+      "inc42": {
+        "description": "Tín hiệu gọi vốn và chính sách startup Ấn Độ."
+      },
+      "startupchile": {
+        "description": "Nguồn tin tăng tốc và chương trình hệ sinh thái LatAm.",
+        "notes": "Đồng bộ chương trình mỗi 24 giờ"
+      },
+      "dealstreetasia": {
+        "description": "Giao dịch thị trường tư nhân châu Á, gọi vốn và hoạt động nhà đầu tư."
+      }
+    }
+  },
+  "ru": {
+    "regions": {
+      "Africa": "Африка",
+      "Asia": "Азия",
+      "Asia-Pacific": "Азиатско-Тихоокеанский регион",
+      "Brazil": "Бразилия",
+      "DACH": "DACH",
+      "Europe": "Европа",
+      "Francophone Europe / Africa": "Франкоязычная Европа / Африка",
+      "Global": "Глобально",
+      "Global / AI": "Глобально / ИИ",
+      "Global / North America": "Глобально / Северная Америка",
+      "Global South": "Глобальный Юг",
+      "Greater China": "Большой Китай",
+      "India": "Индия",
+      "Israel": "Израиль",
+      "Korea": "Корея",
+      "Latin America": "Латинская Америка",
+      "MENA": "Ближний Восток и Северная Африка",
+      "Nordics": "Скандинавия",
+      "Oceania": "Океания",
+      "South Asia": "Южная Азия",
+      "Southern Cone": "Южный конус",
+      "Türkiye / Eastern Europe": "Турция / Восточная Европа",
+      "Vietnam": "Вьетнам",
+      "West Africa": "Западная Африка"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "Глобальная лента новостей о стартапах и фандрайзинге."
+      },
+      "crunchbase-news": {
+        "description": "Анонсы раундов и активность инвесторов."
+      },
+      "36kr": {
+        "description": "Китайскоязычное освещение стартапов и hard-tech."
+      },
+      "krasia": {
+        "description": "Аналитика стартапов Юго-Восточной и Восточной Азии."
+      },
+      "techinasia": {
+        "description": "Финансирование и продукты стартапов АТР."
+      },
+      "nikkei-asia": {
+        "description": "Бизнес и венчур АТР от Nikkei."
+      },
+      "platum": {
+        "description": "Корейский стол стартапов и финансирования."
+      },
+      "yourstory": {
+        "description": "Истории предпринимательства и финансирования с фокусом на Индию."
+      },
+      "startup-india": {
+        "description": "Государственный реестр и сигналы признания индийских стартапов.",
+        "notes": "Пакетная синхронизация каждые 48 ч"
+      },
+      "sifted": {
+        "description": "Европейское освещение стартапов и deep-tech fundraising."
+      },
+      "eu-startups": {
+        "description": "Общеевропейский агрегатор новостей о стартапах."
+      },
+      "les-echos-start": {
+        "description": "Франкоязычный стол стартапов и scale-up."
+      },
+      "gruenderszene": {
+        "description": "Немецкоязычное освещение фаундеров и финансирования."
+      },
+      "africarena": {
+        "description": "Отчёты о венчуре и экосистеме в Африке."
+      },
+      "wamda": {
+        "description": "Стол MENA по предпринимательству и финансированию."
+      },
+      "contxto": {
+        "description": "Освещение стартапов и VC в Латинской Америке."
+      },
+      "startupbase-br": {
+        "description": "Карта, рейтинги и аналитика бразильской экосистемы.",
+        "notes": "Обход реестра каждые 24 ч"
+      },
+      "israel-tech": {
+        "description": "Сигналы финансирования израильского deep-tech и кибербезопасности."
+      },
+      "afrilabs": {
+        "description": "Африканское сообщество фаундеров и инвесторов.",
+        "notes": "Дайджест сообщества каждые 12 ч"
+      },
+      "pitchbook-public": {
+        "description": "Публичные брифинги по фандрайзингу и рыночные заметки."
+      },
+      "venturebeat": {
+        "description": "Освещение продуктов/финансирования ИИ и enterprise-стартапов."
+      },
+      "rest-of-world": {
+        "description": "Технологические истории за пределами Кремниевой долины."
+      },
+      "startupdaily-au": {
+        "description": "Стол стартапов и рынков капитала Австралии и НЗ."
+      },
+      "nordic-startup-news": {
+        "description": "Скандинавское освещение стартапов из Стокгольма."
+      },
+      "webrazzi": {
+        "description": "Турецкоязычный стол технологий и финансирования стартапов."
+      },
+      "vnexpress-startup": {
+        "description": "Вьетнамские репортажи о стартапах и цифровой экономике."
+      },
+      "technode": {
+        "description": "Двуязычная китайско-глобальная лента tech и венчура."
+      },
+      "pulse-ng": {
+        "description": "Освещение капитала стартапов Западной и Южной Африки."
+      },
+      "inc42": {
+        "description": "Индийские сигналы финансирования и политики для стартапов."
+      },
+      "startupchile": {
+        "description": "Лента акселераторов и экосистемных программ LatAm.",
+        "notes": "Синхронизация программ каждые 24 ч"
+      },
+      "dealstreetasia": {
+        "description": "Сделки частных рынков Азии, фандрайзинг и активность инвесторов."
+      }
+    }
+  },
+  "ar": {
+    "regions": {
+      "Africa": "أفريقيا",
+      "Asia": "آسيا",
+      "Asia-Pacific": "آسيا والمحيط الهادئ",
+      "Brazil": "البرازيل",
+      "DACH": "DACH",
+      "Europe": "أوروبا",
+      "Francophone Europe / Africa": "أوروبا الفرنكوفونية / أفريقيا",
+      "Global": "عالمي",
+      "Global / AI": "عالمي / ذكاء اصطناعي",
+      "Global / North America": "عالمي / أمريكا الشمالية",
+      "Global South": "الجنوب العالمي",
+      "Greater China": "الصين الكبرى",
+      "India": "الهند",
+      "Israel": "إسرائيل",
+      "Korea": "كوريا",
+      "Latin America": "أمريكا اللاتينية",
+      "MENA": "الشرق الأوسط وشمال أفريقيا",
+      "Nordics": "الشمال الأوروبي",
+      "Oceania": "أوقيانوسيا",
+      "South Asia": "جنوب آسيا",
+      "Southern Cone": "المخروط الجنوبي",
+      "Türkiye / Eastern Europe": "تركيا / أوروبا الشرقية",
+      "Vietnam": "فيتنام",
+      "West Africa": "غرب أفريقيا"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "سلك أخبار عالمي للشركات الناشئة وجمع التمويل."
+      },
+      "crunchbase-news": {
+        "description": "إعلانات الجولات ونشاط المستثمرين."
+      },
+      "36kr": {
+        "description": "تغطية باللغة الصينية للشركات الناشئة والتقنية الصلبة."
+      },
+      "krasia": {
+        "description": "استخبارات الشركات الناشئة في جنوب شرق وشرق آسيا."
+      },
+      "techinasia": {
+        "description": "تغطية التمويل والمنتجات للشركات الناشئة في آسيا والمحيط الهادئ."
+      },
+      "nikkei-asia": {
+        "description": "تغطية الأعمال والمشاريع في آسيا والمحيط الهادئ من Nikkei."
+      },
+      "platum": {
+        "description": "مكتب كوري للشركات الناشئة والتمويل."
+      },
+      "yourstory": {
+        "description": "قصص ريادة أعمال وتمويل تركز على الهند."
+      },
+      "startup-india": {
+        "description": "سجل حكومي وإشارات اعتراف للشركات الناشئة الهندية.",
+        "notes": "مزامنة دفعية كل 48 ساعة"
+      },
+      "sifted": {
+        "description": "تغطية أوروبية للشركات الناشئة وجمع تمويل التقنيات العميقة."
+      },
+      "eu-startups": {
+        "description": "مجمّع أخبار الشركات الناشئة على مستوى أوروبا."
+      },
+      "les-echos-start": {
+        "description": "مكتب فرنسي للشركات الناشئة والمتوسعة."
+      },
+      "gruenderszene": {
+        "description": "تغطية ألمانية للمؤسسين والتمويل."
+      },
+      "africarena": {
+        "description": "تقارير المشاريع والنظام البيئي في أفريقيا."
+      },
+      "wamda": {
+        "description": "مكتب ريادة الأعمال والتمويل في الشرق الأوسط وشمال أفريقيا."
+      },
+      "contxto": {
+        "description": "تغطية أمريكا اللاتينية للشركات الناشئة ورأس المال المخاطر."
+      },
+      "startupbase-br": {
+        "description": "خريطة وتصنيفات واستخبارات النظام البيئي البرازيلي.",
+        "notes": "زحف السجل كل 24 ساعة"
+      },
+      "israel-tech": {
+        "description": "إشارات تمويل التقنيات العميقة والأمن السيبراني الإسرائيلي."
+      },
+      "afrilabs": {
+        "description": "مجتمع أفريقي للمؤسسين والمستثمرين.",
+        "notes": "ملخص مجتمعي كل 12 ساعة"
+      },
+      "pitchbook-public": {
+        "description": "موجزات عامة لجمع التمويل وملاحظات السوق."
+      },
+      "venturebeat": {
+        "description": "تغطية منتجات/تمويل شركات الذكاء الاصطناعي والمؤسسات."
+      },
+      "rest-of-world": {
+        "description": "قصص تقنية من خارج وادي السيليكون."
+      },
+      "startupdaily-au": {
+        "description": "مكتب الشركات الناشئة وأسواق رأس المال في أستراليا ونيوزيلندا."
+      },
+      "nordic-startup-news": {
+        "description": "تغطية الشركات الناشئة الشمالية من ستوكهولم."
+      },
+      "webrazzi": {
+        "description": "مكتب تركي للتقنية وتمويل الشركات الناشئة."
+      },
+      "vnexpress-startup": {
+        "description": "تقارير فيتنامية عن الشركات الناشئة والاقتصاد الرقمي."
+      },
+      "technode": {
+        "description": "تغذية ثنائية اللغة صينية-عالمية للتقنية والمشاريع."
+      },
+      "pulse-ng": {
+        "description": "تغطية رأس مال الشركات الناشئة في غرب وجنوب أفريقيا."
+      },
+      "inc42": {
+        "description": "إشارات تمويل وسياسة للشركات الناشئة الهندية."
+      },
+      "startupchile": {
+        "description": "تغذية مسرّعات وبرامج النظام البيئي في أمريكا اللاتينية.",
+        "notes": "مزامنة البرامج كل 24 ساعة"
+      },
+      "dealstreetasia": {
+        "description": "صفقات الأسواق الخاصة في آسيا وجمع التمويل ونشاط المستثمرين."
+      }
+    }
+  },
+  "hi": {
+    "regions": {
+      "Africa": "अफ़्रीका",
+      "Asia": "एशिया",
+      "Asia-Pacific": "एशिया-प्रशांत",
+      "Brazil": "ब्राज़ील",
+      "DACH": "DACH",
+      "Europe": "यूरोप",
+      "Francophone Europe / Africa": "फ्रैंकोफ़ोन यूरोप / अफ़्रीका",
+      "Global": "वैश्विक",
+      "Global / AI": "वैश्विक / एआई",
+      "Global / North America": "वैश्विक / उत्तरी अमेरिका",
+      "Global South": "वैश्विक दक्षिण",
+      "Greater China": "वृहत्तर चीन",
+      "India": "भारत",
+      "Israel": "इज़राइल",
+      "Korea": "कोरिया",
+      "Latin America": "लैटिन अमेरिका",
+      "MENA": "मेना",
+      "Nordics": "नॉर्डिक",
+      "Oceania": "ओशिनिया",
+      "South Asia": "दक्षिण एशिया",
+      "Southern Cone": "दक्षिणी शंकु",
+      "Türkiye / Eastern Europe": "तुर्की / पूर्वी यूरोप",
+      "Vietnam": "वियतनाम",
+      "West Africa": "पश्चिम अफ़्रीका"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "वैश्विक स्टार्टअप और फंडरेज़िंग समाचार तार।"
+      },
+      "crunchbase-news": {
+        "description": "राउंड घोषणाएँ और निवेशक गतिविधि।"
+      },
+      "36kr": {
+        "description": "चीनी भाषा में स्टार्टअप और हार्ड-टेक कवरेज।"
+      },
+      "krasia": {
+        "description": "दक्षिण-पूर्व और पूर्वी एशिया स्टार्टअप इंटेलिजेंस।"
+      },
+      "techinasia": {
+        "description": "एशिया-प्रशांत स्टार्टअप फंडिंग और उत्पाद कवरेज।"
+      },
+      "nikkei-asia": {
+        "description": "Nikkei से APAC व्यापार और वेंचर कवरेज।"
+      },
+      "platum": {
+        "description": "कोरियाई स्टार्टअप और फंडिंग डेस्क।"
+      },
+      "yourstory": {
+        "description": "भारत-केंद्रित उद्यमिता और फंडिंग कहानियाँ।"
+      },
+      "startup-india": {
+        "description": "भारतीय स्टार्टअप के लिए सरकारी रजिस्ट्री और मान्यता संकेत।",
+        "notes": "हर 48 घंटे बैच सिंक"
+      },
+      "sifted": {
+        "description": "यूरोपीय स्टार्टअप और डीप-टेक फंडरेज़िंग कवरेज।"
+      },
+      "eu-startups": {
+        "description": "पैन-यूरोपीय स्टार्टअप समाचार एग्रीगेटर।"
+      },
+      "les-echos-start": {
+        "description": "फ्रेंच-भाषा स्टार्टअप और स्केल-अप डेस्क।"
+      },
+      "gruenderszene": {
+        "description": "जर्मन-भाषा संस्थापक और फंडिंग कवरेज।"
+      },
+      "africarena": {
+        "description": "अफ़्रीकी वेंचर और इकोसिस्टम रिपोर्टिंग।"
+      },
+      "wamda": {
+        "description": "मेना उद्यमिता और फंडिंग डेस्क।"
+      },
+      "contxto": {
+        "description": "लैटिन अमेरिका स्टार्टअप और वीसी कवरेज।"
+      },
+      "startupbase-br": {
+        "description": "ब्राज़ील स्टार्टअप मानचित्र, रैंकिंग और इकोसिस्टम इंटेल।",
+        "notes": "हर 24 घंटे रजिस्ट्री क्रॉल"
+      },
+      "israel-tech": {
+        "description": "इज़राइली डीप-टेक और साइबर सुरक्षा फंडिंग संकेत।"
+      },
+      "afrilabs": {
+        "description": "अफ़्रीकी संस्थापक और निवेशक डील फ़्लो समुदाय।",
+        "notes": "हर 12 घंटे समुदाय डाइजेस्ट"
+      },
+      "pitchbook-public": {
+        "description": "सार्वजनिक फंडरेज़िंग ब्रीफ़ और बाज़ार नोट्स।"
+      },
+      "venturebeat": {
+        "description": "एआई और एंटरप्राइज़ स्टार्टअप उत्पाद/फंडिंग कवरेज।"
+      },
+      "rest-of-world": {
+        "description": "सिलिकॉन वैली के बाहर की तकनीक कहानियाँ।"
+      },
+      "startupdaily-au": {
+        "description": "ऑस्ट्रेलिया और न्यूज़ीलैंड स्टार्टअप व पूँजी बाज़ार डेस्क।"
+      },
+      "nordic-startup-news": {
+        "description": "स्टॉकहोम से नॉर्डिक स्टार्टअप कवरेज।"
+      },
+      "webrazzi": {
+        "description": "तुर्की-भाषा टेक और स्टार्टअप फंडिंग डेस्क।"
+      },
+      "vnexpress-startup": {
+        "description": "वियतनामी स्टार्टअप और डिजिटल अर्थव्यवस्था रिपोर्टिंग।"
+      },
+      "technode": {
+        "description": "चीन-वैश्विक द्विभाषी टेक और वेंचर फ़ीड।"
+      },
+      "pulse-ng": {
+        "description": "पश्चिम और दक्षिणी अफ़्रीका स्टार्टअप पूँजी कवरेज।"
+      },
+      "inc42": {
+        "description": "भारतीय स्टार्टअप फंडिंग और नीति संकेत।"
+      },
+      "startupchile": {
+        "description": "लैटिन अमेरिका एक्सेलेरेटर और इकोसिस्टम प्रोग्राम फ़ीड।",
+        "notes": "हर 24 घंटे प्रोग्राम बैच सिंक"
+      },
+      "dealstreetasia": {
+        "description": "एशिया निजी बाज़ार डील्स, फंडरेज़िंग और निवेशक गतिविधि।"
+      }
+    }
+  },
+  "th": {
+    "regions": {
+      "Africa": "แอฟริกา",
+      "Asia": "เอเชีย",
+      "Asia-Pacific": "เอเชียแปซิฟิก",
+      "Brazil": "บราซิล",
+      "DACH": "DACH",
+      "Europe": "ยุโรป",
+      "Francophone Europe / Africa": "ยุโรปฝรั่งเศส / แอฟริกา",
+      "Global": "ทั่วโลก",
+      "Global / AI": "ทั่วโลก / AI",
+      "Global / North America": "ทั่วโลก / อเมริกาเหนือ",
+      "Global South": "ซีกโลกใต้",
+      "Greater China": "จีนแผ่นดินใหญ่และบริเวณใกล้เคียง",
+      "India": "อินเดีย",
+      "Israel": "อิสราเอล",
+      "Korea": "เกาหลี",
+      "Latin America": "ลาตินอเมริกา",
+      "MENA": "ตะวันออกกลางและแอฟริกาเหนือ",
+      "Nordics": "นอร์ดิก",
+      "Oceania": "โอเชียเนีย",
+      "South Asia": "เอเชียใต้",
+      "Southern Cone": "กรวยใต้",
+      "Türkiye / Eastern Europe": "ตุรกี / ยุโรปตะวันออก",
+      "Vietnam": "เวียดนาม",
+      "West Africa": "แอฟริกาตะวันตก"
+    },
+    "sources": {
+      "techcrunch": {
+        "description": "สายข่าวสตาร์ทอัพและการระดมทุนระดับโลก"
+      },
+      "crunchbase-news": {
+        "description": "ประกาศรอบระดมทุนและกิจกรรมนักลงทุน"
+      },
+      "36kr": {
+        "description": "รายงานสตาร์ทอัพและฮาร์ดเทคภาษาจีน"
+      },
+      "krasia": {
+        "description": "ข่าวกรองสตาร์ทอัพเอเชียตะวันออกเฉียงใต้และตะวันออก"
+      },
+      "techinasia": {
+        "description": "รายงานการระดมทุนและผลิตภัณฑ์สตาร์ทอัพเอเชียแปซิฟิก"
+      },
+      "nikkei-asia": {
+        "description": "รายงานธุรกิจและเวนเจอร์ APAC จาก Nikkei"
+      },
+      "platum": {
+        "description": "โต๊ะสตาร์ทอัพและการระดมทุนเกาหลี"
+      },
+      "yourstory": {
+        "description": "เรื่องราวผู้ประกอบการและการระดมทุนที่เน้นอินเดีย"
+      },
+      "startup-india": {
+        "description": "ทะเบียนรัฐบาลและสัญญาณการรับรองสำหรับสตาร์ทอัพอินเดีย",
+        "notes": "ซิงก์แบบชุดทุก 48 ชั่วโมง"
+      },
+      "sifted": {
+        "description": "รายงานสตาร์ทอัพและการระดมทุนดีพเทคยุโรป"
+      },
+      "eu-startups": {
+        "description": "ตัวรวมข่าวสตาร์ทอัพทั่วยุโรป"
+      },
+      "les-echos-start": {
+        "description": "โต๊ะสตาร์ทอัพและสเกลอัปภาษาฝรั่งเศส"
+      },
+      "gruenderszene": {
+        "description": "รายงานผู้ก่อตั้งและการระดมทุนภาษาเยอรมัน"
+      },
+      "africarena": {
+        "description": "รายงานเวนเจอร์และระบบนิเวศแอฟริกา"
+      },
+      "wamda": {
+        "description": "โต๊ะผู้ประกอบการและการระดมทุน MENA"
+      },
+      "contxto": {
+        "description": "รายงานสตาร์ทอัพและ VC ลาตินอเมริกา"
+      },
+      "startupbase-br": {
+        "description": "แผนที่ อันดับ และข่าวกรองระบบนิเวศบราซิล",
+        "notes": "ครอลทะเบียนทุก 24 ชั่วโมง"
+      },
+      "israel-tech": {
+        "description": "สัญญาณระดมทุนดีพเทคและความมั่นคงไซเบอร์อิสราเอล"
+      },
+      "afrilabs": {
+        "description": "ชุมชนผู้ก่อตั้งและนักลงทุนแอฟริกา",
+        "notes": "สรุปชุมชนทุก 12 ชั่วโมง"
+      },
+      "pitchbook-public": {
+        "description": "สรุปการระดมทุนสาธารณะและบันทึกตลาด"
+      },
+      "venturebeat": {
+        "description": "รายงานผลิตภัณฑ์/การระดมทุนสตาร์ทอัพ AI และองค์กร"
+      },
+      "rest-of-world": {
+        "description": "เรื่องราวเทคโนโลยีนอกซิลิคอนแวลลีย์"
+      },
+      "startupdaily-au": {
+        "description": "โต๊ะสตาร์ทอัพและตลาดทุนออสเตรเลีย/นิวซีแลนด์"
+      },
+      "nordic-startup-news": {
+        "description": "รายงานสตาร์ทอัพนอร์ดิกจากสตอกโฮล์ม"
+      },
+      "webrazzi": {
+        "description": "โต๊ะเทคและการระดมทุนสตาร์ทอัพภาษาตุรกี"
+      },
+      "vnexpress-startup": {
+        "description": "รายงานสตาร์ทอัพและเศรษฐกิจดิจิทัลเวียดนาม"
+      },
+      "technode": {
+        "description": "ฟีดเทคและเวนเจอร์สองภาษาจีน–โลก"
+      },
+      "pulse-ng": {
+        "description": "รายงานทุนสตาร์ทอัพแอฟริกาตะวันตกและใต้"
+      },
+      "inc42": {
+        "description": "สัญญาณระดมทุนและนโยบายสตาร์ทอัพอินเดีย"
+      },
+      "startupchile": {
+        "description": "ฟีดตัวเร่งและโปรแกรมระบบนิเวศลาตินอเมริกา",
+        "notes": "ซิงก์โปรแกรมทุก 24 ชั่วโมง"
+      },
+      "dealstreetasia": {
+        "description": "ดีลตลาดส่วนตัวเอเชีย การระดมทุน และกิจกรรมนักลงทุน"
+      }
+    }
+  }
+}

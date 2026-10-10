@@ -1,0 +1,127 @@
+{
+  "regions": {
+    "Africa": "アフリカ",
+    "Asia": "アジア",
+    "Asia-Pacific": "アジア太平洋",
+    "Brazil": "ブラジル",
+    "DACH": "DACH",
+    "Europe": "ヨーロッパ",
+    "Francophone Europe / Africa": "フランス語圏ヨーロッパ / アフリカ",
+    "Global": "グローバル",
+    "Global / AI": "グローバル / AI",
+    "Global / North America": "グローバル / 北米",
+    "Global South": "グローバル・サウス",
+    "Greater China": "グレーターチャイナ",
+    "India": "インド",
+    "Israel": "イスラエル",
+    "Korea": "韓国",
+    "Latin America": "ラテンアメリカ",
+    "MENA": "中東・北アフリカ",
+    "Nordics": "北欧",
+    "Oceania": "オセアニア",
+    "South Asia": "南アジア",
+    "Southern Cone": "南部諸国",
+    "Türkiye / Eastern Europe": "トルコ / 東欧",
+    "Vietnam": "ベトナム",
+    "West Africa": "西アフリカ"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "世界のスタートアップと資金調達ニュース。"
+    },
+    "crunchbase-news": {
+      "description": "ラウンド発表と投資家動向フィード。"
+    },
+    "36kr": {
+      "description": "中国語のスタートアップとハードテック報道。"
+    },
+    "krasia": {
+      "description": "東南・東アジアのスタートアップ情報。"
+    },
+    "techinasia": {
+      "description": "アジア太平洋の資金調達とプロダクト報道。"
+    },
+    "nikkei-asia": {
+      "description": "日経によるアジア太平洋のビジネス・ベンチャー報道。"
+    },
+    "platum": {
+      "description": "韓国スタートアップと資金調達デスク。"
+    },
+    "yourstory": {
+      "description": "インド中心の起業と資金調達ストーリー。"
+    },
+    "startup-india": {
+      "description": "インドスタートアップの政府登録・認定シグナル。",
+      "notes": "48時間ごとのバッチ同期"
+    },
+    "sifted": {
+      "description": "欧州スタートアップとディープテック資金調達報道。"
+    },
+    "eu-startups": {
+      "description": "欧州横断のスタートアップニュース集約。"
+    },
+    "les-echos-start": {
+      "description": "フランス語のスタートアップ／スケールアップデスク。"
+    },
+    "gruenderszene": {
+      "description": "ドイツ語の創業者と資金調達報道。"
+    },
+    "africarena": {
+      "description": "アフリカのベンチャーとエコシステム報道。"
+    },
+    "wamda": {
+      "description": "MENAの起業と資金調達デスク。"
+    },
+    "contxto": {
+      "description": "ラテンアメリカのスタートアップとVC報道。"
+    },
+    "startupbase-br": {
+      "description": "ブラジルのスタートアップ地図・ランキング・生態系情報。",
+      "notes": "レジストリを24時間ごとにクロール"
+    },
+    "israel-tech": {
+      "description": "イスラエルのディープテックとサイバーセキュリティ資金シグナル。"
+    },
+    "afrilabs": {
+      "description": "アフリカの創業者・投資家ディールフローコミュニティ。",
+      "notes": "コミュニティダイジェストは12時間ごと"
+    },
+    "pitchbook-public": {
+      "description": "公開の資金調達ブリーフと市場ノート。"
+    },
+    "venturebeat": {
+      "description": "AIとエンタープライズのプロダクト／資金調達報道。"
+    },
+    "rest-of-world": {
+      "description": "シリコンバレー以外のテクノロジーストーリー。"
+    },
+    "startupdaily-au": {
+      "description": "豪州・NZのスタートアップと資本市場デスク。"
+    },
+    "nordic-startup-news": {
+      "description": "ストックホルム発の北欧スタートアップ報道。"
+    },
+    "webrazzi": {
+      "description": "トルコ語のテックと資金調達デスク。"
+    },
+    "vnexpress-startup": {
+      "description": "ベトナムのスタートアップとデジタル経済報道。"
+    },
+    "technode": {
+      "description": "中国と世界をつなぐバイリンガルテック／ベンチャーフィード。"
+    },
+    "pulse-ng": {
+      "description": "西・南部アフリカのスタートアップ資本報道。"
+    },
+    "inc42": {
+      "description": "インドの資金調達と政策シグナル。"
+    },
+    "startupchile": {
+      "description": "ラテンアメリカのアクセラレーターとエコシステムプログラム。",
+      "notes": "プログラムバッチを24時間ごとに同期"
+    },
+    "dealstreetasia": {
+      "description": "アジアのプライベートマーケット取引・資金調達・投資家動向。"
+    }
+  }
+}

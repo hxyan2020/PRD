@@ -1,0 +1,127 @@
+{
+  "regions": {
+    "Africa": "Afrika",
+    "Asia": "Asia",
+    "Asia-Pacific": "Asia-Pasifik",
+    "Brazil": "Brasil",
+    "DACH": "DACH",
+    "Europe": "Eropa",
+    "Francophone Europe / Africa": "Eropa Frankofon / Afrika",
+    "Global": "Global",
+    "Global / AI": "Global / AI",
+    "Global / North America": "Global / Amerika Utara",
+    "Global South": "Global Selatan",
+    "Greater China": "Tiongkok Raya",
+    "India": "India",
+    "Israel": "Israel",
+    "Korea": "Korea",
+    "Latin America": "Amerika Latin",
+    "MENA": "MENA",
+    "Nordics": "Nordik",
+    "Oceania": "Oseania",
+    "South Asia": "Asia Selatan",
+    "Southern Cone": "Kerucut Selatan",
+    "Türkiye / Eastern Europe": "Turki / Eropa Timur",
+    "Vietnam": "Vietnam",
+    "West Africa": "Afrika Barat"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "Kabel berita startup dan penggalangan dana global."
+    },
+    "crunchbase-news": {
+      "description": "Pengumuman putaran dan aktivitas investor."
+    },
+    "36kr": {
+      "description": "Liputan startup dan hard-tech berbahasa Mandarin."
+    },
+    "krasia": {
+      "description": "Intelijen startup Asia Tenggara dan Timur."
+    },
+    "techinasia": {
+      "description": "Liputan pendanaan dan produk startup Asia-Pasifik."
+    },
+    "nikkei-asia": {
+      "description": "Liputan bisnis dan venture APAC dari Nikkei."
+    },
+    "platum": {
+      "description": "Meja startup dan pendanaan Korea."
+    },
+    "yourstory": {
+      "description": "Cerita kewirausahaan dan pendanaan berfokus India."
+    },
+    "startup-india": {
+      "description": "Registri pemerintah dan sinyal pengakuan untuk startup India.",
+      "notes": "Sinkronisasi batch setiap 48 jam"
+    },
+    "sifted": {
+      "description": "Liputan startup dan deep-tech fundraising Eropa."
+    },
+    "eu-startups": {
+      "description": "Agregator berita startup pan-Eropa."
+    },
+    "les-echos-start": {
+      "description": "Meja startup dan scale-up berbahasa Prancis."
+    },
+    "gruenderszene": {
+      "description": "Liputan founder dan pendanaan berbahasa Jerman."
+    },
+    "africarena": {
+      "description": "Laporan venture dan ekosistem Afrika."
+    },
+    "wamda": {
+      "description": "Meja kewirausahaan dan pendanaan MENA."
+    },
+    "contxto": {
+      "description": "Liputan startup dan VC Amerika Latin."
+    },
+    "startupbase-br": {
+      "description": "Peta, peringkat, dan intelijen ekosistem Brasil.",
+      "notes": "Crawl registri setiap 24 jam"
+    },
+    "israel-tech": {
+      "description": "Sinyal pendanaan deep-tech dan keamanan siber Israel."
+    },
+    "afrilabs": {
+      "description": "Komunitas founder dan investor Afrika.",
+      "notes": "Ringkasan komunitas setiap 12 jam"
+    },
+    "pitchbook-public": {
+      "description": "Brief penggalangan dana publik dan catatan pasar."
+    },
+    "venturebeat": {
+      "description": "Liputan produk/pendanaan startup AI dan enterprise."
+    },
+    "rest-of-world": {
+      "description": "Cerita teknologi di luar Silicon Valley."
+    },
+    "startupdaily-au": {
+      "description": "Meja startup dan pasar modal Australia/NZ."
+    },
+    "nordic-startup-news": {
+      "description": "Liputan startup Nordik dari Stockholm."
+    },
+    "webrazzi": {
+      "description": "Meja tech dan pendanaan startup berbahasa Turki."
+    },
+    "vnexpress-startup": {
+      "description": "Laporan startup dan ekonomi digital Vietnam."
+    },
+    "technode": {
+      "description": "Umpan tech dan venture bilingual Tiongkok-global."
+    },
+    "pulse-ng": {
+      "description": "Liputan modal startup Afrika Barat dan Selatan."
+    },
+    "inc42": {
+      "description": "Sinyal pendanaan dan kebijakan startup India."
+    },
+    "startupchile": {
+      "description": "Umpan akselerator dan program ekosistem LatAm.",
+      "notes": "Sinkronisasi program setiap 24 jam"
+    },
+    "dealstreetasia": {
+      "description": "Deal pasar swasta Asia, penggalangan dana, dan aktivitas investor."
+    }
+  }
+}
