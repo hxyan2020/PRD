@@ -1,5 +1,6 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { NoteTree } from '../components/NoteTree'
 import { RichTextEditor } from '../components/RichTextEditor'
 import {
   formatTimestamp,
@@ -200,6 +201,8 @@ export function Notebook() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [recoverToast, setRecoverToast] = useState(false)
+  const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
+  const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
 
   const categoryMap = useMemo(() => {
     const map = new Map<string, NotebookCategory>()
@@ -211,6 +214,20 @@ export function Notebook() {
     const filtered = filterEntries(entries, query, categoryFilter, categories)
     return sortEntries(filtered, sort, lang)
   }, [entries, query, categoryFilter, categories, sort, lang])
+
+  const openedNote = useMemo(
+    () => (openedNoteId ? entries.find((e) => e.id === openedNoteId) ?? null : null),
+    [openedNoteId, entries],
+  )
+
+  useEffect(() => {
+    if (!treeFocusId) return
+    const el = document.querySelector<HTMLElement>(`[data-entry-id="${treeFocusId}"]`)
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const timer = window.setTimeout(() => setTreeFocusId(null), 1600)
+    return () => window.clearTimeout(timer)
+  }, [treeFocusId, visibleEntries])
 
   const visibleTrash = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -299,9 +316,23 @@ export function Notebook() {
     setCategoryFilter([id])
   }
 
+  function openNoteFromTree(entry: NotebookEntry) {
+    setView('notes')
+    setCategoryFilter([])
+    setQuery('')
+    setOpenedNoteId(entry.id)
+    setTreeFocusId(entry.id)
+    setComposerOpen(false)
+  }
+
+  function closeOpenedNote() {
+    setOpenedNoteId(null)
+  }
+
   function moveToDustbin(id: string) {
     removeEntry(id)
     if (editingId === id) cancelEdit()
+    if (openedNoteId === id) setOpenedNoteId(null)
   }
 
   function recoverFromDustbin(entry: TrashedNotebookEntry) {
@@ -585,6 +616,75 @@ export function Notebook() {
       </section>
 
       {count > 0 || categories.length > 0 ? (
+        <NoteTree
+          categories={categories}
+          entries={entries}
+          lang={lang}
+          selectedNoteId={openedNoteId}
+          onSelectNote={openNoteFromTree}
+          t={t}
+        />
+      ) : null}
+
+      {openedNote ? (
+        <section
+          className="note-tree-reader"
+          aria-label={t('noteTreeOpen')}
+          data-opened-note-id={openedNote.id}
+        >
+          <div className="note-tree-reader-head">
+            <h2>
+              {openedNote.title?.trim() ||
+                htmlToPlainText(openedNote.selectedText).slice(0, 80) ||
+                t('freeNote')}
+            </h2>
+            <button type="button" className="btn ghost" onClick={closeOpenedNote}>
+              {t('closeNote')}
+            </button>
+          </div>
+          <div className="note-tree-reader-meta">
+            <time dateTime={openedNote.createdAt}>
+              {formatTimestamp(openedNote.createdAt, lang)}
+            </time>
+            <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
+            {(openedNote.categoryIds ?? [])
+              .map((id) => categoryMap.get(id))
+              .filter((c): c is NotebookCategory => Boolean(c))
+              .map((cat) => (
+                <span
+                  key={cat.id}
+                  className="notebook-category-badge"
+                  style={categoryColorStyle(cat.color) as CSSProperties}
+                >
+                  <span className="category-dot" aria-hidden="true" />
+                  {cat.name}
+                </span>
+              ))}
+          </div>
+          <NoteBody html={openedNote.selectedText} className="notebook-quote" />
+          {openedNote.explanation ? (
+            <div className="notebook-explanation">
+              {openedNote.explanation.split(/\n\n+/).map((block, index) => (
+                <p key={`${openedNote.id}-open-${index}`}>{block.replace(/\*\*/g, '')}</p>
+              ))}
+            </div>
+          ) : null}
+          <div className="notebook-actions">
+            <button type="button" className="btn ghost" onClick={() => startEdit(openedNote)}>
+              {t('edit')}
+            </button>
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={() => moveToDustbin(openedNote.id)}
+            >
+              {t('moveToDustbin')}
+            </button>
+          </div>
+        </section>
+      ) : null}
+
+      {count > 0 || categories.length > 0 ? (
         <section className="notebook-filter-bar" aria-label={t('filterByCategory')}>
           <div className="notebook-filter-bar-head">
             <h2>{t('filterByCategory')}</h2>
@@ -673,7 +773,9 @@ export function Notebook() {
               <li
                 key={entry.id}
                 data-entry-id={entry.id}
-                className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}`}
+                className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}${
+                  treeFocusId === entry.id || openedNoteId === entry.id ? ' tree-focus' : ''
+                }`}
               >
                 <div className="notebook-meta">
                   <time dateTime={entry.createdAt}>{formatTimestamp(entry.createdAt, lang)}</time>
