@@ -89,6 +89,102 @@ export function localizeCountry(country: string, locale: LocaleCode): string {
   return displayName(locale, "region", iso.toUpperCase()) ?? country;
 }
 
+/** Common idea team cities → display labels for CJK locales. */
+const CITY_ZH_CN: Record<string, string> = {
+  Algiers: "阿尔及尔",
+  Amsterdam: "阿姆斯特丹",
+  Beijing: "北京",
+  Bengaluru: "班加罗尔",
+  Berlin: "柏林",
+  Bogotá: "波哥大",
+  Bogota: "波哥大",
+  Boston: "波士顿",
+  "Buenos Aires": "布宜诺斯艾利斯",
+  "Cape Town": "开普敦",
+  Chennai: "金奈",
+  Copenhagen: "哥本哈根",
+  Dubai: "迪拜",
+  Gothenburg: "哥德堡",
+  Guangzhou: "广州",
+  Helsinki: "赫尔辛基",
+  "Ho Chi Minh City": "胡志明市",
+  Jakarta: "雅加达",
+  Lagos: "拉各斯",
+  London: "伦敦",
+  Melbourne: "墨尔本",
+  "Mexico City": "墨西哥城",
+  Montevideo: "蒙得维的亚",
+  Munich: "慕尼黑",
+  Nairobi: "内罗毕",
+  "New York": "纽约",
+  Noida: "诺伊达",
+  Ottawa: "渥太华",
+  Paris: "巴黎",
+  "San Francisco": "旧金山",
+  "San Mateo": "圣马特奥",
+  "São Paulo": "圣保罗",
+  "Sao Paulo": "圣保罗",
+  Seoul: "首尔",
+  Singapore: "新加坡",
+  Stockholm: "斯德哥尔摩",
+  Sydney: "悉尼",
+  Tallinn: "塔林",
+  "Tel Aviv": "特拉维夫",
+  Tokyo: "东京",
+  Toronto: "多伦多",
+  Wellington: "惠灵顿",
+};
+
+const CITY_ZH_TW: Record<string, string> = {
+  ...CITY_ZH_CN,
+  Algiers: "阿爾及爾",
+  Amsterdam: "阿姆斯特丹",
+  Beijing: "北京",
+  Bengaluru: "班加羅爾",
+  Berlin: "柏林",
+  Boston: "波士頓",
+  "Buenos Aires": "布宜諾斯艾利斯",
+  "Cape Town": "開普敦",
+  Chennai: "清奈",
+  Copenhagen: "哥本哈根",
+  Dubai: "杜拜",
+  Gothenburg: "哥特堡",
+  Guangzhou: "廣州",
+  Helsinki: "赫爾辛基",
+  "Ho Chi Minh City": "胡志明市",
+  Jakarta: "雅加達",
+  Lagos: "拉哥斯",
+  London: "倫敦",
+  Melbourne: "墨爾本",
+  "Mexico City": "墨西哥城",
+  Montevideo: "蒙特維多",
+  Munich: "慕尼黑",
+  Nairobi: "奈洛比",
+  "New York": "紐約",
+  Ottawa: "渥太華",
+  Paris: "巴黎",
+  "San Francisco": "舊金山",
+  "San Mateo": "聖马特奧",
+  "São Paulo": "聖保羅",
+  "Sao Paulo": "聖保羅",
+  Seoul: "首爾",
+  Singapore: "新加坡",
+  Stockholm: "斯德哥爾摩",
+  Sydney: "雪梨",
+  Tallinn: "塔林",
+  "Tel Aviv": "特拉維夫",
+  Tokyo: "東京",
+  Toronto: "多倫多",
+  Wellington: "威靈頓",
+};
+
+export function localizeCity(city: string, locale: LocaleCode): string {
+  if (!city || locale === "en") return city;
+  if (locale === "zh-CN") return CITY_ZH_CN[city] ?? city;
+  if (locale === "zh-TW") return CITY_ZH_TW[city] ?? CITY_ZH_CN[city] ?? city;
+  return city;
+}
+
 export function localizeLanguage(language: string, locale: LocaleCode): string {
   if (locale === "en" || !language) return language;
   return language

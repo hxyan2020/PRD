@@ -40,6 +40,14 @@ describe("localizeIdea", () => {
     expect(view.name).toBe("新兴市场收款");
     expect(view.description).toContain("跨境支付");
     expect(view.industry).toBe("金融科技");
+
+    const creator = catalogIdeas().find((i) => i.slug === "bytedance-creator-os");
+    expect(creator).toBeTruthy();
+    const creatorView = localizeIdea(creator!, "zh-CN");
+    expect(creatorView.name).toBe("创作者操作系统");
+    expect(creatorView.description).toContain("短视频");
+    expect(creatorView.description).not.toMatch(/Short-form video platform/i);
+    expect(creatorView.sector).toBe("短视频");
   });
 
   it("localizes industry filter labels while preserving English option values", () => {

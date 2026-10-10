@@ -10,7 +10,7 @@ import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
-import { localizeCountry } from "@/lib/i18n/localize-source";
+import { localizeCity, localizeCountry } from "@/lib/i18n/localize-source";
 import { presentMatch } from "@/lib/i18n/present-match";
 import { emptyProfile, isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
@@ -91,6 +91,7 @@ export function DailyRecommendation() {
   const profile = loadProfileFromStorage() ?? emptyProfile();
   const presented = presentMatch(match, view, profile, t, locale);
   const countryLabel = localizeCountry(idea.teamCountry, locale);
+  const cityLabel = idea.teamCity ? localizeCity(idea.teamCity, locale) : "";
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -113,7 +114,7 @@ export function DailyRecommendation() {
             size="sm"
           />
           {countryLabel}
-          {idea.teamCity ? ` · ${idea.teamCity}` : ""}
+          {cityLabel ? ` · ${cityLabel}` : ""}
         </span>
         <span>
           {view.industry} / {view.sector}
