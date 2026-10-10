@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RichTextEditor } from '../components/RichTextEditor'
 import { formatTimestamp, useNotebook, type NotebookEntry } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
-import { isBlankHtml, sanitizeHtml } from '../lib/sanitizeHtml'
+import { htmlToPlainText, isBlankHtml, sanitizeHtml } from '../lib/sanitizeHtml'
+
+type NotebookSort = 'created' | 'edited' | 'alpha'
+
+const SORT_STORAGE_KEY = 'ownlab-notebook-sort'
 
 function typeLabel(
   type: NotebookEntry['type'],
@@ -27,6 +31,44 @@ function NoteBody({ html, className }: { html: string; className?: string }) {
   )
 }
 
+function readSort(): NotebookSort {
+  try {
+    const raw = localStorage.getItem(SORT_STORAGE_KEY)
+    if (raw === 'created' || raw === 'edited' || raw === 'alpha') return raw
+  } catch {
+    /* ignore */
+  }
+  return 'created'
+}
+
+function sortKeyAlpha(entry: NotebookEntry): string {
+  const title = entry.title?.trim()
+  if (title) return title
+  return htmlToPlainText(entry.selectedText) || entry.selectedText
+}
+
+function sortEntries(entries: NotebookEntry[], sort: NotebookSort, lang: 'en' | 'zh'): NotebookEntry[] {
+  const list = [...entries]
+  if (sort === 'alpha') {
+    const collator = new Intl.Collator(lang === 'zh' ? 'zh-CN' : 'en', {
+      sensitivity: 'base',
+      numeric: true,
+    })
+    return list.sort((a, b) => collator.compare(sortKeyAlpha(a), sortKeyAlpha(b)))
+  }
+  if (sort === 'edited') {
+    return list.sort((a, b) => {
+      const aTime = new Date(a.updatedAt || a.createdAt).getTime()
+      const bTime = new Date(b.updatedAt || b.createdAt).getTime()
+      return bTime - aTime
+    })
+  }
+  // created — newest first
+  return list.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  )
+}
+
 export function Notebook() {
   const { entries, count, addNote, updateEntry, removeEntry, clearAll } = useNotebook()
   const { lang, t } = useLanguage()
@@ -37,6 +79,18 @@ export function Notebook() {
   const [newTitle, setNewTitle] = useState('')
   const [newNote, setNewNote] = useState('')
   const [composerOpen, setComposerOpen] = useState(true)
+  const [sort, setSort] = useState<NotebookSort>(() => readSort())
+
+  const sortedEntries = useMemo(() => sortEntries(entries, sort, lang), [entries, sort, lang])
+
+  function changeSort(next: NotebookSort) {
+    setSort(next)
+    try {
+      localStorage.setItem(SORT_STORAGE_KEY, next)
+    } catch {
+      /* ignore */
+    }
+  }
 
   function startEdit(entry: NotebookEntry) {
     setEditingId(entry.id)
@@ -82,9 +136,25 @@ export function Notebook() {
         <p className="eyebrow">{t('notebookEyebrow')}</p>
         <h1>{t('notebookTitle')}</h1>
         <p className="section-lede">{t('notebookLede')}</p>
-        <p className="notebook-count">
-          {count} {count === 1 ? t('note') : t('notes')}
-        </p>
+        <div className="notebook-toolbar">
+          <p className="notebook-count">
+            {count} {count === 1 ? t('note') : t('notes')}
+          </p>
+          {count > 0 ? (
+            <label className="notebook-sort">
+              <span>{t('sortNotes')}</span>
+              <select
+                value={sort}
+                onChange={(e) => changeSort(e.target.value as NotebookSort)}
+                aria-label={t('sortNotes')}
+              >
+                <option value="created">{t('sortByCreated')}</option>
+                <option value="edited">{t('sortByEdited')}</option>
+                <option value="alpha">{t('sortByAlpha')}</option>
+              </select>
+            </label>
+          ) : null}
+        </div>
       </header>
 
       <section className="notebook-composer" aria-label={t('newNote')}>
@@ -158,7 +228,7 @@ export function Notebook() {
         </div>
       ) : (
         <ol className="notebook-timeline">
-          {entries.map((entry) => {
+          {sortedEntries.map((entry) => {
             const editing = editingId === entry.id
             const editBlank =
               entry.type === 'note' ? isBlankHtml(draftText) : !draftText.trim()

@@ -2305,9 +2305,45 @@ body.menu-open {
   gap: 0.45rem;
 }
 
+.notebook-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+  margin-top: 0.35rem;
+}
+
 .notebook-count {
+  margin: 0;
   font-weight: 700;
   color: var(--teal-deep);
+}
+
+.notebook-sort {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.notebook-sort select {
+  height: 2.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  padding: 0 0.55rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: #fff;
+}
+
+.notebook-sort select:focus {
+  outline: 2px solid rgba(13, 148, 136, 0.35);
+  border-color: var(--teal);
 }
 
 .notebook-composer {
