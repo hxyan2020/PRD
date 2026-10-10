@@ -42,7 +42,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/8 bg-ink/85 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-black/10 bg-paper/90 backdrop-blur-md">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <Link
           href="/"
@@ -51,7 +51,7 @@ export function SiteHeader() {
         >
           <BrandLogo size={36} className="h-8 w-8 sm:h-9 sm:w-9" />
           <span className="flex min-w-0 flex-col leading-none">
-            <span className="font-display text-xl tracking-tight text-foam transition group-hover:text-white sm:text-2xl">
+            <span className="font-display text-xl tracking-tight text-foam transition group-hover:text-black sm:text-2xl">
               VentureScan
             </span>
             <span className="mt-0.5 hidden font-mono text-[10px] uppercase tracking-[0.2em] text-celadon md:inline">
@@ -68,7 +68,7 @@ export function SiteHeader() {
           <LanguagePicker />
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-foam md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/15 bg-black/[0.04] text-foam md:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t("nav.close") : t("nav.menu")}
@@ -91,7 +91,7 @@ export function SiteHeader() {
       {open ? (
         <div
           id="mobile-nav"
-          className="border-t border-white/10 bg-ink-2/95 md:hidden"
+          className="border-t border-black/10 bg-paper/95 md:hidden"
         >
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 text-base text-mist">
             {NAV_LINKS.map((link) => (
@@ -99,7 +99,7 @@ export function SiteHeader() {
                 {t(link.key)}
               </MobileLink>
             ))}
-            <div className="mt-2 flex flex-col gap-2 border-t border-white/10 pt-3">
+            <div className="mt-2 flex flex-col gap-2 border-t border-black/10 pt-3">
               <AuthNav stacked />
             </div>
           </nav>
@@ -134,7 +134,7 @@ function MobileLink({
     <Link
       href={href}
       onClick={onClick}
-      className="rounded-xl px-3 py-3 text-foam hover:bg-white/5"
+      className="rounded-xl px-3 py-3 text-foam hover:bg-black/[0.04]"
     >
       {children}
     </Link>

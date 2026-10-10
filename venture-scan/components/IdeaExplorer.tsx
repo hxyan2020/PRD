@@ -122,7 +122,7 @@ export function IdeaExplorer({
 
   return (
     <section id="ideas" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
-      <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="font-display text-3xl text-foam sm:text-4xl">{t("ledger.title")}</h2>
           <p className="mt-2 max-w-xl text-sm text-mist">
@@ -216,7 +216,7 @@ export function IdeaExplorer({
         </p>
       </div>
 
-      <ul className="mt-8 divide-y divide-white/10 border-t border-white/10">
+      <ul className="mt-8 divide-y divide-black/10 border-t border-black/10">
         {filtered.map((idea, idx) => {
           const match = matches[idea.slug];
           const view = localizeIdea(idea, locale);
@@ -230,7 +230,7 @@ export function IdeaExplorer({
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-display text-xl text-foam transition group-hover:text-white sm:text-2xl">
+                      <h3 className="font-display text-xl text-foam transition group-hover:text-black sm:text-2xl">
                         {view.name}
                       </h3>
                       <span

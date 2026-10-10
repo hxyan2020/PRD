@@ -79,15 +79,15 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
 
   if (!ready) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-ink-2/60 p-5 text-sm text-mist">
+      <div className="rounded-2xl border border-black/10 bg-ink-2/60 p-5 text-sm text-mist">
         {t("ideaChat.loading")}
       </div>
     );
   }
 
   return (
-    <section className="mt-12 rounded-2xl border border-white/10 bg-ink-2/60 shadow-panel">
-      <div className="border-b border-white/10 px-4 py-4 sm:px-5">
+    <section className="mt-12 rounded-2xl border border-black/10 bg-ink-2/60 shadow-panel">
+      <div className="border-b border-black/10 px-4 py-4 sm:px-5">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
           {t("ideaChat.kicker")}
         </p>
@@ -97,12 +97,12 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
         <p className="mt-2 text-sm text-mist">{t("ideaChat.body")}</p>
       </div>
 
-      <div className="flex flex-wrap gap-2 border-b border-white/10 px-4 py-3 sm:px-5">
+      <div className="flex flex-wrap gap-2 border-b border-black/10 px-4 py-3 sm:px-5">
         {IDEA_QA_SUGGESTIONS.map((prompt) => (
           <button
             key={prompt}
             type="button"
-            className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-left text-xs text-mist hover:border-celadon/40 hover:text-foam"
+            className="rounded-full border border-black/12 bg-black/[0.04] px-3 py-1.5 text-left text-xs text-mist hover:border-celadon/40 hover:text-foam"
             onClick={() => ask(prompt)}
           >
             {prompt}
@@ -115,7 +115,7 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
           <div
             key={m.id}
             className={`max-w-[95%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
-              m.role === "bot" ? "bg-white/5 text-foam" : "ml-auto bg-celadon/20 text-foam"
+              m.role === "bot" ? "bg-black/[0.04] text-foam" : "ml-auto bg-celadon/20 text-foam"
             }`}
           >
             <p className="whitespace-pre-wrap">{m.text}</p>
@@ -128,7 +128,7 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
       </div>
 
       <form
-        className="flex gap-2 border-t border-white/10 px-4 py-3 sm:px-5 sm:py-4"
+        className="flex gap-2 border-t border-black/10 px-4 py-3 sm:px-5 sm:py-4"
         onSubmit={(e) => {
           e.preventDefault();
           ask(input);
@@ -160,7 +160,7 @@ function CitationsList({
   heading: string;
 }) {
   return (
-    <div className="mt-3 rounded-xl border border-white/10 bg-ink/40 p-3">
+    <div className="mt-3 rounded-xl border border-black/10 bg-black/[0.03] p-3">
       <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">{heading}</p>
       <ul className="mt-2 space-y-2">
         {citations.map((c) => (
@@ -169,7 +169,7 @@ function CitationsList({
               <PlatformLogo sourceId={c.id} name={c.label} className="h-7 w-7 rounded-lg" />
             ) : (
               <span
-                className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/12 bg-white/10 font-mono text-[10px] text-mist"
+                className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-black/12 bg-black/[0.05] font-mono text-[10px] text-mist"
                 aria-hidden
               >
                 {c.kind === "official" ? "◎" : "≡"}

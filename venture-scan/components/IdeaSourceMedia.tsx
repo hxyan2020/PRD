@@ -39,7 +39,7 @@ export function IdeaSourceMedia({ idea }: { idea: StartupIdea }) {
               href={article.url}
               target="_blank"
               rel="noreferrer"
-              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-2/50 transition hover:border-celadon/40 hover:bg-ink-2/80"
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-ink-2/50 transition hover:border-celadon/40 hover:bg-ink-2/80"
             >
               <span className="relative aspect-[16/10] w-full overflow-hidden bg-ink">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -52,12 +52,12 @@ export function IdeaSourceMedia({ idea }: { idea: StartupIdea }) {
                   decoding="async"
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                 />
-                <span className="absolute left-3 top-3 rounded-md border border-white/20 bg-ink/70 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-foam backdrop-blur">
+                <span className="absolute left-3 top-3 rounded-md border border-black/15 bg-paper/90 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink backdrop-blur">
                   {article.sourceName}
                 </span>
               </span>
               <span className="flex flex-1 flex-col gap-2 p-4">
-                <span className="font-display text-lg leading-snug text-foam transition group-hover:text-white">
+                <span className="font-display text-lg leading-snug text-foam transition group-hover:text-black">
                   {article.title}
                 </span>
                 {article.excerpt ? (

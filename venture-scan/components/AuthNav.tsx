@@ -29,7 +29,7 @@ export function AuthNav({ stacked = false }: { stacked?: boolean }) {
   }, []);
 
   const linkClass = stacked
-    ? "rounded-xl px-3 py-3 text-foam hover:bg-white/5"
+    ? "rounded-xl px-3 py-3 text-foam hover:bg-black/[0.04]"
     : "hover:text-foam";
 
   if (user === undefined) {

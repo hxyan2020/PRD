@@ -98,7 +98,7 @@ export function SourcesDesk() {
           {countries.map((country) => (
             <li
               key={country}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-xs text-foam"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-black/10 bg-black/[0.03] px-2.5 py-1.5 text-xs text-foam"
             >
               <Flag code={countryToFlagCode(country) ?? ""} title={country} size="sm" />
               {country}
@@ -152,7 +152,7 @@ export function SourcesDesk() {
           return (
             <li
               key={source.id}
-              className="rounded-2xl border border-white/10 bg-ink-2/50 p-4 sm:p-5"
+              className="rounded-2xl border border-black/10 bg-ink-2/50 p-4 sm:p-5"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
@@ -160,7 +160,7 @@ export function SourcesDesk() {
                     <PlatformLogo sourceId={source.id} name={source.name} />
                     <h3 className="font-display text-xl text-foam">{source.name}</h3>
                     <HealthBadge health={status} label={t(`sources.health.${status}`)} />
-                    <span className="rounded-md border border-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-mist">
+                    <span className="rounded-md border border-black/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-mist">
                       {kindLabel(source.kind)}
                     </span>
                   </div>
@@ -191,7 +191,7 @@ export function SourcesDesk() {
                         {source.countries.map((c) => (
                           <span
                             key={c}
-                            className="inline-flex items-center gap-1.5 rounded-md bg-white/5 px-2 py-1 text-foam"
+                            className="inline-flex items-center gap-1.5 rounded-md bg-black/[0.04] px-2 py-1 text-foam"
                           >
                             <Flag code={countryToFlagCode(c) ?? ""} title={c} size="sm" />
                             <span>{c}</span>
@@ -204,7 +204,7 @@ export function SourcesDesk() {
                     <p className="mt-3 text-xs text-copper">{source.notes}</p>
                   ) : null}
                 </div>
-                <div className="shrink-0 rounded-xl border border-white/8 bg-ink/40 px-3 py-2 sm:min-w-[160px] sm:text-right">
+                <div className="shrink-0 rounded-xl border border-black/8 bg-black/[0.03] px-3 py-2 sm:min-w-[160px] sm:text-right">
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
                     {t("sources.lastSourced")}
                   </p>
@@ -238,7 +238,7 @@ export function SourcesDesk() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-3 sm:px-4 sm:py-4">
+    <div className="rounded-2xl border border-black/10 bg-black/[0.03] px-3 py-3 sm:px-4 sm:py-4">
       <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-mist">{label}</p>
       <p className="mt-1 font-display text-2xl text-foam sm:text-3xl">{value}</p>
     </div>
@@ -247,10 +247,10 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function HealthBadge({ health, label }: { health: SourceHealth; label: string }) {
   const tones: Record<SourceHealth, string> = {
-    healthy: "border-celadon/40 bg-celadon/15 text-celadon",
-    degraded: "border-copper/40 bg-copper/15 text-copper",
-    stale: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-    offline: "border-red-400/30 bg-red-400/10 text-red-200",
+    healthy: "border-celadon/50 bg-celadon/20 text-ink",
+    degraded: "border-copper/40 bg-copper/10 text-copper",
+    stale: "border-amber-700/30 bg-amber-500/10 text-amber-900",
+    offline: "border-red-700/30 bg-red-500/10 text-red-800",
   };
   return (
     <span

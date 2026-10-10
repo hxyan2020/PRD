@@ -76,7 +76,7 @@ export function CollectionPage() {
       {items.length === 0 ? (
         <p className="mt-10 text-sm text-mist">{t("collection.empty")}</p>
       ) : (
-        <ul className="mt-10 divide-y divide-white/10 border-t border-white/10">
+        <ul className="mt-10 divide-y divide-black/10 border-t border-black/10">
           {items.map((item) => {
             const view = localizeIdea(item.idea, locale);
             return (
@@ -85,7 +85,7 @@ export function CollectionPage() {
                 <div>
                   <Link
                     href={`/ideas/${item.ideaSlug}`}
-                    className="font-display text-2xl text-foam hover:text-white"
+                    className="font-display text-2xl text-foam hover:text-black"
                   >
                     {view.name}
                   </Link>

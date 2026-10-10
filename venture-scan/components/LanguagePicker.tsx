@@ -29,7 +29,7 @@ export function LanguagePicker() {
     <div className="relative" ref={rootRef}>
       <button
         type="button"
-        className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-2.5 text-sm text-foam hover:border-white/25 hover:bg-white/10"
+        className="inline-flex h-10 items-center gap-2 rounded-xl border border-black/15 bg-black/[0.04] px-2.5 text-sm text-foam hover:border-black/25 hover:bg-black/[0.06]"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t("lang.pickerLabel")}
@@ -46,7 +46,7 @@ export function LanguagePicker() {
         <ul
           role="listbox"
           aria-label={t("lang.pickerLabel")}
-          className="absolute end-0 z-50 mt-2 max-h-[min(70vh,22rem)] w-[min(calc(100vw-2rem),16rem)] overflow-y-auto overscroll-contain rounded-xl border border-white/15 bg-ink-2 py-1 shadow-panel"
+          className="absolute end-0 z-50 mt-2 max-h-[min(70vh,22rem)] w-[min(calc(100vw-2rem),16rem)] overflow-y-auto overscroll-contain rounded-xl border border-black/15 bg-ink-2 py-1 shadow-panel"
         >
           {locales.map((item) => {
             const selected = item.code === locale;
@@ -54,7 +54,7 @@ export function LanguagePicker() {
               <li key={item.code} role="option" aria-selected={selected}>
                 <button
                   type="button"
-                  className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm hover:bg-white/10 ${
+                  className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm hover:bg-black/[0.06] ${
                     selected ? "bg-celadon/15 text-foam" : "text-mist"
                   }`}
                   onClick={() => {

@@ -13,7 +13,7 @@ import type { StartupIdea } from "@/lib/types";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid gap-1 border-b border-white/10 py-4 sm:grid-cols-[160px_1fr] sm:gap-6">
+    <div className="grid gap-1 border-b border-black/10 py-4 sm:grid-cols-[160px_1fr] sm:gap-6">
       <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-mist">{label}</dt>
       <dd className="text-sm leading-relaxed text-foam">{children}</dd>
     </div>

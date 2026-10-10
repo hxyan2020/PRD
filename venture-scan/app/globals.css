@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --ink: #0c1210;
-  --ink-2: #141c18;
-  --foam: #e8f0eb;
-  --celadon: #3d9b7a;
-  --copper: #c47a3a;
-  --mist: #a8b5ae;
+  --ink: #111111;
+  --ink-2: #ffffff;
+  --foam: #141414;
+  --celadon: #e4b72c;
+  --copper: #b45309;
+  --mist: #6b6760;
+  --chalk: #f1ede3;
+  --paper: #f1ede3;
 }
 
 html {
@@ -18,7 +20,7 @@ html {
 
 html,
 body {
-  background: var(--ink);
+  background: var(--paper);
   color: var(--foam);
   overflow-x: clip;
 }
@@ -28,21 +30,21 @@ body {
   min-height: 100dvh;
   padding-bottom: env(safe-area-inset-bottom);
   background-image:
-    radial-gradient(1000px 520px at 12% -8%, rgba(61, 155, 122, 0.22), transparent 55%),
-    radial-gradient(900px 480px at 92% 8%, rgba(196, 122, 58, 0.14), transparent 50%),
-    linear-gradient(165deg, #0c1210 0%, #101814 45%, #0a100e 100%);
+    radial-gradient(900px 480px at 8% -6%, rgba(228, 183, 44, 0.18), transparent 55%),
+    radial-gradient(800px 420px at 96% 4%, rgba(17, 17, 17, 0.05), transparent 50%),
+    linear-gradient(180deg, #f4f0e6 0%, #f1ede3 42%, #ebe6da 100%);
 }
 
 .mesh {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  opacity: 0.35;
+  opacity: 0.22;
   background-image:
-    linear-gradient(rgba(232, 240, 235, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232, 240, 235, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 17, 17, 0.04) 1px, transparent 1px);
   background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at 50% 20%, black 20%, transparent 70%);
+  mask-image: radial-gradient(ellipse at 40% 30%, black 15%, transparent 72%);
 }
 
 .grain {
@@ -50,7 +52,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 40;
-  opacity: 0.04;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -61,7 +63,7 @@ body {
 }
 
 .field {
-  @apply w-full rounded-xl border border-white/10 bg-ink-2/70 px-3 py-2.5 text-base text-foam outline-none transition placeholder:text-mist/60 focus:border-celadon/50 focus:ring-1 focus:ring-celadon/30 sm:py-2 sm:text-sm;
+  @apply w-full rounded-xl border border-black/10 bg-ink-2 px-3 py-2.5 text-base text-foam outline-none transition placeholder:text-mist/70 focus:border-celadon focus:ring-1 focus:ring-celadon/40 sm:py-2 sm:text-sm;
   min-height: 44px;
 }
 
@@ -70,11 +72,11 @@ body {
 }
 
 .btn-primary {
-  @apply btn bg-celadon text-ink hover:brightness-110;
+  @apply btn bg-celadon text-ink hover:brightness-105;
 }
 
 .btn-ghost {
-  @apply btn border border-white/15 bg-white/5 text-foam hover:border-white/25 hover:bg-white/10;
+  @apply btn border border-black/15 bg-black/[0.03] text-foam hover:border-black/25 hover:bg-black/[0.06];
 }
 
 .btn-block-mobile {

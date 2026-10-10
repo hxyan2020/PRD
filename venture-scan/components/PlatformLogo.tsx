@@ -16,7 +16,7 @@ export function PlatformLogo({ sourceId, name, className }: PlatformLogoProps) {
 
   return (
     <span
-      className={`relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/12 bg-white/90 ${className ?? ""}`}
+      className={`relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/12 bg-white/90 ${className ?? ""}`}
       title={name}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

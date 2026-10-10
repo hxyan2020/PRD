@@ -228,8 +228,8 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-6 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[1.1fr_0.9fr]">
-      <section className="flex min-h-[65vh] flex-col rounded-2xl border border-white/10 bg-ink-2/60 shadow-panel sm:min-h-[70vh]">
-        <div className="border-b border-white/10 px-4 py-4 sm:px-5">
+      <section className="flex min-h-[65vh] flex-col rounded-2xl border border-black/10 bg-ink-2/60 shadow-panel sm:min-h-[70vh]">
+        <div className="border-b border-black/10 px-4 py-4 sm:px-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
             {t("match.kicker")}
           </p>
@@ -243,7 +243,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
               key={m.id}
               className={`max-w-[92%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                 m.role === "bot"
-                  ? "bg-white/5 text-foam"
+                  ? "bg-black/[0.04] text-foam"
                   : "ml-auto bg-celadon/20 text-foam"
               }`}
             >
@@ -253,7 +253,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
           <div ref={bottomRef} />
         </div>
 
-        <div className="sticky bottom-0 border-t border-white/10 bg-ink-2/95 px-4 py-3 backdrop-blur sm:static sm:bg-transparent sm:px-5 sm:py-4 sm:backdrop-blur-none">
+        <div className="sticky bottom-0 border-t border-black/10 bg-ink-2/95 px-4 py-3 backdrop-blur sm:static sm:bg-transparent sm:px-5 sm:py-4 sm:backdrop-blur-none">
           {!complete ? (
             <form
               className="flex gap-2"
@@ -311,7 +311,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
       </section>
 
       <aside className="space-y-4">
-        <div className="rounded-2xl border border-white/10 bg-ink-2/60 p-4 sm:p-5">
+        <div className="rounded-2xl border border-black/10 bg-ink-2/60 p-4 sm:p-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">
             {t("match.profile")}
           </p>
@@ -342,7 +342,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
           </dl>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-ink-2/60 p-5">
+        <div className="rounded-2xl border border-black/10 bg-ink-2/60 p-5">
           <div className="flex items-baseline justify-between gap-3">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
@@ -359,7 +359,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
             <p className="mt-4 text-sm text-mist">{t("match.finishHint")}</p>
           ) : null}
 
-          <ul className="mt-4 divide-y divide-white/10">
+          <ul className="mt-4 divide-y divide-black/10">
             {topMatches.map(({ idea, match }) => {
               const view = localizeIdea(idea, locale);
               return (
@@ -367,7 +367,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
                 <Link href={`/ideas/${idea.slug}`} className="group block">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-display text-xl text-foam group-hover:text-white">
+                      <h3 className="font-display text-xl text-foam group-hover:text-black">
                         {view.name}
                       </h3>
                       <p className="mt-1 text-xs text-mist">
@@ -410,7 +410,7 @@ function ScorePill({ score }: { score: number }) {
   const tone =
     score >= 70 ? "border-celadon/40 bg-celadon/15 text-celadon" : score >= 40
       ? "border-copper/40 bg-copper/15 text-copper"
-      : "border-white/15 bg-white/5 text-mist";
+      : "border-black/15 bg-black/[0.04] text-mist";
   return (
     <span className={`shrink-0 rounded-full border px-2.5 py-1 font-mono text-xs ${tone}`}>
       {score}%

@@ -22,7 +22,7 @@ export function Flag({ code, title, className, size = "md" }: FlagProps) {
   if (!/^[a-z]{2}$/.test(cc)) {
     return (
       <span
-        className={`inline-flex items-center justify-center rounded-[2px] bg-white/10 text-[9px] text-mist ${dims.className} ${className ?? ""}`}
+        className={`inline-flex items-center justify-center rounded-[2px] bg-black/[0.05] text-[9px] text-mist ${dims.className} ${className ?? ""}`}
         title={title}
         aria-hidden
       >

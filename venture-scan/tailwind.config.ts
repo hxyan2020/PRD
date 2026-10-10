@@ -5,13 +5,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#0c1210",
-        "ink-2": "#141c18",
-        mist: "#a8b5ae",
-        foam: "#e8f0eb",
-        celadon: "#3d9b7a",
-        copper: "#c47a3a",
-        chalk: "#f2f6f3",
+        ink: "#111111",
+        "ink-2": "#ffffff",
+        mist: "#6b6760",
+        foam: "#141414",
+        celadon: "#e4b72c",
+        copper: "#b45309",
+        chalk: "#f1ede3",
+        paper: "#f1ede3",
       },
       fontFamily: {
         display: ["var(--font-display)", "serif"],
@@ -19,7 +20,7 @@ const config: Config = {
         mono: ["var(--font-mono)", "monospace"],
       },
       boxShadow: {
-        panel: "0 18px 50px rgba(0,0,0,0.35)",
+        panel: "0 18px 40px rgba(17,17,17,0.08)",
       },
       keyframes: {
         rise: {
@@ -35,11 +36,16 @@ const config: Config = {
           "50%": { transform: "translateY(-8px)" },
           "100%": { transform: "translateY(0)" },
         },
+        ken: {
+          "0%": { transform: "scale(1.04) translate3d(0,0,0)" },
+          "100%": { transform: "scale(1.1) translate3d(-1.5%, -1%, 0)" },
+        },
       },
       animation: {
         rise: "rise 0.7s ease-out both",
         "pulse-glow": "pulseGlow 3.2s ease-in-out infinite",
         drift: "drift 6s ease-in-out infinite",
+        ken: "ken 18s ease-out both",
       },
     },
   },
