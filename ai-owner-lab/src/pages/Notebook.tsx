@@ -21,6 +21,15 @@ type CategoryFilterSelection = string[]
 const UNCATEGORIZED_FILTER = '__uncategorized__'
 
 const SORT_STORAGE_KEY = 'ownlab-notebook-sort'
+const CATEGORIES_OPEN_KEY = 'ownlab-notebook-categories-open'
+
+function readCategoriesOpen(): boolean {
+  try {
+    return localStorage.getItem(CATEGORIES_OPEN_KEY) === '1'
+  } catch {
+    return false
+  }
+}
 
 function typeLabel(
   type: NotebookEntry['type'],
@@ -204,6 +213,7 @@ export function Notebook() {
   const [query, setQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
   const [newCategoryName, setNewCategoryName] = useState('')
+  const [categoriesOpen, setCategoriesOpen] = useState(() => readCategoriesOpen())
   const [recoverToast, setRecoverToast] = useState(false)
   const [storageToast, setStorageToast] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
@@ -262,6 +272,18 @@ export function Notebook() {
     } catch {
       /* ignore */
     }
+  }
+
+  function toggleCategoriesOpen() {
+    setCategoriesOpen((open) => {
+      const next = !open
+      try {
+        localStorage.setItem(CATEGORIES_OPEN_KEY, next ? '1' : '0')
+      } catch {
+        /* ignore */
+      }
+      return next
+    })
   }
 
   function startEdit(entry: NotebookEntry) {
@@ -568,55 +590,78 @@ export function Notebook() {
         )
       ) : (
         <>
-      <section className="notebook-categories" aria-label={t('manageCategories')}>
-        <div className="notebook-composer-head">
-          <h2>{t('categories')}</h2>
-        </div>
-        <div className="notebook-category-create">
-          <input
-            type="text"
-            value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
-            placeholder={t('categoryNamePlaceholder')}
-            maxLength={40}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                createCategory()
-              }
-            }}
-          />
-          <button
-            type="button"
-            className="btn primary"
-            disabled={!newCategoryName.trim()}
-            onClick={createCategory}
-          >
-            {t('addCategory')}
-          </button>
-        </div>
-        {categories.length ? (
-          <ul className="notebook-category-list">
-            {categories.map((cat) => (
-              <li key={cat.id} style={categoryColorStyle(cat.color) as CSSProperties}>
-                <span className="notebook-category-chip">
-                  <span className="category-dot" aria-hidden="true" />
-                  {cat.name}
-                </span>
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={() => onDeleteCategory(cat)}
-                  aria-label={`${t('deleteCategory')}: ${cat.name}`}
-                >
-                  {t('delete')}
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
-        )}
+      <section
+        className={`notebook-categories${categoriesOpen ? ' open' : ' folded'}`}
+        aria-label={t('manageCategories')}
+      >
+        <button
+          type="button"
+          className="notebook-categories-toggle"
+          aria-expanded={categoriesOpen}
+          aria-controls="notebook-categories-panel"
+          onClick={toggleCategoriesOpen}
+        >
+          <span className="notebook-categories-chevron" aria-hidden="true">
+            {categoriesOpen ? '▾' : '▸'}
+          </span>
+          <span className="notebook-categories-title">{t('categories')}</span>
+          <span className="notebook-categories-count">{categories.length}</span>
+          <span className="sr-only">
+            {categoriesOpen ? t('collapseCategories') : t('expandCategories')}
+          </span>
+        </button>
+        {!categoriesOpen ? (
+          <p className="notebook-categories-hint">{t('categoriesFoldHint')}</p>
+        ) : null}
+        {categoriesOpen ? (
+          <div id="notebook-categories-panel" className="notebook-categories-panel">
+            <div className="notebook-category-create">
+              <input
+                type="text"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                placeholder={t('categoryNamePlaceholder')}
+                maxLength={40}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    void createCategory()
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="btn primary"
+                disabled={!newCategoryName.trim()}
+                onClick={() => void createCategory()}
+              >
+                {t('addCategory')}
+              </button>
+            </div>
+            {categories.length ? (
+              <ul className="notebook-category-list">
+                {categories.map((cat) => (
+                  <li key={cat.id} style={categoryColorStyle(cat.color) as CSSProperties}>
+                    <span className="notebook-category-chip">
+                      <span className="category-dot" aria-hidden="true" />
+                      {cat.name}
+                    </span>
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => onDeleteCategory(cat)}
+                      aria-label={`${t('deleteCategory')}: ${cat.name}`}
+                    >
+                      {t('delete')}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
+            )}
+          </div>
+        ) : null}
       </section>
 
       <section className="notebook-composer" aria-label={t('newNote')}>
