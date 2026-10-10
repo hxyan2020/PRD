@@ -84,10 +84,11 @@ export function NoteTree({
     [categories, entries, lang, t],
   )
 
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
+  // Categories start folded; only ids present here are expanded.
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({})
 
   function toggleCategory(id: string) {
-    setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
+    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
   if (!entries.length && !categories.length) return null
@@ -100,8 +101,7 @@ export function NoteTree({
       </div>
       <ul className="note-tree-list" role="tree">
         {tree.map((node) => {
-          const isCollapsed = Boolean(collapsed[node.id])
-          const expanded = !isCollapsed
+          const expanded = Boolean(expandedIds[node.id])
           return (
             <li
               key={node.id}
