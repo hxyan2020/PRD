@@ -158,7 +158,6 @@ export function Notebook() {
     addNote,
     updateEntry,
     removeEntry,
-    clearAll,
     addCategory,
     removeCategory,
   } = useNotebook()
@@ -594,19 +593,6 @@ export function Notebook() {
         </ol>
       )}
 
-      {entries.length > 0 ? (
-        <div className="danger-zone">
-          <button
-            type="button"
-            className="btn ghost"
-            onClick={() => {
-              if (window.confirm(t('clearNotebookConfirm'))) clearAll()
-            }}
-          >
-            {t('clearNotebook')}
-          </button>
-        </div>
-      ) : null}
     </div>
   )
 }

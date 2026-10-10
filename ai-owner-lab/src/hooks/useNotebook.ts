@@ -47,7 +47,6 @@ export function useNotebook() {
     addNote: notebookStore.addNote,
     updateEntry: notebookStore.update,
     removeEntry: notebookStore.remove,
-    clearAll: notebookStore.clear,
     addCategory: notebookStore.addCategory,
     renameCategory: notebookStore.renameCategory,
     removeCategory: notebookStore.removeCategory,
