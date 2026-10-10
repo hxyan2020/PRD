@@ -189,7 +189,7 @@ export function Notebook() {
     removeCategory,
   } = useNotebook()
   const { lang, t } = useLanguage()
-  const [view, setView] = useState<'notes' | 'tree' | 'dustbin'>('notes')
+  const [view, setView] = useState<'notes' | 'tree' | 'categories' | 'dustbin'>('notes')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
@@ -434,14 +434,18 @@ export function Notebook() {
             ? t('dustbinTitle')
             : view === 'tree'
               ? t('treeTitle')
-              : t('notebookTitle')}
+              : view === 'categories'
+                ? t('categoriesTitle')
+                : t('notebookTitle')}
         </h1>
         <p className="section-lede">
           {view === 'dustbin'
             ? t('dustbinLede')
             : view === 'tree'
               ? t('treeLede')
-              : t('notebookLede')}
+              : view === 'categories'
+                ? t('categoriesLede')
+                : t('notebookLede')}
         </p>
         <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
           <button
@@ -464,6 +468,20 @@ export function Notebook() {
           >
             <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-tree" />
             {t('viewTree')}
+            <span className="notebook-view-count">{count}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'categories'}
+            className={`notebook-view-tab${view === 'categories' ? ' on' : ''}`}
+            onClick={() => setView('categories')}
+          >
+            <span
+              aria-hidden="true"
+              className="notebook-view-icon notebook-view-icon-categories"
+            />
+            {t('viewCategories')}
             <span className="notebook-view-count">{categories.length}</span>
           </button>
           <button
@@ -478,7 +496,7 @@ export function Notebook() {
             <span className="notebook-view-count">{trashCount}</span>
           </button>
         </div>
-        {view !== 'tree' ? (
+        {view === 'notes' || view === 'dustbin' ? (
           <div className="notebook-toolbar">
             <p className="notebook-count">
               {view === 'dustbin'
@@ -596,59 +614,59 @@ export function Notebook() {
             })}
           </ol>
         )
+      ) : view === 'categories' ? (
+        <section className="notebook-categories open" aria-label={t('manageCategories')}>
+          <div className="notebook-composer-head">
+            <h2>{t('manageCategories')}</h2>
+          </div>
+          <div className="notebook-category-create">
+            <input
+              type="text"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder={t('categoryNamePlaceholder')}
+              maxLength={40}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  void createCategory()
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="btn primary"
+              disabled={!newCategoryName.trim()}
+              onClick={() => void createCategory()}
+            >
+              {t('addCategory')}
+            </button>
+          </div>
+          {categories.length ? (
+            <ul className="notebook-category-list">
+              {categories.map((cat) => (
+                <li key={cat.id} style={categoryColorStyle(cat.color) as CSSProperties}>
+                  <span className="notebook-category-chip">
+                    <span className="category-dot" aria-hidden="true" />
+                    {cat.name}
+                  </span>
+                  <button
+                    type="button"
+                    className="btn ghost"
+                    onClick={() => onDeleteCategory(cat)}
+                    aria-label={`${t('deleteCategory')}: ${cat.name}`}
+                  >
+                    {t('delete')}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
+          )}
+        </section>
       ) : view === 'tree' ? (
         <>
-          <section className="notebook-categories open" aria-label={t('manageCategories')}>
-            <div className="notebook-composer-head">
-              <h2>{t('manageCategories')}</h2>
-            </div>
-            <div className="notebook-category-create">
-              <input
-                type="text"
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
-                placeholder={t('categoryNamePlaceholder')}
-                maxLength={40}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    void createCategory()
-                  }
-                }}
-              />
-              <button
-                type="button"
-                className="btn primary"
-                disabled={!newCategoryName.trim()}
-                onClick={() => void createCategory()}
-              >
-                {t('addCategory')}
-              </button>
-            </div>
-            {categories.length ? (
-              <ul className="notebook-category-list">
-                {categories.map((cat) => (
-                  <li key={cat.id} style={categoryColorStyle(cat.color) as CSSProperties}>
-                    <span className="notebook-category-chip">
-                      <span className="category-dot" aria-hidden="true" />
-                      {cat.name}
-                    </span>
-                    <button
-                      type="button"
-                      className="btn ghost"
-                      onClick={() => onDeleteCategory(cat)}
-                      aria-label={`${t('deleteCategory')}: ${cat.name}`}
-                    >
-                      {t('delete')}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
-            )}
-          </section>
-
           <NoteTree
             categories={categories}
             entries={entries}

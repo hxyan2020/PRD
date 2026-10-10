@@ -2390,6 +2390,16 @@ body.menu-open {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v6'/%3E%3Cpath d='M6 21V12h12v9'/%3E%3Cpath d='M6 12V9h12v3'/%3E%3Ccircle cx='12' cy='3' r='1.5' fill='black' stroke='none'/%3E%3C/svg%3E");
 }
 
+.notebook-view-icon-categories {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16'/%3E%3Cpath d='M4 12h10'/%3E%3Cpath d='M4 17h7'/%3E%3Ccircle cx='18' cy='12' r='2'/%3E%3Ccircle cx='15' cy='17' r='2'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16'/%3E%3Cpath d='M4 12h10'/%3E%3Cpath d='M4 17h7'/%3E%3Ccircle cx='18' cy='12' r='2'/%3E%3Ccircle cx='15' cy='17' r='2'/%3E%3C/svg%3E");
+}
+
+/* Keep four tabs readable on narrower pages. */
+.notebook-view-switch {
+  flex-wrap: wrap;
+}
+
 .dustbin-entry {
   opacity: 0.96;
   border-style: dashed;
