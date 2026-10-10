@@ -208,6 +208,44 @@ function selectionInsideCode(editor: HTMLElement | null): HTMLElement | null {
   return code && editor.contains(code) ? (code as HTMLElement) : null
 }
 
+/** Text-offset caret bookmark so we can restore after a rare controlled HTML rewrite. */
+function getCaretTextOffset(root: HTMLElement): number {
+  const selection = window.getSelection()
+  if (!selection || !selection.rangeCount) return 0
+  const range = selection.getRangeAt(0)
+  if (!root.contains(range.endContainer)) return 0
+  const pre = range.cloneRange()
+  pre.selectNodeContents(root)
+  pre.setEnd(range.endContainer, range.endOffset)
+  return pre.toString().length
+}
+
+function setCaretTextOffset(root: HTMLElement, offset: number) {
+  const selection = window.getSelection()
+  if (!selection) return
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+  let remaining = Math.max(0, offset)
+  let node = walker.nextNode() as Text | null
+  while (node) {
+    const len = node.data.length
+    if (remaining <= len) {
+      const range = document.createRange()
+      range.setStart(node, remaining)
+      range.collapse(true)
+      selection.removeAllRanges()
+      selection.addRange(range)
+      return
+    }
+    remaining -= len
+    node = walker.nextNode() as Text | null
+  }
+  const range = document.createRange()
+  range.selectNodeContents(root)
+  range.collapse(false)
+  selection.removeAllRanges()
+  selection.addRange(range)
+}
+
 function applyHighlightColor(color: string, editor: HTMLElement | null) {
   const selection = window.getSelection()
   if (!selection || !selection.rangeCount || selection.isCollapsed) return
@@ -269,12 +307,26 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   useEffect(() => {
     const el = editorRef.current
     if (!el) return
-    if (el.innerHTML !== value) {
-      el.innerHTML = value || ''
-      lastHtml.current = value
+
+    // While editing, the live DOM is source of truth. Sanitized `value` often
+    // differs cosmetically from browser innerHTML (table rows, <br>, attrs).
+    // Rewriting innerHTML here resets the caret to the start — skip that.
+    if (value === lastHtml.current) {
+      if (document.activeElement !== el) {
+        highlightCodeBlocksInElement(el)
+      }
+      return
     }
-    // Show language colors when the editor is not being typed in.
-    if (document.activeElement !== el) {
+
+    // External value change (clear composer, load another draft, etc.).
+    const focused = document.activeElement === el
+    const caret = focused ? getCaretTextOffset(el) : 0
+    el.innerHTML = value || ''
+    lastHtml.current = value
+    if (focused) {
+      setCaretTextOffset(el, caret)
+      captureSelection()
+    } else {
       highlightCodeBlocksInElement(el)
     }
   }, [value])
