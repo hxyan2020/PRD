@@ -125,25 +125,263 @@ export function codeElementToPlainText(el: HTMLElement): string {
   return out.replace(/\u00a0/g, ' ').replace(/\n+$/u, '')
 }
 
+type YamlTok =
+  | { t: 'key'; name: string }
+  | { t: 'string'; v: string }
+  | { t: 'scalar'; v: string }
+  | { t: 'dash' }
+
+function tokenizeYamlLike(input: string): YamlTok[] {
+  const s = input.replace(/\r\n?/g, '\n')
+  const tokens: YamlTok[] = []
+  let i = 0
+  while (i < s.length) {
+    const ch = s[i]
+    if (ch === '\n' || ch === ' ' || ch === '\t') {
+      i += 1
+      continue
+    }
+    if (ch === '-' && (i + 1 >= s.length || /[\sA-Za-z_"']/.test(s[i + 1]!))) {
+      tokens.push({ t: 'dash' })
+      i += 1
+      continue
+    }
+    if (ch === '"') {
+      let j = i + 1
+      let raw = '"'
+      while (j < s.length) {
+        if (s[j] === '\\' && j + 1 < s.length) {
+          raw += s[j]! + s[j + 1]!
+          j += 2
+          continue
+        }
+        raw += s[j]
+        if (s[j] === '"') {
+          j += 1
+          break
+        }
+        j += 1
+      }
+      tokens.push({ t: 'string', v: raw })
+      i = j
+      continue
+    }
+    const key = s.slice(i).match(/^([A-Za-z_][\w.-]*):(?!\w)/)
+    if (key) {
+      tokens.push({ t: 'key', name: key[1]! })
+      i += key[0].length
+      continue
+    }
+    const scalar = s.slice(i).match(/^[^\s]+/)
+    if (scalar) {
+      tokens.push({ t: 'scalar', v: scalar[0]! })
+      i += scalar[0].length
+      continue
+    }
+    i += 1
+  }
+  return tokens
+}
+
+function keyShape(
+  tokens: YamlTok[],
+  index: number,
+): 'leaf' | 'empty' | 'seq' | 'other' {
+  const tok = tokens[index]
+  if (!tok || tok.t !== 'key') return 'other'
+  const next = tokens[index + 1]
+  if (!next || next.t === 'key') return 'empty'
+  if (next.t === 'dash') return 'seq'
+  if (next.t === 'string' || next.t === 'scalar') return 'leaf'
+  return 'other'
+}
+
 /**
- * Recover structured code that lost newlines (e.g. "value"next_key: jammed together).
- * Only runs when the block has no real line breaks.
+ * Rebuild YAML with newlines + 2-space indentation from flattened / jammed text.
+ * Preserves blocks that already include nested indentation.
  */
-export function restoreCollapsedCodeLines(code: string, _language?: string | null): string {
-  if (!code || code.includes('\n')) return code
-  if (!/:\s*"/.test(code) && !/:\s*\d/.test(code)) return code
+export function reindentYaml(code: string): string {
+  const normalized = code.replace(/\t/g, '  ')
+  const lines = normalized.split(/\r?\n/)
+  const alreadyIndented = lines.some((l) => /^ {2,}\S/.test(l))
+  if (alreadyIndented && !/:\s*[A-Za-z_][\w.-]*\s*:/.test(code.replace(/\n/g, ' '))) {
+    return lines.map((l) => l.replace(/\s+$/u, '')).join('\n').replace(/\n+$/u, '')
+  }
 
-  let next = code
-  // "value"next_key:  →  "value"\nnext_key:
-  next = next.replace(/("(?:\\.|[^"\\])*")(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
-  // "value"- "item"  → list items on new lines
-  next = next.replace(/("(?:\\.|[^"\\])*")(?=-\s*)/g, '$1\n')
-  // yaml/json object close jammed: }key: or ]key:
-  next = next.replace(/([}\]])(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
-  // empty value jammed into next key: purpose:business_objective:
-  next = next.replace(/(:)(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
+  const tokens = tokenizeYamlLike(normalized)
+  if (!tokens.some((t) => t.t === 'key')) return code
 
+  const out: string[] = []
+  let i = 0
+  const pad = (n: number) => '  '.repeat(Math.max(0, n))
+
+  const peek = () => tokens[i]
+  const take = () => tokens[i++]!
+
+  const parseSeq = (indent: number) => {
+    while (peek()?.t === 'dash') {
+      take() // dash
+      const next = peek()
+      if (next?.t === 'key') {
+        const shape = keyShape(tokens, i)
+        if (shape === 'leaf') {
+          const key = take() as Extract<YamlTok, { t: 'key' }>
+          const val = take()
+          const text = val.t === 'string' || val.t === 'scalar' ? val.v : ''
+          out.push(`${pad(indent)}- ${key.name}: ${text}`)
+          // Mapping fields under this list item (stop before numeric/bool leaves —
+          // those usually belong to the parent map, e.g. timeout_seconds: 30).
+          while (keyShape(tokens, i) === 'leaf') {
+            const vPeek = tokens[i + 1]
+            if (
+              vPeek?.t === 'scalar' &&
+              /^(true|false|null|-?\d+(?:\.\d+)?)$/i.test(vPeek.v)
+            ) {
+              break
+            }
+            const k = take() as Extract<YamlTok, { t: 'key' }>
+            const v = take()
+            const vt = v.t === 'string' || v.t === 'scalar' ? v.v : ''
+            out.push(`${pad(indent + 1)}${k.name}: ${vt}`)
+          }
+        } else if (shape === 'empty') {
+          const key = take() as Extract<YamlTok, { t: 'key' }>
+          out.push(`${pad(indent)}- ${key.name}:`)
+          parseMap(indent + 1, false)
+        } else if (shape === 'seq') {
+          const key = take() as Extract<YamlTok, { t: 'key' }>
+          out.push(`${pad(indent)}- ${key.name}:`)
+          parseSeq(indent + 1)
+        } else {
+          break
+        }
+      } else if (next?.t === 'string' || next?.t === 'scalar') {
+        const val = take() as Extract<YamlTok, { t: 'string' | 'scalar' }>
+        out.push(`${pad(indent)}- ${val.v}`)
+      } else {
+        break
+      }
+    }
+  }
+
+  /**
+   * @param allowSiblingEmptyStop When true (nested under an empty key that only had leaves so far),
+   *   stop before the next empty/seq key so it can be a sibling of the parent.
+   */
+  const remainingHasEmptyOrSeq = (from: number): boolean => {
+    for (let j = from; j < tokens.length; j++) {
+      if (tokens[j]?.t !== 'key') continue
+      const sh = keyShape(tokens, j)
+      if (sh === 'empty' || sh === 'seq') return true
+      if (sh === 'leaf') j += 1
+    }
+    return false
+  }
+
+  const parseMap = (indent: number, allowSiblingEmptyStop: boolean) => {
+    let seenLeaf = false
+    let seenComplex = false
+    while (peek()?.t === 'key') {
+      const shape = keyShape(tokens, i)
+      if (
+        allowSiblingEmptyStop &&
+        seenLeaf &&
+        !seenComplex &&
+        (shape === 'empty' || shape === 'seq')
+      ) {
+        // e.g. purpose: leaves… then trigger:  → trigger is sibling of purpose
+        break
+      }
+      // Trailing root-level leaves after a nested section (decision_logic after investigation)
+      if (
+        allowSiblingEmptyStop &&
+        seenComplex &&
+        shape === 'leaf' &&
+        !remainingHasEmptyOrSeq(i)
+      ) {
+        break
+      }
+      if (shape === 'leaf') {
+        const key = take() as Extract<YamlTok, { t: 'key' }>
+        const val = take()
+        const text = val.t === 'string' || val.t === 'scalar' ? val.v : ''
+        out.push(`${pad(indent)}${key.name}: ${text}`)
+        seenLeaf = true
+        continue
+      }
+      if (shape === 'empty') {
+        const key = take() as Extract<YamlTok, { t: 'key' }>
+        out.push(`${pad(indent)}${key.name}:`)
+        parseMap(indent + 1, true)
+        seenComplex = true
+        continue
+      }
+      if (shape === 'seq') {
+        const key = take() as Extract<YamlTok, { t: 'key' }>
+        out.push(`${pad(indent)}${key.name}:`)
+        parseSeq(indent + 1)
+        seenComplex = true
+        continue
+      }
+      break
+    }
+  }
+
+  // Root: series of entries.
+  while (i < tokens.length) {
+    if (peek()?.t === 'key') {
+      parseMap(0, false)
+      // parseMap at root with allowSiblingEmptyStop false consumes empty keys as root entries.
+      // But parseMap loops keys — at root we need to consume one entry at a time with stop disabled.
+      // Actually parseMap(0,false) consumes ALL remaining keys. Good for root.
+      break
+    }
+    if (peek()?.t === 'dash') {
+      parseSeq(0)
+      continue
+    }
+    // Unexpected token — emit as plain scalar line and continue.
+    const tok = take()
+    if (tok.t === 'string' || tok.t === 'scalar') out.push(tok.v)
+  }
+
+  return out.join('\n')
+}
+
+/** Insert newlines at jammed structural boundaries (non-YAML fallback). */
+function splitJammedStructuredLines(code: string): string {
+  let next = code.replace(/\r\n?/g, '\n')
+  next = next.replace(/("(?:\\.|[^"\\])*")\s*(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
+  next = next.replace(/("(?:\\.|[^"\\])*")\s*(?=-\s+)/g, '$1\n')
+  next = next.replace(/([A-Za-z_][\w.-]*:)\s*(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
+  next = next.replace(/([A-Za-z_][\w.-]*:)\s*(?=-\s+)/g, '$1\n')
+  next = next.replace(
+    /(:\s*(?:true|false|null|-?\d+(?:\.\d+)?))\s*(?=[A-Za-z_][\w.-]*\s*:|-\s+)/gi,
+    '$1\n',
+  )
+  next = next.replace(/([}\]])\s*(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
+  next = next.replace(/(-\s+"(?:\\.|[^"\\])*")\s*(?=-\s+)/g, '$1\n')
   return next
+}
+
+/**
+ * Recover structured code: restore newlines and YAML indentation when flattened.
+ */
+export function restoreCollapsedCodeLines(code: string, language?: string | null): string {
+  if (!code) return code
+  const lang = normalizeCodeLanguage(language)
+  const hasStructure =
+    /:\s*"/.test(code) || /:\s*\d/.test(code) || /:\s*[A-Za-z_][\w.-]*\s*:/.test(code)
+  if (!hasStructure && !code.includes('\n')) return code
+
+  if (lang === 'yaml' || lang === 'yml') {
+    return reindentYaml(code)
+  }
+
+  if (!code.includes('\n') || /"[A-Za-z_][\w.-]*\s*:/.test(code) || /:[A-Za-z_][\w.-]*\s*:/.test(code)) {
+    return splitJammedStructuredLines(code)
+  }
+  return code
 }
 
 function ensureCodeChild(pre: HTMLElement): HTMLElement {
