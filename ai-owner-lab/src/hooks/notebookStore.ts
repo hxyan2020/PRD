@@ -13,6 +13,35 @@ const entryListeners = new Set<EntryListener>()
 const trashListeners = new Set<TrashListener>()
 const categoryListeners = new Set<CategoryListener>()
 
+export type NotebookStorageErrorCode = 'quota' | 'unknown'
+
+export class NotebookStorageError extends Error {
+  readonly code: NotebookStorageErrorCode
+
+  constructor(code: NotebookStorageErrorCode, message?: string) {
+    super(message ?? (code === 'quota' ? 'Notebook storage is full' : 'Notebook storage failed'))
+    this.name = 'NotebookStorageError'
+    this.code = code
+  }
+}
+
+function isQuotaExceeded(err: unknown): boolean {
+  if (!err || typeof err !== 'object') return false
+  const e = err as { name?: string; code?: number; message?: string }
+  if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') return true
+  // Legacy WebKit / IE codes
+  if (e.code === 22 || e.code === 1014) return true
+  return /quota/i.test(e.message ?? '')
+}
+
+function persistLocalStorage(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value)
+  } catch (err) {
+    throw new NotebookStorageError(isQuotaExceeded(err) ? 'quota' : 'unknown')
+  }
+}
+
 function read(): NotebookEntry[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -31,7 +60,7 @@ function write(entries: NotebookEntry[]) {
   const sorted = [...entries].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   )
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
+  persistLocalStorage(STORAGE_KEY, JSON.stringify(sorted))
   entryListeners.forEach((listener) => listener(sorted))
 }
 
@@ -59,7 +88,7 @@ function writeTrash(trash: TrashedNotebookEntry[]) {
   const sorted = [...trash].sort(
     (a, b) => new Date(b.deletedAt).getTime() - new Date(a.deletedAt).getTime(),
   )
-  localStorage.setItem(TRASH_STORAGE_KEY, JSON.stringify(sorted))
+  persistLocalStorage(TRASH_STORAGE_KEY, JSON.stringify(sorted))
   trashListeners.forEach((listener) => listener(sorted))
 }
 
@@ -96,7 +125,11 @@ function readCategories(): NotebookCategory[] {
       a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
     )
     if (needsPersist) {
-      localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
+      try {
+        persistLocalStorage(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
+      } catch {
+        /* best-effort migration; keep in-memory colors */
+      }
     }
     return sorted
   } catch {
@@ -108,7 +141,7 @@ function writeCategories(categories: NotebookCategory[]) {
   const sorted = [...categories].sort((a, b) =>
     a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
   )
-  localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
+  persistLocalStorage(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
   categoryListeners.forEach((listener) => listener(sorted))
 }
 

@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { NoteTree } from '../components/NoteTree'
-import { RichTextEditor } from '../components/RichTextEditor'
+import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
+import { NotebookStorageError } from '../hooks/notebookStore'
 import {
   formatTimestamp,
   useNotebook,
@@ -196,6 +197,7 @@ export function Notebook() {
   const [newNote, setNewNote] = useState('')
   const [newCategoryIds, setNewCategoryIds] = useState<string[]>([])
   const [composerOpen, setComposerOpen] = useState(true)
+  const [composerError, setComposerError] = useState<string | null>(null)
   const [sort, setSort] = useState<NotebookSort>(() => readSort())
   const [query, setQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
@@ -203,6 +205,8 @@ export function Notebook() {
   const [recoverToast, setRecoverToast] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
+  const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
+  const editEditorRef = useRef<RichTextEditorHandle | null>(null)
 
   const categoryMap = useMemo(() => {
     const map = new Map<string, NotebookCategory>()
@@ -266,35 +270,65 @@ export function Notebook() {
   }
 
   function saveEdit(entry: NotebookEntry) {
-    const selectedText =
-      entry.type === 'note' ? sanitizeHtml(draftText).trim() : draftText.trim()
-    if (entry.type === 'note' ? isBlankHtml(selectedText) : !selectedText) return
-    const patch =
-      entry.type === 'explanation'
-        ? {
-            title: draftTitle,
-            selectedText,
-            explanation: draftExplanation,
-            categoryIds: draftCategoryIds,
-          }
-        : { title: draftTitle, selectedText, categoryIds: draftCategoryIds }
-    const updated = updateEntry(entry.id, patch)
-    if (updated) cancelEdit()
+    try {
+      const selectedText =
+        entry.type === 'note'
+          ? (editEditorRef.current?.getSanitizedHtml() ?? sanitizeHtml(draftText)).trim()
+          : draftText.trim()
+      if (entry.type === 'note' ? isBlankHtml(selectedText) : !selectedText) return
+      const patch =
+        entry.type === 'explanation'
+          ? {
+              title: draftTitle,
+              selectedText,
+              explanation: draftExplanation,
+              categoryIds: draftCategoryIds,
+            }
+          : { title: draftTitle, selectedText, categoryIds: draftCategoryIds }
+      const updated = updateEntry(entry.id, patch)
+      if (updated) cancelEdit()
+    } catch (err) {
+      const message =
+        err instanceof NotebookStorageError && err.code === 'quota'
+          ? t('notebookStorageFull')
+          : t('noteSaveFailed')
+      window.alert(message)
+    }
   }
 
   function createNote() {
-    const html = sanitizeHtml(newNote).trim()
-    if (isBlankHtml(html)) return
-    const created = addNote({
-      text: html,
-      title: newTitle,
-      categoryIds: newCategoryIds,
-    })
-    if (!created) return
-    setNewTitle('')
-    setNewNote('')
-    setNewCategoryIds([])
-    setComposerOpen(true)
+    setComposerError(null)
+    try {
+      // Prefer live contentEditable HTML — React state can lag behind the DOM.
+      const html = (
+        composerEditorRef.current?.getSanitizedHtml() ?? sanitizeHtml(newNote)
+      ).trim()
+      if (isBlankHtml(html)) {
+        setComposerError(t('noteEmptyBody'))
+        composerEditorRef.current?.focus()
+        return
+      }
+      const created = addNote({
+        text: html,
+        title: newTitle,
+        categoryIds: newCategoryIds,
+      })
+      if (!created) {
+        setComposerError(t('noteSaveFailed'))
+        return
+      }
+      setNewTitle('')
+      setNewNote('')
+      setNewCategoryIds([])
+      setComposerOpen(true)
+      setComposerError(null)
+    } catch (err) {
+      if (err instanceof NotebookStorageError && err.code === 'quota') {
+        setComposerError(t('notebookStorageFull'))
+      } else {
+        setComposerError(t('noteSaveFailed'))
+      }
+    }
   }
 
   function createCategory() {
@@ -343,7 +377,6 @@ export function Notebook() {
     setView('notes')
   }
 
-  const canCreate = !isBlankHtml(newNote)
   const categoryFiltering = categoryFilter.length > 0
   const filtering =
     view === 'notes'
@@ -581,19 +614,23 @@ export function Notebook() {
             <div className="notebook-field">
               <span className="notebook-field-label">{t('noteBodyLabel')}</span>
               <RichTextEditor
+                ref={composerEditorRef}
                 value={newNote}
-                onChange={setNewNote}
+                onChange={(html) => {
+                  setNewNote(html)
+                  if (composerError) setComposerError(null)
+                }}
                 placeholder={t('newNotePlaceholder')}
                 ariaLabel={t('noteBodyLabel')}
               />
             </div>
+            {composerError ? (
+              <p className="notebook-composer-error" role="alert">
+                {composerError}
+              </p>
+            ) : null}
             <div className="notebook-actions">
-              <button
-                type="button"
-                className="btn primary"
-                disabled={!canCreate}
-                onClick={createNote}
-              >
+              <button type="button" className="btn primary" onClick={createNote}>
                 {t('createNote')}
               </button>
               {entries.length > 0 ? (
@@ -605,6 +642,7 @@ export function Notebook() {
                     setNewTitle('')
                     setNewNote('')
                     setNewCategoryIds([])
+                    setComposerError(null)
                   }}
                 >
                   {t('cancelEdit')}
@@ -840,6 +878,7 @@ export function Notebook() {
                       <div className="notebook-field">
                         <span className="notebook-field-label">{t('noteBodyLabel')}</span>
                         <RichTextEditor
+                          ref={editEditorRef}
                           value={draftText}
                           onChange={setDraftText}
                           placeholder={t('newNotePlaceholder')}

@@ -1,4 +1,12 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+import {
+  forwardRef,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react'
 import {
   CODE_LANGUAGES,
   highlightCodeBlocksInElement,
@@ -41,6 +49,12 @@ interface Props {
   minHeight?: string
   autoFocus?: boolean
   ariaLabel?: string
+}
+
+/** Imperative helpers so parents can flush live contentEditable HTML on save. */
+export type RichTextEditorHandle = {
+  getSanitizedHtml: () => string
+  focus: () => void
 }
 
 function runCommand(command: string, value?: string) {
@@ -209,14 +223,17 @@ function applyHighlightColor(color: string, editor: HTMLElement | null) {
     document.execCommand('backColor', false, color)
 }
 
-export function RichTextEditor({
-  value,
-  onChange,
-  placeholder,
-  minHeight = '8rem',
-  autoFocus,
-  ariaLabel,
-}: Props) {
+export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichTextEditor(
+  {
+    value,
+    onChange,
+    placeholder,
+    minHeight = '8rem',
+    autoFocus,
+    ariaLabel,
+  },
+  ref,
+) {
   const { t } = useLanguage()
   const editorRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -228,6 +245,26 @@ export function RichTextEditor({
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
   const [tableCols, setTableCols] = useState(3)
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      getSanitizedHtml() {
+        const el = editorRef.current
+        if (!el) return sanitizeHtml(value)
+        // Persist plain code (no hljs spans) so stored notes stay editable.
+        plainifyCodeBlocksInElement(el)
+        const html = sanitizeHtml(el.innerHTML)
+        lastHtml.current = html
+        if (html !== value) onChange(html)
+        return html
+      },
+      focus() {
+        editorRef.current?.focus()
+      },
+    }),
+    [onChange, value],
+  )
 
   useEffect(() => {
     const el = editorRef.current
@@ -772,4 +809,4 @@ export function RichTextEditor({
       </div>
     </div>
   )
-}
+})

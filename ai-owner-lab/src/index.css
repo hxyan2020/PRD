@@ -2893,6 +2893,16 @@ button.notebook-category-badge.on {
   font-size: 1.05rem;
 }
 
+.notebook-composer-error {
+  margin: 0.35rem 0 0.15rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: #7f1d1d;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
 .notebook-field {
   display: grid;
   gap: 0.35rem;
