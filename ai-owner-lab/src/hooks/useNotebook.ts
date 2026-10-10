@@ -61,7 +61,6 @@ export function useNotebook() {
     restoreEntry: notebookStore.restore,
     addCategory: notebookStore.addCategory,
     renameCategory: notebookStore.renameCategory,
-    setCategoryColor: notebookStore.setCategoryColor,
     removeCategory: notebookStore.removeCategory,
   }
 }

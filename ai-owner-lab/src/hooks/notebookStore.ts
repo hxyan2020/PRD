@@ -1,9 +1,4 @@
-import {
-  getCategoryColor,
-  isCategoryColorId,
-  nextCategoryColor,
-  type CategoryColorId,
-} from '../lib/categoryColors'
+import { isCategoryColorId, nextCategoryColor } from '../lib/categoryColors'
 import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
 const STORAGE_KEY = 'ownlab-notebook-v1'
@@ -89,15 +84,21 @@ function readCategories(): NotebookCategory[] {
     if (!Array.isArray(parsed)) return []
     const used: Array<string | undefined> = []
     const normalized: NotebookCategory[] = []
+    let needsPersist = false
     for (const item of parsed) {
       const cat = normalizeCategory(item, used)
       if (!cat) continue
+      if (!isCategoryColorId(item.color)) needsPersist = true
       used.push(cat.color)
       normalized.push(cat)
     }
-    return normalized.sort((a, b) =>
+    const sorted = normalized.sort((a, b) =>
       a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
     )
+    if (needsPersist) {
+      localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(sorted))
+    }
+    return sorted
   } catch {
     return []
   }
@@ -294,7 +295,7 @@ export const notebookStore = {
     }
     write([])
   },
-  addCategory(name: string, color?: CategoryColorId) {
+  addCategory(name: string) {
     const trimmed = name.trim()
     if (!trimmed) return null
     const existing = readCategories()
@@ -305,9 +306,8 @@ export const notebookStore = {
       id: uid('cat'),
       name: trimmed,
       createdAt: new Date().toISOString(),
-      color: isCategoryColorId(color)
-        ? color
-        : nextCategoryColor(existing.map((c) => c.color)),
+      // Prefer a color not already used; if all are taken, reuse the least-used.
+      color: nextCategoryColor(existing.map((c) => c.color)),
     }
     writeCategories([...existing, category])
     return category
@@ -324,17 +324,6 @@ export const notebookStore = {
       return null
     }
     const updated = { ...categories[index], name: trimmed }
-    const next = [...categories]
-    next[index] = updated
-    writeCategories(next)
-    return updated
-  },
-  setCategoryColor(id: string, color: CategoryColorId) {
-    if (!isCategoryColorId(color)) return null
-    const categories = readCategories()
-    const index = categories.findIndex((c) => c.id === id)
-    if (index < 0) return null
-    const updated = { ...categories[index], color: getCategoryColor(color).id }
     const next = [...categories]
     next[index] = updated
     writeCategories(next)
