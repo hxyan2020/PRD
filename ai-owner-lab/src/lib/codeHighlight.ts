@@ -104,17 +104,57 @@ function detectLangFromEl(el: Element): string {
   )
 }
 
+/** textContent drops <br>; contentEditable often inserts those inside <pre>. */
+export function codeElementToPlainText(el: HTMLElement): string {
+  let out = ''
+  const walk = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      out += node.nodeValue || ''
+      return
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return
+    const tag = (node as Element).tagName
+    if (tag === 'BR') {
+      out += '\n'
+      return
+    }
+    for (const child of node.childNodes) walk(child)
+    if (tag === 'DIV' || tag === 'P' || tag === 'LI') out += '\n'
+  }
+  walk(el)
+  return out.replace(/\u00a0/g, ' ').replace(/\n+$/u, '')
+}
+
+/**
+ * Recover structured code that lost newlines (e.g. "value"next_key: jammed together).
+ * Only runs when the block has no real line breaks.
+ */
+export function restoreCollapsedCodeLines(code: string, _language?: string | null): string {
+  if (!code || code.includes('\n')) return code
+  if (!/:\s*"/.test(code) && !/:\s*\d/.test(code)) return code
+
+  let next = code
+  // "value"next_key:  →  "value"\nnext_key:
+  next = next.replace(/("(?:\\.|[^"\\])*")(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
+  // "value"- "item"  → list items on new lines
+  next = next.replace(/("(?:\\.|[^"\\])*")(?=-\s*)/g, '$1\n')
+  // yaml/json object close jammed: }key: or ]key:
+  next = next.replace(/([}\]])(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
+
+  return next
+}
+
 function ensureCodeChild(pre: HTMLElement): HTMLElement {
   const existing = pre.querySelector(':scope > code')
   if (existing) return existing as HTMLElement
   const code = document.createElement('code')
-  code.textContent = pre.textContent || ''
+  code.textContent = codeElementToPlainText(pre)
   pre.replaceChildren(code)
   return code
 }
 
 function paintCodeElement(code: HTMLElement, lang: string) {
-  const source = code.textContent || ''
+  const source = restoreCollapsedCodeLines(codeElementToPlainText(code), lang)
   code.innerHTML = highlightCode(source, lang)
   code.classList.add('hljs', `language-${lang}`)
   code.setAttribute('data-lang', lang)
@@ -154,7 +194,7 @@ export function plainifyCodeBlocksInElement(root: ParentNode) {
     .forEach((node) => {
       const pre = node as HTMLElement
       const lang = detectLangFromEl(pre)
-      const text = pre.textContent || ''
+      const text = restoreCollapsedCodeLines(codeElementToPlainText(pre), lang)
       const code = document.createElement('code')
       code.className = `language-${lang}`
       code.setAttribute('data-lang', lang)
@@ -168,7 +208,7 @@ export function plainifyCodeBlocksInElement(root: ParentNode) {
     const code = node as HTMLElement
     if (code.closest('pre')) return
     const lang = detectLangFromEl(code)
-    const text = code.textContent || ''
+    const text = restoreCollapsedCodeLines(codeElementToPlainText(code), lang)
     code.replaceChildren(document.createTextNode(text))
     code.className = `notebook-code language-${lang}`
     code.setAttribute('data-lang', lang)

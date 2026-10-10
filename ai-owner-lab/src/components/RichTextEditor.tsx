@@ -757,10 +757,16 @@ export function RichTextEditor({
               return
             }
             e.preventDefault()
-            const text = e.clipboardData.getData('text/plain')
+            const inCode = selectionInsideCode(editorRef.current)
+            if (inCode) prepareCodeForEditing()
+            const text = (e.clipboardData.getData('text/plain') || '').replace(
+              /\r\n?/g,
+              '\n',
+            )
             runCommand('insertText', text)
             emitChange()
             captureSelection()
+            if (!selectionInsideCode(editorRef.current)) paintCodeColors()
           }}
         />
       </div>
