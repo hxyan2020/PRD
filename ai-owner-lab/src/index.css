@@ -2845,30 +2845,66 @@ button.notebook-category-badge.on {
 .notebook-category-picker {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .notebook-category-option {
   display: inline-flex;
+  flex-direction: row;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.65rem;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.28rem 0.7rem 0.28rem 0.55rem;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #fff;
-  font-size: 0.88rem;
+  color: var(--ink);
+  font-size: 0.84rem;
   font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
   cursor: pointer;
+  user-select: none;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.notebook-category-option:hover {
+  border-color: var(--cat-border, rgba(13, 148, 136, 0.4));
+  background: var(--cat-soft, rgba(13, 148, 136, 0.08));
 }
 
 .notebook-category-option.on {
-  border-color: var(--cat-border, rgba(13, 148, 136, 0.5));
-  background: var(--cat-soft, rgba(13, 148, 136, 0.12));
+  border-color: var(--cat-border, rgba(13, 148, 136, 0.55));
+  background: var(--cat-soft, rgba(13, 148, 136, 0.16));
   color: var(--cat-text, var(--teal-deep));
+  box-shadow: inset 0 0 0 1px var(--cat-border, rgba(13, 148, 136, 0.25));
 }
 
+.notebook-category-option .category-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+/* Keep native checkbox for a11y; chip selected state carries the visual. */
 .notebook-category-option input {
-  margin: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.notebook-category-option:focus-within {
+  outline: 2px solid rgba(13, 148, 136, 0.4);
+  outline-offset: 2px;
 }
 
 .notebook-composer {
@@ -3531,12 +3567,27 @@ button.notebook-category-badge.on {
   gap: 0.75rem;
 }
 
-.notebook-edit-form label {
+/* Field labels only — do not stack category picker chips. */
+.notebook-edit-form > label,
+.notebook-edit-form .notebook-field > label:not(.notebook-category-option) {
   display: grid;
   gap: 0.35rem;
   font-weight: 700;
   font-size: 0.86rem;
   color: var(--ink);
+}
+
+.notebook-edit-form .notebook-category-option {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 650;
+  font-size: 0.84rem;
+  color: var(--ink);
+}
+
+.notebook-edit-form .notebook-category-option.on {
+  color: var(--cat-text, var(--teal-deep));
 }
 
 .notebook-edit-form textarea {

@@ -162,9 +162,10 @@ function CategoryPicker({
               type="checkbox"
               checked={checked}
               onChange={() => onChange(toggleId(selectedIds, cat.id))}
+              aria-label={cat.name}
             />
             <span className="category-dot" aria-hidden="true" />
-            <span>{cat.name}</span>
+            <span className="notebook-category-option-name">{cat.name}</span>
           </label>
         )
       })}
