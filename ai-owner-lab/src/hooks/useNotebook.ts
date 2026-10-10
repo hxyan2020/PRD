@@ -23,30 +23,40 @@ export interface NotebookEntry {
   model?: string
 }
 
+export interface TrashedNotebookEntry extends NotebookEntry {
+  deletedAt: string
+}
+
 export function useNotebook() {
   const [entries, setEntries] = useState<NotebookEntry[]>(() => notebookStore.get())
+  const [trash, setTrash] = useState<TrashedNotebookEntry[]>(() => notebookStore.getTrash())
   const [categories, setCategories] = useState<NotebookCategory[]>(() =>
     notebookStore.getCategories(),
   )
 
   useEffect(() => {
     const unsubEntries = notebookStore.subscribe(setEntries)
+    const unsubTrash = notebookStore.subscribeTrash(setTrash)
     const unsubCategories = notebookStore.subscribeCategories(setCategories)
     return () => {
       unsubEntries()
+      unsubTrash()
       unsubCategories()
     }
   }, [])
 
   return {
     entries,
+    trash,
     categories,
     count: entries.length,
+    trashCount: trash.length,
     addClip: notebookStore.addClip,
     addExplanation: notebookStore.addExplanation,
     addNote: notebookStore.addNote,
     updateEntry: notebookStore.update,
     removeEntry: notebookStore.remove,
+    restoreEntry: notebookStore.restore,
     addCategory: notebookStore.addCategory,
     renameCategory: notebookStore.renameCategory,
     removeCategory: notebookStore.removeCategory,

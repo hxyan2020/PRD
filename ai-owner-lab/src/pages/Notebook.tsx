@@ -6,6 +6,7 @@ import {
   useNotebook,
   type NotebookCategory,
   type NotebookEntry,
+  type TrashedNotebookEntry,
 } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
 import type { UiKey } from '../i18n/ui'
@@ -153,15 +154,19 @@ function CategoryPicker({
 export function Notebook() {
   const {
     entries,
+    trash,
     categories,
     count,
+    trashCount,
     addNote,
     updateEntry,
     removeEntry,
+    restoreEntry,
     addCategory,
     removeCategory,
   } = useNotebook()
   const { lang, t } = useLanguage()
+  const [view, setView] = useState<'notes' | 'dustbin'>('notes')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
@@ -175,6 +180,7 @@ export function Notebook() {
   const [query, setQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
   const [newCategoryName, setNewCategoryName] = useState('')
+  const [recoverToast, setRecoverToast] = useState(false)
 
   const categoryMap = useMemo(() => {
     const map = new Map<string, NotebookCategory>()
@@ -186,6 +192,17 @@ export function Notebook() {
     const filtered = filterEntries(entries, query, categoryFilter, categories)
     return sortEntries(filtered, sort, lang)
   }, [entries, query, categoryFilter, categories, sort, lang])
+
+  const visibleTrash = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    let list = trash
+    if (q) {
+      list = list.filter((entry) => entrySearchText(entry, categories).includes(q))
+    }
+    return [...list].sort(
+      (a, b) => new Date(b.deletedAt).getTime() - new Date(a.deletedAt).getTime(),
+    )
+  }, [trash, query, categories])
 
   function changeSort(next: NotebookSort) {
     setSort(next)
@@ -258,22 +275,68 @@ export function Notebook() {
     setDraftCategoryIds((ids) => ids.filter((id) => id !== cat.id))
   }
 
+  function moveToDustbin(id: string) {
+    removeEntry(id)
+    if (editingId === id) cancelEdit()
+  }
+
+  function recoverFromDustbin(entry: TrashedNotebookEntry) {
+    const restored = restoreEntry(entry.id)
+    if (!restored) return
+    setRecoverToast(true)
+    window.setTimeout(() => setRecoverToast(false), 2200)
+    setView('notes')
+  }
+
   const canCreate = !isBlankHtml(newNote)
-  const filtering = Boolean(query.trim()) || categoryFilter !== 'all'
+  const filtering =
+    view === 'notes'
+      ? Boolean(query.trim()) || categoryFilter !== 'all'
+      : Boolean(query.trim())
 
   return (
     <div className="page">
       <header className="page-header">
         <p className="eyebrow">{t('notebookEyebrow')}</p>
-        <h1>{t('notebookTitle')}</h1>
-        <p className="section-lede">{t('notebookLede')}</p>
+        <h1>{view === 'dustbin' ? t('dustbinTitle') : t('notebookTitle')}</h1>
+        <p className="section-lede">
+          {view === 'dustbin' ? t('dustbinLede') : t('notebookLede')}
+        </p>
+        <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'notes'}
+            className={`notebook-view-tab${view === 'notes' ? ' on' : ''}`}
+            onClick={() => setView('notes')}
+          >
+            <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-notes" />
+            {t('viewNotes')}
+            <span className="notebook-view-count">{count}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'dustbin'}
+            className={`notebook-view-tab${view === 'dustbin' ? ' on' : ''}`}
+            onClick={() => setView('dustbin')}
+          >
+            <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-dustbin" />
+            {t('dustbin')}
+            <span className="notebook-view-count">{trashCount}</span>
+          </button>
+        </div>
         <div className="notebook-toolbar">
           <p className="notebook-count">
-            {filtering && count > 0
-              ? t('searchShowing', { shown: visibleEntries.length, total: count })
-              : `${count} ${count === 1 ? t('note') : t('notes')}`}
+            {view === 'dustbin'
+              ? filtering && trashCount > 0
+                ? t('searchShowing', { shown: visibleTrash.length, total: trashCount })
+                : t('dustbinCount', { n: trashCount })
+              : filtering && count > 0
+                ? t('searchShowing', { shown: visibleEntries.length, total: count })
+                : `${count} ${count === 1 ? t('note') : t('notes')}`}
           </p>
-          {count > 0 ? (
+          {(view === 'notes' ? count > 0 : trashCount > 0) ? (
             <div className="notebook-toolbar-controls">
               <label className="notebook-search">
                 <span className="sr-only">{t('searchNotes')}</span>
@@ -285,23 +348,88 @@ export function Notebook() {
                   aria-label={t('searchNotes')}
                 />
               </label>
-              <label className="notebook-sort">
-                <span>{t('sortNotes')}</span>
-                <select
-                  value={sort}
-                  onChange={(e) => changeSort(e.target.value as NotebookSort)}
-                  aria-label={t('sortNotes')}
-                >
-                  <option value="created">{t('sortByCreated')}</option>
-                  <option value="edited">{t('sortByEdited')}</option>
-                  <option value="alpha">{t('sortByAlpha')}</option>
-                </select>
-              </label>
+              {view === 'notes' ? (
+                <label className="notebook-sort">
+                  <span>{t('sortNotes')}</span>
+                  <select
+                    value={sort}
+                    onChange={(e) => changeSort(e.target.value as NotebookSort)}
+                    aria-label={t('sortNotes')}
+                  >
+                    <option value="created">{t('sortByCreated')}</option>
+                    <option value="edited">{t('sortByEdited')}</option>
+                    <option value="alpha">{t('sortByAlpha')}</option>
+                  </select>
+                </label>
+              ) : null}
             </div>
           ) : null}
         </div>
       </header>
 
+      {recoverToast ? (
+        <p className="notebook-toast" role="status">
+          {t('recoveredToNotebook')}
+        </p>
+      ) : null}
+
+      {view === 'dustbin' ? (
+        trashCount === 0 ? (
+          <div className="callout dustbin-empty">
+            <h2>{t('dustbinEmpty')}</h2>
+            <p>{t('dustbinEmptyBody')}</p>
+          </div>
+        ) : visibleTrash.length === 0 ? (
+          <div className="callout">
+            <h2>{t('searchNoResults')}</h2>
+            <p>{t('searchNotesPlaceholder')}</p>
+          </div>
+        ) : (
+          <ol className="notebook-timeline dustbin-timeline">
+            {visibleTrash.map((entry) => {
+              const entryCategories = (entry.categoryIds ?? [])
+                .map((id) => categoryMap.get(id))
+                .filter((c): c is NotebookCategory => Boolean(c))
+              return (
+                <li key={entry.id} className={`notebook-entry ${entry.type} dustbin-entry`}>
+                  <div className="notebook-meta">
+                    <time dateTime={entry.deletedAt}>
+                      {t('deletedAt')} {formatTimestamp(entry.deletedAt, lang)}
+                    </time>
+                    <span className="notebook-type">{typeLabel(entry.type, t)}</span>
+                    {entryCategories.length
+                      ? entryCategories.map((cat) => (
+                          <span key={cat.id} className="notebook-category-badge">
+                            {cat.name}
+                          </span>
+                        ))
+                      : null}
+                  </div>
+                  {entry.title ? <h3 className="notebook-entry-title">{entry.title}</h3> : null}
+                  <NoteBody html={entry.selectedText} className="notebook-quote" />
+                  {entry.explanation ? (
+                    <div className="notebook-explanation">
+                      {entry.explanation.split(/\n\n+/).map((block, index) => (
+                        <p key={`${entry.id}-b-${index}`}>{block.replace(/\*\*/g, '')}</p>
+                      ))}
+                    </div>
+                  ) : null}
+                  <div className="notebook-actions">
+                    <button
+                      type="button"
+                      className="btn primary"
+                      onClick={() => recoverFromDustbin(entry)}
+                    >
+                      {t('recoverNote')}
+                    </button>
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        )
+      ) : (
+        <>
       <section className="notebook-categories" aria-label={t('manageCategories')}>
         <div className="notebook-composer-head">
           <h2>{t('categories')}</h2>
@@ -581,8 +709,12 @@ export function Notebook() {
                       <button type="button" className="btn ghost" onClick={() => startEdit(entry)}>
                         {t('edit')}
                       </button>
-                      <button type="button" className="btn ghost" onClick={() => removeEntry(entry.id)}>
-                        {t('delete')}
+                      <button
+                        type="button"
+                        className="btn ghost"
+                        onClick={() => moveToDustbin(entry.id)}
+                      >
+                        {t('moveToDustbin')}
                       </button>
                     </div>
                   </>
@@ -591,6 +723,8 @@ export function Notebook() {
             )
           })}
         </ol>
+      )}
+        </>
       )}
 
     </div>

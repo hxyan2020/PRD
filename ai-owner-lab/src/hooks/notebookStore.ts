@@ -1,12 +1,15 @@
-import type { NotebookCategory, NotebookEntry } from './useNotebook'
+import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
 const STORAGE_KEY = 'ownlab-notebook-v1'
+const TRASH_STORAGE_KEY = 'ownlab-notebook-trash-v1'
 const CATEGORY_STORAGE_KEY = 'ownlab-notebook-categories-v1'
 
 type EntryListener = (entries: NotebookEntry[]) => void
+type TrashListener = (trash: TrashedNotebookEntry[]) => void
 type CategoryListener = (categories: NotebookCategory[]) => void
 
 const entryListeners = new Set<EntryListener>()
+const trashListeners = new Set<TrashListener>()
 const categoryListeners = new Set<CategoryListener>()
 
 function read(): NotebookEntry[] {
@@ -29,6 +32,34 @@ function write(entries: NotebookEntry[]) {
   )
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
   entryListeners.forEach((listener) => listener(sorted))
+}
+
+function readTrash(): TrashedNotebookEntry[] {
+  try {
+    const raw = localStorage.getItem(TRASH_STORAGE_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as TrashedNotebookEntry[]
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .filter(
+        (e) =>
+          e &&
+          typeof e.id === 'string' &&
+          typeof e.selectedText === 'string' &&
+          typeof e.deletedAt === 'string',
+      )
+      .sort((a, b) => new Date(b.deletedAt).getTime() - new Date(a.deletedAt).getTime())
+  } catch {
+    return []
+  }
+}
+
+function writeTrash(trash: TrashedNotebookEntry[]) {
+  const sorted = [...trash].sort(
+    (a, b) => new Date(b.deletedAt).getTime() - new Date(a.deletedAt).getTime(),
+  )
+  localStorage.setItem(TRASH_STORAGE_KEY, JSON.stringify(sorted))
+  trashListeners.forEach((listener) => listener(sorted))
 }
 
 function readCategories(): NotebookCategory[] {
@@ -65,11 +96,18 @@ function normalizeCategoryIds(ids: string[] | undefined): string[] | undefined {
 
 export const notebookStore = {
   get: read,
+  getTrash: readTrash,
   getCategories: readCategories,
   subscribe(listener: EntryListener) {
     entryListeners.add(listener)
     return () => {
       entryListeners.delete(listener)
+    }
+  },
+  subscribeTrash(listener: TrashListener) {
+    trashListeners.add(listener)
+    return () => {
+      trashListeners.delete(listener)
     }
   },
   subscribeCategories(listener: CategoryListener) {
@@ -182,11 +220,52 @@ export const notebookStore = {
     return updated
   },
   remove(id: string) {
-    write(read().filter((e) => e.id !== id))
+    const entries = read()
+    const entry = entries.find((e) => e.id === id)
+    if (!entry) return null
+    const deletedAt = new Date().toISOString()
+    const trashed: TrashedNotebookEntry = { ...entry, deletedAt }
+    // Keep forever — never auto-purge. Replace any prior trash copy of same id.
+    writeTrash([trashed, ...readTrash().filter((e) => e.id !== id)])
+    write(entries.filter((e) => e.id !== id))
+    return trashed
+  },
+  restore(id: string) {
+    const trash = readTrash()
+    const index = trash.findIndex((e) => e.id === id)
+    if (index < 0) return null
+    const trashed = trash[index]
+    const restored: NotebookEntry = {
+      id: trashed.id,
+      createdAt: trashed.createdAt,
+      updatedAt: new Date().toISOString(),
+      type: trashed.type,
+      title: trashed.title,
+      selectedText: trashed.selectedText,
+      explanation: trashed.explanation,
+      categoryIds: trashed.categoryIds,
+      sourceLabel: trashed.sourceLabel,
+      sourcePath: trashed.sourcePath,
+      model: trashed.model,
+    }
+    writeTrash(trash.filter((e) => e.id !== id))
+    // If an active note somehow shares the id, keep the restored content under a new id.
+    const active = read()
+    if (active.some((e) => e.id === restored.id)) {
+      restored.id = uid('nb')
+    }
+    write([restored, ...active])
+    return restored
   },
   clear() {
+    // Soft-clear: move every note into the dustbin so nothing is lost.
+    const now = new Date().toISOString()
+    const moving = read().map((entry) => ({ ...entry, deletedAt: now }))
+    if (moving.length) {
+      const keep = readTrash().filter((t) => !moving.some((m) => m.id === t.id))
+      writeTrash([...moving, ...keep])
+    }
     write([])
-    writeCategories([])
   },
   addCategory(name: string) {
     const trimmed = name.trim()
@@ -243,6 +322,10 @@ if (typeof window !== 'undefined') {
     if (event.key === STORAGE_KEY) {
       const entries = read()
       entryListeners.forEach((listener) => listener(entries))
+    }
+    if (event.key === TRASH_STORAGE_KEY) {
+      const trash = readTrash()
+      trashListeners.forEach((listener) => listener(trash))
     }
     if (event.key === CATEGORY_STORAGE_KEY) {
       const categories = readCategories()
