@@ -37,7 +37,14 @@ export function Layout() {
       <div className="atmosphere" aria-hidden="true" />
       <header className="topbar">
         <NavLink to="/" className="brand">
-          <span className="brand-mark" aria-hidden="true" />
+          <img
+            className="brand-mark"
+            src={`${import.meta.env.BASE_URL}logo-mark.png`}
+            alt=""
+            width={36}
+            height={36}
+            aria-hidden="true"
+          />
           <span className="brand-text">
             OWNLAB
             <small>{t('brandSub')}</small>
