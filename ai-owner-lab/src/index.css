@@ -2385,6 +2385,11 @@ body.menu-open {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v6M14 11v6'/%3E%3C/svg%3E");
 }
 
+.notebook-view-icon-tree {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v6'/%3E%3Cpath d='M6 21V12h12v9'/%3E%3Cpath d='M6 12V9h12v3'/%3E%3Ccircle cx='12' cy='3' r='1.5' fill='black' stroke='none'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v6'/%3E%3Cpath d='M6 21V12h12v9'/%3E%3Cpath d='M6 12V9h12v3'/%3E%3Ccircle cx='12' cy='3' r='1.5' fill='black' stroke='none'/%3E%3C/svg%3E");
+}
+
 .dustbin-entry {
   opacity: 0.96;
   border-style: dashed;
@@ -2469,76 +2474,19 @@ body.menu-open {
 
 .notebook-categories {
   margin: 0 0 1.25rem;
-  padding: 0.65rem 1rem;
+  padding: 1.1rem 1.15rem;
   background: rgba(245, 248, 250, 0.75);
   border: 1px solid var(--line);
   border-left: 4px solid var(--signal);
 }
 
-.notebook-categories.open {
-  padding: 0.85rem 1.15rem 1.1rem;
+.notebook-categories .notebook-composer-head {
+  margin-bottom: 0.75rem;
 }
 
-.notebook-categories-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
+.notebook-categories .notebook-composer-head h2 {
   margin: 0;
-  padding: 0.35rem 0.15rem;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  font-weight: 800;
   font-size: 1.05rem;
-  text-align: left;
-  cursor: pointer;
-}
-
-.notebook-categories-toggle:hover {
-  color: var(--teal-deep);
-}
-
-.notebook-categories-toggle:focus-visible {
-  outline: 2px solid rgba(13, 148, 136, 0.4);
-  outline-offset: 2px;
-  border-radius: 0.25rem;
-}
-
-.notebook-categories-chevron {
-  width: 0.95rem;
-  flex-shrink: 0;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.notebook-categories-title {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.notebook-categories-count {
-  min-width: 1.4rem;
-  padding: 0.05rem 0.45rem;
-  border-radius: 999px;
-  background: rgba(15, 76, 129, 0.12);
-  color: var(--signal);
-  font-size: 0.75rem;
-  font-weight: 800;
-  text-align: center;
-}
-
-.notebook-categories-hint {
-  margin: 0.1rem 0 0.15rem 1.45rem;
-  color: var(--ink-soft);
-  font-size: 0.86rem;
-  line-height: 1.4;
-}
-
-.notebook-categories-panel {
-  margin-top: 0.65rem;
 }
 
 .note-tree {
@@ -2547,6 +2495,17 @@ body.menu-open {
   background: rgba(245, 248, 250, 0.75);
   border: 1px solid var(--line);
   border-left: 4px solid var(--teal);
+}
+
+.note-tree.embedded {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.note-tree-empty-page {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
 .note-tree-head h2 {

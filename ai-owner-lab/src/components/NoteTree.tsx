@@ -69,6 +69,8 @@ type Props = {
   selectedNoteId: string | null
   onSelectNote: (entry: NotebookEntry) => void
   t: (key: UiKey, vars?: Record<string, string | number>) => string
+  /** When true, drop outer card chrome (used inside the Tree tab). */
+  embedded?: boolean
 }
 
 export function NoteTree({
@@ -78,6 +80,7 @@ export function NoteTree({
   selectedNoteId,
   onSelectNote,
   t,
+  embedded = false,
 }: Props) {
   const tree = useMemo(
     () => buildNoteTree(categories, entries, lang, t('uncategorized')),
@@ -91,10 +94,19 @@ export function NoteTree({
     setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
-  if (!entries.length && !categories.length) return null
+  if (!entries.length && !categories.length) {
+    return (
+      <div className={`note-tree${embedded ? ' embedded' : ''}`} aria-label={t('noteTree')}>
+        <p className="note-tree-empty-page">{t('noteTreeEmpty')}</p>
+      </div>
+    )
+  }
 
   return (
-    <section className="note-tree" aria-label={t('noteTree')}>
+    <section
+      className={`note-tree${embedded ? ' embedded' : ''}`}
+      aria-label={t('noteTree')}
+    >
       <div className="note-tree-head">
         <h2>{t('noteTree')}</h2>
         <p className="note-tree-hint">{t('noteTreeHint')}</p>

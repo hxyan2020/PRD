@@ -21,15 +21,6 @@ type CategoryFilterSelection = string[]
 const UNCATEGORIZED_FILTER = '__uncategorized__'
 
 const SORT_STORAGE_KEY = 'ownlab-notebook-sort'
-const CATEGORIES_OPEN_KEY = 'ownlab-notebook-categories-open'
-
-function readCategoriesOpen(): boolean {
-  try {
-    return localStorage.getItem(CATEGORIES_OPEN_KEY) === '1'
-  } catch {
-    return false
-  }
-}
 
 function typeLabel(
   type: NotebookEntry['type'],
@@ -198,7 +189,7 @@ export function Notebook() {
     removeCategory,
   } = useNotebook()
   const { lang, t } = useLanguage()
-  const [view, setView] = useState<'notes' | 'dustbin'>('notes')
+  const [view, setView] = useState<'notes' | 'tree' | 'dustbin'>('notes')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
@@ -213,7 +204,6 @@ export function Notebook() {
   const [query, setQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
   const [newCategoryName, setNewCategoryName] = useState('')
-  const [categoriesOpen, setCategoriesOpen] = useState(() => readCategoriesOpen())
   const [recoverToast, setRecoverToast] = useState(false)
   const [storageToast, setStorageToast] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
@@ -272,18 +262,6 @@ export function Notebook() {
     } catch {
       /* ignore */
     }
-  }
-
-  function toggleCategoriesOpen() {
-    setCategoriesOpen((open) => {
-      const next = !open
-      try {
-        localStorage.setItem(CATEGORIES_OPEN_KEY, next ? '1' : '0')
-      } catch {
-        /* ignore */
-      }
-      return next
-    })
   }
 
   function startEdit(entry: NotebookEntry) {
@@ -394,12 +372,19 @@ export function Notebook() {
   }
 
   function openNoteFromTree(entry: NotebookEntry) {
-    setView('notes')
+    setView('tree')
     setCategoryFilter([])
     setQuery('')
     setOpenedNoteId(entry.id)
     setTreeFocusId(entry.id)
-    setComposerOpen(false)
+    setEditingId(null)
+  }
+
+  function editOpenedNote(entry: NotebookEntry) {
+    setView('notes')
+    setOpenedNoteId(null)
+    startEdit(entry)
+    setTreeFocusId(entry.id)
   }
 
   function closeOpenedNote() {
@@ -444,9 +429,19 @@ export function Notebook() {
     <div className="page">
       <header className="page-header">
         <p className="eyebrow">{t('notebookEyebrow')}</p>
-        <h1>{view === 'dustbin' ? t('dustbinTitle') : t('notebookTitle')}</h1>
+        <h1>
+          {view === 'dustbin'
+            ? t('dustbinTitle')
+            : view === 'tree'
+              ? t('treeTitle')
+              : t('notebookTitle')}
+        </h1>
         <p className="section-lede">
-          {view === 'dustbin' ? t('dustbinLede') : t('notebookLede')}
+          {view === 'dustbin'
+            ? t('dustbinLede')
+            : view === 'tree'
+              ? t('treeLede')
+              : t('notebookLede')}
         </p>
         <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
           <button
@@ -463,6 +458,17 @@ export function Notebook() {
           <button
             type="button"
             role="tab"
+            aria-selected={view === 'tree'}
+            className={`notebook-view-tab${view === 'tree' ? ' on' : ''}`}
+            onClick={() => setView('tree')}
+          >
+            <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-tree" />
+            {t('viewTree')}
+            <span className="notebook-view-count">{categories.length}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
             aria-selected={view === 'dustbin'}
             className={`notebook-view-tab${view === 'dustbin' ? ' on' : ''}`}
             onClick={() => setView('dustbin')}
@@ -472,45 +478,47 @@ export function Notebook() {
             <span className="notebook-view-count">{trashCount}</span>
           </button>
         </div>
-        <div className="notebook-toolbar">
-          <p className="notebook-count">
-            {view === 'dustbin'
-              ? filtering && trashCount > 0
-                ? t('searchShowing', { shown: visibleTrash.length, total: trashCount })
-                : t('dustbinCount', { n: trashCount })
-              : filtering && count > 0
-                ? t('searchShowing', { shown: visibleEntries.length, total: count })
-                : `${count} ${count === 1 ? t('note') : t('notes')}`}
-          </p>
-          {(view === 'notes' ? count > 0 : trashCount > 0) ? (
-            <div className="notebook-toolbar-controls">
-              <label className="notebook-search">
-                <span className="sr-only">{t('searchNotes')}</span>
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder={t('searchNotesPlaceholder')}
-                  aria-label={t('searchNotes')}
-                />
-              </label>
-              {view === 'notes' ? (
-                <label className="notebook-sort">
-                  <span>{t('sortNotes')}</span>
-                  <select
-                    value={sort}
-                    onChange={(e) => changeSort(e.target.value as NotebookSort)}
-                    aria-label={t('sortNotes')}
-                  >
-                    <option value="created">{t('sortByCreated')}</option>
-                    <option value="edited">{t('sortByEdited')}</option>
-                    <option value="alpha">{t('sortByAlpha')}</option>
-                  </select>
+        {view !== 'tree' ? (
+          <div className="notebook-toolbar">
+            <p className="notebook-count">
+              {view === 'dustbin'
+                ? filtering && trashCount > 0
+                  ? t('searchShowing', { shown: visibleTrash.length, total: trashCount })
+                  : t('dustbinCount', { n: trashCount })
+                : filtering && count > 0
+                  ? t('searchShowing', { shown: visibleEntries.length, total: count })
+                  : `${count} ${count === 1 ? t('note') : t('notes')}`}
+            </p>
+            {(view === 'notes' ? count > 0 : trashCount > 0) ? (
+              <div className="notebook-toolbar-controls">
+                <label className="notebook-search">
+                  <span className="sr-only">{t('searchNotes')}</span>
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder={t('searchNotesPlaceholder')}
+                    aria-label={t('searchNotes')}
+                  />
                 </label>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
+                {view === 'notes' ? (
+                  <label className="notebook-sort">
+                    <span>{t('sortNotes')}</span>
+                    <select
+                      value={sort}
+                      onChange={(e) => changeSort(e.target.value as NotebookSort)}
+                      aria-label={t('sortNotes')}
+                    >
+                      <option value="created">{t('sortByCreated')}</option>
+                      <option value="edited">{t('sortByEdited')}</option>
+                      <option value="alpha">{t('sortByAlpha')}</option>
+                    </select>
+                  </label>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </header>
 
       {recoverToast ? (
@@ -588,33 +596,12 @@ export function Notebook() {
             })}
           </ol>
         )
-      ) : (
+      ) : view === 'tree' ? (
         <>
-      <section
-        className={`notebook-categories${categoriesOpen ? ' open' : ' folded'}`}
-        aria-label={t('manageCategories')}
-      >
-        <button
-          type="button"
-          className="notebook-categories-toggle"
-          aria-expanded={categoriesOpen}
-          aria-controls="notebook-categories-panel"
-          onClick={toggleCategoriesOpen}
-        >
-          <span className="notebook-categories-chevron" aria-hidden="true">
-            {categoriesOpen ? '▾' : '▸'}
-          </span>
-          <span className="notebook-categories-title">{t('categories')}</span>
-          <span className="notebook-categories-count">{categories.length}</span>
-          <span className="sr-only">
-            {categoriesOpen ? t('collapseCategories') : t('expandCategories')}
-          </span>
-        </button>
-        {!categoriesOpen ? (
-          <p className="notebook-categories-hint">{t('categoriesFoldHint')}</p>
-        ) : null}
-        {categoriesOpen ? (
-          <div id="notebook-categories-panel" className="notebook-categories-panel">
+          <section className="notebook-categories open" aria-label={t('manageCategories')}>
+            <div className="notebook-composer-head">
+              <h2>{t('manageCategories')}</h2>
+            </div>
             <div className="notebook-category-create">
               <input
                 type="text"
@@ -660,10 +647,82 @@ export function Notebook() {
             ) : (
               <p className="notebook-category-empty">{t('noCategoriesYet')}</p>
             )}
-          </div>
-        ) : null}
-      </section>
+          </section>
 
+          <NoteTree
+            categories={categories}
+            entries={entries}
+            lang={lang}
+            selectedNoteId={openedNoteId}
+            onSelectNote={openNoteFromTree}
+            t={t}
+            embedded
+          />
+
+          {openedNote ? (
+            <section
+              className="note-tree-reader"
+              aria-label={t('noteTreeOpen')}
+              data-opened-note-id={openedNote.id}
+            >
+              <div className="note-tree-reader-head">
+                <h2>
+                  {openedNote.title?.trim() ||
+                    htmlToPlainText(openedNote.selectedText).slice(0, 80) ||
+                    t('freeNote')}
+                </h2>
+                <button type="button" className="btn ghost" onClick={closeOpenedNote}>
+                  {t('closeNote')}
+                </button>
+              </div>
+              <div className="note-tree-reader-meta">
+                <time dateTime={openedNote.createdAt}>
+                  {formatTimestamp(openedNote.createdAt, lang)}
+                </time>
+                <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
+                {(openedNote.categoryIds ?? [])
+                  .map((id) => categoryMap.get(id))
+                  .filter((c): c is NotebookCategory => Boolean(c))
+                  .map((cat) => (
+                    <span
+                      key={cat.id}
+                      className="notebook-category-badge"
+                      style={categoryColorStyle(cat.color) as CSSProperties}
+                    >
+                      <span className="category-dot" aria-hidden="true" />
+                      {cat.name}
+                    </span>
+                  ))}
+              </div>
+              <NoteBody html={openedNote.selectedText} className="notebook-quote" />
+              {openedNote.explanation ? (
+                <div className="notebook-explanation">
+                  {openedNote.explanation.split(/\n\n+/).map((block, index) => (
+                    <p key={`${openedNote.id}-open-${index}`}>{block.replace(/\*\*/g, '')}</p>
+                  ))}
+                </div>
+              ) : null}
+              <div className="notebook-actions">
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={() => editOpenedNote(openedNote)}
+                >
+                  {t('edit')}
+                </button>
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={() => moveToDustbin(openedNote.id)}
+                >
+                  {t('moveToDustbin')}
+                </button>
+              </div>
+            </section>
+          ) : null}
+        </>
+      ) : (
+        <>
       <section className="notebook-composer" aria-label={t('newNote')}>
         <div className="notebook-composer-head">
           <h2>{t('newNote')}</h2>
@@ -737,75 +796,6 @@ export function Notebook() {
           </div>
         ) : null}
       </section>
-
-      {count > 0 || categories.length > 0 ? (
-        <NoteTree
-          categories={categories}
-          entries={entries}
-          lang={lang}
-          selectedNoteId={openedNoteId}
-          onSelectNote={openNoteFromTree}
-          t={t}
-        />
-      ) : null}
-
-      {openedNote ? (
-        <section
-          className="note-tree-reader"
-          aria-label={t('noteTreeOpen')}
-          data-opened-note-id={openedNote.id}
-        >
-          <div className="note-tree-reader-head">
-            <h2>
-              {openedNote.title?.trim() ||
-                htmlToPlainText(openedNote.selectedText).slice(0, 80) ||
-                t('freeNote')}
-            </h2>
-            <button type="button" className="btn ghost" onClick={closeOpenedNote}>
-              {t('closeNote')}
-            </button>
-          </div>
-          <div className="note-tree-reader-meta">
-            <time dateTime={openedNote.createdAt}>
-              {formatTimestamp(openedNote.createdAt, lang)}
-            </time>
-            <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
-            {(openedNote.categoryIds ?? [])
-              .map((id) => categoryMap.get(id))
-              .filter((c): c is NotebookCategory => Boolean(c))
-              .map((cat) => (
-                <span
-                  key={cat.id}
-                  className="notebook-category-badge"
-                  style={categoryColorStyle(cat.color) as CSSProperties}
-                >
-                  <span className="category-dot" aria-hidden="true" />
-                  {cat.name}
-                </span>
-              ))}
-          </div>
-          <NoteBody html={openedNote.selectedText} className="notebook-quote" />
-          {openedNote.explanation ? (
-            <div className="notebook-explanation">
-              {openedNote.explanation.split(/\n\n+/).map((block, index) => (
-                <p key={`${openedNote.id}-open-${index}`}>{block.replace(/\*\*/g, '')}</p>
-              ))}
-            </div>
-          ) : null}
-          <div className="notebook-actions">
-            <button type="button" className="btn ghost" onClick={() => startEdit(openedNote)}>
-              {t('edit')}
-            </button>
-            <button
-              type="button"
-              className="btn ghost"
-              onClick={() => moveToDustbin(openedNote.id)}
-            >
-              {t('moveToDustbin')}
-            </button>
-          </div>
-        </section>
-      ) : null}
 
       {count > 0 || categories.length > 0 ? (
         <section className="notebook-filter-bar" aria-label={t('filterByCategory')}>
