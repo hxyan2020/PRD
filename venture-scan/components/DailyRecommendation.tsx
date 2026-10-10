@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
+import { ProfileChatbot } from "@/components/ProfileChatbot";
 import { fetchDaily } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
@@ -15,6 +16,7 @@ import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
 type State =
   | { status: "loading" }
   | { status: "need-profile" }
+  | { status: "edit-profile" }
   | { status: "error"; message: string }
   | {
       status: "ready";
@@ -27,38 +29,34 @@ export function DailyRecommendation() {
   const { t, locale } = useI18n();
   const [state, setState] = useState<State>({ status: "loading" });
 
-  useEffect(() => {
+  const loadDaily = useCallback(async () => {
     const profile = loadProfileFromStorage();
     if (!profile || !isProfileReady(profile)) {
       setState({ status: "need-profile" });
       return;
     }
 
-    let cancelled = false;
-    void (async () => {
-      try {
-        const daily = await fetchDaily(profile);
-        if (!daily) throw new Error("Could not load today's pick");
-        if (cancelled) return;
-        setState({
-          status: "ready",
-          day: daily.day,
-          idea: daily.idea,
-          match: daily.match,
-        });
-      } catch (e) {
-        if (cancelled) return;
-        setState({
-          status: "error",
-          message: e instanceof Error ? e.message : "Could not load today's pick",
-        });
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
+    setState({ status: "loading" });
+    try {
+      const daily = await fetchDaily(profile);
+      if (!daily) throw new Error("Could not load today's pick");
+      setState({
+        status: "ready",
+        day: daily.day,
+        idea: daily.idea,
+        match: daily.match,
+      });
+    } catch (e) {
+      setState({
+        status: "error",
+        message: e instanceof Error ? e.message : "Could not load today's pick",
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    void loadDaily();
+  }, [loadDaily]);
 
   if (state.status === "loading") {
     return (
@@ -68,18 +66,13 @@ export function DailyRecommendation() {
     );
   }
 
-  if (state.status === "need-profile") {
+  if (state.status === "need-profile" || state.status === "edit-profile") {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-celadon">
-          {t("today.kicker")}
-        </p>
-        <h1 className="mt-3 font-display text-4xl text-foam">{t("today.needTitle")}</h1>
-        <p className="mt-4 text-sm leading-relaxed text-mist">{t("today.needBody")}</p>
-        <Link href="/match" className="btn-primary mt-8 inline-flex">
-          {t("today.openMatch")}
-        </Link>
-      </div>
+      <ProfileChatbot
+        onProfileSaved={() => {
+          void loadDaily();
+        }}
+      />
     );
   }
 
@@ -168,9 +161,13 @@ export function DailyRecommendation() {
           <Link href={`/ideas/${idea.slug}`} className="btn-ghost btn-block-mobile">
             {t("today.dossier")}
           </Link>
-          <Link href="/match" className="btn-ghost btn-block-mobile">
+          <button
+            type="button"
+            className="btn-ghost btn-block-mobile"
+            onClick={() => setState({ status: "edit-profile" })}
+          >
             {t("today.updateProfile")}
-          </Link>
+          </button>
           <Link href="/collection" className="btn-ghost btn-block-mobile">
             {t("today.collection")}
           </Link>

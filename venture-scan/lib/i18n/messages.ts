@@ -92,7 +92,7 @@ const en = {
   "ledger.body":
     "Each entry includes name, description, team, industry, sector, fundraising, website, socials, and a suggested go-forward play.",
   "ledger.sorted": " Sorted by your chatbot profile match score.",
-  "ledger.buildProfile": "Build match profile",
+  "ledger.buildProfile": "Build today's profile",
   "ledger.sortMatch": "Sort: match score",
   "ledger.sortRecent": "Sort: recent scan",
   "ledger.scan": "Run scan",
@@ -240,7 +240,7 @@ const en = {
     "browse and filter on the frontend; open any entry for the full dossier with brand/cover images extracted from related data sources, plus an idea chatbot that answers follow-ups and cites those desks on every reply.",
   "method.matchLabel": "Match",
   "method.match":
-    "a chatbot collects skills, major, current business, and interested domains, then scores every idea against that profile. If a reply drifts off the question, it gently steers you back before moving on.",
+    "on Today, a chatbot collects skills, major, current business, and interested domains, then scores every idea against that profile. If a reply drifts off the question, it gently steers you back before moving on.",
   "method.dailyLabel": "Daily pick",
   "method.daily":
     "each day we recommend your highest-matched idea and list where you matched, where the gap is, and how to close it.",

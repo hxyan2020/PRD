@@ -27,14 +27,9 @@ export function Hero({ count }: { count: number }) {
           <Link href="#ideas" className="btn-primary btn-block-mobile">
             {t("hero.browse", { count })}
           </Link>
-          <div className="grid grid-cols-2 gap-2.5 sm:contents">
-            <Link href="/today" className="btn-ghost btn-block-mobile">
-              {t("hero.today")}
-            </Link>
-            <Link href="/match" className="btn-ghost btn-block-mobile">
-              {t("hero.match")}
-            </Link>
-          </div>
+          <Link href="/today" className="btn-ghost btn-block-mobile">
+            {t("hero.today")}
+          </Link>
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-mist/80 sm:text-[11px] sm:tracking-[0.18em]">
             {t("hero.chips")}
           </span>

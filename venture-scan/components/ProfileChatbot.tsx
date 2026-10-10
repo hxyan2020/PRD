@@ -37,7 +37,12 @@ const STEP_DEFS: { id: ChatStepId; promptKey: MessageKey }[] = [
 
 type Ranked = { idea: StartupIdea; match: IdeaMatch };
 
-export function ProfileChatbot() {
+type ProfileChatbotProps = {
+  /** Called after a profile is newly completed (or rematch finishes) so Today can show the pick. */
+  onProfileSaved?: () => void;
+};
+
+export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
   const { t, locale } = useI18n();
   const [profile, setProfile] = useState<UserProfile>(() => emptyProfile());
   const [stepIndex, setStepIndex] = useState(0);
@@ -273,9 +278,22 @@ export function ProfileChatbot() {
             </form>
           ) : (
             <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
+              {onProfileSaved ? (
+                <button
+                  type="button"
+                  className="btn-primary btn-block-mobile"
+                  onClick={() => onProfileSaved()}
+                >
+                  {t("teaser.open")}
+                </button>
+              ) : (
+                <Link href="/today" className="btn-primary btn-block-mobile">
+                  {t("teaser.open")}
+                </Link>
+              )}
               <button
                 type="button"
-                className="btn-primary btn-block-mobile"
+                className="btn-ghost btn-block-mobile"
                 onClick={() => void runMatch(profile)}
               >
                 {ranking ? t("match.scoring") : t("match.rematch")}

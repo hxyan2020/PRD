@@ -130,7 +130,7 @@ export function IdeaExplorer({
         </div>
         <div className="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           {!hasMatches ? (
-            <Link href="/match" className="btn-primary btn-block-mobile shrink-0">
+            <Link href="/today" className="btn-primary btn-block-mobile shrink-0">
               {t("ledger.buildProfile")}
             </Link>
           ) : (

@@ -55,7 +55,7 @@ export function DailyTeaser() {
             )}
           </p>
         </div>
-        <Link href={ready ? "/today" : "/match"} className="btn-ghost btn-block-mobile shrink-0">
+        <Link href="/today" className="btn-ghost btn-block-mobile shrink-0">
           {ready ? t("teaser.open") : t("teaser.build")}
         </Link>
       </div>
