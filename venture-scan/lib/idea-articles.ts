@@ -47,12 +47,18 @@ export function ideaArticleManifestSize(): number {
 }
 
 /** Flat list of article citations for Q&A / chatbot. */
-export function articleCitationsForIdea(slug: string, limit = 3) {
+export function articleCitationsForIdea(
+  slug: string,
+  limit = 3,
+  t?: (key: "ideaChat.cite.articleDetail", vars?: Record<string, string | number>) => string,
+) {
   return articleCardsForIdea(slug, limit).map((a) => ({
     id: a.id,
     label: a.title,
     url: a.url,
-    detail: `${a.sourceName} · article image embedded`,
+    detail: t
+      ? t("ideaChat.cite.articleDetail", { source: a.sourceName })
+      : `${a.sourceName} · article image embedded`,
     kind: "wire" as const,
   }));
 }

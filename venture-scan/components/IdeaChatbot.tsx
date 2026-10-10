@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { PlatformLogo } from "@/components/PlatformLogo";
 import { withBase } from "@/lib/base-path";
 import {
-  IDEA_QA_SUGGESTIONS,
+  IDEA_QA_SUGGESTION_KEYS,
   answerIdeaQuestion,
   type IdeaQaCitation,
   type IdeaQaReply,
@@ -22,7 +22,7 @@ type ChatMessage = {
 };
 
 export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [ready, setReady] = useState(false);
@@ -38,23 +38,25 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
         citations: [
           {
             id: "ingest",
-            label: `VentureScan ingest · ${idea.source}`,
+            label: t("ideaChat.cite.ingest", { source: idea.source }),
             url: "/sources",
-            detail: `Last scanned ${new Date(idea.scannedAt).toISOString().replace(".000Z", "Z")}`,
+            detail: t("ideaChat.cite.lastScanned", {
+              date: new Date(idea.scannedAt).toISOString().replace(".000Z", "Z"),
+            }),
             kind: "primary",
           },
           {
             id: "official",
-            label: `${idea.name} website`,
+            label: t("ideaChat.cite.website", { name: idea.name }),
             url: idea.website,
-            detail: "Official company site",
+            detail: t("ideaChat.cite.officialSite"),
             kind: "official",
           },
         ],
       },
     ]);
     setReady(true);
-  }, [idea.id, idea.name, idea.source, idea.scannedAt, idea.website, t]);
+  }, [idea.id, idea.name, idea.source, idea.scannedAt, idea.website, t, locale]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -65,7 +67,7 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
     if (!q) return;
 
     const userMsg: ChatMessage = { id: `u-${Date.now()}`, role: "user", text: q };
-    const reply: IdeaQaReply = answerIdeaQuestion(idea, q);
+    const reply: IdeaQaReply = answerIdeaQuestion(idea, q, t);
     const botMsg: ChatMessage = {
       id: `b-${Date.now()}`,
       role: "bot",
@@ -98,16 +100,19 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
       </div>
 
       <div className="flex flex-wrap gap-2 border-b border-black/10 px-4 py-3 sm:px-5">
-        {IDEA_QA_SUGGESTIONS.map((prompt) => (
-          <button
-            key={prompt}
-            type="button"
-            className="rounded-full border border-black/12 bg-black/[0.04] px-3 py-1.5 text-left text-xs text-mist hover:border-celadon/40 hover:text-foam"
-            onClick={() => ask(prompt)}
-          >
-            {prompt}
-          </button>
-        ))}
+        {IDEA_QA_SUGGESTION_KEYS.map((key) => {
+          const prompt = t(key);
+          return (
+            <button
+              key={key}
+              type="button"
+              className="rounded-full border border-black/12 bg-black/[0.04] px-3 py-1.5 text-left text-xs text-mist hover:border-celadon/40 hover:text-foam"
+              onClick={() => ask(prompt)}
+            >
+              {prompt}
+            </button>
+          );
+        })}
       </div>
 
       <div className="max-h-[28rem] space-y-3 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5">
