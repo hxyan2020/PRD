@@ -29,10 +29,6 @@ export function getTextNodesInRange(range: Range): Text[] {
   return nodes
 }
 
-function textLength(node: Text): number {
-  return (node.nodeValue || '').replace(/\u200b/g, '').length
-}
-
 function isMeaningfulText(node: Text): boolean {
   return Boolean((node.nodeValue || '').replace(/\u200b/g, '').trim())
 }
