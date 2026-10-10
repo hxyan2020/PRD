@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "África",
+    "Asia": "Ásia",
+    "Asia-Pacific": "Ásia-Pacífico",
+    "Brazil": "Brasil",
+    "DACH": "DACH",
+    "Europe": "Europa",
+    "Francophone Europe / Africa": "Europa francófona / África",
+    "Global": "Global",
+    "Global / AI": "Global / IA",
+    "Global / North America": "Global / América do Norte",
+    "Global South": "Sul Global",
+    "Greater China": "Grande China",
+    "India": "Índia",
+    "Israel": "Israel",
+    "Korea": "Coreia",
+    "Latin America": "América Latina",
+    "MENA": "MENA",
+    "Nordics": "Nórdicos",
+    "Oceania": "Oceania",
+    "South Asia": "Ásia do Sul",
+    "Southern Cone": "Cone Sul",
+    "Türkiye / Eastern Europe": "Turquia / Europa Oriental",
+    "Vietnam": "Vietnã",
+    "West Africa": "África Ocidental"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "Wire global de notícias de startups e fundraising."
+    },
+    "crunchbase-news": {
+      "description": "Anúncios de rodadas e atividade de investidores."
+    },
+    "36kr": {
+      "description": "Cobertura em chinês de startups e hard-tech."
+    },
+    "krasia": {
+      "description": "Inteligência de startups do Sudeste e Leste Asiático."
+    },
+    "techinasia": {
+      "description": "Funding e produto de startups na Ásia-Pacífico."
+    },
+    "nikkei-asia": {
+      "description": "Cobertura de negócios e venture APAC da Nikkei."
+    },
+    "platum": {
+      "description": "Mesa coreana de startups e funding."
+    },
+    "yourstory": {
+      "description": "Histórias de empreendedorismo e funding focadas na Índia."
+    },
+    "startup-india": {
+      "description": "Registro governamental e sinais de reconhecimento para startups indianas.",
+      "notes": "Sincronização em lote a cada 48 h"
+    },
+    "sifted": {
+      "description": "Cobertura europeia de startups e deep-tech fundraising."
+    },
+    "eu-startups": {
+      "description": "Agregador pan-europeu de notícias de startups."
+    },
+    "les-echos-start": {
+      "description": "Mesa francófona de startups e scale-ups."
+    },
+    "gruenderszene": {
+      "description": "Cobertura em alemão de fundadores e funding."
+    },
+    "africarena": {
+      "description": "Reportagens de venture e ecossistema na África."
+    },
+    "wamda": {
+      "description": "Mesa MENA de empreendedorismo e funding."
+    },
+    "contxto": {
+      "description": "Cobertura LatAm de startups e venture capital."
+    },
+    "startupbase-br": {
+      "description": "Mapa, rankings e inteligência do ecossistema brasileiro.",
+      "notes": "Crawl do registro a cada 24 h"
+    },
+    "israel-tech": {
+      "description": "Sinais de funding em deep-tech e cibersegurança israelenses."
+    },
+    "afrilabs": {
+      "description": "Comunidade africana de fundadores e investidores.",
+      "notes": "Digest comunitário a cada 12 h"
+    },
+    "pitchbook-public": {
+      "description": "Briefs públicos de fundraising e notas de mercado."
+    },
+    "venturebeat": {
+      "description": "Cobertura de produto/funding de startups de IA e enterprise."
+    },
+    "rest-of-world": {
+      "description": "Histórias de tecnologia fora do Silicon Valley."
+    },
+    "startupdaily-au": {
+      "description": "Mesa de startups e mercados de capital AU/NZ."
+    },
+    "nordic-startup-news": {
+      "description": "Cobertura nórdica de startups a partir de Estocolmo."
+    },
+    "webrazzi": {
+      "description": "Mesa turca de tech e funding de startups."
+    },
+    "vnexpress-startup": {
+      "description": "Reportagens vietnamitas de startups e economia digital."
+    },
+    "technode": {
+      "description": "Feed bilíngue sino-global de tech e venture."
+    },
+    "pulse-ng": {
+      "description": "Cobertura de capital startup na África Ocidental e do Sul."
+    },
+    "inc42": {
+      "description": "Sinais indianos de funding e política para startups."
+    },
+    "startupchile": {
+      "description": "Feed de aceleradoras e programas LatAm.",
+      "notes": "Sincronização de programas a cada 24 h"
+    },
+    "dealstreetasia": {
+      "description": "Deals de mercados privados, fundraising e atividade de investidores na Ásia."
+    }
+  },
+  "countries": {
+    "Argentina": "Argentina",
+    "Australia": "Austrália",
+    "Austria": "Áustria",
+    "Belgium": "Bélgica",
+    "Brazil": "Brasil",
+    "Bulgaria": "Bulgária",
+    "Canada": "Canadá",
+    "Chile": "Chile",
+    "China": "China",
+    "Colombia": "Colômbia",
+    "Denmark": "Dinamarca",
+    "Egypt": "Egito",
+    "Finland": "Finlândia",
+    "France": "França",
+    "Germany": "Alemanha",
+    "Ghana": "Gana",
+    "Greece": "Grécia",
+    "Hong Kong": "Hong Kong, RAE da China",
+    "Iceland": "Islândia",
+    "India": "Índia",
+    "Indonesia": "Indonésia",
+    "Israel": "Israel",
+    "Italy": "Itália",
+    "Japan": "Japão",
+    "Jordan": "Jordânia",
+    "Kenya": "Quênia",
+    "Lebanon": "Líbano",
+    "Malaysia": "Malásia",
+    "Mexico": "México",
+    "Morocco": "Marrocos",
+    "Netherlands": "Países Baixos",
+    "New Zealand": "Nova Zelândia",
+    "Nigeria": "Nigéria",
+    "Norway": "Noruega",
+    "Peru": "Peru",
+    "Philippines": "Filipinas",
+    "Poland": "Polônia",
+    "Portugal": "Portugal",
+    "Romania": "Romênia",
+    "Rwanda": "Ruanda",
+    "Saudi Arabia": "Arábia Saudita",
+    "Senegal": "Senegal",
+    "Singapore": "Singapura",
+    "South Africa": "África do Sul",
+    "South Korea": "Coreia do Sul",
+    "Spain": "Espanha",
+    "Sweden": "Suécia",
+    "Switzerland": "Suíça",
+    "Taiwan": "Taiwan",
+    "Thailand": "Tailândia",
+    "Turkey": "Turquia",
+    "United Arab Emirates": "Emirados Árabes Unidos",
+    "United Kingdom": "Reino Unido",
+    "United States": "Estados Unidos",
+    "Uruguay": "Uruguai",
+    "Vietnam": "Vietnã"
+  }
+}

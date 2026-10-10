@@ -1,0 +1,281 @@
+{
+  "techcrunch": {
+    "id": "techcrunch",
+    "name": "TechCrunch",
+    "file": "techcrunch.png",
+    "kind": "icon",
+    "bytes": 13412,
+    "imageUrl": "https://icon.horse/icon/techcrunch.com",
+    "contentType": "image/png"
+  },
+  "crunchbase-news": {
+    "id": "crunchbase-news",
+    "name": "Crunchbase News",
+    "file": "crunchbase-news.png",
+    "kind": "favicon",
+    "bytes": 1055,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=crunchbase.com&sz=256",
+    "contentType": "image/png"
+  },
+  "36kr": {
+    "id": "36kr",
+    "name": "36\u6c2a",
+    "file": "36kr.png",
+    "kind": "icon",
+    "bytes": 879,
+    "imageUrl": "https://icon.horse/icon/36kr.com",
+    "contentType": "image/png"
+  },
+  "krasia": {
+    "id": "krasia",
+    "name": "KrASIA",
+    "file": "krasia.png",
+    "kind": "icon",
+    "bytes": 5834,
+    "imageUrl": "https://icon.horse/icon/kr-asia.com",
+    "contentType": "image/png"
+  },
+  "techinasia": {
+    "id": "techinasia",
+    "name": "Tech in Asia",
+    "file": "techinasia.png",
+    "kind": "logo-fallback",
+    "bytes": 1426,
+    "imageUrl": "https://icon.horse/icon/techinasia.com",
+    "contentType": "image/png"
+  },
+  "nikkei-asia": {
+    "id": "nikkei-asia",
+    "name": "Nikkei Asia",
+    "file": "nikkei-asia.jpg",
+    "kind": "og",
+    "bytes": 31079,
+    "imageUrl": "https://images.ft.com/v3/image/raw/https%3A%2F%2Fasia.nikkei.com%2Fimages%2Ffrontend%2Ffavicons%2F630x630.png?fit=cover&gravity=faces&dpr=2&quality=medium&source=nar-cms&format=jpg&width=630&height=630",
+    "contentType": "image/jpeg"
+  },
+  "platum": {
+    "id": "platum",
+    "name": "\ud50c\ub798\ud140 (Platum)",
+    "file": "platum.jpg",
+    "kind": "og",
+    "bytes": 72087,
+    "imageUrl": "https://cdn.platum.kr/wp-content/uploads/2024/11/platum_-1.jpg",
+    "contentType": "image/jpeg"
+  },
+  "yourstory": {
+    "id": "yourstory",
+    "name": "YourStory",
+    "file": "yourstory.png",
+    "kind": "favicon",
+    "bytes": 323,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=yourstory.com&sz=256",
+    "contentType": "image/png"
+  },
+  "startup-india": {
+    "id": "startup-india",
+    "name": "Startup India",
+    "file": "startup-india.png",
+    "kind": "favicon",
+    "bytes": 383,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=startupindia.gov.in&sz=256",
+    "contentType": "image/png"
+  },
+  "sifted": {
+    "id": "sifted",
+    "name": "Sifted",
+    "file": "sifted.png",
+    "kind": "og",
+    "bytes": 24270,
+    "imageUrl": "https://www.datocms-assets.com/60124/1687337580-sifted-on-pink.png",
+    "contentType": "image/png"
+  },
+  "eu-startups": {
+    "id": "eu-startups",
+    "name": "EU-Startups",
+    "file": "eu-startups.png",
+    "kind": "favicon",
+    "bytes": 324,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=eu-startups.com&sz=256",
+    "contentType": "image/png"
+  },
+  "les-echos-start": {
+    "id": "les-echos-start",
+    "name": "Les Echos Start",
+    "file": "les-echos-start.png",
+    "kind": "icon",
+    "bytes": 2205,
+    "imageUrl": "https://icon.horse/icon/lesechos.fr",
+    "contentType": "image/png"
+  },
+  "gruenderszene": {
+    "id": "gruenderszene",
+    "name": "Gr\u00fcnderszene",
+    "file": "gruenderszene.png",
+    "kind": "favicon",
+    "bytes": 891,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=businessinsider.de&sz=256",
+    "contentType": "image/png"
+  },
+  "africarena": {
+    "id": "africarena",
+    "name": "AfricArena / Disrupt Africa",
+    "file": "africarena.png",
+    "kind": "icon",
+    "bytes": 19366,
+    "imageUrl": "https://icon.horse/icon/disruptafrica.com",
+    "contentType": "image/png"
+  },
+  "wamda": {
+    "id": "wamda",
+    "name": "Wamda",
+    "file": "wamda.png",
+    "kind": "favicon",
+    "bytes": 197,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=wamda.com&sz=256",
+    "contentType": "image/png"
+  },
+  "contxto": {
+    "id": "contxto",
+    "name": "Contxto",
+    "file": "contxto.png",
+    "kind": "icon",
+    "bytes": 12416,
+    "imageUrl": "https://icon.horse/icon/contxto.com",
+    "contentType": "image/png"
+  },
+  "startupbase-br": {
+    "id": "startupbase-br",
+    "name": "Distrito",
+    "file": "startupbase-br.png",
+    "kind": "icon",
+    "bytes": 1369,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=distrito.me&sz=128",
+    "contentType": "image/png"
+  },
+  "israel-tech": {
+    "id": "israel-tech",
+    "name": "Calcalist Tech / Geektime",
+    "file": "israel-tech.png",
+    "kind": "icon",
+    "bytes": 4038,
+    "imageUrl": "https://icon.horse/icon/geektime.com",
+    "contentType": "image/png"
+  },
+  "afrilabs": {
+    "id": "afrilabs",
+    "name": "AfriLabs / VC4A",
+    "file": "afrilabs.webp",
+    "kind": "og",
+    "bytes": 9470,
+    "imageUrl": "https://vc4a.com/wp-content/uploads/2026/08/cropped-vc4a-logo-round-400x400-1.webp",
+    "contentType": "image/webp"
+  },
+  "pitchbook-public": {
+    "id": "pitchbook-public",
+    "name": "PitchBook public briefs",
+    "file": "pitchbook-public.png",
+    "kind": "icon",
+    "bytes": 2158,
+    "imageUrl": "https://icon.horse/icon/pitchbook.com",
+    "contentType": "image/png"
+  },
+  "venturebeat": {
+    "id": "venturebeat",
+    "name": "VentureBeat",
+    "file": "venturebeat.png",
+    "kind": "icon",
+    "bytes": 1977,
+    "imageUrl": "https://icon.horse/icon/venturebeat.com",
+    "contentType": "image/png"
+  },
+  "rest-of-world": {
+    "id": "rest-of-world",
+    "name": "Rest of World",
+    "file": "rest-of-world.png",
+    "kind": "og",
+    "bytes": 76294,
+    "imageUrl": "https://restofworld.org/wp-content/uploads/2020/05/cropped-SocialCard-1.png",
+    "contentType": "image/png"
+  },
+  "startupdaily-au": {
+    "id": "startupdaily-au",
+    "name": "Startup Daily / SmartCompany",
+    "file": "startupdaily-au.png",
+    "kind": "og",
+    "bytes": 15919,
+    "imageUrl": "https://assets.smartcompany.com.au/wp-content/uploads/sites/4/2022/11/Smartcompany_Horizontal_Black_Logo_3000x4000px-e1668556442225.png?quality=70&w=1312",
+    "contentType": "image/png"
+  },
+  "nordic-startup-news": {
+    "id": "nordic-startup-news",
+    "name": "Breakit",
+    "file": "nordic-startup-news.png",
+    "kind": "icon",
+    "bytes": 6913,
+    "imageUrl": "https://icon.horse/icon/breakit.se",
+    "contentType": "image/png"
+  },
+  "webrazzi": {
+    "id": "webrazzi",
+    "name": "Webrazzi",
+    "file": "webrazzi.png",
+    "kind": "icon",
+    "bytes": 4574,
+    "imageUrl": "https://icon.horse/icon/webrazzi.com",
+    "contentType": "image/png"
+  },
+  "vnexpress-startup": {
+    "id": "vnexpress-startup",
+    "name": "VnExpress / CafeF Startup",
+    "file": "vnexpress-startup.png",
+    "kind": "icon",
+    "bytes": 994,
+    "imageUrl": "https://icon.horse/icon/vnexpress.net",
+    "contentType": "image/png"
+  },
+  "technode": {
+    "id": "technode",
+    "name": "TechNode",
+    "file": "technode.jpg",
+    "kind": "og",
+    "bytes": 74874,
+    "imageUrl": "https://technode.com/wp-content/uploads/2026/08/banner-go-global.jpg",
+    "contentType": "image/jpeg"
+  },
+  "pulse-ng": {
+    "id": "pulse-ng",
+    "name": "TechCabal / Pulse Nigeria",
+    "file": "pulse-ng.png",
+    "kind": "icon",
+    "bytes": 4501,
+    "imageUrl": "https://icon.horse/icon/techcabal.com",
+    "contentType": "image/png"
+  },
+  "inc42": {
+    "id": "inc42",
+    "name": "Inc42",
+    "file": "inc42.jpg",
+    "kind": "og",
+    "bytes": 49939,
+    "imageUrl": "https://inc42.com/cdn-cgi/image/quality=90/https://asset.inc42.com/2018/08/default-social-share-image.jpg",
+    "contentType": "image/jpeg"
+  },
+  "startupchile": {
+    "id": "startupchile",
+    "name": "Start-Up Chile / LatamList",
+    "file": "startupchile.png",
+    "kind": "icon",
+    "bytes": 11819,
+    "imageUrl": "https://icon.horse/icon/startupchile.org",
+    "contentType": "image/png"
+  },
+  "dealstreetasia": {
+    "id": "dealstreetasia",
+    "name": "DealStreetAsia",
+    "file": "dealstreetasia.png",
+    "kind": "icon",
+    "bytes": 402,
+    "imageUrl": "https://www.google.com/s2/favicons?domain=dealstreetasia.com&sz=128",
+    "contentType": "image/png"
+  }
+}

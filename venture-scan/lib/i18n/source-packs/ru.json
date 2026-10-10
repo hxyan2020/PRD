@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "Африка",
+    "Asia": "Азия",
+    "Asia-Pacific": "Азиатско-Тихоокеанский регион",
+    "Brazil": "Бразилия",
+    "DACH": "DACH",
+    "Europe": "Европа",
+    "Francophone Europe / Africa": "Франкоязычная Европа / Африка",
+    "Global": "Глобально",
+    "Global / AI": "Глобально / ИИ",
+    "Global / North America": "Глобально / Северная Америка",
+    "Global South": "Глобальный Юг",
+    "Greater China": "Большой Китай",
+    "India": "Индия",
+    "Israel": "Израиль",
+    "Korea": "Корея",
+    "Latin America": "Латинская Америка",
+    "MENA": "Ближний Восток и Северная Африка",
+    "Nordics": "Скандинавия",
+    "Oceania": "Океания",
+    "South Asia": "Южная Азия",
+    "Southern Cone": "Южный конус",
+    "Türkiye / Eastern Europe": "Турция / Восточная Европа",
+    "Vietnam": "Вьетнам",
+    "West Africa": "Западная Африка"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "Глобальная лента новостей о стартапах и фандрайзинге."
+    },
+    "crunchbase-news": {
+      "description": "Анонсы раундов и активность инвесторов."
+    },
+    "36kr": {
+      "description": "Китайскоязычное освещение стартапов и hard-tech."
+    },
+    "krasia": {
+      "description": "Аналитика стартапов Юго-Восточной и Восточной Азии."
+    },
+    "techinasia": {
+      "description": "Финансирование и продукты стартапов АТР."
+    },
+    "nikkei-asia": {
+      "description": "Бизнес и венчур АТР от Nikkei."
+    },
+    "platum": {
+      "description": "Корейский стол стартапов и финансирования."
+    },
+    "yourstory": {
+      "description": "Истории предпринимательства и финансирования с фокусом на Индию."
+    },
+    "startup-india": {
+      "description": "Государственный реестр и сигналы признания индийских стартапов.",
+      "notes": "Пакетная синхронизация каждые 48 ч"
+    },
+    "sifted": {
+      "description": "Европейское освещение стартапов и deep-tech fundraising."
+    },
+    "eu-startups": {
+      "description": "Общеевропейский агрегатор новостей о стартапах."
+    },
+    "les-echos-start": {
+      "description": "Франкоязычный стол стартапов и scale-up."
+    },
+    "gruenderszene": {
+      "description": "Немецкоязычное освещение фаундеров и финансирования."
+    },
+    "africarena": {
+      "description": "Отчёты о венчуре и экосистеме в Африке."
+    },
+    "wamda": {
+      "description": "Стол MENA по предпринимательству и финансированию."
+    },
+    "contxto": {
+      "description": "Освещение стартапов и VC в Латинской Америке."
+    },
+    "startupbase-br": {
+      "description": "Карта, рейтинги и аналитика бразильской экосистемы.",
+      "notes": "Обход реестра каждые 24 ч"
+    },
+    "israel-tech": {
+      "description": "Сигналы финансирования израильского deep-tech и кибербезопасности."
+    },
+    "afrilabs": {
+      "description": "Африканское сообщество фаундеров и инвесторов.",
+      "notes": "Дайджест сообщества каждые 12 ч"
+    },
+    "pitchbook-public": {
+      "description": "Публичные брифинги по фандрайзингу и рыночные заметки."
+    },
+    "venturebeat": {
+      "description": "Освещение продуктов/финансирования ИИ и enterprise-стартапов."
+    },
+    "rest-of-world": {
+      "description": "Технологические истории за пределами Кремниевой долины."
+    },
+    "startupdaily-au": {
+      "description": "Стол стартапов и рынков капитала Австралии и НЗ."
+    },
+    "nordic-startup-news": {
+      "description": "Скандинавское освещение стартапов из Стокгольма."
+    },
+    "webrazzi": {
+      "description": "Турецкоязычный стол технологий и финансирования стартапов."
+    },
+    "vnexpress-startup": {
+      "description": "Вьетнамские репортажи о стартапах и цифровой экономике."
+    },
+    "technode": {
+      "description": "Двуязычная китайско-глобальная лента tech и венчура."
+    },
+    "pulse-ng": {
+      "description": "Освещение капитала стартапов Западной и Южной Африки."
+    },
+    "inc42": {
+      "description": "Индийские сигналы финансирования и политики для стартапов."
+    },
+    "startupchile": {
+      "description": "Лента акселераторов и экосистемных программ LatAm.",
+      "notes": "Синхронизация программ каждые 24 ч"
+    },
+    "dealstreetasia": {
+      "description": "Сделки частных рынков Азии, фандрайзинг и активность инвесторов."
+    }
+  },
+  "countries": {
+    "Argentina": "Аргентина",
+    "Australia": "Австралия",
+    "Austria": "Австрия",
+    "Belgium": "Бельгия",
+    "Brazil": "Бразилия",
+    "Bulgaria": "Болгария",
+    "Canada": "Канада",
+    "Chile": "Чили",
+    "China": "Китай",
+    "Colombia": "Колумбия",
+    "Denmark": "Дания",
+    "Egypt": "Египет",
+    "Finland": "Финляндия",
+    "France": "Франция",
+    "Germany": "Германия",
+    "Ghana": "Гана",
+    "Greece": "Греция",
+    "Hong Kong": "Гонконг (САР)",
+    "Iceland": "Исландия",
+    "India": "Индия",
+    "Indonesia": "Индонезия",
+    "Israel": "Израиль",
+    "Italy": "Италия",
+    "Japan": "Япония",
+    "Jordan": "Иордания",
+    "Kenya": "Кения",
+    "Lebanon": "Ливан",
+    "Malaysia": "Малайзия",
+    "Mexico": "Мексика",
+    "Morocco": "Марокко",
+    "Netherlands": "Нидерланды",
+    "New Zealand": "Новая Зеландия",
+    "Nigeria": "Нигерия",
+    "Norway": "Норвегия",
+    "Peru": "Перу",
+    "Philippines": "Филиппины",
+    "Poland": "Польша",
+    "Portugal": "Португалия",
+    "Romania": "Румыния",
+    "Rwanda": "Руанда",
+    "Saudi Arabia": "Саудовская Аравия",
+    "Senegal": "Сенегал",
+    "Singapore": "Сингапур",
+    "South Africa": "Южно-Африканская Республика",
+    "South Korea": "Республика Корея",
+    "Spain": "Испания",
+    "Sweden": "Швеция",
+    "Switzerland": "Швейцария",
+    "Taiwan": "Тайвань",
+    "Thailand": "Таиланд",
+    "Turkey": "Турция",
+    "United Arab Emirates": "ОАЭ",
+    "United Kingdom": "Великобритания",
+    "United States": "Соединенные Штаты",
+    "Uruguay": "Уругвай",
+    "Vietnam": "Вьетнам"
+  }
+}

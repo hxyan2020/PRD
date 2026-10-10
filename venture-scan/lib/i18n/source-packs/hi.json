@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "अफ़्रीका",
+    "Asia": "एशिया",
+    "Asia-Pacific": "एशिया-प्रशांत",
+    "Brazil": "ब्राज़ील",
+    "DACH": "DACH",
+    "Europe": "यूरोप",
+    "Francophone Europe / Africa": "फ्रैंकोफ़ोन यूरोप / अफ़्रीका",
+    "Global": "वैश्विक",
+    "Global / AI": "वैश्विक / एआई",
+    "Global / North America": "वैश्विक / उत्तरी अमेरिका",
+    "Global South": "वैश्विक दक्षिण",
+    "Greater China": "वृहत्तर चीन",
+    "India": "भारत",
+    "Israel": "इज़राइल",
+    "Korea": "कोरिया",
+    "Latin America": "लैटिन अमेरिका",
+    "MENA": "मेना",
+    "Nordics": "नॉर्डिक",
+    "Oceania": "ओशिनिया",
+    "South Asia": "दक्षिण एशिया",
+    "Southern Cone": "दक्षिणी शंकु",
+    "Türkiye / Eastern Europe": "तुर्की / पूर्वी यूरोप",
+    "Vietnam": "वियतनाम",
+    "West Africa": "पश्चिम अफ़्रीका"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "वैश्विक स्टार्टअप और फंडरेज़िंग समाचार तार।"
+    },
+    "crunchbase-news": {
+      "description": "राउंड घोषणाएँ और निवेशक गतिविधि।"
+    },
+    "36kr": {
+      "description": "चीनी भाषा में स्टार्टअप और हार्ड-टेक कवरेज।"
+    },
+    "krasia": {
+      "description": "दक्षिण-पूर्व और पूर्वी एशिया स्टार्टअप इंटेलिजेंस।"
+    },
+    "techinasia": {
+      "description": "एशिया-प्रशांत स्टार्टअप फंडिंग और उत्पाद कवरेज।"
+    },
+    "nikkei-asia": {
+      "description": "Nikkei से APAC व्यापार और वेंचर कवरेज।"
+    },
+    "platum": {
+      "description": "कोरियाई स्टार्टअप और फंडिंग डेस्क।"
+    },
+    "yourstory": {
+      "description": "भारत-केंद्रित उद्यमिता और फंडिंग कहानियाँ।"
+    },
+    "startup-india": {
+      "description": "भारतीय स्टार्टअप के लिए सरकारी रजिस्ट्री और मान्यता संकेत।",
+      "notes": "हर 48 घंटे बैच सिंक"
+    },
+    "sifted": {
+      "description": "यूरोपीय स्टार्टअप और डीप-टेक फंडरेज़िंग कवरेज।"
+    },
+    "eu-startups": {
+      "description": "पैन-यूरोपीय स्टार्टअप समाचार एग्रीगेटर।"
+    },
+    "les-echos-start": {
+      "description": "फ्रेंच-भाषा स्टार्टअप और स्केल-अप डेस्क।"
+    },
+    "gruenderszene": {
+      "description": "जर्मन-भाषा संस्थापक और फंडिंग कवरेज।"
+    },
+    "africarena": {
+      "description": "अफ़्रीकी वेंचर और इकोसिस्टम रिपोर्टिंग।"
+    },
+    "wamda": {
+      "description": "मेना उद्यमिता और फंडिंग डेस्क।"
+    },
+    "contxto": {
+      "description": "लैटिन अमेरिका स्टार्टअप और वीसी कवरेज।"
+    },
+    "startupbase-br": {
+      "description": "ब्राज़ील स्टार्टअप मानचित्र, रैंकिंग और इकोसिस्टम इंटेल।",
+      "notes": "हर 24 घंटे रजिस्ट्री क्रॉल"
+    },
+    "israel-tech": {
+      "description": "इज़राइली डीप-टेक और साइबर सुरक्षा फंडिंग संकेत।"
+    },
+    "afrilabs": {
+      "description": "अफ़्रीकी संस्थापक और निवेशक डील फ़्लो समुदाय।",
+      "notes": "हर 12 घंटे समुदाय डाइजेस्ट"
+    },
+    "pitchbook-public": {
+      "description": "सार्वजनिक फंडरेज़िंग ब्रीफ़ और बाज़ार नोट्स।"
+    },
+    "venturebeat": {
+      "description": "एआई और एंटरप्राइज़ स्टार्टअप उत्पाद/फंडिंग कवरेज।"
+    },
+    "rest-of-world": {
+      "description": "सिलिकॉन वैली के बाहर की तकनीक कहानियाँ।"
+    },
+    "startupdaily-au": {
+      "description": "ऑस्ट्रेलिया और न्यूज़ीलैंड स्टार्टअप व पूँजी बाज़ार डेस्क।"
+    },
+    "nordic-startup-news": {
+      "description": "स्टॉकहोम से नॉर्डिक स्टार्टअप कवरेज।"
+    },
+    "webrazzi": {
+      "description": "तुर्की-भाषा टेक और स्टार्टअप फंडिंग डेस्क।"
+    },
+    "vnexpress-startup": {
+      "description": "वियतनामी स्टार्टअप और डिजिटल अर्थव्यवस्था रिपोर्टिंग।"
+    },
+    "technode": {
+      "description": "चीन-वैश्विक द्विभाषी टेक और वेंचर फ़ीड।"
+    },
+    "pulse-ng": {
+      "description": "पश्चिम और दक्षिणी अफ़्रीका स्टार्टअप पूँजी कवरेज।"
+    },
+    "inc42": {
+      "description": "भारतीय स्टार्टअप फंडिंग और नीति संकेत।"
+    },
+    "startupchile": {
+      "description": "लैटिन अमेरिका एक्सेलेरेटर और इकोसिस्टम प्रोग्राम फ़ीड।",
+      "notes": "हर 24 घंटे प्रोग्राम बैच सिंक"
+    },
+    "dealstreetasia": {
+      "description": "एशिया निजी बाज़ार डील्स, फंडरेज़िंग और निवेशक गतिविधि।"
+    }
+  },
+  "countries": {
+    "Argentina": "अर्जेंटीना",
+    "Australia": "ऑस्ट्रेलिया",
+    "Austria": "ऑस्ट्रिया",
+    "Belgium": "बेल्जियम",
+    "Brazil": "ब्राज़ील",
+    "Bulgaria": "बुल्गारिया",
+    "Canada": "कनाडा",
+    "Chile": "चिली",
+    "China": "चीन",
+    "Colombia": "कोलंबिया",
+    "Denmark": "डेनमार्क",
+    "Egypt": "मिस्र",
+    "Finland": "फ़िनलैंड",
+    "France": "फ़्रांस",
+    "Germany": "जर्मनी",
+    "Ghana": "घाना",
+    "Greece": "यूनान",
+    "Hong Kong": "हाँग काँग (चीन विशेष प्रशासनिक क्षेत्र)",
+    "Iceland": "आइसलैंड",
+    "India": "भारत",
+    "Indonesia": "इंडोनेशिया",
+    "Israel": "इज़राइल",
+    "Italy": "इटली",
+    "Japan": "जापान",
+    "Jordan": "जॉर्डन",
+    "Kenya": "केन्या",
+    "Lebanon": "लेबनान",
+    "Malaysia": "मलेशिया",
+    "Mexico": "मैक्सिको",
+    "Morocco": "मोरक्को",
+    "Netherlands": "नीदरलैंड",
+    "New Zealand": "न्यूज़ीलैंड",
+    "Nigeria": "नाइजीरिया",
+    "Norway": "नॉर्वे",
+    "Peru": "पेरू",
+    "Philippines": "फ़िलिपींस",
+    "Poland": "पोलैंड",
+    "Portugal": "पुर्तगाल",
+    "Romania": "रोमानिया",
+    "Rwanda": "रवांडा",
+    "Saudi Arabia": "सऊदी अरब",
+    "Senegal": "सेनेगल",
+    "Singapore": "सिंगापुर",
+    "South Africa": "दक्षिण अफ़्रीका",
+    "South Korea": "दक्षिण कोरिया",
+    "Spain": "स्पेन",
+    "Sweden": "स्वीडन",
+    "Switzerland": "स्विट्ज़रलैंड",
+    "Taiwan": "ताइवान",
+    "Thailand": "थाईलैंड",
+    "Turkey": "तुर्किये",
+    "United Arab Emirates": "संयुक्त अरब अमीरात",
+    "United Kingdom": "यूनाइटेड किंगडम",
+    "United States": "संयुक्त राज्य",
+    "Uruguay": "उरूग्वे",
+    "Vietnam": "वियतनाम"
+  }
+}

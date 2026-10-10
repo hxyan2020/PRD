@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "Afrika",
+    "Asia": "Azië",
+    "Asia-Pacific": "Azië-Pacific",
+    "Brazil": "Brazilië",
+    "DACH": "DACH",
+    "Europe": "Europa",
+    "Francophone Europe / Africa": "Francofoon Europa / Afrika",
+    "Global": "Wereldwijd",
+    "Global / AI": "Wereldwijd / AI",
+    "Global / North America": "Wereldwijd / Noord-Amerika",
+    "Global South": "Mondiale Zuiden",
+    "Greater China": "Groter China",
+    "India": "India",
+    "Israel": "Israël",
+    "Korea": "Korea",
+    "Latin America": "Latijns-Amerika",
+    "MENA": "MENA",
+    "Nordics": "Noordse landen",
+    "Oceania": "Oceanië",
+    "South Asia": "Zuid-Azië",
+    "Southern Cone": "Zuidelijke kegel",
+    "Türkiye / Eastern Europe": "Turkije / Oost-Europa",
+    "Vietnam": "Vietnam",
+    "West Africa": "West-Afrika"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "Wereldwijde startup- en fundraisingnieuwsdraad."
+    },
+    "crunchbase-news": {
+      "description": "Rondeaankondigingen en investeerdersactiviteit."
+    },
+    "36kr": {
+      "description": "Chineestalige startup- en hard-techverslaggeving."
+    },
+    "krasia": {
+      "description": "Startup-intelligence voor Zuidoost- en Oost-Azië."
+    },
+    "techinasia": {
+      "description": "APAC-startupfunding en productverslaggeving."
+    },
+    "nikkei-asia": {
+      "description": "APAC business- en ventureverslaggeving van Nikkei."
+    },
+    "platum": {
+      "description": "Koreaanse startup- en fundingdesk."
+    },
+    "yourstory": {
+      "description": "India-gerichte entrepreneurship- en fundingverhalen."
+    },
+    "startup-india": {
+      "description": "Overheidsregister en erkenningssignalen voor Indiase startups.",
+      "notes": "Batchsynchronisatie elke 48 uur"
+    },
+    "sifted": {
+      "description": "Europese startup- en deep-techfundraisingverslaggeving."
+    },
+    "eu-startups": {
+      "description": "Paneuropese aggregator van startupnieuws."
+    },
+    "les-echos-start": {
+      "description": "Franstalige startup- en scale-updesk."
+    },
+    "gruenderszene": {
+      "description": "Duitstalige founder- en fundingverslaggeving."
+    },
+    "africarena": {
+      "description": "Afrikaanse venture- en ecosysteemverslagen."
+    },
+    "wamda": {
+      "description": "MENA-entrepreneurship- en fundingdesk."
+    },
+    "contxto": {
+      "description": "LatAm-startup- en vc-verslaggeving."
+    },
+    "startupbase-br": {
+      "description": "Braziliaanse startupkaart, rankings en ecosysteemintelligence.",
+      "notes": "Registercrawl elke 24 uur"
+    },
+    "israel-tech": {
+      "description": "Israëlische deep-tech- en cybersecurityfundingsignalen."
+    },
+    "afrilabs": {
+      "description": "Afrikaanse founder- en investeerderdealflowcommunity.",
+      "notes": "Communitydigest elke 12 uur"
+    },
+    "pitchbook-public": {
+      "description": "Openbare fundraisingbriefs en marktnotities."
+    },
+    "venturebeat": {
+      "description": "AI- en enterprise-startup product-/fundingverslaggeving."
+    },
+    "rest-of-world": {
+      "description": "Technologieverhalen buiten Silicon Valley."
+    },
+    "startupdaily-au": {
+      "description": "Australische en NZ startup- en kapitaalmarktdesk."
+    },
+    "nordic-startup-news": {
+      "description": "Noordse startupverslaggeving vanuit Stockholm."
+    },
+    "webrazzi": {
+      "description": "Turkstalige tech- en startupfundingdesk."
+    },
+    "vnexpress-startup": {
+      "description": "Vietnamese startup- en digitale-economieverslagen."
+    },
+    "technode": {
+      "description": "Sino-globale tweetalige tech- en venturefeed."
+    },
+    "pulse-ng": {
+      "description": "Startupkapitaalverslaggeving West- en Zuidelijk Afrika."
+    },
+    "inc42": {
+      "description": "Indiase startupfunding- en beleidssignalen."
+    },
+    "startupchile": {
+      "description": "LatAm-accelerator- en ecosysteemprogrammfeed.",
+      "notes": "Programmabatchsync elke 24 uur"
+    },
+    "dealstreetasia": {
+      "description": "Aziatische private-marketdeals, fundraising en investeerdersactiviteit."
+    }
+  },
+  "countries": {
+    "Argentina": "Argentinië",
+    "Australia": "Australië",
+    "Austria": "Oostenrijk",
+    "Belgium": "België",
+    "Brazil": "Brazilië",
+    "Bulgaria": "Bulgarije",
+    "Canada": "Canada",
+    "Chile": "Chili",
+    "China": "China",
+    "Colombia": "Colombia",
+    "Denmark": "Denemarken",
+    "Egypt": "Egypte",
+    "Finland": "Finland",
+    "France": "Frankrijk",
+    "Germany": "Duitsland",
+    "Ghana": "Ghana",
+    "Greece": "Griekenland",
+    "Hong Kong": "Hongkong SAR van China",
+    "Iceland": "IJsland",
+    "India": "India",
+    "Indonesia": "Indonesië",
+    "Israel": "Israël",
+    "Italy": "Italië",
+    "Japan": "Japan",
+    "Jordan": "Jordanië",
+    "Kenya": "Kenia",
+    "Lebanon": "Libanon",
+    "Malaysia": "Maleisië",
+    "Mexico": "Mexico",
+    "Morocco": "Marokko",
+    "Netherlands": "Nederland",
+    "New Zealand": "Nieuw-Zeeland",
+    "Nigeria": "Nigeria",
+    "Norway": "Noorwegen",
+    "Peru": "Peru",
+    "Philippines": "Filipijnen",
+    "Poland": "Polen",
+    "Portugal": "Portugal",
+    "Romania": "Roemenië",
+    "Rwanda": "Rwanda",
+    "Saudi Arabia": "Saoedi-Arabië",
+    "Senegal": "Senegal",
+    "Singapore": "Singapore",
+    "South Africa": "Zuid-Afrika",
+    "South Korea": "Zuid-Korea",
+    "Spain": "Spanje",
+    "Sweden": "Zweden",
+    "Switzerland": "Zwitserland",
+    "Taiwan": "Taiwan",
+    "Thailand": "Thailand",
+    "Turkey": "Turkije",
+    "United Arab Emirates": "Verenigde Arabische Emiraten",
+    "United Kingdom": "Verenigd Koninkrijk",
+    "United States": "Verenigde Staten",
+    "Uruguay": "Uruguay",
+    "Vietnam": "Vietnam"
+  }
+}

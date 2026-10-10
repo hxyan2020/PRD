@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "아프리카",
+    "Asia": "아시아",
+    "Asia-Pacific": "아시아태평양",
+    "Brazil": "브라질",
+    "DACH": "DACH",
+    "Europe": "유럽",
+    "Francophone Europe / Africa": "불어권 유럽 / 아프리카",
+    "Global": "글로벌",
+    "Global / AI": "글로벌 / AI",
+    "Global / North America": "글로벌 / 북미",
+    "Global South": "글로벌 사우스",
+    "Greater China": "중화권",
+    "India": "인도",
+    "Israel": "이스라엘",
+    "Korea": "한국",
+    "Latin America": "라틴아메리카",
+    "MENA": "중동·북아프리카",
+    "Nordics": "북유럽",
+    "Oceania": "오세아니아",
+    "South Asia": "남아시아",
+    "Southern Cone": "남부 원뿔",
+    "Türkiye / Eastern Europe": "튀르kiye / 동유럽",
+    "Vietnam": "베트남",
+    "West Africa": "서아프리카"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "글로벌 스타트업·펀딩 뉴스 와이어."
+    },
+    "crunchbase-news": {
+      "description": "라운드 발표와 투자자 활동 피드."
+    },
+    "36kr": {
+      "description": "중국어 스타트업·하드테크 보도."
+    },
+    "krasia": {
+      "description": "동남아·동아시아 스타트업 인텔리전스."
+    },
+    "techinasia": {
+      "description": "아태 스타트업 펀딩·제품 보도."
+    },
+    "nikkei-asia": {
+      "description": "닛케이의 아태 비즈니스·벤처 보도."
+    },
+    "platum": {
+      "description": "한국 스타트업·펀딩 데스크."
+    },
+    "yourstory": {
+      "description": "인도 중심 창업·펀딩 스토리."
+    },
+    "startup-india": {
+      "description": "인도 스타트업 정부 등록·인증 신호.",
+      "notes": "48시간마다 배치 동기화"
+    },
+    "sifted": {
+      "description": "유럽 스타트업·딥테크 펀딩 보도."
+    },
+    "eu-startups": {
+      "description": "범유럽 스타트업 뉴스 애그리게이터."
+    },
+    "les-echos-start": {
+      "description": "프랑스어 스타트업·스케일업 데스크."
+    },
+    "gruenderszene": {
+      "description": "독일어 창업자·펀딩 보도."
+    },
+    "africarena": {
+      "description": "아프리카 벤처·생태계 보도."
+    },
+    "wamda": {
+      "description": "MENA 창업·펀딩 데스크."
+    },
+    "contxto": {
+      "description": "라틴아메리카 스타트업·VC 보도."
+    },
+    "startupbase-br": {
+      "description": "브라질 스타트업 지도·랭킹·생태계 인텔.",
+      "notes": "레지스트리 24시간마다 크롤"
+    },
+    "israel-tech": {
+      "description": "이스라엘 딥테크·사이버보안 펀딩 신호."
+    },
+    "afrilabs": {
+      "description": "아프리카 창업자·투자자 딜플로우 커뮤니티.",
+      "notes": "커뮤니티 다이제스트 12시간마다"
+    },
+    "pitchbook-public": {
+      "description": "공개 펀딩 브리프와 시장 노트."
+    },
+    "venturebeat": {
+      "description": "AI·엔터프라이즈 제품/펀딩 보도."
+    },
+    "rest-of-world": {
+      "description": "실리콘밸리 밖의 테크 스토리."
+    },
+    "startupdaily-au": {
+      "description": "호주·뉴질랜드 스타트업·자본시장 데스크."
+    },
+    "nordic-startup-news": {
+      "description": "스톡홀름발 북유럽 스타트업·테크 보도."
+    },
+    "webrazzi": {
+      "description": "터키어 테크·스타트업 펀딩 데스크."
+    },
+    "vnexpress-startup": {
+      "description": "베트남 스타트업·디지털 경제 보도."
+    },
+    "technode": {
+      "description": "중·글로벌 이중언어 테크·벤처 피드."
+    },
+    "pulse-ng": {
+      "description": "서·남부 아프리카 스타트업 자본 보도."
+    },
+    "inc42": {
+      "description": "인도 스타트업 펀딩·정책 신호."
+    },
+    "startupchile": {
+      "description": "라틴아메리카 액셀러레이터·생태계 프로그램.",
+      "notes": "프로그램 배치 24시간마다 동기화"
+    },
+    "dealstreetasia": {
+      "description": "아시아 사모시장 딜·펀딩·투자자 활동."
+    }
+  },
+  "countries": {
+    "Argentina": "아르헨티나",
+    "Australia": "오스트레일리아",
+    "Austria": "오스트리아",
+    "Belgium": "벨기에",
+    "Brazil": "브라질",
+    "Bulgaria": "불가리아",
+    "Canada": "캐나다",
+    "Chile": "칠레",
+    "China": "중국",
+    "Colombia": "콜롬비아",
+    "Denmark": "덴마크",
+    "Egypt": "이집트",
+    "Finland": "핀란드",
+    "France": "프랑스",
+    "Germany": "독일",
+    "Ghana": "가나",
+    "Greece": "그리스",
+    "Hong Kong": "홍콩(중국 특별행정구)",
+    "Iceland": "아이슬란드",
+    "India": "인도",
+    "Indonesia": "인도네시아",
+    "Israel": "이스라엘",
+    "Italy": "이탈리아",
+    "Japan": "일본",
+    "Jordan": "요르단",
+    "Kenya": "케냐",
+    "Lebanon": "레바논",
+    "Malaysia": "말레이시아",
+    "Mexico": "멕시코",
+    "Morocco": "모로코",
+    "Netherlands": "네덜란드",
+    "New Zealand": "뉴질랜드",
+    "Nigeria": "나이지리아",
+    "Norway": "노르웨이",
+    "Peru": "페루",
+    "Philippines": "필리핀",
+    "Poland": "폴란드",
+    "Portugal": "포르투갈",
+    "Romania": "루마니아",
+    "Rwanda": "르완다",
+    "Saudi Arabia": "사우디아라비아",
+    "Senegal": "세네갈",
+    "Singapore": "싱가포르",
+    "South Africa": "남아프리카",
+    "South Korea": "대한민국",
+    "Spain": "스페인",
+    "Sweden": "스웨덴",
+    "Switzerland": "스위스",
+    "Taiwan": "대만",
+    "Thailand": "태국",
+    "Turkey": "튀르키예",
+    "United Arab Emirates": "아랍에미리트",
+    "United Kingdom": "영국",
+    "United States": "미국",
+    "Uruguay": "우루과이",
+    "Vietnam": "베트남"
+  }
+}
