@@ -161,16 +161,25 @@ export function ExplainDrawer({
                 type="password"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder="sk-..."
+                placeholder="sk-… (optional)"
+                autoComplete="off"
               />
             </label>
             <label>
               {t('endpoint')}
-              <input value={endpoint} onChange={(e) => setEndpoint(e.target.value)} />
+              <input
+                value={endpoint}
+                onChange={(e) => setEndpoint(e.target.value)}
+                placeholder="https://text.pollinations.ai/openai"
+              />
             </label>
             <label>
               {t('model')}
-              <input value={modelName} onChange={(e) => setModelName(e.target.value)} />
+              <input
+                value={modelName}
+                onChange={(e) => setModelName(e.target.value)}
+                placeholder="openai"
+              />
             </label>
             <button type="button" className="btn primary" onClick={persistSettings}>
               {t('saveApi')}
