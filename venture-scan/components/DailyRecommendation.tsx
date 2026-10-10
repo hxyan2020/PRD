@@ -10,7 +10,9 @@ import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
-import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
+import { localizeCountry } from "@/lib/i18n/localize-source";
+import { presentMatch } from "@/lib/i18n/present-match";
+import { emptyProfile, isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
 
 type State =
@@ -86,6 +88,9 @@ export function DailyRecommendation() {
 
   const { day, idea, match } = state;
   const view = localizeIdea(idea, locale);
+  const profile = loadProfileFromStorage() ?? emptyProfile();
+  const presented = presentMatch(match, view, profile, t, locale);
+  const countryLabel = localizeCountry(idea.teamCountry, locale);
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -95,7 +100,7 @@ export function DailyRecommendation() {
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <h1 className="font-display text-3xl text-foam sm:text-5xl">{view.name}</h1>
         <span className="w-fit rounded-full border border-celadon/40 bg-celadon/15 px-3 py-1 font-mono text-sm text-celadon">
-          {match.score}% match
+          {t("today.scoreMatch", { score: match.score })}
         </span>
       </div>
       <p className="mt-4 text-base leading-relaxed text-mist">{view.description}</p>
@@ -104,10 +109,10 @@ export function DailyRecommendation() {
         <span className="inline-flex items-center gap-1.5">
           <Flag
             code={countryToFlagCode(idea.teamCountry) ?? ""}
-            title={idea.teamCountry}
+            title={countryLabel}
             size="sm"
           />
-          {idea.teamCountry}
+          {countryLabel}
           {idea.teamCity ? ` · ${idea.teamCity}` : ""}
         </span>
         <span>
@@ -125,9 +130,9 @@ export function DailyRecommendation() {
 
       <section className="mt-10 animate-rise">
         <h2 className="font-display text-2xl text-foam">{t("today.matched")}</h2>
-        {match.matched.length ? (
+        {presented.matched.length ? (
           <ul className="mt-4 space-y-3">
-            {match.matched.map((point) => (
+            {presented.matched.map((point) => (
               <MatchRow key={point.dimension} point={point} matchedLabel={t("today.matched")} />
             ))}
           </ul>
@@ -139,9 +144,9 @@ export function DailyRecommendation() {
       <section className="mt-10 animate-rise [animation-delay:80ms]">
         <h2 className="font-display text-2xl text-foam">{t("today.gaps")}</h2>
         <p className="mt-2 text-sm text-mist">{t("today.gapsHint")}</p>
-        {match.gaps.length ? (
+        {presented.gaps.length ? (
           <ul className="mt-4 space-y-4">
-            {match.gaps.map((gap) => (
+            {presented.gaps.map((gap) => (
               <GapRow
                 key={gap.dimension}
                 gap={gap}
@@ -156,7 +161,7 @@ export function DailyRecommendation() {
       </section>
 
       <div className="mt-10 space-y-4">
-        <CollectButton idea={idea} match={match} />
+        <CollectButton idea={idea} match={presented} />
         <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:gap-3">
           <Link href={`/ideas/${idea.slug}`} className="btn-ghost btn-block-mobile">
             {t("today.dossier")}

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { listUserCollection, removeFromCollection } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
+import { presentMatch } from "@/lib/i18n/present-match";
+import { emptyProfile, loadProfileFromStorage } from "@/lib/profile";
 import type { CollectionItem } from "@/lib/types";
 
 export function CollectionPage() {
@@ -79,6 +81,10 @@ export function CollectionPage() {
         <ul className="mt-10 divide-y divide-black/10 border-t border-black/10">
           {items.map((item) => {
             const view = localizeIdea(item.idea, locale);
+            const profile = loadProfileFromStorage() ?? emptyProfile();
+            const presented = item.match
+              ? presentMatch(item.match, view, profile, t, locale)
+              : null;
             return (
             <li key={item.id} className="py-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -91,18 +97,18 @@ export function CollectionPage() {
                   </Link>
                   <p className="mt-1 text-xs text-mist">
                     {view.industry} · {view.sector}
-                    {item.match ? ` · ${t("ledger.match", { score: item.match.score })}` : ""}
+                    {presented ? ` · ${t("ledger.match", { score: presented.score })}` : ""}
                   </p>
-                  {item.match?.matched[0] ? (
+                  {presented?.matched[0] ? (
                     <p className="mt-2 text-xs text-celadon">
-                      {t("today.matched")} · {item.match.matched[0].dimension}:{" "}
-                      {item.match.matched[0].detail}
+                      {t("today.matched")} · {presented.matched[0].dimension}:{" "}
+                      {presented.matched[0].detail}
                     </p>
                   ) : null}
-                  {item.match?.gaps[0] ? (
+                  {presented?.gaps[0] ? (
                     <p className="mt-1 text-xs text-mist">
-                      {t("today.gaps")} · {item.match.gaps[0].dimension}:{" "}
-                      {item.match.gaps[0].closeGap}
+                      {t("today.gaps")} · {presented.gaps[0].dimension}:{" "}
+                      {presented.gaps[0].closeGap}
                     </p>
                   ) : null}
                 </div>

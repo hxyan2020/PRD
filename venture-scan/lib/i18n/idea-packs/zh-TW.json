@@ -178,5 +178,644 @@
     "sector": "DevSecOps / GRC",
     "fundingRoundNote": "網路安全天使 + 美國企業戰略方",
     "goForwardSummary": "將盡職調查白標包賣給區域 VC 與企業創投部門，而非追逐每一個新創品牌。"
+  },
+  "stripe-atlas-rails": {
+    "name": "Atlas 公司設立轨道",
+    "description": "幫助創始人远程設立公司、完成合规与銀行開户的編排轨道。",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "Startup Infrastructure",
+    "fundingRoundNote": "Public markets + prior private rounds",
+    "goForwardSummary": "前進路徑：White-label formation packs for regional accelerators under a local brand."
+  },
+  "notion-ops-stack": {
+    "name": "Workspace 运營栈",
+    "description": "面向团队的工作区运營栈，把文档、任务与知识庫连成一体。",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "Collaborative Software",
+    "fundingRoundNote": "Growth equity syndicate",
+    "goForwardSummary": "前進路徑：Spin a manufacturing SOP template pack and sell to factory ops teams."
+  },
+  "canva-design-os": {
+    "name": "视觉設計 OS",
+    "description": "视觉設計 OS：Browser design suite that lets SMBs ship localized creatives without a dedicated studio—templates, brand kits, and magic resize.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "營销科技",
+    "sector": "Creative Tools",
+    "fundingRoundNote": "Late-stage private",
+    "goForwardSummary": "前進路徑：Partner with SEA agency networks on vernacular template marketplaces."
+  },
+  "shopify-merchant-os": {
+    "name": "商户电商 OS",
+    "description": "面向独立站商户的电商操作系统：店面、结账与履约工具。",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "E-commerce",
+    "sector": "Merchant Platforms",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Offer white-label storefront kits to regional conglomerates' SME brands."
+  },
+  "revolut-neo-bank": {
+    "name": "无國界新銀行",
+    "description": "多币种帳戶与跨境消费的新銀行体验。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "Digital Banking",
+    "fundingRoundNote": "SoftBank-led late stage",
+    "goForwardSummary": "前進路徑：License card issuing stacks to ASEAN digital banks entering EU corridors."
+  },
+  "klarna-bnpl-rails": {
+    "name": "灵活结账轨道",
+    "description": "为电商结账提供分期与先买后付的灵活支付轨道。",
+    "businessModel": "商業模式：Merchant discount fee + consumer interest.",
+    "industry": "金融科技",
+    "sector": "Consumer Credit",
+    "fundingRoundNote": "Late-stage private rounds",
+    "goForwardSummary": "前進路徑：Port installment UX to SEA marketplaces with local bank sponsors."
+  },
+  "spotify-audio-graph": {
+    "name": "音频發现图谱",
+    "description": "音频發现图谱：Personalized audio graph that connects podcasts, music, and creator monetization for global listeners.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "媒体",
+    "sector": "Audio Streaming",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Spin a vertical podcast network OS for education publishers."
+  },
+  "industrial-climate-os": {
+    "name": "工業气候 OS",
+    "description": "工業气候 OS：Software that maps plant energy loads, carbon intensity, and retrofit ROI for European manufacturers under CSRD pressure.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "气候科技",
+    "sector": "Industrial Decarbonization",
+    "fundingRoundNote": "Climate growth funds",
+    "goForwardSummary": "前進路徑：Franchise energy-audit crews using the same ROI calculator in secondary DE cities."
+  },
+  "wise-fx-corridor": {
+    "name": "透明外汇走廊",
+    "description": "透明费率的跨境汇款与多币种帳戶走廊。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "跨境支付",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Build Asia–Africa SME payout lanes on the same transparency narrative."
+  },
+  "rappi-super-app": {
+    "name": "拉美超级应用",
+    "description": "拉美超级应用：On-demand delivery, payments, and fintech wallet spanning groceries, restaurants, and last-mile in major LatAm cities.",
+    "businessModel": "商業模式：Delivery fees + ads + fintech take-rate.",
+    "industry": "出行科技",
+    "sector": "On-demand Delivery",
+    "fundingRoundNote": "SoftBank + others",
+    "goForwardSummary": "前進路徑：Franchise city ops cells with shared logistics software in secondary markets."
+  },
+  "nubank-digital-bank": {
+    "name": "紫色數字銀行",
+    "description": "以移动端为先的數字銀行，服务大众零售与信贷。",
+    "businessModel": "商業模式：Interchange + interest + fees.",
+    "industry": "金融科技",
+    "sector": "Digital Banking",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Copy the credit-card-first funnel for SEA underbanked corridors."
+  },
+  "mercadolibre-commerce": {
+    "name": "拉美电商图谱",
+    "description": "拉美电商图谱：Marketplace + logistics + fintech ecosystem connecting sellers and buyers across Spanish- and Portuguese-speaking Americas.",
+    "businessModel": "商業模式：Take-rate + ads + fintech.",
+    "industry": "E-commerce",
+    "sector": "Marketplaces",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Offer logistics middleware to regional retailers as B2B only."
+  },
+  "grab-sea-superapp": {
+    "name": "东南亚出行超级应用",
+    "description": "整合出行、外卖与金融的东南亚超级应用。",
+    "businessModel": "商業模式：Take-rate + fintech + ads.",
+    "industry": "出行科技",
+    "sector": "Multi-service Platforms",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Franchise micro-fleet hubs in tier-2 SEA cities under Grab software."
+  },
+  "gojek-tokopedia": {
+    "name": "群岛超级平台",
+    "description": "群岛超级平台：Combined on-demand services and marketplace for Indonesian consumers spanning rides, food, and e-commerce.",
+    "businessModel": "商業模式：Take-rate + ads + fintech.",
+    "industry": "出行科技",
+    "sector": "Multi-service Platforms",
+    "fundingRoundNote": "Goto Group consolidation",
+    "goForwardSummary": "前進路徑：Spin logistics-only APIs for enterprise shippers."
+  },
+  "paytm-india-wallet": {
+    "name": "印度支付织物",
+    "description": "印度支付织物：Consumer wallet, UPI rails, and merchant acquiring stack connecting India's digital payments economy.",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "Payments",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Sell merchant acquiring APIs to regional banks as white-label."
+  },
+  "razorpay-merchant": {
+    "name": "商户收款栈",
+    "description": "商户收款栈：Payment gateway, payroll, and banking APIs for Indian startups and SMEs going online.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "Merchant Payments",
+    "fundingRoundNote": "Tiger + others",
+    "goForwardSummary": "前進路徑：Clone merchant APIs for Bangladesh/Sri Lanka corridors."
+  },
+  "bytedance-creator-os": {
+    "name": "創作者操作系统",
+    "description": "創作者操作系统：Short-form video platform with creator funds, live commerce, and recommendation engines for global audiences.",
+    "businessModel": "商業模式：Ads + live commerce take-rate.",
+    "industry": "媒体",
+    "sector": "Short Video",
+    "fundingRoundNote": "Private late stage",
+    "goForwardSummary": "前進路徑：Spin education-only short video rails for tutoring brands."
+  },
+  "shein-fast-fashion": {
+    "name": "快时尚供应链",
+    "description": "快时尚供应链：Data-driven apparel design-to-consumer loop that tests micro-batches and scales winners globally.",
+    "businessModel": "商業模式：DTC merchandise margin + marketplace.",
+    "industry": "E-commerce",
+    "sector": "Fashion Retail",
+    "fundingRoundNote": "Private late stage",
+    "goForwardSummary": "前進路徑：License demand-sensing to regional apparel manufacturers."
+  },
+  "coupang-rocket": {
+    "name": "火箭电商履约",
+    "description": "火箭电商履约：E-commerce with owned logistics promising next-day delivery across South Korea and expanding abroad.",
+    "businessModel": "商業模式：Merchandise + marketplace + membership.",
+    "industry": "E-commerce",
+    "sector": "Logistics Commerce",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Franchise rocket-delivery dark stores in secondary KR metros."
+  },
+  "tokopedia-market": {
+    "name": "群岛市場平台",
+    "description": "群岛市場平台：Indonesia-focused marketplace connecting MSMEs with consumers via logistics and payments partners.",
+    "businessModel": "商業模式：Take-rate + ads + fintech.",
+    "industry": "E-commerce",
+    "sector": "Marketplaces",
+    "fundingRoundNote": "Goto Group",
+    "goForwardSummary": "前進路徑：Partner as category operator for specialty MSME verticals."
+  },
+  "sea-shopee": {
+    "name": "东南亚电商引擎",
+    "description": "东南亚电商引擎：Marketplace and gaming-adjacent commerce network with strong Southeast Asian merchant penetration.",
+    "businessModel": "商業模式：Take-rate + ads + fintech + gaming.",
+    "industry": "E-commerce",
+    "sector": "Marketplaces",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Spin a B2B wholesale lane for neighborhood kirana-style shops."
+  },
+  "flutterwave-africa": {
+    "name": "非洲支付網絡",
+    "description": "连接非洲商户与全球支付方式的收款網絡。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "Payments",
+    "fundingRoundNote": "Avenir + others",
+    "goForwardSummary": "前進路徑：Open Asia–Africa merchant corridors for diaspora e-commerce."
+  },
+  "paystack-africa": {
+    "name": "非洲商户支付",
+    "description": "面向非洲商户的在线收款与本地支付方式接入。",
+    "businessModel": "商業模式：Payment MDR.",
+    "industry": "金融科技",
+    "sector": "Merchant Payments",
+    "fundingRoundNote": "Stripe acquisition",
+    "goForwardSummary": "前進路徑：Partner as East Africa reseller for Stripe/Paystack stack."
+  },
+  "andela-talent": {
+    "name": "全球技术人才網絡",
+    "description": "连接全球技术人才与企業工程团队的人才網絡。",
+    "businessModel": "商業模式：Placement margin + managed teams.",
+    "industry": "HR Tech",
+    "sector": "Talent Marketplaces",
+    "fundingRoundNote": "SoftBank Vision Fund",
+    "goForwardSummary": "前進路徑：Sell dedicated squads to EU scale-ups as staff-aug productized offer."
+  },
+  "yassir-maghreb": {
+    "name": "马格里布超级应用",
+    "description": "马格里布超级应用：Ride-hailing, delivery, and payments for North African cities with Arabic-first UX.",
+    "businessModel": "商業模式：Take-rate + fintech.",
+    "industry": "出行科技",
+    "sector": "On-demand Platforms",
+    "fundingRoundNote": "Growth round",
+    "goForwardSummary": "前進路徑：Franchise city ops across Francophone Africa."
+  },
+  "careem-middle-east": {
+    "name": "中东出行超级应用",
+    "description": "中东出行超级应用：Ride-hailing, delivery, and remittance services across Middle East and Pakistan corridors.",
+    "businessModel": "商業模式：Take-rate + fintech.",
+    "industry": "出行科技",
+    "sector": "Multi-service Platforms",
+    "fundingRoundNote": "Uber acquisition",
+    "goForwardSummary": "前進路徑：Spin remittance-only product for GCC–South Asia corridors."
+  },
+  "tabby-bnpl-gcc": {
+    "name": "海湾先买后付",
+    "description": "海湾先买后付：Sharia-friendly installment shopping for GCC consumers embedded at fashion and electronics checkout.",
+    "businessModel": "商業模式：Merchant fees + consumer plans.",
+    "industry": "金融科技",
+    "sector": "Consumer Credit",
+    "fundingRoundNote": "SoftBank + others",
+    "goForwardSummary": "前進路徑：Port installment UX to Muslim-majority SEA markets."
+  },
+  "vtex-commerce": {
+    "name": "企業电商平台",
+    "description": "企業电商平台：Enterprise commerce platform for retailers modernizing storefronts across LatAm and global markets.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "E-commerce",
+    "sector": "Commerce Platforms",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Sell vertical commerce kits to grocery chains as packaged offer."
+  },
+  "dlocal-crossborder": {
+    "name": "新兴市場收款",
+    "description": "跨境支付編排，幫助全球商户在新兴市場用本地支付方式收款。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "跨境支付",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "在 dLocal 轨道下以非洲收款专家身份合作。"
+  },
+  "pieter-patreon-creators": {
+    "name": "創作者会员轨道",
+    "description": "让創作者用会员訂閱向粉丝变现的工具与账单轨道。",
+    "businessModel": "平台抽成。",
+    "industry": "媒体",
+    "sector": "創作者经济",
+    "fundingRoundNote": "SoftBank + others",
+    "goForwardSummary": "前進路徑：Spin education-tutor membership packs for Asian tutoring brands."
+  },
+  "airtable-ops-db": {
+    "name": "运營數据庫",
+    "description": "运營數据庫：Spreadsheet-database hybrid that lets ops teams model workflows without engineering tickets.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "No-Code Platforms",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Ship a clinic ops base template and sell to outpatient groups."
+  },
+  "figma-design-collab": {
+    "name": "协作設計画布",
+    "description": "实时协作的专業設計画布与组件系统。",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "Design Tools",
+    "fundingRoundNote": "Adobe acquisition path",
+    "goForwardSummary": "前進路徑：Offer agency white-label design system kits as packaged SKUs."
+  },
+  "databricks-lakehouse": {
+    "name": "湖仓一体平台",
+    "description": "统一數据分析、工程与 AI 的湖仓一体平台。",
+    "businessModel": "平台抽成。",
+    "industry": "Enterprise Software",
+    "sector": "Data Platforms",
+    "fundingRoundNote": "Mega late-stage rounds",
+    "goForwardSummary": "前進路徑：Package industry lakehouse starters for banks and telcos."
+  },
+  "openai-platform": {
+    "name": "大模型平台",
+    "description": "面向開發者与企業的大语言模型与 API 平台。",
+    "businessModel": "商業模式：API usage + enterprise seats.",
+    "industry": "人工智能",
+    "sector": "基础模型",
+    "fundingRoundNote": "Microsoft + others",
+    "goForwardSummary": "前進路徑：Build vertical agents on the API and sell to regulated industries."
+  },
+  "anthropic-claude": {
+    "name": "安全对齐模型",
+    "description": "安全对齐模型：Enterprise-safe large language models and tooling emphasizing controllability and long-context work.",
+    "businessModel": "商業模式：API usage + enterprise contracts.",
+    "industry": "人工智能",
+    "sector": "基础模型",
+    "fundingRoundNote": "Amazon + others",
+    "goForwardSummary": "前進路徑：Ship compliance-review agents for legal and finance desks."
+  },
+  "mistral-europe-ai": {
+    "name": "欧洲開源模型",
+    "description": "欧洲開源模型：Open-weight and commercial frontier models built in Europe for sovereignty-conscious buyers.",
+    "businessModel": "商業模式：API + enterprise licenses.",
+    "industry": "人工智能",
+    "sector": "基础模型",
+    "fundingRoundNote": "European + US strategic",
+    "goForwardSummary": "前進路徑：Partner as APAC distributor for sovereign AI deployments."
+  },
+  "deepmind-science": {
+    "name": "科学智能引擎",
+    "description": "科学智能引擎：Research-driven AI applied to science, biology, and complex systems with enterprise partnerships.",
+    "businessModel": "商業模式：Strategic partnerships + cloud.",
+    "industry": "人工智能",
+    "sector": "Research Platforms",
+    "fundingRoundNote": "Google DeepMind",
+    "goForwardSummary": "前進路徑：License domain models into pharma discovery workflows."
+  },
+  "personio-hr-eu": {
+    "name": "欧洲 HR 套件",
+    "description": "欧洲 HR 套件：All-in-one HRIS for European SMEs covering hiring, payroll, and people ops with local compliance.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "HR Tech",
+    "sector": "HRIS",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Localize payroll modules for SEA multi-entity startups."
+  },
+  "contentful-cms": {
+    "name": "无头内容平台",
+    "description": "无头内容平台：Headless CMS that lets global brands ship omnichannel content with structured models.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "營销科技",
+    "sector": "CMS",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Ship a retail PDP content kit as a vertical SKU."
+  },
+  "celonis-process": {
+    "name": "流程挖掘智能",
+    "description": "流程挖掘智能：Process mining platform that reconstructs how enterprises actually run and finds automation ROI.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "Enterprise Software",
+    "sector": "Process Intelligence",
+    "fundingRoundNote": "Late-stage private",
+    "goForwardSummary": "前進路徑：Package process kits for banks' KYC/ops lines."
+  },
+  "ui-path-rpa": {
+    "name": "企業 RPA 自动化",
+    "description": "企業 RPA 自动化：Robotic process automation and AI agents that take repetitive desktop and API work off human queues.",
+    "businessModel": "商業模式：Enterprise licenses.",
+    "industry": "Enterprise Software",
+    "sector": "Automation",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Ship healthcare claims automation packs as vertical products."
+  },
+  "hashicorp-infra": {
+    "name": "基础設施即代码",
+    "description": "基础設施即代码：Terraform and secrets tooling that standardizes cloud provisioning for platform engineering teams.",
+    "businessModel": "商業模式：Open core + enterprise.",
+    "industry": "DevTools",
+    "sector": "Infrastructure",
+    "fundingRoundNote": "IBM acquisition path",
+    "goForwardSummary": "前進路徑：Offer managed Terraform Cloud pods to regional MSPs."
+  },
+  "gitlab-devops": {
+    "name": "一体化 DevOps",
+    "description": "一体化 DevOps：End-to-end DevSecOps platform from plan to deploy with integrated security scanning.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "DevTools",
+    "sector": "DevSecOps",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Partner as regulated-industry GitLab reseller with compliance packs."
+  },
+  "sentry-observability": {
+    "name": "应用可观测性",
+    "description": "应用可观测性：Developer observability that catches production errors and performance regressions before users churn.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "DevTools",
+    "sector": "可观测性",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Ship mobile-game crash packs as a vertical SKU."
+  },
+  "vercel-frontend": {
+    "name": "前端云平台",
+    "description": "前端云平台：Deploy platform for Next.js and modern frontends with edge networks and preview workflows.",
+    "businessModel": "商業模式：Usage + seats.",
+    "industry": "DevTools",
+    "sector": "Frontend Cloud",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Sell enterprise frontend platforms to agencies as white-label hosting."
+  },
+  "supabase-backend": {
+    "name": "開源后端即服务",
+    "description": "開源后端即服务：Postgres-backed backend-as-a-service with auth, storage, and realtime for indie and startup builders.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "DevTools",
+    "sector": "Backend Platforms",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Partner as regional managed Supabase host for regulated data residency."
+  },
+  "pleo-spend": {
+    "name": "智能支出卡",
+    "description": "智能支出卡：Corporate cards and spend management for European SMEs with automated bookkeeping sync.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "支出管理",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Localize spend cards for Singapore/HK multi-entity startups."
+  },
+  "hopin-events": {
+    "name": "虚拟活动平台",
+    "description": "虚拟活动平台：Event platform for hybrid conferences with stages, expo halls, and networking rooms.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "營销科技",
+    "sector": "Events",
+    "fundingRoundNote": "Peak private valuation era",
+    "goForwardSummary": "前進路徑：Spin investor-day event kits for IR teams."
+  },
+  "checkout-com": {
+    "name": "全球支付編排",
+    "description": "为平台与商户提供的全球支付編排与本地收单能力。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "Payments",
+    "fundingRoundNote": "SoftBank + others",
+    "goForwardSummary": "前進路徑：Partner as LatAm acquiring specialist under Checkout rails."
+  },
+  "adyen-acquiring": {
+    "name": "全球收单網絡",
+    "description": "服务全球商户的统一收单与支付处理網絡。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "Payments",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Package unified-commerce kits for regional retail conglomerates."
+  },
+  "bolt-estonia": {
+    "name": "欧洲出行網絡",
+    "description": "欧洲出行網絡：Ride-hailing and micromobility with food delivery expansion across Europe and Africa.",
+    "businessModel": "商業模式：Take-rate.",
+    "industry": "出行科技",
+    "sector": "Ride-hailing",
+    "fundingRoundNote": "Late-stage private",
+    "goForwardSummary": "前進路徑：Franchise city fleets in secondary African metros."
+  },
+  "wolt-delivery": {
+    "name": "本地即时配送",
+    "description": "本地即时配送：Food and retail delivery platform with strong Nordic and CEE city density, now under DoorDash.",
+    "businessModel": "商業模式：Delivery fees + ads.",
+    "industry": "出行科技",
+    "sector": "Food Delivery",
+    "fundingRoundNote": "DoorDash acquisition",
+    "goForwardSummary": "前進路徑：Franchise dark-store pods for grocery in secondary cities."
+  },
+  "swan-banking-as-a-service": {
+    "name": "銀行即服务",
+    "description": "銀行即服务：Banking-as-a-service APIs letting European fintechs and platforms embed accounts and cards.",
+    "businessModel": "商業模式：BaaS fees + interchange share.",
+    "industry": "金融科技",
+    "sector": "銀行即服务",
+    "fundingRoundNote": "European fintech funds",
+    "goForwardSummary": "前進路徑：Partner as vertical BaaS integrator for payroll platforms."
+  },
+  "qonto-sme-bank": {
+    "name": "中小企業銀行",
+    "description": "中小企業銀行：Business accounts, cards, and bookkeeping for European freelancers and SMEs.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "Business Banking",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Localize SME banking UX for Singapore/HK freelancers."
+  },
+  "alan-health": {
+    "name": "欧洲數字医保",
+    "description": "欧洲數字医保：Mobile-first health insurance and care navigation for European employees and freelancers.",
+    "businessModel": "商業模式：Insurance premiums + care services.",
+    "industry": "健康科技",
+    "sector": "InsurTech",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Franchise care navigation pods in secondary EU cities."
+  },
+  "doctors-without-wait": {
+    "name": "即时问诊網絡",
+    "description": "即时问诊網絡：App-based primary care and mental health visits that reduce clinic wait times for urban professionals.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "健康科技",
+    "sector": "Telehealth",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Localize async care for Japan/Korea private hospital groups."
+  },
+  "cognition-devin": {
+    "name": "自主软件工程师",
+    "description": "自主软件工程师：AI software engineer agents that take tickets from backlog to pull request for product teams.",
+    "businessModel": "商業模式：Seat + usage enterprise.",
+    "industry": "人工智能",
+    "sector": "Developer Agents",
+    "fundingRoundNote": "Founders Fund + others",
+    "goForwardSummary": "前進路徑：Sell agents to IT services firms as delivery multipliers."
+  },
+  "runway-ml-video": {
+    "name": "生成式视频工作室",
+    "description": "生成式视频工作室：AI video generation and editing tools used by creators and studios for rapid content iteration.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "人工智能",
+    "sector": "Generative Media",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Spin ad-only video packs for performance agencies."
+  },
+  "elevenlabs-voice": {
+    "name": "生成式语音",
+    "description": "生成式语音：High-fidelity AI voice generation and dubbing for creators, games, and localization teams.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "人工智能",
+    "sector": "Voice AI",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Build Asian language voice packs with local studio partners."
+  },
+  "perplexity-answer": {
+    "name": "答案引擎",
+    "description": "答案引擎：Cited answer engine that combines search and generative AI for research and decision workflows.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "人工智能",
+    "sector": "Search",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Sell research desks to consulting firms as private answer engines."
+  },
+  "cursor-coding": {
+    "name": "AI 结对编程",
+    "description": "把 AI 结对编程嵌入本地開發工作流的代码编辑器。",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "DevTools",
+    "sector": "AI Coding",
+    "fundingRoundNote": "a16z + others",
+    "goForwardSummary": "前進路徑：Sell org-wide IDE seats via SI partners to enterprises."
+  },
+  "loom-async-video": {
+    "name": "异步视频消息",
+    "description": "异步视频消息：Lightweight screen-and-cam recording for async updates that replace status meetings.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "Async Collaboration",
+    "fundingRoundNote": "Atlassian acquisition",
+    "goForwardSummary": "前進路徑：Spin customer-success update packs for SaaS CS teams."
+  },
+  "miro-whiteboard": {
+    "name": "远程白板协作",
+    "description": "远程白板协作：Online whiteboard for workshops, product discovery, and distributed team facilitation.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "Collaboration",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Ship consulting workshop kits as vertical templates."
+  },
+  "webflow-sites": {
+    "name": "可视化建站",
+    "description": "可视化建站：Visual development platform for marketing sites and web apps without traditional CMS bottlenecks.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "營销科技",
+    "sector": "Website Builders",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Franchise Webflow agencies in secondary Asian markets."
+  },
+  "intercom-support": {
+    "name": "客户沟通平台",
+    "description": "客户沟通平台：Customer support platform blending inbox, help center, and AI agents for product companies.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "客户支持",
+    "fundingRoundNote": "Growth equity",
+    "goForwardSummary": "前進路徑：Spin fintech support agents trained on card/dispute workflows."
+  },
+  "hubspot-crm": {
+    "name": "增长型 CRM",
+    "description": "面向增长团队的入站營销与 CRM 平台。",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "客户关系管理",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Localize CRM playbooks for SEA SMB agencies."
+  },
+  "atlassian-work": {
+    "name": "团队协作套件",
+    "description": "团队协作套件：Jira, Confluence, and related tools that organize software delivery for enterprises worldwide.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "Enterprise Software",
+    "sector": "Work Management",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Package ITSM starter kits for mid-market via partners."
+  },
+  "xero-accounting": {
+    "name": "云会計平台",
+    "description": "云会計平台：Online accounting for small businesses with bank feeds, invoicing, and accountant ecosystems.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "会計",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Localize GST/VAT packs for SEA SMEs with accounting partners."
+  },
+  "canva-affinity": {
+    "name": "专業創意套件",
+    "description": "专業創意套件：Template-led creative platform path that many regional design tools still emulate for SMB GTM.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "營销科技",
+    "sector": "Creative Tools",
+    "fundingRoundNote": "Open seed for regional clone",
+    "goForwardSummary": "前進路徑：Franchise vernacular template studios in secondary markets."
+  },
+  "freshworks-crm": {
+    "name": "中小企業 CRM",
+    "description": "中小企業 CRM：CRM and support suite aimed at mid-market teams that want Salesforce power without Salesforce complexity.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "客户关系管理",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "前進路徑：Double down India/SEA mid-market packs with local SI partners."
+  },
+  "zoho-suite": {
+    "name": "一体化商务套件",
+    "description": "一体化商务套件：Broad productivity and ops suite from India spanning CRM, email, and finance for cost-sensitive SMEs.",
+    "businessModel": "訂閱 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "Business Suites",
+    "fundingRoundNote": "Profit-funded growth",
+    "goForwardSummary": "前進路徑：Franchise localized implementation shops for Zoho suites in secondary cities."
   }
 }

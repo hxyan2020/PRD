@@ -95,8 +95,11 @@ export function localizeIdeaFieldLabel(
   return englishValue;
 }
 
-export function ideaPackCoverage(locale: LocaleCode): { total: number; translated: number } {
-  const enSlugs = Object.keys(IDEA_PACKS.en);
+export function ideaPackCoverage(
+  locale: LocaleCode,
+  slugs?: string[],
+): { total: number; translated: number } {
+  const enSlugs = slugs ?? Object.keys(IDEA_PACKS.en);
   if (locale === "en") return { total: enSlugs.length, translated: enSlugs.length };
   const pack = IDEA_PACKS[locale] ?? {};
   let translated = 0;

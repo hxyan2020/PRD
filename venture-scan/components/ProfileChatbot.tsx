@@ -11,6 +11,7 @@ import {
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
 import type { MessageKey } from "@/lib/i18n/messages";
+import { presentMatch } from "@/lib/i18n/present-match";
 import {
   clearProfileStorage,
   emptyProfile,
@@ -364,6 +365,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
           <ul className="mt-4 divide-y divide-black/10">
             {topMatches.map(({ idea, match }) => {
               const view = localizeIdea(idea, locale);
+              const presented = presentMatch(match, view, profile, t, locale);
               return (
               <li key={idea.id} className="py-3">
                 <Link href={`/ideas/${idea.slug}`} className="group block">
@@ -376,16 +378,18 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
                         {view.industry} · {view.sector}
                       </p>
                     </div>
-                    <ScorePill score={match.score} />
+                    <ScorePill score={presented.score} />
                   </div>
-                  {match.matched[0] ? (
+                  {presented.matched[0] ? (
                     <p className="mt-2 text-xs text-celadon/90">
-                      Matched · {match.matched[0].dimension}: {match.matched[0].detail}
+                      {t("today.matched")} · {presented.matched[0].dimension}:{" "}
+                      {presented.matched[0].detail}
                     </p>
                   ) : null}
-                  {match.gaps[0] ? (
+                  {presented.gaps[0] ? (
                     <p className="mt-1 text-xs text-mist">
-                      Gap · {match.gaps[0].dimension}: {match.gaps[0].closeGap}
+                      {t("today.gaps")} · {presented.gaps[0].dimension}:{" "}
+                      {presented.gaps[0].closeGap}
                     </p>
                   ) : null}
                 </Link>

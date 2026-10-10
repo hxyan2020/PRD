@@ -232,6 +232,68 @@ const en = {
   "today.updateProfile": "Update profile",
   "today.collection": "View collection",
   "today.dateLabel": "Today's recommendation · {day}",
+  "today.scoreMatch": "{score}% match",
+
+  "match.dim.skills": "Skills",
+  "match.dim.major": "Major / background",
+  "match.dim.currentBusiness": "Current business",
+  "match.dim.interestedDomains": "Interested domains",
+  "match.dim.preferredMarkets": "Preferred markets",
+
+  "match.explain.skills.hit":
+    "Your skills ({skills}) align with how {name} operates.",
+  "match.explain.skills.hitEmpty": "No skills on your profile yet.",
+  "match.explain.skills.gap":
+    "Skill overlap with {industry} / {sector} is still thin.",
+  "match.explain.skills.gapEmpty": "Skills are missing from your profile.",
+  "match.explain.skills.close":
+    "Practice one concrete skill used in {sector} this week (e.g. a mini project, customer interview, or tool tutorial), then add it to your profile.",
+  "match.explain.skills.closeEmpty":
+    "Open the match chatbot and list 3–5 skills so we can score this dimension.",
+
+  "match.explain.major.hit": "Your background ({major}) fits {industry}.",
+  "match.explain.major.hitEmpty": "No major / background on your profile yet.",
+  "match.explain.major.gap":
+    "Your background ({major}) does not yet map cleanly onto {industry}.",
+  "match.explain.major.gapEmpty": "Academic / professional background is missing.",
+  "match.explain.major.close":
+    "Ship a 1-week bridge project that applies {major} to {sector}, then note the outcome in your profile notes.",
+  "match.explain.major.closeEmpty":
+    "Tell the chatbot your major or professional background.",
+
+  "match.explain.business.hit":
+    "Your current work ({business}) overlaps this business model.",
+  "match.explain.business.hitEmpty": "No current business on your profile yet.",
+  "match.explain.business.gap":
+    "Your current work ({business}) is adjacent, not core, to {name}'s model.",
+  "match.explain.business.gapEmpty": "Current business / focus is missing.",
+  "match.explain.business.close":
+    "Pilot the go-forward play “{strategy}” inside your existing operation for 2 weeks: {summary}",
+  "match.explain.business.closeEmpty":
+    "Describe your current job or venture in the chatbot so we can map operational fit.",
+
+  "match.explain.domains.hit": "Your interests ({domains}) hit {sector}.",
+  "match.explain.domains.hitEmpty": "No interested domains on your profile yet.",
+  "match.explain.domains.gap":
+    "Stated interests ({domains}) only weakly cover {industry} / {sector}.",
+  "match.explain.domains.gapEmpty": "Interested domains are missing.",
+  "match.explain.domains.close":
+    "Spend 3 hours this week in {sector} (read 2 primary sources, talk to 1 operator), then add “{industry}” to your interested domains if it sticks.",
+  "match.explain.domains.closeEmpty":
+    "List the domains you care about in the match chatbot.",
+
+  "match.explain.markets.hit":
+    "Your markets ({markets}) overlap {country} or the localization play.",
+  "match.explain.markets.hitEmpty":
+    "No preferred markets on your profile yet (optional).",
+  "match.explain.markets.gap":
+    "Your markets ({markets}) do not yet overlap {country} or its go-forward geography.",
+  "match.explain.markets.gapEmpty":
+    "Preferred markets are unset, so geo fit is weak.",
+  "match.explain.markets.close":
+    "Map a local entry for {market}: customer, partner, and regulation checklist based on “{strategy}”.",
+  "match.explain.markets.closeEmpty":
+    "Add preferred countries/markets in the chatbot to unlock geo scoring.",
 
   "auth.loginKicker": "Sign in",
   "auth.registerKicker": "Create account",

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { catalogIdeas } from "../catalog";
 import { FEATURED_SEED_IDEAS } from "../seed-ideas";
 import { LOCALES } from "./locales";
 import { ideaPackCoverage, localizeIdea, localizeIdeaFieldLabel } from "./localize-idea";
@@ -23,12 +24,22 @@ describe("localizeIdea", () => {
   });
 
   it("covers all locales with translated descriptions for featured ideas", () => {
+    const featuredSlugs = FEATURED_SEED_IDEAS.map((i) => i.slug);
     for (const locale of LOCALES) {
       if (locale.code === "en") continue;
-      const { total, translated } = ideaPackCoverage(locale.code);
+      const { total, translated } = ideaPackCoverage(locale.code, featuredSlugs);
       expect(total).toBe(FEATURED_SEED_IDEAS.length);
       expect(translated).toBe(FEATURED_SEED_IDEAS.length);
     }
+  });
+
+  it("localizes expanded catalog ideas in zh-CN", () => {
+    const idea = catalogIdeas().find((i) => i.slug === "dlocal-crossborder");
+    expect(idea).toBeTruthy();
+    const view = localizeIdea(idea!, "zh-CN");
+    expect(view.name).toBe("新兴市场收款");
+    expect(view.description).toContain("跨境支付");
+    expect(view.industry).toBe("金融科技");
   });
 
   it("localizes industry filter labels while preserving English option values", () => {
