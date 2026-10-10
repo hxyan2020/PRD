@@ -9,6 +9,7 @@ import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea, localizeIdeaFieldLabel } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
+import { rankByFundingSecured, rankByMatchScore } from "@/lib/rank-ideas";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
 
 type Meta = {
@@ -30,16 +31,20 @@ export function IdeaExplorer({
   const [sector, setSector] = useState("");
   const [country, setCountry] = useState("");
   const [fundraising, setFundraising] = useState<"all" | "yes" | "no">("all");
-  const [sortByMatch, setSortByMatch] = useState(false);
   const [ideas, setIdeas] = useState(initialIdeas);
   const [matches, setMatches] = useState<Record<string, IdeaMatch>>({});
+  const [hasProfile, setHasProfile] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanNote, setScanNote] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   useEffect(() => {
     const profile = loadProfileFromStorage();
-    if (!profile || !isProfileReady(profile)) return;
+    if (!profile || !isProfileReady(profile)) {
+      setHasProfile(false);
+      return;
+    }
+    setHasProfile(true);
     let cancelled = false;
     void (async () => {
       try {
@@ -48,7 +53,6 @@ export function IdeaExplorer({
         const map: Record<string, IdeaMatch> = {};
         for (const m of data.matches) map[m.slug] = m;
         setMatches(map);
-        setSortByMatch(true);
       } catch {
         // Profile matching is optional on the ledger.
       }
@@ -59,7 +63,7 @@ export function IdeaExplorer({
   }, []);
 
   const filtered = useMemo(() => {
-    let rows = ideas.filter((idea) => {
+    const rows = ideas.filter((idea) => {
       if (industry && idea.industry !== industry) return false;
       if (sector && idea.sector !== sector) return false;
       if (country && idea.teamCountry !== country) return false;
@@ -87,13 +91,11 @@ export function IdeaExplorer({
       return true;
     });
 
-    if (sortByMatch && Object.keys(matches).length) {
-      rows = [...rows].sort(
-        (a, b) => (matches[b.slug]?.score ?? -1) - (matches[a.slug]?.score ?? -1),
-      );
+    if (hasProfile && Object.keys(matches).length) {
+      return rankByMatchScore(rows, matches);
     }
-    return rows;
-  }, [ideas, q, industry, sector, country, fundraising, sortByMatch, matches, locale]);
+    return rankByFundingSecured(rows);
+  }, [ideas, q, industry, sector, country, fundraising, hasProfile, matches, locale]);
 
   async function rescan() {
     setScanning(true);
@@ -125,7 +127,7 @@ export function IdeaExplorer({
           <h2 className="font-display text-3xl text-foam sm:text-4xl">{t("ledger.title")}</h2>
           <p className="mt-2 max-w-xl text-sm text-mist">
             {t("ledger.body")}
-            {hasMatches ? t("ledger.sorted") : ""}
+            {hasMatches ? t("ledger.sorted") : t("ledger.sortedFunding")}
           </p>
         </div>
         <div className="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:flex-wrap">
@@ -133,15 +135,7 @@ export function IdeaExplorer({
             <Link href="/today" className="btn-primary btn-block-mobile shrink-0">
               {t("ledger.buildProfile")}
             </Link>
-          ) : (
-            <button
-              type="button"
-              className="btn-ghost btn-block-mobile shrink-0"
-              onClick={() => setSortByMatch((v) => !v)}
-            >
-              {sortByMatch ? t("ledger.sortMatch") : t("ledger.sortRecent")}
-            </button>
-          )}
+          ) : null}
           <button
             type="button"
             className="btn-ghost btn-block-mobile shrink-0"

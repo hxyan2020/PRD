@@ -7,13 +7,13 @@ import {
   articleCitationsForIdea,
   ideaArticleManifestSize,
 } from "./idea-articles";
-import { SEED_IDEAS } from "./seed-ideas";
+import { FEATURED_SEED_IDEAS } from "./seed-ideas";
 
 describe("idea articles", () => {
-  it("ships at least one specific article with a local image for every seed idea", () => {
-    expect(ideaArticleManifestSize()).toBeGreaterThanOrEqual(SEED_IDEAS.length);
+  it("ships at least one specific article with a local image for every featured seed idea", () => {
+    expect(ideaArticleManifestSize()).toBeGreaterThanOrEqual(FEATURED_SEED_IDEAS.length);
 
-    for (const idea of SEED_IDEAS) {
+    for (const idea of FEATURED_SEED_IDEAS) {
       const cards = articleCardsForIdea(idea.slug, 6);
       expect(cards.length, idea.slug).toBeGreaterThan(0);
       for (const card of cards) {
@@ -30,7 +30,7 @@ describe("idea articles", () => {
   });
 
   it("exposes article citations with article URLs for Q&A", () => {
-    const idea = SEED_IDEAS[0];
+    const idea = FEATURED_SEED_IDEAS[0];
     const citations = articleCitationsForIdea(idea.slug, 3);
     expect(citations.length).toBeGreaterThan(0);
     for (const c of citations) {

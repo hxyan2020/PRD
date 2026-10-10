@@ -1,9 +1,13 @@
+import { allScanIdeas } from "./expanded-ideas";
 import type { StartupIdea } from "./types";
 
 const scannedAt = "2026-10-09T08:00:00.000Z";
 
-/** Curated worldwide startup + fundraising signals used by the scanner. */
-export const SEED_IDEAS: StartupIdea[] = [
+/**
+ * Featured dossiers with localized copy + article galleries.
+ * Full scan catalog is FEATURED + expanded signals (see SEED_IDEAS).
+ */
+export const FEATURED_SEED_IDEAS: StartupIdea[] = [
   {
     id: "idea_01",
     slug: "reef-credit-exchange",
@@ -621,3 +625,6 @@ export const SEED_IDEAS: StartupIdea[] = [
     tags: ["cyber", "DevSecOps", "Israel", "SaaS"],
   },
 ];
+
+/** Full scan catalog: featured dossiers plus expanded worldwide signals. */
+export const SEED_IDEAS: StartupIdea[] = allScanIdeas(FEATURED_SEED_IDEAS);

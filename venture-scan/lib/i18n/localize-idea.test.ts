@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { SEED_IDEAS } from "../seed-ideas";
+import { FEATURED_SEED_IDEAS } from "../seed-ideas";
 import { LOCALES } from "./locales";
 import { ideaPackCoverage, localizeIdea, localizeIdeaFieldLabel } from "./localize-idea";
 
 describe("localizeIdea", () => {
   it("keeps English ideas unchanged for en", () => {
-    const idea = SEED_IDEAS[0];
+    const idea = FEATURED_SEED_IDEAS[0];
     expect(localizeIdea(idea, "en")).toBe(idea);
   });
 
-  it("translates zh-CN idea copy for every seed idea", () => {
-    for (const idea of SEED_IDEAS) {
+  it("translates zh-CN idea copy for every featured seed idea", () => {
+    for (const idea of FEATURED_SEED_IDEAS) {
       const view = localizeIdea(idea, "zh-CN");
       expect(view.description).not.toBe(idea.description);
       expect(view.description.length).toBeGreaterThan(10);
@@ -22,12 +22,12 @@ describe("localizeIdea", () => {
     }
   });
 
-  it("covers all locales with translated descriptions", () => {
+  it("covers all locales with translated descriptions for featured ideas", () => {
     for (const locale of LOCALES) {
       if (locale.code === "en") continue;
       const { total, translated } = ideaPackCoverage(locale.code);
-      expect(total).toBe(SEED_IDEAS.length);
-      expect(translated).toBe(SEED_IDEAS.length);
+      expect(total).toBe(FEATURED_SEED_IDEAS.length);
+      expect(translated).toBe(FEATURED_SEED_IDEAS.length);
     }
   });
 

@@ -91,7 +91,8 @@ const en = {
   "ledger.title": "Idea ledger",
   "ledger.body":
     "Each entry includes name, description, team, industry, sector, fundraising, website, socials, and a suggested go-forward play.",
-  "ledger.sorted": " Sorted by your chatbot profile match score.",
+  "ledger.sorted": " Ranked most → least matched to your profile.",
+  "ledger.sortedFunding": " Ranked by most fundraising secured.",
   "ledger.buildProfile": "Build today's profile",
   "ledger.sortMatch": "Sort: match score",
   "ledger.sortRecent": "Sort: recent scan",
