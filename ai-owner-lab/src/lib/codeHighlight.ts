@@ -140,6 +140,8 @@ export function restoreCollapsedCodeLines(code: string, _language?: string | nul
   next = next.replace(/("(?:\\.|[^"\\])*")(?=-\s*)/g, '$1\n')
   // yaml/json object close jammed: }key: or ]key:
   next = next.replace(/([}\]])(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
+  // empty value jammed into next key: purpose:business_objective:
+  next = next.replace(/(:)(?=[A-Za-z_][\w.-]*\s*:)/g, '$1\n')
 
   return next
 }
