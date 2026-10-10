@@ -1,3 +1,4 @@
+import { highlightRange } from './rangeHighlight'
 import { sanitizeHtml } from './sanitizeHtml'
 
 const DEFAULT_HIGHLIGHT = '#fde68a'
@@ -18,25 +19,7 @@ export function highlightSelectionInNotebookQuote(
   if (!entryId || entry.classList.contains('editing')) return null
   if (!quote.contains(range.commonAncestorContainer)) return null
 
-  const mark = document.createElement('mark')
-  mark.style.backgroundColor = color
-  mark.style.color = 'inherit'
-
-  try {
-    range.surroundContents(mark)
-  } catch {
-    const fragment = range.extractContents()
-    mark.appendChild(fragment)
-    range.insertNode(mark)
-  }
-
-  // Normalize nested marks created by overlapping highlights.
-  quote.querySelectorAll('mark mark').forEach((inner) => {
-    const parent = inner.parentElement
-    if (!parent) return
-    while (inner.firstChild) parent.insertBefore(inner.firstChild, inner)
-    inner.remove()
-  })
+  if (!highlightRange(range, color)) return null
 
   const html = sanitizeHtml(quote.innerHTML)
   selection.removeAllRanges()

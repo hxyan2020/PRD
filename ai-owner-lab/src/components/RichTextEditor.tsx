@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { sanitizeHtml } from '../lib/sanitizeHtml'
 import { fileToNoteImageDataUrl, isAllowedImageMime } from '../lib/noteImage'
+import { clearHighlightInRange, highlightRange } from '../lib/rangeHighlight'
 import { useLanguage } from '../i18n/LanguageContext'
 
 const COLORS = [
@@ -122,80 +123,19 @@ function hasVisibleContent(html: string): boolean {
   return Boolean(html.replace(/<br\s*\/?>|&nbsp;|\s|<\/?[^>]+>/gi, '').trim())
 }
 
-function wrapSelectionWithMark(color: string) {
+function applyHighlightColor(color: string, editor: HTMLElement | null) {
   const selection = window.getSelection()
-  if (!selection || !selection.rangeCount || selection.isCollapsed) return false
+  if (!selection || !selection.rangeCount || selection.isCollapsed) return
   const range = selection.getRangeAt(0)
-  const mark = document.createElement('mark')
-  mark.style.backgroundColor = color
-  mark.style.color = 'inherit'
-  try {
-    range.surroundContents(mark)
-  } catch {
-    const fragment = range.extractContents()
-    mark.appendChild(fragment)
-    range.insertNode(mark)
-  }
-  selection.removeAllRanges()
-  const next = document.createRange()
-  next.selectNodeContents(mark)
-  selection.addRange(next)
-  return true
-}
-
-function clearHighlightInSelection() {
-  const selection = window.getSelection()
-  if (!selection || !selection.rangeCount || selection.isCollapsed) {
-    runCommand('hiliteColor', 'transparent')
-    runCommand('backColor', 'transparent')
-    return
-  }
-  const range = selection.getRangeAt(0)
-  const root =
-    range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
-      ? (range.commonAncestorContainer as HTMLElement)
-      : range.commonAncestorContainer.parentElement
-  if (!root) return
-  const marks = root.closest('.rte-editor')?.querySelectorAll('mark') ?? []
-  marks.forEach((mark) => {
-    if (!selection.containsNode(mark, true)) return
-    const parent = mark.parentNode
-    if (!parent) return
-    while (mark.firstChild) parent.insertBefore(mark.firstChild, mark)
-    parent.removeChild(mark)
-  })
-  runCommand('hiliteColor', 'transparent')
-  runCommand('backColor', 'transparent')
-}
-
-function selectionLooksHighlighted(color: string): boolean {
-  const selection = window.getSelection()
-  if (!selection || !selection.rangeCount || selection.isCollapsed) return false
-  const node = selection.anchorNode
-  const el =
-    node?.nodeType === Node.ELEMENT_NODE ? (node as Element) : node?.parentElement
-  if (!el) return false
-  const marked = el.closest('mark, span[style*="background"]')
-  if (!marked) return false
-  const style = (marked as HTMLElement).style?.backgroundColor || ''
-  const attr = marked.getAttribute('style') || ''
-  const hay = `${style} ${attr}`.toLowerCase()
-  return hay.includes(color.toLowerCase()) || hay.includes('rgb(')
-}
-
-function applyHighlightColor(color: string) {
   if (color === 'transparent') {
-    clearHighlightInSelection()
+    clearHighlightInRange(range, editor)
     return
   }
-  // Prefer wrapping with <mark> — reliable across browsers and after toolbar focus moves.
-  if (wrapSelectionWithMark(color)) return
-  const applied =
-    document.execCommand('hiliteColor', false, color) ||
+  // Text-node wrapping works across multiple list rows / bullets.
+  if (highlightRange(range, color)) return
+  // Fallback for odd browser selections.
+  document.execCommand('hiliteColor', false, color) ||
     document.execCommand('backColor', false, color)
-  if (!applied || !selectionLooksHighlighted(color)) {
-    wrapSelectionWithMark(color)
-  }
 }
 
 export function RichTextEditor({
@@ -455,7 +395,9 @@ export function RichTextEditor({
                 e.preventDefault()
                 captureSelection()
               }}
-              onClick={() => withFocus(() => applyHighlightColor(color.value))}
+              onClick={() =>
+                withFocus(() => applyHighlightColor(color.value, editorRef.current))
+              }
             />
           ))}
           <button
@@ -467,7 +409,9 @@ export function RichTextEditor({
               e.preventDefault()
               captureSelection()
             }}
-            onClick={() => withFocus(() => applyHighlightColor('transparent'))}
+            onClick={() =>
+              withFocus(() => applyHighlightColor('transparent', editorRef.current))
+            }
           >
             /
           </button>
