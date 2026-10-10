@@ -76,14 +76,16 @@ export const notebookStore = {
     write([entry, ...read()])
     return entry
   },
-  addNote(input: { text: string }) {
+  addNote(input: { text: string; title?: string }) {
     // Caller may pass sanitized HTML; empty check is done upstream via plain text.
     const text = input.text.trim()
     if (!text) return null
+    const title = input.title?.trim() || undefined
     const entry: NotebookEntry = {
       id: uid(),
       createdAt: new Date().toISOString(),
       type: 'note',
+      title,
       selectedText: text,
       sourceLabel: 'Notebook',
     }
@@ -93,6 +95,7 @@ export const notebookStore = {
   update(
     id: string,
     patch: {
+      title?: string
       selectedText?: string
       explanation?: string
     },
@@ -111,8 +114,15 @@ export const notebookStore = {
       explanation = next || undefined
     }
 
+    let title = current.title
+    if (patch.title !== undefined) {
+      const next = patch.title.trim()
+      title = next || undefined
+    }
+
     const updated: NotebookEntry = {
       ...current,
+      title,
       selectedText,
       explanation: current.type === 'explanation' ? explanation ?? '' : explanation,
       updatedAt: new Date().toISOString(),

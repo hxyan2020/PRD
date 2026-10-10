@@ -31,19 +31,23 @@ export function Notebook() {
   const { entries, count, addNote, updateEntry, removeEntry, clearAll } = useNotebook()
   const { lang, t } = useLanguage()
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
   const [draftExplanation, setDraftExplanation] = useState('')
+  const [newTitle, setNewTitle] = useState('')
   const [newNote, setNewNote] = useState('')
   const [composerOpen, setComposerOpen] = useState(true)
 
   function startEdit(entry: NotebookEntry) {
     setEditingId(entry.id)
+    setDraftTitle(entry.title ?? '')
     setDraftText(entry.selectedText)
     setDraftExplanation(entry.explanation ?? '')
   }
 
   function cancelEdit() {
     setEditingId(null)
+    setDraftTitle('')
     setDraftText('')
     setDraftExplanation('')
   }
@@ -54,8 +58,8 @@ export function Notebook() {
     if (entry.type === 'note' ? isBlankHtml(selectedText) : !selectedText) return
     const patch =
       entry.type === 'explanation'
-        ? { selectedText, explanation: draftExplanation }
-        : { selectedText }
+        ? { title: draftTitle, selectedText, explanation: draftExplanation }
+        : { title: draftTitle, selectedText }
     const updated = updateEntry(entry.id, patch)
     if (updated) cancelEdit()
   }
@@ -63,8 +67,9 @@ export function Notebook() {
   function createNote() {
     const html = sanitizeHtml(newNote).trim()
     if (isBlankHtml(html)) return
-    const created = addNote({ text: html })
+    const created = addNote({ text: html, title: newTitle })
     if (!created) return
+    setNewTitle('')
     setNewNote('')
     setComposerOpen(true)
   }
@@ -93,13 +98,24 @@ export function Notebook() {
         </div>
         {composerOpen ? (
           <div className="notebook-edit-form">
+            <label className="notebook-field">
+              <span className="notebook-field-label">{t('noteTitleLabel')}</span>
+              <input
+                className="notebook-title-input"
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder={t('noteTitlePlaceholder')}
+                maxLength={120}
+                autoFocus={entries.length === 0}
+              />
+            </label>
             <div className="notebook-field">
               <span className="notebook-field-label">{t('noteBodyLabel')}</span>
               <RichTextEditor
                 value={newNote}
                 onChange={setNewNote}
                 placeholder={t('newNotePlaceholder')}
-                autoFocus={entries.length === 0}
                 ariaLabel={t('noteBodyLabel')}
               />
             </div>
@@ -118,6 +134,7 @@ export function Notebook() {
                   className="btn ghost"
                   onClick={() => {
                     setComposerOpen(false)
+                    setNewTitle('')
                     setNewNote('')
                   }}
                 >
@@ -167,6 +184,18 @@ export function Notebook() {
 
                 {editing ? (
                   <div className="notebook-edit-form">
+                    <label className="notebook-field">
+                      <span className="notebook-field-label">{t('noteTitleLabel')}</span>
+                      <input
+                        className="notebook-title-input"
+                        type="text"
+                        value={draftTitle}
+                        onChange={(e) => setDraftTitle(e.target.value)}
+                        placeholder={t('noteTitlePlaceholder')}
+                        maxLength={120}
+                        autoFocus
+                      />
+                    </label>
                     {entry.type === 'note' ? (
                       <div className="notebook-field">
                         <span className="notebook-field-label">{t('noteBodyLabel')}</span>
@@ -174,7 +203,6 @@ export function Notebook() {
                           value={draftText}
                           onChange={setDraftText}
                           placeholder={t('newNotePlaceholder')}
-                          autoFocus
                           minHeight="10rem"
                           ariaLabel={t('noteBodyLabel')}
                         />
@@ -186,7 +214,6 @@ export function Notebook() {
                           value={draftText}
                           onChange={(e) => setDraftText(e.target.value)}
                           rows={3}
-                          autoFocus
                         />
                       </label>
                     )}
@@ -216,6 +243,7 @@ export function Notebook() {
                   </div>
                 ) : (
                   <>
+                    {entry.title ? <h3 className="notebook-entry-title">{entry.title}</h3> : null}
                     <NoteBody html={entry.selectedText} className="notebook-quote" />
                     {entry.explanation ? (
                       <div className="notebook-explanation">

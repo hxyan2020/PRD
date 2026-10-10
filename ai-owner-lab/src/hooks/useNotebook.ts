@@ -8,6 +8,7 @@ export interface NotebookEntry {
   createdAt: string
   updatedAt?: string
   type: NotebookEntryType
+  title?: string
   selectedText: string
   explanation?: string
   sourceLabel?: string

@@ -2343,6 +2343,39 @@ body.menu-open {
   color: var(--ink);
 }
 
+.notebook-title-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--ink);
+  background: #fff;
+}
+
+.notebook-title-input:focus {
+  outline: 2px solid rgba(13, 148, 136, 0.35);
+  border-color: var(--teal);
+}
+
+.notebook-title-input::placeholder {
+  font-weight: 600;
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+
+.notebook-entry-title {
+  margin: 0 0 0.55rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
 .rte {
   display: grid;
   gap: 0.45rem;
