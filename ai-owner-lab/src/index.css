@@ -3253,7 +3253,10 @@ button.notebook-category-badge.on {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
+  height: auto;
+  max-height: none;
   overflow-x: auto;
+  overflow-y: visible;
   overflow-wrap: anywhere;
   word-break: break-word;
   border-radius: 0.4rem;
@@ -3420,7 +3423,9 @@ button.notebook-category-badge.on {
 .notebook-rich,
 .notebook-quote {
   max-width: 100%;
+  max-height: none;
   overflow-x: auto;
+  overflow-y: visible;
 }
 
 .notebook-rich {

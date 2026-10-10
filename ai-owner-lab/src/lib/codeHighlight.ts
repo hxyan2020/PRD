@@ -131,6 +131,53 @@ type YamlTok =
   | { t: 'scalar'; v: string }
   | { t: 'dash' }
 
+function readQuotedString(s: string, start: number): { raw: string; end: number } {
+  let j = start + 1
+  let raw = '"'
+  while (j < s.length) {
+    if (s[j] === '\\' && j + 1 < s.length) {
+      raw += s[j]! + s[j + 1]!
+      j += 2
+      continue
+    }
+    raw += s[j]
+    if (s[j] === '"') {
+      j += 1
+      break
+    }
+    j += 1
+  }
+  return { raw, end: j }
+}
+
+/** Read a balanced [...] or {...} value, including quoted strings inside. */
+function readFlowCollection(s: string, start: number): { raw: string; end: number } {
+  const open = s[start]
+  const close = open === '[' ? ']' : '}'
+  let depth = 0
+  let j = start
+  let raw = ''
+  while (j < s.length) {
+    const ch = s[j]!
+    if (ch === '"') {
+      const q = readQuotedString(s, j)
+      raw += q.raw
+      j = q.end
+      continue
+    }
+    raw += ch
+    if (ch === open) depth += 1
+    else if (ch === close) {
+      depth -= 1
+      j += 1
+      if (depth === 0) break
+      continue
+    }
+    j += 1
+  }
+  return { raw, end: j }
+}
+
 function tokenizeYamlLike(input: string): YamlTok[] {
   const s = input.replace(/\r\n?/g, '\n')
   const tokens: YamlTok[] = []
@@ -141,29 +188,21 @@ function tokenizeYamlLike(input: string): YamlTok[] {
       i += 1
       continue
     }
-    if (ch === '-' && (i + 1 >= s.length || /[\sA-Za-z_"']/.test(s[i + 1]!))) {
+    if (ch === '-' && (i + 1 >= s.length || /[\sA-Za-z_"'\[]/.test(s[i + 1]!))) {
       tokens.push({ t: 'dash' })
       i += 1
       continue
     }
     if (ch === '"') {
-      let j = i + 1
-      let raw = '"'
-      while (j < s.length) {
-        if (s[j] === '\\' && j + 1 < s.length) {
-          raw += s[j]! + s[j + 1]!
-          j += 2
-          continue
-        }
-        raw += s[j]
-        if (s[j] === '"') {
-          j += 1
-          break
-        }
-        j += 1
-      }
-      tokens.push({ t: 'string', v: raw })
-      i = j
+      const q = readQuotedString(s, i)
+      tokens.push({ t: 'string', v: q.raw })
+      i = q.end
+      continue
+    }
+    if (ch === '[' || ch === '{') {
+      const flow = readFlowCollection(s, i)
+      tokens.push({ t: 'scalar', v: flow.raw })
+      i = flow.end
       continue
     }
     const key = s.slice(i).match(/^([A-Za-z_][\w.-]*):(?!\w)/)
@@ -172,7 +211,7 @@ function tokenizeYamlLike(input: string): YamlTok[] {
       i += key[0].length
       continue
     }
-    const scalar = s.slice(i).match(/^[^\s]+/)
+    const scalar = s.slice(i).match(/^[^\s\[\]{}]+/)
     if (scalar) {
       tokens.push({ t: 'scalar', v: scalar[0]! })
       i += scalar[0].length
@@ -196,6 +235,10 @@ function keyShape(
   return 'other'
 }
 
+function lineLooksJammed(line: string): boolean {
+  return /:\s*[A-Za-z_][\w.-]*\s*:/.test(line) || /:\s*-\s+\S/.test(line)
+}
+
 /**
  * Rebuild YAML with newlines + 2-space indentation from flattened / jammed text.
  * Preserves blocks that already include nested indentation.
@@ -204,12 +247,34 @@ export function reindentYaml(code: string): string {
   const normalized = code.replace(/\t/g, '  ')
   const lines = normalized.split(/\r?\n/)
   const alreadyIndented = lines.some((l) => /^ {2,}\S/.test(l))
-  if (alreadyIndented && !/:\s*[A-Za-z_][\w.-]*\s*:/.test(code.replace(/\n/g, ' '))) {
+  const jammedLines = lines.filter((l) => lineLooksJammed(l))
+
+  // Normal nested YAML (with indent) — keep as-is. Only rewrite truly jammed lines.
+  if (alreadyIndented && jammedLines.length === 0) {
     return lines.map((l) => l.replace(/\s+$/u, '')).join('\n').replace(/\n+$/u, '')
   }
+  if (alreadyIndented && jammedLines.length > 0) {
+    return lines
+      .map((line) => {
+        if (!lineLooksJammed(line)) return line.replace(/\s+$/u, '')
+        const indent = (line.match(/^ */)?.[0] || '').length
+        const rebuilt = reindentYamlFlat(line.trim())
+        return rebuilt
+          .split('\n')
+          .map((l, idx) => (idx === 0 ? ' '.repeat(indent) + l : ' '.repeat(indent) + l))
+          .join('\n')
+      })
+      .join('\n')
+      .replace(/\n+$/u, '')
+  }
 
+  return reindentYamlFlat(normalized)
+}
+
+/** Parse a flat / partially-flat YAML stream into indented lines. Never drops tokens. */
+function reindentYamlFlat(normalized: string): string {
   const tokens = tokenizeYamlLike(normalized)
-  if (!tokens.some((t) => t.t === 'key')) return code
+  if (!tokens.some((t) => t.t === 'key')) return normalized
 
   const out: string[] = []
   let i = 0
@@ -329,20 +394,38 @@ export function reindentYaml(code: string): string {
 
   // Root: series of entries.
   while (i < tokens.length) {
+    const before = i
     if (peek()?.t === 'key') {
       parseMap(0, false)
-      // parseMap at root with allowSiblingEmptyStop false consumes empty keys as root entries.
-      // But parseMap loops keys — at root we need to consume one entry at a time with stop disabled.
-      // Actually parseMap(0,false) consumes ALL remaining keys. Good for root.
-      break
+      if (i > before) continue
+      // Parser made no progress — emit the key literally and advance.
+      const key = take() as Extract<YamlTok, { t: 'key' }>
+      out.push(`${key.name}:`)
+      continue
     }
     if (peek()?.t === 'dash') {
       parseSeq(0)
+      if (i === before) take()
       continue
     }
-    // Unexpected token — emit as plain scalar line and continue.
+    // Unexpected token — emit as plain text so nothing is cut short.
     const tok = take()
-    if (tok.t === 'string' || tok.t === 'scalar') out.push(tok.v)
+    if (tok.t === 'key') out.push(`${tok.name}:`)
+    else if (tok.t === 'dash') out.push('-')
+    else out.push(tok.v)
+  }
+
+  // Safety: if anything remains, append it rather than truncating.
+  if (i < tokens.length) {
+    const rest = tokens
+      .slice(i)
+      .map((t) => {
+        if (t.t === 'key') return `${t.name}:`
+        if (t.t === 'dash') return '-'
+        return t.v
+      })
+      .join(' ')
+    if (rest.trim()) out.push(rest)
   }
 
   return out.join('\n')
