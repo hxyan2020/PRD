@@ -1,3 +1,5 @@
+import { isSafeImageSrc } from './noteImage'
+
 const ALLOWED_TAGS = new Set([
   'B',
   'STRONG',
@@ -17,6 +19,8 @@ const ALLOWED_TAGS = new Set([
   'H1',
   'H2',
   'H3',
+  'IMG',
+  'FIGURE',
 ])
 
 const ALLOWED_STYLES = new Set([
@@ -26,6 +30,15 @@ const ALLOWED_STYLES = new Set([
   'font-weight',
   'font-style',
   'text-decoration',
+  'max-width',
+  'height',
+  'width',
+  'display',
+  'margin',
+  'margin-top',
+  'margin-right',
+  'margin-bottom',
+  'margin-left',
 ])
 
 function sanitizeStyle(style: string): string {
@@ -39,11 +52,46 @@ function sanitizeStyle(style: string): string {
       const prop = part.slice(0, idx).trim().toLowerCase()
       const value = part.slice(idx + 1).trim()
       if (!ALLOWED_STYLES.has(prop)) return ''
-      if (/expression|url\s*\(|javascript:/i.test(value)) return ''
+      if (/expression|javascript:/i.test(value)) return ''
+      if (/url\s*\(/i.test(value) && prop !== 'background-image') return ''
+      if (/url\s*\(/i.test(value)) return ''
       return `${prop}: ${value}`
     })
     .filter(Boolean)
     .join('; ')
+}
+
+function sanitizeImg(el: HTMLElement) {
+  const src = el.getAttribute('src') || ''
+  if (!isSafeImageSrc(src)) {
+    el.replaceWith(document.createTextNode(''))
+    return false
+  }
+  // Keep only safe attributes.
+  for (const attr of Array.from(el.attributes)) {
+    const name = attr.name.toLowerCase()
+    if (name === 'src') continue
+    if (name === 'alt') {
+      el.setAttribute('alt', attr.value.slice(0, 200))
+      continue
+    }
+    if (name === 'style') {
+      const cleaned = sanitizeStyle(attr.value)
+      if (cleaned) el.setAttribute('style', cleaned)
+      else el.removeAttribute('style')
+      continue
+    }
+    if ((name === 'width' || name === 'height') && /^\d{1,4}$/.test(attr.value)) {
+      continue
+    }
+    el.removeAttribute(attr.name)
+  }
+  if (!el.getAttribute('alt')) el.setAttribute('alt', '')
+  const style = el.getAttribute('style') || ''
+  if (!/max-width/i.test(style)) {
+    el.setAttribute('style', `${style ? `${style}; ` : ''}max-width: 100%; height: auto`)
+  }
+  return true
 }
 
 /** Strip scripts/events; keep basic formatting tags used by the notebook editor. */
@@ -61,6 +109,10 @@ export function sanitizeHtml(input: string): string {
         if (!ALLOWED_TAGS.has(el.tagName)) {
           const text = document.createTextNode(el.textContent ?? '')
           el.replaceWith(text)
+          continue
+        }
+        if (el.tagName === 'IMG') {
+          sanitizeImg(el)
           continue
         }
         for (const attr of Array.from(el.attributes)) {
@@ -94,6 +146,11 @@ export function htmlToPlainText(html: string): string {
   return (div.textContent || '').replace(/\u00a0/g, ' ').trim()
 }
 
+export function htmlHasImage(html: string): boolean {
+  return /<img\b/i.test(html)
+}
+
 export function isBlankHtml(html: string): boolean {
+  if (htmlHasImage(html)) return false
   return !htmlToPlainText(html)
 }

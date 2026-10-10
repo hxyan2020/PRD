@@ -1,5 +1,6 @@
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { sanitizeHtml } from '../lib/sanitizeHtml'
+import { fileToNoteImageDataUrl, isAllowedImageMime } from '../lib/noteImage'
 import { useLanguage } from '../i18n/LanguageContext'
 
 const COLORS = [
@@ -31,6 +32,12 @@ function runCommand(command: string, value?: string) {
   document.execCommand(command, false, value)
 }
 
+function hasVisibleContent(html: string): boolean {
+  if (!html) return false
+  if (/<img\b/i.test(html)) return true
+  return Boolean(html.replace(/<br\s*\/?>|&nbsp;|\s|<\/?[^>]+>/gi, '').trim())
+}
+
 export function RichTextEditor({
   value,
   onChange,
@@ -41,8 +48,11 @@ export function RichTextEditor({
 }: Props) {
   const { t } = useLanguage()
   const editorRef = useRef<HTMLDivElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const lastHtml = useRef(value)
   const placeholderId = useId()
+  const [imageError, setImageError] = useState<string | null>(null)
+  const [imageBusy, setImageBusy] = useState(false)
 
   useEffect(() => {
     const el = editorRef.current
@@ -58,7 +68,6 @@ export function RichTextEditor({
     const el = editorRef.current
     if (!el) return
     el.focus()
-    // Place caret at end
     const range = document.createRange()
     range.selectNodeContents(el)
     range.collapse(false)
@@ -82,7 +91,44 @@ export function RichTextEditor({
     emitChange()
   }
 
-  const empty = !value || !value.replace(/<br\s*\/?>|&nbsp;|\s/gi, '').trim()
+  async function insertImageFile(file: Blob) {
+    if (!isAllowedImageMime(file.type || '')) {
+      setImageError(t('editorImageTypeError'))
+      return
+    }
+    setImageBusy(true)
+    setImageError(null)
+    try {
+      const dataUrl = await fileToNoteImageDataUrl(file)
+      withFocus(() => {
+        const safe = sanitizeHtml(
+          `<img src="${dataUrl}" alt="" style="max-width: 100%; height: auto" />`,
+        )
+        // insertHTML keeps surrounding text; fallback for older engines
+        if (!document.execCommand('insertHTML', false, safe)) {
+          const el = editorRef.current
+          if (!el) return
+          el.insertAdjacentHTML('beforeend', safe)
+        }
+      })
+    } catch {
+      setImageError(t('editorImageTooLarge'))
+    } finally {
+      setImageBusy(false)
+    }
+  }
+
+  async function onPickFiles(files: FileList | null) {
+    if (!files?.length) return
+    for (const file of Array.from(files)) {
+      if (file.type.startsWith('image/')) {
+        await insertImageFile(file)
+      }
+    }
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const empty = !hasVisibleContent(value)
 
   return (
     <div className="rte">
@@ -180,6 +226,26 @@ export function RichTextEditor({
         <span className="rte-sep" aria-hidden="true" />
         <button
           type="button"
+          className="rte-btn rte-btn-image"
+          title={t('editorInsertImage')}
+          aria-label={t('editorInsertImage')}
+          disabled={imageBusy}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <span aria-hidden="true" className="rte-image-glyph" />
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+          multiple
+          className="sr-only"
+          tabIndex={-1}
+          onChange={(e) => void onPickFiles(e.target.files)}
+        />
+        <button
+          type="button"
           className="rte-btn"
           title={t('editorClear')}
           aria-label={t('editorClear')}
@@ -189,8 +255,36 @@ export function RichTextEditor({
           ⌫
         </button>
       </div>
+      {imageError ? (
+        <p className="rte-image-error" role="alert">
+          {imageError}
+        </p>
+      ) : null}
+      {imageBusy ? (
+        <p className="rte-image-status" role="status">
+          {t('editorImageProcessing')}
+        </p>
+      ) : null}
 
-      <div className="rte-shell">
+      <div
+        className="rte-shell"
+        onDragOver={(e) => {
+          if ([...e.dataTransfer.types].includes('Files')) {
+            e.preventDefault()
+            e.dataTransfer.dropEffect = 'copy'
+          }
+        }}
+        onDrop={(e) => {
+          const files = e.dataTransfer.files
+          if (!files?.length) return
+          const images = Array.from(files).filter((f) => f.type.startsWith('image/'))
+          if (!images.length) return
+          e.preventDefault()
+          void (async () => {
+            for (const file of images) await insertImageFile(file)
+          })()
+        }}
+      >
         {empty ? (
           <div className="rte-placeholder" id={placeholderId} aria-hidden="true">
             {placeholder}
@@ -209,6 +303,20 @@ export function RichTextEditor({
           onInput={emitChange}
           onBlur={emitChange}
           onPaste={(e) => {
+            const items = e.clipboardData?.items
+            const imageItems = items
+              ? Array.from(items).filter((item) => item.type.startsWith('image/'))
+              : []
+            if (imageItems.length) {
+              e.preventDefault()
+              void (async () => {
+                for (const item of imageItems) {
+                  const file = item.getAsFile()
+                  if (file) await insertImageFile(file)
+                }
+              })()
+              return
+            }
             e.preventDefault()
             const text = e.clipboardData.getData('text/plain')
             runCommand('insertText', text)
