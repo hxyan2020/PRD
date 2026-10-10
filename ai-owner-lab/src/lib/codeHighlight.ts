@@ -240,11 +240,54 @@ function lineLooksJammed(line: string): boolean {
 }
 
 /**
+ * Repair list/value lines that were wrongly split so each word is on its own line:
+ *   - Validate
+ *   alert
+ *   and
+ *   metric
+ * → `- Validate alert and metric`
+ */
+export function rejoinBrokenBulletLines(code: string): string {
+  const lines = code.replace(/\r\n?/g, '\n').split('\n')
+  const out: string[] = []
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) {
+      out.push(line.replace(/\s+$/u, ''))
+      continue
+    }
+    const isKey = /^[A-Za-z_][\w.-]*:\s*/.test(trimmed)
+    const isList = /^-\s+/.test(trimmed)
+    const isComment = trimmed.startsWith('#')
+    const prev = out.length ? out[out.length - 1] : ''
+    const prevTrim = prev.trim()
+    const prevIsList = /^-\s+\S/.test(prevTrim)
+    const prevIsLeaf =
+      /^[A-Za-z_][\w.-]*:\s+\S/.test(prevTrim) && !prevTrim.endsWith(':')
+    const orphanWord =
+      !isKey &&
+      !isList &&
+      !isComment &&
+      !trimmed.startsWith('[') &&
+      !trimmed.startsWith('{') &&
+      !trimmed.startsWith('"')
+
+    if (orphanWord && (prevIsList || prevIsLeaf)) {
+      out[out.length - 1] = `${prev} ${trimmed}`
+      continue
+    }
+    out.push(line.replace(/\s+$/u, ''))
+  }
+  return out.join('\n').replace(/\n+$/u, '')
+}
+
+/**
  * Rebuild YAML with newlines + 2-space indentation from flattened / jammed text.
  * Preserves blocks that already include nested indentation.
  */
 export function reindentYaml(code: string): string {
-  const normalized = code.replace(/\t/g, '  ')
+  // Fix word-per-line bullet breakage first (from older parser / paste issues).
+  const normalized = rejoinBrokenBulletLines(code.replace(/\t/g, '  '))
   const lines = normalized.split(/\r?\n/)
   const alreadyIndented = lines.some((l) => /^ {2,}\S/.test(l))
   const jammedLines = lines.filter((l) => lineLooksJammed(l))
@@ -261,7 +304,7 @@ export function reindentYaml(code: string): string {
         const rebuilt = reindentYamlFlat(line.trim())
         return rebuilt
           .split('\n')
-          .map((l, idx) => (idx === 0 ? ' '.repeat(indent) + l : ' '.repeat(indent) + l))
+          .map((l) => ' '.repeat(indent) + l)
           .join('\n')
       })
       .join('\n')
@@ -283,6 +326,23 @@ function reindentYamlFlat(normalized: string): string {
   const peek = () => tokens[i]
   const take = () => tokens[i++]!
 
+  /** Join consecutive plain words into one scalar (keeps bullet sentences intact). */
+  const takePlainValue = (): string => {
+    const first = peek()
+    if (!first || (first.t !== 'string' && first.t !== 'scalar')) return ''
+    if (first.t === 'string' || (first.t === 'scalar' && /^[[{]/.test(first.v))) {
+      return (take() as Extract<YamlTok, { t: 'string' | 'scalar' }>).v
+    }
+    const parts: string[] = []
+    while (peek()?.t === 'scalar') {
+      const word = (take() as Extract<YamlTok, { t: 'scalar' }>).v
+      parts.push(word)
+      // Stop before next structural token; keep consuming words only.
+      if (peek()?.t === 'key' || peek()?.t === 'dash' || peek()?.t === 'string') break
+    }
+    return parts.join(' ')
+  }
+
   const parseSeq = (indent: number) => {
     while (peek()?.t === 'dash') {
       take() // dash
@@ -291,8 +351,7 @@ function reindentYamlFlat(normalized: string): string {
         const shape = keyShape(tokens, i)
         if (shape === 'leaf') {
           const key = take() as Extract<YamlTok, { t: 'key' }>
-          const val = take()
-          const text = val.t === 'string' || val.t === 'scalar' ? val.v : ''
+          const text = takePlainValue()
           out.push(`${pad(indent)}- ${key.name}: ${text}`)
           // Mapping fields under this list item (stop before numeric/bool leaves —
           // those usually belong to the parent map, e.g. timeout_seconds: 30).
@@ -305,8 +364,7 @@ function reindentYamlFlat(normalized: string): string {
               break
             }
             const k = take() as Extract<YamlTok, { t: 'key' }>
-            const v = take()
-            const vt = v.t === 'string' || v.t === 'scalar' ? v.v : ''
+            const vt = takePlainValue()
             out.push(`${pad(indent + 1)}${k.name}: ${vt}`)
           }
         } else if (shape === 'empty') {
@@ -321,8 +379,7 @@ function reindentYamlFlat(normalized: string): string {
           break
         }
       } else if (next?.t === 'string' || next?.t === 'scalar') {
-        const val = take() as Extract<YamlTok, { t: 'string' | 'scalar' }>
-        out.push(`${pad(indent)}- ${val.v}`)
+        out.push(`${pad(indent)}- ${takePlainValue()}`)
       } else {
         break
       }
@@ -338,7 +395,10 @@ function reindentYamlFlat(normalized: string): string {
       if (tokens[j]?.t !== 'key') continue
       const sh = keyShape(tokens, j)
       if (sh === 'empty' || sh === 'seq') return true
-      if (sh === 'leaf') j += 1
+      if (sh === 'leaf') {
+        j += 1 // value start
+        while (j + 1 < tokens.length && tokens[j + 1]?.t === 'scalar') j += 1
+      }
     }
     return false
   }
@@ -368,8 +428,7 @@ function reindentYamlFlat(normalized: string): string {
       }
       if (shape === 'leaf') {
         const key = take() as Extract<YamlTok, { t: 'key' }>
-        const val = take()
-        const text = val.t === 'string' || val.t === 'scalar' ? val.v : ''
+        const text = takePlainValue()
         out.push(`${pad(indent)}${key.name}: ${text}`)
         seenLeaf = true
         continue

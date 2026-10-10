@@ -3257,8 +3257,9 @@ button.notebook-category-badge.on {
   max-height: none;
   overflow-x: auto;
   overflow-y: visible;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  /* Wrap at the container edge; do not force a new line per word */
+  overflow-wrap: break-word;
+  word-break: normal;
   border-radius: 0.4rem;
   border: 1px solid #1f3340;
   background: #12202a;
