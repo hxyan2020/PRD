@@ -1,35 +1,77 @@
 import { useEffect, useState } from 'react'
+import type { CategoryColorId } from '../lib/categoryColors'
 import { notebookStore } from './notebookStore'
 
-export type NotebookEntryType = 'clip' | 'explanation'
+export type NotebookEntryType = 'clip' | 'explanation' | 'note'
+
+export interface NotebookCategory {
+  id: string
+  name: string
+  createdAt: string
+  color: CategoryColorId
+}
 
 export interface NotebookEntry {
   id: string
   createdAt: string
   updatedAt?: string
   type: NotebookEntryType
+  title?: string
   selectedText: string
   explanation?: string
+  categoryIds?: string[]
   sourceLabel?: string
   sourcePath?: string
   model?: string
 }
 
+export interface TrashedNotebookEntry extends NotebookEntry {
+  deletedAt: string
+}
+
 export function useNotebook() {
+  const [ready, setReady] = useState(() => notebookStore.isReady())
   const [entries, setEntries] = useState<NotebookEntry[]>(() => notebookStore.get())
+  const [trash, setTrash] = useState<TrashedNotebookEntry[]>(() => notebookStore.getTrash())
+  const [categories, setCategories] = useState<NotebookCategory[]>(() =>
+    notebookStore.getCategories(),
+  )
 
   useEffect(() => {
-    return notebookStore.subscribe(setEntries)
+    const unsubEntries = notebookStore.subscribe(setEntries)
+    const unsubTrash = notebookStore.subscribeTrash(setTrash)
+    const unsubCategories = notebookStore.subscribeCategories(setCategories)
+    const unsubReady = notebookStore.subscribeReady(() => {
+      setReady(true)
+      setEntries(notebookStore.get())
+      setTrash(notebookStore.getTrash())
+      setCategories(notebookStore.getCategories())
+    })
+    void notebookStore.ready()
+    return () => {
+      unsubEntries()
+      unsubTrash()
+      unsubCategories()
+      unsubReady()
+    }
   }, [])
 
   return {
+    ready,
     entries,
+    trash,
+    categories,
     count: entries.length,
+    trashCount: trash.length,
     addClip: notebookStore.addClip,
     addExplanation: notebookStore.addExplanation,
+    addNote: notebookStore.addNote,
     updateEntry: notebookStore.update,
     removeEntry: notebookStore.remove,
-    clearAll: notebookStore.clear,
+    restoreEntry: notebookStore.restore,
+    addCategory: notebookStore.addCategory,
+    renameCategory: notebookStore.renameCategory,
+    removeCategory: notebookStore.removeCategory,
   }
 }
 

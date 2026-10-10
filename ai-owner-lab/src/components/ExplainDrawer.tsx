@@ -117,15 +117,21 @@ export function ExplainDrawer({
 
   function saveToNotebook() {
     if (!latestAssistant || busy || isAnimating) return
-    notebook.addExplanation({
-      selectedText,
-      explanation: latestAssistant,
-      sourceLabel,
-      sourcePath,
-      model,
-    })
-    setSavedFlash(true)
-    window.setTimeout(() => setSavedFlash(false), 2000)
+    void notebook
+      .addExplanation({
+        selectedText,
+        explanation: latestAssistant,
+        sourceLabel,
+        sourcePath,
+        model,
+      })
+      .then(() => {
+        setSavedFlash(true)
+        window.setTimeout(() => setSavedFlash(false), 2000)
+      })
+      .catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : 'Could not save to notebook')
+      })
   }
 
   function persistSettings() {
@@ -161,16 +167,25 @@ export function ExplainDrawer({
                 type="password"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder="sk-..."
+                placeholder="sk-… (optional)"
+                autoComplete="off"
               />
             </label>
             <label>
               {t('endpoint')}
-              <input value={endpoint} onChange={(e) => setEndpoint(e.target.value)} />
+              <input
+                value={endpoint}
+                onChange={(e) => setEndpoint(e.target.value)}
+                placeholder="https://text.pollinations.ai/openai"
+              />
             </label>
             <label>
               {t('model')}
-              <input value={modelName} onChange={(e) => setModelName(e.target.value)} />
+              <input
+                value={modelName}
+                onChange={(e) => setModelName(e.target.value)}
+                placeholder="openai"
+              />
             </label>
             <button type="button" className="btn primary" onClick={persistSettings}>
               {t('saveApi')}
