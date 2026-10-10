@@ -92,25 +92,32 @@ function clearHighlightInSelection() {
   runCommand('backColor', 'transparent')
 }
 
+function selectionLooksHighlighted(color: string): boolean {
+  const selection = window.getSelection()
+  if (!selection || !selection.rangeCount || selection.isCollapsed) return false
+  const node = selection.anchorNode
+  const el =
+    node?.nodeType === Node.ELEMENT_NODE ? (node as Element) : node?.parentElement
+  if (!el) return false
+  const marked = el.closest('mark, span[style*="background"]')
+  if (!marked) return false
+  const style = (marked as HTMLElement).style?.backgroundColor || ''
+  const attr = marked.getAttribute('style') || ''
+  const hay = `${style} ${attr}`.toLowerCase()
+  return hay.includes(color.toLowerCase()) || hay.includes('rgb(')
+}
+
 function applyHighlightColor(color: string) {
   if (color === 'transparent') {
     clearHighlightInSelection()
     return
   }
-  // Prefer native commands when a live selection exists.
-  const before = window.getSelection()?.toString() ?? ''
-  let applied = document.execCommand('hiliteColor', false, color)
-  if (!applied) applied = document.execCommand('backColor', false, color)
-  const afterHtmlHasColor = (() => {
-    const node = window.getSelection()?.anchorNode
-    const el =
-      node?.nodeType === Node.ELEMENT_NODE
-        ? (node as HTMLElement)
-        : node?.parentElement
-    const editor = el?.closest('.rte-editor')
-    return Boolean(editor && editor.innerHTML.toLowerCase().includes(color.toLowerCase()))
-  })()
-  if (!applied || (!afterHtmlHasColor && before)) {
+  // Prefer wrapping with <mark> — reliable across browsers and after toolbar focus moves.
+  if (wrapSelectionWithMark(color)) return
+  const applied =
+    document.execCommand('hiliteColor', false, color) ||
+    document.execCommand('backColor', false, color)
+  if (!applied || !selectionLooksHighlighted(color)) {
     wrapSelectionWithMark(color)
   }
 }
