@@ -2320,6 +2320,36 @@ body.menu-open {
   color: var(--teal-deep);
 }
 
+.notebook-toolbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.75rem;
+}
+
+.notebook-search {
+  display: inline-flex;
+  min-width: min(100%, 16rem);
+  flex: 1 1 12rem;
+}
+
+.notebook-search input {
+  width: 100%;
+  height: 2.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  padding: 0 0.7rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: #fff;
+}
+
+.notebook-search input:focus {
+  outline: 2px solid rgba(13, 148, 136, 0.35);
+  border-color: var(--teal);
+}
+
 .notebook-sort {
   display: inline-flex;
   flex-wrap: wrap;

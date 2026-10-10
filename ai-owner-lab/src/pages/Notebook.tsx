@@ -69,6 +69,28 @@ function sortEntries(entries: NotebookEntry[], sort: NotebookSort, lang: 'en' | 
   )
 }
 
+function entrySearchText(entry: NotebookEntry): string {
+  const parts = [
+    entry.title ?? '',
+    htmlToPlainText(entry.selectedText) || entry.selectedText,
+    entry.explanation ? htmlToPlainText(entry.explanation) || entry.explanation : '',
+  ]
+  return parts.join('\n').toLowerCase()
+}
+
+function filterEntries(entries: NotebookEntry[], query: string): NotebookEntry[] {
+  const tokens = query
+    .toLowerCase()
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter(Boolean)
+  if (!tokens.length) return entries
+  return entries.filter((entry) => {
+    const haystack = entrySearchText(entry)
+    return tokens.every((token) => haystack.includes(token))
+  })
+}
+
 export function Notebook() {
   const { entries, count, addNote, updateEntry, removeEntry, clearAll } = useNotebook()
   const { lang, t } = useLanguage()
@@ -80,8 +102,12 @@ export function Notebook() {
   const [newNote, setNewNote] = useState('')
   const [composerOpen, setComposerOpen] = useState(true)
   const [sort, setSort] = useState<NotebookSort>(() => readSort())
+  const [query, setQuery] = useState('')
 
-  const sortedEntries = useMemo(() => sortEntries(entries, sort, lang), [entries, sort, lang])
+  const visibleEntries = useMemo(() => {
+    const filtered = filterEntries(entries, query)
+    return sortEntries(filtered, sort, lang)
+  }, [entries, query, sort, lang])
 
   function changeSort(next: NotebookSort) {
     setSort(next)
@@ -138,21 +164,35 @@ export function Notebook() {
         <p className="section-lede">{t('notebookLede')}</p>
         <div className="notebook-toolbar">
           <p className="notebook-count">
-            {count} {count === 1 ? t('note') : t('notes')}
+            {query.trim() && count > 0
+              ? t('searchShowing', { shown: visibleEntries.length, total: count })
+              : `${count} ${count === 1 ? t('note') : t('notes')}`}
           </p>
           {count > 0 ? (
-            <label className="notebook-sort">
-              <span>{t('sortNotes')}</span>
-              <select
-                value={sort}
-                onChange={(e) => changeSort(e.target.value as NotebookSort)}
-                aria-label={t('sortNotes')}
-              >
-                <option value="created">{t('sortByCreated')}</option>
-                <option value="edited">{t('sortByEdited')}</option>
-                <option value="alpha">{t('sortByAlpha')}</option>
-              </select>
-            </label>
+            <div className="notebook-toolbar-controls">
+              <label className="notebook-search">
+                <span className="sr-only">{t('searchNotes')}</span>
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t('searchNotesPlaceholder')}
+                  aria-label={t('searchNotes')}
+                />
+              </label>
+              <label className="notebook-sort">
+                <span>{t('sortNotes')}</span>
+                <select
+                  value={sort}
+                  onChange={(e) => changeSort(e.target.value as NotebookSort)}
+                  aria-label={t('sortNotes')}
+                >
+                  <option value="created">{t('sortByCreated')}</option>
+                  <option value="edited">{t('sortByEdited')}</option>
+                  <option value="alpha">{t('sortByAlpha')}</option>
+                </select>
+              </label>
+            </div>
           ) : null}
         </div>
       </header>
@@ -226,9 +266,14 @@ export function Notebook() {
             </Link>
           </p>
         </div>
+      ) : visibleEntries.length === 0 ? (
+        <div className="callout">
+          <h2>{t('searchNoResults')}</h2>
+          <p>{t('searchNotesPlaceholder')}</p>
+        </div>
       ) : (
         <ol className="notebook-timeline">
-          {sortedEntries.map((entry) => {
+          {visibleEntries.map((entry) => {
             const editing = editingId === entry.id
             const editBlank =
               entry.type === 'note' ? isBlankHtml(draftText) : !draftText.trim()
