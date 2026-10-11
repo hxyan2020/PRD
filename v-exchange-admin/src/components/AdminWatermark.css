@@ -1,0 +1,26 @@
+.admin-watermark {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.12;
+  background-image: repeating-linear-gradient(
+    -30deg,
+    transparent,
+    transparent 80px,
+    rgba(0, 0, 0, 0.03) 80px,
+    rgba(0, 0, 0, 0.03) 81px
+  );
+}
+
+.admin-watermark::before {
+  content: '0x0g7 admin  0x0g7 admin  0x0g7 admin  0x0g7 admin  0x0g7 admin';
+  position: absolute;
+  inset: -20%;
+  font-size: 22px;
+  line-height: 3.2;
+  color: #999;
+  transform: rotate(-25deg);
+  white-space: pre-wrap;
+  word-break: break-all;
+}

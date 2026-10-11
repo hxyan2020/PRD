@@ -1,0 +1,71 @@
+.admin-root {
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.admin-sider {
+  border-right: 1px solid #f0f0f0;
+}
+
+.admin-brand {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-brand-title {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  height: 48px;
+  line-height: 48px;
+}
+
+.admin-collapse-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.65);
+  padding: 4px 8px;
+}
+
+.admin-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-content {
+  padding: 0;
+  min-height: calc(100vh - 48px);
+}
+
+.admin-tabs {
+  background: #fff;
+  padding: 8px 12px 0;
+  margin: 0;
+}
+
+.admin-tabs .ant-tabs-nav {
+  margin-bottom: 0;
+}
+
+.admin-page-host {
+  margin: 12px;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  min-height: calc(100vh - 120px);
+}
