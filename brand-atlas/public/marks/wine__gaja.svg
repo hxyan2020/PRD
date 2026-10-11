@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <path fill="#C4C4C4" d="M64 20c-18 0-32 14-32 32 0 28 32 56 32 56s32-28 32-56c0-18-14-32-32-32zm0 20c6 0 12 6 12 12s-6 12-12 12-12-6-12-12 6-12 12-12z"/>
-  <text x="64" y="112" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#C4C4C4" letter-spacing="0.25em">GAJA</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Gaja">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Gaja</text>
 </svg>

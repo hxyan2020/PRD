@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <circle cx="64" cy="56" r="40" fill="none" stroke="#C4C4C4" stroke-width="3"/>
-  <text x="64" y="50" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#C4C4C4">陸奥</text>
-  <text x="64" y="72" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#C4C4C4">八仙</text>
-  <text x="64" y="112" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C4C4C4" letter-spacing="0.1em">MUTSU HASSEN</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Mutsu Hassen">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Mutsu Hassen</text>
 </svg>
