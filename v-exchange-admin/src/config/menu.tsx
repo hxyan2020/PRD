@@ -1,5 +1,6 @@
 import type { MenuProps } from 'antd'
 import {
+  ApiOutlined,
   AppstoreOutlined,
   DollarOutlined,
   FileTextOutlined,
@@ -7,6 +8,8 @@ import {
   SettingOutlined,
   ShoppingOutlined,
   TeamOutlined,
+  ToolOutlined,
+  WarningOutlined,
 } from '@ant-design/icons'
 
 export type PageKey =
@@ -24,8 +27,14 @@ export type PageKey =
   | 'funding-rate'
   | 'position-list'
   | 'position-value-stats'
-  | 'order-list'
-  | 'deal-list'
+  | 'active-order'
+  | 'trigger-order'
+  | 'stop-order'
+  | 'active-order-history-deal'
+  | 'trigger-order-history-deal'
+  | 'liquidate-history'
+  | 'adl-history'
+  | 'stop-order-history-deal'
   | 'user-asset'
   | 'user-rate-config'
   | 'user-info'
@@ -37,11 +46,22 @@ export type PageKey =
   | 'redis-value-manage'
   | 'openapi-whitelist'
   | 'openapi-market'
+  | 'openapi-mm-blacklist'
   | 'financial-report'
   | 'transfer-record'
   | 'financial-account'
   | 'financial-recon'
   | 'finance-flow'
+  | 'api-manage'
+  | 'tools-close-position'
+  | 'tools-global-frequency'
+  | 'tools-open-bottom-position'
+  | 'risk-funding-fee-change'
+  | 'risk-liquidation-switch'
+  | 'risk-market-price-limit'
+  | 'risk-reserve-list'
+  | 'risk-reserve-detail'
+  | 'risk-trading-restriction'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -58,8 +78,14 @@ export const pageLabels: Record<PageKey, string> = {
   'funding-rate': 'Funding Rate',
   'position-list': 'Position List',
   'position-value-stats': 'Position Value Statistics',
-  'order-list': 'Order List',
-  'deal-list': 'Deal List',
+  'active-order': 'Active Order',
+  'trigger-order': 'Trigger Order',
+  'stop-order': 'Stop Order',
+  'active-order-history-deal': 'Active Order History Deal',
+  'trigger-order-history-deal': 'Trigger Order History Deal',
+  'liquidate-history': 'Liquidate History',
+  'adl-history': 'ADL History',
+  'stop-order-history-deal': 'Stop Order History Deal',
   'user-asset': 'User Asset',
   'user-rate-config': 'User Rate Configuration',
   'user-info': 'User Info',
@@ -71,11 +97,22 @@ export const pageLabels: Record<PageKey, string> = {
   'redis-value-manage': 'Redis Value Management',
   'openapi-whitelist': 'OpenApi White List',
   'openapi-market': 'OpenApi Market',
+  'openapi-mm-blacklist': 'OpenApi MM Blacklist',
   'financial-report': 'Financial Report',
   'transfer-record': 'Transfer Record',
   'financial-account': 'Financial Account',
   'financial-recon': 'Financial Reconciliation',
   'finance-flow': 'FinanceFlow',
+  'api-manage': 'API Management',
+  'tools-close-position': 'Close Position',
+  'tools-global-frequency': 'Global Frequency',
+  'tools-open-bottom-position': 'Open Bottom Position',
+  'risk-funding-fee-change': 'Funding Fee Change',
+  'risk-liquidation-switch': 'Liquidation Switch',
+  'risk-market-price-limit': 'Market Price Limit',
+  'risk-reserve-list': 'Risk Reserve List',
+  'risk-reserve-detail': 'Risk Reserve Detail',
+  'risk-trading-restriction': 'Trading Restriction',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -116,8 +153,26 @@ export const sideMenuItems: MenuProps['items'] = [
     children: [
       { key: 'position-list', label: 'Position List' },
       { key: 'position-value-stats', label: 'Position Value Statistics' },
-      { key: 'order-list', label: 'Order List' },
-      { key: 'deal-list', label: 'Deal List' },
+      {
+        key: 'order-list-group',
+        label: 'Order List',
+        children: [
+          { key: 'active-order', label: 'Active Order' },
+          { key: 'trigger-order', label: 'Trigger Order' },
+          { key: 'stop-order', label: 'Stop Order' },
+        ],
+      },
+      {
+        key: 'deal-list-group',
+        label: 'Deal List',
+        children: [
+          { key: 'active-order-history-deal', label: 'Active Order History Deal' },
+          { key: 'trigger-order-history-deal', label: 'Trigger Order History Deal' },
+          { key: 'liquidate-history', label: 'Liquidate History' },
+          { key: 'adl-history', label: 'ADL History' },
+          { key: 'stop-order-history-deal', label: 'Stop Order History Deal' },
+        ],
+      },
     ],
   },
   {
@@ -143,6 +198,7 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'redis-value-manage', label: 'Redis Value Management' },
       { key: 'openapi-whitelist', label: 'OpenApi White List' },
       { key: 'openapi-market', label: 'OpenApi Market' },
+      { key: 'openapi-mm-blacklist', label: 'OpenApi MM Blacklist' },
     ],
   },
   {
@@ -157,6 +213,35 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'finance-flow', label: 'FinanceFlow' },
     ],
   },
+  {
+    key: 'api-mgmt',
+    icon: <ApiOutlined />,
+    label: 'API Management',
+    children: [{ key: 'api-manage', label: 'API Management' }],
+  },
+  {
+    key: 'tools-mgmt',
+    icon: <ToolOutlined />,
+    label: 'Tools Management',
+    children: [
+      { key: 'tools-close-position', label: 'Close Position' },
+      { key: 'tools-global-frequency', label: 'Global Frequency' },
+      { key: 'tools-open-bottom-position', label: 'Open Bottom Position' },
+    ],
+  },
+  {
+    key: 'risk-monitor',
+    icon: <WarningOutlined />,
+    label: 'Risk Monitor',
+    children: [
+      { key: 'risk-funding-fee-change', label: 'Funding Fee Change' },
+      { key: 'risk-liquidation-switch', label: 'Liquidation Switch' },
+      { key: 'risk-market-price-limit', label: 'Market Price Limit' },
+      { key: 'risk-reserve-list', label: 'Risk Reserve List' },
+      { key: 'risk-reserve-detail', label: 'Risk Reserve Detail' },
+      { key: 'risk-trading-restriction', label: 'Trading Restriction' },
+    ],
+  },
 ]
 
 export function isPageKey(key: string): key is PageKey {
@@ -167,7 +252,12 @@ export const defaultOpenKeys = [
   'contract-mgmt',
   'price-mgmt',
   'order-mgmt',
+  'order-list-group',
+  'deal-list-group',
   'user-mgmt',
   'contract-config',
   'financial-mgmt',
+  'api-mgmt',
+  'tools-mgmt',
+  'risk-monitor',
 ]

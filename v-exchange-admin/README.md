@@ -1,6 +1,20 @@
 # V Exchange Admin (MatchingManagement)
 
-React + Ant Design replica of the **MatchingManagement** broker admin shown in your reference screenshots. Pages use static mock data from those screens; additional menu routes show **Under Development** until more screenshots are provided.
+React + Ant Design replica of the **MatchingManagement** broker admin (V Exchange / bitx-prod reference UI).
+
+## Public URL (GitHub Pages)
+
+After deployment from `main`:
+
+**https://hxyan2020.github.io/PRD/**
+
+Direct examples:
+
+- Overview: https://hxyan2020.github.io/PRD/overview
+- Contract List: https://hxyan2020.github.io/PRD/contract-list
+- User Rate Configuration: https://hxyan2020.github.io/PRD/user-rate-config
+
+Enable **GitHub Pages** in the repo settings once (Source: **GitHub Actions**) if the workflow has not run yet.
 
 ## Run locally
 
@@ -10,16 +24,15 @@ npm install
 npm run dev
 ```
 
-Open the URL printed by Vite (default `http://localhost:5173`).
+## Build
 
-## Implemented pages (from screenshots)
+```bash
+npm run build          # local (base /)
+npm run build:pages    # GitHub Pages (base /PRD/)
+```
 
-- Overview, Contract List, Coin Introduce, KLine Manage, Trade Amount Factor Config, Admin Adl (一键平仓)
-- Market Source (17 rows), Index Price, Fair Price, Index Market Link (empty), Funding Rate
-- Position List (empty table + filters)
+## Coverage
 
-## Adding more screens
+Implemented from screenshots: contract & price modules, full order management (active/trigger/stop + deal history), user management (asset, rates, info, risk, blacklist, margin), Redis key/value admin, plus menu stubs for financial / API / tools / risk modules.
 
-1. Add mock rows in `src/mock/data.ts` if needed.
-2. Create or extend a page under `src/pages/`.
-3. Wire the page in `src/pages/registry.tsx`.
+Mock data lives in `src/mock/`.
