@@ -577,7 +577,7 @@ sequenceDiagram
 | 要求更多資訊 | 記錄審查＋可能刷新建議（不是核准） |
 | 駁回 | 關閉候選 |
 | 核准納入監控 | 可選：`DISCOVERY_PROMOTE` 經 AI 工程師提案 → RO 覆核 → 技能＋偵測器 |
-| 開啟筆記本（HTML）／開啟 Colab | 來自 `RISK_DISCOVERY_NOTEBOOK` 的外部連結 |
+| 開啟 Jupyter（Colab）／HTML／下載 .ipynb | 頁首＋看板連結來自 `RISK_DISCOVERY_NOTEBOOK`（Colab、HTML Pages、原始 `.ipynb`） |
 
 當 `discovery.auto_on_detectors=true` 時與 `run_detectors` 並行。產品：PRD §6.5 · 操作：使用手冊 §14A。
 

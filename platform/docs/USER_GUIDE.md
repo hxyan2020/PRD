@@ -662,7 +662,9 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 
 ## 14A. Unknown Risk Discovery (AI suggestion card)
 
-**Path:** `/admin/discovery` · **Notebook:** [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing)
+**Path:** `/admin/discovery` · **Notebook:** [Colab / Jupyter](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing) · [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [.ipynb](https://hxyan2020.github.io/PRD/risk-discovery/risk_discovery.ipynb)  
+
+On the admin page use the primary **Open Jupyter (Colab)** button (also **Open notebook (HTML)** and **Download .ipynb**).
 
 This page ports the Colab review widgets into CRMP Admin. It runs **beside** DETECT→ALARM→AI_RCA→SKILL→HUMAN→RESOLVED→DASHBOARD; candidates do **not** become daily monitors until a human promotes them. No silent deploy. Maker ≠ checker on optional monitoring promote.
 

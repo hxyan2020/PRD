@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { DiscoverySuggestionBoard } from "@/components/DiscoverySuggestionBoard";
+import { EnZh } from "@/components/EnZh";
 import {
   discoveryPendingCount,
   listDiscoveryCandidates,
@@ -9,6 +10,7 @@ import {
   seedDiscoveryIfEmpty,
 } from "@/lib/ai/discovery";
 import { getDiscoveryAiStatus } from "@/lib/ai/discovery-analyse";
+import { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";
 import { getDb } from "@/lib/db";
 
 export default async function DiscoveryPage() {
@@ -41,7 +43,31 @@ export default async function DiscoveryPage() {
 
   return (
     <div>
-      <AdminPageHeader pageKey="discovery" />
+      <AdminPageHeader
+        pageKey="discovery"
+        actions={
+          <>
+            <a
+              className="btn btn-primary"
+              href={RISK_DISCOVERY_NOTEBOOK.colab}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="discovery-header-notebook-colab"
+            >
+              <EnZh en="Jupyter notebook" zh="Jupyter 筆記本" />
+            </a>
+            <a
+              className="btn"
+              href={RISK_DISCOVERY_NOTEBOOK.ipynb}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="discovery-header-notebook-ipynb"
+            >
+              <EnZh en=".ipynb" zh=".ipynb" />
+            </a>
+          </>
+        }
+      />
       <DiscoverySuggestionBoard
         initial={{
           candidates: listDiscoveryCandidates(undefined, 100) as React.ComponentProps<

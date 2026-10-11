@@ -661,7 +661,9 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 
 ## 14A. 未知風險探索（AI 建議卡）
 
-**路徑：** `/admin/discovery` · **筆記本：** [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing)
+**路徑：** `/admin/discovery` · **筆記本：** [Colab／Jupyter](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing) · [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [.ipynb](https://hxyan2020.github.io/PRD/risk-discovery/risk_discovery.ipynb)  
+
+管理頁上使用主要按鈕 **開啟 Jupyter（Colab）**（另有 **開啟筆記本（HTML）** 與 **下載 .ipynb**）。
 
 本頁把 Colab 審查元件搬進 CRMP 管理後台。它與 DETECT→ALARM→AI_RCA→SKILL→HUMAN→RESOLVED→DASHBOARD **並行**；候選在人類晉升前**不會**成為每日監控。不靜默部署。可選監控晉升須制作者≠覆核者。
 

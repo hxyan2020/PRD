@@ -581,7 +581,7 @@ sequenceDiagram
 | Ask for more info | Records review + may refresh suggestion (not an approval) |
 | Dismiss | Closes candidate |
 | Approve for monitoring | Optional: `DISCOVERY_PROMOTE` via AI Engineer propose → RO decide → skill + detector |
-| Open notebook (HTML) / Open Colab | External links from `RISK_DISCOVERY_NOTEBOOK` |
+| Open Jupyter (Colab) / HTML / Download .ipynb | Header + board links from `RISK_DISCOVERY_NOTEBOOK` (Colab, HTML Pages, raw `.ipynb`) |
 
 Parallel to `run_detectors` when `discovery.auto_on_detectors=true`. Product: PRD §6.5 · Operator: User Guide §14A.
 

@@ -20,6 +20,24 @@ assert.match(board, /Disconnect \/ Mock|中斷／Mock/);
 assert.match(board, /Connect OpenAI/);
 assert.match(board, /discovery-suggestion-card/);
 assert.match(board, /RISK_DISCOVERY_NOTEBOOK/);
+assert.match(board, /discovery-notebook-colab/);
+assert.match(board, /discovery-notebook-html/);
+assert.match(board, /discovery-notebook-ipynb/);
+assert.match(board, /Open Jupyter \(Colab\)|開啟 Jupyter（Colab）/);
+
+const page = read("src/app/admin/discovery/page.tsx");
+assert.match(page, /discovery-header-notebook-colab/);
+assert.match(page, /RISK_DISCOVERY_NOTEBOOK/);
+assert.match(page, /Jupyter notebook|Jupyter 筆記本/);
+
+const links = read("src/lib/ai/discovery-links.ts");
+assert.match(links, /colab\.research\.google\.com/);
+assert.match(links, /risk_discovery\.ipynb/);
+assert.match(links, /hxyan2020\.github\.io\/PRD\/risk-discovery/);
+
+const urls = read("src/lib/docs/urls.ts");
+assert.match(urls, /risk_discovery\.ipynb/);
+assert.match(urls, /colab\.research\.google\.com/);
 
 const analyse = read("src/lib/ai/discovery-analyse.ts");
 assert.match(analyse, /deterministicSuggestion/);

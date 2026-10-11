@@ -40,6 +40,18 @@ export const PLATFORM_URLS: UrlEntry[] = [
     path: "https://hxyan2020.github.io/PRD/risk-discovery/",
     description: "Executed Colab unknown-risk discovery notebook (code + outputs) published on GitHub Pages",
   },
+  {
+    category: "Docs",
+    title: "Risk discovery notebook (.ipynb)",
+    path: "https://hxyan2020.github.io/PRD/risk-discovery/risk_discovery.ipynb",
+    description: "Raw Jupyter notebook file for unknown-risk discovery (download / open locally)",
+  },
+  {
+    category: "Docs",
+    title: "Risk discovery notebook (Colab)",
+    path: "https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing",
+    description: "Interactive Google Colab Jupyter notebook for unknown-risk discovery",
+  },
   { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); alerts & tickets live on Realtime Alert & Tracker; deep-link targets for M2-* codes", permission: "monitor.read" },
   { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Not in left nav — redirects to Monitor 2.0 (detectors merged into indicator registry)", permission: "detectors.read" },
   { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + grouped AI pipeline controls (rank note) + AI RCA; M2-* MonitorCode tooltips/links; closed tickets → Risk Log; AI Analyses list redirects here", permission: "monitor.read" },
