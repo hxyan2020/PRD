@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { CloudSetupCard } from '../components/CloudSetupCard'
 import { NoteTree } from '../components/NoteTree'
 import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
-import { NotebookStorageError, notebookStore } from '../hooks/notebookStore'
+import {
+  NotebookStorageError,
+  notebookStore,
+  type CloudRuntimeState,
+} from '../hooks/notebookStore'
 import { getCloudSyncStatus } from '../lib/notebookGistSync'
 import {
   formatTimestamp,
@@ -217,10 +222,15 @@ export function Notebook() {
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
   const [cloudOn, setCloudOn] = useState(() => getCloudSyncStatus().configured)
+  const [cloudState, setCloudState] = useState<CloudRuntimeState>(() =>
+    notebookStore.getCloudRuntime().state,
+  )
+  const [cloudError, setCloudError] = useState<string | null>(null)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
   const importInputRef = useRef<HTMLInputElement | null>(null)
   const autoRecoverTried = useRef(false)
+  const cloudSetupRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (!ready) return
@@ -233,6 +243,14 @@ export function Notebook() {
     const timer = window.setTimeout(() => setStorageToast(null), 5200)
     return () => window.clearTimeout(timer)
   }, [ready, t])
+
+  useEffect(() => {
+    return notebookStore.subscribeCloudRuntime((runtime) => {
+      setCloudState(runtime.state)
+      setCloudError(runtime.error)
+      setCloudOn(getCloudSyncStatus().configured || runtime.state === 'syncing' || runtime.state === 'synced')
+    })
+  }, [])
 
   useEffect(() => {
     if (view !== 'backup') setCloudOn(getCloudSyncStatus().configured)
@@ -446,6 +464,12 @@ export function Notebook() {
       setNewCategoryIds([])
       setComposerOpen(true)
       setComposerError(null)
+      if (!getCloudSyncStatus().configured) {
+        setCloudOn(false)
+        window.requestAnimationFrame(() => {
+          cloudSetupRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        })
+      }
     } catch (err) {
       if (err instanceof NotebookStorageError && err.code === 'quota') {
         setComposerError(t('notebookStorageFull'))
@@ -565,10 +589,23 @@ export function Notebook() {
                   : t('notebookLede')}
         </p>
         {cloudOn ? (
-          <p className="notebook-cloud-pill" title={t('cloudTitle')}>
-            {t('cloudStatusOn')}
+          <p
+            className={`notebook-cloud-pill${cloudState === 'error' ? ' err' : ''}${
+              cloudState === 'syncing' ? ' syncing' : ''
+            }`}
+            title={t('cloudTitle')}
+          >
+            {cloudState === 'syncing'
+              ? t('cloudSyncing')
+              : cloudState === 'error'
+                ? t('cloudSyncError', { error: cloudError || 'error' })
+                : t('cloudSynced')}
           </p>
-        ) : null}
+        ) : (
+          <p className="notebook-cloud-pill off" title={t('cloudRequiredTitle')}>
+            {t('cloudSyncOffBanner')}
+          </p>
+        )}
         <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
           <button
             type="button"
@@ -675,6 +712,17 @@ export function Notebook() {
           </div>
         ) : null}
       </header>
+
+      {!cloudOn && (view === 'notes' || view === 'backup') ? (
+        <div ref={cloudSetupRef}>
+          <CloudSetupCard
+            onEnabled={() => {
+              setCloudOn(true)
+              setCloudState('synced')
+            }}
+          />
+        </div>
+      ) : null}
 
       {recoverToast ? (
         <p className="notebook-toast" role="status">

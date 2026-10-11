@@ -382,7 +382,7 @@ async function hydrate(): Promise<void> {
     } catch {
       /* ignore */
     }
-    scheduleDurableSync()
+    await scheduleDurableSync()
   })()
 }
 
@@ -440,21 +440,95 @@ function buildBackupJson(): string {
 }
 
 let durableTimer: ReturnType<typeof setTimeout> | null = null
+let cloudPushInFlight: Promise<void> | null = null
 
-/** Push the latest notebook JSON to folder backup + optional GitHub Gist (debounced). */
-function scheduleDurableSync() {
+export type CloudRuntimeState = 'off' | 'syncing' | 'synced' | 'error'
+
+type CloudRuntime = {
+  state: CloudRuntimeState
+  lastSyncedAt: string | null
+  error: string | null
+  gistId: string
+}
+
+type CloudRuntimeListener = (runtime: CloudRuntime) => void
+const cloudRuntimeListeners = new Set<CloudRuntimeListener>()
+
+let cloudRuntime: CloudRuntime = {
+  state: isCloudSyncReady() ? 'synced' : 'off',
+  lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+  error: null,
+  gistId: getCloudSyncStatus().gistId,
+}
+
+function setCloudRuntime(patch: Partial<CloudRuntime>) {
+  cloudRuntime = { ...cloudRuntime, ...patch }
+  cloudRuntimeListeners.forEach((listener) => listener(cloudRuntime))
+}
+
+function refreshCloudRuntimeFromSettings() {
+  const status = getCloudSyncStatus()
+  if (!isCloudSyncReady()) {
+    setCloudRuntime({
+      state: 'off',
+      lastSyncedAt: status.lastSyncedAt,
+      error: null,
+      gistId: status.gistId,
+    })
+    return
+  }
+  setCloudRuntime({
+    state: cloudRuntime.state === 'error' ? 'error' : 'synced',
+    lastSyncedAt: status.lastSyncedAt,
+    gistId: status.gistId,
+  })
+}
+
+/** Debounced folder backup only (local disk). */
+function scheduleFolderBackup() {
   if (typeof window === 'undefined') return
   if (durableTimer) window.clearTimeout(durableTimer)
   durableTimer = window.setTimeout(() => {
     durableTimer = null
-    const json = buildBackupJson()
-    void writeFolderBackup(json).catch(() => {
+    void writeFolderBackup(buildBackupJson()).catch(() => {
       /* folder not configured / permission denied */
     })
-    void pushGistBackup(json).catch(() => {
-      /* gist sync off or misconfigured */
-    })
   }, 1200)
+}
+
+/** Push notebook to cloud immediately when sync is enabled (awaits in-flight). */
+async function flushCloudSync() {
+  if (!isCloudSyncReady()) {
+    setCloudRuntime({ state: 'off', error: null })
+    return
+  }
+  if (cloudPushInFlight) return cloudPushInFlight
+  setCloudRuntime({ state: 'syncing', error: null })
+  cloudPushInFlight = (async () => {
+    try {
+      const result = await pushGistBackup(buildBackupJson())
+      setCloudRuntime({
+        state: 'synced',
+        lastSyncedAt: new Date().toISOString(),
+        error: null,
+        gistId: result.gistId,
+      })
+    } catch (err) {
+      setCloudRuntime({
+        state: 'error',
+        error: err instanceof Error ? err.message : 'Cloud sync failed',
+      })
+    } finally {
+      cloudPushInFlight = null
+    }
+  })()
+  return cloudPushInFlight
+}
+
+/** Folder (debounced) + cloud (immediate when enabled). */
+async function scheduleDurableSync() {
+  scheduleFolderBackup()
+  await flushCloudSync()
 }
 
 async function writeEntries(entries: NotebookEntry[]) {
@@ -467,7 +541,7 @@ async function writeEntries(entries: NotebookEntry[]) {
   entryListeners.forEach((listener) => listener(sorted))
   // After a successful write, point the latest snapshot at the new durable set.
   await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  scheduleDurableSync()
+  await scheduleDurableSync()
 }
 
 async function writeTrash(trash: TrashedNotebookEntry[]) {
@@ -478,7 +552,7 @@ async function writeTrash(trash: TrashedNotebookEntry[]) {
   cache.trash = sorted
   trashListeners.forEach((listener) => listener(sorted))
   await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  scheduleDurableSync()
+  await scheduleDurableSync()
 }
 
 async function writeCategories(categories: NotebookCategory[]) {
@@ -489,7 +563,7 @@ async function writeCategories(categories: NotebookCategory[]) {
   cache.categories = sorted
   categoryListeners.forEach((listener) => listener(sorted))
   await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  scheduleDurableSync()
+  await scheduleDurableSync()
 }
 
 function uid(prefix: string) {
@@ -693,6 +767,14 @@ export const notebookStore = {
     return { total: entries.length }
   },
   getCloudSyncStatus,
+  getCloudRuntime: () => cloudRuntime,
+  subscribeCloudRuntime(listener: CloudRuntimeListener) {
+    cloudRuntimeListeners.add(listener)
+    listener(cloudRuntime)
+    return () => {
+      cloudRuntimeListeners.delete(listener)
+    }
+  },
   /** Immediately push notebook JSON to folder backup + optional cloud Gist. */
   async syncDurableNow(): Promise<{
     folder: boolean
@@ -711,12 +793,24 @@ export const notebookStore = {
     } catch {
       folder = false
     }
-    try {
-      const result = await pushGistBackup(json)
-      gistId = result.gistId
-      htmlUrl = result.htmlUrl
-    } catch (err) {
-      gistError = err instanceof Error ? err.message : 'Cloud sync failed'
+    if (isCloudSyncReady()) {
+      setCloudRuntime({ state: 'syncing', error: null })
+      try {
+        const result = await pushGistBackup(json)
+        gistId = result.gistId
+        htmlUrl = result.htmlUrl
+        setCloudRuntime({
+          state: 'synced',
+          lastSyncedAt: new Date().toISOString(),
+          error: null,
+          gistId: result.gistId,
+        })
+      } catch (err) {
+        gistError = err instanceof Error ? err.message : 'Cloud sync failed'
+        setCloudRuntime({ state: 'error', error: gistError })
+      }
+    } else {
+      refreshCloudRuntimeFromSettings()
     }
     return { folder, gistId, gistError, htmlUrl }
   },
@@ -760,6 +854,7 @@ export const notebookStore = {
       gistId: input.gistId?.trim() || loadGistSettings().gistId,
       enabled: true,
     })
+    refreshCloudRuntimeFromSettings()
     const result = await notebookStore.syncDurableNow()
     if (!result.gistId) {
       throw new NotebookStorageError('unknown', result.gistError || 'Cloud upload failed')
@@ -781,13 +876,14 @@ export const notebookStore = {
       throw new NotebookStorageError('unknown', 'Token and cloud notebook id are required')
     }
     saveGistSettings({ token: input.token, gistId, enabled: true })
+    refreshCloudRuntimeFromSettings()
     const gistJson = await pullGistBackup(loadGistSettings())
     if (!gistJson) {
       throw new NotebookStorageError('unknown', 'No cloud notebook found for that id')
     }
     const imported = await notebookStore.importBackup(gistJson)
     setLastCloudSyncAt()
-    scheduleDurableSync()
+    await scheduleDurableSync()
     return { total: imported.total, gistId }
   },
   subscribe(listener: EntryListener) {

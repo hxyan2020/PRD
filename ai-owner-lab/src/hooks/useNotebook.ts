@@ -81,6 +81,8 @@ export function useNotebook() {
     enableCloudSync: notebookStore.enableCloudSync,
     connectCloudSync: notebookStore.connectCloudSync,
     getCloudSyncStatus: notebookStore.getCloudSyncStatus,
+    getCloudRuntime: notebookStore.getCloudRuntime,
+    subscribeCloudRuntime: notebookStore.subscribeCloudRuntime,
   }
 }
 

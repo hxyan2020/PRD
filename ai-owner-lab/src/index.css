@@ -2485,6 +2485,47 @@ body.menu-open {
   border: 1px solid rgba(13, 148, 136, 0.22);
 }
 
+.notebook-cloud-pill.off {
+  color: #9a3412;
+  background: rgba(234, 88, 12, 0.12);
+  border-color: rgba(234, 88, 12, 0.28);
+}
+
+.notebook-cloud-pill.syncing {
+  color: #1d4ed8;
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.notebook-cloud-pill.err {
+  color: #991b1b;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.notebook-cloud-setup {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.85rem 0 1.1rem;
+  padding: 1.05rem 1.15rem;
+  border: 1px solid rgba(234, 88, 12, 0.35);
+  border-radius: 0.75rem;
+  background: linear-gradient(180deg, rgba(255, 247, 237, 0.95), rgba(255, 255, 255, 0.88));
+}
+
+.notebook-cloud-setup-head h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.notebook-cloud-setup-head p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 .notebook-backup-card h3 {
   margin: 0;
   font-size: 1.02rem;

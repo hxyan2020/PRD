@@ -124,6 +124,14 @@ const en = {
   cloudTitle: 'Cloud sync (any device)',
   cloudBody:
     'Uses a private GitHub Gist as your cloud notebook. Your token stays in this browser only — OWNLAB never sends it to our servers.',
+  cloudRequiredTitle: 'Turn on cloud sync to keep new notes',
+  cloudRequiredBody:
+    'New notes stay on this device only until cloud sync is on. Paste a GitHub token once — every new note uploads to your private cloud notebook automatically.',
+  cloudRequiredStep2: 'Paste the token here and click Enable cloud sync. After that, every new note is saved to the cloud.',
+  cloudSyncing: 'Saving to cloud…',
+  cloudSynced: 'Saved to cloud',
+  cloudSyncError: 'Cloud save failed: {error}',
+  cloudSyncOffBanner: 'Cloud sync is off — new notes are only on this device.',
   cloudStep1: 'Create a classic GitHub token with the gist scope:',
   cloudCreateToken: 'Create token',
   cloudStep2: 'Paste the token below and click “Enable cloud sync” to upload this notebook.',
@@ -494,6 +502,14 @@ const zh: Record<UiKey, string> = {
   cloudTitle: '云同步（任意设备）',
   cloudBody:
     '用私有 GitHub Gist 作为云端笔记本。令牌只留在本浏览器，OWNLAB 不会把它发到我们的服务器。',
+  cloudRequiredTitle: '请开启云同步以保存新笔记',
+  cloudRequiredBody:
+    '未开启云同步前，新笔记只留在本设备。粘贴一次 GitHub 令牌后，每条新笔记都会自动上传到你的私有云笔记本。',
+  cloudRequiredStep2: '在此粘贴令牌并点「开启云同步」。之后每条新笔记都会保存到云端。',
+  cloudSyncing: '正在保存到云端…',
+  cloudSynced: '已保存到云端',
+  cloudSyncError: '云端保存失败：{error}',
+  cloudSyncOffBanner: '云同步未开启——新笔记仅保存在本设备。',
   cloudStep1: '创建带 gist 权限的经典 GitHub 令牌：',
   cloudCreateToken: '创建令牌',
   cloudStep2: '把令牌粘贴到下方，点「开启云同步」上传本笔记本。',
