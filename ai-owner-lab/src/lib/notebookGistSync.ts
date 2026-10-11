@@ -222,10 +222,21 @@ export async function pushGistBackup(
   }
 }
 
-/** Verify the token can talk to GitHub (gist scope). */
-export async function verifyGistToken(token: string): Promise<{ login: string }> {
-  const user = await githubJson('/user', token.trim())
-  const login = String(user.login || '')
-  if (!login) throw new Error('Token did not return a GitHub user')
-  return { login }
+/** Verify the token can read/write gists (classic PAT with gist scope). */
+export async function verifyGistToken(token: string): Promise<{ ok: true }> {
+  const trimmed = token.trim()
+  if (!trimmed) throw new Error('GitHub token is required')
+  try {
+    // Prefer the gists endpoint — some tokens can sync notes without a full /user grant.
+    await githubJson('/gists?per_page=1', trimmed)
+    return { ok: true }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'invalid token'
+    if (/Resource not accessible|Bad credentials|401|403/i.test(message)) {
+      throw new Error(
+        'Token cannot access Gists. Create a classic GitHub PAT with the gist scope and try again.',
+      )
+    }
+    throw err
+  }
 }
