@@ -763,7 +763,7 @@ export const notebookStore = {
     trashListeners.forEach((listener) => listener(trash))
     categoryListeners.forEach((listener) => listener(categories))
     await saveSnapshot(cache.entries, cache.trash, cache.categories)
-    scheduleDurableSync()
+    await scheduleDurableSync()
     return { total: entries.length }
   },
   getCloudSyncStatus,

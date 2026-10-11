@@ -62,13 +62,16 @@ await page.waitForFunction(
   { timeout: 5000 },
 )
 
+// Cloud setup card should appear until sync is enabled
+const setupVisible = await page.getByRole('heading', { name: 'Turn on cloud sync to keep new notes' }).isVisible()
+
 await page.getByRole('tab', { name: 'Backup' }).click()
 await page.waitForSelector('.notebook-backup')
 const backupVisible = await page.locator('.notebook-backup').isVisible()
 const cloudVisible = await page.getByRole('heading', { name: 'Cloud sync (any device)' }).isVisible()
 const persistVisible = await page.getByRole('heading', { name: 'Keep browser storage' }).isVisible()
 const folderVisible = await page.getByRole('heading', { name: 'Backup folder' }).isVisible()
-const enableCloudVisible = await page.getByRole('button', { name: 'Enable cloud sync' }).isVisible()
+const enableCloudVisible = await page.getByRole('button', { name: 'Enable cloud sync' }).count().then((n) => n >= 1)
 const recoveryDumpVisible = await page
   .getByRole('button', { name: 'Scan & download recovery dump' })
   .isVisible()
@@ -110,6 +113,7 @@ const restored = await page.evaluate(
 await page.screenshot({ path: path.join(OUT, 'backup-import-restored.png'), fullPage: true })
 
 const summary = {
+  setupVisible,
   backupVisible,
   cloudVisible,
   enableCloudVisible,
@@ -124,6 +128,7 @@ fs.writeFileSync(path.join(OUT, 'backup-smoke.json'), JSON.stringify(summary, nu
 console.log(JSON.stringify(summary, null, 2))
 
 const ok =
+  setupVisible &&
   backupVisible &&
   cloudVisible &&
   enableCloudVisible &&
