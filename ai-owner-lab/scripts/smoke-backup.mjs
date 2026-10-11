@@ -69,6 +69,9 @@ const cloudVisible = await page.getByRole('heading', { name: 'Cloud sync (any de
 const persistVisible = await page.getByRole('heading', { name: 'Keep browser storage' }).isVisible()
 const folderVisible = await page.getByRole('heading', { name: 'Backup folder' }).isVisible()
 const enableCloudVisible = await page.getByRole('button', { name: 'Enable cloud sync' }).isVisible()
+const recoveryDumpVisible = await page
+  .getByRole('button', { name: 'Scan & download recovery dump' })
+  .isVisible()
 
 const [download] = await Promise.all([
   page.waitForEvent('download'),
@@ -110,6 +113,7 @@ const summary = {
   backupVisible,
   cloudVisible,
   enableCloudVisible,
+  recoveryDumpVisible,
   persistVisible,
   folderVisible,
   exportHasNote,
@@ -123,6 +127,7 @@ const ok =
   backupVisible &&
   cloudVisible &&
   enableCloudVisible &&
+  recoveryDumpVisible &&
   persistVisible &&
   folderVisible &&
   exportHasNote &&
