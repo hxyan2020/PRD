@@ -242,8 +242,8 @@
       captionHant: "簡介：抽籤術如何運作"
     },
     "coca-leaves": {
-      youtubeId: "cFE8w7Ut_Lg",
-      caption: "Intro: coca/despacho offering",
+      youtubeId: "YtdW-zl5z1U",
+      caption: "Intro: La VERITÀ sulle foglie di COCA",
       captionZh: "简介：古柯叶占如何运作",
       captionHant: "簡介：古柯叶占如何運作"
     },
@@ -266,8 +266,8 @@
       captionHant: "簡介：德爾斐神諭／皮提亞如何運作"
     },
     "dene-stars": {
-      youtubeId: "aqiISsDkcPc",
-      caption: "Intro: Indigenous elders read stars",
+      youtubeId: "zJr6ps9U7hI",
+      caption: "Intro: Northern Dene Astronomy",
       captionZh: "简介：德内星象知识如何运作",
       captionHant: "簡介：德内星象知识如何運作"
     },
@@ -596,8 +596,8 @@
       captionHant: "簡介：毛利月历如何運作"
     },
     "mapuche-peuma": {
-      youtubeId: "JWG1aL3sLOQ",
-      caption: "Intro: Taiwan island temple keeps ancient dream-seeking ritual alive",
+      youtubeId: "bN-KS2n5fzM",
+      caption: "Intro: Why Artemidorus Was Way Ahead of His Time",
       captionZh: "简介：马普切梦兆如何运作",
       captionHant: "簡介：馬普切夢兆如何運作"
     },
@@ -686,8 +686,8 @@
       captionHant: "簡介：摸骨算命如何運作"
     },
     "mole-reading": {
-      youtubeId: "BgdRifh9UuI",
-      caption: "Intro: mole/face physiognomy",
+      youtubeId: "79pxe7pFnvY",
+      caption: "Intro: WHAT IS THE SPIRITUAL SIGNIFICANCE OF THE MOLES & MARKS ON YOUR FACE?",
       captionZh: "简介：痣相如何运作",
       captionHant: "簡介：痣相如何運作"
     },
@@ -704,8 +704,8 @@
       captionHant: "簡介：莫尔多瓦民俗占如何運作"
     },
     "nephomancy": {
-      youtubeId: "dQKQsrgNA3w",
-      caption: "Intro: scrying clouds/forms",
+      youtubeId: "ae47bQnxeb8",
+      caption: "Intro: What is Nephomancy? ☁️",
       captionZh: "简介：云占如何运作",
       captionHant: "簡介：雲占如何運作"
     },
@@ -872,8 +872,8 @@
       captionHant: "簡介：四柱（韓國）如何運作"
     },
     "samoan-tofa": {
-      youtubeId: "ZiNdmSGvQLU",
-      caption: "Intro: Polynesian spirit/calendar",
+      youtubeId: "MU8tt8jMxXU",
+      caption: "Intro: Old Religion of Samoa (Old Samoa, John B. Stair) | Polynesian Myth | Samoan Gods",
       captionZh: "简介：萨摩亚托法智慧如何运作",
       captionHant: "簡介：萨摩亚托法智慧如何運作"
     },
