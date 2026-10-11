@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="64" cy="72" rx="36" ry="34" fill="#C8C8C8"/><circle cx="34" cy="42" r="12" fill="#C8C8C8"/><circle cx="94" cy="42" r="12" fill="#C8C8C8"/><ellipse cx="64" cy="58" rx="28" ry="24" fill="#C8C8C8"/><circle cx="52" cy="56" r="4" fill="#7A7A7A"/><circle cx="76" cy="56" r="4" fill="#7A7A7A"/><ellipse cx="64" cy="72" rx="8" ry="6" fill="#7A7A7A"/>
+  <ellipse cx="60.5" cy="65.357" rx="40.2504" ry="19.809929999999998" fill="#D0D0D0"/><path fill="#D0D0D0" d="M88.67528 42.0512 L94.71284 56.03468 L106.78796 53.7041 L98.73787999999999 40.682120000000005 Z"/><circle cx="98.73787999999999" cy="52.53881" r="13.276" fill="#D0D0D0"/><path fill="#D0D0D0" d="M38.36228 77.0099 V99.8319 H45.23128 V77.0099 M54.46244 77.0099 V99.8319 H61.33144 V77.0099 M68.55008 77.0099 V99.8319 H75.41908 V77.0099 M82.63772 77.0099 V99.8319 H89.50672 V77.0099"/><path fill="#D0D0D0" d="M20.2496 65.357 Q4.078600000000002 50.043 24.2496 57.357"/>
 </svg>

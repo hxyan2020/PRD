@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Stamp nature marks with recognizable silhouettes per kind:
- * trees, flowers, birds, animals, fungi — mixed by stable id hash +
- * taxonomic / tag cues so the grid isn't one repeated blob.
+ * Stamp nature marks with parametric silhouettes that read as the real
+ * category form (tree / flower / bird / animal / fungus), with enough
+ * per-id variation that a grid isn't 2 repeating blobs.
  *
- * FORCE=1 rewrites every nature mark (default: only generic/missing).
+ * FORCE=1 rewrites every nature mark.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -15,7 +15,7 @@ const marksDir = join(root, "public", "marks");
 const catalogPath = join(root, "public", "data", "catalog.json");
 mkdirSync(marksDir, { recursive: true });
 
-const FILL = "#C8C8C8";
+const FILL = "#D0D0D0";
 const FORCE = process.env.FORCE === "1";
 
 function svg(body) {
@@ -35,162 +35,15 @@ function hash(s) {
   return h >>> 0;
 }
 
-function pick(id, variants) {
-  return variants[hash(id) % variants.length];
+/** Deterministic floats in [0,1) from id + salt. */
+function rnd(id, salt = 0) {
+  const h = hash(`${id}#${salt}`);
+  return (h % 10000) / 10000;
 }
 
-/** Recognizable animal silhouettes (side / front profiles). */
-const MAMMALS = [
-  // sheep / woolly quadruped
-  `<ellipse cx="58" cy="70" rx="34" ry="24" fill="${FILL}"/><circle cx="92" cy="58" r="16" fill="${FILL}"/><path fill="${FILL}" d="M40 88v28h12V88M70 88v28h12V88M100 50l10-14M100 62l14-4"/><circle cx="98" cy="54" r="3" fill="#7A7A7A"/>`,
-  // bear
-  `<ellipse cx="64" cy="72" rx="36" ry="34" fill="${FILL}"/><circle cx="34" cy="42" r="12" fill="${FILL}"/><circle cx="94" cy="42" r="12" fill="${FILL}"/><ellipse cx="64" cy="58" rx="28" ry="24" fill="${FILL}"/><circle cx="52" cy="56" r="4" fill="#7A7A7A"/><circle cx="76" cy="56" r="4" fill="#7A7A7A"/><ellipse cx="64" cy="72" rx="8" ry="6" fill="#7A7A7A"/>`,
-  // deer with antlers
-  `<path fill="${FILL}" d="M34 18l8 22M46 12l6 28M82 12l-6 28M94 18l-8 22M52 48h24c2 22-4 40-12 48s-14-10-12-48zM48 96v26h12V96M68 96v26h12V96"/><circle cx="58" cy="56" r="3" fill="#7A7A7A"/><circle cx="70" cy="56" r="3" fill="#7A7A7A"/>`,
-  // rabbit
-  `<path fill="${FILL}" d="M46 8c-6 22-2 40 8 46M82 8c6 22 2 40-8 46"/><ellipse cx="64" cy="74" rx="26" ry="30" fill="${FILL}"/><circle cx="52" cy="66" r="4" fill="#7A7A7A"/><circle cx="76" cy="66" r="4" fill="#7A7A7A"/><ellipse cx="64" cy="86" rx="6" ry="4" fill="#7A7A7A"/>`,
-  // cat / feline
-  `<path fill="${FILL}" d="M38 30l10 18h32l10-18-14 6-12-14-12 14z"/><ellipse cx="64" cy="72" rx="28" ry="30" fill="${FILL}"/><circle cx="52" cy="66" r="4" fill="#7A7A7A"/><circle cx="76" cy="66" r="4" fill="#7A7A7A"/><path fill="${FILL}" d="M64 74l-6 10h12zM44 100c-10 8-6 20 4 20M84 100c10 8 6 20-4 20"/>`,
-  // dog / wolf
-  `<path fill="${FILL}" d="M30 44c0-14 10-24 20-24 5 0 8 3 10 6 2-3 5-6 10-6 10 0 20 10 20 24v10H30z"/><ellipse cx="60" cy="78" rx="30" ry="22" fill="${FILL}"/><path fill="${FILL}" d="M42 96l-8 26h14l6-26M74 96l8 26H68l-6-26M88 52l18-6-4 14"/>`,
-  // elephant
-  `<ellipse cx="58" cy="68" rx="34" ry="28" fill="${FILL}"/><circle cx="92" cy="58" r="20" fill="${FILL}"/><path fill="${FILL}" d="M100 70c8 18 4 36-8 44M40 90v30h14V90M68 90v30h14V90M28 62c-12 4-18 16-12 24"/><circle cx="98" cy="52" r="4" fill="#7A7A7A"/>`,
-  // horse
-  `<path fill="${FILL}" d="M28 70c4-20 20-34 40-34 8 0 16 2 22 8l18-18 4 10-12 12c6 8 6 20 2 30H40c-8 0-14-4-12-8z"/><path fill="${FILL}" d="M40 86v34h12V86M70 86v34h12V86M100 42c8-4 14 2 10 10"/>`,
-];
-
-const BIRDS = [
-  // perched songbird side profile
-  `<path fill="${FILL}" d="M86 44c-6-14-20-22-36-20-18 2-30 16-28 32 2 14 14 24 30 26 8 1 16-1 22-6l18 14 6-8-14-12c8-6 10-16 2-26z"/><circle cx="48" cy="48" r="4" fill="#7A7A7A"/><path fill="${FILL}" d="M34 52l-14 4 14 2"/>`,
-  // eagle / raptor wings open
-  `<path fill="${FILL}" d="M64 40c-4 0-8 4-8 10 0 4 2 6 4 8L16 78l8 10 32-16v28h16V72l32 16 8-10-44-20c2-2 4-4 4-8 0-6-4-10-8-10z"/><circle cx="58" cy="48" r="3" fill="#7A7A7A"/>`,
-  // owl face
-  `<ellipse cx="64" cy="68" rx="30" ry="36" fill="${FILL}"/><circle cx="50" cy="58" r="12" fill="#9A9A9A"/><circle cx="78" cy="58" r="12" fill="#9A9A9A"/><circle cx="50" cy="58" r="5" fill="#4A4A4A"/><circle cx="78" cy="58" r="5" fill="#4A4A4A"/><path fill="${FILL}" d="M64 68l-8 12h16zM44 28l10 18M84 28l-10 18"/>`,
-  // flamingo / long-neck wader
-  `<path fill="${FILL}" d="M72 18c-2 18 2 34 14 46 10 10 6 28-6 34-8 4-16-2-18-10 10 2 14-6 10-14-8-14-10-30-6-46zM52 90c-6 14 0 28 10 34h14c-6-12-6-24 0-34"/><circle cx="78" cy="24" r="8" fill="${FILL}"/><circle cx="80" cy="22" r="2" fill="#7A7A7A"/>`,
-  // duck / waterfowl
-  `<ellipse cx="60" cy="72" rx="34" ry="20" fill="${FILL}"/><circle cx="96" cy="60" r="14" fill="${FILL}"/><path fill="${FILL}" d="M104 62l18 4-18 4M40 60c-12-16 0-28 16-20M28 80c8 12 28 16 48 12"/><circle cx="100" cy="56" r="3" fill="#7A7A7A"/>`,
-  // hummingbird / small flier
-  `<path fill="${FILL}" d="M70 58c-10-4-22-2-30 8-6 8-4 20 6 24 8 4 18 0 24-8l22 18 8-10-18-16c8-4 12-14 8-22-4-6-12-6-20 6z"/><path fill="${FILL}" d="M48 52c-20-8-28-24-18-28 14 8 22 18 22 28"/><circle cx="78" cy="52" r="3" fill="#7A7A7A"/>`,
-];
-
-const INSECTS = [
-  // beetle / cricket side
-  `<ellipse cx="64" cy="74" rx="30" ry="18" fill="${FILL}"/><circle cx="94" cy="66" r="12" fill="${FILL}"/><path fill="${FILL}" d="M40 74c-14 10-22 24-16 32M52 68c-10-18-4-32 8-32M100 60l14-18M100 70l18-6"/><circle cx="98" cy="62" r="2" fill="#7A7A7A"/>`,
-  // butterfly
-  `<path fill="${FILL}" d="M64 64C40 32 16 28 8 44c16 6 36 16 56 20-24 6-44 18-56 24 10 14 34 8 56-20 24 32 48 36 56 20-16-6-36-16-56-20 24-6 44-18 56-24-10-14-34-8-56 20z"/><rect x="62" y="36" width="4" height="64" rx="2" fill="${FILL}"/>`,
-  // ant
-  `<circle cx="64" cy="34" r="12" fill="${FILL}"/><ellipse cx="64" cy="56" rx="10" ry="12" fill="${FILL}"/><ellipse cx="64" cy="88" rx="16" ry="22" fill="${FILL}"/><path fill="${FILL}" d="M52 34l-18-14M76 34l18-14M48 56H24M80 56h24M50 78l-18 14M78 78l18 14"/>`,
-  // bee
-  `<ellipse cx="64" cy="70" rx="28" ry="20" fill="${FILL}"/><path fill="${FILL}" d="M48 60h32v5H48zM48 72h32v5H48zM36 56c-14-18 0-30 14-20M92 56c14-18 0-30-14-20"/><circle cx="88" cy="66" r="8" fill="${FILL}"/>`,
-  // dragonfly
-  `<path fill="${FILL}" d="M18 56c22-10 40-4 46 10-8 12-26 18-46 10zM110 56c-22-10-40-4-46 10 8 12 26 18 46 10z"/><ellipse cx="64" cy="66" rx="8" ry="30" fill="${FILL}"/><circle cx="64" cy="40" r="8" fill="${FILL}"/>`,
-  // ladybug
-  `<ellipse cx="64" cy="72" rx="34" ry="28" fill="${FILL}"/><circle cx="64" cy="42" r="14" fill="${FILL}"/><circle cx="50" cy="64" r="6" fill="#7A7A7A"/><circle cx="78" cy="64" r="6" fill="#7A7A7A"/><circle cx="64" cy="84" r="6" fill="#7A7A7A"/><path fill="${FILL}" d="M64 48v48"/>`,
-  // spider
-  `<circle cx="64" cy="66" r="16" fill="${FILL}"/><circle cx="64" cy="48" r="10" fill="${FILL}"/><path fill="${FILL}" d="M48 56L18 38M48 66H14M48 76L18 94M80 56l30-18M80 66h34M80 76l30 18"/>`,
-];
-
-const FISH = [
-  `<path fill="${FILL}" d="M14 66c18-28 46-40 74-34 18 4 30 14 34 26H90c0 10-10 18-24 18H46c-14 0-26-4-32-10zM96 48l18-18-6 24"/><circle cx="42" cy="58" r="4" fill="#7A7A7A"/>`,
-  `<path fill="${FILL}" d="M12 70c10-30 44-48 78-42 22 4 36 16 40 30H98c-4 14-18 22-34 22H42c-14 0-26-4-30-18zM104 58c10-6 18 0 22 10l-14 4"/><circle cx="40" cy="62" r="4" fill="#7A7A7A"/>`,
-  `<path fill="${FILL}" d="M18 64c10-26 40-42 72-36 18 4 30 14 34 26-22-4-40 6-48 18-4 8-2 16 6 20-14 0-28-8-36-18zM100 50c6-10 14-12 18-6"/><circle cx="44" cy="56" r="4" fill="#7A7A7A"/>`,
-];
-
-const REPTILES = [
-  // lizard
-  `<ellipse cx="58" cy="72" rx="38" ry="18" fill="${FILL}"/><circle cx="98" cy="64" r="12" fill="${FILL}"/><path fill="${FILL}" d="M30 86l-14 18M48 92l-6 22M70 92l6 22M88 86l14 18M108 60l12-10"/><circle cx="102" cy="60" r="2" fill="#7A7A7A"/>`,
-  // snake S-curve
-  `<path fill="${FILL}" d="M22 38c18-18 44-8 52 10 8 18 26 22 42 8-14 22-40 26-56 8-14-14-30-18-42-2zM108 52c10 0 14 10 8 16"/><circle cx="112" cy="56" r="3" fill="#7A7A7A"/>`,
-  // turtle
-  `<ellipse cx="64" cy="68" rx="40" ry="26" fill="${FILL}"/><circle cx="106" cy="66" r="12" fill="${FILL}"/><path fill="${FILL}" d="M28 58c-14 0-18 14-8 18M70 38c0-14 14-18 18-8M48 42l16 22 16-22"/><circle cx="110" cy="62" r="2" fill="#7A7A7A"/>`,
-  // frog
-  `<ellipse cx="64" cy="76" rx="34" ry="26" fill="${FILL}"/><circle cx="42" cy="50" r="14" fill="${FILL}"/><circle cx="86" cy="50" r="14" fill="${FILL}"/><circle cx="42" cy="50" r="5" fill="#7A7A7A"/><circle cx="86" cy="50" r="5" fill="#7A7A7A"/><path fill="${FILL}" d="M28 90c-12 8-8 24 6 24M100 90c12 8 8 24-6 24"/>`,
-];
-
-/** Flower silhouettes — petals + stem. */
-const FLOWERS = [
-  // daisy / radial petals
-  `<g fill="${FILL}"><ellipse cx="64" cy="28" rx="10" ry="18"/><ellipse cx="64" cy="60" rx="10" ry="18"/><ellipse cx="48" cy="44" rx="18" ry="10"/><ellipse cx="80" cy="44" rx="18" ry="10"/><ellipse cx="52" cy="32" rx="14" ry="10" transform="rotate(-40 52 32)"/><ellipse cx="76" cy="32" rx="14" ry="10" transform="rotate(40 76 32)"/><ellipse cx="52" cy="56" rx="14" ry="10" transform="rotate(40 52 56)"/><ellipse cx="76" cy="56" rx="14" ry="10" transform="rotate(-40 76 56)"/><circle cx="64" cy="44" r="10"/><rect x="60" y="70" width="8" height="48" rx="3"/></g>`,
-  // tulip
-  `<path fill="${FILL}" d="M64 18c-18 10-26 34-22 52h44c4-18-4-42-22-52zM46 28c10-14 18-14 18-14s8 0 18 14"/><rect x="60" y="70" width="8" height="48" rx="3" fill="${FILL}"/><path fill="${FILL}" d="M64 90c-18 4-28 18-24 28M64 90c18 4 28 18 24 28"/>`,
-  // rose / layered bloom
-  `<circle cx="64" cy="46" r="26" fill="${FILL}"/><circle cx="64" cy="46" r="16" fill="#9A9A9A"/><circle cx="64" cy="46" r="7" fill="${FILL}"/><path fill="${FILL}" d="M48 28c-10-8-22-4-24 8 10 2 20 8 28 14M80 28c10-8 22-4 24 8-10 2-20 8-28 14"/><rect x="60" y="72" width="8" height="46" rx="3" fill="${FILL}"/><path fill="${FILL}" d="M64 88c-16 6-22 18-16 28M64 92c14 4 22 16 18 26"/>`,
-  // orchid / asymmetric
-  `<path fill="${FILL}" d="M64 70c-26-10-38-32-28-48 10 14 22 22 28 26 6-4 18-12 28-26 10 16-2 38-28 48z"/><ellipse cx="48" cy="36" rx="14" ry="18" fill="${FILL}"/><ellipse cx="80" cy="36" rx="14" ry="18" fill="${FILL}"/><circle cx="64" cy="52" r="8" fill="${FILL}"/><rect x="60" y="70" width="8" height="48" rx="3" fill="${FILL}"/>`,
-  // sunflower
-  `<g fill="${FILL}"><ellipse cx="64" cy="18" rx="8" ry="16"/><ellipse cx="64" cy="70" rx="8" ry="16"/><ellipse cx="38" cy="44" rx="16" ry="8"/><ellipse cx="90" cy="44" rx="16" ry="8"/><ellipse cx="46" cy="24" rx="12" ry="8" transform="rotate(-35 46 24)"/><ellipse cx="82" cy="24" rx="12" ry="8" transform="rotate(35 82 24)"/><ellipse cx="46" cy="64" rx="12" ry="8" transform="rotate(35 46 64)"/><ellipse cx="82" cy="64" rx="12" ry="8" transform="rotate(-35 82 64)"/><circle cx="64" cy="44" r="16"/><circle cx="64" cy="44" r="8" fill="#8A8A8A"/><rect x="60" y="76" width="8" height="44" rx="3"/></g>`,
-];
-
-/** Tree silhouettes — crown + trunk. */
-const TREES = [
-  // round deciduous canopy
-  `<ellipse cx="64" cy="48" rx="42" ry="36" fill="${FILL}"/><path fill="${FILL}" d="M56 78h16v42H56z"/><path fill="${FILL}" d="M64 88l-22 8 4 6 18-6 18 6 4-6z"/>`,
-  // pine / conifer tiers
-  `<path fill="${FILL}" d="M64 6L38 40h12L32 64h14L28 92h28v30h16V92h28L82 64h14L78 40h12z"/>`,
-  // palm
-  `<path fill="${FILL}" d="M64 52c-6-24-28-40-48-40 22 10 38 28 42 44 6-24 28-40 48-40-22 10-38 28-42 44z"/><path fill="${FILL}" d="M58 52h12v68H58z"/><path fill="${FILL}" d="M64 40c-20-4-36 8-40 20M64 36c20-4 36 8 40 20"/>`,
-  // oak / irregular canopy
-  `<path fill="${FILL}" d="M64 16c-22 0-40 14-42 34-12 2-22 14-22 28 0 16 12 30 30 32v30h16V98c18-2 32-16 32-32 0-14-10-26-22-28-2-20-20-34-42-34z"/>`,
-  // birch / slender
-  `<ellipse cx="64" cy="44" rx="28" ry="34" fill="${FILL}"/><rect x="58" y="72" width="12" height="48" rx="2" fill="${FILL}"/><path fill="${FILL}" d="M50 40h28M46 56h36" stroke="#8A8A8A" stroke-width="2"/>`,
-  // willow / drooping
-  `<path fill="${FILL}" d="M64 20c-20 0-36 12-40 30 0 0-4 24 8 36 0-16 8-28 16-34 4 10 4 24 0 40h32c-4-16-4-30 0-40 8 6 16 18 16 34 12-12 8-36 8-36-4-18-20-30-40-30z"/><rect x="58" y="70" width="12" height="50" rx="2" fill="${FILL}"/>`,
-];
-
-/** Fungus silhouettes — caps + stems. */
-const MUSHROOMS = [
-  // classic toadstool
-  `<path fill="${FILL}" d="M22 66c0-28 18-50 42-50s42 22 42 50c-10-10-28-14-42-14S32 56 22 66z"/><rect x="56" y="66" width="16" height="46" rx="4" fill="${FILL}"/><circle cx="48" cy="48" r="5" fill="#9A9A9A"/><circle cx="72" cy="42" r="4" fill="#9A9A9A"/><circle cx="84" cy="54" r="3" fill="#9A9A9A"/>`,
-  // wide flat oyster / shelf
-  `<ellipse cx="64" cy="52" rx="48" ry="24" fill="${FILL}"/><rect x="58" y="52" width="12" height="56" rx="3" fill="${FILL}"/><path fill="${FILL}" d="M40 52c-8 8-8 20 0 28M88 52c8 8 8 20 0 28"/>`,
-  // clustered morel-ish
-  `<ellipse cx="48" cy="40" rx="16" ry="28" fill="${FILL}"/><ellipse cx="72" cy="36" rx="14" ry="26" fill="${FILL}"/><ellipse cx="64" cy="52" rx="18" ry="22" fill="${FILL}"/><rect x="44" y="68" width="10" height="40" rx="3" fill="${FILL}"/><rect x="60" y="72" width="10" height="36" rx="3" fill="${FILL}"/><rect x="74" y="66" width="10" height="42" rx="3" fill="${FILL}"/>`,
-  // chanterelle / funnel
-  `<path fill="${FILL}" d="M24 58c8-28 28-44 40-44s32 16 40 44c-12-8-28-12-40-12S36 50 24 58z"/><path fill="${FILL}" d="M52 58h24l8 52H44z"/>`,
-];
-
-const GENUS_HINTS = [
-  [/felis|panthera|lynx|puma|leopard|tiger|lion|cat|lynx/i, MAMMALS, 4],
-  [/canis|vulpes|wolf|fox|dog|coyote|lupus/i, MAMMALS, 5],
-  [/ursus|bear|ailuropoda/i, MAMMALS, 1],
-  [/cervus|deer|rangifer|alces|moose|odocoileus/i, MAMMALS, 2],
-  [/lepus|oryctolagus|rabbit|hare/i, MAMMALS, 3],
-  [/ovis|sheep|capra|goat/i, MAMMALS, 0],
-  [/equus|horse|zebra/i, MAMMALS, 7],
-  [/bos|cow|bison|bubalus/i, MAMMALS, 0],
-  [/elephant|loxodonta|elephas/i, MAMMALS, 6],
-  [/accipiter|aquila|falco|eagle|hawk|buteo|halaeetus/i, BIRDS, 1],
-  [/strix|owl|bubo|tyto|otus/i, BIRDS, 2],
-  [/anas|duck|cygnus|swan|anser|goose/i, BIRDS, 4],
-  [/phoenicopterus|flamingo/i, BIRDS, 3],
-  [/trochil|humming/i, BIRDS, 5],
-  [/passer|corvus|turdus|bird|avian|parus|fringilla/i, BIRDS, 0],
-  [/papilio|danaus|butterfly|moth|noctua|acherontia/i, INSECTS, 1],
-  [/apis|bombus|bee|wasp|vespa/i, INSECTS, 3],
-  [/formica|ant|camponotus/i, INSECTS, 2],
-  [/coccinella|ladybug|ladybird/i, INSECTS, 5],
-  [/arachn|spider|araneus/i, INSECTS, 6],
-  [/libellula|dragonfly|anisoptera/i, INSECTS, 4],
-  [/acheta|gryllus|cricket|orthoptera|beetle|coleoptera/i, INSECTS, 0],
-  [/salmo|tuna|shark|fish|pisc|carassius|cyprinus/i, FISH, 0],
-  [/serpent|snake|python|naja|vipera/i, REPTILES, 1],
-  [/testudo|turtle|chelonia|tortoise/i, REPTILES, 2],
-  [/rana|frog|bufo|toad|amphib/i, REPTILES, 3],
-  [/rosa|rose/i, FLOWERS, 2],
-  [/tulipa|tulip/i, FLOWERS, 1],
-  [/helianthus|sunflower/i, FLOWERS, 4],
-  [/orchid|orchis|phalaenopsis/i, FLOWERS, 3],
-  [/pinus|picea|abies|fir|spruce|pine|conifer/i, TREES, 1],
-  [/palm|phoenix|cocos|areca/i, TREES, 2],
-  [/salix|willow/i, TREES, 5],
-  [/quercus|oak/i, TREES, 3],
-  [/betula|birch/i, TREES, 4],
-  [/amanita|toadstool/i, MUSHROOMS, 0],
-  [/pleurotus|oyster/i, MUSHROOMS, 1],
-  [/morchella|morel/i, MUSHROOMS, 2],
-  [/cantharellus|chanterelle/i, MUSHROOMS, 3],
-];
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
 
 function kindFor(item) {
   const tags = item.tags || [];
@@ -201,52 +54,374 @@ function kindFor(item) {
   for (const k of ["bird", "insect", "arachnid", "fish", "reptile", "amphibian", "mammal", "mollusc"]) {
     if (tags.includes(k)) return k;
   }
+  // animals shelf mixes mammals/insects/etc — sniff name
+  const hay = `${item.id} ${item.name}`.toLowerCase();
+  if (/bird|eagle|owl|duck|sparrow|hawk|finch|accipiter|corvus|turdus/.test(hay)) return "bird";
+  if (
+    /bee|ant|butterfly|moth|beetle|spider|insect|wasp|fly|hornet|termite|cicada|mantis|aphid|weevil|centipede|cockroach|cricket|acheta|formica|apis|bombus|papilio|coccinella|libellula|orthoptera|coleoptera|hymenoptera|lepidoptera|diptera|odonata|hemiptera|odonata/.test(
+      hay,
+    )
+  ) {
+    return "insect";
+  }
+  if (/fish|shark|tuna|salmon|pisc/.test(hay)) return "fish";
+  if (/snake|lizard|turtle|frog|toad|crocodile|serpent|python/.test(hay)) return "reptile";
   return "mammal";
 }
 
-function bodyFor(item) {
-  const hay = `${item.id} ${item.name} ${(item.tags || []).join(" ")}`;
-  for (const [re, variants, prefer] of GENUS_HINTS) {
-    if (re.test(hay)) {
-      // Prefer the matched silhouette — do not wrap-mix into unrelated shapes
-      // (e.g. horse → sheep). Slight alternate only within adjacent variants.
-      if (typeof prefer === "number" && variants[prefer]) {
-        return variants[prefer];
-      }
-      return pick(item.id, variants);
+/* -------------------- FUNGI -------------------- */
+function mushroomBody(id) {
+  const style = Math.floor(rnd(id, 1) * 6); // 6 structural families
+  const stemW = lerp(8, 22, rnd(id, 2));
+  const stemH = lerp(28, 58, rnd(id, 3));
+  const capW = lerp(36, 110, rnd(id, 4));
+  const capH = lerp(14, 42, rnd(id, 5));
+  const cx = 64;
+  const stemTop = 118 - stemH;
+  const capY = stemTop;
+  const spots = Math.floor(rnd(id, 6) * 5);
+  const lean = lerp(-10, 10, rnd(id, 7));
+
+  let cap = "";
+  if (style === 0) {
+    // classic dome toadstool
+    const rx = capW / 2;
+    const ry = capH;
+    cap = `<path fill="${FILL}" d="M${cx - rx} ${capY} A${rx} ${ry} 0 0 1 ${cx + rx} ${capY} L${cx + rx * 0.92} ${capY + 6} L${cx - rx * 0.92} ${capY + 6} Z"/>`;
+  } else if (style === 1) {
+    // flat / shelf oyster
+    const rx = capW / 2;
+    cap = `<ellipse cx="${cx + lean * 0.4}" cy="${capY}" rx="${rx}" ry="${capH * 0.7}" fill="${FILL}"/>`;
+  } else if (style === 2) {
+    // funnel / chanterelle
+    const top = capW / 2;
+    const throat = stemW * 1.4;
+    cap = `<path fill="${FILL}" d="M${cx - top} ${capY - capH * 0.3} Q${cx} ${capY - capH} ${cx + top} ${capY - capH * 0.3} L${cx + throat} ${capY + 8} L${cx - throat} ${capY + 8} Z"/>`;
+  } else if (style === 3) {
+    // tall thin enoki-like cluster (2-3 stems)
+    const n = 2 + Math.floor(rnd(id, 8) * 2);
+    const parts = [];
+    for (let i = 0; i < n; i++) {
+      const ox = lerp(-22, 22, (i + 0.5) / n) + lean * 0.2;
+      const sw = lerp(5, 10, rnd(id, 10 + i));
+      const sh = lerp(40, 70, rnd(id, 20 + i));
+      const st = 118 - sh;
+      const cw = lerp(14, 28, rnd(id, 30 + i));
+      parts.push(
+        `<ellipse cx="${cx + ox}" cy="${st}" rx="${cw / 2}" ry="${lerp(8, 14, rnd(id, 40 + i))}" fill="${FILL}"/>`,
+        `<rect x="${cx + ox - sw / 2}" y="${st}" width="${sw}" height="${sh}" rx="2" fill="${FILL}"/>`,
+      );
     }
+    return parts.join("");
+  } else if (style === 4) {
+    // morel / conical pitted
+    const top = capW * 0.28;
+    const bot = capW * 0.42;
+    cap = `<path fill="${FILL}" d="M${cx - top} ${capY - capH} L${cx + top} ${capY - capH} L${cx + bot} ${capY + 4} L${cx - bot} ${capY + 4} Z"/>`;
+    for (let i = 0; i < 4; i++) {
+      const px = cx + lerp(-bot * 0.5, bot * 0.5, rnd(id, 50 + i));
+      const py = capY - lerp(4, capH * 0.8, rnd(id, 60 + i));
+      cap += `<circle cx="${px}" cy="${py}" r="2.2" fill="#8A8A8A"/>`;
+    }
+  } else {
+    // umbrella with skirt ring
+    const rx = capW / 2;
+    const ry = capH;
+    cap = `<path fill="${FILL}" d="M${cx - rx} ${capY} A${rx} ${ry} 0 0 1 ${cx + rx} ${capY} L${cx + stemW} ${capY + 8} L${cx - stemW} ${capY + 8} Z"/>`;
+    cap += `<ellipse cx="${cx}" cy="${capY + stemH * 0.35}" rx="${stemW * 1.3}" ry="3" fill="${FILL}"/>`;
   }
-  const kind = kindFor(item);
-  if (kind === "bird") return pick(item.id, BIRDS);
-  if (kind === "insect" || kind === "arachnid") return pick(item.id, INSECTS);
-  if (kind === "fish" || kind === "mollusc") return pick(item.id, FISH);
-  if (kind === "reptile" || kind === "amphibian") return pick(item.id, REPTILES);
-  if (kind === "flower") return pick(item.id, FLOWERS);
-  if (kind === "tree") return pick(item.id, TREES);
-  if (kind === "mushroom") return pick(item.id, MUSHROOMS);
-  return pick(item.id, MAMMALS);
+
+  let dots = "";
+  for (let i = 0; i < spots; i++) {
+    const px = cx + lerp(-capW * 0.35, capW * 0.35, rnd(id, 70 + i));
+    const py = capY - lerp(2, capH * 0.7, rnd(id, 80 + i));
+    dots += `<circle cx="${px}" cy="${py}" r="${lerp(2, 4.5, rnd(id, 90 + i))}" fill="#8A8A8A"/>`;
+  }
+
+  const stem = `<rect x="${cx - stemW / 2 + lean * 0.15}" y="${stemTop}" width="${stemW}" height="${stemH}" rx="${Math.min(4, stemW / 3)}" fill="${FILL}"/>`;
+  const base = `<ellipse cx="${cx}" cy="118" rx="${stemW * 1.5}" ry="4" fill="${FILL}" opacity="0.55"/>`;
+  return `${cap}${dots}${stem}${base}`;
 }
 
-const GENERIC_SNIPPETS = [
-  'rx="28" ry="16"',
-  'rx="36" ry="22"',
-  'd="M28 72c8-20 28-36 52-36',
-  'd="M16 64c16-24 40-36 64-32',
-  'rx="40" ry="22"',
-  'd="M64 40c0-8 6-14 0-22',
-  'd="M24 64c0-24 18-44 40-44',
-  'd="M64 18c-18 0-32 12-34 28',
-  'd="M64 8L40 40h10L36 60',
-  'fill="#C4C4C4"', // prior stamp fill
-];
+/* -------------------- TREES -------------------- */
+function treeBody(id) {
+  const style = Math.floor(rnd(id, 1) * 6);
+  const trunkW = lerp(8, 18, rnd(id, 2));
+  const trunkH = lerp(28, 52, rnd(id, 3));
+  const crownR = lerp(28, 48, rnd(id, 4));
+  const cx = 64;
+  const trunkTop = 118 - trunkH;
+  const trunk = `<rect x="${cx - trunkW / 2}" y="${trunkTop}" width="${trunkW}" height="${trunkH}" rx="2" fill="${FILL}"/>`;
 
-function isGenericOrMissing(path) {
-  if (!existsSync(path)) return true;
-  if (FORCE) return true;
-  const text = readFileSync(path, "utf8");
-  if (text.includes("data:image")) return false;
-  if (text.includes('viewBox="0 0 24 24"')) return false;
-  return GENERIC_SNIPPETS.some((s) => text.includes(s)) || text.length < 400;
+  if (style === 0) {
+    // round deciduous
+    return `<ellipse cx="${cx}" cy="${trunkTop - crownR * 0.35}" rx="${crownR}" ry="${crownR * 0.85}" fill="${FILL}"/>${trunk}`;
+  }
+  if (style === 1) {
+    // pine tiers
+    const tiers = 3 + Math.floor(rnd(id, 5) * 2);
+    let paths = "";
+    let y = 14 + rnd(id, 6) * 8;
+    for (let i = 0; i < tiers; i++) {
+      const w = lerp(22, 56, (i + 1) / tiers) * lerp(0.85, 1.15, rnd(id, 10 + i));
+      const h = lerp(18, 28, rnd(id, 20 + i));
+      paths += `<path fill="${FILL}" d="M${cx} ${y} L${cx + w / 2} ${y + h} L${cx - w / 2} ${y + h} Z"/>`;
+      y += h * 0.62;
+    }
+    return `${paths}${trunk}`;
+  }
+  if (style === 2) {
+    // palm fronds
+    let fronds = "";
+    const n = 5 + Math.floor(rnd(id, 7) * 3);
+    for (let i = 0; i < n; i++) {
+      const ang = lerp(-140, -40, i / (n - 1)) + lerp(-8, 8, rnd(id, 30 + i));
+      const rad = (ang * Math.PI) / 180;
+      const len = lerp(34, 52, rnd(id, 40 + i));
+      const x2 = cx + Math.cos(rad) * len;
+      const y2 = trunkTop - 4 + Math.sin(rad) * len * 0.55;
+      fronds += `<path fill="${FILL}" d="M${cx} ${trunkTop} Q${(cx + x2) / 2} ${trunkTop - 18} ${x2} ${y2} L${x2 + 4} ${y2 + 6} Q${(cx + x2) / 2 + 4} ${trunkTop - 8} ${cx + 3} ${trunkTop + 2} Z"/>`;
+    }
+    return `${fronds}${trunk}`;
+  }
+  if (style === 3) {
+    // oak irregular multi-lobe
+    const lobes = [];
+    const n = 4 + Math.floor(rnd(id, 8) * 3);
+    for (let i = 0; i < n; i++) {
+      const ox = lerp(-crownR * 0.7, crownR * 0.7, rnd(id, 50 + i));
+      const oy = lerp(-crownR * 0.9, crownR * 0.2, rnd(id, 60 + i));
+      const r = lerp(16, 28, rnd(id, 70 + i));
+      lobes.push(`<circle cx="${cx + ox}" cy="${trunkTop + oy}" r="${r}" fill="${FILL}"/>`);
+    }
+    return `${lobes.join("")}${trunk}`;
+  }
+  if (style === 4) {
+    // willow droop
+    let droop = `<ellipse cx="${cx}" cy="${trunkTop - 18}" rx="${crownR * 0.85}" ry="20" fill="${FILL}"/>`;
+    for (let i = 0; i < 7; i++) {
+      const x = cx + lerp(-crownR * 0.8, crownR * 0.8, i / 6);
+      const len = lerp(28, 48, rnd(id, 80 + i));
+      droop += `<path fill="none" stroke="${FILL}" stroke-width="3" stroke-linecap="round" d="M${x} ${trunkTop - 10} Q${x + lerp(-6, 6, rnd(id, 90 + i))} ${trunkTop + len * 0.4} ${x + lerp(-4, 4, rnd(id, 100 + i))} ${trunkTop + len}"/>`;
+    }
+    return `${droop}${trunk}`;
+  }
+  // cypress / columnar
+  const top = trunkTop - lerp(50, 70, rnd(id, 9));
+  return `<path fill="${FILL}" d="M${cx} ${top} L${cx + trunkW * 1.8} ${trunkTop} L${cx - trunkW * 1.8} ${trunkTop} Z"/><ellipse cx="${cx}" cy="${(top + trunkTop) / 2}" rx="${trunkW * 1.6}" ry="${(trunkTop - top) * 0.45}" fill="${FILL}"/>${trunk}`;
+}
+
+/* -------------------- FLOWERS -------------------- */
+function flowerBody(id) {
+  const style = Math.floor(rnd(id, 1) * 5);
+  const petals = 4 + Math.floor(rnd(id, 2) * 6); // 4..9
+  const petalLen = lerp(16, 32, rnd(id, 3));
+  const petalW = lerp(7, 16, rnd(id, 4));
+  const centerR = lerp(6, 14, rnd(id, 5));
+  const stemH = lerp(36, 56, rnd(id, 6));
+  const cy = 48;
+  const cx = 64;
+  const stem = `<rect x="${cx - 3}" y="${cy + centerR}" width="6" height="${stemH}" rx="2" fill="${FILL}"/>`;
+  const leaf =
+    rnd(id, 7) > 0.35
+      ? `<ellipse cx="${cx - 14}" cy="${cy + centerR + stemH * 0.45}" rx="12" ry="5" transform="rotate(-35 ${cx - 14} ${cy + centerR + stemH * 0.45})" fill="${FILL}"/>`
+      : "";
+
+  if (style === 0) {
+    // daisy radial
+    let p = "";
+    for (let i = 0; i < petals; i++) {
+      const ang = (i / petals) * Math.PI * 2 + rnd(id, 10) * 0.2;
+      const px = cx + Math.cos(ang) * (centerR + petalLen * 0.35);
+      const py = cy + Math.sin(ang) * (centerR + petalLen * 0.35);
+      const deg = (ang * 180) / Math.PI;
+      p += `<ellipse cx="${px}" cy="${py}" rx="${petalW}" ry="${petalLen}" transform="rotate(${deg} ${px} ${py})" fill="${FILL}"/>`;
+    }
+    return `${p}<circle cx="${cx}" cy="${cy}" r="${centerR}" fill="${FILL}"/>${stem}${leaf}`;
+  }
+  if (style === 1) {
+    // tulip cup
+    const w = lerp(22, 36, rnd(id, 8));
+    const h = lerp(28, 42, rnd(id, 9));
+    return `<path fill="${FILL}" d="M${cx - w} ${cy + 8} Q${cx - w * 0.3} ${cy - h} ${cx} ${cy - h * 0.55} Q${cx + w * 0.3} ${cy - h} ${cx + w} ${cy + 8} Q${cx} ${cy + 16} ${cx - w} ${cy + 8} Z"/>${stem}${leaf}`;
+  }
+  if (style === 2) {
+    // rose layered circles
+    return `<circle cx="${cx}" cy="${cy}" r="${centerR + petalLen * 0.7}" fill="${FILL}"/><circle cx="${cx}" cy="${cy}" r="${centerR + petalLen * 0.4}" fill="#A8A8A8"/><circle cx="${cx}" cy="${cy}" r="${centerR}" fill="${FILL}"/>${stem}${leaf}`;
+  }
+  if (style === 3) {
+    // orchid asymmetric
+    return `<ellipse cx="${cx - 18}" cy="${cy - 4}" rx="${petalLen * 0.7}" ry="${petalW * 1.4}" transform="rotate(-25 ${cx - 18} ${cy - 4})" fill="${FILL}"/><ellipse cx="${cx + 18}" cy="${cy - 4}" rx="${petalLen * 0.7}" ry="${petalW * 1.4}" transform="rotate(25 ${cx + 18} ${cy - 4})" fill="${FILL}"/><ellipse cx="${cx}" cy="${cy + 10}" rx="${petalW * 1.2}" ry="${petalLen * 0.85}" fill="${FILL}"/><circle cx="${cx}" cy="${cy}" r="${centerR * 0.7}" fill="${FILL}"/>${stem}${leaf}`;
+  }
+  // sunflower
+  let p = "";
+  const n = petals + 4;
+  for (let i = 0; i < n; i++) {
+    const ang = (i / n) * Math.PI * 2;
+    const px = cx + Math.cos(ang) * (centerR + 12);
+    const py = cy + Math.sin(ang) * (centerR + 12);
+    const deg = (ang * 180) / Math.PI;
+    p += `<ellipse cx="${px}" cy="${py}" rx="6" ry="${petalLen * 0.7}" transform="rotate(${deg} ${px} ${py})" fill="${FILL}"/>`;
+  }
+  return `${p}<circle cx="${cx}" cy="${cy}" r="${centerR * 1.2}" fill="${FILL}"/><circle cx="${cx}" cy="${cy}" r="${centerR * 0.55}" fill="#8A8A8A"/>${stem}${leaf}`;
+}
+
+/* -------------------- BIRDS -------------------- */
+function birdBody(id) {
+  const style = Math.floor(rnd(id, 1) * 5);
+  const bodyW = lerp(22, 36, rnd(id, 2));
+  const bodyH = lerp(14, 24, rnd(id, 3));
+  const cx = 64;
+  const cy = 68;
+
+  if (style === 0) {
+    // side-profile songbird
+    const headR = lerp(8, 14, rnd(id, 4));
+    const beak = lerp(8, 16, rnd(id, 5));
+    const tail = lerp(14, 28, rnd(id, 6));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW}" ry="${bodyH}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.75}" cy="${cy - bodyH * 0.35}" r="${headR}" fill="${FILL}"/><path fill="${FILL}" d="M${cx + bodyW * 0.75 + headR * 0.6} ${cy - bodyH * 0.35} L${cx + bodyW * 0.75 + headR + beak} ${cy - bodyH * 0.2} L${cx + bodyW * 0.75 + headR * 0.6} ${cy - bodyH * 0.1} Z"/><path fill="${FILL}" d="M${cx - bodyW * 0.8} ${cy} L${cx - bodyW - tail} ${cy - tail * 0.4} L${cx - bodyW * 0.7} ${cy + 6} Z"/><circle cx="${cx + bodyW * 0.85}" cy="${cy - bodyH * 0.45}" r="2" fill="#6A6A6A"/><path fill="${FILL}" d="M${cx - 4} ${cy + bodyH * 0.7} L${cx - 8} ${cy + bodyH + 14} M${cx + 6} ${cy + bodyH * 0.7} L${cx + 10} ${cy + bodyH + 12}"/>`;
+  }
+  if (style === 1) {
+    // raptor wings open
+    const span = lerp(48, 58, rnd(id, 7));
+    return `<path fill="${FILL}" d="M${cx} ${cy - 8} L${cx - span} ${cy + 18} L${cx - span + 10} ${cy + 28} L${cx - 8} ${cy + 6} L${cx - 8} ${cy + 34} L${cx + 8} ${cy + 34} L${cx + 8} ${cy + 6} L${cx + span - 10} ${cy + 28} L${cx + span} ${cy + 18} Z"/><circle cx="${cx}" cy="${cy - 14}" r="10" fill="${FILL}"/><path fill="${FILL}" d="M${cx + 6} ${cy - 14} L${cx + 18} ${cy - 10} L${cx + 6} ${cy - 8} Z"/>`;
+  }
+  if (style === 2) {
+    // owl face
+    const r = lerp(28, 38, rnd(id, 8));
+    const eye = lerp(8, 13, rnd(id, 9));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${r * 0.85}" ry="${r}" fill="${FILL}"/><circle cx="${cx - r * 0.35}" cy="${cy - 6}" r="${eye}" fill="#9A9A9A"/><circle cx="${cx + r * 0.35}" cy="${cy - 6}" r="${eye}" fill="#9A9A9A"/><circle cx="${cx - r * 0.35}" cy="${cy - 6}" r="${eye * 0.4}" fill="#4A4A4A"/><circle cx="${cx + r * 0.35}" cy="${cy - 6}" r="${eye * 0.4}" fill="#4A4A4A"/><path fill="${FILL}" d="M${cx} ${cy + 4} L${cx - 8} ${cy + 16} L${cx + 8} ${cy + 16} Z"/><path fill="${FILL}" d="M${cx - r * 0.7} ${cy - r * 0.7} L${cx - r * 0.35} ${cy - r * 0.2} L${cx - r * 0.15} ${cy - r * 0.55} Z M${cx + r * 0.7} ${cy - r * 0.7} L${cx + r * 0.35} ${cy - r * 0.2} L${cx + r * 0.15} ${cy - r * 0.55} Z"/>`;
+  }
+  if (style === 3) {
+    // long-neck wader
+    const neck = lerp(28, 44, rnd(id, 10));
+    return `<ellipse cx="${cx - 8}" cy="${cy + 10}" rx="${bodyW}" ry="${bodyH}" fill="${FILL}"/><path fill="${FILL}" d="M${cx + 8} ${cy} Q${cx + 18} ${cy - neck * 0.5} ${cx + 10} ${cy - neck}"/><circle cx="${cx + 12}" cy="${cy - neck}" r="9" fill="${FILL}"/><path fill="${FILL}" d="M${cx + 18} ${cy - neck} L${cx + 30} ${cy - neck + 4} L${cx + 18} ${cy - neck + 6} Z"/><path fill="${FILL}" d="M${cx - 4} ${cy + bodyH} L${cx - 6} ${cy + bodyH + 28} M${cx + 8} ${cy + bodyH} L${cx + 12} ${cy + bodyH + 26}"/>`;
+  }
+  // duck
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW * 1.1}" ry="${bodyH}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.85}" cy="${cy - 8}" r="12" fill="${FILL}"/><path fill="${FILL}" d="M${cx + bodyW * 0.85 + 8} ${cy - 6} L${cx + bodyW * 0.85 + 22} ${cy - 2} L${cx + bodyW * 0.85 + 8} ${cy + 2} Z"/><path fill="${FILL}" d="M${cx - bodyW} ${cy - 4} Q${cx - bodyW - 8} ${cy - 20} ${cx - bodyW + 10} ${cy - 8}"/><circle cx="${cx + bodyW * 0.95}" cy="${cy - 10}" r="2" fill="#6A6A6A"/>`;
+}
+
+/* -------------------- ANIMALS / INSECTS / etc -------------------- */
+function mammalBody(id) {
+  const style = Math.floor(rnd(id, 1) * 7);
+  const bodyW = lerp(24, 42, rnd(id, 2));
+  const bodyH = lerp(14, 28, rnd(id, 3));
+  const cx = 56 + lerp(-4, 6, rnd(id, 11));
+  const cy = 68 + lerp(-4, 6, rnd(id, 12));
+  const legH = lerp(16, 34, rnd(id, 4));
+  const legW = lerp(5, 10, rnd(id, 13));
+  const legs = `<path fill="${FILL}" d="M${cx - bodyW * 0.55} ${cy + bodyH * 0.5} V${cy + bodyH * 0.5 + legH} H${cx - bodyW * 0.55 + legW} V${cy + bodyH * 0.5} M${cx - bodyW * 0.15} ${cy + bodyH * 0.5} V${cy + bodyH * 0.5 + legH} H${cx - bodyW * 0.15 + legW} V${cy + bodyH * 0.5} M${cx + bodyW * 0.2} ${cy + bodyH * 0.5} V${cy + bodyH * 0.5 + legH} H${cx + bodyW * 0.2 + legW} V${cy + bodyH * 0.5} M${cx + bodyW * 0.55} ${cy + bodyH * 0.5} V${cy + bodyH * 0.5 + legH} H${cx + bodyW * 0.55 + legW} V${cy + bodyH * 0.5}"/>`;
+
+  if (style === 0) {
+    const headR = lerp(9, 18, rnd(id, 5));
+    const snout = lerp(6, 14, rnd(id, 6));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW}" ry="${bodyH}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.9}" cy="${cy - bodyH * 0.35}" r="${headR}" fill="${FILL}"/>${legs}<path fill="${FILL}" d="M${cx + bodyW * 0.9 + headR * 0.5} ${cy - bodyH * 0.4} L${cx + bodyW * 0.9 + headR + snout} ${cy - bodyH * 0.25} L${cx + bodyW * 0.9 + headR * 0.5} ${cy - bodyH * 0.15} Z"/>`;
+  }
+  if (style === 1) {
+    const ear = lerp(8, 16, rnd(id, 5));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW}" ry="${bodyH * 0.85}" fill="${FILL}"/><path fill="${FILL}" d="M${cx + bodyW * 0.7} ${cy - bodyH} L${cx + bodyW * 0.85} ${cy - bodyH * 0.4} L${cx + bodyW * 1.15} ${cy - bodyH * 0.5} L${cx + bodyW * 0.95} ${cy - bodyH - ear * 0.15} Z"/><circle cx="${cx + bodyW * 0.95}" cy="${cy - bodyH * 0.55}" r="${lerp(9, 14, rnd(id, 6))}" fill="${FILL}"/>${legs}<path fill="${FILL}" d="M${cx - bodyW} ${cy} Q${cx - bodyW - lerp(10, 20, rnd(id, 7))} ${cy - lerp(12, 22, rnd(id, 8))} ${cx - bodyW + 4} ${cy - 8}"/>`;
+  }
+  if (style === 2) {
+    const headR = lerp(9, 14, rnd(id, 5));
+    const antler = lerp(12, 24, rnd(id, 6));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW * 0.85}" ry="${bodyH}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.85}" cy="${cy - bodyH * 0.6}" r="${headR}" fill="${FILL}"/><path fill="${FILL}" d="M${cx + bodyW * 0.7} ${cy - bodyH * 0.9} L${cx + bodyW * 0.55} ${cy - bodyH * 0.9 - antler} M${cx + bodyW * 0.75} ${cy - bodyH * 1.15} L${cx + bodyW * 0.62} ${cy - bodyH * 0.9 - antler * 1.15} M${cx + bodyW} ${cy - bodyH * 0.9} L${cx + bodyW * 1.15} ${cy - bodyH * 0.9 - antler} M${cx + bodyW * 0.95} ${cy - bodyH * 1.15} L${cx + bodyW * 1.12} ${cy - bodyH * 0.9 - antler * 1.15}"/>${legs}`;
+  }
+  if (style === 3) {
+    const ear = lerp(20, 36, rnd(id, 5));
+    return `<ellipse cx="${cx}" cy="${cy + 4}" rx="${bodyW * 0.7}" ry="${bodyH * 1.1}" fill="${FILL}"/><path fill="${FILL}" d="M${cx - 10} ${cy - bodyH} Q${cx - 14} ${cy - bodyH - ear} ${cx - 4} ${cy - bodyH + 4} M${cx + 6} ${cy - bodyH} Q${cx + 12} ${cy - bodyH - ear} ${cx + 2} ${cy - bodyH + 4}"/><circle cx="${cx}" cy="${cy - bodyH * 0.3}" r="${lerp(11, 17, rnd(id, 6))}" fill="${FILL}"/>${legs}`;
+  }
+  if (style === 4) {
+    const trunk = lerp(24, 44, rnd(id, 5));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW}" ry="${bodyH * 1.15}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.85}" cy="${cy - 4}" r="${lerp(12, 18, rnd(id, 6))}" fill="${FILL}"/><path fill="${FILL}" d="M${cx + bodyW * 0.95} ${cy + 6} Q${cx + bodyW * 1.25} ${cy + trunk * 0.55} ${cx + bodyW * 0.85} ${cy + trunk}"/><path fill="${FILL}" d="M${cx + bodyW * 0.55} ${cy - 8} Q${cx + bodyW * 0.3} ${cy - 28} ${cx + bodyW * 0.7} ${cy - 18}"/>${legs}`;
+  }
+  if (style === 5) {
+    const ear = lerp(5, 10, rnd(id, 5));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW}" ry="${bodyH * 1.2}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.7}" cy="${cy - bodyH * 0.5}" r="${lerp(12, 18, rnd(id, 6))}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.45}" cy="${cy - bodyH * 1.05}" r="${ear}" fill="${FILL}"/><circle cx="${cx + bodyW * 0.95}" cy="${cy - bodyH * 1.05}" r="${ear}" fill="${FILL}"/>${legs}`;
+  }
+  const neck = lerp(0.8, 1.25, rnd(id, 5));
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW}" ry="${bodyH}" fill="${FILL}"/><path fill="${FILL}" d="M${cx + bodyW * 0.7} ${cy - bodyH * 0.3} L${cx + bodyW * 1.1} ${cy - bodyH * neck} L${cx + bodyW * 1.35} ${cy - bodyH * (neck - 0.2)} L${cx + bodyW * 0.95} ${cy - bodyH * 0.1} Z"/><path fill="${FILL}" d="M${cx + bodyW * 1.2} ${cy - bodyH * neck} L${cx + bodyW * 1.5} ${cy - bodyH * (neck - 0.3)}"/>${legs}<path fill="${FILL}" d="M${cx - bodyW} ${cy - 4} Q${cx - bodyW - 8} ${cy - 22} ${cx - bodyW + 8} ${cy - 10}"/>`;
+}
+
+function insectBody(id) {
+  const style = Math.floor(rnd(id, 1) * 5);
+  const cx = 64;
+  const cy = 64 + lerp(-6, 8, rnd(id, 2));
+  if (style === 0) {
+    // butterfly — wing span / asymmetry vary
+    const wing = lerp(24, 48, rnd(id, 3));
+    const lift = lerp(0.7, 1.2, rnd(id, 4));
+    const bodyH = lerp(40, 64, rnd(id, 5));
+    return `<path fill="${FILL}" d="M${cx} ${cy} C${cx - wing} ${cy - wing * lift} ${cx - wing * 1.15} ${cy - 8} ${cx - 6} ${cy - 2} C${cx - wing} ${cy + 18} ${cx - wing * 0.65} ${cy + wing * 0.65} ${cx} ${cy} C${cx + wing * 0.65} ${cy + wing * 0.65} ${cx + wing} ${cy + 18} ${cx + 6} ${cy - 2} C${cx + wing * 1.15} ${cy - 8} ${cx + wing} ${cy - wing * lift} ${cx} ${cy} Z"/><rect x="${cx - 2}" y="${cy - bodyH * 0.45}" width="4" height="${bodyH}" rx="2" fill="${FILL}"/>`;
+  }
+  if (style === 1) {
+    // beetle — body proportions + leg splay
+    const rx = lerp(18, 34, rnd(id, 3));
+    const ry = lerp(12, 22, rnd(id, 4));
+    const head = lerp(7, 14, rnd(id, 5));
+    const leg = lerp(12, 24, rnd(id, 6));
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${FILL}"/><circle cx="${cx + rx * 0.95}" cy="${cy - ry * 0.25}" r="${head}" fill="${FILL}"/><path fill="${FILL}" d="M${cx - rx * 0.7} ${cy} L${cx - rx - leg * 0.6} ${cy + leg * 0.7} M${cx - rx * 0.3} ${cy - ry * 0.4} L${cx - rx - leg * 0.3} ${cy - leg} M${cx + rx * 1.05} ${cy - ry * 0.3} L${cx + rx + leg * 0.5} ${cy - leg * 0.9}"/>`;
+  }
+  if (style === 2) {
+    // ant — segment sizes
+    const h1 = lerp(7, 13, rnd(id, 3));
+    const h2 = lerp(7, 12, rnd(id, 4));
+    const h3 = lerp(12, 20, rnd(id, 5));
+    const gap = lerp(14, 22, rnd(id, 6));
+    return `<circle cx="${cx}" cy="${cy - gap}" r="${h1}" fill="${FILL}"/><ellipse cx="${cx}" cy="${cy}" rx="${h2}" ry="${h2 + 1}" fill="${FILL}"/><ellipse cx="${cx}" cy="${cy + gap}" rx="${h3 * 0.75}" ry="${h3}" fill="${FILL}"/><path fill="${FILL}" d="M${cx - h1 * 0.7} ${cy - gap} L${cx - h1 - 14} ${cy - gap - 12} M${cx + h1 * 0.7} ${cy - gap} L${cx + h1 + 14} ${cy - gap - 12} M${cx - h2} ${cy} H${cx - h2 - 18} M${cx + h2} ${cy} H${cx + h2 + 18}"/>`;
+  }
+  if (style === 3) {
+    // bee — stripe count + wing size
+    const rx = lerp(18, 30, rnd(id, 3));
+    const ry = lerp(12, 20, rnd(id, 4));
+    const wing = lerp(14, 28, rnd(id, 5));
+    let stripes = "";
+    const n = 2 + Math.floor(rnd(id, 6) * 3);
+    for (let i = 0; i < n; i++) {
+      const y = cy - ry * 0.5 + (i + 0.5) * ((ry) / n);
+      stripes += `<rect x="${cx - rx * 0.55}" y="${y}" width="${rx * 1.1}" height="3.5" fill="#8A8A8A"/>`;
+    }
+    return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${FILL}"/>${stripes}<path fill="${FILL}" d="M${cx - rx * 0.5} ${cy - ry * 0.4} C${cx - rx - wing * 0.3} ${cy - ry - wing * 0.4} ${cx - 4} ${cy - ry - wing * 0.5} ${cx - 4} ${cy - ry * 0.2} M${cx + rx * 0.5} ${cy - ry * 0.4} C${cx + rx + wing * 0.3} ${cy - ry - wing * 0.4} ${cx + 4} ${cy - ry - wing * 0.5} ${cx + 4} ${cy - ry * 0.2}"/><circle cx="${cx + rx * 0.95}" cy="${cy}" r="${lerp(5, 10, rnd(id, 7))}" fill="${FILL}"/>`;
+  }
+  // spider — abdomen/leg length vary
+  const body = lerp(10, 18, rnd(id, 3));
+  const head = lerp(6, 12, rnd(id, 4));
+  const leg = lerp(22, 40, rnd(id, 5));
+  return `<circle cx="${cx}" cy="${cy}" r="${body}" fill="${FILL}"/><circle cx="${cx}" cy="${cy - body * 0.95}" r="${head}" fill="${FILL}"/><path fill="${FILL}" d="M${cx - body * 0.8} ${cy - 4} L${cx - leg} ${cy - leg * 0.55} M${cx - body * 0.9} ${cy + 2} H${cx - leg - 4} M${cx - body * 0.8} ${cy + 8} L${cx - leg} ${cy + leg * 0.55} M${cx + body * 0.8} ${cy - 4} L${cx + leg} ${cy - leg * 0.55} M${cx + body * 0.9} ${cy + 2} H${cx + leg + 4} M${cx + body * 0.8} ${cy + 8} L${cx + leg} ${cy + leg * 0.55}"/>`;
+}
+
+function fishBody(id) {
+  const bodyW = lerp(36, 52, rnd(id, 1));
+  const bodyH = lerp(14, 24, rnd(id, 2));
+  const cx = 60;
+  const cy = 64;
+  const tail = lerp(14, 26, rnd(id, 3));
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${bodyW}" ry="${bodyH}" fill="${FILL}"/><path fill="${FILL}" d="M${cx - bodyW * 0.85} ${cy} L${cx - bodyW - tail} ${cy - tail * 0.7} L${cx - bodyW - 4} ${cy} L${cx - bodyW - tail} ${cy + tail * 0.7} Z"/><path fill="${FILL}" d="M${cx + 4} ${cy - bodyH * 0.7} L${cx + 12} ${cy - bodyH - 10} L${cx + 20} ${cy - bodyH * 0.5} Z"/><circle cx="${cx + bodyW * 0.55}" cy="${cy - 4}" r="3" fill="#6A6A6A"/>`;
+}
+
+function reptileBody(id) {
+  const style = Math.floor(rnd(id, 1) * 3);
+  if (style === 0) {
+    // lizard
+    return `<ellipse cx="58" cy="70" rx="40" ry="14" fill="${FILL}"/><circle cx="100" cy="64" r="11" fill="${FILL}"/><path fill="${FILL}" d="M30 82 L14 104 M48 86 L40 112 M70 86 L78 112 M90 82 L108 100 M108 60 L118 50"/>`;
+  }
+  if (style === 1) {
+    // snake
+    return `<path fill="${FILL}" d="M18 40 C40 20 60 40 70 58 C80 78 100 82 116 64 C100 90 74 92 58 72 C46 58 28 52 18 62 Z"/>`;
+  }
+  // turtle
+  return `<ellipse cx="64" cy="70" rx="40" ry="24" fill="${FILL}"/><circle cx="106" cy="68" r="12" fill="${FILL}"/><path fill="${FILL}" d="M28 58 C12 58 10 78 22 80 M70 42 C70 26 90 24 92 40 M48 44 L64 66 L80 44"/>`;
+}
+
+function bodyFor(item) {
+  const kind = kindFor(item);
+  if (kind === "mushroom") return mushroomBody(item.id);
+  if (kind === "tree") return treeBody(item.id);
+  if (kind === "flower") return flowerBody(item.id);
+  if (kind === "bird") return birdBody(item.id);
+  if (kind === "insect" || kind === "arachnid") return insectBody(item.id);
+  if (kind === "fish" || kind === "mollusc") return fishBody(item.id);
+  if (kind === "reptile" || kind === "amphibian") return reptileBody(item.id);
+  return mammalBody(item.id);
 }
 
 const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
@@ -256,19 +431,14 @@ const nature = catalog.items.filter((it) =>
 
 let wrote = 0;
 let skipped = 0;
-const samples = { trees: [], flowers: [], birds: [], animals: [], mushrooms: [] };
-
 for (const item of nature) {
   const out = join(marksDir, `${item.id}.svg`);
-  if (!isGenericOrMissing(out)) {
+  if (!FORCE && existsSync(out) && readFileSync(out, "utf8").includes("data:image")) {
     skipped += 1;
     continue;
   }
-  const body = bodyFor(item);
-  writeFileSync(out, svg(body));
+  writeFileSync(out, svg(bodyFor(item)));
   wrote += 1;
-  const bucket = samples[item.categoryId];
-  if (bucket && bucket.length < 4) bucket.push(item.id);
 }
 
-console.log(JSON.stringify({ nature: nature.length, wrote, skipped, force: FORCE, samples }, null, 2));
+console.log(JSON.stringify({ nature: nature.length, wrote, skipped, force: FORCE }, null, 2));

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="64" cy="68" rx="30" ry="36" fill="#C8C8C8"/><circle cx="50" cy="58" r="12" fill="#9A9A9A"/><circle cx="78" cy="58" r="12" fill="#9A9A9A"/><circle cx="50" cy="58" r="5" fill="#4A4A4A"/><circle cx="78" cy="58" r="5" fill="#4A4A4A"/><path fill="#C8C8C8" d="M64 68l-8 12h16zM44 28l10 18M84 28l-10 18"/>
+  <ellipse cx="64" cy="68" rx="26.15365" ry="30.769" fill="#D0D0D0"/><circle cx="53.230850000000004" cy="62" r="10.575" fill="#9A9A9A"/><circle cx="74.76915" cy="62" r="10.575" fill="#9A9A9A"/><circle cx="53.230850000000004" cy="62" r="4.2299999999999995" fill="#4A4A4A"/><circle cx="74.76915" cy="62" r="4.2299999999999995" fill="#4A4A4A"/><path fill="#D0D0D0" d="M64 72 L56 84 L72 84 Z"/><path fill="#D0D0D0" d="M42.46170000000001 46.46170000000001 L53.230850000000004 61.846199999999996 L59.38465 51.07705 Z M85.53829999999999 46.46170000000001 L74.76915 61.846199999999996 L68.61535 51.07705 Z"/>
 </svg>

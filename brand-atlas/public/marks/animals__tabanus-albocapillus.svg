@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <path fill="#C8C8C8" d="M18 56c22-10 40-4 46 10-8 12-26 18-46 10zM110 56c-22-10-40-4-46 10 8 12 26 18 46 10z"/><ellipse cx="64" cy="66" rx="8" ry="30" fill="#C8C8C8"/><circle cx="64" cy="40" r="8" fill="#C8C8C8"/>
+  <ellipse cx="64" cy="70.5762" rx="19.6368" ry="14.996" fill="#D0D0D0"/><rect x="53.19976" y="64.95270000000001" width="21.60048" height="3.5" fill="#8A8A8A"/><rect x="53.19976" y="68.7017" width="21.60048" height="3.5" fill="#8A8A8A"/><rect x="53.19976" y="72.4507" width="21.60048" height="3.5" fill="#8A8A8A"/><rect x="53.19976" y="76.1997" width="21.60048" height="3.5" fill="#8A8A8A"/><path fill="#D0D0D0" d="M54.1816 64.5778 C37.59028 46.54964 60 44.292 60 67.577 M73.8184 64.5778 C90.40972 46.54964 68 44.292 68 67.577"/><circle cx="82.65496" cy="70.5762" r="5.444" fill="#D0D0D0"/>
 </svg>

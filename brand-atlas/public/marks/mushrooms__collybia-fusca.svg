@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="48" cy="40" rx="16" ry="28" fill="#C8C8C8"/><ellipse cx="72" cy="36" rx="14" ry="26" fill="#C8C8C8"/><ellipse cx="64" cy="52" rx="18" ry="22" fill="#C8C8C8"/><rect x="44" y="68" width="10" height="40" rx="3" fill="#C8C8C8"/><rect x="60" y="72" width="10" height="36" rx="3" fill="#C8C8C8"/><rect x="74" y="66" width="10" height="42" rx="3" fill="#C8C8C8"/>
+  <ellipse cx="48.04213333333333" cy="71.493" rx="13.552" ry="13.0298" fill="#D0D0D0"/><rect x="44.29763333333333" y="71.493" width="7.489" height="46.507" rx="2" fill="#D0D0D0"/><ellipse cx="62.7088" cy="64.35" rx="11.8853" ry="8.4584" fill="#D0D0D0"/><rect x="59.559549999999994" y="64.35" width="6.2985" height="53.65" rx="2" fill="#D0D0D0"/><ellipse cx="77.37546666666667" cy="57.206999999999994" rx="10.2186" ry="10.1726" fill="#D0D0D0"/><rect x="72.44046666666667" y="57.206999999999994" width="9.870000000000001" height="60.793000000000006" rx="2" fill="#D0D0D0"/>
 </svg>

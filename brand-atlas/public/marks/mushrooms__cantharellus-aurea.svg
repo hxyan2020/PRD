@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <path fill="#C8C8C8" d="M46 8c-6 22-2 40 8 46M82 8c6 22 2 40-8 46"/><ellipse cx="64" cy="74" rx="26" ry="30" fill="#C8C8C8"/><circle cx="52" cy="66" r="4" fill="#7A7A7A"/><circle cx="76" cy="66" r="4" fill="#7A7A7A"/><ellipse cx="64" cy="86" rx="6" ry="4" fill="#7A7A7A"/>
+  <path fill="#D0D0D0" d="M37.675 77.535 A26.325000000000003 41.6332 0 0 1 90.325 77.535 L81.15039999999999 85.535 L46.8496 85.535 Z"/><ellipse cx="64" cy="91.69775" rx="22.295519999999996" ry="3" fill="#D0D0D0"/><circle cx="48.3624235" cy="50.905224024" r="2.47075" fill="#8A8A8A"/><circle cx="57.137599" cy="57.368029467999996" r="3.066" fill="#8A8A8A"/><circle cx="65.9127745" cy="65.122853136" r="3.7802499999999997" fill="#8A8A8A"/><rect x="55.3141" y="77.535" width="17.150399999999998" height="40.465" rx="4" fill="#D0D0D0"/><ellipse cx="64" cy="118" rx="25.725599999999996" ry="4" fill="#D0D0D0" opacity="0.55"/>
 </svg>

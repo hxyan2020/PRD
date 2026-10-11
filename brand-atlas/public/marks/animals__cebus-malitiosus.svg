@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="64" cy="72" rx="36" ry="34" fill="#C8C8C8"/><circle cx="34" cy="42" r="12" fill="#C8C8C8"/><circle cx="94" cy="42" r="12" fill="#C8C8C8"/><ellipse cx="64" cy="58" rx="28" ry="24" fill="#C8C8C8"/><circle cx="52" cy="56" r="4" fill="#7A7A7A"/><circle cx="76" cy="56" r="4" fill="#7A7A7A"/><ellipse cx="64" cy="72" rx="8" ry="6" fill="#7A7A7A"/>
+  <ellipse cx="60.196" cy="65.053" rx="32.3016" ry="20.54808" fill="#D0D0D0"/><circle cx="82.80712" cy="56.491299999999995" r="14.4816" fill="#D0D0D0"/><circle cx="74.73172" cy="47.073429999999995" r="8.496500000000001" fill="#D0D0D0"/><circle cx="90.88252" cy="47.073429999999995" r="8.496500000000001" fill="#D0D0D0"/><path fill="#D0D0D0" d="M42.430119999999995 73.6147 V106.4879 H49.147119999999994 V73.6147 M55.35076 73.6147 V106.4879 H62.06776 V73.6147 M66.65632 73.6147 V106.4879 H73.37331999999999 V73.6147 M77.96188000000001 73.6147 V106.4879 H84.67888 V73.6147"/>
 </svg>

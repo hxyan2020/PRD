@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="64" cy="72" rx="34" ry="28" fill="#C8C8C8"/><circle cx="64" cy="42" r="14" fill="#C8C8C8"/><circle cx="50" cy="64" r="6" fill="#7A7A7A"/><circle cx="78" cy="64" r="6" fill="#7A7A7A"/><circle cx="64" cy="84" r="6" fill="#7A7A7A"/><path fill="#C8C8C8" d="M64 48v48"/>
+  <ellipse cx="64" cy="71.5618" rx="20.4816" ry="15.5592" fill="#D0D0D0"/><rect x="52.735119999999995" y="65.72710000000001" width="22.529760000000003" height="3.5" fill="#8A8A8A"/><rect x="52.735119999999995" y="69.6169" width="22.529760000000003" height="3.5" fill="#8A8A8A"/><rect x="52.735119999999995" y="73.50670000000001" width="22.529760000000003" height="3.5" fill="#8A8A8A"/><rect x="52.735119999999995" y="77.3965" width="22.529760000000003" height="3.5" fill="#8A8A8A"/><path fill="#D0D0D0" d="M53.7592 65.33812 C36.449799999999996 46.577799999999996 60 44.2216 60 68.44996 M74.24080000000001 65.33812 C91.5502 46.577799999999996 68 44.2216 68 68.44996"/><circle cx="83.45752" cy="71.5618" r="5.796" fill="#D0D0D0"/>
 </svg>
