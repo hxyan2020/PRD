@@ -1,6 +1,25 @@
 import type { ReactElement } from 'react'
 import type { PageKey } from '../config/menu'
+import {
+  ApiOpenListPage,
+  ApiRatioConfigPage,
+  ApiUserLimitConfigPage,
+  ApiUserTakerBlacklistPageWithNote,
+  ApiUserTakerConfigPage,
+} from './api/ApiManagementPages'
 import { RedisKeyManagePage, RedisValueManagePage } from './config/RedisPages'
+import {
+  FinanceFlowPage,
+  FinancialAccountPage,
+  FinancialReconPage,
+  FinancialReportPage,
+  TransferRecordPage,
+} from './financial/FinancialPages'
+import {
+  OpenApiMarketMakerPage,
+  OpenApiMmBlacklistPage,
+  OpenApiWhitelistPage,
+} from './openapi/OpenApiPages'
 import { AdminAdlPage } from './AdminAdlPage'
 import { CoinIntroducePage } from './CoinIntroducePage'
 import { ContractListPage } from './ContractListPage'
@@ -25,6 +44,7 @@ import {
   TriggerOrderHistoryDealPage,
   TriggerOrderPage,
 } from './order/OrderPages'
+import { ClosePositionPage, GlobalFrequencyPage, OpenBottomPositionPage } from './tools/ToolsPages'
 import {
   BlacklistGroupPage,
   MarginChangePage,
@@ -69,22 +89,29 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'margin-change': MarginChangePage,
   'redis-key-manage': RedisKeyManagePage,
   'redis-value-manage': RedisValueManagePage,
-  'openapi-whitelist': underDev,
-  'openapi-market': underDev,
-  'openapi-mm-blacklist': underDev,
-  'financial-report': underDev,
-  'transfer-record': underDev,
-  'financial-account': underDev,
-  'financial-recon': underDev,
-  'finance-flow': underDev,
-  'api-manage': underDev,
-  'tools-close-position': underDev,
-  'tools-global-frequency': underDev,
-  'tools-open-bottom-position': underDev,
+  'openapi-whitelist': OpenApiWhitelistPage,
+  'openapi-market': OpenApiMarketMakerPage,
+  'openapi-mm-blacklist': OpenApiMmBlacklistPage,
+  'financial-report': FinancialReportPage,
+  'transfer-record': TransferRecordPage,
+  'financial-account': FinancialAccountPage,
+  'financial-recon': FinancialReconPage,
+  'finance-flow': FinanceFlowPage,
+  'api-open-list': ApiOpenListPage,
+  'api-ratio-config': ApiRatioConfigPage,
+  'api-user-limit-config': ApiUserLimitConfigPage,
+  'api-user-taker-blacklist': ApiUserTakerBlacklistPageWithNote,
+  'api-user-taker-config': ApiUserTakerConfigPage,
+  'tools-close-position': ClosePositionPage,
+  'tools-global-frequency': GlobalFrequencyPage,
+  'tools-open-bottom-position': OpenBottomPositionPage,
   'risk-funding-fee-change': underDev,
   'risk-liquidation-switch': underDev,
   'risk-market-price-limit': underDev,
   'risk-reserve-list': underDev,
   'risk-reserve-detail': underDev,
   'risk-trading-restriction': underDev,
+  'risk-spread-alert': underDev,
+  'risk-no-trade-monitor': underDev,
+  'risk-depth-monitor': underDev,
 }

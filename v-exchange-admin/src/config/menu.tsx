@@ -52,7 +52,11 @@ export type PageKey =
   | 'financial-account'
   | 'financial-recon'
   | 'finance-flow'
-  | 'api-manage'
+  | 'api-open-list'
+  | 'api-ratio-config'
+  | 'api-user-limit-config'
+  | 'api-user-taker-blacklist'
+  | 'api-user-taker-config'
   | 'tools-close-position'
   | 'tools-global-frequency'
   | 'tools-open-bottom-position'
@@ -62,6 +66,9 @@ export type PageKey =
   | 'risk-reserve-list'
   | 'risk-reserve-detail'
   | 'risk-trading-restriction'
+  | 'risk-spread-alert'
+  | 'risk-no-trade-monitor'
+  | 'risk-depth-monitor'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -95,17 +102,21 @@ export const pageLabels: Record<PageKey, string> = {
   'margin-change': 'Margin Change',
   'redis-key-manage': 'Redis Key Management',
   'redis-value-manage': 'Redis Value Management',
-  'openapi-whitelist': 'OpenApi White List',
-  'openapi-market': 'OpenApi Market',
-  'openapi-mm-blacklist': 'OpenApi MM Blacklist',
+  'openapi-whitelist': 'OpenApi White Config',
+  'openapi-market': 'OpenAPI Market Maker Config',
+  'openapi-mm-blacklist': 'OpenApi MM Blacklist config',
   'financial-report': 'Financial Report',
   'transfer-record': 'Transfer Record',
-  'financial-account': 'Financial Account',
-  'financial-recon': 'Financial Reconciliation',
-  'finance-flow': 'FinanceFlow',
-  'api-manage': 'API Management',
+  'financial-account': 'Financial Account Manage',
+  'financial-recon': 'Financial Reconciliation Monitor',
+  'finance-flow': 'financeFlow',
+  'api-open-list': 'API Open List',
+  'api-ratio-config': 'Ratio Config',
+  'api-user-limit-config': 'User Limit Config',
+  'api-user-taker-blacklist': 'User Taker Blacklist',
+  'api-user-taker-config': 'User Taker Config',
   'tools-close-position': 'Close Position',
-  'tools-global-frequency': 'Global Frequency',
+  'tools-global-frequency': 'GlobalFrequencyGroup',
   'tools-open-bottom-position': 'Open Bottom Position',
   'risk-funding-fee-change': 'Funding Fee Change',
   'risk-liquidation-switch': 'Liquidation Switch',
@@ -113,6 +124,9 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-reserve-list': 'Risk Reserve List',
   'risk-reserve-detail': 'Risk Reserve Detail',
   'risk-trading-restriction': 'Trading Restriction',
+  'risk-spread-alert': 'Spread Alert',
+  'risk-no-trade-monitor': 'No Trade Monitor',
+  'risk-depth-monitor': 'Depth Monitor',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -196,9 +210,9 @@ export const sideMenuItems: MenuProps['items'] = [
     children: [
       { key: 'redis-key-manage', label: 'Redis Key Management' },
       { key: 'redis-value-manage', label: 'Redis Value Management' },
-      { key: 'openapi-whitelist', label: 'OpenApi White List' },
-      { key: 'openapi-market', label: 'OpenApi Market' },
-      { key: 'openapi-mm-blacklist', label: 'OpenApi MM Blacklist' },
+      { key: 'openapi-whitelist', label: 'OpenApi White Config' },
+      { key: 'openapi-market', label: 'OpenAPI Market Maker Config' },
+      { key: 'openapi-mm-blacklist', label: 'OpenApi MM Blacklist config' },
     ],
   },
   {
@@ -208,8 +222,8 @@ export const sideMenuItems: MenuProps['items'] = [
     children: [
       { key: 'financial-report', label: 'Financial Report' },
       { key: 'transfer-record', label: 'Transfer Record' },
-      { key: 'financial-account', label: 'Financial Account' },
-      { key: 'financial-recon', label: 'Financial Reconciliation' },
+      { key: 'financial-account', label: 'Financial Account Manage' },
+      { key: 'financial-recon', label: 'Financial Reconciliation Monitor' },
       { key: 'finance-flow', label: 'FinanceFlow' },
     ],
   },
@@ -217,7 +231,13 @@ export const sideMenuItems: MenuProps['items'] = [
     key: 'api-mgmt',
     icon: <ApiOutlined />,
     label: 'API Management',
-    children: [{ key: 'api-manage', label: 'API Management' }],
+    children: [
+      { key: 'api-open-list', label: 'API Open List' },
+      { key: 'api-ratio-config', label: 'Ratio Config' },
+      { key: 'api-user-limit-config', label: 'User Limit Config' },
+      { key: 'api-user-taker-blacklist', label: 'User Taker Blacklist' },
+      { key: 'api-user-taker-config', label: 'User Taker Config' },
+    ],
   },
   {
     key: 'tools-mgmt',
@@ -225,7 +245,7 @@ export const sideMenuItems: MenuProps['items'] = [
     label: 'Tools Management',
     children: [
       { key: 'tools-close-position', label: 'Close Position' },
-      { key: 'tools-global-frequency', label: 'Global Frequency' },
+      { key: 'tools-global-frequency', label: 'GlobalFrequencyGroup' },
       { key: 'tools-open-bottom-position', label: 'Open Bottom Position' },
     ],
   },
@@ -240,6 +260,9 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-reserve-list', label: 'Risk Reserve List' },
       { key: 'risk-reserve-detail', label: 'Risk Reserve Detail' },
       { key: 'risk-trading-restriction', label: 'Trading Restriction' },
+      { key: 'risk-spread-alert', label: 'Spread Alert' },
+      { key: 'risk-no-trade-monitor', label: 'No Trade Monitor' },
+      { key: 'risk-depth-monitor', label: 'Depth Monitor' },
     ],
   },
 ]
