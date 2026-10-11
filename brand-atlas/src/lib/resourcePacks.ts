@@ -60,11 +60,20 @@ export function subscribeResourcePacks(cb: () => void): () => void {
 }
 
 const ALCOHOL_IDS = new Set(["alcohol", "liquor", "wine", "sake", "beer"]);
+const HOTDRINKS_IDS = new Set(["hotdrinks", "coffee", "tea"]);
+
+/** Map legacy category ids onto the merged catalogue categories. */
+export function canonicalCategoryId(categoryId: string): string {
+  if (ALCOHOL_IDS.has(categoryId)) return "alcohol";
+  if (HOTDRINKS_IDS.has(categoryId)) return "hotdrinks";
+  return categoryId;
+}
 
 export function listResourcePacks(categoryId?: string): ResourcePack[] {
   const all = readAll().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   if (!categoryId) return all;
   if (categoryId === "alcohol") return all.filter((p) => ALCOHOL_IDS.has(p.categoryId));
+  if (categoryId === "hotdrinks") return all.filter((p) => HOTDRINKS_IDS.has(p.categoryId));
   return all.filter((p) => p.categoryId === categoryId);
 }
 
@@ -197,14 +206,19 @@ export function mergeCatalogWithPacks(
   const packs = readAll();
   if (!packs.length && !extraItems.length) return base;
 
+  const normalize = (item: CatalogItem): CatalogItem => {
+    const next = canonicalCategoryId(item.categoryId);
+    return next === item.categoryId ? item : { ...item, categoryId: next };
+  };
+
   const byId = new Map(base.items.map((i) => [i.id, i]));
   for (const pack of packs) {
     for (const item of pack.items) {
-      if (!byId.has(item.id)) byId.set(item.id, item);
+      if (!byId.has(item.id)) byId.set(item.id, normalize(item));
     }
   }
   for (const item of extraItems) {
-    if (!byId.has(item.id)) byId.set(item.id, item);
+    if (!byId.has(item.id)) byId.set(item.id, normalize(item));
   }
 
   const items = [...byId.values()];

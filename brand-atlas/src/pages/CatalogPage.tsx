@@ -20,6 +20,8 @@ const LEGACY_CATEGORY_REDIRECT: Record<string, string> = {
   wine: "alcohol",
   sake: "alcohol",
   beer: "alcohol",
+  coffee: "hotdrinks",
+  tea: "hotdrinks",
 };
 
 export function CatalogPage() {

@@ -92,6 +92,25 @@ const RULES: Record<string, RelevanceRule> = {
     acceptHints: ["beer", "brewery", "lager", "ale", "brew"],
     rejectHints: ["automobile", "tree species", "cigarette"],
   },
+  hotdrinks: {
+    subject: "coffee tea brand cafe",
+    acceptHints: [
+      "coffee",
+      "café",
+      "cafe",
+      "espresso",
+      "roaster",
+      "barista",
+      "tea",
+      "tea leave",
+      "camellia",
+      "infusion",
+      "matcha",
+      "chai",
+    ],
+    rejectHints: ["automobile", "cigarette brand", "alcohol brand"],
+  },
+  /** Legacy aliases — redirected to hotdrinks category */
   coffee: {
     subject: "coffee brand",
     acceptHints: ["coffee", "café", "cafe", "espresso", "roaster", "barista"],

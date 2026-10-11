@@ -49,6 +49,14 @@ export const CATEGORY_ICONS: Record<string, (props?: IconProps) => ReactNode> = 
       <path d="M8.2 12.8h7.6" />
     </Icon>
   ),
+  hotdrinks: (p) => (
+    <Icon {...p}>
+      <path d="M5.8 9.4h9.4v7A2.3 2.3 0 0 1 12.9 18.7H8.1A2.3 2.3 0 0 1 5.8 16.4V9.4Z" />
+      <path d="M15.2 10.8h1.7a2.3 2.3 0 1 1 0 4.6h-1.7" />
+      <path d="M8.2 5.8c.45.65.45 1.35 0 2" />
+      <path d="M11 5.8c.45.65.45 1.35 0 2" />
+    </Icon>
+  ),
   coffee: (p) => (
     <Icon {...p}>
       <path d="M5.8 9.4h9.4v7A2.3 2.3 0 0 1 12.9 18.7H8.1A2.3 2.3 0 0 1 5.8 16.4V9.4Z" />

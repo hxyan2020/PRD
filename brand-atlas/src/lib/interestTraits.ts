@@ -120,42 +120,27 @@ const SPECS: Record<string, CategoryInterestSpec> = {
       },
     ],
   },
-  coffee: {
-    categoryId: "coffee",
+  hotdrinks: {
+    categoryId: "hotdrinks",
     kind: "brand",
-    subject: "coffee brand roaster chain",
-    listQuery: "coffee brands",
+    subject: "coffee tea brand cafe",
+    listQuery: "coffee tea brands",
     fields: [
       originField(),
       {
-        id: "type",
-        label: "Type",
-        hint: "Chain, roaster, or instant.",
+        id: "drink",
+        label: "Drink type",
+        hint: "Coffee or tea.",
         options: [
+          { id: "coffee", label: "Coffee" },
+          { id: "tea", label: "Tea" },
           { id: "chain", label: "Café chain" },
           { id: "roaster", label: "Specialty roaster" },
-          { id: "instant", label: "Instant / retail" },
-        ],
-        searchHint: "type",
-      },
-    ],
-  },
-  tea: {
-    categoryId: "tea",
-    kind: "brand",
-    subject: "tea brand",
-    listQuery: "tea brands",
-    fields: [
-      originField(),
-      {
-        id: "type",
-        label: "Tea type",
-        hint: "Leaf style.",
-        options: [
-          { id: "black", label: "Black" },
-          { id: "green", label: "Green" },
+          { id: "instant", label: "Instant / retail coffee" },
+          { id: "black", label: "Black tea" },
+          { id: "green", label: "Green tea" },
           { id: "oolong", label: "Oolong" },
-          { id: "herbal", label: "Herbal" },
+          { id: "herbal", label: "Herbal tea" },
           { id: "matcha", label: "Matcha" },
         ],
         searchHint: "type",
@@ -333,9 +318,11 @@ const SPECS: Record<string, CategoryInterestSpec> = {
 };
 
 const LEGACY_ALCOHOL = new Set(["liquor", "wine", "sake", "beer"]);
+const LEGACY_HOTDRINKS = new Set(["coffee", "tea"]);
 
 export function interestSpecFor(categoryId: string): CategoryInterestSpec | null {
   if (LEGACY_ALCOHOL.has(categoryId)) return SPECS.alcohol ?? null;
+  if (LEGACY_HOTDRINKS.has(categoryId)) return SPECS.hotdrinks ?? null;
   return SPECS[categoryId] ?? null;
 }
 

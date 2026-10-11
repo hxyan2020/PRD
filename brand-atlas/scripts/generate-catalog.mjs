@@ -3715,30 +3715,38 @@ const CATEGORIES = {
 };
 
 /** Fold liquor / wine / sake / beer into one Alcohol catalogue (keep asset prefixes). */
-(function mergeAlcoholCategories() {
-  const parts = ["liquor", "wine", "sake", "beer"];
-  const items = [];
-  for (const ns of parts) {
-    const src = CATEGORIES[ns];
-    if (!src) continue;
-    for (const seed of src.items) {
-      const tags = new Set([...(seed.tags ?? []), ns]);
-      items.push({ ...seed, ns, tags: [...tags] });
+(function mergeBeverageCategories() {
+  function fold(parts, id, label, blurb) {
+    const items = [];
+    for (const ns of parts) {
+      const src = CATEGORIES[ns];
+      if (!src) continue;
+      for (const seed of src.items) {
+        const tags = new Set([...(seed.tags ?? []), ns]);
+        items.push({ ...seed, ns, tags: [...tags] });
+      }
     }
+    return { id, label, blurb, kind: "brand", items };
   }
-  const alcohol = {
-    id: "alcohol",
-    label: "Alcohol brands",
-    blurb: "Spirits, wine, sake, and beer — bottles and breweries still poured today.",
-    kind: "brand",
-    items,
-  };
+
+  const alcohol = fold(
+    ["liquor", "wine", "sake", "beer"],
+    "alcohol",
+    "Alcohol brands",
+    "Spirits, wine, sake, and beer — bottles and breweries still poured today.",
+  );
+  const hotdrinks = fold(
+    ["coffee", "tea"],
+    "hotdrinks",
+    "Coffee & tea brands",
+    "Café chains, roasters, and tea houses — cups still poured today.",
+  );
+
   const order = [
     "cars",
     "cigarettes",
     "alcohol",
-    "coffee",
-    "tea",
+    "hotdrinks",
     "clothes",
     "luxury",
     "trees",
@@ -3749,6 +3757,7 @@ const CATEGORIES = {
   const next = {};
   for (const key of order) {
     if (key === "alcohol") next.alcohol = alcohol;
+    else if (key === "hotdrinks") next.hotdrinks = hotdrinks;
     else if (CATEGORIES[key]) next[key] = CATEGORIES[key];
   }
   for (const key of Object.keys(CATEGORIES)) delete CATEGORIES[key];

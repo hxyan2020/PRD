@@ -16,10 +16,10 @@ export function AboutPage() {
         <div>
           <h3 style={{ fontFamily: "var(--font-display)", marginTop: 0 }}>Catalogue</h3>
           <p>
-            Entries span car brands, cigarette brands (18+), liquor, wine, sake,
-            beer, coffee, tea, clothes, luxury houses, trees, flowers, animals
-            (including insects), and packaged food. Covers start greyscale and
-            locked until you confirm a sighting.
+            Entries span car brands, cigarette brands (18+), alcohol (spirits,
+            wine, sake, beer), coffee & tea, clothes, luxury houses, trees,
+            flowers, animals (including insects), and packaged food. Covers start
+            greyscale and locked until you confirm a sighting.
           </p>
           <h3 style={{ fontFamily: "var(--font-display)" }}>Scan flow</h3>
           <ol>
