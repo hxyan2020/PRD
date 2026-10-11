@@ -251,6 +251,7 @@ graph LR
 | 監控與風險 | 每日績效 | `/admin/dashboard` | 當日 CFD＋加密畫面 | 兩產品格；WARN／BREACH 數 |
 | 監控與風險 | 風險日誌分析 | `/admin/risk-log` | 處理時間、損失 vs 防損、漏洞 | 摘要＋類別＋領域＋紀錄 |
 | 監控與風險 | 市場情報 | `/admin/market-intel` | 會移動 LP 的頭條 | 立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描 |
+| 監控與風險 | 未知風險探索 | `/admin/discovery` | 與筆記本對齊的 AI 建議卡；RO 閘門後才進每日監控 | 連線 OpenAI／Mock；分析；核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者）；HTML／Colab 筆記本連結 |
 | 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 統一指標＋偵測器登錄 | 全部執行／同步／暫停；近期執行；未結警報連至即時警報與追蹤（無警報／工單分頁） |
 | 監控與風險 | 偵測器（轉址） | `/admin/detectors` | 僅書籤 | 左側無此列 — 轉址 Monitor 2.0 |
 | 監控與風險 | 即時警報與追蹤 | `/admin/alerts` | 未結佇列＋分組 AI 管線 | MonitorCode 提示；僅 OPEN；確認；`/admin/ai-analyses` 列表轉址至此 |
@@ -284,6 +285,33 @@ graph LR
 | 殼層 | 語言 | cookie `crmp_ui_lang` | 英／繁中 | 導覽＋文件切換 |
 | 殼層 | 未讀徽章 | 左側 | 新工作 | 增加／打開清除 |
 | 殼層 | 手機抽屜 | `< lg` | 手機使用 | 漢堡；messenger 主從 |
+
+### 6.5 未知風險探索 — 方法、資料、流程
+
+與 DETECT→DASHBOARD **並行**。候選在人類晉升前不會成為每日監控。畫面：`/admin/discovery`（CRMP 管理後台；非 CRMP Plus）。筆記本：[HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing)。
+
+**需要的資料**
+- 即時 `monitor_indicators` 最新值（CFD／加密簿冊代理）以建構短特徵窗 — 不含原始客戶 PII
+- 可選伺服器 `OPENAI_API_KEY` 供 LIVE 分析（切勿在瀏覽器或公開產物貼上金鑰）
+- 已驗證的風險負責人／覆核者才能審查；可選監控晉升需 AI 工程師＋不同 RO
+
+**方法（七類，與筆記本一致）**
+1. 孤立森林 — 多變量／點異常代理  
+2. CUSUM — 持續體制轉移  
+3. Mahalanobis／聯合距離 — 聯合異常狀態  
+4. LOF — 相對同儕局部離群  
+5. 子群切片 — 產品 × 領域對比  
+6. 序列／領先—滯後 — 前兆型態  
+7. 相關網路 — 跨指標依賴偏移  
+
+**流程**
+1. 執行探索（或 `discovery.auto_on_detectors=true` 時與 `run_detectors` 並行）→ `PENDING_RO` 候選  
+2. 連線 OpenAI（環境變數金鑰）或維持 Mock  
+3. 分析所選 → 結構化 AI 建議卡（評估、根因、情境、公式、維度、驗證步驟、限制、優先、信心）  
+4. RO 動作（與筆記本一致）：核准進入驗證 · 要求更多資訊 · 駁回 — 絕不自動部署  
+5. 可選核准納入監控 → AI 工程師提案／RO 覆核（制作者≠覆核者）→ `SKILL-DISC-*`＋`M2-DISC-*` 加入每日偵測  
+
+「要求更多資訊」可能刷新建議卡；該 AI 回覆絕不是核准。操作細節：使用手冊 §14A · 實作：TSD §11A。
 
 ---
 
@@ -405,5 +433,6 @@ graph LR
 | 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；AI 分析列表轉址；Monitor 中心無警報／工單分頁 |
 | 1.9 | 2026-10-11 | FR-37 未知風險探索 AI 建議卡（CRMP 管理後台） |
+| 1.10 | 2026-10-11 | §6.5 方法／資料／流程＋功能目錄列 `/admin/discovery` |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

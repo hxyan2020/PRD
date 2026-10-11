@@ -251,6 +251,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
+| Monitor & risk | Unknown Risk Discovery | `/admin/discovery` | Notebook-parity AI suggestion card; RO gates unknown risks before daily monitors | Connect OpenAI/Mock; Analyse; Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker); HTML/Colab notebook links |
 | Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Unified indicator + detector registry | Run all / Sync / Pause; recent runs; open alerts link → Realtime Alert & Tracker (no Alerts/Tickets tabs) |
 | Monitor & risk | Detectors (redirect) | `/admin/detectors` | Bookmarks only | Not in left nav — redirects to Monitor 2.0 |
 | Monitor & risk | Realtime Alert & Tracker | `/admin/alerts` | Open queue + grouped AI pipeline | MonitorCode tooltips; open-only; ack; `/admin/ai-analyses` list redirects here |
@@ -284,6 +285,33 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Shell | Language | cookie `crmp_ui_lang` | EN / 繁中 | Nav + docs switch |
 | Shell | Unread badges | left nav | New work | Increment / clear-on-view |
 | Shell | Mobile drawer | `< lg` | Phone use | Hamburger; messenger master-detail |
+
+### 6.5 Unknown Risk Discovery — methods, data, flow
+
+Parallel lane beside DETECT→DASHBOARD. Candidates never become daily monitors until a human promotes them. Surface: `/admin/discovery` (CRMP Admin; not CRMP Plus). Notebook reference: [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing).
+
+**Data needed**
+- Live `monitor_indicators` last values (CFD/crypto book proxies) for a short realtime feature window — no raw client PII
+- Optional server `OPENAI_API_KEY` for LIVE Analyse (never paste keys in the browser or published artifacts)
+- Authenticated Risk Owner / checker for review; AI Engineer + distinct RO for optional monitoring promote
+
+**Methods (seven families, notebook parity)**
+1. Isolation Forest — multivariate / point anomaly proxy  
+2. CUSUM — sustained regime shift  
+3. Mahalanobis / joint distance — jointly unusual states  
+4. LOF — peer-relative local outlier  
+5. Subgroup slice — product × domain contrast  
+6. Sequence / lead-lag — precursor patterns  
+7. Correlation network — cross-indicator dependency shift  
+
+**Flow**
+1. Run discovery (or `run_detectors` with parallel discovery when `discovery.auto_on_detectors=true`) → `PENDING_RO` candidates  
+2. Connect OpenAI (env key) or stay Mock  
+3. Analyse selected → structured AI suggestion card (assessment, root causes, scenario, formula, dimensions, validation steps, limitations, priority, confidence)  
+4. RO actions (notebook parity): Approve for validation · Ask for more info · Dismiss — never auto-deploy  
+5. Optional Approve for monitoring → AI Engineer proposes / RO decides (maker≠checker) → `SKILL-DISC-*` + `M2-DISC-*` join daily detectors  
+
+Ask-for-more-info may refresh the suggestion card; that AI reply is never an approval. Operator detail: User Guide §14A · Implementation: TSD §11A.
 
 ---
 
@@ -405,5 +433,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + rollback; editable Roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses list redirect; Monitor hub without Alerts/Tickets tabs; dedupe FR-24 |
 | 1.9 | 2026-10-11 | FR-37 Unknown Risk Discovery AI suggestion card on CRMP Admin |
+| 1.10 | 2026-10-11 | §6.5 methods / data / flow + feature catalogue row for `/admin/discovery` |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
