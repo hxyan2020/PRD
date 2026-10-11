@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <defs>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
+  </defs>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAHlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABaVcReAAAACXRSTlMA8kARuY4n1moV/T0GAAABbElEQVR4nO2ZW47DIBAEDZjX/S8cUPKzK1szwLSJoq4LVJlBRsbHQQghhBBCCCGEEEIIIVeE5M1JQW33MTsAOXpVQ4i5gshRURCiQ/lrdYqCAvS3giL5PWz932QvDQDrr1UYQjrRAWfaOgFxBh66BTvu2wN2j2D7JgS/hxRvIvQSSAuA3gXSi7ARkEOQjwLsNsgqP24KivX/TAFToPaD1mDEjygY89sXjPqt98Gwv6+B4TvxnPBbFsz57Qpm/VYF836bghW/xeksn7/YglX/YoFb968VWPgXCkyef6XAyt8OhqmCaOafurVwlv42heECW38v2OsfnYLmNmqUkTWwf/6Oeg00d2HIAphfWQD0qwqgfkUB2C8WwP3C57srcH8vuP1kecR/3F8gPOW/K9Bdf5hwuQ+ee/7rgkf9jf87UXv9Y8ffj6a1z585UsyfObiMOX4lgi/xbMSi+x0HaUiNbXZCCCGEEEIIIeRHeAHywnogfb4gBgAAAABJRU5ErkJggg==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
+</svg>

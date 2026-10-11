@@ -268,6 +268,15 @@ export function ScanPage() {
             <div className="banner banner--warn">
               <strong>Need a clearer shot</strong>
               <p style={{ margin: "0.4rem 0 0" }}>{result.message}</p>
+              {selectedCats.length === 1 && (
+                <p style={{ margin: "0.65rem 0 0" }}>
+                  Not in the catalogue yet?{" "}
+                  <Link to={`/catalog/${selectedCats[0]}`}>
+                    Contribute a new sighting on this shelf
+                  </Link>{" "}
+                  — we only accept photos that belong in that category.
+                </p>
+              )}
             </div>
           )}
 

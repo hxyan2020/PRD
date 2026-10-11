@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { coverGradient } from "../lib/catalog";
+import { coverUrl, markUrl } from "../lib/marks";
 import {
   formatPct,
   formatUtc,
@@ -61,6 +62,9 @@ export function ItemDetail({
   }, [unlock?.note, item.id]);
 
   const permalink = unlock ? permanentLink(unlock.shareId) : null;
+  const mark = markUrl(item);
+  const stockCover = coverUrl(item);
+  const coverPhoto = unlock?.photoDataUrl || stockCover;
 
   const copyLink = async () => {
     if (!permalink) return;
@@ -86,9 +90,30 @@ export function ItemDetail({
     <div className="celebrate" role="dialog" aria-modal="true" onClick={onClose}>
       <div className="celebrate__card detail-card" onClick={(e) => e.stopPropagation()}>
         <div
-          className="detail-cover"
-          style={{ background: coverGradient(item.coverHue, mode !== "locked") }}
-        />
+          className={`detail-cover is-${mode}${coverPhoto ? " has-cover" : ""}`}
+          style={{
+            background: coverPhoto
+              ? undefined
+              : coverGradient(item.coverHue, mode !== "locked"),
+          }}
+        >
+          {coverPhoto && (
+            <img
+              className="detail-cover__photo"
+              src={coverPhoto}
+              alt=""
+              draggable={false}
+            />
+          )}
+          {mark && !unlock?.photoDataUrl && (
+            <img
+              className={`detail-cover__mark${coverPhoto ? " detail-cover__mark--overlay" : ""}`}
+              src={mark}
+              alt=""
+              draggable={false}
+            />
+          )}
+        </div>
 
         {mode === "locked" && (
           <>

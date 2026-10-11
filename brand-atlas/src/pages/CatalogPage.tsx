@@ -1,27 +1,41 @@
 import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { ItemDetail } from "../components/ItemDetail";
 import { ItemTile } from "../components/ItemTile";
+import { ContributeUploadPanel } from "../components/ContributeUploadPanel";
+import { ResourcePackPanel } from "../components/ResourcePackPanel";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
 import { itemsForCategory } from "../lib/catalog";
 import {
   categoryProgress,
-  overallProgress,
   revealMode,
   sneakPeekIds,
 } from "../lib/progress";
 import { formatPct } from "../lib/unlocks";
 
+const LEGACY_CATEGORY_REDIRECT: Record<string, string> = {
+  liquor: "alcohol",
+  wine: "alcohol",
+  sake: "alcohol",
+  beer: "alcohol",
+  coffee: "hotdrinks",
+  tea: "hotdrinks",
+};
+
 export function CatalogPage() {
   const { categoryId } = useParams();
-  const { catalog, loading, error } = useCatalog();
+  const { catalog, loading, error, refresh } = useCatalog();
   const { version, isUnlocked, getUnlock, updateNote, updatePhoto } = useUnlocks();
   const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "locked" | "unlocked" | "sneak">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  if (categoryId && LEGACY_CATEGORY_REDIRECT[categoryId]) {
+    return <Navigate to={`/catalog/${LEGACY_CATEGORY_REDIRECT[categoryId]}`} replace />;
+  }
 
   const activeCategory = catalog?.categories.find((c) => c.id === categoryId);
 
@@ -43,12 +57,8 @@ export function CatalogPage() {
   }, [catalog, version]);
 
   const progress = useMemo(() => {
-    if (!catalog) return null;
-    if (categoryId) {
-      const items = itemsForCategory(catalog, categoryId);
-      return categoryProgress(items);
-    }
-    return overallProgress(catalog);
+    if (!catalog || !categoryId) return null;
+    return categoryProgress(itemsForCategory(catalog, categoryId));
   }, [catalog, categoryId, version]);
 
   const items = useMemo(() => {
@@ -121,6 +131,21 @@ export function CatalogPage() {
             </p>
           )}
         </div>
+      )}
+
+      {activeCategory && catalog && (
+        <>
+          <ContributeUploadPanel
+            catalog={catalog}
+            category={activeCategory}
+            onChanged={refresh}
+          />
+          <ResourcePackPanel
+            catalog={catalog}
+            category={activeCategory}
+            onChanged={refresh}
+          />
+        </>
       )}
 
       <div className="pill-group" style={{ marginBottom: "1rem" }}>
