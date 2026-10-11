@@ -33,11 +33,20 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
 
   const onPick = (f: File | null) => {
     if (!f) return;
+    if (!f.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      return;
+    }
     if (preview) URL.revokeObjectURL(preview);
     setFile(f);
     setPreview(URL.createObjectURL(f));
     setError(null);
     setStatus(null);
+  };
+
+  const openPicker = () => {
+    if (busy) return;
+    fileRef.current?.click();
   };
 
   async function onSubmit() {
@@ -98,18 +107,54 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
 
       <div className="contribute-panel__grid">
         <div>
-          <div className={`dropzone contribute-dropzone ${preview ? "has-media" : ""}`}>
+          <button
+            type="button"
+            className={`dropzone contribute-dropzone contribute-dropzone--button ${preview ? "has-media" : ""}`}
+            onClick={openPicker}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openPicker();
+              }
+            }}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.currentTarget.classList.add("is-dragover");
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.currentTarget.classList.remove("is-dragover");
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.currentTarget.classList.remove("is-dragover");
+              const dropped = e.dataTransfer.files?.[0] ?? null;
+              onPick(dropped);
+            }}
+            disabled={busy}
+            aria-label="Upload photo of the uncovered brand or species"
+          >
             {preview && <img src={preview} alt="Contribution preview" />}
             <div className="dropzone__hint">
               <strong>Photo of the uncovered brand or species</strong>
               <p className="muted">Must belong in {category.label}.</p>
+              <p className="muted contribute-dropzone__cta">
+                {preview ? "Click or drop to replace" : "Click or drop an image to upload"}
+              </p>
             </div>
-          </div>
+          </button>
           <div className="cta-row" style={{ marginTop: "0.75rem" }}>
             <button
               type="button"
               className="btn btn--forest"
-              onClick={() => fileRef.current?.click()}
+              onClick={openPicker}
+              disabled={busy}
             >
               Choose image
             </button>
@@ -119,7 +164,10 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
               accept="image/*"
               capture="environment"
               hidden
-              onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+              onChange={(e) => {
+                onPick(e.target.files?.[0] ?? null);
+                e.target.value = "";
+              }}
             />
           </div>
         </div>

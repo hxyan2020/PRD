@@ -404,6 +404,64 @@ img {
   min-height: 200px;
 }
 
+.contribute-dropzone--button {
+  width: 100%;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.contribute-dropzone--button:hover:not(:disabled),
+.contribute-dropzone--button:focus-visible {
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--lime) 45%, transparent);
+  outline: none;
+}
+
+.contribute-dropzone--button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.contribute-dropzone--button.is-dragover {
+  border-color: var(--forest);
+  background:
+    radial-gradient(circle at 30% 20%, #c8e08a55, transparent 45%),
+    color-mix(in oklab, var(--lime) 18%, white);
+}
+
+.contribute-dropzone__cta {
+  margin: 0.55rem 0 0;
+  font-size: 0.86rem;
+}
+
+.contribute-dropzone--button.has-media .dropzone__hint {
+  display: grid;
+  place-items: center;
+  inset: 0;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 1rem;
+  background: color-mix(in oklab, black 42%, transparent);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.contribute-dropzone--button.has-media .dropzone__hint .muted {
+  color: color-mix(in oklab, white 78%, transparent);
+}
+
+.contribute-dropzone--button.has-media:hover .dropzone__hint,
+.contribute-dropzone--button.has-media:focus-visible .dropzone__hint {
+  opacity: 1;
+}
+
 .contribute-panel__form {
   display: grid;
   gap: 0.75rem;
