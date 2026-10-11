@@ -23,8 +23,10 @@ import { ORIGINAL_CRMP_ADMIN_URL } from "@/lib/platform-site";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
 import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
+import { HomeDiscoveryLane } from "@/components/HomeDiscoveryLane";
 import { HomeDummyAlertButtons } from "@/components/HomeDummyAlertButtons";
 import { spineStageCounts } from "@/lib/ai/spine";
+import { discoveryPendingCount } from "@/lib/ai/discovery";
 import { FINISHED_AT, finishedAtLabel } from "@/lib/build-stamp";
 import { getUiLocale } from "@/lib/i18n-server";
 import { DUMMY_HOME_STAGES } from "@/lib/ai/dummy-spine";
@@ -450,6 +452,33 @@ export default async function AdminDashboardPage({
         highlightStages={dummyIds.length ? [...DUMMY_HOME_STAGES] : []}
         demoPulse={dummyIds.length > 0}
       />
+
+      {(() => {
+        let pending = 0;
+        let inMonitoring = 0;
+        let latest: { title: string; created_at: string } | undefined;
+        try {
+          pending = discoveryPendingCount();
+          inMonitoring = (
+            db
+              .prepare(`SELECT COUNT(*) AS c FROM risk_discovery_candidates WHERE status = 'IN_MONITORING'`)
+              .get() as { c: number }
+          ).c;
+          latest = latestSpineEvent(db, ["DISCOVER", "DISCOVERY_REVIEW", "DISCOVERY_PROMOTE"]);
+        } catch {
+          /* discovery schema may be mid-migrate */
+        }
+        return (
+          <HomeDiscoveryLane
+            stats={{
+              pending,
+              inMonitoring,
+              latestTitle: latest?.title ?? null,
+              latestAt: latest?.created_at ?? null,
+            }}
+          />
+        );
+      })()}
 
       <footer
         className="mt-8 pt-4 border-t border-[var(--line)] text-[11px] text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"

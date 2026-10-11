@@ -1958,6 +1958,48 @@ export const UAT_CASES: UatCase[] = [
     },
   },
   {
+    seq: 51,
+    id: "UAT-51",
+    t_start_min: 520,
+    duration_min: 12,
+    severity: "High",
+    bu: "Risk Owner",
+    dependency: "Monitor 2.0 + AI Skills + AI Admin maker/checker",
+    covers: [
+      "Unknown Risk Discovery",
+      "Admin Home spine",
+      "AI Skills",
+      "Monitor 2.0",
+    ],
+    en: {
+      title: "Unknown-risk discovery lane: RO approve promotes skill + monitor beside the spine",
+      why: "Discovery must not silent-deploy into DETECT→DASHBOARD; RO POC owns the gate, then AI looks for the new signals daily.",
+      objective:
+        "Run discovery, leave a PENDING_RO candidate, approve for monitoring as Risk Owner, and confirm skill + Monitor 2.0 target appear without replacing the main spine.",
+      steps: [
+        "Sign in as risk.owner@vantagemarkets.com. Open Admin Home and confirm the Integration spine (DETECT→DASHBOARD) and a separate Unknown risk discovery lane.",
+        "Open Unknown Risk Discovery. Click Run discovery now (or Run all on Monitor 2.0 which runs discovery in parallel). Confirm new PENDING_RO candidates.",
+        "Select a candidate. Choose Approve for monitoring (not silent deploy). Confirm maker≠checker note: AI Engineer proposes, RO decides.",
+        "Verify the candidate becomes IN_MONITORING with a skill code and M2-DISC-* monitor id. Open AI Skills and Monitor 2.0 and find both. Confirm Admin Home discovery lane pending count dropped.",
+      ],
+      pass: "Candidate promoted to skill + monitor; main spine unchanged; discovery lane shows IN_MONITORING / lower pending count.",
+      evidence: "candidate_id, skill_code, monitor_id, change_request_id screenshots.",
+    },
+    zh: {
+      title: "未知風險探索通道：RO 核准後才晉升技能＋監控，與脊柱並行",
+      why: "探索不得靜默部署進 DETECT→DASHBOARD；RO POC 守關，之後 AI 才每日尋找新訊號。",
+      objective: "執行探索、留下 PENDING_RO 候選、以風險負責人核准納入監控，確認技能與 Monitor 2.0 目標出現且未取代主脊柱。",
+      steps: [
+        "以 risk.owner@vantagemarkets.com 登入。在管理首頁確認整合脊柱（DETECT→DASHBOARD）與獨立的未知風險探索通道。",
+        "開啟未知風險探索。點「立即執行探索」（或 Monitor 2.0「全部執行」會並行跑探索）。確認出現 PENDING_RO 候選。",
+        "選一候選，選「核准納入監控」（非靜默部署）。確認制作者≠覆核者：AI 工程師提案、RO 覆核。",
+        "確認候選變為 IN_MONITORING，並有技能代碼與 M2-DISC-* 指標。到 AI 技能與 Monitor 2.0 找到兩者。確認首頁探索通道待 RO 數下降。",
+      ],
+      pass: "候選已晉升為技能＋監控；主脊柱未變；探索通道顯示監控中／待 RO 數下降。",
+      evidence: "candidate_id、skill_code、monitor_id、change_request_id 截圖。",
+    },
+  },
+  {
     seq: 49,
     id: "UAT-49",
     t_start_min: 535,

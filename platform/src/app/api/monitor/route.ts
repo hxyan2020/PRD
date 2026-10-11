@@ -95,7 +95,28 @@ export async function POST(req: Request) {
       actor: user.name,
     });
     writeAudit(user, "RUN_DETECTORS", "monitor", "all", { count: results.length });
-    return NextResponse.json({ ok: true, results });
+
+    // Parallel unknown-risk discovery lane — does not alter DETECT→DASHBOARD outcomes.
+    let discovery: Record<string, unknown> | null = null;
+    const autoDiscovery =
+      (
+        getDb().prepare(`SELECT value FROM platform_settings WHERE key='discovery.auto_on_detectors'`).get() as
+          | { value: string }
+          | undefined
+      )?.value !== "false";
+    if (autoDiscovery) {
+      const { runDiscoveryParallel } = await import("@/lib/ai/discovery");
+      discovery = runDiscoveryParallel({ actor: user.name, trigger: "PARALLEL_DETECTORS" });
+    }
+
+    return NextResponse.json({ ok: true, results, discovery });
+  }
+
+  if (action === "run_discovery") {
+    const { runDiscoveryParallel } = await import("@/lib/ai/discovery");
+    const discovery = runDiscoveryParallel({ actor: user.name, trigger: "MANUAL" });
+    writeAudit(user, "RUN_DISCOVERY", "risk_discovery", String(discovery.scan_id), discovery);
+    return NextResponse.json({ ok: true, discovery });
   }
 
   if (action === "update_thresholds") {

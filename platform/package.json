@@ -10,6 +10,8 @@
     "lint": "next lint",
     "test:mermaid": "npx tsx scripts/verify-mermaid-edges.ts",
     "test:crmp-plus": "npx tsx scripts/verify-crmp-plus.ts",
+    "test:discovery": "tsx scripts/verify-discovery-lane.ts",
+    "test:discovery-smoke": "tsx scripts/smoke-discovery.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {
@@ -32,6 +34,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

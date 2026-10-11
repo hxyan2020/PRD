@@ -353,6 +353,10 @@ export function sampleDetectorValue(base: number | null, monitorId: string): num
   const b = base ?? 0;
   // Market intel is owned by the 5-minute scanner — do not jitter over its hits.
   if (monitorId === "M2-MKT-INTEL") return b;
+  // Discovery-promoted scores keep mild jitter so daily monitoring stays live.
+  if (monitorId.startsWith("M2-DISC-")) {
+    return Math.round((b + (Math.random() - 0.35) * Math.max(0.05, Math.abs(b) * 0.1)) * 1000) / 1000;
+  }
   const jitter =
     monitorId.includes("HEDGE") ? (Math.random() - 0.55) * 4 : (Math.random() - 0.35) * Math.max(1, b * 0.08);
   return Math.round((b + jitter) * 100) / 100;

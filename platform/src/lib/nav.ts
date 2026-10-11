@@ -60,6 +60,7 @@ export const NAV_ITEMS = [
   { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read", group: "monitor" },
   { href: "/admin/alerts", label: "Realtime Alert & Tracker", icon: Bell, permission: "monitor.read", group: "monitor" },
   { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
   { href: "/admin/risk-log", label: "Risk Log Analytics", icon: ScrollText, permission: "monitor.read", group: "monitor" },
   { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
 

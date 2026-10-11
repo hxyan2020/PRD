@@ -44,8 +44,18 @@ export function statusClass(status: string) {
     case "PENDING":
       return "bg-amber-50 text-amber-900 border-amber-200";
     case "PENDING_RO":
+    case "ASK_MORE_INFO":
     case "AWAITING_HUMAN":
       return "bg-rose-50 text-rose-800 border-rose-200";
+    case "APPROVED_FOR_VALIDATION":
+    case "APPROVED_FOR_MONITORING":
+      return "bg-amber-50 text-amber-900 border-amber-200";
+    case "IN_MONITORING":
+    case "COMPLETED":
+      return "bg-teal-50 text-teal-900 border-teal-200";
+    case "DISMISSED":
+    case "SKIPPED":
+      return "bg-slate-100 text-slate-600 border-slate-200";
     default:
       return "bg-slate-100 text-slate-700 border-slate-200";
   }

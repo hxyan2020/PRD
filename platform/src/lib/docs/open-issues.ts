@@ -160,6 +160,11 @@ export const OPEN_ISSUES: OpenIssue[] = [
       { en: "Workshop: spine stages vs home ticket counts vs audit planes", zh: "工作坊：脊柱階段 vs 首頁計數 vs 稽核平面" },
       { en: "Draft BU RACI (AI / System / RO / Pricing / Ops / Monitor / GRC)", zh: "起草 BU RACI（AI／System／RO／Pricing／Ops／Monitor／GRC）" },
       { en: "Define dual-control write path (maker → checker → control bus)", zh: "定義雙重控制寫路徑（Maker→Checker→控制匯流排）" },
+      {
+        en: "Parallel unknown-risk discovery lane (DISCOVER → RO approve → skill+monitor) stays outside DETECT→DASHBOARD until RO promotes",
+        zh: "平行未知風險探索通道（DISCOVER→RO 核准→技能＋監控）在 RO 晉升前不進入 DETECT→DASHBOARD",
+        done: true,
+      },
       { en: "Classify surfaces: BAU desk vs pilot-only vs human-only blocklist", zh: "畫面分級：日常台面／僅試點／僅限人類黑名單" },
       { en: "Design freeze signed by Risk Owner + Platform Owner", zh: "風險負責人＋平台負責人簽核設計凍結" },
     ],

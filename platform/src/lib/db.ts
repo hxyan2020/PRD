@@ -3,6 +3,7 @@ import { classifyAuditPlane, ensureAuditDemoSamples } from "@/lib/audit";
 import fs from "fs";
 import path from "path";
 import { ensureAiSchema } from "@/lib/ai/schema";
+import { ensureDiscoverySchema } from "@/lib/ai/discovery-schema";
 import { ensureSpineSchema } from "@/lib/ai/spine-schema";
 import { seedRagIfEmpty } from "@/lib/ai/seed-rag";
 import { seedSkillsIfEmpty } from "@/lib/ai/skills";
@@ -1434,6 +1435,11 @@ function runEnsureAiLayer(db: Database.Database) {
   ensureRiskLogSchema(db);
   seedRiskLogIfEmpty(db);
   ensureMarketIntelSchema(db);
+  ensureDiscoverySchema(db);
+  // Lazy require — discovery.ts imports admin/db; avoid cycle at module load.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { seedDiscoveryIfEmpty } = require("@/lib/ai/discovery") as typeof import("@/lib/ai/discovery");
+  seedDiscoveryIfEmpty(db);
   ensureChallengerSchema(db);
   ensureImprovementSchema(db);
   seedAiAnalysesIfEmpty(db);

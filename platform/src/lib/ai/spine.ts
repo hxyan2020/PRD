@@ -11,7 +11,11 @@ export type SpineStage =
   | "INTERVENTION"
   | "ESCALATION"
   | "RESOLVED"
-  | "DASHBOARD";
+  | "DASHBOARD"
+  /** Parallel unknown-risk discovery lane (not part of DETECT→DASHBOARD). */
+  | "DISCOVER"
+  | "DISCOVERY_REVIEW"
+  | "DISCOVERY_PROMOTE";
 
 export function logSpineEvent(input: {
   stage: SpineStage;

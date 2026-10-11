@@ -12,6 +12,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/dashboard": { en: "Daily Performance", "zh-Hant": "每日績效" },
   "/admin/risk-log": { en: "Risk Log Analytics", "zh-Hant": "風險日誌分析" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
+  "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
   "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
@@ -82,6 +83,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "Hour / 24h headlines plus a sentiment barometer for core Vantage instruments — then news, social and official channels that can move LP prices (M2-MKT-INTEL).",
       "zh-Hant": "一小時／24 小時頭條，加上 Vantage 主要商品情緒氣壓計 — 再掃描可能影響 LP 報價的新聞／社群／官方頻道（M2-MKT-INTEL）。",
+    },
+  },
+  discovery: {
+    title: { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
+    subtitle: {
+      en: "Parallel lane: realtime discovery of unknown risk events and indicators → RO POC approve → skill + Monitor 2.0 target (maker≠checker). Joins DETECT→DASHBOARD only after approval.",
+      "zh-Hant": "平行通道：即時探索未知風險事件與指標 → RO POC 核准 → 技能＋Monitor 2.0 目標（制作者≠覆核者）。核准後才加入 DETECT→DASHBOARD。",
     },
   },
   detectors: {
