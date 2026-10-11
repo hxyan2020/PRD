@@ -5,9 +5,12 @@ import {
   getExtraPaintings,
   getStats,
   markViewed,
+  setExtraPaintings,
   toggleCollected,
   isCollected,
 } from '../lib/storage'
+import { hasDisplayableImageUrl } from '../lib/images'
+import { repairExtraPaintings } from '../lib/discover'
 import { useAuth } from './AuthProvider'
 
 type Ctx = {
@@ -62,8 +65,22 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
 
   // Reload per-user extras/stats when auth session changes.
   const reloadUserLibrary = useCallback(() => {
-    setExtras(getExtraPaintings().map((p) => ({ ...p, discovered: true })))
+    const raw = getExtraPaintings().map((p) => ({ ...p, discovered: true }))
+    // Drop empties immediately; repair blocked hosts asynchronously.
+    const quick = raw.filter((p) => hasDisplayableImageUrl(p) || p.image || p.imageFull)
+    setExtras(quick.filter((p) => hasDisplayableImageUrl(p)))
     setStats(getStats())
+
+    const needsRepair = raw.some(
+      (p) => !hasDisplayableImageUrl(p) && (Boolean(p.image) || Boolean(p.imageFull) || Boolean(p.name)),
+    )
+    if (!needsRepair && quick.length === raw.length) return
+
+    void repairExtraPaintings(raw).then((fixed) => {
+      setExtraPaintings(fixed)
+      setExtras(fixed.map((p) => ({ ...p, discovered: true })))
+      setStats(getStats())
+    })
   }, [])
 
   useEffect(() => {
@@ -107,8 +124,12 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
     },
     collected: (id) => isCollected(id),
     mergeExtras: (items) => {
-      const tagged = items.map((p) => ({ ...p, discovered: true }))
-      const next = addExtraPaintings(tagged).map((p) => ({ ...p, discovered: true }))
+      const tagged = items
+        .map((p) => ({ ...p, discovered: true }))
+        .filter((p) => hasDisplayableImageUrl(p))
+      const next = addExtraPaintings(tagged)
+        .map((p) => ({ ...p, discovered: true }))
+        .filter((p) => hasDisplayableImageUrl(p))
       setExtras(next)
       setStats(getStats())
       void persistLibrary()

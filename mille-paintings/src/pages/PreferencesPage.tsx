@@ -13,7 +13,7 @@ import {
   type DiscoverProgress,
   type DiscoverStep,
 } from '../lib/discover'
-import { displayImageUrl } from '../lib/images'
+import { displayImageUrl, imageCandidates } from '../lib/images'
 import { optionLabel } from '../lib/optionLabels'
 import {
   COUNTRY_GROUPS,
@@ -348,7 +348,7 @@ export function PreferencesPage() {
               <Link key={p.id} to={`/painting/${p.id}`} className="discover-card">
                 <SafeImage
                   src={displayImageUrl(p)}
-                  fallbackSrc={p.imageFull && p.imageFull !== displayImageUrl(p) ? p.imageFull : p.image}
+                  candidates={imageCandidates(p)}
                   alt={p.name}
                   loading="lazy"
                 />

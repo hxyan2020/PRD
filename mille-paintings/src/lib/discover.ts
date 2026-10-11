@@ -1,5 +1,12 @@
 import type { Painting } from '../types'
-import { commonsFileName } from './images'
+import {
+  commonsFileName,
+  hasDisplayableImageUrl,
+  isBlockedHotlinkUrl,
+  withCommonsWidth,
+  DISPLAY_IMAGE_WIDTH,
+  VIEWER_IMAGE_WIDTH,
+} from './images'
 import {
   countrySearchTerms,
   eraYearRanges,
@@ -40,7 +47,7 @@ function errDetail(err: unknown): string {
   return 'Failed'
 }
 
-function commons(filename: string, width = 2400) {
+function commons(filename: string, width = VIEWER_IMAGE_WIDTH) {
   const base = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`
   return `${base}?width=${width}`
 }
@@ -312,9 +319,9 @@ function preferenceScore(p: Painting, prefs: Preferences): number {
   return score + Math.min(p.sitelinks, 40) / 40
 }
 
-/** AIC IIIF is often blocked for hotlinking from GitHub Pages — rescue via Commons. */
+/** Hosts that fail as hotlinked <img> from GitHub Pages — rescue via Commons. */
 function needsImageRescue(url: string): boolean {
-  return /artic\.edu\/iiif/i.test(url)
+  return isBlockedHotlinkUrl(url)
 }
 
 async function commonsImageForTitle(
@@ -332,7 +339,7 @@ async function commonsImageForTitle(
     gsrnamespace: '6',
     prop: 'imageinfo',
     iiprop: 'url',
-    iiurlwidth: '1200',
+    iiurlwidth: '1280',
   })
   try {
     const res = await fetchWithTimeout(
@@ -348,10 +355,11 @@ async function commonsImageForTitle(
       const info = page.imageinfo?.[0]
       const file = page.title?.replace(/^File:/, '')
       if (!file || !info?.url) continue
-      // Prefer Commons FilePath (works under referrerPolicy=no-referrer).
+      // Prefer direct thumbs when present; FilePath as a stable alternate.
+      const thumb = info.thumburl || ''
       return {
-        image: commons(file, 1600),
-        imageFull: commons(file, 2400),
+        image: thumb || commons(file, DISPLAY_IMAGE_WIDTH),
+        imageFull: commons(file, VIEWER_IMAGE_WIDTH),
       }
     }
   } catch {
@@ -362,10 +370,31 @@ async function commonsImageForTitle(
 
 async function ensureDisplayableImage(p: Painting): Promise<Painting | null> {
   if (!p.image && !p.imageFull) return null
-  if (!needsImageRescue(p.image) && !needsImageRescue(p.imageFull)) return p
+  const imageBlocked = needsImageRescue(p.image)
+  const fullBlocked = needsImageRescue(p.imageFull)
+  if (!imageBlocked && !fullBlocked && hasDisplayableImageUrl(p)) {
+    // Normalize Commons URLs to safe widths.
+    return {
+      ...p,
+      image: p.image ? withCommonsWidth(p.image, DISPLAY_IMAGE_WIDTH) : p.image,
+      imageFull: p.imageFull
+        ? withCommonsWidth(p.imageFull, VIEWER_IMAGE_WIDTH)
+        : p.imageFull,
+    }
+  }
   const rescued = await commonsImageForTitle(p.name, p.painter)
   if (!rescued) return null
   return { ...p, image: rescued.image, imageFull: rescued.imageFull }
+}
+
+/** Repair or drop stored extras whose image hosts are blocked / empty. */
+export async function repairExtraPaintings(paintings: Painting[]): Promise<Painting[]> {
+  const out: Painting[] = []
+  for (const p of paintings) {
+    const fixed = await ensureDisplayableImage({ ...p, discovered: true })
+    if (fixed && hasDisplayableImageUrl(fixed)) out.push(fixed)
+  }
+  return out
 }
 
 function expandGenreTerms(genres: string[]): string[] {
@@ -457,8 +486,8 @@ function rowToPainting(row: Binding, genreFallback?: string): Painting | null {
     rank: 0,
     sitelinks: Number(row.sitelinks?.value || 0),
     name,
-    image: commons(imagePath, 1600),
-    imageFull: commons(imagePath),
+    image: commons(imagePath, DISPLAY_IMAGE_WIDTH),
+    imageFull: commons(imagePath, VIEWER_IMAGE_WIDTH),
     painter: row.creatorLabel?.value || 'Unknown',
     painterId: (row.creator?.value || '').split('/').pop() || '',
     painterBirthYear: yearOf(row.birth?.value),
@@ -603,8 +632,8 @@ async function searchWikidataText(query: string, existing: Set<string>): Promise
       rank: 0,
       sitelinks: 5,
       name,
-      image: commons(imageClaim, 1600),
-      imageFull: commons(imageClaim),
+      image: commons(imageClaim, DISPLAY_IMAGE_WIDTH),
+      imageFull: commons(imageClaim, VIEWER_IMAGE_WIDTH),
       painter: creatorId || 'Unknown',
       painterId: creatorId || '',
       painterBirthYear: 'Unknown',
@@ -704,18 +733,16 @@ async function searchArtInstitute(query: string, existing: Set<string>): Promise
     if (type && !/paint|scroll|panel|ink|oil|watercolor|tempera|fresco|drawing/.test(type)) {
       continue
     }
-    // AIC IIIF is often blocked off-site — prefer Commons rescue for a displayable URL.
+    // AIC IIIF is blocked off-site — only keep hits we can rescue via Commons.
     const rescued = await commonsImageForTitle(hit.title, hit.artist_title || undefined)
-    if (!rescued && !hit.image_id) continue
-    const img = rescued?.image || `https://www.artic.edu/iiif/2/${hit.image_id}/full/843,/0/default.jpg`
-    const imgFull = rescued?.imageFull || `https://www.artic.edu/iiif/2/${hit.image_id}/full/1686,/0/default.jpg`
-    const candidate: Painting = {
+    if (!rescued) continue
+    out.push({
       id,
       rank: 0,
       sitelinks: 4,
       name: hit.title,
-      image: img,
-      imageFull: imgFull,
+      image: rescued.image,
+      imageFull: rescued.imageFull,
       painter: hit.artist_title || 'Unknown',
       painterId: '',
       painterBirthYear: yearFromText(hit.date_display),
@@ -733,9 +760,7 @@ async function searchArtInstitute(query: string, existing: Set<string>): Promise
         : 'Sourced from the Art Institute of Chicago open API.',
       painterPhotos: [],
       discovered: true,
-    }
-    const displayable = await ensureDisplayableImage(candidate)
-    if (displayable) out.push(displayable)
+    })
   }
   return out
 }
@@ -776,7 +801,7 @@ async function searchVA(query: string, existing: Set<string>): Promise<Painting[
     if (existing.has(id)) continue
     const image = `${base}full/!800,800/0/default.jpg`
     const imageFull = `${base}full/!1600,1600/0/default.jpg`
-    out.push({
+    const candidate: Painting = {
       id,
       rank: 0,
       sitelinks: 3,
@@ -798,7 +823,9 @@ async function searchVA(query: string, existing: Set<string>): Promise<Painting[
       anecdote: 'Sourced from the Victoria and Albert Museum open collections search.',
       painterPhotos: [],
       discovered: true,
-    })
+    }
+    const displayable = await ensureDisplayableImage(candidate)
+    if (displayable) out.push(displayable)
   }
   return out
 }
@@ -848,7 +875,9 @@ async function searchOpenverse(
       seenLocal.add(id)
       const tags = (hit.tags || []).map((t) => t.name).filter(Boolean).join(', ')
       const provider = hit.provider || hit.source || 'Openverse'
-      out.push({
+      // Skip known-blocked CDNs unless Commons can rescue the title.
+      if (isBlockedHotlinkUrl(hit.url) && !hit.title) continue
+      const candidate: Painting = {
         id,
         rank: 0,
         sitelinks: 2,
@@ -870,7 +899,9 @@ async function searchOpenverse(
           : 'Sourced through the Openverse open-content image search.',
         painterPhotos: [],
         discovered: true,
-      })
+      }
+      const displayable = await ensureDisplayableImage(candidate)
+      if (displayable) out.push(displayable)
     }
     if (out.length >= 20) break
   }
@@ -895,7 +926,7 @@ async function searchCommonsOnce(
     gsrnamespace: '6',
     prop: 'imageinfo',
     iiprop: 'url|extmetadata|size',
-    iiurlwidth: '1200',
+    iiurlwidth: '1280',
   })
   const res = await fetchWithTimeout(
     `https://commons.wikimedia.org/w/api.php?${params}`,
@@ -958,8 +989,8 @@ async function searchCommonsOnce(
       rank: 0,
       sitelinks: looksPainted ? 3 : 2,
       name,
-      image: direct || commons(file, 1600),
-      imageFull: info.url || commons(file, 2400),
+      image: direct || commons(file, DISPLAY_IMAGE_WIDTH),
+      imageFull: commons(file, VIEWER_IMAGE_WIDTH),
       painter: artist.slice(0, 120),
       painterId: '',
       painterBirthYear: 'Unknown',
@@ -1292,7 +1323,12 @@ export async function discoverPaintings(
   const matched = pool
     .filter((p) => matchesPreferences(p, prefs))
     .filter((p) => !catalogueHas(ownedOnly, p))
-  const ranked = rankByMood(matched, prefs.moods)
+  const displayable: Painting[] = []
+  for (const p of matched) {
+    const fixed = await ensureDisplayableImage(p)
+    if (fixed && hasDisplayableImageUrl(fixed)) displayable.push(fixed)
+  }
+  const ranked = rankByMood(displayable, prefs.moods)
     .map((p) => ({ p, score: preferenceScore(p, prefs) }))
     .sort((a, b) => b.score - a.score || b.p.sitelinks - a.p.sitelinks)
     .map((x) => x.p)

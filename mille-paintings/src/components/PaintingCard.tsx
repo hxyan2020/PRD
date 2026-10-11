@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Painting } from '../types'
 import { useI18n } from '../i18n/I18nContext'
 import { optionLabel, optionLabels } from '../lib/optionLabels'
-import { displayImageUrl } from '../lib/images'
+import { displayImageUrl, imageCandidates } from '../lib/images'
 import { CountryFlags } from './CountryFlags'
 import { SafeImage } from './SafeImage'
 import './PaintingCard.css'
@@ -17,20 +18,34 @@ export function PaintingCard({
   const { t, lang } = useI18n()
   const genre = optionLabels(lang, painting.genre)
   const country = optionLabel(lang, painting.painterCountry)
+  const [hidden, setHidden] = useState(false)
+  const candidates = imageCandidates(painting)
+  const primary = displayImageUrl(painting)
+
+  // Hide cards that cannot show any image — better than empty `#—` placeholders.
+  if (hidden || !primary) return null
+
+  const rankLabel =
+    painting.rank > 0
+      ? `#${painting.rank}`
+      : painting.discovered
+        ? t('discoveredBadge')
+        : '#—'
 
   return (
     <Link to={`/painting/${painting.id}`} className="painting-card">
       <div className="painting-card-media">
         <SafeImage
-          src={displayImageUrl(painting)}
-          fallbackSrc={painting.image}
+          src={primary}
+          candidates={candidates.slice(1)}
           alt={painting.name}
           loading="lazy"
           decoding="async"
+          onAllFailed={() => setHidden(true)}
         />
         {painting.lostOrDestroyed ? <span className="lost-badge">{t('lostDestroyed')}</span> : null}
         {collected ? <span className="collected-badge">{t('collected')}</span> : null}
-        <span className="rank-badge">#{painting.rank || '—'}</span>
+        <span className={`rank-badge${painting.rank > 0 ? '' : ' rank-badge-soft'}`}>{rankLabel}</span>
       </div>
       <div className="painting-card-meta">
         <h2>{painting.name}</h2>

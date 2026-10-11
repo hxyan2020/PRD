@@ -7,7 +7,7 @@ import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
 import { useI18n } from '../i18n/I18nContext'
-import { displayImageUrl } from '../lib/images'
+import { displayImageUrl, imageCandidates } from '../lib/images'
 import { pickDailyPainting, pickSurprise } from '../lib/recommend'
 import type { Painting } from '../types'
 import './TodayPage.css'
@@ -55,7 +55,11 @@ export function TodayPage() {
 
       <section className="today-stage">
         <button type="button" className="today-image" onClick={() => setFullscreen(true)}>
-          <SafeImage src={displayImageUrl(display)} fallbackSrc={display.image} alt={display.name} />
+          <SafeImage
+            src={displayImageUrl(display)}
+            candidates={imageCandidates(display)}
+            alt={display.name}
+          />
         </button>
         <div className="today-meta">
           <p className="rank">{t('rank', { n: display.rank || '—' })}</p>
