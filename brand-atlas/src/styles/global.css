@@ -1088,6 +1088,9 @@ img {
   object-fit: cover;
   object-position: center 40%;
   transform: scale(1.02);
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   animation: heroKen 22s ease-in-out infinite alternate;
 }
 

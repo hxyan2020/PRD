@@ -19,10 +19,12 @@ export function HomePage() {
       <section className="hero">
         <img
           className="hero__banner"
-          src={`${import.meta.env.BASE_URL}banner-seen.png`}
+          src={`${import.meta.env.BASE_URL}banner-seen.jpg`}
           alt=""
-          width={1000}
-          height={609}
+          width={3200}
+          height={1948}
+          decoding="async"
+          fetchPriority="high"
         />
         <div className="hero__veil" aria-hidden="true" />
         <div className="hero__content">
