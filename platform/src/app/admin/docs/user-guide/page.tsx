@@ -20,6 +20,7 @@ export default async function UserGuidePage({ searchParams }: { searchParams: Pr
     { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
     { href: "/admin/ai-admin", en: "AI Admin", zh: "AI 管理" },
     { href: "/admin/market-intel", en: "Market Intel", zh: "市場情報" },
+    { href: "/admin/discovery", en: "Risk Discovery", zh: "風險探索" },
     { href: "/admin/docs/uat", en: "UAT", zh: "UAT" },
     { href: "/admin/docs/urls", en: "All URLs", zh: "全部網址" },
   ];

@@ -967,11 +967,19 @@ export const STATUS_LABELS: Record<string, Pair> = {
   PENDING: { en: "PENDING", "zh-Hant": "待處理" },
   PENDING_ADMIN: { en: "PENDING ADMIN", "zh-Hant": "待管理員" },
   PENDING_RO: { en: "PENDING RO", "zh-Hant": "待 RO" },
+  ASK_MORE_INFO: { en: "ASK MORE INFO", "zh-Hant": "需更多資訊" },
+  APPROVED_FOR_VALIDATION: { en: "APPROVED FOR VALIDATION", "zh-Hant": "已核准驗證" },
+  APPROVED_FOR_MONITORING: { en: "APPROVED FOR MONITORING", "zh-Hant": "已核准監控" },
+  IN_MONITORING: { en: "IN MONITORING", "zh-Hant": "監控中" },
+  DISMISSED: { en: "DISMISSED", "zh-Hant": "已駁回" },
   AWAITING_HUMAN: { en: "AWAITING HUMAN", "zh-Hant": "待人工" },
   AWAITING_CHECKER: { en: "AWAITING CHECKER", "zh-Hant": "待 Checker" },
   APPROVED: { en: "APPROVED", "zh-Hant": "已核准" },
   REJECTED: { en: "REJECTED", "zh-Hant": "已駁回" },
   INFO: { en: "INFO", "zh-Hant": "資訊" },
+  COMPLETED: { en: "COMPLETED", "zh-Hant": "已完成" },
+  SKIPPED: { en: "SKIPPED", "zh-Hant": "已略過" },
+  RUNNING: { en: "RUNNING", "zh-Hant": "執行中" },
 };
 
 export const STAGE_LABELS: Record<string, Pair> = {
@@ -982,6 +990,9 @@ export const STAGE_LABELS: Record<string, Pair> = {
   HUMAN_INTERVENTION: { en: "HUMAN_INTERVENTION", "zh-Hant": "人工干預" },
   RESOLVED: { en: "RESOLVED", "zh-Hant": "已結案" },
   DASHBOARD: { en: "DASHBOARD", "zh-Hant": "儀表板" },
+  DISCOVER: { en: "DISCOVER", "zh-Hant": "探索" },
+  DISCOVERY_REVIEW: { en: "DISCOVERY_REVIEW", "zh-Hant": "探索審核" },
+  DISCOVERY_PROMOTE: { en: "DISCOVERY_PROMOTE", "zh-Hant": "探索晉升" },
 };
 
 /** English operational phrases → 繁中. Unknown strings stay English. */

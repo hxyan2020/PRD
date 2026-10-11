@@ -148,7 +148,7 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
                         onChange={(e) => patch(u.path, "title", e.target.value)}
                       />
                     ) : (
-                      u.title
+                      <Phrase>{u.title}</Phrase>
                     )}
                   </div>
                   <div>
@@ -222,7 +222,7 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
                             onChange={(e) => patch(u.path, "title", e.target.value)}
                           />
                         ) : (
-                          u.title
+                          <Phrase>{u.title}</Phrase>
                         )}
                       </td>
                       <td>

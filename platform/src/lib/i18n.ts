@@ -12,6 +12,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/dashboard": { en: "Daily Performance", "zh-Hant": "每日績效" },
   "/admin/risk-log": { en: "Risk Log Analytics", "zh-Hant": "風險日誌分析" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
+  "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
   "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
@@ -82,6 +83,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "Hour / 24h headlines plus a sentiment barometer for core Vantage instruments — then news, social and official channels that can move LP prices (M2-MKT-INTEL).",
       "zh-Hant": "一小時／24 小時頭條，加上 Vantage 主要商品情緒氣壓計 — 再掃描可能影響 LP 報價的新聞／社群／官方頻道（M2-MKT-INTEL）。",
+    },
+  },
+  discovery: {
+    title: { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
+    subtitle: {
+      en: "Notebook-parity AI suggestion card: Connect OpenAI / Mock → Analyse → Approve for validation / Ask more info / Dismiss. Optional promote to skill + Monitor 2.0 after RO check.",
+      "zh-Hant": "與筆記本對齊的 AI 建議卡：連線 OpenAI／Mock → 分析 → 核准驗證／要求更多資訊／駁回。可選經 RO 覆核後晉升為技能＋Monitor 2.0。",
     },
   },
   detectors: {

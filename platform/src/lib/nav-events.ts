@@ -36,6 +36,10 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     db,
     `SELECT COUNT(*) AS c, MAX(scanned_at) AS ts FROM market_intel_findings WHERE scanned_at >= datetime('now','-1 day')`
   );
+  const discovery = scalar(
+    db,
+    `SELECT COUNT(*) AS c, MAX(created_at) AS ts FROM risk_discovery_candidates WHERE status IN ('PENDING_RO','ASK_MORE_INFO')`
+  );
   const interventions = scalar(
     db,
     `SELECT COUNT(*) AS c, MAX(requested_at) AS ts FROM interventions WHERE status IN ('PENDING','AWAITING_CHECKER','AWAITING_HUMAN')`
@@ -63,6 +67,7 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     "/admin/alerts": { count: alerts.c, latestAt: alerts.ts },
     "/admin/messenger": { count: messenger.c, latestAt: messenger.ts },
     "/admin/market-intel": { count: intel.c, latestAt: intel.ts },
+    "/admin/discovery": { count: discovery.c, latestAt: discovery.ts },
     "/admin/interventions": { count: interventions.c, latestAt: interventions.ts },
     "/admin/audit": { count: audit.c, latestAt: audit.ts },
     "/admin/monitor-2": monitorBadge,

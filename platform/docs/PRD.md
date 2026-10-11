@@ -230,6 +230,7 @@ graph LR
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
+| FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -250,6 +251,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
+| Monitor & risk | Unknown Risk Discovery | `/admin/discovery` | Notebook-parity AI suggestion card; RO gates unknown risks before daily monitors | Connect OpenAI/Mock; Analyse; Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker); HTML/Colab notebook links |
 | Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Unified indicator + detector registry | Run all / Sync / Pause; recent runs; open alerts link → Realtime Alert & Tracker (no Alerts/Tickets tabs) |
 | Monitor & risk | Detectors (redirect) | `/admin/detectors` | Bookmarks only | Not in left nav — redirects to Monitor 2.0 |
 | Monitor & risk | Realtime Alert & Tracker | `/admin/alerts` | Open queue + grouped AI pipeline | MonitorCode tooltips; open-only; ack; `/admin/ai-analyses` list redirects here |
@@ -283,6 +285,54 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Shell | Language | cookie `crmp_ui_lang` | EN / 繁中 | Nav + docs switch |
 | Shell | Unread badges | left nav | New work | Increment / clear-on-view |
 | Shell | Mobile drawer | `< lg` | Phone use | Hamburger; messenger master-detail |
+
+### 6.5 Unknown Risk Discovery — methods, data, flow
+
+Parallel lane beside DETECT→ALARM→AI_RCA→SKILL→HUMAN→RESOLVED→DASHBOARD. Candidates never become daily monitors until a human promotes them. No silent deploy. Surface: `/admin/discovery` (**CRMP Admin**, not CRMP Plus). Notebook: [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing).
+
+```mermaid
+flowchart TD
+  A[Feature window from monitor_indicators] --> B[Seven discovery methods]
+  B --> C[PENDING_RO candidates]
+  C --> D[Connect OpenAI or Mock]
+  D --> E[Analyse → AI suggestion card]
+  E --> F{RO decision}
+  F -->|Approve validation| G[BU/UAT only — no deploy]
+  F -->|Ask more info| E
+  F -->|Dismiss| H[Closed]
+  G --> I{Optional promote?}
+  I -->|maker≠checker| J[SKILL-DISC-* + M2-DISC-*]
+```
+
+**Data needed**
+
+| Input | Constraint |
+|---|---|
+| `monitor_indicators` last values (CFD/crypto proxies) | Short feature window; no raw client PII |
+| `OPENAI_API_KEY` (optional, server env) | LIVE Analyse only; never in browser or published artifacts |
+| Risk Owner / checker session | Required for review mutations |
+| AI Engineer + distinct RO | Required for monitoring promote (SoD) |
+
+**Methods (seven families, notebook parity)**
+
+| # | Family | Finds |
+|---|---|---|
+| 1 | Isolation Forest | Multivariate / point anomaly proxy |
+| 2 | CUSUM | Sustained regime shift |
+| 3 | Mahalanobis / joint distance | Jointly unusual states |
+| 4 | LOF | Peer-relative local outlier |
+| 5 | Subgroup slice | Product × domain contrast |
+| 6 | Sequence / lead-lag | Precursor patterns |
+| 7 | Correlation network | Cross-indicator dependency shift |
+
+**Flow**
+1. Run discovery (manual, or parallel with `run_detectors` when `discovery.auto_on_detectors=true`) → `PENDING_RO`  
+2. Connect OpenAI (env key) or stay Mock  
+3. Analyse selected → structured AI suggestion card  
+4. RO: Approve for validation · Ask for more info · Dismiss — never auto-deploy  
+5. Optional Approve for monitoring → AI Engineer propose / RO decide → `SKILL-DISC-*` + `M2-DISC-*`  
+
+**Acceptance (FR-37):** notebook-parity controls on `/admin/discovery`; AI cannot write review decisions; promote path enforces maker≠checker; EN + zh-Hant copy; notebook links visible. Operator: User Guide §14A · Build: TSD §11A.
 
 ---
 
@@ -403,5 +453,8 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.6 | 2026-10-05 | Spine on home; BU and Teams; line1/2 AI Admin; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + rollback; editable Roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses list redirect; Monitor hub without Alerts/Tickets tabs; dedupe FR-24 |
+| 1.9 | 2026-10-11 | FR-37 Unknown Risk Discovery AI suggestion card on CRMP Admin |
+| 1.10 | 2026-10-11 | §6.5 methods / data / flow + feature catalogue row for `/admin/discovery` |
+| 1.11 | 2026-10-11 | §6.5 expanded tables + mermaid flow; cross-links to UG §14A / TSD §11A |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

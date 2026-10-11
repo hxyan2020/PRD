@@ -517,6 +517,13 @@ function applyChange(entityType: string, action: string, payload: Record<string,
     return { applied: "training_create", run_id: runId };
   }
 
+  if (entityType === "DISCOVERY_PROMOTE" && action === "CREATE") {
+    // Lazy require avoids circular import with discovery.ts (propose/decide).
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { applyDiscoveryPromote } = require("@/lib/ai/discovery") as typeof import("@/lib/ai/discovery");
+    return applyDiscoveryPromote(payload);
+  }
+
   throw new Error(`Unsupported change ${entityType}/${action}`);
 }
 

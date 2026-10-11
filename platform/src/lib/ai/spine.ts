@@ -11,7 +11,10 @@ export type SpineStage =
   | "INTERVENTION"
   | "ESCALATION"
   | "RESOLVED"
-  | "DASHBOARD";
+  | "DASHBOARD"
+  | "DISCOVER"
+  | "DISCOVERY_REVIEW"
+  | "DISCOVERY_PROMOTE";
 
 export function logSpineEvent(input: {
   stage: SpineStage;

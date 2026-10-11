@@ -1147,6 +1147,23 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   FUNCTION: "功能",
   FIELD: "欄位",
   DATA: "資料",
+  "Unknown Risk Discovery": "未知風險探索",
+  "Risk discovery notebook (HTML)": "風險探索筆記本（HTML）",
+  "Risk discovery notebook (.ipynb)": "風險探索筆記本（.ipynb）",
+  "Risk discovery notebook (Colab)": "風險探索筆記本（Colab）",
+  "Discovery API": "探索 API",
+  "Notebook-parity AI suggestion card + RO review (Connect OpenAI/Mock, Analyse, Approve for validation / Ask more info / Dismiss); optional promote to skill + Monitor 2.0; Colab/HTML notebook links":
+    "與筆記本對齊的 AI 建議卡＋RO 審查（連線 OpenAI／Mock、分析、核准驗證／要求更多資訊／駁回）；可選晉升技能＋Monitor 2.0；含 Colab／HTML 筆記本連結",
+  "Executed Colab unknown-risk discovery notebook (code + outputs) published on GitHub Pages":
+    "已執行的 Colab 未知風險探索筆記本（程式碼＋輸出）發布於 GitHub Pages",
+  "Raw Jupyter notebook file for unknown-risk discovery (download / open locally)":
+    "未知風險探索原始 Jupyter 筆記本檔（下載／本機開啟）",
+  "Interactive Google Colab Jupyter notebook for unknown-risk discovery":
+    "未知風險探索互動式 Google Colab Jupyter 筆記本",
+  "GET candidates · POST scan_now / connect_openai / disconnect_openai / analyse / review (APPROVE_FOR_VALIDATION|ASK_MORE_INFO|DISMISS|APPROVE_FOR_MONITORING)":
+    "GET 候選 · POST scan_now／connect_openai／disconnect_openai／analyse／review（核准驗證｜要求更多資訊｜駁回｜核准納入監控）",
+  "Unknown-risk discovery candidates, scans, and RO review actions":
+    "未知風險探索候選、掃描與 RO 審查動作",
 };
 
 /** Longest-first English fragments rewritten inside mixed dummy / log strings. */

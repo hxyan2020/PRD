@@ -179,6 +179,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/monitor-2` | 統一登錄＋`MonitorActions`、`/api/monitor`、`/api/detectors` | `monitor.read`／`monitor.operate` | §16.5 |
 | 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
 | 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
+| 監控 | `/admin/discovery` | **未知風險探索** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read`／`ai.approve` | **§11A** |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
@@ -498,6 +499,90 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 ---
 
+## 11A. 未知風險探索（AI 建議卡）
+
+**畫面：** `/admin/discovery` · **API：** `/api/discovery` · **UI：** `DiscoverySuggestionBoard`  
+**資料表：** `risk_discovery_candidates`、`risk_discovery_scans`、`risk_discovery_reviews`  
+**設定：** `discovery.enabled`、`discovery.auto_on_detectors`  
+**脊柱階段：** `DISCOVER` · `DISCOVERY_REVIEW` · `DISCOVERY_PROMOTE`  
+**筆記本網址：** `lib/ai/discovery-links.ts`（HTML＋Colab；可進客戶端包）
+
+### 11A.1 模組
+| 模組 | 職責 |
+|---|---|
+| `lib/ai/discovery.ts` | 特徵窗取樣；七類掃描；持久化候選／掃描；審查＋晉升 |
+| `lib/ai/discovery-analyse.ts` | MOCK／LIVE 結構化建議卡（`OPENAI_API_KEY` 僅伺服器） |
+| `lib/ai/discovery-schema.ts` | SQLite 表＋預設設定 |
+| `lib/ai/discovery-links.ts` | 公開筆記本網址 |
+| `components/DiscoverySuggestionBoard.tsx` | 與筆記本對齊的控制＋建議卡 |
+| `app/api/discovery/route.ts` | `scan_now`、`connect_openai`、`disconnect_openai`、`analyse`、`review`、`toggle_enabled` |
+| `app/api/monitor/route.ts` | `auto` 旗標為真時於 `run_detectors` 並行 `runDiscoveryParallel` |
+
+### 11A.2 需要的資料
+| 來源 | 用途 |
+|---|---|
+| `monitor_indicators`（未暫停列：last_value、門檻、產品、領域） | 約 48 步合成即時特徵窗供掃描器 |
+| `risk_discovery_*` 表 | 候選、掃描執行、不可變審查稽核 |
+| `OPENAI_API_KEY`（可選環境變數） | LIVE 分析；絕不可由客戶端提供 |
+| 具 `monitor.read`／`ai.approve` 的工作階段使用者 | 操作 vs 審查 |
+
+不含原始客戶 PII。候選 `evidence_json` 僅含方法分數與錨點監控 id。
+
+### 11A.3 方法（筆記本族類）
+於 `discovery.ts` 對特徵窗實作：
+
+| 鍵 | 族類 | 訊號 |
+|---|---|---|
+| `isolation_forest` | 孤立森林 | 多變量／點異常代理 |
+| `cusum` | CUSUM | 持續體制轉移（如 LP 拒單） |
+| `mahalanobis` | 聯合距離 | 多序列聯合異常狀態 |
+| `lof` | LOF | 相對同儕局部離群 |
+| `subgroup` | 子群切片 | 產品 × 領域對比 |
+| `sequence` | 領先—滯後 | 前兆／序列型態 |
+| `corr_network` | 相關網路 | 跨指標依賴偏移 |
+
+每一命中 → 指紋去重 → `PENDING_RO` 列，含提案 `M2-DISC-*`／`SKILL-DISC-*`。
+
+### 11A.4 流程
+```mermaid
+sequenceDiagram
+  participant Op as 操作者
+  participant UI as /admin/discovery
+  participant API as /api/discovery
+  participant DB as SQLite
+  participant AI as 分析 MOCK/LIVE
+  Op->>UI: 執行探索／選候選
+  UI->>API: scan_now／analyse
+  API->>DB: 候選＋掃描
+  API->>AI: 結構化建議
+  AI-->>UI: 建議卡 JSON
+  Op->>UI: 核准驗證／追問／駁回
+  UI->>API: review
+  API->>DB: risk_discovery_reviews＋狀態
+  Note over API,DB: 可選 APPROVE_FOR_MONITORING → DISCOVERY_PROMOTE 制作者≠覆核者
+```
+
+1. `runDiscoveryParallel`（手動 `scan_now` 或與偵測器並行）寫入 `PENDING_RO`  
+2. 工作階段 AI 模式：預設 Mock；僅伺服器有金鑰時可連線 OpenAI  
+3. `analyse` → 建議卡欄位（評估、根因、情境、公式、維度、驗證、限制、優先、信心、analysis_source）  
+4. `review`：`APPROVE_FOR_VALIDATION`｜`ASK_MORE_INFO`｜`DISMISS` — AI 不可寫入  
+5. 可選 `APPROVE_FOR_MONITORING` → `DISCOVERY_PROMOTE` 提案／覆核 → 技能＋偵測器種子  
+
+### 11A.5 互動（與筆記本對齊）
+| 控制 | 行為 |
+|---|---|
+| 連線 OpenAI／中斷 Mock | 工作階段 AI 模式；即時需伺服器金鑰 |
+| 分析所選 | 回傳結構化建議卡 JSON |
+| 核准進入驗證 | 人工閘門供 BU／UAT — 不部署 |
+| 要求更多資訊 | 記錄審查＋可能刷新建議（不是核准） |
+| 駁回 | 關閉候選 |
+| 核准納入監控 | 可選：`DISCOVERY_PROMOTE` 經 AI 工程師提案 → RO 覆核 → 技能＋偵測器 |
+| 開啟 Jupyter（Colab）／HTML／下載 .ipynb | 頁首＋看板連結來自 `RISK_DISCOVERY_NOTEBOOK`（Colab、HTML Pages、原始 `.ipynb`） |
+
+當 `discovery.auto_on_detectors=true` 時與 `run_detectors` 並行。產品：PRD §6.5 · 操作：使用手冊 §14A。
+
+---
+
 ## 12. 市場情報
 
 ### 12.1 目的
@@ -696,6 +781,9 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
 | 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
+| 1.9 | 2026-10-11 | §11A 未知風險探索 AI 建議卡＋`/api/discovery` |
+| 1.10 | 2026-10-11 | §11A 擴充：模組、資料、七類方法、序列流程、API |
+| 1.11 | 2026-10-11 | §7.2 畫面地圖補上 `/admin/discovery`（與英文版對齊） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

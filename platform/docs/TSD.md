@@ -179,6 +179,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/monitor-2` | unified registry + `MonitorActions`, `/api/monitor`, `/api/detectors` | `monitor.read` / `monitor.operate` | §16.5 |
 | Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
 | Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
+| Monitor | `/admin/discovery` | **Unknown Risk Discovery** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read` / `ai.approve` | **§11A** |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -502,6 +503,90 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 
 ---
 
+## 11A. Unknown Risk Discovery (AI suggestion card)
+
+**Surface:** `/admin/discovery` · **API:** `/api/discovery` · **UI:** `DiscoverySuggestionBoard`  
+**Tables:** `risk_discovery_candidates`, `risk_discovery_scans`, `risk_discovery_reviews`  
+**Settings:** `discovery.enabled`, `discovery.auto_on_detectors`  
+**Spine stages:** `DISCOVER` · `DISCOVERY_REVIEW` · `DISCOVERY_PROMOTE`  
+**Notebook URLs:** `lib/ai/discovery-links.ts` (HTML + Colab; safe for client bundles)
+
+### 11A.1 Modules
+| Module | Role |
+|---|---|
+| `lib/ai/discovery.ts` | Feature window sample; seven method scanners; persist candidates/scans; review + promote |
+| `lib/ai/discovery-analyse.ts` | MOCK / LIVE structured suggestion card (`OPENAI_API_KEY` server-only) |
+| `lib/ai/discovery-schema.ts` | SQLite tables + default settings |
+| `lib/ai/discovery-links.ts` | Public notebook URLs |
+| `components/DiscoverySuggestionBoard.tsx` | Notebook-parity controls + suggestion card |
+| `app/api/discovery/route.ts` | `scan_now`, `connect_openai`, `disconnect_openai`, `analyse`, `review`, `toggle_enabled` |
+| `app/api/monitor/route.ts` | Parallel `runDiscoveryParallel` on `run_detectors` when auto flag is true |
+
+### 11A.2 Data needed
+| Source | Use |
+|---|---|
+| `monitor_indicators` (unpaused rows: last_value, thresholds, product, domain) | ~48-step synthetic realtime feature window for scanners |
+| `risk_discovery_*` tables | Candidates, scan runs, immutable review audit |
+| `OPENAI_API_KEY` (optional env) | LIVE Analyse; never client-supplied |
+| Session user with `monitor.read` / `ai.approve` | Operate vs review |
+
+No raw client PII. Candidate `evidence_json` holds method scores and anchor monitor ids only.
+
+### 11A.3 Methods (notebook families)
+Implemented in `discovery.ts` against the feature window:
+
+| Key | Family | Signal |
+|---|---|---|
+| `isolation_forest` | Isolation Forest | Multivariate / point anomaly proxy |
+| `cusum` | CUSUM | Sustained regime shift (e.g. LP reject) |
+| `mahalanobis` | Joint distance | Jointly unusual multi-series state |
+| `lof` | LOF | Peer-relative local outlier |
+| `subgroup` | Subgroup slice | Product × domain contrast |
+| `sequence` | Lead-lag | Precursor / sequence pattern |
+| `corr_network` | Correlation network | Cross-indicator dependency shift |
+
+Each hit → fingerprint dedupe → `PENDING_RO` row with proposed `M2-DISC-*` / `SKILL-DISC-*`.
+
+### 11A.4 Flow
+```mermaid
+sequenceDiagram
+  participant Op as Operator
+  participant UI as /admin/discovery
+  participant API as /api/discovery
+  participant DB as SQLite
+  participant AI as Analyse MOCK/LIVE
+  Op->>UI: Run discovery / select candidate
+  UI->>API: scan_now / analyse
+  API->>DB: candidates + scans
+  API->>AI: structured suggestion
+  AI-->>UI: suggestion card JSON
+  Op->>UI: Approve validation / Ask / Dismiss
+  UI->>API: review
+  API->>DB: risk_discovery_reviews + status
+  Note over API,DB: Optional APPROVE_FOR_MONITORING → DISCOVERY_PROMOTE maker≠checker
+```
+
+1. `runDiscoveryParallel` (manual `scan_now` or parallel with detectors) writes `PENDING_RO`  
+2. Session AI mode: Mock default; Connect OpenAI only if server key present  
+3. `analyse` → suggestion card fields (assessment, causes, scenario, formula, dimensions, validation, limitations, priority, confidence, analysis_source)  
+4. `review`: `APPROVE_FOR_VALIDATION` | `ASK_MORE_INFO` | `DISMISS` — AI cannot write these  
+5. Optional `APPROVE_FOR_MONITORING` → `DISCOVERY_PROMOTE` propose/decide → skill + detector seed  
+
+### 11A.5 Interaction (notebook parity)
+| Control | Behaviour |
+|---|---|
+| Connect OpenAI / Disconnect Mock | Session AI mode; live requires server key |
+| Analyse selected | Returns structured suggestion card JSON |
+| Approve for validation | Human gate for BU/UAT — no deploy |
+| Ask for more info | Records review + may refresh suggestion (not an approval) |
+| Dismiss | Closes candidate |
+| Approve for monitoring | Optional: `DISCOVERY_PROMOTE` via AI Engineer propose → RO decide → skill + detector |
+| Open Jupyter (Colab) / HTML / Download .ipynb | Header + board links from `RISK_DISCOVERY_NOTEBOOK` (Colab, HTML Pages, raw `.ipynb`) |
+
+Parallel to `run_detectors` when `discovery.auto_on_detectors=true`. Product: PRD §6.5 · Operator: User Guide §14A.
+
+---
+
 ## 12. Market Intelligence
 
 ### 12.1 Purpose
@@ -556,7 +641,8 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/messenger` | Threads + inline actions |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
-| `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `GET/POST /api/discovery` | Unknown-risk candidates; Connect OpenAI/Mock; Analyse; RO review |
+| `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors` (+ parallel discovery), `run_discovery`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
 | `GET/POST /api/detectors` | Legacy detector CRUD / run (UI on Monitor 2.0) |
 | `GET/POST /api/escalation` | Routes + dimension coefficients + ESC-DEFAULT probe |
 | `GET/POST /api/roles` | Editable RBAC (`update_role`; AI actors forbidden) |
@@ -700,6 +786,8 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
+| 1.9 | 2026-10-11 | §11A Unknown Risk Discovery AI suggestion card + `/api/discovery` |
+| 1.10 | 2026-10-11 | §11A expanded: modules, data, seven methods, sequence flow, API |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
