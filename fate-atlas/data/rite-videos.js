@@ -32,8 +32,8 @@
       captionHant: "簡介：阿坎日名宿命如何運作"
     },
     "andean-wata": {
-      youtubeId: "cFE8w7Ut_Lg",
-      caption: "Intro: Andean despacho ayni",
+      youtubeId: "4OShU3lQaGs",
+      caption: "Intro: Inti Raymi — Andean solar year festival",
       captionZh: "简介：安第斯瓦塔占如何运作",
       captionHant: "簡介：安第斯瓦塔占如何運作"
     },
@@ -63,7 +63,7 @@
     },
     "astragalomancy": {
       youtubeId: "fHsHSGu7TDA",
-      caption: "Intro: Hellenic knucklebones",
+      caption: "Intro: Hellenic knucklebones & lots",
       captionZh: "简介：距骨占如何运作",
       captionHant: "簡介：距骨占如何運作"
     },
@@ -99,13 +99,13 @@
     },
     "aztec-tonalpohualli": {
       youtubeId: "U2qI7z7Z7aA",
-      caption: "Intro: Tonalpohualli day count",
+      caption: "Intro: Tonalpohualli day-count",
       captionZh: "简介：阿兹特克神历如何运作",
       captionHant: "簡介：阿兹特克神历如何運作"
     },
     "bagua": {
       youtubeId: "Bwh9bVi-i7M",
-      caption: "Intro: I Ching 3 coin method",
+      caption: "Intro: I Ching / Bagua three-coin hexagram method",
       captionZh: "简介：八卦（铜钱起卦）如何运作",
       captionHant: "簡介：八卦（銅錢起卦）如何運作"
     },
@@ -189,7 +189,7 @@
     },
     "capnomancy": {
       youtubeId: "7nnnaL6pl8M",
-      caption: "Intro: smoke/flame scrying",
+      caption: "Intro: Flame/smoke scrying for beginners",
       captionZh: "简介：烟占如何运作",
       captionHant: "簡介：烟占如何運作"
     },
@@ -207,7 +207,7 @@
     },
     "ceromancy": {
       youtubeId: "gom6H6T11Z0",
-      caption: "Intro: Candle wax in water",
+      caption: "Intro: How to scry candle wax in water",
       captionZh: "简介：蜡占如何运作",
       captionHant: "簡介：蜡占如何運作"
     },
@@ -237,13 +237,13 @@
     },
     "cleromancy": {
       youtubeId: "fHsHSGu7TDA",
-      caption: "Intro: Hellenic casting lots",
+      caption: "Intro: Hellenic casting lots (cleromancy)",
       captionZh: "简介：抽签术如何运作",
       captionHant: "簡介：抽籤術如何運作"
     },
     "coca-leaves": {
       youtubeId: "YtdW-zl5z1U",
-      caption: "Intro: La VERITÀ sulle foglie di COCA",
+      caption: "Intro: Andean coca leaf as sacred ritual plant",
       captionZh: "简介：古柯叶占如何运作",
       captionHant: "簡介：古柯叶占如何運作"
     },
@@ -290,8 +290,8 @@
       captionHant: "簡介：多贡狐迹占如何運作"
     },
     "domino": {
-      youtubeId: "fHsHSGu7TDA",
-      caption: "Intro: Divination in Hellenism | HELLENISM 101",
+      youtubeId: "IedbibnQLT0",
+      caption: "Intro: Cleromancy — casting lots / number draws",
       captionZh: "简介：骨牌占如何运作",
       captionHant: "簡介：骨牌占如何運作"
     },
@@ -303,7 +303,7 @@
     },
     "dream-interp": {
       youtubeId: "bN-KS2n5fzM",
-      caption: "Intro: Why Artemidorus Was Way Ahead of His Time",
+      caption: "Intro: Artemidorus — ancient dream interpretation",
       captionZh: "简介：解梦如何运作",
       captionHant: "簡介：解夢如何運作"
     },
@@ -338,8 +338,8 @@
       captionHant: "簡介：風水如何運作"
     },
     "fijian-draunikau": {
-      youtubeId: "JWG1aL3sLOQ",
-      caption: "Intro: Taiwan island temple keeps ancient dream-seeking ritual alive",
+      youtubeId: "CBWgOe8HsV0",
+      caption: "Intro: Fijian ancestral gods & spirit world",
       captionZh: "简介：斐济草药灵术（记述）如何运作",
       captionHant: "簡介：斐济草藥靈術（記述）如何運作"
     },
@@ -422,8 +422,8 @@
       captionHant: "簡介：人類圖如何運作"
     },
     "hydromancy": {
-      youtubeId: "dQKQsrgNA3w",
-      caption: "Intro: water scrying",
+      youtubeId: "k56Tgu2CO8s",
+      caption: "Intro: What is hydromancy (water reading)",
       captionZh: "简介：水占如何运作",
       captionHant: "簡介：水占如何運作"
     },
@@ -459,7 +459,7 @@
     },
     "innu-scapula": {
       youtubeId: "W4o99n0-YSM",
-      caption: "Intro: Naskapi Innu hunting dreams",
+      caption: "Intro: Naskapi/Innu hunting spirituality & omens",
       captionZh: "简介：因努灼骨占如何运作",
       captionHant: "簡介：因努灼骨占如何運作"
     },
@@ -572,8 +572,8 @@
       captionHant: "簡介：緬甸星命如何運作"
     },
     "maize-casting": {
-      youtubeId: "qgknQN9A1Ww",
-      caption: "Intro: El Mito del Dios Maíz",
+      youtubeId: "1rSGwiNJigE",
+      caption: "Intro: Sacred maize & Mesoamerican corn rites",
       captionZh: "简介：玉米粒占如何运作",
       captionHant: "簡介：玉米粒占如何運作"
     },
@@ -596,8 +596,8 @@
       captionHant: "簡介：毛利月历如何運作"
     },
     "mapuche-peuma": {
-      youtubeId: "bN-KS2n5fzM",
-      caption: "Intro: Why Artemidorus Was Way Ahead of His Time",
+      youtubeId: "DOefFpPpDxk",
+      caption: "Intro: Mapuche machi calling through dreams",
       captionZh: "简介：马普切梦兆如何运作",
       captionHant: "簡介：馬普切夢兆如何運作"
     },
@@ -638,8 +638,8 @@
       captionHant: "簡介：十六貝壳占（梅林丁洛贡）如何運作"
     },
     "mesopotamian-dream": {
-      youtubeId: "bN-KS2n5fzM",
-      caption: "Intro: Why Artemidorus Was Way Ahead of His Time",
+      youtubeId: "CGnGukNsc1k",
+      caption: "Intro: Ancient dream-spirit omens & prophecy",
       captionZh: "简介：美索不达米亚梦书如何运作",
       captionHant: "簡介：美索不達米亞夢書如何運作"
     },
@@ -699,7 +699,7 @@
     },
     "mordovian": {
       youtubeId: "gom6H6T11Z0",
-      caption: "Intro: marriage wax folk",
+      caption: "Intro: Folk Yuletide omen casting (wax/fire family)",
       captionZh: "简介：莫尔多瓦民俗占如何运作",
       captionHant: "簡介：莫尔多瓦民俗占如何運作"
     },
@@ -765,7 +765,7 @@
     },
     "oracle-bones": {
       youtubeId: "C1rWYXf0e_w",
-      caption: "Intro: Shang oracle bones",
+      caption: "Intro: Shang oracle bones (scapula/plastron cracks)",
       captionZh: "简介：甲骨占卜如何运作",
       captionHant: "簡介：甲骨占卜如何運作"
     },
@@ -806,14 +806,14 @@
       captionHant: "簡介：面相（欧洲）如何運作"
     },
     "png-smoke": {
-      youtubeId: "7nnnaL6pl8M",
-      caption: "Intro: smoke/fire oracle style",
+      youtubeId: "VcpAwCtDSH4",
+      caption: "Intro: Papua New Guinea fire ritual (Baining)",
       captionZh: "简介：巴布亚新几内亚烟占如何运作",
       captionHant: "簡介：巴布亚新几内亚烟占如何運作"
     },
     "pyromancy": {
       youtubeId: "7nnnaL6pl8M",
-      caption: "Intro: fire scrying",
+      caption: "Intro: Fire/flame reading basics",
       captionZh: "简介：火占如何运作",
       captionHant: "簡介：火占如何運作"
     },
@@ -831,7 +831,7 @@
     },
     "quechua-despacho": {
       youtubeId: "cFE8w7Ut_Lg",
-      caption: "Intro: Despacho ceremony",
+      caption: "Intro: Despacho & sacred reciprocity",
       captionZh: "简介：克丘亚祭礼包如何运作",
       captionHant: "簡介：克丘亚祭禮包如何運作"
     },
@@ -861,7 +861,7 @@
     },
     "russian-svyatki": {
       youtubeId: "gom6H6T11Z0",
-      caption: "Intro: wax water Svyatki-style",
+      caption: "Intro: Wax-in-water folk fortune (Svyatki-style)",
       captionZh: "简介：俄罗斯圣周期间占如何运作",
       captionHant: "簡介：俄罗斯聖周期间占如何運作"
     },
@@ -873,7 +873,7 @@
     },
     "samoan-tofa": {
       youtubeId: "MU8tt8jMxXU",
-      caption: "Intro: Old Religion of Samoa (Old Samoa, John B. Stair) | Polynesian Myth | Samoan Gods",
+      caption: "Intro: Old Samoan religion & spirit world",
       captionZh: "简介：萨摩亚托法智慧如何运作",
       captionHant: "簡介：萨摩亚托法智慧如何運作"
     },
@@ -897,13 +897,13 @@
     },
     "scapulimancy-asia": {
       youtubeId: "C1rWYXf0e_w",
-      caption: "Intro: Oracle bones scapulimancy",
+      caption: "Intro: Shoulder-blade crack reading (oracle-bone family)",
       captionZh: "简介：灼骨占（中亚）如何运作",
       captionHant: "簡介：灼骨占（中亞）如何運作"
     },
     "scrying": {
       youtubeId: "dQKQsrgNA3w",
-      caption: "Intro: Scrying for Beginners",
+      caption: "Intro: Scrying for beginners",
       captionZh: "简介：水晶／镜观视如何运作",
       captionHant: "簡介：水晶／镜觀视如何運作"
     },
@@ -921,7 +921,7 @@
     },
     "shaking-tent": {
       youtubeId: "W4o99n0-YSM",
-      caption: "Intro: Naskapi Innu spirituality",
+      caption: "Intro: Naskapi shaking-tent spirit communication",
       captionZh: "简介：晃帐篷仪式如何运作",
       captionHant: "簡介：晃帐篷儀式如何運作"
     },
@@ -957,7 +957,7 @@
     },
     "slavic-folk": {
       youtubeId: "gom6H6T11Z0",
-      caption: "Intro: wax water folk (Slavic-style)",
+      caption: "Intro: Candle-wax folk scrying (Slavic Yuletide family)",
       captionZh: "简介：斯拉夫民俗占如何运作",
       captionHant: "簡介：斯拉夫民俗占如何運作"
     },
@@ -974,8 +974,8 @@
       captionHant: "簡介：息相學如何運作"
     },
     "tahitian-moon": {
-      youtubeId: "ZiNdmSGvQLU",
-      caption: "Intro: Polynesian moon calendar",
+      youtubeId: "zgmBaZtWES4",
+      caption: "Intro: Polynesian lunar night calendar (Kaulana Mahina)",
       captionZh: "简介：塔希提月历如何运作",
       captionHant: "簡介：塔希提月历如何運作"
     },
@@ -1077,13 +1077,13 @@
     },
     "wauja-tobacco": {
       youtubeId: "ZS9AVcLsYnk",
-      caption: "Intro: Shamanism Documentary: The Sacred Science [OFFICIAL FREE, FULL MOVIE LINK]",
+      caption: "Intro: Amazonian shamanic vision practice",
       captionZh: "简介：瓦乌贾烟草仪式如何运作",
       captionHant: "簡介：瓦乌贾烟草儀式如何運作"
     },
     "western-astrology": {
-      youtubeId: "iV0W26XDmrk",
-      caption: "Intro: Western vs Vedic astrology",
+      youtubeId: "EPUd7pQHKuo",
+      caption: "Intro: How to read a Western birth chart",
       captionZh: "简介：西方占星如何运作",
       captionHant: "簡介：西方占星如何運作"
     },
@@ -1107,7 +1107,7 @@
     },
     "zapotec-mixtec": {
       youtubeId: "U2qI7z7Z7aA",
-      caption: "Intro: Mesoamerican day count",
+      caption: "Intro: Mesoamerican day-count (Tonalpohualli family)",
       captionZh: "简介：萨波特克／米斯特克历占如何运作",
       captionHant: "簡介：萨波特克／米斯特克历占如何運作"
     },
