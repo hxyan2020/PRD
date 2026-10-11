@@ -44,6 +44,18 @@ export function CatalogPage() {
     setSelectedId(null);
   }, [categoryId]);
 
+  useEffect(() => {
+    if (!categoryId) return;
+    const active = document.querySelector<HTMLElement>(
+      `.pill-group .pill.is-on`,
+    );
+    active?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [categoryId]);
+
   /** After contribute / resource-pack success: remesh stats and show the live shelf. */
   const handleShelfChanged = () => {
     refresh();

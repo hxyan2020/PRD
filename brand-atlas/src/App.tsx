@@ -81,9 +81,15 @@ function Header() {
               to="/unlocked"
               className="muted mono header-progress header-progress--link"
               title={t("header.unlockedTitle")}
+              aria-label={t("header.unlocked", { count: String(count) })}
               onClick={closeMenu}
             >
-              {t("header.unlocked", { count: String(count) })}
+              <span className="header-progress__full">
+                {t("header.unlocked", { count: String(count) })}
+              </span>
+              <span className="header-progress__short" aria-hidden="true">
+                {count}
+              </span>
             </NavLink>
             <LanguagePicker />
             <div className="header-auth-desktop">

@@ -169,7 +169,12 @@ export function UnlockedPage() {
                             {item.origin ?? group.label}
                           </span>
                           <span className="unlocked-row__when mono">
-                            {t("unlocked.seenAt")}: {formatUtc(unlock.unlockedAt)}
+                            <span className="unlocked-row__when-label">
+                              {t("unlocked.seenAt")}:{" "}
+                            </span>
+                            <time dateTime={unlock.unlockedAt}>
+                              {formatUtc(unlock.unlockedAt)}
+                            </time>
                           </span>
                           <p className={`unlocked-row__note${note ? "" : " is-empty"}`}>
                             {note ? note : t("unlockedPage.noNote")}
