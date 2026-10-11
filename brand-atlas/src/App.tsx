@@ -140,15 +140,6 @@ function Header() {
             <NavLink to="/scan" onClick={closeMenu}>
               {t("nav.scan")}
             </NavLink>
-            <NavLink to="/about" onClick={closeMenu}>
-              {t("nav.about")}
-            </NavLink>
-            <NavLink to="/contact" onClick={closeMenu}>
-              {t("nav.contact")}
-            </NavLink>
-            <NavLink to="/terms" onClick={closeMenu}>
-              {t("nav.terms")}
-            </NavLink>
             <div className="nav-auth">
               {isLoggedIn ? (
                 <>
@@ -190,11 +181,11 @@ function Footer() {
     <footer className="site-footer">
       <div className="shell footer-grid">
         <p>{t("footer.tagline")}</p>
-        <div className="footer-links">
+        <nav className="footer-links" aria-label="Site">
+          <NavLink to="/about">{t("nav.about")}</NavLink>
           <NavLink to="/contact">{t("nav.contact")}</NavLink>
           <NavLink to="/terms">{t("nav.terms")}</NavLink>
-          <NavLink to="/about">{t("nav.about")}</NavLink>
-        </div>
+        </nav>
       </div>
     </footer>
   );
