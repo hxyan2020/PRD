@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <path fill="#C4C4C4" d="M64 22l8 22h24l-19 16 7 24-20-14-20 14 7-24-19-16h24z"/>
-  <path fill="#C4C4C4" opacity="0.7" d="M30 78l5 12h14l-11 9 4 14-12-8-12 8 4-14-11-9h14z M98 78l5 12h14l-11 9 4 14-12-8-12 8 4-14-11-9h14z"/>
-  <text x="64" y="118" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C4C4C4" letter-spacing="0.15em">SEVEN STARS</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Seven Stars">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Seven Stars</text>
 </svg>

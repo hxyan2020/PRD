@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <rect x="20" y="36" width="88" height="56" rx="4" fill="none" stroke="#C4C4C4" stroke-width="3"/>
-  <text x="64" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#C4C4C4">BENSON</text>
-  <text x="64" y="78" text-anchor="middle" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#C4C4C4">&amp; HEDGES</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Benson &amp; Hedges">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Benson &amp; Hedges</text>
 </svg>

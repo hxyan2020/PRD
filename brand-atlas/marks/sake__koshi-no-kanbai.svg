@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <circle cx="64" cy="52" r="36" fill="none" stroke="#C4C4C4" stroke-width="3"/>
-  <path fill="#C4C4C4" d="M64 28c-4 8 0 14 0 14s4-6 0-14c8 2 14 8 14 14-8-2-14 0-14 0s6-2 14-14c-2 8-8 14-14 14 2 8 0 14 0 14s-2-6 0-14c-8 2-14 8-14 14 8-2 14 0 14 0s-6-2-14-14z"/>
-  <text x="64" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C4C4C4" letter-spacing="0.08em">KOSHI NO KANBAI</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Koshi no Kanbai">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Koshi no Kanbai</text>
 </svg>
