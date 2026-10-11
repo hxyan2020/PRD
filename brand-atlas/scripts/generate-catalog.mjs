@@ -6280,44 +6280,65 @@ function mushroomSilhouetteSvg() {
 </svg>`;
 }
 
+/** Stable hash → index, so COL species don't all share one silhouette. */
+function silhouetteVariant(seed, count) {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0) % count;
+}
+
 /** Grey animal silhouettes for COL species without a hand-drawn mark. */
-function animalSilhouetteSvg(kind) {
+function animalSilhouetteSvg(kind, seed = "") {
   const fill = "#C4C4C4";
-  if (kind === "bird") {
-    return `<?xml version="1.0" encoding="UTF-8"?>
+  const wrap = (body) => `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <path fill="${fill}" d="M28 72c8-20 28-36 52-36 12 0 24 4 32 12l8-16-4 20c8 8 8 20 0 28-12 12-32 16-52 12-16-4-28-12-36-20z"/>
+  ${body}
 </svg>`;
+  if (kind === "bird") {
+    const birds = [
+      `<path fill="${fill}" d="M28 72c8-20 28-36 52-36 12 0 24 4 32 12l8-16-4 20c8 8 8 20 0 28-12 12-32 16-52 12-16-4-28-12-36-20z"/>`,
+      `<path fill="${fill}" d="M64 28c-8 0-14 8-14 16 0 4 2 8 6 10l-36 20 8 8 28-12v30h16V70l28 12 8-8-36-20c4-2 6-6 6-10 0-8-6-16-14-16z"/>`,
+      `<ellipse cx="64" cy="64" rx="32" ry="40" fill="${fill}"/><circle cx="50" cy="56" r="12" fill="#9A9A9A"/><circle cx="78" cy="56" r="12" fill="#9A9A9A"/><path fill="${fill}" d="M64 68l-6 10h12z"/>`,
+    ];
+    return wrap(birds[silhouetteVariant(seed, birds.length)]);
   }
   if (kind === "insect" || kind === "arachnid") {
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="64" cy="72" rx="28" ry="16" fill="${fill}"/>
-  <circle cx="88" cy="64" r="10" fill="${fill}"/>
-  <path fill="${fill}" d="M40 72c-12 8-20 20-16 28 M48 68c-8-16-4-28 4-28 M96 60l12-16 M96 68l16-8"/>
-</svg>`;
+    const bugs = [
+      `<ellipse cx="64" cy="72" rx="28" ry="16" fill="${fill}"/><circle cx="88" cy="64" r="10" fill="${fill}"/><path fill="${fill}" d="M40 72c-12 8-20 20-16 28 M48 68c-8-16-4-28 4-28 M96 60l12-16 M96 68l16-8"/>`,
+      `<path fill="${fill}" d="M64 64c-20-28-40-32-48-20 12 4 28 16 48 20-20 4-36 16-48 20 8 12 28 8 48-20 20 28 40 32 48 20-12-4-28-16-48-20 20-4 36-16 48-20-8-12-28-8-48 20z M62 40h4v56h-4z"/>`,
+      `<circle cx="64" cy="36" r="12" fill="${fill}"/><ellipse cx="64" cy="58" rx="10" ry="12" fill="${fill}"/><ellipse cx="64" cy="88" rx="16" ry="22" fill="${fill}"/>`,
+      `<ellipse cx="64" cy="68" rx="28" ry="20" fill="${fill}"/><path fill="${fill}" d="M48 60h32v4H48z M48 72h32v4H48z M36 56c-12-16 0-28 12-20 M92 56c12-16 0-28-12-20"/>`,
+      `<circle cx="64" cy="64" r="16" fill="${fill}"/><circle cx="64" cy="48" r="10" fill="${fill}"/><path fill="${fill}" d="M48 56l-28-16 M48 64l-32 0 M80 56l28-16 M80 64l32 0"/>`,
+    ];
+    return wrap(bugs[silhouetteVariant(seed, bugs.length)]);
   }
   if (kind === "fish") {
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <path fill="${fill}" d="M16 64c16-24 40-36 64-32 16 2 28 12 32 24H88c0 8-8 16-20 16H44c-12 0-22-4-28-8z M92 48l16-16-4 20"/>
-</svg>`;
+    const fish = [
+      `<path fill="${fill}" d="M16 64c16-24 40-36 64-32 16 2 28 12 32 24H88c0 8-8 16-20 16H44c-12 0-22-4-28-8z M92 48l16-16-4 20"/>`,
+      `<path fill="${fill}" d="M12 68c8-28 40-44 72-40 20 2 36 14 40 28H96c-4 12-16 20-32 20H40c-12 0-24-4-28-16z"/>`,
+      `<path fill="${fill}" d="M20 64c8-24 36-40 68-36 16 2 28 12 32 24-20-4-36 4-44 16z M96 52c4-8 12-10 16-6"/>`,
+    ];
+    return wrap(fish[silhouetteVariant(seed, fish.length)]);
   }
   if (kind === "reptile" || kind === "amphibian") {
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="64" cy="70" rx="40" ry="22" fill="${fill}"/>
-  <circle cx="96" cy="62" r="12" fill="${fill}"/>
-  <path fill="${fill}" d="M36 86l-12 16 M52 90l-4 18 M76 90l4 18 M92 86l12 16"/>
-</svg>`;
+    const reptiles = [
+      `<ellipse cx="64" cy="70" rx="40" ry="22" fill="${fill}"/><circle cx="96" cy="62" r="12" fill="${fill}"/><path fill="${fill}" d="M36 86l-12 16 M52 90l-4 18 M76 90l4 18 M92 86l12 16"/>`,
+      `<path fill="${fill}" d="M24 40c16-16 40-8 48 8 8 16 24 20 40 8-12 20-36 24-52 8-12-12-28-16-40-4z"/>`,
+      `<ellipse cx="64" cy="72" rx="36" ry="28" fill="${fill}"/><circle cx="44" cy="48" r="14" fill="${fill}"/><circle cx="84" cy="48" r="14" fill="${fill}"/>`,
+    ];
+    return wrap(reptiles[silhouetteVariant(seed, reptiles.length)]);
   }
-  // mammal / other / mollusc default quadruped-ish
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <ellipse cx="60" cy="68" rx="36" ry="22" fill="${fill}"/>
-  <circle cx="92" cy="56" r="14" fill="${fill}"/>
-  <path fill="${fill}" d="M40 84v28h10V84 M70 84v28h10V84 M100 52l12-8"/>
-</svg>`;
+  const mammals = [
+    `<ellipse cx="60" cy="68" rx="36" ry="22" fill="${fill}"/><circle cx="92" cy="56" r="14" fill="${fill}"/><path fill="${fill}" d="M40 84v28h10V84 M70 84v28h10V84 M100 52l12-8"/>`,
+    `<circle cx="36" cy="40" r="14" fill="${fill}"/><circle cx="92" cy="40" r="14" fill="${fill}"/><ellipse cx="64" cy="68" rx="38" ry="40" fill="${fill}"/>`,
+    `<path fill="${fill}" d="M40 20c0 0 8 20 12 28 M88 20c0 0-8 20-12 28 M48 52h32c0 28-8 44-16 44s-16-16-16-44z"/>`,
+    `<path fill="${fill}" d="M40 28l8 20h32l8-20-12 8-12-12-12 12z M40 48h48c0 28-10 44-24 44S40 76 40 48z"/>`,
+    `<path fill="${fill}" d="M48 12c-4 20 0 36 8 40 M80 12c4 20 0 36-8 40"/><ellipse cx="64" cy="72" rx="28" ry="32" fill="${fill}"/>`,
+  ];
+  return wrap(mammals[silhouetteVariant(seed, mammals.length)]);
 }
 
 /** Local SVG mark so locked tiles show a recognizable grey logo shape offline. */
@@ -6352,11 +6373,11 @@ function writeMarkSvg(itemId, name, categoryId, hue, tags = []) {
     const kind = ["mammal", "bird", "reptile", "amphibian", "fish", "insect", "arachnid", "mollusc", "other"].find(
       (k) => tags.includes(k),
     ) ?? "other";
-    writeFileSync(out, animalSilhouetteSvg(kind));
+    writeFileSync(out, animalSilhouetteSvg(kind, itemId));
     return `marks/${itemId}.svg`;
   }
   if (categoryId === "birds") {
-    writeFileSync(out, animalSilhouetteSvg("bird"));
+    writeFileSync(out, animalSilhouetteSvg("bird", itemId));
     return `marks/${itemId}.svg`;
   }
   if (categoryId === "mushrooms") {

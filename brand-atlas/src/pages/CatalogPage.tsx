@@ -8,6 +8,7 @@ import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
 import { categoryLabel } from "../i18n/labels";
+import { categoryIcon } from "../lib/categoryIcons";
 import { itemsForCategory } from "../lib/catalog";
 import {
   categoryProgress,
@@ -15,6 +16,15 @@ import {
   sneakPeekIds,
 } from "../lib/progress";
 import { formatPct } from "../lib/unlocks";
+
+/** Nature mega-lists drown "All" in identical silhouettes — keep them behind their own shelf. */
+const NATURE_CATEGORY_IDS = new Set([
+  "trees",
+  "flowers",
+  "animals",
+  "birds",
+  "mushrooms",
+]);
 
 const LEGACY_CATEGORY_REDIRECT: Record<string, string> = {
   liquor: "alcohol",
@@ -70,10 +80,14 @@ export function CatalogPage() {
 
   const categoryItems = useMemo(() => {
     if (!catalog) return [];
-    return categoryId
-      ? itemsForCategory(catalog, categoryId)
-      : [...catalog.items].filter((it) => it.status !== "removed");
-  }, [catalog, categoryId]);
+    if (categoryId) return itemsForCategory(catalog, categoryId);
+    const all = catalog.items.filter((it) => it.status !== "removed");
+    // Searching from All: include every shelf. Idle All: brands only (nature is behind its own pill).
+    if (query.trim()) return all;
+    return all.filter((it) => !NATURE_CATEGORY_IDS.has(it.categoryId));
+  }, [catalog, categoryId, query]);
+
+  const showShelfPicker = Boolean(catalog && !categoryId && !query.trim());
 
   const peekByCategory = useMemo(() => {
     if (!catalog) return new Map<string, Set<string>>();
@@ -135,7 +149,9 @@ export function CatalogPage() {
           <p>
             {activeCategory
               ? activeCategory.blurb
-              : t("catalog.blurbDefault")}
+              : showShelfPicker
+                ? t("home.pickShelfBlurb")
+                : t("catalog.blurbDefault")}
           </p>
         </div>
         <Link className="btn btn--forest" to="/scan">
@@ -263,42 +279,90 @@ export function CatalogPage() {
                 placeholder={t("catalog.searchPlaceholder")}
               />
             </div>
-            <div className="field" style={{ flex: "0 0 160px" }}>
-              <label htmlFor="filter">{t("catalog.show")}</label>
-              <select
-                id="filter"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value as typeof filter)}
-              >
-                <option value="all">{t("catalog.all")}</option>
-                <option value="locked">{t("catalog.locked")}</option>
-                <option value="sneak">{t("catalog.sneak")}</option>
-                <option value="unlocked">{t("catalog.unlocked")}</option>
-              </select>
-            </div>
+            {!showShelfPicker && (
+              <div className="field" style={{ flex: "0 0 160px" }}>
+                <label htmlFor="filter">{t("catalog.show")}</label>
+                <select
+                  id="filter"
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value as typeof filter)}
+                >
+                  <option value="all">{t("catalog.all")}</option>
+                  <option value="locked">{t("catalog.locked")}</option>
+                  <option value="sneak">{t("catalog.sneak")}</option>
+                  <option value="unlocked">{t("catalog.unlocked")}</option>
+                </select>
+              </div>
+            )}
           </div>
 
           {loading && <p className="muted">{t("catalog.loading")}</p>}
           {error && <p className="banner banner--warn">{error}</p>}
 
-          <div className="item-grid">
-            {items.map((item) => {
-              const peek = peekByCategory.get(item.categoryId) ?? new Set();
-              return (
-                <ItemTile
-                  key={item.id}
-                  item={item}
-                  mode={revealMode(item, peek)}
-                  onClick={() => setSelectedId(item.id)}
-                />
-              );
-            })}
-          </div>
+          {showShelfPicker ? (
+            <>
+              <div className="section__head" style={{ marginBottom: "0.75rem" }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>{t("home.pickShelf")}</h3>
+                </div>
+              </div>
+              <div className="category-grid">
+                {catalog?.categories.map((cat) => {
+                  const prog = categoryProgress(
+                    itemsForCategory(catalog, cat.id),
+                  );
+                  const label = categoryLabel(t, cat.id, cat.label);
+                  return (
+                    <Link
+                      key={cat.id}
+                      className="category-chip"
+                      to={`/catalog/${cat.id}`}
+                    >
+                      <span className="category-chip__icon">
+                        {categoryIcon(cat.id)}
+                      </span>
+                      <span className="category-chip__text">
+                        <strong>{label}</strong>
+                        <span>
+                          {prog.unlocked}/{prog.total} ·{" "}
+                          {cat.kind === "nature"
+                            ? t("home.kindNature")
+                            : t("home.kindBrand")}
+                        </span>
+                      </span>
+                      <span
+                        className="category-chip__pct mono"
+                        title={`${label} ${t("catalog.progress")}`}
+                      >
+                        {formatPct(prog.pct)}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="item-grid">
+                {items.map((item) => {
+                  const peek = peekByCategory.get(item.categoryId) ?? new Set();
+                  return (
+                    <ItemTile
+                      key={item.id}
+                      item={item}
+                      mode={revealMode(item, peek)}
+                      onClick={() => setSelectedId(item.id)}
+                    />
+                  );
+                })}
+              </div>
 
-          {!loading && !items.length && (
-            <p className="muted" style={{ marginTop: "1rem" }}>
-              {t("catalog.empty")}
-            </p>
+              {!loading && !items.length && (
+                <p className="muted" style={{ marginTop: "1rem" }}>
+                  {t("catalog.empty")}
+                </p>
+              )}
+            </>
           )}
         </div>
       )}

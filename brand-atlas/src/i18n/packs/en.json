@@ -37,7 +37,7 @@
   "catalog.tabContribute": "Contribute",
   "catalog.tabAdd": "Add to the catalogue",
   "catalog.tabCatalogue": "Current catalogue",
-  "catalog.blurbDefault": "Locked covers stay greyscale until you scan and confirm. Sneak peeks light colour early.",
+  "catalog.blurbDefault": "Pick a shelf to browse locked covers. Scan to confirm and restore colour — sneak peeks light colour early.",
   "catalog.onShelf": "{count} on shelf",
   "catalog.sneakReward": "Sneak peek reward: next {pct} of this shelf (colour only).",
   "catalog.search": "Search",

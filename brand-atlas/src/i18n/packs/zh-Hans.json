@@ -36,7 +36,7 @@
   "catalog.tabContribute": "贡献",
   "catalog.tabAdd": "添加到图鉴",
   "catalog.tabCatalogue": "当前图鉴",
-  "catalog.blurbDefault": "未解锁封面保持灰阶，扫描确认后上色。预览可提前显示颜色。",
+  "catalog.blurbDefault": "先选一个分类货架，再浏览未解锁封面。扫描确认后上色；预览可提前显示颜色。",
   "catalog.onShelf": "架上 {count}",
   "catalog.sneakReward": "预览奖励：本架接下来 {pct}（仅颜色）。",
   "catalog.search": "搜索",
