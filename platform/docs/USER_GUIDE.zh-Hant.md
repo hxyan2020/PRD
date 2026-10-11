@@ -663,30 +663,64 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 
 **路徑：** `/admin/discovery` · **筆記本：** [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing)
 
-本頁把 Colab 審查元件搬進 CRMP 管理後台。它與 DETECT→DASHBOARD **並行**；候選在人類晉升前不會成為每日監控。
+本頁把 Colab 審查元件搬進 CRMP 管理後台。它與 DETECT→ALARM→AI_RCA→SKILL→HUMAN→RESOLVED→DASHBOARD **並行**；候選在人類晉升前**不會**成為每日監控。不靜默部署。可選監控晉升須制作者≠覆核者。
+
+```mermaid
+flowchart LR
+  Scan[執行探索／與偵測器並行] --> Cand[PENDING_RO 候選]
+  Cand --> Mode[連線 OpenAI 或 Mock]
+  Mode --> Analyse[分析所選]
+  Analyse --> Card[AI 建議卡]
+  Card --> Val[核准進入驗證]
+  Card --> Ask[要求更多資訊]
+  Card --> Dis[駁回]
+  Ask --> Analyse
+  Val --> Optional[可選：核准納入監控]
+  Optional --> Promote[AI 工程師提案／RO 覆核]
+  Promote --> Live[SKILL-DISC-*＋M2-DISC-* 每日]
+```
 
 ### 需要的資料
-- 即時 `monitor_indicators` 最新值（CFD／加密簿冊代理）以建構短特徵窗
-- 可選伺服器端 `OPENAI_API_KEY` 供即時分析（切勿在瀏覽器貼上金鑰）
-- 已驗證的風險負責人／覆核者才能做審查動作
+| 輸入 | 用途 |
+|---|---|
+| 即時 `monitor_indicators` 最新值（CFD／加密簿冊代理） | 建構約 48 步短特徵窗供七類方法使用 |
+| 可選伺服器 `OPENAI_API_KEY` | 僅 LIVE 分析 — 切勿在瀏覽器或公開 Pages 產物貼上金鑰 |
+| 已驗證的風險負責人／覆核者 | 審查動作（驗證／追問／駁回） |
+| AI 工程師＋不同 RO | 可選「核准納入監控」（制作者≠覆核者） |
+
+不使用原始客戶 PII。證據僅為指標層聚合與方法分數。
 
 ### 方法（與筆記本相同的七類）
-1. **孤立森林** — 多變量／點異常代理  
-2. **CUSUM** — 持續體制轉移  
-3. **Mahalanobis／聯合距離** — 聯合異常狀態  
-4. **LOF** — 相對同儕局部離群  
-5. **子群切片** — 產品 × 領域對比  
-6. **序列／領先—滯後** — 前兆型態  
-7. **相關網路** — 跨指標依賴偏移  
+1. **孤立森林** — 特徵窗上的多變量／點異常代理  
+2. **CUSUM** — 持續體制轉移（例如 LP 拒單率漂移）  
+3. **Mahalanobis／聯合距離** — 多指標聯合異常狀態  
+4. **LOF** — 相對同儕序列的局部離群  
+5. **子群切片** — 產品 × 領域對比（CFD vs 加密、領域群組）  
+6. **序列／領先—滯後** — 跨時間步前兆型態  
+7. **相關網路** — 跨指標依賴／相關偏移  
 
-### 流程
-1. **執行探索**（或 `run_detectors` 並行探索）→ `PENDING_RO` 候選  
-2. **連線 OpenAI**（環境變數金鑰）或維持 **Mock**  
-3. **分析所選** → 結構化 **AI 建議卡**（評估、根因、情境、公式、維度、驗證步驟、限制、優先、信心）  
-4. RO 動作（與筆記本一致）：**核准進入驗證** · **要求更多資訊** · **駁回** — 絕不自動部署  
-5. 可選 **核准納入監控** → AI 工程師提案／RO 覆核（制作者≠覆核者）→ `SKILL-DISC-*`＋`M2-DISC-*` 加入每日偵測  
+每一命中成為候選：提案指標名、維度、建議 `M2-DISC-*`／`SKILL-DISC-*` 代碼、分數、嚴重度、證據 JSON。
 
-「要求更多資訊」可能刷新建議卡；該 AI 回覆**絕不是**核准。
+### 流程（操作者）
+1. 打開 **未知風險探索**（或當 `discovery.auto_on_detectors=true` 時由 Monitor **全部執行**並行觸發）。  
+2. 確認 **ENABLED** 與 **AI: MOCK**（若伺服器有金鑰可 **連線 OpenAI**）。  
+3. 選取 `PENDING_RO` 候選 → **分析所選** → 閱讀結構化 **AI 建議卡**（評估、根因、情境、公式、維度、驗證步驟、限制、優先、信心）。  
+4. 選擇與筆記本一致的動作：  
+   - **核准進入驗證** — BU／UAT 人工閘門；**不**改正式規則  
+   - **要求更多資訊** — 記錄問題；可能刷新建議卡；**絕不是**核准  
+   - **駁回** — 關閉候選  
+5. 可選 **核准納入監控** → AI 工程師提案／RO 覆核 → 技能＋偵測器加入每日 Monitor 2.0。
+
+### 候選狀態
+| 狀態 | 意義 |
+|---|---|
+| `PENDING_RO` | 等待風險負責人審查 |
+| `ASK_MORE_INFO` | RO 已追問；仍開放 |
+| `APPROVED_VALIDATION` | 僅核准 BU／UAT |
+| `DISMISSED` | 關閉且未晉升 |
+| `PROMOTED`／納入監控 | 制作者≠覆核者後技能＋`M2-DISC-*` 上線 |
+
+產品需求：[PRD §6.5](/admin/docs/prd)。實作細節：[TSD §11A](/admin/docs/tsd)。
 
 ---
 
@@ -703,5 +737,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 1.9 | 2026-10-06 | 首頁虛擬脊柱：虛擬警報／虛擬警報組；英／繁中介面與儲存文案 |
 | 1.10 | 2026-10-06 | 示範 Messenger 鳥瞰：升級路徑承辦聊天窗 |
 | 1.11 | 2026-10-11 | 未知風險探索管理頁 — 與筆記本對齊的 AI 建議卡＋RO 審查 |
+| 1.12 | 2026-10-11 | §14A 擴充：資料表、七類方法、操作流程、狀態、mermaid |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

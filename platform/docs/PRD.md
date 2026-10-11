@@ -288,30 +288,51 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 
 ### 6.5 Unknown Risk Discovery — methods, data, flow
 
-Parallel lane beside DETECT→DASHBOARD. Candidates never become daily monitors until a human promotes them. Surface: `/admin/discovery` (CRMP Admin; not CRMP Plus). Notebook reference: [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing).
+Parallel lane beside DETECT→ALARM→AI_RCA→SKILL→HUMAN→RESOLVED→DASHBOARD. Candidates never become daily monitors until a human promotes them. No silent deploy. Surface: `/admin/discovery` (**CRMP Admin**, not CRMP Plus). Notebook: [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing).
+
+```mermaid
+flowchart TD
+  A[Feature window from monitor_indicators] --> B[Seven discovery methods]
+  B --> C[PENDING_RO candidates]
+  C --> D[Connect OpenAI or Mock]
+  D --> E[Analyse → AI suggestion card]
+  E --> F{RO decision}
+  F -->|Approve validation| G[BU/UAT only — no deploy]
+  F -->|Ask more info| E
+  F -->|Dismiss| H[Closed]
+  G --> I{Optional promote?}
+  I -->|maker≠checker| J[SKILL-DISC-* + M2-DISC-*]
+```
 
 **Data needed**
-- Live `monitor_indicators` last values (CFD/crypto book proxies) for a short realtime feature window — no raw client PII
-- Optional server `OPENAI_API_KEY` for LIVE Analyse (never paste keys in the browser or published artifacts)
-- Authenticated Risk Owner / checker for review; AI Engineer + distinct RO for optional monitoring promote
+
+| Input | Constraint |
+|---|---|
+| `monitor_indicators` last values (CFD/crypto proxies) | Short feature window; no raw client PII |
+| `OPENAI_API_KEY` (optional, server env) | LIVE Analyse only; never in browser or published artifacts |
+| Risk Owner / checker session | Required for review mutations |
+| AI Engineer + distinct RO | Required for monitoring promote (SoD) |
 
 **Methods (seven families, notebook parity)**
-1. Isolation Forest — multivariate / point anomaly proxy  
-2. CUSUM — sustained regime shift  
-3. Mahalanobis / joint distance — jointly unusual states  
-4. LOF — peer-relative local outlier  
-5. Subgroup slice — product × domain contrast  
-6. Sequence / lead-lag — precursor patterns  
-7. Correlation network — cross-indicator dependency shift  
+
+| # | Family | Finds |
+|---|---|---|
+| 1 | Isolation Forest | Multivariate / point anomaly proxy |
+| 2 | CUSUM | Sustained regime shift |
+| 3 | Mahalanobis / joint distance | Jointly unusual states |
+| 4 | LOF | Peer-relative local outlier |
+| 5 | Subgroup slice | Product × domain contrast |
+| 6 | Sequence / lead-lag | Precursor patterns |
+| 7 | Correlation network | Cross-indicator dependency shift |
 
 **Flow**
-1. Run discovery (or `run_detectors` with parallel discovery when `discovery.auto_on_detectors=true`) → `PENDING_RO` candidates  
+1. Run discovery (manual, or parallel with `run_detectors` when `discovery.auto_on_detectors=true`) → `PENDING_RO`  
 2. Connect OpenAI (env key) or stay Mock  
-3. Analyse selected → structured AI suggestion card (assessment, root causes, scenario, formula, dimensions, validation steps, limitations, priority, confidence)  
-4. RO actions (notebook parity): Approve for validation · Ask for more info · Dismiss — never auto-deploy  
-5. Optional Approve for monitoring → AI Engineer proposes / RO decides (maker≠checker) → `SKILL-DISC-*` + `M2-DISC-*` join daily detectors  
+3. Analyse selected → structured AI suggestion card  
+4. RO: Approve for validation · Ask for more info · Dismiss — never auto-deploy  
+5. Optional Approve for monitoring → AI Engineer propose / RO decide → `SKILL-DISC-*` + `M2-DISC-*`  
 
-Ask-for-more-info may refresh the suggestion card; that AI reply is never an approval. Operator detail: User Guide §14A · Implementation: TSD §11A.
+**Acceptance (FR-37):** notebook-parity controls on `/admin/discovery`; AI cannot write review decisions; promote path enforces maker≠checker; EN + zh-Hant copy; notebook links visible. Operator: User Guide §14A · Build: TSD §11A.
 
 ---
 
@@ -434,5 +455,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses list redirect; Monitor hub without Alerts/Tickets tabs; dedupe FR-24 |
 | 1.9 | 2026-10-11 | FR-37 Unknown Risk Discovery AI suggestion card on CRMP Admin |
 | 1.10 | 2026-10-11 | §6.5 methods / data / flow + feature catalogue row for `/admin/discovery` |
+| 1.11 | 2026-10-11 | §6.5 expanded tables + mermaid flow; cross-links to UG §14A / TSD §11A |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

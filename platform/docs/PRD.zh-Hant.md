@@ -288,30 +288,51 @@ graph LR
 
 ### 6.5 未知風險探索 — 方法、資料、流程
 
-與 DETECT→DASHBOARD **並行**。候選在人類晉升前不會成為每日監控。畫面：`/admin/discovery`（CRMP 管理後台；非 CRMP Plus）。筆記本：[HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing)。
+與 DETECT→ALARM→AI_RCA→SKILL→HUMAN→RESOLVED→DASHBOARD **並行**。候選在人類晉升前不會成為每日監控。不靜默部署。畫面：`/admin/discovery`（**CRMP 管理後台**，非 CRMP Plus）。筆記本：[HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing)。
+
+```mermaid
+flowchart TD
+  A[自 monitor_indicators 取特徵窗] --> B[七類探索方法]
+  B --> C[PENDING_RO 候選]
+  C --> D[連線 OpenAI 或 Mock]
+  D --> E[分析 → AI 建議卡]
+  E --> F{RO 決策}
+  F -->|核准驗證| G[僅 BU／UAT — 不部署]
+  F -->|要求更多資訊| E
+  F -->|駁回| H[關閉]
+  G --> I{可選晉升？}
+  I -->|制作者≠覆核者| J[SKILL-DISC-*＋M2-DISC-*]
+```
 
 **需要的資料**
-- 即時 `monitor_indicators` 最新值（CFD／加密簿冊代理）以建構短特徵窗 — 不含原始客戶 PII
-- 可選伺服器 `OPENAI_API_KEY` 供 LIVE 分析（切勿在瀏覽器或公開產物貼上金鑰）
-- 已驗證的風險負責人／覆核者才能審查；可選監控晉升需 AI 工程師＋不同 RO
+
+| 輸入 | 約束 |
+|---|---|
+| `monitor_indicators` 最新值（CFD／加密代理） | 短特徵窗；不含原始客戶 PII |
+| `OPENAI_API_KEY`（可選，伺服器環境變數） | 僅 LIVE 分析；不可進瀏覽器或公開產物 |
+| 風險負責人／覆核者工作階段 | 審查變更必要 |
+| AI 工程師＋不同 RO | 監控晉升必要（職能分離） |
 
 **方法（七類，與筆記本一致）**
-1. 孤立森林 — 多變量／點異常代理  
-2. CUSUM — 持續體制轉移  
-3. Mahalanobis／聯合距離 — 聯合異常狀態  
-4. LOF — 相對同儕局部離群  
-5. 子群切片 — 產品 × 領域對比  
-6. 序列／領先—滯後 — 前兆型態  
-7. 相關網路 — 跨指標依賴偏移  
+
+| # | 族類 | 發現 |
+|---|---|---|
+| 1 | 孤立森林 | 多變量／點異常代理 |
+| 2 | CUSUM | 持續體制轉移 |
+| 3 | Mahalanobis／聯合距離 | 聯合異常狀態 |
+| 4 | LOF | 相對同儕局部離群 |
+| 5 | 子群切片 | 產品 × 領域對比 |
+| 6 | 序列／領先—滯後 | 前兆型態 |
+| 7 | 相關網路 | 跨指標依賴偏移 |
 
 **流程**
-1. 執行探索（或 `discovery.auto_on_detectors=true` 時與 `run_detectors` 並行）→ `PENDING_RO` 候選  
+1. 執行探索（手動，或 `discovery.auto_on_detectors=true` 時與 `run_detectors` 並行）→ `PENDING_RO`  
 2. 連線 OpenAI（環境變數金鑰）或維持 Mock  
-3. 分析所選 → 結構化 AI 建議卡（評估、根因、情境、公式、維度、驗證步驟、限制、優先、信心）  
-4. RO 動作（與筆記本一致）：核准進入驗證 · 要求更多資訊 · 駁回 — 絕不自動部署  
-5. 可選核准納入監控 → AI 工程師提案／RO 覆核（制作者≠覆核者）→ `SKILL-DISC-*`＋`M2-DISC-*` 加入每日偵測  
+3. 分析所選 → 結構化 AI 建議卡  
+4. RO：核准進入驗證 · 要求更多資訊 · 駁回 — 絕不自動部署  
+5. 可選核准納入監控 → AI 工程師提案／RO 覆核 → `SKILL-DISC-*`＋`M2-DISC-*`  
 
-「要求更多資訊」可能刷新建議卡；該 AI 回覆絕不是核准。操作細節：使用手冊 §14A · 實作：TSD §11A。
+**驗收（FR-37）：** `/admin/discovery` 與筆記本控制對齊；AI 不可寫審查決策；晉升路徑強制制作者≠覆核者；英＋繁中；筆記本連結可見。操作：使用手冊 §14A · 實作：TSD §11A。
 
 ---
 
@@ -434,5 +455,6 @@ graph LR
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；AI 分析列表轉址；Monitor 中心無警報／工單分頁 |
 | 1.9 | 2026-10-11 | FR-37 未知風險探索 AI 建議卡（CRMP 管理後台） |
 | 1.10 | 2026-10-11 | §6.5 方法／資料／流程＋功能目錄列 `/admin/discovery` |
+| 1.11 | 2026-10-11 | §6.5 表格與 mermaid 流程擴充；交叉連結使用手冊 §14A／TSD §11A |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
