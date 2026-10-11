@@ -82,23 +82,18 @@ function Header() {
             <LanguagePicker />
             <div className="header-auth-desktop">
               {isLoggedIn ? (
-                <div className="auth-chip">
-                  <span className="auth-chip__email" title={email ?? undefined}>
-                    {email}
-                  </span>
-                  <button type="button" className="btn btn--quiet btn--tiny" onClick={() => logOut()}>
-                    {t("nav.logout")}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="btn btn--quiet btn--tiny"
+                  title={email ?? undefined}
+                  onClick={() => logOut()}
+                >
+                  {t("nav.logout")}
+                </button>
               ) : (
-                <>
-                  <NavLink className="btn btn--quiet btn--tiny" to="/login">
-                    {t("nav.login")}
-                  </NavLink>
-                  <NavLink className="btn btn--forest btn--tiny" to="/signup">
-                    {t("nav.signup")}
-                  </NavLink>
-                </>
+                <NavLink className="btn btn--forest btn--tiny" to="/login">
+                  {t("nav.login")}
+                </NavLink>
               )}
             </div>
             <button
@@ -142,30 +137,21 @@ function Header() {
             </NavLink>
             <div className="nav-auth">
               {isLoggedIn ? (
-                <>
-                  <span className="auth-chip__email" title={email ?? undefined}>
-                    {email}
-                  </span>
-                  <button
-                    type="button"
-                    className="btn btn--quiet btn--tiny"
-                    onClick={() => {
-                      logOut();
-                      closeMenu();
-                    }}
-                  >
-                    {t("nav.logout")}
-                  </button>
-                </>
+                <button
+                  type="button"
+                  className="btn btn--quiet btn--tiny"
+                  title={email ?? undefined}
+                  onClick={() => {
+                    logOut();
+                    closeMenu();
+                  }}
+                >
+                  {t("nav.logout")}
+                </button>
               ) : (
-                <>
-                  <NavLink className="btn btn--quiet btn--tiny" to="/login" onClick={closeMenu}>
-                    {t("nav.login")}
-                  </NavLink>
-                  <NavLink className="btn btn--forest btn--tiny" to="/signup" onClick={closeMenu}>
-                    {t("nav.signup")}
-                  </NavLink>
-                </>
+                <NavLink className="btn btn--forest btn--tiny" to="/login" onClick={closeMenu}>
+                  {t("nav.login")}
+                </NavLink>
               )}
             </div>
           </nav>
