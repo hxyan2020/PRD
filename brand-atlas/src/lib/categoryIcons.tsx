@@ -114,6 +114,103 @@ export const CATEGORY_ICONS: Record<string, (props?: IconProps) => ReactNode> = 
       <path d="M14.4 4.8c1.7 0 3.1 1.4 3.1 3.2S16.1 11.2 14.4 11.2V19" />
     </Icon>
   ),
+  softdrinks: (p) => (
+    <Icon {...p}>
+      <path d="M9 4h6l1.5 4.5v9.2A2.3 2.3 0 0 1 14.2 20H9.8A2.3 2.3 0 0 1 7.5 17.7V8.5L9 4Z" />
+      <path d="M9.2 10.5h5.6" />
+    </Icon>
+  ),
+  snacks: (p) => (
+    <Icon {...p}>
+      <path d="M7 8.5c0-2 2.2-3.5 5-3.5s5 1.5 5 3.5v9H7v-9Z" />
+      <path d="M7 11.5h10" />
+    </Icon>
+  ),
+  dairy: (p) => (
+    <Icon {...p}>
+      <path d="M9 5h6l1 3v10.5A1.5 1.5 0 0 1 14.5 20h-5A1.5 1.5 0 0 1 8 18.5V8l1-3Z" />
+      <path d="M9.5 10h5" />
+    </Icon>
+  ),
+  beauty: (p) => (
+    <Icon {...p}>
+      <path d="M12 4.5v4" />
+      <path d="M9.5 8.5h5l1.2 10.2A1.3 1.3 0 0 1 14.4 20H9.6a1.3 1.3 0 0 1-1.3-1.3L9.5 8.5Z" />
+    </Icon>
+  ),
+  tech: (p) => (
+    <Icon {...p}>
+      <rect x="6" y="4.5" width="12" height="15" rx="2" />
+      <path d="M10 17.5h4" />
+    </Icon>
+  ),
+  sportswear: (p) => (
+    <Icon {...p}>
+      <path d="M8.5 7.5 12 9.5l3.5-2 2.5 2-1.8 2.2V19h-9V9.7L6 9.5l2.5-2Z" />
+    </Icon>
+  ),
+  pharma: (p) => (
+    <Icon {...p}>
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+      <rect x="7" y="7" width="10" height="10" rx="2" />
+    </Icon>
+  ),
+  watches: (p) => (
+    <Icon {...p}>
+      <circle cx="12" cy="12" r="5.5" />
+      <path d="M12 9.5v3l2 1.2" />
+      <path d="M10 4.5h4M10 19.5h4" />
+    </Icon>
+  ),
+  airlines: (p) => (
+    <Icon {...p}>
+      <path d="M4 13.5h16" />
+      <path d="M6.5 13.5 11 7.5h2l1.5 6" />
+      <path d="M14.5 13.5 18 10.5" />
+      <path d="M9 13.5v4M13.5 13.5v4" />
+    </Icon>
+  ),
+  banks: (p) => (
+    <Icon {...p}>
+      <path d="M4.5 9.5 12 5l7.5 4.5H4.5Z" />
+      <path d="M6 10.5v7M10 10.5v7M14 10.5v7M18 10.5v7" />
+      <path d="M4.5 18.5h15" />
+    </Icon>
+  ),
+  instruments: (p) => (
+    <Icon {...p}>
+      <path d="M9 5v11.5a2.5 2.5 0 1 0 2-2.45V8.5l7-1.5v8a2.5 2.5 0 1 0 2-2.45V5.5L11 7.2V5H9Z" />
+    </Icon>
+  ),
+  toys: (p) => (
+    <Icon {...p}>
+      <rect x="5.5" y="8" width="13" height="10" rx="2" />
+      <circle cx="9" cy="13" r="1.2" />
+      <circle cx="15" cy="13" r="1.2" />
+      <path d="M9.5 5.5h5v2.5h-5z" />
+    </Icon>
+  ),
+  motorcycles: (p) => (
+    <Icon {...p}>
+      <circle cx="7.5" cy="16" r="2.5" />
+      <circle cx="16.5" cy="16" r="2.5" />
+      <path d="M9.5 15.5 12 9h3l2.5 6.5" />
+      <path d="M12 9 9 12.5H6.5" />
+    </Icon>
+  ),
+  birds: (p) => (
+    <Icon {...p}>
+      <path d="M5 14c3-6 8-9 13-8 1.5 2 1.5 5 0 7-4 3-9 3-13 1Z" />
+      <path d="M15 8.5 18 5" />
+    </Icon>
+  ),
+  mushrooms: (p) => (
+    <Icon {...p}>
+      <path d="M6 12c0-4.5 2.7-8 6-8s6 3.5 6 8c-1.5-1.5-3.8-2.2-6-2.2S7.5 10.5 6 12Z" />
+      <path d="M11 12v7h2v-7" />
+    </Icon>
+  ),
 };
 
 export function categoryIcon(categoryId: string, className?: string): ReactNode {

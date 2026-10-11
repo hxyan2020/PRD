@@ -55,6 +55,21 @@ function searchQuery(item) {
     const tip = item.tags?.[0];
     return tip ? `${item.name} ${tip}` : `${item.name} food brand`;
   }
+  if (cat === "softdrinks") return `${item.name} drink`;
+  if (cat === "snacks") return `${item.name} snack`;
+  if (cat === "dairy") return `${item.name} dairy`;
+  if (cat === "beauty") return `${item.name} beauty`;
+  if (cat === "tech") return `${item.name} electronics`;
+  if (cat === "sportswear") return `${item.name} sportswear`;
+  if (cat === "pharma") return `${item.name} medicine`;
+  if (cat === "watches") return `${item.name} watch`;
+  if (cat === "airlines") return `${item.name} airline`;
+  if (cat === "banks") return `${item.name} bank`;
+  if (cat === "instruments") return `${item.name} instrument`;
+  if (cat === "toys") return `${item.name} toy`;
+  if (cat === "motorcycles") return `${item.name} motorcycle`;
+  if (cat === "birds") return `${item.name} bird`;
+  if (cat === "mushrooms") return `${item.name} mushroom`;
   if (cat === "clothes") return `${item.name} fashion`;
   if (cat === "luxury") return `${item.name}`;
   if (cat === "cigarettes") return `${item.name} cigarettes`;

@@ -5954,6 +5954,41 @@ const CATEGORIES = {
   console.log(`Merged ${added} Catalogue of Life animal species (total ${CATEGORIES.animals.items.length}).`);
 })();
 
+/** Load expanded brand + nature shelves from scripts/data/extra-category-seeds.json */
+(function mergeExtraCategories() {
+  const extraPath = join(__dirname, "data", "extra-category-seeds.json");
+  if (!existsSync(extraPath)) return;
+  const payload = JSON.parse(readFileSync(extraPath, "utf8"));
+  const extra = payload.categories || payload;
+  let added = 0;
+  for (const [key, cat] of Object.entries(extra)) {
+    if (!cat?.id || !Array.isArray(cat.items) || !cat.items.length) continue;
+    if (CATEGORIES[key]) {
+      const seen = new Set(CATEGORIES[key].items.map((s) => s.id));
+      let n = 0;
+      for (const seed of cat.items) {
+        if (!seed?.id || !seed?.name || seen.has(seed.id)) continue;
+        seen.add(seed.id);
+        CATEGORIES[key].items.push(seed);
+        n += 1;
+      }
+      added += n;
+      console.log(`Merged ${n} extra seeds into ${key} (total ${CATEGORIES[key].items.length}).`);
+    } else {
+      CATEGORIES[key] = {
+        id: cat.id,
+        label: cat.label || key,
+        blurb: cat.blurb || `${cat.label || key} catalogue.`,
+        kind: cat.kind || "brand",
+        items: cat.items,
+      };
+      added += cat.items.length;
+      console.log(`Added category ${key} with ${cat.items.length} items.`);
+    }
+  }
+  console.log(`Extra categories load complete (+${added} items).`);
+})();
+
 /** Fold liquor / wine / sake / beer into one Alcohol catalogue (keep asset prefixes). */
 (function mergeBeverageCategories() {
   function fold(parts, id, label, blurb) {
@@ -5984,21 +6019,42 @@ const CATEGORIES = {
 
   const order = [
     "cars",
+    "motorcycles",
     "cigarettes",
     "alcohol",
     "hotdrinks",
+    "softdrinks",
+    "food",
+    "snacks",
+    "dairy",
     "clothes",
+    "sportswear",
     "luxury",
+    "watches",
+    "beauty",
+    "tech",
+    "pharma",
+    "airlines",
+    "banks",
+    "instruments",
+    "toys",
     "trees",
     "flowers",
     "animals",
-    "food",
+    "birds",
+    "mushrooms",
   ];
+  const foldedAway = new Set(["liquor", "wine", "sake", "beer", "coffee", "tea"]);
   const next = {};
   for (const key of order) {
     if (key === "alcohol") next.alcohol = alcohol;
     else if (key === "hotdrinks") next.hotdrinks = hotdrinks;
     else if (CATEGORIES[key]) next[key] = CATEGORIES[key];
+  }
+  // Keep any extra shelves that are not folded legacy namespaces
+  for (const key of Object.keys(CATEGORIES)) {
+    if (next[key] || foldedAway.has(key)) continue;
+    next[key] = CATEGORIES[key];
   }
   for (const key of Object.keys(CATEGORIES)) delete CATEGORIES[key];
   Object.assign(CATEGORIES, next);
@@ -6145,11 +6201,28 @@ function buildFacts(cat, seed) {
         habitat: "Still living in the wild or alongside humans",
         story: `${seed.name} is still alive on Earth today.`,
       };
+    case "birds":
+      return {
+        species: seed.aliases?.[0] ?? seed.name,
+        class: "Bird",
+        habitat: origin === "Worldwide" ? "Wide natural range" : origin || "Wild ranges",
+        story: `${seed.name} still flies or nests on Earth today.`,
+      };
+    case "mushrooms":
+      return {
+        species: seed.aliases?.[0] ?? seed.name,
+        class: tags.includes("toxic") ? "Toxic fungus" : tags.includes("edible") ? "Edible fungus" : "Fungus",
+        habitat: origin === "Worldwide" ? "Forests & fields" : origin || "Wild & cultivated",
+        story: `${seed.name} still fruits in the living mycota.`,
+      };
     case "food":
+    case "snacks":
+    case "dairy":
+    case "softdrinks":
       return {
         introduced: String(yearFromId(sid, 1850, 2005)),
         origin,
-        category: tags === "—" ? "Packaged food" : tags,
+        category: tags === "—" ? cat.label : tags,
         story: `${seed.name} is still on tables and shelves.`,
       };
     default:
@@ -6194,6 +6267,16 @@ function flowerSilhouetteSvg() {
   <path fill="${fill}" d="M64 40c0-8 6-14 0-22 8 0 14 6 22 0-6 8 0 14 0 22 8 0 14 6 22 0-8 6-6 14-14 14 0 8-6 14 0 22-8 0-14-6-22 0 6-8 0-14 0-22-8 0-14-6-22 0 8-6 6-14 14-14z"/>
   <circle cx="64" cy="54" r="8" fill="${fill}"/>
   <path fill="${fill}" d="M60 78h8v42h-8z"/>
+</svg>`;
+}
+
+/** Grey mushroom / fungus silhouette. */
+function mushroomSilhouetteSvg() {
+  const fill = "#C4C4C4";
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="${fill}" d="M24 64c0-24 18-44 40-44s40 20 40 44c-8-8-24-12-40-12S32 56 24 64z"/>
+  <rect x="56" y="64" width="16" height="44" rx="4" fill="${fill}"/>
 </svg>`;
 }
 
@@ -6270,6 +6353,14 @@ function writeMarkSvg(itemId, name, categoryId, hue, tags = []) {
       (k) => tags.includes(k),
     ) ?? "other";
     writeFileSync(out, animalSilhouetteSvg(kind));
+    return `marks/${itemId}.svg`;
+  }
+  if (categoryId === "birds") {
+    writeFileSync(out, animalSilhouetteSvg("bird"));
+    return `marks/${itemId}.svg`;
+  }
+  if (categoryId === "mushrooms") {
+    writeFileSync(out, mushroomSilhouetteSvg());
     return `marks/${itemId}.svg`;
   }
   const initials = name

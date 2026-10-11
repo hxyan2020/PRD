@@ -21,7 +21,7 @@ export interface RelevanceRule {
   /** Extract hitting these without accept hints → reject */
   rejectHints: string[];
   /** Nature shelves: soft visual expectation */
-  natureCue?: "green" | "floral" | "animal";
+  natureCue?: "green" | "floral" | "animal" | "bird" | "fungus";
 }
 
 const RULES: Record<string, RelevanceRule> = {
@@ -173,6 +173,83 @@ const RULES: Record<string, RelevanceRule> = {
     acceptHints: ["food", "snack", "sauce", "noodle", "confection", "grocery", "edible", "cuisine"],
     rejectHints: ["automobile manufacturer", "cigarette brand"],
   },
+  softdrinks: {
+    subject: "soft drink beverage brand",
+    acceptHints: ["soda", "soft drink", "juice", "water brand", "energy drink", "beverage"],
+    rejectHints: ["automobile", "cigarette brand", "alcohol brand"],
+  },
+  snacks: {
+    subject: "snack confectionery brand",
+    acceptHints: ["snack", "chips", "candy", "biscuit", "cookie", "confection", "chocolate"],
+    rejectHints: ["automobile", "cigarette brand"],
+  },
+  dairy: {
+    subject: "dairy brand",
+    acceptHints: ["dairy", "milk", "yogurt", "cheese", "butter", "cream"],
+    rejectHints: ["automobile", "cigarette brand"],
+  },
+  beauty: {
+    subject: "beauty cosmetics brand",
+    acceptHints: ["beauty", "cosmetic", "skincare", "makeup", "perfume", "personal care"],
+    rejectHints: ["automobile manufacturer", "cigarette brand"],
+  },
+  tech: {
+    subject: "consumer electronics brand",
+    acceptHints: ["phone", "electronics", "computer", "tech", "smartphone", "gadget"],
+    rejectHints: ["cigarette brand", "alcohol brand"],
+  },
+  sportswear: {
+    subject: "sportswear athletic brand",
+    acceptHints: ["sportswear", "athletic", "sneaker", "footwear", "outdoor apparel"],
+    rejectHints: ["cigarette brand", "automobile manufacturer"],
+  },
+  pharma: {
+    subject: "pharmacy OTC brand",
+    acceptHints: ["pharmacy", "medicine", "otc", "vitamin", "drug store", "healthcare"],
+    rejectHints: ["automobile", "cigarette brand"],
+  },
+  watches: {
+    subject: "watch timepiece brand",
+    acceptHints: ["watch", "timepiece", "wristwatch", "chronograph"],
+    rejectHints: ["cigarette brand", "soft drink"],
+  },
+  airlines: {
+    subject: "airline brand",
+    acceptHints: ["airline", "aviation", "aircraft", "airport", "flight"],
+    rejectHints: ["cigarette brand", "automobile manufacturer"],
+  },
+  banks: {
+    subject: "bank fintech brand",
+    acceptHints: ["bank", "fintech", "payment", "card network", "finance"],
+    rejectHints: ["cigarette brand", "soft drink"],
+  },
+  instruments: {
+    subject: "musical instrument brand",
+    acceptHints: ["instrument", "guitar", "piano", "drums", "musical"],
+    rejectHints: ["cigarette brand", "automobile"],
+  },
+  toys: {
+    subject: "toy game brand",
+    acceptHints: ["toy", "game", "lego", "doll", "puzzle", "play"],
+    rejectHints: ["cigarette brand", "alcohol brand"],
+  },
+  motorcycles: {
+    subject: "motorcycle scooter brand",
+    acceptHints: ["motorcycle", "scooter", "motorbike", "two-wheeler"],
+    rejectHints: ["cigarette brand", "soft drink"],
+  },
+  birds: {
+    subject: "bird species",
+    acceptHints: ["bird", "avian", "passerine", "raptor", "waterfowl", "ornithology"],
+    rejectHints: ["automobile", "cigarette brand"],
+    natureCue: "bird",
+  },
+  mushrooms: {
+    subject: "mushroom fungus species",
+    acceptHints: ["mushroom", "fungus", "fungi", "mycology", "toadstool", "truffle"],
+    rejectHints: ["automobile", "cigarette brand"],
+    natureCue: "fungus",
+  },
 };
 
 export function relevanceRuleFor(categoryId: string): RelevanceRule | null {
@@ -310,8 +387,11 @@ export async function validateCategoryRelevance(input: {
           if (cues.warmness >= 0.08 || cues.greenness >= 0.05) score += 1;
           else score -= 0.8;
         }
-        if (rule.natureCue === "animal") {
+        if (rule.natureCue === "animal" || rule.natureCue === "bird") {
           if (cues.contrast >= 0.15) score += 0.6;
+        }
+        if (rule.natureCue === "fungus") {
+          if (cues.warmness >= 0.06 || cues.contrast >= 0.12) score += 0.6;
         }
       }
     } catch {
