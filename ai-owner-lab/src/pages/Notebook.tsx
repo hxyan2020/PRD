@@ -187,6 +187,9 @@ export function Notebook() {
     restoreEntry,
     addCategory,
     removeCategory,
+    recoverFromBackups,
+    exportBackup,
+    importBackup,
   } = useNotebook()
   const { lang, t } = useLanguage()
   const [view, setView] = useState<'notes' | 'tree' | 'categories' | 'dustbin'>('notes')
@@ -205,19 +208,89 @@ export function Notebook() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [recoverToast, setRecoverToast] = useState(false)
-  const [storageToast, setStorageToast] = useState(false)
+  const [storageToast, setStorageToast] = useState<string | null>(null)
+  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null)
+  const [recoveryBusy, setRecoveryBusy] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
+  const importInputRef = useRef<HTMLInputElement | null>(null)
+  const autoRecoverTried = useRef(false)
 
   useEffect(() => {
     if (!ready) return
-    if (notebookStore.consumeMigrationNotice()) {
-      setStorageToast(true)
-      window.setTimeout(() => setStorageToast(false), 5200)
+    let message: string | null = null
+    if (notebookStore.consumeRecoveryNotice()) message = t('notesRecoveredToast')
+    else if (notebookStore.consumeMigrationNotice()) message = t('notebookStorageUpgraded')
+    if (!message) return
+    setStorageToast(message)
+    const timer = window.setTimeout(() => setStorageToast(null), 5200)
+    return () => window.clearTimeout(timer)
+  }, [ready, t])
+
+  useEffect(() => {
+    if (!ready || autoRecoverTried.current) return
+    if (count > 0) return
+    autoRecoverTried.current = true
+    void recoverFromBackups()
+      .then((result) => {
+        if (result.restored > 0) {
+          setRecoveryMessage(
+            t('recoverNotesFound', { restored: result.restored, total: result.total }),
+          )
+        }
+      })
+      .catch(() => {
+        /* ignore auto-recover errors */
+      })
+  }, [ready, count, recoverFromBackups, t])
+
+  async function onRecoverNotes() {
+    setRecoveryBusy(true)
+    setRecoveryMessage(null)
+    try {
+      const result = await recoverFromBackups()
+      if (result.restored > 0 || result.total > 0) {
+        setRecoveryMessage(
+          t('recoverNotesFound', { restored: result.restored, total: result.total }),
+        )
+      } else {
+        setRecoveryMessage(t('recoverNotesNone'))
+      }
+    } catch {
+      setRecoveryMessage(t('recoverNotesNone'))
+    } finally {
+      setRecoveryBusy(false)
     }
-  }, [ready])
+  }
+
+  function onExportNotes() {
+    const json = exportBackup()
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `ownlab-notebook-backup-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  async function onImportFile(file: File | null) {
+    if (!file) return
+    setRecoveryBusy(true)
+    setRecoveryMessage(null)
+    try {
+      const text = await file.text()
+      const result = await importBackup(text)
+      setRecoveryMessage(t('recoverNotesFound', { restored: result.total, total: result.total }))
+    } catch {
+      setRecoveryMessage(t('recoverNotesNone'))
+    } finally {
+      setRecoveryBusy(false)
+      if (importInputRef.current) importInputRef.current.value = ''
+    }
+  }
 
   const categoryMap = useMemo(() => {
     const map = new Map<string, NotebookCategory>()
@@ -533,6 +606,11 @@ export function Notebook() {
                     </select>
                   </label>
                 ) : null}
+                {view === 'notes' && count > 0 ? (
+                  <button type="button" className="btn ghost" onClick={onExportNotes}>
+                    {t('exportNotes')}
+                  </button>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -546,7 +624,7 @@ export function Notebook() {
       ) : null}
       {storageToast ? (
         <p className="notebook-toast" role="status">
-          {t('notebookStorageUpgraded')}
+          {storageToast}
         </p>
       ) : null}
 
@@ -880,6 +958,46 @@ export function Notebook() {
               {t('day')}1
             </Link>
           </p>
+          <p className="notebook-recover-hint">{t('recoverNotesHint')}</p>
+          {recoveryMessage ? (
+            <p className="notebook-recover-status" role="status">
+              {recoveryMessage}
+            </p>
+          ) : null}
+          <div className="notebook-actions">
+            <button
+              type="button"
+              className="btn primary"
+              disabled={recoveryBusy}
+              onClick={() => void onRecoverNotes()}
+            >
+              {t('recoverNotes')}
+            </button>
+            <button
+              type="button"
+              className="btn ghost"
+              disabled={recoveryBusy}
+              onClick={onExportNotes}
+            >
+              {t('exportNotes')}
+            </button>
+            <button
+              type="button"
+              className="btn ghost"
+              disabled={recoveryBusy}
+              onClick={() => importInputRef.current?.click()}
+            >
+              {t('importNotes')}
+            </button>
+            <input
+              ref={importInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="sr-only"
+              tabIndex={-1}
+              onChange={(e) => void onImportFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
         </div>
       ) : visibleEntries.length === 0 ? (
         <div className="callout">

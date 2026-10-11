@@ -3,9 +3,10 @@ import {
   IDB_KEYS,
   idbGet,
   idbGetMeta,
-  idbSet,
   idbSetMeta,
+  idbSetVerified,
   isPersistenceQuotaExceeded,
+  type NotebookSnapshot,
 } from '../lib/notebookPersistence'
 import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
@@ -68,9 +69,15 @@ function sortCategories(categories: NotebookCategory[]): NotebookCategory[] {
   )
 }
 
+function isEntryLike(e: unknown): e is NotebookEntry {
+  if (!e || typeof e !== 'object') return false
+  const row = e as Partial<NotebookEntry>
+  return typeof row.id === 'string' && typeof row.selectedText === 'string'
+}
+
 function parseEntries(raw: unknown): NotebookEntry[] {
   if (!Array.isArray(raw)) return []
-  return sortEntries(raw as NotebookEntry[])
+  return sortEntries(raw.filter(isEntryLike))
 }
 
 function parseTrash(raw: unknown): TrashedNotebookEntry[] {
@@ -84,6 +91,74 @@ function parseTrash(raw: unknown): TrashedNotebookEntry[] {
         typeof e.deletedAt === 'string',
     ),
   )
+}
+
+function entryTime(e: NotebookEntry): number {
+  return new Date(e.updatedAt || e.createdAt).getTime()
+}
+
+function mergeEntries(...lists: NotebookEntry[][]): NotebookEntry[] {
+  const map = new Map<string, NotebookEntry>()
+  for (const list of lists) {
+    for (const entry of list) {
+      if (!isEntryLike(entry)) continue
+      const prev = map.get(entry.id)
+      if (!prev || entryTime(entry) >= entryTime(prev)) map.set(entry.id, entry)
+    }
+  }
+  return sortEntries([...map.values()])
+}
+
+function mergeTrash(...lists: TrashedNotebookEntry[][]): TrashedNotebookEntry[] {
+  const map = new Map<string, TrashedNotebookEntry>()
+  for (const list of lists) {
+    for (const entry of list) {
+      if (!entry?.id) continue
+      const prev = map.get(entry.id)
+      if (!prev || new Date(entry.deletedAt).getTime() >= new Date(prev.deletedAt).getTime()) {
+        map.set(entry.id, entry)
+      }
+    }
+  }
+  return sortTrash([...map.values()])
+}
+
+function mergeCategories(...lists: NotebookCategory[][]): NotebookCategory[] {
+  const map = new Map<string, NotebookCategory>()
+  for (const list of lists) {
+    for (const cat of list) {
+      if (!cat?.id) continue
+      if (!map.has(cat.id)) map.set(cat.id, cat)
+    }
+  }
+  return sortCategories([...map.values()])
+}
+
+function snapshotFrom(
+  entries: NotebookEntry[],
+  trash: TrashedNotebookEntry[],
+  categories: NotebookCategory[],
+): NotebookSnapshot {
+  return {
+    savedAt: new Date().toISOString(),
+    entries,
+    trash,
+    categories,
+  }
+}
+
+function parseSnapshot(raw: unknown): {
+  entries: NotebookEntry[]
+  trash: TrashedNotebookEntry[]
+  categories: NotebookCategory[]
+} | null {
+  if (!raw || typeof raw !== 'object') return null
+  const snap = raw as Partial<NotebookSnapshot>
+  return {
+    entries: parseEntries(snap.entries),
+    trash: parseTrash(snap.trash),
+    categories: parseCategories(snap.categories),
+  }
 }
 
 function normalizeCategory(
@@ -133,78 +208,131 @@ function clearLocalStorageNotebookKeys() {
   }
 }
 
-async function persistKey(key: typeof IDB_KEYS.entries | typeof IDB_KEYS.trash | typeof IDB_KEYS.categories, value: unknown) {
+async function persistKey(
+  key: typeof IDB_KEYS.entries | typeof IDB_KEYS.trash | typeof IDB_KEYS.categories,
+  value: unknown,
+) {
   try {
-    await idbSet(key, value)
+    await idbSetVerified(key, value)
   } catch (err) {
     throw new NotebookStorageError(isPersistenceQuotaExceeded(err) ? 'quota' : 'unknown')
   }
+}
+
+async function saveSnapshot(
+  entries: NotebookEntry[],
+  trash: TrashedNotebookEntry[],
+  categories: NotebookCategory[],
+) {
+  // Only snapshot when there is something to protect.
+  if (!entries.length && !trash.length && !categories.length) return
+  try {
+    const current = await idbGet<NotebookSnapshot>(IDB_KEYS.snapshot)
+    if (current) {
+      await idbSetVerified(IDB_KEYS.snapshotPrev, current)
+    }
+    await idbSetVerified(IDB_KEYS.snapshot, snapshotFrom(entries, trash, categories))
+    const meta = (await idbGetMeta()) ?? { storageBackend: 'indexeddb' as const }
+    await idbSetMeta({ ...meta, storageBackend: 'indexeddb', lastBackupAt: new Date().toISOString() })
+  } catch {
+    /* best-effort backup — never block the primary write path for backup failure alone */
+  }
+}
+
+async function gatherAllSources(): Promise<{
+  entries: NotebookEntry[]
+  trash: TrashedNotebookEntry[]
+  categories: NotebookCategory[]
+  recoveredFromBackup: boolean
+  recoveredFromLocalStorage: boolean
+}> {
+  const idbEntries = parseEntries(await idbGet(IDB_KEYS.entries))
+  const idbTrash = parseTrash(await idbGet(IDB_KEYS.trash))
+  const idbCategories = parseCategories(await idbGet(IDB_KEYS.categories))
+
+  const snap = parseSnapshot(await idbGet(IDB_KEYS.snapshot))
+  const snapPrev = parseSnapshot(await idbGet(IDB_KEYS.snapshotPrev))
+
+  const lsEntries = parseEntries(readLocalStorageJson(LS_ENTRIES))
+  const lsTrash = parseTrash(readLocalStorageJson(LS_TRASH))
+  const lsCategories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
+
+  const entries = mergeEntries(
+    idbEntries,
+    snap?.entries ?? [],
+    snapPrev?.entries ?? [],
+    lsEntries,
+  )
+  const trash = mergeTrash(idbTrash, snap?.trash ?? [], snapPrev?.trash ?? [], lsTrash)
+  const categories = mergeCategories(
+    idbCategories,
+    snap?.categories ?? [],
+    snapPrev?.categories ?? [],
+    lsCategories,
+  )
+
+  const recoveredFromBackup =
+    idbEntries.length === 0 &&
+    entries.length > 0 &&
+    (Boolean(snap?.entries.length) || Boolean(snapPrev?.entries.length))
+  const recoveredFromLocalStorage =
+    idbEntries.length < entries.length && lsEntries.length > 0
+
+  return { entries, trash, categories, recoveredFromBackup, recoveredFromLocalStorage }
 }
 
 async function hydrate(): Promise<void> {
   let entries: NotebookEntry[] = []
   let trash: TrashedNotebookEntry[] = []
   let categories: NotebookCategory[] = []
+  let recovered = false
 
   try {
-    const meta = await idbGetMeta()
-    const idbEntries = await idbGet<NotebookEntry[]>(IDB_KEYS.entries)
-    const idbTrash = await idbGet<TrashedNotebookEntry[]>(IDB_KEYS.trash)
-    const idbCategories = await idbGet<NotebookCategory[]>(IDB_KEYS.categories)
+    const gathered = await gatherAllSources()
+    entries = gathered.entries
+    trash = gathered.trash
+    categories = gathered.categories
+    recovered = gathered.recoveredFromBackup || gathered.recoveredFromLocalStorage
 
-    const hasIdb =
-      idbEntries !== undefined || idbTrash !== undefined || idbCategories !== undefined || Boolean(meta)
+    // Persist merged result when we recovered/merged anything extra, or first-time migrate.
+    const primaryEntries = parseEntries(await idbGet(IDB_KEYS.entries))
+    const needsPersist =
+      recovered ||
+      primaryEntries.length !== entries.length ||
+      (await idbGet(IDB_KEYS.entries)) === undefined
 
-    if (hasIdb) {
-      entries = parseEntries(idbEntries ?? [])
-      trash = parseTrash(idbTrash ?? [])
-      categories = parseCategories(idbCategories ?? [])
-    } else {
-      // First launch on IndexedDB: migrate any legacy localStorage notebook.
-      entries = parseEntries(readLocalStorageJson(LS_ENTRIES))
-      trash = parseTrash(readLocalStorageJson(LS_TRASH))
-      categories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
-      const hadLocalData = entries.length > 0 || trash.length > 0 || categories.length > 0
+    if (needsPersist && (entries.length || trash.length || categories.length)) {
+      await saveSnapshot(entries, trash, categories)
       await persistKey(IDB_KEYS.entries, entries)
       await persistKey(IDB_KEYS.trash, trash)
       await persistKey(IDB_KEYS.categories, categories)
       await idbSetMeta({
         storageBackend: 'indexeddb',
-        migratedFromLocalStorageAt: hadLocalData ? new Date().toISOString() : undefined,
+        migratedFromLocalStorageAt: gathered.recoveredFromLocalStorage
+          ? new Date().toISOString()
+          : undefined,
+        lastBackupAt: new Date().toISOString(),
       })
-      clearLocalStorageNotebookKeys()
-      if (hadLocalData) (cache as Cache & { _migrated?: boolean })._migrated = true
+      // Only clear legacy LS after a verified IDB write of the merged set.
+      if (entries.length > 0 || trash.length > 0 || categories.length > 0) {
+        const verified = parseEntries(await idbGet(IDB_KEYS.entries))
+        if (verified.length === entries.length) {
+          clearLocalStorageNotebookKeys()
+        }
+      }
+      if (gathered.recoveredFromLocalStorage || gathered.recoveredFromBackup) {
+        ;(cache as Cache & { _migrated?: boolean })._migrated = true
+      }
+    } else if ((await idbGet(IDB_KEYS.entries)) === undefined) {
+      // Empty first visit — initialize IDB keys but keep any LS untouched if present.
+      await persistKey(IDB_KEYS.entries, [])
+      await persistKey(IDB_KEYS.trash, [])
+      await persistKey(IDB_KEYS.categories, [])
+      await idbSetMeta({ storageBackend: 'indexeddb' })
     }
 
-    // If IDB already existed but localStorage still has newer/orphan data (partial
-    // prior migrate), merge by id without dropping either side.
-    const lsEntries = parseEntries(readLocalStorageJson(LS_ENTRIES))
-    const lsTrash = parseTrash(readLocalStorageJson(LS_TRASH))
-    const lsCategories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
-    if (lsEntries.length || lsTrash.length || lsCategories.length) {
-      const entryIds = new Set(entries.map((e) => e.id))
-      const mergedEntries = sortEntries([
-        ...entries,
-        ...lsEntries.filter((e) => e?.id && !entryIds.has(e.id)),
-      ])
-      const trashIds = new Set(trash.map((e) => e.id))
-      const mergedTrash = sortTrash([
-        ...trash,
-        ...lsTrash.filter((e) => e?.id && !trashIds.has(e.id)),
-      ])
-      const catIds = new Set(categories.map((c) => c.id))
-      const mergedCategories = sortCategories([
-        ...categories,
-        ...lsCategories.filter((c) => c?.id && !catIds.has(c.id)),
-      ])
-      entries = mergedEntries
-      trash = mergedTrash
-      categories = mergedCategories
-      await persistKey(IDB_KEYS.entries, entries)
-      await persistKey(IDB_KEYS.trash, trash)
-      await persistKey(IDB_KEYS.categories, categories)
-      clearLocalStorageNotebookKeys()
-      ;(cache as Cache & { _migrated?: boolean })._migrated = true
+    if (recovered) {
+      ;(cache as Cache & { _recovered?: boolean })._recovered = true
     }
   } catch {
     // Fall back to whatever localStorage still has if IDB is blocked.
@@ -237,25 +365,33 @@ if (typeof window !== 'undefined') {
 async function writeEntries(entries: NotebookEntry[]) {
   await ensureReady()
   const sorted = sortEntries(entries)
+  // Keep prior durable snapshot as snapshotPrev, then write primary.
+  await saveSnapshot(cache.entries, cache.trash, cache.categories)
   await persistKey(IDB_KEYS.entries, sorted)
   cache.entries = sorted
   entryListeners.forEach((listener) => listener(sorted))
+  // After a successful write, point the latest snapshot at the new durable set.
+  await saveSnapshot(cache.entries, cache.trash, cache.categories)
 }
 
 async function writeTrash(trash: TrashedNotebookEntry[]) {
   await ensureReady()
   const sorted = sortTrash(trash)
+  await saveSnapshot(cache.entries, cache.trash, cache.categories)
   await persistKey(IDB_KEYS.trash, sorted)
   cache.trash = sorted
   trashListeners.forEach((listener) => listener(sorted))
+  await saveSnapshot(cache.entries, cache.trash, cache.categories)
 }
 
 async function writeCategories(categories: NotebookCategory[]) {
   await ensureReady()
   const sorted = sortCategories(categories)
+  await saveSnapshot(cache.entries, cache.trash, cache.categories)
   await persistKey(IDB_KEYS.categories, sorted)
   cache.categories = sorted
   categoryListeners.forEach((listener) => listener(sorted))
+  await saveSnapshot(cache.entries, cache.trash, cache.categories)
 }
 
 function uid(prefix: string) {
@@ -280,16 +416,87 @@ export const notebookStore = {
   consumeMigrationNotice(): boolean {
     try {
       if (localStorage.getItem(MIGRATION_BANNER_KEY) === '1') return false
-      // Only show if we actually cleared/migrated LS data this session or earlier.
-      // Flag is set when hydrate wrote meta.migratedFromLocalStorageAt for the first time,
-      // or when merge-from-LS ran. We detect via meta asynchronously in hydrate and
-      // stash a session hint on cache.
       if (!(cache as Cache & { _migrated?: boolean })._migrated) return false
       localStorage.setItem(MIGRATION_BANNER_KEY, '1')
       return true
     } catch {
       return false
     }
+  },
+  consumeRecoveryNotice(): boolean {
+    const flagged = (cache as Cache & { _recovered?: boolean })._recovered
+    if (!flagged) return false
+    ;(cache as Cache & { _recovered?: boolean })._recovered = false
+    return true
+  },
+  /** Rescan localStorage + IDB backups and merge anything still present. */
+  async recoverFromBackups(): Promise<{ restored: number; total: number }> {
+    await ensureReady()
+    const before = cache.entries.length
+    const gathered = await gatherAllSources()
+    const entries = gathered.entries
+    const trash = gathered.trash
+    const categories = gathered.categories
+    if (
+      entries.length === cache.entries.length &&
+      trash.length === cache.trash.length &&
+      categories.length === cache.categories.length
+    ) {
+      return { restored: 0, total: cache.entries.length }
+    }
+    await saveSnapshot(entries, trash, categories)
+    await persistKey(IDB_KEYS.entries, entries)
+    await persistKey(IDB_KEYS.trash, trash)
+    await persistKey(IDB_KEYS.categories, categories)
+    cache.entries = entries
+    cache.trash = trash
+    cache.categories = categories
+    entryListeners.forEach((listener) => listener(entries))
+    trashListeners.forEach((listener) => listener(trash))
+    categoryListeners.forEach((listener) => listener(categories))
+    return { restored: Math.max(0, entries.length - before), total: entries.length }
+  },
+  /** Download a JSON backup of notes / trash / categories. */
+  exportBackup(): string {
+    return JSON.stringify(
+      {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        entries: cache.entries,
+        trash: cache.trash,
+        categories: cache.categories,
+      },
+      null,
+      2,
+    )
+  },
+  async importBackup(json: string): Promise<{ total: number }> {
+    await ensureReady()
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(json) as unknown
+    } catch {
+      throw new NotebookStorageError('unknown', 'Invalid backup file')
+    }
+    const body = parsed as {
+      entries?: unknown
+      trash?: unknown
+      categories?: unknown
+    }
+    const entries = mergeEntries(cache.entries, parseEntries(body.entries))
+    const trash = mergeTrash(cache.trash, parseTrash(body.trash))
+    const categories = mergeCategories(cache.categories, parseCategories(body.categories))
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    await persistKey(IDB_KEYS.entries, entries)
+    await persistKey(IDB_KEYS.trash, trash)
+    await persistKey(IDB_KEYS.categories, categories)
+    cache.entries = entries
+    cache.trash = trash
+    cache.categories = categories
+    entryListeners.forEach((listener) => listener(entries))
+    trashListeners.forEach((listener) => listener(trash))
+    categoryListeners.forEach((listener) => listener(categories))
+    return { total: entries.length }
   },
   subscribe(listener: EntryListener) {
     entryListeners.add(listener)

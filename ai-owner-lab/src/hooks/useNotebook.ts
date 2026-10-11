@@ -72,6 +72,9 @@ export function useNotebook() {
     addCategory: notebookStore.addCategory,
     renameCategory: notebookStore.renameCategory,
     removeCategory: notebookStore.removeCategory,
+    recoverFromBackups: notebookStore.recoverFromBackups,
+    exportBackup: notebookStore.exportBackup,
+    importBackup: notebookStore.importBackup,
   }
 }
 

@@ -9,13 +9,24 @@ export const IDB_KEYS = {
   trash: 'trash',
   categories: 'categories',
   meta: 'meta',
+  /** Last known-good full snapshot before a write (recovery). */
+  snapshot: 'snapshot',
+  snapshotPrev: 'snapshot_prev',
 } as const
 
 export type IdbKey = (typeof IDB_KEYS)[keyof typeof IDB_KEYS]
 
+export type NotebookSnapshot = {
+  savedAt: string
+  entries: unknown
+  trash: unknown
+  categories: unknown
+}
+
 type Meta = {
   migratedFromLocalStorageAt?: string
   storageBackend: 'indexeddb'
+  lastBackupAt?: string
 }
 
 function openDb(): Promise<IDBDatabase> {
@@ -83,6 +94,21 @@ export async function idbSet(key: IdbKey, value: unknown): Promise<void> {
     throw err
   } finally {
     db.close()
+  }
+}
+
+/** Write then read back — refuse to treat a write as durable if verify fails. */
+export async function idbSetVerified(key: IdbKey, value: unknown): Promise<void> {
+  await idbSet(key, value)
+  const read = await idbGet(key)
+  if (Array.isArray(value)) {
+    if (!Array.isArray(read) || read.length !== value.length) {
+      throw new Error('IndexedDB verify failed')
+    }
+    return
+  }
+  if (read === undefined && value !== undefined) {
+    throw new Error('IndexedDB verify failed')
   }
 }
 

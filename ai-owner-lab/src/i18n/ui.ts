@@ -98,6 +98,15 @@ const en = {
   emptyNotebook: 'Empty for now',
   emptyNotebookBody:
     'Write a note below, or open a day lesson, highlight a sentence, and use the floating toolbar.',
+  recoverNotes: 'Restore notes',
+  recoverNotesHint:
+    'Notes live only in this browser. If they vanished, try restore from a local backup, or import a JSON file you exported earlier.',
+  recoverNotesFound: 'Restored {restored} note(s). You now have {total}.',
+  recoverNotesNone:
+    'No recoverable notes found in this browser. If you switched browsers/devices, or cleared site data, the notes cannot be recovered from the server.',
+  exportNotes: 'Export backup',
+  importNotes: 'Import backup',
+  notesRecoveredToast: 'Recovered notes from a local backup.',
   sortNotes: 'Sort by',
   sortByCreated: 'Created time',
   sortByEdited: 'Last edited',
@@ -369,6 +378,15 @@ const zh: Record<UiKey, string> = {
   notes: '条笔记',
   note: '条笔记',
   emptyNotebook: '暂无笔记',
+  recoverNotes: '恢复笔记',
+  recoverNotesHint:
+    '笔记只保存在本浏览器。若笔记消失，请尝试从本地备份恢复，或导入你之前导出的 JSON 文件。',
+  recoverNotesFound: '已恢复 {restored} 条笔记，当前共 {total} 条。',
+  recoverNotesNone:
+    '在此浏览器未找到可恢复的笔记。若你换了浏览器/设备，或清除过网站数据，服务器无法找回笔记。',
+  exportNotes: '导出备份',
+  importNotes: '导入备份',
+  notesRecoveredToast: '已从本地备份恢复笔记。',
   emptyNotebookBody: '在下方直接写一条笔记，或打开某一天课程，选中文字后使用浮动工具栏。',
   sortNotes: '排序',
   sortByCreated: '创建时间',

@@ -2395,11 +2395,6 @@ body.menu-open {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16'/%3E%3Cpath d='M4 12h10'/%3E%3Cpath d='M4 17h7'/%3E%3Ccircle cx='18' cy='12' r='2'/%3E%3Ccircle cx='15' cy='17' r='2'/%3E%3C/svg%3E");
 }
 
-/* Keep four tabs readable on narrower pages. */
-.notebook-view-switch {
-  flex-wrap: wrap;
-}
-
 .dustbin-entry {
   opacity: 0.96;
   border-style: dashed;
@@ -2972,6 +2967,23 @@ button.notebook-category-badge.on {
   color: #7f1d1d;
   background: #fef2f2;
   border: 1px solid #fecaca;
+}
+
+.notebook-recover-hint {
+  margin: 0.85rem 0 0.45rem;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.notebook-recover-status {
+  margin: 0.35rem 0 0.65rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--teal-deep);
+  background: rgba(13, 148, 136, 0.1);
+  border: 1px solid rgba(13, 148, 136, 0.25);
 }
 
 .notebook-field {
