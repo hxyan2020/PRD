@@ -7,7 +7,7 @@ import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
 import { dailyHomeSelection } from '../lib/dailyRotation'
-import { displayImageUrl } from '../lib/images'
+import { displayImageUrl, imageCandidates } from '../lib/images'
 import { todayKey } from '../lib/storage'
 import './HomePage.css'
 
@@ -33,7 +33,7 @@ export function HomePage() {
           {hero ? (
             <SafeImage
               src={displayImageUrl(hero)}
-              fallbackSrc={hero.image}
+              candidates={imageCandidates(hero)}
               alt=""
               className="hero-image"
             />
@@ -104,7 +104,12 @@ export function HomePage() {
                 className="featured-item"
                 style={{ animationDelay: `${index * 80}ms` }}
               >
-                <SafeImage src={displayImageUrl(painting)} alt={painting.name} loading="lazy" />
+                <SafeImage
+                  src={displayImageUrl(painting)}
+                  candidates={imageCandidates(painting)}
+                  alt={painting.name}
+                  loading="lazy"
+                />
                 <div>
                   <span>#{painting.rank}</span>
                   <h3>{painting.name}</h3>

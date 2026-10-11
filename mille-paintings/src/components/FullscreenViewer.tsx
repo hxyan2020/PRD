@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import type { Painting } from '../types'
 import { useI18n } from '../i18n/I18nContext'
-import { displayImageUrl, viewerImageUrl } from '../lib/images'
+import { imageCandidates, viewerImageUrl, VIEWER_IMAGE_WIDTH } from '../lib/images'
+import { SafeImage } from './SafeImage'
 import './FullscreenViewer.css'
 
 export function FullscreenViewer({
@@ -22,12 +23,7 @@ export function FullscreenViewer({
 }) {
   const { t } = useI18n()
   const preferred = viewerImageUrl(painting)
-  const fallback = displayImageUrl(painting)
-  const [src, setSrc] = useState(preferred)
-
-  useEffect(() => {
-    setSrc(preferred)
-  }, [preferred, painting.id])
+  const candidates = imageCandidates(painting, VIEWER_IMAGE_WIDTH)
 
   useEffect(() => {
     if (!open) return
@@ -51,14 +47,12 @@ export function FullscreenViewer({
       <button type="button" className="fs-close" onClick={onClose}>
         {t('exitFullscreen')}
       </button>
-      {src ? (
-        <img
-          key={src}
-          src={src}
+      {preferred ? (
+        <SafeImage
+          key={painting.id}
+          src={preferred}
+          candidates={candidates}
           alt={painting.name}
-          onError={() => {
-            if (fallback && src !== fallback) setSrc(fallback)
-          }}
         />
       ) : null}
       <div className="fs-bar">

@@ -7,7 +7,7 @@ import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
 import { useI18n } from '../i18n/I18nContext'
-import { displayImageUrl, hiResImageUrl, withCommonsWidth } from '../lib/images'
+import { displayImageUrl, hiResImageUrl, imageCandidates, withCommonsWidth } from '../lib/images'
 import './PaintingPage.css'
 
 export function PaintingPage() {
@@ -63,7 +63,7 @@ export function PaintingPage() {
         <button type="button" className="painting-frame" onClick={() => setFullscreen(true)}>
           <SafeImage
             src={displayImageUrl(painting)}
-            fallbackSrc={painting.image}
+            candidates={imageCandidates(painting)}
             alt={painting.name}
           />
           {painting.lostOrDestroyed ? <span className="lost-pill">{t('lostDestroyed')}</span> : null}
@@ -217,7 +217,12 @@ function LocalizedRelatedCard({
   const { painting } = useLocalizedPainting(base)
   return (
     <Link to={`/painting/${id}`} className="related-card">
-      <SafeImage src={displayImageUrl(image)} alt={painting?.name || fallbackName} loading="lazy" />
+      <SafeImage
+        src={displayImageUrl(image)}
+        candidates={imageCandidates(image)}
+        alt={painting?.name || fallbackName}
+        loading="lazy"
+      />
       <div>
         <h3>{painting?.name || fallbackName}</h3>
         <p>{painting?.painter || fallbackPainter}</p>

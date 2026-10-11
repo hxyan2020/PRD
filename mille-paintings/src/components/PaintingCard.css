@@ -43,6 +43,12 @@
   border: 1px solid rgba(214, 167, 86, 0.35);
 }
 
+.rank-badge-soft {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-size: 0.68rem;
+}
+
 .lost-badge {
   right: 0.75rem;
   background: rgba(196, 92, 72, 0.88);
