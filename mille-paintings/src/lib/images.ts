@@ -174,19 +174,6 @@ export function viewerImageUrl(painting: Pick<Painting, 'image' | 'imageFull'>):
   return candidates[0] || ''
 }
 
-/**
- * External “open hi-res” link.
- * Cap at a safe Commons thumb width — larger FilePath requests can fall through
- * to multi‑100MB originals that browsers fail to display.
- */
-export function hiResImageUrl(painting: Pick<Painting, 'image' | 'imageFull'>): string {
-  const full = painting.imageFull?.trim() || painting.image?.trim()
-  if (!full || isBlockedHotlinkUrl(full)) {
-    return displayImageUrl(painting)
-  }
-  return withCommonsWidth(full, VIEWER_IMAGE_WIDTH)
-}
-
 /** True when a URL would fetch an uncapped Commons original. */
 export function isUnsafeCommonsOriginal(url: string): boolean {
   const u = url.trim()

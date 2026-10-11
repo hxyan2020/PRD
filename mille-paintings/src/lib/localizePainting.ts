@@ -1,6 +1,6 @@
 import type { Painting } from '../types'
 import { optionLabel, optionLabels } from './optionLabels'
-import { wikiLangFor, wikiSitelinkKey } from './wikiLang'
+import { mintLangFor, wikiLangFor, wikiSitelinkKey } from './wikiLang'
 
 export type LocalizedPainting = Painting & {
   /** True when at least one field was replaced from Wikidata/Wikipedia. */
@@ -18,6 +18,8 @@ type WdEntity = {
 const cache = new Map<string, LocalizedPainting>()
 /** Labels-only cache for gallery/list cards (no Wikipedia extracts). */
 const labelCache = new Map<string, LocalizedPainting>()
+/** Machine-translated intro/anecdote snippets (uiLang + source text). */
+const mintCache = new Map<string, string>()
 
 function pickLabel(entity: WdEntity | undefined, langs: string[], fallback: string): string {
   if (!entity?.labels) return fallback
@@ -77,40 +79,220 @@ export function withStaticLabels(painting: Painting, uiLang: string): LocalizedP
   }
 }
 
-async function fetchWikiExtract(
-  wiki: string,
-  title: string,
-  variant?: string,
-): Promise<string> {
-  const params = new URLSearchParams({
-    action: 'query',
-    format: 'json',
-    origin: '*',
-    prop: 'extracts',
-    exintro: '1',
-    explaintext: '1',
-    redirects: '1',
-    titles: title,
-  })
-  if (variant) params.set('variant', variant)
-  const res = await fetch(`https://${wiki}.wikipedia.org/w/api.php?${params}`)
-  if (!res.ok) return ''
-  const data = (await res.json()) as {
-    query?: { pages?: Record<string, { extract?: string; missing?: boolean }> }
+/** True when text is a thin attribution stub rather than a real description. */
+export function isThinDescription(text: string, minLen = 160): boolean {
+  const t = (text || '').replace(/\s+/g, ' ').trim()
+  if (!t) return true
+  // Wikipedia exchars truncates with "..." — that is not a stub when the body is already long.
+  const truncated = t.endsWith('…') || t.endsWith('...')
+  if (truncated && t.length < Math.min(minLen, 200)) return true
+  if (t.length < minLen) return true
+  if (
+    /^(painting|oil painting|portrait painting|artwork|work)\b.*\bby\b/i.test(t) &&
+    t.length < 280
+  ) {
+    return true
   }
-  for (const page of Object.values(data.query?.pages || {})) {
-    if (page.missing) continue
-    const extract = (page.extract || '').replace(/\s+/g, ' ').trim()
-    if (extract && !/may refer to:/i.test(extract)) return extract
+  const sentences = (t.match(/[.!?]/g) || []).length
+  if (/\bpainting by\b/i.test(t) && sentences <= 1 && t.length < 220) {
+    return true
+  }
+  return false
+}
+
+function pickRicherText(
+  current: string,
+  candidate: string,
+  minLen = 160,
+  opts?: { preferCandidate?: boolean },
+): string {
+  const next = (candidate || '').replace(/\s+/g, ' ').trim()
+  if (!next) return current
+  // UI-language Wikipedia leads win whenever they are not a stub.
+  if (opts?.preferCandidate && next.length >= Math.min(120, minLen) && !isThinDescription(next, Math.min(120, minLen))) {
+    return next
+  }
+  if (isThinDescription(next, minLen) && !isThinDescription(current, minLen)) return current
+  if (next.length > (current || '').length) return next
+  if (isThinDescription(current, minLen) && !isThinDescription(next, minLen)) return next
+  return current
+}
+
+function cleanWikiExtract(raw: string): string {
+  return (raw || '')
+    .replace(/\s*==+\s*[^=]+?\s*==+\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function stripHtml(html: string): string {
+  return (html || '')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/p>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function chunkForMint(text: string, maxLen = 700): string[] {
+  const clean = (text || '').replace(/\s+/g, ' ').trim()
+  if (!clean) return []
+  if (clean.length <= maxLen) return [clean]
+  const parts: string[] = []
+  let rest = clean
+  while (rest.length > maxLen) {
+    const window = rest.slice(0, maxLen)
+    const breakAt = Math.max(window.lastIndexOf('. '), window.lastIndexOf('。'), window.lastIndexOf('! '), window.lastIndexOf('? '))
+    const idx = breakAt > maxLen * 0.4 ? breakAt + 1 : window.lastIndexOf(' ')
+    const cut = idx > maxLen * 0.3 ? idx : maxLen
+    parts.push(rest.slice(0, cut).trim())
+    rest = rest.slice(cut).trim()
+  }
+  if (rest) parts.push(rest)
+  return parts
+}
+
+/** True when translated text uses the expected script for the UI language. */
+export function textMatchesUiLang(text: string, uiLang: string): boolean {
+  const t = (text || '').trim()
+  if (!t) return false
+  const mint = mintLangFor(uiLang)
+  if (!mint) return true
+  if (mint === 'zh' || mint === 'ja') return /[\u3400-\u9fff]/.test(t)
+  if (mint === 'ko') return /[\uac00-\ud7af]/.test(t)
+  if (mint === 'ar' || mint === 'fa' || mint === 'ur') return /[\u0600-\u06ff]/.test(t)
+  if (mint === 'he') return /[\u0590-\u05ff]/.test(t)
+  if (mint === 'ru' || mint === 'uk') return /[\u0400-\u04ff]/.test(t)
+  if (mint === 'el') return /[\u0370-\u03ff]/.test(t)
+  if (mint === 'th') return /[\u0e00-\u0e7f]/.test(t)
+  if (mint === 'hi') return /[\u0900-\u097f]/.test(t)
+  if (mint === 'bn') return /[\u0980-\u09ff]/.test(t)
+  // Latin-script locales: reject untranslated English catalogue phrasing.
+  // (Titles may stay English even in a good translation.)
+  if (/\boil-on-canvas painting (created|executed)\b/i.test(t) || /\bis an oil-on-canvas\b/i.test(t)) {
+    return false
+  }
+  return true
+}
+
+async function translateChunk(chunk: string, target: string): Promise<string> {
+  const body = JSON.stringify({
+    html: `<p>${chunk.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`,
+  })
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(`https://cxserver.wikimedia.org/v2/translate/en/${target}/MinT`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
+      if (res.status === 429 || res.status >= 500) {
+        await new Promise((r) => setTimeout(r, 500 * (attempt + 1)))
+        continue
+      }
+      if (!res.ok) return ''
+      const data = (await res.json()) as { contents?: string }
+      return stripHtml(data.contents || '')
+    } catch {
+      await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+    }
   }
   return ''
 }
 
 /**
+ * Translate catalogue English via Wikimedia MinT (cxserver) when no UI-language
+ * Wikipedia page exists. Returns '' on failure (failures are not cached).
+ */
+async function translateViaMint(text: string, uiLang: string): Promise<string> {
+  const target = mintLangFor(uiLang)
+  if (!target || !text.trim()) return ''
+  const cacheKey = `${target}:${text}`
+  const hit = mintCache.get(cacheKey)
+  if (hit) return hit
+
+  const chunks = chunkForMint(text)
+  // Parallelize chunks — sequential MinT made painting pages look untranslated.
+  const parts = await Promise.all(chunks.map((chunk) => translateChunk(chunk, target)))
+  if (parts.some((p) => !p)) return ''
+  const out = parts.join(' ').replace(/\s+/g, ' ').trim()
+  if (!out) return ''
+  mintCache.set(cacheKey, out)
+  return out
+}
+
+async function fetchWikiExtract(
+  wiki: string,
+  title: string,
+  variant?: string,
+): Promise<string> {
+  const base = {
+    action: 'query',
+    format: 'json',
+    origin: '*',
+    prop: 'extracts',
+    explaintext: '1',
+    redirects: '1',
+    titles: title,
+  } as const
+
+  const pull = async (extra: Record<string, string>) => {
+    const params = new URLSearchParams({ ...base, ...extra })
+    if (variant) params.set('variant', variant)
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch(`https://${wiki}.wikipedia.org/w/api.php?${params}`)
+        if (!res.ok) {
+          if (res.status === 429 || res.status >= 500) {
+            await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+            continue
+          }
+          return ''
+        }
+        const data = (await res.json()) as {
+          query?: { pages?: Record<string, { extract?: string; missing?: boolean }> }
+        }
+        for (const page of Object.values(data.query?.pages || {})) {
+          if (page.missing) continue
+          const extract = cleanWikiExtract(page.extract || '')
+          if (extract && !/may refer to:/i.test(extract)) return extract
+        }
+        return ''
+      } catch {
+        await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+      }
+    }
+    return ''
+  }
+
+  // Lead first; if thin, pull a longer plain-text window (one page only).
+  let extract = await pull({ exintro: '1' })
+  if (isThinDescription(extract, 280)) {
+    const longer = await pull({ exchars: '1800' })
+    if (longer.length > extract.length) extract = longer
+  }
+  return extract
+}
+
+export type LocalizeProgress = (partial: LocalizedPainting) => void
+
+/**
  * Localize painting display fields for the active UI language.
  * Falls back to the English dataset values when a translation is missing.
+ * Calls `onPartial` after the intro is ready so the about section can update
+ * before the slower painter-bio translation finishes.
  */
-export async function localizePainting(painting: Painting, uiLang: string): Promise<LocalizedPainting> {
+export async function localizePainting(
+  painting: Painting,
+  uiLang: string,
+  onPartial?: LocalizeProgress,
+): Promise<LocalizedPainting> {
   if (!uiLang || uiLang === 'en') {
     return { ...painting, localized: false }
   }
@@ -162,29 +344,45 @@ export async function localizePainting(painting: Painting, uiLang: string): Prom
       ? pickLabel(related[collectionId], target.labelLangs, painting.collection)
       : painting.collection
 
-    const siteKey = wikiSitelinkKey(target.wiki)
-    const paintingTitle = paintingEnt?.sitelinks?.[siteKey]?.title
-    const painterTitle = painterEnt?.sitelinks?.[siteKey]?.title
-
     let intro = painting.intro
     let anecdote = painting.anecdote
-    if (paintingTitle) {
-      const extract = await fetchWikiExtract(target.wiki, paintingTitle, target.variant)
-      if (extract) intro = extract
-    } else if (paintingEnt?.descriptions) {
-      const desc = pickLabel(
-        { labels: paintingEnt.descriptions as Record<string, { value: string }> },
-        target.labelLangs,
-        '',
-      )
-      if (desc) intro = desc
+    let introFromUiWiki = false
+    let anecdoteFromUiWiki = false
+
+    // Prefer a non-stub UI-language Wikipedia extract. Only fall back to English /
+    // catalogue / Wikidata descriptions when the target-language page is missing.
+    const targetPaintingTitle = paintingEnt?.sitelinks?.[wikiSitelinkKey(target.wiki)]?.title
+    if (targetPaintingTitle) {
+      const extract = await fetchWikiExtract(target.wiki, targetPaintingTitle, target.variant)
+      // Accept UI-language leads even when shorter than the English catalogue —
+      // never let truncated wiki ellipsis cause an English overwrite later.
+      if (extract.length >= 80 && !isThinDescription(extract, 80)) {
+        intro = extract
+        introFromUiWiki = true
+      }
     }
-    if (painterTitle) {
-      const extract = await fetchWikiExtract(target.wiki, painterTitle, target.variant)
-      if (extract) anecdote = extract
+    if (!introFromUiWiki && isThinDescription(intro, 120)) {
+      const enTitle = paintingEnt?.sitelinks?.enwiki?.title
+      if (enTitle && target.wiki !== 'en') {
+        const enExtract = await fetchWikiExtract('en', enTitle)
+        intro = pickRicherText(intro, enExtract, 160)
+      }
+      if (isThinDescription(intro, 120) && paintingEnt?.descriptions) {
+        const desc = pickLabel(
+          { labels: paintingEnt.descriptions as Record<string, { value: string }> },
+          target.labelLangs,
+          '',
+        )
+        if (desc) intro = pickRicherText(intro, desc, 40)
+      }
+    }
+    // Optimized English catalogue intros: machine-translate when no UI wiki page.
+    if (!introFromUiWiki) {
+      const minted = await translateViaMint(intro, uiLang)
+      if (minted.length >= 80 && textMatchesUiLang(minted, uiLang)) intro = minted
     }
 
-    const localized: LocalizedPainting = {
+    const withIntro: LocalizedPainting = {
       ...painting,
       name,
       painter,
@@ -193,15 +391,45 @@ export async function localizePainting(painting: Painting, uiLang: string): Prom
       placeOfCreation,
       collection,
       intro,
+      anecdote: painting.anecdote,
+      localized: true,
+    }
+    // Publish intro ASAP so “关于这幅画” is not stuck on English while the bio loads.
+    onPartial?.(withIntro)
+
+    const targetPainterTitle = painterEnt?.sitelinks?.[wikiSitelinkKey(target.wiki)]?.title
+    if (targetPainterTitle) {
+      const extract = await fetchWikiExtract(target.wiki, targetPainterTitle, target.variant)
+      if (extract.length >= 80 && !isThinDescription(extract, 80)) {
+        anecdote = extract
+        anecdoteFromUiWiki = true
+      }
+    }
+    if (!anecdoteFromUiWiki && isThinDescription(anecdote, 120)) {
+      const enTitle = painterEnt?.sitelinks?.enwiki?.title
+      if (enTitle && target.wiki !== 'en') {
+        const enExtract = await fetchWikiExtract('en', enTitle)
+        anecdote = pickRicherText(anecdote, enExtract, 120)
+      }
+    }
+    if (!anecdoteFromUiWiki) {
+      const minted = await translateViaMint(anecdote, uiLang)
+      if (minted.length >= 60 && textMatchesUiLang(minted, uiLang)) anecdote = minted
+    }
+
+    const localized: LocalizedPainting = {
+      ...withIntro,
       anecdote,
       localized: true,
     }
-    cache.set(cacheKey, localized)
+    // Only cache when the about text actually matches the UI language (or wiki provided it).
+    const introOk = introFromUiWiki || textMatchesUiLang(localized.intro, uiLang)
+    if (introOk) cache.set(cacheKey, localized)
     return localized
   } catch {
-    const fallback = { ...painting, localized: false }
-    cache.set(cacheKey, fallback)
-    return fallback
+    // Do not cache failures — a transient MinT/Wikidata error would otherwise
+    // pin the English catalogue text for the rest of the session.
+    return { ...painting, localized: false }
   }
 }
 
@@ -285,4 +513,5 @@ export async function localizePaintingLabelsBatch(
 export function clearLocalizationCache() {
   cache.clear()
   labelCache.clear()
+  mintCache.clear()
 }

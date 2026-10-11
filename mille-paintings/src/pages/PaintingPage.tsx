@@ -6,8 +6,9 @@ import { LoadingState } from '../components/LoadingState'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
+import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
-import { displayImageUrl, hiResImageUrl, imageCandidates, withCommonsWidth } from '../lib/images'
+import { displayImageUrl, imageCandidates, withCommonsWidth } from '../lib/images'
 import './PaintingPage.css'
 
 export function PaintingPage() {
@@ -113,31 +114,15 @@ export function PaintingPage() {
             >
               {saved ? t('collected') : t('collect')}
             </button>
-            <a
-              className="btn ghost"
-              href={hiResImageUrl(painting)}
-              target="_blank"
-              rel="noopener noreferrer"
-              referrerPolicy="no-referrer"
-              onClick={(e) => {
-                const href = hiResImageUrl(painting)
-                if (!href) {
-                  e.preventDefault()
-                  setFullscreen(true)
-                  return
-                }
-                e.currentTarget.href = href
-              }}
-            >
-              {t('openHiRes')}
-            </a>
           </div>
         </div>
       </section>
 
       <section className="detail-block">
         <h2>{t('aboutPainting')}</h2>
-        <p>{painting.intro}</p>
+        <p className={localizing && !painting.intro ? 'localize-hint' : undefined}>
+          {painting.intro || (localizing ? t('loadingTranslation') : '')}
+        </p>
       </section>
 
       <section className="detail-block painter-block">
@@ -154,7 +139,9 @@ export function PaintingPage() {
             />
           </p>
           <h3>{t('anecdote')}</h3>
-          <p>{painting.anecdote}</p>
+          <p className={localizing && !painting.anecdote ? 'localize-hint' : undefined}>
+            {painting.anecdote || (localizing ? t('loadingTranslation') : '')}
+          </p>
         </div>
         <div className="photo-rail" aria-label="Photos of the painter">
           {painting.painterPhotos.length > 0 ? (
@@ -214,7 +201,9 @@ function LocalizedRelatedCard({
 }) {
   const store = usePaintingsStore()
   const base = store.paintings.find((p) => p.id === id)
-  const { painting } = useLocalizedPainting(base)
+  // Labels only — avoid competing with the main painting for Wikipedia extracts.
+  const { paintings } = useLocalizedPaintings(base ? [base] : [])
+  const painting = paintings[0]
   return (
     <Link to={`/painting/${id}`} className="related-card">
       <SafeImage

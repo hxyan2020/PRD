@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { clearLocalizationCache } from '../lib/localizePainting'
 import { detectBrowserLang, resolveLang } from './languages'
 import { translate } from './translations'
 
@@ -24,6 +25,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState(initialLang)
 
   const setLang = (code: string) => {
+    clearLocalizationCache()
     setLangState(code)
     localStorage.setItem(LANG_KEY, code)
   }
