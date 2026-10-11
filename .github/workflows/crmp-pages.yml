@@ -11,6 +11,7 @@ on:
       ]
     paths:
       - "platform/**"
+      - "docs/risk-discovery/**"
       - ".github/workflows/crmp-pages.yml"
   workflow_dispatch:
 
@@ -39,11 +40,20 @@ jobs:
         run: |
           npm ci
           npm run build:pages
-      - name: Stage nested Pages folder
+      - name: Stage nested Pages folders
         run: |
-          mkdir -p publish/crmp-admin
+          mkdir -p publish/crmp-admin publish/risk-discovery
           cp -a platform/out/. publish/crmp-admin/
           touch publish/crmp-admin/.nojekyll
+          # Executed Colab notebook HTML + .ipynb (must coexist with MatchingManagement at /PRD/)
+          if [ -d docs/risk-discovery ]; then
+            cp -a docs/risk-discovery/. publish/risk-discovery/
+            touch publish/risk-discovery/.nojekyll
+            # Prefer notebook index over site-wide SPA 404 for this folder
+            if [ -f publish/risk-discovery/index.html ] && [ ! -f publish/risk-discovery/404.html ]; then
+              cp publish/risk-discovery/index.html publish/risk-discovery/404.html
+            fi
+          fi
       - name: Publish gh-pages (keep sibling sites)
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -54,9 +64,9 @@ jobs:
       - name: Public URL
         run: |
           {
-            echo "Permanent CRMP Admin URL"
+            echo "Permanent URLs"
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
-            echo "- https://hxyan2020.github.io/PRD/crmp-admin/"
+            echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/discovery/"
+            echo "- https://hxyan2020.github.io/PRD/risk-discovery/"
+            echo "- https://hxyan2020.github.io/PRD/risk-discovery/risk_discovery.ipynb"
           } >> "$GITHUB_STEP_SUMMARY"
-
-# republish trigger 20261011155154
