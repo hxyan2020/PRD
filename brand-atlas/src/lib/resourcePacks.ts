@@ -59,9 +59,13 @@ export function subscribeResourcePacks(cb: () => void): () => void {
   };
 }
 
+const ALCOHOL_IDS = new Set(["alcohol", "liquor", "wine", "sake", "beer"]);
+
 export function listResourcePacks(categoryId?: string): ResourcePack[] {
   const all = readAll().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  return categoryId ? all.filter((p) => p.categoryId === categoryId) : all;
+  if (!categoryId) return all;
+  if (categoryId === "alcohol") return all.filter((p) => ALCOHOL_IDS.has(p.categoryId));
+  return all.filter((p) => p.categoryId === categoryId);
 }
 
 export function slugify(name: string): string {

@@ -93,104 +93,30 @@ const SPECS: Record<string, CategoryInterestSpec> = {
     listQuery: "cigarette brands",
     fields: [originField()],
   },
-  liquor: {
-    categoryId: "liquor",
+  alcohol: {
+    categoryId: "alcohol",
     kind: "brand",
-    subject: "spirits liquor brand",
-    listQuery: "liquor brands",
+    subject: "alcohol beverage brand",
+    listQuery: "alcohol brands liquor wine sake beer",
     fields: [
       originField(),
       {
-        id: "spirit",
-        label: "Spirit type",
-        hint: "Category of spirit.",
+        id: "drink",
+        label: "Drink type",
+        hint: "Spirits, wine, sake, or beer.",
         options: [
+          { id: "liquor", label: "Spirits / liquor" },
+          { id: "wine", label: "Wine" },
+          { id: "sake", label: "Sake" },
+          { id: "beer", label: "Beer" },
           { id: "whisky", label: "Whisky / whiskey" },
           { id: "vodka", label: "Vodka" },
           { id: "gin", label: "Gin" },
           { id: "rum", label: "Rum" },
           { id: "tequila", label: "Tequila / mezcal" },
-          { id: "brandy", label: "Brandy / cognac" },
-          { id: "baijiu", label: "Baijiu" },
+          { id: "sparkling", label: "Sparkling wine" },
         ],
-        searchHint: "spirit",
-      },
-    ],
-  },
-  wine: {
-    categoryId: "wine",
-    kind: "brand",
-    subject: "wine producer brand",
-    listQuery: "wine brands",
-    fields: [
-      originField("Wine region / country"),
-      {
-        id: "style",
-        label: "Style",
-        hint: "Colour or production style.",
-        options: [
-          { id: "red", label: "Red" },
-          { id: "white", label: "White" },
-          { id: "sparkling", label: "Sparkling" },
-          { id: "rosé", label: "Rosé" },
-        ],
-        searchHint: "style",
-      },
-    ],
-  },
-  sake: {
-    categoryId: "sake",
-    kind: "brand",
-    subject: "sake brewery brand",
-    listQuery: "sake brands",
-    fields: [
-      {
-        id: "prefecture",
-        label: "Prefecture / region",
-        hint: "Japanese brewing region.",
-        options: [
-          { id: "niigata", label: "Niigata" },
-          { id: "hyogo", label: "Hyōgo" },
-          { id: "kyoto", label: "Kyoto" },
-          { id: "hiroshima", label: "Hiroshima" },
-          { id: "akita", label: "Akita" },
-          { id: "yamagata", label: "Yamagata" },
-        ],
-        searchHint: "prefecture",
-      },
-      {
-        id: "grade",
-        label: "Grade",
-        hint: "Brewing grade focus.",
-        options: [
-          { id: "junmai", label: "Junmai" },
-          { id: "ginjo", label: "Ginjō" },
-          { id: "daiginjo", label: "Daiginjō" },
-          { id: "nigori", label: "Nigori" },
-        ],
-        searchHint: "grade",
-      },
-    ],
-  },
-  beer: {
-    categoryId: "beer",
-    kind: "brand",
-    subject: "beer brewery brand",
-    listQuery: "beer brands",
-    fields: [
-      originField(),
-      {
-        id: "style",
-        label: "Style",
-        hint: "Brew style.",
-        options: [
-          { id: "lager", label: "Lager" },
-          { id: "ipa", label: "IPA" },
-          { id: "stout", label: "Stout / porter" },
-          { id: "wheat", label: "Wheat / weiss" },
-          { id: "craft", label: "Craft" },
-        ],
-        searchHint: "style",
+        searchHint: "type",
       },
     ],
   },
@@ -406,7 +332,10 @@ const SPECS: Record<string, CategoryInterestSpec> = {
   },
 };
 
+const LEGACY_ALCOHOL = new Set(["liquor", "wine", "sake", "beer"]);
+
 export function interestSpecFor(categoryId: string): CategoryInterestSpec | null {
+  if (LEGACY_ALCOHOL.has(categoryId)) return SPECS.alcohol ?? null;
   return SPECS[categoryId] ?? null;
 }
 

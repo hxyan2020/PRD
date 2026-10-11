@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { ItemDetail } from "../components/ItemDetail";
 import { ItemTile } from "../components/ItemTile";
 import { ContributeUploadPanel } from "../components/ContributeUploadPanel";
@@ -15,6 +15,13 @@ import {
 } from "../lib/progress";
 import { formatPct } from "../lib/unlocks";
 
+const LEGACY_CATEGORY_REDIRECT: Record<string, string> = {
+  liquor: "alcohol",
+  wine: "alcohol",
+  sake: "alcohol",
+  beer: "alcohol",
+};
+
 export function CatalogPage() {
   const { categoryId } = useParams();
   const { catalog, loading, error, refresh } = useCatalog();
@@ -23,6 +30,10 @@ export function CatalogPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "locked" | "unlocked" | "sneak">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  if (categoryId && LEGACY_CATEGORY_REDIRECT[categoryId]) {
+    return <Navigate to={`/catalog/${LEGACY_CATEGORY_REDIRECT[categoryId]}`} replace />;
+  }
 
   const activeCategory = catalog?.categories.find((c) => c.id === categoryId);
 

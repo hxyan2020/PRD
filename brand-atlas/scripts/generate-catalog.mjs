@@ -3341,6 +3341,47 @@ const CATEGORIES = {
   },
 };
 
+/** Fold liquor / wine / sake / beer into one Alcohol catalogue (keep asset prefixes). */
+(function mergeAlcoholCategories() {
+  const parts = ["liquor", "wine", "sake", "beer"];
+  const items = [];
+  for (const ns of parts) {
+    const src = CATEGORIES[ns];
+    if (!src) continue;
+    for (const seed of src.items) {
+      const tags = new Set([...(seed.tags ?? []), ns]);
+      items.push({ ...seed, ns, tags: [...tags] });
+    }
+  }
+  const alcohol = {
+    id: "alcohol",
+    label: "Alcohol brands",
+    blurb: "Spirits, wine, sake, and beer — bottles and breweries still poured today.",
+    kind: "brand",
+    items,
+  };
+  const order = [
+    "cars",
+    "cigarettes",
+    "alcohol",
+    "coffee",
+    "tea",
+    "clothes",
+    "luxury",
+    "trees",
+    "flowers",
+    "animals",
+    "food",
+  ];
+  const next = {};
+  for (const key of order) {
+    if (key === "alcohol") next.alcohol = alcohol;
+    else if (CATEGORIES[key]) next[key] = CATEGORIES[key];
+  }
+  for (const key of Object.keys(CATEGORIES)) delete CATEGORIES[key];
+  Object.assign(CATEGORIES, next);
+})();
+
 function slugify(s) {
   return String(s)
     .toLowerCase()
@@ -3433,6 +3474,7 @@ function buildFacts(cat, seed) {
     case "wine":
     case "sake":
     case "beer":
+    case "alcohol":
       return {
         established: String(yearFromId(sid, 1600, 1990)),
         house: seed.name,
@@ -3557,9 +3599,11 @@ function resolveCoverPath(itemId) {
 function buildItem(cat, seed, index) {
   const id = seed.id || slugify(seed.name);
   const facts = buildFacts(cat, seed);
-  const itemId = `${cat.id}__${id}`;
-  const hue = coverHue(`${cat.id}-${id}`);
-  const markPath = writeMarkSvg(itemId, seed.name, cat.id, hue);
+  /** Optional seed.ns keeps legacy mark/cover/unlock ids after category merges. */
+  const ns = seed.ns || cat.id;
+  const itemId = `${ns}__${id}`;
+  const hue = coverHue(`${ns}-${id}`);
+  const markPath = writeMarkSvg(itemId, seed.name, ns, hue);
   const markIcon = MARK_ICONS[itemId] ?? null;
   const coverPath = resolveCoverPath(itemId);
   return {

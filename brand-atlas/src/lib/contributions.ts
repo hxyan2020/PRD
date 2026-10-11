@@ -40,9 +40,13 @@ export function subscribeContributions(cb: () => void): () => void {
   };
 }
 
+const ALCOHOL_IDS = new Set(["alcohol", "liquor", "wine", "sake", "beer"]);
+
 export function listContributions(categoryId?: string): ContributionRecord[] {
   const all = readAll().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  return categoryId ? all.filter((c) => c.categoryId === categoryId) : all;
+  if (!categoryId) return all;
+  if (categoryId === "alcohol") return all.filter((c) => ALCOHOL_IDS.has(c.categoryId));
+  return all.filter((c) => c.categoryId === categoryId);
 }
 
 export function contributionItems(): CatalogItem[] {

@@ -40,10 +40,15 @@ function searchQuery(item) {
   const cat = item.categoryId;
   if (["trees", "flowers", "animals"].includes(cat)) return item.name;
   if (cat === "cars") return `${item.name} automobile`;
-  if (cat === "beer") return `${item.name} beer`;
-  if (cat === "wine") return `${item.name} wine`;
-  if (cat === "sake") return `${item.name} sake`;
-  if (cat === "liquor") return `${item.name} bottle`;
+  if (cat === "beer" || item.tags?.includes("beer") || String(item.id).startsWith("beer__"))
+    return `${item.name} beer`;
+  if (cat === "wine" || item.tags?.includes("wine") || String(item.id).startsWith("wine__"))
+    return `${item.name} wine`;
+  if (cat === "sake" || item.tags?.includes("sake") || String(item.id).startsWith("sake__"))
+    return `${item.name} sake`;
+  if (cat === "liquor" || item.tags?.includes("liquor") || String(item.id).startsWith("liquor__"))
+    return `${item.name} bottle`;
+  if (cat === "alcohol") return `${item.name} drink`;
   if (cat === "coffee") return `${item.name} coffee`;
   if (cat === "tea") return `${item.name} tea`;
   if (cat === "food") return item.name;

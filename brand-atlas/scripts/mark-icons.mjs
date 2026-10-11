@@ -70,6 +70,7 @@ export const MARK_GLYPHS = {
   wine: "♤",
   sake: "☆",
   beer: "▢",
+  alcohol: "◇",
   coffee: "☕",
   tea: "♨",
   clothes: "◇",
