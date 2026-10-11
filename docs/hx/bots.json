@@ -1,0 +1,19 @@
+{
+  "program": "HX bots monitoring",
+  "owner": "HX",
+  "slug": "canon",
+  "name": "Canon",
+  "kind": "external",
+  "targets": [
+    {
+      "id": "canon",
+      "name": "Canon",
+      "kind": "web",
+      "path": "/",
+      "url": "https://canon-ivory.vercel.app/",
+      "health": "https://canon-ivory.vercel.app/hx/health.json",
+      "intervalSeconds": 60,
+      "expect": { "status": "ok", "archiveSongs": 1000 }
+    }
+  ]
+}
