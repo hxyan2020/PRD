@@ -51,7 +51,10 @@ function searchQuery(item) {
   if (cat === "alcohol") return `${item.name} drink`;
   if (cat === "coffee") return `${item.name} coffee`;
   if (cat === "tea") return `${item.name} tea`;
-  if (cat === "food") return item.name;
+  if (cat === "food") {
+    const tip = item.tags?.[0];
+    return tip ? `${item.name} ${tip}` : `${item.name} food brand`;
+  }
   if (cat === "clothes") return `${item.name} fashion`;
   if (cat === "luxury") return `${item.name}`;
   if (cat === "cigarettes") return `${item.name} cigarettes`;
@@ -190,7 +193,13 @@ for (const name of readdirSync(coversDir)) {
 }
 
 const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
-const items = catalog.items.filter((it) => it.status !== "removed");
+const categoryFilter = process.argv.slice(2).filter((a) => !a.startsWith("-"));
+let items = catalog.items.filter((it) => it.status !== "removed");
+if (categoryFilter.length) {
+  const want = new Set(categoryFilter);
+  items = items.filter((it) => want.has(it.categoryId));
+  console.log(`Category filter: ${[...want].join(", ")}`);
+}
 const missing = items.filter((it) => !hasJpg(it.id));
 console.log(`Fetching ${missing.length} missing covers (${items.length - missing.length} already present)…`);
 
