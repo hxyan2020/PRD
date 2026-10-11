@@ -20,6 +20,9 @@ export type MessageKey =
   | "catalog.unlocked"
   | "catalog.sneak"
   | "catalog.progress"
+  | "catalog.tabContribute"
+  | "catalog.tabAdd"
+  | "catalog.tabCatalogue"
   | "scan.title"
   | "scan.blurb"
   | "scan.identify"
@@ -64,6 +67,9 @@ const en: Pack = {
   "catalog.unlocked": "Unlocked",
   "catalog.sneak": "Sneak peek",
   "catalog.progress": "Progress",
+  "catalog.tabContribute": "Contribute",
+  "catalog.tabAdd": "Add to the catalogue",
+  "catalog.tabCatalogue": "Current catalogue",
   "scan.title": "Scan & unlock",
   "scan.blurb":
     "Choose categories, then photograph or upload. AI reads the logo / distinctive features and asks you to confirm.",
@@ -114,6 +120,9 @@ const packs: Record<string, Pack> = {
     "catalog.unlocked": "已解锁",
     "catalog.sneak": "预览",
     "catalog.progress": "进度",
+    "catalog.tabContribute": "贡献",
+    "catalog.tabAdd": "添加到图鉴",
+    "catalog.tabCatalogue": "当前图鉴",
     "scan.title": "扫描解锁",
     "scan.blurb": "选择分类，拍照或上传。AI 识别标志或特征并请你确认。",
     "scan.identify": "AI 识别",
@@ -153,6 +162,9 @@ const packs: Record<string, Pack> = {
     "catalog.unlocked": "已解鎖",
     "catalog.sneak": "預覽",
     "catalog.progress": "進度",
+    "catalog.tabContribute": "貢獻",
+    "catalog.tabAdd": "加入圖鑑",
+    "catalog.tabCatalogue": "目前圖鑑",
     "scan.title": "掃描解鎖",
     "scan.identify": "AI 辨識",
     "scan.confirm": "確認",
@@ -185,6 +197,9 @@ const packs: Record<string, Pack> = {
     "catalog.unlocked": "解放済み",
     "catalog.sneak": "チラ見せ",
     "catalog.progress": "進捗",
+    "catalog.tabContribute": "投稿",
+    "catalog.tabAdd": "図鑑に追加",
+    "catalog.tabCatalogue": "現在の図鑑",
     "scan.title": "スキャン＆アンロック",
     "scan.identify": "AIで識別",
     "scan.confirm": "確定",
@@ -219,6 +234,9 @@ const packs: Record<string, Pack> = {
     "catalog.unlocked": "잠금 해제됨",
     "catalog.sneak": "미리보기",
     "catalog.progress": "진행률",
+    "catalog.tabContribute": "기여",
+    "catalog.tabAdd": "도감에 추가",
+    "catalog.tabCatalogue": "현재 도감",
     "scan.title": "스캔 & 잠금 해제",
     "scan.identify": "AI 식별",
     "scan.confirm": "확인",
@@ -251,6 +269,9 @@ const packs: Record<string, Pack> = {
     "catalog.unlocked": "Desbloqueado",
     "catalog.sneak": "Vista previa",
     "catalog.progress": "Progreso",
+    "catalog.tabContribute": "Contribuir",
+    "catalog.tabAdd": "Añadir al catálogo",
+    "catalog.tabCatalogue": "Catálogo actual",
     "scan.title": "Escanear y desbloquear",
     "scan.identify": "Identificar con IA",
     "scan.confirm": "Confirmar",
@@ -285,6 +306,9 @@ const packs: Record<string, Pack> = {
     "catalog.unlocked": "Débloqué",
     "catalog.sneak": "Aperçu",
     "catalog.progress": "Progression",
+    "catalog.tabContribute": "Contribuer",
+    "catalog.tabAdd": "Ajouter au catalogue",
+    "catalog.tabCatalogue": "Catalogue actuel",
     "scan.title": "Scanner et débloquer",
     "scan.identify": "Identifier avec l'IA",
     "scan.confirm": "Confirmer",

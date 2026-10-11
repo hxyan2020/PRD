@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ItemDetail } from "../components/ItemDetail";
 import { ItemTile } from "../components/ItemTile";
@@ -24,6 +24,8 @@ const LEGACY_CATEGORY_REDIRECT: Record<string, string> = {
   tea: "hotdrinks",
 };
 
+type ShelfTab = "contribute" | "add" | "catalogue";
+
 export function CatalogPage() {
   const { categoryId } = useParams();
   const { catalog, loading, error, refresh } = useCatalog();
@@ -32,6 +34,14 @@ export function CatalogPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "locked" | "unlocked" | "sneak">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [shelfTab, setShelfTab] = useState<ShelfTab>("catalogue");
+
+  useEffect(() => {
+    setShelfTab("catalogue");
+    setQuery("");
+    setFilter("all");
+    setSelectedId(null);
+  }, [categoryId]);
 
   if (categoryId && LEGACY_CATEGORY_REDIRECT[categoryId]) {
     return <Navigate to={`/catalog/${LEGACY_CATEGORY_REDIRECT[categoryId]}`} replace />;
@@ -133,21 +143,6 @@ export function CatalogPage() {
         </div>
       )}
 
-      {activeCategory && catalog && (
-        <>
-          <ContributeUploadPanel
-            catalog={catalog}
-            category={activeCategory}
-            onChanged={refresh}
-          />
-          <ResourcePackPanel
-            catalog={catalog}
-            category={activeCategory}
-            onChanged={refresh}
-          />
-        </>
-      )}
-
       <div className="pill-group" style={{ marginBottom: "1rem" }}>
         <Link className={`pill ${!categoryId ? "is-on" : ""}`} to="/catalog">
           {t("catalog.all")}
@@ -163,52 +158,116 @@ export function CatalogPage() {
         ))}
       </div>
 
-      <div className="toolbar">
-        <div className="field">
-          <label htmlFor="q">Search</label>
-          <input
-            id="q"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Name, origin, tag…"
+      {activeCategory && catalog && (
+        <div className="shelf-tabs" role="tablist" aria-label={activeCategory.label}>
+          {(
+            [
+              ["contribute", t("catalog.tabContribute")],
+              ["add", t("catalog.tabAdd")],
+              ["catalogue", t("catalog.tabCatalogue")],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              id={`shelf-tab-${id}`}
+              aria-selected={shelfTab === id}
+              aria-controls={`shelf-panel-${id}`}
+              className={`shelf-tabs__tab ${shelfTab === id ? "is-on" : ""}`}
+              onClick={() => setShelfTab(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {activeCategory && catalog && shelfTab === "contribute" && (
+        <div
+          className="shelf-tabs__panel"
+          role="tabpanel"
+          id="shelf-panel-contribute"
+          aria-labelledby="shelf-tab-contribute"
+        >
+          <ContributeUploadPanel
+            catalog={catalog}
+            category={activeCategory}
+            onChanged={refresh}
           />
         </div>
-        <div className="field" style={{ flex: "0 0 160px" }}>
-          <label htmlFor="filter">Show</label>
-          <select
-            id="filter"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value as typeof filter)}
-          >
-            <option value="all">All</option>
-            <option value="locked">{t("catalog.locked")}</option>
-            <option value="sneak">{t("catalog.sneak")}</option>
-            <option value="unlocked">{t("catalog.unlocked")}</option>
-          </select>
+      )}
+
+      {activeCategory && catalog && shelfTab === "add" && (
+        <div
+          className="shelf-tabs__panel"
+          role="tabpanel"
+          id="shelf-panel-add"
+          aria-labelledby="shelf-tab-add"
+        >
+          <ResourcePackPanel
+            catalog={catalog}
+            category={activeCategory}
+            onChanged={refresh}
+          />
         </div>
-      </div>
+      )}
 
-      {loading && <p className="muted">Loading…</p>}
-      {error && <p className="banner banner--warn">{error}</p>}
+      {(!activeCategory || shelfTab === "catalogue") && (
+        <div
+          className="shelf-tabs__panel"
+          role={activeCategory ? "tabpanel" : undefined}
+          id={activeCategory ? "shelf-panel-catalogue" : undefined}
+          aria-labelledby={activeCategory ? "shelf-tab-catalogue" : undefined}
+        >
+          <div className="toolbar">
+            <div className="field">
+              <label htmlFor="q">Search</label>
+              <input
+                id="q"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Name, origin, tag…"
+              />
+            </div>
+            <div className="field" style={{ flex: "0 0 160px" }}>
+              <label htmlFor="filter">Show</label>
+              <select
+                id="filter"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value as typeof filter)}
+              >
+                <option value="all">All</option>
+                <option value="locked">{t("catalog.locked")}</option>
+                <option value="sneak">{t("catalog.sneak")}</option>
+                <option value="unlocked">{t("catalog.unlocked")}</option>
+              </select>
+            </div>
+          </div>
 
-      <div className="item-grid">
-        {items.map((item) => {
-          const peek = peekByCategory.get(item.categoryId) ?? new Set();
-          return (
-            <ItemTile
-              key={item.id}
-              item={item}
-              mode={revealMode(item, peek)}
-              onClick={() => setSelectedId(item.id)}
-            />
-          );
-        })}
-      </div>
+          {loading && <p className="muted">Loading…</p>}
+          {error && <p className="banner banner--warn">{error}</p>}
 
-      {!loading && !items.length && (
-        <p className="muted" style={{ marginTop: "1rem" }}>
-          No items match this filter.
-        </p>
+          <div className="item-grid">
+            {items.map((item) => {
+              const peek = peekByCategory.get(item.categoryId) ?? new Set();
+              return (
+                <ItemTile
+                  key={item.id}
+                  item={item}
+                  mode={revealMode(item, peek)}
+                  onClick={() => setSelectedId(item.id)}
+                />
+              );
+            })}
+          </div>
+
+          {!loading && !items.length && (
+            <p className="muted" style={{ marginTop: "1rem" }}>
+              No items match this filter.
+            </p>
+          )}
+        </div>
       )}
 
       {selected && catalog && (

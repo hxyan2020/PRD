@@ -36,7 +36,21 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
   const packs = useMemo(() => listResourcePacks(category.id), [category.id, catalog.meta.itemCount]);
   const progress = categoryProgress(itemsForCategory(catalog, category.id));
 
-  if (!interestSpec) return null;
+  if (!interestSpec) {
+    return (
+      <section className="resource-pack" aria-labelledby="resource-pack-title">
+        <div className="resource-pack__head">
+          <div>
+            <h3 id="resource-pack-title">Add to the catalogue</h3>
+            <p>
+              Resource packs are not available for this shelf yet. Use Contribute to
+              upload a sighting, or browse the current catalogue.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
   const spec = interestSpec;
 
   const interests: InterestSelection = { traits, note: note.trim() || undefined };
@@ -123,11 +137,11 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
     <section className="resource-pack" aria-labelledby="resource-pack-title">
       <div className="resource-pack__head">
         <div>
-          <h3 id="resource-pack-title">Resource packs</h3>
+          <h3 id="resource-pack-title">Add to the catalogue</h3>
           <p>
             Specify interests for this shelf, then let Seen search the web for matching
-            brands or species and add them as a pack. New items start locked; progress
-            updates automatically ({progress.unlocked}/{progress.total} ·{" "}
+            brands or species and add them. New items start locked; progress updates
+            automatically ({progress.unlocked}/{progress.total} ·{" "}
             {formatPct(progress.pct)}).
           </p>
         </div>
