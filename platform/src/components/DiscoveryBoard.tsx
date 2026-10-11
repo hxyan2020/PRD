@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Badge, StatCard, StatusBadge } from "@/components/ui";
@@ -78,21 +78,28 @@ export function DiscoveryBoard({
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [comment, setComment] = useState("");
+  const [candidates, setCandidates] = useState(initial.candidates);
+  const [pendingCount, setPendingCount] = useState(initial.pending_count);
   const [selected, setSelected] = useState<string | null>(
     initial.candidates.find((c) => c.status === "PENDING_RO")?.candidate_id ??
       initial.candidates[0]?.candidate_id ??
       null
   );
 
+  useEffect(() => {
+    setCandidates(initial.candidates);
+    setPendingCount(initial.pending_count);
+  }, [initial.candidates, initial.pending_count]);
+
   const enabled =
     initial.settings.find((s) => s.key === "discovery.enabled")?.value !== "false";
 
   const filtered = useMemo(() => {
-    if (filter === "ALL") return initial.candidates;
-    return initial.candidates.filter((c) => c.status === filter);
-  }, [filter, initial.candidates]);
+    if (filter === "ALL") return candidates;
+    return candidates.filter((c) => c.status === filter);
+  }, [filter, candidates]);
 
-  const selectedRow = initial.candidates.find((c) => c.candidate_id === selected) || filtered[0];
+  const selectedRow = candidates.find((c) => c.candidate_id === selected) || filtered[0];
 
   async function scanNow() {
     setBusy("scan");
@@ -149,6 +156,29 @@ export function DiscoveryBoard({
     } else {
       setMsg(locale === "zh-Hant" ? `已記錄：${data.status}` : `Recorded: ${data.status}`);
     }
+    setCandidates((prev) =>
+      prev.map((c) =>
+        c.candidate_id === selectedRow.candidate_id
+          ? {
+              ...c,
+              status: String(data.status || c.status),
+              skill_code: data.skill_code ? String(data.skill_code) : c.skill_code,
+              monitor_id: data.monitor_id ? String(data.monitor_id) : c.monitor_id,
+              change_request_id: data.change_request_id
+                ? String(data.change_request_id)
+                : c.change_request_id,
+              review_note: comment || c.review_note,
+              reviewed_by_name: initial.roles.role_code,
+            }
+          : c
+      )
+    );
+    setPendingCount((n) =>
+      ["APPROVE_FOR_MONITORING", "APPROVE_FOR_VALIDATION", "DISMISS"].includes(action)
+        ? Math.max(0, n - 1)
+        : n
+    );
+    if (action === "APPROVE_FOR_MONITORING") setFilter("IN_MONITORING");
     setComment("");
     router.refresh();
   }
@@ -158,15 +188,15 @@ export function DiscoveryBoard({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
           label={locale === "zh-Hant" ? "待 RO" : "Pending RO"}
-          value={initial.pending_count}
+          value={pendingCount}
         />
         <StatCard
           label={locale === "zh-Hant" ? "候選總數" : "Candidates"}
-          value={initial.candidates.length}
+          value={candidates.length}
         />
         <StatCard
           label={locale === "zh-Hant" ? "已進監控" : "In monitoring"}
-          value={initial.candidates.filter((c) => c.status === "IN_MONITORING").length}
+          value={candidates.filter((c) => c.status === "IN_MONITORING").length}
         />
         <StatCard
           label={locale === "zh-Hant" ? "最近掃描" : "Latest scan"}
