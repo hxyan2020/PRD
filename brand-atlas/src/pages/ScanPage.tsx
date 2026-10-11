@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { CelebrateModal } from "../components/CelebrateModal";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
+import { useI18n } from "../i18n/I18nProvider";
+import { categoryLabel } from "../i18n/labels";
 import { findItem, getCategory } from "../lib/catalog";
 import { identifyImage } from "../lib/identify";
 import type { CatalogItem, Guess, IdentifyResult } from "../types/catalog";
@@ -10,6 +12,7 @@ import type { CatalogItem, Guess, IdentifyResult } from "../types/catalog";
 export function ScanPage() {
   const { catalog, loading, error } = useCatalog();
   const { unlock } = useUnlocks();
+  const { t } = useI18n();
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -163,20 +166,17 @@ export function ScanPage() {
     <main className="shell section">
       <div className="section__head">
         <div>
-          <h2>Scan & unlock</h2>
-          <p>
-            Choose categories, then photograph or upload. AI reads the logo /
-            distinctive features and asks you to confirm.
-          </p>
+          <h2>{t("scan.title")}</h2>
+          <p>{t("scan.blurb")}</p>
         </div>
       </div>
 
-      {loading && <p className="muted">Loading catalogue…</p>}
+      {loading && <p className="muted">{t("scan.loading")}</p>}
       {error && <p className="banner banner--warn">{error}</p>}
 
       <div style={{ marginBottom: "1rem" }}>
         <p className="muted" style={{ marginBottom: "0.5rem" }}>
-          Categories (optional — leave empty to search all)
+          {t("scan.categoriesHint")}
         </p>
         <div className="pill-group">
           <button
@@ -184,7 +184,7 @@ export function ScanPage() {
             className={`pill ${allSelected ? "is-on" : ""}`}
             onClick={() => setSelectedCats([])}
           >
-            All categories
+            {t("scan.allCategories")}
           </button>
           {categoryOptions.map((cat) => (
             <button
@@ -193,7 +193,7 @@ export function ScanPage() {
               className={`pill ${selectedCats.includes(cat.id) ? "is-on" : ""}`}
               onClick={() => toggleCat(cat.id)}
             >
-              {cat.label}
+              {categoryLabel(t, cat.id, cat.label)}
             </button>
           ))}
         </div>
@@ -203,27 +203,27 @@ export function ScanPage() {
         <div>
           <div className={`dropzone ${(previewUrl || cameraOn) ? "has-media" : ""}`}>
             {cameraOn && <video ref={videoRef} playsInline muted autoPlay />}
-            {!cameraOn && previewUrl && <img src={previewUrl} alt="Upload preview" />}
+            {!cameraOn && previewUrl && <img src={previewUrl} alt="" />}
             <div className="dropzone__hint">
-              <strong>Drop an image, upload, or use the camera</strong>
-              <p className="muted">Aim at the brand logo or a clear silhouette.</p>
+              <strong>{t("scan.dropHint")}</strong>
+              <p className="muted">{t("scan.dropSub")}</p>
             </div>
           </div>
 
           <div className="cta-row" style={{ marginTop: "0.9rem" }}>
             <button type="button" className="btn btn--forest" onClick={() => fileRef.current?.click()}>
-              Upload image
+              {t("scan.upload")}
             </button>
             <button
               type="button"
               className="btn btn--quiet"
               onClick={() => (cameraOn ? stopCamera() : void startCamera())}
             >
-              {cameraOn ? "Stop camera" : "Use camera"}
+              {cameraOn ? t("scan.stopCamera") : t("scan.camera")}
             </button>
             {cameraOn && (
               <button type="button" className="btn btn--primary" onClick={captureFromCamera}>
-                Capture
+                {t("scan.capture")}
               </button>
             )}
             <input
@@ -243,7 +243,7 @@ export function ScanPage() {
             disabled={!file || busy || !catalog}
             onClick={() => void runIdentify()}
           >
-            {busy ? "Scanning…" : "Identify with AI"}
+            {busy ? t("scan.scanning") : t("scan.identify")}
           </button>
 
           {busy && (
@@ -258,23 +258,20 @@ export function ScanPage() {
 
         <div>
           {!result && !busy && (
-            <div className="banner">
-              Tip: packaging text and logos work best. For trees, flowers, and
-              animals, fill the frame with distinct shape and colour.
-            </div>
+            <div className="banner">{t("scan.tip")}</div>
           )}
 
           {result?.status === "unclear" && (
             <div className="banner banner--warn">
-              <strong>Need a clearer shot</strong>
+              <strong>{t("scan.needClearer")}</strong>
               <p style={{ margin: "0.4rem 0 0" }}>{result.message}</p>
               {selectedCats.length === 1 && (
                 <p style={{ margin: "0.65rem 0 0" }}>
-                  Not in the catalogue yet?{" "}
+                  {t("scan.notInCatalogue")}{" "}
                   <Link to={`/catalog/${selectedCats[0]}`}>
-                    Contribute a new sighting on this shelf
+                    {t("scan.contributeLink")}
                   </Link>{" "}
-                  — we only accept photos that belong in that category.
+                  {t("scan.contributeOnly")}
                 </p>
               )}
             </div>
@@ -285,7 +282,7 @@ export function ScanPage() {
               <div className="banner banner--ok">
                 <strong>{result.message}</strong>
                 <p className="muted" style={{ margin: "0.35rem 0 0" }}>
-                  Guesses limited to 5 · confidences sum to 100%
+                  {t("scan.guessesMeta")}
                 </p>
               </div>
               <div className="guess-list">
@@ -312,10 +309,10 @@ export function ScanPage() {
                 disabled={!picked}
                 onClick={() => void confirmGuess()}
               >
-                Confirm selection
+                {t("scan.confirm")}
               </button>
               <p className="muted" style={{ marginTop: "0.7rem" }}>
-                Wrong set?{" "}
+                {t("scan.wrongSet")}{" "}
                 <button
                   type="button"
                   className="btn btn--quiet"
@@ -324,16 +321,15 @@ export function ScanPage() {
                     setPicked(null);
                   }}
                 >
-                  Try another photo
+                  {t("scan.tryAnother")}
                 </button>
               </p>
             </>
           )}
 
           <p className="muted" style={{ marginTop: "1.2rem" }}>
-            After confirm, we match your pick to the catalogue. A hit means bingo —
-            greyscale lifts and colour returns.{" "}
-            <Link to="/catalog">See your unlocks</Link>.
+            {t("scan.afterConfirm")}{" "}
+            <Link to="/catalog">{t("scan.seeUnlocks")}</Link>.
           </p>
         </div>
       </div>
@@ -341,7 +337,11 @@ export function ScanPage() {
       {celebrating && catalog && (
         <CelebrateModal
           item={celebrating}
-          categoryLabel={getCategory(catalog, celebrating.categoryId)?.label ?? ""}
+          categoryLabel={categoryLabel(
+            t,
+            celebrating.categoryId,
+            getCategory(catalog, celebrating.categoryId)?.label ?? "",
+          )}
           onClose={() => setCelebrating(null)}
         />
       )}

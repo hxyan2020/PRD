@@ -12,6 +12,7 @@ import {
   type PackCandidate,
 } from "../lib/resourcePacks";
 import type { Catalog, CatalogCategory } from "../types/catalog";
+import { useI18n } from "../i18n/I18nProvider";
 import { formatPct } from "../lib/unlocks";
 import { categoryProgress } from "../lib/progress";
 import { itemsForCategory } from "../lib/catalog";
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
+  const { t } = useI18n();
   const interestSpec = interestSpecFor(category.id);
   const [traits, setTraits] = useState<Record<string, string[]>>({});
   const [note, setNote] = useState("");
@@ -46,11 +48,8 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
       <section className="resource-pack" aria-labelledby="resource-pack-title">
         <div className="resource-pack__head">
           <div>
-            <h3 id="resource-pack-title">Add to the catalogue</h3>
-            <p>
-              Resource packs are not available for this shelf yet. Use Contribute to
-              upload a sighting, or browse the current catalogue.
-            </p>
+            <h3 id="resource-pack-title">{t("pack.title")}</h3>
+            <p>{t("pack.unavailable")}</p>
           </div>
         </div>
       </section>
@@ -99,7 +98,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
       setSelected(new Set(result.candidates.map((c) => c.slug)));
       setStatus(result.message);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Discovery failed");
+      setError(e instanceof Error ? e.message : t("pack.failedDiscover"));
     } finally {
       setBusy(false);
     }
@@ -109,7 +108,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
     if (!preview?.length) return;
     const chosen = preview.filter((c) => selected.has(c.slug));
     if (!chosen.length) {
-      setError("Select at least one discovered item to add.");
+      setError(t("pack.selectOne"));
       return;
     }
     try {
@@ -127,7 +126,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
       setSelected(new Set());
       onChanged();
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Could not add pack");
+      setError(e instanceof Error ? e.message : t("pack.failedAdd"));
     }
   }
 
@@ -137,18 +136,14 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
   }
 
   const anyTrait = Object.values(traits).some((v) => v.length > 0) || Boolean(note.trim());
+  const statsLabel = `${progress.unlocked}/${progress.total} · ${formatPct(progress.pct)} · ${category.itemCount}`;
 
   return (
     <section className="resource-pack" aria-labelledby="resource-pack-title">
       <div className="resource-pack__head">
         <div>
-          <h3 id="resource-pack-title">Add to the catalogue</h3>
-          <p>
-            Specify interests for this shelf, then let Seen search the web for matching
-            brands or species and add them. New items start locked; progress updates
-            automatically ({progress.unlocked}/{progress.total} ·{" "}
-            {formatPct(progress.pct)} · {category.itemCount} on shelf).
-          </p>
+          <h3 id="resource-pack-title">{t("pack.title")}</h3>
+          <p>{t("pack.blurb", { stats: statsLabel })}</p>
         </div>
       </div>
 
@@ -178,7 +173,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
         ))}
 
         <div className="field">
-          <label htmlFor={`pack-note-${category.id}`}>Extra interest note</label>
+          <label htmlFor={`pack-note-${category.id}`}>{t("pack.note")}</label>
           <input
             id={`pack-note-${category.id}`}
             value={note}
@@ -186,7 +181,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
               setNote(e.target.value);
               setPreview(null);
             }}
-            placeholder="e.g. rising EV makers, street trees in humid cities…"
+            placeholder={t("pack.notePlaceholder")}
           />
         </div>
       </div>
@@ -198,11 +193,11 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
           disabled={busy || !anyTrait}
           onClick={() => void onSearch()}
         >
-          {busy ? "Searching the web…" : "Search & preview pack"}
+          {busy ? t("contribute.checking") : t("pack.discover")}
         </button>
         {preview && preview.length > 0 && (
           <button type="button" className="btn btn--forest" onClick={onAddPack}>
-            Add resource pack ({selected.size})
+            {t("pack.add", { count: String(selected.size) })}
           </button>
         )}
       </div>
@@ -212,7 +207,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
 
       {queries.length > 0 && (
         <p className="muted resource-pack__queries">
-          Queries: {queries.slice(0, 3).join(" · ")}
+          {t("pack.queries", { queries: queries.slice(0, 3).join(" · ") })}
           {queries.length > 3 ? "…" : ""}
         </p>
       )}
@@ -243,7 +238,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
 
       {packs.length > 0 && (
         <div className="resource-pack__installed">
-          <h4>Installed packs</h4>
+          <h4>{t("pack.yourPacks")}</h4>
           <ul>
             {packs.map((p) => (
               <li key={p.id}>
@@ -251,7 +246,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
                   <strong>{p.title}</strong>
                   <small className="muted">
                     {" "}
-                    {p.items.length} items · {new Date(p.createdAt).toLocaleString()}
+                    {p.items.length} · {new Date(p.createdAt).toLocaleString()}
                   </small>
                 </div>
                 <button
@@ -259,7 +254,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
                   className="btn btn--quiet btn--tiny"
                   onClick={() => onRemove(p.id)}
                 >
-                  Remove
+                  {t("pack.remove")}
                 </button>
               </li>
             ))}

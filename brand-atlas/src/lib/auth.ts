@@ -38,19 +38,23 @@ function writeUsers(users: Record<string, UserAccount>) {
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
-function readRawSession(): Session | null {
+function readRawSession(): { session: Session; needsUpgrade: boolean } | null {
   try {
     const raw = localStorage.getItem(SESSION_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<Session>;
     if (!parsed || typeof parsed.email !== "string" || !parsed.email) return null;
-    return {
+    const session: Session = {
       email: parsed.email,
       loggedInAt:
         typeof parsed.loggedInAt === "string"
           ? parsed.loggedInAt
           : new Date().toISOString(),
       remember: true,
+    };
+    return {
+      session,
+      needsUpgrade: parsed.remember !== true,
     };
   } catch {
     return null;
@@ -63,9 +67,10 @@ function readRawSession(): Session | null {
  * refresh, tab close, or navigation.
  */
 export function getSession(): Session | null {
-  const session = readRawSession();
-  if (!session) return null;
+  const restored = readRawSession();
+  if (!restored) return null;
 
+  const { session, needsUpgrade } = restored;
   const users = readUsers();
   if (!users[session.email]) {
     // Orphaned session (account removed) — force sign-out.
@@ -73,12 +78,9 @@ export function getSession(): Session | null {
     return null;
   }
 
-  // Re-write upgraded shape so older sessions also stay remembered.
-  if (session.remember !== true) {
-    localStorage.setItem(
-      SESSION_KEY,
-      JSON.stringify({ ...session, remember: true } satisfies Session),
-    );
+  // Upgrade older session payloads so they stay remembered.
+  if (needsUpgrade) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   }
   return session;
 }

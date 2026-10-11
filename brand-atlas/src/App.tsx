@@ -56,7 +56,7 @@ function Header() {
         <button
           type="button"
           className="nav-backdrop"
-          aria-label="Close menu"
+          aria-label={t("nav.closeMenu")}
           onClick={closeMenu}
         />
       )}
@@ -76,8 +76,8 @@ function Header() {
           </NavLink>
 
           <div className="header-tools header-tools--compact">
-            <div className="muted mono header-progress" title="Unlocked by you">
-              {count} unlocked
+            <div className="muted mono header-progress" title={t("header.unlockedTitle")}>
+              {t("header.unlocked", { count: String(count) })}
             </div>
             <LanguagePicker />
             <div className="header-auth-desktop">
@@ -101,7 +101,7 @@ function Header() {
               className={`nav-toggle ${menuOpen ? "is-open" : ""}`}
               aria-expanded={menuOpen}
               aria-controls="primary-nav"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
               onClick={() => setMenuOpen((v) => !v)}
             >
               <span />
@@ -116,11 +116,11 @@ function Header() {
             aria-label="Primary"
           >
             <div className="nav__mobile-head">
-              <span className="nav__mobile-title">Menu</span>
+              <span className="nav__mobile-title">{t("nav.menu")}</span>
               <button
                 type="button"
                 className="nav-close"
-                aria-label="Close menu"
+                aria-label={t("nav.closeMenu")}
                 onClick={closeMenu}
               >
                 ×

@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { CelebrateModal } from "./CelebrateModal";
+import { useI18n } from "../i18n/I18nProvider";
+import { categoryLabel } from "../i18n/labels";
 import { contributeSighting } from "../lib/contributeSighting";
 import { listContributions } from "../lib/contributions";
 import { categoryProgress } from "../lib/progress";
@@ -14,7 +16,9 @@ interface Props {
 }
 
 export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
+  const { t } = useI18n();
   const fileRef = useRef<HTMLInputElement>(null);
+  const catName = categoryLabel(t, category.id, category.label);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -34,7 +38,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
   const onPick = (f: File | null) => {
     if (!f) return;
     if (!f.type.startsWith("image/")) {
-      setError("Please choose an image file.");
+      setError(t("contribute.needImageFile"));
       return;
     }
     if (preview) URL.revokeObjectURL(preview);
@@ -51,7 +55,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
 
   async function onSubmit() {
     if (!file) {
-      setError("Choose an image first.");
+      setError(t("contribute.needImage"));
       return;
     }
     setBusy(true);
@@ -82,7 +86,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
         onChanged();
       }
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Contribution failed");
+      setError(e instanceof Error ? e.message : t("contribute.failed"));
     } finally {
       setBusy(false);
       setProgress(1);
@@ -91,17 +95,15 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
 
   const kindHint =
     category.kind === "nature"
-      ? `For ${category.label.toLowerCase()}, the photo must clearly show that subject (e.g. a real tree for Trees).`
-      : `For ${category.label.toLowerCase()}, the photo must show a relevant brand mark or product from this shelf.`;
+      ? t("contribute.hintNature", { category: catName })
+      : t("contribute.hintBrand", { category: catName });
 
   return (
     <section className="contribute-panel" aria-labelledby="contribute-title">
       <div className="contribute-panel__head">
-        <h3 id="contribute-title">Contribute a new sighting</h3>
+        <h3 id="contribute-title">{t("contribute.title")}</h3>
         <p>
-          Upload a photo of something not yet on this shelf. If it already exists, we
-          unlock it. If it is new and relevant, we add brand details, unlock it, and
-          recalculate progress ({shelfSizeLabel}). {kindHint}
+          {t("contribute.blurb", { stats: shelfSizeLabel })} {kindHint}
         </p>
       </div>
 
@@ -138,14 +140,14 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
               onPick(dropped);
             }}
             disabled={busy}
-            aria-label="Upload photo of the uncovered brand or species"
+            aria-label={t("contribute.uploadAria")}
           >
-            {preview && <img src={preview} alt="Contribution preview" />}
+            {preview && <img src={preview} alt="" />}
             <div className="dropzone__hint">
-              <strong>Photo of the uncovered brand or species</strong>
-              <p className="muted">Must belong in {category.label}.</p>
+              <strong>{t("contribute.photoLabel")}</strong>
+              <p className="muted">{t("contribute.mustBelong", { category: catName })}</p>
               <p className="muted contribute-dropzone__cta">
-                {preview ? "Click or drop to replace" : "Click or drop an image to upload"}
+                {preview ? t("contribute.clickReplace") : t("contribute.clickUpload")}
               </p>
             </div>
           </button>
@@ -156,7 +158,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
               onClick={openPicker}
               disabled={busy}
             >
-              Choose image
+              {t("contribute.chooseImage")}
             </button>
             <input
               ref={fileRef}
@@ -175,7 +177,9 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
         <div className="contribute-panel__form">
           <div className="field">
             <label htmlFor={`contrib-name-${category.id}`}>
-              Name {category.kind === "nature" ? "(species)" : "(brand)"}
+              {category.kind === "nature"
+                ? t("contribute.nameSpecies")
+                : t("contribute.nameBrand")}
             </label>
             <input
               id={`contrib-name-${category.id}`}
@@ -186,7 +190,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
                   ? "e.g. Ginkgo"
                   : category.id === "cars"
                     ? "e.g. Hongqi"
-                    : "Name shown in the photo"
+                    : catName
               }
             />
           </div>
@@ -197,7 +201,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
             disabled={busy || !file}
             onClick={() => void onSubmit()}
           >
-            {busy ? "Checking…" : "Submit sighting"}
+            {busy ? t("contribute.checking") : t("contribute.submit")}
           </button>
           {busy && (
             <div style={{ marginTop: "0.7rem" }}>
@@ -214,7 +218,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
 
       {contribs.length > 0 && (
         <div className="contribute-panel__list">
-          <h4>Your contributions on this shelf</h4>
+          <h4>{t("contribute.listTitle")}</h4>
           <ul>
             {contribs.map((c) => (
               <li key={c.id}>
@@ -233,7 +237,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
       {celebrating && (
         <CelebrateModal
           item={celebrating}
-          categoryLabel={category.label}
+          categoryLabel={catName}
           onClose={() => setCelebrating(null)}
         />
       )}

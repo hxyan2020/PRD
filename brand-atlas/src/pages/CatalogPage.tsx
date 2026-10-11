@@ -7,6 +7,7 @@ import { ResourcePackPanel } from "../components/ResourcePackPanel";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
+import { categoryLabel } from "../i18n/labels";
 import { itemsForCategory } from "../lib/catalog";
 import {
   categoryProgress,
@@ -114,11 +115,15 @@ export function CatalogPage() {
     <main className="shell section">
       <div className="section__head">
         <div>
-          <h2>{activeCategory ? activeCategory.label : t("catalog.title")}</h2>
+          <h2>
+            {activeCategory
+              ? categoryLabel(t, activeCategory.id, activeCategory.label)
+              : t("catalog.title")}
+          </h2>
           <p>
             {activeCategory
               ? activeCategory.blurb
-              : "Locked covers stay greyscale until you scan and confirm. Sneak peeks light colour early."}
+              : t("catalog.blurbDefault")}
           </p>
         </div>
         <Link className="btn btn--forest" to="/scan">
@@ -134,7 +139,10 @@ export function CatalogPage() {
             <span className="muted">
               {" "}
               ({progress.unlocked}/{progress.total}
-              {activeCategory ? ` · ${activeCategory.itemCount} on shelf` : ""})
+              {activeCategory
+                ? ` · ${t("catalog.onShelf", { count: String(activeCategory.itemCount) })}`
+                : ""}
+              )
             </span>
           </div>
           <div className="progress-bar" aria-hidden>
@@ -144,8 +152,9 @@ export function CatalogPage() {
             typeof progress.sneakFraction === "number" &&
             progress.sneakFraction > 0 && (
             <p className="muted" style={{ margin: 0 }}>
-              Sneak peek reward: next {formatPct(progress.sneakFraction * 100)} of this shelf
-              (colour only).
+              {t("catalog.sneakReward", {
+                pct: formatPct(progress.sneakFraction * 100),
+              })}
             </p>
           )}
         </div>
@@ -161,13 +170,17 @@ export function CatalogPage() {
             className={`pill ${categoryId === cat.id ? "is-on" : ""}`}
             to={`/catalog/${cat.id}`}
           >
-            {cat.label}
+            {categoryLabel(t, cat.id, cat.label)}
           </Link>
         ))}
       </div>
 
       {activeCategory && catalog && (
-        <div className="shelf-tabs" role="tablist" aria-label={activeCategory.label}>
+        <div
+          className="shelf-tabs"
+          role="tablist"
+          aria-label={categoryLabel(t, activeCategory.id, activeCategory.label)}
+        >
           {(
             [
               ["contribute", t("catalog.tabContribute")],
@@ -230,22 +243,22 @@ export function CatalogPage() {
         >
           <div className="toolbar">
             <div className="field">
-              <label htmlFor="q">Search</label>
+              <label htmlFor="q">{t("catalog.search")}</label>
               <input
                 id="q"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Name, origin, tag…"
+                placeholder={t("catalog.searchPlaceholder")}
               />
             </div>
             <div className="field" style={{ flex: "0 0 160px" }}>
-              <label htmlFor="filter">Show</label>
+              <label htmlFor="filter">{t("catalog.show")}</label>
               <select
                 id="filter"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as typeof filter)}
               >
-                <option value="all">All</option>
+                <option value="all">{t("catalog.all")}</option>
                 <option value="locked">{t("catalog.locked")}</option>
                 <option value="sneak">{t("catalog.sneak")}</option>
                 <option value="unlocked">{t("catalog.unlocked")}</option>
@@ -253,7 +266,7 @@ export function CatalogPage() {
             </div>
           </div>
 
-          {loading && <p className="muted">Loading…</p>}
+          {loading && <p className="muted">{t("catalog.loading")}</p>}
           {error && <p className="banner banner--warn">{error}</p>}
 
           <div className="item-grid">
@@ -272,7 +285,7 @@ export function CatalogPage() {
 
           {!loading && !items.length && (
             <p className="muted" style={{ marginTop: "1rem" }}>
-              No items match this filter.
+              {t("catalog.empty")}
             </p>
           )}
         </div>
@@ -281,9 +294,11 @@ export function CatalogPage() {
       {selected && catalog && (
         <ItemDetail
           item={selected}
-          categoryLabel={
-            catalog.categories.find((c) => c.id === selected.categoryId)?.label ?? ""
-          }
+          categoryLabel={categoryLabel(
+            t,
+            selected.categoryId,
+            catalog.categories.find((c) => c.id === selected.categoryId)?.label ?? "",
+          )}
           mode={selectedMode}
           unlock={getUnlock(selected.id)}
           categoryPct={selectedCatPct}
