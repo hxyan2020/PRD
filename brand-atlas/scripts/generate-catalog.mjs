@@ -5006,6 +5006,25 @@ const CATEGORIES = {
   },
 };
 
+/** Expand trees from Catalogue of Life (ChecklistBank) species for woody genera. */
+(function mergeColTreeSpecies() {
+  const colPath = join(__dirname, "data", "tree-seeds-col.json");
+  if (!existsSync(colPath) || !CATEGORIES.trees) return;
+  const extra = JSON.parse(readFileSync(colPath, "utf8"));
+  if (!Array.isArray(extra) || !extra.length) return;
+  const seen = new Set(CATEGORIES.trees.items.map((s) => s.id));
+  let added = 0;
+  for (const seed of extra) {
+    if (!seed?.id || !seed?.name || seen.has(seed.id)) continue;
+    seen.add(seed.id);
+    CATEGORIES.trees.items.push(seed);
+    added += 1;
+  }
+  CATEGORIES.trees.blurb =
+    "Living trees still rooted on Earth — curated icons plus Catalogue of Life species across woody genera.";
+  console.log(`Merged ${added} Catalogue of Life tree species (total ${CATEGORIES.trees.items.length}).`);
+})();
+
 /** Fold liquor / wine / sake / beer into one Alcohol catalogue (keep asset prefixes). */
 (function mergeBeverageCategories() {
   function fold(parts, id, label, blurb) {
@@ -5217,8 +5236,29 @@ function escapeXml(s) {
     .replace(/"/g, "&quot;");
 }
 
+/** Grey tree silhouettes for COL species without a hand-drawn mark. */
+function treeSilhouetteSvg(kind) {
+  const fill = "#C4C4C4";
+  if (kind === "conifer") {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="${fill}" d="M64 8L40 40h10L36 60h12L32 84h20v36h24V84h20L80 60h12L78 40h10z"/>
+</svg>`;
+  }
+  if (kind === "palm") {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="${fill}" d="M64 48c-4-20-20-36-36-40 16 8 28 24 32 40 4-20 20-36 36-40-16 8-28 24-32 40z M60 48h8v72h-8z M40 40c8 4 16 12 20 20 M88 40c-8 4-16 12-20 20"/>
+</svg>`;
+  }
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="${fill}" d="M64 18c-18 0-32 12-34 28-10 2-18 12-18 24 0 14 11 26 26 28v22h12V98h16v22h12V98c15-2 26-14 26-28 0-12-8-22-18-24-2-16-16-28-34-28z"/>
+</svg>`;
+}
+
 /** Local SVG mark so locked tiles show a recognizable grey logo shape offline. */
-function writeMarkSvg(itemId, name, categoryId, hue) {
+function writeMarkSvg(itemId, name, categoryId, hue, tags = []) {
   mkdirSync(marksDir, { recursive: true });
   const out = join(marksDir, `${itemId}.svg`);
   // Keep previously vendored logos / silhouettes / Clearbit wraps / crests — do not overwrite.
@@ -5231,6 +5271,15 @@ function writeMarkSvg(itemId, name, categoryId, hue) {
     if (!isMonogramBadge) {
       return `marks/${itemId}.svg`;
     }
+  }
+  if (categoryId === "trees") {
+    const kind = tags.includes("palm")
+      ? "palm"
+      : tags.includes("conifer")
+        ? "conifer"
+        : "deciduous";
+    writeFileSync(out, treeSilhouetteSvg(kind));
+    return `marks/${itemId}.svg`;
   }
   const initials = name
     .replace(/[^A-Za-z0-9\u00C0-\u024F]/g, " ")
@@ -5277,7 +5326,7 @@ function buildItem(cat, seed, index) {
   const ns = seed.ns || cat.id;
   const itemId = `${ns}__${id}`;
   const hue = coverHue(`${ns}-${id}`);
-  const markPath = writeMarkSvg(itemId, seed.name, ns, hue);
+  const markPath = writeMarkSvg(itemId, seed.name, ns, hue, seed.tags ?? []);
   const markIcon = MARK_ICONS[itemId] ?? null;
   const coverPath = resolveCoverPath(itemId);
   return {
