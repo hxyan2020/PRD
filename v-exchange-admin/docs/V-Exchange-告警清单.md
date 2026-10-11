@@ -1,7 +1,23 @@
 # V-Exchange 告警清单
 
 > 来源：Lark 文档「V-Exchange 告警清单 / 告警清单 草」（Natalie Chen）。  
-> 永久链接：https://hxyan2020.github.io/PRD/alarm-list.html
+> 永久链接：https://hxyan2020.github.io/PRD/alarm-list.html  
+> 监控警报 SOP（同一页面 Tab）：https://hxyan2020.github.io/PRD/alarm-list.html#sop  
+> SOP 源片段：`v-exchange-admin/public/alarm-sop-content.html`（构建时合并进 `alarm-list.html`）
+
+## 监控警报 SOP（Alex Huang · Oct 8）
+
+与 Lark「V-exchange 监控警报SOP」对齐，包含：
+
+1. **警报及其触发处理流程图**（事前 / 事中 / 事后；Risk、前端、BIT-perpetual、MM 造市商）
+2. **1.1 警报优先级与 Risk 反应时间**（低 &lt;15min … 最高 &lt;3min）
+3. **1.2 相关问题对接人**（系统/指数/标记价格、盘面/流动性、财务、价差预警及 Lark 群组）
+4. **2. 盘面异常监控** — 无交易、档位深度、价差（盘口价差/偏离/插针）、限价异常（告警定义 + 原因分析 + 样例记录）
+5. **3. 平台定价 / 标记价格异常监控**（Soft Xiao、Evan Bi；后续截图内容继续追加）
+
+---
+
+## 告警清单表
 
 | 分类 | 子模块 | 告警说明 | 逻辑说明 | 告警群 |
 |------|--------|----------|----------|--------|
