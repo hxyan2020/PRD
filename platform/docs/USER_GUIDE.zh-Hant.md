@@ -716,9 +716,9 @@ flowchart LR
 |---|---|
 | `PENDING_RO` | 等待風險負責人審查 |
 | `ASK_MORE_INFO` | RO 已追問；仍開放 |
-| `APPROVED_VALIDATION` | 僅核准 BU／UAT |
+| `APPROVED_FOR_VALIDATION` | 僅核准 BU／UAT |
 | `DISMISSED` | 關閉且未晉升 |
-| `PROMOTED`／納入監控 | 制作者≠覆核者後技能＋`M2-DISC-*` 上線 |
+| `IN_MONITORING` | 制作者≠覆核者後技能＋`M2-DISC-*` 上線 |
 
 產品需求：[PRD §6.5](/admin/docs/prd)。實作細節：[TSD §11A](/admin/docs/tsd)。
 

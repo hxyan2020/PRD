@@ -717,9 +717,9 @@ Each hit becomes a candidate with proposed indicator name, dimension, suggested 
 |---|---|
 | `PENDING_RO` | Waiting for Risk Owner review |
 | `ASK_MORE_INFO` | RO asked a follow-up; still open |
-| `APPROVED_VALIDATION` | Cleared for BU/UAT only |
+| `APPROVED_FOR_VALIDATION` | Cleared for BU/UAT only |
 | `DISMISSED` | Closed without promote |
-| `PROMOTED` / in monitoring | Skill + `M2-DISC-*` live after maker≠checker |
+| `IN_MONITORING` | Skill + `M2-DISC-*` live after maker≠checker |
 
 Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/admin/docs/tsd).
 
