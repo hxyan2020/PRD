@@ -112,6 +112,8 @@
       .sop-doc h4 { margin: 14px 0 8px; font-size: 14px; font-weight: 600; }
       .logic-list { margin: 8px 0 16px 20px; padding: 0; }
       .logic-list li { margin-bottom: 8px; }
+      .ref-list { margin: 8px 0 0 20px; }
+      .ref-list li { margin-bottom: 6px; }
       .group-chip { display: block; background: #f5f5f5; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; margin: 6px 0; font-size: 12px; }
       .group-chip.external { border-color: #91caff; background: #e6f4ff; }
       .pill { display: inline-block; background: #f0f0f0; border-radius: 999px; padding: 2px 10px; font-size: 12px; margin-right: 6px; }
@@ -785,8 +787,76 @@
     </tbody>
   </table>
   <div class="callout warn">监控 DB 账户注资金额，达到一定阈值之后进行预警</div>
+  <p><strong>原因分析：</strong>DB 账户持续需注资，且注资金额超过授信额度，由于爆仓规模过大或是账户持续出现亏损</p>
 
-  <p class="note">（下一批截图内容将继续追加在本 Tab 底部）</p>
+  <h3><span class="dot orange"></span> DB 注资 / 回拨通知</h3>
+  <div class="callout warn">
+    👁️ 每一笔注资，注资资金的结果会通知给 DB、RC 和财务，包括系统自动注资 / 手动注资<br>
+    每一笔回拨，回拨的结果会通知给 DB、RC 和财务
+  </div>
+  <p><strong>原因分析：</strong></p>
+  <ul class="logic-list">
+    <li><strong>注资：</strong>为了确保 DB 账户有足够的备用资金用来接管爆仓单，会有自动注资的程序，也可以手动发起注资</li>
+    <li><strong>回拨：</strong>当 DB 资金冗余时，可以人工选择将资金归还给平台</li>
+  </ul>
+
+  <h3><span class="dot orange"></span> DB 心跳预警</h3>
+  <div class="callout warn">🔔 DB 账户撤单触发</div>
+  <p><strong>原因分析：</strong>DB 断连，无法维护交易所流动性 &amp; 处置爆仓单</p>
+
+  <h2 class="section-red">8. 爆仓监控 · 报 MM24H 运维群组</h2>
+  <p class="owners">负责人：<span class="pill">Yifei Zhang</span></p>
+
+  <h3><span class="dot orange"></span> 大额爆仓预警</h3>
+  <div class="callout warn">🚧 大额爆仓用户接近爆仓，需要警惕爆仓冲击事件，提醒 MM 准备接仓</div>
+  <p><strong>原因分析：</strong>有大额仓位客户保证金不足，因行情标的剧烈波动导致接近强平水准</p>
+
+  <h3><span class="dot orange"></span> 大额爆仓后通知</h3>
+  <table class="compact">
+    <thead>
+      <tr><th>合约账户 ID</th><th>持仓单据</th><th>仓位模式</th><th>告警时间</th><th>告警方式</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1000000000014</td><td>XAU_USD-1 张-LONG</td><td>逐仓</td><td>2026-09-28 22:46:26</td><td>Lark</td></tr>
+      <tr><td>1000000000018</td><td>XAU_USD-1 张-LONG</td><td>逐仓</td><td>2026-09-28 22:40:26</td><td>Lark</td></tr>
+      <tr><td>1000000000025</td><td>XAU_USD-3 张-LONG</td><td>逐仓</td><td>2026-09-28 22:38:16</td><td>Lark</td></tr>
+      <tr><td>1000000000017</td><td>XAU_USD-2 张-LONG</td><td>逐仓</td><td>2026-09-28 15:38:29</td><td>Lark</td></tr>
+      <tr><td>1000000000014</td><td>XAU_USD-1 张-LONG</td><td>逐仓</td><td>2026-09-28 06:45:07</td><td>Lark</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn">大额仓位客户爆仓后，需要在群组报告通知 MM（造市商）接收仓位</div>
+  <p><strong>原因分析：</strong>大额仓位客户保证金不足，低于维持仓位最低保证金水准，导致强平</p>
+
+  <h3><span class="dot orange"></span> ADL 异常预警</h3>
+  <div class="callout warn">
+    <strong>ADL（Auto-Deleveraging，自动减仓）</strong> 是永续合约市场中的最后一道风险防线。可能是 2 个原因：
+    <ol class="logic-list">
+      <li>当市场发生极端波动、大量用户爆仓（强制平仓），且交易所的「保险基金」不足以弥补穿仓亏损时，系统就会自动强平获利最高、杠杆最大的反向仓位，来平衡整个市场</li>
+      <li>市场上没有足够对手盘的仓位</li>
+    </ol>
+    接管账户，透过 ADL 将订单抛给 DB 接仓账户。由于各种原因，可能导致下单接仓位失败（系统异常、接仓账户余额不足）
+  </div>
+
+  <h2 class="section-red">9. 快照对账警报</h2>
+  <table>
+    <thead><tr><th>警报名称</th><th>警报说明</th></tr></thead>
+    <tbody>
+      <tr><td>用户快照与流水勾稽失败</td><td>用户快照与流水勾稽失败</td></tr>
+      <tr><td>Broker 汇总快照与用户快照勾稽失败</td><td>Broker 的期末钱包余额不等于其期初钱包余额加上各项变动的总和（入金、已实现盈亏、手续费、资金）</td></tr>
+      <tr><td>使用者 / Broker 快照缺失</td><td>使用者快照缺失 / Broker 快照缺失</td></tr>
+      <tr><td>资金流水类型未匹配</td><td>资金流水类型未匹配</td></tr>
+    </tbody>
+  </table>
+
+  <h3>本文引用</h3>
+  <ul class="ref-list">
+    <li>【PRD】永续合约财务报表设计与对账逻辑 — 已评审</li>
+    <li>V1.0 黄金 3 号管理后台 — 风控模块 — PRD</li>
+    <li>风控监控需求方案设计</li>
+    <li><a href="alarm-list.html">V-Exchange 告警清单</a></li>
+    <li>【PRD】黄金 3 号永续合约指数价格系统（简化版）— 已评审</li>
+    <li>黄金 3 号永续合约指数价格采集技术文档</li>
+  </ul>
 </div>
       </div>
       <footer>
