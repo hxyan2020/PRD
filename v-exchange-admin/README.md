@@ -8,6 +8,8 @@ After deployment from `main`:
 
 **https://hxyan2020.github.io/PRD/**
 
+**V-Exchange 告警清单（中文，永久页）：** https://hxyan2020.github.io/PRD/alarm-list.html
+
 Direct examples:
 
 - Overview: https://hxyan2020.github.io/PRD/overview
