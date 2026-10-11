@@ -65,9 +65,10 @@ await page.waitForFunction(
 await page.getByRole('tab', { name: 'Backup' }).click()
 await page.waitForSelector('.notebook-backup')
 const backupVisible = await page.locator('.notebook-backup').isVisible()
+const cloudVisible = await page.getByRole('heading', { name: 'Cloud sync (any device)' }).isVisible()
 const persistVisible = await page.getByRole('heading', { name: 'Keep browser storage' }).isVisible()
 const folderVisible = await page.getByRole('heading', { name: 'Backup folder' }).isVisible()
-const gistVisible = await page.getByRole('heading', { name: 'GitHub Gist sync' }).isVisible()
+const enableCloudVisible = await page.getByRole('button', { name: 'Enable cloud sync' }).isVisible()
 
 const [download] = await Promise.all([
   page.waitForEvent('download'),
@@ -107,9 +108,10 @@ await page.screenshot({ path: path.join(OUT, 'backup-import-restored.png'), full
 
 const summary = {
   backupVisible,
+  cloudVisible,
+  enableCloudVisible,
   persistVisible,
   folderVisible,
-  gistVisible,
   exportHasNote,
   restored,
   pageErrors: errors,
@@ -119,9 +121,10 @@ console.log(JSON.stringify(summary, null, 2))
 
 const ok =
   backupVisible &&
+  cloudVisible &&
+  enableCloudVisible &&
   persistVisible &&
   folderVisible &&
-  gistVisible &&
   exportHasNote &&
   restored &&
   errors.length === 0

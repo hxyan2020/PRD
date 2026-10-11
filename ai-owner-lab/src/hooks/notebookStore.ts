@@ -1,6 +1,14 @@
 import { isCategoryColorId, nextCategoryColor } from '../lib/categoryColors'
 import { readFolderBackup, requestPersistentStorage, writeFolderBackup } from '../lib/notebookFolderBackup'
-import { pullGistBackup, pushGistBackup } from '../lib/notebookGistSync'
+import {
+  getCloudSyncStatus,
+  isCloudSyncReady,
+  loadGistSettings,
+  pullGistBackup,
+  pushGistBackup,
+  saveGistSettings,
+  setLastCloudSyncAt,
+} from '../lib/notebookGistSync'
 import {
   IDB_KEYS,
   idbGet,
@@ -355,7 +363,7 @@ async function hydrate(): Promise<void> {
   // Ask the browser not to evict notebook storage under disk pressure.
   void requestPersistentStorage()
 
-  // Merge any newer on-disk / gist backup after primary hydrate settles.
+  // Merge any newer on-disk / cloud backup after primary hydrate settles.
   void (async () => {
     try {
       const folderJson = await readFolderBackup()
@@ -364,8 +372,13 @@ async function hydrate(): Promise<void> {
       /* ignore */
     }
     try {
-      const gistJson = await pullGistBackup()
-      if (gistJson) await notebookStore.importBackup(gistJson)
+      if (isCloudSyncReady()) {
+        const gistJson = await pullGistBackup()
+        if (gistJson) {
+          await notebookStore.importBackup(gistJson)
+          setLastCloudSyncAt()
+        }
+      }
     } catch {
       /* ignore */
     }
@@ -379,9 +392,37 @@ function ensureReady(): Promise<void> {
   return readyPromise
 }
 
+let cloudPullInFlight: Promise<void> | null = null
+
+/** Pull cloud notes when the tab becomes visible again (other-device edits). */
+async function pullCloudIfConfigured() {
+  if (!isCloudSyncReady()) return
+  if (cloudPullInFlight) return cloudPullInFlight
+  cloudPullInFlight = (async () => {
+    try {
+      const gistJson = await pullGistBackup()
+      if (gistJson) {
+        await notebookStore.importBackup(gistJson)
+        setLastCloudSyncAt()
+      }
+    } catch {
+      /* ignore offline / auth errors */
+    } finally {
+      cloudPullInFlight = null
+    }
+  })()
+  return cloudPullInFlight
+}
+
 // Kick off hydration as soon as the module loads in the browser.
 if (typeof window !== 'undefined') {
   void ensureReady()
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') void pullCloudIfConfigured()
+  })
+  window.addEventListener('focus', () => {
+    void pullCloudIfConfigured()
+  })
 }
 
 function buildBackupJson(): string {
@@ -547,17 +588,20 @@ export const notebookStore = {
     scheduleDurableSync()
     return { total: entries.length }
   },
-  /** Immediately push notebook JSON to folder backup + optional GitHub Gist. */
+  getCloudSyncStatus,
+  /** Immediately push notebook JSON to folder backup + optional cloud Gist. */
   async syncDurableNow(): Promise<{
     folder: boolean
     gistId: string | null
     gistError?: string
+    htmlUrl?: string | null
   }> {
     await ensureReady()
     const json = buildBackupJson()
     let folder = false
     let gistId: string | null = null
     let gistError: string | undefined
+    let htmlUrl: string | null | undefined
     try {
       folder = await writeFolderBackup(json)
     } catch {
@@ -566,12 +610,13 @@ export const notebookStore = {
     try {
       const result = await pushGistBackup(json)
       gistId = result.gistId
+      htmlUrl = result.htmlUrl
     } catch (err) {
-      gistError = err instanceof Error ? err.message : 'GitHub sync failed'
+      gistError = err instanceof Error ? err.message : 'Cloud sync failed'
     }
-    return { folder, gistId, gistError }
+    return { folder, gistId, gistError, htmlUrl }
   },
-  /** Pull folder + Gist backups and merge into the notebook. */
+  /** Pull folder + cloud backups and merge into the notebook. */
   async pullRemoteBackups(): Promise<{ total: number; fromFolder: boolean; fromGist: boolean }> {
     await ensureReady()
     let fromFolder = false
@@ -586,15 +631,60 @@ export const notebookStore = {
       /* ignore */
     }
     try {
-      const gistJson = await pullGistBackup()
-      if (gistJson) {
-        await notebookStore.importBackup(gistJson)
-        fromGist = true
+      const settings = loadGistSettings()
+      if (settings.token && settings.gistId) {
+        const gistJson = await pullGistBackup(settings)
+        if (gistJson) {
+          await notebookStore.importBackup(gistJson)
+          setLastCloudSyncAt()
+          fromGist = true
+        }
       }
     } catch {
       /* ignore */
     }
     return { total: cache.entries.length, fromFolder, fromGist }
+  },
+  /** Enable cloud sync, upload notes, return the cloud notebook id for other devices. */
+  async enableCloudSync(input: {
+    token: string
+    gistId?: string
+  }): Promise<{ gistId: string; htmlUrl: string | null; total: number }> {
+    await ensureReady()
+    saveGistSettings({
+      token: input.token,
+      gistId: input.gistId?.trim() || loadGistSettings().gistId,
+      enabled: true,
+    })
+    const result = await notebookStore.syncDurableNow()
+    if (!result.gistId) {
+      throw new NotebookStorageError('unknown', result.gistError || 'Cloud upload failed')
+    }
+    return {
+      gistId: result.gistId,
+      htmlUrl: result.htmlUrl ?? null,
+      total: cache.entries.length,
+    }
+  },
+  /** Connect this device to an existing cloud notebook and download notes. */
+  async connectCloudSync(input: {
+    token: string
+    gistId: string
+  }): Promise<{ total: number; gistId: string }> {
+    await ensureReady()
+    const gistId = input.gistId.trim()
+    if (!input.token.trim() || !gistId) {
+      throw new NotebookStorageError('unknown', 'Token and cloud notebook id are required')
+    }
+    saveGistSettings({ token: input.token, gistId, enabled: true })
+    const gistJson = await pullGistBackup(loadGistSettings())
+    if (!gistJson) {
+      throw new NotebookStorageError('unknown', 'No cloud notebook found for that id')
+    }
+    const imported = await notebookStore.importBackup(gistJson)
+    setLastCloudSyncAt()
+    scheduleDurableSync()
+    return { total: imported.total, gistId }
   },
   subscribe(listener: EntryListener) {
     entryListeners.add(listener)

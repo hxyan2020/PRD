@@ -4,6 +4,7 @@ import { NoteTree } from '../components/NoteTree'
 import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
 import { NotebookStorageError, notebookStore } from '../hooks/notebookStore'
+import { getCloudSyncStatus } from '../lib/notebookGistSync'
 import {
   formatTimestamp,
   useNotebook,
@@ -214,6 +215,7 @@ export function Notebook() {
   const [recoveryBusy, setRecoveryBusy] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
+  const [cloudOn, setCloudOn] = useState(() => getCloudSyncStatus().configured)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
   const importInputRef = useRef<HTMLInputElement | null>(null)
@@ -221,6 +223,7 @@ export function Notebook() {
 
   useEffect(() => {
     if (!ready) return
+    setCloudOn(getCloudSyncStatus().configured)
     let message: string | null = null
     if (notebookStore.consumeRecoveryNotice()) message = t('notesRecoveredToast')
     else if (notebookStore.consumeMigrationNotice()) message = t('notebookStorageUpgraded')
@@ -229,6 +232,10 @@ export function Notebook() {
     const timer = window.setTimeout(() => setStorageToast(null), 5200)
     return () => window.clearTimeout(timer)
   }, [ready, t])
+
+  useEffect(() => {
+    if (view !== 'backup') setCloudOn(getCloudSyncStatus().configured)
+  }, [view, count])
 
   useEffect(() => {
     if (!ready || autoRecoverTried.current) return
@@ -525,6 +532,11 @@ export function Notebook() {
                   ? t('backupLede')
                   : t('notebookLede')}
         </p>
+        {cloudOn ? (
+          <p className="notebook-cloud-pill" title={t('cloudTitle')}>
+            {t('cloudStatusOn')}
+          </p>
+        ) : null}
         <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
           <button
             type="button"

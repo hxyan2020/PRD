@@ -9,28 +9,127 @@ import {
   pickBackupFolder,
   requestPersistentStorage,
 } from '../lib/notebookFolderBackup'
-import { loadGistSettings, saveGistSettings } from '../lib/notebookGistSync'
+import {
+  GIST_TOKEN_CREATE_URL,
+  getCloudSyncStatus,
+  loadGistSettings,
+  saveGistSettings,
+  verifyGistToken,
+} from '../lib/notebookGistSync'
 
 export function NotebookBackupPanel() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const importInputRef = useRef<HTMLInputElement | null>(null)
   const [persistState, setPersistState] = useState<'granted' | 'prompt' | 'unsupported'>('prompt')
   const [folderName, setFolderName] = useState<string | null>(null)
   const [folderSupported] = useState(() => folderBackupSupported())
   const [gistToken, setGistToken] = useState('')
   const [gistId, setGistId] = useState('')
-  const [gistEnabled, setGistEnabled] = useState(false)
+  const [cloudOn, setCloudOn] = useState(false)
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
   const [status, setStatus] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  function refreshCloudStatus() {
+    const cloud = getCloudSyncStatus()
+    const gist = loadGistSettings()
+    setGistToken(gist.token)
+    setGistId(gist.gistId)
+    setCloudOn(gist.enabled && Boolean(gist.token && gist.gistId))
+    setLastSyncedAt(cloud.lastSyncedAt)
+  }
 
   useEffect(() => {
     void getPersistentStorageState().then(setPersistState)
     void getBackupFolderName().then(setFolderName)
-    const gist = loadGistSettings()
-    setGistToken(gist.token)
-    setGistId(gist.gistId)
-    setGistEnabled(gist.enabled)
+    refreshCloudStatus()
   }, [])
+
+  function formatSyncTime(iso: string | null) {
+    if (!iso) return t('cloudNeverSynced')
+    try {
+      return new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }).format(new Date(iso))
+    } catch {
+      return iso
+    }
+  }
+
+  async function onEnableCloud() {
+    setBusy(true)
+    setStatus(null)
+    try {
+      if (!gistToken.trim()) {
+        setStatus(t('cloudTokenRequired'))
+        return
+      }
+      await verifyGistToken(gistToken)
+      const result = await notebookStore.enableCloudSync({
+        token: gistToken,
+        gistId: gistId || undefined,
+      })
+      setGistId(result.gistId)
+      setCloudOn(true)
+      setLastSyncedAt(new Date().toISOString())
+      setStatus(t('cloudEnabledOk', { id: result.gistId, total: result.total }))
+    } catch (err) {
+      setStatus(
+        t('cloudEnabledFail', {
+          error: err instanceof Error ? err.message : 'failed',
+        }),
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function onConnectCloud() {
+    setBusy(true)
+    setStatus(null)
+    try {
+      if (!gistToken.trim() || !gistId.trim()) {
+        setStatus(t('cloudConnectRequired'))
+        return
+      }
+      await verifyGistToken(gistToken)
+      const result = await notebookStore.connectCloudSync({
+        token: gistToken,
+        gistId,
+      })
+      setGistId(result.gistId)
+      setCloudOn(true)
+      setLastSyncedAt(new Date().toISOString())
+      setStatus(t('cloudConnectOk', { total: result.total }))
+    } catch (err) {
+      setStatus(
+        t('cloudConnectFail', {
+          error: err instanceof Error ? err.message : 'failed',
+        }),
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  function onDisableCloud() {
+    saveGistSettings({ enabled: false })
+    setCloudOn(false)
+    setStatus(t('cloudDisabled'))
+  }
+
+  async function onCopyCloudId() {
+    if (!gistId) return
+    try {
+      await navigator.clipboard.writeText(gistId)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setStatus(t('cloudCopyFail'))
+    }
+  }
 
   async function onRequestPersist() {
     setBusy(true)
@@ -84,35 +183,30 @@ export function NotebookBackupPanel() {
     }
   }
 
-  function onSaveGist() {
-    const next = saveGistSettings({
-      token: gistToken,
-      gistId,
-      enabled: gistEnabled,
-    })
-    setGistToken(next.token)
-    setGistId(next.gistId)
-    setGistEnabled(next.enabled)
-    setStatus(t('backupGistSaved'))
-  }
-
   async function onSyncNow() {
     setBusy(true)
     setStatus(null)
     try {
-      saveGistSettings({ token: gistToken, gistId, enabled: gistEnabled })
+      if (gistToken.trim()) {
+        saveGistSettings({
+          token: gistToken,
+          gistId,
+          enabled: cloudOn || Boolean(gistId && gistToken),
+        })
+      }
       const result = await notebookStore.syncDurableNow()
       const parts: string[] = []
-      if (result.folder) parts.push(t('backupSyncFolderOk'))
-      else if (folderName) parts.push(t('backupSyncFolderMiss'))
       if (result.gistId) {
         setGistId(result.gistId)
+        setCloudOn(true)
+        setLastSyncedAt(new Date().toISOString())
         parts.push(t('backupSyncGistOk', { id: result.gistId }))
-      } else if (gistEnabled && result.gistError) {
+      } else if (result.gistError) {
         parts.push(t('backupSyncGistFail', { error: result.gistError }))
-      } else if (!gistEnabled && !result.folder) {
-        parts.push(t('backupSyncNothing'))
       }
+      if (result.folder) parts.push(t('backupSyncFolderOk'))
+      else if (folderName) parts.push(t('backupSyncFolderMiss'))
+      if (!parts.length) parts.push(t('backupSyncNothing'))
       setStatus(parts.join(' '))
     } finally {
       setBusy(false)
@@ -123,13 +217,22 @@ export function NotebookBackupPanel() {
     setBusy(true)
     setStatus(null)
     try {
-      saveGistSettings({ token: gistToken, gistId, enabled: gistEnabled })
+      if (gistToken.trim() && gistId.trim()) {
+        saveGistSettings({ token: gistToken, gistId, enabled: true })
+      }
       const result = await notebookStore.pullRemoteBackups()
       if (result.fromFolder || result.fromGist) {
+        if (result.fromGist) {
+          setCloudOn(true)
+          setLastSyncedAt(new Date().toISOString())
+        }
         setStatus(
           t('backupPullOk', {
             total: result.total,
-            sources: [result.fromFolder ? t('backupSourceFolder') : '', result.fromGist ? t('backupSourceGist') : '']
+            sources: [
+              result.fromGist ? t('backupSourceGist') : '',
+              result.fromFolder ? t('backupSourceFolder') : '',
+            ]
               .filter(Boolean)
               .join(' + '),
           }),
@@ -182,6 +285,107 @@ export function NotebookBackupPanel() {
         </p>
       ) : null}
 
+      <div className={`notebook-backup-card cloud${cloudOn ? ' on' : ''}`}>
+        <div className="notebook-backup-card-head">
+          <h3>{t('cloudTitle')}</h3>
+          {cloudOn ? <span className="notebook-cloud-badge">{t('cloudStatusOn')}</span> : null}
+        </div>
+        <p>{t('cloudBody')}</p>
+        <ol className="notebook-cloud-steps">
+          <li>
+            {t('cloudStep1')}{' '}
+            <a href={GIST_TOKEN_CREATE_URL} target="_blank" rel="noreferrer">
+              {t('cloudCreateToken')}
+            </a>
+          </li>
+          <li>{t('cloudStep2')}</li>
+          <li>{t('cloudStep3')}</li>
+        </ol>
+
+        <label className="notebook-field">
+          <span className="notebook-field-label">{t('backupGistToken')}</span>
+          <input
+            className="notebook-title-input"
+            type="password"
+            autoComplete="off"
+            value={gistToken}
+            onChange={(e) => setGistToken(e.target.value)}
+            placeholder="ghp_…"
+          />
+        </label>
+        <label className="notebook-field">
+          <span className="notebook-field-label">{t('cloudNotebookId')}</span>
+          <input
+            className="notebook-title-input"
+            type="text"
+            value={gistId}
+            onChange={(e) => setGistId(e.target.value)}
+            placeholder={t('cloudNotebookIdPlaceholder')}
+          />
+        </label>
+
+        <p className="notebook-backup-meta">
+          {cloudOn
+            ? t('cloudLastSynced', { time: formatSyncTime(lastSyncedAt) })
+            : t('cloudStatusOff')}
+        </p>
+
+        <div className="notebook-actions">
+          <button type="button" className="btn primary" disabled={busy} onClick={() => void onEnableCloud()}>
+            {cloudOn ? t('cloudUploadNow') : t('cloudEnable')}
+          </button>
+          <button type="button" className="btn ghost" disabled={busy} onClick={() => void onConnectCloud()}>
+            {t('cloudConnectDevice')}
+          </button>
+          {gistId ? (
+            <button type="button" className="btn ghost" disabled={busy} onClick={() => void onCopyCloudId()}>
+              {copied ? t('cloudCopied') : t('cloudCopyId')}
+            </button>
+          ) : null}
+          {cloudOn ? (
+            <button type="button" className="btn ghost" disabled={busy} onClick={onDisableCloud}>
+              {t('cloudDisable')}
+            </button>
+          ) : null}
+        </div>
+
+        {cloudOn && gistId ? (
+          <p className="notebook-cloud-other-device">{t('cloudOtherDeviceHint', { id: gistId })}</p>
+        ) : null}
+      </div>
+
+      <div className="notebook-backup-card">
+        <h3>{t('backupActionsTitle')}</h3>
+        <p>{t('backupActionsBody')}</p>
+        <div className="notebook-actions">
+          <button type="button" className="btn primary" disabled={busy} onClick={() => void onSyncNow()}>
+            {t('backupSyncNow')}
+          </button>
+          <button type="button" className="btn ghost" disabled={busy} onClick={() => void onPullRemote()}>
+            {t('backupPullNow')}
+          </button>
+          <button type="button" className="btn ghost" disabled={busy} onClick={onExportNotes}>
+            {t('exportNotes')}
+          </button>
+          <button
+            type="button"
+            className="btn ghost"
+            disabled={busy}
+            onClick={() => importInputRef.current?.click()}
+          >
+            {t('importNotes')}
+          </button>
+          <input
+            ref={importInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="sr-only"
+            tabIndex={-1}
+            onChange={(e) => void onImportFile(e.target.files?.[0] ?? null)}
+          />
+        </div>
+      </div>
+
       <div className="notebook-backup-card">
         <h3>{t('backupPersistTitle')}</h3>
         <p>{t('backupPersistBody')}</p>
@@ -223,77 +427,6 @@ export function NotebookBackupPanel() {
             </div>
           </>
         )}
-      </div>
-
-      <div className="notebook-backup-card">
-        <h3>{t('backupGistTitle')}</h3>
-        <p>{t('backupGistBody')}</p>
-        <label className="notebook-field">
-          <span className="notebook-field-label">{t('backupGistToken')}</span>
-          <input
-            className="notebook-title-input"
-            type="password"
-            autoComplete="off"
-            value={gistToken}
-            onChange={(e) => setGistToken(e.target.value)}
-            placeholder="ghp_…"
-          />
-        </label>
-        <label className="notebook-field">
-          <span className="notebook-field-label">{t('backupGistId')}</span>
-          <input
-            className="notebook-title-input"
-            type="text"
-            value={gistId}
-            onChange={(e) => setGistId(e.target.value)}
-            placeholder={t('backupGistIdPlaceholder')}
-          />
-        </label>
-        <label className="notebook-backup-check">
-          <input
-            type="checkbox"
-            checked={gistEnabled}
-            onChange={(e) => setGistEnabled(e.target.checked)}
-          />
-          <span>{t('backupGistEnable')}</span>
-        </label>
-        <div className="notebook-actions">
-          <button type="button" className="btn ghost" disabled={busy} onClick={onSaveGist}>
-            {t('backupGistSave')}
-          </button>
-        </div>
-      </div>
-
-      <div className="notebook-backup-card">
-        <h3>{t('backupActionsTitle')}</h3>
-        <p>{t('backupActionsBody')}</p>
-        <div className="notebook-actions">
-          <button type="button" className="btn primary" disabled={busy} onClick={() => void onSyncNow()}>
-            {t('backupSyncNow')}
-          </button>
-          <button type="button" className="btn ghost" disabled={busy} onClick={() => void onPullRemote()}>
-            {t('backupPullNow')}
-          </button>
-          <button type="button" className="btn ghost" disabled={busy} onClick={onExportNotes}>
-            {t('exportNotes')}
-          </button>
-          <button
-            type="button"
-            className="btn ghost"
-            disabled={busy}
-            onClick={() => importInputRef.current?.click()}
-          >
-            {t('importNotes')}
-          </button>
-          <input
-            ref={importInputRef}
-            type="file"
-            accept="application/json,.json"
-            className="sr-only"
-            tabIndex={-1}
-            onChange={(e) => void onImportFile(e.target.files?.[0] ?? null)}
-          />
-        </div>
       </div>
     </section>
   )

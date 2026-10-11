@@ -1,18 +1,31 @@
 /**
- * Optional GitHub Gist sync — notes travel with your GitHub account across devices.
+ * Cloud notebook sync via a private GitHub Gist.
+ * Notes travel with your GitHub account across devices.
  * Token stays in this browser only (same pattern as the AI tutor API key).
  */
 
 const TOKEN_KEY = 'ownlab-notebook-gist-token'
 const GIST_ID_KEY = 'ownlab-notebook-gist-id'
 const ENABLED_KEY = 'ownlab-notebook-gist-enabled'
+const LAST_SYNC_KEY = 'ownlab-notebook-gist-last-sync'
 const FILE_NAME = 'ownlab-notebook-backup.json'
 const MAX_PUSH_CHARS = 4_500_000
+
+export const GIST_TOKEN_CREATE_URL =
+  'https://github.com/settings/tokens/new?scopes=gist&description=OWNLAB%20notebook%20cloud%20sync'
 
 export type GistSettings = {
   token: string
   gistId: string
   enabled: boolean
+}
+
+export type CloudSyncStatus = {
+  configured: boolean
+  enabled: boolean
+  gistId: string
+  lastSyncedAt: string | null
+  gistUrl: string | null
 }
 
 export function loadGistSettings(): GistSettings {
@@ -44,6 +57,43 @@ export function saveGistSettings(input: Partial<GistSettings>) {
     /* ignore */
   }
   return next
+}
+
+export function getLastCloudSyncAt(): string | null {
+  try {
+    return localStorage.getItem(LAST_SYNC_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function setLastCloudSyncAt(iso = new Date().toISOString()) {
+  try {
+    localStorage.setItem(LAST_SYNC_KEY, iso)
+  } catch {
+    /* ignore */
+  }
+  return iso
+}
+
+export function gistUrlFor(gistId: string): string | null {
+  if (!gistId) return null
+  return `https://gist.github.com/${gistId}`
+}
+
+export function getCloudSyncStatus(): CloudSyncStatus {
+  const settings = loadGistSettings()
+  return {
+    configured: Boolean(settings.token && settings.gistId && settings.enabled),
+    enabled: settings.enabled,
+    gistId: settings.gistId,
+    lastSyncedAt: getLastCloudSyncAt(),
+    gistUrl: gistUrlFor(settings.gistId),
+  }
+}
+
+export function isCloudSyncReady(settings = loadGistSettings()): boolean {
+  return Boolean(settings.enabled && settings.token)
 }
 
 async function githubJson(
@@ -85,7 +135,8 @@ function extractBackupContent(gist: Record<string, unknown>): string | null {
 export async function pullGistBackup(
   settings = loadGistSettings(),
 ): Promise<string | null> {
-  if (!settings.enabled || !settings.token || !settings.gistId) return null
+  if (!settings.token || !settings.gistId) return null
+  // Allow an explicit pull while connecting a second device (enabled may still be off).
   const gist = await githubJson(`/gists/${settings.gistId}`, settings.token)
   return extractBackupContent(gist)
 }
@@ -93,9 +144,9 @@ export async function pullGistBackup(
 export async function pushGistBackup(
   json: string,
   settings = loadGistSettings(),
-): Promise<{ gistId: string; truncated: boolean }> {
+): Promise<{ gistId: string; truncated: boolean; htmlUrl: string | null }> {
   if (!settings.enabled || !settings.token) {
-    throw new Error('GitHub sync is not configured')
+    throw new Error('Cloud sync is not configured')
   }
   let body = json
   let truncated = false
@@ -136,7 +187,7 @@ export async function pushGistBackup(
   }
 
   const payload = {
-    description: 'OWNLAB notebook backup',
+    description: 'OWNLAB notebook cloud backup',
     public: false,
     files: {
       [FILE_NAME]: { content: body },
@@ -144,11 +195,16 @@ export async function pushGistBackup(
   }
 
   if (settings.gistId) {
-    await githubJson(`/gists/${settings.gistId}`, settings.token, {
+    const updated = await githubJson(`/gists/${settings.gistId}`, settings.token, {
       method: 'PATCH',
       body: JSON.stringify(payload),
     })
-    return { gistId: settings.gistId, truncated }
+    setLastCloudSyncAt()
+    return {
+      gistId: settings.gistId,
+      truncated,
+      htmlUrl: typeof updated.html_url === 'string' ? updated.html_url : gistUrlFor(settings.gistId),
+    }
   }
 
   const created = await githubJson('/gists', settings.token, {
@@ -156,7 +212,20 @@ export async function pushGistBackup(
     body: JSON.stringify(payload),
   })
   const gistId = String(created.id || '')
-  if (!gistId) throw new Error('GitHub did not return a gist id')
+  if (!gistId) throw new Error('GitHub did not return a cloud notebook id')
   saveGistSettings({ gistId })
-  return { gistId, truncated }
+  setLastCloudSyncAt()
+  return {
+    gistId,
+    truncated,
+    htmlUrl: typeof created.html_url === 'string' ? created.html_url : gistUrlFor(gistId),
+  }
+}
+
+/** Verify the token can talk to GitHub (gist scope). */
+export async function verifyGistToken(token: string): Promise<{ login: string }> {
+  const user = await githubJson('/user', token.trim())
+  const login = String(user.login || '')
+  if (!login) throw new Error('Token did not return a GitHub user')
+  return { login }
 }

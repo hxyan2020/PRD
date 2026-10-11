@@ -2422,6 +2422,69 @@ body.menu-open {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(241, 245, 249, 0.55));
 }
 
+.notebook-backup-card.cloud {
+  border-color: rgba(13, 148, 136, 0.35);
+  background: linear-gradient(180deg, rgba(240, 253, 250, 0.95), rgba(255, 255, 255, 0.8));
+}
+
+.notebook-backup-card.cloud.on {
+  box-shadow: inset 0 0 0 1px rgba(13, 148, 136, 0.2);
+}
+
+.notebook-backup-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.notebook-cloud-badge {
+  flex-shrink: 0;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0f766e;
+  background: rgba(13, 148, 136, 0.14);
+}
+
+.notebook-cloud-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.notebook-cloud-steps a {
+  color: var(--teal-deep);
+  font-weight: 600;
+}
+
+.notebook-cloud-other-device {
+  margin: 0.15rem 0 0;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--ink);
+  background: rgba(15, 23, 42, 0.04);
+  border-radius: 0.45rem;
+}
+
+.notebook-cloud-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f766e;
+  background: rgba(13, 148, 136, 0.12);
+  border: 1px solid rgba(13, 148, 136, 0.22);
+}
+
 .notebook-backup-card h3 {
   margin: 0;
   font-size: 1.02rem;
