@@ -416,15 +416,18 @@ export function isPhotographicSrc(src: string | undefined): boolean {
 
 /**
  * Gallery images for the detail page.
- * Real photos only — never pad with synthetic `ludus-view` panels.
- * A title card is used only when the entry has no photographic URLs.
- * Length is whatever we have (1–N); there is no fixed 5-image quota.
+ * Real photos only — never show synthetic `ludus-view` panels
+ * (Atmosphere / How it's played / Tools / Cultural setting).
+ * A single title card is used only when the entry has no photographic URLs.
+ * Length is whatever we have (0–N); there is no fixed image quota.
  */
 export function listDisplayImages(images: string[] | undefined): string[] {
   const list = (images ?? []).filter(Boolean);
-  const photos = list.filter(isPhotographicSrc);
+  // Explicitly drop numbered placeholder panels even if older builds left them in.
+  const withoutViews = list.filter((src) => !isLudusViewSrc(src));
+  const photos = withoutViews.filter(isPhotographicSrc);
   if (photos.length) return photos;
-  const cards = list.filter(isLudusCardSrc);
+  const cards = withoutViews.filter(isLudusCardSrc);
   if (cards.length) return cards.slice(0, 1);
   return [];
 }
