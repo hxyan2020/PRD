@@ -324,48 +324,84 @@ function needsImageRescue(url: string): boolean {
   return isBlockedHotlinkUrl(url)
 }
 
+function titleTokens(text: string): string[] {
+  return normalizeDiscoverKey(text)
+    .split(' ')
+    .filter((t) => t.length >= 3)
+    .slice(0, 8)
+}
+
 async function commonsImageForTitle(
   title: string,
   artist?: string,
 ): Promise<{ image: string; imageFull: string } | null> {
-  const q = [title, artist, 'painting'].filter(Boolean).join(' ').slice(0, 120)
-  const params = new URLSearchParams({
-    action: 'query',
-    format: 'json',
-    origin: '*',
-    generator: 'search',
-    gsrsearch: `filetype:bitmap ${q}`,
-    gsrlimit: '5',
-    gsrnamespace: '6',
-    prop: 'imageinfo',
-    iiprop: 'url',
-    iiurlwidth: '1280',
-  })
-  try {
-    const res = await fetchWithTimeout(
-      `https://commons.wikimedia.org/w/api.php?${params}`,
-      { headers: { 'User-Agent': UA } },
-      10000,
-    )
-    if (!res.ok) return null
-    const data = (await res.json()) as {
-      query?: { pages?: Record<string, { title?: string; imageinfo?: Array<{ url?: string; thumburl?: string }> }> }
-    }
-    for (const page of Object.values(data.query?.pages || {})) {
-      const info = page.imageinfo?.[0]
-      const file = page.title?.replace(/^File:/, '')
-      if (!file || !info?.url) continue
-      // Prefer direct thumbs when present; FilePath as a stable alternate.
-      const thumb = info.thumburl || ''
-      return {
-        image: thumb || commons(file, DISPLAY_IMAGE_WIDTH),
-        imageFull: commons(file, VIEWER_IMAGE_WIDTH),
+  const queries = [
+    [title, artist, 'painting'].filter(Boolean).join(' ').slice(0, 120),
+    [title, 'painting'].filter(Boolean).join(' ').slice(0, 120),
+  ]
+  const want = new Set(titleTokens(title))
+  const artistTok = artist ? titleTokens(artist) : []
+
+  let fallback: { image: string; imageFull: string } | null = null
+
+  for (const q of queries) {
+    if (!q.trim()) continue
+    const params = new URLSearchParams({
+      action: 'query',
+      format: 'json',
+      origin: '*',
+      generator: 'search',
+      gsrsearch: `filetype:bitmap ${q}`,
+      gsrlimit: '8',
+      gsrnamespace: '6',
+      prop: 'imageinfo',
+      iiprop: 'url',
+      iiurlwidth: '1280',
+    })
+    try {
+      const res = await fetchWithTimeout(
+        `https://commons.wikimedia.org/w/api.php?${params}`,
+        { headers: { 'User-Agent': UA } },
+        10000,
+      )
+      if (!res.ok) continue
+      const data = (await res.json()) as {
+        query?: {
+          pages?: Record<string, { title?: string; imageinfo?: Array<{ url?: string; thumburl?: string }> }>
+        }
       }
+      const ranked: Array<{ score: number; image: string; imageFull: string }> = []
+      for (const page of Object.values(data.query?.pages || {})) {
+        const info = page.imageinfo?.[0]
+        const file = page.title?.replace(/^File:/, '')
+        if (!file || !info?.url) continue
+        const fileKey = normalizeDiscoverKey(file)
+        let score = 0
+        for (const t of want) if (fileKey.includes(t)) score += 3
+        for (const t of artistTok) if (fileKey.includes(t)) score += 4
+        if (/paint|painting|oil|canvas|scroll|watercolor|水墨|画|畫/.test(fileKey)) score += 1
+        // Avoid tourist / photo noise when better matches exist.
+        if (/panoramio|resort|hotel|selfie|logo|map of|street view/.test(fileKey)) score -= 5
+        const thumb = info.thumburl || ''
+        const candidate = {
+          score,
+          image: thumb || commons(file, DISPLAY_IMAGE_WIDTH),
+          imageFull: commons(file, VIEWER_IMAGE_WIDTH),
+        }
+        ranked.push(candidate)
+        if (!fallback) fallback = { image: candidate.image, imageFull: candidate.imageFull }
+      }
+      ranked.sort((a, b) => b.score - a.score)
+      const best = ranked.find((r) => r.score >= 3) || ranked[0]
+      if (best && best.score >= 3) {
+        return { image: best.image, imageFull: best.imageFull }
+      }
+      if (best && !fallback) fallback = { image: best.image, imageFull: best.imageFull }
+    } catch {
+      // try next query
     }
-  } catch {
-    return null
   }
-  return null
+  return fallback
 }
 
 async function ensureDisplayableImage(p: Painting): Promise<Painting | null> {
