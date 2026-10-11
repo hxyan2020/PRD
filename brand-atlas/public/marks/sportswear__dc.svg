@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="DC Shoes">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(190 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(230 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">△</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">DS</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAB9CAYAAABqMmsMAAACW0lEQVR42u3ay3LiMBCF4dMt2YTk/R81F7CsngWQxNiTMmRSZWX+b2u8kbr6hiUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8Pd73ovcXTt6/d7SVKt9fbA4fjallKSfSMDEACNs/PFGwFA7ScA/scASB9t3O7x8eb3M0e4XQ/7vULSWIrKMCzW/4hYFSTuLnNXjKNKKUwBLagRcjN5Sspdp77vFZLMTBGhlPOsBLiZaq1yd6WHB+XdTvly+ZLK8TjtITjmjXf5fa+c0vzSIhQ2vz4301irbOHZ4fWVHqA14/E4S/MhLV7+JWvMLt9M40IJIQBaKQWfavZdQeQ+qfuTDMPxNhAA55R+78g3Hg5/bRbJAI0owyDZ7S2bSarjyB6gdbnrZCtGvtnl1zrZFSz9BhvmKanb7aQbL//6kkspqrXOsgEBsGGXRdC/Yucx8eXlhSZw07N/1ynv9zen/DVCpw2i3BW1EgCbu/yc76r3N2WC83aRErBxXdedSkDExwQQodT3q3qCcWn2j5jsBAiAxjw9Pams/PJnafXLGNi48YuZ/q4pgyNtbS70xRHvev+/NrXzPUBjrle6ZRg0liKX5DlPuv1VTSdH2tCEkNJkq1drff9QpNZ6mvM/Pb9sAikBv8QlzZuk6q7hcJhmg1JUPvUIa7IAAdBWBEhmqhEanp+Xm8Tj8b0nsBV/HtEDtFT/JXmEXt/evp4UhuG0SDKm/F82APiP/h4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHzfH1RIvW/8otlPAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

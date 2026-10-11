@@ -2,7 +2,7 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-11T07:09:38.793Z",
+    "generatedAt": "2026-10-11T08:16:34.686Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
@@ -10081,7 +10081,7 @@
       "coverHue": 185,
       "mark": "marks/motorcycles__honda-moto.svg",
       "cover": "covers/motorcycles__honda-moto.jpg",
-      "markIcon": null,
+      "markIcon": "honda",
       "sort": 0,
       "status": "active"
     },
@@ -10213,7 +10213,7 @@
       "coverHue": 121,
       "mark": "marks/motorcycles__bmw-moto.svg",
       "cover": "covers/motorcycles__bmw-moto.jpg",
-      "markIcon": null,
+      "markIcon": "bmw",
       "sort": 6,
       "status": "active"
     },
@@ -10235,7 +10235,7 @@
       "coverHue": 247,
       "mark": "marks/motorcycles__ducati.svg",
       "cover": "covers/motorcycles__ducati.jpg",
-      "markIcon": null,
+      "markIcon": "ducati",
       "sort": 7,
       "status": "active"
     },
@@ -10543,7 +10543,7 @@
       "coverHue": 145,
       "mark": "marks/motorcycles__ktm.svg",
       "cover": "covers/motorcycles__ktm.jpg",
-      "markIcon": null,
+      "markIcon": "ktm",
       "sort": 21,
       "status": "active"
     },
@@ -52210,7 +52210,7 @@
       "coverHue": 111,
       "mark": "marks/beer__guinness.svg",
       "cover": "covers/beer__guinness.jpg",
-      "markIcon": "guinness",
+      "markIcon": null,
       "sort": 1211,
       "status": "active"
     },
@@ -84010,7 +84010,7 @@
       "coverHue": 148,
       "mark": "marks/softdrinks__coca-cola.svg",
       "cover": "covers/softdrinks__coca-cola.jpg",
-      "markIcon": null,
+      "markIcon": "cocacola",
       "sort": 0,
       "status": "active"
     },
@@ -84278,7 +84278,7 @@
       "coverHue": 87,
       "mark": "marks/softdrinks__red-bull.svg",
       "cover": "covers/softdrinks__red-bull.jpg",
-      "markIcon": null,
+      "markIcon": "redbull",
       "sort": 11,
       "status": "active"
     },
@@ -84302,7 +84302,7 @@
       "coverHue": 138,
       "mark": "marks/softdrinks__monster.svg",
       "cover": "covers/softdrinks__monster.jpg",
-      "markIcon": null,
+      "markIcon": "monster",
       "sort": 12,
       "status": "active"
     },
@@ -143217,7 +143217,7 @@
       "coverHue": 292,
       "mark": "marks/sportswear__nike.svg",
       "cover": "covers/sportswear__nike.jpg",
-      "markIcon": null,
+      "markIcon": "nike",
       "sort": 0,
       "status": "active"
     },
@@ -143239,7 +143239,7 @@
       "coverHue": 111,
       "mark": "marks/sportswear__adidas.svg",
       "cover": "covers/sportswear__adidas.jpg",
-      "markIcon": null,
+      "markIcon": "adidas",
       "sort": 1,
       "status": "active"
     },
@@ -143261,7 +143261,7 @@
       "coverHue": 184,
       "mark": "marks/sportswear__puma.svg",
       "cover": "covers/sportswear__puma.jpg",
-      "markIcon": null,
+      "markIcon": "puma",
       "sort": 2,
       "status": "active"
     },
@@ -143305,7 +143305,7 @@
       "coverHue": 256,
       "mark": "marks/sportswear__new-balance.svg",
       "cover": "covers/sportswear__new-balance.jpg",
-      "markIcon": null,
+      "markIcon": "newbalance",
       "sort": 4,
       "status": "active"
     },
@@ -143371,7 +143371,7 @@
       "coverHue": 116,
       "mark": "marks/sportswear__under-armour.svg",
       "cover": "covers/sportswear__under-armour.jpg",
-      "markIcon": null,
+      "markIcon": "underarmour",
       "sort": 7,
       "status": "active"
     },
@@ -155377,7 +155377,7 @@
       "coverHue": 22,
       "mark": "marks/watches__apple-watch-brand.svg",
       "cover": "covers/watches__apple-watch-brand.jpg",
-      "markIcon": null,
+      "markIcon": "apple",
       "sort": 48,
       "status": "active"
     },
@@ -161619,7 +161619,7 @@
       "coverHue": 187,
       "mark": "marks/tech__apple.svg",
       "cover": "covers/tech__apple.jpg",
-      "markIcon": null,
+      "markIcon": "apple",
       "sort": 0,
       "status": "active"
     },
@@ -161641,7 +161641,7 @@
       "coverHue": 179,
       "mark": "marks/tech__samsung.svg",
       "cover": null,
-      "markIcon": null,
+      "markIcon": "samsung",
       "sort": 1,
       "status": "active"
     },
@@ -161663,7 +161663,7 @@
       "coverHue": 184,
       "mark": "marks/tech__google.svg",
       "cover": "covers/tech__google.jpg",
-      "markIcon": null,
+      "markIcon": "google",
       "sort": 2,
       "status": "active"
     },
@@ -161685,7 +161685,7 @@
       "coverHue": 190,
       "mark": "marks/tech__huawei.svg",
       "cover": "covers/tech__huawei.jpg",
-      "markIcon": null,
+      "markIcon": "huawei",
       "sort": 3,
       "status": "active"
     },
@@ -161707,7 +161707,7 @@
       "coverHue": 194,
       "mark": "marks/tech__xiaomi.svg",
       "cover": null,
-      "markIcon": null,
+      "markIcon": "xiaomi",
       "sort": 4,
       "status": "active"
     },
@@ -161883,7 +161883,7 @@
       "coverHue": 214,
       "mark": "marks/tech__sony.svg",
       "cover": "covers/tech__sony.jpg",
-      "markIcon": null,
+      "markIcon": "sony",
       "sort": 12,
       "status": "active"
     },
@@ -162367,7 +162367,7 @@
       "coverHue": 144,
       "mark": "marks/tech__dell.svg",
       "cover": "covers/tech__dell.jpg",
-      "markIcon": null,
+      "markIcon": "dell",
       "sort": 34,
       "status": "active"
     },
@@ -162389,7 +162389,7 @@
       "coverHue": 207,
       "mark": "marks/tech__hp.svg",
       "cover": "covers/tech__hp.jpg",
-      "markIcon": null,
+      "markIcon": "hp",
       "sort": 35,
       "status": "active"
     },
@@ -162411,7 +162411,7 @@
       "coverHue": 266,
       "mark": "marks/tech__lenovo.svg",
       "cover": "covers/tech__lenovo.jpg",
-      "markIcon": null,
+      "markIcon": "lenovo",
       "sort": 36,
       "status": "active"
     },
@@ -162653,7 +162653,7 @@
       "coverHue": 287,
       "mark": "marks/tech__intel.svg",
       "cover": "covers/tech__intel.jpg",
-      "markIcon": null,
+      "markIcon": "intel",
       "sort": 47,
       "status": "active"
     },
@@ -162675,7 +162675,7 @@
       "coverHue": 337,
       "mark": "marks/tech__amd.svg",
       "cover": "covers/tech__amd.jpg",
-      "markIcon": null,
+      "markIcon": "amd",
       "sort": 48,
       "status": "active"
     },
@@ -162697,7 +162697,7 @@
       "coverHue": 2,
       "mark": "marks/tech__nvidia.svg",
       "cover": "covers/tech__nvidia.jpg",
-      "markIcon": null,
+      "markIcon": "nvidia",
       "sort": 49,
       "status": "active"
     },
@@ -171021,7 +171021,7 @@
       "coverHue": 172,
       "mark": "marks/airlines__british-airways.svg",
       "cover": null,
-      "markIcon": null,
+      "markIcon": "britishairways",
       "sort": 13,
       "status": "active"
     },
@@ -171109,7 +171109,7 @@
       "coverHue": 108,
       "mark": "marks/airlines__lufthansa.svg",
       "cover": "covers/airlines__lufthansa.jpg",
-      "markIcon": null,
+      "markIcon": "lufthansa",
       "sort": 17,
       "status": "active"
     },
@@ -171175,7 +171175,7 @@
       "coverHue": 118,
       "mark": "marks/airlines__air-france.svg",
       "cover": "covers/airlines__air-france.jpg",
-      "markIcon": null,
+      "markIcon": "airfrance",
       "sort": 20,
       "status": "active"
     },
@@ -171835,7 +171835,7 @@
       "coverHue": 234,
       "mark": "marks/airlines__emirates.svg",
       "cover": "covers/airlines__emirates.jpg",
-      "markIcon": null,
+      "markIcon": "emirates",
       "sort": 50,
       "status": "active"
     },
@@ -174101,7 +174101,7 @@
       "coverHue": 161,
       "mark": "marks/banks__paypal.svg",
       "cover": "covers/banks__paypal.jpg",
-      "markIcon": null,
+      "markIcon": "paypal",
       "sort": 14,
       "status": "active"
     },
@@ -174299,7 +174299,7 @@
       "coverHue": 170,
       "mark": "marks/banks__hsbc.svg",
       "cover": "covers/banks__hsbc.jpg",
-      "markIcon": null,
+      "markIcon": "hsbc",
       "sort": 23,
       "status": "active"
     },

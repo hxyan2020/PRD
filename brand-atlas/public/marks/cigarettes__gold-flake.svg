@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <defs>
-    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
-  </defs>
-  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAmVBMVEX///////78/Pz+//zf4ujg4Oja2+OPl7CGjabLz9tcZ4leZ4vBxNL7/Ppfa5BicZdwgKFPXIUBGVaLmrabqL0AE1HT2OEAClOrsMi2v89ncZobM2oAFFcULGgAEFNTY4lodpYLJGErPnHu7vE4SHgKIVfl5+sWKWBpcZI5TXpwfJlobYynrcBBVoNLWIl7gJmTm6swRHIeOm0/zoMCAAAAtklEQVQYlU2O2RaCMAxEpwuoCCgVi8pqwb0u+P8fZ+pycB6adM7NJADABGOeD8bwk4gwGv/9wTEJpiGVr1iEeDZPBoNDqkW61NR85jjm2WqdbQZE5kWoi1IjchsYAVXNMasaRDQhOJNb0wrRdsqlgIBm54Nz7A+xM2jFIfWk9qW0W4dwHJuTOav8qE5x7RB9qTPrldfW3HAPKcMmVYewyIVV9eZBGaPeWKSm1wieZtySQ/o876Nfbv0LqVaXImMAAAAASUVORK5CYII=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Gold Flake">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Gold Flake</text>
 </svg>

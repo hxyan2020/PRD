@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <defs>
-    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
-  </defs>
-  <image href="data:image/png;base64,UklGRj4DAABXRUJQVlA4WAoAAAAYAAAAYwAARAAAVlA4TF4CAAAvYwAREHDktm0g8f/vnt3GTuc2hwg5kG2btjXXXvu+920bkX/0f2gzt23btq3ckW3btm1tzQmAD3DKLmW63pCAxqaZYOJC481QD5gaAgp4hxIu5NFaoEVK+ylxfKE4YE2VUn6hhHERHTfGNFP+N8lsdYG5jIC6Awt7e/QEuWWfshfSDVjY28awpcyurV0EVNFVex0KtddFJSB7WLABeSzk0QhgN9mMnFTIjfjdxWMhP6GkX2+goO9vIKcXKN4PnEfhdsCALchfjwWTO/TcRUFzFHM8GvBgfYvBRwSU8B6lAhMfzO8QUJcjYMBOFAqsBAoUDEShQJJQY6AnFHQsENAeIEBBExQb0D8VgTkhoJAXKKZE9Fg2EAaU8QmlnIiuyQA5AQrmIp+S0H/VgQECDqOQ49FqoHBMQCWfUQqhgLoDBQoGNYio2QRQMBOFnO3AAAGlfUApJaJLLJABAgq6j2JIQp+UBQIULEI+JaCeQGGSgrYxFNAgoEBAWW9RygjooiwgI0DBMhRCIrrMAgEK+qEQkSRJE6AwS4gcDiOfQRG1AwrAgK3IJ3g0EyhMM6CEWyikXJMLCBBQ0GUU5ni0nRCYp6Cyh8hFUEBjgQVgQDm3kZNmJA7tlxsSQEF515CTEhL6oRYwAAwo5Qxy/CTHoy1yAYEoBYXtQkEKoIBOygEEgAG5rEdJwmMJORMJw0CYpYxJHPJBjkcjgAIAy4JWllti6aklllmoDshQiBMKajuLEk5L6I/pCgABACAMDDPQSFiQ0dFaq6yetcoaC9QAAj8pO0qhlGEgysAt2SSFT2hFWElGugAAAEV4aWYAAElJKgAIAAAABgASAQMAAQAAAAEAAAAaAQUAAQAAAFYAAAAbAQUAAQAAAF4AAAAoAQMAAQAAAAIAAAATAgMAAQAAAAEAAABphwQAAQAAAGYAAAAAAAAALxkBAOgDAAAvGQEA6AMAAAYAAJAHAAQAAAAwMjEwAZEHAAQAAAABAgMAAKAHAAQAAAAwMTAwAaADAAEAAAD//wAAAqAEAAEAAABkAAAAA6AEAAEAAABFAAAAAAAAAA==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Kanpai London">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Kanpai London</text>
 </svg>
