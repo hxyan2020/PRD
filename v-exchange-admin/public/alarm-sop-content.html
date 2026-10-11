@@ -1,0 +1,236 @@
+<!-- Fragment: V-exchange 监控警报 SOP body (included in alarm-list.html) -->
+<div class="sop-doc">
+  <p class="meta">作者：Alex Huang · 最后更新：Oct 8 · 对应 Lark「V-exchange 监控警报SOP」</p>
+
+  <h2 class="section-red">1. 警报及其触发处理流程图</h2>
+  <div class="flow-grid">
+    <div class="flow-corner"></div>
+    <div class="flow-col-head">Risk</div>
+    <div class="flow-col-head">前端</div>
+    <div class="flow-col-head">BIT-perpetual<br><small>Soft Xiao · Evan Bi</small></div>
+    <div class="flow-col-head">MM 造市商<br><small>Yifei Zhang</small></div>
+
+    <div class="flow-row-head">事前</div>
+    <div class="flow-cell stack">
+      <div class="flow-box">Risk 实时监控</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box primary">Lark 群报警</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">检查客户端 &amp; 确认初步范围</div>
+    </div>
+    <div class="flow-cell"></div>
+    <div class="flow-cell"></div>
+    <div class="flow-cell">
+      <div class="flow-box">1. 停止市商挂单<br>2. 客户入金报告 / 通知造市商</div>
+    </div>
+
+    <div class="flow-row-head">事中</div>
+    <div class="flow-cell stack">
+      <div class="flow-box">确认异常</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">初步报告 Jeff 群 / 24HR command AAA</div>
+    </div>
+    <div class="flow-cell stack">
+      <div class="flow-box">通知前端</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">同步事故状况</div>
+    </div>
+    <div class="flow-cell stack">
+      <div class="flow-box">系统事故通知 BIT</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">排查异常原因</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">定位问题并解决异常</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box success">指数价格 / 标记价格恢复正常</div>
+    </div>
+    <div class="flow-cell stack">
+      <div class="flow-box">补充 / 调整流动性<br>or 接收仓位</div>
+    </div>
+
+    <div class="flow-row-head">事后</div>
+    <div class="flow-cell stack span-risk-after">
+      <div class="flow-box">Risk 调查影响客户以及仓位</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">确认赔付方式</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">报告影响金额 / 影响客户数量<br>至 Jeff 群以及 24hr command AAA</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">寄信给相关部门 / 品牌</div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-box">交接 / 纪录 · 填写事故纪录表</div>
+    </div>
+    <div class="flow-cell">
+      <div class="flow-box">通知前端 · 事故解决</div>
+    </div>
+    <div class="flow-cell"></div>
+    <div class="flow-cell"></div>
+  </div>
+
+  <h3>1.1 警报（优先级、时间 待讨论）</h3>
+  <table class="compact">
+    <thead><tr><th>警报名称</th><th>Risk 反应时间</th></tr></thead>
+    <tbody>
+      <tr><td>🟢 低</td><td>&lt; 15 分钟</td></tr>
+      <tr><td>🟡 中</td><td>&lt; 10 分钟</td></tr>
+      <tr><td>🟠 高</td><td>&lt; 5 分钟</td></tr>
+      <tr><td>🔴 最高</td><td>&lt; 3 分钟</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 相关问题对接人</h3>
+  <table>
+    <thead>
+      <tr><th>问题类型</th><th>补充说明</th><th>对接人</th><th>相关群组</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>系统问题<br>指数价格源<br>标记价格源</td>
+        <td>比较偏向系统结构错误问题</td>
+        <td><strong>BIT：</strong>Evan Bi、Soft Xiao<br><small>（可以主要找这 2 位解决）</small><br>Sherlock Chen、Zed Zhao</td>
+        <td class="groups">
+          <span class="group-chip">定价异常告警（生产环境）</span>
+          <span class="group-chip">资金费异常告警（生产环境）</span>
+          <span class="group-chip">盘面异常告警（生产环境）</span>
+          <span class="group-chip">标记价格异常告警（生产环境）</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-red">盘面价格<br>接仓爆仓<br>流动性问题</td>
+        <td>永续合约 Order Book 由用户挂单与造市商铺单；遇到价格问题先报告群组，Tag 相应对接人</td>
+        <td><strong>MM：</strong>Yifei Zhang</td>
+        <td class="groups">
+          <span class="group-chip">资金费异常告警（生产环境）</span>
+          <span class="group-chip">盘面异常告警（生产环境）</span>
+          <span class="group-chip">标记价格异常告警（生产环境）</span>
+          <span class="group-chip external">MM 24h 运维</span>
+          <span class="group-chip">DB 接仓账户告警（生产环境）</span>
+          <p class="note">（暂定）还不确定会加谁进去，目前相关警报都报这个群</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-red">价格问题</td>
+        <td>价格问题可以先报告群组，Tag 相应对接人</td>
+        <td>—</td>
+        <td>External 群 · Join</td>
+      </tr>
+      <tr>
+        <td>财务问题</td>
+        <td>—</td>
+        <td>PMO：Claire Song、Carson Peng<br>永续合约财务对账：Pro Huang</td>
+        <td class="group-chip">DB 接仓账户告警（生产环境）</td>
+      </tr>
+      <tr>
+        <td>价差预警</td>
+        <td>—</td>
+        <td>BIT：Soft Xiao</td>
+        <td class="group-chip">财务报表对账告警（生产环境）</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note">已知目前大概只会对接这几个人以及群组，后续如果有更新会再新增。</p>
+
+  <h2 class="section-red">2. 盘面异常监控</h2>
+
+  <h3><span class="dot orange"></span> 无交易监控</h3>
+  <p><strong>Tab：</strong>告警记录 · 监控配置 · 合约名称筛选（查询 / 重置）</p>
+  <table class="compact">
+    <thead><tr><th>合约</th><th>告警类型</th><th>告警值</th><th>告警时间</th><th>告警方式</th></tr></thead>
+    <tbody>
+      <tr><td>XAU_USD</td><td>长时间无交易</td><td>30 秒</td><td>2026-09-18 17:38:51</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>长时间无交易</td><td>30 秒</td><td>2026-09-18 17:38:50</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>长时间无交易</td><td>30 秒</td><td>2026-09-18 17:38:49</td><td>Lark</td></tr>
+    </tbody>
+  </table>
+  <div class="lark-card">
+    <div class="lark-title">【无交易监控】超时未成交</div>
+    合约：XAU_USD · 告警类型：超时未成交 · 无交易时长：195 秒 · 告警阈值：&gt;= 30 秒<br>
+    最近成交时间：2026-10-08 17:22:33 · 告警时间：2026-10-08 17:25:49
+  </div>
+  <div class="callout warn">⚠️ 警报定义 · 🌟 当前时间 − 最后一笔订单成交时间</div>
+  <p><strong>买一价 / 卖一价</strong> — Order Book 卖一 / 买一示意（盘口流动性参考）</p>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>盘面交易不活跃</td><td>市场无足够流动性，正常现象</td></tr>
+      <tr><td>撮合引擎异常</td><td>系统故障导致无新订单成交</td></tr>
+      <tr><td>MM 异常</td><td>做市商断线，未持续提供报价</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 档位深度监控（盘面流动性）</h3>
+  <table class="compact">
+    <thead><tr><th>合约</th><th>类型</th><th>阈值</th><th>时间</th><th>方式</th></tr></thead>
+    <tbody>
+      <tr><td>XAU_USD</td><td>深度告警</td><td>0.1% &lt; ~50,000 USD</td><td>2026-09-22 07:38:16</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>档位告警</td><td>&lt;= 25 档</td><td>2026-09-22 07:38:16</td><td>Lark</td></tr>
+    </tbody>
+  </table>
+  <div class="lark-card">
+    <div class="lark-title">【档位深度监控】深度告警</div>
+    合约：XAU_USD · 侧别：BUY · 当前深度：0.00 USD · 告警阈值：&lt;= 300 USD · 时间：2026-10-08 17:23:47
+  </div>
+  <div class="callout warn">⚠️ 警报定义 · 🌟 针对合约盘口挂单档位数量的警告</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>MM 异常</td><td>做市商掉线或网络故障</td></tr>
+      <tr><td>MM 未按要求补充</td><td>做市商未提供约定的流动性</td></tr>
+      <tr><td>Basis 套利风险</td><td>做市商自行限量规避风险</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 价差预警监控（盘口价差）</h3>
+  <div class="callout warn">⚠️ 警报定义 · 🎯 针对合约买一价和卖一价的偏离率的监控警报</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>市场波动</td><td>正常的市场反应</td></tr>
+      <tr><td>MM 报价过宽</td><td>做市商宁愿承担更宽的价差以规避风险</td></tr>
+      <tr><td>流动性不足</td><td>买卖盘都不充足</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 价差预警监控（盘口偏离）</h3>
+  <p>历史记录 · 巡检配置 · 合约名称查询</p>
+  <table class="compact">
+    <thead>
+      <tr>
+        <th>合约</th><th>告警值</th><th>监控类型1</th><th>价格1</th><th>监控类型2</th><th>价格2</th><th>周期</th><th>告警时间</th><th>方式</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>XAU_USD</td><td>0.1%</td><td>买一价格</td><td>4345.22</td><td>买一价格</td><td>4351.88</td><td>5 分钟</td><td>2026-09-22 00:50:01</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>0.1%</td><td>买一价格</td><td>4346.13</td><td>买一价格</td><td>4350.71</td><td>5 分钟</td><td>2026-09-22 00:45:01</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>0.1%</td><td>买一价格</td><td>4357.29</td><td>买一价格</td><td>4375.99</td><td>5 分钟</td><td>2026-09-22 00:40:01</td><td>Lark</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn">📢 买一、卖一、买卖中间价 与 指数价格偏离超过 x%</div>
+
+  <h3><span class="dot orange"></span> 价差预警监控（盘口插针）</h3>
+  <div class="callout warn">✏️ 最新价和指数价格偏移过大进行预警</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>价格操纵</td><td>企图通过挂单影响市场价格</td></tr>
+      <tr><td>Basis 套利</td><td>利用交易所间价格差异进行套利</td></tr>
+      <tr><td>系统故障</td><td>定价计算错误</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot red"></span> 限价异常</h3>
+  <div class="callout warn">⚡ 最高买价低于 ask1 的 x% 或 最低卖价高于 bid1 的 x%</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>价格操纵</td><td>企图通过挂单影响市场价格</td></tr>
+      <tr><td>Basis 套利</td><td>利用交易所间价格差异进行套利</td></tr>
+      <tr><td>系统故障</td><td>定价计算错误</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-red">3. 平台定价 / 标记价格异常监控</h2>
+  <p class="owners">负责人：<span class="pill">Soft Xiao</span> <span class="pill">Evan Bi</span></p>
+  <h3>📊 指数价格与标记价格差异比较</h3>
+  <p class="note">（后续截图内容可继续追加在本 Tab 底部）</p>
+</div>
