@@ -1,6 +1,6 @@
 import type { Painting } from '../types'
 import { optionLabel, optionLabels } from './optionLabels'
-import { wikiLangFor, wikiSitelinkKey } from './wikiLang'
+import { mintLangFor, wikiLangFor, wikiSitelinkKey } from './wikiLang'
 
 export type LocalizedPainting = Painting & {
   /** True when at least one field was replaced from Wikidata/Wikipedia. */
@@ -18,6 +18,8 @@ type WdEntity = {
 const cache = new Map<string, LocalizedPainting>()
 /** Labels-only cache for gallery/list cards (no Wikipedia extracts). */
 const labelCache = new Map<string, LocalizedPainting>()
+/** Machine-translated intro/anecdote snippets (uiLang + source text). */
+const mintCache = new Map<string, string>()
 
 function pickLabel(entity: WdEntity | undefined, langs: string[], fallback: string): string {
   if (!entity?.labels) return fallback
@@ -121,6 +123,80 @@ function cleanWikiExtract(raw: string): string {
     .replace(/\s*==+\s*[^=]+?\s*==+\s*/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+function stripHtml(html: string): string {
+  return (html || '')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/p>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function chunkForMint(text: string, maxLen = 700): string[] {
+  const clean = (text || '').replace(/\s+/g, ' ').trim()
+  if (!clean) return []
+  if (clean.length <= maxLen) return [clean]
+  const parts: string[] = []
+  let rest = clean
+  while (rest.length > maxLen) {
+    const window = rest.slice(0, maxLen)
+    const breakAt = Math.max(window.lastIndexOf('. '), window.lastIndexOf('。'), window.lastIndexOf('! '), window.lastIndexOf('? '))
+    const idx = breakAt > maxLen * 0.4 ? breakAt + 1 : window.lastIndexOf(' ')
+    const cut = idx > maxLen * 0.3 ? idx : maxLen
+    parts.push(rest.slice(0, cut).trim())
+    rest = rest.slice(cut).trim()
+  }
+  if (rest) parts.push(rest)
+  return parts
+}
+
+/**
+ * Translate catalogue English via Wikimedia MinT (cxserver) when no UI-language
+ * Wikipedia page exists. Returns '' on failure.
+ */
+async function translateViaMint(text: string, uiLang: string): Promise<string> {
+  const target = mintLangFor(uiLang)
+  if (!target || !text.trim()) return ''
+  const cacheKey = `${target}:${text}`
+  const hit = mintCache.get(cacheKey)
+  if (hit !== undefined) return hit
+
+  const chunks = chunkForMint(text)
+  const translated: string[] = []
+  for (const chunk of chunks) {
+    try {
+      const res = await fetch(`https://cxserver.wikimedia.org/v2/translate/en/${target}/MinT`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html: `<p>${chunk.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>` }),
+      })
+      if (!res.ok) {
+        mintCache.set(cacheKey, '')
+        return ''
+      }
+      const data = (await res.json()) as { contents?: string }
+      const plain = stripHtml(data.contents || '')
+      if (!plain) {
+        mintCache.set(cacheKey, '')
+        return ''
+      }
+      translated.push(plain)
+    } catch {
+      mintCache.set(cacheKey, '')
+      return ''
+    }
+  }
+  const out = translated.join(' ').replace(/\s+/g, ' ').trim()
+  mintCache.set(cacheKey, out)
+  return out
 }
 
 async function fetchWikiExtract(
@@ -264,6 +340,11 @@ export async function localizePainting(painting: Painting, uiLang: string): Prom
         if (desc) intro = pickRicherText(intro, desc, 40)
       }
     }
+    // Optimized English catalogue intros: machine-translate when no UI wiki page.
+    if (!introFromUiWiki) {
+      const minted = await translateViaMint(intro, uiLang)
+      if (minted.length >= 80) intro = minted
+    }
 
     const targetPainterTitle = painterEnt?.sitelinks?.[wikiSitelinkKey(target.wiki)]?.title
     if (targetPainterTitle) {
@@ -279,6 +360,10 @@ export async function localizePainting(painting: Painting, uiLang: string): Prom
         const enExtract = await fetchWikiExtract('en', enTitle)
         anecdote = pickRicherText(anecdote, enExtract, 120)
       }
+    }
+    if (!anecdoteFromUiWiki) {
+      const minted = await translateViaMint(anecdote, uiLang)
+      if (minted.length >= 60) anecdote = minted
     }
 
     const localized: LocalizedPainting = {
@@ -382,4 +467,5 @@ export async function localizePaintingLabelsBatch(
 export function clearLocalizationCache() {
   cache.clear()
   labelCache.clear()
+  mintCache.clear()
 }

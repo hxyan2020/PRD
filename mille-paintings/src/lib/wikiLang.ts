@@ -35,3 +35,26 @@ export function wikiLangFor(uiLang: string): WikiLangTarget {
 export function wikiSitelinkKey(wiki: string): string {
   return `${wiki}wiki`
 }
+
+/**
+ * Map UI language codes onto Wikimedia MinT / cxserver target codes.
+ * Returns null when machine translation should be skipped.
+ */
+export function mintLangFor(uiLang: string): string | null {
+  if (!uiLang || uiLang === 'en') return null
+  switch (uiLang) {
+    case 'zh':
+      return 'zh'
+    case 'zh-TW':
+      // MinT has no zh-hant pair; Simplified Chinese is the best available MT target.
+      return 'zh'
+    case 'pt-BR':
+      return 'pt'
+    case 'fil':
+      return 'tl'
+    case 'no':
+      return 'nb'
+    default:
+      return uiLang.split('-')[0]
+  }
+}
