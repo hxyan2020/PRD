@@ -28,7 +28,7 @@ type ShelfTab = "contribute" | "add" | "catalogue";
 
 export function CatalogPage() {
   const { categoryId } = useParams();
-  const { catalog, loading, error, refresh } = useCatalog();
+  const { catalog, loading, error, refresh, packVersion } = useCatalog();
   const { version, isUnlocked, getUnlock, updateNote, updatePhoto } = useUnlocks();
   const { t } = useI18n();
   const [query, setQuery] = useState("");
@@ -42,6 +42,12 @@ export function CatalogPage() {
     setFilter("all");
     setSelectedId(null);
   }, [categoryId]);
+
+  /** After contribute / resource-pack success: remesh stats and show the live shelf. */
+  const handleShelfChanged = () => {
+    refresh();
+    setShelfTab("catalogue");
+  };
 
   if (categoryId && LEGACY_CATEGORY_REDIRECT[categoryId]) {
     return <Navigate to={`/catalog/${LEGACY_CATEGORY_REDIRECT[categoryId]}`} replace />;
@@ -64,12 +70,13 @@ export function CatalogPage() {
       map.set(cat.id, sneakPeekIds(items));
     }
     return map;
-  }, [catalog, version]);
+  }, [catalog, version, packVersion]);
 
   const progress = useMemo(() => {
     if (!catalog || !categoryId) return null;
     return categoryProgress(itemsForCategory(catalog, categoryId));
-  }, [catalog, categoryId, version]);
+    // version: unlocks; packVersion: contributions / resource packs
+  }, [catalog, categoryId, version, packVersion]);
 
   const items = useMemo(() => {
     let list = [...categoryItems];
@@ -120,13 +127,14 @@ export function CatalogPage() {
       </div>
 
       {progress && (
-        <div className="progress-panel">
+        <div className="progress-panel" data-total={progress.total} data-unlocked={progress.unlocked}>
           <div>
             <strong>{t("catalog.progress")}</strong>
             <span className="mono"> {formatPct(progress.pct)}</span>
             <span className="muted">
               {" "}
-              ({progress.unlocked}/{progress.total})
+              ({progress.unlocked}/{progress.total}
+              {activeCategory ? ` · ${activeCategory.itemCount} on shelf` : ""})
             </span>
           </div>
           <div className="progress-bar" aria-hidden>
@@ -193,7 +201,7 @@ export function CatalogPage() {
           <ContributeUploadPanel
             catalog={catalog}
             category={activeCategory}
-            onChanged={refresh}
+            onChanged={handleShelfChanged}
           />
         </div>
       )}
@@ -208,7 +216,7 @@ export function CatalogPage() {
           <ResourcePackPanel
             catalog={catalog}
             category={activeCategory}
-            onChanged={refresh}
+            onChanged={handleShelfChanged}
           />
         </div>
       )}

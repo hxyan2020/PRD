@@ -33,8 +33,13 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
   const [queries, setQueries] = useState<string[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  const packs = useMemo(() => listResourcePacks(category.id), [category.id, catalog.meta.itemCount]);
-  const progress = categoryProgress(itemsForCategory(catalog, category.id));
+  const packs = useMemo(
+    () => listResourcePacks(category.id),
+    // Remesh when shelf grows via packs / contributions
+    [category.id, catalog.meta.itemCount, category.itemCount],
+  );
+  const shelfItems = itemsForCategory(catalog, category.id);
+  const progress = categoryProgress(shelfItems);
 
   if (!interestSpec) {
     return (
@@ -142,7 +147,7 @@ export function ResourcePackPanel({ catalog, category, onChanged }: Props) {
             Specify interests for this shelf, then let Seen search the web for matching
             brands or species and add them. New items start locked; progress updates
             automatically ({progress.unlocked}/{progress.total} ·{" "}
-            {formatPct(progress.pct)}).
+            {formatPct(progress.pct)} · {category.itemCount} on shelf).
           </p>
         </div>
       </div>

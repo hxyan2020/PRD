@@ -25,8 +25,11 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
   const [status, setStatus] = useState<string | null>(null);
   const [celebrating, setCelebrating] = useState<CatalogItem | null>(null);
 
-  const shelfProgress = categoryProgress(itemsForCategory(catalog, category.id));
+  const shelfItems = itemsForCategory(catalog, category.id);
+  const shelfProgress = categoryProgress(shelfItems);
   const contribs = listContributions(category.id);
+  // Keep copy in sync with live shelf size after successful adds
+  const shelfSizeLabel = `${shelfProgress.unlocked}/${shelfProgress.total} · ${formatPct(shelfProgress.pct)} · ${category.itemCount} on shelf`;
 
   const onPick = (f: File | null) => {
     if (!f) return;
@@ -89,8 +92,7 @@ export function ContributeUploadPanel({ catalog, category, onChanged }: Props) {
         <p>
           Upload a photo of something not yet on this shelf. If it already exists, we
           unlock it. If it is new and relevant, we add brand details, unlock it, and
-          recalculate progress ({shelfProgress.unlocked}/{shelfProgress.total} ·{" "}
-          {formatPct(shelfProgress.pct)}). {kindHint}
+          recalculate progress ({shelfSizeLabel}). {kindHint}
         </p>
       </div>
 
