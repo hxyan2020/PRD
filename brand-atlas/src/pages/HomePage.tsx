@@ -26,6 +26,45 @@ export function HomePage() {
           decoding="async"
           fetchPriority="high"
         />
+        <svg
+          className="hero__shapes"
+          viewBox="0 0 1600 900"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          {/* Tall tower block — left */}
+          <path
+            className="hero__shape hero__shape--a"
+            d="M412 70h118l8 38 4 520-6 92-14 48H428l-12-54-6-88 2-518z"
+          />
+          {/* Mid tower — right */}
+          <path
+            className="hero__shape hero__shape--b"
+            d="M1188 120h86l6 28 2 210-4 36-10 22h-78l-8-24-4-38 2-208z"
+          />
+          {/* Wide foreground slab */}
+          <path
+            className="hero__shape hero__shape--c"
+            d="M620 470l520-18 48 22 36 70-12 168-40 52-210 28-280 8-160-24-70-48 8-120 40-90z"
+          />
+          {/* Pixel spray / digital dust */}
+          <g className="hero__shape-dust" fill="var(--lime)">
+            <rect x="480" y="48" width="10" height="10" />
+            <rect x="498" y="36" width="8" height="8" />
+            <rect x="512" y="58" width="7" height="7" />
+            <rect x="528" y="42" width="9" height="9" />
+            <rect x="544" y="64" width="6" height="6" />
+            <rect x="556" y="50" width="8" height="8" />
+            <rect x="470" y="72" width="5" height="5" />
+            <rect x="1240" y="96" width="9" height="9" />
+            <rect x="1256" y="108" width="7" height="7" />
+            <rect x="1270" y="88" width="8" height="8" />
+            <rect x="1284" y="112" width="6" height="6" />
+            <rect x="900" y="452" width="8" height="8" />
+            <rect x="918" y="440" width="6" height="6" />
+            <rect x="934" y="458" width="7" height="7" />
+          </g>
+        </svg>
         <div className="hero__veil" aria-hidden="true" />
         <div className="hero__content">
           <p className="hero__brand">

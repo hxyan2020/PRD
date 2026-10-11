@@ -970,6 +970,16 @@ img {
     align-items: end;
   }
 
+  /* Keep yellow slabs out of the bottom copy/CTA band on small screens */
+  .hero__shapes {
+    transform: translate3d(6%, -4%, 0) scale(0.92);
+    transform-origin: 70% 40%;
+  }
+
+  .hero__shape--c {
+    opacity: 0.92;
+  }
+
   .hero__content {
     padding: 1.1rem 1rem 1.45rem;
     max-width: none;
@@ -1251,6 +1261,7 @@ img {
 .hero__banner {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1275,10 +1286,65 @@ img {
   }
 }
 
-.hero__veil {
+/* Canary blocks in front of the photo (original Seen banner language) */
+.hero__shapes {
   position: absolute;
   inset: 0;
   z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.hero__shape {
+  fill: var(--lime);
+  transform-origin: center;
+  animation: shapeDrift 18s ease-in-out infinite alternate;
+}
+
+.hero__shape--a {
+  animation-delay: 0s;
+}
+
+.hero__shape--b {
+  animation-delay: -4s;
+  animation-duration: 22s;
+}
+
+.hero__shape--c {
+  animation-delay: -8s;
+  animation-duration: 26s;
+}
+
+.hero__shape-dust {
+  opacity: 0.95;
+  animation: dustFlicker 7s steps(2, end) infinite;
+}
+
+@keyframes shapeDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0.6%, -0.8%, 0);
+  }
+}
+
+@keyframes dustFlicker {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   pointer-events: none;
   /* Lighter veil so the city photo stays clear; keep a reading pad under copy only */
   background:
@@ -1294,11 +1360,16 @@ img {
     transform: none;
     filter: contrast(1.04) brightness(1.03);
   }
+
+  .hero__shape,
+  .hero__shape-dust {
+    animation: none;
+  }
 }
 
 .hero__content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   padding: clamp(2rem, 6vw, 4.5rem);
   max-width: 38rem;
 }
