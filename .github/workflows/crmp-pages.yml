@@ -58,3 +58,5 @@ jobs:
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/"
           } >> "$GITHUB_STEP_SUMMARY"
+
+# republish trigger 20261011155154
