@@ -33,5 +33,13 @@
   "cat.animals": "حيوانات وحشرات",
   "cat.birds": "طيور",
   "cat.mushrooms": "فطر",
-  "common.close": "إغلاق"
+  "common.close": "إغلاق",
+  "nav.unlocked": "المفتوح",
+  "unlockedPage.title": "ما فتحته",
+  "unlockedPage.blurb": "كل ما فتحته، مقسّم حسب الكتالوج — مع وقت الجمع وملاحظاتك.",
+  "unlockedPage.loading": "جاري تحميل المفتوح…",
+  "unlockedPage.empty": "لم تفتح شيئًا بعد. امسح شيئًا رأيته لتبدأ مجموعتك.",
+  "unlockedPage.emptyCta": "امسح للفتح",
+  "unlockedPage.countInCat": "{count} مفتوح",
+  "unlockedPage.noNote": "لا ملاحظة بعد"
 }

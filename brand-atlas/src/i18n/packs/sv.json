@@ -33,5 +33,13 @@
   "cat.animals": "Djur & insekter",
   "cat.birds": "Fåglar",
   "cat.mushrooms": "Svampar",
-  "common.close": "Stäng"
+  "common.close": "Stäng",
+  "nav.unlocked": "Upplåsta",
+  "unlockedPage.title": "Dina upplåsningar",
+  "unlockedPage.blurb": "Allt du låst upp, grupperat per katalog — med tidpunkt och fältanteckningar.",
+  "unlockedPage.loading": "Laddar upplåsningar…",
+  "unlockedPage.empty": "Inget upplåst än. Skanna något du sett.",
+  "unlockedPage.emptyCta": "Skanna för att låsa upp",
+  "unlockedPage.countInCat": "{count} upplåsta",
+  "unlockedPage.noNote": "Ingen anteckning ännu"
 }

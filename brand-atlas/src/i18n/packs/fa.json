@@ -22,5 +22,13 @@
   "cat.animals": "حیوانات و حشرات",
   "cat.birds": "پرندگان",
   "cat.mushrooms": "قارچ‌ها",
-  "common.close": "بستن"
+  "common.close": "بستن",
+  "nav.unlocked": "بازشده‌ها",
+  "unlockedPage.title": "بازشده‌های شما",
+  "unlockedPage.blurb": "همه چیزهایی که باز کرده‌اید، به‌تفکیک کاتالوگ — با زمان جمع‌آوری و یادداشت میدانی.",
+  "unlockedPage.loading": "در حال بارگذاری بازشده‌ها…",
+  "unlockedPage.empty": "هنوز چیزی باز نشده. چیزی را که دیده‌اید اسکن کنید.",
+  "unlockedPage.emptyCta": "اسکن برای باز کردن",
+  "unlockedPage.countInCat": "{count} بازشده",
+  "unlockedPage.noNote": "هنوز یادداشتی نیست"
 }

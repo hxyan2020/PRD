@@ -33,5 +33,13 @@
   "cat.animals": "Hewan & serangga",
   "cat.birds": "Burung",
   "cat.mushrooms": "Jamur",
-  "common.close": "Tutup"
+  "common.close": "Tutup",
+  "nav.unlocked": "Terbuka",
+  "unlockedPage.title": "Koleksi terbuka",
+  "unlockedPage.blurb": "Semua yang Anda buka, dikelompokkan per katalog — dengan waktu koleksi dan catatan lapangan.",
+  "unlockedPage.loading": "Memuat yang terbuka…",
+  "unlockedPage.empty": "Belum ada yang terbuka. Pindai sesuatu yang Anda lihat.",
+  "unlockedPage.emptyCta": "Pindai untuk membuka",
+  "unlockedPage.countInCat": "{count} terbuka",
+  "unlockedPage.noNote": "Belum ada catatan"
 }

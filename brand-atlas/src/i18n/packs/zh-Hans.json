@@ -193,5 +193,13 @@
   "cat.animals": "动物与昆虫",
   "cat.birds": "鸟类",
   "cat.mushrooms": "蘑菇与真菌",
-  "common.close": "关闭"
+  "common.close": "关闭",
+  "nav.unlocked": "已解锁",
+  "unlockedPage.title": "我的解锁",
+  "unlockedPage.blurb": "按图鉴分类展示你已解锁的条目，含收藏时间与田野笔记。",
+  "unlockedPage.loading": "正在加载解锁…",
+  "unlockedPage.empty": "还没有解锁。扫描你见过的东西，开始收藏。",
+  "unlockedPage.emptyCta": "去扫描解锁",
+  "unlockedPage.countInCat": "已解锁 {count}",
+  "unlockedPage.noNote": "暂无田野笔记"
 }

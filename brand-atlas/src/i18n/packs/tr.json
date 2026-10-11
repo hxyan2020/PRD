@@ -33,5 +33,13 @@
   "cat.animals": "Hayvanlar ve böcekler",
   "cat.birds": "Kuşlar",
   "cat.mushrooms": "Mantarlar",
-  "common.close": "Kapat"
+  "common.close": "Kapat",
+  "nav.unlocked": "Açılanlar",
+  "unlockedPage.title": "Açtıkların",
+  "unlockedPage.blurb": "Açtığın her şey kataloglara göre — toplama zamanı ve saha notlarınla.",
+  "unlockedPage.loading": "Açılanlar yükleniyor…",
+  "unlockedPage.empty": "Henüz bir şey açılmadı. Gördüğünü tara.",
+  "unlockedPage.emptyCta": "Taramak için tara",
+  "unlockedPage.countInCat": "{count} açık",
+  "unlockedPage.noNote": "Henüz not yok"
 }

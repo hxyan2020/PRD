@@ -33,5 +33,13 @@
   "cat.animals": "สัตว์และแมลง",
   "cat.birds": "นก",
   "cat.mushrooms": "เห็ด",
-  "common.close": "ปิด"
+  "common.close": "ปิด",
+  "nav.unlocked": "ปลดล็อกแล้ว",
+  "unlockedPage.title": "รายการที่ปลดล็อก",
+  "unlockedPage.blurb": "ทุกรายการที่ปลดล็อก จัดตามแคตตาล็อก พร้อมเวลาที่เก็บและบันทึกภาคสนาม",
+  "unlockedPage.loading": "กำลังโหลดรายการที่ปลดล็อก…",
+  "unlockedPage.empty": "ยังไม่มีรายการที่ปลดล็อก สแกนสิ่งที่คุณเห็นเพื่อเริ่มสะสม",
+  "unlockedPage.emptyCta": "สแกนเพื่อปลดล็อก",
+  "unlockedPage.countInCat": "ปลดล็อก {count}",
+  "unlockedPage.noNote": "ยังไม่มีบันทึก"
 }

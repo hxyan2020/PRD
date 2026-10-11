@@ -193,5 +193,13 @@
   "cat.animals": "Animaux et insectes",
   "cat.birds": "Oiseaux",
   "cat.mushrooms": "Champignons",
-  "common.close": "Fermer"
+  "common.close": "Fermer",
+  "nav.unlocked": "Débloqués",
+  "unlockedPage.title": "Vos déblocages",
+  "unlockedPage.blurb": "Tout ce que vous avez débloqué, groupé par catalogue — avec horodatage et notes de terrain.",
+  "unlockedPage.loading": "Chargement des déblocages…",
+  "unlockedPage.empty": "Rien de débloqué pour l’instant. Scannez quelque chose que vous avez vu.",
+  "unlockedPage.emptyCta": "Scanner pour débloquer",
+  "unlockedPage.countInCat": "{count} débloqué(s)",
+  "unlockedPage.noNote": "Pas encore de note"
 }

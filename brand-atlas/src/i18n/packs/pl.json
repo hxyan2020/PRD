@@ -68,5 +68,13 @@
   "cat.animals": "Zwierzęta i owady",
   "cat.birds": "Ptaki",
   "cat.mushrooms": "Grzyby",
-  "common.close": "Zamknij"
+  "common.close": "Zamknij",
+  "nav.unlocked": "Odblokowane",
+  "unlockedPage.title": "Twoje odblokowania",
+  "unlockedPage.blurb": "Wszystko, co odblokowałeś, według katalogu — z czasem i notatkami terenowymi.",
+  "unlockedPage.loading": "Ładowanie odblokowań…",
+  "unlockedPage.empty": "Jeszcze nic nie odblokowano. Zeskanuj coś, co widziałeś.",
+  "unlockedPage.emptyCta": "Skanuj, by odblokować",
+  "unlockedPage.countInCat": "{count} odblokowane",
+  "unlockedPage.noNote": "Brak notatki"
 }

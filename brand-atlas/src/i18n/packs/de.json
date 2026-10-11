@@ -193,5 +193,13 @@
   "cat.animals": "Tiere & Insekten",
   "cat.birds": "Vögel",
   "cat.mushrooms": "Pilze",
-  "common.close": "Schließen"
+  "common.close": "Schließen",
+  "nav.unlocked": "Freigeschaltet",
+  "unlockedPage.title": "Deine Freischaltungen",
+  "unlockedPage.blurb": "Alles, was du freigeschaltet hast — nach Katalog gruppiert, mit Zeitpunkt und Feldnotiz.",
+  "unlockedPage.loading": "Freischaltungen werden geladen…",
+  "unlockedPage.empty": "Noch nichts freigeschaltet. Scanne etwas, das du gesehen hast.",
+  "unlockedPage.emptyCta": "Scannen zum Freischalten",
+  "unlockedPage.countInCat": "{count} freigeschaltet",
+  "unlockedPage.noNote": "Noch keine Feldnotiz"
 }

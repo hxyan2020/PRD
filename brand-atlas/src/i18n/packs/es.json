@@ -193,5 +193,13 @@
   "cat.animals": "Animales e insectos",
   "cat.birds": "Aves",
   "cat.mushrooms": "Setas y hongos",
-  "common.close": "Cerrar"
+  "common.close": "Cerrar",
+  "nav.unlocked": "Desbloqueados",
+  "unlockedPage.title": "Tus desbloqueos",
+  "unlockedPage.blurb": "Todo lo que has desbloqueado, agrupado por catálogo — con fecha y notas de campo.",
+  "unlockedPage.loading": "Cargando desbloqueos…",
+  "unlockedPage.empty": "Aún no hay desbloqueos. Escanea algo que hayas visto.",
+  "unlockedPage.emptyCta": "Escanear para desbloquear",
+  "unlockedPage.countInCat": "{count} desbloqueado(s)",
+  "unlockedPage.noNote": "Sin nota de campo aún"
 }

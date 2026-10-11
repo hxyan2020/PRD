@@ -22,5 +22,13 @@
   "cat.animals": "প্রাণী ও পোকা",
   "cat.birds": "পাখি",
   "cat.mushrooms": "মাশরুম",
-  "common.close": "বন্ধ"
+  "common.close": "বন্ধ",
+  "nav.unlocked": "আনলক",
+  "unlockedPage.title": "আপনার আনলক",
+  "unlockedPage.blurb": "ক্যাটালগ অনুযায়ী আপনার আনলক — সংগ্রহের সময় ও ফিল্ড নোটসহ।",
+  "unlockedPage.loading": "আনলক লোড হচ্ছে…",
+  "unlockedPage.empty": "এখনো কিছু আনলক নেই। যা দেখেছেন স্ক্যান করুন।",
+  "unlockedPage.emptyCta": "স্ক্যান করে আনলক করুন",
+  "unlockedPage.countInCat": "{count} আনলক",
+  "unlockedPage.noNote": "এখনো কোনো নোট নেই"
 }

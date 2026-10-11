@@ -92,5 +92,13 @@
   "cat.animals": "Животные и насекомые",
   "cat.birds": "Птицы",
   "cat.mushrooms": "Грибы",
-  "common.close": "Закрыть"
+  "common.close": "Закрыть",
+  "nav.unlocked": "Открыто",
+  "unlockedPage.title": "Ваши открытия",
+  "unlockedPage.blurb": "Всё, что вы открыли, по каталогам — с временем сбора и полевыми заметками.",
+  "unlockedPage.loading": "Загрузка открытий…",
+  "unlockedPage.empty": "Пока ничего не открыто. Отсканируйте то, что видели.",
+  "unlockedPage.emptyCta": "Сканировать",
+  "unlockedPage.countInCat": "открыто: {count}",
+  "unlockedPage.noNote": "Заметки пока нет"
 }

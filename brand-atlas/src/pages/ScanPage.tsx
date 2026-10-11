@@ -329,7 +329,7 @@ export function ScanPage() {
 
           <p className="muted" style={{ marginTop: "1.2rem" }}>
             {t("scan.afterConfirm")}{" "}
-            <Link to="/catalog">{t("scan.seeUnlocks")}</Link>.
+            <Link to="/unlocked">{t("scan.seeUnlocks")}</Link>.
           </p>
         </div>
       </div>

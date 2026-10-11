@@ -20,6 +20,7 @@ import { HomePage } from "./pages/HomePage";
 import { ScanPage } from "./pages/ScanPage";
 import { SharePage } from "./pages/SharePage";
 import { TermsPage } from "./pages/TermsPage";
+import { UnlockedPage } from "./pages/UnlockedPage";
 
 const useHashRouter = import.meta.env.BASE_URL !== "/";
 const Router = useHashRouter ? HashRouter : BrowserRouter;
@@ -76,9 +77,14 @@ function Header() {
           </NavLink>
 
           <div className="header-tools header-tools--compact">
-            <div className="muted mono header-progress" title={t("header.unlockedTitle")}>
+            <NavLink
+              to="/unlocked"
+              className="muted mono header-progress header-progress--link"
+              title={t("header.unlockedTitle")}
+              onClick={closeMenu}
+            >
               {t("header.unlocked", { count: String(count) })}
-            </div>
+            </NavLink>
             <LanguagePicker />
             <div className="header-auth-desktop">
               {isLoggedIn ? (
@@ -131,6 +137,9 @@ function Header() {
             </NavLink>
             <NavLink to="/catalog" onClick={closeMenu}>
               {t("nav.catalog")}
+            </NavLink>
+            <NavLink to="/unlocked" onClick={closeMenu}>
+              {t("nav.unlocked")}
             </NavLink>
             <NavLink to="/scan" onClick={closeMenu}>
               {t("nav.scan")}
@@ -185,6 +194,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/catalog/:categoryId" element={<CatalogPage />} />
+        <Route path="/unlocked" element={<UnlockedPage />} />
         <Route path="/scan" element={<ScanPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />

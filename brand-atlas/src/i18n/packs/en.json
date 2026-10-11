@@ -194,5 +194,13 @@
   "cat.animals": "Animals & insects",
   "cat.birds": "Birds",
   "cat.mushrooms": "Mushrooms & fungi",
-  "common.close": "Close"
+  "common.close": "Close",
+  "nav.unlocked": "Unlocked",
+  "unlockedPage.title": "Your unlocks",
+  "unlockedPage.blurb": "Everything you’ve unlocked, grouped by catalogue — with when you collected it and your field notes.",
+  "unlockedPage.loading": "Loading unlocks…",
+  "unlockedPage.empty": "Nothing unlocked yet. Scan something you’ve seen to start your collection.",
+  "unlockedPage.emptyCta": "Scan to unlock",
+  "unlockedPage.countInCat": "{count} unlocked",
+  "unlockedPage.noNote": "No field note yet"
 }

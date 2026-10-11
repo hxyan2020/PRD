@@ -22,5 +22,13 @@
   "cat.animals": "בעלי חיים וחרקים",
   "cat.birds": "ציפורים",
   "cat.mushrooms": "פטריות",
-  "common.close": "סגור"
+  "common.close": "סגור",
+  "nav.unlocked": "נפתחו",
+  "unlockedPage.title": "הפריטים שנפתחו",
+  "unlockedPage.blurb": "כל מה שפתחת, מחולק לפי קטלוג — עם זמן האיסוף והערות השטח.",
+  "unlockedPage.loading": "טוען פריטים שנפתחו…",
+  "unlockedPage.empty": "עדיין לא נפתח כלום. סרקו משהו שראיתם.",
+  "unlockedPage.emptyCta": "סרקו כדי לפתוח",
+  "unlockedPage.countInCat": "{count} נפתחו",
+  "unlockedPage.noNote": "אין הערה עדיין"
 }

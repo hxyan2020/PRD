@@ -33,5 +33,13 @@
   "cat.animals": "Động vật & côn trùng",
   "cat.birds": "Chim",
   "cat.mushrooms": "Nấm",
-  "common.close": "Đóng"
+  "common.close": "Đóng",
+  "nav.unlocked": "Đã mở",
+  "unlockedPage.title": "Bộ sưu tập đã mở",
+  "unlockedPage.blurb": "Mọi mục bạn đã mở, nhóm theo catalogue — kèm thời gian và ghi chú thực địa.",
+  "unlockedPage.loading": "Đang tải mục đã mở…",
+  "unlockedPage.empty": "Chưa mở gì. Quét thứ bạn đã thấy để bắt đầu.",
+  "unlockedPage.emptyCta": "Quét để mở khóa",
+  "unlockedPage.countInCat": "{count} đã mở",
+  "unlockedPage.noNote": "Chưa có ghi chú"
 }

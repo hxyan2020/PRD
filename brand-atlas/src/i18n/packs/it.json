@@ -92,5 +92,13 @@
   "cat.animals": "Animali e insetti",
   "cat.birds": "Uccelli",
   "cat.mushrooms": "Funghi",
-  "common.close": "Chiudi"
+  "common.close": "Chiudi",
+  "nav.unlocked": "Sbloccati",
+  "unlockedPage.title": "I tuoi sblocchi",
+  "unlockedPage.blurb": "Tutto ciò che hai sbloccato, raggruppato per catalogo — con data e note sul campo.",
+  "unlockedPage.loading": "Caricamento sblocchi…",
+  "unlockedPage.empty": "Niente ancora sbloccato. Scansiona qualcosa che hai visto.",
+  "unlockedPage.emptyCta": "Scansiona per sbloccare",
+  "unlockedPage.countInCat": "{count} sbloccati",
+  "unlockedPage.noNote": "Nessuna nota ancora"
 }

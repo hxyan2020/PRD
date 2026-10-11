@@ -193,5 +193,13 @@
   "cat.animals": "動物與昆蟲",
   "cat.birds": "鳥類",
   "cat.mushrooms": "蘑菇與真菌",
-  "common.close": "關閉"
+  "common.close": "關閉",
+  "nav.unlocked": "已解鎖",
+  "unlockedPage.title": "我的解鎖",
+  "unlockedPage.blurb": "依圖鑑分類顯示你已解鎖的項目，含收藏時間與田野筆記。",
+  "unlockedPage.loading": "正在載入解鎖…",
+  "unlockedPage.empty": "尚未解鎖任何項目。掃描你見過的東西，開始收藏。",
+  "unlockedPage.emptyCta": "去掃描解鎖",
+  "unlockedPage.countInCat": "已解鎖 {count}",
+  "unlockedPage.noNote": "尚無田野筆記"
 }

@@ -33,5 +33,13 @@
   "cat.animals": "Тварини й комахи",
   "cat.birds": "Птахи",
   "cat.mushrooms": "Гриби",
-  "common.close": "Закрити"
+  "common.close": "Закрити",
+  "nav.unlocked": "Відкрито",
+  "unlockedPage.title": "Ваші відкриття",
+  "unlockedPage.blurb": "Усе, що ви відкрили, за каталогами — з часом збору та польовими нотатками.",
+  "unlockedPage.loading": "Завантаження відкриттів…",
+  "unlockedPage.empty": "Ще нічого не відкрито. Відскануйте те, що бачили.",
+  "unlockedPage.emptyCta": "Сканувати",
+  "unlockedPage.countInCat": "відкрито: {count}",
+  "unlockedPage.noNote": "Нотатки ще немає"
 }

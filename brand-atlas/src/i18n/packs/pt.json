@@ -93,5 +93,13 @@
   "cat.animals": "Animais e insetos",
   "cat.birds": "Aves",
   "cat.mushrooms": "Cogumelos",
-  "common.close": "Fechar"
+  "common.close": "Fechar",
+  "nav.unlocked": "Desbloqueados",
+  "unlockedPage.title": "Seus desbloqueios",
+  "unlockedPage.blurb": "Tudo o que você desbloqueou, agrupado por catálogo — com data e notas de campo.",
+  "unlockedPage.loading": "Carregando desbloqueios…",
+  "unlockedPage.empty": "Nada desbloqueado ainda. Escaneie algo que você viu.",
+  "unlockedPage.emptyCta": "Escanear para desbloquear",
+  "unlockedPage.countInCat": "{count} desbloqueado(s)",
+  "unlockedPage.noNote": "Sem nota de campo ainda"
 }

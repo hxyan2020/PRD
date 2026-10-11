@@ -69,5 +69,13 @@
   "cat.animals": "Dieren & insecten",
   "cat.birds": "Vogels",
   "cat.mushrooms": "Paddenstoelen",
-  "common.close": "Sluiten"
+  "common.close": "Sluiten",
+  "nav.unlocked": "Ontgrendeld",
+  "unlockedPage.title": "Jouw ontgrendelingen",
+  "unlockedPage.blurb": "Alles wat je hebt ontgrendeld, gegroepeerd per catalogus — met tijdstip en veldnotities.",
+  "unlockedPage.loading": "Ontgrendelingen laden…",
+  "unlockedPage.empty": "Nog niets ontgrendeld. Scan iets dat je hebt gezien.",
+  "unlockedPage.emptyCta": "Scan om te ontgrendelen",
+  "unlockedPage.countInCat": "{count} ontgrendeld",
+  "unlockedPage.noNote": "Nog geen veldnotitie"
 }

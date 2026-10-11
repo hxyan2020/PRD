@@ -33,5 +33,13 @@
   "cat.animals": "जानवर और कीड़े",
   "cat.birds": "पंछी",
   "cat.mushrooms": "मशरूम",
-  "common.close": "बंद करें"
+  "common.close": "बंद करें",
+  "nav.unlocked": "अनलॉक",
+  "unlockedPage.title": "आपके अनलॉक",
+  "unlockedPage.blurb": "कैटलॉग के अनुसार आपके अनलॉक — संग्रह समय और फ़ील्ड नोट के साथ।",
+  "unlockedPage.loading": "अनलॉक लोड हो रहे हैं…",
+  "unlockedPage.empty": "अभी कुछ अनलॉक नहीं। जो देखा है उसे स्कैन करें।",
+  "unlockedPage.emptyCta": "स्कैन करके अनलॉक करें",
+  "unlockedPage.countInCat": "{count} अनलॉक",
+  "unlockedPage.noNote": "अभी कोई नोट नहीं"
 }

@@ -22,5 +22,13 @@
   "cat.animals": "Haiwan & serangga",
   "cat.birds": "Burung",
   "cat.mushrooms": "Cendawan",
-  "common.close": "Tutup"
+  "common.close": "Tutup",
+  "nav.unlocked": "Dibuka",
+  "unlockedPage.title": "Koleksi dibuka",
+  "unlockedPage.blurb": "Semua yang anda buka, dikumpulkan mengikut katalog — dengan masa dan nota lapangan.",
+  "unlockedPage.loading": "Memuatkan yang dibuka…",
+  "unlockedPage.empty": "Belum ada yang dibuka. Imbas sesuatu yang anda lihat.",
+  "unlockedPage.emptyCta": "Imbas untuk buka",
+  "unlockedPage.countInCat": "{count} dibuka",
+  "unlockedPage.noNote": "Tiada nota lagi"
 }
