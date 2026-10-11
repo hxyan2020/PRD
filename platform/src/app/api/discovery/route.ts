@@ -119,9 +119,12 @@ export async function POST(req: Request) {
           }
         | undefined;
       if (!row) return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
+      const localeRaw = String(body.locale || "en");
+      const locale = localeRaw === "zh-Hant" ? "zh-Hant" : "en";
       const suggestion = await analyseDiscoveryCandidate({
         candidate: row,
         followup: body.followup ? String(body.followup) : undefined,
+        locale,
       });
       return NextResponse.json({ ok: true, suggestion, ai_status: getDiscoveryAiStatus() });
     }
@@ -172,9 +175,16 @@ export async function POST(req: Request) {
             }
           | undefined;
         if (row) {
+          const localeRaw = String(body.locale || "en");
+          const locale = localeRaw === "zh-Hant" ? "zh-Hant" : "en";
           suggestion = await analyseDiscoveryCandidate({
             candidate: row,
-            followup: body.comment ? String(body.comment) : "Provide additional evidence and validation plan",
+            followup: body.comment
+              ? String(body.comment)
+              : locale === "zh-Hant"
+                ? "請補充證據與驗證計畫"
+                : "Provide additional evidence and validation plan",
+            locale,
           });
         }
       }

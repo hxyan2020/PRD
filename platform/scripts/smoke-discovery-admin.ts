@@ -59,6 +59,14 @@ async function main() {
   assert.ok(suggestion.assessment);
   assert.ok(suggestion.proposed_indicator_formula);
 
+  const suggestionZh = await analyseDiscoveryCandidate({
+    candidate: cand,
+    followup: "需要驗證計畫",
+    locale: "zh-Hant",
+  });
+  assert.match(suggestionZh.assessment, /MOCK 回應/);
+  assert.ok(suggestionZh.possible_root_causes.some((c) => /市場|流動性/.test(c)));
+
   const ro = getDb()
     .prepare(`SELECT id, name, role_code FROM users WHERE email=?`)
     .get("risk.owner@vantagemarkets.com") as { id: number; name: string; role_code: string };

@@ -272,6 +272,7 @@ export function DiscoverySuggestionBoard({
         action: "analyse",
         candidate_id: selectedRow.candidate_id,
         followup: question || undefined,
+        locale,
       });
       setSuggestion(data.suggestion as DiscoverySuggestion);
       setMsg(
@@ -297,6 +298,7 @@ export function DiscoverySuggestionBoard({
         review_action: action,
         comment: question || undefined,
         reviewer_name: reviewer,
+        locale,
       });
       if (data.suggestion) {
         setSuggestion(data.suggestion as DiscoverySuggestion);
@@ -390,7 +392,13 @@ export function DiscoverySuggestionBoard({
           />
         </p>
         <div className="flex flex-wrap gap-2 items-center">
-          <Badge>{enabled ? "ENABLED" : "DISABLED"}</Badge>
+          <Badge>
+            {enabled ? (
+              <EnZh en="ENABLED" zh="已啟用" />
+            ) : (
+              <EnZh en="DISABLED" zh="已停用" />
+            )}
+          </Badge>
           <Badge data-testid="discovery-ai-mode">
             AI: {aiStatus.mode === "LIVE_OPENAI" ? `LIVE (${aiStatus.model})` : "MOCK"}
           </Badge>
@@ -400,7 +408,10 @@ export function DiscoverySuggestionBoard({
           <a className="btn" href={RISK_DISCOVERY_NOTEBOOK.colab} target="_blank" rel="noreferrer">
             <EnZh en="Open Colab" zh="開啟 Colab" />
           </a>
-          <Link className="btn" href="/admin/docs/user-guide">
+          <Link
+            className="btn"
+            href={locale === "zh-Hant" ? "/admin/docs/user-guide?lang=zh-Hant" : "/admin/docs/user-guide"}
+          >
             <EnZh en="Methods & flow (docs)" zh="方法與流程（文件）" />
           </Link>
         </div>

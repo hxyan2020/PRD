@@ -71,11 +71,40 @@ export function disableDiscoveryOpenAi() {
 
 export function deterministicSuggestion(
   candidate: DiscoveryCandidateInput,
-  followup?: string
+  followup?: string,
+  locale: "en" | "zh-Hant" = "en"
 ): DiscoverySuggestion {
+  const zh = locale === "zh-Hant";
   const follow = followup?.trim()
-    ? ` Reviewer follow-up: ${followup.trim().slice(0, 400)}`
+    ? zh
+      ? ` 審查人追問：${followup.trim().slice(0, 400)}`
+      : ` Reviewer follow-up: ${followup.trim().slice(0, 400)}`
     : "";
+  if (zh) {
+    return {
+      assessment: `MOCK 回應 — 候選來自 ${candidate.method}：${candidate.scenario}。請確認這是否為真實控管缺口。${follow}`,
+      possible_root_causes: ["市場波動或流動性體制", "LP 或橋接劣化", "資料彙總／陳舊輸入"],
+      proposed_risk_scenario: candidate.scenario,
+      proposed_indicator_formula: `${candidate.proposed_indicator} — 請確認分子、分母、群體與持續性`,
+      proposed_dimensions: [candidate.proposed_dimension],
+      recommended_validation_steps: [
+        "核對原始資料與時間戳",
+        "檢查對齊同儕群體與基線",
+        "執行樣本外回測",
+        "取得業務單位 SME 核准",
+        "啟用 Monitor 2.0 前完成 UAT",
+      ],
+      limitations: [
+        "MOCK 輸出；未呼叫 OpenAI API",
+        "僅合成／即時窗代理資料",
+        "分數不代表因果或損失成立",
+      ],
+      priority: "MEDIUM",
+      confidence: "LOW",
+      analysis_source: "MOCK",
+      model: null,
+    };
+  }
   return {
     assessment: `MOCK RESPONSE — Candidate from ${candidate.method}: ${candidate.scenario}. Verify that this is a true control gap.${follow}`,
     possible_root_causes: [
@@ -207,9 +236,10 @@ async function liveOpenAiAnalyse(
 export async function analyseDiscoveryCandidate(input: {
   candidate: DiscoveryCandidateInput;
   followup?: string;
+  locale?: "en" | "zh-Hant";
 }): Promise<DiscoverySuggestion> {
   if (aiMode !== "LIVE_OPENAI") {
-    return deterministicSuggestion(input.candidate, input.followup);
+    return deterministicSuggestion(input.candidate, input.followup, input.locale || "en");
   }
   return liveOpenAiAnalyse(input.candidate, input.followup);
 }
