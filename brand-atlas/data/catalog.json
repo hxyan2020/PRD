@@ -2,12 +2,12 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-11T05:44:48.425Z",
+    "generatedAt": "2026-10-11T05:46:47.561Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
     "itemCount": 3568,
-    "categoryCount": 11,
+    "categoryCount": 10,
     "note": "Curated living catalogue of human-made brands and still-present nature. Refreshed weekly."
   },
   "categories": [
@@ -33,18 +33,11 @@
       "itemCount": 1709
     },
     {
-      "id": "coffee",
-      "label": "Coffee",
-      "blurb": "Roasters, chains, and bean houses still brewing.",
+      "id": "hotdrinks",
+      "label": "Coffee & tea brands",
+      "blurb": "Café chains, roasters, and tea houses — cups still poured today.",
       "kind": "brand",
-      "itemCount": 92
-    },
-    {
-      "id": "tea",
-      "label": "Tea",
-      "blurb": "Tea houses and bags still steeping.",
-      "kind": "brand",
-      "itemCount": 97
+      "itemCount": 189
     },
     {
       "id": "clothes",
@@ -63192,15 +63185,15 @@
       "slug": "starbucks",
       "name": "Starbucks",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Starbucks — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Starbucks — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1971",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Starbucks is still steeping or brewing on shelves and in cafés."
+        "story": "Starbucks is still present in the living catalogue."
       },
       "coverHue": 173,
       "mark": "marks/coffee__starbucks.svg",
@@ -63217,15 +63210,15 @@
         "dunkin donuts",
         "dunkin"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Dunkin' — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Dunkin' — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1860",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Dunkin' is still steeping or brewing on shelves and in cafés."
+        "story": "Dunkin' is still present in the living catalogue."
       },
       "coverHue": 292,
       "mark": "marks/coffee__dunkin.svg",
@@ -63241,15 +63234,15 @@
       "aliases": [
         "peets"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Peet's Coffee — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Peet's Coffee — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1931",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Peet's Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Peet's Coffee is still present in the living catalogue."
       },
       "coverHue": 86,
       "mark": "marks/coffee__peets.svg",
@@ -63265,15 +63258,15 @@
       "aliases": [
         "blue bottle"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Blue Bottle Coffee — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Blue Bottle Coffee — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1976",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Blue Bottle Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Blue Bottle Coffee is still present in the living catalogue."
       },
       "coverHue": 160,
       "mark": "marks/coffee__blue-bottle.svg",
@@ -63287,15 +63280,15 @@
       "slug": "illy",
       "name": "Illy",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Italy",
-      "tags": [],
-      "summary": "Illy — catalogued in coffee · Italy.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Illy — catalogued in coffee & tea brands · Italy.",
       "facts": {
-        "founded": "1942",
         "origin": "Italy",
-        "specialty": "Coffee",
-        "story": "Illy is still steeping or brewing on shelves and in cafés."
+        "story": "Illy is still present in the living catalogue."
       },
       "coverHue": 329,
       "mark": "marks/coffee__illy.svg",
@@ -63309,15 +63302,15 @@
       "slug": "lavazza",
       "name": "Lavazza",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Italy",
-      "tags": [],
-      "summary": "Lavazza — catalogued in coffee · Italy.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Lavazza — catalogued in coffee & tea brands · Italy.",
       "facts": {
-        "founded": "1862",
         "origin": "Italy",
-        "specialty": "Coffee",
-        "story": "Lavazza is still steeping or brewing on shelves and in cafés."
+        "story": "Lavazza is still present in the living catalogue."
       },
       "coverHue": 96,
       "mark": "marks/coffee__lavazza.svg",
@@ -63331,15 +63324,15 @@
       "slug": "nespresso",
       "name": "Nespresso",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Switzerland",
-      "tags": [],
-      "summary": "Nespresso — catalogued in coffee · Switzerland.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Nespresso — catalogued in coffee & tea brands · Switzerland.",
       "facts": {
-        "founded": "1961",
         "origin": "Switzerland",
-        "specialty": "Coffee",
-        "story": "Nespresso is still steeping or brewing on shelves and in cafés."
+        "story": "Nespresso is still present in the living catalogue."
       },
       "coverHue": 119,
       "mark": "marks/coffee__nespresso.svg",
@@ -63355,15 +63348,15 @@
       "aliases": [
         "nescafe"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Switzerland",
-      "tags": [],
-      "summary": "Nescafé — catalogued in coffee · Switzerland.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Nescafé — catalogued in coffee & tea brands · Switzerland.",
       "facts": {
-        "founded": "1878",
         "origin": "Switzerland",
-        "specialty": "Coffee",
-        "story": "Nescafé is still steeping or brewing on shelves and in cafés."
+        "story": "Nescafé is still present in the living catalogue."
       },
       "coverHue": 0,
       "mark": "marks/coffee__nescafe.svg",
@@ -63377,15 +63370,15 @@
       "slug": "folgers",
       "name": "Folgers",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Folgers — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Folgers — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1956",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Folgers is still steeping or brewing on shelves and in cafés."
+        "story": "Folgers is still present in the living catalogue."
       },
       "coverHue": 105,
       "mark": "marks/coffee__folgers.svg",
@@ -63399,15 +63392,15 @@
       "slug": "maxwell-house",
       "name": "Maxwell House",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Maxwell House — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Maxwell House — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1857",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Maxwell House is still steeping or brewing on shelves and in cafés."
+        "story": "Maxwell House is still present in the living catalogue."
       },
       "coverHue": 228,
       "mark": "marks/coffee__maxwell-house.svg",
@@ -63421,15 +63414,15 @@
       "slug": "tim-hortons",
       "name": "Tim Hortons",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Canada",
-      "tags": [],
-      "summary": "Tim Hortons — catalogued in coffee · Canada.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Tim Hortons — catalogued in coffee & tea brands · Canada.",
       "facts": {
-        "founded": "1911",
         "origin": "Canada",
-        "specialty": "Coffee",
-        "story": "Tim Hortons is still steeping or brewing on shelves and in cafés."
+        "story": "Tim Hortons is still present in the living catalogue."
       },
       "coverHue": 13,
       "mark": "marks/coffee__tim-hortons.svg",
@@ -63445,15 +63438,15 @@
       "aliases": [
         "costa"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Costa Coffee — catalogued in coffee · UK.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Costa Coffee — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1947",
         "origin": "UK",
-        "specialty": "Coffee",
-        "story": "Costa Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Costa Coffee is still present in the living catalogue."
       },
       "coverHue": 259,
       "mark": "marks/coffee__costa.svg",
@@ -63469,15 +63462,15 @@
       "aliases": [
         "pret"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Pret A Manger — catalogued in coffee · UK.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Pret A Manger — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1877",
         "origin": "UK",
-        "specialty": "Coffee",
-        "story": "Pret A Manger is still steeping or brewing on shelves and in cafés."
+        "story": "Pret A Manger is still present in the living catalogue."
       },
       "coverHue": 210,
       "mark": "marks/coffee__pret.svg",
@@ -63491,15 +63484,15 @@
       "slug": "ucc",
       "name": "UCC",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "UCC — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "UCC — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1897",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "UCC is still steeping or brewing on shelves and in cafés."
+        "story": "UCC is still present in the living catalogue."
       },
       "coverHue": 20,
       "mark": "marks/coffee__ucc.svg",
@@ -63513,15 +63506,15 @@
       "slug": "doutor",
       "name": "Doutor",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Doutor — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Doutor — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1988",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "Doutor is still steeping or brewing on shelves and in cafés."
+        "story": "Doutor is still present in the living catalogue."
       },
       "coverHue": 222,
       "mark": "marks/coffee__doutor.svg",
@@ -63537,15 +63530,15 @@
       "aliases": [
         "komeda"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Komeda Coffee — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Komeda Coffee — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1958",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "Komeda Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Komeda Coffee is still present in the living catalogue."
       },
       "coverHue": 178,
       "mark": "marks/coffee__komeda.svg",
@@ -63561,15 +63554,15 @@
       "aliases": [
         "luckin"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "China",
-      "tags": [],
-      "summary": "Luckin Coffee — catalogued in coffee · China.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Luckin Coffee — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1856",
         "origin": "China",
-        "specialty": "Coffee",
-        "story": "Luckin Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Luckin Coffee is still present in the living catalogue."
       },
       "coverHue": 319,
       "mark": "marks/coffee__luckin.svg",
@@ -63585,15 +63578,15 @@
       "aliases": [
         "mccafe"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "McCafé — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "McCafé — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1892",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "McCafé is still steeping or brewing on shelves and in cafés."
+        "story": "McCafé is still present in the living catalogue."
       },
       "coverHue": 100,
       "mark": "marks/coffee__mccafe.svg",
@@ -63607,15 +63600,15 @@
       "slug": "stumptown",
       "name": "Stumptown",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Stumptown — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Stumptown — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1850",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Stumptown is still steeping or brewing on shelves and in cafés."
+        "story": "Stumptown is still present in the living catalogue."
       },
       "coverHue": 216,
       "mark": "marks/coffee__stumptown.svg",
@@ -63629,15 +63622,15 @@
       "slug": "intelligentsia",
       "name": "Intelligentsia",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Intelligentsia — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Intelligentsia — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1937",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Intelligentsia is still steeping or brewing on shelves and in cafés."
+        "story": "Intelligentsia is still present in the living catalogue."
       },
       "coverHue": 261,
       "mark": "marks/coffee__intelligentsia.svg",
@@ -63651,15 +63644,15 @@
       "slug": "counter-culture",
       "name": "Counter Culture",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Counter Culture — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Counter Culture — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1859",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Counter Culture is still steeping or brewing on shelves and in cafés."
+        "story": "Counter Culture is still present in the living catalogue."
       },
       "coverHue": 140,
       "mark": "marks/coffee__counter-culture.svg",
@@ -63675,15 +63668,15 @@
       "aliases": [
         "davidoff cafe"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Switzerland",
-      "tags": [],
-      "summary": "Davidoff Café — catalogued in coffee · Switzerland.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Davidoff Café — catalogued in coffee & tea brands · Switzerland.",
       "facts": {
-        "founded": "1881",
         "origin": "Switzerland",
-        "specialty": "Coffee",
-        "story": "Davidoff Café is still steeping or brewing on shelves and in cafés."
+        "story": "Davidoff Café is still present in the living catalogue."
       },
       "coverHue": 62,
       "mark": "marks/coffee__davidoff-cafe.svg",
@@ -63697,15 +63690,15 @@
       "slug": "segafredo",
       "name": "Segafredo",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Italy",
-      "tags": [],
-      "summary": "Segafredo — catalogued in coffee · Italy.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Segafredo — catalogued in coffee & tea brands · Italy.",
       "facts": {
-        "founded": "2003",
         "origin": "Italy",
-        "specialty": "Coffee",
-        "story": "Segafredo is still steeping or brewing on shelves and in cafés."
+        "story": "Segafredo is still present in the living catalogue."
       },
       "coverHue": 159,
       "mark": "marks/coffee__segafredo.svg",
@@ -63719,15 +63712,15 @@
       "slug": "kimbo",
       "name": "Kimbo",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Italy",
-      "tags": [],
-      "summary": "Kimbo — catalogued in coffee · Italy.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Kimbo — catalogued in coffee & tea brands · Italy.",
       "facts": {
-        "founded": "1995",
         "origin": "Italy",
-        "specialty": "Coffee",
-        "story": "Kimbo is still steeping or brewing on shelves and in cafés."
+        "story": "Kimbo is still present in the living catalogue."
       },
       "coverHue": 131,
       "mark": "marks/coffee__kimbo.svg",
@@ -63743,15 +63736,15 @@
       "aliases": [
         "dutchbros"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Dutch Bros — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Dutch Bros — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1875",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Dutch Bros is still steeping or brewing on shelves and in cafés."
+        "story": "Dutch Bros is still present in the living catalogue."
       },
       "coverHue": 258,
       "mark": "marks/coffee__dutch-bros.svg",
@@ -63765,15 +63758,15 @@
       "slug": "pacific-coffee",
       "name": "Pacific Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Hong Kong",
-      "tags": [],
-      "summary": "Pacific Coffee — catalogued in coffee · Hong Kong.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Pacific Coffee — catalogued in coffee & tea brands · Hong Kong.",
       "facts": {
-        "founded": "1874",
         "origin": "Hong Kong",
-        "specialty": "Coffee",
-        "story": "Pacific Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Pacific Coffee is still present in the living catalogue."
       },
       "coverHue": 281,
       "mark": "marks/coffee__pacific-coffee.svg",
@@ -63789,15 +63782,15 @@
       "aliases": [
         "manner"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "China",
-      "tags": [],
-      "summary": "Manner Coffee — catalogued in coffee · China.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Manner Coffee — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1923",
         "origin": "China",
-        "specialty": "Coffee",
-        "story": "Manner Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Manner Coffee is still present in the living catalogue."
       },
       "coverHue": 194,
       "mark": "marks/coffee__manner.svg",
@@ -63815,15 +63808,15 @@
         "arabica",
         "%arabica"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "% Arabica — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "% Arabica — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1954",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "% Arabica is still steeping or brewing on shelves and in cafés."
+        "story": "% Arabica is still present in the living catalogue."
       },
       "coverHue": 108,
       "mark": "marks/coffee__percent-arabica.svg",
@@ -63837,15 +63830,15 @@
       "slug": "blue-tokai",
       "name": "Blue Tokai",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Blue Tokai — catalogued in coffee · India.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Blue Tokai — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1895",
         "origin": "India",
-        "specialty": "Coffee",
-        "story": "Blue Tokai is still steeping or brewing on shelves and in cafés."
+        "story": "Blue Tokai is still present in the living catalogue."
       },
       "coverHue": 342,
       "mark": "marks/coffee__blue-tokai.svg",
@@ -63861,15 +63854,15 @@
       "aliases": [
         "库迪"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "China",
-      "tags": [],
-      "summary": "Cotti Coffee — catalogued in coffee · China.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Cotti Coffee — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1917",
         "origin": "China",
-        "specialty": "Coffee",
-        "story": "Cotti Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Cotti Coffee is still present in the living catalogue."
       },
       "coverHue": 148,
       "mark": "marks/coffee__cotti.svg",
@@ -63885,15 +63878,15 @@
       "aliases": [
         "caribou"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Caribou Coffee — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Caribou Coffee — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1900",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Caribou Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Caribou Coffee is still present in the living catalogue."
       },
       "coverHue": 138,
       "mark": "marks/coffee__caribou.svg",
@@ -63907,15 +63900,15 @@
       "slug": "la-colombe",
       "name": "La Colombe",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "La Colombe — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "La Colombe — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1948",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "La Colombe is still steeping or brewing on shelves and in cafés."
+        "story": "La Colombe is still present in the living catalogue."
       },
       "coverHue": 330,
       "mark": "marks/coffee__la-colombe.svg",
@@ -63929,15 +63922,15 @@
       "slug": "ritual",
       "name": "Ritual Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Ritual Coffee — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Ritual Coffee — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1985",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Ritual Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Ritual Coffee is still present in the living catalogue."
       },
       "coverHue": 60,
       "mark": "marks/coffee__ritual.svg",
@@ -63951,15 +63944,15 @@
       "slug": "verve",
       "name": "Verve Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Verve Coffee — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Verve Coffee — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1942",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Verve Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Verve Coffee is still present in the living catalogue."
       },
       "coverHue": 33,
       "mark": "marks/coffee__verve.svg",
@@ -63973,15 +63966,15 @@
       "slug": "philz",
       "name": "Philz Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Philz Coffee — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Philz Coffee — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1946",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Philz Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Philz Coffee is still present in the living catalogue."
       },
       "coverHue": 182,
       "mark": "marks/coffee__philz.svg",
@@ -63995,15 +63988,15 @@
       "slug": "second-cup",
       "name": "Second Cup",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Canada",
-      "tags": [],
-      "summary": "Second Cup — catalogued in coffee · Canada.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Second Cup — catalogued in coffee & tea brands · Canada.",
       "facts": {
-        "founded": "1970",
         "origin": "Canada",
-        "specialty": "Coffee",
-        "story": "Second Cup is still steeping or brewing on shelves and in cafés."
+        "story": "Second Cup is still present in the living catalogue."
       },
       "coverHue": 262,
       "mark": "marks/coffee__second-cup.svg",
@@ -64019,15 +64012,15 @@
       "aliases": [
         "balzac"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Canada",
-      "tags": [],
-      "summary": "Balzac's — catalogued in coffee · Canada.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Balzac's — catalogued in coffee & tea brands · Canada.",
       "facts": {
-        "founded": "1860",
         "origin": "Canada",
-        "specialty": "Coffee",
-        "story": "Balzac's is still steeping or brewing on shelves and in cafés."
+        "story": "Balzac's is still present in the living catalogue."
       },
       "coverHue": 24,
       "mark": "marks/coffee__balzac.svg",
@@ -64044,15 +64037,15 @@
         "ccd",
         "cafe coffee day"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Café Coffee Day — catalogued in coffee · India.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Café Coffee Day — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1878",
         "origin": "India",
-        "specialty": "Coffee",
-        "story": "Café Coffee Day is still steeping or brewing on shelves and in cafés."
+        "story": "Café Coffee Day is still present in the living catalogue."
       },
       "coverHue": 90,
       "mark": "marks/coffee__cafe-coffee-day.svg",
@@ -64066,15 +64059,15 @@
       "slug": "third-wave-coffee",
       "name": "Third Wave Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Third Wave Coffee — catalogued in coffee · India.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Third Wave Coffee — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1931",
         "origin": "India",
-        "specialty": "Coffee",
-        "story": "Third Wave Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Third Wave Coffee is still present in the living catalogue."
       },
       "coverHue": 185,
       "mark": "marks/coffee__third-wave-coffee.svg",
@@ -64090,15 +64083,15 @@
       "aliases": [
         "sleepy owl"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Sleepy Owl — catalogued in coffee · India.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Sleepy Owl — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1987",
         "origin": "India",
-        "specialty": "Coffee",
-        "story": "Sleepy Owl is still steeping or brewing on shelves and in cafés."
+        "story": "Sleepy Owl is still present in the living catalogue."
       },
       "coverHue": 113,
       "mark": "marks/coffee__sleep-easy.svg",
@@ -64114,15 +64107,15 @@
       "aliases": [
         "gloria jeans"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "Gloria Jean's — catalogued in coffee · Australia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Gloria Jean's — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1941",
         "origin": "Australia",
-        "specialty": "Coffee",
-        "story": "Gloria Jean's is still steeping or brewing on shelves and in cafés."
+        "story": "Gloria Jean's is still present in the living catalogue."
       },
       "coverHue": 183,
       "mark": "marks/coffee__gloria-jeans.svg",
@@ -64136,15 +64129,15 @@
       "slug": "campos",
       "name": "Campos Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "Campos Coffee — catalogued in coffee · Australia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Campos Coffee — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1943",
         "origin": "Australia",
-        "specialty": "Coffee",
-        "story": "Campos Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Campos Coffee is still present in the living catalogue."
       },
       "coverHue": 286,
       "mark": "marks/coffee__campos.svg",
@@ -64160,15 +64153,15 @@
       "aliases": [
         "tobys estate"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "Toby's Estate — catalogued in coffee · Australia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Toby's Estate — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1971",
         "origin": "Australia",
-        "specialty": "Coffee",
-        "story": "Toby's Estate is still steeping or brewing on shelves and in cafés."
+        "story": "Toby's Estate is still present in the living catalogue."
       },
       "coverHue": 78,
       "mark": "marks/coffee__toby-estate.svg",
@@ -64184,15 +64177,15 @@
       "aliases": [
         "allpress"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "New Zealand",
-      "tags": [],
-      "summary": "Allpress Espresso — catalogued in coffee · New Zealand.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Allpress Espresso — catalogued in coffee & tea brands · New Zealand.",
       "facts": {
-        "founded": "1898",
         "origin": "New Zealand",
-        "specialty": "Coffee",
-        "story": "Allpress Espresso is still steeping or brewing on shelves and in cafés."
+        "story": "Allpress Espresso is still present in the living catalogue."
       },
       "coverHue": 235,
       "mark": "marks/coffee__allpress.svg",
@@ -64206,15 +64199,15 @@
       "slug": "flight-coffee",
       "name": "Flight Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "New Zealand",
-      "tags": [],
-      "summary": "Flight Coffee — catalogued in coffee · New Zealand.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Flight Coffee — catalogued in coffee & tea brands · New Zealand.",
       "facts": {
-        "founded": "1906",
         "origin": "New Zealand",
-        "specialty": "Coffee",
-        "story": "Flight Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Flight Coffee is still present in the living catalogue."
       },
       "coverHue": 40,
       "mark": "marks/coffee__flight-coffee.svg",
@@ -64228,15 +64221,15 @@
       "slug": "coffee-supreme",
       "name": "Coffee Supreme",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "New Zealand",
-      "tags": [],
-      "summary": "Coffee Supreme — catalogued in coffee · New Zealand.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Coffee Supreme — catalogued in coffee & tea brands · New Zealand.",
       "facts": {
-        "founded": "1944",
         "origin": "New Zealand",
-        "specialty": "Coffee",
-        "story": "Coffee Supreme is still steeping or brewing on shelves and in cafés."
+        "story": "Coffee Supreme is still present in the living catalogue."
       },
       "coverHue": 265,
       "mark": "marks/coffee__coffee-supreme.svg",
@@ -64252,15 +64245,15 @@
       "aliases": [
         "hario"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "HARIO Café — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "HARIO Café — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1940",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "HARIO Café is still steeping or brewing on shelves and in cafés."
+        "story": "HARIO Café is still present in the living catalogue."
       },
       "coverHue": 102,
       "mark": "marks/coffee__hario.svg",
@@ -64276,15 +64269,15 @@
       "aliases": [
         "星乃"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Hoshino Coffee — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Hoshino Coffee — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1966",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "Hoshino Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Hoshino Coffee is still present in the living catalogue."
       },
       "coverHue": 261,
       "mark": "marks/coffee__hoshino.svg",
@@ -64300,15 +64293,15 @@
       "aliases": [
         "excelsior"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Excelsior Café — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Excelsior Café — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1915",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "Excelsior Café is still steeping or brewing on shelves and in cafés."
+        "story": "Excelsior Café is still present in the living catalogue."
       },
       "coverHue": 223,
       "mark": "marks/coffee__excelsior.svg",
@@ -64324,15 +64317,15 @@
       "aliases": [
         "tullys"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Tully's Coffee — catalogued in coffee · Japan.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Tully's Coffee — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1981",
         "origin": "Japan",
-        "specialty": "Coffee",
-        "story": "Tully's Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Tully's Coffee is still present in the living catalogue."
       },
       "coverHue": 28,
       "mark": "marks/coffee__tullys.svg",
@@ -64346,15 +64339,15 @@
       "slug": "misto-box",
       "name": "MistoBox",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "MistoBox — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "MistoBox — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1869",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "MistoBox is still steeping or brewing on shelves and in cafés."
+        "story": "MistoBox is still present in the living catalogue."
       },
       "coverHue": 303,
       "mark": "marks/coffee__misto-box.svg",
@@ -64370,15 +64363,15 @@
       "aliases": [
         "挪瓦"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "China",
-      "tags": [],
-      "summary": "NOWWA Coffee — catalogued in coffee · China.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "NOWWA Coffee — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1983",
         "origin": "China",
-        "specialty": "Coffee",
-        "story": "NOWWA Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "NOWWA Coffee is still present in the living catalogue."
       },
       "coverHue": 105,
       "mark": "marks/coffee__now-tea-coffee.svg",
@@ -64394,15 +64387,15 @@
       "aliases": [
         "时见"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "China",
-      "tags": [],
-      "summary": "Seesaw Coffee — catalogued in coffee · China.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Seesaw Coffee — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1900",
         "origin": "China",
-        "specialty": "Coffee",
-        "story": "Seesaw Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Seesaw Coffee is still present in the living catalogue."
       },
       "coverHue": 231,
       "mark": "marks/coffee__seesaw.svg",
@@ -64418,15 +64411,15 @@
       "aliases": [
         "koi cafe"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Singapore",
-      "tags": [],
-      "summary": "KOI Thé Café — catalogued in coffee · Singapore.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "KOI Thé Café — catalogued in coffee & tea brands · Singapore.",
       "facts": {
-        "founded": "1874",
         "origin": "Singapore",
-        "specialty": "Coffee",
-        "story": "KOI Thé Café is still steeping or brewing on shelves and in cafés."
+        "story": "KOI Thé Café is still present in the living catalogue."
       },
       "coverHue": 142,
       "mark": "marks/coffee__koi-cafe.svg",
@@ -64442,15 +64435,15 @@
       "aliases": [
         "ya kun"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Singapore",
-      "tags": [],
-      "summary": "Ya Kun Kaya Toast — catalogued in coffee · Singapore.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Ya Kun Kaya Toast — catalogued in coffee & tea brands · Singapore.",
       "facts": {
-        "founded": "1913",
         "origin": "Singapore",
-        "specialty": "Coffee",
-        "story": "Ya Kun Kaya Toast is still steeping or brewing on shelves and in cafés."
+        "story": "Ya Kun Kaya Toast is still present in the living catalogue."
       },
       "coverHue": 0,
       "mark": "marks/coffee__ya-kun.svg",
@@ -64466,15 +64459,15 @@
       "aliases": [
         "oldtown"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Malaysia",
-      "tags": [],
-      "summary": "OldTown White Coffee — catalogued in coffee · Malaysia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "OldTown White Coffee — catalogued in coffee & tea brands · Malaysia.",
       "facts": {
-        "founded": "1885",
         "origin": "Malaysia",
-        "specialty": "Coffee",
-        "story": "OldTown White Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "OldTown White Coffee is still present in the living catalogue."
       },
       "coverHue": 185,
       "mark": "marks/coffee__old-town.svg",
@@ -64490,15 +64483,15 @@
       "aliases": [
         "zus"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Malaysia",
-      "tags": [],
-      "summary": "Zus Coffee — catalogued in coffee · Malaysia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Zus Coffee — catalogued in coffee & tea brands · Malaysia.",
       "facts": {
-        "founded": "1949",
         "origin": "Malaysia",
-        "specialty": "Coffee",
-        "story": "Zus Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Zus Coffee is still present in the living catalogue."
       },
       "coverHue": 186,
       "mark": "marks/coffee__zus-coffee.svg",
@@ -64512,15 +64505,15 @@
       "slug": "gayo",
       "name": "Gayo Coffee",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Indonesia",
-      "tags": [],
-      "summary": "Gayo Coffee — catalogued in coffee · Indonesia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Gayo Coffee — catalogued in coffee & tea brands · Indonesia.",
       "facts": {
-        "founded": "1906",
         "origin": "Indonesia",
-        "specialty": "Coffee",
-        "story": "Gayo Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Gayo Coffee is still present in the living catalogue."
       },
       "coverHue": 49,
       "mark": "marks/coffee__gayo.svg",
@@ -64536,15 +64529,15 @@
       "aliases": [
         "anomali"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Indonesia",
-      "tags": [],
-      "summary": "Anomali Coffee — catalogued in coffee · Indonesia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Anomali Coffee — catalogued in coffee & tea brands · Indonesia.",
       "facts": {
-        "founded": "1925",
         "origin": "Indonesia",
-        "specialty": "Coffee",
-        "story": "Anomali Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Anomali Coffee is still present in the living catalogue."
       },
       "coverHue": 13,
       "mark": "marks/coffee__animo.svg",
@@ -64560,15 +64553,15 @@
       "aliases": [
         "cafe amazon"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Thailand",
-      "tags": [],
-      "summary": "Café Amazon — catalogued in coffee · Thailand.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Café Amazon — catalogued in coffee & tea brands · Thailand.",
       "facts": {
-        "founded": "2006",
         "origin": "Thailand",
-        "specialty": "Coffee",
-        "story": "Café Amazon is still steeping or brewing on shelves and in cafés."
+        "story": "Café Amazon is still present in the living catalogue."
       },
       "coverHue": 171,
       "mark": "marks/coffee__cafe-amazon.svg",
@@ -64584,15 +64577,15 @@
       "aliases": [
         "doi tung"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Thailand",
-      "tags": [],
-      "summary": "Doi Tung Coffee — catalogued in coffee · Thailand.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Doi Tung Coffee — catalogued in coffee & tea brands · Thailand.",
       "facts": {
-        "founded": "1925",
         "origin": "Thailand",
-        "specialty": "Coffee",
-        "story": "Doi Tung Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Doi Tung Coffee is still present in the living catalogue."
       },
       "coverHue": 39,
       "mark": "marks/coffee__doitung.svg",
@@ -64608,15 +64601,15 @@
       "aliases": [
         "trung nguyen"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Vietnam",
-      "tags": [],
-      "summary": "Trung Nguyên — catalogued in coffee · Vietnam.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Trung Nguyên — catalogued in coffee & tea brands · Vietnam.",
       "facts": {
-        "founded": "1941",
         "origin": "Vietnam",
-        "specialty": "Coffee",
-        "story": "Trung Nguyên is still steeping or brewing on shelves and in cafés."
+        "story": "Trung Nguyên is still present in the living catalogue."
       },
       "coverHue": 76,
       "mark": "marks/coffee__trung-nguyen.svg",
@@ -64632,15 +64625,15 @@
       "aliases": [
         "highlands"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Vietnam",
-      "tags": [],
-      "summary": "Highlands Coffee — catalogued in coffee · Vietnam.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Highlands Coffee — catalogued in coffee & tea brands · Vietnam.",
       "facts": {
-        "founded": "1983",
         "origin": "Vietnam",
-        "specialty": "Coffee",
-        "story": "Highlands Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Highlands Coffee is still present in the living catalogue."
       },
       "coverHue": 216,
       "mark": "marks/coffee__highlands-vn.svg",
@@ -64654,15 +64647,15 @@
       "slug": "the-coffee-house",
       "name": "The Coffee House",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Vietnam",
-      "tags": [],
-      "summary": "The Coffee House — catalogued in coffee · Vietnam.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "The Coffee House — catalogued in coffee & tea brands · Vietnam.",
       "facts": {
-        "founded": "1870",
         "origin": "Vietnam",
-        "specialty": "Coffee",
-        "story": "The Coffee House is still steeping or brewing on shelves and in cafés."
+        "story": "The Coffee House is still present in the living catalogue."
       },
       "coverHue": 60,
       "mark": "marks/coffee__the-coffee-house.svg",
@@ -64676,15 +64669,15 @@
       "slug": "juan-valdez",
       "name": "Juan Valdez",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Colombia",
-      "tags": [],
-      "summary": "Juan Valdez — catalogued in coffee · Colombia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Juan Valdez — catalogued in coffee & tea brands · Colombia.",
       "facts": {
-        "founded": "1970",
         "origin": "Colombia",
-        "specialty": "Coffee",
-        "story": "Juan Valdez is still steeping or brewing on shelves and in cafés."
+        "story": "Juan Valdez is still present in the living catalogue."
       },
       "coverHue": 116,
       "mark": "marks/coffee__juan-valdez.svg",
@@ -64700,15 +64693,15 @@
       "aliases": [
         "cafe britt"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Costa Rica",
-      "tags": [],
-      "summary": "Café Britt — catalogued in coffee · Costa Rica.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Café Britt — catalogued in coffee & tea brands · Costa Rica.",
       "facts": {
-        "founded": "1971",
         "origin": "Costa Rica",
-        "specialty": "Coffee",
-        "story": "Café Britt is still steeping or brewing on shelves and in cafés."
+        "story": "Café Britt is still present in the living catalogue."
       },
       "coverHue": 114,
       "mark": "marks/coffee__cafe-britt.svg",
@@ -64722,15 +64715,15 @@
       "slug": "cafe-de-colombia",
       "name": "Café de Colombia",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Colombia",
-      "tags": [],
-      "summary": "Café de Colombia — catalogued in coffee · Colombia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Café de Colombia — catalogued in coffee & tea brands · Colombia.",
       "facts": {
-        "founded": "1864",
         "origin": "Colombia",
-        "specialty": "Coffee",
-        "story": "Café de Colombia is still steeping or brewing on shelves and in cafés."
+        "story": "Café de Colombia is still present in the living catalogue."
       },
       "coverHue": 329,
       "mark": "marks/coffee__cafe-de-colombia.svg",
@@ -64744,15 +64737,15 @@
       "slug": "orfeu",
       "name": "Orfeu",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Brazil",
-      "tags": [],
-      "summary": "Orfeu — catalogued in coffee · Brazil.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Orfeu — catalogued in coffee & tea brands · Brazil.",
       "facts": {
-        "founded": "2008",
         "origin": "Brazil",
-        "specialty": "Coffee",
-        "story": "Orfeu is still steeping or brewing on shelves and in cafés."
+        "story": "Orfeu is still present in the living catalogue."
       },
       "coverHue": 26,
       "mark": "marks/coffee__orfeu.svg",
@@ -64768,15 +64761,15 @@
       "aliases": [
         "tres coracoes"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Brazil",
-      "tags": [],
-      "summary": "3 Corações — catalogued in coffee · Brazil.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "3 Corações — catalogued in coffee & tea brands · Brazil.",
       "facts": {
-        "founded": "1872",
         "origin": "Brazil",
-        "specialty": "Coffee",
-        "story": "3 Corações is still steeping or brewing on shelves and in cafés."
+        "story": "3 Corações is still present in the living catalogue."
       },
       "coverHue": 263,
       "mark": "marks/coffee__3coracoes.svg",
@@ -64792,15 +64785,15 @@
       "aliases": [
         "pilao"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Brazil",
-      "tags": [],
-      "summary": "Pilão — catalogued in coffee · Brazil.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Pilão — catalogued in coffee & tea brands · Brazil.",
       "facts": {
-        "founded": "1975",
         "origin": "Brazil",
-        "specialty": "Coffee",
-        "story": "Pilão is still steeping or brewing on shelves and in cafés."
+        "story": "Pilão is still present in the living catalogue."
       },
       "coverHue": 104,
       "mark": "marks/coffee__pilao.svg",
@@ -64814,15 +64807,15 @@
       "slug": "havanna",
       "name": "Havanna",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Argentina",
-      "tags": [],
-      "summary": "Havanna — catalogued in coffee · Argentina.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Havanna — catalogued in coffee & tea brands · Argentina.",
       "facts": {
-        "founded": "1887",
         "origin": "Argentina",
-        "specialty": "Coffee",
-        "story": "Havanna is still steeping or brewing on shelves and in cafés."
+        "story": "Havanna is still present in the living catalogue."
       },
       "coverHue": 324,
       "mark": "marks/coffee__havanna.svg",
@@ -64836,15 +64829,15 @@
       "slug": "bonafide",
       "name": "Bonafide",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Argentina",
-      "tags": [],
-      "summary": "Bonafide — catalogued in coffee · Argentina.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Bonafide — catalogued in coffee & tea brands · Argentina.",
       "facts": {
-        "founded": "1935",
         "origin": "Argentina",
-        "specialty": "Coffee",
-        "story": "Bonafide is still steeping or brewing on shelves and in cafés."
+        "story": "Bonafide is still present in the living catalogue."
       },
       "coverHue": 317,
       "mark": "marks/coffee__bonafide.svg",
@@ -64858,15 +64851,15 @@
       "slug": "julius-meinl",
       "name": "Julius Meinl",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Austria",
-      "tags": [],
-      "summary": "Julius Meinl — catalogued in coffee · Austria.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Julius Meinl — catalogued in coffee & tea brands · Austria.",
       "facts": {
-        "founded": "1938",
         "origin": "Austria",
-        "specialty": "Coffee",
-        "story": "Julius Meinl is still steeping or brewing on shelves and in cafés."
+        "story": "Julius Meinl is still present in the living catalogue."
       },
       "coverHue": 185,
       "mark": "marks/coffee__julius-meinl.svg",
@@ -64880,15 +64873,15 @@
       "slug": "tchibo",
       "name": "Tchibo",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Germany",
-      "tags": [],
-      "summary": "Tchibo — catalogued in coffee · Germany.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Tchibo — catalogued in coffee & tea brands · Germany.",
       "facts": {
-        "founded": "1930",
         "origin": "Germany",
-        "specialty": "Coffee",
-        "story": "Tchibo is still steeping or brewing on shelves and in cafés."
+        "story": "Tchibo is still present in the living catalogue."
       },
       "coverHue": 6,
       "mark": "marks/coffee__tchibo.svg",
@@ -64902,15 +64895,15 @@
       "slug": "dallmayr",
       "name": "Dallmayr",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Germany",
-      "tags": [],
-      "summary": "Dallmayr — catalogued in coffee · Germany.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Dallmayr — catalogued in coffee & tea brands · Germany.",
       "facts": {
-        "founded": "1899",
         "origin": "Germany",
-        "specialty": "Coffee",
-        "story": "Dallmayr is still steeping or brewing on shelves and in cafés."
+        "story": "Dallmayr is still present in the living catalogue."
       },
       "coverHue": 187,
       "mark": "marks/coffee__dallmayr.svg",
@@ -64924,15 +64917,15 @@
       "slug": "eduscho",
       "name": "Eduscho",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Austria",
-      "tags": [],
-      "summary": "Eduscho — catalogued in coffee · Austria.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Eduscho — catalogued in coffee & tea brands · Austria.",
       "facts": {
-        "founded": "1915",
         "origin": "Austria",
-        "specialty": "Coffee",
-        "story": "Eduscho is still steeping or brewing on shelves and in cafés."
+        "story": "Eduscho is still present in the living catalogue."
       },
       "coverHue": 84,
       "mark": "marks/coffee__eduscho.svg",
@@ -64948,15 +64941,15 @@
       "aliases": [
         "lavazza tierra"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Italy",
-      "tags": [],
-      "summary": "Lavazza ¡Tierra! — catalogued in coffee · Italy.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Lavazza ¡Tierra! — catalogued in coffee & tea brands · Italy.",
       "facts": {
-        "founded": "1914",
         "origin": "Italy",
-        "specialty": "Coffee",
-        "story": "Lavazza ¡Tierra! is still steeping or brewing on shelves and in cafés."
+        "story": "Lavazza ¡Tierra! is still present in the living catalogue."
       },
       "coverHue": 278,
       "mark": "marks/coffee__lavazza-tierra.svg",
@@ -64970,15 +64963,15 @@
       "slug": "moka-bialetti",
       "name": "Bialetti",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Italy",
-      "tags": [],
-      "summary": "Bialetti — catalogued in coffee · Italy.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Bialetti — catalogued in coffee & tea brands · Italy.",
       "facts": {
-        "founded": "1887",
         "origin": "Italy",
-        "specialty": "Coffee",
-        "story": "Bialetti is still steeping or brewing on shelves and in cafés."
+        "story": "Bialetti is still present in the living catalogue."
       },
       "coverHue": 170,
       "mark": "marks/coffee__moka-bialetti.svg",
@@ -64994,15 +64987,15 @@
       "aliases": [
         "cafes richard"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "France",
-      "tags": [],
-      "summary": "Cafés Richard — catalogued in coffee · France.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Cafés Richard — catalogued in coffee & tea brands · France.",
       "facts": {
-        "founded": "1894",
         "origin": "France",
-        "specialty": "Coffee",
-        "story": "Cafés Richard is still steeping or brewing on shelves and in cafés."
+        "story": "Cafés Richard is still present in the living catalogue."
       },
       "coverHue": 231,
       "mark": "marks/coffee__cafes-richard.svg",
@@ -65016,15 +65009,15 @@
       "slug": "maison-du-cafe",
       "name": "Maison du Café",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "France",
-      "tags": [],
-      "summary": "Maison du Café — catalogued in coffee · France.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Maison du Café — catalogued in coffee & tea brands · France.",
       "facts": {
-        "founded": "1936",
         "origin": "France",
-        "specialty": "Coffee",
-        "story": "Maison du Café is still steeping or brewing on shelves and in cafés."
+        "story": "Maison du Café is still present in the living catalogue."
       },
       "coverHue": 266,
       "mark": "marks/coffee__maison-du-cafe.svg",
@@ -65038,15 +65031,15 @@
       "slug": "ladoro",
       "name": "Ladoro",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Greece",
-      "tags": [],
-      "summary": "Ladoro — catalogued in coffee · Greece.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Ladoro — catalogued in coffee & tea brands · Greece.",
       "facts": {
-        "founded": "1975",
         "origin": "Greece",
-        "specialty": "Coffee",
-        "story": "Ladoro is still steeping or brewing on shelves and in cafés."
+        "story": "Ladoro is still present in the living catalogue."
       },
       "coverHue": 134,
       "mark": "marks/coffee__ladoro.svg",
@@ -65060,15 +65053,15 @@
       "slug": "loumidis",
       "name": "Loumidis",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Greece",
-      "tags": [],
-      "summary": "Loumidis — catalogued in coffee · Greece.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Loumidis — catalogued in coffee & tea brands · Greece.",
       "facts": {
-        "founded": "1856",
         "origin": "Greece",
-        "specialty": "Coffee",
-        "story": "Loumidis is still steeping or brewing on shelves and in cafés."
+        "story": "Loumidis is still present in the living catalogue."
       },
       "coverHue": 209,
       "mark": "marks/coffee__loumidis.svg",
@@ -65084,15 +65077,15 @@
       "aliases": [
         "mehmet efendi"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Turkey",
-      "tags": [],
-      "summary": "Kurukahveci Mehmet Efendi — catalogued in coffee · Turkey.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Kurukahveci Mehmet Efendi — catalogued in coffee & tea brands · Turkey.",
       "facts": {
-        "founded": "1917",
         "origin": "Turkey",
-        "specialty": "Coffee",
-        "story": "Kurukahveci Mehmet Efendi is still steeping or brewing on shelves and in cafés."
+        "story": "Kurukahveci Mehmet Efendi is still present in the living catalogue."
       },
       "coverHue": 73,
       "mark": "marks/coffee__kurukahveci.svg",
@@ -65108,15 +65101,15 @@
       "aliases": [
         "kahve dunyasi"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Turkey",
-      "tags": [],
-      "summary": "Kahve Dünyası — catalogued in coffee · Turkey.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Kahve Dünyası — catalogued in coffee & tea brands · Turkey.",
       "facts": {
-        "founded": "1861",
         "origin": "Turkey",
-        "specialty": "Coffee",
-        "story": "Kahve Dünyası is still steeping or brewing on shelves and in cafés."
+        "story": "Kahve Dünyası is still present in the living catalogue."
       },
       "coverHue": 350,
       "mark": "marks/coffee__kahve-dunyasi.svg",
@@ -65130,15 +65123,15 @@
       "slug": "jacobs",
       "name": "Jacobs",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Germany",
-      "tags": [],
-      "summary": "Jacobs — catalogued in coffee · Germany.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Jacobs — catalogued in coffee & tea brands · Germany.",
       "facts": {
-        "founded": "1989",
         "origin": "Germany",
-        "specialty": "Coffee",
-        "story": "Jacobs is still steeping or brewing on shelves and in cafés."
+        "story": "Jacobs is still present in the living catalogue."
       },
       "coverHue": 149,
       "mark": "marks/coffee__jacobs.svg",
@@ -65152,15 +65145,15 @@
       "slug": "douwe-egberts",
       "name": "Douwe Egberts",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Netherlands",
-      "tags": [],
-      "summary": "Douwe Egberts — catalogued in coffee · Netherlands.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Douwe Egberts — catalogued in coffee & tea brands · Netherlands.",
       "facts": {
-        "founded": "1913",
         "origin": "Netherlands",
-        "specialty": "Coffee",
-        "story": "Douwe Egberts is still steeping or brewing on shelves and in cafés."
+        "story": "Douwe Egberts is still present in the living catalogue."
       },
       "coverHue": 6,
       "mark": "marks/coffee__douwe-egberts.svg",
@@ -65174,15 +65167,15 @@
       "slug": "senseo",
       "name": "Senseo",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Netherlands",
-      "tags": [],
-      "summary": "Senseo — catalogued in coffee · Netherlands.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Senseo — catalogued in coffee & tea brands · Netherlands.",
       "facts": {
-        "founded": "2008",
         "origin": "Netherlands",
-        "specialty": "Coffee",
-        "story": "Senseo is still steeping or brewing on shelves and in cafés."
+        "story": "Senseo is still present in the living catalogue."
       },
       "coverHue": 266,
       "mark": "marks/coffee__senseo.svg",
@@ -65196,15 +65189,15 @@
       "slug": "kofola-cafe",
       "name": "CrossCafe",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Czechia",
-      "tags": [],
-      "summary": "CrossCafe — catalogued in coffee · Czechia.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "CrossCafe — catalogued in coffee & tea brands · Czechia.",
       "facts": {
-        "founded": "1998",
         "origin": "Czechia",
-        "specialty": "Coffee",
-        "story": "CrossCafe is still steeping or brewing on shelves and in cafés."
+        "story": "CrossCafe is still present in the living catalogue."
       },
       "coverHue": 279,
       "mark": "marks/coffee__kofola-cafe.svg",
@@ -65218,15 +65211,15 @@
       "slug": "mother-parkers",
       "name": "Mother Parkers",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "Canada",
-      "tags": [],
-      "summary": "Mother Parkers — catalogued in coffee · Canada.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Mother Parkers — catalogued in coffee & tea brands · Canada.",
       "facts": {
-        "founded": "1867",
         "origin": "Canada",
-        "specialty": "Coffee",
-        "story": "Mother Parkers is still steeping or brewing on shelves and in cafés."
+        "story": "Mother Parkers is still present in the living catalogue."
       },
       "coverHue": 83,
       "mark": "marks/coffee__mother-parkers.svg",
@@ -65242,15 +65235,15 @@
       "aliases": [
         "death wish"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Death Wish Coffee — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Death Wish Coffee — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1922",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Death Wish Coffee is still steeping or brewing on shelves and in cafés."
+        "story": "Death Wish Coffee is still present in the living catalogue."
       },
       "coverHue": 225,
       "mark": "marks/coffee__death-wish.svg",
@@ -65264,15 +65257,15 @@
       "slug": "keurig",
       "name": "Keurig",
       "aliases": [],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Keurig — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Keurig — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1957",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Keurig is still steeping or brewing on shelves and in cafés."
+        "story": "Keurig is still present in the living catalogue."
       },
       "coverHue": 110,
       "mark": "marks/coffee__keurig.svg",
@@ -65288,15 +65281,15 @@
       "aliases": [
         "green mountain coffee"
       ],
-      "categoryId": "coffee",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Green Mountain — catalogued in coffee · USA.",
+      "tags": [
+        "coffee"
+      ],
+      "summary": "Green Mountain — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1929",
         "origin": "USA",
-        "specialty": "Coffee",
-        "story": "Green Mountain is still steeping or brewing on shelves and in cafés."
+        "story": "Green Mountain is still present in the living catalogue."
       },
       "coverHue": 154,
       "mark": "marks/coffee__keurig-dr-pepper.svg",
@@ -65310,21 +65303,21 @@
       "slug": "lipton",
       "name": "Lipton",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Lipton — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1892",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Lipton is still steeping or brewing on shelves and in cafés."
+        "story": "Lipton is still present in the living catalogue."
       },
       "coverHue": 13,
       "mark": "marks/tea__lipton.svg",
       "cover": "covers/tea__lipton.jpg",
       "markIcon": null,
-      "sort": 0,
+      "sort": 92,
       "status": "active"
     },
     {
@@ -65332,21 +65325,21 @@
       "slug": "twinings",
       "name": "Twinings",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Twinings — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Twinings — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1975",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Twinings is still steeping or brewing on shelves and in cafés."
+        "story": "Twinings is still present in the living catalogue."
       },
       "coverHue": 302,
       "mark": "marks/tea__twinings.svg",
       "cover": "covers/tea__twinings.jpg",
       "markIcon": null,
-      "sort": 1,
+      "sort": 93,
       "status": "active"
     },
     {
@@ -65354,21 +65347,21 @@
       "slug": "pg-tips",
       "name": "PG Tips",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "PG Tips — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "PG Tips — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1930",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "PG Tips is still steeping or brewing on shelves and in cafés."
+        "story": "PG Tips is still present in the living catalogue."
       },
       "coverHue": 265,
       "mark": "marks/tea__pg-tips.svg",
       "cover": "covers/tea__pg-tips.jpg",
       "markIcon": null,
-      "sort": 2,
+      "sort": 94,
       "status": "active"
     },
     {
@@ -65376,21 +65369,21 @@
       "slug": "yorkshire",
       "name": "Yorkshire Tea",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Yorkshire Tea — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Yorkshire Tea — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1928",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Yorkshire Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Yorkshire Tea is still present in the living catalogue."
       },
       "coverHue": 91,
       "mark": "marks/tea__yorkshire.svg",
       "cover": "covers/tea__yorkshire.jpg",
       "markIcon": null,
-      "sort": 3,
+      "sort": 95,
       "status": "active"
     },
     {
@@ -65398,21 +65391,21 @@
       "slug": "tetley",
       "name": "Tetley",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Tetley — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tetley — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "2001",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Tetley is still steeping or brewing on shelves and in cafés."
+        "story": "Tetley is still present in the living catalogue."
       },
       "coverHue": 314,
       "mark": "marks/tea__tetley.svg",
       "cover": "covers/tea__tetley.jpg",
       "markIcon": null,
-      "sort": 4,
+      "sort": 96,
       "status": "active"
     },
     {
@@ -65422,21 +65415,21 @@
       "aliases": [
         "harney"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Harney & Sons — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Harney & Sons — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "2006",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Harney & Sons is still steeping or brewing on shelves and in cafés."
+        "story": "Harney & Sons is still present in the living catalogue."
       },
       "coverHue": 118,
       "mark": "marks/tea__harney.svg",
       "cover": "covers/tea__harney.jpg",
       "markIcon": null,
-      "sort": 5,
+      "sort": 97,
       "status": "active"
     },
     {
@@ -65444,21 +65437,21 @@
       "slug": "tazo",
       "name": "Tazo",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Tazo — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tazo — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1898",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Tazo is still steeping or brewing on shelves and in cafés."
+        "story": "Tazo is still present in the living catalogue."
       },
       "coverHue": 311,
       "mark": "marks/tea__tazo.svg",
       "cover": "covers/tea__tazo.jpg",
       "markIcon": null,
-      "sort": 6,
+      "sort": 98,
       "status": "active"
     },
     {
@@ -65466,21 +65459,21 @@
       "slug": "mighty-leaf",
       "name": "Mighty Leaf",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Mighty Leaf — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Mighty Leaf — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1906",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Mighty Leaf is still steeping or brewing on shelves and in cafés."
+        "story": "Mighty Leaf is still present in the living catalogue."
       },
       "coverHue": 244,
       "mark": "marks/tea__mighty-leaf.svg",
       "cover": "covers/tea__mighty-leaf.jpg",
       "markIcon": null,
-      "sort": 7,
+      "sort": 99,
       "status": "active"
     },
     {
@@ -65488,21 +65481,21 @@
       "slug": "dilmah",
       "name": "Dilmah",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Sri Lanka",
-      "tags": [],
-      "summary": "Dilmah — catalogued in tea · Sri Lanka.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dilmah — catalogued in coffee & tea brands · Sri Lanka.",
       "facts": {
-        "founded": "1989",
         "origin": "Sri Lanka",
-        "specialty": "Tea",
-        "story": "Dilmah is still steeping or brewing on shelves and in cafés."
+        "story": "Dilmah is still present in the living catalogue."
       },
       "coverHue": 274,
       "mark": "marks/tea__dilmah.svg",
       "cover": "covers/tea__dilmah.jpg",
       "markIcon": null,
-      "sort": 8,
+      "sort": 100,
       "status": "active"
     },
     {
@@ -65512,21 +65505,21 @@
       "aliases": [
         "ahmad"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Ahmad Tea — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ahmad Tea — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1967",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Ahmad Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Ahmad Tea is still present in the living catalogue."
       },
       "coverHue": 84,
       "mark": "marks/tea__ahmad.svg",
       "cover": "covers/tea__ahmad.jpg",
       "markIcon": null,
-      "sort": 9,
+      "sort": 101,
       "status": "active"
     },
     {
@@ -65536,21 +65529,21 @@
       "aliases": [
         "twg"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Singapore",
-      "tags": [],
-      "summary": "TWG Tea — catalogued in tea · Singapore.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "TWG Tea — catalogued in coffee & tea brands · Singapore.",
       "facts": {
-        "founded": "1955",
         "origin": "Singapore",
-        "specialty": "Tea",
-        "story": "TWG Tea is still steeping or brewing on shelves and in cafés."
+        "story": "TWG Tea is still present in the living catalogue."
       },
       "coverHue": 103,
       "mark": "marks/tea__twg.svg",
       "cover": "covers/tea__twg.jpg",
       "markIcon": null,
-      "sort": 10,
+      "sort": 102,
       "status": "active"
     },
     {
@@ -65558,21 +65551,21 @@
       "slug": "lupicia",
       "name": "Lupicia",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Lupicia — catalogued in tea · Japan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lupicia — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1914",
         "origin": "Japan",
-        "specialty": "Tea",
-        "story": "Lupicia is still steeping or brewing on shelves and in cafés."
+        "story": "Lupicia is still present in the living catalogue."
       },
       "coverHue": 316,
       "mark": "marks/tea__lupicia.svg",
       "cover": "covers/tea__lupicia.jpg",
       "markIcon": null,
-      "sort": 11,
+      "sort": 103,
       "status": "active"
     },
     {
@@ -65583,21 +65576,21 @@
         "itoen",
         "ito en"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Itō En — catalogued in tea · Japan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Itō En — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "2010",
         "origin": "Japan",
-        "specialty": "Tea",
-        "story": "Itō En is still steeping or brewing on shelves and in cafés."
+        "story": "Itō En is still present in the living catalogue."
       },
       "coverHue": 119,
       "mark": "marks/tea__ito-en.svg",
       "cover": "covers/tea__ito-en.jpg",
       "markIcon": null,
-      "sort": 12,
+      "sort": 104,
       "status": "active"
     },
     {
@@ -65605,21 +65598,21 @@
       "slug": "yamamotoyama",
       "name": "Yamamotoyama",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Yamamotoyama — catalogued in tea · Japan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Yamamotoyama — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1851",
         "origin": "Japan",
-        "specialty": "Tea",
-        "story": "Yamamotoyama is still steeping or brewing on shelves and in cafés."
+        "story": "Yamamotoyama is still present in the living catalogue."
       },
       "coverHue": 2,
       "mark": "marks/tea__yamamotoyama.svg",
       "cover": "covers/tea__yamamotoyama.jpg",
       "markIcon": null,
-      "sort": 13,
+      "sort": 105,
       "status": "active"
     },
     {
@@ -65627,21 +65620,21 @@
       "slug": "clipper",
       "name": "Clipper",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
+      "tags": [
+        "tea"
+      ],
       "summary": "Clipper — refreshed 2026-10-08. Still present in the living catalogue.",
       "facts": {
-        "founded": "1918",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Clipper is still steeping or brewing on shelves and in cafés."
+        "story": "Clipper is still present in the living catalogue."
       },
       "coverHue": 296,
       "mark": "marks/tea__clipper.svg",
       "cover": "covers/tea__clipper.jpg",
       "markIcon": null,
-      "sort": 14,
+      "sort": 106,
       "status": "active"
     },
     {
@@ -65649,21 +65642,21 @@
       "slug": "pukka",
       "name": "Pukka",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Pukka — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pukka — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1932",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Pukka is still steeping or brewing on shelves and in cafés."
+        "story": "Pukka is still present in the living catalogue."
       },
       "coverHue": 207,
       "mark": "marks/tea__pukka.svg",
       "cover": "covers/tea__pukka.jpg",
       "markIcon": null,
-      "sort": 15,
+      "sort": 107,
       "status": "active"
     },
     {
@@ -65673,21 +65666,21 @@
       "aliases": [
         "yogi"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Germany",
-      "tags": [],
-      "summary": "Yogi Tea — catalogued in tea · Germany.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Yogi Tea — catalogued in coffee & tea brands · Germany.",
       "facts": {
-        "founded": "1869",
         "origin": "Germany",
-        "specialty": "Tea",
-        "story": "Yogi Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Yogi Tea is still present in the living catalogue."
       },
       "coverHue": 125,
       "mark": "marks/tea__yogi.svg",
       "cover": "covers/tea__yogi.jpg",
       "markIcon": null,
-      "sort": 16,
+      "sort": 108,
       "status": "active"
     },
     {
@@ -65695,21 +65688,21 @@
       "slug": "celestial",
       "name": "Celestial Seasonings",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Celestial Seasonings — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Celestial Seasonings — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "2007",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Celestial Seasonings is still steeping or brewing on shelves and in cafés."
+        "story": "Celestial Seasonings is still present in the living catalogue."
       },
       "coverHue": 283,
       "mark": "marks/tea__celestial.svg",
       "cover": "covers/tea__celestial.jpg",
       "markIcon": null,
-      "sort": 17,
+      "sort": 109,
       "status": "active"
     },
     {
@@ -65717,21 +65710,21 @@
       "slug": "bigelow",
       "name": "Bigelow",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Bigelow — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bigelow — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1863",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Bigelow is still steeping or brewing on shelves and in cafés."
+        "story": "Bigelow is still present in the living catalogue."
       },
       "coverHue": 290,
       "mark": "marks/tea__bigelow.svg",
       "cover": "covers/tea__bigelow.jpg",
       "markIcon": null,
-      "sort": 18,
+      "sort": 110,
       "status": "active"
     },
     {
@@ -65739,21 +65732,21 @@
       "slug": "numi",
       "name": "Numi",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Numi — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Numi — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1948",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Numi is still steeping or brewing on shelves and in cafés."
+        "story": "Numi is still present in the living catalogue."
       },
       "coverHue": 216,
       "mark": "marks/tea__numi.svg",
       "cover": "covers/tea__numi.jpg",
       "markIcon": null,
-      "sort": 19,
+      "sort": 111,
       "status": "active"
     },
     {
@@ -65763,21 +65756,21 @@
       "aliases": [
         "davids tea"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Canada",
-      "tags": [],
-      "summary": "DAVIDsTEA — catalogued in tea · Canada.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "DAVIDsTEA — catalogued in coffee & tea brands · Canada.",
       "facts": {
-        "founded": "1993",
         "origin": "Canada",
-        "specialty": "Tea",
-        "story": "DAVIDsTEA is still steeping or brewing on shelves and in cafés."
+        "story": "DAVIDsTEA is still present in the living catalogue."
       },
       "coverHue": 231,
       "mark": "marks/tea__davids-tea.svg",
       "cover": "covers/tea__davids-tea.jpg",
       "markIcon": null,
-      "sort": 20,
+      "sort": 112,
       "status": "active"
     },
     {
@@ -65787,21 +65780,21 @@
       "aliases": [
         "chatramue"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Thailand",
-      "tags": [],
-      "summary": "ChaTraMue — catalogued in tea · Thailand.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "ChaTraMue — catalogued in coffee & tea brands · Thailand.",
       "facts": {
-        "founded": "1854",
         "origin": "Thailand",
-        "specialty": "Tea",
-        "story": "ChaTraMue is still steeping or brewing on shelves and in cafés."
+        "story": "ChaTraMue is still present in the living catalogue."
       },
       "coverHue": 13,
       "mark": "marks/tea__cha-tra-mue.svg",
       "cover": "covers/tea__cha-tra-mue.jpg",
       "markIcon": null,
-      "sort": 21,
+      "sort": 113,
       "status": "active"
     },
     {
@@ -65811,21 +65804,21 @@
       "aliases": [
         "tenren"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "Ten Ren — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ten Ren — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1880",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "Ten Ren is still steeping or brewing on shelves and in cafés."
+        "story": "Ten Ren is still present in the living catalogue."
       },
       "coverHue": 123,
       "mark": "marks/tea__tenren.svg",
       "cover": "covers/tea__tenren.jpg",
       "markIcon": null,
-      "sort": 22,
+      "sort": 114,
       "status": "active"
     },
     {
@@ -65836,21 +65829,21 @@
         "teapigs",
         "tea pigs"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Tea Pig — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tea Pig — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1924",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Tea Pig is still steeping or brewing on shelves and in cafés."
+        "story": "Tea Pig is still present in the living catalogue."
       },
       "coverHue": 216,
       "mark": "marks/tea__teapigs.svg",
       "cover": "covers/tea__teapigs.jpg",
       "markIcon": null,
-      "sort": 23,
+      "sort": 115,
       "status": "active"
     },
     {
@@ -65860,21 +65853,21 @@
       "aliases": [
         "whittard of chelsea"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Whittard — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Whittard — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1881",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Whittard is still steeping or brewing on shelves and in cafés."
+        "story": "Whittard is still present in the living catalogue."
       },
       "coverHue": 64,
       "mark": "marks/tea__whittard.svg",
       "cover": "covers/tea__whittard.jpg",
       "markIcon": null,
-      "sort": 24,
+      "sort": 116,
       "status": "active"
     },
     {
@@ -65884,23 +65877,22 @@
       "aliases": [
         "霸王茶姬"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "China",
       "tags": [
-        "rising"
+        "rising",
+        "tea"
       ],
-      "summary": "CHAGEE — catalogued in tea · China.",
+      "summary": "CHAGEE — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1981",
         "origin": "China",
-        "specialty": "rising",
-        "story": "CHAGEE is still steeping or brewing on shelves and in cafés."
+        "story": "CHAGEE is still present in the living catalogue."
       },
       "coverHue": 16,
       "mark": "marks/tea__chagee.svg",
       "cover": "covers/tea__chagee.jpg",
       "markIcon": null,
-      "sort": 25,
+      "sort": 117,
       "status": "active"
     },
     {
@@ -65910,23 +65902,22 @@
       "aliases": [
         "喜茶"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "China",
       "tags": [
-        "rising"
+        "rising",
+        "tea"
       ],
-      "summary": "HEYTEA — catalogued in tea · China.",
+      "summary": "HEYTEA — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1972",
         "origin": "China",
-        "specialty": "rising",
-        "story": "HEYTEA is still steeping or brewing on shelves and in cafés."
+        "story": "HEYTEA is still present in the living catalogue."
       },
       "coverHue": 321,
       "mark": "marks/tea__heytea.svg",
       "cover": "covers/tea__heytea.jpg",
       "markIcon": null,
-      "sort": 26,
+      "sort": 118,
       "status": "active"
     },
     {
@@ -65936,23 +65927,22 @@
       "aliases": [
         "奈雪"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "China",
       "tags": [
-        "rising"
+        "rising",
+        "tea"
       ],
-      "summary": "Nayuki — catalogued in tea · China.",
+      "summary": "Nayuki — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1894",
         "origin": "China",
-        "specialty": "rising",
-        "story": "Nayuki is still steeping or brewing on shelves and in cafés."
+        "story": "Nayuki is still present in the living catalogue."
       },
       "coverHue": 98,
       "mark": "marks/tea__nayuki.svg",
       "cover": "covers/tea__nayuki.jpg",
       "markIcon": null,
-      "sort": 27,
+      "sort": 119,
       "status": "active"
     },
     {
@@ -65962,21 +65952,21 @@
       "aliases": [
         "贡茶"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "Gong Cha — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gong Cha — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1863",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "Gong Cha is still steeping or brewing on shelves and in cafés."
+        "story": "Gong Cha is still present in the living catalogue."
       },
       "coverHue": 141,
       "mark": "marks/tea__gong-cha.svg",
       "cover": "covers/tea__gong-cha.jpg",
       "markIcon": null,
-      "sort": 28,
+      "sort": 120,
       "status": "active"
     },
     {
@@ -65986,21 +65976,21 @@
       "aliases": [
         "日出茶太"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "Chatime — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Chatime — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1983",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "Chatime is still steeping or brewing on shelves and in cafés."
+        "story": "Chatime is still present in the living catalogue."
       },
       "coverHue": 156,
       "mark": "marks/tea__chatime.svg",
       "cover": "covers/tea__chatime.jpg",
       "markIcon": null,
-      "sort": 29,
+      "sort": 121,
       "status": "active"
     },
     {
@@ -66008,21 +65998,21 @@
       "slug": "yorkshire-gold",
       "name": "Yorkshire Gold",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Yorkshire Gold — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Yorkshire Gold — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1966",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Yorkshire Gold is still steeping or brewing on shelves and in cafés."
+        "story": "Yorkshire Gold is still present in the living catalogue."
       },
       "coverHue": 178,
       "mark": "marks/tea__yorkshire-gold.svg",
       "cover": "covers/tea__yorkshire-gold.jpg",
       "markIcon": null,
-      "sort": 30,
+      "sort": 122,
       "status": "active"
     },
     {
@@ -66032,21 +66022,21 @@
       "aliases": [
         "barrys"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Ireland",
-      "tags": [],
-      "summary": "Barry's Tea — catalogued in tea · Ireland.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Barry's Tea — catalogued in coffee & tea brands · Ireland.",
       "facts": {
-        "founded": "1955",
         "origin": "Ireland",
-        "specialty": "Tea",
-        "story": "Barry's Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Barry's Tea is still present in the living catalogue."
       },
       "coverHue": 61,
       "mark": "marks/tea__barry.svg",
       "cover": "covers/tea__barry.jpg",
       "markIcon": null,
-      "sort": 31,
+      "sort": 123,
       "status": "active"
     },
     {
@@ -66054,21 +66044,21 @@
       "slug": "lyons",
       "name": "Lyons Tea",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Ireland",
-      "tags": [],
-      "summary": "Lyons Tea — catalogued in tea · Ireland.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lyons Tea — catalogued in coffee & tea brands · Ireland.",
       "facts": {
-        "founded": "1892",
         "origin": "Ireland",
-        "specialty": "Tea",
-        "story": "Lyons Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Lyons Tea is still present in the living catalogue."
       },
       "coverHue": 82,
       "mark": "marks/tea__lyons.svg",
       "cover": "covers/tea__lyons.jpg",
       "markIcon": null,
-      "sort": 32,
+      "sort": 124,
       "status": "active"
     },
     {
@@ -66076,21 +66066,21 @@
       "slug": "typhoo",
       "name": "Typhoo",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Typhoo — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Typhoo — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1915",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Typhoo is still steeping or brewing on shelves and in cafés."
+        "story": "Typhoo is still present in the living catalogue."
       },
       "coverHue": 266,
       "mark": "marks/tea__typhoo.svg",
       "cover": "covers/tea__typhoo.jpg",
       "markIcon": null,
-      "sort": 33,
+      "sort": 125,
       "status": "active"
     },
     {
@@ -66098,21 +66088,21 @@
       "slug": "brook-bond",
       "name": "Brook Bond",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Brook Bond — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Brook Bond — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1935",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Brook Bond is still steeping or brewing on shelves and in cafés."
+        "story": "Brook Bond is still present in the living catalogue."
       },
       "coverHue": 162,
       "mark": "marks/tea__brook-bond.svg",
       "cover": "covers/tea__brook-bond.jpg",
       "markIcon": null,
-      "sort": 34,
+      "sort": 126,
       "status": "active"
     },
     {
@@ -66122,21 +66112,21 @@
       "aliases": [
         "stash"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Stash Tea — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Stash Tea — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1890",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Stash Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Stash Tea is still present in the living catalogue."
       },
       "coverHue": 304,
       "mark": "marks/tea__stash.svg",
       "cover": "covers/tea__stash.jpg",
       "markIcon": null,
-      "sort": 35,
+      "sort": 127,
       "status": "active"
     },
     {
@@ -66146,21 +66136,21 @@
       "aliases": [
         "republic of tea"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "The Republic of Tea — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "The Republic of Tea — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1980",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "The Republic of Tea is still steeping or brewing on shelves and in cafés."
+        "story": "The Republic of Tea is still present in the living catalogue."
       },
       "coverHue": 302,
       "mark": "marks/tea__republic-of-tea.svg",
       "cover": "covers/tea__republic-of-tea.jpg",
       "markIcon": null,
-      "sort": 36,
+      "sort": 128,
       "status": "active"
     },
     {
@@ -66168,21 +66158,21 @@
       "slug": "traditional-medicinals",
       "name": "Traditional Medicinals",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Traditional Medicinals — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Traditional Medicinals — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1914",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Traditional Medicinals is still steeping or brewing on shelves and in cafés."
+        "story": "Traditional Medicinals is still present in the living catalogue."
       },
       "coverHue": 352,
       "mark": "marks/tea__traditional-medicinals.svg",
       "cover": "covers/tea__traditional-medicinals.jpg",
       "markIcon": null,
-      "sort": 37,
+      "sort": 129,
       "status": "active"
     },
     {
@@ -66192,21 +66182,21 @@
       "aliases": [
         "rishi"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Rishi Tea — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Rishi Tea — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1924",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Rishi Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Rishi Tea is still present in the living catalogue."
       },
       "coverHue": 120,
       "mark": "marks/tea__rishi.svg",
       "cover": "covers/tea__rishi.jpg",
       "markIcon": null,
-      "sort": 38,
+      "sort": 130,
       "status": "active"
     },
     {
@@ -66216,21 +66206,21 @@
       "aliases": [
         "teaforté"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Tea Forte — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tea Forte — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1902",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Tea Forte is still steeping or brewing on shelves and in cafés."
+        "story": "Tea Forte is still present in the living catalogue."
       },
       "coverHue": 312,
       "mark": "marks/tea__tea-forte.svg",
       "cover": "covers/tea__tea-forte.jpg",
       "markIcon": null,
-      "sort": 39,
+      "sort": 131,
       "status": "active"
     },
     {
@@ -66238,21 +66228,21 @@
       "slug": "pure-leaf",
       "name": "Pure Leaf",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Pure Leaf — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pure Leaf — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1987",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Pure Leaf is still steeping or brewing on shelves and in cafés."
+        "story": "Pure Leaf is still present in the living catalogue."
       },
       "coverHue": 214,
       "mark": "marks/tea__pure-leaf.svg",
       "cover": "covers/tea__pure-leaf.jpg",
       "markIcon": null,
-      "sort": 40,
+      "sort": 132,
       "status": "active"
     },
     {
@@ -66262,21 +66252,21 @@
       "aliases": [
         "gold peak"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Gold Peak Tea — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gold Peak Tea — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1923",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Gold Peak Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Gold Peak Tea is still present in the living catalogue."
       },
       "coverHue": 303,
       "mark": "marks/tea__gold-peak.svg",
       "cover": "covers/tea__gold-peak.jpg",
       "markIcon": null,
-      "sort": 41,
+      "sort": 133,
       "status": "active"
     },
     {
@@ -66286,21 +66276,21 @@
       "aliases": [
         "aj tea"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Arthur Jackson — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Arthur Jackson — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1961",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Arthur Jackson is still steeping or brewing on shelves and in cafés."
+        "story": "Arthur Jackson is still present in the living catalogue."
       },
       "coverHue": 343,
       "mark": "marks/tea__arthur.svg",
       "cover": "covers/tea__arthur.jpg",
       "markIcon": null,
-      "sort": 42,
+      "sort": 134,
       "status": "active"
     },
     {
@@ -66310,21 +66300,21 @@
       "aliases": [
         "fortnum"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Fortnum & Mason Tea — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Fortnum & Mason Tea — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "1958",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Fortnum & Mason Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Fortnum & Mason Tea is still present in the living catalogue."
       },
       "coverHue": 158,
       "mark": "marks/tea__fortnum.svg",
       "cover": "covers/tea__fortnum.jpg",
       "markIcon": null,
-      "sort": 43,
+      "sort": 135,
       "status": "active"
     },
     {
@@ -66334,21 +66324,21 @@
       "aliases": [
         "mariage freres"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "France",
-      "tags": [],
-      "summary": "Mariage Frères — catalogued in tea · France.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Mariage Frères — catalogued in coffee & tea brands · France.",
       "facts": {
-        "founded": "1866",
         "origin": "France",
-        "specialty": "Tea",
-        "story": "Mariage Frères is still steeping or brewing on shelves and in cafés."
+        "story": "Mariage Frères is still present in the living catalogue."
       },
       "coverHue": 239,
       "mark": "marks/tea__mariage.svg",
       "cover": "covers/tea__mariage.jpg",
       "markIcon": null,
-      "sort": 44,
+      "sort": 136,
       "status": "active"
     },
     {
@@ -66356,21 +66346,21 @@
       "slug": "kusmi",
       "name": "Kusmi Tea",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "France",
-      "tags": [],
-      "summary": "Kusmi Tea — catalogued in tea · France.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Kusmi Tea — catalogued in coffee & tea brands · France.",
       "facts": {
-        "founded": "1888",
         "origin": "France",
-        "specialty": "Tea",
-        "story": "Kusmi Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Kusmi Tea is still present in the living catalogue."
       },
       "coverHue": 160,
       "mark": "marks/tea__kusmi.svg",
       "cover": "covers/tea__kusmi.jpg",
       "markIcon": null,
-      "sort": 45,
+      "sort": 137,
       "status": "active"
     },
     {
@@ -66380,21 +66370,21 @@
       "aliases": [
         "dammann"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "France",
-      "tags": [],
-      "summary": "Dammann Frères — catalogued in tea · France.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dammann Frères — catalogued in coffee & tea brands · France.",
       "facts": {
-        "founded": "1927",
         "origin": "France",
-        "specialty": "Tea",
-        "story": "Dammann Frères is still steeping or brewing on shelves and in cafés."
+        "story": "Dammann Frères is still present in the living catalogue."
       },
       "coverHue": 7,
       "mark": "marks/tea__dammann.svg",
       "cover": "covers/tea__dammann.jpg",
       "markIcon": null,
-      "sort": 46,
+      "sort": 138,
       "status": "active"
     },
     {
@@ -66404,21 +66394,21 @@
       "aliases": [
         "palais des thes"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "France",
-      "tags": [],
-      "summary": "Palais des Thés — catalogued in tea · France.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Palais des Thés — catalogued in coffee & tea brands · France.",
       "facts": {
-        "founded": "1857",
         "origin": "France",
-        "specialty": "Tea",
-        "story": "Palais des Thés is still steeping or brewing on shelves and in cafés."
+        "story": "Palais des Thés is still present in the living catalogue."
       },
       "coverHue": 181,
       "mark": "marks/tea__palais-des-thes.svg",
       "cover": "covers/tea__palais-des-thes.jpg",
       "markIcon": null,
-      "sort": 47,
+      "sort": 139,
       "status": "active"
     },
     {
@@ -66428,21 +66418,21 @@
       "aliases": [
         "messmer"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Germany",
-      "tags": [],
-      "summary": "Meßmer — catalogued in tea · Germany.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Meßmer — catalogued in coffee & tea brands · Germany.",
       "facts": {
-        "founded": "1919",
         "origin": "Germany",
-        "specialty": "Tea",
-        "story": "Meßmer is still steeping or brewing on shelves and in cafés."
+        "story": "Meßmer is still present in the living catalogue."
       },
       "coverHue": 48,
       "mark": "marks/tea__meßmer.svg",
       "cover": "covers/tea__meßmer.jpg",
       "markIcon": null,
-      "sort": 48,
+      "sort": 140,
       "status": "active"
     },
     {
@@ -66452,21 +66442,21 @@
       "aliases": [
         "teegschwendner"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Germany",
-      "tags": [],
-      "summary": "TeeGschwendner — catalogued in tea · Germany.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "TeeGschwendner — catalogued in coffee & tea brands · Germany.",
       "facts": {
-        "founded": "1894",
         "origin": "Germany",
-        "specialty": "Tea",
-        "story": "TeeGschwendner is still steeping or brewing on shelves and in cafés."
+        "story": "TeeGschwendner is still present in the living catalogue."
       },
       "coverHue": 23,
       "mark": "marks/tea__teesewinkel.svg",
       "cover": "covers/tea__teesewinkel.jpg",
       "markIcon": null,
-      "sort": 49,
+      "sort": 141,
       "status": "active"
     },
     {
@@ -66474,21 +66464,21 @@
       "slug": "pickwick",
       "name": "Pickwick",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Netherlands",
-      "tags": [],
-      "summary": "Pickwick — catalogued in tea · Netherlands.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pickwick — catalogued in coffee & tea brands · Netherlands.",
       "facts": {
-        "founded": "1870",
         "origin": "Netherlands",
-        "specialty": "Tea",
-        "story": "Pickwick is still steeping or brewing on shelves and in cafés."
+        "story": "Pickwick is still present in the living catalogue."
       },
       "coverHue": 136,
       "mark": "marks/tea__pickwick.svg",
       "cover": "covers/tea__pickwick.jpg",
       "markIcon": null,
-      "sort": 50,
+      "sort": 142,
       "status": "active"
     },
     {
@@ -66498,21 +66488,21 @@
       "aliases": [
         "ricola"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Switzerland",
-      "tags": [],
-      "summary": "Ricola Herbal — catalogued in tea · Switzerland.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ricola Herbal — catalogued in coffee & tea brands · Switzerland.",
       "facts": {
-        "founded": "1929",
         "origin": "Switzerland",
-        "specialty": "Tea",
-        "story": "Ricola Herbal is still steeping or brewing on shelves and in cafés."
+        "story": "Ricola Herbal is still present in the living catalogue."
       },
       "coverHue": 224,
       "mark": "marks/tea__ricola-tea.svg",
       "cover": "covers/tea__ricola-tea.jpg",
       "markIcon": null,
-      "sort": 51,
+      "sort": 143,
       "status": "active"
     },
     {
@@ -66520,21 +66510,21 @@
       "slug": "mlesna",
       "name": "Mlesna",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Sri Lanka",
-      "tags": [],
-      "summary": "Mlesna — catalogued in tea · Sri Lanka.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Mlesna — catalogued in coffee & tea brands · Sri Lanka.",
       "facts": {
-        "founded": "1974",
         "origin": "Sri Lanka",
-        "specialty": "Tea",
-        "story": "Mlesna is still steeping or brewing on shelves and in cafés."
+        "story": "Mlesna is still present in the living catalogue."
       },
       "coverHue": 141,
       "mark": "marks/tea__mlesna.svg",
       "cover": "covers/tea__mlesna.jpg",
       "markIcon": null,
-      "sort": 52,
+      "sort": 144,
       "status": "active"
     },
     {
@@ -66542,21 +66532,21 @@
       "slug": "imperial-tea",
       "name": "Imperial Tea Court",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Imperial Tea Court — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Imperial Tea Court — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "2003",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Imperial Tea Court is still steeping or brewing on shelves and in cafés."
+        "story": "Imperial Tea Court is still present in the living catalogue."
       },
       "coverHue": 227,
       "mark": "marks/tea__imperial-tea.svg",
       "cover": "covers/tea__imperial-tea.jpg",
       "markIcon": null,
-      "sort": 53,
+      "sort": 145,
       "status": "active"
     },
     {
@@ -66566,21 +66556,21 @@
       "aliases": [
         "taj mahal"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Taj Mahal Tea — catalogued in tea · India.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Taj Mahal Tea — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1952",
         "origin": "India",
-        "specialty": "Tea",
-        "story": "Taj Mahal Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Taj Mahal Tea is still present in the living catalogue."
       },
       "coverHue": 29,
       "mark": "marks/tea__taj-mahal-tea.svg",
       "cover": "covers/tea__taj-mahal-tea.jpg",
       "markIcon": null,
-      "sort": 54,
+      "sort": 146,
       "status": "active"
     },
     {
@@ -66590,21 +66580,21 @@
       "aliases": [
         "tata"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Tata Tea — catalogued in tea · India.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tata Tea — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1907",
         "origin": "India",
-        "specialty": "Tea",
-        "story": "Tata Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Tata Tea is still present in the living catalogue."
       },
       "coverHue": 74,
       "mark": "marks/tea__tata-tea.svg",
       "cover": "covers/tea__tata-tea.jpg",
       "markIcon": null,
-      "sort": 55,
+      "sort": 147,
       "status": "active"
     },
     {
@@ -66612,21 +66602,21 @@
       "slug": "wagh-bakri",
       "name": "Wagh Bakri",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Wagh Bakri — catalogued in tea · India.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Wagh Bakri — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1925",
         "origin": "India",
-        "specialty": "Tea",
-        "story": "Wagh Bakri is still steeping or brewing on shelves and in cafés."
+        "story": "Wagh Bakri is still present in the living catalogue."
       },
       "coverHue": 150,
       "mark": "marks/tea__wagh-bakri.svg",
       "cover": "covers/tea__wagh-bakri.jpg",
       "markIcon": null,
-      "sort": 56,
+      "sort": 148,
       "status": "active"
     },
     {
@@ -66636,21 +66626,21 @@
       "aliases": [
         "red label tea"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Brooke Bond Red Label — catalogued in tea · India.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Brooke Bond Red Label — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1880",
         "origin": "India",
-        "specialty": "Tea",
-        "story": "Brooke Bond Red Label is still steeping or brewing on shelves and in cafés."
+        "story": "Brooke Bond Red Label is still present in the living catalogue."
       },
       "coverHue": 123,
       "mark": "marks/tea__red-label.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 57,
+      "sort": 149,
       "status": "active"
     },
     {
@@ -66658,21 +66648,21 @@
       "slug": "society-tea",
       "name": "Society Tea",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "India",
-      "tags": [],
-      "summary": "Society Tea — catalogued in tea · India.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Society Tea — catalogued in coffee & tea brands · India.",
       "facts": {
-        "founded": "1934",
         "origin": "India",
-        "specialty": "Tea",
-        "story": "Society Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Society Tea is still present in the living catalogue."
       },
       "coverHue": 238,
       "mark": "marks/tea__society-tea.svg",
       "cover": "covers/tea__society-tea.jpg",
       "markIcon": null,
-      "sort": 58,
+      "sort": 150,
       "status": "active"
     },
     {
@@ -66680,21 +66670,21 @@
       "slug": "orchid-tea",
       "name": "Basilur",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Sri Lanka",
-      "tags": [],
-      "summary": "Basilur — catalogued in tea · Sri Lanka.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Basilur — catalogued in coffee & tea brands · Sri Lanka.",
       "facts": {
-        "founded": "1893",
         "origin": "Sri Lanka",
-        "specialty": "Tea",
-        "story": "Basilur is still steeping or brewing on shelves and in cafés."
+        "story": "Basilur is still present in the living catalogue."
       },
       "coverHue": 315,
       "mark": "marks/tea__orchid-tea.svg",
       "cover": "covers/tea__orchid-tea.jpg",
       "markIcon": null,
-      "sort": 59,
+      "sort": 151,
       "status": "active"
     },
     {
@@ -66704,21 +66694,21 @@
       "aliases": [
         "akbar"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Sri Lanka",
-      "tags": [],
-      "summary": "Akbar Tea — catalogued in tea · Sri Lanka.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Akbar Tea — catalogued in coffee & tea brands · Sri Lanka.",
       "facts": {
-        "founded": "1857",
         "origin": "Sri Lanka",
-        "specialty": "Tea",
-        "story": "Akbar Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Akbar Tea is still present in the living catalogue."
       },
       "coverHue": 60,
       "mark": "marks/tea__akbar.svg",
       "cover": "covers/tea__akbar.jpg",
       "markIcon": null,
-      "sort": 60,
+      "sort": 152,
       "status": "active"
     },
     {
@@ -66726,21 +66716,21 @@
       "slug": "boyd",
       "name": "Boyd's Coffee Tea",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
-      "tags": [],
-      "summary": "Boyd's Coffee Tea — catalogued in tea · USA.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Boyd's Coffee Tea — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1998",
         "origin": "USA",
-        "specialty": "Tea",
-        "story": "Boyd's Coffee Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Boyd's Coffee Tea is still present in the living catalogue."
       },
       "coverHue": 205,
       "mark": "marks/tea__boyd.svg",
       "cover": "covers/tea__boyd.jpg",
       "markIcon": null,
-      "sort": 61,
+      "sort": 153,
       "status": "active"
     },
     {
@@ -66751,21 +66741,21 @@
         "お〜いお茶",
         "oi ocha"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Oi Ocha — catalogued in tea · Japan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Oi Ocha — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1898",
         "origin": "Japan",
-        "specialty": "Tea",
-        "story": "Oi Ocha is still steeping or brewing on shelves and in cafés."
+        "story": "Oi Ocha is still present in the living catalogue."
       },
       "coverHue": 279,
       "mark": "marks/tea__itoen-oi.svg",
       "cover": "covers/tea__itoen-oi.jpg",
       "markIcon": null,
-      "sort": 62,
+      "sort": 154,
       "status": "active"
     },
     {
@@ -66775,21 +66765,21 @@
       "aliases": [
         "伊右衛門"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Iyemon — catalogued in tea · Japan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Iyemon — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1910",
         "origin": "Japan",
-        "specialty": "Tea",
-        "story": "Iyemon is still steeping or brewing on shelves and in cafés."
+        "story": "Iyemon is still present in the living catalogue."
       },
       "coverHue": 99,
       "mark": "marks/tea__suntory-iyemon.svg",
       "cover": "covers/tea__suntory-iyemon.jpg",
       "markIcon": null,
-      "sort": 63,
+      "sort": 155,
       "status": "active"
     },
     {
@@ -66799,21 +66789,21 @@
       "aliases": [
         "福寿園"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Fukujuen — catalogued in tea · Japan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Fukujuen — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "2008",
         "origin": "Japan",
-        "specialty": "Tea",
-        "story": "Fukujuen is still steeping or brewing on shelves and in cafés."
+        "story": "Fukujuen is still present in the living catalogue."
       },
       "coverHue": 26,
       "mark": "marks/tea__fukujuen.svg",
       "cover": "covers/tea__fukujuen.jpg",
       "markIcon": null,
-      "sort": 64,
+      "sort": 156,
       "status": "active"
     },
     {
@@ -66823,21 +66813,21 @@
       "aliases": [
         "永谷園"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Japan",
-      "tags": [],
-      "summary": "Nagatani-en — catalogued in tea · Japan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Nagatani-en — catalogued in coffee & tea brands · Japan.",
       "facts": {
-        "founded": "1942",
         "origin": "Japan",
-        "specialty": "Tea",
-        "story": "Nagatani-en is still steeping or brewing on shelves and in cafés."
+        "story": "Nagatani-en is still present in the living catalogue."
       },
       "coverHue": 282,
       "mark": "marks/tea__nagatani.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 65,
+      "sort": 157,
       "status": "active"
     },
     {
@@ -66847,21 +66837,21 @@
       "aliases": [
         "天福"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "Ten Fu — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ten Fu — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1914",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "Ten Fu is still steeping or brewing on shelves and in cafés."
+        "story": "Ten Fu is still present in the living catalogue."
       },
       "coverHue": 183,
       "mark": "marks/tea__tenfu.svg",
       "cover": "covers/tea__tenfu.jpg",
       "markIcon": null,
-      "sort": 66,
+      "sort": 158,
       "status": "active"
     },
     {
@@ -66871,21 +66861,21 @@
       "aliases": [
         "陆羽"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "Lu Yu Tea — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lu Yu Tea — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1968",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "Lu Yu Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Lu Yu Tea is still present in the living catalogue."
       },
       "coverHue": 203,
       "mark": "marks/tea__luke-tea.svg",
       "cover": "covers/tea__luke-tea.jpg",
       "markIcon": null,
-      "sort": 67,
+      "sort": 159,
       "status": "active"
     },
     {
@@ -66895,21 +66885,21 @@
       "aliases": [
         "清心福全"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "Ching Shin Fu Chuan — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ching Shin Fu Chuan — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "2000",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "Ching Shin Fu Chuan is still steeping or brewing on shelves and in cafés."
+        "story": "Ching Shin Fu Chuan is still present in the living catalogue."
       },
       "coverHue": 255,
       "mark": "marks/tea__ching-shin.svg",
       "cover": "covers/tea__ching-shin.jpg",
       "markIcon": null,
-      "sort": 68,
+      "sort": 160,
       "status": "active"
     },
     {
@@ -66919,21 +66909,21 @@
       "aliases": [
         "五十嵐"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "50 Lan — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "50 Lan — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1974",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "50 Lan is still steeping or brewing on shelves and in cafés."
+        "story": "50 Lan is still present in the living catalogue."
       },
       "coverHue": 292,
       "mark": "marks/tea__50-lan.svg",
       "cover": "covers/tea__50-lan.jpg",
       "markIcon": null,
-      "sort": 69,
+      "sort": 161,
       "status": "active"
     },
     {
@@ -66944,21 +66934,21 @@
         "都可",
         "coco"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "CoCo Fresh Tea — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "CoCo Fresh Tea — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1961",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "CoCo Fresh Tea is still steeping or brewing on shelves and in cafés."
+        "story": "CoCo Fresh Tea is still present in the living catalogue."
       },
       "coverHue": 165,
       "mark": "marks/tea__coco.svg",
       "cover": "covers/tea__coco.jpg",
       "markIcon": null,
-      "sort": 70,
+      "sort": 162,
       "status": "active"
     },
     {
@@ -66968,21 +66958,21 @@
       "aliases": [
         "老虎堂"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Taiwan",
-      "tags": [],
-      "summary": "Tiger Sugar — catalogued in tea · Taiwan.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tiger Sugar — catalogued in coffee & tea brands · Taiwan.",
       "facts": {
-        "founded": "1854",
         "origin": "Taiwan",
-        "specialty": "Tea",
-        "story": "Tiger Sugar is still steeping or brewing on shelves and in cafés."
+        "story": "Tiger Sugar is still present in the living catalogue."
       },
       "coverHue": 251,
       "mark": "marks/tea__tiger-sugar.svg",
       "cover": "covers/tea__tiger-sugar.jpg",
       "markIcon": null,
-      "sort": 71,
+      "sort": 163,
       "status": "active"
     },
     {
@@ -66992,23 +66982,22 @@
       "aliases": [
         "蜜雪冰城"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "China",
       "tags": [
-        "rising"
+        "rising",
+        "tea"
       ],
-      "summary": "Mixue — catalogued in tea · China.",
+      "summary": "Mixue — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1862",
         "origin": "China",
-        "specialty": "rising",
-        "story": "Mixue is still steeping or brewing on shelves and in cafés."
+        "story": "Mixue is still present in the living catalogue."
       },
       "coverHue": 39,
       "mark": "marks/tea__mixue.svg",
       "cover": "covers/tea__mixue.jpg",
       "markIcon": null,
-      "sort": 72,
+      "sort": 164,
       "status": "active"
     },
     {
@@ -67018,23 +67007,22 @@
       "aliases": [
         "古茗"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "China",
       "tags": [
-        "rising"
+        "rising",
+        "tea"
       ],
-      "summary": "Guming — catalogued in tea · China.",
+      "summary": "Guming — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1887",
         "origin": "China",
-        "specialty": "rising",
-        "story": "Guming is still steeping or brewing on shelves and in cafés."
+        "story": "Guming is still present in the living catalogue."
       },
       "coverHue": 88,
       "mark": "marks/tea__guming.svg",
       "cover": "covers/tea__guming.jpg",
       "markIcon": null,
-      "sort": 73,
+      "sort": 165,
       "status": "active"
     },
     {
@@ -67044,21 +67032,21 @@
       "aliases": [
         "沪上阿姨"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "China",
-      "tags": [],
-      "summary": "Auntea Jenny — catalogued in tea · China.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Auntea Jenny — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1868",
         "origin": "China",
-        "specialty": "Tea",
-        "story": "Auntea Jenny is still steeping or brewing on shelves and in cafés."
+        "story": "Auntea Jenny is still present in the living catalogue."
       },
       "coverHue": 19,
       "mark": "marks/tea__auntea.svg",
       "cover": "covers/tea__auntea.jpg",
       "markIcon": null,
-      "sort": 74,
+      "sort": 166,
       "status": "active"
     },
     {
@@ -67068,21 +67056,21 @@
       "aliases": [
         "天福茗茶"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "China",
-      "tags": [],
-      "summary": "Tianfu Tea — catalogued in tea · China.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tianfu Tea — catalogued in coffee & tea brands · China.",
       "facts": {
-        "founded": "1882",
         "origin": "China",
-        "specialty": "Tea",
-        "story": "Tianfu Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Tianfu Tea is still present in the living catalogue."
       },
       "coverHue": 73,
       "mark": "marks/tea__tenfu-cn.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 75,
+      "sort": 167,
       "status": "active"
     },
     {
@@ -67090,21 +67078,21 @@
       "slug": "maxbrenner",
       "name": "Max Brenner Chai",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "Max Brenner Chai — catalogued in tea · Australia.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Max Brenner Chai — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1992",
         "origin": "Australia",
-        "specialty": "Tea",
-        "story": "Max Brenner Chai is still steeping or brewing on shelves and in cafés."
+        "story": "Max Brenner Chai is still present in the living catalogue."
       },
       "coverHue": 171,
       "mark": "marks/tea__maxbrenner.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 76,
+      "sort": 168,
       "status": "active"
     },
     {
@@ -67114,21 +67102,21 @@
       "aliases": [
         "t2"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "T2 Tea — catalogued in tea · Australia.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "T2 Tea — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1864",
         "origin": "Australia",
-        "specialty": "Tea",
-        "story": "T2 Tea is still steeping or brewing on shelves and in cafés."
+        "story": "T2 Tea is still present in the living catalogue."
       },
       "coverHue": 315,
       "mark": "marks/tea__t2.svg",
       "cover": "covers/tea__t2.jpg",
       "markIcon": null,
-      "sort": 77,
+      "sort": 169,
       "status": "active"
     },
     {
@@ -67136,21 +67124,21 @@
       "slug": "madura",
       "name": "Madura Tea",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "Madura Tea — catalogued in tea · Australia.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Madura Tea — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1890",
         "origin": "Australia",
-        "specialty": "Tea",
-        "story": "Madura Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Madura Tea is still present in the living catalogue."
       },
       "coverHue": 225,
       "mark": "marks/tea__madura.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 78,
+      "sort": 170,
       "status": "active"
     },
     {
@@ -67158,21 +67146,21 @@
       "slug": "nerada",
       "name": "Nerada",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "Nerada — catalogued in tea · Australia.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Nerada — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1996",
         "origin": "Australia",
-        "specialty": "Tea",
-        "story": "Nerada is still steeping or brewing on shelves and in cafés."
+        "story": "Nerada is still present in the living catalogue."
       },
       "coverHue": 120,
       "mark": "marks/tea__nerada.svg",
       "cover": "covers/tea__nerada.jpg",
       "markIcon": null,
-      "sort": 79,
+      "sort": 171,
       "status": "active"
     },
     {
@@ -67180,21 +67168,21 @@
       "slug": "aromatika",
       "name": "Aromatika",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Ukraine",
-      "tags": [],
-      "summary": "Aromatika — catalogued in tea · Ukraine.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Aromatika — catalogued in coffee & tea brands · Ukraine.",
       "facts": {
-        "founded": "2003",
         "origin": "Ukraine",
-        "specialty": "Tea",
-        "story": "Aromatika is still steeping or brewing on shelves and in cafés."
+        "story": "Aromatika is still present in the living catalogue."
       },
       "coverHue": 104,
       "mark": "marks/tea__aromatika.svg",
       "cover": "covers/tea__aromatika.jpg",
       "markIcon": null,
-      "sort": 80,
+      "sort": 172,
       "status": "active"
     },
     {
@@ -67202,21 +67190,21 @@
       "slug": "greenfield",
       "name": "Greenfield Tea",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Russia",
-      "tags": [],
-      "summary": "Greenfield Tea — catalogued in tea · Russia.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Greenfield Tea — catalogued in coffee & tea brands · Russia.",
       "facts": {
-        "founded": "1852",
         "origin": "Russia",
-        "specialty": "Tea",
-        "story": "Greenfield Tea is still steeping or brewing on shelves and in cafés."
+        "story": "Greenfield Tea is still present in the living catalogue."
       },
       "coverHue": 28,
       "mark": "marks/tea__greenfield.svg",
       "cover": "covers/tea__greenfield.jpg",
       "markIcon": null,
-      "sort": 81,
+      "sort": 173,
       "status": "active"
     },
     {
@@ -67224,21 +67212,21 @@
       "slug": "ahmad-ru",
       "name": "Ahmad Russian Blend",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Russia",
-      "tags": [],
-      "summary": "Ahmad Russian Blend — catalogued in tea · Russia.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ahmad Russian Blend — catalogued in coffee & tea brands · Russia.",
       "facts": {
-        "founded": "1865",
         "origin": "Russia",
-        "specialty": "Tea",
-        "story": "Ahmad Russian Blend is still steeping or brewing on shelves and in cafés."
+        "story": "Ahmad Russian Blend is still present in the living catalogue."
       },
       "coverHue": 12,
       "mark": "marks/tea__ahmad-ru.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 82,
+      "sort": 174,
       "status": "active"
     },
     {
@@ -67248,21 +67236,21 @@
       "aliases": [
         "caykur"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Turkey",
-      "tags": [],
-      "summary": "Çaykur — catalogued in tea · Turkey.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Çaykur — catalogued in coffee & tea brands · Turkey.",
       "facts": {
-        "founded": "1933",
         "origin": "Turkey",
-        "specialty": "Tea",
-        "story": "Çaykur is still steeping or brewing on shelves and in cafés."
+        "story": "Çaykur is still present in the living catalogue."
       },
       "coverHue": 306,
       "mark": "marks/tea__caykur.svg",
       "cover": "covers/tea__caykur.jpg",
       "markIcon": null,
-      "sort": 83,
+      "sort": 175,
       "status": "active"
     },
     {
@@ -67272,21 +67260,21 @@
       "aliases": [
         "dogus cay"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Turkey",
-      "tags": [],
-      "summary": "Doğuş Çay — catalogued in tea · Turkey.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Doğuş Çay — catalogued in coffee & tea brands · Turkey.",
       "facts": {
-        "founded": "1966",
         "origin": "Turkey",
-        "specialty": "Tea",
-        "story": "Doğuş Çay is still steeping or brewing on shelves and in cafés."
+        "story": "Doğuş Çay is still present in the living catalogue."
       },
       "coverHue": 93,
       "mark": "marks/tea__dogus.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 84,
+      "sort": 176,
       "status": "active"
     },
     {
@@ -67296,21 +67284,21 @@
       "aliases": [
         "el arosa"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Egypt",
-      "tags": [],
-      "summary": "El Arosa Tea — catalogued in tea · Egypt.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "El Arosa Tea — catalogued in coffee & tea brands · Egypt.",
       "facts": {
-        "founded": "2004",
         "origin": "Egypt",
-        "specialty": "Tea",
-        "story": "El Arosa Tea is still steeping or brewing on shelves and in cafés."
+        "story": "El Arosa Tea is still present in the living catalogue."
       },
       "coverHue": 247,
       "mark": "marks/tea__egyptian-star.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 85,
+      "sort": 177,
       "status": "active"
     },
     {
@@ -67318,21 +67306,21 @@
       "slug": "kenyan-ketepa",
       "name": "Ketepa",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Kenya",
-      "tags": [],
-      "summary": "Ketepa — catalogued in tea · Kenya.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ketepa — catalogued in coffee & tea brands · Kenya.",
       "facts": {
-        "founded": "1908",
         "origin": "Kenya",
-        "specialty": "Tea",
-        "story": "Ketepa is still steeping or brewing on shelves and in cafés."
+        "story": "Ketepa is still present in the living catalogue."
       },
       "coverHue": 50,
       "mark": "marks/tea__kenyan-ketepa.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 86,
+      "sort": 178,
       "status": "active"
     },
     {
@@ -67340,21 +67328,21 @@
       "slug": "rwandan-sorwathe",
       "name": "Sorwathe",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Rwanda",
-      "tags": [],
-      "summary": "Sorwathe — catalogued in tea · Rwanda.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sorwathe — catalogued in coffee & tea brands · Rwanda.",
       "facts": {
-        "founded": "1968",
         "origin": "Rwanda",
-        "specialty": "Tea",
-        "story": "Sorwathe is still steeping or brewing on shelves and in cafés."
+        "story": "Sorwathe is still present in the living catalogue."
       },
       "coverHue": 292,
       "mark": "marks/tea__rwandan-sorwathe.svg",
       "cover": "covers/tea__rwandan-sorwathe.jpg",
       "markIcon": null,
-      "sort": 87,
+      "sort": 179,
       "status": "active"
     },
     {
@@ -67364,21 +67352,21 @@
       "aliases": [
         "freshpak"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "South Africa",
-      "tags": [],
-      "summary": "Freshpak Rooibos — catalogued in tea · South Africa.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Freshpak Rooibos — catalogued in coffee & tea brands · South Africa.",
       "facts": {
-        "founded": "1879",
         "origin": "South Africa",
-        "specialty": "Tea",
-        "story": "Freshpak Rooibos is still steeping or brewing on shelves and in cafés."
+        "story": "Freshpak Rooibos is still present in the living catalogue."
       },
       "coverHue": 27,
       "mark": "marks/tea__rooibos-fresh.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 88,
+      "sort": 180,
       "status": "active"
     },
     {
@@ -67388,21 +67376,21 @@
       "aliases": [
         "11 oclock"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "South Africa",
-      "tags": [],
-      "summary": "Eleven O'Clock — catalogued in tea · South Africa.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Eleven O'Clock — catalogued in coffee & tea brands · South Africa.",
       "facts": {
-        "founded": "1865",
         "origin": "South Africa",
-        "specialty": "Tea",
-        "story": "Eleven O'Clock is still steeping or brewing on shelves and in cafés."
+        "story": "Eleven O'Clock is still present in the living catalogue."
       },
       "coverHue": 145,
       "mark": "marks/tea__eleveno.svg",
       "cover": "covers/tea__eleveno.jpg",
       "markIcon": null,
-      "sort": 89,
+      "sort": 181,
       "status": "active"
     },
     {
@@ -67412,23 +67400,22 @@
       "aliases": [
         "taragui"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Argentina",
       "tags": [
-        "yerba-mate"
+        "yerba-mate",
+        "tea"
       ],
-      "summary": "Taragüi — catalogued in tea · Argentina.",
+      "summary": "Taragüi — catalogued in coffee & tea brands · Argentina.",
       "facts": {
-        "founded": "1999",
         "origin": "Argentina",
-        "specialty": "yerba-mate",
-        "story": "Taragüi is still steeping or brewing on shelves and in cafés."
+        "story": "Taragüi is still present in the living catalogue."
       },
       "coverHue": 212,
       "mark": "marks/tea__mate-taragui.svg",
       "cover": null,
       "markIcon": null,
-      "sort": 90,
+      "sort": 182,
       "status": "active"
     },
     {
@@ -67436,23 +67423,22 @@
       "slug": "mate-rosamonte",
       "name": "Rosamonte",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Argentina",
       "tags": [
-        "yerba-mate"
+        "yerba-mate",
+        "tea"
       ],
-      "summary": "Rosamonte — catalogued in tea · Argentina.",
+      "summary": "Rosamonte — catalogued in coffee & tea brands · Argentina.",
       "facts": {
-        "founded": "1953",
         "origin": "Argentina",
-        "specialty": "yerba-mate",
-        "story": "Rosamonte is still steeping or brewing on shelves and in cafés."
+        "story": "Rosamonte is still present in the living catalogue."
       },
       "coverHue": 303,
       "mark": "marks/tea__mate-rosamonte.svg",
       "cover": "covers/tea__mate-rosamonte.jpg",
       "markIcon": null,
-      "sort": 91,
+      "sort": 183,
       "status": "active"
     },
     {
@@ -67460,23 +67446,22 @@
       "slug": "mate-cruz",
       "name": "Cruz de Malta",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Argentina",
       "tags": [
-        "yerba-mate"
+        "yerba-mate",
+        "tea"
       ],
-      "summary": "Cruz de Malta — catalogued in tea · Argentina.",
+      "summary": "Cruz de Malta — catalogued in coffee & tea brands · Argentina.",
       "facts": {
-        "founded": "1896",
         "origin": "Argentina",
-        "specialty": "yerba-mate",
-        "story": "Cruz de Malta is still steeping or brewing on shelves and in cafés."
+        "story": "Cruz de Malta is still present in the living catalogue."
       },
       "coverHue": 151,
       "mark": "marks/tea__mate-cruz.svg",
       "cover": "covers/tea__mate-cruz.jpg",
       "markIcon": null,
-      "sort": 92,
+      "sort": 184,
       "status": "active"
     },
     {
@@ -67486,23 +67471,22 @@
       "aliases": [
         "guayaki"
       ],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "USA",
       "tags": [
-        "yerba-mate"
+        "yerba-mate",
+        "tea"
       ],
-      "summary": "Guayakí — catalogued in tea · USA.",
+      "summary": "Guayakí — catalogued in coffee & tea brands · USA.",
       "facts": {
-        "founded": "1975",
         "origin": "USA",
-        "specialty": "yerba-mate",
-        "story": "Guayakí is still steeping or brewing on shelves and in cafés."
+        "story": "Guayakí is still present in the living catalogue."
       },
       "coverHue": 156,
       "mark": "marks/tea__guayaki.svg",
       "cover": "covers/tea__guayaki.jpg",
       "markIcon": null,
-      "sort": 93,
+      "sort": 185,
       "status": "active"
     },
     {
@@ -67510,21 +67494,21 @@
       "slug": "pukka-love",
       "name": "Pukka Love",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Pukka Love — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pukka Love — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "2010",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Pukka Love is still steeping or brewing on shelves and in cafés."
+        "story": "Pukka Love is still present in the living catalogue."
       },
       "coverHue": 232,
       "mark": "marks/tea__pukka-love.svg",
       "cover": "covers/tea__pukka-love.jpg",
       "markIcon": null,
-      "sort": 94,
+      "sort": 186,
       "status": "active"
     },
     {
@@ -67532,21 +67516,21 @@
       "slug": "clipper-organic",
       "name": "Clipper Organic",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "UK",
-      "tags": [],
-      "summary": "Clipper Organic — catalogued in tea · UK.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Clipper Organic — catalogued in coffee & tea brands · UK.",
       "facts": {
-        "founded": "2009",
         "origin": "UK",
-        "specialty": "Tea",
-        "story": "Clipper Organic is still steeping or brewing on shelves and in cafés."
+        "story": "Clipper Organic is still present in the living catalogue."
       },
       "coverHue": 54,
       "mark": "marks/tea__clipper-organic.svg",
       "cover": "covers/tea__clipper-organic.jpg",
       "markIcon": null,
-      "sort": 95,
+      "sort": 187,
       "status": "active"
     },
     {
@@ -67554,21 +67538,21 @@
       "slug": "tea-drop",
       "name": "The Tea Drop",
       "aliases": [],
-      "categoryId": "tea",
+      "categoryId": "hotdrinks",
       "origin": "Australia",
-      "tags": [],
-      "summary": "The Tea Drop — catalogued in tea · Australia.",
+      "tags": [
+        "tea"
+      ],
+      "summary": "The Tea Drop — catalogued in coffee & tea brands · Australia.",
       "facts": {
-        "founded": "1993",
         "origin": "Australia",
-        "specialty": "Tea",
-        "story": "The Tea Drop is still steeping or brewing on shelves and in cafés."
+        "story": "The Tea Drop is still present in the living catalogue."
       },
       "coverHue": 9,
       "mark": "marks/tea__tea-drop.svg",
       "cover": "covers/tea__tea-drop.jpg",
       "markIcon": null,
-      "sort": 96,
+      "sort": 188,
       "status": "active"
     },
     {
