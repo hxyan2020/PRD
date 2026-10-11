@@ -158,43 +158,71 @@ function chunkForMint(text: string, maxLen = 700): string[] {
   return parts
 }
 
+/** True when translated text uses the expected script for the UI language. */
+export function textMatchesUiLang(text: string, uiLang: string): boolean {
+  const t = (text || '').trim()
+  if (!t) return false
+  const mint = mintLangFor(uiLang)
+  if (!mint) return true
+  if (mint === 'zh' || mint === 'ja') return /[\u3400-\u9fff]/.test(t)
+  if (mint === 'ko') return /[\uac00-\ud7af]/.test(t)
+  if (mint === 'ar' || mint === 'fa' || mint === 'ur') return /[\u0600-\u06ff]/.test(t)
+  if (mint === 'he') return /[\u0590-\u05ff]/.test(t)
+  if (mint === 'ru' || mint === 'uk') return /[\u0400-\u04ff]/.test(t)
+  if (mint === 'el') return /[\u0370-\u03ff]/.test(t)
+  if (mint === 'th') return /[\u0e00-\u0e7f]/.test(t)
+  if (mint === 'hi') return /[\u0900-\u097f]/.test(t)
+  if (mint === 'bn') return /[\u0980-\u09ff]/.test(t)
+  // Latin-script locales: reject untranslated English catalogue phrasing.
+  // (Titles may stay English even in a good translation.)
+  if (/\boil-on-canvas painting (created|executed)\b/i.test(t) || /\bis an oil-on-canvas\b/i.test(t)) {
+    return false
+  }
+  return true
+}
+
+async function translateChunk(chunk: string, target: string): Promise<string> {
+  const body = JSON.stringify({
+    html: `<p>${chunk.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`,
+  })
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(`https://cxserver.wikimedia.org/v2/translate/en/${target}/MinT`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
+      if (res.status === 429 || res.status >= 500) {
+        await new Promise((r) => setTimeout(r, 500 * (attempt + 1)))
+        continue
+      }
+      if (!res.ok) return ''
+      const data = (await res.json()) as { contents?: string }
+      return stripHtml(data.contents || '')
+    } catch {
+      await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+    }
+  }
+  return ''
+}
+
 /**
  * Translate catalogue English via Wikimedia MinT (cxserver) when no UI-language
- * Wikipedia page exists. Returns '' on failure.
+ * Wikipedia page exists. Returns '' on failure (failures are not cached).
  */
 async function translateViaMint(text: string, uiLang: string): Promise<string> {
   const target = mintLangFor(uiLang)
   if (!target || !text.trim()) return ''
   const cacheKey = `${target}:${text}`
   const hit = mintCache.get(cacheKey)
-  if (hit !== undefined) return hit
+  if (hit) return hit
 
   const chunks = chunkForMint(text)
-  const translated: string[] = []
-  for (const chunk of chunks) {
-    try {
-      const res = await fetch(`https://cxserver.wikimedia.org/v2/translate/en/${target}/MinT`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ html: `<p>${chunk.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>` }),
-      })
-      if (!res.ok) {
-        mintCache.set(cacheKey, '')
-        return ''
-      }
-      const data = (await res.json()) as { contents?: string }
-      const plain = stripHtml(data.contents || '')
-      if (!plain) {
-        mintCache.set(cacheKey, '')
-        return ''
-      }
-      translated.push(plain)
-    } catch {
-      mintCache.set(cacheKey, '')
-      return ''
-    }
-  }
-  const out = translated.join(' ').replace(/\s+/g, ' ').trim()
+  // Parallelize chunks — sequential MinT made painting pages look untranslated.
+  const parts = await Promise.all(chunks.map((chunk) => translateChunk(chunk, target)))
+  if (parts.some((p) => !p)) return ''
+  const out = parts.join(' ').replace(/\s+/g, ' ').trim()
+  if (!out) return ''
   mintCache.set(cacheKey, out)
   return out
 }
@@ -252,11 +280,19 @@ async function fetchWikiExtract(
   return extract
 }
 
+export type LocalizeProgress = (partial: LocalizedPainting) => void
+
 /**
  * Localize painting display fields for the active UI language.
  * Falls back to the English dataset values when a translation is missing.
+ * Calls `onPartial` after the intro is ready so the about section can update
+ * before the slower painter-bio translation finishes.
  */
-export async function localizePainting(painting: Painting, uiLang: string): Promise<LocalizedPainting> {
+export async function localizePainting(
+  painting: Painting,
+  uiLang: string,
+  onPartial?: LocalizeProgress,
+): Promise<LocalizedPainting> {
   if (!uiLang || uiLang === 'en') {
     return { ...painting, localized: false }
   }
@@ -343,8 +379,23 @@ export async function localizePainting(painting: Painting, uiLang: string): Prom
     // Optimized English catalogue intros: machine-translate when no UI wiki page.
     if (!introFromUiWiki) {
       const minted = await translateViaMint(intro, uiLang)
-      if (minted.length >= 80) intro = minted
+      if (minted.length >= 80 && textMatchesUiLang(minted, uiLang)) intro = minted
     }
+
+    const withIntro: LocalizedPainting = {
+      ...painting,
+      name,
+      painter,
+      genre,
+      painterCountry,
+      placeOfCreation,
+      collection,
+      intro,
+      anecdote: painting.anecdote,
+      localized: true,
+    }
+    // Publish intro ASAP so “关于这幅画” is not stuck on English while the bio loads.
+    onPartial?.(withIntro)
 
     const targetPainterTitle = painterEnt?.sitelinks?.[wikiSitelinkKey(target.wiki)]?.title
     if (targetPainterTitle) {
@@ -363,27 +414,22 @@ export async function localizePainting(painting: Painting, uiLang: string): Prom
     }
     if (!anecdoteFromUiWiki) {
       const minted = await translateViaMint(anecdote, uiLang)
-      if (minted.length >= 60) anecdote = minted
+      if (minted.length >= 60 && textMatchesUiLang(minted, uiLang)) anecdote = minted
     }
 
     const localized: LocalizedPainting = {
-      ...painting,
-      name,
-      painter,
-      genre,
-      painterCountry,
-      placeOfCreation,
-      collection,
-      intro,
+      ...withIntro,
       anecdote,
       localized: true,
     }
-    cache.set(cacheKey, localized)
+    // Only cache when the about text actually matches the UI language (or wiki provided it).
+    const introOk = introFromUiWiki || textMatchesUiLang(localized.intro, uiLang)
+    if (introOk) cache.set(cacheKey, localized)
     return localized
   } catch {
-    const fallback = { ...painting, localized: false }
-    cache.set(cacheKey, fallback)
-    return fallback
+    // Do not cache failures — a transient MinT/Wikidata error would otherwise
+    // pin the English catalogue text for the rest of the session.
+    return { ...painting, localized: false }
   }
 }
 

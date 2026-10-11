@@ -25,7 +25,14 @@ export function useLocalizedPainting(painting: Painting | null | undefined): {
     // even when the parent rebuilds the painting object identity.
     const snapshot = painting
     let cancelled = false
-    setLocalized({ ...snapshot, localized: false })
+    // Clear body copy while translating so English catalogue text is not shown
+    // under a translated “About” heading.
+    setLocalized({
+      ...snapshot,
+      intro: lang === 'en' ? snapshot.intro : '',
+      anecdote: lang === 'en' ? snapshot.anecdote : '',
+      localized: false,
+    })
 
     if (lang === 'en') {
       setLoading(false)
@@ -33,7 +40,9 @@ export function useLocalizedPainting(painting: Painting | null | undefined): {
     }
 
     setLoading(true)
-    localizePainting(snapshot, lang)
+    localizePainting(snapshot, lang, (partial) => {
+      if (!cancelled) setLocalized(partial)
+    })
       .then((result) => {
         if (!cancelled) setLocalized(result)
       })

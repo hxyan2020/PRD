@@ -120,7 +120,9 @@ export function PaintingPage() {
 
       <section className="detail-block">
         <h2>{t('aboutPainting')}</h2>
-        <p>{painting.intro}</p>
+        <p className={localizing && !painting.intro ? 'localize-hint' : undefined}>
+          {painting.intro || (localizing ? t('loadingTranslation') : '')}
+        </p>
       </section>
 
       <section className="detail-block painter-block">
@@ -137,7 +139,9 @@ export function PaintingPage() {
             />
           </p>
           <h3>{t('anecdote')}</h3>
-          <p>{painting.anecdote}</p>
+          <p className={localizing && !painting.anecdote ? 'localize-hint' : undefined}>
+            {painting.anecdote || (localizing ? t('loadingTranslation') : '')}
+          </p>
         </div>
         <div className="photo-rail" aria-label="Photos of the painter">
           {painting.painterPhotos.length > 0 ? (

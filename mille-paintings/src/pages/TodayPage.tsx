@@ -39,8 +39,10 @@ export function TodayPage() {
   if (store.status === 'error') return <main className="today-page"><p className="error">{store.message}</p></main>
   if (!current || !display) return null
 
-  const blurb = display.intro.slice(0, 280)
-  const blurbEllipsis = display.intro.length > 280 ? '…' : ''
+  const blurb = localizing && !display.intro
+    ? t('loadingTranslation')
+    : display.intro.slice(0, 280)
+  const blurbEllipsis = !localizing && display.intro.length > 280 ? '…' : ''
 
   return (
     <main className="today-page">
