@@ -9,6 +9,7 @@ export const FALLBACK_NAV_TOTALS: Record<string, number> = {
   "/admin/alerts": 5,
   "/admin/messenger": 6,
   "/admin/market-intel": 3,
+  "/admin/discovery": 2,
   "/admin/interventions": 3,
   "/admin/audit": 3,
   "/admin/monitor-2": 4,

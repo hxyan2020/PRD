@@ -498,6 +498,32 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 ---
 
+## 11A. 未知風險探索（AI 建議卡）
+
+**畫面：** `/admin/discovery` · **API：** `/api/discovery` · **資料表：** `risk_discovery_candidates`、`risk_discovery_scans`、`risk_discovery_reviews`
+
+### 資料
+- 自即時 `monitor_indicators` 取樣特徵窗（不含原始客戶 PII）
+- 審查稽核寫入 `risk_discovery_reviews`（AI 不可寫決策）
+- 可選伺服器 `OPENAI_API_KEY` 供 LIVE 分析
+
+### 方法
+孤立森林、CUSUM、Mahalanobis／聯合距離、LOF、子群切片、領先—滯後序列、相關網路偏移 — 與已發布 Colab 筆記本同一族方法。
+
+### 互動（與筆記本對齊）
+| 控制 | 行為 |
+|---|---|
+| 連線 OpenAI／中斷 Mock | 工作階段 AI 模式；即時需伺服器金鑰 |
+| 分析所選 | 回傳結構化建議卡 JSON |
+| 核准進入驗證 | 人工閘門供 BU／UAT — 不部署 |
+| 要求更多資訊 | 記錄審查＋可能刷新建議（不是核准） |
+| 駁回 | 關閉候選 |
+| 核准納入監控 | 可選：`DISCOVERY_PROMOTE` 經 AI 工程師提案 → RO 覆核 → 技能＋偵測器 |
+
+當 `discovery.auto_on_detectors=true` 時與 `run_detectors` 並行。頁面與網址目錄含筆記本 HTML＋Colab 連結。
+
+---
+
 ## 12. 市場情報
 
 ### 12.1 目的
@@ -696,6 +722,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
 | 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
+| 1.9 | 2026-10-11 | §11A 未知風險探索 AI 建議卡＋`/api/discovery` |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

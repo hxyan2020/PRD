@@ -12,6 +12,7 @@ import { ensureAiAdminSchema } from "@/lib/ai/admin-schema";
 import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
 import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
+import { ensureDiscoverySchema } from "@/lib/ai/discovery-schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
 import { ensureImprovementSchema } from "@/lib/ai/improvement";
 import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
@@ -1081,7 +1082,19 @@ function ensureEscalationSchema(db: Database.Database) {
   upsert.run("escalation.default_route_code", "ESC-DEFAULT", "Catch-all escalation path for unmatched / exotic events");
 }
 
+let aiLayerBusy = false;
+
 function ensureAiLayer(db: Database.Database) {
+  if (aiLayerBusy) return;
+  aiLayerBusy = true;
+  try {
+    runEnsureAiLayer(db);
+  } finally {
+    aiLayerBusy = false;
+  }
+}
+
+function runEnsureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
   ensureSpineSchema(db);
   ensureAiAdminSchema(db);
@@ -1099,6 +1112,11 @@ function ensureAiLayer(db: Database.Database) {
   ensureRiskLogSchema(db);
   seedRiskLogIfEmpty(db);
   ensureMarketIntelSchema(db);
+  ensureDiscoverySchema(db);
+  // Lazy require — discovery.ts imports admin/db; avoid cycle at module load.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { seedDiscoveryIfEmpty } = require("@/lib/ai/discovery") as typeof import("@/lib/ai/discovery");
+  seedDiscoveryIfEmpty(db);
   ensureChallengerSchema(db);
   ensureImprovementSchema(db);
   seedAiAnalysesIfEmpty(db);

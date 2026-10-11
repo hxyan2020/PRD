@@ -638,6 +638,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Monitor & risk | Monitor 2.0 | Unified indicator + detector registry; Run all / Sync / Pause; recent runs; M2-* deep links (alerts → Realtime Alert) |
 | Monitor & risk | Realtime Alert & Tracker | Ack the open queue; grouped AI pipeline; MonitorCode tooltips; AI Analyses list redirects here |
 | Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
+| Monitor & risk | Unknown Risk Discovery | Notebook-parity AI suggestion card; RO review; optional promote to skill + Monitor 2.0 |
 | Monitor & risk | Risk Log Analytics | 90-day charts, closed packs, loss vs prevented, loopholes |
 | Monitor & risk | Risk Domains | P0–P3 scenarios hooked to Monitor 2.0 |
 | AI & knowledge | AI Skills | Browse playbooks; Enter the full SKILL.md; one escalation bind |
@@ -659,6 +660,37 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 
 ---
 
+## 14A. Unknown Risk Discovery (AI suggestion card)
+
+**Path:** `/admin/discovery` · **Notebook:** [HTML](https://hxyan2020.github.io/PRD/risk-discovery/) · [Colab](https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing)
+
+This page ports the Colab review widgets into CRMP Admin. It runs **beside** DETECT→DASHBOARD; candidates do not become daily monitors until a human promotes them.
+
+### Data needed
+- Live `monitor_indicators` last values (CFD/crypto book proxies) to build a short realtime feature window
+- Optional server-side `OPENAI_API_KEY` for live Analyse (never paste keys in the browser)
+- Authenticated Risk Owner / checker for review actions
+
+### Methods (same seven families as the notebook)
+1. **Isolation Forest** — multivariate / point anomaly proxy  
+2. **CUSUM** — sustained regime shift  
+3. **Mahalanobis / joint distance** — jointly unusual states  
+4. **LOF** — peer-relative local outlier  
+5. **Subgroup slice** — product × domain contrast  
+6. **Sequence / lead-lag** — precursor patterns  
+7. **Correlation network** — cross-indicator dependency shift  
+
+### Flow
+1. **Run discovery** (or `run_detectors` with parallel discovery) → `PENDING_RO` candidates  
+2. **Connect OpenAI** (env key) or stay **Mock**  
+3. **Analyse selected** → structured **AI suggestion card** (assessment, root causes, scenario, formula, dimensions, validation steps, limitations, priority, confidence)  
+4. RO actions (notebook parity): **Approve for validation** · **Ask for more info** · **Dismiss** — never auto-deploy  
+5. Optional **Approve for monitoring** → AI Engineer proposes / RO decides (maker≠checker) → `SKILL-DISC-*` + `M2-DISC-*` join daily detectors  
+
+Ask-for-more-info may refresh the suggestion card; that AI reply is **never** an approval.
+
+---
+
 ## 15. Document control
 
 | Ver | Date | Notes |
@@ -671,5 +703,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors merged into Monitor 2.0 (redirect); AI Analyses list not left-nav; Monitor hub = indicator+detector table (no Alerts/Tickets tabs); mobile polish note |
 | 1.9 | 2026-10-06 | Home dummy spine: Dummy alert / Dummy alert group; bilingual EN / zh-Hant chrome and stored copy |
 | 1.10 | 2026-10-06 | Demo Messenger bird-eye POC windows along the escalation path |
+| 1.11 | 2026-10-11 | Unknown Risk Discovery admin page — notebook-parity AI suggestion card + RO review |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

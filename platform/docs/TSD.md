@@ -179,6 +179,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/monitor-2` | unified registry + `MonitorActions`, `/api/monitor`, `/api/detectors` | `monitor.read` / `monitor.operate` | §16.5 |
 | Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
 | Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
+| Monitor | `/admin/discovery` | **Unknown Risk Discovery** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read` / `ai.approve` | **§11A** |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -502,6 +503,32 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 
 ---
 
+## 11A. Unknown Risk Discovery (AI suggestion card)
+
+**Surface:** `/admin/discovery` · **API:** `/api/discovery` · **Tables:** `risk_discovery_candidates`, `risk_discovery_scans`, `risk_discovery_reviews`
+
+### Data
+- Feature window sampled from live `monitor_indicators` (not raw client PII)
+- Review audit in `risk_discovery_reviews` (AI cannot write decisions)
+- Optional `OPENAI_API_KEY` server env for LIVE Analyse
+
+### Methods
+Isolation Forest, CUSUM, Mahalanobis/joint distance, LOF, subgroup slice, lead-lag sequence, correlation-network shift — same families as the published Colab notebook.
+
+### Interaction (notebook parity)
+| Control | Behaviour |
+|---|---|
+| Connect OpenAI / Disconnect Mock | Session AI mode; live requires server key |
+| Analyse selected | Returns structured suggestion card JSON |
+| Approve for validation | Human gate for BU/UAT — no deploy |
+| Ask for more info | Records review + may refresh suggestion (not an approval) |
+| Dismiss | Closes candidate |
+| Approve for monitoring | Optional: `DISCOVERY_PROMOTE` via AI Engineer propose → RO decide → skill + detector |
+
+Parallel to `run_detectors` when `discovery.auto_on_detectors=true`. Notebook links: HTML + Colab on the page and URL catalog.
+
+---
+
 ## 12. Market Intelligence
 
 ### 12.1 Purpose
@@ -556,7 +583,8 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/messenger` | Threads + inline actions |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
-| `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `GET/POST /api/discovery` | Unknown-risk candidates; Connect OpenAI/Mock; Analyse; RO review |
+| `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors` (+ parallel discovery), `run_discovery`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
 | `GET/POST /api/detectors` | Legacy detector CRUD / run (UI on Monitor 2.0) |
 | `GET/POST /api/escalation` | Routes + dimension coefficients + ESC-DEFAULT probe |
 | `GET/POST /api/roles` | Editable RBAC (`update_role`; AI actors forbidden) |
@@ -700,6 +728,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
+| 1.9 | 2026-10-11 | §11A Unknown Risk Discovery AI suggestion card + `/api/discovery` |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

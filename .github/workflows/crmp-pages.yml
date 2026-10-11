@@ -2,7 +2,13 @@ name: Publish CRMP Admin to GitHub Pages
 
 on:
   push:
-    branches: [cursor/crmp-admin-pages-a935, cursor/public-urls-a935, main]
+    branches:
+      [
+        cursor/crmp-admin-pages-a935,
+        cursor/public-urls-a935,
+        cursor/risk-discovery-admin-28bc,
+        main,
+      ]
     paths:
       - "platform/**"
       - ".github/workflows/crmp-pages.yml"
