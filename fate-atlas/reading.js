@@ -5431,6 +5431,41 @@
     render();
   }
 
+  function riteVideoHTML(method) {
+    const v = window.FatumRiteVideos?.for?.(method?.id || method);
+    if (!v?.youtubeId) return "";
+    const zh = localePrefersZh();
+    const hant = String(window.FatumI18n?.getLocale?.() || "").startsWith("zh-Hant");
+    const label = zh
+      ? hant
+        ? "短片：這個儀式怎麼運作"
+        : "短片：这个仪式怎么运作"
+      : "Short clip: how this rite works";
+    const caption = v.caption
+      ? zh
+        ? hant
+          ? v.captionHant || v.captionZh || v.caption
+          : v.captionZh || v.caption
+        : v.caption
+      : "";
+    const start = Number(v.start) > 0 ? `?start=${Number(v.start)}` : "";
+    const src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.youtubeId)}${start}${start ? "&" : "?"}rel=0&modestbranding=1`;
+    return `<section class="rite-video" aria-label="${escapeHTML(label)}">
+        <h4 class="rite-video__title">${escapeHTML(label)}</h4>
+        <div class="rite-video__frame">
+          <iframe
+            src="${src}"
+            title="${escapeHTML(caption || label)}"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        </div>
+        ${caption ? `<p class="rite-video__caption">${escapeHTML(caption)}</p>` : ""}
+      </section>`;
+  }
+
   function riteExplanationHTML(method, text) {
     const t = text || (window.FatumMethodText ? window.FatumMethodText.localize(method) : method) || {};
     const explain =
@@ -5439,11 +5474,12 @@
       t.summary ||
       method?.summary ||
       "";
-    if (!explain) return "";
+    const video = riteVideoHTML(method);
+    if (!explain && !video) return "";
     const title = ti("rite.explainTitle") || "About this rite";
-    return `<section class="rite-explain" aria-label="${escapeHTML(title)}">
+    return `${video}<section class="rite-explain" aria-label="${escapeHTML(title)}">
         <h4 class="rite-explain__title">${escapeHTML(title)}</h4>
-        <p class="rite-explain__body">${escapeHTML(explain)}</p>
+        ${explain ? `<p class="rite-explain__body">${escapeHTML(explain)}</p>` : ""}
       </section>`;
   }
 

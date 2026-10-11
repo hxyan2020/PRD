@@ -79,7 +79,7 @@
     if (isZh()) {
       return zhText(
         `你问的是「${f}」。此仪式给出「${symbol}」，核心意思是：${leanClean}。${howClean ? howClean + (howClean.endsWith("。") ? "" : "。") : ""}这不是预报“会怎样”，而是提醒你对照日常证据，改一件你能控制的事。`,
-        `你問的是「${f}」。此儀式給出「${symbol}」，核心意思是：${leanClean}。${howClean ? howClean + (howClean.endsWith("。") || howClean.endsWith("。") ? "" : "。") : ""}這不是預報「會怎樣」，而是提醒你對照日常證據，改一件你能控制的事。`
+        `你問的是「${f}」。此儀式給出「${symbol}」，核心意思是：${leanClean}。${howClean ? howClean + (howClean.endsWith("。") ? "" : "。") : ""}這不是預報「會怎樣」，而是提醒你對照日常證據，改一件你能控制的事。`
       );
     }
     return `You asked about “${f}”. This rite showed “${symbol}”, which means: ${leanClean}. ${howClean} That is not a forecast of what will happen — it is a prompt to change one thing you control and check ordinary evidence.`;
