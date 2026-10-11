@@ -208,13 +208,10 @@ function bodyFor(item) {
   const hay = `${item.id} ${item.name} ${(item.tags || []).join(" ")}`;
   for (const [re, variants, prefer] of GENUS_HINTS) {
     if (re.test(hay)) {
+      // Prefer the matched silhouette — do not wrap-mix into unrelated shapes
+      // (e.g. horse → sheep). Slight alternate only within adjacent variants.
       if (typeof prefer === "number" && variants[prefer]) {
-        const pool = [
-          variants[prefer],
-          variants[(prefer + 1) % variants.length],
-          variants[(prefer + 2) % variants.length],
-        ];
-        return pick(item.id, pool);
+        return variants[prefer];
       }
       return pick(item.id, variants);
     }
