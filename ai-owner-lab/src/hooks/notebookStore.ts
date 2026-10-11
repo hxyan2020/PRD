@@ -558,6 +558,74 @@ export const notebookStore = {
   exportBackup(): string {
     return buildBackupJson()
   },
+  /**
+   * Dump every notebook-related IndexedDB + localStorage remnant for recovery.
+   * No DevTools required — use this when F12 / Application panel is unavailable.
+   */
+  async dumpRecoveryStorage(): Promise<{
+    json: string
+    entryCount: number
+    sources: string[]
+  }> {
+    await ensureReady()
+    const idbEntries = await idbGet(IDB_KEYS.entries)
+    const idbTrash = await idbGet(IDB_KEYS.trash)
+    const idbCategories = await idbGet(IDB_KEYS.categories)
+    const snapshot = await idbGet(IDB_KEYS.snapshot)
+    const snapshotPrev = await idbGet(IDB_KEYS.snapshotPrev)
+    const meta = await idbGetMeta()
+    const lsEntries = readLocalStorageJson(LS_ENTRIES)
+    const lsTrash = readLocalStorageJson(LS_TRASH)
+    const lsCategories = readLocalStorageJson(LS_CATEGORIES)
+
+    const merged = await gatherAllSources()
+    const sources: string[] = []
+    if (parseEntries(idbEntries).length) sources.push('indexeddb.entries')
+    if (parseSnapshot(snapshot)?.entries.length) sources.push('indexeddb.snapshot')
+    if (parseSnapshot(snapshotPrev)?.entries.length) sources.push('indexeddb.snapshot_prev')
+    if (parseEntries(lsEntries).length) sources.push('localStorage.entries')
+    if (parseTrash(idbTrash).length || parseTrash(lsTrash).length) sources.push('trash')
+    if (parseCategories(idbCategories).length || parseCategories(lsCategories).length) {
+      sources.push('categories')
+    }
+
+    const json = JSON.stringify(
+      {
+        version: 1,
+        kind: 'ownlab-recovery-dump',
+        exportedAt: new Date().toISOString(),
+        href: typeof location !== 'undefined' ? location.href : undefined,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+        summary: {
+          mergedEntryCount: merged.entries.length,
+          sources,
+        },
+        // Importable shape (same as a normal backup).
+        entries: merged.entries,
+        trash: merged.trash,
+        categories: merged.categories,
+        // Raw remnants for debugging / deeper recovery.
+        raw: {
+          indexedDB: {
+            entries: idbEntries ?? null,
+            trash: idbTrash ?? null,
+            categories: idbCategories ?? null,
+            snapshot: snapshot ?? null,
+            snapshot_prev: snapshotPrev ?? null,
+            meta: meta ?? null,
+          },
+          localStorage: {
+            [LS_ENTRIES]: lsEntries ?? null,
+            [LS_TRASH]: lsTrash ?? null,
+            [LS_CATEGORIES]: lsCategories ?? null,
+          },
+        },
+      },
+      null,
+      2,
+    )
+    return { json, entryCount: merged.entries.length, sources }
+  },
   async importBackup(json: string): Promise<{ total: number }> {
     await ensureReady()
     let parsed: unknown
@@ -570,10 +638,46 @@ export const notebookStore = {
       entries?: unknown
       trash?: unknown
       categories?: unknown
+      raw?: {
+        indexedDB?: {
+          entries?: unknown
+          trash?: unknown
+          categories?: unknown
+          snapshot?: unknown
+          snapshot_prev?: unknown
+        }
+        localStorage?: Record<string, unknown>
+      }
     }
-    const entries = mergeEntries(cache.entries, parseEntries(body.entries))
-    const trash = mergeTrash(cache.trash, parseTrash(body.trash))
-    const categories = mergeCategories(cache.categories, parseCategories(body.categories))
+    // Accept normal backups and recovery dumps (including nested raw remnants).
+    const rawIdb = body.raw?.indexedDB
+    const rawLs = body.raw?.localStorage
+    const snap = parseSnapshot(rawIdb?.snapshot)
+    const snapPrev = parseSnapshot(rawIdb?.snapshot_prev)
+    const entries = mergeEntries(
+      cache.entries,
+      parseEntries(body.entries),
+      parseEntries(rawIdb?.entries),
+      snap?.entries ?? [],
+      snapPrev?.entries ?? [],
+      parseEntries(rawLs?.[LS_ENTRIES]),
+    )
+    const trash = mergeTrash(
+      cache.trash,
+      parseTrash(body.trash),
+      parseTrash(rawIdb?.trash),
+      snap?.trash ?? [],
+      snapPrev?.trash ?? [],
+      parseTrash(rawLs?.[LS_TRASH]),
+    )
+    const categories = mergeCategories(
+      cache.categories,
+      parseCategories(body.categories),
+      parseCategories(rawIdb?.categories),
+      snap?.categories ?? [],
+      snapPrev?.categories ?? [],
+      parseCategories(rawLs?.[LS_CATEGORIES]),
+    )
     await saveSnapshot(cache.entries, cache.trash, cache.categories)
     await persistKey(IDB_KEYS.entries, entries)
     await persistKey(IDB_KEYS.trash, trash)

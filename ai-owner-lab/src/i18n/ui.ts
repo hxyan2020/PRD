@@ -100,12 +100,20 @@ const en = {
     'Write a note below, or open a day lesson, highlight a sentence, and use the floating toolbar.',
   recoverNotes: 'Restore notes',
   recoverNotesHint:
-    'Notes auto-save in this browser. Open the Backup tab to keep a folder copy and optional GitHub Gist so notes survive clears and travel with you.',
+    'Notes auto-save in this browser. If they vanished, click “Scan & download recovery dump” below (no DevTools / F12 needed). Also open Backup for cloud sync.',
   recoverNotesFound: 'Restored {restored} note(s). You now have {total}.',
   recoverNotesNone:
-    'No recoverable notes found yet. Open Backup to pull from your folder or GitHub Gist, or import a JSON file you exported earlier.',
+    'No recoverable notes found yet. Try “Scan & download recovery dump”, then open Backup to pull from cloud/folder or import a JSON file.',
   exportNotes: 'Export backup',
   importNotes: 'Import backup',
+  recoveryDump: 'Scan & download recovery dump',
+  recoveryDumpHint:
+    'No F12 needed. Scans this browser’s IndexedDB + localStorage for any leftover notes and downloads a JSON file you can Import — or share for help.',
+  recoveryDumpFound:
+    'Found {count} note(s) in {sources}. Downloaded recovery dump — Import it here if notes are still missing.',
+  recoveryDumpEmpty:
+    'Scan finished: no notes left in this browser’s storage. If you used another device/profile, open OWNLAB there and run the same scan, or connect Cloud sync / import an old backup file.',
+  recoveryDumpFail: 'Could not scan browser storage. Try again, or open Backup → Import if you have a JSON file.',
   notesRecoveredToast: 'Recovered notes from a local backup.',
   viewBackup: 'Backup',
   backupTitle: 'Cloud & backups',
@@ -462,12 +470,20 @@ const zh: Record<UiKey, string> = {
   emptyNotebook: '暂无笔记',
   recoverNotes: '恢复笔记',
   recoverNotesHint:
-    '笔记会自动保存在本浏览器。请打开「备份」页，设置文件夹副本和可选的 GitHub Gist，这样清除数据或换设备后仍能找回。',
+    '笔记会自动保存在本浏览器。若消失，请点下方「扫描并下载恢复包」（不用 F12 / 开发者工具）。也可打开「备份」做云同步。',
   recoverNotesFound: '已恢复 {restored} 条笔记，当前共 {total} 条。',
   recoverNotesNone:
-    '尚未找到可恢复的笔记。请到「备份」从文件夹或 GitHub Gist 拉取，或导入你之前导出的 JSON。',
+    '尚未找到可恢复的笔记。请先「扫描并下载恢复包」，再到「备份」从云端/文件夹拉取，或导入旧的 JSON。',
   exportNotes: '导出备份',
   importNotes: '导入备份',
+  recoveryDump: '扫描并下载恢复包',
+  recoveryDumpHint:
+    '不需要 F12。会扫描本浏览器 IndexedDB 与 localStorage 中残留的笔记，下载 JSON——可直接「导入备份」，或发给我帮你恢复。',
+  recoveryDumpFound:
+    '在 {sources} 中找到 {count} 条笔记，已下载恢复包。若列表仍为空，请用「导入备份」导入该文件。',
+  recoveryDumpEmpty:
+    '扫描完成：当前浏览器存储里已没有笔记。若昨天用的是别的设备/浏览器配置，请到那边打开 OWNLAB 再扫一次，或连接云同步 / 导入旧备份。',
+  recoveryDumpFail: '无法扫描浏览器存储。请重试，或到「备份」导入已有的 JSON 文件。',
   notesRecoveredToast: '已从本地备份恢复笔记。',
   viewBackup: '备份',
   backupTitle: '云同步与备份',

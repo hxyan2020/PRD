@@ -191,6 +191,7 @@ export function Notebook() {
     removeCategory,
     recoverFromBackups,
     exportBackup,
+    dumpRecoveryStorage,
     importBackup,
   } = useNotebook()
   const { lang, t } = useLanguage()
@@ -282,6 +283,37 @@ export function Notebook() {
     a.download = `ownlab-notebook-backup-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  async function onRecoveryDump() {
+    setRecoveryBusy(true)
+    setRecoveryMessage(null)
+    try {
+      const dump = await dumpRecoveryStorage()
+      const blob = new Blob([dump.json], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `ownlab-recovery-dump-${new Date().toISOString().slice(0, 10)}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+      if (dump.entryCount > 0) {
+        // Also merge into the live notebook immediately.
+        await importBackup(dump.json)
+        setRecoveryMessage(
+          t('recoveryDumpFound', {
+            count: dump.entryCount,
+            sources: dump.sources.join(', ') || 'storage',
+          }),
+        )
+      } else {
+        setRecoveryMessage(t('recoveryDumpEmpty'))
+      }
+    } catch {
+      setRecoveryMessage(t('recoveryDumpFail'))
+    } finally {
+      setRecoveryBusy(false)
+    }
   }
 
   async function onImportFile(file: File | null) {
@@ -988,6 +1020,7 @@ export function Notebook() {
             </Link>
           </p>
           <p className="notebook-recover-hint">{t('recoverNotesHint')}</p>
+          <p className="notebook-recover-hint">{t('recoveryDumpHint')}</p>
           {recoveryMessage ? (
             <p className="notebook-recover-status" role="status">
               {recoveryMessage}
@@ -998,11 +1031,19 @@ export function Notebook() {
               type="button"
               className="btn primary"
               disabled={recoveryBusy}
+              onClick={() => void onRecoveryDump()}
+            >
+              {t('recoveryDump')}
+            </button>
+            <button
+              type="button"
+              className="btn primary"
+              disabled={recoveryBusy}
               onClick={() => void onRecoverNotes()}
             >
               {t('recoverNotes')}
             </button>
-            <button type="button" className="btn primary" onClick={() => setView('backup')}>
+            <button type="button" className="btn ghost" onClick={() => setView('backup')}>
               {t('viewBackup')}
             </button>
             <button

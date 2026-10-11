@@ -259,6 +259,36 @@ export function NotebookBackupPanel() {
     setStatus(t('backupExportDone'))
   }
 
+  async function onRecoveryDump() {
+    setBusy(true)
+    setStatus(null)
+    try {
+      const dump = await notebookStore.dumpRecoveryStorage()
+      const blob = new Blob([dump.json], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `ownlab-recovery-dump-${new Date().toISOString().slice(0, 10)}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+      if (dump.entryCount > 0) {
+        await notebookStore.importBackup(dump.json)
+        setStatus(
+          t('recoveryDumpFound', {
+            count: dump.entryCount,
+            sources: dump.sources.join(', ') || 'storage',
+          }),
+        )
+      } else {
+        setStatus(t('recoveryDumpEmpty'))
+      }
+    } catch {
+      setStatus(t('recoveryDumpFail'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function onImportFile(file: File | null) {
     if (!file) return
     setBusy(true)
@@ -357,7 +387,11 @@ export function NotebookBackupPanel() {
       <div className="notebook-backup-card">
         <h3>{t('backupActionsTitle')}</h3>
         <p>{t('backupActionsBody')}</p>
+        <p className="notebook-backup-meta">{t('recoveryDumpHint')}</p>
         <div className="notebook-actions">
+          <button type="button" className="btn primary" disabled={busy} onClick={() => void onRecoveryDump()}>
+            {t('recoveryDump')}
+          </button>
           <button type="button" className="btn primary" disabled={busy} onClick={() => void onSyncNow()}>
             {t('backupSyncNow')}
           </button>
