@@ -1,4 +1,6 @@
 import { isCategoryColorId, nextCategoryColor } from '../lib/categoryColors'
+import { readFolderBackup, requestPersistentStorage, writeFolderBackup } from '../lib/notebookFolderBackup'
+import { pullGistBackup, pushGistBackup } from '../lib/notebookGistSync'
 import {
   IDB_KEYS,
   idbGet,
@@ -349,6 +351,26 @@ async function hydrate(): Promise<void> {
   trashListeners.forEach((listener) => listener(cache.trash))
   categoryListeners.forEach((listener) => listener(cache.categories))
   readyListeners.forEach((listener) => listener())
+
+  // Ask the browser not to evict notebook storage under disk pressure.
+  void requestPersistentStorage()
+
+  // Merge any newer on-disk / gist backup after primary hydrate settles.
+  void (async () => {
+    try {
+      const folderJson = await readFolderBackup()
+      if (folderJson) await notebookStore.importBackup(folderJson)
+    } catch {
+      /* ignore */
+    }
+    try {
+      const gistJson = await pullGistBackup()
+      if (gistJson) await notebookStore.importBackup(gistJson)
+    } catch {
+      /* ignore */
+    }
+    scheduleDurableSync()
+  })()
 }
 
 function ensureReady(): Promise<void> {
@@ -362,6 +384,38 @@ if (typeof window !== 'undefined') {
   void ensureReady()
 }
 
+function buildBackupJson(): string {
+  return JSON.stringify(
+    {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      entries: cache.entries,
+      trash: cache.trash,
+      categories: cache.categories,
+    },
+    null,
+    2,
+  )
+}
+
+let durableTimer: ReturnType<typeof setTimeout> | null = null
+
+/** Push the latest notebook JSON to folder backup + optional GitHub Gist (debounced). */
+function scheduleDurableSync() {
+  if (typeof window === 'undefined') return
+  if (durableTimer) window.clearTimeout(durableTimer)
+  durableTimer = window.setTimeout(() => {
+    durableTimer = null
+    const json = buildBackupJson()
+    void writeFolderBackup(json).catch(() => {
+      /* folder not configured / permission denied */
+    })
+    void pushGistBackup(json).catch(() => {
+      /* gist sync off or misconfigured */
+    })
+  }, 1200)
+}
+
 async function writeEntries(entries: NotebookEntry[]) {
   await ensureReady()
   const sorted = sortEntries(entries)
@@ -372,6 +426,7 @@ async function writeEntries(entries: NotebookEntry[]) {
   entryListeners.forEach((listener) => listener(sorted))
   // After a successful write, point the latest snapshot at the new durable set.
   await saveSnapshot(cache.entries, cache.trash, cache.categories)
+  scheduleDurableSync()
 }
 
 async function writeTrash(trash: TrashedNotebookEntry[]) {
@@ -382,6 +437,7 @@ async function writeTrash(trash: TrashedNotebookEntry[]) {
   cache.trash = sorted
   trashListeners.forEach((listener) => listener(sorted))
   await saveSnapshot(cache.entries, cache.trash, cache.categories)
+  scheduleDurableSync()
 }
 
 async function writeCategories(categories: NotebookCategory[]) {
@@ -392,6 +448,7 @@ async function writeCategories(categories: NotebookCategory[]) {
   cache.categories = sorted
   categoryListeners.forEach((listener) => listener(sorted))
   await saveSnapshot(cache.entries, cache.trash, cache.categories)
+  scheduleDurableSync()
 }
 
 function uid(prefix: string) {
@@ -429,7 +486,7 @@ export const notebookStore = {
     ;(cache as Cache & { _recovered?: boolean })._recovered = false
     return true
   },
-  /** Rescan localStorage + IDB backups and merge anything still present. */
+  /** Rescan localStorage + IDB + folder/Gist backups and merge anything still present. */
   async recoverFromBackups(): Promise<{ restored: number; total: number }> {
     await ensureReady()
     const before = cache.entries.length
@@ -437,38 +494,28 @@ export const notebookStore = {
     const entries = gathered.entries
     const trash = gathered.trash
     const categories = gathered.categories
-    if (
-      entries.length === cache.entries.length &&
-      trash.length === cache.trash.length &&
-      categories.length === cache.categories.length
-    ) {
-      return { restored: 0, total: cache.entries.length }
+    const localChanged =
+      entries.length !== cache.entries.length ||
+      trash.length !== cache.trash.length ||
+      categories.length !== cache.categories.length
+    if (localChanged) {
+      await saveSnapshot(entries, trash, categories)
+      await persistKey(IDB_KEYS.entries, entries)
+      await persistKey(IDB_KEYS.trash, trash)
+      await persistKey(IDB_KEYS.categories, categories)
+      cache.entries = entries
+      cache.trash = trash
+      cache.categories = categories
+      entryListeners.forEach((listener) => listener(entries))
+      trashListeners.forEach((listener) => listener(trash))
+      categoryListeners.forEach((listener) => listener(categories))
     }
-    await saveSnapshot(entries, trash, categories)
-    await persistKey(IDB_KEYS.entries, entries)
-    await persistKey(IDB_KEYS.trash, trash)
-    await persistKey(IDB_KEYS.categories, categories)
-    cache.entries = entries
-    cache.trash = trash
-    cache.categories = categories
-    entryListeners.forEach((listener) => listener(entries))
-    trashListeners.forEach((listener) => listener(trash))
-    categoryListeners.forEach((listener) => listener(categories))
-    return { restored: Math.max(0, entries.length - before), total: entries.length }
+    await notebookStore.pullRemoteBackups()
+    return { restored: Math.max(0, cache.entries.length - before), total: cache.entries.length }
   },
   /** Download a JSON backup of notes / trash / categories. */
   exportBackup(): string {
-    return JSON.stringify(
-      {
-        version: 1,
-        exportedAt: new Date().toISOString(),
-        entries: cache.entries,
-        trash: cache.trash,
-        categories: cache.categories,
-      },
-      null,
-      2,
-    )
+    return buildBackupJson()
   },
   async importBackup(json: string): Promise<{ total: number }> {
     await ensureReady()
@@ -496,7 +543,58 @@ export const notebookStore = {
     entryListeners.forEach((listener) => listener(entries))
     trashListeners.forEach((listener) => listener(trash))
     categoryListeners.forEach((listener) => listener(categories))
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    scheduleDurableSync()
     return { total: entries.length }
+  },
+  /** Immediately push notebook JSON to folder backup + optional GitHub Gist. */
+  async syncDurableNow(): Promise<{
+    folder: boolean
+    gistId: string | null
+    gistError?: string
+  }> {
+    await ensureReady()
+    const json = buildBackupJson()
+    let folder = false
+    let gistId: string | null = null
+    let gistError: string | undefined
+    try {
+      folder = await writeFolderBackup(json)
+    } catch {
+      folder = false
+    }
+    try {
+      const result = await pushGistBackup(json)
+      gistId = result.gistId
+    } catch (err) {
+      gistError = err instanceof Error ? err.message : 'GitHub sync failed'
+    }
+    return { folder, gistId, gistError }
+  },
+  /** Pull folder + Gist backups and merge into the notebook. */
+  async pullRemoteBackups(): Promise<{ total: number; fromFolder: boolean; fromGist: boolean }> {
+    await ensureReady()
+    let fromFolder = false
+    let fromGist = false
+    try {
+      const folderJson = await readFolderBackup()
+      if (folderJson) {
+        await notebookStore.importBackup(folderJson)
+        fromFolder = true
+      }
+    } catch {
+      /* ignore */
+    }
+    try {
+      const gistJson = await pullGistBackup()
+      if (gistJson) {
+        await notebookStore.importBackup(gistJson)
+        fromGist = true
+      }
+    } catch {
+      /* ignore */
+    }
+    return { total: cache.entries.length, fromFolder, fromGist }
   },
   subscribe(listener: EntryListener) {
     entryListeners.add(listener)

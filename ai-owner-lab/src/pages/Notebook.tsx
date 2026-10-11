@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { NoteTree } from '../components/NoteTree'
+import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
 import { NotebookStorageError, notebookStore } from '../hooks/notebookStore'
 import {
@@ -192,7 +193,7 @@ export function Notebook() {
     importBackup,
   } = useNotebook()
   const { lang, t } = useLanguage()
-  const [view, setView] = useState<'notes' | 'tree' | 'categories' | 'dustbin'>('notes')
+  const [view, setView] = useState<'notes' | 'tree' | 'categories' | 'dustbin' | 'backup'>('notes')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
@@ -509,7 +510,9 @@ export function Notebook() {
               ? t('treeTitle')
               : view === 'categories'
                 ? t('categoriesTitle')
-                : t('notebookTitle')}
+                : view === 'backup'
+                  ? t('backupTitle')
+                  : t('notebookTitle')}
         </h1>
         <p className="section-lede">
           {view === 'dustbin'
@@ -518,7 +521,9 @@ export function Notebook() {
               ? t('treeLede')
               : view === 'categories'
                 ? t('categoriesLede')
-                : t('notebookLede')}
+                : view === 'backup'
+                  ? t('backupLede')
+                  : t('notebookLede')}
         </p>
         <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
           <button
@@ -567,6 +572,16 @@ export function Notebook() {
             <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-dustbin" />
             {t('dustbin')}
             <span className="notebook-view-count">{trashCount}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'backup'}
+            className={`notebook-view-tab${view === 'backup' ? ' on' : ''}`}
+            onClick={() => setView('backup')}
+          >
+            <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-backup" />
+            {t('viewBackup')}
           </button>
         </div>
         {view === 'notes' || view === 'dustbin' ? (
@@ -628,7 +643,9 @@ export function Notebook() {
         </p>
       ) : null}
 
-      {view === 'dustbin' ? (
+      {view === 'backup' ? (
+        <NotebookBackupPanel />
+      ) : view === 'dustbin' ? (
         trashCount === 0 ? (
           <div className="callout dustbin-empty">
             <h2>{t('dustbinEmpty')}</h2>
@@ -972,6 +989,9 @@ export function Notebook() {
               onClick={() => void onRecoverNotes()}
             >
               {t('recoverNotes')}
+            </button>
+            <button type="button" className="btn primary" onClick={() => setView('backup')}>
+              {t('viewBackup')}
             </button>
             <button
               type="button"

@@ -75,6 +75,8 @@ export function useNotebook() {
     recoverFromBackups: notebookStore.recoverFromBackups,
     exportBackup: notebookStore.exportBackup,
     importBackup: notebookStore.importBackup,
+    syncDurableNow: notebookStore.syncDurableNow,
+    pullRemoteBackups: notebookStore.pullRemoteBackups,
   }
 }
 
