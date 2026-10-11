@@ -567,7 +567,7 @@ const packs: Record<string, Pack> = {
   "about.title": "So funktioniert Seen",
   "about.blurb": "Ein lebendiger Katalog, den du freischaltest, indem du die Welt bemerkst.",
   "about.catalogueTitle": "Katalog",
-  "about.catalogueBody": "Einträge umfassen Autos & Motorräder, Zigaretten (18+), Alkohol, Kaffee & Tee, Softdrinks, Lebensmittel, Snacks, Milchprodukte, Kleidung & Sportwear, Luxus & Uhren, Beauty, Technik, Apotheke, Airlines, Banken, Instrumente, Spielzeug, Bäume, Blumen, Tiere, Vögel und Pilze. Cover starten grau und gesperrt, bis du eine Sichtung bestätigst.",
+  "about.catalogueBody": "Einträge umfassen Autos & Motorräder, Zigaretten (18+), Alkohol, Kaffee & Tee, Softdrinks, Lebensmittel, Snacks, Milchprodukte, Kleidung & Sportbekleidung, Luxus & Uhren, Beauty, Technik, Apotheke, Airlines, Banken, Instrumente, Spielzeug, Bäume, Blumen, Tiere, Vögel und Pilze. Cover starten grau und gesperrt, bis du eine Sichtung bestätigst.",
   "about.scanTitle": "Scan-Ablauf",
   "about.scan1": "Eine oder mehrere Kategorien wählen (oder „alle“ lassen).",
   "about.scan2": "Foto aufnehmen oder Bild hochladen.",
