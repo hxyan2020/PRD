@@ -2471,11 +2471,19 @@ body.menu-open {
   border-radius: 0.45rem;
 }
 
+.notebook-cloud-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
 .notebook-cloud-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin: 0.35rem 0 0;
+  margin: 0;
   padding: 0.25rem 0.65rem;
   border-radius: 999px;
   font-size: 0.78rem;
@@ -2483,6 +2491,11 @@ body.menu-open {
   color: #0f766e;
   background: rgba(13, 148, 136, 0.12);
   border: 1px solid rgba(13, 148, 136, 0.22);
+}
+
+.notebook-cloud-verify-btn {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.7rem;
 }
 
 .notebook-cloud-pill.off {

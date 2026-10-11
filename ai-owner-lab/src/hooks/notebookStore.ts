@@ -843,6 +843,114 @@ export const notebookStore = {
     }
     return { total: cache.entries.length, fromFolder, fromGist }
   },
+  /**
+   * Push then pull cloud notebook and report whether sync is healthy.
+   * Safe to run anytime — does not delete local notes.
+   */
+  async verifyCloudSync(): Promise<{
+    ok: boolean
+    configured: boolean
+    gistId: string
+    localCount: number
+    cloudCount: number
+    lastSyncedAt: string | null
+    htmlUrl: string | null
+    error?: string
+  }> {
+    await ensureReady()
+    const settings = loadGistSettings()
+    const localCount = cache.entries.length
+    if (!settings.enabled || !settings.token) {
+      return {
+        ok: false,
+        configured: false,
+        gistId: settings.gistId,
+        localCount,
+        cloudCount: 0,
+        lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+        htmlUrl: null,
+        error: 'Cloud sync is not enabled on this device',
+      }
+    }
+    try {
+      const pushed = await notebookStore.syncDurableNow()
+      if (!pushed.gistId) {
+        return {
+          ok: false,
+          configured: false,
+          gistId: settings.gistId,
+          localCount,
+          cloudCount: 0,
+          lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+          htmlUrl: null,
+          error: pushed.gistError || 'Upload to cloud failed',
+        }
+      }
+      const gistJson = await pullGistBackup(loadGistSettings())
+      if (!gistJson) {
+        return {
+          ok: false,
+          configured: true,
+          gistId: pushed.gistId,
+          localCount,
+          cloudCount: 0,
+          lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+          htmlUrl: pushed.htmlUrl ?? null,
+          error: 'Cloud notebook is empty or unreadable',
+        }
+      }
+      let cloudCount = 0
+      try {
+        const parsed = JSON.parse(gistJson) as { entries?: unknown }
+        cloudCount = parseEntries(parsed.entries).length
+      } catch {
+        return {
+          ok: false,
+          configured: true,
+          gistId: pushed.gistId,
+          localCount,
+          cloudCount: 0,
+          lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+          htmlUrl: pushed.htmlUrl ?? null,
+          error: 'Cloud notebook JSON is invalid',
+        }
+      }
+      setLastCloudSyncAt()
+      const ok = cloudCount >= localCount && cloudCount > 0
+      setCloudRuntime({
+        state: ok ? 'synced' : 'error',
+        lastSyncedAt: new Date().toISOString(),
+        error: ok ? null : 'Cloud note count is lower than local',
+        gistId: pushed.gistId,
+      })
+      return {
+        ok: ok || (localCount === 0 && cloudCount === 0),
+        configured: true,
+        gistId: pushed.gistId,
+        localCount,
+        cloudCount,
+        lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+        htmlUrl: pushed.htmlUrl ?? null,
+        error:
+          ok || (localCount === 0 && cloudCount === 0)
+            ? undefined
+            : `Cloud has ${cloudCount} note(s) but this device has ${localCount}`,
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Cloud verify failed'
+      setCloudRuntime({ state: 'error', error })
+      return {
+        ok: false,
+        configured: Boolean(settings.token && settings.gistId && settings.enabled),
+        gistId: settings.gistId,
+        localCount,
+        cloudCount: 0,
+        lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+        htmlUrl: null,
+        error,
+      }
+    }
+  },
   /** Enable cloud sync, upload notes, return the cloud notebook id for other devices. */
   async enableCloudSync(input: {
     token: string

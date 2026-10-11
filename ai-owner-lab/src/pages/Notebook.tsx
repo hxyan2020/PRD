@@ -589,18 +589,27 @@ export function Notebook() {
                   : t('notebookLede')}
         </p>
         {cloudOn ? (
-          <p
-            className={`notebook-cloud-pill${cloudState === 'error' ? ' err' : ''}${
-              cloudState === 'syncing' ? ' syncing' : ''
-            }`}
-            title={t('cloudTitle')}
-          >
-            {cloudState === 'syncing'
-              ? t('cloudSyncing')
-              : cloudState === 'error'
-                ? t('cloudSyncError', { error: cloudError || 'error' })
-                : t('cloudSynced')}
-          </p>
+          <div className="notebook-cloud-status-row">
+            <p
+              className={`notebook-cloud-pill${cloudState === 'error' ? ' err' : ''}${
+                cloudState === 'syncing' ? ' syncing' : ''
+              }`}
+              title={t('cloudTitle')}
+            >
+              {cloudState === 'syncing'
+                ? t('cloudSyncing')
+                : cloudState === 'error'
+                  ? t('cloudSyncError', { error: cloudError || 'error' })
+                  : t('cloudSynced')}
+            </p>
+            <button
+              type="button"
+              className="btn ghost notebook-cloud-verify-btn"
+              onClick={() => setView('backup')}
+            >
+              {t('cloudVerify')}
+            </button>
+          </div>
         ) : (
           <p className="notebook-cloud-pill off" title={t('cloudRequiredTitle')}>
             {t('cloudSyncOffBanner')}

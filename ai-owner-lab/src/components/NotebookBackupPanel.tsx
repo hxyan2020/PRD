@@ -183,6 +183,42 @@ export function NotebookBackupPanel() {
     }
   }
 
+  async function onVerifyCloud() {
+    setBusy(true)
+    setStatus(null)
+    try {
+      const result = await notebookStore.verifyCloudSync()
+      refreshCloudStatus()
+      if (!result.configured && result.error?.includes('not enabled')) {
+        setStatus(t('cloudVerifyNotConfigured'))
+        return
+      }
+      if (result.ok && result.localCount === 0 && result.cloudCount === 0) {
+        setStatus(t('cloudVerifyEmptyOk', { id: result.gistId }))
+        return
+      }
+      if (result.ok) {
+        setStatus(
+          t('cloudVerifyOk', {
+            local: result.localCount,
+            cloud: result.cloudCount,
+            id: result.gistId,
+          }),
+        )
+        return
+      }
+      setStatus(t('cloudVerifyFail', { error: result.error || 'unknown' }))
+    } catch (err) {
+      setStatus(
+        t('cloudVerifyFail', {
+          error: err instanceof Error ? err.message : 'unknown',
+        }),
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function onSyncNow() {
     setBusy(true)
     setStatus(null)
@@ -363,6 +399,9 @@ export function NotebookBackupPanel() {
         <div className="notebook-actions">
           <button type="button" className="btn primary" disabled={busy} onClick={() => void onEnableCloud()}>
             {cloudOn ? t('cloudUploadNow') : t('cloudEnable')}
+          </button>
+          <button type="button" className="btn primary" disabled={busy} onClick={() => void onVerifyCloud()}>
+            {t('cloudVerify')}
           </button>
           <button type="button" className="btn ghost" disabled={busy} onClick={() => void onConnectCloud()}>
             {t('cloudConnectDevice')}

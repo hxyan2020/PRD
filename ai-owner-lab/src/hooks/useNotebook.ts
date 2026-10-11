@@ -80,6 +80,7 @@ export function useNotebook() {
     pullRemoteBackups: notebookStore.pullRemoteBackups,
     enableCloudSync: notebookStore.enableCloudSync,
     connectCloudSync: notebookStore.connectCloudSync,
+    verifyCloudSync: notebookStore.verifyCloudSync,
     getCloudSyncStatus: notebookStore.getCloudSyncStatus,
     getCloudRuntime: notebookStore.getCloudRuntime,
     subscribeCloudRuntime: notebookStore.subscribeCloudRuntime,
