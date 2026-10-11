@@ -34,10 +34,12 @@ jobs:
           npm run build:pages
           cp dist/index.html dist/404.html
 
-      - name: Publish to gh-pages branch
+      # keep_files: preserve sibling Pages sites (e.g. /PRD/crmp-admin/).
+      # Do NOT use force_orphan — that wipes the whole gh-pages branch.
+      - name: Publish to gh-pages branch (keep sibling sites)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: v-exchange-admin/dist
           publish_branch: gh-pages
-          force_orphan: true
+          keep_files: true
