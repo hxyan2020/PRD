@@ -921,7 +921,7 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 42%;
+  object-position: center 40%;
   transform: scale(1.02);
   animation: heroKen 22s ease-in-out infinite alternate;
 }

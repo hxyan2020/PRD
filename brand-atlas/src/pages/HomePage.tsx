@@ -20,8 +20,8 @@ export function HomePage() {
           className="hero__banner"
           src={`${import.meta.env.BASE_URL}banner-seen.png`}
           alt=""
-          width={1199}
-          height={932}
+          width={1000}
+          height={609}
         />
         <div className="hero__veil" aria-hidden="true" />
         <div className="hero__content">

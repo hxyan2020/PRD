@@ -212,9 +212,10 @@ const CATEGORIES = {
   sake: {
     id: "sake",
     label: "Sake brands",
-    blurb: "Brewers and labels still pouring nihonshu.",
+    blurb: "Nihonshu brewers and labels — from Japan and sake makers around the world.",
     kind: "brand",
     items: [
+      // Japan
       { id: "dassai", name: "Dassai", aliases: ["獺祭"], origin: "Japan" },
       { id: "kubota", name: "Kubota", aliases: ["久保田"], origin: "Japan" },
       { id: "hakutsuru", name: "Hakutsuru", aliases: ["白鶴"], origin: "Japan" },
@@ -223,7 +224,6 @@ const CATEGORIES = {
       { id: "takara", name: "Takara", aliases: ["宝"], origin: "Japan" },
       { id: "juyondai", name: "Juyondai", aliases: ["十四代"], origin: "Japan" },
       { id: "born", name: "Born", aliases: ["梵"], origin: "Japan" },
-      { id: "sake-one", name: "SakeOne", origin: "USA" },
       { id: "kikusui", name: "Kikusui", aliases: ["菊水"], origin: "Japan" },
       { id: "dewazakura", name: "Dewazakura", aliases: ["出羽桜"], origin: "Japan" },
       { id: "nanbu-bijin", name: "Nanbu Bijin", aliases: ["南部美人"], origin: "Japan" },
@@ -240,6 +240,51 @@ const CATEGORIES = {
       { id: "hiroki", name: "Hiroki", aliases: ["飛良喜"], origin: "Japan" },
       { id: "denshin", name: "Denshin", aliases: ["伝心"], origin: "Japan" },
       { id: "tedorigawa", name: "Tedorigawa", aliases: ["手取川"], origin: "Japan" },
+      { id: "kawa", name: "Kawa", aliases: ["川"], origin: "Japan", tags: ["export"] },
+      { id: "wakatake", name: "Wakatake", aliases: ["若竹", "onikoroshi"], origin: "Japan" },
+      { id: "kenbishi", name: "Kenbishi", aliases: ["剣菱"], origin: "Japan" },
+      { id: "shimeharitsuru", name: "Shimeharitsuru", aliases: ["〆張鶴"], origin: "Japan" },
+      { id: "ama-no-to", name: "Ama no To", aliases: ["天の戸"], origin: "Japan" },
+      { id: "katsuyama", name: "Katsuyama", aliases: ["勝山"], origin: "Japan" },
+      // USA
+      { id: "sake-one", name: "SakeOne", aliases: ["momokawa"], origin: "USA" },
+      { id: "brooklyn-kura", name: "Brooklyn Kura", origin: "USA", tags: ["craft"] },
+      { id: "proper-sake", name: "Proper Sake Co", aliases: ["proper sake"], origin: "USA", tags: ["craft"] },
+      { id: "sequoia-sake", name: "Sequoia Sake", origin: "USA", tags: ["craft"] },
+      { id: "den-sake", name: "Den Sake Brewery", aliases: ["den sake"], origin: "USA", tags: ["craft"] },
+      { id: "setting-sun", name: "Setting Sun Sake", aliases: ["setting sun"], origin: "USA", tags: ["craft"] },
+      { id: "yaegaki-usa", name: "Yaegaki USA", aliases: ["yaegaki"], origin: "USA" },
+      // Canada
+      { id: "artisan-sake-maker", name: "Artisan Sake Maker", aliases: ["osake"], origin: "Canada", tags: ["craft"] },
+      { id: "ontario-spring-water", name: "Ontario Spring Water Sake", aliases: ["osws"], origin: "Canada", tags: ["craft"] },
+      // Australia
+      { id: "sun-masamune", name: "Sun Masamune", aliases: ["go-shu", "goshu"], origin: "Australia" },
+      { id: "melbourne-sake", name: "Melbourne Sake", origin: "Australia", tags: ["craft"] },
+      // New Zealand
+      { id: "zenkuro", name: "Zenkuro", origin: "New Zealand", tags: ["craft"] },
+      // United Kingdom
+      { id: "dojima", name: "Dojima Sake Brewery", aliases: ["dojima"], origin: "UK", tags: ["craft"] },
+      { id: "kanpai-london", name: "Kanpai London", aliases: ["kanpai"], origin: "UK", tags: ["craft"] },
+      // France
+      { id: "heavensake", name: "HEAVENSAKE", aliases: ["heavensake"], origin: "France" },
+      { id: "les-larmes-du-levant", name: "Les Larmes du Levant", aliases: ["larmes du levant"], origin: "France", tags: ["craft"] },
+      // Brazil
+      { id: "azuma-kirin", name: "Azuma Kirin", aliases: ["azuma"], origin: "Brazil" },
+      { id: "thikara", name: "Thikara", aliases: ["sake thikara"], origin: "Brazil" },
+      // Taiwan
+      { id: "ttl-sake", name: "TTL Sake", aliases: ["台灣菸酒", "taiwan tobacco liquor sake"], origin: "Taiwan" },
+      { id: "yilan-sake", name: "Yilan Distillery Sake", aliases: ["宜蘭", "yilan"], origin: "Taiwan" },
+      // Norway / Nordics
+      { id: "nogne-o-sake", name: "Nøgne Ø Sake", aliases: ["nogne o sake", "nøgne ø"], origin: "Norway", tags: ["craft"] },
+      // More Americas craft
+      { id: "north-american-sake", name: "North American Sake Brewery", aliases: ["nasake", "na sake"], origin: "USA", tags: ["craft"] },
+      { id: "texas-sake", name: "Texas Sake Co", aliases: ["texas sake"], origin: "USA", tags: ["craft"] },
+      // South Korea (cheongju / clear rice wine often shelved with sake)
+      { id: "kooksoondang", name: "Kooksoondang", aliases: ["국순당", "baekseju"], origin: "South Korea" },
+      { id: "sansachun", name: "Sansachun", aliases: ["산사춘"], origin: "South Korea", tags: ["cheongju"] },
+      // China (Japanese-style sake produced / bottled for Greater China)
+      { id: "huangjiu-kuaijishan", name: "Kuaijishan", aliases: ["会稽山", "kuaiji"], origin: "China", tags: ["rice-wine"] },
+      { id: "pagoda-shaoxing", name: "Pagoda Brand", aliases: ["塔牌", "shaoxing pagoda"], origin: "China", tags: ["rice-wine"] },
     ],
   },
   beer: {
