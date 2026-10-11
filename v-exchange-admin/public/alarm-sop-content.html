@@ -231,6 +231,201 @@
 
   <h2 class="section-red">3. 平台定价 / 标记价格异常监控</h2>
   <p class="owners">负责人：<span class="pill">Soft Xiao</span> <span class="pill">Evan Bi</span></p>
+
   <h3>📊 指数价格与标记价格差异比较</h3>
-  <p class="note">（后续截图内容可继续追加在本 Tab 底部）</p>
+  <table>
+    <thead>
+      <tr><th>价格类型</th><th>定义</th><th>作用</th><th>特点</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>指数价格</strong></td>
+        <td>多家现货市场的加权平均价格</td>
+        <td>反映市场公允价格，用于强平依据</td>
+        <td>公平、稳定，避免单一市场波动影响</td>
+      </tr>
+      <tr>
+        <td><strong>标记价格</strong></td>
+        <td>基于指数价格和资金费率计算得出</td>
+        <td>用于未实现盈亏计算和强平机制</td>
+        <td>减少短期波动影响，保护交易者</td>
+      </tr>
+      <tr>
+        <td><strong>最新价格</strong></td>
+        <td>最近一笔成交的价格</td>
+        <td>即时反映市场交易状况</td>
+        <td>波动较大，适合短期交易参考</td>
+      </tr>
+      <tr>
+        <td><strong>说明</strong></td>
+        <td>某代币在几大主要交易所的平均现货价格</td>
+        <td>标记价格一般是订单簿的中间价格</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 价差预警 · 定价 / 标记价格异常</h3>
+  <div class="callout warn">🎵 针对标记价格的偏离率的监控（VS 指数价格、最新价格）<br>原因：标记价格计算异常或盘口突然插针</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>定价系统进程崩溃</td><td>服务器异常导致进程停止</td></tr>
+      <tr><td>计算逻辑故障</td><td>数学计算错误</td></tr>
+      <tr><td>数据库连接失败</td><td>无法获取实时数据</td></tr>
+      <tr><td>输入数据异常</td><td>行情源提供异常数据</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 友商价差监控</h3>
+  <table class="compact">
+    <thead>
+      <tr><th>合约</th><th>监控周期</th><th>监控对标友商</th><th>价格类型</th><th>偏差值</th><th>告警时间</th><th>告警方式</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>XAU_USD</td><td>5 分钟</td><td>Binance</td><td>标记价</td><td>0.5%</td><td>2024-09-23 10:55:07</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>5 分钟</td><td>Bybit</td><td>标记价</td><td>0.5%</td><td>2024-09-23 10:55:07</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>5 分钟</td><td>Binance</td><td>指数价</td><td>0.3%</td><td>2024-09-23 10:55:07</td><td>Lark</td></tr>
+      <tr><td>XAU_USD</td><td>5 分钟</td><td>OKX</td><td>指数价</td><td>0.3%</td><td>2024-09-23 10:55:07</td><td>Lark</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn">🌱 用于监控竞品价格与平台价格的价差（最新价、指数价、标记价）</div>
+  <p><strong>原因分析：</strong>指数价格 / 标记价格计算异常或盘口突然插针</p>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>行情源延迟</td><td>我们的行情源更新较慢</td></tr>
+      <tr><td>做市商报价偏差</td><td>做市商故意拉宽价差</td></tr>
+      <tr><td>市场流动性不同</td><td>各交易所流动性差异</td></tr>
+      <tr><td>汇率波动</td><td>USDT/USD 兑换率变化</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-red">4. 标记价格计算异常预警</h2>
+  <p class="owners">负责人：<span class="pill">Soft Xiao</span> <span class="pill">Evan Bi</span></p>
+
+  <h3><span class="dot green"></span> 标记价格降级警报</h3>
+  <div class="callout warn">🌀 标记价格计算出现警告级别异常（一览进行监控）｜数据源异常 / 可信度下降</div>
+  <div class="lark-card alert-red">
+    <div class="lark-title">【标记价格降级告警】</div>
+    【SOL_USD】标记价格计算失败，降级使用指数价格，指数价格【1202.72】
+  </div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>数据源单点故障</td><td>一个数据源延迟但有备用</td></tr>
+      <tr><td>计算置信度下降</td><td>数据品质下降但仍可用</td></tr>
+      <tr><td>自动切换触发</td><td>系统已切换到备用源</td></tr>
+      <tr><td>时延增加</td><td>响应时间变长</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot green"></span> 标记价格进入 / 退出观察期报警</h3>
+  <div class="callout warn">指数价格进入 / 退出观察期触发系统报警｜指数源异常 / 进入观察期</div>
+  <div class="lark-card">
+    <div class="lark-title">【标记价格进入观察期告警】</div>
+    指数：SOL_USD · 偏差率阈值：3% · 当前偏差率：N/A · 观察期阈值：60 秒<br>
+    告警时间：2026-09-28 10:46:35
+  </div>
+  <div class="lark-card info-blue">
+    <div class="lark-title">【标记价格退出观察期】</div>
+    指数：SOL_USD · 恢复阈值：60 秒 · 恢复时间：2026-09-28 10:46:35
+  </div>
+
+  <h2 class="section-red">5. 指数价格源预警</h2>
+  <p class="owners">负责人：<span class="pill">Soft Xiao</span> <span class="pill">Evan Bi</span></p>
+
+  <h3><span class="dot orange"></span> 指数价格超时未更新</h3>
+  <div class="callout warn">指数计算过程中，进入观察期间（价格来源异常）时触发的报警<br>原因：某一指数源失效（超时无更新），进入观察视窗</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>API 完全离线</td><td>指数源服务完全断线</td></tr>
+      <tr><td>网络中断</td><td>网络连接失败</td></tr>
+      <tr><td>TTL 过期</td><td>缓存数据已过期无新数据</td></tr>
+      <tr><td>服务提供商故障</td><td>Binance / Bybit 等故障</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 指数价格变更报警 — 剔除</h3>
+  <div class="callout warn">🏋️ 参与计算指数成分任一个不可用，被剔除<br>原因：指数成分超时未更新，或价格偏离过大</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>宏观新闻</td><td>央行决定等重大新闻</td></tr>
+      <tr><td>市场崩盘</td><td>全球市场异常波动</td></tr>
+      <tr><td>指数源故障</td><td>单点故障导致数据异常</td></tr>
+      <tr><td>人为操纵</td><td>大户操纵指数</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 指数价格变更报警 — 恢复</h3>
+  <div class="callout warn">🧘 指数已从异常波动中恢复正常｜监控恢复过程</div>
+  <table class="cause">
+    <thead><tr><th>原因</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>自然恢复</td><td>市场自行稳定</td></tr>
+      <tr><td>消息面影响</td><td>重大经济数据发布 / 重大经济议题</td></tr>
+      <tr><td>流动性恢复</td><td>做市商恢复报价</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="dot orange"></span> 汇率获取失败 / 汇率源全部获取失败</h3>
+  <div class="callout warn">📋 单一汇率来源取得失败报警<br>原因：USDT/USD 汇率获取失败，影响指数计算</div>
+  <h4>🔍 逻辑说明</h4>
+  <ol class="logic-list">
+    <li>若某指数源交易所计价货币为 USDT，需转换为 USD。使用 Kraken 交易所的即时 USDT/USD 汇率。</li>
+    <li>为防止 Kraken 断开链接，也会同时取 Binance、Bybit 和 OKX 这三家的汇率，缓存在 Redis（数据库平台）的时间可控制为 1 秒更新一次。使用优先权为 <strong>Kraken → Binance → Bybit → OKX</strong>。</li>
+  </ol>
+
+  <h3><span class="dot orange"></span> 指数价格线性平滑过渡</h3>
+  <div class="callout warn">♻️ 当本次指数计算时，计算源发生变动，则会进入平滑过渡阶段，防止指数突变</div>
+  <table class="compact">
+    <thead><tr><th>报警</th><th>报警说明</th></tr></thead>
+    <tbody>
+      <tr><td>指数价格线性平滑过渡开始</td><td>指数价格线性平滑过渡开始</td></tr>
+      <tr><td>指数价格线性平滑过渡结束</td><td>指数价格线性平滑过渡结束</td></tr>
+      <tr><td>指数市场异常警报</td><td>只有一个有效的指数来源</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-red">6. 资金费异常报警</h2>
+  <p class="owners">负责人：<span class="pill">Soft Xiao</span> <span class="pill">Evan Bi</span></p>
+
+  <h3><span class="dot orange"></span> 外部资金费率异常监控</h3>
+  <div class="callout warn">📌 本所资金费率与其他交易所资金费率的差额的警报</div>
+  <p><strong>原因分析：</strong>平台盘口 / 溢价与竞品有较大的差距，或是平台资金费率计算异常</p>
+
+  <h3><span class="dot orange"></span> 内部资金费率异常监控</h3>
+  <div class="callout warn">📁 本所资金费率是否超过最大上限或最小下限的警报</div>
+  <p><strong>原因分析：</strong>合约持续正溢价或负溢价，且价格无法回归</p>
+
+  <h2 class="section-red">7. 强平 — DB 账户报警 · 报 MM24H 运维群组</h2>
+  <p class="owners">负责人：<span class="pill">Yifei Zhang</span></p>
+  <p class="note">之后会有一个群叫「MM24H 运维」，有关 MM 造市商流动性、爆仓相关监控都会报告在这上面（暂定）。</p>
+  <div class="group-chip external">MM 24h 运维</div>
+
+  <h3><span class="dot orange"></span> DB 资金一级 / 二级预警</h3>
+  <table class="compact">
+    <thead><tr><th>类型</th><th>告警内容</th><th>时间</th><th>方式</th></tr></thead>
+    <tbody>
+      <tr><td>DB 资金二级预警</td><td>！！DB 接仓账户可用余额低于 0</td><td>2026-09-22 15:31:48</td><td>Lark</td></tr>
+      <tr><td>DB 资金二级预警</td><td>！！DB 接仓账户可用余额低于 0</td><td>2026-09-22 15:31:38</td><td>Lark</td></tr>
+      <tr><td>DB 资金二级预警</td><td>！！DB 接仓账户可用余额低于 0</td><td>2026-09-22 15:31:28</td><td>Lark</td></tr>
+      <tr><td>DB 资金一级预警</td><td>DB 接仓账户可用余额低于 50000 USD，可用余额 0.00 USD</td><td>2026-09-22 15:31:18</td><td>Lark</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn">判断 DB 可用于造市金额是否达到阈值</div>
+  <p><strong>原因分析：</strong>平台注入的资金被接管的爆仓单占用，且没有及时平仓或产生较大的浮亏</p>
+
+  <h3><span class="dot orange"></span> DB 注资金额上限预警</h3>
+  <table class="compact">
+    <thead><tr><th>类型</th><th>告警内容</th><th>时间</th><th>方式</th></tr></thead>
+    <tbody>
+      <tr><td>注资余额上限预警</td><td>当前注资金额大于 150000 USD，当前注资金额为 1000000.00 USD</td><td>2026-09-22 16:00:00</td><td>Lark</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn">监控 DB 账户注资金额，达到一定阈值之后进行预警</div>
+
+  <p class="note">（下一批截图内容将继续追加在本 Tab 底部）</p>
 </div>
