@@ -5025,6 +5025,25 @@ const CATEGORIES = {
   console.log(`Merged ${added} Catalogue of Life tree species (total ${CATEGORIES.trees.items.length}).`);
 })();
 
+/** Expand flowers from Catalogue of Life ornamental / wildflower genera. */
+(function mergeColFlowerSpecies() {
+  const colPath = join(__dirname, "data", "flower-seeds-col.json");
+  if (!existsSync(colPath) || !CATEGORIES.flowers) return;
+  const extra = JSON.parse(readFileSync(colPath, "utf8"));
+  if (!Array.isArray(extra) || !extra.length) return;
+  const seen = new Set(CATEGORIES.flowers.items.map((s) => s.id));
+  let added = 0;
+  for (const seed of extra) {
+    if (!seed?.id || !seed?.name || seen.has(seed.id)) continue;
+    seen.add(seed.id);
+    CATEGORIES.flowers.items.push(seed);
+    added += 1;
+  }
+  CATEGORIES.flowers.blurb =
+    "Living flowers still blooming on Earth — curated icons plus Catalogue of Life species across flowering genera.";
+  console.log(`Merged ${added} Catalogue of Life flower species (total ${CATEGORIES.flowers.items.length}).`);
+})();
+
 /** Fold liquor / wine / sake / beer into one Alcohol catalogue (keep asset prefixes). */
 (function mergeBeverageCategories() {
   function fold(parts, id, label, blurb) {
@@ -5257,6 +5276,17 @@ function treeSilhouetteSvg(kind) {
 </svg>`;
 }
 
+/** Grey flower silhouette for COL flower species without a hand-drawn mark. */
+function flowerSilhouetteSvg() {
+  const fill = "#C4C4C4";
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="${fill}" d="M64 40c0-8 6-14 0-22 8 0 14 6 22 0-6 8 0 14 0 22 8 0 14 6 22 0-8 6-6 14-14 14 0 8-6 14 0 22-8 0-14-6-22 0 6-8 0-14 0-22-8 0-14-6-22 0 8-6 6-14 14-14z"/>
+  <circle cx="64" cy="54" r="8" fill="${fill}"/>
+  <path fill="${fill}" d="M60 78h8v42h-8z"/>
+</svg>`;
+}
+
 /** Local SVG mark so locked tiles show a recognizable grey logo shape offline. */
 function writeMarkSvg(itemId, name, categoryId, hue, tags = []) {
   mkdirSync(marksDir, { recursive: true });
@@ -5279,6 +5309,10 @@ function writeMarkSvg(itemId, name, categoryId, hue, tags = []) {
         ? "conifer"
         : "deciduous";
     writeFileSync(out, treeSilhouetteSvg(kind));
+    return `marks/${itemId}.svg`;
+  }
+  if (categoryId === "flowers") {
+    writeFileSync(out, flowerSilhouetteSvg());
     return `marks/${itemId}.svg`;
   }
   const initials = name

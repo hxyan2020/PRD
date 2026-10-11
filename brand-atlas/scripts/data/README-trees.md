@@ -1,6 +1,11 @@
-# Tree species data
+# Nature species data (Catalogue of Life)
 
+## Trees
 - `col-tree-species.json` — raw accepted species from [Catalogue of Life](https://www.catalogueoflife.org/) via ChecklistBank dataset `3LR`, for woody/tree genera guided by Wikipedia “List of tree genera” / GlobalTreeSearch-style families.
-- `tree-seeds-col.json` — filtered seed list merged into `generate-catalog.mjs` (per-genus caps for balance; shrub/herb-heavy genera dropped).
+- `tree-seeds-col.json` — filtered seed list merged into `generate-catalog.mjs`.
+- Regenerate: `python3 scripts/fetch-tree-species.py` then `npm run data`.
 
-Regenerate with: `python3 scripts/fetch-tree-species.py` (see agent history) then rebuild seeds and `npm run data`.
+## Flowers
+- `col-flower-species.json` — raw accepted species for ornamental / wildflower genera.
+- `flower-seeds-col.json` — filtered seed list merged into `generate-catalog.mjs`.
+- Regenerate: `python3 scripts/fetch-flower-species.py` then `npm run data`.
