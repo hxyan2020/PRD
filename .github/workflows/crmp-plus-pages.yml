@@ -1,0 +1,55 @@
+name: Publish CRMP Plus to GitHub Pages
+
+on:
+  push:
+    branches: [cursor/crmp-plus-a935]
+    paths:
+      - "platform/**"
+      - ".github/workflows/crmp-plus-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crmp-plus-static
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - name: Build static CRMP Plus snapshot
+        working-directory: platform
+        env:
+          NEXT_PUBLIC_STATIC_EXPORT: "1"
+          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-plus
+        run: |
+          npm ci
+          npm run build:pages
+      - name: Stage nested Pages folder
+        run: |
+          mkdir -p publish/crmp-plus
+          cp -a platform/out/. publish/crmp-plus/
+          touch publish/crmp-plus/.nojekyll
+      - name: Publish gh-pages (keep sibling sites including crmp-admin)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: publish
+          publish_branch: gh-pages
+          keep_files: true
+      - name: Public URL
+        run: |
+          {
+            echo "Permanent CRMP Plus URL (original CRMP Admin left intact)"
+            echo "- https://hxyan2020.github.io/PRD/crmp-plus/admin/"
+            echo "- https://hxyan2020.github.io/PRD/crmp-plus/"
+            echo "- Frozen original: https://hxyan2020.github.io/PRD/crmp-admin/admin/"
+          } >> "$GITHUB_STEP_SUMMARY"
