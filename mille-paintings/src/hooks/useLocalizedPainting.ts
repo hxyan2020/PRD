@@ -21,8 +21,11 @@ export function useLocalizedPainting(painting: Painting | null | undefined): {
       return
     }
 
+    // Snapshot fields for this effect run so id/lang-only deps stay stable
+    // even when the parent rebuilds the painting object identity.
+    const snapshot = painting
     let cancelled = false
-    setLocalized({ ...painting, localized: false })
+    setLocalized({ ...snapshot, localized: false })
 
     if (lang === 'en') {
       setLoading(false)
@@ -30,7 +33,7 @@ export function useLocalizedPainting(painting: Painting | null | undefined): {
     }
 
     setLoading(true)
-    localizePainting(painting, lang)
+    localizePainting(snapshot, lang)
       .then((result) => {
         if (!cancelled) setLocalized(result)
       })
@@ -41,7 +44,8 @@ export function useLocalizedPainting(painting: Painting | null | undefined): {
     return () => {
       cancelled = true
     }
-  }, [painting, painting?.id, lang])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [painting?.id, lang])
 
   return { painting: localized, loading }
 }

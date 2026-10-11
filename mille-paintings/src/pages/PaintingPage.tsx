@@ -6,8 +6,9 @@ import { LoadingState } from '../components/LoadingState'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
+import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
-import { displayImageUrl, hiResImageUrl, imageCandidates, withCommonsWidth } from '../lib/images'
+import { displayImageUrl, imageCandidates, withCommonsWidth } from '../lib/images'
 import './PaintingPage.css'
 
 export function PaintingPage() {
@@ -113,24 +114,6 @@ export function PaintingPage() {
             >
               {saved ? t('collected') : t('collect')}
             </button>
-            <a
-              className="btn ghost"
-              href={hiResImageUrl(painting)}
-              target="_blank"
-              rel="noopener noreferrer"
-              referrerPolicy="no-referrer"
-              onClick={(e) => {
-                const href = hiResImageUrl(painting)
-                if (!href) {
-                  e.preventDefault()
-                  setFullscreen(true)
-                  return
-                }
-                e.currentTarget.href = href
-              }}
-            >
-              {t('openHiRes')}
-            </a>
           </div>
         </div>
       </section>
@@ -214,7 +197,9 @@ function LocalizedRelatedCard({
 }) {
   const store = usePaintingsStore()
   const base = store.paintings.find((p) => p.id === id)
-  const { painting } = useLocalizedPainting(base)
+  // Labels only — avoid competing with the main painting for Wikipedia extracts.
+  const { paintings } = useLocalizedPaintings(base ? [base] : [])
+  const painting = paintings[0]
   return (
     <Link to={`/painting/${id}`} className="related-card">
       <SafeImage

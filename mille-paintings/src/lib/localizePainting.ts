@@ -77,33 +77,103 @@ export function withStaticLabels(painting: Painting, uiLang: string): LocalizedP
   }
 }
 
+/** True when text is a thin attribution stub rather than a real description. */
+export function isThinDescription(text: string, minLen = 160): boolean {
+  const t = (text || '').replace(/\s+/g, ' ').trim()
+  if (!t) return true
+  // Wikipedia exchars truncates with "..." — that is not a stub when the body is already long.
+  const truncated = t.endsWith('…') || t.endsWith('...')
+  if (truncated && t.length < Math.min(minLen, 200)) return true
+  if (t.length < minLen) return true
+  if (
+    /^(painting|oil painting|portrait painting|artwork|work)\b.*\bby\b/i.test(t) &&
+    t.length < 280
+  ) {
+    return true
+  }
+  const sentences = (t.match(/[.!?]/g) || []).length
+  if (/\bpainting by\b/i.test(t) && sentences <= 1 && t.length < 220) {
+    return true
+  }
+  return false
+}
+
+function pickRicherText(
+  current: string,
+  candidate: string,
+  minLen = 160,
+  opts?: { preferCandidate?: boolean },
+): string {
+  const next = (candidate || '').replace(/\s+/g, ' ').trim()
+  if (!next) return current
+  // UI-language Wikipedia leads win whenever they are not a stub.
+  if (opts?.preferCandidate && next.length >= Math.min(120, minLen) && !isThinDescription(next, Math.min(120, minLen))) {
+    return next
+  }
+  if (isThinDescription(next, minLen) && !isThinDescription(current, minLen)) return current
+  if (next.length > (current || '').length) return next
+  if (isThinDescription(current, minLen) && !isThinDescription(next, minLen)) return next
+  return current
+}
+
+function cleanWikiExtract(raw: string): string {
+  return (raw || '')
+    .replace(/\s*==+\s*[^=]+?\s*==+\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 async function fetchWikiExtract(
   wiki: string,
   title: string,
   variant?: string,
 ): Promise<string> {
-  const params = new URLSearchParams({
+  const base = {
     action: 'query',
     format: 'json',
     origin: '*',
     prop: 'extracts',
-    exintro: '1',
     explaintext: '1',
     redirects: '1',
     titles: title,
-  })
-  if (variant) params.set('variant', variant)
-  const res = await fetch(`https://${wiki}.wikipedia.org/w/api.php?${params}`)
-  if (!res.ok) return ''
-  const data = (await res.json()) as {
-    query?: { pages?: Record<string, { extract?: string; missing?: boolean }> }
+  } as const
+
+  const pull = async (extra: Record<string, string>) => {
+    const params = new URLSearchParams({ ...base, ...extra })
+    if (variant) params.set('variant', variant)
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch(`https://${wiki}.wikipedia.org/w/api.php?${params}`)
+        if (!res.ok) {
+          if (res.status === 429 || res.status >= 500) {
+            await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+            continue
+          }
+          return ''
+        }
+        const data = (await res.json()) as {
+          query?: { pages?: Record<string, { extract?: string; missing?: boolean }> }
+        }
+        for (const page of Object.values(data.query?.pages || {})) {
+          if (page.missing) continue
+          const extract = cleanWikiExtract(page.extract || '')
+          if (extract && !/may refer to:/i.test(extract)) return extract
+        }
+        return ''
+      } catch {
+        await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+      }
+    }
+    return ''
   }
-  for (const page of Object.values(data.query?.pages || {})) {
-    if (page.missing) continue
-    const extract = (page.extract || '').replace(/\s+/g, ' ').trim()
-    if (extract && !/may refer to:/i.test(extract)) return extract
+
+  // Lead first; if thin, pull a longer plain-text window (one page only).
+  let extract = await pull({ exintro: '1' })
+  if (isThinDescription(extract, 280)) {
+    const longer = await pull({ exchars: '1800' })
+    if (longer.length > extract.length) extract = longer
   }
-  return ''
+  return extract
 }
 
 /**
@@ -162,26 +232,53 @@ export async function localizePainting(painting: Painting, uiLang: string): Prom
       ? pickLabel(related[collectionId], target.labelLangs, painting.collection)
       : painting.collection
 
-    const siteKey = wikiSitelinkKey(target.wiki)
-    const paintingTitle = paintingEnt?.sitelinks?.[siteKey]?.title
-    const painterTitle = painterEnt?.sitelinks?.[siteKey]?.title
-
     let intro = painting.intro
     let anecdote = painting.anecdote
-    if (paintingTitle) {
-      const extract = await fetchWikiExtract(target.wiki, paintingTitle, target.variant)
-      if (extract) intro = extract
-    } else if (paintingEnt?.descriptions) {
-      const desc = pickLabel(
-        { labels: paintingEnt.descriptions as Record<string, { value: string }> },
-        target.labelLangs,
-        '',
-      )
-      if (desc) intro = desc
+    let introFromUiWiki = false
+    let anecdoteFromUiWiki = false
+
+    // Prefer a non-stub UI-language Wikipedia extract. Only fall back to English /
+    // catalogue / Wikidata descriptions when the target-language page is missing.
+    const targetPaintingTitle = paintingEnt?.sitelinks?.[wikiSitelinkKey(target.wiki)]?.title
+    if (targetPaintingTitle) {
+      const extract = await fetchWikiExtract(target.wiki, targetPaintingTitle, target.variant)
+      // Accept UI-language leads even when shorter than the English catalogue —
+      // never let truncated wiki ellipsis cause an English overwrite later.
+      if (extract.length >= 80 && !isThinDescription(extract, 80)) {
+        intro = extract
+        introFromUiWiki = true
+      }
     }
-    if (painterTitle) {
-      const extract = await fetchWikiExtract(target.wiki, painterTitle, target.variant)
-      if (extract) anecdote = extract
+    if (!introFromUiWiki && isThinDescription(intro, 120)) {
+      const enTitle = paintingEnt?.sitelinks?.enwiki?.title
+      if (enTitle && target.wiki !== 'en') {
+        const enExtract = await fetchWikiExtract('en', enTitle)
+        intro = pickRicherText(intro, enExtract, 160)
+      }
+      if (isThinDescription(intro, 120) && paintingEnt?.descriptions) {
+        const desc = pickLabel(
+          { labels: paintingEnt.descriptions as Record<string, { value: string }> },
+          target.labelLangs,
+          '',
+        )
+        if (desc) intro = pickRicherText(intro, desc, 40)
+      }
+    }
+
+    const targetPainterTitle = painterEnt?.sitelinks?.[wikiSitelinkKey(target.wiki)]?.title
+    if (targetPainterTitle) {
+      const extract = await fetchWikiExtract(target.wiki, targetPainterTitle, target.variant)
+      if (extract.length >= 80 && !isThinDescription(extract, 80)) {
+        anecdote = extract
+        anecdoteFromUiWiki = true
+      }
+    }
+    if (!anecdoteFromUiWiki && isThinDescription(anecdote, 120)) {
+      const enTitle = painterEnt?.sitelinks?.enwiki?.title
+      if (enTitle && target.wiki !== 'en') {
+        const enExtract = await fetchWikiExtract('en', enTitle)
+        anecdote = pickRicherText(anecdote, enExtract, 120)
+      }
     }
 
     const localized: LocalizedPainting = {
