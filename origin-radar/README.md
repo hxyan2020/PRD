@@ -28,9 +28,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Public URL
 
-Live desk: [https://tidy-cocoa-294.harvis.page](https://tidy-cocoa-294.harvis.page)
+Live desk: [https://chirpy-thimble-904.harvis.page](https://chirpy-thimble-904.harvis.page)
 
-This is a static export (`npm run build:static`), not a Vercel claim-deployment. Radar, queue, generate, and storefront run in the browser; Generate / Collect / Discard save to localStorage. Anonymous Vercel `--temporary` deploys expire (the claim page shows “This deployment has expired.”).
+This is a static export (`npm run build:static`), not a Vercel claim-deployment. Radar, queue, generate, and storefront run in the browser; Generate / Collect / Discard save to localStorage. Anonymous Vercel `--temporary` deploys expire (the claim page shows “This deployment has expired.”). Unclaimed Harvis sites expire 24 hours after the last deploy — claim the site from the dashboard to keep this URL.
 
 ```bash
 cd origin-radar
