@@ -2,11 +2,11 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-11T05:50:32.789Z",
+    "generatedAt": "2026-10-11T05:53:02.412Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
-    "itemCount": 3951,
+    "itemCount": 4235,
     "categoryCount": 10,
     "note": "Curated living catalogue of human-made brands and still-present nature. Refreshed weekly."
   },
@@ -37,7 +37,7 @@
       "label": "Coffee & tea brands",
       "blurb": "Café chains, roasters, and tea houses — cups still poured today.",
       "kind": "brand",
-      "itemCount": 572
+      "itemCount": 856
     },
     {
       "id": "clothes",
@@ -27020,7 +27020,7 @@
       },
       "coverHue": 33,
       "mark": "marks/liquor__boterham.svg",
-      "cover": null,
+      "cover": "covers/liquor__boterham.jpg",
       "markIcon": null,
       "sort": 306,
       "status": "active"
@@ -27176,7 +27176,7 @@
       },
       "coverHue": 13,
       "mark": "marks/liquor__hardy.svg",
-      "cover": null,
+      "cover": "covers/liquor__hardy.jpg",
       "markIcon": null,
       "sort": 312,
       "status": "active"
@@ -27362,7 +27362,7 @@
       },
       "coverHue": 266,
       "mark": "marks/liquor__calvados-boulard.svg",
-      "cover": null,
+      "cover": "covers/liquor__calvados-boulard.jpg",
       "markIcon": null,
       "sort": 319,
       "status": "active"
@@ -29084,7 +29084,7 @@
       },
       "coverHue": 254,
       "mark": "marks/liquor__raki-kulup.svg",
-      "cover": null,
+      "cover": "covers/liquor__raki-kulup.jpg",
       "markIcon": null,
       "sort": 383,
       "status": "active"
@@ -35733,7 +35733,7 @@
       },
       "coverHue": 63,
       "mark": "marks/wine__ridge.svg",
-      "cover": null,
+      "cover": "covers/wine__ridge.jpg",
       "markIcon": null,
       "sort": 636,
       "status": "active"
@@ -36995,7 +36995,7 @@
       },
       "coverHue": 7,
       "mark": "marks/wine__chateau-ausone.svg",
-      "cover": null,
+      "cover": "covers/wine__chateau-ausone.jpg",
       "markIcon": null,
       "sort": 684,
       "status": "active"
@@ -40786,7 +40786,7 @@
       },
       "coverHue": 308,
       "mark": "marks/wine__jose-maria.svg",
-      "cover": null,
+      "cover": "covers/wine__jose-maria.jpg",
       "markIcon": null,
       "sort": 831,
       "status": "active"
@@ -44227,7 +44227,7 @@
       },
       "coverHue": 256,
       "mark": "marks/wine__lebanese-ksara.svg",
-      "cover": null,
+      "cover": "covers/wine__lebanese-ksara.jpg",
       "markIcon": null,
       "sort": 967,
       "status": "active"
@@ -44331,7 +44331,7 @@
       },
       "coverHue": 271,
       "mark": "marks/wine__lebanese-ixeir.svg",
-      "cover": null,
+      "cover": "covers/wine__lebanese-ixeir.jpg",
       "markIcon": null,
       "sort": 971,
       "status": "active"
@@ -45447,7 +45447,7 @@
       },
       "coverHue": 40,
       "mark": "marks/wine__croatian-grgic.svg",
-      "cover": null,
+      "cover": "covers/wine__croatian-grgic.jpg",
       "markIcon": null,
       "sort": 1015,
       "status": "active"
@@ -47387,7 +47387,7 @@
       },
       "coverHue": 17,
       "mark": "marks/wine__swedish-blaxsta.svg",
-      "cover": null,
+      "cover": "covers/wine__swedish-blaxsta.jpg",
       "markIcon": null,
       "sort": 1091,
       "status": "active"
@@ -48022,7 +48022,7 @@
       },
       "coverHue": 125,
       "mark": "marks/wine__mexican-adobe.svg",
-      "cover": null,
+      "cover": "covers/wine__mexican-adobe.jpg",
       "markIcon": null,
       "sort": 1116,
       "status": "active"
@@ -54466,7 +54466,7 @@
       },
       "coverHue": 201,
       "mark": "marks/beer__creemore.svg",
-      "cover": null,
+      "cover": "covers/beer__creemore.jpg",
       "markIcon": null,
       "sort": 1364,
       "status": "active"
@@ -54543,7 +54543,7 @@
       },
       "coverHue": 332,
       "mark": "marks/beer__ares.svg",
-      "cover": null,
+      "cover": "covers/beer__ares.jpg",
       "markIcon": null,
       "sort": 1367,
       "status": "active"
@@ -58040,7 +58040,7 @@
       },
       "coverHue": 326,
       "mark": "marks/beer__biere-de-garde.svg",
-      "cover": null,
+      "cover": "covers/beer__biere-de-garde.jpg",
       "markIcon": null,
       "sort": 1505,
       "status": "active"
@@ -62242,7 +62242,7 @@
       },
       "coverHue": 137,
       "mark": "marks/beer__bohlinger.svg",
-      "cover": null,
+      "cover": "covers/beer__bohlinger.jpg",
       "markIcon": null,
       "sort": 1671,
       "status": "active"
@@ -76020,6 +76020,6307 @@
       "status": "active"
     },
     {
+      "id": "tea__jacksons-of-piccadilly",
+      "slug": "jacksons-of-piccadilly",
+      "name": "Jacksons of Piccadilly",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Jacksons of Piccadilly — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Jacksons of Piccadilly is still present in the living catalogue."
+      },
+      "coverHue": 178,
+      "mark": "marks/tea__jacksons-of-piccadilly.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 572,
+      "status": "active"
+    },
+    {
+      "id": "tea__birchall",
+      "slug": "birchall",
+      "name": "Birchall",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Birchall — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Birchall is still present in the living catalogue."
+      },
+      "coverHue": 70,
+      "mark": "marks/tea__birchall.svg",
+      "cover": "covers/tea__birchall.jpg",
+      "markIcon": null,
+      "sort": 573,
+      "status": "active"
+    },
+    {
+      "id": "tea__drury",
+      "slug": "drury",
+      "name": "Drury Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Drury Tea — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Drury Tea is still present in the living catalogue."
+      },
+      "coverHue": 233,
+      "mark": "marks/tea__drury.svg",
+      "cover": "covers/tea__drury.jpg",
+      "markIcon": null,
+      "sort": 574,
+      "status": "active"
+    },
+    {
+      "id": "tea__postcard-teas",
+      "slug": "postcard-teas",
+      "name": "Postcard Teas",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Postcard Teas — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Postcard Teas is still present in the living catalogue."
+      },
+      "coverHue": 187,
+      "mark": "marks/tea__postcard-teas.svg",
+      "cover": "covers/tea__postcard-teas.jpg",
+      "markIcon": null,
+      "sort": 575,
+      "status": "active"
+    },
+    {
+      "id": "tea__rare-tea",
+      "slug": "rare-tea",
+      "name": "Rare Tea Company",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Rare Tea Company — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Rare Tea Company is still present in the living catalogue."
+      },
+      "coverHue": 282,
+      "mark": "marks/tea__rare-tea.svg",
+      "cover": "covers/tea__rare-tea.jpg",
+      "markIcon": null,
+      "sort": 576,
+      "status": "active"
+    },
+    {
+      "id": "tea__good-earth",
+      "slug": "good-earth",
+      "name": "Good Earth Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Good Earth Tea — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Good Earth Tea is still present in the living catalogue."
+      },
+      "coverHue": 7,
+      "mark": "marks/tea__good-earth.svg",
+      "cover": "covers/tea__good-earth.jpg",
+      "markIcon": null,
+      "sort": 577,
+      "status": "active"
+    },
+    {
+      "id": "tea__tick-tock",
+      "slug": "tick-tock",
+      "name": "Tick Tock",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tick Tock — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Tick Tock is still present in the living catalogue."
+      },
+      "coverHue": 318,
+      "mark": "marks/tea__tick-tock.svg",
+      "cover": "covers/tea__tick-tock.jpg",
+      "markIcon": null,
+      "sort": 578,
+      "status": "active"
+    },
+    {
+      "id": "tea__brookes",
+      "slug": "brookes",
+      "name": "Brooke Bond",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Brooke Bond — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Brooke Bond is still present in the living catalogue."
+      },
+      "coverHue": 92,
+      "mark": "marks/tea__brookes.svg",
+      "cover": "covers/tea__brookes.jpg",
+      "markIcon": null,
+      "sort": 579,
+      "status": "active"
+    },
+    {
+      "id": "tea__co-op-99",
+      "slug": "co-op-99",
+      "name": "99 Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "99 Tea — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "99 Tea is still present in the living catalogue."
+      },
+      "coverHue": 32,
+      "mark": "marks/tea__co-op-99.svg",
+      "cover": "covers/tea__co-op-99.jpg",
+      "markIcon": null,
+      "sort": 580,
+      "status": "active"
+    },
+    {
+      "id": "tea__barry-tea",
+      "slug": "barry-tea",
+      "name": "Barry's Tea",
+      "aliases": [
+        "barrys"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Ireland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Barry's Tea — catalogued in coffee & tea brands · Ireland.",
+      "facts": {
+        "origin": "Ireland",
+        "story": "Barry's Tea is still present in the living catalogue."
+      },
+      "coverHue": 24,
+      "mark": "marks/tea__barry-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 581,
+      "status": "active"
+    },
+    {
+      "id": "tea__lyons-tea",
+      "slug": "lyons-tea",
+      "name": "Lyons Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Ireland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lyons Tea — catalogued in coffee & tea brands · Ireland.",
+      "facts": {
+        "origin": "Ireland",
+        "story": "Lyons Tea is still present in the living catalogue."
+      },
+      "coverHue": 21,
+      "mark": "marks/tea__lyons-tea.svg",
+      "cover": "covers/tea__lyons-tea.jpg",
+      "markIcon": null,
+      "sort": 582,
+      "status": "active"
+    },
+    {
+      "id": "tea__robert-roberts-tea",
+      "slug": "robert-roberts-tea",
+      "name": "Robert Roberts Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Ireland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Robert Roberts Tea — catalogued in coffee & tea brands · Ireland.",
+      "facts": {
+        "origin": "Ireland",
+        "story": "Robert Roberts Tea is still present in the living catalogue."
+      },
+      "coverHue": 14,
+      "mark": "marks/tea__robert-roberts-tea.svg",
+      "cover": "covers/tea__robert-roberts-tea.jpg",
+      "markIcon": null,
+      "sort": 583,
+      "status": "active"
+    },
+    {
+      "id": "tea__bewleys-tea",
+      "slug": "bewleys-tea",
+      "name": "Bewley's Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Ireland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bewley's Tea — catalogued in coffee & tea brands · Ireland.",
+      "facts": {
+        "origin": "Ireland",
+        "story": "Bewley's Tea is still present in the living catalogue."
+      },
+      "coverHue": 189,
+      "mark": "marks/tea__bewleys-tea.svg",
+      "cover": "covers/tea__bewleys-tea.jpg",
+      "markIcon": null,
+      "sort": 584,
+      "status": "active"
+    },
+    {
+      "id": "tea__yogitea",
+      "slug": "yogitea",
+      "name": "Yogi Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "USA",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Yogi Tea — catalogued in coffee & tea brands · USA.",
+      "facts": {
+        "origin": "USA",
+        "story": "Yogi Tea is still present in the living catalogue."
+      },
+      "coverHue": 99,
+      "mark": "marks/tea__yogitea.svg",
+      "cover": "covers/tea__yogitea.jpg",
+      "markIcon": null,
+      "sort": 585,
+      "status": "active"
+    },
+    {
+      "id": "tea__twinings-us",
+      "slug": "twinings-us",
+      "name": "Twinings USA",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "USA",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Twinings USA — catalogued in coffee & tea brands · USA.",
+      "facts": {
+        "origin": "USA",
+        "story": "Twinings USA is still present in the living catalogue."
+      },
+      "coverHue": 149,
+      "mark": "marks/tea__twinings-us.svg",
+      "cover": "covers/tea__twinings-us.jpg",
+      "markIcon": null,
+      "sort": 586,
+      "status": "active"
+    },
+    {
+      "id": "tea__teavana",
+      "slug": "teavana",
+      "name": "Teavana",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "USA",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Teavana — catalogued in coffee & tea brands · USA.",
+      "facts": {
+        "origin": "USA",
+        "story": "Teavana is still present in the living catalogue."
+      },
+      "coverHue": 113,
+      "mark": "marks/tea__teavana.svg",
+      "cover": "covers/tea__teavana.jpg",
+      "markIcon": null,
+      "sort": 587,
+      "status": "active"
+    },
+    {
+      "id": "tea__arborteas",
+      "slug": "arborteas",
+      "name": "Arbor Teas",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "USA",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Arbor Teas — catalogued in coffee & tea brands · USA.",
+      "facts": {
+        "origin": "USA",
+        "story": "Arbor Teas is still present in the living catalogue."
+      },
+      "coverHue": 162,
+      "mark": "marks/tea__arborteas.svg",
+      "cover": "covers/tea__arborteas.jpg",
+      "markIcon": null,
+      "sort": 588,
+      "status": "active"
+    },
+    {
+      "id": "tea__smith-teamaker",
+      "slug": "smith-teamaker",
+      "name": "Smith Teamaker",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "USA",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Smith Teamaker — catalogued in coffee & tea brands · USA.",
+      "facts": {
+        "origin": "USA",
+        "story": "Smith Teamaker is still present in the living catalogue."
+      },
+      "coverHue": 107,
+      "mark": "marks/tea__smith-teamaker.svg",
+      "cover": "covers/tea__smith-teamaker.jpg",
+      "markIcon": null,
+      "sort": 589,
+      "status": "active"
+    },
+    {
+      "id": "tea__adagio",
+      "slug": "adagio",
+      "name": "Adagio Teas",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "USA",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Adagio Teas — catalogued in coffee & tea brands · USA.",
+      "facts": {
+        "origin": "USA",
+        "story": "Adagio Teas is still present in the living catalogue."
+      },
+      "coverHue": 84,
+      "mark": "marks/tea__adagio.svg",
+      "cover": "covers/tea__adagio.jpg",
+      "markIcon": null,
+      "sort": 590,
+      "status": "active"
+    },
+    {
+      "id": "tea__davidstea",
+      "slug": "davidstea",
+      "name": "DAVIDsTEA",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "DAVIDsTEA — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "DAVIDsTEA is still present in the living catalogue."
+      },
+      "coverHue": 92,
+      "mark": "marks/tea__davidstea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 591,
+      "status": "active"
+    },
+    {
+      "id": "tea__teatluxe",
+      "slug": "teatluxe",
+      "name": "TeaLuxe",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "TeaLuxe — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "TeaLuxe is still present in the living catalogue."
+      },
+      "coverHue": 239,
+      "mark": "marks/tea__teatluxe.svg",
+      "cover": "covers/tea__teatluxe.jpg",
+      "markIcon": null,
+      "sort": 592,
+      "status": "active"
+    },
+    {
+      "id": "tea__plume-tea",
+      "slug": "plume-tea",
+      "name": "Pluck Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pluck Tea — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "Pluck Tea is still present in the living catalogue."
+      },
+      "coverHue": 175,
+      "mark": "marks/tea__plume-tea.svg",
+      "cover": "covers/tea__plume-tea.jpg",
+      "markIcon": null,
+      "sort": 593,
+      "status": "active"
+    },
+    {
+      "id": "tea__shanti-tea",
+      "slug": "shanti-tea",
+      "name": "Shanti Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Shanti Tea — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "Shanti Tea is still present in the living catalogue."
+      },
+      "coverHue": 7,
+      "mark": "marks/tea__shanti-tea.svg",
+      "cover": "covers/tea__shanti-tea.jpg",
+      "markIcon": null,
+      "sort": 594,
+      "status": "active"
+    },
+    {
+      "id": "tea__red-rose",
+      "slug": "red-rose",
+      "name": "Red Rose Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Red Rose Tea — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "Red Rose Tea is still present in the living catalogue."
+      },
+      "coverHue": 72,
+      "mark": "marks/tea__red-rose.svg",
+      "cover": "covers/tea__red-rose.jpg",
+      "markIcon": null,
+      "sort": 595,
+      "status": "active"
+    },
+    {
+      "id": "tea__salada",
+      "slug": "salada",
+      "name": "Salada Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Salada Tea — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "Salada Tea is still present in the living catalogue."
+      },
+      "coverHue": 205,
+      "mark": "marks/tea__salada.svg",
+      "cover": "covers/tea__salada.jpg",
+      "markIcon": null,
+      "sort": 596,
+      "status": "active"
+    },
+    {
+      "id": "tea__meteora",
+      "slug": "meteora",
+      "name": "Murchie's",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Murchie's — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "Murchie's is still present in the living catalogue."
+      },
+      "coverHue": 112,
+      "mark": "marks/tea__meteora.svg",
+      "cover": "covers/tea__meteora.jpg",
+      "markIcon": null,
+      "sort": 597,
+      "status": "active"
+    },
+    {
+      "id": "tea__tetley-ca",
+      "slug": "tetley-ca",
+      "name": "Tetley Canada",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Canada",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tetley Canada — catalogued in coffee & tea brands · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "story": "Tetley Canada is still present in the living catalogue."
+      },
+      "coverHue": 9,
+      "mark": "marks/tea__tetley-ca.svg",
+      "cover": "covers/tea__tetley-ca.jpg",
+      "markIcon": null,
+      "sort": 598,
+      "status": "active"
+    },
+    {
+      "id": "tea__george-stearns",
+      "slug": "george-stearns",
+      "name": "George Steuart Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "George Steuart Tea — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "George Steuart Tea is still present in the living catalogue."
+      },
+      "coverHue": 25,
+      "mark": "marks/tea__george-stearns.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 599,
+      "status": "active"
+    },
+    {
+      "id": "tea__imperial-tea-lk",
+      "slug": "imperial-tea-lk",
+      "name": "Imperial Teas of Sri Lanka",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Imperial Teas of Sri Lanka — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "Imperial Teas of Sri Lanka is still present in the living catalogue."
+      },
+      "coverHue": 49,
+      "mark": "marks/tea__imperial-tea-lk.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 600,
+      "status": "active"
+    },
+    {
+      "id": "tea__heladiv",
+      "slug": "heladiv",
+      "name": "Heladiv",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Heladiv — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "Heladiv is still present in the living catalogue."
+      },
+      "coverHue": 82,
+      "mark": "marks/tea__heladiv.svg",
+      "cover": "covers/tea__heladiv.jpg",
+      "markIcon": null,
+      "sort": 601,
+      "status": "active"
+    },
+    {
+      "id": "tea__basilur",
+      "slug": "basilur",
+      "name": "Basilur",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Basilur — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "Basilur is still present in the living catalogue."
+      },
+      "coverHue": 359,
+      "mark": "marks/tea__basilur.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 602,
+      "status": "active"
+    },
+    {
+      "id": "tea__malwatte",
+      "slug": "malwatte",
+      "name": "Malwatte Valley",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Malwatte Valley — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "Malwatte Valley is still present in the living catalogue."
+      },
+      "coverHue": 32,
+      "mark": "marks/tea__malwatte.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 603,
+      "status": "active"
+    },
+    {
+      "id": "tea__stassen",
+      "slug": "stassen",
+      "name": "Stassen",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Stassen — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "Stassen is still present in the living catalogue."
+      },
+      "coverHue": 236,
+      "mark": "marks/tea__stassen.svg",
+      "cover": "covers/tea__stassen.jpg",
+      "markIcon": null,
+      "sort": 604,
+      "status": "active"
+    },
+    {
+      "id": "tea__watawala",
+      "slug": "watawala",
+      "name": "Watawala",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Watawala — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "Watawala is still present in the living catalogue."
+      },
+      "coverHue": 195,
+      "mark": "marks/tea__watawala.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 605,
+      "status": "active"
+    },
+    {
+      "id": "tea__kelani-valley",
+      "slug": "kelani-valley",
+      "name": "Kelani Valley Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sri Lanka",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Kelani Valley Tea — catalogued in coffee & tea brands · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "story": "Kelani Valley Tea is still present in the living catalogue."
+      },
+      "coverHue": 309,
+      "mark": "marks/tea__kelani-valley.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 606,
+      "status": "active"
+    },
+    {
+      "id": "tea__brookbond",
+      "slug": "brookbond",
+      "name": "Brook Bond Red Label",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Brook Bond Red Label — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Brook Bond Red Label is still present in the living catalogue."
+      },
+      "coverHue": 137,
+      "mark": "marks/tea__brookbond.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 607,
+      "status": "active"
+    },
+    {
+      "id": "tea__girnar",
+      "slug": "girnar",
+      "name": "Girnar Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Girnar Tea — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Girnar Tea is still present in the living catalogue."
+      },
+      "coverHue": 84,
+      "mark": "marks/tea__girnar.svg",
+      "cover": "covers/tea__girnar.jpg",
+      "markIcon": null,
+      "sort": 608,
+      "status": "active"
+    },
+    {
+      "id": "tea__marvel",
+      "slug": "marvel",
+      "name": "Marvel Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Marvel Tea — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Marvel Tea is still present in the living catalogue."
+      },
+      "coverHue": 268,
+      "mark": "marks/tea__marvel.svg",
+      "cover": "covers/tea__marvel.jpg",
+      "markIcon": null,
+      "sort": 609,
+      "status": "active"
+    },
+    {
+      "id": "tea__tgl-co",
+      "slug": "tgl-co",
+      "name": "TGL Co.",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "TGL Co. — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "TGL Co. is still present in the living catalogue."
+      },
+      "coverHue": 53,
+      "mark": "marks/tea__tgl-co.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 610,
+      "status": "active"
+    },
+    {
+      "id": "tea__chaayos",
+      "slug": "chaayos",
+      "name": "Chaayos",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Chaayos — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Chaayos is still present in the living catalogue."
+      },
+      "coverHue": 19,
+      "mark": "marks/tea__chaayos.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 611,
+      "status": "active"
+    },
+    {
+      "id": "tea__chai-point",
+      "slug": "chai-point",
+      "name": "Chai Point",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Chai Point — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Chai Point is still present in the living catalogue."
+      },
+      "coverHue": 357,
+      "mark": "marks/tea__chai-point.svg",
+      "cover": "covers/tea__chai-point.jpg",
+      "markIcon": null,
+      "sort": 612,
+      "status": "active"
+    },
+    {
+      "id": "tea__vahdam",
+      "slug": "vahdam",
+      "name": "Vahdam Teas",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Vahdam Teas — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Vahdam Teas is still present in the living catalogue."
+      },
+      "coverHue": 216,
+      "mark": "marks/tea__vahdam.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 613,
+      "status": "active"
+    },
+    {
+      "id": "tea__teabox",
+      "slug": "teabox",
+      "name": "Teabox",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Teabox — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Teabox is still present in the living catalogue."
+      },
+      "coverHue": 264,
+      "mark": "marks/tea__teabox.svg",
+      "cover": "covers/tea__teabox.jpg",
+      "markIcon": null,
+      "sort": 614,
+      "status": "active"
+    },
+    {
+      "id": "tea__karma-kettle",
+      "slug": "karma-kettle",
+      "name": "Karma Kettle",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Karma Kettle — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Karma Kettle is still present in the living catalogue."
+      },
+      "coverHue": 341,
+      "mark": "marks/tea__karma-kettle.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 615,
+      "status": "active"
+    },
+    {
+      "id": "tea__halmari",
+      "slug": "halmari",
+      "name": "Halmari Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Halmari Tea — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Halmari Tea is still present in the living catalogue."
+      },
+      "coverHue": 113,
+      "mark": "marks/tea__halmari.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 616,
+      "status": "active"
+    },
+    {
+      "id": "tea__makaibari",
+      "slug": "makaibari",
+      "name": "Makaibari",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Makaibari — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Makaibari is still present in the living catalogue."
+      },
+      "coverHue": 312,
+      "mark": "marks/tea__makaibari.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 617,
+      "status": "active"
+    },
+    {
+      "id": "tea__castleton",
+      "slug": "castleton",
+      "name": "Castleton Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Castleton Tea — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Castleton Tea is still present in the living catalogue."
+      },
+      "coverHue": 270,
+      "mark": "marks/tea__castleton.svg",
+      "cover": "covers/tea__castleton.jpg",
+      "markIcon": null,
+      "sort": 618,
+      "status": "active"
+    },
+    {
+      "id": "tea__gowaldas",
+      "slug": "gowaldas",
+      "name": "Gowaldas",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gowaldas — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Gowaldas is still present in the living catalogue."
+      },
+      "coverHue": 249,
+      "mark": "marks/tea__gowaldas.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 619,
+      "status": "active"
+    },
+    {
+      "id": "tea__lipton-india",
+      "slug": "lipton-india",
+      "name": "Lipton Yellow Label India",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Yellow Label India — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Lipton Yellow Label India is still present in the living catalogue."
+      },
+      "coverHue": 143,
+      "mark": "marks/tea__lipton-india.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 620,
+      "status": "active"
+    },
+    {
+      "id": "tea__assam-company",
+      "slug": "assam-company",
+      "name": "Assam Company",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Assam Company — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Assam Company is still present in the living catalogue."
+      },
+      "coverHue": 120,
+      "mark": "marks/tea__assam-company.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 621,
+      "status": "active"
+    },
+    {
+      "id": "tea__goodricke",
+      "slug": "goodricke",
+      "name": "Goodricke",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "India",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Goodricke — catalogued in coffee & tea brands · India.",
+      "facts": {
+        "origin": "India",
+        "story": "Goodricke is still present in the living catalogue."
+      },
+      "coverHue": 100,
+      "mark": "marks/tea__goodricke.svg",
+      "cover": "covers/tea__goodricke.jpg",
+      "markIcon": null,
+      "sort": 622,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-china-yunnan",
+      "slug": "tea-china-yunnan",
+      "name": "Dayi / Menghai",
+      "aliases": [
+        "大益",
+        "dayi"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dayi / Menghai — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Dayi / Menghai is still present in the living catalogue."
+      },
+      "coverHue": 25,
+      "mark": "marks/tea__tea-china-yunnan.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 623,
+      "status": "active"
+    },
+    {
+      "id": "tea__xiaguan",
+      "slug": "xiaguan",
+      "name": "Xiaguan",
+      "aliases": [
+        "下关"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Xiaguan — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Xiaguan is still present in the living catalogue."
+      },
+      "coverHue": 110,
+      "mark": "marks/tea__xiaguan.svg",
+      "cover": "covers/tea__xiaguan.jpg",
+      "markIcon": null,
+      "sort": 624,
+      "status": "active"
+    },
+    {
+      "id": "tea__chinatea",
+      "slug": "chinatea",
+      "name": "China Tea",
+      "aliases": [
+        "中茶"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "China Tea — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "China Tea is still present in the living catalogue."
+      },
+      "coverHue": 270,
+      "mark": "marks/tea__chinatea.svg",
+      "cover": "covers/tea__chinatea.jpg",
+      "markIcon": null,
+      "sort": 625,
+      "status": "active"
+    },
+    {
+      "id": "tea__luyu",
+      "slug": "luyu",
+      "name": "Lu Yu Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lu Yu Tea — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Lu Yu Tea is still present in the living catalogue."
+      },
+      "coverHue": 58,
+      "mark": "marks/tea__luyu.svg",
+      "cover": "covers/tea__luyu.jpg",
+      "markIcon": null,
+      "sort": 626,
+      "status": "active"
+    },
+    {
+      "id": "tea__bama-tea",
+      "slug": "bama-tea",
+      "name": "Bama Tea",
+      "aliases": [
+        "八马"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bama Tea — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Bama Tea is still present in the living catalogue."
+      },
+      "coverHue": 179,
+      "mark": "marks/tea__bama-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 627,
+      "status": "active"
+    },
+    {
+      "id": "tea__xiao-guan",
+      "slug": "xiao-guan",
+      "name": "Xiaoguan Tea",
+      "aliases": [
+        "小罐茶"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Xiaoguan Tea — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Xiaoguan Tea is still present in the living catalogue."
+      },
+      "coverHue": 244,
+      "mark": "marks/tea__xiao-guan.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 628,
+      "status": "active"
+    },
+    {
+      "id": "tea__zhengshan",
+      "slug": "zhengshan",
+      "name": "Zhengshan",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Zhengshan — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Zhengshan is still present in the living catalogue."
+      },
+      "coverHue": 109,
+      "mark": "marks/tea__zhengshan.svg",
+      "cover": "covers/tea__zhengshan.jpg",
+      "markIcon": null,
+      "sort": 629,
+      "status": "active"
+    },
+    {
+      "id": "tea__keemun",
+      "slug": "keemun",
+      "name": "Keemun Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Keemun Tea Brand — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Keemun Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 296,
+      "mark": "marks/tea__keemun.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 630,
+      "status": "active"
+    },
+    {
+      "id": "tea__longjing-brand",
+      "slug": "longjing-brand",
+      "name": "West Lake Longjing Co",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "West Lake Longjing Co — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "West Lake Longjing Co is still present in the living catalogue."
+      },
+      "coverHue": 27,
+      "mark": "marks/tea__longjing-brand.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 631,
+      "status": "active"
+    },
+    {
+      "id": "tea__anxi-tieguanyin",
+      "slug": "anxi-tieguanyin",
+      "name": "Anxi Tieguanyin Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Anxi Tieguanyin Brand — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Anxi Tieguanyin Brand is still present in the living catalogue."
+      },
+      "coverHue": 317,
+      "mark": "marks/tea__anxi-tieguanyin.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 632,
+      "status": "active"
+    },
+    {
+      "id": "tea__wuyi-star",
+      "slug": "wuyi-star",
+      "name": "Wuyi Star",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Wuyi Star — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Wuyi Star is still present in the living catalogue."
+      },
+      "coverHue": 60,
+      "mark": "marks/tea__wuyi-star.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 633,
+      "status": "active"
+    },
+    {
+      "id": "tea__pinjun",
+      "slug": "pinjun",
+      "name": "Pinjun Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "China",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pinjun Tea — catalogued in coffee & tea brands · China.",
+      "facts": {
+        "origin": "China",
+        "story": "Pinjun Tea is still present in the living catalogue."
+      },
+      "coverHue": 11,
+      "mark": "marks/tea__pinjun.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 634,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-japan-itoen",
+      "slug": "tea-japan-itoen",
+      "name": "Ito En",
+      "aliases": [
+        "伊藤園"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ito En — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Ito En is still present in the living catalogue."
+      },
+      "coverHue": 324,
+      "mark": "marks/tea__tea-japan-itoen.svg",
+      "cover": "covers/tea__tea-japan-itoen.jpg",
+      "markIcon": null,
+      "sort": 635,
+      "status": "active"
+    },
+    {
+      "id": "tea__jugetsudo",
+      "slug": "jugetsudo",
+      "name": "Jugetsudo",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Jugetsudo — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Jugetsudo is still present in the living catalogue."
+      },
+      "coverHue": 267,
+      "mark": "marks/tea__jugetsudo.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 636,
+      "status": "active"
+    },
+    {
+      "id": "tea__ippodo",
+      "slug": "ippodo",
+      "name": "Ippodo Tea",
+      "aliases": [
+        "一保堂"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ippodo Tea — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Ippodo Tea is still present in the living catalogue."
+      },
+      "coverHue": 302,
+      "mark": "marks/tea__ippodo.svg",
+      "cover": "covers/tea__ippodo.jpg",
+      "markIcon": null,
+      "sort": 637,
+      "status": "active"
+    },
+    {
+      "id": "tea__marukyu",
+      "slug": "marukyu",
+      "name": "Marukyu Koyamaen",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Marukyu Koyamaen — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Marukyu Koyamaen is still present in the living catalogue."
+      },
+      "coverHue": 355,
+      "mark": "marks/tea__marukyu.svg",
+      "cover": "covers/tea__marukyu.jpg",
+      "markIcon": null,
+      "sort": 638,
+      "status": "active"
+    },
+    {
+      "id": "tea__aoi-seicha",
+      "slug": "aoi-seicha",
+      "name": "Aoi Seicha",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Aoi Seicha — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Aoi Seicha is still present in the living catalogue."
+      },
+      "coverHue": 204,
+      "mark": "marks/tea__aoi-seicha.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 639,
+      "status": "active"
+    },
+    {
+      "id": "tea__harada-tea",
+      "slug": "harada-tea",
+      "name": "Harada Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Harada Tea — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Harada Tea is still present in the living catalogue."
+      },
+      "coverHue": 269,
+      "mark": "marks/tea__harada-tea.svg",
+      "cover": "covers/tea__harada-tea.jpg",
+      "markIcon": null,
+      "sort": 640,
+      "status": "active"
+    },
+    {
+      "id": "tea__osada-tea",
+      "slug": "osada-tea",
+      "name": "Osada Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Osada Tea — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Osada Tea is still present in the living catalogue."
+      },
+      "coverHue": 216,
+      "mark": "marks/tea__osada-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 641,
+      "status": "active"
+    },
+    {
+      "id": "tea__sugimoto",
+      "slug": "sugimoto",
+      "name": "Sugimoto Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sugimoto Tea — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Sugimoto Tea is still present in the living catalogue."
+      },
+      "coverHue": 358,
+      "mark": "marks/tea__sugimoto.svg",
+      "cover": "covers/tea__sugimoto.jpg",
+      "markIcon": null,
+      "sort": 642,
+      "status": "active"
+    },
+    {
+      "id": "tea__maeda-en",
+      "slug": "maeda-en",
+      "name": "Maeda-en",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Maeda-en — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Maeda-en is still present in the living catalogue."
+      },
+      "coverHue": 349,
+      "mark": "marks/tea__maeda-en.svg",
+      "cover": "covers/tea__maeda-en.jpg",
+      "markIcon": null,
+      "sort": 643,
+      "status": "active"
+    },
+    {
+      "id": "tea__kyoei",
+      "slug": "kyoei",
+      "name": "Kyoei Seicha",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Kyoei Seicha — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Kyoei Seicha is still present in the living catalogue."
+      },
+      "coverHue": 32,
+      "mark": "marks/tea__kyoei.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 644,
+      "status": "active"
+    },
+    {
+      "id": "tea__ocha-no-sato",
+      "slug": "ocha-no-sato",
+      "name": "Ocha no Sato",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ocha no Sato — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Ocha no Sato is still present in the living catalogue."
+      },
+      "coverHue": 234,
+      "mark": "marks/tea__ocha-no-sato.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 645,
+      "status": "active"
+    },
+    {
+      "id": "tea__gokou",
+      "slug": "gokou",
+      "name": "Gokou Matcha",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gokou Matcha — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Gokou Matcha is still present in the living catalogue."
+      },
+      "coverHue": 156,
+      "mark": "marks/tea__gokou.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 646,
+      "status": "active"
+    },
+    {
+      "id": "tea__nakamura-tokichi",
+      "slug": "nakamura-tokichi",
+      "name": "Nakamura Tokichi",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Japan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Nakamura Tokichi — catalogued in coffee & tea brands · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "story": "Nakamura Tokichi is still present in the living catalogue."
+      },
+      "coverHue": 43,
+      "mark": "marks/tea__nakamura-tokichi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 647,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-taiwan-ten-ren",
+      "slug": "tea-taiwan-ten-ren",
+      "name": "Ten Ren",
+      "aliases": [
+        "天仁"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ten Ren — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Ten Ren is still present in the living catalogue."
+      },
+      "coverHue": 120,
+      "mark": "marks/tea__tea-taiwan-ten-ren.svg",
+      "cover": "covers/tea__tea-taiwan-ten-ren.jpg",
+      "markIcon": null,
+      "sort": 648,
+      "status": "active"
+    },
+    {
+      "id": "tea__wang-de-chuan",
+      "slug": "wang-de-chuan",
+      "name": "Wang De Chuan",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Wang De Chuan — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Wang De Chuan is still present in the living catalogue."
+      },
+      "coverHue": 206,
+      "mark": "marks/tea__wang-de-chuan.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 649,
+      "status": "active"
+    },
+    {
+      "id": "tea__shanlinxi",
+      "slug": "shanlinxi",
+      "name": "Shanlinxi Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Shanlinxi Tea — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Shanlinxi Tea is still present in the living catalogue."
+      },
+      "coverHue": 67,
+      "mark": "marks/tea__shanlinxi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 650,
+      "status": "active"
+    },
+    {
+      "id": "tea__dongding",
+      "slug": "dongding",
+      "name": "Dong Ding Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dong Ding Tea Brand — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Dong Ding Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 215,
+      "mark": "marks/tea__dongding.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 651,
+      "status": "active"
+    },
+    {
+      "id": "tea__lalashan",
+      "slug": "lalashan",
+      "name": "Lalashan Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lalashan Tea — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Lalashan Tea is still present in the living catalogue."
+      },
+      "coverHue": 281,
+      "mark": "marks/tea__lalashan.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 652,
+      "status": "active"
+    },
+    {
+      "id": "tea__dayuling",
+      "slug": "dayuling",
+      "name": "Da Yu Ling",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Da Yu Ling — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Da Yu Ling is still present in the living catalogue."
+      },
+      "coverHue": 12,
+      "mark": "marks/tea__dayuling.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 653,
+      "status": "active"
+    },
+    {
+      "id": "tea__tp-tea",
+      "slug": "tp-tea",
+      "name": "TP Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "TP Tea — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "TP Tea is still present in the living catalogue."
+      },
+      "coverHue": 148,
+      "mark": "marks/tea__tp-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 654,
+      "status": "active"
+    },
+    {
+      "id": "tea__gongcha",
+      "slug": "gongcha",
+      "name": "Gong Cha",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gong Cha — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Gong Cha is still present in the living catalogue."
+      },
+      "coverHue": 286,
+      "mark": "marks/tea__gongcha.svg",
+      "cover": "covers/tea__gongcha.jpg",
+      "markIcon": null,
+      "sort": 655,
+      "status": "active"
+    },
+    {
+      "id": "tea__sharetea",
+      "slug": "sharetea",
+      "name": "Sharetea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sharetea — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Sharetea is still present in the living catalogue."
+      },
+      "coverHue": 214,
+      "mark": "marks/tea__sharetea.svg",
+      "cover": "covers/tea__sharetea.jpg",
+      "markIcon": null,
+      "sort": 656,
+      "status": "active"
+    },
+    {
+      "id": "tea__presotea",
+      "slug": "presotea",
+      "name": "Presotea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Taiwan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Presotea — catalogued in coffee & tea brands · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "story": "Presotea is still present in the living catalogue."
+      },
+      "coverHue": 358,
+      "mark": "marks/tea__presotea.svg",
+      "cover": "covers/tea__presotea.jpg",
+      "markIcon": null,
+      "sort": 657,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-korea",
+      "slug": "tea-korea",
+      "name": "Osulloc",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Korea",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Osulloc — catalogued in coffee & tea brands · South Korea.",
+      "facts": {
+        "origin": "South Korea",
+        "story": "Osulloc is still present in the living catalogue."
+      },
+      "coverHue": 88,
+      "mark": "marks/tea__tea-korea.svg",
+      "cover": "covers/tea__tea-korea.jpg",
+      "markIcon": null,
+      "sort": 658,
+      "status": "active"
+    },
+    {
+      "id": "tea__damtuh",
+      "slug": "damtuh",
+      "name": "Damtuh",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Korea",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Damtuh — catalogued in coffee & tea brands · South Korea.",
+      "facts": {
+        "origin": "South Korea",
+        "story": "Damtuh is still present in the living catalogue."
+      },
+      "coverHue": 84,
+      "mark": "marks/tea__damtuh.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 659,
+      "status": "active"
+    },
+    {
+      "id": "tea__gongcha-kr",
+      "slug": "gongcha-kr",
+      "name": "Gong Cha Korea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Korea",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gong Cha Korea — catalogued in coffee & tea brands · South Korea.",
+      "facts": {
+        "origin": "South Korea",
+        "story": "Gong Cha Korea is still present in the living catalogue."
+      },
+      "coverHue": 334,
+      "mark": "marks/tea__gongcha-kr.svg",
+      "cover": "covers/tea__gongcha-kr.jpg",
+      "markIcon": null,
+      "sort": 660,
+      "status": "active"
+    },
+    {
+      "id": "tea__gonggeori",
+      "slug": "gonggeori",
+      "name": "Gonggeori Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Korea",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gonggeori Tea — catalogued in coffee & tea brands · South Korea.",
+      "facts": {
+        "origin": "South Korea",
+        "story": "Gonggeori Tea is still present in the living catalogue."
+      },
+      "coverHue": 170,
+      "mark": "marks/tea__gonggeori.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 661,
+      "status": "active"
+    },
+    {
+      "id": "tea__bosung",
+      "slug": "bosung",
+      "name": "Boseong Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Korea",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Boseong Tea — catalogued in coffee & tea brands · South Korea.",
+      "facts": {
+        "origin": "South Korea",
+        "story": "Boseong Tea is still present in the living catalogue."
+      },
+      "coverHue": 245,
+      "mark": "marks/tea__bosung.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 662,
+      "status": "active"
+    },
+    {
+      "id": "tea__hadong",
+      "slug": "hadong",
+      "name": "Hadong Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Korea",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Hadong Tea — catalogued in coffee & tea brands · South Korea.",
+      "facts": {
+        "origin": "South Korea",
+        "story": "Hadong Tea is still present in the living catalogue."
+      },
+      "coverHue": 66,
+      "mark": "marks/tea__hadong.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 663,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-vietnam",
+      "slug": "tea-vietnam",
+      "name": "Phúc Long Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Vietnam",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Phúc Long Tea — catalogued in coffee & tea brands · Vietnam.",
+      "facts": {
+        "origin": "Vietnam",
+        "story": "Phúc Long Tea is still present in the living catalogue."
+      },
+      "coverHue": 54,
+      "mark": "marks/tea__tea-vietnam.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 664,
+      "status": "active"
+    },
+    {
+      "id": "tea__vinh-tien",
+      "slug": "vinh-tien",
+      "name": "Vĩnh Tiến Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Vietnam",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Vĩnh Tiến Tea — catalogued in coffee & tea brands · Vietnam.",
+      "facts": {
+        "origin": "Vietnam",
+        "story": "Vĩnh Tiến Tea is still present in the living catalogue."
+      },
+      "coverHue": 153,
+      "mark": "marks/tea__vinh-tien.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 665,
+      "status": "active"
+    },
+    {
+      "id": "tea__thai-nguyen",
+      "slug": "thai-nguyen",
+      "name": "Thai Nguyen Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Vietnam",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thai Nguyen Tea — catalogued in coffee & tea brands · Vietnam.",
+      "facts": {
+        "origin": "Vietnam",
+        "story": "Thai Nguyen Tea is still present in the living catalogue."
+      },
+      "coverHue": 250,
+      "mark": "marks/tea__thai-nguyen.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 666,
+      "status": "active"
+    },
+    {
+      "id": "tea__cau-tre",
+      "slug": "cau-tre",
+      "name": "Cầu Tre Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Vietnam",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Cầu Tre Tea — catalogued in coffee & tea brands · Vietnam.",
+      "facts": {
+        "origin": "Vietnam",
+        "story": "Cầu Tre Tea is still present in the living catalogue."
+      },
+      "coverHue": 204,
+      "mark": "marks/tea__cau-tre.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 667,
+      "status": "active"
+    },
+    {
+      "id": "tea__tra-dao",
+      "slug": "tra-dao",
+      "name": "Trà Đạo",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Vietnam",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Trà Đạo — catalogued in coffee & tea brands · Vietnam.",
+      "facts": {
+        "origin": "Vietnam",
+        "story": "Trà Đạo is still present in the living catalogue."
+      },
+      "coverHue": 11,
+      "mark": "marks/tea__tra-dao.svg",
+      "cover": "covers/tea__tra-dao.jpg",
+      "markIcon": null,
+      "sort": 668,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-thailand",
+      "slug": "tea-thailand",
+      "name": "ChaTraMue",
+      "aliases": [
+        "手标"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Thailand",
+      "tags": [
+        "tea"
+      ],
+      "summary": "ChaTraMue — catalogued in coffee & tea brands · Thailand.",
+      "facts": {
+        "origin": "Thailand",
+        "story": "ChaTraMue is still present in the living catalogue."
+      },
+      "coverHue": 209,
+      "mark": "marks/tea__tea-thailand.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 669,
+      "status": "active"
+    },
+    {
+      "id": "tea__ranong",
+      "slug": "ranong",
+      "name": "Ranong Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Thailand",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ranong Tea — catalogued in coffee & tea brands · Thailand.",
+      "facts": {
+        "origin": "Thailand",
+        "story": "Ranong Tea is still present in the living catalogue."
+      },
+      "coverHue": 326,
+      "mark": "marks/tea__ranong.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 670,
+      "status": "active"
+    },
+    {
+      "id": "tea__doi-tung-tea",
+      "slug": "doi-tung-tea",
+      "name": "Doi Tung Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Thailand",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Doi Tung Tea — catalogued in coffee & tea brands · Thailand.",
+      "facts": {
+        "origin": "Thailand",
+        "story": "Doi Tung Tea is still present in the living catalogue."
+      },
+      "coverHue": 1,
+      "mark": "marks/tea__doi-tung-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 671,
+      "status": "active"
+    },
+    {
+      "id": "tea__ocha",
+      "slug": "ocha",
+      "name": "Ocha Thai Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Thailand",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ocha Thai Tea — catalogued in coffee & tea brands · Thailand.",
+      "facts": {
+        "origin": "Thailand",
+        "story": "Ocha Thai Tea is still present in the living catalogue."
+      },
+      "coverHue": 306,
+      "mark": "marks/tea__ocha.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 672,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-malaysia",
+      "slug": "tea-malaysia",
+      "name": "BOH Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Malaysia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "BOH Tea — catalogued in coffee & tea brands · Malaysia.",
+      "facts": {
+        "origin": "Malaysia",
+        "story": "BOH Tea is still present in the living catalogue."
+      },
+      "coverHue": 357,
+      "mark": "marks/tea__tea-malaysia.svg",
+      "cover": "covers/tea__tea-malaysia.jpg",
+      "markIcon": null,
+      "sort": 673,
+      "status": "active"
+    },
+    {
+      "id": "tea__cameron",
+      "slug": "cameron",
+      "name": "Cameron Highlands Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Malaysia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Cameron Highlands Tea — catalogued in coffee & tea brands · Malaysia.",
+      "facts": {
+        "origin": "Malaysia",
+        "story": "Cameron Highlands Tea is still present in the living catalogue."
+      },
+      "coverHue": 166,
+      "mark": "marks/tea__cameron.svg",
+      "cover": "covers/tea__cameron.jpg",
+      "markIcon": null,
+      "sort": 674,
+      "status": "active"
+    },
+    {
+      "id": "tea__sabah-tea",
+      "slug": "sabah-tea",
+      "name": "Sabah Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Malaysia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sabah Tea — catalogued in coffee & tea brands · Malaysia.",
+      "facts": {
+        "origin": "Malaysia",
+        "story": "Sabah Tea is still present in the living catalogue."
+      },
+      "coverHue": 353,
+      "mark": "marks/tea__sabah-tea.svg",
+      "cover": "covers/tea__sabah-tea.jpg",
+      "markIcon": null,
+      "sort": 675,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-singapore",
+      "slug": "tea-singapore",
+      "name": "TWG Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Singapore",
+      "tags": [
+        "tea"
+      ],
+      "summary": "TWG Tea — catalogued in coffee & tea brands · Singapore.",
+      "facts": {
+        "origin": "Singapore",
+        "story": "TWG Tea is still present in the living catalogue."
+      },
+      "coverHue": 282,
+      "mark": "marks/tea__tea-singapore.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 676,
+      "status": "active"
+    },
+    {
+      "id": "tea__peach-garden",
+      "slug": "peach-garden",
+      "name": "Peach Garden Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Singapore",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Peach Garden Tea — catalogued in coffee & tea brands · Singapore.",
+      "facts": {
+        "origin": "Singapore",
+        "story": "Peach Garden Tea is still present in the living catalogue."
+      },
+      "coverHue": 270,
+      "mark": "marks/tea__peach-garden.svg",
+      "cover": "covers/tea__peach-garden.jpg",
+      "markIcon": null,
+      "sort": 677,
+      "status": "active"
+    },
+    {
+      "id": "tea__orienta",
+      "slug": "orienta",
+      "name": "Orienta Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Singapore",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Orienta Tea — catalogued in coffee & tea brands · Singapore.",
+      "facts": {
+        "origin": "Singapore",
+        "story": "Orienta Tea is still present in the living catalogue."
+      },
+      "coverHue": 311,
+      "mark": "marks/tea__orienta.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 678,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-indonesia",
+      "slug": "tea-indonesia",
+      "name": "Teh Botol Sosro",
+      "aliases": [
+        "sosro"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Indonesia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Teh Botol Sosro — catalogued in coffee & tea brands · Indonesia.",
+      "facts": {
+        "origin": "Indonesia",
+        "story": "Teh Botol Sosro is still present in the living catalogue."
+      },
+      "coverHue": 274,
+      "mark": "marks/tea__tea-indonesia.svg",
+      "cover": "covers/tea__tea-indonesia.jpg",
+      "markIcon": null,
+      "sort": 679,
+      "status": "active"
+    },
+    {
+      "id": "tea__tong-tji",
+      "slug": "tong-tji",
+      "name": "Tong Tji",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Indonesia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tong Tji — catalogued in coffee & tea brands · Indonesia.",
+      "facts": {
+        "origin": "Indonesia",
+        "story": "Tong Tji is still present in the living catalogue."
+      },
+      "coverHue": 23,
+      "mark": "marks/tea__tong-tji.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 680,
+      "status": "active"
+    },
+    {
+      "id": "tea__sariwangi",
+      "slug": "sariwangi",
+      "name": "Sariwangi",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Indonesia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sariwangi — catalogued in coffee & tea brands · Indonesia.",
+      "facts": {
+        "origin": "Indonesia",
+        "story": "Sariwangi is still present in the living catalogue."
+      },
+      "coverHue": 220,
+      "mark": "marks/tea__sariwangi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 681,
+      "status": "active"
+    },
+    {
+      "id": "tea__poci",
+      "slug": "poci",
+      "name": "Teh Poci",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Indonesia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Teh Poci — catalogued in coffee & tea brands · Indonesia.",
+      "facts": {
+        "origin": "Indonesia",
+        "story": "Teh Poci is still present in the living catalogue."
+      },
+      "coverHue": 82,
+      "mark": "marks/tea__poci.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 682,
+      "status": "active"
+    },
+    {
+      "id": "tea__cap-botol",
+      "slug": "cap-botol",
+      "name": "Cap Botol",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Indonesia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Cap Botol — catalogued in coffee & tea brands · Indonesia.",
+      "facts": {
+        "origin": "Indonesia",
+        "story": "Cap Botol is still present in the living catalogue."
+      },
+      "coverHue": 300,
+      "mark": "marks/tea__cap-botol.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 683,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-philippines",
+      "slug": "tea-philippines",
+      "name": "Basic Tea PH",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Philippines",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Basic Tea PH — catalogued in coffee & tea brands · Philippines.",
+      "facts": {
+        "origin": "Philippines",
+        "story": "Basic Tea PH is still present in the living catalogue."
+      },
+      "coverHue": 79,
+      "mark": "marks/tea__tea-philippines.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 684,
+      "status": "active"
+    },
+    {
+      "id": "tea__tablea",
+      "slug": "tablea",
+      "name": "Tablea Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Philippines",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tablea Tea — catalogued in coffee & tea brands · Philippines.",
+      "facts": {
+        "origin": "Philippines",
+        "story": "Tablea Tea is still present in the living catalogue."
+      },
+      "coverHue": 328,
+      "mark": "marks/tea__tablea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 685,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-cambodia",
+      "slug": "tea-cambodia",
+      "name": "Cambodia Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Cambodia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Cambodia Tea Brand — catalogued in coffee & tea brands · Cambodia.",
+      "facts": {
+        "origin": "Cambodia",
+        "story": "Cambodia Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 194,
+      "mark": "marks/tea__tea-cambodia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 686,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-laos",
+      "slug": "tea-laos",
+      "name": "Laos Tea Phongsali",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Laos",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Laos Tea Phongsali — catalogued in coffee & tea brands · Laos.",
+      "facts": {
+        "origin": "Laos",
+        "story": "Laos Tea Phongsali is still present in the living catalogue."
+      },
+      "coverHue": 243,
+      "mark": "marks/tea__tea-laos.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 687,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-myanmar",
+      "slug": "tea-myanmar",
+      "name": "Shwe Pyi Oo Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Myanmar",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Shwe Pyi Oo Tea — catalogued in coffee & tea brands · Myanmar.",
+      "facts": {
+        "origin": "Myanmar",
+        "story": "Shwe Pyi Oo Tea is still present in the living catalogue."
+      },
+      "coverHue": 11,
+      "mark": "marks/tea__tea-myanmar.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 688,
+      "status": "active"
+    },
+    {
+      "id": "tea__laphet",
+      "slug": "laphet",
+      "name": "Laphet Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Myanmar",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Laphet Tea Brand — catalogued in coffee & tea brands · Myanmar.",
+      "facts": {
+        "origin": "Myanmar",
+        "story": "Laphet Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 169,
+      "mark": "marks/tea__laphet.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 689,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-nepal",
+      "slug": "tea-nepal",
+      "name": "Ilam Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Nepal",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ilam Tea — catalogued in coffee & tea brands · Nepal.",
+      "facts": {
+        "origin": "Nepal",
+        "story": "Ilam Tea is still present in the living catalogue."
+      },
+      "coverHue": 26,
+      "mark": "marks/tea__tea-nepal.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 690,
+      "status": "active"
+    },
+    {
+      "id": "tea__gurkha-tea",
+      "slug": "gurkha-tea",
+      "name": "Gurkha Tea Estate",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Nepal",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gurkha Tea Estate — catalogued in coffee & tea brands · Nepal.",
+      "facts": {
+        "origin": "Nepal",
+        "story": "Gurkha Tea Estate is still present in the living catalogue."
+      },
+      "coverHue": 264,
+      "mark": "marks/tea__gurkha-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 691,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-bangladesh",
+      "slug": "tea-bangladesh",
+      "name": "Ispahani Mirzapore",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Bangladesh",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ispahani Mirzapore — catalogued in coffee & tea brands · Bangladesh.",
+      "facts": {
+        "origin": "Bangladesh",
+        "story": "Ispahani Mirzapore is still present in the living catalogue."
+      },
+      "coverHue": 149,
+      "mark": "marks/tea__tea-bangladesh.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 692,
+      "status": "active"
+    },
+    {
+      "id": "tea__finlay-bd",
+      "slug": "finlay-bd",
+      "name": "Finlay Tea BD",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Bangladesh",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Finlay Tea BD — catalogued in coffee & tea brands · Bangladesh.",
+      "facts": {
+        "origin": "Bangladesh",
+        "story": "Finlay Tea BD is still present in the living catalogue."
+      },
+      "coverHue": 137,
+      "mark": "marks/tea__finlay-bd.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 693,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-pakistan",
+      "slug": "tea-pakistan",
+      "name": "Tapal Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Pakistan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tapal Tea — catalogued in coffee & tea brands · Pakistan.",
+      "facts": {
+        "origin": "Pakistan",
+        "story": "Tapal Tea is still present in the living catalogue."
+      },
+      "coverHue": 183,
+      "mark": "marks/tea__tea-pakistan.svg",
+      "cover": "covers/tea__tea-pakistan.jpg",
+      "markIcon": null,
+      "sort": 694,
+      "status": "active"
+    },
+    {
+      "id": "tea__vital-tea",
+      "slug": "vital-tea",
+      "name": "Vital Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Pakistan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Vital Tea — catalogued in coffee & tea brands · Pakistan.",
+      "facts": {
+        "origin": "Pakistan",
+        "story": "Vital Tea is still present in the living catalogue."
+      },
+      "coverHue": 50,
+      "mark": "marks/tea__vital-tea.svg",
+      "cover": "covers/tea__vital-tea.jpg",
+      "markIcon": null,
+      "sort": 695,
+      "status": "active"
+    },
+    {
+      "id": "tea__danedar",
+      "slug": "danedar",
+      "name": "Danedar",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Pakistan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Danedar — catalogued in coffee & tea brands · Pakistan.",
+      "facts": {
+        "origin": "Pakistan",
+        "story": "Danedar is still present in the living catalogue."
+      },
+      "coverHue": 84,
+      "mark": "marks/tea__danedar.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 696,
+      "status": "active"
+    },
+    {
+      "id": "tea__lipton-pk",
+      "slug": "lipton-pk",
+      "name": "Lipton Pakistan",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Pakistan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Pakistan — catalogued in coffee & tea brands · Pakistan.",
+      "facts": {
+        "origin": "Pakistan",
+        "story": "Lipton Pakistan is still present in the living catalogue."
+      },
+      "coverHue": 275,
+      "mark": "marks/tea__lipton-pk.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 697,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-iran",
+      "slug": "tea-iran",
+      "name": "Golestan Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Iran",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Golestan Tea — catalogued in coffee & tea brands · Iran.",
+      "facts": {
+        "origin": "Iran",
+        "story": "Golestan Tea is still present in the living catalogue."
+      },
+      "coverHue": 208,
+      "mark": "marks/tea__tea-iran.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 698,
+      "status": "active"
+    },
+    {
+      "id": "tea__ahmad-ir",
+      "slug": "ahmad-ir",
+      "name": "Ahmad Iran",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Iran",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ahmad Iran — catalogued in coffee & tea brands · Iran.",
+      "facts": {
+        "origin": "Iran",
+        "story": "Ahmad Iran is still present in the living catalogue."
+      },
+      "coverHue": 90,
+      "mark": "marks/tea__ahmad-ir.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 699,
+      "status": "active"
+    },
+    {
+      "id": "tea__shahrzad",
+      "slug": "shahrzad",
+      "name": "Shahrzad Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Iran",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Shahrzad Tea — catalogued in coffee & tea brands · Iran.",
+      "facts": {
+        "origin": "Iran",
+        "story": "Shahrzad Tea is still present in the living catalogue."
+      },
+      "coverHue": 252,
+      "mark": "marks/tea__shahrzad.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 700,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-turkey",
+      "slug": "tea-turkey",
+      "name": "Çaykur",
+      "aliases": [
+        "caykur"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Turkey",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Çaykur — catalogued in coffee & tea brands · Turkey.",
+      "facts": {
+        "origin": "Turkey",
+        "story": "Çaykur is still present in the living catalogue."
+      },
+      "coverHue": 24,
+      "mark": "marks/tea__tea-turkey.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 701,
+      "status": "active"
+    },
+    {
+      "id": "tea__lipton-tr",
+      "slug": "lipton-tr",
+      "name": "Lipton Turkey",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Turkey",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Turkey — catalogued in coffee & tea brands · Turkey.",
+      "facts": {
+        "origin": "Turkey",
+        "story": "Lipton Turkey is still present in the living catalogue."
+      },
+      "coverHue": 46,
+      "mark": "marks/tea__lipton-tr.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 702,
+      "status": "active"
+    },
+    {
+      "id": "tea__ofcay",
+      "slug": "ofcay",
+      "name": "Ofçay",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Turkey",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ofçay — catalogued in coffee & tea brands · Turkey.",
+      "facts": {
+        "origin": "Turkey",
+        "story": "Ofçay is still present in the living catalogue."
+      },
+      "coverHue": 287,
+      "mark": "marks/tea__ofcay.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 703,
+      "status": "active"
+    },
+    {
+      "id": "tea__karali",
+      "slug": "karali",
+      "name": "Karali Çay",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Turkey",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Karali Çay — catalogued in coffee & tea brands · Turkey.",
+      "facts": {
+        "origin": "Turkey",
+        "story": "Karali Çay is still present in the living catalogue."
+      },
+      "coverHue": 159,
+      "mark": "marks/tea__karali.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 704,
+      "status": "active"
+    },
+    {
+      "id": "tea__caycci",
+      "slug": "caycci",
+      "name": "Çaycı",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Turkey",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Çaycı — catalogued in coffee & tea brands · Turkey.",
+      "facts": {
+        "origin": "Turkey",
+        "story": "Çaycı is still present in the living catalogue."
+      },
+      "coverHue": 331,
+      "mark": "marks/tea__caycci.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 705,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-russia",
+      "slug": "tea-russia",
+      "name": "Принцесса Нури",
+      "aliases": [
+        "princess nuri"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Russia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Принцесса Нури — catalogued in coffee & tea brands · Russia.",
+      "facts": {
+        "origin": "Russia",
+        "story": "Принцесса Нури is still present in the living catalogue."
+      },
+      "coverHue": 221,
+      "mark": "marks/tea__tea-russia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 706,
+      "status": "active"
+    },
+    {
+      "id": "tea__maisiki",
+      "slug": "maisiki",
+      "name": "Майский",
+      "aliases": [
+        "maisky"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Russia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Майский — catalogued in coffee & tea brands · Russia.",
+      "facts": {
+        "origin": "Russia",
+        "story": "Майский is still present in the living catalogue."
+      },
+      "coverHue": 316,
+      "mark": "marks/tea__maisiki.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 707,
+      "status": "active"
+    },
+    {
+      "id": "tea__richard-tea",
+      "slug": "richard-tea",
+      "name": "Richard Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Russia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Richard Tea — catalogued in coffee & tea brands · Russia.",
+      "facts": {
+        "origin": "Russia",
+        "story": "Richard Tea is still present in the living catalogue."
+      },
+      "coverHue": 205,
+      "mark": "marks/tea__richard-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 708,
+      "status": "active"
+    },
+    {
+      "id": "tea__curtis",
+      "slug": "curtis",
+      "name": "Curtis Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Russia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Curtis Tea — catalogued in coffee & tea brands · Russia.",
+      "facts": {
+        "origin": "Russia",
+        "story": "Curtis Tea is still present in the living catalogue."
+      },
+      "coverHue": 107,
+      "mark": "marks/tea__curtis.svg",
+      "cover": "covers/tea__curtis.jpg",
+      "markIcon": null,
+      "sort": 709,
+      "status": "active"
+    },
+    {
+      "id": "tea__tess",
+      "slug": "tess",
+      "name": "Tess Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Russia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tess Tea — catalogued in coffee & tea brands · Russia.",
+      "facts": {
+        "origin": "Russia",
+        "story": "Tess Tea is still present in the living catalogue."
+      },
+      "coverHue": 342,
+      "mark": "marks/tea__tess.svg",
+      "cover": "covers/tea__tess.jpg",
+      "markIcon": null,
+      "sort": 710,
+      "status": "active"
+    },
+    {
+      "id": "tea__impra",
+      "slug": "impra",
+      "name": "Impra",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Russia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Impra — catalogued in coffee & tea brands · Russia.",
+      "facts": {
+        "origin": "Russia",
+        "story": "Impra is still present in the living catalogue."
+      },
+      "coverHue": 54,
+      "mark": "marks/tea__impra.svg",
+      "cover": "covers/tea__impra.jpg",
+      "markIcon": null,
+      "sort": 711,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-ukraine",
+      "slug": "tea-ukraine",
+      "name": "Мономах",
+      "aliases": [
+        "monomakh"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Ukraine",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Мономах — catalogued in coffee & tea brands · Ukraine.",
+      "facts": {
+        "origin": "Ukraine",
+        "story": "Мономах is still present in the living catalogue."
+      },
+      "coverHue": 289,
+      "mark": "marks/tea__tea-ukraine.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 712,
+      "status": "active"
+    },
+    {
+      "id": "tea__batyk",
+      "slug": "batyk",
+      "name": "Batik Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Ukraine",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Batik Tea — catalogued in coffee & tea brands · Ukraine.",
+      "facts": {
+        "origin": "Ukraine",
+        "story": "Batik Tea is still present in the living catalogue."
+      },
+      "coverHue": 26,
+      "mark": "marks/tea__batyk.svg",
+      "cover": "covers/tea__batyk.jpg",
+      "markIcon": null,
+      "sort": 713,
+      "status": "active"
+    },
+    {
+      "id": "tea__lipton-ua",
+      "slug": "lipton-ua",
+      "name": "Lipton Ukraine",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Ukraine",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Ukraine — catalogued in coffee & tea brands · Ukraine.",
+      "facts": {
+        "origin": "Ukraine",
+        "story": "Lipton Ukraine is still present in the living catalogue."
+      },
+      "coverHue": 60,
+      "mark": "marks/tea__lipton-ua.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 714,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-belarus",
+      "slug": "tea-belarus",
+      "name": "Майский BY",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Belarus",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Майский BY — catalogued in coffee & tea brands · Belarus.",
+      "facts": {
+        "origin": "Belarus",
+        "story": "Майский BY is still present in the living catalogue."
+      },
+      "coverHue": 262,
+      "mark": "marks/tea__tea-belarus.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 715,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-georgia",
+      "slug": "tea-georgia",
+      "name": "Gurieli",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Georgia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gurieli — catalogued in coffee & tea brands · Georgia.",
+      "facts": {
+        "origin": "Georgia",
+        "story": "Gurieli is still present in the living catalogue."
+      },
+      "coverHue": 140,
+      "mark": "marks/tea__tea-georgia.svg",
+      "cover": "covers/tea__tea-georgia.jpg",
+      "markIcon": null,
+      "sort": 716,
+      "status": "active"
+    },
+    {
+      "id": "tea__gek",
+      "slug": "gek",
+      "name": "Gek Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Georgia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gek Tea — catalogued in coffee & tea brands · Georgia.",
+      "facts": {
+        "origin": "Georgia",
+        "story": "Gek Tea is still present in the living catalogue."
+      },
+      "coverHue": 16,
+      "mark": "marks/tea__gek.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 717,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-azerbaijan",
+      "slug": "tea-azerbaijan",
+      "name": "Azərçay",
+      "aliases": [
+        "azercay"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Azerbaijan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Azərçay — catalogued in coffee & tea brands · Azerbaijan.",
+      "facts": {
+        "origin": "Azerbaijan",
+        "story": "Azərçay is still present in the living catalogue."
+      },
+      "coverHue": 285,
+      "mark": "marks/tea__tea-azerbaijan.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 718,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-armenia",
+      "slug": "tea-armenia",
+      "name": "Armenia Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Armenia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Armenia Tea — catalogued in coffee & tea brands · Armenia.",
+      "facts": {
+        "origin": "Armenia",
+        "story": "Armenia Tea is still present in the living catalogue."
+      },
+      "coverHue": 275,
+      "mark": "marks/tea__tea-armenia.svg",
+      "cover": "covers/tea__tea-armenia.jpg",
+      "markIcon": null,
+      "sort": 719,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-kazakhstan",
+      "slug": "tea-kazakhstan",
+      "name": "Baykh Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Kazakhstan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Baykh Tea — catalogued in coffee & tea brands · Kazakhstan.",
+      "facts": {
+        "origin": "Kazakhstan",
+        "story": "Baykh Tea is still present in the living catalogue."
+      },
+      "coverHue": 74,
+      "mark": "marks/tea__tea-kazakhstan.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 720,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-uzbekistan",
+      "slug": "tea-uzbekistan",
+      "name": "Samarkand Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Uzbekistan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Samarkand Tea — catalogued in coffee & tea brands · Uzbekistan.",
+      "facts": {
+        "origin": "Uzbekistan",
+        "story": "Samarkand Tea is still present in the living catalogue."
+      },
+      "coverHue": 214,
+      "mark": "marks/tea__tea-uzbekistan.svg",
+      "cover": "covers/tea__tea-uzbekistan.jpg",
+      "markIcon": null,
+      "sort": 721,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-mongolia",
+      "slug": "tea-mongolia",
+      "name": "Suutei Tsai Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Mongolia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Suutei Tsai Brand — catalogued in coffee & tea brands · Mongolia.",
+      "facts": {
+        "origin": "Mongolia",
+        "story": "Suutei Tsai Brand is still present in the living catalogue."
+      },
+      "coverHue": 90,
+      "mark": "marks/tea__tea-mongolia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 722,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-france",
+      "slug": "tea-france",
+      "name": "Mariage Frères",
+      "aliases": [
+        "mariage freres"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Mariage Frères — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "Mariage Frères is still present in the living catalogue."
+      },
+      "coverHue": 61,
+      "mark": "marks/tea__tea-france.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 723,
+      "status": "active"
+    },
+    {
+      "id": "tea__damman",
+      "slug": "damman",
+      "name": "Dammann Frères",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dammann Frères — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "Dammann Frères is still present in the living catalogue."
+      },
+      "coverHue": 303,
+      "mark": "marks/tea__damman.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 724,
+      "status": "active"
+    },
+    {
+      "id": "tea__betjeman",
+      "slug": "betjeman",
+      "name": "Betjeman & Barton",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Betjeman & Barton — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "Betjeman & Barton is still present in the living catalogue."
+      },
+      "coverHue": 331,
+      "mark": "marks/tea__betjeman.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 725,
+      "status": "active"
+    },
+    {
+      "id": "tea__le-palais",
+      "slug": "le-palais",
+      "name": "Le Palais Oriental",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Le Palais Oriental — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "Le Palais Oriental is still present in the living catalogue."
+      },
+      "coverHue": 111,
+      "mark": "marks/tea__le-palais.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 726,
+      "status": "active"
+    },
+    {
+      "id": "tea__compagnie-coloniale",
+      "slug": "compagnie-coloniale",
+      "name": "Compagnie Coloniale",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Compagnie Coloniale — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "Compagnie Coloniale is still present in the living catalogue."
+      },
+      "coverHue": 11,
+      "mark": "marks/tea__compagnie-coloniale.svg",
+      "cover": "covers/tea__compagnie-coloniale.jpg",
+      "markIcon": null,
+      "sort": 727,
+      "status": "active"
+    },
+    {
+      "id": "tea__george-cannon",
+      "slug": "george-cannon",
+      "name": "George Cannon",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "George Cannon — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "George Cannon is still present in the living catalogue."
+      },
+      "coverHue": 190,
+      "mark": "marks/tea__george-cannon.svg",
+      "cover": "covers/tea__george-cannon.jpg",
+      "markIcon": null,
+      "sort": 728,
+      "status": "active"
+    },
+    {
+      "id": "tea__the-vert",
+      "slug": "the-vert",
+      "name": "Thé Éléphant",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé Éléphant — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "Thé Éléphant is still present in the living catalogue."
+      },
+      "coverHue": 42,
+      "mark": "marks/tea__the-vert.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 729,
+      "status": "active"
+    },
+    {
+      "id": "tea__lipton-fr",
+      "slug": "lipton-fr",
+      "name": "Lipton France",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "France",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton France — catalogued in coffee & tea brands · France.",
+      "facts": {
+        "origin": "France",
+        "story": "Lipton France is still present in the living catalogue."
+      },
+      "coverHue": 332,
+      "mark": "marks/tea__lipton-fr.svg",
+      "cover": "covers/tea__lipton-fr.jpg",
+      "markIcon": null,
+      "sort": 730,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-germany",
+      "slug": "tea-germany",
+      "name": "Teekanne",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Teekanne — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Teekanne is still present in the living catalogue."
+      },
+      "coverHue": 41,
+      "mark": "marks/tea__tea-germany.svg",
+      "cover": "covers/tea__tea-germany.jpg",
+      "markIcon": null,
+      "sort": 731,
+      "status": "active"
+    },
+    {
+      "id": "tea__ronnefeldt",
+      "slug": "ronnefeldt",
+      "name": "Ronnefeldt",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ronnefeldt — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Ronnefeldt is still present in the living catalogue."
+      },
+      "coverHue": 242,
+      "mark": "marks/tea__ronnefeldt.svg",
+      "cover": "covers/tea__ronnefeldt.jpg",
+      "markIcon": null,
+      "sort": 732,
+      "status": "active"
+    },
+    {
+      "id": "tea__messmer",
+      "slug": "messmer",
+      "name": "Messmer",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Messmer — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Messmer is still present in the living catalogue."
+      },
+      "coverHue": 37,
+      "mark": "marks/tea__messmer.svg",
+      "cover": "covers/tea__messmer.jpg",
+      "markIcon": null,
+      "sort": 733,
+      "status": "active"
+    },
+    {
+      "id": "tea__milford",
+      "slug": "milford",
+      "name": "Milford Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Milford Tea — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Milford Tea is still present in the living catalogue."
+      },
+      "coverHue": 22,
+      "mark": "marks/tea__milford.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 734,
+      "status": "active"
+    },
+    {
+      "id": "tea__messmer-classic",
+      "slug": "messmer-classic",
+      "name": "Meßmer Classic",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Meßmer Classic — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Meßmer Classic is still present in the living catalogue."
+      },
+      "coverHue": 194,
+      "mark": "marks/tea__messmer-classic.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 735,
+      "status": "active"
+    },
+    {
+      "id": "tea__lebensbaum",
+      "slug": "lebensbaum",
+      "name": "Lebensbaum",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lebensbaum — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Lebensbaum is still present in the living catalogue."
+      },
+      "coverHue": 253,
+      "mark": "marks/tea__lebensbaum.svg",
+      "cover": "covers/tea__lebensbaum.jpg",
+      "markIcon": null,
+      "sort": 736,
+      "status": "active"
+    },
+    {
+      "id": "tea__pannier",
+      "slug": "pannier",
+      "name": "Bünting Tee",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bünting Tee — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Bünting Tee is still present in the living catalogue."
+      },
+      "coverHue": 216,
+      "mark": "marks/tea__pannier.svg",
+      "cover": "covers/tea__pannier.jpg",
+      "markIcon": null,
+      "sort": 737,
+      "status": "active"
+    },
+    {
+      "id": "tea__ostfriesen",
+      "slug": "ostfriesen",
+      "name": "Ostfriesische Tee Gesellschaft",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Germany",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ostfriesische Tee Gesellschaft — catalogued in coffee & tea brands · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "story": "Ostfriesische Tee Gesellschaft is still present in the living catalogue."
+      },
+      "coverHue": 241,
+      "mark": "marks/tea__ostfriesen.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 738,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-netherlands",
+      "slug": "tea-netherlands",
+      "name": "Pickwick",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Netherlands",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pickwick — catalogued in coffee & tea brands · Netherlands.",
+      "facts": {
+        "origin": "Netherlands",
+        "story": "Pickwick is still present in the living catalogue."
+      },
+      "coverHue": 246,
+      "mark": "marks/tea__tea-netherlands.svg",
+      "cover": "covers/tea__tea-netherlands.jpg",
+      "markIcon": null,
+      "sort": 739,
+      "status": "active"
+    },
+    {
+      "id": "tea__simon-levelt",
+      "slug": "simon-levelt",
+      "name": "Simon Lévelt",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Netherlands",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Simon Lévelt — catalogued in coffee & tea brands · Netherlands.",
+      "facts": {
+        "origin": "Netherlands",
+        "story": "Simon Lévelt is still present in the living catalogue."
+      },
+      "coverHue": 292,
+      "mark": "marks/tea__simon-levelt.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 740,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-belgium",
+      "slug": "tea-belgium",
+      "name": "Tea Together BE",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Belgium",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tea Together BE — catalogued in coffee & tea brands · Belgium.",
+      "facts": {
+        "origin": "Belgium",
+        "story": "Tea Together BE is still present in the living catalogue."
+      },
+      "coverHue": 73,
+      "mark": "marks/tea__tea-belgium.svg",
+      "cover": "covers/tea__tea-belgium.jpg",
+      "markIcon": null,
+      "sort": 741,
+      "status": "active"
+    },
+    {
+      "id": "tea__theotel",
+      "slug": "theotel",
+      "name": "Theotel",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Belgium",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Theotel — catalogued in coffee & tea brands · Belgium.",
+      "facts": {
+        "origin": "Belgium",
+        "story": "Theotel is still present in the living catalogue."
+      },
+      "coverHue": 224,
+      "mark": "marks/tea__theotel.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 742,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-switzerland",
+      "slug": "tea-switzerland",
+      "name": "Tea City",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Switzerland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tea City — catalogued in coffee & tea brands · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "story": "Tea City is still present in the living catalogue."
+      },
+      "coverHue": 345,
+      "mark": "marks/tea__tea-switzerland.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 743,
+      "status": "active"
+    },
+    {
+      "id": "tea__migros-tea",
+      "slug": "migros-tea",
+      "name": "Migros Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Switzerland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Migros Tea — catalogued in coffee & tea brands · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "story": "Migros Tea is still present in the living catalogue."
+      },
+      "coverHue": 115,
+      "mark": "marks/tea__migros-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 744,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-austria",
+      "slug": "tea-austria",
+      "name": "Sonnentor",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Austria",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sonnentor — catalogued in coffee & tea brands · Austria.",
+      "facts": {
+        "origin": "Austria",
+        "story": "Sonnentor is still present in the living catalogue."
+      },
+      "coverHue": 3,
+      "mark": "marks/tea__tea-austria.svg",
+      "cover": "covers/tea__tea-austria.jpg",
+      "markIcon": null,
+      "sort": 745,
+      "status": "active"
+    },
+    {
+      "id": "tea__teekanne-at",
+      "slug": "teekanne-at",
+      "name": "Teekanne Austria",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Austria",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Teekanne Austria — catalogued in coffee & tea brands · Austria.",
+      "facts": {
+        "origin": "Austria",
+        "story": "Teekanne Austria is still present in the living catalogue."
+      },
+      "coverHue": 232,
+      "mark": "marks/tea__teekanne-at.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 746,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-italy",
+      "slug": "tea-italy",
+      "name": "Pompadour Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Italy",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pompadour Tea — catalogued in coffee & tea brands · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "story": "Pompadour Tea is still present in the living catalogue."
+      },
+      "coverHue": 225,
+      "mark": "marks/tea__tea-italy.svg",
+      "cover": "covers/tea__tea-italy.jpg",
+      "markIcon": null,
+      "sort": 747,
+      "status": "active"
+    },
+    {
+      "id": "tea__twinings-it",
+      "slug": "twinings-it",
+      "name": "Twinings Italy",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Italy",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Twinings Italy — catalogued in coffee & tea brands · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "story": "Twinings Italy is still present in the living catalogue."
+      },
+      "coverHue": 138,
+      "mark": "marks/tea__twinings-it.svg",
+      "cover": "covers/tea__twinings-it.jpg",
+      "markIcon": null,
+      "sort": 748,
+      "status": "active"
+    },
+    {
+      "id": "tea__sir-winston",
+      "slug": "sir-winston",
+      "name": "Sir Winston Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Italy",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sir Winston Tea — catalogued in coffee & tea brands · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "story": "Sir Winston Tea is still present in the living catalogue."
+      },
+      "coverHue": 278,
+      "mark": "marks/tea__sir-winston.svg",
+      "cover": "covers/tea__sir-winston.jpg",
+      "markIcon": null,
+      "sort": 749,
+      "status": "active"
+    },
+    {
+      "id": "tea__teekanne-it",
+      "slug": "teekanne-it",
+      "name": "Teekanne Italy",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Italy",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Teekanne Italy — catalogued in coffee & tea brands · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "story": "Teekanne Italy is still present in the living catalogue."
+      },
+      "coverHue": 120,
+      "mark": "marks/tea__teekanne-it.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 750,
+      "status": "active"
+    },
+    {
+      "id": "tea__la-via-del-te",
+      "slug": "la-via-del-te",
+      "name": "La Via del Tè",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Italy",
+      "tags": [
+        "tea"
+      ],
+      "summary": "La Via del Tè — catalogued in coffee & tea brands · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "story": "La Via del Tè is still present in the living catalogue."
+      },
+      "coverHue": 197,
+      "mark": "marks/tea__la-via-del-te.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 751,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-spain",
+      "slug": "tea-spain",
+      "name": "Hornimans",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Spain",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Hornimans — catalogued in coffee & tea brands · Spain.",
+      "facts": {
+        "origin": "Spain",
+        "story": "Hornimans is still present in the living catalogue."
+      },
+      "coverHue": 247,
+      "mark": "marks/tea__tea-spain.svg",
+      "cover": "covers/tea__tea-spain.jpg",
+      "markIcon": null,
+      "sort": 752,
+      "status": "active"
+    },
+    {
+      "id": "tea__pompadour-es",
+      "slug": "pompadour-es",
+      "name": "Pompadour Spain",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Spain",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pompadour Spain — catalogued in coffee & tea brands · Spain.",
+      "facts": {
+        "origin": "Spain",
+        "story": "Pompadour Spain is still present in the living catalogue."
+      },
+      "coverHue": 81,
+      "mark": "marks/tea__pompadour-es.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 753,
+      "status": "active"
+    },
+    {
+      "id": "tea__lipton-es",
+      "slug": "lipton-es",
+      "name": "Lipton Spain",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Spain",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Spain — catalogued in coffee & tea brands · Spain.",
+      "facts": {
+        "origin": "Spain",
+        "story": "Lipton Spain is still present in the living catalogue."
+      },
+      "coverHue": 302,
+      "mark": "marks/tea__lipton-es.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 754,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-portugal",
+      "slug": "tea-portugal",
+      "name": "Cha Gorreana",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Portugal",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Cha Gorreana — catalogued in coffee & tea brands · Portugal.",
+      "facts": {
+        "origin": "Portugal",
+        "story": "Cha Gorreana is still present in the living catalogue."
+      },
+      "coverHue": 304,
+      "mark": "marks/tea__tea-portugal.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 755,
+      "status": "active"
+    },
+    {
+      "id": "tea__azores-tea",
+      "slug": "azores-tea",
+      "name": "Chá Porto Formoso",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Portugal",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Chá Porto Formoso — catalogued in coffee & tea brands · Portugal.",
+      "facts": {
+        "origin": "Portugal",
+        "story": "Chá Porto Formoso is still present in the living catalogue."
+      },
+      "coverHue": 242,
+      "mark": "marks/tea__azores-tea.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 756,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-greece",
+      "slug": "tea-greece",
+      "name": "Greek Mountain Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Greece",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Greek Mountain Tea Brand — catalogued in coffee & tea brands · Greece.",
+      "facts": {
+        "origin": "Greece",
+        "story": "Greek Mountain Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 207,
+      "mark": "marks/tea__tea-greece.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 757,
+      "status": "active"
+    },
+    {
+      "id": "tea__daphnes",
+      "slug": "daphnes",
+      "name": "Daphnes Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Greece",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Daphnes Tea — catalogued in coffee & tea brands · Greece.",
+      "facts": {
+        "origin": "Greece",
+        "story": "Daphnes Tea is still present in the living catalogue."
+      },
+      "coverHue": 74,
+      "mark": "marks/tea__daphnes.svg",
+      "cover": "covers/tea__daphnes.jpg",
+      "markIcon": null,
+      "sort": 758,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-poland",
+      "slug": "tea-poland",
+      "name": "Posti",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Poland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Posti — catalogued in coffee & tea brands · Poland.",
+      "facts": {
+        "origin": "Poland",
+        "story": "Posti is still present in the living catalogue."
+      },
+      "coverHue": 316,
+      "mark": "marks/tea__tea-poland.svg",
+      "cover": "covers/tea__tea-poland.jpg",
+      "markIcon": null,
+      "sort": 759,
+      "status": "active"
+    },
+    {
+      "id": "tea__dilmah-pl",
+      "slug": "dilmah-pl",
+      "name": "Dilmah Poland",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Poland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dilmah Poland — catalogued in coffee & tea brands · Poland.",
+      "facts": {
+        "origin": "Poland",
+        "story": "Dilmah Poland is still present in the living catalogue."
+      },
+      "coverHue": 71,
+      "mark": "marks/tea__dilmah-pl.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 760,
+      "status": "active"
+    },
+    {
+      "id": "tea__lipton-pl",
+      "slug": "lipton-pl",
+      "name": "Lipton Poland",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Poland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Poland — catalogued in coffee & tea brands · Poland.",
+      "facts": {
+        "origin": "Poland",
+        "story": "Lipton Poland is still present in the living catalogue."
+      },
+      "coverHue": 276,
+      "mark": "marks/tea__lipton-pl.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 761,
+      "status": "active"
+    },
+    {
+      "id": "tea__minutka",
+      "slug": "minutka",
+      "name": "Minutka",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Poland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Minutka — catalogued in coffee & tea brands · Poland.",
+      "facts": {
+        "origin": "Poland",
+        "story": "Minutka is still present in the living catalogue."
+      },
+      "coverHue": 274,
+      "mark": "marks/tea__minutka.svg",
+      "cover": "covers/tea__minutka.jpg",
+      "markIcon": null,
+      "sort": 762,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-czech",
+      "slug": "tea-czech",
+      "name": "Jemča",
+      "aliases": [
+        "jemca"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Czechia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Jemča — catalogued in coffee & tea brands · Czechia.",
+      "facts": {
+        "origin": "Czechia",
+        "story": "Jemča is still present in the living catalogue."
+      },
+      "coverHue": 353,
+      "mark": "marks/tea__tea-czech.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 763,
+      "status": "active"
+    },
+    {
+      "id": "tea__pigi",
+      "slug": "pigi",
+      "name": "Pigi Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Czechia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Pigi Tea — catalogued in coffee & tea brands · Czechia.",
+      "facts": {
+        "origin": "Czechia",
+        "story": "Pigi Tea is still present in the living catalogue."
+      },
+      "coverHue": 200,
+      "mark": "marks/tea__pigi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 764,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-slovakia",
+      "slug": "tea-slovakia",
+      "name": "Jemča SK",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Slovakia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Jemča SK — catalogued in coffee & tea brands · Slovakia.",
+      "facts": {
+        "origin": "Slovakia",
+        "story": "Jemča SK is still present in the living catalogue."
+      },
+      "coverHue": 356,
+      "mark": "marks/tea__tea-slovakia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 765,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-hungary",
+      "slug": "tea-hungary",
+      "name": "Filtro Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Hungary",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Filtro Tea — catalogued in coffee & tea brands · Hungary.",
+      "facts": {
+        "origin": "Hungary",
+        "story": "Filtro Tea is still present in the living catalogue."
+      },
+      "coverHue": 216,
+      "mark": "marks/tea__tea-hungary.svg",
+      "cover": "covers/tea__tea-hungary.jpg",
+      "markIcon": null,
+      "sort": 766,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-romania",
+      "slug": "tea-romania",
+      "name": "Fares",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Romania",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Fares — catalogued in coffee & tea brands · Romania.",
+      "facts": {
+        "origin": "Romania",
+        "story": "Fares is still present in the living catalogue."
+      },
+      "coverHue": 251,
+      "mark": "marks/tea__tea-romania.svg",
+      "cover": "covers/tea__tea-romania.jpg",
+      "markIcon": null,
+      "sort": 767,
+      "status": "active"
+    },
+    {
+      "id": "tea__plaafar",
+      "slug": "plaafar",
+      "name": "Plafar",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Romania",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Plafar — catalogued in coffee & tea brands · Romania.",
+      "facts": {
+        "origin": "Romania",
+        "story": "Plafar is still present in the living catalogue."
+      },
+      "coverHue": 254,
+      "mark": "marks/tea__plaafar.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 768,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-bulgaria",
+      "slug": "tea-bulgaria",
+      "name": "Bioprograma",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Bulgaria",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bioprograma — catalogued in coffee & tea brands · Bulgaria.",
+      "facts": {
+        "origin": "Bulgaria",
+        "story": "Bioprograma is still present in the living catalogue."
+      },
+      "coverHue": 9,
+      "mark": "marks/tea__tea-bulgaria.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 769,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-serbia",
+      "slug": "tea-serbia",
+      "name": "Fructus Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Serbia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Fructus Tea — catalogued in coffee & tea brands · Serbia.",
+      "facts": {
+        "origin": "Serbia",
+        "story": "Fructus Tea is still present in the living catalogue."
+      },
+      "coverHue": 188,
+      "mark": "marks/tea__tea-serbia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 770,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-croatia",
+      "slug": "tea-croatia",
+      "name": "Franck Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Croatia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Franck Tea — catalogued in coffee & tea brands · Croatia.",
+      "facts": {
+        "origin": "Croatia",
+        "story": "Franck Tea is still present in the living catalogue."
+      },
+      "coverHue": 265,
+      "mark": "marks/tea__tea-croatia.svg",
+      "cover": "covers/tea__tea-croatia.jpg",
+      "markIcon": null,
+      "sort": 771,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-slovenia",
+      "slug": "tea-slovenia",
+      "name": "1001 Cvet",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Slovenia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "1001 Cvet — catalogued in coffee & tea brands · Slovenia.",
+      "facts": {
+        "origin": "Slovenia",
+        "story": "1001 Cvet is still present in the living catalogue."
+      },
+      "coverHue": 3,
+      "mark": "marks/tea__tea-slovenia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 772,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-nordic",
+      "slug": "tea-nordic",
+      "name": "Kung Markatta Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sweden",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Kung Markatta Tea — catalogued in coffee & tea brands · Sweden.",
+      "facts": {
+        "origin": "Sweden",
+        "story": "Kung Markatta Tea is still present in the living catalogue."
+      },
+      "coverHue": 47,
+      "mark": "marks/tea__tea-nordic.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 773,
+      "status": "active"
+    },
+    {
+      "id": "tea__nordqvist",
+      "slug": "nordqvist",
+      "name": "Nordqvist",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Finland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Nordqvist — catalogued in coffee & tea brands · Finland.",
+      "facts": {
+        "origin": "Finland",
+        "story": "Nordqvist is still present in the living catalogue."
+      },
+      "coverHue": 5,
+      "mark": "marks/tea__nordqvist.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 774,
+      "status": "active"
+    },
+    {
+      "id": "tea__forsman",
+      "slug": "forsman",
+      "name": "Forsman Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Finland",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Forsman Tea — catalogued in coffee & tea brands · Finland.",
+      "facts": {
+        "origin": "Finland",
+        "story": "Forsman Tea is still present in the living catalogue."
+      },
+      "coverHue": 107,
+      "mark": "marks/tea__forsman.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 775,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-norway",
+      "slug": "tea-norway",
+      "name": "Løv Organic",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Norway",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Løv Organic — catalogued in coffee & tea brands · Norway.",
+      "facts": {
+        "origin": "Norway",
+        "story": "Løv Organic is still present in the living catalogue."
+      },
+      "coverHue": 80,
+      "mark": "marks/tea__tea-norway.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 776,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-denmark",
+      "slug": "tea-denmark",
+      "name": "Clipper Denmark",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Denmark",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Clipper Denmark — catalogued in coffee & tea brands · Denmark.",
+      "facts": {
+        "origin": "Denmark",
+        "story": "Clipper Denmark is still present in the living catalogue."
+      },
+      "coverHue": 24,
+      "mark": "marks/tea__tea-denmark.svg",
+      "cover": "covers/tea__tea-denmark.jpg",
+      "markIcon": null,
+      "sort": 777,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-egypt",
+      "slug": "tea-egypt",
+      "name": "El Arosa Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Egypt",
+      "tags": [
+        "tea"
+      ],
+      "summary": "El Arosa Tea — catalogued in coffee & tea brands · Egypt.",
+      "facts": {
+        "origin": "Egypt",
+        "story": "El Arosa Tea is still present in the living catalogue."
+      },
+      "coverHue": 321,
+      "mark": "marks/tea__tea-egypt.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 778,
+      "status": "active"
+    },
+    {
+      "id": "tea__ismail",
+      "slug": "ismail",
+      "name": "Ismail Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Egypt",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ismail Tea — catalogued in coffee & tea brands · Egypt.",
+      "facts": {
+        "origin": "Egypt",
+        "story": "Ismail Tea is still present in the living catalogue."
+      },
+      "coverHue": 230,
+      "mark": "marks/tea__ismail.svg",
+      "cover": "covers/tea__ismail.jpg",
+      "markIcon": null,
+      "sort": 779,
+      "status": "active"
+    },
+    {
+      "id": "tea__ahmed-tea-eg",
+      "slug": "ahmed-tea-eg",
+      "name": "Ahmed Tea Egypt",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Egypt",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ahmed Tea Egypt — catalogued in coffee & tea brands · Egypt.",
+      "facts": {
+        "origin": "Egypt",
+        "story": "Ahmed Tea Egypt is still present in the living catalogue."
+      },
+      "coverHue": 20,
+      "mark": "marks/tea__ahmed-tea-eg.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 780,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-morocco",
+      "slug": "tea-morocco",
+      "name": "Sultan Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Morocco",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sultan Tea — catalogued in coffee & tea brands · Morocco.",
+      "facts": {
+        "origin": "Morocco",
+        "story": "Sultan Tea is still present in the living catalogue."
+      },
+      "coverHue": 278,
+      "mark": "marks/tea__tea-morocco.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 781,
+      "status": "active"
+    },
+    {
+      "id": "tea__the-vert-maroc",
+      "slug": "the-vert-maroc",
+      "name": "Thé Vert du Maroc",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Morocco",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé Vert du Maroc — catalogued in coffee & tea brands · Morocco.",
+      "facts": {
+        "origin": "Morocco",
+        "story": "Thé Vert du Maroc is still present in the living catalogue."
+      },
+      "coverHue": 279,
+      "mark": "marks/tea__the-vert-maroc.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 782,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-tunisia",
+      "slug": "tea-tunisia",
+      "name": "Thé Tunisien",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Tunisia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé Tunisien — catalogued in coffee & tea brands · Tunisia.",
+      "facts": {
+        "origin": "Tunisia",
+        "story": "Thé Tunisien is still present in the living catalogue."
+      },
+      "coverHue": 333,
+      "mark": "marks/tea__tea-tunisia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 783,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-algeria",
+      "slug": "tea-algeria",
+      "name": "Thé Algérien",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Algeria",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé Algérien — catalogued in coffee & tea brands · Algeria.",
+      "facts": {
+        "origin": "Algeria",
+        "story": "Thé Algérien is still present in the living catalogue."
+      },
+      "coverHue": 327,
+      "mark": "marks/tea__tea-algeria.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 784,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-sudan",
+      "slug": "tea-sudan",
+      "name": "Sudan Tea Packers",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Sudan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sudan Tea Packers — catalogued in coffee & tea brands · Sudan.",
+      "facts": {
+        "origin": "Sudan",
+        "story": "Sudan Tea Packers is still present in the living catalogue."
+      },
+      "coverHue": 277,
+      "mark": "marks/tea__tea-sudan.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 785,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-kenya",
+      "slug": "tea-kenya",
+      "name": "Kericho Gold",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Kenya",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Kericho Gold — catalogued in coffee & tea brands · Kenya.",
+      "facts": {
+        "origin": "Kenya",
+        "story": "Kericho Gold is still present in the living catalogue."
+      },
+      "coverHue": 274,
+      "mark": "marks/tea__tea-kenya.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 786,
+      "status": "active"
+    },
+    {
+      "id": "tea__ketepa",
+      "slug": "ketepa",
+      "name": "Ketepa",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Kenya",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ketepa — catalogued in coffee & tea brands · Kenya.",
+      "facts": {
+        "origin": "Kenya",
+        "story": "Ketepa is still present in the living catalogue."
+      },
+      "coverHue": 105,
+      "mark": "marks/tea__ketepa.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 787,
+      "status": "active"
+    },
+    {
+      "id": "tea__finlays-ke",
+      "slug": "finlays-ke",
+      "name": "Finlays Kenya",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Kenya",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Finlays Kenya — catalogued in coffee & tea brands · Kenya.",
+      "facts": {
+        "origin": "Kenya",
+        "story": "Finlays Kenya is still present in the living catalogue."
+      },
+      "coverHue": 138,
+      "mark": "marks/tea__finlays-ke.svg",
+      "cover": "covers/tea__finlays-ke.jpg",
+      "markIcon": null,
+      "sort": 788,
+      "status": "active"
+    },
+    {
+      "id": "tea__sasini",
+      "slug": "sasini",
+      "name": "Sasini Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Kenya",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sasini Tea — catalogued in coffee & tea brands · Kenya.",
+      "facts": {
+        "origin": "Kenya",
+        "story": "Sasini Tea is still present in the living catalogue."
+      },
+      "coverHue": 28,
+      "mark": "marks/tea__sasini.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 789,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-uganda",
+      "slug": "tea-uganda",
+      "name": "Ugandan Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Uganda",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Ugandan Tea Brand — catalogued in coffee & tea brands · Uganda.",
+      "facts": {
+        "origin": "Uganda",
+        "story": "Ugandan Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 302,
+      "mark": "marks/tea__tea-uganda.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 790,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-tanzania",
+      "slug": "tea-tanzania",
+      "name": "Tanzania Tea Blenders",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Tanzania",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tanzania Tea Blenders — catalogued in coffee & tea brands · Tanzania.",
+      "facts": {
+        "origin": "Tanzania",
+        "story": "Tanzania Tea Blenders is still present in the living catalogue."
+      },
+      "coverHue": 48,
+      "mark": "marks/tea__tea-tanzania.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 791,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-rwanda",
+      "slug": "tea-rwanda",
+      "name": "Rwanda Mountain Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Rwanda",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Rwanda Mountain Tea — catalogued in coffee & tea brands · Rwanda.",
+      "facts": {
+        "origin": "Rwanda",
+        "story": "Rwanda Mountain Tea is still present in the living catalogue."
+      },
+      "coverHue": 345,
+      "mark": "marks/tea__tea-rwanda.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 792,
+      "status": "active"
+    },
+    {
+      "id": "tea__sorwathe",
+      "slug": "sorwathe",
+      "name": "Sorwathe",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Rwanda",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Sorwathe — catalogued in coffee & tea brands · Rwanda.",
+      "facts": {
+        "origin": "Rwanda",
+        "story": "Sorwathe is still present in the living catalogue."
+      },
+      "coverHue": 94,
+      "mark": "marks/tea__sorwathe.svg",
+      "cover": "covers/tea__sorwathe.jpg",
+      "markIcon": null,
+      "sort": 793,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-burundi",
+      "slug": "tea-burundi",
+      "name": "Burundi Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Burundi",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Burundi Tea — catalogued in coffee & tea brands · Burundi.",
+      "facts": {
+        "origin": "Burundi",
+        "story": "Burundi Tea is still present in the living catalogue."
+      },
+      "coverHue": 123,
+      "mark": "marks/tea__tea-burundi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 794,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-malawi",
+      "slug": "tea-malawi",
+      "name": "Satemwa Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Malawi",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Satemwa Tea — catalogued in coffee & tea brands · Malawi.",
+      "facts": {
+        "origin": "Malawi",
+        "story": "Satemwa Tea is still present in the living catalogue."
+      },
+      "coverHue": 253,
+      "mark": "marks/tea__tea-malawi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 795,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-zimbabwe",
+      "slug": "tea-zimbabwe",
+      "name": "Tanganda Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Zimbabwe",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Tanganda Tea — catalogued in coffee & tea brands · Zimbabwe.",
+      "facts": {
+        "origin": "Zimbabwe",
+        "story": "Tanganda Tea is still present in the living catalogue."
+      },
+      "coverHue": 333,
+      "mark": "marks/tea__tea-zimbabwe.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 796,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-zambia",
+      "slug": "tea-zambia",
+      "name": "Kawambwa Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Zambia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Kawambwa Tea — catalogued in coffee & tea brands · Zambia.",
+      "facts": {
+        "origin": "Zambia",
+        "story": "Kawambwa Tea is still present in the living catalogue."
+      },
+      "coverHue": 126,
+      "mark": "marks/tea__tea-zambia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 797,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-sa",
+      "slug": "tea-sa",
+      "name": "Five Roses",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Africa",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Five Roses — catalogued in coffee & tea brands · South Africa.",
+      "facts": {
+        "origin": "South Africa",
+        "story": "Five Roses is still present in the living catalogue."
+      },
+      "coverHue": 192,
+      "mark": "marks/tea__tea-sa.svg",
+      "cover": "covers/tea__tea-sa.jpg",
+      "markIcon": null,
+      "sort": 798,
+      "status": "active"
+    },
+    {
+      "id": "tea__joekels",
+      "slug": "joekels",
+      "name": "Jockels Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Africa",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Jockels Tea — catalogued in coffee & tea brands · South Africa.",
+      "facts": {
+        "origin": "South Africa",
+        "story": "Jockels Tea is still present in the living catalogue."
+      },
+      "coverHue": 188,
+      "mark": "marks/tea__joekels.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 799,
+      "status": "active"
+    },
+    {
+      "id": "tea__freshpak",
+      "slug": "freshpak",
+      "name": "Freshpak Rooibos",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Africa",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Freshpak Rooibos — catalogued in coffee & tea brands · South Africa.",
+      "facts": {
+        "origin": "South Africa",
+        "story": "Freshpak Rooibos is still present in the living catalogue."
+      },
+      "coverHue": 137,
+      "mark": "marks/tea__freshpak.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 800,
+      "status": "active"
+    },
+    {
+      "id": "tea__rooibos-ltd",
+      "slug": "rooibos-ltd",
+      "name": "Rooibos Ltd",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Africa",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Rooibos Ltd — catalogued in coffee & tea brands · South Africa.",
+      "facts": {
+        "origin": "South Africa",
+        "story": "Rooibos Ltd is still present in the living catalogue."
+      },
+      "coverHue": 177,
+      "mark": "marks/tea__rooibos-ltd.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 801,
+      "status": "active"
+    },
+    {
+      "id": "tea__laager",
+      "slug": "laager",
+      "name": "Laager",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "South Africa",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Laager — catalogued in coffee & tea brands · South Africa.",
+      "facts": {
+        "origin": "South Africa",
+        "story": "Laager is still present in the living catalogue."
+      },
+      "coverHue": 181,
+      "mark": "marks/tea__laager.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 802,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-nigeria",
+      "slug": "tea-nigeria",
+      "name": "Lipton Nigeria",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Nigeria",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Nigeria — catalogued in coffee & tea brands · Nigeria.",
+      "facts": {
+        "origin": "Nigeria",
+        "story": "Lipton Nigeria is still present in the living catalogue."
+      },
+      "coverHue": 199,
+      "mark": "marks/tea__tea-nigeria.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 803,
+      "status": "active"
+    },
+    {
+      "id": "tea__top-tea",
+      "slug": "top-tea",
+      "name": "Top Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Nigeria",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Top Tea — catalogued in coffee & tea brands · Nigeria.",
+      "facts": {
+        "origin": "Nigeria",
+        "story": "Top Tea is still present in the living catalogue."
+      },
+      "coverHue": 299,
+      "mark": "marks/tea__top-tea.svg",
+      "cover": "covers/tea__top-tea.jpg",
+      "markIcon": null,
+      "sort": 804,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-ghana",
+      "slug": "tea-ghana",
+      "name": "Lipton Ghana",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Ghana",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lipton Ghana — catalogued in coffee & tea brands · Ghana.",
+      "facts": {
+        "origin": "Ghana",
+        "story": "Lipton Ghana is still present in the living catalogue."
+      },
+      "coverHue": 9,
+      "mark": "marks/tea__tea-ghana.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 805,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-ivory",
+      "slug": "tea-ivory",
+      "name": "Thé Côte d'Ivoire",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Ivory Coast",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé Côte d'Ivoire — catalogued in coffee & tea brands · Ivory Coast.",
+      "facts": {
+        "origin": "Ivory Coast",
+        "story": "Thé Côte d'Ivoire is still present in the living catalogue."
+      },
+      "coverHue": 7,
+      "mark": "marks/tea__tea-ivory.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 806,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-cameroon",
+      "slug": "tea-cameroon",
+      "name": "Thé Cameroun",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Cameroon",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé Cameroun — catalogued in coffee & tea brands · Cameroon.",
+      "facts": {
+        "origin": "Cameroon",
+        "story": "Thé Cameroun is still present in the living catalogue."
+      },
+      "coverHue": 260,
+      "mark": "marks/tea__tea-cameroon.svg",
+      "cover": "covers/tea__tea-cameroon.jpg",
+      "markIcon": null,
+      "sort": 807,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-madagascar",
+      "slug": "tea-madagascar",
+      "name": "Thé de Madagascar",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Madagascar",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé de Madagascar — catalogued in coffee & tea brands · Madagascar.",
+      "facts": {
+        "origin": "Madagascar",
+        "story": "Thé de Madagascar is still present in the living catalogue."
+      },
+      "coverHue": 174,
+      "mark": "marks/tea__tea-madagascar.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 808,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-mauritius",
+      "slug": "tea-mauritius",
+      "name": "Bois Chéri",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Mauritius",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bois Chéri — catalogued in coffee & tea brands · Mauritius.",
+      "facts": {
+        "origin": "Mauritius",
+        "story": "Bois Chéri is still present in the living catalogue."
+      },
+      "coverHue": 65,
+      "mark": "marks/tea__tea-mauritius.svg",
+      "cover": "covers/tea__tea-mauritius.jpg",
+      "markIcon": null,
+      "sort": 809,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-reunion",
+      "slug": "tea-reunion",
+      "name": "Thé de Bourbon",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Réunion",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Thé de Bourbon — catalogued in coffee & tea brands · Réunion.",
+      "facts": {
+        "origin": "Réunion",
+        "story": "Thé de Bourbon is still present in the living catalogue."
+      },
+      "coverHue": 66,
+      "mark": "marks/tea__tea-reunion.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 810,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-saudi",
+      "slug": "tea-saudi",
+      "name": "Rabea Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Saudi Arabia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Rabea Tea — catalogued in coffee & tea brands · Saudi Arabia.",
+      "facts": {
+        "origin": "Saudi Arabia",
+        "story": "Rabea Tea is still present in the living catalogue."
+      },
+      "coverHue": 122,
+      "mark": "marks/tea__tea-saudi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 811,
+      "status": "active"
+    },
+    {
+      "id": "tea__al-kbous",
+      "slug": "al-kbous",
+      "name": "Al-Kbous",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Saudi Arabia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Al-Kbous — catalogued in coffee & tea brands · Saudi Arabia.",
+      "facts": {
+        "origin": "Saudi Arabia",
+        "story": "Al-Kbous is still present in the living catalogue."
+      },
+      "coverHue": 177,
+      "mark": "marks/tea__al-kbous.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 812,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-uae",
+      "slug": "tea-uae",
+      "name": "Alokozay Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UAE",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Alokozay Tea — catalogued in coffee & tea brands · UAE.",
+      "facts": {
+        "origin": "UAE",
+        "story": "Alokozay Tea is still present in the living catalogue."
+      },
+      "coverHue": 231,
+      "mark": "marks/tea__tea-uae.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 813,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-qatar",
+      "slug": "tea-qatar",
+      "name": "Alokozay Qatar",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Qatar",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Alokozay Qatar — catalogued in coffee & tea brands · Qatar.",
+      "facts": {
+        "origin": "Qatar",
+        "story": "Alokozay Qatar is still present in the living catalogue."
+      },
+      "coverHue": 275,
+      "mark": "marks/tea__tea-qatar.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 814,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-kuwait",
+      "slug": "tea-kuwait",
+      "name": "Alokozay Kuwait",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Kuwait",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Alokozay Kuwait — catalogued in coffee & tea brands · Kuwait.",
+      "facts": {
+        "origin": "Kuwait",
+        "story": "Alokozay Kuwait is still present in the living catalogue."
+      },
+      "coverHue": 249,
+      "mark": "marks/tea__tea-kuwait.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 815,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-jordan",
+      "slug": "tea-jordan",
+      "name": "Jordan Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Jordan",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Jordan Tea — catalogued in coffee & tea brands · Jordan.",
+      "facts": {
+        "origin": "Jordan",
+        "story": "Jordan Tea is still present in the living catalogue."
+      },
+      "coverHue": 286,
+      "mark": "marks/tea__tea-jordan.svg",
+      "cover": "covers/tea__tea-jordan.jpg",
+      "markIcon": null,
+      "sort": 816,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-lebanon",
+      "slug": "tea-lebanon",
+      "name": "Café Najjar Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Lebanon",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Café Najjar Tea — catalogued in coffee & tea brands · Lebanon.",
+      "facts": {
+        "origin": "Lebanon",
+        "story": "Café Najjar Tea is still present in the living catalogue."
+      },
+      "coverHue": 275,
+      "mark": "marks/tea__tea-lebanon.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 817,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-israel",
+      "slug": "tea-israel",
+      "name": "Wissotzky",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Israel",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Wissotzky — catalogued in coffee & tea brands · Israel.",
+      "facts": {
+        "origin": "Israel",
+        "story": "Wissotzky is still present in the living catalogue."
+      },
+      "coverHue": 18,
+      "mark": "marks/tea__tea-israel.svg",
+      "cover": "covers/tea__tea-israel.jpg",
+      "markIcon": null,
+      "sort": 818,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-iraq",
+      "slug": "tea-iraq",
+      "name": "Iraqi Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Iraq",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Iraqi Tea Brand — catalogued in coffee & tea brands · Iraq.",
+      "facts": {
+        "origin": "Iraq",
+        "story": "Iraqi Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 211,
+      "mark": "marks/tea__tea-iraq.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 819,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-yemen",
+      "slug": "tea-yemen",
+      "name": "Yemeni Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Yemen",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Yemeni Tea Brand — catalogued in coffee & tea brands · Yemen.",
+      "facts": {
+        "origin": "Yemen",
+        "story": "Yemeni Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 40,
+      "mark": "marks/tea__tea-yemen.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 820,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-australia",
+      "slug": "tea-australia",
+      "name": "Nerada",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Australia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Nerada — catalogued in coffee & tea brands · Australia.",
+      "facts": {
+        "origin": "Australia",
+        "story": "Nerada is still present in the living catalogue."
+      },
+      "coverHue": 222,
+      "mark": "marks/tea__tea-australia.svg",
+      "cover": "covers/tea__tea-australia.jpg",
+      "markIcon": null,
+      "sort": 821,
+      "status": "active"
+    },
+    {
+      "id": "tea__bushells",
+      "slug": "bushells",
+      "name": "Bushells",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Australia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bushells — catalogued in coffee & tea brands · Australia.",
+      "facts": {
+        "origin": "Australia",
+        "story": "Bushells is still present in the living catalogue."
+      },
+      "coverHue": 11,
+      "mark": "marks/tea__bushells.svg",
+      "cover": "covers/tea__bushells.jpg",
+      "markIcon": null,
+      "sort": 822,
+      "status": "active"
+    },
+    {
+      "id": "tea__lanchoo",
+      "slug": "lanchoo",
+      "name": "Lanchoo",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Australia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Lanchoo — catalogued in coffee & tea brands · Australia.",
+      "facts": {
+        "origin": "Australia",
+        "story": "Lanchoo is still present in the living catalogue."
+      },
+      "coverHue": 73,
+      "mark": "marks/tea__lanchoo.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 823,
+      "status": "active"
+    },
+    {
+      "id": "tea__dilmah-au",
+      "slug": "dilmah-au",
+      "name": "Dilmah Australia",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Australia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dilmah Australia — catalogued in coffee & tea brands · Australia.",
+      "facts": {
+        "origin": "Australia",
+        "story": "Dilmah Australia is still present in the living catalogue."
+      },
+      "coverHue": 335,
+      "mark": "marks/tea__dilmah-au.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 824,
+      "status": "active"
+    },
+    {
+      "id": "tea__the-tea-centre",
+      "slug": "the-tea-centre",
+      "name": "The Tea Centre",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Australia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "The Tea Centre — catalogued in coffee & tea brands · Australia.",
+      "facts": {
+        "origin": "Australia",
+        "story": "The Tea Centre is still present in the living catalogue."
+      },
+      "coverHue": 225,
+      "mark": "marks/tea__the-tea-centre.svg",
+      "cover": "covers/tea__the-tea-centre.jpg",
+      "markIcon": null,
+      "sort": 825,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-nz",
+      "slug": "tea-nz",
+      "name": "Bell Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "New Zealand",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Bell Tea — catalogued in coffee & tea brands · New Zealand.",
+      "facts": {
+        "origin": "New Zealand",
+        "story": "Bell Tea is still present in the living catalogue."
+      },
+      "coverHue": 62,
+      "mark": "marks/tea__tea-nz.svg",
+      "cover": "covers/tea__tea-nz.jpg",
+      "markIcon": null,
+      "sort": 826,
+      "status": "active"
+    },
+    {
+      "id": "tea__choysa",
+      "slug": "choysa",
+      "name": "Choysa",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "New Zealand",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Choysa — catalogued in coffee & tea brands · New Zealand.",
+      "facts": {
+        "origin": "New Zealand",
+        "story": "Choysa is still present in the living catalogue."
+      },
+      "coverHue": 298,
+      "mark": "marks/tea__choysa.svg",
+      "cover": "covers/tea__choysa.jpg",
+      "markIcon": null,
+      "sort": 827,
+      "status": "active"
+    },
+    {
+      "id": "tea__dilmah-nz",
+      "slug": "dilmah-nz",
+      "name": "Dilmah NZ",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "New Zealand",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Dilmah NZ — catalogued in coffee & tea brands · New Zealand.",
+      "facts": {
+        "origin": "New Zealand",
+        "story": "Dilmah NZ is still present in the living catalogue."
+      },
+      "coverHue": 23,
+      "mark": "marks/tea__dilmah-nz.svg",
+      "cover": "covers/tea__dilmah-nz.jpg",
+      "markIcon": null,
+      "sort": 828,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-fiji",
+      "slug": "tea-fiji",
+      "name": "Fiji Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Fiji",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Fiji Tea — catalogued in coffee & tea brands · Fiji.",
+      "facts": {
+        "origin": "Fiji",
+        "story": "Fiji Tea is still present in the living catalogue."
+      },
+      "coverHue": 20,
+      "mark": "marks/tea__tea-fiji.svg",
+      "cover": "covers/tea__tea-fiji.jpg",
+      "markIcon": null,
+      "sort": 829,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-png",
+      "slug": "tea-png",
+      "name": "PNG Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Papua New Guinea",
+      "tags": [
+        "tea"
+      ],
+      "summary": "PNG Tea — catalogued in coffee & tea brands · Papua New Guinea.",
+      "facts": {
+        "origin": "Papua New Guinea",
+        "story": "PNG Tea is still present in the living catalogue."
+      },
+      "coverHue": 151,
+      "mark": "marks/tea__tea-png.svg",
+      "cover": "covers/tea__tea-png.jpg",
+      "markIcon": null,
+      "sort": 830,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-brazil",
+      "slug": "tea-brazil",
+      "name": "Mate Leão",
+      "aliases": [
+        "leao"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Brazil",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Mate Leão — catalogued in coffee & tea brands · Brazil.",
+      "facts": {
+        "origin": "Brazil",
+        "story": "Mate Leão is still present in the living catalogue."
+      },
+      "coverHue": 22,
+      "mark": "marks/tea__tea-brazil.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 831,
+      "status": "active"
+    },
+    {
+      "id": "tea__cha-leao",
+      "slug": "cha-leao",
+      "name": "Chá Leão",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Brazil",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Chá Leão — catalogued in coffee & tea brands · Brazil.",
+      "facts": {
+        "origin": "Brazil",
+        "story": "Chá Leão is still present in the living catalogue."
+      },
+      "coverHue": 173,
+      "mark": "marks/tea__cha-leao.svg",
+      "cover": "covers/tea__cha-leao.jpg",
+      "markIcon": null,
+      "sort": 832,
+      "status": "active"
+    },
+    {
+      "id": "tea__matte-leao",
+      "slug": "matte-leao",
+      "name": "Matte Leão",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Brazil",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Matte Leão — catalogued in coffee & tea brands · Brazil.",
+      "facts": {
+        "origin": "Brazil",
+        "story": "Matte Leão is still present in the living catalogue."
+      },
+      "coverHue": 240,
+      "mark": "marks/tea__matte-leao.svg",
+      "cover": "covers/tea__matte-leao.jpg",
+      "markIcon": null,
+      "sort": 833,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-argentina-more",
+      "slug": "tea-argentina-more",
+      "name": "Playadito",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Argentina",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Playadito — catalogued in coffee & tea brands · Argentina.",
+      "facts": {
+        "origin": "Argentina",
+        "story": "Playadito is still present in the living catalogue."
+      },
+      "coverHue": 269,
+      "mark": "marks/tea__tea-argentina-more.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 834,
+      "status": "active"
+    },
+    {
+      "id": "tea__mate-cbse",
+      "slug": "mate-cbse",
+      "name": "CBSé",
+      "aliases": [
+        "cbse"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Argentina",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "CBSé — catalogued in coffee & tea brands · Argentina.",
+      "facts": {
+        "origin": "Argentina",
+        "story": "CBSé is still present in the living catalogue."
+      },
+      "coverHue": 172,
+      "mark": "marks/tea__mate-cbse.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 835,
+      "status": "active"
+    },
+    {
+      "id": "tea__mate-amanda",
+      "slug": "mate-amanda",
+      "name": "Amanda",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Argentina",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Amanda — catalogued in coffee & tea brands · Argentina.",
+      "facts": {
+        "origin": "Argentina",
+        "story": "Amanda is still present in the living catalogue."
+      },
+      "coverHue": 81,
+      "mark": "marks/tea__mate-amanda.svg",
+      "cover": "covers/tea__mate-amanda.jpg",
+      "markIcon": null,
+      "sort": 836,
+      "status": "active"
+    },
+    {
+      "id": "tea__mate-la-merced",
+      "slug": "mate-la-merced",
+      "name": "La Merced",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Argentina",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "La Merced — catalogued in coffee & tea brands · Argentina.",
+      "facts": {
+        "origin": "Argentina",
+        "story": "La Merced is still present in the living catalogue."
+      },
+      "coverHue": 349,
+      "mark": "marks/tea__mate-la-merced.svg",
+      "cover": "covers/tea__mate-la-merced.jpg",
+      "markIcon": null,
+      "sort": 837,
+      "status": "active"
+    },
+    {
+      "id": "tea__mate-union",
+      "slug": "mate-union",
+      "name": "Unión",
+      "aliases": [
+        "union mate"
+      ],
+      "categoryId": "hotdrinks",
+      "origin": "Argentina",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Unión — catalogued in coffee & tea brands · Argentina.",
+      "facts": {
+        "origin": "Argentina",
+        "story": "Unión is still present in the living catalogue."
+      },
+      "coverHue": 204,
+      "mark": "marks/tea__mate-union.svg",
+      "cover": "covers/tea__mate-union.jpg",
+      "markIcon": null,
+      "sort": 838,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-uruguay",
+      "slug": "tea-uruguay",
+      "name": "Canarias Mate",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Uruguay",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Canarias Mate — catalogued in coffee & tea brands · Uruguay.",
+      "facts": {
+        "origin": "Uruguay",
+        "story": "Canarias Mate is still present in the living catalogue."
+      },
+      "coverHue": 84,
+      "mark": "marks/tea__tea-uruguay.svg",
+      "cover": "covers/tea__tea-uruguay.jpg",
+      "markIcon": null,
+      "sort": 839,
+      "status": "active"
+    },
+    {
+      "id": "tea__mate-sara",
+      "slug": "mate-sara",
+      "name": "Sara Mate",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Uruguay",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Sara Mate — catalogued in coffee & tea brands · Uruguay.",
+      "facts": {
+        "origin": "Uruguay",
+        "story": "Sara Mate is still present in the living catalogue."
+      },
+      "coverHue": 272,
+      "mark": "marks/tea__mate-sara.svg",
+      "cover": "covers/tea__mate-sara.jpg",
+      "markIcon": null,
+      "sort": 840,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-paraguay",
+      "slug": "tea-paraguay",
+      "name": "Pajarito",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Paraguay",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Pajarito — catalogued in coffee & tea brands · Paraguay.",
+      "facts": {
+        "origin": "Paraguay",
+        "story": "Pajarito is still present in the living catalogue."
+      },
+      "coverHue": 152,
+      "mark": "marks/tea__tea-paraguay.svg",
+      "cover": "covers/tea__tea-paraguay.jpg",
+      "markIcon": null,
+      "sort": 841,
+      "status": "active"
+    },
+    {
+      "id": "tea__mate-kurupi",
+      "slug": "mate-kurupi",
+      "name": "Kurupí",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Paraguay",
+      "tags": [
+        "yerba-mate",
+        "tea"
+      ],
+      "summary": "Kurupí — catalogued in coffee & tea brands · Paraguay.",
+      "facts": {
+        "origin": "Paraguay",
+        "story": "Kurupí is still present in the living catalogue."
+      },
+      "coverHue": 233,
+      "mark": "marks/tea__mate-kurupi.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 842,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-chile",
+      "slug": "tea-chile",
+      "name": "Té Supremo",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Chile",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Té Supremo — catalogued in coffee & tea brands · Chile.",
+      "facts": {
+        "origin": "Chile",
+        "story": "Té Supremo is still present in the living catalogue."
+      },
+      "coverHue": 315,
+      "mark": "marks/tea__tea-chile.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 843,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-peru",
+      "slug": "tea-peru",
+      "name": "Té Peruano",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Peru",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Té Peruano — catalogued in coffee & tea brands · Peru.",
+      "facts": {
+        "origin": "Peru",
+        "story": "Té Peruano is still present in the living catalogue."
+      },
+      "coverHue": 226,
+      "mark": "marks/tea__tea-peru.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 844,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-colombia",
+      "slug": "tea-colombia",
+      "name": "Hornimans Colombia",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Colombia",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Hornimans Colombia — catalogued in coffee & tea brands · Colombia.",
+      "facts": {
+        "origin": "Colombia",
+        "story": "Hornimans Colombia is still present in the living catalogue."
+      },
+      "coverHue": 198,
+      "mark": "marks/tea__tea-colombia.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 845,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-mexico",
+      "slug": "tea-mexico",
+      "name": "La Pastora",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Mexico",
+      "tags": [
+        "tea"
+      ],
+      "summary": "La Pastora — catalogued in coffee & tea brands · Mexico.",
+      "facts": {
+        "origin": "Mexico",
+        "story": "La Pastora is still present in the living catalogue."
+      },
+      "coverHue": 263,
+      "mark": "marks/tea__tea-mexico.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 846,
+      "status": "active"
+    },
+    {
+      "id": "tea__mccormick-tea-mx",
+      "slug": "mccormick-tea-mx",
+      "name": "McCormick Tea MX",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Mexico",
+      "tags": [
+        "tea"
+      ],
+      "summary": "McCormick Tea MX — catalogued in coffee & tea brands · Mexico.",
+      "facts": {
+        "origin": "Mexico",
+        "story": "McCormick Tea MX is still present in the living catalogue."
+      },
+      "coverHue": 302,
+      "mark": "marks/tea__mccormick-tea-mx.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 847,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-cuba",
+      "slug": "tea-cuba",
+      "name": "Té Cubano",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Cuba",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Té Cubano — catalogued in coffee & tea brands · Cuba.",
+      "facts": {
+        "origin": "Cuba",
+        "story": "Té Cubano is still present in the living catalogue."
+      },
+      "coverHue": 43,
+      "mark": "marks/tea__tea-cuba.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 848,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-jamaica",
+      "slug": "tea-jamaica",
+      "name": "Jamaican Ginger Tea Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Jamaica",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Jamaican Ginger Tea Brand — catalogued in coffee & tea brands · Jamaica.",
+      "facts": {
+        "origin": "Jamaica",
+        "story": "Jamaican Ginger Tea Brand is still present in the living catalogue."
+      },
+      "coverHue": 130,
+      "mark": "marks/tea__tea-jamaica.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 849,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-hk",
+      "slug": "tea-hk",
+      "name": "Luk Yu Tea",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Hong Kong",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Luk Yu Tea — catalogued in coffee & tea brands · Hong Kong.",
+      "facts": {
+        "origin": "Hong Kong",
+        "story": "Luk Yu Tea is still present in the living catalogue."
+      },
+      "coverHue": 221,
+      "mark": "marks/tea__tea-hk.svg",
+      "cover": "covers/tea__tea-hk.jpg",
+      "markIcon": null,
+      "sort": 850,
+      "status": "active"
+    },
+    {
+      "id": "tea__fook-ming-tong",
+      "slug": "fook-ming-tong",
+      "name": "Fook Ming Tong",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Hong Kong",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Fook Ming Tong — catalogued in coffee & tea brands · Hong Kong.",
+      "facts": {
+        "origin": "Hong Kong",
+        "story": "Fook Ming Tong is still present in the living catalogue."
+      },
+      "coverHue": 249,
+      "mark": "marks/tea__fook-ming-tong.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 851,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-macau",
+      "slug": "tea-macau",
+      "name": "Macau Tea House Brand",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Macau",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Macau Tea House Brand — catalogued in coffee & tea brands · Macau.",
+      "facts": {
+        "origin": "Macau",
+        "story": "Macau Tea House Brand is still present in the living catalogue."
+      },
+      "coverHue": 17,
+      "mark": "marks/tea__tea-macau.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 852,
+      "status": "active"
+    },
+    {
+      "id": "tea__gong-fu",
+      "slug": "gong-fu",
+      "name": "Gongfu Tea HK",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "Hong Kong",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Gongfu Tea HK — catalogued in coffee & tea brands · Hong Kong.",
+      "facts": {
+        "origin": "Hong Kong",
+        "story": "Gongfu Tea HK is still present in the living catalogue."
+      },
+      "coverHue": 190,
+      "mark": "marks/tea__gong-fu.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 853,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-scotch",
+      "slug": "tea-scotch",
+      "name": "Scottish Blend",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Scottish Blend — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Scottish Blend is still present in the living catalogue."
+      },
+      "coverHue": 52,
+      "mark": "marks/tea__tea-scotch.svg",
+      "cover": null,
+      "markIcon": null,
+      "sort": 854,
+      "status": "active"
+    },
+    {
+      "id": "tea__tea-welsh",
+      "slug": "tea-welsh",
+      "name": "Welsh Brew",
+      "aliases": [],
+      "categoryId": "hotdrinks",
+      "origin": "UK",
+      "tags": [
+        "tea"
+      ],
+      "summary": "Welsh Brew — catalogued in coffee & tea brands · UK.",
+      "facts": {
+        "origin": "UK",
+        "story": "Welsh Brew is still present in the living catalogue."
+      },
+      "coverHue": 345,
+      "mark": "marks/tea__tea-welsh.svg",
+      "cover": "covers/tea__tea-welsh.jpg",
+      "markIcon": null,
+      "sort": 855,
+      "status": "active"
+    },
+    {
       "id": "clothes__nike",
       "slug": "nike",
       "name": "Nike",
@@ -80482,7 +86783,7 @@
       },
       "coverHue": 3,
       "mark": "marks/luxury__beijing-enamel.svg",
-      "cover": null,
+      "cover": "covers/luxury__beijing-enamel.jpg",
       "markIcon": null,
       "sort": 68,
       "status": "active"
