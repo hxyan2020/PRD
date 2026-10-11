@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Stag beetle">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(115 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(155 48% 38%)"/>
-    </linearGradient>
-  </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">◉</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">SB</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <ellipse cx="64" cy="72" rx="28" ry="16" fill="#C4C4C4"/>
+  <circle cx="88" cy="64" r="10" fill="#C4C4C4"/>
+  <path fill="#C4C4C4" d="M40 72c-12 8-20 20-16 28 M48 68c-8-16-4-28 4-28 M96 60l12-16 M96 68l16-8"/>
 </svg>

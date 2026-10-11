@@ -5044,6 +5044,25 @@ const CATEGORIES = {
   console.log(`Merged ${added} Catalogue of Life flower species (total ${CATEGORIES.flowers.items.length}).`);
 })();
 
+/** Expand animals & insects from Catalogue of Life vertebrate / arthropod genera. */
+(function mergeColAnimalSpecies() {
+  const colPath = join(__dirname, "data", "animal-seeds-col.json");
+  if (!existsSync(colPath) || !CATEGORIES.animals) return;
+  const extra = JSON.parse(readFileSync(colPath, "utf8"));
+  if (!Array.isArray(extra) || !extra.length) return;
+  const seen = new Set(CATEGORIES.animals.items.map((s) => s.id));
+  let added = 0;
+  for (const seed of extra) {
+    if (!seed?.id || !seed?.name || seen.has(seed.id)) continue;
+    seen.add(seed.id);
+    CATEGORIES.animals.items.push(seed);
+    added += 1;
+  }
+  CATEGORIES.animals.blurb =
+    "Living animals and insects still found on Earth — curated icons plus Catalogue of Life species across major genera.";
+  console.log(`Merged ${added} Catalogue of Life animal species (total ${CATEGORIES.animals.items.length}).`);
+})();
+
 /** Fold liquor / wine / sake / beer into one Alcohol catalogue (keep asset prefixes). */
 (function mergeBeverageCategories() {
   function fold(parts, id, label, blurb) {
@@ -5287,6 +5306,46 @@ function flowerSilhouetteSvg() {
 </svg>`;
 }
 
+/** Grey animal silhouettes for COL species without a hand-drawn mark. */
+function animalSilhouetteSvg(kind) {
+  const fill = "#C4C4C4";
+  if (kind === "bird") {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="${fill}" d="M28 72c8-20 28-36 52-36 12 0 24 4 32 12l8-16-4 20c8 8 8 20 0 28-12 12-32 16-52 12-16-4-28-12-36-20z"/>
+</svg>`;
+  }
+  if (kind === "insect" || kind === "arachnid") {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <ellipse cx="64" cy="72" rx="28" ry="16" fill="${fill}"/>
+  <circle cx="88" cy="64" r="10" fill="${fill}"/>
+  <path fill="${fill}" d="M40 72c-12 8-20 20-16 28 M48 68c-8-16-4-28 4-28 M96 60l12-16 M96 68l16-8"/>
+</svg>`;
+  }
+  if (kind === "fish") {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="${fill}" d="M16 64c16-24 40-36 64-32 16 2 28 12 32 24H88c0 8-8 16-20 16H44c-12 0-22-4-28-8z M92 48l16-16-4 20"/>
+</svg>`;
+  }
+  if (kind === "reptile" || kind === "amphibian") {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <ellipse cx="64" cy="70" rx="40" ry="22" fill="${fill}"/>
+  <circle cx="96" cy="62" r="12" fill="${fill}"/>
+  <path fill="${fill}" d="M36 86l-12 16 M52 90l-4 18 M76 90l4 18 M92 86l12 16"/>
+</svg>`;
+  }
+  // mammal / other / mollusc default quadruped-ish
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <ellipse cx="60" cy="68" rx="36" ry="22" fill="${fill}"/>
+  <circle cx="92" cy="56" r="14" fill="${fill}"/>
+  <path fill="${fill}" d="M40 84v28h10V84 M70 84v28h10V84 M100 52l12-8"/>
+</svg>`;
+}
+
 /** Local SVG mark so locked tiles show a recognizable grey logo shape offline. */
 function writeMarkSvg(itemId, name, categoryId, hue, tags = []) {
   mkdirSync(marksDir, { recursive: true });
@@ -5313,6 +5372,13 @@ function writeMarkSvg(itemId, name, categoryId, hue, tags = []) {
   }
   if (categoryId === "flowers") {
     writeFileSync(out, flowerSilhouetteSvg());
+    return `marks/${itemId}.svg`;
+  }
+  if (categoryId === "animals") {
+    const kind = ["mammal", "bird", "reptile", "amphibian", "fish", "insect", "arachnid", "mollusc", "other"].find(
+      (k) => tags.includes(k),
+    ) ?? "other";
+    writeFileSync(out, animalSilhouetteSvg(kind));
     return `marks/${itemId}.svg`;
   }
   const initials = name
