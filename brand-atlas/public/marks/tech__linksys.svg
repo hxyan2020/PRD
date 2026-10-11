@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Linksys">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Linksys</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAASCAYAAACTkNaDAAABJklEQVR42u1ZWw7AIAgTs/tfmX3OLPMBAtY4fk20QCmwETOntxFR0trXfeWdtXPJu1rMvbdb51bWw9mKnwe+nIDMMwGRyZ8poAgr8WU0cB4ksFCdCCyR1U9EiYjwCGBJAmZelvzW3RL/vAl6ocoUM7vMIpKgzgZfUrka0luQIydg0yoBkuTX3hvxLQIrBAGs5NJ7kPQi+ErMMC2gJZej7cC68rWJeb/V802L1wIfVAvoKYFmgkZZyyQYvPGWsYKeAU60WvK9SJERA6CZCWbnCMsAz8h6tDJcyJUg7XEjvbYVRG2ApXv9DEGsZxnoFqBxFv0zLJrBzwDWJNhpTVy2Bq76KrW6HSCTwwvbNluAVglG1eCkv4FbEmAkoX9LkMcjn+j0T4LHbhTcukGq8hDjAAAAAElFTkSuQmCC" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
 </svg>

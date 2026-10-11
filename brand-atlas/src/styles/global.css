@@ -1600,14 +1600,18 @@ img {
 }
 
 .item-tile.is-locked .item-tile__mark {
-  /* Lift grey marks so logo silhouettes read on dark locked covers */
-  filter: grayscale(1) contrast(1.25) brightness(1.65);
-  opacity: 0.9;
+  /* Force light silhouette so logos read on dark greyscale covers */
+  filter: brightness(0) invert(1) contrast(1.05)
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  opacity: 0.95;
 }
 
 .item-tile.is-locked .item-tile__mark--overlay {
-  filter: grayscale(1) contrast(1.2) brightness(1.5) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
-  opacity: 0.92;
+  filter: brightness(0) invert(1) contrast(1.08)
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65));
+  opacity: 0.96;
+  width: 46%;
+  height: 40%;
 }
 
 .item-tile.is-sneak .item-tile__mark {
@@ -1683,7 +1687,8 @@ img {
 }
 
 .detail-cover.is-locked .detail-cover__mark {
-  filter: grayscale(1) contrast(1.25) brightness(1.55);
+  filter: brightness(0) invert(1) contrast(1.05)
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
 }
 
 .detail-cover.is-sneak .detail-cover__mark {

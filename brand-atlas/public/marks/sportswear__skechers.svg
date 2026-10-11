@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Skechers">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Skechers</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAABfmlDQ1BJQ0MgUHJvZmlsZQAAeJylkLFLAlEcx79qoZRhUEODww3SEAphBI1lgxAiYgZZLefpaXCnx91JRGNDq4NLRUsW/Qe1Rf9AEATVFEHNDQURhFzf5wlC6NTveO99+L7f9917X8Db0BTdGpoF9KptZpMJaT2/IflfEIAH45hHWFYsYymTSWFgfT2wl3UfE2cN7utbo8WSpQCeAHlBMUybvEhO79iG4AZ5UqnIRfIZOWryguQ7oRdcfhNcdvlbsJnLLgPeIFkquxwVXHBZvEVSKqZO1sgRXasr3fuIlwRL1bVVruHOsJBFEglIKKCObWiwEeNaZWb9ffGOL40aPQpnA7sw6SijQm+Uap2nlriq1Ev8NHawRPZ/M7XUubj7h+AKMPzqOJ8zgP8YaB84zs+p47RbgO8JuGn2/LUm43yn3uhpkRMgtA9cXve0wjlwxYynng3ZlDuSj8OrqsDHBTCWByaY9cjmf/fdvLv7aD0CuT0gdQscHgHT7A9t/QIwQnS8cfos6QAAAHtJREFUeNrt0DERAAAIBCC1f+e3g+cIEegkxd0oEChQoEAEChQoEIECBQpEoECBAhEoUKBABAoUKBCBAgUKRKBAgQIRKFCgQAQKFCgQgQIFChSIQIECBSJQoECBCBQoUCACBQoUiECBAgUiUKBAgQgUKFAgAgUKFIjAPwuNywOdadF6tgAAAABJRU5ErkJggg==" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
 </svg>

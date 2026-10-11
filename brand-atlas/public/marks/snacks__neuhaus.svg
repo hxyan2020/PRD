@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Neuhaus">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Neuhaus</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAQCAYAAADeWHeIAAABT0lEQVR42u1Yyw7EIAgsjf//y+xh08Q1PmAGu7aRoxEdHg6IHJmo6uERETm2PFsECfxOhPfIyQZ/y7MlRR9oTagaa3iSkdEvdUu9FqNZ9kVhYGz24E8opV+HofSvqj+6DBN5dfO7a7olNus+xAaPDuPz1j1na/MImIjQtX/l8oMk1d3YWneW6z1syWqUN9geerTSWGR5qb3y8A4bsIEtje4m0OqEixVG7FAyA5JErX3X2UjgGNpEAjCyYQXsqvplABGBKc9SA2fVd2uzwzi11jjla3cwiSdRSmxDBmBfF/NKlhyMdOx/+ryjhn/4C3jjnGAPrrIEGH0t0GRg6Jm9nw0wUhJXSm7PbCDNeunMH5nFEtkDoPuRbj8qDmUS9LCnmdlodcKKL27lMmHBZsV/RoF5Q11lbEB1/+23FGlwb7wapVvT9+jOdLoXR4TfWJs+KAMFSQli/XQAAAAASUVORK5CYII=" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="MMC Studio">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">MMC Studio</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAABfmlDQ1BJQ0MgUHJvZmlsZQAAeJylkL9Lw0AcxV9bxV+VDnZwcMhQHKRFqYuj1qEgpZRawapLkqatkLQhSRFxdHDt0EXFxSr+B7qJ/4AgCOqkg84OCiJIie+aQkHayW+4uw/vvu9y9wB/XVcNe2AOMCqOlU0mpPX8hjT0Ah9GEMIswrJqm0uZTAp96+uB3az7mDirf1/PGitotgr4hskLqmk55EVyescxBdfJYbUsF8hn5KjFC5LvhK54/Ca45PG3YCuXXQb8QbJU8jgqWPFYvEVSy5ZB1skRQ6+pnfuIlwS1ytoq16n2sJFFEglIUFDDNnQ4iHGtMLPevnjbl0aVHpWziV1YdJRQpjdKtcZTNa5F6ho/nR0skf3fTO3ifNz7Q3AFGHx13c8ZYOgYaB247s+p67aaQOAJuGl0/dUG43ynXu9qkRMgtA9cXnc15Ry4YsaTz6ZsyW0pwOEvFoGPC2A8D0ww69HN/+57eXf20XwEcntA6hY4PAKm2R/a+gULvXStIdpt3gAAAHtJREFUeNrt0DERAAAIBCC1f+e3g+cIEegkxd0oEChQoEAEChQoEIECBQpEoECBAhEoUKBABAoUKBCBAgUKRKBAgQIRKFCgQAQKFCgQgQIFChSIQIECBSJQoECBCBQoUCACBQoUiECBAgUiUKBAgQgUKFAgAgUKFIjAPwuNywOdadF6tgAAAABJRU5ErkJggg==" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
 </svg>

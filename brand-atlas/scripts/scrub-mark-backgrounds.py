@@ -18,14 +18,25 @@ DATA_RE = re.compile(
 
 
 def corner_colors(im: Image.Image, inset: int = 2):
+    """Return opaque corner RGB samples only (ignore transparent corners)."""
     w, h = im.size
     pts = [
         (inset, inset),
         (w - 1 - inset, inset),
         (inset, h - 1 - inset),
         (w - 1 - inset, h - 1 - inset),
+        (inset + 2, inset + 2),
+        (w - 3 - inset, inset + 2),
+        (inset + 2, h - 3 - inset),
+        (w - 3 - inset, h - 3 - inset),
     ]
-    return [im.getpixel(p)[:3] for p in pts]
+    out = []
+    for pt in pts:
+        px = im.getpixel(pt)
+        if len(px) >= 4 and px[3] < 200:
+            continue
+        out.append(px[:3])
+    return out
 
 
 def close(a, b, tol=28):
@@ -51,6 +62,15 @@ def scrub_rgba(im: Image.Image) -> Image.Image | None:
     if bg_count / n < 0.22:
         return None  # logo already fills most of the frame
 
+    def lum(rgb):
+        r, g, b = rgb
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+    # Never scrub near-white / light grey fields — that destroys light wordmarks
+    # we normalize for locked-tile invert visibility.
+    if lum(bg) > 180:
+        return None
+
     # Wider tolerance for branded solid fields (red Campari, purple Courvoisier, etc.)
     tol = 42
     out = []
@@ -61,6 +81,12 @@ def scrub_rgba(im: Image.Image) -> Image.Image | None:
             out.append((r, g, b, 0))
         else:
             out.append((r, g, b, a))
+
+    # Abort if scrubbing would erase the mark
+    remaining = sum(1 for p in out if p[3] > 40)
+    if remaining < max(30, int(0.02 * n)):
+        return None
+
     rgba.putdata(out)
     return rgba
 

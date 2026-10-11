@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="JOOP!">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">JOOP!</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgCAYAAADaInAlAAABp0lEQVR42u1b7QrDIAzcyd7/ld2vgiutX/kw0QiDDdbmLl4StQ0+BkfO+e83gMDCyKXkgFlHPA2Kc3rurzUBGlh6bXBwfrJ13XO5AEYcIS2EWSyjeCh2OO0B+IDLQdoOWBGJ3Di4bLfsVudNWwCUe3AJ0AqWWmSOiuXNZuu6tHJBNeo0rQUYFQt3hqNwr10HQFcAHORmlX7/70j0WRkSokuro3/G4Rwi4MACQAyLVhZMKyd/hS1NLB5GChfsIXyzAuBeuVus1doLQk7M6aTIkxJjlIAYbsvKMgGcGnGRAZztr71Ef+vA5218Y/r9p3uKgEMAh28fQwCHl610gso9YalNePmhCKb8Hhng8EVp7AJiG7jfFuvNpscj260zAMXpXtYQ1p5Z3PFECdgs+5nMAJqOaNmKMvByDpBzFp0oAI8OnrFr5XUuL6m/1heQOCKglyzX+3xUh0u/yuUh9V880530zLN0rQWhVoq2hEW8ZFLJaHYDSUSc1cYQzizS7Axa1Z6lLTwpPFIdQVwcu1vDpBtALTnFCxYpTl3NoeVFmmSjPVyWS8nhB5aDDmw4YWj8AAAAAElFTkSuQmCC" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Avia">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Avia</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <defs>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
+  </defs>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAlCAYAAACK7+GWAAADMklEQVR42u3YTWtdRRjA8d+cc3MbayttTZNijWK0otZXRAJVqYoKBTeKBVH8CPoBdKdbVy5EceHejQtRCvUFUfoColBwIVUoUaEGDdYWm9zcc8ZFp3gJbU3S1Kbm+cPAvXPPmftw5j/PM2fS3bfvsBbY2dbemB32e8qrPdRJvISP8CmmL+WfdQSXky3YjG24Dg/hxdL3An7Dj5jCt/gCMziG2RDgymNjmeRJTOBBXI/uea4fKW0Sewf69+NjHMbBEGB1cy/24AFsxx3YcJFjPlHaDD7DB9hXvocA/zFjGMVtuKFM8l1lhW/A+hWY8AuVkGfxTJn8P/A1DpSycRjHQ4CVY7TU6ztLewo3lxR+OZ9lNVAubsFzpf+vsm/4BB/iaAiwNLaVlXw/dpa0O3EFxb++lJ89eB3vFxmO4QhOrhkB5nCsyk4MvAbOycbbymbJKVkqb4zYjXFsKmm2Krd8U9piaMtufheuvojQT+AH/FTS+inUSxwjldYt8ezErTiU1so5QC8xnVr1wDHAyZQ93AzZ2x/ydG/I8aq1wqcEG8pr3Ogy738Tb+H7S/Vc1owA56LGiZStl0z2O17udQ2XpbtYGuQyViqf2zNtI97G88sMbz+erAeW74XIA60auP5sXxMCXCBXJ+ZxTU7SInNAix1t7fF+x/acHKpbB+q+ibbyWNMx0VbjmfvOcWBT4XTZteeFP2zKyWm56ko/T6d25qu6MVW1DtZ9Q+eJZRa7m44b28pYTg7UjS/rvnXY1XSMt5VHmo4tOelh/p9yFwJcDIMrK5UJPJsBllNKNufk1d6wiTY5WrVe6875M2XdgU3Iv2WisyJVC/qH8crcsG05uaepTVWtBvXY1mtjJpdbPwcedjWQqqtSEpbaZhPvdHu6eHddz3zZtaVFxLIwjoX9Dd7r9kynrJe4KdfmQ4DVJ9TWnBypz2xWqxUeeyQnv1bZvk7fTMoe7XfiHGDV7UdwVb50Yw9lRiSfd/p+Se2KShZcQQxnvqubEGAtszGnEGCtEwKEAEEIEIQAQQgQhABBCBCEAEEIEIQAQQgQhABBCBCEAEEIEIQAQQgQhABBCBD8b/gb6w3UkHNkzgcAAAAASUVORK5CYII=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Iveco Bus">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Iveco Bus</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAABVCAYAAACmRjqWAAAB10lEQVR42u3bMW4TQRiG4e9fxSZcAG5AkSqXQTSpOQE9gqNQwikouEAKHyAlioSESEGC56dARuIA3l3i52nsbkYj693ZWW91d4DTNFkCEABAAAABAAQAEABAAAABAAQAEABAAAABAP4rZ5ZgxT5Xdl+Ti5mG2yW5+JbkdZJ4SewUlLcBwQ6AVWW5ku7cfqpXmXLZI/ep1HHHTHeyrZGb8TMfnl/13WEeCABz+vjno6e839/lRW1m2JFXkn1S5/leT/MlyfVhHggAS+jcT9s81CadPvKBbWVkpFL5MU1+FwLAKm4GkmySjBz/ic1IZ6pkynACeCo8BgQBAAQAEABWcwJQi4w6LTIuC3AIuG77dJLONMOx3GGMHiO/LL0AsJSXf7+9qSe57M7D0a/Kna6zbJPc3I5cP/t3HjzWTaa/AoMdAGv0ruZ7E+hgl+Sti4IdAPDoeQoAAgAIACAAgAAAAgAIACAAgAAAAgAIACAAgAAAAgAIACAAgAAAAgAIACAAgAAAAgAIACAAgAAAAgAIACAAgAAAAgAIACAAgAAAAgAIACAAgACAAFgCEABAAAABAAQAEABAAAABAAQAEABAAAABAAQAEABAAAABAAQAEABAAAABABbxG0WkUUQ9zID/AAAAAElFTkSuQmCC" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
 </svg>

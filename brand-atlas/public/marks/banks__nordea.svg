@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Nordea">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Nordea</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAbCAYAAAC0n4dLAAAByElEQVR42u1aXQ/DIAisxP//l93TkqZrlY8DdNWkD2ssHnDqoSvHbuLWWvt5V0pZ0hfa6Xx3qyg2/9OseFMjbjJRS+Vui2wBO3kv2QJGMzhyGT+TDj3u1zbXrrT/bH5ybRfOTOcYerLT+5a7yozG743N1SYSLBq9g/IVbZuQA3jpg9aaCgP3GykWKQYv+wjb5OU4OpkeRLRg8cTLwYWKIWUmIJME3r7MSKy77yly8OzklVJCRG0P3xfD9eHaQWu2qnVQGsgRcEkQNImXJCgKB0dccmN97XP+3cNOKCVqCcooMFGqeoTDqxqyTqKR7V4MCV16oWYEilyzYMkUoz3/yKP+zkzkjEL2bgs6P5mxoYiAzn6s7L1SWBPuGb/KcXjfC8xPTDcCnIE8EWETZK2kiwlgXQ1mX0UkZS3Sjxn+L0HZgX9b0DmHPxKtYO1H2QHUnnlH4+D20ZxpPNnnEsFyb0BRs2h0Law99oyox1F1es+GlVxafVa1znjs65535hLsiNocJZglvmpwk9XR1UTPjFgkGNG4KTqQiNm7Agk8/UTipgxntRrCI2HeJEDrJYvtu/71cGxcFmuuZz1wcnFo93HtlTgS+7V9AD9bjB7ZrvHAAAAAAElFTkSuQmCC" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
 </svg>
