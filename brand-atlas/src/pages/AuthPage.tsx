@@ -47,7 +47,8 @@ export function AuthPage({ mode: initialMode = "login" }: { mode?: AuthMode }) {
     <main className="shell section auth-page">
       <h2>{mode === "login" ? t("auth.loginTitle") : t("auth.signupTitle")}</h2>
       <p className="muted">
-        Session stays signed in on this device until you log out.
+        You stay logged in on this device until you tap Log out — refreshing or
+        closing the tab will not sign you out.
       </p>
 
       <div className="auth-tabs" role="tablist" aria-label="Account">
