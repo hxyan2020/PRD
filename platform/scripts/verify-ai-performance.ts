@@ -71,4 +71,28 @@ for (const [rel, markers] of [
   }
 }
 
+const phrases = read("src/lib/i18n-phrases.ts");
+for (const key of [
+  "LOGIN_FAILED",
+  "DISCOVERY_ANALYSE",
+  "DISCOVERY_CONNECT_OPENAI",
+  "TOGGLE_DETECTOR",
+  "MESSENGER_RECOMMEND",
+  "MESSENGER_SYNC",
+  "MARKET_INTEL_TOGGLE_ENABLED",
+  "AI_CHANGE_PROPOSED",
+]) {
+  assert.match(phrases, new RegExp(`${key}:\\s*"[^"]+"`), `missing zh phrase for ${key}`);
+}
+
+const boardIntro = read("src/lib/i18n-extra.ts");
+assert.match(boardIntro, /探索掃描／分析／RO 審查/);
+assert.match(boardIntro, /失敗登入/);
+assert.match(boardIntro, /AI 績效為唯讀/);
+
+const boardZh = read("src/components/AiPerformanceBoard.tsx");
+assert.match(boardZh, /挑戰者一致率/);
+assert.match(boardZh, /即時警報與追蹤/);
+assert.doesNotMatch(boardZh, /交给/);
+
 console.log("ok: AI Performance evaluation board wiring + docs");

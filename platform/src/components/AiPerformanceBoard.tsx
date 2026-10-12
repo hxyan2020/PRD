@@ -105,13 +105,13 @@ export function AiPerformanceBoard({ initial }: { initial: EvalData }) {
         <p className="font-semibold">
           <EnZh
             en="AI performance evaluation — skill match, challenger agreement, human feedback, training quality"
-            zh="AI 績效評估 — 技能匹配、挑戰者一致、人工回饋、訓練品質"
+            zh="AI 績效評估 — 技能匹配、挑戰者一致率、人工回饋、訓練品質"
           />
         </p>
         <p className="text-sm text-[var(--muted)]">
           <EnZh
             en="Read-only health board. Queue training or rate analyses in AI Admin (maker≠checker)."
-            zh="唯讀健康看板。排隊訓練或評分分析請至 AI 管理（制作者≠覆核者）。"
+            zh="唯讀健康看板。排隊訓練或評分分析請至 AI 管理（Maker≠Checker）。"
           />
         </p>
         <div className="flex flex-wrap gap-2">
@@ -122,14 +122,14 @@ export function AiPerformanceBoard({ initial }: { initial: EvalData }) {
             L2: {initial.line_settings?.line2_model || "—"}
           </Badge>
           <Badge>
-            <EnZh en="2nd AI from" zh="第二 AI 門檻" />{" "}
+            <EnZh en="2nd AI from" zh="第二 AI 自" />{" "}
             {initial.line_settings?.second_opinion_severity || "BREACH"}
           </Badge>
           <Link className="btn btn-primary" href="/admin/ai-admin">
             <EnZh en="Open AI Admin" zh="開啟 AI 管理" />
           </Link>
           <Link className="btn" href="/admin/alerts">
-            <EnZh en="Realtime analyses" zh="即時分析" />
+            <EnZh en="Realtime Alert & Tracker" zh="即時警報與追蹤" />
           </Link>
         </div>
       </div>
@@ -336,7 +336,7 @@ export function AiPerformanceBoard({ initial }: { initial: EvalData }) {
           <ul className="space-y-2 text-sm">
             {initial.recent_feedback.length === 0 ? (
               <li className="text-[var(--muted)]">
-                <EnZh en="No human ratings yet — rate from AI Admin History." zh="尚無人工評分 — 請在 AI 管理「歷史」評分。" />
+                <EnZh en="No human ratings yet — rate from AI Admin History." zh="尚無人工評分 — 請在 AI 管理「歷史與準確率」評分。" />
               </li>
             ) : (
               initial.recent_feedback.map((f) => (

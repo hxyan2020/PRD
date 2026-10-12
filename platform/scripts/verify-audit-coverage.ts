@@ -54,4 +54,13 @@ assert.match(ug, /Failed logins are also recorded/);
 const ugZh = read("docs/USER_GUIDE.zh-Hant.md");
 assert.match(ugZh, /登入失敗也會記錄/);
 
+const phrases = read("src/lib/i18n-phrases.ts");
+assert.match(phrases, /LOGIN_FAILED:\s*"登入失敗"/);
+assert.match(phrases, /DISCOVERY_ANALYSE:\s*"探索分析"/);
+assert.match(phrases, /TOGGLE_DETECTOR:\s*"切換偵測器"/);
+
+const intro = read("src/lib/i18n-extra.ts");
+assert.match(intro, /audit\.boardIntro/);
+assert.match(intro, /失敗登入/);
+
 console.log("ok: Admin/Lark mutation audit coverage guards");

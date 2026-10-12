@@ -342,7 +342,7 @@ flowchart TD
 |---|---|
 | **方法** | 彙總即時 SQLite 指標：技能匹配率、挑戰者裁決、人工回饋標籤、干預同意率、改進審查狀態、訓練準確率／F1；刷新當日 `ai_accuracy_snapshots` |
 | **資料** | `ai_analyses`、`ai_analysis_challenges`、`ai_feedback`、`ai_improvement_reviews`、`ai_training_runs`、`ai_accuracy_snapshots`、`interventions`、`platform_settings`（`ai.line1.*`／`ai.line2.*`／第二意見嚴重度） |
-| **流程** | 操作者開啟 `/admin/ai-performance` → `getAiPerformanceEval()` → KPI＋表格；變更（評分／訓練／變更單）仍在 `/admin/ai-admin` 且制作者≠覆核者 |
+| **流程** | 操作者開啟 `/admin/ai-performance` → `getAiPerformanceEval()` → KPI＋表格；變更（評分／訓練／變更單）仍在 `/admin/ai-admin` 且 Maker≠Checker |
 
 **驗收（FR-38）：** 左側導覽有 **AI 績效**；看板顯示技能／挑戰者／回饋／訓練 KPI；唯讀（無變更單表單）；`GET /api/ai-performance`＋`GET /api/ai-admin?tab=performance`；英＋繁中介面。操作：使用手冊 §8.2A · 實作：TSD §8A。
 

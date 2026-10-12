@@ -41,7 +41,7 @@ graph TD
 | 10 | UAT-10 | 106m | 8m | Medium | Risk | Separate OPEN WARN thread (do not use the Critical sample) | Messenger — 排除誤報 | Demo Messenger, Realtime Alert & Tracker |
 | 11 | UAT-11 | 114m | 10m | Critical | Risk Owner | UAT-04 dual-AI pack reviewed on a BREACH thread | Messenger — 接受 AI 包後結案 | Demo Messenger, Realtime Alert & Tracker |
 | 12 | UAT-12 | 124m | 15m | Critical | Ops + Risk Owner | OPEN thread; Human Intervention page | Messenger — 提出控制、雙重確認、再送到管理端 | Demo Messenger, Human Intervention |
-| 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — 提出變更的人不能自己核准 | AI Admin, AI Performance, Users, Audit Log |
+| 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — 提出變更的人不能自己核准 | AI 管理, AI 績效, Users, 稽核日誌 |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | 市場情報 —「立即掃描」必須跑完（含 GitHub Pages） | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與首頁脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
@@ -292,7 +292,7 @@ graph TD
 ### UAT-13 — AI Admin — 提出變更的人不能自己核准
 
 - **嚴重度：** Critical · **負責：** AI Engineer + Risk Owner · **依賴：** Two distinct users with ai.admin / checker capability · **建議：** T+139m / 20m
-- **涵蓋：** AI Admin, AI Performance, Users, Audit Log
+- **涵蓋：** AI 管理, AI 績效, Users, 稽核日誌
 - **為何測：** 單一工程師不可默默改驅動即時 RCA 的模型或門檻。
 - **目的：** 以 Maker 提出無害變更，自我核准失敗，再以另一 Checker 核准；並確認 AI 績效看板顯示即時 KPI。
 
@@ -866,7 +866,7 @@ graph TD
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
 3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）通過。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
-5. 將證據包連結記入稽核備註／交给 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
+5. 將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 
 **通過：** 已簽署決策；Critical 100% Pass；High 豁免≤2。
 **證據：** 簽核註記（日期、風險負責人、豁免清單）。
