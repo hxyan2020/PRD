@@ -321,9 +321,9 @@ function subjectSilhouette(
   const dx = ((h % 60) - 30) * 0.4 + (opts?.offsetX ?? 0);
   const dy = ((h2 % 50) - 25) * 0.35;
   const rot = ((h >> 5) % 14) - 7;
-  const opacity = opts?.opacity ?? 0.55;
+  const opacity = opts?.opacity ?? 0.78;
   const g = (body: string) =>
-    `<g fill="${accent}" stroke="${accent}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${450 + dx} ${300 + dy}) rotate(${rot})" opacity="${opacity}">${body}</g>`;
+    `<g fill="${accent}" stroke="${accent}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${450 + dx} ${300 + dy}) rotate(${rot}) scale(1.12)" opacity="${opacity}">${body}</g>`;
 
   switch (motif) {
     case "whistle":
