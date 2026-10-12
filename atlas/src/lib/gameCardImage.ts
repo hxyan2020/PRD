@@ -190,12 +190,25 @@ function hashSeed(s: string): number {
   return h >>> 0;
 }
 
+function mixAccent(baseHex: string, h: number): string {
+  const raw = baseHex.replace("#", "");
+  const r = Number.parseInt(raw.slice(0, 2), 16) || 188;
+  const g = Number.parseInt(raw.slice(2, 4), 16) || 2;
+  const b = Number.parseInt(raw.slice(4, 6), 16) || 52;
+  const dr = ((h >> 0) % 70) - 20;
+  const dg = ((h >> 8) % 90) - 30;
+  const db = ((h >> 16) % 80) - 20;
+  const clamp = (n: number) => Math.max(24, Math.min(230, n));
+  return `rgb(${clamp(r + dr)},${clamp(g + dg)},${clamp(b + db)})`;
+}
+
 /** Text-free atmospheric art for card backgrounds (no competing titles). */
 export function ludusBackdropDataUri(category: string, seed = ""): string {
-  const accent = CATEGORY_ACCENT[category] || "#bc0234";
+  const baseAccent = CATEGORY_ACCENT[category] || "#bc0234";
   // Hash must include the full seed so locale variants never share art.
   const h = hashSeed(`${category}|${seed}`);
   const h2 = hashSeed(`${seed}|${category}|backdrop`);
+  const accent = mixAccent(baseAccent, h ^ h2);
   const motif = h % 4;
   const ox = 40 + (h % 420);
   const oy = 30 + ((h >> 8) % 340);
