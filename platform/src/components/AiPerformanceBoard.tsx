@@ -122,7 +122,7 @@ export function AiPerformanceBoard({ initial }: { initial: EvalData }) {
             L2: {initial.line_settings?.line2_model || "—"}
           </Badge>
           <Badge>
-            <EnZh en="2nd AI from" zh="第二 AI 自" />{" "}
+            <EnZh en="2nd AI from" zh="第二意見自" />{" "}
             {initial.line_settings?.second_opinion_severity || "BREACH"}
           </Badge>
           <Link className="btn btn-primary" href="/admin/ai-admin">

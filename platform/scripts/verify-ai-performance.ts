@@ -81,6 +81,7 @@ for (const key of [
   "MESSENGER_SYNC",
   "MARKET_INTEL_TOGGLE_ENABLED",
   "AI_CHANGE_PROPOSED",
+  "AI_IMPROVEMENT_REVIEW",
 ]) {
   assert.match(phrases, new RegExp(`${key}:\\s*"[^"]+"`), `missing zh phrase for ${key}`);
 }

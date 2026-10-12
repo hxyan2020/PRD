@@ -231,7 +231,7 @@ graph LR
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
-| FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者同意／部分／不同意、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
+| FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者一致率（同意／部分／不同意）、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
 
 ### 6.3 P2 — 之後（生態階段）
 

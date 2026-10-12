@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { AiPerformanceBoard } from "@/components/AiPerformanceBoard";
+import { EnZh } from "@/components/EnZh";
 import { getAiPerformanceEval } from "@/lib/ai/admin";
 
 function canView(role: string) {
@@ -33,7 +34,7 @@ export default async function AiPerformancePage() {
         </Link>
         {" · "}
         <Link className="underline" href="/admin/ai-admin">
-          AI Admin
+          <EnZh en="AI Admin" zh="AI 管理" />
         </Link>
       </div>
       <AiPerformanceBoard

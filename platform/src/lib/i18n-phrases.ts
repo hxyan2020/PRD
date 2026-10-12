@@ -657,6 +657,7 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   DUMMY_SPINE_RUN: "虛擬脊柱演練",
   AI_ANALYSIS_SKILL: "AI 分析技能",
   AI_SECOND_OPINION: "AI 第二意見",
+  AI_IMPROVEMENT_REVIEW: "AI 如何改進審查",
   AI_CHANGE_PROPOSED: "AI 變更已提案",
   AI_CHANGE_APPROVED: "AI 變更已核准",
   AI_CHANGE_REJECTED: "AI 變更已駁回",

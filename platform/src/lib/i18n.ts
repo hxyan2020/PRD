@@ -125,7 +125,7 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     title: { en: "AI Performance Evaluation", "zh-Hant": "AI 績效評估" },
     subtitle: {
       en: "Read-only health board — skill match, challenger agreement, human feedback, training quality, 14-day accuracy. Queue training or rate analyses in AI Admin.",
-      "zh-Hant": "唯讀健康看板 — 技能匹配、挑戰者一致、人工回饋、訓練品質、14 日準確率。排隊訓練或評分分析請至 AI 管理。",
+      "zh-Hant": "唯讀健康看板 — 技能匹配、挑戰者一致率、人工回饋、訓練品質、14 日準確率。排隊訓練或評分分析請至 AI 管理。",
     },
   },
   interventions: {
