@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <path fill="#C4C4C4" d="M64 8L40 40h10L36 60h12L32 84h20v36h24V84h20L80 60h12L78 40h10z"/>
+  <circle cx="59.302972" cy="68.37439158" r="17.3704" fill="#D0D0D0"/><circle cx="46.87672348" cy="78.13787255999999" r="26.513199999999998" fill="#D0D0D0"/><circle cx="86.63967496" cy="89.85322962" r="23.0848" fill="#D0D0D0"/><circle cx="74.21342643999999" cy="58.6109106" r="20.2276" fill="#D0D0D0"/><circle cx="56.81876608" cy="66.42251549999999" r="17.9416" fill="#D0D0D0"/><rect x="55.2995" y="85.72319999999999" width="17.401" height="32.2768" rx="2" fill="#D0D0D0"/>
 </svg>
