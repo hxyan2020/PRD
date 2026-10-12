@@ -36,7 +36,8 @@ export function CloudSetupCard({ onEnabled }: Props) {
           : t('cloudEnabledOk', { id: result.gistId, total: result.total }),
       )
       setToken('')
-      onEnabled?.()
+      // Keep the success line visible before the parent hides this card.
+      window.setTimeout(() => onEnabled?.(), result.restoredFromCloud ? 2200 : 900)
     } catch (err) {
       setError(err instanceof Error ? err.message : t('cloudEnabledFail', { error: 'failed' }))
     } finally {
