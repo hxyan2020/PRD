@@ -328,7 +328,11 @@ export async function verifyGistToken(token: string): Promise<{ ok: true }> {
   if (!trimmed) throw new Error('GitHub token is required')
   try {
     // Prefer the gists endpoint — some tokens can sync notes without a full /user grant.
-    await githubJson('/gists?per_page=1', trimmed)
+    // Response is a JSON array; do not use githubJson (object-only).
+    const data = await githubFetch('/gists?per_page=1', trimmed)
+    if (!Array.isArray(data)) {
+      throw new Error('Unexpected GitHub response while verifying token')
+    }
     return { ok: true }
   } catch (err) {
     const message = err instanceof Error ? err.message : 'invalid token'
