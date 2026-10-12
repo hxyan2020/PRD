@@ -266,7 +266,9 @@ NOISE_RE = re.compile(
     r"kinetic sand|dandy.?s?\s*world|dandysworld|squid game|boat race\s*\||"
     r"flames\s+game|etheria|wingspan|missouri star|quilt|"
     r"sink\s*n[’']?\s*sand|kokeshi\??\s*official how to play|"
-    r"gotquestions|bible|biblical|casting lots\s*\?)\b",
+    r"gotquestions|bible|biblical|casting lots\s*\?|"
+    r"recipe|cooking|seafood|shellfish|clean\s+abalone|"
+    r"how\s+to\s+clean|how\s+to\s+cook|lifehack)\b",
     re.I,
 )
 
@@ -274,6 +276,7 @@ NOISE_RE = re.compile(
 SEARCH_ALIASES = {
     "go": "Go Weiqi board game",
     "go (weiqi)": "Go Weiqi board game",
+    "abalone": "Abalone board game how to play rules",
     "tag": "tag playground game how to play",
     "catch": "catch playground game",
     "memory": "memory matching card game",
@@ -339,6 +342,13 @@ def _norm_text(s: str) -> str:
 # Extra title tokens accepted as “mentions the game” when the catalog name
 # is a generic archetype (so mancala videos can match “Local pit-and-seed…”).
 RELATED_TITLE_TOKENS = {
+    "abalone": [
+        "abalone board",
+        "abalone game",
+        "how to play abalone",
+        "abalone rules",
+        "push abalone",
+    ],
     "local pit-and-seed sowing": [
         "mancala",
         "oware",
@@ -414,6 +424,7 @@ AMBIGUOUS_CONTEXT = {
     "palín": ("mapuche", "chile", "chueca", "tradicional", "traditional", "hockey", "stick"),
     "palin": ("mapuche", "chile", "chueca", "tradicional", "traditional", "hockey", "stick"),
     "kokeshi": ("doll", "wooden", "japan", "japanese", "tohoku", "souvenir"),
+    "abalone": ("board", "game", "rules", "play", "strategy", "marble", "hex"),
 }
 
 
@@ -629,6 +640,29 @@ def search_query_for(game: dict) -> str:
     return f"{base} how to play tutorial rules"
 
 
+def tutorial_matches_game(game: dict, tutorial: dict | None) -> bool:
+    """
+    True when a stored tutorial still belongs to this catalog row.
+
+    After collection regenerations, game ids shift — a baby-rattle row can
+    keep a whistle tutorial. Reject those so they are re-fetched.
+    """
+    if not tutorial or not tutorial.get("videoId"):
+        return False
+    name = game.get("name") or ""
+    title = tutorial.get("title") or ""
+    query = tutorial.get("query") or ""
+    expected = search_query_for(game)
+    if query and _norm_text(query) != _norm_text(expected):
+        return False
+    if title_mentions_game(title, name):
+        return True
+    # Soft craft/demo titles are OK when the query is still the expected one.
+    if query and looks_like_tutorial(title, name, soft=True):
+        return True
+    return False
+
+
 def score_candidate(c: dict, game_name: str = "") -> float:
     """Higher is better: relevance first, then popularity + recency."""
     title = c.get("title") or ""
@@ -788,6 +822,11 @@ def main() -> None:
     ap.add_argument("--concurrency", type=int, default=6)
     ap.add_argument("--force", action="store_true", help="Re-fetch even if tutorial exists")
     ap.add_argument("--ids", type=str, default="", help="Comma-separated game ids")
+    ap.add_argument(
+        "--audit-only",
+        action="store_true",
+        help="Report mismatch/missing counts and exit without fetching",
+    )
     args = ap.parse_args()
 
     collection = load_json(COLLECTION, {"games": []})
@@ -797,18 +836,77 @@ def main() -> None:
     if not isinstance(tutorials, dict):
         tutorials = {}
 
+    # Drop tutorials for ids that no longer exist in the catalog.
+    live_ids = {g["id"] for g in games}
+    orphans = [gid for gid in list(tutorials) if gid not in live_ids]
+    for gid in orphans:
+        del tutorials[gid]
+
     if args.ids:
         want = {x.strip() for x in args.ids.split(",") if x.strip()}
         games = [g for g in games if g.get("id") in want]
     if args.limit and args.limit > 0:
         games = games[: args.limit]
 
-    todo = []
+    # First: clone any still-valid tutorial onto siblings that share the same
+    # search query (locale matrix rows), so one good Infant-rattle pick covers
+    # all countries before we hit the network.
+    good_by_query: dict[str, dict] = {}
     for g in games:
         gid = g["id"]
-        if not args.force and gid in tutorials and tutorials[gid].get("videoId"):
+        t = tutorials.get(gid)
+        if tutorial_matches_game(g, t):
+            good_by_query.setdefault(search_query_for(g), t)
+
+    cloned = 0
+    for g in games:
+        gid = g["id"]
+        q = search_query_for(g)
+        if tutorial_matches_game(g, tutorials.get(gid)):
             continue
+        donor = good_by_query.get(q)
+        if donor:
+            tutorials[gid] = dict(donor)
+            cloned += 1
+
+    todo = []
+    mismatched = 0
+    for g in games:
+        gid = g["id"]
+        existing = tutorials.get(gid)
+        if not args.force and tutorial_matches_game(g, existing):
+            continue
+        if existing and existing.get("videoId") and not tutorial_matches_game(g, existing):
+            mismatched += 1
+            # Clear stale binding so a failed re-fetch cannot leave the wrong video.
+            tutorials.pop(gid, None)
         todo.append(g)
+
+    if args.audit_only:
+        missing = sum(1 for g in games if not tutorial_matches_game(g, tutorials.get(g["id"])))
+        print(
+            f"audit games={len(games)} orphans_removed={len(orphans)} "
+            f"cloned_from_siblings={cloned} mismatched_cleared={mismatched} "
+            f"still_missing_or_mismatch={missing} kept_ok="
+            f"{len(games) - missing}",
+            flush=True,
+        )
+        save_json(OUT, {
+            gid: {
+                "videoId": t["videoId"],
+                "title": t.get("title") or "",
+                "url": t.get("url") or f"https://www.youtube.com/watch?v={t['videoId']}",
+                "channelTitle": t.get("channelTitle") or "",
+                "publishedText": t.get("publishedText"),
+                "viewCount": t.get("viewCount") or 0,
+                "likeCount": t.get("likeCount"),
+                "candidatesConsidered": t.get("candidatesConsidered") or MIN_CANDIDATES,
+                "query": t.get("query"),
+            }
+            for gid, t in tutorials.items()
+            if t and t.get("videoId")
+        })
+        return
 
     # Deduplicate by search query so regional variants share one YouTube pick.
     by_query: dict[str, list] = {}
@@ -821,7 +919,9 @@ def main() -> None:
         _cache.pop(f"pickquery::{query.lower()}", None)
 
     print(
-        f"games={len(games)} todo={len(todo)} unique_queries={len(by_query)} "
+        f"games={len(games)} orphans_removed={len(orphans)} "
+        f"cloned_from_siblings={cloned} mismatched_cleared={mismatched} "
+        f"todo={len(todo)} unique_queries={len(by_query)} "
         f"concurrency={args.concurrency}",
         flush=True,
     )
@@ -870,10 +970,32 @@ def main() -> None:
 
     with _lock:
         save_json(CACHE, _cache)
-    # Strip bulky candidates list from public file to keep payload lean
+
+    # After fetches, re-spread any newly good picks onto locale siblings.
+    good_by_query = {}
+    for g in collection.get("games") or []:
+        t = tutorials.get(g["id"])
+        if tutorial_matches_game(g, t):
+            good_by_query.setdefault(search_query_for(g), t)
+    for g in collection.get("games") or []:
+        gid = g["id"]
+        if tutorial_matches_game(g, tutorials.get(gid)):
+            continue
+        donor = good_by_query.get(search_query_for(g))
+        if donor:
+            tutorials[gid] = dict(donor)
+
+    # Strip bulky candidates list from public file to keep payload lean.
+    # Never persist a tutorial that fails the match check for its game id.
+    by_id = {g["id"]: g for g in (collection.get("games") or [])}
     public = {}
+    dropped = 0
     for gid, t in tutorials.items():
         if not t or not t.get("videoId"):
+            continue
+        game = by_id.get(gid)
+        if not game or not tutorial_matches_game(game, t):
+            dropped += 1
             continue
         public[gid] = {
             "videoId": t["videoId"],
@@ -888,7 +1010,8 @@ def main() -> None:
         }
     save_json(OUT, public)
     print(
-        f"done written={len(public)} failed_or_miss={failed} path={OUT}",
+        f"done written={len(public)} failed_or_miss={failed} "
+        f"dropped_unmatched={dropped} path={OUT}",
         flush=True,
     )
 
