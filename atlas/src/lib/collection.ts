@@ -2,7 +2,7 @@ import type { CollectionMeta, Game, TutorialVideo } from "../types/game";
 import { readPool, POOL_EVENT } from "./pool";
 import { AUTH_EVENT } from "./auth";
 import { readStaging, STAGING_EVENT } from "./staging";
-import { sanitizeImageList } from "./gameCardImage";
+import { encodeLudusCard, sanitizeImageList } from "./gameCardImage";
 
 export type CollectionData = {
   meta: CollectionMeta & { brand?: string };
@@ -69,6 +69,25 @@ function sanitizeGame(game: Game): Game {
   };
 }
 
+/** Collection grid: never show the same photographic cover on two games. */
+function ensureUniqueCatalogCovers(games: Game[]): Game[] {
+  const used = new Set<string>();
+  return games.map((game) => {
+    const httpImages = (game.images ?? []).filter((u) => /^https?:\/\//.test(u));
+    const cover = httpImages[0];
+    if (cover && used.has(cover)) {
+      return {
+        ...game,
+        images: [
+          encodeLudusCard(game.name, game.category, game.originCountry),
+        ],
+      };
+    }
+    for (const u of httpImages) used.add(u);
+    return game;
+  });
+}
+
 async function loadBase(): Promise<CollectionData> {
   if (baseCache) return baseCache;
   const [res, tutorials] = await Promise.all([
@@ -77,10 +96,12 @@ async function loadBase(): Promise<CollectionData> {
   ]);
   if (!res.ok) throw new Error(`Failed to load collection (${res.status})`);
   const raw = (await res.json()) as CollectionData;
+  const cleanedGames = ensureUniqueCatalogCovers(
+    raw.games.map((g) => sanitizeGame(g)),
+  );
   baseCache = {
     ...raw,
-    games: raw.games.map((g) => {
-      const cleaned = sanitizeGame(g);
+    games: cleanedGames.map((cleaned) => {
       const tutorial = tutorials[cleaned.id];
       return tutorial ? { ...cleaned, tutorialVideo: tutorial } : cleaned;
     }),

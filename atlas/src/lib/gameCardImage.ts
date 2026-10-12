@@ -190,61 +190,84 @@ function hashSeed(s: string): number {
   return h >>> 0;
 }
 
+function mixAccent(baseHex: string, h: number): string {
+  const raw = baseHex.replace("#", "");
+  const r = Number.parseInt(raw.slice(0, 2), 16) || 188;
+  const g = Number.parseInt(raw.slice(2, 4), 16) || 2;
+  const b = Number.parseInt(raw.slice(4, 6), 16) || 52;
+  const dr = ((h >> 0) % 70) - 20;
+  const dg = ((h >> 8) % 90) - 30;
+  const db = ((h >> 16) % 80) - 20;
+  const clamp = (n: number) => Math.max(24, Math.min(230, n));
+  return `rgb(${clamp(r + dr)},${clamp(g + dg)},${clamp(b + db)})`;
+}
+
 /** Text-free atmospheric art for card backgrounds (no competing titles). */
 export function ludusBackdropDataUri(category: string, seed = ""): string {
-  const accent = CATEGORY_ACCENT[category] || "#bc0234";
+  const baseAccent = CATEGORY_ACCENT[category] || "#bc0234";
+  // Hash must include the full seed so locale variants never share art.
   const h = hashSeed(`${category}|${seed}`);
+  const h2 = hashSeed(`${seed}|${category}|backdrop`);
+  const accent = mixAccent(baseAccent, h ^ h2);
   const motif = h % 4;
-  const ox = 120 + (h % 180);
-  const oy = 80 + ((h >> 8) % 160);
+  const ox = 40 + (h % 420);
+  const oy = 30 + ((h >> 8) % 340);
+  const gap = 42 + (h2 % 28);
+  const rot = (h2 >> 4) % 60;
+  const glowX = 15 + (h % 70);
+  const glowY = 10 + ((h2 >> 8) % 60);
+  const washA = 12 + (h % 18);
+  const washB = 8 + ((h2 >> 12) % 16);
   let shapes = "";
   if (motif === 0) {
-    // board grid
-    shapes = `<g opacity="0.22" stroke="${accent}" stroke-width="2" fill="none">
-      ${Array.from({ length: 9 }, (_, i) => {
-        const p = 80 + i * 55;
-        return `<path d="M${p} 60 V540"/><path d="M60 ${p} H540"/>`;
+    // board grid — offset + spacing vary per seed
+    shapes = `<g opacity="0.22" stroke="${accent}" stroke-width="2" fill="none" transform="translate(${(h % 40) - 20} ${(h2 % 40) - 20})">
+      ${Array.from({ length: 10 }, (_, i) => {
+        const p = 40 + i * gap;
+        return `<path d="M${p} 40 V560"/><path d="M40 ${p} H860"/>`;
       }).join("")}
     </g>`;
   } else if (motif === 1) {
     // concentric rings / ball
-    shapes = `<g fill="none" stroke="${accent}" stroke-width="3">
-      <circle cx="${ox + 220}" cy="${oy + 180}" r="180" opacity="0.28"/>
-      <circle cx="${ox + 220}" cy="${oy + 180}" r="120" opacity="0.22"/>
-      <circle cx="${ox + 220}" cy="${oy + 180}" r="60" opacity="0.3"/>
-      <circle cx="${ox + 220}" cy="${oy + 180}" r="18" fill="${accent}" opacity="0.35" stroke="none"/>
+    shapes = `<g fill="none" stroke="${accent}" stroke-width="${2 + (h % 3)}">
+      <circle cx="${ox}" cy="${oy}" r="180" opacity="0.28"/>
+      <circle cx="${ox}" cy="${oy}" r="120" opacity="0.22"/>
+      <circle cx="${ox}" cy="${oy}" r="60" opacity="0.3"/>
+      <circle cx="${ox}" cy="${oy}" r="18" fill="${accent}" opacity="0.35" stroke="none"/>
     </g>`;
   } else if (motif === 2) {
-    // tile / diamond lattice
+    // tile / diamond lattice — position jitter from seed
     shapes = `<g opacity="0.2" fill="${accent}">
       ${Array.from({ length: 24 }, (_, i) => {
-        const x = 40 + (i % 6) * 140 + ((i * 17) % 40);
-        const y = 40 + Math.floor(i / 6) * 130 + ((i * 11) % 30);
-        return `<rect x="${x}" y="${y}" width="70" height="70" transform="rotate(45 ${x + 35} ${y + 35})" opacity="${0.35 + ((i * 13) % 40) / 100}"/>`;
+        const x = 40 + (i % 6) * 140 + ((i * 17 + h) % 40);
+        const y = 40 + Math.floor(i / 6) * 130 + ((i * 11 + h2) % 30);
+        return `<rect x="${x}" y="${y}" width="70" height="70" transform="rotate(${45 + (rot % 20)} ${x + 35} ${y + 35})" opacity="${0.35 + ((i * 13 + (h % 17)) % 40) / 100}"/>`;
       }).join("")}
     </g>`;
   } else {
-    // string / arc ribbons
-    shapes = `<g fill="none" stroke="${accent}" stroke-width="10" stroke-linecap="round" opacity="0.28">
-      <path d="M40 420 C 220 120, 420 520, 860 160"/>
-      <path d="M60 520 C 280 200, 500 560, 880 280"/>
-      <path d="M20 260 C 240 40, 520 360, 900 120"/>
+    // string / arc ribbons — control points shift per seed
+    const a = 80 + (h % 200);
+    const b = 100 + (h2 % 220);
+    shapes = `<g fill="none" stroke="${accent}" stroke-width="${8 + (h % 5)}" stroke-linecap="round" opacity="0.28">
+      <path d="M40 ${420 - (h % 80)} C ${a} ${120 + (h2 % 100)}, ${420 + (h % 80)} ${520 - (h2 % 90)}, 860 ${160 + (h % 120)}"/>
+      <path d="M60 ${520 - (h2 % 70)} C ${b} ${200 + (h % 90)}, ${500 + (h2 % 60)} ${560 - (h % 100)}, 880 ${280 + (h2 % 80)}"/>
+      <path d="M20 ${260 + (h % 60)} C ${240 + (h2 % 40)} ${40 + (h % 80)}, ${520 - (h % 50)} ${360 + (h2 % 70)}, 900 ${120 + (h % 100)}"/>
     </g>`;
   }
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
   <defs>
     <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1a0c10"/>
+      <stop offset="0%" stop-color="rgb(${washA + 10},${washB},${washA})"/>
       <stop offset="45%" stop-color="#0c0c0c"/>
-      <stop offset="100%" stop-color="#14080c"/>
+      <stop offset="100%" stop-color="rgb(${washB},${washA},${washA + 4})"/>
     </linearGradient>
-    <radialGradient id="glow" cx="30%" cy="25%" r="65%">
-      <stop offset="0%" stop-color="${accent}" stop-opacity="0.38"/>
+    <radialGradient id="glow" cx="${glowX}%" cy="${glowY}%" r="65%">
+      <stop offset="0%" stop-color="${accent}" stop-opacity="${0.28 + (h % 20) / 100}"/>
       <stop offset="55%" stop-color="${accent}" stop-opacity="0.1"/>
       <stop offset="100%" stop-color="#000" stop-opacity="0"/>
     </radialGradient>
-    <pattern id="grain" width="36" height="36" patternUnits="userSpaceOnUse">
+    <pattern id="grain" width="${28 + (h % 16)}" height="${28 + (h2 % 16)}" patternUnits="userSpaceOnUse">
       <circle cx="3" cy="7" r="1.1" fill="${accent}" opacity="0.16"/>
       <circle cx="20" cy="22" r="1" fill="#e8f0ec" opacity="0.07"/>
       <circle cx="30" cy="10" r="0.8" fill="#e8f0ec" opacity="0.05"/>

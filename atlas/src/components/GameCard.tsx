@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import type { Game } from "../types/game";
 import { excerpt } from "../lib/collection";
 import {
+  isLudusSyntheticSrc,
   ludusBackdropDataUri,
   primaryCoverSrc,
 } from "../lib/gameCardImage";
@@ -14,8 +15,12 @@ import { useI18n } from "../i18n";
 export function GameCard({ game, index }: { game: Game; index: number }) {
   const { t } = useI18n();
   const cover = primaryCoverSrc(game.images);
+  // Seed by game id so locale variants get distinct atmospheric art — never
+  // stack a titled ludus-card SVG on top of the card’s own heading.
   const backdrop = ludusBackdropDataUri(game.category, game.id || game.slug);
   const [coverFailed, setCoverFailed] = useState(false);
+  const photoCover =
+    cover && !isLudusSyntheticSrc(cover) && !coverFailed ? cover : null;
   const label = {
     name: game.name,
     category: game.category,
@@ -29,9 +34,9 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
     >
       <Link to={`/game/${game.slug}`} className="game-card-link">
         <div className="game-card-img" aria-hidden="true">
-          {cover && !coverFailed ? (
+          {photoCover ? (
             <GameImage
-              src={cover}
+              src={photoCover}
               alt=""
               loading="lazy"
               label={label}
