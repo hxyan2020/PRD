@@ -74,7 +74,15 @@ export function NotebookBackupPanel() {
       setGistId(result.gistId)
       setCloudOn(true)
       setLastSyncedAt(new Date().toISOString())
-      setStatus(t('cloudEnabledOk', { id: result.gistId, total: result.total }))
+      setStatus(
+        result.restoredFromCloud
+          ? t('cloudEnabledRestoredOk', {
+              id: result.gistId,
+              total: result.total,
+              cloud: result.cloudNoteCount,
+            })
+          : t('cloudEnabledOk', { id: result.gistId, total: result.total }),
+      )
     } catch (err) {
       setStatus(
         t('cloudEnabledFail', {
@@ -90,14 +98,14 @@ export function NotebookBackupPanel() {
     setBusy(true)
     setStatus(null)
     try {
-      if (!gistToken.trim() || !gistId.trim()) {
-        setStatus(t('cloudConnectRequired'))
+      if (!gistToken.trim()) {
+        setStatus(t('cloudTokenRequired'))
         return
       }
       await verifyGistToken(gistToken)
       const result = await notebookStore.connectCloudSync({
         token: gistToken,
-        gistId,
+        gistId: gistId || undefined,
       })
       setGistId(result.gistId)
       setCloudOn(true)

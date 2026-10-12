@@ -96,11 +96,11 @@ export function isCloudSyncReady(settings = loadGistSettings()): boolean {
   return Boolean(settings.enabled && settings.token)
 }
 
-async function githubJson(
+async function githubFetch(
   path: string,
   token: string,
   init?: RequestInit,
-): Promise<Record<string, unknown>> {
+): Promise<unknown> {
   const response = await fetch(`https://api.github.com${path}`, {
     ...init,
     headers: {
@@ -112,16 +112,116 @@ async function githubJson(
     },
   })
   const text = await response.text()
-  let data: Record<string, unknown> = {}
+  let data: unknown = {}
   try {
-    data = text ? (JSON.parse(text) as Record<string, unknown>) : {}
+    data = text ? JSON.parse(text) : {}
   } catch {
     data = { message: text.slice(0, 200) }
   }
   if (!response.ok) {
-    throw new Error(String(data.message || `GitHub error ${response.status}`))
+    const message =
+      data && typeof data === 'object' && 'message' in data
+        ? String((data as { message: unknown }).message)
+        : `GitHub error ${response.status}`
+    throw new Error(message)
   }
   return data
+}
+
+async function githubJson(
+  path: string,
+  token: string,
+  init?: RequestInit,
+): Promise<Record<string, unknown>> {
+  const data = await githubFetch(path, token, init)
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('Unexpected GitHub response')
+  }
+  return data as Record<string, unknown>
+}
+
+export const OWNLAB_GIST_FILE = FILE_NAME
+export const OWNLAB_GIST_DESCRIPTION = 'OWNLAB notebook cloud backup'
+
+export type OwnlabGistMatch = {
+  gistId: string
+  updatedAt: string
+  htmlUrl: string | null
+  noteCount: number
+}
+
+function countNotesInBackupJson(raw: string | null): number {
+  if (!raw) return 0
+  try {
+    const parsed = JSON.parse(raw) as { entries?: unknown }
+    return Array.isArray(parsed.entries) ? parsed.entries.length : 0
+  } catch {
+    return 0
+  }
+}
+
+function gistLooksLikeOwnlab(gist: Record<string, unknown>): boolean {
+  const files = gist.files as Record<string, unknown> | undefined
+  if (files && FILE_NAME in files) return true
+  const description = typeof gist.description === 'string' ? gist.description : ''
+  return /OWNLAB notebook/i.test(description)
+}
+
+/**
+ * Find existing OWNLAB cloud notebooks for this GitHub token.
+ * Used so a new device can restore notes with the token alone (no separate login / gist id).
+ */
+export async function findOwnlabNotebookGists(token: string): Promise<OwnlabGistMatch[]> {
+  const trimmed = token.trim()
+  if (!trimmed) return []
+
+  const candidates: Array<{ gistId: string; updatedAt: string; htmlUrl: string | null }> = []
+  for (let page = 1; page <= 5; page += 1) {
+    const data = await githubFetch(`/gists?per_page=100&page=${page}`, trimmed)
+    if (!Array.isArray(data) || data.length === 0) break
+    for (const item of data) {
+      if (!item || typeof item !== 'object') continue
+      const gist = item as Record<string, unknown>
+      if (!gistLooksLikeOwnlab(gist)) continue
+      const gistId = String(gist.id || '')
+      if (!gistId) continue
+      candidates.push({
+        gistId,
+        updatedAt: typeof gist.updated_at === 'string' ? gist.updated_at : '',
+        htmlUrl: typeof gist.html_url === 'string' ? gist.html_url : gistUrlFor(gistId),
+      })
+    }
+    if (data.length < 100) break
+  }
+
+  // Rank by note count (empty gists created by prior broken “enable” flows lose).
+  const scored: OwnlabGistMatch[] = []
+  for (const candidate of candidates) {
+    try {
+      const full = await githubJson(`/gists/${candidate.gistId}`, trimmed)
+      const content = extractBackupContent(full)
+      scored.push({
+        ...candidate,
+        noteCount: countNotesInBackupJson(content),
+      })
+    } catch {
+      scored.push({ ...candidate, noteCount: 0 })
+    }
+  }
+
+  scored.sort((a, b) => {
+    if (b.noteCount !== a.noteCount) return b.noteCount - a.noteCount
+    return (b.updatedAt || '').localeCompare(a.updatedAt || '')
+  })
+  return scored
+}
+
+/** Best existing OWNLAB gist for this token, or null if none. */
+export async function resolveOwnlabNotebookGist(
+  token: string,
+): Promise<OwnlabGistMatch | null> {
+  const matches = await findOwnlabNotebookGists(token)
+  return matches[0] ?? null
 }
 
 function extractBackupContent(gist: Record<string, unknown>): string | null {

@@ -6,6 +6,7 @@ import {
   loadGistSettings,
   pullGistBackup,
   pushGistBackup,
+  resolveOwnlabNotebookGist,
   saveGistSettings,
   setLastCloudSyncAt,
 } from '../lib/notebookGistSync'
@@ -951,18 +952,74 @@ export const notebookStore = {
       }
     }
   },
-  /** Enable cloud sync, upload notes, return the cloud notebook id for other devices. */
+  /**
+   * Enable cloud sync with a GitHub token.
+   * On a new device, the same token alone finds your existing OWNLAB gist and restores notes
+   * (no separate site login — the token is the credential).
+   */
   async enableCloudSync(input: {
     token: string
     gistId?: string
-  }): Promise<{ gistId: string; htmlUrl: string | null; total: number }> {
+  }): Promise<{
+    gistId: string
+    htmlUrl: string | null
+    total: number
+    restoredFromCloud: boolean
+    cloudNoteCount: number
+  }> {
     await ensureReady()
+    const token = input.token.trim()
+    if (!token) {
+      throw new NotebookStorageError('unknown', 'GitHub token is required')
+    }
+
+    let gistId = input.gistId?.trim() || loadGistSettings().gistId
+    let restoredFromCloud = false
+    let cloudNoteCount = 0
+
+    // New device / token-only setup: locate the existing cloud notebook instead of
+    // creating a second empty gist that hides the notes from the first device.
+    if (!gistId) {
+      const existing = await resolveOwnlabNotebookGist(token)
+      if (existing) {
+        gistId = existing.gistId
+        cloudNoteCount = existing.noteCount
+      }
+    }
+
     saveGistSettings({
-      token: input.token,
-      gistId: input.gistId?.trim() || loadGistSettings().gistId,
+      token,
+      gistId: gistId || '',
       enabled: true,
     })
     refreshCloudRuntimeFromSettings()
+
+    if (gistId) {
+      try {
+        const gistJson = await pullGistBackup(loadGistSettings())
+        if (gistJson) {
+          try {
+            const parsed = JSON.parse(gistJson) as { entries?: unknown }
+            cloudNoteCount = Array.isArray(parsed.entries) ? parsed.entries.length : cloudNoteCount
+          } catch {
+            /* keep prior count */
+          }
+          if (cloudNoteCount > 0 || cache.entries.length === 0) {
+            await notebookStore.importBackup(gistJson)
+            restoredFromCloud = cloudNoteCount > 0
+            setLastCloudSyncAt()
+          }
+        }
+      } catch (err) {
+        // If an explicit gist id was wrong, fail clearly; discovery misses just create anew below.
+        if (input.gistId?.trim()) {
+          throw err instanceof Error
+            ? new NotebookStorageError('unknown', err.message)
+            : new NotebookStorageError('unknown', 'Could not download cloud notebook')
+        }
+      }
+    }
+
     const result = await notebookStore.syncDurableNow()
     if (!result.gistId) {
       throw new NotebookStorageError('unknown', result.gistError || 'Cloud upload failed')
@@ -971,19 +1028,32 @@ export const notebookStore = {
       gistId: result.gistId,
       htmlUrl: result.htmlUrl ?? null,
       total: cache.entries.length,
+      restoredFromCloud,
+      cloudNoteCount,
     }
   },
   /** Connect this device to an existing cloud notebook and download notes. */
   async connectCloudSync(input: {
     token: string
-    gistId: string
-  }): Promise<{ total: number; gistId: string }> {
+    gistId?: string
+  }): Promise<{ total: number; gistId: string; restoredFromCloud: boolean }> {
     await ensureReady()
-    const gistId = input.gistId.trim()
-    if (!input.token.trim() || !gistId) {
-      throw new NotebookStorageError('unknown', 'Token and cloud notebook id are required')
+    const token = input.token.trim()
+    let gistId = input.gistId?.trim() || ''
+    if (!token) {
+      throw new NotebookStorageError('unknown', 'GitHub token is required')
     }
-    saveGistSettings({ token: input.token, gistId, enabled: true })
+    if (!gistId) {
+      const existing = await resolveOwnlabNotebookGist(token)
+      if (!existing) {
+        throw new NotebookStorageError(
+          'unknown',
+          'No OWNLAB cloud notebook found for this token. Enable cloud sync on your first device first.',
+        )
+      }
+      gistId = existing.gistId
+    }
+    saveGistSettings({ token, gistId, enabled: true })
     refreshCloudRuntimeFromSettings()
     const gistJson = await pullGistBackup(loadGistSettings())
     if (!gistJson) {
@@ -992,7 +1062,7 @@ export const notebookStore = {
     const imported = await notebookStore.importBackup(gistJson)
     setLastCloudSyncAt()
     await scheduleDurableSync()
-    return { total: imported.total, gistId }
+    return { total: imported.total, gistId, restoredFromCloud: imported.total > 0 }
   },
   subscribe(listener: EntryListener) {
     entryListeners.add(listener)

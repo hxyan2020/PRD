@@ -26,7 +26,15 @@ export function CloudSetupCard({ onEnabled }: Props) {
       }
       await verifyGistToken(token)
       const result = await notebookStore.enableCloudSync({ token })
-      setSuccess(t('cloudEnabledOk', { id: result.gistId, total: result.total }))
+      setSuccess(
+        result.restoredFromCloud
+          ? t('cloudEnabledRestoredOk', {
+              id: result.gistId,
+              total: result.total,
+              cloud: result.cloudNoteCount,
+            })
+          : t('cloudEnabledOk', { id: result.gistId, total: result.total }),
+      )
       setToken('')
       onEnabled?.()
     } catch (err) {
@@ -41,6 +49,7 @@ export function CloudSetupCard({ onEnabled }: Props) {
       <div className="notebook-cloud-setup-head">
         <h2>{t('cloudRequiredTitle')}</h2>
         <p>{t('cloudRequiredBody')}</p>
+        <p className="notebook-cloud-setup-note">{t('cloudNoLoginHint')}</p>
       </div>
       <ol className="notebook-cloud-steps">
         <li>
@@ -50,6 +59,7 @@ export function CloudSetupCard({ onEnabled }: Props) {
           </a>
         </li>
         <li>{t('cloudRequiredStep2')}</li>
+        <li>{t('cloudRequiredStep3')}</li>
       </ol>
       <label className="notebook-field">
         <span className="notebook-field-label">{t('backupGistToken')}</span>

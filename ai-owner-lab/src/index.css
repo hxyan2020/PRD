@@ -2539,6 +2539,15 @@ body.menu-open {
   line-height: 1.45;
 }
 
+.notebook-cloud-setup-note {
+  margin-top: 0.45rem !important;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--ink) !important;
+  font-weight: 550;
+}
+
 .notebook-backup-card h3 {
   margin: 0;
   font-size: 1.02rem;

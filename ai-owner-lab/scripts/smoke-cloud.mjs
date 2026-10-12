@@ -76,22 +76,34 @@ const enableStatus = await page.locator('.notebook-recover-status').textContent(
 const gistId = await page.locator('.notebook-backup input[type="text"]').inputValue()
 await page.screenshot({ path: path.join(OUT, 'cloud-sync-enabled.png'), fullPage: true })
 
-// Simulate a fresh device: wipe local notes + cloud settings, then reconnect.
+// Simulate a fresh device: wipe local notes + cloud settings, then restore with TOKEN ONLY
+// (no gist id — this is the new-device path users actually take).
 await wipeNotebook(page, { keepGist: false })
 await page.reload({ waitUntil: 'networkidle' })
-await page.getByRole('tab', { name: 'Backup' }).click()
-await page.waitForSelector('.notebook-backup')
-await page.locator('.notebook-backup input[type="password"]').fill(token)
-await page.locator('.notebook-backup input[type="text"]').fill(gistId)
-await page.getByRole('button', { name: 'Connect this device' }).click()
+await page.waitForSelector('.notebook-cloud-setup, .notebook-composer')
+const setupPassword = page.locator('.notebook-cloud-setup input[type="password"]')
+if (await setupPassword.count()) {
+  await setupPassword.fill(token)
+  await page.getByRole('button', { name: /Enable cloud sync|开启云同步/ }).first().click()
+} else {
+  await page.getByRole('tab', { name: 'Backup' }).click()
+  await page.waitForSelector('.notebook-backup')
+  await page.locator('.notebook-backup input[type="password"]').fill(token)
+  // Leave notebook id blank on purpose.
+  await page.locator('.notebook-backup input[type="text"]').fill('')
+  await page.getByRole('button', { name: 'Enable cloud sync' }).click()
+}
 await page.waitForFunction(
   () => {
-    const s = document.querySelector('.notebook-recover-status')
-    return Boolean(s && /Connected|已连接/i.test(s.textContent || ''))
+    const s = document.querySelector('.notebook-recover-status, .notebook-cloud-setup .notebook-recover-status')
+    return Boolean(
+      s && /Cloud sync on|restored|云同步已开启|已从账号恢复/i.test(s.textContent || ''),
+    )
   },
   null,
-  { timeout: 25000 },
+  { timeout: 45000 },
 )
+const restoreStatus = await page.locator('.notebook-recover-status').first().textContent()
 await page.getByRole('tab', { name: /Notes/ }).click()
 await page.waitForSelector('.notebook-timeline .notebook-entry', { timeout: 8000 })
 const restored = await page.evaluate(
@@ -103,7 +115,7 @@ const restored = await page.evaluate(
 )
 await page.screenshot({ path: path.join(OUT, 'cloud-sync-connected.png'), fullPage: true })
 
-const summary = { enableStatus, gistId, restored, pageErrors: errors }
+const summary = { enableStatus, gistId, restoreStatus, restored, pageErrors: errors }
 fs.writeFileSync(path.join(OUT, 'cloud-sync-api.json'), JSON.stringify(summary, null, 2))
 console.log(JSON.stringify(summary, null, 2))
 await browser.close()

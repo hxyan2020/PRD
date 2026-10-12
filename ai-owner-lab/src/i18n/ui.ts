@@ -124,10 +124,15 @@ const en = {
   cloudTitle: 'Cloud sync (any device)',
   cloudBody:
     'Uses a private GitHub Gist as your cloud notebook. Your token stays in this browser only — OWNLAB never sends it to our servers.',
-  cloudRequiredTitle: 'Turn on cloud sync to keep new notes',
+  cloudRequiredTitle: 'Turn on cloud sync to keep notes on every device',
   cloudRequiredBody:
-    'New notes stay on this device only until cloud sync is on. Paste a GitHub token once — every new note uploads to your private cloud notebook automatically.',
-  cloudRequiredStep2: 'Paste the token here and click Enable cloud sync. After that, every new note is saved to the cloud.',
+    'OWNLAB has no site login. Notes stay in this browser until you connect a GitHub token — that token is how a new phone or laptop finds the same private notebook.',
+  cloudRequiredStep2:
+    'Paste the token here and click Enable cloud sync. First device uploads your notes; another device with the same token downloads them.',
+  cloudRequiredStep3:
+    'On a new device: open Notebook, paste the same token, Enable cloud sync — notes restore automatically (no notebook id needed).',
+  cloudNoLoginHint:
+    'Not a website account — same GitHub token on each device = same notes. Without the token, a new device starts empty.',
   cloudSyncing: 'Saving to cloud…',
   cloudSynced: 'Saved to cloud',
   cloudSyncError: 'Cloud save failed: {error}',
@@ -143,9 +148,9 @@ const en = {
   cloudCreateToken: 'Create token',
   cloudStep2: 'Paste the token below and click “Enable cloud sync” to upload this notebook.',
   cloudStep3:
-    'On another device, paste the same token + the cloud notebook id, then click “Connect this device”.',
-  cloudNotebookId: 'Cloud notebook id',
-  cloudNotebookIdPlaceholder: 'Leave blank on first device — created automatically',
+    'On another device, paste the same token and Enable cloud sync (or Connect). OWNLAB finds your notebook automatically.',
+  cloudNotebookId: 'Cloud notebook id (optional)',
+  cloudNotebookIdPlaceholder: 'Optional — leave blank; same token finds your notebook',
   cloudEnable: 'Enable cloud sync',
   cloudUploadNow: 'Upload to cloud now',
   cloudConnectDevice: 'Connect this device',
@@ -159,13 +164,15 @@ const en = {
   cloudNeverSynced: 'not yet',
   cloudLastSynced: 'Last cloud sync: {time}',
   cloudTokenRequired: 'Paste a GitHub token first (gist scope).',
-  cloudConnectRequired: 'Paste both the GitHub token and the cloud notebook id from your first device.',
-  cloudEnabledOk: 'Cloud sync on. Notebook id {id} — {total} note(s) uploaded. Use this id on other devices.',
+  cloudConnectRequired: 'Paste your GitHub token (notebook id optional — same token finds it).',
+  cloudEnabledOk: 'Cloud sync on. Notebook id {id} — {total} note(s) on this device.',
+  cloudEnabledRestoredOk:
+    'Cloud sync on — restored {cloud} note(s) from your account. This device now has {total}. Notebook id {id}.',
   cloudEnabledFail: 'Could not enable cloud sync: {error}',
   cloudConnectOk: 'Connected. Merged cloud notebook — you now have {total} note(s).',
   cloudConnectFail: 'Could not connect: {error}',
   cloudOtherDeviceHint:
-    'Other device: open Backup → paste the same token → cloud notebook id {id} → Connect this device.',
+    'Other device: open Notebook → paste the same GitHub token → Enable cloud sync (notes restore automatically).',
   backupPersistTitle: 'Keep browser storage',
   backupPersistBody:
     'Ask Chrome/Edge not to delete OWNLAB data when disk space is low. Recommended on every device you write notes on.',
@@ -509,10 +516,15 @@ const zh: Record<UiKey, string> = {
   cloudTitle: '云同步（任意设备）',
   cloudBody:
     '用私有 GitHub Gist 作为云端笔记本。令牌只留在本浏览器，OWNLAB 不会把它发到我们的服务器。',
-  cloudRequiredTitle: '请开启云同步以保存新笔记',
+  cloudRequiredTitle: '请开启云同步，以便在每台设备看到笔记',
   cloudRequiredBody:
-    '未开启云同步前，新笔记只留在本设备。粘贴一次 GitHub 令牌后，每条新笔记都会自动上传到你的私有云笔记本。',
-  cloudRequiredStep2: '在此粘贴令牌并点「开启云同步」。之后每条新笔记都会保存到云端。',
+    'OWNLAB 没有网站账号登录。未连接 GitHub 令牌前，笔记只留在本浏览器；同一令牌就是新手机/电脑找回同一本私有笔记本的方式。',
+  cloudRequiredStep2:
+    '在此粘贴令牌并点「开启云同步」。第一台设备上传笔记；另一台设备用同一令牌即可下载。',
+  cloudRequiredStep3:
+    '换设备时：打开笔记本，粘贴同一令牌，点「开启云同步」——笔记会自动恢复（无需笔记本 ID）。',
+  cloudNoLoginHint:
+    '这不是网站登录——每台设备用同一个 GitHub 令牌 = 同一份笔记。没有令牌时，新设备一定是空的。',
   cloudSyncing: '正在保存到云端…',
   cloudSynced: '已保存到云端',
   cloudSyncError: '云端保存失败：{error}',
@@ -525,9 +537,9 @@ const zh: Record<UiKey, string> = {
   cloudStep1: '创建带 gist 权限的经典 GitHub 令牌：',
   cloudCreateToken: '创建令牌',
   cloudStep2: '把令牌粘贴到下方，点「开启云同步」上传本笔记本。',
-  cloudStep3: '在另一台设备粘贴相同令牌 + 云笔记本 ID，再点「连接此设备」。',
-  cloudNotebookId: '云笔记本 ID',
-  cloudNotebookIdPlaceholder: '第一台设备可留空——会自动创建',
+  cloudStep3: '在另一台设备粘贴相同令牌并点「开启云同步」或「连接此设备」。OWNLAB 会自动找到你的笔记本。',
+  cloudNotebookId: '云笔记本 ID（可选）',
+  cloudNotebookIdPlaceholder: '可留空——同一令牌会自动找到笔记本',
   cloudEnable: '开启云同步',
   cloudUploadNow: '立即上传到云端',
   cloudConnectDevice: '连接此设备',
@@ -541,13 +553,15 @@ const zh: Record<UiKey, string> = {
   cloudNeverSynced: '尚未同步',
   cloudLastSynced: '上次云同步：{time}',
   cloudTokenRequired: '请先粘贴带 gist 权限的 GitHub 令牌。',
-  cloudConnectRequired: '请粘贴 GitHub 令牌，以及第一台设备上的云笔记本 ID。',
-  cloudEnabledOk: '云同步已开启。笔记本 ID {id}——已上传 {total} 条。请在其他设备使用此 ID。',
+  cloudConnectRequired: '请粘贴 GitHub 令牌（笔记本 ID 可选——同一令牌即可找到）。',
+  cloudEnabledOk: '云同步已开启。笔记本 ID {id}——本设备共 {total} 条。',
+  cloudEnabledRestoredOk:
+    '云同步已开启——已从账号恢复 {cloud} 条。本设备现共 {total} 条。笔记本 ID {id}。',
   cloudEnabledFail: '无法开启云同步：{error}',
   cloudConnectOk: '已连接。已合并云端笔记本，当前共 {total} 条。',
   cloudConnectFail: '无法连接：{error}',
   cloudOtherDeviceHint:
-    '其他设备：打开「备份」→ 粘贴相同令牌 → 云笔记本 ID {id} →「连接此设备」。',
+    '其他设备：打开笔记本 → 粘贴同一 GitHub 令牌 →「开启云同步」（笔记会自动恢复）。',
   backupPersistTitle: '持久化浏览器存储',
   backupPersistBody:
     '请求 Chrome/Edge 在磁盘紧张时不要删除 OWNLAB 数据。建议在你写笔记的每台设备上都开启。',
