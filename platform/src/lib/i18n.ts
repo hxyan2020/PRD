@@ -17,6 +17,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-admin": { en: "AI Admin", "zh-Hant": "AI 管理" },
+  "/admin/ai-performance": { en: "AI Performance", "zh-Hant": "AI 績效" },
   "/admin/interventions": { en: "Human Intervention", "zh-Hant": "人工干預" },
   "/admin/spine": { en: "Spine (redirect)", "zh-Hant": "脊柱（轉址）" },
   "/admin/rag": { en: "RAG Knowledge Base", "zh-Hant": "RAG 知識庫" },
@@ -118,6 +119,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "First-line and second-line AI cards, parameters, training, accuracy, skills and RAG — maker/checker dual control; AI proposes RAG via propose_rag only.",
       "zh-Hant": "一線／二線 AI 卡片、參數、訓練、準確率、Skills 與 RAG — Maker／Checker 雙重控制；AI 僅能經 propose_rag 提案 RAG。",
+    },
+  },
+  "ai-performance": {
+    title: { en: "AI Performance Evaluation", "zh-Hant": "AI 績效評估" },
+    subtitle: {
+      en: "Read-only health board — skill match, challenger agreement, human feedback, training quality, 14-day accuracy. Queue training or rate analyses in AI Admin.",
+      "zh-Hant": "唯讀健康看板 — 技能匹配、挑戰者一致、人工回饋、訓練品質、14 日準確率。排隊訓練或評分分析請至 AI 管理。",
     },
   },
   interventions: {

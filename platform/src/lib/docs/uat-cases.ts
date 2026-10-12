@@ -520,13 +520,14 @@ export const UAT_CASES: UatCase[] = [
     dependency: "Two distinct users with ai.admin / checker capability",
     covers: [
       "AI Admin",
+      "AI Performance",
       "Users",
       "Audit Log",
     ],
     en: {
       title: "AI Admin — the person who proposes a change cannot approve it",
       why: "A single engineer must not silently retune models or thresholds that drive live RCA.",
-      objective: "Propose a harmless setting as Maker, fail to self-approve, then approve as a different Checker.",
+      objective: "Propose a harmless setting as Maker, fail to self-approve, then approve as a different Checker; confirm the AI Performance board shows live KPIs.",
       steps: [
         "Sign in as the AI Engineer (ai.engineer@vantagemarkets.com / ai123) if that seed user exists; otherwise use a second admin account.",
         "Open AI Admin. Propose a harmless change (for example a comment on a model row, or a threshold you will revert).",
@@ -534,14 +535,15 @@ export const UAT_CASES: UatCase[] = [
         "Sign in as a different checker-capable user (Risk Owner or Super Admin).",
         "Approve the pending change. Confirm it applies only after that second approval.",
         "On localhost, open Audit Log and find both the propose and the approve rows (two different actors).",
+        "Open AI Performance (`/admin/ai-performance`). Confirm KPIs render (skill match, challenger agree, feedback accuracy, training quality) and the board is read-only (no propose/approve forms).",
       ],
-      pass: "Self-approve blocked; distinct checker succeeds; audit shows maker and checker.",
-      evidence: "Change request id; Audit entries for propose + approve.",
+      pass: "Self-approve blocked; distinct checker succeeds; audit shows maker and checker; AI Performance board shows KPIs without mutation controls.",
+      evidence: "Change request id; Audit entries for propose + approve; AI Performance screenshot.",
     },
     zh: {
       title: "AI Admin — 提出變更的人不能自己核准",
       why: "單一工程師不可默默改驅動即時 RCA 的模型或門檻。",
-      objective: "以 Maker 提出無害變更，自我核准失敗，再以另一 Checker 核准。",
+      objective: "以 Maker 提出無害變更，自我核准失敗，再以另一 Checker 核准；並確認 AI 績效看板顯示即時 KPI。",
       steps: [
         "以 AI 工程師登入（ai.engineer@vantagemarkets.com / ai123，若種子存在），否則用第二個管理員。",
         "開啟 AI Admin，提出無害變更（例如模型列備註，或稍後會還原的門檻）。",
@@ -549,9 +551,10 @@ export const UAT_CASES: UatCase[] = [
         "改以不同 Checker 能力使用者登入（風險負責人或超級管理員）。",
         "核准待審變更，確認只有第二次核准後才生效。",
         "本機開啟稽核日誌，找到提出與核准兩列（兩個不同操作者）。",
+        "開啟 AI 績效（`/admin/ai-performance`）。確認 KPI 有顯示（技能匹配、挑戰者一致、回饋準確率、訓練品質），且看板為唯讀（無提案／核准表單）。",
       ],
-      pass: "自我核准被擋；不同 Checker 成功；稽核含 Maker 與 Checker。",
-      evidence: "變更單號；提出＋核准稽核。",
+      pass: "自我核准被擋；不同 Checker 成功；稽核含 Maker 與 Checker；AI 績效看板顯示 KPI 且無可寫控制。",
+      evidence: "變更單號；提出＋核准稽核；AI 績效截圖。",
     },
   },
   {

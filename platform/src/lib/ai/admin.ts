@@ -319,6 +319,92 @@ export function getAiAdminOverview() {
   };
 }
 
+/** Read-focused AI performance evaluation board (shares snapshot logic with AI Admin). */
+export function getAiPerformanceEval() {
+  const overview = getAiAdminOverview();
+  const db = getDb();
+
+  const challengeTotal =
+    (overview.kpis.challenge_agree || 0) +
+    (overview.kpis.challenge_partial || 0) +
+    (overview.kpis.challenge_disagree || 0);
+  const challengeAgreeRate = challengeTotal
+    ? (overview.kpis.challenge_agree || 0) / challengeTotal
+    : 0;
+
+  let improvements = { total: 0, open: 0, satisfactory: 0 };
+  try {
+    improvements = db
+      .prepare(
+        `SELECT
+           COUNT(*) AS total,
+           SUM(CASE WHEN status='OPEN' OR status IS NULL OR status='' THEN 1 ELSE 0 END) AS open,
+           SUM(CASE WHEN status IN ('SATISFIED','SATISFACTORY','CLOSED') THEN 1 ELSE 0 END) AS satisfactory
+         FROM ai_improvement_reviews`
+      )
+      .get() as { total: number; open: number; satisfactory: number };
+  } catch {
+    /* table may be empty / not yet migrated on cold start */
+  }
+
+  const training = db
+    .prepare(
+      `SELECT
+         COUNT(*) AS total,
+         SUM(CASE WHEN status='COMPLETED' THEN 1 ELSE 0 END) AS completed,
+         SUM(CASE WHEN status='RUNNING' THEN 1 ELSE 0 END) AS running,
+         SUM(CASE WHEN status='QUEUED' THEN 1 ELSE 0 END) AS queued,
+         AVG(CASE WHEN status='COMPLETED' THEN accuracy END) AS avg_accuracy,
+         AVG(CASE WHEN status='COMPLETED' THEN f1_score END) AS avg_f1
+       FROM ai_training_runs`
+    )
+    .get() as {
+    total: number;
+    completed: number;
+    running: number;
+    queued: number;
+    avg_accuracy: number | null;
+    avg_f1: number | null;
+  };
+
+  const recentTraining = db
+    .prepare(
+      `SELECT run_id, name, model_name, status, accuracy, precision_score, recall_score, f1_score, samples, completed_at, started_at
+       FROM ai_training_runs
+       ORDER BY id DESC LIMIT 8`
+    )
+    .all();
+
+  const recentFeedback = db
+    .prepare(
+      `SELECT f.id, f.label, f.note, f.created_at, a.analysis_id, a.mode, a.confidence, a.indicator_monitor_id, u.name AS rated_by_name
+       FROM ai_feedback f
+       JOIN ai_analyses a ON a.id = f.analysis_id
+       LEFT JOIN users u ON u.id = f.rated_by
+       ORDER BY f.id DESC LIMIT 12`
+    )
+    .all();
+
+  return {
+    ...overview,
+    kpis: {
+      ...overview.kpis,
+      challenge_agree_rate: challengeAgreeRate,
+      challenge_total: challengeTotal,
+      improvements_total: improvements.total || 0,
+      improvements_open: improvements.open || 0,
+      improvements_satisfactory: improvements.satisfactory || 0,
+      training_completed: training.completed || 0,
+      training_running: training.running || 0,
+      training_queued: training.queued || 0,
+      training_avg_accuracy: training.avg_accuracy ?? 0,
+      training_avg_f1: training.avg_f1 ?? 0,
+    },
+    recent_training: recentTraining,
+    recent_feedback: recentFeedback,
+  };
+}
+
 export function listChangeRequests(status?: string) {
   const db = getDb();
   let sql = `

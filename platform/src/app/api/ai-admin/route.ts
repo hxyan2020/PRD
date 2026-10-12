@@ -3,6 +3,7 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import {
   decideChangeRequest,
   getAiAdminOverview,
+  getAiPerformanceEval,
   listAiParams,
   listChangeRequests,
   listRagForAdmin,
@@ -67,6 +68,9 @@ export async function GET(req: Request) {
   }
   if (tab === "rag") {
     return NextResponse.json({ documents: listRagForAdmin() });
+  }
+  if (tab === "performance") {
+    return NextResponse.json({ eval: getAiPerformanceEval() });
   }
 
   return NextResponse.json({

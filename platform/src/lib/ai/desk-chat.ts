@@ -72,11 +72,11 @@ const KNOWLEDGE: Knowledge[] = [
     boost: ["built"],
     en: {
       title: "What has been built",
-      body: "Shipped: Admin Home, Daily Performance, Monitor 2.0 + Alerts + Detectors, Market Intel, Risk Log, Risk Domains, AI Analyses + challenger + how-to-improve chatbot, Skills / Knowledge Tree / RAG, AI Admin maker-checker, Human Intervention, Demo Messenger (thinking animation), Escalation + Lark registry, Spine + Audit, org + users, Data Sources, grouped Settings, AI access blocklist, EN/繁中 chrome, selection chatbot, docs (TSD/PRD/User Guide/UAT/Ecosystem/Roadmap/URLs), GitHub Pages snapshot. Not live: real Lark cards (RM-01), Monitor write-back (RM-02), billed LLM (RM-03), independent challenger vendor (RM-04), SSO (RM-05), Postgres (RM-06), real halt/leverage/LP/withdrawal adapters (RM-09).",
+      body: "Shipped: Admin Home, Daily Performance, Monitor 2.0 + Alerts + Detectors, Market Intel, Risk Log, Risk Domains, AI Analyses + challenger + how-to-improve chatbot, Skills / Knowledge Tree / RAG, AI Admin maker-checker, AI Performance evaluation board, Human Intervention, Demo Messenger (thinking animation), Escalation + Lark registry, Spine + Audit, org + users, Data Sources, grouped Settings, AI access blocklist, EN/繁中 chrome, selection chatbot, docs (TSD/PRD/User Guide/UAT/Ecosystem/Roadmap/URLs), GitHub Pages snapshot. Not live: real Lark cards (RM-01), Monitor write-back (RM-02), billed LLM (RM-03), independent challenger vendor (RM-04), SSO (RM-05), Postgres (RM-06), real halt/leverage/LP/withdrawal adapters (RM-09).",
     },
     zh: {
       title: "目前已建置",
-      body: "已上線：管理首頁、每日績效、Monitor 2.0＋警報＋偵測器、市場情報、風險日誌、風險領域、AI 分析＋挑戰者＋如何改進聊天、技能／知識樹／RAG、AI 管理雙人、人工干預、示範 Messenger（思考動畫）、升級＋Lark 登錄、脊柱＋稽核、組織與使用者、資料來源、分組設定、AI 存取禁區、EN／繁中、劃選聊天機器人、全套文件、GitHub Pages 快照。未上線：真實 Lark 卡片（RM-01）、Monitor 回寫（RM-02）、計費 LLM（RM-03）、獨立挑戰者供應商（RM-04）、SSO（RM-05）、Postgres（RM-06）、真實停商品／槓桿／LP／出金適配（RM-09）。",
+      body: "已上線：管理首頁、每日績效、Monitor 2.0＋警報＋偵測器、市場情報、風險日誌、風險領域、AI 分析＋挑戰者＋如何改進聊天、技能／知識樹／RAG、AI 管理雙人、AI 績效評估看板、人工干預、示範 Messenger（思考動畫）、升級＋Lark 登錄、脊柱＋稽核、組織與使用者、資料來源、分組設定、AI 存取禁區、EN／繁中、劃選聊天機器人、全套文件、GitHub Pages 快照。未上線：真實 Lark 卡片（RM-01）、Monitor 回寫（RM-02）、計費 LLM（RM-03）、獨立挑戰者供應商（RM-04）、SSO（RM-05）、Postgres（RM-06）、真實停商品／槓桿／LP／出金適配（RM-09）。",
     },
   },
   {
@@ -232,6 +232,28 @@ const KNOWLEDGE: Knowledge[] = [
     zh: {
       title: "Maker／Checker",
       body: "AI 管理的變更單需要 Maker 與另一位 Checker。原型裡這是應用內旗標，不是 IdP 身分（SSO 是 RM-05）。AI 服務角色永不可有停商品／只平倉權限 — 見 AI 存取安全。",
+    },
+  },
+  {
+    keys: [
+      "ai performance",
+      "accuracy",
+      "skill match",
+      "challenger agree",
+      "feedback accuracy",
+      "training quality",
+      "ai 績效",
+      "準確率",
+      "技能匹配",
+    ],
+    href: "/admin/ai-performance",
+    en: {
+      title: "AI performance evaluation",
+      body: "Open AI Performance for the read-only health board: skill match rate, challenger agree/partial/disagree, human feedback labels, how-to-improve reviews, training accuracy/F1, and 14-day snapshots. Queue training or rate analyses in AI Admin (maker≠checker).",
+    },
+    zh: {
+      title: "AI 績效評估",
+      body: "開啟 AI 績效查看唯讀健康看板：技能匹配率、挑戰者同意／部分／不同意、人工回饋標籤、如何改進審查、訓練準確率／F1，以及 14 日快照。排隊訓練或評分分析請至 AI 管理（制作者≠覆核者）。",
     },
   },
   {

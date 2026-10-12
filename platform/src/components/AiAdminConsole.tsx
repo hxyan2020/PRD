@@ -212,6 +212,10 @@ export function AiAdminConsole({
           <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("adm.governance")}</div>
           <p className="text-sm mt-1 max-w-3xl">
             {t("adm.govHint")}{" "}
+            <Link className="underline" href="/admin/ai-performance">
+              {navLabel("/admin/ai-performance", locale, "AI Performance")}
+            </Link>
+            {" · "}
             <Link className="underline" href="/admin/interventions">
               {navLabel("/admin/interventions", locale, "Human Intervention")}
             </Link>

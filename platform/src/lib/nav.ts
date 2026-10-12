@@ -7,6 +7,7 @@ import {
   Compass,
   Database,
   FileText,
+  Gauge,
   GitBranch,
   Globe2,
   LayoutDashboard,
@@ -67,6 +68,7 @@ export const NAV_ITEMS = [
   { href: "/admin/knowledge-tree", label: "Knowledge Tree", icon: Network, permission: "rag.read", group: "ai" },
   { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read", group: "ai" },
   { href: "/admin/ai-admin", label: "AI Admin", icon: SlidersHorizontal, permission: "ai.admin", group: "ai" },
+  { href: "/admin/ai-performance", label: "AI Performance", icon: Gauge, permission: "ai.read", group: "ai" },
 
   { href: "/admin/messenger", label: "Demo Messenger", icon: MessagesSquare, permission: "lark.read", group: "response" },
   { href: "/admin/interventions", label: "Human Intervention", icon: UserCheck, permission: "intervene.operate", group: "response" },
