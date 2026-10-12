@@ -17,7 +17,12 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
   const cover = primaryCoverSrc(game.images);
   // Seed by game id so locale variants get distinct atmospheric art — never
   // stack a titled ludus-card SVG on top of the card’s own heading.
-  const backdrop = ludusBackdropDataUri(game.category, game.id || game.slug);
+  // Pass the name so silhouettes match the idea (whistle ≠ generic Musical Play).
+  const backdrop = ludusBackdropDataUri(
+    game.category,
+    game.id || game.slug,
+    game.name,
+  );
   const [coverFailed, setCoverFailed] = useState(false);
   const photoCover =
     cover && !isLudusSyntheticSrc(cover) && !coverFailed ? cover : null;

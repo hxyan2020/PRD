@@ -15,6 +15,7 @@ import {
   isLudusSyntheticSrc,
   isPhotographicSrc,
   listDisplayImages,
+  ludusBackdropDataUri,
   primaryCoverSrc,
   resolveImageSrc,
   VIEW_CAPTION_KEYS,
@@ -83,7 +84,7 @@ export function GameDetailPage() {
     cardFooter: t("detail.cardFooter"),
   };
   // Title-card SVGs repeat the game name — using them as the hero background
-  // creates a ghost double of the headline. Prefer a plain brand wash instead.
+  // creates a ghost double of the headline. Prefer a subject-matched wash.
   const heroPhoto =
     activeSrc &&
     isPhotographicSrc(activeSrc) &&
@@ -92,13 +93,26 @@ export function GameDetailPage() {
     !activeSrc.startsWith("data:")
       ? resolveImageSrc(activeSrc, imageLabel)
       : "";
+  const heroWash = !heroPhoto
+    ? ludusBackdropDataUri(
+        game.categoryKey || game.category,
+        game.id || game.slug,
+        game.name,
+      )
+    : "";
 
   return (
     <>
       <section className="detail-hero">
         <div
           className={`detail-hero-media${heroPhoto ? "" : " detail-hero-media--wash"}`}
-          style={heroPhoto ? { backgroundImage: `url("${heroPhoto}")` } : undefined}
+          style={
+            heroPhoto
+              ? { backgroundImage: `url("${heroPhoto}")` }
+              : heroWash
+                ? { backgroundImage: `url("${heroWash}")` }
+                : undefined
+          }
           aria-hidden="true"
         />
         <div className="container">

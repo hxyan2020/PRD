@@ -641,29 +641,45 @@ const CURATED_PHOTOS = {
   ],
   "String telephone": [commons("Cup-and-ball.jpg"), commons("Tin_can_telephone.jpg")],
   "Paper dolls": [commons("Kokeshi_dolls.jpg"), commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg")],
-  "Puppet theater": [commons("Wayang_kulit.jpg"), commons("Bilboquet.jpg")],
-  "Action figures": [commons("Tin_soldier.jpg"), commons("Hobby_horse.jpg")],
-  Bocce: [commons("Quoits.jpg"), commons("Sepak_takraw.jpg"), commons("Footbag.jpg")],
-  Croquet: [commons("Quoits.jpg"), commons("Tug_of_war.jpg")],
+  "Puppet theater": [commons("Wayang_kulit.jpg"), commons("Shadow_puppet.jpg")],
+  "Action figures": [commons("Tin_soldier.jpg"), commons("Toy_soldiers.jpg")],
+  Bocce: [commons("Bocce.jpg"), commons("Boules.jpg"), commons("Pétanque.jpg")],
+  Croquet: [commons("Croquet.jpg"), commons("Quoits.jpg")],
   Quoits: [commons("Quoits.jpg")],
   Dreidel: [commons("Spinning_top.jpg"), commons("Dice.jpg")],
   Teetotum: [commons("Spinning_top.jpg"), commons("Dice.jpg")],
   "Gyroscope toy": [commons("Spinning_top.jpg"), commons("Yo_yo_toy.jpg")],
   "Tower of Hanoi": [commons("Tower_of_Hanoi.jpg"), commons("Jenga_distorted.jpg")],
-  "Soma cube": [commons("Rubiks_cube_by_keqs.jpg"), commons("A_pile_of_alphabet_wooden_blocks.jpg")],
+  "Soma cube": [commons("Soma_cube.jpg"), commons("A_pile_of_alphabet_wooden_blocks.jpg")],
   "Spot It! / Dobble": [commons("Cards_-Deck_Playing.jpg"), commons("Playing_cards.jpg")],
-  "Capture the flag": [commons("Children_playing_hide_and_seek.jpg"), commons("Tug_of_war.jpg")],
-  "Egg and spoon race": [commons("Seesaw.jpg"), commons("Tug_of_war.jpg")],
-  "Sack race": [commons("Seesaw.jpg"), commons("Children_playing_hide_and_seek.jpg")],
-  Kazoo: [commons("Maracas.jpg"), commons("Xylophone.jpg")],
-  "Thumb piano / kalimba toy": [commons("Xylophone.jpg"), commons("Maracas.jpg")],
-  Castanets: [commons("Maracas.jpg"), commons("Xylophone.jpg")],
+  "Capture the flag": [commons("Capture_the_flag.jpg"), commons("Children_playing_hide_and_seek.jpg")],
+  "Egg and spoon race": [
+    commons("Egg_and_spoon_race.jpg"),
+    commons("Sack_race.jpg"),
+    commons("Three-legged_race.jpg"),
+  ],
+  "Sack race": [commons("Sack_race.jpg"), commons("Three-legged_race.jpg")],
+  Kazoo: [
+    commons("Whistle.jpg"),
+    commons("Bird whistle toy.jpg"),
+    commons("Flute.jpg"),
+  ],
+  "Thumb piano / kalimba toy": [
+    commons("Xylophone.jpg"),
+    commons("Hand_drum.jpg"),
+    commons("Maracas.jpg"),
+  ],
+  Castanets: [commons("Maracas.jpg"), commons("Castanets.jpg")],
   "House of cards": [commons("Cards_-Deck_Playing.jpg"), commons("Playing_cards.jpg")],
   "Domino toppling": [commons("Domino_--_2021_--_6766.jpg")],
-  "Lincoln Logs": [commons("A_pile_of_alphabet_wooden_blocks.jpg"), commons("Lego_bricks.jpg")],
-  "Piñata": [commons("Maracas.jpg"), commons("Circle_game.jpg")],
+  "Lincoln Logs": [
+    commons("Lincoln_Logs.jpg"),
+    commons("Wooden_toys.jpg"),
+    commons("A_pile_of_alphabet_wooden_blocks.jpg"),
+  ],
+  "Piñata": [commons("Piñata.jpg"), commons("Maracas.jpg")],
   "Daruma doll": [commons("Kokeshi_dolls.jpg"), commons("Matryoshka_dolls.jpg")],
-  "Christmas crackers": [commons("Maracas.jpg"), commons("Circle_game.jpg")],
+  "Christmas crackers": [commons("Piñata.jpg"), commons("Maracas.jpg")],
   Charades: [commons("Circle_game.jpg"), commons("Children_playing_hide_and_seek.jpg")],
   Hangman: [commons("Scrabble_game.jpg"), commons("Circle_game.jpg")],
   "Twenty questions": [commons("Circle_game.jpg"), commons("Scrabble_game.jpg")],
@@ -1024,14 +1040,35 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Hopscotch.jpg"),
   commons("Tug_of_war.jpg"),
   commons("Boomerang.jpg"),
-  commons("Kokeshi.jpg"),
+  commons("Kokeshi_dolls.jpg"),
   commons("Corn_husk_doll.jpg"),
   commons("Sepak_takraw.jpg"),
   commons("Diabolo.jpg"),
   commons("Soma_cube.jpg"),
   commons("Tower_of_Hanoi.jpg"),
   commons("Maracas.jpg"),
-  commons("Rattle_(percussion).jpg"),
+  commons("Rattle.jpg"),
+  commons("Plastic baby rattle toy 2.jpg"),
+  commons("Assortment of five baby rattles.jpg"),
+  commons("Bird whistle toy.jpg"),
+  commons("Toy whistle (FindID 992394).jpg"),
+  commons("2016-01 Ocarina front.jpg"),
+  commons("Three Maya Ceramic Ocarinas.jpg"),
+  commons("Horse Pull Toy.jpg"),
+  commons("Dog Pull Toy.jpg"),
+  commons("Antique rhinoceros pull-toy (25107963143).jpg"),
+  commons("Hobby horse at Sidmouth Folk Festival.jpg"),
+  commons("Beigoma 01.jpg"),
+  commons("Metal spinning top, Museum of Childhood, Edinburgh.JPG"),
+  commons("Beyblade.jpg"),
+  commons("Paper_fortune_teller.jpg"),
+  commons("Cootie_catcher.jpg"),
+  commons("Hand_drum.jpg"),
+  commons("Russian_dolls.jpg"),
+  commons("Whirligig.jpg"),
+  commons("Kite_flying.jpg"),
+  commons("Dart_board.jpg"),
+  commons("Pogo.jpg"),
   commons("Lego_bricks.jpg"),
   commons("Rock-paper-scissors.jpg"),
   commons("Nine_Men%27s_Morris.jpg"),
@@ -1042,15 +1079,12 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Reversi.jpg"),
   commons("Mahjong.jpg"),
   commons("Playing_cards.jpg"),
-  commons("Jigsaw_puzzle.jpg"),
   commons("Cup-and-ball.jpg"),
   commons("Kendama.jpg"),
   commons("Origami.jpg"),
   commons("Paper_airplane.jpg"),
   commons("Stilts.jpg"),
-  commons("Hula_hoop.jpg"),
   commons("Pinwheel_(toy).jpg"),
-  commons("Soap_bubbles.jpg"),
   commons("Teddy_bear.jpg"),
   commons("Rocking_horse.jpg"),
   commons("Hobby_horse.jpg"),
@@ -1058,7 +1092,6 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Dollhouse.jpg"),
   commons("Wayang_kulit.jpg"),
   commons("Shadow_puppet.jpg"),
-  commons("Hand_puppet.jpg"),
   commons("Frisbee.jpg"),
   commons("Darts.jpg"),
   commons("Croquet.jpg"),
@@ -1069,14 +1102,10 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Badminton.jpg"),
   commons("Archery.jpg"),
   commons("Slingshot.jpg"),
-  commons("Hacky_sack.jpg"),
-  commons("Bean_bag.jpg"),
-  commons("Pogo_stick.jpg"),
+  commons("Hacky_Sack.jpg"),
   commons("Unicycle.jpg"),
   commons("Juggler.jpg"),
   commons("Piñata.jpg"),
-  commons("Musical_chairs.jpg"),
-  commons("Tag_(game).jpg"),
   commons("Dodgeball.jpg"),
   commons("Sack_race.jpg"),
   commons("Board_game.jpg"),
@@ -1089,11 +1118,9 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Sudoku.jpg"),
   commons("Kaleidoscope.jpg"),
   commons("Whistle.jpg"),
-  commons("Drum_(musical_instrument).jpg"),
   commons("Flute.jpg"),
   commons("Toy_car.jpg"),
   commons("Toy_train.jpg"),
-  commons("Pull_toy.jpg"),
   commons("Balloon.jpg"),
   commons("Carousel.jpg"),
   commons("Seesaw.jpg"),
@@ -1101,11 +1128,6 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Sandbox.jpg"),
   commons("Snowman.jpg"),
   commons("Sandcastle.jpg"),
-  commons("Cat%27s_cradle.jpg"),
-  commons("Jump_rope.jpg"),
-  commons("Skipping_rope.jpg"),
-  commons("Children_playing_marbles.jpg"),
-  commons("Children_with_kites.jpg"),
   commons("Wooden_toys.jpg"),
   commons("Fox_and_geese.jpg"),
   commons("Halma.jpg"),
@@ -1156,16 +1178,12 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Paper_boat.jpg"),
   commons("Hide_and_seek.jpg"),
   commons("Red_rover.jpg"),
-  commons("Simon_Says.jpg"),
   commons("Capture_the_flag.jpg"),
   commons("Three-legged_race.jpg"),
   commons("Egg_and_spoon_race.jpg"),
-  commons("Memory_(game).jpg"),
   commons("PegSolitaire.jpg"),
   commons("International_draughts.jpg"),
   commons("Alquerque_game_board.jpg"),
-  commons("Bao_la_mjini_board.jpg"),
-  commons("Sungka.jpg"),
   commons("Oware.jpg"),
   commons("Wooden_Mancala_board.jpg"),
   commons("Pachisi-real.jpg"),
@@ -1187,6 +1205,9 @@ const EXTRA_UNIQUE_PHOTOS = [
   commons("Jianzi.jpg"),
   commons("Kite.jpg"),
   commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+  commons("Ghanaian kid (skipping rope) 04.jpg"),
+  commons("Ghanaian kid (skipping rope) 05.jpg"),
+  commons("Ghanaian kid (skipping rope) 06.jpg"),
   commons("Knucklebones.jpg"),
   commons("Dice.jpg"),
   commons("Scrabble_game.jpg"),
@@ -1802,31 +1823,36 @@ function entryLineage(uniqueKey, name, archetypeKey, parentName) {
  * Only verified-live Commons / Unsplash URLs (checked in generate).
  */
 const ARCHETYPE_PHOTOS = {
+  // Keep pools subject-tight and Commons-alive — off-topic / 404 fillers made
+  // Collection covers look like the wrong toy once exclusive allocation spilled.
   whistle_toy: [
     commons("Flute.jpg"),
     commons("Whistle.jpg"),
-    commons("Toy_piano.jpg"),
-    commons("Wind_chime.jpg"),
+    commons("Bird whistle toy.jpg"),
+    commons("Toy whistle (FindID 992394).jpg"),
+    commons("2016-01 Ocarina front.jpg"),
+    commons("Three Maya Ceramic Ocarinas.jpg"),
   ],
   pull_toy: [
     commons("Wagon.jpg"),
     commons("Hobby_horse.jpg"),
     commons("Rocking_horse.jpg"),
-    commons("Pull_toy.jpg"),
-    commons("Toy_car.jpg"),
-    commons("Toy_train.jpg"),
+    commons("Horse Pull Toy.jpg"),
+    commons("Dog Pull Toy.jpg"),
+    commons("Antique rhinoceros pull-toy (25107963143).jpg"),
+    commons("Hobby horse at Sidmouth Folk Festival.jpg"),
   ],
   mini_weapons_toy: [
     commons("Archery.jpg"),
     commons("Slingshot.jpg"),
     commons("Darts.jpg"),
-    commons("Toy_soldiers.jpg"),
+    commons("Dart_board.jpg"),
+    commons("Slingshot - গুলতি - DSC00532.jpg"),
   ],
   jacks_local: [
     commons("Knucklebones.jpg"),
     commons("Astragaloi.jpg"),
     commons("Glass_Marbles.jpg"),
-    commons("Children_playing_marbles.jpg"),
   ],
   story_dice_oral: [
     commons("Dice.jpg"),
@@ -1837,92 +1863,68 @@ const ARCHETYPE_PHOTOS = {
   shadow_play: [
     commons("Wayang_kulit.jpg"),
     commons("Shadow_puppet.jpg"),
-    commons("Hand_puppet.jpg"),
-    commons("Marionette.jpg"),
   ],
   kite_local: [
     commons("Kite.jpg"),
-    commons("Children_with_kites.jpg"),
-    commons("Pinwheel_(toy).jpg"),
+    commons("Kite_flying.jpg"),
     unsplash("1757743066599-193b467c35f1"),
   ],
   cloth_doll_local: [
     commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
     commons("Worry_dolls.jpg"),
     commons("Corn_husk_doll.jpg"),
-    commons("Teddy_bear.jpg"),
-    commons("Kokeshi.jpg"),
+    commons("Kokeshi_dolls.jpg"),
+    commons("Russian_dolls.jpg"),
+    commons("Matryoshka_dolls.jpg"),
   ],
   ball_sewn: [
     commons("Footbag.jpg"),
     commons("Sepak_takraw.jpg"),
     commons("Jianzi.jpg"),
-    commons("Hacky_sack.jpg"),
-    commons("Bean_bag.jpg"),
+    commons("Hacky_Sack.jpg"),
     commons("Shuttlecock.jpg"),
   ],
   top_local: [
     commons("Spinning_top.jpg"),
     commons("Yo_yo_toy.jpg"),
     commons("Diabolo.jpg"),
-    commons("Pinwheel_(toy).jpg"),
+    commons("Beigoma 01.jpg"),
+    commons("Metal spinning top, Museum of Childhood, Edinburgh.JPG"),
+    commons("Beyblade.jpg"),
   ],
   string_local: [
     commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
-    commons("Cat%27s_cradle.jpg"),
-    commons("Jump_rope.jpg"),
   ],
   board_race_folk: [
     commons("Pachisi-real.jpg"),
     commons("Snakes_and_Ladders.jpg"),
     commons("Ludo_board.svg"),
     commons("Board_game.jpg"),
-    commons("Chinese_checkers.jpg"),
   ],
   sowing_local: [
     commons("Mancala.jpg"),
     commons("Oware.jpg"),
     commons("Wooden_Mancala_board.jpg"),
     commons("Congkak.jpg"),
-    commons("Sungka.jpg"),
-    commons("Bao_la_mjini_board.jpg"),
   ],
   jump_rope: [
     commons("Ghanaian kid (skipping rope) 04.jpg"),
     commons("Ghanaian kid (skipping rope) 05.jpg"),
     commons("Ghanaian kid (skipping rope) 06.jpg"),
-    commons("Jump_rope.jpg"),
-    commons("Skipping_rope.jpg"),
     commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
   ],
   blindfold_tag: [
     commons("Blind_man's_bluff.jpg"),
     commons("Children_playing_hide_and_seek.jpg"),
     commons("Hide_and_seek.jpg"),
-    commons("Tag_(game).jpg"),
-    commons("Capture_the_flag.jpg"),
   ],
   wrestling_play: [
     commons("Wrestling.jpg"),
     commons("Traditional_wrestling.jpg"),
-    commons("Tug_of_war.jpg"),
   ],
-  memory_song: [
-    commons("Circle_game.jpg"),
-    commons("Musical_chairs.jpg"),
-    commons("Simon_Says.jpg"),
-    commons("Rock-paper-scissors.jpg"),
-  ],
-  balance_stilts: [
-    commons("Stilts.jpg"),
-    commons("Pogo_stick.jpg"),
-    commons("Unicycle.jpg"),
-  ],
-  leaf_boat: [
-    commons("Paper_boat.jpg"),
-    commons("Paper_airplane.jpg"),
-    commons("Origami.jpg"),
-  ],
+  memory_song: [commons("Circle_game.jpg")],
+  balance_stilts: [commons("Stilts.jpg"), commons("Pogo.jpg")],
+  leaf_boat: [commons("Paper_boat.jpg"), commons("Paper_airplane.jpg")],
   snow_or_sand: [
     commons("Sandcastle.jpg"),
     commons("Snowman.jpg"),
@@ -1931,25 +1933,19 @@ const ARCHETYPE_PHOTOS = {
   knuckle_football: [
     commons("Footbag.jpg"),
     commons("Jianzi.jpg"),
-    commons("Hacky_sack.jpg"),
-    commons("Chinlone.jpg"),
+    commons("Hacky_Sack.jpg"),
   ],
-  riddle_local: [
-    commons("Circle_game.jpg"),
-    commons("Memory_(game).jpg"),
-    commons("Crossword.jpg"),
-  ],
+  riddle_local: [commons("Circle_game.jpg")],
   ceremonial_toy: [
     commons("Maracas.jpg"),
     commons("Rattle.jpg"),
     commons("Piñata.jpg"),
-    commons("Rattle_(percussion).jpg"),
+    commons("Maracas from Africa.jpg"),
+    commons("Colorful Maracas.JPG"),
   ],
   puzzle_knot: [
     commons("Pick-up_sticks.jpg"),
-    commons("Jigsaw_puzzle.jpg"),
     commons("Tangram-1.JPG"),
-    commons("Soma_cube.jpg"),
   ],
   mini_house: [
     commons("Dollhouse.jpg"),
@@ -1958,45 +1954,41 @@ const ARCHETYPE_PHOTOS = {
   ],
   hand_drum: [
     commons("Maracas.jpg"),
+    commons("Hand_drum.jpg"),
     commons("Xylophone.jpg"),
-    commons("Drum_(musical_instrument).jpg"),
-    commons("Wind_chime.jpg"),
   ],
   clapping_rhyme: [
     commons("Circle_game.jpg"),
     commons("Children_playing_hide_and_seek.jpg"),
-    commons("Musical_chairs.jpg"),
-    commons("Red_rover.jpg"),
   ],
   nesting_cups: [
     commons("A_pile_of_alphabet_wooden_blocks.jpg"),
     commons("Cup-and-ball.jpg"),
     commons("Matryoshka_dolls.jpg"),
-    commons("Kendama.jpg"),
+    commons("Russian_dolls.jpg"),
   ],
   fortune_fold: [
-    commons("Paper_boat.jpg"),
-    commons("Cards_-Deck_Playing.jpg"),
     commons("Origami.jpg"),
-    commons("Paper_airplane.jpg"),
+    commons("Paper_boat.jpg"),
+    commons("Paper_fortune_teller.jpg"),
+    commons("Cootie_catcher.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
   ],
-  ribbon_wand: [
-    commons("Kite.jpg"),
-    commons("Maracas.jpg"),
-    commons("Hula_hoop.jpg"),
-    commons("Soap_bubbles.jpg"),
-  ],
+  ribbon_wand: [commons("Whirligig.jpg"), commons("Piñata.jpg")],
   button_spinner: [
     commons("Spinning_top.jpg"),
     commons("Yo_yo_toy.jpg"),
     commons("Diabolo.jpg"),
-    commons("Kaleidoscope.jpg"),
+    commons("Whirligig.jpg"),
+    commons("Beigoma 01.jpg"),
   ],
   rattle: [
     commons("Maracas.jpg"),
     commons("Rattle.jpg"),
-    commons("Rattle_(percussion).jpg"),
-    commons("Bean_bag.jpg"),
+    commons("Plastic baby rattle toy 2.jpg"),
+    commons("Assortment of five baby rattles.jpg"),
+    commons("Maracas from Africa.jpg"),
+    commons("Colorful Maracas.JPG"),
   ],
 };
 
@@ -2164,28 +2156,39 @@ const imageBank = {
       if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
         break;
     }
-    // Always fall through to category + global extra banks for exclusive
-    // covers (matrix rows used to soft-reuse 1–2 archetype photos ~90×).
-    while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
-      const url = this.takeCategoryPhoto(
-        category,
-        lineage,
-        avoid,
-        `${uniqueKey}:${imgs.length}:${themeKey}`,
-      );
-      if (!pushPhoto(url)) break;
-    }
-    while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
-      if (
-        !pushPhoto(
-          this.takeExtraPhoto(
-            lineage,
-            avoid,
-            `${uniqueKey}:${imgs.length}:${themeKey}`,
-          ),
-        )
-      ) {
-        break;
+
+    // Spillover (category / global extras) is only for untitled generic rows.
+    // Named curated games and regional archetypes must not receive unrelated
+    // stock (toy piano on a whistle, bumper cars on a Rubik's Cube, etc.).
+    const hasThematicPool =
+      !!resolvePhotoKey(name) ||
+      !!(parentName && resolvePhotoKey(parentName)) ||
+      !!(aliasCurated && resolvePhotoKey(aliasCurated)) ||
+      !!(archetypeKey && ARCHETYPE_PHOTOS[archetypeKey]?.length);
+    const allowSpillover = !hasThematicPool || !!parentName;
+
+    if (allowSpillover) {
+      while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+        const url = this.takeCategoryPhoto(
+          category,
+          lineage,
+          avoid,
+          `${uniqueKey}:${imgs.length}:${themeKey}`,
+        );
+        if (!pushPhoto(url)) break;
+      }
+      while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+        if (
+          !pushPhoto(
+            this.takeExtraPhoto(
+              lineage,
+              avoid,
+              `${uniqueKey}:${imgs.length}:${themeKey}`,
+            ),
+          )
+        ) {
+          break;
+        }
       }
     }
 
