@@ -1,6 +1,6 @@
 # CRMP Open Issues
 
-**Document ID:** CRMP-OI-001 · **Version:** 1.3 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
+**Document ID:** CRMP-OI-001 · **Version:** 1.4 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
 
 Tentative open-issue checklist for the CRMP admin / control-plane programme. Assumptions are explicit:
 
@@ -179,6 +179,8 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - [x] First/second-line AI Admin · grouped pipeline · intervention actioner email  
 - [x] `propose_rag` · ESC-DEFAULT + coefficients · RAG leaves · MonitorCode  
 - [x] Editable Roles + audit plane split + Roll back  
+- [x] AI Performance evaluation board (`/admin/ai-performance`) — skill match, challenger, feedback, training  
+- [x] Audit mutation coverage — every admin/Lark/messenger path + `LOGIN_FAILED` (`test:audit`)  
 - [ ] Formal UAT sign-off (OI-09)  
 
 ---
@@ -245,6 +247,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 **BU:** GRC · **Status:** Planned · **ETA:** 2027-Q4 · **Depends:** Legal; OI-06; Postgres
 
 - [x] Prototype audit plane split (CRMP / Vantage Markets Admin) + Roll back  
+- [x] Mutation coverage guards — discovery / Lark / detectors / market-intel / messenger / failed login  
 - [ ] Legal retention + redaction policy for evidence excerpts  
 - [ ] Scheduled retention / purge jobs  
 - [ ] Auditor-ready export pack (beyond UI tabs)  
@@ -260,5 +263,6 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 | 1.1 | 2026-10-05 | Audit plane split + rollback; editable Roles; escalation dimensions noted |
 | 1.2 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11 mobile cards; OI-13 local-only ack |
 | 1.3 | 2026-10-05 | Detailed per-BU checklists; OI-16 observability, OI-17 kill-switches, OI-18 tenancy; board renders checklist lines |
+| 1.4 | 2026-10-12 | OI-14 AI Performance board + audit mutation coverage shipped; OI-12 coverage guards |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)

@@ -1,6 +1,6 @@
 # 平台改進路線圖
 
-已交付台面打磨（即時警報與追蹤命名；偵測器合併至 Monitor 2.0；分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾、手機卡片列表）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
+已交付台面打磨（即時警報與追蹤命名；偵測器合併至 Monitor 2.0；分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、**AI 績效**唯讀評估看板、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾＋每次管理／Lark 變更覆蓋、手機卡片列表）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
 
 **文件編號：** CRMP-RM-001 · 現行 CRMP 原型之後的優先待辦  
 **讀者：** 風險負責人、平台負責人、工程、GRC  
@@ -130,12 +130,14 @@
 2. 僅在匹配器 **與** 模型都同意時走技能路徑。
 3. 評測架：歷史標註案例（跟單集中、LP 拒單、熱錢包浮額、權益回撤）。
 4. Prompt 版本走 [AI 管理](/admin/ai-admin) Maker／Checker。
+5. 操作人員在改調前用 [AI 績效](/admin/ai-performance) 判斷原型品質（技能匹配、挑戰者一致、回饋準確率、訓練 F1、14 日快照）— 唯讀；變更仍在 AI 管理。
 
 ### 完成標準
 
 - 留出測試包技能精確率達約定門檻（起步 80%）。
 - 沒有人工關卡的不可逆建議 = 0。
 - 每筆 RCA 至少引用一筆證據庫。挑戰者（RM-04）維持 **獨立** 行程。
+- AI 績效看板在管理後台即時追蹤同一門檻（今日為原型 KPI；正式評測架之後）。
 
 ### 不做的風險
 
@@ -492,7 +494,7 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 |---|---|
 | RM-01 | [示範 Messenger](/admin/messenger) · [Lark](/admin/lark) |
 | RM-02 | [Monitor 2.0](/admin/monitor-2) · [即時警報與追蹤](/admin/alerts) |
-| RM-03／RM-04 | [即時警報與追蹤](/admin/alerts) · [AI 管理](/admin/ai-admin) |
+| RM-03／RM-04 | [即時警報與追蹤](/admin/alerts) · [AI 管理](/admin/ai-admin) · [AI 績效](/admin/ai-performance) |
 | RM-05 | [使用者](/admin/users) · [角色](/admin/roles) |
 | RM-09 | [人工干預](/admin/interventions) · [AI 存取安全](/admin/security/ai-access) |
 | RM-11 | [每日績效](/admin/dashboard) · [風險日誌](/admin/risk-log) |
@@ -508,5 +510,6 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 |---|---|---|
 | 1.7 | 2026-10-05 | 日常打磨：稽核分頁＋回滾、ESC-DEFAULT、BU 與團隊、開放議題／進度 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；RM-02／RM-12 今日事實；手機卡片列表 |
+| 1.9 | 2026-10-12 | AI 績效評估看板＋稽核變更覆蓋列為日常；RM-03 連結 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

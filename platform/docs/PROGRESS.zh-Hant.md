@@ -1,6 +1,6 @@
 # CRMP 進度追蹤
 
-**文件編號：** CRMP-PT-001 · **版本：** 1.4 · **互動看板：** [/admin/docs/progress](/admin/docs/progress) · **開放議題：** [/admin/docs/open-issues](/admin/docs/open-issues)
+**文件編號：** CRMP-PT-001 · **版本：** 1.5 · **互動看板：** [/admin/docs/progress](/admin/docs/progress) · **開放議題：** [/admin/docs/open-issues](/admin/docs/open-issues)
 
 將**每一個開放議題**對映到追蹤板：
 
@@ -13,7 +13,7 @@
 
 互動 SVG＋手機卡片：`/admin/docs/progress`（資料：`platform/src/lib/docs/open-issues.ts` — 18 項）。可依狀態與 BU 篩選。
 
-已交付台面事實（日常，不另開長條）：稽核平面分流、可編輯角色、ESC-DEFAULT、首頁脊柱、BU 與團隊、**即時警報與追蹤**、偵測器→**Monitor 2.0**。
+已交付台面事實（日常，不另開長條）：稽核平面分流（**CRMP 日誌**／**Vantage Markets 管理日誌**＋回滾＋每次管理／Lark 變更覆蓋）、**AI 績效**唯讀評估看板、可編輯角色、ESC-DEFAULT、首頁脊柱、BU 與團隊、**即時警報與追蹤**、偵測器→**Monitor 2.0**。
 
 ### 議題 → BU → 狀態 → 時間窗
 
@@ -51,5 +51,6 @@
 | 1.2 | 2026-10-05 | 日常註記：即時警報與追蹤；偵測器→Monitor 2.0 |
 | 1.3 | 2026-10-05 | 新增 OI-16／17／18 |
 | 1.4 | 2026-10-05 | 看板軸向：X＝開放議題、Y＝時間軸；每欄標 BU；BU 篩選；手機卡片 |
+| 1.5 | 2026-10-12 | 日常：AI 績效看板＋稽核變更覆蓋 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

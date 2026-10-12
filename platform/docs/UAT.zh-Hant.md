@@ -13,7 +13,7 @@
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、未知風險探索、即時警報與追蹤、風險領域、AI Admin、AI 績效（唯讀評估）、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾；每次管理／Lark 變更＋失敗登入）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
@@ -41,7 +41,7 @@ graph TD
 | 10 | UAT-10 | 106m | 8m | Medium | Risk | Separate OPEN WARN thread (do not use the Critical sample) | Messenger — 排除誤報 | Demo Messenger, Realtime Alert & Tracker |
 | 11 | UAT-11 | 114m | 10m | Critical | Risk Owner | UAT-04 dual-AI pack reviewed on a BREACH thread | Messenger — 接受 AI 包後結案 | Demo Messenger, Realtime Alert & Tracker |
 | 12 | UAT-12 | 124m | 15m | Critical | Ops + Risk Owner | OPEN thread; Human Intervention page | Messenger — 提出控制、雙重確認、再送到管理端 | Demo Messenger, Human Intervention |
-| 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — 提出變更的人不能自己核准 | AI Admin, Users, Audit Log |
+| 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — 提出變更的人不能自己核准 | AI Admin, AI Performance, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | 市場情報 —「立即掃描」必須跑完（含 GitHub Pages） | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與首頁脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
@@ -292,9 +292,9 @@ graph TD
 ### UAT-13 — AI Admin — 提出變更的人不能自己核准
 
 - **嚴重度：** Critical · **負責：** AI Engineer + Risk Owner · **依賴：** Two distinct users with ai.admin / checker capability · **建議：** T+139m / 20m
-- **涵蓋：** AI Admin, Users, Audit Log
+- **涵蓋：** AI Admin, AI Performance, Users, Audit Log
 - **為何測：** 單一工程師不可默默改驅動即時 RCA 的模型或門檻。
-- **目的：** 以 Maker 提出無害變更，自我核准失敗，再以另一 Checker 核准。
+- **目的：** 以 Maker 提出無害變更，自我核准失敗，再以另一 Checker 核准；並確認 AI 績效看板顯示即時 KPI。
 
 **步驟**
 
@@ -304,9 +304,10 @@ graph TD
 4. 改以不同 Checker 能力使用者登入（風險負責人或超級管理員）。
 5. 核准待審變更，確認只有第二次核准後才生效。
 6. 本機開啟稽核日誌，找到提出與核准兩列（兩個不同操作者）。
+7. 開啟 AI 績效（`/admin/ai-performance`）。確認 KPI 有顯示（技能匹配、挑戰者一致、回饋準確率、訓練品質），且看板為唯讀（無提案／核准表單）。
 
-**通過：** 自我核准被擋；不同 Checker 成功；稽核含 Maker 與 Checker。
-**證據：** 變更單號；提出＋核准稽核。
+**通過：** 自我核准被擋；不同 Checker 成功；稽核含 Maker 與 Checker；AI 績效看板顯示 KPI 且無可寫控制。
+**證據：** 變更單號；提出＋核准稽核；AI 績效截圖。
 
 ### UAT-14 — 市場情報 —「立即掃描」必須跑完（含 GitHub Pages）
 
@@ -350,16 +351,17 @@ graph TD
 - **嚴重度：** High · **負責：** System · **依賴：** UAT-07 through UAT-12 performed · **建議：** T+181m / 15m
 - **涵蓋：** Audit Log, Admin Home spine
 - **為何測：** 若聊天動作從稽核消失，事後無法還原決策。
-- **目的：** 把至少一次升級與一次控制確認對到首頁脊柱與／或稽核；確認兩個稽核分頁與回滾。
+- **目的：** 把至少一次升級與一次控制確認對到首頁脊柱與／或稽核；確認兩個稽核分頁、回滾，以及管理／Lark 變更（含失敗登入）皆有寫列。
 
 **步驟**
 
-1. 開啟稽核日誌。確認兩個分頁：**CRMP 日誌**與 **Vantage Markets 管理日誌**。Messenger 升級／排除／結案與 AI 動作應在 CRMP 日誌；權限／設定／RAG／Lark 在 Vantage Markets 管理日誌。
+1. 開啟稽核日誌。確認兩個分頁：**CRMP 日誌**與 **Vantage Markets 管理日誌**。Messenger 升級／排除／結案與 AI 動作應在 CRMP 日誌；權限／設定／RAG／Lark 在 Vantage Markets 管理日誌。探索連線／分析／RO 審查與偵測器切換亦在 CRMP；Lark 建立／啟停／測試通知與 `LOGIN_FAILED` 在 Vantage Markets 管理。
 2. 在管理首頁打開整合脊柱（階段工單計數 — 無脊柱日誌分頁），找 AI_RCA、ESCALATION／HUMAN_INTERVENTION 等階段。
 3. 從前案挑一次升級與一次「送到 admin」確認，找到約一分鐘內的時間戳與參考號。
 4. 有變更前快照的列應可見**回滾**（`POST /api/audit/rollback`）。能用一句話說明：「這個聊天動作變成那一列首頁脊柱／稽核」。
+5. 說明：AI 績效（`/admin/ai-performance`）為唯讀、不寫稽核列 — 品質相關變更仍來自 AI 管理。
 
-**通過：** Audit 與／或首頁脊柱可見至少一次升級與一次控制確認；兩個稽核分頁可渲染；有快照時可見回滾。
+**通過：** Audit 與／或首頁脊柱可見至少一次升級與一次控制確認；兩個稽核分頁可渲染；有快照時可見回滾；變更覆蓋含探索／Lark／登入失敗。
 **證據：** 事件 id；稽核分頁＋首頁脊柱截圖。
 
 ### UAT-17 — 英文與繁中文件都能顯示

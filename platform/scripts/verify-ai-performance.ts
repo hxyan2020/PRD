@@ -47,12 +47,23 @@ assert.match(urls, /\/admin\/ai-performance/);
 assert.match(urls, /\/api\/ai-performance/);
 
 for (const [rel, markers] of [
-  ["docs/USER_GUIDE.md", [/8\.2A AI Performance/, /\/admin\/ai-performance/]],
-  ["docs/USER_GUIDE.zh-Hant.md", [/8\.2A AI 績效/, /\/admin\/ai-performance/]],
-  ["docs/PRD.md", [/FR-38/, /### 6\.6 AI Performance/]],
-  ["docs/PRD.zh-Hant.md", [/FR-38/, /### 6\.6 AI 績效/]],
-  ["docs/TSD.md", [/## 8A\. AI Performance/, /getAiPerformanceEval/]],
-  ["docs/TSD.zh-Hant.md", [/## 8A\. AI 績效/, /getAiPerformanceEval/]],
+  ["docs/USER_GUIDE.md", [/8\.2A AI Performance/, /\/admin\/ai-performance/, /test:audit/]],
+  ["docs/USER_GUIDE.zh-Hant.md", [/8\.2A AI 績效/, /\/admin\/ai-performance/, /test:audit/]],
+  ["docs/PRD.md", [/FR-38/, /### 6\.6 AI Performance/, /mutation coverage/]],
+  ["docs/PRD.zh-Hant.md", [/FR-38/, /### 6\.6 AI 績效/, /變更覆蓋/]],
+  ["docs/TSD.md", [/## 8A\. AI Performance/, /getAiPerformanceEval/, /test:audit/]],
+  ["docs/TSD.zh-Hant.md", [/## 8A\. AI 績效/, /getAiPerformanceEval/, /test:audit/]],
+  ["docs/UAT.md", [/AI Performance/, /\/admin\/ai-performance/, /LOGIN_FAILED/]],
+  ["docs/UAT.zh-Hant.md", [/AI 績效/, /\/admin\/ai-performance/, /LOGIN_FAILED/]],
+  ["docs/ROADMAP.md", [/AI Performance/, /audit mutation coverage/]],
+  ["docs/ROADMAP.zh-Hant.md", [/AI 績效/, /稽核變更覆蓋/]],
+  ["docs/OPEN_ISSUES.md", [/AI Performance evaluation board/, /Mutation coverage guards/]],
+  ["docs/OPEN_ISSUES.zh-Hant.md", [/AI 績效評估看板/, /變更覆蓋守護/]],
+  ["docs/ECOSYSTEM.md", [/AI Performance/, /mutation coverage/]],
+  ["docs/ECOSYSTEM.zh-Hant.md", [/AI 績效/, /變更覆蓋/]],
+  ["docs/PROGRESS.md", [/AI Performance/, /mutation coverage/]],
+  ["docs/PROGRESS.zh-Hant.md", [/AI 績效/, /變更覆蓋/]],
+  ["docs/CHANGELOG.md", [/AI Performance/, /Audit mutation coverage/]],
 ] as Array<[string, RegExp[]]>) {
   const src = read(rel);
   for (const m of markers) {

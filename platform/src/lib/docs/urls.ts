@@ -85,7 +85,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
 
   // System
   { category: "System", title: "Data Sources", path: "/admin/data-sources", description: "Internal/external source registry", permission: "sources.read" },
-  { category: "System", title: "Audit Log", path: "/admin/audit", description: "Two tabs — CRMP logs (alerts/AI/skills/escalation/interventions/messenger) and Vantage Markets Admin logs (rights, transaction pulls, Lark, BU POC responses, settings/org/RAG); Roll back via before-state snapshot", permission: "audit.read" },
+  { category: "System", title: "Audit Log", path: "/admin/audit", description: "Two tabs — CRMP logs (alerts/AI/skills/discovery/detectors/escalation/interventions/messenger) and Vantage Markets Admin logs (login incl. LOGIN_FAILED, rights, Lark create/toggle/test, market-intel, settings/org/RAG); Roll back via before-state; mutation coverage guarded by test:audit", permission: "audit.read" },
   { category: "API", title: "Audit Rollback API", path: "/api/audit/rollback", description: "POST { audit_id } restores before-state snapshot when available (audit.read + manage)", permission: "audit.read" },
   { category: "System", title: "Platform Settings", path: "/admin/settings", description: "Feature flags & thresholds", permission: "settings.manage" },
 

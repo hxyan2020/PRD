@@ -223,6 +223,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     screens: [
       { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
       { href: "/admin/ai-admin", en: "AI Admin", zh: "AI 管理" },
+      { href: "/admin/ai-performance", en: "AI Performance", zh: "AI 績效" },
       { href: "/admin/skills", en: "AI Skills", zh: "AI 技能" },
       { href: "/admin/rag", en: "RAG Knowledge Base", zh: "RAG 知識庫" },
     ],
@@ -231,15 +232,17 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       "Skill steps stored as EXECUTED_MOCK | AWAITING_HUMAN",
       "POST /api/ai analyze — no live model call",
       "Confidence can hit 1.0 on a skill hit",
+      "getAiPerformanceEval() · /admin/ai-performance read-only board",
     ],
     en: {
       title: "LLM primary RCA with tool-calling and eval harness",
       operatorGets: "Root-cause text that used tools (snapshot, RAG, tickets) — not only a keyword match to a skill pack.",
       why: "Heuristic matchSkill can fire with certainty 1.0 on wording overlap. That is unsafe once RM-09 can write.",
-      today: "Primary RCA is heuristic skill match or RAG retrieve. No live model, no tools, no offline eval set.",
+      today: "Primary RCA is heuristic skill match or RAG retrieve. No live model, no tools, no offline eval set. AI Performance board shows prototype KPIs (skill match, challenger, feedback, training).",
       todayFacts: [
         "analyze.ts: skill path sets EXECUTED_MOCK for non-human steps; human steps wait in the intervention queue.",
         "AI Admin holds prompt-like settings and maker/checker, but generation is not an LLM.",
+        "AI Performance (/admin/ai-performance) is the read-only eval surface — mutations stay on AI Admin.",
         "Seeded analyses already look ‘complete’ — easy to mistake demo RCA for a model.",
       ],
       build: [
@@ -247,11 +250,13 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
         "Skill path only when the matcher and the model agree.",
         "Eval harness on labelled historic cases (copy concentration, LP reject, hot-wallet float, equity DD): hypothesis quality, evidence citation, unsafe-action rate.",
         "Prompt versions live in AI Admin with maker/checker.",
+        "Wire AI Performance board to production eval metrics (not only SQLite prototype KPIs).",
       ],
       doneWhen: [
         "Held-out pack: skill-match precision ≥ agreed gate (start 80%).",
         "Unsafe irreversible suggestions without a human gate = 0.",
         "Every RCA cites at least one evidence-vault row. Challenger (RM-04) stays a separate process.",
+        "AI Performance board tracks the same gates live in Admin.",
       ],
       skipRisk: "False-certain skills auto-queue halt/leverage once adapters exist; no way to regress quality.",
     },
@@ -259,10 +264,11 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       title: "LLM 主 RCA：工具呼叫＋評測架",
       operatorGets: "根因文字是用工具（快照、RAG、工單）寫出來的，不是只靠關鍵字撞到技能包。",
       why: "啟發式 matchSkill 可能因用詞重疊就把信心打到 1.0。一旦 RM-09 能寫入，這就不安全。",
-      today: "主 RCA 是啟發式技能匹配或 RAG 檢索。沒有線上模型、工具、離線評測集。",
+      today: "主 RCA 是啟發式技能匹配或 RAG 檢索。沒有線上模型、工具、離線評測集。AI 績效看板顯示原型 KPI（技能匹配、挑戰者、回饋、訓練）。",
       todayFacts: [
         "analyze.ts：非人工步驟存 EXECUTED_MOCK；人工步驟進干預佇列。",
         "AI 管理有類似 Prompt 的設定與 Maker／Checker，但生成不是 LLM。",
+        "AI 績效（/admin/ai-performance）是唯讀評估面 — 變更仍在 AI 管理。",
         "種子分析看起來已經「完成」— 容易把示範 RCA 當成模型輸出。",
       ],
       build: [
@@ -270,11 +276,13 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
         "僅在匹配器與模型都同意時走技能路徑。",
         "評測架：歷史標註案例（跟單集中、LP 拒單、熱錢包浮額、權益回撤），打假設品質、證據引用、不安全動作率。",
         "Prompt 版本走 AI 管理 Maker／Checker。",
+        "將 AI 績效看板接到正式評測指標（不只 SQLite 原型 KPI）。",
       ],
       doneWhen: [
         "留出測試包技能精確率達約定門檻（起步 80%）。",
         "沒有人工關卡的不可逆建議 = 0。",
         "每筆 RCA 至少引用一筆證據庫。挑戰者（RM-04）維持獨立行程。",
+        "AI 績效看板在管理後台即時追蹤同一門檻。",
       ],
       skipRisk: "一旦適配存在，錯誤的高確定技能會自動排隊停商品／槓桿；品質無法回歸。",
     },

@@ -476,6 +476,11 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "原型稽核平面分流（CRMP／Vantage Markets 管理）＋回滾",
         done: true,
       },
+      {
+        en: "Mutation coverage guards — discovery / Lark / detectors / market-intel / messenger / failed login",
+        zh: "變更覆蓋守護 — 探索／Lark／偵測器／市場情報／Messenger／失敗登入",
+        done: true,
+      },
       { en: "Legal retention + redaction policy for evidence excerpts", zh: "證據摘錄的法遵保存＋遮罩政策" },
       { en: "Scheduled retention / purge jobs", zh: "排程保存／清除作業" },
       { en: "Auditor-ready export pack (beyond UI tabs)", zh: "稽核就緒匯出包（超越 UI 分頁）" },
@@ -523,14 +528,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Prototype AI desk features — UAT window",
       detail:
-        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back. Formal UAT sign-off still open (OI-09).",
+        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, AI Performance eval board, grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back + mutation coverage. Formal UAT sign-off still open (OI-09).",
       dependencies: "UAT-01…45; Risk Owner calendar",
       eta: "2026-10 / 2026-11 UAT",
     },
     zh: {
       title: "原型 AI 台面功能 — UAT 窗口",
       detail:
-        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾。正式 UAT 簽核仍開放（OI-09）。",
+        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、AI 績效評估看板、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾＋變更覆蓋。正式 UAT 簽核仍開放（OI-09）。",
       dependencies: "UAT-01…45；風險負責人行程",
       eta: "2026-10／2026-11 UAT",
     },
@@ -555,6 +560,16 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "可編輯角色＋稽核平面分流＋回滾",
         done: true,
       },
+      {
+        en: "AI Performance evaluation board (/admin/ai-performance)",
+        zh: "AI 績效評估看板（/admin/ai-performance）",
+        done: true,
+      },
+      {
+        en: "Audit mutation coverage — admin/Lark/messenger + LOGIN_FAILED (test:audit)",
+        zh: "稽核變更覆蓋 — 管理／Lark／Messenger＋LOGIN_FAILED（test:audit）",
+        done: true,
+      },
       { en: "Formal UAT sign-off (OI-09)", zh: "正式 UAT 簽核（OI-09）" },
     ],
   },
@@ -569,14 +584,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; audit tabs + Roll back).",
+        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; AI Performance; audit tabs + Roll back + mutation coverage).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；稽核分頁＋回滾）。",
+        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；AI 績效；稽核分頁＋回滾＋變更覆蓋）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },

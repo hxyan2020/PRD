@@ -1,6 +1,6 @@
 # Vantage Ecosystem Adoption Evaluation
 
-**Document ID:** CRMP-ECO-001 · **Version:** 1.8 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
+**Document ID:** CRMP-ECO-001 · **Version:** 1.9 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
 
 ## 1. Executive view
 
@@ -132,6 +132,8 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 | Intel | Synthetic/heuristic market scan | Needs licensed sources + scoring |
 | Enforcement | AI blocklist is largely documentary in UI | Must bind to AI service principals |
 | Mobile | Responsive card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit; confirm sheets still desktop-first | OK for web responsive ops, not native-app grade |
+| AI quality | Heuristic KPIs on [AI Performance](/admin/ai-performance); no production eval harness | Retune without live precision/F1 gates is guesswork |
+| Audit trail | Plane split + Roll back + mutation coverage (`test:audit`) for admin/Lark/messenger + failed login | Export / retention still open (OI-12) |
 
 ---
 
@@ -145,8 +147,10 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 6. Legal review before persisting client identifiers in evidence excerpts; set retention + redaction jobs.  
 7. Cap AI spend and latency with SLOs; challenger must remain an **independent** decision path (no shared prompt cache with primary).  
 8. Change-control: AI Admin setting changes always require a distinct checker.  
-9. Do not auto-close Monitor tickets from AI alone on BREACH/CRITICAL without Risk Owner policy.  
-10. Rehearse escalation path (Primary → Secondary → Risk Owner → Exec) in UAT before go-live.
+9. Review [AI Performance](/admin/ai-performance) before retuning models/thresholds; the board is read-only — mutations stay on AI Admin under maker≠checker.  
+10. Do not auto-close Monitor tickets from AI alone on BREACH/CRITICAL without Risk Owner policy.  
+11. Rehearse escalation path (Primary → Secondary → Risk Owner → Exec) in UAT before go-live.  
+12. Confirm Audit Log records every mutating admin/Lark path (discovery, detectors, messenger, failed login) — not only happy-path messenger closes.
 
 ---
 
@@ -170,5 +174,6 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 |---|---|---|
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin + Roll back; home spine; Open Issues / Progress links |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; F2/Phase B/Monitor shortcoming; mobile card lists; demo links |
+| 1.9 | 2026-10-12 | AI Performance board + audit mutation coverage noted in shortcomings / precautions |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
