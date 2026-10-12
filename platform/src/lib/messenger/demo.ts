@@ -926,6 +926,10 @@ export function messengerAction(input: {
         : `⚙️ Proposed: ${action.label}\n${action.description}\nPlease double-confirm before sending to Vantage Markets admin.`,
       { pending_id: Number(info.lastInsertRowid), action, poc_step: hop }
     );
+    writeAudit({ name: input.user_name }, "MESSENGER_RECOMMEND", "messenger_thread", thread.thread_id, {
+      action: action.code,
+      pending_id: Number(info.lastInsertRowid),
+    });
     return getMessengerThread(thread.id);
   }
 
@@ -942,6 +946,9 @@ export function messengerAction(input: {
       zh ? "已取消待確認控制動作。" : "Cancelled pending control action.",
       { poc_step: hop }
     );
+    writeAudit({ name: input.user_name }, "MESSENGER_CANCEL_ACTION", "messenger_thread", thread.thread_id, {
+      pending_id: input.pending_id,
+    });
     return getMessengerThread(thread.id);
   }
 
@@ -1079,7 +1086,10 @@ export function messengerAction(input: {
   throw new Error(`Unknown action ${input.action}`);
 }
 
-export function syncNewAlertsToMessenger(limit = 5) {
+export function syncNewAlertsToMessenger(
+  limit = 5,
+  actor?: { id?: number | null; name?: string | null } | null
+) {
   ensureMessengerSchema();
   seedMessengerIfEmpty();
   const db = getDb();
@@ -1151,6 +1161,12 @@ export function syncNewAlertsToMessenger(limit = 5) {
         }
       );
     }
+  }
+  if (rows.length > 0) {
+    writeAudit(actor ?? { name: "system" }, "MESSENGER_SYNC", "messenger_thread", "batch", {
+      synced: rows.length,
+      alert_ids: rows.map((r) => r.alert_id),
+    });
   }
   return rows.length;
 }

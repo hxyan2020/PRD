@@ -572,12 +572,14 @@ The **human-only** inventory. AI service accounts must never receive these pages
 
 ### 11.3 Audit Log — `/admin/audit`
 
+Every mutating admin / Lark / messenger operation writes a row here (actor, action, entity, details, timestamp). Reads do not. Failed logins are also recorded.
+
 Two tabs:
 
 | Tab | What it records |
 |---|---|
-| **CRMP logs** | All changes done inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
-| **Vantage Markets Admin logs** | Changes on other admin pages — restrict user rights, pull transaction data, triggered Lark messages, received risk incident response by BU POC, settings / org / RAG |
+| **CRMP logs** | Ops inside this CRMP admin — alerts, AI analyse/admin, skills, discovery (scan / Analyse / Connect OpenAI / RO review), detectors, monitor runs, escalation, interventions, messenger triage / sync |
+| **Vantage Markets Admin logs** | Identity & platform — login/logout (incl. failed login), settings toggles, users/roles/org, Lark channel create/toggle/test notify, market-intel Lark push, RAG/docs, messenger control confirm / checker approve / recommend / cancel |
 
 Each row: time, actor, action, entity, details. Both tabs have a **Roll back** button — restores the before-state snapshot when available (`POST /api/audit/rollback`). Newest rows per plane.
 
@@ -741,5 +743,6 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 | 1.10 | 2026-10-06 | Demo Messenger bird-eye POC windows along the escalation path |
 | 1.11 | 2026-10-11 | Unknown Risk Discovery admin page — notebook-parity AI suggestion card + RO review |
 | 1.12 | 2026-10-11 | §14A expanded: data table, seven methods, operator flow, statuses, mermaid |
+| 1.13 | 2026-10-12 | §11.3 audit coverage — every admin/Lark mutation + failed login |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { getDb, writeAudit } from "@/lib/db";
 import { runDetectors } from "@/lib/ai/run-detectors";
 
 export async function GET() {
@@ -27,7 +27,17 @@ export async function POST(req: Request) {
   }
   const body = await req.json().catch(() => ({}));
   if (body.action === "toggle") {
-    getDb().prepare(`UPDATE detectors SET enabled = ? WHERE id = ?`).run(body.enabled ? 1 : 0, body.id);
+    const prev = getDb()
+      .prepare(`SELECT id, code, enabled FROM detectors WHERE id = ?`)
+      .get(body.id) as { id: number; code: string; enabled: number } | undefined;
+    if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const enabled = body.enabled ? 1 : 0;
+    getDb().prepare(`UPDATE detectors SET enabled = ? WHERE id = ?`).run(enabled, body.id);
+    writeAudit(user, "TOGGLE_DETECTOR", "detector", prev.code, {
+      before: { enabled: prev.enabled },
+      after: { enabled },
+      detector_id: prev.id,
+    });
     return NextResponse.json({ ok: true });
   }
   const results = runDetectors({

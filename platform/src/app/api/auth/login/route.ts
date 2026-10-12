@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSession, loginWithCredentials } from "@/lib/auth";
+import { writeAudit } from "@/lib/db";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -10,6 +11,10 @@ export async function POST(req: Request) {
   }
   const user = loginWithCredentials(email, password);
   if (!user) {
+    writeAudit(null, "LOGIN_FAILED", "user", email.toLowerCase(), {
+      email: email.toLowerCase(),
+      reason: "invalid_credentials",
+    });
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
   await createSession(user.id);
