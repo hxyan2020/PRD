@@ -222,7 +222,7 @@ graph LR
 | FR-26 | 分組平台設定 | 六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器 |
 | FR-27 | 組織目錄 | BU 與團隊合併中心（`/admin/departments`）、可編輯角色（`/admin/roles` · `/api/roles`）、使用者（含 demo platform owner／haixiang.yan@hytechc.com） |
 | FR-28 | 升級路徑＋Lark 登錄 | 維度 × 係數；ESC-DEFAULT 兜底；技能綁一條路徑代碼；無「路徑」名稱欄；頻道啟用 |
-| FR-36 | 稽核平面分流＋回滾 | `/admin/audit` CRMP 日誌 vs Vantage Markets 管理日誌分頁；回滾經 `POST /api/audit/rollback` 還原變更前快照 |
+| FR-36 | 稽核平面分流＋回滾＋變更覆蓋 | `/admin/audit` CRMP vs Vantage Markets 管理分頁；回滾經 `POST /api/audit/rollback`；每次管理／Lark／Messenger 變更＋`LOGIN_FAILED` 皆 `writeAudit`（由 `test:audit` 守護） |
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
@@ -231,6 +231,7 @@ graph LR
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
+| FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者同意／部分／不同意、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -258,6 +259,7 @@ graph LR
 | 監控與風險 | 風險領域 | `/admin/risk-domains` | 權責＋P0–P3 情境對應 Monitor 2.0 | 展開情境；點 M2-* 晶片 |
 | AI 與知識 | AI 分析（轉址） | `/admin/ai-analyses` → `/admin/alerts` | 列表併入即時警報與追蹤 | 分組管線＋排序說明；明細包在 `/admin/ai-analyses/[id]` |
 | AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理＋第一／第二線卡片 | 七個分頁；propose_rag 人工閘道；Maker ≠ Checker |
+| AI 與知識 | AI 績效 | `/admin/ai-performance` | 改調前先判斷 AI 品質 | 唯讀 KPI＋訓練／回饋／挑戰者；無提案表單 |
 | AI 與知識 | AI 技能 | `/admin/skills` | 劇本＋鏈 | 進入 → SKILL.md 頁 |
 | AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；樹幹；進入 |
 | AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
@@ -334,6 +336,16 @@ flowchart TD
 
 **驗收（FR-37）：** `/admin/discovery` 與筆記本控制對齊；AI 不可寫審查決策；晉升路徑強制制作者≠覆核者；英＋繁中；筆記本連結可見。操作：使用手冊 §14A · 實作：TSD §11A。
 
+### 6.6 AI 績效評估 — 方法、資料、流程
+
+| 層級 | 細節 |
+|---|---|
+| **方法** | 彙總即時 SQLite 指標：技能匹配率、挑戰者裁決、人工回饋標籤、干預同意率、改進審查狀態、訓練準確率／F1；刷新當日 `ai_accuracy_snapshots` |
+| **資料** | `ai_analyses`、`ai_analysis_challenges`、`ai_feedback`、`ai_improvement_reviews`、`ai_training_runs`、`ai_accuracy_snapshots`、`interventions`、`platform_settings`（`ai.line1.*`／`ai.line2.*`／第二意見嚴重度） |
+| **流程** | 操作者開啟 `/admin/ai-performance` → `getAiPerformanceEval()` → KPI＋表格；變更（評分／訓練／變更單）仍在 `/admin/ai-admin` 且制作者≠覆核者 |
+
+**驗收（FR-38）：** 左側導覽有 **AI 績效**；看板顯示技能／挑戰者／回饋／訓練 KPI；唯讀（無變更單表單）；`GET /api/ai-performance`＋`GET /api/ai-admin?tab=performance`；英＋繁中介面。操作：使用手冊 §8.2A · 實作：TSD §8A。
+
 ---
 
 ## 7. 非功能需求
@@ -341,7 +353,7 @@ flowchart TD
 | ID | 領域 | 需求 |
 |---|---|---|
 | NFR-01 | 延遲 | 原型：警報 → 雙 AI 包通常 < 60 秒 |
-| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin 變更發出稽核 |
+| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin／探索／Lark 變更發出稽核；失敗登入亦記錄；AI 績效頁為唯讀 |
 | NFR-03 | 安全 | AI 主體不得取得黑名單權限 |
 | NFR-04 | 職能分離 | AI Admin 強制 Maker／Checker；指定控制要 Checker |
 | NFR-05 | 可用性 | 示範單節點 SQLite 可接受；正式需 HA（見生態） |
@@ -360,6 +372,7 @@ flowchart TD
 3. **Messenger 路徑：** 顯示證據貼上保險庫；升級前進路徑；排除／結案更新狀態。  
 4. **控制：** 封鎖帳號 → 雙重確認 → admin_ref；必要時 Checker 後續。  
 5. **AI Admin：** 需要不同 Checker；自己核准被擋。  
+5b. **AI 績效：** `/admin/ai-performance` 顯示 KPI（技能匹配、挑戰者、回饋、訓練）且無可寫控制；自 AI 管理可連結。  
 6. **覆蓋：** UAT 視窗 BREACH／CRITICAL 樣本 100% 已挑戰（允許回填）。  
 7. **文件：** PRD／TSD／使用手冊／UAT／生態／路線圖／開放議題／進度英繁皆可渲染；使用手冊對左側每一頁都有操作說明。  
 8. **手機：** Messenger 列表→執行緒→返回在約 390px 可用且無整頁溢出。  
@@ -456,5 +469,6 @@ flowchart TD
 | 1.9 | 2026-10-11 | FR-37 未知風險探索 AI 建議卡（CRMP 管理後台） |
 | 1.10 | 2026-10-11 | §6.5 方法／資料／流程＋功能目錄列 `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 表格與 mermaid 流程擴充；交叉連結使用手冊 §14A／TSD §11A |
+| 1.12 | 2026-10-12 | FR-36 稽核變更覆蓋；FR-38 AI 績效評估儀表板（§6.6） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

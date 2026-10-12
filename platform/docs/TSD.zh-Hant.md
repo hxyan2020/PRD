@@ -183,6 +183,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
+| AI | **`/admin/ai-performance`** | `AiPerformanceBoard`、`GET /api/ai-performance` | `ai.read` \| `ai.admin` | **§8A** |
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10＋§16.10 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`、`/api/rag` | `rag.read`／`rag.manage` | §16.12 |
@@ -216,7 +217,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 4. 排隊訓練／重新校正工作
 5. 標註 RCA 品質回饋（CORRECT／INCORRECT／PARTIAL）
 
-此頁是**治理**，不是即時 RCA 工作台（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`），也不是介入櫃檯（`/admin/interventions`）。
+此頁是**治理**，不是即時 RCA 工作台（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`），不是介入櫃檯（`/admin/interventions`），也不是專用唯讀評估看板（`/admin/ai-performance` — **§8A**）。
 
 ### 8.2 路由與元件
 
@@ -400,6 +401,7 @@ sequenceDiagram
 ### 8.12 相關頁面
 | 頁面 | 關係 |
 |---|---|
+| `/admin/ai-performance` | 唯讀評估看板（§8A）— 經 `getAiPerformanceEval` 共用 KPI |
 | `/admin/skills` | 核准後之劇本／情境板 |
 | `/admin/rag` | 語料瀏覽；受治理變更應走 AI Admin CR |
 | `/admin/ai-analyses` | 消費此處治理之 Skills／RAG／參數 |
@@ -411,6 +413,46 @@ sequenceDiagram
 - CRITICAL 參數變更強制雙重核准
 - PENDING CR 通知 Lark `oc_ai_detection_lab`
 - 匯出 CR 包供合規
+
+---
+
+## 8A. AI 績效評估看板
+
+### 8A.1 目的
+`/admin/ai-performance` 為 AI 品質的**唯讀**健康看板。操作人員在 AI 管理提案模型／門檻變更前，用它評估技能匹配、挑戰者一致、人工回饋準確率、如何改進審查與訓練指標。
+
+本頁**不**提供 Maker／Checker 表單。變更仍在 `/admin/ai-admin`。
+
+### 8A.2 路由與元件
+
+| 項目 | 規格 |
+|---|---|
+| 頁面路由 | `GET /admin/ai-performance` → `platform/src/app/admin/ai-performance/page.tsx` |
+| UI 元件 | `AiPerformanceBoard`（`platform/src/components/AiPerformanceBoard.tsx`） |
+| API | `GET /api/ai-performance` · 亦可用 `GET /api/ai-admin?tab=performance` |
+| 領域邏輯 | `getAiPerformanceEval()`（`platform/src/lib/ai/admin.ts`，延伸 `getAiAdminOverview`） |
+
+### 8A.3 存取控制
+與 AI 管理總覽相同：`ai.admin` · `ai.read` · `skills.manage` · `rag.manage` 任一即可。未授權 → 轉址 `/admin`。
+
+### 8A.4 資料與 KPI
+| 來源 | 指標 |
+|---|---|
+| `ai_analyses` | 總數、技能／RAG 模式、信心、需人工、挑戰率 |
+| `ai_analysis_challenges` | 同意／部分／不同意 → 一致率 |
+| `ai_feedback` | 正確／不正確／部分 → 回饋準確率 |
+| `interventions` | 已核准 ÷ 已決策 → 人工同意率 |
+| `ai_improvement_reviews` | 總數／開放／滿意 |
+| `ai_training_runs` | 已完成／執行中／佇列；平均準確率與 F1；近期列 |
+| `ai_accuracy_snapshots` | 最近 14 日（當日即時刷新） |
+| `platform_settings` | 一線／二線模型＋第二意見嚴重度徽章 |
+
+### 8A.5 UX／驗收
+1. 左側導覽 **AI 績效**（AI 與知識）。
+2. 看板渲染 KPI 列＋挑戰者／回饋／改進／訓練／歷史／最近清單（`data-testid="ai-performance-board"`）。
+3. 頁面無可寫提案／核准控制。
+4. 連結至 AI 管理與即時警報與追蹤。
+5. 英／繁中介面（`EnZh`＋頁面 meta `ai-performance`）。
 
 ---
 
@@ -759,6 +801,8 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
 
+靜態守護：`npm run test:audit` 斷言 discovery、Lark、偵測器、市場情報、登入與 Messenger 變更路徑皆有 `writeAudit` 標記。執行期煙測：`npm run test:audit-smoke`。`/admin/ai-performance` 為唯讀，不寫稽核列。
+
 ### 16.20 平台設定
 
 `SettingsManager` 依鍵前綴分組：`platform.|products.`、`monitor2.`、`ai.`、`market_intel.`、`lark.`、`escalation.|detectors.`。`PATCH /api/settings`。Pages：訊息「僅存在此瀏覽器」。
@@ -784,6 +828,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.9 | 2026-10-11 | §11A 未知風險探索 AI 建議卡＋`/api/discovery` |
 | 1.10 | 2026-10-11 | §11A 擴充：模組、資料、七類方法、序列流程、API |
 | 1.11 | 2026-10-11 | §7.2 畫面地圖補上 `/admin/discovery`（與英文版對齊） |
+| 1.12 | 2026-10-12 | §8A AI 績效評估看板；§16.19 稽核覆蓋守護 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
