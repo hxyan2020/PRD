@@ -234,12 +234,17 @@ export function GameDetailPage() {
               <p className="variations-intro">{t("detail.variationsIntro")}</p>
               <div className="variations">
                 {game.variations.map((v) => {
+                  // Never fall back to the parent gallery — each variation must
+                  // keep its own image so the product page does not repeat photos.
                   const varPhotos = listDisplayImages(v.images).filter(isPhotographicSrc);
                   const varCover =
-                    primaryCoverSrc(v.images) ??
-                    primaryCoverSrc(game.images) ??
-                    v.images?.[0];
-                  const varThumbs = varPhotos.filter((src) => src !== varCover).slice(0, 3);
+                    primaryCoverSrc(v.images) ?? listDisplayImages(v.images)[0];
+                  const pagePhotoSet = new Set(
+                    listDisplayImages(game.images).filter(isPhotographicSrc),
+                  );
+                  const varThumbs = varPhotos
+                    .filter((src) => src !== varCover && !pagePhotoSet.has(src))
+                    .slice(0, 3);
                   return (
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
                     {varCover ? (

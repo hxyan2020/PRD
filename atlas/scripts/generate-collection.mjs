@@ -1830,16 +1830,28 @@ const imageBank = {
   },
 
   /**
-   * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string, parentName?: string }} opts
+   * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string, parentName?: string, pageAvoid?: Set<string> }} opts
    */
   allocate(opts) {
-    const { name, category, originCountry, uniqueKey, parentName, archetypeKey } =
-      opts;
-    const lineage = photoLineage(name, archetypeKey, parentName);
+    const {
+      name,
+      category,
+      originCountry,
+      uniqueKey,
+      parentName,
+      archetypeKey,
+      pageAvoid,
+    } = opts;
+    // Variations get their own lineage so they do not soft-reuse the parent's
+    // curated pool on the same product page.
+    const lineage = parentName
+      ? `var:${photoLineage(name, archetypeKey, parentName)}:${slugify(name)}:${slugify(originCountry)}`
+      : photoLineage(name, archetypeKey, parentName);
 
     /** @type {string[]} */
     const imgs = [];
-    const avoid = new Set();
+    /** URLs already shown on this product page must never be reused. */
+    const avoid = new Set(pageAvoid || []);
 
     let photoCount = 0;
     const pushPhoto = (url) => {
@@ -1859,6 +1871,8 @@ const imageBank = {
     while (photoCount < PHOTO_MAX && imgs.length < GALLERY_MAX) {
       if (!pushPhoto(this.takeCuratedPhoto(name, lineage, avoid))) break;
     }
+    // Variations may borrow unused parent-pool photos, but never ones already
+    // claimed by the parent gallery or an earlier variation on this page.
     if (photoCount < PHOTO_MAX && parentName) {
       pushPhoto(this.takeCuratedPhoto(parentName, lineage, avoid));
     }
@@ -1876,10 +1890,9 @@ const imageBank = {
       if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
         break;
     }
-    // Only borrow generic category stock when there is no named/archetype
-    // pool — never spill random EXTRA photos onto catalog titles (that
-    // produced skateboards on Mehen, cribbage on Fanorona, etc.).
-    if (!hasNamedPool && photoCount === 0) {
+    // Category / extra fill when still empty. Variations always need an
+    // exclusive visual; parents without named pools keep the old gate.
+    if (photoCount === 0 && (!hasNamedPool || parentName)) {
       while (photoCount < PHOTO_MAX && imgs.length < GALLERY_MAX) {
         const url = this.takeCategoryPhoto(
           category,
@@ -1888,6 +1901,17 @@ const imageBank = {
           `${uniqueKey}:${imgs.length}`,
         );
         if (!pushPhoto(url)) break;
+      }
+    }
+    if (photoCount === 0 && parentName) {
+      while (photoCount < PHOTO_MAX && imgs.length < GALLERY_MAX) {
+        if (
+          !pushPhoto(
+            this.takeExtraPhoto(lineage, avoid, `${uniqueKey}:${imgs.length}`),
+          )
+        ) {
+          break;
+        }
       }
     }
 
@@ -3004,6 +3028,8 @@ function toGame(seed, index) {
   const slugBase = slugify(seed.name);
   const slug = `${slugBase}-${String(index).padStart(4, "0")}`;
   const imageKey = `game:${slug}`;
+  /** @type {Set<string>} photos already reserved on this product page */
+  const pageAvoid = new Set();
   // Parent gallery first so cornerstone titles keep their curated photos.
   const images = pickImages({
     name: seed.name,
@@ -3011,19 +3037,28 @@ function toGame(seed, index) {
     originCountry: seed.originCountry,
     uniqueKey: imageKey,
     archetypeKey: seed.archetypeKey,
+    pageAvoid,
   });
+  for (const u of images) {
+    if (typeof u === "string" && /^https?:\/\//.test(u)) pageAvoid.add(u);
+  }
   const variations = (seed.variations || []).map((v, vi) => {
     const varKey = `var:${slug}:${slugify(v.name)}:${slugify(v.originCountry)}:${vi}`;
+    const varImages = pickImages({
+      name: v.name,
+      category: seed.category,
+      originCountry: v.originCountry,
+      uniqueKey: varKey,
+      archetypeKey: seed.archetypeKey,
+      parentName: seed.name,
+      pageAvoid,
+    });
+    for (const u of varImages) {
+      if (typeof u === "string" && /^https?:\/\//.test(u)) pageAvoid.add(u);
+    }
     return {
       ...v,
-      images: pickImages({
-        name: v.name,
-        category: seed.category,
-        originCountry: v.originCountry,
-        uniqueKey: varKey,
-        archetypeKey: seed.archetypeKey,
-        parentName: seed.name,
-      }),
+      images: varImages,
     };
   });
   /** @type {Record<string, unknown>} */
@@ -3192,6 +3227,9 @@ async function main() {
       scrub(v);
       delete v.category;
     }
+    // After dead-URL scrub, enforce unique photos across parent + variations
+    // on the same product page (no repeated image tiles).
+    dedupeProductPageImages(g);
   }
   console.log(`Photo URL check: ${alive.size}/${remoteUrls.size} alive, stripped ${stripped}`);
 
@@ -3210,6 +3248,64 @@ async function main() {
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, JSON.stringify(payload));
   console.log(`Wrote ${games.length} games with ${totalVariations} nested variations → ${outPath}`);
+}
+
+/**
+ * Ensure parent gallery + each variation cover use distinct photographic URLs
+ * on one product page. Prefer exclusive spares; fall back to a unique title card.
+ */
+function dedupeProductPageImages(game) {
+  const pageUsed = new Set();
+  const takePhotos = (list) => {
+    const out = [];
+    for (const u of list || []) {
+      if (typeof u !== "string" || !/^https?:\/\//.test(u)) continue;
+      if (pageUsed.has(u)) continue;
+      pageUsed.add(u);
+      out.push(u);
+    }
+    return out;
+  };
+
+  let parentPhotos = takePhotos(game.images);
+  if (!parentPhotos.length) {
+    const card = encodeLudusCard(
+      game.name,
+      game.category || "Toy & Game",
+      game.originCountry || "",
+    );
+    game.images = [card];
+  } else {
+    game.images = parentPhotos.slice(0, GALLERY_MAX);
+  }
+
+  for (const v of game.variations || []) {
+    let photos = takePhotos(v.images);
+    if (!photos.length) {
+      const lineage = `page-dedupe:${slugify(game.name)}:${slugify(v.name)}`;
+      const spare =
+        imageBank.takeCategoryPhoto(
+          game.category,
+          lineage,
+          pageUsed,
+          `${game.id}:${v.name}`,
+        ) ||
+        imageBank.takeExtraPhoto(lineage, pageUsed, `${game.id}:${v.name}`);
+      if (spare && !pageUsed.has(spare)) {
+        pageUsed.add(spare);
+        photos = [spare];
+      } else {
+        photos = [
+          encodeLudusCard(
+            v.name,
+            game.category || "Toy & Game",
+            v.originCountry || "",
+          ),
+        ];
+      }
+    }
+    v.images = photos.slice(0, GALLERY_MAX);
+  }
 }
 
 /**
