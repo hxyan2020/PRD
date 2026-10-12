@@ -276,7 +276,9 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const editorRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const savedRange = useRef<Range | null>(null)
-  const lastHtml = useRef(value)
+  // null until the first DOM sync — do not seed with `value`, or Edit mounts
+  // skip writing into an empty contentEditable and the editor stays blank.
+  const lastHtml = useRef<string | null>(null)
   const placeholderId = useId()
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
@@ -308,17 +310,20 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     const el = editorRef.current
     if (!el) return
 
+    const domEmpty = !el.innerHTML.trim()
+    const needsInitialSync = lastHtml.current === null || (domEmpty && Boolean(value))
+
     // While editing, the live DOM is source of truth. Sanitized `value` often
     // differs cosmetically from browser innerHTML (table rows, <br>, attrs).
     // Rewriting innerHTML here resets the caret to the start — skip that.
-    if (value === lastHtml.current) {
+    if (!needsInitialSync && value === lastHtml.current) {
       if (document.activeElement !== el) {
         highlightCodeBlocksInElement(el)
       }
       return
     }
 
-    // External value change (clear composer, load another draft, etc.).
+    // First mount, or external value change (clear composer, load another draft).
     const focused = document.activeElement === el
     const caret = focused ? getCaretTextOffset(el) : 0
     el.innerHTML = value || ''
