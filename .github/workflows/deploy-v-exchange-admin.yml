@@ -34,10 +34,12 @@ jobs:
           npm run build:pages
           cp dist/index.html dist/404.html
 
-      - name: Publish to gh-pages branch
+      # IMPORTANT: never force_orphan — that wipes /ownlab/, /crmp-admin/, etc.
+      # keep_files preserves sibling apps already published on gh-pages.
+      - name: Publish to gh-pages branch (keep sibling apps)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: v-exchange-admin/dist
           publish_branch: gh-pages
-          force_orphan: true
+          keep_files: true
