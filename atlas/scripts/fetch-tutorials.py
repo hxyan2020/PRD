@@ -266,7 +266,9 @@ NOISE_RE = re.compile(
     r"kinetic sand|dandy.?s?\s*world|dandysworld|squid game|boat race\s*\||"
     r"flames\s+game|etheria|wingspan|missouri star|quilt|"
     r"sink\s*n[’']?\s*sand|kokeshi\??\s*official how to play|"
-    r"gotquestions|bible|biblical|casting lots\s*\?)\b",
+    r"gotquestions|bible|biblical|casting lots\s*\?|"
+    r"recipe|cooking|seafood|shellfish|clean\s+abalone|"
+    r"how\s+to\s+clean|how\s+to\s+cook|lifehack)\b",
     re.I,
 )
 
@@ -274,6 +276,7 @@ NOISE_RE = re.compile(
 SEARCH_ALIASES = {
     "go": "Go Weiqi board game",
     "go (weiqi)": "Go Weiqi board game",
+    "abalone": "Abalone board game how to play rules",
     "tag": "tag playground game how to play",
     "catch": "catch playground game",
     "memory": "memory matching card game",
@@ -339,6 +342,13 @@ def _norm_text(s: str) -> str:
 # Extra title tokens accepted as “mentions the game” when the catalog name
 # is a generic archetype (so mancala videos can match “Local pit-and-seed…”).
 RELATED_TITLE_TOKENS = {
+    "abalone": [
+        "abalone board",
+        "abalone game",
+        "how to play abalone",
+        "abalone rules",
+        "push abalone",
+    ],
     "local pit-and-seed sowing": [
         "mancala",
         "oware",
@@ -414,6 +424,7 @@ AMBIGUOUS_CONTEXT = {
     "palín": ("mapuche", "chile", "chueca", "tradicional", "traditional", "hockey", "stick"),
     "palin": ("mapuche", "chile", "chueca", "tradicional", "traditional", "hockey", "stick"),
     "kokeshi": ("doll", "wooden", "japan", "japanese", "tohoku", "souvenir"),
+    "abalone": ("board", "game", "rules", "play", "strategy", "marble", "hex"),
 }
 
 
