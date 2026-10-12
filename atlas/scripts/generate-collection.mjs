@@ -1685,20 +1685,8 @@ const imageBank = {
       opts;
     const lineage = photoLineage(name, archetypeKey, parentName);
 
-    let card = encodeLudusCard(name, category, originCountry);
-    if (this.usedRefs.has(card)) {
-      const disambig = parentName
-        ? `${originCountry} · via ${parentName}`
-        : `${originCountry} · ${uniqueKey.split(":").slice(-2).join(" ")}`;
-      card = encodeLudusCard(name, category, disambig);
-    }
-    if (this.usedRefs.has(card)) {
-      card = encodeLudusCard(name, category, `${originCountry} · ${uniqueKey}`);
-    }
-    this.usedRefs.add(card);
-
     /** @type {string[]} */
-    const imgs = [card];
+    const imgs = [];
     const avoid = new Set();
 
     let photoCount = 0;
@@ -1751,8 +1739,24 @@ const imageBank = {
       }
     }
 
-    // Stop with whatever real photos we found — never pad with ludus-view
-    // (Atmosphere / How it’s played / …) synthetic panels.
+    // Real photos only when we have them. Title card is a last-resort cover
+    // when nothing photographic survived — never invent ludus-view panels
+    // (Atmosphere / How it’s played / Tools / Cultural setting).
+    if (!imgs.length) {
+      let card = encodeLudusCard(name, category, originCountry);
+      if (this.usedRefs.has(card)) {
+        const disambig = parentName
+          ? `${originCountry} · via ${parentName}`
+          : `${originCountry} · ${uniqueKey.split(":").slice(-2).join(" ")}`;
+        card = encodeLudusCard(name, category, disambig);
+      }
+      if (this.usedRefs.has(card)) {
+        card = encodeLudusCard(name, category, `${originCountry} · ${uniqueKey}`);
+      }
+      this.usedRefs.add(card);
+      imgs.push(card);
+    }
+
     return imgs.slice(0, GALLERY_MAX);
   },
 };
@@ -3006,23 +3010,27 @@ async function main() {
       if (typeof u !== "string") return false;
       // Drop synthetic gallery placeholders if any remain from older builds.
       if (u.startsWith("ludus-view:")) return false;
-      if (!/^https?:\/\//.test(u)) return true; // keep title cards
+      if (u.startsWith("ludus-card:")) return true; // may drop below if photos exist
+      if (!/^https?:\/\//.test(u)) return false;
       const ok = alive.has(u);
       if (!ok) stripped += 1;
       return ok;
     });
-    // Keep surviving photos/cards only — never invent placeholder panels
-    // to pad toward a fixed count (e.g. 5).
-    if (!keep.length) {
-      keep.push(
-        encodeLudusCard(
-          entry.name,
-          entry.category || "Toy & Game",
-          entry.originCountry || "",
-        ),
-      );
+    const photos = keep.filter((u) => /^https?:\/\//.test(u));
+    // Prefer real photos only. Title card only when no photo survived.
+    // Never invent placeholder panels to pad toward a fixed count (e.g. 5).
+    if (photos.length) {
+      entry.images = photos.slice(0, GALLERY_MAX);
+      return;
     }
-    entry.images = keep.slice(0, GALLERY_MAX);
+    const card =
+      keep.find((u) => u.startsWith("ludus-card:")) ||
+      encodeLudusCard(
+        entry.name,
+        entry.category || "Toy & Game",
+        entry.originCountry || "",
+      );
+    entry.images = [card];
   };
   for (const g of games) {
     scrub(g);
