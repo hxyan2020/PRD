@@ -76,52 +76,6 @@ function Header() {
             </span>
           </NavLink>
 
-          <div className="header-tools header-tools--compact">
-            <NavLink
-              to="/unlocked"
-              className="muted mono header-progress header-progress--link"
-              title={t("header.unlockedTitle")}
-              aria-label={t("header.unlocked", { count: String(count) })}
-              onClick={closeMenu}
-            >
-              <span className="header-progress__full">
-                {t("header.unlocked", { count: String(count) })}
-              </span>
-              <span className="header-progress__short" aria-hidden="true">
-                {count}
-              </span>
-            </NavLink>
-            <LanguagePicker />
-            <div className="header-auth-desktop">
-              {isLoggedIn ? (
-                <button
-                  type="button"
-                  className="btn btn--quiet btn--tiny"
-                  title={email ?? undefined}
-                  onClick={() => logOut()}
-                >
-                  {t("nav.logout")}
-                </button>
-              ) : (
-                <NavLink className="btn btn--forest btn--tiny" to="/login">
-                  {t("nav.login")}
-                </NavLink>
-              )}
-            </div>
-            <button
-              type="button"
-              className={`nav-toggle ${menuOpen ? "is-open" : ""}`}
-              aria-expanded={menuOpen}
-              aria-controls="primary-nav"
-              aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
-              onClick={() => setMenuOpen((v) => !v)}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
-          </div>
-
           <nav
             id="primary-nav"
             className={`nav ${menuOpen ? "is-open" : ""}`}
@@ -170,6 +124,52 @@ function Header() {
               )}
             </div>
           </nav>
+
+          <div className="header-tools header-tools--compact">
+            <NavLink
+              to="/unlocked"
+              className="muted mono header-progress header-progress--link"
+              title={t("header.unlockedTitle")}
+              aria-label={t("header.unlocked", { count: String(count) })}
+              onClick={closeMenu}
+            >
+              <span className="header-progress__full">
+                {t("header.unlocked", { count: String(count) })}
+              </span>
+              <span className="header-progress__short" aria-hidden="true">
+                {count}
+              </span>
+            </NavLink>
+            <LanguagePicker />
+            <div className="header-auth-desktop">
+              {isLoggedIn ? (
+                <button
+                  type="button"
+                  className="btn btn--quiet btn--tiny"
+                  title={email ?? undefined}
+                  onClick={() => logOut()}
+                >
+                  {t("nav.logout")}
+                </button>
+              ) : (
+                <NavLink className="btn btn--forest btn--tiny" to="/login">
+                  {t("nav.login")}
+                </NavLink>
+              )}
+            </div>
+            <button
+              type="button"
+              className={`nav-toggle ${menuOpen ? "is-open" : ""}`}
+              aria-expanded={menuOpen}
+              aria-controls="primary-nav"
+              aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+              onClick={() => setMenuOpen((v) => !v)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
         </div>
       </header>
     </>
