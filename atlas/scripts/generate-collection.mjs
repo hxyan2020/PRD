@@ -1223,126 +1223,278 @@ const EXTRA_UNIQUE_PHOTOS = [
   unsplash("1671628586515-0e4d9456f291"),
 ];
 
+/** Durable storefront search URLs — ASINs go stale; keyword searches stay on-topic. */
+function amazonSearch(host, query) {
+  return `https://${host}/s?k=${encodeURIComponent(query)}`;
+}
+function etsySearch(query) {
+  return `https://www.etsy.com/search?q=${encodeURIComponent(query)}`;
+}
+function walmartSearch(query) {
+  return `https://www.walmart.com/search?q=${encodeURIComponent(query)}`;
+}
+function targetSearch(query) {
+  return `https://www.target.com/s?searchTerm=${encodeURIComponent(query)}`;
+}
+function buy(platform, label, url) {
+  return { platform, label, url };
+}
+
+/**
+ * Purchase pools keyed by seed.purchase / archetype.purchase.
+ * Prefer product-topic search pages over hard-coded ASINs (many former DPs 404).
+ */
 const PURCHASE = {
   chess: [
-    { platform: "Amazon", label: "Wooden Chess Set (Amazon US)", url: "https://www.amazon.com/dp/B07YRJF3S7" },
-    { platform: "Amazon UK", label: "Tournament Chess Set (Amazon UK)", url: "https://www.amazon.co.uk/dp/B000P99X7G" },
-    { platform: "Walmart", label: "Classic Chess & Checkers (Walmart)", url: "https://www.walmart.com/ip/Chess-Checkers-Deluxe-Wood-Cabinet/14422659" },
+    buy("Amazon", "Wooden Chess Set (Amazon US)", amazonSearch("www.amazon.com", "wooden chess set")),
+    buy("Amazon UK", "Tournament Chess Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "wooden chess set")),
+    buy("Walmart", "Chess Set (Walmart)", walmartSearch("wooden chess set")),
   ],
   go: [
-    { platform: "Amazon", label: "Go Set with Stones (Amazon US)", url: "https://www.amazon.com/dp/B00004D2Q2" },
-    { platform: "Amazon JP", label: "Go Board Set (Amazon Japan)", url: "https://www.amazon.co.jp/dp/B00GQZQZ6Y" },
-    { platform: "Yellow Mountain Imports", label: "Melamine Go Stones Set", url: "https://www.ymimports.com/products/us-sf002-a" },
+    buy("Amazon", "Go Board Game Set (Amazon US)", amazonSearch("www.amazon.com", "go board game set stones")),
+    buy("Amazon JP", "囲碁 セット (Amazon Japan)", amazonSearch("www.amazon.co.jp", "囲碁 セット")),
+    buy("Amazon UK", "Go / Weiqi Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "go board game set")),
   ],
   mancala: [
-    { platform: "Amazon", label: "Folding Mancala Board (Amazon US)", url: "https://www.amazon.com/dp/B00004YOXI" },
-    { platform: "Target", label: "Classic Mancala Game (Target)", url: "https://www.target.com/p/mancala-game/-/A-14730464" },
-    { platform: "Amazon UK", label: "Wooden Mancala (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00005JB4G" },
+    buy("Amazon", "Mancala Board Game (Amazon US)", amazonSearch("www.amazon.com", "mancala board game")),
+    buy("Target", "Mancala Game (Target)", targetSearch("mancala game")),
+    buy("Amazon UK", "Wooden Mancala (Amazon UK)", amazonSearch("www.amazon.co.uk", "mancala board")),
   ],
   mahjong: [
-    { platform: "Amazon", label: "Chinese Mahjong Set (Amazon US)", url: "https://www.amazon.com/dp/B0009VC8Q6" },
-    { platform: "Amazon UK", label: "Mahjong Tile Set (Amazon UK)", url: "https://www.amazon.co.uk/dp/B000FMYL2K" },
-    { platform: "Walmart", label: "Mahjong Game Set (Walmart)", url: "https://www.walmart.com/ip/Mahjong-Chinese-Traditional-Game-Set/16715491" },
+    buy("Amazon", "Mahjong Set (Amazon US)", amazonSearch("www.amazon.com", "mahjong set")),
+    buy("Amazon UK", "Mahjong Tile Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "mahjong set")),
+    buy("Walmart", "Mahjong Game Set (Walmart)", walmartSearch("mahjong set")),
   ],
   cards: [
-    { platform: "Amazon", label: "Bicycle Playing Cards (Amazon US)", url: "https://www.amazon.com/dp/B00004TKS4" },
-    { platform: "Amazon DE", label: "French-suited Playing Cards (Amazon DE)", url: "https://www.amazon.de/dp/B000KIZ4P6" },
-    { platform: "Walmart", label: "Bicycle Standard Index Cards (Walmart)", url: "https://www.walmart.com/ip/Bicycle-Standard-Playing-Cards/14926905" },
+    buy("Amazon", "Bicycle Playing Cards (Amazon US)", amazonSearch("www.amazon.com", "bicycle playing cards")),
+    buy("Amazon UK", "Playing Cards (Amazon UK)", amazonSearch("www.amazon.co.uk", "bicycle playing cards")),
+    buy("Walmart", "Playing Cards (Walmart)", walmartSearch("bicycle playing cards")),
   ],
   dice: [
-    { platform: "Amazon", label: "Polyhedral Dice Set (Amazon US)", url: "https://www.amazon.com/dp/B00U26V4VQ" },
-    { platform: "Amazon UK", label: "Wooden Dice Set (Amazon UK)", url: "https://www.amazon.co.uk/dp/B01N5OKH1N" },
-    { platform: "Etsy", label: "Handcrafted Olive Wooden Dice (Etsy)", url: "https://www.etsy.com/listing/4332612285/olive-wooden-dice-for-root-board-game" },
+    buy("Amazon", "Dice Set (Amazon US)", amazonSearch("www.amazon.com", "wooden dice set")),
+    buy("Amazon UK", "Dice Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "wooden dice set")),
+    buy("Etsy", "Handcrafted Wooden Dice (Etsy)", etsySearch("wooden dice game")),
   ],
   backgammon: [
-    { platform: "Amazon", label: "Backgammon Set (Amazon US)", url: "https://www.amazon.com/dp/B00004TKSX" },
-    { platform: "Amazon UK", label: "Tournament Backgammon (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0009V1YQK" },
-    { platform: "Walmart", label: "Wood Backgammon Board (Walmart)", url: "https://www.walmart.com/ip/Mainstreet-Classics-27-Tournament-Backgammon-Set/17420280" },
+    buy("Amazon", "Backgammon Set (Amazon US)", amazonSearch("www.amazon.com", "backgammon set")),
+    buy("Amazon UK", "Backgammon Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "backgammon set")),
+    buy("Walmart", "Backgammon Board (Walmart)", walmartSearch("backgammon set")),
   ],
   dominoes: [
-    { platform: "Amazon", label: "Double-Six Dominoes (Amazon US)", url: "https://www.amazon.com/dp/B00004YOXJ" },
-    { platform: "Target", label: "Wooden Dominoes (Target)", url: "https://www.target.com/p/dominoes-game/-/A-14730466" },
-    { platform: "Amazon UK", label: "Mexican Train Dominoes (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00004TSTT" },
+    buy("Amazon", "Dominoes Set (Amazon US)", amazonSearch("www.amazon.com", "double six dominoes")),
+    buy("Target", "Dominoes Game (Target)", targetSearch("dominoes game")),
+    buy("Amazon UK", "Dominoes (Amazon UK)", amazonSearch("www.amazon.co.uk", "dominoes set")),
   ],
   yo_yo: [
-    { platform: "Amazon", label: "Duncan Imperial Yo-Yo (Amazon US)", url: "https://www.amazon.com/dp/B0000C43ZQ" },
-    { platform: "Amazon UK", label: "Classic Wooden Yo-Yo (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0000C9Z8T" },
-    { platform: "Walmart", label: "Duncan Imperial Yo-Yo (Walmart)", url: "https://www.walmart.com/ip/Duncan-Imperial-Yo-Yo/21914987" },
+    buy("Amazon", "Yo-Yo (Amazon US)", amazonSearch("www.amazon.com", "duncan yo-yo")),
+    buy("Amazon UK", "Yo-Yo (Amazon UK)", amazonSearch("www.amazon.co.uk", "wooden yo-yo")),
+    buy("Walmart", "Yo-Yo (Walmart)", walmartSearch("duncan yo yo")),
   ],
   top: [
-    { platform: "Amazon", label: "Wooden Spinning Tops Set (Amazon US)", url: "https://www.amazon.com/dp/B01N4VCZXF" },
-    { platform: "Etsy", label: "Mexican Mesquite Trompos (Etsy)", url: "https://www.etsy.com/listing/4358886269/mexican-trompos-mesquite-wood-2-pack" },
-    { platform: "Amazon JP", label: "Traditional Japanese Top (Amazon JP)", url: "https://www.amazon.co.jp/dp/B00B1M0Y0I" },
+    buy("Amazon", "Spinning Tops (Amazon US)", amazonSearch("www.amazon.com", "wooden spinning tops")),
+    buy("Etsy", "Handcrafted Trompos (Etsy)", etsySearch("wooden spinning top trompo")),
+    buy("Amazon JP", "独楽 (Amazon JP)", amazonSearch("www.amazon.co.jp", "独楽 こま")),
   ],
   kite: [
-    { platform: "Amazon", label: "Delta Kite (Amazon US)", url: "https://www.amazon.com/dp/B001B1Y4DY" },
-    { platform: "Amazon UK", label: "Traditional Diamond Kite (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0001IXT0Y" },
-    { platform: "Walmart", label: "Premier Easy Flyer Kite (Walmart)", url: "https://www.walmart.com/ip/Premier-Kites-Easy-Flyer-Kite/16549912" },
+    buy("Amazon", "Kite (Amazon US)", amazonSearch("www.amazon.com", "delta kite")),
+    buy("Amazon UK", "Kite (Amazon UK)", amazonSearch("www.amazon.co.uk", "diamond kite")),
+    buy("Walmart", "Kite (Walmart)", walmartSearch("kite for kids")),
   ],
   doll: [
-    { platform: "Amazon", label: "Waldorf-Style Cloth Doll (Amazon US)", url: "https://www.amazon.com/dp/B07D7X5Z8K" },
-    { platform: "Etsy", label: "Handmade African Print Rag Doll (Etsy)", url: "https://www.etsy.com/listing/1555427246/handmade-african-print-rag-doll" },
-    { platform: "Amazon UK", label: "Traditional Rag Doll (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00E8JQY6Y" },
+    buy("Amazon", "Cloth Rag Doll (Amazon US)", amazonSearch("www.amazon.com", "waldorf cloth rag doll")),
+    buy("Etsy", "Handmade Rag Doll (Etsy)", etsySearch("handmade rag doll")),
+    buy("Amazon UK", "Traditional Rag Doll (Amazon UK)", amazonSearch("www.amazon.co.uk", "traditional rag doll")),
+  ],
+  matryoshka: [
+    buy("Amazon", "Matryoshka Nesting Dolls (Amazon US)", amazonSearch("www.amazon.com", "matryoshka nesting dolls")),
+    buy("Amazon UK", "Matryoshka Nesting Dolls (Amazon UK)", amazonSearch("www.amazon.co.uk", "matryoshka nesting dolls")),
+    buy("Etsy", "Handmade Matryoshka Dolls (Etsy)", etsySearch("matryoshka nesting dolls")),
+  ],
+  kokeshi: [
+    buy("Amazon", "Kokeshi Doll (Amazon US)", amazonSearch("www.amazon.com", "kokeshi doll")),
+    buy("Amazon JP", "こけし (Amazon Japan)", amazonSearch("www.amazon.co.jp", "こけし")),
+    buy("Etsy", "Kokeshi Doll (Etsy)", etsySearch("kokeshi doll")),
+  ],
+  worry_dolls: [
+    buy("Amazon", "Worry Dolls (Amazon US)", amazonSearch("www.amazon.com", "guatemalan worry dolls")),
+    buy("Amazon UK", "Worry Dolls (Amazon UK)", amazonSearch("www.amazon.co.uk", "worry dolls")),
+    buy("Etsy", "Worry Dolls (Etsy)", etsySearch("worry dolls guatemala")),
+  ],
+  tea_set: [
+    buy("Amazon", "Children's Tea Set (Amazon US)", amazonSearch("www.amazon.com", "children wooden tea set")),
+    buy("Amazon UK", "Toy Tea Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "children tea set toy")),
+    buy("Target", "Play Tea Set (Target)", targetSearch("kids tea set")),
   ],
   marbles: [
-    { platform: "Amazon", label: "Glass Marble Set (Amazon US)", url: "https://www.amazon.com/dp/B0006GZCT4" },
-    { platform: "Amazon UK", label: "Traditional Marbles (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0006N7K6M" },
-    { platform: "Walmart", label: "Mega Marbles Pack (Walmart)", url: "https://www.walmart.com/ip/Mega-Marbles-Assorted-Glass-Marbles/14921348" },
+    buy("Amazon", "Glass Marbles (Amazon US)", amazonSearch("www.amazon.com", "glass marbles set")),
+    buy("Amazon UK", "Marbles (Amazon UK)", amazonSearch("www.amazon.co.uk", "glass marbles")),
+    buy("Walmart", "Marbles (Walmart)", walmartSearch("glass marbles")),
   ],
   jacks: [
-    { platform: "Amazon", label: "Jacks Game Set (Amazon US)", url: "https://www.amazon.com/dp/B00004YOXL" },
-    { platform: "Target", label: "Classic Jacks (Target)", url: "https://www.target.com/p/jacks-game/-/A-14730468" },
-    { platform: "Amazon UK", label: "Knucklebones / Jacks (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00005JH6K" },
+    buy("Amazon", "Jacks Game (Amazon US)", amazonSearch("www.amazon.com", "jacks game set")),
+    buy("Target", "Jacks (Target)", targetSearch("jacks game")),
+    buy("Amazon UK", "Jacks / Knucklebones (Amazon UK)", amazonSearch("www.amazon.co.uk", "jacks game")),
   ],
   puzzle: [
-    { platform: "Amazon", label: "Wooden Tangram Set (Amazon US)", url: "https://www.amazon.com/dp/B0006OUMZ8" },
-    { platform: "Amazon UK", label: "Classic Rubik's Cube (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0BJYJ1V2Q" },
-    { platform: "Walmart", label: "Wood Brain Teaser Puzzle (Walmart)", url: "https://www.walmart.com/ip/Wooden-Brain-Teaser-Puzzle/55439912" },
+    buy("Amazon", "Tangram / Puzzle (Amazon US)", amazonSearch("www.amazon.com", "wooden tangram puzzle")),
+    buy("Amazon UK", "Rubik's Cube (Amazon UK)", amazonSearch("www.amazon.co.uk", "rubiks cube")),
+    buy("Walmart", "Brain Teaser Puzzle (Walmart)", walmartSearch("wooden brain teaser puzzle")),
   ],
   blocks: [
-    { platform: "Amazon", label: "Maple Hardwood Blocks (Amazon US)", url: "https://www.amazon.com/dp/B00005O0IX" },
-    { platform: "Target", label: "Wooden Building Blocks (Target)", url: "https://www.target.com/p/wooden-building-blocks/-/A-14730501" },
-    { platform: "Amazon DE", label: "Holzbausteine Set (Amazon DE)", url: "https://www.amazon.de/dp/B000KBJYF0" },
+    buy("Amazon", "Wooden Building Blocks (Amazon US)", amazonSearch("www.amazon.com", "maple wooden building blocks")),
+    buy("Target", "Building Blocks (Target)", targetSearch("wooden building blocks")),
+    buy("Amazon UK", "Wooden Blocks (Amazon UK)", amazonSearch("www.amazon.co.uk", "wooden building blocks")),
   ],
   shuttlecock: [
-    { platform: "Amazon", label: "Jianzi Shuttlecock (Amazon US)", url: "https://www.amazon.com/dp/B07B4QXK8R" },
-    { platform: "Amazon UK", label: "Chinese Feather Shuttlecock (Amazon UK)", url: "https://www.amazon.co.uk/dp/B07B4QXK8R" },
-    { platform: "Amazon", label: "Feather Kick Shuttlecock Jianzi 5-Pack (Amazon US)", url: "https://www.amazon.com/dp/B094N7H92L" },
+    buy("Amazon", "Jianzi Shuttlecock (Amazon US)", amazonSearch("www.amazon.com", "jianzi feather shuttlecock")),
+    buy("Amazon UK", "Chinese Shuttlecock (Amazon UK)", amazonSearch("www.amazon.co.uk", "jianzi shuttlecock")),
+    buy("Amazon", "Kick Shuttlecock Pack (Amazon US)", amazonSearch("www.amazon.com", "feather kick shuttlecock")),
+  ],
+  ball: [
+    buy("Amazon", "Play Ball (Amazon US)", amazonSearch("www.amazon.com", "soft play ball kids")),
+    buy("Amazon UK", "Play Ball (Amazon UK)", amazonSearch("www.amazon.co.uk", "kids play ball")),
+    buy("Walmart", "Play Ball (Walmart)", walmartSearch("kids play ball")),
   ],
   xiangqi: [
-    { platform: "Amazon", label: "Xiangqi Chinese Chess Set (Amazon US)", url: "https://www.amazon.com/dp/B000WQZ6YI" },
-    { platform: "Amazon UK", label: "Xiangqi Folding Board (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0013L1Y0E" },
-    { platform: "Yellow Mountain Imports", label: "Xiangqi Magnetic Travel Set", url: "https://www.ymimports.com/products/ub-cc002-a" },
+    buy("Amazon", "Xiangqi Set (Amazon US)", amazonSearch("www.amazon.com", "xiangqi chinese chess set")),
+    buy("Amazon UK", "Xiangqi Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "xiangqi chinese chess")),
+    buy("Amazon", "Chinese Chess Magnetic Set (Amazon US)", amazonSearch("www.amazon.com", "magnetic xiangqi set")),
   ],
   shogi: [
-    { platform: "Amazon", label: "Shogi Set (Amazon US)", url: "https://www.amazon.com/dp/B000P0Z6YI" },
-    { platform: "Amazon JP", label: "Shogi Set (Amazon JP)", url: "https://www.amazon.co.jp/dp/B000FQJQZQ" },
-    { platform: "Yellow Mountain Imports", label: "Shogi Magnetic Travel Set", url: "https://www.ymimports.com/products/ub-sh004-a" },
+    buy("Amazon", "Shogi Set (Amazon US)", amazonSearch("www.amazon.com", "shogi set")),
+    buy("Amazon JP", "将棋 セット (Amazon Japan)", amazonSearch("www.amazon.co.jp", "将棋 セット")),
+    buy("Amazon UK", "Shogi Set (Amazon UK)", amazonSearch("www.amazon.co.uk", "shogi board set")),
   ],
   carrom: [
-    { platform: "Amazon", label: "Carrom Board (Amazon US)", url: "https://www.amazon.com/dp/B00KQK8Z0Y" },
-    { platform: "Amazon IN", label: "Synco Carrom Board (Amazon IN)", url: "https://www.amazon.in/dp/B00KQK8Z0Y" },
-    { platform: "Amazon UK", label: "Wooden Carrom Board (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00KQK8Z0Y" },
+    buy("Amazon", "Carrom Board (Amazon US)", amazonSearch("www.amazon.com", "carrom board")),
+    buy("Amazon IN", "Carrom Board (Amazon IN)", amazonSearch("www.amazon.in", "carrom board")),
+    buy("Amazon UK", "Carrom Board (Amazon UK)", amazonSearch("www.amazon.co.uk", "carrom board")),
   ],
   generic_board: [
-    { platform: "Amazon", label: "Classic Wooden Board Game (Amazon US)", url: "https://www.amazon.com/dp/B07YRJF3S7" },
-    { platform: "Etsy", label: "Walnut Mancala Board (Etsy)", url: "https://www.etsy.com/listing/1695550412/walnut-stained-mancala-board-everyday" },
-    { platform: "Amazon UK", label: "Traditional Board Game (Amazon UK)", url: "https://www.amazon.co.uk/dp/B000P99X7G" },
+    buy("Amazon", "Classic Board Game (Amazon US)", amazonSearch("www.amazon.com", "classic wooden board game")),
+    buy("Etsy", "Handmade Board Game (Etsy)", etsySearch("wooden board game")),
+    buy("Amazon UK", "Traditional Board Game (Amazon UK)", amazonSearch("www.amazon.co.uk", "classic board game")),
   ],
   generic_toy: [
-    { platform: "Amazon", label: "Traditional Wooden Toy (Amazon US)", url: "https://www.amazon.com/dp/B01N4VCZXF" },
-    { platform: "Etsy", label: "Bilboquet Cup and Ball (Etsy)", url: "https://www.etsy.com/listing/4478059814/bilboquet-cup-and-ball-game" },
-    { platform: "Amazon UK", label: "Heritage Wooden Toy (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0000C9Z8T" },
+    buy("Amazon", "Traditional Wooden Toy (Amazon US)", amazonSearch("www.amazon.com", "traditional wooden toy")),
+    buy("Etsy", "Handmade Wooden Toy (Etsy)", etsySearch("handmade wooden toy")),
+    buy("Amazon UK", "Heritage Wooden Toy (Amazon UK)", amazonSearch("www.amazon.co.uk", "traditional wooden toy")),
   ],
   outdoor: [
-    { platform: "Amazon", label: "Outdoor Traditional Game Kit (Amazon US)", url: "https://www.amazon.com/dp/B0006GZCT4" },
-    { platform: "Amazon UK", label: "Garden Games Set (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0006N7K6M" },
-    { platform: "Walmart", label: "Classic Outdoor Play Set (Walmart)", url: "https://www.walmart.com/ip/Mega-Marbles-Assorted-Glass-Marbles/14921348" },
+    buy("Amazon", "Outdoor Garden Games (Amazon US)", amazonSearch("www.amazon.com", "outdoor garden games set")),
+    buy("Amazon UK", "Garden Games (Amazon UK)", amazonSearch("www.amazon.co.uk", "garden games set")),
+    buy("Walmart", "Outdoor Play Games (Walmart)", walmartSearch("outdoor lawn games")),
   ],
   music: [
-    { platform: "Amazon", label: "Children's Percussion Toy (Amazon US)", url: "https://www.amazon.com/dp/B00005ML7Q" },
-    { platform: "Amazon UK", label: "Wooden Musical Toy (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00005ML7Q" },
-    { platform: "Etsy", label: "Wooden Animal Baby Rattles (Etsy)", url: "https://www.etsy.com/listing/773722828/animal-baby-rattles-set-of-2-3-or-4" },
+    buy("Amazon", "Children's Musical Toy (Amazon US)", amazonSearch("www.amazon.com", "children wooden musical toy")),
+    buy("Amazon UK", "Wooden Musical Toy (Amazon UK)", amazonSearch("www.amazon.co.uk", "wooden musical toy kids")),
+    buy("Etsy", "Handmade Baby Rattle (Etsy)", etsySearch("wooden baby rattle")),
+  ],
+};
+
+/**
+ * Exact catalog-title overrides so games that share a coarse purchase key
+ * (e.g. doll) still deep-link to the right product topic.
+ */
+const PURCHASE_BY_NAME = {
+  Matryoshka: PURCHASE.matryoshka,
+  Kokeshi: PURCHASE.kokeshi,
+  "Worry dolls": PURCHASE.worry_dolls,
+  "Corn husk doll": [
+    buy("Amazon", "Corn Husk Doll Kit (Amazon US)", amazonSearch("www.amazon.com", "corn husk dolls")),
+    buy("Etsy", "Corn Husk Doll (Etsy)", etsySearch("corn husk doll")),
+    buy("Amazon UK", "Corn Husk Dolls (Amazon UK)", amazonSearch("www.amazon.co.uk", "corn husk doll")),
+  ],
+  "Tea set toy": PURCHASE.tea_set,
+  Scrabble: [
+    buy("Amazon", "Scrabble (Amazon US)", amazonSearch("www.amazon.com", "scrabble board game")),
+    buy("Amazon UK", "Scrabble (Amazon UK)", amazonSearch("www.amazon.co.uk", "scrabble board game")),
+    buy("Walmart", "Scrabble (Walmart)", walmartSearch("scrabble board game")),
+  ],
+  Monopoly: [
+    buy("Amazon", "Monopoly (Amazon US)", amazonSearch("www.amazon.com", "monopoly board game")),
+    buy("Amazon UK", "Monopoly (Amazon UK)", amazonSearch("www.amazon.co.uk", "monopoly board game")),
+    buy("Walmart", "Monopoly (Walmart)", walmartSearch("monopoly board game")),
+  ],
+  Jenga: [
+    buy("Amazon", "Jenga (Amazon US)", amazonSearch("www.amazon.com", "jenga classic")),
+    buy("Amazon UK", "Jenga (Amazon UK)", amazonSearch("www.amazon.co.uk", "jenga classic")),
+    buy("Target", "Jenga (Target)", targetSearch("jenga")),
+  ],
+  "Rubik's Cube": [
+    buy("Amazon", "Rubik's Cube (Amazon US)", amazonSearch("www.amazon.com", "rubiks cube")),
+    buy("Amazon UK", "Rubik's Cube (Amazon UK)", amazonSearch("www.amazon.co.uk", "rubiks cube")),
+    buy("Walmart", "Rubik's Cube (Walmart)", walmartSearch("rubiks cube")),
+  ],
+  Yahtzee: [
+    buy("Amazon", "Yahtzee (Amazon US)", amazonSearch("www.amazon.com", "yahtzee game")),
+    buy("Amazon UK", "Yahtzee (Amazon UK)", amazonSearch("www.amazon.co.uk", "yahtzee game")),
+    buy("Target", "Yahtzee (Target)", targetSearch("yahtzee")),
+  ],
+  "Sorry!": [
+    buy("Amazon", "Sorry! (Amazon US)", amazonSearch("www.amazon.com", "sorry board game")),
+    buy("Amazon UK", "Sorry! (Amazon UK)", amazonSearch("www.amazon.co.uk", "sorry board game")),
+    buy("Walmart", "Sorry! (Walmart)", walmartSearch("sorry board game")),
+  ],
+  Abalone: [
+    buy("Amazon", "Abalone (Amazon US)", amazonSearch("www.amazon.com", "abalone board game")),
+    buy("Amazon UK", "Abalone (Amazon UK)", amazonSearch("www.amazon.co.uk", "abalone board game")),
+    buy("Etsy", "Abalone Game (Etsy)", etsySearch("abalone board game")),
+  ],
+  Blokus: [
+    buy("Amazon", "Blokus (Amazon US)", amazonSearch("www.amazon.com", "blokus board game")),
+    buy("Amazon UK", "Blokus (Amazon UK)", amazonSearch("www.amazon.co.uk", "blokus board game")),
+    buy("Target", "Blokus (Target)", targetSearch("blokus")),
+  ],
+  Stratego: [
+    buy("Amazon", "Stratego (Amazon US)", amazonSearch("www.amazon.com", "stratego board game")),
+    buy("Amazon UK", "Stratego (Amazon UK)", amazonSearch("www.amazon.co.uk", "stratego board game")),
+    buy("Walmart", "Stratego (Walmart)", walmartSearch("stratego")),
+  ],
+  "Candy Land": [
+    buy("Amazon", "Candy Land (Amazon US)", amazonSearch("www.amazon.com", "candy land board game")),
+    buy("Amazon UK", "Candy Land (Amazon UK)", amazonSearch("www.amazon.co.uk", "candyland board game")),
+    buy("Target", "Candy Land (Target)", targetSearch("candy land")),
+  ],
+  "The Game of Life": [
+    buy("Amazon", "The Game of Life (Amazon US)", amazonSearch("www.amazon.com", "game of life board game")),
+    buy("Amazon UK", "The Game of Life (Amazon UK)", amazonSearch("www.amazon.co.uk", "game of life board game")),
+    buy("Walmart", "The Game of Life (Walmart)", walmartSearch("game of life")),
+  ],
+  "Snakes and Ladders": [
+    buy("Amazon", "Snakes and Ladders (Amazon US)", amazonSearch("www.amazon.com", "snakes and ladders board game")),
+    buy("Amazon UK", "Snakes and Ladders (Amazon UK)", amazonSearch("www.amazon.co.uk", "snakes and ladders")),
+    buy("Target", "Chutes and Ladders (Target)", targetSearch("chutes and ladders")),
+  ],
+  "Tower of Hanoi": [
+    buy("Amazon", "Tower of Hanoi (Amazon US)", amazonSearch("www.amazon.com", "tower of hanoi puzzle")),
+    buy("Amazon UK", "Tower of Hanoi (Amazon UK)", amazonSearch("www.amazon.co.uk", "tower of hanoi")),
+    buy("Etsy", "Tower of Hanoi (Etsy)", etsySearch("tower of hanoi wooden")),
+  ],
+  Dreidel: [
+    buy("Amazon", "Dreidel (Amazon US)", amazonSearch("www.amazon.com", "hanukkah dreidel")),
+    buy("Amazon UK", "Dreidel (Amazon UK)", amazonSearch("www.amazon.co.uk", "dreidel")),
+    buy("Etsy", "Dreidel (Etsy)", etsySearch("dreidel")),
+  ],
+  "Piñata": [
+    buy("Amazon", "Piñata (Amazon US)", amazonSearch("www.amazon.com", "pinata birthday")),
+    buy("Amazon UK", "Piñata (Amazon UK)", amazonSearch("www.amazon.co.uk", "pinata")),
+    buy("Walmart", "Piñata (Walmart)", walmartSearch("pinata")),
+  ],
+  "Daruma doll": [
+    buy("Amazon", "Daruma Doll (Amazon US)", amazonSearch("www.amazon.com", "daruma doll")),
+    buy("Amazon JP", "だるま (Amazon Japan)", amazonSearch("www.amazon.co.jp", "だるま")),
+    buy("Etsy", "Daruma Doll (Etsy)", etsySearch("daruma doll")),
+  ],
+  "Lincoln Logs": [
+    buy("Amazon", "Lincoln Logs (Amazon US)", amazonSearch("www.amazon.com", "lincoln logs")),
+    buy("Amazon UK", "Lincoln Logs (Amazon UK)", amazonSearch("www.amazon.co.uk", "lincoln logs")),
+    buy("Target", "Lincoln Logs (Target)", targetSearch("lincoln logs")),
+  ],
+  Cribbage: [
+    buy("Amazon", "Cribbage Board (Amazon US)", amazonSearch("www.amazon.com", "cribbage board")),
+    buy("Amazon UK", "Cribbage (Amazon UK)", amazonSearch("www.amazon.co.uk", "cribbage board")),
+    buy("Etsy", "Cribbage Board (Etsy)", etsySearch("cribbage board wooden")),
   ],
 };
 
@@ -1765,8 +1917,9 @@ function pickImages(opts) {
   return imageBank.allocate(opts);
 }
 
-function pickPurchase(key, salt) {
-  const pool = PURCHASE[key] || PURCHASE.generic_toy;
+function pickPurchase(key, salt, name = "") {
+  const pool =
+    (name && PURCHASE_BY_NAME[name]) || PURCHASE[key] || PURCHASE.generic_toy;
   const start = salt % pool.length;
   const out = [];
   for (let i = 0; i < pool.length; i++) out.push(pool[(start + i) % pool.length]);
@@ -2381,7 +2534,7 @@ const SEEDS = [
     civilization: "Japanese folk craft",
     creationYear: "c. 19th century",
     category: "Dolls & Figures",
-    purchase: "doll",
+    purchase: "kokeshi",
     idealParticipants: "Alone / N/A (display & gentle play)",
     requirements: ["Turned wooden doll", "Painted finish"],
     description:
@@ -2403,7 +2556,7 @@ const SEEDS = [
     civilization: "Russian folk craft",
     creationYear: "1890 CE",
     category: "Dolls & Figures",
-    purchase: "doll",
+    purchase: "matryoshka",
     idealParticipants: "Alone",
     requirements: ["Nested wooden doll set"],
     description:
@@ -2423,7 +2576,7 @@ const SEEDS = [
     civilization: "Maya / Guatemalan folk",
     creationYear: "traditional",
     category: "Dolls & Figures",
-    purchase: "doll",
+    purchase: "worry_dolls",
     idealParticipants: "Alone",
     requirements: ["Small cloth dolls", "Box or pillow"],
     description:
@@ -2443,7 +2596,7 @@ const SEEDS = [
     civilization: "Northeastern Indigenous & Appalachian folk",
     creationYear: "pre-contact / colonial continuity",
     category: "Dolls & Figures",
-    purchase: "doll",
+    purchase: "generic_toy",
     idealParticipants: "Alone",
     requirements: ["Dried corn husks", "String", "Optional corn-silk hair"],
     description:
@@ -2816,7 +2969,7 @@ const EXTRA_NAMED = [
   ["Ludo already variation of Pachisi"],
   ["Mehen", "Egypt", "Ancient Egypt", "c. 3000 BCE", "Board & Race", "generic_board", "2+ people", ["Spiral mehen board", "Marbles or lion pieces", "Throwing sticks"], "Mehen, the coiled serpent game, appears in early dynastic Egypt. Play moved along a spiral serpent toward the center; exact rules are fragmentary, but the board's sacred animal form is clear.", ["Place pieces at the serpent's tail.", "Throw sticks to advance inward along the spiral.", "Resolve interactions when sharing segments per a chosen reconstruction.", "Reaching the center may reverse the path outward.", "First to complete the journey wins in most reconstructions."], []],
   ["Buckingham Palace toy soldiers aside: Toy soldiers", "Germany / United Kingdom", "European modern", "c. 18th–19th century popular", "Dolls & Figures", "generic_toy", "Alone or 2 people", ["Miniature soldiers", "Flat floor or sand table"], "Cast or printed miniature soldiers supported war play and later wargaming. German tin makers and British hollow-casts spread sets worldwide. Play ranges from simple line battles to rule-heavy simulations.", ["Array two equal forces of at least ten figures each on opposite ends of a table or sand tray; place one flag token behind each line.", "On a turn, move up to three of your figures up to one hand-span forward, sideways, or diagonally.", "If a figure ends within one finger-width of an enemy, roll one six-sided die: 4–6 removes the enemy; 1–3 misses. Remove casualties to a dead pile.", "Capture the opponent’s flag by ending a move on its square, or eliminate every enemy figure, to win.", "Store figures upright in a box with tissue so paint and bayonets do not chip."], [{"name":"Tin flats","originCountry":"Germany","creationYear":"18th–19th century","notes":"Early mass-painted flat tin soldiers."}]],
-  ["Tea set toy", "United Kingdom / Europe / East Asia porcelain play", "Modern childhood global", "18th–19th century popular", "Dolls & Figures", "doll", "1–4 people", ["Miniature cups and pot", "Optional water/sand"], "Miniature tea sets let children rehearse hospitality rituals. Porcelain and tin versions tracked adult tea cultures from Britain to Japan. Social scripts—pouring, offering, thanking—are the real ruleset.", ["Set places for dolls or friends.", "Pour (real or imaginary) tea without tipping cups.", "Practice serving order and polite phrases.", "Wash and put away as part of play.", "No score—etiquette role-play."], []],
+  ["Tea set toy", "United Kingdom / Europe / East Asia porcelain play", "Modern childhood global", "18th–19th century popular", "Dolls & Figures", "tea_set", "1–4 people", ["Miniature cups and pot", "Optional water/sand"], "Miniature tea sets let children rehearse hospitality rituals. Porcelain and tin versions tracked adult tea cultures from Britain to Japan. Social scripts—pouring, offering, thanking—are the real ruleset.", ["Set places for dolls or friends.", "Pour (real or imaginary) tea without tipping cups.", "Practice serving order and polite phrases.", "Wash and put away as part of play.", "No score—etiquette role-play."], []],
   ["Slinky", "United States", "Modern American", "1945 CE", "Puzzles & Skill", "generic_toy", "Alone", ["Metal or plastic spring toy", "Stairs optional"], "The Slinky converts potential energy into end-over-end stair walking. A happy accident of naval spring engineering became a global desk and stair toy.", ["Place the Slinky on a stair tread.", "Tip the top coil to the next lower step.", "Watch it walk; restart when it tumbles.", "On flat desks, rock it between hands as a wave.", "Avoid overstretching coils permanently."], []],
   ["Frisbee / flying disc", "United States", "Modern American / global", "1950s CE popular (earlier tin-lid toss)", "Ball & Sport", "outdoor", "2+ people", ["Flying disc", "Open field"], "Flying discs formalized beach and park tossing; ultimate and disc golf added sport frames. The fundamental toy is a hand-thrown gliding plate.", ["Grip the disc with fingers under the rim.", "Throw flat with a spin; face the target.", "Catch with two hands when learning.", "Play catch, ultimate scores, or disc-golf holes.", "Mind wind and bystanders."], []],
   ["Hacky sack / footbag", "United States / global; older Asian footbags", "Modern global; ancient Chinese cuju relatives for feet", "1970s CE popular footbag; older kickbags centuries", "Ball & Sport", "outdoor", "1–circle group", ["Footbag", "Flat ground"], "Keeping a small bag aloft with feet echoes older Eurasian kickbag play. Circle 'sunny' sessions emphasize style and sharing over scoring.", ["Drop the bag to a foot and kick gently upward.", "Use feet, knees, and thighs—no hands.", "In a circle, pass to neighbors.", "Count consecutive kicks.", "Restart together after a drop."], [{"name":"Chinese shuttlecock/footbag relatives","originCountry":"China","creationYear":"centuries old","notes":"Older kick-keeping traditions related in spirit."}]],
@@ -2887,7 +3040,7 @@ function toGame(seed, index) {
     howToPlay: seed.howToPlay,
     howToWin: seed.howToWin || [],
     rulesNotToBreak: seed.rulesNotToBreak || [],
-    purchaseLinks: pickPurchase(seed.purchase, salt),
+    purchaseLinks: pickPurchase(seed.purchase, salt, seed.name),
     requirements: seed.requirements,
     idealParticipants: seed.idealParticipants,
     variations,
