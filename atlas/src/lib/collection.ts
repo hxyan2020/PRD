@@ -35,17 +35,37 @@ function sanitizeGame(game: Game): Game {
     category: game.category,
     originCountry: game.originCountry,
   };
+  const parentImages = sanitizeImageList(game.images, label);
+  const pageUsed = new Set(
+    parentImages.filter((u) => /^https?:\/\//.test(u)),
+  );
+  const variations = (game.variations ?? []).map((v) => {
+    const cleaned = sanitizeImageList(v.images, {
+      name: v.name,
+      category: game.category,
+      originCountry: v.originCountry,
+    }).filter((u) => {
+      if (!/^https?:\/\//.test(u)) return true;
+      if (pageUsed.has(u)) return false;
+      pageUsed.add(u);
+      return true;
+    });
+    // If every photo collided with the parent/earlier variation, keep a
+    // unique title card for this variation instead of repeating a photo.
+    const images =
+      cleaned.length > 0
+        ? cleaned
+        : sanitizeImageList([], {
+            name: v.name,
+            category: game.category,
+            originCountry: v.originCountry,
+          });
+    return { ...v, images };
+  });
   return {
     ...game,
-    images: sanitizeImageList(game.images, label),
-    variations: (game.variations ?? []).map((v) => ({
-      ...v,
-      images: sanitizeImageList(v.images, {
-        name: v.name,
-        category: game.category,
-        originCountry: v.originCountry,
-      }),
-    })),
+    images: parentImages,
+    variations,
   };
 }
 
