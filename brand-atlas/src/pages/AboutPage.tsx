@@ -1,62 +1,51 @@
 import { useCatalog } from "../hooks/useCatalog";
+import { useI18n } from "../i18n/I18nProvider";
 
 export function AboutPage() {
   const { catalog } = useCatalog();
+  const { t, lang } = useI18n();
 
   return (
     <main className="shell section">
       <div className="section__head">
         <div>
-          <h2>How Seen works</h2>
-          <p>A living catalogue you unlock by noticing the world.</p>
+          <h2>{t("about.title")}</h2>
+          <p>{t("about.blurb")}</p>
         </div>
       </div>
 
       <div className="scan-panel">
         <div>
-          <h3 style={{ fontFamily: "var(--font-display)", marginTop: 0 }}>Catalogue</h3>
-          <p>
-            Entries span car brands, cigarette brands (18+), liquor, wine, sake,
-            beer, coffee, tea, clothes, luxury houses, trees, flowers, animals
-            (including insects), and packaged food. Covers start greyscale and
-            locked until you confirm a sighting.
-          </p>
-          <h3 style={{ fontFamily: "var(--font-display)" }}>Scan flow</h3>
+          <h3 style={{ fontFamily: "var(--font-display)", marginTop: 0 }}>
+            {t("about.catalogueTitle")}
+          </h3>
+          <p>{t("about.catalogueBody")}</p>
+          <h3 style={{ fontFamily: "var(--font-display)" }}>{t("about.scanTitle")}</h3>
           <ol>
-            <li>Pick one or more categories (or leave “all”).</li>
-            <li>Take a picture or upload an image.</li>
-            <li>
-              AI OCR + visual cues propose up to 5 guesses with confidence % that
-              add to 100%.
-            </li>
-            <li>
-              If the image is unclear, you are asked to aim at the logo or upload a
-              clearer shot.
-            </li>
-            <li>
-              Confirm → match to catalogue → bingo unlock with colour restored.
-            </li>
+            <li>{t("about.scan1")}</li>
+            <li>{t("about.scan2")}</li>
+            <li>{t("about.scan3")}</li>
+            <li>{t("about.scan4")}</li>
+            <li>{t("about.scan5")}</li>
           </ol>
         </div>
         <div>
-          <h3 style={{ fontFamily: "var(--font-display)", marginTop: 0 }}>Weekly refresh</h3>
-          <p>
-            Every Monday the catalogue runs a scheduled refresh that can add,
-            modify, or rotate items. Locally: <code>npm run refresh</code>. In CI:
-            GitHub Actions workflow <code>weekly-catalog-refresh.yml</code>.
-          </p>
+          <h3 style={{ fontFamily: "var(--font-display)", marginTop: 0 }}>
+            {t("about.refreshTitle")}
+          </h3>
+          <p>{t("about.refreshBody")}</p>
           {catalog && (
             <div className="banner">
               <p style={{ margin: 0 }}>
-                <strong>Last refresh:</strong>{" "}
-                {new Date(catalog.meta.lastRefreshAt).toLocaleString()}
+                <strong>{t("about.lastRefresh")}</strong>{" "}
+                {new Date(catalog.meta.lastRefreshAt).toLocaleString(lang)}
               </p>
               <p style={{ margin: "0.4rem 0 0" }}>
-                <strong>Next refresh:</strong>{" "}
-                {new Date(catalog.meta.nextRefreshAt).toLocaleString()}
+                <strong>{t("about.nextRefresh")}</strong>{" "}
+                {new Date(catalog.meta.nextRefreshAt).toLocaleString(lang)}
               </p>
               <p className="muted" style={{ margin: "0.6rem 0 0" }}>
-                {catalog.meta.note}
+                {t("about.metaNote")}
               </p>
             </div>
           )}

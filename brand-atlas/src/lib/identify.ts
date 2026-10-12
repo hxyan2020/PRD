@@ -40,7 +40,7 @@ function scoreAgainstText(item: CatalogItem, text: string): number {
 }
 
 /** Lightweight colour / edge cue for nature items when OCR finds little. */
-async function imageCues(file: Blob): Promise<{
+export async function imageCues(file: Blob): Promise<{
   brightness: number;
   greenness: number;
   warmness: number;
@@ -130,7 +130,7 @@ function toGuesses(
   });
 }
 
-async function runOcr(file: Blob, onProgress?: (p: number) => void): Promise<string> {
+export async function runOcr(file: Blob, onProgress?: (p: number) => void): Promise<string> {
   const worker = await createWorker("eng", 1, {
     logger: (m) => {
       if (m.status === "recognizing text" && typeof m.progress === "number") {

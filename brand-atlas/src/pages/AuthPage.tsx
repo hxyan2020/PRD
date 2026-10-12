@@ -1,15 +1,29 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { logIn, signUp } from "../lib/auth";
+import { useAuth } from "../hooks/useAuth";
 import { useI18n } from "../i18n/I18nProvider";
 
-export function AuthPage({ mode }: { mode: "login" | "signup" }) {
+type AuthMode = "login" | "signup";
+
+export function AuthPage({ mode: initialMode = "login" }: { mode?: AuthMode }) {
   const { t } = useI18n();
+  const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const paramMode = params.get("mode");
+  const startMode: AuthMode =
+    initialMode === "signup" || paramMode === "signup" ? "signup" : "login";
+
+  const [mode, setMode] = useState<AuthMode>(startMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  if (isLoggedIn) {
+    return <Navigate to="/catalog" replace />;
+  }
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -24,12 +38,37 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
     navigate("/catalog");
   };
 
+  const switchMode = (next: AuthMode) => {
+    setMode(next);
+    setError(null);
+  };
+
   return (
     <main className="shell section auth-page">
       <h2>{mode === "login" ? t("auth.loginTitle") : t("auth.signupTitle")}</h2>
-      <p className="muted">
-        Session stays signed in on this device until you log out.
-      </p>
+      <p className="muted">{t("auth.persistHint")}</p>
+
+      <div className="auth-tabs" role="tablist" aria-label={t("auth.accountTabs")}>
+        <button
+          type="button"
+          role="tab"
+          className={`auth-tabs__tab ${mode === "login" ? "is-on" : ""}`}
+          aria-selected={mode === "login"}
+          onClick={() => switchMode("login")}
+        >
+          {t("nav.login")}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          className={`auth-tabs__tab ${mode === "signup" ? "is-on" : ""}`}
+          aria-selected={mode === "signup"}
+          onClick={() => switchMode("signup")}
+        >
+          {t("nav.signup")}
+        </button>
+      </div>
+
       <form className="auth-form" onSubmit={(e) => void submit(e)}>
         <div className="field">
           <label htmlFor="email">{t("auth.email")}</label>
@@ -59,17 +98,6 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
           {mode === "login" ? t("auth.loginTitle") : t("auth.signupTitle")}
         </button>
       </form>
-      <p className="muted" style={{ marginTop: "1rem" }}>
-        {mode === "login" ? (
-          <>
-            New here? <Link to="/signup">{t("nav.signup")}</Link>
-          </>
-        ) : (
-          <>
-            Already have an account? <Link to="/login">{t("nav.login")}</Link>
-          </>
-        )}
-      </p>
     </main>
   );
 }

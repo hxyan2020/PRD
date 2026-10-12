@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { coverGradient } from "../lib/catalog";
+import { coverUrl, markUrl } from "../lib/marks";
 import {
   formatPct,
   formatUtc,
@@ -61,6 +62,9 @@ export function ItemDetail({
   }, [unlock?.note, item.id]);
 
   const permalink = unlock ? permanentLink(unlock.shareId) : null;
+  const mark = markUrl(item);
+  const stockCover = coverUrl(item);
+  const coverPhoto = unlock?.photoDataUrl || stockCover;
 
   const copyLink = async () => {
     if (!permalink) return;
@@ -86,16 +90,35 @@ export function ItemDetail({
     <div className="celebrate" role="dialog" aria-modal="true" onClick={onClose}>
       <div className="celebrate__card detail-card" onClick={(e) => e.stopPropagation()}>
         <div
-          className="detail-cover"
-          style={{ background: coverGradient(item.coverHue, mode !== "locked") }}
-        />
+          className={`detail-cover is-${mode}${coverPhoto ? " has-cover" : ""}`}
+          style={{
+            background: coverPhoto
+              ? undefined
+              : coverGradient(item.coverHue, mode !== "locked"),
+          }}
+        >
+          {coverPhoto && (
+            <img
+              className="detail-cover__photo"
+              src={coverPhoto}
+              alt=""
+              draggable={false}
+            />
+          )}
+          {mark && !unlock?.photoDataUrl && (
+            <img
+              className={`detail-cover__mark${coverPhoto ? " detail-cover__mark--overlay" : ""}`}
+              src={mark}
+              alt=""
+              draggable={false}
+            />
+          )}
+        </div>
 
         {mode === "locked" && (
           <>
-            <h3>Still locked</h3>
-            <p className="muted">
-              Scan a clear photo of this mark or living thing to unlock the cover.
-            </p>
+            <h3>{t("unlocked.stillLocked")}</h3>
+            <p className="muted">{t("unlocked.stillLockedBlurb")}</p>
           </>
         )}
 
@@ -103,13 +126,12 @@ export function ItemDetail({
           <>
             <p className="muted">
               {t("catalog.sneak")} · {categoryLabel}
-              {categoryPct != null ? ` · ${formatPct(categoryPct)} unlocked` : ""}
+              {categoryPct != null
+                ? ` · ${t("unlocked.pctUnlocked", { pct: formatPct(categoryPct) })}`
+                : ""}
             </p>
-            <h3>Colour preview</h3>
-            <p className="muted">
-              Image is lit up as a reward for your category progress. Name and facts stay
-              hidden until you upload a matching sighting.
-            </p>
+            <h3>{t("unlocked.colourPreview")}</h3>
+            <p className="muted">{t("unlocked.sneakBlurb")}</p>
           </>
         )}
 
@@ -139,19 +161,21 @@ export function ItemDetail({
                 </p>
 
                 <div className="sighting-block">
-                  <strong>Your sighting photo</strong>
+                  <strong>{t("unlocked.sightingPhoto")}</strong>
                   {unlock.photoDataUrl ? (
                     <img
                       className="sighting-photo"
                       src={unlock.photoDataUrl}
-                      alt="Your sighting"
+                      alt=""
                     />
                   ) : (
-                    <p className="muted">No sighting photo attached yet.</p>
+                    <p className="muted">{t("unlocked.noSighting")}</p>
                   )}
                   <div className="cta-row" style={{ marginTop: "0.5rem" }}>
                     <label className="btn btn--quiet" style={{ display: "inline-flex" }}>
-                      {unlock.photoDataUrl ? "Replace photo" : "Attach photo"}
+                      {unlock.photoDataUrl
+                        ? t("unlocked.replacePhoto")
+                        : t("unlocked.attachPhoto")}
                       <input
                         type="file"
                         accept="image/*"
@@ -166,7 +190,7 @@ export function ItemDetail({
                         className="btn btn--quiet"
                         onClick={() => onSavePhoto?.(null)}
                       >
-                        Remove photo
+                        {t("unlocked.removePhoto")}
                       </button>
                     )}
                   </div>
@@ -182,25 +206,25 @@ export function ItemDetail({
                     onBlur={() => {
                       if (note !== (unlock.note ?? "")) saveNote();
                     }}
-                    placeholder="Where you took the photo, what stood out, who you were with…"
+                    placeholder={t("unlocked.notePlaceholder")}
                   />
                   <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.85rem" }}>
-                    Edit anytime — saves when you leave the field or tap Save.
+                    {t("unlocked.noteHint")}
                   </p>
                 </div>
                 {permalink && (
                   <div className="permalink-box" style={{ marginTop: "0.9rem" }}>
-                    <strong>Permanent link</strong>
+                    <strong>{t("unlocked.permalink")}</strong>
                     <code className="permalink-url">{permalink}</code>
                   </div>
                 )}
 
                 <div className="cta-row" style={{ justifyContent: "center" }}>
                   <button type="button" className="btn btn--forest" onClick={saveNote}>
-                    {savedFlash ? "Saved" : t("unlocked.saveNote")}
+                    {savedFlash ? t("unlocked.copied") : t("unlocked.saveNote")}
                   </button>
                   <button type="button" className="btn btn--quiet" onClick={() => void copyLink()}>
-                    {copied ? "Copied!" : t("unlocked.share")}
+                    {copied ? t("unlocked.copied") : t("unlocked.share")}
                   </button>
                 </div>
               </div>
@@ -214,7 +238,7 @@ export function ItemDetail({
           style={{ marginTop: "1rem" }}
           onClick={onClose}
         >
-          Close
+          {t("common.close")}
         </button>
       </div>
     </div>

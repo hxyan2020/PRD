@@ -1,0 +1,1200 @@
+{
+  "mapping": {
+    "cars__toyota": "toyota",
+    "cars__honda": "honda",
+    "cars__nissan": "nissan",
+    "cars__mazda": "mazda",
+    "cars__subaru": "subaru",
+    "cars__mitsubishi": "mitsubishi",
+    "cars__suzuki": "suzuki",
+    "cars__ford": "ford",
+    "cars__chevrolet": "chevrolet",
+    "cars__tesla": "tesla",
+    "cars__jeep": "jeep",
+    "cars__cadillac": "cadillac",
+    "cars__bmw": "bmw",
+    "cars__mercedes-benz": "mercedes",
+    "cars__audi": "audi",
+    "cars__volkswagen": "volkswagen",
+    "cars__porsche": "porsche",
+    "cars__opel": "opel",
+    "cars__ferrari": "ferrari",
+    "cars__lamborghini": "lamborghini",
+    "cars__fiat": "fiat",
+    "cars__alfa-romeo": "alfaromeo",
+    "cars__maserati": "maserati",
+    "cars__volvo": "volvo",
+    "cars__skoda": "skoda",
+    "cars__hyundai": "hyundai",
+    "cars__kia": "kia",
+    "cars__peugeot": "peugeot",
+    "cars__renault": "renault",
+    "cars__citroen": "citroen",
+    "cars__jaguar": "jaguar",
+    "cars__land-rover": "landrover",
+    "cars__mini": "mini",
+    "cars__rolls-royce": "rollsroyce",
+    "cars__bentley": "bentley",
+    "cars__aston-martin": "astonmartin",
+    "cigarettes__kent": "kentico",
+    "cigarettes__hope": "shopee",
+    "liquor__jameson": "jameson",
+    "liquor__makers-mark": "make",
+    "wine__yellow-tail": "ello",
+    "wine__vega-sicilia": "vega",
+    "wine__santa-rita": "anta",
+    "wine__kim-crawford": "ford",
+    "beer__corona": "coronaengine",
+    "beer__stella-artois": "stellar",
+    "beer__carlsberg": "carlsberggroup",
+    "beer__asahi": "asahilinux",
+    "beer__suntory-beer": "malt",
+    "beer__chang": "expertsexchange",
+    "coffee__starbucks": "starbucks",
+    "coffee__illy": "oreilly",
+    "coffee__pret": "prettier",
+    "coffee__intelligentsia": "intel",
+    "coffee__segafredo": "sega",
+    "tea__yogi": "gitea",
+    "clothes__nike": "nike",
+    "clothes__adidas": "adidas",
+    "clothes__puma": "puma",
+    "clothes__under-armour": "underarmour",
+    "clothes__uniqlo": "uniqlo",
+    "clothes__zara": "zara",
+    "clothes__h-and-m": "handm",
+    "clothes__new-balance": "newbalance",
+    "clothes__lululemon": "ulule",
+    "clothes__north-face": "thenorthface",
+    "luxury__hermes": "hermes",
+    "luxury__dior": "dior",
+    "luxury__omega": "mega",
+    "luxury__celine": "line",
+    "food__coca-cola": "cocacola",
+    "food__pringles": "ring",
+    "food__lay": "barclays",
+    "food__kelloggs": "ello",
+    "food__philadelphia": "delphi",
+    "food__red-bull": "redbull",
+    "food__monster": "monster",
+    "food__evian": "deviantart"
+  },
+  "missing": [
+    [
+      "cars__lexus",
+      "Lexus",
+      "none"
+    ],
+    [
+      "cars__genesis",
+      "Genesis",
+      "none"
+    ],
+    [
+      "cars__byd",
+      "BYD",
+      "none"
+    ],
+    [
+      "cars__geely",
+      "Geely",
+      "none"
+    ],
+    [
+      "cigarettes__marlboro",
+      "Marlboro",
+      "none"
+    ],
+    [
+      "cigarettes__camel",
+      "Camel",
+      "none"
+    ],
+    [
+      "cigarettes__lucky-strike",
+      "Lucky Strike",
+      "none"
+    ],
+    [
+      "cigarettes__winston",
+      "Winston",
+      "none"
+    ],
+    [
+      "cigarettes__pall-mall",
+      "Pall Mall",
+      "none"
+    ],
+    [
+      "cigarettes__parliament",
+      "Parliament",
+      "none"
+    ],
+    [
+      "cigarettes__chesterfield",
+      "Chesterfield",
+      "none"
+    ],
+    [
+      "cigarettes__dunhill",
+      "Dunhill",
+      "none"
+    ],
+    [
+      "cigarettes__benson-hedges",
+      "Benson & Hedges",
+      "none"
+    ],
+    [
+      "cigarettes__davidoff",
+      "Davidoff",
+      "none"
+    ],
+    [
+      "cigarettes__gauloises",
+      "Gauloises",
+      "none"
+    ],
+    [
+      "cigarettes__gitanes",
+      "Gitanes",
+      "none"
+    ],
+    [
+      "cigarettes__mevius",
+      "Mevius",
+      "none"
+    ],
+    [
+      "cigarettes__seven-stars",
+      "Seven Stars",
+      "none"
+    ],
+    [
+      "cigarettes__lark",
+      "Lark",
+      "none"
+    ],
+    [
+      "cigarettes__rothmans",
+      "Rothmans",
+      "none"
+    ],
+    [
+      "cigarettes__embassy",
+      "Embassy",
+      "none"
+    ],
+    [
+      "cigarettes__gold-flake",
+      "Gold Flake",
+      "none"
+    ],
+    [
+      "liquor__johnnie-walker",
+      "Johnnie Walker",
+      "none"
+    ],
+    [
+      "liquor__jack-daniels",
+      "Jack Daniel's",
+      "none"
+    ],
+    [
+      "liquor__macallan",
+      "The Macallan",
+      "none"
+    ],
+    [
+      "liquor__glenlivet",
+      "The Glenlivet",
+      "none"
+    ],
+    [
+      "liquor__glenfiddich",
+      "Glenfiddich",
+      "none"
+    ],
+    [
+      "liquor__absolut",
+      "Absolut",
+      "none"
+    ],
+    [
+      "liquor__smirnoff",
+      "Smirnoff",
+      "none"
+    ],
+    [
+      "liquor__grey-goose",
+      "Grey Goose",
+      "none"
+    ],
+    [
+      "liquor__belvedere",
+      "Belvedere",
+      "none"
+    ],
+    [
+      "liquor__bacardi",
+      "Bacardi",
+      "none"
+    ],
+    [
+      "liquor__captain-morgan",
+      "Captain Morgan",
+      "none"
+    ],
+    [
+      "liquor__havana-club",
+      "Havana Club",
+      "none"
+    ],
+    [
+      "liquor__hennessy",
+      "Hennessy",
+      "none"
+    ],
+    [
+      "liquor__remy-martin",
+      "Rémy Martin",
+      "none"
+    ],
+    [
+      "liquor__courvoisier",
+      "Courvoisier",
+      "none"
+    ],
+    [
+      "liquor__patron",
+      "Patrón",
+      "none"
+    ],
+    [
+      "liquor__jose-cuervo",
+      "José Cuervo",
+      "none"
+    ],
+    [
+      "liquor__don-julio",
+      "Don Julio",
+      "none"
+    ],
+    [
+      "liquor__tanqueray",
+      "Tanqueray",
+      "none"
+    ],
+    [
+      "liquor__bombay-sapphire",
+      "Bombay Sapphire",
+      "none"
+    ],
+    [
+      "liquor__hendricks",
+      "Hendrick's",
+      "none"
+    ],
+    [
+      "liquor__jagermeister",
+      "Jägermeister",
+      "none"
+    ],
+    [
+      "liquor__baileys",
+      "Baileys",
+      "none"
+    ],
+    [
+      "liquor__campari",
+      "Campari",
+      "none"
+    ],
+    [
+      "liquor__aperol",
+      "Aperol",
+      "none"
+    ],
+    [
+      "liquor__suntory",
+      "Suntory",
+      "none"
+    ],
+    [
+      "liquor__crown-royal",
+      "Crown Royal",
+      "none"
+    ],
+    [
+      "liquor__chivas",
+      "Chivas Regal",
+      "none"
+    ],
+    [
+      "wine__moet",
+      "Moët & Chandon",
+      "none"
+    ],
+    [
+      "wine__veuve-clicquot",
+      "Veuve Clicquot",
+      "none"
+    ],
+    [
+      "wine__freixenet",
+      "Freixenet",
+      "none"
+    ],
+    [
+      "wine__penfolds",
+      "Penfolds",
+      "none"
+    ],
+    [
+      "wine__barefoot",
+      "Barefoot",
+      "none"
+    ],
+    [
+      "wine__gallo",
+      "Gallo",
+      "none"
+    ],
+    [
+      "wine__robert-mondavi",
+      "Robert Mondavi",
+      "none"
+    ],
+    [
+      "wine__opus-one",
+      "Opus One",
+      "none"
+    ],
+    [
+      "wine__chateau-margaux",
+      "Château Margaux",
+      "none"
+    ],
+    [
+      "wine__lafite",
+      "Château Lafite Rothschild",
+      "none"
+    ],
+    [
+      "wine__latour",
+      "Château Latour",
+      "none"
+    ],
+    [
+      "wine__antinori",
+      "Antinori",
+      "none"
+    ],
+    [
+      "wine__gaja",
+      "Gaja",
+      "none"
+    ],
+    [
+      "wine__torres",
+      "Torres",
+      "none"
+    ],
+    [
+      "wine__concha-y-toro",
+      "Concha y Toro",
+      "none"
+    ],
+    [
+      "wine__cloud-bay",
+      "Cloudy Bay",
+      "none"
+    ],
+    [
+      "wine__jacobs-creek",
+      "Jacob's Creek",
+      "none"
+    ],
+    [
+      "wine__kendall-jackson",
+      "Kendall-Jackson",
+      "none"
+    ],
+    [
+      "wine__mateus",
+      "Mateus",
+      "none"
+    ],
+    [
+      "wine__sandeman",
+      "Sandeman",
+      "none"
+    ],
+    [
+      "wine__taylor-fladgate",
+      "Taylor Fladgate",
+      "none"
+    ],
+    [
+      "sake__dassai",
+      "Dassai",
+      "none"
+    ],
+    [
+      "sake__kubota",
+      "Kubota",
+      "none"
+    ],
+    [
+      "sake__hakutsuru",
+      "Hakutsuru",
+      "none"
+    ],
+    [
+      "sake__gekkeikan",
+      "Gekkeikan",
+      "none"
+    ],
+    [
+      "sake__ozeki",
+      "Ozeki",
+      "none"
+    ],
+    [
+      "sake__takara",
+      "Takara",
+      "none"
+    ],
+    [
+      "sake__juyondai",
+      "Juyondai",
+      "none"
+    ],
+    [
+      "sake__born",
+      "Born",
+      "none"
+    ],
+    [
+      "sake__sake-one",
+      "SakeOne",
+      "none"
+    ],
+    [
+      "sake__kikusui",
+      "Kikusui",
+      "none"
+    ],
+    [
+      "sake__dewazakura",
+      "Dewazakura",
+      "none"
+    ],
+    [
+      "sake__nanbu-bijin",
+      "Nanbu Bijin",
+      "none"
+    ],
+    [
+      "sake__suigei",
+      "Suigei",
+      "none"
+    ],
+    [
+      "sake__hakkaisan",
+      "Hakkaisan",
+      "none"
+    ],
+    [
+      "sake__koshi-no-kanbai",
+      "Koshi no Kanbai",
+      "none"
+    ],
+    [
+      "sake__tatenokawa",
+      "Tatenokawa",
+      "none"
+    ],
+    [
+      "sake__mutsu-hassen",
+      "Mutsu Hassen",
+      "none"
+    ],
+    [
+      "sake__shichiken",
+      "Shichiken",
+      "none"
+    ],
+    [
+      "sake__urakasumi",
+      "Urakasumi",
+      "none"
+    ],
+    [
+      "sake__isojiman",
+      "Isojiman",
+      "none"
+    ],
+    [
+      "sake__masumi",
+      "Masumi",
+      "none"
+    ],
+    [
+      "beer__heineken",
+      "Heineken",
+      "none"
+    ],
+    [
+      "beer__budweiser",
+      "Budweiser",
+      "none"
+    ],
+    [
+      "beer__guinness",
+      "Guinness",
+      "none"
+    ],
+    [
+      "beer__kirin",
+      "Kirin",
+      "none"
+    ],
+    [
+      "beer__sapporo",
+      "Sapporo",
+      "none"
+    ],
+    [
+      "beer__tsingtao",
+      "Tsingtao",
+      "none"
+    ],
+    [
+      "beer__harbin",
+      "Harbin",
+      "none"
+    ],
+    [
+      "beer__tiger",
+      "Tiger",
+      "none"
+    ],
+    [
+      "beer__singha",
+      "Singha",
+      "none"
+    ],
+    [
+      "beer__peroni",
+      "Peroni",
+      "none"
+    ],
+    [
+      "beer__moretti",
+      "Birra Moretti",
+      "none"
+    ],
+    [
+      "beer__becks",
+      "Beck's",
+      "none"
+    ],
+    [
+      "beer__paulaner",
+      "Paulaner",
+      "none"
+    ],
+    [
+      "beer__erdinger",
+      "Erdinger",
+      "none"
+    ],
+    [
+      "beer__modelo",
+      "Modelo",
+      "none"
+    ],
+    [
+      "beer__dos-equis",
+      "Dos Equis",
+      "none"
+    ],
+    [
+      "beer__sierra-nevada",
+      "Sierra Nevada",
+      "none"
+    ],
+    [
+      "beer__blue-moon",
+      "Blue Moon",
+      "none"
+    ],
+    [
+      "beer__hoegaarden",
+      "Hoegaarden",
+      "none"
+    ],
+    [
+      "beer__duvel",
+      "Duvel",
+      "none"
+    ],
+    [
+      "beer__chimay",
+      "Chimay",
+      "none"
+    ],
+    [
+      "beer__foster",
+      "Foster's",
+      "none"
+    ],
+    [
+      "beer__victoria-bitter",
+      "Victoria Bitter",
+      "none"
+    ],
+    [
+      "beer__pilsner-urquell",
+      "Pilsner Urquell",
+      "none"
+    ],
+    [
+      "coffee__dunkin",
+      "Dunkin'",
+      "none"
+    ],
+    [
+      "coffee__peets",
+      "Peet's Coffee",
+      "none"
+    ],
+    [
+      "coffee__blue-bottle",
+      "Blue Bottle Coffee",
+      "none"
+    ],
+    [
+      "coffee__lavazza",
+      "Lavazza",
+      "none"
+    ],
+    [
+      "coffee__nespresso",
+      "Nespresso",
+      "none"
+    ],
+    [
+      "coffee__nescafe",
+      "Nescafé",
+      "none"
+    ],
+    [
+      "coffee__folgers",
+      "Folgers",
+      "none"
+    ],
+    [
+      "coffee__maxwell-house",
+      "Maxwell House",
+      "none"
+    ],
+    [
+      "coffee__tim-hortons",
+      "Tim Hortons",
+      "none"
+    ],
+    [
+      "coffee__costa",
+      "Costa Coffee",
+      "none"
+    ],
+    [
+      "coffee__ucc",
+      "UCC",
+      "none"
+    ],
+    [
+      "coffee__doutor",
+      "Doutor",
+      "none"
+    ],
+    [
+      "coffee__komeda",
+      "Komeda Coffee",
+      "none"
+    ],
+    [
+      "coffee__luckin",
+      "Luckin Coffee",
+      "none"
+    ],
+    [
+      "coffee__mccafe",
+      "McCafé",
+      "none"
+    ],
+    [
+      "coffee__stumptown",
+      "Stumptown",
+      "none"
+    ],
+    [
+      "coffee__counter-culture",
+      "Counter Culture",
+      "none"
+    ],
+    [
+      "coffee__davidoff-cafe",
+      "Davidoff Café",
+      "none"
+    ],
+    [
+      "coffee__kimbo",
+      "Kimbo",
+      "none"
+    ],
+    [
+      "coffee__dutch-bros",
+      "Dutch Bros",
+      "none"
+    ],
+    [
+      "tea__lipton",
+      "Lipton",
+      "none"
+    ],
+    [
+      "tea__twinings",
+      "Twinings",
+      "none"
+    ],
+    [
+      "tea__pg-tips",
+      "PG Tips",
+      "none"
+    ],
+    [
+      "tea__yorkshire",
+      "Yorkshire Tea",
+      "none"
+    ],
+    [
+      "tea__tetley",
+      "Tetley",
+      "none"
+    ],
+    [
+      "tea__harney",
+      "Harney & Sons",
+      "none"
+    ],
+    [
+      "tea__tazo",
+      "Tazo",
+      "none"
+    ],
+    [
+      "tea__mighty-leaf",
+      "Mighty Leaf",
+      "none"
+    ],
+    [
+      "tea__dilmah",
+      "Dilmah",
+      "none"
+    ],
+    [
+      "tea__ahmad",
+      "Ahmad Tea",
+      "none"
+    ],
+    [
+      "tea__twg",
+      "TWG Tea",
+      "none"
+    ],
+    [
+      "tea__lupicia",
+      "Lupicia",
+      "none"
+    ],
+    [
+      "tea__ito-en",
+      "Itō En",
+      "none"
+    ],
+    [
+      "tea__yamamotoyama",
+      "Yamamotoyama",
+      "none"
+    ],
+    [
+      "tea__clipper",
+      "Clipper",
+      "none"
+    ],
+    [
+      "tea__pukka",
+      "Pukka",
+      "none"
+    ],
+    [
+      "tea__celestial",
+      "Celestial Seasonings",
+      "none"
+    ],
+    [
+      "tea__bigelow",
+      "Bigelow",
+      "none"
+    ],
+    [
+      "tea__numi",
+      "Numi",
+      "none"
+    ],
+    [
+      "tea__davids-tea",
+      "DAVIDsTEA",
+      "none"
+    ],
+    [
+      "tea__cha-tra-mue",
+      "ChaTraMue",
+      "none"
+    ],
+    [
+      "tea__tenren",
+      "Ten Ren",
+      "none"
+    ],
+    [
+      "tea__teapigs",
+      "Tea Pig",
+      "none"
+    ],
+    [
+      "tea__whittard",
+      "Whittard",
+      "none"
+    ],
+    [
+      "clothes__gap",
+      "Gap",
+      "none"
+    ],
+    [
+      "clothes__levi",
+      "Levi's",
+      "none"
+    ],
+    [
+      "clothes__ralph-lauren",
+      "Ralph Lauren",
+      "none"
+    ],
+    [
+      "clothes__tommy",
+      "Tommy Hilfiger",
+      "none"
+    ],
+    [
+      "clothes__calvin-klein",
+      "Calvin Klein",
+      "none"
+    ],
+    [
+      "clothes__vans",
+      "Vans",
+      "none"
+    ],
+    [
+      "clothes__converse",
+      "Converse",
+      "none"
+    ],
+    [
+      "clothes__columbia",
+      "Columbia",
+      "none"
+    ],
+    [
+      "clothes__burberry",
+      "Burberry",
+      "none"
+    ],
+    [
+      "clothes__patagonia",
+      "Patagonia",
+      "none"
+    ],
+    [
+      "clothes__supreme",
+      "Supreme",
+      "none"
+    ],
+    [
+      "clothes__off-white",
+      "Off-White",
+      "none"
+    ],
+    [
+      "clothes__aritzia",
+      "Aritzia",
+      "none"
+    ],
+    [
+      "clothes__muji",
+      "MUJI",
+      "none"
+    ],
+    [
+      "clothes__gu",
+      "GU",
+      "none"
+    ],
+    [
+      "clothes__cos",
+      "COS",
+      "none"
+    ],
+    [
+      "clothes__everlane",
+      "Everlane",
+      "none"
+    ],
+    [
+      "clothes__carhartt",
+      "Carhartt",
+      "none"
+    ],
+    [
+      "clothes__dickies",
+      "Dickies",
+      "none"
+    ],
+    [
+      "clothes__champion",
+      "Champion",
+      "none"
+    ],
+    [
+      "luxury__louis-vuitton",
+      "Louis Vuitton",
+      "none"
+    ],
+    [
+      "luxury__chanel",
+      "Chanel",
+      "none"
+    ],
+    [
+      "luxury__cartier",
+      "Cartier",
+      "none"
+    ],
+    [
+      "luxury__tiffany",
+      "Tiffany & Co.",
+      "none"
+    ],
+    [
+      "luxury__rolex",
+      "Rolex",
+      "none"
+    ],
+    [
+      "luxury__patek",
+      "Patek Philippe",
+      "none"
+    ],
+    [
+      "luxury__audemars",
+      "Audemars Piguet",
+      "none"
+    ],
+    [
+      "luxury__bvlgari",
+      "Bulgari",
+      "none"
+    ],
+    [
+      "luxury__van-cleef",
+      "Van Cleef & Arpels",
+      "none"
+    ],
+    [
+      "luxury__fendi",
+      "Fendi",
+      "none"
+    ],
+    [
+      "luxury__bottega",
+      "Bottega Veneta",
+      "none"
+    ],
+    [
+      "luxury__givenchy",
+      "Givenchy",
+      "none"
+    ],
+    [
+      "luxury__ysl",
+      "Yves Saint Laurent",
+      "none"
+    ],
+    [
+      "luxury__montblanc",
+      "Montblanc",
+      "none"
+    ],
+    [
+      "luxury__rimowa",
+      "Rimowa",
+      "none"
+    ],
+    [
+      "luxury__asprey",
+      "Asprey",
+      "none"
+    ],
+    [
+      "luxury__harry-winston",
+      "Harry Winston",
+      "none"
+    ],
+    [
+      "luxury__graff",
+      "Graff",
+      "none"
+    ],
+    [
+      "luxury__chopard",
+      "Chopard",
+      "none"
+    ],
+    [
+      "luxury__gucci",
+      "Gucci",
+      "none"
+    ],
+    [
+      "luxury__prada",
+      "Prada",
+      "none"
+    ],
+    [
+      "food__pepsi",
+      "Pepsi",
+      "none"
+    ],
+    [
+      "food__nutella",
+      "Nutella",
+      "none"
+    ],
+    [
+      "food__oreo",
+      "Oreo",
+      "none"
+    ],
+    [
+      "food__kitkat",
+      "KitKat",
+      "none"
+    ],
+    [
+      "food__snickers",
+      "Snickers",
+      "none"
+    ],
+    [
+      "food__toblerone",
+      "Toblerone",
+      "none"
+    ],
+    [
+      "food__haribo",
+      "Haribo",
+      "none"
+    ],
+    [
+      "food__doritos",
+      "Doritos",
+      "none"
+    ],
+    [
+      "food__heinz",
+      "Heinz",
+      "none"
+    ],
+    [
+      "food__nestle",
+      "Nestlé",
+      "none"
+    ],
+    [
+      "food__kraft",
+      "Kraft",
+      "none"
+    ],
+    [
+      "food__campbell",
+      "Campbell's",
+      "none"
+    ],
+    [
+      "food__tabasco",
+      "Tabasco",
+      "none"
+    ],
+    [
+      "food__maggi",
+      "Maggi",
+      "none"
+    ],
+    [
+      "food__knorr",
+      "Knorr",
+      "none"
+    ],
+    [
+      "food__hellmanns",
+      "Hellmann's",
+      "none"
+    ],
+    [
+      "food__ben-jerrys",
+      "Ben & Jerry's",
+      "none"
+    ],
+    [
+      "food__haagen-dazs",
+      "Häagen-Dazs",
+      "none"
+    ],
+    [
+      "food__san-pellegrino",
+      "S.Pellegrino",
+      "none"
+    ],
+    [
+      "food__meiji",
+      "Meiji",
+      "none"
+    ],
+    [
+      "food__calbee",
+      "Calbee",
+      "none"
+    ],
+    [
+      "food__nissin",
+      "Nissin",
+      "none"
+    ]
+  ],
+  "fail": []
+}

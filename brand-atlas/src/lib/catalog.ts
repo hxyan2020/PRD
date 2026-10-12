@@ -10,6 +10,10 @@ export async function loadCatalog(): Promise<Catalog> {
   return cached;
 }
 
+export function clearCatalogCache() {
+  cached = null;
+}
+
 export function getCategory(
   catalog: Catalog,
   categoryId: string,

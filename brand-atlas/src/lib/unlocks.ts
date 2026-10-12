@@ -3,7 +3,7 @@ const STORAGE_KEY = "seen.unlocks.v1";
 export interface UnlockRecord {
   itemId: string;
   unlockedAt: string;
-  method: "scan" | "manual";
+  method: "scan" | "manual" | "contribute";
   /** Data URL of the user's uploaded sighting photo */
   photoDataUrl?: string | null;
   /** Freeform field note */
