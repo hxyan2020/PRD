@@ -202,58 +202,406 @@ function mixAccent(baseHex: string, h: number): string {
   return `rgb(${clamp(r + dr)},${clamp(g + dg)},${clamp(b + db)})`;
 }
 
-/** Text-free atmospheric art for card backgrounds (no competing titles). */
-export function ludusBackdropDataUri(category: string, seed = ""): string {
-  const baseAccent = CATEGORY_ACCENT[category] || "#bc0234";
-  // Hash must include the full seed so locale variants never share art.
-  const h = hashSeed(`${category}|${seed}`);
-  const h2 = hashSeed(`${seed}|${category}|backdrop`);
-  const accent = mixAccent(baseAccent, h ^ h2);
-  const motif = h % 4;
+/** Subject keys for silhouette art — keep covers idea-matched when stock photos run out. */
+export type SubjectMotif =
+  | "whistle"
+  | "rattle"
+  | "pull"
+  | "bow"
+  | "stones"
+  | "dice"
+  | "shadow"
+  | "kite"
+  | "doll"
+  | "ball"
+  | "top"
+  | "string"
+  | "board"
+  | "mancala"
+  | "rope"
+  | "hide"
+  | "wrestle"
+  | "circle"
+  | "stilts"
+  | "boat"
+  | "sand"
+  | "riddle"
+  | "knot"
+  | "house"
+  | "drum"
+  | "hands"
+  | "cups"
+  | "paper"
+  | "ribbon"
+  | "chess"
+  | "cards"
+  | "blocks"
+  | "yo"
+  | "marbles"
+  | "generic";
+
+/** Map a catalog title onto a recognizable subject silhouette. */
+export function inferSubjectMotif(name: string): SubjectMotif {
+  const n = (name || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+  if (/whistle|ocarina|kazoo|flute|kalimba|thumb piano/.test(n)) return "whistle";
+  if (/rattle|noisemaker|maracas|castanet|pinata|piñata/.test(n)) return "rattle";
+  if (/pull toy|hobby horse|rocking|wagon/.test(n)) return "pull";
+  if (/bow|dart|slingshot|archery/.test(n)) return "bow";
+  if (/knuckle|jacks|skill stones|pocket skill|astragal/.test(n)) return "stones";
+  if (/story lots|casting stick|dice|yahtzee|teetotum|dreidel/.test(n))
+    return "dice";
+  if (/shadow|puppet|wayang/.test(n)) return "shadow";
+  if (/kite/.test(n)) return "kite";
+  if (
+    /doll|matryoshka|kokeshi|daruma|worry doll|rag doll|paper doll|action figure|tin soldier|toy soldier/.test(
+      n,
+    )
+  )
+    return "doll";
+  if (
+    /ball|footbag|hacky|jianzi|shuttlecock|sewn cloth|sepak|bocce|frisbee|flying disc/.test(
+      n,
+    )
+  )
+    return "ball";
+  if (/spinning top|top craft|beigoma|gyroscope|button whirligig|whirligig/.test(n))
+    return "top";
+  if (/yo-?yo|diabolo|kongzhu/.test(n)) return "yo";
+  if (/string|cradle|ayatori|cat'?s cradle/.test(n)) return "string";
+  if (
+    /race board|pachisi|ludo|snakes and|chutes|monopoly|board \(local\)|folk race|senet|backgammon|patolli/.test(
+      n,
+    )
+  )
+    return "board";
+  if (/sowing|mancala|oware|congkak|sungka|pit-and-seed|toguz|wari/.test(n))
+    return "mancala";
+  if (/jump-?rope|skipping|chinese jump/.test(n)) return "rope";
+  if (/blind|hide|seek|sardines|tag \/|call games/.test(n)) return "hide";
+  if (/wrestl/.test(n)) return "wrestle";
+  if (/chant|elimination|musical chairs|simon|charades|clapping rhyme/.test(n))
+    return "circle";
+  if (/stilt|pogo/.test(n)) return "stilts";
+  if (/boat|leaf or bark/.test(n)) return "boat";
+  if (/sand or snow|sandcastle|snowman|sandbox/.test(n)) return "sand";
+  if (/riddle|twenty questions|hangman|memory|word|scrabble/.test(n))
+    return "riddle";
+  if (/knot|cord &|jackstraw|spillikin|mikado|pick-up|puzzle|tangram|rubik|soma|hanoi/.test(n))
+    return "knot";
+  if (/household|tea set|dollhouse|miniature|lincoln log/.test(n)) return "house";
+  if (/drum|xylophone/.test(n)) return "drum";
+  if (/clapping|hand & gesture|rock.paper/.test(n)) return "hands";
+  if (/nesting|cup stack|stacking/.test(n)) return "cups";
+  if (/fortune teller|origami|paper airplane|house of cards/.test(n)) return "paper";
+  if (/ribbon|wand|hula|bubble/.test(n)) return "ribbon";
+  if (
+    /chess|chaturanga|shatranj|xiangqi|shogi|janggi|makruk|sittuyin|hnefatafl|checkers|draughts|go \(/.test(
+      n,
+    )
+  )
+    return "chess";
+  if (/card|mahjong|domino|hanafuda|karuta|ganjifa|rummy|cribbage/.test(n))
+    return "cards";
+  if (/block|construction|jenga|lego|building/.test(n)) return "blocks";
+  if (/marble/.test(n)) return "marbles";
+  return "generic";
+}
+
+/** Centered subject silhouette — readable at card thumb size, no text. */
+function subjectSilhouette(
+  motif: SubjectMotif,
+  accent: string,
+  h: number,
+  h2: number,
+  opts?: { opacity?: number; offsetX?: number },
+): string {
+  const dx = ((h % 60) - 30) * 0.4 + (opts?.offsetX ?? 0);
+  const dy = ((h2 % 50) - 25) * 0.35;
+  const rot = ((h >> 5) % 14) - 7;
+  const opacity = opts?.opacity ?? 0.55;
+  const g = (body: string) =>
+    `<g fill="${accent}" stroke="${accent}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${450 + dx} ${300 + dy}) rotate(${rot})" opacity="${opacity}">${body}</g>`;
+
+  switch (motif) {
+    case "whistle":
+      return g(`
+        <ellipse cx="-40" cy="0" rx="70" ry="38" fill-opacity="0.85" stroke="none"/>
+        <rect x="20" y="-14" width="110" height="28" rx="10" fill-opacity="0.9" stroke="none"/>
+        <circle cx="-55" cy="-8" r="8" fill="#0c0c0c" fill-opacity="0.45" stroke="none"/>
+        <circle cx="40" cy="0" r="6" fill="#0c0c0c" fill-opacity="0.35" stroke="none"/>
+        <circle cx="70" cy="0" r="5" fill="#0c0c0c" fill-opacity="0.3" stroke="none"/>`);
+    case "rattle":
+      return g(`
+        <circle cx="0" cy="-55" r="70" fill-opacity="0.85" stroke="none"/>
+        <circle cx="-22" cy="-70" r="10" fill="#0c0c0c" fill-opacity="0.25" stroke="none"/>
+        <circle cx="18" cy="-40" r="12" fill="#0c0c0c" fill-opacity="0.2" stroke="none"/>
+        <rect x="-12" y="10" width="24" height="120" rx="10" fill-opacity="0.9" stroke="none"/>
+        <ellipse cx="0" cy="140" rx="22" ry="12" fill-opacity="0.7" stroke="none"/>`);
+    case "pull":
+      return g(`
+        <ellipse cx="-20" cy="30" rx="110" ry="40" fill-opacity="0.75" stroke="none"/>
+        <circle cx="-80" cy="70" r="28" fill="none" stroke-width="10" opacity="0.9"/>
+        <circle cx="50" cy="70" r="28" fill="none" stroke-width="10" opacity="0.9"/>
+        <path d="M80 0 C 120 -40, 150 -20, 160 10" fill="none" stroke-width="10"/>
+        <circle cx="-30" cy="-10" r="34" fill-opacity="0.85" stroke="none"/>`);
+    case "bow":
+      return g(`
+        <path d="M-120 80 C -40 -120, 40 -120, 120 80" fill="none" stroke-width="14"/>
+        <path d="M-110 70 L 110 70" fill="none" stroke-width="6" opacity="0.7"/>
+        <path d="M0 -90 L 0 90" fill="none" stroke-width="8"/>
+        <path d="M0 -90 L 18 -70 L 0 -55 Z" fill-opacity="0.9" stroke="none"/>`);
+    case "stones":
+      return g(`
+        ${[-70, -20, 35, 80]
+          .map(
+            (x, i) =>
+              `<ellipse cx="${x}" cy="${(i % 2) * 30 - 10}" rx="${28 + (i % 3) * 6}" ry="${22 + (i % 2) * 6}" fill-opacity="${0.7 + i * 0.05}" stroke="none"/>`,
+          )
+          .join("")}`);
+    case "dice":
+      return g(`
+        <rect x="-90" y="-50" width="100" height="100" rx="16" fill-opacity="0.85" stroke="none"/>
+        <rect x="10" y="-20" width="90" height="90" rx="14" fill-opacity="0.7" stroke="none"/>
+        <circle cx="-55" cy="-15" r="9" fill="#0c0c0c" fill-opacity="0.4" stroke="none"/>
+        <circle cx="-25" cy="15" r="9" fill="#0c0c0c" fill-opacity="0.4" stroke="none"/>
+        <circle cx="40" cy="10" r="8" fill="#0c0c0c" fill-opacity="0.35" stroke="none"/>
+        <circle cx="70" cy="40" r="8" fill="#0c0c0c" fill-opacity="0.35" stroke="none"/>`);
+    case "shadow":
+      return g(`
+        <path d="M-40 -120 C -90 -40, -70 40, -20 120 L 30 90 C 10 20, 0 -40, 40 -100 Z" fill-opacity="0.85" stroke="none"/>
+        <circle cx="10" cy="-70" r="28" fill-opacity="0.75" stroke="none"/>
+        <rect x="60" y="-20" width="14" height="140" rx="6" fill-opacity="0.6" stroke="none"/>`);
+    case "kite":
+      return g(`
+        <path d="M0 -130 L 90 0 L 0 90 L -90 0 Z" fill-opacity="0.85" stroke="none"/>
+        <path d="M0 -130 L 0 90 M -90 0 L 90 0" fill="none" stroke="#0c0c0c" stroke-opacity="0.25" stroke-width="4"/>
+        <path d="M0 90 Q 40 140, 20 180 Q -10 150, 30 200" fill="none" stroke-width="8" opacity="0.8"/>`);
+    case "doll":
+      return g(`
+        <circle cx="0" cy="-80" r="48" fill-opacity="0.9" stroke="none"/>
+        <path d="M-70 0 C -60 -40, 60 -40, 70 0 L 55 130 L -55 130 Z" fill-opacity="0.8" stroke="none"/>
+        <circle cx="-16" cy="-85" r="6" fill="#0c0c0c" fill-opacity="0.35" stroke="none"/>
+        <circle cx="16" cy="-85" r="6" fill="#0c0c0c" fill-opacity="0.35" stroke="none"/>`);
+    case "ball":
+      return g(`
+        <circle cx="0" cy="0" r="110" fill-opacity="0.8" stroke="none"/>
+        <path d="M-90 -20 Q 0 -50, 90 -20 M -95 30 Q 0 60, 95 30 M 0 -110 Q 40 0, 0 110" fill="none" stroke="#0c0c0c" stroke-opacity="0.25" stroke-width="6"/>`);
+    case "top":
+      return g(`
+        <path d="M0 -100 L 70 20 L 18 20 L 35 110 L -35 110 L -18 20 L -70 20 Z" fill-opacity="0.88" stroke="none"/>
+        <ellipse cx="0" cy="-100" rx="18" ry="10" fill-opacity="0.7" stroke="none"/>`);
+    case "yo":
+      return g(`
+        <circle cx="-55" cy="0" r="70" fill-opacity="0.85" stroke="none"/>
+        <circle cx="55" cy="0" r="70" fill-opacity="0.7" stroke="none"/>
+        <rect x="-12" y="-20" width="24" height="40" rx="6" fill="#0c0c0c" fill-opacity="0.35" stroke="none"/>
+        <path d="M0 -70 C 40 -140, 120 -80, 140 -20" fill="none" stroke-width="7" opacity="0.75"/>`);
+    case "string":
+      return g(`
+        <path d="M-100 -40 C -40 -100, 40 -100, 100 -40 C 40 20, -40 20, -100 -40
+                 M-80 20 C -20 80, 20 80, 80 20" fill="none" stroke-width="12" opacity="0.85"/>
+        <circle cx="-100" cy="-40" r="14" fill-opacity="0.9" stroke="none"/>
+        <circle cx="100" cy="-40" r="14" fill-opacity="0.9" stroke="none"/>`);
+    case "board":
+      return g(`
+        <rect x="-130" y="-90" width="260" height="180" rx="12" fill-opacity="0.75" stroke="none"/>
+        ${[0, 1, 2, 3]
+          .map(
+            (i) =>
+              `<path d="M${-100 + i * 65} -70 V70 M-110 ${-55 + i * 40} H110" fill="none" stroke="#0c0c0c" stroke-opacity="0.28" stroke-width="4"/>`,
+          )
+          .join("")}
+        <circle cx="-40" cy="-20" r="14" fill="#0c0c0c" fill-opacity="0.3" stroke="none"/>
+        <circle cx="50" cy="30" r="14" fill="#0c0c0c" fill-opacity="0.3" stroke="none"/>`);
+    case "mancala":
+      return g(`
+        <rect x="-150" y="-50" width="300" height="100" rx="50" fill-opacity="0.75" stroke="none"/>
+        ${[-105, -52, 0, 52, 105]
+          .map(
+            (x) =>
+              `<ellipse cx="${x}" cy="0" rx="28" ry="22" fill="#0c0c0c" fill-opacity="0.28" stroke="none"/>`,
+          )
+          .join("")}`);
+    case "rope":
+      return g(`
+        <path d="M-140 40 C -60 -80, 60 -80, 140 40" fill="none" stroke-width="14"/>
+        <circle cx="-140" cy="40" r="16" fill-opacity="0.9" stroke="none"/>
+        <circle cx="140" cy="40" r="16" fill-opacity="0.9" stroke="none"/>
+        <path d="M-40 60 Q 0 100, 40 60" fill="none" stroke-width="10" opacity="0.7"/>`);
+    case "hide":
+      return g(`
+        <circle cx="0" cy="-20" r="90" fill-opacity="0.8" stroke="none"/>
+        <rect x="-100" y="-40" width="200" height="36" rx="10" fill="#0c0c0c" fill-opacity="0.45" stroke="none"/>
+        <path d="M-50 80 Q 0 130, 50 80" fill="none" stroke-width="10" opacity="0.7"/>`);
+    case "wrestle":
+      return g(`
+        <circle cx="-50" cy="-70" r="32" fill-opacity="0.85" stroke="none"/>
+        <circle cx="55" cy="-55" r="32" fill-opacity="0.75" stroke="none"/>
+        <path d="M-80 0 C -20 -30, 20 -10, 80 20 L 60 90 L -70 80 Z" fill-opacity="0.8" stroke="none"/>`);
+    case "circle":
+      return g(`
+        <circle cx="0" cy="0" r="110" fill="none" stroke-width="14" opacity="0.85"/>
+        ${[0, 1, 2, 3, 4, 5]
+          .map((i) => {
+            const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+            return `<circle cx="${Math.cos(a) * 110}" cy="${Math.sin(a) * 110}" r="16" fill-opacity="0.9" stroke="none"/>`;
+          })
+          .join("")}`);
+    case "stilts":
+      return g(`
+        <rect x="-55" y="-120" width="18" height="240" rx="8" fill-opacity="0.85" stroke="none"/>
+        <rect x="37" y="-120" width="18" height="240" rx="8" fill-opacity="0.85" stroke="none"/>
+        <rect x="-70" y="20" width="48" height="16" rx="6" fill-opacity="0.7" stroke="none"/>
+        <rect x="22" y="20" width="48" height="16" rx="6" fill-opacity="0.7" stroke="none"/>`);
+    case "boat":
+      return g(`
+        <path d="M-120 20 C -60 80, 60 80, 120 20 L 90 20 L 40 -40 L -20 -10 L -70 -50 L -100 20 Z" fill-opacity="0.85" stroke="none"/>
+        <path d="M-140 50 Q 0 90, 140 50" fill="none" stroke-width="8" opacity="0.5"/>`);
+    case "sand":
+      return g(`
+        <path d="M-100 60 L -40 -40 L 20 60 Z" fill-opacity="0.8" stroke="none"/>
+        <path d="M-10 60 L 50 -70 L 110 60 Z" fill-opacity="0.65" stroke="none"/>
+        <ellipse cx="10" cy="70" rx="140" ry="28" fill-opacity="0.45" stroke="none"/>`);
+    case "riddle":
+      return g(`
+        <circle cx="0" cy="-20" r="90" fill-opacity="0.8" stroke="none"/>
+        <text x="0" y="10" text-anchor="middle" fill="#0c0c0c" fill-opacity="0.45" font-family="Georgia, serif" font-size="100" font-weight="700" stroke="none">?</text>`);
+    case "knot":
+      return g(`
+        <rect x="-40" y="-40" width="80" height="80" rx="8" fill-opacity="0.85" stroke="none" transform="rotate(20)"/>
+        <rect x="-40" y="-40" width="80" height="80" rx="8" fill-opacity="0.55" stroke="none" transform="rotate(-25)"/>
+        <path d="M-100 60 C -20 -40, 20 -40, 100 60" fill="none" stroke-width="12"/>`);
+    case "house":
+      return g(`
+        <path d="M-100 20 L 0 -90 L 100 20 Z" fill-opacity="0.85" stroke="none"/>
+        <rect x="-80" y="20" width="160" height="100" fill-opacity="0.75" stroke="none"/>
+        <rect x="-20" y="50" width="40" height="70" fill="#0c0c0c" fill-opacity="0.3" stroke="none"/>`);
+    case "drum":
+      return g(`
+        <ellipse cx="0" cy="-40" rx="100" ry="40" fill-opacity="0.85" stroke="none"/>
+        <path d="M-100 -40 L -85 80 Q 0 110, 85 80 L 100 -40" fill-opacity="0.7" stroke="none"/>
+        <ellipse cx="0" cy="-40" rx="70" ry="24" fill="#0c0c0c" fill-opacity="0.2" stroke="none"/>`);
+    case "hands":
+      return g(`
+        <path d="M-90 40 C -100 -40, -40 -80, -10 -20 L -20 70 Z" fill-opacity="0.8" stroke="none"/>
+        <path d="M90 40 C 100 -40, 40 -80, 10 -20 L 20 70 Z" fill-opacity="0.7" stroke="none"/>`);
+    case "cups":
+      return g(`
+        <ellipse cx="0" cy="70" rx="90" ry="30" fill-opacity="0.55" stroke="none"/>
+        <ellipse cx="0" cy="20" rx="70" ry="26" fill-opacity="0.7" stroke="none"/>
+        <ellipse cx="0" cy="-25" rx="50" ry="22" fill-opacity="0.85" stroke="none"/>
+        <ellipse cx="0" cy="-65" rx="32" ry="16" fill-opacity="0.9" stroke="none"/>`);
+    case "paper":
+      return g(`
+        <path d="M-20 -100 L 90 20 L 20 40 L -90 -30 Z" fill-opacity="0.85" stroke="none"/>
+        <path d="M-20 -100 L 20 40 L -40 60 Z" fill-opacity="0.55" stroke="none"/>
+        <path d="M20 40 L 50 90 L -10 70" fill-opacity="0.45" stroke="none"/>`);
+    case "ribbon":
+      return g(`
+        <rect x="-8" y="-120" width="16" height="160" rx="6" fill-opacity="0.85" stroke="none"/>
+        <path d="M0 40 C 60 60, 100 20, 120 80 C 40 100, -40 70, -100 110 C -60 40, -40 50, 0 40" fill-opacity="0.7" stroke="none"/>`);
+    case "chess":
+      return g(`
+        <rect x="-110" y="-110" width="220" height="220" rx="12" fill-opacity="0.7" stroke="none"/>
+        ${Array.from({ length: 8 }, (_, row) =>
+          Array.from({ length: 8 }, (_, col) => {
+            if ((row + col) % 2 === 0) return "";
+            return `<rect x="${-110 + col * 27.5}" y="${-110 + row * 27.5}" width="27.5" height="27.5" fill="#0c0c0c" fill-opacity="0.28" stroke="none"/>`;
+          }).join(""),
+        ).join("")}
+        <circle cx="0" cy="10" r="28" fill-opacity="0.85" stroke="none"/>
+        <rect x="-12" y="-50" width="24" height="40" fill-opacity="0.85" stroke="none"/>`);
+    case "cards":
+      return g(`
+        <rect x="-80" y="-100" width="110" height="160" rx="12" fill-opacity="0.75" stroke="none" transform="rotate(-12)"/>
+        <rect x="-20" y="-90" width="110" height="160" rx="12" fill-opacity="0.85" stroke="none" transform="rotate(10)"/>
+        <text x="35" y="-10" text-anchor="middle" fill="#0c0c0c" fill-opacity="0.35" font-family="Georgia, serif" font-size="54" font-weight="700" stroke="none">A</text>`);
+    case "blocks":
+      return g(`
+        <rect x="-100" y="20" width="70" height="70" rx="8" fill-opacity="0.8" stroke="none"/>
+        <rect x="-20" y="20" width="70" height="70" rx="8" fill-opacity="0.7" stroke="none"/>
+        <rect x="-60" y="-60" width="70" height="70" rx="8" fill-opacity="0.85" stroke="none"/>`);
+    case "marbles":
+      return g(`
+        <circle cx="-50" cy="10" r="48" fill-opacity="0.85" stroke="none"/>
+        <circle cx="40" cy="-20" r="40" fill-opacity="0.7" stroke="none"/>
+        <circle cx="70" cy="50" r="32" fill-opacity="0.6" stroke="none"/>
+        <circle cx="-30" cy="-50" r="22" fill-opacity="0.75" stroke="none"/>`);
+    default:
+      return g(`
+        <circle cx="0" cy="0" r="100" fill="none" stroke-width="12" opacity="0.7"/>
+        <circle cx="0" cy="0" r="40" fill-opacity="0.75" stroke="none"/>`);
+  }
+}
+
+function ambientMotifShapes(
+  motif: number,
+  accent: string,
+  h: number,
+  h2: number,
+): string {
   const ox = 40 + (h % 420);
   const oy = 30 + ((h >> 8) % 340);
   const gap = 42 + (h2 % 28);
   const rot = (h2 >> 4) % 60;
-  const glowX = 15 + (h % 70);
-  const glowY = 10 + ((h2 >> 8) % 60);
-  const washA = 12 + (h % 18);
-  const washB = 8 + ((h2 >> 12) % 16);
-  let shapes = "";
   if (motif === 0) {
-    // board grid — offset + spacing vary per seed
-    shapes = `<g opacity="0.22" stroke="${accent}" stroke-width="2" fill="none" transform="translate(${(h % 40) - 20} ${(h2 % 40) - 20})">
+    return `<g opacity="0.14" stroke="${accent}" stroke-width="2" fill="none" transform="translate(${(h % 40) - 20} ${(h2 % 40) - 20})">
       ${Array.from({ length: 10 }, (_, i) => {
         const p = 40 + i * gap;
         return `<path d="M${p} 40 V560"/><path d="M40 ${p} H860"/>`;
       }).join("")}
     </g>`;
-  } else if (motif === 1) {
-    // concentric rings / ball
-    shapes = `<g fill="none" stroke="${accent}" stroke-width="${2 + (h % 3)}">
-      <circle cx="${ox}" cy="${oy}" r="180" opacity="0.28"/>
-      <circle cx="${ox}" cy="${oy}" r="120" opacity="0.22"/>
-      <circle cx="${ox}" cy="${oy}" r="60" opacity="0.3"/>
-      <circle cx="${ox}" cy="${oy}" r="18" fill="${accent}" opacity="0.35" stroke="none"/>
+  }
+  if (motif === 1) {
+    return `<g fill="none" stroke="${accent}" stroke-width="${2 + (h % 3)}" opacity="0.7">
+      <circle cx="${ox}" cy="${oy}" r="180" opacity="0.18"/>
+      <circle cx="${ox}" cy="${oy}" r="120" opacity="0.14"/>
+      <circle cx="${ox}" cy="${oy}" r="60" opacity="0.18"/>
     </g>`;
-  } else if (motif === 2) {
-    // tile / diamond lattice — position jitter from seed
-    shapes = `<g opacity="0.2" fill="${accent}">
+  }
+  if (motif === 2) {
+    return `<g opacity="0.12" fill="${accent}">
       ${Array.from({ length: 24 }, (_, i) => {
         const x = 40 + (i % 6) * 140 + ((i * 17 + h) % 40);
         const y = 40 + Math.floor(i / 6) * 130 + ((i * 11 + h2) % 30);
         return `<rect x="${x}" y="${y}" width="70" height="70" transform="rotate(${45 + (rot % 20)} ${x + 35} ${y + 35})" opacity="${0.35 + ((i * 13 + (h % 17)) % 40) / 100}"/>`;
       }).join("")}
     </g>`;
-  } else {
-    // string / arc ribbons — control points shift per seed
-    const a = 80 + (h % 200);
-    const b = 100 + (h2 % 220);
-    shapes = `<g fill="none" stroke="${accent}" stroke-width="${8 + (h % 5)}" stroke-linecap="round" opacity="0.28">
-      <path d="M40 ${420 - (h % 80)} C ${a} ${120 + (h2 % 100)}, ${420 + (h % 80)} ${520 - (h2 % 90)}, 860 ${160 + (h % 120)}"/>
-      <path d="M60 ${520 - (h2 % 70)} C ${b} ${200 + (h % 90)}, ${500 + (h2 % 60)} ${560 - (h % 100)}, 880 ${280 + (h2 % 80)}"/>
-      <path d="M20 ${260 + (h % 60)} C ${240 + (h2 % 40)} ${40 + (h % 80)}, ${520 - (h % 50)} ${360 + (h2 % 70)}, 900 ${120 + (h % 100)}"/>
-    </g>`;
   }
+  const a = 80 + (h % 200);
+  const b = 100 + (h2 % 220);
+  return `<g fill="none" stroke="${accent}" stroke-width="${8 + (h % 5)}" stroke-linecap="round" opacity="0.16">
+    <path d="M40 ${420 - (h % 80)} C ${a} ${120 + (h2 % 100)}, ${420 + (h % 80)} ${520 - (h2 % 90)}, 860 ${160 + (h % 120)}"/>
+    <path d="M60 ${520 - (h2 % 70)} C ${b} ${200 + (h % 90)}, ${500 + (h2 % 60)} ${560 - (h % 100)}, 880 ${280 + (h2 % 80)}"/>
+  </g>`;
+}
+
+/**
+ * Text-free atmospheric art for card backgrounds (no competing titles).
+ * When `subjectName` is set, a silhouette matching the idea is drawn so
+ * locale variants without stock photos still read as the right toy/game.
+ */
+export function ludusBackdropDataUri(
+  category: string,
+  seed = "",
+  subjectName = "",
+): string {
+  const baseAccent = CATEGORY_ACCENT[category] || "#bc0234";
+  // Hash must include the full seed so locale variants never share art.
+  const h = hashSeed(`${category}|${seed}|${subjectName}`);
+  const h2 = hashSeed(`${seed}|${category}|backdrop|${subjectName}`);
+  const accent = mixAccent(baseAccent, h ^ h2);
+  const ambient = h % 4;
+  const glowX = 15 + (h % 70);
+  const glowY = 10 + ((h2 >> 8) % 60);
+  const washA = 12 + (h % 18);
+  const washB = 8 + ((h2 >> 12) % 16);
+  const subject = inferSubjectMotif(subjectName || category);
+  const shapes = `${ambientMotifShapes(ambient, accent, h, h2)}
+  ${subjectSilhouette(subject, accent, h, h2)}`;
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
   <defs>
@@ -300,6 +648,13 @@ export function ludusCardDataUri(
       return `<text x="60" y="${y}" fill="#e8f0ec" font-family="Georgia, 'Times New Roman', serif" font-size="${titleFont}" font-weight="700">${escapeXml(line)}</text>`;
     })
     .join("");
+  const h = hashSeed(`card|${name}|${category}`);
+  const h2 = hashSeed(`${originCountry}|${name}|card`);
+  // Soft silhouette on the right so gallery thumbs match the idea, not just text.
+  const silhouette = subjectSilhouette(inferSubjectMotif(name), accent, h, h2, {
+    opacity: 0.28,
+    offsetX: 160,
+  });
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
   <defs>
@@ -315,6 +670,7 @@ export function ludusCardDataUri(
   </defs>
   <rect width="900" height="600" fill="url(#bg)"/>
   <rect width="900" height="600" fill="url(#grain)"/>
+  ${silhouette}
   <rect x="0" y="0" width="12" height="600" fill="${accent}"/>
   <text x="60" y="92" fill="${accent}" font-family="system-ui, sans-serif" font-size="18" font-weight="600" letter-spacing="0.18em">LUDUS ATLAS</text>
   <text x="60" y="150" fill="#b7c9c0" font-family="system-ui, sans-serif" font-size="20">${escapeXml(category || "Toy & Game")}</text>

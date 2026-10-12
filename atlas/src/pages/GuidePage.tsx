@@ -5,6 +5,7 @@ import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
 import { loadCollection } from "../lib/collection";
 import {
+  isLudusSyntheticSrc,
   ludusBackdropDataUri,
   primaryCoverSrc,
 } from "../lib/gameCardImage";
@@ -51,13 +52,19 @@ function RecCards({ games }: { games: Game[] }) {
     <div className="chat-recs">
       {games.map((g) => {
         const cover = primaryCoverSrc(g.images);
-        const backdrop = ludusBackdropDataUri(g.category, g.id || g.slug);
+        const backdrop = ludusBackdropDataUri(
+          g.category,
+          g.id || g.slug,
+          g.name,
+        );
+        const photoCover =
+          cover && !isLudusSyntheticSrc(cover) ? cover : null;
         return (
           <Link key={g.id} to={`/game/${g.slug}`} className="chat-rec-card">
             <div className="chat-rec-img" aria-hidden="true">
-              {cover ? (
+              {photoCover ? (
                 <GameImage
-                  src={cover}
+                  src={photoCover}
                   alt=""
                   loading="lazy"
                   label={{
