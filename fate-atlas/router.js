@@ -1,11 +1,12 @@
 /**
  * Hash router — splits Fatum Atlas into focused pages.
- * Routes: home | play | atlas | journal | about | terms
+ * Routes: home | atlas | journal | about | terms
+ * Legacy #/play and #begin redirect to home (recommendations live under the hero).
  */
 (function () {
   "use strict";
 
-  const ROUTES = ["home", "play", "atlas", "journal", "about", "terms"];
+  const ROUTES = ["home", "atlas", "journal", "about", "terms"];
   let current = "home";
   const listeners = new Set();
 
@@ -14,8 +15,8 @@
   }
 
   const LEGACY = {
-    play: "play",
-    begin: "play",
+    play: "home",
+    begin: "home",
     catalog: "atlas",
     regions: "atlas",
     journal: "journal",
@@ -28,6 +29,7 @@
   function parseHash() {
     const raw = (location.hash || "#/home").replace(/^#\/?/, "");
     const [path, query = ""] = raw.split("?");
+    const legacyHit = Object.prototype.hasOwnProperty.call(LEGACY, path) && !ROUTES.includes(path);
     const normalized = ROUTES.includes(path)
       ? path
       : LEGACY[path] || "home";
@@ -42,7 +44,12 @@
         params[k] = v || "";
       }
     });
-    return { page, params, legacy: Boolean(LEGACY[path]) && !ROUTES.includes(path) };
+    const focusPlay =
+      path === "play" ||
+      path === "begin" ||
+      params.focus === "play" ||
+      params.focus === "featured";
+    return { page, params, legacy: legacyHit, focusPlay };
   }
 
   function setHash(page, params, replace) {
@@ -89,19 +96,28 @@
     return params;
   }
 
+  function scrollToFeatured() {
+    requestAnimationFrame(() => {
+      document.getElementById("play")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   function apply() {
     const parsed = parseHash();
     const { page, params } = parsed;
-    // Rewrite legacy anchors (#catalog → #/atlas) so the URL stays clean
+    // Rewrite legacy anchors (#/play → #/home, #catalog → #/atlas) so the URL stays clean
     if (parsed.legacy) {
-      navigate(page, params, { replace: true });
+      const nextParams = { ...params };
+      if (parsed.focusPlay) nextParams.focus = "play";
+      navigate(page, nextParams, { replace: true });
       return;
     }
     current = page;
     document.body.dataset.page = page;
 
     document.querySelectorAll(".page[data-page]").forEach((el) => {
-      const on = el.getAttribute("data-page") === page;
+      const pageId = el.getAttribute("data-page");
+      const on = pageId === page;
       el.hidden = !on;
       el.classList.toggle("is-active-page", on);
       if (on) el.removeAttribute("aria-hidden");
@@ -146,13 +162,35 @@
         }
       });
     }
-    if (page === "play" && params.surprise === "1") {
-      document.getElementById("draw-btn")?.click();
-      navigate("play", {}, { replace: true });
+    if ((page === "atlas" || page === "home") && params.surprise === "1") {
+      navigate("atlas", {}, { replace: true });
+      requestAnimationFrame(() => {
+        document.getElementById("recommend")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("draw-btn")?.click();
+      });
       return;
     }
 
-    window.scrollTo(0, 0);
+    let focusPlay = page === "home" && parsed.focusPlay;
+    if (page === "home" && (params.focus === "play" || params.focus === "featured")) {
+      const cleaned = { ...params };
+      delete cleaned.focus;
+      let cleanHash = "#/home";
+      const keys = Object.keys(cleaned).filter((k) => cleaned[k] != null && cleaned[k] !== "");
+      if (keys.length) {
+        cleanHash +=
+          "?" +
+          keys
+            .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(cleaned[k])}`)
+            .join("&");
+      }
+      if (location.hash !== cleanHash) history.replaceState(null, "", cleanHash);
+      focusPlay = true;
+    }
+
+    if (focusPlay) scrollToFeatured();
+    else window.scrollTo(0, 0);
+
     listeners.forEach((fn) => {
       try {
         fn(page, params);
@@ -176,6 +214,8 @@
       };
       const continent = link.getAttribute("data-continent");
       if (continent) params.continent = continent;
+      const scroll = link.getAttribute("data-scroll");
+      if (scroll) params.focus = scroll;
       navigate(page, params);
     });
 

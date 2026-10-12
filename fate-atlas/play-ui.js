@@ -88,18 +88,11 @@
   }
 
   function surpriseRite() {
-    const methods = window.FATE_METHODS || [];
-    if (!methods.length) return;
-    const pick = methods[Math.floor(Math.random() * methods.length)];
-    const name =
-      window.FatumMethodText ? window.FatumMethodText.localize(pick).name : pick.name;
-    showToast(t("toast.surprise", { name }));
-    if (window.FatumRouter) window.FatumRouter.navigate("play");
-    if (window.FatumReading?.open) {
-      window.FatumReading.open(pick.id);
-    } else {
-      document.getElementById("draw-btn")?.click();
+    if (window.FatumRouter) {
+      window.FatumRouter.navigate("atlas", { surprise: "1" });
+      return;
     }
+    document.getElementById("draw-btn")?.click();
   }
 
   function init() {
