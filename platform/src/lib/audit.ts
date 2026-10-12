@@ -35,6 +35,7 @@ const VANTAGE_ENTITY = new Set([
 
 const VANTAGE_ACTION = new Set([
   "LOGIN",
+  "LOGIN_FAILED",
   "LOGOUT",
   "SEED_DATABASE",
   "UPDATE_SETTING",
@@ -62,6 +63,10 @@ const VANTAGE_ACTION = new Set([
   "DOC_RESET",
   "MESSENGER_CONFIRM_ACTION",
   "MESSENGER_CHECKER_APPROVE",
+  "MESSENGER_RECOMMEND",
+  "MESSENGER_CANCEL_ACTION",
+  "DISCOVERY_TOGGLE_ENABLED",
+  "MARKET_INTEL_TOGGLE_ENABLED",
   "PULL_TRANSACTION_DATA",
   "RESTRICT_USER_RIGHTS",
   "BU_POC_INCIDENT_RESPONSE",
@@ -83,10 +88,26 @@ const CRMP_ACTION_HINT = new Set([
   "MESSENGER_CLOSE",
   "MESSENGER_CHAT",
   "MESSENGER_SHOW_EVIDENCE",
+  "MESSENGER_SYNC",
   "INTERVENTION_DECIDE",
+  "INTERVENTION_APPROVED",
+  "INTERVENTION_REJECTED",
   "UPDATE_THRESHOLDS",
   "PAUSE_INDICATOR",
   "RESUME_INDICATOR",
+  "TOGGLE_DETECTOR",
+  "RUN_DETECTORS",
+  "RUN_DISCOVERY",
+  "DISCOVERY_CONNECT_OPENAI",
+  "DISCOVERY_DISCONNECT_OPENAI",
+  "DISCOVERY_ANALYSE",
+  "DISCOVERY_ASK_MORE",
+  "DISCOVERY_DISMISS",
+  "DISCOVERY_APPROVE_VALIDATION",
+  "DISCOVERY_APPROVE_MONITORING",
+  "UPDATE_TICKET",
+  "SYNC_MONITOR2",
+  "DESK_CHAT",
 ]);
 
 const REVERSIBLE_ACTIONS = new Set([
@@ -109,9 +130,21 @@ export function classifyAuditPlane(action: string, entityType: string): AuditPla
   if (VANTAGE_ENTITY.has(entityType) || VANTAGE_ACTION.has(action)) return "vantage";
   // Entity hints for CRMP ops
   if (
-    ["monitor_alert", "alert", "ai_analysis", "intervention", "escalation_route", "skill", "messenger_thread"].includes(
-      entityType
-    )
+    [
+      "monitor_alert",
+      "alert",
+      "ai_analysis",
+      "intervention",
+      "escalation_route",
+      "skill",
+      "messenger_thread",
+      "risk_discovery",
+      "discovery_candidate",
+      "detector",
+      "monitor",
+      "monitor_indicator",
+      "monitor_ticket",
+    ].includes(entityType)
   ) {
     return "crmp";
   }

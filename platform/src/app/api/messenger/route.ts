@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   if (body.action === "sync") {
-    const n = syncNewAlertsToMessenger(Number(body.limit ?? 10));
+    const n = syncNewAlertsToMessenger(Number(body.limit ?? 10), user);
     return NextResponse.json({ ok: true, synced: n, threads: listMessengerThreads() });
   }
 

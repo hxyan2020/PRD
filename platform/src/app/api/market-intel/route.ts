@@ -8,7 +8,7 @@ import {
   runMarketIntelScan,
   seedMarketIntel,
 } from "@/lib/market-intel/scanner";
-import { getDb } from "@/lib/db";
+import { getDb, writeAudit } from "@/lib/db";
 
 function canView(role: string) {
   return (
@@ -72,6 +72,9 @@ export async function POST(req: Request) {
   }
 
   if (body.action === "toggle_enabled") {
+    const before = getDb()
+      .prepare(`SELECT value FROM platform_settings WHERE key = 'market_intel.enabled'`)
+      .get() as { value: string } | undefined;
     const value = body.enabled ? "true" : "false";
     getDb()
       .prepare(
@@ -79,6 +82,11 @@ export async function POST(req: Request) {
          ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`
       )
       .run(value);
+    writeAudit(user, "MARKET_INTEL_TOGGLE_ENABLED", "platform_settings", "market_intel.enabled", {
+      before: { value: before?.value ?? null },
+      after: { value },
+      enabled: !!body.enabled,
+    });
     return NextResponse.json({ ok: true, enabled: body.enabled });
   }
 

@@ -11,6 +11,8 @@
     "test:mermaid": "npx tsx scripts/verify-mermaid-edges.ts",
     "test:discovery": "tsx scripts/verify-discovery-admin.ts",
     "test:discovery-smoke": "tsx scripts/smoke-discovery-admin.ts",
+    "test:audit": "tsx scripts/verify-audit-coverage.ts",
+    "test:audit-smoke": "tsx scripts/smoke-audit-coverage.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {

@@ -15,7 +15,7 @@ import {
   enableDiscoveryOpenAi,
   getDiscoveryAiStatus,
 } from "@/lib/ai/discovery-analyse";
-import { getDb } from "@/lib/db";
+import { getDb, writeAudit } from "@/lib/db";
 import { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";
 
 function canView(role: string) {
@@ -89,12 +89,24 @@ export async function POST(req: Request) {
       if (!canOperate(user.role_code) && !canReview(user.role_code)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
-      const status = enableDiscoveryOpenAi(String(body.model || "gpt-4.1-mini"));
+      const model = String(body.model || "gpt-4.1-mini");
+      const status = enableDiscoveryOpenAi(model);
+      writeAudit(user, "DISCOVERY_CONNECT_OPENAI", "risk_discovery", "ai_mode", {
+        mode: status.mode,
+        model: status.model,
+        key_configured: status.key_configured,
+      });
       return NextResponse.json({ ok: true, status });
     }
 
     if (body.action === "disconnect_openai") {
+      if (!canOperate(user.role_code) && !canReview(user.role_code)) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
       const status = disableDiscoveryOpenAi();
+      writeAudit(user, "DISCOVERY_DISCONNECT_OPENAI", "risk_discovery", "ai_mode", {
+        mode: status.mode,
+      });
       return NextResponse.json({ ok: true, status });
     }
 
@@ -124,6 +136,14 @@ export async function POST(req: Request) {
       const suggestion = await analyseDiscoveryCandidate({
         candidate: row,
         followup: body.followup ? String(body.followup) : undefined,
+        locale,
+      });
+      writeAudit(user, "DISCOVERY_ANALYSE", "risk_discovery", candidateId, {
+        method: row.method,
+        analysis_source: suggestion.analysis_source,
+        priority: suggestion.priority,
+        confidence: suggestion.confidence,
+        followup: Boolean(body.followup),
         locale,
       });
       return NextResponse.json({ ok: true, suggestion, ai_status: getDiscoveryAiStatus() });
@@ -196,6 +216,9 @@ export async function POST(req: Request) {
       if (!canOperate(user.role_code) && !hasPermission(user.role_code, "settings.manage")) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
+      const before = getDb()
+        .prepare(`SELECT value FROM platform_settings WHERE key = 'discovery.enabled'`)
+        .get() as { value: string } | undefined;
       const value = body.enabled ? "true" : "false";
       getDb()
         .prepare(
@@ -203,6 +226,11 @@ export async function POST(req: Request) {
            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`
         )
         .run(value);
+      writeAudit(user, "DISCOVERY_TOGGLE_ENABLED", "platform_settings", "discovery.enabled", {
+        before: { value: before?.value ?? null },
+        after: { value },
+        enabled: !!body.enabled,
+      });
       return NextResponse.json({ ok: true, enabled: !!body.enabled });
     }
 

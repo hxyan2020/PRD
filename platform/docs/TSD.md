@@ -755,12 +755,12 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.19 Audit log
 
-`AuditBoard` partitions `audit_logs` into two tabs via `classifyAuditPlane` (`lib/audit.ts`):
+Every mutating admin / Lark / messenger API path calls `writeAudit` (`lib/db.ts`) into `audit_logs`. `AuditBoard` partitions rows into two tabs via `classifyAuditPlane` (`lib/audit.ts`):
 
 | Tab | Contents |
 |---|---|
-| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
-| **Vantage Markets Admin logs** | Other admin pages — restrict user rights, pull transaction data, triggered Lark messages, BU POC risk-incident responses, settings / org / RAG |
+| **CRMP logs** | Alerts, AI, skills, discovery (scan / Analyse / Connect-Disconnect OpenAI / RO review), detectors, monitor, escalation, interventions, messenger triage / sync |
+| **Vantage Markets Admin logs** | Login/logout (+ `LOGIN_FAILED`), settings / users / roles / org, Lark channel create/toggle/test notify, market-intel Lark push + enable toggle, RAG/docs, messenger recommend / cancel / confirm / checker |
 
 Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
 

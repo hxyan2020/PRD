@@ -750,12 +750,12 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.19 稽核日誌
 
-`AuditBoard` 經 `classifyAuditPlane`（`lib/audit.ts`）將 `audit_logs` 分為兩個分頁：
+每一次會變更狀態的管理後台／Lark／Messenger API 路徑皆呼叫 `writeAudit`（`lib/db.ts`）寫入 `audit_logs`。`AuditBoard` 經 `classifyAuditPlane`（`lib/audit.ts`）分為兩個分頁：
 
 | 分頁 | 內容 |
 |---|---|
-| **CRMP 日誌** | 本 CRMP 管理介面內變更 — 警報、AI、技能、升級、干預、Messenger |
-| **Vantage Markets 管理日誌** | 其他管理頁 — 限制權限、拉取交易、觸發 Lark、BU POC 風險事件回應、設定／組織／RAG |
+| **CRMP 日誌** | 警報、AI、技能、探索（掃描／分析／連線—中斷 OpenAI／RO 審查）、偵測器、Monitor、升級、干預、Messenger 分流／同步 |
+| **Vantage Markets 管理日誌** | 登入／登出（含 `LOGIN_FAILED`）、設定／使用者／角色／組織、Lark 頻道建立／啟停／測試通知、市場情報 Lark 推送與啟用切換、RAG／文件、Messenger 建議／取消／確認／覆核 |
 
 兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
 
