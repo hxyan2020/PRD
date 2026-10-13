@@ -564,39 +564,64 @@ async function scheduleDurableSync() {
   await flushCloudSync()
 }
 
-async function writeEntries(entries: NotebookEntry[]) {
-  await ensureReady()
-  const sorted = sortEntries(entries)
-  // Keep prior durable snapshot as snapshotPrev, then write primary.
-  await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  await persistKey(IDB_KEYS.entries, sorted)
-  cache.entries = sorted
-  entryListeners.forEach((listener) => listener(sorted))
-  // After a successful write, point the latest snapshot at the new durable set.
-  await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  await scheduleDurableSync()
+/**
+ * Serialize all notebook mutations. Overlapping addNote/update calls used to read the
+ * same cache.entries snapshot and overwrite each other — notes "synced once then stopped"
+ * on a busy new device because later local writes were dropped before upload.
+ *
+ * Cloud push/pull stays *outside* this chain so a slow Gist round-trip cannot block the
+ * next local write (and so pull-merge can safely enqueueWrite without deadlock).
+ */
+let writeChain: Promise<void> = Promise.resolve()
+
+function enqueueWrite<T>(task: () => Promise<T>): Promise<T> {
+  const run = writeChain.then(task, task)
+  writeChain = run.then(
+    () => undefined,
+    () => undefined,
+  )
+  return run
 }
 
-async function writeTrash(trash: TrashedNotebookEntry[]) {
-  await ensureReady()
-  const sorted = sortTrash(trash)
-  await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  await persistKey(IDB_KEYS.trash, sorted)
-  cache.trash = sorted
-  trashListeners.forEach((listener) => listener(sorted))
-  await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  await scheduleDurableSync()
+/** Folder + cloud after the write lock is released (coalesced by flushCloudSync). */
+function kickDurableSync() {
+  void scheduleDurableSync()
 }
 
-async function writeCategories(categories: NotebookCategory[]) {
-  await ensureReady()
-  const sorted = sortCategories(categories)
-  await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  await persistKey(IDB_KEYS.categories, sorted)
-  cache.categories = sorted
-  categoryListeners.forEach((listener) => listener(sorted))
-  await saveSnapshot(cache.entries, cache.trash, cache.categories)
-  await scheduleDurableSync()
+async function mutateEntries(
+  mutator: (prev: NotebookEntry[]) => NotebookEntry[],
+): Promise<NotebookEntry[]> {
+  const sorted = await enqueueWrite(async () => {
+    await ensureReady()
+    const next = sortEntries(mutator(cache.entries))
+    // Keep prior durable snapshot as snapshotPrev, then write primary.
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    await persistKey(IDB_KEYS.entries, next)
+    cache.entries = next
+    entryListeners.forEach((listener) => listener(next))
+    // After a successful write, point the latest snapshot at the new durable set.
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    return next
+  })
+  kickDurableSync()
+  return sorted
+}
+
+async function mutateCategories(
+  mutator: (prev: NotebookCategory[]) => NotebookCategory[],
+): Promise<NotebookCategory[]> {
+  const sorted = await enqueueWrite(async () => {
+    await ensureReady()
+    const next = sortCategories(mutator(cache.categories))
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    await persistKey(IDB_KEYS.categories, next)
+    cache.categories = next
+    categoryListeners.forEach((listener) => listener(next))
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    return next
+  })
+  kickDurableSync()
+  return sorted
 }
 
 function uid(prefix: string) {
@@ -764,45 +789,50 @@ export const notebookStore = {
     const rawLs = body.raw?.localStorage
     const snap = parseSnapshot(rawIdb?.snapshot)
     const snapPrev = parseSnapshot(rawIdb?.snapshot_prev)
-    const entries = mergeEntries(
-      cache.entries,
+    const incomingEntries = [
       parseEntries(body.entries),
       parseEntries(rawIdb?.entries),
       snap?.entries ?? [],
       snapPrev?.entries ?? [],
       parseEntries(rawLs?.[LS_ENTRIES]),
-    )
-    const trash = mergeTrash(
-      cache.trash,
+    ]
+    const incomingTrash = [
       parseTrash(body.trash),
       parseTrash(rawIdb?.trash),
       snap?.trash ?? [],
       snapPrev?.trash ?? [],
       parseTrash(rawLs?.[LS_TRASH]),
-    )
-    const categories = mergeCategories(
-      cache.categories,
+    ]
+    const incomingCategories = [
       parseCategories(body.categories),
       parseCategories(rawIdb?.categories),
       snap?.categories ?? [],
       snapPrev?.categories ?? [],
       parseCategories(rawLs?.[LS_CATEGORIES]),
-    )
-    await saveSnapshot(cache.entries, cache.trash, cache.categories)
-    await persistKey(IDB_KEYS.entries, entries)
-    await persistKey(IDB_KEYS.trash, trash)
-    await persistKey(IDB_KEYS.categories, categories)
-    cache.entries = entries
-    cache.trash = trash
-    cache.categories = categories
-    entryListeners.forEach((listener) => listener(entries))
-    trashListeners.forEach((listener) => listener(trash))
-    categoryListeners.forEach((listener) => listener(categories))
-    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    ]
+    // Merge against the live cache inside the write queue so a concurrent addNote
+    // cannot be overwritten by a slower pull-merge.
+    const total = await enqueueWrite(async () => {
+      const entries = mergeEntries(cache.entries, ...incomingEntries)
+      const trash = mergeTrash(cache.trash, ...incomingTrash)
+      const categories = mergeCategories(cache.categories, ...incomingCategories)
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.entries, entries)
+      await persistKey(IDB_KEYS.trash, trash)
+      await persistKey(IDB_KEYS.categories, categories)
+      cache.entries = entries
+      cache.trash = trash
+      cache.categories = categories
+      entryListeners.forEach((listener) => listener(entries))
+      trashListeners.forEach((listener) => listener(trash))
+      categoryListeners.forEach((listener) => listener(categories))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      return entries.length
+    })
     if (options?.syncCloud !== false) {
       await scheduleDurableSync()
     }
-    return { total: entries.length }
+    return { total }
   },
   getCloudSyncStatus,
   getCloudRuntime: () => cloudRuntime,
@@ -1162,7 +1192,7 @@ export const notebookStore = {
       sourceLabel: input.sourceLabel,
       sourcePath: input.sourcePath,
     }
-    await writeEntries([entry, ...cache.entries])
+    await mutateEntries((prev) => [entry, ...prev])
     return entry
   },
   async addExplanation(input: {
@@ -1185,7 +1215,7 @@ export const notebookStore = {
       sourcePath: input.sourcePath,
       model: input.model,
     }
-    await writeEntries([entry, ...cache.entries])
+    await mutateEntries((prev) => [entry, ...prev])
     return entry
   },
   async addNote(input: { text: string; title?: string; categoryIds?: string[] }) {
@@ -1202,7 +1232,7 @@ export const notebookStore = {
       categoryIds: normalizeCategoryIds(input.categoryIds),
       sourceLabel: 'Notebook',
     }
-    await writeEntries([entry, ...cache.entries])
+    await mutateEntries((prev) => [entry, ...prev])
     return entry
   },
   async update(
@@ -1215,141 +1245,194 @@ export const notebookStore = {
     },
   ) {
     await ensureReady()
-    const entries = cache.entries
-    const index = entries.findIndex((e) => e.id === id)
-    if (index < 0) return null
-    const current = entries[index]
-    const selectedText =
-      patch.selectedText !== undefined ? patch.selectedText.trim() : current.selectedText
-    if (!selectedText) return null
+    let updated: NotebookEntry | null = null
+    await mutateEntries((entries) => {
+      const index = entries.findIndex((e) => e.id === id)
+      if (index < 0) return entries
+      const current = entries[index]
+      const selectedText =
+        patch.selectedText !== undefined ? patch.selectedText.trim() : current.selectedText
+      if (!selectedText) return entries
 
-    let explanation = current.explanation
-    if (patch.explanation !== undefined) {
-      const next = patch.explanation.trim()
-      explanation = next || undefined
-    }
+      let explanation = current.explanation
+      if (patch.explanation !== undefined) {
+        const next = patch.explanation.trim()
+        explanation = next || undefined
+      }
 
-    let title = current.title
-    if (patch.title !== undefined) {
-      const next = patch.title.trim()
-      title = next || undefined
-    }
+      let title = current.title
+      if (patch.title !== undefined) {
+        const next = patch.title.trim()
+        title = next || undefined
+      }
 
-    const categoryIds =
-      patch.categoryIds !== undefined
-        ? normalizeCategoryIds(patch.categoryIds)
-        : current.categoryIds
+      const categoryIds =
+        patch.categoryIds !== undefined
+          ? normalizeCategoryIds(patch.categoryIds)
+          : current.categoryIds
 
-    const updated: NotebookEntry = {
-      ...current,
-      title,
-      selectedText,
-      categoryIds,
-      explanation: current.type === 'explanation' ? explanation ?? '' : explanation,
-      updatedAt: new Date().toISOString(),
-    }
-    const next = [...entries]
-    next[index] = updated
-    await writeEntries(next)
+      updated = {
+        ...current,
+        title,
+        selectedText,
+        categoryIds,
+        explanation: current.type === 'explanation' ? explanation ?? '' : explanation,
+        updatedAt: new Date().toISOString(),
+      }
+      const next = [...entries]
+      next[index] = updated
+      return next
+    })
     return updated
   },
   async remove(id: string) {
-    await ensureReady()
-    const entries = cache.entries
-    const entry = entries.find((e) => e.id === id)
-    if (!entry) return null
-    const deletedAt = new Date().toISOString()
-    const trashed: TrashedNotebookEntry = { ...entry, deletedAt }
-    await writeTrash([trashed, ...cache.trash.filter((e) => e.id !== id)])
-    await writeEntries(entries.filter((e) => e.id !== id))
+    const trashed = await enqueueWrite(async () => {
+      await ensureReady()
+      const entries = cache.entries
+      const entry = entries.find((e) => e.id === id)
+      if (!entry) return null
+      const deletedAt = new Date().toISOString()
+      const nextTrashed: TrashedNotebookEntry = { ...entry, deletedAt }
+      const nextTrash = sortTrash([nextTrashed, ...cache.trash.filter((e) => e.id !== id)])
+      const nextEntries = sortEntries(entries.filter((e) => e.id !== id))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.trash, nextTrash)
+      await persistKey(IDB_KEYS.entries, nextEntries)
+      cache.trash = nextTrash
+      cache.entries = nextEntries
+      trashListeners.forEach((listener) => listener(nextTrash))
+      entryListeners.forEach((listener) => listener(nextEntries))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      return nextTrashed
+    })
+    if (trashed) kickDurableSync()
     return trashed
   },
   async restore(id: string) {
-    await ensureReady()
-    const trash = cache.trash
-    const index = trash.findIndex((e) => e.id === id)
-    if (index < 0) return null
-    const trashed = trash[index]
-    const restored: NotebookEntry = {
-      id: trashed.id,
-      createdAt: trashed.createdAt,
-      updatedAt: new Date().toISOString(),
-      type: trashed.type,
-      title: trashed.title,
-      selectedText: trashed.selectedText,
-      explanation: trashed.explanation,
-      categoryIds: trashed.categoryIds,
-      sourceLabel: trashed.sourceLabel,
-      sourcePath: trashed.sourcePath,
-      model: trashed.model,
-    }
-    await writeTrash(trash.filter((e) => e.id !== id))
-    const active = cache.entries
-    if (active.some((e) => e.id === restored.id)) {
-      restored.id = uid('nb')
-    }
-    await writeEntries([restored, ...active])
+    const restored = await enqueueWrite(async () => {
+      await ensureReady()
+      const trash = cache.trash
+      const index = trash.findIndex((e) => e.id === id)
+      if (index < 0) return null
+      const trashed = trash[index]
+      let restoredEntry: NotebookEntry = {
+        id: trashed.id,
+        createdAt: trashed.createdAt,
+        updatedAt: new Date().toISOString(),
+        type: trashed.type,
+        title: trashed.title,
+        selectedText: trashed.selectedText,
+        explanation: trashed.explanation,
+        categoryIds: trashed.categoryIds,
+        sourceLabel: trashed.sourceLabel,
+        sourcePath: trashed.sourcePath,
+        model: trashed.model,
+      }
+      if (cache.entries.some((e) => e.id === restoredEntry.id)) {
+        restoredEntry = { ...restoredEntry, id: uid('nb') }
+      }
+      const nextTrash = sortTrash(trash.filter((e) => e.id !== id))
+      const nextEntries = sortEntries([restoredEntry, ...cache.entries])
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.trash, nextTrash)
+      await persistKey(IDB_KEYS.entries, nextEntries)
+      cache.trash = nextTrash
+      cache.entries = nextEntries
+      trashListeners.forEach((listener) => listener(nextTrash))
+      entryListeners.forEach((listener) => listener(nextEntries))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      return restoredEntry
+    })
+    if (restored) kickDurableSync()
     return restored
   },
   async clear() {
-    await ensureReady()
-    const now = new Date().toISOString()
-    const moving = cache.entries.map((entry) => ({ ...entry, deletedAt: now }))
-    if (moving.length) {
-      const keep = cache.trash.filter((t) => !moving.some((m) => m.id === t.id))
-      await writeTrash([...moving, ...keep])
-    }
-    await writeEntries([])
+    await enqueueWrite(async () => {
+      await ensureReady()
+      const now = new Date().toISOString()
+      const moving = cache.entries.map((entry) => ({ ...entry, deletedAt: now }))
+      const nextTrash = moving.length
+        ? sortTrash([
+            ...moving,
+            ...cache.trash.filter((t) => !moving.some((m) => m.id === t.id)),
+          ])
+        : cache.trash
+      const nextEntries: NotebookEntry[] = []
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.trash, nextTrash)
+      await persistKey(IDB_KEYS.entries, nextEntries)
+      cache.trash = nextTrash
+      cache.entries = nextEntries
+      trashListeners.forEach((listener) => listener(nextTrash))
+      entryListeners.forEach((listener) => listener(nextEntries))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    })
+    kickDurableSync()
   },
   async addCategory(name: string) {
-    await ensureReady()
     const trimmed = name.trim()
     if (!trimmed) return null
-    const existing = cache.categories
-    if (existing.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
-      return existing.find((c) => c.name.toLowerCase() === trimmed.toLowerCase()) ?? null
-    }
-    const category: NotebookCategory = {
-      id: uid('cat'),
-      name: trimmed,
-      createdAt: new Date().toISOString(),
-      color: nextCategoryColor(existing.map((c) => c.color)),
-    }
-    await writeCategories([...existing, category])
-    return category
+    let created: NotebookCategory | null = null
+    await mutateCategories((existing) => {
+      const match = existing.find((c) => c.name.toLowerCase() === trimmed.toLowerCase())
+      if (match) {
+        created = match
+        return existing
+      }
+      created = {
+        id: uid('cat'),
+        name: trimmed,
+        createdAt: new Date().toISOString(),
+        color: nextCategoryColor(existing.map((c) => c.color)),
+      }
+      return [...existing, created]
+    })
+    return created
   },
   async renameCategory(id: string, name: string) {
-    await ensureReady()
     const trimmed = name.trim()
     if (!trimmed) return null
-    const categories = cache.categories
-    const index = categories.findIndex((c) => c.id === id)
-    if (index < 0) return null
-    if (
-      categories.some((c) => c.id !== id && c.name.toLowerCase() === trimmed.toLowerCase())
-    ) {
-      return null
-    }
-    const updated = { ...categories[index], name: trimmed }
-    const next = [...categories]
-    next[index] = updated
-    await writeCategories(next)
+    let updated: NotebookCategory | null = null
+    await mutateCategories((categories) => {
+      const index = categories.findIndex((c) => c.id === id)
+      if (index < 0) return categories
+      if (
+        categories.some((c) => c.id !== id && c.name.toLowerCase() === trimmed.toLowerCase())
+      ) {
+        return categories
+      }
+      updated = { ...categories[index], name: trimmed }
+      const next = [...categories]
+      next[index] = updated
+      return next
+    })
     return updated
   },
   async removeCategory(id: string) {
-    await ensureReady()
-    await writeCategories(cache.categories.filter((c) => c.id !== id))
-    const entries = cache.entries
-    let changed = false
-    const next = entries.map((entry) => {
-      if (!entry.categoryIds?.includes(id)) return entry
-      changed = true
-      return {
-        ...entry,
-        categoryIds: normalizeCategoryIds(entry.categoryIds.filter((cid) => cid !== id)),
-        updatedAt: new Date().toISOString(),
-      }
+    await enqueueWrite(async () => {
+      await ensureReady()
+      const nextCategories = sortCategories(cache.categories.filter((c) => c.id !== id))
+      let changed = false
+      const nextEntries = sortEntries(
+        cache.entries.map((entry) => {
+          if (!entry.categoryIds?.includes(id)) return entry
+          changed = true
+          return {
+            ...entry,
+            categoryIds: normalizeCategoryIds(entry.categoryIds.filter((cid) => cid !== id)),
+            updatedAt: new Date().toISOString(),
+          }
+        }),
+      )
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.categories, nextCategories)
+      if (changed) await persistKey(IDB_KEYS.entries, nextEntries)
+      cache.categories = nextCategories
+      if (changed) cache.entries = nextEntries
+      categoryListeners.forEach((listener) => listener(nextCategories))
+      if (changed) entryListeners.forEach((listener) => listener(nextEntries))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
     })
-    if (changed) await writeEntries(next)
+    kickDurableSync()
   },
 }
