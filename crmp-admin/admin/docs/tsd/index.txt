@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/bcddb95c213b8b8c.css","style"]
-0:{"P":null,"b":"ssoBp-KC2NE2GNiwW-QvB","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/bcddb95c213b8b8c.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","eirunA2kHEHW5_D4w8QIE",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-2ccc099e7387e024.js","7581","static/chunks/app/admin/layout-e270c8ce674eba91.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/messenger":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-11T17:23:39.793Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-11 20:53:39"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-11 17:23:39"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-11 17:23:39"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
-12:T9b2e,# Vantage CRMP — Technical Specification Design (TSD)
+:HL["/PRD/crmp-admin/_next/static/css/a8b8a0336d8ce09f.css","style"]
+0:{"P":null,"b":"iMK5go5--pnTumfJOo00q","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/a8b8a0336d8ce09f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","-NWa1Qtu-yj8lgKFM5GLA",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-0a5a3c43c9dadb3a.js","4415","static/chunks/4415-c95b3268cadcc31f.js","7581","static/chunks/app/admin/layout-8aee075c81fbd9b4.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/messenger":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-13T12:57:06.160Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-13 16:27:06"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-13 12:57:06"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-13 12:57:06"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
+12:Ta691,# Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
 **Version:** 1.8  
@@ -199,6 +199,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
+| AI | **`/admin/ai-performance`** | `AiPerformanceBoard`, `GET /api/ai-performance` | `ai.read` \| `ai.admin` | **§8A** |
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §16.10 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §16.12 |
@@ -232,7 +233,7 @@ Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, 
 4. Queue training / recalibration runs
 5. Label RCA quality feedback (CORRECT / INCORRECT / PARTIAL)
 
-It is **governance**, not the live RCA workbench (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`) and not the intervention desk (`/admin/interventions`).
+It is **governance**, not the live RCA workbench (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`), not the intervention desk (`/admin/interventions`), and not the dedicated read-only evaluation board (`/admin/ai-performance` — **§8A**).
 
 ### 8.2 Route & components
 
@@ -420,6 +421,7 @@ sequenceDiagram
 ### 8.12 Related pages
 | Page | Relationship |
 |---|---|
+| `/admin/ai-performance` | Read-only evaluation board (§8A) — KPIs shared via `getAiPerformanceEval` |
 | `/admin/skills` | Runtime playbook / scenario board (post-approve view) |
 | `/admin/rag` | Corpus browser; create/update should prefer AI Admin CR path for governed changes |
 | `/admin/ai-analyses` | Consumes skills/RAG/params governed here |
@@ -431,6 +433,46 @@ sequenceDiagram
 - Mandatory dual approval for CRITICAL severity param changes
 - Webhook notify Lark `oc_ai_detection_lab` on PENDING CR
 - Export CR pack for compliance
+
+---
+
+## 8A. AI Performance Evaluation Board
+
+### 8A.1 Purpose
+`/admin/ai-performance` is the **read-only** health board for AI quality. Operators use it to evaluate skill match, challenger agreement, human feedback accuracy, how-to-improve reviews, and training metrics **before** proposing model/threshold changes on AI Admin.
+
+It does **not** expose maker/checker forms. Mutations remain on `/admin/ai-admin`.
+
+### 8A.2 Route & components
+
+| Item | Spec |
+|---|---|
+| Page route | `GET /admin/ai-performance` → `platform/src/app/admin/ai-performance/page.tsx` |
+| UI component | `AiPerformanceBoard` (`platform/src/components/AiPerformanceBoard.tsx`) |
+| API | `GET /api/ai-performance` · also `GET /api/ai-admin?tab=performance` |
+| Domain logic | `getAiPerformanceEval()` in `platform/src/lib/ai/admin.ts` (extends `getAiAdminOverview`) |
+
+### 8A.3 Access control
+Same view gate as AI Admin overview: any of `ai.admin` · `ai.read` · `skills.manage` · `rag.manage`. Unauthorized → redirect `/admin`.
+
+### 8A.4 Data & KPIs
+| Source | Metrics |
+|---|---|
+| `ai_analyses` | totals, skill/RAG mode counts, confidence, needs_human, challenge rate |
+| `ai_analysis_challenges` | agree / partial / disagree → agree rate |
+| `ai_feedback` | correct / incorrect / partial → feedback accuracy |
+| `interventions` | approved ÷ decided → human agree rate |
+| `ai_improvement_reviews` | total / open / satisfactory |
+| `ai_training_runs` | completed / running / queued; avg accuracy & F1; recent rows |
+| `ai_accuracy_snapshots` | last 14 days (today refreshed live) |
+| `platform_settings` | line1 / line2 model + second-opinion severity badges |
+
+### 8A.5 UX / acceptance
+1. Left nav **AI Performance** under AI & knowledge.
+2. Board renders KPI strip + challenger / feedback / improve / training / history / recent lists (`data-testid="ai-performance-board"`).
+3. No propose/approve controls on the page.
+4. Links to AI Admin and Realtime Alert & Tracker.
+5. EN / zh-Hant chrome via `EnZh` + page meta `ai-performance`.
 
 ---
 
@@ -771,14 +813,16 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.19 Audit log
 
-`AuditBoard` partitions `audit_logs` into two tabs via `classifyAuditPlane` (`lib/audit.ts`):
+Every mutating admin / Lark / messenger API path calls `writeAudit` (`lib/db.ts`) into `audit_logs`. `AuditBoard` partitions rows into two tabs via `classifyAuditPlane` (`lib/audit.ts`):
 
 | Tab | Contents |
 |---|---|
-| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
-| **Vantage Markets Admin logs** | Other admin pages — restrict user rights, pull transaction data, triggered Lark messages, BU POC risk-incident responses, settings / org / RAG |
+| **CRMP logs** | Alerts, AI, skills, discovery (scan / Analyse / Connect-Disconnect OpenAI / RO review), detectors, monitor, escalation, interventions, messenger triage / sync |
+| **Vantage Markets Admin logs** | Login/logout (+ `LOGIN_FAILED`), settings / users / roles / org, Lark channel create/toggle/test notify, market-intel Lark push + enable toggle, RAG/docs, messenger recommend / cancel / confirm / checker |
 
 Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
+
+Static guard: `npm run test:audit` asserts `writeAudit` markers on discovery, Lark, detectors, market-intel, login, and messenger mutation paths. Runtime smoke: `npm run test:audit-smoke`. `/admin/ai-performance` is read-only and does not write audit rows.
 
 ### 16.20 Platform settings
 
@@ -804,10 +848,11 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
 | 1.9 | 2026-10-11 | §11A Unknown Risk Discovery AI suggestion card + `/api/discovery` |
 | 1.10 | 2026-10-11 | §11A expanded: modules, data, seven methods, sequence flow, API |
+| 1.11 | 2026-10-12 | §8A AI Performance evaluation board; §16.19 audit coverage guards |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
-13:T950c,# Vantage CRMP — 技術規格設計（TSD）
+13:Ta061,# Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
 **版本：** 1.8  
@@ -992,6 +1037,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
+| AI | **`/admin/ai-performance`** | `AiPerformanceBoard`、`GET /api/ai-performance` | `ai.read` \| `ai.admin` | **§8A** |
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10＋§16.10 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`、`/api/rag` | `rag.read`／`rag.manage` | §16.12 |
@@ -1025,7 +1071,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 4. 排隊訓練／重新校正工作
 5. 標註 RCA 品質回饋（CORRECT／INCORRECT／PARTIAL）
 
-此頁是**治理**，不是即時 RCA 工作台（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`），也不是介入櫃檯（`/admin/interventions`）。
+此頁是**治理**，不是即時 RCA 工作台（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`），不是介入櫃檯（`/admin/interventions`），也不是專用唯讀評估看板（`/admin/ai-performance` — **§8A**）。
 
 ### 8.2 路由與元件
 
@@ -1209,6 +1255,7 @@ sequenceDiagram
 ### 8.12 相關頁面
 | 頁面 | 關係 |
 |---|---|
+| `/admin/ai-performance` | 唯讀評估看板（§8A）— 經 `getAiPerformanceEval` 共用 KPI |
 | `/admin/skills` | 核准後之劇本／情境板 |
 | `/admin/rag` | 語料瀏覽；受治理變更應走 AI Admin CR |
 | `/admin/ai-analyses` | 消費此處治理之 Skills／RAG／參數 |
@@ -1220,6 +1267,46 @@ sequenceDiagram
 - CRITICAL 參數變更強制雙重核准
 - PENDING CR 通知 Lark `oc_ai_detection_lab`
 - 匯出 CR 包供合規
+
+---
+
+## 8A. AI 績效評估看板
+
+### 8A.1 目的
+`/admin/ai-performance` 為 AI 品質的**唯讀**健康看板。操作人員在 AI 管理提案模型／門檻變更前，用它評估技能匹配、挑戰者一致率、人工回饋準確率、「如何改進」審查與訓練指標。
+
+本頁**不**提供 Maker／Checker 表單。變更仍在 `/admin/ai-admin`。
+
+### 8A.2 路由與元件
+
+| 項目 | 規格 |
+|---|---|
+| 頁面路由 | `GET /admin/ai-performance` → `platform/src/app/admin/ai-performance/page.tsx` |
+| UI 元件 | `AiPerformanceBoard`（`platform/src/components/AiPerformanceBoard.tsx`） |
+| API | `GET /api/ai-performance` · 亦可用 `GET /api/ai-admin?tab=performance` |
+| 領域邏輯 | `getAiPerformanceEval()`（`platform/src/lib/ai/admin.ts`，延伸 `getAiAdminOverview`） |
+
+### 8A.3 存取控制
+與 AI 管理總覽相同：`ai.admin` · `ai.read` · `skills.manage` · `rag.manage` 任一即可。未授權 → 轉址 `/admin`。
+
+### 8A.4 資料與 KPI
+| 來源 | 指標 |
+|---|---|
+| `ai_analyses` | 總數、技能／RAG 模式、信心、需人工、挑戰率 |
+| `ai_analysis_challenges` | 同意／部分／不同意 → 一致率 |
+| `ai_feedback` | 正確／不正確／部分 → 回饋準確率 |
+| `interventions` | 已核准 ÷ 已決策 → 人工同意率 |
+| `ai_improvement_reviews` | 總數／開放／滿意 |
+| `ai_training_runs` | 已完成／執行中／佇列；平均準確率與 F1；近期列 |
+| `ai_accuracy_snapshots` | 最近 14 日（當日即時刷新） |
+| `platform_settings` | 一線／二線模型＋第二意見嚴重度徽章 |
+
+### 8A.5 UX／驗收
+1. 左側導覽 **AI 績效**（AI 與知識）。
+2. 看板渲染 KPI 列＋挑戰者／回饋／改進／訓練／歷史／最近清單（`data-testid="ai-performance-board"`）。
+3. 頁面無可寫提案／核准控制。
+4. 連結至 AI 管理與即時警報與追蹤。
+5. 英／繁中介面（`EnZh`＋頁面 meta `ai-performance`）。
 
 ---
 
@@ -1559,14 +1646,16 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.19 稽核日誌
 
-`AuditBoard` 經 `classifyAuditPlane`（`lib/audit.ts`）將 `audit_logs` 分為兩個分頁：
+每一次會變更狀態的管理後台／Lark／Messenger API 路徑皆呼叫 `writeAudit`（`lib/db.ts`）寫入 `audit_logs`。`AuditBoard` 經 `classifyAuditPlane`（`lib/audit.ts`）分為兩個分頁：
 
 | 分頁 | 內容 |
 |---|---|
-| **CRMP 日誌** | 本 CRMP 管理介面內變更 — 警報、AI、技能、升級、干預、Messenger |
-| **Vantage Markets 管理日誌** | 其他管理頁 — 限制權限、拉取交易、觸發 Lark、BU POC 風險事件回應、設定／組織／RAG |
+| **CRMP 日誌** | 警報、AI、技能、探索（掃描／分析／連線—中斷 OpenAI／RO 審查）、偵測器、Monitor、升級、干預、Messenger 分流／同步 |
+| **Vantage Markets 管理日誌** | 登入／登出（含 `LOGIN_FAILED`）、設定／使用者／角色／組織、Lark 頻道建立／啟停／測試通知、市場情報 Lark 推送與啟用切換、RAG／文件、Messenger 建議／取消／確認／覆核 |
 
 兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
+
+靜態守護：`npm run test:audit` 斷言 discovery、Lark、偵測器、市場情報、登入與 Messenger 變更路徑皆有 `writeAudit` 標記。執行期煙測：`npm run test:audit-smoke`。`/admin/ai-performance` 為唯讀，不寫稽核列。
 
 ### 16.20 平台設定
 
@@ -1593,6 +1682,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.9 | 2026-10-11 | §11A 未知風險探索 AI 建議卡＋`/api/discovery` |
 | 1.10 | 2026-10-11 | §11A 擴充：模組、資料、七類方法、序列流程、API |
 | 1.11 | 2026-10-11 | §7.2 畫面地圖補上 `/admin/discovery`（與英文版對齊） |
+| 1.12 | 2026-10-12 | §8A AI 績效評估看板；§16.19 稽核覆蓋守護 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

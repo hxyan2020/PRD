@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/bcddb95c213b8b8c.css","style"]
-0:{"P":null,"b":"ssoBp-KC2NE2GNiwW-QvB","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/bcddb95c213b8b8c.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","UgASOpnPYyvbwJXvnUiGF",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-2ccc099e7387e024.js","7581","static/chunks/app/admin/layout-e270c8ce674eba91.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/messenger":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-11T17:23:39.793Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-11 20:53:39"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-11 17:23:39"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-11 17:23:39"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"DocArticleView"]
-12:T673a,# CRMP Product Requirements Document (PRD)
+:HL["/PRD/crmp-admin/_next/static/css/a8b8a0336d8ce09f.css","style"]
+0:{"P":null,"b":"iMK5go5--pnTumfJOo00q","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/a8b8a0336d8ce09f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","WdMgAcdwXDam1dIy0XYK2",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-0a5a3c43c9dadb3a.js","4415","static/chunks/4415-c95b3268cadcc31f.js","7581","static/chunks/app/admin/layout-8aee075c81fbd9b4.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/messenger":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-13T12:57:06.160Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-13 16:27:06"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-13 12:57:06"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-13 12:57:06"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"DocArticleView"]
+12:T6e97,# CRMP Product Requirements Document (PRD)
 
 **Document ID:** CRMP-PRD-001  
 **Status:** Prototype / Demo-ready  
@@ -238,7 +238,7 @@ graph LR
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
 | FR-27 | Org directory | Combined BU and Teams hub (`/admin/departments`), editable Roles (`/admin/roles` · `/api/roles`), Users (incl. demo platform owner / haixiang.yan@hytechc.com) |
 | FR-28 | Escalation routes + Lark registry | Dimensions × coefficients; ESC-DEFAULT catch-all; skill binds one route code; no Path name column; channel enable |
-| FR-36 | Audit plane split + rollback | `/admin/audit` CRMP logs vs Vantage Markets Admin logs tabs; Roll back restores before-state via `POST /api/audit/rollback` |
+| FR-36 | Audit plane split + rollback + mutation coverage | `/admin/audit` CRMP vs Vantage Markets Admin tabs; Roll back via `POST /api/audit/rollback`; every mutating admin/Lark/messenger path + `LOGIN_FAILED` writes `writeAudit` (guarded by `test:audit`) |
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
@@ -247,6 +247,7 @@ graph LR
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 | FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
+| FR-38 | AI Performance evaluation dashboard | `/admin/ai-performance` read-only board: skill match, challenger agree/partial/disagree, human feedback labels, how-to-improve counts, training accuracy/F1, 14-day snapshots; `GET /api/ai-performance`; EN/zh-Hant; link from AI Admin |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -274,6 +275,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership + P0–P3 scenarios linked to Monitor 2.0 | Expand scenario; click M2-* chip |
 | AI & knowledge | AI Analyses (redirect) | `/admin/ai-analyses` → `/admin/alerts` | List merged into Realtime Alert & Tracker | Grouped pipeline + rank note; detail pack at `/admin/ai-analyses/[id]` |
 | AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag human-gate; maker ≠ checker |
+| AI & knowledge | AI Performance | `/admin/ai-performance` | Judge AI quality before retuning | Read-only KPIs + training/feedback/challenger; no propose forms |
 | AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md; one escalation bind |
 | AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |
@@ -350,6 +352,16 @@ flowchart TD
 
 **Acceptance (FR-37):** notebook-parity controls on `/admin/discovery`; AI cannot write review decisions; promote path enforces maker≠checker; EN + zh-Hant copy; notebook links visible. Operator: User Guide §14A · Build: TSD §11A.
 
+### 6.6 AI Performance evaluation — methods, data, flow
+
+| Layer | Detail |
+|---|---|
+| **Methods** | Aggregate live SQLite metrics: skill-match rate, challenger verdicts, human feedback labels, intervention agree rate, improvement-review status, training-run accuracy/F1; refresh today’s `ai_accuracy_snapshots` row |
+| **Data** | `ai_analyses`, `ai_analysis_challenges`, `ai_feedback`, `ai_improvement_reviews`, `ai_training_runs`, `ai_accuracy_snapshots`, `interventions`, `platform_settings` (`ai.line1.*` / `ai.line2.*` / second-opinion severity) |
+| **Flow** | Operator opens `/admin/ai-performance` → `getAiPerformanceEval()` → KPI + tables; mutations (rate / train / CR) stay on `/admin/ai-admin` under maker≠checker |
+
+**Acceptance (FR-38):** left-nav **AI Performance**; board shows skill / challenger / feedback / training KPIs; read-only (no CR forms); `GET /api/ai-performance` + `GET /api/ai-admin?tab=performance`; EN + zh-Hant chrome. Operator: User Guide §8.2A · Build: TSD §8A.
+
 ---
 
 ## 7. Non-functional requirements
@@ -357,7 +369,7 @@ flowchart TD
 | ID | Area | Requirement |
 |---|---|---|
 | NFR-01 | Latency | Prototype: alarm → dual-AI pack typically < 60s |
-| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin emit audit |
+| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin/discovery/Lark emit audit; failed logins recorded; AI Performance page is read-only |
 | NFR-03 | Security | AI principals must not receive blocklisted rights |
 | NFR-04 | SoD | Maker/checker enforced for AI Admin; checker for designated controls |
 | NFR-05 | Availability | Demo single-node SQLite acceptable; production needs HA (see Ecosystem) |
@@ -376,6 +388,7 @@ flowchart TD
 3. **Messenger path:** Show evidence posts vault; Escalate advances path; Dismiss/Close update statuses.  
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  
 5. **AI Admin:** Distinct checker required; self-approve blocked.  
+5b. **AI Performance:** `/admin/ai-performance` renders KPIs (skill match, challenger, feedback, training) without mutation controls; linked from AI Admin.  
 6. **Coverage:** UAT window BREACH/CRITICAL samples 100% challenged (backfill allowed).  
 7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem/Roadmap render EN and zh-Hant; User Guide has a how-to for every left-nav page.  
 8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.  
@@ -472,9 +485,10 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.9 | 2026-10-11 | FR-37 Unknown Risk Discovery AI suggestion card on CRMP Admin |
 | 1.10 | 2026-10-11 | §6.5 methods / data / flow + feature catalogue row for `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 expanded tables + mermaid flow; cross-links to UG §14A / TSD §11A |
+| 1.12 | 2026-10-12 | FR-36 audit mutation coverage; FR-38 AI Performance evaluation dashboard (§6.6) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
-13:T6413,# CRMP 產品需求文件（PRD）
+13:T6b40,# CRMP 產品需求文件（PRD）
 
 **文件編號：** CRMP-PRD-001  
 **狀態：** 原型／可示範  
@@ -698,7 +712,7 @@ graph LR
 | FR-26 | 分組平台設定 | 六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器 |
 | FR-27 | 組織目錄 | BU 與團隊合併中心（`/admin/departments`）、可編輯角色（`/admin/roles` · `/api/roles`）、使用者（含 demo platform owner／haixiang.yan@hytechc.com） |
 | FR-28 | 升級路徑＋Lark 登錄 | 維度 × 係數；ESC-DEFAULT 兜底；技能綁一條路徑代碼；無「路徑」名稱欄；頻道啟用 |
-| FR-36 | 稽核平面分流＋回滾 | `/admin/audit` CRMP 日誌 vs Vantage Markets 管理日誌分頁；回滾經 `POST /api/audit/rollback` 還原變更前快照 |
+| FR-36 | 稽核平面分流＋回滾＋變更覆蓋 | `/admin/audit` CRMP vs Vantage Markets 管理分頁；回滾經 `POST /api/audit/rollback`；每次管理／Lark／Messenger 變更＋`LOGIN_FAILED` 皆 `writeAudit`（由 `test:audit` 守護） |
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
@@ -707,6 +721,7 @@ graph LR
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
+| FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者一致率（同意／部分／不同意）、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -734,6 +749,7 @@ graph LR
 | 監控與風險 | 風險領域 | `/admin/risk-domains` | 權責＋P0–P3 情境對應 Monitor 2.0 | 展開情境；點 M2-* 晶片 |
 | AI 與知識 | AI 分析（轉址） | `/admin/ai-analyses` → `/admin/alerts` | 列表併入即時警報與追蹤 | 分組管線＋排序說明；明細包在 `/admin/ai-analyses/[id]` |
 | AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理＋第一／第二線卡片 | 七個分頁；propose_rag 人工閘道；Maker ≠ Checker |
+| AI 與知識 | AI 績效 | `/admin/ai-performance` | 改調前先判斷 AI 品質 | 唯讀 KPI＋訓練／回饋／挑戰者；無提案表單 |
 | AI 與知識 | AI 技能 | `/admin/skills` | 劇本＋鏈 | 進入 → SKILL.md 頁 |
 | AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；樹幹；進入 |
 | AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
@@ -810,6 +826,16 @@ flowchart TD
 
 **驗收（FR-37）：** `/admin/discovery` 與筆記本控制對齊；AI 不可寫審查決策；晉升路徑強制制作者≠覆核者；英＋繁中；筆記本連結可見。操作：使用手冊 §14A · 實作：TSD §11A。
 
+### 6.6 AI 績效評估 — 方法、資料、流程
+
+| 層級 | 細節 |
+|---|---|
+| **方法** | 彙總即時 SQLite 指標：技能匹配率、挑戰者裁決、人工回饋標籤、干預同意率、改進審查狀態、訓練準確率／F1；刷新當日 `ai_accuracy_snapshots` |
+| **資料** | `ai_analyses`、`ai_analysis_challenges`、`ai_feedback`、`ai_improvement_reviews`、`ai_training_runs`、`ai_accuracy_snapshots`、`interventions`、`platform_settings`（`ai.line1.*`／`ai.line2.*`／第二意見嚴重度） |
+| **流程** | 操作者開啟 `/admin/ai-performance` → `getAiPerformanceEval()` → KPI＋表格；變更（評分／訓練／變更單）仍在 `/admin/ai-admin` 且 Maker≠Checker |
+
+**驗收（FR-38）：** 左側導覽有 **AI 績效**；看板顯示技能／挑戰者／回饋／訓練 KPI；唯讀（無變更單表單）；`GET /api/ai-performance`＋`GET /api/ai-admin?tab=performance`；英＋繁中介面。操作：使用手冊 §8.2A · 實作：TSD §8A。
+
 ---
 
 ## 7. 非功能需求
@@ -817,7 +843,7 @@ flowchart TD
 | ID | 領域 | 需求 |
 |---|---|---|
 | NFR-01 | 延遲 | 原型：警報 → 雙 AI 包通常 < 60 秒 |
-| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin 變更發出稽核 |
+| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin／探索／Lark 變更發出稽核；失敗登入亦記錄；AI 績效頁為唯讀 |
 | NFR-03 | 安全 | AI 主體不得取得黑名單權限 |
 | NFR-04 | 職能分離 | AI Admin 強制 Maker／Checker；指定控制要 Checker |
 | NFR-05 | 可用性 | 示範單節點 SQLite 可接受；正式需 HA（見生態） |
@@ -836,6 +862,7 @@ flowchart TD
 3. **Messenger 路徑：** 顯示證據貼上保險庫；升級前進路徑；排除／結案更新狀態。  
 4. **控制：** 封鎖帳號 → 雙重確認 → admin_ref；必要時 Checker 後續。  
 5. **AI Admin：** 需要不同 Checker；自己核准被擋。  
+5b. **AI 績效：** `/admin/ai-performance` 顯示 KPI（技能匹配、挑戰者、回饋、訓練）且無可寫控制；自 AI 管理可連結。  
 6. **覆蓋：** UAT 視窗 BREACH／CRITICAL 樣本 100% 已挑戰（允許回填）。  
 7. **文件：** PRD／TSD／使用手冊／UAT／生態／路線圖／開放議題／進度英繁皆可渲染；使用手冊對左側每一頁都有操作說明。  
 8. **手機：** Messenger 列表→執行緒→返回在約 390px 可用且無整頁溢出。  
@@ -932,6 +959,7 @@ flowchart TD
 | 1.9 | 2026-10-11 | FR-37 未知風險探索 AI 建議卡（CRMP 管理後台） |
 | 1.10 | 2026-10-11 | §6.5 方法／資料／流程＋功能目錄列 `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 表格與 mermaid 流程擴充；交叉連結使用手冊 §14A／TSD §11A |
+| 1.12 | 2026-10-12 | FR-36 稽核變更覆蓋；FR-38 AI 績效評估儀表板（§6.6） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","P0 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P0 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"10"}]]}],["$","div","P1 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P1 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"20"}]]}],["$","div","Product scope",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Product scope"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"CFD + Crypto"}]]}],["$","div","Acceptance",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Acceptance"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"UAT-01…45"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / demo-ready"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/tsd","children":"TSD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"PRD","markdownEn":"$12","markdownZh":"$13"}]]}]

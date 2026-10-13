@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/bcddb95c213b8b8c.css","style"]
-0:{"P":null,"b":"ssoBp-KC2NE2GNiwW-QvB","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/bcddb95c213b8b8c.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","6VYUhsqC3rw3QVtoSQmxZ",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-2ccc099e7387e024.js","7581","static/chunks/app/admin/layout-e270c8ce674eba91.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/messenger":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-11T17:23:39.793Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-11 17:23:39"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-11 20:53:39"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-11 17:23:39"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-11 17:23:39"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-2ccc099e7387e024.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"DocArticleView"]
-12:Tb02c,# CRMP User Guide
+:HL["/PRD/crmp-admin/_next/static/css/a8b8a0336d8ce09f.css","style"]
+0:{"P":null,"b":"iMK5go5--pnTumfJOo00q","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/a8b8a0336d8ce09f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","t6KnvxuqYNT-rWrl8r4Vq",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-0a5a3c43c9dadb3a.js","4415","static/chunks/4415-c95b3268cadcc31f.js","7581","static/chunks/app/admin/layout-8aee075c81fbd9b4.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/messenger":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-13T12:57:06.160Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-13 12:57:06"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-13 16:27:06"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-13 12:57:06"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-13 12:57:06"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c95b3268cadcc31f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"DocArticleView"]
+12:Tb999,# CRMP User Guide
 
 **Document ID:** CRMP-UG-001 · **Audience:** anyone who opens the admin desk  
 **Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
@@ -111,7 +111,7 @@ The left pane is grouped so you are not staring at one long list:
 |---|---|
 | **Overview** | Admin Home (includes spine stage ticket counts) |
 | **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Risk Log → Risk Domains |
-| **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
+| **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin → AI Performance (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
 | **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
@@ -386,6 +386,25 @@ sequenceDiagram
   API-->>Checker: skill is ACTIVE
 ```
 
+### 8.2A AI Performance — `/admin/ai-performance`
+
+**What it is.** The **read-only** evaluation board for AI quality — separate from AI Admin governance. Use it to judge whether skill match, the second-AI challenger, human feedback, and training runs are healthy before you change models or thresholds.
+
+**What you see.**
+
+| Block | What it shows |
+|---|---|
+| KPI strip | Analyses total, skill match rate, avg confidence, needs-human, challenge rate, challenger agree rate, feedback accuracy, human agree rate |
+| Second AI | Agree / Partial / Disagree counts |
+| Human feedback | Correct / Partial / Incorrect labels |
+| How-to-improve | Open vs satisfied review counts |
+| Training quality | Recent runs with accuracy, precision / recall / F1, samples |
+| 14-day snapshots | Skill / human / feedback rates per day |
+| Recent lists | Latest analyses + feedback ratings |
+
+**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. This page itself has no propose / approve forms.
+
+**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests.
 
 ### 8.3 AI Skills — `/admin/skills`
 
@@ -588,14 +607,18 @@ The **human-only** inventory. AI service accounts must never receive these pages
 
 ### 11.3 Audit Log — `/admin/audit`
 
+Every mutating admin / Lark / messenger operation writes a row here (actor, action, entity, details, timestamp). Reads do not. Failed logins are also recorded. Coverage is guarded by `npm run test:audit` / `test:audit-smoke` (discovery Connect/Analyse/RO, Lark create/toggle/test notify, detector toggles, market-intel enable, messenger recommend/cancel/confirm/sync, `LOGIN_FAILED`).
+
 Two tabs:
 
 | Tab | What it records |
 |---|---|
-| **CRMP logs** | All changes done inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
-| **Vantage Markets Admin logs** | Changes on other admin pages — restrict user rights, pull transaction data, triggered Lark messages, received risk incident response by BU POC, settings / org / RAG |
+| **CRMP logs** | Ops inside this CRMP admin — alerts, AI analyse/admin, skills, discovery (scan / Analyse / Connect OpenAI / RO review), detectors, monitor runs, escalation, interventions, messenger triage / sync |
+| **Vantage Markets Admin logs** | Identity & platform — login/logout (incl. failed login), settings toggles, users/roles/org, Lark channel create/toggle/test notify, market-intel Lark push, RAG/docs, messenger control confirm / checker approve / recommend / cancel |
 
 Each row: time, actor, action, entity, details. Both tabs have a **Roll back** button — restores the before-state snapshot when available (`POST /api/audit/rollback`). Newest rows per plane.
+
+**Note.** AI Performance (`/admin/ai-performance`) is read-only and does **not** write audit rows. Mutations that change AI quality (feedback labels, training queue, CR approve) still land via AI Admin and appear here.
 
 ### 11.4 Platform Settings — `/admin/settings`
 
@@ -661,6 +684,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | Knowledge Tree | Domains, skills, RAG document leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
+| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, 14-day accuracy |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
@@ -757,9 +781,11 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 | 1.10 | 2026-10-06 | Demo Messenger bird-eye POC windows along the escalation path |
 | 1.11 | 2026-10-11 | Unknown Risk Discovery admin page — notebook-parity AI suggestion card + RO review |
 | 1.12 | 2026-10-11 | §14A expanded: data table, seven methods, operator flow, statuses, mermaid |
+| 1.13 | 2026-10-12 | §11.3 audit coverage — every admin/Lark mutation + failed login |
+| 1.14 | 2026-10-12 | §8.2A AI Performance evaluation board; audit coverage note + verify scripts |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
-13:Ta698,# CRMP 使用手冊
+13:Tafc4,# CRMP 使用手冊
 
 **文件編號：** CRMP-UG-001 · **對象：** 任何會打開管理後台的人  
 **語言：** 繁體中文（本頁）· [English](/admin/docs/user-guide?lang=en)  
@@ -856,7 +882,7 @@ graph TD
 |---|---|
 | **總覽** | 管理首頁（含脊柱階段工單計數） |
 | **監控與風險** | 每日績效 → Monitor 2.0 → 即時警報與追蹤 → 市場情報 → 未知風險探索 → 風險日誌 → 風險領域 |
-| **AI 與知識** | AI 技能 → 知識樹 → RAG → AI 管理（AI 分析列表已併入即時警報與追蹤；偵測器左側分頁已移除 → Monitor 2.0） |
+| **AI 與知識** | AI 技能 → 知識樹 → RAG → AI 管理 → AI 績效（AI 分析列表已併入即時警報與追蹤；偵測器左側分頁已移除 → Monitor 2.0） |
 | **應變** | 示範 Messenger → 人工干預 → 升級路徑 → Lark |
 | **組織** | BU 與團隊 → 使用者 → 角色 |
 | **平台** | 資料來源 → 平台設定 → 稽核日誌 → AI 存取安全 |
@@ -1131,6 +1157,25 @@ sequenceDiagram
   API-->>Checker: 技能已 ACTIVE
 ```
 
+### 8.2A AI 績效 — `/admin/ai-performance`
+
+**這頁是什麼。** AI 品質的**唯讀**評估看板 — 與 AI 管理治理分開。在改模型或門檻前，用它判斷技能匹配、第二 AI 挑戰者、人工回饋與訓練是否健康。
+
+**會看到什麼。**
+
+| 區塊 | 顯示內容 |
+|---|---|
+| KPI 列 | 分析總數、技能匹配率、平均信心、需人工、挑戰率、挑戰者一致率、回饋準確率、人工同意率 |
+| 第二 AI | 同意／部分／不同意計數 |
+| 人工回饋 | 正確／部分／不正確標籤 |
+| 如何改進 | 開放 vs 滿意審查數 |
+| 訓練品質 | 近期執行含準確率、精確率／召回率／F1、樣本數 |
+| 14 日快照 | 每日技能／人工／回饋比率 |
+| 最近清單 | 最新分析＋回饋評分 |
+
+**要點什麼。** 開啟 AI 管理以排隊訓練或評分分析（Maker≠Checker）。開啟即時警報與追蹤查看即時包。本頁本身沒有提案／核准表單。
+
+**怎樣算正常。** KPI 來自 SQLite（或種子示範資料）。你為分析標籤或跑挑戰後，挑戰者一致率與回饋準確率會變動。Viewer／具 `ai.read` 的角色可開啟看板；仍不能核准 AI 管理變更單。
 
 ### 8.3 AI 技能 — `/admin/skills`
 
@@ -1332,14 +1377,18 @@ graph LR
 
 ### 11.3 稽核日誌 — `/admin/audit`
 
+每一次會變更狀態的管理後台／Lark／Messenger 操作都會寫入一列（執行者、動作、實體、明細、時間戳）。唯讀不寫。登入失敗也會記錄。覆蓋範圍由 `npm run test:audit`／`test:audit-smoke` 守護（探索連線／分析／RO、Lark 建立／啟停／測試通知、偵測器切換、市場情報啟用、Messenger 建議／取消／確認／同步、`LOGIN_FAILED`）。
+
 兩個分頁：
 
 | 分頁 | 記錄內容 |
 |---|---|
-| **CRMP 日誌** | 本 CRMP 管理介面內的所有變更 — 警報、AI、技能、升級、干預、Messenger |
-| **Vantage Markets 管理日誌** | 其他管理頁面的變更 — 限制使用者權限、拉取交易資料、觸發 Lark 訊息、接收 BU POC 風險事件回應、設定／組織／RAG |
+| **CRMP 日誌** | 本 CRMP 管理介面內的操作 — 警報、AI 分析／管理、技能、探索（掃描／分析／連線 OpenAI／RO 審查）、偵測器、Monitor 執行、升級、干預、Messenger 分流／同步 |
+| **Vantage Markets 管理日誌** | 身分與平台 — 登入／登出（含失敗登入）、設定切換、使用者／角色／組織、Lark 頻道建立／啟停／測試通知、市場情報 Lark 推送、RAG／文件、Messenger 控制確認／覆核核准／建議／取消 |
 
 每列：時間、執行者、動作、實體、明細。兩個分頁皆有**回滾**按鈕 — 有變更前快照時可還原（`POST /api/audit/rollback`）。
+
+**說明。** AI 績效（`/admin/ai-performance`）為唯讀，**不會**寫稽核列。會改變 AI 品質的變更（回饋標籤、訓練佇列、變更單核准）仍經 AI 管理寫入並出現在此。
 
 ### 11.4 平台設定 — `/admin/settings`
 
@@ -1405,6 +1454,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | AI 與知識 | 知識樹 | 領域、技能、RAG 文件葉＋深連結 |
 | AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖／人工閘道 — `propose_rag` |
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
+| AI 與知識 | AI 績效 | 唯讀評估：技能匹配、挑戰者、回饋、訓練、14 日準確率 |
 | 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、控制 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
 | 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
@@ -1501,6 +1551,8 @@ flowchart LR
 | 1.10 | 2026-10-06 | 示範 Messenger 鳥瞰：升級路徑承辦聊天窗 |
 | 1.11 | 2026-10-11 | 未知風險探索管理頁 — 與筆記本對齊的 AI 建議卡＋RO 審查 |
 | 1.12 | 2026-10-11 | §14A 擴充：資料表、七類方法、操作流程、狀態、mermaid |
+| 1.13 | 2026-10-12 | §11.3 稽核覆蓋 — 每次管理／Lark 變更＋失敗登入 |
+| 1.14 | 2026-10-12 | §8.2A AI 績效評估看板；稽核覆蓋說明＋驗證腳本 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 5:["$","div",null,{"children":[["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Operator handbook · EN / 繁中"}]]}],["$","p",null,{"className":"text-sm text-[var(--muted)]","children":"Plain-English how-to for every left-nav page: login, unread badges, monitor, AI, messenger, org, settings and docs."}],["$","div",null,{"className":"action-row","children":[["$","$L10","/admin/messenger",{"className":"btn","href":"/admin/messenger","children":"Messenger"}],["$","$L10","/admin/alerts",{"className":"btn","href":"/admin/alerts","children":"Realtime Alert & Tracker"}],["$","$L10","/admin/ai-admin",{"className":"btn","href":"/admin/ai-admin","children":"AI Admin"}],["$","$L10","/admin/market-intel",{"className":"btn","href":"/admin/market-intel","children":"Market Intel"}],["$","$L10","/admin/discovery",{"className":"btn","href":"/admin/discovery","children":"Risk Discovery"}],["$","$L10","/admin/docs/uat",{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10","/admin/docs/urls",{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],["$","$L11",null,{"docId":"USER_GUIDE","markdownEn":"$12","markdownZh":"$13"}]]}]
