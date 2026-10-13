@@ -198,6 +198,7 @@ export function DiscoverySuggestionBoard({
   const [msg, setMsg] = useState<string | null>(null);
   const [suggestion, setSuggestion] = useState<DiscoverySuggestion | null>(null);
   const [filter, setFilter] = useState("PENDING_RO");
+  const [showEvidence, setShowEvidence] = useState(false);
 
   const enabled =
     initial.settings.find((s) => s.key === "discovery.enabled")?.value !== "false";
@@ -211,6 +212,15 @@ export function DiscoverySuggestionBoard({
     candidates.find((c) => c.candidate_id === selected) ||
     filtered[0] ||
     candidates[0];
+
+  const filterTabs = [
+    ["PENDING_RO", "Pending RO", "待 RO"],
+    ["ASK_MORE_INFO", "Ask more", "需更多資訊"],
+    ["APPROVED_FOR_VALIDATION", "Validation", "驗證中"],
+    ["IN_MONITORING", "Monitoring", "監控中"],
+    ["DISMISSED", "Dismissed", "已駁回"],
+    ["ALL", "All", "全部"],
+  ] as const;
 
   async function post(body: Record<string, unknown>) {
     const res = await fetch("/api/discovery", {
@@ -365,12 +375,21 @@ export function DiscoverySuggestionBoard({
   return (
     <div className="space-y-4" data-testid="discovery-suggestion-board">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label={locale === "zh-Hant" ? "待 RO" : "Pending RO"} value={pendingCount} />
+        <div className="panel p-4 border-amber-200 bg-amber-50/50">
+          <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">
+            {locale === "zh-Hant" ? "待 RO" : "Pending RO"}
+          </div>
+          <div className="mt-2 text-2xl font-semibold tabular-nums text-amber-900">{pendingCount}</div>
+        </div>
         <StatCard label={locale === "zh-Hant" ? "候選總數" : "Candidates"} value={candidates.length} />
-        <StatCard
-          label={locale === "zh-Hant" ? "已進監控" : "In monitoring"}
-          value={candidates.filter((c) => c.status === "IN_MONITORING").length}
-        />
+        <div className="panel p-4 border-emerald-200 bg-emerald-50/40">
+          <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">
+            {locale === "zh-Hant" ? "已進監控" : "In monitoring"}
+          </div>
+          <div className="mt-2 text-2xl font-semibold tabular-nums text-emerald-900">
+            {candidates.filter((c) => c.status === "IN_MONITORING").length}
+          </div>
+        </div>
         <StatCard
           label={locale === "zh-Hant" ? "最近掃描" : "Latest scan"}
           value={initial.scans[0]?.candidates_new ?? 0}
@@ -378,310 +397,398 @@ export function DiscoverySuggestionBoard({
         />
       </div>
 
-      <div className="panel p-3 sm:p-4 border-amber-200 bg-amber-50/70 text-sm space-y-2">
-        <p className="font-semibold">
-          <EnZh
-            en="Notebook-parity AI suggestion review (CRMP Admin)"
-            zh="與筆記本對齊的 AI 建議審查（CRMP 管理後台）"
-          />
-        </p>
-        <p className="text-[var(--muted)]">
-          <EnZh
-            en="Connect OpenAI / Mock → Analyse selected → structured suggestion card. Approve for validation / Ask more info / Dismiss match the Colab widgets. Approve never auto-deploys. Optional Approve for monitoring promotes skill + Monitor 2.0 via maker≠checker."
-            zh="連線 OpenAI／Mock → 分析所選 → 結構化建議卡。核准驗證／要求更多資訊／駁回與 Colab 元件一致。核准不會自動部署。可選「核准納入監控」經制作者≠覆核者晉升技能＋Monitor 2.0。"
-          />
-        </p>
-        <div className="flex flex-wrap gap-2 items-center">
-          <Badge>
-            {enabled ? (
-              <EnZh en="ENABLED" zh="已啟用" />
-            ) : (
-              <EnZh en="DISABLED" zh="已停用" />
-            )}
-          </Badge>
-          <Badge data-testid="discovery-ai-mode">
-            AI: {aiStatus.mode === "LIVE_OPENAI" ? `LIVE (${aiStatus.model})` : "MOCK"}
-          </Badge>
-          <a
-            className="btn btn-primary"
-            href={RISK_DISCOVERY_NOTEBOOK.colab}
-            target="_blank"
-            rel="noreferrer"
-            data-testid="discovery-notebook-colab"
-          >
-            <EnZh en="Open Jupyter (Colab)" zh="開啟 Jupyter（Colab）" />
-          </a>
-          <a
-            className="btn"
-            href={RISK_DISCOVERY_NOTEBOOK.html}
-            target="_blank"
-            rel="noreferrer"
-            data-testid="discovery-notebook-html"
-          >
-            <EnZh en="Open notebook (HTML)" zh="開啟筆記本（HTML）" />
-          </a>
-          <a
-            className="btn"
-            href={RISK_DISCOVERY_NOTEBOOK.ipynb}
-            target="_blank"
-            rel="noreferrer"
-            data-testid="discovery-notebook-ipynb"
-          >
-            <EnZh en="Download .ipynb" zh="下載 .ipynb" />
-          </a>
-          <Link
-            className="btn"
-            href={locale === "zh-Hant" ? "/admin/docs/user-guide?lang=zh-Hant" : "/admin/docs/user-guide"}
-          >
-            <EnZh en="Methods & flow (docs)" zh="方法與流程（文件）" />
-          </Link>
+      <div className="panel p-3 sm:p-4 border-[var(--line)] bg-gradient-to-r from-slate-50 to-white text-sm">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 max-w-3xl space-y-1">
+            <p className="font-semibold text-slate-900">
+              <EnZh
+                en="Notebook-parity AI suggestion review"
+                zh="與筆記本對齊的 AI 建議審查"
+              />
+            </p>
+            <p className="text-[var(--muted)] text-[13px] leading-relaxed">
+              <EnZh
+                en="1 Connect AI → 2 Analyse candidate → 3 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
+                zh="① 連線 AI → ② 分析候選 → ③ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
+              />
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 items-center shrink-0">
+            <Badge className={enabled ? "bg-emerald-100 text-emerald-900 border-emerald-200" : "bg-slate-100"}>
+              {enabled ? <EnZh en="ENABLED" zh="已啟用" /> : <EnZh en="DISABLED" zh="已停用" />}
+            </Badge>
+            <Badge data-testid="discovery-ai-mode">
+              AI: {aiStatus.mode === "LIVE_OPENAI" ? `LIVE (${aiStatus.model})` : "MOCK"}
+            </Badge>
+            <a
+              className="btn btn-primary !min-h-9 text-xs"
+              href={RISK_DISCOVERY_NOTEBOOK.colab}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="discovery-notebook-colab"
+            >
+              <EnZh en="Open Jupyter (Colab)" zh="開啟 Jupyter（Colab）" />
+            </a>
+            <a
+              className="btn !min-h-9 text-xs"
+              href={RISK_DISCOVERY_NOTEBOOK.html}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="discovery-notebook-html"
+            >
+              <EnZh en="Open notebook (HTML)" zh="開啟筆記本（HTML）" />
+            </a>
+            <a
+              className="btn !min-h-9 text-xs"
+              href={RISK_DISCOVERY_NOTEBOOK.ipynb}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="discovery-notebook-ipynb"
+            >
+              <EnZh en="Download .ipynb" zh="下載 .ipynb" />
+            </a>
+            <Link
+              className="btn !min-h-9 text-xs"
+              href={locale === "zh-Hant" ? "/admin/docs/user-guide?lang=zh-Hant" : "/admin/docs/user-guide"}
+            >
+              <EnZh en="Methods & flow (docs)" zh="方法與流程（文件）" />
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Notebook widget strip */}
-      <section className="panel p-4 space-y-3" data-testid="discovery-notebook-controls">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm font-semibold" data-testid="discovery-ai-status-label">
-            <EnZh
-              en={
-                aiStatus.mode === "LIVE_OPENAI"
-                  ? `AI: LIVE OpenAI (${aiStatus.model}) — API calls cost tokens`
-                  : "AI: MOCK — no API calls"
-              }
-              zh={
-                aiStatus.mode === "LIVE_OPENAI"
-                  ? `AI：即時 OpenAI（${aiStatus.model}）— API 會產生費用`
-                  : "AI：Mock — 不呼叫 API"
-              }
-            />
-          </span>
-          {initial.roles.can_operate || initial.roles.can_review ? (
-            <>
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={!!busy}
-                onClick={() => setAiMode(true)}
-                data-testid="discovery-connect-openai"
-              >
-                <EnZh en="Connect OpenAI (Secrets/env)" zh="連線 OpenAI（Secrets／環境變數）" />
-              </button>
-              <button
-                type="button"
-                className="btn"
-                disabled={!!busy}
-                onClick={() => setAiMode(false)}
-                data-testid="discovery-disconnect-openai"
-              >
-                <EnZh en="Disconnect / Mock" zh="中斷／Mock" />
-              </button>
-            </>
-          ) : null}
-          {initial.roles.can_operate ? (
-            <button
-              type="button"
-              className="btn"
-              disabled={busy === "scan"}
-              onClick={scanNow}
-              data-testid="discovery-scan-now"
-            >
-              <EnZh en="Run discovery now" zh="立即執行探索" />
-            </button>
-          ) : null}
-        </div>
-
-        <label className="block text-xs font-semibold text-[var(--muted)]">
-          <EnZh en="Candidate" zh="候選" />
-          <select
-            className="mt-1 w-full rounded-md border border-[var(--line)] p-2 text-sm"
-            value={selectedRow?.candidate_id || ""}
-            onChange={(e) => {
-              setSelected(e.target.value);
-              setSuggestion(null);
-            }}
-            data-testid="discovery-candidate-select"
-          >
-            {(filter === "ALL" ? candidates : filtered).map((c) => (
-              <option key={c.candidate_id} value={c.candidate_id}>
-                {c.method} | {c.scenario.slice(0, 60)} | {c.candidate_id}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <div className="grid sm:grid-cols-2 gap-3">
-          <label className="block text-xs font-semibold text-[var(--muted)]">
-            <EnZh en="Reviewer" zh="審查人" />
-            <input
-              className="mt-1 w-full rounded-md border border-[var(--line)] p-2 text-sm"
-              value={reviewer}
-              onChange={(e) => setReviewer(e.target.value)}
-              data-testid="discovery-reviewer"
-            />
-          </label>
-          <label className="block text-xs font-semibold text-[var(--muted)] sm:col-span-2">
-            <EnZh en="Question / reason" zh="問題／理由" />
-            <textarea
-              className="mt-1 w-full rounded-md border border-[var(--line)] p-2 text-sm"
-              rows={2}
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              data-testid="discovery-comment"
-            />
-          </label>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={!!busy || !selectedRow}
-            onClick={analyseSelected}
-            data-testid="discovery-analyse"
-          >
-            <EnZh en="Analyse selected" zh="分析所選" />
-          </button>
-          {initial.roles.can_review ? (
-            <>
-              <button
-                type="button"
-                className="btn"
-                disabled={!!busy || !selectedRow}
-                onClick={() => review("APPROVE_FOR_VALIDATION")}
-                data-testid="discovery-approve-validation"
-              >
-                <EnZh en="Approve for validation" zh="核准進入驗證" />
-              </button>
-              <button
-                type="button"
-                className="btn"
-                disabled={!!busy || !selectedRow}
-                onClick={() => review("ASK_MORE_INFO")}
-                data-testid="discovery-ask-more"
-              >
-                <EnZh en="Ask for more info" zh="要求更多資訊" />
-              </button>
-              <button
-                type="button"
-                className="btn"
-                disabled={!!busy || !selectedRow}
-                onClick={() => review("DISMISS")}
-                data-testid="discovery-dismiss"
-              >
-                <EnZh en="Dismiss" zh="駁回" />
-              </button>
-              <button
-                type="button"
-                className="btn"
-                disabled={!!busy || !selectedRow}
-                onClick={() => review("APPROVE_FOR_MONITORING")}
-                data-testid="discovery-approve-monitoring"
-                title="Beyond notebook — promotes skill + monitor via maker≠checker"
-              >
-                <EnZh en="Approve for monitoring" zh="核准納入監控" />
-              </button>
-            </>
-          ) : null}
-        </div>
-        {msg ? (
-          <p className="text-sm font-medium text-teal-900" data-testid="discovery-msg">
-            {msg}
-          </p>
-        ) : null}
-        <p className="text-xs text-[var(--muted)]">
-          <EnZh
-            en="Ask for more info may refresh the AI suggestion card; that response is never treated as approval. A human owns every review decision."
-            zh="要求更多資訊可能刷新 AI 建議卡；該回覆絕不視為核准。每次審查決策皆由人類負責。"
-          />
-        </p>
-      </section>
-
-      {suggestion ? <SuggestionCard suggestion={suggestion} locale={locale} /> : null}
-
-      {selectedRow ? (
-        <section className="panel p-4" data-testid="discovery-candidate-detail">
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <div>
-              <div className="font-mono text-xs text-[var(--muted)]">{selectedRow.candidate_id}</div>
-              <h2 className="text-lg font-semibold mt-1">{selectedRow.proposed_indicator}</h2>
-              <p className="text-sm text-[var(--muted)] mt-1">{selectedRow.scenario}</p>
-            </div>
-            <StatusBadge value={selectedRow.status} />
+      <div className="grid lg:grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-4 items-start">
+        {/* Left: candidate queue */}
+        <aside className="panel p-3 space-y-3 lg:sticky lg:top-3">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-sm font-semibold">
+              <EnZh en="Candidate queue" zh="候選佇列" />
+            </h2>
+            <span className="text-xs text-[var(--muted)] tabular-nums">{filtered.length}</span>
           </div>
-          <dl className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-            <div>
-              <dt className="text-xs text-[var(--muted)]">
-                <EnZh en="Method" zh="方法" />
-              </dt>
-              <dd className="font-medium">{methodLabel}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-[var(--muted)]">
-                <EnZh en="Dimension" zh="維度" />
-              </dt>
-              <dd className="font-medium">{selectedRow.proposed_dimension}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-[var(--muted)]">
-                <EnZh en="Severity" zh="嚴重度" />
-              </dt>
-              <dd className="font-medium">{selectedRow.severity}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-[var(--muted)]">
-                <EnZh en="Proposed monitor" zh="提案指標" />
-              </dt>
-              <dd>
-                <MonitorCode id={selectedRow.proposed_monitor_id || "—"} />
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-[var(--muted)]">
-                <EnZh en="Proposed skill" zh="提案技能" />
-              </dt>
-              <dd className="font-mono text-xs">{selectedRow.proposed_skill_code || "—"}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-[var(--muted)]">
-                <EnZh en="Score" zh="分數" />
-              </dt>
-              <dd className="tabular-nums font-medium">
-                {selectedRow.score.toFixed(3)} · rel {(selectedRow.relative_score * 100).toFixed(0)}%
-              </dd>
-            </div>
-          </dl>
-          {selectedRow.skill_code || selectedRow.monitor_id ? (
-            <div className="mt-3 rounded-lg bg-teal-50 border border-teal-200 p-3 text-sm">
-              <EnZh en="Promoted into daily monitoring:" zh="已晉升至每日監控：" />{" "}
-              <span className="font-mono">{selectedRow.skill_code}</span>
-              {" · "}
-              <MonitorCode id={selectedRow.monitor_id || ""} />
-            </div>
-          ) : null}
-          <pre className="mt-3 max-h-36 overflow-auto rounded-lg bg-slate-950 text-slate-100 text-[11px] p-3">
-            {JSON.stringify(JSON.parse(selectedRow.evidence_json || "{}"), null, 2)}
-          </pre>
-        </section>
-      ) : null}
+          <div className="flex flex-wrap gap-1.5">
+            {filterTabs.map(([code, en, zh]) => (
+              <button
+                key={code}
+                type="button"
+                className={`btn !min-h-8 !px-2.5 text-[11px] ${filter === code ? "btn-primary" : ""}`}
+                onClick={() => setFilter(code)}
+              >
+                {locale === "zh-Hant" ? zh : en}
+              </button>
+            ))}
+          </div>
+          <label className="sr-only">
+            <EnZh en="Candidate" zh="候選" />
+            <select
+              className="mt-1 w-full rounded-md border border-[var(--line)] p-2 text-sm"
+              value={selectedRow?.candidate_id || ""}
+              onChange={(e) => {
+                setSelected(e.target.value);
+                setSuggestion(null);
+                setShowEvidence(false);
+              }}
+              data-testid="discovery-candidate-select"
+            >
+              {(filter === "ALL" ? candidates : filtered).map((c) => (
+                <option key={c.candidate_id} value={c.candidate_id}>
+                  {c.method} | {c.scenario.slice(0, 60)} | {c.candidate_id}
+                </option>
+              ))}
+            </select>
+          </label>
+          <ul className="space-y-2 max-h-[32rem] overflow-auto pr-0.5" data-testid="discovery-candidate-list">
+            {filtered.map((c) => {
+              const active = c.candidate_id === selectedRow?.candidate_id;
+              const mLabel =
+                locale === "zh-Hant" ? METHODS[c.method]?.zh || c.method : METHODS[c.method]?.en || c.method;
+              return (
+                <li key={c.candidate_id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelected(c.candidate_id);
+                      setSuggestion(null);
+                      setShowEvidence(false);
+                    }}
+                    className={`w-full text-left rounded-xl border px-3 py-2.5 transition ${
+                      active
+                        ? "border-teal-400 bg-teal-50 shadow-sm"
+                        : "border-[var(--line)] bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <StatusBadge value={c.status} />
+                      <Badge className="text-[10px]">{mLabel}</Badge>
+                    </div>
+                    <div className="mt-1.5 text-sm font-semibold line-clamp-2">{c.proposed_indicator}</div>
+                    <div className="mt-1 text-[11px] text-[var(--muted)] line-clamp-2">{c.scenario}</div>
+                    <div className="mt-1.5 flex flex-wrap gap-2 text-[11px] text-[var(--muted)]">
+                      <span className="font-mono">{c.candidate_id.slice(0, 14)}</span>
+                      <span className="tabular-nums">
+                        {(c.relative_score * 100).toFixed(0)}% · {c.severity}
+                      </span>
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
+            {!filtered.length ? (
+              <li className="text-sm text-[var(--muted)] p-2">
+                <EnZh en="No candidates in this filter." zh="此篩選尚無候選。" />
+              </li>
+            ) : null}
+          </ul>
+        </aside>
 
-      <div className="flex flex-wrap gap-2">
-        {[
-          ["PENDING_RO", "Pending RO", "待 RO"],
-          ["ASK_MORE_INFO", "Ask more", "需更多資訊"],
-          ["APPROVED_FOR_VALIDATION", "Validation", "驗證中"],
-          ["IN_MONITORING", "Monitoring", "監控中"],
-          ["DISMISSED", "Dismissed", "已駁回"],
-          ["ALL", "All", "全部"],
-        ].map(([code, en, zh]) => (
-          <button
-            key={code}
-            type="button"
-            className={`btn h-8 text-xs ${filter === code ? "btn-primary" : ""}`}
-            onClick={() => setFilter(code)}
-          >
-            {locale === "zh-Hant" ? zh : en}
-          </button>
-        ))}
+        {/* Right: workspace */}
+        <div className="space-y-4 min-w-0">
+          <section className="panel p-4 space-y-3" data-testid="discovery-notebook-controls">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-teal-800">
+                  <EnZh en="Step 1 · Connect & scan" zh="步驟 1 · 連線與掃描" />
+                </div>
+                <p className="text-sm font-semibold mt-0.5" data-testid="discovery-ai-status-label">
+                  <EnZh
+                    en={
+                      aiStatus.mode === "LIVE_OPENAI"
+                        ? `AI: LIVE OpenAI (${aiStatus.model}) — API calls cost tokens`
+                        : "AI: MOCK — no API calls"
+                    }
+                    zh={
+                      aiStatus.mode === "LIVE_OPENAI"
+                        ? `AI：即時 OpenAI（${aiStatus.model}）— API 會產生費用`
+                        : "AI：Mock — 不呼叫 API"
+                    }
+                  />
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {initial.roles.can_operate || initial.roles.can_review ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-primary !min-h-10 text-xs"
+                      disabled={!!busy}
+                      onClick={() => setAiMode(true)}
+                      data-testid="discovery-connect-openai"
+                    >
+                      <EnZh en="Connect OpenAI" zh="連線 OpenAI（Secrets／環境變數）" />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn !min-h-10 text-xs"
+                      disabled={!!busy}
+                      onClick={() => setAiMode(false)}
+                      data-testid="discovery-disconnect-openai"
+                    >
+                      <EnZh en="Disconnect / Mock" zh="中斷／Mock" />
+                    </button>
+                  </>
+                ) : null}
+                {initial.roles.can_operate ? (
+                  <button
+                    type="button"
+                    className="btn !min-h-10 text-xs"
+                    disabled={busy === "scan"}
+                    onClick={scanNow}
+                    data-testid="discovery-scan-now"
+                  >
+                    <EnZh en="Run discovery now" zh="立即執行探索" />
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </section>
+
+          {selectedRow ? (
+            <section className="panel p-4 space-y-4" data-testid="discovery-candidate-detail">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="font-mono text-xs text-[var(--muted)]">{selectedRow.candidate_id}</div>
+                  <h2 className="text-lg font-semibold mt-1 tracking-tight">{selectedRow.proposed_indicator}</h2>
+                  <p className="text-sm text-[var(--muted)] mt-1 leading-relaxed">{selectedRow.scenario}</p>
+                </div>
+                <StatusBadge value={selectedRow.status} />
+              </div>
+              <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm rounded-xl border border-[var(--line)] bg-slate-50/70 p-3">
+                <div>
+                  <dt className="text-xs text-[var(--muted)]">
+                    <EnZh en="Method" zh="方法" />
+                  </dt>
+                  <dd className="font-medium mt-0.5">{methodLabel}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--muted)]">
+                    <EnZh en="Dimension" zh="維度" />
+                  </dt>
+                  <dd className="font-medium mt-0.5">{selectedRow.proposed_dimension}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--muted)]">
+                    <EnZh en="Severity" zh="嚴重度" />
+                  </dt>
+                  <dd className="font-medium mt-0.5">{selectedRow.severity}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--muted)]">
+                    <EnZh en="Proposed monitor" zh="提案指標" />
+                  </dt>
+                  <dd className="mt-0.5">
+                    <MonitorCode id={selectedRow.proposed_monitor_id || "—"} />
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--muted)]">
+                    <EnZh en="Proposed skill" zh="提案技能" />
+                  </dt>
+                  <dd className="font-mono text-xs mt-0.5 break-all">
+                    {selectedRow.proposed_skill_code || "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--muted)]">
+                    <EnZh en="Score" zh="分數" />
+                  </dt>
+                  <dd className="tabular-nums font-medium mt-0.5">
+                    {selectedRow.score.toFixed(3)} · rel {(selectedRow.relative_score * 100).toFixed(0)}%
+                  </dd>
+                </div>
+              </dl>
+              {selectedRow.skill_code || selectedRow.monitor_id ? (
+                <div className="rounded-lg bg-teal-50 border border-teal-200 p-3 text-sm">
+                  <EnZh en="Promoted into daily monitoring:" zh="已晉升至每日監控：" />{" "}
+                  <span className="font-mono">{selectedRow.skill_code}</span>
+                  {" · "}
+                  <MonitorCode id={selectedRow.monitor_id || ""} />
+                </div>
+              ) : null}
+              <div>
+                <button
+                  type="button"
+                  className="btn !min-h-9 text-xs"
+                  onClick={() => setShowEvidence((v) => !v)}
+                >
+                  {showEvidence ? (
+                    <EnZh en="Hide evidence JSON" zh="隱藏證據 JSON" />
+                  ) : (
+                    <EnZh en="Show evidence JSON" zh="顯示證據 JSON" />
+                  )}
+                </button>
+                {showEvidence ? (
+                  <pre className="mt-2 max-h-40 overflow-auto rounded-xl bg-slate-950 text-slate-100 text-[11px] p-3">
+                    {JSON.stringify(JSON.parse(selectedRow.evidence_json || "{}"), null, 2)}
+                  </pre>
+                ) : null}
+              </div>
+
+              <div className="rounded-xl border border-teal-200 bg-teal-50/40 p-3 space-y-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-teal-800">
+                  <EnZh en="Step 2 · Analyse" zh="步驟 2 · 分析" />
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <label className="block text-xs font-semibold text-[var(--muted)]">
+                    <EnZh en="Reviewer" zh="審查人" />
+                    <input
+                      className="mt-1 w-full rounded-md border border-[var(--line)] bg-white p-2 text-sm"
+                      value={reviewer}
+                      onChange={(e) => setReviewer(e.target.value)}
+                      data-testid="discovery-reviewer"
+                    />
+                  </label>
+                  <label className="block text-xs font-semibold text-[var(--muted)] sm:col-span-2">
+                    <EnZh en="Question / reason" zh="問題／理由" />
+                    <textarea
+                      className="mt-1 w-full rounded-md border border-[var(--line)] bg-white p-2 text-sm"
+                      rows={2}
+                      value={question}
+                      onChange={(e) => setQuestion(e.target.value)}
+                      data-testid="discovery-comment"
+                    />
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={!!busy || !selectedRow}
+                  onClick={analyseSelected}
+                  data-testid="discovery-analyse"
+                >
+                  <EnZh en="Analyse selected" zh="分析所選" />
+                </button>
+              </div>
+
+              {initial.roles.can_review ? (
+                <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3 space-y-2.5">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-900">
+                    <EnZh en="Step 3 · RO review" zh="步驟 3 · RO 審查" />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={!!busy || !selectedRow}
+                      onClick={() => review("APPROVE_FOR_VALIDATION")}
+                      data-testid="discovery-approve-validation"
+                    >
+                      <EnZh en="Approve for validation" zh="核准進入驗證" />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn"
+                      disabled={!!busy || !selectedRow}
+                      onClick={() => review("ASK_MORE_INFO")}
+                      data-testid="discovery-ask-more"
+                    >
+                      <EnZh en="Ask for more info" zh="要求更多資訊" />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn text-[var(--muted)]"
+                      disabled={!!busy || !selectedRow}
+                      onClick={() => review("DISMISS")}
+                      data-testid="discovery-dismiss"
+                    >
+                      <EnZh en="Dismiss" zh="駁回" />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn border-rose-300 bg-rose-50 text-rose-950"
+                      disabled={!!busy || !selectedRow}
+                      onClick={() => review("APPROVE_FOR_MONITORING")}
+                      data-testid="discovery-approve-monitoring"
+                      title="Beyond notebook — promotes skill + monitor via maker≠checker"
+                    >
+                      <EnZh en="Approve for monitoring" zh="核准納入監控" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-[var(--muted)] leading-snug">
+                    <EnZh
+                      en="Ask for more info may refresh the AI suggestion card; that response is never treated as approval. A human owns every review decision."
+                      zh="要求更多資訊可能刷新 AI 建議卡；該回覆絕不視為核准。每次審查決策皆由人類負責。"
+                    />
+                  </p>
+                </div>
+              ) : null}
+
+              {msg ? (
+                <p
+                  className="text-sm font-medium text-teal-900 rounded-lg border border-teal-200 bg-teal-50 px-3 py-2"
+                  data-testid="discovery-msg"
+                >
+                  {msg}
+                </p>
+              ) : null}
+            </section>
+          ) : (
+            <section className="panel p-6 text-sm text-[var(--muted)]" data-testid="discovery-candidate-detail">
+              <EnZh en="Select a candidate from the queue." zh="請從左側佇列選擇候選。" />
+            </section>
+          )}
+
+          {suggestion ? <SuggestionCard suggestion={suggestion} locale={locale} /> : null}
+        </div>
       </div>
     </div>
   );
