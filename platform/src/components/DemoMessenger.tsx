@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ChevronDown, ChevronRight, Send, Sparkles } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
@@ -224,16 +224,161 @@ function ThinkingCard({
   );
 }
 
+/** Lark-style interactive actions attached to the AI report card message. */
+function LarkCardActions({
+  busy,
+  capabilities,
+  recommendedGroups,
+  visibleRecommended,
+  locale,
+  onClose,
+  onEscalate,
+  onEvidence,
+  onDismiss,
+  onRecommend,
+}: {
+  busy: boolean;
+  capabilities: MessengerCaps;
+  recommendedGroups: Record<"critical" | "control" | "soft", Recommended[]>;
+  visibleRecommended: Recommended[];
+  locale: UiLocale;
+  onClose: () => void;
+  onEscalate: () => void;
+  onEvidence: () => void;
+  onDismiss: () => void;
+  onRecommend: (code: string) => void;
+}) {
+  return (
+    <div className="mt-3 border-t border-amber-200/80 pt-2.5 space-y-2.5" data-testid="msg-lark-card-actions">
+      <div data-testid="msg-triage-actions" className="space-y-1.5">
+        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+          {t("msg.triagePrimary", locale)}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {capabilities.canTriage ? (
+            <button
+              type="button"
+              className="btn btn-primary !min-h-10 text-xs"
+              disabled={busy}
+              onClick={onClose}
+              data-testid="msg-btn-close"
+            >
+              {t("msg.close", locale)}
+            </button>
+          ) : null}
+          {capabilities.canEscalate ? (
+            <button
+              type="button"
+              className="btn !min-h-10 text-xs border-rose-300 bg-rose-50 text-rose-950 hover:bg-rose-100"
+              disabled={busy}
+              onClick={onEscalate}
+              title={t("msg.escalateHint", locale)}
+              data-testid="msg-btn-escalate"
+            >
+              {t("msg.escalate", locale)}
+            </button>
+          ) : (
+            <p className="text-xs text-rose-800 self-center">{t("msg.escalateHint", locale)}</p>
+          )}
+        </div>
+        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] pt-0.5">
+          {t("msg.triageSecondary", locale)}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {capabilities.canEvidence ? (
+            <button
+              type="button"
+              className="btn !min-h-10 text-xs"
+              disabled={busy}
+              onClick={onEvidence}
+              data-testid="msg-btn-evidence"
+            >
+              {t("msg.showEvidence", locale)}
+            </button>
+          ) : null}
+          {capabilities.canTriage ? (
+            <button
+              type="button"
+              className="btn !min-h-10 text-xs text-[var(--muted)]"
+              disabled={busy}
+              onClick={onDismiss}
+              data-testid="msg-btn-dismiss"
+            >
+              {t("msg.dismiss", locale)}
+            </button>
+          ) : null}
+        </div>
+      </div>
+
+      <div data-testid="msg-recommended-actions" className="space-y-1.5 border-t border-dashed border-amber-200/80 pt-2">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+            {t("msg.recommended", locale)}
+          </div>
+          <div className="text-[10px] font-mono text-[var(--muted)]">{capabilities.roleCode}</div>
+        </div>
+        <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.rankNote", locale)}</p>
+        {(
+          [
+            ["critical", "msg.groupCritical"],
+            ["control", "msg.groupControl"],
+            ["soft", "msg.groupSoft"],
+          ] as const
+        ).map(([key, labelKey]) => {
+          const items = recommendedGroups[key];
+          if (!items.length) return null;
+          return (
+            <div key={key}>
+              <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1">
+                {t(labelKey, locale)}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {items.map((a, idx) => {
+                  const loc = localizeAction(a.code, a.label, a.description, locale);
+                  const cls =
+                    key === "critical" && idx === 0
+                      ? "btn btn-primary text-xs !min-h-10"
+                      : key === "critical"
+                        ? "btn text-xs !min-h-10 border-rose-300 bg-rose-50 text-rose-950"
+                        : "btn text-xs !min-h-10";
+                  return (
+                    <button
+                      key={a.code}
+                      type="button"
+                      className={cls}
+                      disabled={busy}
+                      title={loc.description}
+                      onClick={() => onRecommend(a.code)}
+                      data-testid={`msg-rec-${a.code}`}
+                    >
+                      {loc.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+        {!visibleRecommended.length ? (
+          <p className="text-xs text-rose-800">{t("msg.escalateHint", locale)}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function MessageBubble({
   m,
   locale,
   openThoughts,
   onToggleThoughts,
+  cardActions,
 }: {
   m: Message;
   locale: UiLocale;
   openThoughts: Record<string, boolean>;
   onToggleThoughts: (id: string) => void;
+  cardActions?: ReactNode;
 }) {
   if (m.kind === "THINKING") {
     const meta = JSON.parse(m.meta_json || "{}") as { elapsed_ms?: number; steps?: string[] };
@@ -265,9 +410,15 @@ function MessageBubble({
               ? "border-rose-200 bg-rose-50/50"
               : "border-[var(--line)] bg-white"
       }`}
+      data-testid={cardActions ? "msg-lark-interactive-card" : undefined}
     >
       <div className="flex flex-wrap gap-2 items-center text-xs text-[var(--muted)]">
         <Badge className="bg-slate-100 text-slate-700 border-slate-200">{m.kind}</Badge>
+        {cardActions ? (
+          <Badge className="bg-amber-100 text-amber-950 border-amber-200">
+            {locale === "zh-Hant" ? "互動卡片" : "Interactive card"}
+          </Badge>
+        ) : null}
         <span className="font-semibold text-[var(--ink)]">{m.sender}</span>
         <span className="break-word">{m.created_at}</span>
       </div>
@@ -279,8 +430,16 @@ function MessageBubble({
           {t("msg.openInAdmin", locale)}
         </AdminLink>
       ) : null}
+      {cardActions}
     </div>
   );
+}
+
+function lastAiReportId(msgs: Message[]): string | null {
+  for (let i = msgs.length - 1; i >= 0; i--) {
+    if (msgs[i].kind === "AI_REPORT") return msgs[i].msg_id;
+  }
+  return null;
 }
 
 export function DemoMessenger({
@@ -352,6 +511,22 @@ export function DemoMessenger({
     }
     return groups;
   }, [visibleRecommended]);
+
+  const larkCardActions =
+    active?.status === "OPEN" ? (
+      <LarkCardActions
+        busy={busy}
+        capabilities={capabilities}
+        recommendedGroups={recommendedGroups}
+        visibleRecommended={visibleRecommended}
+        locale={locale}
+        onClose={() => void run("close")}
+        onEscalate={() => void run("escalate")}
+        onEvidence={() => void run("show_evidence")}
+        onDismiss={() => void run("dismiss")}
+        onRecommend={(code) => void run("recommend", { action_code: code })}
+      />
+    ) : null;
 
   useEffect(() => {
     runGen.current += 1;
@@ -804,66 +979,11 @@ export function DemoMessenger({
                 {phrase(active.title, locale)}
               </h2>
               {active.status === "OPEN" ? (
-                <div className="mt-3 space-y-2" data-testid="msg-triage-actions">
-                  <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
-                    {t("msg.triagePrimary", locale)}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {capabilities.canTriage ? (
-                      <button
-                        type="button"
-                        className="btn btn-primary !min-h-11"
-                        disabled={busy}
-                        onClick={() => void run("close")}
-                        data-testid="msg-btn-close"
-                      >
-                        {t("msg.close", locale)}
-                      </button>
-                    ) : null}
-                    {capabilities.canEscalate ? (
-                      <button
-                        type="button"
-                        className="btn !min-h-11 border-rose-300 bg-rose-50 text-rose-950 hover:bg-rose-100"
-                        disabled={busy}
-                        onClick={() => void run("escalate")}
-                        title={t("msg.escalateHint", locale)}
-                        data-testid="msg-btn-escalate"
-                      >
-                        {t("msg.escalate", locale)}
-                      </button>
-                    ) : (
-                      <p className="text-xs text-rose-800 self-center">{t("msg.escalateHint", locale)}</p>
-                    )}
-                  </div>
-                  <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] pt-1">
-                    {t("msg.triageSecondary", locale)}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {capabilities.canEvidence ? (
-                      <button
-                        type="button"
-                        className="btn"
-                        disabled={busy}
-                        onClick={() => void run("show_evidence")}
-                        data-testid="msg-btn-evidence"
-                      >
-                        {t("msg.showEvidence", locale)}
-                      </button>
-                    ) : null}
-                    {capabilities.canTriage ? (
-                      <button
-                        type="button"
-                        className="btn text-[var(--muted)]"
-                        disabled={busy}
-                        onClick={() => void run("dismiss")}
-                        data-testid="msg-btn-dismiss"
-                      >
-                        {t("msg.dismiss", locale)}
-                      </button>
-                    ) : null}
-                  </div>
-                  <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.rankNote", locale)}</p>
-                </div>
+                <p className="mt-2 text-[11px] text-[var(--muted)] leading-snug">
+                  {locale === "zh-Hant"
+                    ? "決策與管制按鈕附在下方 AI 報告互動卡片上（Lark 訊息樣式）。"
+                    : "Decision and control buttons are attached to the AI report interactive card below (Lark message style)."}
+                </p>
               ) : null}
             </div>
 
@@ -949,17 +1069,24 @@ export function DemoMessenger({
                             </div>
                           </div>
                           <div className="flex-1 overflow-auto space-y-2 p-2 min-h-0 overscroll-contain">
-                            {w.messages.map((m) => (
-                              <MessageBubble
-                                key={`${m.msg_id}-${w.step}`}
-                                m={m}
-                                locale={locale}
-                                openThoughts={openThoughts}
-                                onToggleThoughts={(id) =>
-                                  setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))
-                                }
-                              />
-                            ))}
+                            {w.messages.map((m) => {
+                              const attach =
+                                Boolean(larkCardActions) &&
+                                live &&
+                                m.msg_id === lastAiReportId(w.messages);
+                              return (
+                                <MessageBubble
+                                  key={`${m.msg_id}-${w.step}`}
+                                  m={m}
+                                  locale={locale}
+                                  openThoughts={openThoughts}
+                                  onToggleThoughts={(id) =>
+                                    setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))
+                                  }
+                                  cardActions={attach ? larkCardActions : undefined}
+                                />
+                              );
+                            })}
                             {!w.messages.length ? (
                               <p className="text-[11px] text-[var(--muted)] leading-snug p-1">
                                 {t("msg.pocEmpty", locale)}
@@ -981,15 +1108,19 @@ export function DemoMessenger({
                 </>
               ) : (
                 <div className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain">
-                  {messages.map((m) => (
-                    <MessageBubble
-                      key={m.msg_id}
-                      m={m}
-                      locale={locale}
-                      openThoughts={openThoughts}
-                      onToggleThoughts={(id) => setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))}
-                    />
-                  ))}
+                  {messages.map((m) => {
+                    const attach = Boolean(larkCardActions) && m.msg_id === lastAiReportId(messages);
+                    return (
+                      <MessageBubble
+                        key={m.msg_id}
+                        m={m}
+                        locale={locale}
+                        openThoughts={openThoughts}
+                        onToggleThoughts={(id) => setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))}
+                        cardActions={attach ? larkCardActions : undefined}
+                      />
+                    );
+                  })}
                   {liveThink ? (
                     <ThinkingCard steps={liveThink.steps} visible={liveThink.visible} running locale={locale} />
                   ) : null}
@@ -1000,60 +1131,6 @@ export function DemoMessenger({
 
             {active.status === "OPEN" && (
               <div className="mt-2 border-t border-[var(--line)] pt-2 space-y-2 shrink-0 bg-[var(--panel)] pb-[max(0.35rem,var(--safe-bottom))]">
-                <div data-testid="msg-recommended-actions">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-                    <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)]">
-                      {t("msg.recommended", locale)}
-                    </div>
-                    <div className="text-[10px] text-[var(--muted)]">{capabilities.roleCode}</div>
-                  </div>
-                  <p className="text-[11px] text-[var(--muted)] mb-2 leading-snug">{t("msg.rankNote", locale)}</p>
-                  {(
-                    [
-                      ["critical", "msg.groupCritical"],
-                      ["control", "msg.groupControl"],
-                      ["soft", "msg.groupSoft"],
-                    ] as const
-                  ).map(([key, labelKey]) => {
-                    const items = recommendedGroups[key];
-                    if (!items.length) return null;
-                    return (
-                      <div key={key} className="mb-2">
-                        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1">
-                          {t(labelKey, locale)}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {items.map((a, idx) => {
-                            const loc = localizeAction(a.code, a.label, a.description, locale);
-                            const cls =
-                              key === "critical" && idx === 0
-                                ? "btn btn-primary"
-                                : key === "critical"
-                                  ? "btn border-rose-300 bg-rose-50 text-rose-950"
-                                  : "btn";
-                            return (
-                              <button
-                                key={a.code}
-                                type="button"
-                                className={`${cls} text-xs`}
-                                disabled={busy}
-                                title={loc.description}
-                                onClick={() => void run("recommend", { action_code: a.code })}
-                                data-testid={`msg-rec-${a.code}`}
-                              >
-                                {loc.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {!visibleRecommended.length ? (
-                    <p className="text-xs text-rose-800">{t("msg.escalateHint", locale)}</p>
-                  ) : null}
-                </div>
-
                 {pending.map((p) => {
                   const detail = JSON.parse(p.detail_json || "{}") as Recommended;
                   const loc = localizeAction(
