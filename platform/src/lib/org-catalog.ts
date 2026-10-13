@@ -1,0 +1,729 @@
+/** Source of truth for BU (department) and role responsibility charters. */
+
+export type DepartmentCode = "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM";
+
+export type RoleCode =
+  | "SUPER_ADMIN"
+  | "RISK_OWNER"
+  | "RISK_ANALYST"
+  | "OPS_LEAD"
+  | "OPS_ANALYST"
+  | "AI_ENGINEER"
+  | "SYSTEM_ADMIN"
+  | "VIEWER";
+
+export type Duty = {
+  title: string;
+  detail: string;
+};
+
+export type DepartmentCharter = {
+  code: DepartmentCode;
+  name: string;
+  mandate: string;
+  owns: Duty[];
+  accountable: Duty[];
+  collaborates: Duty[];
+  outOfScope: Duty[];
+  escalatesTo: Duty[];
+};
+
+export type RoleCharter = {
+  code: RoleCode;
+  name: string;
+  department: DepartmentCode | null;
+  intro: string;
+  owns: string[];
+  does: string[];
+  doesNot: string[];
+  escalatesTo: string[];
+};
+
+export const DEPARTMENT_CHARTERS: Record<DepartmentCode, DepartmentCharter> = {
+  RISK_CONTROL: {
+    code: "RISK_CONTROL",
+    name: "Risk Control",
+    mandate:
+      "Book owner for Vantage forex CFD (MT4/MT5 via oneZero) and the crypto-exchange stack. Sets limit policy, chairs war-rooms, and is the human gate for halt, close-only, leverage cut, LP disable and withdrawal pause. AI may recommend; this BU decides.",
+    owns: [
+      {
+        title: "Limit policy, entity-aware exposure caps, and the breach-authority matrix (CFD + crypto)",
+        detail:
+          "Risk Control writes the actual limits clients and the firm can take — how much gold, FX, crypto, or copy-trading exposure is allowed on each legal entity. When a limit is hit, this team decides whether that is a warning, a hard stop, or a named person who may override. Other BUs follow that matrix; they do not invent their own caps.",
+      },
+      {
+        title: "Market, credit, liquidity and LP-hedge risk on the live CFD book (A-book / B-book)",
+        detail:
+          "This is the live CFD trading book. Risk Control watches P&L, client margin, whether we are hedging to liquidity providers or keeping risk in-house, and whether an LP is rejecting or filling poorly. If the book is too big, too one-sided, or credit is blowing out, this BU calls the containment (cut exposure, change hedge mix) — after a human gate on high-impact moves.",
+      },
+      {
+        title: "Crypto exchange: wallet-float policy, liquidation backlog, oracle lag, insurance-fund drawdown, OI concentration",
+        detail:
+          "On the crypto exchange, Risk Control sets how much client crypto may sit in the hot wallet, how long the liquidation engine may lag, how stale a mark-price oracle may be, how far the insurance fund may draw down, and how concentrated open interest may get. They own the policy and the go / no-go. System runs the wallets and matching engine; Risk does not patch servers.",
+      },
+      {
+        title: "Human approval of halt / close-only / group leverage cut / LP disable / large-withdrawal pause",
+        detail:
+          "AI and detectors may recommend “stop this symbol”, “cut this group’s leverage”, “turn off this LP”, or “pause large withdrawals”. Risk Control is the human who says yes or no. Until this BU (or dual control) signs, those actions stay mocked or queued. This is the core of “AI recommends, humans decide”.",
+      },
+      {
+        title: "Daily risk dashboard, risk-domain RACI, and residual-risk sign-off after incidents",
+        detail:
+          "Each morning this BU owns the daily risk numbers and which domain (market, credit, crypto, fraud, …) sits with whom. After an incident they write down what risk is still left and who accepted it. If the dashboard is late or a domain has no owner, that is a Risk Control miss.",
+      },
+      {
+        title: "Copy-trade cascade, toxic-flow, NBP and concentration interventions",
+        detail:
+          "When one signal provider’s copiers all get hurt together, when flow looks like latency arbitrage, when clients go negative-balance, or when a few names hold too much of the book, Risk Control runs the playbook: pause copies, tighten groups, freeze accounts, or force de-risk. Operations may talk to the client; Risk decides the trading restriction.",
+      },
+      {
+        title: "Escalation routes into Risk Control Desk and Crypto Exchange Risk",
+        detail:
+          "This BU owns which alert severity goes to which Lark / messenger desk, how fast, and who is on call. If a CRITICAL never pages the Risk Control Desk, or crypto wallet alarms skip Crypto Exchange Risk, that routing mistake belongs here — not to Operations or AI.",
+      },
+    ],
+    accountable: [
+      {
+        title: "War-room decisions on BREACH/CRITICAL until residual risk is accepted in writing",
+        detail:
+          "On a BREACH or CRITICAL, Risk Control chairs the war-room. They keep the incident open until someone named has written “we accept what is left”. They cannot close a CRITICAL just because the alarm went quiet.",
+      },
+      {
+        title: "Policy changes that alter client trading conditions (leverage, spreads, product groups, entity packs)",
+        detail:
+          "If leverage, spreads, or which products a client type may trade will change, Risk Control signs that policy. System may flip the switch; Operations may tell the client; this BU is accountable for the risk of the change.",
+      },
+      {
+        title: "Named owner on every risk domain tagged RISK_CONTROL",
+        detail:
+          "Every domain marked RISK_CONTROL (market/pricing, credit, LP hedge, crypto stack, and so on) must have a named person in this BU. If a domain is “owned by Risk” on paper but nobody is on call, this team is accountable.",
+      },
+      {
+        title: "Post-incident risk memo and lessons fed into RAG",
+        detail:
+          "After the dust settles, Risk Control writes what happened, what we still sit with, and what we will do differently. That memo is meant to land in the RAG knowledge base so the next RCA does not start from zero.",
+      },
+    ],
+    collaborates: [
+      {
+        title: "Operations — funding exceptions and withdrawal pauses that have credit, AML or fraud impact",
+        detail:
+          "Ops holds the funding queue. When a withdrawal pause or deposit exception is really a credit, fraud, or AML problem, Risk Control joins — they decide whether trading should freeze, not how to post the bank file.",
+      },
+      {
+        title: "AI — detector promotion (Risk is checker), RCA challenge, skill-playbook certainty",
+        detail:
+          "AI builds detectors and drafts root-cause. Risk Control is the checker when a detector goes live, and they challenge RCA when the second AI disagrees. They do not train the model; they decide whether to trust it on the book.",
+      },
+      {
+        title: "System — kill-switches, feed health, LP/bridge failover, wallet infrastructure",
+        detail:
+          "System keeps servers, bridges, and wallets up. Risk Control says which kill-switches exist and when they may be armed. If a feed is stale or an LP is down, System diagnoses infra; Risk decides whether the book must be de-risked in the meantime.",
+      },
+      {
+        title: "Crypto Exchange Risk team — matching-engine, oracle and hot-wallet incidents",
+        detail:
+          "The crypto desk sits in this BU. They work with System on engine/oracle/wallet incidents, but Risk Control still owns float policy and whether to pause withdrawals or new high-leverage perps.",
+      },
+    ],
+    outOfScope: [
+      {
+        title: "Day-to-day deposit/withdrawal case work and EOD recon (Operations)",
+        detail:
+          "Risk Control does not work the funding ticket pile or tick off end-of-day recon breaks. That is Operations. Risk only steps in when the case becomes credit, fraud, or a trading freeze.",
+      },
+      {
+        title: "Training detectors or promoting shadow → live as maker (AI Engineer; Risk is checker)",
+        detail:
+          "This BU does not train models or press “promote detector” as the person who built it. AI Engineer is the maker; Risk Owner is the checker on live. Risk can block a bad promotion; they should not be both maker and checker.",
+      },
+      {
+        title: "Patching trading servers, bridges or wallets (System)",
+        detail:
+          "Risk Control does not SSH to boxes, patch oneZero, or rotate wallet keys. If infra is broken they escalate to System and, if the book is at risk, they still decide trading containment.",
+      },
+      {
+        title: "Changing platform feature flags that are not risk thresholds this BU owns",
+        detail:
+          "Turning on market-intel scans, messenger features, or unrelated flags is System / Super Admin. Risk only owns the risk thresholds (warn/breach levels, auto-analyse on alarm) that sit in their RACI.",
+      },
+    ],
+    escalatesTo: [
+      {
+        title: "SUPER_ADMIN / demo platform owner on multi-entity or capital-threshold events",
+        detail:
+          "If the problem crosses legal entities or looks like a capital / licence limit, Risk Control does not absorb it alone. They escalate to Super Admin / the named platform owner so entity segregation and capital sit with someone who can speak for the firm.",
+      },
+      {
+        title: "Legal/compliance (outside CRMP) when entity segregation or licence limits are at risk",
+        detail:
+          "CRMP cannot sign a licence issue. When client-money segregation or a regulator limit is in play, Risk Control pages legal/compliance outside this admin and records that they did.",
+      },
+    ],
+  },
+  OPERATIONS: {
+    code: "OPERATIONS",
+    name: "Operations",
+    mandate:
+      "Runs the client-money and case spine: funding exceptions, EOD reconciliation, ticket triage, promo/bonus execution and client contact. Executes risk decisions; does not set limit policy or arm halt/leverage controls.",
+    owns: [
+      {
+        title: "Deposit and withdrawal exception queues, including crypto on-chain rails",
+        detail:
+          "Operations works every stuck deposit and withdrawal — bank, card, and crypto on-chain. They chase missing hashes, wrong amounts, and compliance holds. They do not invent a freeze: if Risk has not paused withdrawals, Ops keeps the queue moving; if Risk has paused, Ops executes that pause on the cases.",
+      },
+      {
+        title: "EOD reconciliations, Nostro/Vostro breaks, and bonus-wallet mismatches",
+        detail:
+          "At end of day this BU ties client balances, bank Nostro/Vostro, and bonus wallets together. A break means money does not match. Ops owns finding and fixing the break before the daily dashboard is trusted. Risk does not do this recon.",
+      },
+      {
+        title: "Ticket triage, client contact, and case notes that the spine can audit",
+        detail:
+          "Ops is who the client hears from. They pick up tickets, write what was said, and leave notes the audit trail can replay. They must not tell a client “your symbol is halted” or “your withdrawal is paused” until Risk has actually signed that decision.",
+      },
+      {
+        title: "Promo / bonus ops execution and clawback after Risk or Fraud flags",
+        detail:
+          "When a promotion or bonus is live, Ops credits and later claws back if Risk or fraud flags the account. They run the bonus ledger. They do not decide that flow was toxic — that is Risk / AI — but they execute the clawback once told.",
+      },
+      {
+        title: "Operational runbooks for funding freezes that Risk has already approved",
+        detail:
+          "If Risk has approved “pause this rail / these accounts”, Ops owns the runbook: which queue, which template, who calls the bank. They do not start a freeze on their own for market-risk reasons.",
+      },
+      {
+        title: "Client-facing status on halted symbols or paused withdrawals (after a Risk decision)",
+        detail:
+          "Once Risk has halted a symbol or paused withdrawals, Ops updates the client-facing status and handles the inbox. They are the messenger, not the decision maker.",
+      },
+    ],
+    accountable: [
+      {
+        title: "Completeness of recon before the daily dashboard is published",
+        detail:
+          "If recon is incomplete, the daily risk dashboard can lie. Ops is accountable for finishing or clearly flagging breaks before that publish. Risk reads the dashboard; Ops makes the money numbers tie.",
+      },
+      {
+        title: "SLA on funding tickets that sit on escalation routes",
+        detail:
+          "Funding tickets have clocks. Ops owns hitting those SLAs — first response, chase, close — unless the case has been handed to Risk as credit/fraud.",
+      },
+      {
+        title: "Accurate client communication that does not pre-empt a Risk decision",
+        detail:
+          "Wrong or early client messages create complaints and false hope. Ops is accountable that what the client is told matches a signed Risk/Ops decision, not a rumour from an AI card.",
+      },
+    ],
+    collaborates: [
+      {
+        title: "Risk Control — when a withdrawal pause or credit freeze is proposed",
+        detail:
+          "Ops can propose “this withdrawal looks wrong”. Risk Control decides whether it is a credit freeze or a trading restriction. Together they dual-control when money and book risk mix.",
+      },
+      {
+        title: "System — payment-rail, wallet-ops and banking-file incidents",
+        detail:
+          "When the payment gateway, wallet daemon, or bank file is down, Ops opens the incident with System. Ops owns the client cases stuck in the queue; System owns the pipe.",
+      },
+      {
+        title: "AI — fraud/bonus detectors that need case evidence",
+        detail:
+          "AI flags multi-account or bonus abuse. Ops attaches the payment and contact evidence so the skill is not guessing. Ops does not tune the detector.",
+      },
+      {
+        title: "Credit & Client Risk team — NBP clusters tied to funding delays",
+        detail:
+          "If clients go negative because a deposit was late or a withdrawal bounced, Ops works with Credit & Client Risk so the funding delay is visible in the credit picture, not hidden as “just ops”.",
+      },
+    ],
+    outOfScope: [
+      {
+        title: "Setting leverage, halt, LP or wallet-float policy (Risk Control)",
+        detail:
+          "Ops does not set how much leverage a group gets, whether a symbol is halted, which LP is on, or how much crypto sits in hot wallets. Asking them to “just halt it” is out of scope.",
+      },
+      {
+        title: "Approving high-severity interventions (Risk Owner / dual control)",
+        detail:
+          "Ops Lead can approve ops-severity cases. They cannot be the sole yes on halt, LP disable, or a large withdrawal pause. That is Risk Owner / dual control.",
+      },
+      {
+        title: "Changing detectors, skills or the RAG corpus (AI)",
+        detail:
+          "Ops does not edit playbooks or knowledge articles as owner. They can send evidence and comments; AI Engineer maintains the corpus.",
+      },
+      {
+        title: "Admin privilege and audit-store configuration (System)",
+        detail:
+          "Ops does not create admin users or change how the audit log is stored. That is System / Super Admin.",
+      },
+    ],
+    escalatesTo: [
+      {
+        title: "OPS_LEAD → RISK_OWNER when a funding case becomes credit, fraud or market risk",
+        detail:
+          "The analyst tries Ops Lead first. If the case is really “this client is a credit hole / fraud ring / moving the book”, it leaves Ops and goes to Risk Owner. Do not sit on it in the funding queue.",
+      },
+      {
+        title: "SYSTEM_ADMIN when payment rails or wallets are down",
+        detail:
+          "If the rail or wallet is the problem, escalate to System Admin, not to Risk. Risk cannot restart a daemon. Ops still keeps clients updated.",
+      },
+    ],
+  },
+  AI: {
+    code: "AI",
+    name: "AI",
+    mandate:
+      "Builds and maintains the detection, RCA and evidence layer: detectors, skill playbooks, RAG, challenger packs and alert-quality monitoring. Recommends only — never executes halt, close-only, leverage cut, LP disable or withdrawal pause.",
+    owns: [
+      {
+        title: "Anomaly, toxic-flow, copy-cascade and crypto-liquidation detector catalogue",
+        detail:
+          "AI writes and tends the detectors that notice odd P&L, toxic flow, copy-trading pile-ups, and crypto liquidation backlogs. They own the catalogue and shadow runs. They do not flip trading switches when a detector fires.",
+      },
+      {
+        title: "AI RCA narratives with evidence links into RAG and the spine",
+        detail:
+          "When Monitor alarms, this BU drafts the root-cause story with links to evidence, RAG docs, and the spine. Operators should be able to see why the AI said what it said. If the narrative is empty or unlinked, that is an AI miss.",
+      },
+      {
+        title: "Alert quality, false-positive rate, and model-drift monitoring",
+        detail:
+          "AI watches whether detectors cry wolf or go quiet. Rising false positives or drift is their problem to surface — to Risk as checker if a live detector must be pulled back.",
+      },
+      {
+        title: "Shadow → live detector promotion as maker (Risk Owner is checker on live)",
+        detail:
+          "AI Engineer proposes “this detector is good enough to go live”. They are the maker. Risk Owner (a different person) must check. AI must not promote itself to live and then act on the book.",
+      },
+      {
+        title: "Skill playbooks (SKILL.md), Knowledge Tree mapping, and RAG document hygiene",
+        detail:
+          "Playbooks, the knowledge tree, and the RAG library are this BU’s garden. Stale docs, broken links, or a skill that no longer matches the book are theirs to fix. Other BUs consume this; they do not own the corpus.",
+      },
+      {
+        title: "Second-AI challenger configuration (in-repo heuristic today; independent vendor is RM-04)",
+        detail:
+          "On BREACH/CRITICAL a second opinion runs. AI owns that challenger setting (today a second heuristic in this repo). They do not pretend it is a separate vendor — that is still on the roadmap.",
+      },
+      {
+        title: "Human-only AI access blocklist recommendations (AI Access Security)",
+        detail:
+          "AI proposes which pages, buttons, and fields the AI service must never touch (halt, close-only, secrets, the database file). Super Admin / Risk keep the policy; AI does not grant itself those rights.",
+      },
+    ],
+    accountable: [
+      {
+        title: "Explainability of every auto-triggered analysis on the spine",
+        detail:
+          "If an analysis fired automatically, someone must be able to open it and see evidence. AI is accountable when the spine shows a black box.",
+      },
+      {
+        title: "Maker/checker dual control on AI Admin settings, training runs and skill edits",
+        detail:
+          "Changes to models, skills, or AI settings need a maker and a different checker. AI is accountable for not self-approving. The checker is typically Risk Owner or another human, not the same engineer.",
+      },
+      {
+        title: "That the AI service role never receives halt / close-only / secret permissions",
+        detail:
+          "The bot identity must stay read-and-recommend. If someone assigns it halt rights, that is a control failure this BU must flag and refuse.",
+      },
+    ],
+    collaborates: [
+      {
+        title: "Risk Control — checker on live detector promotion and intervention recommendations",
+        detail:
+          "AI brings the draft. Risk Control says whether it may go live or whether a halt/leverage idea may even be queued for a human. Neither side skips the other.",
+      },
+      {
+        title: "Operations — case evidence that trains fraud/bonus skills",
+        detail:
+          "Fraud and bonus skills need real case notes and payment evidence. Ops supplies them; AI turns them into better detectors, not the other way around.",
+      },
+      {
+        title: "System — data-source health that feeds detectors and RAG",
+        detail:
+          "If a source is stale, detectors lie. AI flags freshness; System fixes connectors. AI does not own credentials.",
+      },
+      {
+        title: "All BUs — when a skill certainty gate fails and RCA falls back to RAG",
+        detail:
+          "When the skill is not sure, RCA falls back to RAG. AI still writes the pack; the owning BU still decides what to do. AI does not treat a low-certainty pack as an order.",
+      },
+    ],
+    outOfScope: [
+      {
+        title: "Final intervention authority (Risk / Ops / System per domain RACI)",
+        detail:
+          "AI never has the last word on halt, freeze, clawback, or kill-switch. That sits with the domain owner. Approve on Human Intervention is a human page.",
+      },
+      {
+        title: "Changing production Monitor 2.0 upstream thresholds (owner BU + System)",
+        detail:
+          "AI may suggest a threshold is noisy. It does not change live Monitor 2.0 warn/breach numbers. The owner BU and System do that.",
+      },
+      {
+        title: "User directory, SSO and break-glass admin (System / Super Admin)",
+        detail:
+          "AI does not create users or hold break-glass. That is System / Super Admin, and SSO is still on the roadmap.",
+      },
+      {
+        title: "Client contact or funding-ticket ownership (Operations)",
+        detail:
+          "The chatbot in this admin explains. It does not email clients or close funding tickets. Ops owns that work.",
+      },
+    ],
+    escalatesTo: [
+      {
+        title: "RISK_OWNER when a detector should go live or a recommendation needs a human gate",
+        detail:
+          "Anything that would change the live book or a live detector goes to Risk Owner. AI stops at recommend.",
+      },
+      {
+        title: "AI Engineer on-call → SYSTEM_ADMIN on pipeline or source outages",
+        detail:
+          "If RAG, detectors, or a source pipeline is down, AI on-call pages System Admin. They do not try to “fix prod” by editing settings as a lone maker.",
+      },
+    ],
+  },
+  SYSTEM: {
+    code: "SYSTEM",
+    name: "System",
+    mandate:
+      "Owns control-plane plumbing: trading servers, oneZero bridges, LP endpoints, wallets, config change-control, kill-switches, data pipelines, evidence vault, admin privileges and the audit store. Executes switches Risk has armed; does not set book-risk policy.",
+    owns: [
+      {
+        title: "Trading server / oneZero bridge / LP endpoint health and failover",
+        detail:
+          "System keeps MT4/MT5, the oneZero bridge, and LP connections alive and failsover when they are not. If quotes are stale because the feed process died, that is System. Whether the book must then be halted is Risk.",
+      },
+      {
+        title: "Config change control, non-risk feature flags, and platform kill-switches",
+        detail:
+          "System owns how config is changed and which kill-switches exist as engineering. Risk says when a risk switch may be armed. System executes. They do not pick new leverage as a “config tweak”.",
+      },
+      {
+        title: "Data pipelines into Monitor, detectors, RAG and the evidence vault",
+        detail:
+          "Indicators, RAG documents, and evidence have to arrive. System owns the pipes, credentials, and refresh. AI consumes them; System does not write RCA.",
+      },
+      {
+        title: "Admin privileges, session store, and immutable audit logging",
+        detail:
+          "Who can log in, how sessions live, and that the audit trail cannot be quietly edited — that is System. They do not assign Risk Owner as a business decision; they implement the directory Super Admin / Risk asked for.",
+      },
+      {
+        title: "Data-source registry (internal + external) and connector credentials",
+        detail:
+          "The Data Sources page is System’s inventory: URLs, keys, cadence, status. AI and Market Intel read from it. Credentials do not live in a detector config owned by AI.",
+      },
+      {
+        title: "Crypto wallet infrastructure (hot / warm / cold) — not float policy (Risk)",
+        detail:
+          "System runs the wallet software and key ceremony plumbing. How much float is allowed in hot vs cold is Risk policy. System can say “the daemon is down”; they cannot say “raise the hot-wallet cap”.",
+      },
+    ],
+    accountable: [
+      {
+        title: "Availability of CRMP, Monitor sync, and messenger routes",
+        detail:
+          "If the admin, Monitor sync, or messenger routing is down, System is accountable. Other BUs cannot do their RACI without the plane.",
+      },
+      {
+        title: "Segregation of duties between settings.manage and risk.intervene",
+        detail:
+          "The person who can change platform settings should not be the only person who can intervene on the book. System is accountable that those permissions stay split unless Super Admin has declared break-glass.",
+      },
+      {
+        title: "That every kill-switch execution is logged to spine + audit",
+        detail:
+          "A kill-switch with no spine/audit line is a control failure. System must log the execution even when Risk armed it.",
+      },
+    ],
+    collaborates: [
+      {
+        title: "Risk Control — which kill-switches exist and who may arm them",
+        detail:
+          "System builds the switch. Risk Control names who may arm it and when. Neither side ships a silent switch.",
+      },
+      {
+        title: "AI — source freshness and pipeline SLAs for detectors",
+        detail:
+          "AI needs fresh data. System and AI agree SLAs; System repairs connectors; AI does not hold production keys.",
+      },
+      {
+        title: "Operations — payment-rail and banking-file incidents",
+        detail:
+          "When rails or files break, System and Ops sit together: System on the pipe, Ops on the cases. Risk joins only if credit or book risk appears.",
+      },
+      {
+        title: "SUPER_ADMIN — break-glass access and privilege reviews",
+        detail:
+          "Break-glass and periodic privilege reviews are Super Admin with System. System implements; Super Admin authorises.",
+      },
+    ],
+    outOfScope: [
+      {
+        title: "Limit policy and book-risk decisions (Risk Control)",
+        detail:
+          "System does not set exposure caps or accept residual market risk. “The server is fine so the book must be fine” is not their call.",
+      },
+      {
+        title: "Client case handling and recon ownership (Operations)",
+        detail:
+          "System does not work funding tickets or sign EOD recon. They restore the rail so Ops can.",
+      },
+      {
+        title: "Model training and RCA narrative quality (AI)",
+        detail:
+          "System does not train detectors or write root-cause prose. They keep GPUs/pipes up if asked; quality of RCA is AI’s.",
+      },
+      {
+        title: "Accepting residual market or credit risk after an incident",
+        detail:
+          "After an outage, System can say “we’re back”. They cannot sign “the book risk is acceptable now”. That is Risk Owner.",
+      },
+    ],
+    escalatesTo: [
+      {
+        title: "SUPER_ADMIN on privilege, data-loss or multi-system outage",
+        detail:
+          "Lost data, broken privileges, or several systems down at once go to Super Admin. System does not quietly rebuild access.",
+      },
+      {
+        title: "RISK_OWNER when infrastructure failure creates market or wallet risk",
+        detail:
+          "If a dead bridge or wallet means the book or client crypto is at risk, System pages Risk Owner immediately so trading/wallet policy can change while infra is still being fixed.",
+      },
+    ],
+  },
+};
+
+export const ROLE_CHARTERS: Record<RoleCode, RoleCharter> = {
+  SUPER_ADMIN: {
+    code: "SUPER_ADMIN",
+    name: "Super Admin",
+    department: null,
+    intro:
+      "Cross-department platform administrator. Holds break-glass access to users, settings, detectors and AI Admin without a single-BU RACI constraint. Used for the demo platform owner and exceptional incidents — not for daily book risk.",
+    owns: [
+      "User and role assignment, including emergency privilege",
+      "Platform-wide settings, feature flags and kill-switch configuration",
+      "Break-glass override of maker/checker after an incident is declared",
+      "Audit-log retention and the admin-access security blocklist",
+    ],
+    does: [
+      "Create, disable and reassign users across departments",
+      "Review any admin page; operate AI Admin when no departmental checker is available",
+      "Reset demo data and documentation overlays in this prototype",
+      "Authorise System to execute a platform-wide kill-switch",
+    ],
+    doesNot: [
+      "Own the daily CFD or crypto risk book (that is the Risk Owner)",
+      "Replace departmental decision rights on client-facing interventions unless escalated",
+      "Act as the default maker on detector training or shadow runs (AI Engineer)",
+    ],
+    escalatesTo: [
+      "Named demo platform owner (haixiang.yan@hytechc.com) / board for capital or licence events",
+    ],
+  },
+  RISK_OWNER: {
+    code: "RISK_OWNER",
+    name: "Risk Owner",
+    department: "RISK_CONTROL",
+    intro:
+      "Department owner for Risk Control. Accountable for limit policy, escalations, war-room, and the human gate on high-severity interventions across forex CFD and the crypto exchange.",
+    owns: [
+      "Limit policy, breach authority, and residual-risk acceptance",
+      "Escalation routes into Risk Control Desk and Crypto Exchange Risk",
+      "Checker role on live detector promotion and risk-facing AI Admin settings",
+      "Approve / reject Human Intervention for halt, leverage, LP disable and wallet pause",
+    ],
+    does: [
+      "Chair BREACH/CRITICAL war-rooms until residual risk is signed",
+      "Tune risk thresholds this BU owns (not System-only flags)",
+      "Assign Risk Analysts on-call and review the daily risk dashboard",
+      "Challenge AI RCA when the second-AI verdict is DISAGREE or PARTIAL",
+      "Sign entity-aware leverage or product-group changes before they go live",
+    ],
+    doesNot: [
+      "Process funding tickets or speak to clients as case owner (Operations)",
+      "Patch bridges, LPs or wallets (System)",
+      "Auto-execute halt / close-only — those stay human-gated, including for this role's own proposals when dual-control applies",
+    ],
+    escalatesTo: [
+      "SUPER_ADMIN / demo platform owner on entity-capital, multi-entity or licence-limit events",
+    ],
+  },
+  RISK_ANALYST: {
+    code: "RISK_ANALYST",
+    name: "Risk Analyst",
+    department: "RISK_CONTROL",
+    intro:
+      "First-line Risk Control operator. Monitors alerts, investigates with AI RCA and evidence, proposes actions, and pages the Risk Owner when a human gate is required.",
+    owns: [
+      "Live alert queue for Risk Control domains during the shift",
+      "Investigation packs: Monitor evidence, RAG, market intel, messenger thread",
+      "Draft intervention recommendations (maker) for the Risk Owner to check",
+    ],
+    does: [
+      "Ack, annotate and escalate alerts on Demo Messenger",
+      "Run detectors in operate mode and attach evidence to the spine",
+      "Propose halt / leverage / LP / pause — never confirm high-severity actions alone",
+      "Feed post-incident notes into the case thread for RAG later",
+    ],
+    doesNot: [
+      "Approve high-severity interventions or change limit policy",
+      "Manage users, platform settings, or AI Admin checker steps",
+      "Close a CRITICAL without Risk Owner (or dual-control) sign-off",
+    ],
+    escalatesTo: [
+      "RISK_OWNER (primary) → SUPER_ADMIN if the owner is unreachable past SLA",
+    ],
+  },
+  OPS_LEAD: {
+    code: "OPS_LEAD",
+    name: "Operations Lead",
+    department: "OPERATIONS",
+    intro:
+      "Owns Operations queues: funding exceptions, EOD recon, ticket SLA, and client-facing execution of risk decisions. Checker for ops-side interventions; maker for case assignment.",
+    owns: [
+      "Ops Funding & Recon team SLA and on-call roster",
+      "Withdrawal / deposit exception policy inside rails Risk has not frozen",
+      "Client communication after a Risk decision (halted symbol, paused withdrawal)",
+      "Ops dashboard scope (dashboard.ops)",
+    ],
+    does: [
+      "Prioritise recon breaks before the daily dashboard is published",
+      "Approve ops-severity interventions; escalate credit or fraud to Risk",
+      "Manage Lark channels used by Ops Funding & Recon",
+      "Dual-control with Risk when a funding freeze is credit-related",
+    ],
+    doesNot: [
+      "Set leverage, halt, LP or wallet-float policy",
+      "Promote detectors or edit RAG as owner",
+      "Grant admin privileges or change platform kill-switches",
+    ],
+    escalatesTo: [
+      "RISK_OWNER when a case becomes credit, fraud or market risk",
+      "SYSTEM_ADMIN when payment rails or wallets are down",
+    ],
+  },
+  OPS_ANALYST: {
+    code: "OPS_ANALYST",
+    name: "Operations Analyst",
+    department: "OPERATIONS",
+    intro:
+      "Handles operational tickets and case work: funding exceptions, recon items, client contact, and evidence capture for AI fraud/bonus skills.",
+    owns: [
+      "Assigned tickets in Ops Funding & Recon",
+      "Case notes and client-contact logs that the spine can audit",
+      "First-pass recon exception classification",
+    ],
+    does: [
+      "Work the ops queue, update ticket status, notify via messenger",
+      "Collect payment-rail / on-chain evidence for AI and Risk",
+      "Execute a freeze or release only after the documented approval",
+    ],
+    doesNot: [
+      "Close credit-impacted withdrawals without the Operations Lead",
+      "Change Monitor thresholds, detectors or platform settings",
+      "Tell a client a risk decision that Risk has not signed",
+    ],
+    escalatesTo: [
+      "OPS_LEAD → RISK_OWNER if the case is credit or fraud",
+    ],
+  },
+  AI_ENGINEER: {
+    code: "AI_ENGINEER",
+    name: "AI Engineer",
+    department: "AI",
+    intro:
+      "Maintains detectors, RCA models, skill playbooks, RAG pipelines and the challenger. Maker on AI Admin; cannot be the sole checker on live promotion.",
+    owns: [
+      "Detector catalogue health, shadow runs, and drift monitors",
+      "Skill playbook accuracy and Knowledge Tree links",
+      "RAG corpus freshness and source citations",
+      "AI analysis pipeline as maker (auto-on-alarm, certainty gate, challenger settings)",
+    ],
+    does: [
+      "Propose AI Admin changes, training runs and skill edits",
+      "Investigate false positives with the Risk Analyst",
+      "Keep human-only AI access blocklist recommendations current",
+      "Operate detectors and attach RCA evidence",
+    ],
+    doesNot: [
+      "Approve their own live detector promotion (Risk Owner or a different checker)",
+      "Execute halt / leverage / LP / withdrawal actions",
+      "Change platform-wide kill-switches (System)",
+    ],
+    escalatesTo: [
+      "RISK_OWNER for live promotion and intervention recommendations",
+      "SYSTEM_ADMIN for source or pipeline outages",
+    ],
+  },
+  SYSTEM_ADMIN: {
+    code: "SYSTEM_ADMIN",
+    name: "System Admin",
+    department: "SYSTEM",
+    intro:
+      "Infra, LP endpoints, bridges, servers, wallets, config change-control and platform configuration. Executes kill-switches that Risk has armed; does not set book-risk policy.",
+    owns: [
+      "Trading Infra & Bridges on-call",
+      "Data-source connectors, credentials and refresh cadence",
+      "settings.manage for non-risk flags, sessions and the audit store",
+      "User / team management within System (and support for other BUs)",
+    ],
+    does: [
+      "Patch, failover and health-check LP / bridge / wallet / server",
+      "Arm or execute a kill-switch when Risk (or Super Admin) has authorised it",
+      "Register new internal and external sources",
+      "Investigate tech-domain alerts (stale quotes from feed, API errors, wallet daemons)",
+    ],
+    doesNot: [
+      "Accept residual market or credit risk",
+      "Train models or write RCA as owner",
+      "Handle client funding cases",
+    ],
+    escalatesTo: [
+      "RISK_OWNER when infra failure creates book or wallet risk",
+      "SUPER_ADMIN on privilege, data-loss or multi-system outage",
+    ],
+  },
+  VIEWER: {
+    code: "VIEWER",
+    name: "Viewer",
+    department: null,
+    intro:
+      "Read-only observer of dashboards, org chart, source registry, analyses and docs. Cannot operate alerts, interventions, AI Admin or settings. Typical board / auditor persona.",
+    owns: [
+      "No operational RACI — may raise questions in messenger threads they can read",
+    ],
+    does: [
+      "Open dashboards, docs, RAG, skills (read), alerts (read) and org pages",
+      "Follow the spine log and the audit trail they are permitted to see",
+    ],
+    doesNot: [
+      "Ack, escalate, intervene, edit users, change settings, or run AI Admin",
+      "Be assigned as on-call or as maker/checker",
+    ],
+    escalatesTo: [
+      "Sponsoring BU owner (usually RISK_OWNER or SUPER_ADMIN) outside the product",
+    ],
+  },
+};
+
+export const DEPARTMENT_LIST = Object.values(DEPARTMENT_CHARTERS);
+export const ROLE_LIST = Object.values(ROLE_CHARTERS);
+
+export function departmentCharter(code: string | null | undefined): DepartmentCharter | undefined {
+  if (!code) return undefined;
+  return DEPARTMENT_CHARTERS[code as DepartmentCode];
+}
+
+export function roleCharter(code: string | null | undefined): RoleCharter | undefined {
+  if (!code) return undefined;
+  return ROLE_CHARTERS[code as RoleCode];
+}

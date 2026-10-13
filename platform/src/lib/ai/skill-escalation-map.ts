@@ -1,0 +1,108 @@
+/**
+ * Explicit skill → escalation route_code binding.
+ * Every skill binds exactly one path; unbound skills fall back to ESC-DEFAULT
+ * so no risk event lacks an escalation path.
+ */
+export const SKILL_ESCALATION_ROUTE: Record<string, string> = {
+  // Credit / client
+  "SKILL-MARGIN-SPIKE": "ESC-MARGIN-BREACH",
+  "SKILL-COPY-CONCENTRATION": "ESC-COPY-CONC",
+  "SKILL-COPY-CHURN": "ESC-COPY-CONC",
+  "SKILL-FRAUD-CLUSTER": "ESC-MARGIN-BREACH",
+  "SKILL-NEGATIVE-BALANCE": "ESC-MARGIN-BREACH",
+  "SKILL-STOPOUT-VELOCITY": "ESC-MARGIN-BREACH",
+  "SKILL-LATENCY-ARB": "ESC-MARGIN-BREACH",
+  "SKILL-XAU247-EXPOSURE": "ESC-MARGIN-BREACH",
+  "SKILL-LEVERAGE-ONBOARD": "ESC-MARGIN-BREACH",
+
+  // LP / hedge
+  "SKILL-LP-REJECT-STORM": "ESC-LP-REJECT",
+  "SKILL-HEDGE-COVERAGE": "ESC-LP-REJECT",
+  "SKILL-ABOOK-RATIO": "ESC-LP-REJECT",
+
+  // Crypto / wallet
+  "SKILL-CRYPTO-HOT-WALLET": "ESC-WALLET-FLOAT",
+  "SKILL-CRYPTO-LIQ-BACKLOG": "ESC-WALLET-FLOAT",
+  "SKILL-CRYPTO-DEPOSIT-SPIKE": "ESC-WALLET-FLOAT",
+  "SKILL-CRYPTO-ORACLE": "ESC-WALLET-FLOAT",
+  "SKILL-CRYPTO-INSURANCE": "ESC-WALLET-FLOAT",
+  "SKILL-CRYPTO-OI-CONC": "ESC-WALLET-FLOAT",
+  "SKILL-WITHDRAWAL-VELOCITY": "ESC-WALLET-FLOAT",
+  "SKILL-FUNDING-EXTREME": "ESC-WALLET-FLOAT",
+  "SKILL-PERP-BASIS": "ESC-WALLET-FLOAT",
+  "SKILL-STABLE-DEPEG": "ESC-WALLET-FLOAT",
+
+  // Market / feed
+  "SKILL-STALE-FEED": "ESC-FEED-STALE",
+  "SKILL-STALE-FEED-HALT": "ESC-FEED-STALE",
+  "SKILL-BRIDGE-LATENCY": "ESC-FEED-STALE",
+  "SKILL-API-ERROR-RATE": "ESC-FEED-STALE",
+  "SKILL-PLATFORM-DISCONNECT": "ESC-FEED-STALE",
+  "SKILL-SYMBOL-HALTS": "ESC-FEED-STALE",
+  "SKILL-EQUITY-DRAWDOWN": "ESC-FEED-STALE",
+  "SKILL-CORRELATION-BREAK": "ESC-FEED-STALE",
+  "SKILL-SLIPPAGE-SPIKE": "ESC-FEED-STALE",
+  "SKILL-SPREAD-ANOMALY": "ESC-FEED-STALE",
+  "SKILL-NEWS-GROSS": "ESC-FEED-STALE",
+  "SKILL-VAR-BREACH": "ESC-FEED-STALE",
+  "SKILL-GAP-RISK": "ESC-FEED-STALE",
+  "SKILL-SWAP-MISCONFIG": "ESC-FEED-STALE",
+
+  // Ops / funding
+  "SKILL-FUNDING-EXCEPTION": "ESC-FUNDING",
+  "SKILL-RECON-BREAKS": "ESC-FUNDING",
+
+  // Fraud / conduct → risk desk path
+  "SKILL-BONUS-BURN": "ESC-MARGIN-BREACH",
+  "SKILL-CHARGEBACK-SPIKE": "ESC-MARGIN-BREACH",
+  "SKILL-PAYMENT-FRAUD": "ESC-MARGIN-BREACH",
+  "SKILL-IB-REBATE-ANOMALY": "ESC-MARGIN-BREACH",
+  "SKILL-WASH-TRADE": "ESC-MARGIN-BREACH",
+
+  // Reg / capital → risk desk
+  "SKILL-ENTITY-CAPITAL": "ESC-MARGIN-BREACH",
+  "SKILL-SEGREGATION-GAP": "ESC-MARGIN-BREACH",
+
+  // Model / catch-all
+  "SKILL-DETECTOR-DRIFT": "ESC-MODEL-DRIFT",
+  "SKILL-GENERIC-HUMAN-REVIEW": "ESC-DEFAULT",
+  "SKILL-MARKET-INTEL": "ESC-DEFAULT",
+  "SKILL-DEMO-LIQ": "ESC-DEFAULT",
+};
+
+/** Domain → route when a skill has no explicit bind. */
+const DOMAIN_ROUTE_FALLBACK: Record<string, string> = {
+  CREDIT_CLIENT: "ESC-MARGIN-BREACH",
+  LP_HEDGE: "ESC-LP-REJECT",
+  CRYPTO_EXCHANGE: "ESC-WALLET-FLOAT",
+  MARKET_PRICING: "ESC-FEED-STALE",
+  OPS_PROCESS: "ESC-FUNDING",
+  MODEL_AI: "ESC-MODEL-DRIFT",
+  TECH_INFRA: "ESC-FEED-STALE",
+  FRAUD_CONDUCT: "ESC-MARGIN-BREACH",
+  REG_CAPITAL: "ESC-MARGIN-BREACH",
+  PRODUCT_CONFIG: "ESC-FEED-STALE",
+};
+
+export function escalationRouteForSkill(
+  skillCode: string,
+  opts?: { domain?: string; defaultCode?: string }
+): string {
+  if (SKILL_ESCALATION_ROUTE[skillCode]) return SKILL_ESCALATION_ROUTE[skillCode];
+  if (opts?.domain && DOMAIN_ROUTE_FALLBACK[opts.domain]) return DOMAIN_ROUTE_FALLBACK[opts.domain];
+  return opts?.defaultCode || "ESC-DEFAULT";
+}
+
+/** Ensure every skill code resolves to exactly one route (never empty). */
+export function ensureSkillEscalationBind(
+  skillCode: string,
+  opts?: { domain?: string }
+): { route_code: string; source: "explicit" | "domain" | "default" } {
+  if (SKILL_ESCALATION_ROUTE[skillCode]) {
+    return { route_code: SKILL_ESCALATION_ROUTE[skillCode], source: "explicit" };
+  }
+  if (opts?.domain && DOMAIN_ROUTE_FALLBACK[opts.domain]) {
+    return { route_code: DOMAIN_ROUTE_FALLBACK[opts.domain], source: "domain" };
+  }
+  return { route_code: "ESC-DEFAULT", source: "default" };
+}

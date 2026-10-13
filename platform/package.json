@@ -1,0 +1,45 @@
+{
+  "name": "platform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "build:pages": "bash scripts/build-github-pages.sh",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "test:mermaid": "npx tsx scripts/verify-mermaid-edges.ts",
+    "test:discovery": "tsx scripts/verify-discovery-admin.ts",
+    "test:discovery-smoke": "tsx scripts/smoke-discovery-admin.ts",
+    "test:audit": "tsx scripts/verify-audit-coverage.ts",
+    "test:audit-smoke": "tsx scripts/smoke-audit-coverage.ts",
+    "test:ai-performance": "tsx scripts/verify-ai-performance.ts",
+    "test:ai-performance-smoke": "tsx scripts/smoke-ai-performance.ts",
+    "test:severity-feedback": "tsx scripts/verify-severity-feedback.ts",
+    "test:severity-feedback-smoke": "tsx scripts/smoke-severity-feedback.ts",
+    "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "lucide-react": "^1.49.0",
+    "next": "15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.4",
+    "tailwindcss": "^4",
+    "tsx": "^4.20.5",
+    "typescript": "^5"
+  }
+}

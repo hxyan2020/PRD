@@ -1,0 +1,75 @@
+name: Publish CRMP Admin to GitHub Pages
+
+on:
+  push:
+    branches:
+      [
+        cursor/crmp-admin-pages-a935,
+        cursor/public-urls-a935,
+        cursor/risk-discovery-admin-28bc,
+        cursor/admin-audit-coverage-28bc,
+        cursor/ai-performance-dashboard-28bc,
+        cursor/severity-feedback-weights-28bc,
+        main,
+      ]
+    paths:
+      - "platform/**"
+      - "docs/risk-discovery/**"
+      - ".github/workflows/crmp-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crmp-static
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - name: Build static admin snapshot
+        working-directory: platform
+        env:
+          NEXT_PUBLIC_STATIC_EXPORT: "1"
+          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-admin
+        run: |
+          npm ci
+          npm run build:pages
+      - name: Stage nested Pages folders
+        run: |
+          mkdir -p publish/crmp-admin publish/risk-discovery
+          cp -a platform/out/. publish/crmp-admin/
+          touch publish/crmp-admin/.nojekyll
+          # Executed Colab notebook HTML + .ipynb (must coexist with MatchingManagement at /PRD/)
+          if [ -d docs/risk-discovery ]; then
+            cp -a docs/risk-discovery/. publish/risk-discovery/
+            touch publish/risk-discovery/.nojekyll
+            # Prefer notebook index over site-wide SPA 404 for this folder
+            if [ -f publish/risk-discovery/index.html ] && [ ! -f publish/risk-discovery/404.html ]; then
+              cp publish/risk-discovery/index.html publish/risk-discovery/404.html
+            fi
+          fi
+      - name: Publish gh-pages (keep sibling sites)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: publish
+          publish_branch: gh-pages
+          keep_files: true
+      - name: Public URL
+        run: |
+          {
+            echo "Permanent URLs"
+            echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
+            echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/discovery/"
+            echo "- https://hxyan2020.github.io/PRD/risk-discovery/"
+            echo "- https://hxyan2020.github.io/PRD/risk-discovery/risk_discovery.ipynb"
+          } >> "$GITHUB_STEP_SUMMARY"

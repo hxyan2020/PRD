@@ -1,0 +1,1347 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ChevronDown, ChevronRight, Send, Sparkles } from "lucide-react";
+import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { VantageMark } from "@/components/VantageLogo";
+import { AdminLink } from "@/components/AdminLink";
+import { useUiLocale } from "@/hooks/useUiLocale";
+import { t, phrase, type UiLocale } from "@/lib/i18n";
+import { bumpNavBadge } from "@/lib/nav-badges";
+import { THINKING_ACTIONS, thinkingSteps } from "@/lib/messenger/thinking";
+
+const ACTION_I18N: Record<string, { en: string; "zh-Hant": string; descEn: string; descZh: string }> = {
+  BLOCK_ACCOUNT: {
+    en: "Block user account",
+    "zh-Hant": "封鎖使用者帳戶",
+    descEn: "Freeze login and new orders for flagged account(s).",
+    descZh: "凍結標註帳戶之登入與新訂單。",
+  },
+  HALT_SYMBOL: {
+    en: "Halt trading (symbol)",
+    "zh-Hant": "暫停交易（商品）",
+    descEn: "Temporarily disable new exposure on the stressed symbol.",
+    descZh: "暫時停用受壓商品之新曝險。",
+  },
+  CUT_LEVERAGE: {
+    en: "Cut max leverage",
+    "zh-Hant": "調降最大槓桿",
+    descEn: "Reduce leverage for affected cohort / instrument.",
+    descZh: "降低受影響族群／商品槓桿。",
+  },
+  WIDEN_SPREAD: {
+    en: "Pre-widen spreads",
+    "zh-Hant": "預先擴大點差",
+    descEn: "Widen LP quotes ahead of expected volatility.",
+    descZh: "在預期波動前擴大 LP 報價點差。",
+  },
+  PAUSE_COPY: {
+    en: "Pause copy joining",
+    "zh-Hant": "暫停跟單加入",
+    descEn: "Stop new copiers joining the concentrated provider.",
+    descZh: "停止新跟單者加入過度集中之提供者。",
+  },
+};
+
+function localizeAction(code: string, label: string, description: string, locale: UiLocale) {
+  const hit = ACTION_I18N[code];
+  if (!hit) return { label, description };
+  return {
+    label: hit[locale],
+    description: locale === "zh-Hant" ? hit.descZh : hit.descEn,
+  };
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+type Thread = {
+  id: number;
+  thread_id: string;
+  channel_name: string;
+  title: string;
+  severity: string;
+  status: string;
+  message_count: number;
+  last_body: string | null;
+  updated_at: string;
+};
+
+type Message = {
+  id: number;
+  msg_id: string;
+  kind: string;
+  sender: string;
+  body: string;
+  meta_json: string;
+  created_at: string;
+};
+
+type Pending = {
+  id: number;
+  action_code: string;
+  status: string;
+  detail_json: string;
+};
+
+type Recommended = {
+  code: string;
+  label: string;
+  description: string;
+  admin_path: string;
+  needs_checker: boolean;
+  priority?: "critical" | "control" | "soft";
+  permission?: string;
+};
+
+type MessengerCaps = {
+  roleCode: string;
+  canEvidence: boolean;
+  canEscalate: boolean;
+  canTriage: boolean;
+  canIntervene: boolean;
+  canSoftControl: boolean;
+};
+
+const ACTION_PRIORITY: Record<string, "critical" | "control" | "soft"> = {
+  BLOCK_ACCOUNT: "critical",
+  HALT_SYMBOL: "critical",
+  CUT_LEVERAGE: "control",
+  PAUSE_COPY: "control",
+  WIDEN_SPREAD: "soft",
+};
+
+type PocHop = {
+  step: number;
+  team: string;
+  poc_name: string | null;
+  poc_email: string | null;
+  poc_role: string | null;
+};
+
+type PocWindow = PocHop & {
+  status: "relayed" | "active" | "waiting";
+  messages: Message[];
+};
+
+type InboxPack = {
+  messages: Message[];
+  pending: Pending[];
+  recommended_actions: Recommended[];
+  poc_windows?: PocWindow[];
+  current_step?: number;
+};
+
+type LiveThink = {
+  steps: string[];
+  visible: number;
+};
+
+function stamp() {
+  return new Date().toISOString().replace("T", " ").slice(0, 19);
+}
+
+let msgSeq = 0;
+
+function makeMessage(kind: string, sender: string, body: string, meta: Record<string, unknown> = {}): Message {
+  const now = Date.now();
+  msgSeq += 1;
+  return {
+    id: now + msgSeq,
+    msg_id: `${kind === "THINKING" ? "THINK" : "MSG"}-DEMO-${now}-${msgSeq}`,
+    kind,
+    sender,
+    body,
+    meta_json: JSON.stringify(meta),
+    created_at: stamp(),
+  };
+}
+
+function ThinkingCard({
+  steps,
+  visible,
+  running,
+  elapsedMs,
+  expanded,
+  onToggle,
+  locale,
+}: {
+  steps: string[];
+  visible: number;
+  running: boolean;
+  elapsedMs?: number;
+  expanded?: boolean;
+  onToggle?: () => void;
+  locale: UiLocale;
+}) {
+  const shown = running ? steps.slice(0, Math.max(visible, 0)) : steps;
+  const seconds = Math.max(1, Math.round((elapsedMs || 0) / 1000));
+  return (
+    <div className="rounded-xl border border-teal-200 bg-gradient-to-b from-teal-50 to-white px-3 py-2 text-sm max-w-full sm:max-w-[95%]">
+      <button
+        type="button"
+        className="flex w-full items-center gap-2 text-left min-h-11"
+        onClick={running ? undefined : onToggle}
+        aria-expanded={running ? true : Boolean(expanded)}
+        aria-label={running ? t("msg.thinking", locale) : expanded ? t("msg.hideThoughts", locale) : t("msg.showThoughts", locale)}
+      >
+        {running ? (
+          <span className="flex gap-1 shrink-0" aria-hidden>
+            <span className="think-dot" />
+            <span className="think-dot" />
+            <span className="think-dot" />
+          </span>
+        ) : expanded ? (
+          <ChevronDown size={16} className="shrink-0 text-teal-800" />
+        ) : (
+          <ChevronRight size={16} className="shrink-0 text-teal-800" />
+        )}
+        <Sparkles size={14} className="shrink-0 text-teal-800" />
+        <span className="font-semibold text-teal-950">
+          {running ? t("msg.thinking", locale) : t("msg.thoughtFor", locale, { s: seconds })}
+        </span>
+      </button>
+      {(running || expanded) && shown.length > 0 && (
+        <ol className="mt-1.5 mb-1 space-y-1.5 pl-0.5">
+          {shown.map((step, i) => {
+            const current = running && i === visible - 1;
+            const done = !running || i < visible - 1;
+            return (
+              <li key={`${i}-${step}`} className="think-step flex gap-2 text-[13px] leading-snug text-slate-700">
+                <span className={`mt-0.5 shrink-0 ${done ? "text-teal-700" : "text-teal-500"}`}>{done ? "✓" : "›"}</span>
+                <span>
+                  {step}
+                  {current ? <span className="think-cursor" /> : null}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </div>
+  );
+}
+
+/** Lark-style interactive actions attached to the AI report card message. */
+function LarkCardActions({
+  busy,
+  capabilities,
+  recommendedGroups,
+  visibleRecommended,
+  locale,
+  aiSeverity,
+  onClose,
+  onEscalate,
+  onEvidence,
+  onDismiss,
+  onRecommend,
+  onRecommendSeverity,
+}: {
+  busy: boolean;
+  capabilities: MessengerCaps;
+  recommendedGroups: Record<"critical" | "control" | "soft", Recommended[]>;
+  visibleRecommended: Recommended[];
+  locale: UiLocale;
+  aiSeverity: string;
+  onClose: () => void;
+  onEscalate: () => void;
+  onEvidence: () => void;
+  onDismiss: () => void;
+  onRecommend: (code: string) => void;
+  onRecommendSeverity: (recommended_p: number, reason: string) => void;
+}) {
+  const [sevP, setSevP] = useState<number | null>(null);
+  const [sevReason, setSevReason] = useState("");
+  const aiP =
+    aiSeverity === "CRITICAL" ? 0 : aiSeverity === "BREACH" ? 1 : aiSeverity === "WARN" ? 2 : 3;
+  const levels = [
+    { p: 0, tone: "border-rose-300 bg-rose-50 text-rose-950", en: "P0", zh: "P0" },
+    { p: 1, tone: "border-orange-300 bg-orange-50 text-orange-950", en: "P1", zh: "P1" },
+    { p: 2, tone: "border-amber-300 bg-amber-50 text-amber-950", en: "P2", zh: "P2" },
+    { p: 3, tone: "border-slate-300 bg-slate-50 text-slate-800", en: "P3", zh: "P3" },
+  ];
+
+  return (
+    <div className="mt-3 border-t border-amber-200/80 pt-2.5 space-y-2.5" data-testid="msg-lark-card-actions">
+      <div data-testid="msg-triage-actions" className="space-y-1.5">
+        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+          {t("msg.triagePrimary", locale)}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {capabilities.canTriage ? (
+            <button
+              type="button"
+              className="btn btn-primary !min-h-10 text-xs"
+              disabled={busy}
+              onClick={onClose}
+              data-testid="msg-btn-close"
+            >
+              {t("msg.close", locale)}
+            </button>
+          ) : null}
+          {capabilities.canEscalate ? (
+            <button
+              type="button"
+              className="btn !min-h-10 text-xs border-rose-300 bg-rose-50 text-rose-950 hover:bg-rose-100"
+              disabled={busy}
+              onClick={onEscalate}
+              title={t("msg.escalateHint", locale)}
+              data-testid="msg-btn-escalate"
+            >
+              {t("msg.escalate", locale)}
+            </button>
+          ) : (
+            <p className="text-xs text-rose-800 self-center">{t("msg.escalateHint", locale)}</p>
+          )}
+        </div>
+        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] pt-0.5">
+          {t("msg.triageSecondary", locale)}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {capabilities.canEvidence ? (
+            <button
+              type="button"
+              className="btn !min-h-10 text-xs"
+              disabled={busy}
+              onClick={onEvidence}
+              data-testid="msg-btn-evidence"
+            >
+              {t("msg.showEvidence", locale)}
+            </button>
+          ) : null}
+          {capabilities.canTriage ? (
+            <button
+              type="button"
+              className="btn !min-h-10 text-xs text-[var(--muted)]"
+              disabled={busy}
+              onClick={onDismiss}
+              data-testid="msg-btn-dismiss"
+            >
+              {t("msg.dismiss", locale)}
+            </button>
+          ) : null}
+        </div>
+      </div>
+
+      {capabilities.canTriage ? (
+        <div
+          className="space-y-2 border-t border-dashed border-amber-200/80 pt-2"
+          data-testid="msg-severity-recommend"
+        >
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+              {t("msg.severityRecommend", locale)}
+            </div>
+            <div className="text-[11px] text-[var(--muted)]">
+              {t("msg.severityAiLabel", locale)}:{" "}
+              <span className="font-mono font-semibold text-slate-800">
+                P{aiP} · {aiSeverity}
+              </span>
+            </div>
+          </div>
+          <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.severityRecommendHint", locale)}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {levels.map((lv) => (
+              <button
+                key={lv.p}
+                type="button"
+                disabled={busy}
+                onClick={() => setSevP(lv.p)}
+                className={`btn !min-h-9 !px-3 text-xs ${lv.tone} ${
+                  sevP === lv.p ? "ring-2 ring-offset-1 ring-teal-500" : ""
+                }`}
+                data-testid={`msg-sev-p${lv.p}`}
+              >
+                {locale === "zh-Hant" ? lv.zh : lv.en}
+              </button>
+            ))}
+          </div>
+          <label className="block text-[11px] font-semibold text-[var(--muted)]">
+            {t("msg.severityReason", locale)}
+            <textarea
+              className="mt-1 w-full rounded-md border border-[var(--line)] bg-white p-2 text-sm"
+              rows={2}
+              value={sevReason}
+              onChange={(e) => setSevReason(e.target.value)}
+              placeholder={t("msg.severityReasonPh", locale)}
+              data-testid="msg-sev-reason"
+            />
+          </label>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="btn btn-primary !min-h-10 text-xs"
+              disabled={busy || sevP == null || sevReason.trim().length < 3}
+              onClick={() => {
+                if (sevP == null) return;
+                onRecommendSeverity(sevP, sevReason.trim());
+                setSevReason("");
+              }}
+              data-testid="msg-sev-submit"
+            >
+              {t("msg.severitySubmit", locale)}
+            </button>
+            <a className="text-[11px] text-teal-800 underline" href="/admin/escalation">
+              {t("msg.severityEscLink", locale)}
+            </a>
+          </div>
+        </div>
+      ) : null}
+
+      <div data-testid="msg-recommended-actions" className="space-y-1.5 border-t border-dashed border-amber-200/80 pt-2">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+            {t("msg.recommended", locale)}
+          </div>
+          <div className="text-[10px] font-mono text-[var(--muted)]">{capabilities.roleCode}</div>
+        </div>
+        <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.rankNote", locale)}</p>
+        {(
+          [
+            ["critical", "msg.groupCritical"],
+            ["control", "msg.groupControl"],
+            ["soft", "msg.groupSoft"],
+          ] as const
+        ).map(([key, labelKey]) => {
+          const items = recommendedGroups[key];
+          if (!items.length) return null;
+          return (
+            <div key={key}>
+              <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1">
+                {t(labelKey, locale)}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {items.map((a, idx) => {
+                  const loc = localizeAction(a.code, a.label, a.description, locale);
+                  const cls =
+                    key === "critical" && idx === 0
+                      ? "btn btn-primary text-xs !min-h-10"
+                      : key === "critical"
+                        ? "btn text-xs !min-h-10 border-rose-300 bg-rose-50 text-rose-950"
+                        : "btn text-xs !min-h-10";
+                  return (
+                    <button
+                      key={a.code}
+                      type="button"
+                      className={cls}
+                      disabled={busy}
+                      title={loc.description}
+                      onClick={() => onRecommend(a.code)}
+                      data-testid={`msg-rec-${a.code}`}
+                    >
+                      {loc.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+        {!visibleRecommended.length ? (
+          <p className="text-xs text-rose-800">{t("msg.escalateHint", locale)}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function MessageBubble({
+  m,
+  locale,
+  openThoughts,
+  onToggleThoughts,
+  cardActions,
+}: {
+  m: Message;
+  locale: UiLocale;
+  openThoughts: Record<string, boolean>;
+  onToggleThoughts: (id: string) => void;
+  cardActions?: ReactNode;
+}) {
+  if (m.kind === "THINKING") {
+    const meta = JSON.parse(m.meta_json || "{}") as { elapsed_ms?: number; steps?: string[] };
+    const steps = Array.isArray(meta.steps) && meta.steps.length ? meta.steps : m.body.split("\n").filter(Boolean);
+    const expanded = Boolean(openThoughts[m.msg_id]);
+    return (
+      <ThinkingCard
+        steps={steps}
+        visible={steps.length}
+        running={false}
+        elapsedMs={meta.elapsed_ms}
+        expanded={expanded}
+        onToggle={() => onToggleThoughts(m.msg_id)}
+        locale={locale}
+      />
+    );
+  }
+  const meta = JSON.parse(m.meta_json || "{}") as Record<string, unknown>;
+  const isUser = m.kind === "USER";
+  const handoff = meta.handoff === "in" || meta.handoff === "out" ? String(meta.handoff) : null;
+  return (
+    <div
+      className={`rounded-xl border px-3 py-2 text-sm max-w-full ${
+        isUser
+          ? "ml-auto border-teal-200 bg-teal-50"
+          : m.kind === "AI_REPORT"
+            ? "border-amber-200 bg-amber-50/60"
+            : m.kind === "ESCALATION" || handoff
+              ? "border-rose-200 bg-rose-50/50"
+              : "border-[var(--line)] bg-white"
+      }`}
+      data-testid={cardActions ? "msg-lark-interactive-card" : undefined}
+    >
+      <div className="flex flex-wrap gap-2 items-center text-xs text-[var(--muted)]">
+        <Badge className="bg-slate-100 text-slate-700 border-slate-200">{m.kind}</Badge>
+        {cardActions ? (
+          <Badge className="bg-amber-100 text-amber-950 border-amber-200">
+            {locale === "zh-Hant" ? "互動卡片" : "Interactive card"}
+          </Badge>
+        ) : null}
+        <span className="font-semibold text-[var(--ink)]">{m.sender}</span>
+        <span className="break-word">{m.created_at}</span>
+      </div>
+      <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800 break-word">
+        {phrase(m.body, locale)}
+      </pre>
+      {typeof meta.admin_url === "string" ? (
+        <AdminLink className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
+          {t("msg.openInAdmin", locale)}
+        </AdminLink>
+      ) : null}
+      {cardActions}
+    </div>
+  );
+}
+
+function lastAiReportId(msgs: Message[]): string | null {
+  for (let i = msgs.length - 1; i >= 0; i--) {
+    if (msgs[i].kind === "AI_REPORT") return msgs[i].msg_id;
+  }
+  return null;
+}
+
+export function DemoMessenger({
+  initialThreads,
+  initialCatalog = {},
+  staticMode = false,
+  caps,
+}: {
+  initialThreads: Thread[];
+  initialCatalog?: Record<number, InboxPack>;
+  staticMode?: boolean;
+  caps?: MessengerCaps;
+}) {
+  const router = useRouter();
+  const { locale } = useUiLocale();
+  const capabilities: MessengerCaps = caps || {
+    roleCode: staticMode ? "PUBLIC_GUEST" : "VIEWER",
+    canEvidence: true,
+    canEscalate: staticMode,
+    canTriage: staticMode,
+    canIntervene: staticMode,
+    canSoftControl: staticMode,
+  };
+  const [threads, setThreads] = useState(initialThreads);
+  const [catalog, setCatalog] = useState<Record<number, InboxPack>>(initialCatalog);
+  const [activeId, setActiveId] = useState<number | null>(initialThreads[0]?.id ?? null);
+  const firstPack = initialThreads[0] ? initialCatalog[initialThreads[0].id] : undefined;
+  const [messages, setMessages] = useState<Message[]>(firstPack?.messages || []);
+  const [pending, setPending] = useState<Pending[]>(firstPack?.pending || []);
+  const [recommended, setRecommended] = useState<Recommended[]>(firstPack?.recommended_actions || []);
+  const [pocWindows, setPocWindows] = useState<PocWindow[]>(firstPack?.poc_windows || []);
+  const [focusedHop, setFocusedHop] = useState<number>(firstPack?.current_step ?? 0);
+  const [chat, setChat] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [loaded, setLoaded] = useState(Boolean(firstPack?.messages?.length));
+  const [confirmId, setConfirmId] = useState<number | null>(null);
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [mobilePane, setMobilePane] = useState<"list" | "thread">("list");
+  const [liveThink, setLiveThink] = useState<LiveThink | null>(null);
+  const [openThoughts, setOpenThoughts] = useState<Record<string, boolean>>({});
+
+  const packRef = useRef({ messages, pending, recommended, activeId });
+  packRef.current = { messages, pending, recommended, activeId };
+  const runGen = useRef(0);
+  const lockRef = useRef(false);
+  const listRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const active = useMemo(() => threads.find((row) => row.id === activeId) || null, [threads, activeId]);
+
+  const visibleRecommended = useMemo(() => {
+    return recommended.filter((a) => {
+      const priority = a.priority || ACTION_PRIORITY[a.code] || "soft";
+      if (priority === "critical" || priority === "control") return capabilities.canIntervene;
+      if (priority === "soft") return capabilities.canSoftControl || capabilities.canIntervene;
+      return false;
+    });
+  }, [recommended, capabilities.canIntervene, capabilities.canSoftControl]);
+
+  const recommendedGroups = useMemo(() => {
+    const groups: Record<"critical" | "control" | "soft", Recommended[]> = {
+      critical: [],
+      control: [],
+      soft: [],
+    };
+    for (const a of visibleRecommended) {
+      const priority = a.priority || ACTION_PRIORITY[a.code] || "soft";
+      groups[priority].push(a);
+    }
+    return groups;
+  }, [visibleRecommended]);
+
+  const larkCardActions =
+    active?.status === "OPEN" ? (
+      <LarkCardActions
+        busy={busy}
+        capabilities={capabilities}
+        recommendedGroups={recommendedGroups}
+        visibleRecommended={visibleRecommended}
+        locale={locale}
+        aiSeverity={active.severity || "WARN"}
+        onClose={() => void run("close")}
+        onEscalate={() => void run("escalate")}
+        onEvidence={() => void run("show_evidence")}
+        onDismiss={() => void run("dismiss")}
+        onRecommend={(code) => void run("recommend", { action_code: code })}
+        onRecommendSeverity={(recommended_p, reason) =>
+          void run("recommend_severity", { recommended_p, reason })
+        }
+      />
+    ) : null;
+
+  useEffect(() => {
+    runGen.current += 1;
+    setLiveThink(null);
+  }, [activeId]);
+
+  useEffect(() => {
+    const node = listRef.current;
+    if (!node) return;
+    const scroll = () => {
+      node.scrollTop = node.scrollHeight;
+    };
+    scroll();
+    const frame = window.requestAnimationFrame(scroll);
+    const timer = window.setTimeout(scroll, 80);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [messages, liveThink, pending, statusMsg]);
+
+  function applyPack(id: number, pack: InboxPack, opts: { openPane?: boolean } = {}) {
+    setActiveId(id);
+    setMessages(pack.messages || []);
+    setPending(pack.pending || []);
+    setRecommended(pack.recommended_actions || []);
+    setPocWindows(pack.poc_windows || []);
+    setFocusedHop(pack.current_step ?? pack.poc_windows?.find((w) => w.status === "active")?.step ?? 0);
+    setLoaded(true);
+    setConfirmId(null);
+    if (opts.openPane !== false) setMobilePane("thread");
+  }
+
+  async function loadThread(id: number, opts: { openPane?: boolean } = {}) {
+    if (staticMode && catalog[id]) {
+      applyPack(id, catalog[id], opts);
+      return;
+    }
+    setBusy(true);
+    setStatusMsg(null);
+    const res = await fetch(`/api/messenger?id=${id}`);
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      if (catalog[id]) {
+        applyPack(id, catalog[id], opts);
+        return;
+      }
+      setStatusMsg(data.error || t("msg.failedThread", locale));
+      return;
+    }
+    applyPack(
+      id,
+      {
+        messages: data.messages || [],
+        pending: data.pending || [],
+        recommended_actions: data.recommended_actions || [],
+        poc_windows: data.poc_windows || [],
+        current_step: data.current_step,
+      },
+      opts
+    );
+  }
+
+  function commitPack(nextMessages: Message[], nextPending: Pending[], extra: { status?: string } = {}) {
+    const id = packRef.current.activeId;
+    if (!id) return;
+    packRef.current = {
+      ...packRef.current,
+      messages: nextMessages,
+      pending: nextPending,
+    };
+    setMessages(nextMessages);
+    setPending(nextPending);
+    setThreads((prev) =>
+      prev.map((thread) =>
+        thread.id === id
+          ? {
+              ...thread,
+              last_body: nextMessages[nextMessages.length - 1]?.body || thread.last_body,
+              message_count: nextMessages.filter((m) => m.kind !== "THINKING").length,
+              status: extra.status || thread.status,
+            }
+          : thread
+      )
+    );
+    setCatalog((prev) => ({
+      ...prev,
+      [id]: {
+        messages: nextMessages,
+        pending: nextPending,
+        recommended_actions: packRef.current.recommended,
+        poc_windows: pocWindows,
+        current_step: focusedHop,
+      },
+    }));
+  }
+
+  function relayLocalHop(actor: string, outBody: string, inBody: string) {
+    if (!pocWindows.length) return;
+    const fromStep = pocWindows.find((w) => w.status === "active")?.step ?? focusedHop;
+    const nextStep = Math.min(fromStep + 1, pocWindows.length - 1);
+    const outMsg = makeMessage("ESCALATION", actor, outBody, {
+      poc_step: fromStep,
+      step: nextStep,
+      handoff: "out",
+    });
+    const inMsg =
+      nextStep !== fromStep
+        ? makeMessage("ESCALATION", actor, inBody, {
+            poc_step: nextStep,
+            step: nextStep,
+            handoff: "in",
+          })
+        : null;
+    setPocWindows((prev) =>
+      prev.map((w) => {
+        const status = w.step < nextStep ? "relayed" : w.step === nextStep ? "active" : "waiting";
+        const extra: Message[] = [];
+        if (w.step === fromStep) extra.push(outMsg);
+        if (inMsg && w.step === nextStep) extra.push(inMsg);
+        return { ...w, status, messages: extra.length ? [...w.messages, ...extra] : w.messages };
+      })
+    );
+    setFocusedHop(nextStep);
+  }
+
+  function appendLocal(
+    kind: string,
+    sender: string,
+    body: string,
+    extra: { status?: string; action_code?: string; meta?: Record<string, unknown> } = {}
+  ) {
+    if (!packRef.current.activeId) return;
+    const msg = makeMessage(kind, sender, body, extra.meta || {});
+    const nextMessages = [...packRef.current.messages, msg];
+    let nextPending = packRef.current.pending;
+    if (kind === "ACTION_PROPOSAL") {
+      const code = extra.action_code || "WIDEN_SPREAD";
+      nextPending = [
+        ...packRef.current.pending,
+        {
+          id: Date.now(),
+          action_code: code,
+          status: "AWAITING_CONFIRM",
+          detail_json: JSON.stringify({
+            label: code,
+            description: body,
+            admin_path: "/admin/interventions",
+          }),
+        },
+      ];
+    }
+    commitPack(nextMessages, nextPending, extra);
+  }
+
+  async function playThinking(action: string, extra: Record<string, unknown> = {}) {
+    const gen = runGen.current;
+    const steps = thinkingSteps(action, locale, extra);
+    const startedAt = Date.now();
+    setLiveThink({ steps, visible: 0 });
+    await sleep(180);
+    for (let i = 0; i < steps.length; i += 1) {
+      if (gen !== runGen.current) return null;
+      setLiveThink({ steps, visible: i + 1 });
+      await sleep(500 + i * 70);
+    }
+    await sleep(260);
+    if (gen !== runGen.current) return null;
+    const elapsedMs = Date.now() - startedAt;
+    setLiveThink(null);
+    return { steps, elapsedMs };
+  }
+
+  function mergeThought(serverMsgs: Message[], thought: Message, action: string, prev: Message[]) {
+    const durable = prev.filter((m) => m.kind !== "THINKING" && !String(m.msg_id).startsWith("MSG-DEMO-"));
+    const prevIds = new Set(durable.map((m) => m.msg_id));
+    const firstNew = serverMsgs.findIndex((m) => !prevIds.has(m.msg_id));
+    const insertAt = firstNew === -1 ? serverMsgs.length : firstNew;
+    const olderThoughts = prev.filter((m) => m.kind === "THINKING" && m.msg_id !== thought.msg_id);
+    let merged: Message[];
+    if (action === "chat") {
+      const head = serverMsgs.slice(0, insertAt);
+      const tail = serverMsgs.slice(insertAt);
+      const userMsg = tail[0];
+      merged = [...head, ...(userMsg ? [userMsg] : []), thought, ...tail.slice(userMsg ? 1 : 0)];
+    } else {
+      merged = [...serverMsgs.slice(0, insertAt), thought, ...serverMsgs.slice(insertAt)];
+    }
+    const idx = merged.findIndex((m) => m.msg_id === thought.msg_id);
+    if (idx >= 0 && olderThoughts.length) {
+      return [...merged.slice(0, idx), ...olderThoughts, ...merged.slice(idx)];
+    }
+    return merged;
+  }
+
+  async function run(action: string, extra: Record<string, unknown> = {}) {
+    if (!activeId && action !== "sync") return;
+    if (lockRef.current && action !== "sync") return;
+    if (action === "chat" && !String(extra.text || "").trim()) return;
+
+    const gen = runGen.current;
+    lockRef.current = true;
+    setBusy(true);
+    setStatusMsg(null);
+
+    let thought: { steps: string[]; elapsedMs: number } | null = null;
+    try {
+      if (THINKING_ACTIONS.has(action)) {
+        if (action === "chat") {
+          appendLocal(
+            "USER",
+            locale === "zh-Hant" ? "公開訪客" : "Public visitor",
+            String(extra.text || "").trim()
+          );
+          setChat("");
+        }
+        thought = await playThinking(action, extra);
+        if (!thought || gen !== runGen.current) return;
+        appendLocal("THINKING", locale === "zh-Hant" ? "CRMP AI" : "CRMP AI", thought.steps.join("\n"), {
+          meta: { elapsed_ms: thought.elapsedMs, action, steps: thought.steps },
+        });
+      }
+
+      if (staticMode) {
+        const zh = locale === "zh-Hant";
+        const actorVisitor = zh ? "公開訪客" : "Public visitor";
+        const actorEvidence = zh ? "證據庫" : "Evidence Vault";
+        const actorEscalation = zh ? "升級引擎" : "Escalation Engine";
+        const actorAdvisor = zh ? "動作顧問" : "Action Advisor";
+        const actorBot = zh ? "CRMP 聊天機器人" : "CRMP Chatbot";
+        if (action === "sync") {
+          setStatusMsg(t("msg.synced", locale, { n: 0 }));
+          return;
+        }
+        if (action === "show_evidence") {
+          appendLocal(
+            "EVIDENCE",
+            actorEvidence,
+            zh
+              ? "📎 證據包（示範）\n• [MONITOR] 128 帳戶保證金使用率 >90%\n• [BOOK] 跟單權益集中度 31%\n• [RAG] 先前美盤開盤違規劇本"
+              : "📎 Evidence pack (demo)\n• [MONITOR] Margin utilisation >90% for 128 accounts\n• [BOOK] Copy-equity concentration 31%\n• [RAG] Prior US-open breach playbook"
+          );
+        } else if (action === "escalate") {
+          const from = pocWindows.find((w) => w.status === "active") || pocWindows[0];
+          const to =
+            pocWindows.find((w) => w.step === Math.min((from?.step ?? 0) + 1, pocWindows.length - 1)) || from;
+          relayLocalHop(
+            actorEscalation,
+            zh
+              ? `⬆️ 已從 ${from?.team || "一線"} 轉交至 ${to?.team || "下一承辦"}（步驟 ${(to?.step ?? 0) + 1}/${pocWindows.length || 4}）\n承辦：${from?.poc_name || from?.team} → ${to?.poc_name || to?.team}`
+              : `⬆️ Relayed from ${from?.team || "primary"} to ${to?.team || "next POC"} (step ${(to?.step ?? 0) + 1}/${pocWindows.length || 4})\nPOC: ${from?.poc_name || from?.team} → ${to?.poc_name || to?.team}`,
+            zh
+              ? `⬇️ ${to?.team || "下一承辦"} 已接收（承辦 ${to?.poc_name || to?.team || ""}）\n來自：${from?.team || "一線"}`
+              : `⬇️ ${to?.team || "next desk"} received (POC ${to?.poc_name || to?.team || ""})\nFrom: ${from?.team || "primary"}`
+          );
+          appendLocal(
+            "ESCALATION",
+            actorEscalation,
+            zh
+              ? `⬆️ 已從 ${from?.team || "一線"} 轉交至 ${to?.team || "下一承辦"}（步驟 ${(to?.step ?? 0) + 1}/${pocWindows.length || 4}）`
+              : `⬆️ Relayed from ${from?.team || "primary"} to ${to?.team || "next POC"} (step ${(to?.step ?? 0) + 1}/${pocWindows.length || 4})`
+          );
+        } else if (action === "dismiss") {
+          appendLocal(
+            "SYSTEM",
+            actorVisitor,
+            zh ? "❎ 已排除為誤報。警報已關閉。" : "❎ Dismissed as false alarm. Alert closed.",
+            { status: "DISMISSED" }
+          );
+        } else if (action === "close") {
+          appendLocal(
+            "SYSTEM",
+            actorVisitor,
+            zh ? "✅ 已結案 — 接受 AI 分析。" : "✅ Closed — AI analysis accepted.",
+            { status: "CLOSED" }
+          );
+        } else if (action === "chat") {
+          appendLocal(
+            "CHATBOT",
+            actorBot,
+            zh
+              ? "💬 已記錄。已附加至示範執行緒供風險台審閱。"
+              : "💬 Noted. Attached to the demo thread for Risk Desk review."
+          );
+        } else if (action === "recommend") {
+          const code = String(extra.action_code || "WIDEN_SPREAD");
+          appendLocal(
+            "ACTION_PROPOSAL",
+            actorAdvisor,
+            zh
+              ? `⚙️ 建議：${code}\n送至 Vantage Markets 管理後台前請雙重確認。`
+              : `⚙️ Proposed: ${code}\nPlease double-confirm before sending to Vantage Markets admin.`,
+            { action_code: code }
+          );
+        } else if (action === "recommend_severity") {
+          const p = Number(extra.recommended_p ?? 2);
+          const reason = String(extra.reason || "").trim();
+          appendLocal(
+            "SYSTEM",
+            actorVisitor,
+            zh
+              ? `🎚️ 嚴重度重推薦：建議 P${p}\n原因：${reason}\n（靜態示範 — 正式環境會寫入每月權重學習）`
+              : `🎚️ Severity re-recommend: suggested P${p}\nReason: ${reason}\n(Static demo — live mode writes monthly weight learning.)`,
+            { recommended_p: p, reason }
+          );
+        } else if (action !== "sync") {
+          appendLocal(
+            "SYSTEM",
+            "Messenger",
+            zh
+              ? `示範動作 ${action} 已記錄（靜態快照 — 無即時 Lark API）。`
+              : `Demo action ${action} recorded (static snapshot — no live Lark API).`
+          );
+        }
+        setStatusMsg(t("msg.actionDone", locale, { action }));
+        setConfirmId(null);
+        if (action === "escalate" || action === "sync") bumpNavBadge("/admin/messenger", 1);
+        if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
+        return;
+      }
+
+      const snapshot = packRef.current.messages;
+      const localThought = [...snapshot].reverse().find((m) => m.kind === "THINKING");
+      const res = await fetch("/api/messenger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, thread_id: activeId, ...extra }),
+      });
+      const data = await res.json();
+      if (gen !== runGen.current) return;
+      if (!res.ok) {
+        if (action === "escalate" && pocWindows.length) {
+          const from = pocWindows.find((w) => w.status === "active") || pocWindows[0];
+          const to =
+            pocWindows.find((w) => w.step === Math.min((from?.step ?? 0) + 1, pocWindows.length - 1)) || from;
+          const zh = locale === "zh-Hant";
+          relayLocalHop(
+            zh ? "升級引擎" : "Escalation Engine",
+            zh
+              ? `⬆️ 已從 ${from?.team || "一線"} 轉交至 ${to?.team || "下一承辦"}`
+              : `⬆️ Relayed from ${from?.team || "primary"} to ${to?.team || "next POC"}`,
+            zh
+              ? `⬇️ ${to?.team || "下一承辦"} 已接收`
+              : `⬇️ ${to?.team || "next desk"} received`
+          );
+          setStatusMsg(t("msg.actionDone", locale, { action }));
+          return;
+        }
+        setStatusMsg(
+          data.error ? phrase(String(data.error), locale) || String(data.error) : t("msg.actionFailed", locale)
+        );
+        return;
+      }
+      if (action === "sync") {
+        setThreads(data.threads || []);
+        setStatusMsg(t("msg.synced", locale, { n: data.synced ?? 0 }));
+        bumpNavBadge("/admin/messenger", Number(data.synced) || 1);
+        router.refresh();
+        return;
+      }
+      const serverMsgs: Message[] = data.messages || [];
+      const nextMessages =
+        thought && localThought ? mergeThought(serverMsgs, localThought, action, snapshot) : serverMsgs;
+      setMessages(nextMessages);
+      setPending(data.pending || []);
+      setRecommended(data.recommended_actions || []);
+      if (Array.isArray(data.poc_windows)) {
+        setPocWindows(data.poc_windows as PocWindow[]);
+        if (typeof data.current_step === "number") setFocusedHop(data.current_step);
+      }
+      setConfirmId(null);
+      setChat("");
+      const listRes = await fetch("/api/messenger");
+      const listData = await listRes.json();
+      if (gen !== runGen.current) return;
+      if (listRes.ok) setThreads(listData.threads || []);
+      setStatusMsg(t("msg.actionDone", locale, { action }));
+      if (action === "escalate") bumpNavBadge("/admin/messenger", 1);
+      if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
+    } finally {
+      lockRef.current = false;
+      setBusy(false);
+    }
+  }
+
+  useEffect(() => {
+    if (activeId && !loaded) {
+      void loadThread(activeId, { openPane: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeId, loaded]);
+
+  return (
+    <div className="messenger-shell grid lg:grid-cols-[minmax(240px,300px)_minmax(0,1fr)] gap-3 sm:gap-4">
+      <section
+        className={`panel p-3 flex flex-col min-h-0 ${
+          mobilePane === "thread" ? "hidden lg:flex" : "flex"
+        }`}
+      >
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <VantageMark className="h-7 w-7" />
+            <h2 className="font-semibold text-sm sm:text-base">{t("msg.channels", locale)}</h2>
+          </div>
+          <button type="button" className="btn text-xs !min-h-11" disabled={busy} onClick={() => void run("sync")}>
+            {t("msg.sync", locale)}
+          </button>
+        </div>
+        <div className="space-y-2 overflow-auto flex-1 min-h-0 -mx-1 px-1 overscroll-contain">
+          {threads.map((row) => (
+            <button
+              key={row.id}
+              type="button"
+              onClick={() => void loadThread(row.id)}
+              className={`w-full text-left rounded-xl border px-3 py-2.5 transition min-h-16 ${
+                activeId === row.id ? "border-teal-400 bg-teal-50" : "border-[var(--line)] hover:bg-slate-50"
+              }`}
+            >
+              <div className="flex flex-wrap gap-1.5 items-center">
+                <SeverityBadge value={row.severity} />
+                <StatusBadge value={row.status} />
+              </div>
+              <div className="mt-1 text-sm font-semibold line-clamp-2 break-word">{phrase(row.title, locale)}</div>
+              <div className="text-[11px] text-[var(--muted)] mt-0.5">
+                {row.channel_name} · {row.message_count} msgs
+              </div>
+            </button>
+          ))}
+          {!threads.length && <p className="text-sm text-[var(--muted)] p-2">{t("msg.empty", locale)}</p>}
+        </div>
+      </section>
+
+      <section
+        className={`panel p-3 sm:p-4 flex flex-col min-h-0 ${
+          mobilePane === "list" ? "hidden lg:flex" : "flex"
+        }`}
+      >
+        {active ? (
+          <>
+            <div className="border-b border-[var(--line)] pb-2 mb-2 shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <button
+                  type="button"
+                  className="btn !min-h-11 !px-2.5 lg:hidden shrink-0"
+                  onClick={() => setMobilePane("list")}
+                >
+                  <ArrowLeft size={16} />
+                  <span className="sr-only">{t("msg.threads", locale)}</span>
+                </button>
+                <div className="flex flex-wrap gap-1.5 items-center min-w-0">
+                  <SeverityBadge value={active.severity} />
+                  <StatusBadge value={active.status} />
+                  <span className="hidden sm:inline-flex">
+                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{active.channel_name}</Badge>
+                  </span>
+                  <span className="hidden sm:inline-flex">
+                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{active.thread_id}</Badge>
+                  </span>
+                </div>
+              </div>
+              <h2 className="mt-2 font-[family-name:var(--font-display)] text-base sm:text-xl break-word line-clamp-2">
+                {phrase(active.title, locale)}
+              </h2>
+              {active.status === "OPEN" ? (
+                <p className="mt-2 text-[11px] text-[var(--muted)] leading-snug">
+                  {locale === "zh-Hant"
+                    ? "決策與管制按鈕附在下方 AI 報告互動卡片上（Lark 訊息樣式）。"
+                    : "Decision and control buttons are attached to the AI report interactive card below (Lark message style)."}
+                </p>
+              ) : null}
+            </div>
+
+            <div ref={listRef} className="flex-1 min-h-[12rem] min-w-0 flex flex-col">
+              {pocWindows.length ? (
+                <>
+                  <div className="shrink-0 mb-2" data-testid="msg-poc-path">
+                    <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1.5">
+                      {t("msg.birdeye", locale)}
+                    </div>
+                    <div className="chip-scroller items-stretch">
+                      {pocWindows.map((w, i) => {
+                        const live = w.status === "active";
+                        const done = w.status === "relayed";
+                        return (
+                          <button
+                            key={w.step}
+                            type="button"
+                            data-testid={`msg-poc-chip-${w.step}`}
+                            onClick={() => setFocusedHop(w.step)}
+                            className={`flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-left min-h-11 shrink-0 max-w-[16rem] ${
+                              focusedHop === w.step
+                                ? "border-teal-400 bg-teal-50"
+                                : live
+                                  ? "border-rose-300 bg-rose-50"
+                                  : done
+                                    ? "border-slate-200 bg-slate-50"
+                                    : "border-dashed border-[var(--line)] bg-white"
+                            }`}
+                          >
+                            <span className="text-[10px] tabular-nums text-[var(--muted)]">{w.step + 1}</span>
+                            <span className="min-w-0">
+                              <span className="block text-xs font-semibold truncate">{phrase(w.team, locale)}</span>
+                              <span className="block text-[10px] text-[var(--muted)] truncate">
+                                {w.poc_name
+                                  ? `${w.poc_name}${w.poc_role ? ` · ${w.poc_role}` : ""}`
+                                  : t("msg.noPocYet", locale)}
+                              </span>
+                            </span>
+                            <Badge
+                              className={`whitespace-nowrap ${
+                                live
+                                  ? "bg-rose-100 text-rose-900 border-rose-200"
+                                  : done
+                                    ? "bg-slate-100 text-slate-700 border-slate-200"
+                                    : "bg-white text-slate-500 border-slate-200"
+                              }`}
+                            >
+                              {live
+                                ? t("msg.pocActive", locale)
+                                : done
+                                  ? t("msg.pocRelayed", locale)
+                                  : t("msg.pocWaiting", locale)}
+                            </Badge>
+                            {i < pocWindows.length - 1 ? (
+                              <span className="text-[var(--muted)] text-xs" aria-hidden>
+                                →
+                              </span>
+                            ) : null}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="poc-windows flex-1 min-h-0" data-testid="msg-poc-windows">
+                    {pocWindows.map((w) => {
+                      const live = w.status === "active";
+                      const focused = focusedHop === w.step;
+                      return (
+                        <div
+                          key={w.step}
+                          data-testid={`msg-poc-window-${w.step}`}
+                          data-poc-status={w.status}
+                          onClick={() => setFocusedHop(w.step)}
+                          className={`poc-window ${focused ? "poc-window-focus" : ""} ${
+                            live ? "poc-window-live" : w.status === "waiting" ? "poc-window-wait" : ""
+                          } ${focused || pocWindows.length <= 2 ? "" : "hidden md:flex"}`}
+                        >
+                          <div className="shrink-0 border-b border-[var(--line)] px-2.5 py-1.5">
+                            <div className="text-xs font-semibold truncate">{phrase(w.team, locale)}</div>
+                            <div className="text-[10px] text-[var(--muted)] truncate">
+                              {w.poc_name ? `${w.poc_name}${w.poc_email ? ` · ${w.poc_email}` : ""}` : t("tracker.noPoc", locale)}
+                            </div>
+                          </div>
+                          <div className="flex-1 overflow-auto space-y-2 p-2 min-h-0 overscroll-contain">
+                            {w.messages.map((m) => {
+                              const attach =
+                                Boolean(larkCardActions) &&
+                                live &&
+                                m.msg_id === lastAiReportId(w.messages);
+                              return (
+                                <MessageBubble
+                                  key={`${m.msg_id}-${w.step}`}
+                                  m={m}
+                                  locale={locale}
+                                  openThoughts={openThoughts}
+                                  onToggleThoughts={(id) =>
+                                    setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))
+                                  }
+                                  cardActions={attach ? larkCardActions : undefined}
+                                />
+                              );
+                            })}
+                            {!w.messages.length ? (
+                              <p className="text-[11px] text-[var(--muted)] leading-snug p-1">
+                                {t("msg.pocEmpty", locale)}
+                              </p>
+                            ) : null}
+                            {live && liveThink ? (
+                              <ThinkingCard
+                                steps={liveThink.steps}
+                                visible={liveThink.visible}
+                                running
+                                locale={locale}
+                              />
+                            ) : null}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain">
+                  {messages.map((m) => {
+                    const attach = Boolean(larkCardActions) && m.msg_id === lastAiReportId(messages);
+                    return (
+                      <MessageBubble
+                        key={m.msg_id}
+                        m={m}
+                        locale={locale}
+                        openThoughts={openThoughts}
+                        onToggleThoughts={(id) => setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))}
+                        cardActions={attach ? larkCardActions : undefined}
+                      />
+                    );
+                  })}
+                  {liveThink ? (
+                    <ThinkingCard steps={liveThink.steps} visible={liveThink.visible} running locale={locale} />
+                  ) : null}
+                  <div ref={bottomRef} className="h-px w-full shrink-0" />
+                </div>
+              )}
+            </div>
+
+            {active.status === "OPEN" && (
+              <div className="mt-2 border-t border-[var(--line)] pt-2 space-y-2 shrink-0 bg-[var(--panel)] pb-[max(0.35rem,var(--safe-bottom))]">
+                {pending.map((p) => {
+                  const detail = JSON.parse(p.detail_json || "{}") as Recommended;
+                  const loc = localizeAction(
+                    p.action_code,
+                    detail.label || p.action_code,
+                    detail.description || "",
+                    locale
+                  );
+                  const awaitingChecker = p.status === "AWAITING_CHECKER";
+                  return (
+                    <div
+                      key={p.id}
+                      className={`rounded-xl border px-3 py-2 text-sm ${
+                        awaitingChecker
+                          ? "border-violet-300 bg-violet-50"
+                          : "border-amber-300 bg-amber-50"
+                      }`}
+                    >
+                      <div className="font-semibold">
+                        {awaitingChecker ? t("msg.checkerNeeded", locale) : t("msg.confirm", locale)} {loc.label}
+                      </div>
+                      <p className="text-[var(--muted)] mt-1 break-word">{loc.description}</p>
+                      <div className="mt-2 action-row">
+                        {awaitingChecker ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              disabled={busy}
+                              onClick={() => void run("checker_approve", { pending_id: p.id })}
+                            >
+                              {t("msg.checkerApprove", locale)}
+                            </button>
+                            <AdminLink className="btn" href={detail.admin_path || "/admin/interventions"}>
+                              {t("msg.openAdmin", locale)}
+                            </AdminLink>
+                          </>
+                        ) : confirmId === p.id ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              disabled={busy}
+                              onClick={() => void run("confirm_action", { pending_id: p.id })}
+                            >
+                              {t("msg.yesAdmin", locale)}
+                            </button>
+                            <button type="button" className="btn" disabled={busy} onClick={() => setConfirmId(null)}>
+                              {t("msg.noBack", locale)}
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              disabled={busy}
+                              onClick={() => setConfirmId(p.id)}
+                            >
+                              {t("msg.doubleConfirm", locale)}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn"
+                              disabled={busy}
+                              onClick={() => void run("cancel_action", { pending_id: p.id })}
+                            >
+                              {t("msg.cancel", locale)}
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                <form
+                  className="flex gap-2"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!chat.trim()) return;
+                    void run("chat", { text: chat.trim() });
+                  }}
+                >
+                  <input
+                    className="input flex-1 !rounded-xl !min-h-11"
+                    placeholder={t("msg.chatPlaceholder", locale)}
+                    value={chat}
+                    onChange={(e) => setChat(e.target.value)}
+                    disabled={busy}
+                  />
+                  <button
+                    type="submit"
+                    className="btn btn-primary shrink-0 !min-h-11 !px-3 sm:!px-4"
+                    disabled={busy || !chat.trim()}
+                    aria-label={t("msg.send", locale)}
+                  >
+                    <Send size={16} className="sm:hidden" aria-hidden />
+                    <span className="hidden sm:inline">{t("msg.send", locale)}</span>
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {statusMsg && (
+              <div className="mt-2 text-xs sm:text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 break-word shrink-0 line-clamp-2">
+                {statusMsg}
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-[var(--muted)] text-sm p-2">{t("msg.select", locale)}</p>
+        )}
+      </section>
+    </div>
+  );
+}
