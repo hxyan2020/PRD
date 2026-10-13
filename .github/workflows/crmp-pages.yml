@@ -9,6 +9,7 @@ on:
         cursor/risk-discovery-admin-28bc,
         cursor/admin-audit-coverage-28bc,
         cursor/ai-performance-dashboard-28bc,
+        cursor/severity-feedback-weights-28bc,
         main,
       ]
     paths:

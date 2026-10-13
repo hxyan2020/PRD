@@ -1123,6 +1123,12 @@ function runEnsureAiLayer(db: Database.Database) {
   seedInterventionsIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
+  // Lazy require — severity-feedback imports db helpers.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { ensureSeverityFeedbackSchema, seedSeverityFeedbackIfEmpty } =
+    require("@/lib/severity-feedback") as typeof import("@/lib/severity-feedback");
+  ensureSeverityFeedbackSchema(db);
+  seedSeverityFeedbackIfEmpty(db);
   ensureDocEditsSchema(db);
   ensureAuditDemoSamples(db);
   const upsert = db.prepare(

@@ -330,6 +330,25 @@ const UI: Record<string, Pair> = {
   "msg.recommended": { en: "Recommended actions", "zh-Hant": "建議動作" },
   "msg.triagePrimary": { en: "Primary decision", "zh-Hant": "主要決策" },
   "msg.triageSecondary": { en: "Other triage", "zh-Hant": "其他分流" },
+  "msg.severityRecommend": {
+    en: "Re-recommend severity (P0–P3)",
+    "zh-Hant": "重新推薦嚴重度（P0–P3）",
+  },
+  "msg.severityRecommendHint": {
+    en: "Override the AI incident severity for learning. Reasons feed monthly factor-weight suggestions on Escalation Routes.",
+    "zh-Hant": "覆寫 AI 事故嚴重度供學習。理由會匯入升級路徑的每月因子權重建議。",
+  },
+  "msg.severityReason": { en: "Reason for severity change", "zh-Hant": "嚴重度變更原因" },
+  "msg.severityReasonPh": {
+    en: "Why should this be P0 / P1 / P2 / P3?",
+    "zh-Hant": "為何應為 P0／P1／P2／P3？",
+  },
+  "msg.severitySubmit": { en: "Submit severity feedback", "zh-Hant": "送出嚴重度回饋" },
+  "msg.severityAiLabel": { en: "AI severity", "zh-Hant": "AI 嚴重度" },
+  "msg.severityEscLink": {
+    en: "Monthly weight pack → Escalation",
+    "zh-Hant": "每月權重組合 → 升級路徑",
+  },
   "msg.groupCritical": { en: "Critical controls", "zh-Hant": "關鍵管制" },
   "msg.groupControl": { en: "Risk controls", "zh-Hant": "風險控制" },
   "msg.groupSoft": { en: "Market softeners", "zh-Hant": "市場緩和" },

@@ -6,6 +6,11 @@ import {
   DEFAULT_ROUTE_CODE,
   matchEscalationRoute,
 } from "@/lib/escalation/match";
+import {
+  applyMonthlyWeightSuggestion,
+  getMonthlyWeightSuggestion,
+  listSeverityFeedback,
+} from "@/lib/severity-feedback";
 
 function isDefaultRoute(row: {
   is_default?: number | null;
@@ -33,6 +38,13 @@ export async function GET(req: Request) {
     const matched = matchEscalationRoute(db, domain, severity);
     return NextResponse.json({ matched });
   }
+  if (url.searchParams.get("severity_weights") === "1") {
+    const month = url.searchParams.get("month") || undefined;
+    return NextResponse.json({
+      suggestion: getMonthlyWeightSuggestion(month),
+      recent_feedback: listSeverityFeedback(20, month),
+    });
+  }
   const routes = db
     .prepare(
       `SELECT r.*,
@@ -56,6 +68,21 @@ export async function POST(req: Request) {
   }
   const body = await req.json();
   const db = getDb();
+
+  if (body.action === "apply_severity_weights") {
+    try {
+      const suggestion = applyMonthlyWeightSuggestion({
+        actor: user,
+        month: body.month,
+      });
+      return NextResponse.json({ ok: true, suggestion });
+    } catch (e) {
+      return NextResponse.json(
+        { error: e instanceof Error ? e.message : String(e) },
+        { status: 400 }
+      );
+    }
+  }
 
   if (body.action === "toggle") {
     const prev = db

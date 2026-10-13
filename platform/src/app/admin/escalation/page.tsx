@@ -2,6 +2,11 @@ import { EscalationManager } from "@/components/EscalationManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import {
+  getMonthlyWeightSuggestion,
+  listSeverityFeedback,
+  seedSeverityFeedbackIfEmpty,
+} from "@/lib/severity-feedback";
 import { redirect } from "next/navigation";
 
 export default async function EscalationPage() {
@@ -9,6 +14,7 @@ export default async function EscalationPage() {
   if (!user || !hasPermission(user.role_code, "escalation.read")) redirect("/admin");
 
   const db = getDb();
+  seedSeverityFeedbackIfEmpty(db);
   const routes = db
     .prepare(
       `SELECT r.*,
@@ -34,6 +40,17 @@ export default async function EscalationPage() {
   const defaultSlaRow = db
     .prepare(`SELECT value FROM platform_settings WHERE key = 'escalation.default_sla_minutes'`)
     .get() as { value: string } | undefined;
+  const monthlySuggestion = getMonthlyWeightSuggestion();
+  const recentSeverityFeedback = listSeverityFeedback(12, monthlySuggestion.month_key).map((f) => ({
+    feedback_id: f.feedback_id,
+    ai_severity: f.ai_severity,
+    ai_p: f.ai_p,
+    recommended_p: f.recommended_p,
+    recommended_ops: f.recommended_ops,
+    reason: f.reason,
+    rated_by_name: f.rated_by_name,
+    created_at: f.created_at,
+  }));
 
   return (
     <div>
@@ -45,6 +62,8 @@ export default async function EscalationPage() {
         domains={domains}
         canManage={hasPermission(user.role_code, "escalation.manage")}
         defaultSlaMinutes={Number(defaultSlaRow?.value) || 30}
+        monthlySuggestion={monthlySuggestion}
+        recentSeverityFeedback={recentSeverityFeedback}
       />
     </div>
   );

@@ -232,6 +232,7 @@ graph LR
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
 | FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者一致率（同意／部分／不同意）、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
+| FR-39 | Lark AI 事故報告 P0–P3 嚴重度重推薦 | 示範 Messenger AI_REPORT 卡：台面重推薦 P0–P3＋原因 → `severity_feedback`；每月組合在 `/admin/escalation` 建議升級因子權重（套用 → ESC-DEFAULT）；AI 績效唯讀呈現 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -264,9 +265,9 @@ graph LR
 | AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；樹幹；進入 |
 | AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
 | 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註；樣本顯示操作者信箱 |
-| 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流＋鳥瞰 POC 窗 | 路徑晶片、承辦窗、同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟 |
+| 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流＋鳥瞰 POC 窗 | 路徑晶片、承辦窗、同步、證據、聊天、升級、排除、結案、P0–P3 嚴重度重推薦、控制、在管理後台開啟 |
 | 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；localhost 模擬通知 |
-| 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
+| 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT；技能綁一條；每月 P0–P3 權重組合；無「路徑」名稱欄 |
 | 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
 | 組織 | 角色與權限 | `/admin/roles` | 可編輯 RBAC | `/api/roles`；權限晶片＋章程 |
 | 組織 | 使用者 | `/admin/users` | 目錄 | demo platform owner／haixiang.yan@hytechc.com；管理可新增／停用 |

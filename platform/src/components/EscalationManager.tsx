@@ -47,6 +47,32 @@ function parseInvolved(raw: string | null | undefined): string[] {
   }
 }
 
+type MonthlySuggestion = {
+  month_key: string;
+  sample_count: number;
+  upgrades: number;
+  downgrades: number;
+  same: number;
+  p_histogram: Record<"P0" | "P1" | "P2" | "P3", number>;
+  current_coefficients: EscalationCoefficients;
+  suggested_coefficients: EscalationCoefficients;
+  rationale_en: string;
+  rationale_zh: string;
+  applied: boolean;
+  applied_at: string | null;
+};
+
+type SeverityFeedbackLite = {
+  feedback_id: string;
+  ai_severity: string;
+  ai_p: number;
+  recommended_p: number;
+  recommended_ops: string;
+  reason: string;
+  rated_by_name: string | null;
+  created_at: string;
+};
+
 export function EscalationManager({
   routes,
   teams,
@@ -54,6 +80,8 @@ export function EscalationManager({
   domains,
   canManage,
   defaultSlaMinutes = 30,
+  monthlySuggestion = null,
+  recentSeverityFeedback = [],
 }: {
   routes: Route[];
   teams: Array<{ id: number; name: string }>;
@@ -61,6 +89,8 @@ export function EscalationManager({
   domains: Array<{ code: string; name: string }>;
   canManage: boolean;
   defaultSlaMinutes?: number;
+  monthlySuggestion?: MonthlySuggestion | null;
+  recentSeverityFeedback?: SeverityFeedbackLite[];
 }) {
   const router = useRouter();
   const { t, phrase, locale } = useT();
@@ -94,6 +124,30 @@ export function EscalationManager({
     severity: string;
     result: string | null;
   }>({ domain: "EXOTIC_EVENT", severity: "WARN", result: null });
+  const [weightPack, setWeightPack] = useState<MonthlySuggestion | null>(monthlySuggestion);
+  const [weightBusy, setWeightBusy] = useState(false);
+
+  async function applyWeightPack() {
+    if (!canManage || !weightPack) return;
+    setWeightBusy(true);
+    setMsg(null);
+    try {
+      const res = await fetch("/api/escalation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "apply_severity_weights", month: weightPack.month_key }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Apply failed");
+      setWeightPack(data.suggestion);
+      setMsg(zh ? "已套用本月嚴重度因子權重至 ESC-DEFAULT" : "Applied monthly severity factor weights to ESC-DEFAULT");
+      router.refresh();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : String(e));
+    } finally {
+      setWeightBusy(false);
+    }
+  }
 
   const defaultRoute = useMemo(
     () =>
@@ -302,6 +356,95 @@ export function EscalationManager({
           ))}
         </div>
       </div>
+
+      {weightPack ? (
+        <div
+          className="panel p-4 border-amber-200 bg-amber-50/40 space-y-3"
+          data-testid="esc-severity-weight-pack"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <div className="text-xs uppercase tracking-[0.12em] text-amber-900">
+                {zh ? "每月嚴重度權重建議（P0–P3 回饋）" : "Monthly severity weight pack (P0–P3 feedback)"}
+              </div>
+              <p className="text-sm mt-1 text-amber-950 max-w-3xl">
+                {zh ? weightPack.rationale_zh : weightPack.rationale_en}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <Badge className="bg-white border-amber-200">{weightPack.month_key}</Badge>
+              <Badge className="bg-white border-amber-200">
+                {zh ? "樣本" : "Samples"} {weightPack.sample_count}
+              </Badge>
+              <Badge className="bg-rose-50 border-rose-200 text-rose-900">
+                {zh ? "升級" : "Up"} {weightPack.upgrades}
+              </Badge>
+              <Badge className="bg-slate-50 border-slate-200">
+                {zh ? "降級" : "Down"} {weightPack.downgrades}
+              </Badge>
+              {weightPack.applied ? (
+                <Badge className="bg-emerald-100 border-emerald-200 text-emerald-900">
+                  {zh ? "已套用" : "Applied"}
+                </Badge>
+              ) : null}
+            </div>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-2 text-xs">
+            {COEFF_KEYS.map((k) => (
+              <div key={k.key} className="rounded-lg border border-amber-200 bg-white px-3 py-2">
+                <div className="text-[var(--muted)]">{zh ? k.zh : k.en}</div>
+                <div className="mt-1 font-mono tabular-nums">
+                  {weightPack.current_coefficients[k.key].toFixed(2)}
+                  {" → "}
+                  <span className="font-semibold text-teal-900">
+                    {weightPack.suggested_coefficients[k.key].toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs">
+            {(["P0", "P1", "P2", "P3"] as const).map((p) => (
+              <Badge key={p} className="bg-white border-amber-200">
+                {p}: {weightPack.p_histogram[p]}
+              </Badge>
+            ))}
+          </div>
+          {recentSeverityFeedback.length ? (
+            <ul className="space-y-1.5 max-h-40 overflow-auto text-xs" data-testid="esc-severity-feedback-list">
+              {recentSeverityFeedback.slice(0, 8).map((f) => (
+                <li key={f.feedback_id} className="rounded-md border border-amber-100 bg-white/80 px-2 py-1.5">
+                  <span className="font-mono">
+                    P{f.ai_p}→P{f.recommended_p}
+                  </span>{" "}
+                  <span className="text-[var(--muted)]">· {f.rated_by_name || "—"}</span>
+                  <div className="text-slate-700 line-clamp-2">{f.reason}</div>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <div className="flex flex-wrap gap-2 items-center">
+            {canManage ? (
+              <button
+                type="button"
+                className="btn btn-primary !min-h-10 text-xs"
+                disabled={weightBusy || weightPack.sample_count === 0 || weightPack.applied}
+                onClick={() => void applyWeightPack()}
+                data-testid="esc-apply-severity-weights"
+              >
+                {zh ? "套用至 ESC-DEFAULT" : "Apply to ESC-DEFAULT"}
+              </button>
+            ) : null}
+            <a className="text-xs text-teal-800 underline" href="/admin/messenger">
+              {zh ? "在 Messenger 重推薦嚴重度 →" : "Re-recommend severity in Messenger →"}
+            </a>
+            <a className="text-xs text-teal-800 underline" href="/admin/ai-performance">
+              {zh ? "AI 績效看板 →" : "AI Performance →"}
+            </a>
+          </div>
+          {msg ? <p className="text-sm text-teal-900">{msg}</p> : null}
+        </div>
+      ) : null}
 
       {canManage && (
         <div className="panel p-4" data-testid="esc-create-form">

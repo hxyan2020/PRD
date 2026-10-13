@@ -385,6 +385,14 @@ export function getAiPerformanceEval() {
     )
     .all();
 
+  // Lazy require — severity-feedback imports db helpers.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { getMonthlyWeightSuggestion, listSeverityFeedback, seedSeverityFeedbackIfEmpty } =
+    require("@/lib/severity-feedback") as typeof import("@/lib/severity-feedback");
+  seedSeverityFeedbackIfEmpty(db);
+  const severityWeightPack = getMonthlyWeightSuggestion();
+  const recentSeverityFeedback = listSeverityFeedback(10, severityWeightPack.month_key);
+
   return {
     ...overview,
     kpis: {
@@ -399,9 +407,14 @@ export function getAiPerformanceEval() {
       training_queued: training.queued || 0,
       training_avg_accuracy: training.avg_accuracy ?? 0,
       training_avg_f1: training.avg_f1 ?? 0,
+      severity_feedback_month: severityWeightPack.sample_count,
+      severity_upgrades: severityWeightPack.upgrades,
+      severity_downgrades: severityWeightPack.downgrades,
     },
     recent_training: recentTraining,
     recent_feedback: recentFeedback,
+    severity_weight_pack: severityWeightPack,
+    recent_severity_feedback: recentSeverityFeedback,
   };
 }
 

@@ -8,6 +8,7 @@ export const THINKING_ACTIONS = new Set([
   "dismiss",
   "close",
   "recommend",
+  "recommend_severity",
   "chat",
   "confirm_action",
   "checker_approve",
@@ -38,6 +39,11 @@ const THINK_SCRIPTS: Record<string, Pair[]> = {
     { en: "Scoring available controls against the alert mode…", "zh-Hant": "依警報模式為可用控制項評分…" },
     { en: "Checking maker-checker rules for {code}…", "zh-Hant": "檢查 {code} 的 Maker-Checker 規則…" },
     { en: "Drafting a proposal the desk can double-confirm…", "zh-Hant": "草擬可供台面雙重確認的建議…" },
+  ],
+  recommend_severity: [
+    { en: "Comparing AI ops severity with your P0–P3 recommendation…", "zh-Hant": "比對 AI 營運嚴重度與您的 P0–P3 推薦…" },
+    { en: "Recording the reason for monthly factor-weight learning…", "zh-Hant": "記錄理由供每月因子權重學習…" },
+    { en: "Posting the severity feedback on the AI incident card…", "zh-Hant": "將嚴重度回饋貼到 AI 事故卡片…" },
   ],
   chat: [
     { en: "Attaching your note to the open case…", "zh-Hant": "將你的備註附加到本案…" },

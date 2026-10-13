@@ -143,7 +143,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 系統 | 原型模式 | 說明 |
 |---|---|---|
 | Monitor 2.0 | 鏡像表 + 同步／全部執行／模擬 | 指標＋偵測器登錄在 `/admin/monitor-2`；未結警報／工單在即時警報與追蹤 |
-| Demo Messenger | 站內執行緒 + `/api/messenger` | 證據、升級、控制 |
+| Demo Messenger | 站內執行緒 + `/api/messenger` | 證據、升級、P0–P3 嚴重度重推薦、控制 |
 | Lark | 頻道登錄 + 模擬 Webhook／情報 outbox | 依嚴重度路由 |
 | 市場情報來源 | 啟發式 5 分鐘掃描 | 卡片格式 i–vi |
 | LP／Bridge／錢包 | 建議動作 + 管理深連結 | 真實適配前需人工關卡 |
@@ -531,10 +531,11 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 | `escalate` | 升級路徑前進一步；目前承辦窗貼轉交、下一窗貼接收 |
 | `dismiss` | 誤報 → DISMISSED／警報關閉 |
 | `close` | 接受 AI → CLOSED |
+| `recommend_severity` | AI_REPORT 卡上重推薦 P0–P3＋原因 → `severity_feedback`（並貼 SYSTEM）；供每月權重組合 |
 | `recommend` → `confirm_action` | 雙重確認控制 → admin_ref（必要時 Checker） |
 
 ### 11.4 資料
-見 §4.4。
+見 §4.4；另含 `severity_feedback`（P0–P3 重推薦，`lib/severity-feedback.ts`）。每月組合：`getMonthlyWeightSuggestion` → 升級路徑套用 → ESC-DEFAULT `coefficients_json`。
 
 ### 11.5 POC 窗
 `getMessengerThread` 回傳 `poc_windows` — 匹配路徑每一跳一個 Lark 聊天（一線團隊 → 二線 → 風險負責人 → 高階），承辦來自 `users`／`teams`。UI：鳥瞰路徑晶片＋分欄（`data-testid=msg-poc-windows`）。

@@ -34,6 +34,9 @@ type EvalData = {
     training_queued?: number;
     training_avg_accuracy?: number;
     training_avg_f1?: number;
+    severity_feedback_month?: number;
+    severity_upgrades?: number;
+    severity_downgrades?: number;
   };
   line_settings?: {
     line1_model: string;
@@ -88,6 +91,29 @@ type EvalData = {
     confidence: number;
     indicator_monitor_id: string;
     rated_by_name: string | null;
+  }>;
+  severity_weight_pack?: {
+    month_key: string;
+    sample_count: number;
+    upgrades: number;
+    downgrades: number;
+    same: number;
+    p_histogram: Record<"P0" | "P1" | "P2" | "P3", number>;
+    current_coefficients: Record<string, number>;
+    suggested_coefficients: Record<string, number>;
+    rationale_en: string;
+    rationale_zh: string;
+    applied: boolean;
+  };
+  recent_severity_feedback?: Array<{
+    feedback_id: string;
+    ai_severity: string;
+    ai_p: number;
+    recommended_p: number;
+    recommended_ops: string;
+    reason: string;
+    rated_by_name: string | null;
+    created_at: string;
   }>;
 };
 
@@ -694,6 +720,86 @@ export function AiPerformanceBoard({ initial }: { initial: EvalData }) {
           />
         </section>
       </div>
+
+      <section className="panel p-4 space-y-3" data-testid="ai-perf-severity-weights">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <h2 className="font-semibold">
+              <EnZh
+                en="P0–P3 severity re-recommendations → monthly factor weights"
+                zh="P0–P3 嚴重度重推薦 → 每月因子權重"
+              />
+            </h2>
+            <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">
+              {zh
+                ? initial.severity_weight_pack?.rationale_zh ||
+                  "Lark AI 事故報告上的嚴重度回饋，每月整合為升級路徑係數建議。"
+                : initial.severity_weight_pack?.rationale_en ||
+                  "Severity feedback on Lark AI incident reports aggregates monthly into escalation coefficient suggestions."}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <Badge>
+              <EnZh en="Month samples" zh="本月樣本" /> {k.severity_feedback_month ?? 0}
+            </Badge>
+            <Badge className="bg-rose-50 border-rose-200 text-rose-900">
+              <EnZh en="Upgrades" zh="升級" /> {k.severity_upgrades ?? 0}
+            </Badge>
+            <Badge className="bg-slate-50">
+              <EnZh en="Downgrades" zh="降級" /> {k.severity_downgrades ?? 0}
+            </Badge>
+            <Link className="btn !min-h-9 text-xs" href="/admin/escalation">
+              <EnZh en="Open Escalation pack" zh="開啟升級權重組合" />
+            </Link>
+            <Link className="btn !min-h-9 text-xs" href="/admin/messenger">
+              <EnZh en="Messenger AI report" zh="Messenger AI 報告" />
+            </Link>
+          </div>
+        </div>
+        {initial.severity_weight_pack ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-2 text-xs">
+            {(
+              [
+                ["severity", zh ? "嚴重度" : "Severity"],
+                ["involved_teams", zh ? "涉入團隊" : "Involved teams"],
+                ["risk_scenario", zh ? "風險情境" : "Risk scenario"],
+                ["pending_time", zh ? "待處理時間" : "Pending time"],
+                ["need_human_intervention", zh ? "需人工" : "Need human"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className="rounded-lg border border-[var(--line)] bg-slate-50/80 px-3 py-2">
+                <div className="text-[var(--muted)]">{label}</div>
+                <div className="mt-1 font-mono tabular-nums">
+                  {Number(initial.severity_weight_pack?.current_coefficients[key] ?? 1).toFixed(2)}
+                  {" → "}
+                  <span className="font-semibold text-teal-900">
+                    {Number(initial.severity_weight_pack?.suggested_coefficients[key] ?? 1).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        <ul className="space-y-1.5 text-xs max-h-36 overflow-auto">
+          {(initial.recent_severity_feedback || []).map((f) => (
+            <li
+              key={f.feedback_id}
+              className="rounded-md border border-[var(--line)] bg-white px-2 py-1.5 flex flex-wrap gap-2"
+            >
+              <span className="font-mono shrink-0">
+                P{f.ai_p}→P{f.recommended_p}
+              </span>
+              <span className="text-[var(--muted)] shrink-0">{f.rated_by_name || "—"}</span>
+              <span className="min-w-0 flex-1 line-clamp-2 text-slate-700">{f.reason}</span>
+            </li>
+          ))}
+          {!initial.recent_severity_feedback?.length ? (
+            <li className="text-[var(--muted)]">
+              <EnZh en="No severity re-recommendations this month yet." zh="本月尚無嚴重度重推薦。" />
+            </li>
+          ) : null}
+        </ul>
+      </section>
 
       <section className="panel p-4 space-y-3" data-testid="ai-perf-training">
         <div className="flex flex-wrap items-center justify-between gap-2">

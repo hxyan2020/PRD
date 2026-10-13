@@ -232,6 +232,7 @@ graph LR
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 | FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
 | FR-38 | AI Performance evaluation dashboard | `/admin/ai-performance` read-only board: skill match, challenger agree/partial/disagree, human feedback labels, how-to-improve counts, training accuracy/F1, 14-day snapshots; `GET /api/ai-performance`; EN/zh-Hant; link from AI Admin |
+| FR-39 | P0–P3 severity re-recommend on Lark AI incident | Demo Messenger AI_REPORT card: desk re-recommends P0–P3 + reason → `severity_feedback`; monthly pack suggests escalation factor weights on `/admin/escalation` (apply → ESC-DEFAULT); surfaced read-only on AI Performance |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -264,9 +265,9 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |
 | Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
-| Response | Demo Messenger | `/admin/messenger` | Chat-native triage with bird-eye POC windows | Path chips, per-POC chats, sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
+| Response | Demo Messenger | `/admin/messenger` | Chat-native triage with bird-eye POC windows | Path chips, per-POC chats, sync, evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls, Open in admin |
 | Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
-| Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT; skill binds one path; no Path name column |
+| Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT; skill binds one path; monthly P0–P3 weight pack; no Path name column |
 | Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |
 | Organisation | Roles & Permissions | `/admin/roles` | Editable RBAC | `/api/roles`; permission chips + charters |
 | Organisation | Users | `/admin/users` | Directory | demo platform owner / haixiang.yan@hytechc.com; add/disable manage |

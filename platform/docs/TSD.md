@@ -143,7 +143,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 | System | Mode in prototype | Notes |
 |---|---|---|
 | Monitor 2.0 | Mirrored tables + sync / Run all / simulate | Indicator + detector registry on `/admin/monitor-2`; open alerts/tickets on Realtime Alert & Tracker |
-| Demo Messenger | In-app threads + `/api/messenger` | Evidence, escalate, controls |
+| Demo Messenger | In-app threads + `/api/messenger` | Evidence, escalate, P0–P3 severity re-recommend, controls |
 | Lark | Channel registry + mock webhook / intel outbox | Severity routing |
 | Market intel feeds | Heuristic 5-min scanner | Card format i–vi |
 | LP / Bridge / Wallets | Suggested actions + admin deep-links | Human gate before real adapters |
@@ -535,10 +535,11 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 | `escalate` | Advance escalation path step; post hand-off in the current POC window and intake in the next |
 | `dismiss` | False alarm → thread DISMISSED, alert CLOSED |
 | `close` | Accept AI → thread CLOSED |
+| `recommend_severity` | Desk re-recommends P0–P3 + reason on AI_REPORT card → `severity_feedback` (+ SYSTEM bubble); feeds monthly weight pack |
 | `recommend` → `confirm_action` | Double-confirm control → admin_ref (+ checker if required) |
 
 ### 11.4 Data
-`messenger_threads`, `messenger_messages`, `messenger_pending_actions` (see §4.4).
+`messenger_threads`, `messenger_messages`, `messenger_pending_actions`, `severity_feedback` (P0–P3 re-recommendations; see `lib/severity-feedback.ts`). Monthly pack: `getMonthlyWeightSuggestion` → Escalation Routes apply → ESC-DEFAULT `coefficients_json`.
 
 ### 11.5 POC windows
 `getMessengerThread` returns `poc_windows` — one Lark chat per hop on the matched route (primary team → secondary → Risk Owner → Exec) with named POC from `users`/`teams`. UI: bird-eye path chips + split columns (`data-testid=msg-poc-windows`).

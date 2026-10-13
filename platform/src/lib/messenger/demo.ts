@@ -12,6 +12,7 @@ export type MessengerAction =
   | "dismiss"
   | "close"
   | "recommend"
+  | "recommend_severity"
   | "confirm_action"
   | "cancel_action"
   | "checker_approve";
@@ -685,6 +686,9 @@ export function messengerAction(input: {
   text?: string;
   action_code?: string;
   pending_id?: number;
+  recommended_p?: number;
+  reason?: string;
+  user_id?: number | null;
   locale?: UiLocale;
 }) {
   ensureMessengerSchema();
@@ -929,6 +933,53 @@ export function messengerAction(input: {
     writeAudit({ name: input.user_name }, "MESSENGER_RECOMMEND", "messenger_thread", thread.thread_id, {
       action: action.code,
       pending_id: Number(info.lastInsertRowid),
+    });
+    return getMessengerThread(thread.id);
+  }
+
+  if (input.action === "recommend_severity") {
+    // Lazy require — severity-feedback ↔ db ↔ messenger cycle at module load.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { opsSeverityToP, submitSeverityRecommendation } =
+      require("@/lib/severity-feedback") as typeof import("@/lib/severity-feedback");
+    const recommended_p = Number(input.recommended_p);
+    if (![0, 1, 2, 3].includes(recommended_p)) throw new Error("recommended_p must be 0–3");
+    const reason = String(input.reason || input.text || "").trim();
+    if (reason.length < 3) throw new Error("Reason required");
+    const row = submitSeverityRecommendation({
+      thread_id: thread.id,
+      thread_code: thread.thread_id,
+      analysis_id: thread.analysis_id,
+      alert_id: thread.alert_id,
+      ai_severity: thread.severity,
+      recommended_p: recommended_p as 0 | 1 | 2 | 3,
+      reason,
+      actor: { id: input.user_id ?? null, name: input.user_name },
+    });
+    const aiP = opsSeverityToP(thread.severity);
+    const dir =
+      recommended_p < aiP ? (zh ? "升級" : "upgrade") : recommended_p > aiP ? (zh ? "降級" : "downgrade") : zh ? "維持" : "confirm";
+    addMessage(
+      db,
+      thread.id,
+      "SYSTEM",
+      input.user_name,
+      zh
+        ? `🎚️ 嚴重度重推薦：AI P${aiP}（${thread.severity}）→ 建議 P${recommended_p}（${row.recommended_ops}）［${dir}］\n原因：${reason}\n已記入本月因子權重學習；可於升級路徑檢視每月建議。`
+        : `🎚️ Severity re-recommend: AI P${aiP} (${thread.severity}) → suggested P${recommended_p} (${row.recommended_ops}) [${dir}]\nReason: ${reason}\nLogged for monthly factor-weight learning — see Escalation Routes for the pack.`,
+      {
+        poc_step: hop,
+        severity_feedback_id: row.feedback_id,
+        ai_p: aiP,
+        recommended_p,
+        recommended_ops: row.recommended_ops,
+        reason,
+      }
+    );
+    writeAudit({ name: input.user_name }, "MESSENGER_RECOMMEND_SEVERITY", "messenger_thread", thread.thread_id, {
+      feedback_id: row.feedback_id,
+      recommended_p,
+      reason,
     });
     return getMessengerThread(thread.id);
   }

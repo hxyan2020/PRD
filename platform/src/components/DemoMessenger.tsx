@@ -231,23 +231,38 @@ function LarkCardActions({
   recommendedGroups,
   visibleRecommended,
   locale,
+  aiSeverity,
   onClose,
   onEscalate,
   onEvidence,
   onDismiss,
   onRecommend,
+  onRecommendSeverity,
 }: {
   busy: boolean;
   capabilities: MessengerCaps;
   recommendedGroups: Record<"critical" | "control" | "soft", Recommended[]>;
   visibleRecommended: Recommended[];
   locale: UiLocale;
+  aiSeverity: string;
   onClose: () => void;
   onEscalate: () => void;
   onEvidence: () => void;
   onDismiss: () => void;
   onRecommend: (code: string) => void;
+  onRecommendSeverity: (recommended_p: number, reason: string) => void;
 }) {
+  const [sevP, setSevP] = useState<number | null>(null);
+  const [sevReason, setSevReason] = useState("");
+  const aiP =
+    aiSeverity === "CRITICAL" ? 0 : aiSeverity === "BREACH" ? 1 : aiSeverity === "WARN" ? 2 : 3;
+  const levels = [
+    { p: 0, tone: "border-rose-300 bg-rose-50 text-rose-950", en: "P0", zh: "P0" },
+    { p: 1, tone: "border-orange-300 bg-orange-50 text-orange-950", en: "P1", zh: "P1" },
+    { p: 2, tone: "border-amber-300 bg-amber-50 text-amber-950", en: "P2", zh: "P2" },
+    { p: 3, tone: "border-slate-300 bg-slate-50 text-slate-800", en: "P3", zh: "P3" },
+  ];
+
   return (
     <div className="mt-3 border-t border-amber-200/80 pt-2.5 space-y-2.5" data-testid="msg-lark-card-actions">
       <div data-testid="msg-triage-actions" className="space-y-1.5">
@@ -309,6 +324,71 @@ function LarkCardActions({
           ) : null}
         </div>
       </div>
+
+      {capabilities.canTriage ? (
+        <div
+          className="space-y-2 border-t border-dashed border-amber-200/80 pt-2"
+          data-testid="msg-severity-recommend"
+        >
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+              {t("msg.severityRecommend", locale)}
+            </div>
+            <div className="text-[11px] text-[var(--muted)]">
+              {t("msg.severityAiLabel", locale)}:{" "}
+              <span className="font-mono font-semibold text-slate-800">
+                P{aiP} · {aiSeverity}
+              </span>
+            </div>
+          </div>
+          <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.severityRecommendHint", locale)}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {levels.map((lv) => (
+              <button
+                key={lv.p}
+                type="button"
+                disabled={busy}
+                onClick={() => setSevP(lv.p)}
+                className={`btn !min-h-9 !px-3 text-xs ${lv.tone} ${
+                  sevP === lv.p ? "ring-2 ring-offset-1 ring-teal-500" : ""
+                }`}
+                data-testid={`msg-sev-p${lv.p}`}
+              >
+                {locale === "zh-Hant" ? lv.zh : lv.en}
+              </button>
+            ))}
+          </div>
+          <label className="block text-[11px] font-semibold text-[var(--muted)]">
+            {t("msg.severityReason", locale)}
+            <textarea
+              className="mt-1 w-full rounded-md border border-[var(--line)] bg-white p-2 text-sm"
+              rows={2}
+              value={sevReason}
+              onChange={(e) => setSevReason(e.target.value)}
+              placeholder={t("msg.severityReasonPh", locale)}
+              data-testid="msg-sev-reason"
+            />
+          </label>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="btn btn-primary !min-h-10 text-xs"
+              disabled={busy || sevP == null || sevReason.trim().length < 3}
+              onClick={() => {
+                if (sevP == null) return;
+                onRecommendSeverity(sevP, sevReason.trim());
+                setSevReason("");
+              }}
+              data-testid="msg-sev-submit"
+            >
+              {t("msg.severitySubmit", locale)}
+            </button>
+            <a className="text-[11px] text-teal-800 underline" href="/admin/escalation">
+              {t("msg.severityEscLink", locale)}
+            </a>
+          </div>
+        </div>
+      ) : null}
 
       <div data-testid="msg-recommended-actions" className="space-y-1.5 border-t border-dashed border-amber-200/80 pt-2">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -520,11 +600,15 @@ export function DemoMessenger({
         recommendedGroups={recommendedGroups}
         visibleRecommended={visibleRecommended}
         locale={locale}
+        aiSeverity={active.severity || "WARN"}
         onClose={() => void run("close")}
         onEscalate={() => void run("escalate")}
         onEvidence={() => void run("show_evidence")}
         onDismiss={() => void run("dismiss")}
         onRecommend={(code) => void run("recommend", { action_code: code })}
+        onRecommendSeverity={(recommended_p, reason) =>
+          void run("recommend_severity", { recommended_p, reason })
+        }
       />
     ) : null;
 
@@ -821,6 +905,17 @@ export function DemoMessenger({
               ? `⚙️ 建議：${code}\n送至 Vantage Markets 管理後台前請雙重確認。`
               : `⚙️ Proposed: ${code}\nPlease double-confirm before sending to Vantage Markets admin.`,
             { action_code: code }
+          );
+        } else if (action === "recommend_severity") {
+          const p = Number(extra.recommended_p ?? 2);
+          const reason = String(extra.reason || "").trim();
+          appendLocal(
+            "SYSTEM",
+            actorVisitor,
+            zh
+              ? `🎚️ 嚴重度重推薦：建議 P${p}\n原因：${reason}\n（靜態示範 — 正式環境會寫入每月權重學習）`
+              : `🎚️ Severity re-recommend: suggested P${p}\nReason: ${reason}\n(Static demo — live mode writes monthly weight learning.)`,
+            { recommended_p: p, reason }
           );
         } else if (action !== "sync") {
           appendLocal(

@@ -46,9 +46,12 @@ export async function POST(req: Request) {
     thread_id: Number(body.thread_id),
     action: body.action as MessengerAction,
     user_name: user.name,
+    user_id: user.id,
     text: body.text,
     action_code: body.action_code,
     pending_id: body.pending_id ? Number(body.pending_id) : undefined,
+    recommended_p: body.recommended_p != null ? Number(body.recommended_p) : undefined,
+    reason: body.reason,
     locale,
   });
   return NextResponse.json({ ok: true, ...detail });
