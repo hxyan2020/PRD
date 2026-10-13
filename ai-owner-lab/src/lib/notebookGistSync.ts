@@ -96,11 +96,33 @@ export function isCloudSyncReady(settings = loadGistSettings()): boolean {
   return Boolean(settings.enabled && settings.token)
 }
 
-async function githubFetch(
+/** Thrown when another device updated the Gist between our pull and push. */
+export class GistConflictError extends Error {
+  readonly status: number
+
+  constructor(status = 412) {
+    super('Cloud notebook changed on another device — retrying merge')
+    this.name = 'GistConflictError'
+    this.status = status
+  }
+}
+
+export function isGistConflictError(err: unknown): err is GistConflictError {
+  return err instanceof GistConflictError
+}
+
+type GithubRequestResult = {
+  ok: boolean
+  status: number
+  etag: string | null
+  data: unknown
+}
+
+async function githubRequest(
   path: string,
   token: string,
   init?: RequestInit,
-): Promise<unknown> {
+): Promise<GithubRequestResult> {
   const response = await fetch(`https://api.github.com${path}`, {
     ...init,
     headers: {
@@ -118,14 +140,32 @@ async function githubFetch(
   } catch {
     data = { message: text.slice(0, 200) }
   }
-  if (!response.ok) {
+  return {
+    ok: response.ok,
+    status: response.status,
+    etag: response.headers.get('ETag'),
+    data,
+  }
+}
+
+async function githubFetch(
+  path: string,
+  token: string,
+  init?: RequestInit,
+): Promise<unknown> {
+  const result = await githubRequest(path, token, init)
+  if (!result.ok) {
+    if (result.status === 409 || result.status === 412) {
+      throw new GistConflictError(result.status)
+    }
+    const data = result.data
     const message =
       data && typeof data === 'object' && 'message' in data
         ? String((data as { message: unknown }).message)
-        : `GitHub error ${response.status}`
+        : `GitHub error ${result.status}`
     throw new Error(message)
   }
-  return data
+  return result.data
 }
 
 async function githubJson(
@@ -284,19 +324,89 @@ export function parseGistIdInput(raw: string): string {
   return match?.[0] ?? trimmed
 }
 
+export type PulledGistBackup = {
+  content: string
+  etag: string | null
+  gistId: string
+}
+
+/**
+ * Pull cloud notebook JSON + ETag (for conflict-safe push).
+ * Returns null when this device has no gist id yet.
+ */
+export async function pullGistBackupMeta(
+  settings = loadGistSettings(),
+): Promise<PulledGistBackup | null> {
+  if (!settings.token || !settings.gistId) return null
+  // Allow an explicit pull while connecting a second device (enabled may still be off).
+  const result = await githubRequest(`/gists/${settings.gistId}`, settings.token)
+  if (!result.ok) {
+    const data = result.data
+    const message =
+      data && typeof data === 'object' && 'message' in data
+        ? String((data as { message: unknown }).message)
+        : `GitHub error ${result.status}`
+    throw new Error(message)
+  }
+  if (!result.data || typeof result.data !== 'object' || Array.isArray(result.data)) {
+    throw new Error('Unexpected GitHub response')
+  }
+  const content = await extractBackupContentFull(
+    result.data as Record<string, unknown>,
+    settings.token,
+  )
+  if (!content) return null
+  return { content, etag: result.etag, gistId: settings.gistId }
+}
+
 export async function pullGistBackup(
   settings = loadGistSettings(),
 ): Promise<string | null> {
-  if (!settings.token || !settings.gistId) return null
-  // Allow an explicit pull while connecting a second device (enabled may still be off).
-  const gist = await githubJson(`/gists/${settings.gistId}`, settings.token)
-  return extractBackupContentFull(gist, settings.token)
+  const meta = await pullGistBackupMeta(settings)
+  return meta?.content ?? null
+}
+
+/**
+ * If this device is stuck on an empty / poorer OWNLAB gist while another gist for
+ * the same token has more notes, switch to the richer notebook.
+ */
+export async function repairOwnlabGistSelection(
+  settings = loadGistSettings(),
+): Promise<{ switched: boolean; gistId: string; noteCount: number }> {
+  if (!settings.token) {
+    return { switched: false, gistId: settings.gistId, noteCount: 0 }
+  }
+  const matches = await findOwnlabNotebookGists(settings.token)
+  if (!matches.length) {
+    return { switched: false, gistId: settings.gistId, noteCount: 0 }
+  }
+  const best = matches[0]
+  const current = settings.gistId
+    ? matches.find((m) => m.gistId === settings.gistId)
+    : undefined
+  const currentCount = current?.noteCount ?? 0
+  // Only escape unset / unknown / empty gists. Do not flip between two healthy
+  // notebooks just because counts differ mid-sync across devices.
+  const shouldSwitch =
+    !settings.gistId ||
+    !current ||
+    (currentCount === 0 && best.noteCount > 0)
+  if (shouldSwitch && best.gistId !== settings.gistId) {
+    saveGistSettings({ gistId: best.gistId })
+    return { switched: true, gistId: best.gistId, noteCount: best.noteCount }
+  }
+  return {
+    switched: false,
+    gistId: settings.gistId || best.gistId,
+    noteCount: current?.noteCount ?? best.noteCount,
+  }
 }
 
 export async function pushGistBackup(
   json: string,
   settings = loadGistSettings(),
-): Promise<{ gistId: string; truncated: boolean; htmlUrl: string | null }> {
+  options?: { ifMatch?: string | null },
+): Promise<{ gistId: string; truncated: boolean; htmlUrl: string | null; etag: string | null }> {
   if (!settings.enabled || !settings.token) {
     throw new Error('Cloud sync is not configured')
   }
@@ -347,30 +457,68 @@ export async function pushGistBackup(
   }
 
   if (settings.gistId) {
-    const updated = await githubJson(`/gists/${settings.gistId}`, settings.token, {
+    const headers: Record<string, string> = {}
+    if (options?.ifMatch) headers['If-Match'] = options.ifMatch
+    const result = await githubRequest(`/gists/${settings.gistId}`, settings.token, {
       method: 'PATCH',
       body: JSON.stringify(payload),
+      headers,
     })
+    if (!result.ok) {
+      if (result.status === 409 || result.status === 412) {
+        throw new GistConflictError(result.status)
+      }
+      const data = result.data
+      const message =
+        data && typeof data === 'object' && 'message' in data
+          ? String((data as { message: unknown }).message)
+          : `GitHub error ${result.status}`
+      throw new Error(message)
+    }
+    const updated = result.data
+    if (!updated || typeof updated !== 'object' || Array.isArray(updated)) {
+      throw new Error('Unexpected GitHub response')
+    }
     setLastCloudSyncAt()
     return {
       gistId: settings.gistId,
       truncated,
-      htmlUrl: typeof updated.html_url === 'string' ? updated.html_url : gistUrlFor(settings.gistId),
+      htmlUrl:
+        typeof (updated as { html_url?: unknown }).html_url === 'string'
+          ? String((updated as { html_url: string }).html_url)
+          : gistUrlFor(settings.gistId),
+      etag: result.etag,
     }
   }
 
-  const created = await githubJson('/gists', settings.token, {
+  const createdResult = await githubRequest('/gists', settings.token, {
     method: 'POST',
     body: JSON.stringify(payload),
   })
-  const gistId = String(created.id || '')
+  if (!createdResult.ok) {
+    const data = createdResult.data
+    const message =
+      data && typeof data === 'object' && 'message' in data
+        ? String((data as { message: unknown }).message)
+        : `GitHub error ${createdResult.status}`
+    throw new Error(message)
+  }
+  const created = createdResult.data
+  if (!created || typeof created !== 'object' || Array.isArray(created)) {
+    throw new Error('Unexpected GitHub response')
+  }
+  const gistId = String((created as { id?: unknown }).id || '')
   if (!gistId) throw new Error('GitHub did not return a cloud notebook id')
   saveGistSettings({ gistId })
   setLastCloudSyncAt()
   return {
     gistId,
     truncated,
-    htmlUrl: typeof created.html_url === 'string' ? created.html_url : gistUrlFor(gistId),
+    htmlUrl:
+      typeof (created as { html_url?: unknown }).html_url === 'string'
+        ? String((created as { html_url: string }).html_url)
+        : gistUrlFor(gistId),
+    etag: createdResult.etag,
   }
 }
 

@@ -3,10 +3,13 @@ import { readFolderBackup, requestPersistentStorage, writeFolderBackup } from '.
 import {
   getCloudSyncStatus,
   isCloudSyncReady,
+  isGistConflictError,
   loadGistSettings,
   parseGistIdInput,
   pullGistBackup,
+  pullGistBackupMeta,
   pushGistBackup,
+  repairOwnlabGistSelection,
   resolveOwnlabNotebookGist,
   saveGistSettings,
   setLastCloudSyncAt,
@@ -375,6 +378,9 @@ async function hydrate(): Promise<void> {
     }
     try {
       if (isCloudSyncReady()) {
+        // Escape an empty/stale gist left by older enable flows.
+        await repairOwnlabGistSelection()
+        refreshCloudRuntimeFromSettings()
         const gistJson = await pullGistBackup()
         if (gistJson) {
           await notebookStore.importBackup(gistJson, { syncCloud: false })
@@ -395,20 +401,24 @@ function ensureReady(): Promise<void> {
 }
 
 let cloudPullInFlight: Promise<void> | null = null
+let cloudEtag: string | null = null
+let periodicSyncTimer: ReturnType<typeof setInterval> | null = null
 
 /**
  * Pull cloud notebook and merge into the local cache without scheduling another sync.
  * Used before push so another device's notes aren't overwritten by last-write-wins.
+ * Returns the ETag to If-Match on the subsequent push.
  */
-async function pullAndMergeCloudQuiet(): Promise<boolean> {
-  if (!isCloudSyncReady()) return false
+async function pullAndMergeCloudQuiet(): Promise<{ merged: boolean; etag: string | null }> {
+  if (!isCloudSyncReady()) return { merged: false, etag: null }
   const settings = loadGistSettings()
-  if (!settings.token || !settings.gistId) return false
-  const gistJson = await pullGistBackup(settings)
-  if (!gistJson) return false
-  await notebookStore.importBackup(gistJson, { syncCloud: false })
+  if (!settings.token || !settings.gistId) return { merged: false, etag: cloudEtag }
+  const meta = await pullGistBackupMeta(settings)
+  if (!meta) return { merged: false, etag: cloudEtag }
+  cloudEtag = meta.etag
+  await notebookStore.importBackup(meta.content, { syncCloud: false })
   setLastCloudSyncAt()
-  return true
+  return { merged: true, etag: meta.etag }
 }
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
@@ -428,9 +438,21 @@ async function pullCloudIfConfigured() {
   return cloudPullInFlight
 }
 
+function startPeriodicCloudSync() {
+  if (typeof window === 'undefined') return
+  if (periodicSyncTimer) return
+  // New devices sitting idle never pulled other-device notes — poll while visible.
+  periodicSyncTimer = window.setInterval(() => {
+    if (document.visibilityState !== 'visible') return
+    if (!isCloudSyncReady()) return
+    void pullCloudIfConfigured()
+  }, 20_000)
+}
+
 // Kick off hydration as soon as the module loads in the browser.
 if (typeof window !== 'undefined') {
   void ensureReady()
+  startPeriodicCloudSync()
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') void pullCloudIfConfigured()
   })
@@ -516,6 +538,7 @@ function scheduleFolderBackup() {
  * Push notebook to cloud when sync is enabled.
  * Coalesces overlapping writes: if notes change mid-upload, run another push with
  * the latest cache (previously those notes were dropped and never uploaded).
+ * Retries on Gist ETag conflicts so two devices adding notes don't clobber each other.
  */
 async function flushCloudSync() {
   if (!isCloudSyncReady()) {
@@ -529,20 +552,46 @@ async function flushCloudSync() {
     try {
       while (cloudPushDirty) {
         cloudPushDirty = false
+        let etag: string | null = cloudEtag
         // Merge remote first so a slower device doesn't clobber notes from another.
         try {
-          await pullAndMergeCloudQuiet()
+          const pulled = await pullAndMergeCloudQuiet()
+          etag = pulled.etag
         } catch {
           /* push local anyway if pull fails (offline / rate limit) */
         }
         if (cloudPushDirty) continue
-        const result = await pushGistBackup(buildBackupJson())
-        setCloudRuntime({
-          state: 'synced',
-          lastSyncedAt: new Date().toISOString(),
-          error: null,
-          gistId: result.gistId,
-        })
+
+        let pushed = false
+        for (let attempt = 0; attempt < 6; attempt += 1) {
+          try {
+            const result = await pushGistBackup(buildBackupJson(), loadGistSettings(), {
+              ifMatch: etag,
+            })
+            cloudEtag = result.etag
+            setCloudRuntime({
+              state: 'synced',
+              lastSyncedAt: new Date().toISOString(),
+              error: null,
+              gistId: result.gistId,
+            })
+            pushed = true
+            break
+          } catch (err) {
+            if (!isGistConflictError(err)) throw err
+            // Another device wrote first — merge their notes and retry with fresh ETag.
+            try {
+              const pulled = await pullAndMergeCloudQuiet()
+              etag = pulled.etag
+            } catch {
+              etag = null
+            }
+            cloudPushDirty = false
+          }
+        }
+        if (!pushed) {
+          throw new Error('Cloud sync conflicted with another device too many times')
+        }
       }
     } catch (err) {
       setCloudRuntime({
@@ -1062,9 +1111,19 @@ export const notebookStore = {
       gistId: gistId || '',
       enabled: true,
     })
+    // If this browser was previously stuck on an empty gist, jump to the rich one.
+    try {
+      const repaired = await repairOwnlabGistSelection(loadGistSettings())
+      if (repaired.switched) {
+        gistId = repaired.gistId
+        cloudNoteCount = repaired.noteCount
+      }
+    } catch {
+      /* discovery failed — continue with current id */
+    }
     refreshCloudRuntimeFromSettings()
 
-    if (gistId) {
+    if (gistId || loadGistSettings().gistId) {
       try {
         const gistJson = await pullGistBackup(loadGistSettings())
         if (gistJson) {
