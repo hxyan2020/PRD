@@ -61,7 +61,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "AI Analyses (redirect)", path: "/admin/ai-analyses", description: "Redirects to Realtime Alert & Tracker", permission: "ai.read" },
   { category: "AI", title: "AI Analysis Detail", path: "/admin/ai-analyses/[id]", description: "Single analysis pack + AiChallengePanel", permission: "ai.read" },
   { category: "AI", title: "AI Admin", path: "/admin/ai-admin", description: "First-line + second-line AI Admin cards, maker/checker, propose_rag, training & accuracy", permission: "ai.admin" },
-  { category: "AI", title: "AI Performance", path: "/admin/ai-performance", description: "Read-only evaluation board — skill match, challenger agree, feedback accuracy, training quality, 14-day snapshots", permission: "ai.read" },
+  { category: "AI", title: "AI Performance", path: "/admin/ai-performance", description: "Read-only evaluation board — skill match, challenger agree, feedback accuracy, training quality, monthly P0–P3→factor-weight pack, 14-day snapshots", permission: "ai.read" },
   { category: "AI", title: "Spine (redirect → Home)", path: "/admin/spine", description: "Not in left nav — redirects to Admin Home; stage ticket counts live on the home spine viz (Spine Log tab removed)", permission: "spine.read" },
   { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus — AI write blocked (human-gate: pages AI cannot edit escalate to human / propose_rag maker-checker)", permission: "rag.read" },
   { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page; each skill binds one escalation path (ESC-DEFAULT fallback)", permission: "skills.read" },
@@ -70,10 +70,10 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "AI Access Security", path: "/admin/security/ai-access", description: "Human-only pages/functions/fields blocklist (includes FN-RAG-WRITE / propose_rag only)", permission: "audit.read" },
 
   // Response (messenger / intervention / escalation)
-  { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls", permission: "lark.read" },
+  { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls", permission: "lark.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
   { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
-  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; skill binds one route code; no separate Path name column", permission: "escalation.read" },
+  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; monthly P0–P3 severity weight pack (apply → ESC-DEFAULT); skill binds one route code; no separate Path name column", permission: "escalation.read" },
 
   // Org
   { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation); former Departments + Teams", permission: "teams.read" },

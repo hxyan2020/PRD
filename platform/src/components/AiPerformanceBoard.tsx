@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useId, useMemo } from "react";
 import { Badge, StatCard, StatusBadge } from "@/components/ui";
 import { EnZh } from "@/components/EnZh";
+import { Phrase } from "@/components/Phrase";
 import { MonitorCode } from "@/components/MonitorCode";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { cn } from "@/lib/utils";
@@ -790,7 +791,9 @@ export function AiPerformanceBoard({ initial }: { initial: EvalData }) {
                 P{f.ai_p}→P{f.recommended_p}
               </span>
               <span className="text-[var(--muted)] shrink-0">{f.rated_by_name || "—"}</span>
-              <span className="min-w-0 flex-1 line-clamp-2 text-slate-700">{f.reason}</span>
+              <span className="min-w-0 flex-1 line-clamp-2 text-slate-700">
+                <Phrase>{f.reason}</Phrase>
+              </span>
             </li>
           ))}
           {!initial.recent_severity_feedback?.length ? (

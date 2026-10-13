@@ -124,8 +124,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "ai-performance": {
     title: { en: "AI Performance Evaluation", "zh-Hant": "AI 績效評估" },
     subtitle: {
-      en: "Read-only health board — skill match, challenger agreement, human feedback, training quality, 14-day accuracy. Queue training or rate analyses in AI Admin.",
-      "zh-Hant": "唯讀健康看板 — 技能匹配、挑戰者一致率、人工回饋、訓練品質、14 日準確率。排隊訓練或評分分析請至 AI 管理。",
+      en: "Read-only health board — skill match, challenger agreement, human feedback, training quality, monthly P0–P3→factor-weight pack, 14-day accuracy. Queue training or rate analyses in AI Admin; apply weights on Escalation Routes.",
+      "zh-Hant": "唯讀健康看板 — 技能匹配、挑戰者一致率、人工回饋、訓練品質、每月 P0–P3→因子權重組合、14 日準確率。排隊訓練或評分分析請至 AI 管理；套用權重請至升級路徑。",
     },
   },
   interventions: {
@@ -166,8 +166,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   messenger: {
     title: { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
     subtitle: {
-      en: "Prototype Lark-style inbox: one case, split chat windows per POC on the escalation path — bird-eye relay from desk to desk, plus evidence, chatbot, escalate, dismiss, close, and controls.",
-      "zh-Hant": "原型 Lark 風格收件匣：同一案件依升級路徑承辦拆成多個聊天窗 — 鳥瞰台面轉遞，並含證據、聊天機器人、升級、排除、結案與控制動作。",
+      en: "Prototype Lark-style inbox: one case, split chat windows per POC on the escalation path — bird-eye relay from desk to desk, plus evidence, chatbot, escalate, dismiss, close, P0–P3 severity re-recommend (feeds monthly factor weights), and controls.",
+      "zh-Hant": "原型 Lark 風格收件匣：同一案件依升級路徑承辦拆成多個聊天窗 — 鳥瞰台面轉遞，並含證據、聊天機器人、升級、排除、結案、P0–P3 嚴重度重推薦（匯入每月因子權重）與控制動作。",
     },
   },
   "ai-access": {
@@ -194,8 +194,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   escalation: {
     title: { en: "Escalation Routes", "zh-Hant": "升級路徑" },
     subtitle: {
-      en: "Severity → team → SLA; catch-all ESC-DEFAULT; each skill binds one path. Used by Demo Messenger and Lark notify.",
-      "zh-Hant": "嚴重度 → 團隊 → SLA；兜底 ESC-DEFAULT；每個技能綁定一條路徑。供示範 Messenger 與 Lark 通知使用。",
+      en: "Severity → team → SLA; catch-all ESC-DEFAULT; each skill binds one path; monthly P0–P3 severity weight pack from Messenger feedback (apply → ESC-DEFAULT). Used by Demo Messenger and Lark notify.",
+      "zh-Hant": "嚴重度 → 團隊 → SLA；兜底 ESC-DEFAULT；每個技能綁定一條路徑；來自 Messenger 回饋的每月 P0–P3 嚴重度權重組合（套用 → ESC-DEFAULT）。供示範 Messenger 與 Lark 通知使用。",
     },
   },
   departments: {

@@ -960,7 +960,9 @@ export function DemoMessenger({
           setStatusMsg(t("msg.actionDone", locale, { action }));
           return;
         }
-        setStatusMsg(data.error || t("msg.actionFailed", locale));
+        setStatusMsg(
+          data.error ? phrase(String(data.error), locale) || String(data.error) : t("msg.actionFailed", locale)
+        );
         return;
       }
       if (action === "sync") {

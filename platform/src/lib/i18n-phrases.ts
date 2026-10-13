@@ -751,6 +751,41 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "控制平面總覽、虛擬脊柱按鈕（單則或連動組走完 DETECT→結案）、統計、可展開警報追蹤，以及首頁脊柱階段工單數（脊柱日誌分頁已移除）",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls":
     "警報＋AI 報告收件匣；依升級路徑承辦拆聊天窗（鳥瞰轉遞）；證據、聊天、升級、排除、結案、控制",
+  "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls":
+    "警報＋AI 報告收件匣；依升級路徑承辦拆聊天窗（鳥瞰轉遞）；證據、聊天、升級、排除、結案、P0–P3 嚴重度重推薦、控制",
+  "Demo Messenger": "示範 Messenger",
+  "Escalation Routes": "升級路徑",
+  "AI Performance": "AI 績效",
+  "AI Performance Evaluation": "AI 績效評估",
+  "Read-only evaluation board — skill match, challenger agree, feedback accuracy, training quality, 14-day snapshots":
+    "唯讀評估看板 — 技能匹配、挑戰者一致、回饋準確率、訓練品質、14 日快照",
+  "Read-only evaluation board — skill match, challenger agree, feedback accuracy, training quality, monthly P0–P3→factor-weight pack, 14-day snapshots":
+    "唯讀評估看板 — 技能匹配、挑戰者一致、回饋準確率、訓練品質、每月 P0–P3→因子權重組合、14 日快照",
+  "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; skill binds one route code; no separate Path name column":
+    "以維度定義之路徑（嚴重度、團隊、情境、待處理時間、需人工）× 可編輯係數；ESC-DEFAULT 兜底；技能綁定一條路徑代碼；無獨立「路徑」名稱欄",
+  "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; monthly P0–P3 severity weight pack (apply → ESC-DEFAULT); skill binds one route code; no separate Path name column":
+    "以維度定義之路徑（嚴重度、團隊、情境、待處理時間、需人工）× 可編輯係數；ESC-DEFAULT 兜底；每月 P0–P3 嚴重度權重組合（套用 → ESC-DEFAULT）；技能綁定一條路徑代碼；無獨立「路徑」名稱欄",
+  "Channel registry; routes with route_code, is_default, coefficients_json, risk_scenario, involved_teams, pending threshold (ESC-DEFAULT); monthly P0–P3 weight pack apply":
+    "頻道登錄；路徑含 route_code、is_default、coefficients_json、風險情境、涉入團隊、待處理門檻（ESC-DEFAULT）；每月 P0–P3 權重組合套用",
+  "P0–P3 re-recommendations from Messenger AI_REPORT cards; feeds monthly escalation factor-weight suggestions":
+    "來自 Messenger AI_REPORT 卡的 P0–P3 重推薦；匯入每月升級因子權重建議",
+  severity_feedback: "嚴重度回饋",
+  "Confirm P0 — equity drawdown with LP stale quotes needs firm war-room.":
+    "確認 P0 — 權益回撤且 LP 報價過期，需正式戰情室。",
+  "Upgrade to P0 — copy-book contagion risk underestimated by AI.":
+    "升級至 P0 — AI 低估跟單帳簿傳染風險。",
+  "Should be P1 — margin cohort already breached soft limits overnight.":
+    "應為 P1 — 保證金族群已於夜間突破軟限額。",
+  "Downgrade to P2 — one-off tick spike, book recovered within 3 minutes.":
+    "降級至 P2 — 單次 tick 尖峰，帳簿於 3 分鐘內恢復。",
+  "Raise to P2 — recurring pattern on this symbol this week.":
+    "提高至 P2 — 本週此商品反覆出現相同型態。",
+  "No severity feedback this month — nothing to apply":
+    "本月尚無嚴重度回饋 — 無可套用",
+  "Reason required (min 3 chars)": "須填原因（至少 3 字）",
+  "Reason required": "須填原因",
+  "recommended_p must be 0–3": "recommended_p 必須為 0–3",
+  "Apply failed": "套用失敗",
   "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges":
     "GET 分析 · POST 分析／模擬／dummy_spine（首頁虛擬警報或組、自動走至結案）／補跑挑戰",
 
@@ -1204,6 +1239,7 @@ export const DUMMY_PHRASE_FRAGMENTS = [
   "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)",
   "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls",
+  "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls",
   "Home dummy",
   "home-dummy",
 ] as const;

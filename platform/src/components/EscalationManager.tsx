@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { Phrase } from "@/components/Phrase";
 import { useT } from "@/hooks/useUiLocale";
+import { phrase } from "@/lib/i18n";
 import {
   DEFAULT_ESCALATION_COEFFICIENTS,
   DEFAULT_ROUTE_CODE,
@@ -143,7 +145,8 @@ export function EscalationManager({
       setMsg(zh ? "已套用本月嚴重度因子權重至 ESC-DEFAULT" : "Applied monthly severity factor weights to ESC-DEFAULT");
       router.refresh();
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : String(e));
+      const raw = e instanceof Error ? e.message : String(e);
+      setMsg(phrase(raw, zh ? "zh-Hant" : "en") || raw);
     } finally {
       setWeightBusy(false);
     }
@@ -418,7 +421,9 @@ export function EscalationManager({
                     P{f.ai_p}→P{f.recommended_p}
                   </span>{" "}
                   <span className="text-[var(--muted)]">· {f.rated_by_name || "—"}</span>
-                  <div className="text-slate-700 line-clamp-2">{f.reason}</div>
+                  <div className="text-slate-700 line-clamp-2">
+                    <Phrase>{f.reason}</Phrase>
+                  </div>
                 </li>
               ))}
             </ul>

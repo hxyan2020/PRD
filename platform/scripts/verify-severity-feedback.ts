@@ -49,6 +49,23 @@ assert.match(admin, /getMonthlyWeightSuggestion/);
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /msg\.severityRecommend/);
 assert.match(i18n, /重新推薦嚴重度/);
+assert.match(i18n, /每月 P0–P3→因子權重組合/);
+assert.match(i18n, /P0–P3 嚴重度重推薦（匯入每月因子權重）/);
+assert.match(i18n, /每月 P0–P3 嚴重度權重組合（套用 → ESC-DEFAULT）/);
+
+const phrases = read("src/lib/i18n-phrases.ts");
+assert.match(phrases, /P0–P3 嚴重度重推薦/);
+assert.match(phrases, /每月 P0–P3→因子權重組合/);
+assert.match(phrases, /確認 P0 — 權益回撤且 LP 報價過期/);
+assert.match(phrases, /來自 Messenger AI_REPORT 卡的 P0–P3 重推薦/);
+
+const escUi = read("src/components/EscalationManager.tsx");
+assert.match(escUi, /Phrase/);
+assert.match(escUi, /每月嚴重度權重建議/);
+
+const aiPerfUi = read("src/components/AiPerformanceBoard.tsx");
+assert.match(aiPerfUi, /Phrase/);
+assert.match(aiPerfUi, /P0–P3 嚴重度重推薦 → 每月因子權重/);
 
 const ug = read("docs/USER_GUIDE.md");
 assert.match(ug, /Re-recommend severity \(P0–P3\)/);
