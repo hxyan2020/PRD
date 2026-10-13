@@ -6,7 +6,7 @@
 **Owner:** demo platform owner · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
-This PRD is the product contract for **every screen and feature currently in CRMP Admin**. Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-45](/admin/docs/uat).
+This PRD is the product contract for **every screen and feature currently in CRMP Admin**. Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-46](/admin/docs/uat).
 
 ---
 
@@ -226,7 +226,7 @@ graph LR
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
-| FR-32 | UAT interactive pack | UAT-01…UAT-45 with why/steps/pass/evidence and screen coverage |
+| FR-32 | UAT interactive pack | UAT-01…UAT-46 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
@@ -347,6 +347,27 @@ flowchart TD
 
 **Acceptance (FR-38):** left-nav **AI Performance**; board shows skill / challenger / feedback / training KPIs; read-only (no CR forms); `GET /api/ai-performance` + `GET /api/ai-admin?tab=performance`; EN + zh-Hant chrome. Operator: User Guide §8.2A · Build: TSD §8A.
 
+### 6.7 AI-assisted escalation factor weights (P0–P3 feedback) — methods, data, flow
+
+Operators re-label monitor-incident severity on the Lark-style AI report; AI aggregates those labels monthly into suggested **escalation dimension coefficients** (severity, involved teams, risk scenario, pending time, need-human). Humans still apply the pack — AI never silently rewrites routes.
+
+| Layer | Detail |
+|---|---|
+| **Methods** | Map ops severity ↔ P0–P3 (P0=CRITICAL … P3=INFO). On each `recommend_severity`, store AI P vs recommended P + free-text reason. Monthly pack: count upgrades / downgrades / confirms; nudge ESC-DEFAULT coefficients (clamped). |
+| **Data** | `severity_feedback`; `escalation_routes.coefficients_json`; `platform_settings` key `severity.weights.applied.{YYYY-MM}`; audit `SEVERITY_RECOMMEND` / `MESSENGER_RECOMMEND_SEVERITY` / `SEVERITY_WEIGHTS_APPLY` |
+| **Flow** | Messenger AI_REPORT card → pick P0–P3 + reason → SQLite feedback → Escalation Routes monthly pack (apply → ESC-DEFAULT) → AI Performance read-only mirror |
+
+```mermaid
+flowchart LR
+  Card[AI_REPORT card P0-P3 + reason] --> FB[severity_feedback]
+  FB --> Pack[Monthly weight suggestion]
+  Pack --> Esc[Escalation Routes apply]
+  Esc --> Coeff[ESC-DEFAULT coefficients_json]
+  Pack --> Perf[AI Performance read-only]
+```
+
+**Acceptance (FR-39):** interactive severity block on open AI_REPORT (`msg-severity-recommend`); monthly pack on `/admin/escalation` (`esc-severity-weight-pack`) with apply when `escalation.manage`; AI Performance shows pack without mutation; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 / §16.15 · UAT-45.
+
 ---
 
 ## 7. Non-functional requirements
@@ -354,7 +375,7 @@ flowchart TD
 | ID | Area | Requirement |
 |---|---|---|
 | NFR-01 | Latency | Prototype: alarm → dual-AI pack typically < 60s |
-| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin/discovery/Lark emit audit; failed logins recorded; AI Performance page is read-only |
+| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin/discovery/Lark/severity-feedback/weight-apply emit audit; failed logins recorded; AI Performance page is read-only |
 | NFR-03 | Security | AI principals must not receive blocklisted rights |
 | NFR-04 | SoD | Maker/checker enforced for AI Admin; checker for designated controls |
 | NFR-05 | Availability | Demo single-node SQLite acceptable; production needs HA (see Ecosystem) |
@@ -374,6 +395,7 @@ flowchart TD
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  
 5. **AI Admin:** Distinct checker required; self-approve blocked.  
 5b. **AI Performance:** `/admin/ai-performance` renders KPIs (skill match, challenger, feedback, training) without mutation controls; linked from AI Admin.  
+5c. **Severity → weights (FR-39):** Messenger AI_REPORT accepts P0–P3 re-recommend + reason; Escalation Routes shows monthly pack and can apply to ESC-DEFAULT; AI Performance mirrors read-only.  
 6. **Coverage:** UAT window BREACH/CRITICAL samples 100% challenged (backfill allowed).  
 7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem/Roadmap render EN and zh-Hant; User Guide has a how-to for every left-nav page.  
 8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.  
@@ -383,7 +405,7 @@ flowchart TD
 12. **Owner login:** demo platform owner persona persists after refresh on Pages.  
 13. **Nav truth:** Left nav has Realtime Alert & Tracker (not Live Alerts); no Detectors / AI Analyses list / Spine Log rows; `/admin/detectors` → Monitor 2.0; `/admin/ai-analyses` → alerts; `/admin/spine` → home.
 
-Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync).
+Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, P0–P3 severity re-recommend, recommended controls, sync).
 
 ---
 
@@ -441,7 +463,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 |---|---|
 | Operator how-to per page | User Guide §6–§12 |
 | Technical module per page | TSD §7 + §8–§17 |
-| Test case per surface | UAT-01…UAT-45 `covers` field |
+| Test case per surface | UAT-01…UAT-46 `covers` field |
 | Public and local URLs | URL Catalog |
 
 ---
@@ -471,5 +493,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.10 | 2026-10-11 | §6.5 methods / data / flow + feature catalogue row for `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 expanded tables + mermaid flow; cross-links to UG §14A / TSD §11A |
 | 1.12 | 2026-10-12 | FR-36 audit mutation coverage; FR-38 AI Performance evaluation dashboard (§6.6) |
+| 1.13 | 2026-10-13 | FR-39 AI-assisted escalation factor weights from P0–P3 severity feedback (§6.7); UAT-45 / UAT-46 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

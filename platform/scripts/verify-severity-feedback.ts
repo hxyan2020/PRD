@@ -53,17 +53,33 @@ assert.match(i18n, /重新推薦嚴重度/);
 const ug = read("docs/USER_GUIDE.md");
 assert.match(ug, /Re-recommend severity \(P0–P3\)/);
 assert.match(ug, /monthly severity weight pack/);
+assert.match(ug, /AI-assisted factor weights/);
 const ugZh = read("docs/USER_GUIDE.zh-Hant.md");
 assert.match(ugZh, /重新推薦嚴重度（P0–P3）/);
+assert.match(ugZh, /AI 協助調整因子權重/);
 
 const prd = read("docs/PRD.md");
 assert.match(prd, /FR-39/);
+assert.match(prd, /### 6\.7 AI-assisted escalation factor weights/);
+assert.match(prd, /UAT-45/);
 const prdZh = read("docs/PRD.zh-Hant.md");
 assert.match(prdZh, /FR-39/);
+assert.match(prdZh, /### 6\.7 AI 協助調整升級因子權重/);
 
 const tsd = read("docs/TSD.md");
 assert.match(tsd, /recommend_severity/);
 assert.match(tsd, /severity_feedback/);
+assert.match(tsd, /### 11\.6 P0–P3 severity re-recommend/);
+const tsdZh = read("docs/TSD.zh-Hant.md");
+assert.match(tsdZh, /### 11\.6 P0–P3 嚴重度重推薦/);
+
+const uat = read("docs/UAT.md");
+assert.match(uat, /UAT-45 — P0–P3 severity re-recommend/);
+assert.match(uat, /UAT-46 — Risk Owner exit sign-off/);
+const uatCases = read("src/lib/docs/uat-cases.ts");
+assert.match(uatCases, /id: "UAT-45"/);
+assert.match(uatCases, /id: "UAT-46"/);
+assert.match(uatCases, /severity re-recommend feeds monthly factor-weight pack/);
 
 const wf = fs.readFileSync(path.join(repo, ".github/workflows/crmp-pages.yml"), "utf8");
 assert.match(wf, /cursor\/severity-feedback-weights-28bc/);

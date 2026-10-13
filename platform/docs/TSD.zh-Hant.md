@@ -446,13 +446,15 @@ sequenceDiagram
 | `ai_training_runs` | 已完成／執行中／佇列；平均準確率與 F1；近期列 |
 | `ai_accuracy_snapshots` | 最近 14 日（當日即時刷新） |
 | `platform_settings` | 一線／二線模型＋第二意見嚴重度徽章 |
+| `severity_feedback`＋每月組合 | P0–P3 重推薦計數；建議升級係數（升級路徑組合之唯讀鏡像） |
 
 ### 8A.5 UX／驗收
 1. 左側導覽 **AI 績效**（AI 與知識）。
 2. 看板渲染 KPI 列＋挑戰者／回饋／改進／訓練／歷史／最近清單（`data-testid="ai-performance-board"`）。
-3. 頁面無可寫提案／核准控制。
-4. 連結至 AI 管理與即時警報與追蹤。
-5. 英／繁中介面（`EnZh`＋頁面 meta `ai-performance`）。
+3. 面板 `ai-perf-severity-weights` 顯示每月 P0–P3 → 因子權重建議（連到升級路徑／Messenger；無套用按鈕）。
+4. 頁面無可寫提案／核准控制。
+5. 連結至 AI 管理與即時警報與追蹤。
+6. 英／繁中介面（`EnZh`＋頁面 meta `ai-performance`）。
 
 ---
 
@@ -539,6 +541,21 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 ### 11.5 POC 窗
 `getMessengerThread` 回傳 `poc_windows` — 匹配路徑每一跳一個 Lark 聊天（一線團隊 → 二線 → 風險負責人 → 高階），承辦來自 `users`／`teams`。UI：鳥瞰路徑晶片＋分欄（`data-testid=msg-poc-windows`）。
+
+### 11.6 P0–P3 嚴重度重推薦 → 每月因子權重（FR-39）
+
+| 項目 | 規格 |
+|---|---|
+| UI | 未結 AI_REPORT 上的 `LarkCardActions` 區塊 `msg-severity-recommend`（P0–P3、原因、送出） |
+| 動作 | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason }` |
+| 領域 | `lib/severity-feedback.ts` — `submitSeverityRecommendation`、`getMonthlyWeightSuggestion`、`applyMonthlyWeightSuggestion` |
+| 資料表 | `severity_feedback`（`ai_p`、`recommended_p`、`reason`、`month_key`…） |
+| 升級 UI | `EscalationManager` 面板 `esc-severity-weight-pack`；套用 → `POST /api/escalation` `apply_severity_weights` |
+| AI 績效 | 經 `getAiPerformanceEval().severity_weight_pack` 唯讀呈現 |
+| 對應 | P0=CRITICAL · P1=BREACH · P2=WARN · P3=INFO |
+| 守護 | `npm run test:severity-feedback` · `test:severity-feedback-smoke` |
+
+AI 只建議係數；僅具 `escalation.manage` 的人類可套用至 ESC-DEFAULT。套用寫稽核（`SEVERITY_WEIGHTS_APPLY`），並在 `platform_settings` 蓋章 `severity.weights.applied.{YYYY-MM}`。
 
 ---
 
@@ -779,6 +796,8 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
 
+**AI 協助調整因子權重（FR-39）：** 示範 Messenger AI_REPORT 卡將 P0–P3 重推薦寫入 `severity_feedback`。`getMonthlyWeightSuggestion()` 產出當月目前→建議係數組合。升級路徑顯示組合（`esc-severity-weight-pack`），`apply_severity_weights` 寫入 ESC-DEFAULT／`is_default` 路徑。AI 績效唯讀鏡像。見 §11.6。
+
 ### 16.16 組織
 
 **BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。部門（職責 JSON）嵌套團隊（Lark chat、值班、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
@@ -797,7 +816,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 | 分頁 | 內容 |
 |---|---|
-| **CRMP 日誌** | 警報、AI、技能、探索（掃描／分析／連線—中斷 OpenAI／RO 審查）、偵測器、Monitor、升級、干預、Messenger 分流／同步 |
+| **CRMP 日誌** | 警報、AI、技能、探索（掃描／分析／連線—中斷 OpenAI／RO 審查）、偵測器、Monitor、升級（含 `SEVERITY_WEIGHTS_APPLY`）、干預、Messenger 分流／同步／嚴重度重推薦 |
 | **Vantage Markets 管理日誌** | 登入／登出（含 `LOGIN_FAILED`）、設定／使用者／角色／組織、Lark 頻道建立／啟停／測試通知、市場情報 Lark 推送與啟用切換、RAG／文件、Messenger 建議／取消／確認／覆核 |
 
 兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
@@ -810,7 +829,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（45）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（46）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`。
 
 ---
 
@@ -830,6 +849,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.10 | 2026-10-11 | §11A 擴充：模組、資料、七類方法、序列流程、API |
 | 1.11 | 2026-10-11 | §7.2 畫面地圖補上 `/admin/discovery`（與英文版對齊） |
 | 1.12 | 2026-10-12 | §8A AI 績效評估看板；§16.19 稽核覆蓋守護 |
+| 1.13 | 2026-10-13 | §11.6／§16.15 FR-39 P0–P3 嚴重度回饋 → 每月升級因子權重 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

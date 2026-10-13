@@ -6,7 +6,7 @@
 **負責人：** demo platform owner · **核准人：** 風險負責人  
 **相關文件：** [TSD](/admin/docs/tsd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [生態導入評估](/admin/docs/ecosystem)
 
-本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-45](/admin/docs/uat)。
+本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-46](/admin/docs/uat)。
 
 ---
 
@@ -226,7 +226,7 @@ graph LR
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
-| FR-32 | UAT 互動包 | UAT-01…UAT-45 含為什麼／步驟／通過／證據與畫面覆蓋 |
+| FR-32 | UAT 互動包 | UAT-01…UAT-46 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
@@ -347,6 +347,27 @@ flowchart TD
 
 **驗收（FR-38）：** 左側導覽有 **AI 績效**；看板顯示技能／挑戰者／回饋／訓練 KPI；唯讀（無變更單表單）；`GET /api/ai-performance`＋`GET /api/ai-admin?tab=performance`；英＋繁中介面。操作：使用手冊 §8.2A · 實作：TSD §8A。
 
+### 6.7 AI 協助調整升級因子權重（P0–P3 回饋）— 方法、資料、流程
+
+操作者在 Lark 風格 AI 事故報告上重標監控事故嚴重度；AI 每月彙總這些標籤，建議**升級維度係數**（嚴重度、涉入團隊、風險情境、待處理時間、需人工）。人類仍須套用組合 — AI 不會靜默改寫路徑。
+
+| 層級 | 細節 |
+|---|---|
+| **方法** | 營運嚴重度 ↔ P0–P3（P0=CRITICAL … P3=INFO）。每次 `recommend_severity` 記錄 AI 的 P、建議的 P 與自由文字原因。每月組合：統計升級／降級／維持；微調 ESC-DEFAULT 係數（有上下限）。 |
+| **資料** | `severity_feedback`；`escalation_routes.coefficients_json`；`platform_settings` 鍵 `severity.weights.applied.{YYYY-MM}`；稽核 `SEVERITY_RECOMMEND`／`MESSENGER_RECOMMEND_SEVERITY`／`SEVERITY_WEIGHTS_APPLY` |
+| **流程** | Messenger AI_REPORT 卡 → 選 P0–P3＋原因 → SQLite 回饋 → 升級路徑每月組合（套用 → ESC-DEFAULT）→ AI 績效唯讀鏡像 |
+
+```mermaid
+flowchart LR
+  Card[AI_REPORT 卡 P0-P3＋原因] --> FB[severity_feedback]
+  FB --> Pack[每月權重建議]
+  Pack --> Esc[升級路徑套用]
+  Esc --> Coeff[ESC-DEFAULT coefficients_json]
+  Pack --> Perf[AI 績效唯讀]
+```
+
+**驗收（FR-39）：** 未結 AI_REPORT 上有互動嚴重度區（`msg-severity-recommend`）；`/admin/escalation` 有每月組合（`esc-severity-weight-pack`），`escalation.manage` 可套用；AI 績效顯示組合且無變更控件；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6／§16.15 · UAT-45。
+
 ---
 
 ## 7. 非功能需求
@@ -354,7 +375,7 @@ flowchart TD
 | ID | 領域 | 需求 |
 |---|---|---|
 | NFR-01 | 延遲 | 原型：警報 → 雙 AI 包通常 < 60 秒 |
-| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin／探索／Lark 變更發出稽核；失敗登入亦記錄；AI 績效頁為唯讀 |
+| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin／探索／Lark／嚴重度回饋／權重套用變更發出稽核；失敗登入亦記錄；AI 績效頁為唯讀 |
 | NFR-03 | 安全 | AI 主體不得取得黑名單權限 |
 | NFR-04 | 職能分離 | AI Admin 強制 Maker／Checker；指定控制要 Checker |
 | NFR-05 | 可用性 | 示範單節點 SQLite 可接受；正式需 HA（見生態） |
@@ -374,6 +395,7 @@ flowchart TD
 4. **控制：** 封鎖帳號 → 雙重確認 → admin_ref；必要時 Checker 後續。  
 5. **AI Admin：** 需要不同 Checker；自己核准被擋。  
 5b. **AI 績效：** `/admin/ai-performance` 顯示 KPI（技能匹配、挑戰者、回饋、訓練）且無可寫控制；自 AI 管理可連結。  
+5c. **嚴重度 → 權重（FR-39）：** Messenger AI_REPORT 可重推薦 P0–P3＋原因；升級路徑顯示每月組合並可套用至 ESC-DEFAULT；AI 績效唯讀鏡像。  
 6. **覆蓋：** UAT 視窗 BREACH／CRITICAL 樣本 100% 已挑戰（允許回填）。  
 7. **文件：** PRD／TSD／使用手冊／UAT／生態／路線圖／開放議題／進度英繁皆可渲染；使用手冊對左側每一頁都有操作說明。  
 8. **手機：** Messenger 列表→執行緒→返回在約 390px 可用且無整頁溢出。  
@@ -383,7 +405,7 @@ flowchart TD
 12. **負責人登入：** demo platform owner 角色在 Pages 重新整理後仍在。  
 13. **選單真相：** 左側為即時警報與追蹤（非「即時警報」舊名）；無偵測器／AI 分析列表／脊柱日誌列；`/admin/detectors`→Monitor 2.0；`/admin/ai-analyses`→警報；`/admin/spine`→首頁。
 
-正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-45）。此包覆蓋每一個管理畫面以及完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步）。
+正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-46）。此包覆蓋每一個管理畫面以及完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、P0–P3 嚴重度重推薦、建議控制、同步）。
 
 ---
 
@@ -441,7 +463,7 @@ flowchart TD
 |---|---|
 | 每頁操作說明 | 使用手冊 §6–§12 |
 | 每頁技術模組 | TSD §7＋§8–§16 |
-| 每介面測試案例 | UAT-01…UAT-45 的 `covers` 欄 |
+| 每介面測試案例 | UAT-01…UAT-46 的 `covers` 欄 |
 | 公開與本機網址 | 網址目錄 |
 
 ---
@@ -471,5 +493,6 @@ flowchart TD
 | 1.10 | 2026-10-11 | §6.5 方法／資料／流程＋功能目錄列 `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 表格與 mermaid 流程擴充；交叉連結使用手冊 §14A／TSD §11A |
 | 1.12 | 2026-10-12 | FR-36 稽核變更覆蓋；FR-38 AI 績效評估儀表板（§6.6） |
+| 1.13 | 2026-10-13 | FR-39 AI 協助自 P0–P3 嚴重度回饋調整升級因子權重（§6.7）；UAT-45／UAT-46 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

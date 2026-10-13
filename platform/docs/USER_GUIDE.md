@@ -383,12 +383,13 @@ sequenceDiagram
 | Human feedback | Correct / Partial / Incorrect labels |
 | How-to-improve | Open vs satisfied review counts |
 | Training quality | Recent runs with accuracy, precision / recall / F1, samples |
+| P0–P3 → factor weights | Monthly severity re-recommendations from Messenger AI reports; current → suggested escalation coefficients (read-only) |
 | 14-day snapshots | Skill / human / feedback rates per day |
 | Recent lists | Latest analyses + feedback ratings |
 
-**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. This page itself has no propose / approve forms.
+**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. Open **Escalation Routes** to apply the monthly weight pack (this page never applies it). Open **Demo Messenger** to add more P0–P3 feedback. This page itself has no propose / approve forms.
 
-**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests.
+**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. The severity-weight panel shows sample / upgrade / downgrade counts for the month. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests or apply coefficients.
 
 ### 8.3 AI Skills — `/admin/skills`
 
@@ -517,6 +518,8 @@ graph TD
   Thread --> Ev[Show evidence]
   Thread --> Chat[Chatbot]
   Thread --> Esc[Escalate]
+  Thread --> Sev[Re-recommend P0-P3 + reason]
+  Sev --> Pack[Monthly weight pack on Escalation]
   Thread --> Dec{Accept the AI?}
   Dec -->|Yes| Close[Close]
   Dec -->|False alarm| Dismiss[Dismiss]
@@ -525,6 +528,7 @@ graph TD
   DC --> Admin[Admin ref]
 ```
 
+**How AI helps adjust factor weights.** After you submit P0–P3 feedback on an AI report card, the reason is stored for the calendar month. Escalation Routes aggregates upgrades vs downgrades and suggests new dimension coefficients. Applying the pack is a human action on `/admin/escalation` (see §9.4) — not automatic.
 
 ### 9.3 Lark Integration — `/admin/lark`
 
@@ -540,11 +544,28 @@ graph TD
 
 **What it is.** Paths are defined by **dimensions** (severity, involved teams, risk scenario, pending time, need human intervention) with editable **coefficients**. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** route code; unbound skills fall back to ESC-DEFAULT. There is **no separate Path name column** — the route code plus dimensions identify the path.
 
-**What you see.** Route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled. A **monthly severity weight pack** summarises P0–P3 re-recommendations collected from Demo Messenger AI incident cards and suggests updated factor coefficients.
+**AI-assisted factor weights.** Desk re-recommendations of P0–P3 on Messenger AI reports feed a **monthly severity weight pack** on this page. The platform suggests coefficient nudges; a human with manage rights applies them to ESC-DEFAULT.
 
-**What to click.** Create/edit/disable if you have manage rights (localhost). Edit dimension coefficients. Confirm the catch-all default exists. On Skills, confirm each playbook binds exactly one path. When the monthly pack has samples, **Apply to ESC-DEFAULT** writes the suggested coefficients (audit: `SEVERITY_WEIGHTS_APPLY`).
+**What you see.** Route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled. The monthly pack panel shows: month key, sample / upgrade / downgrade counts, current → suggested coefficients for each dimension, recent feedback reasons, and **Apply to ESC-DEFAULT**.
 
-**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code. Severity feedback from Messenger shows upgrade/downgrade counts and a current → suggested coefficient row.
+**What to click.**
+
+1. Create/edit/disable routes if you have manage rights (localhost). Edit dimension coefficients by hand when needed.  
+2. Confirm the catch-all default exists. On Skills, confirm each playbook binds exactly one path.  
+3. Review the monthly pack rationale. When samples > 0 and it is not yet applied, click **Apply to ESC-DEFAULT** (audit: `SEVERITY_WEIGHTS_APPLY`).  
+4. Use the links back to Messenger (add more P0–P3 feedback) or AI Performance (read-only mirror).
+
+**P0–P3 mapping (same as Messenger card):** P0 = CRITICAL · P1 = BREACH · P2 = WARN · P3 = INFO.
+
+**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code. Severity feedback from Messenger shows upgrade/downgrade counts and a current → suggested coefficient row. After apply, the pack badge shows Applied.
+
+```mermaid
+flowchart LR
+  Msg[Messenger P0-P3 feedback] --> Month[Monthly pack]
+  Month --> Review[Human reviews deltas]
+  Review -->|Apply| EscDefault[ESC-DEFAULT coefficients]
+  Month --> Perf[AI Performance mirror]
+```
 
 ```mermaid
 graph LR
@@ -631,7 +652,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | User Guide | `/admin/docs/user-guide` | This handbook |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
-| UAT Checklist | `/admin/docs/uat` | Interactive 45-case sign-off (UAT-01 … UAT-45): why, steps, pass, evidence, screen coverage |
+| UAT Checklist | `/admin/docs/uat` | Interactive 46-case sign-off (UAT-01 … UAT-46): why, steps, pass, evidence, screen coverage |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
@@ -669,10 +690,10 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | Knowledge Tree | Domains, skills, RAG document leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
-| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, 14-day accuracy |
-| Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
+| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, P0–P3→weights pack, 14-day accuracy |
+| Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
-| Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
+| Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; monthly P0–P3 weight pack; skill binds one path |
 | Response | Lark Integration | Channel registry |
 | Organisation | BU and Teams | Combined BU RACI + nested on-call teams (`/admin/departments`) |
 | Organisation | Users | Directory, including demo platform owner / haixiang.yan@hytechc.com |
@@ -768,5 +789,6 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 | 1.12 | 2026-10-11 | §14A expanded: data table, seven methods, operator flow, statuses, mermaid |
 | 1.13 | 2026-10-12 | §11.3 audit coverage — every admin/Lark mutation + failed login |
 | 1.14 | 2026-10-12 | §8.2A AI Performance evaluation board; audit coverage note + verify scripts |
+| 1.15 | 2026-10-13 | §8.2A / §9.2 / §9.4 AI-assisted P0–P3 severity feedback → monthly factor weights (FR-39) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

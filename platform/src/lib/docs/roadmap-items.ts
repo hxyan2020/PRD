@@ -224,6 +224,8 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
       { href: "/admin/ai-admin", en: "AI Admin", zh: "AI 管理" },
       { href: "/admin/ai-performance", en: "AI Performance", zh: "AI 績效" },
+      { href: "/admin/messenger", en: "Demo Messenger", zh: "示範 Messenger" },
+      { href: "/admin/escalation", en: "Escalation Routes", zh: "升級路徑" },
       { href: "/admin/skills", en: "AI Skills", zh: "AI 技能" },
       { href: "/admin/rag", en: "RAG Knowledge Base", zh: "RAG 知識庫" },
     ],
@@ -233,16 +235,18 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       "POST /api/ai analyze — no live model call",
       "Confidence can hit 1.0 on a skill hit",
       "getAiPerformanceEval() · /admin/ai-performance read-only board",
+      "lib/severity-feedback.ts — P0–P3 re-recommend → monthly escalation weight pack (FR-39)",
     ],
     en: {
       title: "LLM primary RCA with tool-calling and eval harness",
       operatorGets: "Root-cause text that used tools (snapshot, RAG, tickets) — not only a keyword match to a skill pack.",
       why: "Heuristic matchSkill can fire with certainty 1.0 on wording overlap. That is unsafe once RM-09 can write.",
-      today: "Primary RCA is heuristic skill match or RAG retrieve. No live model, no tools, no offline eval set. AI Performance board shows prototype KPIs (skill match, challenger, feedback, training).",
+      today: "Primary RCA is heuristic skill match or RAG retrieve. No live model, no tools, no offline eval set. AI Performance board shows prototype KPIs (skill match, challenger, feedback, training) plus monthly P0–P3→escalation-weight suggestions from Messenger.",
       todayFacts: [
         "analyze.ts: skill path sets EXECUTED_MOCK for non-human steps; human steps wait in the intervention queue.",
         "AI Admin holds prompt-like settings and maker/checker, but generation is not an LLM.",
         "AI Performance (/admin/ai-performance) is the read-only eval surface — mutations stay on AI Admin.",
+        "Messenger AI_REPORT cards collect P0–P3 severity re-recommendations; Escalation Routes applies the monthly coefficient pack (human gate).",
         "Seeded analyses already look ‘complete’ — easy to mistake demo RCA for a model.",
       ],
       build: [
@@ -264,11 +268,12 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       title: "LLM 主 RCA：工具呼叫＋評測架",
       operatorGets: "根因文字是用工具（快照、RAG、工單）寫出來的，不是只靠關鍵字撞到技能包。",
       why: "啟發式 matchSkill 可能因用詞重疊就把信心打到 1.0。一旦 RM-09 能寫入，這就不安全。",
-      today: "主 RCA 是啟發式技能匹配或 RAG 檢索。沒有線上模型、工具、離線評測集。AI 績效看板顯示原型 KPI（技能匹配、挑戰者、回饋、訓練）。",
+      today: "主 RCA 是啟發式技能匹配或 RAG 檢索。沒有線上模型、工具、離線評測集。AI 績效看板顯示原型 KPI（技能匹配、挑戰者、回饋、訓練），以及來自 Messenger 的每月 P0–P3→升級權重建議。",
       todayFacts: [
         "analyze.ts：非人工步驟存 EXECUTED_MOCK；人工步驟進干預佇列。",
         "AI 管理有類似 Prompt 的設定與 Maker／Checker，但生成不是 LLM。",
         "AI 績效（/admin/ai-performance）是唯讀評估面 — 變更仍在 AI 管理。",
+        "Messenger AI_REPORT 卡收集 P0–P3 嚴重度重推薦；升級路徑由人類套用每月係數組合。",
         "種子分析看起來已經「完成」— 容易把示範 RCA 當成模型輸出。",
       ],
       build: [

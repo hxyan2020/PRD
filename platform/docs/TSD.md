@@ -450,13 +450,15 @@ Same view gate as AI Admin overview: any of `ai.admin` · `ai.read` · `skills.m
 | `ai_training_runs` | completed / running / queued; avg accuracy & F1; recent rows |
 | `ai_accuracy_snapshots` | last 14 days (today refreshed live) |
 | `platform_settings` | line1 / line2 model + second-opinion severity badges |
+| `severity_feedback` + monthly pack | P0–P3 re-recommend counts; suggested escalation coefficients (read-only mirror of Escalation Routes pack) |
 
 ### 8A.5 UX / acceptance
 1. Left nav **AI Performance** under AI & knowledge.
 2. Board renders KPI strip + challenger / feedback / improve / training / history / recent lists (`data-testid="ai-performance-board"`).
-3. No propose/approve controls on the page.
-4. Links to AI Admin and Realtime Alert & Tracker.
-5. EN / zh-Hant chrome via `EnZh` + page meta `ai-performance`.
+3. Panel `ai-perf-severity-weights` shows monthly P0–P3 → factor-weight suggestion (links to Escalation / Messenger; no apply button).
+4. No propose/approve controls on the page.
+5. Links to AI Admin and Realtime Alert & Tracker.
+6. EN / zh-Hant chrome via `EnZh` + page meta `ai-performance`.
 
 ---
 
@@ -543,6 +545,21 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 
 ### 11.5 POC windows
 `getMessengerThread` returns `poc_windows` — one Lark chat per hop on the matched route (primary team → secondary → Risk Owner → Exec) with named POC from `users`/`teams`. UI: bird-eye path chips + split columns (`data-testid=msg-poc-windows`).
+
+### 11.6 P0–P3 severity re-recommend → monthly factor weights (FR-39)
+
+| Item | Spec |
+|---|---|
+| UI | `LarkCardActions` block `msg-severity-recommend` on open AI_REPORT (P0–P3 chips, reason, submit) |
+| Action | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason }` |
+| Domain | `lib/severity-feedback.ts` — `submitSeverityRecommendation`, `getMonthlyWeightSuggestion`, `applyMonthlyWeightSuggestion` |
+| Table | `severity_feedback` (`ai_p`, `recommended_p`, `reason`, `month_key`, …) |
+| Escalation UI | `EscalationManager` panel `esc-severity-weight-pack`; apply → `POST /api/escalation` `apply_severity_weights` |
+| AI Performance | Read-only pack via `getAiPerformanceEval().severity_weight_pack` |
+| Mapping | P0=CRITICAL · P1=BREACH · P2=WARN · P3=INFO |
+| Guards | `npm run test:severity-feedback` · `test:severity-feedback-smoke` |
+
+AI suggests coefficients; only humans with `escalation.manage` apply them to ESC-DEFAULT. Apply is audited (`SEVERITY_WEIGHTS_APPLY`) and stamped in `platform_settings` as `severity.weights.applied.{YYYY-MM}`.
 
 ---
 
@@ -687,7 +704,7 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/discovery` | Unknown-risk candidates; Connect OpenAI/Mock; Analyse; RO review |
 | `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors` (+ parallel discovery), `run_discovery`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
 | `GET/POST /api/detectors` | Legacy detector CRUD / run (UI on Monitor 2.0) |
-| `GET/POST /api/escalation` | Routes + dimension coefficients + ESC-DEFAULT probe |
+| `GET/POST /api/escalation` | Routes + dimension coefficients + ESC-DEFAULT probe; `?severity_weights=1` monthly pack; `apply_severity_weights` |
 | `GET/POST /api/roles` | Editable RBAC (`update_role`; AI actors forbidden) |
 | `GET/POST /api/org` | Departments + teams; `update_team` mission / on-call |
 | `POST /api/audit/rollback` | Restore before-state snapshot by `audit_id` |
@@ -784,6 +801,8 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 `lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
 
+**AI-assisted factor weights (FR-39):** Demo Messenger AI_REPORT cards collect P0–P3 re-recommendations into `severity_feedback`. `getMonthlyWeightSuggestion()` builds a current→suggested coefficient pack for the calendar month. Escalation Routes shows the pack (`esc-severity-weight-pack`) and `apply_severity_weights` writes suggested values onto ESC-DEFAULT / `is_default` routes. AI Performance mirrors the pack read-only. See §11.6.
+
 ### 16.16 Organisation
 
 **BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`). Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
@@ -802,7 +821,7 @@ Every mutating admin / Lark / messenger API path calls `writeAudit` (`lib/db.ts`
 
 | Tab | Contents |
 |---|---|
-| **CRMP logs** | Alerts, AI, skills, discovery (scan / Analyse / Connect-Disconnect OpenAI / RO review), detectors, monitor, escalation, interventions, messenger triage / sync |
+| **CRMP logs** | Alerts, AI, skills, discovery (scan / Analyse / Connect-Disconnect OpenAI / RO review), detectors, monitor, escalation (incl. `SEVERITY_WEIGHTS_APPLY`), interventions, messenger triage / sync / severity re-recommend |
 | **Vantage Markets Admin logs** | Login/logout (+ `LOGIN_FAILED`), settings / users / roles / org, Lark channel create/toggle/test notify, market-intel Lark push + enable toggle, RAG/docs, messenger recommend / cancel / confirm / checker |
 
 Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
@@ -834,6 +853,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.9 | 2026-10-11 | §11A Unknown Risk Discovery AI suggestion card + `/api/discovery` |
 | 1.10 | 2026-10-11 | §11A expanded: modules, data, seven methods, sequence flow, API |
 | 1.11 | 2026-10-12 | §8A AI Performance evaluation board; §16.19 audit coverage guards |
+| 1.12 | 2026-10-13 | §11.6 / §16.15 FR-39 P0–P3 severity feedback → monthly escalation factor weights |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

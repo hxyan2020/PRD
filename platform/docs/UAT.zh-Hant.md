@@ -9,11 +9,11 @@
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- 全包建議時窗約 **9 小時**（45 案）。
+- 全包建議時窗約 **9 小時**（46 案）。
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、未知風險探索、即時警報與追蹤、風險領域、AI 管理、AI 績效（唯讀評估）、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾；每次管理／Lark 變更＋失敗登入）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、P0–P3 嚴重度重推薦、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、未知風險探索、即時警報與追蹤、風險領域、AI 管理、AI 績效（唯讀評估含每月 P0–P3→權重組合）、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT · 每月嚴重度權重組合）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾；每次管理／Lark 變更＋失敗登入）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
@@ -73,7 +73,8 @@ graph TD
 | 42 | UAT-42 | 456m | 8m | Low | All | Docs published | 改進路線圖可讀 | Improvement Roadmap |
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | 公開快照 — 登入可用並維持 demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — 結案後重新整理仍保持關閉 | Demo Messenger |
-| 45 | UAT-45 | 484m | 15m | Critical | Risk Owner | UAT-01–44 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
+| 45 | UAT-45 | 484m | 12m | High | Risk + AI | UAT-33 or UAT-37; open AI_REPORT thread | P0–P3 嚴重度重推薦匯入每月因子權重組合 | Demo Messenger, Escalation Routes, AI Performance |
+| 46 | UAT-46 | 496m | 15m | Critical | Risk Owner | UAT-01–45 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
 
 ## 逐步案例
 
@@ -727,9 +728,10 @@ graph TD
 1. 開啟升級路徑。
 2. 確認列以維度定義（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）並可編輯係數 — 不是自由文字「路徑」名稱欄。
 3. 找到 `ESC-DEFAULT`（未匹配／特殊事件兜底）與至少一條已啟用、含 SLA 的非預設路徑。
-4. 與 UAT-09 的 ESCALATION 氣泡比對，路徑代碼／團隊精神應相符。
+4. 確認每月嚴重度權重組合面板存在（完整 P0–P3 回饋迴路見 UAT-45）。
+5. 與 UAT-09 的 ESCALATION 氣泡比對，路徑代碼／團隊精神應相符。
 
-**通過：** ESC-DEFAULT 存在；至少一條維度路徑含係數＋SLA；無「路徑」名稱欄；與 Messenger 升級文字相符。
+**通過：** ESC-DEFAULT 存在；至少一條維度路徑含係數＋SLA；無「路徑」名稱欄；每月權重組合面板可見；與 Messenger 升級文字相符。
 **證據：** 維度表截圖＋ Messenger ESCALATION 氣泡。
 
 ### UAT-38 — 組織 — BU 與團隊、使用者與角色
@@ -853,9 +855,27 @@ graph TD
 **通過：** 關閉／排除狀態在切換後仍在；本機重整後仍在；同步不複製已結案。
 **證據：** CLOSED 對話停用工具列截圖（離開再回來後）。
 
-### UAT-45 — 風險負責人退出簽核
+### UAT-45 — P0–P3 嚴重度重推薦匯入每月因子權重組合
 
-- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–44 results recorded · **建議：** T+484m / 15m
+- **嚴重度：** High · **負責：** Risk + AI · **依賴：** UAT-33 or UAT-37; open AI_REPORT thread · **建議：** T+484m / 12m
+- **涵蓋：** Demo Messenger, Escalation Routes, AI Performance
+- **為何測：** AI 應從台面嚴重度覆寫學習，但套用新升級係數必須由人類負責。
+- **目的：** 在未結 Messenger AI 報告上重推薦嚴重度並填原因；確認升級路徑顯示每月組合、AI 績效唯讀鏡像。
+
+**步驟**
+
+1. 開啟示範 Messenger → 一則含 AI_REPORT 互動卡的未結執行緒。
+2. 在「重新推薦嚴重度（P0–P3）」看 AI 嚴重度（如 P1 · BREACH）。選不同 P（或維持），填 ≥3 字原因，送出嚴重度回饋。
+3. 確認 SYSTEM 泡泡記錄 AI P → 建議 P 與原因。
+4. 開啟升級路徑。每月嚴重度權重組合須顯示樣本 ≥1、升級／降級統計、目前 → 建議係數。有管理權時可套用至 ESC-DEFAULT 一次（或確認樣本 > 0 時有套用按鈕）。
+5. 開啟 AI 績效。P0–P3 → 因子權重面板須列出同月回饋與建議差值 — 且本頁沒有套用按鈕。
+
+**通過：** Messenger 接受 P0–P3＋原因；升級路徑顯示每月組合（套用可選）；AI 績效唯讀鏡像。
+**證據：** Messenger 嚴重度區、升級路徑每月組合、AI 績效嚴重度面板截圖。
+
+### UAT-46 — 風險負責人退出簽核
+
+- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–45 results recorded · **建議：** T+496m / 15m
 - **涵蓋：** UAT Checklist, Audit Log
 - **為何測：** 在有權的人寫下 ACCEPT／ACCEPT WITH WAIVERS／REJECT 之前，UAT 不算結束。
 - **目的：** 依退出規則統計 Critical／High，並存簽署決策。
@@ -864,7 +884,7 @@ graph TD
 
 1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
-3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）通過。
+3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）通過或豁免。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 
@@ -876,4 +896,4 @@ graph TD
 1. 所有 **Critical** 必須 Pass。
 2. **High** 豁免不超過 2 項，且須書面風險接受。
 3. UAT 視窗內 BREACH／CRITICAL **100%** 附第二 AI（UAT-19）。
-4. 完成 **UAT-45** 簽核（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。
+4. 完成 **UAT-46** 簽核（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。
