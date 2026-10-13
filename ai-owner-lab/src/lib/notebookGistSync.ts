@@ -369,9 +369,14 @@ export async function pullGistBackup(
 /**
  * If this device is stuck on an empty / poorer OWNLAB gist while another gist for
  * the same token has more notes, switch to the richer notebook.
+ *
+ * `preferRichest`: used by the public-HTML export path — always attach to the
+ * OWNLAB gist with the most notes so a phone with a partial/older gist id still
+ * pulls the full notebook (e.g. 15 notes instead of a leftover 8-note gist).
  */
 export async function repairOwnlabGistSelection(
   settings = loadGistSettings(),
+  options?: { preferRichest?: boolean },
 ): Promise<{ switched: boolean; gistId: string; noteCount: number }> {
   if (!settings.token) {
     return { switched: false, gistId: settings.gistId, noteCount: 0 }
@@ -385,12 +390,13 @@ export async function repairOwnlabGistSelection(
     ? matches.find((m) => m.gistId === settings.gistId)
     : undefined
   const currentCount = current?.noteCount ?? 0
-  // Only escape unset / unknown / empty gists. Do not flip between two healthy
-  // notebooks just because counts differ mid-sync across devices.
+  // Default: only escape unset / unknown / empty gists.
+  // Export path: also jump when another OWNLAB gist clearly has more notes.
   const shouldSwitch =
     !settings.gistId ||
     !current ||
-    (currentCount === 0 && best.noteCount > 0)
+    (currentCount === 0 && best.noteCount > 0) ||
+    (Boolean(options?.preferRichest) && best.noteCount > currentCount)
   if (shouldSwitch && best.gistId !== settings.gistId) {
     saveGistSettings({ gistId: best.gistId })
     return { switched: true, gistId: best.gistId, noteCount: best.noteCount }

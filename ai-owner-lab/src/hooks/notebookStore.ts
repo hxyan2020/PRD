@@ -947,6 +947,84 @@ export const notebookStore = {
     return { total: cache.entries.length, fromFolder, fromGist }
   },
   /**
+   * Pull the richest OWNLAB cloud notebook for export/copy pages.
+   * Switches gist id when another gist for the same token has more notes,
+   * then merges into local cache (does not push).
+   */
+  async pullCloudForExport(): Promise<{
+    ok: boolean
+    localBefore: number
+    cloudCount: number
+    total: number
+    switchedGist: boolean
+    gistId: string
+    error?: string
+  }> {
+    await ensureReady()
+    const localBefore = cache.entries.length
+    const settings = loadGistSettings()
+    if (!settings.token) {
+      return {
+        ok: false,
+        localBefore,
+        cloudCount: 0,
+        total: localBefore,
+        switchedGist: false,
+        gistId: settings.gistId,
+        error: 'Cloud sync is not configured on this device',
+      }
+    }
+    try {
+      // Ensure sync is marked enabled so subsequent pulls keep working.
+      if (!settings.enabled) {
+        saveGistSettings({ enabled: true })
+      }
+      const repaired = await repairOwnlabGistSelection(loadGistSettings(), {
+        preferRichest: true,
+      })
+      refreshCloudRuntimeFromSettings()
+      const gistJson = await pullGistBackup(loadGistSettings())
+      if (!gistJson) {
+        return {
+          ok: false,
+          localBefore,
+          cloudCount: repaired.noteCount,
+          total: cache.entries.length,
+          switchedGist: repaired.switched,
+          gistId: repaired.gistId,
+          error: 'Cloud notebook is empty or unreadable',
+        }
+      }
+      let cloudCount = repaired.noteCount
+      try {
+        const parsed = JSON.parse(gistJson) as { entries?: unknown }
+        cloudCount = Array.isArray(parsed.entries) ? parsed.entries.length : cloudCount
+      } catch {
+        /* keep repaired count */
+      }
+      await notebookStore.importBackup(gistJson, { syncCloud: false })
+      setLastCloudSyncAt()
+      return {
+        ok: true,
+        localBefore,
+        cloudCount,
+        total: cache.entries.length,
+        switchedGist: repaired.switched,
+        gistId: repaired.gistId || loadGistSettings().gistId,
+      }
+    } catch (err) {
+      return {
+        ok: false,
+        localBefore,
+        cloudCount: 0,
+        total: cache.entries.length,
+        switchedGist: false,
+        gistId: loadGistSettings().gistId,
+        error: err instanceof Error ? err.message : 'Cloud pull failed',
+      }
+    }
+  },
+  /**
    * Push then pull cloud notebook and report whether sync is healthy.
    * Safe to run anytime — does not delete local notes.
    */

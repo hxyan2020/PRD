@@ -3982,6 +3982,12 @@ button.notebook-category-badge.on {
   margin: 0.35rem 0;
 }
 
+.notes-public-help-note {
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .notes-public-preview h2 {
   margin: 0 0 0.65rem;
   font-size: 1.05rem;

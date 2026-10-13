@@ -425,6 +425,16 @@ const en = {
   publicHtmlCloudFail: 'Could not refresh from cloud.',
   publicHtmlNav: 'Public HTML',
   publicHtmlLoading: 'Loading notes…',
+  publicHtmlLoadingCloud: 'Loading notes from cloud…',
+  publicHtmlCountDetail: '{n} note(s) ready (was {before} on this phone · cloud had {cloud})',
+  publicHtmlMergedMore:
+    'Merged cloud notes: this phone had {before}, cloud had {cloud}, now {total}.',
+  publicHtmlSwitchedGist:
+    'Switched to the full cloud notebook (phone had {before}, cloud has {cloud}). Now {total} note(s).',
+  publicHtmlStillShort:
+    'This export has {total} note(s) but cloud reported {cloud}. On the device that still has all notes: Notebook → Double-check cloud sync, then refresh here again.',
+  publicHtmlHowCloud:
+    'This page auto-pulls the richest cloud notebook when you open it, so a phone with fewer local notes still exports the full set.',
 } as const
 
 type UiKey = keyof typeof en
@@ -836,6 +846,15 @@ const zh: Record<UiKey, string> = {
   publicHtmlCloudFail: '无法从云端刷新。',
   publicHtmlNav: '公开 HTML',
   publicHtmlLoading: '正在加载笔记…',
+  publicHtmlLoadingCloud: '正在从云端加载笔记…',
+  publicHtmlCountDetail: '已准备 {n} 条（本机原有 {before} · 云端 {cloud}）',
+  publicHtmlMergedMore: '已合并云端笔记：本机原有 {before}，云端 {cloud}，现在共 {total} 条。',
+  publicHtmlSwitchedGist:
+    '已切换到完整云端笔记本（本机原有 {before}，云端 {cloud}）。现在共 {total} 条。',
+  publicHtmlStillShort:
+    '当前导出有 {total} 条，但云端报告 {cloud} 条。请到仍有全部笔记的设备：笔记 → 核对云同步，然后再回到这里刷新。',
+  publicHtmlHowCloud:
+    '打开本页会自动拉取笔记最多的云端笔记本，所以本机笔记偏少时也能导出完整集合。',
 }
 
 const catalogs: Record<Lang, Record<UiKey, string>> = { en: en as Record<UiKey, string>, zh }
