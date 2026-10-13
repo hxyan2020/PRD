@@ -3930,3 +3930,67 @@ button.notebook-category-badge.on {
     min-height: 2.75rem;
   }
 }
+
+/* Copyable public HTML export page */
+.notes-public-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 0 3rem;
+}
+
+.notes-public-hero .eyebrow a {
+  color: var(--teal-deep);
+  text-decoration: none;
+  font-weight: 650;
+}
+
+.notes-public-hero h1 {
+  margin: 0.2rem 0 0.5rem;
+}
+
+.notes-public-count {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.notes-public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.notes-public-help {
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 1rem 1.15rem;
+  background: color-mix(in srgb, var(--paper) 88%, #fff);
+  margin-bottom: 1.5rem;
+}
+
+.notes-public-help h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.notes-public-help ol {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.notes-public-help li {
+  margin: 0.35rem 0;
+}
+
+.notes-public-preview h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+}
+
+.notes-public-frame {
+  width: 100%;
+  min-height: 70vh;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #fff;
+}

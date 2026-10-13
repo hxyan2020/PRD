@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { notebookStore } from '../hooks/notebookStore'
 import { useLanguage } from '../i18n/LanguageContext'
 import {
@@ -432,6 +433,16 @@ export function NotebookBackupPanel() {
         {cloudOn && gistId ? (
           <p className="notebook-cloud-other-device">{t('cloudOtherDeviceHint', { id: gistId })}</p>
         ) : null}
+      </div>
+
+      <div className="notebook-backup-card">
+        <h3>{t('publicHtmlTitle')}</h3>
+        <p>{t('publicHtmlBody')}</p>
+        <div className="notebook-actions">
+          <Link className="btn primary" to="/notes-html">
+            {t('publicHtmlNav')}
+          </Link>
+        </div>
       </div>
 
       <div className="notebook-backup-card">

@@ -610,12 +610,24 @@ export function Notebook() {
             >
               {t('cloudVerify')}
             </button>
+            {count > 0 ? (
+              <Link className="btn ghost notebook-cloud-verify-btn" to="/notes-html">
+                {t('publicHtmlNav')}
+              </Link>
+            ) : null}
           </div>
         ) : (
           <p className="notebook-cloud-pill off" title={t('cloudRequiredTitle')}>
             {t('cloudSyncOffBanner')}
           </p>
         )}
+        {!cloudOn && count > 0 ? (
+          <div className="notebook-cloud-status-row">
+            <Link className="btn ghost notebook-cloud-verify-btn" to="/notes-html">
+              {t('publicHtmlNav')}
+            </Link>
+          </div>
+        ) : null}
         <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
           <button
             type="button"
