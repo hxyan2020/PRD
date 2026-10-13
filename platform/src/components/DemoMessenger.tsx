@@ -224,6 +224,61 @@ function ThinkingCard({
   );
 }
 
+const KIND_CARD: Record<
+  string,
+  { en: string; zh: string; accent: string; chip: string; surface: string }
+> = {
+  ALERT: {
+    en: "Alert",
+    zh: "警報",
+    accent: "border-l-amber-500",
+    chip: "bg-amber-100 text-amber-950 border-amber-200",
+    surface: "bg-amber-50/70 border-amber-200",
+  },
+  AI_REPORT: {
+    en: "AI report",
+    zh: "AI 報告",
+    accent: "border-l-violet-500",
+    chip: "bg-violet-100 text-violet-950 border-violet-200",
+    surface: "bg-violet-50/60 border-violet-200",
+  },
+  ESCALATION: {
+    en: "Escalation",
+    zh: "升級",
+    accent: "border-l-rose-500",
+    chip: "bg-rose-100 text-rose-950 border-rose-200",
+    surface: "bg-rose-50/60 border-rose-200",
+  },
+  EVIDENCE: {
+    en: "Evidence",
+    zh: "證據",
+    accent: "border-l-sky-500",
+    chip: "bg-sky-100 text-sky-950 border-sky-200",
+    surface: "bg-sky-50/60 border-sky-200",
+  },
+  USER: {
+    en: "You",
+    zh: "你",
+    accent: "border-l-teal-600",
+    chip: "bg-teal-100 text-teal-950 border-teal-200",
+    surface: "bg-teal-50 border-teal-200",
+  },
+  SYSTEM: {
+    en: "System",
+    zh: "系統",
+    accent: "border-l-slate-400",
+    chip: "bg-slate-100 text-slate-800 border-slate-200",
+    surface: "bg-white border-[var(--line)]",
+  },
+  CONTROL: {
+    en: "Control",
+    zh: "管制",
+    accent: "border-l-orange-500",
+    chip: "bg-orange-100 text-orange-950 border-orange-200",
+    surface: "bg-orange-50/70 border-orange-200",
+  },
+};
+
 function MessageBubble({
   m,
   locale,
@@ -252,34 +307,46 @@ function MessageBubble({
     );
   }
   const meta = JSON.parse(m.meta_json || "{}") as Record<string, unknown>;
-  const isUser = m.kind === "USER";
   const handoff = meta.handoff === "in" || meta.handoff === "out" ? String(meta.handoff) : null;
+  const style =
+    KIND_CARD[m.kind] ||
+    (handoff
+      ? KIND_CARD.ESCALATION
+      : {
+          en: m.kind,
+          zh: m.kind,
+          accent: "border-l-slate-300",
+          chip: "bg-slate-100 text-slate-700 border-slate-200",
+          surface: "bg-white border-[var(--line)]",
+        });
+  const kindLabel = locale === "zh-Hant" ? style.zh : style.en;
+  const isUser = m.kind === "USER";
+
   return (
-    <div
-      className={`rounded-xl border px-3 py-2 text-sm max-w-full ${
-        isUser
-          ? "ml-auto border-teal-200 bg-teal-50"
-          : m.kind === "AI_REPORT"
-            ? "border-amber-200 bg-amber-50/60"
-            : m.kind === "ESCALATION" || handoff
-              ? "border-rose-200 bg-rose-50/50"
-              : "border-[var(--line)] bg-white"
+    <article
+      className={`msg-card rounded-xl border border-l-4 px-3.5 py-3 text-sm shadow-sm ${style.surface} ${style.accent} ${
+        isUser ? "ml-4 sm:ml-10" : "mr-2 sm:mr-6"
       }`}
+      data-testid={`msg-card-${m.kind}`}
     >
-      <div className="flex flex-wrap gap-2 items-center text-xs text-[var(--muted)]">
-        <Badge className="bg-slate-100 text-slate-700 border-slate-200">{m.kind}</Badge>
-        <span className="font-semibold text-[var(--ink)]">{m.sender}</span>
-        <span className="break-word">{m.created_at}</span>
-      </div>
-      <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800 break-word">
+      <header className="flex flex-wrap items-center gap-2 gap-y-1">
+        <Badge className={style.chip}>{kindLabel}</Badge>
+        <span className="font-semibold text-[var(--ink)] text-[13px]">{m.sender}</span>
+        <span className="text-[11px] text-[var(--muted)] tabular-nums ml-auto">{m.created_at}</span>
+      </header>
+      <div className="mt-2.5 whitespace-pre-wrap font-sans text-[13.5px] leading-relaxed text-slate-800 break-word">
         {phrase(m.body, locale)}
-      </pre>
+      </div>
       {typeof meta.admin_url === "string" ? (
-        <AdminLink className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
+        <AdminLink
+          className="inline-flex items-center gap-1 mt-3 text-teal-800 text-xs font-semibold underline underline-offset-2"
+          href={String(meta.admin_url)}
+        >
           {t("msg.openInAdmin", locale)}
+          <span aria-hidden>→</span>
         </AdminLink>
       ) : null}
-    </div>
+    </article>
   );
 }
 
@@ -779,99 +846,113 @@ export function DemoMessenger({
       >
         {active ? (
           <>
-            <div className="border-b border-[var(--line)] pb-2 mb-2 shrink-0">
-              <div className="flex items-center gap-2 min-w-0">
-                <button
-                  type="button"
-                  className="btn !min-h-11 !px-2.5 lg:hidden shrink-0"
-                  onClick={() => setMobilePane("list")}
-                >
-                  <ArrowLeft size={16} />
-                  <span className="sr-only">{t("msg.threads", locale)}</span>
-                </button>
-                <div className="flex flex-wrap gap-1.5 items-center min-w-0">
-                  <SeverityBadge value={active.severity} />
-                  <StatusBadge value={active.status} />
-                  <span className="hidden sm:inline-flex">
-                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{active.channel_name}</Badge>
-                  </span>
-                  <span className="hidden sm:inline-flex">
-                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{active.thread_id}</Badge>
-                  </span>
+            <div className="msg-alert-card shrink-0 mb-3 rounded-2xl border border-[var(--line)] bg-gradient-to-b from-slate-50 to-white shadow-sm overflow-hidden">
+              <div className="px-3.5 sm:px-4 pt-3 pb-2">
+                <div className="flex items-start gap-2 min-w-0">
+                  <button
+                    type="button"
+                    className="btn !min-h-10 !px-2.5 lg:hidden shrink-0"
+                    onClick={() => setMobilePane("list")}
+                  >
+                    <ArrowLeft size={16} />
+                    <span className="sr-only">{t("msg.threads", locale)}</span>
+                  </button>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      <SeverityBadge value={active.severity} />
+                      <StatusBadge value={active.status} />
+                      <Badge className="bg-slate-100 text-slate-700 border-slate-200">{active.channel_name}</Badge>
+                      <Badge className="bg-orange-50 text-orange-900 border-orange-200 font-mono text-[10px]">
+                        {active.thread_id}
+                      </Badge>
+                    </div>
+                    <h2 className="mt-2 font-[family-name:var(--font-display)] text-lg sm:text-xl tracking-tight break-word">
+                      {phrase(active.title, locale)}
+                    </h2>
+                  </div>
                 </div>
               </div>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-base sm:text-xl break-word line-clamp-2">
-                {phrase(active.title, locale)}
-              </h2>
+
               {active.status === "OPEN" ? (
-                <div className="mt-3 space-y-2" data-testid="msg-triage-actions">
-                  <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
-                    {t("msg.triagePrimary", locale)}
+                <div className="border-t border-[var(--line)] bg-white" data-testid="msg-triage-actions">
+                  <div className="px-3.5 sm:px-4 py-2.5 space-y-2.5">
+                    <div>
+                      <div className="text-[11px] font-semibold text-slate-600 mb-1.5">
+                        {t("msg.triagePrimary", locale)}
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {capabilities.canTriage ? (
+                          <button
+                            type="button"
+                            className="btn btn-primary !min-h-11 justify-center"
+                            disabled={busy}
+                            onClick={() => void run("close")}
+                            data-testid="msg-btn-close"
+                          >
+                            {t("msg.close", locale)}
+                          </button>
+                        ) : null}
+                        {capabilities.canEscalate ? (
+                          <button
+                            type="button"
+                            className="btn !min-h-11 justify-center border-rose-300 bg-rose-50 text-rose-950 hover:bg-rose-100"
+                            disabled={busy}
+                            onClick={() => void run("escalate")}
+                            title={t("msg.escalateHint", locale)}
+                            data-testid="msg-btn-escalate"
+                          >
+                            {t("msg.escalate", locale)}
+                          </button>
+                        ) : (
+                          <p className="text-xs text-rose-800 self-center sm:col-span-2">
+                            {t("msg.escalateHint", locale)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="border-t border-dashed border-[var(--line)] pt-2.5">
+                      <div className="text-[11px] font-semibold text-slate-600 mb-1.5">
+                        {t("msg.triageSecondary", locale)}
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {capabilities.canEvidence ? (
+                          <button
+                            type="button"
+                            className="btn !min-h-11 justify-center"
+                            disabled={busy}
+                            onClick={() => void run("show_evidence")}
+                            data-testid="msg-btn-evidence"
+                          >
+                            {t("msg.showEvidence", locale)}
+                          </button>
+                        ) : null}
+                        {capabilities.canTriage ? (
+                          <button
+                            type="button"
+                            className="btn !min-h-11 justify-center text-[var(--muted)]"
+                            disabled={busy}
+                            onClick={() => void run("dismiss")}
+                            data-testid="msg-btn-dismiss"
+                          >
+                            {t("msg.dismiss", locale)}
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.rankNote", locale)}</p>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {capabilities.canTriage ? (
-                      <button
-                        type="button"
-                        className="btn btn-primary !min-h-11"
-                        disabled={busy}
-                        onClick={() => void run("close")}
-                        data-testid="msg-btn-close"
-                      >
-                        {t("msg.close", locale)}
-                      </button>
-                    ) : null}
-                    {capabilities.canEscalate ? (
-                      <button
-                        type="button"
-                        className="btn !min-h-11 border-rose-300 bg-rose-50 text-rose-950 hover:bg-rose-100"
-                        disabled={busy}
-                        onClick={() => void run("escalate")}
-                        title={t("msg.escalateHint", locale)}
-                        data-testid="msg-btn-escalate"
-                      >
-                        {t("msg.escalate", locale)}
-                      </button>
-                    ) : (
-                      <p className="text-xs text-rose-800 self-center">{t("msg.escalateHint", locale)}</p>
-                    )}
-                  </div>
-                  <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] pt-1">
-                    {t("msg.triageSecondary", locale)}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {capabilities.canEvidence ? (
-                      <button
-                        type="button"
-                        className="btn"
-                        disabled={busy}
-                        onClick={() => void run("show_evidence")}
-                        data-testid="msg-btn-evidence"
-                      >
-                        {t("msg.showEvidence", locale)}
-                      </button>
-                    ) : null}
-                    {capabilities.canTriage ? (
-                      <button
-                        type="button"
-                        className="btn text-[var(--muted)]"
-                        disabled={busy}
-                        onClick={() => void run("dismiss")}
-                        data-testid="msg-btn-dismiss"
-                      >
-                        {t("msg.dismiss", locale)}
-                      </button>
-                    ) : null}
-                  </div>
-                  <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.rankNote", locale)}</p>
                 </div>
               ) : null}
             </div>
 
-            <div ref={listRef} className="flex-1 min-h-[12rem] min-w-0 flex flex-col">
+            <div ref={listRef} className="flex-1 min-h-[12rem] min-w-0 flex flex-col gap-3 overflow-hidden">
               {pocWindows.length ? (
                 <>
-                  <div className="shrink-0 mb-2" data-testid="msg-poc-path">
-                    <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1.5">
+                  <div
+                    className="shrink-0 rounded-2xl border border-[var(--line)] bg-white px-3 py-2.5 shadow-sm"
+                    data-testid="msg-poc-path"
+                  >
+                    <div className="text-[11px] font-semibold text-slate-600 mb-2">
                       {t("msg.birdeye", locale)}
                     </div>
                     <div className="chip-scroller items-stretch">
@@ -884,17 +965,29 @@ export function DemoMessenger({
                             type="button"
                             data-testid={`msg-poc-chip-${w.step}`}
                             onClick={() => setFocusedHop(w.step)}
-                            className={`flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-left min-h-11 shrink-0 max-w-[16rem] ${
+                            className={`flex items-center gap-2 rounded-xl border px-2.5 py-2 text-left min-h-11 shrink-0 max-w-[15rem] ${
                               focusedHop === w.step
-                                ? "border-teal-400 bg-teal-50"
+                                ? "border-teal-500 bg-teal-50 ring-2 ring-teal-500/20"
                                 : live
                                   ? "border-rose-300 bg-rose-50"
                                   : done
                                     ? "border-slate-200 bg-slate-50"
-                                    : "border-dashed border-[var(--line)] bg-white"
+                                    : "border-dashed border-[var(--line)] bg-slate-50/60"
                             }`}
                           >
-                            <span className="text-[10px] tabular-nums text-[var(--muted)]">{w.step + 1}</span>
+                            <span
+                              className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold tabular-nums ${
+                                live
+                                  ? "bg-rose-600 text-white"
+                                  : done
+                                    ? "bg-slate-400 text-white"
+                                    : focusedHop === w.step
+                                      ? "bg-teal-700 text-white"
+                                      : "bg-slate-200 text-slate-700"
+                              }`}
+                            >
+                              {w.step + 1}
+                            </span>
                             <span className="min-w-0">
                               <span className="block text-xs font-semibold truncate">{phrase(w.team, locale)}</span>
                               <span className="block text-[10px] text-[var(--muted)] truncate">
@@ -928,6 +1021,7 @@ export function DemoMessenger({
                       })}
                     </div>
                   </div>
+
                   <div className="poc-windows flex-1 min-h-0" data-testid="msg-poc-windows">
                     {pocWindows.map((w) => {
                       const live = w.status === "active";
@@ -938,49 +1032,89 @@ export function DemoMessenger({
                           data-testid={`msg-poc-window-${w.step}`}
                           data-poc-status={w.status}
                           onClick={() => setFocusedHop(w.step)}
-                          className={`poc-window ${focused ? "poc-window-focus" : ""} ${
+                          className={`poc-window ${focused ? "poc-window-focus" : "poc-window-collapsed"} ${
                             live ? "poc-window-live" : w.status === "waiting" ? "poc-window-wait" : ""
-                          } ${focused || pocWindows.length <= 2 ? "" : "hidden md:flex"}`}
+                          }`}
                         >
-                          <div className="shrink-0 border-b border-[var(--line)] px-2.5 py-1.5">
-                            <div className="text-xs font-semibold truncate">{phrase(w.team, locale)}</div>
-                            <div className="text-[10px] text-[var(--muted)] truncate">
-                              {w.poc_name ? `${w.poc_name}${w.poc_email ? ` · ${w.poc_email}` : ""}` : t("tracker.noPoc", locale)}
+                          <div className="shrink-0 border-b border-[var(--line)] px-3 py-2 flex items-center gap-2 bg-slate-50/80">
+                            <span
+                              className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold ${
+                                live ? "bg-rose-600 text-white" : "bg-slate-300 text-slate-800"
+                              }`}
+                            >
+                              {w.step + 1}
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-xs font-semibold truncate">{phrase(w.team, locale)}</div>
+                              <div className="text-[10px] text-[var(--muted)] truncate">
+                                {w.poc_name
+                                  ? `${w.poc_name}${w.poc_email ? ` · ${w.poc_email}` : ""}`
+                                  : t("tracker.noPoc", locale)}
+                              </div>
                             </div>
+                            <Badge
+                              className={
+                                live
+                                  ? "bg-rose-100 text-rose-900 border-rose-200"
+                                  : w.status === "relayed"
+                                    ? "bg-slate-100 text-slate-700 border-slate-200"
+                                    : "bg-white text-slate-500 border-slate-200"
+                              }
+                            >
+                              {live
+                                ? t("msg.pocActive", locale)
+                                : w.status === "relayed"
+                                  ? t("msg.pocRelayed", locale)
+                                  : t("msg.pocWaiting", locale)}
+                            </Badge>
                           </div>
-                          <div className="flex-1 overflow-auto space-y-2 p-2 min-h-0 overscroll-contain">
-                            {w.messages.map((m) => (
-                              <MessageBubble
-                                key={`${m.msg_id}-${w.step}`}
-                                m={m}
-                                locale={locale}
-                                openThoughts={openThoughts}
-                                onToggleThoughts={(id) =>
-                                  setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))
-                                }
-                              />
-                            ))}
-                            {!w.messages.length ? (
-                              <p className="text-[11px] text-[var(--muted)] leading-snug p-1">
-                                {t("msg.pocEmpty", locale)}
-                              </p>
-                            ) : null}
-                            {live && liveThink ? (
-                              <ThinkingCard
-                                steps={liveThink.steps}
-                                visible={liveThink.visible}
-                                running
-                                locale={locale}
-                              />
-                            ) : null}
-                          </div>
+                          {focused ? (
+                            <div className="flex-1 overflow-auto space-y-2.5 p-3 min-h-0 overscroll-contain bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_40%)]">
+                              {w.messages.map((m) => (
+                                <MessageBubble
+                                  key={`${m.msg_id}-${w.step}`}
+                                  m={m}
+                                  locale={locale}
+                                  openThoughts={openThoughts}
+                                  onToggleThoughts={(id) =>
+                                    setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))
+                                  }
+                                />
+                              ))}
+                              {!w.messages.length ? (
+                                <p className="text-[12px] text-[var(--muted)] leading-snug p-2 rounded-xl border border-dashed border-[var(--line)] bg-white">
+                                  {t("msg.pocEmpty", locale)}
+                                </p>
+                              ) : null}
+                              {live && liveThink ? (
+                                <ThinkingCard
+                                  steps={liveThink.steps}
+                                  visible={liveThink.visible}
+                                  running
+                                  locale={locale}
+                                />
+                              ) : null}
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              className="px-3 py-2 text-left text-[11px] text-[var(--muted)] hover:bg-slate-50"
+                              onClick={() => setFocusedHop(w.step)}
+                            >
+                              {w.messages.length
+                                ? locale === "zh-Hant"
+                                  ? `${w.messages.length} 則訊息 — 點擊展開`
+                                  : `${w.messages.length} messages — tap to open`
+                                : t("msg.pocEmpty", locale)}
+                            </button>
+                          )}
                         </div>
                       );
                     })}
                   </div>
                 </>
               ) : (
-                <div className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain">
+                <div className="flex-1 overflow-auto space-y-2.5 rounded-2xl border border-[var(--line)] bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_40%)] p-3 overscroll-contain">
                   {messages.map((m) => (
                     <MessageBubble
                       key={m.msg_id}
@@ -999,15 +1133,13 @@ export function DemoMessenger({
             </div>
 
             {active.status === "OPEN" && (
-              <div className="mt-2 border-t border-[var(--line)] pt-2 space-y-2 shrink-0 bg-[var(--panel)] pb-[max(0.35rem,var(--safe-bottom))]">
-                <div data-testid="msg-recommended-actions">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-                    <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)]">
-                      {t("msg.recommended", locale)}
-                    </div>
-                    <div className="text-[10px] text-[var(--muted)]">{capabilities.roleCode}</div>
+              <div className="mt-3 shrink-0 rounded-2xl border border-[var(--line)] bg-white shadow-sm overflow-hidden pb-[max(0.35rem,var(--safe-bottom))]">
+                <div className="px-3.5 sm:px-4 py-3 space-y-3" data-testid="msg-recommended-actions">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div className="text-[11px] font-semibold text-slate-700">{t("msg.recommended", locale)}</div>
+                    <div className="text-[10px] font-mono text-[var(--muted)]">{capabilities.roleCode}</div>
                   </div>
-                  <p className="text-[11px] text-[var(--muted)] mb-2 leading-snug">{t("msg.rankNote", locale)}</p>
+                  <p className="text-[11px] text-[var(--muted)] leading-snug -mt-1">{t("msg.rankNote", locale)}</p>
                   {(
                     [
                       ["critical", "msg.groupCritical"],
@@ -1018,24 +1150,24 @@ export function DemoMessenger({
                     const items = recommendedGroups[key];
                     if (!items.length) return null;
                     return (
-                      <div key={key} className="mb-2">
-                        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1">
+                      <div key={key} className="rounded-xl border border-[var(--line)] bg-slate-50/70 p-2.5">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500 mb-1.5">
                           {t(labelKey, locale)}
                         </div>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {items.map((a, idx) => {
                             const loc = localizeAction(a.code, a.label, a.description, locale);
                             const cls =
                               key === "critical" && idx === 0
-                                ? "btn btn-primary"
+                                ? "btn btn-primary justify-center"
                                 : key === "critical"
-                                  ? "btn border-rose-300 bg-rose-50 text-rose-950"
-                                  : "btn";
+                                  ? "btn justify-center border-rose-300 bg-rose-50 text-rose-950"
+                                  : "btn justify-center";
                             return (
                               <button
                                 key={a.code}
                                 type="button"
-                                className={`${cls} text-xs`}
+                                className={`${cls} text-xs !min-h-10`}
                                 disabled={busy}
                                 title={loc.description}
                                 onClick={() => void run("recommend", { action_code: a.code })}
@@ -1054,84 +1186,94 @@ export function DemoMessenger({
                   ) : null}
                 </div>
 
-                {pending.map((p) => {
-                  const detail = JSON.parse(p.detail_json || "{}") as Recommended;
-                  const loc = localizeAction(
-                    p.action_code,
-                    detail.label || p.action_code,
-                    detail.description || "",
-                    locale
-                  );
-                  const awaitingChecker = p.status === "AWAITING_CHECKER";
-                  return (
-                    <div
-                      key={p.id}
-                      className={`rounded-xl border px-3 py-2 text-sm ${
-                        awaitingChecker
-                          ? "border-violet-300 bg-violet-50"
-                          : "border-amber-300 bg-amber-50"
-                      }`}
-                    >
-                      <div className="font-semibold">
-                        {awaitingChecker ? t("msg.checkerNeeded", locale) : t("msg.confirm", locale)} {loc.label}
-                      </div>
-                      <p className="text-[var(--muted)] mt-1 break-word">{loc.description}</p>
-                      <div className="mt-2 action-row">
-                        {awaitingChecker ? (
-                          <>
-                            <button
-                              type="button"
-                              className="btn btn-primary"
-                              disabled={busy}
-                              onClick={() => void run("checker_approve", { pending_id: p.id })}
-                            >
-                              {t("msg.checkerApprove", locale)}
-                            </button>
-                            <AdminLink className="btn" href={detail.admin_path || "/admin/interventions"}>
-                              {t("msg.openAdmin", locale)}
-                            </AdminLink>
-                          </>
-                        ) : confirmId === p.id ? (
-                          <>
-                            <button
-                              type="button"
-                              className="btn btn-primary"
-                              disabled={busy}
-                              onClick={() => void run("confirm_action", { pending_id: p.id })}
-                            >
-                              {t("msg.yesAdmin", locale)}
-                            </button>
-                            <button type="button" className="btn" disabled={busy} onClick={() => setConfirmId(null)}>
-                              {t("msg.noBack", locale)}
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              type="button"
-                              className="btn btn-primary"
-                              disabled={busy}
-                              onClick={() => setConfirmId(p.id)}
-                            >
-                              {t("msg.doubleConfirm", locale)}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn"
-                              disabled={busy}
-                              onClick={() => void run("cancel_action", { pending_id: p.id })}
-                            >
-                              {t("msg.cancel", locale)}
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                {pending.length ? (
+                  <div className="px-3.5 sm:px-4 pb-3 space-y-2">
+                    {pending.map((p) => {
+                      const detail = JSON.parse(p.detail_json || "{}") as Recommended;
+                      const loc = localizeAction(
+                        p.action_code,
+                        detail.label || p.action_code,
+                        detail.description || "",
+                        locale
+                      );
+                      const awaitingChecker = p.status === "AWAITING_CHECKER";
+                      return (
+                        <div
+                          key={p.id}
+                          className={`rounded-xl border px-3 py-2.5 text-sm ${
+                            awaitingChecker
+                              ? "border-violet-300 bg-violet-50"
+                              : "border-amber-300 bg-amber-50"
+                          }`}
+                        >
+                          <div className="font-semibold">
+                            {awaitingChecker ? t("msg.checkerNeeded", locale) : t("msg.confirm", locale)}{" "}
+                            {loc.label}
+                          </div>
+                          <p className="text-[var(--muted)] mt-1 break-word text-[13px]">{loc.description}</p>
+                          <div className="mt-2 action-row">
+                            {awaitingChecker ? (
+                              <>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  disabled={busy}
+                                  onClick={() => void run("checker_approve", { pending_id: p.id })}
+                                >
+                                  {t("msg.checkerApprove", locale)}
+                                </button>
+                                <AdminLink className="btn" href={detail.admin_path || "/admin/interventions"}>
+                                  {t("msg.openAdmin", locale)}
+                                </AdminLink>
+                              </>
+                            ) : confirmId === p.id ? (
+                              <>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  disabled={busy}
+                                  onClick={() => void run("confirm_action", { pending_id: p.id })}
+                                >
+                                  {t("msg.yesAdmin", locale)}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn"
+                                  disabled={busy}
+                                  onClick={() => setConfirmId(null)}
+                                >
+                                  {t("msg.noBack", locale)}
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  disabled={busy}
+                                  onClick={() => setConfirmId(p.id)}
+                                >
+                                  {t("msg.doubleConfirm", locale)}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn"
+                                  disabled={busy}
+                                  onClick={() => void run("cancel_action", { pending_id: p.id })}
+                                >
+                                  {t("msg.cancel", locale)}
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
 
                 <form
-                  className="flex gap-2"
+                  className="flex gap-2 border-t border-[var(--line)] px-3.5 sm:px-4 py-2.5 bg-slate-50/80"
                   onSubmit={(e) => {
                     e.preventDefault();
                     if (!chat.trim()) return;
@@ -1139,7 +1281,7 @@ export function DemoMessenger({
                   }}
                 >
                   <input
-                    className="input flex-1 !rounded-xl !min-h-11"
+                    className="input flex-1 !rounded-xl !min-h-11 !bg-white"
                     placeholder={t("msg.chatPlaceholder", locale)}
                     value={chat}
                     onChange={(e) => setChat(e.target.value)}
@@ -1159,7 +1301,7 @@ export function DemoMessenger({
             )}
 
             {statusMsg && (
-              <div className="mt-2 text-xs sm:text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 break-word shrink-0 line-clamp-2">
+              <div className="mt-2 text-xs sm:text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-xl px-3 py-2 break-word shrink-0 line-clamp-2">
                 {statusMsg}
               </div>
             )}
