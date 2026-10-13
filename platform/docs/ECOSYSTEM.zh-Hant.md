@@ -1,6 +1,6 @@
 # Vantage 生態導入評估
 
-**文件編號：** CRMP-ECO-001 · **版本：** 1.8 · **狀態：** 高階規劃包 · **範圍：** CFD + Crypto CRMP 原型 → 正式環境
+**文件編號：** CRMP-ECO-001 · **版本：** 1.9 · **狀態：** 高階規劃包 · **範圍：** CFD + Crypto CRMP 原型 → 正式環境
 
 ## 1. 總覽
 
@@ -130,6 +130,8 @@ CRMP 示範已驗證端到端脊柱：
 | 情報 | 啟發式掃描 | 需授權來源 |
 | 強制 | AI 黑名單偏文件化 | 須綁定 AI 服務主體 |
 | 行動 | Monitor 2.0／升級／資料來源／風險日誌／稽核已有響應式卡片；確認表仍偏桌面 | Web 響應式可接受，非原生 App 級 |
+| AI 品質 | [AI 績效](/admin/ai-performance) 上的啟發式 KPI；無正式評測架 | 無即時精確率／F1 閘道時改調等於猜 |
+| 稽核軌跡 | 平面分流＋回滾＋管理／Lark／Messenger 變更覆蓋（`test:audit`）含失敗登入 | 匯出／保存仍開放（OI-12） |
 
 ---
 
@@ -143,8 +145,10 @@ CRMP 示範已驗證端到端脊柱：
 6. 證據含客戶識別前須法遵審查；設定保存與遮罩作業。  
 7. 以 SLO 限制 AI 成本與延遲；挑戰者須保持**獨立**決策路徑。  
 8. AI Admin 設定變更永遠需要不同 Checker。  
-9. BREACH／CRITICAL 不得僅由 AI 自動關閉 Monitor 工單（除非風險政策明文允許）。  
-10. 上線前以 UAT 演練升級路徑（Primary → Secondary → Risk Owner → Exec）。
+9. 改調模型／門檻前先看 [AI 績效](/admin/ai-performance)；看板為唯讀 — 變更仍在 AI 管理且制作者≠覆核者。  
+10. BREACH／CRITICAL 不得僅由 AI 自動關閉 Monitor 工單（除非風險政策明文允許）。  
+11. 上線前以 UAT 演練升級路徑（Primary → Secondary → Risk Owner → Exec）。  
+12. 確認稽核日誌記錄每一次管理／Lark 變更（探索、偵測器、Messenger、失敗登入）— 不只是快樂路徑結案。
 
 ---
 
@@ -168,5 +172,6 @@ CRMP 示範已驗證端到端脊柱：
 |---|---|---|
 | 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理＋回滾；首頁脊柱；開放議題／進度連結 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；F2／階段 B／Monitor 不足；手機卡片；示範連結 |
+| 1.9 | 2026-10-12 | AI 績效看板＋稽核變更覆蓋記入不足／注意事項 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

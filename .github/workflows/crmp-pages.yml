@@ -7,6 +7,8 @@ on:
         cursor/crmp-admin-pages-a935,
         cursor/public-urls-a935,
         cursor/risk-discovery-admin-28bc,
+        cursor/admin-audit-coverage-28bc,
+        cursor/ai-performance-dashboard-28bc,
         main,
       ]
     paths:

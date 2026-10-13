@@ -222,7 +222,7 @@ graph LR
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
 | FR-27 | Org directory | Combined BU and Teams hub (`/admin/departments`), editable Roles (`/admin/roles` · `/api/roles`), Users (incl. demo platform owner / haixiang.yan@hytechc.com) |
 | FR-28 | Escalation routes + Lark registry | Dimensions × coefficients; ESC-DEFAULT catch-all; skill binds one route code; no Path name column; channel enable |
-| FR-36 | Audit plane split + rollback | `/admin/audit` CRMP logs vs Vantage Markets Admin logs tabs; Roll back restores before-state via `POST /api/audit/rollback` |
+| FR-36 | Audit plane split + rollback + mutation coverage | `/admin/audit` CRMP vs Vantage Markets Admin tabs; Roll back via `POST /api/audit/rollback`; every mutating admin/Lark/messenger path + `LOGIN_FAILED` writes `writeAudit` (guarded by `test:audit`) |
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
@@ -231,6 +231,7 @@ graph LR
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 | FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
+| FR-38 | AI Performance evaluation dashboard | `/admin/ai-performance` read-only board: skill match, challenger agree/partial/disagree, human feedback labels, how-to-improve counts, training accuracy/F1, 14-day snapshots; `GET /api/ai-performance`; EN/zh-Hant; link from AI Admin |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -258,6 +259,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership + P0–P3 scenarios linked to Monitor 2.0 | Expand scenario; click M2-* chip |
 | AI & knowledge | AI Analyses (redirect) | `/admin/ai-analyses` → `/admin/alerts` | List merged into Realtime Alert & Tracker | Grouped pipeline + rank note; detail pack at `/admin/ai-analyses/[id]` |
 | AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag human-gate; maker ≠ checker |
+| AI & knowledge | AI Performance | `/admin/ai-performance` | Judge AI quality before retuning | Read-only KPIs + training/feedback/challenger; no propose forms |
 | AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md; one escalation bind |
 | AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |
@@ -334,6 +336,16 @@ flowchart TD
 
 **Acceptance (FR-37):** notebook-parity controls on `/admin/discovery`; AI cannot write review decisions; promote path enforces maker≠checker; EN + zh-Hant copy; notebook links visible. Operator: User Guide §14A · Build: TSD §11A.
 
+### 6.6 AI Performance evaluation — methods, data, flow
+
+| Layer | Detail |
+|---|---|
+| **Methods** | Aggregate live SQLite metrics: skill-match rate, challenger verdicts, human feedback labels, intervention agree rate, improvement-review status, training-run accuracy/F1; refresh today’s `ai_accuracy_snapshots` row |
+| **Data** | `ai_analyses`, `ai_analysis_challenges`, `ai_feedback`, `ai_improvement_reviews`, `ai_training_runs`, `ai_accuracy_snapshots`, `interventions`, `platform_settings` (`ai.line1.*` / `ai.line2.*` / second-opinion severity) |
+| **Flow** | Operator opens `/admin/ai-performance` → `getAiPerformanceEval()` → KPI + tables; mutations (rate / train / CR) stay on `/admin/ai-admin` under maker≠checker |
+
+**Acceptance (FR-38):** left-nav **AI Performance**; board shows skill / challenger / feedback / training KPIs; read-only (no CR forms); `GET /api/ai-performance` + `GET /api/ai-admin?tab=performance`; EN + zh-Hant chrome. Operator: User Guide §8.2A · Build: TSD §8A.
+
 ---
 
 ## 7. Non-functional requirements
@@ -341,7 +353,7 @@ flowchart TD
 | ID | Area | Requirement |
 |---|---|---|
 | NFR-01 | Latency | Prototype: alarm → dual-AI pack typically < 60s |
-| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin emit audit |
+| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin/discovery/Lark emit audit; failed logins recorded; AI Performance page is read-only |
 | NFR-03 | Security | AI principals must not receive blocklisted rights |
 | NFR-04 | SoD | Maker/checker enforced for AI Admin; checker for designated controls |
 | NFR-05 | Availability | Demo single-node SQLite acceptable; production needs HA (see Ecosystem) |
@@ -360,6 +372,7 @@ flowchart TD
 3. **Messenger path:** Show evidence posts vault; Escalate advances path; Dismiss/Close update statuses.  
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  
 5. **AI Admin:** Distinct checker required; self-approve blocked.  
+5b. **AI Performance:** `/admin/ai-performance` renders KPIs (skill match, challenger, feedback, training) without mutation controls; linked from AI Admin.  
 6. **Coverage:** UAT window BREACH/CRITICAL samples 100% challenged (backfill allowed).  
 7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem/Roadmap render EN and zh-Hant; User Guide has a how-to for every left-nav page.  
 8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.  
@@ -456,5 +469,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.9 | 2026-10-11 | FR-37 Unknown Risk Discovery AI suggestion card on CRMP Admin |
 | 1.10 | 2026-10-11 | §6.5 methods / data / flow + feature catalogue row for `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 expanded tables + mermaid flow; cross-links to UG §14A / TSD §11A |
+| 1.12 | 2026-10-12 | FR-36 audit mutation coverage; FR-38 AI Performance evaluation dashboard (§6.6) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

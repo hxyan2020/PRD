@@ -13,7 +13,7 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Unknown Risk Discovery, Realtime Alert & Tracker, Risk Domains, AI Admin, AI Performance (read-only eval), Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back; every mutating admin/Lark path + failed login), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -41,7 +41,7 @@ graph TD
 | 10 | UAT-10 | 106m | 8m | Medium | Risk | Separate OPEN WARN thread (do not use the Critical sample) | Messenger — dismiss a false alarm | Demo Messenger, Realtime Alert & Tracker |
 | 11 | UAT-11 | 114m | 10m | Critical | Risk Owner | UAT-04 dual-AI pack reviewed on a BREACH thread | Messenger — close the case after accepting the AI pack | Demo Messenger, Realtime Alert & Tracker |
 | 12 | UAT-12 | 124m | 15m | Critical | Ops + Risk Owner | OPEN thread; Human Intervention page | Messenger — propose a control, double-check, then send to admin | Demo Messenger, Human Intervention |
-| 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — the person who proposes a change cannot approve it | AI Admin, Users, Audit Log |
+| 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — the person who proposes a change cannot approve it | AI Admin, AI Performance, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | Market Intelligence — Scan now must finish (including on GitHub Pages) | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI must not be allowed near human-only data | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and home spine tell the same story as messenger | Audit Log, Admin Home spine |
@@ -292,9 +292,9 @@ graph TD
 ### UAT-13 — AI Admin — the person who proposes a change cannot approve it
 
 - **Severity:** Critical · **BU:** AI Engineer + Risk Owner · **Depends:** Two distinct users with ai.admin / checker capability · **Window:** T+139m / 20m
-- **Covers:** AI Admin, Users, Audit Log
+- **Covers:** AI Admin, AI Performance, Users, Audit Log
 - **Why:** A single engineer must not silently retune models or thresholds that drive live RCA.
-- **Goal:** Propose a harmless setting as Maker, fail to self-approve, then approve as a different Checker.
+- **Goal:** Propose a harmless setting as Maker, fail to self-approve, then approve as a different Checker; confirm the AI Performance board shows live KPIs.
 
 **Steps**
 
@@ -304,9 +304,10 @@ graph TD
 4. Sign in as a different checker-capable user (Risk Owner or Super Admin).
 5. Approve the pending change. Confirm it applies only after that second approval.
 6. On localhost, open Audit Log and find both the propose and the approve rows (two different actors).
+7. Open AI Performance (`/admin/ai-performance`). Confirm KPIs render (skill match, challenger agree, feedback accuracy, training quality) and the board is read-only (no propose/approve forms).
 
-**Pass:** Self-approve blocked; distinct checker succeeds; audit shows maker and checker.
-**Evidence:** Change request id; Audit entries for propose + approve.
+**Pass:** Self-approve blocked; distinct checker succeeds; audit shows maker and checker; AI Performance board shows KPIs without mutation controls.
+**Evidence:** Change request id; Audit entries for propose + approve; AI Performance screenshot.
 
 ### UAT-14 — Market Intelligence — Scan now must finish (including on GitHub Pages)
 
@@ -350,16 +351,17 @@ graph TD
 - **Severity:** High · **BU:** System · **Depends:** UAT-07 through UAT-12 performed · **Window:** T+181m / 15m
 - **Covers:** Audit Log, Admin Home spine
 - **Why:** If chat actions vanish from the audit trail, we cannot reconstruct a decision after the fact.
-- **Goal:** Match at least one escalate and one control-confirm from messenger to home spine and/or Audit; confirm the two audit tabs and Roll back affordance.
+- **Goal:** Match at least one escalate and one control-confirm from messenger to home spine and/or Audit; confirm the two audit tabs, Roll back, and that mutating admin/Lark paths (plus failed login) write rows.
 
 **Steps**
 
-1. Open Audit Log. Confirm two tabs: **CRMP logs** and **Vantage Markets Admin logs**. Messenger escalate/dismiss/close and AI actions should land under CRMP logs; rights / settings / RAG / Lark under Vantage Markets Admin logs.
+1. Open Audit Log. Confirm two tabs: **CRMP logs** and **Vantage Markets Admin logs**. Messenger escalate/dismiss/close and AI actions should land under CRMP logs; rights / settings / RAG / Lark under Vantage Markets Admin logs. Discovery Connect/Analyse/RO review and detector toggles also land under CRMP; Lark create/toggle/test notify and `LOGIN_FAILED` under Vantage Markets Admin.
 2. On Admin Home, open the integration spine (stage ticket counts — there is no Spine Log tab). Look for stages such as AI_RCA, ESCALATION / HUMAN_INTERVENTION.
 3. Pick one messenger escalate and one “send to admin” confirm from earlier cases. Find matching timestamps (within about one minute) and reference ids.
 4. On a row with a before-state snapshot, confirm **Roll back** is available (`POST /api/audit/rollback`). You should be able to explain in one sentence: “this chat action became that spine/audit row”.
+5. Note: AI Performance (`/admin/ai-performance`) is read-only and does not write audit rows — quality mutations still come from AI Admin.
 
-**Pass:** At least one escalate and one control confirm visible in Audit and/or home spine with matching refs; both audit tabs render; Roll back button present where snapshot exists.
+**Pass:** At least one escalate and one control confirm visible in Audit and/or home spine with matching refs; both audit tabs render; Roll back button present where snapshot exists; mutation coverage includes discovery/Lark/login failures.
 **Evidence:** Event ids; screenshot pair Audit tabs + Admin Home spine.
 
 ### UAT-17 — English and Traditional Chinese documentation both render

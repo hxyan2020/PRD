@@ -95,7 +95,7 @@ The left pane is grouped so you are not staring at one long list:
 |---|---|
 | **Overview** | Admin Home (includes spine stage ticket counts) |
 | **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Risk Log → Risk Domains |
-| **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
+| **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin → AI Performance (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
 | **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
@@ -370,6 +370,25 @@ sequenceDiagram
   API-->>Checker: skill is ACTIVE
 ```
 
+### 8.2A AI Performance — `/admin/ai-performance`
+
+**What it is.** The **read-only** evaluation board for AI quality — separate from AI Admin governance. Use it to judge whether skill match, the second-AI challenger, human feedback, and training runs are healthy before you change models or thresholds.
+
+**What you see.**
+
+| Block | What it shows |
+|---|---|
+| KPI strip | Analyses total, skill match rate, avg confidence, needs-human, challenge rate, challenger agree rate, feedback accuracy, human agree rate |
+| Second AI | Agree / Partial / Disagree counts |
+| Human feedback | Correct / Partial / Incorrect labels |
+| How-to-improve | Open vs satisfied review counts |
+| Training quality | Recent runs with accuracy, precision / recall / F1, samples |
+| 14-day snapshots | Skill / human / feedback rates per day |
+| Recent lists | Latest analyses + feedback ratings |
+
+**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. This page itself has no propose / approve forms.
+
+**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests.
 
 ### 8.3 AI Skills — `/admin/skills`
 
@@ -572,7 +591,7 @@ The **human-only** inventory. AI service accounts must never receive these pages
 
 ### 11.3 Audit Log — `/admin/audit`
 
-Every mutating admin / Lark / messenger operation writes a row here (actor, action, entity, details, timestamp). Reads do not. Failed logins are also recorded.
+Every mutating admin / Lark / messenger operation writes a row here (actor, action, entity, details, timestamp). Reads do not. Failed logins are also recorded. Coverage is guarded by `npm run test:audit` / `test:audit-smoke` (discovery Connect/Analyse/RO, Lark create/toggle/test notify, detector toggles, market-intel enable, messenger recommend/cancel/confirm/sync, `LOGIN_FAILED`).
 
 Two tabs:
 
@@ -582,6 +601,8 @@ Two tabs:
 | **Vantage Markets Admin logs** | Identity & platform — login/logout (incl. failed login), settings toggles, users/roles/org, Lark channel create/toggle/test notify, market-intel Lark push, RAG/docs, messenger control confirm / checker approve / recommend / cancel |
 
 Each row: time, actor, action, entity, details. Both tabs have a **Roll back** button — restores the before-state snapshot when available (`POST /api/audit/rollback`). Newest rows per plane.
+
+**Note.** AI Performance (`/admin/ai-performance`) is read-only and does **not** write audit rows. Mutations that change AI quality (feedback labels, training queue, CR approve) still land via AI Admin and appear here.
 
 ### 11.4 Platform Settings — `/admin/settings`
 
@@ -647,6 +668,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | Knowledge Tree | Domains, skills, RAG document leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
+| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, 14-day accuracy |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
@@ -744,5 +766,6 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 | 1.11 | 2026-10-11 | Unknown Risk Discovery admin page — notebook-parity AI suggestion card + RO review |
 | 1.12 | 2026-10-11 | §14A expanded: data table, seven methods, operator flow, statuses, mermaid |
 | 1.13 | 2026-10-12 | §11.3 audit coverage — every admin/Lark mutation + failed login |
+| 1.14 | 2026-10-12 | §8.2A AI Performance evaluation board; audit coverage note + verify scripts |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

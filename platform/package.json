@@ -13,6 +13,8 @@
     "test:discovery-smoke": "tsx scripts/smoke-discovery-admin.ts",
     "test:audit": "tsx scripts/verify-audit-coverage.ts",
     "test:audit-smoke": "tsx scripts/smoke-audit-coverage.ts",
+    "test:ai-performance": "tsx scripts/verify-ai-performance.ts",
+    "test:ai-performance-smoke": "tsx scripts/smoke-ai-performance.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {

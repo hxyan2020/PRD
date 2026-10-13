@@ -1,6 +1,6 @@
 # CRMP 開放議題
 
-**文件編號：** CRMP-OI-001 · **版本：** 1.3 · **互動看板：** [/admin/docs/open-issues](/admin/docs/open-issues) · **進度雙生：** [/admin/docs/progress](/admin/docs/progress)
+**文件編號：** CRMP-OI-001 · **版本：** 1.4 · **互動看板：** [/admin/docs/open-issues](/admin/docs/open-issues) · **進度雙生：** [/admin/docs/progress](/admin/docs/progress)
 
 CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明示：
 
@@ -179,6 +179,8 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 - [x] 一線／二線 AI 管理·分組管線·干預操作者信箱  
 - [x] `propose_rag`·ESC-DEFAULT＋係數·RAG 葉·MonitorCode  
 - [x] 可編輯角色＋稽核平面分流＋回滾  
+- [x] AI 績效評估看板（`/admin/ai-performance`）— 技能匹配、挑戰者、回饋、訓練  
+- [x] 稽核變更覆蓋 — 每次管理／Lark／Messenger 路徑＋`LOGIN_FAILED`（`test:audit`）  
 - [ ] 正式 UAT 簽核（OI-09）  
 
 ---
@@ -245,6 +247,7 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 **BU：** GRC · **狀態：** 已規劃 · **ETA：** 2027-Q4 · **依賴：** 法務；OI-06；Postgres
 
 - [x] 原型稽核平面分流（CRMP／Vantage Markets 管理）＋回滾  
+- [x] 變更覆蓋守護 — 探索／Lark／偵測器／市場情報／Messenger／失敗登入  
 - [ ] 證據摘錄的法遵保存＋遮罩政策  
 - [ ] 排程保存／清除作業  
 - [ ] 稽核就緒匯出包（超越 UI 分頁）  
@@ -260,5 +263,6 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 | 1.1 | 2026-10-05 | 稽核平面分流＋回滾；可編輯角色；升級維度 |
 | 1.2 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0 |
 | 1.3 | 2026-10-05 | 依 BU 詳細勾選；OI-16／17／18；看板渲染勾選明細 |
+| 1.4 | 2026-10-12 | OI-14 AI 績效看板＋稽核變更覆蓋已交付；OI-12 覆蓋守護 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

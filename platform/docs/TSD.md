@@ -183,6 +183,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
+| AI | **`/admin/ai-performance`** | `AiPerformanceBoard`, `GET /api/ai-performance` | `ai.read` \| `ai.admin` | **§8A** |
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §16.10 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §16.12 |
@@ -216,7 +217,7 @@ Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, 
 4. Queue training / recalibration runs
 5. Label RCA quality feedback (CORRECT / INCORRECT / PARTIAL)
 
-It is **governance**, not the live RCA workbench (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`) and not the intervention desk (`/admin/interventions`).
+It is **governance**, not the live RCA workbench (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`), not the intervention desk (`/admin/interventions`), and not the dedicated read-only evaluation board (`/admin/ai-performance` — **§8A**).
 
 ### 8.2 Route & components
 
@@ -404,6 +405,7 @@ sequenceDiagram
 ### 8.12 Related pages
 | Page | Relationship |
 |---|---|
+| `/admin/ai-performance` | Read-only evaluation board (§8A) — KPIs shared via `getAiPerformanceEval` |
 | `/admin/skills` | Runtime playbook / scenario board (post-approve view) |
 | `/admin/rag` | Corpus browser; create/update should prefer AI Admin CR path for governed changes |
 | `/admin/ai-analyses` | Consumes skills/RAG/params governed here |
@@ -415,6 +417,46 @@ sequenceDiagram
 - Mandatory dual approval for CRITICAL severity param changes
 - Webhook notify Lark `oc_ai_detection_lab` on PENDING CR
 - Export CR pack for compliance
+
+---
+
+## 8A. AI Performance Evaluation Board
+
+### 8A.1 Purpose
+`/admin/ai-performance` is the **read-only** health board for AI quality. Operators use it to evaluate skill match, challenger agreement, human feedback accuracy, how-to-improve reviews, and training metrics **before** proposing model/threshold changes on AI Admin.
+
+It does **not** expose maker/checker forms. Mutations remain on `/admin/ai-admin`.
+
+### 8A.2 Route & components
+
+| Item | Spec |
+|---|---|
+| Page route | `GET /admin/ai-performance` → `platform/src/app/admin/ai-performance/page.tsx` |
+| UI component | `AiPerformanceBoard` (`platform/src/components/AiPerformanceBoard.tsx`) |
+| API | `GET /api/ai-performance` · also `GET /api/ai-admin?tab=performance` |
+| Domain logic | `getAiPerformanceEval()` in `platform/src/lib/ai/admin.ts` (extends `getAiAdminOverview`) |
+
+### 8A.3 Access control
+Same view gate as AI Admin overview: any of `ai.admin` · `ai.read` · `skills.manage` · `rag.manage`. Unauthorized → redirect `/admin`.
+
+### 8A.4 Data & KPIs
+| Source | Metrics |
+|---|---|
+| `ai_analyses` | totals, skill/RAG mode counts, confidence, needs_human, challenge rate |
+| `ai_analysis_challenges` | agree / partial / disagree → agree rate |
+| `ai_feedback` | correct / incorrect / partial → feedback accuracy |
+| `interventions` | approved ÷ decided → human agree rate |
+| `ai_improvement_reviews` | total / open / satisfactory |
+| `ai_training_runs` | completed / running / queued; avg accuracy & F1; recent rows |
+| `ai_accuracy_snapshots` | last 14 days (today refreshed live) |
+| `platform_settings` | line1 / line2 model + second-opinion severity badges |
+
+### 8A.5 UX / acceptance
+1. Left nav **AI Performance** under AI & knowledge.
+2. Board renders KPI strip + challenger / feedback / improve / training / history / recent lists (`data-testid="ai-performance-board"`).
+3. No propose/approve controls on the page.
+4. Links to AI Admin and Realtime Alert & Tracker.
+5. EN / zh-Hant chrome via `EnZh` + page meta `ai-performance`.
 
 ---
 
@@ -764,6 +806,8 @@ Every mutating admin / Lark / messenger API path calls `writeAudit` (`lib/db.ts`
 
 Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
 
+Static guard: `npm run test:audit` asserts `writeAudit` markers on discovery, Lark, detectors, market-intel, login, and messenger mutation paths. Runtime smoke: `npm run test:audit-smoke`. `/admin/ai-performance` is read-only and does not write audit rows.
+
 ### 16.20 Platform settings
 
 `SettingsManager` groups by key prefix: `platform.|products.`, `monitor2.`, `ai.`, `market_intel.`, `lark.`, `escalation.|detectors.`. `PATCH /api/settings`. Pages: message “stored in this browser only”.
@@ -788,6 +832,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
 | 1.9 | 2026-10-11 | §11A Unknown Risk Discovery AI suggestion card + `/api/discovery` |
 | 1.10 | 2026-10-11 | §11A expanded: modules, data, seven methods, sequence flow, API |
+| 1.11 | 2026-10-12 | §8A AI Performance evaluation board; §16.19 audit coverage guards |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

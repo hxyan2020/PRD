@@ -80,8 +80,8 @@ export const EXTRA_UI: Record<string, Pair> = {
     "zh-Hant": "Vantage Markets 管理日誌",
   },
   "audit.boardIntro": {
-    en: "CRMP logs record every change made inside this CRMP admin (alerts, AI, skills, escalation, interventions, messenger). Vantage Markets Admin logs record changes on other admin pages — restrict user rights, pull transaction data, trigger Lark messages, receive BU POC risk-incident responses, settings, org and RAG. Roll back restores the before-state snapshot when available.",
-    "zh-Hant": "CRMP 日誌記錄本 CRMP 管理介面內的所有變更（警報、AI、技能、升級、干預、Messenger）。Vantage Markets 管理日誌記錄其他管理頁面的變更——限制使用者權限、拉取交易資料、觸發 Lark 訊息、接收 BU POC 風險事件回應、設定、組織與 RAG。有變更前快照時可回滾。",
+    en: "CRMP logs record every change made inside this CRMP admin (alerts, AI, skills, discovery scan/Analyse/RO review, detectors, escalation, interventions, messenger). Vantage Markets Admin logs record identity and platform changes — login/logout (incl. failed login), restrict user rights, pull transaction data, Lark channel create/toggle/test notify, market-intel push, settings, org and RAG. Roll back restores the before-state snapshot when available. AI Performance is read-only and does not write rows here.",
+    "zh-Hant": "CRMP 日誌記錄本 CRMP 管理介面內的所有變更（警報、AI、技能、探索掃描／分析／RO 審查、偵測器、升級、干預、Messenger）。Vantage Markets 管理日誌記錄身分與平台變更——登入／登出（含失敗登入）、限制使用者權限、拉取交易資料、Lark 頻道建立／啟停／測試通知、市場情報推送、設定、組織與 RAG。有變更前快照時可回滾。AI 績效為唯讀，不會在此寫入列。",
   },
   "audit.rollback": { en: "Roll back", "zh-Hant": "回滾" },
   "audit.rollbackOk": { en: "Roll back applied.", "zh-Hant": "已套用回滾。" },

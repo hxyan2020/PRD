@@ -1,6 +1,6 @@
 # CRMP Progress Tracker
 
-**Document ID:** CRMP-PT-001 · **Version:** 1.4 · **Interactive board:** [/admin/docs/progress](/admin/docs/progress) · **Open issues:** [/admin/docs/open-issues](/admin/docs/open-issues)
+**Document ID:** CRMP-PT-001 · **Version:** 1.5 · **Interactive board:** [/admin/docs/progress](/admin/docs/progress) · **Open issues:** [/admin/docs/open-issues](/admin/docs/open-issues)
 
 Maps **every open issue** onto a tracker:
 
@@ -13,7 +13,7 @@ Each column header labels the **responsible BU**. Cell colour = status: **Planne
 
 Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 18 issues). Filter by status and BU on the board.
 
-Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back), editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
+Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back + mutation coverage for every admin/Lark path), **AI Performance** read-only eval board, editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
 
 ### Issue → BU → status → window
 
@@ -80,5 +80,6 @@ gantt
 | 1.2 | 2026-10-05 | BAU note: Realtime Alert & Tracker; Detectors→Monitor 2.0 |
 | 1.3 | 2026-10-05 | Bars for OI-16 / OI-17 / OI-18 |
 | 1.4 | 2026-10-05 | Board axes: X = open issues, Y = timeline; BU on every column; BU filter; mobile cards |
+| 1.5 | 2026-10-12 | BAU: AI Performance board + audit mutation coverage |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [PROGRESS.zh-Hant.md](./PROGRESS.zh-Hant.md)
