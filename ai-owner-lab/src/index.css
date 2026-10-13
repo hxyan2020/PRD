@@ -176,6 +176,10 @@ textarea {
   display: none;
 }
 
+.nav-close {
+  display: none;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -1780,6 +1784,14 @@ body.menu-open {
 
   .menu-toggle {
     display: grid;
+    position: relative;
+    /* Above the open drawer — otherwise the panel covers the toggle and it can't close. */
+    z-index: 40;
+  }
+
+  .topbar-actions {
+    position: relative;
+    z-index: 40;
   }
 
   .nav-scrim {
@@ -1788,7 +1800,7 @@ body.menu-open {
     inset: 0;
     border: none;
     background: rgba(11, 31, 42, 0.35);
-    z-index: 28;
+    z-index: 31;
   }
 
   .nav {
@@ -1815,6 +1827,26 @@ body.menu-open {
 
   .nav.open {
     display: flex;
+  }
+
+  .nav-close {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0 0 0.35rem;
+    padding: 0 0.15rem 0.65rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-close-label {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+
+  .nav-close-btn {
+    flex-shrink: 0;
   }
 
   .nav-link {
