@@ -176,6 +176,10 @@ textarea {
   display: none;
 }
 
+.nav-close {
+  display: none;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -229,6 +233,10 @@ textarea {
   justify-content: flex-end;
   width: 100%;
   order: 3;
+}
+
+.nav-mobile {
+  display: none;
 }
 
 .nav-link {
@@ -1183,13 +1191,13 @@ body.menu-open {
 }
 
 @keyframes fade-down {
+  /* Opacity only — a lingering transform on .topbar traps position:fixed children
+     (mobile menu / scrim) inside the header box so the menu can't be dismissed. */
   from {
     opacity: 0;
-    transform: translateY(-8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -1782,16 +1790,25 @@ body.menu-open {
     display: grid;
   }
 
+  .nav-desktop {
+    display: none;
+  }
+
+  /* Keep the whole topbar above the drawer so the hamburger can fold the menu closed. */
+  body.menu-open .topbar {
+    z-index: 40;
+  }
+
   .nav-scrim {
     display: block;
     position: fixed;
     inset: 0;
     border: none;
     background: rgba(11, 31, 42, 0.35);
-    z-index: 28;
+    z-index: 35;
   }
 
-  .nav {
+  .nav-mobile {
     display: none;
     position: fixed;
     top: 0;
@@ -1809,12 +1826,32 @@ body.menu-open {
     background: #f5f8fa;
     border-left: 1px solid var(--line);
     box-shadow: -12px 0 40px rgba(11, 31, 42, 0.16);
-    z-index: 32;
+    z-index: 36;
     overflow: auto;
   }
 
-  .nav.open {
+  .nav-mobile.open {
     display: flex;
+  }
+
+  .nav-close {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0 0 0.35rem;
+    padding: 0 0.15rem 0.65rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-close-label {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+
+  .nav-close-btn {
+    flex-shrink: 0;
   }
 
   .nav-link {
@@ -2027,7 +2064,7 @@ body.menu-open {
     order: 1;
   }
 
-  .nav {
+  .nav-desktop {
     order: 2;
     width: auto;
     flex: 1;
@@ -2038,6 +2075,12 @@ body.menu-open {
   .topbar-actions {
     order: 3;
     margin-left: 0;
+  }
+
+  .nav-mobile,
+  .nav-scrim,
+  .nav-close {
+    display: none !important;
   }
 }
 
