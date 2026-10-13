@@ -8,13 +8,13 @@ d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/css/7a734d923c2597c7.css","style"]
-0:{"P":null,"b":"21d50qRooRgOQ-1Y404SM","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/7a734d923c2597c7.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","iSBoxtlOlJkS5MHdU2zbe",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-0a5a3c43c9dadb3a.js","4415","static/chunks/4415-65ba49e94043d836.js","7581","static/chunks/app/admin/layout-8aee075c81fbd9b4.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-13 14:56:22"},"/admin/messenger":{"count":5,"latestAt":"2026-10-13 14:56:22"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-13T14:56:22.529Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-13 14:56:22"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-13 18:26:22"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-13 14:56:22"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-13 14:56:22"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+0:{"P":null,"b":"Ajp5NJTYZiLNIw8jlVGUr","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/7a734d923c2597c7.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","BHGrMu0Jt154ydDfI99Rq",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-0a5a3c43c9dadb3a.js","4415","static/chunks/4415-65ba49e94043d836.js","7581","static/chunks/app/admin/layout-05f3823aa5c1447f.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-13 15:06:06"},"/admin/messenger":{"count":5,"latestAt":"2026-10-13 15:06:06"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-13T15:06:06.626Z"},"/admin/discovery":{"count":4,"latestAt":"2026-10-13 15:06:06"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":24,"latestAt":"2026-10-13 18:36:06"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-13 15:06:06"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-13 15:06:06"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
 f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-65ba49e94043d836.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"Badge"]
 10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-65ba49e94043d836.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],""]
 11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-65ba49e94043d836.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"DocArticleView"]
-12:T6ff4,# CRMP Product Requirements Document (PRD)
+12:T7805,# CRMP Product Requirements Document (PRD)
 
 **Document ID:** CRMP-PRD-001  
 **Status:** Prototype / Demo-ready  
@@ -22,7 +22,7 @@ f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4
 **Owner:** demo platform owner · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
-This PRD is the product contract for **every screen and feature currently in CRMP Admin**. Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-45](/admin/docs/uat).
+This PRD is the product contract for **every screen and feature currently in CRMP Admin**. Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-46](/admin/docs/uat).
 
 ---
 
@@ -242,7 +242,7 @@ graph LR
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
-| FR-32 | UAT interactive pack | UAT-01…UAT-45 with why/steps/pass/evidence and screen coverage |
+| FR-32 | UAT interactive pack | UAT-01…UAT-46 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
@@ -363,6 +363,27 @@ flowchart TD
 
 **Acceptance (FR-38):** left-nav **AI Performance**; board shows skill / challenger / feedback / training KPIs; read-only (no CR forms); `GET /api/ai-performance` + `GET /api/ai-admin?tab=performance`; EN + zh-Hant chrome. Operator: User Guide §8.2A · Build: TSD §8A.
 
+### 6.7 AI-assisted escalation factor weights (P0–P3 feedback) — methods, data, flow
+
+Operators re-label monitor-incident severity on the Lark-style AI report; AI aggregates those labels monthly into suggested **escalation dimension coefficients** (severity, involved teams, risk scenario, pending time, need-human). Humans still apply the pack — AI never silently rewrites routes.
+
+| Layer | Detail |
+|---|---|
+| **Methods** | Map ops severity ↔ P0–P3 (P0=CRITICAL … P3=INFO). On each `recommend_severity`, store AI P vs recommended P + free-text reason. Monthly pack: count upgrades / downgrades / confirms; nudge ESC-DEFAULT coefficients (clamped). |
+| **Data** | `severity_feedback`; `escalation_routes.coefficients_json`; `platform_settings` key `severity.weights.applied.{YYYY-MM}`; audit `SEVERITY_RECOMMEND` / `MESSENGER_RECOMMEND_SEVERITY` / `SEVERITY_WEIGHTS_APPLY` |
+| **Flow** | Messenger AI_REPORT card → pick P0–P3 + reason → SQLite feedback → Escalation Routes monthly pack (apply → ESC-DEFAULT) → AI Performance read-only mirror |
+
+```mermaid
+flowchart LR
+  Card[AI_REPORT card P0-P3 + reason] --> FB[severity_feedback]
+  FB --> Pack[Monthly weight suggestion]
+  Pack --> Esc[Escalation Routes apply]
+  Esc --> Coeff[ESC-DEFAULT coefficients_json]
+  Pack --> Perf[AI Performance read-only]
+```
+
+**Acceptance (FR-39):** interactive severity block on open AI_REPORT (`msg-severity-recommend`); monthly pack on `/admin/escalation` (`esc-severity-weight-pack`) with apply when `escalation.manage`; AI Performance shows pack without mutation; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 / §16.15 · UAT-45.
+
 ---
 
 ## 7. Non-functional requirements
@@ -370,7 +391,7 @@ flowchart TD
 | ID | Area | Requirement |
 |---|---|---|
 | NFR-01 | Latency | Prototype: alarm → dual-AI pack typically < 60s |
-| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin/discovery/Lark emit audit; failed logins recorded; AI Performance page is read-only |
+| NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin/discovery/Lark/severity-feedback/weight-apply emit audit; failed logins recorded; AI Performance page is read-only |
 | NFR-03 | Security | AI principals must not receive blocklisted rights |
 | NFR-04 | SoD | Maker/checker enforced for AI Admin; checker for designated controls |
 | NFR-05 | Availability | Demo single-node SQLite acceptable; production needs HA (see Ecosystem) |
@@ -390,6 +411,7 @@ flowchart TD
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  
 5. **AI Admin:** Distinct checker required; self-approve blocked.  
 5b. **AI Performance:** `/admin/ai-performance` renders KPIs (skill match, challenger, feedback, training) without mutation controls; linked from AI Admin.  
+5c. **Severity → weights (FR-39):** Messenger AI_REPORT accepts P0–P3 re-recommend + reason; Escalation Routes shows monthly pack and can apply to ESC-DEFAULT; AI Performance mirrors read-only.  
 6. **Coverage:** UAT window BREACH/CRITICAL samples 100% challenged (backfill allowed).  
 7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem/Roadmap render EN and zh-Hant; User Guide has a how-to for every left-nav page.  
 8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.  
@@ -399,7 +421,7 @@ flowchart TD
 12. **Owner login:** demo platform owner persona persists after refresh on Pages.  
 13. **Nav truth:** Left nav has Realtime Alert & Tracker (not Live Alerts); no Detectors / AI Analyses list / Spine Log rows; `/admin/detectors` → Monitor 2.0; `/admin/ai-analyses` → alerts; `/admin/spine` → home.
 
-Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync).
+Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, P0–P3 severity re-recommend, recommended controls, sync).
 
 ---
 
@@ -457,7 +479,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 |---|---|
 | Operator how-to per page | User Guide §6–§12 |
 | Technical module per page | TSD §7 + §8–§17 |
-| Test case per surface | UAT-01…UAT-45 `covers` field |
+| Test case per surface | UAT-01…UAT-46 `covers` field |
 | Public and local URLs | URL Catalog |
 
 ---
@@ -487,9 +509,10 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.10 | 2026-10-11 | §6.5 methods / data / flow + feature catalogue row for `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 expanded tables + mermaid flow; cross-links to UG §14A / TSD §11A |
 | 1.12 | 2026-10-12 | FR-36 audit mutation coverage; FR-38 AI Performance evaluation dashboard (§6.6) |
+| 1.13 | 2026-10-13 | FR-39 AI-assisted escalation factor weights from P0–P3 severity feedback (§6.7); UAT-45 / UAT-46 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
-13:T6c86,# CRMP 產品需求文件（PRD）
+13:T7451,# CRMP 產品需求文件（PRD）
 
 **文件編號：** CRMP-PRD-001  
 **狀態：** 原型／可示範  
@@ -497,7 +520,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 **負責人：** demo platform owner · **核准人：** 風險負責人  
 **相關文件：** [TSD](/admin/docs/tsd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [生態導入評估](/admin/docs/ecosystem)
 
-本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-45](/admin/docs/uat)。
+本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-46](/admin/docs/uat)。
 
 ---
 
@@ -717,7 +740,7 @@ graph LR
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
-| FR-32 | UAT 互動包 | UAT-01…UAT-45 含為什麼／步驟／通過／證據與畫面覆蓋 |
+| FR-32 | UAT 互動包 | UAT-01…UAT-46 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
@@ -838,6 +861,27 @@ flowchart TD
 
 **驗收（FR-38）：** 左側導覽有 **AI 績效**；看板顯示技能／挑戰者／回饋／訓練 KPI；唯讀（無變更單表單）；`GET /api/ai-performance`＋`GET /api/ai-admin?tab=performance`；英＋繁中介面。操作：使用手冊 §8.2A · 實作：TSD §8A。
 
+### 6.7 AI 協助調整升級因子權重（P0–P3 回饋）— 方法、資料、流程
+
+操作者在 Lark 風格 AI 事故報告上重標監控事故嚴重度；AI 每月彙總這些標籤，建議**升級維度係數**（嚴重度、涉入團隊、風險情境、待處理時間、需人工）。人類仍須套用組合 — AI 不會靜默改寫路徑。
+
+| 層級 | 細節 |
+|---|---|
+| **方法** | 營運嚴重度 ↔ P0–P3（P0=CRITICAL … P3=INFO）。每次 `recommend_severity` 記錄 AI 的 P、建議的 P 與自由文字原因。每月組合：統計升級／降級／維持；微調 ESC-DEFAULT 係數（有上下限）。 |
+| **資料** | `severity_feedback`；`escalation_routes.coefficients_json`；`platform_settings` 鍵 `severity.weights.applied.{YYYY-MM}`；稽核 `SEVERITY_RECOMMEND`／`MESSENGER_RECOMMEND_SEVERITY`／`SEVERITY_WEIGHTS_APPLY` |
+| **流程** | Messenger AI_REPORT 卡 → 選 P0–P3＋原因 → SQLite 回饋 → 升級路徑每月組合（套用 → ESC-DEFAULT）→ AI 績效唯讀鏡像 |
+
+```mermaid
+flowchart LR
+  Card[AI_REPORT 卡 P0-P3＋原因] --> FB[severity_feedback]
+  FB --> Pack[每月權重建議]
+  Pack --> Esc[升級路徑套用]
+  Esc --> Coeff[ESC-DEFAULT coefficients_json]
+  Pack --> Perf[AI 績效唯讀]
+```
+
+**驗收（FR-39）：** 未結 AI_REPORT 上有互動嚴重度區（`msg-severity-recommend`）；`/admin/escalation` 有每月組合（`esc-severity-weight-pack`），`escalation.manage` 可套用；AI 績效顯示組合且無變更控件；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6／§16.15 · UAT-45。
+
 ---
 
 ## 7. 非功能需求
@@ -845,7 +889,7 @@ flowchart TD
 | ID | 領域 | 需求 |
 |---|---|---|
 | NFR-01 | 延遲 | 原型：警報 → 雙 AI 包通常 < 60 秒 |
-| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin／探索／Lark 變更發出稽核；失敗登入亦記錄；AI 績效頁為唯讀 |
+| NFR-02 | 可稽核 | 警報／分析／messenger／AI Admin／探索／Lark／嚴重度回饋／權重套用變更發出稽核；失敗登入亦記錄；AI 績效頁為唯讀 |
 | NFR-03 | 安全 | AI 主體不得取得黑名單權限 |
 | NFR-04 | 職能分離 | AI Admin 強制 Maker／Checker；指定控制要 Checker |
 | NFR-05 | 可用性 | 示範單節點 SQLite 可接受；正式需 HA（見生態） |
@@ -865,6 +909,7 @@ flowchart TD
 4. **控制：** 封鎖帳號 → 雙重確認 → admin_ref；必要時 Checker 後續。  
 5. **AI Admin：** 需要不同 Checker；自己核准被擋。  
 5b. **AI 績效：** `/admin/ai-performance` 顯示 KPI（技能匹配、挑戰者、回饋、訓練）且無可寫控制；自 AI 管理可連結。  
+5c. **嚴重度 → 權重（FR-39）：** Messenger AI_REPORT 可重推薦 P0–P3＋原因；升級路徑顯示每月組合並可套用至 ESC-DEFAULT；AI 績效唯讀鏡像。  
 6. **覆蓋：** UAT 視窗 BREACH／CRITICAL 樣本 100% 已挑戰（允許回填）。  
 7. **文件：** PRD／TSD／使用手冊／UAT／生態／路線圖／開放議題／進度英繁皆可渲染；使用手冊對左側每一頁都有操作說明。  
 8. **手機：** Messenger 列表→執行緒→返回在約 390px 可用且無整頁溢出。  
@@ -874,7 +919,7 @@ flowchart TD
 12. **負責人登入：** demo platform owner 角色在 Pages 重新整理後仍在。  
 13. **選單真相：** 左側為即時警報與追蹤（非「即時警報」舊名）；無偵測器／AI 分析列表／脊柱日誌列；`/admin/detectors`→Monitor 2.0；`/admin/ai-analyses`→警報；`/admin/spine`→首頁。
 
-正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-45）。此包覆蓋每一個管理畫面以及完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步）。
+正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-46）。此包覆蓋每一個管理畫面以及完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、P0–P3 嚴重度重推薦、建議控制、同步）。
 
 ---
 
@@ -932,7 +977,7 @@ flowchart TD
 |---|---|
 | 每頁操作說明 | 使用手冊 §6–§12 |
 | 每頁技術模組 | TSD §7＋§8–§16 |
-| 每介面測試案例 | UAT-01…UAT-45 的 `covers` 欄 |
+| 每介面測試案例 | UAT-01…UAT-46 的 `covers` 欄 |
 | 公開與本機網址 | 網址目錄 |
 
 ---
@@ -962,6 +1007,7 @@ flowchart TD
 | 1.10 | 2026-10-11 | §6.5 方法／資料／流程＋功能目錄列 `/admin/discovery` |
 | 1.11 | 2026-10-11 | §6.5 表格與 mermaid 流程擴充；交叉連結使用手冊 §14A／TSD §11A |
 | 1.12 | 2026-10-12 | FR-36 稽核變更覆蓋；FR-38 AI 績效評估儀表板（§6.6） |
+| 1.13 | 2026-10-13 | FR-39 AI 協助自 P0–P3 嚴重度回饋調整升級因子權重（§6.7）；UAT-45／UAT-46 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","P0 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P0 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"10"}]]}],["$","div","P1 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P1 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"20"}]]}],["$","div","Product scope",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Product scope"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"CFD + Crypto"}]]}],["$","div","Acceptance",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Acceptance"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"UAT-01…45"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / demo-ready"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/tsd","children":"TSD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"PRD","markdownEn":"$12","markdownZh":"$13"}]]}]
