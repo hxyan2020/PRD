@@ -94,6 +94,11 @@ assert.match(boardIntro, /AI 績效為唯讀/);
 const boardZh = read("src/components/AiPerformanceBoard.tsx");
 assert.match(boardZh, /挑戰者一致率/);
 assert.match(boardZh, /即時警報與追蹤/);
+assert.match(boardZh, /ai-perf-history-chart/);
+assert.match(boardZh, /ai-perf-donut/);
+assert.match(boardZh, /bg-emerald-100/);
+assert.match(boardZh, /bg-rose-100/);
+assert.match(boardZh, /bg-amber-100/);
 assert.doesNotMatch(boardZh, /交给/);
 
 console.log("ok: AI Performance evaluation board wiring + docs");
