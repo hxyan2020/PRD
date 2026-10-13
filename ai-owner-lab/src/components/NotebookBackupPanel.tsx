@@ -67,9 +67,12 @@ export function NotebookBackupPanel() {
         return
       }
       await verifyGistToken(gistToken)
+      const localCount = notebookStore.get().length
       const result = await notebookStore.enableCloudSync({
         token: gistToken,
         gistId: gistId || undefined,
+        // First device with local notes may create the cloud notebook; empty device restores only.
+        allowCreateEmpty: localCount > 0,
       })
       setGistId(result.gistId)
       setCloudOn(true)

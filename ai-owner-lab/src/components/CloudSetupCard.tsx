@@ -5,15 +5,19 @@ import { GIST_TOKEN_CREATE_URL, verifyGistToken } from '../lib/notebookGistSync'
 
 type Props = {
   onEnabled?: () => void
+  /** Empty notebook on a new device — restore only, never invent an empty cloud book. */
+  restoreMode?: boolean
 }
 
 /** Sticky setup card until cloud sync is turned on — required for cross-device saves. */
-export function CloudSetupCard({ onEnabled }: Props) {
+export function CloudSetupCard({ onEnabled, restoreMode = false }: Props) {
   const { t } = useLanguage()
   const [token, setToken] = useState('')
+  const [gistId, setGistId] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   async function enable() {
     setBusy(true)
@@ -25,7 +29,11 @@ export function CloudSetupCard({ onEnabled }: Props) {
         return
       }
       await verifyGistToken(token)
-      const result = await notebookStore.enableCloudSync({ token })
+      const result = await notebookStore.enableCloudSync({
+        token,
+        gistId: gistId || undefined,
+        allowCreateEmpty: !restoreMode,
+      })
       setSuccess(
         result.restoredFromCloud
           ? t('cloudEnabledRestoredOk', {
@@ -46,31 +54,27 @@ export function CloudSetupCard({ onEnabled }: Props) {
   }
 
   return (
-    <section className="notebook-cloud-setup" aria-label={t('cloudRequiredTitle')}>
+    <section
+      className={`notebook-cloud-setup${restoreMode ? ' restore' : ''}`}
+      aria-label={restoreMode ? t('cloudRestoreTitle') : t('cloudRequiredTitle')}
+    >
       <div className="notebook-cloud-setup-head">
-        <h2>{t('cloudRequiredTitle')}</h2>
-        <p>{t('cloudRequiredBody')}</p>
+        <h2>{restoreMode ? t('cloudRestoreTitle') : t('cloudRequiredTitle')}</h2>
+        <p>{restoreMode ? t('cloudRestoreBody') : t('cloudRequiredBody')}</p>
         <p className="notebook-cloud-setup-note">{t('cloudNoLoginHint')}</p>
       </div>
-      <ol className="notebook-cloud-steps">
-        <li>
-          {t('cloudStep1')}{' '}
-          <a href={GIST_TOKEN_CREATE_URL} target="_blank" rel="noreferrer">
-            {t('cloudCreateToken')}
-          </a>
-        </li>
-        <li>{t('cloudRequiredStep2')}</li>
-        <li>{t('cloudRequiredStep3')}</li>
-      </ol>
+
       <label className="notebook-field">
         <span className="notebook-field-label">{t('backupGistToken')}</span>
         <input
           className="notebook-title-input"
           type="password"
           autoComplete="off"
+          enterKeyHint="go"
           value={token}
           onChange={(e) => setToken(e.target.value)}
           placeholder="ghp_…"
+          autoFocus={restoreMode}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault()
@@ -79,6 +83,36 @@ export function CloudSetupCard({ onEnabled }: Props) {
           }}
         />
       </label>
+
+      <p className="notebook-cloud-token-hint">
+        {t('cloudStep1')}{' '}
+        <a href={GIST_TOKEN_CREATE_URL} target="_blank" rel="noreferrer">
+          {t('cloudCreateToken')}
+        </a>
+        {t('cloudTokenHintSuffix')}
+      </p>
+
+      <button
+        type="button"
+        className="btn ghost notebook-cloud-advanced-toggle"
+        onClick={() => setShowAdvanced((v) => !v)}
+      >
+        {showAdvanced ? t('cloudHideAdvanced') : t('cloudShowAdvanced')}
+      </button>
+      {showAdvanced ? (
+        <label className="notebook-field">
+          <span className="notebook-field-label">{t('cloudNotebookId')}</span>
+          <input
+            className="notebook-title-input"
+            type="text"
+            autoComplete="off"
+            value={gistId}
+            onChange={(e) => setGistId(e.target.value)}
+            placeholder={t('cloudNotebookIdPlaceholder')}
+          />
+        </label>
+      ) : null}
+
       {error ? (
         <p className="notebook-composer-error" role="alert">
           {error}
@@ -91,7 +125,7 @@ export function CloudSetupCard({ onEnabled }: Props) {
       ) : null}
       <div className="notebook-actions">
         <button type="button" className="btn primary" disabled={busy} onClick={() => void enable()}>
-          {busy ? t('cloudSyncing') : t('cloudEnable')}
+          {busy ? t('cloudSyncing') : restoreMode ? t('cloudRestore') : t('cloudEnable')}
         </button>
       </div>
     </section>

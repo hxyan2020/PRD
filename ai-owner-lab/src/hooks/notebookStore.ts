@@ -4,6 +4,7 @@ import {
   getCloudSyncStatus,
   isCloudSyncReady,
   loadGistSettings,
+  parseGistIdInput,
   pullGistBackup,
   pushGistBackup,
   resolveOwnlabNotebookGist,
@@ -954,12 +955,13 @@ export const notebookStore = {
   },
   /**
    * Enable cloud sync with a GitHub token.
-   * On a new device, the same token alone finds your existing OWNLAB gist and restores notes
-   * (no separate site login — the token is the credential).
+   * On a new device (no local notes), refuse to create a fresh empty gist — restore only.
    */
   async enableCloudSync(input: {
     token: string
     gistId?: string
+    /** When true, allow creating a brand-new empty cloud notebook (first device). */
+    allowCreateEmpty?: boolean
   }): Promise<{
     gistId: string
     htmlUrl: string | null
@@ -973,9 +975,11 @@ export const notebookStore = {
       throw new NotebookStorageError('unknown', 'GitHub token is required')
     }
 
-    let gistId = input.gistId?.trim() || loadGistSettings().gistId
+    let gistId = parseGistIdInput(input.gistId || '') || loadGistSettings().gistId
     let restoredFromCloud = false
     let cloudNoteCount = 0
+    const localCount = cache.entries.length
+    const restoringEmptyDevice = localCount === 0 && !input.allowCreateEmpty
 
     // New device / token-only setup: locate the existing cloud notebook instead of
     // creating a second empty gist that hides the notes from the first device.
@@ -985,6 +989,20 @@ export const notebookStore = {
         gistId = existing.gistId
         cloudNoteCount = existing.noteCount
       }
+    }
+
+    if (restoringEmptyDevice && !gistId) {
+      throw new NotebookStorageError(
+        'unknown',
+        'No OWNLAB cloud notebook found for this token. On the device that still has your notes: open Notebook → turn on cloud sync (or Backup → Double-check cloud sync), wait until it says Saved to cloud, then come back here and try again with the same token.',
+      )
+    }
+
+    if (restoringEmptyDevice && gistId && cloudNoteCount === 0) {
+      throw new NotebookStorageError(
+        'unknown',
+        'Cloud notebook is empty (0 notes). Your notes were probably never uploaded. On the device that has them: open Notebook → Enable cloud sync / Double-check cloud sync until it says Saved to cloud, then restore here again.',
+      )
     }
 
     saveGistSettings({
@@ -1011,13 +1029,22 @@ export const notebookStore = {
           }
         }
       } catch (err) {
-        // If an explicit gist id was wrong, fail clearly; discovery misses just create anew below.
-        if (input.gistId?.trim()) {
+        if (restoringEmptyDevice || input.gistId?.trim()) {
           throw err instanceof Error
             ? new NotebookStorageError('unknown', err.message)
             : new NotebookStorageError('unknown', 'Could not download cloud notebook')
         }
       }
+    }
+
+    if (restoringEmptyDevice && cloudNoteCount === 0) {
+      // Do not leave this device "synced" to an empty notebook — that looks like success with 0 notes.
+      saveGistSettings({ enabled: false })
+      refreshCloudRuntimeFromSettings()
+      throw new NotebookStorageError(
+        'unknown',
+        'Cloud notebook is empty (0 notes). Your notes were probably never uploaded. On the device that has them: open Notebook → Enable cloud sync / Double-check cloud sync until it says Saved to cloud, then restore here again.',
+      )
     }
 
     const result = await notebookStore.syncDurableNow()
@@ -1039,16 +1066,16 @@ export const notebookStore = {
   }): Promise<{ total: number; gistId: string; restoredFromCloud: boolean }> {
     await ensureReady()
     const token = input.token.trim()
-    let gistId = input.gistId?.trim() || ''
+    let gistId = parseGistIdInput(input.gistId || '')
     if (!token) {
       throw new NotebookStorageError('unknown', 'GitHub token is required')
     }
     if (!gistId) {
       const existing = await resolveOwnlabNotebookGist(token)
-      if (!existing) {
+      if (!existing || existing.noteCount === 0) {
         throw new NotebookStorageError(
           'unknown',
-          'No OWNLAB cloud notebook found for this token. Enable cloud sync on your first device first.',
+          'No OWNLAB notes found in cloud for this token. Enable cloud sync on the device that has your notes first, then try again.',
         )
       }
       gistId = existing.gistId
@@ -1060,9 +1087,17 @@ export const notebookStore = {
       throw new NotebookStorageError('unknown', 'No cloud notebook found for that id')
     }
     const imported = await notebookStore.importBackup(gistJson)
+    if (imported.total === 0) {
+      saveGistSettings({ enabled: false })
+      refreshCloudRuntimeFromSettings()
+      throw new NotebookStorageError(
+        'unknown',
+        'Cloud notebook is empty. Upload notes from your other device first, then connect again.',
+      )
+    }
     setLastCloudSyncAt()
     await scheduleDurableSync()
-    return { total: imported.total, gistId, restoredFromCloud: imported.total > 0 }
+    return { total: imported.total, gistId, restoredFromCloud: true }
   },
   subscribe(listener: EntryListener) {
     entryListeners.add(listener)

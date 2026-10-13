@@ -199,7 +199,7 @@ export async function findOwnlabNotebookGists(token: string): Promise<OwnlabGist
   for (const candidate of candidates) {
     try {
       const full = await githubJson(`/gists/${candidate.gistId}`, trimmed)
-      const content = extractBackupContent(full)
+      const content = await extractBackupContentFull(full, trimmed)
       scored.push({
         ...candidate,
         noteCount: countNotesInBackupJson(content),
@@ -224,12 +224,64 @@ export async function resolveOwnlabNotebookGist(
   return matches[0] ?? null
 }
 
-function extractBackupContent(gist: Record<string, unknown>): string | null {
-  const files = gist.files as Record<string, { content?: string }> | undefined
+type GistFile = {
+  content?: string
+  truncated?: boolean
+  raw_url?: string
+  filename?: string
+}
+
+function pickOwnlabFile(
+  files: Record<string, GistFile> | undefined,
+): GistFile | null {
   if (!files) return null
-  if (files[FILE_NAME]?.content) return files[FILE_NAME].content
-  const first = Object.values(files)[0]
-  return first?.content ?? null
+  if (files[FILE_NAME]) return files[FILE_NAME]
+  return Object.values(files)[0] ?? null
+}
+
+/**
+ * Full notebook JSON, following raw_url when GitHub truncates >1MB files.
+ * Without this, large notebooks restore as empty/corrupt on a new device.
+ */
+export async function extractBackupContentFull(
+  gist: Record<string, unknown>,
+  token: string,
+): Promise<string | null> {
+  const files = gist.files as Record<string, GistFile> | undefined
+  const file = pickOwnlabFile(files)
+  if (!file) return null
+  if (file.truncated && file.raw_url) {
+    const response = await fetch(file.raw_url, {
+      headers: {
+        Accept: 'application/vnd.github.raw',
+        Authorization: `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    })
+    if (!response.ok) {
+      throw new Error(`Could not download full cloud notebook (${response.status})`)
+    }
+    return response.text()
+  }
+  return file.content ?? null
+}
+
+/** Accept a raw gist id or a gist.github.com / api URL. */
+export function parseGistIdInput(raw: string): string {
+  const trimmed = raw.trim()
+  if (!trimmed) return ''
+  if (/^[a-f0-9]{16,}$/i.test(trimmed)) return trimmed
+  try {
+    const url = new URL(trimmed)
+    const parts = url.pathname.split('/').filter(Boolean)
+    // https://gist.github.com/{user}/{id} or https://gist.github.com/{id}
+    const last = parts[parts.length - 1] || ''
+    if (/^[a-f0-9]{16,}$/i.test(last)) return last
+  } catch {
+    /* not a URL */
+  }
+  const match = trimmed.match(/[a-f0-9]{20,}/i)
+  return match?.[0] ?? trimmed
 }
 
 export async function pullGistBackup(
@@ -238,7 +290,7 @@ export async function pullGistBackup(
   if (!settings.token || !settings.gistId) return null
   // Allow an explicit pull while connecting a second device (enabled may still be off).
   const gist = await githubJson(`/gists/${settings.gistId}`, settings.token)
-  return extractBackupContent(gist)
+  return extractBackupContentFull(gist, settings.token)
 }
 
 export async function pushGistBackup(

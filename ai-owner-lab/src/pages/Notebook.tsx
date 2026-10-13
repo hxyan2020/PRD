@@ -226,6 +226,7 @@ export function Notebook() {
     notebookStore.getCloudRuntime().state,
   )
   const [cloudError, setCloudError] = useState<string | null>(null)
+  const [skipCloudRestore, setSkipCloudRestore] = useState(false)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
   const importInputRef = useRef<HTMLInputElement | null>(null)
@@ -723,13 +724,24 @@ export function Notebook() {
       </header>
 
       {!cloudOn && (view === 'notes' || view === 'backup') ? (
-        <div ref={cloudSetupRef}>
+        <div ref={cloudSetupRef} className="notebook-cloud-setup-anchor">
           <CloudSetupCard
+            restoreMode={count === 0 && !skipCloudRestore}
             onEnabled={() => {
               setCloudOn(true)
               setCloudState('synced')
+              setSkipCloudRestore(false)
             }}
           />
+          {count === 0 && !skipCloudRestore ? (
+            <button
+              type="button"
+              className="btn ghost notebook-cloud-skip"
+              onClick={() => setSkipCloudRestore(true)}
+            >
+              {t('cloudSkipRestore')}
+            </button>
+          ) : null}
         </div>
       ) : null}
 
@@ -935,6 +947,8 @@ export function Notebook() {
             </section>
           ) : null}
         </>
+      ) : !cloudOn && count === 0 && !skipCloudRestore ? (
+        null
       ) : (
         <>
       <section className="notebook-composer" aria-label={t('newNote')}>
