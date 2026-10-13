@@ -21,6 +21,15 @@ export function Layout() {
     return () => document.body.classList.remove('menu-open')
   }, [menuOpen])
 
+  useEffect(() => {
+    if (!menuOpen) return
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [menuOpen])
+
   const links = [
     { to: '/', label: t('navHome'), end: true },
     { to: '/curriculum', label: t('navCurriculum') },
@@ -97,6 +106,18 @@ export function Layout() {
           className={`nav ${menuOpen ? 'open' : ''}`}
           aria-label="Primary"
         >
+          {menuOpen ? (
+            <div className="nav-close">
+              <span className="nav-close-label">{t('menu')}</span>
+              <button
+                type="button"
+                className="btn ghost nav-close-btn"
+                onClick={() => setMenuOpen(false)}
+              >
+                {t('closeMenu')}
+              </button>
+            </div>
+          ) : null}
           {links.map((link) => (
             <NavLink
               key={link.to}
