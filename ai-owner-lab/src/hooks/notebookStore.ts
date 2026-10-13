@@ -369,7 +369,7 @@ async function hydrate(): Promise<void> {
   void (async () => {
     try {
       const folderJson = await readFolderBackup()
-      if (folderJson) await notebookStore.importBackup(folderJson)
+      if (folderJson) await notebookStore.importBackup(folderJson, { syncCloud: false })
     } catch {
       /* ignore */
     }
@@ -377,7 +377,7 @@ async function hydrate(): Promise<void> {
       if (isCloudSyncReady()) {
         const gistJson = await pullGistBackup()
         if (gistJson) {
-          await notebookStore.importBackup(gistJson)
+          await notebookStore.importBackup(gistJson, { syncCloud: false })
           setLastCloudSyncAt()
         }
       }
@@ -396,17 +396,29 @@ function ensureReady(): Promise<void> {
 
 let cloudPullInFlight: Promise<void> | null = null
 
+/**
+ * Pull cloud notebook and merge into the local cache without scheduling another sync.
+ * Used before push so another device's notes aren't overwritten by last-write-wins.
+ */
+async function pullAndMergeCloudQuiet(): Promise<boolean> {
+  if (!isCloudSyncReady()) return false
+  const settings = loadGistSettings()
+  if (!settings.token || !settings.gistId) return false
+  const gistJson = await pullGistBackup(settings)
+  if (!gistJson) return false
+  await notebookStore.importBackup(gistJson, { syncCloud: false })
+  setLastCloudSyncAt()
+  return true
+}
+
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
 async function pullCloudIfConfigured() {
   if (!isCloudSyncReady()) return
+  // flushCloudSync already pull-merges before each push — one serialized path.
   if (cloudPullInFlight) return cloudPullInFlight
   cloudPullInFlight = (async () => {
     try {
-      const gistJson = await pullGistBackup()
-      if (gistJson) {
-        await notebookStore.importBackup(gistJson)
-        setLastCloudSyncAt()
-      }
+      await flushCloudSync()
     } catch {
       /* ignore offline / auth errors */
     } finally {
@@ -443,6 +455,8 @@ function buildBackupJson(): string {
 
 let durableTimer: ReturnType<typeof setTimeout> | null = null
 let cloudPushInFlight: Promise<void> | null = null
+/** Set when a write happens while a cloud push is in flight — flush must run again. */
+let cloudPushDirty = false
 
 export type CloudRuntimeState = 'off' | 'syncing' | 'synced' | 'error'
 
@@ -498,23 +512,38 @@ function scheduleFolderBackup() {
   }, 1200)
 }
 
-/** Push notebook to cloud immediately when sync is enabled (awaits in-flight). */
+/**
+ * Push notebook to cloud when sync is enabled.
+ * Coalesces overlapping writes: if notes change mid-upload, run another push with
+ * the latest cache (previously those notes were dropped and never uploaded).
+ */
 async function flushCloudSync() {
   if (!isCloudSyncReady()) {
     setCloudRuntime({ state: 'off', error: null })
     return
   }
+  cloudPushDirty = true
   if (cloudPushInFlight) return cloudPushInFlight
   setCloudRuntime({ state: 'syncing', error: null })
   cloudPushInFlight = (async () => {
     try {
-      const result = await pushGistBackup(buildBackupJson())
-      setCloudRuntime({
-        state: 'synced',
-        lastSyncedAt: new Date().toISOString(),
-        error: null,
-        gistId: result.gistId,
-      })
+      while (cloudPushDirty) {
+        cloudPushDirty = false
+        // Merge remote first so a slower device doesn't clobber notes from another.
+        try {
+          await pullAndMergeCloudQuiet()
+        } catch {
+          /* push local anyway if pull fails (offline / rate limit) */
+        }
+        if (cloudPushDirty) continue
+        const result = await pushGistBackup(buildBackupJson())
+        setCloudRuntime({
+          state: 'synced',
+          lastSyncedAt: new Date().toISOString(),
+          error: null,
+          gistId: result.gistId,
+        })
+      }
     } catch (err) {
       setCloudRuntime({
         state: 'error',
@@ -522,6 +551,8 @@ async function flushCloudSync() {
       })
     } finally {
       cloudPushInFlight = null
+      // A write may have landed between the last loop check and this finally.
+      if (cloudPushDirty) void flushCloudSync()
     }
   })()
   return cloudPushInFlight
@@ -702,7 +733,10 @@ export const notebookStore = {
     )
     return { json, entryCount: merged.entries.length, sources }
   },
-  async importBackup(json: string): Promise<{ total: number }> {
+  async importBackup(
+    json: string,
+    options?: { syncCloud?: boolean },
+  ): Promise<{ total: number }> {
     await ensureReady()
     let parsed: unknown
     try {
@@ -765,7 +799,9 @@ export const notebookStore = {
     trashListeners.forEach((listener) => listener(trash))
     categoryListeners.forEach((listener) => listener(categories))
     await saveSnapshot(cache.entries, cache.trash, cache.categories)
-    await scheduleDurableSync()
+    if (options?.syncCloud !== false) {
+      await scheduleDurableSync()
+    }
     return { total: entries.length }
   },
   getCloudSyncStatus,
@@ -787,34 +823,20 @@ export const notebookStore = {
     await ensureReady()
     const json = buildBackupJson()
     let folder = false
-    let gistId: string | null = null
-    let gistError: string | undefined
-    let htmlUrl: string | null | undefined
     try {
       folder = await writeFolderBackup(json)
     } catch {
       folder = false
     }
-    if (isCloudSyncReady()) {
-      setCloudRuntime({ state: 'syncing', error: null })
-      try {
-        const result = await pushGistBackup(json)
-        gistId = result.gistId
-        htmlUrl = result.htmlUrl
-        setCloudRuntime({
-          state: 'synced',
-          lastSyncedAt: new Date().toISOString(),
-          error: null,
-          gistId: result.gistId,
-        })
-      } catch (err) {
-        gistError = err instanceof Error ? err.message : 'Cloud sync failed'
-        setCloudRuntime({ state: 'error', error: gistError })
-      }
-    } else {
-      refreshCloudRuntimeFromSettings()
+    await flushCloudSync()
+    const status = getCloudSyncStatus()
+    const runtime = cloudRuntime
+    return {
+      folder,
+      gistId: runtime.gistId || status.gistId || null,
+      gistError: runtime.state === 'error' ? runtime.error ?? 'Cloud sync failed' : undefined,
+      htmlUrl: status.gistUrl,
     }
-    return { folder, gistId, gistError, htmlUrl }
   },
   /** Pull folder + cloud backups and merge into the notebook. */
   async pullRemoteBackups(): Promise<{ total: number; fromFolder: boolean; fromGist: boolean }> {
@@ -1023,7 +1045,7 @@ export const notebookStore = {
             /* keep prior count */
           }
           if (cloudNoteCount > 0 || cache.entries.length === 0) {
-            await notebookStore.importBackup(gistJson)
+            await notebookStore.importBackup(gistJson, { syncCloud: false })
             restoredFromCloud = cloudNoteCount > 0
             setLastCloudSyncAt()
           }
@@ -1086,7 +1108,7 @@ export const notebookStore = {
     if (!gistJson) {
       throw new NotebookStorageError('unknown', 'No cloud notebook found for that id')
     }
-    const imported = await notebookStore.importBackup(gistJson)
+    const imported = await notebookStore.importBackup(gistJson, { syncCloud: false })
     if (imported.total === 0) {
       saveGistSettings({ enabled: false })
       refreshCloudRuntimeFromSettings()
