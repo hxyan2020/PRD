@@ -1,4 +1,5 @@
 import { EscalationManager } from "@/components/EscalationManager";
+import { SeverityFormulaBoard } from "@/components/SeverityFormulaBoard";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
@@ -7,6 +8,11 @@ import {
   listSeverityFeedback,
   seedSeverityFeedbackIfEmpty,
 } from "@/lib/severity-feedback";
+import {
+  getLiveSeverityFormula,
+  getWeeklyFormulaSuggestion,
+  seedSeverityFormulaLoop,
+} from "@/lib/severity-formula";
 import { redirect } from "next/navigation";
 
 export default async function EscalationPage() {
@@ -15,6 +21,7 @@ export default async function EscalationPage() {
 
   const db = getDb();
   seedSeverityFeedbackIfEmpty(db);
+  seedSeverityFormulaLoop(db);
   const routes = db
     .prepare(
       `SELECT r.*,
@@ -41,6 +48,8 @@ export default async function EscalationPage() {
     .prepare(`SELECT value FROM platform_settings WHERE key = 'escalation.default_sla_minutes'`)
     .get() as { value: string } | undefined;
   const monthlySuggestion = getMonthlyWeightSuggestion();
+  const liveFormula = getLiveSeverityFormula();
+  const weeklyFormula = getWeeklyFormulaSuggestion();
   const recentSeverityFeedback = listSeverityFeedback(12, monthlySuggestion.month_key).map((f) => ({
     feedback_id: f.feedback_id,
     ai_severity: f.ai_severity,
@@ -48,13 +57,25 @@ export default async function EscalationPage() {
     recommended_p: f.recommended_p,
     recommended_ops: f.recommended_ops,
     reason: f.reason,
+    reason_codes_json: f.reason_codes_json ?? null,
     rated_by_name: f.rated_by_name,
     created_at: f.created_at,
+    week_key: f.week_key ?? null,
   }));
 
   return (
-    <div>
+    <div className="space-y-4">
       <AdminPageHeader pageKey="escalation" />
+      <SeverityFormulaBoard
+        liveFormula={liveFormula}
+        weekly={weeklyFormula}
+        recentFeedback={recentSeverityFeedback}
+        canPropose={
+          hasPermission(user.role_code, "ai.propose") ||
+          hasPermission(user.role_code, "escalation.manage")
+        }
+        canApprove={hasPermission(user.role_code, "ai.approve")}
+      />
       <EscalationManager
         routes={routes}
         teams={teams}

@@ -232,7 +232,7 @@ graph LR
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
 | FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者一致率（同意／部分／不同意）、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
-| FR-39 | Lark AI 事故報告 P0–P3 嚴重度重推薦 | 示範 Messenger AI_REPORT 卡：台面重推薦 P0–P3＋原因 → `severity_feedback`；每月組合在 `/admin/escalation` 建議升級因子權重（套用 → ESC-DEFAULT）；AI 績效唯讀呈現 |
+| FR-39 | P0–P3 嚴重度公式優化迴路 | 線上加權公式分到 P0–P3；24/7 值班在 AI_REPORT 勾選不准原因並覆寫 → 每週 AI 推薦新公式（增減因子、調整權重）→ 風險負責人經 `ai_change_requests` 核准；另含每月升級係數組合 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -347,26 +347,33 @@ flowchart TD
 
 **驗收（FR-38）：** 左側導覽有 **AI 績效**；看板顯示技能／挑戰者／回饋／訓練 KPI；唯讀（無變更單表單）；`GET /api/ai-performance`＋`GET /api/ai-admin?tab=performance`；英＋繁中介面。操作：使用手冊 §8.2A · 實作：TSD §8A。
 
-### 6.7 AI 協助調整升級因子權重（P0–P3 回饋）— 方法、資料、流程
+### 6.7 嚴重度公式優化＋升級權重（P0–P3）— 方法、資料、流程
 
-操作者在 Lark 風格 AI 事故報告上重標監控事故嚴重度；AI 每月彙總這些標籤，建議**升級維度係數**（嚴重度、涉入團隊、風險情境、待處理時間、需人工）。人類仍須套用組合 — AI 不會靜默改寫路徑。
+**主迴路（公式）：** 線上加權公式將警報打成 P0–P3。24/7 值班在 Lark AI 事故卡覆寫 P，並勾選**不准原因代碼**（幅度過重、漏判傳染、單次尖峰…）。AI 每週彙總成新公式（啟停因子、調整權重、微調分帶），開立 `ai_change_requests`；**風險負責人**核准或駁回（Maker ≠ Checker）。
+
+**次迴路（路由）：** 同一批回饋仍匯入 ESC-DEFAULT 的每月**升級維度係數**組合（`escalation.manage` 套用）。
 
 | 層級 | 細節 |
 |---|---|
-| **方法** | 營運嚴重度 ↔ P0–P3（P0=CRITICAL … P3=INFO）。每次 `recommend_severity` 記錄 AI 的 P、建議的 P 與自由文字原因。每月組合：統計升級／降級／維持；微調 ESC-DEFAULT 係數（有上下限）。 |
-| **資料** | `severity_feedback`；`escalation_routes.coefficients_json`；`platform_settings` 鍵 `severity.weights.applied.{YYYY-MM}`；稽核 `SEVERITY_RECOMMEND`／`MESSENGER_RECOMMEND_SEVERITY`／`SEVERITY_WEIGHTS_APPLY` |
-| **流程** | Messenger AI_REPORT 卡 → 選 P0–P3＋原因 → SQLite 回饋 → 升級路徑每月組合（套用 → ESC-DEFAULT）→ AI 績效唯讀鏡像 |
+| **方法** | 啟用因子加權和 → 分數 → P 分帶。值班：P0–P3＋原因代碼（＋選填備註）。每週 AI：增減／啟用因子、權重差、門檻微調 → CR。RO 決定 → 線上公式。 |
+| **資料** | `severity.formula.live`；`severity_feedback`（含 `reason_codes_json`、`week_key`）；`ai_change_requests` 實體 `SEVERITY_FORMULA`；每月組合仍用 `escalation_routes.coefficients_json` |
+| **流程** | 公式打成 P1 → Messenger 覆寫為 P2＋代碼 → 每週建議 → 升級路徑 RO 核准（`sev-formula-loop`）→ AI 績效唯讀鏡像 |
 
 ```mermaid
 flowchart LR
-  Card[AI_REPORT 卡 P0-P3＋原因] --> FB[severity_feedback]
-  FB --> Pack[每月權重建議]
-  Pack --> Esc[升級路徑套用]
-  Esc --> Coeff[ESC-DEFAULT coefficients_json]
-  Pack --> Perf[AI 績效唯讀]
+  Formula[線上嚴重度公式] --> Alert[警報打分如 P1]
+  Alert --> Card[AI_REPORT P0-P3＋原因代碼]
+  Card --> FB[severity_feedback week_key]
+  FB --> Week[每週公式建議]
+  Week --> CR[ai_change_requests SEVERITY_FORMULA]
+  CR --> RO[風險負責人核准]
+  RO --> Live[severity.formula.live]
+  FB --> Pack[每月升級係數]
+  Pack --> Esc[ESC-DEFAULT 套用]
+  Week --> Perf[AI 績效唯讀]
 ```
 
-**驗收（FR-39）：** 未結 AI_REPORT 上有互動嚴重度區（`msg-severity-recommend`）；`/admin/escalation` 有每月組合（`esc-severity-weight-pack`），`escalation.manage` 可套用；AI 績效顯示組合且無變更控件；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6／§16.15 · UAT-45。
+**驗收（FR-39）：** `/admin/escalation` 的 `sev-formula-loop` 顯示線上公式＋範例 P＋每週差異＋RO 核准；Messenger `msg-severity-recommend` 有原因代碼勾選；每週 CR 為 AI Engineer Maker／RO Checker；AI 績效鏡像每週組合；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6 · UAT-45／UAT-47。
 
 ---
 
@@ -494,5 +501,6 @@ flowchart LR
 | 1.11 | 2026-10-11 | §6.5 表格與 mermaid 流程擴充；交叉連結使用手冊 §14A／TSD §11A |
 | 1.12 | 2026-10-12 | FR-36 稽核變更覆蓋；FR-38 AI 績效評估儀表板（§6.6） |
 | 1.13 | 2026-10-13 | FR-39 AI 協助自 P0–P3 嚴重度回饋調整升級因子權重（§6.7）；UAT-45／UAT-46 |
+| 1.14 | 2026-10-14 | FR-39 主迴路（§6.7）：線上公式 → 值班原因代碼 → 每週 AI → RO 核准；UAT-47 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

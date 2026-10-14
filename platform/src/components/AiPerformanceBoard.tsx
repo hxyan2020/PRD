@@ -38,6 +38,8 @@ type EvalData = {
     severity_feedback_month?: number;
     severity_upgrades?: number;
     severity_downgrades?: number;
+    severity_formula_week_samples?: number;
+    severity_formula_pending?: number;
   };
   line_settings?: {
     line1_model: string;
@@ -116,6 +118,26 @@ type EvalData = {
     rated_by_name: string | null;
     created_at: string;
   }>;
+  severity_formula_weekly?: {
+    week_key: string;
+    sample_count: number;
+    upgrades: number;
+    downgrades: number;
+    rationale_en: string;
+    rationale_zh: string;
+    pending_status: string | null;
+    pending_request_id: string | null;
+    factor_changes: Array<{
+      id: string;
+      change: string;
+      en: string;
+      zh: string;
+      from_weight: number;
+      to_weight: number;
+      from_enabled: boolean;
+      to_enabled: boolean;
+    }>;
+  };
 };
 
 const COLORS = {
@@ -721,6 +743,65 @@ export function AiPerformanceBoard({ initial }: { initial: EvalData }) {
           />
         </section>
       </div>
+
+      <section className="panel p-4 space-y-3" data-testid="ai-perf-severity-formula">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <h2 className="font-semibold">
+              <EnZh
+                en="Weekly severity formula loop (read-only)"
+                zh="每週嚴重度公式迴路（唯讀）"
+              />
+            </h2>
+            <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">
+              {zh
+                ? initial.severity_formula_weekly?.rationale_zh ||
+                  "值班原因代碼彙總後，AI 建議增減因子與權重；風險負責人在升級路徑核准。"
+                : initial.severity_formula_weekly?.rationale_en ||
+                  "Ops reason codes aggregate weekly; AI suggests add/remove factors and weights — Risk Owner approves on Escalation Routes."}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <Badge>
+              <EnZh en="Week samples" zh="本週樣本" />{" "}
+              {k.severity_formula_week_samples ?? initial.severity_formula_weekly?.sample_count ?? 0}
+            </Badge>
+            {initial.severity_formula_weekly?.pending_status ? (
+              <Badge className="bg-amber-50 border-amber-200 text-amber-950">
+                {initial.severity_formula_weekly.pending_request_id ||
+                  initial.severity_formula_weekly.pending_status}
+              </Badge>
+            ) : null}
+            <Link className="btn !min-h-9 text-xs" href="/admin/escalation">
+              <EnZh en="Open formula loop (RO)" zh="開啟公式迴路（RO）" />
+            </Link>
+          </div>
+        </div>
+        <ul className="space-y-1 text-xs">
+          {(initial.severity_formula_weekly?.factor_changes || [])
+            .filter((c) => c.change !== "unchanged")
+            .slice(0, 8)
+            .map((c) => (
+              <li
+                key={c.id}
+                className="rounded border border-[var(--line)] bg-slate-50/80 px-2 py-1.5 flex flex-wrap justify-between gap-2"
+              >
+                <span>
+                  {zh ? c.zh : c.en} · {c.change}
+                </span>
+                <span className="font-mono">
+                  {c.from_enabled ? "on" : "off"}/{c.from_weight.toFixed(2)} →{" "}
+                  {c.to_enabled ? "on" : "off"}/{c.to_weight.toFixed(2)}
+                </span>
+              </li>
+            ))}
+          {!initial.severity_formula_weekly?.factor_changes?.some((c) => c.change !== "unchanged") ? (
+            <li className="text-[var(--muted)]">
+              <EnZh en="No factor diffs in the weekly pack yet." zh="每週組合尚無因子差異。" />
+            </li>
+          ) : null}
+        </ul>
+      </section>
 
       <section className="panel p-4 space-y-3" data-testid="ai-perf-severity-weights">
         <div className="flex flex-wrap items-start justify-between gap-2">

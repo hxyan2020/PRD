@@ -451,14 +451,16 @@ Same view gate as AI Admin overview: any of `ai.admin` · `ai.read` · `skills.m
 | `ai_accuracy_snapshots` | last 14 days (today refreshed live) |
 | `platform_settings` | line1 / line2 model + second-opinion severity badges |
 | `severity_feedback` + monthly pack | P0–P3 re-recommend counts; suggested escalation coefficients (read-only mirror of Escalation Routes pack) |
+| Weekly formula pack | `getWeeklyFormulaSuggestion` → `severity_formula_weekly` / `ai-perf-severity-formula` (read-only; RO approve only on Escalation) |
 
 ### 8A.5 UX / acceptance
 1. Left nav **AI Performance** under AI & knowledge.
 2. Board renders KPI strip + challenger / feedback / improve / training / history / recent lists (`data-testid="ai-performance-board"`).
 3. Panel `ai-perf-severity-weights` shows monthly P0–P3 → factor-weight suggestion (links to Escalation / Messenger; no apply button).
-4. No propose/approve controls on the page.
-5. Links to AI Admin and Realtime Alert & Tracker.
-6. EN / zh-Hant chrome via `EnZh` + page meta `ai-performance`.
+4. Panel `ai-perf-severity-formula` mirrors the weekly severity formula pack (factor diffs / CR status; no RO approve).
+5. No propose/approve controls on the page.
+6. Links to AI Admin and Realtime Alert & Tracker.
+7. EN / zh-Hant chrome via `EnZh` + page meta `ai-performance`.
 
 ---
 
@@ -541,25 +543,40 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 | `recommend` → `confirm_action` | Double-confirm control → admin_ref (+ checker if required) |
 
 ### 11.4 Data
-`messenger_threads`, `messenger_messages`, `messenger_pending_actions`, `severity_feedback` (P0–P3 re-recommendations; see `lib/severity-feedback.ts`). Monthly pack: `getMonthlyWeightSuggestion` → Escalation Routes apply → ESC-DEFAULT `coefficients_json`.
+`messenger_threads`, `messenger_messages`, `messenger_pending_actions`, `severity_feedback` (P0–P3 re-recommendations + reason codes / `week_key`; see `lib/severity-feedback.ts` + `lib/severity-formula.ts`). Live formula: `severity.formula.live`. Weekly CR: `ai_change_requests` `SEVERITY_FORMULA`. Monthly pack: `getMonthlyWeightSuggestion` → Escalation Routes apply → ESC-DEFAULT `coefficients_json`.
 
 ### 11.5 POC windows
 `getMessengerThread` returns `poc_windows` — one Lark chat per hop on the matched route (primary team → secondary → Risk Owner → Exec) with named POC from `users`/`teams`. UI: bird-eye path chips + split columns (`data-testid=msg-poc-windows`).
 
-### 11.6 P0–P3 severity re-recommend → monthly factor weights (FR-39)
+### 11.6 Severity formula optimisation loop + monthly escalation weights (FR-39)
+
+**Primary loop — live formula → ops reason codes → weekly AI → RO approve**
 
 | Item | Spec |
 |---|---|
-| UI | `LarkCardActions` block `msg-severity-recommend` on open AI_REPORT (P0–P3 chips, reason, submit) |
-| Action | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason }` |
-| Domain | `lib/severity-feedback.ts` — `submitSeverityRecommendation`, `getMonthlyWeightSuggestion`, `applyMonthlyWeightSuggestion` |
-| Table | `severity_feedback` (`ai_p`, `recommended_p`, `reason`, `month_key`, …) |
+| Live formula | `platform_settings` key `severity.formula.live` (`SeverityFormula`: factors, weights, P bands) |
+| Score | Client-safe `lib/severity-formula-score.ts` · catalogue `lib/severity-formula-shared.ts` · server `lib/severity-formula.ts` |
+| Ops UI | Messenger `msg-severity-recommend` + `msg-sev-reason-codes` on open AI_REPORT (P0–P3, reason-code checkboxes, optional note) |
+| Ops action | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` |
+| Feedback row | `severity_feedback` (+ `reason_codes_json`, `week_key`, `formula_version`, `formula_p`, `month_key`) |
+| Weekly AI | `getWeeklyFormulaSuggestion` / `proposeWeeklyFormulaChange` → enable/disable factors, weight deltas, threshold nudges |
+| CR | `ai_change_requests` entity `SEVERITY_FORMULA` · AI Engineer maker · Risk Owner checker (`ai.approve`) |
+| Escalation UI | `SeverityFormulaBoard` `sev-formula-loop` on `/admin/escalation` · Propose / `sev-formula-ro-approve` |
+| Apply | `decideChangeRequest` → `applySeverityFormulaPayload` → updates `severity.formula.live` |
+| AI Performance | Read-only weekly pack via `severity_formula_weekly` / `ai-perf-severity-formula` |
+| Guards | `npm run test:severity-formula` · `test:severity-formula-smoke` (plus monthly guards below) |
+
+**Secondary loop — monthly ESC-DEFAULT coefficient pack**
+
+| Item | Spec |
+|---|---|
+| Domain | `lib/severity-feedback.ts` — `getMonthlyWeightSuggestion`, `applyMonthlyWeightSuggestion` |
 | Escalation UI | `EscalationManager` panel `esc-severity-weight-pack`; apply → `POST /api/escalation` `apply_severity_weights` |
 | AI Performance | Read-only pack via `getAiPerformanceEval().severity_weight_pack` |
 | Mapping | P0=CRITICAL · P1=BREACH · P2=WARN · P3=INFO |
 | Guards | `npm run test:severity-feedback` · `test:severity-feedback-smoke` |
 
-AI suggests coefficients; only humans with `escalation.manage` apply them to ESC-DEFAULT. Apply is audited (`SEVERITY_WEIGHTS_APPLY`) and stamped in `platform_settings` as `severity.weights.applied.{YYYY-MM}`.
+Weekly formula changes require RO approval (maker ≠ checker). Monthly coefficients: AI suggests; only humans with `escalation.manage` apply to ESC-DEFAULT (`SEVERITY_WEIGHTS_APPLY`, stamp `severity.weights.applied.{YYYY-MM}`).
 
 ---
 
@@ -801,7 +818,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 `lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
 
-**AI-assisted factor weights (FR-39):** Demo Messenger AI_REPORT cards collect P0–P3 re-recommendations into `severity_feedback`. `getMonthlyWeightSuggestion()` builds a current→suggested coefficient pack for the calendar month. Escalation Routes shows the pack (`esc-severity-weight-pack`) and `apply_severity_weights` writes suggested values onto ESC-DEFAULT / `is_default` routes. AI Performance mirrors the pack read-only. See §11.6.
+**Severity formula loop (FR-39):** Live weighted formula scores alerts to P0–P3. Messenger AI_REPORT cards collect overrides + reason-code checkboxes into `severity_feedback`. Weekly AI proposes factor add/remove/weight retune as `SEVERITY_FORMULA` CRs; Risk Owner approves on Escalation (`sev-formula-loop`). Secondary: `getMonthlyWeightSuggestion()` → `esc-severity-weight-pack` / `apply_severity_weights` on ESC-DEFAULT. AI Performance mirrors both packs read-only. See §11.6.
 
 ### 16.16 Organisation
 
@@ -854,6 +871,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.10 | 2026-10-11 | §11A expanded: modules, data, seven methods, sequence flow, API |
 | 1.11 | 2026-10-12 | §8A AI Performance evaluation board; §16.19 audit coverage guards |
 | 1.12 | 2026-10-13 | §11.6 / §16.15 FR-39 P0–P3 severity feedback → monthly escalation factor weights |
+| 1.13 | 2026-10-14 | §11.6 / §16.15 FR-39 primary loop: live formula → ops reason codes → weekly AI → RO approve (`SEVERITY_FORMULA`) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

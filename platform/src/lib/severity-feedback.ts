@@ -86,12 +86,29 @@ export function ensureSeverityFeedbackSchema(db: Database.Database = getDb()) {
     CREATE INDEX IF NOT EXISTS idx_severity_feedback_month ON severity_feedback(month_key);
     CREATE INDEX IF NOT EXISTS idx_severity_feedback_created ON severity_feedback(created_at);
   `);
+  // Extended columns for formula loop (reason checkboxes + weekly pack).
+  const cols = db.prepare(`PRAGMA table_info(severity_feedback)`).all() as Array<{ name: string }>;
+  const names = new Set(cols.map((c) => c.name));
+  if (!names.has("reason_codes_json")) db.exec(`ALTER TABLE severity_feedback ADD COLUMN reason_codes_json TEXT`);
+  if (!names.has("week_key")) db.exec(`ALTER TABLE severity_feedback ADD COLUMN week_key TEXT`);
+  if (!names.has("formula_version")) db.exec(`ALTER TABLE severity_feedback ADD COLUMN formula_version TEXT`);
+  if (!names.has("formula_p")) db.exec(`ALTER TABLE severity_feedback ADD COLUMN formula_p INTEGER`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_severity_feedback_week ON severity_feedback(week_key)`);
 }
 
-function monthKey(d = new Date()): string {
+export function monthKey(d = new Date()): string {
   const y = d.getUTCFullYear();
   const m = String(d.getUTCMonth() + 1).padStart(2, "0");
   return `${y}-${m}`;
+}
+
+function isoWeekKey(d = new Date()): string {
+  const date = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  const day = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  return `${date.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`;
 }
 
 function feedbackId() {
@@ -110,9 +127,13 @@ export type SeverityFeedbackRow = {
   recommended_p: number;
   recommended_ops: string;
   reason: string;
+  reason_codes_json?: string | null;
   rated_by: number | null;
   rated_by_name: string | null;
   month_key: string;
+  week_key?: string | null;
+  formula_version?: string | null;
+  formula_p?: number | null;
   created_at: string;
 };
 
@@ -124,25 +145,44 @@ export function submitSeverityRecommendation(input: {
   ai_severity: string;
   recommended_p: SeverityP;
   reason: string;
+  reason_codes?: string[];
+  formula_version?: string | null;
+  formula_p?: number | null;
   actor: { id?: number | null; name: string };
 }): SeverityFeedbackRow {
   ensureSeverityFeedbackSchema();
   const db = getDb();
-  const reason = input.reason.trim();
-  if (!reason || reason.length < 3) throw new Error("Reason required (min 3 chars)");
+  const codes = Array.isArray(input.reason_codes)
+    ? input.reason_codes.map((c) => String(c)).filter(Boolean)
+    : [];
+  const reason = input.reason.trim() || codes.join(", ");
+  if ((!reason || reason.length < 3) && codes.length === 0) {
+    throw new Error("Reason or reason codes required");
+  }
+  if (reason.length > 0 && reason.length < 3 && codes.length === 0) {
+    throw new Error("Reason required (min 3 chars)");
+  }
   if (![0, 1, 2, 3].includes(input.recommended_p)) throw new Error("recommended_p must be 0–3");
 
   const ai_p = opsSeverityToP(input.ai_severity);
   const recommended_ops = pToOpsSeverity(input.recommended_p);
   const id = feedbackId();
   const mk = monthKey();
+  const wk = isoWeekKey();
+  const reasonText =
+    reason.length >= 3
+      ? reason
+      : codes.length
+        ? `Reason codes: ${codes.join(", ")}`
+        : reason;
 
   const info = db
     .prepare(
       `INSERT INTO severity_feedback
         (feedback_id, thread_id, thread_code, analysis_id, alert_id, ai_severity, ai_p,
-         recommended_p, recommended_ops, reason, rated_by, rated_by_name, month_key)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+         recommended_p, recommended_ops, reason, reason_codes_json, rated_by, rated_by_name,
+         month_key, week_key, formula_version, formula_p)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       id,
@@ -154,10 +194,14 @@ export function submitSeverityRecommendation(input: {
       ai_p,
       input.recommended_p,
       recommended_ops,
-      reason,
+      reasonText,
+      codes.length ? JSON.stringify(codes) : null,
       input.actor.id ?? null,
       input.actor.name,
-      mk
+      mk,
+      wk,
+      input.formula_version ?? null,
+      input.formula_p ?? null
     );
 
   writeAudit(input.actor, "SEVERITY_RECOMMEND", "severity_feedback", id, {
@@ -165,7 +209,9 @@ export function submitSeverityRecommendation(input: {
     ai_p,
     recommended_p: input.recommended_p,
     recommended_ops,
-    reason,
+    reason: reasonText,
+    reason_codes: codes,
+    week_key: wk,
     thread_id: input.thread_id,
   });
 

@@ -688,6 +688,7 @@ export function messengerAction(input: {
   pending_id?: number;
   recommended_p?: number;
   reason?: string;
+  reason_codes?: string[] | string;
   user_id?: number | null;
   locale?: UiLocale;
 }) {
@@ -942,10 +943,23 @@ export function messengerAction(input: {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { opsSeverityToP, submitSeverityRecommendation } =
       require("@/lib/severity-feedback") as typeof import("@/lib/severity-feedback");
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { DEMO_ALERT_OBSERVATIONS, getLiveSeverityFormula, scoreSeverityFormula } =
+      require("@/lib/severity-formula") as typeof import("@/lib/severity-formula");
     const recommended_p = Number(input.recommended_p);
     if (![0, 1, 2, 3].includes(recommended_p)) throw new Error("recommended_p must be 0–3");
     const reason = String(input.reason || input.text || "").trim();
-    if (reason.length < 3) throw new Error("Reason required");
+    const reason_codes = Array.isArray(input.reason_codes)
+      ? (input.reason_codes as unknown[]).map((c) => String(c))
+      : typeof input.reason_codes === "string"
+        ? String(input.reason_codes)
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [];
+    if (reason.length < 3 && reason_codes.length === 0) throw new Error("Reason or reason codes required");
+    const live = getLiveSeverityFormula();
+    const scored = scoreSeverityFormula(live, DEMO_ALERT_OBSERVATIONS);
     const row = submitSeverityRecommendation({
       thread_id: thread.id,
       thread_code: thread.thread_id,
@@ -954,19 +968,27 @@ export function messengerAction(input: {
       ai_severity: thread.severity,
       recommended_p: recommended_p as 0 | 1 | 2 | 3,
       reason,
+      reason_codes,
+      formula_version: live.version,
+      formula_p: scored.p,
       actor: { id: input.user_id ?? null, name: input.user_name },
     });
     const aiP = opsSeverityToP(thread.severity);
     const dir =
       recommended_p < aiP ? (zh ? "升級" : "upgrade") : recommended_p > aiP ? (zh ? "降級" : "downgrade") : zh ? "維持" : "confirm";
+    const codeLine = reason_codes.length
+      ? zh
+        ? `原因代碼：${reason_codes.join("、")}`
+        : `Reason codes: ${reason_codes.join(", ")}`
+      : "";
     addMessage(
       db,
       thread.id,
       "SYSTEM",
       input.user_name,
       zh
-        ? `🎚️ 嚴重度重推薦：AI P${aiP}（${thread.severity}）→ 建議 P${recommended_p}（${row.recommended_ops}）［${dir}］\n原因：${reason}\n已記入本月因子權重學習；可於升級路徑檢視每月建議。`
-        : `🎚️ Severity re-recommend: AI P${aiP} (${thread.severity}) → suggested P${recommended_p} (${row.recommended_ops}) [${dir}]\nReason: ${reason}\nLogged for monthly factor-weight learning — see Escalation Routes for the pack.`,
+        ? `🎚️ 嚴重度重推薦：公式／AI P${aiP}（${thread.severity}，${live.version}）→ 值班建議 P${recommended_p}（${row.recommended_ops}）［${dir}］\n${codeLine}\n備註：${reason || "—"}\n已記入每週嚴重度公式學習；可於升級路徑檢視並由 RO 核准。`
+        : `🎚️ Severity re-recommend: formula/AI P${aiP} (${thread.severity}, ${live.version}) → ops suggested P${recommended_p} (${row.recommended_ops}) [${dir}]\n${codeLine}\nNote: ${reason || "—"}\nLogged for weekly severity-formula learning — Escalation Routes → RO approve.`,
       {
         poc_step: hop,
         severity_feedback_id: row.feedback_id,
@@ -974,12 +996,16 @@ export function messengerAction(input: {
         recommended_p,
         recommended_ops: row.recommended_ops,
         reason,
+        reason_codes,
+        formula_version: live.version,
+        formula_p: scored.p,
       }
     );
     writeAudit({ name: input.user_name }, "MESSENGER_RECOMMEND_SEVERITY", "messenger_thread", thread.thread_id, {
       feedback_id: row.feedback_id,
       recommended_p,
       reason,
+      reason_codes,
     });
     return getMessengerThread(thread.id);
   }

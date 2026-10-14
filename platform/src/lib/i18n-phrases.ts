@@ -780,8 +780,25 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "降級至 P2 — 單次 tick 尖峰，帳簿於 3 分鐘內恢復。",
   "Raise to P2 — recurring pattern on this symbol this week.":
     "提高至 P2 — 本週此商品反覆出現相同型態。",
+  "Ops 24/7: one-off spike, book recovered — formula P1 too hot.":
+    "24/7 值班：單次尖峰且帳簿已恢復 — 公式 P1 過重。",
+  "Copy contagion underestimated — should be P0.":
+    "跟單傳染被低估 — 應為 P0。",
+  "Overnight soft-limit breach missed by formula.":
+    "公式漏判隔夜軟限額突破。",
+  "Wrong cohort scope — B-book only, not firm-wide.":
+    "族群範圍不對 — 僅 B-book，非全公司。",
+  "Recurring pattern this week — raise to P2.":
+    "本週反覆出現 — 提高至 P2。",
   "No severity feedback this month — nothing to apply":
     "本月尚無嚴重度回饋 — 無可套用",
+  "No severity feedback this week — nothing to propose":
+    "本週尚無嚴重度回饋 — 無可提案",
+  "Reason or reason codes required": "須填原因或勾選原因代碼",
+  "Propose failed": "提案失敗",
+  "Decide failed": "核准／駁回失敗",
+  "Maker/checker: proposer cannot approve their own change":
+    "Maker／Checker：提案人不可核准自己的變更",
   "Reason required (min 3 chars)": "須填原因（至少 3 字）",
   "Reason required": "須填原因",
   "recommended_p must be 0–3": "recommended_p 必須為 0–3",

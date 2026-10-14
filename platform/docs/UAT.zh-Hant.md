@@ -9,11 +9,11 @@
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- 全包建議時窗約 **9 小時**（46 案）。
+- 全包建議時窗約 **9 小時**（47 案）。
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、P0–P3 嚴重度重推薦、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、未知風險探索、即時警報與追蹤、風險領域、AI 管理、AI 績效（唯讀評估含每月 P0–P3→權重組合）、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT · 每月嚴重度權重組合）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾；每次管理／Lark 變更＋失敗登入）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、P0–P3 嚴重度重推薦＋原因代碼、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、未知風險探索、即時警報與追蹤、風險領域、AI 管理、AI 績效（唯讀評估含每週嚴重度公式＋每月 P0–P3→權重組合）、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（嚴重度公式迴路 · 維度 × 係數 · ESC-DEFAULT · 每月嚴重度權重組合）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾；每次管理／Lark 變更＋失敗登入）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
@@ -74,7 +74,8 @@ graph TD
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | 公開快照 — 登入可用並維持 demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — 結案後重新整理仍保持關閉 | Demo Messenger |
 | 45 | UAT-45 | 484m | 12m | High | Risk + AI | UAT-33 or UAT-37; open AI_REPORT thread | P0–P3 嚴重度重推薦匯入每月因子權重組合 | Demo Messenger, Escalation Routes, AI Performance |
-| 46 | UAT-46 | 496m | 15m | Critical | Risk Owner | UAT-01–45 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
+| 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45; Escalation formula loop seeded | 嚴重度公式迴路：值班原因代碼 → 每週 AI → RO 核准 | Demo Messenger, Escalation Routes, AI Admin, AI Performance |
+| 47 | UAT-46 | 508m | 15m | Critical | Risk Owner | UAT-01–45 and UAT-47 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
 
 ## 逐步案例
 
@@ -728,7 +729,7 @@ graph TD
 1. 開啟升級路徑。
 2. 確認列以維度定義（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）並可編輯係數 — 不是自由文字「路徑」名稱欄。
 3. 找到 `ESC-DEFAULT`（未匹配／特殊事件兜底）與至少一條已啟用、含 SLA 的非預設路徑。
-4. 確認每月嚴重度權重組合面板存在（完整 P0–P3 回饋迴路見 UAT-45）。
+4. 確認每月嚴重度權重組合面板存在（每月 P0–P3→權重見 UAT-45；每週公式→RO 見 UAT-47）。
 5. 與 UAT-09 的 ESCALATION 氣泡比對，路徑代碼／團隊精神應相符。
 
 **通過：** ESC-DEFAULT 存在；至少一條維度路徑含係數＋SLA；無「路徑」名稱欄；每月權重組合面板可見；與 Messenger 升級文字相符。
@@ -873,9 +874,26 @@ graph TD
 **通過：** Messenger 接受 P0–P3＋原因；升級路徑顯示每月組合（套用可選）；AI 績效唯讀鏡像。
 **證據：** Messenger 嚴重度區、升級路徑每月組合、AI 績效嚴重度面板截圖。
 
+### UAT-47 — 嚴重度公式迴路：值班原因代碼 → 每週 AI → RO 核准
+
+- **嚴重度：** High · **負責：** Ops + Risk Owner + AI · **依賴：** UAT-45; Escalation formula loop seeded · **建議：** T+496m / 12m
+- **涵蓋：** Demo Messenger, Escalation Routes, AI Admin, AI Performance
+- **為何測：** 公式分到的 P 必須可由 24/7 值班更正；AI 只能在風險負責人核准後改公式。
+- **目的：** 在 Messenger 將公式 P1 覆寫為 P2 並勾選原因；在升級路徑確認每週公式差異並由 RO 核准待審 CR。
+
+**步驟**
+
+1. 開啟升級路徑。確認 `sev-formula-loop`：線上公式對範例警報打分（如 P1）、每週組合列出因子啟停／權重變更，並顯示 PENDING CR（或點**提案每週公式**）。
+2. 開啟示範 Messenger → 未結 AI_REPORT。在重新推薦嚴重度選 P2，勾至少一個原因代碼（如單次尖峰），選填備註後送出。
+3. 回到升級路徑。本週樣本／原因代碼直方應反映覆寫。以風險負責人點**RO 核准並套用**（Maker 須為 AI Engineer，不可是自己）。
+4. 確認線上公式版本更新，且 AI 績效每週公式面板唯讀鏡像（該頁無核准按鈕）。
+
+**通過：** 接受原因代碼；RO 核准每週 CR；線上公式版本變更；AI 績效唯讀鏡像。
+**證據：** Messenger 原因代碼、升級路徑 `sev-formula-loop` 核准前後、AI 績效每週面板截圖。
+
 ### UAT-46 — 風險負責人退出簽核
 
-- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–45 results recorded · **建議：** T+496m / 15m
+- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–45 and UAT-47 results recorded · **建議：** T+508m / 15m
 - **涵蓋：** UAT Checklist, Audit Log
 - **為何測：** 在有權的人寫下 ACCEPT／ACCEPT WITH WAIVERS／REJECT 之前，UAT 不算結束。
 - **目的：** 依退出規則統計 Critical／High，並存簽署決策。
@@ -884,7 +902,7 @@ graph TD
 
 1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
-3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）通過或豁免。
+3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）通過或豁免。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 

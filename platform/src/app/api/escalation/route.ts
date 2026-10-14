@@ -11,6 +11,11 @@ import {
   getMonthlyWeightSuggestion,
   listSeverityFeedback,
 } from "@/lib/severity-feedback";
+import {
+  getLiveSeverityFormula,
+  getWeeklyFormulaSuggestion,
+  proposeWeeklyFormulaChange,
+} from "@/lib/severity-formula";
 
 function isDefaultRoute(row: {
   is_default?: number | null;
@@ -45,6 +50,14 @@ export async function GET(req: Request) {
       recent_feedback: listSeverityFeedback(20, month),
     });
   }
+  if (url.searchParams.get("severity_formula") === "1") {
+    const week = url.searchParams.get("week") || undefined;
+    return NextResponse.json({
+      live: getLiveSeverityFormula(),
+      weekly: getWeeklyFormulaSuggestion(week),
+      recent_feedback: listSeverityFeedback(20),
+    });
+  }
   const routes = db
     .prepare(
       `SELECT r.*,
@@ -75,6 +88,19 @@ export async function POST(req: Request) {
         actor: user,
         month: body.month,
       });
+      return NextResponse.json({ ok: true, suggestion });
+    } catch (e) {
+      return NextResponse.json(
+        { error: e instanceof Error ? e.message : String(e) },
+        { status: 400 }
+      );
+    }
+  }
+
+  if (body.action === "propose_severity_formula") {
+    try {
+      // Always propose as AI Engineer (maker) so Risk Owner can checker-approve.
+      const suggestion = proposeWeeklyFormulaChange({ week: body.week });
       return NextResponse.json({ ok: true, suggestion });
     } catch (e) {
       return NextResponse.json(
