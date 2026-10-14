@@ -10,6 +10,7 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, phrase, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { THINKING_ACTIONS, thinkingSteps } from "@/lib/messenger/thinking";
+import { SEVERITY_REASON_CODES } from "@/lib/severity-formula";
 
 const ACTION_I18N: Record<string, { en: string; "zh-Hant": string; descEn: string; descZh: string }> = {
   BLOCK_ACCOUNT: {
@@ -250,10 +251,11 @@ function LarkCardActions({
   onEvidence: () => void;
   onDismiss: () => void;
   onRecommend: (code: string) => void;
-  onRecommendSeverity: (recommended_p: number, reason: string) => void;
+  onRecommendSeverity: (recommended_p: number, reason: string, reason_codes: string[]) => void;
 }) {
   const [sevP, setSevP] = useState<number | null>(null);
   const [sevReason, setSevReason] = useState("");
+  const [sevCodes, setSevCodes] = useState<string[]>([]);
   const aiP =
     aiSeverity === "CRITICAL" ? 0 : aiSeverity === "BREACH" ? 1 : aiSeverity === "WARN" ? 2 : 3;
   const levels = [
@@ -262,6 +264,7 @@ function LarkCardActions({
     { p: 2, tone: "border-amber-300 bg-amber-50 text-amber-950", en: "P2", zh: "P2" },
     { p: 3, tone: "border-slate-300 bg-slate-50 text-slate-800", en: "P3", zh: "P3" },
   ];
+  const canSubmitSev = sevP != null && (sevCodes.length > 0 || sevReason.trim().length >= 3);
 
   return (
     <div className="mt-3 border-t border-amber-200/80 pt-2.5 space-y-2.5" data-testid="msg-lark-card-actions">
@@ -358,6 +361,36 @@ function LarkCardActions({
               </button>
             ))}
           </div>
+          <div className="space-y-1.5" data-testid="msg-sev-reason-codes">
+            <div className="text-[11px] font-semibold text-[var(--muted)]">
+              {t("msg.severityReasonCodes", locale)}
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {SEVERITY_REASON_CODES.map((code) => {
+                const on = sevCodes.includes(code.id);
+                return (
+                  <button
+                    key={code.id}
+                    type="button"
+                    disabled={busy}
+                    onClick={() =>
+                      setSevCodes((prev) =>
+                        on ? prev.filter((x) => x !== code.id) : [...prev, code.id]
+                      )
+                    }
+                    className={`btn !min-h-8 !px-2 text-[11px] ${
+                      on
+                        ? "border-indigo-300 bg-indigo-50 text-indigo-950 ring-1 ring-indigo-400"
+                        : "border-[var(--line)] bg-white text-slate-700"
+                    }`}
+                    data-testid={`msg-sev-code-${code.id}`}
+                  >
+                    {locale === "zh-Hant" ? code.zh : code.en}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <label className="block text-[11px] font-semibold text-[var(--muted)]">
             {t("msg.severityReason", locale)}
             <textarea
@@ -373,11 +406,12 @@ function LarkCardActions({
             <button
               type="button"
               className="btn btn-primary !min-h-10 text-xs"
-              disabled={busy || sevP == null || sevReason.trim().length < 3}
+              disabled={busy || !canSubmitSev}
               onClick={() => {
                 if (sevP == null) return;
-                onRecommendSeverity(sevP, sevReason.trim());
+                onRecommendSeverity(sevP, sevReason.trim(), sevCodes);
                 setSevReason("");
+                setSevCodes([]);
               }}
               data-testid="msg-sev-submit"
             >
@@ -606,8 +640,8 @@ export function DemoMessenger({
         onEvidence={() => void run("show_evidence")}
         onDismiss={() => void run("dismiss")}
         onRecommend={(code) => void run("recommend", { action_code: code })}
-        onRecommendSeverity={(recommended_p, reason) =>
-          void run("recommend_severity", { recommended_p, reason })
+        onRecommendSeverity={(recommended_p, reason, reason_codes) =>
+          void run("recommend_severity", { recommended_p, reason, reason_codes })
         }
       />
     ) : null;
@@ -909,13 +943,16 @@ export function DemoMessenger({
         } else if (action === "recommend_severity") {
           const p = Number(extra.recommended_p ?? 2);
           const reason = String(extra.reason || "").trim();
+          const codes = Array.isArray(extra.reason_codes)
+            ? (extra.reason_codes as string[])
+            : [];
           appendLocal(
             "SYSTEM",
             actorVisitor,
             zh
-              ? `🎚️ 嚴重度重推薦：建議 P${p}\n原因：${reason}\n（靜態示範 — 正式環境會寫入每月權重學習）`
-              : `🎚️ Severity re-recommend: suggested P${p}\nReason: ${reason}\n(Static demo — live mode writes monthly weight learning.)`,
-            { recommended_p: p, reason }
+              ? `🎚️ 嚴重度重推薦：建議 P${p}\n原因代碼：${codes.join("、") || "—"}\n備註：${reason || "—"}\n（靜態示範 — 正式環境會寫入每週公式學習）`
+              : `🎚️ Severity re-recommend: suggested P${p}\nReason codes: ${codes.join(", ") || "—"}\nNote: ${reason || "—"}\n(Static demo — live mode writes weekly formula learning.)`,
+            { recommended_p: p, reason, reason_codes: codes }
           );
         } else if (action !== "sync") {
           appendLocal(

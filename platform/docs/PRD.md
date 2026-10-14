@@ -232,7 +232,7 @@ graph LR
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 | FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
 | FR-38 | AI Performance evaluation dashboard | `/admin/ai-performance` read-only board: skill match, challenger agree/partial/disagree, human feedback labels, how-to-improve counts, training accuracy/F1, 14-day snapshots; `GET /api/ai-performance`; EN/zh-Hant; link from AI Admin |
-| FR-39 | P0–P3 severity re-recommend on Lark AI incident | Demo Messenger AI_REPORT card: desk re-recommends P0–P3 + reason → `severity_feedback`; monthly pack suggests escalation factor weights on `/admin/escalation` (apply → ESC-DEFAULT); surfaced read-only on AI Performance |
+| FR-39 | P0–P3 severity formula optimisation loop | Live weighted formula assigns P0–P3; 24/7 ops corrects on AI_REPORT with reason-code checkboxes → weekly AI formula recommend (add/remove factors, retune weights) → Risk Owner approves via `ai_change_requests`; plus monthly escalation coefficient pack |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -347,26 +347,33 @@ flowchart TD
 
 **Acceptance (FR-38):** left-nav **AI Performance**; board shows skill / challenger / feedback / training KPIs; read-only (no CR forms); `GET /api/ai-performance` + `GET /api/ai-admin?tab=performance`; EN + zh-Hant chrome. Operator: User Guide §8.2A · Build: TSD §8A.
 
-### 6.7 AI-assisted escalation factor weights (P0–P3 feedback) — methods, data, flow
+### 6.7 Severity formula optimisation + escalation weights (P0–P3) — methods, data, flow
 
-Operators re-label monitor-incident severity on the Lark-style AI report; AI aggregates those labels monthly into suggested **escalation dimension coefficients** (severity, involved teams, risk scenario, pending time, need-human). Humans still apply the pack — AI never silently rewrites routes.
+**Primary loop (formula):** a live weighted formula scores an alert into P0–P3. 24/7 ops on the Lark AI incident card overrides the P and ticks **reason codes** (overweight magnitude, missed contagion, one-off spike, …). AI aggregates weekly into a new formula (enable/disable factors, retune weights, adjust P bands) and opens an `ai_change_requests` row; **Risk Owner** approves or rejects (maker ≠ checker).
+
+**Secondary loop (routing):** the same feedback also feeds a monthly **escalation dimension coefficient** pack on ESC-DEFAULT (apply with `escalation.manage`).
 
 | Layer | Detail |
 |---|---|
-| **Methods** | Map ops severity ↔ P0–P3 (P0=CRITICAL … P3=INFO). On each `recommend_severity`, store AI P vs recommended P + free-text reason. Monthly pack: count upgrades / downgrades / confirms; nudge ESC-DEFAULT coefficients (clamped). |
-| **Data** | `severity_feedback`; `escalation_routes.coefficients_json`; `platform_settings` key `severity.weights.applied.{YYYY-MM}`; audit `SEVERITY_RECOMMEND` / `MESSENGER_RECOMMEND_SEVERITY` / `SEVERITY_WEIGHTS_APPLY` |
-| **Flow** | Messenger AI_REPORT card → pick P0–P3 + reason → SQLite feedback → Escalation Routes monthly pack (apply → ESC-DEFAULT) → AI Performance read-only mirror |
+| **Methods** | Weighted sum of enabled factors → score → P bands. Ops: P0–P3 + reason codes (+ optional note). Weekly AI: add/remove/enable factors, weight deltas, threshold nudges → CR. RO decide → live formula. |
+| **Data** | `severity.formula.live` setting; `severity_feedback` (+ `reason_codes_json`, `week_key`); `ai_change_requests` entity `SEVERITY_FORMULA`; monthly pack still uses `escalation_routes.coefficients_json` |
+| **Flow** | Formula scores alert P1 → Messenger override to P2 + codes → weekly recommend → RO approve on Escalation (`sev-formula-loop`) → AI Performance read-only mirror |
 
 ```mermaid
 flowchart LR
-  Card[AI_REPORT card P0-P3 + reason] --> FB[severity_feedback]
-  FB --> Pack[Monthly weight suggestion]
-  Pack --> Esc[Escalation Routes apply]
-  Esc --> Coeff[ESC-DEFAULT coefficients_json]
-  Pack --> Perf[AI Performance read-only]
+  Formula[Live severity formula] --> Alert[Alert scored e.g. P1]
+  Alert --> Card[AI_REPORT P0-P3 + reason codes]
+  Card --> FB[severity_feedback week_key]
+  FB --> Week[Weekly formula suggestion]
+  Week --> CR[ai_change_requests SEVERITY_FORMULA]
+  CR --> RO[Risk Owner approve]
+  RO --> Live[severity.formula.live]
+  FB --> Pack[Monthly escalation coeffs]
+  Pack --> Esc[ESC-DEFAULT apply]
+  Week --> Perf[AI Performance read-only]
 ```
 
-**Acceptance (FR-39):** interactive severity block on open AI_REPORT (`msg-severity-recommend`); monthly pack on `/admin/escalation` (`esc-severity-weight-pack`) with apply when `escalation.manage`; AI Performance shows pack without mutation; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 / §16.15 · UAT-45.
+**Acceptance (FR-39):** `sev-formula-loop` on `/admin/escalation` shows live formula + sample P + weekly diffs + RO approve; Messenger `msg-severity-recommend` has reason-code checkboxes; weekly CR uses AI Engineer maker / RO checker; AI Performance mirrors weekly pack; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 · UAT-45 / UAT-47.
 
 ---
 

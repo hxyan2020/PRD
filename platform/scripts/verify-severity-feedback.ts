@@ -50,8 +50,9 @@ const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /msg\.severityRecommend/);
 assert.match(i18n, /重新推薦嚴重度/);
 assert.match(i18n, /每月 P0–P3→因子權重組合/);
-assert.match(i18n, /P0–P3 嚴重度重推薦（匯入每月因子權重）/);
-assert.match(i18n, /每月 P0–P3 嚴重度權重組合（套用 → ESC-DEFAULT）/);
+assert.match(i18n, /msg\.severityReasonCodes/);
+assert.match(i18n, /嚴重度公式迴路/);
+assert.match(i18n, /公式迴路＋RO 核准/);
 
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /P0–P3 嚴重度重推薦/);
@@ -70,18 +71,19 @@ assert.match(aiPerfUi, /P0–P3 嚴重度重推薦 → 每月因子權重/);
 const ug = read("docs/USER_GUIDE.md");
 assert.match(ug, /Re-recommend severity \(P0–P3\)/);
 assert.match(ug, /monthly severity weight pack/);
-assert.match(ug, /AI-assisted factor weights/);
+assert.match(ug, /Severity formula loop \+ factor weights/);
 const ugZh = read("docs/USER_GUIDE.zh-Hant.md");
 assert.match(ugZh, /重新推薦嚴重度（P0–P3）/);
-assert.match(ugZh, /AI 協助調整因子權重/);
+assert.match(ugZh, /嚴重度公式迴路＋因子權重/);
 
 const prd = read("docs/PRD.md");
 assert.match(prd, /FR-39/);
-assert.match(prd, /### 6\.7 AI-assisted escalation factor weights/);
+assert.match(prd, /### 6\.7 Severity formula optimisation/);
 assert.match(prd, /UAT-45/);
+assert.match(prd, /UAT-47/);
 const prdZh = read("docs/PRD.zh-Hant.md");
 assert.match(prdZh, /FR-39/);
-assert.match(prdZh, /### 6\.7 AI 協助調整升級因子權重/);
+assert.match(prdZh, /### 6\.7 嚴重度公式優化/);
 
 const tsd = read("docs/TSD.md");
 assert.match(tsd, /recommend_severity/);

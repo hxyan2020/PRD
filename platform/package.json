@@ -17,6 +17,8 @@
     "test:ai-performance-smoke": "tsx scripts/smoke-ai-performance.ts",
     "test:severity-feedback": "tsx scripts/verify-severity-feedback.ts",
     "test:severity-feedback-smoke": "tsx scripts/smoke-severity-feedback.ts",
+    "test:severity-formula": "tsx scripts/verify-severity-formula.ts",
+    "test:severity-formula-smoke": "tsx scripts/smoke-severity-formula.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {

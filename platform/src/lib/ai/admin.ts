@@ -385,12 +385,17 @@ export function getAiPerformanceEval() {
     )
     .all();
 
-  // Lazy require — severity-feedback imports db helpers.
+  // Lazy require — severity-feedback / formula import db helpers.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { getMonthlyWeightSuggestion, listSeverityFeedback, seedSeverityFeedbackIfEmpty } =
     require("@/lib/severity-feedback") as typeof import("@/lib/severity-feedback");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { getWeeklyFormulaSuggestion, seedSeverityFormulaLoop } =
+    require("@/lib/severity-formula") as typeof import("@/lib/severity-formula");
   seedSeverityFeedbackIfEmpty(db);
+  seedSeverityFormulaLoop(db);
   const severityWeightPack = getMonthlyWeightSuggestion();
+  const severityFormulaWeekly = getWeeklyFormulaSuggestion();
   const recentSeverityFeedback = listSeverityFeedback(10, severityWeightPack.month_key);
 
   return {
@@ -410,10 +415,13 @@ export function getAiPerformanceEval() {
       severity_feedback_month: severityWeightPack.sample_count,
       severity_upgrades: severityWeightPack.upgrades,
       severity_downgrades: severityWeightPack.downgrades,
+      severity_formula_week_samples: severityFormulaWeekly.sample_count,
+      severity_formula_pending: severityFormulaWeekly.pending_status === "PENDING" ? 1 : 0,
     },
     recent_training: recentTraining,
     recent_feedback: recentFeedback,
     severity_weight_pack: severityWeightPack,
+    severity_formula_weekly: severityFormulaWeekly,
     recent_severity_feedback: recentSeverityFeedback,
   };
 }
@@ -474,7 +482,12 @@ export function proposeChange(input: {
   return { id: Number(info.lastInsertRowid), request_id: requestId };
 }
 
-function applyChange(entityType: string, action: string, payload: Record<string, unknown>) {
+function applyChange(
+  entityType: string,
+  action: string,
+  payload: Record<string, unknown>,
+  actor?: Actor
+) {
   const db = getDb();
   if (entityType === "PARAM" && action === "UPDATE") {
     const key = String(payload.key || "");
@@ -623,6 +636,15 @@ function applyChange(entityType: string, action: string, payload: Record<string,
     return applyDiscoveryPromote(payload);
   }
 
+  if (entityType === "SEVERITY_FORMULA" && action === "UPDATE") {
+    // Lazy require avoids circular import with severity-formula ↔ admin.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { applySeverityFormulaPayload } =
+      require("@/lib/severity-formula") as typeof import("@/lib/severity-formula");
+    const applied = applySeverityFormulaPayload(payload, actor || { id: null, name: "ai_change_apply" });
+    return { applied: "severity_formula", version: applied.version };
+  }
+
   throw new Error(`Unsupported change ${entityType}/${action}`);
 }
 
@@ -664,7 +686,7 @@ export function decideChangeRequest(input: {
   let applied: Record<string, unknown> | null = null;
   if (input.decision === "APPROVED") {
     const payload = JSON.parse(row.payload_json || "{}") as Record<string, unknown>;
-    applied = applyChange(row.entity_type, row.action, payload);
+    applied = applyChange(row.entity_type, row.action, payload, input.actor);
   }
 
   db.prepare(

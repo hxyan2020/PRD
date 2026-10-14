@@ -502,7 +502,7 @@ graph TD
 | **Escalate** | Moves Primary → Secondary → Risk Owner → Exec along the route |
 | **Dismiss** | False alarm. Closes the thread and the alert |
 | **Close (accept AI)** | Accepts the analysis and closes the ticket |
-| **Re-recommend severity (P0–P3)** | On the AI incident report card: pick P0–P3, give a reason. Logged for monthly factor-weight learning (see Escalation Routes) |
+| **Re-recommend severity (P0–P3)** | On the AI incident report card: pick P0–P3, tick why the formula/AI P is wrong (reason codes), optional note. Feeds weekly formula recommend + monthly escalation weight pack (Escalation Routes → RO approve) |
 | **Recommended actions** | Block user, halt trading, cut max leverage, pre-widen spreads, pause copy joining |
 | **Double-confirm…** then **Yes, send to Vantage admin** | Creates an admin reference + link (often Interventions) |
 | **Checker approve (go live)** | When the system says a checker is required |
@@ -544,7 +544,7 @@ graph TD
 
 **What it is.** Paths are defined by **dimensions** (severity, involved teams, risk scenario, pending time, need human intervention) with editable **coefficients**. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** route code; unbound skills fall back to ESC-DEFAULT. There is **no separate Path name column** — the route code plus dimensions identify the path.
 
-**AI-assisted factor weights.** Desk re-recommendations of P0–P3 on Messenger AI reports feed a **monthly severity weight pack** on this page. The platform suggests coefficient nudges; a human with manage rights applies them to ESC-DEFAULT.
+**Severity formula loop + factor weights.** At the top of this page, `sev-formula-loop` shows the **live weighted formula** (sample alert scored e.g. P1), ops reason-code taxonomy, and the **weekly AI formula recommendation** (enable/disable factors, retune weights). Risk Owner approves the pending `SEVERITY_FORMULA` change request (AI Engineer is maker). Below that, the **monthly severity weight pack** still nudges ESC-DEFAULT escalation coefficients for humans with manage rights.
 
 **What you see.** Route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled. The monthly pack panel shows: month key, sample / upgrade / downgrade counts, current → suggested coefficients for each dimension, recent feedback reasons, and **Apply to ESC-DEFAULT**.
 

@@ -194,8 +194,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   escalation: {
     title: { en: "Escalation Routes", "zh-Hant": "升級路徑" },
     subtitle: {
-      en: "Severity → team → SLA; catch-all ESC-DEFAULT; each skill binds one path; monthly P0–P3 severity weight pack from Messenger feedback (apply → ESC-DEFAULT). Used by Demo Messenger and Lark notify.",
-      "zh-Hant": "嚴重度 → 團隊 → SLA；兜底 ESC-DEFAULT；每個技能綁定一條路徑；來自 Messenger 回饋的每月 P0–P3 嚴重度權重組合（套用 → ESC-DEFAULT）。供示範 Messenger 與 Lark 通知使用。",
+      en: "Severity formula loop (live factors → ops reason codes → weekly AI recommend → RO approve) plus routes, ESC-DEFAULT, and monthly escalation weight pack.",
+      "zh-Hant": "嚴重度公式迴路（線上因子 → 值班原因代碼 → 每週 AI 建議 → RO 核准），加上升級路徑、ESC-DEFAULT 與每月升級權重組合。",
     },
   },
   departments: {
@@ -335,19 +335,23 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "重新推薦嚴重度（P0–P3）",
   },
   "msg.severityRecommendHint": {
-    en: "Override the AI incident severity for learning. Reasons feed monthly factor-weight suggestions on Escalation Routes.",
-    "zh-Hant": "覆寫 AI 事故嚴重度供學習。理由會匯入升級路徑的每月因子權重建議。",
+    en: "24/7 ops: if the formula/AI P is wrong, pick the correct P and tick why. Feeds the weekly severity-formula recommendation for Risk Owner approval.",
+    "zh-Hant": "24/7 值班：若公式／AI 的 P 不準，選正確 P 並勾選原因。匯入每週嚴重度公式建議，供風險負責人核准。",
   },
-  "msg.severityReason": { en: "Reason for severity change", "zh-Hant": "嚴重度變更原因" },
+  "msg.severityReasonCodes": {
+    en: "Why is the severity inaccurate?",
+    "zh-Hant": "嚴重度為何不準？",
+  },
+  "msg.severityReason": { en: "Optional note", "zh-Hant": "選填備註" },
   "msg.severityReasonPh": {
-    en: "Why should this be P0 / P1 / P2 / P3?",
-    "zh-Hant": "為何應為 P0／P1／P2／P3？",
+    en: "Anything else for the weekly formula review?",
+    "zh-Hant": "還有什麼要給每週公式覆核？",
   },
   "msg.severitySubmit": { en: "Submit severity feedback", "zh-Hant": "送出嚴重度回饋" },
-  "msg.severityAiLabel": { en: "AI severity", "zh-Hant": "AI 嚴重度" },
+  "msg.severityAiLabel": { en: "Formula / AI severity", "zh-Hant": "公式／AI 嚴重度" },
   "msg.severityEscLink": {
-    en: "Monthly weight pack → Escalation",
-    "zh-Hant": "每月權重組合 → 升級路徑",
+    en: "Formula loop + RO approve → Escalation",
+    "zh-Hant": "公式迴路＋RO 核准 → 升級路徑",
   },
   "msg.groupCritical": { en: "Critical controls", "zh-Hant": "關鍵管制" },
   "msg.groupControl": { en: "Risk controls", "zh-Hant": "風險控制" },
