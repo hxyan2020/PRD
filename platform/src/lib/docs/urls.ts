@@ -9,18 +9,34 @@ export type UrlEntry = {
 /** Permanent GitHub Pages URL for CRMP Admin (`/admin`). */
 export const PUBLIC_ADMIN_URL = "https://hxyan2020.github.io/PRD/crmp-admin/admin/";
 export const PUBLIC_ADMIN_ORIGIN = "https://hxyan2020.github.io/PRD/crmp-admin";
+/** Permanent GitHub Pages URL for the crypto-exchange desk (`/exchange`). */
+export const PUBLIC_EXCHANGE_URL = `${PUBLIC_ADMIN_ORIGIN}/exchange/`;
 export const PUBLIC_MESSENGER_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/messenger/`;
 
 export const PLATFORM_URLS: UrlEntry[] = [
   // Auth
   { category: "Auth", title: "Login", path: "/login", description: "Full-page credential login (bookmark). Prefer /admin/login from the desk." },
   { category: "Auth", title: "Admin Login", path: "/admin/login", description: "Sign in inside the admin shell — never 404s on GitHub Pages" },
+  {
+    category: "Auth",
+    title: "Crypto Exchange Login",
+    path: `${PUBLIC_EXCHANGE_URL}login/`,
+    description: "Sign in inside the crypto-exchange desk shell on GitHub Pages",
+  },
   { category: "API", title: "Auth Login", path: "/api/auth/login", description: "POST email/password → session cookie" },
   { category: "API", title: "Auth Me", path: "/api/auth/me", description: "GET current session user" },
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },
 
   // Home
   { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
+  {
+    category: "Home",
+    title: "Crypto Exchange Admin Home",
+    path: PUBLIC_EXCHANGE_URL,
+    description:
+      "Permanent GitHub Pages desk for crypto-exchange demos — parallel to /admin, no Vantage logo/wording, CFD broker framing scrubbed; original /admin unchanged",
+    permission: "admin.access",
+  },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },

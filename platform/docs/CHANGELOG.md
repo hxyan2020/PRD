@@ -2,6 +2,8 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-14T12:05:00.000Z | Crypto-exchange desk assigned to public GitHub Pages URL `https://hxyan2020.github.io/PRD/crmp-admin/exchange/` |
+| 2026-10-14T11:30:00.000Z | Parallel crypto-exchange admin mount `/exchange` (no logo, no Vantage Markets chrome, CFD→exchange copy scrub); existing `/admin` unchanged |
 | 2026-10-14T04:40:00.000Z | FR-40 zh-Hant parity polish: UAT-48 dependency/covers 繁中、URL catalog phrases、interactive UAT board `dependency_zh`/`covers_zh` |
 | 2026-10-14T04:30:00.000Z | Indicator aggregation linear flow `/admin/indicator-aggregation` (FR-40 / PRD §6.8 / UG §14B / TSD §11.7 / UAT-48): single alert → skill/RAG → membership → wait window → RO single or aggregate; EN+zh-Hant docs parity |
 | 2026-10-12T18:50:00.000Z | Audit mutation coverage (every admin/Lark/messenger path + LOGIN_FAILED; test:audit guards) + AI Performance eval board `/admin/ai-performance` (FR-38 / TSD §8A / UG §8.2A); docs parity UG/PRD/TSD/UAT/Roadmap/Ecosystem/Open Issues/Progress/URLs EN+zh-Hant |
