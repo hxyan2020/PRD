@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL } from "@/lib/docs/urls";
+import {
+  PLATFORM_URLS,
+  PUBLIC_ADMIN_URL,
+  PUBLIC_EXCHANGE_URL,
+  PUBLIC_MESSENGER_URL,
+} from "@/lib/docs/urls";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { OwnerIdentityPanel } from "@/components/OwnerIdentityPanel";
@@ -48,6 +53,15 @@ export default async function UrlsCatalogPage() {
         <p className="mt-2">
           <a className="text-teal-900 underline break-all" href={PUBLIC_ADMIN_URL}>
             {PUBLIC_ADMIN_URL}
+          </a>
+        </p>
+        <p className="mt-2">
+          <a
+            className="text-teal-900 underline break-all"
+            href={PUBLIC_EXCHANGE_URL}
+            data-testid="urls-public-exchange"
+          >
+            {PUBLIC_EXCHANGE_URL}
           </a>
         </p>
         <p className="mt-2">

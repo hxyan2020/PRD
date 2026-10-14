@@ -72,6 +72,7 @@ jobs:
           {
             echo "Permanent URLs"
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
+            echo "- https://hxyan2020.github.io/PRD/crmp-admin/exchange/"
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/discovery/"
             echo "- https://hxyan2020.github.io/PRD/risk-discovery/"
             echo "- https://hxyan2020.github.io/PRD/risk-discovery/risk_discovery.ipynb"

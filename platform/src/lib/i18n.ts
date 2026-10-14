@@ -453,8 +453,8 @@ const UI: Record<string, Pair> = {
   "urls.data": { en: "Data / tables", "zh-Hant": "資料／資料表" },
   "urls.inbox": { en: "Demo inbox", "zh-Hant": "示範收件匣" },
   "urls.publicNote": {
-    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. Permanent GitHub Pages URL: https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark messenger demo: https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
-    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。永久 GitHub Pages 網址：https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark Messenger 示範：https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
+    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. Permanent GitHub Pages: https://hxyan2020.github.io/PRD/crmp-admin/admin/ · crypto-exchange desk: https://hxyan2020.github.io/PRD/crmp-admin/exchange/ · Lark messenger: https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
+    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。永久 GitHub Pages：https://hxyan2020.github.io/PRD/crmp-admin/admin/ · 加密交易所台面：https://hxyan2020.github.io/PRD/crmp-admin/exchange/ · Lark Messenger：https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
   },
   "urls.cheat": {
     en: "Demo Messenger actions: show_evidence · chat · escalate · dismiss · close · recommend → double-confirm → Vantage admin ref · checker_approve when required.",

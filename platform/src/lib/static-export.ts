@@ -28,6 +28,7 @@ export function publicApiPath(path: string) {
 
 export const PUBLIC_ADMIN_ORIGIN = "https://hxyan2020.github.io/PRD/crmp-admin";
 export const PUBLIC_ADMIN_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/`;
+export const PUBLIC_EXCHANGE_URL = `${PUBLIC_ADMIN_ORIGIN}/exchange/`;
 export const PUBLIC_MESSENGER_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/messenger/`;
 
 export function publicBasePath() {
@@ -43,6 +44,15 @@ export function publicAdminHref(path = "/admin/") {
   let pathname = hashIdx >= 0 ? suffix.slice(0, hashIdx) : suffix;
   if (isStaticExport() && !pathname.endsWith("/")) pathname += "/";
   return `${base}${pathname}${hash}`;
+}
+
+/** Pages-safe href under the crypto-exchange mount (`/exchange…`). */
+export function publicExchangeHref(path = "/exchange/") {
+  let suffix = path.startsWith("/") ? path : `/${path}`;
+  if (!suffix.startsWith("/exchange")) {
+    suffix = suffix === "/" ? "/exchange/" : `/exchange${suffix}`;
+  }
+  return publicAdminHref(suffix);
 }
 
 export async function readSearchParams<T extends Record<string, string | undefined>>(

@@ -2,10 +2,12 @@ import Link from "next/link";
 import AdminHomePage from "../admin/page";
 import { EnZh } from "@/components/EnZh";
 import { EXCHANGE_MOUNT } from "@/lib/admin-mount";
+import { PUBLIC_EXCHANGE_URL } from "@/lib/static-export";
 
 /**
  * Crypto-exchange home — reuses the live admin desk data/widgets, with a
- * crypto-first banner. Vantage logo / CFD chrome are stripped by ExchangeMountGuards.
+ * crypto-first banner. Broker logo / CFD chrome are stripped by ExchangeMountGuards.
+ * Canonical public URL is the GitHub Pages snapshot.
  */
 export default async function ExchangeHomePage(props: {
   searchParams?: Promise<{ dummy?: string }>;
@@ -24,9 +26,18 @@ export default async function ExchangeHomePage(props: {
         </h1>
         <p className="text-sm text-teal-950 max-w-3xl">
           <EnZh
-            en="This is a parallel copy of the CRMP admin at /exchange — no broker logo and no CFD-broker branding. Use this mount for crypto-exchange demos. The original /admin desk is unchanged."
-            zh="這是 CRMP 管理後台在 /exchange 的平行副本 — 無券商標誌、無 CFD 券商品牌文案。供加密交易所示範。原 /admin 台面未改動。"
+            en="Permanent public desk on GitHub Pages — no broker logo and no CFD-broker branding. The original /admin desk is unchanged."
+            zh="永久公開台面（GitHub Pages）— 無券商標誌、無 CFD 券商品牌文案。原 /admin 台面未改動。"
           />
+        </p>
+        <p className="text-sm">
+          <a
+            className="text-teal-900 underline break-all font-medium"
+            href={PUBLIC_EXCHANGE_URL}
+            data-testid="exchange-public-url"
+          >
+            {PUBLIC_EXCHANGE_URL}
+          </a>
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
           <Link className="btn btn-primary !min-h-9 text-xs" href={`${EXCHANGE_MOUNT}/dashboard`}>

@@ -40,10 +40,21 @@ assert.match(layout, /ExchangeAdminShell/);
 const home = read("src/app/exchange/page.tsx");
 assert.match(home, /Crypto Exchange Risk Control Plane/);
 assert.match(home, /加密交易所風險控制平面/);
+assert.match(home, /PUBLIC_EXCHANGE_URL/);
+assert.match(home, /exchange-public-url/);
 
 const login = read("src/app/exchange/login/page.tsx");
 assert.match(login, /exchange-login/);
 assert.doesNotMatch(login, /VantageLogo/);
+
+const urls = read("src/lib/docs/urls.ts");
+assert.match(urls, /PUBLIC_EXCHANGE_URL/);
+assert.match(urls, /PUBLIC_ADMIN_ORIGIN\}\/exchange\//);
+assert.match(urls, /path: PUBLIC_EXCHANGE_URL/);
+
+const staticExport = read("src/lib/static-export.ts");
+assert.match(staticExport, /PUBLIC_EXCHANGE_URL/);
+assert.match(staticExport, /publicExchangeHref/);
 
 for (const rel of [
   "src/app/exchange/dashboard/page.tsx",
