@@ -8,13 +8,13 @@ d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/css/cae071b8c3557322.css","style"]
-0:{"P":null,"b":"Xgpc6VtwXUDgT4BPHJaQi","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/cae071b8c3557322.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","yky9IyN6RSP-mXrobMQFB",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+0:{"P":null,"b":"CMxYjt-nhvqdApDiGBKLO","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/cae071b8c3557322.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","9w81mte0JXKCfHQl1EfMx",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
 e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-f7631973f6246d74.js","4415","static/chunks/4415-d0640f85c2aad52e.js","7581","static/chunks/app/admin/layout-23ea2af3f6431575.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 04:15:42"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 04:15:42"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T04:15:42.589Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 04:15:42"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-14 07:45:42"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 04:15:42"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 04:15:42"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T04:21:54.167Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-14 07:51:54"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 04:21:54"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 04:21:54"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
 f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"Badge"]
 10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],""]
 11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"DocArticleView"]
-12:Tc427,# CRMP User Guide
+12:Tca3b,# CRMP User Guide
 
 **Document ID:** CRMP-UG-001 · **Audience:** anyone who opens the admin desk  
 **Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
@@ -400,12 +400,13 @@ sequenceDiagram
 | How-to-improve | Open vs satisfied review counts |
 | Training quality | Recent runs with accuracy, precision / recall / F1, samples |
 | P0–P3 → factor weights | Monthly severity re-recommendations from Messenger AI reports; current → suggested escalation coefficients (read-only) |
+| Weekly severity formula | Read-only mirror of the weekly formula pack (factor enable/disable / weight diffs, pending CR status) — approve only on Escalation Routes |
 | 14-day snapshots | Skill / human / feedback rates per day |
 | Recent lists | Latest analyses + feedback ratings |
 
-**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. Open **Escalation Routes** to apply the monthly weight pack (this page never applies it). Open **Demo Messenger** to add more P0–P3 feedback. This page itself has no propose / approve forms.
+**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. Open **Escalation Routes** to RO-approve the weekly formula CR or apply the monthly weight pack (this page never applies either). Open **Demo Messenger** to add more P0–P3 + reason-code feedback. This page itself has no propose / approve forms.
 
-**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. The severity-weight panel shows sample / upgrade / downgrade counts for the month. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests or apply coefficients.
+**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. The severity-weight panel shows sample / upgrade / downgrade counts for the month; the weekly formula panel mirrors Escalation’s pack without RO buttons. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests or apply coefficients.
 
 ### 8.3 AI Skills — `/admin/skills`
 
@@ -544,7 +545,7 @@ graph TD
   DC --> Admin[Admin ref]
 ```
 
-**How AI helps adjust factor weights.** After you submit P0–P3 feedback on an AI report card, the reason is stored for the calendar month. Escalation Routes aggregates upgrades vs downgrades and suggests new dimension coefficients. Applying the pack is a human action on `/admin/escalation` (see §9.4) — not automatic.
+**How AI helps adjust the severity formula and factor weights.** After you submit P0–P3 feedback with reason-code checkboxes on an AI report card, the row is stored with a `week_key` (and month key). Weekly, AI recommends a new scoring formula (add/remove factors, retune weights, nudge P bands) for Risk Owner approval. The same feedback also feeds a monthly escalation-dimension coefficient pack. Both apply actions are human-owned on `/admin/escalation` (see §9.4) — not automatic.
 
 ### 9.3 Lark Integration — `/admin/lark`
 
@@ -560,27 +561,40 @@ graph TD
 
 **What it is.** Paths are defined by **dimensions** (severity, involved teams, risk scenario, pending time, need human intervention) with editable **coefficients**. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** route code; unbound skills fall back to ESC-DEFAULT. There is **no separate Path name column** — the route code plus dimensions identify the path.
 
-**Severity formula loop + factor weights.** At the top of this page, `sev-formula-loop` shows the **live weighted formula** (sample alert scored e.g. P1), ops reason-code taxonomy, and the **weekly AI formula recommendation** (enable/disable factors, retune weights). Risk Owner approves the pending `SEVERITY_FORMULA` change request (AI Engineer is maker). Below that, the **monthly severity weight pack** still nudges ESC-DEFAULT escalation coefficients for humans with manage rights.
+**Severity formula loop + factor weights.** At the top of this page, `sev-formula-loop` shows the full optimisation chain:
 
-**What you see.** Route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled. The monthly pack panel shows: month key, sample / upgrade / downgrade counts, current → suggested coefficients for each dimension, recent feedback reasons, and **Apply to ESC-DEFAULT**.
+1. **Live formula scores** a sample alert (e.g. P1 · BREACH).  
+2. **24/7 ops** on Messenger overrides to another P and ticks **reason codes** (overweight magnitude, one-off spike, missed contagion, …).  
+3. **Weekly aggregate** counts samples / upgrades / downgrades and the reason-code histogram.  
+4. **AI new formula** lists factor enable/disable and weight diffs (and P-band nudges).  
+5. **Risk Owner** approves or rejects the pending `SEVERITY_FORMULA` change request (AI Engineer is maker — not the same user).
+
+Below that, the **monthly severity weight pack** still nudges ESC-DEFAULT escalation coefficients for humans with manage rights.
+
+**What you see.** Formula loop board (`sev-formula-loop`): live factors + sample score, weekly rationale, factor diffs, RO Approve / Reject (when PENDING), recent ops overrides. Route list: route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled. Monthly pack panel: month key, sample / upgrade / downgrade counts, current → suggested coefficients, recent feedback reasons, **Apply to ESC-DEFAULT**.
 
 **What to click.**
 
-1. Create/edit/disable routes if you have manage rights (localhost). Edit dimension coefficients by hand when needed.  
-2. Confirm the catch-all default exists. On Skills, confirm each playbook binds exactly one path.  
-3. Review the monthly pack rationale. When samples > 0 and it is not yet applied, click **Apply to ESC-DEFAULT** (audit: `SEVERITY_WEIGHTS_APPLY`).  
-4. Use the links back to Messenger (add more P0–P3 feedback) or AI Performance (read-only mirror).
+1. Review `sev-formula-loop`. If no PENDING CR and samples > 0, **Propose weekly formula (AI maker)** (needs `ai.propose` or escalation manage).  
+2. As Risk Owner (`ai.approve`), click **RO approve & apply** (or Reject). Confirm live formula version / weights update.  
+3. Create/edit/disable routes if you have manage rights (localhost). Edit dimension coefficients by hand when needed. Confirm ESC-DEFAULT exists; on Skills each playbook binds exactly one path.  
+4. Review the monthly pack rationale. When samples > 0 and it is not yet applied, click **Apply to ESC-DEFAULT** (audit: `SEVERITY_WEIGHTS_APPLY`).  
+5. Use the links back to Messenger (add more P0–P3 + reason codes) or AI Performance (read-only mirror — no approve there).
 
 **P0–P3 mapping (same as Messenger card):** P0 = CRITICAL · P1 = BREACH · P2 = WARN · P3 = INFO.
 
-**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code. Severity feedback from Messenger shows upgrade/downgrade counts and a current → suggested coefficient row. After apply, the pack badge shows Applied.
+**Good looks like.** Sample alert lands on a clear P under the live formula. Weekly pack shows factor diffs and a PENDING / APPROVED CR id. After RO approve, live weights match the suggested formula. CRITICAL has a tighter SLA than WARN; unmatched events still resolve via ESC-DEFAULT. Monthly pack shows upgrade/downgrade counts; after apply, the badge shows Applied.
 
 ```mermaid
 flowchart LR
-  Msg[Messenger P0-P3 feedback] --> Month[Monthly pack]
-  Month --> Review[Human reviews deltas]
-  Review -->|Apply| EscDefault[ESC-DEFAULT coefficients]
-  Month --> Perf[AI Performance mirror]
+  Formula[Live formula] --> Alert[Alert scored e.g. P1]
+  Alert --> Msg[Messenger P0-P3 + reason codes]
+  Msg --> Week[Weekly AI formula]
+  Week --> CR[SEVERITY_FORMULA CR]
+  CR -->|RO approve| Live[severity.formula.live]
+  Msg --> Month[Monthly pack]
+  Month -->|Apply| EscDefault[ESC-DEFAULT coefficients]
+  Week --> Perf[AI Performance mirror]
 ```
 
 ```mermaid
@@ -706,10 +720,10 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | Knowledge Tree | Domains, skills, RAG document leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
-| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, P0–P3→weights pack, 14-day accuracy |
-| Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls |
+| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, weekly formula + P0–P3→weights packs, 14-day accuracy |
+| Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend + reason codes, controls |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
-| Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; monthly P0–P3 weight pack; skill binds one path |
+| Response | Escalation Routes | Severity formula loop (weekly AI → RO); dimensions × coefficients; ESC-DEFAULT; monthly P0–P3 weight pack; skill binds one path |
 | Response | Lark Integration | Channel registry |
 | Organisation | BU and Teams | Combined BU RACI + nested on-call teams (`/admin/departments`) |
 | Organisation | Users | Directory, including demo platform owner / haixiang.yan@hytechc.com |
@@ -806,9 +820,10 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 | 1.13 | 2026-10-12 | §11.3 audit coverage — every admin/Lark mutation + failed login |
 | 1.14 | 2026-10-12 | §8.2A AI Performance evaluation board; audit coverage note + verify scripts |
 | 1.15 | 2026-10-13 | §8.2A / §9.2 / §9.4 AI-assisted P0–P3 severity feedback → monthly factor weights (FR-39) |
+| 1.16 | 2026-10-14 | §8.2A / §9.2 / §9.4 primary severity formula loop: live formula → ops reason codes → weekly AI → RO approve |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
-13:Tb892,# CRMP 使用手冊
+13:Tbeca,# CRMP 使用手冊
 
 **文件編號：** CRMP-UG-001 · **對象：** 任何會打開管理後台的人  
 **語言：** 繁體中文（本頁）· [English](/admin/docs/user-guide?lang=en)  
@@ -1194,12 +1209,13 @@ sequenceDiagram
 | 如何改進 | 開放 vs 滿意審查數 |
 | 訓練品質 | 近期執行含準確率、精確率／召回率／F1、樣本數 |
 | P0–P3 → 因子權重 | 來自 Messenger AI 報告的本月嚴重度重推薦；目前 → 建議升級係數（唯讀） |
+| 每週嚴重度公式 | 每週公式組合的唯讀鏡像（因子啟停／權重差、待審 CR 狀態）— 僅在升級路徑核准 |
 | 14 日快照 | 每日技能／人工／回饋比率 |
 | 最近清單 | 最新分析＋回饋評分 |
 
-**要點什麼。** 開啟 AI 管理以排隊訓練或評分分析（Maker≠Checker）。開啟即時警報與追蹤查看即時包。開啟**升級路徑**以套用每月權重組合（本頁從不套用）。開啟**示範 Messenger** 以新增 P0–P3 回饋。本頁本身沒有提案／核准表單。
+**要點什麼。** 開啟 AI 管理以排隊訓練或評分分析（Maker≠Checker）。開啟即時警報與追蹤查看即時包。開啟**升級路徑**以由 RO 核准每週公式 CR 或套用每月權重組合（本頁從不套用）。開啟**示範 Messenger** 以新增 P0–P3＋原因代碼回饋。本頁本身沒有提案／核准表單。
 
-**怎樣算正常。** KPI 來自 SQLite（或種子示範資料）。你為分析標籤或跑挑戰後，挑戰者一致率與回饋準確率會變動。Viewer／具 `ai.read` 的角色可開啟看板；仍不能核准 AI 管理變更單。
+**怎樣算正常。** KPI 來自 SQLite（或種子示範資料）。你為分析標籤或跑挑戰後，挑戰者一致率與回饋準確率會變動。嚴重度權重面板顯示當月樣本／升級／降級計數；每週公式面板鏡像升級路徑組合且無 RO 按鈕。Viewer／具 `ai.read` 的角色可開啟看板；仍不能核准 AI 管理變更單或套用係數。
 
 ### 8.3 AI 技能 — `/admin/skills`
 
@@ -1337,7 +1353,7 @@ graph TD
   DC --> Admin[管理參照]
 ```
 
-**AI 如何協助調整因子權重。** 在 AI 報告卡送出 P0–P3 回饋後，原因會記入當月。升級路徑彙總升級 vs 降級並建議新的維度係數。套用組合是 `/admin/escalation` 上的人類動作（見 §9.4）— 不會自動改。
+**AI 如何協助調整嚴重度公式與因子權重。** 在 AI 報告卡送出 P0–P3 回饋並勾選原因代碼後，列會帶 `week_key`（與月份鍵）入庫。每週 AI 推薦新打分公式（增減因子、調整權重、微調 P 分帶）供風險負責人核准；同一批回饋也匯入每月升級維度係數組合。兩種套用都是 `/admin/escalation` 上的人類動作（見 §9.4）— 不會自動改。
 
 ### 9.3 Lark 整合 — `/admin/lark`
 
@@ -1353,27 +1369,40 @@ graph TD
 
 **這頁是什麼。** 路徑由**維度**定義（嚴重度、涉入團隊、風險情境、待處理時間、是否需人工干預），各因子有可編輯**係數**。示範 Messenger **升級** 跟這張地圖走。每個警報一定有路徑：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。每個技能綁定**一條**路徑代碼；未綁定者回落 ESC-DEFAULT。**已移除獨立「路徑」名稱欄** — 以路徑代碼＋維度識別。
 
-**嚴重度公式迴路＋因子權重。** 本頁頂部 `sev-formula-loop` 顯示**線上加權公式**（範例警報如打成 P1）、值班原因代碼，以及**每週 AI 公式建議**（啟停因子、調整權重）。風險負責人核准待審的 `SEVERITY_FORMULA` 變更申請（AI Engineer 為 Maker）。下方**每月嚴重度權重組合**仍微調 ESC-DEFAULT 升級係數，由具管理權者套用。
+**嚴重度公式迴路＋因子權重。** 本頁頂部 `sev-formula-loop` 顯示完整優化鏈：
 
-**會看到什麼。** 路徑代碼（含 `ESC-DEFAULT`）、維度欄位、係數編輯、團隊、頻道、SLA、預設旗標、啟用。每月組合面板顯示：月份、樣本／升級／降級數、各維度目前 → 建議係數、近期回饋原因，以及**套用至 ESC-DEFAULT**。
+1. **線上公式打分**範例警報（如 P1 · BREACH）。  
+2. **24/7 值班**在 Messenger 覆寫為另一個 P，並勾選**不准原因代碼**（幅度過重、單次尖峰、漏判傳染…）。  
+3. **每週彙總**樣本／升級／降級與原因代碼直方。  
+4. **AI 新公式**列出因子啟停與權重差（以及 P 分帶微調）。  
+5. **風險負責人**核准或駁回待審 `SEVERITY_FORMULA` 變更申請（AI Engineer 為 Maker — 不可同一人）。
+
+下方**每月嚴重度權重組合**仍微調 ESC-DEFAULT 升級係數，由具管理權者套用。
+
+**會看到什麼。** 公式迴路板（`sev-formula-loop`）：線上因子＋範例分數、每週說明、因子差異、RO 核准／駁回（PENDING 時）、近期值班覆寫。路徑清單：路徑代碼（含 `ESC-DEFAULT`）、維度欄位、係數編輯、團隊、頻道、SLA、預設旗標、啟用。每月組合面板：月份、樣本／升級／降級數、目前 → 建議係數、近期回饋原因、**套用至 ESC-DEFAULT**。
 
 **要點什麼。**
 
-1. 有管理權可在 localhost 新增／編輯／停用；必要時手改維度係數。  
-2. 確認兜底預設存在；在技能頁確認每個劇本只綁一條路徑。  
-3. 閱讀每月組合說明；樣本 > 0 且尚未套用時點**套用至 ESC-DEFAULT**（稽核：`SEVERITY_WEIGHTS_APPLY`）。  
-4. 連回 Messenger（再加 P0–P3 回饋）或 AI 績效（唯讀鏡像）。
+1. 檢視 `sev-formula-loop`。若無 PENDING CR 且樣本 > 0，點**提案每週公式（AI Maker）**（需 `ai.propose` 或升級管理權）。  
+2. 以風險負責人（`ai.approve`）點**RO 核准並套用**（或駁回）。確認線上公式版本／權重更新。  
+3. 有管理權可在 localhost 新增／編輯／停用；必要時手改維度係數。確認 ESC-DEFAULT 存在；技能頁每個劇本只綁一條路徑。  
+4. 閱讀每月組合說明；樣本 > 0 且尚未套用時點**套用至 ESC-DEFAULT**（稽核：`SEVERITY_WEIGHTS_APPLY`）。  
+5. 連回 Messenger（再加 P0–P3＋原因代碼）或 AI 績效（唯讀鏡像 — 該頁無核准）。
 
 **P0–P3 對應（與 Messenger 卡相同）：** P0 = CRITICAL · P1 = BREACH · P2 = WARN · P3 = INFO。
 
-**怎樣算正常。** CRITICAL 的 SLA 比 WARN 緊。未匹配事件仍經 ESC-DEFAULT 落地。技能頁沒有自由文字「路徑」欄 — 只有綁定的路徑代碼。Messenger 嚴重度回饋顯示升級／降級數與目前 → 建議係數列。套用後組合徽章顯示已套用。
+**怎樣算正常。** 範例警報在線上公式下有清楚的 P。每週組合顯示因子差異與 PENDING／APPROVED CR。RO 核准後線上權重與建議公式一致。CRITICAL 的 SLA 比 WARN 緊；未匹配事件仍經 ESC-DEFAULT 落地。每月組合顯示升級／降級數；套用後徽章顯示已套用。
 
 ```mermaid
 flowchart LR
-  Msg[Messenger P0-P3 回饋] --> Month[每月組合]
-  Month --> Review[人類審視差值]
-  Review -->|套用| EscDefault[ESC-DEFAULT 係數]
-  Month --> Perf[AI 績效鏡像]
+  Formula[線上公式] --> Alert[警報打分如 P1]
+  Alert --> Msg[Messenger P0-P3＋原因代碼]
+  Msg --> Week[每週 AI 公式]
+  Week --> CR[SEVERITY_FORMULA CR]
+  CR -->|RO 核准| Live[severity.formula.live]
+  Msg --> Month[每月組合]
+  Month -->|套用| EscDefault[ESC-DEFAULT 係數]
+  Week --> Perf[AI 績效鏡像]
 ```
 
 ```mermaid
@@ -1499,10 +1528,10 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | AI 與知識 | 知識樹 | 領域、技能、RAG 文件葉＋深連結 |
 | AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖／人工閘道 — `propose_rag` |
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
-| AI 與知識 | AI 績效 | 唯讀評估：技能匹配、挑戰者、回饋、訓練、P0–P3→權重組合、14 日準確率 |
-| 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、P0–P3 嚴重度重推薦、控制 |
+| AI 與知識 | AI 績效 | 唯讀評估：技能匹配、挑戰者、回饋、訓練、每週公式＋P0–P3→權重組合、14 日準確率 |
+| 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、P0–P3 嚴重度重推薦＋原因代碼、控制 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
-| 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；每月 P0–P3 權重組合；技能綁一條 |
+| 應變 | 升級路徑 | 嚴重度公式迴路（每週 AI → RO）；維度 × 係數；ESC-DEFAULT；每月 P0–P3 權重組合；技能綁一條 |
 | 應變 | Lark 整合 | 頻道登錄 |
 | 組織 | BU 與團隊 | 合併 BU RACI＋嵌套值班團隊（`/admin/departments`） |
 | 組織 | 使用者 | 目錄，含 demo platform owner／haixiang.yan@hytechc.com |
@@ -1599,6 +1628,7 @@ flowchart LR
 | 1.13 | 2026-10-12 | §11.3 稽核覆蓋 — 每次管理／Lark 變更＋失敗登入 |
 | 1.14 | 2026-10-12 | §8.2A AI 績效評估看板；稽核覆蓋說明＋驗證腳本 |
 | 1.15 | 2026-10-13 | §8.2A／§9.2／§9.4 AI 協助自 P0–P3 嚴重度回饋調整因子權重（FR-39） |
+| 1.16 | 2026-10-14 | §8.2A／§9.2／§9.4 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 5:["$","div",null,{"children":[["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Operator handbook · EN / 繁中"}]]}],["$","p",null,{"className":"text-sm text-[var(--muted)]","children":"Plain-English how-to for every left-nav page: login, unread badges, monitor, AI, messenger, org, settings and docs."}],["$","div",null,{"className":"action-row","children":[["$","$L10","/admin/messenger",{"className":"btn","href":"/admin/messenger","children":"Messenger"}],["$","$L10","/admin/alerts",{"className":"btn","href":"/admin/alerts","children":"Realtime Alert & Tracker"}],["$","$L10","/admin/ai-admin",{"className":"btn","href":"/admin/ai-admin","children":"AI Admin"}],["$","$L10","/admin/market-intel",{"className":"btn","href":"/admin/market-intel","children":"Market Intel"}],["$","$L10","/admin/discovery",{"className":"btn","href":"/admin/discovery","children":"Risk Discovery"}],["$","$L10","/admin/docs/uat",{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10","/admin/docs/urls",{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],["$","$L11",null,{"docId":"USER_GUIDE","markdownEn":"$12","markdownZh":"$13"}]]}]
