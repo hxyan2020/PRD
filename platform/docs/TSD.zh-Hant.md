@@ -447,14 +447,16 @@ sequenceDiagram
 | `ai_accuracy_snapshots` | 最近 14 日（當日即時刷新） |
 | `platform_settings` | 一線／二線模型＋第二意見嚴重度徽章 |
 | `severity_feedback`＋每月組合 | P0–P3 重推薦計數；建議升級係數（升級路徑組合之唯讀鏡像） |
+| 每週公式組合 | `getWeeklyFormulaSuggestion` → `severity_formula_weekly`／`ai-perf-severity-formula`（唯讀；RO 核准僅在升級路徑） |
 
 ### 8A.5 UX／驗收
 1. 左側導覽 **AI 績效**（AI 與知識）。
 2. 看板渲染 KPI 列＋挑戰者／回饋／改進／訓練／歷史／最近清單（`data-testid="ai-performance-board"`）。
 3. 面板 `ai-perf-severity-weights` 顯示每月 P0–P3 → 因子權重建議（連到升級路徑／Messenger；無套用按鈕）。
-4. 頁面無可寫提案／核准控制。
-5. 連結至 AI 管理與即時警報與追蹤。
-6. 英／繁中介面（`EnZh`＋頁面 meta `ai-performance`）。
+4. 面板 `ai-perf-severity-formula` 鏡像每週嚴重度公式組合（因子差異／CR 狀態；無 RO 核准）。
+5. 頁面無可寫提案／核准控制。
+6. 連結至 AI 管理與即時警報與追蹤。
+7. 英／繁中介面（`EnZh`＋頁面 meta `ai-performance`）。
 
 ---
 
@@ -537,25 +539,40 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 | `recommend` → `confirm_action` | 雙重確認控制 → admin_ref（必要時 Checker） |
 
 ### 11.4 資料
-見 §4.4；另含 `severity_feedback`（P0–P3 重推薦，`lib/severity-feedback.ts`）。每月組合：`getMonthlyWeightSuggestion` → 升級路徑套用 → ESC-DEFAULT `coefficients_json`。
+見 §4.4；另含 `severity_feedback`（P0–P3 重推薦＋原因代碼／`week_key`，見 `lib/severity-feedback.ts`＋`lib/severity-formula.ts`）。線上公式：`severity.formula.live`。每週 CR：`ai_change_requests` `SEVERITY_FORMULA`。每月組合：`getMonthlyWeightSuggestion` → 升級路徑套用 → ESC-DEFAULT `coefficients_json`。
 
 ### 11.5 POC 窗
 `getMessengerThread` 回傳 `poc_windows` — 匹配路徑每一跳一個 Lark 聊天（一線團隊 → 二線 → 風險負責人 → 高階），承辦來自 `users`／`teams`。UI：鳥瞰路徑晶片＋分欄（`data-testid=msg-poc-windows`）。
 
-### 11.6 P0–P3 嚴重度重推薦 → 每月因子權重（FR-39）
+### 11.6 嚴重度公式優化迴路＋每月升級權重（FR-39）
+
+**主迴路 — 線上公式 → 值班原因代碼 → 每週 AI → RO 核准**
 
 | 項目 | 規格 |
 |---|---|
-| UI | 未結 AI_REPORT 上的 `LarkCardActions` 區塊 `msg-severity-recommend`（P0–P3、原因、送出） |
-| 動作 | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason }` |
-| 領域 | `lib/severity-feedback.ts` — `submitSeverityRecommendation`、`getMonthlyWeightSuggestion`、`applyMonthlyWeightSuggestion` |
-| 資料表 | `severity_feedback`（`ai_p`、`recommended_p`、`reason`、`month_key`…） |
+| 線上公式 | `platform_settings` 鍵 `severity.formula.live`（`SeverityFormula`：因子、權重、P 分帶） |
+| 打分 | 客戶端安全 `lib/severity-formula-score.ts` · 目錄 `lib/severity-formula-shared.ts` · 伺服器 `lib/severity-formula.ts` |
+| 值班 UI | Messenger `msg-severity-recommend`＋`msg-sev-reason-codes`（未結 AI_REPORT：P0–P3、原因代碼勾選、選填備註） |
+| 值班動作 | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` |
+| 回饋列 | `severity_feedback`（＋`reason_codes_json`、`week_key`、`formula_version`、`formula_p`、`month_key`） |
+| 每週 AI | `getWeeklyFormulaSuggestion`／`proposeWeeklyFormulaChange` → 啟停因子、權重差、門檻微調 |
+| 變更申請 | `ai_change_requests` 實體 `SEVERITY_FORMULA` · AI Engineer Maker · 風險負責人 Checker（`ai.approve`） |
+| 升級 UI | `/admin/escalation` 上 `SeverityFormulaBoard` `sev-formula-loop` · 提案／`sev-formula-ro-approve` |
+| 套用 | `decideChangeRequest` → `applySeverityFormulaPayload` → 更新 `severity.formula.live` |
+| AI 績效 | 經 `severity_formula_weekly`／`ai-perf-severity-formula` 唯讀呈現每週組合 |
+| 守護 | `npm run test:severity-formula` · `test:severity-formula-smoke`（另見下方每月守護） |
+
+**次迴路 — 每月 ESC-DEFAULT 係數組合**
+
+| 項目 | 規格 |
+|---|---|
+| 領域 | `lib/severity-feedback.ts` — `getMonthlyWeightSuggestion`、`applyMonthlyWeightSuggestion` |
 | 升級 UI | `EscalationManager` 面板 `esc-severity-weight-pack`；套用 → `POST /api/escalation` `apply_severity_weights` |
 | AI 績效 | 經 `getAiPerformanceEval().severity_weight_pack` 唯讀呈現 |
 | 對應 | P0=CRITICAL · P1=BREACH · P2=WARN · P3=INFO |
 | 守護 | `npm run test:severity-feedback` · `test:severity-feedback-smoke` |
 
-AI 只建議係數；僅具 `escalation.manage` 的人類可套用至 ESC-DEFAULT。套用寫稽核（`SEVERITY_WEIGHTS_APPLY`），並在 `platform_settings` 蓋章 `severity.weights.applied.{YYYY-MM}`。
+每週公式變更須 RO 核准（Maker ≠ Checker）。每月係數：AI 建議；僅具 `escalation.manage` 的人類可套用至 ESC-DEFAULT（`SEVERITY_WEIGHTS_APPLY`，蓋章 `severity.weights.applied.{YYYY-MM}`）。
 
 ---
 
@@ -796,7 +813,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
 
-**AI 協助調整因子權重（FR-39）：** 示範 Messenger AI_REPORT 卡將 P0–P3 重推薦寫入 `severity_feedback`。`getMonthlyWeightSuggestion()` 產出當月目前→建議係數組合。升級路徑顯示組合（`esc-severity-weight-pack`），`apply_severity_weights` 寫入 ESC-DEFAULT／`is_default` 路徑。AI 績效唯讀鏡像。見 §11.6。
+**嚴重度公式迴路（FR-39）：** 線上加權公式將警報打成 P0–P3。Messenger AI_REPORT 卡收集覆寫＋原因代碼勾選至 `severity_feedback`。每週 AI 以 `SEVERITY_FORMULA` CR 建議增減因子／調整權重；風險負責人在升級路徑（`sev-formula-loop`）核准。次迴路：`getMonthlyWeightSuggestion()` → `esc-severity-weight-pack`／`apply_severity_weights` 套用 ESC-DEFAULT。AI 績效兩種組合皆唯讀鏡像。見 §11.6。
 
 ### 16.16 組織
 
@@ -850,6 +867,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.11 | 2026-10-11 | §7.2 畫面地圖補上 `/admin/discovery`（與英文版對齊） |
 | 1.12 | 2026-10-12 | §8A AI 績效評估看板；§16.19 稽核覆蓋守護 |
 | 1.13 | 2026-10-13 | §11.6／§16.15 FR-39 P0–P3 嚴重度回饋 → 每月升級因子權重 |
+| 1.14 | 2026-10-14 | §11.6／§16.15 FR-39 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准（`SEVERITY_FORMULA`） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

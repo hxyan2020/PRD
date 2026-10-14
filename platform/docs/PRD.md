@@ -501,5 +501,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.11 | 2026-10-11 | §6.5 expanded tables + mermaid flow; cross-links to UG §14A / TSD §11A |
 | 1.12 | 2026-10-12 | FR-36 audit mutation coverage; FR-38 AI Performance evaluation dashboard (§6.6) |
 | 1.13 | 2026-10-13 | FR-39 AI-assisted escalation factor weights from P0–P3 severity feedback (§6.7); UAT-45 / UAT-46 |
+| 1.14 | 2026-10-14 | FR-39 primary severity formula loop (§6.7): live formula → ops reason codes → weekly AI → RO approve; UAT-47 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

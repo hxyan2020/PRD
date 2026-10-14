@@ -9,11 +9,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **9 hours** (46 cases).
+- Full pack suggested window ≈ **9 hours** (47 cases).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, P0–P3 severity re-recommend, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Unknown Risk Discovery, Realtime Alert & Tracker, Risk Domains, AI Admin, AI Performance (read-only eval incl. monthly P0–P3→weights pack), Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT · monthly severity weight pack), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back; every mutating admin/Lark path + failed login), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, P0–P3 severity re-recommend with reason codes, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Unknown Risk Discovery, Realtime Alert & Tracker, Risk Domains, AI Admin, AI Performance (read-only eval incl. weekly severity formula + monthly P0–P3→weights pack), Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (severity formula loop · dimensions × coefficients · ESC-DEFAULT · monthly severity weight pack), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back; every mutating admin/Lark path + failed login), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -74,7 +74,8 @@ graph TD
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | Public snapshot — Sign in works and stays on demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — closed threads stay closed after refresh | Demo Messenger |
 | 45 | UAT-45 | 484m | 12m | High | Risk + AI | UAT-33 or UAT-37; open AI_REPORT thread | P0–P3 severity re-recommend feeds monthly factor-weight pack | Demo Messenger, Escalation Routes, AI Performance |
-| 46 | UAT-46 | 496m | 15m | Critical | Risk Owner | UAT-01–45 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
+| 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45; Escalation formula loop seeded | Severity formula loop: ops reason codes → weekly AI → RO approve | Demo Messenger, Escalation Routes, AI Admin, AI Performance |
+| 47 | UAT-46 | 508m | 15m | Critical | Risk Owner | UAT-01–45 and UAT-47 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
 
@@ -728,7 +729,7 @@ graph TD
 1. Open Escalation Routes.
 2. Confirm rows are defined by dimensions (severity, involved teams, risk scenario, pending threshold, need-human) with editable coefficients — not a free-text Path name column.
 3. Find `ESC-DEFAULT` (catch-all for unmatched / exotic events) and at least one enabled non-default route with SLA.
-4. Confirm the monthly severity weight pack panel is present (even if sample count is from seed data) — full P0–P3 feedback loop is covered in UAT-45.
+4. Confirm the monthly severity weight pack panel is present (even if sample count is from seed data) — monthly P0–P3→weights is UAT-45; weekly formula→RO is UAT-47.
 5. Compare with the ESCALATION bubble from UAT-09. Route codes / teams should match in spirit (desk → credit → owner → exec).
 
 **Pass:** ESC-DEFAULT present; at least one enabled dimension-based route with coefficients + SLA; no Path name column; monthly weight pack panel visible; matches messenger escalate text.
@@ -873,9 +874,26 @@ graph TD
 **Pass:** Messenger accepts P0–P3 + reason; Escalation shows monthly pack (apply optional); AI Performance mirrors read-only.
 **Evidence:** Screenshots of Messenger severity block, Escalation monthly pack, AI Performance severity panel.
 
+### UAT-47 — Severity formula loop: ops reason codes → weekly AI → RO approve
+
+- **Severity:** High · **BU:** Ops + Risk Owner + AI · **Depends:** UAT-45; Escalation formula loop seeded · **Window:** T+496m / 12m
+- **Covers:** Demo Messenger, Escalation Routes, AI Admin, AI Performance
+- **Why:** Formula-assigned P must be correctable by 24/7 ops; AI may only change the formula after Risk Owner approval.
+- **Goal:** Override a formula P1 to P2 with reason codes on Messenger; on Escalation confirm weekly formula diffs and RO-approve the pending CR.
+
+**Steps**
+
+1. Open Escalation Routes. Confirm `sev-formula-loop`: live formula scores the sample alert (e.g. P1), weekly pack lists factor enable/disable/weight changes, and a PENDING CR id is shown (or **Propose weekly formula**).
+2. Open Demo Messenger → OPEN AI_REPORT. In Re-recommend severity, pick P2, tick at least one reason code (e.g. one-off spike), optional note, Submit.
+3. Return to Escalation. Weekly samples / reason-code histogram should reflect the override. As Risk Owner, click **RO approve & apply** (maker must be AI Engineer — not yourself).
+4. Confirm live formula version updates and AI Performance weekly formula panel mirrors the pack read-only (no approve button there).
+
+**Pass:** Reason codes accepted; weekly CR approved by RO; live formula version changes; AI Performance read-only mirror.
+**Evidence:** Screenshots of Messenger reason codes, Escalation `sev-formula-loop` before/after RO approve, AI Performance weekly panel.
+
 ### UAT-46 — Risk Owner exit sign-off
 
-- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–45 results recorded · **Window:** T+496m / 15m
+- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–45 and UAT-47 results recorded · **Window:** T+508m / 15m
 - **Covers:** UAT Checklist, Audit Log
 - **Why:** UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.
 - **Goal:** Tally Critical/High results against the exit rules and file a signed decision.
@@ -884,7 +902,7 @@ graph TD
 
 1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
-3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), and severity→weights (UAT-45) passed or waived.
+3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), and formula→RO (UAT-47) passed or waived.
 4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 

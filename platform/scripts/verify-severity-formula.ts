@@ -56,13 +56,43 @@ assert.match(escPage, /seedSeverityFormulaLoop/);
 const prd = read("docs/PRD.md");
 assert.match(prd, /Severity formula optimisation/);
 assert.match(prd, /sev-formula-loop/);
+assert.match(prd, /UAT-47/);
 const prdZh = read("docs/PRD.zh-Hant.md");
 assert.match(prdZh, /嚴重度公式優化/);
 assert.match(prdZh, /sev-formula-loop/);
+assert.match(prdZh, /UAT-47/);
+
+const ug = read("docs/USER_GUIDE.md");
+assert.match(ug, /Severity formula loop \+ factor weights/);
+assert.match(ug, /RO approve & apply/);
+assert.match(ug, /severity\.formula\.live/);
+const ugZh = read("docs/USER_GUIDE.zh-Hant.md");
+assert.match(ugZh, /嚴重度公式迴路＋因子權重/);
+assert.match(ugZh, /RO 核准並套用/);
+assert.match(ugZh, /severity\.formula\.live/);
+
+const tsd = read("docs/TSD.md");
+assert.match(tsd, /Severity formula optimisation loop/);
+assert.match(tsd, /severity-formula-score/);
+assert.match(tsd, /SEVERITY_FORMULA/);
+assert.match(tsd, /ai-perf-severity-formula/);
+const tsdZh = read("docs/TSD.zh-Hant.md");
+assert.match(tsdZh, /嚴重度公式優化迴路/);
+assert.match(tsdZh, /severity-formula-score/);
+assert.match(tsdZh, /SEVERITY_FORMULA/);
+assert.match(tsdZh, /ai-perf-severity-formula/);
+
+const uatMd = read("docs/UAT.md");
+assert.match(uatMd, /UAT-47 — Severity formula loop/);
+assert.match(uatMd, /ops reason codes → weekly AI → RO approve/);
+const uatZh = read("docs/UAT.zh-Hant.md");
+assert.match(uatZh, /UAT-47 — 嚴重度公式迴路/);
+assert.match(uatZh, /值班原因代碼 → 每週 AI → RO 核准/);
 
 const uat = read("src/lib/docs/uat-cases.ts");
 assert.match(uat, /id: "UAT-47"/);
 assert.match(uat, /Severity formula loop/);
+assert.match(uat, /嚴重度公式迴路：值班原因代碼/);
 
 const wf = fs.readFileSync(path.join(root, "..", ".github/workflows/crmp-pages.yml"), "utf8");
 assert.match(wf, /cursor\/severity-formula-ro-approve-28bc/);

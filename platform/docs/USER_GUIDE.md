@@ -384,12 +384,13 @@ sequenceDiagram
 | How-to-improve | Open vs satisfied review counts |
 | Training quality | Recent runs with accuracy, precision / recall / F1, samples |
 | P0–P3 → factor weights | Monthly severity re-recommendations from Messenger AI reports; current → suggested escalation coefficients (read-only) |
+| Weekly severity formula | Read-only mirror of the weekly formula pack (factor enable/disable / weight diffs, pending CR status) — approve only on Escalation Routes |
 | 14-day snapshots | Skill / human / feedback rates per day |
 | Recent lists | Latest analyses + feedback ratings |
 
-**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. Open **Escalation Routes** to apply the monthly weight pack (this page never applies it). Open **Demo Messenger** to add more P0–P3 feedback. This page itself has no propose / approve forms.
+**What to click.** Open AI Admin to queue training or rate analyses (maker≠checker). Open Realtime Alert & Tracker for live packs. Open **Escalation Routes** to RO-approve the weekly formula CR or apply the monthly weight pack (this page never applies either). Open **Demo Messenger** to add more P0–P3 + reason-code feedback. This page itself has no propose / approve forms.
 
-**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. The severity-weight panel shows sample / upgrade / downgrade counts for the month. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests or apply coefficients.
+**Good looks like.** KPIs populate from SQLite (or seeded demo data). Challenger agree rate and feedback accuracy move when you label analyses or run challenges. The severity-weight panel shows sample / upgrade / downgrade counts for the month; the weekly formula panel mirrors Escalation’s pack without RO buttons. Viewer / AI-read roles can open the board; they still cannot approve AI Admin change requests or apply coefficients.
 
 ### 8.3 AI Skills — `/admin/skills`
 
@@ -528,7 +529,7 @@ graph TD
   DC --> Admin[Admin ref]
 ```
 
-**How AI helps adjust factor weights.** After you submit P0–P3 feedback on an AI report card, the reason is stored for the calendar month. Escalation Routes aggregates upgrades vs downgrades and suggests new dimension coefficients. Applying the pack is a human action on `/admin/escalation` (see §9.4) — not automatic.
+**How AI helps adjust the severity formula and factor weights.** After you submit P0–P3 feedback with reason-code checkboxes on an AI report card, the row is stored with a `week_key` (and month key). Weekly, AI recommends a new scoring formula (add/remove factors, retune weights, nudge P bands) for Risk Owner approval. The same feedback also feeds a monthly escalation-dimension coefficient pack. Both apply actions are human-owned on `/admin/escalation` (see §9.4) — not automatic.
 
 ### 9.3 Lark Integration — `/admin/lark`
 
@@ -544,27 +545,40 @@ graph TD
 
 **What it is.** Paths are defined by **dimensions** (severity, involved teams, risk scenario, pending time, need human intervention) with editable **coefficients**. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** route code; unbound skills fall back to ESC-DEFAULT. There is **no separate Path name column** — the route code plus dimensions identify the path.
 
-**Severity formula loop + factor weights.** At the top of this page, `sev-formula-loop` shows the **live weighted formula** (sample alert scored e.g. P1), ops reason-code taxonomy, and the **weekly AI formula recommendation** (enable/disable factors, retune weights). Risk Owner approves the pending `SEVERITY_FORMULA` change request (AI Engineer is maker). Below that, the **monthly severity weight pack** still nudges ESC-DEFAULT escalation coefficients for humans with manage rights.
+**Severity formula loop + factor weights.** At the top of this page, `sev-formula-loop` shows the full optimisation chain:
 
-**What you see.** Route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled. The monthly pack panel shows: month key, sample / upgrade / downgrade counts, current → suggested coefficients for each dimension, recent feedback reasons, and **Apply to ESC-DEFAULT**.
+1. **Live formula scores** a sample alert (e.g. P1 · BREACH).  
+2. **24/7 ops** on Messenger overrides to another P and ticks **reason codes** (overweight magnitude, one-off spike, missed contagion, …).  
+3. **Weekly aggregate** counts samples / upgrades / downgrades and the reason-code histogram.  
+4. **AI new formula** lists factor enable/disable and weight diffs (and P-band nudges).  
+5. **Risk Owner** approves or rejects the pending `SEVERITY_FORMULA` change request (AI Engineer is maker — not the same user).
+
+Below that, the **monthly severity weight pack** still nudges ESC-DEFAULT escalation coefficients for humans with manage rights.
+
+**What you see.** Formula loop board (`sev-formula-loop`): live factors + sample score, weekly rationale, factor diffs, RO Approve / Reject (when PENDING), recent ops overrides. Route list: route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled. Monthly pack panel: month key, sample / upgrade / downgrade counts, current → suggested coefficients, recent feedback reasons, **Apply to ESC-DEFAULT**.
 
 **What to click.**
 
-1. Create/edit/disable routes if you have manage rights (localhost). Edit dimension coefficients by hand when needed.  
-2. Confirm the catch-all default exists. On Skills, confirm each playbook binds exactly one path.  
-3. Review the monthly pack rationale. When samples > 0 and it is not yet applied, click **Apply to ESC-DEFAULT** (audit: `SEVERITY_WEIGHTS_APPLY`).  
-4. Use the links back to Messenger (add more P0–P3 feedback) or AI Performance (read-only mirror).
+1. Review `sev-formula-loop`. If no PENDING CR and samples > 0, **Propose weekly formula (AI maker)** (needs `ai.propose` or escalation manage).  
+2. As Risk Owner (`ai.approve`), click **RO approve & apply** (or Reject). Confirm live formula version / weights update.  
+3. Create/edit/disable routes if you have manage rights (localhost). Edit dimension coefficients by hand when needed. Confirm ESC-DEFAULT exists; on Skills each playbook binds exactly one path.  
+4. Review the monthly pack rationale. When samples > 0 and it is not yet applied, click **Apply to ESC-DEFAULT** (audit: `SEVERITY_WEIGHTS_APPLY`).  
+5. Use the links back to Messenger (add more P0–P3 + reason codes) or AI Performance (read-only mirror — no approve there).
 
 **P0–P3 mapping (same as Messenger card):** P0 = CRITICAL · P1 = BREACH · P2 = WARN · P3 = INFO.
 
-**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code. Severity feedback from Messenger shows upgrade/downgrade counts and a current → suggested coefficient row. After apply, the pack badge shows Applied.
+**Good looks like.** Sample alert lands on a clear P under the live formula. Weekly pack shows factor diffs and a PENDING / APPROVED CR id. After RO approve, live weights match the suggested formula. CRITICAL has a tighter SLA than WARN; unmatched events still resolve via ESC-DEFAULT. Monthly pack shows upgrade/downgrade counts; after apply, the badge shows Applied.
 
 ```mermaid
 flowchart LR
-  Msg[Messenger P0-P3 feedback] --> Month[Monthly pack]
-  Month --> Review[Human reviews deltas]
-  Review -->|Apply| EscDefault[ESC-DEFAULT coefficients]
-  Month --> Perf[AI Performance mirror]
+  Formula[Live formula] --> Alert[Alert scored e.g. P1]
+  Alert --> Msg[Messenger P0-P3 + reason codes]
+  Msg --> Week[Weekly AI formula]
+  Week --> CR[SEVERITY_FORMULA CR]
+  CR -->|RO approve| Live[severity.formula.live]
+  Msg --> Month[Monthly pack]
+  Month -->|Apply| EscDefault[ESC-DEFAULT coefficients]
+  Week --> Perf[AI Performance mirror]
 ```
 
 ```mermaid
@@ -690,10 +704,10 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | Knowledge Tree | Domains, skills, RAG document leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
-| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, P0–P3→weights pack, 14-day accuracy |
-| Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls |
+| AI & knowledge | AI Performance | Read-only eval: skill match, challenger, feedback, training, weekly formula + P0–P3→weights packs, 14-day accuracy |
+| Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend + reason codes, controls |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
-| Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; monthly P0–P3 weight pack; skill binds one path |
+| Response | Escalation Routes | Severity formula loop (weekly AI → RO); dimensions × coefficients; ESC-DEFAULT; monthly P0–P3 weight pack; skill binds one path |
 | Response | Lark Integration | Channel registry |
 | Organisation | BU and Teams | Combined BU RACI + nested on-call teams (`/admin/departments`) |
 | Organisation | Users | Directory, including demo platform owner / haixiang.yan@hytechc.com |
@@ -790,5 +804,6 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 | 1.13 | 2026-10-12 | §11.3 audit coverage — every admin/Lark mutation + failed login |
 | 1.14 | 2026-10-12 | §8.2A AI Performance evaluation board; audit coverage note + verify scripts |
 | 1.15 | 2026-10-13 | §8.2A / §9.2 / §9.4 AI-assisted P0–P3 severity feedback → monthly factor weights (FR-39) |
+| 1.16 | 2026-10-14 | §8.2A / §9.2 / §9.4 primary severity formula loop: live formula → ops reason codes → weekly AI → RO approve |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
