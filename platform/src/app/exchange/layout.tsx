@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import { getCurrentUser, rolePermissions } from "@/lib/auth";
 import { ExchangeAdminShell } from "@/components/ExchangeAdminShell";
 import { collectNavEvents } from "@/lib/nav-events";
 import { FALLBACK_NAV_TOTALS } from "@/lib/nav-badges";
 import { getDb } from "@/lib/db";
+
+export const metadata: Metadata = {
+  title: "Crypto Exchange Risk Control Plane",
+  description:
+    "Parallel CRMP desk for crypto-exchange risk — wallets, matching, liquidations and exchange book controls.",
+  icons: {
+    icon: [{ url: "/favicon.ico" }],
+  },
+};
 
 function fallbackEvents() {
   return Object.fromEntries(
@@ -10,7 +20,7 @@ function fallbackEvents() {
   );
 }
 
-/** Crypto-exchange admin mount — parallel to `/admin`, no Vantage chrome. */
+/** Crypto-exchange admin mount — parallel to `/admin`, no broker chrome. */
 export default async function ExchangeLayout({ children }: { children: React.ReactNode }) {
   const user = (await getCurrentUser())!;
   let navEvents = fallbackEvents();
