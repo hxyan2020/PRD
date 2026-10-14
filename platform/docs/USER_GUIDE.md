@@ -94,7 +94,7 @@ The left pane is grouped so you are not staring at one long list:
 | Group | What lives there |
 |---|---|
 | **Overview** | Admin Home (includes spine stage ticket counts) |
-| **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Risk Log → Risk Domains |
+| **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Unknown Risk Discovery → Indicator Aggregation → Risk Log → Risk Domains |
 | **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin → AI Performance (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
 | **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
@@ -698,6 +698,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Monitor & risk | Realtime Alert & Tracker | Ack the open queue; grouped AI pipeline; MonitorCode tooltips; AI Analyses list redirects here |
 | Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
 | Monitor & risk | Unknown Risk Discovery | Notebook-parity AI suggestion card; RO review; optional promote to skill + Monitor 2.0 |
+| Monitor & risk | Indicator Aggregation | Linear flow: single alert → skill/RAG → membership → wait window → RO single or aggregate |
 | Monitor & risk | Risk Log Analytics | 90-day charts, closed packs, loss vs prevented, loopholes |
 | Monitor & risk | Risk Domains | P0–P3 scenarios hooked to Monitor 2.0 |
 | AI & knowledge | AI Skills | Browse playbooks; Enter the full SKILL.md; one escalation bind |
@@ -785,6 +786,32 @@ Each hit becomes a candidate with proposed indicator name, dimension, suggested 
 
 Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/admin/docs/tsd).
 
+## 14B. Indicator Aggregation Flow — `/admin/indicator-aggregation`
+
+**What it is.** A **linear** process board that shows how a single-indicator alert becomes either a single RO case or an aggregated multi-indicator pack.
+
+**What you see.** Eight-step linear rail; live sessions (seeded demos for no-membership / window-timeout / aggregated); event trail; aggregate member timeline from linked chains; definition cards.
+
+**What to click.**
+
+1. Pick a monitor (or `M2-ORPHAN-999` for no membership) → **Fire demo alert**.  
+2. Watch steps: single alert → skill/RAG → membership check.  
+3. If correlated: **Related alert: M2-…** to aggregate, or **End window → RO as single**.  
+4. Confirm outcome badge: `SINGLE_NO_MEMBERSHIP` / `SINGLE_WINDOW_TIMEOUT` / `AGGREGATED`.
+
+```mermaid
+flowchart LR
+  A[Single alert] --> B[Skill / RAG]
+  B --> C{In aggregate?}
+  C -->|No| D[RO single]
+  C -->|Yes| E[Wait window]
+  E -->|Timeout| D
+  E -->|Related| F[Aggregate UI]
+  F --> G[RO aggregate]
+```
+
+Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
+
 ---
 
 ## 15. Document control
@@ -805,5 +832,6 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 | 1.14 | 2026-10-12 | §8.2A AI Performance evaluation board; audit coverage note + verify scripts |
 | 1.15 | 2026-10-13 | §8.2A / §9.2 / §9.4 AI-assisted P0–P3 severity feedback → monthly factor weights (FR-39) |
 | 1.16 | 2026-10-14 | §8.2A / §9.2 / §9.4 primary severity formula loop: live formula → ops reason codes → weekly AI → RO approve |
+| 1.17 | 2026-10-14 | §14B Indicator Aggregation linear flow (FR-40) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

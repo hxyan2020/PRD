@@ -233,6 +233,7 @@ graph LR
 | FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
 | FR-38 | AI Performance evaluation dashboard | `/admin/ai-performance` read-only board: skill match, challenger agree/partial/disagree, human feedback labels, how-to-improve counts, training accuracy/F1, 14-day snapshots; `GET /api/ai-performance`; EN/zh-Hant; link from AI Admin |
 | FR-39 | P0–P3 severity formula optimisation loop | Live weighted formula assigns P0–P3; 24/7 ops corrects on AI_REPORT with reason-code checkboxes → weekly AI formula recommend (add/remove factors, retune weights) → Risk Owner approves via `ai_change_requests`; plus monthly escalation coefficient pack |
+| FR-40 | Indicator aggregation linear flow | Single alert → skill/RAG lookup → aggregate membership check → (no) single path, or (yes) mark correlation + wait window → timeout = RO as single / related alerts = aggregate in UI then RO as aggregate; surface `/admin/indicator-aggregation` |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -254,6 +255,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
 | Monitor & risk | Unknown Risk Discovery | `/admin/discovery` | Notebook-parity AI suggestion card; RO gates unknown risks before daily monitors | Connect OpenAI/Mock; Analyse; Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker); HTML/Colab notebook links |
+| Monitor & risk | Indicator Aggregation | `/admin/indicator-aggregation` | Linear aggregation process for correlated M2-* indicators (from linked timeline chains) | Fire demo alert; skill/RAG lookup; membership check; wait window; inject related / end window; RO single vs aggregate outcomes |
 | Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Unified indicator + detector registry | Run all / Sync / Pause; recent runs; open alerts link → Realtime Alert & Tracker (no Alerts/Tickets tabs) |
 | Monitor & risk | Detectors (redirect) | `/admin/detectors` | Bookmarks only | Not in left nav — redirects to Monitor 2.0 |
 | Monitor & risk | Realtime Alert & Tracker | `/admin/alerts` | Open queue + grouped AI pipeline | MonitorCode tooltips; open-only; ack; `/admin/ai-analyses` list redirects here |
@@ -374,6 +376,30 @@ flowchart LR
 ```
 
 **Acceptance (FR-39):** `sev-formula-loop` on `/admin/escalation` shows live formula + sample P + weekly diffs + RO approve; Messenger `msg-severity-recommend` has reason-code checkboxes; weekly CR uses AI Engineer maker / RO checker; AI Performance mirrors weekly pack; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 · UAT-45 / UAT-47.
+
+### 6.8 Indicator aggregation linear flow — methods, data, flow
+
+**Methods:** On each single-indicator alert, run skill match and/or RAG retrieval, then check whether the monitor is a member of an aggregate definition (linked timeline / chain). If not, continue the remaining single-indicator path. If yes, continue single RCA in parallel, mark “correlation possible”, and open a wait window for other member monitors. Window expiry with no related alerts → status for RO as single. Related alerts inside the window → aggregate in the Admin UI → RO handles as aggregate.
+
+| Layer | Detail |
+|---|---|
+| **Data** | Aggregate defs from `risk_scenario_chains` / `LINKED_SCENARIOS`; sessions in `platform_settings` `indicator.aggregation.sessions` |
+| **Flow** | Alert → skill/RAG → membership → single continue **or** correlated wait → RO single **or** aggregate → RO aggregate |
+| **Surface** | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation` |
+
+```mermaid
+flowchart LR
+  A[Single alert] --> B[Skill / RAG lookup]
+  B --> C{In aggregate?}
+  C -->|No| D[Continue as single]
+  D --> E[RO as single]
+  C -->|Yes| F[Mark correlation + wait window]
+  F -->|Timeout| E
+  F -->|Related alerts| G[Aggregate in UI]
+  G --> H[RO as aggregate]
+```
+
+**Acceptance (FR-40):** Linear stepper visible; demo sessions cover no-membership, window-timeout, and aggregated paths; EN + zh-Hant. Operator: User Guide §14B · Build: TSD §11.7.
 
 ---
 
@@ -502,5 +528,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.12 | 2026-10-12 | FR-36 audit mutation coverage; FR-38 AI Performance evaluation dashboard (§6.6) |
 | 1.13 | 2026-10-13 | FR-39 AI-assisted escalation factor weights from P0–P3 severity feedback (§6.7); UAT-45 / UAT-46 |
 | 1.14 | 2026-10-14 | FR-39 primary severity formula loop (§6.7): live formula → ops reason codes → weekly AI → RO approve; UAT-47 |
+| 1.15 | 2026-10-14 | FR-40 indicator aggregation linear flow (§6.8) on `/admin/indicator-aggregation` |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

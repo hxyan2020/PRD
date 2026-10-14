@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   Library,
   LineChart,
+  Link2,
   ListChecks,
   ListTree,
   Lock,
@@ -61,6 +62,13 @@ export const NAV_ITEMS = [
   { href: "/admin/alerts", label: "Realtime Alert & Tracker", icon: Bell, permission: "monitor.read", group: "monitor" },
   { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
   { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
+  {
+    href: "/admin/indicator-aggregation",
+    label: "Indicator Aggregation",
+    icon: Link2,
+    permission: "monitor.read",
+    group: "monitor",
+  },
   { href: "/admin/risk-log", label: "Risk Log Analytics", icon: ScrollText, permission: "monitor.read", group: "monitor" },
   { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
 

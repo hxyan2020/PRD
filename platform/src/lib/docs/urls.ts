@@ -35,6 +35,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
     permission: "monitor.read",
   },
   {
+    category: "Risk",
+    title: "Indicator Aggregation Flow",
+    path: "/admin/indicator-aggregation",
+    description:
+      "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait window → RO as single or aggregate (from linked timeline chains)",
+    permission: "monitor.read",
+  },
+  {
     category: "Docs",
     title: "Risk discovery notebook (HTML)",
     path: "https://hxyan2020.github.io/PRD/risk-discovery/",

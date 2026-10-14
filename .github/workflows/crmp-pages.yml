@@ -11,6 +11,7 @@ on:
         cursor/ai-performance-dashboard-28bc,
         cursor/severity-feedback-weights-28bc,
         cursor/severity-formula-ro-approve-28bc,
+        cursor/indicator-aggregation-flow-28bc,
         main,
       ]
     paths:
