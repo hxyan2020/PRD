@@ -10,7 +10,7 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, phrase, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { THINKING_ACTIONS, thinkingSteps } from "@/lib/messenger/thinking";
-import { SEVERITY_REASON_CODES } from "@/lib/severity-formula";
+import { SEVERITY_REASON_CODES } from "@/lib/severity-formula-shared";
 
 const ACTION_I18N: Record<string, { en: string; "zh-Hant": string; descEn: string; descZh: string }> = {
   BLOCK_ACCOUNT: {

@@ -7,15 +7,13 @@ import { EnZh } from "@/components/EnZh";
 import { Phrase } from "@/components/Phrase";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase } from "@/lib/i18n";
-import type {
-  SeverityFormula,
-  WeeklyFormulaSuggestion,
-} from "@/lib/severity-formula";
 import {
   DEMO_ALERT_OBSERVATIONS,
   SEVERITY_REASON_CODES,
-  scoreSeverityFormula,
-} from "@/lib/severity-formula";
+  type SeverityFormula,
+  type WeeklyFormulaSuggestion,
+} from "@/lib/severity-formula-shared";
+import { scoreSeverityFormula } from "@/lib/severity-formula-score";
 
 type FeedbackLite = {
   feedback_id: string;

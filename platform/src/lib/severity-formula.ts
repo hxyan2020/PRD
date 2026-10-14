@@ -12,98 +12,32 @@ import {
   pToOpsSeverity,
   type SeverityP,
 } from "@/lib/severity-feedback";
+import {
+  DEFAULT_SEVERITY_FORMULA,
+  DEMO_ALERT_OBSERVATIONS,
+  SEVERITY_REASON_CODES,
+  type FormulaObservations,
+  type SeverityFactorDef,
+  type SeverityFactorId,
+  type SeverityFormula,
+  type SeverityReasonCode,
+  type WeeklyFormulaSuggestion,
+} from "@/lib/severity-formula-shared";
+import { scoreSeverityFormula } from "@/lib/severity-formula-score";
 
-export type SeverityFactorId =
-  | "breach_magnitude"
-  | "book_contagion"
-  | "duration_minutes"
-  | "lp_health"
-  | "client_impact"
-  | "recurrence"
-  | "overnight_gap";
-
-export type SeverityFactorDef = {
-  id: SeverityFactorId;
-  enabled: boolean;
-  weight: number;
-  en: string;
-  zh: string;
+export type {
+  FormulaObservations,
+  SeverityFactorDef,
+  SeverityFactorId,
+  SeverityFormula,
+  SeverityReasonCode,
+  WeeklyFormulaSuggestion,
 };
-
-export type SeverityFormula = {
-  version: string;
-  factors: SeverityFactorDef[];
-  /** Score ≥ threshold → that P; else P3. */
-  thresholds: { p0: number; p1: number; p2: number };
-  updated_at: string | null;
-};
-
-export type SeverityReasonCode = {
-  id: string;
-  en: string;
-  zh: string;
-};
-
-export const SEVERITY_REASON_CODES: SeverityReasonCode[] = [
-  {
-    id: "overweight_magnitude",
-    en: "Breach magnitude overweighted",
-    zh: "違規幅度權重過高",
-  },
-  {
-    id: "missed_contagion",
-    en: "Book / copy contagion missed",
-    zh: "漏判帳簿／跟單傳染",
-  },
-  {
-    id: "one_off_spike",
-    en: "One-off tick spike — recovered fast",
-    zh: "單次 tick 尖峰 — 很快恢復",
-  },
-  {
-    id: "wrong_book_scope",
-    en: "Wrong book / cohort scope",
-    zh: "帳簿／族群範圍不對",
-  },
-  {
-    id: "stale_threshold",
-    en: "Threshold / band stale vs current vol",
-    zh: "門檻／分帶相對波動已過時",
-  },
-  {
-    id: "missing_factor",
-    en: "Missing factor (e.g. overnight / LP)",
-    zh: "缺少因子（如隔夜／LP）",
-  },
-  {
-    id: "should_upgrade",
-    en: "Should be more severe",
-    zh: "應更嚴重",
-  },
-  {
-    id: "should_downgrade",
-    en: "Should be less severe",
-    zh: "應較輕",
-  },
-];
+export { DEFAULT_SEVERITY_FORMULA, DEMO_ALERT_OBSERVATIONS, SEVERITY_REASON_CODES };
+export { scoreSeverityFormula };
 
 const LIVE_KEY = "severity.formula.live";
 const WEEKLY_CR_KEY = "severity.formula.weekly_cr";
-
-export const DEFAULT_SEVERITY_FORMULA: SeverityFormula = {
-  version: "SF-v1",
-  factors: [
-    { id: "breach_magnitude", enabled: true, weight: 1.4, en: "Breach magnitude", zh: "違規幅度" },
-    { id: "book_contagion", enabled: true, weight: 1.1, en: "Book / copy contagion", zh: "帳簿／跟單傳染" },
-    { id: "duration_minutes", enabled: true, weight: 0.9, en: "Duration (minutes open)", zh: "持續時間（分鐘）" },
-    { id: "lp_health", enabled: true, weight: 1.0, en: "LP / feed health", zh: "LP／饋送健康" },
-    { id: "client_impact", enabled: true, weight: 0.8, en: "Client cohort impact", zh: "客戶族群影響" },
-    { id: "recurrence", enabled: false, weight: 0.7, en: "Recurrence this week", zh: "本週復發次數" },
-    { id: "overnight_gap", enabled: false, weight: 0.85, en: "Overnight / gap risk", zh: "隔夜／缺口風險" },
-  ],
-  thresholds: { p0: 4.2, p1: 3.0, p2: 1.8 },
-  updated_at: null,
-};
 
 export function weekKey(d = new Date()): string {
   const date = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
@@ -182,64 +116,6 @@ export function saveLiveSeverityFormula(
   });
   return next;
 }
-
-/** Demo observations for an alert — values in ~0–2 before weight. */
-export type FormulaObservations = Partial<Record<SeverityFactorId, number>>;
-
-export function scoreSeverityFormula(
-  formula: SeverityFormula,
-  observations: FormulaObservations
-): { score: number; p: SeverityP; ops: string; contributions: Array<{ id: string; raw: number; weighted: number; enabled: boolean }> } {
-  const contributions = formula.factors.map((f) => {
-    const raw = Number(observations[f.id] ?? 0);
-    const weighted = f.enabled ? raw * f.weight : 0;
-    return { id: f.id, raw, weighted, enabled: f.enabled };
-  });
-  const score = Math.round(contributions.reduce((s, c) => s + c.weighted, 0) * 100) / 100;
-  let p: SeverityP = 3;
-  if (score >= formula.thresholds.p0) p = 0;
-  else if (score >= formula.thresholds.p1) p = 1;
-  else if (score >= formula.thresholds.p2) p = 2;
-  return { score, p, ops: pToOpsSeverity(p), contributions };
-}
-
-/** Sample alert used in Admin walkthrough — formula lands on P1 with default weights. */
-export const DEMO_ALERT_OBSERVATIONS: FormulaObservations = {
-  breach_magnitude: 1.35,
-  book_contagion: 0.35,
-  duration_minutes: 0.55,
-  lp_health: 0.4,
-  client_impact: 0.45,
-  recurrence: 0.3,
-  overnight_gap: 0.2,
-};
-
-export type WeeklyFormulaSuggestion = {
-  week_key: string;
-  sample_count: number;
-  upgrades: number;
-  downgrades: number;
-  same: number;
-  reason_histogram: Record<string, number>;
-  current: SeverityFormula;
-  suggested: SeverityFormula;
-  factor_changes: Array<{
-    id: string;
-    change: "enable" | "disable" | "weight_up" | "weight_down" | "unchanged";
-    from_weight: number;
-    to_weight: number;
-    from_enabled: boolean;
-    to_enabled: boolean;
-    en: string;
-    zh: string;
-  }>;
-  rationale_en: string;
-  rationale_zh: string;
-  pending_cr_id: number | null;
-  pending_request_id: string | null;
-  pending_status: string | null;
-  applied: boolean;
-};
 
 function cloneFormula(f: SeverityFormula): SeverityFormula {
   return {
@@ -427,16 +303,16 @@ export function proposeWeeklyFormulaChange(input?: {
     return suggestion;
   }
 
-  let actor = input?.actor;
+  let actor = input?.actor as { id: number; name: string; role_code?: string } | undefined;
   if (!actor) {
     const ai = db
-      .prepare(`SELECT id, name FROM users WHERE role_code = 'AI_ENGINEER' ORDER BY id LIMIT 1`)
-      .get() as { id: number; name: string } | undefined;
-    actor = ai || { id: 0, name: "CRMP AI" };
+      .prepare(`SELECT id, name, role_code FROM users WHERE role_code = 'AI_ENGINEER' ORDER BY id LIMIT 1`)
+      .get() as { id: number; name: string; role_code: string } | undefined;
+    actor = ai || { id: 0, name: "CRMP AI", role_code: "AI_ENGINEER" };
   }
 
   const proposed = proposeChange({
-    actor,
+    actor: { id: actor.id, name: actor.name, role_code: actor.role_code || "AI_ENGINEER" },
     entity_type: "SEVERITY_FORMULA",
     action: "UPDATE",
     title: `Weekly severity formula ${suggestion.week_key}`,
