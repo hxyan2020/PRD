@@ -32,6 +32,7 @@ import { MarketSourcePage } from './MarketSourcePage'
 import { OverviewPage } from './OverviewPage'
 import { PlaceholderPage } from './PlaceholderPage'
 import { PositionListPage } from './PositionListPage'
+import { SeverityOptimizationPage } from './risk/SeverityOptimizationPage'
 import { TradeAmountFactorPage } from './TradeAmountFactorPage'
 import {
   ActiveOrderHistoryDealPage,
@@ -111,6 +112,7 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'risk-reserve-list': underDev,
   'risk-reserve-detail': underDev,
   'risk-trading-restriction': underDev,
+  'risk-severity-optimizer': SeverityOptimizationPage,
   'risk-spread-alert': underDev,
   'risk-no-trade-monitor': underDev,
   'risk-depth-monitor': underDev,
