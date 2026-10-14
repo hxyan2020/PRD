@@ -69,6 +69,7 @@ export type PageKey =
   | 'risk-spread-alert'
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
+  | 'risk-severity-optimization'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -127,6 +128,7 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-spread-alert': 'Spread Alert',
   'risk-no-trade-monitor': 'No Trade Monitor',
   'risk-depth-monitor': 'Depth Monitor',
+  'risk-severity-optimization': 'Severity Optimization',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -263,6 +265,7 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-spread-alert', label: 'Spread Alert' },
       { key: 'risk-no-trade-monitor', label: 'No Trade Monitor' },
       { key: 'risk-depth-monitor', label: 'Depth Monitor' },
+      { key: 'risk-severity-optimization', label: 'Severity Optimization (AI)' },
     ],
   },
 ]
