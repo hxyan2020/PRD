@@ -5,6 +5,7 @@ import {
   DollarOutlined,
   FileTextOutlined,
   LineChartOutlined,
+  RobotOutlined,
   SettingOutlined,
   ShoppingOutlined,
   TeamOutlined,
@@ -69,6 +70,10 @@ export type PageKey =
   | 'risk-spread-alert'
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
+  | 'severity-pipeline'
+  | 'severity-alerts'
+  | 'severity-recommendations'
+  | 'severity-formula'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -127,6 +132,10 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-spread-alert': 'Spread Alert',
   'risk-no-trade-monitor': 'No Trade Monitor',
   'risk-depth-monitor': 'Depth Monitor',
+  'severity-pipeline': '链路总览 Pipeline',
+  'severity-alerts': 'Incident 告警与反馈',
+  'severity-recommendations': '每周 AI 推荐',
+  'severity-formula': '严重度公式 & 审批',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -265,6 +274,17 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-depth-monitor', label: 'Depth Monitor' },
     ],
   },
+  {
+    key: 'severity-opt',
+    icon: <RobotOutlined />,
+    label: '严重度优化 (AI)',
+    children: [
+      { key: 'severity-pipeline', label: '链路总览 Pipeline' },
+      { key: 'severity-alerts', label: 'Incident 告警与反馈' },
+      { key: 'severity-recommendations', label: '每周 AI 推荐' },
+      { key: 'severity-formula', label: '严重度公式 & 审批' },
+    ],
+  },
 ]
 
 export function isPageKey(key: string): key is PageKey {
@@ -283,4 +303,5 @@ export const defaultOpenKeys = [
   'api-mgmt',
   'tools-mgmt',
   'risk-monitor',
+  'severity-opt',
 ]

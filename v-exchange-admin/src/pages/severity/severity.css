@@ -1,0 +1,85 @@
+.sev-pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+}
+
+.sev-stage {
+  flex: 1 1 0;
+  min-width: 150px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-top: 3px solid var(--sev-stage-color, #1890ff);
+  border-radius: 4px;
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sev-stage-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sev-stage-index {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sev-stage-color, #1890ff);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.sev-stage-title {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.sev-stage-role {
+  font-size: 11px;
+  color: #999;
+}
+
+.sev-stage-desc {
+  font-size: 12px;
+  color: #595959;
+  line-height: 1.45;
+  flex: 1 1 auto;
+}
+
+.sev-stage-metric {
+  font-size: 12px;
+  color: var(--sev-stage-color, #1890ff);
+  font-weight: 600;
+}
+
+.sev-arrow {
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bfbfbf;
+  font-size: 16px;
+}
+
+.sev-weight-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: #1890ff;
+}
+
+.sev-reason-bar {
+  height: 14px;
+  border-radius: 2px;
+  background: #ff7a45;
+}
