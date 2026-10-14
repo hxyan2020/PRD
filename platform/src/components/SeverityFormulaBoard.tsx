@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui";
 import { EnZh } from "@/components/EnZh";
@@ -44,6 +44,10 @@ export function SeverityFormulaBoard({
   const [pack, setPack] = useState(weekly);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPack(weekly);
+  }, [weekly]);
 
   const demo = useMemo(() => scoreSeverityFormula(liveFormula, DEMO_ALERT_OBSERVATIONS), [liveFormula]);
   const suggestedDemo = useMemo(
@@ -97,6 +101,12 @@ export function SeverityFormulaBoard({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Decide failed");
+      setPack((prev) => ({
+        ...prev,
+        pending_status: decision,
+        applied: decision === "APPROVED",
+        current: decision === "APPROVED" ? prev.suggested : prev.current,
+      }));
       setMsg(
         decision === "APPROVED"
           ? zh
