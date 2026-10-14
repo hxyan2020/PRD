@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/cae071b8c3557322.css","style"]
-0:{"P":null,"b":"CMxYjt-nhvqdApDiGBKLO","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/cae071b8c3557322.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","Ar8cP_OoJkn7xsaiwIybZ",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-f7631973f6246d74.js","4415","static/chunks/4415-d0640f85c2aad52e.js","7581","static/chunks/app/admin/layout-23ea2af3f6431575.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T04:21:54.167Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-14 07:51:54"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 04:21:54"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 04:21:54"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"DocArticleView"]
-12:T7a8d,# CRMP Product Requirements Document (PRD)
+:HL["/PRD/crmp-admin/_next/static/css/f99356daa836fae6.css","style"]
+0:{"P":null,"b":"DRZdH62yLtVWjQFWGeAap","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/f99356daa836fae6.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","4UAMF2AlKcqh7QBQ0KP2z",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","6164","static/chunks/6164-4b2dece20d1a27f7.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","7581","static/chunks/app/admin/layout-576b70d28ae8b026.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 04:30:57"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 04:30:57"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T04:30:57.815Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 04:30:57"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-14 08:00:57"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 04:30:57"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 04:30:57"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"DocArticleView"]
+12:T831e,# CRMP Product Requirements Document (PRD)
 
 **Document ID:** CRMP-PRD-001  
 **Status:** Prototype / Demo-ready  
@@ -249,6 +249,7 @@ graph LR
 | FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
 | FR-38 | AI Performance evaluation dashboard | `/admin/ai-performance` read-only board: skill match, challenger agree/partial/disagree, human feedback labels, how-to-improve counts, training accuracy/F1, 14-day snapshots; `GET /api/ai-performance`; EN/zh-Hant; link from AI Admin |
 | FR-39 | P0–P3 severity formula optimisation loop | Live weighted formula assigns P0–P3; 24/7 ops corrects on AI_REPORT with reason-code checkboxes → weekly AI formula recommend (add/remove factors, retune weights) → Risk Owner approves via `ai_change_requests`; plus monthly escalation coefficient pack |
+| FR-40 | Indicator aggregation linear flow | Single alert → skill/RAG lookup → aggregate membership check → (no) single path, or (yes) mark correlation + wait window → timeout = RO as single / related alerts = aggregate in UI then RO as aggregate; surface `/admin/indicator-aggregation` |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -270,6 +271,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
 | Monitor & risk | Unknown Risk Discovery | `/admin/discovery` | Notebook-parity AI suggestion card; RO gates unknown risks before daily monitors | Connect OpenAI/Mock; Analyse; Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker); HTML/Colab notebook links |
+| Monitor & risk | Indicator Aggregation | `/admin/indicator-aggregation` | Linear aggregation process for correlated M2-* indicators (from linked timeline chains) | Fire demo alert; skill/RAG lookup; membership check; wait window; inject related / end window; RO single vs aggregate outcomes |
 | Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Unified indicator + detector registry | Run all / Sync / Pause; recent runs; open alerts link → Realtime Alert & Tracker (no Alerts/Tickets tabs) |
 | Monitor & risk | Detectors (redirect) | `/admin/detectors` | Bookmarks only | Not in left nav — redirects to Monitor 2.0 |
 | Monitor & risk | Realtime Alert & Tracker | `/admin/alerts` | Open queue + grouped AI pipeline | MonitorCode tooltips; open-only; ack; `/admin/ai-analyses` list redirects here |
@@ -390,6 +392,30 @@ flowchart LR
 ```
 
 **Acceptance (FR-39):** `sev-formula-loop` on `/admin/escalation` shows live formula + sample P + weekly diffs + RO approve; Messenger `msg-severity-recommend` has reason-code checkboxes; weekly CR uses AI Engineer maker / RO checker; AI Performance mirrors weekly pack; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 · UAT-45 / UAT-47.
+
+### 6.8 Indicator aggregation linear flow — methods, data, flow
+
+**Methods:** On each single-indicator alert, run skill match and/or RAG retrieval, then check whether the monitor is a member of an aggregate definition (linked timeline / chain). If not, continue the remaining single-indicator path. If yes, continue single RCA in parallel, mark “correlation possible”, and open a wait window for other member monitors. Window expiry with no related alerts → status for RO as single. Related alerts inside the window → aggregate in the Admin UI → RO handles as aggregate.
+
+| Layer | Detail |
+|---|---|
+| **Data** | Aggregate defs from `risk_scenario_chains` / `LINKED_SCENARIOS`; sessions in `platform_settings` `indicator.aggregation.sessions` |
+| **Flow** | Alert → skill/RAG → membership → single continue **or** correlated wait → RO single **or** aggregate → RO aggregate |
+| **Surface** | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation` |
+
+```mermaid
+flowchart LR
+  A[Single alert] --> B[Skill / RAG lookup]
+  B --> C{In aggregate?}
+  C -->|No| D[Continue as single]
+  D --> E[RO as single]
+  C -->|Yes| F[Mark correlation + wait window]
+  F -->|Timeout| E
+  F -->|Related alerts| G[Aggregate in UI]
+  G --> H[RO as aggregate]
+```
+
+**Acceptance (FR-40):** Linear stepper visible; demo sessions cover no-membership, window-timeout, and aggregated paths; EN + zh-Hant. Operator: User Guide §14B · Build: TSD §11.7.
 
 ---
 
@@ -518,9 +544,10 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.12 | 2026-10-12 | FR-36 audit mutation coverage; FR-38 AI Performance evaluation dashboard (§6.6) |
 | 1.13 | 2026-10-13 | FR-39 AI-assisted escalation factor weights from P0–P3 severity feedback (§6.7); UAT-45 / UAT-46 |
 | 1.14 | 2026-10-14 | FR-39 primary severity formula loop (§6.7): live formula → ops reason codes → weekly AI → RO approve; UAT-47 |
+| 1.15 | 2026-10-14 | FR-40 indicator aggregation linear flow (§6.8) on `/admin/indicator-aggregation` |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
-13:T7673,# CRMP 產品需求文件（PRD）
+13:T7ea4,# CRMP 產品需求文件（PRD）
 
 **文件編號：** CRMP-PRD-001  
 **狀態：** 原型／可示範  
@@ -755,6 +782,7 @@ graph LR
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
 | FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者一致率（同意／部分／不同意）、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
 | FR-39 | P0–P3 嚴重度公式優化迴路 | 線上加權公式分到 P0–P3；24/7 值班在 AI_REPORT 勾選不准原因並覆寫 → 每週 AI 推薦新公式（增減因子、調整權重）→ 風險負責人經 `ai_change_requests` 核准；另含每月升級係數組合 |
+| FR-40 | 指標聚合線型流程 | 單一告警 → Skill／RAG 檢索 → 聚合成員資格檢查 →（否）單一路徑，或（是）標記關聯＋等待視窗 → 逾時＝RO 按單一／出現關聯＝界面聚合後再報 RO；畫面 `/admin/indicator-aggregation` |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -776,6 +804,7 @@ graph LR
 | 監控與風險 | 風險日誌分析 | `/admin/risk-log` | 處理時間、損失 vs 防損、漏洞 | 摘要＋類別＋領域＋紀錄 |
 | 監控與風險 | 市場情報 | `/admin/market-intel` | 會移動 LP 的頭條 | 立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描 |
 | 監控與風險 | 未知風險探索 | `/admin/discovery` | 與筆記本對齊的 AI 建議卡；RO 閘門後才進每日監控 | 連線 OpenAI／Mock；分析；核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者）；HTML／Colab 筆記本連結 |
+| 監控與風險 | 指標聚合流程 | `/admin/indicator-aggregation` | 關聯 M2-* 指標的線型聚合過程（來自連結時間鏈） | 觸發示範告警；Skill／RAG 檢索；成員資格；等待視窗；匯入關聯／結束視窗；RO 單一 vs 聚合結果 |
 | 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 統一指標＋偵測器登錄 | 全部執行／同步／暫停；近期執行；未結警報連至即時警報與追蹤（無警報／工單分頁） |
 | 監控與風險 | 偵測器（轉址） | `/admin/detectors` | 僅書籤 | 左側無此列 — 轉址 Monitor 2.0 |
 | 監控與風險 | 即時警報與追蹤 | `/admin/alerts` | 未結佇列＋分組 AI 管線 | MonitorCode 提示；僅 OPEN；確認；`/admin/ai-analyses` 列表轉址至此 |
@@ -896,6 +925,30 @@ flowchart LR
 ```
 
 **驗收（FR-39）：** `/admin/escalation` 的 `sev-formula-loop` 顯示線上公式＋範例 P＋每週差異＋RO 核准；Messenger `msg-severity-recommend` 有原因代碼勾選；每週 CR 為 AI Engineer Maker／RO Checker；AI 績效鏡像每週組合；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6 · UAT-45／UAT-47。
+
+### 6.8 指標聚合線型流程 — 方法、資料、流程
+
+**方法：** 每次單一指標告警後，執行技能匹配與／或 RAG 檢索，再檢查該監控是否為某聚合定義（連結時間鏈）的成員。若否，繼續單一指標剩餘流程。若是，並行繼續單一 RCA，標記「可能存在指標關聯」，並開啟等待視窗等其他成員監控。視窗結束且無關聯告警 → 狀態供 RO 按單一處理。視窗內出現關聯告警 → 在管理界面聚合 → RO 按聚合案件處理。
+
+| 層 | 細節 |
+|---|---|
+| **資料** | 聚合定義來自 `risk_scenario_chains`／`LINKED_SCENARIOS`；工作階段存於 `platform_settings` `indicator.aggregation.sessions` |
+| **流程** | 告警 → Skill／RAG → 成員資格 → 單一繼續 **或** 關聯等待 → RO 單一 **或** 界面聚合 → RO 聚合 |
+| **畫面** | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation` |
+
+```mermaid
+flowchart LR
+  A[單一告警] --> B[Skill／RAG 檢索]
+  B --> C{屬聚合？}
+  C -->|否| D[按單一繼續]
+  D --> E[RO 按單一]
+  C -->|是| F[標記關聯＋等待視窗]
+  F -->|逾時| E
+  F -->|關聯告警| G[界面內聚合]
+  G --> H[RO 按聚合]
+```
+
+**驗收（FR-40）：** 線型步驟可見；示範工作階段涵蓋無成員、視窗逾時、已聚合三條路徑；英＋繁中。操作：使用手冊 §14B · 實作：TSD §11.7。
 
 ---
 
@@ -1024,6 +1077,7 @@ flowchart LR
 | 1.12 | 2026-10-12 | FR-36 稽核變更覆蓋；FR-38 AI 績效評估儀表板（§6.6） |
 | 1.13 | 2026-10-13 | FR-39 AI 協助自 P0–P3 嚴重度回饋調整升級因子權重（§6.7）；UAT-45／UAT-46 |
 | 1.14 | 2026-10-14 | FR-39 主迴路（§6.7）：線上公式 → 值班原因代碼 → 每週 AI → RO 核准；UAT-47 |
+| 1.15 | 2026-10-14 | FR-40 指標聚合線型流程（§6.8）`/admin/indicator-aggregation` |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","P0 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P0 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"10"}]]}],["$","div","P1 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P1 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"20"}]]}],["$","div","Product scope",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Product scope"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"CFD + Crypto"}]]}],["$","div","Acceptance",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Acceptance"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"UAT-01…45"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / demo-ready"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/tsd","children":"TSD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"PRD","markdownEn":"$12","markdownZh":"$13"}]]}]

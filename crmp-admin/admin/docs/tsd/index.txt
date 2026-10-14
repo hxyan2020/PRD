@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/cae071b8c3557322.css","style"]
-0:{"P":null,"b":"CMxYjt-nhvqdApDiGBKLO","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/cae071b8c3557322.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","FkVqyTAnKbEFQMvRbXgJS",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","4525","static/chunks/4525-f7631973f6246d74.js","4415","static/chunks/4415-d0640f85c2aad52e.js","7581","static/chunks/app/admin/layout-23ea2af3f6431575.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T04:21:54.167Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 04:21:54"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-14 07:51:54"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 04:21:54"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 04:21:54"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-d0640f85c2aad52e.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
-12:Tb707,# Vantage CRMP — Technical Specification Design (TSD)
+:HL["/PRD/crmp-admin/_next/static/css/f99356daa836fae6.css","style"]
+0:{"P":null,"b":"DRZdH62yLtVWjQFWGeAap","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/f99356daa836fae6.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","MQwHVz31HGvH1p97FEZUL",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","6164","static/chunks/6164-4b2dece20d1a27f7.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","7581","static/chunks/app/admin/layout-576b70d28ae8b026.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 04:30:57"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 04:30:57"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T04:30:57.815Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 04:30:57"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-14 08:00:57"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 04:30:57"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 04:30:57"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-99d9e27e0e4759a6.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
+12:Tbb18,# Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
 **Version:** 1.8  
@@ -196,6 +196,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
 | Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
 | Monitor | `/admin/discovery` | **Unknown Risk Discovery** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read` / `ai.approve` | **§11A** |
+| Monitor | `/admin/indicator-aggregation` | **Indicator Aggregation** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read` / `monitor.operate` | **§11.7** |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -594,6 +595,18 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 
 Weekly formula changes require RO approval (maker ≠ checker). Monthly coefficients: AI suggests; only humans with `escalation.manage` apply to ESC-DEFAULT (`SEVERITY_WEIGHTS_APPLY`, stamp `severity.weights.applied.{YYYY-MM}`).
 
+### 11.7 Indicator aggregation linear flow (FR-40)
+
+| Item | Spec |
+|---|---|
+| Surface | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
+| API | `GET/POST /api/indicator-aggregation` — `start`, `inject_related`, `close_window` |
+| Domain | `lib/indicator-aggregation.ts` (+ client-safe `indicator-aggregation-shared.ts`) |
+| Definitions | Built from `risk_scenario_chains` / `LINKED_SCENARIOS` (member monitors + window from sequence span) |
+| Sessions | `platform_settings` key `indicator.aggregation.sessions` |
+| Linear steps | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| Guards | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
+
 ---
 
 ## 11A. Unknown Risk Discovery (AI suggestion card)
@@ -888,10 +901,11 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.11 | 2026-10-12 | §8A AI Performance evaluation board; §16.19 audit coverage guards |
 | 1.12 | 2026-10-13 | §11.6 / §16.15 FR-39 P0–P3 severity feedback → monthly escalation factor weights |
 | 1.13 | 2026-10-14 | §11.6 / §16.15 FR-39 primary loop: live formula → ops reason codes → weekly AI → RO approve (`SEVERITY_FORMULA`) |
+| 1.14 | 2026-10-14 | §11.7 FR-40 indicator aggregation linear flow |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
-13:Tb061,# Vantage CRMP — 技術規格設計（TSD）
+13:Tb46a,# Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
 **版本：** 1.8  
@@ -1073,6 +1087,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
 | 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/discovery` | **未知風險探索** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read`／`ai.approve` | **§11A** |
+| 監控 | `/admin/indicator-aggregation` | **指標聚合流程** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read`／`monitor.operate` | **§11.7** |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
@@ -1467,6 +1482,18 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 每週公式變更須 RO 核准（Maker ≠ Checker）。每月係數：AI 建議；僅具 `escalation.manage` 的人類可套用至 ESC-DEFAULT（`SEVERITY_WEIGHTS_APPLY`，蓋章 `severity.weights.applied.{YYYY-MM}`）。
 
+### 11.7 指標聚合線型流程（FR-40）
+
+| 項目 | 規格 |
+|---|---|
+| 畫面 | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
+| API | `GET/POST /api/indicator-aggregation` — `start`、`inject_related`、`close_window` |
+| 領域 | `lib/indicator-aggregation.ts`（＋客戶端安全 `indicator-aggregation-shared.ts`） |
+| 定義 | 由 `risk_scenario_chains`／`LINKED_SCENARIOS` 建立（成員監控＋依序列跨度的視窗） |
+| 工作階段 | `platform_settings` 鍵 `indicator.aggregation.sessions` |
+| 線型步驟 | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| 守護 | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
+
 ---
 
 ## 11A. 未知風險探索（AI 建議卡）
@@ -1761,6 +1788,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.12 | 2026-10-12 | §8A AI 績效評估看板；§16.19 稽核覆蓋守護 |
 | 1.13 | 2026-10-13 | §11.6／§16.15 FR-39 P0–P3 嚴重度回饋 → 每月升級因子權重 |
 | 1.14 | 2026-10-14 | §11.6／§16.15 FR-39 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准（`SEVERITY_FORMULA`） |
+| 1.15 | 2026-10-14 | §11.7 FR-40 指標聚合線型流程 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
