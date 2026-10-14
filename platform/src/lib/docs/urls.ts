@@ -21,6 +21,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
 
   // Home
   { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
+  {
+    category: "Home",
+    title: "Crypto Exchange Admin Home",
+    path: "/exchange",
+    description:
+      "Parallel CRMP desk for crypto-exchange demos — same pages as /admin, no Vantage logo/wording, CFD broker framing scrubbed; original /admin unchanged",
+    permission: "admin.access",
+  },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },

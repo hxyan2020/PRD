@@ -1223,6 +1223,9 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   FIELD: "欄位",
   DATA: "資料",
   "Unknown Risk Discovery": "未知風險探索",
+  "Crypto Exchange Admin Home": "加密交易所管理首頁",
+  "Parallel CRMP desk for crypto-exchange demos — same pages as /admin, no Vantage logo/wording, CFD broker framing scrubbed; original /admin unchanged":
+    "平行 CRMP 台面供加密交易所示範 — 頁面同 /admin，無 Vantage 標誌／文案，已去除 CFD 券商表述；原 /admin 未改動",
   "Indicator Aggregation": "指標聚合流程",
   "Indicator Aggregation Flow": "指標聚合流程",
   "Indicator Aggregation API": "指標聚合 API",

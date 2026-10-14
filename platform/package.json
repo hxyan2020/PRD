@@ -21,6 +21,7 @@
     "test:severity-formula-smoke": "tsx scripts/smoke-severity-formula.ts",
     "test:indicator-aggregation": "tsx scripts/verify-indicator-aggregation.ts",
     "test:indicator-aggregation-smoke": "tsx scripts/smoke-indicator-aggregation.ts",
+    "test:exchange-admin": "tsx scripts/verify-exchange-admin.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {
