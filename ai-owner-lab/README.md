@@ -43,7 +43,7 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 Each day lesson includes a **From production** case (real products/incidents/patterns) plus an **interactive diagram** — click nodes to inspect details.
 
-**Notebook / AI tutor:** highlight text → floating toolbar → **Add to notebook** or **Explain with AI**. The drawer can use the built-in local tutor, or an OpenAI-compatible API key (browser-only). Saved replies appear on **Notebook**, newest first with timestamps.
+**Notebook / AI tutor:** highlight text → floating toolbar → **Add to notebook** or **Explain with AI**. The drawer calls a ChatGPT-compatible OpenAI endpoint by default (Pollinations `text.pollinations.ai/openai`, same pattern as risk-handbook — no key required). You can paste your own OpenAI key in **API** settings. If the remote bot is unavailable, OWNLAB falls back to the local tutor. Saved replies appear on **Notebook**, newest first with timestamps.
 
 **Languages:** switch **EN / 中文** in the top bar. UI, curriculum, glossary, visuals, production cases, and the local tutor follow the selected language (saved in `localStorage`).
 
