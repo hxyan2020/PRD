@@ -9,11 +9,11 @@
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- 全包建議時窗約 **9 小時**（47 案）。
+- 全包建議時窗約 **9 小時**（48 案）。
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、P0–P3 嚴重度重推薦＋原因代碼、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、未知風險探索、即時警報與追蹤、風險領域、AI 管理、AI 績效（唯讀評估含每週嚴重度公式＋每月 P0–P3→權重組合）、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（嚴重度公式迴路 · 維度 × 係數 · ESC-DEFAULT · 每月嚴重度權重組合）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾；每次管理／Lark 變更＋失敗登入）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、P0–P3 嚴重度重推薦＋原因代碼、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、未知風險探索、指標聚合流程（線型：成員資格 → 等待 → RO 單一／聚合）、即時警報與追蹤、風險領域、AI 管理、AI 績效（唯讀評估含每週嚴重度公式＋每月 P0–P3→權重組合）、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（嚴重度公式迴路 · 維度 × 係數 · ESC-DEFAULT · 每月嚴重度權重組合）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾；每次管理／Lark 變更＋失敗登入）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
@@ -74,8 +74,9 @@ graph TD
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | 公開快照 — 登入可用並維持 demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — 結案後重新整理仍保持關閉 | Demo Messenger |
 | 45 | UAT-45 | 484m | 12m | High | Risk + AI | UAT-33 or UAT-37; open AI_REPORT thread | P0–P3 嚴重度重推薦匯入每月因子權重組合 | Demo Messenger, Escalation Routes, AI Performance |
-| 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45; Escalation formula loop seeded | 嚴重度公式迴路：值班原因代碼 → 每週 AI → RO 核准 | Demo Messenger, Escalation Routes, AI Admin, AI Performance |
-| 47 | UAT-46 | 508m | 15m | Critical | Risk Owner | UAT-01–45 and UAT-47 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
+| 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45；升級路徑公式迴路已種子 | 嚴重度公式迴路：值班原因代碼 → 每週 AI → RO 核准 | 示範 Messenger、升級路徑、AI 管理、AI 績效 |
+| 47 | UAT-48 | 508m | 12m | High | Risk + AI + Ops | UAT-02；指標聚合已種子 | 指標聚合線型流程：成員資格 → 等待 → RO 單一或聚合 | 指標聚合流程、AI 技能、RAG |
+| 48 | UAT-46 | 520m | 15m | Critical | Risk Owner | UAT-01–45、UAT-47、UAT-48 結果已記錄 | 風險負責人退出簽核 | UAT 清單、稽核日誌 |
 
 ## 逐步案例
 
@@ -876,8 +877,8 @@ graph TD
 
 ### UAT-47 — 嚴重度公式迴路：值班原因代碼 → 每週 AI → RO 核准
 
-- **嚴重度：** High · **負責：** Ops + Risk Owner + AI · **依賴：** UAT-45; Escalation formula loop seeded · **建議：** T+496m / 12m
-- **涵蓋：** Demo Messenger, Escalation Routes, AI Admin, AI Performance
+- **嚴重度：** High · **負責：** Ops + Risk Owner + AI · **依賴：** UAT-45；升級路徑公式迴路已種子 · **建議：** T+496m / 12m
+- **涵蓋：** 示範 Messenger、升級路徑、AI 管理、AI 績效
 - **為何測：** 公式分到的 P 必須可由 24/7 值班更正；AI 只能在風險負責人核准後改公式。
 - **目的：** 在 Messenger 將公式 P1 覆寫為 P2 並勾選原因；在升級路徑確認每週公式差異並由 RO 核准待審 CR。
 
@@ -891,10 +892,28 @@ graph TD
 **通過：** 接受原因代碼；RO 核准每週 CR；線上公式版本變更；AI 績效唯讀鏡像。
 **證據：** Messenger 原因代碼、升級路徑 `sev-formula-loop` 核准前後、AI 績效每週面板截圖。
 
+### UAT-48 — 指標聚合線型流程：成員資格 → 等待 → RO 單一或聚合
+
+- **嚴重度：** High · **負責：** Risk + AI + Ops · **依賴：** UAT-02；指標聚合已種子 · **建議：** T+508m / 12m
+- **涵蓋：** 指標聚合流程、AI 技能、RAG
+- **為何測：** 單一指標告警必須維持單一，或等待關聯監控後再以聚合包呈報 RO — 線型過程必須可見且可操作。
+- **目的：** 在 `/admin/indicator-aggregation` 走完線型軌道：無成員單一路徑、關聯等待 → 關聯告警 → AGGREGATED，以及等待 → 逾時 → RO 按單一。
+
+**步驟**
+
+1. 開啟**指標聚合流程**。確認八步線型軌道（`indicator-agg-linear-steps`）與種子工作階段（無成員／逾時／已聚合）。
+2. 選 `M2-ORPHAN-999` → **觸發示範告警**。確認步驟到達 RO 單一，結果為 `SINGLE_NO_MEMBERSHIP`（已跑 Skill／RAG；不屬任何聚合）。
+3. 選某一鏈成員監控（見定義卡）→ **觸發示範告警**。確認**可能存在指標關聯**與 `CORRELATED_WAIT` 等待視窗。
+4. 點**關聯告警：M2-…** → 確認結果 `AGGREGATED` 與步驟**RO 按聚合指標處理**；成員時間線顯示已觸發 vs 待觸發。
+5. 再觸發一則鏈成員告警 → **結束視窗 → RO 按單一處理** → 確認 `SINGLE_WINDOW_TIMEOUT`。
+
+**通過：** 線型步驟可見；三種結果皆示範；英或繁中介面可讀。
+**證據：** 線型軌道、單一路徑、等待視窗、已聚合工作階段詳情截圖。
+
 ### UAT-46 — 風險負責人退出簽核
 
-- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–45 and UAT-47 results recorded · **建議：** T+508m / 15m
-- **涵蓋：** UAT Checklist, Audit Log
+- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–45、UAT-47、UAT-48 結果已記錄 · **建議：** T+520m / 15m
+- **涵蓋：** UAT 清單、稽核日誌
 - **為何測：** 在有權的人寫下 ACCEPT／ACCEPT WITH WAIVERS／REJECT 之前，UAT 不算結束。
 - **目的：** 依退出規則統計 Critical／High，並存簽署決策。
 
@@ -902,7 +921,7 @@ graph TD
 
 1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
-3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）通過或豁免。
+3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）通過或豁免。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 

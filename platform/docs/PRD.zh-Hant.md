@@ -233,6 +233,7 @@ graph LR
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
 | FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者一致率（同意／部分／不同意）、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
 | FR-39 | P0–P3 嚴重度公式優化迴路 | 線上加權公式分到 P0–P3；24/7 值班在 AI_REPORT 勾選不准原因並覆寫 → 每週 AI 推薦新公式（增減因子、調整權重）→ 風險負責人經 `ai_change_requests` 核准；另含每月升級係數組合 |
+| FR-40 | 指標聚合線型流程 | 單一告警 → Skill／RAG 檢索 → 聚合成員資格檢查 →（否）單一路徑，或（是）標記關聯＋等待視窗 → 逾時＝RO 按單一／出現關聯＝界面聚合後再報 RO；畫面 `/admin/indicator-aggregation` |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -254,6 +255,7 @@ graph LR
 | 監控與風險 | 風險日誌分析 | `/admin/risk-log` | 處理時間、損失 vs 防損、漏洞 | 摘要＋類別＋領域＋紀錄 |
 | 監控與風險 | 市場情報 | `/admin/market-intel` | 會移動 LP 的頭條 | 立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描 |
 | 監控與風險 | 未知風險探索 | `/admin/discovery` | 與筆記本對齊的 AI 建議卡；RO 閘門後才進每日監控 | 連線 OpenAI／Mock；分析；核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者）；HTML／Colab 筆記本連結 |
+| 監控與風險 | 指標聚合流程 | `/admin/indicator-aggregation` | 關聯 M2-* 指標的線型聚合過程（來自連結時間鏈） | 觸發示範告警；Skill／RAG 檢索；成員資格；等待視窗；匯入關聯／結束視窗；RO 單一 vs 聚合結果 |
 | 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 統一指標＋偵測器登錄 | 全部執行／同步／暫停；近期執行；未結警報連至即時警報與追蹤（無警報／工單分頁） |
 | 監控與風險 | 偵測器（轉址） | `/admin/detectors` | 僅書籤 | 左側無此列 — 轉址 Monitor 2.0 |
 | 監控與風險 | 即時警報與追蹤 | `/admin/alerts` | 未結佇列＋分組 AI 管線 | MonitorCode 提示；僅 OPEN；確認；`/admin/ai-analyses` 列表轉址至此 |
@@ -374,6 +376,30 @@ flowchart LR
 ```
 
 **驗收（FR-39）：** `/admin/escalation` 的 `sev-formula-loop` 顯示線上公式＋範例 P＋每週差異＋RO 核准；Messenger `msg-severity-recommend` 有原因代碼勾選；每週 CR 為 AI Engineer Maker／RO Checker；AI 績效鏡像每週組合；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6 · UAT-45／UAT-47。
+
+### 6.8 指標聚合線型流程 — 方法、資料、流程
+
+**方法：** 每次單一指標告警後，執行技能匹配與／或 RAG 檢索，再檢查該監控是否為某聚合定義（連結時間鏈）的成員。若否，繼續單一指標剩餘流程。若是，並行繼續單一 RCA，標記「可能存在指標關聯」，並開啟等待視窗等其他成員監控。視窗結束且無關聯告警 → 狀態供 RO 按單一處理。視窗內出現關聯告警 → 在管理界面聚合 → RO 按聚合案件處理。
+
+| 層 | 細節 |
+|---|---|
+| **資料** | 聚合定義來自 `risk_scenario_chains`／`LINKED_SCENARIOS`；工作階段存於 `platform_settings` `indicator.aggregation.sessions` |
+| **流程** | 告警 → Skill／RAG → 成員資格 → 單一繼續 **或** 關聯等待 → RO 單一 **或** 界面聚合 → RO 聚合 |
+| **畫面** | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation` |
+
+```mermaid
+flowchart LR
+  A[單一告警] --> B[Skill／RAG 檢索]
+  B --> C{屬聚合？}
+  C -->|否| D[按單一繼續]
+  D --> E[RO 按單一]
+  C -->|是| F[標記關聯＋等待視窗]
+  F -->|逾時| E
+  F -->|關聯告警| G[界面內聚合]
+  G --> H[RO 按聚合]
+```
+
+**驗收（FR-40）：** 線型步驟可見；示範工作階段涵蓋無成員、視窗逾時、已聚合三條路徑；英＋繁中。操作：使用手冊 §14B · 實作：TSD §11.7 · UAT-48。
 
 ---
 
@@ -502,5 +528,6 @@ flowchart LR
 | 1.12 | 2026-10-12 | FR-36 稽核變更覆蓋；FR-38 AI 績效評估儀表板（§6.6） |
 | 1.13 | 2026-10-13 | FR-39 AI 協助自 P0–P3 嚴重度回饋調整升級因子權重（§6.7）；UAT-45／UAT-46 |
 | 1.14 | 2026-10-14 | FR-39 主迴路（§6.7）：線上公式 → 值班原因代碼 → 每週 AI → RO 核准；UAT-47 |
+| 1.15 | 2026-10-14 | FR-40 指標聚合線型流程（§6.8）`/admin/indicator-aggregation` |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

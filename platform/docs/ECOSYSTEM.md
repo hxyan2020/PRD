@@ -6,7 +6,7 @@
 
 The CRMP demo already proves an end-to-end spine:
 
-**Monitor 2.0 alarm → Realtime Alert & Tracker → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit (CRMP / Vantage Markets Admin plane split + Roll back) + home spine stage counts.**
+**Monitor 2.0 alarm → Realtime Alert & Tracker → AI RCA (skill/RAG) → optional Indicator Aggregation (correlated monitors) → independent second-AI challenge → messenger actions → maker/checker intervention → audit (CRMP / Vantage Markets Admin plane split + Roll back) + home spine stage counts.**
 
 Programme gaps and tentative ETAs live in [Open Issues](/admin/docs/open-issues) and [Progress Tracker](/admin/docs/progress) (Monitor still adding indicators; CRMP initial design; tech/resource plan open). Platform owner: demo platform owner / `haixiang.yan@hytechc.com`.
 
@@ -133,6 +133,7 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 | Enforcement | AI blocklist is largely documentary in UI | Must bind to AI service principals |
 | Mobile | Responsive card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit; confirm sheets still desktop-first | OK for web responsive ops, not native-app grade |
 | AI quality | Heuristic KPIs on [AI Performance](/admin/ai-performance); no production eval harness | Retune without live precision/F1 gates is guesswork |
+| Aggregation | Linear prototype on [Indicator Aggregation](/admin/indicator-aggregation) (linked chains / wait window → RO single or aggregate); not a production correlation engine | Live desks need Monitor feed + policy before auto-merge |
 | Audit trail | Plane split + Roll back + mutation coverage (`test:audit`) for admin/Lark/messenger + failed login | Export / retention still open (OI-12) |
 
 ---
@@ -150,7 +151,8 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 9. Review [AI Performance](/admin/ai-performance) before retuning models/thresholds; the board is read-only — mutations stay on AI Admin under maker≠checker.  
 10. Do not auto-close Monitor tickets from AI alone on BREACH/CRITICAL without Risk Owner policy.  
 11. Rehearse escalation path (Primary → Secondary → Risk Owner → Exec) in UAT before go-live.  
-12. Confirm Audit Log records every mutating admin/Lark path (discovery, detectors, messenger, failed login) — not only happy-path messenger closes.
+12. Confirm Audit Log records every mutating admin/Lark path (discovery, detectors, messenger, failed login) — not only happy-path messenger closes.  
+13. Correlated monitors: Risk Owner decides **single vs aggregate** on [Indicator Aggregation](/admin/indicator-aggregation); do not auto-merge without RO policy.
 
 ---
 
@@ -164,7 +166,7 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 - [ ] Security sign-off on AI blocklist + SoD model  
 - [ ] Legal sign-off on evidence retention  
 
-**Demo links:** this page · [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress) · [URL Catalog](/admin/docs/urls) · [UAT Checklist](/admin/docs/uat) · [Improvement Roadmap](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
+**Demo links:** this page · [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress) · [URL Catalog](/admin/docs/urls) · [UAT Checklist](/admin/docs/uat) · [Improvement Roadmap](/admin/docs/roadmap) · [Indicator Aggregation](/admin/indicator-aggregation) · [Demo Messenger](/admin/messenger)
 
 ---
 
@@ -175,5 +177,6 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin + Roll back; home spine; Open Issues / Progress links |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; F2/Phase B/Monitor shortcoming; mobile card lists; demo links |
 | 1.9 | 2026-10-12 | AI Performance board + audit mutation coverage noted in shortcomings / precautions |
+| 2.0 | 2026-10-14 | Indicator Aggregation (FR-40) in spine / shortcomings / precautions / demo links |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -13,6 +13,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/risk-log": { en: "Risk Log Analytics", "zh-Hant": "風險日誌分析" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
+  "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
   "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
@@ -91,6 +92,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "Notebook-parity AI suggestion card: Connect OpenAI / Mock → Analyse → Approve for validation / Ask more info / Dismiss. Optional promote to skill + Monitor 2.0 after RO check.",
       "zh-Hant": "與筆記本對齊的 AI 建議卡：連線 OpenAI／Mock → 分析 → 核准驗證／要求更多資訊／駁回。可選經 RO 覆核後晉升為技能＋Monitor 2.0。",
+    },
+  },
+  "indicator-aggregation": {
+    title: { en: "Indicator Aggregation Flow", "zh-Hant": "指標聚合流程" },
+    subtitle: {
+      en: "Linear process: single alert → skill/RAG lookup → aggregate membership → wait window for related indicators → RO as single or aggregated case.",
+      "zh-Hant": "線型流程：單一告警 → Skill／RAG 檢索 → 聚合成員資格 → 關聯指標等待視窗 → RO 按單一或聚合案件處理。",
     },
   },
   detectors: {

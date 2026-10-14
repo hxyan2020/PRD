@@ -13,7 +13,7 @@
 
 互動 SVG＋手機卡片：`/admin/docs/progress`（資料：`platform/src/lib/docs/open-issues.ts` — 18 項）。可依狀態與 BU 篩選。
 
-已交付台面事實（日常，不另開長條）：稽核平面分流（**CRMP 日誌**／**Vantage Markets 管理日誌**＋回滾＋每次管理／Lark 變更覆蓋）、**AI 績效**唯讀評估看板、可編輯角色、ESC-DEFAULT、首頁脊柱、BU 與團隊、**即時警報與追蹤**、偵測器→**Monitor 2.0**。
+已交付台面事實（日常，不另開長條）：稽核平面分流（**CRMP 日誌**／**Vantage Markets 管理日誌**＋回滾＋每次管理／Lark 變更覆蓋）、**AI 績效**唯讀評估看板、可編輯角色、ESC-DEFAULT、嚴重度公式迴路＋**指標聚合**線型流程（`/admin/indicator-aggregation`，FR-40）、首頁脊柱、BU 與團隊、**即時警報與追蹤**、偵測器→**Monitor 2.0**。
 
 ### 議題 → BU → 狀態 → 時間窗
 

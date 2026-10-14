@@ -255,9 +255,11 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
                     <div className="text-xs text-[var(--muted)] mt-2 break-word">
                       <strong>{zh ? "負責 BU" : "BU"}:</strong> {c.bu}
                       {" · "}
-                      <strong>{zh ? "依賴" : "Depends"}:</strong> {c.dependency}
+                      <strong>{zh ? "依賴" : "Depends"}:</strong>{" "}
+                      {zh && c.dependency_zh ? c.dependency_zh : c.dependency}
                       {" · "}
-                      <strong>{zh ? "涵蓋" : "Covers"}:</strong> {c.covers.join(" · ")}
+                      <strong>{zh ? "涵蓋" : "Covers"}:</strong>{" "}
+                      {(zh && c.covers_zh ? c.covers_zh : c.covers).join(" · ")}
                     </div>
                   </div>
                   <span className="text-xs text-[var(--muted)] shrink-0">

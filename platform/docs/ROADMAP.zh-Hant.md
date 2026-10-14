@@ -1,6 +1,6 @@
 # 平台改進路線圖
 
-已交付台面打磨（即時警報與追蹤命名；偵測器合併至 Monitor 2.0；分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、**AI 績效**唯讀評估看板、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾＋每次管理／Lark 變更覆蓋、手機卡片列表）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
+已交付台面打磨（即時警報與追蹤命名；偵測器合併至 Monitor 2.0；分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、**AI 績效**唯讀評估看板、**指標聚合**線型流程（關聯監控）、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾＋每次管理／Lark 變更覆蓋、手機卡片列表）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
 
 **文件編號：** CRMP-RM-001 · 現行 CRMP 原型之後的優先待辦  
 **讀者：** 風險負責人、平台負責人、工程、GRC  
@@ -494,7 +494,7 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 |---|---|
 | RM-01 | [示範 Messenger](/admin/messenger) · [Lark](/admin/lark) |
 | RM-02 | [Monitor 2.0](/admin/monitor-2) · [即時警報與追蹤](/admin/alerts) |
-| RM-03／RM-04 | [即時警報與追蹤](/admin/alerts) · [AI 管理](/admin/ai-admin) · [AI 績效](/admin/ai-performance) |
+| RM-03／RM-04 | [即時警報與追蹤](/admin/alerts) · [AI 管理](/admin/ai-admin) · [AI 績效](/admin/ai-performance) · [指標聚合](/admin/indicator-aggregation) |
 | RM-05 | [使用者](/admin/users) · [角色](/admin/roles) |
 | RM-09 | [人工干預](/admin/interventions) · [AI 存取安全](/admin/security/ai-access) |
 | RM-11 | [每日績效](/admin/dashboard) · [風險日誌](/admin/risk-log) |
@@ -511,5 +511,6 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 | 1.7 | 2026-10-05 | 日常打磨：稽核分頁＋回滾、ESC-DEFAULT、BU 與團隊、開放議題／進度 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；RM-02／RM-12 今日事實；手機卡片列表 |
 | 1.9 | 2026-10-12 | AI 績效評估看板＋稽核變更覆蓋列為日常；RM-03 連結 |
+| 2.0 | 2026-10-14 | 指標聚合線型流程（FR-40）列為日常；`/admin/indicator-aggregation` |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

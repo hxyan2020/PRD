@@ -6,7 +6,7 @@
 
 CRMP 示範已驗證端到端脊柱：
 
-**Monitor 2.0 警報 → 即時警報與追蹤 → AI RCA（Skill/RAG）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核（CRMP／Vantage Markets 管理平面分流＋回滾）／首頁脊柱階段計數。**
+**Monitor 2.0 警報 → 即時警報與追蹤 → AI RCA（Skill/RAG）→ 可選指標聚合（關聯監控）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核（CRMP／Vantage Markets 管理平面分流＋回滾）／首頁脊柱階段計數。**
 
 計畫缺口與暫定 ETA 見 [開放議題](/admin/docs/open-issues) 與 [進度追蹤](/admin/docs/progress)（Monitor 仍在加指標；CRMP 初始設計；技術／資源規劃仍開放）。平台負責人：demo platform owner／`haixiang.yan@hytechc.com`。
 
@@ -131,6 +131,7 @@ CRMP 示範已驗證端到端脊柱：
 | 強制 | AI 黑名單偏文件化 | 須綁定 AI 服務主體 |
 | 行動 | Monitor 2.0／升級／資料來源／風險日誌／稽核已有響應式卡片；確認表仍偏桌面 | Web 響應式可接受，非原生 App 級 |
 | AI 品質 | [AI 績效](/admin/ai-performance) 上的啟發式 KPI；無正式評測架 | 無即時精確率／F1 閘道時改調等於猜 |
+| 聚合 | [指標聚合](/admin/indicator-aggregation) 線型原型（關聯鏈／等待窗 → RO 單一或聚合）；非正式關聯引擎 | 正式台面需 Monitor 饋送＋政策後才能自動合併 |
 | 稽核軌跡 | 平面分流＋回滾＋管理／Lark／Messenger 變更覆蓋（`test:audit`）含失敗登入 | 匯出／保存仍開放（OI-12） |
 
 ---
@@ -148,7 +149,8 @@ CRMP 示範已驗證端到端脊柱：
 9. 改調模型／門檻前先看 [AI 績效](/admin/ai-performance)；看板為唯讀 — 變更仍在 AI 管理且制作者≠覆核者。  
 10. BREACH／CRITICAL 不得僅由 AI 自動關閉 Monitor 工單（除非風險政策明文允許）。  
 11. 上線前以 UAT 演練升級路徑（Primary → Secondary → Risk Owner → Exec）。  
-12. 確認稽核日誌記錄每一次管理／Lark 變更（探索、偵測器、Messenger、失敗登入）— 不只是快樂路徑結案。
+12. 確認稽核日誌記錄每一次管理／Lark 變更（探索、偵測器、Messenger、失敗登入）— 不只是快樂路徑結案。  
+13. 關聯監控：風險負責人在 [指標聚合](/admin/indicator-aggregation) 決定**單一或聚合**；無 RO 政策前不得自動合併。
 
 ---
 
@@ -162,7 +164,7 @@ CRMP 示範已驗證端到端脊柱：
 - [ ] 資安簽核 AI 黑名單＋SoD 模型  
 - [ ] 法遵簽核證據保存政策  
 
-**示範連結：** 本頁 · [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress) · [網址目錄](/admin/docs/urls) · [UAT 清單](/admin/docs/uat) · [改進路線圖](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
+**示範連結：** 本頁 · [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress) · [網址目錄](/admin/docs/urls) · [UAT 清單](/admin/docs/uat) · [改進路線圖](/admin/docs/roadmap) · [指標聚合](/admin/indicator-aggregation) · [Demo Messenger](/admin/messenger)
 
 ---
 
@@ -173,5 +175,6 @@ CRMP 示範已驗證端到端脊柱：
 | 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理＋回滾；首頁脊柱；開放議題／進度連結 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；F2／階段 B／Monitor 不足；手機卡片；示範連結 |
 | 1.9 | 2026-10-12 | AI 績效看板＋稽核變更覆蓋記入不足／注意事項 |
+| 2.0 | 2026-10-14 | 指標聚合（FR-40）記入脊柱／不足／注意事項／示範連結 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

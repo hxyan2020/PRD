@@ -180,6 +180,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
 | Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
 | Monitor | `/admin/discovery` | **Unknown Risk Discovery** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read` / `ai.approve` | **§11A** |
+| Monitor | `/admin/indicator-aggregation` | **Indicator Aggregation** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read` / `monitor.operate` | **§11.7** |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -578,6 +579,18 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 
 Weekly formula changes require RO approval (maker ≠ checker). Monthly coefficients: AI suggests; only humans with `escalation.manage` apply to ESC-DEFAULT (`SEVERITY_WEIGHTS_APPLY`, stamp `severity.weights.applied.{YYYY-MM}`).
 
+### 11.7 Indicator aggregation linear flow (FR-40)
+
+| Item | Spec |
+|---|---|
+| Surface | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
+| API | `GET/POST /api/indicator-aggregation` — `start`, `inject_related`, `close_window` |
+| Domain | `lib/indicator-aggregation.ts` (+ client-safe `indicator-aggregation-shared.ts`) |
+| Definitions | Built from `risk_scenario_chains` / `LINKED_SCENARIOS` (member monitors + window from sequence span) |
+| Sessions | `platform_settings` key `indicator.aggregation.sessions` |
+| Linear steps | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| Guards | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
+
 ---
 
 ## 11A. Unknown Risk Discovery (AI suggestion card)
@@ -872,6 +885,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.11 | 2026-10-12 | §8A AI Performance evaluation board; §16.19 audit coverage guards |
 | 1.12 | 2026-10-13 | §11.6 / §16.15 FR-39 P0–P3 severity feedback → monthly escalation factor weights |
 | 1.13 | 2026-10-14 | §11.6 / §16.15 FR-39 primary loop: live formula → ops reason codes → weekly AI → RO approve (`SEVERITY_FORMULA`) |
+| 1.14 | 2026-10-14 | §11.7 FR-40 indicator aggregation linear flow |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

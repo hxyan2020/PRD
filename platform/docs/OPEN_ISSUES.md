@@ -1,6 +1,6 @@
 # CRMP Open Issues
 
-**Document ID:** CRMP-OI-001 · **Version:** 1.4 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
+**Document ID:** CRMP-OI-001 · **Version:** 1.5 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
 
 Tentative open-issue checklist for the CRMP admin / control-plane programme. Assumptions are explicit:
 
@@ -173,7 +173,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - [ ] Tag corpus rows to Monitor `M2-*` where applicable  
 
 #### OI-14 — Prototype AI desk features — UAT window
-**BU:** AI · **Status:** UAT · **ETA:** 2026-10 / 11 · **Depends:** UAT-01…45; RO calendar
+**BU:** AI · **Status:** UAT · **ETA:** 2026-10 / 11 · **Depends:** UAT-01…48; RO calendar
 
 - [x] Realtime Alert & Tracker + Detectors merged into Monitor 2.0  
 - [x] First/second-line AI Admin · grouped pipeline · intervention actioner email  
@@ -181,6 +181,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - [x] Editable Roles + audit plane split + Roll back  
 - [x] AI Performance evaluation board (`/admin/ai-performance`) — skill match, challenger, feedback, training  
 - [x] Audit mutation coverage — every admin/Lark/messenger path + `LOGIN_FAILED` (`test:audit`)  
+- [x] Indicator Aggregation linear flow (`/admin/indicator-aggregation`, FR-40 / UAT-48) — membership → wait → RO single or aggregate  
 - [ ] Formal UAT sign-off (OI-09)  
 
 ---
@@ -220,7 +221,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 #### OI-09 — Risk Owner UAT exit + policy thresholds
 **BU:** Risk Owner · **Status:** Started · **ETA:** 2026-Q4 / 2027-Q1 · **Depends:** UAT pack; BU and Teams RACI; AI Admin
 
-- [ ] Execute interactive UAT-01…45 with evidence notes  
+- [ ] Execute interactive UAT-01…48 with evidence notes  
 - [ ] Sign UAT exit criteria (pass thresholds)  
 - [ ] Set second-AI severity policy (default BREACH)  
 - [ ] Accept ESC-DEFAULT catch-all + dimension coefficients  
@@ -264,5 +265,6 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 | 1.2 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11 mobile cards; OI-13 local-only ack |
 | 1.3 | 2026-10-05 | Detailed per-BU checklists; OI-16 observability, OI-17 kill-switches, OI-18 tenancy; board renders checklist lines |
 | 1.4 | 2026-10-12 | OI-14 AI Performance board + audit mutation coverage shipped; OI-12 coverage guards |
+| 1.5 | 2026-10-14 | OI-14 Indicator Aggregation linear flow (FR-40 / UAT-48) shipped |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)

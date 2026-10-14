@@ -180,6 +180,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
 | 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/discovery` | **未知風險探索** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read`／`ai.approve` | **§11A** |
+| 監控 | `/admin/indicator-aggregation` | **指標聚合流程** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read`／`monitor.operate` | **§11.7** |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
@@ -574,6 +575,18 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 每週公式變更須 RO 核准（Maker ≠ Checker）。每月係數：AI 建議；僅具 `escalation.manage` 的人類可套用至 ESC-DEFAULT（`SEVERITY_WEIGHTS_APPLY`，蓋章 `severity.weights.applied.{YYYY-MM}`）。
 
+### 11.7 指標聚合線型流程（FR-40）
+
+| 項目 | 規格 |
+|---|---|
+| 畫面 | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
+| API | `GET/POST /api/indicator-aggregation` — `start`、`inject_related`、`close_window` |
+| 領域 | `lib/indicator-aggregation.ts`（＋客戶端安全 `indicator-aggregation-shared.ts`） |
+| 定義 | 由 `risk_scenario_chains`／`LINKED_SCENARIOS` 建立（成員監控＋依序列跨度的視窗） |
+| 工作階段 | `platform_settings` 鍵 `indicator.aggregation.sessions` |
+| 線型步驟 | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| 守護 | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
+
 ---
 
 ## 11A. 未知風險探索（AI 建議卡）
@@ -868,6 +881,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.12 | 2026-10-12 | §8A AI 績效評估看板；§16.19 稽核覆蓋守護 |
 | 1.13 | 2026-10-13 | §11.6／§16.15 FR-39 P0–P3 嚴重度回饋 → 每月升級因子權重 |
 | 1.14 | 2026-10-14 | §11.6／§16.15 FR-39 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准（`SEVERITY_FORMULA`） |
+| 1.15 | 2026-10-14 | §11.7 FR-40 指標聚合線型流程 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

@@ -13,7 +13,7 @@ Each column header labels the **responsible BU**. Cell colour = status: **Planne
 
 Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 18 issues). Filter by status and BU on the board.
 
-Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back + mutation coverage for every admin/Lark path), **AI Performance** read-only eval board, editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
+Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back + mutation coverage for every admin/Lark path), **AI Performance** read-only eval board, editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, severity formula loop + **Indicator Aggregation** linear flow (`/admin/indicator-aggregation`, FR-40), home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
 
 ### Issue → BU → status → window
 
