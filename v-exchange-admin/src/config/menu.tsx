@@ -67,6 +67,7 @@ export type PageKey =
   | 'risk-reserve-detail'
   | 'risk-trading-restriction'
   | 'risk-spread-alert'
+  | 'risk-severity-optimization'
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
 
@@ -125,6 +126,7 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-reserve-detail': 'Risk Reserve Detail',
   'risk-trading-restriction': 'Trading Restriction',
   'risk-spread-alert': 'Spread Alert',
+  'risk-severity-optimization': 'Severity Optimization',
   'risk-no-trade-monitor': 'No Trade Monitor',
   'risk-depth-monitor': 'Depth Monitor',
 }
@@ -261,6 +263,7 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-reserve-detail', label: 'Risk Reserve Detail' },
       { key: 'risk-trading-restriction', label: 'Trading Restriction' },
       { key: 'risk-spread-alert', label: 'Spread Alert' },
+      { key: 'risk-severity-optimization', label: 'Severity Optimization' },
       { key: 'risk-no-trade-monitor', label: 'No Trade Monitor' },
       { key: 'risk-depth-monitor', label: 'Depth Monitor' },
     ],

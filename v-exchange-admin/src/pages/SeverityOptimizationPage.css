@@ -1,0 +1,111 @@
+.severity-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.severity-page .severity-section-card {
+  height: 100%;
+}
+
+.severity-page .severity-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.severity-page .severity-kv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.severity-page .severity-kv {
+  padding: 10px 12px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+}
+
+.severity-page .severity-kv-label {
+  margin-bottom: 4px;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+}
+
+.severity-page .severity-formula {
+  padding: 12px;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 8px;
+  color: #135200;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.severity-page .severity-feedback-box {
+  padding: 12px;
+  background: #fff7e6;
+  border: 1px solid #ffd591;
+  border-radius: 8px;
+}
+
+.severity-page .severity-recommendation {
+  padding: 12px;
+  background: #f0f5ff;
+  border: 1px solid #adc6ff;
+  border-radius: 8px;
+}
+
+.severity-page .severity-factor-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.severity-page .severity-factor-summary-item {
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+}
+
+.severity-page .severity-factor-number {
+  display: block;
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.severity-page .severity-approval-panel {
+  padding: 14px;
+  border: 1px dashed #91caff;
+  border-radius: 8px;
+  background: #f5fbff;
+}
+
+.severity-page .severity-timeline-note {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.severity-page .severity-reason-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.severity-page .severity-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1200px) {
+  .severity-page .severity-kv-grid,
+  .severity-page .severity-factor-summary {
+    grid-template-columns: 1fr;
+  }
+}
