@@ -8,34 +8,42 @@ import {
   downloadPublicNotesHtml,
   openPublicNotesHtml,
 } from '../lib/notebookPublicHtml'
-import { getCloudSyncStatus, loadGistSettings } from '../lib/notebookGistSync'
+import {
+  getCloudSyncStatus,
+  loadGistSettings,
+  type OwnlabGistMatch,
+} from '../lib/notebookGistSync'
 
 type PullSummary = {
   localBefore: number
   cloudCount: number
   total: number
   switchedGist: boolean
+  gistSummaries?: OwnlabGistMatch[]
   error?: string
   ok: boolean
 }
 
-async function pullRichestCloud(): Promise<PullSummary> {
+async function pullUnionCloud(): Promise<PullSummary> {
   return notebookStore.pullCloudForExport()
 }
 
 /**
  * Build a public, copy-friendly HTML of all notebook notes (images embedded).
- * Auto-pulls the richest cloud notebook on open so a phone with a partial local
- * cache (e.g. 8 notes) still exports the full set (e.g. 15).
+ * Auto-merges every OWNLAB cloud gist + local snapshots, then can publish a
+ * public GitHub link so notes are reachable on any phone.
  */
 export function NotesPublicHtml() {
   const { t, lang } = useLanguage()
   const { ready, entries, categories, count } = useNotebook()
   const [status, setStatus] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [publishing, setPublishing] = useState(false)
   const [cloudReady, setCloudReady] = useState(false)
   const [cloudCount, setCloudCount] = useState<number | null>(null)
   const [localBefore, setLocalBefore] = useState<number | null>(null)
+  const [gistSummaries, setGistSummaries] = useState<OwnlabGistMatch[]>([])
+  const [publicLink, setPublicLink] = useState<string | null>(null)
   const [previewHtml, setPreviewHtml] = useState<string>('')
   const tRef = useRef(t)
   tRef.current = t
@@ -55,15 +63,16 @@ export function NotesPublicHtml() {
   function applyPullResult(result: PullSummary, translate = t) {
     setLocalBefore(result.localBefore)
     setCloudCount(result.cloudCount)
+    setGistSummaries(result.gistSummaries ?? [])
     setCloudReady(true)
-    if (!result.ok) {
-      setStatus(result.error || translate('publicHtmlCloudFail'))
+    if (!result.ok && result.error) {
+      setStatus(result.error)
       return
     }
-    if (result.switchedGist) {
+    if ((result.gistSummaries?.length ?? 0) > 1) {
       setStatus(
-        translate('publicHtmlSwitchedGist', {
-          before: result.localBefore,
+        translate('publicHtmlMergedGists', {
+          gists: result.gistSummaries!.length,
           cloud: result.cloudCount,
           total: result.total,
         }),
@@ -76,9 +85,13 @@ export function NotesPublicHtml() {
           total: result.total,
         }),
       )
-    } else if (result.total < result.cloudCount) {
+    } else if (result.switchedGist) {
       setStatus(
-        translate('publicHtmlStillShort', { total: result.total, cloud: result.cloudCount }),
+        translate('publicHtmlSwitchedGist', {
+          before: result.localBefore,
+          cloud: result.cloudCount,
+          total: result.total,
+        }),
       )
     } else {
       setStatus(translate('publicHtmlCloudPulled', { total: result.total }))
@@ -88,13 +101,14 @@ export function NotesPublicHtml() {
   async function refreshFromCloud() {
     setBusy(true)
     setStatus(null)
+    setPublicLink(null)
     try {
       if (!loadGistSettings().token) {
         setCloudReady(true)
         setStatus(t('publicHtmlNeedCloud'))
         return
       }
-      applyPullResult(await pullRichestCloud())
+      applyPullResult(await pullUnionCloud())
     } catch (err) {
       setCloudReady(true)
       setStatus(err instanceof Error ? err.message : t('publicHtmlCloudFail'))
@@ -103,9 +117,6 @@ export function NotesPublicHtml() {
     }
   }
 
-  // Auto-pull richest cloud notebook when the page becomes ready.
-  // Do not gate on a ref — React Strict Mode remounts would skip the real pull
-  // and leave the phone stuck on its partial local cache (e.g. 8 of 15).
   useEffect(() => {
     if (!ready) return
     if (!loadGistSettings().token) {
@@ -115,7 +126,7 @@ export function NotesPublicHtml() {
     let cancelled = false
     setBusy(true)
     setCloudReady(false)
-    void pullRichestCloud()
+    void pullUnionCloud()
       .then((result) => {
         if (cancelled) return
         applyPullResult(result, tRef.current)
@@ -149,6 +160,30 @@ export function NotesPublicHtml() {
     }
     openPublicNotesHtml(html)
     setStatus(t('publicHtmlOpened', { n: count }))
+  }
+
+  async function onPublishLink() {
+    if (!html || count === 0) {
+      setStatus(t('publicHtmlNoNotes'))
+      return
+    }
+    setPublishing(true)
+    setStatus(null)
+    try {
+      const published = await notebookStore.publishNotesPublicLink(html)
+      const link = published.rawUrl || published.htmlUrl
+      setPublicLink(link)
+      setStatus(t('publicHtmlPublished', { n: published.noteCount }))
+      try {
+        await navigator.clipboard.writeText(link)
+      } catch {
+        /* user can copy from the visible link */
+      }
+    } catch (err) {
+      setStatus(err instanceof Error ? err.message : t('publicHtmlPublishFail'))
+    } finally {
+      setPublishing(false)
+    }
   }
 
   const cloud = getCloudSyncStatus()
@@ -185,6 +220,14 @@ export function NotesPublicHtml() {
         </button>
         <button
           type="button"
+          className="btn primary"
+          disabled={actionsDisabled || publishing}
+          onClick={() => void onPublishLink()}
+        >
+          {publishing ? t('cloudSyncing') : t('publicHtmlPublish')}
+        </button>
+        <button
+          type="button"
           className="btn ghost"
           disabled={!ready || busy || !hasToken}
           onClick={() => void refreshFromCloud()}
@@ -193,15 +236,51 @@ export function NotesPublicHtml() {
         </button>
       </div>
 
+      {publicLink ? (
+        <p className="notes-public-link" role="status">
+          {t('publicHtmlLinkLabel')}{' '}
+          <a href={publicLink} target="_blank" rel="noreferrer">
+            {publicLink}
+          </a>
+        </p>
+      ) : null}
+
       {status ? (
         <p className="notebook-recover-status" role="status">
           {status}
         </p>
       ) : null}
 
-      {cloudReady && cloudCount != null && count < cloudCount ? (
+      {gistSummaries.length > 0 ? (
+        <section className="notes-public-gists" aria-label={t('publicHtmlGistsTitle')}>
+          <h2>{t('publicHtmlGistsTitle')}</h2>
+          <ul>
+            {gistSummaries.map((g) => (
+              <li key={g.gistId}>
+                <code>{g.gistId.slice(0, 12)}…</code> — {t('publicHtmlGistCount', { n: g.noteCount })}
+                {g.htmlUrl ? (
+                  <>
+                    {' '}
+                    <a href={g.htmlUrl} target="_blank" rel="noreferrer">
+                      gist
+                    </a>
+                  </>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+          <p className="notes-public-help-note">{t('publicHtmlGistsHint')}</p>
+        </section>
+      ) : null}
+
+      {cloudReady &&
+      cloudCount != null &&
+      count > 0 &&
+      gistSummaries.length > 0 &&
+      Math.max(...gistSummaries.map((g) => g.noteCount), 0) === cloudCount &&
+      cloudCount === count ? (
         <p className="notebook-composer-error" role="alert">
-          {t('publicHtmlStillShort', { total: count, cloud: cloudCount })}
+          {t('publicHtmlCloudOnlyPartial', { cloud: cloudCount, total: count })}
         </p>
       ) : null}
 
@@ -211,6 +290,7 @@ export function NotesPublicHtml() {
           <li>{t('publicHtmlHow1')}</li>
           <li>{t('publicHtmlHow2')}</li>
           <li>{t('publicHtmlHow3')}</li>
+          <li>{t('publicHtmlHow4')}</li>
         </ol>
         <p className="notes-public-help-note">{t('publicHtmlHowCloud')}</p>
       </section>

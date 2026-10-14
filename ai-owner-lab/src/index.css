@@ -3988,6 +3988,43 @@ button.notebook-category-badge.on {
   font-size: 0.92rem;
 }
 
+.notes-public-link {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.65rem;
+  background: #e7f3f1;
+  color: var(--ink);
+  word-break: break-all;
+  font-size: 0.92rem;
+}
+
+.notes-public-link a {
+  color: var(--teal-deep);
+  font-weight: 650;
+}
+
+.notes-public-gists {
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 1rem 1.15rem;
+  margin: 1rem 0 1.25rem;
+  background: #fff;
+}
+
+.notes-public-gists h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.notes-public-gists ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.notes-public-gists li {
+  margin: 0.3rem 0;
+}
+
 .notes-public-preview h2 {
   margin: 0 0 0.65rem;
   font-size: 1.05rem;

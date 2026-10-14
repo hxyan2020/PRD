@@ -282,6 +282,7 @@ function pickOwnlabFile(
 /**
  * Full notebook JSON, following raw_url when GitHub truncates >1MB files.
  * Without this, large notebooks restore as empty/corrupt on a new device.
+ * Also falls back to raw_url when inline content is missing or not valid JSON.
  */
 export async function extractBackupContentFull(
   gist: Record<string, unknown>,
@@ -290,7 +291,20 @@ export async function extractBackupContentFull(
   const files = gist.files as Record<string, GistFile> | undefined
   const file = pickOwnlabFile(files)
   if (!file) return null
-  if (file.truncated && file.raw_url) {
+
+  const inline = file.content ?? null
+  const inlineOk = (() => {
+    if (!inline) return false
+    try {
+      JSON.parse(inline)
+      return true
+    } catch {
+      return false
+    }
+  })()
+
+  const needsRaw = Boolean(file.raw_url) && (file.truncated || !inlineOk)
+  if (needsRaw && file.raw_url) {
     const response = await fetch(file.raw_url, {
       headers: {
         Accept: 'application/vnd.github.raw',
@@ -299,11 +313,82 @@ export async function extractBackupContentFull(
       },
     })
     if (!response.ok) {
+      if (inlineOk) return inline
       throw new Error(`Could not download full cloud notebook (${response.status})`)
     }
     return response.text()
   }
-  return file.content ?? null
+  return inline
+}
+
+export type OwnlabGistBackup = OwnlabGistMatch & { content: string }
+
+/** Download every OWNLAB gist backup for this token (for union-merge recovery). */
+export async function pullAllOwnlabGistBackups(token: string): Promise<OwnlabGistBackup[]> {
+  const matches = await findOwnlabNotebookGists(token)
+  const out: OwnlabGistBackup[] = []
+  for (const match of matches) {
+    try {
+      const full = await githubJson(`/gists/${match.gistId}`, token.trim())
+      const content = await extractBackupContentFull(full, token.trim())
+      if (!content) continue
+      out.push({
+        ...match,
+        noteCount: countNotesInBackupJson(content),
+        content,
+      })
+    } catch {
+      /* skip unreadable gist */
+    }
+  }
+  return out
+}
+
+/**
+ * Publish a standalone notes HTML as a *public* Gist so the user can open a
+ * shareable link on any device and copy text/images.
+ */
+export async function publishPublicNotesHtml(
+  html: string,
+  token: string,
+  options?: { fileName?: string; description?: string },
+): Promise<{ gistId: string; htmlUrl: string; rawUrl: string | null }> {
+  const trimmed = token.trim()
+  if (!trimmed) throw new Error('GitHub token is required')
+  const fileName = options?.fileName || 'ownlab-notes-copy.html'
+  const description =
+    options?.description || 'OWNLAB notes — public copy page (text + images)'
+  const result = await githubRequest('/gists', trimmed, {
+    method: 'POST',
+    body: JSON.stringify({
+      description,
+      public: true,
+      files: {
+        [fileName]: { content: html },
+      },
+    }),
+  })
+  if (!result.ok) {
+    const data = result.data
+    const message =
+      data && typeof data === 'object' && 'message' in data
+        ? String((data as { message: unknown }).message)
+        : `GitHub error ${result.status}`
+    throw new Error(message)
+  }
+  const created = result.data
+  if (!created || typeof created !== 'object' || Array.isArray(created)) {
+    throw new Error('Unexpected GitHub response')
+  }
+  const gistId = String((created as { id?: unknown }).id || '')
+  if (!gistId) throw new Error('GitHub did not return a public page id')
+  const htmlUrl =
+    typeof (created as { html_url?: unknown }).html_url === 'string'
+      ? String((created as { html_url: string }).html_url)
+      : `https://gist.github.com/${gistId}`
+  const files = (created as { files?: Record<string, { raw_url?: string }> }).files
+  const rawUrl = files?.[fileName]?.raw_url ?? null
+  return { gistId, htmlUrl, rawUrl }
 }
 
 /** Accept a raw gist id or a gist.github.com / api URL. */

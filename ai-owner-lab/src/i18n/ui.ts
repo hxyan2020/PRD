@@ -434,7 +434,20 @@ const en = {
   publicHtmlStillShort:
     'This export has {total} note(s) but cloud reported {cloud}. On the device that still has all notes: Notebook → Double-check cloud sync, then refresh here again.',
   publicHtmlHowCloud:
-    'This page auto-pulls the richest cloud notebook when you open it, so a phone with fewer local notes still exports the full set.',
+    'This page merges every OWNLAB cloud notebook for your token plus local snapshots, then can publish a public copy link.',
+  publicHtmlPublish: 'Create public copy link',
+  publicHtmlPublished: 'Public copy link ready ({n} notes) — link copied if clipboard allows.',
+  publicHtmlPublishFail: 'Could not create a public copy link.',
+  publicHtmlLinkLabel: 'Open this link on any device to copy:',
+  publicHtmlGistsTitle: 'Cloud notebooks found',
+  publicHtmlGistCount: '{n} note(s)',
+  publicHtmlGistsHint:
+    'If notes were split across leftover cloud notebooks, they are union-merged above. Totals per gist are listed here.',
+  publicHtmlMergedGists:
+    'Merged {gists} cloud notebook(s) ({cloud} unique cloud ids) → {total} note(s) on this device.',
+  publicHtmlCloudOnlyPartial:
+    'Cloud currently only has about {cloud} note(s) (this device shows {total}). Missing notes were never uploaded — open Notebook on the device that still has them → Double-check cloud sync, then tap Refresh here. Or use Create public copy link after that device uploads.',
+  publicHtmlHow4: 'Or tap Create public copy link and open the shared URL on any phone.',
 } as const
 
 type UiKey = keyof typeof en
@@ -854,7 +867,18 @@ const zh: Record<UiKey, string> = {
   publicHtmlStillShort:
     '当前导出有 {total} 条，但云端报告 {cloud} 条。请到仍有全部笔记的设备：笔记 → 核对云同步，然后再回到这里刷新。',
   publicHtmlHowCloud:
-    '打开本页会自动拉取笔记最多的云端笔记本，所以本机笔记偏少时也能导出完整集合。',
+    '本页会合并该 Token 下所有 OWNLAB 云端笔记本以及本地快照，并可生成公开复制链接。',
+  publicHtmlPublish: '生成公开复制链接',
+  publicHtmlPublished: '公开复制链接已就绪（{n} 条）— 若系统允许已复制到剪贴板。',
+  publicHtmlPublishFail: '无法创建公开复制链接。',
+  publicHtmlLinkLabel: '在任意设备打开此链接即可复制：',
+  publicHtmlGistsTitle: '找到的云端笔记本',
+  publicHtmlGistCount: '{n} 条笔记',
+  publicHtmlGistsHint: '若笔记分散在多个旧云端笔记本中，上面已做合并。下方列出每个 gist 的数量。',
+  publicHtmlMergedGists: '已合并 {gists} 个云端笔记本（云端唯一 id {cloud} 个）→ 本机现有 {total} 条。',
+  publicHtmlCloudOnlyPartial:
+    '云端目前大约只有 {cloud} 条（本机显示 {total}）。缺少的笔记从未成功上传——请到仍有全部笔记的设备打开「笔记」→「核对云同步」，再回到这里点刷新；上传成功后也可点「生成公开复制链接」。',
+  publicHtmlHow4: '或点「生成公开复制链接」，用分享的网址在任意手机打开复制。',
 }
 
 const catalogs: Record<Lang, Record<UiKey, string>> = { en: en as Record<UiKey, string>, zh }

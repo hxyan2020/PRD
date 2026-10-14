@@ -6,6 +6,8 @@ import {
   isGistConflictError,
   loadGistSettings,
   parseGistIdInput,
+  publishPublicNotesHtml,
+  pullAllOwnlabGistBackups,
   pullGistBackup,
   pullGistBackupMeta,
   pushGistBackup,
@@ -13,6 +15,7 @@ import {
   resolveOwnlabNotebookGist,
   saveGistSettings,
   setLastCloudSyncAt,
+  type OwnlabGistMatch,
 } from '../lib/notebookGistSync'
 import {
   IDB_KEYS,
@@ -947,9 +950,9 @@ export const notebookStore = {
     return { total: cache.entries.length, fromFolder, fromGist }
   },
   /**
-   * Pull the richest OWNLAB cloud notebook for export/copy pages.
-   * Switches gist id when another gist for the same token has more notes,
-   * then merges into local cache (does not push).
+   * Recover every local remnant + union-merge ALL OWNLAB cloud gists for export.
+   * Notes were often split across leftover gists (8 in one, more in another) or
+   * only survived in IndexedDB snapshots — one "richest gist" pull is not enough.
    */
   async pullCloudForExport(): Promise<{
     ok: boolean
@@ -958,59 +961,123 @@ export const notebookStore = {
     total: number
     switchedGist: boolean
     gistId: string
+    gistSummaries: OwnlabGistMatch[]
     error?: string
   }> {
     await ensureReady()
     const localBefore = cache.entries.length
     const settings = loadGistSettings()
+    async function mergeLocalRemnants() {
+      const gathered = await gatherAllSources()
+      try {
+        const folderJson = await readFolderBackup()
+        if (folderJson) {
+          await notebookStore.importBackup(folderJson, { syncCloud: false })
+        }
+      } catch {
+        /* no folder backup */
+      }
+      const entries = mergeEntries(cache.entries, gathered.entries)
+      const trash = mergeTrash(cache.trash, gathered.trash)
+      const categories = mergeCategories(cache.categories, gathered.categories)
+      if (
+        entries.length !== cache.entries.length ||
+        trash.length !== cache.trash.length ||
+        categories.length !== cache.categories.length
+      ) {
+        await enqueueWrite(async () => {
+          const nextEntries = mergeEntries(cache.entries, entries)
+          const nextTrash = mergeTrash(cache.trash, trash)
+          const nextCategories = mergeCategories(cache.categories, categories)
+          await saveSnapshot(cache.entries, cache.trash, cache.categories)
+          await persistKey(IDB_KEYS.entries, nextEntries)
+          await persistKey(IDB_KEYS.trash, nextTrash)
+          await persistKey(IDB_KEYS.categories, nextCategories)
+          cache.entries = nextEntries
+          cache.trash = nextTrash
+          cache.categories = nextCategories
+          entryListeners.forEach((listener) => listener(nextEntries))
+          trashListeners.forEach((listener) => listener(nextTrash))
+          categoryListeners.forEach((listener) => listener(nextCategories))
+          await saveSnapshot(cache.entries, cache.trash, cache.categories)
+        })
+      }
+    }
+
     if (!settings.token) {
+      try {
+        await mergeLocalRemnants()
+      } catch {
+        /* ignore */
+      }
       return {
         ok: false,
         localBefore,
         cloudCount: 0,
-        total: localBefore,
+        total: cache.entries.length,
         switchedGist: false,
         gistId: settings.gistId,
+        gistSummaries: [],
         error: 'Cloud sync is not configured on this device',
       }
     }
     try {
-      // Ensure sync is marked enabled so subsequent pulls keep working.
       if (!settings.enabled) {
         saveGistSettings({ enabled: true })
       }
+      // Local IDB snapshots / localStorage / folder first (may hold notes cloud lost).
+      try {
+        await mergeLocalRemnants()
+      } catch {
+        /* continue with cloud union */
+      }
+
+      const backups = await pullAllOwnlabGistBackups(settings.token)
+      const gistSummaries: OwnlabGistMatch[] = backups.map(
+        ({ content: _c, ...match }) => match,
+      )
+      let cloudUnion = 0
+      const seenIds = new Set<string>()
+      for (const backup of backups) {
+        try {
+          const parsed = JSON.parse(backup.content) as { entries?: unknown }
+          if (Array.isArray(parsed.entries)) {
+            for (const row of parsed.entries) {
+              if (row && typeof row === 'object' && 'id' in row) {
+                seenIds.add(String((row as { id: unknown }).id))
+              }
+            }
+          }
+        } catch {
+          /* skip */
+        }
+        await notebookStore.importBackup(backup.content, { syncCloud: false })
+      }
+      cloudUnion = seenIds.size
+
       const repaired = await repairOwnlabGistSelection(loadGistSettings(), {
         preferRichest: true,
       })
       refreshCloudRuntimeFromSettings()
-      const gistJson = await pullGistBackup(loadGistSettings())
-      if (!gistJson) {
-        return {
-          ok: false,
-          localBefore,
-          cloudCount: repaired.noteCount,
-          total: cache.entries.length,
-          switchedGist: repaired.switched,
-          gistId: repaired.gistId,
-          error: 'Cloud notebook is empty or unreadable',
+      setLastCloudSyncAt()
+
+      // Push the union back so future devices see the full set.
+      if (cache.entries.length > 0 && isCloudSyncReady()) {
+        try {
+          await flushCloudSync()
+        } catch {
+          /* export can still proceed with local merge */
         }
       }
-      let cloudCount = repaired.noteCount
-      try {
-        const parsed = JSON.parse(gistJson) as { entries?: unknown }
-        cloudCount = Array.isArray(parsed.entries) ? parsed.entries.length : cloudCount
-      } catch {
-        /* keep repaired count */
-      }
-      await notebookStore.importBackup(gistJson, { syncCloud: false })
-      setLastCloudSyncAt()
+
       return {
-        ok: true,
+        ok: backups.length > 0 || cache.entries.length > localBefore,
         localBefore,
-        cloudCount,
+        cloudCount: cloudUnion || repaired.noteCount,
         total: cache.entries.length,
         switchedGist: repaired.switched,
         gistId: repaired.gistId || loadGistSettings().gistId,
+        gistSummaries,
       }
     } catch (err) {
       return {
@@ -1020,9 +1087,30 @@ export const notebookStore = {
         total: cache.entries.length,
         switchedGist: false,
         gistId: loadGistSettings().gistId,
+        gistSummaries: [],
         error: err instanceof Error ? err.message : 'Cloud pull failed',
       }
     }
+  },
+  /** Publish current notes as a public HTML Gist link for copy on any device. */
+  async publishNotesPublicLink(html: string): Promise<{
+    htmlUrl: string
+    rawUrl: string | null
+    gistId: string
+    noteCount: number
+  }> {
+    await ensureReady()
+    const token = loadGistSettings().token
+    if (!token) {
+      throw new NotebookStorageError(
+        'unknown',
+        'GitHub token is required to create a public copy link',
+      )
+    }
+    const published = await publishPublicNotesHtml(html, token, {
+      description: `OWNLAB notes copy (${cache.entries.length} notes)`,
+    })
+    return { ...published, noteCount: cache.entries.length }
   },
   /**
    * Push then pull cloud notebook and report whether sync is healthy.
