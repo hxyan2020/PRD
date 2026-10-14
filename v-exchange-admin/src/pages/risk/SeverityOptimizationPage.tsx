@@ -176,6 +176,15 @@ function nextFormulaVersion(recommendations: FormulaRecommendation[]) {
   return `sev-v3.${max + 1}`
 }
 
+function toIsoWeekString(input: Date) {
+  const date = new Date(Date.UTC(input.getUTCFullYear(), input.getUTCMonth(), input.getUTCDate()))
+  const dayNumber = date.getUTCDay() || 7
+  date.setUTCDate(date.getUTCDate() + 4 - dayNumber)
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1))
+  const weekNo = Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+  return `${date.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`
+}
+
 function buildAiRecommendation(feedbacks: FeedbackRecord[], recommendations: FormulaRecommendation[]) {
   const reasonCounts = new Map<string, number>()
   for (const item of feedbacks) {
@@ -243,7 +252,7 @@ function buildAiRecommendation(feedbacks: FeedbackRecord[], recommendations: For
   }
 
   const now = new Date()
-  const week = `${now.getUTCFullYear()}-W${String(Math.ceil((now.getUTCDate() + 6) / 7)).padStart(2, '0')}`
+  const week = toIsoWeekString(now)
   const candidateFormula = nextFormulaVersion(recommendations)
   const baseFormula = recommendations[0]?.candidateFormula ?? 'sev-v3.2'
 
