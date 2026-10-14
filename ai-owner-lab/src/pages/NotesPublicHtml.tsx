@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { notebookStore } from '../hooks/notebookStore'
 import { useNotebook } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -9,8 +9,10 @@ import {
   openPublicNotesHtml,
 } from '../lib/notebookPublicHtml'
 import {
-  getCloudSyncStatus,
+  GIST_TOKEN_CREATE_URL,
   loadGistSettings,
+  saveGistSettings,
+  verifyGistToken,
   type OwnlabGistMatch,
 } from '../lib/notebookGistSync'
 
@@ -24,26 +26,57 @@ type PullSummary = {
   ok: boolean
 }
 
-async function pullUnionCloud(): Promise<PullSummary> {
-  return notebookStore.pullCloudForExport()
+const COPY_FILE = 'ownlab-notes-copy.html'
+
+async function fetchPublicCopyHtml(gistId: string): Promise<string> {
+  const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  })
+  if (!response.ok) {
+    throw new Error(`Could not open shared notes (${response.status})`)
+  }
+  const data = (await response.json()) as {
+    files?: Record<string, { content?: string; truncated?: boolean; raw_url?: string }>
+  }
+  const file = data.files?.[COPY_FILE] || Object.values(data.files || {})[0]
+  if (!file) throw new Error('Shared notes file missing')
+  if (file.truncated && file.raw_url) {
+    const raw = await fetch(file.raw_url)
+    if (!raw.ok) throw new Error('Could not download full shared notes')
+    return raw.text()
+  }
+  if (!file.content) throw new Error('Shared notes are empty')
+  return file.content
+}
+
+function sharePageUrl(gistId: string): string {
+  const base = `${window.location.origin}${window.location.pathname}`
+  return `${base}#/notes-html?gist=${encodeURIComponent(gistId)}`
 }
 
 /**
- * Build a public, copy-friendly HTML of all notebook notes (images embedded).
- * Auto-merges every OWNLAB cloud gist + local snapshots, then can publish a
- * public GitHub link so notes are reachable on any phone.
+ * Recover notes from cloud/local and send a shareable OWNLAB copy link.
+ * Also opens shared links: #/notes-html?gist=<publicGistId>
  */
 export function NotesPublicHtml() {
   const { t, lang } = useLanguage()
   const { ready, entries, categories, count } = useNotebook()
+  const [searchParams] = useSearchParams()
+  const sharedGistId = searchParams.get('gist')?.trim() || ''
+
+  const [token, setToken] = useState(() => loadGistSettings().token)
   const [status, setStatus] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [publishing, setPublishing] = useState(false)
   const [cloudReady, setCloudReady] = useState(false)
   const [cloudCount, setCloudCount] = useState<number | null>(null)
   const [localBefore, setLocalBefore] = useState<number | null>(null)
   const [gistSummaries, setGistSummaries] = useState<OwnlabGistMatch[]>([])
   const [publicLink, setPublicLink] = useState<string | null>(null)
+  const [sharedHtml, setSharedHtml] = useState<string>('')
+  const [sharedError, setSharedError] = useState<string | null>(null)
   const [previewHtml, setPreviewHtml] = useState<string>('')
   const tRef = useRef(t)
   tRef.current = t
@@ -59,6 +92,30 @@ export function NotesPublicHtml() {
   useEffect(() => {
     setPreviewHtml(html)
   }, [html])
+
+  // Viewer mode: open a public copy link without needing a token.
+  useEffect(() => {
+    if (!sharedGistId) return
+    let cancelled = false
+    setSharedError(null)
+    setBusy(true)
+    void fetchPublicCopyHtml(sharedGistId)
+      .then((doc) => {
+        if (cancelled) return
+        setSharedHtml(doc)
+        setStatus(tRef.current('publicHtmlSharedLoaded'))
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return
+        setSharedError(err instanceof Error ? err.message : tRef.current('publicHtmlSharedFail'))
+      })
+      .finally(() => {
+        if (!cancelled) setBusy(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [sharedGistId])
 
   function applyPullResult(result: PullSummary, translate = t) {
     setLocalBefore(result.localBefore)
@@ -85,40 +142,13 @@ export function NotesPublicHtml() {
           total: result.total,
         }),
       )
-    } else if (result.switchedGist) {
-      setStatus(
-        translate('publicHtmlSwitchedGist', {
-          before: result.localBefore,
-          cloud: result.cloudCount,
-          total: result.total,
-        }),
-      )
     } else {
       setStatus(translate('publicHtmlCloudPulled', { total: result.total }))
     }
   }
 
-  async function refreshFromCloud() {
-    setBusy(true)
-    setStatus(null)
-    setPublicLink(null)
-    try {
-      if (!loadGistSettings().token) {
-        setCloudReady(true)
-        setStatus(t('publicHtmlNeedCloud'))
-        return
-      }
-      applyPullResult(await pullUnionCloud())
-    } catch (err) {
-      setCloudReady(true)
-      setStatus(err instanceof Error ? err.message : t('publicHtmlCloudFail'))
-    } finally {
-      setBusy(false)
-    }
-  }
-
   useEffect(() => {
-    if (!ready) return
+    if (!ready || sharedGistId) return
     if (!loadGistSettings().token) {
       setCloudReady(true)
       return
@@ -126,7 +156,8 @@ export function NotesPublicHtml() {
     let cancelled = false
     setBusy(true)
     setCloudReady(false)
-    void pullUnionCloud()
+    void notebookStore
+      .pullCloudForExport()
       .then((result) => {
         if (cancelled) return
         applyPullResult(result, tRef.current)
@@ -142,54 +173,120 @@ export function NotesPublicHtml() {
     return () => {
       cancelled = true
     }
-  }, [ready])
+  }, [ready, sharedGistId])
 
-  function onDownload() {
-    if (!html || count === 0) {
-      setStatus(t('publicHtmlNoNotes'))
-      return
-    }
-    downloadPublicNotesHtml(html)
-    setStatus(t('publicHtmlDownloaded', { n: count }))
-  }
-
-  function onOpen() {
-    if (!html || count === 0) {
-      setStatus(t('publicHtmlNoNotes'))
-      return
-    }
-    openPublicNotesHtml(html)
-    setStatus(t('publicHtmlOpened', { n: count }))
-  }
-
-  async function onPublishLink() {
-    if (!html || count === 0) {
-      setStatus(t('publicHtmlNoNotes'))
-      return
-    }
-    setPublishing(true)
+  async function recoverAndSendLink() {
+    setBusy(true)
     setStatus(null)
+    setPublicLink(null)
     try {
-      const published = await notebookStore.publishNotesPublicLink(html)
-      const link = published.rawUrl || published.htmlUrl
+      const trimmed = token.trim()
+      if (!trimmed) {
+        setStatus(t('cloudTokenRequired'))
+        return
+      }
+      await verifyGistToken(trimmed)
+      saveGistSettings({ token: trimmed, enabled: true })
+      const pulled = await notebookStore.pullCloudForExport()
+      applyPullResult(pulled)
+
+      const latest = notebookStore.get()
+      const cats = notebookStore.getCategories()
+      if (latest.length === 0) {
+        setStatus(t('publicHtmlNoNotes'))
+        return
+      }
+      const doc = buildPublicNotesHtml(latest, cats, {
+        lang,
+        title: lang === 'zh' ? 'OWNLAB 笔记' : 'OWNLAB notes',
+      })
+      const published = await notebookStore.publishNotesPublicLink(doc)
+      const link = sharePageUrl(published.gistId)
       setPublicLink(link)
       setStatus(t('publicHtmlPublished', { n: published.noteCount }))
       try {
         await navigator.clipboard.writeText(link)
       } catch {
-        /* user can copy from the visible link */
+        /* ignore */
+      }
+      if (typeof navigator.share === 'function') {
+        try {
+          await navigator.share({
+            title: 'OWNLAB notes',
+            text: t('publicHtmlShareText', { n: published.noteCount }),
+            url: link,
+          })
+        } catch {
+          /* user cancelled share sheet */
+        }
       }
     } catch (err) {
+      setCloudReady(true)
       setStatus(err instanceof Error ? err.message : t('publicHtmlPublishFail'))
     } finally {
-      setPublishing(false)
+      setBusy(false)
     }
   }
 
-  const cloud = getCloudSyncStatus()
-  const hasToken = Boolean(loadGistSettings().token)
-  const waitingOnCloud = hasToken && !cloudReady
-  const actionsDisabled = !ready || busy || waitingOnCloud || count === 0
+  async function copyLink() {
+    if (!publicLink) return
+    try {
+      await navigator.clipboard.writeText(publicLink)
+      setStatus(t('publicHtmlLinkCopied'))
+    } catch {
+      setStatus(t('publicHtmlLinkCopyFail'))
+    }
+  }
+
+  async function shareLink() {
+    if (!publicLink || typeof navigator.share !== 'function') return
+    try {
+      await navigator.share({
+        title: 'OWNLAB notes',
+        text: t('publicHtmlShareText', { n: count }),
+        url: publicLink,
+      })
+    } catch {
+      /* cancelled */
+    }
+  }
+
+  // Shared-viewer mode
+  if (sharedGistId) {
+    return (
+      <div className="notes-public-page">
+        <header className="notes-public-hero">
+          <p className="eyebrow">
+            <Link to="/notebook">{t('publicHtmlBack')}</Link>
+          </p>
+          <h1>{t('publicHtmlSharedTitle')}</h1>
+          <p>{t('publicHtmlSharedBody')}</p>
+        </header>
+        {busy ? <p className="notes-public-count">{t('publicHtmlLoadingCloud')}</p> : null}
+        {sharedError ? (
+          <p className="notebook-composer-error" role="alert">
+            {sharedError}
+          </p>
+        ) : null}
+        {status ? (
+          <p className="notebook-recover-status" role="status">
+            {status}
+          </p>
+        ) : null}
+        {sharedHtml ? (
+          <iframe
+            title={t('publicHtmlSharedTitle')}
+            className="notes-public-frame notes-public-frame-tall"
+            sandbox="allow-scripts allow-same-origin allow-downloads allow-popups"
+            srcDoc={sharedHtml}
+          />
+        ) : null}
+      </div>
+    )
+  }
+
+  const hasToken = Boolean(loadGistSettings().token || token.trim())
+  const waitingOnCloud = Boolean(loadGistSettings().token) && !cloudReady
 
   return (
     <div className="notes-public-page">
@@ -197,8 +294,8 @@ export function NotesPublicHtml() {
         <p className="eyebrow">
           <Link to="/notebook">{t('publicHtmlBack')}</Link>
         </p>
-        <h1>{t('publicHtmlTitle')}</h1>
-        <p>{t('publicHtmlBody')}</p>
+        <h1>{t('publicHtmlSendTitle')}</h1>
+        <p>{t('publicHtmlSendBody')}</p>
         <p className="notes-public-count">
           {!ready || waitingOnCloud
             ? t('publicHtmlLoadingCloud')
@@ -207,42 +304,81 @@ export function NotesPublicHtml() {
                 cloud: cloudCount ?? '—',
                 before: localBefore ?? count,
               })}
-          {cloud.configured || hasToken ? ` · ${t('cloudSynced')}` : ''}
         </p>
       </header>
 
-      <div className="notes-public-actions">
-        <button type="button" className="btn primary" disabled={actionsDisabled} onClick={onOpen}>
-          {waitingOnCloud || busy ? t('cloudSyncing') : t('publicHtmlOpen')}
-        </button>
-        <button type="button" className="btn" disabled={actionsDisabled} onClick={onDownload}>
-          {t('publicHtmlDownload')}
-        </button>
-        <button
-          type="button"
-          className="btn primary"
-          disabled={actionsDisabled || publishing}
-          onClick={() => void onPublishLink()}
-        >
-          {publishing ? t('cloudSyncing') : t('publicHtmlPublish')}
-        </button>
-        <button
-          type="button"
-          className="btn ghost"
-          disabled={!ready || busy || !hasToken}
-          onClick={() => void refreshFromCloud()}
-        >
-          {busy ? t('cloudSyncing') : t('publicHtmlPullCloud')}
-        </button>
-      </div>
+      <section className="notes-public-send" aria-label={t('publicHtmlSendTitle')}>
+        <label className="notebook-field">
+          <span className="notebook-field-label">{t('backupGistToken')}</span>
+          <input
+            className="notebook-title-input"
+            type="password"
+            autoComplete="off"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            placeholder="ghp_…"
+          />
+        </label>
+        <p className="notebook-cloud-token-hint">
+          {t('cloudStep1')}{' '}
+          <a href={GIST_TOKEN_CREATE_URL} target="_blank" rel="noreferrer">
+            {t('cloudCreateToken')}
+          </a>
+          {t('cloudTokenHintSuffix')}
+        </p>
+        <div className="notes-public-actions">
+          <button
+            type="button"
+            className="btn primary"
+            disabled={!ready || busy || !token.trim()}
+            onClick={() => void recoverAndSendLink()}
+          >
+            {busy ? t('cloudSyncing') : t('publicHtmlSendCta')}
+          </button>
+          <button
+            type="button"
+            className="btn"
+            disabled={!ready || busy || count === 0}
+            onClick={() => {
+              downloadPublicNotesHtml(html)
+              setStatus(t('publicHtmlDownloaded', { n: count }))
+            }}
+          >
+            {t('publicHtmlDownload')}
+          </button>
+          <button
+            type="button"
+            className="btn ghost"
+            disabled={!ready || busy || count === 0}
+            onClick={() => openPublicNotesHtml(html)}
+          >
+            {t('publicHtmlOpen')}
+          </button>
+        </div>
+      </section>
 
       {publicLink ? (
-        <p className="notes-public-link" role="status">
-          {t('publicHtmlLinkLabel')}{' '}
-          <a href={publicLink} target="_blank" rel="noreferrer">
-            {publicLink}
-          </a>
-        </p>
+        <section className="notes-public-link-card" aria-label={t('publicHtmlLinkLabel')}>
+          <h2>{t('publicHtmlLinkReady')}</h2>
+          <p className="notes-public-link">
+            <a href={publicLink} target="_blank" rel="noreferrer">
+              {publicLink}
+            </a>
+          </p>
+          <div className="notes-public-actions">
+            <a className="btn primary" href={publicLink} target="_blank" rel="noreferrer">
+              {t('publicHtmlOpenLink')}
+            </a>
+            <button type="button" className="btn" onClick={() => void copyLink()}>
+              {t('publicHtmlCopyLink')}
+            </button>
+            {typeof navigator.share === 'function' ? (
+              <button type="button" className="btn ghost" onClick={() => void shareLink()}>
+                {t('publicHtmlShareLink')}
+              </button>
+            ) : null}
+          </div>
+        </section>
       ) : null}
 
       {status ? (
@@ -258,14 +394,6 @@ export function NotesPublicHtml() {
             {gistSummaries.map((g) => (
               <li key={g.gistId}>
                 <code>{g.gistId.slice(0, 12)}…</code> — {t('publicHtmlGistCount', { n: g.noteCount })}
-                {g.htmlUrl ? (
-                  <>
-                    {' '}
-                    <a href={g.htmlUrl} target="_blank" rel="noreferrer">
-                      gist
-                    </a>
-                  </>
-                ) : null}
               </li>
             ))}
           </ul>
@@ -273,26 +401,19 @@ export function NotesPublicHtml() {
         </section>
       ) : null}
 
-      {cloudReady &&
-      cloudCount != null &&
-      count > 0 &&
-      gistSummaries.length > 0 &&
-      Math.max(...gistSummaries.map((g) => g.noteCount), 0) === cloudCount &&
-      cloudCount === count ? (
+      {!hasToken ? (
         <p className="notebook-composer-error" role="alert">
-          {t('publicHtmlCloudOnlyPartial', { cloud: cloudCount, total: count })}
+          {t('publicHtmlNeedCloud')}
         </p>
       ) : null}
 
       <section className="notes-public-help" aria-label={t('publicHtmlHowTitle')}>
         <h2>{t('publicHtmlHowTitle')}</h2>
         <ol>
-          <li>{t('publicHtmlHow1')}</li>
-          <li>{t('publicHtmlHow2')}</li>
-          <li>{t('publicHtmlHow3')}</li>
-          <li>{t('publicHtmlHow4')}</li>
+          <li>{t('publicHtmlSendHow1')}</li>
+          <li>{t('publicHtmlSendHow2')}</li>
+          <li>{t('publicHtmlSendHow3')}</li>
         </ol>
-        <p className="notes-public-help-note">{t('publicHtmlHowCloud')}</p>
       </section>
 
       {count > 0 && previewHtml && !waitingOnCloud ? (

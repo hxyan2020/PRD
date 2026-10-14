@@ -448,6 +448,24 @@ const en = {
   publicHtmlCloudOnlyPartial:
     'Cloud currently only has about {cloud} note(s) (this device shows {total}). Missing notes were never uploaded — open Notebook on the device that still has them → Double-check cloud sync, then tap Refresh here. Or use Create public copy link after that device uploads.',
   publicHtmlHow4: 'Or tap Create public copy link and open the shared URL on any phone.',
+  publicHtmlSendTitle: 'Send notes copy link',
+  publicHtmlSendBody:
+    'Paste your GitHub token. We merge every OWNLAB cloud notebook + local backups, then create a public OWNLAB link you can open on any phone to copy text and images.',
+  publicHtmlSendCta: 'Recover & send copy link',
+  publicHtmlLinkReady: 'Your copy link is ready',
+  publicHtmlOpenLink: 'Open copy link',
+  publicHtmlCopyLink: 'Copy link',
+  publicHtmlShareLink: 'Share…',
+  publicHtmlLinkCopied: 'Link copied to clipboard.',
+  publicHtmlLinkCopyFail: 'Could not copy — long-press the link instead.',
+  publicHtmlShareText: 'OWNLAB notes ({n}) — open to copy text and images',
+  publicHtmlSendHow1: 'Paste the same classic GitHub PAT (gist scope) used for notebook sync.',
+  publicHtmlSendHow2: 'Tap Recover & send copy link — wait until the link appears.',
+  publicHtmlSendHow3: 'Open the link on any phone, or Share / Copy it to yourself (Messages, email, etc.).',
+  publicHtmlSharedTitle: 'Shared OWNLAB notes',
+  publicHtmlSharedBody: 'Select text to copy. Right-click / long-press images → Copy image, or use Save image under each picture.',
+  publicHtmlSharedLoaded: 'Shared notes loaded — copy below.',
+  publicHtmlSharedFail: 'Could not open this shared notes link.',
 } as const
 
 type UiKey = keyof typeof en
@@ -879,6 +897,24 @@ const zh: Record<UiKey, string> = {
   publicHtmlCloudOnlyPartial:
     '云端目前大约只有 {cloud} 条（本机显示 {total}）。缺少的笔记从未成功上传——请到仍有全部笔记的设备打开「笔记」→「核对云同步」，再回到这里点刷新；上传成功后也可点「生成公开复制链接」。',
   publicHtmlHow4: '或点「生成公开复制链接」，用分享的网址在任意手机打开复制。',
+  publicHtmlSendTitle: '发送笔记复制链接',
+  publicHtmlSendBody:
+    '粘贴你的 GitHub Token。我们会合并所有 OWNLAB 云端笔记本和本地备份，然后生成一个可在任意手机打开的公开链接，用来复制文字和图片。',
+  publicHtmlSendCta: '恢复并发送复制链接',
+  publicHtmlLinkReady: '复制链接已就绪',
+  publicHtmlOpenLink: '打开复制链接',
+  publicHtmlCopyLink: '复制链接',
+  publicHtmlShareLink: '分享…',
+  publicHtmlLinkCopied: '链接已复制到剪贴板。',
+  publicHtmlLinkCopyFail: '无法自动复制——请长按链接手动复制。',
+  publicHtmlShareText: 'OWNLAB 笔记（{n} 条）— 打开后可复制文字和图片',
+  publicHtmlSendHow1: '粘贴与笔记云同步相同的经典 GitHub PAT（gist 权限）。',
+  publicHtmlSendHow2: '点「恢复并发送复制链接」，等到链接出现。',
+  publicHtmlSendHow3: '在任意手机打开该链接，或点分享/复制发给自己（信息、邮件等）。',
+  publicHtmlSharedTitle: '分享的 OWNLAB 笔记',
+  publicHtmlSharedBody: '可选中文字复制。图片可长按「复制图片」，或点每张图下方的 Save image。',
+  publicHtmlSharedLoaded: '已加载分享笔记——可在下方复制。',
+  publicHtmlSharedFail: '无法打开此分享链接。',
 }
 
 const catalogs: Record<Lang, Record<UiKey, string>> = { en: en as Record<UiKey, string>, zh }

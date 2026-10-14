@@ -3988,6 +3988,27 @@ button.notebook-category-badge.on {
   font-size: 0.92rem;
 }
 
+.notes-public-send {
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  padding: 1rem 1.1rem 1.15rem;
+  margin: 1rem 0 1.25rem;
+  background: color-mix(in srgb, var(--paper) 70%, #fff);
+}
+
+.notes-public-link-card {
+  border: 1px solid #9fd0c8;
+  border-radius: 0.85rem;
+  padding: 1rem 1.1rem 1.15rem;
+  margin: 0 0 1.25rem;
+  background: #e7f3f1;
+}
+
+.notes-public-link-card h2 {
+  margin: 0 0 0.55rem;
+  font-size: 1.1rem;
+}
+
 .notes-public-link {
   margin: 0.75rem 0 0;
   padding: 0.75rem 0.9rem;
@@ -3996,6 +4017,15 @@ button.notebook-category-badge.on {
   color: var(--ink);
   word-break: break-all;
   font-size: 0.92rem;
+}
+
+.notes-public-link-card .notes-public-link {
+  background: #fff;
+  margin: 0 0 0.85rem;
+}
+
+.notes-public-frame-tall {
+  min-height: 78vh;
 }
 
 .notes-public-link a {
