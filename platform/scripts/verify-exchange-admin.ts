@@ -68,6 +68,15 @@ for (const rel of [
   assert.match(src, /admin\//, `${rel} should point at admin module`);
 }
 
+for (const rel of [
+  "src/app/exchange/ai-analyses/[id]/page.tsx",
+  "src/app/exchange/skills/[code]/page.tsx",
+]) {
+  const src = read(rel);
+  assert.match(src, /generateStaticParams/, `${rel} must export generateStaticParams for Pages`);
+  assert.match(src, /export \{ default, generateStaticParams \}/, `${rel} should re-export params`);
+}
+
 // Existing admin chrome must still be the Vantage shell.
 const adminLayout = read("src/app/admin/layout.tsx");
 assert.match(adminLayout, /AdminShell/);

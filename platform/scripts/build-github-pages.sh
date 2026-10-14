@@ -37,5 +37,10 @@ trap cleanup EXIT
 export NEXT_PUBLIC_STATIC_EXPORT=1
 export STATIC_EXPORT=1
 export NEXT_PUBLIC_BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-/PRD/crmp-admin}"
-npx next build
+# Prefer local binary — `npx` can fail in some CI/agent environments.
+if [[ -x "$ROOT/node_modules/.bin/next" ]]; then
+  "$ROOT/node_modules/.bin/next" build
+else
+  npx next build
+fi
 echo "Static snapshot written to out"

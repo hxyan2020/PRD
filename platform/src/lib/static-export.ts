@@ -38,20 +38,22 @@ export function publicBasePath() {
 
 export function publicAdminHref(path = "/admin/") {
   const base = publicBasePath();
-  let suffix = path.startsWith("/") ? path : `/${path}`;
-  const hashIdx = suffix.indexOf("#");
-  const hash = hashIdx >= 0 ? suffix.slice(hashIdx) : "";
-  let pathname = hashIdx >= 0 ? suffix.slice(0, hashIdx) : suffix;
+  const raw = path.startsWith("/") ? path : `/${path}`;
+  const hashIdx = raw.indexOf("#");
+  const hash = hashIdx >= 0 ? raw.slice(hashIdx) : "";
+  let pathname = hashIdx >= 0 ? raw.slice(0, hashIdx) : raw;
   if (isStaticExport() && !pathname.endsWith("/")) pathname += "/";
   return `${base}${pathname}${hash}`;
 }
 
 /** Pages-safe href under the crypto-exchange mount (`/exchange…`). */
 export function publicExchangeHref(path = "/exchange/") {
-  let suffix = path.startsWith("/") ? path : `/${path}`;
-  if (!suffix.startsWith("/exchange")) {
-    suffix = suffix === "/" ? "/exchange/" : `/exchange${suffix}`;
-  }
+  const raw = path.startsWith("/") ? path : `/${path}`;
+  const suffix = raw.startsWith("/exchange")
+    ? raw
+    : raw === "/"
+      ? "/exchange/"
+      : `/exchange${raw}`;
   return publicAdminHref(suffix);
 }
 
