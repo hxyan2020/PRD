@@ -19,8 +19,12 @@ export type UatCase = {
   severity: UatSeverity;
   bu: string;
   dependency: string;
+  /** Optional Traditional Chinese dependency line for the interactive UAT board */
+  dependency_zh?: string;
   /** Admin screens / surfaces this case is meant to exercise */
   covers: string[];
+  /** Optional Traditional Chinese covers for the interactive UAT board */
+  covers_zh?: string[];
   en: UatCopy;
   zh: UatCopy;
 };
@@ -1847,14 +1851,16 @@ export const UAT_CASES: UatCase[] = [
     },
   },
   {
-    seq: 47,
+    seq: 46,
     id: "UAT-47",
-    t_start_min: 508,
+    t_start_min: 496,
     duration_min: 12,
     severity: "High",
     bu: "Ops + Risk Owner + AI",
     dependency: "UAT-45; Escalation formula loop seeded",
+    dependency_zh: "UAT-45；升級路徑公式迴路已種子",
     covers: ["Demo Messenger", "Escalation Routes", "AI Admin", "AI Performance"],
+    covers_zh: ["示範 Messenger", "升級路徑", "AI 管理", "AI 績效"],
     en: {
       title: "Severity formula loop: ops reason codes → weekly AI → RO approve",
       why: "Formula-assigned P must be correctable by 24/7 ops; AI may only change the formula after Risk Owner approval.",
@@ -1883,14 +1889,16 @@ export const UAT_CASES: UatCase[] = [
     },
   },
   {
-    seq: 48,
+    seq: 47,
     id: "UAT-48",
-    t_start_min: 520,
+    t_start_min: 508,
     duration_min: 12,
     severity: "High",
     bu: "Risk + AI + Ops",
     dependency: "UAT-02; Indicator Aggregation seeded",
+    dependency_zh: "UAT-02；指標聚合已種子",
     covers: ["Indicator Aggregation", "AI Skills", "RAG"],
+    covers_zh: ["指標聚合流程", "AI 技能", "RAG"],
     en: {
       title: "Indicator aggregation linear flow: membership → wait → RO single or aggregate",
       why: "A single-indicator alert must either stay single or wait for correlated monitors before RO sees an aggregated pack — the linear process must be visible and operable.",
@@ -1923,17 +1931,19 @@ export const UAT_CASES: UatCase[] = [
     },
   },
   {
-    seq: 46,
+    seq: 48,
     id: "UAT-46",
-    t_start_min: 532,
+    t_start_min: 520,
     duration_min: 15,
     severity: "Critical",
     bu: "Risk Owner",
     dependency: "UAT-01–45, UAT-47 and UAT-48 results recorded",
+    dependency_zh: "UAT-01–45、UAT-47、UAT-48 結果已記錄",
     covers: [
       "UAT Checklist",
       "Audit Log",
     ],
+    covers_zh: ["UAT 清單", "稽核日誌"],
     en: {
       title: "Risk Owner exit sign-off",
       why: "UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.",

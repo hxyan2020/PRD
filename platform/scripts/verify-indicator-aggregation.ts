@@ -50,6 +50,13 @@ assert.match(urls, /\/api\/indicator-aggregation/);
 const uatCases = read("src/lib/docs/uat-cases.ts");
 assert.match(uatCases, /id: \"UAT-48\"/);
 assert.match(uatCases, /\/admin\/indicator-aggregation/);
+assert.match(uatCases, /title: \"指標聚合線型流程/);
+assert.match(uatCases, /dependency_zh: \"UAT-02；指標聚合已種子\"/);
+assert.match(uatCases, /covers_zh: \[\"指標聚合流程\"/);
+
+const phrases = read("src/lib/i18n-phrases.ts");
+assert.match(phrases, /\"Indicator Aggregation Flow\": \"指標聚合流程\"/);
+assert.match(phrases, /\"Indicator Aggregation API\": \"指標聚合 API\"/);
 
 const openIssuesTs = read("src/lib/docs/open-issues.ts");
 assert.match(openIssuesTs, /Indicator Aggregation linear flow/);

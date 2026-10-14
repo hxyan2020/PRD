@@ -221,7 +221,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 #### OI-09 — Risk Owner UAT exit + policy thresholds
 **BU:** Risk Owner · **Status:** Started · **ETA:** 2026-Q4 / 2027-Q1 · **Depends:** UAT pack; BU and Teams RACI; AI Admin
 
-- [ ] Execute interactive UAT-01…45 with evidence notes  
+- [ ] Execute interactive UAT-01…48 with evidence notes  
 - [ ] Sign UAT exit criteria (pass thresholds)  
 - [ ] Set second-AI severity policy (default BREACH)  
 - [ ] Accept ESC-DEFAULT catch-all + dimension coefficients  

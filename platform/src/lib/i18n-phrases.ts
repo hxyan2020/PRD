@@ -1223,6 +1223,13 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   FIELD: "欄位",
   DATA: "資料",
   "Unknown Risk Discovery": "未知風險探索",
+  "Indicator Aggregation": "指標聚合流程",
+  "Indicator Aggregation Flow": "指標聚合流程",
+  "Indicator Aggregation API": "指標聚合 API",
+  "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait window → RO as single or aggregate (from linked timeline chains)":
+    "線型聚合介面：單一告警 → Skill／RAG → 成員資格檢查 → 關聯等待視窗 → RO 按單一或聚合（來自連結時間鏈）",
+  "GET board pack · POST start / inject_related / close_window (linear FR-40 flow; RO single or aggregate)":
+    "GET 看板組合 · POST start／inject_related／close_window（FR-40 線型流程；RO 單一或聚合）",
   "Risk discovery notebook (HTML)": "風險探索筆記本（HTML）",
   "Risk discovery notebook (.ipynb)": "風險探索筆記本（.ipynb）",
   "Risk discovery notebook (Colab)": "風險探索筆記本（Colab）",

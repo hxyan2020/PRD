@@ -365,7 +365,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
       eta: "2026-Q4／2027-Q1",
     },
     checklist: [
-      { en: "Execute interactive UAT-01…45 with evidence notes", zh: "執行互動式 UAT-01…45 並留證據註記" },
+      { en: "Execute interactive UAT-01…48 with evidence notes", zh: "執行互動式 UAT-01…48 並留證據註記" },
       { en: "Sign UAT exit criteria (pass thresholds)", zh: "簽核 UAT 退出標準（通過門檻）" },
       { en: "Set second-AI severity policy (default BREACH)", zh: "設定第二 AI 嚴重度政策（預設 BREACH）" },
       { en: "Accept ESC-DEFAULT catch-all + dimension coefficients", zh: "接受 ESC-DEFAULT 兜底＋維度係數" },
