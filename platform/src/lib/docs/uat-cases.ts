@@ -1883,13 +1883,53 @@ export const UAT_CASES: UatCase[] = [
     },
   },
   {
+    seq: 48,
+    id: "UAT-48",
+    t_start_min: 520,
+    duration_min: 12,
+    severity: "High",
+    bu: "Risk + AI + Ops",
+    dependency: "UAT-02; Indicator Aggregation seeded",
+    covers: ["Indicator Aggregation", "AI Skills", "RAG"],
+    en: {
+      title: "Indicator aggregation linear flow: membership → wait → RO single or aggregate",
+      why: "A single-indicator alert must either stay single or wait for correlated monitors before RO sees an aggregated pack — the linear process must be visible and operable.",
+      objective:
+        "Walk the linear rail on /admin/indicator-aggregation: no-membership single path, correlation wait → related alert → AGGREGATED, and wait → timeout → RO as single.",
+      steps: [
+        "Open Indicator Aggregation. Confirm the eight-step linear rail (indicator-agg-linear-steps) and seeded sessions for no-membership / timeout / aggregated outcomes.",
+        "Select M2-ORPHAN-999 → Fire demo alert. Confirm steps reach RO as single with outcome SINGLE_NO_MEMBERSHIP (skill/RAG ran; not in any aggregate).",
+        "Select a chain member monitor → Fire demo alert. Confirm Correlation possible and CORRELATED_WAIT with a wait window.",
+        "Click Related alert: M2-… → confirm outcome AGGREGATED and step RO handles as aggregate; member timeline shows fired vs pending monitors.",
+        "Fire another chain member alert → End window → RO as single → confirm SINGLE_WINDOW_TIMEOUT.",
+      ],
+      pass: "Linear stepper visible; three outcomes demonstrated; EN or zh-Hant chrome readable.",
+      evidence: "Screenshots of linear rail, single path, wait window, and aggregated session detail.",
+    },
+    zh: {
+      title: "指標聚合線型流程：成員資格 → 等待 → RO 單一或聚合",
+      why: "單一指標告警必須維持單一，或等待關聯監控後再以聚合包呈報 RO — 線型過程必須可見且可操作。",
+      objective:
+        "在 /admin/indicator-aggregation 走完線型軌道：無成員單一路徑、關聯等待 → 關聯告警 → AGGREGATED，以及等待 → 逾時 → RO 按單一。",
+      steps: [
+        "開啟指標聚合流程。確認八步線型軌道（indicator-agg-linear-steps）與種子工作階段（無成員／逾時／已聚合）。",
+        "選 M2-ORPHAN-999 → 觸發示範告警。確認步驟到達 RO 單一，結果為 SINGLE_NO_MEMBERSHIP（已跑 Skill／RAG；不屬任何聚合）。",
+        "選某一鏈成員監控 → 觸發示範告警。確認可能存在指標關聯與 CORRELATED_WAIT 等待視窗。",
+        "點關聯告警：M2-… → 確認結果 AGGREGATED 與步驟 RO 按聚合指標處理；成員時間線顯示已觸發 vs 待觸發。",
+        "再觸發一則鏈成員告警 → 結束視窗 → RO 按單一處理 → 確認 SINGLE_WINDOW_TIMEOUT。",
+      ],
+      pass: "線型步驟可見；三種結果皆示範；英或繁中介面可讀。",
+      evidence: "線型軌道、單一路徑、等待視窗、已聚合工作階段詳情截圖。",
+    },
+  },
+  {
     seq: 46,
     id: "UAT-46",
-    t_start_min: 520,
+    t_start_min: 532,
     duration_min: 15,
     severity: "Critical",
     bu: "Risk Owner",
-    dependency: "UAT-01–45 and UAT-47 results recorded",
+    dependency: "UAT-01–45, UAT-47 and UAT-48 results recorded",
     covers: [
       "UAT Checklist",
       "Audit Log",
@@ -1901,7 +1941,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.",
         "Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.",
-        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), and formula→RO (UAT-47) passed or waived.",
+        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), and aggregation flow (UAT-48) passed or waived.",
         "Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).",
         "File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.",
       ],
@@ -1915,7 +1955,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。",
         "統計 High：最多兩項 WAIVE，每項附一句書面風險接受。",
-        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）通過或豁免。",
+        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）通過或豁免。",
         "記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。",
         "將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。",
       ],

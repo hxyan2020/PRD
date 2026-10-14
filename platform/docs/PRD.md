@@ -399,7 +399,7 @@ flowchart LR
   G --> H[RO as aggregate]
 ```
 
-**Acceptance (FR-40):** Linear stepper visible; demo sessions cover no-membership, window-timeout, and aggregated paths; EN + zh-Hant. Operator: User Guide §14B · Build: TSD §11.7.
+**Acceptance (FR-40):** Linear stepper visible; demo sessions cover no-membership, window-timeout, and aggregated paths; EN + zh-Hant. Operator: User Guide §14B · Build: TSD §11.7 · UAT-48.
 
 ---
 

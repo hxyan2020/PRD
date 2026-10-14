@@ -1,6 +1,6 @@
 # CRMP 開放議題
 
-**文件編號：** CRMP-OI-001 · **版本：** 1.4 · **互動看板：** [/admin/docs/open-issues](/admin/docs/open-issues) · **進度雙生：** [/admin/docs/progress](/admin/docs/progress)
+**文件編號：** CRMP-OI-001 · **版本：** 1.5 · **互動看板：** [/admin/docs/open-issues](/admin/docs/open-issues) · **進度雙生：** [/admin/docs/progress](/admin/docs/progress)
 
 CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明示：
 
@@ -173,7 +173,7 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 - [ ] 適用處將語料列標到 Monitor `M2-*`  
 
 #### OI-14 — 原型 AI 台面功能 — UAT
-**BU：** AI · **狀態：** UAT · **ETA：** 2026-10／11 · **依賴：** UAT-01…45；RO 行程
+**BU：** AI · **狀態：** UAT · **ETA：** 2026-10／11 · **依賴：** UAT-01…48；RO 行程
 
 - [x] 即時警報與追蹤＋偵測器併入 Monitor 2.0  
 - [x] 一線／二線 AI 管理·分組管線·干預操作者信箱  
@@ -181,6 +181,7 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 - [x] 可編輯角色＋稽核平面分流＋回滾  
 - [x] AI 績效評估看板（`/admin/ai-performance`）— 技能匹配、挑戰者、回饋、訓練  
 - [x] 稽核變更覆蓋 — 每次管理／Lark／Messenger 路徑＋`LOGIN_FAILED`（`test:audit`）  
+- [x] 指標聚合線型流程（`/admin/indicator-aggregation`，FR-40／UAT-48）— 成員 → 等待 → RO 單一或聚合  
 - [ ] 正式 UAT 簽核（OI-09）  
 
 ---
@@ -264,5 +265,6 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 | 1.2 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0 |
 | 1.3 | 2026-10-05 | 依 BU 詳細勾選；OI-16／17／18；看板渲染勾選明細 |
 | 1.4 | 2026-10-12 | OI-14 AI 績效看板＋稽核變更覆蓋已交付；OI-12 覆蓋守護 |
+| 1.5 | 2026-10-14 | OI-14 指標聚合線型流程（FR-40／UAT-48）已交付 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

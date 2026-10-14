@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-14T04:30:00.000Z | Indicator aggregation linear flow `/admin/indicator-aggregation` (FR-40 / PRD §6.8 / UG §14B / TSD §11.7 / UAT-48): single alert → skill/RAG → membership → wait window → RO single or aggregate; EN+zh-Hant docs parity |
 | 2026-10-12T18:50:00.000Z | Audit mutation coverage (every admin/Lark/messenger path + LOGIN_FAILED; test:audit guards) + AI Performance eval board `/admin/ai-performance` (FR-38 / TSD §8A / UG §8.2A); docs parity UG/PRD/TSD/UAT/Roadmap/Ecosystem/Open Issues/Progress/URLs EN+zh-Hant |
 | 2026-10-06T05:40:00.000Z | Lark demo: split chat windows per POC on the escalation path; bird-eye relay chips; dummy spine escalates two hops |
 | 2026-10-06T05:15:00.000Z | Dummy spine zh-Hant: phrase maps + fragment rewrite for titles/messages/actors/spine; API locale into messenger notes; UG/UAT/PRD/TSD bilingual |

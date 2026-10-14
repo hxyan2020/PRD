@@ -43,24 +43,44 @@ const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /indicator-aggregation/);
 assert.match(i18n, /指標聚合流程/);
 
-const prd = read("docs/PRD.md");
-assert.match(prd, /FR-40/);
-assert.match(prd, /### 6\.8 Indicator aggregation/);
-const prdZh = read("docs/PRD.zh-Hant.md");
-assert.match(prdZh, /FR-40/);
-assert.match(prdZh, /### 6\.8 指標聚合線型流程/);
+const urls = read("src/lib/docs/urls.ts");
+assert.match(urls, /\/admin\/indicator-aggregation/);
+assert.match(urls, /\/api\/indicator-aggregation/);
 
-const ug = read("docs/USER_GUIDE.md");
-assert.match(ug, /## 14B\. Indicator Aggregation Flow/);
-const ugZh = read("docs/USER_GUIDE.zh-Hant.md");
-assert.match(ugZh, /## 14B\. 指標聚合流程/);
+const uatCases = read("src/lib/docs/uat-cases.ts");
+assert.match(uatCases, /id: \"UAT-48\"/);
+assert.match(uatCases, /\/admin\/indicator-aggregation/);
 
-const tsd = read("docs/TSD.md");
-assert.match(tsd, /### 11\.7 Indicator aggregation linear flow/);
-const tsdZh = read("docs/TSD.zh-Hant.md");
-assert.match(tsdZh, /### 11\.7 指標聚合線型流程/);
+const openIssuesTs = read("src/lib/docs/open-issues.ts");
+assert.match(openIssuesTs, /Indicator Aggregation linear flow/);
+assert.match(openIssuesTs, /指標聚合線型流程/);
+
+for (const [rel, markers] of [
+  ["docs/PRD.md", [/FR-40/, /### 6\.8 Indicator aggregation/, /UAT-48/]],
+  ["docs/PRD.zh-Hant.md", [/FR-40/, /### 6\.8 指標聚合線型流程/, /UAT-48/]],
+  ["docs/USER_GUIDE.md", [/## 14B\. Indicator Aggregation Flow/, /\/admin\/indicator-aggregation/]],
+  ["docs/USER_GUIDE.zh-Hant.md", [/## 14B\. 指標聚合流程/, /\/admin\/indicator-aggregation/]],
+  ["docs/TSD.md", [/### 11\.7 Indicator aggregation linear flow/]],
+  ["docs/TSD.zh-Hant.md", [/### 11\.7 指標聚合線型流程/]],
+  ["docs/UAT.md", [/UAT-48/, /Indicator aggregation linear flow/, /48 cases/]],
+  ["docs/UAT.zh-Hant.md", [/UAT-48/, /指標聚合線型流程/, /48 案/]],
+  ["docs/ROADMAP.md", [/Indicator Aggregation/, /FR-40|indicator-aggregation/]],
+  ["docs/ROADMAP.zh-Hant.md", [/指標聚合/, /FR-40|indicator-aggregation/]],
+  ["docs/ECOSYSTEM.md", [/Indicator Aggregation/, /correlated monitors|Aggregation/]],
+  ["docs/ECOSYSTEM.zh-Hant.md", [/指標聚合/, /關聯監控|聚合/]],
+  ["docs/OPEN_ISSUES.md", [/Indicator Aggregation linear flow/, /FR-40/]],
+  ["docs/OPEN_ISSUES.zh-Hant.md", [/指標聚合線型流程/, /FR-40/]],
+  ["docs/PROGRESS.md", [/Indicator Aggregation/, /FR-40/]],
+  ["docs/PROGRESS.zh-Hant.md", [/指標聚合/, /FR-40/]],
+  ["docs/CHANGELOG.md", [/Indicator aggregation linear flow/, /FR-40/, /UAT-48/]],
+] as Array<[string, RegExp[]]>) {
+  const src = read(rel);
+  for (const m of markers) {
+    assert.match(src, m, `${rel} missing ${m}`);
+  }
+}
 
 const wf = fs.readFileSync(path.join(repo, ".github/workflows/crmp-pages.yml"), "utf8");
 assert.match(wf, /cursor\/indicator-aggregation-flow-28bc/);
 
-console.log("ok: indicator aggregation linear flow (FR-40)");
+console.log("ok: indicator aggregation linear flow (FR-40) + docs parity");

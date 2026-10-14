@@ -114,6 +114,13 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Desk selection chat", path: "/api/ai-chat", description: "POST selected text + follow-ups → grounded CRMP explanation" },
   { category: "API", title: "AI Admin API", path: "/api/ai-admin", description: "Propose/approve settings, training, feedback" },
   { category: "API", title: "AI Performance API", path: "/api/ai-performance", description: "GET read-only eval KPIs (skill match, challenger, feedback, training)" },
+  {
+    category: "API",
+    title: "Indicator Aggregation API",
+    path: "/api/indicator-aggregation",
+    description:
+      "GET board pack · POST start / inject_related / close_window (linear FR-40 flow; RO single or aggregate)",
+  },
   { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker" },
   { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management & test notify" },
   { category: "API", title: "Market Intel API", path: "/api/market-intel", description: "Scan / findings / outbox" },
