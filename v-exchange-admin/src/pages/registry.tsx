@@ -44,6 +44,12 @@ import {
   TriggerOrderHistoryDealPage,
   TriggerOrderPage,
 } from './order/OrderPages'
+import {
+  SeverityFormulaPage,
+  SeverityIncidentsPage,
+  SeverityPipelinePage,
+  SeverityRecommendationsPage,
+} from './severity/SeverityPages'
 import { ClosePositionPage, GlobalFrequencyPage, OpenBottomPositionPage } from './tools/ToolsPages'
 import {
   BlacklistGroupPage,
@@ -114,4 +120,8 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'risk-spread-alert': underDev,
   'risk-no-trade-monitor': underDev,
   'risk-depth-monitor': underDev,
+  'severity-pipeline': SeverityPipelinePage,
+  'severity-formula': SeverityFormulaPage,
+  'severity-incidents': SeverityIncidentsPage,
+  'severity-recommendations': SeverityRecommendationsPage,
 }

@@ -3,6 +3,7 @@ import {
   ApiOutlined,
   AppstoreOutlined,
   DollarOutlined,
+  ExperimentOutlined,
   FileTextOutlined,
   LineChartOutlined,
   SettingOutlined,
@@ -69,6 +70,10 @@ export type PageKey =
   | 'risk-spread-alert'
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
+  | 'severity-pipeline'
+  | 'severity-formula'
+  | 'severity-incidents'
+  | 'severity-recommendations'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -127,6 +132,10 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-spread-alert': 'Spread Alert',
   'risk-no-trade-monitor': 'No Trade Monitor',
   'risk-depth-monitor': 'Depth Monitor',
+  'severity-pipeline': 'Optimization Pipeline',
+  'severity-formula': 'Severity Formula',
+  'severity-incidents': 'Incident Feedback',
+  'severity-recommendations': 'AI Recommendations',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -265,6 +274,17 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-depth-monitor', label: 'Depth Monitor' },
     ],
   },
+  {
+    key: 'severity-mgmt',
+    icon: <ExperimentOutlined />,
+    label: 'Severity Optimization',
+    children: [
+      { key: 'severity-pipeline', label: 'Optimization Pipeline' },
+      { key: 'severity-formula', label: 'Severity Formula' },
+      { key: 'severity-incidents', label: 'Incident Feedback' },
+      { key: 'severity-recommendations', label: 'AI Recommendations' },
+    ],
+  },
 ]
 
 export function isPageKey(key: string): key is PageKey {
@@ -283,4 +303,5 @@ export const defaultOpenKeys = [
   'api-mgmt',
   'tools-mgmt',
   'risk-monitor',
+  'severity-mgmt',
 ]
