@@ -79,6 +79,7 @@ export function useNotebook() {
     syncDurableNow: notebookStore.syncDurableNow,
     pullRemoteBackups: notebookStore.pullRemoteBackups,
     enableCloudSync: notebookStore.enableCloudSync,
+    enableVercelCloudSync: notebookStore.enableVercelCloudSync,
     connectCloudSync: notebookStore.connectCloudSync,
     verifyCloudSync: notebookStore.verifyCloudSync,
     getCloudSyncStatus: notebookStore.getCloudSyncStatus,

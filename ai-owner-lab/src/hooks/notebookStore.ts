@@ -18,6 +18,16 @@ import {
   type OwnlabGistMatch,
 } from '../lib/notebookGistSync'
 import {
+  getLastVercelSyncAt,
+  isVercelNotebookHost,
+  isVercelSyncReady,
+  loadVercelSyncSettings,
+  pullVercelBackup,
+  pushVercelBackup,
+  saveVercelSyncSettings,
+  setLastVercelSyncAt,
+} from '../lib/notebookVercelSync'
+import {
   IDB_KEYS,
   idbGet,
   idbGetMeta,
@@ -412,7 +422,20 @@ let periodicSyncTimer: ReturnType<typeof setInterval> | null = null
  * Used before push so another device's notes aren't overwritten by last-write-wins.
  * Returns the ETag to If-Match on the subsequent push.
  */
+function anyCloudBackendReady(): boolean {
+  return isVercelSyncReady() || isCloudSyncReady()
+}
+
 async function pullAndMergeCloudQuiet(): Promise<{ merged: boolean; etag: string | null }> {
+  if (isVercelSyncReady()) {
+    const { cloudKey } = loadVercelSyncSettings()
+    const pulled = await pullVercelBackup(cloudKey)
+    if (!pulled) return { merged: false, etag: cloudEtag }
+    cloudEtag = pulled.etag
+    await notebookStore.importBackup(pulled.content, { syncCloud: false })
+    setLastVercelSyncAt()
+    return { merged: true, etag: pulled.etag }
+  }
   if (!isCloudSyncReady()) return { merged: false, etag: null }
   const settings = loadGistSettings()
   if (!settings.token || !settings.gistId) return { merged: false, etag: cloudEtag }
@@ -426,7 +449,7 @@ async function pullAndMergeCloudQuiet(): Promise<{ merged: boolean; etag: string
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
 async function pullCloudIfConfigured() {
-  if (!isCloudSyncReady()) return
+  if (!anyCloudBackendReady()) return
   // flushCloudSync already pull-merges before each push — one serialized path.
   if (cloudPullInFlight) return cloudPullInFlight
   cloudPullInFlight = (async () => {
@@ -447,7 +470,7 @@ function startPeriodicCloudSync() {
   // New devices sitting idle never pulled other-device notes — poll while visible.
   periodicSyncTimer = window.setInterval(() => {
     if (document.visibilityState !== 'visible') return
-    if (!isCloudSyncReady()) return
+    if (!anyCloudBackendReady()) return
     void pullCloudIfConfigured()
   }, 20_000)
 }
@@ -495,11 +518,25 @@ type CloudRuntime = {
 type CloudRuntimeListener = (runtime: CloudRuntime) => void
 const cloudRuntimeListeners = new Set<CloudRuntimeListener>()
 
+function unifiedCloudSyncStatus() {
+  if (isVercelSyncReady()) {
+    const v = loadVercelSyncSettings()
+    return {
+      configured: true,
+      enabled: true,
+      gistId: `vercel:${v.cloudKey.slice(0, 8)}…`,
+      lastSyncedAt: getLastVercelSyncAt(),
+      gistUrl: null as string | null,
+    }
+  }
+  return getCloudSyncStatus()
+}
+
 let cloudRuntime: CloudRuntime = {
-  state: isCloudSyncReady() ? 'synced' : 'off',
-  lastSyncedAt: getCloudSyncStatus().lastSyncedAt,
+  state: anyCloudBackendReady() ? 'synced' : 'off',
+  lastSyncedAt: unifiedCloudSyncStatus().lastSyncedAt,
   error: null,
-  gistId: getCloudSyncStatus().gistId,
+  gistId: unifiedCloudSyncStatus().gistId,
 }
 
 function setCloudRuntime(patch: Partial<CloudRuntime>) {
@@ -508,8 +545,8 @@ function setCloudRuntime(patch: Partial<CloudRuntime>) {
 }
 
 function refreshCloudRuntimeFromSettings() {
-  const status = getCloudSyncStatus()
-  if (!isCloudSyncReady()) {
+  const status = unifiedCloudSyncStatus()
+  if (!anyCloudBackendReady()) {
     setCloudRuntime({
       state: 'off',
       lastSyncedAt: status.lastSyncedAt,
@@ -544,7 +581,7 @@ function scheduleFolderBackup() {
  * Retries on Gist ETag conflicts so two devices adding notes don't clobber each other.
  */
 async function flushCloudSync() {
-  if (!isCloudSyncReady()) {
+  if (!anyCloudBackendReady()) {
     setCloudRuntime({ state: 'off', error: null })
     return
   }
@@ -566,30 +603,43 @@ async function flushCloudSync() {
         if (cloudPushDirty) continue
 
         let pushed = false
-        for (let attempt = 0; attempt < 6; attempt += 1) {
-          try {
-            const result = await pushGistBackup(buildBackupJson(), loadGistSettings(), {
-              ifMatch: etag,
-            })
-            cloudEtag = result.etag
-            setCloudRuntime({
-              state: 'synced',
-              lastSyncedAt: new Date().toISOString(),
-              error: null,
-              gistId: result.gistId,
-            })
-            pushed = true
-            break
-          } catch (err) {
-            if (!isGistConflictError(err)) throw err
-            // Another device wrote first — merge their notes and retry with fresh ETag.
+        if (isVercelSyncReady()) {
+          const { cloudKey } = loadVercelSyncSettings()
+          const result = await pushVercelBackup(buildBackupJson(), cloudKey)
+          cloudEtag = result.etag
+          setCloudRuntime({
+            state: 'synced',
+            lastSyncedAt: new Date().toISOString(),
+            error: null,
+            gistId: `vercel:${cloudKey.slice(0, 8)}…`,
+          })
+          pushed = true
+        } else {
+          for (let attempt = 0; attempt < 6; attempt += 1) {
             try {
-              const pulled = await pullAndMergeCloudQuiet()
-              etag = pulled.etag
-            } catch {
-              etag = null
+              const result = await pushGistBackup(buildBackupJson(), loadGistSettings(), {
+                ifMatch: etag,
+              })
+              cloudEtag = result.etag
+              setCloudRuntime({
+                state: 'synced',
+                lastSyncedAt: new Date().toISOString(),
+                error: null,
+                gistId: result.gistId,
+              })
+              pushed = true
+              break
+            } catch (err) {
+              if (!isGistConflictError(err)) throw err
+              // Another device wrote first — merge their notes and retry with fresh ETag.
+              try {
+                const pulled = await pullAndMergeCloudQuiet()
+                etag = pulled.etag
+              } catch {
+                etag = null
+              }
+              cloudPushDirty = false
             }
-            cloudPushDirty = false
           }
         }
         if (!pushed) {
@@ -886,7 +936,8 @@ export const notebookStore = {
     }
     return { total }
   },
-  getCloudSyncStatus,
+  getCloudSyncStatus: unifiedCloudSyncStatus,
+  isVercelNotebookHost,
   getCloudRuntime: () => cloudRuntime,
   subscribeCloudRuntime(listener: CloudRuntimeListener) {
     cloudRuntimeListeners.add(listener)
@@ -1218,6 +1269,81 @@ export const notebookStore = {
         htmlUrl: null,
         error,
       }
+    }
+  },
+  /**
+   * Enable cross-device sync via Vercel Blob using a shared cloud key.
+   * Same key on every device = same notes (no GitHub token required).
+   */
+  async enableVercelCloudSync(input: {
+    cloudKey: string
+    allowCreateEmpty?: boolean
+  }): Promise<{
+    cloudKey: string
+    total: number
+    restoredFromCloud: boolean
+    cloudNoteCount: number
+  }> {
+    await ensureReady()
+    if (!isVercelNotebookHost()) {
+      throw new NotebookStorageError(
+        'unknown',
+        'Vercel cloud storage is only available on the Vercel site (ownlab-omega.vercel.app).',
+      )
+    }
+    const cloudKey = input.cloudKey.trim()
+    if (cloudKey.length < 8) {
+      throw new NotebookStorageError('unknown', 'Cloud key must be at least 8 characters')
+    }
+
+    const localCount = cache.entries.length
+    const restoringEmptyDevice = localCount === 0 && !input.allowCreateEmpty
+    let cloudNoteCount = 0
+    let restoredFromCloud = false
+
+    saveVercelSyncSettings({ cloudKey, enabled: true })
+    // Prefer Vercel over Gist when both might be set.
+    saveGistSettings({ enabled: false })
+    refreshCloudRuntimeFromSettings()
+
+    try {
+      const pulled = await pullVercelBackup(cloudKey)
+      if (pulled) {
+        cloudNoteCount = pulled.noteCount
+        if (cloudNoteCount > 0 || cache.entries.length === 0) {
+          await notebookStore.importBackup(pulled.content, { syncCloud: false })
+          restoredFromCloud = cloudNoteCount > 0
+          setLastVercelSyncAt()
+        }
+      }
+    } catch (err) {
+      if (restoringEmptyDevice) {
+        saveVercelSyncSettings({ enabled: false })
+        refreshCloudRuntimeFromSettings()
+        throw err instanceof Error
+          ? new NotebookStorageError('unknown', err.message)
+          : new NotebookStorageError('unknown', 'Could not download Vercel notebook')
+      }
+    }
+
+    if (restoringEmptyDevice && cloudNoteCount === 0) {
+      saveVercelSyncSettings({ enabled: false })
+      refreshCloudRuntimeFromSettings()
+      throw new NotebookStorageError(
+        'unknown',
+        'No notes found for this cloud key yet. On the device that has your notes: open Notebook, create/paste this same cloud key, Enable cloud sync, wait for Saved to cloud, then restore here.',
+      )
+    }
+
+    await scheduleDurableSync()
+    if (!isVercelSyncReady()) {
+      throw new NotebookStorageError('unknown', 'Vercel cloud sync did not stay enabled')
+    }
+    return {
+      cloudKey,
+      total: cache.entries.length,
+      restoredFromCloud,
+      cloudNoteCount,
     }
   },
   /**

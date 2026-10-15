@@ -9,7 +9,6 @@ import {
   notebookStore,
   type CloudRuntimeState,
 } from '../hooks/notebookStore'
-import { getCloudSyncStatus } from '../lib/notebookGistSync'
 import {
   formatTimestamp,
   useNotebook,
@@ -221,7 +220,7 @@ export function Notebook() {
   const [recoveryBusy, setRecoveryBusy] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
-  const [cloudOn, setCloudOn] = useState(() => getCloudSyncStatus().configured)
+  const [cloudOn, setCloudOn] = useState(() => notebookStore.getCloudSyncStatus().configured)
   const [cloudState, setCloudState] = useState<CloudRuntimeState>(() =>
     notebookStore.getCloudRuntime().state,
   )
@@ -235,7 +234,7 @@ export function Notebook() {
 
   useEffect(() => {
     if (!ready) return
-    setCloudOn(getCloudSyncStatus().configured)
+    setCloudOn(notebookStore.getCloudSyncStatus().configured)
     let message: string | null = null
     if (notebookStore.consumeRecoveryNotice()) message = t('notesRecoveredToast')
     else if (notebookStore.consumeMigrationNotice()) message = t('notebookStorageUpgraded')
@@ -249,12 +248,16 @@ export function Notebook() {
     return notebookStore.subscribeCloudRuntime((runtime) => {
       setCloudState(runtime.state)
       setCloudError(runtime.error)
-      setCloudOn(getCloudSyncStatus().configured || runtime.state === 'syncing' || runtime.state === 'synced')
+      setCloudOn(
+        notebookStore.getCloudSyncStatus().configured ||
+          runtime.state === 'syncing' ||
+          runtime.state === 'synced',
+      )
     })
   }, [])
 
   useEffect(() => {
-    if (view !== 'backup') setCloudOn(getCloudSyncStatus().configured)
+    if (view !== 'backup') setCloudOn(notebookStore.getCloudSyncStatus().configured)
   }, [view, count])
 
   useEffect(() => {
@@ -465,7 +468,7 @@ export function Notebook() {
       setNewCategoryIds([])
       setComposerOpen(true)
       setComposerError(null)
-      if (!getCloudSyncStatus().configured) {
+      if (!notebookStore.getCloudSyncStatus().configured) {
         setCloudOn(false)
         window.requestAnimationFrame(() => {
           cloudSetupRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
