@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import { CloudSetupCard } from '../components/CloudSetupCard'
 import { NoteTree } from '../components/NoteTree'
 import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
@@ -220,12 +221,14 @@ export function Notebook() {
   const [recoveryBusy, setRecoveryBusy] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
+  const { available: authAvailable, username: authUser } = useAuth()
   const [cloudOn, setCloudOn] = useState(() => notebookStore.getCloudSyncStatus().configured)
   const [cloudState, setCloudState] = useState<CloudRuntimeState>(() =>
     notebookStore.getCloudRuntime().state,
   )
   const [cloudError, setCloudError] = useState<string | null>(null)
   const [skipCloudRestore, setSkipCloudRestore] = useState(false)
+  const accountSynced = Boolean(authAvailable && authUser)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
   const importInputRef = useRef<HTMLInputElement | null>(null)
@@ -233,8 +236,12 @@ export function Notebook() {
   const cloudSetupRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
+    if (accountSynced) setCloudOn(true)
+  }, [accountSynced])
+
+  useEffect(() => {
     if (!ready) return
-    setCloudOn(notebookStore.getCloudSyncStatus().configured)
+    setCloudOn(accountSynced || notebookStore.getCloudSyncStatus().configured)
     let message: string | null = null
     if (notebookStore.consumeRecoveryNotice()) message = t('notesRecoveredToast')
     else if (notebookStore.consumeMigrationNotice()) message = t('notebookStorageUpgraded')
@@ -242,23 +249,26 @@ export function Notebook() {
     setStorageToast(message)
     const timer = window.setTimeout(() => setStorageToast(null), 5200)
     return () => window.clearTimeout(timer)
-  }, [ready, t])
+  }, [ready, t, accountSynced])
 
   useEffect(() => {
     return notebookStore.subscribeCloudRuntime((runtime) => {
       setCloudState(runtime.state)
       setCloudError(runtime.error)
       setCloudOn(
-        notebookStore.getCloudSyncStatus().configured ||
+        accountSynced ||
+          notebookStore.getCloudSyncStatus().configured ||
           runtime.state === 'syncing' ||
           runtime.state === 'synced',
       )
     })
-  }, [])
+  }, [accountSynced])
 
   useEffect(() => {
-    if (view !== 'backup') setCloudOn(notebookStore.getCloudSyncStatus().configured)
-  }, [view, count])
+    if (view !== 'backup') {
+      setCloudOn(accountSynced || notebookStore.getCloudSyncStatus().configured)
+    }
+  }, [view, count, accountSynced])
 
   useEffect(() => {
     if (!ready || autoRecoverTried.current) return
@@ -592,19 +602,25 @@ export function Notebook() {
                   ? t('backupLede')
                   : t('notebookLede')}
         </p>
-        {cloudOn ? (
+        {cloudOn || accountSynced ? (
           <div className="notebook-cloud-status-row">
             <p
               className={`notebook-cloud-pill${cloudState === 'error' ? ' err' : ''}${
                 cloudState === 'syncing' ? ' syncing' : ''
               }`}
-              title={t('cloudTitle')}
+              title={accountSynced ? t('authSignedInHint') : t('cloudTitle')}
             >
-              {cloudState === 'syncing'
-                ? t('cloudSyncing')
-                : cloudState === 'error'
-                  ? t('cloudSyncError', { error: cloudError || 'error' })
-                  : t('cloudSynced')}
+              {accountSynced
+                ? cloudState === 'syncing'
+                  ? t('cloudSyncing')
+                  : cloudState === 'error'
+                    ? t('cloudSyncError', { error: cloudError || 'error' })
+                    : t('authSyncOn', { user: authUser || '' })
+                : cloudState === 'syncing'
+                  ? t('cloudSyncing')
+                  : cloudState === 'error'
+                    ? t('cloudSyncError', { error: cloudError || 'error' })
+                    : t('cloudSynced')}
             </p>
             <button
               type="button"
@@ -738,8 +754,17 @@ export function Notebook() {
         ) : null}
       </header>
 
-      {!cloudOn && (view === 'notes' || view === 'backup') ? (
+      {!accountSynced && !cloudOn && (view === 'notes' || view === 'backup') ? (
         <div ref={cloudSetupRef} className="notebook-cloud-setup-anchor">
+          {authAvailable ? (
+            <section className="notebook-cloud-setup" aria-label={t('authSignIn')}>
+              <div className="notebook-cloud-setup-head">
+                <h2>{t('authRequiredTitle')}</h2>
+                <p>{t('authRequiredBody')}</p>
+                <p className="notebook-cloud-setup-note">{t('authRequiredHint')}</p>
+              </div>
+            </section>
+          ) : null}
           <CloudSetupCard
             restoreMode={count === 0 && !skipCloudRestore}
             onEnabled={() => {

@@ -18,8 +18,18 @@ import {
   type OwnlabGistMatch,
 } from '../lib/notebookGistSync'
 import {
-  getLastVercelSyncAt,
+  getLastAccountSyncAt,
+  isAccountSyncReady,
   isVercelNotebookHost,
+  loadCachedAccountUser,
+  pullAccountBackup,
+  pushAccountBackup,
+  saveAccountSyncEnabled,
+  saveCachedAccountUser,
+  setLastAccountSyncAt,
+} from '../lib/notebookAccountSync'
+import {
+  getLastVercelSyncAt,
   isVercelSyncReady,
   loadVercelSyncSettings,
   pullVercelBackup,
@@ -423,10 +433,18 @@ let periodicSyncTimer: ReturnType<typeof setInterval> | null = null
  * Returns the ETag to If-Match on the subsequent push.
  */
 function anyCloudBackendReady(): boolean {
-  return isVercelSyncReady() || isCloudSyncReady()
+  return isAccountSyncReady() || isVercelSyncReady() || isCloudSyncReady()
 }
 
 async function pullAndMergeCloudQuiet(): Promise<{ merged: boolean; etag: string | null }> {
+  if (isAccountSyncReady()) {
+    const pulled = await pullAccountBackup()
+    if (!pulled) return { merged: false, etag: cloudEtag }
+    cloudEtag = pulled.etag
+    await notebookStore.importBackup(pulled.content, { syncCloud: false })
+    setLastAccountSyncAt()
+    return { merged: true, etag: pulled.etag }
+  }
   if (isVercelSyncReady()) {
     const { cloudKey } = loadVercelSyncSettings()
     const pulled = await pullVercelBackup(cloudKey)
@@ -519,6 +537,15 @@ type CloudRuntimeListener = (runtime: CloudRuntime) => void
 const cloudRuntimeListeners = new Set<CloudRuntimeListener>()
 
 function unifiedCloudSyncStatus() {
+  if (isAccountSyncReady()) {
+    return {
+      configured: true,
+      enabled: true,
+      gistId: `account:${loadCachedAccountUser()}`,
+      lastSyncedAt: getLastAccountSyncAt(),
+      gistUrl: null as string | null,
+    }
+  }
   if (isVercelSyncReady()) {
     const v = loadVercelSyncSettings()
     return {
@@ -603,7 +630,17 @@ async function flushCloudSync() {
         if (cloudPushDirty) continue
 
         let pushed = false
-        if (isVercelSyncReady()) {
+        if (isAccountSyncReady()) {
+          const result = await pushAccountBackup(buildBackupJson())
+          cloudEtag = result.etag
+          setCloudRuntime({
+            state: 'synced',
+            lastSyncedAt: new Date().toISOString(),
+            error: null,
+            gistId: `account:${loadCachedAccountUser()}`,
+          })
+          pushed = true
+        } else if (isVercelSyncReady()) {
           const { cloudKey } = loadVercelSyncSettings()
           const result = await pushVercelBackup(buildBackupJson(), cloudKey)
           cloudEtag = result.etag
@@ -1270,6 +1307,84 @@ export const notebookStore = {
         error,
       }
     }
+  },
+  /**
+   * After account login: attach this device to the signed-in user's cloud notebook.
+   * Pulls existing notes (if any) and enables automatic push — no restore key.
+   */
+  async enableAccountCloudSync(input: {
+    username: string
+    allowCreateEmpty?: boolean
+  }): Promise<{
+    username: string
+    total: number
+    restoredFromCloud: boolean
+    cloudNoteCount: number
+  }> {
+    await ensureReady()
+    if (!isVercelNotebookHost()) {
+      throw new NotebookStorageError(
+        'unknown',
+        'Account sync is only available on the Vercel site (ownlab-omega.vercel.app).',
+      )
+    }
+    const username = input.username.trim().toLowerCase()
+    if (!username) throw new NotebookStorageError('unknown', 'Username required')
+
+    const localCount = cache.entries.length
+    const restoringEmptyDevice = localCount === 0 && !input.allowCreateEmpty
+    let cloudNoteCount = 0
+    let restoredFromCloud = false
+
+    saveCachedAccountUser(username)
+    saveAccountSyncEnabled(true)
+    // Prefer account sync over key/gist on this device.
+    saveVercelSyncSettings({ enabled: false })
+    saveGistSettings({ enabled: false })
+    refreshCloudRuntimeFromSettings()
+
+    try {
+      const pulled = await pullAccountBackup()
+      if (pulled) {
+        cloudNoteCount = pulled.noteCount
+        if (cloudNoteCount > 0 || cache.entries.length === 0) {
+          await notebookStore.importBackup(pulled.content, { syncCloud: false })
+          restoredFromCloud = cloudNoteCount > 0
+          setLastAccountSyncAt()
+        }
+      }
+    } catch (err) {
+      if (restoringEmptyDevice) {
+        saveAccountSyncEnabled(false)
+        refreshCloudRuntimeFromSettings()
+        throw err instanceof Error
+          ? new NotebookStorageError('unknown', err.message)
+          : new NotebookStorageError('unknown', 'Could not download account notebook')
+      }
+    }
+
+    // Empty local + empty cloud on first register is OK (allowCreateEmpty).
+    if (restoringEmptyDevice && cloudNoteCount === 0) {
+      saveAccountSyncEnabled(false)
+      refreshCloudRuntimeFromSettings()
+      throw new NotebookStorageError(
+        'unknown',
+        'No notes on this account yet. Sign in on the device that has your notes first (they upload automatically), then open OWNLAB here again while signed in.',
+      )
+    }
+
+    await scheduleDurableSync()
+    return {
+      username,
+      total: cache.entries.length,
+      restoredFromCloud,
+      cloudNoteCount,
+    }
+  },
+  disableAccountCloudSync() {
+    saveAccountSyncEnabled(false)
+    saveCachedAccountUser(null)
+    refreshCloudRuntimeFromSettings()
   },
   /**
    * Enable cross-device sync via Vercel Blob using a shared cloud key.

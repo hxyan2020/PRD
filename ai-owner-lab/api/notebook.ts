@@ -1,9 +1,16 @@
 /**
  * Cross-device notebook backup on Vercel Blob.
- * Auth: shared cloud key in `x-ownlab-cloud-key` (hashed → private blob path).
+ * Preferred auth: signed session cookie (account login).
+ * Fallback: shared cloud key header `x-ownlab-cloud-key`.
  */
 import { createHash } from 'node:crypto'
 import { head, put } from '@vercel/blob'
+import {
+  accountNotebookPath,
+  blobToken,
+  corsAuth,
+  sessionFromRequest,
+} from './_lib/auth'
 
 export const config = {
   api: {
@@ -27,13 +34,22 @@ function readCloudKey(req: { headers?: Record<string, string | string[] | undefi
   return typeof value === 'string' ? value.trim() : ''
 }
 
-function cors(res: {
-  setHeader: (k: string, v: string) => void
-  status: (n: number) => { end: () => void; json: (b: unknown) => void; send: (b: string) => void }
-}) {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-ownlab-cloud-key, If-Match')
+function resolvePathname(req: {
+  headers?: Record<string, string | string[] | undefined>
+}): { pathname: string; mode: 'account' | 'key' } | { error: string; status: number } {
+  const session = sessionFromRequest(req)
+  if (session?.u) {
+    return { pathname: accountNotebookPath(session.u), mode: 'account' }
+  }
+  const cloudKey = readCloudKey(req)
+  if (cloudKey.length >= MIN_KEY_LEN) {
+    return { pathname: pathnameForKey(cloudKey), mode: 'key' }
+  }
+  return {
+    status: 401,
+    error:
+      'Sign in to sync notes across devices, or send x-ownlab-cloud-key (advanced).',
+  }
 }
 
 export default async function handler(
@@ -51,35 +67,39 @@ export default async function handler(
     }
   },
 ) {
-  cors(res)
+  corsAuth(res)
   if (req.method === 'OPTIONS') {
     res.status(204).end()
     return
   }
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN
-  if (!token) {
+  let token: string
+  try {
+    token = blobToken()
+  } catch {
     res.status(500).json({ error: 'Vercel Blob is not configured on this deployment' })
     return
   }
 
-  const cloudKey = readCloudKey(req)
-  if (cloudKey.length < MIN_KEY_LEN) {
-    res.status(401).json({
-      error: `Cloud key required (at least ${MIN_KEY_LEN} characters). Same key on every device = same notes.`,
-    })
+  const resolved = resolvePathname(req)
+  if ('error' in resolved) {
+    res.status(resolved.status).json({ error: resolved.error })
     return
   }
-
-  const pathname = pathnameForKey(cloudKey)
+  const { pathname, mode } = resolved
 
   try {
     if (req.method === 'GET') {
-      let meta: { url: string; downloadUrl?: string; contentType?: string } | null = null
+      let meta: { url: string; downloadUrl?: string } | null = null
       try {
         meta = await head(pathname, { token })
       } catch {
-        res.status(404).json({ error: 'No notebook saved for this cloud key yet' })
+        res.status(404).json({
+          error:
+            mode === 'account'
+              ? 'No notebook saved for this account yet'
+              : 'No notebook saved for this cloud key yet',
+        })
         return
       }
       const downloadUrl = meta.downloadUrl || meta.url
@@ -88,7 +108,7 @@ export default async function handler(
       })
       if (!upstream.ok) {
         res.status(upstream.status === 404 ? 404 : 502).json({
-          error: upstream.status === 404 ? 'No notebook saved for this cloud key yet' : 'Blob download failed',
+          error: upstream.status === 404 ? 'No notebook saved yet' : 'Blob download failed',
         })
         return
       }
@@ -111,7 +131,6 @@ export default async function handler(
         res.status(400).json({ error: 'Notebook payload missing or too large' })
         return
       }
-      // Validate JSON shape lightly
       try {
         const parsed = JSON.parse(body) as { entries?: unknown }
         if (!Array.isArray(parsed.entries)) {
@@ -134,6 +153,7 @@ export default async function handler(
       res.setHeader('ETag', etag)
       res.status(200).json({
         ok: true,
+        mode,
         pathname: result.pathname,
         etag,
         uploadedAt: new Date().toISOString(),

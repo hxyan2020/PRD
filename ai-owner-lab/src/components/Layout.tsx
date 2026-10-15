@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useProgress } from '../hooks/useProgress'
 import { useNotebook } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
+import { AuthBar } from './AuthBar'
 import { SelectionTools } from './SelectionTools'
 
 export function Layout() {
@@ -61,6 +62,7 @@ export function Layout() {
         </NavLink>
 
         <div className="topbar-actions">
+          <AuthBar />
           <div className="lang-switch" role="group" aria-label="Language">
             <button
               type="button"
