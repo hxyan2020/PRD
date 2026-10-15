@@ -1,4 +1,4 @@
-import { clearSessionCookie, corsAuth } from '../_lib/auth'
+import { clearSessionCookie, corsAuth } from '../_lib/auth.js'
 
 export default async function handler(
   req: { method?: string },

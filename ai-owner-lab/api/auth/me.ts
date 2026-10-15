@@ -1,4 +1,4 @@
-import { corsAuth, sessionFromRequest } from '../_lib/auth'
+import { corsAuth, sessionFromRequest } from '../_lib/auth.js'
 
 export default async function handler(
   req: { method?: string; headers?: Record<string, string | string[] | undefined> },

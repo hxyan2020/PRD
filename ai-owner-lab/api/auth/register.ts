@@ -7,7 +7,7 @@ import {
   saveUser,
   setSessionCookie,
   signSession,
-} from '../_lib/auth'
+} from '../_lib/auth.js'
 
 export default async function handler(
   req: { method?: string; headers?: Record<string, string | string[] | undefined>; body?: unknown },

@@ -10,7 +10,7 @@ import {
   blobToken,
   corsAuth,
   sessionFromRequest,
-} from './_lib/auth'
+} from './_lib/auth.js'
 
 export const config = {
   api: {
