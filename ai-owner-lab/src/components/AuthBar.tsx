@@ -69,7 +69,7 @@ export function AuthBar() {
             <button
               type="button"
               className="auth-modal-scrim"
-              aria-label={t('closeMenu')}
+              aria-label={t('authClose')}
               onClick={() => setOpen(false)}
             />
             <div
@@ -82,78 +82,83 @@ export function AuthBar() {
                 <h2 id={titleId}>{mode === 'login' ? t('authSignIn') : t('authCreateAccount')}</h2>
                 <button
                   type="button"
-                  className="btn ghost auth-modal-close"
+                  className="auth-modal-close"
+                  aria-label={t('authClose')}
                   onClick={() => setOpen(false)}
                 >
-                  {t('closeMenu')}
+                  ×
                 </button>
               </div>
-              <p className="auth-lede">{t('authLede')}</p>
-              <div className="auth-mode" role="tablist" aria-label={t('authSignIn')}>
+              <div className="auth-modal-body">
+                <p className="auth-lede">{t('authLedeShort')}</p>
+                <div className="auth-mode" role="tablist" aria-label={t('authSignIn')}>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={mode === 'login'}
+                    className={mode === 'login' ? 'active' : ''}
+                    onClick={() => setMode('login')}
+                  >
+                    {t('authSignIn')}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={mode === 'register'}
+                    className={mode === 'register' ? 'active' : ''}
+                    onClick={() => setMode('register')}
+                  >
+                    {t('authCreateAccount')}
+                  </button>
+                </div>
+                <label className="notebook-field">
+                  <span className="notebook-field-label">{t('authUsername')}</span>
+                  <input
+                    className="notebook-title-input auth-input"
+                    autoComplete="username"
+                    enterKeyHint="next"
+                    value={user}
+                    onChange={(e) => setUser(e.target.value)}
+                    autoFocus
+                  />
+                </label>
+                <label className="notebook-field">
+                  <span className="notebook-field-label">{t('authPassword')}</span>
+                  <input
+                    className="notebook-title-input auth-input"
+                    type="password"
+                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                    enterKeyHint="go"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        void submit()
+                      }
+                    }}
+                  />
+                </label>
+                {error ? (
+                  <p className="notebook-composer-error" role="alert">
+                    {error}
+                  </p>
+                ) : null}
+              </div>
+              <div className="auth-modal-foot">
                 <button
                   type="button"
-                  role="tab"
-                  aria-selected={mode === 'login'}
-                  className={mode === 'login' ? 'active' : ''}
-                  onClick={() => setMode('login')}
+                  className="btn primary auth-submit"
+                  disabled={busy}
+                  onClick={() => void submit()}
                 >
-                  {t('authSignIn')}
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={mode === 'register'}
-                  className={mode === 'register' ? 'active' : ''}
-                  onClick={() => setMode('register')}
-                >
-                  {t('authCreateAccount')}
+                  {busy
+                    ? t('authWorking')
+                    : mode === 'login'
+                      ? t('authSignIn')
+                      : t('authCreateAccount')}
                 </button>
               </div>
-              <label className="notebook-field">
-                <span className="notebook-field-label">{t('authUsername')}</span>
-                <input
-                  className="notebook-title-input auth-input"
-                  autoComplete="username"
-                  enterKeyHint="next"
-                  value={user}
-                  onChange={(e) => setUser(e.target.value)}
-                  autoFocus
-                />
-              </label>
-              <label className="notebook-field">
-                <span className="notebook-field-label">{t('authPassword')}</span>
-                <input
-                  className="notebook-title-input auth-input"
-                  type="password"
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                  enterKeyHint="go"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      void submit()
-                    }
-                  }}
-                />
-              </label>
-              {error ? (
-                <p className="notebook-composer-error" role="alert">
-                  {error}
-                </p>
-              ) : null}
-              <button
-                type="button"
-                className="btn primary auth-submit"
-                disabled={busy}
-                onClick={() => void submit()}
-              >
-                {busy
-                  ? t('authWorking')
-                  : mode === 'login'
-                    ? t('authSignIn')
-                    : t('authCreateAccount')}
-              </button>
             </div>
           </div>,
           document.body,
