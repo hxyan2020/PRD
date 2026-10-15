@@ -1,8 +1,12 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// GitHub Pages project site: https://hxyan2020.github.io/PRD/ownlab/
+// GitHub Pages: /PRD/ownlab/ — Vercel (and local override) use /
+const base =
+  process.env.BASE_PATH ??
+  (process.env.VERCEL ? '/' : '/PRD/ownlab/')
+
 export default defineConfig({
-  base: '/PRD/ownlab/',
+  base,
   plugins: [react()],
 })
