@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "非洲",
+    "Asia": "亞洲",
+    "Asia-Pacific": "亞太",
+    "Brazil": "巴西",
+    "DACH": "德語區（德奧瑞）",
+    "Europe": "歐洲",
+    "Francophone Europe / Africa": "法語歐洲 / 非洲",
+    "Global": "全球",
+    "Global / AI": "全球 / 人工智慧",
+    "Global / North America": "全球 / 北美",
+    "Global South": "全球南方",
+    "Greater China": "大中華區",
+    "India": "印度",
+    "Israel": "以色列",
+    "Korea": "韓國",
+    "Latin America": "拉丁美洲",
+    "MENA": "中東與北非",
+    "Nordics": "北歐",
+    "Oceania": "大洋洲",
+    "South Asia": "南亞",
+    "Southern Cone": "南錐體",
+    "Türkiye / Eastern Europe": "土耳其 / 東歐",
+    "Vietnam": "越南",
+    "West Africa": "西非"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "全球創業與募資新聞專線。"
+    },
+    "crunchbase-news": {
+      "description": "募資輪次公告與投資人動態。"
+    },
+    "36kr": {
+      "description": "中文創業與硬科技報導。"
+    },
+    "krasia": {
+      "description": "東南亞與東亞創業情報。"
+    },
+    "techinasia": {
+      "description": "亞太創業募資與產品報導。"
+    },
+    "nikkei-asia": {
+      "description": "日經亞太商業與創投報導。"
+    },
+    "platum": {
+      "description": "韓國創業與募資專線。"
+    },
+    "yourstory": {
+      "description": "聚焦印度的創業與募資故事。"
+    },
+    "startup-india": {
+      "description": "印度新創企業政府註冊與認證信號。",
+      "notes": "每 48 小時批次同步"
+    },
+    "sifted": {
+      "description": "歐洲創業與深科技募資報導。"
+    },
+    "eu-startups": {
+      "description": "泛歐創業新聞聚合。"
+    },
+    "les-echos-start": {
+      "description": "法語創業與成長型企業專線。"
+    },
+    "gruenderszene": {
+      "description": "德語創辦人與募資報導。"
+    },
+    "africarena": {
+      "description": "非洲創投與生態報導。"
+    },
+    "wamda": {
+      "description": "中東與北非創業與募資專線。"
+    },
+    "contxto": {
+      "description": "拉美創業與風險資本報導。"
+    },
+    "startupbase-br": {
+      "description": "巴西創業地圖、排名與生態情報。",
+      "notes": "註冊庫每 24 小時抓取"
+    },
+    "israel-tech": {
+      "description": "以色列深科技與網路安全募資信號。"
+    },
+    "afrilabs": {
+      "description": "非洲創辦人與投資人交易流社群。",
+      "notes": "社群摘要每 12 小時"
+    },
+    "pitchbook-public": {
+      "description": "公開募資簡報與市場筆記。"
+    },
+    "venturebeat": {
+      "description": "人工智慧與企業級創業產品／募資報導。"
+    },
+    "rest-of-world": {
+      "description": "矽谷以外的科技故事。"
+    },
+    "startupdaily-au": {
+      "description": "澳大利亞與紐西蘭創業與資本市場專線。"
+    },
+    "nordic-startup-news": {
+      "description": "來自斯德哥爾摩的北歐創業、科技與成長型報導。"
+    },
+    "webrazzi": {
+      "description": "土耳其語科技與創業募資專線。"
+    },
+    "vnexpress-startup": {
+      "description": "越南創業與數位經濟報導。"
+    },
+    "technode": {
+      "description": "中外雙語科技與創投資訊。"
+    },
+    "pulse-ng": {
+      "description": "西非與南部非洲創業資本報導。"
+    },
+    "inc42": {
+      "description": "印度創業募資與政策信號。"
+    },
+    "startupchile": {
+      "description": "拉美加速器與生態項目資訊。",
+      "notes": "項目批次每 24 小時同步"
+    },
+    "dealstreetasia": {
+      "description": "亞洲私募市場交易、募資與投資人動態。"
+    }
+  },
+  "countries": {
+    "Argentina": "阿根廷",
+    "Australia": "澳洲",
+    "Austria": "奧地利",
+    "Belgium": "比利時",
+    "Brazil": "巴西",
+    "Bulgaria": "保加利亞",
+    "Canada": "加拿大",
+    "Chile": "智利",
+    "China": "中國",
+    "Colombia": "哥倫比亞",
+    "Denmark": "丹麥",
+    "Egypt": "埃及",
+    "Finland": "芬蘭",
+    "France": "法國",
+    "Germany": "德國",
+    "Ghana": "迦納",
+    "Greece": "希臘",
+    "Hong Kong": "中國香港特別行政區",
+    "Iceland": "冰島",
+    "India": "印度",
+    "Indonesia": "印尼",
+    "Israel": "以色列",
+    "Italy": "義大利",
+    "Japan": "日本",
+    "Jordan": "約旦",
+    "Kenya": "肯亞",
+    "Lebanon": "黎巴嫩",
+    "Malaysia": "馬來西亞",
+    "Mexico": "墨西哥",
+    "Morocco": "摩洛哥",
+    "Netherlands": "荷蘭",
+    "New Zealand": "紐西蘭",
+    "Nigeria": "奈及利亞",
+    "Norway": "挪威",
+    "Peru": "秘魯",
+    "Philippines": "菲律賓",
+    "Poland": "波蘭",
+    "Portugal": "葡萄牙",
+    "Romania": "羅馬尼亞",
+    "Rwanda": "盧安達",
+    "Saudi Arabia": "沙烏地阿拉伯",
+    "Senegal": "塞內加爾",
+    "Singapore": "新加坡",
+    "South Africa": "南非",
+    "South Korea": "南韓",
+    "Spain": "西班牙",
+    "Sweden": "瑞典",
+    "Switzerland": "瑞士",
+    "Taiwan": "台灣",
+    "Thailand": "泰國",
+    "Turkey": "土耳其",
+    "United Arab Emirates": "阿拉伯聯合大公國",
+    "United Kingdom": "英國",
+    "United States": "美國",
+    "Uruguay": "烏拉圭",
+    "Vietnam": "越南"
+  }
+}

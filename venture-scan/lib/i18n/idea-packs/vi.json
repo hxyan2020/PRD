@@ -1,0 +1,182 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit Exchange",
+    "description": "Sàn giao dịch token hóa kết quả phục hồi rạn san hô đã xác minh và bán tín chỉ đa dạng sinh học gắn carbon cho khách sạn, bảo hiểm và chính quyền ven biển. Đối tác hiện trường tải lên cảm biến + nhật ký lặn; ReefCredit phát hành chứng chỉ có thể giao dịch.",
+    "businessModel": "Thu phí giao dịch 8–12% trên doanh số tín chỉ cộng ghế SaaS cho bảng điều khiển xác minh bán cho khu nghỉ dưỡng và người mua đô thị.",
+    "industry": "Công nghệ khí hậu",
+    "sector": "Kinh tế xanh dương / Tín chỉ đa dạng sinh học",
+    "fundingRoundNote": "Quỹ khí hậu khu vực dẫn dắt với LP du lịch",
+    "goForwardSummary": "Đề xuất trở thành hub xác minh nhượng quyền tại thành phố ven biển của bạn—vận hành onboarding đối tác lặn và bán tín chỉ cho khách sạn địa phương trong khi nền tảng mẹ xử lý thanh toán."
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift Nursing AI",
+    "description": "Trợ lý giọng nói môi trường cho khoa bệnh viện ban đêm: soạn ghi chú điều dưỡng, gắn cờ nguy cơ suy giảm từ trao đổi về sinh hiệu, và bàn giao brief có cấu trúc cho đội sáng. Xây cho đơn vị cấp cứu thiếu nhân sự.",
+    "businessModel": "Giấy phép hàng năm theo giường bán cho hệ thống bệnh viện; tầng cao cấp gồm đầu nối ghi ngược EHR.",
+    "industry": "Công nghệ y tế",
+    "sector": "AI quy trình bệnh viện",
+    "fundingRoundNote": "Đồng đầu tư chiến lược hệ thống bệnh viện",
+    "goForwardSummary": "Sao chép quy trình khoa đêm cốt lõi cho chuỗi bệnh viện tư châu Á; bản địa hóa gói ngôn ngữ (JP/KR/ZH) và bắt đầu với khoa ICU nơi việc ghi chép tiếng Anh đã có sẵn."
+  },
+  "kiln-microfactory": {
+    "name": "Kiln Microfactory",
+    "description": "Nhà máy vi mô in 3D gốm + kim loại dùng chung trong khu phố, cho phép nhà thiết kế tải CAD, chọn vật liệu và nhận sản xuất lô nhỏ trong cùng tuần mà không sở hữu máy. Nhắm thương hiệu phần cứng indie và studio kiến trúc.",
+    "businessModel": "Phí sử dụng máy + biên lợi nhuận vật liệu + retainer concierge thiết kế-đến-sản xuất tùy chọn.",
+    "industry": "Sản xuất",
+    "sector": "Chế tạo phân tán",
+    "fundingRoundNote": "Đang gọi vòng thiên thần €1.2M",
+    "goForwardSummary": "Nhượng quyền một gian nhà máy vi mô tại thành phố bạn bằng stack phần mềm của họ—giữ quan hệ nhà thiết kế địa phương trong khi cấp phép bộ lập lịch việc và định giá vật liệu của Kiln."
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack Coldchain",
+    "description": "Kho lạnh mô-đun dùng năng lượng mặt trời và cảm biến hư hỏng IoT cho bên gom nông sản nông hộ nhỏ. Nông dân thuê slot theo thùng; người mua nhận cửa sổ cung ứng đảm bảo chất lượng qua WhatsApp + ứng dụng.",
+    "businessModel": "Thuê phần cứng + phí kho lạnh theo thùng + take-rate sàn khi người mua đặt lô.",
+    "industry": "Công nghệ nông nghiệp",
+    "sector": "Logistics chuỗi lạnh",
+    "fundingRoundNote": "DFI + vốn tăng trưởng khí hậu",
+    "goForwardSummary": "Xin hợp tác với đội sáng lập làm nhà vận hành được cấp phép Đông Nam Á hoặc Nam Á—nhân bản mô hình thuê thùng với đối tác EPC năng lượng mặt trời địa phương."
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop Companion",
+    "description": "Người bạn đồng hành máy tính bảng + thiết bị đeo chạy check-in hàng ngày cho người cao tuổi sống một mình, cảnh báo gia đình khi có mẫu bất thường, và đặt lịch thăm người chăm sóc địa phương. Nhấn mạnh UX ưu tiên giọng nói và bảng điều khiển gia đình dễ dùng.",
+    "businessModel": "Thuê bao hàng tháng theo hộ; đại lý chăm sóc trả phí giới thiệu lead và công cụ danh sách ca.",
+    "industry": "Công nghệ y tế",
+    "sector": "Chăm sóc người cao tuổi / Người tiêu dùng",
+    "fundingRoundNote": "Corporate venture từ telco + bảo hiểm",
+    "goForwardSummary": "Cung cấp cùng stack cho nhóm tuổi khác—người làm việc từ xa trẻ chăm bố mẹ ở nước ngoài—hoặc đóng gói lại thành phúc lợi EAP doanh nghiệp cho nhân viên có người cao tuổi ở nước ngoài."
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane Freight",
+    "description": "Lớp tài liệu AI tự xây gói hải quan, vận đơn và dấu vết tuân thủ cho nhà xuất khẩu SME xuyên biên giới. Tích hợp với gửi tài liệu WhatsApp và các ERP phổ biến.",
+    "businessModel": "Phí SaaS theo lô hàng + upsell bảo hiểm tuân thủ cao cấp với underwriter đối tác.",
+    "industry": "Công nghệ logistics",
+    "sector": "SaaS tuân thủ thương mại",
+    "fundingRoundNote": "Nhà đầu tư hành lang Ấn Độ–Trung Đông",
+    "goForwardSummary": "Cung cấp dưới dạng middleware tuân thủ white-label cho forwarder và ngân hàng tại thị trường bạn thay vì cạnh tranh trực tiếp logo SME cuối."
+  },
+  "playpane-classroom": {
+    "name": "PlayPane Classroom",
+    "description": "Bộ STEM vật lý đồng bộ với bảng điều khiển giáo viên cho chương trình sau giờ học. Trẻ lắp dự án điện tử; ứng dụng theo dõi mức thành thạo và gợi ý bộ tiếp theo. Chỗ đứng vững tại các academy trust Anh.",
+    "businessModel": "Biên lợi nhuận phần cứng bộ + ghế phần mềm lớp học hàng năm bán cho trường và trung tâm gia sư nhượng quyền.",
+    "industry": "Công nghệ giáo dục",
+    "sector": "Học thực hành K-12",
+    "fundingRoundNote": "Vòng £2.5M đang mở",
+    "goForwardSummary": "Sao chép mô hình bộ + bảng điều khiển cho trung tâm bồi dưỡng châu Á; bản địa hóa chương trình theo lộ trình thi đấu (Olympiad) và bán qua mạng nhượng quyền gia sư."
+  },
+  "voltpath-depot": {
+    "name": "VoltPath Depot",
+    "description": "Trạm đổi pin cho đội giao hàng last-mile dùng pin chuẩn. Shipper đổi dưới hai phút; VoltPath sở hữu tồn kho pin và bán energy-as-a-service cho thương hiệu logistics.",
+    "businessModel": "Phí mỗi lần đổi + hợp đồng SLA đội xe hàng tháng; giá trị còn lại từ bán pin vòng đời thứ hai.",
+    "industry": "Di chuyển",
+    "sector": "Hạ tầng pin EV",
+    "fundingRoundNote": "Chiến lược ride-hailing + PE hạ tầng",
+    "goForwardSummary": "Đề xuất trở thành nhà vận hành trạm nhượng quyền tại thành phố bạn—VoltPath cung cấp pin và phần mềm; bạn bảo đảm đất và hợp đồng shipper."
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft Ads",
+    "description": "Studio quảng cáo sinh tạo biến URL sản phẩm thành gói sáng tạo bản địa hóa cho Meta, TikTok và Xiaohongshu—kèm kiểm tra tuân thủ ngôn ngữ tuyên bố theo thị trường.",
+    "businessModel": "SaaS theo ghế cho agency + tín chỉ sử dụng theo khối lượng render; gói SSO doanh nghiệp.",
+    "industry": "Công nghệ tiếp thị",
+    "sector": "Tự động hóa sáng tạo",
+    "fundingRoundNote": "Seed Bắc Mỹ với thiên thần GTM châu Á",
+    "goForwardSummary": "Tách một ngách dọc—ví dụ chỉ beauty D2C—với mẫu native Xiaohongshu và bán cho agency đã chuyên về danh mục đó."
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor Legal Ops",
+    "description": "Hệ điều hành quy trình cho văn phòng luật di trú và visa boutique: tiếp nhận khách, checklist tài liệu, lịch hạn chót và chat khách mã hóa. Cắt giờ hành chính để luật sư tính phí nhiều thời gian tư vấn hơn.",
+    "businessModel": "SaaS hàng tháng theo luật sư; chữ ký điện tử cao cấp và điền mẫu chính phủ dưới dạng add-on.",
+    "industry": "Công nghệ pháp lý",
+    "sector": "Quản lý hành nghề",
+    "fundingRoundNote": "Bootstrapped + friends/family",
+    "goForwardSummary": "Xin hợp tác với đội sáng lập làm reseller APAC—đóng gói Harbor với mạng tư vấn di trú địa phương và chia sẻ MRR."
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "Startup lên men chính xác sản xuất protein giống sữa cho kem và kem pha mà không cần bò. Bán nguyên liệu B2B cho thương hiệu CPG muốn câu chuyện Scope 3 sạch hơn.",
+    "businessModel": "Hợp đồng cung ứng nguyên liệu theo bậc khối lượng; phí đồng phát triển công thức tùy chỉnh.",
+    "industry": "Công nghệ thực phẩm",
+    "sector": "Protein thay thế",
+    "fundingRoundNote": "Syndicate tăng trưởng food-tech châu Âu",
+    "goForwardSummary": "Cấp phép chủng lên men + IP quy trình cho nhà máy khu vực thay vì nhập protein thành phẩm—hợp tác với co-packer CPG địa phương."
+  },
+  "meshpay-remit": {
+    "name": "MeshPay Remit",
+    "description": "Đường chuyển tiền phí thấp dùng đối tác ngân hàng địa phương và thanh toán stablecoin giữa Brazil và các hành lang châu Phi. Tập trung chi trả micro-merchant cho người bán e-commerce diaspora.",
+    "businessModel": "Spread phí FX + chuyển tiền; lợi suất float trên số dư thanh toán; phí API cho tích hợp sàn.",
+    "industry": "FinTech",
+    "sector": "Thanh toán xuyên biên giới",
+    "fundingRoundNote": "Fintech LatAm + quỹ tập trung châu Phi",
+    "goForwardSummary": "Sao chép thiết kế hành lang cho tuyến chuyển tiền châu Á–châu Phi (ví dụ Singapore/HK → Đông Phi) với cùng định vị chi trả merchant."
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire Mesh Sensors",
+    "description": "Cảm biến mesh công suất thấp và uplink vệ tinh phát hiện sớm dấu hiệu nhiệt và cột khói trên vành đai cháy nông thôn. Cảnh báo đưa vào bảng điều khiển CFA/SES địa phương và mô hình tổn thất bảo hiểm.",
+    "businessModel": "Phần cứng + SaaS giám sát hàng năm bán cho hội đồng và tiện ích; cấp phép dữ liệu cho bảo hiểm.",
+    "industry": "Công nghệ khí hậu",
+    "sector": "Phát hiện cháy rừng",
+    "fundingRoundNote": "Thiên thần khí hậu + stack tài trợ disaster-tech",
+    "goForwardSummary": "Chuyển stack mesh + cảnh báo sang hành lang cháy than bùn Đông Nam Á, kết hợp đối tác LoRaWAN telco địa phương."
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok Energy Retrofit",
+    "description": "Bộ cách nhiệt mô-đun và bơm nhiệt thiết kế cho nhà sân truyền thống Hàn Quốc, bán kèm tài chính trợ cấp và tự động hóa giấy tờ hoàn tiền đô thị.",
+    "businessModel": "Biên lợi nhuận bộ + take-rate đối tác lắp đặt + SaaS nộp hoàn tiền bán cho nhà thầu.",
+    "industry": "Công nghệ khí hậu",
+    "sector": "Cải tạo nhà ở",
+    "fundingRoundNote": "Đồng đầu tư ngân hàng xanh Hàn Quốc",
+    "goForwardSummary": "Nhượng quyền đội lắp đặt tại các thành phố Hàn Quốc cấp hai trước, rồi thích ứng bộ cho tồn kho nhà gỗ Nhật Bản."
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier Carbon Ledger",
+    "description": "Hệ điều hành kế toán Scope-3 cho maison xa xỉ Pháp, ánh xạ atelier nhà cung cấp, vật liệu và logistics thành sổ cái carbon sẵn sàng kiểm toán cho báo cáo CSRD.",
+    "businessModel": "Ghế SaaS doanh nghiệp + tín chỉ tính dấu chân theo SKU; chia sẻ doanh thu đồng bán với kiểm toán viên.",
+    "industry": "Công nghệ khí hậu",
+    "sector": "ESG / Chuỗi cung ứng",
+    "fundingRoundNote": "Tăng trưởng khí hậu châu Âu + chiến lược thời trang",
+    "goForwardSummary": "Tách mô-đun chỉ cho SKU ready-to-wear và bán cho thương hiệu tầm trung không đủ chi phí triển khai maison đầy đủ."
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado Voice POS",
+    "description": "Điểm bán ưu tiên giọng nói cho tienda Mexico và người bán đường phố: nói tồn kho và doanh số bằng tiếng Tây Ban Nha, đồng bộ biên nhận WhatsApp, và mở hạn mức vốn lưu động vi mô.",
+    "businessModel": "Biên lợi nhuận bộ phần cứng + SaaS hàng tháng + chia lãi tín dụng nhúng với đối tác ngân hàng.",
+    "industry": "FinTech",
+    "sector": "Thanh toán SMB / Embedded Finance",
+    "fundingRoundNote": "Syndicate fintech LatAm",
+    "goForwardSummary": "Tái sử dụng UX POS giọng nói cho hành lang bán lẻ phi chính thức Bahasa/Tagalog với ví telco địa phương."
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic Triage",
+    "description": "Bot phân loại WhatsApp + USSD đưa bệnh nhân township vào đúng hàng đợi phòng khám, kèm bảng điều khiển điều dưỡng và chia sẻ ETA xe cứu thương cho phòng khám metro Cape Town.",
+    "businessModel": "SaaS theo phòng khám + giấy phép hệ thống y tế tỉnh; upsell telehealth tùy chọn.",
+    "industry": "Công nghệ y tế",
+    "sector": "Tiếp cận chăm sóc ban đầu",
+    "fundingRoundNote": "Đang gọi $3.2M cho triển khai đa tỉnh",
+    "goForwardSummary": "Hợp tác làm nhà vận hành triển khai Đông Phi—bản địa hóa luồng USSD và tích hợp phòng khám trong khi Cape Clinic giữ động cơ lõi."
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "Tái sử dụng pin EV từ đội xe Bắc Âu thành lưu trữ nhà và cabin mô-đun với chẩn đoán từ xa và đấu thầu dịch vụ phụ trợ lưới.",
+    "businessModel": "Biên lợi nhuận tân trang pin + energy-as-a-service hàng tháng; chia sẻ doanh thu dịch vụ lưới.",
+    "industry": "Năng lượng",
+    "sector": "Tuần hoàn pin",
+    "fundingRoundNote": "Công nghiệp Bắc Âu + PE khí hậu",
+    "goForwardSummary": "Cấp phép stack BMS + chẩn đoán cho OEM EV châu Á đang tìm lộ trình tuân thủ second-life EU."
+  },
+  "saigon-microgrid-coops": {
+    "name": "Saigon Microgrid Co-ops",
+    "description": "Hợp tác xã mặt trời + lưu trữ cho khu công nghiệp Việt Nam gom mái nhà, thanh toán tín chỉ năng lượng on-chain lite, và bán dư thừa lên lưới theo quy tắc DPPA.",
+    "businessModel": "Phí phát triển dự án + SaaS quản lý hợp tác xã liên tục + spread giao dịch năng lượng.",
+    "industry": "Công nghệ khí hậu",
+    "sector": "Năng lượng phân tán",
+    "fundingRoundNote": "Quỹ khí hậu SEA + LP khu công nghiệp",
+    "goForwardSummary": "Nhượng quyền playbook thành lập hợp tác xã tới các thành phố Việt Nam cấp hai và khu công nghiệp biên giới Campuchia."
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "Đường ống bảo mật liên tục cho startup deep-tech Israel ánh xạ SBOM, cấu hình sai đám mây và phát hiện red-team thành điểm rủi ro sẵn sàng hội đồng cho thẩm định Series A.",
+    "businessModel": "SaaS theo kỹ sư + tín chỉ pen-test cao cấp; gói white-label thẩm định VC.",
+    "industry": "An ninh mạng",
+    "sector": "DevSecOps / GRC",
+    "fundingRoundNote": "Thiên thần cyber + chiến lược enterprise Mỹ",
+    "goForwardSummary": "Bán gói white-label thẩm định cho VC khu vực và cánh venture doanh nghiệp thay vì đuổi theo mọi logo startup."
+  }
+}

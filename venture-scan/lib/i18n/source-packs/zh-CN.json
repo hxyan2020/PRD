@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "非洲",
+    "Asia": "亚洲",
+    "Asia-Pacific": "亚太",
+    "Brazil": "巴西",
+    "DACH": "德语区（德奥瑞）",
+    "Europe": "欧洲",
+    "Francophone Europe / Africa": "法语欧洲 / 非洲",
+    "Global": "全球",
+    "Global / AI": "全球 / 人工智能",
+    "Global / North America": "全球 / 北美",
+    "Global South": "全球南方",
+    "Greater China": "大中华区",
+    "India": "印度",
+    "Israel": "以色列",
+    "Korea": "韩国",
+    "Latin America": "拉丁美洲",
+    "MENA": "中东与北非",
+    "Nordics": "北欧",
+    "Oceania": "大洋洲",
+    "South Asia": "南亚",
+    "Southern Cone": "南锥体",
+    "Türkiye / Eastern Europe": "土耳其 / 东欧",
+    "Vietnam": "越南",
+    "West Africa": "西非"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "全球创业与融资新闻专线。"
+    },
+    "crunchbase-news": {
+      "description": "融资轮次公告与投资人动态。"
+    },
+    "36kr": {
+      "description": "中文创业与硬科技报道。"
+    },
+    "krasia": {
+      "description": "东南亚与东亚创业情报。"
+    },
+    "techinasia": {
+      "description": "亚太创业融资与产品报道。"
+    },
+    "nikkei-asia": {
+      "description": "日经亚太商业与创投报道。"
+    },
+    "platum": {
+      "description": "韩国创业与融资专线。"
+    },
+    "yourstory": {
+      "description": "聚焦印度的创业与融资故事。"
+    },
+    "startup-india": {
+      "description": "印度初创企业政府注册与认证信号。",
+      "notes": "每 48 小时批量同步"
+    },
+    "sifted": {
+      "description": "欧洲创业与深科技融资报道。"
+    },
+    "eu-startups": {
+      "description": "泛欧创业新闻聚合。"
+    },
+    "les-echos-start": {
+      "description": "法语创业与成长期企业专线。"
+    },
+    "gruenderszene": {
+      "description": "德语创始人与融资报道。"
+    },
+    "africarena": {
+      "description": "非洲创投与生态报道。"
+    },
+    "wamda": {
+      "description": "中东与北非创业与融资专线。"
+    },
+    "contxto": {
+      "description": "拉美创业与风险资本报道。"
+    },
+    "startupbase-br": {
+      "description": "巴西创业地图、排名与生态情报。",
+      "notes": "注册库每 24 小时抓取"
+    },
+    "israel-tech": {
+      "description": "以色列深科技与网络安全融资信号。"
+    },
+    "afrilabs": {
+      "description": "非洲创始人与投资人交易流社区。",
+      "notes": "社区摘要每 12 小时"
+    },
+    "pitchbook-public": {
+      "description": "公开融资简报与市场笔记。"
+    },
+    "venturebeat": {
+      "description": "人工智能与企业级创业产品/融资报道。"
+    },
+    "rest-of-world": {
+      "description": "硅谷以外的科技故事。"
+    },
+    "startupdaily-au": {
+      "description": "澳大利亚与新西兰创业与资本市场专线。"
+    },
+    "nordic-startup-news": {
+      "description": "来自斯德哥尔摩的北欧创业、科技与成长期报道。"
+    },
+    "webrazzi": {
+      "description": "土耳其语科技与创业融资专线。"
+    },
+    "vnexpress-startup": {
+      "description": "越南创业与数字经济报道。"
+    },
+    "technode": {
+      "description": "中外双语科技与创投资讯。"
+    },
+    "pulse-ng": {
+      "description": "西非与南部非洲创业资本报道。"
+    },
+    "inc42": {
+      "description": "印度创业融资与政策信号。"
+    },
+    "startupchile": {
+      "description": "拉美加速器与生态项目资讯。",
+      "notes": "项目批次每 24 小时同步"
+    },
+    "dealstreetasia": {
+      "description": "亚洲私募市场交易、融资与投资人动态。"
+    }
+  },
+  "countries": {
+    "Argentina": "阿根廷",
+    "Australia": "澳大利亚",
+    "Austria": "奥地利",
+    "Belgium": "比利时",
+    "Brazil": "巴西",
+    "Bulgaria": "保加利亚",
+    "Canada": "加拿大",
+    "Chile": "智利",
+    "China": "中国",
+    "Colombia": "哥伦比亚",
+    "Denmark": "丹麦",
+    "Egypt": "埃及",
+    "Finland": "芬兰",
+    "France": "法国",
+    "Germany": "德国",
+    "Ghana": "加纳",
+    "Greece": "希腊",
+    "Hong Kong": "中国香港特别行政区",
+    "Iceland": "冰岛",
+    "India": "印度",
+    "Indonesia": "印度尼西亚",
+    "Israel": "以色列",
+    "Italy": "意大利",
+    "Japan": "日本",
+    "Jordan": "约旦",
+    "Kenya": "肯尼亚",
+    "Lebanon": "黎巴嫩",
+    "Malaysia": "马来西亚",
+    "Mexico": "墨西哥",
+    "Morocco": "摩洛哥",
+    "Netherlands": "荷兰",
+    "New Zealand": "新西兰",
+    "Nigeria": "尼日利亚",
+    "Norway": "挪威",
+    "Peru": "秘鲁",
+    "Philippines": "菲律宾",
+    "Poland": "波兰",
+    "Portugal": "葡萄牙",
+    "Romania": "罗马尼亚",
+    "Rwanda": "卢旺达",
+    "Saudi Arabia": "沙特阿拉伯",
+    "Senegal": "塞内加尔",
+    "Singapore": "新加坡",
+    "South Africa": "南非",
+    "South Korea": "韩国",
+    "Spain": "西班牙",
+    "Sweden": "瑞典",
+    "Switzerland": "瑞士",
+    "Taiwan": "台湾",
+    "Thailand": "泰国",
+    "Turkey": "土耳其",
+    "United Arab Emirates": "阿拉伯联合酋长国",
+    "United Kingdom": "英国",
+    "United States": "美国",
+    "Uruguay": "乌拉圭",
+    "Vietnam": "越南"
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit Exchange",
+    "description": "Marketplace yang mementoken hasil restorasi terumbu karang terverifikasi dan menjual kredit keanekaragaman hayati yang berdekatan karbon kepada hotel, asuransi, dan pemerintah pesisir. Mitra lapangan mengunggah sensor + log selam; ReefCredit menerbitkan sertifikat yang dapat diperdagangkan.",
+    "businessModel": "Mengambil biaya transaksi 8–12% dari penjualan kredit plus kursi SaaS untuk dasbor verifikasi yang dijual ke resor dan pembeli kota.",
+    "industry": "Teknologi Iklim",
+    "sector": "Ekonomi Biru / Kredit Keanekaragaman Hayati",
+    "fundingRoundNote": "Dipimpin dana iklim regional dengan LP pariwisata",
+    "goForwardSummary": "Tawarkan diri menjadi hub verifikasi waralaba di kota pesisir Anda—jalankan onboarding mitra selam dan jual kredit ke hotel lokal sementara platform induk menangani settlement."
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift Nursing AI",
+    "description": "Asisten suara ambien untuk bangsal rumah sakit semalam yang menyusun catatan keperawatan, menandai risiko penurunan dari percakapan vital, dan menyerahkan brief terstruktur ke tim pagi. Dibangun untuk unit rawat akut yang kekurangan staf.",
+    "businessModel": "Lisensi tahunan per tempat tidur yang dijual ke sistem rumah sakit; tingkat premium mencakup konektor write-back EHR.",
+    "industry": "Teknologi Kesehatan",
+    "sector": "AI Alur Kerja Rumah Sakit",
+    "fundingRoundNote": "Co-invest strategis sistem rumah sakit",
+    "goForwardSummary": "Salin alur kerja bangsal malam inti untuk rantai rumah sakit swasta Asia; lokalkan paket bahasa (JP/KR/ZH) dan mulai dari bangsal ICU di mana pencatatan berbahasa Inggris sudah ada."
+  },
+  "kiln-microfactory": {
+    "name": "Kiln Microfactory",
+    "description": "Mikrofabrik keramik + logam 3D-print bersama di lingkungan yang memungkinkan desainer mengunggah CAD, memilih material, dan mendapat produksi batch kecil dalam minggu yang sama tanpa memiliki mesin. Menarget merek hardware indie dan studio arsitektur.",
+    "businessModel": "Biaya pemanfaatan mesin + margin material + retainer konsierge desain-ke-manufaktur opsional.",
+    "industry": "Manufaktur",
+    "sector": "Fabrikasi Terdistribusi",
+    "fundingRoundNote": "Menggalang putaran angel €1.2M",
+    "goForwardSummary": "Waralaba bay mikrofabrik di kota Anda memakai tumpukan perangkat lunak mereka—miliki hubungan desainer lokal sambil melisensikan penjadwal pekerjaan dan harga material Kiln."
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack Coldchain",
+    "description": "Ruang dingin modular berbasis surya dan sensor pembusukan IoT untuk agregator hasil petani kecil. Petani menyewa slot per peti; pembeli mendapat jendela pasokan terjamin kualitas lewat WhatsApp + aplikasi.",
+    "businessModel": "Sewa perangkat keras + biaya penyimpanan dingin per peti + take-rate marketplace saat pembeli memesan lot.",
+    "industry": "AgriTech",
+    "sector": "Logistik Rantai Dingin",
+    "fundingRoundNote": "DFI + ekuitas pertumbuhan iklim",
+    "goForwardSummary": "Minta kerja sama tim pendiri sebagai operator berlisensi Asia Tenggara atau Asia Selatan—replikasi model sewa peti dengan mitra EPC surya lokal."
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop Companion",
+    "description": "Pendamping tablet + wearable yang menjalankan check-in harian untuk lansia yang tinggal sendiri, memberi peringatan keluarga saat pola anomali, dan memesan kunjungan caregiver lokal. Penekanan pada UX suara-pertama dan dasbor keluarga yang mudah.",
+    "businessModel": "Langganan bulanan per rumah tangga; agen caregiver membayar untuk rujukan prospek dan alat roster.",
+    "industry": "Teknologi Kesehatan",
+    "sector": "Perawatan Lansia / Konsumen",
+    "fundingRoundNote": "Corporate venture dari telco + asuransi",
+    "goForwardSummary": "Tawarkan tumpukan yang sama ke kelompok usia berbeda—pekerja jarak jauh muda yang merawat orang tua di luar negeri—atau bundel ulang sebagai manfaat EAP korporat untuk karyawan dengan lansia di luar negeri."
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane Freight",
+    "description": "Lapisan dokumentasi AI yang otomatis membangun paket bea cukai, bill of lading, dan jejak kepatuhan untuk eksportir UKM lintas batas. Terintegrasi dengan drop dokumen WhatsApp dan ERP umum.",
+    "businessModel": "Biaya SaaS per pengiriman + upsell asuransi kepatuhan premium dengan underwriter mitra.",
+    "industry": "Teknologi Logistik",
+    "sector": "SaaS Kepatuhan Perdagangan",
+    "fundingRoundNote": "Investor koridor India–Timur Tengah",
+    "goForwardSummary": "Tawarkan sebagai middleware kepatuhan white-label ke freight forwarder dan bank di pasar Anda alih-alih bersaing langsung memperebutkan logo UKM akhir."
+  },
+  "playpane-classroom": {
+    "name": "PlayPane Classroom",
+    "description": "Kit STEM fisik yang disinkronkan ke dasbor guru untuk program after-school. Anak membangun proyek elektronik; aplikasi melacak penguasaan dan merekomendasikan kit berikutnya. Pijakan kuat di academy trust Inggris.",
+    "businessModel": "Margin perangkat keras kit + kursi perangkat lunak kelas tahunan yang dijual ke sekolah dan pusat bimbingan waralaba.",
+    "industry": "EdTech",
+    "sector": "Pembelajaran Praktis K-12",
+    "fundingRoundNote": "Putaran £2.5M terbuka",
+    "goForwardSummary": "Salin model kit + dasbor untuk pusat pengayaan Asia; lokalkan kurikulum ke jalur kompetisi (Olimpiade) dan jual lewat jaringan waralaba bimbingan."
+  },
+  "voltpath-depot": {
+    "name": "VoltPath Depot",
+    "description": "Depot tukar baterai untuk armada pengiriman last-mile memakai paket standar. Kurir menukar dalam kurang dari dua menit; VoltPath memiliki inventaris paket dan menjual energy-as-a-service ke merek logistik.",
+    "businessModel": "Biaya per tukar + kontrak SLA armada bulanan; nilai residu dari penjualan paket second-life.",
+    "industry": "Mobilitas",
+    "sector": "Infrastruktur Baterai EV",
+    "fundingRoundNote": "Strategis ride-hailing + PE infrastruktur",
+    "goForwardSummary": "Tawarkan diri menjadi operator depot waralaba di kota Anda—VoltPath memasok paket dan perangkat lunak; Anda mengamankan lahan dan kontrak kurir."
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft Ads",
+    "description": "Studio iklan generatif yang mengubah URL produk menjadi paket kreatif terlokalisasi untuk Meta, TikTok, dan Xiaohongshu—lengkap dengan pemeriksaan kepatuhan bahasa klaim per pasar.",
+    "businessModel": "SaaS berbasis kursi untuk agensi + kredit penggunaan untuk volume render; paket SSO enterprise.",
+    "industry": "MarTech",
+    "sector": "Otomasi Kreatif",
+    "fundingRoundNote": "Seed Amerika Utara dengan angel GTM Asia",
+    "goForwardSummary": "Pisahkan niche vertikal—mis. hanya beauty D2C—dengan template native Xiaohongshu dan jual ke agensi yang sudah spesialis di kategori itu."
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor Legal Ops",
+    "description": "OS alur kerja untuk firma hukum imigrasi dan visa butik: intake klien, daftar periksa dokumen, kalender tenggat, dan chat klien terenkripsi. Memangkas jam admin agar pengacara menagih lebih banyak waktu advisori.",
+    "businessModel": "SaaS bulanan per pengacara; e-signature premium dan pengisi formulir pemerintah sebagai add-on.",
+    "industry": "Teknologi Hukum",
+    "sector": "Manajemen Praktik",
+    "fundingRoundNote": "Bootstrapped + friends/family",
+    "goForwardSummary": "Minta kerja sama tim pendiri sebagai reseller APAC mereka—bundel Harbor dengan jaringan konsultasi imigrasi lokal Anda dan bagi MRR."
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "Startup fermentasi presisi yang memproduksi protein identik susu untuk es krim dan krimer tanpa sapi. Menjual bahan B2B ke merek CPG yang mencari narasi Scope 3 lebih bersih.",
+    "businessModel": "Kontrak pasokan bahan dengan tingkat volume; biaya co-development untuk formulasi khusus.",
+    "industry": "Teknologi Pangan",
+    "sector": "Protein Alternatif",
+    "fundingRoundNote": "Sindikat pertumbuhan food-tech Eropa",
+    "goForwardSummary": "Lisensikan strain fermentasi + IP proses untuk pabrik regional alih-alih mengimpor protein jadi—bermitra dengan co-packer CPG lokal."
+  },
+  "meshpay-remit": {
+    "name": "MeshPay Remit",
+    "description": "Rel remitansi berbiaya rendah memakai mitra bank lokal dan settlement stablecoin antara Brasil dan koridor Afrika. Fokus pada pembayaran mikro-merchant untuk penjual e-commerce diaspora.",
+    "businessModel": "Spread biaya FX + transfer; yield float pada saldo settlement; biaya API untuk integrasi marketplace.",
+    "industry": "FinTech",
+    "sector": "Pembayaran Lintas Batas",
+    "fundingRoundNote": "Fintech LatAm + dana fokus Afrika",
+    "goForwardSummary": "Salin desain koridor untuk jalur remitansi Asia–Afrika (mis. Singapura/HK → Afrika Timur) dengan positioning pembayaran merchant yang sama."
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire Mesh Sensors",
+    "description": "Sensor mesh berdaya rendah dan uplink satelit yang mendeteksi tanda panas dini dan plumes asap di sabuk kebakaran pedesaan. Peringatan masuk ke dasbor CFA/SES lokal dan model kerugian asuransi.",
+    "businessModel": "Perangkat keras + SaaS pemantauan tahunan dijual ke dewan dan utilitas; lisensi data ke asuransi.",
+    "industry": "Teknologi Iklim",
+    "sector": "Deteksi Kebakaran Hutan",
+    "fundingRoundNote": "Angel iklim + tumpukan hibah disaster-tech",
+    "goForwardSummary": "Port tumpukan mesh + peringatan ke koridor kebakaran gambut Asia Tenggara, dipasangkan dengan mitra LoRaWAN telco lokal."
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok Energy Retrofit",
+    "description": "Kit isolasi modular dan heat-pump yang dirancang untuk rumah halaman tradisional Korea, dijual dengan pembiayaan bersubsidi dan otomatisasi dokumen rebate kota.",
+    "businessModel": "Margin kit + take-rate mitra instalasi + SaaS pengajuan rebate dijual ke kontraktor.",
+    "industry": "Teknologi Iklim",
+    "sector": "Retrofit Residensial",
+    "fundingRoundNote": "Co-invest green-bank Korea",
+    "goForwardSummary": "Waralaba kru instalasi di kota sekunder Korea dulu, lalu sesuaikan kit untuk stok kayu Jepang."
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier Carbon Ledger",
+    "description": "OS akuntansi Scope-3 untuk maison mewah Prancis yang memetakan atelier pemasok, material, dan logistik menjadi ledger karbon siap audit untuk pelaporan CSRD.",
+    "businessModel": "Kursi SaaS enterprise + kredit perhitungan jejak per-SKU; bagi hasil co-sell auditor.",
+    "industry": "Teknologi Iklim",
+    "sector": "ESG / Rantai Pasok",
+    "fundingRoundNote": "Pertumbuhan iklim Eropa + strategis fashion",
+    "goForwardSummary": "Buat modul SKU khusus ready-to-wear dan jual ke merek mid-market yang tidak mampu deployment maison penuh."
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado Voice POS",
+    "description": "Point-of-sale suara-pertama untuk tienda Meksiko dan pedagang kaki lima: ucapkan inventaris dan penjualan dalam bahasa Spanyol, sinkron ke struk WhatsApp, dan buka jalur modal kerja mikro.",
+    "businessModel": "Margin kit perangkat keras + SaaS bulanan + bagi bunga kredit tertanam dengan mitra bank.",
+    "industry": "FinTech",
+    "sector": "Pembayaran UKM / Embedded Finance",
+    "fundingRoundNote": "Sindikat fintech LatAm",
+    "goForwardSummary": "Gunakan ulang UX voice POS untuk koridor ritel informal Bahasa/Tagalog dengan dompet telco lokal."
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic Triage",
+    "description": "Bot triase WhatsApp + USSD yang mengarahkan pasien township ke antrean klinik yang tepat, dengan dasbor perawat dan berbagi ETA ambulans untuk klinik metro Cape Town.",
+    "businessModel": "SaaS per klinik + lisensi sistem kesehatan provinsi; upsell telehealth opsional.",
+    "industry": "Teknologi Kesehatan",
+    "sector": "Akses Perawatan Primer",
+    "fundingRoundNote": "Menggalang $3.2M untuk peluncuran multi-provinsi",
+    "goForwardSummary": "Bermitra sebagai operator deployment Afrika Timur—lokalkan alur USSD dan integrasi klinik sementara Cape Clinic memiliki mesin inti."
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "Menggunakan ulang paket EV dari armada Nordik menjadi penyimpanan rumah dan kabin modular dengan diagnostik jarak jauh dan penawaran layanan tambahan grid.",
+    "businessModel": "Margin refurb paket + energy-as-a-service bulanan; bagi hasil pendapatan layanan grid.",
+    "industry": "Energi",
+    "sector": "Sirkularitas Baterai",
+    "fundingRoundNote": "Industri Nordik + PE iklim",
+    "goForwardSummary": "Lisensikan tumpukan BMS + diagnostik ke OEM EV Asia yang mencari jalur kepatuhan second-life UE."
+  },
+  "saigon-microgrid-coops": {
+    "name": "Saigon Microgrid Co-ops",
+    "description": "Koperasi surya + penyimpanan untuk kawasan industri Vietnam yang mengumpulkan atap, menyelesaikan kredit energi secara on-chain lite, dan menjual surplus ke grid di bawah aturan DPPA.",
+    "businessModel": "Biaya pengembangan proyek + SaaS manajemen koperasi berkelanjutan + spread perdagangan energi.",
+    "industry": "Teknologi Iklim",
+    "sector": "Energi Terdistribusi",
+    "fundingRoundNote": "Dana iklim SEA + LP kawasan industri",
+    "goForwardSummary": "Waralaba playbook pembentukan koperasi ke kota sekunder Vietnam dan kawasan industri perbatasan Kamboja."
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "Pipeline keamanan berkelanjutan untuk startup deep-tech Israel yang memetakan SBOM, misconfig cloud, dan temuan red-team menjadi skor risiko siap dewan untuk due diligence Series A.",
+    "businessModel": "SaaS per-insinyur + kredit pen-test premium; paket white-label due diligence VC.",
+    "industry": "Keamanan Siber",
+    "sector": "DevSecOps / GRC",
+    "fundingRoundNote": "Angel cyber + strategis enterprise AS",
+    "goForwardSummary": "Jual paket white-label due diligence ke VC regional dan lengan venture korporat alih-alih mengejar setiap logo startup."
+  }
+}

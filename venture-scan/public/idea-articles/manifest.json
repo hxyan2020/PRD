@@ -1,0 +1,680 @@
+{
+  "reef-credit-exchange": [
+    {
+      "id": "reef-credit-exchange-0",
+      "title": "Ulysses is using robots to restore seagrass populations",
+      "url": "https://techcrunch.com/2024/11/07/ulysses-is-using-robots-to-restore-seagrass-populations/",
+      "sourceId": "techcrunch",
+      "excerpt": "Seagrass plays a big role in marine ecosystems but is being rapidly destroyed due to climate change, Ulysses wants to help.",
+      "imageFile": "00.webp",
+      "imagePath": "/idea-articles/reef-credit-exchange/00.webp",
+      "imageKind": "rss",
+      "bytes": 106552
+    },
+    {
+      "id": "reef-credit-exchange-1",
+      "title": "To fix the climate, these 10 investors are betting the house on the ocean",
+      "url": "https://techcrunch.com/2023/03/02/to-fix-the-climate-these-10-investors-are-betting-the-house-on-the-ocean/",
+      "sourceId": "techcrunch",
+      "excerpt": "Founders and investors have a growing appreciation for the ocean’s potential to help solve the climate problem.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/reef-credit-exchange/01.jpg",
+      "imageKind": "rss",
+      "bytes": 1372826
+    },
+    {
+      "id": "reef-credit-exchange-2",
+      "title": "Opna wants to help companies hit 'net zero' by finding and funding carbon projects",
+      "url": "https://techcrunch.com/2023/09/05/opna-wants-to-help-companies-hit-net-zero-by-finding-and-funding-carbon-projects/",
+      "sourceId": "techcrunch",
+      "excerpt": "Opna's platform helps corporations find, fund, and monitor carbon projects as part of their offsetting endeavors.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/reef-credit-exchange/02.jpg",
+      "imageKind": "rss",
+      "bytes": 120272
+    }
+  ],
+  "nightshift-nursing-ai": [
+    {
+      "id": "nightshift-nursing-ai-0",
+      "title": "Ambience Healthcare raises $70M for its AI assistant led by OpenAI and Kleiner Perkins",
+      "url": "https://techcrunch.com/2024/02/06/ambience-healthcare-raises-70m-for-its-ai-assistant-led-by-openai-and-kleiner-perkins/",
+      "sourceId": "techcrunch",
+      "excerpt": "Artificial intelligence has an increasing role in the world of healthcare, and startups that bring the two worlds closer are seeing significant traction",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/nightshift-nursing-ai/00.jpg",
+      "imageKind": "rss",
+      "bytes": 161236
+    },
+    {
+      "id": "nightshift-nursing-ai-1",
+      "title": "Nabla raises another $24 million for its AI assistant for doctors that automatically writes clinical notes",
+      "url": "https://techcrunch.com/2024/01/05/nabla-raises-another-24-million-for-its-ai-assistant-for-doctors/",
+      "sourceId": "techcrunch",
+      "excerpt": "Paris-based startup Nabla just announced that it has raised a $24 million Series B funding round for its AI copilot for doctors.",
+      "imageFile": "01.webp",
+      "imagePath": "/idea-articles/nightshift-nursing-ai/01.webp",
+      "imageKind": "rss",
+      "bytes": 99744
+    },
+    {
+      "id": "nightshift-nursing-ai-2",
+      "title": "Corti, an AI 'co-pilot' for healthcare clinicians, raises $60M",
+      "url": "https://techcrunch.com/2023/09/20/corti-an-ai-co-pilot-for-healthcare-clinicians-raises-60m/",
+      "sourceId": "techcrunch",
+      "excerpt": "Artificial intelligence continues to be a major force in the world of healthcare, and in one of the latest developments, a Copenhagen startup called Corti",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/nightshift-nursing-ai/02.jpg",
+      "imageKind": "rss",
+      "bytes": 916119
+    }
+  ],
+  "kiln-microfactory": [
+    {
+      "id": "kiln-microfactory-0",
+      "title": "SAEKI's 'microfactories' help large manufacturing scale up",
+      "url": "https://techcrunch.com/2023/08/09/saeki/",
+      "sourceId": "techcrunch",
+      "excerpt": "Robots-as-a-service startup SAEKI says its tech makes creating concrete molds not only faster, but also more cost-efficient.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/kiln-microfactory/00.jpg",
+      "imageKind": "rss",
+      "bytes": 1522811
+    },
+    {
+      "id": "kiln-microfactory-1",
+      "title": "Daedalus, which is building precision-manufacturing factories powered by AI, raises $21M",
+      "url": "https://techcrunch.com/2024/02/08/daedalus-manufacturing-jonas-schneider-openai-robotics-raises-21-million/",
+      "sourceId": "techcrunch",
+      "excerpt": "Founded by one of OpenAI's first engineering hires, Daedalus is striving to \"redefine manufacturing\" with next-gen factories.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/kiln-microfactory/01.jpg",
+      "imageKind": "rss",
+      "bytes": 130765
+    },
+    {
+      "id": "kiln-microfactory-2",
+      "title": "British startup Isembard lands $9M to reshore manufacturing for critical industries",
+      "url": "https://techcrunch.com/2025/04/24/british-startup-isembard-lands-9m-to-reshore-manufacturing-for-critical-industries/",
+      "sourceId": "techcrunch",
+      "excerpt": "Geopolitical pressures are accelerating a demand in many countries and regions to reshore -- that is, to redevelop critical industry infrastructure, and",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/kiln-microfactory/02.jpg",
+      "imageKind": "rss",
+      "bytes": 42412
+    }
+  ],
+  "farmstack-coldchain": [
+    {
+      "id": "farmstack-coldchain-0",
+      "title": "Cold-chain startup Figorr raises $1.5M, backs the rollout of data-driven perishables insurance",
+      "url": "https://techcrunch.com/2023/05/14/cold-chain-startup-figorr-raises-1-5m-backs-the-roll-out-of-data-driven-perishables-insurance/",
+      "sourceId": "techcrunch",
+      "excerpt": "Nigeria's Figorr is set to launch a risk management platform to provide insurers with data needed to introduce tailored products.",
+      "imageFile": "00.webp",
+      "imagePath": "/idea-articles/farmstack-coldchain/00.webp",
+      "imageKind": "rss",
+      "bytes": 56264
+    },
+    {
+      "id": "farmstack-coldchain-1",
+      "title": "Koolboks' $2.5M seed round to scale solar refrigeration across Africa",
+      "url": "https://techcrunch.com/2022/08/18/paris-based-koolboks-closes-2-5m-seed-round-to-scale-solar-refrigeration-across-africa/",
+      "sourceId": "techcrunch",
+      "excerpt": "For restaurants or neighborhood stores dealing with perishables, frozen foods and beverages, having intermittent electricity inhibits growth of their businesses",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/farmstack-coldchain/01.jpg",
+      "imageKind": "rss",
+      "bytes": 305609
+    },
+    {
+      "id": "farmstack-coldchain-2",
+      "title": "Solar cooling startup Koolboks raises $11 million to expand across Africa",
+      "url": "https://techcabal.com/2025/09/03/koolboks-raises-11-million-for-africa-expansion/",
+      "sourceId": "pulse-ng",
+      "excerpt": "The new funding will support the setup of a local assembly plant in Nigeria within the next 12–18 months, a move the startup expects to cut operation costs on logistics and import duties. Koolboks will pass on this lower",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/farmstack-coldchain/02.jpg",
+      "imageKind": "rss",
+      "bytes": 338107
+    }
+  ],
+  "elderloop-companion": [
+    {
+      "id": "elderloop-companion-0",
+      "title": "The ElliQ eldercare robot is finally available",
+      "url": "https://techcrunch.com/2022/03/15/the-elliq-eldercare-robot-is-finally-available/",
+      "sourceId": "techcrunch",
+      "excerpt": "The astute TechCrunch reader will quickly note that we’ve been covering Intuition Robotics for five years now, dating back to the eldercare robotics’",
+      "imageFile": "00.webp",
+      "imagePath": "/idea-articles/elderloop-companion/00.webp",
+      "imageKind": "rss",
+      "bytes": 101674
+    },
+    {
+      "id": "elderloop-companion-1",
+      "title": "Eldercare robot ElliQ nabs another $25 million in funding",
+      "url": "https://techcrunch.com/2023/08/29/eldercare-robot-elliq-nabs-another-25-million-in-funding/",
+      "sourceId": "techcrunch",
+      "excerpt": "The Israeli firm announced a $36 million Series B in the early days of the pandemic, and now it’s adding another $25 million.",
+      "imageFile": "01.png",
+      "imagePath": "/idea-articles/elderloop-companion/01.png",
+      "imageKind": "rss",
+      "bytes": 341876
+    },
+    {
+      "id": "elderloop-companion-2",
+      "title": "The ElliQ eldercare robot gets a hardware upgrade, generative AI for improved conversations",
+      "url": "https://techcrunch.com/2024/01/09/elliq-ces/",
+      "sourceId": "techcrunch",
+      "excerpt": ". The latest version of the robot features design tweaks, more powerful hardware and – of course – generative AI integration.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/elderloop-companion/02.jpg",
+      "imageKind": "rss",
+      "bytes": 453029
+    }
+  ],
+  "ledgerlane-freight": [
+    {
+      "id": "ledgerlane-freight-0",
+      "title": "India's Kale Logistics raises $30M in global expansion push",
+      "url": "https://techcrunch.com/2023/09/11/kale-logistics-solutions-funding/",
+      "sourceId": "techcrunch",
+      "excerpt": "Kale Logistics Solutions, an Indian startup offering a vertical SaaS platform to assist logistics needs, has raised $30 million in a fresh funding round, Kale Logistics Solutions, an Indian startup offering a vertical Sa",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/ledgerlane-freight/00.jpg",
+      "imageKind": "rss",
+      "bytes": 838389
+    },
+    {
+      "id": "ledgerlane-freight-1",
+      "title": "SaaS Startup TreZix Bags $2 Mn To Streamline Import And Export Solutions",
+      "url": "https://inc42.com/buzz/saas-startup-trezix-bags-2-mn-to-streamline-import-and-export-solutions/",
+      "sourceId": "inc42",
+      "excerpt": "TreZix has closed a seed funding round of $2 Mn (around INR 17.3 Cr) co-led by Morphosis Venture Capital and Pentathlon Ventures",
+      "imageFile": "01.png",
+      "imagePath": "/idea-articles/ledgerlane-freight/01.png",
+      "imageKind": "rss",
+      "bytes": 307275
+    },
+    {
+      "id": "ledgerlane-freight-2",
+      "title": "Cross Border Logistics Startup Xindus Bags $10 Mn",
+      "url": "https://inc42.com/buzz/cross-border-logistics-startup-xindus-bags-10-mn/",
+      "sourceId": "inc42",
+      "excerpt": "Gurugram-based Xindus raises $10 Mn Series A led by 3one4 Capital to expand operations and increase GMV from $30 Mn to $200 Mn",
+      "imageFile": "02.png",
+      "imagePath": "/idea-articles/ledgerlane-freight/02.png",
+      "imageKind": "rss",
+      "bytes": 202015
+    }
+  ],
+  "playpane-classroom": [
+    {
+      "id": "playpane-classroom-0",
+      "title": "The 20 best STEM toys and games to gift young learners and curious minds",
+      "url": "https://techcrunch.com/2023/11/21/the-20-best-stem-toys-to-gift-coders-in-training/",
+      "sourceId": "techcrunch",
+      "excerpt": "Read on for our gift guide into 20 of the best STEM toys for switching young minds onto coding and engineering concepts.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/playpane-classroom/00.jpg",
+      "imageKind": "rss",
+      "bytes": 1260324
+    },
+    {
+      "id": "playpane-classroom-1",
+      "title": "Hear ClassDojo and SignalFire unpack edtech’s opportunity ahead on TechCrunch Live",
+      "url": "https://techcrunch.com/2023/04/19/hear-classdojo-and-signalfire-unpack-edtechs-opportunity-ahead-on-techcrunch-live/",
+      "sourceId": "techcrunch",
+      "excerpt": "Join TechCrunch Live on April 26 at 12 pm PDT to hear ClassDojo and SignalFire unpack edtech’s opportunity ahead.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/playpane-classroom/01.jpg",
+      "imageKind": "rss",
+      "bytes": 173382
+    }
+  ],
+  "voltpath-depot": [
+    {
+      "id": "voltpath-depot-0",
+      "title": "Gogoro scales battery swapping to new markets via B2B partners",
+      "url": "https://techcrunch.com/2023/03/24/gogoro-scales-battery-swapping-new-markets-b2b-partners/",
+      "sourceId": "techcrunch",
+      "excerpt": "Gogoro is partnering with Foodpanda in Singapore in the latest B2B play from the battery swapping company aimed at global expansion.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/voltpath-depot/00.jpg",
+      "imageKind": "rss",
+      "bytes": 436888
+    },
+    {
+      "id": "voltpath-depot-1",
+      "title": "Indian EV startup Zypp Electric secures backing to fund expansion to Southeast Asia",
+      "url": "https://techcrunch.com/2024/05/26/indian-ev-startup-zypp-electric-secures-eneos-backing-to-fund-expansion-to-southeast-asia/",
+      "sourceId": "techcrunch",
+      "excerpt": "Zypp Electric, an Indian startup offering an EV-as-a-service platform, is planning to enter Southeast Asia early next year.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/voltpath-depot/01.jpg",
+      "imageKind": "rss",
+      "bytes": 113848
+    },
+    {
+      "id": "voltpath-depot-2",
+      "title": "India's Kazam powers up to roll out EV charging in Southeast Asia",
+      "url": "https://techcrunch.com/2024/08/11/indias-kazam-powers-up-to-roll-out-ev-charging-in-southeast-asia/",
+      "sourceId": "techcrunch",
+      "excerpt": "Kazam, an Indian EV charging solution provider, has raised $8 million to expand its footprint in the country and enter Southeast Asian markets.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/voltpath-depot/02.jpg",
+      "imageKind": "rss",
+      "bytes": 103768
+    }
+  ],
+  "cuecraft-ads": [
+    {
+      "id": "cuecraft-ads-0",
+      "title": "Creatopy, which automates ad creation using AI, raises a $10M Series A",
+      "url": "https://techcrunch.com/2024/08/22/creatopy-which-automates-ad-creation-using-ai-raises-a-10m-series-a/",
+      "sourceId": "techcrunch",
+      "excerpt": "The startup — which was developed in Romania but has a U.S. TopCo — now considers more than 5,000 brands and agencies as its clients.",
+      "imageFile": "00.webp",
+      "imagePath": "/idea-articles/cuecraft-ads/00.webp",
+      "imageKind": "rss",
+      "bytes": 75660
+    },
+    {
+      "id": "cuecraft-ads-1",
+      "title": "AI platform to analyze creative advertising raises $5.1M from investors, including a16z",
+      "url": "https://techcrunch.com/2023/05/01/ai-platform-to-analyze-creative-advertising-raises-5-1m-from-investors-including-a16z/",
+      "sourceId": "techcrunch",
+      "excerpt": "In this increasingly AI-driven era, creative and media teams will probably need to employ the technology to up their game on analyzing their creative",
+      "imageFile": "01.png",
+      "imagePath": "/idea-articles/cuecraft-ads/01.png",
+      "imageKind": "rss",
+      "bytes": 1576924
+    },
+    {
+      "id": "cuecraft-ads-2",
+      "title": "Ex-Ramp engineers raise $20M for platform Melius after scrapping their first product",
+      "url": "https://techcrunch.com/2026/10/06/ex-ramp-engineers-raise-20m-for-platform-melius-after-scrapping-their-first-product/",
+      "sourceId": "techcrunch",
+      "excerpt": "Instead of helping marketers manage and optimize ad spend, the company is focusing on building the tools that generate the creative assets and campaigns.",
+      "imageFile": "02.webp",
+      "imagePath": "/idea-articles/cuecraft-ads/02.webp",
+      "imageKind": "rss",
+      "bytes": 53364
+    }
+  ],
+  "harbor-legal-ops": [
+    {
+      "id": "harbor-legal-ops-0",
+      "title": "Alma co-founder had such a bad immigration experience she founded a legal AI startup to fix it",
+      "url": "https://techcrunch.com/2024/07/11/immigration-visa-alma-law/",
+      "sourceId": "techcrunch",
+      "excerpt": "Alma aims to simplify the visa process for technologists, founders and researchers by providing personal legal advisors.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/harbor-legal-ops/00.jpg",
+      "imageKind": "rss",
+      "bytes": 178018
+    },
+    {
+      "id": "harbor-legal-ops-1",
+      "title": "Immigrant banking platform Majority secures $20M following 3x revenue growth",
+      "url": "https://techcrunch.com/2024/05/22/majority-immigrant-banking-20m/",
+      "sourceId": "techcrunch",
+      "excerpt": "For a $5.99 per month, immigrants have a bank account and debit card with fee-free international money transfers and discounted international calling.",
+      "imageFile": "01.png",
+      "imagePath": "/idea-articles/harbor-legal-ops/01.png",
+      "imageKind": "rss",
+      "bytes": 131635
+    },
+    {
+      "id": "harbor-legal-ops-2",
+      "title": "Majority, a digital bank for US migrants, grabs $9.75M amid expansion in Texas",
+      "url": "https://techcrunch.com/2023/06/14/majority-digital-bank-migrants-9-75m-fintech/",
+      "sourceId": "techcrunch",
+      "excerpt": "Majority's new location positions the company close to The Gateway to the Americas International Bridge that crosses the Rio Grande in Texas.",
+      "imageFile": "02.png",
+      "imagePath": "/idea-articles/harbor-legal-ops/02.png",
+      "imageKind": "rss",
+      "bytes": 594085
+    }
+  ],
+  "spore-kitchen": [
+    {
+      "id": "spore-kitchen-0",
+      "title": "New capital infusion puts Farmless on path to first alternative protein products",
+      "url": "https://techcrunch.com/2023/12/04/farmless-alternative-protein-4m-food-tech/",
+      "sourceId": "techcrunch",
+      "excerpt": "Farmless will use the new capital to build a pilot brewery in Amsterdam and develop its first products to replace meat, dairy and eggs.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/spore-kitchen/00.jpg",
+      "imageKind": "rss",
+      "bytes": 200911
+    },
+    {
+      "id": "spore-kitchen-1",
+      "title": "Bon Vivant toasts taking $15.9M to brew up versatile animal-free dairy proteins",
+      "url": "https://techcrunch.com/2023/10/11/bon-vivant-seed/",
+      "sourceId": "techcrunch",
+      "excerpt": "Lyon, France-based precision fermentation startup Bon Vivant, which is using biotech techniques to reprogram yeast microorganisms to produce animal-free French precision fermentation startup Bon Vivant, which is using bi",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/spore-kitchen/01.jpg",
+      "imageKind": "rss",
+      "bytes": 286149
+    },
+    {
+      "id": "spore-kitchen-2",
+      "title": "French food tech company Standing Ovation nabs $12 million for animal-free dairy cheese",
+      "url": "https://techcrunch.com/2022/09/14/french-foodtech-standing-ovation-nabs-12-million-for-animal-free-dairy-cheese/",
+      "sourceId": "techcrunch",
+      "excerpt": "French startup Standing Ovation has raised €12 million ($12 million) in a series A round of funding to develop an animal-free casein for use in cheese.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/spore-kitchen/02.jpg",
+      "imageKind": "rss",
+      "bytes": 399199
+    }
+  ],
+  "meshpay-remit": [
+    {
+      "id": "meshpay-remit-0",
+      "title": "EXCLUSIVE: Caliza lands $8.5 million to bring real-time money transfers to Latin America using USDC",
+      "url": "https://techcrunch.com/2024/07/15/caliza-lands-8-5-million-to-bring-real-time-money-transfers-to-latin-america-using-usdc/",
+      "sourceId": "techcrunch",
+      "excerpt": "Real-time payments are becoming commonplace for individuals and businesses, but not yet for cross-border transactions. That's what Caliza is hoping to",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/meshpay-remit/00.jpg",
+      "imageKind": "rss",
+      "bytes": 137518
+    },
+    {
+      "id": "meshpay-remit-1",
+      "title": "Félix Pago raises $15.5 million to help Latino workers send money home via WhatsApp",
+      "url": "https://techcrunch.com/2024/05/28/felix-pago-raises-15-5-million-to-help-latino-workers-send-money-home-via-whatsapp/",
+      "sourceId": "techcrunch",
+      "excerpt": "Remittances from workers in the U.S. to their families and friends in Latin America amounted to $155 billion in 2023. With such a huge opportunity, banks, money transfer companies, retailers, and fintechs are all trying ",
+      "imageFile": "01.webp",
+      "imagePath": "/idea-articles/meshpay-remit/01.webp",
+      "imageKind": "rss",
+      "bytes": 51398
+    },
+    {
+      "id": "meshpay-remit-2",
+      "title": "Qash and Banco R4 Launch the First Stablecoin Infrastructure for a Regulated Bank in Latin America",
+      "url": "https://contxto.com/en/fintech/qash-and-banco-r4-launch-the-first-stablecoin-infrastructure-for-a-regulated-bank-in-latin-america/",
+      "sourceId": "contxto",
+      "excerpt": "Desde hace años, las stablecoins son ampliamente utilizadas a nivel retail de manera informal para proteger el valor de los ahorros, pagar a proveedores locales y concretar transacciones difíciles de procesar a través de",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/meshpay-remit/02.jpg",
+      "imageKind": "rss",
+      "bytes": 322018
+    }
+  ],
+  "bushfire-mesh-sensors": [
+    {
+      "id": "bushfire-mesh-sensors-0",
+      "title": "OroraTech's space-based wildfire detection brings in $25M to put more imaging satellites in orbit",
+      "url": "https://techcrunch.com/2024/10/16/ororatechs-space-based-wildfire-detection-brings-in-25m-to-put-more-imaging-satellites-in-orbit/",
+      "sourceId": "techcrunch",
+      "excerpt": "Wildfires aren't going away, but our ability to detect and track them — and maybe catch them early enough to prevent serious damage — is getting better.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/bushfire-mesh-sensors/00.jpg",
+      "imageKind": "rss",
+      "bytes": 211151
+    },
+    {
+      "id": "bushfire-mesh-sensors-1",
+      "title": "Spire and OroraTech will launch a fleet of wildfire-monitoring satellites",
+      "url": "https://techcrunch.com/2023/06/28/spire-and-ororatech-will-launch-a-fleet-of-wildfire-monitoring-satellites/",
+      "sourceId": "techcrunch",
+      "excerpt": "Spire and OroraTech will launch a fleet of eight satellites to monitor thermal anomalies and detect wildfires around the world.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/bushfire-mesh-sensors/01.jpg",
+      "imageKind": "rss",
+      "bytes": 62493
+    },
+    {
+      "id": "bushfire-mesh-sensors-2",
+      "title": "New sensors co-developed by Google aim to detect wildfires everywhere much faster",
+      "url": "https://techcrunch.com/2024/09/16/google-and-muon-space-join-forces-to-continuously-scan-the-earth-for-wildfires/",
+      "sourceId": "techcrunch",
+      "excerpt": "The company is working with Muon Space, the Earth Fire Alliance, and others to launch FireSat.",
+      "imageFile": "02.png",
+      "imagePath": "/idea-articles/bushfire-mesh-sensors/02.png",
+      "imageKind": "rss",
+      "bytes": 348367
+    }
+  ],
+  "hanok-energy-retrofit": [
+    {
+      "id": "hanok-energy-retrofit-0",
+      "title": "Energy X secures $20M at $120M valuation to slash building sector emissions",
+      "url": "https://techcrunch.com/2023/01/31/energy-x-secures-20m-at-120m-valuation-to-slash-building-sector-emissions/",
+      "sourceId": "techcrunch",
+      "excerpt": "Energy X, a Seoul-based construction platform for zero-energy buildings, secured a $20.3 million Series B at a valuation of $120 million.",
+      "imageFile": "00.webp",
+      "imagePath": "/idea-articles/hanok-energy-retrofit/00.webp",
+      "imageKind": "rss",
+      "bytes": 604126
+    },
+    {
+      "id": "hanok-energy-retrofit-1",
+      "title": "HeatTransformers turns up the dial on heat pumps with new funding",
+      "url": "https://techcrunch.com/2023/04/06/heattransformers-series-a/",
+      "sourceId": "techcrunch",
+      "excerpt": "The Netherlands has banned central heating boilers and incentivized heat pumps. HeatTransformers just a raised €15M to go heavy on the (proverbial) gas.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/hanok-energy-retrofit/01.jpg",
+      "imageKind": "rss",
+      "bytes": 1501585
+    },
+    {
+      "id": "hanok-energy-retrofit-2",
+      "title": "Lun is in a mad rush to help heat-pump installers decarbonize homes",
+      "url": "https://techcrunch.com/2023/03/22/lun-seed/",
+      "sourceId": "techcrunch",
+      "excerpt": "Lun, a climate tech startup out of Denmark, is on a mission to help homes decarbonize fast -- starting with household heating.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/hanok-energy-retrofit/02.jpg",
+      "imageKind": "rss",
+      "bytes": 193929
+    }
+  ],
+  "atelier-carbon-ledger": [
+    {
+      "id": "atelier-carbon-ledger-0",
+      "title": "Carbonfact is a carbon management platform designed specifically for the fashion industry",
+      "url": "https://techcrunch.com/2024/04/29/carbonfact-is-a-carbon-management-platform-designed-specifically-for-the-fashion-industry/",
+      "sourceId": "techcrunch",
+      "excerpt": "French startup Carbonfact believes that the best carbon accounting solutions will focus on one vertical. That’s why the company has decided to provide a",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/atelier-carbon-ledger/00.jpg",
+      "imageKind": "rss",
+      "bytes": 300595
+    },
+    {
+      "id": "atelier-carbon-ledger-1",
+      "title": "European carbon accounting startup Plan A raises $27M from VC and corporate heavyweights",
+      "url": "https://techcrunch.com/2023/09/19/plan-a-carbon-accounting/",
+      "sourceId": "techcrunch",
+      "excerpt": "Plan A, a carbon accounting and ESG reporting platform, has raised $27M in a round of funding led by Lightspeed Venture partners.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/atelier-carbon-ledger/01.jpg",
+      "imageKind": "rss",
+      "bytes": 173226
+    },
+    {
+      "id": "atelier-carbon-ledger-2",
+      "title": "Muir AI puts machine learning to work estimating product emissions data",
+      "url": "https://techcrunch.com/2023/10/02/carbon-pollution-muir-ai-seed-round/",
+      "sourceId": "techcrunch",
+      "excerpt": "Everything from materials to manufacturing and distribution leaves a carbon footprint, and not all vendors report their emissions.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/atelier-carbon-ledger/02.jpg",
+      "imageKind": "rss",
+      "bytes": 149441
+    }
+  ],
+  "mercado-voice-pos": [
+    {
+      "id": "mercado-voice-pos-0",
+      "title": "Clip Secures $100 Million",
+      "url": "https://contxto.com/en/venture-capital/clip-secures-100-million-investment-to-boost-digital-payments-in-mexico/",
+      "sourceId": "contxto",
+      "excerpt": "The funding round values Clip in line with its 2021 Series D valuation, demonstrating continued investor confidence in the company's growth potential.",
+      "imageFile": "00.webp",
+      "imagePath": "/idea-articles/mercado-voice-pos/00.webp",
+      "imageKind": "rss",
+      "bytes": 157138
+    },
+    {
+      "id": "mercado-voice-pos-1",
+      "title": "Square launches AI voice ordering and an integrated Bitcoin solution for merchants",
+      "url": "https://techcrunch.com/2025/10/08/square-launches-ai-voice-ordering-and-an-integrated-bitcoin-solution-for-merchants/",
+      "sourceId": "techcrunch",
+      "excerpt": "Block is now allowing Square merchants to accept Bitcoin payments without any processing fee for one year",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/mercado-voice-pos/01.jpg",
+      "imageKind": "rss",
+      "bytes": 99559
+    }
+  ],
+  "cape-clinic-triage": [
+    {
+      "id": "cape-clinic-triage-0",
+      "title": "Gabbi Health launches “Gabbi Doc” – Your 24/7 AI Doctor on WhatsApp",
+      "url": "https://techcabal.com/2025/08/14/gabbi-health-launches-gabbi-doc-your-24-7-ai-doctor-on-whatsapp/",
+      "sourceId": "pulse-ng",
+      "excerpt": "Gabbi Health, a leader in AI-powered digital healthcare solutions, proudly announces the launch of Gabbi Doc, a 24/7 conversational AI doctor available directly on WhatsApp. This innovative service puts instant, reliable",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/cape-clinic-triage/00.jpg",
+      "imageKind": "rss",
+      "bytes": 87322
+    },
+    {
+      "id": "cape-clinic-triage-1",
+      "title": "Can WhatsApp make healthcare predictable in Ghana? Rivia thinks so",
+      "url": "https://techcabal.com/2026/01/24/rivia-is-using-whatsapp-in-its-healthcare/",
+      "sourceId": "pulse-ng",
+      "excerpt": "That experience is now beginning to shift for some Ghanaians through Rivia, a healthtech startup co-founded by Isidore Kpotufe in 2024.",
+      "imageFile": "01.png",
+      "imagePath": "/idea-articles/cape-clinic-triage/01.png",
+      "imageKind": "rss",
+      "bytes": 1713366
+    },
+    {
+      "id": "cape-clinic-triage-2",
+      "title": "SA Telehealth platform Contro closes R10.1 million pre-seed round",
+      "url": "https://techcabal.com/2022/11/11/contro-preseed-round/",
+      "sourceId": "pulse-ng",
+      "excerpt": "Contro launched in June 2021 and currently offers six services, including subscription services for birth control, erectile dysfunction treatment and hair loss treatment, as well as once-off treatment for STIs, thrush an",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/cape-clinic-triage/02.jpg",
+      "imageKind": "rss",
+      "bytes": 29985
+    }
+  ],
+  "fjord-battery-secondlife": [
+    {
+      "id": "fjord-battery-secondlife-0",
+      "title": "Second-life Jaguar I-Pace batteries to power energy storage systems",
+      "url": "https://techcrunch.com/2023/08/23/second-life-jaguar-i-pace-batteries-to-power-energy-storage-systems/",
+      "sourceId": "techcrunch",
+      "excerpt": "JLR and Wykes Engineering are using second-life Jaguar I-Pace batteries to power a renewable energy storage system.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/fjord-battery-secondlife/00.jpg",
+      "imageKind": "rss",
+      "bytes": 287588
+    },
+    {
+      "id": "fjord-battery-secondlife-1",
+      "title": "Cylib wants to own EV battery recycling in Europe",
+      "url": "https://techcrunch.com/2024/05/30/cylib-wants-to-own-ev-battery-recycling-in-europe/",
+      "sourceId": "techcrunch",
+      "excerpt": "Battery recycling startups have emerged in Europe in a bid to tap into the next big opportunity in the EV market: battery waste. Among them is Cylib, a",
+      "imageFile": "01.webp",
+      "imagePath": "/idea-articles/fjord-battery-secondlife/01.webp",
+      "imageKind": "rss",
+      "bytes": 167128
+    },
+    {
+      "id": "fjord-battery-secondlife-2",
+      "title": "Exclusive: Moment Energy raises $40M to meet 'infinite demand for power' with EV batteries",
+      "url": "https://techcrunch.com/2026/05/05/moment-energy-raises-40m-to-meet-infinite-demand-for-power-with-ev-batteries/",
+      "sourceId": "techcrunch",
+      "excerpt": "The startup has put a spin on repurposing EV batteries, CEO Edward Chiang told TechCrunch.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/fjord-battery-secondlife/02.jpg",
+      "imageKind": "rss",
+      "bytes": 203295
+    }
+  ],
+  "saigon-microgrid-coops": [
+    {
+      "id": "saigon-microgrid-coops-0",
+      "title": "Solar AI wants to make solar power more accessible in Southeast Asia",
+      "url": "https://techcrunch.com/2023/08/22/solar-ai/",
+      "sourceId": "techcrunch",
+      "excerpt": "High energy prices are leading to a solar boom across the world, but in Singapore, many home owners are still hesitant to install solar panels because of the high cost.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/saigon-microgrid-coops/00.jpg",
+      "imageKind": "rss",
+      "bytes": 655933
+    },
+    {
+      "id": "saigon-microgrid-coops-1",
+      "title": "Crossboundary gets $25M for solar mini-grids in Africa",
+      "url": "https://techcrunch.com/2022/06/15/crossboundary-gets-25m-for-solar-mini-grids-in-africa/",
+      "sourceId": "techcrunch",
+      "excerpt": "Crossboundary said the new funding will unlock an additional $25 million in senior debt, helping it secure capital to the tune of $50 million.",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/saigon-microgrid-coops/01.jpg",
+      "imageKind": "rss",
+      "bytes": 236489
+    },
+    {
+      "id": "saigon-microgrid-coops-2",
+      "title": "Odyssey Energy Solutions continues quest to electrify developing economies with $5.3M seed",
+      "url": "https://techcrunch.com/2022/09/08/odyssey-energy-solutions-continues-quest-to-electrify-developing-economies-with-5-4m-seed/",
+      "sourceId": "techcrunch",
+      "excerpt": "The startup's platform enables the planning, financing, building and operating of distributed renewable energy projects in developing economies.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/saigon-microgrid-coops/02.jpg",
+      "imageKind": "rss",
+      "bytes": 261788
+    }
+  ],
+  "iron-dome-devsecops": [
+    {
+      "id": "iron-dome-devsecops-0",
+      "title": "Legit Security lands $40M to lock down apps and dev environments",
+      "url": "https://techcrunch.com/2023/09/20/legit-security-lands-40m-to-lock-down-apps-and-dev-environments/",
+      "sourceId": "techcrunch",
+      "excerpt": "Legit Security, a startup developing a platform to monitor and protect apps from exploits and vulnerabilities, has raised $40 million in funding.",
+      "imageFile": "00.jpg",
+      "imagePath": "/idea-articles/iron-dome-devsecops/00.jpg",
+      "imageKind": "rss",
+      "bytes": 948046
+    },
+    {
+      "id": "iron-dome-devsecops-1",
+      "title": "Wiz raises $1B at a $12B valuation to expand its cloud security platform through acquisitions",
+      "url": "https://techcrunch.com/2024/05/07/wiz-raises-1b-at-12b-valuation-expanding-through-acquisitions/",
+      "sourceId": "techcrunch",
+      "excerpt": "Wiz, the buzzy startup building an all-in-one cloud security platform, is on an acquisition march to expand its business quickly en route to an IPO. Now,",
+      "imageFile": "01.jpg",
+      "imagePath": "/idea-articles/iron-dome-devsecops/01.jpg",
+      "imageKind": "rss",
+      "bytes": 167061
+    },
+    {
+      "id": "iron-dome-devsecops-2",
+      "title": "Cloud-native cybersecurity startup Aqua Security raises $60M and remains a unicorn",
+      "url": "https://techcrunch.com/2024/01/03/cloud-native-cybersecurity-startup-aqua-security-raises-60m-and-remains-a-unicorn/",
+      "sourceId": "techcrunch",
+      "excerpt": "Aqua Security, a cybersecurity startup that helps companies protect their cloud-native services, has raised $60 million in funding.",
+      "imageFile": "02.jpg",
+      "imagePath": "/idea-articles/iron-dome-devsecops/02.jpg",
+      "imageKind": "rss",
+      "bytes": 82796
+    }
+  ]
+}

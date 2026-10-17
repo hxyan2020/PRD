@@ -1,0 +1,182 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit Exchange",
+    "description": "検証済みのサンゴ礁再生成果をトークン化し、ホテル・保険会社・沿岸自治体向けに炭素隣接の生物多様性クレジットを販売するマーケットプレイス。現場パートナーがセンサーとダイビングログをアップロードし、ReefCredit が取引可能な証明書を発行する。",
+    "businessModel": "クレジット販売の取引手数料 8–12% に加え、リゾートや自治体向け検証ダッシュボードの SaaS シートを販売。",
+    "industry": "気候テック",
+    "sector": "ブルーエコノミー / 生物多様性クレジット",
+    "fundingRoundNote": "地域気候ファンド主導、観光系 LP が参加",
+    "goForwardSummary": "沿岸都市のフランチャイズ検証ハブになる提案を——ダイビングパートナーのオンボーディングを担い、地元ホテルにクレジットを販売。決済は親プラットフォームが処理する。"
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift Nursing AI",
+    "description": "夜間病棟向けの環境音声アシスタント。看護記録を下書きし、バイタルの会話から悪化リスクを検知し、朝番チームへ構造化ブリーフを渡す。人手不足の急性期病棟向けに設計。",
+    "businessModel": "病院グループ向けベッド単位の年間ライセンス。プレミアム層は EHR 書き戻しコネクタ付き。",
+    "industry": "ヘルステック",
+    "sector": "病院ワークフロー AI",
+    "fundingRoundNote": "病院システムによる戦略的共同投資",
+    "goForwardSummary": "アジアの私立病院チェーン向けに夜間病棟コアワークフローを複製。言語パック（JP/KR/ZH）をローカライズし、英語カルテが既にある ICU から始める。"
+  },
+  "kiln-microfactory": {
+    "name": "Kiln Microfactory",
+    "description": "近隣共有のセラミック＋金属 3D プリント・マイクロファクトリー。デザイナーが CAD をアップロードし材料を選び、自前設備なしで同週の小ロット生産を得られる。インディー・ハードウェアブランドと建築スタジオ向け。",
+    "businessModel": "機械稼働料＋材料マージン＋任意の設計から製造までのコンシェルジュ顧問料。",
+    "industry": "製造",
+    "sector": "分散型ファブリケーション",
+    "fundingRoundNote": "€1.2M エンジェルラウンドを調達中",
+    "goForwardSummary": "彼らのソフトウェアススタックで自都市にマイクロファクトリー・ベイをフランチャイズ——地元デザイナー関係を握りつつ、Kiln のジョブスケジューラと材料価格をライセンスする。"
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack Coldchain",
+    "description": "小規模農家の集荷業者向け、ソーラー駆動のモジュール式冷蔵室と IoT 腐敗センサー。農家はクレート単位でスロットを借り、買い手は WhatsApp とアプリで品質保証付きの供給ウィンドウを得る。",
+    "businessModel": "ハードウェアリース＋クレート単位の冷蔵料＋買い手がロット予約した際のマーケットプレイス手数料。",
+    "industry": "アグリテック",
+    "sector": "コールドチェーン物流",
+    "fundingRoundNote": "開発金融機関＋気候グロース・エクイティ",
+    "goForwardSummary": "創業チームに東南アジアまたは南アジアのライセンス運営者としての協力を打診——地元ソーラー EPC パートナーとクレート賃貸モデルを再現する。"
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop Companion",
+    "description": "独居高齢者向けのタブレット＋ウェアラブル伴走端末。毎日の安否確認を行い、異常パターンで家族に通知し、地元介護者の訪問を予約。音声優先 UX と摩擦の少ない家族ダッシュボードを重視。",
+    "businessModel": "世帯単位の月額サブスク。介護事業者は紹介リードとシフトツールに課金。",
+    "industry": "ヘルステック",
+    "sector": "高齢者ケア / コンシューマー",
+    "fundingRoundNote": "通信＋保険のコーポレートベンチャー",
+    "goForwardSummary": "同じスタックを別年齢層——海外でリモート勤務し親を気遣う若者——に提供するか、海外に高齢親族がいる従業員向け企業 EAP 特典として再梱包する。"
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane Freight",
+    "description": "越境中小輸出業者向けに通関書類一式、船荷証券、コンプライアンス証跡を自動生成する AI ドキュメンテーション層。WhatsApp での書類投下と一般的な ERP と連携。",
+    "businessModel": "出荷単位の SaaS 料金＋提携アンダーライターによるプレミアムコンプライアンス保険のアップセル。",
+    "industry": "物流テック",
+    "sector": "貿易コンプライアンス SaaS",
+    "fundingRoundNote": "インド–中東回廊の投資家",
+    "goForwardSummary": "末端の中小企業ロゴを直接争うのではなく、自市場のフォワーダーや銀行向けホワイトラベル・コンプライアンス・ミドルウェアとして提供する。"
+  },
+  "playpane-classroom": {
+    "name": "PlayPane Classroom",
+    "description": "放課後プログラム向け、教師ダッシュボードと同期する物理 STEM キット。子どもが電子工作を組み立て、アプリが習熟度を追跡し次のキットを推奨。英国アカデミー・トラストに強い足場。",
+    "businessModel": "キットのハードウェア・マージン＋学校やフランチャイズ学習塾向け年間教室ソフトシート。",
+    "industry": "エドテック",
+    "sector": "K-12 体験型学習",
+    "fundingRoundNote": "£2.5M ラウンドを開放中",
+    "goForwardSummary": "アジアの習い事センター向けにキット＋ダッシュボードモデルを複製。オリンピック等のコンテスト経路にカリキュラムをローカライズし、学習塾フランチャイズ網で販売する。"
+  },
+  "voltpath-depot": {
+    "name": "VoltPath Depot",
+    "description": "標準パックを使うラストマイル配送フリート向けバッテリー交換デポ。クーリエは 2 分以内に交換。VoltPath がパック在庫を持ち、物流ブランドにエネルギー・アズ・ア・サービスを販売。",
+    "businessModel": "交換ごとの料金＋フリート月次 SLA 契約。セカンドライフ・パック販売の残存価値。",
+    "industry": "モビリティ",
+    "sector": "EV バッテリーインフラ",
+    "fundingRoundNote": "配車戦略投資＋インフラ PE",
+    "goForwardSummary": "自都市のフランチャイズ・デポ運営者になる提案を——VoltPath がパックとソフトを供給し、土地とクーリエ契約はあなたが確保する。"
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft Ads",
+    "description": "製品 URL から Meta・TikTok・Xiaohongshu 向けのローカライズド・クリエイティブパックを生成する広告スタジオ。市場ごとの訴求文言コンプライアンスチェック付き。",
+    "businessModel": "代理店向けシート型 SaaS＋レンダー量の利用クレジット。エンタープライズ SSO プラン。",
+    "industry": "マーテック",
+    "sector": "クリエイティブ自動化",
+    "fundingRoundNote": "北米シード、アジア GTM エンジェル参加",
+    "goForwardSummary": "美容 D2C など垂直ニッチを切り出し、Xiaohongshu ネイティブのテンプレートで、そのカテゴリに特化した代理店に販売する。"
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor Legal Ops",
+    "description": "ブティック移民・ビザ法律事務所向けワークフロー OS。顧客受付、書類チェックリスト、期限カレンダー、暗号化クライアントチャット。事務時間を削減し、弁護士がより多くの助言時間を請求できるようにする。",
+    "businessModel": "弁護士単位の月額 SaaS。プレミアム電子署名と政府フォーム記入をアドオンとして提供。",
+    "industry": "リーガルテック",
+    "sector": "プラクティス管理",
+    "fundingRoundNote": "ブートストラップ＋知人・家族ラウンド",
+    "goForwardSummary": "創業チームに APAC リセラーとしての協力を打診——Harbor を地元移民コンサル網とバンドルし、MRR をシェアする。"
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "精密発酵スタートアップ。牛を使わずアイスクリームやクリーマー向けの乳製品同一タンパク質を生産。よりクリーンな Scope 3 ナラティブを求める CPG ブランドに B2B 原料を販売。",
+    "businessModel": "数量ティア付き原料供給契約。カスタム処方の共同開発フィー。",
+    "industry": "フードテック",
+    "sector": "代替タンパク質",
+    "fundingRoundNote": "欧州フードテック・グロース・シンジケート",
+    "goForwardSummary": "完成タンパク質を輸入する代わりに、発酵株＋プロセス IP をライセンスして地域プラントを建て——地元 CPG のコパッカーと提携する。"
+  },
+  "meshpay-remit": {
+    "name": "MeshPay Remit",
+    "description": "現地銀行パートナーとステーブルコイン決済を使い、ブラジルとアフリカ回廊間の低手数料送金レール。ディアスポラ EC セラー向けマイクロマーチャント出金に注力。",
+    "businessModel": "FX＋送金手数料スプレッド。決済残高のフロート利回り。マーケットプレイス連携の API 料金。",
+    "industry": "フィンテック",
+    "sector": "クロスボーダー決済",
+    "fundingRoundNote": "ラテンアメリカ・フィンテック＋アフリカ特化ファンド",
+    "goForwardSummary": "同じマーチャント出金ポジションで、アジア–アフリカ送金レーン（例：シンガポール／香港 → 東アフリカ）向けに回廊設計を複製する。"
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire Mesh Sensors",
+    "description": "農村の火災帯で早期の熱シグネチャと煙プルームを検知する低電力メッシュセンサーと衛星アップリンク。アラートは地元 CFA/SES ダッシュボードと保険会社の損失モデルに流れる。",
+    "businessModel": "議会・公益事業向けハードウェア＋年間監視 SaaS。保険会社へのデータライセンス。",
+    "industry": "気候テック",
+    "sector": "山火事検知",
+    "fundingRoundNote": "気候エンジェル＋災害テック助成スタック",
+    "goForwardSummary": "メッシュ＋アラートスタックを東南アジアの泥炭火災回廊に移植し、地元通信の LoRaWAN パートナーと組む。"
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok Energy Retrofit",
+    "description": "韓国の伝統的中庭住宅向けモジュール断熱とヒートポンプキット。補助金付き融資と自治体リベート書類の自動化付きで販売。",
+    "businessModel": "キット・マージン＋施工パートナー手数料＋請負業者向けリベート申請 SaaS。",
+    "industry": "気候テック",
+    "sector": "住宅レトロフィット",
+    "fundingRoundNote": "韓国グリーンバンク共同投資",
+    "goForwardSummary": "まず韓国の地方都市で施工クルーをフランチャイズし、その後日本の木造ストック向けにキットを適応させる。"
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier Carbon Ledger",
+    "description": "フランス高級メゾン向け Scope-3 会計 OS。サプライヤーのアトリエ、材料、物流を監査対応の炭素台帳にマッピングし、CSRD 報告に活用。",
+    "businessModel": "エンタープライズ SaaS シート＋SKU 単位のフットプリント計算クレジット。監査法人との共同販売レベニューシェア。",
+    "industry": "気候テック",
+    "sector": "ESG / サプライチェーン",
+    "fundingRoundNote": "欧州気候グロース＋ファッション戦略投資",
+    "goForwardSummary": "既製服専用 SKU モジュールを切り出し、フルメゾン展開を負担できない中堅ブランドに販売する。"
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado Voice POS",
+    "description": "メキシコのティエンダと露天商向け音声ファースト POS。スペイン語で在庫と売上を話し、WhatsApp レシートに同期し、マイクロ運転資金枠を解錠。",
+    "businessModel": "ハードウェアキット・マージン＋月額 SaaS＋銀行パートナーとの埋め込みクレジット金利シェア。",
+    "industry": "フィンテック",
+    "sector": "SMB 決済 / 埋め込み金融",
+    "fundingRoundNote": "ラテンアメリカ・フィンテック・シンジケート",
+    "goForwardSummary": "バハサ／タガログ語のインフォーマル小売回廊向けに音声 POS UX を再利用し、地元通信ウォレットと連携する。"
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic Triage",
+    "description": "タウンシップ患者を適切なクリニック待ち行列へ誘導する WhatsApp＋USSD トリアージボット。ケープタウン都市圏クリニック向け看護師ダッシュボードと救急車 ETA 共有付き。",
+    "businessModel": "クリニック単位 SaaS＋州保健システムのライセンス。任意の遠隔医療アップセル。",
+    "industry": "ヘルステック",
+    "sector": "プライマリケア・アクセス",
+    "fundingRoundNote": "複数州展開のため $3.2M を調達中",
+    "goForwardSummary": "東アフリカ展開オペレーターとして提携——USSD フローとクリニック連携をローカライズし、コアエンジンは Cape Clinic が保有する。"
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "北欧フリートの EV パックをモジュール式の家庭・キャビン蓄電に転用。リモート診断と系統アンシラリーサービス入札付き。",
+    "businessModel": "パック再生マージン＋月次エネルギー・アズ・ア・サービス。系統サービス収入シェア。",
+    "industry": "エネルギー",
+    "sector": "バッテリー循環",
+    "fundingRoundNote": "北欧産業＋気候 PE",
+    "goForwardSummary": "EU セカンドライフ適合経路を求めるアジア EV OEM に BMS＋診断スタックをライセンスする。"
+  },
+  "saigon-microgrid-coops": {
+    "name": "Saigon Microgrid Co-ops",
+    "description": "ベトナム工業団地向けソーラー＋蓄電コープ。屋上をプールし、オンチェーン・ライトでエネルギークレジットを精算し、DPPA 規則の下で余剰を系統に販売。",
+    "businessModel": "プロジェクト開発フィー＋継続コープ管理 SaaS＋エネルギー取引スプレッド。",
+    "industry": "気候テック",
+    "sector": "分散型エネルギー",
+    "fundingRoundNote": "SEA 気候ファンド＋工業団地 LP",
+    "goForwardSummary": "コープ組成プレイブックをベトナム地方都市とカンボジア国境の工業団地へフランチャイズ展開する。"
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "イスラエルのディープテック・スタートアップ向け継続セキュリティパイプライン。SBOM、クラウド誤設定、レッドチーム所見をシリーズ A デューデリジェンス向けの取締役会対応リスクスコアにマッピング。",
+    "businessModel": "エンジニア単位 SaaS＋プレミアム・ペンテストクレジット。VC デューデリジェンス用ホワイトラベルプラン。",
+    "industry": "サイバーセキュリティ",
+    "sector": "DevSecOps / GRC",
+    "fundingRoundNote": "サイバーエンジェル＋米国エンタープライズ戦略投資",
+    "goForwardSummary": "すべてのスタートアップロゴを追うのではなく、地域 VC とコーポレートベンチャー向けにデューデリジェンス・ホワイトラベルパックを販売する。"
+  }
+}

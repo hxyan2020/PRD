@@ -1,0 +1,821 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit 交易所",
+    "description": "将经过核验的珊瑚礁修复成果代币化，并向酒店、保险公司与沿海政府出售生物多样性信用的市场平台。",
+    "businessModel": "信用销售收取 8–12% 交易费，并向度假村与市政买家出售验证看板 SaaS 席位。",
+    "industry": "气候科技",
+    "sector": "蓝色经济 / 生物多样性信用",
+    "fundingRoundNote": "由区域气候基金领投，旅游类 LP 参与",
+    "goForwardSummary": "争取成为您所在沿海城市的特许验证中心——负责潜水合作方入驻，并向本地酒店销售信用，结算由母平台处理。"
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift 护理 AI",
+    "description": "面向夜间病房的环境语音助手：自动起草护理记录，从生命体征交谈中标出恶化风险，并向早班团队交接结构化简报。为人力紧张的急症护理单元而建。",
+    "businessModel": "按床位向医院集团出售年费许可；高级版含 EHR 回写连接器。",
+    "industry": "健康科技",
+    "sector": "医院流程 AI",
+    "fundingRoundNote": "医院系统战略联合投资",
+    "goForwardSummary": "将核心夜班病房工作流复制到亚洲私立医院连锁；本地化语言包（日/韩/中），并从已有英文病历的 ICU 起步。"
+  },
+  "kiln-microfactory": {
+    "name": "Kiln 微工厂",
+    "description": "社区共享的陶瓷与金属 3D 打印微工厂：设计师上传 CAD、选择材料，无需自有设备即可在当周完成小批量生产。面向独立硬件品牌与建筑工作室。",
+    "businessModel": "设备利用率费用 + 材料加价 + 可选的设计到制造礼宾顾问年费。",
+    "industry": "制造业",
+    "sector": "分布式制造",
+    "fundingRoundNote": "正在募集 €1.2M 天使轮",
+    "goForwardSummary": "用其软件栈在您所在城市开设特许微工厂工位——掌握本地设计师关系，同时授权使用 Kiln 的任务调度与材料定价。"
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack 冷链",
+    "description": "面向小农户农产品集货商的太阳能模块冷库与物联网损耗传感器，按箱租用仓位，买家通过 WhatsApp 与应用获取品质保障供应窗口。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "农业科技",
+    "sector": "冷链物流",
+    "fundingRoundNote": "开发性金融机构 + 气候成长型股权",
+    "goForwardSummary": "向创始团队申请成为其东南亚或南亚授权运营商——与本地太阳能 EPC 合作伙伴复制按箱租赁模式。"
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop 陪伴",
+    "description": "平板与可穿戴陪伴设备，为独居老人进行每日签到，在异常模式时提醒家人，并预约本地照护上门。强调语音优先体验与低摩擦的家庭看板。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "健康科技",
+    "sector": "养老 / 消费",
+    "fundingRoundNote": "电信与保险公司企业风投",
+    "goForwardSummary": "将同一技术栈提供给另一年龄群体——在海外远程工作、需照料父母的年轻人——或重新打包为企业 EAP 福利，服务有海外长辈的员工。"
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane 货运",
+    "description": "为跨境中小出口商自动生成报关包、提单与合规轨迹的 AI 单证层，可对接 WhatsApp 文件投递与常见 ERP。",
+    "businessModel": "按票 SaaS 费用 + 与合作承保方的高级合规保险追加销售。",
+    "industry": "物流科技",
+    "sector": "贸易合规 SaaS",
+    "fundingRoundNote": "印度–中东走廊投资者",
+    "goForwardSummary": "在您所在市场作为白标合规中间件卖给货代与银行，而非直接争夺终端中小企业客户。"
+  },
+  "playpane-classroom": {
+    "name": "PlayPane 课堂",
+    "description": "与教师看板同步的实体 STEM 套件，用于课后项目。孩子动手做电子项目；应用跟踪掌握度并推荐下一套件。在英国学院信托学校有稳固立足点。",
+    "businessModel": "套件硬件利润 + 向学校与特许辅导中心出售的年度课堂软件席位。",
+    "industry": "教育科技",
+    "sector": "K-12 动手学习",
+    "fundingRoundNote": "开放 £2.5M 融资轮",
+    "goForwardSummary": "将套件 + 看板模式复制到亚洲素质拓展中心；按竞赛路径（奥赛）本地化课程，并通过辅导特许网络销售。"
+  },
+  "voltpath-depot": {
+    "name": "VoltPath 换电站",
+    "description": "面向末端配送车队的标准化电池换电站：快递员两分钟内完成换电，VoltPath 持有电池库存并以能源即服务卖给物流品牌。",
+    "businessModel": "按次换电费 + 车队月度 SLA 合同；二手电池残值销售。",
+    "industry": "出行",
+    "sector": "电动车电池基础设施",
+    "fundingRoundNote": "网约车战略投资 + 基础设施私募股权",
+    "goForwardSummary": "争取成为您所在城市的特许换电站运营商——VoltPath 供应电池与软件；您负责场地与骑手合同。"
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft 广告",
+    "description": "生成式广告工作室：输入商品链接即可产出适配 Meta、TikTok、小红书的本地化创意包，并按市场做话术合规检查。",
+    "businessModel": "面向代理商的按席位 SaaS + 渲染用量积分；企业 SSO 方案。",
+    "industry": "营销科技",
+    "sector": "创意自动化",
+    "fundingRoundNote": "北美种子轮，含亚洲 GTM 天使",
+    "goForwardSummary": "拆出垂直细分——例如仅美妆 D2C——用原生小红书模板，卖给已专注该品类的代理商。"
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor 法律运营",
+    "description": "面向精品移民与签证律所的工作流操作系统：客户接待、文件清单、截止日期日历与加密客户聊天。减少行政工时，让律师更多计费咨询时间。",
+    "businessModel": "按律师月度 SaaS；高级电子签名与政府表格填写器作为附加项。",
+    "industry": "法律科技",
+    "sector": "执业管理",
+    "fundingRoundNote": "自力更生 + 亲友轮",
+    "goForwardSummary": "向创始团队申请成为其亚太转售商——将 Harbor 与您本地移民咨询网络捆绑，并分享 MRR。"
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "用精准发酵生产与乳品同质的冰淇淋与奶精蛋白，向寻求更清晰 Scope 3 叙事的 CPG 品牌供应 B2B 原料。",
+    "businessModel": "按量阶梯的原料供应合同；定制配方的联合开发费用。",
+    "industry": "食品科技",
+    "sector": "替代蛋白",
+    "fundingRoundNote": "欧洲食品科技成长辛迪加",
+    "goForwardSummary": "授权发酵菌株与工艺 IP 建设区域工厂，而非进口成品蛋白——与本地 CPG 代工厂合作。"
+  },
+  "meshpay-remit": {
+    "name": "MeshPay 汇款",
+    "description": "利用本地银行合作方与稳定币结算，在巴西与非洲走廊之间提供低费用汇款通道。聚焦侨民电商卖家的微商户出款。",
+    "businessModel": "外汇与转账费差价；结算余额浮存收益；市场对接 API 费用。",
+    "industry": "金融科技",
+    "sector": "跨境支付",
+    "fundingRoundNote": "拉美金融科技 + 聚焦非洲的基金",
+    "goForwardSummary": "将走廊设计复制到亚洲–非洲汇款通道（如新加坡/香港 → 东非），沿用同一商户出款定位。"
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire 网状传感器",
+    "description": "低功耗网状传感器与卫星上行链路，在农村火险带早期探测热特征与烟羽。告警接入本地 CFA/SES 看板与保险公司损失模型。",
+    "businessModel": "硬件 + 向市政与公用事业出售的年度监测 SaaS；向保险公司授权数据。",
+    "industry": "气候科技",
+    "sector": "野火监测",
+    "fundingRoundNote": "气候天使 + 灾害科技资助组合",
+    "goForwardSummary": "将网状 + 告警技术栈移植到东南亚泥炭火走廊，并与本地电信 LoRaWAN 合作方配对。"
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok 节能改造",
+    "description": "专为韩国传统庭院住宅设计的模块化保温与热泵套件，配套补贴融资与市政返利文书自动化。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "气候科技",
+    "sector": "住宅节能改造",
+    "fundingRoundNote": "韩国绿色银行联合投资",
+    "goForwardSummary": "先在韩国二线城市特许安装团队，再将套件适配日本木结构存量住宅。"
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier 碳台账",
+    "description": "面向法国奢侈品牌的 Scope-3 核算操作系统，把供应商工坊、材料与物流映射为可审计的碳台账以支持 CSRD 披露。",
+    "businessModel": "企业 SaaS 席位 + 按 SKU 足迹计算积分；与审计机构联合销售收入分成。",
+    "industry": "气候科技",
+    "sector": "ESG / 供应链",
+    "fundingRoundNote": "欧洲气候成长 + 时尚战略投资方",
+    "goForwardSummary": "拆出仅成衣的 SKU 模块，卖给负担不起完整世家部署的中端品牌。"
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado 语音 POS",
+    "description": "面向墨西哥便利店与街头商贩的语音优先收银：用西班牙语口述库存与销售，同步 WhatsApp 小票并解锁微型营运资金。",
+    "businessModel": "硬件套件利润 + 月度 SaaS + 与银行合作方的嵌入式信贷利息分成。",
+    "industry": "金融科技",
+    "sector": "中小商户支付 / 嵌入式金融",
+    "fundingRoundNote": "拉美金融科技辛迪加",
+    "goForwardSummary": "将语音 POS 体验复用于印尼语/他加禄语非正式零售走廊，对接本地电信钱包。"
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic 分诊",
+    "description": "WhatsApp + USSD 分诊机器人，把乡镇患者分流到合适诊所队列，并为开普敦都会区诊所提供护士看板与救护车 ETA。",
+    "businessModel": "按诊所 SaaS + 省级卫生系统许可；可选远程医疗追加销售。",
+    "industry": "健康科技",
+    "sector": "基层医疗可及",
+    "fundingRoundNote": "正在为多省推广募集 $3.2M",
+    "goForwardSummary": "作为东非部署运营商合作——本地化 USSD 流程与诊所对接，核心引擎仍由 Cape Clinic 持有。"
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "将北欧车队淘汰的电动车电池包改造为模块化家用与小屋储能，并提供远程诊断与电网辅助服务竞价。",
+    "businessModel": "电池翻新利润 + 月度能源即服务；电网服务收入分成。",
+    "industry": "能源",
+    "sector": "电池循环",
+    "fundingRoundNote": "北欧工业 + 气候私募股权",
+    "goForwardSummary": "将 BMS + 诊断技术栈授权给寻求欧盟二手寿命合规路径的亚洲电动车 OEM。"
+  },
+  "saigon-microgrid-coops": {
+    "name": "西贡微电网合作社",
+    "description": "面向越南工业园的太阳能 + 储能合作社：汇集屋顶资源，以轻量链上方式结算能源信用，并按 DPPA 规则向电网出售余电。",
+    "businessModel": "项目开发费 + 持续合作社管理 SaaS + 能源交易价差。",
+    "industry": "气候科技",
+    "sector": "分布式能源",
+    "fundingRoundNote": "东南亚气候基金 + 工业园 LP",
+    "goForwardSummary": "将合作社组建手册特许推广到越南二线城市与柬埔寨边境园区。"
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "面向以色列深科技初创的持续安全流水线：将 SBOM、云配置错误与红队发现映射为董事会可读的风险评分，用于 A 轮尽调。",
+    "businessModel": "按工程师 SaaS + 高级渗透测试积分；VC 尽调白标方案。",
+    "industry": "网络安全",
+    "sector": "DevSecOps / 治理合规",
+    "fundingRoundNote": "网络安全天使 + 美国企业战略方",
+    "goForwardSummary": "将尽调白标包卖给区域 VC 与企业风投部门，而非追逐每一个初创品牌。"
+  },
+  "stripe-atlas-rails": {
+    "name": "Atlas 公司设立轨道",
+    "description": "帮助创始人远程设立公司、完成合规与银行开户的编排轨道。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "创业基础设施",
+    "fundingRoundNote": "公开市场及此前私募轮次",
+    "goForwardSummary": "围绕「Atlas 公司设立轨道」推进本地化或垂直拆分路径。"
+  },
+  "notion-ops-stack": {
+    "name": "Workspace 运营栈",
+    "description": "面向团队的工作区运营栈，把文档、任务与知识库连成一体。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "协作软件",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「Workspace 运营栈」推进本地化或垂直拆分路径。"
+  },
+  "canva-design-os": {
+    "name": "视觉设计 OS",
+    "description": "浏览器端设计套件，让中小企业无需专职设计团队也能产出本地化创意——模板、品牌套件与智能尺寸适配。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "营销科技",
+    "sector": "创意工具",
+    "fundingRoundNote": "后期私募轮次",
+    "goForwardSummary": "围绕「视觉设计 OS」推进本地化或垂直拆分路径。"
+  },
+  "shopify-merchant-os": {
+    "name": "商户电商 OS",
+    "description": "面向独立站商户的电商操作系统：店面、结账与履约工具。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "电商",
+    "sector": "商户平台",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「商户电商 OS」推进本地化或垂直拆分路径。"
+  },
+  "revolut-neo-bank": {
+    "name": "无国界新银行",
+    "description": "多币种账户与跨境消费的新银行体验。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "金融科技",
+    "sector": "数字银行",
+    "fundingRoundNote": "软银等机构",
+    "goForwardSummary": "围绕「无国界新银行」推进本地化或垂直拆分路径。"
+  },
+  "klarna-bnpl-rails": {
+    "name": "灵活结账轨道",
+    "description": "为电商结账提供分期与先买后付的灵活支付轨道。",
+    "businessModel": "利息与价差收入。",
+    "industry": "金融科技",
+    "sector": "消费信贷",
+    "fundingRoundNote": "后期私募轮次",
+    "goForwardSummary": "围绕「灵活结账轨道」推进本地化或垂直拆分路径。"
+  },
+  "spotify-audio-graph": {
+    "name": "音频发现图谱",
+    "description": "连接播客、音乐与创作者变现的个性化音频图谱，服务全球听众。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "媒体",
+    "sector": "音频流媒体",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「音频发现图谱」推进本地化或垂直拆分路径。"
+  },
+  "industrial-climate-os": {
+    "name": "工业气候 OS",
+    "description": "映射工厂能耗、碳强度与改造回报的软件，服务面临 CSRD 压力的欧洲制造商。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "气候科技",
+    "sector": "工业脱碳",
+    "fundingRoundNote": "气候成长基金",
+    "goForwardSummary": "围绕「工业气候 OS」推进本地化或垂直拆分路径。"
+  },
+  "wise-fx-corridor": {
+    "name": "透明外汇走廊",
+    "description": "透明费率的跨境汇款与多币种账户走廊。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "跨境支付",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「透明外汇走廊」推进本地化或垂直拆分路径。"
+  },
+  "rappi-super-app": {
+    "name": "拉美超级应用",
+    "description": "覆盖拉美主要城市的即时配送、支付与金融钱包，横跨生鲜、餐饮与末端配送。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "出行",
+    "sector": "即时配送",
+    "fundingRoundNote": "软银等机构",
+    "goForwardSummary": "围绕「拉美超级应用」推进本地化或垂直拆分路径。"
+  },
+  "nubank-digital-bank": {
+    "name": "紫色数字银行",
+    "description": "以移动端为先的数字银行，服务大众零售与信贷。",
+    "businessModel": "刷卡分润 + 利息 + 手续费。",
+    "industry": "金融科技",
+    "sector": "数字银行",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「紫色数字银行」推进本地化或垂直拆分路径。"
+  },
+  "mercadolibre-commerce": {
+    "name": "拉美电商图谱",
+    "description": "连接西语与葡语美洲买卖双方的市场 + 物流 + 金融科技生态。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "电商",
+    "sector": "市场平台",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「拉美电商图谱」推进本地化或垂直拆分路径。"
+  },
+  "grab-sea-superapp": {
+    "name": "东南亚出行超级应用",
+    "description": "整合出行、外卖与金融的东南亚超级应用。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "出行",
+    "sector": "多服务平台",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「东南亚出行超级应用」推进本地化或垂直拆分路径。"
+  },
+  "gojek-tokopedia": {
+    "name": "群岛超级平台",
+    "description": "面向印尼消费者的按需服务与市场组合，覆盖出行、餐饮与电商。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "出行",
+    "sector": "多服务平台",
+    "fundingRoundNote": "Goto 集团整合",
+    "goForwardSummary": "围绕「群岛超级平台」推进本地化或垂直拆分路径。"
+  },
+  "paytm-india-wallet": {
+    "name": "印度支付织物",
+    "description": "连接印度数字支付经济的消费者钱包、UPI 轨道与商户收单栈。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "支付",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「印度支付织物」推进本地化或垂直拆分路径。"
+  },
+  "razorpay-merchant": {
+    "name": "商户收款栈",
+    "description": "面向印度创业公司与中小企业的支付网关、发薪与银行 API。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "商户支付",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「商户收款栈」推进本地化或垂直拆分路径。"
+  },
+  "bytedance-creator-os": {
+    "name": "创作者操作系统",
+    "description": "短视频平台，配备创作者基金、直播电商与面向全球受众的推荐引擎。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "媒体",
+    "sector": "短视频",
+    "fundingRoundNote": "后期私募",
+    "goForwardSummary": "围绕「创作者操作系统」推进本地化或垂直拆分路径。"
+  },
+  "shein-fast-fashion": {
+    "name": "快时尚供应链",
+    "description": "数据驱动的服饰设计到消费者闭环：小批量试款并把赢家规模化到全球。",
+    "businessModel": "商业模式：基于核心产品 收费。",
+    "industry": "电商",
+    "sector": "时尚零售",
+    "fundingRoundNote": "后期私募",
+    "goForwardSummary": "围绕「快时尚供应链」推进本地化或垂直拆分路径。"
+  },
+  "coupang-rocket": {
+    "name": "火箭电商履约",
+    "description": "自建物流的电商，承诺韩国次日达并向海外扩张。",
+    "businessModel": "商业模式：基于核心产品 收费。",
+    "industry": "电商",
+    "sector": "物流电商",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「火箭电商履约」推进本地化或垂直拆分路径。"
+  },
+  "tokopedia-market": {
+    "name": "群岛市场平台",
+    "description": "聚焦印尼的市场平台，通过物流与支付合作方连接中小微企业与消费者。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "电商",
+    "sector": "市场平台",
+    "fundingRoundNote": "Goto 集团整合",
+    "goForwardSummary": "围绕「群岛市场平台」推进本地化或垂直拆分路径。"
+  },
+  "sea-shopee": {
+    "name": "东南亚电商引擎",
+    "description": "在东南亚商户渗透深厚的市场与游戏联动电商网络。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "电商",
+    "sector": "市场平台",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「东南亚电商引擎」推进本地化或垂直拆分路径。"
+  },
+  "flutterwave-africa": {
+    "name": "非洲支付网络",
+    "description": "连接非洲商户与全球支付方式的收款网络。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "支付",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「非洲支付网络」推进本地化或垂直拆分路径。"
+  },
+  "paystack-africa": {
+    "name": "非洲商户支付",
+    "description": "面向非洲商户的在线收款与本地支付方式接入。",
+    "businessModel": "交易抽成与增值服务收费。",
+    "industry": "金融科技",
+    "sector": "商户支付",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「非洲商户支付」推进本地化或垂直拆分路径。"
+  },
+  "andela-talent": {
+    "name": "全球技术人才网络",
+    "description": "连接全球技术人才与企业工程团队的人才网络。",
+    "businessModel": "商业模式：基于核心产品 收费。",
+    "industry": "人力资源科技",
+    "sector": "人才市场",
+    "fundingRoundNote": "软银等机构",
+    "goForwardSummary": "围绕「全球技术人才网络」推进本地化或垂直拆分路径。"
+  },
+  "yassir-maghreb": {
+    "name": "马格里布超级应用",
+    "description": "面向北非城市的网约车、配送与支付，阿拉伯语优先体验。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "出行",
+    "sector": "按需服务平台",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「马格里布超级应用」推进本地化或垂直拆分路径。"
+  },
+  "careem-middle-east": {
+    "name": "中东出行超级应用",
+    "description": "覆盖中东与巴基斯坦走廊的网约车、配送与汇款服务。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "出行",
+    "sector": "多服务平台",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「中东出行超级应用」推进本地化或垂直拆分路径。"
+  },
+  "tabby-bnpl-gcc": {
+    "name": "海湾先买后付",
+    "description": "嵌入海湾时尚与数码结账的合规友好分期购物。",
+    "businessModel": "交易手续费。",
+    "industry": "金融科技",
+    "sector": "消费信贷",
+    "fundingRoundNote": "软银等机构",
+    "goForwardSummary": "围绕「海湾先买后付」推进本地化或垂直拆分路径。"
+  },
+  "vtex-commerce": {
+    "name": "企业电商平台",
+    "description": "帮助零售商在拉美及全球市场现代化店面的企业电商平台。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "电商",
+    "sector": "电商平台",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「企业电商平台」推进本地化或垂直拆分路径。"
+  },
+  "dlocal-crossborder": {
+    "name": "新兴市场收款",
+    "description": "跨境支付编排，帮助全球商户在新兴市场用本地支付方式收款。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "跨境支付",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "在 dLocal 轨道下以非洲收款专家身份合作。"
+  },
+  "pieter-patreon-creators": {
+    "name": "创作者会员轨道",
+    "description": "让创作者用会员订阅向粉丝变现的工具与账单轨道。",
+    "businessModel": "平台抽成。",
+    "industry": "媒体",
+    "sector": "创作者经济",
+    "fundingRoundNote": "软银等机构",
+    "goForwardSummary": "围绕「创作者会员轨道」推进本地化或垂直拆分路径。"
+  },
+  "airtable-ops-db": {
+    "name": "运营数据库",
+    "description": "表格与数据库混合体，让运营团队无需提工程工单即可建模工作流。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "无代码平台",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「运营数据库」推进本地化或垂直拆分路径。"
+  },
+  "figma-design-collab": {
+    "name": "协作设计画布",
+    "description": "实时协作的专业设计画布与组件系统。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "设计工具",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「协作设计画布」推进本地化或垂直拆分路径。"
+  },
+  "databricks-lakehouse": {
+    "name": "湖仓一体平台",
+    "description": "统一数据分析、工程与 AI 的湖仓一体平台。",
+    "businessModel": "平台抽成。",
+    "industry": "企业软件",
+    "sector": "数据平台",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「湖仓一体平台」推进本地化或垂直拆分路径。"
+  },
+  "openai-platform": {
+    "name": "大模型平台",
+    "description": "面向开发者与企业的大语言模型与 API 平台。",
+    "businessModel": "API 与用量计费。",
+    "industry": "人工智能",
+    "sector": "基础模型",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「大模型平台」推进本地化或垂直拆分路径。"
+  },
+  "anthropic-claude": {
+    "name": "安全对齐模型",
+    "description": "强调可控性与长上下文的企业级大语言模型与工具。",
+    "businessModel": "商业模式：基于 API 与用量 收费。",
+    "industry": "人工智能",
+    "sector": "基础模型",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「安全对齐模型」推进本地化或垂直拆分路径。"
+  },
+  "mistral-europe-ai": {
+    "name": "欧洲开源模型",
+    "description": "在欧洲打造的开源权重与商业前沿模型，服务重视主权的买家。",
+    "businessModel": "API 与用量计费。",
+    "industry": "人工智能",
+    "sector": "基础模型",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「欧洲开源模型」推进本地化或垂直拆分路径。"
+  },
+  "deepmind-science": {
+    "name": "科学智能引擎",
+    "description": "面向科学、生物与复杂系统的研究型 AI，并开展企业合作。",
+    "businessModel": "商业模式：基于核心产品 收费。",
+    "industry": "人工智能",
+    "sector": "研究平台",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「科学智能引擎」推进本地化或垂直拆分路径。"
+  },
+  "personio-hr-eu": {
+    "name": "欧洲 HR 套件",
+    "description": "覆盖招聘、薪酬与人事运营的欧洲中小企业一体化 HRIS，含本地合规。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "人力资源科技",
+    "sector": "人力资源信息系统",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「欧洲 HR 套件」推进本地化或垂直拆分路径。"
+  },
+  "contentful-cms": {
+    "name": "无头内容平台",
+    "description": "无头 CMS，让全球品牌用结构化模型发布全渠道内容。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "营销科技",
+    "sector": "内容管理系统",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「无头内容平台」推进本地化或垂直拆分路径。"
+  },
+  "celonis-process": {
+    "name": "流程挖掘智能",
+    "description": "重建企业真实运转过程并发现自动化回报的流程挖掘平台。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "企业软件",
+    "sector": "流程智能",
+    "fundingRoundNote": "后期私募轮次",
+    "goForwardSummary": "围绕「流程挖掘智能」推进本地化或垂直拆分路径。"
+  },
+  "ui-path-rpa": {
+    "name": "企业 RPA 自动化",
+    "description": "机器人流程自动化与 AI 智能体，把重复桌面与 API 工作从人工队列中剥离。",
+    "businessModel": "交易抽成与增值服务收费。",
+    "industry": "企业软件",
+    "sector": "自动化",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「企业 RPA 自动化」推进本地化或垂直拆分路径。"
+  },
+  "hashicorp-infra": {
+    "name": "基础设施即代码",
+    "description": "Terraform 与密钥工具，为平台工程团队标准化云资源供给。",
+    "businessModel": "交易抽成与增值服务收费。",
+    "industry": "开发者工具",
+    "sector": "基础设施",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「基础设施即代码」推进本地化或垂直拆分路径。"
+  },
+  "gitlab-devops": {
+    "name": "一体化 DevOps",
+    "description": "从规划到部署的端到端 DevSecOps 平台，内置安全扫描。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "开发者工具",
+    "sector": "开发安全运营",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「一体化 DevOps」推进本地化或垂直拆分路径。"
+  },
+  "sentry-observability": {
+    "name": "应用可观测性",
+    "description": "在用户流失前捕获生产错误与性能回退的开发者可观测性平台。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "开发者工具",
+    "sector": "可观测性",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「应用可观测性」推进本地化或垂直拆分路径。"
+  },
+  "vercel-frontend": {
+    "name": "前端云平台",
+    "description": "面向 Next.js 与现代前端的部署平台，含边缘网络与预览工作流。",
+    "businessModel": "商业模式：Usage + seats.",
+    "industry": "开发者工具",
+    "sector": "前端云",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「前端云平台」推进本地化或垂直拆分路径。"
+  },
+  "supabase-backend": {
+    "name": "开源后端即服务",
+    "description": "基于 Postgres 的后端即服务，提供认证、存储与实时能力，适合独立开发者与创业团队。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "开发者工具",
+    "sector": "后端平台",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「开源后端即服务」推进本地化或垂直拆分路径。"
+  },
+  "pleo-spend": {
+    "name": "智能支出卡",
+    "description": "面向欧洲中小企业的企业卡与支出管理，可自动同步记账。",
+    "businessModel": "刷卡分润 + 利息 + 手续费。",
+    "industry": "金融科技",
+    "sector": "支出管理",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「智能支出卡」推进本地化或垂直拆分路径。"
+  },
+  "hopin-events": {
+    "name": "虚拟活动平台",
+    "description": "混合会议活动平台，含主会场、展厅与社交房间。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "营销科技",
+    "sector": "活动",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「虚拟活动平台」推进本地化或垂直拆分路径。"
+  },
+  "checkout-com": {
+    "name": "全球支付编排",
+    "description": "为平台与商户提供的全球支付编排与本地收单能力。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "支付",
+    "fundingRoundNote": "软银等机构",
+    "goForwardSummary": "围绕「全球支付编排」推进本地化或垂直拆分路径。"
+  },
+  "adyen-acquiring": {
+    "name": "全球收单网络",
+    "description": "服务全球商户的统一收单与支付处理网络。",
+    "businessModel": "支付手续费 + 外汇价差。",
+    "industry": "金融科技",
+    "sector": "支付",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「全球收单网络」推进本地化或垂直拆分路径。"
+  },
+  "bolt-estonia": {
+    "name": "欧洲出行网络",
+    "description": "网约车与微出行，并在欧洲与非洲扩展外卖配送。",
+    "businessModel": "广告 + 直播电商抽成。",
+    "industry": "出行",
+    "sector": "网约车",
+    "fundingRoundNote": "后期私募轮次",
+    "goForwardSummary": "围绕「欧洲出行网络」推进本地化或垂直拆分路径。"
+  },
+  "wolt-delivery": {
+    "name": "本地即时配送",
+    "description": "北欧与中东欧城市密度高的餐饮与零售配送平台（现属 DoorDash）。",
+    "businessModel": "交易抽成与增值服务收费。",
+    "industry": "出行",
+    "sector": "外卖配送",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「本地即时配送」推进本地化或垂直拆分路径。"
+  },
+  "swan-banking-as-a-service": {
+    "name": "银行即服务",
+    "description": "银行即服务 API，让欧洲金融科技与平台嵌入账户与卡片。",
+    "businessModel": "刷卡分润 + 利息 + 手续费。",
+    "industry": "金融科技",
+    "sector": "银行即服务",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「银行即服务」推进本地化或垂直拆分路径。"
+  },
+  "qonto-sme-bank": {
+    "name": "中小企业银行",
+    "description": "面向欧洲自由职业者与中小企业的对公账户、卡片与记账。",
+    "businessModel": "刷卡分润 + 利息 + 手续费。",
+    "industry": "金融科技",
+    "sector": "对公银行",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「中小企业银行」推进本地化或垂直拆分路径。"
+  },
+  "alan-health": {
+    "name": "欧洲数字医保",
+    "description": "面向欧洲雇员与自由职业者的移动优先健康保险与就医导航。",
+    "businessModel": "商业模式：基于核心产品 收费。",
+    "industry": "健康科技",
+    "sector": "保险科技",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「欧洲数字医保」推进本地化或垂直拆分路径。"
+  },
+  "doctors-without-wait": {
+    "name": "即时问诊网络",
+    "description": "基于应用的基层医疗与心理健康问诊，缩短都市白领诊所等待时间。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "健康科技",
+    "sector": "远程医疗",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「即时问诊网络」推进本地化或垂直拆分路径。"
+  },
+  "cognition-devin": {
+    "name": "自主软件工程师",
+    "description": "把待办工单做到拉取请求的 AI 软件工程师智能体，服务产品团队。",
+    "businessModel": "API 与用量计费。",
+    "industry": "人工智能",
+    "sector": "开发者智能体",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「自主软件工程师」推进本地化或垂直拆分路径。"
+  },
+  "runway-ml-video": {
+    "name": "生成式视频工作室",
+    "description": "创作者与工作室用于快速内容迭代的 AI 视频生成与剪辑工具。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "人工智能",
+    "sector": "生成式媒体",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「生成式视频工作室」推进本地化或垂直拆分路径。"
+  },
+  "elevenlabs-voice": {
+    "name": "生成式语音",
+    "description": "高保真 AI 语音生成与配音，服务创作者、游戏与本地化团队。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "人工智能",
+    "sector": "语音 AI",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「生成式语音」推进本地化或垂直拆分路径。"
+  },
+  "perplexity-answer": {
+    "name": "答案引擎",
+    "description": "结合搜索与生成式 AI、带引用的答案引擎，用于研究与决策。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "人工智能",
+    "sector": "搜索",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「答案引擎」推进本地化或垂直拆分路径。"
+  },
+  "cursor-coding": {
+    "name": "AI 结对编程",
+    "description": "把 AI 结对编程嵌入本地开发工作流的代码编辑器。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "开发者工具",
+    "sector": "AI 编程",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「AI 结对编程」推进本地化或垂直拆分路径。"
+  },
+  "loom-async-video": {
+    "name": "异步视频消息",
+    "description": "轻量屏幕与摄像头录制，用异步更新替代状态同步会议。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "异步协作",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「异步视频消息」推进本地化或垂直拆分路径。"
+  },
+  "miro-whiteboard": {
+    "name": "远程白板协作",
+    "description": "用于工作坊、产品发现与分布式团队引导的在线白板。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "生产力",
+    "sector": "协作",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「远程白板协作」推进本地化或垂直拆分路径。"
+  },
+  "webflow-sites": {
+    "name": "可视化建站",
+    "description": "可视化开发平台，打造营销站与 Web 应用而无需传统 CMS 瓶颈。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "营销科技",
+    "sector": "建站工具",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「可视化建站」推进本地化或垂直拆分路径。"
+  },
+  "intercom-support": {
+    "name": "客户沟通平台",
+    "description": "融合收件箱、帮助中心与 AI 智能体的客户支持平台。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "客户支持",
+    "fundingRoundNote": "成长型股权财团",
+    "goForwardSummary": "围绕「客户沟通平台」推进本地化或垂直拆分路径。"
+  },
+  "hubspot-crm": {
+    "name": "增长型 CRM",
+    "description": "面向增长团队的入站营销与 CRM 平台。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "客户关系管理",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「增长型 CRM」推进本地化或垂直拆分路径。"
+  },
+  "atlassian-work": {
+    "name": "团队协作套件",
+    "description": "Jira、Confluence 等工具，组织全球企业软件交付。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "企业软件",
+    "sector": "工作管理",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「团队协作套件」推进本地化或垂直拆分路径。"
+  },
+  "xero-accounting": {
+    "name": "云会计平台",
+    "description": "面向小企业的在线会计，含银行流水、开票与会计师生态。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "金融科技",
+    "sector": "会计",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「云会计平台」推进本地化或垂直拆分路径。"
+  },
+  "canva-affinity": {
+    "name": "专业创意套件",
+    "description": "模板驱动的创意平台路径，仍被诸多区域设计工具效仿以打入中小企业。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "营销科技",
+    "sector": "创意工具",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「专业创意套件」推进本地化或垂直拆分路径。"
+  },
+  "freshworks-crm": {
+    "name": "中小企业 CRM",
+    "description": "面向中端市场的 CRM 与支持套件，追求 Salesforce 能力但更轻量。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "客户关系管理",
+    "fundingRoundNote": "上市公司",
+    "goForwardSummary": "围绕「中小企业 CRM」推进本地化或垂直拆分路径。"
+  },
+  "zoho-suite": {
+    "name": "一体化商务套件",
+    "description": "源自印度的宽覆盖生产力与运营套件，横跨 CRM、邮件与财务，服务成本敏感型中小企业。",
+    "businessModel": "订阅 / SaaS 收费。",
+    "industry": "SaaS",
+    "sector": "商务套件",
+    "fundingRoundNote": "已完成融资",
+    "goForwardSummary": "围绕「一体化商务套件」推进本地化或垂直拆分路径。"
+  }
+}

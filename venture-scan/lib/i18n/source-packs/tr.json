@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "Afrika",
+    "Asia": "Asya",
+    "Asia-Pacific": "Asya-Pasifik",
+    "Brazil": "Brezilya",
+    "DACH": "DACH",
+    "Europe": "Avrupa",
+    "Francophone Europe / Africa": "Frankofon Avrupa / Afrika",
+    "Global": "Küresel",
+    "Global / AI": "Küresel / Yapay zekâ",
+    "Global / North America": "Küresel / Kuzey Amerika",
+    "Global South": "Küresel Güney",
+    "Greater China": "Büyük Çin",
+    "India": "Hindistan",
+    "Israel": "İsrail",
+    "Korea": "Kore",
+    "Latin America": "Latin Amerika",
+    "MENA": "MENA",
+    "Nordics": "İskandinavya",
+    "Oceania": "Okyanusya",
+    "South Asia": "Güney Asya",
+    "Southern Cone": "Güney Koni",
+    "Türkiye / Eastern Europe": "Türkiye / Doğu Avrupa",
+    "Vietnam": "Vietnam",
+    "West Africa": "Batı Afrika"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "Küresel girişim ve fonlama haber teli."
+    },
+    "crunchbase-news": {
+      "description": "Tur duyuruları ve yatırımcı etkinliği."
+    },
+    "36kr": {
+      "description": "Çince girişim ve hard-tech haberciliği."
+    },
+    "krasia": {
+      "description": "Güneydoğu ve Doğu Asya girişim istihbaratı."
+    },
+    "techinasia": {
+      "description": "Asya-Pasifik girişim fonlama ve ürün haberciliği."
+    },
+    "nikkei-asia": {
+      "description": "Nikkei'den APAC iş ve girişim haberciliği."
+    },
+    "platum": {
+      "description": "Kore girişim ve fonlama masası."
+    },
+    "yourstory": {
+      "description": "Hindistan odaklı girişimcilik ve fonlama hikâyeleri."
+    },
+    "startup-india": {
+      "description": "Hint girişimler için devlet kaydı ve tanınma sinyalleri.",
+      "notes": "48 saatte bir toplu senkron"
+    },
+    "sifted": {
+      "description": "Avrupa girişim ve deep-tech fonlama haberciliği."
+    },
+    "eu-startups": {
+      "description": "Avrupa çapında girişim haber toplayıcısı."
+    },
+    "les-echos-start": {
+      "description": "Fransızca girişim ve scale-up masası."
+    },
+    "gruenderszene": {
+      "description": "Almanca kurucu ve fonlama haberciliği."
+    },
+    "africarena": {
+      "description": "Afrika girişim ve ekosistem raporlaması."
+    },
+    "wamda": {
+      "description": "MENA girişimcilik ve fonlama masası."
+    },
+    "contxto": {
+      "description": "LatAm girişim ve risk sermayesi haberciliği."
+    },
+    "startupbase-br": {
+      "description": "Brezilya girişim haritası, sıralamalar ve ekosistem istihbaratı.",
+      "notes": "Kayıt tarama her 24 saatte"
+    },
+    "israel-tech": {
+      "description": "İsrail deep-tech ve siber güvenlik fonlama sinyalleri."
+    },
+    "afrilabs": {
+      "description": "Afrikalı kurucu ve yatırımcı deal flow topluluğu.",
+      "notes": "Topluluk özeti her 12 saatte"
+    },
+    "pitchbook-public": {
+      "description": "Kamuya açık fonlama briefleri ve piyasa notları."
+    },
+    "venturebeat": {
+      "description": "YZ ve kurumsal girişim ürün/fonlama haberciliği."
+    },
+    "rest-of-world": {
+      "description": "Silikon Vadisi dışındaki teknoloji hikâyeleri."
+    },
+    "startupdaily-au": {
+      "description": "Avustralya ve Yeni Zelanda girişim ve sermaye piyasası masası."
+    },
+    "nordic-startup-news": {
+      "description": "Stockholm'den Kuzey Avrupa girişim haberciliği."
+    },
+    "webrazzi": {
+      "description": "Türkçe teknoloji ve girişim fonlama masası."
+    },
+    "vnexpress-startup": {
+      "description": "Vietnam girişim ve dijital ekonomi raporları."
+    },
+    "technode": {
+      "description": "Çin-küresel çift dilli teknoloji ve girişim akışı."
+    },
+    "pulse-ng": {
+      "description": "Batı ve Güney Afrika girişim sermayesi haberciliği."
+    },
+    "inc42": {
+      "description": "Hint girişim fonlama ve politika sinyalleri."
+    },
+    "startupchile": {
+      "description": "LatAm hızlandırıcı ve ekosistem program akışı.",
+      "notes": "Program toplu senkron her 24 saatte"
+    },
+    "dealstreetasia": {
+      "description": "Asya özel piyasa işlemleri, fonlama ve yatırımcı etkinliği."
+    }
+  },
+  "countries": {
+    "Argentina": "Arjantin",
+    "Australia": "Avustralya",
+    "Austria": "Avusturya",
+    "Belgium": "Belçika",
+    "Brazil": "Brezilya",
+    "Bulgaria": "Bulgaristan",
+    "Canada": "Kanada",
+    "Chile": "Şili",
+    "China": "Çin",
+    "Colombia": "Kolombiya",
+    "Denmark": "Danimarka",
+    "Egypt": "Mısır",
+    "Finland": "Finlandiya",
+    "France": "Fransa",
+    "Germany": "Almanya",
+    "Ghana": "Gana",
+    "Greece": "Yunanistan",
+    "Hong Kong": "Çin Hong Kong ÖİB",
+    "Iceland": "İzlanda",
+    "India": "Hindistan",
+    "Indonesia": "Endonezya",
+    "Israel": "İsrail",
+    "Italy": "İtalya",
+    "Japan": "Japonya",
+    "Jordan": "Ürdün",
+    "Kenya": "Kenya",
+    "Lebanon": "Lübnan",
+    "Malaysia": "Malezya",
+    "Mexico": "Meksika",
+    "Morocco": "Fas",
+    "Netherlands": "Hollanda",
+    "New Zealand": "Yeni Zelanda",
+    "Nigeria": "Nijerya",
+    "Norway": "Norveç",
+    "Peru": "Peru",
+    "Philippines": "Filipinler",
+    "Poland": "Polonya",
+    "Portugal": "Portekiz",
+    "Romania": "Romanya",
+    "Rwanda": "Ruanda",
+    "Saudi Arabia": "Suudi Arabistan",
+    "Senegal": "Senegal",
+    "Singapore": "Singapur",
+    "South Africa": "Güney Afrika",
+    "South Korea": "Güney Kore",
+    "Spain": "İspanya",
+    "Sweden": "İsveç",
+    "Switzerland": "İsviçre",
+    "Taiwan": "Tayvan",
+    "Thailand": "Tayland",
+    "Turkey": "Türkiye",
+    "United Arab Emirates": "Birleşik Arap Emirlikleri",
+    "United Kingdom": "Birleşik Krallık",
+    "United States": "Amerika Birleşik Devletleri",
+    "Uruguay": "Uruguay",
+    "Vietnam": "Vietnam"
+  }
+}
