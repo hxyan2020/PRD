@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FullscreenViewer } from '../components/FullscreenViewer'
 import { LoadingState } from '../components/LoadingState'
+import { LoginPrompt } from '../components/LoginPrompt'
 import { SafeImage } from '../components/SafeImage'
 import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
+import { useRequireAuth } from '../hooks/useRequireAuth'
 import { useI18n } from '../i18n/I18nContext'
 import { displayImageUrl, imageCandidates } from '../lib/images'
 import { pickDailyPainting, pickSurprise } from '../lib/recommend'
@@ -15,11 +17,18 @@ import './TodayPage.css'
 export function TodayPage() {
   const { t } = useI18n()
   const store = usePaintingsStore()
+  const { requireAuth, promptOpen, promptReason, closePrompt, goSignIn } = useRequireAuth()
   const [current, setCurrent] = useState<Painting | null>(null)
   const [fullscreen, setFullscreen] = useState(false)
   const [saved, setSaved] = useState(false)
   const { painting: localized, loading: localizing } = useLocalizedPainting(current)
   const display = localized || current
+
+  const handleCollect = () => {
+    if (!current) return
+    if (!requireAuth('collect')) return
+    setSaved(store.toggleCollect(current.id))
+  }
 
   const daily = useMemo(() => {
     if (store.status !== 'ready' || !store.paintings.length) return null
@@ -78,7 +87,7 @@ export function TodayPage() {
             <button
               type="button"
               className={`btn ghost ${saved ? 'active' : ''}`}
-              onClick={() => setSaved(store.toggleCollect(current.id))}
+              onClick={handleCollect}
             >
               {saved ? t('collected') : t('collect')}
             </button>
@@ -106,13 +115,20 @@ export function TodayPage() {
         open={fullscreen}
         onClose={() => setFullscreen(false)}
         collected={saved}
-        onCollect={() => setSaved(store.toggleCollect(current.id))}
+        onCollect={handleCollect}
         onSurprise={() => {
           const next = pickSurprise(store.paintings, current.id)
           setCurrent(next)
           store.trackView(next.id)
           setSaved(store.collected(next.id))
         }}
+      />
+
+      <LoginPrompt
+        open={promptOpen}
+        reason={promptReason}
+        onCancel={closePrompt}
+        onSignIn={goSignIn}
       />
     </main>
   )

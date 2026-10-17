@@ -2,10 +2,12 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CountryFlags } from '../components/CountryFlags'
 import { GenreIcon } from '../components/GenreIcon'
+import { LoginPrompt } from '../components/LoginPrompt'
 import { SafeImage } from '../components/SafeImage'
 import { useAuth } from '../data/AuthProvider'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
+import { useRequireAuth } from '../hooks/useRequireAuth'
 import { useI18n } from '../i18n/I18nContext'
 import {
   discoverPaintings,
@@ -50,12 +52,20 @@ export function PreferencesPage() {
   const { t, lang } = useI18n()
   const store = usePaintingsStore()
   const { persistLibrary } = useAuth()
+  const { requireAuth, promptOpen, promptReason, closePrompt, goSignIn } = useRequireAuth()
   const [prefs, setPrefs] = useState<Preferences>(() => getPreferences())
   const [savedMsg, setSavedMsg] = useState('')
   const [busy, setBusy] = useState(false)
   const [genMsg, setGenMsg] = useState('')
   const [lastBatch, setLastBatch] = useState<Painting[]>([])
   const [progress, setProgress] = useState<DiscoverProgress | null>(null)
+
+  const guardPrefs = (): boolean => requireAuth('prefs')
+
+  const togglePref = (key: keyof Preferences, value: string) => {
+    if (!guardPrefs()) return
+    setPrefs((p) => ({ ...p, [key]: toggleIn(p[key] as string[], value) }))
+  }
 
   const collectionGenres = useMemo(() => {
     const curated = new Set(GENRE_GROUPS.flatMap((g) => g.options.map((x) => x.toLowerCase())))
@@ -103,7 +113,7 @@ export function PreferencesPage() {
                   key={g}
                   type="button"
                   className={`chip chip-genre ${prefs.genres.includes(g) ? 'on' : ''}`}
-                  onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
+                  onClick={() => togglePref('genres', g)}
                 >
                   <GenreIcon genre={g} />
                   <span>{optionLabel(lang, g)}</span>
@@ -121,7 +131,7 @@ export function PreferencesPage() {
                   key={g}
                   type="button"
                   className={`chip chip-genre ${prefs.genres.includes(g) ? 'on' : ''}`}
-                  onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
+                  onClick={() => togglePref('genres', g)}
                 >
                   <GenreIcon genre={g} />
                   <span>{optionLabel(lang, g)}</span>
@@ -144,7 +154,7 @@ export function PreferencesPage() {
                   key={c}
                   type="button"
                   className={`chip chip-country ${prefs.countries.includes(c) ? 'on' : ''}`}
-                  onClick={() => setPrefs((p) => ({ ...p, countries: toggleIn(p.countries, c) }))}
+                  onClick={() => togglePref('countries', c)}
                 >
                   <CountryFlags country={c} size="sm" />
                   <span>{optionLabel(lang, c)}</span>
@@ -164,7 +174,7 @@ export function PreferencesPage() {
               key={e}
               type="button"
               className={`chip ${prefs.eras.includes(e) ? 'on' : ''}`}
-              onClick={() => setPrefs((p) => ({ ...p, eras: toggleIn(p.eras, e) }))}
+              onClick={() => togglePref('eras', e)}
             >
               {optionLabel(lang, e)}
             </button>
@@ -180,7 +190,7 @@ export function PreferencesPage() {
               key={m}
               type="button"
               className={`chip ${prefs.moods.includes(m) ? 'on' : ''}`}
-              onClick={() => setPrefs((p) => ({ ...p, moods: toggleIn(p.moods, m) }))}
+              onClick={() => togglePref('moods', m)}
             >
               {optionLabel(lang, m)}
             </button>
@@ -193,6 +203,7 @@ export function PreferencesPage() {
           type="button"
           className="btn primary"
           onClick={() => {
+            if (!guardPrefs()) return
             savePreferences(prefs)
             void persistLibrary()
             setSavedMsg(t('prefsSaved'))
@@ -205,6 +216,7 @@ export function PreferencesPage() {
           type="button"
           className="btn ghost"
           onClick={() => {
+            if (!guardPrefs()) return
             setPrefs(DEFAULT_PREFS)
             savePreferences(DEFAULT_PREFS)
             void persistLibrary()
@@ -230,6 +242,7 @@ export function PreferencesPage() {
           className="btn primary"
           disabled={busy}
           onClick={async () => {
+            if (!guardPrefs()) return
             setBusy(true)
             setGenMsg(t('generating'))
             setLastBatch([])
@@ -370,6 +383,13 @@ export function PreferencesPage() {
           </div>
         </section>
       )}
+
+      <LoginPrompt
+        open={promptOpen}
+        reason={promptReason}
+        onCancel={closePrompt}
+        onSignIn={goSignIn}
+      />
     </main>
   )
 }
