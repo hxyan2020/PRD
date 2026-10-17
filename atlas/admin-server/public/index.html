@@ -81,9 +81,19 @@
               <h3>Locale overlays</h3>
               <p id="locale-help" class="muted">Pick a language, edit its fields, then save. Switching languages keeps each locale’s own text. Publish rebuilds content-i18n for every supported locale.</p>
               <p id="overlay-kind" class="muted"></p>
-              <label>Locale
-                <select id="locale-select"></select>
-              </label>
+              <div class="locale-field">
+                <span class="locale-label">Locale</span>
+                <div class="locale-picker" id="locale-picker">
+                  <button type="button" id="locale-trigger" class="locale-trigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span id="locale-trigger-flag" class="locale-flag" aria-hidden="true"></span>
+                    <span id="locale-trigger-text"></span>
+                    <span class="locale-caret" aria-hidden="true">▾</span>
+                  </button>
+                  <ul id="locale-menu" class="locale-menu hidden" role="listbox"></ul>
+                </div>
+                <!-- Hidden select kept for form state / accessibility sync -->
+                <select id="locale-select" class="locale-select-sr" tabindex="-1" aria-hidden="true"></select>
+              </div>
               <label>Localized name / title<input id="loc-name" /></label>
               <label>Localized description<textarea id="loc-description" rows="4"></textarea></label>
               <label>Localized how-to (one per line)<textarea id="loc-howto" rows="5"></textarea></label>
@@ -108,6 +118,6 @@
         </div>
       </div>
     </div>
-    <script src="/admin.js?v=3" type="module"></script>
+    <script src="/admin.js?v=4" type="module"></script>
   </body>
 </html>

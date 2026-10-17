@@ -8,6 +8,8 @@ const state = {
   locales: ["en"],
   /** @type {Record<string, object>} */
   localeOverlays: {},
+  /** @type {Record<string, object>} */
+  localeByCode: {},
   /** Locale currently shown in the overlay fields (not merely the <select>). */
   activeLocale: "",
   overlayKind: "curated",
@@ -86,22 +88,93 @@ $("btn-logout").addEventListener("click", async () => {
   showLogin();
 });
 
+function flagMarkup(meta) {
+  if (meta?.iso) {
+    return `<img class="locale-flag-img" src="/flags/${escapeHtml(meta.iso)}.svg" width="22" height="16" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" />`;
+  }
+  if (meta?.emblem) {
+    return `<span class="locale-emblem">${escapeHtml(meta.emblem)}</span>`;
+  }
+  return `<span class="locale-emblem">🏳️</span>`;
+}
+
+function localeLabel(meta, code) {
+  return `${meta?.nativeLabel || code} (${code})`;
+}
+
+function setLocaleTrigger(code) {
+  const meta = state.localeByCode[code] || { nativeLabel: code };
+  $("locale-trigger-flag").innerHTML = flagMarkup(meta);
+  $("locale-trigger-text").textContent = localeLabel(meta, code);
+  $("locale-select").value = code;
+  for (const btn of $("locale-menu").querySelectorAll(".locale-option")) {
+    btn.classList.toggle("active", btn.dataset.code === code);
+  }
+}
+
+function closeLocaleMenu() {
+  $("locale-menu").classList.add("hidden");
+  $("locale-trigger").setAttribute("aria-expanded", "false");
+}
+
+function openLocaleMenu() {
+  $("locale-menu").classList.remove("hidden");
+  $("locale-trigger").setAttribute("aria-expanded", "true");
+}
+
 async function loadLocales() {
   const data = await api("/api/locales");
   state.locales = data.locales || ["en"];
   const catalog = data.catalog || [];
-  const byCode = Object.fromEntries(catalog.map((l) => [l.code, l]));
+  state.localeByCode = Object.fromEntries(catalog.map((l) => [l.code, l]));
+  const nonEn = data.overlayLocales || state.locales.filter((l) => l !== "en");
   const sel = $("locale-select");
-  const nonEn = (data.overlayLocales || state.locales.filter((l) => l !== "en"));
   sel.innerHTML = nonEn
+    .map((code) => `<option value="${escapeHtml(code)}">${escapeHtml(code)}</option>`)
+    .join("");
+  const menu = $("locale-menu");
+  menu.innerHTML = nonEn
     .map((code) => {
-      const meta = byCode[code] || { flag: "🏳️", nativeLabel: code, englishLabel: code };
-      const label = `${meta.flag} ${meta.nativeLabel} (${code})`;
-      return `<option value="${escapeHtml(code)}">${label}</option>`;
+      const meta = state.localeByCode[code] || { nativeLabel: code };
+      return `<li role="option">
+        <button type="button" class="locale-option" data-code="${escapeHtml(code)}">
+          <span class="locale-flag">${flagMarkup(meta)}</span>
+          <span class="locale-option-text">${escapeHtml(localeLabel(meta, code))}</span>
+        </button>
+      </li>`;
     })
     .join("");
+  menu.querySelectorAll(".locale-option").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const next = btn.dataset.code;
+      if (!next || next === state.activeLocale) {
+        closeLocaleMenu();
+        return;
+      }
+      // Stash into the locale we were editing, then switch.
+      stashLocaleOverlay(state.activeLocale);
+      state.activeLocale = next;
+      setLocaleTrigger(next);
+      fillLocaleFields();
+      closeLocaleMenu();
+    });
+  });
   state.activeLocale = nonEn[0] || "";
+  if (state.activeLocale) setLocaleTrigger(state.activeLocale);
 }
+
+$("locale-trigger").addEventListener("click", (e) => {
+  e.preventDefault();
+  const open = !$("locale-menu").classList.contains("hidden");
+  if (open) closeLocaleMenu();
+  else openLocaleMenu();
+});
+
+document.addEventListener("click", (e) => {
+  const picker = $("locale-picker");
+  if (!picker || picker.contains(e.target)) return;
+  closeLocaleMenu();
+});
 
 async function loadGames() {
   const data = await api(
@@ -204,10 +277,11 @@ function fillEditor(data) {
       "Editing curated locale pack for this catalog entry.";
   }
 
-  // Keep select + activeLocale aligned; default to first non-en locale.
-  const sel = $("locale-select");
-  if (!sel.value && sel.options.length) sel.selectedIndex = 0;
-  state.activeLocale = sel.value || "";
+  // Keep picker + activeLocale aligned; default to first non-en locale.
+  if (!state.activeLocale && $("locale-select").options.length) {
+    state.activeLocale = $("locale-select").options[0].value;
+  }
+  if (state.activeLocale) setLocaleTrigger(state.activeLocale);
   fillLocaleFields();
 }
 
@@ -259,13 +333,7 @@ function stashLocaleOverlay(locale) {
   };
 }
 
-$("locale-select").addEventListener("change", (e) => {
-  const next = e.target.value;
-  // Critical: stash into the locale we were editing, not the newly selected one.
-  stashLocaleOverlay(state.activeLocale);
-  state.activeLocale = next;
-  fillLocaleFields();
-});
+// Locale changes are handled by the custom picker buttons in loadLocales().
 
 $("editor-form").addEventListener("submit", async (e) => {
   e.preventDefault();

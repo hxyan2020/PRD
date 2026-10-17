@@ -67,13 +67,86 @@ input, textarea, select {
   padding: 0.7rem 0.8rem;
   font: inherit;
 }
-#locale-select {
-  font-size: 1rem;
-  line-height: 1.4;
+.locale-field { display: grid; gap: 0.35rem; }
+.locale-label { font-size: 0.9rem; color: var(--muted); }
+.locale-picker { position: relative; }
+.locale-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #0f0b0f;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
 }
-#locale-select option {
-  font-size: 1rem;
-  padding: 0.35rem 0.5rem;
+.locale-trigger:hover { border-color: var(--accent); }
+.locale-caret { margin-left: auto; color: var(--muted); }
+.locale-flag, .locale-flag-img, .locale-emblem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 16px;
+  flex: 0 0 22px;
+}
+.locale-flag-img {
+  width: 22px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: #222;
+}
+.locale-emblem { font-size: 1rem; line-height: 1; }
+.locale-menu {
+  position: absolute;
+  z-index: 12;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow: auto;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: #120d12;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+}
+.locale-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.locale-option:hover, .locale-option.active {
+  background: #1b1016;
+}
+.locale-option-text { flex: 1; }
+.locale-select-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 textarea { resize: vertical; line-height: 1.4; }
 

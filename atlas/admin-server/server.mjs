@@ -24,6 +24,7 @@ import { publishCatalog } from "./publish.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, "public");
+const flagsDir = join(__dirname, "..", "public", "flags");
 const PORT = Number(process.env.PORT || 8787);
 const HOST = process.env.HOST || "0.0.0.0";
 
@@ -190,6 +191,23 @@ const server = createServer(async (req, res) => {
 
     if (path.startsWith("/api/")) {
       return sendJson(res, 404, { error: "Not found" });
+    }
+
+    // Self-hosted SVG flags (same assets as the public site).
+    const flagMatch = path.match(/^\/flags\/([a-z]{2})\.svg$/);
+    if (flagMatch && method === "GET") {
+      const filePath = join(flagsDir, `${flagMatch[1]}.svg`);
+      if (!filePath.startsWith(flagsDir) || !existsSync(filePath)) {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Not found");
+        return;
+      }
+      res.writeHead(200, {
+        "Content-Type": "image/svg+xml",
+        "Cache-Control": "public, max-age=86400",
+      });
+      res.end(readFileSync(filePath));
+      return;
     }
 
     return serveStatic(req, res, path);
