@@ -61,7 +61,7 @@ export function FundingRoundPicker({ value, rounds, onChange, className }: Props
           id={listId}
           role="listbox"
           aria-label={labelAll}
-          className="absolute left-0 right-0 z-40 mt-1.5 max-h-72 overflow-auto rounded-xl border border-black/12 bg-paper py-1 shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
+          className="absolute left-0 z-40 mt-1.5 max-h-72 min-w-full w-max max-w-[min(100vw-2rem,28rem)] overflow-auto rounded-xl border border-black/12 bg-paper py-1 shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
         >
           {options.map((opt) => {
             const active = opt.value === value;
@@ -71,7 +71,7 @@ export function FundingRoundPicker({ value, rounds, onChange, className }: Props
                   type="button"
                   role="option"
                   aria-selected={active}
-                  className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm transition ${
+                  className={`flex w-full items-center gap-2.5 whitespace-nowrap px-3 py-2.5 text-left text-sm transition ${
                     active
                       ? "bg-celadon/20 text-foam"
                       : "text-foam hover:bg-black/[0.04]"
@@ -85,7 +85,7 @@ export function FundingRoundPicker({ value, rounds, onChange, className }: Props
                     stage={opt.value}
                     className={active ? "text-celadon" : "text-mist"}
                   />
-                  <span className="truncate">{opt.label}</span>
+                  <span>{opt.label}</span>
                 </button>
               </li>
             );
