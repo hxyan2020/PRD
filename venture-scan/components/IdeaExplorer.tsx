@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { Flag } from "@/components/Flag";
+import { IndustryIcon } from "@/components/IndustryIcon";
+import { IndustryPicker } from "@/components/IndustryPicker";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
@@ -159,19 +161,11 @@ export function IdeaExplorer({
           onChange={(e) => setQ(e.target.value)}
           aria-label={t("ledger.search")}
         />
-        <select
-          className="field"
+        <IndustryPicker
           value={industry}
-          onChange={(e) => setIndustry(e.target.value)}
-          aria-label={t("ledger.allIndustries")}
-        >
-          <option value="">{t("ledger.allIndustries")}</option>
-          {meta.industries.map((v) => (
-            <option key={v} value={v}>
-              {localizeIdeaFieldLabel("industry", v, locale)}
-            </option>
-          ))}
-        </select>
+          industries={meta.industries}
+          onChange={setIndustry}
+        />
         <select
           className="field"
           value={country}
@@ -262,7 +256,8 @@ export function IdeaExplorer({
                         {idea.teamCity ? ` · ${idea.teamCity}` : ""}
                       </span>
                       <span>{t("common.people", { count: idea.teamSize })}</span>
-                      <span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <IndustryIcon industry={idea.industry} className="text-celadon" />
                         {view.industry} / {view.sector}
                       </span>
                       {idea.fundraisingSecured ? (
