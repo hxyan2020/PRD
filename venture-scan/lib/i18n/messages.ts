@@ -209,6 +209,14 @@ const en = {
     "I can help unpack {name}. Try asking about funding, the team, business model, industry, go-forward play, website/socials, or where this data came from.",
   "ideaChat.na": "n/a",
 
+  "ideaAlbum.kicker": "Photo album",
+  "ideaAlbum.title": "From the company & coverage",
+  "ideaAlbum.body":
+    "Photos pulled from the operator’s official website and reliable media covering this business — one to nine images, relevance-checked.",
+  "ideaAlbum.count": "{count} photos",
+  "ideaAlbum.openSource": "Open source →",
+  "ideaAlbum.close": "Close",
+
   "ideaMedia.kicker": "Related coverage",
   "ideaMedia.title": "Articles from data sources",
   "ideaMedia.body":

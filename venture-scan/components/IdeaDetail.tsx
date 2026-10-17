@@ -4,9 +4,11 @@ import Link from "next/link";
 import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
 import { IdeaChatbot } from "@/components/IdeaChatbot";
+import { IdeaPhotoAlbum } from "@/components/IdeaPhotoAlbum";
 import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, socialLabel, strategyMessageKey } from "@/lib/format";
+import { photosForIdea } from "@/lib/idea-photos";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
 import type { StartupIdea } from "@/lib/types";
@@ -23,6 +25,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 export function IdeaDetail({ idea }: { idea: StartupIdea }) {
   const { t, locale } = useI18n();
   const view = localizeIdea(idea, locale);
+  const photos = photosForIdea(idea.slug, 9);
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -37,6 +40,8 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
         <h1 className="mt-3 font-display text-4xl text-foam sm:text-5xl">{view.name}</h1>
         <p className="mt-4 text-base leading-relaxed text-mist">{view.description}</p>
       </header>
+
+      <IdeaPhotoAlbum name={view.name} photos={photos} />
 
       <dl className="mt-10 animate-rise [animation-delay:100ms]">
         <Row label={t("dossier.name")}>{view.name}</Row>
