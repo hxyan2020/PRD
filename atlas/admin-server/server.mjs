@@ -17,6 +17,7 @@ import {
   getGame,
   saveGame,
   supportedLocales,
+  localeCatalog,
   extractYoutubeId,
 } from "./store.mjs";
 import { publishCatalog } from "./publish.mjs";
@@ -132,7 +133,12 @@ const server = createServer(async (req, res) => {
 
     if (path === "/api/locales" && method === "GET") {
       if (!requireAuth(req, res)) return;
-      return sendJson(res, 200, { locales: ["en", ...supportedLocales()] });
+      const catalog = localeCatalog();
+      return sendJson(res, 200, {
+        locales: catalog.map((l) => l.code),
+        catalog,
+        overlayLocales: supportedLocales(),
+      });
     }
 
     if (path === "/api/games" && method === "GET") {

@@ -89,9 +89,17 @@ $("btn-logout").addEventListener("click", async () => {
 async function loadLocales() {
   const data = await api("/api/locales");
   state.locales = data.locales || ["en"];
+  const catalog = data.catalog || [];
+  const byCode = Object.fromEntries(catalog.map((l) => [l.code, l]));
   const sel = $("locale-select");
-  const nonEn = state.locales.filter((l) => l !== "en");
-  sel.innerHTML = nonEn.map((l) => `<option value="${l}">${l}</option>`).join("");
+  const nonEn = (data.overlayLocales || state.locales.filter((l) => l !== "en"));
+  sel.innerHTML = nonEn
+    .map((code) => {
+      const meta = byCode[code] || { flag: "🏳️", nativeLabel: code, englishLabel: code };
+      const label = `${meta.flag} ${meta.nativeLabel} (${code})`;
+      return `<option value="${escapeHtml(code)}">${label}</option>`;
+    })
+    .join("");
   state.activeLocale = nonEn[0] || "";
 }
 

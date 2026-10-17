@@ -375,40 +375,48 @@ export function extractYoutubeId(input) {
   return m2 ? m2[1] : "";
 }
 
+/** Locale codes with national / civilizational flags (aligned with site i18n). */
+export const LOCALE_META = [
+  { code: "en", flag: "🇬🇧", nativeLabel: "English", englishLabel: "English" },
+  { code: "zh-Hans", flag: "🇨🇳", nativeLabel: "简体中文", englishLabel: "Chinese (Simplified)" },
+  { code: "zh-Hant", flag: "🇹🇼", nativeLabel: "繁體中文", englishLabel: "Chinese (Traditional)" },
+  { code: "es", flag: "🇪🇸", nativeLabel: "Español", englishLabel: "Spanish" },
+  { code: "hi", flag: "🇮🇳", nativeLabel: "हिन्दी", englishLabel: "Hindi" },
+  { code: "ar", flag: "🇸🇦", nativeLabel: "العربية", englishLabel: "Arabic" },
+  { code: "fr", flag: "🇫🇷", nativeLabel: "Français", englishLabel: "French" },
+  { code: "pt", flag: "🇧🇷", nativeLabel: "Português", englishLabel: "Portuguese" },
+  { code: "ru", flag: "🇷🇺", nativeLabel: "Русский", englishLabel: "Russian" },
+  { code: "ja", flag: "🇯🇵", nativeLabel: "日本語", englishLabel: "Japanese" },
+  { code: "de", flag: "🇩🇪", nativeLabel: "Deutsch", englishLabel: "German" },
+  { code: "ko", flag: "🇰🇷", nativeLabel: "한국어", englishLabel: "Korean" },
+  { code: "it", flag: "🇮🇹", nativeLabel: "Italiano", englishLabel: "Italian" },
+  { code: "tr", flag: "🇹🇷", nativeLabel: "Türkçe", englishLabel: "Turkish" },
+  { code: "vi", flag: "🇻🇳", nativeLabel: "Tiếng Việt", englishLabel: "Vietnamese" },
+  { code: "th", flag: "🇹🇭", nativeLabel: "ไทย", englishLabel: "Thai" },
+  { code: "id", flag: "🇮🇩", nativeLabel: "Bahasa Indonesia", englishLabel: "Indonesian" },
+  { code: "nl", flag: "🇳🇱", nativeLabel: "Nederlands", englishLabel: "Dutch" },
+  { code: "pl", flag: "🇵🇱", nativeLabel: "Polski", englishLabel: "Polish" },
+  { code: "sv", flag: "🇸🇪", nativeLabel: "Svenska", englishLabel: "Swedish" },
+  { code: "el", flag: "🇬🇷", nativeLabel: "Ελληνικά", englishLabel: "Greek" },
+  { code: "he", flag: "🇮🇱", nativeLabel: "עברית", englishLabel: "Hebrew" },
+  { code: "uk", flag: "🇺🇦", nativeLabel: "Українська", englishLabel: "Ukrainian" },
+  { code: "fa", flag: "🇮🇷", nativeLabel: "فارسی", englishLabel: "Persian" },
+  { code: "bn", flag: "🇧🇩", nativeLabel: "বাংলা", englishLabel: "Bengali" },
+  { code: "sw", flag: "🇰🇪", nativeLabel: "Kiswahili", englishLabel: "Swahili" },
+  { code: "la", flag: "🦅", nativeLabel: "Latina", englishLabel: "Latin (Ancient Rome)" },
+  { code: "grc", flag: "🏛️", nativeLabel: "Ἀρχαία Ἑλληνική", englishLabel: "Ancient Greek" },
+  { code: "sa", flag: "🕉️", nativeLabel: "संस्कृतम्", englishLabel: "Sanskrit" },
+  { code: "egy", flag: "🇪🇬", nativeLabel: "r n kmt (Egyptian)", englishLabel: "Ancient Egyptian" },
+  { code: "akk", flag: "🇮🇶", nativeLabel: "Akkadû", englishLabel: "Akkadian (Mesopotamia)" },
+  { code: "non", flag: "🇳🇴", nativeLabel: "Norrœnt", englishLabel: "Old Norse" },
+];
+
 export function supportedLocales() {
-  return [
-    "zh-Hans",
-    "zh-Hant",
-    "es",
-    "hi",
-    "ar",
-    "fr",
-    "pt",
-    "ru",
-    "ja",
-    "de",
-    "ko",
-    "it",
-    "tr",
-    "vi",
-    "th",
-    "id",
-    "nl",
-    "pl",
-    "sv",
-    "el",
-    "he",
-    "uk",
-    "fa",
-    "bn",
-    "sw",
-    "la",
-    "grc",
-    "sa",
-    "egy",
-    "akk",
-    "non",
-  ];
+  return LOCALE_META.filter((l) => l.code !== "en").map((l) => l.code);
+}
+
+export function localeCatalog() {
+  return LOCALE_META;
 }
 
 export { PATHS, atlasRoot };

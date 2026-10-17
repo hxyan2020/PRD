@@ -67,6 +67,14 @@ input, textarea, select {
   padding: 0.7rem 0.8rem;
   font: inherit;
 }
+#locale-select {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+#locale-select option {
+  font-size: 1rem;
+  padding: 0.35rem 0.5rem;
+}
 textarea { resize: vertical; line-height: 1.4; }
 
 .topbar {
