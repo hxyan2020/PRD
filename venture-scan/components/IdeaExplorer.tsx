@@ -12,7 +12,7 @@ import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
-import { localizeIdea, localizeIdeaFieldLabel } from "@/lib/i18n/localize-idea";
+import { localizeIdea } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import { rankByFundingSecured, rankByMatchScore } from "@/lib/rank-ideas";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
