@@ -79,11 +79,12 @@
               </div>
 
               <h3>Locale overlays</h3>
-              <p class="muted">Edit translated curated text for a language, then save. Publish rebuilds content-i18n for every supported locale.</p>
+              <p id="locale-help" class="muted">Pick a language, edit its fields, then save. Switching languages keeps each locale’s own text. Publish rebuilds content-i18n for every supported locale.</p>
+              <p id="overlay-kind" class="muted"></p>
               <label>Locale
                 <select id="locale-select"></select>
               </label>
-              <label>Localized name<input id="loc-name" /></label>
+              <label>Localized name / title<input id="loc-name" /></label>
               <label>Localized description<textarea id="loc-description" rows="4"></textarea></label>
               <label>Localized how-to (one per line)<textarea id="loc-howto" rows="5"></textarea></label>
               <label>Localized requirements (one per line)<textarea id="loc-req" rows="3"></textarea></label>
@@ -107,6 +108,6 @@
         </div>
       </div>
     </div>
-    <script src="/admin.js" type="module"></script>
+    <script src="/admin.js?v=2" type="module"></script>
   </body>
 </html>

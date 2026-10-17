@@ -6,7 +6,12 @@ const state = {
   selectedId: null,
   detail: null,
   locales: ["en"],
+  /** @type {Record<string, object>} */
   localeOverlays: {},
+  /** Locale currently shown in the overlay fields (not merely the <select>). */
+  activeLocale: "",
+  overlayKind: "curated",
+  archetypeKey: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -85,10 +90,9 @@ async function loadLocales() {
   const data = await api("/api/locales");
   state.locales = data.locales || ["en"];
   const sel = $("locale-select");
-  sel.innerHTML = state.locales
-    .filter((l) => l !== "en")
-    .map((l) => `<option value="${l}">${l}</option>`)
-    .join("");
+  const nonEn = state.locales.filter((l) => l !== "en");
+  sel.innerHTML = nonEn.map((l) => `<option value="${l}">${l}</option>`).join("");
+  state.activeLocale = nonEn[0] || "";
 }
 
 async function loadGames() {
@@ -151,7 +155,10 @@ async function openGame(id) {
   state.selectedId = id;
   const data = await api(`/api/games/${encodeURIComponent(id)}`);
   state.detail = data;
-  state.localeOverlays = { ...(data.localeOverlays || {}) };
+  // Fresh copy from server — never reuse a previously corrupted in-memory pack.
+  state.localeOverlays = structuredClone(data.localeOverlays || {});
+  state.overlayKind = data.overlayKind || "curated";
+  state.archetypeKey = data.archetypeKey || null;
   $("empty-editor").classList.add("hidden");
   $("editor-form").classList.remove("hidden");
   fillEditor(data);
@@ -181,6 +188,18 @@ function fillEditor(data) {
   form.youtubeChannel.value = t.channelTitle || "";
   form.clearTutorial.checked = false;
   renderPreviews(g.images || []);
+
+  if (state.overlayKind === "archetype") {
+    $("overlay-kind").textContent = `Editing archetype pack “${state.archetypeKey}” — changes apply to every regional variant of this idea.`;
+  } else {
+    $("overlay-kind").textContent =
+      "Editing curated locale pack for this catalog entry.";
+  }
+
+  // Keep select + activeLocale aligned; default to first non-en locale.
+  const sel = $("locale-select");
+  if (!sel.value && sel.options.length) sel.selectedIndex = 0;
+  state.activeLocale = sel.value || "";
   fillLocaleFields();
 }
 
@@ -197,8 +216,18 @@ $("editor-form").images.addEventListener("input", (e) => {
   renderPreviews(lines(e.target.value));
 });
 
+function readLocaleFieldsFromForm() {
+  return {
+    name: $("loc-name").value.trim(),
+    description: $("loc-description").value.trim(),
+    howToPlay: lines($("loc-howto").value),
+    requirements: lines($("loc-req").value),
+    idealParticipants: $("loc-participants").value.trim(),
+  };
+}
+
 function fillLocaleFields() {
-  const locale = $("locale-select").value;
+  const locale = state.activeLocale || $("locale-select").value;
   const o = state.localeOverlays[locale] || {};
   $("loc-name").value = o.name || "";
   $("loc-description").value = o.description || "";
@@ -207,41 +236,39 @@ function fillLocaleFields() {
   $("loc-participants").value = o.idealParticipants || "";
 }
 
-$("locale-select").addEventListener("change", () => {
-  // stash current locale edits before switching
-  stashLocaleOverlay();
-  fillLocaleFields();
-});
-
-function stashLocaleOverlay() {
-  const locale = $("locale-select").value;
+/** Persist form fields into a specific locale key (must be the locale being left). */
+function stashLocaleOverlay(locale) {
   if (!locale) return;
-  const name = $("loc-name").value.trim();
-  const description = $("loc-description").value.trim();
-  const howToPlay = lines($("loc-howto").value);
-  const requirements = lines($("loc-req").value);
-  const idealParticipants = $("loc-participants").value.trim();
-  if (!name && !description && !howToPlay.length && !requirements.length && !idealParticipants) {
-    // leave existing unless user cleared intentionally — keep prior
-    return;
-  }
+  const fields = readLocaleFieldsFromForm();
+  const prev = state.localeOverlays[locale] || {};
   state.localeOverlays[locale] = {
-    name: name || undefined,
-    description,
-    howToPlay,
-    requirements,
-    idealParticipants,
+    ...prev,
+    ...fields,
+    // Preserve win/rules arrays from server if the form doesn't edit them yet.
+    howToWin: prev.howToWin || [],
+    rulesNotToBreak: prev.rulesNotToBreak || [],
+    variationNotes: prev.variationNotes || [],
   };
 }
+
+$("locale-select").addEventListener("change", (e) => {
+  const next = e.target.value;
+  // Critical: stash into the locale we were editing, not the newly selected one.
+  stashLocaleOverlay(state.activeLocale);
+  state.activeLocale = next;
+  fillLocaleFields();
+});
 
 $("editor-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!state.selectedId) return;
-  stashLocaleOverlay();
+  stashLocaleOverlay(state.activeLocale);
   const form = e.target;
   $("save-status").textContent = "Saving…";
   const images = lines(form.images.value);
   const patch = {
+    overlayKind: state.overlayKind,
+    archetypeKey: state.archetypeKey,
     game: {
       name: form.name.value.trim(),
       slug: form.slug.value.trim(),
@@ -259,13 +286,16 @@ $("editor-form").addEventListener("submit", async (e) => {
       requirements: lines(form.requirements.value),
       images,
     },
-    curatedEn: {
-      name: form.name.value.trim(),
-      description: form.description.value.trim(),
-      howToPlay: lines(form.howToPlay.value),
-      requirements: lines(form.requirements.value),
-      idealParticipants: form.idealParticipants.value.trim(),
-    },
+    curatedEn:
+      state.overlayKind === "curated"
+        ? {
+            name: form.name.value.trim(),
+            description: form.description.value.trim(),
+            howToPlay: lines(form.howToPlay.value),
+            requirements: lines(form.requirements.value),
+            idealParticipants: form.idealParticipants.value.trim(),
+          }
+        : undefined,
     localeOverlays: state.localeOverlays,
   };
   if (form.clearTutorial.checked) {
@@ -283,7 +313,9 @@ $("editor-form").addEventListener("submit", async (e) => {
       body: JSON.stringify(patch),
     });
     state.detail = saved;
-    state.localeOverlays = { ...(saved.localeOverlays || {}) };
+    state.localeOverlays = structuredClone(saved.localeOverlays || {});
+    state.overlayKind = saved.overlayKind || state.overlayKind;
+    state.archetypeKey = saved.archetypeKey || state.archetypeKey;
     fillEditor(saved);
     $("save-status").textContent = "Saved";
     toast("Game saved");
@@ -295,7 +327,8 @@ $("editor-form").addEventListener("submit", async (e) => {
 });
 
 $("btn-publish").addEventListener("click", async () => {
-  if (!confirm("Rebuild all locale packs and deploy Ludus Atlas to GitHub Pages?")) return;
+  if (!confirm("Rebuild all locale packs and deploy Ludus Atlas to GitHub Pages?"))
+    return;
   $("btn-publish").disabled = true;
   $("publish-modal").classList.remove("hidden");
   $("publish-log").textContent = "Publishing…";

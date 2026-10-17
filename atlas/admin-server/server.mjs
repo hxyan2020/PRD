@@ -85,7 +85,10 @@ function serveStatic(req, res, urlPath) {
   const ext = extname(filePath);
   res.writeHead(200, {
     "Content-Type": MIME[ext] || "application/octet-stream",
-    "Cache-Control": ext === ".html" ? "no-store" : "public, max-age=300",
+    "Cache-Control":
+      ext === ".html" || ext === ".js" || ext === ".css"
+        ? "no-store"
+        : "public, max-age=300",
   });
   res.end(readFileSync(filePath));
 }

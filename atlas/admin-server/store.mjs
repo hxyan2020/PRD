@@ -20,6 +20,8 @@ const PATHS = {
   contentI18n: join(publicData, "content-i18n.json"),
   curatedEn: join(i18nData, "curated-en.json"),
   curatedI18n: join(i18nData, "curated-i18n.json"),
+  archetypesEn: join(i18nData, "archetypes-en.json"),
+  archetypesI18n: join(i18nData, "archetypes-i18n.json"),
 };
 
 function readJson(path, fallback) {
@@ -46,6 +48,85 @@ export function loadCuratedEn() {
 
 export function loadCuratedI18n() {
   return readJson(PATHS.curatedI18n, {});
+}
+
+export function loadArchetypesEn() {
+  return readJson(PATHS.archetypesEn, {});
+}
+
+export function loadArchetypesI18n() {
+  return readJson(PATHS.archetypesI18n, {});
+}
+
+/** Normalize either curated or archetype packs into editor overlay shape. */
+function overlayFromCurated(entry) {
+  if (!entry) return null;
+  return {
+    name: entry.name || "",
+    description: entry.description || "",
+    howToPlay: entry.howToPlay || [],
+    requirements: entry.requirements || [],
+    idealParticipants: entry.idealParticipants || "",
+    howToWin: entry.howToWin || [],
+    rulesNotToBreak: entry.rulesNotToBreak || [],
+    variationNotes: entry.variationNotes || [],
+  };
+}
+
+function overlayFromArchetype(entry) {
+  if (!entry) return null;
+  return {
+    name: entry.title || "",
+    description: entry.descTemplate || "",
+    howToPlay: entry.steps || [],
+    requirements: entry.req || [],
+    idealParticipants: entry.participants || "",
+    howToWin: entry.howToWin || [],
+    rulesNotToBreak: entry.rulesNotToBreak || [],
+    variationNotes: [],
+  };
+}
+
+function curatedFromOverlay(overlay, fallback = {}) {
+  return {
+    name: overlay.name || fallback.name || undefined,
+    description: overlay.description || fallback.description || "",
+    howToPlay: overlay.howToPlay?.length
+      ? overlay.howToPlay
+      : fallback.howToPlay || [],
+    requirements: overlay.requirements?.length
+      ? overlay.requirements
+      : fallback.requirements || [],
+    idealParticipants:
+      overlay.idealParticipants || fallback.idealParticipants || "",
+    howToWin: overlay.howToWin?.length
+      ? overlay.howToWin
+      : fallback.howToWin || [],
+    rulesNotToBreak: overlay.rulesNotToBreak?.length
+      ? overlay.rulesNotToBreak
+      : fallback.rulesNotToBreak || [],
+    variationNotes: overlay.variationNotes?.length
+      ? overlay.variationNotes
+      : fallback.variationNotes || [],
+  };
+}
+
+function archetypeFromOverlay(overlay, fallback = {}) {
+  return {
+    title: overlay.name || fallback.title || "",
+    descTemplate: overlay.description || fallback.descTemplate || "",
+    steps: overlay.howToPlay?.length ? overlay.howToPlay : fallback.steps || [],
+    req: overlay.requirements?.length
+      ? overlay.requirements
+      : fallback.req || [],
+    participants: overlay.idealParticipants || fallback.participants || "",
+    howToWin: overlay.howToWin?.length
+      ? overlay.howToWin
+      : fallback.howToWin || [],
+    rulesNotToBreak: overlay.rulesNotToBreak?.length
+      ? overlay.rulesNotToBreak
+      : fallback.rulesNotToBreak || [],
+  };
 }
 
 export function listGames({ q = "", page = 1, limit = 40 } = {}) {
@@ -100,15 +181,42 @@ export function getGame(id) {
   const tutorials = loadTutorials();
   const curatedEn = loadCuratedEn();
   const curatedI18n = loadCuratedI18n();
+  const archetypesEn = loadArchetypesEn();
+  const archetypesI18n = loadArchetypesI18n();
+
+  const hasCurated = Boolean(curatedEn[game.id] || curatedI18n.en?.[game.id]);
+  const archetypeKey = game.archetypeKey || "";
+  const overlayKind =
+    hasCurated || !archetypeKey ? "curated" : "archetype";
+
   /** @type {Record<string, unknown>} */
   const localeOverlays = {};
-  for (const [locale, pack] of Object.entries(curatedI18n)) {
-    if (pack && pack[game.id]) localeOverlays[locale] = pack[game.id];
+  if (overlayKind === "curated") {
+    for (const [locale, pack] of Object.entries(curatedI18n)) {
+      if (pack && pack[game.id]) {
+        localeOverlays[locale] = overlayFromCurated(pack[game.id]);
+      }
+    }
+  } else if (archetypeKey) {
+    for (const [locale, pack] of Object.entries(archetypesI18n)) {
+      if (pack && pack[archetypeKey]) {
+        localeOverlays[locale] = overlayFromArchetype(pack[archetypeKey]);
+      }
+    }
   }
+
   return {
     game,
     tutorial: tutorials[game.id] || null,
-    curatedEn: curatedEn[game.id] || null,
+    curatedEn: curatedEn[game.id]
+      ? overlayFromCurated(curatedEn[game.id])
+      : null,
+    archetypeEn:
+      archetypeKey && archetypesEn[archetypeKey]
+        ? overlayFromArchetype(archetypesEn[archetypeKey])
+        : null,
+    overlayKind,
+    archetypeKey: archetypeKey || null,
     localeOverlays,
   };
 }
@@ -185,35 +293,65 @@ export function saveGame(id, patch) {
   }
   writeFileSync(PATHS.tutorials, JSON.stringify(tutorials));
 
-  if (patch.curatedEn !== undefined) {
+  const overlayKind =
+    patch.overlayKind ||
+    (prev.archetypeKey && !loadCuratedEn()[prev.id] ? "archetype" : "curated");
+  const archetypeKey = patch.archetypeKey || prev.archetypeKey || "";
+
+  if (overlayKind === "curated" && patch.curatedEn !== undefined) {
     const curatedEn = loadCuratedEn();
     if (patch.curatedEn === null) {
       delete curatedEn[prev.id];
     } else if (patch.curatedEn) {
-      curatedEn[prev.id] = {
-        name: patch.curatedEn.name || nextGame.name,
-        description: patch.curatedEn.description || nextGame.description,
-        howToPlay: patch.curatedEn.howToPlay || nextGame.howToPlay,
-        requirements: patch.curatedEn.requirements || nextGame.requirements,
-        idealParticipants:
-          patch.curatedEn.idealParticipants || nextGame.idealParticipants,
-        variationNotes: patch.curatedEn.variationNotes || [],
-      };
+      const prevCur = curatedEn[prev.id] || {};
+      curatedEn[prev.id] = curatedFromOverlay(
+        {
+          name: patch.curatedEn.name || nextGame.name,
+          description: patch.curatedEn.description || nextGame.description,
+          howToPlay: patch.curatedEn.howToPlay || nextGame.howToPlay,
+          requirements: patch.curatedEn.requirements || nextGame.requirements,
+          idealParticipants:
+            patch.curatedEn.idealParticipants || nextGame.idealParticipants,
+          howToWin: patch.curatedEn.howToWin,
+          rulesNotToBreak: patch.curatedEn.rulesNotToBreak,
+          variationNotes: patch.curatedEn.variationNotes,
+        },
+        prevCur,
+      );
     }
     writeJson(PATHS.curatedEn, curatedEn);
   }
 
   if (patch.localeOverlays) {
-    const curatedI18n = loadCuratedI18n();
-    for (const [locale, overlay] of Object.entries(patch.localeOverlays)) {
-      if (!curatedI18n[locale]) curatedI18n[locale] = {};
-      if (overlay === null) {
-        delete curatedI18n[locale][prev.id];
-      } else if (overlay) {
-        curatedI18n[locale][prev.id] = overlay;
+    if (overlayKind === "archetype" && archetypeKey) {
+      const archetypesI18n = loadArchetypesI18n();
+      for (const [locale, overlay] of Object.entries(patch.localeOverlays)) {
+        if (!archetypesI18n[locale]) archetypesI18n[locale] = {};
+        if (overlay === null) {
+          delete archetypesI18n[locale][archetypeKey];
+        } else if (overlay) {
+          archetypesI18n[locale][archetypeKey] = archetypeFromOverlay(
+            overlay,
+            archetypesI18n[locale][archetypeKey] || {},
+          );
+        }
       }
+      writeJson(PATHS.archetypesI18n, archetypesI18n);
+    } else {
+      const curatedI18n = loadCuratedI18n();
+      for (const [locale, overlay] of Object.entries(patch.localeOverlays)) {
+        if (!curatedI18n[locale]) curatedI18n[locale] = {};
+        if (overlay === null) {
+          delete curatedI18n[locale][prev.id];
+        } else if (overlay) {
+          curatedI18n[locale][prev.id] = curatedFromOverlay(
+            overlay,
+            curatedI18n[locale][prev.id] || {},
+          );
+        }
+      }
+      writeJson(PATHS.curatedI18n, curatedI18n);
     }
-    writeJson(PATHS.curatedI18n, curatedI18n);
   }
 
   return getGame(prev.id);

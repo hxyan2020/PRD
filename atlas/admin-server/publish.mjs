@@ -69,6 +69,8 @@ export function publishCatalog(opts = {}) {
       "atlas/public/data/content-i18n.json",
       "atlas/scripts/content-i18n-data/curated-en.json",
       "atlas/scripts/content-i18n-data/curated-i18n.json",
+      "atlas/scripts/content-i18n-data/archetypes-en.json",
+      "atlas/scripts/content-i18n-data/archetypes-i18n.json",
     ],
     repoRoot,
   );
