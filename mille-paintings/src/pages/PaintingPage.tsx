@@ -3,10 +3,12 @@ import { Link, useParams } from 'react-router-dom'
 import { CountryFlags } from '../components/CountryFlags'
 import { FullscreenViewer } from '../components/FullscreenViewer'
 import { LoadingState } from '../components/LoadingState'
+import { LoginPrompt } from '../components/LoginPrompt'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
 import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
+import { useRequireAuth } from '../hooks/useRequireAuth'
 import { useI18n } from '../i18n/I18nContext'
 import { displayImageUrl, imageCandidates, withCommonsWidth } from '../lib/images'
 import './PaintingPage.css'
@@ -15,11 +17,18 @@ export function PaintingPage() {
   const { id = '' } = useParams()
   const { t } = useI18n()
   const store = usePaintingsStore()
+  const { requireAuth, promptOpen, promptReason, closePrompt, goSignIn } = useRequireAuth()
   const [fullscreen, setFullscreen] = useState(false)
   const [saved, setSaved] = useState(false)
 
   const base = store.paintings.find((p) => p.id === id)
   const { painting, loading: localizing } = useLocalizedPainting(base)
+
+  const handleCollect = () => {
+    if (!base) return
+    if (!requireAuth('collect')) return
+    setSaved(store.toggleCollect(base.id))
+  }
 
   useEffect(() => {
     if (base) {
@@ -110,7 +119,7 @@ export function PaintingPage() {
             <button
               type="button"
               className={`btn ghost ${saved ? 'active' : ''}`}
-              onClick={() => setSaved(store.toggleCollect(base.id))}
+              onClick={handleCollect}
             >
               {saved ? t('collected') : t('collect')}
             </button>
@@ -182,7 +191,14 @@ export function PaintingPage() {
         open={fullscreen}
         onClose={() => setFullscreen(false)}
         collected={saved}
-        onCollect={() => setSaved(store.toggleCollect(base.id))}
+        onCollect={handleCollect}
+      />
+
+      <LoginPrompt
+        open={promptOpen}
+        reason={promptReason}
+        onCancel={closePrompt}
+        onSignIn={goSignIn}
       />
     </main>
   )

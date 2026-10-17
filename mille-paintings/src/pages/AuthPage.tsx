@@ -1,10 +1,15 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../data/AuthProvider'
 import { useI18n } from '../i18n/I18nContext'
 import './AuthPage.css'
 
 type Mode = 'signin' | 'signup'
+
+type AuthLocationState = {
+  next?: string
+  reason?: 'collect' | 'prefs'
+}
 
 function authErrorMessage(t: (k: string) => string, err: unknown): string {
   const code = err instanceof Error ? err.message : ''
@@ -22,10 +27,20 @@ function authErrorMessage(t: (k: string) => string, err: unknown): string {
   }
 }
 
+function safeNextPath(next: unknown): string {
+  if (typeof next !== 'string' || !next.startsWith('/') || next.startsWith('//')) {
+    return '/collection'
+  }
+  return next
+}
+
 export function AuthPage() {
   const { t } = useI18n()
   const { user, ready, signIn, signUp, signOut, cloudEnabled, syncing } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const returnTo = safeNextPath((location.state as AuthLocationState | null)?.next)
+  const promptReason = (location.state as AuthLocationState | null)?.reason
   const [mode, setMode] = useState<Mode>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -82,7 +97,7 @@ export function AuthPage() {
     try {
       if (mode === 'signup') await signUp(email, password)
       else await signIn(email, password)
-      navigate('/collection', { replace: true })
+      navigate(returnTo, { replace: true })
     } catch (err) {
       setError(authErrorMessage(t, err))
     } finally {
@@ -95,7 +110,15 @@ export function AuthPage() {
       <header>
         <p className="eyebrow">{t('navAccount')}</p>
         <h1>{mode === 'signup' ? t('authSignUpTitle') : t('authSignInTitle')}</h1>
-        <p>{mode === 'signup' ? t('authSignUpLede') : t('authSignInLede')}</p>
+        <p>
+          {promptReason === 'collect'
+            ? t('loginPromptCollect')
+            : promptReason === 'prefs'
+              ? t('loginPromptPrefs')
+              : mode === 'signup'
+                ? t('authSignUpLede')
+                : t('authSignInLede')}
+        </p>
       </header>
 
       <section className="auth-card">
