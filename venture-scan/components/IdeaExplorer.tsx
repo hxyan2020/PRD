@@ -6,6 +6,8 @@ import { CountryPicker } from "@/components/CountryPicker";
 import { Flag } from "@/components/Flag";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { IndustryPicker } from "@/components/IndustryPicker";
+import { SectorIcon } from "@/components/SectorIcon";
+import { SectorPicker } from "@/components/SectorPicker";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
@@ -185,19 +187,12 @@ export function IdeaExplorer({
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
-        <select
-          className="field max-w-full sm:max-w-xs"
+        <SectorPicker
+          className="max-w-full sm:max-w-xs"
           value={sector}
-          onChange={(e) => setSector(e.target.value)}
-          aria-label={t("ledger.allSectors")}
-        >
-          <option value="">{t("ledger.allSectors")}</option>
-          {meta.sectors.map((v) => (
-            <option key={v} value={v}>
-              {localizeIdeaFieldLabel("sector", v, locale)}
-            </option>
-          ))}
-        </select>
+          sectors={meta.sectors}
+          onChange={setSector}
+        />
         <p className="self-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
           {pending ? "…" : t("ledger.shown", { count: filtered.length })}
         </p>
