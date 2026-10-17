@@ -164,9 +164,9 @@ export function IdeaExplorer({
         <p className="mt-3 font-mono text-xs text-celadon">{scanNote}</p>
       ) : null}
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-5 grid grid-cols-1 gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3 lg:grid-cols-5">
         <input
-          className="field lg:col-span-2"
+          className="field sm:col-span-2 lg:col-span-2"
           placeholder={t("ledger.search")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -192,22 +192,19 @@ export function IdeaExplorer({
           <option value="yes">{t("ledger.fundYes")}</option>
           <option value="no">{t("ledger.fundNo")}</option>
         </select>
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-2">
         <SectorPicker
-          className="max-w-full sm:max-w-xs"
+          className="w-full lg:col-span-2"
           value={sector}
           sectors={meta.sectors}
           onChange={setSector}
         />
         <FundingRoundPicker
-          className="max-w-full sm:max-w-xs"
+          className="w-full lg:col-span-2"
           value={fundingRound}
           rounds={fundingRounds}
           onChange={setFundingRound}
         />
-        <p className="self-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
+        <p className="flex items-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist sm:col-span-2 lg:col-span-1">
           {pending ? "…" : t("ledger.shown", { count: filtered.length })}
         </p>
       </div>
@@ -219,14 +216,14 @@ export function IdeaExplorer({
           return (
             <li
               key={idea.id}
-              className="animate-rise group py-6"
+              className="animate-rise group py-5 sm:py-6"
               style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}
             >
               <Link href={`/ideas/${idea.slug}`} className="block outline-none">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-display text-xl text-foam transition group-hover:text-black sm:text-2xl">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                      <h3 className="font-display text-[1.2rem] leading-snug text-foam transition group-hover:text-black sm:text-2xl">
                         {view.name}
                       </h3>
                       <span
@@ -247,27 +244,31 @@ export function IdeaExplorer({
                     <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-relaxed text-mist">
                       {view.description}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist/90">
-                      <span className="inline-flex items-center gap-1.5">
+                    <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-mist/90">
+                      <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
                         <Flag
                           code={countryToFlagCode(idea.teamCountry) ?? ""}
                           title={idea.teamCountry}
                           size="sm"
                         />
-                        {idea.teamCountry}
-                        {idea.teamCity ? ` · ${idea.teamCity}` : ""}
+                        <span className="truncate">
+                          {idea.teamCountry}
+                          {idea.teamCity ? ` · ${idea.teamCity}` : ""}
+                        </span>
                       </span>
-                      <span>{t("common.people", { count: idea.teamSize })}</span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <IndustryIcon industry={idea.industry} className="text-celadon" />
-                        {view.industry} / {view.sector}
+                      <span className="shrink-0">{t("common.people", { count: idea.teamSize })}</span>
+                      <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+                        <IndustryIcon industry={idea.industry} className="shrink-0 text-celadon" />
+                        <span className="truncate">
+                          {view.industry} / {view.sector}
+                        </span>
                       </span>
                       {idea.fundraisingSecured ? (
-                        <span>{formatMoney(idea.fundingAmountUsd)}</span>
+                        <span className="shrink-0">{formatMoney(idea.fundingAmountUsd)}</span>
                       ) : null}
                     </div>
                   </div>
-                  <p className="shrink-0 max-w-full text-xs leading-relaxed text-mist sm:max-w-xs sm:text-right">
+                  <p className="shrink-0 border-t border-black/5 pt-3 text-xs leading-relaxed text-mist sm:max-w-xs sm:border-0 sm:pt-0 sm:text-right">
                     <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">
                       {t("ledger.goForward")}
                     </span>

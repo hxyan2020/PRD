@@ -99,14 +99,14 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
         <p className="mt-2 text-sm text-mist">{t("ideaChat.body")}</p>
       </div>
 
-      <div className="flex flex-wrap gap-2 border-b border-black/10 px-4 py-3 sm:px-5">
+      <div className="-mx-0 flex gap-2 overflow-x-auto overscroll-x-contain border-b border-black/10 px-4 py-3 scrollbar-none sm:flex-wrap sm:overflow-visible sm:px-5">
         {IDEA_QA_SUGGESTION_KEYS.map((key) => {
           const prompt = t(key);
           return (
             <button
               key={key}
               type="button"
-              className="rounded-full border border-black/12 bg-black/[0.04] px-3 py-1.5 text-left text-xs text-mist hover:border-celadon/40 hover:text-foam"
+              className="shrink-0 rounded-full border border-black/12 bg-black/[0.04] px-3 py-2 text-left text-xs text-mist hover:border-celadon/40 hover:text-foam sm:py-1.5"
               onClick={() => ask(prompt)}
             >
               {prompt}
@@ -115,7 +115,7 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
         })}
       </div>
 
-      <div className="max-h-[28rem] space-y-3 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5">
+      <div className="max-h-[min(22rem,50svh)] space-y-3 overflow-y-auto overscroll-contain px-4 py-4 sm:max-h-[28rem] sm:px-5">
         {messages.map((m) => (
           <div
             key={m.id}
@@ -133,7 +133,7 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
       </div>
 
       <form
-        className="flex gap-2 border-t border-black/10 px-4 py-3 sm:px-5 sm:py-4"
+        className="flex flex-col gap-2 border-t border-black/10 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:flex-row sm:px-5 sm:py-4 sm:pb-4"
         onSubmit={(e) => {
           e.preventDefault();
           ask(input);
@@ -141,7 +141,7 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
       >
         <input
           ref={inputRef}
-          className="field"
+          className="field min-w-0 flex-1"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={t("ideaChat.placeholder", { name: idea.name })}
@@ -149,7 +149,7 @@ export function IdeaChatbot({ idea }: { idea: StartupIdea }) {
           autoComplete="off"
           enterKeyHint="send"
         />
-        <button type="submit" className="btn-primary shrink-0">
+        <button type="submit" className="btn-primary btn-block-mobile shrink-0 sm:min-w-[5.5rem]">
           {t("ideaChat.send")}
         </button>
       </form>

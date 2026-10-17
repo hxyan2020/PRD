@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdeaFieldLabel } from "@/lib/i18n/localize-idea";
+import { usePickerLock } from "@/lib/use-picker-lock";
 
 type Props = {
   value: string;
@@ -20,6 +21,7 @@ export function IndustryPicker({ value, industries, onChange, className }: Props
   const listId = useId();
   const labelAll = t("ledger.allIndustries");
   const selectedLabel = value ? localizeIdeaFieldLabel("industry", value, locale) : labelAll;
+  usePickerLock(open);
 
   useEffect(() => {
     if (!open) return;
@@ -37,10 +39,13 @@ export function IndustryPicker({ value, industries, onChange, className }: Props
     };
   }, [open]);
 
-  const options = [{ value: "", label: labelAll }, ...industries.map((v) => ({
-    value: v,
-    label: localizeIdeaFieldLabel("industry", v, locale),
-  }))];
+  const options = [
+    { value: "", label: labelAll },
+    ...industries.map((v) => ({
+      value: v,
+      label: localizeIdeaFieldLabel("industry", v, locale),
+    })),
+  ];
 
   return (
     <div ref={rootRef} className={`relative ${className ?? ""}`}>
@@ -61,40 +66,45 @@ export function IndustryPicker({ value, industries, onChange, className }: Props
       </button>
 
       {open ? (
-        <ul
-          id={listId}
-          role="listbox"
-          aria-label={labelAll}
-          className="absolute left-0 z-40 mt-1.5 max-h-72 min-w-full w-max max-w-[min(100vw-2rem,28rem)] overflow-auto rounded-xl border border-black/12 bg-paper py-1 shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
-        >
-          {options.map((opt) => {
-            const active = opt.value === value;
-            return (
-              <li key={opt.value || "__all"} role="presentation">
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={active}
-                  className={`flex w-full items-center gap-2.5 whitespace-nowrap px-3 py-2.5 text-left text-sm transition ${
-                    active
-                      ? "bg-celadon/20 text-foam"
-                      : "text-foam hover:bg-black/[0.04]"
-                  }`}
-                  onClick={() => {
-                    onChange(opt.value);
-                    setOpen(false);
-                  }}
-                >
-                  <IndustryIcon
-                    industry={opt.value}
-                    className={active ? "text-celadon" : "text-mist"}
-                  />
-                  <span>{opt.label}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          <button
+            type="button"
+            className="picker-backdrop"
+            aria-label={t("ideaAlbum.close")}
+            onClick={() => setOpen(false)}
+          />
+          <ul id={listId} role="listbox" aria-label={labelAll} className="picker-menu">
+            {options.map((opt) => {
+              const active = opt.value === value;
+              return (
+                <li key={opt.value || "__all"} role="presentation">
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={active}
+                    className={`flex w-full items-center gap-2.5 px-3 py-3 text-left text-sm transition sm:whitespace-nowrap sm:py-2.5 ${
+                      active
+                        ? "bg-celadon/20 text-foam"
+                        : "text-foam hover:bg-black/[0.04]"
+                    }`}
+                    onClick={() => {
+                      onChange(opt.value);
+                      setOpen(false);
+                    }}
+                  >
+                    <IndustryIcon
+                      industry={opt.value}
+                      className={active ? "text-celadon" : "text-mist"}
+                    />
+                    <span className="min-w-0 flex-1 whitespace-normal break-words">
+                      {opt.label}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </>
       ) : null}
     </div>
   );

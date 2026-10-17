@@ -28,17 +28,21 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
   const photos = photosForIdea(idea.slug, 9);
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <Link href="/ideas" className="text-sm text-mist hover:text-foam">
+    <article className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-16">
+      <Link href="/ideas" className="inline-flex min-h-11 items-center text-sm text-mist hover:text-foam">
         {t("dossier.back")}
       </Link>
 
-      <header className="mt-6 animate-rise">
-        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-celadon">
+      <header className="mt-4 animate-rise sm:mt-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon sm:text-[11px] sm:tracking-[0.22em]">
           {view.industry} · {view.sector}
         </p>
-        <h1 className="mt-3 font-display text-4xl text-foam sm:text-5xl">{view.name}</h1>
-        <p className="mt-4 text-base leading-relaxed text-mist">{view.description}</p>
+        <h1 className="mt-2 font-display text-[2rem] leading-[1.1] text-foam sm:mt-3 sm:text-5xl">
+          {view.name}
+        </h1>
+        <p className="mt-3 text-[0.95rem] leading-relaxed text-mist sm:mt-4 sm:text-base">
+          {view.description}
+        </p>
       </header>
 
       <IdeaPhotoAlbum name={view.name} photos={photos} />

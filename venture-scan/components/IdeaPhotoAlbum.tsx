@@ -90,25 +90,25 @@ export function IdeaPhotoAlbum({ name, photos }: Props) {
 
       {current ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center sm:p-4"
           role="dialog"
           aria-modal="true"
           aria-label={current.caption || name}
           onClick={() => setActive(null)}
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-2xl bg-paper shadow-2xl"
+            className="relative flex max-h-[92svh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl bg-paper shadow-2xl sm:max-h-[90vh] sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={withBase(current.imagePath)}
               alt={current.caption || name}
-              className="max-h-[72vh] w-full object-contain bg-ink"
+              className="max-h-[58svh] w-full object-contain bg-ink sm:max-h-[72vh]"
             />
-            <div className="flex flex-wrap items-start justify-between gap-3 border-t border-black/10 px-4 py-3">
+            <div className="flex flex-col gap-3 border-t border-black/10 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:flex-row sm:items-start sm:justify-between sm:pb-3">
               <div className="min-w-0">
-                <p className="truncate text-sm text-foam">{current.caption || name}</p>
+                <p className="line-clamp-2 text-sm text-foam">{current.caption || name}</p>
                 <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
                   {current.sourceLabel}
                   {current.sourceUrl ? (
@@ -126,12 +126,12 @@ export function IdeaPhotoAlbum({ name, photos }: Props) {
                   ) : null}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="grid grid-cols-3 gap-2 sm:flex sm:w-auto sm:items-center">
                 {photos.length > 1 ? (
                   <>
                     <button
                       type="button"
-                      className="btn-ghost px-3 py-1.5 text-xs"
+                      className="btn-ghost min-h-11 px-3 text-xs"
                       onClick={() =>
                         setActive((i) => (i == null ? 0 : (i - 1 + photos.length) % photos.length))
                       }
@@ -140,7 +140,7 @@ export function IdeaPhotoAlbum({ name, photos }: Props) {
                     </button>
                     <button
                       type="button"
-                      className="btn-ghost px-3 py-1.5 text-xs"
+                      className="btn-ghost min-h-11 px-3 text-xs"
                       onClick={() =>
                         setActive((i) => (i == null ? 0 : (i + 1) % photos.length))
                       }
@@ -148,10 +148,12 @@ export function IdeaPhotoAlbum({ name, photos }: Props) {
                       →
                     </button>
                   </>
-                ) : null}
+                ) : (
+                  <span className="sm:hidden" />
+                )}
                 <button
                   type="button"
-                  className="btn-ghost px-3 py-1.5 text-xs"
+                  className={`btn-ghost min-h-11 px-3 text-xs ${photos.length <= 1 ? "col-span-3" : ""}`}
                   onClick={() => setActive(null)}
                 >
                   {t("ideaAlbum.close")}
