@@ -772,6 +772,7 @@ body > * {
 .celebrate__card,
 .hex-display,
 .pick-grid button,
+.choice-btn,
 .card-fan__card,
 .lot-chip,
 .step-card,
@@ -781,6 +782,12 @@ body > * {
   background: var(--surface) !important;
   color: var(--ink) !important;
   border-color: var(--line) !important;
+}
+
+.choice-btn:hover {
+  border-color: var(--copper) !important;
+  background: rgba(224, 168, 74, 0.14) !important;
+  color: var(--ink) !important;
 }
 
 .celebrate {
