@@ -778,8 +778,29 @@ const FRAGILE_HOSTS = new Set([
   "fastly.picsum.photos",
 ]);
 
+/** Site-relative uploads saved by the Ludus admin (`uploads/{gameId}/…`). */
+export function isLocalUploadSrc(src: string | undefined): boolean {
+  if (!src) return false;
+  return src.startsWith("uploads/") || src.startsWith("/uploads/");
+}
+
+/** Resolve admin upload paths against Vite `base` (local `/` or Pages `/PRD/ludus-atlas/`). */
+export function resolveMediaUrl(src: string): string {
+  if (!src) return src;
+  if (src.startsWith("uploads/")) {
+    const base = import.meta.env.BASE_URL || "/";
+    return `${base}${src}`;
+  }
+  if (src.startsWith("/uploads/")) {
+    const base = import.meta.env.BASE_URL || "/";
+    return `${base}${src.slice(1)}`;
+  }
+  return src;
+}
+
 export function isFragileRemoteSrc(src: string): boolean {
   if (!src || isLudusSyntheticSrc(src) || src.startsWith("data:")) return false;
+  if (isLocalUploadSrc(src)) return false;
   try {
     return FRAGILE_HOSTS.has(new URL(src).hostname);
   } catch {
@@ -790,6 +811,7 @@ export function isFragileRemoteSrc(src: string): boolean {
 /** True when `src` is a real remote photo (not a Ludus synthetic / fragile host). */
 export function isPhotographicSrc(src: string | undefined): boolean {
   if (!src || isLudusSyntheticSrc(src) || src.startsWith("data:")) return false;
+  if (isLocalUploadSrc(src)) return true;
   return !isFragileRemoteSrc(src);
 }
 
@@ -838,7 +860,7 @@ export function resolveImageSrc(src: string, label?: ImageLabel): string {
     );
   }
   const parsed = parseLudusCard(src);
-  if (!parsed) return src;
+  if (!parsed) return resolveMediaUrl(src);
   return ludusCardDataUri(
     label?.name || parsed.name,
     label?.category || parsed.category,

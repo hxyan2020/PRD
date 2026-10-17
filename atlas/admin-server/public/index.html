@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ludus Atlas Admin</title>
+    <link rel="stylesheet" href="/admin.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section id="login-view" class="panel login-panel hidden">
+        <h1>Ludus Atlas Admin</h1>
+        <p class="muted">Sign in to edit games, photos, YouTube tutorials, and publish all locales.</p>
+        <form id="login-form">
+          <label>Username<input id="login-user" autocomplete="username" required /></label>
+          <label>Password<input id="login-pass" type="password" autocomplete="current-password" required /></label>
+          <button type="submit">Sign in</button>
+          <p id="login-error" class="error" hidden></p>
+        </form>
+      </section>
+
+      <section id="app-view" class="hidden">
+        <header class="topbar">
+          <div>
+            <strong>Ludus Atlas Admin</strong>
+            <span id="whoami" class="muted"></span>
+          </div>
+          <div class="topbar-actions">
+            <button id="btn-publish" class="primary">Publish all languages</button>
+            <button id="btn-logout" class="ghost">Log out</button>
+          </div>
+        </header>
+
+        <div class="layout">
+          <aside class="sidebar">
+            <input id="search" placeholder="Search name, country, id…" />
+            <div id="game-list" class="game-list"></div>
+            <div class="pager">
+              <button id="prev-page" class="ghost">Prev</button>
+              <span id="page-info" class="muted"></span>
+              <button id="next-page" class="ghost">Next</button>
+            </div>
+          </aside>
+
+          <main class="editor">
+            <div id="empty-editor" class="muted">Select a game to edit.</div>
+            <form id="editor-form" class="hidden">
+              <div class="editor-head">
+                <h2 id="editor-title">Game</h2>
+                <span id="editor-id" class="muted"></span>
+              </div>
+
+              <div class="grid-2">
+                <label>Name<input name="name" required /></label>
+                <label>Slug<input name="slug" required /></label>
+                <label>Category<input name="category" required /></label>
+                <label>Origin country<input name="originCountry" required /></label>
+                <label>Civilization<input name="civilization" /></label>
+                <label>Creation year<input name="creationYear" /></label>
+                <label>Ideal participants<input name="idealParticipants" /></label>
+                <label>Tags (comma-separated)<input name="tags" /></label>
+              </div>
+
+              <label>Description<textarea name="description" rows="5"></textarea></label>
+              <label>How to play (one step per line)<textarea name="howToPlay" rows="6"></textarea></label>
+              <label>Requirements (one per line)<textarea name="requirements" rows="4"></textarea></label>
+
+              <h3>Photos</h3>
+              <p class="muted">Upload from your computer or paste URLs. First image is the cover. Click a photo to view full screen.</p>
+              <div class="photo-toolbar">
+                <label class="upload-btn">
+                  Upload from computer
+                  <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden />
+                </label>
+                <button type="button" class="ghost" id="add-image-url">Add URL</button>
+                <span id="upload-status" class="muted"></span>
+              </div>
+              <div id="image-gallery" class="image-gallery" aria-live="polite"></div>
+              <details class="url-editor">
+                <summary>Edit image URLs</summary>
+                <textarea name="images" rows="5" placeholder="One image URL or uploads/… path per line"></textarea>
+              </details>
+
+              <h3>YouTube tutorial</h3>
+              <div class="grid-2">
+                <label>YouTube URL or video id<input name="youtubeUrl" placeholder="https://www.youtube.com/watch?v=…" /></label>
+                <label>Title<input name="youtubeTitle" /></label>
+                <label>Channel<input name="youtubeChannel" /></label>
+                <label><span class="check"><input type="checkbox" name="clearTutorial" /> Clear tutorial</span></label>
+              </div>
+
+              <h3>Locale overlays</h3>
+              <p id="locale-help" class="muted">Pick a language, edit its fields, then save. Switching languages keeps each locale’s own text. Publish rebuilds content-i18n for every supported locale.</p>
+              <p id="overlay-kind" class="muted"></p>
+              <div class="locale-field">
+                <span class="locale-label">Locale</span>
+                <div class="locale-picker" id="locale-picker">
+                  <button type="button" id="locale-trigger" class="locale-trigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span id="locale-trigger-flag" class="locale-flag" aria-hidden="true"></span>
+                    <span id="locale-trigger-text"></span>
+                    <span class="locale-caret" aria-hidden="true">▾</span>
+                  </button>
+                  <ul id="locale-menu" class="locale-menu hidden" role="listbox"></ul>
+                </div>
+                <!-- Hidden select kept for form state / accessibility sync -->
+                <select id="locale-select" class="locale-select-sr" tabindex="-1" aria-hidden="true"></select>
+              </div>
+              <label>Localized name / title<input id="loc-name" /></label>
+              <label>Localized description<textarea id="loc-description" rows="4"></textarea></label>
+              <label>Localized how-to (one per line)<textarea id="loc-howto" rows="5"></textarea></label>
+              <label>Localized requirements (one per line)<textarea id="loc-req" rows="3"></textarea></label>
+              <label>Localized participants<input id="loc-participants" /></label>
+
+              <div class="editor-actions">
+                <button type="submit" class="primary">Save game</button>
+                <span id="save-status" class="muted"></span>
+              </div>
+            </form>
+          </main>
+        </div>
+      </section>
+
+      <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Full screen image">
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">×</button>
+        <button type="button" class="lightbox-nav prev" id="lightbox-prev" aria-label="Previous image">‹</button>
+        <img id="lightbox-img" alt="" />
+        <button type="button" class="lightbox-nav next" id="lightbox-next" aria-label="Next image">›</button>
+      </div>
+
+      <div id="toast" class="toast hidden"></div>
+      <div id="publish-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3>Publish status</h3>
+          <pre id="publish-log"></pre>
+          <button id="close-publish" class="primary">Close</button>
+        </div>
+      </div>
+    </div>
+    <script src="/admin.js?v=5" type="module"></script>
+  </body>
+</html>
