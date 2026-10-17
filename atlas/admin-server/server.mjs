@@ -21,12 +21,15 @@ import {
   extractYoutubeId,
 } from "./store.mjs";
 import { publishCatalog } from "./publish.mjs";
+import { saveUploadedImage, uploadsDir } from "./upload.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, "public");
 const flagsDir = join(__dirname, "..", "public", "flags");
+const uploadsRoot = uploadsDir();
 const PORT = Number(process.env.PORT || 8787);
 const HOST = process.env.HOST || "0.0.0.0";
+const MAX_UPLOAD_BODY = 12 * 1024 * 1024;
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -35,6 +38,10 @@ const MIME = {
   ".json": "application/json; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
   ".ico": "image/x-icon",
 };
 
@@ -48,10 +55,19 @@ function sendJson(res, status, body, extraHeaders = {}) {
   res.end(payload);
 }
 
-function readBody(req) {
+function readBody(req, { maxBytes = 2 * 1024 * 1024 } = {}) {
   return new Promise((resolve, reject) => {
     const chunks = [];
-    req.on("data", (c) => chunks.push(c));
+    let size = 0;
+    req.on("data", (c) => {
+      size += c.length;
+      if (size > maxBytes) {
+        reject(new Error("Request body too large"));
+        req.destroy();
+        return;
+      }
+      chunks.push(c);
+    });
     req.on("end", () => {
       const raw = Buffer.concat(chunks).toString("utf8");
       if (!raw) return resolve({});
@@ -63,6 +79,27 @@ function readBody(req) {
     });
     req.on("error", reject);
   });
+}
+
+function serveUploads(req, res, urlPath) {
+  const rel = urlPath.replace(/^\/uploads\/?/, "").replace(/\?.*$/, "");
+  if (!rel || rel.includes("..")) {
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("Not found");
+    return;
+  }
+  const filePath = join(uploadsRoot, rel);
+  if (!filePath.startsWith(uploadsRoot) || !existsSync(filePath)) {
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("Not found");
+    return;
+  }
+  const ext = extname(filePath).toLowerCase();
+  res.writeHead(200, {
+    "Content-Type": MIME[ext] || "application/octet-stream",
+    "Cache-Control": "public, max-age=86400",
+  });
+  res.end(readFileSync(filePath));
 }
 
 function requireAuth(req, res) {
@@ -189,8 +226,28 @@ const server = createServer(async (req, res) => {
       return sendJson(res, result.ok ? 200 : 500, result);
     }
 
+    if (path === "/api/upload" && method === "POST") {
+      if (!requireAuth(req, res)) return;
+      try {
+        const body = await readBody(req, { maxBytes: MAX_UPLOAD_BODY });
+        const saved = saveUploadedImage({
+          gameId: body.gameId || "",
+          filename: body.filename || "photo.jpg",
+          mime: body.mime || "",
+          dataBase64: body.dataBase64 || body.data || "",
+        });
+        return sendJson(res, 200, { ok: true, url: saved.url, bytes: saved.bytes });
+      } catch (e) {
+        return sendJson(res, 400, { error: e.message || "Upload failed" });
+      }
+    }
+
     if (path.startsWith("/api/")) {
       return sendJson(res, 404, { error: "Not found" });
+    }
+
+    if (path.startsWith("/uploads/") && method === "GET") {
+      return serveUploads(req, res, path);
     }
 
     // Self-hosted SVG flags (same assets as the public site).

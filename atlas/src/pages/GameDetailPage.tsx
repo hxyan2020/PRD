@@ -8,6 +8,7 @@ import { PlatformLogo } from "../components/PlatformLogo";
 import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
 import { GameAssistant } from "../components/GameAssistant";
+import { ImageLightbox } from "../components/ImageLightbox";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
 import {
@@ -33,6 +34,7 @@ export function GameDetailPage() {
   const { slug } = useParams();
   const [game, setGame] = useState<Game | null | undefined>(undefined);
   const [activeImg, setActiveImg] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [total, setTotal] = useState<number>();
   const { t, locale } = useI18n();
 
@@ -314,12 +316,25 @@ export function GameDetailPage() {
         <aside className="detail-aside">
           <div className="panel">
             <h2>{t("detail.images")}</h2>
-            <GameImage
-              className="main-shot"
-              src={activeSrc}
-              alt={`${game.name} reference`}
-              label={imageLabel}
-            />
+            {activeSrc ? (
+              <button
+                type="button"
+                className="main-shot-btn"
+                onClick={() => setLightboxOpen(true)}
+                aria-label={t("detail.expandImage")}
+                title={t("detail.expandImage")}
+              >
+                <GameImage
+                  className="main-shot"
+                  src={activeSrc}
+                  alt={`${game.name} reference`}
+                  label={imageLabel}
+                />
+                <span className="main-shot-expand" aria-hidden="true">
+                  ⤢
+                </span>
+              </button>
+            ) : null}
             {galleryImages.length > 1 ? (
               <div className="gallery">
                 {galleryImages.map((src, i) => (
@@ -328,6 +343,10 @@ export function GameDetailPage() {
                     key={`${src}-${i}`}
                     className={i === activeImg ? "active" : undefined}
                     onClick={() => setActiveImg(i)}
+                    onDoubleClick={() => {
+                      setActiveImg(i);
+                      setLightboxOpen(true);
+                    }}
                     aria-label={t("detail.showImage", { n: i + 1 })}
                   >
                     <GameImage
@@ -386,6 +405,19 @@ export function GameDetailPage() {
         </aside>
       </div>
       <Footer total={total} />
+      {lightboxOpen && galleryImages.length > 0 ? (
+        <ImageLightbox
+          images={galleryImages}
+          index={Math.min(activeImg, galleryImages.length - 1)}
+          alt={`${game.name} reference`}
+          label={imageLabel}
+          onClose={() => setLightboxOpen(false)}
+          onIndexChange={setActiveImg}
+          closeLabel={t("detail.closeLightbox")}
+          prevLabel={t("detail.prevImage")}
+          nextLabel={t("detail.nextImage")}
+        />
+      ) : null}
     </>
   );
 }

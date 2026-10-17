@@ -67,6 +67,7 @@ export function publishCatalog(opts = {}) {
       "atlas/public/data/collection.json",
       "atlas/public/data/tutorials.json",
       "atlas/public/data/content-i18n.json",
+      "atlas/public/uploads",
       "atlas/scripts/content-i18n-data/curated-en.json",
       "atlas/scripts/content-i18n-data/curated-i18n.json",
       "atlas/scripts/content-i18n-data/archetypes-en.json",

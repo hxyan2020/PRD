@@ -1083,12 +1083,108 @@ select {
   border-color: var(--brass);
 }
 
+.main-shot-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.main-shot-btn:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
 .main-shot {
   width: 100%;
   aspect-ratio: 16 / 11;
   object-fit: cover;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
   background: var(--ink-soft);
+  display: block;
+}
+.main-shot-expand {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: rgba(12, 12, 12, 0.62);
+  color: #f4efe6;
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+}
+.main-shot-btn:hover .main-shot-expand {
+  background: rgba(188, 2, 52, 0.88);
+}
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 3.5rem;
+}
+.image-lightbox-shot {
+  max-width: min(96vw, 1400px);
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  background: #000;
+}
+.image-lightbox-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 1rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.image-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.image-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.image-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.image-lightbox-nav.prev {
+  left: 0.75rem;
+}
+.image-lightbox-nav.next {
+  right: 0.75rem;
 }
 
 .detail-tutorial-intro {

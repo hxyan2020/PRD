@@ -66,9 +66,20 @@
               <label>Requirements (one per line)<textarea name="requirements" rows="4"></textarea></label>
 
               <h3>Photos</h3>
-              <p class="muted">One image URL per line (Commons / Unsplash / https). First line is the cover.</p>
-              <textarea name="images" rows="5"></textarea>
-              <div id="image-previews" class="previews"></div>
+              <p class="muted">Upload from your computer or paste URLs. First image is the cover. Click a photo to view full screen.</p>
+              <div class="photo-toolbar">
+                <label class="upload-btn">
+                  Upload from computer
+                  <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden />
+                </label>
+                <button type="button" class="ghost" id="add-image-url">Add URL</button>
+                <span id="upload-status" class="muted"></span>
+              </div>
+              <div id="image-gallery" class="image-gallery" aria-live="polite"></div>
+              <details class="url-editor">
+                <summary>Edit image URLs</summary>
+                <textarea name="images" rows="5" placeholder="One image URL or uploads/… path per line"></textarea>
+              </details>
 
               <h3>YouTube tutorial</h3>
               <div class="grid-2">
@@ -109,6 +120,13 @@
         </div>
       </section>
 
+      <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Full screen image">
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">×</button>
+        <button type="button" class="lightbox-nav prev" id="lightbox-prev" aria-label="Previous image">‹</button>
+        <img id="lightbox-img" alt="" />
+        <button type="button" class="lightbox-nav next" id="lightbox-next" aria-label="Next image">›</button>
+      </div>
+
       <div id="toast" class="toast hidden"></div>
       <div id="publish-modal" class="modal hidden">
         <div class="modal-card">
@@ -118,6 +136,6 @@
         </div>
       </div>
     </div>
-    <script src="/admin.js?v=4" type="module"></script>
+    <script src="/admin.js?v=5" type="module"></script>
   </body>
 </html>
