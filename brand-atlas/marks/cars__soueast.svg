@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <defs>
-    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
-  </defs>
-  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAAAWCAYAAACmEtU9AAABCUlEQVR42u3cbQ6CMAwA0G3h/lfGCygSdNB27/01JvtoS+eIvbXW9n1vkfXeDz+PPP6rY//2vRmO1vHTeKLHzgoxlGUf3s0jS/yMLAPNGiDZ13cF2WNIjN1QKAU4iqTxU7hQAiiUAAolsIInLif/aas6sWi3xhLA3O6OoQx7868xXnljQ0cJuOi5o6OMsMiVuxXJGD+WKhSap+dQJYeHTQZm5nCFPB4ZFhpAoQSWPtoqlIAjePKT4ei9eypB8q5SDs+1RWrh/R7p6Lf63H7JATns6A3wXEdZ9QngX2GMc4XO1ylMRwmgUAIolI5TQIFcHRYYewCJC+WZBI2cxGfeb4tehBRJZudABi874XI6Yz5Q1gAAAABJRU5ErkJggg==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
-</svg>
