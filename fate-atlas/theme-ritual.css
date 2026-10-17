@@ -783,6 +783,22 @@ body > * {
   border-color: var(--line) !important;
 }
 
+/* Quest choice answers: white + light --ink was unreadable on ritual theme */
+.choice-btn {
+  background: var(--surface-2) !important;
+  color: var(--ink) !important;
+  border-color: var(--line-strong) !important;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.choice-btn:hover {
+  border-color: var(--copper) !important;
+  background: rgba(224, 168, 74, 0.18) !important;
+  color: #fff6e8 !important;
+}
+
 .celebrate {
   color: var(--ink);
 }
