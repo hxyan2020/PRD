@@ -35,8 +35,29 @@ export function GameDetailPage() {
   const [game, setGame] = useState<Game | null | undefined>(undefined);
   const [activeImg, setActiveImg] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImages, setLightboxImages] = useState<string[] | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxAlt, setLightboxAlt] = useState("");
+  const [lightboxLabel, setLightboxLabel] = useState<ImageLabel | undefined>();
+  const [lightboxSyncGallery, setLightboxSyncGallery] = useState(false);
   const [total, setTotal] = useState<number>();
   const { t, locale } = useI18n();
+
+  function openLightbox(
+    images: string[],
+    index: number,
+    alt: string,
+    label?: ImageLabel,
+    syncGallery = false,
+  ) {
+    if (!images.length) return;
+    setLightboxImages(images);
+    setLightboxIndex(Math.min(Math.max(index, 0), images.length - 1));
+    setLightboxAlt(alt);
+    setLightboxLabel(label);
+    setLightboxSyncGallery(syncGallery);
+    setLightboxOpen(true);
+  }
 
   useEffect(() => {
     let alive = true;
@@ -261,34 +282,57 @@ export function GameDetailPage() {
                   const varThumbs = varPhotos
                     .filter((src) => src !== varCover && !pagePhotoSet.has(src))
                     .slice(0, 3);
+                  const varGallery = [varCover, ...varThumbs].filter(Boolean) as string[];
+                  const varLabel: ImageLabel = {
+                    name: v.name,
+                    category: game.category,
+                    originCountry: v.originCountry,
+                    categoryKey: game.categoryKey ?? game.category,
+                  };
                   return (
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
                     {varCover ? (
                       <div className="variation-media">
-                        <GameImage
-                          src={varCover}
-                          alt={v.name}
-                          loading="lazy"
-                          label={{
-                            name: v.name,
-                            category: game.category,
-                            originCountry: v.originCountry,
-                          }}
-                        />
+                        <button
+                          type="button"
+                          className="variation-expand"
+                          onClick={() =>
+                            openLightbox(varGallery, 0, v.name, varLabel)
+                          }
+                          aria-label={t("detail.expandImage")}
+                          title={t("detail.expandImage")}
+                        >
+                          <GameImage
+                            src={varCover}
+                            alt={v.name}
+                            loading="lazy"
+                            label={varLabel}
+                          />
+                        </button>
                         {varThumbs.length ? (
                           <div className="variation-thumbs">
-                            {varThumbs.map((src) => (
-                              <GameImage
+                            {varThumbs.map((src, vi) => (
+                              <button
+                                type="button"
                                 key={src}
-                                src={src}
-                                alt=""
-                                loading="lazy"
-                                label={{
-                                  ...imageLabel,
-                                  name: v.name,
-                                  originCountry: v.originCountry,
-                                }}
-                              />
+                                className="variation-thumb-btn"
+                                onClick={() =>
+                                  openLightbox(
+                                    varGallery,
+                                    vi + 1,
+                                    v.name,
+                                    varLabel,
+                                  )
+                                }
+                                aria-label={t("detail.expandImage")}
+                              >
+                                <GameImage
+                                  src={src}
+                                  alt=""
+                                  loading="lazy"
+                                  label={varLabel}
+                                />
+                              </button>
                             ))}
                           </div>
                         ) : null}
@@ -320,7 +364,15 @@ export function GameDetailPage() {
               <button
                 type="button"
                 className="main-shot-btn"
-                onClick={() => setLightboxOpen(true)}
+                onClick={() =>
+                  openLightbox(
+                    galleryImages.length ? galleryImages : [activeSrc],
+                    activeImg,
+                    `${game.name} reference`,
+                    imageLabel,
+                    true,
+                  )
+                }
                 aria-label={t("detail.expandImage")}
                 title={t("detail.expandImage")}
               >
@@ -342,10 +394,18 @@ export function GameDetailPage() {
                     type="button"
                     key={`${src}-${i}`}
                     className={i === activeImg ? "active" : undefined}
-                    onClick={() => setActiveImg(i)}
-                    onDoubleClick={() => {
-                      setActiveImg(i);
-                      setLightboxOpen(true);
+                    onClick={() => {
+                      if (i === activeImg) {
+                        openLightbox(
+                          galleryImages,
+                          i,
+                          `${game.name} reference`,
+                          imageLabel,
+                          true,
+                        );
+                      } else {
+                        setActiveImg(i);
+                      }
                     }}
                     aria-label={t("detail.showImage", { n: i + 1 })}
                   >
@@ -405,14 +465,20 @@ export function GameDetailPage() {
         </aside>
       </div>
       <Footer total={total} />
-      {lightboxOpen && galleryImages.length > 0 ? (
+      {lightboxOpen && lightboxImages && lightboxImages.length > 0 ? (
         <ImageLightbox
-          images={galleryImages}
-          index={Math.min(activeImg, galleryImages.length - 1)}
-          alt={`${game.name} reference`}
-          label={imageLabel}
-          onClose={() => setLightboxOpen(false)}
-          onIndexChange={setActiveImg}
+          images={lightboxImages}
+          index={Math.min(lightboxIndex, lightboxImages.length - 1)}
+          alt={lightboxAlt}
+          label={lightboxLabel}
+          onClose={() => {
+            setLightboxOpen(false);
+            setLightboxImages(null);
+          }}
+          onIndexChange={(i) => {
+            setLightboxIndex(i);
+            if (lightboxSyncGallery) setActiveImg(i);
+          }}
           closeLabel={t("detail.closeLightbox")}
           prevLabel={t("detail.prevImage")}
           nextLabel={t("detail.nextImage")}

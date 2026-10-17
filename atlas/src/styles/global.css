@@ -1399,12 +1399,28 @@ select {
   margin-bottom: 0.75rem;
 }
 
+.variation-expand {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.variation-expand:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+.variation-expand img,
 .variation-media > img {
   width: 100%;
   max-height: 220px;
   object-fit: cover;
   border-radius: var(--radius);
   border: 1px solid var(--line);
+  display: block;
 }
 
 .variation-thumbs {
@@ -1413,12 +1429,27 @@ select {
   gap: 0.35rem;
 }
 
-.variation-thumbs img {
+.variation-thumb-btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: calc(var(--radius) - 2px);
+  overflow: hidden;
+  line-height: 0;
+}
+.variation-thumb-btn:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+.variation-thumbs img,
+.variation-thumb-btn img {
   width: 72px;
   height: 54px;
   object-fit: cover;
   border-radius: calc(var(--radius) - 2px);
   border: 1px solid var(--line);
+  display: block;
 }
 
 .variation h3 {
