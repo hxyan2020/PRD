@@ -57,8 +57,8 @@ const en = {
   "dossier.industry": "(v) Industry",
   "dossier.sector": "(vi) Sector",
   "dossier.fundraising": "(vii) Fundraising secured?",
-  "dossier.website": "(viii) Website (live market operator)",
-  "dossier.social": "(ix) Socials (live market operator)",
+  "dossier.website": "(viii) Official website",
+  "dossier.social": "(ix) Official socials",
   "dossier.goForward": "(x) Go-forward play",
 
   "sourceKind.news": "News",

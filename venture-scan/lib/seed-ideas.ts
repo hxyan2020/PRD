@@ -302,10 +302,14 @@ export const FEATURED_SEED_IDEAS: StartupIdea[] = [
     fundraisingSecured: false,
     fundingStage: "Pre-seed",
     fundingRoundNote: "Bootstrapped + friends/family",
-    website: "https://www.tryalma.com/",
+    website: "https://www.docketwise.com/",
     social: [
-      { platform: "linkedin", handle: "Alma", url: "https://www.linkedin.com/company/tryalma" },
-      { platform: "linkedin", handle: "Alma HQ", url: "https://www.linkedin.com/company/almahq" },
+      { platform: "x", handle: "@docketwise", url: "https://x.com/docketwise" },
+      {
+        platform: "linkedin",
+        handle: "Boundless Immigration",
+        url: "https://www.linkedin.com/company/boundless-immigration",
+      },
     ],
     goForward: {
       strategy: "partner_founders",
