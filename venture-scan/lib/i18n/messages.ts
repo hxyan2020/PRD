@@ -102,6 +102,7 @@ const en = {
   "ledger.allIndustries": "All industries",
   "ledger.allCountries": "All countries",
   "ledger.allSectors": "All sectors",
+  "ledger.allRounds": "All fundraising rounds",
   "ledger.fundAll": "Fundraising: all",
   "ledger.fundYes": "Fundraising secured",
   "ledger.fundNo": "Not yet funded",

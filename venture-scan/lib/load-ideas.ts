@@ -1,6 +1,7 @@
 import { isStaticMode } from "./base-path";
 import { catalogIdeas, catalogMeta } from "./catalog";
 import { distinctValues, getIdeaBySlug, listIdeas } from "./db";
+import { collectFundingStages } from "./funding-stages";
 import { ensureSeeded } from "./scanner";
 import type { StartupIdea } from "./types";
 
@@ -10,6 +11,7 @@ export type IdeasPageData = {
     industries: string[];
     sectors: string[];
     countries: string[];
+    fundingRounds: string[];
   };
 };
 
@@ -20,12 +22,14 @@ export function loadIdeasForPage(): IdeasPageData {
   }
   try {
     ensureSeeded();
+    const ideas = listIdeas();
     return {
-      ideas: listIdeas(),
+      ideas,
       meta: {
         industries: distinctValues("industry"),
         sectors: distinctValues("sector"),
         countries: distinctValues("team_country"),
+        fundingRounds: collectFundingStages(ideas),
       },
     };
   } catch {

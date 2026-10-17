@@ -1,3 +1,4 @@
+import { collectFundingStages } from "./funding-stages";
 import { SEED_IDEAS } from "./seed-ideas";
 import type { StartupIdea } from "./types";
 
@@ -14,6 +15,7 @@ export function catalogMeta(): {
   industries: string[];
   sectors: string[];
   countries: string[];
+  fundingRounds: string[];
 } {
   const ideas = catalogIdeas();
   const uniq = (values: string[]) => [...new Set(values)].sort((a, b) => a.localeCompare(b));
@@ -21,5 +23,6 @@ export function catalogMeta(): {
     industries: uniq(ideas.map((i) => i.industry)),
     sectors: uniq(ideas.map((i) => i.sector)),
     countries: uniq(ideas.map((i) => i.teamCountry)),
+    fundingRounds: collectFundingStages(ideas),
   };
 }

@@ -63,6 +63,8 @@ export type IdeaFilters = {
   sector?: string;
   country?: string;
   fundraising?: "yes" | "no" | "all";
+  /** Exact funding stage / round label, e.g. "Series A". */
+  fundingRound?: string;
 };
 
 /** Profile collected by the matching chatbot. */

@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { CountryPicker } from "@/components/CountryPicker";
 import { Flag } from "@/components/Flag";
+import { FundingRoundPicker } from "@/components/FundingRoundPicker";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { IndustryPicker } from "@/components/IndustryPicker";
-import { SectorIcon } from "@/components/SectorIcon";
 import { SectorPicker } from "@/components/SectorPicker";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
+import { collectFundingStages } from "@/lib/funding-stages";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
@@ -21,6 +22,7 @@ type Meta = {
   industries: string[];
   sectors: string[];
   countries: string[];
+  fundingRounds?: string[];
 };
 
 export function IdeaExplorer({
@@ -36,7 +38,12 @@ export function IdeaExplorer({
   const [sector, setSector] = useState("");
   const [country, setCountry] = useState("");
   const [fundraising, setFundraising] = useState<"all" | "yes" | "no">("all");
+  const [fundingRound, setFundingRound] = useState("");
   const [ideas, setIdeas] = useState(initialIdeas);
+  const fundingRounds = useMemo(
+    () => meta.fundingRounds ?? collectFundingStages(ideas),
+    [meta.fundingRounds, ideas],
+  );
   const [matches, setMatches] = useState<Record<string, IdeaMatch>>({});
   const [hasProfile, setHasProfile] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -74,6 +81,7 @@ export function IdeaExplorer({
       if (country && idea.teamCountry !== country) return false;
       if (fundraising === "yes" && !idea.fundraisingSecured) return false;
       if (fundraising === "no" && idea.fundraisingSecured) return false;
+      if (fundingRound && idea.fundingStage !== fundingRound) return false;
       if (q) {
         const needle = q.toLowerCase();
         const view = localizeIdea(idea, locale);
@@ -100,7 +108,7 @@ export function IdeaExplorer({
       return rankByMatchScore(rows, matches);
     }
     return rankByFundingSecured(rows);
-  }, [ideas, q, industry, sector, country, fundraising, hasProfile, matches, locale]);
+  }, [ideas, q, industry, sector, country, fundraising, fundingRound, hasProfile, matches, locale]);
 
   async function rescan() {
     setScanning(true);
@@ -192,6 +200,12 @@ export function IdeaExplorer({
           value={sector}
           sectors={meta.sectors}
           onChange={setSector}
+        />
+        <FundingRoundPicker
+          className="max-w-full sm:max-w-xs"
+          value={fundingRound}
+          rounds={fundingRounds}
+          onChange={setFundingRound}
         />
         <p className="self-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
           {pending ? "…" : t("ledger.shown", { count: filtered.length })}

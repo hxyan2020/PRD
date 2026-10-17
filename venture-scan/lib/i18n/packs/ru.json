@@ -70,6 +70,7 @@
   "ledger.allIndustries": "Все отрасли промышленности",
   "ledger.allCountries": "Все страны",
   "ledger.allSectors": "Все сектора",
+  "ledger.allRounds": "Все раунды финансирования",
   "ledger.fundAll": "Сбор средств: все",
   "ledger.fundYes": "Сбор средств обеспечен",
   "ledger.fundNo": "Еще не финансируется",
