@@ -1,22 +1,14 @@
 import { notFound } from "next/navigation";
 import { IdeaDetail } from "@/components/IdeaDetail";
-import { isStaticMode } from "@/lib/base-path";
-import { catalogBySlug, catalogIdeas } from "@/lib/catalog";
-import { getIdeaBySlug } from "@/lib/db";
-import { ensureSeeded } from "@/lib/scanner";
+import { catalogIdeas } from "@/lib/catalog";
+import { loadIdeaForPage } from "@/lib/load-ideas";
 
 export function generateStaticParams() {
   return catalogIdeas().map((idea) => ({ slug: idea.slug }));
 }
 
 function loadIdea(slug: string) {
-  if (isStaticMode()) return catalogBySlug(slug);
-  try {
-    ensureSeeded();
-    return getIdeaBySlug(slug) ?? catalogBySlug(slug);
-  } catch {
-    return catalogBySlug(slug);
-  }
+  return loadIdeaForPage(slug);
 }
 
 export default async function IdeaPage({

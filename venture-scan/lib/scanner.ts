@@ -58,9 +58,19 @@ export function runScan(options: { source?: string } = {}): ScanResult {
   };
 }
 
+/**
+ * Ensure SQLite holds the full sourced catalog.
+ * Re-runs ingest when the DB is empty or behind SEED_IDEAS (new ideas added).
+ */
 export function ensureSeeded(): void {
-  if (countIdeas() === 0) {
+  const expected = SEED_IDEAS.length;
+  const current = countIdeas();
+  if (current === 0) {
     runScan({ source: "bootstrap-seed" });
+    return;
+  }
+  if (current < expected) {
+    runScan({ source: "catalog-sync" });
   }
 }
 

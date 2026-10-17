@@ -10,6 +10,7 @@
     "start": "next start --port 3000 --hostname 0.0.0.0",
     "seed": "tsx scripts/seed.ts",
     "scan": "tsx scripts/scan.ts",
+    "export:ideas": "tsx scripts/export-ideas-snapshot.ts",
     "extract:media": "node scripts/extract-source-media.mjs",
     "extract:articles": "node scripts/extract-idea-articles.mjs",
     "test": "vitest run",

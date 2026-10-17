@@ -26,7 +26,7 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <Link href="/#ideas" className="text-sm text-mist hover:text-foam">
+      <Link href="/ideas" className="text-sm text-mist hover:text-foam">
         {t("dossier.back")}
       </Link>
 

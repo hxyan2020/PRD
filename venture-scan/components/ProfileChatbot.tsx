@@ -304,7 +304,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
               <button type="button" className="btn-ghost btn-block-mobile" onClick={resetChat}>
                 {t("match.rebuild")}
               </button>
-              <Link href="/#ideas" className="btn-ghost btn-block-mobile">
+              <Link href="/ideas" className="btn-ghost btn-block-mobile">
                 {t("match.viewLedger")}
               </Link>
             </div>

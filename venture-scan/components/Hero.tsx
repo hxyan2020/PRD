@@ -49,7 +49,7 @@ export function Hero({ count }: { count: number }) {
             {t("hero.body")}
           </p>
           <div className="mt-7 flex w-full flex-col gap-2.5 sm:mt-8 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-            <Link href="#ideas" className="btn-primary btn-block-mobile">
+            <Link href="/ideas" className="btn-primary btn-block-mobile">
               {t("hero.browse", { count })}
             </Link>
             <Link href="/today" className="btn-ghost btn-block-mobile">

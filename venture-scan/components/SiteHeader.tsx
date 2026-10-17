@@ -15,7 +15,7 @@ type NavKey = Extract<
 
 const NAV_LINKS: { href: string; key: NavKey }[] = [
   { href: "/today", key: "nav.today" },
-  { href: "/#ideas", key: "nav.ideas" },
+  { href: "/ideas", key: "nav.ideas" },
   { href: "/sources", key: "nav.sources" },
 ];
 

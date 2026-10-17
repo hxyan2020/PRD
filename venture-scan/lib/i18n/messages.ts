@@ -48,7 +48,7 @@ const en = {
   "strategy.vertical_spinout": "Spin out a vertical niche",
   "strategy.b2b_pivot": "Offer as B2B to incumbents",
 
-  "dossier.back": "← Back to ledger",
+  "dossier.back": "← Back to ideas",
   "dossier.name": "(i) Idea name",
   "dossier.description": "(ii) Full description",
   "dossier.howMoney": "How it makes money:",

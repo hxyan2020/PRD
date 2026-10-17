@@ -2,8 +2,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { getIdeaBySlug, listIdeas, resetDbForTests } from "./db";
-import { runScan } from "./scanner";
+import { countIdeas, getIdeaBySlug, listIdeas, resetDbForTests, upsertIdea } from "./db";
+import { SEED_IDEAS } from "./seed-ideas";
+import { ensureSeeded, runScan } from "./scanner";
 
 describe("runScan", () => {
   let tmp: string;
@@ -55,5 +56,20 @@ describe("runScan", () => {
     const idea = getIdeaBySlug("reef-credit-exchange");
     expect(idea?.name).toBe("ReefCredit Exchange");
     expect(idea?.goForward.strategy).toBe("franchise_local");
+  });
+
+  it("ensureSeeded syncs the full sourced catalog into SQLite", () => {
+    ensureSeeded();
+    expect(countIdeas()).toBe(SEED_IDEAS.length);
+    expect(listIdeas().some((i) => i.slug === "bytedance-creator-os")).toBe(true);
+
+    // Simulate a stale DB missing newer sourced ideas.
+    const onlyOne = SEED_IDEAS[0];
+    resetDbForTests();
+    process.env.VENTURE_SCAN_DB = path.join(tmp, "stale.sqlite");
+    upsertIdea(onlyOne);
+    expect(countIdeas()).toBe(1);
+    ensureSeeded();
+    expect(countIdeas()).toBe(SEED_IDEAS.length);
   });
 });

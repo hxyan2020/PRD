@@ -40,6 +40,16 @@ if (process.env.BASE_PATH) {
 
 let status = 1;
 try {
+  // Persist sourced ideas into SQLite and export public/data/ideas.json for static browse.
+  const tsxBin = path.join(app, "node_modules", ".bin", "tsx");
+  const snap = spawnSync(tsxBin, ["scripts/export-ideas-snapshot.ts"], {
+    stdio: "inherit",
+    env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
+  });
+  if ((snap.status ?? 1) !== 0) {
+    process.exit(snap.status ?? 1);
+  }
+
   const nextBin = path.join(app, "node_modules", ".bin", "next");
   const r = spawnSync(nextBin, ["build"], { stdio: "inherit", env });
   status = r.status ?? 1;

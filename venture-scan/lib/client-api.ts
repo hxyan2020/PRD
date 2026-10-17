@@ -8,15 +8,30 @@ const COLLECTION_KEY = "venturescan.collection.v1";
 const USERS_KEY = "venturescan.users.v1";
 const SESSION_KEY = "venturescan.session.v1";
 
+async function fetchIdeasSnapshot(): Promise<StartupIdea[] | null> {
+  try {
+    const res = await fetch(withBase("/data/ideas.json"));
+    if (!res.ok) return null;
+    const data = (await res.json()) as { ideas?: StartupIdea[] };
+    return Array.isArray(data.ideas) ? data.ideas : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchIdeas(): Promise<StartupIdea[]> {
-  if (isStaticMode()) return catalogIdeas();
+  if (isStaticMode()) {
+    const snapshot = await fetchIdeasSnapshot();
+    return snapshot ?? catalogIdeas();
+  }
   try {
     const res = await fetch(withBase("/api/ideas"));
     if (!res.ok) throw new Error("ideas failed");
     const data = await res.json();
     return data.ideas as StartupIdea[];
   } catch {
-    return catalogIdeas();
+    const snapshot = await fetchIdeasSnapshot();
+    return snapshot ?? catalogIdeas();
   }
 }
 
