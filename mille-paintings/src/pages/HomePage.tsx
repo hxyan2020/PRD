@@ -23,8 +23,6 @@ export function HomePage() {
     [store.status, store.paintings, day],
   )
   const { paintings: localizedFeatured } = useLocalizedPaintings(featured)
-  const { paintings: localizedHero } = useLocalizedPaintings(hero ? [hero] : [])
-  const heroLocalized = localizedHero[0] || hero
 
   return (
     <main className="home">
@@ -53,11 +51,6 @@ export function HomePage() {
             <Link to="/gallery" className="btn ghost">
               {t('enterGallery')}
             </Link>
-            {heroLocalized ? (
-              <Link to={`/painting/${heroLocalized.id}`} className="btn ghost">
-                {t('beginWith', { name: heroLocalized.name })}
-              </Link>
-            ) : null}
           </div>
           <div className="hero-stats">
             <StatsCounter />
