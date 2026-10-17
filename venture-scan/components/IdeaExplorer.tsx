@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
+import { CountryPicker } from "@/components/CountryPicker";
 import { Flag } from "@/components/Flag";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { IndustryPicker } from "@/components/IndustryPicker";
@@ -166,19 +167,11 @@ export function IdeaExplorer({
           industries={meta.industries}
           onChange={setIndustry}
         />
-        <select
-          className="field"
+        <CountryPicker
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          aria-label={t("ledger.allCountries")}
-        >
-          <option value="">{t("ledger.allCountries")}</option>
-          {meta.countries.map((v) => (
-            <option key={v} value={v}>
-              {v}
-            </option>
-          ))}
-        </select>
+          countries={meta.countries}
+          onChange={setCountry}
+        />
         <select
           className="field"
           value={fundraising}
