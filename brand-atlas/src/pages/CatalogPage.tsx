@@ -6,6 +6,7 @@ import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
 import { itemsForCategory } from "../lib/catalog";
+import { allCategoriesIcon, categoryIcon } from "../lib/categoryIcons";
 import {
   categoryProgress,
   overallProgress,
@@ -125,7 +126,8 @@ export function CatalogPage() {
 
       <div className="pill-group" style={{ marginBottom: "1rem" }}>
         <Link className={`pill ${!categoryId ? "is-on" : ""}`} to="/catalog">
-          {t("catalog.all")}
+          {allCategoriesIcon()}
+          <span>{t("catalog.all")}</span>
         </Link>
         {catalog?.categories.map((cat) => (
           <Link
@@ -133,7 +135,8 @@ export function CatalogPage() {
             className={`pill ${categoryId === cat.id ? "is-on" : ""}`}
             to={`/catalog/${cat.id}`}
           >
-            {cat.label}
+            {categoryIcon(cat.id)}
+            <span>{cat.label}</span>
           </Link>
         ))}
       </div>

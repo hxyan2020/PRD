@@ -4,6 +4,7 @@ import { CelebrateModal } from "../components/CelebrateModal";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { findItem, getCategory } from "../lib/catalog";
+import { allCategoriesIcon, categoryIcon } from "../lib/categoryIcons";
 import { identifyImage } from "../lib/identify";
 import type { CatalogItem, Guess, IdentifyResult } from "../types/catalog";
 
@@ -184,7 +185,8 @@ export function ScanPage() {
             className={`pill ${allSelected ? "is-on" : ""}`}
             onClick={() => setSelectedCats([])}
           >
-            All categories
+            {allCategoriesIcon()}
+            <span>All categories</span>
           </button>
           {categoryOptions.map((cat) => (
             <button
@@ -193,7 +195,8 @@ export function ScanPage() {
               className={`pill ${selectedCats.includes(cat.id) ? "is-on" : ""}`}
               onClick={() => toggleCat(cat.id)}
             >
-              {cat.label}
+              {categoryIcon(cat.id)}
+              <span>{cat.label}</span>
             </button>
           ))}
         </div>
