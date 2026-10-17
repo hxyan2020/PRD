@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+
+# Ludus Atlas admin secrets
+atlas/admin-server/.credentials.json
+atlas/admin-server/.env
+atlas/admin-server/data-overrides/

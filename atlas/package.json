@@ -6,12 +6,14 @@
   "scripts": {
     "data": "node scripts/generate-collection.mjs",
     "tutorials": "python3 scripts/fetch-tutorials.py",
-    "prebuild": "npm run data",
+    "prebuild": "node scripts/prebuild.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "deploy:pages": "node scripts/deploy-gh-pages.mjs"
+    "deploy:pages": "node scripts/deploy-gh-pages.mjs",
+    "admin": "node admin-server/server.mjs",
+    "deploy:pages:keep-data": "SKIP_DATA_REGEN=1 node scripts/deploy-gh-pages.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
