@@ -28,18 +28,27 @@ assert.match(shared, /AGGREGATE_READY/);
 assert.match(shared, /FORCE_AGGREGATED/);
 assert.match(shared, /L1_L2_LABELS/);
 assert.match(shared, /POST_L2_FLOW_STAGES/);
+assert.match(shared, /export function computeL2Severity/);
+assert.match(shared, /L2_SEVERITY/);
+assert.match(shared, /max\(L1\)/);
 
 const board = read("src/components/IndicatorAggregationBoard.tsx");
 assert.match(board, /indicator-agg-board/);
 assert.match(board, /indicator-agg-linear-steps/);
 assert.match(board, /indicator-agg-force/);
+assert.match(board, /indicator-agg-l2-severity/);
 assert.match(board, /from \"@\/lib\/indicator-aggregation-shared\"/);
 assert.doesNotMatch(board, /from \"@\/lib\/indicator-aggregation\"/);
 
 const homeDemo = read("src/components/HomeL1L2AggregationDemo.tsx");
 assert.match(homeDemo, /home-l1-l2-demo/);
 assert.match(homeDemo, /home-l1-l2-force/);
+assert.match(homeDemo, /home-l2-severity-calc/);
+assert.match(homeDemo, /computeL2Severity/);
 assert.match(homeDemo, /L1_L2_LABELS/);
+
+assert.match(lib, /applyL2Severity|computeL2Severity/);
+assert.match(lib, /l2_severity_calc/);
 
 const homePage = read("src/app/admin/page.tsx");
 assert.match(homePage, /HomeL1L2AggregationDemo/);

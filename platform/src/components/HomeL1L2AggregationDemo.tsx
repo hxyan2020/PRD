@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui";
 import {
   L1_L2_LABELS,
   POST_L2_FLOW_STAGES,
+  computeL2Severity,
 } from "@/lib/indicator-aggregation-shared";
 
 type DemoPhase =
@@ -22,10 +23,13 @@ type DemoPhase =
   | "done";
 
 const DEMO_L1 = [
-  { id: "M2-FEED-003", t: 0, en: "Stale quotes", zh: "陳舊行情" },
-  { id: "M2-MRG-014", t: 8, en: "Margin spike", zh: "保證金尖峰" },
-  { id: "M2-EQ-001", t: 18, en: "Equity drawdown", zh: "權益回撤" },
+  { id: "M2-FEED-003", t: 0, en: "Stale quotes", zh: "陳舊行情", severity: "WARN" },
+  { id: "M2-MRG-014", t: 8, en: "Margin spike", zh: "保證金尖峰", severity: "BREACH" },
+  { id: "M2-EQ-001", t: 18, en: "Equity drawdown", zh: "權益回撤", severity: "CRITICAL" },
 ] as const;
+
+/** Demo weight: strong enough that multi-L1 BREACH can justify one-band upgrade. */
+const DEMO_SEVERITY_WEIGHT = 1.25;
 
 const WINDOW_SEC = 12;
 const L2_CODE = "CHAIN-FEED-LIQUIDATION-ERROR";
@@ -65,6 +69,21 @@ export function HomeL1L2AggregationDemo() {
     () => DEMO_L1.filter((m) => !fired.includes(m.id)).map((m) => m.id),
     [fired]
   );
+
+  const l2SeverityCalc = useMemo(() => {
+    if (fired.length === 0) return null;
+    if (phase !== "l2_ready" && phase !== "post_flow" && phase !== "done" && phase !== "force") {
+      return null;
+    }
+    const l1_severities: Record<string, string> = {};
+    for (const m of DEMO_L1) {
+      if (fired.includes(m.id)) l1_severities[m.id] = m.severity;
+    }
+    return computeL2Severity({
+      l1_severities,
+      severity_weight: DEMO_SEVERITY_WEIGHT,
+    });
+  }, [fired, phase]);
 
   const fireNextL1 = useCallback(() => {
     setFired((prev) => {
@@ -279,11 +298,14 @@ export function HomeL1L2AggregationDemo() {
                   </span>
                   <span className="text-[11px] font-mono">
                     {on ? (
-                      <EnZh en={`fired · T+${m.t}m`} zh={`已觸發 · T+${m.t}m`} />
+                      <EnZh
+                        en={`fired · ${m.severity} · T+${m.t}m`}
+                        zh={`已觸發 · ${m.severity} · T+${m.t}m`}
+                      />
                     ) : isMissing ? (
-                      <EnZh en="missing at force" zh="強制時缺失" />
+                      <EnZh en={`missing · would be ${m.severity}`} zh={`缺失 · 本為 ${m.severity}`} />
                     ) : (
-                      <EnZh en={`slot ${i + 1}`} zh={`槽位 ${i + 1}`} />
+                      <EnZh en={`slot ${i + 1} · ${m.severity}`} zh={`槽位 ${i + 1} · ${m.severity}`} />
                     )}
                   </span>
                 </li>
@@ -350,6 +372,45 @@ export function HomeL1L2AggregationDemo() {
                 />
               )}
             </p>
+            {l2SeverityCalc ? (
+              <div
+                className="mt-3 rounded-lg border border-indigo-200 bg-white/90 px-2.5 py-2 space-y-1.5"
+                data-testid="home-l2-severity-calc"
+              >
+                <div className="flex flex-wrap items-center gap-2 justify-between">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-indigo-900">
+                    <EnZh en="L2 severity calc" zh="L2 嚴重度計算" />
+                  </span>
+                  <Badge
+                    className={
+                      l2SeverityCalc.final === "CRITICAL"
+                        ? "bg-rose-100 text-rose-950 border-rose-200"
+                        : l2SeverityCalc.final === "BREACH"
+                          ? "bg-orange-100 text-orange-950 border-orange-200"
+                          : "bg-amber-100 text-amber-950 border-amber-200"
+                    }
+                    data-testid="home-l2-severity-final"
+                  >
+                    L2 = {l2SeverityCalc.final}
+                    {l2SeverityCalc.upgraded ? (zh ? " · 已升檔" : " · upgraded") : ""}
+                  </Badge>
+                </div>
+                <p className="text-[11px] font-mono text-indigo-950/90" data-testid="home-l2-severity-formula">
+                  {zh ? l2SeverityCalc.formula_zh : l2SeverityCalc.formula_en}
+                </p>
+                <ol className="list-decimal pl-4 space-y-0.5 text-[11px] text-slate-700">
+                  {(zh ? l2SeverityCalc.steps_zh : l2SeverityCalc.steps_en).map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+                <p className="text-[10px] text-[var(--muted)]">
+                  <EnZh
+                    en="Rule: L2 ≥ max(fired L1); severity weight can raise one band so the pack stays severe enough."
+                    zh="規則：L2 ≥ max(已觸發 L1)；嚴重度權重最多升一檔，確保聚合包足夠嚴重。"
+                  />
+                </p>
+              </div>
+            ) : null}
             {(phase === "l2_ready" || phase === "done") && !auto ? (
               <button
                 type="button"

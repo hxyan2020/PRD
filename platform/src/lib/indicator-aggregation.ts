@@ -15,11 +15,13 @@ import type { LinkedScenario, TimelineEvent } from "@/lib/ai/scenario-types";
 import {
   LINEAR_AGGREGATION_STEPS,
   POST_L2_FLOW_STAGES,
+  computeL2Severity,
   type AggregateDefinition,
   type AggregationEvent,
   type AggregationOutcome,
   type AggregationSession,
   type AggregationStepId,
+  type L2SeverityCalc,
 } from "@/lib/indicator-aggregation-shared";
 
 export type {
@@ -28,8 +30,37 @@ export type {
   AggregationOutcome,
   AggregationSession,
   AggregationStepId,
+  L2SeverityCalc,
 };
-export { LINEAR_AGGREGATION_STEPS, POST_L2_FLOW_STAGES };
+export { LINEAR_AGGREGATION_STEPS, POST_L2_FLOW_STAGES, computeL2Severity };
+
+/** Map aggregate-definition ops severity → L2 escalation weight (≥1 keeps / raises band). */
+export function severityWeightFromOps(ops?: string | null): number {
+  const s = String(ops || "BREACH").toUpperCase();
+  if (s === "CRITICAL") return 1.35;
+  if (s === "BREACH") return 1.2;
+  if (s === "WARN") return 1.05;
+  return 1.0;
+}
+
+/** Attach L2 severity = max(L1) floor, then × severity weight (never below max L1). */
+function applyL2Severity(session: AggregationSession, def: AggregateDefinition | null) {
+  const l1 = { ...(session.l1_severities || {}) };
+  if (!l1[session.trigger_monitor] && session.trigger_severity) {
+    l1[session.trigger_monitor] = session.trigger_severity;
+  }
+  session.l1_severities = l1;
+  const weight = severityWeightFromOps(def?.severity || session.trigger_severity);
+  const calc = computeL2Severity({ l1_severities: l1, severity_weight: weight });
+  session.l2_severity = calc.final;
+  session.l2_severity_calc = calc;
+  pushEvent(
+    session,
+    "RO_AGGREGATE",
+    `L2 severity: ${calc.formula_en}`,
+    `L2 嚴重度：${calc.formula_zh}`
+  );
+}
 
 export type AggregationBoardPack = {
   definitions: AggregateDefinition[];
@@ -225,6 +256,9 @@ export function startAggregationSession(input: {
     force_aggregated: false,
     missing_l1_at_force: [],
     post_flow: [],
+    l1_severities: { [monitor]: severity },
+    l2_severity: null,
+    l2_severity_calc: null,
     events: [],
     created_at: nowIso(),
     updated_at: nowIso(),
@@ -335,12 +369,17 @@ export function injectRelatedAlert(input: {
     throw new Error("Related monitor must differ from the trigger");
   }
   if (!session.related_seen.includes(related)) session.related_seen.push(related);
+  const relatedSev = String(input.severity || "BREACH").toUpperCase();
+  session.l1_severities = {
+    ...(session.l1_severities || { [session.trigger_monitor]: session.trigger_severity }),
+    [related]: relatedSev,
+  };
 
   pushEvent(
     session,
     "AGGREGATE_READY",
-    `Related alert ${related} (${input.severity || "BREACH"}) inside window — aggregating in UI`,
-    `視窗內出現關聯告警 ${related}（${input.severity || "BREACH"}）— 界面內聚合`
+    `Related alert ${related} (${relatedSev}) inside window — aggregating in UI`,
+    `視窗內出現關聯告警 ${related}（${relatedSev}）— 界面內聚合`
   );
   pushEvent(
     session,
@@ -351,6 +390,9 @@ export function injectRelatedAlert(input: {
   session.outcome = "AGGREGATED";
   session.force_aggregated = false;
   session.post_flow = POST_L2_FLOW_STAGES.map((s) => s.id);
+  const def =
+    listAggregateDefinitions(db).find((d) => d.code === session.aggregate_code) || null;
+  applyL2Severity(session, def);
   sessions[idx] = session;
   saveSessions(sessions, db);
   writeAudit(input.actor || { id: null, name: "system" }, "INDICATOR_AGG_RELATED", "indicator_aggregation", session.session_id, {
@@ -435,6 +477,12 @@ export function forceAggregateIncomplete(input: {
   );
   session.outcome = "FORCE_AGGREGATED";
   session.post_flow = POST_L2_FLOW_STAGES.map((s) => s.id);
+  session.l1_severities = {
+    ...(session.l1_severities || { [session.trigger_monitor]: session.trigger_severity }),
+  };
+  const def =
+    listAggregateDefinitions(db).find((d) => d.code === session.aggregate_code) || null;
+  applyL2Severity(session, def);
   sessions[idx] = session;
   saveSessions(sessions, db);
   writeAudit(
@@ -442,7 +490,13 @@ export function forceAggregateIncomplete(input: {
     "INDICATOR_AGG_FORCE",
     "indicator_aggregation",
     session.session_id,
-    { missing, reason, outcome: session.outcome, post_flow: session.post_flow }
+    {
+      missing,
+      reason,
+      outcome: session.outcome,
+      post_flow: session.post_flow,
+      l2_severity: session.l2_severity,
+    }
   );
   return session;
 }
