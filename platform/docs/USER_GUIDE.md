@@ -504,7 +504,7 @@ graph TD
 | **Escalate** | Moves Primary → Secondary → Risk Owner → Exec along the route |
 | **Dismiss** | False alarm. Closes the thread and the alert |
 | **Close (accept AI)** | Accepts the analysis and closes the ticket |
-| **Severity feedback (P0–P3)** (also: Re-recommend severity) | On the Lark AI incident report card: **Monitor 2.0 surfaces** (hub / indicator / realtime alerts / L1→L2 aggregation); one-tap **AI severity is accurate — nothing wrong**; or pick a corrected P0–P3 with reason codes. Feeds weekly formula recommend + monthly escalation weight pack (Escalation Routes → RO approve) |
+| **Severity feedback (P0–P3)** (also: Re-recommend severity) | On the Lark AI incident report card: **Monitor 2.0 surfaces** (hub / indicator / realtime alerts / L1→L2 aggregation); one-tap **AI severity is accurate — nothing wrong** (`ai_accurate`); or pick a corrected P0–P3 with reason codes. Feeds weekly formula recommend + monthly escalation weight pack (Escalation Routes → RO approve) |
 | **Recommended actions** | Block user, halt trading, cut max leverage, pre-widen spreads, pause copy joining |
 | **Double-confirm…** then **Yes, send to Vantage admin** | Creates an admin reference + link (often Interventions) |
 | **Checker approve (go live)** | When the system says a checker is required |

@@ -13,7 +13,7 @@ Each column header labels the **responsible BU**. Cell colour = status: **Planne
 
 Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 18 issues). Filter by status and BU on the board.
 
-Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back + mutation coverage for every admin/Lark path), **AI Performance** read-only eval board, editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, severity formula loop (FR-39: AI_REPORT **accurate confirm** + Monitor 2.0 surfaces) + **Indicator Aggregation** linear flow (`/admin/indicator-aggregation`, FR-40: force-aggregate + L2 severity = max(L1)×weight + homepage L1→L2 demo), Monitor 2.0 **threshold adjustment full-flow** demo, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
+Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back + mutation coverage for every admin/Lark path), **AI Performance** read-only eval board, editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, severity formula loop (FR-39: AI_REPORT **accurate confirm** + Monitor 2.0 surfaces) + **Indicator Aggregation** linear flow (`/admin/indicator-aggregation`, FR-40: force-aggregate `FORCE_AGGREGATED` + L2 severity = max(L1)×weight + homepage L1→L2 demo), Monitor 2.0 **threshold adjustment full-flow** demo, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
 
 ### Issue → BU → status → window
 

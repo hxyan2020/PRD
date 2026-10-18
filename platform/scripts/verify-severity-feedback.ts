@@ -86,6 +86,10 @@ assert.match(phrases, /P0–P3 嚴重度重推薦/);
 assert.match(phrases, /每月 P0–P3→因子權重組合/);
 assert.match(phrases, /確認 P0 — 權益回撤且 LP 報價過期/);
 assert.match(phrases, /來自 Messenger AI_REPORT 卡的 P0–P3 重推薦/);
+assert.match(phrases, /AI_REPORT Monitor 2\.0 surfaces \+ accurate severity confirm/);
+assert.match(phrases, /AI_REPORT Monitor 2\.0 可用介面＋準確嚴重度確認/);
+assert.match(phrases, /recommend_severity \(ai_accurate or P override/);
+assert.match(phrases, /recommend_severity（ai_accurate 或 P 覆寫/);
 
 const escUi = read("src/components/EscalationManager.tsx");
 assert.match(escUi, /Phrase/);
@@ -99,6 +103,7 @@ const ug = read("docs/USER_GUIDE.md");
 assert.match(ug, /Severity feedback \(P0–P3\)/);
 assert.match(ug, /Re-recommend severity/);
 assert.match(ug, /AI severity is accurate/);
+assert.match(ug, /ai_accurate/);
 assert.match(ug, /Monitor 2\.0 surfaces/);
 assert.match(ug, /monthly severity weight pack/);
 assert.match(ug, /Severity formula loop \+ factor weights/);
@@ -106,6 +111,7 @@ const ugZh = read("docs/USER_GUIDE.zh-Hant.md");
 assert.match(ugZh, /嚴重度回饋（P0–P3）/);
 assert.match(ugZh, /重新推薦嚴重度/);
 assert.match(ugZh, /沒什麼不准/);
+assert.match(ugZh, /ai_accurate/);
 assert.match(ugZh, /Monitor 2\.0 可用介面/);
 assert.match(ugZh, /嚴重度公式迴路＋因子權重/);
 

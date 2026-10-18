@@ -63,4 +63,10 @@ for (const [rel, markers] of [
   }
 }
 
+const phrases = read("src/lib/i18n-phrases.ts");
+assert.match(phrases, /threshold adjustment full-flow demo/);
+assert.match(phrases, /門檻調整全流程演示/);
+assert.match(phrases, /L1→L2 aggregation demo \+ threshold adjustment full-flow demo/);
+assert.match(phrases, /L1→L2 聚合演示＋門檻調整全流程演示/);
+
 console.log("ok: threshold adjustment full-flow demo");

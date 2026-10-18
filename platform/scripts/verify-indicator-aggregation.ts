@@ -84,6 +84,9 @@ assert.match(uatCases, /covers_zh: \[\"指標聚合流程\"/);
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /\"Indicator Aggregation Flow\": \"指標聚合流程\"/);
 assert.match(phrases, /\"Indicator Aggregation API\": \"指標聚合 API\"/);
+assert.match(phrases, /FORCE_AGGREGATED/);
+assert.match(phrases, /L2 嚴重度 = max\(已觸發 L1\)×權重/);
+assert.match(phrases, /force_aggregate／continue_post_flow/);
 
 const openIssuesTs = read("src/lib/docs/open-issues.ts");
 assert.match(openIssuesTs, /Indicator Aggregation linear flow/);
