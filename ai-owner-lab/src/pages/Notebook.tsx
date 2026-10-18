@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { CloudSetupCard } from '../components/CloudSetupCard'
 import { NoteAttachments } from '../components/NoteAttachments'
+import { NoteCardImages } from '../components/NoteCardImages'
 import { NoteTree } from '../components/NoteTree'
 import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
@@ -1470,6 +1471,11 @@ export function Notebook() {
                       {entry.title ? (
                         <h3 className="notebook-entry-title">{entry.title}</h3>
                       ) : null}
+                      <NoteCardImages
+                        html={entry.selectedText}
+                        attachments={entry.attachments}
+                        limit={3}
+                      />
                       {(() => {
                         const bodySummary = htmlToPlainText(entry.selectedText).trim()
                         const explanationSummary = (entry.explanation || '')
