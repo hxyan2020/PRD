@@ -35,6 +35,9 @@ describe("mobile UI affordances", () => {
     expect(src).toContain("mobile-filters");
     expect(src).toContain("idea-ledger-row");
     expect(src).toContain("idea-ledger-meta");
+    expect(src).toContain("ledger.filters");
+    expect(src).toContain("filtersOpen");
+    expect(src).toContain("sm:contents");
   });
 
   it("anchors idea dossiers at the top of the page on open", () => {

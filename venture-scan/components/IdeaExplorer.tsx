@@ -40,6 +40,7 @@ export function IdeaExplorer({
   const [country, setCountry] = useState("");
   const [fundraising, setFundraising] = useState<"all" | "yes" | "no">("all");
   const [fundingRound, setFundingRound] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [ideas, setIdeas] = useState(initialIdeas);
   const fundingRounds = useMemo(
     () => meta.fundingRounds ?? collectFundingStages(ideas),
@@ -133,6 +134,21 @@ export function IdeaExplorer({
   }
 
   const hasMatches = Object.keys(matches).length > 0;
+  const activeFilterCount = [
+    industry,
+    sector,
+    country,
+    fundingRound,
+    fundraising !== "all" ? fundraising : "",
+  ].filter(Boolean).length;
+
+  function clearFilters() {
+    setIndustry("");
+    setSector("");
+    setCountry("");
+    setFundraising("all");
+    setFundingRound("");
+  }
 
   return (
     <section id="ideas" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
@@ -176,38 +192,66 @@ export function IdeaExplorer({
           autoCapitalize="off"
           autoCorrect="off"
         />
-        <IndustryPicker
-          value={industry}
-          industries={meta.industries}
-          onChange={setIndustry}
-        />
-        <CountryPicker
-          value={country}
-          countries={meta.countries}
-          onChange={setCountry}
-        />
-        <select
-          className="field"
-          value={fundraising}
-          onChange={(e) => setFundraising(e.target.value as "all" | "yes" | "no")}
-          aria-label={t("ledger.fundAll")}
+        <button
+          type="button"
+          className="btn-ghost min-h-11 justify-between sm:hidden"
+          aria-expanded={filtersOpen}
+          onClick={() => setFiltersOpen((v) => !v)}
         >
-          <option value="all">{t("ledger.fundAll")}</option>
-          <option value="yes">{t("ledger.fundYes")}</option>
-          <option value="no">{t("ledger.fundNo")}</option>
-        </select>
-        <SectorPicker
-          className="w-full lg:col-span-2"
-          value={sector}
-          sectors={meta.sectors}
-          onChange={setSector}
-        />
-        <FundingRoundPicker
-          className="w-full lg:col-span-2"
-          value={fundingRound}
-          rounds={fundingRounds}
-          onChange={setFundingRound}
-        />
+          <span>
+            {filtersOpen
+              ? t("ledger.hideFilters")
+              : activeFilterCount > 0
+                ? t("ledger.filtersActive", { count: activeFilterCount })
+                : t("ledger.filters")}
+          </span>
+          <span aria-hidden className="font-mono text-xs text-mist">
+            {filtersOpen ? "▴" : "▾"}
+          </span>
+        </button>
+        <div className={`${filtersOpen ? "contents" : "hidden"} sm:contents`}>
+          <IndustryPicker
+            value={industry}
+            industries={meta.industries}
+            onChange={setIndustry}
+          />
+          <CountryPicker
+            value={country}
+            countries={meta.countries}
+            onChange={setCountry}
+          />
+          <select
+            className="field"
+            value={fundraising}
+            onChange={(e) => setFundraising(e.target.value as "all" | "yes" | "no")}
+            aria-label={t("ledger.fundAll")}
+          >
+            <option value="all">{t("ledger.fundAll")}</option>
+            <option value="yes">{t("ledger.fundYes")}</option>
+            <option value="no">{t("ledger.fundNo")}</option>
+          </select>
+          <SectorPicker
+            className="w-full lg:col-span-2"
+            value={sector}
+            sectors={meta.sectors}
+            onChange={setSector}
+          />
+          <FundingRoundPicker
+            className="w-full lg:col-span-2"
+            value={fundingRound}
+            rounds={fundingRounds}
+            onChange={setFundingRound}
+          />
+          {activeFilterCount > 0 ? (
+            <button
+              type="button"
+              className="btn-ghost min-h-11 sm:hidden"
+              onClick={clearFilters}
+            >
+              {t("ledger.clearFilters")}
+            </button>
+          ) : null}
+        </div>
         <p className="flex min-h-11 items-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist sm:col-span-2 lg:col-span-1">
           {pending ? "…" : t("ledger.shown", { count: filtered.length })}
         </p>
