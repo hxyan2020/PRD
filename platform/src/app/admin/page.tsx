@@ -22,6 +22,7 @@ import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
 import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
 import { HomeDummyAlertButtons } from "@/components/HomeDummyAlertButtons";
+import { HomeL1L2AggregationDemo } from "@/components/HomeL1L2AggregationDemo";
 import { spineStageCounts } from "@/lib/ai/spine";
 import { FINISHED_AT, finishedAtLabel } from "@/lib/build-stamp";
 import { getUiLocale } from "@/lib/i18n-server";
@@ -362,6 +363,8 @@ export default async function AdminDashboardPage({
       </div>
 
       <HomeDummyAlertButtons />
+
+      <HomeL1L2AggregationDemo />
 
       <section className="panel p-3 sm:p-4 min-w-0 mt-6">
         <div className="flex items-start justify-between gap-2">

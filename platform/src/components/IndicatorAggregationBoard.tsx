@@ -29,6 +29,7 @@ function stepIndex(step: AggregationStepId): number {
 
 function outcomeTone(outcome: AggregationSession["outcome"]) {
   if (outcome === "AGGREGATED") return "bg-indigo-100 border-indigo-200 text-indigo-950";
+  if (outcome === "FORCE_AGGREGATED") return "bg-orange-100 border-orange-200 text-orange-950";
   if (outcome === "PENDING") return "bg-amber-100 border-amber-200 text-amber-950";
   return "bg-slate-100 border-slate-200 text-slate-800";
 }
@@ -358,6 +359,23 @@ export function IndicatorAggregationBoard({
                   ))}
                   <button
                     type="button"
+                    className="btn !min-h-10 text-xs border-orange-300 text-orange-950"
+                    disabled={busy}
+                    onClick={() =>
+                      void run("force_aggregate", {
+                        session_id: active.session_id,
+                        reason: "RO force L2 while L1 incomplete (desk demo)",
+                      })
+                    }
+                    data-testid="indicator-agg-force"
+                  >
+                    <EnZh
+                      en="Force-aggregate L2 (L1 incomplete)"
+                      zh="強制聚合 L2（L1 未齊）"
+                    />
+                  </button>
+                  <button
+                    type="button"
                     className="btn !min-h-10 text-xs"
                     disabled={busy}
                     onClick={() =>
@@ -366,6 +384,83 @@ export function IndicatorAggregationBoard({
                     data-testid="indicator-agg-timeout"
                   >
                     <EnZh en="End window → RO as single" zh="結束視窗 → RO 按單一處理" />
+                  </button>
+                </div>
+              ) : null}
+
+              {(active.outcome === "AGGREGATED" || active.outcome === "FORCE_AGGREGATED") &&
+              active.l2_severity_calc ? (
+                <div
+                  className="rounded-lg border border-indigo-200 bg-indigo-50/60 px-3 py-2 space-y-1.5"
+                  data-testid="indicator-agg-l2-severity"
+                >
+                  <div className="flex flex-wrap items-center gap-2 justify-between">
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-indigo-900">
+                      <EnZh en="L2 severity = max(L1) × weight" zh="L2 嚴重度 = max(L1) × 權重" />
+                    </span>
+                    <span data-testid="indicator-agg-l2-severity-final">
+                      <Badge
+                        className={
+                          active.l2_severity === "CRITICAL"
+                            ? "bg-rose-100 text-rose-950 border-rose-200"
+                            : active.l2_severity === "BREACH"
+                              ? "bg-orange-100 text-orange-950 border-orange-200"
+                              : "bg-amber-100 text-amber-950 border-amber-200"
+                        }
+                      >
+                        L2 = {active.l2_severity || active.l2_severity_calc.final}
+                        {active.l2_severity_calc.upgraded
+                          ? zh
+                            ? " · 已升檔"
+                            : " · upgraded"
+                          : ""}
+                      </Badge>
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-mono text-indigo-950/90">
+                    {zh
+                      ? active.l2_severity_calc.formula_zh
+                      : active.l2_severity_calc.formula_en}
+                  </p>
+                  <ul className="text-[11px] text-slate-700 space-y-0.5 font-mono">
+                    {active.l2_severity_calc.l1.map((row) => (
+                      <li key={row.monitor_id}>
+                        {row.monitor_id} = {row.severity}
+                      </li>
+                    ))}
+                  </ul>
+                  <ol className="list-decimal pl-4 space-y-0.5 text-[11px] text-slate-700">
+                    {(zh
+                      ? active.l2_severity_calc.steps_zh
+                      : active.l2_severity_calc.steps_en
+                    ).map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              ) : null}
+
+              {canOperate &&
+              (active.outcome === "AGGREGATED" || active.outcome === "FORCE_AGGREGATED") ? (
+                <div className="flex flex-wrap gap-2 pt-1" data-testid="indicator-agg-post-flow">
+                  {active.force_aggregated ? (
+                    <Badge className="bg-orange-100 border-orange-200 text-orange-950">
+                      <EnZh
+                        en={`Forced · missing L1: ${(active.missing_l1_at_force || []).join(", ") || "—"}`}
+                        zh={`已強制 · 缺 L1：${(active.missing_l1_at_force || []).join("、") || "—"}`}
+                      />
+                    </Badge>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="btn btn-primary !min-h-10 text-xs"
+                    disabled={busy}
+                    onClick={() =>
+                      void run("continue_post_flow", { session_id: active.session_id })
+                    }
+                    data-testid="indicator-agg-continue"
+                  >
+                    <EnZh en="Continue post-L2 flow" zh="繼續 L2 之後流程" />
                   </button>
                 </div>
               ) : null}
