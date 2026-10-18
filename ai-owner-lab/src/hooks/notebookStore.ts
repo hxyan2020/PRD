@@ -167,6 +167,37 @@ function mergeTrash(...lists: TrashedNotebookEntry[][]): TrashedNotebookEntry[] 
   return sortTrash([...map.values()])
 }
 
+/**
+ * A note must not live in both the notebook and the dustbin.
+ * After merges (esp. cloud pull), prefer trash when deletedAt >= entry time;
+ * prefer the live entry when it was updated/restored after the delete.
+ */
+function reconcileEntriesAndTrash(
+  entries: NotebookEntry[],
+  trash: TrashedNotebookEntry[],
+): { entries: NotebookEntry[]; trash: TrashedNotebookEntry[] } {
+  const entryMap = new Map(entries.map((e) => [e.id, e]))
+  const trashMap = new Map(trash.map((e) => [e.id, e]))
+  const nextEntries: NotebookEntry[] = []
+  const nextTrash: TrashedNotebookEntry[] = []
+  for (const id of new Set([...entryMap.keys(), ...trashMap.keys()])) {
+    const entry = entryMap.get(id)
+    const trashed = trashMap.get(id)
+    if (entry && trashed) {
+      if (entryTime(entry) > new Date(trashed.deletedAt).getTime()) {
+        nextEntries.push(entry)
+      } else {
+        nextTrash.push(trashed)
+      }
+    } else if (entry) {
+      nextEntries.push(entry)
+    } else if (trashed) {
+      nextTrash.push(trashed)
+    }
+  }
+  return { entries: sortEntries(nextEntries), trash: sortTrash(nextTrash) }
+}
+
 function mergeCategories(...lists: NotebookCategory[][]): NotebookCategory[] {
   const map = new Map<string, NotebookCategory>()
   for (const list of lists) {
@@ -301,13 +332,12 @@ async function gatherAllSources(): Promise<{
   const lsTrash = parseTrash(readLocalStorageJson(LS_TRASH))
   const lsCategories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
 
-  const entries = mergeEntries(
-    idbEntries,
-    snap?.entries ?? [],
-    snapPrev?.entries ?? [],
-    lsEntries,
+  const merged = reconcileEntriesAndTrash(
+    mergeEntries(idbEntries, snap?.entries ?? [], snapPrev?.entries ?? [], lsEntries),
+    mergeTrash(idbTrash, snap?.trash ?? [], snapPrev?.trash ?? [], lsTrash),
   )
-  const trash = mergeTrash(idbTrash, snap?.trash ?? [], snapPrev?.trash ?? [], lsTrash)
+  const entries = merged.entries
+  const trash = merged.trash
   const categories = mergeCategories(
     idbCategories,
     snap?.categories ?? [],
@@ -958,8 +988,12 @@ export const notebookStore = {
     // Merge against the live cache inside the write queue so a concurrent addNote
     // cannot be overwritten by a slower pull-merge.
     const total = await enqueueWrite(async () => {
-      const entries = mergeEntries(cache.entries, ...incomingEntries)
-      const trash = mergeTrash(cache.trash, ...incomingTrash)
+      const reconciled = reconcileEntriesAndTrash(
+        mergeEntries(cache.entries, ...incomingEntries),
+        mergeTrash(cache.trash, ...incomingTrash),
+      )
+      const entries = reconciled.entries
+      const trash = reconciled.trash
       const categories = mergeCategories(cache.categories, ...incomingCategories)
       await saveSnapshot(cache.entries, cache.trash, cache.categories)
       await persistKey(IDB_KEYS.entries, entries)
@@ -1071,8 +1105,12 @@ export const notebookStore = {
       } catch {
         /* no folder backup */
       }
-      const entries = mergeEntries(cache.entries, gathered.entries)
-      const trash = mergeTrash(cache.trash, gathered.trash)
+      const gatheredRecon = reconcileEntriesAndTrash(
+        mergeEntries(cache.entries, gathered.entries),
+        mergeTrash(cache.trash, gathered.trash),
+      )
+      const entries = gatheredRecon.entries
+      const trash = gatheredRecon.trash
       const categories = mergeCategories(cache.categories, gathered.categories)
       if (
         entries.length !== cache.entries.length ||
@@ -1080,18 +1118,20 @@ export const notebookStore = {
         categories.length !== cache.categories.length
       ) {
         await enqueueWrite(async () => {
-          const nextEntries = mergeEntries(cache.entries, entries)
-          const nextTrash = mergeTrash(cache.trash, trash)
+          const next = reconcileEntriesAndTrash(
+            mergeEntries(cache.entries, entries),
+            mergeTrash(cache.trash, trash),
+          )
           const nextCategories = mergeCategories(cache.categories, categories)
           await saveSnapshot(cache.entries, cache.trash, cache.categories)
-          await persistKey(IDB_KEYS.entries, nextEntries)
-          await persistKey(IDB_KEYS.trash, nextTrash)
+          await persistKey(IDB_KEYS.entries, next.entries)
+          await persistKey(IDB_KEYS.trash, next.trash)
           await persistKey(IDB_KEYS.categories, nextCategories)
-          cache.entries = nextEntries
-          cache.trash = nextTrash
+          cache.entries = next.entries
+          cache.trash = next.trash
           cache.categories = nextCategories
-          entryListeners.forEach((listener) => listener(nextEntries))
-          trashListeners.forEach((listener) => listener(nextTrash))
+          entryListeners.forEach((listener) => listener(next.entries))
+          trashListeners.forEach((listener) => listener(next.trash))
           categoryListeners.forEach((listener) => listener(nextCategories))
           await saveSnapshot(cache.entries, cache.trash, cache.categories)
         })
@@ -1839,14 +1879,18 @@ export const notebookStore = {
       await ensureReady()
       const trash = cache.trash
       const entry = trash.find((e) => e.id === id)
-      if (!entry) return null
+      if (!entry && !cache.entries.some((e) => e.id === id)) return null
       const nextTrash = sortTrash(trash.filter((e) => e.id !== id))
+      const nextEntries = sortEntries(cache.entries.filter((e) => e.id !== id))
       await saveSnapshot(cache.entries, cache.trash, cache.categories)
       await persistKey(IDB_KEYS.trash, nextTrash)
+      await persistKey(IDB_KEYS.entries, nextEntries)
       cache.trash = nextTrash
+      cache.entries = nextEntries
       trashListeners.forEach((listener) => listener(nextTrash))
+      entryListeners.forEach((listener) => listener(nextEntries))
       await saveSnapshot(cache.entries, cache.trash, cache.categories)
-      return entry
+      return entry ?? ({ id, deletedAt: new Date().toISOString() } as TrashedNotebookEntry)
     })
     if (removed) kickDurableSync()
     return removed

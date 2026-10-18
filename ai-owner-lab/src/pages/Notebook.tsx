@@ -390,14 +390,21 @@ export function Notebook() {
     return map
   }, [categories])
 
+  /** Active notes only — never show dustbin items in the tree or note list. */
+  const activeEntries = useMemo(() => {
+    if (!trash.length) return entries
+    const trashedIds = new Set(trash.map((e) => e.id))
+    return entries.filter((e) => !trashedIds.has(e.id))
+  }, [entries, trash])
+
   const visibleEntries = useMemo(() => {
-    const filtered = filterEntries(entries, query, categoryFilter, categories)
+    const filtered = filterEntries(activeEntries, query, categoryFilter, categories)
     return sortEntries(filtered, sort, lang)
-  }, [entries, query, categoryFilter, categories, sort, lang])
+  }, [activeEntries, query, categoryFilter, categories, sort, lang])
 
   const openedNote = useMemo(
-    () => (openedNoteId ? entries.find((e) => e.id === openedNoteId) ?? null : null),
-    [openedNoteId, entries],
+    () => (openedNoteId ? activeEntries.find((e) => e.id === openedNoteId) ?? null : null),
+    [openedNoteId, activeEntries],
   )
 
   useEffect(() => {
@@ -589,6 +596,7 @@ export function Notebook() {
     })
     if (editingId === id) cancelEdit()
     if (openedNoteId === id) setOpenedNoteId(null)
+    if (treeFocusId === id) setTreeFocusId(null)
   }
 
   async function recoverFromDustbin(entry: TrashedNotebookEntry) {
@@ -710,7 +718,7 @@ export function Notebook() {
           >
             <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-notes" />
             {t('viewNotes')}
-            <span className="notebook-view-count">{count}</span>
+            <span className="notebook-view-count">{activeEntries.length}</span>
           </button>
           <button
             type="button"
@@ -721,7 +729,7 @@ export function Notebook() {
           >
             <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-tree" />
             {t('viewTree')}
-            <span className="notebook-view-count">{count}</span>
+            <span className="notebook-view-count">{activeEntries.length}</span>
           </button>
           <button
             type="button"
@@ -1057,7 +1065,7 @@ export function Notebook() {
         <>
           <NoteTree
             categories={categories}
-            entries={entries}
+            entries={activeEntries}
             lang={lang}
             selectedNoteId={openedNoteId}
             onSelectNote={openNoteFromTree}
