@@ -441,7 +441,7 @@ export function EscalationManager({
               </button>
             ) : null}
             <a className="text-xs text-teal-800 underline" href="/admin/messenger">
-              {zh ? "在 Messenger 重推薦嚴重度 →" : "Re-recommend severity in Messenger →"}
+              {zh ? "在 Messenger 回饋嚴重度 →" : "Severity feedback in Messenger →"}
             </a>
             <a className="text-xs text-teal-800 underline" href="/admin/ai-performance">
               {zh ? "AI 績效看板 →" : "AI Performance →"}

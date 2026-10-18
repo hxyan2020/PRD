@@ -4,6 +4,7 @@ import { getDb, writeAudit } from "@/lib/db";
 import { logSpineEvent } from "@/lib/ai/spine";
 import { matchEscalationRoute } from "@/lib/escalation/match";
 import type { UiLocale } from "@/lib/i18n";
+import { monitor2DeepLinks } from "@/lib/monitor-deep-links";
 
 export type MessengerAction =
   | "show_evidence"
@@ -342,7 +343,7 @@ export function seedMessengerIfEmpty(db: Database.Database = getDb()) {
       { alert_id: a.alert_id, monitor_id: a.monitor_id }
     );
 
-    addDemoAiReport(db, tid, a);
+    addDemoAiReport(db, tid, { ...a, monitor_id: a.monitor_id });
     addDemoEscalation(db, tid, a.severity);
   }
 
@@ -390,6 +391,40 @@ function lookupAnalysis(
     | undefined;
 }
 
+function resolveThreadMonitorId(db: Database.Database, tid: number, fallback?: string | null): string | null {
+  if (fallback) return String(fallback).toUpperCase();
+  const rows = db
+    .prepare(`SELECT meta_json FROM messenger_messages WHERE thread_id = ? ORDER BY id`)
+    .all(tid) as Array<{ meta_json: string }>;
+  for (const row of rows) {
+    try {
+      const meta = JSON.parse(row.meta_json || "{}") as { monitor_id?: string };
+      if (meta.monitor_id) return String(meta.monitor_id).toUpperCase();
+    } catch {
+      /* ignore */
+    }
+  }
+  const alert = db
+    .prepare(
+      `SELECT i.monitor_id FROM messenger_threads t
+       JOIN monitor_alerts a ON a.id = t.alert_id
+       JOIN monitor_indicators i ON i.id = a.indicator_id
+       WHERE t.id = ?`
+    )
+    .get(tid) as { monitor_id: string } | undefined;
+  return alert?.monitor_id ? String(alert.monitor_id).toUpperCase() : null;
+}
+
+function aiReportMonitorMeta(monitorId: string | null) {
+  const links = monitor2DeepLinks(monitorId);
+  return {
+    monitor_id: monitorId,
+    monitor_links: links,
+    /** Primary Monitor 2.0 entry for the card chrome */
+    monitor_url: links.find((l) => l.id === "indicator")?.href || links[0]?.href || "/admin/monitor-2",
+  };
+}
+
 function addDemoAiReport(
   db: Database.Database,
   tid: number,
@@ -401,8 +436,14 @@ function addDemoAiReport(
     mode: string | null;
     challenge_verdict: string | null;
     id?: number;
+    monitor_id?: string | null;
   }
 ) {
+  const monitorId = resolveThreadMonitorId(db, tid, a.monitor_id);
+  const m2 = aiReportMonitorMeta(monitorId);
+  const m2Lines = m2.monitor_links
+    .map((l) => `· ${l.en}: ${l.href}`)
+    .join("\n");
   const linked =
     a.analysis_db_id && a.summary
       ? {
@@ -421,13 +462,14 @@ function addDemoAiReport(
       "CRMP AI",
       `🤖 AI Report ${linked.analysis_id}\nMode: ${linked.mode || "RAG"}\n${linked.summary || a.title}${
         linked.challenge_verdict ? `\nSecond AI: ${linked.challenge_verdict}` : ""
-      }`,
+      }\n\nMonitor 2.0 surfaces:\n${m2Lines}\n\nSeverity: confirm if accurate, or re-recommend P0–P3 with reason codes.`,
       {
         analysis_db_id: linked.id,
         analysis_id: linked.analysis_id,
         mode: linked.mode,
         challenge_verdict: linked.challenge_verdict,
         admin_url: `/admin/ai-analyses/${linked.id}`,
+        ...m2,
       }
     );
     db.prepare(`UPDATE messenger_threads SET analysis_id = ? WHERE id = ?`).run(linked.id, tid);
@@ -438,8 +480,8 @@ function addDemoAiReport(
     tid,
     "AI_REPORT",
     "CRMP AI",
-    `🤖 AI Report AIA-DEMO\nMode: RAG\nPrimary RCA: ${a.title} matches a Credit & Client Risk pattern (session-open utilisation / concentration).\nRecommended: page Risk Desk, attach evidence, hold irreversible controls for checker.\nSecond AI: AGREE`,
-    { analysis_id: "AIA-DEMO", admin_url: "/admin/ai-analyses" }
+    `🤖 AI Report AIA-DEMO\nMode: RAG\nPrimary RCA: ${a.title} matches a Credit & Client Risk pattern (session-open utilisation / concentration).\nRecommended: page Risk Desk, attach evidence, hold irreversible controls for checker.\nSecond AI: AGREE\n\nMonitor 2.0 surfaces:\n${m2Lines}\n\nSeverity: confirm if accurate, or re-recommend P0–P3 with reason codes.`,
+    { analysis_id: "AIA-DEMO", admin_url: "/admin/ai-analyses", ...m2 }
   );
 }
 
@@ -531,7 +573,30 @@ export function ensureMessengerDemoMessages(db: Database.Database = getDb()) {
         summary: null,
         mode: null,
         challenge_verdict: null,
+        monitor_id: resolveThreadMonitorId(db, thread.id, null),
       });
+    } else {
+      // Refresh Monitor 2.0 deep-link pack on existing AI_REPORT cards.
+      const msgs = db
+        .prepare(`SELECT id, meta_json FROM messenger_messages WHERE thread_id = ? AND kind = 'AI_REPORT'`)
+        .all(thread.id) as Array<{ id: number; meta_json: string }>;
+      const mid = resolveThreadMonitorId(db, thread.id, null);
+      const m2 = aiReportMonitorMeta(mid);
+      for (const msg of msgs) {
+        let meta: Record<string, unknown> = {};
+        try {
+          meta = JSON.parse(msg.meta_json || "{}") as Record<string, unknown>;
+        } catch {
+          meta = {};
+        }
+        if (!Array.isArray(meta.monitor_links) || !meta.monitor_links.length) {
+          Object.assign(meta, m2);
+          db.prepare(`UPDATE messenger_messages SET meta_json = ? WHERE id = ?`).run(
+            JSON.stringify(meta),
+            msg.id
+          );
+        }
+      }
     }
     if (!kinds.includes("ESCALATION")) {
       addDemoEscalation(db, thread.id, thread.severity);
@@ -572,6 +637,10 @@ function relinkMessengerToAnalyses(db: Database.Database) {
       meta.admin_url = `/admin/ai-analyses/${linked.id}`;
       meta.analysis_db_id = linked.id;
       meta.analysis_id = linked.analysis_id;
+      const mid =
+        (typeof meta.monitor_id === "string" && meta.monitor_id) ||
+        resolveThreadMonitorId(db, thread.id, null);
+      Object.assign(meta, aiReportMonitorMeta(mid));
       db.prepare(`UPDATE messenger_messages SET meta_json = ? WHERE id = ?`).run(JSON.stringify(meta), msg.id);
     }
   }

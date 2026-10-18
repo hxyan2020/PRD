@@ -867,7 +867,7 @@ graph TD
 **Steps**
 
 1. Open Demo Messenger → an OPEN thread with an AI_REPORT interactive card.
-2. In Re-recommend severity (P0–P3), note the AI severity (e.g. P1 · BREACH). Pick a different P (or confirm the same), type a reason ≥3 characters, Submit severity feedback.
+2. On the AI_REPORT card, open Monitor 2.0 surfaces (hub / indicator / alerts). Either tap **AI severity is accurate — nothing wrong**, or pick a different P with reason codes, then Submit severity feedback.
 3. Confirm a SYSTEM bubble records AI P → suggested P and the reason.
 4. Open Escalation Routes. The monthly severity weight pack must show sample count ≥1, upgrade/downgrade tallies, and current → suggested coefficients. If you have manage rights, Apply to ESC-DEFAULT once (or confirm the Apply button exists when samples > 0).
 5. Open AI Performance. The P0–P3 → factor weights panel must list the same month’s feedback and suggested deltas — with no Apply button on that page.

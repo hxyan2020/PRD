@@ -10,7 +10,12 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, phrase, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { THINKING_ACTIONS, thinkingSteps } from "@/lib/messenger/thinking";
-import { SEVERITY_REASON_CODES } from "@/lib/severity-formula-shared";
+import {
+  SEVERITY_ACCURATE_CODE,
+  SEVERITY_REASON_CODES,
+  isSeverityAccurateCode,
+} from "@/lib/severity-formula-shared";
+import { monitor2DeepLinks, type MonitorDeepLink } from "@/lib/monitor-deep-links";
 
 const ACTION_I18N: Record<string, { en: string; "zh-Hant": string; descEn: string; descZh: string }> = {
   BLOCK_ACCOUNT: {
@@ -239,6 +244,7 @@ function LarkCardActions({
   onDismiss,
   onRecommend,
   onRecommendSeverity,
+  monitorLinks,
 }: {
   busy: boolean;
   capabilities: MessengerCaps;
@@ -246,6 +252,7 @@ function LarkCardActions({
   visibleRecommended: Recommended[];
   locale: UiLocale;
   aiSeverity: string;
+  monitorLinks: MonitorDeepLink[];
   onClose: () => void;
   onEscalate: () => void;
   onEvidence: () => void;
@@ -264,10 +271,58 @@ function LarkCardActions({
     { p: 2, tone: "border-amber-300 bg-amber-50 text-amber-950", en: "P2", zh: "P2" },
     { p: 3, tone: "border-slate-300 bg-slate-50 text-slate-800", en: "P3", zh: "P3" },
   ];
-  const canSubmitSev = sevP != null && (sevCodes.length > 0 || sevReason.trim().length >= 3);
+  const accurateOn = sevCodes.includes(SEVERITY_ACCURATE_CODE);
+  const inaccurateCodes = SEVERITY_REASON_CODES.filter((c) => !isSeverityAccurateCode(c.id));
+  const canSubmitSev =
+    sevP != null &&
+    (accurateOn || sevCodes.some((c) => !isSeverityAccurateCode(c)) || sevReason.trim().length >= 3);
+
+  function toggleCode(id: string) {
+    setSevCodes((prev) => {
+      const on = prev.includes(id);
+      if (isSeverityAccurateCode(id)) {
+        if (on) return prev.filter((x) => x !== id);
+        setSevP(aiP);
+        return [SEVERITY_ACCURATE_CODE];
+      }
+      const withoutAccurate = prev.filter((x) => !isSeverityAccurateCode(x));
+      if (on) return withoutAccurate.filter((x) => x !== id);
+      return [...withoutAccurate, id];
+    });
+  }
+
+  function confirmAccurate() {
+    setSevP(aiP);
+    setSevCodes([SEVERITY_ACCURATE_CODE]);
+    onRecommendSeverity(aiP, sevReason.trim() || "AI severity confirmed accurate", [
+      SEVERITY_ACCURATE_CODE,
+    ]);
+    setSevReason("");
+    setSevCodes([]);
+    setSevP(null);
+  }
 
   return (
     <div className="mt-3 border-t border-amber-200/80 pt-2.5 space-y-2.5" data-testid="msg-lark-card-actions">
+      <div data-testid="msg-monitor-surfaces" className="space-y-1.5">
+        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+          {t("msg.monitorSurfaces", locale)}
+        </div>
+        <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.monitorSurfacesHint", locale)}</p>
+        <div className="flex flex-wrap gap-1.5">
+          {monitorLinks.map((link) => (
+            <AdminLink
+              key={link.id}
+              href={link.href}
+              className="btn !min-h-8 !px-2 text-[11px] border-teal-200 bg-teal-50/80 text-teal-950"
+              data-testid={`msg-m2-link-${link.id}`}
+            >
+              {locale === "zh-Hant" ? link.zh : link.en}
+            </AdminLink>
+          ))}
+        </div>
+      </div>
+
       <div data-testid="msg-triage-actions" className="space-y-1.5">
         <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
           {t("msg.triagePrimary", locale)}
@@ -345,13 +400,28 @@ function LarkCardActions({
             </div>
           </div>
           <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.severityRecommendHint", locale)}</p>
+          <div className="space-y-1.5" data-testid="msg-sev-accurate">
+            <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.severityAccurateHint", locale)}</p>
+            <button
+              type="button"
+              className="btn !min-h-10 text-xs border-teal-300 bg-teal-50 text-teal-950 hover:bg-teal-100"
+              disabled={busy}
+              onClick={confirmAccurate}
+              data-testid="msg-sev-confirm-accurate"
+            >
+              {t("msg.severityAccurate", locale)} · P{aiP}
+            </button>
+          </div>
           <div className="flex flex-wrap gap-1.5">
             {levels.map((lv) => (
               <button
                 key={lv.p}
                 type="button"
-                disabled={busy}
-                onClick={() => setSevP(lv.p)}
+                disabled={busy || accurateOn}
+                onClick={() => {
+                  setSevP(lv.p);
+                  setSevCodes((prev) => prev.filter((x) => !isSeverityAccurateCode(x)));
+                }}
                 className={`btn !min-h-9 !px-3 text-xs ${lv.tone} ${
                   sevP === lv.p ? "ring-2 ring-offset-1 ring-teal-500" : ""
                 }`}
@@ -366,18 +436,14 @@ function LarkCardActions({
               {t("msg.severityReasonCodes", locale)}
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {SEVERITY_REASON_CODES.map((code) => {
+              {inaccurateCodes.map((code) => {
                 const on = sevCodes.includes(code.id);
                 return (
                   <button
                     key={code.id}
                     type="button"
-                    disabled={busy}
-                    onClick={() =>
-                      setSevCodes((prev) =>
-                        on ? prev.filter((x) => x !== code.id) : [...prev, code.id]
-                      )
-                    }
+                    disabled={busy || accurateOn}
+                    onClick={() => toggleCode(code.id)}
                     className={`btn !min-h-8 !px-2 text-[11px] ${
                       on
                         ? "border-indigo-300 bg-indigo-50 text-indigo-950 ring-1 ring-indigo-400"
@@ -412,6 +478,7 @@ function LarkCardActions({
                 onRecommendSeverity(sevP, sevReason.trim(), sevCodes);
                 setSevReason("");
                 setSevCodes([]);
+                setSevP(null);
               }}
               data-testid="msg-sev-submit"
             >
@@ -539,10 +606,35 @@ function MessageBubble({
       <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800 break-word">
         {phrase(m.body, locale)}
       </pre>
-      {typeof meta.admin_url === "string" ? (
-        <AdminLink className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
-          {t("msg.openInAdmin", locale)}
-        </AdminLink>
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+        {typeof meta.admin_url === "string" ? (
+          <AdminLink className="inline-block text-teal-800 text-xs underline" href={String(meta.admin_url)}>
+            {t("msg.openInAdmin", locale)}
+          </AdminLink>
+        ) : null}
+        {typeof meta.monitor_url === "string" ? (
+          <AdminLink
+            className="inline-block text-teal-800 text-xs underline"
+            href={String(meta.monitor_url)}
+            data-testid="msg-ai-report-monitor-url"
+          >
+            {locale === "zh-Hant" ? "Monitor 2.0 →" : "Monitor 2.0 →"}
+          </AdminLink>
+        ) : null}
+      </div>
+      {m.kind === "AI_REPORT" && Array.isArray(meta.monitor_links) && meta.monitor_links.length ? (
+        <div className="mt-2 flex flex-wrap gap-1.5" data-testid="msg-ai-report-m2-links">
+          {(meta.monitor_links as MonitorDeepLink[]).map((link) => (
+            <AdminLink
+              key={link.id}
+              href={link.href}
+              className="text-[11px] text-teal-900 underline"
+              data-testid={`msg-ai-m2-${link.id}`}
+            >
+              {locale === "zh-Hant" ? link.zh : link.en}
+            </AdminLink>
+          ))}
+        </div>
       ) : null}
       {cardActions}
     </div>
@@ -626,6 +718,44 @@ export function DemoMessenger({
     return groups;
   }, [visibleRecommended]);
 
+  const activeMonitorId = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      try {
+        const meta = JSON.parse(messages[i].meta_json || "{}") as {
+          monitor_id?: string;
+          monitor_links?: MonitorDeepLink[];
+        };
+        if (meta.monitor_id) return String(meta.monitor_id);
+        if (Array.isArray(meta.monitor_links) && meta.monitor_links[0]) {
+          const hit = meta.monitor_links.find((l) => l.id === "indicator");
+          if (hit?.href?.includes("monitor_id=")) {
+            return decodeURIComponent(hit.href.split("monitor_id=")[1] || "");
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    return null;
+  }, [messages]);
+
+  const activeMonitorLinks = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].kind !== "AI_REPORT") continue;
+      try {
+        const meta = JSON.parse(messages[i].meta_json || "{}") as {
+          monitor_links?: MonitorDeepLink[];
+        };
+        if (Array.isArray(meta.monitor_links) && meta.monitor_links.length) {
+          return meta.monitor_links;
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    return monitor2DeepLinks(activeMonitorId);
+  }, [messages, activeMonitorId]);
+
   const larkCardActions =
     active?.status === "OPEN" ? (
       <LarkCardActions
@@ -635,6 +765,7 @@ export function DemoMessenger({
         visibleRecommended={visibleRecommended}
         locale={locale}
         aiSeverity={active.severity || "WARN"}
+        monitorLinks={activeMonitorLinks}
         onClose={() => void run("close")}
         onEscalate={() => void run("escalate")}
         onEvidence={() => void run("show_evidence")}

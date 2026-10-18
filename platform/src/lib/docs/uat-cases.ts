@@ -1827,7 +1827,7 @@ export const UAT_CASES: UatCase[] = [
       objective: "On an OPEN Messenger AI report, re-recommend severity with a reason; confirm Escalation Routes shows the monthly pack and AI Performance mirrors it read-only.",
       steps: [
         "Open Demo Messenger → an OPEN thread with an AI_REPORT interactive card.",
-        "In Re-recommend severity (P0–P3), note the AI severity (e.g. P1 · BREACH). Pick a different P (or confirm the same), type a reason ≥3 characters, Submit severity feedback.",
+        "On the AI_REPORT card, open Monitor 2.0 surfaces (hub / indicator / alerts). Either tap AI severity is accurate — nothing wrong, or pick a different P with reason codes, then Submit severity feedback.",
         "Confirm a SYSTEM bubble records AI P → suggested P and the reason.",
         "Open Escalation Routes. The monthly severity weight pack must show sample count ≥1, upgrade/downgrade tallies, and current → suggested coefficients. If you have manage rights, Apply to ESC-DEFAULT once (or confirm the Apply button exists when samples > 0).",
         "Open AI Performance. The P0–P3 → factor weights panel must list the same month’s feedback and suggested deltas — with no Apply button on that page.",
@@ -1841,7 +1841,7 @@ export const UAT_CASES: UatCase[] = [
       objective: "在未結 Messenger AI 報告上重推薦嚴重度並填原因；確認升級路徑顯示每月組合、AI 績效唯讀鏡像。",
       steps: [
         "開啟示範 Messenger → 一則含 AI_REPORT 互動卡的未結執行緒。",
-        "在「重新推薦嚴重度（P0–P3）」看 AI 嚴重度（如 P1 · BREACH）。選不同 P（或維持），填 ≥3 字原因，送出嚴重度回饋。",
+        "在 AI_REPORT 卡開啟 Monitor 2.0 可用介面（中心／指標／警報）。可點「AI 嚴重度準確 — 沒什麼不准」，或不準時選正確 P 並勾原因代碼，再送出嚴重度回饋。",
         "確認 SYSTEM 泡泡記錄 AI P → 建議 P 與原因。",
         "開啟升級路徑。每月嚴重度權重組合須顯示樣本 ≥1、升級／降級統計、目前 → 建議係數。有管理權時可套用至 ESC-DEFAULT 一次（或確認樣本 > 0 時有套用按鈕）。",
         "開啟 AI 績效。P0–P3 → 因子權重面板須列出同月回饋與建議差值 — 且本頁沒有套用按鈕。",

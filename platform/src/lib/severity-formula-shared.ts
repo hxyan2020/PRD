@@ -31,6 +31,8 @@ export type SeverityReasonCode = {
 };
 
 export const SEVERITY_REASON_CODES: SeverityReasonCode[] = [
+  /** Confirm AI / formula P — nothing inaccurate (feeds monthly "same" count). */
+  { id: "ai_accurate", en: "AI severity is accurate — nothing wrong", zh: "AI 嚴重度準確 — 沒什麼不准" },
   { id: "overweight_magnitude", en: "Breach magnitude overweighted", zh: "違規幅度權重過高" },
   { id: "missed_contagion", en: "Book / copy contagion missed", zh: "漏判帳簿／跟單傳染" },
   { id: "one_off_spike", en: "One-off tick spike — recovered fast", zh: "單次 tick 尖峰 — 很快恢復" },
@@ -40,6 +42,12 @@ export const SEVERITY_REASON_CODES: SeverityReasonCode[] = [
   { id: "should_upgrade", en: "Should be more severe", zh: "應更嚴重" },
   { id: "should_downgrade", en: "Should be less severe", zh: "應較輕" },
 ];
+
+export const SEVERITY_ACCURATE_CODE = "ai_accurate";
+
+export function isSeverityAccurateCode(id: string): boolean {
+  return id === SEVERITY_ACCURATE_CODE;
+}
 
 export const DEFAULT_SEVERITY_FORMULA: SeverityFormula = {
   version: "SF-v1",
