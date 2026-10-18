@@ -188,8 +188,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "monitor-2": {
     title: { en: "Monitor 2.0 Integration Hub", "zh-Hant": "Monitor 2.0 整合中心" },
     subtitle: {
-      en: "Unified indicator + detector registry — thresholds, sampling runs, risk scenarios and combinations. Alerts live under Realtime Alert & Tracker.",
-      "zh-Hant": "統一指標與偵測器登錄 — 門檻、採樣執行、風險情境與組合。警報請至「即時警報與追蹤」。",
+      en: "Unified indicator + detector registry — thresholds, sampling runs, risk scenarios and combinations. Animated threshold adjustment full flow (observe → AI X→Y → CR → dual control → apply → audit) sits above the table. Alerts live under Realtime Alert & Tracker.",
+      "zh-Hant": "統一指標與偵測器登錄 — 門檻、採樣執行、風險情境與組合。表格上方有門檻調整全流程動態演示（取樣 → AI X→Y → CR → 雙重控制 → 套用 → 稽核）。警報請至「即時警報與追蹤」。",
     },
   },
   lark: {
