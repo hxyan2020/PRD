@@ -66,7 +66,13 @@ export default async function handler(
     }
 
     const token = blobToken()
-    const meta = await head(pathname, { token })
+    let meta: { url: string; downloadUrl?: string; contentType?: string; contentDisposition?: string }
+    try {
+      meta = await head(pathname, { token })
+    } catch {
+      res.status(404).json({ error: 'File not found' })
+      return
+    }
     const downloadUrl = meta.downloadUrl || meta.url
     const upstream = await fetch(downloadUrl, {
       headers: { Authorization: `Bearer ${token}` },
