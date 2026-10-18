@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNotebook } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
+import {
+  highlightSelectionInNotebookQuote,
+  selectionIsInNotebookQuote,
+} from '../lib/highlightSelection'
 import { ExplainDrawer } from './ExplainDrawer'
 
 interface ToolbarState {
@@ -9,9 +13,11 @@ interface ToolbarState {
   x: number
   y: number
   placeBelow: boolean
+  canHighlightNote: boolean
 }
 
 const TOOLBAR_W = 196
+const TOOLBAR_W_HIGHLIGHT = 278
 const TOOLBAR_H = 52
 
 export function SelectionTools() {
@@ -72,9 +78,11 @@ export function SelectionTools() {
           return
         }
 
+        const canHighlightNote = selectionIsInNotebookQuote()
+        const width = canHighlightNote ? TOOLBAR_W_HIGHLIGHT : TOOLBAR_W
         const x = Math.min(
-          window.innerWidth - TOOLBAR_W - 12,
-          Math.max(12, rect.left + rect.width / 2 - TOOLBAR_W / 2),
+          window.innerWidth - width - 12,
+          Math.max(12, rect.left + rect.width / 2 - width / 2),
         )
         const preferAbove = rect.top - TOOLBAR_H - 10
         const placeBelow = preferAbove < 12
@@ -84,7 +92,7 @@ export function SelectionTools() {
           Math.max(12, rawY),
         )
 
-        setToolbar({ text, x, y, placeBelow })
+        setToolbar({ text, x, y, placeBelow, canHighlightNote })
       }, 280)
     }
 
@@ -120,15 +128,25 @@ export function SelectionTools() {
 
   function saveClip() {
     if (!toolbar) return
-    notebook.addClip({
-      selectedText: toolbar.text,
-      sourceLabel: source.label,
-      sourcePath: source.path,
-    })
-    setFlash(t('savedToNotebook'))
+    const text = toolbar.text
+    const label = source.label
+    const path = source.path
     setToolbar(null)
     window.getSelection()?.removeAllRanges()
-    window.setTimeout(() => setFlash(''), 1800)
+    void notebook
+      .addClip({
+        selectedText: text,
+        sourceLabel: label,
+        sourcePath: path,
+      })
+      .then(() => {
+        setFlash(t('savedToNotebook'))
+        window.setTimeout(() => setFlash(''), 1800)
+      })
+      .catch(() => {
+        setFlash(t('noteSaveFailed'))
+        window.setTimeout(() => setFlash(''), 2200)
+      })
   }
 
   function openExplain() {
@@ -139,16 +157,53 @@ export function SelectionTools() {
     window.getSelection()?.removeAllRanges()
   }
 
+  function highlightInNote() {
+    if (!toolbar?.canHighlightNote) return
+    const result = highlightSelectionInNotebookQuote('#fde68a')
+    if (!result) return
+    setToolbar(null)
+    void notebook
+      .updateEntry(result.entryId, { selectedText: result.html })
+      .then((updated) => {
+        if (!updated) return
+        setFlash(t('highlightedInNote'))
+        window.setTimeout(() => setFlash(''), 1800)
+      })
+      .catch(() => {
+        setFlash(t('noteSaveFailed'))
+        window.setTimeout(() => setFlash(''), 2200)
+      })
+  }
+
   return (
     <>
       {toolbar ? (
         <div
           ref={toolbarRef}
-          className={`selection-toolbar ${toolbar.placeBelow ? 'below' : 'above'}`}
+          className={`selection-toolbar ${toolbar.placeBelow ? 'below' : 'above'}${
+            toolbar.canHighlightNote ? ' with-highlight' : ''
+          }`}
           style={{ left: toolbar.x, top: toolbar.y }}
           role="toolbar"
           aria-label={t('selectionToolbar')}
         >
+          {toolbar.canHighlightNote ? (
+            <button
+              type="button"
+              className="selection-action highlight"
+              onPointerDown={(event) => {
+                holdingToolbar.current = true
+                event.preventDefault()
+              }}
+              onPointerUp={() => {
+                holdingToolbar.current = false
+              }}
+              onClick={highlightInNote}
+            >
+              <HighlightIcon />
+              <span>{t('highlightSelection')}</span>
+            </button>
+          ) : null}
           <button
             type="button"
             className="selection-action"
@@ -190,6 +245,17 @@ export function SelectionTools() {
         onClose={() => setExplainOpen(false)}
       />
     </>
+  )
+}
+
+function HighlightIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M4 19h16v2H4zm2.75-3.5 2 .7 8.1-8.1-2-2-8.1 8.1zM16.4 4.85l1.4-1.4a1 1 0 0 1 1.4 0l1.35 1.35a1 1 0 0 1 0 1.4l-1.4 1.4z"
+      />
+    </svg>
   )
 }
 
@@ -250,7 +316,7 @@ function isInsideUiChrome(node: Node): boolean {
   if (!el) return false
   return Boolean(
     el.closest(
-      'input, textarea, button, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch, .menu-toggle',
+      'input, textarea, button, [contenteditable="true"], .rte, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch, .menu-toggle',
     ),
   )
 }
