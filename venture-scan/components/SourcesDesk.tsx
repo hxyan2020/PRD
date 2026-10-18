@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from "react";
 import {
-  DATA_SOURCES,
   allCoveredCountries,
   sourceHealth,
   sourcesSummary,
   type DataSource,
   type SourceHealth,
 } from "@/lib/data-sources";
+import { dailyScanSchedule } from "@/lib/daily-scan";
+import { liveDataSources, readSourceIngest } from "@/lib/source-ingest";
 import { Flag } from "@/components/Flag";
 import { PlatformLogo } from "@/components/PlatformLogo";
 import { relativeTime } from "@/lib/format";
@@ -29,24 +30,27 @@ export function SourcesDesk() {
   const [health, setHealth] = useState<"all" | SourceHealth>("all");
   const [q, setQ] = useState("");
   const now = useMemo(() => Date.now(), []);
-  const summary = useMemo(() => sourcesSummary(now), [now]);
+  const sources = useMemo(() => liveDataSources(), []);
+  const ingest = useMemo(() => readSourceIngest(), []);
+  const schedule = useMemo(() => dailyScanSchedule(), []);
+  const summary = useMemo(() => sourcesSummary(now, sources), [now, sources]);
   const countries = useMemo(() => {
-    const list = allCoveredCountries();
+    const list = allCoveredCountries(sources);
     return [...list].sort((a, b) =>
       localizeCountry(a, locale).localeCompare(localizeCountry(b, locale), locale),
     );
-  }, [locale]);
+  }, [locale, sources]);
   const regions = useMemo(
     () =>
-      [...new Set(DATA_SOURCES.map((s) => s.region))].sort((a, b) =>
+      [...new Set(sources.map((s) => s.region))].sort((a, b) =>
         localizeRegion(a, locale).localeCompare(localizeRegion(b, locale), locale),
       ),
-    [locale],
+    [locale, sources],
   );
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return DATA_SOURCES.filter((source) => {
+    return sources.filter((source) => {
       const h = sourceHealth(source, now);
       if (health !== "all" && h !== health) return false;
       if (region !== "all" && source.region !== region) return false;
@@ -74,7 +78,7 @@ export function SourcesDesk() {
       if (ha !== hb) return ha - hb;
       return b.lastSourcedAt.localeCompare(a.lastSourcedAt);
     });
-  }, [q, region, health, now, locale]);
+  }, [q, region, health, now, locale, sources]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -87,6 +91,20 @@ export function SourcesDesk() {
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-mist sm:text-base">
           {t("sources.body")}
+        </p>
+        <p className="mt-4 rounded-xl border border-celadon/25 bg-celadon/10 px-4 py-3 font-mono text-[11px] leading-relaxed text-foam sm:text-xs">
+          <span className="text-celadon">{t("sources.scheduleLabel")}</span>{" "}
+          {t("sources.schedule", {
+            time: schedule.localTime,
+            tz: schedule.timezone,
+          })}
+          {ingest.scannedAt ? (
+            <>
+              {" · "}
+              {t("sources.lastDailyScan")}{" "}
+              {relativeTime(ingest.scannedAt, now, t)}
+            </>
+          ) : null}
         </p>
       </header>
 

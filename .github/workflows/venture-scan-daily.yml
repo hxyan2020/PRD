@@ -1,4 +1,8 @@
-# Daily VentureScan catalog refresh at 07:00 Asia/Shanghai (UTC+8) = 23:00 UTC.
+# Daily VentureScan ingest at 07:00 Asia/Shanghai (UTC+8).
+# GitHub Actions cron is UTC-only → 23:00 UTC == 07:00 UTC+8.
+#
+# Note: scheduled workflows only run once this file is on the repository
+# default branch (usually main). Use workflow_dispatch to run manually sooner.
 name: VentureScan daily scan
 
 on:
@@ -8,7 +12,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
 
 concurrency:
   group: venture-scan-daily
@@ -23,6 +26,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -34,10 +39,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Scan + export ideas snapshot
-        run: |
-          npm run scan
-          npm run export:ideas
+      - name: Daily source probe + idea catalog refresh (07:00 UTC+8)
+        run: npm run scan:daily
 
       - name: Fill photo album gaps (official site + articles only)
         run: node scripts/extract-idea-photos.mjs
@@ -46,20 +49,22 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Commit catalog refresh
+      - name: Commit catalog + ingest refresh
         run: |
-          cd ..
+          cd "$GITHUB_WORKSPACE"
           git config user.name "venture-scan-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add venture-scan/public/data/ideas.json venture-scan/public/idea-photos || true
+          git add \
+            venture-scan/public/data/ideas.json \
+            venture-scan/public/data/source-ingest.json \
+            venture-scan/public/idea-photos \
+            || true
           if git diff --staged --quiet; then
             echo "No catalog changes to commit"
           else
-            git commit -m "chore(venture-scan): daily startup idea scan $(date -u +%Y-%m-%d)"
+            git commit -m "chore(venture-scan): daily scan 07:00 UTC+8 $(TZ=Asia/Shanghai date +%Y-%m-%d)"
             git push
           fi
 
       - name: Deploy GitHub Pages
         run: npm run deploy:pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

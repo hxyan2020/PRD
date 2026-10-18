@@ -364,6 +364,9 @@ const en = {
   "sources.health.degraded": "Degraded",
   "sources.health.stale": "Stale",
   "sources.health.offline": "Offline",
+  "sources.scheduleLabel": "Daily scan",
+  "sources.schedule": "{time} {tz} — every registered desk is probed and eligible startup ideas are refreshed.",
+  "sources.lastDailyScan": "Last run",
 
   "lang.pickerLabel": "Choose language",
 } as const;

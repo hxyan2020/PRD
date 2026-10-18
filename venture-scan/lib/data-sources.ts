@@ -485,17 +485,17 @@ export function allCoveredCountries(sources: DataSource[] = DATA_SOURCES): strin
   );
 }
 
-export function sourcesSummary(now = Date.now()) {
+export function sourcesSummary(now = Date.now(), sources: DataSource[] = DATA_SOURCES) {
   const healthCounts = { healthy: 0, degraded: 0, stale: 0, offline: 0 };
-  for (const source of DATA_SOURCES) {
+  for (const source of sources) {
     healthCounts[sourceHealth(source, now)] += 1;
   }
-  const lastSourcedAt = DATA_SOURCES.map((s) => s.lastSourcedAt).sort().at(-1) ?? null;
+  const lastSourcedAt = sources.map((s) => s.lastSourcedAt).sort().at(-1) ?? null;
   return {
-    total: DATA_SOURCES.length,
-    countries: allCoveredCountries(),
+    total: sources.length,
+    countries: allCoveredCountries(sources),
     healthCounts,
     lastSourcedAt,
-    languages: [...new Set(DATA_SOURCES.map((s) => s.language))].sort(),
+    languages: [...new Set(sources.map((s) => s.language))].sort(),
   };
 }
