@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { catalogIdeas } from "./catalog";
+import { catalogActiveIdeas } from "./catalog";
 import {
   OFFICIAL_WEBSITE_HOST_BY_SLUG,
   assertOfficialWebsite,
@@ -7,7 +7,7 @@ import {
 } from "./idea-official-links";
 
 describe("catalog official website links", () => {
-  const ideas = catalogIdeas();
+  const ideas = catalogActiveIdeas();
 
   it("covers every catalog slug in the official-host lockfile", () => {
     const slugs = new Set(ideas.map((i) => i.slug));

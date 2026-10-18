@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "Thị trường ({markets}) chưa chồng với {country}.",
   "match.explain.markets.gapEmpty": "Chưa đặt thị trường ưu tiên nên khớp địa lý yếu.",
   "match.explain.markets.close": "Lập checklist vào thị trường {market} theo “{strategy}”.",
-  "match.explain.markets.closeEmpty": "Thêm quốc gia/thị trường ưu tiên trong chatbot."
+  "match.explain.markets.closeEmpty": "Thêm quốc gia/thị trường ưu tiên trong chatbot.",
+  "ledger.statusAll": "Trạng thái: tất cả",
+  "ledger.statusActive": "Trạng thái: đang hoạt động",
+  "ledger.statusArchived": "Trạng thái: đã lưu trữ",
+  "ledger.archived": "Đã lưu trữ",
+  "ledger.archiveHint": "Tìm kiếm cũng thấy các ý tưởng lịch sử trong kho lưu trữ.",
+  "dossier.archived": "Ý tưởng lịch sử đã lưu trữ — giữ lại để tìm kiếm và tham khảo."
 }

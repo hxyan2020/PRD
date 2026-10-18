@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "Pazarlarınız ({markets}) henüz {country} ile örtüşmüyor.",
   "match.explain.markets.gapEmpty": "Tercih edilen pazar yoksa coğrafi uyum zayıf.",
   "match.explain.markets.close": "{market} için “{strategy}” temelli yerel giriş planı çıkarın.",
-  "match.explain.markets.closeEmpty": "Sohbet botuna tercih edilen ülke/pazar ekleyin."
+  "match.explain.markets.closeEmpty": "Sohbet botuna tercih edilen ülke/pazar ekleyin.",
+  "ledger.statusAll": "Durum: tümü",
+  "ledger.statusActive": "Durum: aktif",
+  "ledger.statusArchived": "Durum: arşiv",
+  "ledger.archived": "Arşivlendi",
+  "ledger.archiveHint": "Arama arşivdeki tarihsel fikirleri bulur.",
+  "dossier.archived": "Arşivlenmiş tarihsel fikir — arama ve başvuru için saklanır."
 }

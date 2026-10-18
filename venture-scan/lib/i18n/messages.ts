@@ -116,6 +116,12 @@ const en = {
   "ledger.open": "Fundraising open",
   "ledger.goForward": "Go forward",
   "ledger.match": "Match {score}%",
+  "ledger.statusAll": "Status: all",
+  "ledger.statusActive": "Status: active",
+  "ledger.statusArchived": "Status: archived",
+  "ledger.archived": "Archived",
+  "ledger.archiveHint": "Search finds historical ideas kept in the archive.",
+  "dossier.archived": "Archived historical idea — retained for search and reference.",
 
   "footer.tagline": "worldwide startup ideas & fundraising ledger",
   "footer.chips": "Scan · store · surface",

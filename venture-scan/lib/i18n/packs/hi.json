@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "बाज़ार ({markets}) अभी {country} से ओवरलैप नहीं करते।",
   "match.explain.markets.gapEmpty": "पसंदीदा बाज़ार न होने पर भू-फिट कमज़ोर है।",
   "match.explain.markets.close": "{market} के लिए “{strategy}” पर स्थानीय एंट्री बनाएँ।",
-  "match.explain.markets.closeEmpty": "चैटबॉट में पसंदीदा देश/बाज़ार जोड़ें।"
+  "match.explain.markets.closeEmpty": "चैटबॉट में पसंदीदा देश/बाज़ार जोड़ें।",
+  "ledger.statusAll": "स्थिति: सभी",
+  "ledger.statusActive": "स्थिति: सक्रिय",
+  "ledger.statusArchived": "स्थिति: संग्रहीत",
+  "ledger.archived": "संग्रहीत",
+  "ledger.archiveHint": "खोज से संग्रह में ऐतिहासिक विचार मिलते हैं।",
+  "dossier.archived": "संग्रहीत ऐतिहासिक विचार — खोज और संदर्भ के लिए रखा गया।"
 }

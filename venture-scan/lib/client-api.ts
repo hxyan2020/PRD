@@ -58,7 +58,7 @@ export async function matchProfile(profile: UserProfile): Promise<{
     }
   }
 
-  const ideas = catalogIdeas();
+  const ideas = catalogIdeas().filter((i) => (i.status ?? "active") === "active");
   const matches = rankIdeasForProfile(ideas, profile);
   const bySlug = Object.fromEntries(matches.map((m) => [m.slug, m]));
   return {
@@ -94,7 +94,10 @@ export async function fetchDaily(profile: UserProfile): Promise<{
     }
   }
 
-  const daily = buildDailyRecommendation(catalogIdeas(), profile);
+  const daily = buildDailyRecommendation(
+    catalogIdeas().filter((i) => (i.status ?? "active") === "active"),
+    profile,
+  );
   if (!daily) return null;
   return { day: daily.day, idea: daily.idea, match: daily.match };
 }

@@ -1,12 +1,12 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { catalogIdeas } from "./catalog";
+import { catalogActiveIdeas } from "./catalog";
 import { ideaPhotoCount, photosForIdea } from "./idea-photos";
 
 describe("idea photo albums", () => {
-  it("ships 1–9 local photos for every catalog idea", () => {
-    const ideas = catalogIdeas();
+  it("ships 1–9 local photos for every active catalog idea", () => {
+    const ideas = catalogActiveIdeas();
     expect(ideas.length).toBeGreaterThan(20);
     for (const idea of ideas) {
       const photos = photosForIdea(idea.slug, 9);

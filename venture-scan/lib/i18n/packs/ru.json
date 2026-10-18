@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "Рынки ({markets}) ещё не пересекаются с {country}.",
   "match.explain.markets.gapEmpty": "Без рынков гео-совпадение слабое.",
   "match.explain.markets.close": "Составьте локальный план входа для {market} на основе «{strategy}».",
-  "match.explain.markets.closeEmpty": "Добавьте страны/рынки в чат-боте."
+  "match.explain.markets.closeEmpty": "Добавьте страны/рынки в чат-боте.",
+  "ledger.statusAll": "Статус: все",
+  "ledger.statusActive": "Статус: активные",
+  "ledger.statusArchived": "Статус: в архиве",
+  "ledger.archived": "В архиве",
+  "ledger.archiveHint": "Поиск находит исторические идеи в архиве.",
+  "dossier.archived": "Архивная историческая идея — сохранена для поиска и справки."
 }

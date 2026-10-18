@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "你的目标市场（{markets}）尚未覆盖 {country} 或其前进地理范围。",
   "match.explain.markets.gapEmpty": "未设置目标市场，地域契合度偏弱。",
   "match.explain.markets.close": "为 {market} 画一张本地切入清单：客户、合作方与合规项，基于「{strategy}」。",
-  "match.explain.markets.closeEmpty": "在助手中补充目标国家 / 市场以解锁地域打分。"
+  "match.explain.markets.closeEmpty": "在助手中补充目标国家 / 市场以解锁地域打分。",
+  "ledger.statusAll": "状态：全部",
+  "ledger.statusActive": "状态：活跃",
+  "ledger.statusArchived": "状态：已归档",
+  "ledger.archived": "已归档",
+  "ledger.archiveHint": "搜索可找到归档中的历史创意。",
+  "dossier.archived": "已归档的历史创意 — 保留供搜索与参考。"
 }

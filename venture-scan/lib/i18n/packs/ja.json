@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "市場（{markets}）はまだ {country} と重なっていません。",
   "match.explain.markets.gapEmpty": "希望市場が未設定のため地域適合が弱いです。",
   "match.explain.markets.close": "{market} 向けに顧客・パートナー・規制チェックリストを「{strategy}」に基づき作ってください。",
-  "match.explain.markets.closeEmpty": "チャットで希望国 / 市場を追加してください。"
+  "match.explain.markets.closeEmpty": "チャットで希望国 / 市場を追加してください。",
+  "ledger.statusAll": "ステータス：すべて",
+  "ledger.statusActive": "ステータス：公開中",
+  "ledger.statusArchived": "ステータス：アーカイブ",
+  "ledger.archived": "アーカイブ",
+  "ledger.archiveHint": "検索するとアーカイブ済みの過去アイデアも見つかります。",
+  "dossier.archived": "アーカイブ済みの過去アイデア — 検索・参照用に保持。"
 }

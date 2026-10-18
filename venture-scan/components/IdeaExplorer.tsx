@@ -9,6 +9,7 @@ import { IndustryIcon } from "@/components/IndustryIcon";
 import { IndustryPicker } from "@/components/IndustryPicker";
 import { SectorLabel } from "@/components/SectorLabel";
 import { SectorPicker } from "@/components/SectorPicker";
+import { isArchivedIdea } from "@/lib/archived-ideas";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
@@ -17,7 +18,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import { rankByFundingSecured, rankByMatchScore } from "@/lib/rank-ideas";
-import type { IdeaMatch, StartupIdea } from "@/lib/types";
+import type { IdeaMatch, IdeaStatus, StartupIdea } from "@/lib/types";
 
 type Meta = {
   industries: string[];
@@ -40,6 +41,9 @@ export function IdeaExplorer({
   const [country, setCountry] = useState("");
   const [fundraising, setFundraising] = useState<"all" | "yes" | "no">("all");
   const [fundingRound, setFundingRound] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"active" | "archived" | "all">(
+    "active",
+  );
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [ideas, setIdeas] = useState(initialIdeas);
   const fundingRounds = useMemo(
@@ -77,22 +81,34 @@ export function IdeaExplorer({
   }, []);
 
   const filtered = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    // Typing a search always queries the archive too so historical ideas stay findable.
+    const effectiveStatus: "active" | "archived" | "all" = needle
+      ? statusFilter === "archived"
+        ? "archived"
+        : "all"
+      : statusFilter;
+
     const rows = ideas.filter((idea) => {
+      const status: IdeaStatus = idea.status ?? "active";
+      if (effectiveStatus === "active" && status !== "active") return false;
+      if (effectiveStatus === "archived" && status !== "archived") return false;
       if (industry && idea.industry !== industry) return false;
       if (sector && idea.sector !== sector) return false;
       if (country && idea.teamCountry !== country) return false;
       if (fundraising === "yes" && !idea.fundraisingSecured) return false;
       if (fundraising === "no" && idea.fundraisingSecured) return false;
       if (fundingRound && idea.fundingStage !== fundingRound) return false;
-      if (q) {
-        const needle = q.toLowerCase();
+      if (needle) {
         const view = localizeIdea(idea, locale);
         const hay = [
+          idea.slug,
           idea.name,
           idea.description,
           idea.industry,
           idea.sector,
           idea.teamCountry,
+          idea.website,
           ...idea.tags,
           view.name,
           view.description,
@@ -110,7 +126,19 @@ export function IdeaExplorer({
       return rankByMatchScore(rows, matches);
     }
     return rankByFundingSecured(rows);
-  }, [ideas, q, industry, sector, country, fundraising, fundingRound, hasProfile, matches, locale]);
+  }, [
+    ideas,
+    q,
+    industry,
+    sector,
+    country,
+    fundraising,
+    fundingRound,
+    statusFilter,
+    hasProfile,
+    matches,
+    locale,
+  ]);
 
   async function rescan() {
     setScanning(true);
@@ -140,6 +168,7 @@ export function IdeaExplorer({
     country,
     fundingRound,
     fundraising !== "all" ? fundraising : "",
+    statusFilter !== "active" ? statusFilter : "",
   ].filter(Boolean).length;
 
   function clearFilters() {
@@ -148,7 +177,10 @@ export function IdeaExplorer({
     setCountry("");
     setFundraising("all");
     setFundingRound("");
+    setStatusFilter("active");
   }
+
+  const archivedInView = filtered.filter(isArchivedIdea).length;
 
   return (
     <section id="ideas" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
@@ -242,6 +274,18 @@ export function IdeaExplorer({
             rounds={fundingRounds}
             onChange={setFundingRound}
           />
+          <select
+            className="field"
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as "active" | "archived" | "all")
+            }
+            aria-label={t("ledger.statusAll")}
+          >
+            <option value="active">{t("ledger.statusActive")}</option>
+            <option value="archived">{t("ledger.statusArchived")}</option>
+            <option value="all">{t("ledger.statusAll")}</option>
+          </select>
           {activeFilterCount > 0 ? (
             <button
               type="button"
@@ -252,9 +296,14 @@ export function IdeaExplorer({
             </button>
           ) : null}
         </div>
-        <p className="flex min-h-11 items-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist sm:col-span-2 lg:col-span-1">
-          {pending ? "…" : t("ledger.shown", { count: filtered.length })}
-        </p>
+        <div className="flex min-h-11 flex-col justify-center gap-1 sm:col-span-2 lg:col-span-1">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
+            {pending ? "…" : t("ledger.shown", { count: filtered.length })}
+          </p>
+          {q.trim() || archivedInView > 0 ? (
+            <p className="text-[11px] leading-snug text-mist/80">{t("ledger.archiveHint")}</p>
+          ) : null}
+        </div>
       </div>
 
       <ul className="mt-8 divide-y divide-black/10 border-t border-black/10">
@@ -283,6 +332,11 @@ export function IdeaExplorer({
                           ? t("ledger.funded", { stage: idea.fundingStage ?? "secured" })
                           : t("ledger.open")}
                       </span>
+                      {isArchivedIdea(idea) ? (
+                        <span className="rounded-md border border-black/15 bg-black/[0.04] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
+                          {t("ledger.archived")}
+                        </span>
+                      ) : null}
                       {match ? (
                         <span className="rounded-full border border-celadon/30 bg-celadon/10 px-2 py-0.5 font-mono text-[10px] text-celadon">
                           {t("ledger.match", { score: match.score })}

@@ -18,7 +18,7 @@ export type IdeasPageData = {
 /** Load all sourced ideas from SQLite (Node) or the compiled catalog (static). */
 export function loadIdeasForPage(): IdeasPageData {
   if (isStaticMode()) {
-    return { ideas: catalogIdeas(), meta: catalogMeta() };
+    return { ideas: catalogIdeas(), meta: catalogMeta({ includeArchived: true }) };
   }
   try {
     ensureSeeded();
@@ -33,7 +33,7 @@ export function loadIdeasForPage(): IdeasPageData {
       },
     };
   } catch {
-    return { ideas: catalogIdeas(), meta: catalogMeta() };
+    return { ideas: catalogIdeas(), meta: catalogMeta({ includeArchived: true }) };
   }
 }
 

@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "Vos marchés ({markets}) ne chevauchent pas encore {country}.",
   "match.explain.markets.gapEmpty": "Sans marchés préférés, l'adéquation géo est faible.",
   "match.explain.markets.close": "Cartographiez une entrée locale pour {market} selon « {strategy} ».",
-  "match.explain.markets.closeEmpty": "Ajoutez pays/marchés préférés dans le chatbot."
+  "match.explain.markets.closeEmpty": "Ajoutez pays/marchés préférés dans le chatbot.",
+  "ledger.statusAll": "Statut : tous",
+  "ledger.statusActive": "Statut : actifs",
+  "ledger.statusArchived": "Statut : archivés",
+  "ledger.archived": "Archivé",
+  "ledger.archiveHint": "La recherche trouve aussi les idées historiques archivées.",
+  "dossier.archived": "Idée historique archivée — conservée pour la recherche et la référence."
 }

@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "Je markten ({markets}) overlappen {country} nog niet.",
   "match.explain.markets.gapEmpty": "Zonder voorkeursmarkten is de geo-fit zwak.",
   "match.explain.markets.close": "Teken een lokale instap voor {market} op basis van “{strategy}”.",
-  "match.explain.markets.closeEmpty": "Voeg voorkeurslanden/-markten toe in de chatbot."
+  "match.explain.markets.closeEmpty": "Voeg voorkeurslanden/-markten toe in de chatbot.",
+  "ledger.statusAll": "Status: alle",
+  "ledger.statusActive": "Status: actief",
+  "ledger.statusArchived": "Status: gearchiveerd",
+  "ledger.archived": "Gearchiveerd",
+  "ledger.archiveHint": "Zoeken vindt historische ideeën in het archief.",
+  "dossier.archived": "Gearchiveerd historisch idee — bewaard voor zoeken en referentie."
 }

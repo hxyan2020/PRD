@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "시장({markets})이 아직 {country} 와 겹치지 않습니다.",
   "match.explain.markets.gapEmpty": "선호 시장이 없어 지역 적합도가 약합니다.",
   "match.explain.markets.close": "{market} 용 고객·파트너·규제 체크리스트를 「{strategy}」 기준으로 만드세요.",
-  "match.explain.markets.closeEmpty": "챗봇에 선호 국가/시장을 추가하세요."
+  "match.explain.markets.closeEmpty": "챗봇에 선호 국가/시장을 추가하세요.",
+  "ledger.statusAll": "상태: 전체",
+  "ledger.statusActive": "상태: 활성",
+  "ledger.statusArchived": "상태: 보관됨",
+  "ledger.archived": "보관됨",
+  "ledger.archiveHint": "검색 시 보관된 과거 아이디어도 찾을 수 있습니다.",
+  "dossier.archived": "보관된 과거 아이디어 — 검색 및 참고용으로 유지됩니다."
 }

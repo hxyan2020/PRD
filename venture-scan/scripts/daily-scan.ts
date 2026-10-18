@@ -100,6 +100,8 @@ async function main() {
   ensureSeeded();
   const scan = runScan({ source: DAILY_SCAN_SOURCE, replace: true });
   const ideas = listIdeas();
+  const active = ideas.filter((i) => (i.status ?? "active") === "active").length;
+  const archived = ideas.length - active;
 
   mkdirSync(outDir, { recursive: true });
   writeFileSync(
@@ -108,6 +110,8 @@ async function main() {
       {
         generatedAt: scannedAt,
         total: ideas.length,
+        active,
+        archived,
         schedule,
         source: DAILY_SCAN_SOURCE,
         ideas,

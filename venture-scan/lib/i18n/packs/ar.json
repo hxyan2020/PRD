@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "أسواقك ({markets}) لا تتقاطع بعد مع {country}.",
   "match.explain.markets.gapEmpty": "بدون أسواق مفضلة يكون التوافق الجغرافي ضعيفاً.",
   "match.explain.markets.close": "ارسم دخولاً محلياً لـ {market} بناءً على “{strategy}”.",
-  "match.explain.markets.closeEmpty": "أضف دولاً/أسواقاً مفضلة في المساعد."
+  "match.explain.markets.closeEmpty": "أضف دولاً/أسواقاً مفضلة في المساعد.",
+  "ledger.statusAll": "الحالة: الكل",
+  "ledger.statusActive": "الحالة: نشط",
+  "ledger.statusArchived": "الحالة: مؤرشف",
+  "ledger.archived": "مؤرشف",
+  "ledger.archiveHint": "البحث يعثر على الأفكار التاريخية في الأرشيف.",
+  "dossier.archived": "فكرة تاريخية مؤرشفة — محفوظة للبحث والمرجعية."
 }

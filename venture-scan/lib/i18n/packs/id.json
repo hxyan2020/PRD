@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "Pasar ({markets}) belum tumpang tindih dengan {country}.",
   "match.explain.markets.gapEmpty": "Tanpa pasar pilihan, kecocokan geo lemah.",
   "match.explain.markets.close": "Petakan masuk lokal untuk {market} berdasarkan “{strategy}”.",
-  "match.explain.markets.closeEmpty": "Tambahkan negara/pasar pilihan di chatbot."
+  "match.explain.markets.closeEmpty": "Tambahkan negara/pasar pilihan di chatbot.",
+  "ledger.statusAll": "Status: semua",
+  "ledger.statusActive": "Status: aktif",
+  "ledger.statusArchived": "Status: diarsipkan",
+  "ledger.archived": "Diarsipkan",
+  "ledger.archiveHint": "Pencarian menemukan ide historis di arsip.",
+  "dossier.archived": "Ide historis terarsip — disimpan untuk pencarian dan referensi."
 }

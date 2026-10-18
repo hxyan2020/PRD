@@ -2,6 +2,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { isActiveIdea, isArchivedIdea } from "./archived-ideas";
+import { catalogIdeas } from "./catalog";
 import { countIdeas, getIdeaBySlug, listIdeas, resetDbForTests, upsertIdea } from "./db";
 import { SEED_IDEAS } from "./seed-ideas";
 import { ensureSeeded, runScan } from "./scanner";
@@ -60,9 +62,14 @@ describe("runScan", () => {
 
   it("ensureSeeded syncs the full sourced catalog into SQLite", () => {
     ensureSeeded();
-    expect(countIdeas()).toBe(SEED_IDEAS.length);
+    expect(countIdeas()).toBe(catalogIdeas().length);
     expect(listIdeas().some((i) => i.slug === "resend-email-api")).toBe(true);
-    expect(listIdeas().some((i) => /spotify/i.test(i.website))).toBe(false);
+    expect(listIdeas().filter(isActiveIdea).some((i) => /spotify/i.test(i.website))).toBe(
+      false,
+    );
+    expect(listIdeas().some((i) => i.slug === "spotify-audio-graph" && isArchivedIdea(i))).toBe(
+      true,
+    );
 
     // Simulate a stale DB missing newer sourced ideas.
     const onlyOne = SEED_IDEAS[0];
@@ -71,6 +78,17 @@ describe("runScan", () => {
     upsertIdea(onlyOne);
     expect(countIdeas()).toBe(1);
     ensureSeeded();
-    expect(countIdeas()).toBe(SEED_IDEAS.length);
+    expect(countIdeas()).toBe(catalogIdeas().length);
+  });
+
+  it("keeps archived historical ideas searchable after replace scans", () => {
+    const result = runScan({ source: "test-archive", replace: true });
+    expect(result.archived).toBeGreaterThan(50);
+    expect(result.active).toBe(SEED_IDEAS.length);
+    const spotify = getIdeaBySlug("spotify-audio-graph");
+    expect(spotify?.status).toBe("archived");
+    expect(listIdeas({ q: "spotify" }).some((i) => i.slug === "spotify-audio-graph")).toBe(
+      true,
+    );
   });
 });

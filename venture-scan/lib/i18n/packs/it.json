@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "Le tue mercados ({markets}) aún no solapan {country}.",
   "match.explain.markets.gapEmpty": "Sin mercados preferidos, el encaje geográfico es débil.",
   "match.explain.markets.close": "Define entrada local para {market} según “{strategy}”: cliente, socio y regulación.",
-  "match.explain.markets.closeEmpty": "Aggiungi países/mercados preferidos en el chatbot."
+  "match.explain.markets.closeEmpty": "Aggiungi países/mercados preferidos en el chatbot.",
+  "ledger.statusAll": "Stato: tutti",
+  "ledger.statusActive": "Stato: attivi",
+  "ledger.statusArchived": "Stato: archiviati",
+  "ledger.archived": "Archiviato",
+  "ledger.archiveHint": "La ricerca trova le idee storiche nell’archivio.",
+  "dossier.archived": "Idea storica archiviata — conservata per ricerca e riferimento."
 }

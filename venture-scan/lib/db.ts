@@ -140,15 +140,21 @@ export function listIdeas(filters: {
 
   if (filters.q) {
     const q = filters.q.toLowerCase();
-    ideas = ideas.filter(
-      (i) =>
-        i.name.toLowerCase().includes(q) ||
-        i.description.toLowerCase().includes(q) ||
-        i.industry.toLowerCase().includes(q) ||
-        i.sector.toLowerCase().includes(q) ||
-        i.teamCountry.toLowerCase().includes(q) ||
-        i.tags.some((t) => t.toLowerCase().includes(q)),
-    );
+    ideas = ideas.filter((i) => {
+      const hay = [
+        i.slug,
+        i.name,
+        i.description,
+        i.industry,
+        i.sector,
+        i.teamCountry,
+        i.website,
+        ...i.tags,
+      ]
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
   }
   if (filters.industry) {
     ideas = ideas.filter((i) => i.industry === filters.industry);

@@ -9,6 +9,7 @@ import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SectorLabel } from "@/components/SectorLabel";
+import { isArchivedIdea } from "@/lib/archived-ideas";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, socialLabel, strategyMessageKey } from "@/lib/format";
 import { photosForIdea } from "@/lib/idea-photos";
@@ -42,6 +43,14 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
       </Link>
 
       <header className="mt-4 animate-rise sm:mt-6">
+        {isArchivedIdea(idea) ? (
+          <p className="mb-3 rounded-xl border border-black/10 bg-black/[0.03] px-3 py-2.5 text-sm text-mist">
+            <span className="mr-2 font-mono text-[10px] uppercase tracking-[0.16em] text-copper">
+              {t("ledger.archived")}
+            </span>
+            {t("dossier.archived")}
+          </p>
+        ) : null}
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-celadon sm:text-[11px] sm:tracking-[0.22em]">
           <span className="inline-flex items-center gap-1.5">
             <IndustryIcon industry={idea.industry} className="text-celadon" />

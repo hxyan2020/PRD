@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { catalogIdeas } from "./catalog";
+import { catalogActiveIdeas } from "./catalog";
 import { SEED_IDEAS } from "./seed-ideas";
 import {
   isEligibleStartupIdea,
@@ -7,8 +7,8 @@ import {
 } from "./startup-eligibility";
 
 describe("startup eligibility", () => {
-  it("keeps every catalog idea within early/mid-stage startup bounds", () => {
-    const ideas = catalogIdeas();
+  it("keeps every active catalog idea within early/mid-stage startup bounds", () => {
+    const ideas = catalogActiveIdeas();
     expect(ideas.length).toBe(SEED_IDEAS.length);
     for (const idea of ideas) {
       expect(startupEligibilityIssues(idea), idea.slug).toEqual([]);

@@ -22,6 +22,8 @@ export type GoForwardStrategy =
   | "vertical_spinout"
   | "b2b_pivot";
 
+export type IdeaStatus = "active" | "archived";
+
 export type StartupIdea = {
   id: string;
   slug: string;
@@ -56,6 +58,10 @@ export type StartupIdea = {
   source: string;
   scannedAt: string;
   tags: string[];
+  /** Live ledger vs historical archive. Omitted → active. */
+  status?: IdeaStatus;
+  archivedAt?: string;
+  archiveReason?: string;
 };
 
 export type IdeaFilters = {

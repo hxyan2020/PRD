@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "你的目標市場（{markets}）尚未覆蓋 {country} 或其前進地理範圍。",
   "match.explain.markets.gapEmpty": "未設定目標市場，地域契合度偏弱。",
   "match.explain.markets.close": "為 {market} 畫一張在地切入清單：客戶、合作方與合規項，基於「{strategy}」。",
-  "match.explain.markets.closeEmpty": "在助手中補充目標國家 / 市場以解鎖地域打分。"
+  "match.explain.markets.closeEmpty": "在助手中補充目標國家 / 市場以解鎖地域打分。",
+  "ledger.statusAll": "狀態：全部",
+  "ledger.statusActive": "狀態：活躍",
+  "ledger.statusArchived": "狀態：已封存",
+  "ledger.archived": "已封存",
+  "ledger.archiveHint": "搜尋可找到封存中的歷史構想。",
+  "dossier.archived": "已封存的歷史構想 — 保留供搜尋與參考。"
 }

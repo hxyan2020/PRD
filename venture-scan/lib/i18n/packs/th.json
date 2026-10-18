@@ -272,5 +272,11 @@
   "match.explain.markets.gap": "ตลาด ({markets}) ยังไม่ทับซ้อนกับ {country}",
   "match.explain.markets.gapEmpty": "ยังไม่ตั้งตลาดที่ต้องการ ทำให้ความเข้ากันทางภูมิศาสตร์อ่อน",
   "match.explain.markets.close": "วางแผนเข้าตลาดท้องถิ่นสำหรับ {market} ตาม “{strategy}”",
-  "match.explain.markets.closeEmpty": "เพิ่มประเทศ/ตลาดที่ต้องการในแชตบอท"
+  "match.explain.markets.closeEmpty": "เพิ่มประเทศ/ตลาดที่ต้องการในแชตบอท",
+  "ledger.statusAll": "สถานะ: ทั้งหมด",
+  "ledger.statusActive": "สถานะ: ใช้งาน",
+  "ledger.statusArchived": "สถานะ: เก็บถาวร",
+  "ledger.archived": "เก็บถาวร",
+  "ledger.archiveHint": "การค้นหาพบไอเดียในอดีตที่เก็บถาวรไว้",
+  "dossier.archived": "ไอเดียในอดีตที่เก็บถาวร — เก็บไว้สำหรับการค้นหาและอ้างอิง"
 }
