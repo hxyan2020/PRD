@@ -339,16 +339,24 @@ const UI: Record<string, Pair> = {
   "msg.triagePrimary": { en: "Primary decision", "zh-Hant": "主要決策" },
   "msg.triageSecondary": { en: "Other triage", "zh-Hant": "其他分流" },
   "msg.severityRecommend": {
-    en: "Re-recommend severity (P0–P3)",
-    "zh-Hant": "重新推薦嚴重度（P0–P3）",
+    en: "Severity feedback (P0–P3)",
+    "zh-Hant": "嚴重度回饋（P0–P3）",
   },
   "msg.severityRecommendHint": {
-    en: "24/7 ops: if the formula/AI P is wrong, pick the correct P and tick why. Feeds the weekly severity-formula recommendation for Risk Owner approval.",
-    "zh-Hant": "24/7 值班：若公式／AI 的 P 不準，選正確 P 並勾選原因。匯入每週嚴重度公式建議，供風險負責人核准。",
+    en: "24/7 ops: confirm AI severity when it looks right, or pick a corrected P and tick why it was off. Feeds the weekly severity-formula pack for Risk Owner approval.",
+    "zh-Hant": "24/7 值班：AI 嚴重度看起來準就確認；不準則選正確 P 並勾選原因。匯入每週嚴重度公式組合，供風險負責人核准。",
+  },
+  "msg.severityAccurate": {
+    en: "AI severity is accurate — nothing wrong",
+    "zh-Hant": "AI 嚴重度準確 — 沒什麼不准",
+  },
+  "msg.severityAccurateHint": {
+    en: "One tap confirms the formula/AI P (no correction). Counts as a monthly “same” sample.",
+    "zh-Hant": "一鍵確認公式／AI 的 P（不更正）。計入每月「維持」樣本。",
   },
   "msg.severityReasonCodes": {
-    en: "Why is the severity inaccurate?",
-    "zh-Hant": "嚴重度為何不準？",
+    en: "If inaccurate — why?",
+    "zh-Hant": "若不準 — 原因？",
   },
   "msg.severityReason": { en: "Optional note", "zh-Hant": "選填備註" },
   "msg.severityReasonPh": {
@@ -360,6 +368,14 @@ const UI: Record<string, Pair> = {
   "msg.severityEscLink": {
     en: "Formula loop + RO approve → Escalation",
     "zh-Hant": "公式迴路＋RO 核准 → 升級路徑",
+  },
+  "msg.monitorSurfaces": {
+    en: "Monitor 2.0 surfaces",
+    "zh-Hant": "Monitor 2.0 可用介面",
+  },
+  "msg.monitorSurfacesHint": {
+    en: "Open the indicator hub, realtime alerts, or L1→L2 aggregation without leaving the incident context.",
+    "zh-Hant": "在事故脈絡下開啟指標中心、即時警報或 L1→L2 聚合。",
   },
   "msg.groupCritical": { en: "Critical controls", "zh-Hant": "關鍵管制" },
   "msg.groupControl": { en: "Risk controls", "zh-Hant": "風險控制" },

@@ -27,7 +27,26 @@ const ui = read("src/components/DemoMessenger.tsx");
 assert.match(ui, /msg-severity-recommend/);
 assert.match(ui, /msg-sev-p\$\{lv\.p\}/);
 assert.match(ui, /msg-sev-submit/);
+assert.match(ui, /msg-sev-confirm-accurate/);
+assert.match(ui, /msg-monitor-surfaces/);
+assert.match(ui, /SEVERITY_ACCURATE_CODE/);
+assert.match(ui, /monitor2DeepLinks/);
 assert.match(ui, /recommend_severity/);
+
+const shared = read("src/lib/severity-formula-shared.ts");
+assert.match(shared, /ai_accurate/);
+assert.match(shared, /AI severity is accurate/);
+assert.match(shared, /沒什麼不准/);
+
+const deepLinks = read("src/lib/monitor-deep-links.ts");
+assert.match(deepLinks, /export function monitor2DeepLinks/);
+assert.match(deepLinks, /\/admin\/monitor-2/);
+assert.match(deepLinks, /\/admin\/alerts/);
+assert.match(deepLinks, /\/admin\/indicator-aggregation/);
+
+assert.match(messenger, /monitor_links/);
+assert.match(messenger, /monitor2DeepLinks/);
+assert.match(messenger, /Monitor 2\.0 surfaces/);
 
 const esc = read("src/components/EscalationManager.tsx");
 assert.match(esc, /esc-severity-weight-pack/);
@@ -48,11 +67,19 @@ assert.match(admin, /getMonthlyWeightSuggestion/);
 
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /msg\.severityRecommend/);
-assert.match(i18n, /重新推薦嚴重度/);
+assert.match(i18n, /嚴重度回饋/);
 assert.match(i18n, /每月 P0–P3→因子權重組合/);
 assert.match(i18n, /msg\.severityReasonCodes/);
+assert.match(i18n, /msg\.severityAccurate/);
+assert.match(i18n, /沒什麼不准/);
+assert.match(i18n, /msg\.monitorSurfaces/);
+assert.match(i18n, /Monitor 2\.0 可用介面/);
 assert.match(i18n, /嚴重度公式迴路/);
 assert.match(i18n, /公式迴路＋RO 核准/);
+
+const m2page = read("src/app/admin/monitor-2/page.tsx");
+assert.match(m2page, /monitor-2-focus-banner/);
+assert.match(m2page, /focusMonitorId/);
 
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /P0–P3 嚴重度重推薦/);
@@ -69,11 +96,17 @@ assert.match(aiPerfUi, /Phrase/);
 assert.match(aiPerfUi, /P0–P3 嚴重度重推薦 → 每月因子權重/);
 
 const ug = read("docs/USER_GUIDE.md");
-assert.match(ug, /Re-recommend severity \(P0–P3\)/);
+assert.match(ug, /Severity feedback \(P0–P3\)/);
+assert.match(ug, /Re-recommend severity/);
+assert.match(ug, /AI severity is accurate/);
+assert.match(ug, /Monitor 2\.0 surfaces/);
 assert.match(ug, /monthly severity weight pack/);
 assert.match(ug, /Severity formula loop \+ factor weights/);
 const ugZh = read("docs/USER_GUIDE.zh-Hant.md");
-assert.match(ugZh, /重新推薦嚴重度（P0–P3）/);
+assert.match(ugZh, /嚴重度回饋（P0–P3）/);
+assert.match(ugZh, /重新推薦嚴重度/);
+assert.match(ugZh, /沒什麼不准/);
+assert.match(ugZh, /Monitor 2\.0 可用介面/);
 assert.match(ugZh, /嚴重度公式迴路＋因子權重/);
 
 const prd = read("docs/PRD.md");

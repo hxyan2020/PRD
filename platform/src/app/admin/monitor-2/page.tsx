@@ -95,6 +95,8 @@ export default async function Monitor2Page({
     .prepare(`SELECT value FROM platform_settings WHERE key = 'monitor2.base_url'`)
     .get() as { value: string } | undefined;
 
+  const focusMonitorId = (sp.monitor_id || "").trim().toUpperCase();
+
   return (
     <div>
       <AdminPageHeader pageKey="monitor-2" />
@@ -128,6 +130,17 @@ export default async function Monitor2Page({
                 <T k="m2.gotoRealtimeAlerts" />
               </Link>
             </p>
+            {focusMonitorId ? (
+              <p
+                className="text-sm mt-2 font-medium text-teal-900"
+                data-testid="monitor-2-focus-banner"
+              >
+                <EnZh
+                  en={`Deep-linked from Lark AI report · highlighting ${focusMonitorId}`}
+                  zh={`自 Lark AI 報告深鏈 · 正標示 ${focusMonitorId}`}
+                />
+              </p>
+            ) : null}
           </div>
           {canOperate && (
             <div className="flex flex-wrap items-start gap-2">
@@ -142,12 +155,16 @@ export default async function Monitor2Page({
             const meta = getIndicatorMeta(i.monitor_id, { unit: i.unit, name: i.name });
             const unit = i.unit ? ` ${i.unit}` : "";
             const paused = !!i.paused;
+            const focused = focusMonitorId && i.monitor_id.toUpperCase() === focusMonitorId;
             return (
               <li
                 key={i.id}
                 id={`${i.monitor_id}-mobile`}
-                className={`panel p-3 space-y-2 ${paused ? "opacity-60" : ""}`}
+                className={`panel p-3 space-y-2 ${paused ? "opacity-60" : ""} ${
+                  focused ? "ring-2 ring-teal-500 border-teal-300" : ""
+                }`}
                 data-testid={`monitor-indicator-mobile-${i.monitor_id}`}
+                data-focused={focused ? "1" : "0"}
               >
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
@@ -236,12 +253,14 @@ export default async function Monitor2Page({
                 const meta = getIndicatorMeta(i.monitor_id, { unit: i.unit, name: i.name });
                 const unit = i.unit ? ` ${i.unit}` : "";
                 const paused = !!i.paused;
+                const focused = focusMonitorId && i.monitor_id.toUpperCase() === focusMonitorId;
                 return (
                   <tr
                     key={i.id}
                     id={i.monitor_id}
                     data-testid={`monitor-indicator-${i.monitor_id}`}
-                    className={paused ? "opacity-60" : undefined}
+                    data-focused={focused ? "1" : "0"}
+                    className={`${paused ? "opacity-60" : ""} ${focused ? "bg-teal-50 ring-2 ring-inset ring-teal-400" : ""}`}
                   >
                     <td className="min-w-[11rem]">
                       <div className="font-medium"><Phrase>{i.name}</Phrase></div>
