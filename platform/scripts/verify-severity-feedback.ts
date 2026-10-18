@@ -129,10 +129,14 @@ assert.match(tsdZh, /SEVERITY_FORMULA/);
 
 const uat = read("docs/UAT.md");
 assert.match(uat, /UAT-45 — P0–P3 severity re-recommend/);
+assert.match(uat, /Monitor 2\.0 surfaces/);
+assert.match(uat, /AI severity is accurate/);
 assert.match(uat, /UAT-47 — Severity formula loop/);
 assert.match(uat, /UAT-46 — Risk Owner exit sign-off/);
 const uatZh = read("docs/UAT.zh-Hant.md");
 assert.match(uatZh, /UAT-45 — P0–P3 嚴重度重推薦/);
+assert.match(uatZh, /Monitor 2\.0 可用介面/);
+assert.match(uatZh, /AI 嚴重度準確/);
 assert.match(uatZh, /UAT-47 — 嚴重度公式迴路/);
 assert.match(uatZh, /UAT-46 — 風險負責人退出簽核/);
 const uatCases = read("src/lib/docs/uat-cases.ts");
@@ -140,6 +144,8 @@ assert.match(uatCases, /id: "UAT-45"/);
 assert.match(uatCases, /id: "UAT-46"/);
 assert.match(uatCases, /id: "UAT-47"/);
 assert.match(uatCases, /severity re-recommend feeds monthly factor-weight pack/);
+assert.match(uatCases, /AI severity is accurate/);
+assert.match(uatCases, /AI 嚴重度準確/);
 
 const wf = fs.readFileSync(path.join(repo, ".github/workflows/crmp-pages.yml"), "utf8");
 assert.match(wf, /cursor\/severity-feedback-weights-28bc/);

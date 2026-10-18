@@ -75,7 +75,7 @@ graph TD
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — 結案後重新整理仍保持關閉 | Demo Messenger |
 | 45 | UAT-45 | 484m | 12m | High | Risk + AI | UAT-33 or UAT-37; open AI_REPORT thread | P0–P3 嚴重度重推薦匯入每月因子權重組合 | Demo Messenger, Escalation Routes, AI Performance |
 | 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45；升級路徑公式迴路已種子 | 嚴重度公式迴路：值班原因代碼 → 每週 AI → RO 核准 | 示範 Messenger、升級路徑、AI 管理、AI 績效 |
-| 47 | UAT-48 | 508m | 12m | High | Risk + AI + Ops | UAT-02；指標聚合已種子 | 指標聚合線型流程：成員資格 → 等待 → RO 單一或聚合 | 指標聚合流程、AI 技能、RAG |
+| 47 | UAT-48 | 508m | 12m | High | Risk + AI + Ops | UAT-02；指標聚合已種子 | 指標聚合：成員資格 → 等待 → RO 單一／聚合／強制聚合＋L2 嚴重度 | 指標聚合流程、AI 技能、RAG、管理首頁 |
 | 48 | UAT-46 | 520m | 15m | Critical | Risk Owner | UAT-01–45、UAT-47、UAT-48 結果已記錄 | 風險負責人退出簽核 | UAT 清單、稽核日誌 |
 
 ## 逐步案例
@@ -892,23 +892,25 @@ graph TD
 **通過：** 接受原因代碼；RO 核准每週 CR；線上公式版本變更；AI 績效唯讀鏡像。
 **證據：** Messenger 原因代碼、升級路徑 `sev-formula-loop` 核准前後、AI 績效每週面板截圖。
 
-### UAT-48 — 指標聚合線型流程：成員資格 → 等待 → RO 單一或聚合
+### UAT-48 — 指標聚合：成員資格 → 等待 → RO 單一／聚合／強制聚合＋L2 嚴重度
 
 - **嚴重度：** High · **負責：** Risk + AI + Ops · **依賴：** UAT-02；指標聚合已種子 · **建議：** T+508m / 12m
-- **涵蓋：** 指標聚合流程、AI 技能、RAG
-- **為何測：** 單一指標告警必須維持單一，或等待關聯監控後再以聚合包呈報 RO — 線型過程必須可見且可操作。
-- **目的：** 在 `/admin/indicator-aggregation` 走完線型軌道：無成員單一路徑、關聯等待 → 關聯告警 → AGGREGATED，以及等待 → 逾時 → RO 按單一。
+- **涵蓋：** 指標聚合流程、AI 技能、RAG、管理首頁
+- **為何測：** 單一指標告警必須維持單一，或等待關聯監控後再以聚合包呈報 RO — 含 L1 未齊時強制聚合，以及 L2 嚴重度永不低於 max(L1)。
+- **目的：** 在 `/admin/indicator-aggregation` 走完線型軌道：無成員、逾時、AGGREGATED、FORCE_AGGREGATED，以及 L2 嚴重度 = max(L1)×權重；可選確認首頁 L1→L2 演示。
 
 **步驟**
 
-1. 開啟**指標聚合流程**。確認八步線型軌道（`indicator-agg-linear-steps`）與種子工作階段（無成員／逾時／已聚合）。
+1. 開啟**指標聚合流程**。確認八步線型軌道（`indicator-agg-linear-steps`）與種子工作階段（無成員／逾時／已聚合／強制聚合）。
 2. 選 `M2-ORPHAN-999` → **觸發示範告警**。確認步驟到達 RO 單一，結果為 `SINGLE_NO_MEMBERSHIP`（已跑 Skill／RAG；不屬任何聚合）。
 3. 選某一鏈成員監控（見定義卡）→ **觸發示範告警**。確認**可能存在指標關聯**與 `CORRELATED_WAIT` 等待視窗。
-4. 點**關聯告警：M2-…** → 確認結果 `AGGREGATED` 與步驟**RO 按聚合指標處理**；成員時間線顯示已觸發 vs 待觸發。
+4. 點**關聯告警：M2-…** → 確認結果 `AGGREGATED` 與步驟**RO 按聚合指標處理**；成員時間線顯示已觸發 vs 待觸發。閱讀 **L2 嚴重度計算**面板（max 已觸發 L1 底線，再 × 權重 — 永不低於 max L1）。
 5. 再觸發一則鏈成員告警 → **結束視窗 → RO 按單一處理** → 確認 `SINGLE_WINDOW_TIMEOUT`。
+6. 再開一則關聯等待且成員未齊 → **強制聚合 L2（L1 未齊）** → 確認 `FORCE_AGGREGATED` 且記錄 `missing_l1_at_force`；L2 嚴重度仍 ≥ max 已觸發 L1。可選**繼續 L2 後流程**。
+7. 在管理首頁播放一次 **L1 → L2 聚合**演示（等待 → 強制 → 嚴重度 → 後續流程）。
 
-**通過：** 線型步驟可見；三種結果皆示範；英或繁中介面可讀。
-**證據：** 線型軌道、單一路徑、等待視窗、已聚合工作階段詳情截圖。
+**通過：** 線型步驟可見；四種結果皆示範（含強制聚合）；L2 嚴重度 ≥ max L1；英或繁中介面可讀。
+**證據：** 線型軌道、單一路徑、等待視窗、已聚合＋強制聚合工作階段、L2 嚴重度面板截圖（可附首頁演示）。
 
 ### UAT-46 — 風險負責人退出簽核
 

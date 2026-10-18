@@ -75,7 +75,7 @@ graph TD
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — closed threads stay closed after refresh | Demo Messenger |
 | 45 | UAT-45 | 484m | 12m | High | Risk + AI | UAT-33 or UAT-37; open AI_REPORT thread | P0–P3 severity re-recommend feeds monthly factor-weight pack | Demo Messenger, Escalation Routes, AI Performance |
 | 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45; Escalation formula loop seeded | Severity formula loop: ops reason codes → weekly AI → RO approve | Demo Messenger, Escalation Routes, AI Admin, AI Performance |
-| 47 | UAT-48 | 508m | 12m | High | Risk + AI + Ops | UAT-02; Indicator Aggregation seeded | Indicator aggregation linear flow: membership → wait → RO single or aggregate | Indicator Aggregation, AI Skills, RAG |
+| 47 | UAT-48 | 508m | 12m | High | Risk + AI + Ops | UAT-02; Indicator Aggregation seeded | Indicator aggregation: membership → wait → RO single / aggregate / force-aggregate + L2 severity | Indicator Aggregation, AI Skills, RAG, Admin Home |
 | 48 | UAT-46 | 520m | 15m | Critical | Risk Owner | UAT-01–45, UAT-47 and UAT-48 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
@@ -892,23 +892,25 @@ graph TD
 **Pass:** Reason codes accepted; weekly CR approved by RO; live formula version changes; AI Performance read-only mirror.
 **Evidence:** Screenshots of Messenger reason codes, Escalation `sev-formula-loop` before/after RO approve, AI Performance weekly panel.
 
-### UAT-48 — Indicator aggregation linear flow: membership → wait → RO single or aggregate
+### UAT-48 — Indicator aggregation: membership → wait → RO single / aggregate / force-aggregate + L2 severity
 
 - **Severity:** High · **BU:** Risk + AI + Ops · **Depends:** UAT-02; Indicator Aggregation seeded · **Window:** T+508m / 12m
-- **Covers:** Indicator Aggregation, AI Skills, RAG
-- **Why:** A single-indicator alert must either stay single or wait for correlated monitors before RO sees an aggregated pack — the linear process must be visible and operable.
-- **Goal:** Walk the linear rail on `/admin/indicator-aggregation`: no-membership single path, correlation wait → related alert → AGGREGATED, and wait → timeout → RO as single.
+- **Covers:** Indicator Aggregation, AI Skills, RAG, Admin Home
+- **Why:** A single-indicator alert must either stay single or wait for correlated monitors before RO sees an aggregated pack — including force-aggregate when L1 is incomplete and an L2 severity that never softens below max(L1).
+- **Goal:** Walk the linear rail on `/admin/indicator-aggregation`: no-membership, timeout, AGGREGATED, FORCE_AGGREGATED, and L2 severity = max(L1)×weight; optionally confirm the homepage L1→L2 demo.
 
 **Steps**
 
-1. Open **Indicator Aggregation**. Confirm the eight-step linear rail (`indicator-agg-linear-steps`) and seeded sessions for no-membership / timeout / aggregated outcomes.
+1. Open **Indicator Aggregation**. Confirm the eight-step linear rail (`indicator-agg-linear-steps`) and seeded sessions for no-membership / timeout / aggregated / force-aggregated outcomes.
 2. Select `M2-ORPHAN-999` → **Fire demo alert**. Confirm steps reach RO as single with outcome `SINGLE_NO_MEMBERSHIP` (skill/RAG ran; not in any aggregate).
 3. Select a chain member monitor (e.g. from a definition card) → **Fire demo alert**. Confirm **Correlation possible** and `CORRELATED_WAIT` with a wait window.
-4. Click **Related alert: M2-…** → confirm outcome `AGGREGATED` and step **RO handles as aggregate**; member timeline shows fired vs pending monitors.
+4. Click **Related alert: M2-…** → confirm outcome `AGGREGATED` and step **RO handles as aggregate**; member timeline shows fired vs pending monitors. Read the **L2 severity calc** panel (max fired L1 floor, then × weight — never softer than max L1).
 5. Fire another chain member alert → **End window → RO as single** → confirm `SINGLE_WINDOW_TIMEOUT`.
+6. Start a correlated wait again with members still pending → **Force-aggregate L2 (L1 incomplete)** → confirm `FORCE_AGGREGATED` and `missing_l1_at_force` recorded; L2 severity still ≥ max fired L1. Optionally **Continue post-L2 flow**.
+7. On Admin Home, play the **L1 → L2 aggregation** demo once (wait → force → severity → post-flow).
 
-**Pass:** Linear stepper visible; three outcomes demonstrated; EN or zh-Hant chrome readable.
-**Evidence:** Screenshots of linear rail, single path, wait window, and aggregated session detail.
+**Pass:** Linear stepper visible; four outcomes demonstrated (incl. force-aggregate); L2 severity ≥ max L1; EN or zh-Hant chrome readable.
+**Evidence:** Screenshots of linear rail, single path, wait window, aggregated + force-aggregated sessions, L2 severity panel (and optional homepage demo).
 
 ### UAT-46 — Risk Owner exit sign-off
 

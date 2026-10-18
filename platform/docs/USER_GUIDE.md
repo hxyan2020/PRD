@@ -282,16 +282,17 @@ graph TD
 
 **What you see.**
 
-- Upstream panel: `monitor2.base_url`, a note that detectors are merged here, and that **alerts / tickets live on Realtime Alert & Tracker**.  
+- **Threshold adjustment full flow** demo (`threshold-flow-demo`): Play/Step through observe → AI X→Y suggest → CR → owner BU + System dual control → apply on this page → audit. AI never writes live bands; the warn/breach editor is step 5. Same demo also appears on Admin Home.  
+- Upstream panel: `monitor2.base_url`, a note that detectors are merged here, and that **alerts / tickets live on Realtime Alert & Tracker**. Deep-link `?monitor_id=` (from Lark AI_REPORT) highlights that indicator.  
 - **Run all** (samples every enabled detector; warn/breach auto-raise alarms and kick AI RCA) and **Sync now (prototype)** when you have operate rights.  
 - One **indicator + detector** table: name, `M2-*` MonitorCode, detector code / comparator, description, domain, product, editable warn/breach, sampling frequency, risk scenarios, combinations (sequence / together), status, last refreshed, open-ticket count (links to Realtime Alert filtered by monitor id), and **Pause** (paused indicators skip AI).  
 - **Recent runs** — observed value, severity, linked alert and analysis.
 
 Legacy `?tab=alerts` / `?tab=tickets` deep-links bounce to Realtime Alert & Tracker.
 
-**What to click.** **Run all** or Sync on localhost. Pause a noisy indicator. Click an open-ticket count or `M2-*` chip. On Pages, treat the catalogue as read-oriented (no live `/api`).
+**What to click.** Play the threshold full-flow demo once. **Run all** or Sync on localhost. Pause a noisy indicator. Edit warn/breach only after dual control (editor links back to the flow). Click an open-ticket count or `M2-*` chip. On Pages, treat the catalogue as read-oriented (no live `/api`).
 
-**Good looks like.** Indicators EQ / MRG / COPY (and others) are present with detector codes. Run all can produce a BREACH and tick Realtime Alert / Monitor 2.0 badges. Paused rows show IDLE and do not fire AI. Home spine DETECT → ALARM moves after a real run.
+**Good looks like.** Flow demo reaches AUDIT with an applied sample band. Indicators EQ / MRG / COPY (and others) are present with detector codes. Run all can produce a BREACH and tick Realtime Alert / Monitor 2.0 badges. Paused rows show IDLE and do not fire AI. Home spine DETECT → ALARM moves after a real run.
 
 ### 7.5 Detectors URL — `/admin/detectors` (redirect)
 
@@ -788,16 +789,18 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 
 ## 14B. Indicator Aggregation Flow — `/admin/indicator-aggregation`
 
-**What it is.** A **linear** process board that shows how a single-indicator alert becomes either a single RO case or an aggregated multi-indicator pack.
+**What it is.** A **linear** process board that shows how a single-indicator alert becomes either a single RO case or an aggregated multi-indicator pack. Admin Home also hosts an animated **L1 → L2 aggregation demo** (`HomeL1L2AggregationDemo`).
 
-**What you see.** Eight-step linear rail; live sessions (seeded demos for no-membership / window-timeout / aggregated); event trail; aggregate member timeline from linked chains; definition cards.
+**What you see.** Eight-step linear rail; live sessions (seeded demos for no-membership / window-timeout / aggregated / force-aggregated); event trail; aggregate member timeline from linked chains; definition cards; after L2 ready, an **L2 severity calc** panel (max fired L1 as floor, then × severity weight).
 
 **What to click.**
 
 1. Pick a monitor (or `M2-ORPHAN-999` for no membership) → **Fire demo alert**.  
 2. Watch steps: single alert → skill/RAG → membership check.  
-3. If correlated: **Related alert: M2-…** to aggregate, or **End window → RO as single**.  
-4. Confirm outcome badge: `SINGLE_NO_MEMBERSHIP` / `SINGLE_WINDOW_TIMEOUT` / `AGGREGATED`.
+3. If correlated: **Related alert: M2-…** to aggregate, **Force-aggregate L2 (L1 incomplete)** when members are still missing, or **End window → RO as single**.  
+4. Confirm outcome badge: `SINGLE_NO_MEMBERSHIP` / `SINGLE_WINDOW_TIMEOUT` / `AGGREGATED` / `FORCE_AGGREGATED`.  
+5. Read the L2 severity formula (must be ≥ max L1). Optionally **Continue post-L2 flow**.  
+6. On Admin Home, **Play demo** for the wait → force → severity → post-flow walkthrough.
 
 ```mermaid
 flowchart LR
@@ -806,8 +809,9 @@ flowchart LR
   C -->|No| D[RO single]
   C -->|Yes| E[Wait window]
   E -->|Timeout| D
-  E -->|Related| F[Aggregate UI]
-  F --> G[RO aggregate]
+  E -->|Related or RO force| F[Aggregate UI]
+  F --> S[L2 severity max L1 x weight]
+  S --> G[RO aggregate]
 ```
 
 Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
@@ -833,5 +837,6 @@ Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
 | 1.15 | 2026-10-13 | §8.2A / §9.2 / §9.4 AI-assisted P0–P3 severity feedback → monthly factor weights (FR-39) |
 | 1.16 | 2026-10-14 | §8.2A / §9.2 / §9.4 primary severity formula loop: live formula → ops reason codes → weekly AI → RO approve |
 | 1.17 | 2026-10-14 | §14B Indicator Aggregation linear flow (FR-40) |
+| 1.18 | 2026-10-18 | §7.4 threshold full-flow demo; §8.2A/§9.2 accurate severity + Monitor 2.0 surfaces; §14B force-aggregate + L2 severity |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

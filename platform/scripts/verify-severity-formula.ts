@@ -43,7 +43,11 @@ assert.match(msg, /reason_codes/);
 
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /msg\.severityReasonCodes/);
-assert.match(i18n, /嚴重度為何不準/);
+assert.match(i18n, /若不準 — 原因？/);
+assert.match(i18n, /msg\.severityAccurate/);
+assert.match(i18n, /AI 嚴重度準確/);
+assert.match(i18n, /msg\.monitorSurfaces/);
+assert.match(i18n, /Monitor 2\.0 可用介面/);
 assert.match(i18n, /公式迴路＋RO 核准/);
 
 const aiPerf = read("src/components/AiPerformanceBoard.tsx");

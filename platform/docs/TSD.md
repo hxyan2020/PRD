@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.8  
+**Version:** 1.15  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -557,8 +557,8 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 |---|---|
 | Live formula | `platform_settings` key `severity.formula.live` (`SeverityFormula`: factors, weights, P bands) |
 | Score | Client-safe `lib/severity-formula-score.ts` · catalogue `lib/severity-formula-shared.ts` · server `lib/severity-formula.ts` |
-| Ops UI | Messenger `msg-severity-recommend` + `msg-sev-reason-codes` on open AI_REPORT (P0–P3, reason-code checkboxes, optional note) |
-| Ops action | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` |
+| Ops UI | Messenger `msg-severity-recommend` + `msg-sev-confirm-accurate` + `msg-sev-reason-codes` on open AI_REPORT; **Monitor 2.0 surfaces** (`msg-monitor-surfaces` / `monitor_links` via `monitor2DeepLinks`) |
+| Ops action | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` — `ai_accurate` confirms AI P (monthly “same”) |
 | Feedback row | `severity_feedback` (+ `reason_codes_json`, `week_key`, `formula_version`, `formula_p`, `month_key`) |
 | Weekly AI | `getWeeklyFormulaSuggestion` / `proposeWeeklyFormulaChange` → enable/disable factors, weight deltas, threshold nudges |
 | CR | `ai_change_requests` entity `SEVERITY_FORMULA` · AI Engineer maker · Risk Owner checker (`ai.approve`) |
@@ -583,12 +583,15 @@ Weekly formula changes require RO approval (maker ≠ checker). Monthly coeffici
 
 | Item | Spec |
 |---|---|
-| Surface | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
-| API | `GET/POST /api/indicator-aggregation` — `start`, `inject_related`, `close_window` |
-| Domain | `lib/indicator-aggregation.ts` (+ client-safe `indicator-aggregation-shared.ts`) |
+| Surface | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · homepage `HomeL1L2AggregationDemo` |
+| API | `GET/POST /api/indicator-aggregation` — `start`, `inject_related`, `close_window`, `force_aggregate`, `continue_post_flow` |
+| Domain | `lib/indicator-aggregation.ts` (+ client-safe `indicator-aggregation-shared.ts` · `computeL2Severity`) |
 | Definitions | Built from `risk_scenario_chains` / `LINKED_SCENARIOS` (member monitors + window from sequence span) |
-| Sessions | `platform_settings` key `indicator.aggregation.sessions` |
+| Sessions | `platform_settings` key `indicator.aggregation.sessions` (+ `l1_severities`, `l2_severity` / `l2_severity_calc`, `force_aggregated`, `missing_l1_at_force`, `post_flow`) |
 | Linear steps | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| Outcomes | `PENDING` · `SINGLE_NO_MEMBERSHIP` · `SINGLE_WINDOW_TIMEOUT` · `AGGREGATED` · `FORCE_AGGREGATED` |
+| L2 severity | After natural or force aggregate: **floor = max(fired L1)**; × severity weight (+ multi-L1 nudge); ≤ one-band upgrade; never below floor; UI panel on board + homepage |
+| Post-L2 | `POST_L2_FLOW_STAGES` starts with `L2_SEVERITY` → AI_RCA → MESSENGER → HUMAN_GATE → CONTROL |
 | Guards | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
 
 ---
@@ -789,7 +792,9 @@ SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, 
 
 ### 16.5 Monitor 2.0 hub (unified indicator + detector registry)
 
-Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all indicators** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; threshold edit via `IndicatorThresholdEditor`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). Primary API: `POST /api/monitor` with `run_detectors` / `toggle_pause` / `update_thresholds` / `sync_monitor2`. Legacy `POST /api/detectors` still exists. Tables `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`. Mobile: `sm:hidden` card lists + `sm:block` tables.
+Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all indicators** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; threshold edit via `IndicatorThresholdEditor`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). Primary API: `POST /api/monitor` with `run_detectors` / `toggle_pause` / `update_thresholds` / `sync_monitor2`. Legacy `POST /api/detectors` still exists. Tables `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`. Mobile: `sm:hidden` card lists + `sm:block` tables. Deep-link `?monitor_id=` highlights the indicator (focus banner) for Lark AI_REPORT surfaces.
+
+**Threshold adjustment full flow (demo):** `ThresholdAdjustmentFlowDemo` (`threshold-flow-demo`) on `/admin/monitor-2` and Admin Home — animated OBSERVE → AI_SUGGEST (X→Y) → DRAFT_CR → MAKER_CHECKER → APPLY_M2 → AUDIT. Stages in `lib/threshold-flow-shared.ts`. Live editor is step 5 (`update_thresholds` → `UPDATE_THRESHOLDS` audit); AI how-to-improve THRESHOLD items link here. Guards: `npm run test:threshold-flow` · `test:threshold-flow-smoke`.
 
 ### 16.6 Detectors URL (redirect)
 
@@ -831,7 +836,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 `lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
 
-**Severity formula loop (FR-39):** Live weighted formula scores alerts to P0–P3. Messenger AI_REPORT cards collect overrides + reason-code checkboxes into `severity_feedback`. Weekly AI proposes factor add/remove/weight retune as `SEVERITY_FORMULA` CRs; Risk Owner approves on Escalation (`sev-formula-loop`). Secondary: `getMonthlyWeightSuggestion()` → `esc-severity-weight-pack` / `apply_severity_weights` on ESC-DEFAULT. AI Performance mirrors both packs read-only. See §11.6.
+**Severity formula loop (FR-39):** Live weighted formula scores alerts to P0–P3. Messenger AI_REPORT cards expose Monitor 2.0 deep links and collect **accurate confirm** (`ai_accurate`) or overrides + reason-code checkboxes into `severity_feedback`. Weekly AI proposes factor add/remove/weight retune as `SEVERITY_FORMULA` CRs; Risk Owner approves on Escalation (`sev-formula-loop`). Secondary: `getMonthlyWeightSuggestion()` → `esc-severity-weight-pack` / `apply_severity_weights` on ESC-DEFAULT. AI Performance mirrors both packs read-only. See §11.6.
 
 ### 16.16 Organisation
 
@@ -886,6 +891,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.12 | 2026-10-13 | §11.6 / §16.15 FR-39 P0–P3 severity feedback → monthly escalation factor weights |
 | 1.13 | 2026-10-14 | §11.6 / §16.15 FR-39 primary loop: live formula → ops reason codes → weekly AI → RO approve (`SEVERITY_FORMULA`) |
 | 1.14 | 2026-10-14 | §11.7 FR-40 indicator aggregation linear flow |
+| 1.15 | 2026-10-18 | §11.6 Monitor 2.0 surfaces + `ai_accurate`; §11.7 force-aggregate + L2 severity; §16.5 threshold full-flow demo |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

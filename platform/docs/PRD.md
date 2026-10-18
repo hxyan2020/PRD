@@ -232,8 +232,8 @@ graph LR
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 | FR-37 | Unknown Risk Discovery AI suggestion card | `/admin/discovery` notebook-parity: Connect OpenAI/Mock, Analyse selected, structured suggestion card, Approve for validation / Ask more info / Dismiss; optional Approve for monitoring (maker≠checker → skill + M2-DISC-*); EN/zh-Hant; notebook HTML/Colab links |
 | FR-38 | AI Performance evaluation dashboard | `/admin/ai-performance` read-only board: skill match, challenger agree/partial/disagree, human feedback labels, how-to-improve counts, training accuracy/F1, 14-day snapshots; `GET /api/ai-performance`; EN/zh-Hant; link from AI Admin |
-| FR-39 | P0–P3 severity formula optimisation loop | Live weighted formula assigns P0–P3; 24/7 ops corrects on AI_REPORT with reason-code checkboxes → weekly AI formula recommend (add/remove factors, retune weights) → Risk Owner approves via `ai_change_requests`; plus monthly escalation coefficient pack |
-| FR-40 | Indicator aggregation linear flow | Single alert → skill/RAG lookup → aggregate membership check → (no) single path, or (yes) mark correlation + wait window → timeout = RO as single / related alerts = aggregate in UI then RO as aggregate; surface `/admin/indicator-aggregation` |
+| FR-39 | P0–P3 severity formula optimisation loop | Live weighted formula assigns P0–P3; 24/7 ops on AI_REPORT: **confirm accurate** (`ai_accurate`) or correct with reason-code checkboxes → weekly AI formula recommend (add/remove factors, retune weights) → Risk Owner approves via `ai_change_requests`; plus monthly escalation coefficient pack; AI_REPORT also exposes **Monitor 2.0 surfaces** (hub / indicator / alerts / L1→L2) |
+| FR-40 | Indicator aggregation linear flow | Single alert → skill/RAG lookup → aggregate membership check → (no) single path, or (yes) mark correlation + wait window → timeout = RO as single / related alerts = aggregate in UI then RO as aggregate; **RO may force-aggregate** while L1 incomplete (`FORCE_AGGREGATED`); after L2 ready, **L2 severity = max(fired L1) floor then × severity weight** (never softer than max L1); homepage demo + `/admin/indicator-aggregation` |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -357,9 +357,9 @@ flowchart TD
 
 | Layer | Detail |
 |---|---|
-| **Methods** | Weighted sum of enabled factors → score → P bands. Ops: P0–P3 + reason codes (+ optional note). Weekly AI: add/remove/enable factors, weight deltas, threshold nudges → CR. RO decide → live formula. |
+| **Methods** | Weighted sum of enabled factors → score → P bands. Ops: one-tap **AI severity is accurate** (`ai_accurate` → monthly “same”) **or** P0–P3 + inaccurate reason codes (+ optional note). Weekly AI: add/remove/enable factors, weight deltas, threshold nudges → CR. RO decide → live formula. |
 | **Data** | `severity.formula.live` setting; `severity_feedback` (+ `reason_codes_json`, `week_key`); `ai_change_requests` entity `SEVERITY_FORMULA`; monthly pack still uses `escalation_routes.coefficients_json` |
-| **Flow** | Formula scores alert P1 → Messenger override to P2 + codes → weekly recommend → RO approve on Escalation (`sev-formula-loop`) → AI Performance read-only mirror |
+| **Flow** | Formula scores alert P1 → AI_REPORT (Monitor 2.0 deep links + severity feedback) → weekly recommend → RO approve on Escalation (`sev-formula-loop`) → AI Performance read-only mirror |
 
 ```mermaid
 flowchart LR
@@ -375,17 +375,17 @@ flowchart LR
   Week --> Perf[AI Performance read-only]
 ```
 
-**Acceptance (FR-39):** `sev-formula-loop` on `/admin/escalation` shows live formula + sample P + weekly diffs + RO approve; Messenger `msg-severity-recommend` has reason-code checkboxes; weekly CR uses AI Engineer maker / RO checker; AI Performance mirrors weekly pack; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 · UAT-45 / UAT-47.
+**Acceptance (FR-39):** `sev-formula-loop` on `/admin/escalation` shows live formula + sample P + weekly diffs + RO approve; Messenger `msg-severity-recommend` has **accurate confirm** + reason-code checkboxes and Monitor 2.0 surface links; weekly CR uses AI Engineer maker / RO checker; AI Performance mirrors weekly pack; EN + zh-Hant. Operator: User Guide §9.2 / §9.4 / §8.2A · Build: TSD §11.6 · UAT-45 / UAT-47.
 
 ### 6.8 Indicator aggregation linear flow — methods, data, flow
 
-**Methods:** On each single-indicator alert, run skill match and/or RAG retrieval, then check whether the monitor is a member of an aggregate definition (linked timeline / chain). If not, continue the remaining single-indicator path. If yes, continue single RCA in parallel, mark “correlation possible”, and open a wait window for other member monitors. Window expiry with no related alerts → status for RO as single. Related alerts inside the window → aggregate in the Admin UI → RO handles as aggregate.
+**Methods:** On each single-indicator alert, run skill match and/or RAG retrieval, then check whether the monitor is a member of an aggregate definition (linked timeline / chain). If not, continue the remaining single-indicator path. If yes, continue single RCA in parallel, mark “correlation possible”, and open a wait window for other member monitors. Window expiry with no related alerts → status for RO as single. Related alerts inside the window → aggregate in the Admin UI → RO handles as aggregate. RO may **force-aggregate** while L1 is incomplete (`FORCE_AGGREGATED`, records `missing_l1_at_force`). When L2 is ready, **L2 ops severity = max(fired L1) as floor**, then × pack severity weight (+ multi-L1 nudge) with at most one-band upgrade — never softer than max L1 — and the formula is shown on the board / homepage demo.
 
 | Layer | Detail |
 |---|---|
-| **Data** | Aggregate defs from `risk_scenario_chains` / `LINKED_SCENARIOS`; sessions in `platform_settings` `indicator.aggregation.sessions` |
-| **Flow** | Alert → skill/RAG → membership → single continue **or** correlated wait → RO single **or** aggregate → RO aggregate |
-| **Surface** | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation` |
+| **Data** | Aggregate defs from `risk_scenario_chains` / `LINKED_SCENARIOS`; sessions in `platform_settings` `indicator.aggregation.sessions` (+ `l1_severities`, `l2_severity`, `l2_severity_calc`, `force_aggregated`, `post_flow`) |
+| **Flow** | Alert → skill/RAG → membership → single continue **or** correlated wait → RO single **or** natural / force aggregate → L2 severity calc → post-L2 spine |
+| **Surface** | `/admin/indicator-aggregation` · homepage `HomeL1L2AggregationDemo` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation` (`force_aggregate`, `continue_post_flow`) |
 
 ```mermaid
 flowchart LR
@@ -396,10 +396,12 @@ flowchart LR
   C -->|Yes| F[Mark correlation + wait window]
   F -->|Timeout| E
   F -->|Related alerts| G[Aggregate in UI]
-  G --> H[RO as aggregate]
+  F -->|RO force L1 incomplete| G
+  G --> S[L2 severity max L1 x weight]
+  S --> H[RO as aggregate]
 ```
 
-**Acceptance (FR-40):** Linear stepper visible; demo sessions cover no-membership, window-timeout, and aggregated paths; EN + zh-Hant. Operator: User Guide §14B · Build: TSD §11.7 · UAT-48.
+**Acceptance (FR-40):** Linear stepper visible; demo sessions cover no-membership, window-timeout, aggregated, and force-aggregated paths; L2 severity panel shows max(L1) floor + weight; homepage L1→L2 demo; EN + zh-Hant. Operator: User Guide §14B · Build: TSD §11.7 · UAT-48.
 
 ---
 
@@ -428,7 +430,8 @@ flowchart LR
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  
 5. **AI Admin:** Distinct checker required; self-approve blocked.  
 5b. **AI Performance:** `/admin/ai-performance` renders KPIs (skill match, challenger, feedback, training) without mutation controls; linked from AI Admin.  
-5c. **Severity → weights (FR-39):** Messenger AI_REPORT accepts P0–P3 re-recommend + reason; Escalation Routes shows monthly pack and can apply to ESC-DEFAULT; AI Performance mirrors read-only.  
+5c. **Severity → weights (FR-39):** Messenger AI_REPORT accepts accurate confirm or P0–P3 re-recommend + reason codes, plus Monitor 2.0 surface links; Escalation Routes shows monthly pack and can apply to ESC-DEFAULT; AI Performance mirrors read-only.  
+5d. **Threshold adjustment flow:** Monitor 2.0 / Admin Home show animated observe → AI X→Y → CR → dual control → apply → audit (AI never writes live bands; editor is step 5).  
 6. **Coverage:** UAT window BREACH/CRITICAL samples 100% challenged (backfill allowed).  
 7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem/Roadmap render EN and zh-Hant; User Guide has a how-to for every left-nav page.  
 8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.  
@@ -529,5 +532,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.13 | 2026-10-13 | FR-39 AI-assisted escalation factor weights from P0–P3 severity feedback (§6.7); UAT-45 / UAT-46 |
 | 1.14 | 2026-10-14 | FR-39 primary severity formula loop (§6.7): live formula → ops reason codes → weekly AI → RO approve; UAT-47 |
 | 1.15 | 2026-10-14 | FR-40 indicator aggregation linear flow (§6.8) on `/admin/indicator-aggregation` |
+| 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 surfaces + accurate severity confirm; FR-40 force-aggregate + L2 severity = max(L1)×weight; Monitor 2.0 threshold adjustment full-flow demo |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

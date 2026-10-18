@@ -1,7 +1,7 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.8  
+**版本：** 1.15  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -553,8 +553,8 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 |---|---|
 | 線上公式 | `platform_settings` 鍵 `severity.formula.live`（`SeverityFormula`：因子、權重、P 分帶） |
 | 打分 | 客戶端安全 `lib/severity-formula-score.ts` · 目錄 `lib/severity-formula-shared.ts` · 伺服器 `lib/severity-formula.ts` |
-| 值班 UI | Messenger `msg-severity-recommend`＋`msg-sev-reason-codes`（未結 AI_REPORT：P0–P3、原因代碼勾選、選填備註） |
-| 值班動作 | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` |
+| 值班 UI | Messenger `msg-severity-recommend`＋`msg-sev-confirm-accurate`＋`msg-sev-reason-codes`；**Monitor 2.0 可用介面**（`msg-monitor-surfaces`／`monitor_links`，經 `monitor2DeepLinks`） |
+| 值班動作 | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` — `ai_accurate` 確認 AI 的 P（每月「維持」） |
 | 回饋列 | `severity_feedback`（＋`reason_codes_json`、`week_key`、`formula_version`、`formula_p`、`month_key`） |
 | 每週 AI | `getWeeklyFormulaSuggestion`／`proposeWeeklyFormulaChange` → 啟停因子、權重差、門檻微調 |
 | 變更申請 | `ai_change_requests` 實體 `SEVERITY_FORMULA` · AI Engineer Maker · 風險負責人 Checker（`ai.approve`） |
@@ -579,12 +579,15 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 | 項目 | 規格 |
 |---|---|
-| 畫面 | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
-| API | `GET/POST /api/indicator-aggregation` — `start`、`inject_related`、`close_window` |
-| 領域 | `lib/indicator-aggregation.ts`（＋客戶端安全 `indicator-aggregation-shared.ts`） |
+| 畫面 | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · 首頁 `HomeL1L2AggregationDemo` |
+| API | `GET/POST /api/indicator-aggregation` — `start`、`inject_related`、`close_window`、`force_aggregate`、`continue_post_flow` |
+| 領域 | `lib/indicator-aggregation.ts`（＋客戶端安全 `indicator-aggregation-shared.ts` · `computeL2Severity`） |
 | 定義 | 由 `risk_scenario_chains`／`LINKED_SCENARIOS` 建立（成員監控＋依序列跨度的視窗） |
-| 工作階段 | `platform_settings` 鍵 `indicator.aggregation.sessions` |
+| 工作階段 | `platform_settings` 鍵 `indicator.aggregation.sessions`（含 `l1_severities`、`l2_severity`／`l2_severity_calc`、`force_aggregated`、`missing_l1_at_force`、`post_flow`） |
 | 線型步驟 | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| 結果 | `PENDING` · `SINGLE_NO_MEMBERSHIP` · `SINGLE_WINDOW_TIMEOUT` · `AGGREGATED` · `FORCE_AGGREGATED` |
+| L2 嚴重度 | 自然或強制聚合後：**底線 = max(已觸發 L1)**；× 權重（＋多 L1 推力）；最多升一檔；永不低於底線；看板＋首頁顯示公式 |
+| L2 之後 | `POST_L2_FLOW_STAGES` 自 `L2_SEVERITY` → AI_RCA → MESSENGER → HUMAN_GATE → CONTROL |
 | 守護 | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
 
 ---
@@ -784,7 +787,9 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.5 Monitor 2.0 中心（統一指標＋偵測器登錄）
 
-單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**執行全部指標**／**同步**／**暫停**；門檻編輯經 `IndicatorThresholdEditor`；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。主 API：`POST /api/monitor`（`run_detectors`／`toggle_pause`／`update_thresholds`／`sync_monitor2`）。舊 `POST /api/detectors` 仍在。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。手機：`sm:hidden` 卡片＋`sm:block` 表格。
+單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**執行全部指標**／**同步**／**暫停**；門檻編輯經 `IndicatorThresholdEditor`；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。主 API：`POST /api/monitor`（`run_detectors`／`toggle_pause`／`update_thresholds`／`sync_monitor2`）。舊 `POST /api/detectors` 仍在。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。手機：`sm:hidden` 卡片＋`sm:block` 表格。深鏈 `?monitor_id=` 會高亮指標（焦點橫幅），供 Lark AI_REPORT 介面使用。
+
+**門檻調整全流程（演示）：** `/admin/monitor-2` 與管理首頁掛載 `ThresholdAdjustmentFlowDemo`（`threshold-flow-demo`）— 動態 OBSERVE → AI_SUGGEST（X→Y）→ DRAFT_CR → MAKER_CHECKER → APPLY_M2 → AUDIT。階段定義於 `lib/threshold-flow-shared.ts`。線上編輯器為第 5 步（`update_thresholds` → `UPDATE_THRESHOLDS` 稽核）；如何改進 THRESHOLD 項連回此處。守護：`npm run test:threshold-flow` · `test:threshold-flow-smoke`。
 
 ### 16.6 偵測器網址（轉址）
 
@@ -826,7 +831,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
 
-**嚴重度公式迴路（FR-39）：** 線上加權公式將警報打成 P0–P3。Messenger AI_REPORT 卡收集覆寫＋原因代碼勾選至 `severity_feedback`。每週 AI 以 `SEVERITY_FORMULA` CR 建議增減因子／調整權重；風險負責人在升級路徑（`sev-formula-loop`）核准。次迴路：`getMonthlyWeightSuggestion()` → `esc-severity-weight-pack`／`apply_severity_weights` 套用 ESC-DEFAULT。AI 績效兩種組合皆唯讀鏡像。見 §11.6。
+**嚴重度公式迴路（FR-39）：** 線上加權公式將警報打成 P0–P3。Messenger AI_REPORT 卡提供 Monitor 2.0 深鏈，並收集**準確確認**（`ai_accurate`）或覆寫＋原因代碼勾選至 `severity_feedback`。每週 AI 以 `SEVERITY_FORMULA` CR 建議增減因子／調整權重；風險負責人在升級路徑（`sev-formula-loop`）核准。次迴路：`getMonthlyWeightSuggestion()` → `esc-severity-weight-pack`／`apply_severity_weights` 套用 ESC-DEFAULT。AI 績效兩種組合皆唯讀鏡像。見 §11.6。
 
 ### 16.16 組織
 
@@ -882,6 +887,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.13 | 2026-10-13 | §11.6／§16.15 FR-39 P0–P3 嚴重度回饋 → 每月升級因子權重 |
 | 1.14 | 2026-10-14 | §11.6／§16.15 FR-39 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准（`SEVERITY_FORMULA`） |
 | 1.15 | 2026-10-14 | §11.7 FR-40 指標聚合線型流程 |
+| 1.16 | 2026-10-18 | §11.6 Monitor 2.0 介面＋`ai_accurate`；§11.7 強制聚合＋L2 嚴重度；§16.5 門檻全流程演示 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

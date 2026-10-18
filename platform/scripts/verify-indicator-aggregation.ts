@@ -76,7 +76,8 @@ assert.match(urls, /\/api\/indicator-aggregation/);
 const uatCases = read("src/lib/docs/uat-cases.ts");
 assert.match(uatCases, /id: \"UAT-48\"/);
 assert.match(uatCases, /\/admin\/indicator-aggregation/);
-assert.match(uatCases, /title: \"指標聚合線型流程/);
+assert.match(uatCases, /title: \"指標聚合：成員資格/);
+assert.match(uatCases, /FORCE_AGGREGATED/);
 assert.match(uatCases, /dependency_zh: \"UAT-02；指標聚合已種子\"/);
 assert.match(uatCases, /covers_zh: \[\"指標聚合流程\"/);
 
@@ -95,8 +96,8 @@ for (const [rel, markers] of [
   ["docs/USER_GUIDE.zh-Hant.md", [/## 14B\. 指標聚合流程/, /\/admin\/indicator-aggregation/]],
   ["docs/TSD.md", [/### 11\.7 Indicator aggregation linear flow/]],
   ["docs/TSD.zh-Hant.md", [/### 11\.7 指標聚合線型流程/]],
-  ["docs/UAT.md", [/UAT-48/, /Indicator aggregation linear flow/, /48 cases/]],
-  ["docs/UAT.zh-Hant.md", [/UAT-48/, /指標聚合線型流程/, /48 案/]],
+  ["docs/UAT.md", [/UAT-48/, /force-aggregate/, /FORCE_AGGREGATED/, /L2 severity/, /48 cases/]],
+  ["docs/UAT.zh-Hant.md", [/UAT-48/, /強制聚合/, /FORCE_AGGREGATED/, /L2 嚴重度/, /48 案/]],
   ["docs/ROADMAP.md", [/Indicator Aggregation/, /FR-40|indicator-aggregation/]],
   ["docs/ROADMAP.zh-Hant.md", [/指標聚合/, /FR-40|indicator-aggregation/]],
   ["docs/ECOSYSTEM.md", [/Indicator Aggregation/, /correlated monitors|Aggregation/]],

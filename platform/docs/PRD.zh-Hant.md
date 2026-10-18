@@ -232,8 +232,8 @@ graph LR
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | 未知風險探索 AI 建議卡 | `/admin/discovery` 與筆記本對齊：連線 OpenAI／Mock、分析所選、結構化建議卡、核准驗證／要求更多資訊／駁回；可選核准納入監控（制作者≠覆核者 → 技能＋M2-DISC-*）；英／繁中；筆記本 HTML／Colab 連結 |
 | FR-38 | AI 績效評估儀表板 | `/admin/ai-performance` 唯讀看板：技能匹配、挑戰者一致率（同意／部分／不同意）、人工回饋標籤、如何改進計數、訓練準確率／F1、14 日快照；`GET /api/ai-performance`；英／繁中；自 AI 管理連結 |
-| FR-39 | P0–P3 嚴重度公式優化迴路 | 線上加權公式分到 P0–P3；24/7 值班在 AI_REPORT 勾選不准原因並覆寫 → 每週 AI 推薦新公式（增減因子、調整權重）→ 風險負責人經 `ai_change_requests` 核准；另含每月升級係數組合 |
-| FR-40 | 指標聚合線型流程 | 單一告警 → Skill／RAG 檢索 → 聚合成員資格檢查 →（否）單一路徑，或（是）標記關聯＋等待視窗 → 逾時＝RO 按單一／出現關聯＝界面聚合後再報 RO；畫面 `/admin/indicator-aggregation` |
+| FR-39 | P0–P3 嚴重度公式優化迴路 | 線上加權公式分到 P0–P3；24/7 值班在 AI_REPORT：**確認準確**（`ai_accurate`）或勾選不准原因並覆寫 → 每週 AI 推薦新公式（增減因子、調整權重）→ 風險負責人經 `ai_change_requests` 核准；另含每月升級係數組合；AI_REPORT 另提供 **Monitor 2.0 可用介面**（中心／指標／警報／L1→L2） |
+| FR-40 | 指標聚合線型流程 | 單一告警 → Skill／RAG 檢索 → 聚合成員資格檢查 →（否）單一路徑，或（是）標記關聯＋等待視窗 → 逾時＝RO 按單一／出現關聯＝界面聚合後再報 RO；**L1 未齊時 RO 可強制聚合**（`FORCE_AGGREGATED`）；L2 就緒後 **L2 嚴重度 = max(已觸發 L1) 底線再 × 權重**（永不低於 max L1）；首頁演示＋`/admin/indicator-aggregation` |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -351,15 +351,15 @@ flowchart TD
 
 ### 6.7 嚴重度公式優化＋升級權重（P0–P3）— 方法、資料、流程
 
-**主迴路（公式）：** 線上加權公式將警報打成 P0–P3。24/7 值班在 Lark AI 事故卡覆寫 P，並勾選**不准原因代碼**（幅度過重、漏判傳染、單次尖峰…）。AI 每週彙總成新公式（啟停因子、調整權重、微調分帶），開立 `ai_change_requests`；**風險負責人**核准或駁回（Maker ≠ Checker）。
+**主迴路（公式）：** 線上加權公式將警報打成 P0–P3。24/7 值班在 Lark AI 事故卡可一鍵**確認 AI 嚴重度準確**（`ai_accurate`，計入每月「維持」），或不準時覆寫 P 並勾選**不准原因代碼**（幅度過重、漏判傳染、單次尖峰…）。AI 每週彙總成新公式（啟停因子、調整權重、微調分帶），開立 `ai_change_requests`；**風險負責人**核准或駁回（Maker ≠ Checker）。卡上另提供 Monitor 2.0 深鏈。
 
 **次迴路（路由）：** 同一批回饋仍匯入 ESC-DEFAULT 的每月**升級維度係數**組合（`escalation.manage` 套用）。
 
 | 層級 | 細節 |
 |---|---|
-| **方法** | 啟用因子加權和 → 分數 → P 分帶。值班：P0–P3＋原因代碼（＋選填備註）。每週 AI：增減／啟用因子、權重差、門檻微調 → CR。RO 決定 → 線上公式。 |
+| **方法** | 啟用因子加權和 → 分數 → P 分帶。值班：確認準確 **或** P0–P3＋不准原因代碼（＋選填備註）。每週 AI：增減／啟用因子、權重差、門檻微調 → CR。RO 決定 → 線上公式。 |
 | **資料** | `severity.formula.live`；`severity_feedback`（含 `reason_codes_json`、`week_key`）；`ai_change_requests` 實體 `SEVERITY_FORMULA`；每月組合仍用 `escalation_routes.coefficients_json` |
-| **流程** | 公式打成 P1 → Messenger 覆寫為 P2＋代碼 → 每週建議 → 升級路徑 RO 核准（`sev-formula-loop`）→ AI 績效唯讀鏡像 |
+| **流程** | 公式打成 P1 → AI_REPORT（Monitor 2.0 深鏈＋嚴重度回饋）→ 每週建議 → 升級路徑 RO 核准（`sev-formula-loop`）→ AI 績效唯讀鏡像 |
 
 ```mermaid
 flowchart LR
@@ -375,17 +375,17 @@ flowchart LR
   Week --> Perf[AI 績效唯讀]
 ```
 
-**驗收（FR-39）：** `/admin/escalation` 的 `sev-formula-loop` 顯示線上公式＋範例 P＋每週差異＋RO 核准；Messenger `msg-severity-recommend` 有原因代碼勾選；每週 CR 為 AI Engineer Maker／RO Checker；AI 績效鏡像每週組合；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6 · UAT-45／UAT-47。
+**驗收（FR-39）：** `/admin/escalation` 的 `sev-formula-loop` 顯示線上公式＋範例 P＋每週差異＋RO 核准；Messenger `msg-severity-recommend` 有**準確確認**＋原因代碼勾選與 Monitor 2.0 介面連結；每週 CR 為 AI Engineer Maker／RO Checker；AI 績效鏡像每週組合；英＋繁中。操作：使用手冊 §9.2／§9.4／§8.2A · 實作：TSD §11.6 · UAT-45／UAT-47。
 
 ### 6.8 指標聚合線型流程 — 方法、資料、流程
 
-**方法：** 每次單一指標告警後，執行技能匹配與／或 RAG 檢索，再檢查該監控是否為某聚合定義（連結時間鏈）的成員。若否，繼續單一指標剩餘流程。若是，並行繼續單一 RCA，標記「可能存在指標關聯」，並開啟等待視窗等其他成員監控。視窗結束且無關聯告警 → 狀態供 RO 按單一處理。視窗內出現關聯告警 → 在管理界面聚合 → RO 按聚合案件處理。
+**方法：** 每次單一指標告警後，執行技能匹配與／或 RAG 檢索，再檢查該監控是否為某聚合定義（連結時間鏈）的成員。若否，繼續單一指標剩餘流程。若是，並行繼續單一 RCA，標記「可能存在指標關聯」，並開啟等待視窗等其他成員監控。視窗結束且無關聯告警 → 狀態供 RO 按單一處理。視窗內出現關聯告警 → 在管理界面聚合 → RO 按聚合案件處理。L1 未齊時 RO 可**強制聚合**（`FORCE_AGGREGATED`，記錄 `missing_l1_at_force`）。L2 就緒後，**L2 營運嚴重度以 max(已觸發 L1) 為底線**，再 × 嚴重度權重（＋多 L1 推力），最多升一檔且永不低於 max L1；公式在看板／首頁演示可見。
 
 | 層 | 細節 |
 |---|---|
-| **資料** | 聚合定義來自 `risk_scenario_chains`／`LINKED_SCENARIOS`；工作階段存於 `platform_settings` `indicator.aggregation.sessions` |
-| **流程** | 告警 → Skill／RAG → 成員資格 → 單一繼續 **或** 關聯等待 → RO 單一 **或** 界面聚合 → RO 聚合 |
-| **畫面** | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation` |
+| **資料** | 聚合定義來自 `risk_scenario_chains`／`LINKED_SCENARIOS`；工作階段存於 `platform_settings` `indicator.aggregation.sessions`（含 `l1_severities`、`l2_severity`、`l2_severity_calc`、`force_aggregated`、`post_flow`） |
+| **流程** | 告警 → Skill／RAG → 成員資格 → 單一繼續 **或** 關聯等待 → RO 單一 **或** 自然／強制聚合 → L2 嚴重度計算 → L2 之後脊柱 |
+| **畫面** | `/admin/indicator-aggregation` · 首頁 `HomeL1L2AggregationDemo` · `IndicatorAggregationBoard` · `POST /api/indicator-aggregation`（`force_aggregate`、`continue_post_flow`） |
 
 ```mermaid
 flowchart LR
@@ -396,10 +396,12 @@ flowchart LR
   C -->|是| F[標記關聯＋等待視窗]
   F -->|逾時| E
   F -->|關聯告警| G[界面內聚合]
-  G --> H[RO 按聚合]
+  F -->|RO 強制 L1 未齊| G
+  G --> S[L2 嚴重度 max L1 × 權重]
+  S --> H[RO 按聚合]
 ```
 
-**驗收（FR-40）：** 線型步驟可見；示範工作階段涵蓋無成員、視窗逾時、已聚合三條路徑；英＋繁中。操作：使用手冊 §14B · 實作：TSD §11.7 · UAT-48。
+**驗收（FR-40）：** 線型步驟可見；示範工作階段涵蓋無成員、視窗逾時、已聚合、強制聚合；L2 嚴重度面板顯示 max(L1) 底線＋權重；首頁 L1→L2 演示；英＋繁中。操作：使用手冊 §14B · 實作：TSD §11.7 · UAT-48。
 
 ---
 
@@ -428,7 +430,8 @@ flowchart LR
 4. **控制：** 封鎖帳號 → 雙重確認 → admin_ref；必要時 Checker 後續。  
 5. **AI Admin：** 需要不同 Checker；自己核准被擋。  
 5b. **AI 績效：** `/admin/ai-performance` 顯示 KPI（技能匹配、挑戰者、回饋、訓練）且無可寫控制；自 AI 管理可連結。  
-5c. **嚴重度 → 權重（FR-39）：** Messenger AI_REPORT 可重推薦 P0–P3＋原因；升級路徑顯示每月組合並可套用至 ESC-DEFAULT；AI 績效唯讀鏡像。  
+5c. **嚴重度 → 權重（FR-39）：** Messenger AI_REPORT 可確認準確或重推薦 P0–P3＋原因代碼，並提供 Monitor 2.0 介面連結；升級路徑顯示每月組合並可套用至 ESC-DEFAULT；AI 績效唯讀鏡像。  
+5d. **門檻調整全流程：** Monitor 2.0／管理首頁動態展示取樣 → AI X→Y → CR → 雙重控制 → 套用 → 稽核（AI 不寫線上分帶；編輯器為第 5 步）。  
 6. **覆蓋：** UAT 視窗 BREACH／CRITICAL 樣本 100% 已挑戰（允許回填）。  
 7. **文件：** PRD／TSD／使用手冊／UAT／生態／路線圖／開放議題／進度英繁皆可渲染；使用手冊對左側每一頁都有操作說明。  
 8. **手機：** Messenger 列表→執行緒→返回在約 390px 可用且無整頁溢出。  
@@ -529,5 +532,6 @@ flowchart LR
 | 1.13 | 2026-10-13 | FR-39 AI 協助自 P0–P3 嚴重度回饋調整升級因子權重（§6.7）；UAT-45／UAT-46 |
 | 1.14 | 2026-10-14 | FR-39 主迴路（§6.7）：線上公式 → 值班原因代碼 → 每週 AI → RO 核准；UAT-47 |
 | 1.15 | 2026-10-14 | FR-40 指標聚合線型流程（§6.8）`/admin/indicator-aggregation` |
+| 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 介面＋準確確認；FR-40 強制聚合＋L2 嚴重度 = max(L1)×權重；Monitor 2.0 門檻調整全流程演示 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
