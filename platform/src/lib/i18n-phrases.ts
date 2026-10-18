@@ -749,10 +749,22 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Dummy run": "虛擬演練",
   "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)":
     "控制平面總覽、虛擬脊柱按鈕（單則或連動組走完 DETECT→結案）、統計、可展開警報追蹤，以及首頁脊柱階段工單數（脊柱日誌分頁已移除）",
+  "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), L1→L2 aggregation demo + threshold adjustment full-flow demo, stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)":
+    "控制平面總覽、虛擬脊柱按鈕（單則或連動組走完 DETECT→結案）、L1→L2 聚合演示＋門檻調整全流程演示、統計、可展開警報追蹤，以及首頁脊柱階段工單數（脊柱日誌分頁已移除）",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls":
     "警報＋AI 報告收件匣；依升級路徑承辦拆聊天窗（鳥瞰轉遞）；證據、聊天、升級、排除、結案、控制",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls":
     "警報＋AI 報告收件匣；依升級路徑承辦拆聊天窗（鳥瞰轉遞）；證據、聊天、升級、排除、結案、P0–P3 嚴重度重推薦、控制",
+  "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close; AI_REPORT Monitor 2.0 surfaces + accurate severity confirm / P0–P3 re-recommend + reason codes; controls":
+    "警報＋AI 報告收件匣；依升級路徑承辦拆聊天窗（鳥瞰轉遞）；證據、聊天、升級、排除、結案；AI_REPORT Monitor 2.0 可用介面＋準確嚴重度確認／P0–P3 重推薦＋原因代碼；控制",
+  "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); alerts & tickets live on Realtime Alert & Tracker; deep-link targets for M2-* codes":
+    "統一指標＋偵測器登錄（全部執行／同步／暫停／近期執行）；警報與工單在即時警報與追蹤；M2-* 深連結目標",
+  "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); threshold adjustment full-flow demo; alerts & tickets live on Realtime Alert & Tracker; deep-link ?monitor_id= (from Lark AI_REPORT) highlights M2-* rows":
+    "統一指標＋偵測器登錄（全部執行／同步／暫停／近期執行）；門檻調整全流程演示；警報與工單在即時警報與追蹤；深鏈 ?monitor_id=（來自 Lark AI_REPORT）高亮 M2-* 列",
+  "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker":
+    "GET 執行緒 · POST evidence／chat／escalate／dismiss／close／recommend／confirm／checker",
+  "GET threads · POST evidence/chat/escalate/dismiss/close/recommend_severity (ai_accurate or P override + reason_codes)/confirm/checker":
+    "GET 執行緒 · POST evidence／chat／escalate／dismiss／close／recommend_severity（ai_accurate 或 P 覆寫＋reason_codes）／confirm／checker",
   "Demo Messenger": "示範 Messenger",
   "Escalation Routes": "升級路徑",
   "AI Performance": "AI 績效",
@@ -1228,8 +1240,12 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Indicator Aggregation API": "指標聚合 API",
   "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait window → RO as single or aggregate (from linked timeline chains)":
     "線型聚合介面：單一告警 → Skill／RAG → 成員資格檢查 → 關聯等待視窗 → RO 按單一或聚合（來自連結時間鏈）",
+  "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait → RO as single / aggregate / force-aggregate (FORCE_AGGREGATED); L2 severity = max(fired L1)×weight; post-L2 flow":
+    "線型聚合介面：單一告警 → Skill／RAG → 成員資格檢查 → 關聯等待 → RO 單一／聚合／強制聚合（FORCE_AGGREGATED）；L2 嚴重度 = max(已觸發 L1)×權重；L2 後流程",
   "GET board pack · POST start / inject_related / close_window (linear FR-40 flow; RO single or aggregate)":
     "GET 看板組合 · POST start／inject_related／close_window（FR-40 線型流程；RO 單一或聚合）",
+  "GET board pack · POST start / inject_related / close_window / force_aggregate / continue_post_flow (FR-40; RO single / aggregate / force; L2 severity)":
+    "GET 看板組合 · POST start／inject_related／close_window／force_aggregate／continue_post_flow（FR-40；RO 單一／聚合／強制；L2 嚴重度）",
   "Risk discovery notebook (HTML)": "風險探索筆記本（HTML）",
   "Risk discovery notebook (.ipynb)": "風險探索筆記本（.ipynb）",
   "Risk discovery notebook (Colab)": "風險探索筆記本（Colab）",
@@ -1261,9 +1277,11 @@ export const DUMMY_PHRASE_FRAGMENTS = [
   "Dummy spine produced no alerts",
   "dummy_spine failed",
   "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)",
+  "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), L1→L2 aggregation demo + threshold adjustment full-flow demo, stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)",
   "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls",
+  "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close; AI_REPORT Monitor 2.0 surfaces + accurate severity confirm / P0–P3 re-recommend + reason codes; controls",
   "Home dummy",
   "home-dummy",
 ] as const;

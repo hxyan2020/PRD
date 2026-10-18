@@ -20,7 +20,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },
 
   // Home
-  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
+  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), L1→L2 aggregation demo + threshold adjustment full-flow demo, stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
@@ -39,7 +39,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
     title: "Indicator Aggregation Flow",
     path: "/admin/indicator-aggregation",
     description:
-      "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait window → RO as single or aggregate (from linked timeline chains)",
+      "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait → RO as single / aggregate / force-aggregate (FORCE_AGGREGATED); L2 severity = max(fired L1)×weight; post-L2 flow",
     permission: "monitor.read",
   },
   {
@@ -60,7 +60,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
     path: "https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing",
     description: "Interactive Google Colab Jupyter notebook for unknown-risk discovery",
   },
-  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); alerts & tickets live on Realtime Alert & Tracker; deep-link targets for M2-* codes", permission: "monitor.read" },
+  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); threshold adjustment full-flow demo; alerts & tickets live on Realtime Alert & Tracker; deep-link ?monitor_id= (from Lark AI_REPORT) highlights M2-* rows", permission: "monitor.read" },
   { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Not in left nav — redirects to Monitor 2.0 (detectors merged into indicator registry)", permission: "detectors.read" },
   { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + grouped AI pipeline controls (rank note) + AI RCA; M2-* MonitorCode tooltips/links; closed tickets → Risk Log; AI Analyses list redirects here", permission: "monitor.read" },
   { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0 (M2-* chips)", permission: "monitor.read" },
@@ -78,7 +78,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "AI Access Security", path: "/admin/security/ai-access", description: "Human-only pages/functions/fields blocklist (includes FN-RAG-WRITE / propose_rag only)", permission: "audit.read" },
 
   // Response (messenger / intervention / escalation)
-  { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls", permission: "lark.read" },
+  { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close; AI_REPORT Monitor 2.0 surfaces + accurate severity confirm / P0–P3 re-recommend + reason codes; controls", permission: "lark.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
   { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; monthly P0–P3 severity weight pack (apply → ESC-DEFAULT); skill binds one route code; no separate Path name column", permission: "escalation.read" },
@@ -119,9 +119,9 @@ export const PLATFORM_URLS: UrlEntry[] = [
     title: "Indicator Aggregation API",
     path: "/api/indicator-aggregation",
     description:
-      "GET board pack · POST start / inject_related / close_window (linear FR-40 flow; RO single or aggregate)",
+      "GET board pack · POST start / inject_related / close_window / force_aggregate / continue_post_flow (FR-40; RO single / aggregate / force; L2 severity)",
   },
-  { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker" },
+  { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend_severity (ai_accurate or P override + reason_codes)/confirm/checker" },
   { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management & test notify" },
   { category: "API", title: "Market Intel API", path: "/api/market-intel", description: "Scan / findings / outbox" },
   { category: "API", title: "Monitor API", path: "/api/monitor", description: "Indicators + detectors: run_detectors (parallel discovery), run_discovery, toggle_pause, threshold edit, sync" },

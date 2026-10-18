@@ -46,4 +46,27 @@ const api = read("src/app/api/monitor/route.ts");
 assert.match(api, /update_thresholds/);
 assert.match(api, /UPDATE_THRESHOLDS/);
 
+for (const [rel, markers] of [
+  ["docs/USER_GUIDE.md", [/threshold-flow-demo/, /Threshold adjustment full flow/]],
+  ["docs/USER_GUIDE.zh-Hant.md", [/threshold-flow-demo/, /門檻調整全流程/]],
+  ["docs/TSD.md", [/ThresholdAdjustmentFlowDemo/, /threshold-flow-shared/]],
+  ["docs/TSD.zh-Hant.md", [/ThresholdAdjustmentFlowDemo/, /threshold-flow-shared/]],
+  ["docs/PRD.md", [/Threshold adjustment flow/]],
+  ["docs/PRD.zh-Hant.md", [/門檻調整/]],
+  ["docs/CHANGELOG.md", [/threshold full-flow/]],
+  ["docs/PROGRESS.md", [/threshold adjustment full-flow|threshold full-flow/]],
+  ["docs/PROGRESS.zh-Hant.md", [/門檻調整全流程|門檻全流程/]],
+] as Array<[string, RegExp[]]>) {
+  const src = read(rel);
+  for (const m of markers) {
+    assert.match(src, m, `${rel} missing ${m}`);
+  }
+}
+
+const phrases = read("src/lib/i18n-phrases.ts");
+assert.match(phrases, /threshold adjustment full-flow demo/);
+assert.match(phrases, /門檻調整全流程演示/);
+assert.match(phrases, /L1→L2 aggregation demo \+ threshold adjustment full-flow demo/);
+assert.match(phrases, /L1→L2 聚合演示＋門檻調整全流程演示/);
+
 console.log("ok: threshold adjustment full-flow demo");
