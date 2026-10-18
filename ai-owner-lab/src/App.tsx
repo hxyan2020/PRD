@@ -1,4 +1,5 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './auth/AuthContext'
 import { Layout } from './components/Layout'
 import { Home } from './pages/Home'
 import { Curriculum } from './pages/Curriculum'
@@ -9,24 +10,28 @@ import { OpsPlaybook } from './pages/OpsPlaybook'
 import { Career } from './pages/Career'
 import { Tracker } from './pages/Tracker'
 import { Notebook } from './pages/Notebook'
+import { NotesPublicHtml } from './pages/NotesPublicHtml'
 
 export default function App() {
   return (
     <HashRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="curriculum" element={<Curriculum />} />
-          <Route path="tracker" element={<Tracker />} />
-          <Route path="notebook" element={<Notebook />} />
-          <Route path="day/:day" element={<DayLessonPage />} />
-          <Route path="glossary" element={<Glossary />} />
-          <Route path="use-cases" element={<UseCases />} />
-          <Route path="ops" element={<OpsPlaybook />} />
-          <Route path="career" element={<Career />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="curriculum" element={<Curriculum />} />
+            <Route path="tracker" element={<Tracker />} />
+            <Route path="notebook" element={<Notebook />} />
+            <Route path="notes-html" element={<NotesPublicHtml />} />
+            <Route path="day/:day" element={<DayLessonPage />} />
+            <Route path="glossary" element={<Glossary />} />
+            <Route path="use-cases" element={<UseCases />} />
+            <Route path="ops" element={<OpsPlaybook />} />
+            <Route path="career" element={<Career />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </HashRouter>
   )
 }
