@@ -311,6 +311,8 @@ const en = {
   noteTreeEmpty:
     'No notes or categories yet. Add categories in the Categories tab, or create notes from Notes.',
   noteTreeOpen: 'Open note',
+  openNoteFull: 'Open',
+  openNoteFullHint: 'Open full screen to read the whole note',
   closeNote: 'Close',
   aiExplanation: 'AI explanation',
   clip: 'Clip',
@@ -816,6 +818,8 @@ const zh: Record<UiKey, string> = {
   noteTreeEmptyCategory: '该分类下还没有笔记。',
   noteTreeEmpty: '还没有笔记或分类。请到「分类」页创建分类，或到「笔记」页添加笔记。',
   noteTreeOpen: '打开笔记',
+  openNoteFull: '打开',
+  openNoteFullHint: '进入全屏查看完整笔记',
   closeNote: '关闭',
   aiExplanation: 'AI 讲解',
   clip: '摘录',

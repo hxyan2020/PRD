@@ -277,6 +277,20 @@ export function Notebook() {
   }, [view, count, accountSynced])
 
   useEffect(() => {
+    if (!openedNoteId) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenedNoteId(null)
+    }
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [openedNoteId])
+
+  useEffect(() => {
     if (!ready || autoRecoverTried.current) return
     if (count > 0) return
     autoRecoverTried.current = true
@@ -548,9 +562,15 @@ export function Notebook() {
     setEditingId(null)
   }
 
+  function openNoteFullScreen(entry: NotebookEntry) {
+    setOpenedNoteId(entry.id)
+    setTreeFocusId(entry.id)
+    setEditingId(null)
+  }
+
   function editOpenedNote(entry: NotebookEntry) {
-    setView('notes')
     setOpenedNoteId(null)
+    setView('notes')
     startEdit(entry)
     setTreeFocusId(entry.id)
   }
@@ -834,6 +854,81 @@ export function Notebook() {
         </p>
       ) : null}
 
+      {openedNote ? (
+        <div
+          className="note-fullscreen"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('noteTreeOpen')}
+          data-opened-note-id={openedNote.id}
+        >
+          <div className="note-fullscreen-panel">
+            <div className="note-fullscreen-head">
+              <h2>
+                {openedNote.title?.trim() ||
+                  htmlToPlainText(openedNote.selectedText).slice(0, 80) ||
+                  t('freeNote')}
+              </h2>
+              <button type="button" className="btn ghost" onClick={closeOpenedNote}>
+                {t('closeNote')}
+              </button>
+            </div>
+            <div className="note-fullscreen-meta">
+              <time dateTime={openedNote.createdAt}>
+                {formatTimestamp(openedNote.createdAt, lang)}
+              </time>
+              <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
+              {(openedNote.categoryIds ?? [])
+                .map((id) => categoryMap.get(id))
+                .filter((c): c is NotebookCategory => Boolean(c))
+                .map((cat) => (
+                  <span
+                    key={cat.id}
+                    className="notebook-category-badge"
+                    style={categoryColorStyle(cat.color) as CSSProperties}
+                  >
+                    <span className="category-dot" aria-hidden="true" />
+                    {cat.name}
+                  </span>
+                ))}
+            </div>
+            <div className="note-fullscreen-body">
+              <NoteBody html={openedNote.selectedText} className="notebook-quote" />
+              {openedNote.explanation ? (
+                <div className="notebook-explanation">
+                  {openedNote.explanation.split(/\n\n+/).map((block, index) => (
+                    <p key={`${openedNote.id}-open-${index}`}>{block.replace(/\*\*/g, '')}</p>
+                  ))}
+                </div>
+              ) : null}
+              <NoteAttachments
+                attachments={openedNote.attachments ?? []}
+                canUpload={Boolean(authUser)}
+                onChange={async (next) => {
+                  await updateEntry(openedNote.id, { attachments: next })
+                }}
+              />
+            </div>
+            <div className="notebook-actions note-fullscreen-actions">
+              <button
+                type="button"
+                className="btn ghost"
+                onClick={() => editOpenedNote(openedNote)}
+              >
+                {t('edit')}
+              </button>
+              <button
+                type="button"
+                className="btn ghost"
+                onClick={() => moveToDustbin(openedNote.id)}
+              >
+                {t('moveToDustbin')}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {view === 'backup' ? (
         <NotebookBackupPanel />
       ) : view === 'dustbin' ? (
@@ -970,74 +1065,6 @@ export function Notebook() {
             embedded
           />
 
-          {openedNote ? (
-            <section
-              className="note-tree-reader"
-              aria-label={t('noteTreeOpen')}
-              data-opened-note-id={openedNote.id}
-            >
-              <div className="note-tree-reader-head">
-                <h2>
-                  {openedNote.title?.trim() ||
-                    htmlToPlainText(openedNote.selectedText).slice(0, 80) ||
-                    t('freeNote')}
-                </h2>
-                <button type="button" className="btn ghost" onClick={closeOpenedNote}>
-                  {t('closeNote')}
-                </button>
-              </div>
-              <div className="note-tree-reader-meta">
-                <time dateTime={openedNote.createdAt}>
-                  {formatTimestamp(openedNote.createdAt, lang)}
-                </time>
-                <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
-                {(openedNote.categoryIds ?? [])
-                  .map((id) => categoryMap.get(id))
-                  .filter((c): c is NotebookCategory => Boolean(c))
-                  .map((cat) => (
-                    <span
-                      key={cat.id}
-                      className="notebook-category-badge"
-                      style={categoryColorStyle(cat.color) as CSSProperties}
-                    >
-                      <span className="category-dot" aria-hidden="true" />
-                      {cat.name}
-                    </span>
-                  ))}
-              </div>
-              <NoteBody html={openedNote.selectedText} className="notebook-quote" />
-              {openedNote.explanation ? (
-                <div className="notebook-explanation">
-                  {openedNote.explanation.split(/\n\n+/).map((block, index) => (
-                    <p key={`${openedNote.id}-open-${index}`}>{block.replace(/\*\*/g, '')}</p>
-                  ))}
-                </div>
-              ) : null}
-              <NoteAttachments
-                attachments={openedNote.attachments ?? []}
-                canUpload={Boolean(authUser)}
-                onChange={async (next) => {
-                  await updateEntry(openedNote.id, { attachments: next })
-                }}
-              />
-              <div className="notebook-actions">
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={() => editOpenedNote(openedNote)}
-                >
-                  {t('edit')}
-                </button>
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={() => moveToDustbin(openedNote.id)}
-                >
-                  {t('moveToDustbin')}
-                </button>
-              </div>
-            </section>
-          ) : null}
         </>
       ) : !cloudOn && count === 0 && !skipCloudRestore ? (
         null
@@ -1269,7 +1296,7 @@ export function Notebook() {
               <li
                 key={entry.id}
                 data-entry-id={entry.id}
-                className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}${
+                className={`notebook-entry notebook-entry-card ${entry.type}${editing ? ' editing' : ''}${
                   treeFocusId === entry.id || openedNoteId === entry.id ? ' tree-focus' : ''
                 }`}
               >
@@ -1292,7 +1319,10 @@ export function Notebook() {
                           style={categoryColorStyle(cat.color) as CSSProperties}
                           title={t('filterByThisCategory', { name: cat.name })}
                           aria-label={t('filterByThisCategory', { name: cat.name })}
-                          onClick={() => filterByCategoryId(cat.id)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            filterByCategoryId(cat.id)
+                          }}
                         >
                           <span className="category-dot" aria-hidden="true" />
                           {cat.name}
@@ -1385,23 +1415,34 @@ export function Notebook() {
                   </div>
                 ) : (
                   <>
-                    {entry.title ? <h3 className="notebook-entry-title">{entry.title}</h3> : null}
-                    <NoteBody html={entry.selectedText} className="notebook-quote" />
-                    {entry.explanation ? (
-                      <div className="notebook-explanation">
-                        {entry.explanation.split(/\n\n+/).map((block, index) => (
-                          <p key={`${entry.id}-b-${index}`}>{block.replace(/\*\*/g, '')}</p>
-                        ))}
-                      </div>
-                    ) : null}
-                    {(entry.attachments?.length ?? 0) > 0 ? (
-                      <NoteAttachments
-                        attachments={entry.attachments ?? []}
-                        canUpload={false}
-                        onChange={() => undefined}
-                      />
-                    ) : null}
+                    <button
+                      type="button"
+                      className="notebook-entry-preview"
+                      title={t('openNoteFullHint')}
+                      aria-label={t('openNoteFullHint')}
+                      onClick={() => openNoteFullScreen(entry)}
+                    >
+                      {entry.title ? <h3 className="notebook-entry-title">{entry.title}</h3> : null}
+                      <NoteBody html={entry.selectedText} className="notebook-quote" />
+                      {entry.explanation ? (
+                        <div className="notebook-explanation">
+                          <p>{entry.explanation.replace(/\*\*/g, '')}</p>
+                        </div>
+                      ) : null}
+                      {(entry.attachments?.length ?? 0) > 0 ? (
+                        <p className="notebook-entry-attach-count">
+                          {t('attachTitle')}: {entry.attachments!.length}
+                        </p>
+                      ) : null}
+                    </button>
                     <div className="notebook-actions">
+                      <button
+                        type="button"
+                        className="btn primary"
+                        onClick={() => openNoteFullScreen(entry)}
+                      >
+                        {t('openNoteFull')}
+                      </button>
                       <button type="button" className="btn ghost" onClick={() => startEdit(entry)}>
                         {t('edit')}
                       </button>
