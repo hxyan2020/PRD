@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import {
   closeWaitWindowAsSingle,
+  continuePostL2Flow,
+  forceAggregateIncomplete,
   getAggregationBoardPack,
   injectRelatedAlert,
   listAggregationSessions,
@@ -82,6 +84,33 @@ export async function POST(req: NextRequest) {
         sessions: listAggregationSessions(),
         message: "Wait window closed — RO handles as single indicator",
         message_zh: "等待視窗已結束 — RO 按單一指標處理",
+      });
+    }
+
+    if (action === "force_aggregate") {
+      const session = forceAggregateIncomplete({
+        session_id: String(body.session_id || ""),
+        reason: body.reason ? String(body.reason) : undefined,
+        actor,
+      });
+      return NextResponse.json({
+        session,
+        sessions: listAggregationSessions(),
+        message: "RO force-aggregated L2 while L1 incomplete — post-flow unlocked",
+        message_zh: "RO 已在 L1 未齊時強制聚合 L2 — 後續流程已解鎖",
+      });
+    }
+
+    if (action === "continue_post_flow") {
+      const session = continuePostL2Flow({
+        session_id: String(body.session_id || ""),
+        actor,
+      });
+      return NextResponse.json({
+        session,
+        sessions: listAggregationSessions(),
+        message: "Post-L2 flow continued (RCA → messenger → human gate)",
+        message_zh: "已繼續 L2 之後流程（RCA → Messenger → 人工關卡）",
       });
     }
 

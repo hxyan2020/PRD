@@ -16,22 +16,39 @@ const lib = read("src/lib/indicator-aggregation.ts");
 assert.match(lib, /export function startAggregationSession/);
 assert.match(lib, /export function injectRelatedAlert/);
 assert.match(lib, /export function closeWaitWindowAsSingle/);
+assert.match(lib, /export function forceAggregateIncomplete/);
+assert.match(lib, /export function continuePostL2Flow/);
 assert.match(lib, /seedAggregationDemosIfEmpty/);
 assert.match(lib, /CORRELATED_WAIT/);
+assert.match(lib, /FORCE_AGGREGATED/);
 
 const shared = read("src/lib/indicator-aggregation-shared.ts");
 assert.match(shared, /LINEAR_AGGREGATION_STEPS/);
 assert.match(shared, /AGGREGATE_READY/);
+assert.match(shared, /FORCE_AGGREGATED/);
+assert.match(shared, /L1_L2_LABELS/);
+assert.match(shared, /POST_L2_FLOW_STAGES/);
 
 const board = read("src/components/IndicatorAggregationBoard.tsx");
 assert.match(board, /indicator-agg-board/);
 assert.match(board, /indicator-agg-linear-steps/);
+assert.match(board, /indicator-agg-force/);
 assert.match(board, /from \"@\/lib\/indicator-aggregation-shared\"/);
 assert.doesNotMatch(board, /from \"@\/lib\/indicator-aggregation\"/);
+
+const homeDemo = read("src/components/HomeL1L2AggregationDemo.tsx");
+assert.match(homeDemo, /home-l1-l2-demo/);
+assert.match(homeDemo, /home-l1-l2-force/);
+assert.match(homeDemo, /L1_L2_LABELS/);
+
+const homePage = read("src/app/admin/page.tsx");
+assert.match(homePage, /HomeL1L2AggregationDemo/);
 
 const api = read("src/app/api/indicator-aggregation/route.ts");
 assert.match(api, /inject_related/);
 assert.match(api, /close_window/);
+assert.match(api, /force_aggregate/);
+assert.match(api, /continue_post_flow/);
 
 const page = read("src/app/admin/indicator-aggregation/page.tsx");
 assert.match(page, /IndicatorAggregationBoard/);

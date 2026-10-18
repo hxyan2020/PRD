@@ -29,6 +29,7 @@ function stepIndex(step: AggregationStepId): number {
 
 function outcomeTone(outcome: AggregationSession["outcome"]) {
   if (outcome === "AGGREGATED") return "bg-indigo-100 border-indigo-200 text-indigo-950";
+  if (outcome === "FORCE_AGGREGATED") return "bg-orange-100 border-orange-200 text-orange-950";
   if (outcome === "PENDING") return "bg-amber-100 border-amber-200 text-amber-950";
   return "bg-slate-100 border-slate-200 text-slate-800";
 }
@@ -358,6 +359,23 @@ export function IndicatorAggregationBoard({
                   ))}
                   <button
                     type="button"
+                    className="btn !min-h-10 text-xs border-orange-300 text-orange-950"
+                    disabled={busy}
+                    onClick={() =>
+                      void run("force_aggregate", {
+                        session_id: active.session_id,
+                        reason: "RO force L2 while L1 incomplete (desk demo)",
+                      })
+                    }
+                    data-testid="indicator-agg-force"
+                  >
+                    <EnZh
+                      en="Force-aggregate L2 (L1 incomplete)"
+                      zh="強制聚合 L2（L1 未齊）"
+                    />
+                  </button>
+                  <button
+                    type="button"
                     className="btn !min-h-10 text-xs"
                     disabled={busy}
                     onClick={() =>
@@ -366,6 +384,31 @@ export function IndicatorAggregationBoard({
                     data-testid="indicator-agg-timeout"
                   >
                     <EnZh en="End window → RO as single" zh="結束視窗 → RO 按單一處理" />
+                  </button>
+                </div>
+              ) : null}
+
+              {canOperate &&
+              (active.outcome === "AGGREGATED" || active.outcome === "FORCE_AGGREGATED") ? (
+                <div className="flex flex-wrap gap-2 pt-1" data-testid="indicator-agg-post-flow">
+                  {active.force_aggregated ? (
+                    <Badge className="bg-orange-100 border-orange-200 text-orange-950">
+                      <EnZh
+                        en={`Forced · missing L1: ${(active.missing_l1_at_force || []).join(", ") || "—"}`}
+                        zh={`已強制 · 缺 L1：${(active.missing_l1_at_force || []).join("、") || "—"}`}
+                      />
+                    </Badge>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="btn btn-primary !min-h-10 text-xs"
+                    disabled={busy}
+                    onClick={() =>
+                      void run("continue_post_flow", { session_id: active.session_id })
+                    }
+                    data-testid="indicator-agg-continue"
+                  >
+                    <EnZh en="Continue post-L2 flow" zh="繼續 L2 之後流程" />
                   </button>
                 </div>
               ) : null}

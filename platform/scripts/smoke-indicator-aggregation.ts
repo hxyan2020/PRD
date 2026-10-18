@@ -4,6 +4,8 @@
 import assert from "node:assert/strict";
 import {
   closeWaitWindowAsSingle,
+  continuePostL2Flow,
+  forceAggregateIncomplete,
   getAggregationBoardPack,
   injectRelatedAlert,
   startAggregationSession,
@@ -57,9 +59,31 @@ const timed = closeWaitWindowAsSingle({
 assert.equal(timed.outcome, "SINGLE_WINDOW_TIMEOUT");
 assert.equal(timed.step, "RO_SINGLE");
 
+const wait3 = startAggregationSession({
+  trigger_monitor: def!.member_monitors[0],
+  trigger_severity: "BREACH",
+  actor: { id: null, name: "smoke" },
+});
+assert.equal(wait3.step, "CORRELATED_WAIT");
+const forced = forceAggregateIncomplete({
+  session_id: wait3.session_id,
+  reason: "smoke force L2 while L1 incomplete",
+  actor: { id: null, name: "smoke" },
+});
+assert.equal(forced.outcome, "FORCE_AGGREGATED");
+assert.equal(forced.force_aggregated, true);
+assert.ok((forced.missing_l1_at_force || []).length >= 1);
+const continued = continuePostL2Flow({
+  session_id: forced.session_id,
+  actor: { id: null, name: "smoke" },
+});
+assert.ok((continued.post_flow || []).length >= 3);
+
 console.log("ok: smoke indicator aggregation", {
   defs: pack.definitions.length,
   orphan: orphan.session_id,
   aggregated: agg.session_id,
   timed: timed.session_id,
+  forced: forced.session_id,
+  missing: forced.missing_l1_at_force,
 });

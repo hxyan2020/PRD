@@ -4,7 +4,8 @@
  *   (no) continue as single |
  *   (yes) mark correlation + wait window →
  *     timeout → RO as single |
- *     related alerts → aggregate UI → RO as aggregate
+ *     related alerts → aggregate UI → RO as aggregate |
+ *     RO force-aggregate while L1 incomplete → L2 + post-flow
  */
 import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
@@ -13,6 +14,7 @@ import { listLinkedScenarios, seedSkillsIfEmpty } from "@/lib/ai/skills";
 import type { LinkedScenario, TimelineEvent } from "@/lib/ai/scenario-types";
 import {
   LINEAR_AGGREGATION_STEPS,
+  POST_L2_FLOW_STAGES,
   type AggregateDefinition,
   type AggregationEvent,
   type AggregationOutcome,
@@ -27,7 +29,7 @@ export type {
   AggregationSession,
   AggregationStepId,
 };
-export { LINEAR_AGGREGATION_STEPS };
+export { LINEAR_AGGREGATION_STEPS, POST_L2_FLOW_STAGES };
 
 export type AggregationBoardPack = {
   definitions: AggregateDefinition[];
@@ -220,6 +222,9 @@ export function startAggregationSession(input: {
     step: "SINGLE_ALERT",
     outcome: "PENDING",
     correlation_marked: false,
+    force_aggregated: false,
+    missing_l1_at_force: [],
+    post_flow: [],
     events: [],
     created_at: nowIso(),
     updated_at: nowIso(),
@@ -344,6 +349,8 @@ export function injectRelatedAlert(input: {
     `聚合包 ${session.aggregate_code} 已就緒，供風險負責人按聚合指標處理（觸發 ${session.trigger_monitor}＋${session.related_seen.join("、")}）`
   );
   session.outcome = "AGGREGATED";
+  session.force_aggregated = false;
+  session.post_flow = POST_L2_FLOW_STAGES.map((s) => s.id);
   sessions[idx] = session;
   saveSessions(sessions, db);
   writeAudit(input.actor || { id: null, name: "system" }, "INDICATOR_AGG_RELATED", "indicator_aggregation", session.session_id, {
@@ -380,6 +387,97 @@ export function closeWaitWindowAsSingle(input: {
   writeAudit(input.actor || { id: null, name: "system" }, "INDICATOR_AGG_TIMEOUT", "indicator_aggregation", session.session_id, {
     outcome: session.outcome,
   });
+  return session;
+}
+
+/**
+ * Risk Owner / human force-aggregates L2 while not all L1 members have fired.
+ * Remaining members are recorded as missing_l1_at_force; post_flow continues the spine.
+ */
+export function forceAggregateIncomplete(input: {
+  session_id: string;
+  reason?: string;
+  actor?: { id?: number | null; name: string };
+  db?: Database.Database;
+}): AggregationSession {
+  const db = input.db || getDb();
+  const sessions = loadSessions(db);
+  const idx = sessions.findIndex((s) => s.session_id === input.session_id);
+  if (idx < 0) throw new Error("Aggregation session not found");
+  const session = sessions[idx];
+  if (session.outcome !== "PENDING" || session.step !== "CORRELATED_WAIT") {
+    throw new Error(`Force-aggregate only while waiting (got ${session.step}/${session.outcome})`);
+  }
+  if (!session.aggregate_code) {
+    throw new Error("Session has no L2 aggregate definition");
+  }
+  const seen = new Set(
+    [session.trigger_monitor, ...session.related_seen].map((m) => m.toUpperCase())
+  );
+  const missing = session.member_monitors.filter((m) => !seen.has(m.toUpperCase()));
+  if (missing.length === 0) {
+    throw new Error("All L1 members already present — use natural aggregate path");
+  }
+  const reason = String(input.reason || "RO approved incomplete L1 set").trim();
+  session.force_aggregated = true;
+  session.missing_l1_at_force = missing;
+  pushEvent(
+    session,
+    "AGGREGATE_READY",
+    `Human force-aggregate L2 ${session.aggregate_code}: L1 incomplete (missing ${missing.join(", ")}). Reason: ${reason}`,
+    `人工強制聚合 L2 ${session.aggregate_code}：L1 未齊（缺 ${missing.join("、")}）。理由：${reason}`
+  );
+  pushEvent(
+    session,
+    "RO_AGGREGATE",
+    `L2 pack ready for RO after force-approve (L1 fired: ${[session.trigger_monitor, ...session.related_seen].join(", ")})`,
+    `強制核准後 L2 包就緒供 RO（已到 L1：${[session.trigger_monitor, ...session.related_seen].join("、")}）`
+  );
+  session.outcome = "FORCE_AGGREGATED";
+  session.post_flow = POST_L2_FLOW_STAGES.map((s) => s.id);
+  sessions[idx] = session;
+  saveSessions(sessions, db);
+  writeAudit(
+    input.actor || { id: null, name: "system" },
+    "INDICATOR_AGG_FORCE",
+    "indicator_aggregation",
+    session.session_id,
+    { missing, reason, outcome: session.outcome, post_flow: session.post_flow }
+  );
+  return session;
+}
+
+/** Mark post-L2 spine stages as continuing (demo / audit). Idempotent. */
+export function continuePostL2Flow(input: {
+  session_id: string;
+  actor?: { id?: number | null; name: string };
+  db?: Database.Database;
+}): AggregationSession {
+  const db = input.db || getDb();
+  const sessions = loadSessions(db);
+  const idx = sessions.findIndex((s) => s.session_id === input.session_id);
+  if (idx < 0) throw new Error("Aggregation session not found");
+  const session = sessions[idx];
+  if (session.outcome !== "AGGREGATED" && session.outcome !== "FORCE_AGGREGATED") {
+    throw new Error("Post-L2 flow only after L2 aggregate is ready");
+  }
+  session.post_flow = POST_L2_FLOW_STAGES.map((s) => s.id);
+  const stages = POST_L2_FLOW_STAGES.map((s) => s.id).join(" → ");
+  pushEvent(
+    session,
+    "RO_AGGREGATE",
+    `Continue after L2: ${stages}`,
+    `L2 之後繼續：${POST_L2_FLOW_STAGES.map((s) => s.zh).join(" → ")}`
+  );
+  sessions[idx] = session;
+  saveSessions(sessions, db);
+  writeAudit(
+    input.actor || { id: null, name: "system" },
+    "INDICATOR_AGG_POST_FLOW",
+    "indicator_aggregation",
+    session.session_id,
+    { post_flow: session.post_flow }
+  );
   return session;
 }
 
