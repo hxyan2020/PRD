@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { CategoryColorId } from '../lib/categoryColors'
+import type { NotebookAttachment } from '../lib/notebookAttachments'
 import { notebookStore } from './notebookStore'
 
 export type NotebookEntryType = 'clip' | 'explanation' | 'note'
+export type { NotebookAttachment }
 
 export interface NotebookCategory {
   id: string
@@ -23,6 +25,8 @@ export interface NotebookEntry {
   sourceLabel?: string
   sourcePath?: string
   model?: string
+  /** Files stored in Vercel Blob; metadata only in local/cloud notebook JSON. */
+  attachments?: NotebookAttachment[]
 }
 
 export interface TrashedNotebookEntry extends NotebookEntry {

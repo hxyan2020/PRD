@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { CloudSetupCard } from '../components/CloudSetupCard'
+import { NoteAttachments } from '../components/NoteAttachments'
 import { NoteTree } from '../components/NoteTree'
 import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
@@ -13,6 +14,7 @@ import {
 import {
   formatTimestamp,
   useNotebook,
+  type NotebookAttachment,
   type NotebookCategory,
   type NotebookEntry,
   type TrashedNotebookEntry,
@@ -206,9 +208,11 @@ export function Notebook() {
   const [draftText, setDraftText] = useState('')
   const [draftExplanation, setDraftExplanation] = useState('')
   const [draftCategoryIds, setDraftCategoryIds] = useState<string[]>([])
+  const [draftAttachments, setDraftAttachments] = useState<NotebookAttachment[]>([])
   const [newTitle, setNewTitle] = useState('')
   const [newNote, setNewNote] = useState('')
   const [newCategoryIds, setNewCategoryIds] = useState<string[]>([])
+  const [newAttachments, setNewAttachments] = useState<NotebookAttachment[]>([])
   const [composerOpen, setComposerOpen] = useState(true)
   const [composerError, setComposerError] = useState<string | null>(null)
   const [sort, setSort] = useState<NotebookSort>(() => readSort())
@@ -415,6 +419,7 @@ export function Notebook() {
     setDraftText(entry.selectedText)
     setDraftExplanation(entry.explanation ?? '')
     setDraftCategoryIds([...(entry.categoryIds ?? [])])
+    setDraftAttachments([...(entry.attachments ?? [])])
   }
 
   function cancelEdit() {
@@ -423,6 +428,7 @@ export function Notebook() {
     setDraftText('')
     setDraftExplanation('')
     setDraftCategoryIds([])
+    setDraftAttachments([])
   }
 
   async function saveEdit(entry: NotebookEntry) {
@@ -431,7 +437,8 @@ export function Notebook() {
         entry.type === 'note'
           ? (editEditorRef.current?.getSanitizedHtml() ?? sanitizeHtml(draftText)).trim()
           : draftText.trim()
-      if (entry.type === 'note' ? isBlankHtml(selectedText) : !selectedText) return
+      const hasFiles = draftAttachments.length > 0
+      if (entry.type === 'note' ? isBlankHtml(selectedText) && !hasFiles : !selectedText) return
       const patch =
         entry.type === 'explanation'
           ? {
@@ -439,8 +446,14 @@ export function Notebook() {
               selectedText,
               explanation: draftExplanation,
               categoryIds: draftCategoryIds,
+              attachments: draftAttachments,
             }
-          : { title: draftTitle, selectedText, categoryIds: draftCategoryIds }
+          : {
+              title: draftTitle,
+              selectedText: selectedText || '<p></p>',
+              categoryIds: draftCategoryIds,
+              attachments: draftAttachments,
+            }
       const updated = await updateEntry(entry.id, patch)
       if (updated) cancelEdit()
     } catch (err) {
@@ -459,15 +472,16 @@ export function Notebook() {
       const html = (
         composerEditorRef.current?.getSanitizedHtml() ?? sanitizeHtml(newNote)
       ).trim()
-      if (isBlankHtml(html)) {
+      if (isBlankHtml(html) && newAttachments.length === 0) {
         setComposerError(t('noteEmptyBody'))
         composerEditorRef.current?.focus()
         return
       }
       const created = await addNote({
-        text: html,
+        text: isBlankHtml(html) ? '' : html,
         title: newTitle,
         categoryIds: newCategoryIds,
+        attachments: newAttachments,
       })
       if (!created) {
         setComposerError(t('noteSaveFailed'))
@@ -476,6 +490,7 @@ export function Notebook() {
       setNewTitle('')
       setNewNote('')
       setNewCategoryIds([])
+      setNewAttachments([])
       setComposerOpen(true)
       setComposerError(null)
       if (!notebookStore.getCloudSyncStatus().configured) {
@@ -968,6 +983,13 @@ export function Notebook() {
                   ))}
                 </div>
               ) : null}
+              <NoteAttachments
+                attachments={openedNote.attachments ?? []}
+                canUpload={Boolean(authUser)}
+                onChange={async (next) => {
+                  await updateEntry(openedNote.id, { attachments: next })
+                }}
+              />
               <div className="notebook-actions">
                 <button
                   type="button"
@@ -1036,6 +1058,14 @@ export function Notebook() {
                 ariaLabel={t('noteBodyLabel')}
               />
             </div>
+            <NoteAttachments
+              attachments={newAttachments}
+              canUpload={Boolean(authUser)}
+              onChange={(next) => {
+                setNewAttachments(next)
+                if (composerError) setComposerError(null)
+              }}
+            />
             {composerError ? (
               <p className="notebook-composer-error" role="alert">
                 {composerError}
@@ -1054,6 +1084,7 @@ export function Notebook() {
                     setNewTitle('')
                     setNewNote('')
                     setNewCategoryIds([])
+                    setNewAttachments([])
                     setComposerError(null)
                   }}
                 >
@@ -1198,7 +1229,9 @@ export function Notebook() {
           {visibleEntries.map((entry) => {
             const editing = editingId === entry.id
             const editBlank =
-              entry.type === 'note' ? isBlankHtml(draftText) : !draftText.trim()
+              entry.type === 'note'
+                ? isBlankHtml(draftText) && draftAttachments.length === 0
+                : !draftText.trim()
             const entryCategories = (entry.categoryIds ?? [])
               .map((id) => categoryMap.get(id))
               .filter((c): c is NotebookCategory => Boolean(c))
@@ -1301,6 +1334,11 @@ export function Notebook() {
                         />
                       </label>
                     ) : null}
+                    <NoteAttachments
+                      attachments={draftAttachments}
+                      canUpload={Boolean(authUser)}
+                      onChange={setDraftAttachments}
+                    />
                     <div className="notebook-actions">
                       <button
                         type="button"
@@ -1325,6 +1363,13 @@ export function Notebook() {
                           <p key={`${entry.id}-b-${index}`}>{block.replace(/\*\*/g, '')}</p>
                         ))}
                       </div>
+                    ) : null}
+                    {(entry.attachments?.length ?? 0) > 0 ? (
+                      <NoteAttachments
+                        attachments={entry.attachments ?? []}
+                        canUpload={false}
+                        onChange={() => undefined}
+                      />
                     ) : null}
                     <div className="notebook-actions">
                       <button type="button" className="btn ghost" onClick={() => startEdit(entry)}>

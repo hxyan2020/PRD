@@ -46,6 +46,7 @@ import {
   isPersistenceQuotaExceeded,
   type NotebookSnapshot,
 } from '../lib/notebookPersistence'
+import { parseAttachments, type NotebookAttachment } from '../lib/notebookAttachments'
 import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
 const LS_ENTRIES = 'ownlab-notebook-v1'
@@ -113,9 +114,14 @@ function isEntryLike(e: unknown): e is NotebookEntry {
   return typeof row.id === 'string' && typeof row.selectedText === 'string'
 }
 
+function normalizeEntry(e: NotebookEntry): NotebookEntry {
+  const attachments = parseAttachments(e.attachments)
+  return attachments.length ? { ...e, attachments } : { ...e, attachments: undefined }
+}
+
 function parseEntries(raw: unknown): NotebookEntry[] {
   if (!Array.isArray(raw)) return []
-  return sortEntries(raw.filter(isEntryLike))
+  return sortEntries(raw.filter(isEntryLike).map(normalizeEntry))
 }
 
 function parseTrash(raw: unknown): TrashedNotebookEntry[] {
@@ -425,7 +431,7 @@ function ensureReady(): Promise<void> {
 
 let cloudPullInFlight: Promise<void> | null = null
 let cloudEtag: string | null = null
-let periodicSyncTimer: ReturnType<typeof setInterval> | null = null
+let periodicSyncTimer: number | null = null
 
 /**
  * Pull cloud notebook and merge into the local cache without scheduling another sync.
@@ -519,7 +525,7 @@ function buildBackupJson(): string {
   )
 }
 
-let durableTimer: ReturnType<typeof setTimeout> | null = null
+let durableTimer: number | null = null
 let cloudPushInFlight: Promise<void> | null = null
 /** Set when a write happens while a cloud push is in flight — flush must run again. */
 let cloudPushDirty = false
@@ -1684,19 +1690,26 @@ export const notebookStore = {
     await mutateEntries((prev) => [entry, ...prev])
     return entry
   },
-  async addNote(input: { text: string; title?: string; categoryIds?: string[] }) {
+  async addNote(input: {
+    text: string
+    title?: string
+    categoryIds?: string[]
+    attachments?: NotebookAttachment[]
+  }) {
     await ensureReady()
     const text = input.text.trim()
-    if (!text) return null
+    const attachments = parseAttachments(input.attachments)
+    if (!text && attachments.length === 0) return null
     const title = input.title?.trim() || undefined
     const entry: NotebookEntry = {
       id: uid('nb'),
       createdAt: new Date().toISOString(),
       type: 'note',
       title,
-      selectedText: text,
+      selectedText: text || '<p></p>',
       categoryIds: normalizeCategoryIds(input.categoryIds),
       sourceLabel: 'Notebook',
+      attachments: attachments.length ? attachments : undefined,
     }
     await mutateEntries((prev) => [entry, ...prev])
     return entry
@@ -1708,6 +1721,7 @@ export const notebookStore = {
       selectedText?: string
       explanation?: string
       categoryIds?: string[]
+      attachments?: NotebookAttachment[]
     },
   ) {
     await ensureReady()
@@ -1718,7 +1732,10 @@ export const notebookStore = {
       const current = entries[index]
       const selectedText =
         patch.selectedText !== undefined ? patch.selectedText.trim() : current.selectedText
-      if (!selectedText) return entries
+      const nextAttachments =
+        patch.attachments !== undefined ? parseAttachments(patch.attachments) : current.attachments
+      const hasFiles = (nextAttachments?.length ?? 0) > 0
+      if (!selectedText && !hasFiles) return entries
 
       let explanation = current.explanation
       if (patch.explanation !== undefined) {
@@ -1740,9 +1757,10 @@ export const notebookStore = {
       updated = {
         ...current,
         title,
-        selectedText,
+        selectedText: selectedText || '<p></p>',
         categoryIds,
         explanation: current.type === 'explanation' ? explanation ?? '' : explanation,
+        attachments: hasFiles ? nextAttachments : undefined,
         updatedAt: new Date().toISOString(),
       }
       const next = [...entries]
@@ -1750,6 +1768,9 @@ export const notebookStore = {
       return next
     })
     return updated
+  },
+  async setAttachments(id: string, attachments: NotebookAttachment[]) {
+    return notebookStore.update(id, { attachments })
   },
   async remove(id: string) {
     const trashed = await enqueueWrite(async () => {

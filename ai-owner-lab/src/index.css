@@ -4085,6 +4085,98 @@ button.notebook-category-badge.on {
   font-size: 0.8rem;
 }
 
+.note-attachments {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.65rem 0 0.25rem;
+  padding: 0.7rem 0.75rem;
+  border: 1px dashed var(--line);
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.note-attachments-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.note-attachments-hint,
+.note-attachments-empty {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.note-attachments-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.note-att {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 0.75rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.note-att-meta {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1 1 10rem;
+}
+
+.note-att-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-att-size {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
+.note-att-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.note-att-actions .btn {
+  min-height: 2.1rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.75rem;
+}
+
+.note-attach-compact-btn {
+  justify-self: start;
+}
+
+@media (max-width: 560px) {
+  .note-att {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .note-att-actions .btn {
+    flex: 1;
+  }
+}
+
 .notebook-actions {
   display: flex;
   flex-wrap: wrap;
