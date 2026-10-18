@@ -1,7 +1,8 @@
 /**
- * Stream a private notebook attachment after verifying the signed-in account owns it.
+ * Issue a short-lived signed download URL for a private notebook attachment.
+ * Browser downloads go straight to Blob storage (no serverless body size cap).
  */
-import { head } from '@vercel/blob'
+import { head, issueSignedToken, presignUrl, getDownloadUrl } from '@vercel/blob'
 import { blobToken, corsAuth, sessionFromRequest } from '../_lib/auth.js'
 
 export const config = {
@@ -25,6 +26,23 @@ function queryPathname(req: {
   }
 }
 
+function wantsRedirect(req: {
+  query?: Record<string, string | string[] | undefined>
+  url?: string
+  headers?: Record<string, string | string[] | undefined>
+}): boolean {
+  try {
+    const url = new URL(req.url || '', 'http://localhost')
+    if (url.searchParams.get('redirect') === '1') return true
+  } catch {
+    /* ignore */
+  }
+  const accept = req.headers?.accept
+  const value = Array.isArray(accept) ? accept.join(',') : String(accept || '')
+  // Direct navigation / <a href> prefers HTML; XHR/fetch usually sends application/json
+  return value.includes('text/html') && !value.includes('application/json')
+}
+
 export default async function handler(
   req: {
     method?: string
@@ -39,6 +57,7 @@ export default async function handler(
       json: (b: unknown) => void
       send: (b: string | Buffer) => void
     }
+    redirect?: (status: number, url: string) => void
   },
 ) {
   corsAuth(res)
@@ -66,33 +85,36 @@ export default async function handler(
     }
 
     const token = blobToken()
-    let meta: { url: string; downloadUrl?: string; contentType?: string; contentDisposition?: string }
     try {
-      meta = await head(pathname, { token })
+      await head(pathname, { token })
     } catch {
       res.status(404).json({ error: 'File not found' })
       return
     }
-    const downloadUrl = meta.downloadUrl || meta.url
-    const upstream = await fetch(downloadUrl, {
-      headers: { Authorization: `Bearer ${token}` },
+
+    const signed = await issueSignedToken({
+      token,
+      pathname,
+      operations: ['get'],
+      validUntil: Date.now() + 15 * 60 * 1000,
     })
-    if (!upstream.ok) {
-      res.status(upstream.status === 404 ? 404 : 502).json({ error: 'File not found' })
+    const { presignedUrl } = await presignUrl(signed, {
+      access: 'private',
+      operation: 'get',
+      pathname,
+      useCache: false,
+    })
+    const downloadUrl = getDownloadUrl(presignedUrl)
+
+    if (wantsRedirect(req)) {
+      res.setHeader('Cache-Control', 'private, no-store')
+      res.setHeader('Location', downloadUrl)
+      res.status(302).end()
       return
     }
 
-    const contentType = meta.contentType || upstream.headers.get('content-type') || 'application/octet-stream'
-    const disposition =
-      meta.contentDisposition ||
-      upstream.headers.get('content-disposition') ||
-      `attachment; filename="${pathname.split('/').pop() || 'download'}"`
-
-    res.setHeader('Content-Type', contentType)
-    res.setHeader('Content-Disposition', disposition)
     res.setHeader('Cache-Control', 'private, no-store')
-    const buf = Buffer.from(await upstream.arrayBuffer())
-    res.status(200).send(buf)
+    res.status(200).json({ url: downloadUrl, pathname })
   } catch (err) {
     res.status(500).json({ error: err instanceof Error ? err.message : 'Download failed' })
   }

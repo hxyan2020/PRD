@@ -92,7 +92,12 @@ export function notebookFileDownloadUrl(pathname: string): string {
 }
 
 export async function downloadNotebookFile(att: NotebookAttachment): Promise<void> {
-  const res = await fetch(notebookFileDownloadUrl(att.pathname), { credentials: 'include' })
+  // Ask the API for a short-lived signed Blob URL, then let the browser download
+  // directly from storage (supports large files without buffering through the app).
+  const res = await fetch(notebookFileDownloadUrl(att.pathname), {
+    credentials: 'include',
+    headers: { Accept: 'application/json' },
+  })
   if (!res.ok) {
     let message = `Download failed (${res.status})`
     try {
@@ -103,13 +108,13 @@ export async function downloadNotebookFile(att: NotebookAttachment): Promise<voi
     }
     throw new Error(message)
   }
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
+  const body = (await res.json()) as { url?: string }
+  if (!body.url) throw new Error('Download URL missing')
   const a = document.createElement('a')
-  a.href = url
+  a.href = body.url
   a.download = att.name
+  a.rel = 'noopener'
   document.body.appendChild(a)
   a.click()
   a.remove()
-  URL.revokeObjectURL(url)
 }
