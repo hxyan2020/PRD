@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
 import { IdeaChatbot } from "@/components/IdeaChatbot";
 import { IdeaPhotoAlbum } from "@/components/IdeaPhotoAlbum";
 import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
+import { IndustryIcon } from "@/components/IndustryIcon";
+import { SectorIcon } from "@/components/SectorIcon";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, socialLabel, strategyMessageKey } from "@/lib/format";
 import { photosForIdea } from "@/lib/idea-photos";
@@ -27,6 +30,12 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
   const view = localizeIdea(idea, locale);
   const photos = photosForIdea(idea.slug, 9);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [idea.slug]);
+
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-16">
       <Link href="/ideas" className="inline-flex min-h-11 items-center text-sm text-mist hover:text-foam">
@@ -34,8 +43,18 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
       </Link>
 
       <header className="mt-4 animate-rise sm:mt-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon sm:text-[11px] sm:tracking-[0.22em]">
-          {view.industry} · {view.sector}
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-celadon sm:text-[11px] sm:tracking-[0.22em]">
+          <span className="inline-flex items-center gap-1.5">
+            <IndustryIcon industry={idea.industry} className="text-celadon" />
+            {view.industry}
+          </span>
+          <span className="text-mist/50" aria-hidden>
+            ·
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <SectorIcon sector={idea.sector} className="text-celadon" />
+            {view.sector}
+          </span>
         </p>
         <h1 className="mt-2 font-display text-[2rem] leading-[1.1] text-foam sm:mt-3 sm:text-5xl">
           {view.name}
@@ -68,8 +87,18 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
           </span>
         </Row>
         <Row label={t("dossier.teamSize")}>{t("common.people", { count: idea.teamSize })}</Row>
-        <Row label={t("dossier.industry")}>{view.industry}</Row>
-        <Row label={t("dossier.sector")}>{view.sector}</Row>
+        <Row label={t("dossier.industry")}>
+          <span className="inline-flex items-center gap-1.5">
+            <IndustryIcon industry={idea.industry} className="text-celadon" />
+            {view.industry}
+          </span>
+        </Row>
+        <Row label={t("dossier.sector")}>
+          <span className="inline-flex items-center gap-1.5">
+            <SectorIcon sector={idea.sector} className="text-celadon" />
+            {view.sector}
+          </span>
+        </Row>
         <Row label={t("dossier.fundraising")}>
           {idea.fundraisingSecured ? (
             <span>

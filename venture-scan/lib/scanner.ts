@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { countIdeas, recordScanRun, upsertIdea } from "./db";
+import { clearIdeas, countIdeas, getIdeaBySlug, recordScanRun, upsertIdea } from "./db";
 import { SEED_IDEAS } from "./seed-ideas";
 import type { StartupIdea } from "./types";
 
@@ -17,10 +17,15 @@ export type ScanResult = {
  * Scans curated worldwide startup + fundraising signals into SQLite.
  * Designed as a pluggable ingest: swap `fetchSignals()` for live APIs later.
  */
-export function runScan(options: { source?: string } = {}): ScanResult {
+export function runScan(options: { source?: string; replace?: boolean } = {}): ScanResult {
   const source = options.source ?? "worldwide-curated-feed";
   const startedAt = new Date().toISOString();
   const signals = fetchSignals();
+  const replace = options.replace ?? true;
+
+  if (replace) {
+    clearIdeas();
+  }
 
   let inserted = 0;
   let updated = 0;
@@ -60,17 +65,19 @@ export function runScan(options: { source?: string } = {}): ScanResult {
 
 /**
  * Ensure SQLite holds the full sourced catalog.
- * Re-runs ingest when the DB is empty or behind SEED_IDEAS (new ideas added).
+ * Re-runs ingest when the DB is empty, behind, or mismatched with SEED_IDEAS.
  */
 export function ensureSeeded(): void {
   const expected = SEED_IDEAS.length;
   const current = countIdeas();
-  if (current === 0) {
-    runScan({ source: "bootstrap-seed" });
+  if (current === 0 || current !== expected) {
+    runScan({ source: current === 0 ? "bootstrap-seed" : "catalog-sync", replace: true });
     return;
   }
-  if (current < expected) {
-    runScan({ source: "catalog-sync" });
+  const sample = SEED_IDEAS[0];
+  const row = getIdeaBySlug(sample.slug);
+  if (!row || row.website !== sample.website) {
+    runScan({ source: "catalog-resync", replace: true });
   }
 }
 

@@ -1,0 +1,65 @@
+# Daily VentureScan catalog refresh at 07:00 Asia/Shanghai (UTC+8) = 23:00 UTC.
+name: VentureScan daily scan
+
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: venture-scan-daily
+  cancel-in-progress: false
+
+jobs:
+  scan-and-publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: venture-scan
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: venture-scan/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Scan + export ideas snapshot
+        run: |
+          npm run scan
+          npm run export:ideas
+
+      - name: Fill photo album gaps (official site + articles only)
+        run: node scripts/extract-idea-photos.mjs
+        continue-on-error: true
+
+      - name: Test
+        run: npm test
+
+      - name: Commit catalog refresh
+        run: |
+          cd ..
+          git config user.name "venture-scan-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add venture-scan/public/data/ideas.json venture-scan/public/idea-photos || true
+          if git diff --staged --quiet; then
+            echo "No catalog changes to commit"
+          else
+            git commit -m "chore(venture-scan): daily startup idea scan $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Deploy GitHub Pages
+        run: npm run deploy:pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

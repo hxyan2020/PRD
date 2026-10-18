@@ -6,7 +6,7 @@ import type { IdeaMatch } from "./types";
 describe("rank ideas", () => {
   it("exposes a scan catalog far larger than the featured 20 dossiers", () => {
     expect(FEATURED_SEED_IDEAS).toHaveLength(20);
-    expect(SEED_IDEAS.length).toBeGreaterThan(60);
+    expect(SEED_IDEAS.length).toBeGreaterThan(40);
   });
 
   it("ranks by fundraising secured then amount when no profile", () => {

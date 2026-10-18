@@ -18,6 +18,9 @@ describe("idea photo albums", () => {
         const abs = join(process.cwd(), "public", photo.imagePath.replace(/^\//, ""));
         expect(existsSync(abs), abs).toBe(true);
         expect(photo.sourceLabel.length).toBeGreaterThan(0);
+        expect(photo.kind, idea.slug).not.toBe("wikipedia");
+        expect((photo.sourceLabel || "").toLowerCase(), idea.slug).not.toContain("wikipedia");
+        expect((photo.sourceUrl || "").toLowerCase(), idea.slug).not.toContain("wikipedia.org");
       }
     }
   });

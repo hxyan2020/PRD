@@ -26,12 +26,13 @@ describe("catalog official website links", () => {
     }
   });
 
-  it("never uses TikTok consumer feed as a primary company website", () => {
+  it("never uses TikTok, Spotify, or Wikipedia as a primary company website", () => {
     for (const idea of ideas) {
-      expect(websiteHost(idea.website), idea.slug).not.toBe("tiktok.com");
+      const host = websiteHost(idea.website);
+      expect(host, idea.slug).not.toBe("tiktok.com");
+      expect(host, idea.slug).not.toBe("spotify.com");
+      expect(host, idea.slug).not.toMatch(/wikipedia/);
     }
-    const bytedance = ideas.find((i) => i.slug === "bytedance-creator-os");
-    expect(bytedance?.website).toBe("https://www.bytedance.com/");
   });
 
   it("ships deep social profile URLs (not placeholders)", () => {

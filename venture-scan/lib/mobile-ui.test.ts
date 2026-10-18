@@ -20,5 +20,15 @@ describe("mobile UI affordances", () => {
     expect(css).toContain("min-height: 44px");
     expect(css).toContain("btn-block-mobile");
     expect(css).toContain("safe-area-inset-bottom");
+    expect(css).toContain("idea-dossier-actions");
+  });
+
+  it("anchors idea dossiers at the top of the page on open", () => {
+    const src = readFileSync(
+      path.join(process.cwd(), "components/IdeaDetail.tsx"),
+      "utf8",
+    );
+    expect(src).toContain("window.scrollTo");
+    expect(src).toContain("SectorIcon");
   });
 });

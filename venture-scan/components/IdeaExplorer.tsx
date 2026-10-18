@@ -7,6 +7,7 @@ import { Flag } from "@/components/Flag";
 import { FundingRoundPicker } from "@/components/FundingRoundPicker";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { IndustryPicker } from "@/components/IndustryPicker";
+import { SectorIcon } from "@/components/SectorIcon";
 import { SectorPicker } from "@/components/SectorPicker";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
@@ -259,9 +260,11 @@ export function IdeaExplorer({
                       <span className="shrink-0">{t("common.people", { count: idea.teamSize })}</span>
                       <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
                         <IndustryIcon industry={idea.industry} className="shrink-0 text-celadon" />
-                        <span className="truncate">
-                          {view.industry} / {view.sector}
-                        </span>
+                        <span className="truncate">{view.industry}</span>
+                      </span>
+                      <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+                        <SectorIcon sector={idea.sector} className="shrink-0 text-celadon" />
+                        <span className="truncate">{view.sector}</span>
                       </span>
                       {idea.fundraisingSecured ? (
                         <span className="shrink-0">{formatMoney(idea.fundingAmountUsd)}</span>

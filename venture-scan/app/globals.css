@@ -147,3 +147,26 @@ body {
     transform: scale(0.99);
   }
 }
+
+/* Idea dossier + ledger: tighter mobile rhythm */
+@media (max-width: 639px) {
+  .idea-ledger-row {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .idea-dossier-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .idea-dossier-actions .btn {
+    width: 100%;
+  }
+}
+
+/* Prefer readable tap targets on idea cards */
+a.idea-card-link {
+  -webkit-tap-highlight-color: transparent;
+}

@@ -80,12 +80,21 @@ export function resetDbForTests(): void {
   instancePath = "";
 }
 
+export function clearIdeas(): void {
+  getDb().prepare("DELETE FROM startup_ideas").run();
+}
+
 export function upsertIdea(idea: StartupIdea): { inserted: boolean } {
   const db = getDb();
   const now = new Date().toISOString();
   const existing = db
     .prepare("SELECT id FROM startup_ideas WHERE slug = ?")
     .get(idea.slug) as { id: string } | undefined;
+
+  // Catalog refreshes reuse idea_NN ids for new slugs — free the old row first.
+  if (!existing) {
+    db.prepare("DELETE FROM startup_ideas WHERE id = ?").run(idea.id);
+  }
 
   db.prepare(
     `INSERT INTO startup_ideas

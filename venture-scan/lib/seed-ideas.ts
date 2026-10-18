@@ -1,7 +1,7 @@
 import { allScanIdeas } from "./expanded-ideas";
 import type { StartupIdea } from "./types";
 
-const scannedAt = "2026-10-09T08:00:00.000Z";
+const scannedAt = "2026-10-18T08:00:00.000Z";
 
 /**
  * Featured dossiers with localized copy + article galleries.
@@ -197,22 +197,23 @@ export const FEATURED_SEED_IDEAS: StartupIdea[] = [
     slug: "playpane-classroom",
     name: "PlayPane Classroom",
     description:
-      "Physical STEM kits synced to a teacher dashboard for after-school programs. Kids build electronics projects; the app tracks mastery and recommends next kits. Strong foothold in UK academy trusts.",
+      "Subscription STEM experiment kits synced to a teacher/parent app for after-school and home learning. Kids run chemistry and physics labs; the app tracks mastery and ships the next kit. Strong foothold with European families and enrichment centers.",
     businessModel:
-      "Kit hardware margin + annual classroom software seats sold to schools and franchise tutoring centers.",
+      "Kit subscription margin + annual classroom software seats sold to schools and franchise tutoring centers.",
     teamCountry: "United Kingdom",
     teamCity: "London",
-    teamSize: 12,
+    teamSize: 80,
     industry: "EdTech",
     sector: "K-12 Hands-on Learning",
-    fundraisingSecured: false,
-    fundingStage: "Seed",
-    fundingRoundNote: "Open £2.5M round",
-    website: "https://www.classdojo.com/",
+    fundraisingSecured: true,
+    fundingStage: "Series B",
+    fundingAmountUsd: 40_000_000,
+    fundingRoundNote: "Edtech growth with European family LPs",
+    website: "https://melscience.com/",
     social: [
-      { platform: "x", handle: "@classdojo", url: "https://x.com/classdojo" },
-      { platform: "instagram", handle: "@classdojo", url: "https://www.instagram.com/classdojo/" },
-      { platform: "youtube", handle: "ClassDojo", url: "https://www.youtube.com/@classdojo" },
+      { platform: "instagram", handle: "@melscience", url: "https://www.instagram.com/melscience/" },
+      { platform: "x", handle: "@MEL_Science", url: "https://x.com/MEL_Science" },
+      { platform: "youtube", handle: "MEL Science", url: "https://www.youtube.com/@melscience" },
     ],
     goForward: {
       strategy: "localize_asia",
@@ -228,23 +229,23 @@ export const FEATURED_SEED_IDEAS: StartupIdea[] = [
     slug: "voltpath-depot",
     name: "VoltPath Depot",
     description:
-      "Battery-swap depots for last-mile delivery fleets using standardized packs. Couriers swap in under two minutes; VoltPath owns pack inventory and sells energy-as-a-service to logistics brands.",
+      "Battery-swap network for light EVs and last-mile fleets using standardized packs. Riders swap in minutes; the operator owns pack inventory and sells energy-as-a-service to logistics and mobility brands across Southeast Asia.",
     businessModel:
       "Per-swap fees + monthly fleet SLA contracts; residual value from second-life pack sales.",
-    teamCountry: "Indonesia",
-    teamCity: "Jakarta",
-    teamSize: 45,
+    teamCountry: "Singapore",
+    teamCity: "Singapore",
+    teamSize: 55,
     industry: "Mobility",
     sector: "EV Battery Infrastructure",
     fundraisingSecured: true,
-    fundingStage: "Series B",
-    fundingAmountUsd: 55_000_000,
-    fundingRoundNote: "Ride-hailing strategic + infrastructure PE",
-    website: "https://www.gogoro.com/",
+    fundingStage: "Series A",
+    fundingAmountUsd: 25_000_000,
+    fundingRoundNote: "SEA climate + mobility growth capital",
+    website: "https://www.oyika.com/",
     social: [
-      { platform: "x", handle: "@gogoro", url: "https://x.com/gogoro" },
-      { platform: "instagram", handle: "@gogoro", url: "https://www.instagram.com/gogoro/" },
-      { platform: "linkedin", handle: "Gogoro", url: "https://www.linkedin.com/company/gogoro" },
+      { platform: "linkedin", handle: "Oyika", url: "https://www.linkedin.com/company/oyika" },
+      { platform: "instagram", handle: "@oyika.ev", url: "https://www.instagram.com/oyika.ev/" },
+      { platform: "facebook", handle: "Oyika", url: "https://www.facebook.com/oyika.ev" },
     ],
     goForward: {
       strategy: "franchise_local",
@@ -253,7 +254,7 @@ export const FEATURED_SEED_IDEAS: StartupIdea[] = [
     },
     source: "seed:sea-mobility-rounds",
     scannedAt,
-    tags: ["EV", "logistics", "Indonesia", "infrastructure"],
+    tags: ["EV", "logistics", "Singapore", "infrastructure"],
   },
   {
     id: "idea_09",
