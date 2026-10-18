@@ -3,6 +3,7 @@ import { MonitorActions } from "@/components/MonitorActions";
 import { MonitorCode } from "@/components/MonitorCode";
 import { IndicatorThresholdEditor } from "@/components/IndicatorThresholdEditor";
 import { IndicatorPauseToggle, MonitorRunAllButton } from "@/components/MonitorEngineActions";
+import { ThresholdAdjustmentFlowDemo } from "@/components/ThresholdAdjustmentFlowDemo";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { StatusBadge, Badge, SeverityBadge } from "@/components/ui";
@@ -101,7 +102,9 @@ export default async function Monitor2Page({
     <div>
       <AdminPageHeader pageKey="monitor-2" />
 
-      <div className="space-y-4">
+      <ThresholdAdjustmentFlowDemo />
+
+      <div className="space-y-4 mt-4">
         <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-xs uppercase tracking-wide text-[var(--muted)]">

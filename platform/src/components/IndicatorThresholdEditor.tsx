@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useT } from "@/hooks/useUiLocale";
+import { EnZh } from "@/components/EnZh";
 
 export function IndicatorThresholdEditor({
   indicatorId,
@@ -133,6 +135,13 @@ export function IndicatorThresholdEditor({
         </button>
         {msg ? <span className="text-[11px] text-teal-800">{msg}</span> : null}
       </div>
+      <p className="text-[10px] text-[var(--muted)] leading-snug">
+        <Link href="#threshold-flow-demo" className="text-teal-800 underline font-semibold">
+          <EnZh en="Step 5 of threshold flow" zh="門檻流程第 5 步" />
+        </Link>
+        {" · "}
+        <EnZh en="AI suggests only; dual control applies here." zh="AI 只建議；雙重控制後在此套用。" />
+      </p>
     </div>
   );
 }

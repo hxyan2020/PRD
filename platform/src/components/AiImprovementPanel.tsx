@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { Badge } from "@/components/ui";
 import { useT, useUiLocale } from "@/hooks/useUiLocale";
 import { isPublicSnapshot } from "@/lib/static-export";
@@ -12,6 +13,7 @@ import {
   type ImprovementReview,
 } from "@/lib/ai/improvement-model";
 import { cn } from "@/lib/utils";
+import { EnZh } from "@/components/EnZh";
 
 const STORAGE_PREFIX = "crmp.imp.";
 
@@ -68,6 +70,16 @@ function ItemCard({ item, t }: { item: ImprovementItem; t: (k: string, vars?: Re
       ) : null}
       <p className="mt-1 text-sm text-slate-700 leading-relaxed">{item.recommendation}</p>
       <p className="mt-1 text-xs text-[var(--muted)] leading-relaxed">{item.rationale}</p>
+      {item.kind === "THRESHOLD" ? (
+        <p className="mt-2 text-[11px]" data-testid="imp-threshold-flow-link">
+          <Link href="/admin/monitor-2#threshold-flow-demo" className="text-teal-800 font-semibold underline">
+            <EnZh
+              en="See full threshold adjustment flow on Monitor 2.0 →"
+              zh="在 Monitor 2.0 看門檻調整全流程 →"
+            />
+          </Link>
+        </p>
+      ) : null}
     </li>
   );
 }
@@ -225,6 +237,15 @@ export function AiImprovementPanel({
                 ) : null}
               </div>
               <div className="mt-1">{item.recommendation}</div>
+              {item.kind === "THRESHOLD" ? (
+                <Link
+                  href="/admin/monitor-2#threshold-flow-demo"
+                  className="mt-1 inline-block text-[11px] text-teal-800 font-semibold underline"
+                  data-testid="imp-threshold-flow-link"
+                >
+                  <EnZh en="Threshold full flow →" zh="門檻全流程 →" />
+                </Link>
+              ) : null}
             </li>
           ) : (
             <ItemCard key={item.id} item={item} t={t} />
