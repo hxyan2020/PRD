@@ -366,81 +366,81 @@
       "id": "playpane-classroom-1",
       "file": "01.jpg",
       "imagePath": "/idea-photos/playpane-classroom/01.jpg",
-      "kind": "media-coverage",
-      "caption": "Hear ClassDojo and SignalFire unpack edtech’s opportunity ahead on TechCrunch Live",
-      "sourceUrl": "https://techcrunch.com/2023/04/19/hear-classdojo-and-signalfire-unpack-edtechs-opportunity-ahead-on-techcrunch-live/",
-      "sourceLabel": "techcrunch",
-      "bytes": 99426
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 65622
     },
     {
       "id": "playpane-classroom-2",
       "file": "02.jpg",
       "imagePath": "/idea-photos/playpane-classroom/02.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.classdojo.com/",
-      "sourceLabel": "classdojo.com",
-      "bytes": 28318
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 35584
     },
     {
       "id": "playpane-classroom-3",
       "file": "03.jpg",
       "imagePath": "/idea-photos/playpane-classroom/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.classdojo.com/",
-      "sourceLabel": "classdojo.com",
-      "bytes": 30197
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 14514
     },
     {
       "id": "playpane-classroom-4",
       "file": "04.jpg",
       "imagePath": "/idea-photos/playpane-classroom/04.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.classdojo.com/",
-      "sourceLabel": "classdojo.com",
-      "bytes": 30485
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 61659
     },
     {
       "id": "playpane-classroom-5",
       "file": "05.jpg",
       "imagePath": "/idea-photos/playpane-classroom/05.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.classdojo.com/",
-      "sourceLabel": "classdojo.com",
-      "bytes": 35914
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 10747
     },
     {
       "id": "playpane-classroom-6",
       "file": "06.jpg",
       "imagePath": "/idea-photos/playpane-classroom/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.classdojo.com/",
-      "sourceLabel": "classdojo.com",
-      "bytes": 36039
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 10447
     },
     {
       "id": "playpane-classroom-7",
       "file": "07.jpg",
       "imagePath": "/idea-photos/playpane-classroom/07.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.classdojo.com/",
-      "sourceLabel": "classdojo.com",
-      "bytes": 30243
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 12951
     },
     {
       "id": "playpane-classroom-8",
       "file": "08.jpg",
       "imagePath": "/idea-photos/playpane-classroom/08.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.classdojo.com/",
-      "sourceLabel": "classdojo.com",
-      "bytes": 45986
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://melscience.com/",
+      "sourceLabel": "melscience.com",
+      "bytes": 13636
     }
   ],
   "voltpath-depot": [
@@ -449,25 +449,15 @@
       "file": "00.jpg",
       "imagePath": "/idea-photos/voltpath-depot/00.jpg",
       "kind": "media-coverage",
-      "caption": "Gogoro scales battery swapping to new markets via B2B partners",
-      "sourceUrl": "https://techcrunch.com/2023/03/24/gogoro-scales-battery-swapping-new-markets-b2b-partners/",
-      "sourceLabel": "techcrunch",
-      "bytes": 98061
-    },
-    {
-      "id": "voltpath-depot-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/voltpath-depot/01.jpg",
-      "kind": "media-coverage",
       "caption": "Indian EV startup Zypp Electric secures backing to fund expansion to Southeast Asia",
       "sourceUrl": "https://techcrunch.com/2024/05/26/indian-ev-startup-zypp-electric-secures-eneos-backing-to-fund-expansion-to-southeast-asia/",
       "sourceLabel": "techcrunch",
       "bytes": 67206
     },
     {
-      "id": "voltpath-depot-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/voltpath-depot/02.jpg",
+      "id": "voltpath-depot-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/voltpath-depot/01.jpg",
       "kind": "media-coverage",
       "caption": "India's Kazam powers up to roll out EV charging in Southeast Asia",
       "sourceUrl": "https://techcrunch.com/2024/08/11/indias-kazam-powers-up-to-roll-out-ev-charging-in-southeast-asia/",
@@ -475,14 +465,54 @@
       "bytes": 56898
     },
     {
+      "id": "voltpath-depot-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/voltpath-depot/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.oyika.com/",
+      "sourceLabel": "oyika.com",
+      "bytes": 11134
+    },
+    {
       "id": "voltpath-depot-3",
       "file": "03.jpg",
       "imagePath": "/idea-photos/voltpath-depot/03.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.gogoro.com/",
-      "sourceLabel": "gogoro.com",
-      "bytes": 8760
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.oyika.com/",
+      "sourceLabel": "oyika.com",
+      "bytes": 42434
+    },
+    {
+      "id": "voltpath-depot-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/voltpath-depot/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.oyika.com/",
+      "sourceLabel": "oyika.com",
+      "bytes": 50204
+    },
+    {
+      "id": "voltpath-depot-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/voltpath-depot/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.oyika.com/",
+      "sourceLabel": "oyika.com",
+      "bytes": 44951
+    },
+    {
+      "id": "voltpath-depot-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/voltpath-depot/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.oyika.com/",
+      "sourceLabel": "oyika.com",
+      "bytes": 21730
     }
   ],
   "cuecraft-ads": [
@@ -1349,1136 +1379,464 @@
       "bytes": 40807
     }
   ],
-  "stripe-atlas-rails": [
+  "resend-email-api": [
     {
-      "id": "stripe-atlas-rails-0",
+      "id": "resend-email-api-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/stripe-atlas-rails/00.jpg",
+      "imagePath": "/idea-photos/resend-email-api/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://stripe.com/atlas",
-      "sourceLabel": "stripe.com",
-      "bytes": 15562
+      "caption": "Official site",
+      "sourceUrl": "https://resend.com/",
+      "sourceLabel": "resend.com",
+      "bytes": 28909
     },
     {
-      "id": "stripe-atlas-rails-1",
+      "id": "resend-email-api-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/stripe-atlas-rails/01.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Stripe, Inc.",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Stripe%2C_Inc.",
-      "sourceLabel": "Wikipedia",
-      "bytes": 166091
+      "imagePath": "/idea-photos/resend-email-api/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://resend.com/",
+      "sourceLabel": "resend.com",
+      "bytes": 5388
     }
   ],
-  "notion-ops-stack": [
+  "clerk-auth": [
     {
-      "id": "notion-ops-stack-0",
+      "id": "clerk-auth-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/notion-ops-stack/00.jpg",
+      "imagePath": "/idea-photos/clerk-auth/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.notion.so/",
-      "sourceLabel": "notion.so",
-      "bytes": 52086
+      "caption": "Official site",
+      "sourceUrl": "https://clerk.com/",
+      "sourceLabel": "clerk.com",
+      "bytes": 30388
     },
     {
-      "id": "notion-ops-stack-1",
+      "id": "clerk-auth-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/notion-ops-stack/01.jpg",
-      "kind": "official-site",
-      "caption": "Capture",
-      "sourceUrl": "https://www.notion.so/",
-      "sourceLabel": "notion.so",
-      "bytes": 10931
+      "imagePath": "/idea-photos/clerk-auth/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://clerk.com/",
+      "sourceLabel": "clerk.com",
+      "bytes": 23796
     }
   ],
-  "canva-design-os": [
+  "neon-serverless-postgres": [
     {
-      "id": "canva-design-os-0",
+      "id": "neon-serverless-postgres-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/canva-design-os/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Canva",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Canva",
-      "sourceLabel": "Wikipedia",
-      "bytes": 2175
-    },
-    {
-      "id": "canva-design-os-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/canva-design-os/01.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Canva",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Canva",
-      "sourceLabel": "Wikipedia",
-      "bytes": 7352
+      "imagePath": "/idea-photos/neon-serverless-postgres/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://neon.tech/",
+      "sourceLabel": "neon.tech",
+      "bytes": 48481
     }
   ],
-  "shopify-merchant-os": [
+  "linear-issue-ops": [
     {
-      "id": "shopify-merchant-os-0",
+      "id": "linear-issue-ops-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/00.jpg",
+      "imagePath": "/idea-photos/linear-issue-ops/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 60971
+      "caption": "Official site",
+      "sourceUrl": "https://linear.app/",
+      "sourceLabel": "linear.app",
+      "bytes": 8980
     },
     {
-      "id": "shopify-merchant-os-1",
+      "id": "linear-issue-ops-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/01.jpg",
-      "kind": "official-site",
-      "caption": "Get started fast",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 34085
+      "imagePath": "/idea-photos/linear-issue-ops/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://linear.app/",
+      "sourceLabel": "linear.app",
+      "bytes": 8572
+    }
+  ],
+  "ramp-spend": [
+    {
+      "id": "ramp-spend-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/ramp-spend/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://ramp.com/",
+      "sourceLabel": "ramp.com",
+      "bytes": 47382
     },
     {
-      "id": "shopify-merchant-os-2",
+      "id": "ramp-spend-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/ramp-spend/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://ramp.com/",
+      "sourceLabel": "ramp.com",
+      "bytes": 32519
+    }
+  ],
+  "mercury-banking": [
+    {
+      "id": "mercury-banking-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/mercury-banking/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://mercury.com/",
+      "sourceLabel": "mercury.com",
+      "bytes": 32416
+    },
+    {
+      "id": "mercury-banking-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/mercury-banking/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mercury.com/",
+      "sourceLabel": "mercury.com",
+      "bytes": 69898
+    },
+    {
+      "id": "mercury-banking-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/02.jpg",
-      "kind": "official-site",
-      "caption": "Switch to Shopify",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 38229
+      "imagePath": "/idea-photos/mercury-banking/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mercury.com/",
+      "sourceLabel": "mercury.com",
+      "bytes": 15726
+    }
+  ],
+  "brex-finance": [
+    {
+      "id": "brex-finance-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/brex-finance/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.brex.com/",
+      "sourceLabel": "brex.com",
+      "bytes": 42225
     },
     {
-      "id": "shopify-merchant-os-3",
+      "id": "brex-finance-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/brex-finance/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.brex.com/",
+      "sourceLabel": "brex.com",
+      "bytes": 25108
+    }
+  ],
+  "runway-ml": [
+    {
+      "id": "runway-ml-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/runway-ml/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://runwayml.com/",
+      "sourceLabel": "runwayml.com",
+      "bytes": 25730
+    }
+  ],
+  "elevenlabs-voice": [
+    {
+      "id": "elevenlabs-voice-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/elevenlabs-voice/00.jpg",
+      "kind": "official-og",
+      "caption": "Official website",
+      "sourceUrl": "https://elevenlabs.io/",
+      "sourceLabel": "elevenlabs.io",
+      "bytes": 43565
+    }
+  ],
+  "perplexity-answer": [
+    {
+      "id": "perplexity-answer-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/perplexity-answer/00.jpg",
+      "kind": "official-og",
+      "caption": "Official website",
+      "sourceUrl": "https://www.perplexity.ai/",
+      "sourceLabel": "perplexity.ai",
+      "bytes": 147492
+    },
+    {
+      "id": "perplexity-answer-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/perplexity-answer/01.jpg",
+      "kind": "official-og",
+      "caption": "Official website",
+      "sourceUrl": "https://www.perplexity.ai/",
+      "sourceLabel": "perplexity.ai",
+      "bytes": 268638
+    },
+    {
+      "id": "perplexity-answer-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/perplexity-answer/02.jpg",
+      "kind": "official-og",
+      "caption": "Official website",
+      "sourceUrl": "https://www.perplexity.ai/",
+      "sourceLabel": "perplexity.ai",
+      "bytes": 86232
+    },
+    {
+      "id": "perplexity-answer-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/03.jpg",
-      "kind": "official-site",
-      "caption": "Trusted by enterprise brands",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 21760
+      "imagePath": "/idea-photos/perplexity-answer/03.jpg",
+      "kind": "official-og",
+      "caption": "Official website",
+      "sourceUrl": "https://www.perplexity.ai/",
+      "sourceLabel": "perplexity.ai",
+      "bytes": 181009
     },
     {
-      "id": "shopify-merchant-os-4",
+      "id": "perplexity-answer-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/04.jpg",
-      "kind": "official-site",
+      "imagePath": "/idea-photos/perplexity-answer/04.jpg",
+      "kind": "official-og",
       "caption": "Official website",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 14560
+      "sourceUrl": "https://www.perplexity.ai/",
+      "sourceLabel": "perplexity.ai",
+      "bytes": 151140
+    }
+  ],
+  "cognition-devin": [
+    {
+      "id": "cognition-devin-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/cognition-devin/00.jpg",
+      "kind": "official-og",
+      "caption": "Official website",
+      "sourceUrl": "https://www.cognition.ai/",
+      "sourceLabel": "cognition.ai",
+      "bytes": 70643
     },
     {
-      "id": "shopify-merchant-os-5",
+      "id": "cognition-devin-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/cognition-devin/01.jpg",
+      "kind": "official-site",
+      "caption": "Cognition Crosses $1B in Annualized Revenue Run Rate",
+      "sourceUrl": "https://www.cognition.ai/",
+      "sourceLabel": "cognition.ai",
+      "bytes": 81661
+    }
+  ],
+  "cursor-coding": [
+    {
+      "id": "cursor-coding-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/cursor-coding/00.jpg",
+      "kind": "official-og",
+      "caption": "Official website",
+      "sourceUrl": "https://cursor.com/",
+      "sourceLabel": "cursor.com",
+      "bytes": 10866
+    },
+    {
+      "id": "cursor-coding-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/cursor-coding/01.jpg",
+      "kind": "official-site",
+      "caption": "Official website",
+      "sourceUrl": "https://cursor.com/",
+      "sourceLabel": "cursor.com",
+      "bytes": 83040
+    },
+    {
+      "id": "cursor-coding-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/cursor-coding/02.jpg",
+      "kind": "official-site",
+      "caption": "Official website",
+      "sourceUrl": "https://cursor.com/",
+      "sourceLabel": "cursor.com",
+      "bytes": 63417
+    }
+  ],
+  "heaptrace-observability": [
+    {
+      "id": "heaptrace-observability-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/heaptrace-observability/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 11632
+    },
+    {
+      "id": "heaptrace-observability-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/heaptrace-observability/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 21491
+    },
+    {
+      "id": "heaptrace-observability-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/heaptrace-observability/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 18414
+    },
+    {
+      "id": "heaptrace-observability-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/heaptrace-observability/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 17112
+    },
+    {
+      "id": "heaptrace-observability-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/heaptrace-observability/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 27324
+    },
+    {
+      "id": "heaptrace-observability-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/05.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 8409
+      "imagePath": "/idea-photos/heaptrace-observability/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 17625
     },
     {
-      "id": "shopify-merchant-os-6",
+      "id": "heaptrace-observability-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 6768
+      "imagePath": "/idea-photos/heaptrace-observability/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 15933
     },
     {
-      "id": "shopify-merchant-os-7",
+      "id": "heaptrace-observability-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/07.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 7425
+      "imagePath": "/idea-photos/heaptrace-observability/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 27248
     },
     {
-      "id": "shopify-merchant-os-8",
+      "id": "heaptrace-observability-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/shopify-merchant-os/08.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.shopify.com/",
-      "sourceLabel": "shopify.com",
-      "bytes": 4156
+      "imagePath": "/idea-photos/heaptrace-observability/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.heap.io/",
+      "sourceLabel": "heap.io",
+      "bytes": 15926
     }
   ],
-  "revolut-neo-bank": [
+  "posthog-product-os": [
     {
-      "id": "revolut-neo-bank-0",
+      "id": "posthog-product-os-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/revolut-neo-bank/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Revolut",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Revolut",
-      "sourceLabel": "Wikipedia",
-      "bytes": 231390
-    }
-  ],
-  "klarna-bnpl-rails": [
-    {
-      "id": "klarna-bnpl-rails-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/klarna-bnpl-rails/00.jpg",
-      "kind": "official-site",
-      "caption": "Cat sitting on a stool",
-      "sourceUrl": "https://www.klarna.com/",
-      "sourceLabel": "klarna.com",
-      "bytes": 44640
+      "imagePath": "/idea-photos/posthog-product-os/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://posthog.com/",
+      "sourceLabel": "posthog.com",
+      "bytes": 51609
     },
     {
-      "id": "klarna-bnpl-rails-1",
+      "id": "posthog-product-os-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/klarna-bnpl-rails/01.jpg",
-      "kind": "official-site",
-      "caption": "Person with a Klarna keychain and a phone showing an animated overview of Klarna app payments.",
-      "sourceUrl": "https://www.klarna.com/",
-      "sourceLabel": "klarna.com",
-      "bytes": 52702
+      "imagePath": "/idea-photos/posthog-product-os/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://posthog.com/",
+      "sourceLabel": "posthog.com",
+      "bytes": 108026
     },
     {
-      "id": "klarna-bnpl-rails-2",
+      "id": "posthog-product-os-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/klarna-bnpl-rails/02.jpg",
-      "kind": "official-site",
-      "caption": "Person with a Klarna keychain and a phone showing an animated overview of Klarna app payments.",
-      "sourceUrl": "https://www.klarna.com/",
-      "sourceLabel": "klarna.com",
-      "bytes": 52702
+      "imagePath": "/idea-photos/posthog-product-os/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://posthog.com/",
+      "sourceLabel": "posthog.com",
+      "bytes": 74850
     },
     {
-      "id": "klarna-bnpl-rails-3",
+      "id": "posthog-product-os-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/klarna-bnpl-rails/03.jpg",
-      "kind": "official-site",
-      "caption": "Klarna app displayed on a phone next to purple cauliflower and grocery bags.",
-      "sourceUrl": "https://www.klarna.com/",
-      "sourceLabel": "klarna.com",
-      "bytes": 64943
+      "imagePath": "/idea-photos/posthog-product-os/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://posthog.com/",
+      "sourceLabel": "posthog.com",
+      "bytes": 57604
     },
     {
-      "id": "klarna-bnpl-rails-4",
+      "id": "posthog-product-os-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/klarna-bnpl-rails/04.jpg",
-      "kind": "official-site",
-      "caption": "Hand holding a phone displaying upcoming payments in the Klarna app.",
-      "sourceUrl": "https://www.klarna.com/",
-      "sourceLabel": "klarna.com",
-      "bytes": 26721
+      "imagePath": "/idea-photos/posthog-product-os/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://posthog.com/",
+      "sourceLabel": "posthog.com",
+      "bytes": 104488
     },
     {
-      "id": "klarna-bnpl-rails-5",
+      "id": "posthog-product-os-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/klarna-bnpl-rails/05.jpg",
-      "kind": "official-site",
-      "caption": "Hand holding a phone and selecting Klarna at checkout in a mobile wallet.",
-      "sourceUrl": "https://www.klarna.com/",
-      "sourceLabel": "klarna.com",
-      "bytes": 29951
+      "imagePath": "/idea-photos/posthog-product-os/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://posthog.com/",
+      "sourceLabel": "posthog.com",
+      "bytes": 93843
     },
     {
-      "id": "klarna-bnpl-rails-6",
+      "id": "posthog-product-os-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/klarna-bnpl-rails/06.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Klarna",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Klarna",
-      "sourceLabel": "Wikipedia",
-      "bytes": 4161
+      "imagePath": "/idea-photos/posthog-product-os/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://posthog.com/",
+      "sourceLabel": "posthog.com",
+      "bytes": 76761
     }
   ],
-  "spotify-audio-graph": [
+  "motherduck-analytics": [
     {
-      "id": "spotify-audio-graph-0",
+      "id": "motherduck-analytics-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/spotify-audio-graph/00.jpg",
+      "imagePath": "/idea-photos/motherduck-analytics/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.spotify.com/",
-      "sourceLabel": "spotify.com",
-      "bytes": 78663
-    },
-    {
-      "id": "spotify-audio-graph-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/spotify-audio-graph/01.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Spotify",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Spotify",
-      "sourceLabel": "Wikipedia",
-      "bytes": 123265
-    }
-  ],
-  "industrial-climate-os": [
-    {
-      "id": "industrial-climate-os-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/00.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 40140
-    },
-    {
-      "id": "industrial-climate-os-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/01.jpg",
-      "kind": "official-site",
-      "caption": "logo-roche-white.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 13364
-    },
-    {
-      "id": "industrial-climate-os-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/02.jpg",
-      "kind": "official-site",
-      "caption": "logo-wurth-white.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 6628
-    },
-    {
-      "id": "industrial-climate-os-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/03.jpg",
-      "kind": "official-site",
-      "caption": "logo-nordex-white.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 8907
-    },
-    {
-      "id": "industrial-climate-os-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/04.jpg",
-      "kind": "official-site",
-      "caption": "logo-continental-white.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 8464
-    },
-    {
-      "id": "industrial-climate-os-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/05.jpg",
-      "kind": "official-site",
-      "caption": "logo-coop-white.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 7240
-    },
-    {
-      "id": "industrial-climate-os-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/06.jpg",
-      "kind": "official-site",
-      "caption": "Frosta.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 17207
-    },
-    {
-      "id": "industrial-climate-os-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/07.jpg",
-      "kind": "official-site",
-      "caption": "Weleda.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 8180
-    },
-    {
-      "id": "industrial-climate-os-8",
-      "file": "08.jpg",
-      "imagePath": "/idea-photos/industrial-climate-os/08.jpg",
-      "kind": "official-site",
-      "caption": "C&amp;A.png",
-      "sourceUrl": "https://www.osapiens.com/",
-      "sourceLabel": "osapiens.com",
-      "bytes": 4531
-    }
-  ],
-  "wise-fx-corridor": [
-    {
-      "id": "wise-fx-corridor-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 12174
-    },
-    {
-      "id": "wise-fx-corridor-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/01.jpg",
-      "kind": "official-site",
-      "caption": "Wise payment cards in bright green featuring the Wise logo, a chip, and a contactless symbol.",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 17312
-    },
-    {
-      "id": "wise-fx-corridor-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/02.jpg",
-      "kind": "official-site",
-      "caption": "A group of people working together in an office.",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 48507
-    },
-    {
-      "id": "wise-fx-corridor-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/03.jpg",
-      "kind": "official-site",
-      "caption": "A city skyline at golden hour.",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 78669
-    },
-    {
-      "id": "wise-fx-corridor-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/04.jpg",
-      "kind": "official-site",
-      "caption": "Woman relaxing at home with a Wise card on the table",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 56711
-    },
-    {
-      "id": "wise-fx-corridor-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/05.jpg",
-      "kind": "official-site",
-      "caption": "Person using a Wise card at an ATM abroad",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 52064
-    },
-    {
-      "id": "wise-fx-corridor-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/06.jpg",
-      "kind": "official-site",
-      "caption": "Friends gathered around a table, with one person holding their Wise card.",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 79296
-    },
-    {
-      "id": "wise-fx-corridor-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/07.jpg",
-      "kind": "official-site",
-      "caption": "Two people looking at a phone together, sending money",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 87373
-    },
-    {
-      "id": "wise-fx-corridor-8",
-      "file": "08.jpg",
-      "imagePath": "/idea-photos/wise-fx-corridor/08.jpg",
-      "kind": "official-site",
-      "caption": "Young person holding a Wise card while enjoying a drink outdoors",
-      "sourceUrl": "https://wise.com/",
-      "sourceLabel": "wise.com",
-      "bytes": 66398
-    }
-  ],
-  "rappi-super-app": [
-    {
-      "id": "rappi-super-app-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/rappi-super-app/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.rappi.com/",
-      "sourceLabel": "rappi.com",
-      "bytes": 68918
-    },
-    {
-      "id": "rappi-super-app-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/rappi-super-app/01.jpg",
-      "kind": "official-site",
-      "caption": "Registra tu restaurante",
-      "sourceUrl": "https://www.rappi.com/",
-      "sourceLabel": "rappi.com",
-      "bytes": 17557
-    },
-    {
-      "id": "rappi-super-app-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/rappi-super-app/02.jpg",
-      "kind": "official-site",
-      "caption": "Registra tu comercio",
-      "sourceUrl": "https://www.rappi.com/",
-      "sourceLabel": "rappi.com",
-      "bytes": 22219
-    },
-    {
-      "id": "rappi-super-app-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/rappi-super-app/03.jpg",
-      "kind": "official-site",
-      "caption": "Únete como repartidor",
-      "sourceUrl": "https://www.rappi.com/",
-      "sourceLabel": "rappi.com",
-      "bytes": 21696
-    },
-    {
-      "id": "rappi-super-app-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/rappi-super-app/04.jpg",
-      "kind": "official-site",
-      "caption": "A heart for you",
-      "sourceUrl": "https://www.rappi.com/",
-      "sourceLabel": "rappi.com",
-      "bytes": 9237
-    }
-  ],
-  "nubank-digital-bank": [
-    {
-      "id": "nubank-digital-bank-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://nubank.com.br/",
-      "sourceLabel": "nubank.com.br",
-      "bytes": 8608
-    },
-    {
-      "id": "nubank-digital-bank-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://nubank.com.br/",
-      "sourceLabel": "nubank.com.br",
-      "bytes": 34894
-    },
-    {
-      "id": "nubank-digital-bank-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://nubank.com.br/",
-      "sourceLabel": "nubank.com.br",
-      "bytes": 22929
-    },
-    {
-      "id": "nubank-digital-bank-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/03.jpg",
-      "kind": "official-site",
-      "caption": "Mulher negra de cabelos cacheados e grisalhos sentada em um sofá e sorrindo, segurando com a mão esquerda um celular em direção a um homem negro, careca, com barba grisalha, sentado ao seu lado no chão, olhando para o rosto dela enquanto sorri e com uma pequena mesa de madeira a sua frente com um notebook.",
-      "sourceUrl": "https://nubank.com.br/",
-      "sourceLabel": "nubank.com.br",
-      "bytes": 82339
-    },
-    {
-      "id": "nubank-digital-bank-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/04.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://nubank.com.br/",
-      "sourceLabel": "nubank.com.br",
-      "bytes": 90651
-    },
-    {
-      "id": "nubank-digital-bank-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/05.jpg",
-      "kind": "official-site",
-      "caption": "Fachada do Nu Cine Copan com letreiro iluminado em um painel de madeira curvado e entrada para o saguão de concreto.",
-      "sourceUrl": "https://nubank.com.br/",
-      "sourceLabel": "nubank.com.br",
-      "bytes": 113773
-    },
-    {
-      "id": "nubank-digital-bank-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://nubank.com.br/",
-      "sourceLabel": "nubank.com.br",
-      "bytes": 32983
-    },
-    {
-      "id": "nubank-digital-bank-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/nubank-digital-bank/07.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Nubank",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Nubank",
-      "sourceLabel": "Wikipedia",
-      "bytes": 5020
-    }
-  ],
-  "mercadolibre-commerce": [
-    {
-      "id": "mercadolibre-commerce-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/mercadolibre-commerce/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · MercadoLibre",
-      "sourceUrl": "https://en.wikipedia.org/wiki/MercadoLibre",
-      "sourceLabel": "Wikipedia",
-      "bytes": 19372
-    }
-  ],
-  "grab-sea-superapp": [
-    {
-      "id": "grab-sea-superapp-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/grab-sea-superapp/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.grab.com/",
-      "sourceLabel": "grab.com",
-      "bytes": 89494
-    },
-    {
-      "id": "grab-sea-superapp-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/grab-sea-superapp/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.grab.com/",
-      "sourceLabel": "grab.com",
-      "bytes": 30585
-    },
-    {
-      "id": "grab-sea-superapp-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/grab-sea-superapp/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.grab.com/",
-      "sourceLabel": "grab.com",
-      "bytes": 76180
-    },
-    {
-      "id": "grab-sea-superapp-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/grab-sea-superapp/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.grab.com/",
-      "sourceLabel": "grab.com",
-      "bytes": 23145
-    },
-    {
-      "id": "grab-sea-superapp-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/grab-sea-superapp/04.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Grab Holdings",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Grab_Holdings",
-      "sourceLabel": "Wikipedia",
-      "bytes": 111071
-    }
-  ],
-  "gojek-tokopedia": [
-    {
-      "id": "gojek-tokopedia-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/gojek-tokopedia/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.gotocompany.com/",
-      "sourceLabel": "gotocompany.com",
-      "bytes": 100312
-    },
-    {
-      "id": "gojek-tokopedia-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/gojek-tokopedia/01.jpg",
-      "kind": "official-site",
-      "caption": "banner",
-      "sourceUrl": "https://www.gotocompany.com/",
-      "sourceLabel": "gotocompany.com",
-      "bytes": 137175
-    },
-    {
-      "id": "gojek-tokopedia-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/gojek-tokopedia/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.gotocompany.com/",
-      "sourceLabel": "gotocompany.com",
-      "bytes": 34551
-    },
-    {
-      "id": "gojek-tokopedia-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/gojek-tokopedia/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.gotocompany.com/",
-      "sourceLabel": "gotocompany.com",
-      "bytes": 41759
-    },
-    {
-      "id": "gojek-tokopedia-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/gojek-tokopedia/04.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.gotocompany.com/",
-      "sourceLabel": "gotocompany.com",
-      "bytes": 47173
-    },
-    {
-      "id": "gojek-tokopedia-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/gojek-tokopedia/05.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.gotocompany.com/",
-      "sourceLabel": "gotocompany.com",
-      "bytes": 40774
-    },
-    {
-      "id": "gojek-tokopedia-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/gojek-tokopedia/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.gotocompany.com/",
-      "sourceLabel": "gotocompany.com",
-      "bytes": 35222
-    }
-  ],
-  "paytm-india-wallet": [
-    {
-      "id": "paytm-india-wallet-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/paytm-india-wallet/00.jpg",
-      "kind": "official-site",
-      "caption": "BB/LL",
-      "sourceUrl": "https://paytm.com/",
-      "sourceLabel": "paytm.com",
-      "bytes": 16972
-    }
-  ],
-  "razorpay-merchant": [
-    {
-      "id": "razorpay-merchant-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/razorpay-merchant/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://razorpay.com/",
-      "sourceLabel": "razorpay.com",
-      "bytes": 42550
-    }
-  ],
-  "bytedance-creator-os": [
-    {
-      "id": "bytedance-creator-os-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/bytedance-creator-os/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · ByteDance",
-      "sourceUrl": "https://en.wikipedia.org/wiki/ByteDance",
-      "sourceLabel": "Wikipedia",
-      "bytes": 249649
-    },
-    {
-      "id": "bytedance-creator-os-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/bytedance-creator-os/01.jpg",
-      "kind": "official-og",
-      "caption": "It's Dark, It's Cold, It's Winter Canal Town (Seedream 4.5).webp",
-      "sourceUrl": "https://en.wikipedia.org/wiki/ByteDance",
-      "sourceLabel": "bytedance.com",
-      "bytes": 142759
-    }
-  ],
-  "shein-fast-fashion": [
-    {
-      "id": "shein-fast-fashion-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/shein-fast-fashion/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Salon Shein w Galerii Młociny w Warszawie.jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASalon%20Shein%20w%20Galerii%20M%C5%82ociny%20w%20Warszawie.jpg",
-      "sourceLabel": "Wikimedia Commons",
-      "bytes": 192794
-    },
-    {
-      "id": "shein-fast-fashion-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/shein-fast-fashion/01.jpg",
-      "kind": "wikipedia",
-      "caption": "Venta de ropa SHEIN en Tianguis en Huejotzingo Mexico.jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AVenta%20de%20ropa%20SHEIN%20en%20Tianguis%20en%20Huejotzingo%20Mexico.jpg",
-      "sourceLabel": "Wikimedia Commons",
-      "bytes": 134355
-    },
-    {
-      "id": "shein-fast-fashion-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/shein-fast-fashion/02.jpg",
-      "kind": "wikipedia",
-      "caption": "Ivan Kuzmich Shein.jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AIvan%20Kuzmich%20Shein.jpg",
-      "sourceLabel": "Wikimedia Commons",
-      "bytes": 7711
-    },
-    {
-      "id": "shein-fast-fashion-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/shein-fast-fashion/03.jpg",
-      "kind": "wikipedia",
-      "caption": "Shein OV.jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AShein%20OV.jpg",
-      "sourceLabel": "Wikimedia Commons",
-      "bytes": 19503
-    }
-  ],
-  "coupang-rocket": [
-    {
-      "id": "coupang-rocket-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/coupang-rocket/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Coupang",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Coupang",
-      "sourceLabel": "Wikipedia",
-      "bytes": 151288
-    }
-  ],
-  "tokopedia-market": [
-    {
-      "id": "tokopedia-market-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/tokopedia-market/00.jpg",
-      "kind": "official-og",
-      "caption": "Tokopedia Tower, Jakarta.jpg",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Tokopedia",
-      "sourceLabel": "tokopedia.com",
-      "bytes": 49759
-    },
-    {
-      "id": "tokopedia-market-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/tokopedia-market/01.jpg",
-      "kind": "official-og",
-      "caption": "Toped 2018-05.png",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Tokopedia",
-      "sourceLabel": "tokopedia.com",
-      "bytes": 37711
-    }
-  ],
-  "sea-shopee": [
-    {
-      "id": "sea-shopee-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/sea-shopee/00.jpg",
-      "kind": "official-site",
-      "caption": "Sea",
-      "sourceUrl": "https://www.sea.com/",
-      "sourceLabel": "sea.com",
-      "bytes": 80957
-    }
-  ],
-  "flutterwave-africa": [
-    {
-      "id": "flutterwave-africa-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/flutterwave-africa/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://flutterwave.com/",
-      "sourceLabel": "flutterwave.com",
-      "bytes": 13265
-    }
-  ],
-  "paystack-africa": [
-    {
-      "id": "paystack-africa-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/paystack-africa/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://paystack.com/",
-      "sourceLabel": "paystack.com",
-      "bytes": 11362
-    },
-    {
-      "id": "paystack-africa-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/paystack-africa/01.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://paystack.com/",
-      "sourceLabel": "paystack.com",
-      "bytes": 11924
-    },
-    {
-      "id": "paystack-africa-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/paystack-africa/02.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://paystack.com/",
-      "sourceLabel": "paystack.com",
-      "bytes": 36550
-    },
-    {
-      "id": "paystack-africa-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/paystack-africa/03.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://paystack.com/",
-      "sourceLabel": "paystack.com",
-      "bytes": 10851
-    },
-    {
-      "id": "paystack-africa-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/paystack-africa/04.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://paystack.com/",
-      "sourceLabel": "paystack.com",
-      "bytes": 29563
-    },
-    {
-      "id": "paystack-africa-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/paystack-africa/05.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://paystack.com/",
-      "sourceLabel": "paystack.com",
-      "bytes": 45077
-    }
-  ],
-  "andela-talent": [
-    {
-      "id": "andela-talent-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/andela-talent/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "andela.com",
-      "bytes": 43932
-    },
-    {
-      "id": "andela-talent-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/andela-talent/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 5471
-    },
-    {
-      "id": "andela-talent-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/andela-talent/02.jpg",
-      "kind": "cdn",
-      "caption": "Glowing green 3D mesh sphere with wave-like dotted patterns.",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 79583
-    },
-    {
-      "id": "andela-talent-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/andela-talent/03.jpg",
-      "kind": "cdn",
-      "caption": "Course progress dashboard showing AI In Production with Deploy &amp; Cloud Architectures fully completed and LLMOps &amp; CI/CD completed.",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 19306
-    },
-    {
-      "id": "andela-talent-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/andela-talent/04.jpg",
-      "kind": "cdn",
-      "caption": "Collage with smiling individuals and logos of Microsoft, Goldman Sachs, and SoFi on a light green background.",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 41465
-    },
-    {
-      "id": "andela-talent-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/andela-talent/05.jpg",
-      "kind": "cdn",
-      "caption": "Five orange stars above a testimonial quote from Mark Schaefer of GitHub about Andela breaking down geographical borders to find talent, save costs, and build solutions faster, with GitHub logo.",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 53171
-    },
-    {
-      "id": "andela-talent-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/andela-talent/06.jpg",
-      "kind": "cdn",
-      "caption": "Man with dark hair and beard wearing glasses and a light denim shirt looking confidently at the camera.",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 77428
-    },
-    {
-      "id": "andela-talent-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/andela-talent/07.jpg",
-      "kind": "cdn",
-      "caption": "Man with dark hair, beard, and glasses wearing a light grey button-up shirt looking confidently at the camera.",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 63999
-    },
-    {
-      "id": "andela-talent-8",
-      "file": "08.jpg",
-      "imagePath": "/idea-photos/andela-talent/08.jpg",
-      "kind": "cdn",
-      "caption": "Interface titled &#x27;Revenue ops agent&#x27; for Business Intelligence automation showing a CSV file named H2 Churn Forecasting with a task to calculate total unique customers by risk category, and buttons labeled Data and Frameworks below.",
-      "sourceUrl": "https://andela.com/",
-      "sourceLabel": "Source",
-      "bytes": 30444
-    }
-  ],
-  "yassir-maghreb": [
-    {
-      "id": "yassir-maghreb-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 20376
-    },
-    {
-      "id": "yassir-maghreb-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/01.jpg",
-      "kind": "official-site",
-      "caption": "ride hailing",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 14426
-    },
-    {
-      "id": "yassir-maghreb-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/02.jpg",
-      "kind": "official-site",
-      "caption": "food delivery",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 17667
-    },
-    {
-      "id": "yassir-maghreb-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/03.jpg",
-      "kind": "official-site",
-      "caption": "drive-deliver-bg",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 12117
-    },
-    {
-      "id": "yassir-maghreb-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/04.jpg",
-      "kind": "official-site",
-      "caption": "Yassir Ride application image",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 43440
-    },
-    {
-      "id": "yassir-maghreb-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/05.jpg",
-      "kind": "official-site",
-      "caption": "Yassir Ride application QR code",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 42155
-    },
-    {
-      "id": "yassir-maghreb-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 6272
-    },
-    {
-      "id": "yassir-maghreb-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/07.jpg",
-      "kind": "official-site",
-      "caption": "Yassir Express application image",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 55215
-    },
-    {
-      "id": "yassir-maghreb-8",
-      "file": "08.jpg",
-      "imagePath": "/idea-photos/yassir-maghreb/08.jpg",
-      "kind": "official-site",
-      "caption": "Yassir Grocery application image",
-      "sourceUrl": "https://yassir.com/",
-      "sourceLabel": "yassir.com",
-      "bytes": 40678
-    }
-  ],
-  "careem-middle-east": [
-    {
-      "id": "careem-middle-east-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/careem-middle-east/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.careem.com/",
-      "sourceLabel": "careem.com",
-      "bytes": 23156
-    },
-    {
-      "id": "careem-middle-east-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/careem-middle-east/01.jpg",
-      "kind": "official-site",
-      "caption": "Careem",
-      "sourceUrl": "https://www.careem.com/",
-      "sourceLabel": "careem.com",
-      "bytes": 7891
+      "caption": "Official site",
+      "sourceUrl": "https://motherduck.com/",
+      "sourceLabel": "motherduck.com",
+      "bytes": 22643
     }
   ],
   "tabby-bnpl-gcc": [
@@ -2573,1286 +1931,792 @@
       "bytes": 9685
     }
   ],
-  "vtex-commerce": [
+  "yassir-maghreb": [
     {
-      "id": "vtex-commerce-0",
+      "id": "yassir-maghreb-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/00.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/00.jpg",
       "kind": "official-og",
       "caption": "Official website",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 28858
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 20376
     },
     {
-      "id": "vtex-commerce-1",
+      "id": "yassir-maghreb-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/01.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 45731
+      "imagePath": "/idea-photos/yassir-maghreb/01.jpg",
+      "kind": "official-site",
+      "caption": "ride hailing",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 14426
     },
     {
-      "id": "vtex-commerce-2",
+      "id": "yassir-maghreb-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/02.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/02.jpg",
       "kind": "official-site",
-      "caption": "VTEX",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 14138
+      "caption": "food delivery",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 17667
     },
     {
-      "id": "vtex-commerce-3",
+      "id": "yassir-maghreb-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/03.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/03.jpg",
       "kind": "official-site",
-      "caption": "Official sponsor of Major League Cricket",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 19762
+      "caption": "drive-deliver-bg",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 12117
     },
     {
-      "id": "vtex-commerce-4",
+      "id": "yassir-maghreb-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/04.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/04.jpg",
       "kind": "official-site",
-      "caption": "Electrolux",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 12167
+      "caption": "Yassir Ride application image",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 43440
     },
     {
-      "id": "vtex-commerce-5",
+      "id": "yassir-maghreb-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/05.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/05.jpg",
       "kind": "official-site",
-      "caption": "Nestlé",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 28827
+      "caption": "Yassir Ride application QR code",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 42155
     },
     {
-      "id": "vtex-commerce-6",
+      "id": "yassir-maghreb-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/06.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/06.jpg",
       "kind": "official-site",
-      "caption": "Carrefour",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 18130
+      "caption": "Official website",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 6272
     },
     {
-      "id": "vtex-commerce-7",
+      "id": "yassir-maghreb-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/07.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/07.jpg",
       "kind": "official-site",
-      "caption": "Coca-Cola",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 35745
+      "caption": "Yassir Express application image",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 55215
     },
     {
-      "id": "vtex-commerce-8",
+      "id": "yassir-maghreb-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/vtex-commerce/08.jpg",
+      "imagePath": "/idea-photos/yassir-maghreb/08.jpg",
       "kind": "official-site",
-      "caption": "Walmart",
-      "sourceUrl": "https://vtex.com/",
-      "sourceLabel": "vtex.com",
-      "bytes": 22118
+      "caption": "Yassir Grocery application image",
+      "sourceUrl": "https://yassir.com/",
+      "sourceLabel": "yassir.com",
+      "bytes": 40678
     }
   ],
-  "dlocal-crossborder": [
+  "mono-africa-open-banking": [
     {
-      "id": "dlocal-crossborder-0",
+      "id": "mono-africa-open-banking-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/00.jpg",
+      "imagePath": "/idea-photos/mono-africa-open-banking/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "dlocal.com",
-      "bytes": 11072
+      "caption": "Official site",
+      "sourceUrl": "https://mono.co/",
+      "sourceLabel": "mono.co",
+      "bytes": 50335
     },
     {
-      "id": "dlocal-crossborder-1",
+      "id": "mono-africa-open-banking-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "Source",
-      "bytes": 13225
-    },
-    {
-      "id": "dlocal-crossborder-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/02.jpg",
-      "kind": "cdn",
-      "caption": "Payins",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "Source",
-      "bytes": 10056
-    },
-    {
-      "id": "dlocal-crossborder-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/03.jpg",
-      "kind": "cdn",
-      "caption": "Payouts",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "Source",
-      "bytes": 14063
-    },
-    {
-      "id": "dlocal-crossborder-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/04.jpg",
-      "kind": "cdn",
-      "caption": "Defense Suite",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "Source",
-      "bytes": 9490
-    },
-    {
-      "id": "dlocal-crossborder-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/05.jpg",
-      "kind": "cdn",
-      "caption": "dLocal for Platforms",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "Source",
-      "bytes": 10334
-    },
-    {
-      "id": "dlocal-crossborder-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/06.jpg",
-      "kind": "cdn",
-      "caption": "Invoice Collection",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "Source",
-      "bytes": 9131
-    },
-    {
-      "id": "dlocal-crossborder-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/dlocal-crossborder/07.jpg",
-      "kind": "cdn",
-      "caption": "Africa and the Middle East",
-      "sourceUrl": "https://dlocal.com/",
-      "sourceLabel": "Source",
-      "bytes": 39114
+      "imagePath": "/idea-photos/mono-africa-open-banking/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mono.co/",
+      "sourceLabel": "mono.co",
+      "bytes": 27897
     }
   ],
-  "pieter-patreon-creators": [
+  "chipper-cash": [
     {
-      "id": "pieter-patreon-creators-0",
+      "id": "chipper-cash-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 101425
+      "imagePath": "/idea-photos/chipper-cash/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 18675
     },
     {
-      "id": "pieter-patreon-creators-1",
+      "id": "chipper-cash-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/01.jpg",
-      "kind": "official-site",
-      "caption": "Jade Novah",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 4701
+      "imagePath": "/idea-photos/chipper-cash/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 55158
     },
     {
-      "id": "pieter-patreon-creators-2",
+      "id": "chipper-cash-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/02.jpg",
-      "kind": "official-site",
-      "caption": "Culture Study",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 6960
+      "imagePath": "/idea-photos/chipper-cash/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 35850
     },
     {
-      "id": "pieter-patreon-creators-3",
+      "id": "chipper-cash-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/03.jpg",
-      "kind": "official-site",
-      "caption": "Elliott Wilson",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 6438
+      "imagePath": "/idea-photos/chipper-cash/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 101936
     },
     {
-      "id": "pieter-patreon-creators-4",
+      "id": "chipper-cash-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/04.jpg",
-      "kind": "official-site",
-      "caption": "Rachel Maksy",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 7542
+      "imagePath": "/idea-photos/chipper-cash/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 120312
     },
     {
-      "id": "pieter-patreon-creators-5",
+      "id": "chipper-cash-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/05.jpg",
-      "kind": "official-site",
-      "caption": "Throwing Fits",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 7022
+      "imagePath": "/idea-photos/chipper-cash/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 56234
     },
     {
-      "id": "pieter-patreon-creators-6",
+      "id": "chipper-cash-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/06.jpg",
-      "kind": "official-site",
-      "caption": "Image of Ellis Ever After",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 4297
+      "imagePath": "/idea-photos/chipper-cash/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 87724
     },
     {
-      "id": "pieter-patreon-creators-7",
+      "id": "chipper-cash-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/07.jpg",
-      "kind": "official-site",
-      "caption": "RossDraws",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 7309
+      "imagePath": "/idea-photos/chipper-cash/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 10251
     },
     {
-      "id": "pieter-patreon-creators-8",
+      "id": "chipper-cash-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/pieter-patreon-creators/08.jpg",
-      "kind": "official-site",
-      "caption": "RachelMaksy",
-      "sourceUrl": "https://www.patreon.com/",
-      "sourceLabel": "patreon.com",
-      "bytes": 8893
+      "imagePath": "/idea-photos/chipper-cash/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.chippercash.com/",
+      "sourceLabel": "chippercash.com",
+      "bytes": 12774
     }
   ],
-  "airtable-ops-db": [
+  "piggyvest-savings": [
     {
-      "id": "airtable-ops-db-0",
+      "id": "piggyvest-savings-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/airtable-ops-db/00.jpg",
+      "imagePath": "/idea-photos/piggyvest-savings/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.airtable.com/",
-      "sourceLabel": "airtable.com",
-      "bytes": 12518
+      "caption": "Official site",
+      "sourceUrl": "https://www.piggyvest.com/",
+      "sourceLabel": "piggyvest.com",
+      "bytes": 10042
     },
     {
-      "id": "airtable-ops-db-1",
+      "id": "piggyvest-savings-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/airtable-ops-db/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.airtable.com/",
-      "sourceLabel": "airtable.com",
-      "bytes": 46322
+      "imagePath": "/idea-photos/piggyvest-savings/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.piggyvest.com/",
+      "sourceLabel": "piggyvest.com",
+      "bytes": 97501
     },
     {
-      "id": "airtable-ops-db-2",
+      "id": "piggyvest-savings-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/airtable-ops-db/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.airtable.com/",
-      "sourceLabel": "airtable.com",
-      "bytes": 37059
+      "imagePath": "/idea-photos/piggyvest-savings/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.piggyvest.com/",
+      "sourceLabel": "piggyvest.com",
+      "bytes": 9837
     },
     {
-      "id": "airtable-ops-db-3",
+      "id": "piggyvest-savings-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/airtable-ops-db/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.airtable.com/",
-      "sourceLabel": "airtable.com",
-      "bytes": 25502
+      "imagePath": "/idea-photos/piggyvest-savings/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.piggyvest.com/",
+      "sourceLabel": "piggyvest.com",
+      "bytes": 11359
+    },
+    {
+      "id": "piggyvest-savings-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/piggyvest-savings/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.piggyvest.com/",
+      "sourceLabel": "piggyvest.com",
+      "bytes": 9643
     }
   ],
-  "figma-design-collab": [
+  "carbonfact-fashion": [
     {
-      "id": "figma-design-collab-0",
+      "id": "carbonfact-fashion-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/00.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 26697
+      "imagePath": "/idea-photos/carbonfact-fashion/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.carbonfact.com/",
+      "sourceLabel": "carbonfact.com",
+      "bytes": 42717
     },
     {
-      "id": "figma-design-collab-1",
+      "id": "carbonfact-fashion-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 21030
+      "imagePath": "/idea-photos/carbonfact-fashion/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.carbonfact.com/",
+      "sourceLabel": "carbonfact.com",
+      "bytes": 68221
     },
     {
-      "id": "figma-design-collab-2",
+      "id": "carbonfact-fashion-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/02.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 15852
+      "imagePath": "/idea-photos/carbonfact-fashion/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.carbonfact.com/",
+      "sourceLabel": "carbonfact.com",
+      "bytes": 43920
     },
     {
-      "id": "figma-design-collab-3",
+      "id": "carbonfact-fashion-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/03.jpg",
-      "kind": "cdn",
-      "caption": "A mock website showing Texture values",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 80085
+      "imagePath": "/idea-photos/carbonfact-fashion/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.carbonfact.com/",
+      "sourceLabel": "carbonfact.com",
+      "bytes": 46979
     },
     {
-      "id": "figma-design-collab-4",
+      "id": "carbonfact-fashion-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/04.jpg",
-      "kind": "cdn",
-      "caption": "UI showing different brush stokes that can be applied to type",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 60464
+      "imagePath": "/idea-photos/carbonfact-fashion/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.carbonfact.com/",
+      "sourceLabel": "carbonfact.com",
+      "bytes": 61390
+    }
+  ],
+  "sylvera-carbon": [
+    {
+      "id": "sylvera-carbon-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/sylvera-carbon/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.sylvera.com/",
+      "sourceLabel": "sylvera.com",
+      "bytes": 72275
+    }
+  ],
+  "watershed-climate": [
+    {
+      "id": "watershed-climate-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/watershed-climate/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 38561
     },
     {
-      "id": "figma-design-collab-5",
+      "id": "watershed-climate-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/watershed-climate/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 53412
+    },
+    {
+      "id": "watershed-climate-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/watershed-climate/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 21680
+    },
+    {
+      "id": "watershed-climate-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/watershed-climate/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 18691
+    },
+    {
+      "id": "watershed-climate-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/watershed-climate/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 41884
+    },
+    {
+      "id": "watershed-climate-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/05.jpg",
-      "kind": "cdn",
-      "caption": "A cursor vector editing a design",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 19599
+      "imagePath": "/idea-photos/watershed-climate/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 21015
     },
     {
-      "id": "figma-design-collab-6",
+      "id": "watershed-climate-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/06.jpg",
-      "kind": "cdn",
-      "caption": "Type on a path shown in purple and teal against a pink background",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 38345
+      "imagePath": "/idea-photos/watershed-climate/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 56172
     },
     {
-      "id": "figma-design-collab-7",
+      "id": "watershed-climate-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/07.jpg",
-      "kind": "cdn",
-      "caption": "A prompt node and a pre-selected image node connect to create the visual output of a butterfly on the Figma Weave interface",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 37349
+      "imagePath": "/idea-photos/watershed-climate/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 54744
     },
     {
-      "id": "figma-design-collab-8",
+      "id": "watershed-climate-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/figma-design-collab/08.jpg",
-      "kind": "cdn",
-      "caption": "UI over a butterfly bitmap mosaic with optionality to change the spacing and establish minimum and maximum sizes",
-      "sourceUrl": "https://www.figma.com/",
-      "sourceLabel": "Source",
-      "bytes": 76775
+      "imagePath": "/idea-photos/watershed-climate/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://watershed.com/",
+      "sourceLabel": "watershed.com",
+      "bytes": 33289
     }
   ],
-  "databricks-lakehouse": [
+  "antora-heat-battery": [
     {
-      "id": "databricks-lakehouse-0",
+      "id": "antora-heat-battery-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/00.jpg",
+      "imagePath": "/idea-photos/antora-heat-battery/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.databricks.com/",
-      "sourceLabel": "databricks.com",
-      "bytes": 18903
+      "caption": "Official site",
+      "sourceUrl": "https://www.antora.energy/",
+      "sourceLabel": "antora.energy",
+      "bytes": 134611
     },
     {
-      "id": "databricks-lakehouse-1",
+      "id": "antora-heat-battery-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/01.jpg",
-      "kind": "official-site",
-      "caption": "Databricks data + AI Summit",
-      "sourceUrl": "https://www.databricks.com/",
-      "sourceLabel": "databricks.com",
-      "bytes": 11084
+      "imagePath": "/idea-photos/antora-heat-battery/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.antora.energy/",
+      "sourceLabel": "antora.energy",
+      "bytes": 46799
     },
     {
-      "id": "databricks-lakehouse-2",
+      "id": "antora-heat-battery-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.databricks.com/",
-      "sourceLabel": "databricks.com",
-      "bytes": 19535
+      "imagePath": "/idea-photos/antora-heat-battery/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.antora.energy/",
+      "sourceLabel": "antora.energy",
+      "bytes": 39024
+    }
+  ],
+  "batterysmart-swap": [
+    {
+      "id": "batterysmart-swap-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/batterysmart-swap/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.batterysmart.in/",
+      "sourceLabel": "batterysmart.in",
+      "bytes": 12805
+    }
+  ],
+  "magicschool-ai": [
+    {
+      "id": "magicschool-ai-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/magicschool-ai/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.magicschool.ai/",
+      "sourceLabel": "magicschool.ai",
+      "bytes": 65734
     },
     {
-      "id": "databricks-lakehouse-3",
+      "id": "magicschool-ai-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/magicschool-ai/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.magicschool.ai/",
+      "sourceLabel": "magicschool.ai",
+      "bytes": 14347
+    },
+    {
+      "id": "magicschool-ai-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/magicschool-ai/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.magicschool.ai/",
+      "sourceLabel": "magicschool.ai",
+      "bytes": 10787
+    },
+    {
+      "id": "magicschool-ai-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.databricks.com/",
-      "sourceLabel": "databricks.com",
-      "bytes": 54686
+      "imagePath": "/idea-photos/magicschool-ai/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.magicschool.ai/",
+      "sourceLabel": "magicschool.ai",
+      "bytes": 16936
     },
     {
-      "id": "databricks-lakehouse-4",
+      "id": "magicschool-ai-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/04.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.databricks.com/",
-      "sourceLabel": "databricks.com",
-      "bytes": 30416
+      "imagePath": "/idea-photos/magicschool-ai/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.magicschool.ai/",
+      "sourceLabel": "magicschool.ai",
+      "bytes": 27353
     },
     {
-      "id": "databricks-lakehouse-5",
+      "id": "magicschool-ai-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/05.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.databricks.com/",
-      "sourceLabel": "databricks.com",
-      "bytes": 17358
+      "imagePath": "/idea-photos/magicschool-ai/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.magicschool.ai/",
+      "sourceLabel": "magicschool.ai",
+      "bytes": 11135
     },
     {
-      "id": "databricks-lakehouse-6",
+      "id": "magicschool-ai-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.databricks.com/",
-      "sourceLabel": "databricks.com",
-      "bytes": 20580
-    },
-    {
-      "id": "databricks-lakehouse-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/databricks-lakehouse/07.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Databricks",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Databricks",
-      "sourceLabel": "Wikipedia",
-      "bytes": 115003
+      "imagePath": "/idea-photos/magicschool-ai/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.magicschool.ai/",
+      "sourceLabel": "magicschool.ai",
+      "bytes": 91633
     }
   ],
-  "openai-platform": [
+  "synthesis-school": [
     {
-      "id": "openai-platform-0",
+      "id": "synthesis-school-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/openai-platform/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · OpenAI",
-      "sourceUrl": "https://en.wikipedia.org/wiki/OpenAI",
-      "sourceLabel": "Wikipedia",
-      "bytes": 187480
-    }
-  ],
-  "anthropic-claude": [
-    {
-      "id": "anthropic-claude-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/anthropic-claude/00.jpg",
+      "imagePath": "/idea-photos/synthesis-school/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.anthropic.com/",
-      "sourceLabel": "anthropic.com",
-      "bytes": 10488
+      "caption": "Official site",
+      "sourceUrl": "https://www.synthesis.com/",
+      "sourceLabel": "synthesis.com",
+      "bytes": 62016
     },
     {
-      "id": "anthropic-claude-1",
+      "id": "synthesis-school-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/anthropic-claude/01.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Anthropic",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Anthropic",
-      "sourceLabel": "Wikipedia",
-      "bytes": 170125
+      "imagePath": "/idea-photos/synthesis-school/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.synthesis.com/",
+      "sourceLabel": "synthesis.com",
+      "bytes": 72766
+    },
+    {
+      "id": "synthesis-school-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/synthesis-school/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.synthesis.com/",
+      "sourceLabel": "synthesis.com",
+      "bytes": 35458
+    },
+    {
+      "id": "synthesis-school-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/synthesis-school/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.synthesis.com/",
+      "sourceLabel": "synthesis.com",
+      "bytes": 120136
+    },
+    {
+      "id": "synthesis-school-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/synthesis-school/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.synthesis.com/",
+      "sourceLabel": "synthesis.com",
+      "bytes": 57197
+    },
+    {
+      "id": "synthesis-school-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/synthesis-school/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.synthesis.com/",
+      "sourceLabel": "synthesis.com",
+      "bytes": 19481
     }
   ],
-  "mistral-europe-ai": [
+  "abridge-clinical": [
     {
-      "id": "mistral-europe-ai-0",
+      "id": "abridge-clinical-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/mistral-europe-ai/00.jpg",
+      "imagePath": "/idea-photos/abridge-clinical/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://mistral.ai/",
-      "sourceLabel": "mistral.ai",
-      "bytes": 22330
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 33698
     },
     {
-      "id": "mistral-europe-ai-1",
+      "id": "abridge-clinical-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/mistral-europe-ai/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://mistral.ai/",
-      "sourceLabel": "mistral.ai",
-      "bytes": 45566
+      "imagePath": "/idea-photos/abridge-clinical/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 5837
     },
     {
-      "id": "mistral-europe-ai-2",
+      "id": "abridge-clinical-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/mistral-europe-ai/02.jpg",
-      "kind": "official-site",
-      "caption": "AXA (white)",
-      "sourceUrl": "https://mistral.ai/",
-      "sourceLabel": "mistral.ai",
-      "bytes": 6620
+      "imagePath": "/idea-photos/abridge-clinical/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 25393
     },
     {
-      "id": "mistral-europe-ai-3",
+      "id": "abridge-clinical-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/mistral-europe-ai/03.jpg",
-      "kind": "official-site",
-      "caption": "Cisco (black)",
-      "sourceUrl": "https://mistral.ai/",
-      "sourceLabel": "mistral.ai",
-      "bytes": 8983
+      "imagePath": "/idea-photos/abridge-clinical/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 42714
     },
     {
-      "id": "mistral-europe-ai-4",
+      "id": "abridge-clinical-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/mistral-europe-ai/04.jpg",
-      "kind": "official-site",
-      "caption": "Cisco (white)",
-      "sourceUrl": "https://mistral.ai/",
-      "sourceLabel": "mistral.ai",
-      "bytes": 8552
+      "imagePath": "/idea-photos/abridge-clinical/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 46418
     },
     {
-      "id": "mistral-europe-ai-5",
+      "id": "abridge-clinical-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/mistral-europe-ai/05.jpg",
-      "kind": "official-site",
-      "caption": "Snowflake (white)",
-      "sourceUrl": "https://mistral.ai/",
-      "sourceLabel": "mistral.ai",
-      "bytes": 7637
-    }
-  ],
-  "deepmind-science": [
-    {
-      "id": "deepmind-science-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/deepmind-science/00.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 11362
+      "imagePath": "/idea-photos/abridge-clinical/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 24610
     },
     {
-      "id": "deepmind-science-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/deepmind-science/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 16654
-    },
-    {
-      "id": "deepmind-science-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/deepmind-science/02.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 17835
-    },
-    {
-      "id": "deepmind-science-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/deepmind-science/03.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 17808
-    },
-    {
-      "id": "deepmind-science-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/deepmind-science/04.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 25162
-    },
-    {
-      "id": "deepmind-science-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/deepmind-science/05.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 27576
-    },
-    {
-      "id": "deepmind-science-6",
+      "id": "abridge-clinical-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/deepmind-science/06.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 15709
+      "imagePath": "/idea-photos/abridge-clinical/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 9914
     },
     {
-      "id": "deepmind-science-7",
+      "id": "abridge-clinical-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/deepmind-science/07.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 14667
+      "imagePath": "/idea-photos/abridge-clinical/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 16569
     },
     {
-      "id": "deepmind-science-8",
+      "id": "abridge-clinical-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/deepmind-science/08.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://deepmind.google/",
-      "sourceLabel": "Source",
-      "bytes": 36566
+      "imagePath": "/idea-photos/abridge-clinical/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.abridge.com/",
+      "sourceLabel": "abridge.com",
+      "bytes": 13989
     }
   ],
-  "personio-hr-eu": [
+  "sideshift-care": [
     {
-      "id": "personio-hr-eu-0",
+      "id": "sideshift-care-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/personio-hr-eu/00.jpg",
+      "imagePath": "/idea-photos/sideshift-care/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.sideshift.com/",
+      "sourceLabel": "sideshift.com",
+      "bytes": 4774
+    }
+  ],
+  "alan-health": [
+    {
+      "id": "alan-health-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/alan-health/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.personio.com/",
-      "sourceLabel": "personio.com",
-      "bytes": 51447
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 44344
     },
     {
-      "id": "personio-hr-eu-1",
+      "id": "alan-health-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/personio-hr-eu/01.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.personio.com/",
-      "sourceLabel": "personio.com",
-      "bytes": 35296
-    }
-  ],
-  "contentful-cms": [
-    {
-      "id": "contentful-cms-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/contentful-cms/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.contentful.com/",
-      "sourceLabel": "contentful.com",
-      "bytes": 99181
-    }
-  ],
-  "celonis-process": [
-    {
-      "id": "celonis-process-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/celonis-process/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.celonis.com/",
-      "sourceLabel": "celonis.com",
-      "bytes": 5354
-    }
-  ],
-  "ui-path-rpa": [
-    {
-      "id": "ui-path-rpa-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/ui-path-rpa/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.uipath.com/",
-      "sourceLabel": "uipath.com",
-      "bytes": 17982
+      "imagePath": "/idea-photos/alan-health/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 104393
     },
     {
-      "id": "ui-path-rpa-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/ui-path-rpa/01.jpg",
-      "kind": "cdn",
-      "caption": "A lone figure stands on a wide orange path crossing a dark field of blocks toward a glowing gateway on the horizon.",
-      "sourceUrl": "https://www.uipath.com/",
-      "sourceLabel": "Source",
-      "bytes": 37525
-    },
-    {
-      "id": "ui-path-rpa-2",
+      "id": "alan-health-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/ui-path-rpa/02.jpg",
-      "kind": "cdn",
-      "caption": "WEX",
-      "sourceUrl": "https://www.uipath.com/",
-      "sourceLabel": "Source",
-      "bytes": 4591
-    }
-  ],
-  "hashicorp-infra": [
-    {
-      "id": "hashicorp-infra-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/hashicorp-infra/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.hashicorp.com/",
-      "sourceLabel": "hashicorp.com",
-      "bytes": 14283
+      "imagePath": "/idea-photos/alan-health/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 59277
     },
     {
-      "id": "hashicorp-infra-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/hashicorp-infra/01.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.hashicorp.com/",
-      "sourceLabel": "hashicorp.com",
-      "bytes": 14283
-    },
-    {
-      "id": "hashicorp-infra-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/hashicorp-infra/02.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.hashicorp.com/",
-      "sourceLabel": "hashicorp.com",
-      "bytes": 17762
-    }
-  ],
-  "gitlab-devops": [
-    {
-      "id": "gitlab-devops-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/gitlab-devops/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://about.gitlab.com/",
-      "sourceLabel": "about.gitlab.com",
-      "bytes": 66459
-    }
-  ],
-  "sentry-observability": [
-    {
-      "id": "sentry-observability-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/sentry-observability/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://sentry.io/",
-      "sourceLabel": "sentry.io",
-      "bytes": 58033
-    },
-    {
-      "id": "sentry-observability-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/sentry-observability/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://sentry.io/",
-      "sourceLabel": "sentry.io",
-      "bytes": 53304
-    },
-    {
-      "id": "sentry-observability-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/sentry-observability/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://sentry.io/",
-      "sourceLabel": "sentry.io",
-      "bytes": 16269
-    },
-    {
-      "id": "sentry-observability-3",
+      "id": "alan-health-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/sentry-observability/03.jpg",
-      "kind": "official-site",
-      "caption": "Illustration of a terminal-style window showing the command npm install @sentry/browser on a dark purple background.",
-      "sourceUrl": "https://sentry.io/",
-      "sourceLabel": "sentry.io",
-      "bytes": 14214
-    }
-  ],
-  "vercel-frontend": [
-    {
-      "id": "vercel-frontend-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/vercel-frontend/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://vercel.com/",
-      "sourceLabel": "vercel.com",
-      "bytes": 9573
+      "imagePath": "/idea-photos/alan-health/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 21805
     },
     {
-      "id": "vercel-frontend-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/vercel-frontend/01.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://vercel.com/",
-      "sourceLabel": "vercel.com",
-      "bytes": 8809
-    }
-  ],
-  "supabase-backend": [
-    {
-      "id": "supabase-backend-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/supabase-backend/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 19752
-    },
-    {
-      "id": "supabase-backend-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/supabase-backend/01.jpg",
-      "kind": "official-site",
-      "caption": "Supabase Postgres database",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 18308
-    },
-    {
-      "id": "supabase-backend-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/supabase-backend/02.jpg",
-      "kind": "official-site",
-      "caption": "Supabase Authentication user db rows",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 5292
-    },
-    {
-      "id": "supabase-backend-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/supabase-backend/03.jpg",
-      "kind": "official-site",
-      "caption": "Supabase Authentication user db rows",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 5583
-    },
-    {
-      "id": "supabase-backend-4",
+      "id": "alan-health-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/supabase-backend/04.jpg",
-      "kind": "official-site",
-      "caption": "Supabase Authentication user db rows",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 7315
+      "imagePath": "/idea-photos/alan-health/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 17370
     },
     {
-      "id": "supabase-backend-5",
+      "id": "alan-health-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/supabase-backend/05.jpg",
-      "kind": "official-site",
-      "caption": "Supabase Authentication user db rows",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 6799
+      "imagePath": "/idea-photos/alan-health/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 70759
     },
     {
-      "id": "supabase-backend-6",
+      "id": "alan-health-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/supabase-backend/06.jpg",
-      "kind": "official-site",
-      "caption": "Supabase Edge Functions globe",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 5740
+      "imagePath": "/idea-photos/alan-health/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 78308
     },
     {
-      "id": "supabase-backend-7",
+      "id": "alan-health-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/supabase-backend/07.jpg",
-      "kind": "official-site",
-      "caption": "Supabase Edge Functions globe",
-      "sourceUrl": "https://supabase.com/",
-      "sourceLabel": "supabase.com",
-      "bytes": 4508
-    }
-  ],
-  "pleo-spend": [
-    {
-      "id": "pleo-spend-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/pleo-spend/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.pleo.io/",
-      "sourceLabel": "pleo.io",
-      "bytes": 25820
+      "imagePath": "/idea-photos/alan-health/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 91997
     },
     {
-      "id": "pleo-spend-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/pleo-spend/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.pleo.io/",
-      "sourceLabel": "pleo.io",
-      "bytes": 30471
-    },
-    {
-      "id": "pleo-spend-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/pleo-spend/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.pleo.io/",
-      "sourceLabel": "pleo.io",
-      "bytes": 16425
-    }
-  ],
-  "hopin-events": [
-    {
-      "id": "hopin-events-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/hopin-events/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://ringcentral.com/events/",
-      "sourceLabel": "ringcentral.com",
-      "bytes": 20141
-    },
-    {
-      "id": "hopin-events-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/hopin-events/01.jpg",
-      "kind": "official-site",
-      "caption": "A speaker in a blazer holding a microphone on stage at ITC Vegas, engaging with the audience under colorful lights.",
-      "sourceUrl": "https://ringcentral.com/events/",
-      "sourceLabel": "ringcentral.com",
-      "bytes": 61564
-    }
-  ],
-  "checkout-com": [
-    {
-      "id": "checkout-com-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/checkout-com/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.checkout.com/",
-      "sourceLabel": "checkout.com",
-      "bytes": 15159
-    },
-    {
-      "id": "checkout-com-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/checkout-com/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.checkout.com/",
-      "sourceLabel": "Source",
-      "bytes": 46571
-    },
-    {
-      "id": "checkout-com-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/checkout-com/02.jpg",
-      "kind": "cdn",
-      "caption": "Woman in a black dress speaking while seated on a dark armchair with a notebook in hand on a blue stage.",
-      "sourceUrl": "https://www.checkout.com/",
-      "sourceLabel": "Source",
-      "bytes": 21125
-    },
-    {
-      "id": "checkout-com-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/checkout-com/03.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.checkout.com/",
-      "sourceLabel": "Source",
-      "bytes": 25806
-    },
-    {
-      "id": "checkout-com-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/checkout-com/04.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.checkout.com/",
-      "sourceLabel": "Source",
-      "bytes": 24884
-    },
-    {
-      "id": "checkout-com-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/checkout-com/05.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.checkout.com/",
-      "sourceLabel": "Source",
-      "bytes": 33215
-    },
-    {
-      "id": "checkout-com-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/checkout-com/06.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.checkout.com/",
-      "sourceLabel": "Source",
-      "bytes": 46635
-    }
-  ],
-  "adyen-acquiring": [
-    {
-      "id": "adyen-acquiring-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/adyen-acquiring/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.adyen.com/",
-      "sourceLabel": "adyen.com",
-      "bytes": 7850
-    }
-  ],
-  "bolt-estonia": [
-    {
-      "id": "bolt-estonia-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 9429
-    },
-    {
-      "id": "bolt-estonia-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 108618
-    },
-    {
-      "id": "bolt-estonia-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 25905
-    },
-    {
-      "id": "bolt-estonia-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 56819
-    },
-    {
-      "id": "bolt-estonia-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/04.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 54090
-    },
-    {
-      "id": "bolt-estonia-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/05.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 28048
-    },
-    {
-      "id": "bolt-estonia-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 35149
-    },
-    {
-      "id": "bolt-estonia-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/07.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 60677
-    },
-    {
-      "id": "bolt-estonia-8",
+      "id": "alan-health-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/bolt-estonia/08.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://bolt.eu/",
-      "sourceLabel": "bolt.eu",
-      "bytes": 41878
-    }
-  ],
-  "wolt-delivery": [
-    {
-      "id": "wolt-delivery-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "wolt.com",
-      "bytes": 70059
-    },
-    {
-      "id": "wolt-delivery-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 79940
-    },
-    {
-      "id": "wolt-delivery-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/02.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 75518
-    },
-    {
-      "id": "wolt-delivery-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/03.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 16011
-    },
-    {
-      "id": "wolt-delivery-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/04.jpg",
-      "kind": "cdn",
-      "caption": "Chihiro, Japan",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 6255
-    },
-    {
-      "id": "wolt-delivery-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/05.jpg",
-      "kind": "cdn",
-      "caption": "Yasin, Sweden",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 7220
-    },
-    {
-      "id": "wolt-delivery-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/06.jpg",
-      "kind": "cdn",
-      "caption": "Tsuyoshi, Japan",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 8356
-    },
-    {
-      "id": "wolt-delivery-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/07.jpg",
-      "kind": "cdn",
-      "caption": "Mari, Japan",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 10607
-    },
-    {
-      "id": "wolt-delivery-8",
-      "file": "08.jpg",
-      "imagePath": "/idea-photos/wolt-delivery/08.jpg",
-      "kind": "cdn",
-      "caption": "Zuzana, Slovakia",
-      "sourceUrl": "https://wolt.com/",
-      "sourceLabel": "Source",
-      "bytes": 8451
-    }
-  ],
-  "swan-banking-as-a-service": [
-    {
-      "id": "swan-banking-as-a-service-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/swan-banking-as-a-service/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.swan.io/",
-      "sourceLabel": "swan.io",
-      "bytes": 43061
-    },
-    {
-      "id": "swan-banking-as-a-service-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/swan-banking-as-a-service/01.jpg",
-      "kind": "cdn",
-      "caption": "White square with the word &#x27;Accountable&#x27; in bold dark text centered on a blurred light background",
-      "sourceUrl": "https://www.swan.io/",
-      "sourceLabel": "Source",
-      "bytes": 11221
+      "imagePath": "/idea-photos/alan-health/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.suki.ai/",
+      "sourceLabel": "suki.ai",
+      "bytes": 142148
     }
   ],
   "qonto-sme-bank": [
@@ -3947,708 +2811,246 @@
       "bytes": 28189
     }
   ],
-  "alan-health": [
+  "swan-baas": [
     {
-      "id": "alan-health-0",
+      "id": "swan-baas-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/alan-health/00.jpg",
+      "imagePath": "/idea-photos/swan-baas/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 79399
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 43061
     },
     {
-      "id": "alan-health-1",
+      "id": "swan-baas-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/alan-health/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 17960
+      "imagePath": "/idea-photos/swan-baas/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 27638
     },
     {
-      "id": "alan-health-2",
+      "id": "swan-baas-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/alan-health/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 4983
+      "imagePath": "/idea-photos/swan-baas/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 11221
     },
     {
-      "id": "alan-health-3",
+      "id": "swan-baas-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/alan-health/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 4919
+      "imagePath": "/idea-photos/swan-baas/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 29779
     },
     {
-      "id": "alan-health-4",
+      "id": "swan-baas-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/alan-health/04.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 22124
+      "imagePath": "/idea-photos/swan-baas/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 22874
     },
     {
-      "id": "alan-health-5",
+      "id": "swan-baas-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/alan-health/05.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 16252
+      "imagePath": "/idea-photos/swan-baas/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 76031
     },
     {
-      "id": "alan-health-6",
+      "id": "swan-baas-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/alan-health/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 14424
+      "imagePath": "/idea-photos/swan-baas/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 83691
     },
     {
-      "id": "alan-health-7",
+      "id": "swan-baas-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/alan-health/07.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://alan.com/",
-      "sourceLabel": "alan.com",
-      "bytes": 15871
-    }
-  ],
-  "doctors-without-wait": [
-    {
-      "id": "doctors-without-wait-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/doctors-without-wait/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Teladoc Health",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Teladoc_Health",
-      "sourceLabel": "Wikipedia",
-      "bytes": 16062
-    }
-  ],
-  "cognition-devin": [
-    {
-      "id": "cognition-devin-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/cognition-devin/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.cognition.ai/",
-      "sourceLabel": "cognition.ai",
-      "bytes": 70643
+      "imagePath": "/idea-photos/swan-baas/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 65832
     },
     {
-      "id": "cognition-devin-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/cognition-devin/01.jpg",
-      "kind": "official-site",
-      "caption": "Cognition Crosses $1B in Annualized Revenue Run Rate",
-      "sourceUrl": "https://www.cognition.ai/",
-      "sourceLabel": "cognition.ai",
-      "bytes": 81661
-    }
-  ],
-  "runway-ml-video": [
-    {
-      "id": "runway-ml-video-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/runway-ml-video/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://runwayml.com/",
-      "sourceLabel": "runwayml.com",
-      "bytes": 25730
-    },
-    {
-      "id": "runway-ml-video-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/runway-ml-video/01.jpg",
-      "kind": "official-site",
-      "caption": "Introducing Runway Ads",
-      "sourceUrl": "https://runwayml.com/",
-      "sourceLabel": "runwayml.com",
-      "bytes": 32079
-    }
-  ],
-  "elevenlabs-voice": [
-    {
-      "id": "elevenlabs-voice-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/elevenlabs-voice/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://elevenlabs.io/",
-      "sourceLabel": "elevenlabs.io",
-      "bytes": 43565
-    }
-  ],
-  "perplexity-answer": [
-    {
-      "id": "perplexity-answer-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/perplexity-answer/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.perplexity.ai/",
-      "sourceLabel": "perplexity.ai",
-      "bytes": 147492
-    },
-    {
-      "id": "perplexity-answer-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/perplexity-answer/01.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.perplexity.ai/",
-      "sourceLabel": "perplexity.ai",
-      "bytes": 268638
-    },
-    {
-      "id": "perplexity-answer-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/perplexity-answer/02.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.perplexity.ai/",
-      "sourceLabel": "perplexity.ai",
-      "bytes": 86232
-    },
-    {
-      "id": "perplexity-answer-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/perplexity-answer/03.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.perplexity.ai/",
-      "sourceLabel": "perplexity.ai",
-      "bytes": 181009
-    },
-    {
-      "id": "perplexity-answer-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/perplexity-answer/04.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.perplexity.ai/",
-      "sourceLabel": "perplexity.ai",
-      "bytes": 151140
-    }
-  ],
-  "cursor-coding": [
-    {
-      "id": "cursor-coding-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/cursor-coding/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://cursor.com/",
-      "sourceLabel": "cursor.com",
-      "bytes": 10866
-    },
-    {
-      "id": "cursor-coding-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/cursor-coding/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://cursor.com/",
-      "sourceLabel": "cursor.com",
-      "bytes": 83040
-    },
-    {
-      "id": "cursor-coding-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/cursor-coding/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://cursor.com/",
-      "sourceLabel": "cursor.com",
-      "bytes": 63417
-    }
-  ],
-  "loom-async-video": [
-    {
-      "id": "loom-async-video-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/loom-async-video/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "loom.com",
-      "bytes": 43071
-    },
-    {
-      "id": "loom-async-video-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/loom-async-video/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "Source",
-      "bytes": 43159
-    },
-    {
-      "id": "loom-async-video-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/loom-async-video/02.jpg",
-      "kind": "official-site",
-      "caption": "Edit your videos like a pro",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "loom.com",
-      "bytes": 46210
-    },
-    {
-      "id": "loom-async-video-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/loom-async-video/03.jpg",
-      "kind": "official-site",
-      "caption": "Integrations with Google, Slack, Salesforce, Figma and Jira",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "loom.com",
-      "bytes": 20548
-    },
-    {
-      "id": "loom-async-video-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/loom-async-video/04.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "Source",
-      "bytes": 23392
-    },
-    {
-      "id": "loom-async-video-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/loom-async-video/05.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "Source",
-      "bytes": 24600
-    },
-    {
-      "id": "loom-async-video-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/loom-async-video/06.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "Source",
-      "bytes": 22146
-    },
-    {
-      "id": "loom-async-video-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/loom-async-video/07.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.loom.com/",
-      "sourceLabel": "Source",
-      "bytes": 24256
-    }
-  ],
-  "miro-whiteboard": [
-    {
-      "id": "miro-whiteboard-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/miro-whiteboard/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://miro.com/",
-      "sourceLabel": "miro.com",
-      "bytes": 12451
-    }
-  ],
-  "webflow-sites": [
-    {
-      "id": "webflow-sites-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/webflow-sites/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "webflow.com",
-      "bytes": 70257
-    },
-    {
-      "id": "webflow-sites-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/webflow-sites/01.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 77897
-    },
-    {
-      "id": "webflow-sites-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/webflow-sites/02.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 79456
-    },
-    {
-      "id": "webflow-sites-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/webflow-sites/03.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 25724
-    },
-    {
-      "id": "webflow-sites-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/webflow-sites/04.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 34408
-    },
-    {
-      "id": "webflow-sites-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/webflow-sites/05.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 35593
-    },
-    {
-      "id": "webflow-sites-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/webflow-sites/06.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 52935
-    },
-    {
-      "id": "webflow-sites-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/webflow-sites/07.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 42040
-    },
-    {
-      "id": "webflow-sites-8",
+      "id": "swan-baas-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/webflow-sites/08.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://webflow.com/",
-      "sourceLabel": "Source",
-      "bytes": 45382
+      "imagePath": "/idea-photos/swan-baas/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 89702
     }
   ],
-  "intercom-support": [
+  "attio-crm": [
     {
-      "id": "intercom-support-0",
+      "id": "attio-crm-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/intercom-support/00.jpg",
+      "imagePath": "/idea-photos/attio-crm/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.intercom.com/",
-      "sourceLabel": "intercom.com",
-      "bytes": 59221
-    },
-    {
-      "id": "intercom-support-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/intercom-support/01.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.intercom.com/",
-      "sourceLabel": "intercom.com",
-      "bytes": 83801
-    },
-    {
-      "id": "intercom-support-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/intercom-support/02.jpg",
-      "kind": "cdn",
-      "caption": "Official website",
-      "sourceUrl": "https://www.intercom.com/",
-      "sourceLabel": "Source",
-      "bytes": 7559
-    },
-    {
-      "id": "intercom-support-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/intercom-support/03.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Fin (company)",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Fin_(company)",
-      "sourceLabel": "Wikipedia",
-      "bytes": 5960
+      "caption": "Official site",
+      "sourceUrl": "https://attio.com/",
+      "sourceLabel": "attio.com",
+      "bytes": 34067
     }
   ],
-  "hubspot-crm": [
+  "cashfree-merchant": [
     {
-      "id": "hubspot-crm-0",
+      "id": "cashfree-merchant-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/00.jpg",
+      "imagePath": "/idea-photos/cashfree-merchant/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 87874
+      "caption": "Official site",
+      "sourceUrl": "https://www.cashfree.com/",
+      "sourceLabel": "cashfree.com",
+      "bytes": 51908
+    }
+  ],
+  "dub-link-os": [
+    {
+      "id": "dub-link-os-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/dub-link-os/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 61664
     },
     {
-      "id": "hubspot-crm-1",
+      "id": "dub-link-os-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/01.jpg",
-      "kind": "official-site",
-      "caption": "195309752641",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 35594
+      "imagePath": "/idea-photos/dub-link-os/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 25177
     },
     {
-      "id": "hubspot-crm-2",
+      "id": "dub-link-os-2",
       "file": "02.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/02.jpg",
-      "kind": "official-site",
-      "caption": "195309752642",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 49975
+      "imagePath": "/idea-photos/dub-link-os/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 58723
     },
     {
-      "id": "hubspot-crm-3",
+      "id": "dub-link-os-3",
       "file": "03.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/03.jpg",
-      "kind": "official-site",
-      "caption": "195309752643",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 33515
+      "imagePath": "/idea-photos/dub-link-os/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 20048
     },
     {
-      "id": "hubspot-crm-4",
+      "id": "dub-link-os-4",
       "file": "04.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/04.jpg",
-      "kind": "official-site",
-      "caption": "195303448595",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 42658
+      "imagePath": "/idea-photos/dub-link-os/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 38545
     },
     {
-      "id": "hubspot-crm-5",
+      "id": "dub-link-os-5",
       "file": "05.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/05.jpg",
-      "kind": "official-site",
-      "caption": "191228329371",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 8447
+      "imagePath": "/idea-photos/dub-link-os/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 19834
     },
     {
-      "id": "hubspot-crm-6",
+      "id": "dub-link-os-6",
       "file": "06.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 47870
+      "imagePath": "/idea-photos/dub-link-os/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 12489
     },
     {
-      "id": "hubspot-crm-7",
+      "id": "dub-link-os-7",
       "file": "07.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/07.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 37464
+      "imagePath": "/idea-photos/dub-link-os/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 12776
     },
     {
-      "id": "hubspot-crm-8",
+      "id": "dub-link-os-8",
       "file": "08.jpg",
-      "imagePath": "/idea-photos/hubspot-crm/08.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.hubspot.com/",
-      "sourceLabel": "hubspot.com",
-      "bytes": 31823
+      "imagePath": "/idea-photos/dub-link-os/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dub.co/",
+      "sourceLabel": "dub.co",
+      "bytes": 28918
     }
   ],
-  "atlassian-work": [
+  "fi-money": [
     {
-      "id": "atlassian-work-0",
+      "id": "fi-money-0",
       "file": "00.jpg",
-      "imagePath": "/idea-photos/atlassian-work/00.jpg",
+      "imagePath": "/idea-photos/fi-money/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://fi.money/",
+      "sourceLabel": "fi.money",
+      "bytes": 27416
+    }
+  ],
+  "incident-ops": [
+    {
+      "id": "incident-ops-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/incident-ops/00.jpg",
       "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.atlassian.com/",
-      "sourceLabel": "atlassian.com",
-      "bytes": 54501
+      "caption": "Official site",
+      "sourceUrl": "https://incident.io/",
+      "sourceLabel": "incident.io",
+      "bytes": 36754
     },
     {
-      "id": "atlassian-work-1",
+      "id": "incident-ops-1",
       "file": "01.jpg",
-      "imagePath": "/idea-photos/atlassian-work/01.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Atlassian",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Atlassian",
-      "sourceLabel": "Wikipedia",
-      "bytes": 71106
-    }
-  ],
-  "xero-accounting": [
-    {
-      "id": "xero-accounting-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/xero-accounting/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 5466
-    },
-    {
-      "id": "xero-accounting-1",
-      "file": "01.jpg",
-      "imagePath": "/idea-photos/xero-accounting/01.jpg",
-      "kind": "official-site",
-      "caption": "Baker rolling croissants, with Xero invoice and payment",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 92758
-    },
-    {
-      "id": "xero-accounting-2",
-      "file": "02.jpg",
-      "imagePath": "/idea-photos/xero-accounting/02.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 35590
-    },
-    {
-      "id": "xero-accounting-3",
-      "file": "03.jpg",
-      "imagePath": "/idea-photos/xero-accounting/03.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 40618
-    },
-    {
-      "id": "xero-accounting-4",
-      "file": "04.jpg",
-      "imagePath": "/idea-photos/xero-accounting/04.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 19980
-    },
-    {
-      "id": "xero-accounting-5",
-      "file": "05.jpg",
-      "imagePath": "/idea-photos/xero-accounting/05.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 23727
-    },
-    {
-      "id": "xero-accounting-6",
-      "file": "06.jpg",
-      "imagePath": "/idea-photos/xero-accounting/06.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 12433
-    },
-    {
-      "id": "xero-accounting-7",
-      "file": "07.jpg",
-      "imagePath": "/idea-photos/xero-accounting/07.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 13843
-    },
-    {
-      "id": "xero-accounting-8",
-      "file": "08.jpg",
-      "imagePath": "/idea-photos/xero-accounting/08.jpg",
-      "kind": "official-site",
-      "caption": "Official website",
-      "sourceUrl": "https://www.xero.com/",
-      "sourceLabel": "xero.com",
-      "bytes": 12093
-    }
-  ],
-  "canva-affinity": [
-    {
-      "id": "canva-affinity-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/canva-affinity/00.jpg",
-      "kind": "official-og",
-      "caption": "Affinity studios screenshot.png",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Affinity_(software)",
-      "sourceLabel": "canva.com",
-      "bytes": 6029
-    }
-  ],
-  "freshworks-crm": [
-    {
-      "id": "freshworks-crm-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/freshworks-crm/00.jpg",
-      "kind": "wikipedia",
-      "caption": "Wikipedia · Freshworks",
-      "sourceUrl": "https://en.wikipedia.org/wiki/Freshworks",
-      "sourceLabel": "Wikipedia",
-      "bytes": 13306
-    }
-  ],
-  "zoho-suite": [
-    {
-      "id": "zoho-suite-0",
-      "file": "00.jpg",
-      "imagePath": "/idea-photos/zoho-suite/00.jpg",
-      "kind": "official-og",
-      "caption": "Official website",
-      "sourceUrl": "https://www.zoho.com/",
-      "sourceLabel": "zoho.com",
-      "bytes": 27329
+      "imagePath": "/idea-photos/incident-ops/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://incident.io/",
+      "sourceLabel": "incident.io",
+      "bytes": 20845
     }
   ]
 }

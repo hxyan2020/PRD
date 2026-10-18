@@ -220,31 +220,9 @@
       "imagePath": "/idea-articles/playpane-classroom/00.jpg",
       "imageKind": "rss",
       "bytes": 1260324
-    },
-    {
-      "id": "playpane-classroom-1",
-      "title": "Hear ClassDojo and SignalFire unpack edtech’s opportunity ahead on TechCrunch Live",
-      "url": "https://techcrunch.com/2023/04/19/hear-classdojo-and-signalfire-unpack-edtechs-opportunity-ahead-on-techcrunch-live/",
-      "sourceId": "techcrunch",
-      "excerpt": "Join TechCrunch Live on April 26 at 12 pm PDT to hear ClassDojo and SignalFire unpack edtech’s opportunity ahead.",
-      "imageFile": "01.jpg",
-      "imagePath": "/idea-articles/playpane-classroom/01.jpg",
-      "imageKind": "rss",
-      "bytes": 173382
     }
   ],
   "voltpath-depot": [
-    {
-      "id": "voltpath-depot-0",
-      "title": "Gogoro scales battery swapping to new markets via B2B partners",
-      "url": "https://techcrunch.com/2023/03/24/gogoro-scales-battery-swapping-new-markets-b2b-partners/",
-      "sourceId": "techcrunch",
-      "excerpt": "Gogoro is partnering with Foodpanda in Singapore in the latest B2B play from the battery swapping company aimed at global expansion.",
-      "imageFile": "00.jpg",
-      "imagePath": "/idea-articles/voltpath-depot/00.jpg",
-      "imageKind": "rss",
-      "bytes": 436888
-    },
     {
       "id": "voltpath-depot-1",
       "title": "Indian EV startup Zypp Electric secures backing to fund expansion to Southeast Asia",
