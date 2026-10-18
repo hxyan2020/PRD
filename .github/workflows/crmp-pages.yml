@@ -12,6 +12,10 @@ on:
         cursor/severity-feedback-weights-28bc,
         cursor/severity-formula-ro-approve-28bc,
         cursor/indicator-aggregation-flow-28bc,
+        cursor/home-l1-l2-demo-28bc,
+        cursor/lark-ai-report-sev-a935,
+        cursor/threshold-flow-demo-a935,
+        cursor/docs-recent-flows-a935,
         main,
       ]
     paths:
