@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { IndustryIcon } from "@/components/IndustryIcon";
+import { SectorLabel } from "@/components/SectorLabel";
 import { matchProfile } from "@/lib/client-api";
 import {
   assessAnswer,
@@ -374,9 +376,13 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
                       <h3 className="font-display text-xl text-foam group-hover:text-black">
                         {view.name}
                       </h3>
-                      <p className="mt-1 text-xs text-mist">
-                        {view.industry} · {view.sector}
-                      </p>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-mist">
+                        <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+                          <IndustryIcon industry={idea.industry} className="shrink-0 text-celadon" />
+                          <span className="truncate">{view.industry}</span>
+                        </span>
+                        <SectorLabel sector={idea.sector} label={view.sector} />
+                      </div>
                     </div>
                     <ScorePill score={presented.score} />
                   </div>

@@ -8,7 +8,7 @@ import { IdeaPhotoAlbum } from "@/components/IdeaPhotoAlbum";
 import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { SectorIcon } from "@/components/SectorIcon";
+import { SectorLabel } from "@/components/SectorLabel";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, socialLabel, strategyMessageKey } from "@/lib/format";
 import { photosForIdea } from "@/lib/idea-photos";
@@ -50,10 +50,11 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
           <span className="text-mist/50" aria-hidden>
             ·
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <SectorIcon sector={idea.sector} className="text-celadon" />
-            {view.sector}
-          </span>
+          <SectorLabel
+            sector={idea.sector}
+            label={view.sector}
+            className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon sm:text-[11px] sm:tracking-[0.22em]"
+          />
         </p>
         <h1 className="mt-2 font-display text-[2rem] leading-[1.1] text-foam sm:mt-3 sm:text-5xl">
           {view.name}
@@ -93,10 +94,7 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
           </span>
         </Row>
         <Row label={t("dossier.sector")}>
-          <span className="inline-flex items-center gap-1.5">
-            <SectorIcon sector={idea.sector} className="text-celadon" />
-            {view.sector}
-          </span>
+          <SectorLabel sector={idea.sector} label={view.sector} />
         </Row>
         <Row label={t("dossier.fundraising")}>
           {idea.fundraisingSecured ? (

@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
+import { IndustryIcon } from "@/components/IndustryIcon";
 import { ProfileChatbot } from "@/components/ProfileChatbot";
+import { SectorLabel } from "@/components/SectorLabel";
 import { fetchDaily } from "@/lib/client-api";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, strategyMessageKey } from "@/lib/format";
@@ -116,9 +118,11 @@ export function DailyRecommendation() {
           {countryLabel}
           {cityLabel ? ` · ${cityLabel}` : ""}
         </span>
-        <span>
-          {view.industry} / {view.sector}
+        <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+          <IndustryIcon industry={idea.industry} className="shrink-0 text-celadon" />
+          <span className="truncate">{view.industry}</span>
         </span>
+        <SectorLabel sector={idea.sector} label={view.sector} />
         <span>
           {idea.fundraisingSecured
             ? t("ledger.funded", { stage: formatMoney(idea.fundingAmountUsd) })

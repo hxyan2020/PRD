@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { IndustryIcon } from "@/components/IndustryIcon";
+import { SectorLabel } from "@/components/SectorLabel";
 import { listUserCollection, removeFromCollection } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
@@ -96,10 +98,16 @@ export function CollectionPage() {
                   >
                     {view.name}
                   </Link>
-                  <p className="mt-1 text-xs text-mist">
-                    {view.industry} · {view.sector}
-                    {presented ? ` · ${t("ledger.match", { score: presented.score })}` : ""}
-                  </p>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-mist">
+                    <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+                      <IndustryIcon industry={item.idea.industry} className="shrink-0 text-celadon" />
+                      <span className="truncate">{view.industry}</span>
+                    </span>
+                    <SectorLabel sector={item.idea.sector} label={view.sector} />
+                    {presented ? (
+                      <span>{t("ledger.match", { score: presented.score })}</span>
+                    ) : null}
+                  </div>
                   {presented?.matched[0] ? (
                     <p className="mt-2 text-xs text-celadon">
                       {t("today.matched")} · {presented.matched[0].dimension}:{" "}

@@ -34,7 +34,7 @@ describe("mobile UI affordances", () => {
     );
     expect(detail).toContain('id="idea-top"');
     expect(detail).toContain("ScrollToTop");
-    expect(detail).toContain("SectorIcon");
+    expect(detail).toContain("SectorLabel");
     expect(scroll).toContain("useLayoutEffect");
     expect(scroll).toContain("scrollRestoration");
     expect(scroll).toContain("window.scrollTo");
