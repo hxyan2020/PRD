@@ -14,7 +14,17 @@ export function Home() {
     <div className="home">
       <section className="hero">
         <div className="hero-copy">
-          <p className="brand-hero">OWNLAB</p>
+          <p className="brand-hero">
+            <img
+              className="brand-hero-mark"
+              src={`${import.meta.env.BASE_URL}logo-mark-dark.png`}
+              alt=""
+              width={72}
+              height={72}
+              aria-hidden="true"
+            />
+            <span>OWNLAB</span>
+          </p>
           <h1>{t('heroTitle')}</h1>
           <p className="lede">{t('heroLede')}</p>
           <div className="cta-row">
