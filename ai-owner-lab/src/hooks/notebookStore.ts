@@ -52,6 +52,7 @@ import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './us
 const LS_ENTRIES = 'ownlab-notebook-v1'
 const LS_TRASH = 'ownlab-notebook-trash-v1'
 const LS_CATEGORIES = 'ownlab-notebook-categories-v1'
+const LS_PURGED = 'ownlab-notebook-purged-v1'
 
 type EntryListener = (entries: NotebookEntry[]) => void
 type TrashListener = (trash: TrashedNotebookEntry[]) => void
@@ -79,12 +80,15 @@ type Cache = {
   entries: NotebookEntry[]
   trash: TrashedNotebookEntry[]
   categories: NotebookCategory[]
+  /** Permanently deleted note ids (tombstones). */
+  purgedIds: string[]
 }
 
 const cache: Cache = {
   entries: [],
   trash: [],
   categories: [],
+  purgedIds: [],
 }
 
 let ready = false
@@ -167,20 +171,43 @@ function mergeTrash(...lists: TrashedNotebookEntry[][]): TrashedNotebookEntry[] 
   return sortTrash([...map.values()])
 }
 
+function parsePurgedIds(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return []
+  const ids = new Set<string>()
+  for (const item of raw) {
+    if (typeof item === 'string' && item.trim()) ids.add(item.trim())
+  }
+  return [...ids].sort()
+}
+
+function mergePurgedIds(...lists: string[][]): string[] {
+  const ids = new Set<string>()
+  for (const list of lists) {
+    for (const id of list) {
+      if (id) ids.add(id)
+    }
+  }
+  return [...ids].sort()
+}
+
 /**
  * A note must not live in both the notebook and the dustbin.
  * After merges (esp. cloud pull), prefer trash when deletedAt >= entry time;
  * prefer the live entry when it was updated/restored after the delete.
+ * Permanently purged ids are stripped from both lists.
  */
 function reconcileEntriesAndTrash(
   entries: NotebookEntry[],
   trash: TrashedNotebookEntry[],
+  purgedIds: string[] = cache.purgedIds,
 ): { entries: NotebookEntry[]; trash: TrashedNotebookEntry[] } {
+  const purged = new Set(purgedIds)
   const entryMap = new Map(entries.map((e) => [e.id, e]))
   const trashMap = new Map(trash.map((e) => [e.id, e]))
   const nextEntries: NotebookEntry[] = []
   const nextTrash: TrashedNotebookEntry[] = []
   for (const id of new Set([...entryMap.keys(), ...trashMap.keys()])) {
+    if (purged.has(id)) continue
     const entry = entryMap.get(id)
     const trashed = trashMap.get(id)
     if (entry && trashed) {
@@ -278,19 +305,35 @@ function clearLocalStorageNotebookKeys() {
     localStorage.removeItem(LS_ENTRIES)
     localStorage.removeItem(LS_TRASH)
     localStorage.removeItem(LS_CATEGORIES)
+    localStorage.removeItem(LS_PURGED)
   } catch {
     /* ignore */
   }
 }
 
 async function persistKey(
-  key: typeof IDB_KEYS.entries | typeof IDB_KEYS.trash | typeof IDB_KEYS.categories,
+  key:
+    | typeof IDB_KEYS.entries
+    | typeof IDB_KEYS.trash
+    | typeof IDB_KEYS.categories
+    | typeof IDB_KEYS.purged,
   value: unknown,
 ) {
   try {
     await idbSetVerified(key, value)
   } catch (err) {
     throw new NotebookStorageError(isPersistenceQuotaExceeded(err) ? 'quota' : 'unknown')
+  }
+}
+
+async function persistPurgedIds(ids: string[]) {
+  const next = parsePurgedIds(ids)
+  cache.purgedIds = next
+  await persistKey(IDB_KEYS.purged, next)
+  try {
+    localStorage.setItem(LS_PURGED, JSON.stringify(next))
+  } catch {
+    /* ignore */
   }
 }
 
@@ -318,12 +361,14 @@ async function gatherAllSources(): Promise<{
   entries: NotebookEntry[]
   trash: TrashedNotebookEntry[]
   categories: NotebookCategory[]
+  purgedIds: string[]
   recoveredFromBackup: boolean
   recoveredFromLocalStorage: boolean
 }> {
   const idbEntries = parseEntries(await idbGet(IDB_KEYS.entries))
   const idbTrash = parseTrash(await idbGet(IDB_KEYS.trash))
   const idbCategories = parseCategories(await idbGet(IDB_KEYS.categories))
+  const idbPurged = parsePurgedIds(await idbGet(IDB_KEYS.purged))
 
   const snap = parseSnapshot(await idbGet(IDB_KEYS.snapshot))
   const snapPrev = parseSnapshot(await idbGet(IDB_KEYS.snapshotPrev))
@@ -331,10 +376,13 @@ async function gatherAllSources(): Promise<{
   const lsEntries = parseEntries(readLocalStorageJson(LS_ENTRIES))
   const lsTrash = parseTrash(readLocalStorageJson(LS_TRASH))
   const lsCategories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
+  const lsPurged = parsePurgedIds(readLocalStorageJson(LS_PURGED))
 
+  const purgedIds = mergePurgedIds(idbPurged, lsPurged)
   const merged = reconcileEntriesAndTrash(
     mergeEntries(idbEntries, snap?.entries ?? [], snapPrev?.entries ?? [], lsEntries),
     mergeTrash(idbTrash, snap?.trash ?? [], snapPrev?.trash ?? [], lsTrash),
+    purgedIds,
   )
   const entries = merged.entries
   const trash = merged.trash
@@ -352,7 +400,14 @@ async function gatherAllSources(): Promise<{
   const recoveredFromLocalStorage =
     idbEntries.length < entries.length && lsEntries.length > 0
 
-  return { entries, trash, categories, recoveredFromBackup, recoveredFromLocalStorage }
+  return {
+    entries,
+    trash,
+    categories,
+    purgedIds,
+    recoveredFromBackup,
+    recoveredFromLocalStorage,
+  }
 }
 
 async function hydrate(): Promise<void> {
@@ -366,6 +421,7 @@ async function hydrate(): Promise<void> {
     entries = gathered.entries
     trash = gathered.trash
     categories = gathered.categories
+    cache.purgedIds = gathered.purgedIds
     recovered = gathered.recoveredFromBackup || gathered.recoveredFromLocalStorage
 
     // Persist merged result when we recovered/merged anything extra, or first-time migrate.
@@ -380,6 +436,7 @@ async function hydrate(): Promise<void> {
       await persistKey(IDB_KEYS.entries, entries)
       await persistKey(IDB_KEYS.trash, trash)
       await persistKey(IDB_KEYS.categories, categories)
+      await persistPurgedIds(gathered.purgedIds)
       await idbSetMeta({
         storageBackend: 'indexeddb',
         migratedFromLocalStorageAt: gathered.recoveredFromLocalStorage
@@ -392,6 +449,11 @@ async function hydrate(): Promise<void> {
         const verified = parseEntries(await idbGet(IDB_KEYS.entries))
         if (verified.length === entries.length) {
           clearLocalStorageNotebookKeys()
+          try {
+            localStorage.setItem(LS_PURGED, JSON.stringify(cache.purgedIds))
+          } catch {
+            /* ignore */
+          }
         }
       }
       if (gathered.recoveredFromLocalStorage || gathered.recoveredFromBackup) {
@@ -402,7 +464,10 @@ async function hydrate(): Promise<void> {
       await persistKey(IDB_KEYS.entries, [])
       await persistKey(IDB_KEYS.trash, [])
       await persistKey(IDB_KEYS.categories, [])
+      await persistPurgedIds(gathered.purgedIds)
       await idbSetMeta({ storageBackend: 'indexeddb' })
+    } else if (gathered.purgedIds.length && (await idbGet(IDB_KEYS.purged)) === undefined) {
+      await persistPurgedIds(gathered.purgedIds)
     }
 
     if (recovered) {
@@ -410,8 +475,15 @@ async function hydrate(): Promise<void> {
     }
   } catch {
     // Fall back to whatever localStorage still has if IDB is blocked.
-    entries = parseEntries(readLocalStorageJson(LS_ENTRIES))
-    trash = parseTrash(readLocalStorageJson(LS_TRASH))
+    const purgedIds = parsePurgedIds(readLocalStorageJson(LS_PURGED))
+    cache.purgedIds = purgedIds
+    const reconciled = reconcileEntriesAndTrash(
+      parseEntries(readLocalStorageJson(LS_ENTRIES)),
+      parseTrash(readLocalStorageJson(LS_TRASH)),
+      purgedIds,
+    )
+    entries = reconciled.entries
+    trash = reconciled.trash
     categories = parseCategories(readLocalStorageJson(LS_CATEGORIES))
   }
 
@@ -549,6 +621,7 @@ function buildBackupJson(): string {
       entries: cache.entries,
       trash: cache.trash,
       categories: cache.categories,
+      purgedIds: cache.purgedIds,
     },
     null,
     2,
@@ -948,11 +1021,13 @@ export const notebookStore = {
       entries?: unknown
       trash?: unknown
       categories?: unknown
+      purgedIds?: unknown
       raw?: {
         indexedDB?: {
           entries?: unknown
           trash?: unknown
           categories?: unknown
+          purged?: unknown
           snapshot?: unknown
           snapshot_prev?: unknown
         }
@@ -985,12 +1060,19 @@ export const notebookStore = {
       snapPrev?.categories ?? [],
       parseCategories(rawLs?.[LS_CATEGORIES]),
     ]
+    const incomingPurged = mergePurgedIds(
+      parsePurgedIds(body.purgedIds),
+      parsePurgedIds(rawIdb?.purged),
+      parsePurgedIds(rawLs?.[LS_PURGED]),
+    )
     // Merge against the live cache inside the write queue so a concurrent addNote
     // cannot be overwritten by a slower pull-merge.
     const total = await enqueueWrite(async () => {
+      const purgedIds = mergePurgedIds(cache.purgedIds, incomingPurged)
       const reconciled = reconcileEntriesAndTrash(
         mergeEntries(cache.entries, ...incomingEntries),
         mergeTrash(cache.trash, ...incomingTrash),
+        purgedIds,
       )
       const entries = reconciled.entries
       const trash = reconciled.trash
@@ -999,6 +1081,7 @@ export const notebookStore = {
       await persistKey(IDB_KEYS.entries, entries)
       await persistKey(IDB_KEYS.trash, trash)
       await persistKey(IDB_KEYS.categories, categories)
+      await persistPurgedIds(purgedIds)
       cache.entries = entries
       cache.trash = trash
       cache.categories = categories
@@ -1105,9 +1188,11 @@ export const notebookStore = {
       } catch {
         /* no folder backup */
       }
+      const purgedIds = mergePurgedIds(cache.purgedIds, gathered.purgedIds)
       const gatheredRecon = reconcileEntriesAndTrash(
         mergeEntries(cache.entries, gathered.entries),
         mergeTrash(cache.trash, gathered.trash),
+        purgedIds,
       )
       const entries = gatheredRecon.entries
       const trash = gatheredRecon.trash
@@ -1115,18 +1200,22 @@ export const notebookStore = {
       if (
         entries.length !== cache.entries.length ||
         trash.length !== cache.trash.length ||
-        categories.length !== cache.categories.length
+        categories.length !== cache.categories.length ||
+        purgedIds.length !== cache.purgedIds.length
       ) {
         await enqueueWrite(async () => {
+          const nextPurged = mergePurgedIds(cache.purgedIds, purgedIds)
           const next = reconcileEntriesAndTrash(
             mergeEntries(cache.entries, entries),
             mergeTrash(cache.trash, trash),
+            nextPurged,
           )
           const nextCategories = mergeCategories(cache.categories, categories)
           await saveSnapshot(cache.entries, cache.trash, cache.categories)
           await persistKey(IDB_KEYS.entries, next.entries)
           await persistKey(IDB_KEYS.trash, next.trash)
           await persistKey(IDB_KEYS.categories, nextCategories)
+          await persistPurgedIds(nextPurged)
           cache.entries = next.entries
           cache.trash = next.trash
           cache.categories = nextCategories
@@ -1854,15 +1943,19 @@ export const notebookStore = {
         sourceLabel: trashed.sourceLabel,
         sourcePath: trashed.sourcePath,
         model: trashed.model,
+        attachments: trashed.attachments,
       }
       if (cache.entries.some((e) => e.id === restoredEntry.id)) {
         restoredEntry = { ...restoredEntry, id: uid('nb') }
       }
       const nextTrash = sortTrash(trash.filter((e) => e.id !== id))
       const nextEntries = sortEntries([restoredEntry, ...cache.entries])
+      // Restoring overrides a prior permanent-delete tombstone for this id.
+      const nextPurged = cache.purgedIds.filter((pid) => pid !== id && pid !== restoredEntry.id)
       await saveSnapshot(cache.entries, cache.trash, cache.categories)
       await persistKey(IDB_KEYS.trash, nextTrash)
       await persistKey(IDB_KEYS.entries, nextEntries)
+      await persistPurgedIds(nextPurged)
       cache.trash = nextTrash
       cache.entries = nextEntries
       trashListeners.forEach((listener) => listener(nextTrash))
@@ -1879,12 +1972,20 @@ export const notebookStore = {
       await ensureReady()
       const trash = cache.trash
       const entry = trash.find((e) => e.id === id)
-      if (!entry && !cache.entries.some((e) => e.id === id)) return null
+      if (!entry && !cache.entries.some((e) => e.id === id)) {
+        // Still record a tombstone so a later cloud pull cannot resurrect it.
+        if (!cache.purgedIds.includes(id)) {
+          await persistPurgedIds([...cache.purgedIds, id])
+        }
+        return null
+      }
       const nextTrash = sortTrash(trash.filter((e) => e.id !== id))
       const nextEntries = sortEntries(cache.entries.filter((e) => e.id !== id))
+      const nextPurged = mergePurgedIds(cache.purgedIds, [id])
       await saveSnapshot(cache.entries, cache.trash, cache.categories)
       await persistKey(IDB_KEYS.trash, nextTrash)
       await persistKey(IDB_KEYS.entries, nextEntries)
+      await persistPurgedIds(nextPurged)
       cache.trash = nextTrash
       cache.entries = nextEntries
       trashListeners.forEach((listener) => listener(nextTrash))

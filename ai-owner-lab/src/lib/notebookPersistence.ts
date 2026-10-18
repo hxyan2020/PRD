@@ -8,6 +8,8 @@ export const IDB_KEYS = {
   entries: 'entries',
   trash: 'trash',
   categories: 'categories',
+  /** Ids permanently deleted from dustbin — must not reappear via cloud merge. */
+  purged: 'purged',
   meta: 'meta',
   /** Last known-good full snapshot before a write (recovery). */
   snapshot: 'snapshot',
