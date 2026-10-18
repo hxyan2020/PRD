@@ -203,7 +203,9 @@ export function Notebook() {
     importBackup,
   } = useNotebook()
   const { lang, t } = useLanguage()
-  const [view, setView] = useState<'notes' | 'tree' | 'categories' | 'dustbin' | 'backup'>('notes')
+  const [view, setView] = useState<
+    'notes' | 'add' | 'tree' | 'categories' | 'dustbin' | 'backup'
+  >('notes')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
@@ -214,7 +216,6 @@ export function Notebook() {
   const [newNote, setNewNote] = useState('')
   const [newCategoryIds, setNewCategoryIds] = useState<string[]>([])
   const [newAttachments, setNewAttachments] = useState<NotebookAttachment[]>([])
-  const [composerOpen, setComposerOpen] = useState(true)
   const [composerError, setComposerError] = useState<string | null>(null)
   const [sort, setSort] = useState<NotebookSort>(() => readSort())
   const [query, setQuery] = useState('')
@@ -514,8 +515,8 @@ export function Notebook() {
       setNewNote('')
       setNewCategoryIds([])
       setNewAttachments([])
-      setComposerOpen(true)
       setComposerError(null)
+      setView('notes')
       if (!notebookStore.getCloudSyncStatus().configured) {
         setCloudOn(false)
         window.requestAnimationFrame(() => {
@@ -650,7 +651,9 @@ export function Notebook() {
                 ? t('categoriesTitle')
                 : view === 'backup'
                   ? t('backupTitle')
-                  : t('notebookTitle')}
+                  : view === 'add'
+                    ? t('viewAdd')
+                    : t('notebookTitle')}
         </h1>
         <p className="section-lede">
           {view === 'dustbin'
@@ -661,7 +664,9 @@ export function Notebook() {
                 ? t('categoriesLede')
                 : view === 'backup'
                   ? t('backupLede')
-                  : t('notebookLede')}
+                  : view === 'add'
+                    ? t('viewAddLede')
+                    : t('notebookLede')}
         </p>
         {cloudOn || accountSynced ? (
           <div className="notebook-cloud-status-row">
@@ -719,6 +724,16 @@ export function Notebook() {
             <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-notes" />
             {t('viewNotes')}
             <span className="notebook-view-count">{activeEntries.length}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'add'}
+            className={`notebook-view-tab${view === 'add' ? ' on' : ''}`}
+            onClick={() => setView('add')}
+          >
+            <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-add" />
+            {t('viewAdd')}
           </button>
           <button
             type="button"
@@ -1074,20 +1089,14 @@ export function Notebook() {
           />
 
         </>
-      ) : !cloudOn && count === 0 && !skipCloudRestore ? (
-        null
-      ) : (
-        <>
-      <section className="notebook-composer" aria-label={t('newNote')}>
-        <div className="notebook-composer-head">
-          <h2>{t('newNote')}</h2>
-          {!composerOpen ? (
-            <button type="button" className="btn primary" onClick={() => setComposerOpen(true)}>
-              {t('newNote')}
-            </button>
-          ) : null}
-        </div>
-        {composerOpen ? (
+      ) : view === 'add' ? (
+        <section className="notebook-composer notebook-add-panel" aria-label={t('viewAdd')}>
+          <div className="notebook-composer-head">
+            <div>
+              <h2>{t('newNote')}</h2>
+              <p className="notebook-add-lede">{t('viewAddLede')}</p>
+            </div>
+          </div>
           <div className="notebook-edit-form">
             <label className="notebook-field">
               <span className="notebook-field-label">{t('noteTitleLabel')}</span>
@@ -1098,7 +1107,7 @@ export function Notebook() {
                 onChange={(e) => setNewTitle(e.target.value)}
                 placeholder={t('noteTitlePlaceholder')}
                 maxLength={120}
-                autoFocus={entries.length === 0}
+                autoFocus
               />
             </label>
             <div className="notebook-field">
@@ -1137,30 +1146,30 @@ export function Notebook() {
               </p>
             ) : null}
             <div className="notebook-actions">
-              <button type="button" className="btn primary" onClick={createNote}>
+              <button type="button" className="btn primary" onClick={() => void createNote()}>
                 {t('createNote')}
               </button>
-              {entries.length > 0 ? (
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={() => {
-                    setComposerOpen(false)
-                    setNewTitle('')
-                    setNewNote('')
-                    setNewCategoryIds([])
-                    setNewAttachments([])
-                    setComposerError(null)
-                  }}
-                >
-                  {t('cancelEdit')}
-                </button>
-              ) : null}
+              <button
+                type="button"
+                className="btn ghost"
+                onClick={() => {
+                  setNewTitle('')
+                  setNewNote('')
+                  setNewCategoryIds([])
+                  setNewAttachments([])
+                  setComposerError(null)
+                  setView('notes')
+                }}
+              >
+                {t('cancelEdit')}
+              </button>
             </div>
           </div>
-        ) : null}
-      </section>
-
+        </section>
+      ) : !cloudOn && count === 0 && !skipCloudRestore ? (
+        null
+      ) : (
+        <>
       {count > 0 || categories.length > 0 ? (
         <section className="notebook-filter-bar" aria-label={t('filterByCategory')}>
           <div className="notebook-filter-bar-head">
@@ -1226,6 +1235,15 @@ export function Notebook() {
               {t('day')}1
             </Link>
           </p>
+          <div className="notebook-actions">
+            <button
+              type="button"
+              className="btn primary"
+              onClick={() => setView('add')}
+            >
+              {t('viewAdd')}
+            </button>
+          </div>
           <p className="notebook-recover-hint">{t('recoverNotesHint')}</p>
           <p className="notebook-recover-hint">{t('recoveryDumpHint')}</p>
           {recoveryMessage ? (
