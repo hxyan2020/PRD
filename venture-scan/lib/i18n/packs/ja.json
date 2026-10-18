@@ -278,5 +278,14 @@
   "ledger.statusArchived": "ステータス：アーカイブ",
   "ledger.archived": "アーカイブ",
   "ledger.archiveHint": "検索するとアーカイブ済みの過去アイデアも見つかります。",
-  "dossier.archived": "アーカイブ済みの過去アイデア — 検索・参照用に保持。"
+  "dossier.archived": "アーカイブ済みの過去アイデア — 検索・参照用に保持。",
+  "hero.seeToday": "今日の {count} 件を見る",
+  "home.todayKicker": "今日",
+  "home.todayTitle": "今日のアイデア",
+  "home.todayBody": "最新スキャンの {count} 件 — 各ドシエで詳細を確認できます。",
+  "home.historyKicker": "履歴",
+  "home.historyBody": "過去のエントリはアーカイブされ検索可能です。Ideas ページの昨日リストへ。",
+  "home.browseHistory": "履歴を見る",
+  "home.yesterdayTitle": "昨日以前",
+  "home.yesterdayBody": "アーカイブ内の過去アイデア。上の検索でも名前・分野・サイトから見つかります。"
 }

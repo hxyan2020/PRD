@@ -77,6 +77,7 @@ const en = {
   "hero.body":
     "Fresh signals from startups and fundraising events worldwide and your next steps",
   "hero.browse": "Browse {count} ideas",
+  "hero.seeToday": "See today's {count} ideas",
   "hero.today": "Today's pick",
   "hero.match": "Match with chatbot",
   "hero.chips": "Name · model · team · funding · play",
@@ -87,6 +88,18 @@ const en = {
   "teaser.ready": "Today's best match: {title}",
   "teaser.open": "Open today's pick",
   "teaser.build": "Build profile first",
+
+  "home.todayKicker": "Today",
+  "home.todayTitle": "Today's ideas",
+  "home.todayBody":
+    "{count} live startup signals from the latest scan — open any dossier for the full playbook.",
+  "home.historyKicker": "History",
+  "home.historyBody":
+    "Earlier catalog entries stay archived and searchable. Jump to yesterday's list on the Ideas page.",
+  "home.browseHistory": "Browse history",
+  "home.yesterdayTitle": "Yesterday & earlier",
+  "home.yesterdayBody":
+    "Historical ideas kept in the archive. Search above still finds them by name, sector, or site.",
 
   "ledger.title": "Idea ledger",
   "ledger.body":

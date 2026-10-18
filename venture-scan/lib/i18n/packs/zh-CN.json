@@ -278,5 +278,14 @@
   "ledger.statusArchived": "状态：已归档",
   "ledger.archived": "已归档",
   "ledger.archiveHint": "搜索可找到归档中的历史创意。",
-  "dossier.archived": "已归档的历史创意 — 保留供搜索与参考。"
+  "dossier.archived": "已归档的历史创意 — 保留供搜索与参考。",
+  "hero.seeToday": "查看今日 {count} 个创意",
+  "home.todayKicker": "今日",
+  "home.todayTitle": "今日创意",
+  "home.todayBody": "最新扫描的 {count} 条创业信号 — 打开任意档案查看完整打法。",
+  "home.historyKicker": "历史",
+  "home.historyBody": "更早的条目已归档且可搜索。前往 Ideas 页跳到昨日列表。",
+  "home.browseHistory": "浏览历史",
+  "home.yesterdayTitle": "昨日及更早",
+  "home.yesterdayBody": "归档中的历史创意。上方搜索仍可按名称、赛道或官网找到它们。"
 }

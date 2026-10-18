@@ -32,12 +32,23 @@ describe("mobile UI affordances", () => {
       path.join(process.cwd(), "components/IdeaExplorer.tsx"),
       "utf8",
     );
+    const row = readFileSync(
+      path.join(process.cwd(), "components/IdeaLedgerRow.tsx"),
+      "utf8",
+    );
+    const home = readFileSync(
+      path.join(process.cwd(), "components/IdeasTeaser.tsx"),
+      "utf8",
+    );
     expect(src).toContain("mobile-filters");
-    expect(src).toContain("idea-ledger-row");
-    expect(src).toContain("idea-ledger-meta");
-    expect(src).toContain("ledger.filters");
+    expect(src).toContain("YESTERDAY_HASH");
     expect(src).toContain("filtersOpen");
     expect(src).toContain("sm:contents");
+    expect(row).toContain("idea-ledger-row");
+    expect(row).toContain("idea-ledger-meta");
+    expect(home).toContain("todaysIdeas");
+    expect(home).toContain("home.browseHistory");
+    expect(home).toContain("YESTERDAY_HASH");
   });
 
   it("anchors idea dossiers at the top of the page on open", () => {

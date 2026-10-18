@@ -278,5 +278,14 @@
   "ledger.statusArchived": "Durum: arşiv",
   "ledger.archived": "Arşivlendi",
   "ledger.archiveHint": "Arama arşivdeki tarihsel fikirleri bulur.",
-  "dossier.archived": "Arşivlenmiş tarihsel fikir — arama ve başvuru için saklanır."
+  "dossier.archived": "Arşivlenmiş tarihsel fikir — arama ve başvuru için saklanır.",
+  "hero.seeToday": "Bugünün {count} fikrini gör",
+  "home.todayKicker": "Bugün",
+  "home.todayTitle": "Bugünün fikirleri",
+  "home.todayBody": "Son taramadan {count} sinyal — playbook için bir dosya açın.",
+  "home.historyKicker": "Geçmiş",
+  "home.historyBody": "Önceki kayıtlar arşivde ve aranabilir. Ideas’ta dünün listesine gidin.",
+  "home.browseHistory": "Geçmişe göz at",
+  "home.yesterdayTitle": "Dün ve daha önce",
+  "home.yesterdayBody": "Arşivdeki tarihsel fikirler. Yukarıdaki arama hâlâ bulur."
 }

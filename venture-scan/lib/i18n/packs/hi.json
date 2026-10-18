@@ -278,5 +278,14 @@
   "ledger.statusArchived": "स्थिति: संग्रहीत",
   "ledger.archived": "संग्रहीत",
   "ledger.archiveHint": "खोज से संग्रह में ऐतिहासिक विचार मिलते हैं।",
-  "dossier.archived": "संग्रहीत ऐतिहासिक विचार — खोज और संदर्भ के लिए रखा गया।"
+  "dossier.archived": "संग्रहीत ऐतिहासिक विचार — खोज और संदर्भ के लिए रखा गया।",
+  "hero.seeToday": "आज के {count} आइडिया देखें",
+  "home.todayKicker": "आज",
+  "home.todayTitle": "आज के आइडिया",
+  "home.todayBody": "नवीनतम स्कैन से {count} सिग्नल — पूरा प्लेबुक देखने के लिए डोजियर खोलें।",
+  "home.historyKicker": "इतिहास",
+  "home.historyBody": "पुरानी प्रविष्टियाँ संग्रहीत और खोज योग्य रहती हैं। Ideas पर कल की सूची पर जाएँ।",
+  "home.browseHistory": "इतिहास देखें",
+  "home.yesterdayTitle": "कल और पहले",
+  "home.yesterdayBody": "संग्रह में ऐतिहासिक आइडिया। ऊपर की खोज अभी भी उन्हें ढूँढती है।"
 }

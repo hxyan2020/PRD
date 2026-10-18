@@ -278,5 +278,14 @@
   "ledger.statusArchived": "สถานะ: เก็บถาวร",
   "ledger.archived": "เก็บถาวร",
   "ledger.archiveHint": "การค้นหาพบไอเดียในอดีตที่เก็บถาวรไว้",
-  "dossier.archived": "ไอเดียในอดีตที่เก็บถาวร — เก็บไว้สำหรับการค้นหาและอ้างอิง"
+  "dossier.archived": "ไอเดียในอดีตที่เก็บถาวร — เก็บไว้สำหรับการค้นหาและอ้างอิง",
+  "hero.seeToday": "ดู {count} ไอเดียวันนี้",
+  "home.todayKicker": "วันนี้",
+  "home.todayTitle": "ไอเดียวันนี้",
+  "home.todayBody": "{count} สัญญาณจากการสแกนล่าสุด — เปิดเอกสารเพื่อดูเพลย์บุ๊ก",
+  "home.historyKicker": "ประวัติ",
+  "home.historyBody": "รายการเก่าถูกเก็บถาวรและค้นหาได้ ไปที่รายการเมื่อวานบน Ideas",
+  "home.browseHistory": "ดูประวัติ",
+  "home.yesterdayTitle": "เมื่อวานและก่อนหน้า",
+  "home.yesterdayBody": "ไอเดียในอดีตในคลัง ช่องค้นหาด้านบนยังพบได้"
 }

@@ -278,5 +278,14 @@
   "ledger.statusArchived": "Статус: в архиве",
   "ledger.archived": "В архиве",
   "ledger.archiveHint": "Поиск находит исторические идеи в архиве.",
-  "dossier.archived": "Архивная историческая идея — сохранена для поиска и справки."
+  "dossier.archived": "Архивная историческая идея — сохранена для поиска и справки.",
+  "hero.seeToday": "Смотреть {count} идей сегодня",
+  "home.todayKicker": "Сегодня",
+  "home.todayTitle": "Идеи сегодня",
+  "home.todayBody": "{count} сигналов последнего скана — откройте досье для полного плейбука.",
+  "home.historyKicker": "История",
+  "home.historyBody": "Более ранние записи архивированы и ищутся. Перейдите к списку вчера на Ideas.",
+  "home.browseHistory": "Смотреть историю",
+  "home.yesterdayTitle": "Вчера и раньше",
+  "home.yesterdayBody": "Исторические идеи в архиве. Поиск выше по-прежнему их находит."
 }

@@ -278,5 +278,14 @@
   "ledger.statusArchived": "الحالة: مؤرشف",
   "ledger.archived": "مؤرشف",
   "ledger.archiveHint": "البحث يعثر على الأفكار التاريخية في الأرشيف.",
-  "dossier.archived": "فكرة تاريخية مؤرشفة — محفوظة للبحث والمرجعية."
+  "dossier.archived": "فكرة تاريخية مؤرشفة — محفوظة للبحث والمرجعية.",
+  "hero.seeToday": "عرض {count} أفكار اليوم",
+  "home.todayKicker": "اليوم",
+  "home.todayTitle": "أفكار اليوم",
+  "home.todayBody": "{count} إشارات من أحدث فحص — افتح أي ملف للدليل الكامل.",
+  "home.historyKicker": "السجل",
+  "home.historyBody": "الإدخالات الأقدم مؤرشفة وقابلة للبحث. انتقل إلى قائمة الأمس في Ideas.",
+  "home.browseHistory": "تصفح السجل",
+  "home.yesterdayTitle": "الأمس وأقدم",
+  "home.yesterdayBody": "أفكار تاريخية في الأرشيف. البحث أعلاه ما زال يجدها."
 }

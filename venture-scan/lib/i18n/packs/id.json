@@ -278,5 +278,14 @@
   "ledger.statusArchived": "Status: diarsipkan",
   "ledger.archived": "Diarsipkan",
   "ledger.archiveHint": "Pencarian menemukan ide historis di arsip.",
-  "dossier.archived": "Ide historis terarsip — disimpan untuk pencarian dan referensi."
+  "dossier.archived": "Ide historis terarsip — disimpan untuk pencarian dan referensi.",
+  "hero.seeToday": "Lihat {count} ide hari ini",
+  "home.todayKicker": "Hari ini",
+  "home.todayTitle": "Ide hari ini",
+  "home.todayBody": "{count} sinyal dari pemindaian terbaru — buka dossie untuk playbook lengkap.",
+  "home.historyKicker": "Riwayat",
+  "home.historyBody": "Entri sebelumnya tetap diarsipkan dan dapat dicari. Ke daftar kemarin di Ideas.",
+  "home.browseHistory": "Jelajahi riwayat",
+  "home.yesterdayTitle": "Kemarin & sebelumnya",
+  "home.yesterdayBody": "Ide historis di arsip. Pencarian di atas masih menemukannya."
 }

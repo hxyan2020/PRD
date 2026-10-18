@@ -278,5 +278,14 @@
   "ledger.statusArchived": "Trạng thái: đã lưu trữ",
   "ledger.archived": "Đã lưu trữ",
   "ledger.archiveHint": "Tìm kiếm cũng thấy các ý tưởng lịch sử trong kho lưu trữ.",
-  "dossier.archived": "Ý tưởng lịch sử đã lưu trữ — giữ lại để tìm kiếm và tham khảo."
+  "dossier.archived": "Ý tưởng lịch sử đã lưu trữ — giữ lại để tìm kiếm và tham khảo.",
+  "hero.seeToday": "Xem {count} ý tưởng hôm nay",
+  "home.todayKicker": "Hôm nay",
+  "home.todayTitle": "Ý tưởng hôm nay",
+  "home.todayBody": "{count} tín hiệu từ lần quét mới nhất — mở hồ sơ để xem playbook.",
+  "home.historyKicker": "Lịch sử",
+  "home.historyBody": "Mục cũ vẫn được lưu trữ và tìm được. Tới danh sách hôm qua trên Ideas.",
+  "home.browseHistory": "Xem lịch sử",
+  "home.yesterdayTitle": "Hôm qua & sớm hơn",
+  "home.yesterdayBody": "Ý tưởng lịch sử trong kho. Tìm kiếm phía trên vẫn tìm thấy chúng."
 }

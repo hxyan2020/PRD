@@ -278,5 +278,14 @@
   "ledger.statusArchived": "상태: 보관됨",
   "ledger.archived": "보관됨",
   "ledger.archiveHint": "검색 시 보관된 과거 아이디어도 찾을 수 있습니다.",
-  "dossier.archived": "보관된 과거 아이디어 — 검색 및 참고용으로 유지됩니다."
+  "dossier.archived": "보관된 과거 아이디어 — 검색 및 참고용으로 유지됩니다.",
+  "hero.seeToday": "오늘의 {count}개 아이디어 보기",
+  "home.todayKicker": "오늘",
+  "home.todayTitle": "오늘의 아이디어",
+  "home.todayBody": "최신 스캔의 {count}개 시그널 — 도큐먼트에서 전체 플레이를 확인하세요.",
+  "home.historyKicker": "기록",
+  "home.historyBody": "이전 항목은 보관되어 검색 가능합니다. Ideas 페이지의 어제 목록으로 이동.",
+  "home.browseHistory": "기록 보기",
+  "home.yesterdayTitle": "어제 및 이전",
+  "home.yesterdayBody": "보관된 과거 아이디어. 위 검색으로 이름·섹터·사이트로도 찾을 수 있습니다."
 }

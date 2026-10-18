@@ -278,5 +278,14 @@
   "ledger.statusArchived": "Statut : archivés",
   "ledger.archived": "Archivé",
   "ledger.archiveHint": "La recherche trouve aussi les idées historiques archivées.",
-  "dossier.archived": "Idée historique archivée — conservée pour la recherche et la référence."
+  "dossier.archived": "Idée historique archivée — conservée pour la recherche et la référence.",
+  "hero.seeToday": "Voir les {count} idées du jour",
+  "home.todayKicker": "Aujourd'hui",
+  "home.todayTitle": "Idées du jour",
+  "home.todayBody": "{count} signaux du dernier scan — ouvrez un dossier pour le playbook.",
+  "home.historyKicker": "Historique",
+  "home.historyBody": "Les entrées antérieures restent archivées et trouvables. Allez à la liste d’hier sur Ideas.",
+  "home.browseHistory": "Parcourir l'historique",
+  "home.yesterdayTitle": "Hier et avant",
+  "home.yesterdayBody": "Idées historiques archivées. La recherche ci-dessus les trouve encore."
 }

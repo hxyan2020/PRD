@@ -278,5 +278,14 @@
   "ledger.statusArchived": "Status: gearchiveerd",
   "ledger.archived": "Gearchiveerd",
   "ledger.archiveHint": "Zoeken vindt historische ideeën in het archief.",
-  "dossier.archived": "Gearchiveerd historisch idee — bewaard voor zoeken en referentie."
+  "dossier.archived": "Gearchiveerd historisch idee — bewaard voor zoeken en referentie.",
+  "hero.seeToday": "Bekijk {count} ideeën van vandaag",
+  "home.todayKicker": "Vandaag",
+  "home.todayTitle": "Ideeën van vandaag",
+  "home.todayBody": "{count} signalen van de laatste scan — open een dossier voor het playbook.",
+  "home.historyKicker": "Geschiedenis",
+  "home.historyBody": "Eerdere items blijven gearchiveerd en vindbaar. Ga naar gisteren op Ideas.",
+  "home.browseHistory": "Geschiedenis bekijken",
+  "home.yesterdayTitle": "Gisteren & eerder",
+  "home.yesterdayBody": "Historische ideeën in het archief. Zoeken hierboven vindt ze nog steeds."
 }

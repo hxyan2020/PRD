@@ -278,5 +278,14 @@
   "ledger.statusArchived": "Status: arquivados",
   "ledger.archived": "Arquivado",
   "ledger.archiveHint": "A busca encontra ideias históricas no arquivo.",
-  "dossier.archived": "Ideia histórica arquivada — mantida para busca e referência."
+  "dossier.archived": "Ideia histórica arquivada — mantida para busca e referência.",
+  "hero.seeToday": "Ver as {count} ideias de hoje",
+  "home.todayKicker": "Hoje",
+  "home.todayTitle": "Ideias de hoje",
+  "home.todayBody": "{count} sinais do último scan — abra qualquer dossiê para o playbook.",
+  "home.historyKicker": "Histórico",
+  "home.historyBody": "Entradas anteriores ficam arquivadas e pesquisáveis. Vá à lista de ontem em Ideas.",
+  "home.browseHistory": "Ver histórico",
+  "home.yesterdayTitle": "Ontem e antes",
+  "home.yesterdayBody": "Ideias históricas no arquivo. A busca acima ainda as encontra."
 }

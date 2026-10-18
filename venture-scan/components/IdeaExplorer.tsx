@@ -3,22 +3,20 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { CountryPicker } from "@/components/CountryPicker";
-import { Flag } from "@/components/Flag";
 import { FundingRoundPicker } from "@/components/FundingRoundPicker";
-import { IndustryIcon } from "@/components/IndustryIcon";
+import { HashScroll } from "@/components/HashScroll";
+import { IdeaLedgerRow } from "@/components/IdeaLedgerRow";
 import { IndustryPicker } from "@/components/IndustryPicker";
-import { SectorLabel } from "@/components/SectorLabel";
 import { SectorPicker } from "@/components/SectorPicker";
-import { isArchivedIdea } from "@/lib/archived-ideas";
+import { isActiveIdea, isArchivedIdea } from "@/lib/archived-ideas";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
-import { countryToFlagCode } from "@/lib/flag-codes";
-import { formatMoney, strategyMessageKey } from "@/lib/format";
 import { collectFundingStages } from "@/lib/funding-stages";
+import { TODAY_HASH, YESTERDAY_HASH } from "@/lib/idea-day";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import { rankByFundingSecured, rankByMatchScore } from "@/lib/rank-ideas";
-import type { IdeaMatch, IdeaStatus, StartupIdea } from "@/lib/types";
+import type { IdeaMatch, StartupIdea } from "@/lib/types";
 
 type Meta = {
   industries: string[];
@@ -42,7 +40,7 @@ export function IdeaExplorer({
   const [fundraising, setFundraising] = useState<"all" | "yes" | "no">("all");
   const [fundingRound, setFundingRound] = useState("");
   const [statusFilter, setStatusFilter] = useState<"active" | "archived" | "all">(
-    "active",
+    "all",
   );
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [ideas, setIdeas] = useState(initialIdeas);
@@ -55,6 +53,9 @@ export function IdeaExplorer({
   const [scanning, setScanning] = useState(false);
   const [scanNote, setScanNote] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [hash, setHash] = useState(() =>
+    typeof window !== "undefined" ? window.location.hash.replace(/^#/, "") : "",
+  );
 
   useEffect(() => {
     const profile = loadProfileFromStorage();
@@ -80,19 +81,17 @@ export function IdeaExplorer({
     };
   }, []);
 
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    // Typing a search always queries the archive too so historical ideas stay findable.
-    const effectiveStatus: "active" | "archived" | "all" = needle
-      ? statusFilter === "archived"
-        ? "archived"
-        : "all"
-      : statusFilter;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const read = () => setHash(window.location.hash.replace(/^#/, ""));
+    read();
+    window.addEventListener("hashchange", read);
+    return () => window.removeEventListener("hashchange", read);
+  }, []);
 
+  const baseFiltered = useMemo(() => {
+    const needle = q.trim().toLowerCase();
     const rows = ideas.filter((idea) => {
-      const status: IdeaStatus = idea.status ?? "active";
-      if (effectiveStatus === "active" && status !== "active") return false;
-      if (effectiveStatus === "archived" && status !== "archived") return false;
       if (industry && idea.industry !== industry) return false;
       if (sector && idea.sector !== sector) return false;
       if (country && idea.teamCountry !== country) return false;
@@ -134,11 +133,21 @@ export function IdeaExplorer({
     country,
     fundraising,
     fundingRound,
-    statusFilter,
     hasProfile,
     matches,
     locale,
   ]);
+
+  const todayRows = useMemo(() => {
+    if (statusFilter === "archived") return [];
+    return baseFiltered.filter(isActiveIdea);
+  }, [baseFiltered, statusFilter]);
+
+  // Always include history so /ideas#yesterday has a stable scroll target.
+  const yesterdayRows = useMemo(
+    () => baseFiltered.filter(isArchivedIdea),
+    [baseFiltered],
+  );
 
   async function rescan() {
     setScanning(true);
@@ -168,7 +177,7 @@ export function IdeaExplorer({
     country,
     fundingRound,
     fundraising !== "all" ? fundraising : "",
-    statusFilter !== "active" ? statusFilter : "",
+    statusFilter !== "all" ? statusFilter : "",
   ].filter(Boolean).length;
 
   function clearFilters() {
@@ -177,13 +186,16 @@ export function IdeaExplorer({
     setCountry("");
     setFundraising("all");
     setFundingRound("");
-    setStatusFilter("active");
+    setStatusFilter("all");
   }
 
-  const archivedInView = filtered.filter(isArchivedIdea).length;
+  const shownCount = todayRows.length + yesterdayRows.length;
 
   return (
     <section id="ideas" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
+      {hash === YESTERDAY_HASH ? <HashScroll hash={YESTERDAY_HASH} /> : null}
+      {hash === TODAY_HASH ? <HashScroll hash={TODAY_HASH} /> : null}
+
       <div className="flex flex-col gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="font-display text-3xl text-foam sm:text-4xl">{t("ledger.title")}</h2>
@@ -282,9 +294,9 @@ export function IdeaExplorer({
             }
             aria-label={t("ledger.statusAll")}
           >
+            <option value="all">{t("ledger.statusAll")}</option>
             <option value="active">{t("ledger.statusActive")}</option>
             <option value="archived">{t("ledger.statusArchived")}</option>
-            <option value="all">{t("ledger.statusAll")}</option>
           </select>
           {activeFilterCount > 0 ? (
             <button
@@ -298,97 +310,70 @@ export function IdeaExplorer({
         </div>
         <div className="flex min-h-11 flex-col justify-center gap-1 sm:col-span-2 lg:col-span-1">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
-            {pending ? "…" : t("ledger.shown", { count: filtered.length })}
+            {pending ? "…" : t("ledger.shown", { count: shownCount })}
           </p>
-          {q.trim() || archivedInView > 0 ? (
-            <p className="text-[11px] leading-snug text-mist/80">{t("ledger.archiveHint")}</p>
-          ) : null}
+          <p className="text-[11px] leading-snug text-mist/80">{t("ledger.archiveHint")}</p>
         </div>
       </div>
 
-      <ul className="mt-8 divide-y divide-black/10 border-t border-black/10">
-        {filtered.map((idea, idx) => {
-          const match = matches[idea.slug];
-          const view = localizeIdea(idea, locale);
-          return (
-            <li
+      {statusFilter !== "archived" ? (
+        <div id={TODAY_HASH} className="mt-10 scroll-mt-24">
+          <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
+                {t("home.todayKicker")}
+              </p>
+              <h3 className="mt-1 font-display text-2xl text-foam">{t("home.todayTitle")}</h3>
+            </div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
+              {t("ledger.shown", { count: todayRows.length })}
+            </p>
+          </div>
+          <ul className="divide-y divide-black/10 border-t border-black/10">
+            {todayRows.map((idea, idx) => (
+              <IdeaLedgerRow
+                key={idea.id}
+                idea={idea}
+                match={matches[idea.slug]}
+                index={idx}
+              />
+            ))}
+            {todayRows.length === 0 ? (
+              <li className="py-12 text-center text-sm text-mist">{t("ledger.empty")}</li>
+            ) : null}
+          </ul>
+        </div>
+      ) : null}
+
+      <div id={YESTERDAY_HASH} className="mt-14 scroll-mt-24">
+        <div className="mb-2 flex flex-wrap items-end justify-between gap-2 border-t border-black/10 pt-10">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
+              {t("home.historyKicker")}
+            </p>
+            <h3 className="mt-1 font-display text-2xl text-foam">
+              {t("home.yesterdayTitle")}
+            </h3>
+            <p className="mt-2 max-w-2xl text-sm text-mist">{t("home.yesterdayBody")}</p>
+          </div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-mist">
+            {t("ledger.shown", { count: yesterdayRows.length })}
+          </p>
+        </div>
+        <ul className="divide-y divide-black/10 border-t border-black/10">
+          {yesterdayRows.map((idea, idx) => (
+            <IdeaLedgerRow
               key={idea.id}
-              className="idea-ledger-row animate-rise group py-5 sm:py-6"
-              style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}
-            >
-              <Link href={`/ideas/${idea.slug}`} scroll className="idea-card-link block outline-none">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                      <h3 className="font-display text-[1.25rem] leading-snug text-foam transition group-hover:text-black sm:text-2xl">
-                        {view.name}
-                      </h3>
-                      <span
-                        className={`font-mono text-[10px] uppercase tracking-[0.16em] ${
-                          idea.fundraisingSecured ? "text-celadon" : "text-copper"
-                        }`}
-                      >
-                        {idea.fundraisingSecured
-                          ? t("ledger.funded", { stage: idea.fundingStage ?? "secured" })
-                          : t("ledger.open")}
-                      </span>
-                      {isArchivedIdea(idea) ? (
-                        <span className="rounded-md border border-black/15 bg-black/[0.04] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
-                          {t("ledger.archived")}
-                        </span>
-                      ) : null}
-                      {match ? (
-                        <span className="rounded-full border border-celadon/30 bg-celadon/10 px-2 py-0.5 font-mono text-[10px] text-celadon">
-                          {t("ledger.match", { score: match.score })}
-                        </span>
-                      ) : null}
-                    </div>
-                    <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-relaxed text-mist">
-                      {view.description}
-                    </p>
-                    <div className="idea-ledger-meta mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-mist/90">
-                      <span className="inline-flex min-w-0 max-w-[min(100%,18rem)] items-center gap-1.5">
-                        <Flag
-                          code={countryToFlagCode(idea.teamCountry) ?? ""}
-                          title={idea.teamCountry}
-                          size="sm"
-                        />
-                        <span className="truncate">
-                          {idea.teamCountry}
-                          {idea.teamCity ? ` · ${idea.teamCity}` : ""}
-                        </span>
-                      </span>
-                      <span className="shrink-0">{t("common.people", { count: idea.teamSize })}</span>
-                      <span className="inline-flex min-w-0 max-w-[min(100%,14rem)] items-center gap-1.5">
-                        <IndustryIcon industry={idea.industry} className="shrink-0 text-celadon" />
-                        <span className="truncate">{view.industry}</span>
-                      </span>
-                      <SectorLabel
-                        sector={idea.sector}
-                        label={view.sector}
-                        className="max-w-[min(100%,16rem)] text-xs text-mist/90"
-                      />
-                      {idea.fundraisingSecured ? (
-                        <span className="shrink-0">{formatMoney(idea.fundingAmountUsd)}</span>
-                      ) : null}
-                    </div>
-                  </div>
-                  <p className="shrink-0 border-t border-black/5 pt-3 text-xs leading-relaxed text-mist sm:max-w-xs sm:border-0 sm:pt-0 sm:text-right">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">
-                      {t("ledger.goForward")}
-                    </span>
-                    <br />
-                    {t(strategyMessageKey(idea.goForward.strategy))}
-                  </p>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-        {filtered.length === 0 ? (
-          <li className="py-12 text-center text-sm text-mist">{t("ledger.empty")}</li>
-        ) : null}
-      </ul>
+              idea={idea}
+              match={matches[idea.slug]}
+              index={idx}
+            />
+          ))}
+          {yesterdayRows.length === 0 ? (
+            <li className="py-12 text-center text-sm text-mist">{t("ledger.empty")}</li>
+          ) : null}
+        </ul>
+      </div>
     </section>
   );
 }

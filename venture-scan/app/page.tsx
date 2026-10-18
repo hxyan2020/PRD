@@ -12,7 +12,7 @@ export default function HomePage() {
     <>
       <Hero count={activeCount} />
       <DailyTeaser />
-      <IdeasTeaser count={activeCount} />
+      <IdeasTeaser ideas={ideas} />
     </>
   );
 }

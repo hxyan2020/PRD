@@ -8,12 +8,17 @@ describe("sector labels on idea surfaces", () => {
       path.join(process.cwd(), "components/IdeaExplorer.tsx"),
       "utf8",
     );
+    const row = readFileSync(
+      path.join(process.cwd(), "components/IdeaLedgerRow.tsx"),
+      "utf8",
+    );
     const label = readFileSync(
       path.join(process.cwd(), "components/SectorLabel.tsx"),
       "utf8",
     );
-    expect(explorer).toContain("SectorLabel");
-    expect(explorer).toContain("sector={idea.sector}");
+    expect(explorer).toContain("IdeaLedgerRow");
+    expect(row).toContain("SectorLabel");
+    expect(row).toContain("sector={idea.sector}");
     expect(label).toContain("SectorIcon");
     expect(label).toContain("splitSectors");
   });
