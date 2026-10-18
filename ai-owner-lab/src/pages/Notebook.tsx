@@ -1448,20 +1448,28 @@ export function Notebook() {
                       aria-label={t('openNoteFullHint')}
                       onClick={() => openNoteFullScreen(entry)}
                     >
-                      {entry.title ? <h3 className="notebook-entry-title">{entry.title}</h3> : null}
-                      <NoteBody html={entry.selectedText} className="notebook-quote" />
-                      {entry.explanation ? (
-                        <div className="notebook-explanation">
-                          <p>{entry.explanation.replace(/\*\*/g, '')}</p>
-                        </div>
+                      {entry.title ? (
+                        <h3 className="notebook-entry-title">{entry.title}</h3>
                       ) : null}
+                      {(() => {
+                        const bodySummary = htmlToPlainText(entry.selectedText).trim()
+                        const explanationSummary = (entry.explanation || '')
+                          .replace(/\*\*/g, '')
+                          .trim()
+                        const summary = [bodySummary, explanationSummary]
+                          .filter(Boolean)
+                          .join('\n\n')
+                        return summary ? (
+                          <p className="notebook-entry-summary">{summary}</p>
+                        ) : null
+                      })()}
                       {(entry.attachments?.length ?? 0) > 0 ? (
                         <p className="notebook-entry-attach-count">
                           {t('attachTitle')}: {entry.attachments!.length}
                         </p>
                       ) : null}
                     </button>
-                    <div className="notebook-actions">
+                    <div className="notebook-actions notebook-entry-card-actions">
                       <button
                         type="button"
                         className="btn primary"
