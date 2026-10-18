@@ -884,36 +884,46 @@ export function Notebook() {
           aria-modal="true"
           aria-label={t('noteTreeOpen')}
           data-opened-note-id={openedNote.id}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeOpenedNote()
+          }}
         >
           <div className="note-fullscreen-panel">
-            <div className="note-fullscreen-head">
-              <h2>
-                {openedNote.title?.trim() ||
-                  htmlToPlainText(openedNote.selectedText).slice(0, 80) ||
-                  t('freeNote')}
-              </h2>
-              <button type="button" className="btn ghost" onClick={closeOpenedNote}>
-                {t('closeNote')}
-              </button>
-            </div>
-            <div className="note-fullscreen-meta">
-              <time dateTime={openedNote.createdAt}>
-                {formatTimestamp(openedNote.createdAt, lang)}
-              </time>
-              <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
-              {(openedNote.categoryIds ?? [])
-                .map((id) => categoryMap.get(id))
-                .filter((c): c is NotebookCategory => Boolean(c))
-                .map((cat) => (
-                  <span
-                    key={cat.id}
-                    className="notebook-category-badge"
-                    style={categoryColorStyle(cat.color) as CSSProperties}
-                  >
-                    <span className="category-dot" aria-hidden="true" />
-                    {cat.name}
-                  </span>
-                ))}
+            <div className="note-fullscreen-toolbar">
+              <div className="note-fullscreen-head">
+                <h2>
+                  {openedNote.title?.trim() ||
+                    htmlToPlainText(openedNote.selectedText).slice(0, 80) ||
+                    t('freeNote')}
+                </h2>
+                <button
+                  type="button"
+                  className="btn primary note-fullscreen-close"
+                  onClick={closeOpenedNote}
+                  aria-label={t('closeNote')}
+                >
+                  {t('closeNote')}
+                </button>
+              </div>
+              <div className="note-fullscreen-meta">
+                <time dateTime={openedNote.createdAt}>
+                  {formatTimestamp(openedNote.createdAt, lang)}
+                </time>
+                <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
+                {(openedNote.categoryIds ?? [])
+                  .map((id) => categoryMap.get(id))
+                  .filter((c): c is NotebookCategory => Boolean(c))
+                  .map((cat) => (
+                    <span
+                      key={cat.id}
+                      className="notebook-category-badge"
+                      style={categoryColorStyle(cat.color) as CSSProperties}
+                    >
+                      <span className="category-dot" aria-hidden="true" />
+                      {cat.name}
+                    </span>
+                  ))}
+              </div>
             </div>
             <div className="note-fullscreen-body">
               <NoteBody html={openedNote.selectedText} className="notebook-quote" />
@@ -924,15 +934,24 @@ export function Notebook() {
                   ))}
                 </div>
               ) : null}
-              <NoteAttachments
-                attachments={openedNote.attachments ?? []}
-                canUpload={Boolean(authUser)}
-                onChange={async (next) => {
-                  await updateEntry(openedNote.id, { attachments: next })
-                }}
-              />
+              {(openedNote.attachments?.length ?? 0) > 0 ? (
+                <NoteAttachments
+                  attachments={openedNote.attachments ?? []}
+                  canUpload={Boolean(authUser)}
+                  onChange={async (next) => {
+                    await updateEntry(openedNote.id, { attachments: next })
+                  }}
+                />
+              ) : null}
             </div>
             <div className="notebook-actions note-fullscreen-actions">
+              <button
+                type="button"
+                className="btn primary"
+                onClick={closeOpenedNote}
+              >
+                {t('closeNote')}
+              </button>
               <button
                 type="button"
                 className="btn ghost"
