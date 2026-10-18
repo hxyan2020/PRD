@@ -381,19 +381,20 @@ export function HomeL1L2AggregationDemo() {
                   <span className="text-[11px] font-semibold uppercase tracking-wide text-indigo-900">
                     <EnZh en="L2 severity calc" zh="L2 嚴重度計算" />
                   </span>
-                  <Badge
-                    className={
-                      l2SeverityCalc.final === "CRITICAL"
-                        ? "bg-rose-100 text-rose-950 border-rose-200"
-                        : l2SeverityCalc.final === "BREACH"
-                          ? "bg-orange-100 text-orange-950 border-orange-200"
-                          : "bg-amber-100 text-amber-950 border-amber-200"
-                    }
-                    data-testid="home-l2-severity-final"
-                  >
-                    L2 = {l2SeverityCalc.final}
-                    {l2SeverityCalc.upgraded ? (zh ? " · 已升檔" : " · upgraded") : ""}
-                  </Badge>
+                  <span data-testid="home-l2-severity-final">
+                    <Badge
+                      className={
+                        l2SeverityCalc.final === "CRITICAL"
+                          ? "bg-rose-100 text-rose-950 border-rose-200"
+                          : l2SeverityCalc.final === "BREACH"
+                            ? "bg-orange-100 text-orange-950 border-orange-200"
+                            : "bg-amber-100 text-amber-950 border-amber-200"
+                      }
+                    >
+                      L2 = {l2SeverityCalc.final}
+                      {l2SeverityCalc.upgraded ? (zh ? " · 已升檔" : " · upgraded") : ""}
+                    </Badge>
+                  </span>
                 </div>
                 <p className="text-[11px] font-mono text-indigo-950/90" data-testid="home-l2-severity-formula">
                   {zh ? l2SeverityCalc.formula_zh : l2SeverityCalc.formula_en}

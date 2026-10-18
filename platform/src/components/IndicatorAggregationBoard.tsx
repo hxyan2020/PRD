@@ -398,23 +398,24 @@ export function IndicatorAggregationBoard({
                     <span className="text-[11px] font-semibold uppercase tracking-wide text-indigo-900">
                       <EnZh en="L2 severity = max(L1) × weight" zh="L2 嚴重度 = max(L1) × 權重" />
                     </span>
-                    <Badge
-                      className={
-                        active.l2_severity === "CRITICAL"
-                          ? "bg-rose-100 text-rose-950 border-rose-200"
-                          : active.l2_severity === "BREACH"
-                            ? "bg-orange-100 text-orange-950 border-orange-200"
-                            : "bg-amber-100 text-amber-950 border-amber-200"
-                      }
-                      data-testid="indicator-agg-l2-severity-final"
-                    >
-                      L2 = {active.l2_severity || active.l2_severity_calc.final}
-                      {active.l2_severity_calc.upgraded
-                        ? zh
-                          ? " · 已升檔"
-                          : " · upgraded"
-                        : ""}
-                    </Badge>
+                    <span data-testid="indicator-agg-l2-severity-final">
+                      <Badge
+                        className={
+                          active.l2_severity === "CRITICAL"
+                            ? "bg-rose-100 text-rose-950 border-rose-200"
+                            : active.l2_severity === "BREACH"
+                              ? "bg-orange-100 text-orange-950 border-orange-200"
+                              : "bg-amber-100 text-amber-950 border-amber-200"
+                        }
+                      >
+                        L2 = {active.l2_severity || active.l2_severity_calc.final}
+                        {active.l2_severity_calc.upgraded
+                          ? zh
+                            ? " · 已升檔"
+                            : " · upgraded"
+                          : ""}
+                      </Badge>
+                    </span>
                   </div>
                   <p className="text-[11px] font-mono text-indigo-950/90">
                     {zh
