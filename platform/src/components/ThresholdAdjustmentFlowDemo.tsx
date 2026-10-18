@@ -211,13 +211,17 @@ export function ThresholdAdjustmentFlowDemo({ compact = false }: { compact?: boo
                 {L.demo_monitor}
               </Badge>
               {band.applied ? (
-                <Badge className="bg-emerald-100 text-emerald-950 border-emerald-200" data-testid="threshold-flow-applied">
-                  <EnZh en="Live band applied" zh="線上分帶已套用" />
-                </Badge>
+                <span data-testid="threshold-flow-applied">
+                  <Badge className="bg-emerald-100 text-emerald-950 border-emerald-200">
+                    <EnZh en="Live band applied" zh="線上分帶已套用" />
+                  </Badge>
+                </span>
               ) : stageIdx >= 1 ? (
-                <Badge className="bg-amber-100 text-amber-950 border-amber-200">
-                  <EnZh en="Suggest only — not live" zh="僅建議 — 未上線" />
-                </Badge>
+                <span data-testid="threshold-flow-proposed">
+                  <Badge className="bg-amber-100 text-amber-950 border-amber-200">
+                    <EnZh en="Suggest only — not live" zh="僅建議 — 未上線" />
+                  </Badge>
+                </span>
               ) : (
                 <span className="text-[11px] text-[var(--muted)] inline-flex items-center gap-1">
                   <Pause className="h-3 w-3" aria-hidden />
