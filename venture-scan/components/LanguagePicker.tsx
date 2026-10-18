@@ -29,7 +29,7 @@ export function LanguagePicker() {
     <div className="relative" ref={rootRef}>
       <button
         type="button"
-        className="inline-flex h-10 items-center gap-2 rounded-xl border border-black/15 bg-black/[0.04] px-2.5 text-sm text-foam hover:border-black/25 hover:bg-black/[0.06]"
+        className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-black/15 bg-black/[0.04] px-2.5 text-sm text-foam hover:border-black/25 hover:bg-black/[0.06]"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t("lang.pickerLabel")}

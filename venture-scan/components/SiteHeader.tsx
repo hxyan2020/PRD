@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AuthNav } from "@/components/AuthNav";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -21,7 +22,12 @@ const NAV_LINKS: { href: string; key: NavKey }[] = [
 
 export function SiteHeader() {
   const { t } = useI18n();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -42,7 +48,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-black/10 bg-paper/90 backdrop-blur-md">
+    <header className="site-header sticky top-0 z-30 border-b border-black/10 bg-paper/90 backdrop-blur-md">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <Link
           href="/"
@@ -68,7 +74,7 @@ export function SiteHeader() {
           <LanguagePicker />
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/15 bg-black/[0.04] text-foam md:hidden"
+            className="site-header-menu inline-flex items-center justify-center rounded-xl border border-black/15 bg-black/[0.04] text-foam md:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t("nav.close") : t("nav.menu")}
@@ -91,7 +97,7 @@ export function SiteHeader() {
       {open ? (
         <div
           id="mobile-nav"
-          className="border-t border-black/10 bg-paper/95 md:hidden"
+          className="border-t border-black/10 bg-paper/95 pb-[max(0.5rem,env(safe-area-inset-bottom))] md:hidden"
         >
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 text-base text-mist">
             {NAV_LINKS.map((link) => (

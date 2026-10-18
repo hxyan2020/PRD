@@ -127,7 +127,7 @@ export function SourcesDesk() {
       <section className="mt-10">
         <h2 className="font-display text-2xl text-foam">{t("sources.coverage")}</h2>
         <p className="mt-2 text-sm text-mist">{t("sources.coverageBody")}</p>
-        <ul className="mt-4 flex flex-wrap gap-2">
+        <ul className="sources-country-rail mt-4 flex flex-wrap gap-2">
           {countries.map((country) => {
             const label = localizeCountry(country, locale);
             return (

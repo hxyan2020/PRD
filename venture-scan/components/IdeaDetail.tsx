@@ -160,7 +160,7 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
         </Row>
       </dl>
 
-      <div className="mt-8">
+      <div className="idea-dossier-actions mt-8">
         <CollectButton idea={idea} />
       </div>
 

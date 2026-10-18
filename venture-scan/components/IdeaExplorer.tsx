@@ -165,13 +165,16 @@ export function IdeaExplorer({
         <p className="mt-3 font-mono text-xs text-celadon">{scanNote}</p>
       ) : null}
 
-      <div className="mt-5 grid grid-cols-1 gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3 lg:grid-cols-5">
+      <div className="mobile-filters mt-5 grid grid-cols-1 gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3 lg:grid-cols-5">
         <input
           className="field sm:col-span-2 lg:col-span-2"
           placeholder={t("ledger.search")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           aria-label={t("ledger.search")}
+          enterKeyHint="search"
+          autoCapitalize="off"
+          autoCorrect="off"
         />
         <IndustryPicker
           value={industry}
@@ -205,7 +208,7 @@ export function IdeaExplorer({
           rounds={fundingRounds}
           onChange={setFundingRound}
         />
-        <p className="flex items-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist sm:col-span-2 lg:col-span-1">
+        <p className="flex min-h-11 items-center font-mono text-[11px] uppercase tracking-[0.16em] text-mist sm:col-span-2 lg:col-span-1">
           {pending ? "…" : t("ledger.shown", { count: filtered.length })}
         </p>
       </div>
@@ -217,14 +220,14 @@ export function IdeaExplorer({
           return (
             <li
               key={idea.id}
-              className="animate-rise group py-5 sm:py-6"
+              className="idea-ledger-row animate-rise group py-5 sm:py-6"
               style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}
             >
               <Link href={`/ideas/${idea.slug}`} scroll className="idea-card-link block outline-none">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                      <h3 className="font-display text-[1.2rem] leading-snug text-foam transition group-hover:text-black sm:text-2xl">
+                      <h3 className="font-display text-[1.25rem] leading-snug text-foam transition group-hover:text-black sm:text-2xl">
                         {view.name}
                       </h3>
                       <span
@@ -245,8 +248,8 @@ export function IdeaExplorer({
                     <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-relaxed text-mist">
                       {view.description}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-mist/90">
-                      <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+                    <div className="idea-ledger-meta mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-mist/90">
+                      <span className="inline-flex min-w-0 max-w-[min(100%,18rem)] items-center gap-1.5">
                         <Flag
                           code={countryToFlagCode(idea.teamCountry) ?? ""}
                           title={idea.teamCountry}
@@ -258,14 +261,14 @@ export function IdeaExplorer({
                         </span>
                       </span>
                       <span className="shrink-0">{t("common.people", { count: idea.teamSize })}</span>
-                      <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+                      <span className="inline-flex min-w-0 max-w-[min(100%,14rem)] items-center gap-1.5">
                         <IndustryIcon industry={idea.industry} className="shrink-0 text-celadon" />
                         <span className="truncate">{view.industry}</span>
                       </span>
                       <SectorLabel
                         sector={idea.sector}
                         label={view.sector}
-                        className="text-xs text-mist/90"
+                        className="max-w-[min(100%,16rem)] text-xs text-mist/90"
                       />
                       {idea.fundraisingSecured ? (
                         <span className="shrink-0">{formatMoney(idea.fundingAmountUsd)}</span>

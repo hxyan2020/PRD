@@ -17,10 +17,24 @@ describe("mobile UI affordances", () => {
 
   it("defines mobile-friendly button and field sizing", () => {
     const css = readFileSync(path.join(process.cwd(), "app/globals.css"), "utf8");
-    expect(css).toContain("min-height: 44px");
+    expect(css).toContain("--tap: 44px");
     expect(css).toContain("btn-block-mobile");
     expect(css).toContain("safe-area-inset-bottom");
+    expect(css).toContain("safe-area-inset-top");
     expect(css).toContain("idea-dossier-actions");
+    expect(css).toContain("mobile-filters");
+    expect(css).toContain("sources-country-rail");
+    expect(css).toContain("touch-action: manipulation");
+  });
+
+  it("uses sticky mobile filters and ledger row classes on Ideas", () => {
+    const src = readFileSync(
+      path.join(process.cwd(), "components/IdeaExplorer.tsx"),
+      "utf8",
+    );
+    expect(src).toContain("mobile-filters");
+    expect(src).toContain("idea-ledger-row");
+    expect(src).toContain("idea-ledger-meta");
   });
 
   it("anchors idea dossiers at the top of the page on open", () => {

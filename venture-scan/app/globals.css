@@ -11,6 +11,7 @@
   --mist: #6b6760;
   --chalk: #f1ede3;
   --paper: #f1ede3;
+  --tap: 44px;
 }
 
 html {
@@ -64,11 +65,14 @@ body {
 
 .field {
   @apply w-full rounded-xl border border-black/10 bg-ink-2 px-3 py-2.5 text-base text-foam outline-none transition placeholder:text-mist/70 focus:border-celadon focus:ring-1 focus:ring-celadon/40 sm:py-2 sm:text-sm;
-  min-height: 44px;
+  min-height: var(--tap);
+  touch-action: manipulation;
 }
 
 .btn {
   @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-primary {
@@ -131,6 +135,10 @@ body {
     border-radius: 1rem;
     padding-bottom: 0.35rem;
   }
+
+  .picker-menu button {
+    min-height: var(--tap);
+  }
 }
 
 .scrollbar-none {
@@ -148,11 +156,25 @@ body {
   }
 }
 
+/* Site chrome */
+.site-header {
+  padding-top: env(safe-area-inset-top);
+}
+
+.site-header-menu {
+  min-width: var(--tap);
+  min-height: var(--tap);
+}
+
 /* Idea dossier + ledger: tighter mobile rhythm */
 @media (max-width: 639px) {
   .idea-ledger-row {
     padding-top: 1rem;
     padding-bottom: 1rem;
+  }
+
+  .idea-ledger-meta {
+    gap: 0.5rem 0.75rem;
   }
 
   .idea-dossier-actions {
@@ -161,7 +183,31 @@ body {
     gap: 0.75rem;
   }
 
-  .idea-dossier-actions .btn {
+  .idea-dossier-actions .btn,
+  .idea-dossier-actions > * {
+    width: 100%;
+  }
+
+  .mobile-filters {
+    position: sticky;
+    top: calc(env(safe-area-inset-top) + 3.5rem);
+    z-index: 20;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding: 0.75rem 1rem;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .sources-country-rail {
+    max-height: 9.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hero-cta-stack {
     width: 100%;
   }
 }
@@ -169,4 +215,5 @@ body {
 /* Prefer readable tap targets on idea cards */
 a.idea-card-link {
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }

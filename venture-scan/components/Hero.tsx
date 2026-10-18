@@ -48,7 +48,7 @@ export function Hero({ count }: { count: number }) {
           <p className="mt-4 max-w-md text-[0.98rem] leading-relaxed text-mist sm:mt-5 sm:text-lg">
             {t("hero.body")}
           </p>
-          <div className="mt-7 flex w-full flex-col gap-2.5 sm:mt-8 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+          <div className="hero-cta-stack mt-7 flex w-full flex-col gap-2.5 sm:mt-8 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
             <Link href="/ideas" className="btn-primary btn-block-mobile">
               {t("hero.browse", { count })}
             </Link>
