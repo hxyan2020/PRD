@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/12826a5c58d3c3c9.css","style"]
-0:{"P":null,"b":"X4K9GG4xT4sOY1DaEjGZ5","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/12826a5c58d3c3c9.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","ToJ1qUtRQFaARYiMZ-EiO",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[6562,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","6164","static/chunks/6164-4b2dece20d1a27f7.js","4415","static/chunks/4415-3612df722476da9e.js","383","static/chunks/383-d866f7910b65f19b.js","7581","static/chunks/app/admin/layout-b770094ff111ff22.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 12:08:29"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 12:08:29"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T12:08:29.938Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 12:08:29"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":30,"latestAt":"2026-10-14 15:38:29"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 12:08:29"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 12:08:29"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3612df722476da9e.js","2839","static/chunks/2839-3584b7e180c8c395.js","3353","static/chunks/3353-27377679a09ad0f5.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3612df722476da9e.js","2839","static/chunks/2839-3584b7e180c8c395.js","3353","static/chunks/3353-27377679a09ad0f5.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3612df722476da9e.js","2839","static/chunks/2839-3584b7e180c8c395.js","3353","static/chunks/3353-27377679a09ad0f5.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"DocArticleView"]
-12:Tcf80,# CRMP User Guide
+:HL["/PRD/crmp-admin/_next/static/css/a89b9bb186a3e5df.css","style"]
+0:{"P":null,"b":"y6tQeUSYH6JvPX4fUe3H8","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/a89b9bb186a3e5df.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","fhz_V9XHB5X4U5m3mzbP0",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","9728","static/chunks/9728-563c061d601d9734.js","5481","static/chunks/5481-4ce4fc090bc5e9e5.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","7581","static/chunks/app/admin/layout-bf40f716a3b7c65f.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-18 14:34:57"},"/admin/messenger":{"count":5,"latestAt":"2026-10-18 14:34:57"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-18T14:34:57.234Z"},"/admin/discovery":{"count":4,"latestAt":"2026-10-18 14:34:57"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-18 18:04:57"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-18 14:34:57"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-18 14:34:57"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","8259","static/chunks/app/admin/docs/user-guide/page-0447b1c826ae0a00.js"],"DocArticleView"]
+12:Td4e0,# CRMP User Guide
 
 **Document ID:** CRMP-UG-001 · **Audience:** anyone who opens the admin desk  
 **Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
@@ -298,16 +298,17 @@ graph TD
 
 **What you see.**
 
-- Upstream panel: `monitor2.base_url`, a note that detectors are merged here, and that **alerts / tickets live on Realtime Alert & Tracker**.  
+- **Threshold adjustment full flow** demo (`threshold-flow-demo`): Play/Step through observe → AI X→Y suggest → CR → owner BU + System dual control → apply on this page → audit. AI never writes live bands; the warn/breach editor is step 5. Same demo also appears on Admin Home.  
+- Upstream panel: `monitor2.base_url`, a note that detectors are merged here, and that **alerts / tickets live on Realtime Alert & Tracker**. Deep-link `?monitor_id=` (from Lark AI_REPORT) highlights that indicator.  
 - **Run all** (samples every enabled detector; warn/breach auto-raise alarms and kick AI RCA) and **Sync now (prototype)** when you have operate rights.  
 - One **indicator + detector** table: name, `M2-*` MonitorCode, detector code / comparator, description, domain, product, editable warn/breach, sampling frequency, risk scenarios, combinations (sequence / together), status, last refreshed, open-ticket count (links to Realtime Alert filtered by monitor id), and **Pause** (paused indicators skip AI).  
 - **Recent runs** — observed value, severity, linked alert and analysis.
 
 Legacy `?tab=alerts` / `?tab=tickets` deep-links bounce to Realtime Alert & Tracker.
 
-**What to click.** **Run all** or Sync on localhost. Pause a noisy indicator. Click an open-ticket count or `M2-*` chip. On Pages, treat the catalogue as read-oriented (no live `/api`).
+**What to click.** Play the threshold full-flow demo once. **Run all** or Sync on localhost. Pause a noisy indicator. Edit warn/breach only after dual control (editor links back to the flow). Click an open-ticket count or `M2-*` chip. On Pages, treat the catalogue as read-oriented (no live `/api`).
 
-**Good looks like.** Indicators EQ / MRG / COPY (and others) are present with detector codes. Run all can produce a BREACH and tick Realtime Alert / Monitor 2.0 badges. Paused rows show IDLE and do not fire AI. Home spine DETECT → ALARM moves after a real run.
+**Good looks like.** Flow demo reaches AUDIT with an applied sample band. Indicators EQ / MRG / COPY (and others) are present with detector codes. Run all can produce a BREACH and tick Realtime Alert / Monitor 2.0 badges. Paused rows show IDLE and do not fire AI. Home spine DETECT → ALARM moves after a real run.
 
 ### 7.5 Detectors URL — `/admin/detectors` (redirect)
 
@@ -519,7 +520,7 @@ graph TD
 | **Escalate** | Moves Primary → Secondary → Risk Owner → Exec along the route |
 | **Dismiss** | False alarm. Closes the thread and the alert |
 | **Close (accept AI)** | Accepts the analysis and closes the ticket |
-| **Re-recommend severity (P0–P3)** | On the AI incident report card: pick P0–P3, tick why the formula/AI P is wrong (reason codes), optional note. Feeds weekly formula recommend + monthly escalation weight pack (Escalation Routes → RO approve) |
+| **Severity feedback (P0–P3)** (also: Re-recommend severity) | On the Lark AI incident report card: **Monitor 2.0 surfaces** (hub / indicator / realtime alerts / L1→L2 aggregation); one-tap **AI severity is accurate — nothing wrong** (`ai_accurate`); or pick a corrected P0–P3 with reason codes. Feeds weekly formula recommend + monthly escalation weight pack (Escalation Routes → RO approve) |
 | **Recommended actions** | Block user, halt trading, cut max leverage, pre-widen spreads, pause copy joining |
 | **Double-confirm…** then **Yes, send to Vantage admin** | Creates an admin reference + link (often Interventions) |
 | **Checker approve (go live)** | When the system says a checker is required |
@@ -804,16 +805,18 @@ Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/a
 
 ## 14B. Indicator Aggregation Flow — `/admin/indicator-aggregation`
 
-**What it is.** A **linear** process board that shows how a single-indicator alert becomes either a single RO case or an aggregated multi-indicator pack.
+**What it is.** A **linear** process board that shows how a single-indicator alert becomes either a single RO case or an aggregated multi-indicator pack. Admin Home also hosts an animated **L1 → L2 aggregation demo** (`HomeL1L2AggregationDemo`).
 
-**What you see.** Eight-step linear rail; live sessions (seeded demos for no-membership / window-timeout / aggregated); event trail; aggregate member timeline from linked chains; definition cards.
+**What you see.** Eight-step linear rail; live sessions (seeded demos for no-membership / window-timeout / aggregated / force-aggregated); event trail; aggregate member timeline from linked chains; definition cards; after L2 ready, an **L2 severity calc** panel (max fired L1 as floor, then × severity weight).
 
 **What to click.**
 
 1. Pick a monitor (or `M2-ORPHAN-999` for no membership) → **Fire demo alert**.  
 2. Watch steps: single alert → skill/RAG → membership check.  
-3. If correlated: **Related alert: M2-…** to aggregate, or **End window → RO as single**.  
-4. Confirm outcome badge: `SINGLE_NO_MEMBERSHIP` / `SINGLE_WINDOW_TIMEOUT` / `AGGREGATED`.
+3. If correlated: **Related alert: M2-…** to aggregate, **Force-aggregate L2 (L1 incomplete)** when members are still missing, or **End window → RO as single**.  
+4. Confirm outcome badge: `SINGLE_NO_MEMBERSHIP` / `SINGLE_WINDOW_TIMEOUT` / `AGGREGATED` / `FORCE_AGGREGATED`.  
+5. Read the L2 severity formula (must be ≥ max L1). Optionally **Continue post-L2 flow**.  
+6. On Admin Home, **Play demo** for the wait → force → severity → post-flow walkthrough.
 
 ```mermaid
 flowchart LR
@@ -822,8 +825,9 @@ flowchart LR
   C -->|No| D[RO single]
   C -->|Yes| E[Wait window]
   E -->|Timeout| D
-  E -->|Related| F[Aggregate UI]
-  F --> G[RO aggregate]
+  E -->|Related or RO force| F[Aggregate UI]
+  F --> S[L2 severity max L1 x weight]
+  S --> G[RO aggregate]
 ```
 
 Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
@@ -849,9 +853,10 @@ Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
 | 1.15 | 2026-10-13 | §8.2A / §9.2 / §9.4 AI-assisted P0–P3 severity feedback → monthly factor weights (FR-39) |
 | 1.16 | 2026-10-14 | §8.2A / §9.2 / §9.4 primary severity formula loop: live formula → ops reason codes → weekly AI → RO approve |
 | 1.17 | 2026-10-14 | §14B Indicator Aggregation linear flow (FR-40) |
+| 1.18 | 2026-10-18 | §7.4 threshold full-flow demo; §8.2A/§9.2 accurate severity + Monitor 2.0 surfaces; §14B force-aggregate + L2 severity |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
-13:Tc3dc,# CRMP 使用手冊
+13:Tc92a,# CRMP 使用手冊
 
 **文件編號：** CRMP-UG-001 · **對象：** 任何會打開管理後台的人  
 **語言：** 繁體中文（本頁）· [English](/admin/docs/user-guide?lang=en)  
@@ -1135,16 +1140,17 @@ graph TD
 
 **會看到什麼。**
 
-- 上游面板：`monitor2.base_url`、偵測器已合併至此的說明，以及**警報／工單請至即時警報與追蹤**。  
+- **門檻調整全流程**演示（`threshold-flow-demo`）：播放／逐步走完取樣 → AI 建議 X→Y → CR → 負責 BU＋系統雙重控制 → 本頁套用 → 稽核。AI 從不寫線上分帶；警告／越線編輯器是第 5 步。管理首頁亦有同一演示。  
+- 上游面板：`monitor2.base_url`、偵測器已合併至此的說明，以及**警報／工單請至即時警報與追蹤**。自 Lark AI_REPORT 的深鏈 `?monitor_id=` 會高亮該指標。  
 - 有操作權時：**全部執行**（對每個啟用偵測器取樣；警告／越線自動拉警報並啟動 AI RCA）與 **立即同步（原型）**。  
 - 一張**指標＋偵測器**表：名稱、`M2-*` MonitorCode、偵測器代碼／比較子、說明、領域、產品、可編輯警告／越線、採樣頻率、風險情境、組合（序列／同時）、狀態、上次刷新、未結工單數（連到依 monitor id 篩選的即時警報與追蹤）、以及 **暫停**（暫停的指標略過 AI）。  
 - **近期執行** — 觀測值、嚴重度、連結的警報與分析。
 
 舊的 `?tab=alerts`／`?tab=tickets` 深連結會轉到即時警報與追蹤。
 
-**要點什麼。** 在 localhost 點 **全部執行** 或同步。暫停吵鬧的指標。點未結工單數或 `M2-*` 晶片。Pages 上當唯讀目錄（無即時 `/api`）。
+**要點什麼。** 先播放一次門檻全流程演示。在 localhost 點 **全部執行** 或同步。暫停吵鬧的指標。僅在雙重控制後編輯警告／越線（編輯器會連回流程）。點未結工單數或 `M2-*` 晶片。Pages 上當唯讀目錄（無即時 `/api`）。
 
-**怎樣算正常。** 看得到 EQ／MRG／COPY 等指標與偵測器代碼。全部執行可產出 BREACH，並推高即時警報與追蹤／Monitor 2.0 徽章。暫停列顯示 IDLE、不開火。真實執行後首頁脊柱 DETECT → ALARM 會動。
+**怎樣算正常。** 流程演示走到 AUDIT 並顯示已套用範例分帶。看得到 EQ／MRG／COPY 等指標與偵測器代碼。全部執行可產出 BREACH，並推高即時警報與追蹤／Monitor 2.0 徽章。暫停列顯示 IDLE、不開火。真實執行後首頁脊柱 DETECT → ALARM 會動。
 
 ### 7.5 偵測器網址 — `/admin/detectors`（轉址）
 
@@ -1355,7 +1361,7 @@ graph TD
 | **升級** | 沿路徑 Primary → Secondary → 風險負責人 → 高階 |
 | **排除** | 誤報。關閉執行緒與警報 |
 | **結案（接受 AI）** | 接受分析並關閉工單 |
-| **重新推薦嚴重度（P0–P3）** | 在 AI 事故報告卡選 P0–P3、勾選公式／AI 不準的原因代碼、選填備註。匯入每週公式建議＋每月升級權重組合（升級路徑 → RO 核准） |
+| **嚴重度回饋（P0–P3）**（亦稱重新推薦嚴重度） | 在 Lark AI 事故報告卡：**Monitor 2.0 可用介面**（中心／指標／即時警報／L1→L2 聚合）；一鍵 **AI 嚴重度準確 — 沒什麼不准**（`ai_accurate`）；或不準時選正確 P0–P3 並勾原因代碼。匯入每週公式建議＋每月升級權重組合（升級路徑 → RO 核准） |
 | **建議動作** | 封鎖使用者、停交易、降最高槓桿、預先加寬點差、暫停跟單加入 |
 | **雙重確認…** 再 **是，送至 Vantage 管理後台** | 產生管理參照 + 連結（常是人工干預） |
 | **Checker 核准（上線）** | 系統說需要 Checker 時 |
@@ -1640,16 +1646,18 @@ flowchart LR
 
 ## 14B. 指標聚合流程 — `/admin/indicator-aggregation`
 
-**這頁是什麼。** 以**線型**流程展示：單一指標告警如何成為單一 RO 案件，或變成多指標聚合包。
+**這頁是什麼。** 以**線型**流程展示：單一指標告警如何成為單一 RO 案件，或變成多指標聚合包。管理首頁另有動態 **L1 → L2 聚合演示**（`HomeL1L2AggregationDemo`）。
 
-**會看到什麼。** 八步線型軌道；即時工作階段（種子示範：無成員／視窗逾時／已聚合）；事件軌跡；來自連結時間鏈的成員時間線；定義卡片。
+**會看到什麼。** 八步線型軌道；即時工作階段（種子示範：無成員／視窗逾時／已聚合／強制聚合）；事件軌跡；來自連結時間鏈的成員時間線；定義卡片；L2 就緒後的 **L2 嚴重度計算**面板（以 max 已觸發 L1 為底線，再 × 權重）。
 
 **要點什麼。**
 
 1. 選監控（或 `M2-ORPHAN-999` 測無成員）→ **觸發示範告警**。  
 2. 觀察步驟：單一告警 → Skill／RAG → 成員資格檢查。  
-3. 若有關聯：**關聯告警：M2-…** 以聚合，或 **結束視窗 → RO 按單一處理**。  
-4. 確認結果徽章：`SINGLE_NO_MEMBERSHIP`／`SINGLE_WINDOW_TIMEOUT`／`AGGREGATED`。
+3. 若有關聯：**關聯告警：M2-…** 以聚合；成員未齊時可 **強制聚合 L2（L1 未齊）**；或 **結束視窗 → RO 按單一處理**。  
+4. 確認結果徽章：`SINGLE_NO_MEMBERSHIP`／`SINGLE_WINDOW_TIMEOUT`／`AGGREGATED`／`FORCE_AGGREGATED`。  
+5. 閱讀 L2 嚴重度公式（必須 ≥ max L1）。可選 **繼續 L2 之後流程**。  
+6. 在管理首頁點 **播放演示**，走完等待 → 強制 → 嚴重度 → 後續流程。
 
 ```mermaid
 flowchart LR
@@ -1658,8 +1666,9 @@ flowchart LR
   C -->|否| D[RO 單一]
   C -->|是| E[等待視窗]
   E -->|逾時| D
-  E -->|關聯| F[界面聚合]
-  F --> G[RO 聚合]
+  E -->|關聯或 RO 強制| F[界面聚合]
+  F --> S[L2 嚴重度 max L1 × 權重]
+  S --> G[RO 聚合]
 ```
 
 產品：[PRD §6.8](/admin/docs/prd)。實作：[TSD §11.7](/admin/docs/tsd)。
@@ -1685,6 +1694,7 @@ flowchart LR
 | 1.15 | 2026-10-13 | §8.2A／§9.2／§9.4 AI 協助自 P0–P3 嚴重度回饋調整因子權重（FR-39） |
 | 1.16 | 2026-10-14 | §8.2A／§9.2／§9.4 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准 |
 | 1.17 | 2026-10-14 | §14B 指標聚合線型流程（FR-40） |
+| 1.18 | 2026-10-18 | §7.4 門檻全流程演示；§8.2A／§9.2 準確嚴重度＋Monitor 2.0 介面；§14B 強制聚合＋L2 嚴重度 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 5:["$","div",null,{"children":[["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Operator handbook · EN / 繁中"}]]}],["$","p",null,{"className":"text-sm text-[var(--muted)]","children":"Plain-English how-to for every left-nav page: login, unread badges, monitor, AI, messenger, org, settings and docs."}],["$","div",null,{"className":"action-row","children":[["$","$L10","/admin/messenger",{"className":"btn","href":"/admin/messenger","children":"Messenger"}],["$","$L10","/admin/alerts",{"className":"btn","href":"/admin/alerts","children":"Realtime Alert & Tracker"}],["$","$L10","/admin/ai-admin",{"className":"btn","href":"/admin/ai-admin","children":"AI Admin"}],["$","$L10","/admin/market-intel",{"className":"btn","href":"/admin/market-intel","children":"Market Intel"}],["$","$L10","/admin/discovery",{"className":"btn","href":"/admin/discovery","children":"Risk Discovery"}],["$","$L10","/admin/docs/uat",{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10","/admin/docs/urls",{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],["$","$L11",null,{"docId":"USER_GUIDE","markdownEn":"$12","markdownZh":"$13"}]]}]

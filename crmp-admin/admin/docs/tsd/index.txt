@@ -7,17 +7,17 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/12826a5c58d3c3c9.css","style"]
-0:{"P":null,"b":"X4K9GG4xT4sOY1DaEjGZ5","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/12826a5c58d3c3c9.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","COrqOIVkysk79sh3aXieE",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[6562,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","6164","static/chunks/6164-4b2dece20d1a27f7.js","4415","static/chunks/4415-3612df722476da9e.js","383","static/chunks/383-d866f7910b65f19b.js","7581","static/chunks/app/admin/layout-b770094ff111ff22.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-14 12:08:29"},"/admin/messenger":{"count":5,"latestAt":"2026-10-14 12:08:29"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-14T12:08:29.938Z"},"/admin/discovery":{"count":5,"latestAt":"2026-10-14 12:08:29"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-14 15:38:29"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-14 12:08:29"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-14 12:08:29"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3612df722476da9e.js","2839","static/chunks/2839-3584b7e180c8c395.js","3353","static/chunks/3353-27377679a09ad0f5.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3612df722476da9e.js","2839","static/chunks/2839-3584b7e180c8c395.js","3353","static/chunks/3353-27377679a09ad0f5.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3612df722476da9e.js","2839","static/chunks/2839-3584b7e180c8c395.js","3353","static/chunks/3353-27377679a09ad0f5.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
-12:Tbb18,# Vantage CRMP — Technical Specification Design (TSD)
+:HL["/PRD/crmp-admin/_next/static/css/a89b9bb186a3e5df.css","style"]
+0:{"P":null,"b":"y6tQeUSYH6JvPX4fUe3H8","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/a89b9bb186a3e5df.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","Fwcn3yyPMbPcxlQO0XQaC",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","9728","static/chunks/9728-563c061d601d9734.js","5481","static/chunks/5481-4ce4fc090bc5e9e5.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","7581","static/chunks/app/admin/layout-bf40f716a3b7c65f.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-18 14:34:57"},"/admin/messenger":{"count":5,"latestAt":"2026-10-18 14:34:57"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-18T14:34:57.234Z"},"/admin/discovery":{"count":4,"latestAt":"2026-10-18 14:34:57"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":25,"latestAt":"2026-10-18 18:04:57"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-18 14:34:57"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-18 14:34:57"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-c8ffcde5e568d68f.js","2839","static/chunks/2839-e5f946adb28a0bf9.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
+12:Tc114,# Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.8  
+**Version:** 1.15  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -573,8 +573,8 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 |---|---|
 | Live formula | `platform_settings` key `severity.formula.live` (`SeverityFormula`: factors, weights, P bands) |
 | Score | Client-safe `lib/severity-formula-score.ts` · catalogue `lib/severity-formula-shared.ts` · server `lib/severity-formula.ts` |
-| Ops UI | Messenger `msg-severity-recommend` + `msg-sev-reason-codes` on open AI_REPORT (P0–P3, reason-code checkboxes, optional note) |
-| Ops action | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` |
+| Ops UI | Messenger `msg-severity-recommend` + `msg-sev-confirm-accurate` + `msg-sev-reason-codes` on open AI_REPORT; **Monitor 2.0 surfaces** (`msg-monitor-surfaces` / `monitor_links` via `monitor2DeepLinks`) |
+| Ops action | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` — `ai_accurate` confirms AI P (monthly “same”) |
 | Feedback row | `severity_feedback` (+ `reason_codes_json`, `week_key`, `formula_version`, `formula_p`, `month_key`) |
 | Weekly AI | `getWeeklyFormulaSuggestion` / `proposeWeeklyFormulaChange` → enable/disable factors, weight deltas, threshold nudges |
 | CR | `ai_change_requests` entity `SEVERITY_FORMULA` · AI Engineer maker · Risk Owner checker (`ai.approve`) |
@@ -599,12 +599,15 @@ Weekly formula changes require RO approval (maker ≠ checker). Monthly coeffici
 
 | Item | Spec |
 |---|---|
-| Surface | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
-| API | `GET/POST /api/indicator-aggregation` — `start`, `inject_related`, `close_window` |
-| Domain | `lib/indicator-aggregation.ts` (+ client-safe `indicator-aggregation-shared.ts`) |
+| Surface | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · homepage `HomeL1L2AggregationDemo` |
+| API | `GET/POST /api/indicator-aggregation` — `start`, `inject_related`, `close_window`, `force_aggregate`, `continue_post_flow` |
+| Domain | `lib/indicator-aggregation.ts` (+ client-safe `indicator-aggregation-shared.ts` · `computeL2Severity`) |
 | Definitions | Built from `risk_scenario_chains` / `LINKED_SCENARIOS` (member monitors + window from sequence span) |
-| Sessions | `platform_settings` key `indicator.aggregation.sessions` |
+| Sessions | `platform_settings` key `indicator.aggregation.sessions` (+ `l1_severities`, `l2_severity` / `l2_severity_calc`, `force_aggregated`, `missing_l1_at_force`, `post_flow`) |
 | Linear steps | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| Outcomes | `PENDING` · `SINGLE_NO_MEMBERSHIP` · `SINGLE_WINDOW_TIMEOUT` · `AGGREGATED` · `FORCE_AGGREGATED` |
+| L2 severity | After natural or force aggregate: **floor = max(fired L1)**; × severity weight (+ multi-L1 nudge); ≤ one-band upgrade; never below floor; UI panel on board + homepage |
+| Post-L2 | `POST_L2_FLOW_STAGES` starts with `L2_SEVERITY` → AI_RCA → MESSENGER → HUMAN_GATE → CONTROL |
 | Guards | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
 
 ---
@@ -805,7 +808,9 @@ SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, 
 
 ### 16.5 Monitor 2.0 hub (unified indicator + detector registry)
 
-Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all indicators** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; threshold edit via `IndicatorThresholdEditor`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). Primary API: `POST /api/monitor` with `run_detectors` / `toggle_pause` / `update_thresholds` / `sync_monitor2`. Legacy `POST /api/detectors` still exists. Tables `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`. Mobile: `sm:hidden` card lists + `sm:block` tables.
+Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all indicators** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; threshold edit via `IndicatorThresholdEditor`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). Primary API: `POST /api/monitor` with `run_detectors` / `toggle_pause` / `update_thresholds` / `sync_monitor2`. Legacy `POST /api/detectors` still exists. Tables `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`. Mobile: `sm:hidden` card lists + `sm:block` tables. Deep-link `?monitor_id=` highlights the indicator (focus banner) for Lark AI_REPORT surfaces.
+
+**Threshold adjustment full flow (demo):** `ThresholdAdjustmentFlowDemo` (`threshold-flow-demo`) on `/admin/monitor-2` and Admin Home — animated OBSERVE → AI_SUGGEST (X→Y) → DRAFT_CR → MAKER_CHECKER → APPLY_M2 → AUDIT. Stages in `lib/threshold-flow-shared.ts`. Live editor is step 5 (`update_thresholds` → `UPDATE_THRESHOLDS` audit); AI how-to-improve THRESHOLD items link here. Guards: `npm run test:threshold-flow` · `test:threshold-flow-smoke`.
 
 ### 16.6 Detectors URL (redirect)
 
@@ -847,7 +852,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 `lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
 
-**Severity formula loop (FR-39):** Live weighted formula scores alerts to P0–P3. Messenger AI_REPORT cards collect overrides + reason-code checkboxes into `severity_feedback`. Weekly AI proposes factor add/remove/weight retune as `SEVERITY_FORMULA` CRs; Risk Owner approves on Escalation (`sev-formula-loop`). Secondary: `getMonthlyWeightSuggestion()` → `esc-severity-weight-pack` / `apply_severity_weights` on ESC-DEFAULT. AI Performance mirrors both packs read-only. See §11.6.
+**Severity formula loop (FR-39):** Live weighted formula scores alerts to P0–P3. Messenger AI_REPORT cards expose Monitor 2.0 deep links and collect **accurate confirm** (`ai_accurate`) or overrides + reason-code checkboxes into `severity_feedback`. Weekly AI proposes factor add/remove/weight retune as `SEVERITY_FORMULA` CRs; Risk Owner approves on Escalation (`sev-formula-loop`). Secondary: `getMonthlyWeightSuggestion()` → `esc-severity-weight-pack` / `apply_severity_weights` on ESC-DEFAULT. AI Performance mirrors both packs read-only. See §11.6.
 
 ### 16.16 Organisation
 
@@ -902,13 +907,14 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.12 | 2026-10-13 | §11.6 / §16.15 FR-39 P0–P3 severity feedback → monthly escalation factor weights |
 | 1.13 | 2026-10-14 | §11.6 / §16.15 FR-39 primary loop: live formula → ops reason codes → weekly AI → RO approve (`SEVERITY_FORMULA`) |
 | 1.14 | 2026-10-14 | §11.7 FR-40 indicator aggregation linear flow |
+| 1.15 | 2026-10-18 | §11.6 Monitor 2.0 surfaces + `ai_accurate`; §11.7 force-aggregate + L2 severity; §16.5 threshold full-flow demo |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
-13:Tb46a,# Vantage CRMP — 技術規格設計（TSD）
+13:Tba65,# Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.8  
+**版本：** 1.15  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -1460,8 +1466,8 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 |---|---|
 | 線上公式 | `platform_settings` 鍵 `severity.formula.live`（`SeverityFormula`：因子、權重、P 分帶） |
 | 打分 | 客戶端安全 `lib/severity-formula-score.ts` · 目錄 `lib/severity-formula-shared.ts` · 伺服器 `lib/severity-formula.ts` |
-| 值班 UI | Messenger `msg-severity-recommend`＋`msg-sev-reason-codes`（未結 AI_REPORT：P0–P3、原因代碼勾選、選填備註） |
-| 值班動作 | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` |
+| 值班 UI | Messenger `msg-severity-recommend`＋`msg-sev-confirm-accurate`＋`msg-sev-reason-codes`；**Monitor 2.0 可用介面**（`msg-monitor-surfaces`／`monitor_links`，經 `monitor2DeepLinks`） |
+| 值班動作 | `POST /api/messenger` `action=recommend_severity` `{ recommended_p, reason, reason_codes }` — `ai_accurate` 確認 AI 的 P（每月「維持」） |
 | 回饋列 | `severity_feedback`（＋`reason_codes_json`、`week_key`、`formula_version`、`formula_p`、`month_key`） |
 | 每週 AI | `getWeeklyFormulaSuggestion`／`proposeWeeklyFormulaChange` → 啟停因子、權重差、門檻微調 |
 | 變更申請 | `ai_change_requests` 實體 `SEVERITY_FORMULA` · AI Engineer Maker · 風險負責人 Checker（`ai.approve`） |
@@ -1486,12 +1492,15 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 | 項目 | 規格 |
 |---|---|
-| 畫面 | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` |
-| API | `GET/POST /api/indicator-aggregation` — `start`、`inject_related`、`close_window` |
-| 領域 | `lib/indicator-aggregation.ts`（＋客戶端安全 `indicator-aggregation-shared.ts`） |
+| 畫面 | `/admin/indicator-aggregation` · `IndicatorAggregationBoard` · 首頁 `HomeL1L2AggregationDemo` |
+| API | `GET/POST /api/indicator-aggregation` — `start`、`inject_related`、`close_window`、`force_aggregate`、`continue_post_flow` |
+| 領域 | `lib/indicator-aggregation.ts`（＋客戶端安全 `indicator-aggregation-shared.ts` · `computeL2Severity`） |
 | 定義 | 由 `risk_scenario_chains`／`LINKED_SCENARIOS` 建立（成員監控＋依序列跨度的視窗） |
-| 工作階段 | `platform_settings` 鍵 `indicator.aggregation.sessions` |
+| 工作階段 | `platform_settings` 鍵 `indicator.aggregation.sessions`（含 `l1_severities`、`l2_severity`／`l2_severity_calc`、`force_aggregated`、`missing_l1_at_force`、`post_flow`） |
 | 線型步驟 | SINGLE_ALERT → SKILL_RAG_LOOKUP → AGGREGATE_CHECK → SINGLE_CONTINUE \| CORRELATED_WAIT → RO_SINGLE \| AGGREGATE_READY → RO_AGGREGATE |
+| 結果 | `PENDING` · `SINGLE_NO_MEMBERSHIP` · `SINGLE_WINDOW_TIMEOUT` · `AGGREGATED` · `FORCE_AGGREGATED` |
+| L2 嚴重度 | 自然或強制聚合後：**底線 = max(已觸發 L1)**；× 權重（＋多 L1 推力）；最多升一檔；永不低於底線；看板＋首頁顯示公式 |
+| L2 之後 | `POST_L2_FLOW_STAGES` 自 `L2_SEVERITY` → AI_RCA → MESSENGER → HUMAN_GATE → CONTROL |
 | 守護 | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
 
 ---
@@ -1691,7 +1700,9 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.5 Monitor 2.0 中心（統一指標＋偵測器登錄）
 
-單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**執行全部指標**／**同步**／**暫停**；門檻編輯經 `IndicatorThresholdEditor`；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。主 API：`POST /api/monitor`（`run_detectors`／`toggle_pause`／`update_thresholds`／`sync_monitor2`）。舊 `POST /api/detectors` 仍在。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。手機：`sm:hidden` 卡片＋`sm:block` 表格。
+單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**執行全部指標**／**同步**／**暫停**；門檻編輯經 `IndicatorThresholdEditor`；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。主 API：`POST /api/monitor`（`run_detectors`／`toggle_pause`／`update_thresholds`／`sync_monitor2`）。舊 `POST /api/detectors` 仍在。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。手機：`sm:hidden` 卡片＋`sm:block` 表格。深鏈 `?monitor_id=` 會高亮指標（焦點橫幅），供 Lark AI_REPORT 介面使用。
+
+**門檻調整全流程（演示）：** `/admin/monitor-2` 與管理首頁掛載 `ThresholdAdjustmentFlowDemo`（`threshold-flow-demo`）— 動態 OBSERVE → AI_SUGGEST（X→Y）→ DRAFT_CR → MAKER_CHECKER → APPLY_M2 → AUDIT。階段定義於 `lib/threshold-flow-shared.ts`。線上編輯器為第 5 步（`update_thresholds` → `UPDATE_THRESHOLDS` 稽核）；如何改進 THRESHOLD 項連回此處。守護：`npm run test:threshold-flow` · `test:threshold-flow-smoke`。
 
 ### 16.6 偵測器網址（轉址）
 
@@ -1733,7 +1744,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
 
-**嚴重度公式迴路（FR-39）：** 線上加權公式將警報打成 P0–P3。Messenger AI_REPORT 卡收集覆寫＋原因代碼勾選至 `severity_feedback`。每週 AI 以 `SEVERITY_FORMULA` CR 建議增減因子／調整權重；風險負責人在升級路徑（`sev-formula-loop`）核准。次迴路：`getMonthlyWeightSuggestion()` → `esc-severity-weight-pack`／`apply_severity_weights` 套用 ESC-DEFAULT。AI 績效兩種組合皆唯讀鏡像。見 §11.6。
+**嚴重度公式迴路（FR-39）：** 線上加權公式將警報打成 P0–P3。Messenger AI_REPORT 卡提供 Monitor 2.0 深鏈，並收集**準確確認**（`ai_accurate`）或覆寫＋原因代碼勾選至 `severity_feedback`。每週 AI 以 `SEVERITY_FORMULA` CR 建議增減因子／調整權重；風險負責人在升級路徑（`sev-formula-loop`）核准。次迴路：`getMonthlyWeightSuggestion()` → `esc-severity-weight-pack`／`apply_severity_weights` 套用 ESC-DEFAULT。AI 績效兩種組合皆唯讀鏡像。見 §11.6。
 
 ### 16.16 組織
 
@@ -1789,10 +1800,11 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.13 | 2026-10-13 | §11.6／§16.15 FR-39 P0–P3 嚴重度回饋 → 每月升級因子權重 |
 | 1.14 | 2026-10-14 | §11.6／§16.15 FR-39 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准（`SEVERITY_FORMULA`） |
 | 1.15 | 2026-10-14 | §11.7 FR-40 指標聚合線型流程 |
+| 1.16 | 2026-10-18 | §11.6 Monitor 2.0 介面＋`ai_accurate`；§11.7 強制聚合＋L2 嚴重度；§16.5 門檻全流程演示 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
-5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.5"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"17"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"TSD","markdownEn":"$12","markdownZh":"$13"}]]}]
+5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.15"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"17"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"TSD","markdownEn":"$12","markdownZh":"$13"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
 8:null
