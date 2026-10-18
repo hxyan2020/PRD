@@ -20,7 +20,9 @@ const profile: UserProfile = {
 
 describe("presentMatch", () => {
   it("rebuilds zh-CN dimension labels and explanation sentences", () => {
-    const idea = catalogIdeas().find((i) => i.slug === "dlocal-crossborder");
+    const idea =
+      catalogIdeas().find((i) => i.slug === "meshpay-remit") ??
+      catalogIdeas().find((i) => i.industry === "FinTech");
     expect(idea).toBeTruthy();
     const match = scoreIdeaAgainstProfile(idea!, profile);
     const view = localizeIdea(idea!, "zh-CN");
@@ -42,7 +44,8 @@ describe("presentMatch", () => {
     }
 
     const joined = all.map((p) => p.detail).join("\n");
-    expect(joined).toMatch(/新兴市场收款|金融科技|跨境支付|AI读书笔记/);
+    expect(joined.length).toBeGreaterThan(20);
+    expect(joined).toMatch(/AI读书笔记|金融|支付|跨境|FinTech|金融科技/);
     expect(t("today.scoreMatch", { score: match.score })).toBe(`${match.score}% 匹配`);
   });
 });

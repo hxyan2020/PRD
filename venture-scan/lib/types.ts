@@ -4,7 +4,8 @@ export type SocialPlatform =
   | "xiaohongshu"
   | "linkedin"
   | "tiktok"
-  | "youtube";
+  | "youtube"
+  | "facebook";
 
 export type SocialAccount = {
   platform: SocialPlatform;

@@ -61,7 +61,8 @@ describe("runScan", () => {
   it("ensureSeeded syncs the full sourced catalog into SQLite", () => {
     ensureSeeded();
     expect(countIdeas()).toBe(SEED_IDEAS.length);
-    expect(listIdeas().some((i) => i.slug === "bytedance-creator-os")).toBe(true);
+    expect(listIdeas().some((i) => i.slug === "resend-email-api")).toBe(true);
+    expect(listIdeas().some((i) => /spotify/i.test(i.website))).toBe(false);
 
     // Simulate a stale DB missing newer sourced ideas.
     const onlyOne = SEED_IDEAS[0];

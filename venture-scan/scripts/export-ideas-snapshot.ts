@@ -12,7 +12,7 @@ const outFile = path.join(outDir, "ideas.json");
 
 ensureSeeded();
 // Always refresh payloads so the snapshot matches the current catalog.
-runScan({ source: "snapshot-export" });
+runScan({ source: "snapshot-export", replace: true });
 
 const ideas = listIdeas();
 fs.mkdirSync(outDir, { recursive: true });

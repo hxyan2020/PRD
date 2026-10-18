@@ -21,7 +21,7 @@ export function runScan(options: { source?: string; replace?: boolean } = {}): S
   const source = options.source ?? "worldwide-curated-feed";
   const startedAt = new Date().toISOString();
   const signals = fetchSignals();
-  const replace = options.replace ?? true;
+  const replace = options.replace ?? false;
 
   if (replace) {
     clearIdeas();

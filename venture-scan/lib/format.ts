@@ -44,6 +44,7 @@ export function socialLabel(platform: SocialPlatform): string {
     linkedin: "LinkedIn",
     tiktok: "TikTok",
     youtube: "YouTube",
+    facebook: "Facebook",
   };
   return map[platform];
 }

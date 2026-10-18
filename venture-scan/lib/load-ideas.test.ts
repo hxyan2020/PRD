@@ -7,7 +7,8 @@ describe("loadIdeasForPage", () => {
     process.env.NEXT_PUBLIC_STATIC = "1";
     const { ideas, meta } = loadIdeasForPage();
     expect(ideas.length).toBe(SEED_IDEAS.length);
-    expect(ideas.some((i) => i.slug === "bytedance-creator-os")).toBe(true);
+    expect(ideas.some((i) => i.slug === "resend-email-api")).toBe(true);
+    expect(ideas.some((i) => /spotify/i.test(i.website))).toBe(false);
     expect(meta.industries.length).toBeGreaterThan(5);
     expect(meta.countries.length).toBeGreaterThan(5);
     delete process.env.NEXT_PUBLIC_STATIC;
