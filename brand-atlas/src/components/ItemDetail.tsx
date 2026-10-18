@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { coverGradient } from "../lib/catalog";
 import { coverUrl, markUrl } from "../lib/marks";
+import { isNatureCategory } from "../lib/nature";
 import {
   formatPct,
   formatUtc,
@@ -56,15 +57,19 @@ export function ItemDetail({
   const [note, setNote] = useState(unlock?.note ?? "");
   const [copied, setCopied] = useState(false);
   const [savedFlash, setSavedFlash] = useState(false);
+  const [coverFailed, setCoverFailed] = useState(false);
+  const nature = isNatureCategory(item.categoryId);
 
   useEffect(() => {
     setNote(unlock?.note ?? "");
+    setCoverFailed(false);
   }, [unlock?.note, item.id]);
 
   const permalink = unlock ? permanentLink(unlock.shareId) : null;
   const mark = markUrl(item);
-  const stockCover = coverUrl(item);
+  const stockCover = coverFailed ? null : coverUrl(item);
   const coverPhoto = unlock?.photoDataUrl || stockCover;
+  const showMark = Boolean(mark) && !unlock?.photoDataUrl && (!coverPhoto || !nature);
 
   const copyLink = async () => {
     if (!permalink) return;
@@ -103,9 +108,12 @@ export function ItemDetail({
               src={coverPhoto}
               alt=""
               draggable={false}
+              onError={() => {
+                if (!unlock?.photoDataUrl) setCoverFailed(true);
+              }}
             />
           )}
-          {mark && !unlock?.photoDataUrl && (
+          {showMark && mark && (
             <img
               className={`detail-cover__mark${coverPhoto ? " detail-cover__mark--overlay" : ""}`}
               src={mark}
@@ -117,7 +125,11 @@ export function ItemDetail({
 
         {mode === "locked" && (
           <>
-            <h3>{t("unlocked.stillLocked")}</h3>
+            <p className="muted">
+              {t("catalog.locked")} · {categoryLabel}
+            </p>
+            <h3>{nature ? item.name : t("unlocked.stillLocked")}</h3>
+            {nature && item.summary ? <p>{item.summary}</p> : null}
             <p className="muted">{t("unlocked.stillLockedBlurb")}</p>
           </>
         )}
@@ -130,7 +142,8 @@ export function ItemDetail({
                 ? ` · ${t("unlocked.pctUnlocked", { pct: formatPct(categoryPct) })}`
                 : ""}
             </p>
-            <h3>{t("unlocked.colourPreview")}</h3>
+            <h3>{nature ? item.name : t("unlocked.colourPreview")}</h3>
+            {nature && item.summary ? <p>{item.summary}</p> : null}
             <p className="muted">{t("unlocked.sneakBlurb")}</p>
           </>
         )}

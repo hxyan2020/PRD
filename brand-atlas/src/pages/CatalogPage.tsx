@@ -16,15 +16,10 @@ import {
   sneakPeekIds,
 } from "../lib/progress";
 import { formatPct } from "../lib/unlocks";
+import { NATURE_CATEGORY_IDS as NATURE_IDS } from "../lib/nature";
 
 /** Nature mega-lists drown "All" in identical silhouettes — keep them behind their own shelf. */
-const NATURE_CATEGORY_IDS = new Set([
-  "trees",
-  "flowers",
-  "animals",
-  "birds",
-  "mushrooms",
-]);
+const NATURE_CATEGORY_IDS = new Set<string>(NATURE_IDS);
 
 const LEGACY_CATEGORY_REDIRECT: Record<string, string> = {
   liquor: "alcohol",

@@ -193,7 +193,13 @@ export async function identifyImage(
   const scored = pool.map((item) => {
     let score = scoreAgainstText(item, ocrText);
     let reason = score > 0 ? "Matched text / logo cues from the image" : "Visual cue only";
-    if (item.categoryId === "trees" || item.categoryId === "flowers" || item.categoryId === "animals") {
+    if (
+      item.categoryId === "trees" ||
+      item.categoryId === "flowers" ||
+      item.categoryId === "animals" ||
+      item.categoryId === "birds" ||
+      item.categoryId === "mushrooms"
+    ) {
       const boost = natureCueBoost(item, cues);
       if (boost > 0) {
         score = Math.min(1, score + boost);

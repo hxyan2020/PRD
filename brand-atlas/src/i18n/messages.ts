@@ -34,6 +34,7 @@ export type MessageKey =
   | "catalog.locked"
   | "catalog.unlocked"
   | "catalog.sneak"
+  | "catalog.scanForColour"
   | "catalog.progress"
   | "catalog.tabContribute"
   | "catalog.tabAdd"
@@ -242,6 +243,7 @@ const en: Pack = {
   "catalog.locked": "Locked",
   "catalog.unlocked": "Unlocked",
   "catalog.sneak": "Sneak peek",
+  "catalog.scanForColour": "Scan to restore colour",
   "catalog.progress": "Progress",
   "catalog.tabContribute": "Contribute",
   "catalog.tabAdd": "Add to the catalogue",

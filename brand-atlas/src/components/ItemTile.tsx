@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { coverGradient } from "../lib/catalog";
 import { coverUrl, markUrl } from "../lib/marks";
+import { isNatureCategory } from "../lib/nature";
 import { getUnlock } from "../lib/unlocks";
 import type { CatalogItem, RevealMode } from "../types/catalog";
 import { useI18n } from "../i18n/I18nProvider";
@@ -15,22 +17,26 @@ export function ItemTile({ item, mode, onClick }: Props) {
   const lit = mode === "unlocked" || mode === "sneak";
   const unlock = mode === "unlocked" ? getUnlock(item.id) : undefined;
   const hasSighting = Boolean(unlock?.photoDataUrl);
-  const stockCover = coverUrl(item);
+  const [coverFailed, setCoverFailed] = useState(false);
+  const stockCover = coverFailed ? null : coverUrl(item);
   const photo = hasSighting ? unlock?.photoDataUrl : stockCover;
   const mark = markUrl(item);
-  const isNature = ["trees", "flowers", "animals"].includes(item.categoryId);
-  // Nature: photo alone. Brands: keep grey logo overlay on locked photo covers.
+  const nature = isNatureCategory(item.categoryId);
+  // Nature: species photo alone (greyscale until unlock). Brands: keep grey
+  // logo overlay on locked photo covers. Silhouette only when no photo.
   const showMark =
     !photo ||
-    (mode === "locked" && !hasSighting && Boolean(stockCover) && !isNature);
+    (mode === "locked" && !hasSighting && Boolean(stockCover) && !nature);
+
+  const showName = nature || mode === "unlocked";
 
   return (
     <button
       type="button"
-      className={`item-tile is-${mode}${photo ? " has-cover" : ""}`}
+      className={`item-tile is-${mode}${photo ? " has-cover" : ""}${nature ? " is-nature" : ""}`}
       onClick={onClick}
       aria-label={
-        mode === "unlocked"
+        showName
           ? item.name
           : mode === "sneak"
             ? `${t("catalog.sneak")}`
@@ -50,6 +56,9 @@ export function ItemTile({ item, mode, onClick }: Props) {
             alt=""
             draggable={false}
             loading="lazy"
+            onError={() => {
+              if (!hasSighting) setCoverFailed(true);
+            }}
           />
         )}
         {showMark && mark && (
@@ -75,15 +84,25 @@ export function ItemTile({ item, mode, onClick }: Props) {
             <strong>{item.name}</strong>
             <small>{item.origin ?? "Worldwide"}</small>
           </>
+        ) : nature ? (
+          <>
+            <strong>{item.name}</strong>
+            <small>
+              {mode === "sneak" ? t("catalog.sneak") : t("catalog.locked")} ·{" "}
+              {t("catalog.scanForColour")}
+            </small>
+          </>
         ) : mode === "sneak" ? (
           <>
             <strong>????</strong>
-            <small>{t("catalog.sneak")} · scan to reveal</small>
+            <small>
+              {t("catalog.sneak")} · {t("catalog.scanForColour")}
+            </small>
           </>
         ) : (
           <>
             <strong>????</strong>
-            <small>Scan to reveal</small>
+            <small>{t("catalog.scanForColour")}</small>
           </>
         )}
       </div>
