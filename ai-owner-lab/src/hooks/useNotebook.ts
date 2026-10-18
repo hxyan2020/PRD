@@ -73,6 +73,7 @@ export function useNotebook() {
     updateEntry: notebookStore.update,
     removeEntry: notebookStore.remove,
     restoreEntry: notebookStore.restore,
+    purgeTrashEntry: notebookStore.purgeTrash,
     addCategory: notebookStore.addCategory,
     renameCategory: notebookStore.renameCategory,
     removeCategory: notebookStore.removeCategory,

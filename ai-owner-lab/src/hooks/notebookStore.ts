@@ -1833,6 +1833,24 @@ export const notebookStore = {
     if (restored) kickDurableSync()
     return restored
   },
+  /** Permanently remove a note from the dustbin (cannot be recovered). */
+  async purgeTrash(id: string) {
+    const removed = await enqueueWrite(async () => {
+      await ensureReady()
+      const trash = cache.trash
+      const entry = trash.find((e) => e.id === id)
+      if (!entry) return null
+      const nextTrash = sortTrash(trash.filter((e) => e.id !== id))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.trash, nextTrash)
+      cache.trash = nextTrash
+      trashListeners.forEach((listener) => listener(nextTrash))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      return entry
+    })
+    if (removed) kickDurableSync()
+    return removed
+  },
   async clear() {
     await enqueueWrite(async () => {
       await ensureReady()

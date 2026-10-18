@@ -194,6 +194,7 @@ export function Notebook() {
     updateEntry,
     removeEntry,
     restoreEntry,
+    purgeTrashEntry,
     addCategory,
     removeCategory,
     recoverFromBackups,
@@ -220,6 +221,7 @@ export function Notebook() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterSelection>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [recoverToast, setRecoverToast] = useState(false)
+  const [deletedForeverToast, setDeletedForeverToast] = useState(false)
   const [storageToast, setStorageToast] = useState<string | null>(null)
   const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null)
   const [recoveryBusy, setRecoveryBusy] = useState(false)
@@ -585,6 +587,22 @@ export function Notebook() {
     }
   }
 
+  async function deleteForeverFromDustbin(entry: TrashedNotebookEntry) {
+    if (!window.confirm(t('deleteForeverConfirm'))) return
+    try {
+      const removed = await purgeTrashEntry(entry.id)
+      if (!removed) return
+      setDeletedForeverToast(true)
+      window.setTimeout(() => setDeletedForeverToast(false), 2200)
+    } catch (err) {
+      const message =
+        err instanceof NotebookStorageError && err.code === 'quota'
+          ? t('notebookStorageFull')
+          : t('noteSaveFailed')
+      window.alert(message)
+    }
+  }
+
   const categoryFiltering = categoryFilter.length > 0
   const filtering =
     view === 'notes'
@@ -805,6 +823,11 @@ export function Notebook() {
           {t('recoveredToNotebook')}
         </p>
       ) : null}
+      {deletedForeverToast ? (
+        <p className="notebook-toast" role="status">
+          {t('deletedForeverToast')}
+        </p>
+      ) : null}
       {storageToast ? (
         <p className="notebook-toast" role="status">
           {storageToast}
@@ -867,9 +890,16 @@ export function Notebook() {
                     <button
                       type="button"
                       className="btn primary"
-                      onClick={() => recoverFromDustbin(entry)}
+                      onClick={() => void recoverFromDustbin(entry)}
                     >
                       {t('recoverNote')}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => void deleteForeverFromDustbin(entry)}
+                    >
+                      {t('deleteForever')}
                     </button>
                   </div>
                 </li>
