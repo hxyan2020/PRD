@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
 import { IdeaChatbot } from "@/components/IdeaChatbot";
 import { IdeaPhotoAlbum } from "@/components/IdeaPhotoAlbum";
 import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
 import { IndustryIcon } from "@/components/IndustryIcon";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { SectorIcon } from "@/components/SectorIcon";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, socialLabel, strategyMessageKey } from "@/lib/format";
@@ -30,14 +30,13 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
   const view = localizeIdea(idea, locale);
   const photos = photosForIdea(idea.slug, 9);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, [idea.slug]);
-
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-16">
+    <article
+      id="idea-top"
+      tabIndex={-1}
+      className="mx-auto w-full max-w-3xl scroll-mt-0 px-4 py-8 outline-none sm:px-6 sm:py-16"
+    >
+      <ScrollToTop pageKey={idea.slug} />
       <Link href="/ideas" className="inline-flex min-h-11 items-center text-sm text-mist hover:text-foam">
         {t("dossier.back")}
       </Link>

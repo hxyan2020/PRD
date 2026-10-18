@@ -24,11 +24,19 @@ describe("mobile UI affordances", () => {
   });
 
   it("anchors idea dossiers at the top of the page on open", () => {
-    const src = readFileSync(
+    const detail = readFileSync(
       path.join(process.cwd(), "components/IdeaDetail.tsx"),
       "utf8",
     );
-    expect(src).toContain("window.scrollTo");
-    expect(src).toContain("SectorIcon");
+    const scroll = readFileSync(
+      path.join(process.cwd(), "components/ScrollToTop.tsx"),
+      "utf8",
+    );
+    expect(detail).toContain('id="idea-top"');
+    expect(detail).toContain("ScrollToTop");
+    expect(detail).toContain("SectorIcon");
+    expect(scroll).toContain("useLayoutEffect");
+    expect(scroll).toContain("scrollRestoration");
+    expect(scroll).toContain("window.scrollTo");
   });
 });

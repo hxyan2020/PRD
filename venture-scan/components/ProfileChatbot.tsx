@@ -368,7 +368,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
               const presented = presentMatch(match, view, profile, t, locale);
               return (
               <li key={idea.id} className="py-3">
-                <Link href={`/ideas/${idea.slug}`} className="group block">
+                <Link href={`/ideas/${idea.slug}`} scroll className="group block">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h3 className="font-display text-xl text-foam group-hover:text-black">

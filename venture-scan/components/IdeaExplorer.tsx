@@ -220,7 +220,7 @@ export function IdeaExplorer({
               className="animate-rise group py-5 sm:py-6"
               style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}
             >
-              <Link href={`/ideas/${idea.slug}`} className="block outline-none">
+              <Link href={`/ideas/${idea.slug}`} scroll className="idea-card-link block outline-none">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">

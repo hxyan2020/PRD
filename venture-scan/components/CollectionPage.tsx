@@ -91,6 +91,7 @@ export function CollectionPage() {
                 <div>
                   <Link
                     href={`/ideas/${item.ideaSlug}`}
+                    scroll
                     className="font-display text-2xl text-foam hover:text-black"
                   >
                     {view.name}

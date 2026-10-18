@@ -164,7 +164,7 @@ export function DailyRecommendation() {
       <div className="mt-10 space-y-4">
         <CollectButton idea={idea} match={presented} />
         <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-          <Link href={`/ideas/${idea.slug}`} className="btn-ghost btn-block-mobile">
+          <Link href={`/ideas/${idea.slug}`} scroll className="btn-ghost btn-block-mobile">
             {t("today.dossier")}
           </Link>
           <button
