@@ -172,7 +172,7 @@ const en = {
   cloudLastSynced: 'Last cloud sync: {time}',
   attachTitle: 'Files',
   attachHint:
-    'Upload doc, Excel, PDF, PPT, images, zip, txt, and more. Files go to your OWNLAB account (sign in required). No practical size limit — large files upload in parts.',
+    'Upload doc, Excel, PDF, PPT, HTML, images, zip, txt, and more. Files go to your OWNLAB account (sign in required). No practical size limit — large files upload in parts.',
   attachAdd: 'Attach files',
   attachEmpty: 'No files attached yet.',
   attachWorking: 'Uploading…',
@@ -687,7 +687,7 @@ const zh: Record<UiKey, string> = {
   cloudLastSynced: '上次云同步：{time}',
   attachTitle: '附件',
   attachHint:
-    '可上传 Word、Excel、PDF、PPT、图片、zip、txt 等。文件存到你的 OWNLAB 账号（需登录）。无实用大小限制——大文件会分片上传。',
+    '可上传 Word、Excel、PDF、PPT、HTML、图片、zip、txt 等。文件存到你的 OWNLAB 账号（需登录）。无实用大小限制——大文件会分片上传。',
   attachAdd: '添加附件',
   attachEmpty: '尚未添加附件。',
   attachWorking: '上传中…',

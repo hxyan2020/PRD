@@ -11,7 +11,7 @@ export type NotebookAttachment = {
 }
 
 const ACCEPT =
-  '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.txt,.csv,.md,.rtf,.png,.jpg,.jpeg,.gif,.webp,.svg,.heic,.mp3,.mp4,.mov,.json'
+  '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.txt,.csv,.md,.rtf,.html,.htm,.png,.jpg,.jpeg,.gif,.webp,.svg,.heic,.mp3,.mp4,.mov,.json,text/html'
 
 export const NOTEBOOK_FILE_ACCEPT = ACCEPT
 
@@ -47,7 +47,13 @@ export function attachmentIconKind(name: string, contentType: string): string {
   if (type.includes('pdf') || lower.endsWith('.pdf')) return 'pdf'
   if (/\.(xlsx?|csv)$/.test(lower) || type.includes('sheet') || type.includes('excel')) return 'sheet'
   if (/\.(pptx?)$/.test(lower) || type.includes('presentation')) return 'slides'
-  if (/\.(docx?|rtf|txt|md)$/.test(lower) || type.startsWith('text/')) return 'doc'
+  if (
+    /\.(docx?|rtf|txt|md|html?)$/.test(lower) ||
+    type.startsWith('text/') ||
+    type.includes('html')
+  ) {
+    return 'doc'
+  }
   if (lower.endsWith('.zip') || type.includes('zip')) return 'zip'
   return 'file'
 }
@@ -61,6 +67,13 @@ function safeFileName(name: string): string {
   return name.replace(/[^\w.\- ()[\]]+/g, '_').slice(0, 180) || 'file'
 }
 
+function contentTypeForUpload(file: File): string {
+  if (file.type) return file.type
+  const lower = file.name.toLowerCase()
+  if (lower.endsWith('.html') || lower.endsWith('.htm')) return 'text/html;charset=utf-8'
+  return 'application/octet-stream'
+}
+
 export async function uploadNotebookFile(
   file: File,
   onProgress?: (pct: number) => void,
@@ -68,12 +81,13 @@ export async function uploadNotebookFile(
   const username = loadCachedAccountUser()
   if (!username) throw new Error('Sign in to upload files')
 
+  const contentType = contentTypeForUpload(file)
   const pathname = `ownlab-accounts/${username}/files/${safeFileName(file.name)}`
   const result = await upload(pathname, file, {
     access: 'private',
     handleUploadUrl: `${window.location.origin}/api/blob/upload`,
     multipart: true,
-    contentType: file.type || 'application/octet-stream',
+    contentType,
     onUploadProgress: ({ percentage }) => onProgress?.(percentage),
   })
 
@@ -81,7 +95,7 @@ export async function uploadNotebookFile(
     id: uid(),
     name: file.name,
     size: file.size,
-    contentType: file.type || result.contentType || 'application/octet-stream',
+    contentType: contentType || result.contentType || 'application/octet-stream',
     pathname: result.pathname,
     uploadedAt: new Date().toISOString(),
   }
@@ -89,6 +103,22 @@ export async function uploadNotebookFile(
 
 export function notebookFileDownloadUrl(pathname: string): string {
   return `${window.location.origin}/api/blob/download?pathname=${encodeURIComponent(pathname)}`
+}
+
+function isHtmlAttachment(att: NotebookAttachment): boolean {
+  const name = att.name.toLowerCase()
+  const type = (att.contentType || '').toLowerCase()
+  return name.endsWith('.html') || name.endsWith('.htm') || type.includes('html')
+}
+
+function triggerBrowserDownload(href: string, filename: string): void {
+  const a = document.createElement('a')
+  a.href = href
+  a.download = filename
+  a.rel = 'noopener'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
 }
 
 export async function downloadNotebookFile(att: NotebookAttachment): Promise<void> {
@@ -110,11 +140,27 @@ export async function downloadNotebookFile(att: NotebookAttachment): Promise<voi
   }
   const body = (await res.json()) as { url?: string }
   if (!body.url) throw new Error('Download URL missing')
-  const a = document.createElement('a')
-  a.href = body.url
-  a.download = att.name
-  a.rel = 'noopener'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
+
+  // HTML often opens in-tab if we only navigate to the signed URL. Prefer a
+  // same-origin blob download so .html/.htm always save as a file.
+  if (isHtmlAttachment(att)) {
+    try {
+      const fileRes = await fetch(body.url)
+      if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
+      const blob = await fileRes.blob()
+      const objectUrl = URL.createObjectURL(
+        new Blob([blob], { type: att.contentType || 'text/html;charset=utf-8' }),
+      )
+      try {
+        triggerBrowserDownload(objectUrl, att.name || 'note.html')
+      } finally {
+        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000)
+      }
+      return
+    } catch {
+      /* fall through to signed download URL */
+    }
+  }
+
+  triggerBrowserDownload(body.url, att.name)
 }
