@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Pirastro">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Pirastro</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img"><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAY1BMVEX///+ZmZktLS2WlpZmZmZpaWnMzMzDw8OHh4eEhISlpaXS0tLw8PDb29v8/PzJycnGxsb29vY/Pz9UVFRISEjq6uoAAABCQkJOTk45OTkzMzPY2NgPDw97e3vk5ORaWlqurq51FjGXAAABNUlEQVQ4jYWTi66DIAxAebmJOJVXfW/7/68coF4ZzNyGBM05bQilCB1hb1FYlMWDsCjII+ctxX9B29RwvBSnIHhiBM6b47fhovwyEp4ZGU+MnYu4goiMI5/p8wyanTUsuXneskYPu9EMumHtZlh0L6jPb7SW2kjPpXGfrpwzaHH3QlWHtEGa3hmyN3IwvlhdxYJLNLVRUiq3baUSAUnV12ocVd2rwDPBGWoGmNXOcwHJEaYRxp3/ECyBaQJiLwVFOoCOqEthYWSaCFuuBKoWY22/KPpbWAFvAMP6LQjub5IBP5rFgfmb5DN2wjM0E6EXFGe7C3h5Xnbk6dvdlTNHRei2DAs1r2Lj+4MIho9qXd94e0cnj40KrxV9p/yrxnFMEfPcSPluRIOT8mDgaPQy/v/wXo7/B3H4GL+IXhRMAAAAAElFTkSuQmCC" width="128" height="128" preserveAspectRatio="xMidYMid meet"/></svg>
