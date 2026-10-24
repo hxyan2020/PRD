@@ -1,8 +1,16 @@
 {
-  "generatedAt": "2026-10-24T04:52:30.457Z",
+  "generatedAt": "2026-10-24T04:51:56.933Z",
   "total": 120,
   "active": 57,
   "archived": 63,
+  "schedule": {
+    "localTime": "07:00",
+    "timezone": "UTC+8",
+    "timezoneIana": "Asia/Shanghai",
+    "cronUtc": "0 23 * * *",
+    "label": "Every day at 07:00 UTC+8"
+  },
+  "source": "daily-0700-utc8",
   "ideas": [
     {
       "id": "idea_01",
