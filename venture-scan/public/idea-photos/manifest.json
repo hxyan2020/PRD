@@ -3052,5 +3052,2664 @@
       "sourceLabel": "incident.io",
       "bytes": 20845
     }
+  ],
+  "stripe-atlas-rails": [
+    {
+      "id": "stripe-atlas-rails-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/stripe-atlas-rails/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://stripe.com/atlas",
+      "sourceLabel": "stripe.com",
+      "bytes": 15562
+    }
+  ],
+  "notion-ops-stack": [
+    {
+      "id": "notion-ops-stack-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/notion-ops-stack/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.notion.so/",
+      "sourceLabel": "notion.so",
+      "bytes": 52086
+    },
+    {
+      "id": "notion-ops-stack-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/notion-ops-stack/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.notion.so/",
+      "sourceLabel": "notion.so",
+      "bytes": 10944
+    }
+  ],
+  "canva-design-os": [],
+  "shopify-merchant-os": [
+    {
+      "id": "shopify-merchant-os-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 60971
+    },
+    {
+      "id": "shopify-merchant-os-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 34085
+    },
+    {
+      "id": "shopify-merchant-os-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 38229
+    },
+    {
+      "id": "shopify-merchant-os-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 21760
+    },
+    {
+      "id": "shopify-merchant-os-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 14560
+    },
+    {
+      "id": "shopify-merchant-os-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 8409
+    },
+    {
+      "id": "shopify-merchant-os-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 6768
+    },
+    {
+      "id": "shopify-merchant-os-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 7425
+    },
+    {
+      "id": "shopify-merchant-os-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/shopify-merchant-os/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.shopify.com/",
+      "sourceLabel": "shopify.com",
+      "bytes": 4156
+    }
+  ],
+  "revolut-neo-bank": [],
+  "klarna-bnpl-rails": [],
+  "spotify-audio-graph": [],
+  "industrial-climate-os": [
+    {
+      "id": "industrial-climate-os-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 40140
+    },
+    {
+      "id": "industrial-climate-os-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 13364
+    },
+    {
+      "id": "industrial-climate-os-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 6628
+    },
+    {
+      "id": "industrial-climate-os-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 8907
+    },
+    {
+      "id": "industrial-climate-os-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 8464
+    },
+    {
+      "id": "industrial-climate-os-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 7240
+    },
+    {
+      "id": "industrial-climate-os-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 17207
+    },
+    {
+      "id": "industrial-climate-os-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 8180
+    },
+    {
+      "id": "industrial-climate-os-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/industrial-climate-os/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.osapiens.com/",
+      "sourceLabel": "osapiens.com",
+      "bytes": 4531
+    }
+  ],
+  "wise-fx-corridor": [
+    {
+      "id": "wise-fx-corridor-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/wise-fx-corridor/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://wise.com/",
+      "sourceLabel": "wise.com",
+      "bytes": 12174
+    },
+    {
+      "id": "wise-fx-corridor-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/wise-fx-corridor/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wise.com/",
+      "sourceLabel": "wise.com",
+      "bytes": 56973
+    },
+    {
+      "id": "wise-fx-corridor-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/wise-fx-corridor/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wise.com/",
+      "sourceLabel": "wise.com",
+      "bytes": 48507
+    },
+    {
+      "id": "wise-fx-corridor-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/wise-fx-corridor/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wise.com/",
+      "sourceLabel": "wise.com",
+      "bytes": 78669
+    },
+    {
+      "id": "wise-fx-corridor-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/wise-fx-corridor/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wise.com/",
+      "sourceLabel": "wise.com",
+      "bytes": 84816
+    },
+    {
+      "id": "wise-fx-corridor-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/wise-fx-corridor/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wise.com/",
+      "sourceLabel": "wise.com",
+      "bytes": 53626
+    }
+  ],
+  "rappi-super-app": [
+    {
+      "id": "rappi-super-app-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/rappi-super-app/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.rappi.com/",
+      "sourceLabel": "rappi.com",
+      "bytes": 68918
+    },
+    {
+      "id": "rappi-super-app-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/rappi-super-app/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.rappi.com/",
+      "sourceLabel": "rappi.com",
+      "bytes": 17557
+    },
+    {
+      "id": "rappi-super-app-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/rappi-super-app/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.rappi.com/",
+      "sourceLabel": "rappi.com",
+      "bytes": 22219
+    },
+    {
+      "id": "rappi-super-app-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/rappi-super-app/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.rappi.com/",
+      "sourceLabel": "rappi.com",
+      "bytes": 21696
+    },
+    {
+      "id": "rappi-super-app-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/rappi-super-app/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.rappi.com/",
+      "sourceLabel": "rappi.com",
+      "bytes": 9237
+    }
+  ],
+  "nubank-digital-bank": [
+    {
+      "id": "nubank-digital-bank-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/nubank-digital-bank/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://nubank.com.br/",
+      "sourceLabel": "nubank.com.br",
+      "bytes": 8608
+    },
+    {
+      "id": "nubank-digital-bank-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/nubank-digital-bank/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://nubank.com.br/",
+      "sourceLabel": "nubank.com.br",
+      "bytes": 34894
+    },
+    {
+      "id": "nubank-digital-bank-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/nubank-digital-bank/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://nubank.com.br/",
+      "sourceLabel": "nubank.com.br",
+      "bytes": 22929
+    },
+    {
+      "id": "nubank-digital-bank-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/nubank-digital-bank/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://nubank.com.br/",
+      "sourceLabel": "nubank.com.br",
+      "bytes": 82339
+    },
+    {
+      "id": "nubank-digital-bank-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/nubank-digital-bank/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://nubank.com.br/",
+      "sourceLabel": "nubank.com.br",
+      "bytes": 90651
+    },
+    {
+      "id": "nubank-digital-bank-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/nubank-digital-bank/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://nubank.com.br/",
+      "sourceLabel": "nubank.com.br",
+      "bytes": 113773
+    },
+    {
+      "id": "nubank-digital-bank-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/nubank-digital-bank/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://nubank.com.br/",
+      "sourceLabel": "nubank.com.br",
+      "bytes": 32983
+    }
+  ],
+  "mercadolibre-commerce": [],
+  "grab-sea-superapp": [
+    {
+      "id": "grab-sea-superapp-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/grab-sea-superapp/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.grab.com/",
+      "sourceLabel": "grab.com",
+      "bytes": 89494
+    },
+    {
+      "id": "grab-sea-superapp-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/grab-sea-superapp/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.grab.com/",
+      "sourceLabel": "grab.com",
+      "bytes": 30585
+    },
+    {
+      "id": "grab-sea-superapp-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/grab-sea-superapp/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.grab.com/",
+      "sourceLabel": "grab.com",
+      "bytes": 76180
+    },
+    {
+      "id": "grab-sea-superapp-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/grab-sea-superapp/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.grab.com/",
+      "sourceLabel": "grab.com",
+      "bytes": 23145
+    }
+  ],
+  "gojek-tokopedia": [
+    {
+      "id": "gojek-tokopedia-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/gojek-tokopedia/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.gotocompany.com/",
+      "sourceLabel": "gotocompany.com",
+      "bytes": 100312
+    },
+    {
+      "id": "gojek-tokopedia-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/gojek-tokopedia/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.gotocompany.com/",
+      "sourceLabel": "gotocompany.com",
+      "bytes": 137175
+    },
+    {
+      "id": "gojek-tokopedia-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/gojek-tokopedia/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.gotocompany.com/",
+      "sourceLabel": "gotocompany.com",
+      "bytes": 34551
+    },
+    {
+      "id": "gojek-tokopedia-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/gojek-tokopedia/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.gotocompany.com/",
+      "sourceLabel": "gotocompany.com",
+      "bytes": 41759
+    },
+    {
+      "id": "gojek-tokopedia-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/gojek-tokopedia/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.gotocompany.com/",
+      "sourceLabel": "gotocompany.com",
+      "bytes": 47173
+    },
+    {
+      "id": "gojek-tokopedia-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/gojek-tokopedia/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.gotocompany.com/",
+      "sourceLabel": "gotocompany.com",
+      "bytes": 40774
+    },
+    {
+      "id": "gojek-tokopedia-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/gojek-tokopedia/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.gotocompany.com/",
+      "sourceLabel": "gotocompany.com",
+      "bytes": 35222
+    }
+  ],
+  "paytm-india-wallet": [
+    {
+      "id": "paytm-india-wallet-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/paytm-india-wallet/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://paytm.com/",
+      "sourceLabel": "paytm.com",
+      "bytes": 16972
+    },
+    {
+      "id": "paytm-india-wallet-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/paytm-india-wallet/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://paytm.com/",
+      "sourceLabel": "paytm.com",
+      "bytes": 14755
+    },
+    {
+      "id": "paytm-india-wallet-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/paytm-india-wallet/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://paytm.com/",
+      "sourceLabel": "paytm.com",
+      "bytes": 37837
+    },
+    {
+      "id": "paytm-india-wallet-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/paytm-india-wallet/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://paytm.com/",
+      "sourceLabel": "paytm.com",
+      "bytes": 39544
+    }
+  ],
+  "razorpay-merchant": [
+    {
+      "id": "razorpay-merchant-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 42550
+    },
+    {
+      "id": "razorpay-merchant-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 18779
+    },
+    {
+      "id": "razorpay-merchant-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 29328
+    },
+    {
+      "id": "razorpay-merchant-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 23755
+    },
+    {
+      "id": "razorpay-merchant-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 22579
+    },
+    {
+      "id": "razorpay-merchant-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 69306
+    },
+    {
+      "id": "razorpay-merchant-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 63070
+    },
+    {
+      "id": "razorpay-merchant-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 66167
+    },
+    {
+      "id": "razorpay-merchant-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/razorpay-merchant/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://razorpay.com/",
+      "sourceLabel": "razorpay.com",
+      "bytes": 59759
+    }
+  ],
+  "bytedance-creator-os": [],
+  "shein-fast-fashion": [],
+  "coupang-rocket": [],
+  "tokopedia-market": [],
+  "sea-shopee": [
+    {
+      "id": "sea-shopee-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/sea-shopee/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.sea.com/",
+      "sourceLabel": "sea.com",
+      "bytes": 7295
+    }
+  ],
+  "flutterwave-africa": [
+    {
+      "id": "flutterwave-africa-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/flutterwave-africa/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://flutterwave.com/",
+      "sourceLabel": "flutterwave.com",
+      "bytes": 14777
+    },
+    {
+      "id": "flutterwave-africa-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/flutterwave-africa/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://flutterwave.com/",
+      "sourceLabel": "flutterwave.com",
+      "bytes": 121110
+    }
+  ],
+  "paystack-africa": [],
+  "andela-talent": [
+    {
+      "id": "andela-talent-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/andela-talent/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 43932
+    },
+    {
+      "id": "andela-talent-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/andela-talent/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 5471
+    },
+    {
+      "id": "andela-talent-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/andela-talent/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 79583
+    },
+    {
+      "id": "andela-talent-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/andela-talent/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 39247
+    },
+    {
+      "id": "andela-talent-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/andela-talent/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 19306
+    },
+    {
+      "id": "andela-talent-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/andela-talent/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 41465
+    },
+    {
+      "id": "andela-talent-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/andela-talent/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 53171
+    },
+    {
+      "id": "andela-talent-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/andela-talent/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 77428
+    },
+    {
+      "id": "andela-talent-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/andela-talent/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://andela.com/",
+      "sourceLabel": "andela.com",
+      "bytes": 63999
+    }
+  ],
+  "careem-middle-east": [
+    {
+      "id": "careem-middle-east-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/careem-middle-east/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.careem.com/",
+      "sourceLabel": "careem.com",
+      "bytes": 23156
+    },
+    {
+      "id": "careem-middle-east-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/careem-middle-east/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.careem.com/",
+      "sourceLabel": "careem.com",
+      "bytes": 7891
+    }
+  ],
+  "vtex-commerce": [
+    {
+      "id": "vtex-commerce-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 28858
+    },
+    {
+      "id": "vtex-commerce-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 14138
+    },
+    {
+      "id": "vtex-commerce-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 19762
+    },
+    {
+      "id": "vtex-commerce-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 15926
+    },
+    {
+      "id": "vtex-commerce-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 22509
+    },
+    {
+      "id": "vtex-commerce-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 22925
+    },
+    {
+      "id": "vtex-commerce-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 15812
+    },
+    {
+      "id": "vtex-commerce-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 18814
+    },
+    {
+      "id": "vtex-commerce-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/vtex-commerce/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vtex.com/",
+      "sourceLabel": "vtex.com",
+      "bytes": 34314
+    }
+  ],
+  "dlocal-crossborder": [
+    {
+      "id": "dlocal-crossborder-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 11072
+    },
+    {
+      "id": "dlocal-crossborder-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 8198
+    },
+    {
+      "id": "dlocal-crossborder-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 13225
+    },
+    {
+      "id": "dlocal-crossborder-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 10056
+    },
+    {
+      "id": "dlocal-crossborder-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 14063
+    },
+    {
+      "id": "dlocal-crossborder-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 9490
+    },
+    {
+      "id": "dlocal-crossborder-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 10334
+    },
+    {
+      "id": "dlocal-crossborder-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/dlocal-crossborder/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://dlocal.com/",
+      "sourceLabel": "dlocal.com",
+      "bytes": 9131
+    }
+  ],
+  "pieter-patreon-creators": [],
+  "airtable-ops-db": [
+    {
+      "id": "airtable-ops-db-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/airtable-ops-db/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.airtable.com/",
+      "sourceLabel": "airtable.com",
+      "bytes": 12518
+    },
+    {
+      "id": "airtable-ops-db-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/airtable-ops-db/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.airtable.com/",
+      "sourceLabel": "airtable.com",
+      "bytes": 46322
+    },
+    {
+      "id": "airtable-ops-db-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/airtable-ops-db/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.airtable.com/",
+      "sourceLabel": "airtable.com",
+      "bytes": 37059
+    },
+    {
+      "id": "airtable-ops-db-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/airtable-ops-db/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.airtable.com/",
+      "sourceLabel": "airtable.com",
+      "bytes": 25502
+    }
+  ],
+  "figma-design-collab": [
+    {
+      "id": "figma-design-collab-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 26697
+    },
+    {
+      "id": "figma-design-collab-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 21030
+    },
+    {
+      "id": "figma-design-collab-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 15852
+    },
+    {
+      "id": "figma-design-collab-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 80085
+    },
+    {
+      "id": "figma-design-collab-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 60464
+    },
+    {
+      "id": "figma-design-collab-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 19599
+    },
+    {
+      "id": "figma-design-collab-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 38345
+    },
+    {
+      "id": "figma-design-collab-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 37349
+    },
+    {
+      "id": "figma-design-collab-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/figma-design-collab/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.figma.com/",
+      "sourceLabel": "figma.com",
+      "bytes": 76775
+    }
+  ],
+  "databricks-lakehouse": [
+    {
+      "id": "databricks-lakehouse-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/databricks-lakehouse/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.databricks.com/",
+      "sourceLabel": "databricks.com",
+      "bytes": 18903
+    },
+    {
+      "id": "databricks-lakehouse-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/databricks-lakehouse/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.databricks.com/",
+      "sourceLabel": "databricks.com",
+      "bytes": 19535
+    },
+    {
+      "id": "databricks-lakehouse-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/databricks-lakehouse/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.databricks.com/",
+      "sourceLabel": "databricks.com",
+      "bytes": 54686
+    },
+    {
+      "id": "databricks-lakehouse-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/databricks-lakehouse/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.databricks.com/",
+      "sourceLabel": "databricks.com",
+      "bytes": 30416
+    },
+    {
+      "id": "databricks-lakehouse-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/databricks-lakehouse/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.databricks.com/",
+      "sourceLabel": "databricks.com",
+      "bytes": 17358
+    },
+    {
+      "id": "databricks-lakehouse-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/databricks-lakehouse/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.databricks.com/",
+      "sourceLabel": "databricks.com",
+      "bytes": 20580
+    },
+    {
+      "id": "databricks-lakehouse-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/databricks-lakehouse/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.databricks.com/",
+      "sourceLabel": "databricks.com",
+      "bytes": 22954
+    }
+  ],
+  "openai-platform": [
+    {
+      "id": "openai-platform-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/openai-platform/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 93939
+    },
+    {
+      "id": "openai-platform-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/openai-platform/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 32829
+    },
+    {
+      "id": "openai-platform-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/openai-platform/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 15221
+    },
+    {
+      "id": "openai-platform-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/openai-platform/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 13630
+    },
+    {
+      "id": "openai-platform-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/openai-platform/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 44983
+    },
+    {
+      "id": "openai-platform-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/openai-platform/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 12685
+    },
+    {
+      "id": "openai-platform-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/openai-platform/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 54167
+    },
+    {
+      "id": "openai-platform-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/openai-platform/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 11699
+    },
+    {
+      "id": "openai-platform-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/openai-platform/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://openai.com/",
+      "sourceLabel": "openai.com",
+      "bytes": 20381
+    }
+  ],
+  "anthropic-claude": [
+    {
+      "id": "anthropic-claude-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/anthropic-claude/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.anthropic.com/",
+      "sourceLabel": "anthropic.com",
+      "bytes": 10901
+    },
+    {
+      "id": "anthropic-claude-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/anthropic-claude/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.anthropic.com/",
+      "sourceLabel": "anthropic.com",
+      "bytes": 52985
+    }
+  ],
+  "mistral-europe-ai": [
+    {
+      "id": "mistral-europe-ai-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 22330
+    },
+    {
+      "id": "mistral-europe-ai-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 36290
+    },
+    {
+      "id": "mistral-europe-ai-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 80930
+    },
+    {
+      "id": "mistral-europe-ai-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 71185
+    },
+    {
+      "id": "mistral-europe-ai-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 45750
+    },
+    {
+      "id": "mistral-europe-ai-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 53050
+    },
+    {
+      "id": "mistral-europe-ai-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 40080
+    },
+    {
+      "id": "mistral-europe-ai-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 11374
+    },
+    {
+      "id": "mistral-europe-ai-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/mistral-europe-ai/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://mistral.ai/",
+      "sourceLabel": "mistral.ai",
+      "bytes": 13586
+    }
+  ],
+  "deepmind-science": [
+    {
+      "id": "deepmind-science-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/deepmind-science/00.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 11362
+    },
+    {
+      "id": "deepmind-science-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/deepmind-science/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 16654
+    },
+    {
+      "id": "deepmind-science-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/deepmind-science/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 17835
+    },
+    {
+      "id": "deepmind-science-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/deepmind-science/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 17808
+    },
+    {
+      "id": "deepmind-science-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/deepmind-science/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 25162
+    },
+    {
+      "id": "deepmind-science-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/deepmind-science/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 27576
+    },
+    {
+      "id": "deepmind-science-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/deepmind-science/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 15709
+    },
+    {
+      "id": "deepmind-science-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/deepmind-science/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 14667
+    },
+    {
+      "id": "deepmind-science-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/deepmind-science/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://deepmind.google/",
+      "sourceLabel": "deepmind.google",
+      "bytes": 36566
+    }
+  ],
+  "personio-hr-eu": [],
+  "contentful-cms": [],
+  "celonis-process": [
+    {
+      "id": "celonis-process-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/celonis-process/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.celonis.com/",
+      "sourceLabel": "celonis.com",
+      "bytes": 5354
+    }
+  ],
+  "ui-path-rpa": [
+    {
+      "id": "ui-path-rpa-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/ui-path-rpa/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.uipath.com/",
+      "sourceLabel": "uipath.com",
+      "bytes": 17982
+    },
+    {
+      "id": "ui-path-rpa-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/ui-path-rpa/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.uipath.com/",
+      "sourceLabel": "uipath.com",
+      "bytes": 37525
+    },
+    {
+      "id": "ui-path-rpa-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/ui-path-rpa/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.uipath.com/",
+      "sourceLabel": "uipath.com",
+      "bytes": 4591
+    }
+  ],
+  "hashicorp-infra": [],
+  "gitlab-devops": [
+    {
+      "id": "gitlab-devops-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/gitlab-devops/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://about.gitlab.com/",
+      "sourceLabel": "about.gitlab.com",
+      "bytes": 66459
+    },
+    {
+      "id": "gitlab-devops-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/gitlab-devops/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://about.gitlab.com/",
+      "sourceLabel": "about.gitlab.com",
+      "bytes": 124782
+    },
+    {
+      "id": "gitlab-devops-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/gitlab-devops/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://about.gitlab.com/",
+      "sourceLabel": "about.gitlab.com",
+      "bytes": 118980
+    }
+  ],
+  "sentry-observability": [
+    {
+      "id": "sentry-observability-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/sentry-observability/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://sentry.io/",
+      "sourceLabel": "sentry.io",
+      "bytes": 58033
+    },
+    {
+      "id": "sentry-observability-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/sentry-observability/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://sentry.io/",
+      "sourceLabel": "sentry.io",
+      "bytes": 27494
+    },
+    {
+      "id": "sentry-observability-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/sentry-observability/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://sentry.io/",
+      "sourceLabel": "sentry.io",
+      "bytes": 53304
+    },
+    {
+      "id": "sentry-observability-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/sentry-observability/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://sentry.io/",
+      "sourceLabel": "sentry.io",
+      "bytes": 16269
+    },
+    {
+      "id": "sentry-observability-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/sentry-observability/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://sentry.io/",
+      "sourceLabel": "sentry.io",
+      "bytes": 14214
+    }
+  ],
+  "vercel-frontend": [
+    {
+      "id": "vercel-frontend-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/vercel-frontend/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://vercel.com/",
+      "sourceLabel": "vercel.com",
+      "bytes": 9573
+    },
+    {
+      "id": "vercel-frontend-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/vercel-frontend/01.jpg",
+      "kind": "official-twitter",
+      "caption": "Official site",
+      "sourceUrl": "https://vercel.com/",
+      "sourceLabel": "vercel.com",
+      "bytes": 8809
+    },
+    {
+      "id": "vercel-frontend-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/vercel-frontend/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://vercel.com/",
+      "sourceLabel": "vercel.com",
+      "bytes": 10231
+    }
+  ],
+  "supabase-backend": [
+    {
+      "id": "supabase-backend-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/supabase-backend/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://supabase.com/",
+      "sourceLabel": "supabase.com",
+      "bytes": 19752
+    },
+    {
+      "id": "supabase-backend-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/supabase-backend/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://supabase.com/",
+      "sourceLabel": "supabase.com",
+      "bytes": 18308
+    },
+    {
+      "id": "supabase-backend-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/supabase-backend/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://supabase.com/",
+      "sourceLabel": "supabase.com",
+      "bytes": 54184
+    },
+    {
+      "id": "supabase-backend-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/supabase-backend/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://supabase.com/",
+      "sourceLabel": "supabase.com",
+      "bytes": 41398
+    },
+    {
+      "id": "supabase-backend-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/supabase-backend/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://supabase.com/",
+      "sourceLabel": "supabase.com",
+      "bytes": 62222
+    },
+    {
+      "id": "supabase-backend-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/supabase-backend/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://supabase.com/",
+      "sourceLabel": "supabase.com",
+      "bytes": 19603
+    },
+    {
+      "id": "supabase-backend-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/supabase-backend/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://supabase.com/",
+      "sourceLabel": "supabase.com",
+      "bytes": 24686
+    }
+  ],
+  "pleo-spend": [
+    {
+      "id": "pleo-spend-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/pleo-spend/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.pleo.io/",
+      "sourceLabel": "pleo.io",
+      "bytes": 25948
+    },
+    {
+      "id": "pleo-spend-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/pleo-spend/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.pleo.io/",
+      "sourceLabel": "pleo.io",
+      "bytes": 30699
+    },
+    {
+      "id": "pleo-spend-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/pleo-spend/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.pleo.io/",
+      "sourceLabel": "pleo.io",
+      "bytes": 16425
+    }
+  ],
+  "hopin-events": [
+    {
+      "id": "hopin-events-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/hopin-events/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://ringcentral.com/events/",
+      "sourceLabel": "ringcentral.com",
+      "bytes": 20141
+    },
+    {
+      "id": "hopin-events-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/hopin-events/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://ringcentral.com/events/",
+      "sourceLabel": "ringcentral.com",
+      "bytes": 85516
+    }
+  ],
+  "checkout-com": [
+    {
+      "id": "checkout-com-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/checkout-com/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 15159
+    },
+    {
+      "id": "checkout-com-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/checkout-com/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 46571
+    },
+    {
+      "id": "checkout-com-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/checkout-com/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 21125
+    },
+    {
+      "id": "checkout-com-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/checkout-com/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 25806
+    },
+    {
+      "id": "checkout-com-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/checkout-com/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 24884
+    },
+    {
+      "id": "checkout-com-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/checkout-com/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 33215
+    },
+    {
+      "id": "checkout-com-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/checkout-com/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 46635
+    },
+    {
+      "id": "checkout-com-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/checkout-com/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.checkout.com/",
+      "sourceLabel": "checkout.com",
+      "bytes": 22183
+    }
+  ],
+  "adyen-acquiring": [
+    {
+      "id": "adyen-acquiring-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/adyen-acquiring/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.adyen.com/",
+      "sourceLabel": "adyen.com",
+      "bytes": 7850
+    }
+  ],
+  "bolt-estonia": [
+    {
+      "id": "bolt-estonia-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 9429
+    },
+    {
+      "id": "bolt-estonia-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 108618
+    },
+    {
+      "id": "bolt-estonia-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 25905
+    },
+    {
+      "id": "bolt-estonia-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 56819
+    },
+    {
+      "id": "bolt-estonia-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 54090
+    },
+    {
+      "id": "bolt-estonia-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 28048
+    },
+    {
+      "id": "bolt-estonia-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 35149
+    },
+    {
+      "id": "bolt-estonia-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 60677
+    },
+    {
+      "id": "bolt-estonia-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/bolt-estonia/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://bolt.eu/",
+      "sourceLabel": "bolt.eu",
+      "bytes": 41878
+    }
+  ],
+  "wolt-delivery": [
+    {
+      "id": "wolt-delivery-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 70059
+    },
+    {
+      "id": "wolt-delivery-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 79940
+    },
+    {
+      "id": "wolt-delivery-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 75518
+    },
+    {
+      "id": "wolt-delivery-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 16011
+    },
+    {
+      "id": "wolt-delivery-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 6255
+    },
+    {
+      "id": "wolt-delivery-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 7220
+    },
+    {
+      "id": "wolt-delivery-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 8356
+    },
+    {
+      "id": "wolt-delivery-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 10607
+    },
+    {
+      "id": "wolt-delivery-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/wolt-delivery/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://wolt.com/",
+      "sourceLabel": "wolt.com",
+      "bytes": 8451
+    }
+  ],
+  "swan-banking-as-a-service": [
+    {
+      "id": "swan-banking-as-a-service-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 43061
+    },
+    {
+      "id": "swan-banking-as-a-service-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 27638
+    },
+    {
+      "id": "swan-banking-as-a-service-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 11221
+    },
+    {
+      "id": "swan-banking-as-a-service-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 29779
+    },
+    {
+      "id": "swan-banking-as-a-service-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 22874
+    },
+    {
+      "id": "swan-banking-as-a-service-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 76031
+    },
+    {
+      "id": "swan-banking-as-a-service-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 83691
+    },
+    {
+      "id": "swan-banking-as-a-service-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 65832
+    },
+    {
+      "id": "swan-banking-as-a-service-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/swan-banking-as-a-service/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.swan.io/",
+      "sourceLabel": "swan.io",
+      "bytes": 89702
+    }
+  ],
+  "doctors-without-wait": [],
+  "runway-ml-video": [
+    {
+      "id": "runway-ml-video-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/runway-ml-video/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://runwayml.com/",
+      "sourceLabel": "runwayml.com",
+      "bytes": 25730
+    }
+  ],
+  "loom-async-video": [
+    {
+      "id": "loom-async-video-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/loom-async-video/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.loom.com/",
+      "sourceLabel": "loom.com",
+      "bytes": 43071
+    },
+    {
+      "id": "loom-async-video-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/loom-async-video/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.loom.com/",
+      "sourceLabel": "loom.com",
+      "bytes": 52521
+    },
+    {
+      "id": "loom-async-video-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/loom-async-video/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.loom.com/",
+      "sourceLabel": "loom.com",
+      "bytes": 46210
+    },
+    {
+      "id": "loom-async-video-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/loom-async-video/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.loom.com/",
+      "sourceLabel": "loom.com",
+      "bytes": 23392
+    },
+    {
+      "id": "loom-async-video-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/loom-async-video/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.loom.com/",
+      "sourceLabel": "loom.com",
+      "bytes": 24600
+    },
+    {
+      "id": "loom-async-video-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/loom-async-video/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.loom.com/",
+      "sourceLabel": "loom.com",
+      "bytes": 22146
+    },
+    {
+      "id": "loom-async-video-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/loom-async-video/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.loom.com/",
+      "sourceLabel": "loom.com",
+      "bytes": 24256
+    }
+  ],
+  "miro-whiteboard": [
+    {
+      "id": "miro-whiteboard-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 12451
+    },
+    {
+      "id": "miro-whiteboard-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 21960
+    },
+    {
+      "id": "miro-whiteboard-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 23342
+    },
+    {
+      "id": "miro-whiteboard-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 37519
+    },
+    {
+      "id": "miro-whiteboard-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 27480
+    },
+    {
+      "id": "miro-whiteboard-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 21833
+    },
+    {
+      "id": "miro-whiteboard-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 14361
+    },
+    {
+      "id": "miro-whiteboard-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 14182
+    },
+    {
+      "id": "miro-whiteboard-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/miro-whiteboard/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://miro.com/",
+      "sourceLabel": "miro.com",
+      "bytes": 13968
+    }
+  ],
+  "webflow-sites": [
+    {
+      "id": "webflow-sites-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/webflow-sites/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 70257
+    },
+    {
+      "id": "webflow-sites-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/webflow-sites/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 77897
+    },
+    {
+      "id": "webflow-sites-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/webflow-sites/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 79456
+    },
+    {
+      "id": "webflow-sites-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/webflow-sites/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 25724
+    },
+    {
+      "id": "webflow-sites-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/webflow-sites/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 34408
+    },
+    {
+      "id": "webflow-sites-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/webflow-sites/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 35593
+    },
+    {
+      "id": "webflow-sites-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/webflow-sites/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 52935
+    },
+    {
+      "id": "webflow-sites-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/webflow-sites/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 42040
+    },
+    {
+      "id": "webflow-sites-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/webflow-sites/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://webflow.com/",
+      "sourceLabel": "webflow.com",
+      "bytes": 45382
+    }
+  ],
+  "intercom-support": [
+    {
+      "id": "intercom-support-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/intercom-support/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.intercom.com/",
+      "sourceLabel": "intercom.com",
+      "bytes": 59221
+    },
+    {
+      "id": "intercom-support-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/intercom-support/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.intercom.com/",
+      "sourceLabel": "intercom.com",
+      "bytes": 83801
+    },
+    {
+      "id": "intercom-support-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/intercom-support/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.intercom.com/",
+      "sourceLabel": "intercom.com",
+      "bytes": 7559
+    }
+  ],
+  "hubspot-crm": [
+    {
+      "id": "hubspot-crm-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 87874
+    },
+    {
+      "id": "hubspot-crm-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 35594
+    },
+    {
+      "id": "hubspot-crm-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 49975
+    },
+    {
+      "id": "hubspot-crm-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 33515
+    },
+    {
+      "id": "hubspot-crm-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 42658
+    },
+    {
+      "id": "hubspot-crm-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 8447
+    },
+    {
+      "id": "hubspot-crm-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 36691
+    },
+    {
+      "id": "hubspot-crm-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 51392
+    },
+    {
+      "id": "hubspot-crm-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/hubspot-crm/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.hubspot.com/",
+      "sourceLabel": "hubspot.com",
+      "bytes": 34630
+    }
+  ],
+  "atlassian-work": [
+    {
+      "id": "atlassian-work-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/atlassian-work/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.atlassian.com/",
+      "sourceLabel": "atlassian.com",
+      "bytes": 54501
+    }
+  ],
+  "xero-accounting": [
+    {
+      "id": "xero-accounting-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/xero-accounting/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 5466
+    },
+    {
+      "id": "xero-accounting-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/xero-accounting/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 92758
+    },
+    {
+      "id": "xero-accounting-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/xero-accounting/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 39362
+    },
+    {
+      "id": "xero-accounting-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/xero-accounting/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 18167
+    },
+    {
+      "id": "xero-accounting-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/xero-accounting/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 30768
+    },
+    {
+      "id": "xero-accounting-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/xero-accounting/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 86559
+    },
+    {
+      "id": "xero-accounting-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/xero-accounting/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 63204
+    },
+    {
+      "id": "xero-accounting-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/xero-accounting/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 75296
+    },
+    {
+      "id": "xero-accounting-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/xero-accounting/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.xero.com/",
+      "sourceLabel": "xero.com",
+      "bytes": 59310
+    }
+  ],
+  "canva-affinity": [],
+  "freshworks-crm": [],
+  "zoho-suite": [
+    {
+      "id": "zoho-suite-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/zoho-suite/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.zoho.com/",
+      "sourceLabel": "zoho.com",
+      "bytes": 27329
+    }
   ]
 }
