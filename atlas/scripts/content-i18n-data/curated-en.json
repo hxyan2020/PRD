@@ -1,0 +1,1337 @@
+{
+  "game-0001": {
+    "name": "Chess",
+    "description": "Chess evolved from chaturanga, a war-simulation of infantry, cavalry, elephants, and chariots. As it traveled through Persia (shatranj) into the Islamic world and medieval Europe, pieces became court ranks. The modern queen and bishop powers crystallized in late medieval Europe. Across cultures it has stood for intellect, foresight, and educated leisure.",
+    "howToPlay": [
+      "Orient the board so each player has a light square on the right-hand corner.",
+      "Place pieces on the back rank (rook, knight, bishop, queen on her color, king, bishop, knight, rook) with pawns on the second rank.",
+      "White moves first; players alternate moving one piece (except when castling).",
+      "Capture by landing on an opponent's piece. Win by checkmating the king.",
+      "Use special moves when legal: castling, en passant, and pawn promotion."
+    ],
+    "requirements": [
+      "Chessboard (8×8)",
+      "16 pieces per side",
+      "Quiet table",
+      "Knowledge of piece moves"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Ancestral form; elephants instead of bishops; some early accounts mention dice.",
+      "Persian-Arabic form with firzan (weak queen) and alfil (leaping bishop).",
+      "Thai chess cousin with different piece powers and promotion rules.",
+      "Burmese chess with free setup behind the pawns."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "India"
+  },
+  "game-0002": {
+    "name": "Go (Weiqi)",
+    "description": "Go is an encirclement game of territory. Stones never move once placed; captured groups are removed. One of the Four Arts of the Chinese scholar, it spread to Korea (baduk) and Japan (igo). Play encodes balance, influence, and living shape rather than direct capture of a king.",
+    "howToPlay": [
+      "Black places the first stone on a grid intersection.",
+      "Players alternate placing one stone; stones do not move after placement.",
+      "A group without liberties (empty adjacent intersections) is captured and removed.",
+      "Do not recreate the previous full-board position (ko) or play suicidal moves unless they capture.",
+      "When both pass, score territory plus captives (rules vary by country); higher score wins."
+    ],
+    "requirements": [
+      "19×19 board (or 13×13 / 9×9)",
+      "Black and white stones",
+      "Bowls for stones"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Korean tradition with the same core rules and distinct teaching culture.",
+      "Japanese professional ranks and territory scoring conventions."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "China"
+  },
+  "game-0003": {
+    "name": "Xiangqi",
+    "description": "Xiangqi (Chinese chess) arrays generals, advisors, elephants, horses, chariots, cannons, and soldiers on a lined board crossed by a river. The cannon’s jumping capture and palace confinement give it a tactical flavor distinct from international chess. It remains a beloved park and street game across China.",
+    "howToPlay": [
+      "Arrange pieces on starting points on opposite sides of the river.",
+      "Red moves first; pieces move on points according to their type.",
+      "Cannons slide like chariots but capture only by jumping over exactly one screen.",
+      "Generals stay in the palace; opposing generals may not face on an open file.",
+      "Checkmate or stalemate the opposing general to win."
+    ],
+    "requirements": [
+      "Xiangqi board with river and palaces",
+      "16 pieces per side"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Korean cousin without a river and with different elephant/horse moves."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "China"
+  },
+  "game-0004": {
+    "name": "Shogi",
+    "description": "Shogi is Japanese chess distinguished by drops: captured pieces return as your own. Wedge-shaped pieces point toward the opponent. Material swings and dense midgames define its drama; professional shogi remains a major Japanese mind sport.",
+    "howToPlay": [
+      "Set pieces with pointed ends facing the opponent.",
+      "Sente moves first—move or drop one piece per turn.",
+      "Captured pieces go to your stand and may be dropped later on empty squares (with pawn/check restrictions).",
+      "Promote eligible pieces in the last three ranks.",
+      "Checkmate the opposing king to win."
+    ],
+    "requirements": [
+      "9×9 shogi board",
+      "40 pieces",
+      "Optional piece stands"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Larger historical variant with many unique piece types."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "Japan"
+  },
+  "game-0005": {
+    "name": "Mancala sowing games",
+    "description": "Mancala is a family of sowing games: players distribute seeds around pits carved in wood, stone, or earth. Boards appear across Africa, the Middle East, and South Asia. Regional names and pit counts differ, but the scoop-and-sow gesture unites them as one fundamental game with many cultural faces.",
+    "howToPlay": [
+      "Default to a Kalah-style 2×6 board: place four seeds in each of the twelve small pits; leave both end stores empty.",
+      "On your turn, scoop all seeds from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
+      "If the last seed lands in your store, take another turn; if it lands in an empty pit on your side, capture that seed plus any seeds in the opposite pit into your store.",
+      "When one player’s six pits are empty, the opponent moves all remaining seeds into their store and the game ends.",
+      "Count seeds in each store; the higher total wins (ties are draws)."
+    ],
+    "requirements": [
+      "Board with two or more rows of pits",
+      "Seeds, stones, or beads"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Akan 2×6 classic; capture opposite seeds when ending with 2 or 3.",
+      "Complex 4-row Swahili coast game with a special nyumba pit.",
+      "Boat-shaped Southeast Asian board with large stores.",
+      "Horn of Africa sowing boards.",
+      "Tamil / South Indian cup-board sowing game.",
+      "Yoruba sowing form with rhythmic scooping play.",
+      "Modern commercial teaching form of mancala."
+    ],
+    "category": "Mancala & Sowing",
+    "originCountry": "Africa / Middle East"
+  },
+  "game-0006": {
+    "name": "Backgammon",
+    "description": "Race-and-hit dice games stretch from the Royal Game of Ur to Persian nard and European tables. Backgammon blends luck and skill as players bear off fifteen checkers while hitting blots. The doubling cube is a modern strategic layer.",
+    "howToPlay": [
+      "Set checkers in the standard opening formation on the 24 points.",
+      "Roll two dice and move checkers forward using both numbers.",
+      "Hit a lone opposing blot to the bar; it must re-enter before other moves.",
+      "Stack your own checkers for safety; six consecutive points form a prime.",
+      "When all fifteen are home, bear off; first to bear off all wins."
+    ],
+    "requirements": [
+      "Backgammon board",
+      "15 checkers per side",
+      "Two dice",
+      "Optional doubling cube"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Persian tables game closely related to backgammon.",
+      "Greek suite: Portes, Plakoto, Fevga.",
+      "Regional café culture name for backgammon-like play.",
+      "Ancient race ancestor with a unique track."
+    ],
+    "category": "Board & Race",
+    "originCountry": "Persia / Mesopotamia region"
+  },
+  "game-0007": {
+    "name": "Senet",
+    "description": "Senet appears in tomb paintings and burial goods across pharaonic Egypt. It held religious meaning as a passage through the afterlife. Exact rules are reconstructed by Egyptologists from later texts and board geometry.",
+    "howToPlay": [
+      "Place pawns on the opening squares of the 30-square track.",
+      "Throw sticks or knucklebones for move length.",
+      "Advance along the serpentine path; heed special squares (safe, water, rebirth).",
+      "Resolve landings on opponents per the reconstruction you follow.",
+      "First to bear all pawns off the final squares wins."
+    ],
+    "requirements": [
+      "30-square senet board",
+      "5–7 pawns per player",
+      "Throwing sticks or knucklebones"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [],
+    "category": "Board & Race",
+    "originCountry": "Egypt"
+  },
+  "game-0008": {
+    "name": "Patolli",
+    "description": "Patolli was a sacred Aztec race game on an X-shaped track using beans as dice. Gambling and ritual offerings intertwined; the game appears in codices and Spanish accounts as cosmic risk made playable.",
+    "howToPlay": [
+      "Lay out the X-shaped board and place markers at the start.",
+      "Throw marked beans for a move value.",
+      "Advance along the track; honor special spaces and capture rules.",
+      "Optional historical wagers can be replaced with points today.",
+      "First to complete the circuit with all markers wins."
+    ],
+    "requirements": [
+      "X-shaped patolli board or mat",
+      "Bean markers",
+      "Marked dice beans"
+    ],
+    "idealParticipants": "2–4 people",
+    "variationNotes": [
+      "Related Mesoamerican race/dice tradition."
+    ],
+    "category": "Board & Race",
+    "originCountry": "Mexico"
+  },
+  "game-0009": {
+    "name": "Pachisi",
+    "description": "Pachisi—the ‘national game of India’—is a cross-and-circle race traditionally played with cowries. Chaupar is a courtly relative. British Ludo and American Parcheesi are commercial descendants of the same fundamental race.",
+    "howToPlay": [
+      "Each player sits at an arm of the cross with four pieces in nest.",
+      "Throw cowries or dice; enter pieces when the throw allows.",
+      "Move around the track; safe squares protect stacks.",
+      "Landing on a lone opponent sends them home.",
+      "First to bring all four pieces into the center wins."
+    ],
+    "requirements": [
+      "Cross-shaped board or cloth",
+      "4 pieces per player",
+      "Cowrie shells or dice"
+    ],
+    "idealParticipants": "2–4 people",
+    "variationNotes": [
+      "Courtly relative with longer arms and dice sticks.",
+      "British patented simplification with cubic dice.",
+      "American commercial adaptation.",
+      "German family race game in the same lineage."
+    ],
+    "category": "Board & Race",
+    "originCountry": "India"
+  },
+  "game-0010": {
+    "name": "Mahjong",
+    "description": "Mahjong draws on earlier Chinese card and gambling-tile traditions. Four players build melds toward a complete hand while reading discards. Regional styles differ in scoring, but the shuffling ‘wall’ is shared cultural theater.",
+    "howToPlay": [
+      "Build and join four tile walls; break with dice.",
+      "Deal hands (usually 13 tiles; dealer 14). East discards first.",
+      "Draw or claim a discard for a meld, then discard.",
+      "Form chows, pungs, kongs, and a pair.",
+      "Declare mahjong on a complete hand; score by regional rules."
+    ],
+    "requirements": [
+      "144-tile set",
+      "Table for four walls",
+      "Dice for wall break"
+    ],
+    "idealParticipants": "4 people",
+    "variationNotes": [
+      "Closed-hand riichi, dora, strict scoring.",
+      "Fast, pung-oriented popular style.",
+      "NMJL card hands and jokers."
+    ],
+    "category": "Cards & Tiles",
+    "originCountry": "China"
+  },
+  "game-0011": {
+    "name": "Dominoes",
+    "description": "Chinese dominoes relate to dice face pairs; European double-six sets spread via Italy and France. Blocking, scoring, and train games all share matching pip ends—one tool, many table cultures.",
+    "howToPlay": [
+      "Shuffle face-down and draw hands.",
+      "Lead with a double or highest tile per the variant.",
+      "Play a tile matching an open end, or draw/pass if you cannot.",
+      "Place doubles crosswise in most styles.",
+      "Win by emptying your hand or reaching a pip score."
+    ],
+    "requirements": [
+      "Double-six or larger set",
+      "Flat table"
+    ],
+    "idealParticipants": "2–4 people",
+    "variationNotes": [
+      "Double-twelve party game with personal trains.",
+      "Common parlor blocking/draw rules."
+    ],
+    "category": "Cards & Tiles",
+    "originCountry": "China"
+  },
+  "game-0012": {
+    "name": "Nine Men's Morris",
+    "description": "Mills games form three-in-a-row to capture. Boards are cut into cloister benches across medieval Europe. Southern African morabaraba is the same fundamental mills contest with pastoral ‘cow’ metaphors—catalogued here as variations, not separate inventions.",
+    "howToPlay": [
+      "Place pieces alternately on empty points until all nine are down.",
+      "Move along lines to adjacent points.",
+      "Form a mill (three in a row) to remove an opposing piece not in a mill if possible.",
+      "When down to three pieces, flying jumps to any empty point are often allowed.",
+      "Win by reducing the opponent to two pieces or blocking all moves."
+    ],
+    "requirements": [
+      "Mills board with 24 points",
+      "9 pieces per player"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Southern African mills with 12 cows per side; school sport form.",
+      "Zulu name for the same mills game.",
+      "Larger piece-count mills variant."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "Roman Empire / Europe"
+  },
+  "game-0013": {
+    "name": "Alquerque / Draughts family",
+    "description": "Alquerque’s leaping captures on a lined board are documented in Alfonso X’s Book of Games. European draughts/checkers moved the idea onto a checkered board. Saharan kharbaga and related Maghreb games belong to the same leap-capture family—variations of one hunting geometry.",
+    "howToPlay": [
+      "Array pieces on opposing sides.",
+      "Move to an adjacent empty point along a line (or dark square in checkers).",
+      "Leap an adjacent enemy into an empty landing square to capture.",
+      "Continue multi-jumps when allowed.",
+      "Capture all enemies or immobilize them to win."
+    ],
+    "requirements": [
+      "Lined Alquerque board or checkered draughts board",
+      "12 pieces per side (typical)"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "8×8 checkered form; men move diagonally.",
+      "10×10 board with flying kings.",
+      "Saharan leap-capture relative."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "Spain / Islamic Spain"
+  },
+  "game-0014": {
+    "name": "Fanorona",
+    "description": "Fanorona is Madagascar’s national board game of approach and withdrawal captures. Cascading line captures create sharp tactics. Oral history links boards to royal politics and community rivalry.",
+    "howToPlay": [
+      "Fill the board except the center; white moves first.",
+      "Move one piece to an adjacent empty point along a line.",
+      "Capture by approach or withdrawal relative to an enemy group.",
+      "Continue capturing with the same piece when further captures exist.",
+      "Capture all opposing pieces to win."
+    ],
+    "requirements": [
+      "9×5-point fanorona board",
+      "22 pieces per color"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [],
+    "category": "Strategy & War",
+    "originCountry": "Madagascar"
+  },
+  "game-0015": {
+    "name": "Carrom",
+    "description": "Carrom is a tabletop striking game beloved across South Asia and the diaspora. Players flick a striker to pocket carrom men, with the queen requiring a cover. It blends billiards geometry with sitting-room sociability.",
+    "howToPlay": [
+      "Powder the board lightly; place pieces in the center with the queen in the middle.",
+      "Flick the striker from your base line to hit your color into pockets.",
+      "Pocket the queen, then cover it by pocketing one of your pieces immediately after.",
+      "Fouls return pieces or cost turns per rule set.",
+      "Clear your pieces (with queen covered) to win."
+    ],
+    "requirements": [
+      "Carrom board with pockets",
+      "9 white, 9 black, 1 red queen",
+      "Striker",
+      "Powder for the surface"
+    ],
+    "idealParticipants": "2 or 4 people",
+    "variationNotes": [
+      "Local foul and scoring house rules on the same board."
+    ],
+    "category": "Puzzles & Skill",
+    "originCountry": "India"
+  },
+  "game-0016": {
+    "name": "Playing cards (French-suited deck)",
+    "description": "Playing cards likely descended from Chinese money-card ideas and entered Europe via Mamluk decks. French suits became a global standard tool for thousands of games. Regional decks are variations of the same portable gaming platform—not wholly separate toys.",
+    "howToPlay": [
+      "Use a 52-card French-suited deck; shuffle, then deal thirteen cards to each of four players for a Hearts-style starter game.",
+      "Play proceeds clockwise; lead any suit except hearts until hearts are broken; players must follow suit if able.",
+      "Highest card of the led suit wins the trick; hearts score 1 penalty point each and the queen of spades scores 13.",
+      "After all thirteen tricks, tally penalty points; rotate the dealer clockwise for the next hand.",
+      "Play hands until one player reaches 100 penalty points; the lowest score wins (or switch later to whist, rummy, or another named game)."
+    ],
+    "requirements": [
+      "52-card French deck (or regional deck)",
+      "Table"
+    ],
+    "idealParticipants": "1–6+ people (depends on game)",
+    "variationNotes": [
+      "Cups, coins, swords, batons.",
+      "Hearts, bells, acorns, leaves.",
+      "40- or 48-card decks for mus, tute, etc."
+    ],
+    "category": "Cards & Tiles",
+    "originCountry": "Egypt / China origins; Europe standardized"
+  },
+  "game-0017": {
+    "name": "Hanafuda / Karuta",
+    "description": "Japanese karuta traditions include seasonal hanafuda and literary uta-garuta. Competitive poem-card karuta demands lightning recognition; hanafuda underpins koi-koi. Cards fuse seasons, poetry, and speed into one family of play objects.",
+    "howToPlay": [
+      "For uta-garuta: a reader chants the first half of a poem.",
+      "Players race to slap the matching ending card.",
+      "Take the card and continue through the set.",
+      "For hanafuda/koi-koi: deal, capture by matching months, and declare yaku.",
+      "Agree which karuta family you are playing before dealing."
+    ],
+    "requirements": [
+      "Hanafuda or uta-garuta set",
+      "Tatami or table space"
+    ],
+    "idealParticipants": "2+ people",
+    "variationNotes": [
+      "12-month flower cards.",
+      "One hundred poem-card matching race."
+    ],
+    "category": "Cards & Tiles",
+    "originCountry": "Japan"
+  },
+  "game-0018": {
+    "name": "Ganjifa",
+    "description": "Ganjifa are circular painted cards of Mughal and regional Indian courts, later folk-crafted in places such as Odisha. Suit systems (Mughal, Dashavatara) differ, but trick-taking court hierarchies unite them as one painted-card tradition.",
+    "howToPlay": [
+      "Use an 8-suit Mughal ganjifa set (96 circular cards) or a 10-suit Dashavatara set; shuffle gently without bending paint layers.",
+      "For a four-player Mughal session, deal twelve cards each; decide trump by the first suit led or a declared trump suit before play.",
+      "Players must follow the led suit if able; otherwise they may play trump or discard.",
+      "Highest trump wins the trick if any trump is played; otherwise the highest card of the led suit wins.",
+      "Each won trick scores one point (or count face cards if using a court-heavy house tally); highest trick total after all cards are played wins. Store cards flat."
+    ],
+    "requirements": [
+      "Circular ganjifa set",
+      "Careful hands for painted cards"
+    ],
+    "idealParticipants": "2–8 people",
+    "variationNotes": [
+      "Ten-avatar suit system."
+    ],
+    "category": "Cards & Tiles",
+    "originCountry": "India"
+  },
+  "game-0019": {
+    "name": "Knucklebones",
+    "description": "Sheep or goat astragalus bones were ubiquitous ancient dice for play and divination. Children tossed and caught them; adults wagered on faces. Modern jacks are a skill descendant of the same pickup tradition.",
+    "howToPlay": [
+      "Start with five astragali (or five jacks plus a small bounce ball if using modern replicas).",
+      "Scatter the pieces, toss one aloft (or bounce the ball once), and pick up one piece before catching the tossed piece or ball.",
+      "On later turns in the same round, pick up two, then three, then four pieces in one sweep while the toss or bounce is airborne.",
+      "Failing to catch or disturbing the remaining pile ends your turn; the next player restarts at picking up ones.",
+      "First player to complete the ones–twos–threes–fours sequence scores one point; play to five points. Use plastic or wooden replicas when real bones are unavailable."
+    ],
+    "requirements": [
+      "Four astragali or replicas",
+      "Soft ground or mat"
+    ],
+    "idealParticipants": "1–4 people",
+    "variationNotes": [
+      "Metal/plastic jacks with a bounce ball.",
+      "Korean five-stone pickup skill game.",
+      "Stone-toss pickup sequence games."
+    ],
+    "category": "Dice & Chance",
+    "originCountry": "Greece"
+  },
+  "game-0020": {
+    "name": "Yo-yo",
+    "description": "Disk-on-string toys appear in ancient art; the modern yo-yo boom traveled through Filipino makers and American brands. Sleeping, looping, and string tricks turn a simple rotor into a skill vocabulary. Contests judge difficulty and style.",
+    "howToPlay": [
+      "Loop the string on your finger and wind the yo-yo.",
+      "Throw down firmly so it sleeps at the bottom.",
+      "Tug to return, or perform a trick while sleeping.",
+      "Learn sleeper, forward pass, and rock-the-baby as foundations.",
+      "Compete by trick lists or endurance sleeps."
+    ],
+    "requirements": [
+      "Yo-yo on a string",
+      "Clear space around body"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [
+      "European fashionable disk-and-string toy."
+    ],
+    "category": "Puzzles & Skill",
+    "originCountry": "China / Greece (disputed antiquity); Philippines popularization"
+  },
+  "game-0021": {
+    "name": "Kite flying",
+    "description": "Kites likely began in China for signaling and ceremony before becoming children’s sport worldwide. Fighter-kite cultures in Afghanistan, India, Brazil, and Japan add cutting lines and aerial combat. The toy joins craft, weather reading, and public spectacle.",
+    "howToPlay": [
+      "Assemble the kite; check spars and bridle balance.",
+      "With back to the wind, have a helper hold or launch as you reel tension.",
+      "Steer with line angle; climb in steady wind.",
+      "In fighter variants, maneuver to cut an opponent’s line.",
+      "Reel in before storms; never fly near power lines."
+    ],
+    "requirements": [
+      "Kite",
+      "Flying line",
+      "Open windy space away from power lines"
+    ],
+    "idealParticipants": "Alone or 2 people",
+    "variationNotes": [
+      "Manja abrasive line for kite battles.",
+      "Giant communal kites and fighting events.",
+      "Brazilian fighter-kite street culture."
+    ],
+    "category": "Outdoor Folk",
+    "originCountry": "China"
+  },
+  "game-0022": {
+    "name": "Cat's cradle",
+    "description": "Cat’s cradle and related string figures appear from the Arctic to Oceania with startling similarity. Figures pass between hands in sequence, training spatial memory and cooperation. Anthropologists recorded hundreds of named patterns tied to stories.",
+    "howToPlay": [
+      "Loop a 1–2 meter cord; Player A opens Cat’s Cradle: palms facing, strings across both hands with the palmar string crossed once.",
+      "Player B pinches the two crossed X’s, pulls them out and down, then up through the center, taking the figure onto their own hands as Soldier’s Bed (or Mattress).",
+      "Player A next takes the side strings to form Candles, then Player B takes again to form the Manger (or Cradle reverse).",
+      "If any loop slips off a finger and the figure collapses, both players restart from Player A’s opening cradle.",
+      "After one clean four-step pass (Cradle → Bed → Candles → Manger), try the sequence again or learn a solo figure such as Cup and Saucer."
+    ],
+    "requirements": [
+      "Loop of string about 1–2 meters",
+      "Two players"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Japanese string-figure tradition.",
+      "String stories with local names and narratives."
+    ],
+    "category": "String & Finger",
+    "originCountry": "Multiple (global)"
+  },
+  "game-0023": {
+    "name": "Jianzi (shuttlecock kicking)",
+    "description": "Jianzi keeps a feathered shuttlecock aloft with the feet—an accessible park sport across China and diaspora communities. Circle play builds rhythm; solo play builds count records. Korean jegichagi and Vietnamese đá cầu are the same fundamental foot-shuttlecock game.",
+    "howToPlay": [
+      "Toss the shuttlecock onto your foot.",
+      "Kick with inner foot, outer foot, or knee to keep it airborne.",
+      "Count consecutive kicks; restart on a drop.",
+      "In a circle, pass to neighbors without using hands.",
+      "Agree whether hand saves are allowed (usually not)."
+    ],
+    "requirements": [
+      "Feathered shuttlecock",
+      "Flat open ground"
+    ],
+    "idealParticipants": "Alone or circle group",
+    "variationNotes": [
+      "Korean paper-wrapped shuttlecock kicking.",
+      "Vietnamese shuttlecock kicking sport."
+    ],
+    "category": "Ball & Sport",
+    "originCountry": "China"
+  },
+  "game-0024": {
+    "name": "Sepak takraw",
+    "description": "Sepak takraw blends volleyball-like net play with foot, knee, chest, and head contacts only. Roots lie in Malay-world circle kicking (sepak raga). Overhead bicycle kicks define the modern spectacle.",
+    "howToPlay": [
+      "Mark a court about 13.4 × 6.1 m with a net 1.52 m high (men’s sport height) and use a rattan or synthetic takraw ball.",
+      "Each team of three stands on its side; the server’s teammate tosses the ball for a foot serve over the net into the opponent’s court.",
+      "A side may use at most three touches with foot, knee, chest, or head before sending the ball back; hands and arms are faults.",
+      "Score one point when the ball grounds in the opponent’s court or the opponent faults (net touch with hand, four touches, out of bounds).",
+      "Play to 21 points per set (must win by 2); best of three sets decides the match."
+    ],
+    "requirements": [
+      "Rattan or synthetic ball",
+      "Net and court for sport form"
+    ],
+    "idealParticipants": "2 teams of 3",
+    "variationNotes": [
+      "Cooperative circle keeping-up without a net."
+    ],
+    "category": "Ball & Sport",
+    "originCountry": "Thailand / Malaysia"
+  },
+  "game-0025": {
+    "name": "Lacrosse",
+    "description": "Stickball among northeastern Indigenous nations held spiritual and diplomatic weight—the Creator’s game. French observers named it lacrosse. Modern codes formalized sport rules, but cradling and scoring with a netted stick continue a deep tradition.",
+    "howToPlay": [
+      "Form two teams and set goals.",
+      "Face off at center.",
+      "Carry, pass, and shoot using the stick pocket (no hand on ball in field rules).",
+      "Score by sending the ball into the goal.",
+      "Highest score at the end wins."
+    ],
+    "requirements": [
+      "Lacrosse sticks",
+      "Ball",
+      "Field with goals"
+    ],
+    "idealParticipants": "2 teams",
+    "variationNotes": [
+      "Double-stick ball games with distinct ritual contexts."
+    ],
+    "category": "Ball & Sport",
+    "originCountry": "Canada / United States"
+  },
+  "game-0026": {
+    "name": "Mesoamerican ballgame / Ulama",
+    "description": "The Mesoamerican ballgame used heavy rubber balls struck mainly with hips on formal courts. Ritual, politics, and sport intertwined. Modern ulama in Sinaloa continues hip-ball play as a living descendant.",
+    "howToPlay": [
+      "Play ulama de cadera on a long packed-earth alley about 65 m; two teams of three to five wear hip pads and use a solid rubber ball.",
+      "Serve by bouncing the ball to a teammate who strikes it forward with the hip only—no hands, feet, or heads.",
+      "Teams volley the ball back and forth across the midline; a bounce must stay within the alley sidelines.",
+      "Score one point when the opposing team fails to return, lets the ball stop, or sends it out of the alley.",
+      "First team to 8 points wins the game (common Sinaloa street tally); rest and switch ends after each game."
+    ],
+    "requirements": [
+      "Solid rubber ball",
+      "Court or alley",
+      "Hip protection"
+    ],
+    "idealParticipants": "2 teams",
+    "variationNotes": [
+      "Sinaloa hip-ulama continuation."
+    ],
+    "category": "Ball & Sport",
+    "originCountry": "Mexico"
+  },
+  "game-0027": {
+    "name": "Kokeshi",
+    "description": "Kokeshi are limbless lathe-turned wooden dolls from northern Honshu onsen towns—first souvenirs and children’s toys, now collected art. Regional schools (Naruko, Tsuchiyu, and others) differ in head joints and floral painting.",
+    "howToPlay": [
+      "Display or hold the doll; there is no competitive scoring.",
+      "Children may invent nurturing stories around a kokeshi.",
+      "Collectors compare schools, signatures, and proportions.",
+      "Handle painted surfaces gently.",
+      "Use as a cultural craft object and soft play prop."
+    ],
+    "requirements": [
+      "Turned wooden doll",
+      "Painted finish"
+    ],
+    "idealParticipants": "Alone / N/A (display & gentle play)",
+    "variationNotes": [
+      "Clicking head joint school style."
+    ],
+    "category": "Dolls & Figures",
+    "originCountry": "Japan"
+  },
+  "game-0028": {
+    "name": "Matryoshka",
+    "description": "Matryoshka nesting dolls were created in the 1890s at Abramtsevo workshops, influenced by nesting forms and peasant dress motifs. Each opening reveals a smaller sister—symbolizing family continuity and fertility—and became a global craft icon.",
+    "howToPlay": [
+      "Open the largest doll at the seam.",
+      "Line up each inner doll by size.",
+      "Nest them closed again in order.",
+      "Invent counting or storytelling games for children.",
+      "Do not force tight seams."
+    ],
+    "requirements": [
+      "Nested wooden doll set"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [],
+    "category": "Dolls & Figures",
+    "originCountry": "Russia"
+  },
+  "game-0029": {
+    "name": "Worry dolls",
+    "description": "Guatemalan worry dolls are tiny figures to whom children tell troubles before placing them under a pillow. Folklore says the dolls carry the worries overnight—a ritual of voice and comfort more than competitive play.",
+    "howToPlay": [
+      "Whisper one worry to each doll.",
+      "Place them under a pillow or in their box overnight.",
+      "In the morning, thank them and put them away.",
+      "Use as many dolls as worries (traditionally a small handful).",
+      "No scoring—personal comfort ritual."
+    ],
+    "requirements": [
+      "Small cloth dolls",
+      "Box or pillow"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [],
+    "category": "Dolls & Figures",
+    "originCountry": "Guatemala"
+  },
+  "game-0030": {
+    "name": "Corn husk doll",
+    "description": "Corn husk dolls are traditional among several Indigenous nations and later rural settlers. Faces are often left blank, with community-specific teachings about why. Making the doll is half the play.",
+    "howToPlay": [
+      "Soak husks; fold and tie a head, arms, and body or skirt.",
+      "Air-dry the finished doll.",
+      "Invent caregiving play or display the figure.",
+      "Follow community protocols when learning inside a living tradition.",
+      "Keep dolls dry to prevent mold."
+    ],
+    "requirements": [
+      "Dried corn husks",
+      "String",
+      "Optional corn-silk hair"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [],
+    "category": "Dolls & Figures",
+    "originCountry": "United States / Canada"
+  },
+  "game-0031": {
+    "name": "Bilboquet / Balero / Kendama family",
+    "description": "Cup-and-ball toys challenge hand-eye timing: swing a tethered ball into a cup or onto a spike. French bilboquet, Mexican balero, and Japanese kendama are variations of one skill family with different vocabularies of tricks.",
+    "howToPlay": [
+      "Hold the handle with the ball hanging on its cord.",
+      "Swing upward and catch the ball in a cup or on the spike.",
+      "Progress to flips and named trick sequences.",
+      "Count consecutive catches.",
+      "Practice over a soft area while learning."
+    ],
+    "requirements": [
+      "Cup-and-ball or spike-and-ball toy on a cord"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [
+      "Mexican competitive cup-and-ball culture.",
+      "Multi-cup spike toy with extensive trick lexicon.",
+      "European parlor cup-and-ball."
+    ],
+    "category": "Puzzles & Skill",
+    "originCountry": "France / Mexico / Japan"
+  },
+  "game-0032": {
+    "name": "Tangram",
+    "description": "The tangram dissects a square into seven tans used to form silhouettes. It spread from China as a parlor craze in the 19th century. Geometric transformation and negative space are the toy’s quiet lessons.",
+    "howToPlay": [
+      "Begin with all seven pieces forming a square.",
+      "Study a silhouette challenge card.",
+      "Rearrange all seven pieces to match the outline without overlaps.",
+      "Create freeform animals or letters.",
+      "Time trials optional for competitive play."
+    ],
+    "requirements": [
+      "Seven tan pieces",
+      "Silhouette challenges optional"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [],
+    "category": "Puzzles & Skill",
+    "originCountry": "China"
+  },
+  "game-0033": {
+    "name": "Rubik's Cube",
+    "description": "Ernő Rubik’s cube popularized three-dimensional combination puzzles worldwide. Layer-turn mechanics hide group theory inside a colorful toy. Speedcubing culture added algorithms, hardware, and sport timing—still one puzzle at heart.",
+    "howToPlay": [
+      "Scramble by turning faces randomly.",
+      "Restore each face to a solid color using layer methods or intuition.",
+      "Beginners often solve the white cross, then corners, middle edges, and last layer.",
+      "Advanced solvers memorize algorithms for speed.",
+      "Optional: time solves with a stackmat or phone timer."
+    ],
+    "requirements": [
+      "3×3 cube puzzle"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [
+      "Smaller order of the same mechanism.",
+      "Higher-order cuboid with reduction methods."
+    ],
+    "category": "Puzzles & Skill",
+    "originCountry": "Hungary"
+  },
+  "game-0034": {
+    "name": "Building blocks",
+    "description": "Stacking blocks are among the oldest construction toys—stone, clay, and wood stacks appear across civilizations. Froebel gifts formalized educational block play in the 19th century. The fundamental act is assembling form from modular solids.",
+    "howToPlay": [
+      "Clear a stable building surface.",
+      "Stack, bridge, and cantilever blocks into towers or houses.",
+      "Agree optional challenges (tallest tower, bridge span, copy a model).",
+      "Knock down deliberately as part of play if desired.",
+      "Sort by shape when packing away."
+    ],
+    "requirements": [
+      "Set of stacking blocks",
+      "Flat floor or table"
+    ],
+    "idealParticipants": "Alone or small group",
+    "variationNotes": [
+      "Educational block sequence for kindergartens.",
+      "Caroline Pratt’s modular classroom blocks."
+    ],
+    "category": "Construction",
+    "originCountry": "Multiple (global)"
+  },
+  "game-0035": {
+    "name": "Chunkey",
+    "description": "Chunkey was a Mississippian plaza sport: a rolled stone disk and spears cast to predict its fall. Status, gambling, and athleticism met near mounds. Archaeology recovers finely made chunkey stones across the Midwest and South.",
+    "howToPlay": [
+      "One player rolls the chunkey stone across the ground.",
+      "Others hurl poles toward where the stone will stop.",
+      "Score by closeness when the stone rests.",
+      "Rotate roles; play to an agreed point total.",
+      "Keep spectators clear of the throw path."
+    ],
+    "requirements": [
+      "Stone discoidal",
+      "Throwing poles",
+      "Level packed ground"
+    ],
+    "idealParticipants": "2+ people",
+    "variationNotes": [],
+    "category": "Ball & Sport",
+    "originCountry": "United States"
+  },
+  "game-0036": {
+    "name": "Palín",
+    "description": "Palín (chueca) is a Mapuche stick-and-ball game with communal and ritual importance. Teams drive a ball toward goals on a long pitch. It remains a marker of Mapuche gathering and identity.",
+    "howToPlay": [
+      "Mark a long field with goals at each end.",
+      "Start the ball at center between teams.",
+      "Strike with sticks toward your goal—no dangerous swings at people.",
+      "Score when the ball crosses the goal space.",
+      "Play to agreed points; honor ceremonial openings when hosted traditionally."
+    ],
+    "requirements": [
+      "Palín sticks",
+      "Hide or wooden ball",
+      "Long field"
+    ],
+    "idealParticipants": "2 teams",
+    "variationNotes": [],
+    "category": "Ball & Sport",
+    "originCountry": "Chile"
+  },
+  "game-0037": {
+    "name": "Tug of war",
+    "description": "Tug of war appears in harvest rites, school sports, and village festivals worldwide. Some East Asian and Pacific forms carry cosmological meanings of seasonal balance. Two teams, one rope—an elemental coordination contest.",
+    "howToPlay": [
+      "Mark a center line and team foul lines.",
+      "Teams grip evenly; avoid wrapping the rope around limbs in sport rules.",
+      "On a signal, pull with short coordinated heaves.",
+      "Win by pulling the center marker across your line.",
+      "Stop immediately if someone slips dangerously."
+    ],
+    "requirements": [
+      "Strong rope",
+      "Center ground marker",
+      "Clear pull zone"
+    ],
+    "idealParticipants": "2 teams",
+    "variationNotes": [
+      "Communal ropes in ritual calendar events.",
+      "Village tug rites around festivals."
+    ],
+    "category": "Outdoor Folk",
+    "originCountry": "Multiple (global)"
+  },
+  "game-0038": {
+    "name": "Hide-and-seek",
+    "description": "Hide-and-seek is a near-universal children’s game with countless local names and counting rhymes. It rehearses stealth, spatial memory, and the social thrill of being found. Architecture—from kasbah alleys to apartment stairwells—reshapes strategy.",
+    "howToPlay": [
+      "Pick one seeker and a home base (tree, wall, or stoop); set hard bounds—no street, no locked rooms.",
+      "The seeker faces the base and counts aloud to 50 while others hide inside the bounds.",
+      "The seeker shouts “Ready or not, here I come,” then tags hiders by touch; tagged players walk to a jail spot beside home base.",
+      "A free hider may dash to base, touch it, and call “Free [name]!” to release one jailed player; if the seeker tags them on the way, they go to jail.",
+      "When all hiders are jailed, or after five minutes, the first player tagged becomes the next seeker."
+    ],
+    "requirements": [
+      "Safe bounded hiding area",
+      "Agreed home base"
+    ],
+    "idealParticipants": "3+ people",
+    "variationNotes": [
+      "Inverse hiding: one hides, others join the hiding spot."
+    ],
+    "category": "Outdoor Folk",
+    "originCountry": "Multiple (global)"
+  },
+  "game-0039": {
+    "name": "Hopscotch",
+    "description": "Hopping grids for tossed markers appear across continents with local shapes and rhymes. Balance, turn-taking, and pavement chalk art meet in one simple race through numbered cells.",
+    "howToPlay": [
+      "Draw a numbered hopscotch grid.",
+      "Toss a marker into the next square; it must land cleanly inside.",
+      "Hop through on one foot, skipping the occupied square.",
+      "Retrieve the marker on the return without faults.",
+      "First to complete all numbers wins."
+    ],
+    "requirements": [
+      "Chalk or scratched grid",
+      "Flat marker stone"
+    ],
+    "idealParticipants": "1–6 people",
+    "variationNotes": [
+      "Spanish-language hopscotch naming and grid variants.",
+      "French hopscotch grids and schoolyard rules."
+    ],
+    "category": "Outdoor Folk",
+    "originCountry": "Multiple (global; Roman roots often cited)"
+  },
+  "game-0040": {
+    "name": "Marbles",
+    "description": "Marble rings are nearly universal children’s gaming. Clay, stone, and later glass spheres are knuckle-shot to knock targets from a circle. ‘Keepsies’ versus friendlies decide whether winners keep captured marbles.",
+    "howToPlay": [
+      "Draw a circle and place target marbles inside.",
+      "Knuckle-shoot from the edge to knock targets out.",
+      "Captured marbles score or are kept depending on agreed stakes.",
+      "If your shooter remains in-ring, many rules allow another shot from there.",
+      "Clear the ring or reach a point goal to win."
+    ],
+    "requirements": [
+      "Glass, clay, or stone marbles",
+      "Circle drawn on ground"
+    ],
+    "idealParticipants": "2–6 people",
+    "variationNotes": [
+      "Formal marble-tournament circle rules."
+    ],
+    "category": "Outdoor Folk",
+    "originCountry": "Multiple (global)"
+  },
+  "game-0041": {
+    "name": "Spinning top",
+    "description": "Tops are among humanity’s oldest mechanical toys, excavated from Ur to the Indus and beyond. String-launch and whip-sustained forms support endurance contests and combat. Local names differ; the physics lesson is shared.",
+    "howToPlay": [
+      "Wind string around the body or prepare a whip.",
+      "Launch with a smooth pull so the tip spins on hard ground.",
+      "Optionally whip to add energy.",
+      "Compete for longest spin or for knocking out rivals.",
+      "Repair worn tips as needed."
+    ],
+    "requirements": [
+      "Wooden, clay, or metal top",
+      "String or whip",
+      "Hard ground"
+    ],
+    "idealParticipants": "1–many people",
+    "variationNotes": [
+      "Cord-thrown combat and trick tops.",
+      "Japanese arena and festival tops.",
+      "South Asian whipping / string tops.",
+      "Korean whipping top."
+    ],
+    "category": "Spinning & Tops",
+    "originCountry": "Multiple (global)"
+  },
+  "game-0042": {
+    "name": "Hnefatafl",
+    "description": "Hnefatafl is a Norse asymmetric hunt: a king and defenders try to escape attackers on a grid. Variants spread across Viking worlds. Balance of forces and throne squares define tense endgames.",
+    "howToPlay": [
+      "Play Copenhagen Hnefatafl on an 11×11 board: place the king on the center throne with 12 defenders in a cross; place 24 attackers in the four edge camps.",
+      "Attackers move first. Every piece slides any number of empty squares like a rook; none may jump.",
+      "Capture an enemy by sandwiching it between two of your pieces on a rank or file (custodial capture); the throne and corner squares can help bracket.",
+      "Attackers win by capturing the king on two opposite sides (or against the throne/edge as a second side). Defenders win if the king reaches any of the four corner sanctuary squares.",
+      "Pieces may not stop on the throne except the king; attackers may not occupy the corners."
+    ],
+    "requirements": [
+      "Tafl board",
+      "King and defenders vs attackers"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Linnaeus recorded Sámi tablut—same tafl family.",
+      "Irish tafl relative on a smaller board."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "Norway"
+  },
+  "game-0043": {
+    "name": "Fox and Geese",
+    "description": "Asymmetric hunt on a cross: geese try to corner a fox that leaps to capture. Related to many predator-prey boards worldwide—the European parlor form is catalogued here with cousins as variations.",
+    "howToPlay": [
+      "Place geese on one end and the fox centrally or opposite per rules.",
+      "Geese move first or second by agreement; they walk without jumping.",
+      "Fox may jump adjacent geese to capture.",
+      "Geese win by immobilizing the fox; fox wins by capturing enough geese.",
+      "Use a modern printed fox-and-geese board if historic boards are unavailable."
+    ],
+    "requirements": [
+      "Cross board",
+      "1 fox and 13+ geese"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Hare-hunting asymmetric relative.",
+      "Spiral predator-prey race cousin."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "United Kingdom"
+  },
+  "game-0044": {
+    "name": "Go Bang / Gomoku",
+    "description": "Five-in-a-row on a Go-like grid is an ancient East Asian pastime formalized as gomoku and renju. Distinct from Go's territory scoring—the goal is a straight five.",
+    "howToPlay": [
+      "Black places first on an intersection.",
+      "Players alternate placing one stone.",
+      "First to form five consecutive stones in a line wins.",
+      "Sport renju adds opening restrictions for balance.",
+      "Play on a dedicated gomoku board or a Go board."
+    ],
+    "requirements": [
+      "15×15 or 19×19 grid",
+      "Black and white stones"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Balanced competitive ruleset for five-in-a-row."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "Japan / China"
+  },
+  "game-0045": {
+    "name": "Reversi / Othello",
+    "description": "Reversi flips sandwiched discs to claim majority color. Othello standardized modern branding and opening. A pure placement-and-flip contest with explosive endgame swings.",
+    "howToPlay": [
+      "Place four discs in the center in the standard Othello opening.",
+      "Black places first on a square that flips at least one white disc.",
+      "Flip all sandwiched opponent discs in every direction.",
+      "A player unable to flip passes; when both cannot move, count discs.",
+      "Majority color wins."
+    ],
+    "requirements": [
+      "8×8 board",
+      "64 double-sided discs"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Trademarked modern standardization of reversi-like play."
+    ],
+    "category": "Strategy & War",
+    "originCountry": "United Kingdom / Japan"
+  },
+  "game-0046": {
+    "name": "Scrabble",
+    "description": "Scrabble assigns point values to letters on a crossword-style grid with premium squares. Born from American crossword culture, it became a global word sport with language-specific sets.",
+    "howToPlay": [
+      "Draw seven tiles; place first word through the center star.",
+      "Build new words connecting to existing letters crossword-style.",
+      "Score letter values times premiums; tally each turn.",
+      "Draw back to seven tiles after each play.",
+      "Highest score when tiles run out and one player empties their rack wins."
+    ],
+    "requirements": [
+      "Scrabble board",
+      "Letter tiles",
+      "Tile racks",
+      "Dictionary for challenges"
+    ],
+    "idealParticipants": "2–4 people",
+    "variationNotes": [],
+    "category": "Memory & Word",
+    "originCountry": "United States"
+  },
+  "game-0047": {
+    "name": "Snakes and Ladders",
+    "description": "Paramapada sopanam / gyan chaupar taught karma with virtues as ladders and vices as snakes. British Snakes and Ladders secularized the race for children—same fundamental up-and-down morality track.",
+    "howToPlay": [
+      "Place tokens off the board; roll to enter.",
+      "Move forward by the die.",
+      "Land at a ladder base to climb; land on a snake head to slide down.",
+      "Exact roll may be required to finish.",
+      "First to the final square wins."
+    ],
+    "requirements": [
+      "Grid board with snakes and ladders",
+      "Die",
+      "One token per player"
+    ],
+    "idealParticipants": "2–4 people",
+    "variationNotes": [
+      "Didactic ancestor with virtues and vices labeled.",
+      "American Milton Bradley branding of the same race."
+    ],
+    "category": "Board & Race",
+    "originCountry": "India"
+  },
+  "game-0048": {
+    "name": "Monopoly",
+    "description": "Property-trading race games critique or celebrate real-estate capitalism. Magie's Landlord's Game preceded Parker Brothers' Monopoly. Local editions map world cities onto the same buy-rent-bankrupt loop.",
+    "howToPlay": [
+      "Each player starts with allotted cash and a token at Go.",
+      "Roll dice, move, and buy unowned properties you land on—or pay rent.",
+      "Build houses/hotels on complete color sets.",
+      "Manage mortgages and trades.",
+      "Last player not bankrupt wins."
+    ],
+    "requirements": [
+      "Monopoly set",
+      "Table space",
+      "Play money"
+    ],
+    "idealParticipants": "2–6 people",
+    "variationNotes": [
+      "Elizabeth Magie's teaching ancestor."
+    ],
+    "category": "Board & Race",
+    "originCountry": "United States"
+  },
+  "game-0049": {
+    "name": "Jenga",
+    "description": "Jenga formalizes the ancient thrill of removing pieces from a stack without collapse. Leslie Scott marketed the tower game globally; the physical puzzle is one shared stack for all players.",
+    "howToPlay": [
+      "Build the tower in alternating crosswise layers of three.",
+      "On your turn, remove one block below the incomplete top layer using one hand.",
+      "Place it on the top to complete or continue layers.",
+      "The player who topples the tower loses (or the prior player wins).",
+      "Rebuild to play again."
+    ],
+    "requirements": [
+      "54 precision blocks",
+      "Stable table"
+    ],
+    "idealParticipants": "1–8 people",
+    "variationNotes": [],
+    "category": "Puzzles & Skill",
+    "originCountry": "United Kingdom"
+  },
+  "game-0050": {
+    "name": "Diabolo",
+    "description": "The Chinese kongzhu / diabolo spins on a string between sticks—tosses, accelerations, and suicides form a circus vocabulary. European circuses adopted and renamed it diabolo.",
+    "howToPlay": [
+      "Start the spool rocking on the string.",
+      "Accelerate with alternating stick motions.",
+      "Toss and catch; attempt orbit tricks.",
+      "Count consecutive catches or trick scores.",
+      "Use open space clear of lamps and faces."
+    ],
+    "requirements": [
+      "Diabolo spool",
+      "Hand sticks with string"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [
+      "Chinese name and folk/circus tradition for the same spool toy."
+    ],
+    "category": "Puzzles & Skill",
+    "originCountry": "China"
+  },
+  "game-0051": {
+    "name": "Kapu kuapu / Jackstraws / Spillikins",
+    "description": "Pick-up sticks (spillikins, jackstraws) drop in a tangle; players extract sticks without moving others. Color values score. A quiet parlor test of fine motor control.",
+    "howToPlay": [
+      "Hold sticks upright in a bundle and release to scramble.",
+      "Players alternately pull one stick without wiggling others.",
+      "If others move, your turn ends (and the stick may return).",
+      "Score by stick colors/values.",
+      "Highest score when the pile is cleared wins."
+    ],
+    "requirements": [
+      "Bundle of thin sticks",
+      "Table"
+    ],
+    "idealParticipants": "1–4 people",
+    "variationNotes": [
+      "Named commercial pick-up sticks set."
+    ],
+    "category": "Puzzles & Skill",
+    "originCountry": "Multiple Europe / China roots debated"
+  },
+  "game-0052": {
+    "name": "Mehen",
+    "description": "Mehen, the coiled serpent game, appears in early dynastic Egypt. Play moved along a spiral serpent toward the center; exact rules are fragmentary, but the board's sacred animal form is clear.",
+    "howToPlay": [
+      "Place pieces at the serpent's tail.",
+      "Throw sticks to advance inward along the spiral.",
+      "Resolve interactions when sharing segments per a chosen reconstruction.",
+      "Reaching the center may reverse the path outward.",
+      "First to complete the journey wins in most reconstructions."
+    ],
+    "requirements": [
+      "Spiral mehen board",
+      "Marbles or lion pieces",
+      "Throwing sticks"
+    ],
+    "idealParticipants": "2+ people",
+    "variationNotes": [],
+    "category": "Board & Race",
+    "originCountry": "Egypt"
+  },
+  "game-0053": {
+    "name": "Buckingham Palace toy soldiers aside: Toy soldiers",
+    "description": "Cast or printed miniature soldiers supported war play and later wargaming. German tin makers and British hollow-casts spread sets worldwide. Play ranges from simple line battles to rule-heavy simulations.",
+    "howToPlay": [
+      "Array two equal forces of at least ten figures each on opposite ends of a table or sand tray; place one flag token behind each line.",
+      "On a turn, move up to three of your figures up to one hand-span forward, sideways, or diagonally.",
+      "If a figure ends within one finger-width of an enemy, roll one six-sided die: 4–6 removes the enemy; 1–3 misses. Remove casualties to a dead pile.",
+      "Capture the opponent’s flag by ending a move on its square, or eliminate every enemy figure, to win.",
+      "Store figures upright in a box with tissue so paint and bayonets do not chip."
+    ],
+    "requirements": [
+      "Miniature soldiers",
+      "Flat floor or sand table"
+    ],
+    "idealParticipants": "Alone or 2 people",
+    "variationNotes": [
+      "Early mass-painted flat tin soldiers."
+    ],
+    "category": "Dolls & Figures",
+    "originCountry": "Germany / United Kingdom"
+  },
+  "game-0054": {
+    "name": "Tea set toy",
+    "description": "Miniature tea sets let children rehearse hospitality rituals. Porcelain and tin versions tracked adult tea cultures from Britain to Japan. Social scripts—pouring, offering, thanking—are the real ruleset.",
+    "howToPlay": [
+      "Set places for dolls or friends.",
+      "Pour (real or imaginary) tea without tipping cups.",
+      "Practice serving order and polite phrases.",
+      "Wash and put away as part of play.",
+      "No score—etiquette role-play."
+    ],
+    "requirements": [
+      "Miniature cups and pot",
+      "Optional water/sand"
+    ],
+    "idealParticipants": "1–4 people",
+    "variationNotes": [],
+    "category": "Dolls & Figures",
+    "originCountry": "United Kingdom / Europe / East Asia porcelain play"
+  },
+  "game-0055": {
+    "name": "Slinky",
+    "description": "The Slinky converts potential energy into end-over-end stair walking. A happy accident of naval spring engineering became a global desk and stair toy.",
+    "howToPlay": [
+      "Place the Slinky on a stair tread.",
+      "Tip the top coil to the next lower step.",
+      "Watch it walk; restart when it tumbles.",
+      "On flat desks, rock it between hands as a wave.",
+      "Avoid overstretching coils permanently."
+    ],
+    "requirements": [
+      "Metal or plastic spring toy",
+      "Stairs optional"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [],
+    "category": "Puzzles & Skill",
+    "originCountry": "United States"
+  },
+  "game-0056": {
+    "name": "Frisbee / flying disc",
+    "description": "Flying discs formalized beach and park tossing; ultimate and disc golf added sport frames. The fundamental toy is a hand-thrown gliding plate.",
+    "howToPlay": [
+      "Grip the disc with fingers under the rim.",
+      "Throw flat with a spin; face the target.",
+      "Catch with two hands when learning.",
+      "Play catch, ultimate scores, or disc-golf holes.",
+      "Mind wind and bystanders."
+    ],
+    "requirements": [
+      "Flying disc",
+      "Open field"
+    ],
+    "idealParticipants": "2+ people",
+    "variationNotes": [],
+    "category": "Ball & Sport",
+    "originCountry": "United States"
+  },
+  "game-0057": {
+    "name": "Hacky sack / footbag",
+    "description": "Keeping a small bag aloft with feet echoes older Eurasian kickbag play. Circle 'sunny' sessions emphasize style and sharing over scoring.",
+    "howToPlay": [
+      "Drop the bag to a foot and kick gently upward.",
+      "Use feet, knees, and thighs—no hands.",
+      "In a circle, pass to neighbors.",
+      "Count consecutive kicks.",
+      "Restart together after a drop."
+    ],
+    "requirements": [
+      "Footbag",
+      "Flat ground"
+    ],
+    "idealParticipants": "1–circle group",
+    "variationNotes": [
+      "Older kick-keeping traditions related in spirit."
+    ],
+    "category": "Ball & Sport",
+    "originCountry": "United States / global; older Asian footbags"
+  },
+  "game-0058": {
+    "name": "Boomerang",
+    "description": "Returning boomerangs are precision-carved throwing sticks from Aboriginal Australian traditions, also used in hunting forms that do not return. Tourist sport boomerangs simplify the returning toy; cultural knowledge of designs remains with communities.",
+    "howToPlay": [
+      "Use only in huge clear fields with no people downrange.",
+      "Grip and throw at the angle taught for that shape.",
+      "Watch the return path; do not snatch blindly.",
+      "Let it land if unsure.",
+      "Learn from knowledgeable throwers; respect design ownership."
+    ],
+    "requirements": [
+      "Returning boomerang",
+      "Large open field",
+      "Spotter recommended"
+    ],
+    "idealParticipants": "Alone",
+    "variationNotes": [],
+    "category": "Outdoor Folk",
+    "originCountry": "Australia"
+  },
+  "game-0059": {
+    "name": "Poi",
+    "description": "Māori poi swung in dance train wrist rhythm and storytelling. Modern fire and performance poi extend the toy globally; traditional contexts remain cultural practice.",
+    "howToPlay": [
+      "Hold cords with weights clear of people.",
+      "Swing in simple side circles to a beat.",
+      "Add patterns as skill grows.",
+      "In cultural performance, follow song and choreography.",
+      "Use fire poi only with professional safety practice."
+    ],
+    "requirements": [
+      "Poi (flax or modern weights on cords)",
+      "Clear swing radius"
+    ],
+    "idealParticipants": "Alone or group",
+    "variationNotes": [],
+    "category": "Musical Play",
+    "originCountry": "New Zealand"
+  },
+  "game-0060": {
+    "name": "Surakarta",
+    "description": "Surakarta is a Javanese capture game where pieces travel circuits around colored loops. Captures follow the loops rather than simple jumps—an elegant regional strategy toy.",
+    "howToPlay": [
+      "Array pieces on your side of the board.",
+      "Move to adjacent empty points.",
+      "Capture by traveling along a circuit loop onto an enemy.",
+      "Removed pieces leave gaps that reshape routes.",
+      "Capture all enemies to win."
+    ],
+    "requirements": [
+      "Surakarta board with circuits",
+      "12 pieces per side"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [],
+    "category": "Strategy & War",
+    "originCountry": "Indonesia"
+  },
+  "game-0061": {
+    "name": "Dakon",
+    "description": "Dakon is a Javanese congkak-family sowing board, often elaborately carved. It is presented as a named regional standard within mancala while remaining one sowing family.",
+    "howToPlay": [
+      "Use a boat board with seven small cups per side plus one large store (lumbung) at each end; place seven seeds in every small cup.",
+      "On your turn, scoop one of your cups and sow one seed clockwise into each following cup, including your store but skipping the opponent’s store.",
+      "If the last seed lands in your store, sow again immediately from any of your cups that still hold seeds (relay turn).",
+      "If the last seed lands in an empty cup on your side, capture that seed and all seeds in the opposite cup into your store.",
+      "When one player cannot move, remaining seeds go to the owner of those cups; most seeds in store wins."
+    ],
+    "requirements": [
+      "Dakon boat board",
+      "Seeds"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Closely related Malay boat-board sowing game—same family."
+    ],
+    "category": "Mancala & Sowing",
+    "originCountry": "Indonesia"
+  },
+  "game-0062": {
+    "name": "Sungka",
+    "description": "Sungka is the Filipino boat-shaped sowing game, cousin to congkak. Boards are household heirlooms; play mixes speed sowing with capture timing.",
+    "howToPlay": [
+      "Seat two players at a sungka board with seven small cups (bahay) per side and one head store (ulo) each; place seven cowries or seeds in every bahay.",
+      "Scoop all seeds from one of your bahay and sow counterclockwise one-by-one into each following cup, including your ulo but skipping the opponent’s ulo.",
+      "If the last seed lands in your ulo, take another turn; if it lands in an empty bahay on your side, capture the opposite bahay’s seeds into your ulo.",
+      "A player who empties their side early waits while the opponent may still sow; continue until neither side has seeds left in bahay.",
+      "Count cowries in each ulo; the higher store wins."
+    ],
+    "requirements": [
+      "Sungka board",
+      "Cowries or seeds"
+    ],
+    "idealParticipants": "2 people",
+    "variationNotes": [
+      "Malay relative—variation within sowing boat boards."
+    ],
+    "category": "Mancala & Sowing",
+    "originCountry": "Philippines"
+  }
+}
