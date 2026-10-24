@@ -1,0 +1,185 @@
+{
+  "regions": {
+    "Africa": "Châu Phi",
+    "Asia": "Châu Á",
+    "Asia-Pacific": "Châu Á–Thái Bình Dương",
+    "Brazil": "Brazil",
+    "DACH": "DACH",
+    "Europe": "Châu Âu",
+    "Francophone Europe / Africa": "Châu Âu Pháp ngữ / Châu Phi",
+    "Global": "Toàn cầu",
+    "Global / AI": "Toàn cầu / AI",
+    "Global / North America": "Toàn cầu / Bắc Mỹ",
+    "Global South": "Phương Nam toàn cầu",
+    "Greater China": "Đại Trung Hoa",
+    "India": "Ấn Độ",
+    "Israel": "Israel",
+    "Korea": "Hàn Quốc",
+    "Latin America": "Mỹ Latinh",
+    "MENA": "MENA",
+    "Nordics": "Bắc Âu",
+    "Oceania": "Châu Đại Dương",
+    "South Asia": "Nam Á",
+    "Southern Cone": "Nón Nam",
+    "Türkiye / Eastern Europe": "Thổ Nhĩ Kỳ / Đông Âu",
+    "Vietnam": "Việt Nam",
+    "West Africa": "Tây Phi"
+  },
+  "sources": {
+    "techcrunch": {
+      "description": "Dây tin toàn cầu về startup và gọi vốn."
+    },
+    "crunchbase-news": {
+      "description": "Thông báo vòng gọi vốn và hoạt động nhà đầu tư."
+    },
+    "36kr": {
+      "description": "Tin startup và hard-tech tiếng Trung."
+    },
+    "krasia": {
+      "description": "Tình báo startup Đông Nam Á và Đông Á."
+    },
+    "techinasia": {
+      "description": "Tin gọi vốn và sản phẩm startup châu Á–Thái Bình Dương."
+    },
+    "nikkei-asia": {
+      "description": "Tin kinh doanh và venture APAC từ Nikkei."
+    },
+    "platum": {
+      "description": "Bàn startup và gọi vốn Hàn Quốc."
+    },
+    "yourstory": {
+      "description": "Câu chuyện khởi nghiệp và gọi vốn tập trung vào Ấn Độ."
+    },
+    "startup-india": {
+      "description": "Đăng ký chính phủ và tín hiệu công nhận cho startup Ấn Độ.",
+      "notes": "Đồng bộ hàng loạt mỗi 48 giờ"
+    },
+    "sifted": {
+      "description": "Tin startup và deep-tech gọi vốn châu Âu."
+    },
+    "eu-startups": {
+      "description": "Trình tổng hợp tin startup toàn châu Âu."
+    },
+    "les-echos-start": {
+      "description": "Bàn startup và scale-up tiếng Pháp."
+    },
+    "gruenderszene": {
+      "description": "Tin nhà sáng lập và gọi vốn tiếng Đức."
+    },
+    "africarena": {
+      "description": "Báo cáo venture và hệ sinh thái châu Phi."
+    },
+    "wamda": {
+      "description": "Bàn khởi nghiệp và gọi vốn MENA."
+    },
+    "contxto": {
+      "description": "Tin startup và VC Mỹ Latinh."
+    },
+    "startupbase-br": {
+      "description": "Bản đồ, xếp hạng và tình báo hệ sinh thái Brazil.",
+      "notes": "Quét sổ đăng ký mỗi 24 giờ"
+    },
+    "israel-tech": {
+      "description": "Tín hiệu gọi vốn deep-tech và an ninh mạng Israel."
+    },
+    "afrilabs": {
+      "description": "Cộng đồng founder và nhà đầu tư châu Phi.",
+      "notes": "Bản tin cộng đồng mỗi 12 giờ"
+    },
+    "pitchbook-public": {
+      "description": "Bản tóm tắt gọi vốn công khai và ghi chú thị trường."
+    },
+    "venturebeat": {
+      "description": "Tin sản phẩm/gọi vốn startup AI và doanh nghiệp."
+    },
+    "rest-of-world": {
+      "description": "Câu chuyện công nghệ ngoài Thung lũng Silicon."
+    },
+    "startupdaily-au": {
+      "description": "Bàn startup và thị trường vốn Úc/NZ."
+    },
+    "nordic-startup-news": {
+      "description": "Tin startup Bắc Âu từ Stockholm."
+    },
+    "webrazzi": {
+      "description": "Bàn công nghệ và gọi vốn startup tiếng Thổ Nhĩ Kỳ."
+    },
+    "vnexpress-startup": {
+      "description": "Báo cáo startup và kinh tế số Việt Nam."
+    },
+    "technode": {
+      "description": "Nguồn tin song ngữ Trung–toàn cầu về tech và venture."
+    },
+    "pulse-ng": {
+      "description": "Tin vốn startup Tây và Nam Phi."
+    },
+    "inc42": {
+      "description": "Tín hiệu gọi vốn và chính sách startup Ấn Độ."
+    },
+    "startupchile": {
+      "description": "Nguồn tin tăng tốc và chương trình hệ sinh thái LatAm.",
+      "notes": "Đồng bộ chương trình mỗi 24 giờ"
+    },
+    "dealstreetasia": {
+      "description": "Giao dịch thị trường tư nhân châu Á, gọi vốn và hoạt động nhà đầu tư."
+    }
+  },
+  "countries": {
+    "Argentina": "Argentina",
+    "Australia": "Australia",
+    "Austria": "Áo",
+    "Belgium": "Bỉ",
+    "Brazil": "Brazil",
+    "Bulgaria": "Bulgaria",
+    "Canada": "Canada",
+    "Chile": "Chile",
+    "China": "Trung Quốc",
+    "Colombia": "Colombia",
+    "Denmark": "Đan Mạch",
+    "Egypt": "Ai Cập",
+    "Finland": "Phần Lan",
+    "France": "Pháp",
+    "Germany": "Đức",
+    "Ghana": "Ghana",
+    "Greece": "Hy Lạp",
+    "Hong Kong": "Đặc khu Hành chính Hồng Kông, Trung Quốc",
+    "Iceland": "Iceland",
+    "India": "Ấn Độ",
+    "Indonesia": "Indonesia",
+    "Israel": "Israel",
+    "Italy": "Italy",
+    "Japan": "Nhật Bản",
+    "Jordan": "Jordan",
+    "Kenya": "Kenya",
+    "Lebanon": "Li-băng",
+    "Malaysia": "Malaysia",
+    "Mexico": "Mexico",
+    "Morocco": "Ma-rốc",
+    "Netherlands": "Hà Lan",
+    "New Zealand": "New Zealand",
+    "Nigeria": "Nigeria",
+    "Norway": "Na Uy",
+    "Peru": "Peru",
+    "Philippines": "Philippines",
+    "Poland": "Ba Lan",
+    "Portugal": "Bồ Đào Nha",
+    "Romania": "Romania",
+    "Rwanda": "Rwanda",
+    "Saudi Arabia": "Ả Rập Xê-út",
+    "Senegal": "Senegal",
+    "Singapore": "Singapore",
+    "South Africa": "Nam Phi",
+    "South Korea": "Hàn Quốc",
+    "Spain": "Tây Ban Nha",
+    "Sweden": "Thụy Điển",
+    "Switzerland": "Thụy Sĩ",
+    "Taiwan": "Đài Loan",
+    "Thailand": "Thái Lan",
+    "Turkey": "Thổ Nhĩ Kỳ",
+    "United Arab Emirates": "Các Tiểu Vương quốc Ả Rập Thống nhất",
+    "United Kingdom": "Vương quốc Anh",
+    "United States": "Hoa Kỳ",
+    "Uruguay": "Uruguay",
+    "Vietnam": "Việt Nam"
+  }
+}

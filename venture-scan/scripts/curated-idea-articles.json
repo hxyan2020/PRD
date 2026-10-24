@@ -1,0 +1,283 @@
+{
+  "_comment": "Topic-locked article URLs per seed idea. Extract prefers these over loose RSS keyword matching so galleries stay on-theme.",
+  "reef-credit-exchange": [
+    {
+      "url": "https://techcrunch.com/2024/11/07/ulysses-is-using-robots-to-restore-seagrass-populations/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/03/02/to-fix-the-climate-these-10-investors-are-betting-the-house-on-the-ocean/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/09/05/opna-wants-to-help-companies-hit-net-zero-by-finding-and-funding-carbon-projects/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "nightshift-nursing-ai": [
+    {
+      "url": "https://techcrunch.com/2024/02/06/ambience-healthcare-raises-70m-for-its-ai-assistant-led-by-openai-and-kleiner-perkins/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/01/05/nabla-raises-another-24-million-for-its-ai-assistant-for-doctors/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/09/20/corti-an-ai-co-pilot-for-healthcare-clinicians-raises-60m/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "kiln-microfactory": [
+    {
+      "url": "https://techcrunch.com/2023/08/09/saeki/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/02/08/daedalus-manufacturing-jonas-schneider-openai-robotics-raises-21-million/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2025/04/24/british-startup-isembard-lands-9m-to-reshore-manufacturing-for-critical-industries/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "farmstack-coldchain": [
+    {
+      "url": "https://techcrunch.com/2023/05/14/cold-chain-startup-figorr-raises-1-5m-backs-the-roll-out-of-data-driven-perishables-insurance/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2022/08/18/paris-based-koolboks-closes-2-5m-seed-round-to-scale-solar-refrigeration-across-africa/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcabal.com/2025/09/03/koolboks-raises-11-million-for-africa-expansion/",
+      "sourceId": "pulse-ng"
+    }
+  ],
+  "elderloop-companion": [
+    {
+      "url": "https://techcrunch.com/2022/03/15/the-elliq-eldercare-robot-is-finally-available/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/08/29/eldercare-robot-elliq-nabs-another-25-million-in-funding/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/01/09/elliq-ces/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "ledgerlane-freight": [
+    {
+      "url": "https://techcrunch.com/2023/09/11/kale-logistics-solutions-funding/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://inc42.com/buzz/saas-startup-trezix-bags-2-mn-to-streamline-import-and-export-solutions/",
+      "sourceId": "inc42"
+    },
+    {
+      "url": "https://inc42.com/buzz/cross-border-logistics-startup-xindus-bags-10-mn/",
+      "sourceId": "inc42"
+    }
+  ],
+  "playpane-classroom": [
+    {
+      "url": "https://techcrunch.com/2023/11/21/the-20-best-stem-toys-to-gift-coders-in-training/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/04/19/hear-classdojo-and-signalfire-unpack-edtechs-opportunity-ahead-on-techcrunch-live/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/07/14/kahoot-acquired/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "voltpath-depot": [
+    {
+      "url": "https://techcrunch.com/2023/03/24/gogoro-scales-battery-swapping-new-markets-b2b-partners/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/05/26/indian-ev-startup-zypp-electric-secures-eneos-backing-to-fund-expansion-to-southeast-asia/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/08/11/indias-kazam-powers-up-to-roll-out-ev-charging-in-southeast-asia/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "cuecraft-ads": [
+    {
+      "url": "https://techcrunch.com/2024/08/22/creatopy-which-automates-ad-creation-using-ai-raises-a-10m-series-a/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/05/01/ai-platform-to-analyze-creative-advertising-raises-5-1m-from-investors-including-a16z/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/06/ex-ramp-engineers-raise-20m-for-platform-melius-after-scrapping-their-first-product/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "harbor-legal-ops": [
+    {
+      "url": "https://techcrunch.com/2024/07/11/immigration-visa-alma-law/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/05/22/majority-immigrant-banking-20m/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/06/14/majority-digital-bank-migrants-9-75m-fintech/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "spore-kitchen": [
+    {
+      "url": "https://techcrunch.com/2023/12/04/farmless-alternative-protein-4m-food-tech/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/10/11/bon-vivant-seed/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2022/09/14/french-foodtech-standing-ovation-nabs-12-million-for-animal-free-dairy-cheese/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "meshpay-remit": [
+    {
+      "url": "https://techcrunch.com/2024/07/15/caliza-lands-8-5-million-to-bring-real-time-money-transfers-to-latin-america-using-usdc/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/05/28/felix-pago-raises-15-5-million-to-help-latino-workers-send-money-home-via-whatsapp/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://contxto.com/en/fintech/qash-and-banco-r4-launch-the-first-stablecoin-infrastructure-for-a-regulated-bank-in-latin-america/",
+      "sourceId": "contxto"
+    }
+  ],
+  "bushfire-mesh-sensors": [
+    {
+      "url": "https://techcrunch.com/2024/10/16/ororatechs-space-based-wildfire-detection-brings-in-25m-to-put-more-imaging-satellites-in-orbit/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/06/28/spire-and-ororatech-will-launch-a-fleet-of-wildfire-monitoring-satellites/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/09/16/google-and-muon-space-join-forces-to-continuously-scan-the-earth-for-wildfires/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "hanok-energy-retrofit": [
+    {
+      "url": "https://techcrunch.com/2023/01/31/energy-x-secures-20m-at-120m-valuation-to-slash-building-sector-emissions/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/04/06/heattransformers-series-a/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/03/22/lun-seed/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "atelier-carbon-ledger": [
+    {
+      "url": "https://techcrunch.com/2024/04/29/carbonfact-is-a-carbon-management-platform-designed-specifically-for-the-fashion-industry/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/09/19/plan-a-carbon-accounting/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2023/10/02/carbon-pollution-muir-ai-seed-round/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "mercado-voice-pos": [
+    {
+      "url": "https://contxto.com/en/venture-capital/clip-secures-100-million-investment-to-boost-digital-payments-in-mexico/",
+      "sourceId": "contxto"
+    },
+    {
+      "url": "https://techcrunch.com/2015/12/07/american-express-backs-mexican-fintech-startup-clip-as-emerging-markets-warm-to-financial-startups/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2025/10/08/square-launches-ai-voice-ordering-and-an-integrated-bitcoin-solution-for-merchants/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "cape-clinic-triage": [
+    {
+      "url": "https://techcabal.com/2025/08/14/gabbi-health-launches-gabbi-doc-your-24-7-ai-doctor-on-whatsapp/",
+      "sourceId": "pulse-ng"
+    },
+    {
+      "url": "https://techcabal.com/2026/01/24/rivia-is-using-whatsapp-in-its-healthcare/",
+      "sourceId": "pulse-ng"
+    },
+    {
+      "url": "https://techcabal.com/2022/11/11/contro-preseed-round/",
+      "sourceId": "pulse-ng"
+    }
+  ],
+  "fjord-battery-secondlife": [
+    {
+      "url": "https://techcrunch.com/2023/08/23/second-life-jaguar-i-pace-batteries-to-power-energy-storage-systems/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/05/30/cylib-wants-to-own-ev-battery-recycling-in-europe/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2026/05/05/moment-energy-raises-40m-to-meet-infinite-demand-for-power-with-ev-batteries/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "saigon-microgrid-coops": [
+    {
+      "url": "https://techcrunch.com/2023/08/22/solar-ai/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2022/06/15/crossboundary-gets-25m-for-solar-mini-grids-in-africa/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2022/09/08/odyssey-energy-solutions-continues-quest-to-electrify-developing-economies-with-5-4m-seed/",
+      "sourceId": "techcrunch"
+    }
+  ],
+  "iron-dome-devsecops": [
+    {
+      "url": "https://techcrunch.com/2023/09/20/legit-security-lands-40m-to-lock-down-apps-and-dev-environments/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/05/07/wiz-raises-1b-at-12b-valuation-expanding-through-acquisitions/",
+      "sourceId": "techcrunch"
+    },
+    {
+      "url": "https://techcrunch.com/2024/01/03/cloud-native-cybersecurity-startup-aqua-security-raises-60m-and-remains-a-unicorn/",
+      "sourceId": "techcrunch"
+    }
+  ]
+}

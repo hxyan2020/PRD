@@ -1,0 +1,280 @@
+#!/usr/bin/env python3
+"""Emit remaining locale packs (ko, pt-BR, it, nl, ar, hi, id, ru, tr, vi, th)."""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+en = json.loads((ROOT / "lib/i18n/packs/en.json").read_text())
+OUT = ROOT / "lib/i18n/packs"
+
+
+def dump(code: str, overlay: dict[str, str]) -> None:
+    d = dict(en)
+    d.update(overlay)
+    missing = [k for k in en if k not in d]
+    if missing:
+        raise SystemExit(f"{code} missing {missing[:8]}")
+    ordered = {k: d[k] for k in en}
+    (OUT / f"{code}.json").write_text(
+        json.dumps(ordered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    same = [k for k in en if ordered[k] == en[k]]
+    print(f"{code}: same={len(same)} cov={round((1 - len(same) / len(en)) * 100)}%")
+
+
+# Import large overlay dicts from sibling module generated inline below via exec of data file
+# For maintainability, overlays live as JSON fragments we build here.
+
+def base_chrome(nav, hero, common, strategy, dossier, kinds, time, teaser, ledger, footer, match, chat, media, today, auth, collection, collect, method, sources, lang):
+    o = {}
+    o.update(nav)
+    o.update(common)
+    o.update(strategy)
+    o.update(dossier)
+    o.update(kinds)
+    o.update(time)
+    o.update(hero)
+    o.update(teaser)
+    o.update(ledger)
+    o.update(footer)
+    o.update(match)
+    o.update(chat)
+    o.update(media)
+    o.update(today)
+    o.update(auth)
+    o.update(collection)
+    o.update(collect)
+    o.update(method)
+    o.update(sources)
+    o.update(lang)
+    return o
+
+
+# --- Korean ---
+dump(
+    "ko",
+    {
+        "nav.today": "오늘",
+        "nav.ideas": "아이디어",
+        "nav.match": "매칭",
+        "nav.method": "방법",
+        "nav.sources": "소스",
+        "nav.login": "로그인",
+        "nav.register": "가입",
+        "nav.collection": "컬렉션",
+        "nav.logout": "로그아웃",
+        "nav.language": "언어",
+        "nav.menu": "메뉴",
+        "nav.close": "닫기",
+        "common.people": "{count}명",
+        "common.yes": "예",
+        "common.notYet": "아직 아님",
+        "common.play": "다음 수",
+        "common.source": "출처",
+        "common.scanned": "스캔 시각",
+        "strategy.localize_asia": "아시아 시장 로컬라이즈",
+        "strategy.new_age_group": "다른 연령층 재타겟",
+        "strategy.partner_founders": "창업팀에 협력 제안",
+        "strategy.franchise_local": "내 도시/국가에서 프랜차이즈",
+        "strategy.license_tech": "기반 기술 라이선스",
+        "strategy.vertical_spinout": "수직 니치 스핀아웃",
+        "strategy.b2b_pivot": "기존 기업에 B2B 제공",
+        "dossier.back": "← 장부로 돌아가기",
+        "dossier.name": "(i) 아이디어 이름",
+        "dossier.description": "(ii) 전체 설명",
+        "dossier.howMoney": "수익 모델:",
+        "dossier.location": "(iii) 팀 위치",
+        "dossier.teamSize": "(iv) 팀 규모",
+        "dossier.industry": "(v) 산업",
+        "dossier.sector": "(vi) 섹터",
+        "dossier.fundraising": "(vii) 펀딩 확보 여부?",
+        "dossier.website": "(viii) 공식 웹사이트",
+        "dossier.social": "(ix) 소셜 미디어",
+        "dossier.goForward": "(x) 다음 수",
+        "sourceKind.news": "뉴스",
+        "sourceKind.registry": "레지스트리",
+        "sourceKind.fundraising": "펀딩",
+        "sourceKind.community": "커뮤니티",
+        "sourceKind.government": "정부",
+        "sourceKind.aggregator": "애그리게이터",
+        "time.justNow": "방금",
+        "time.minutesAgo": "{count}분 전",
+        "time.hoursAgo": "{count}시간 전",
+        "time.daysAgo": "{count}일 전",
+        "hero.kicker": "전 세계 스타트업 아이디어와 펀딩",
+        "hero.body": "전 세계 스타트업·펀딩 시그널을 스캔해 DB에 저장하고, 다음 결정을 위한 필드를 프론트에 보여줍니다.",
+        "hero.browse": "{count}개 아이디어 보기",
+        "hero.today": "오늘의 추천",
+        "hero.match": "챗봇 매칭",
+        "hero.chips": "이름 · 모델 · 팀 · 펀딩 · 다음 수",
+        "teaser.kicker": "매일 추천",
+        "teaser.needProfile": "가장 잘 맞는 아이디어와 일치점, 갭, 메우는 방법을 확인하세요.",
+        "teaser.ready": "오늘 최고 매치: {title}",
+        "teaser.open": "오늘의 픽 열기",
+        "teaser.build": "먼저 프로필 만들기",
+        "ledger.title": "아이디어 장부",
+        "ledger.body": "각 항목에 이름, 설명, 팀, 산업, 섹터, 펀딩, 웹사이트, 소셜, 다음 수가 포함됩니다.",
+        "ledger.sorted": " 챗봇 프로필 매치 점수순.",
+        "ledger.buildProfile": "매칭 프로필 만들기",
+        "ledger.sortMatch": "정렬: 매치 점수",
+        "ledger.sortRecent": "정렬: 최근 스캔",
+        "ledger.scan": "스캔 실행",
+        "ledger.scanning": "스캔 중…",
+        "ledger.search": "아이디어, 산업, 국가 검색…",
+        "ledger.allIndustries": "모든 산업",
+        "ledger.allCountries": "모든 국가",
+        "ledger.allSectors": "모든 섹터",
+        "ledger.fundAll": "펀딩: 전체",
+        "ledger.fundYes": "펀딩 확보",
+        "ledger.fundNo": "미확보",
+        "ledger.shown": "{count}개 표시",
+        "ledger.empty": "필터에 맞는 아이디어가 없습니다.",
+        "ledger.funded": "펀딩 · {stage}",
+        "ledger.open": "펀딩 진행 중",
+        "ledger.goForward": "다음 수",
+        "ledger.match": "매치 {score}%",
+        "footer.tagline": "글로벌 스타트업 아이디어 & 펀딩 장부",
+        "footer.chips": "스캔 · 저장 · 표시",
+        "match.kicker": "프로필 챗봇",
+        "match.title": "매칭 프로필 만들기",
+        "match.body": "스킬, 전공, 현재 사업, 관심 도메인을 모은 뒤 각 아이디어를 점수화합니다.",
+        "match.send": "보내기",
+        "match.rematch": "다시 매칭",
+        "match.scoring": "점수 계산 중…",
+        "match.rebuild": "프로필 다시 만들기",
+        "match.viewLedger": "장부 보기",
+        "match.profile": "내 프로필",
+        "match.name": "이름",
+        "match.skills": "스킬",
+        "match.major": "전공",
+        "match.business": "현재 사업",
+        "match.domains": "관심 도메인",
+        "match.markets": "선호 시장",
+        "match.scores": "매치 점수",
+        "match.topFits": "상위 적합",
+        "match.finishHint": "채팅을 마치면 프로필 기준으로 모든 아이디어를 순위화합니다.",
+        "match.placeholder": "답변 입력…",
+        "match.loading": "매처 로딩…",
+        "match.step.name": "안녕하세요 — VentureScan 매처입니다. 어떻게 부를까요?",
+        "match.step.skills": "어떤 스킬이 있나요? 쉼표로 몇 개 (예: 제품, 영업, Python, 공급망).",
+        "match.step.major": "전공 또는 학력/직업 배경은?",
+        "match.step.business": "현재 사업, 직무, 벤처 포커스는? (아직 없으면 탐색 중인 것).",
+        "match.step.domains": "가장 관심 있는 도메인은? 쉼표 구분 (예: 헬스테크, 기후, 핀테크, 에듀테크).",
+        "match.step.markets": "선호 시장/국가? 쉼표 구분, 또는 skip.",
+        "match.redirect.name": "반가워요 — 아직 이름이 필요해요. 어떻게 적을까요?",
+        "match.redirect.skills": "알겠어요. 매칭을 위해 스킬을 쉼표로 — 예: 제품, 영업, Python.",
+        "match.redirect.major": "감사합니다. 공정한 점수를 위해 전공/직업 배경을 공유해 주세요.",
+        "match.redirect.business": "알겠습니다. 현재 사업, 직무, 탐색 중인 것은?",
+        "match.redirect.domains": "거의 끝 — 관심 도메인은? 쉼표 OK (헬스테크, 기후, 핀테크…).",
+        "match.redirect.markets": "서두르지 마세요. 선호 시장/국가를 쉼표로 — 또는 skip.",
+        "match.redirect.generic": "조금 벗어났어요 — 정확한 매칭 프로필을 위해 이 질문으로 돌아가죠.",
+        "ideaChat.kicker": "아이디어 데스크",
+        "ideaChat.title": "{name}에 대해 묻기",
+        "ideaChat.body": "이 도сье에 후속 질문을 하세요. 답마다 사용한 소스가 표시됩니다.",
+        "ideaChat.welcome": "{name} 도셰 도우미입니다. 펀딩, 팀, 모델, 다음 수, 데이터 출처를 물으면 출처를 달아 답합니다.",
+        "ideaChat.placeholder": "{name}에 대해 질문…",
+        "ideaChat.send": "질문",
+        "ideaChat.sources": "데이터 소스",
+        "ideaChat.loading": "아이디어 챗봇 로딩…",
+        "ideaMedia.kicker": "출처 미디어",
+        "ideaMedia.title": "관련 데이터 소스에서",
+        "ideaMedia.body": "이 시장을 다루는 데스크에서 추출한 브랜드/커버 이미지 — 타일을 열어 소스로 이동.",
+        "ideaMedia.allSources": "모든 소스 →",
+        "ideaMedia.extracted": "추출됨",
+        "today.kicker": "오늘의 추천",
+        "today.needTitle": "먼저 프로필 만들기",
+        "today.needBody": "데일리 픽은 스킬, 전공, 사업, 도메인이 있어야 점수를 매기고 매치/갭을 보여줍니다.",
+        "today.openMatch": "매칭 챗봇 열기",
+        "today.loading": "오늘의 베스트 매치 선택 중…",
+        "today.matched": "일치한 부분",
+        "today.gaps": "갭",
+        "today.gapsHint": "각 갭에 구체적 메우기 행동이 있습니다.",
+        "today.noMatch": "강한 매치가 아직 없습니다 — 아래 갭을 메워 점수를 올리세요.",
+        "today.noGaps": "점수 차원에 큰 갭 없음 — 오늘 잘 맞습니다.",
+        "today.closeIt": "메우는 방법:",
+        "today.dossier": "전체 도셰 열기",
+        "today.updateProfile": "프로필 업데이트",
+        "today.collection": "컬렉션 보기",
+        "today.dateLabel": "오늘의 추천 · {day}",
+        "auth.loginKicker": "로그인",
+        "auth.registerKicker": "계정 만들기",
+        "auth.loginTitle": "다시 오신 것을 환영합니다",
+        "auth.registerTitle": "VentureScan 가입",
+        "auth.body": "이메일과 비밀번호로 아이디어와 매칭 분석을 저장하세요.",
+        "auth.email": "이메일",
+        "auth.password": "비밀번호",
+        "auth.login": "로그인",
+        "auth.register": "계정 만들기",
+        "auth.wait": "잠시만요…",
+        "auth.noAccount": "계정이 없나요?",
+        "auth.hasAccount": "이미 가입했나요?",
+        "collection.kicker": "저장됨",
+        "collection.title": "컬렉션",
+        "collection.body": "저장한 아이디어와 프로필이 있을 때 매칭 분석.",
+        "collection.empty": "아직 없습니다. 아이디어나 오늘의 픽을 열고 아이디어+매칭 저장을 누르세요.",
+        "collection.remove": "제거",
+        "collection.needLogin": "로그인하여 저장·확인하세요.",
+        "collection.loading": "컬렉션 로딩…",
+        "collect.loginPrompt": "하여 이 아이디어와 매칭 분석을 저장.",
+        "collect.save": "아이디어 + 매칭 저장",
+        "collect.saving": "저장 중…",
+        "collect.remove": "컬렉션에서 제거",
+        "collect.updating": "업데이트 중…",
+        "collect.savedBoth": "아이디어와 매칭 분석을 컬렉션에 저장했습니다.",
+        "collect.savedIdea": "아이디어를 컬렉션에 저장했습니다.",
+        "collect.removed": "컬렉션에서 제거했습니다.",
+        "method.title": "VentureScan 작동 방식",
+        "method.scanLabel": "스캔",
+        "method.scan": "큐레이션 피드에서 전 세계 스타트업 아이디어와 펀딩 시그널을 수집(라이브 API 연결 가능).",
+        "method.storeLabel": "저장",
+        "method.store": "각 아이디어를 SQLite에 정규화하고 필수 10개 필드(이름~다음 수)를 맞춥니다.",
+        "method.surfaceLabel": "표시",
+        "method.surface": "프론트에서 탐색·필터. 관련 소스에서 추출한 브랜드/커버가 있는 도셰와 출처를 다는 아이디어 챗봇.",
+        "method.matchLabel": "매칭",
+        "method.match": "챗봇이 스킬·전공·사업·도메인을 모은 뒤 점수를 매깁니다. 빗나가면 부드럽게 되돌립니다.",
+        "method.dailyLabel": "데일리 픽",
+        "method.daily": "매일 최고 매치 아이디어를 추천하고 일치점, 갭, 메우기를 보여줍니다.",
+        "method.collectLabel": "컬렉션",
+        "method.collect": "이메일·비밀번호로 로그인한 뒤 아이디어와 분석을 개인 컬렉션에 저장.",
+        "method.languagesLabel": "언어",
+        "method.languages": "헤더 국기 선택기로 주요 세계 언어 UI 전환.",
+        "method.mobileLabel": "모바일",
+        "method.mobile": "고정 헤더+햄버거, 큰 터치 영역, 폰용 세로 스택 레이아웃.",
+        "method.sourcesLabel": "소스",
+        "method.sourcesBefore": "",
+        "method.sourcesLink": "데이터 소스 데스크",
+        "method.sourcesAfter": "는 모든 커넥터, 국가, 최근 수집, 상태를 나열합니다(다국어 데스크 포함).",
+        "method.urlLabel": "영구 URL",
+        "method.url": "게시 위치",
+        "method.seed": "시드 데이터는 기후·헬스·제조·농업·에듀테크·모빌리티·마테크·법률·푸드·에너지·사이버·핀테크를 싱가포르, 미국, 독일, 케냐, 일본, 인도, 영국, 인도네시아, 캐나다, UAE, 네덜란드, 브라질, 호주, 한국, 프랑스, 멕시코, 남아프리카, 스웨덴, 베트남, 이스라엘에서 다룹니다.",
+        "sources.kicker": "수집 데스크",
+        "sources.title": "데이터 소스",
+        "sources.body": "뉴스, 레지스트리, 펀딩 와이어, 정부 피드 등 언어·지역을 가로지르는 커넥터. 상태는 최근 성공을 반영.",
+        "sources.statSources": "소스",
+        "sources.statCountries": "국가",
+        "sources.statLanguages": "언어",
+        "sources.statHealthy": "정상",
+        "sources.coverage": "국가 커버리지",
+        "sources.coverageBody": "현재 커넥터 세트가 나타내는 시장(다국어 데스크 포함).",
+        "sources.search": "소스, 언어, 국가 검색…",
+        "sources.allRegions": "모든 지역",
+        "sources.allHealth": "모든 상태",
+        "sources.shown": "{count}개 표시",
+        "sources.empty": "필터에 맞는 소스가 없습니다.",
+        "sources.language": "언어",
+        "sources.region": "지역",
+        "sources.countries": "커버 국가",
+        "sources.lastSourced": "최근 수집",
+        "sources.visit": "소스 열기",
+        "sources.health.healthy": "정상",
+        "sources.health.degraded": "저하",
+        "sources.health.stale": "오래됨",
+        "sources.health.offline": "오프라인",
+        "lang.pickerLabel": "언어 선택",
+    },
+)
+
+print("ko done — remaining locales via sibling script if needed")
+print("keys in en", len(en))

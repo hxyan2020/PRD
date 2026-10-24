@@ -1,0 +1,99 @@
+# Daily VentureScan ingest at 07:00 Asia/Shanghai (UTC+8).
+# GitHub Actions cron is UTC-only → 23:00 UTC == 07:00 UTC+8.
+#
+# Scheduled workflows ONLY run from the repository default branch (main).
+# Until this file is merged to main, use workflow_dispatch after merge, or
+# run `npm run scan:daily` locally / in CI on this branch.
+name: VentureScan daily scan
+
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+  # Refresh when scan tooling changes on main (not public/data — that would loop
+  # on the bot’s own catalog commit).
+  push:
+    branches: [main]
+    paths:
+      - "venture-scan/lib/**"
+      - "venture-scan/scripts/daily-scan.ts"
+      - "venture-scan/scripts/verify-daily-refresh.ts"
+      - "venture-scan/scripts/export-ideas-snapshot.ts"
+      - ".github/workflows/venture-scan-daily.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: venture-scan-daily
+  cancel-in-progress: false
+
+jobs:
+  scan-and-publish:
+    # Skip re-entry when the previous daily job pushed tooling (or a human
+    # force-pushes as the Actions bot).
+    if: github.actor != 'github-actions[bot]' && github.actor != 'venture-scan-bot'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: venture-scan
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Required so later git push (catalog + gh-pages) can authenticate.
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: venture-scan/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Verify schedule constants match this workflow
+        run: npm test -- lib/daily-scan.test.ts
+
+      - name: Daily source probe + idea catalog refresh (07:00 UTC+8)
+        run: npm run scan:daily
+
+      - name: Verify refresh artifacts
+        run: npm run verify:daily
+
+      - name: Fill photo album gaps (official site + articles only)
+        run: node scripts/extract-idea-photos.mjs
+        continue-on-error: true
+
+      - name: Test
+        run: npm test
+
+      - name: Deploy GitHub Pages
+        run: npm run deploy:pages
+        env:
+          # deploy-gh-pages.mjs pushes origin/gh-pages using checkout credentials.
+          GIT_TERMINAL_PROMPT: "0"
+
+      # Commit after deploy so main keeps the same ideas.json the site published
+      # (build:static re-exports the snapshot while preserving daily schedule).
+      - name: Commit catalog + ingest refresh
+        working-directory: .
+        run: |
+          git config user.name "venture-scan-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            venture-scan/public/data/ideas.json \
+            venture-scan/public/data/source-ingest.json \
+            venture-scan/public/idea-photos \
+            || true
+          if git diff --staged --quiet; then
+            echo "No catalog changes to commit"
+          else
+            git commit -m "chore(venture-scan): daily scan 07:00 UTC+8 $(TZ=Asia/Shanghai date +%Y-%m-%d)"
+            # Push the branch Actions checked out (main on schedule).
+            git push origin HEAD
+          fi

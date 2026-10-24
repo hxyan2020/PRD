@@ -1,0 +1,182 @@
+{
+  "reef-credit-exchange": {
+    "name": "ReefCredit Exchange",
+    "description": "Ein Marktplatz, der verifizierte Ergebnisse der Korallenriff-Restaurierung tokenisiert und kohlenstoffnahe Biodiversitätskredite an Hotels, Versicherer und Küstenverwaltungen verkauft. Feldpartner laden Sensor- und Tauchprotokolle hoch; ReefCredit stellt handelbare Zertifikate aus.",
+    "businessModel": "Nimmt 8–12 % Transaktionsgebühr auf Kreditverkäufe plus SaaS-Sitze für Verifizierungs-Dashboards an Resorts und kommunale Käufer.",
+    "industry": "Klima-Tech",
+    "sector": "Blaue Wirtschaft / Biodiversitätskredite",
+    "fundingRoundNote": "Geführt von regionalem Klimafonds mit Tourismus-LPs",
+    "goForwardSummary": "Biete dich als Franchise-Verifizierungs-Hub in deiner Küstenstadt an—onboarde Tauchpartner und verkaufe Kredite an lokale Hotels, während die Mutterplattform das Settlement übernimmt."
+  },
+  "nightshift-nursing-ai": {
+    "name": "Nightshift Nursing AI",
+    "description": "Ambient Voice-Assistent für Nachtschichten im Krankenhaus, der Pflegeberichte entwirft, Verschlechterungsrisiken aus Vitalzeichen-Gesprächen erkennt und dem Morgen-Team ein strukturiertes Briefing übergibt. Gebaut für akut unterbesetzte Stationen.",
+    "businessModel": "Jährliche Lizenz pro Bett an Krankenhaussysteme; Premium-Stufe inkl. EHR-Write-back-Konnektoren.",
+    "industry": "Health-Tech",
+    "sector": "Krankenhaus-Workflow-KI",
+    "fundingRoundNote": "Strategisches Co-Investment eines Krankenhaussystems",
+    "goForwardSummary": "Übertrage den Nachtstations-Workflow auf asiatische Privatklinikketten; lokalisiere Sprachpakete (JP/KR/ZH) und starte mit ICUs, in denen bereits auf Englisch dokumentiert wird."
+  },
+  "kiln-microfactory": {
+    "name": "Kiln Microfactory",
+    "description": "Geteilte Nachbarschafts-Mikrofabriken für Keramik- und Metall-3D-Druck: Designer laden CAD hoch, wählen Materialien und erhalten noch in derselben Woche Kleinserien—ohne eigene Maschinen. Zielgruppe: Indie-Hardwaremarken und Architekturbüros.",
+    "businessModel": "Maschinen-Nutzungsgebühren + Materialmarge + optionale Design-to-Manufacture-Concierge-Retainers.",
+    "industry": "Fertigung",
+    "sector": "Verteilte Fertigung",
+    "fundingRoundNote": "Angel-Runde über €1.2M in Vorbereitung",
+    "goForwardSummary": "Franchise eine Mikrofabrikbucht in deiner Stadt mit ihrem Software-Stack—pflege lokale Designerbeziehungen und lizenziere Kilns Job-Scheduler sowie Materialpreise."
+  },
+  "farmstack-coldchain": {
+    "name": "FarmStack Coldchain",
+    "description": "Solarunterstützte modulare Kühlräume und IoT-Verderbsensoren für Aggregatoren von Kleinerzeugern. Landwirte mieten Stellplätze pro Kiste; Käufer erhalten qualitätsgesicherte Lieferfenster per WhatsApp + App.",
+    "businessModel": "Hardware-Leasing + Kühlgebühren pro Kiste + Marketplace-Take-Rate bei gebuchten Lots.",
+    "industry": "AgriTech",
+    "sector": "Kühllogistik",
+    "fundingRoundNote": "DFIs + Climate-Growth-Equity",
+    "goForwardSummary": "Frage das Gründungsteam nach Kooperation als lizenzierter Betreiber in Südostasien oder Südasien—repliziere das Kistenmietmodell mit lokalen Solar-EPC-Partnern."
+  },
+  "elderloop-companion": {
+    "name": "ElderLoop Companion",
+    "description": "Tablet- und Wearable-Begleiter mit täglichen Check-ins für alleinlebende Senioren, Familien-Alerts bei Anomaliemustern und Buchung lokaler Pflegebesuche. Fokus auf Voice-first-UX und reibungsarme Familien-Dashboards.",
+    "businessModel": "Monatliches Abo pro Haushalt; Pflegeagenturen zahlen für Lead-Referrals und Roster-Tools.",
+    "industry": "Health-Tech",
+    "sector": "Altenpflege / Consumer",
+    "fundingRoundNote": "Corporate Venture von Telko + Versicherer",
+    "goForwardSummary": "Biete denselben Stack einer anderen Altersgruppe an—junge Remote-Worker, die Eltern im Ausland betreuen—oder bündele ihn als Corporate-EAP-Benefit für Mitarbeitende mit overseas-Senioren."
+  },
+  "ledgerlane-freight": {
+    "name": "LedgerLane Freight",
+    "description": "KI-Dokumentationsschicht, die Zollpakete, Konnossemente und Compliance-Trails für grenzüberschreitende KMU-Exporteure automatisch erstellt. Integriert WhatsApp-Dokumentdrops und gängige ERPs.",
+    "businessModel": "SaaS-Gebühr pro Sendung + Premium-Compliance-Versicherung mit Partner-Underwritern.",
+    "industry": "Logistics-Tech",
+    "sector": "Trade-Compliance-SaaS",
+    "fundingRoundNote": "Investoren des Korridors Indien–Naher Osten",
+    "goForwardSummary": "Biete es als White-Label-Compliance-Middleware an Spediteure und Banken in deinem Markt an, statt direkt um End-KMU-Logos zu kämpfen."
+  },
+  "playpane-classroom": {
+    "name": "PlayPane Classroom",
+    "description": "Physische STEM-Kits synchron mit Lehrer-Dashboard für Nachmittagsprogramme. Kinder bauen Elektronikprojekte; die App trackt Mastery und empfiehlt nächste Kits. Starker Fußabdruck bei UK Academy Trusts.",
+    "businessModel": "Hardware-Marge der Kits + jährliche Classroom-Software-Sitze an Schulen und Franchise-Nachhilfezentren.",
+    "industry": "EdTech",
+    "sector": "K-12 Hands-on-Lernen",
+    "fundingRoundNote": "Offene Runde über £2.5M",
+    "goForwardSummary": "Kopiere das Kit-plus-Dashboard-Modell für asiatische Enrichment-Zentren; lokalisiere Curricula auf Olympiaden-Pfade und verkaufe über Nachhilfe-Franchise-Netzwerke."
+  },
+  "voltpath-depot": {
+    "name": "VoltPath Depot",
+    "description": "Batteriewechsel-Depots für Last-Mile-Flotten mit standardisierten Packs. Kuriere tauschen in unter zwei Minuten; VoltPath besitzt das Pack-Inventar und verkauft Energy-as-a-Service an Logistikmarken.",
+    "businessModel": "Gebühren pro Swap + monatliche Flotten-SLA-Verträge; Restwert aus Second-Life-Pack-Verkäufen.",
+    "industry": "Mobilität",
+    "sector": "EV-Batterieinfrastruktur",
+    "fundingRoundNote": "Ride-Hailing-Strategisch + Infrastructure-PE",
+    "goForwardSummary": "Biete dich als Franchise-Depotbetreiber in deiner Stadt an—VoltPath liefert Packs und Software; du sicherst Fläche und Kurierverträge."
+  },
+  "cuecraft-ads": {
+    "name": "CueCraft Ads",
+    "description": "Generatives Ad-Studio, das aus einer Produkt-URL lokalisierte Creative-Packs für Meta, TikTok und Xiaohongshu erzeugt—inkl. Compliance-Checks für Claim-Sprache je Markt.",
+    "businessModel": "Sitzbasiertes SaaS für Agenturen + Nutzungskredite für Render-Volumen; Enterprise-SSO-Pläne.",
+    "industry": "MarTech",
+    "sector": "Creative Automation",
+    "fundingRoundNote": "Nordamerika-Seed mit Asia-GTM-Angels",
+    "goForwardSummary": "Spalte eine vertikale Nische aus—z. B. nur Beauty-D2C—mit Xiaohongshu-nativen Templates und verkaufe an Agenturen, die bereits in dieser Kategorie spezialisiert sind."
+  },
+  "harbor-legal-ops": {
+    "name": "Harbor Legal Ops",
+    "description": "Workflow-OS für Boutique-Kanzleien in Immigration und Visa: Client-Intake, Dokumenten-Checklisten, Fristkalender und verschlüsselter Client-Chat. Senkt Admin-Stunden, damit Anwälte mehr Beratungszeit abrechnen.",
+    "businessModel": "Monatliches SaaS pro Anwalt; Premium-E-Signatur und Behördenformular-Filler als Add-ons.",
+    "industry": "Legal-Tech",
+    "sector": "Kanzleimanagement",
+    "fundingRoundNote": "Bootstrapped + Friends/Family",
+    "goForwardSummary": "Frage das Gründungsteam nach Kooperation als APAC-Reseller—bündele Harbor mit deinem lokalen Immigrationsberatungsnetz und teile MRR."
+  },
+  "spore-kitchen": {
+    "name": "Spore Kitchen",
+    "description": "Precision-Fermentation-Startup, das milchidentische Proteine für Eis und Creamer ohne Kühe herstellt. Verkauft B2B-Zutaten an CPG-Marken mit saubereren Scope-3-Narrativen.",
+    "businessModel": "Zutaten-Lieferverträge mit Volumenstaffeln; Co-Development-Gebühren für Custom-Formulierungen.",
+    "industry": "Food-Tech",
+    "sector": "Alternative Proteine",
+    "fundingRoundNote": "Europäisches Food-Tech-Growth-Syndikat",
+    "goForwardSummary": "Lizenziere Fermentationsstamm und Prozess-IP für eine regionale Anlage statt fertiges Protein zu importieren—partner mit lokalem CPG-Co-Packer."
+  },
+  "meshpay-remit": {
+    "name": "MeshPay Remit",
+    "description": "Günstige Remittance-Rails über lokale Bankpartner und Stablecoin-Settlement zwischen Brasilien und afrikanischen Korridoren. Fokus auf Micro-Merchant-Payouts für Diaspora-E-Commerce-Verkäufer.",
+    "businessModel": "FX- und Transfergebühr-Spread; Float-Yield auf Settlement-Salden; API-Gebühren für Marketplace-Integrationen.",
+    "industry": "FinTech",
+    "sector": "Grenzüberschreitende Zahlungen",
+    "fundingRoundNote": "LatAm-Fintech + Afrika-fokussierter Fonds",
+    "goForwardSummary": "Kopiere das Korridordesign für Asien–Afrika-Remittance-Lanes (z. B. Singapur/HK → Ostafrika) mit derselben Merchant-Payout-Positionierung."
+  },
+  "bushfire-mesh-sensors": {
+    "name": "Bushfire Mesh Sensors",
+    "description": "Energiesparende Mesh-Sensoren und Satelliten-Uplinks, die frühe Wärmesignaturen und Rauchfahnen in ländlichen Feuerzonen erkennen. Alerts speisen lokale CFA/SES-Dashboards und Versicherer-Verlustmodelle.",
+    "businessModel": "Hardware + jährliches Monitoring-SaaS an Kommunen und Utilities; Datenlizenzierung an Versicherer.",
+    "industry": "Klima-Tech",
+    "sector": "Waldbranderkennung",
+    "fundingRoundNote": "Klima-Angels + Disaster-Tech-Grant-Stack",
+    "goForwardSummary": "Portiere Mesh- und Alert-Stack auf südostasiatische Torffeuer-Korridore und pair mit lokalen Telko-LoRaWAN-Partnern."
+  },
+  "hanok-energy-retrofit": {
+    "name": "Hanok Energy Retrofit",
+    "description": "Modulare Dämm- und Wärmepumpen-Kits für traditionelle koreanische Hofhäuser, verkauft mit subventionierter Finanzierung und Automatisierung der kommunalen Rabatt-Papierarbeit.",
+    "businessModel": "Kit-Marge + Take-Rate der Installationspartner + SaaS für Rabattanträge an Handwerker.",
+    "industry": "Klima-Tech",
+    "sector": "Wohngebäude-Retrofit",
+    "fundingRoundNote": "Co-Investment koreanischer Green Bank",
+    "goForwardSummary": "Franchise Installations-Crews zuerst in sekundären koreanischen Städten, dann adaptiere Kits für japanischen Holzbestand."
+  },
+  "atelier-carbon-ledger": {
+    "name": "Atelier Carbon Ledger",
+    "description": "Scope-3-Accounting-OS für französische Luxus-Maisons, das Lieferanten-Ateliers, Materialien und Logistik in auditfertige Carbon-Ledgers für CSRD-Reporting überführt.",
+    "businessModel": "Enterprise-SaaS-Sitze + Footprint-Berechnungskredite pro SKU; Auditor-Co-Sell-Revenue-Share.",
+    "industry": "Klima-Tech",
+    "sector": "ESG / Lieferkette",
+    "fundingRoundNote": "Europäisches Climate Growth + Fashion-Strategics",
+    "goForwardSummary": "Spalte ein Ready-to-Wear-only-SKU-Modul aus und verkaufe es an Mid-Market-Marken, die volle Maison-Deployments nicht stemmen können."
+  },
+  "mercado-voice-pos": {
+    "name": "Mercado Voice POS",
+    "description": "Voice-first Point-of-Sale für mexikanische Tiendas und Straßenhändler: Inventar und Verkäufe auf Spanisch sprechen, WhatsApp-Belege syncen und Micro-Working-Capital-Linien freischalten.",
+    "businessModel": "Hardware-Kit-Marge + monatliches SaaS + Zinsanteil am Embedded Credit mit Bankpartnern.",
+    "industry": "FinTech",
+    "sector": "KMU-Zahlungen / Embedded Finance",
+    "fundingRoundNote": "LatAm-Fintech-Syndikat",
+    "goForwardSummary": "Nutze die Voice-POS-UX für informelle Retail-Korridore in Bahasa/Tagalog mit lokalen Telko-Wallets."
+  },
+  "cape-clinic-triage": {
+    "name": "Cape Clinic Triage",
+    "description": "WhatsApp- und USSD-Triage-Bots, die Township-Patienten in die richtige Klinik-Warteschlange leiten, mit Nurse-Dashboards und Ambulanz-ETA-Sharing für Kliniken im Kapstadt-Metro.",
+    "businessModel": "SaaS pro Klinik + Lizenzen an provinzielle Gesundheitssysteme; optionaler Telehealth-Upsell.",
+    "industry": "Health-Tech",
+    "sector": "Zugang zur Primärversorgung",
+    "fundingRoundNote": "Sammelt $3.2M für Multi-Provinz-Rollout",
+    "goForwardSummary": "Partner als Ostafrika-Deployment-Operator—lokalisiere USSD-Flows und Klinikintegrationen, während Cape Clinic die Core-Engine behält."
+  },
+  "fjord-battery-secondlife": {
+    "name": "Fjord Battery SecondLife",
+    "description": "Bereitet EV-Packs nordischer Flotten zu modularen Heim- und Cabin-Speichern mit Remote-Diagnostik und Gebotsfähigkeit für Netz-Ancillary-Services auf.",
+    "businessModel": "Refurb-Marge der Packs + monatliches Energy-as-a-Service; Revenue-Share aus Grid Services.",
+    "industry": "Energie",
+    "sector": "Batterie-Kreislaufwirtschaft",
+    "fundingRoundNote": "Nordische Industrie + Climate-PE",
+    "goForwardSummary": "Lizenziere BMS- und Diagnostik-Stack an asiatische EV-OEMs mit Bedarf an EU-Second-Life-Compliance-Pfaden."
+  },
+  "saigon-microgrid-coops": {
+    "name": "Saigon Microgrid Co-ops",
+    "description": "Solar-plus-Speicher-Co-ops für vietnamesische Industrieparks, die Dächer bündeln, Energiekredite on-chain lite abrechnen und Überschüsse unter DPPA-Regeln ans Netz verkaufen.",
+    "businessModel": "Projektentwicklungsgebühren + laufendes Co-op-Management-SaaS + Energy-Trading-Spread.",
+    "industry": "Klima-Tech",
+    "sector": "Verteilte Energie",
+    "fundingRoundNote": "SEA-Klimafonds + Industriepark-LPs",
+    "goForwardSummary": "Franchise Co-op-Bildungs-Playbooks in sekundäre vietnamesische Städte und kambodschanische Grenzparks."
+  },
+  "iron-dome-devsecops": {
+    "name": "Iron Lattice DevSecOps",
+    "description": "Kontinuierliche Security-Pipeline für israelische Deep-Tech-Startups, die SBOM, Cloud-Misconfigs und Red-Team-Findings in boardfertige Risk Scores für Series-A-Diligence überführt.",
+    "businessModel": "SaaS pro Engineer + Premium-Pen-Test-Credits; VC-Diligence-White-Label-Pläne.",
+    "industry": "Cybersicherheit",
+    "sector": "DevSecOps / GRC",
+    "fundingRoundNote": "Cyber-Angels + US-Enterprise-Strategics",
+    "goForwardSummary": "Verkaufe das Diligence-White-Label-Pack an regionale VCs und Corporate-Venture-Arms statt jedes Startup-Logo zu jagen."
+  }
+}
