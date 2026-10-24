@@ -41,6 +41,28 @@ const FORCE_IDS = new Set([
 ]);
 
 const EXTRA_DOMAINS = {
+  "coffee__dallmayr": "dallmayr.com",
+  "coffee__douwe-egberts": "douwe-egberts.com",
+  "coffee__juan-valdez": "juanvaldezcafe.com",
+  "coffee__old-town": "oldtown.com.my",
+  "coffee__hario": "hario.jp",
+  "coffee__hoshino": "hoshinocoffee.com",
+  "coffee__tullys": "tullys.com",
+  "coffee__highlands-vn": "highlandscoffee.com.vn",
+  "coffee__trung-nguyen": "trungnguyenlegend.com",
+  "coffee__the-coffee-house": "thecoffeehouse.com",
+  "coffee__percent-arabica": "arabica.com",
+  "coffee__eight-oclock": "eightoclock.com",
+  "coffee__melitta-us": "melitta.com",
+  "coffee__forty-ninth": "49thparallelroasters.com",
+  "coffee__kurukahveci": "mehmetefendi.com",
+  "coffee__kahve-dunyasi": "kahvedunyasi.com",
+  "coffee__cafes-richard": "cafesrichard.fr",
+  "coffee__pilao": "pilao.com.br",
+  "coffee__orfeu": "orfeu.com.br",
+  "coffee__sleep-easy": "sleepyowl.co",
+  "coffee__zus-coffee": "zuscoffee.com",
+  "coffee__cafe-amazon": "cafe-amazon.com",
   "cars__infiniti": "infinitiusa.com",
   "cars__lucid": "lucidmotors.com",
   "cars__li-auto": "lixiang.com",
@@ -229,9 +251,9 @@ function domainsFor(item) {
   const cleaned = String(item.name || "")
     .normalize("NFD")
     .replace(/\p{M}/gu, "")
-    .replace(/[''´`]/g, "")
+    .replace(/[''´`%]/g, "")
     .replace(
-      /\b(inc|ltd|llc|co|corp|the|company|group|brands?|brewery|distillery|winery|motors?|automobile|automotive|auto|bus)\b/gi,
+      /\b(inc|ltd|llc|co|corp|the|company|group|brands?|brewery|distillery|winery|motors?|automobile|automotive|auto|bus|coffee|tea|cafe|café|thé|thee|roasters?|espresso)\b/gi,
       " ",
     )
     .trim();
@@ -242,8 +264,20 @@ function domainsFor(item) {
     .replace(/^-+|-+$/g, "");
 
   if (compact.length >= 2) {
-    out.push(`${compact}.com`, `${compact}.com.cn`, `${compact}.co.uk`, `${compact}.de`, `${compact}.jp`);
-    if (hyphen && hyphen !== compact) out.push(`${hyphen}.com`, `${hyphen}.com.cn`);
+    out.push(
+      `${compact}.com`,
+      `${compact}.com.cn`,
+      `${compact}.co.uk`,
+      `${compact}.de`,
+      `${compact}.jp`,
+      `${compact}.com.br`,
+      `${compact}.com.co`,
+      `${compact}.com.my`,
+      `${compact}.co.jp`,
+    );
+    if (hyphen && hyphen !== compact) {
+      out.push(`${hyphen}.com`, `${hyphen}.com.cn`, `${hyphen}.co.uk`);
+    }
   }
 
   const slug = item.id.split("__")[1];
@@ -252,30 +286,165 @@ function domainsFor(item) {
     out.push(`${s}.com`, `${slug}.com`, `${s}.com.cn`);
   }
 
-  return [...new Set(out)].slice(0, 8);
+  return [...new Set(out)].slice(0, 12);
 }
 
-async function fetchLogo(domains, { lenient = false } = {}) {
+/** Accept CDN/wiki raster, normalize when helpful, else keep original bytes. */
+function rasterFromBuf(buf, mime, meta = {}) {
+  if (!mime) return null;
+  if (!isAcceptableLogo(buf, mime, { lenient: true })) return null;
+  if (mime === "image/svg+xml") {
+    const t = buf.toString("utf8");
+    if (!t.includes("<svg")) return null;
+    return { b64: Buffer.from(t, "utf8").toString("base64"), mime, ...meta };
+  }
+  const norm = normalizeRaster(buf);
+  if (norm) {
+    const nlen = Buffer.from(norm.b64, "base64").length;
+    if (nlen >= 700) return { ...norm, ...meta };
+  }
+  if (buf.length >= 700) {
+    return { b64: buf.toString("base64"), mime, ...meta };
+  }
+  return null;
+}
+
+async function fetchLogo(domains) {
   for (const domain of domains) {
-    const url = `https://logo.uplead.com/${domain}`;
-    try {
-      const res = await fetch(url, {
-        redirect: "follow",
-        headers: { "User-Agent": UA },
-        signal: AbortSignal.timeout(10000),
-      });
-      if (!res.ok) continue;
-      const buf = Buffer.from(await res.arrayBuffer());
-      const mime = sniffMime(buf);
-      if (!isAcceptableLogo(buf, mime, { lenient })) continue;
-      const norm = normalizeRaster(buf);
-      if (!norm) continue;
-      return { ...norm, domain };
-    } catch {
-      /* next */
+    for (const url of [
+      `https://logo.uplead.com/${domain}`,
+      `https://icon.horse/icon/${domain}`,
+    ]) {
+      try {
+        const res = await fetch(url, {
+          redirect: "follow",
+          headers: { "User-Agent": UA, Accept: "image/*,*/*" },
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!res.ok) continue;
+        const buf = Buffer.from(await res.arrayBuffer());
+        const mime = sniffMime(buf) || res.headers.get("content-type")?.split(";")[0] || null;
+        const hit = rasterFromBuf(buf, mime, { domain });
+        if (hit) return hit;
+      } catch {
+        /* next source */
+      }
     }
   }
   return null;
+}
+
+function wikiTitleCandidates(item) {
+  const name = String(item.name || "").trim();
+  const out = [];
+  if (WIKI_SEARCH[item.id]) out.push(WIKI_SEARCH[item.id]);
+  out.push(name);
+  // Common disambiguators for F&B brands
+  if (item.categoryId === "hotdrinks") {
+    out.push(`${name} coffee`, `${name} tea`, `${name} (coffee)`, `${name} (tea)`);
+  }
+  if (item.categoryId === "softdrinks") out.push(`${name} (drink)`, `${name} beverage`);
+  if (item.categoryId === "alcohol") out.push(`${name} (drink)`, `${name} whisky`, `${name} whiskey`);
+  return [...new Set(out.filter(Boolean))].slice(0, 4);
+}
+
+async function fetchWikipediaLogo(item) {
+  for (const title of wikiTitleCandidates(item)) {
+    try {
+      const url =
+        "https://en.wikipedia.org/api/rest_v1/page/summary/" +
+        encodeURIComponent(title.replace(/ /g, "_"));
+      const res = await fetch(url, {
+        headers: { "User-Agent": UA, Accept: "application/json" },
+        signal: AbortSignal.timeout(12000),
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (data.type === "disambiguation") continue;
+      const src =
+        data.originalimage?.source ||
+        data.thumbnail?.source ||
+        null;
+      if (!src) continue;
+      const file = decodeURIComponent(
+        (src.split("/").pop() || "").split("?")[0],
+      );
+      const score = logoFilenameScore(file);
+      // Accept clear logo filenames; reject storefront / building photos.
+      if (score < 10 && !/\blogo\b/i.test(file)) continue;
+      if (looksLikePhotoFilename(file)) continue;
+      const imgRes = await fetch(src, {
+        headers: { "User-Agent": UA },
+        redirect: "follow",
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!imgRes.ok) continue;
+      const buf = Buffer.from(await imgRes.arrayBuffer());
+      const mime = sniffMime(buf) || "image/png";
+      const hit = rasterFromBuf(buf, mime, { domain: `wiki:${title}` });
+      if (hit) return hit;
+    } catch {
+      /* next title */
+    }
+  }
+  return null;
+}
+
+async function fetchCommonsLogoSearch(item) {
+  const name = String(item.name || "").trim();
+  if (!name || name.length < 2) return null;
+  try {
+    const q = new URLSearchParams({
+      action: "query",
+      list: "search",
+      srsearch: `${name} logo`,
+      srnamespace: "6",
+      srlimit: "8",
+      format: "json",
+    });
+    const found = await wikiJson(`https://commons.wikimedia.org/w/api.php?${q}`);
+    const hits = found.query?.search || [];
+    let best = null;
+    let bestScore = 0;
+    for (const hit of hits) {
+      const title = String(hit.title || "").replace(/^File:/i, "");
+      const score = logoFilenameScore(title);
+      // Prefer hits that mention the brand name
+      const nameHit = name
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((w) => w.length > 2)
+        .some((w) => title.toLowerCase().includes(w));
+      const adj = score + (nameHit ? 15 : -20);
+      if (adj > bestScore) {
+        bestScore = adj;
+        best = title;
+      }
+    }
+    if (!best || bestScore < 25) return null;
+    const fileUrl =
+      "https://commons.wikimedia.org/wiki/Special:FilePath/" +
+      encodeURIComponent(best) +
+      "?width=256";
+    const res = await fetch(fileUrl, {
+      headers: { "User-Agent": UA },
+      redirect: "follow",
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    let mime = sniffMime(buf);
+    if (mime === "image/svg+xml") {
+      let svg = buf.toString("utf8");
+      if (!/fill=/.test(svg)) svg = svg.replace(/<path /g, '<path fill="#E8E8E8" ');
+      else svg = svg.replace(/fill="(?!none)[^"]*"/g, 'fill="#E8E8E8"');
+      return { b64: Buffer.from(svg, "utf8").toString("base64"), mime: "image/svg+xml", domain: `commons:${best}` };
+    }
+    if (!mime) mime = "image/png";
+    return rasterFromBuf(buf, mime, { domain: `commons:${best}` });
+  } catch {
+    return null;
+  }
 }
 
 async function fetchSimpleIcon(slug) {
@@ -377,10 +546,9 @@ async function fetchWikidataLogo(item) {
       return { kind: "svg", svg, file: bestFile };
     }
     if (!mime) mime = "image/png";
-    if (!isAcceptableLogo(buf, mime, { lenient: true })) return null;
-    const norm = normalizeRaster(buf);
-    if (!norm) return null;
-    return { kind: "raster", b64: norm.b64, mime: norm.mime, file: bestFile };
+    const hit = rasterFromBuf(buf, mime, { file: bestFile });
+    if (!hit) return null;
+    return { kind: "raster", ...hit };
   } catch {
     return null;
   }
@@ -417,12 +585,23 @@ console.error(`Bulk-enriching ${todo.length} marks…`);
 let fromLogo = 0;
 let fromSimple = 0;
 let fromWiki = 0;
+let fromWikiPage = 0;
+let fromCommons = 0;
 let kept = 0;
 const hits = [];
 const wikiHits = [];
 const stillWeak = [];
 
-// Pass 1: Simple Icons (mapped) + uplead
+function writeRasterMark(out, logo) {
+  if (logo.mime === "image/svg+xml") {
+    // Stored as base64 of SVG text from rasterFromBuf / commons
+    writeFileSync(out, Buffer.from(logo.b64, "base64").toString("utf8"));
+    return;
+  }
+  writeFileSync(out, wrapImage(logo.b64, logo.mime));
+}
+
+// Pass 1: Simple Icons (mapped) + uplead / icon.horse
 await mapPool(todo, CONCURRENCY, async (item) => {
   const out = join(marksDir, `${item.id}.svg`);
 
@@ -439,7 +618,7 @@ await mapPool(todo, CONCURRENCY, async (item) => {
 
   const logo = await fetchLogo(domainsFor(item));
   if (logo) {
-    writeFileSync(out, wrapImage(logo.b64, logo.mime));
+    writeRasterMark(out, logo);
     fromLogo += 1;
     if (hits.length < 80) hits.push([item.id, logo.domain]);
     item.__done = true;
@@ -449,11 +628,30 @@ await mapPool(todo, CONCURRENCY, async (item) => {
   stillWeak.push(item);
 });
 
-console.error(`Pass1 done. Still weak: ${stillWeak.length}. Wikidata pass…`);
+console.error(`Pass1 done. Still weak: ${stillWeak.length}. Wikipedia / Commons / Wikidata…`);
 
-// Pass 2: Wikidata for leftovers
+// Pass 2: Wikipedia page logo → Commons search → Wikidata P154
 await mapPool(stillWeak, WIKI_CONCURRENCY, async (item) => {
   const out = join(marksDir, `${item.id}.svg`);
+
+  const pageLogo = await fetchWikipediaLogo(item);
+  if (pageLogo) {
+    writeRasterMark(out, pageLogo);
+    fromWikiPage += 1;
+    if (wikiHits.length < 80) wikiHits.push([item.id, pageLogo.domain]);
+    item.__done = true;
+    return;
+  }
+
+  const commons = await fetchCommonsLogoSearch(item);
+  if (commons) {
+    writeRasterMark(out, commons);
+    fromCommons += 1;
+    if (wikiHits.length < 80) wikiHits.push([item.id, commons.domain]);
+    item.__done = true;
+    return;
+  }
+
   const wiki = await fetchWikidataLogo(item);
   if (wiki) {
     if (wiki.kind === "svg") {
@@ -512,6 +710,8 @@ console.log(
       todo: todo.length,
       fromSimple,
       fromLogo,
+      fromWikiPage,
+      fromCommons,
       fromWiki,
       keptEmblem: kept,
       brightenedSimple: brightened,
