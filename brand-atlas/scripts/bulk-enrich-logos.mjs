@@ -8,6 +8,7 @@
  *   4) guessed Simple Icons slug
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -170,23 +171,111 @@ function isWeakRaster(svg) {
   if (!m) return false;
   try {
     const buf = Buffer.from(m[2], "base64");
-    // Tiny favicons / near-empty after bad normalize
-    if (buf.length < 900) return true;
-    if (buf[0] === 0x89 && buf[1] === 0x50 && buf.length >= 26) {
-      const w = buf.readUInt32BE(16);
-      const h = buf.readUInt32BE(20);
-      // Near-square opaque favicons often wash out to a blob under invert
-      if (w <= 64 && h <= 64) return true;
-    }
+    return isSolidOrTinyRaster(buf);
   } catch {
     return true;
   }
-  return false;
 }
 
-function needsEnrich(svg) {
+/** True for tiny favicons or near-monochrome filled squares (common CDN placeholders). */
+function isSolidOrTinyRaster(buf) {
+  if (!buf || buf.length < 900) return true;
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf.length >= 26) {
+    const w = buf.readUInt32BE(16);
+    const h = buf.readUInt32BE(20);
+    if (w <= 64 && h <= 64) return true;
+  }
+  // PIL: few colour bins + mostly opaque → blank tile after invert
+  const py = `
+from PIL import Image
+from io import BytesIO
+from collections import Counter
+import sys
+raw=sys.stdin.buffer.read()
+im=Image.open(BytesIO(raw)).convert("RGBA")
+px=list(im.getdata())
+opq=[p for p in px if p[3]>20]
+if not opq:
+    print("weak"); raise SystemExit
+fill=len(opq)/max(1,len(px))
+bins=Counter((p[0]//24,p[1]//24,p[2]//24) for p in opq)
+if fill>0.88 and len(bins)<=12:
+    print("weak"); raise SystemExit
+if len(bins)<=3 and fill>0.55:
+    print("weak"); raise SystemExit
+print("ok")
+`;
+  const r = spawnSync("python3", ["-c", py], {
+    input: buf,
+    encoding: "utf8",
+    maxBuffer: 8_000_000,
+  });
+  return (r.stdout || "").includes("weak");
+}
+
+/** Reject identical placeholder bytes reused across many brands in one run. */
+const seenRasterHashes = new Map();
+function acceptUniqueRaster(buf, itemId) {
+  const h = createHash("sha1").update(buf).digest("hex");
+  const prev = seenRasterHashes.get(h);
+  if (prev && prev !== itemId) return false;
+  seenRasterHashes.set(h, itemId);
+  return true;
+}
+
+/** Item ids whose current mark bytes are reused by ≥2 brands (CDN placeholders). */
+const DUP_WEAK_IDS = new Set();
+
+function indexDuplicateMarks(items) {
+  const byHash = new Map();
+  for (const item of items) {
+    const p = join(marksDir, `${item.id}.svg`);
+    if (!existsSync(p)) continue;
+    const svg = readFileSync(p, "utf8");
+    const m = svg.match(/data:([^;]+);base64,([^"]+)/);
+    if (!m) continue;
+    const h = createHash("sha1").update(Buffer.from(m[2], "base64")).digest("hex");
+    if (!byHash.has(h)) byHash.set(h, []);
+    byHash.get(h).push(item.id);
+  }
+  let n = 0;
+  for (const [h, ids] of byHash.entries()) {
+    if (ids.length === 1) {
+      // Reserve unique existing rasters so later CDN hits can't collide with them.
+      seenRasterHashes.set(h, ids[0]);
+      continue;
+    }
+    for (const id of ids) DUP_WEAK_IDS.add(id);
+    n += ids.length;
+  }
+  console.error(`Flagged ${n} marks in duplicate-raster groups for re-enrich.`);
+}
+
+function emblemSvg(name) {
+  const short = name.length > 16 ? `${name.slice(0, 14)}…` : name;
+  const size = short.length > 12 ? 22 : short.length > 8 ? 28 : 34;
+  const esc = String(name)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const escShort = String(short)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="${esc}">
+  <text x="80" y="92" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="${size}" font-weight="700" fill="#E8E8E8">${escShort}</text>
+</svg>
+`;
+}
+
+function needsEnrich(svg, itemId) {
+  if (DUP_WEAK_IDS.has(itemId)) return true;
   if (isEmblem(svg)) return true;
-  if (RECHECK_WEAK && isWeakRaster(svg)) return true;
+  // Always re-check solid CDN placeholders — they masquerade as "real" rasters.
+  if (isWeakRaster(svg)) return true;
   return false;
 }
 
@@ -298,10 +387,13 @@ function rasterFromBuf(buf, mime, meta = {}) {
     if (!t.includes("<svg")) return null;
     return { b64: Buffer.from(t, "utf8").toString("base64"), mime, ...meta };
   }
+  if (isSolidOrTinyRaster(buf)) return null;
   const norm = normalizeRaster(buf);
   if (norm) {
-    const nlen = Buffer.from(norm.b64, "base64").length;
-    if (nlen >= 700) return { ...norm, ...meta };
+    const nbuf = Buffer.from(norm.b64, "base64");
+    if (nbuf.length >= 700 && !isSolidOrTinyRaster(nbuf)) {
+      return { ...norm, ...meta };
+    }
   }
   if (buf.length >= 700) {
     return { b64: buf.toString("base64"), mime, ...meta };
@@ -309,12 +401,13 @@ function rasterFromBuf(buf, mime, meta = {}) {
   return null;
 }
 
-async function fetchLogo(domains) {
+const SKIP_ICON_HORSE = process.env.SKIP_ICON_HORSE === "1";
+
+async function fetchLogo(domains, itemId = "") {
   for (const domain of domains) {
-    for (const url of [
-      `https://logo.uplead.com/${domain}`,
-      `https://icon.horse/icon/${domain}`,
-    ]) {
+    const urls = [`https://logo.uplead.com/${domain}`];
+    if (!SKIP_ICON_HORSE) urls.push(`https://icon.horse/icon/${domain}`);
+    for (const url of urls) {
       try {
         const res = await fetch(url, {
           redirect: "follow",
@@ -323,6 +416,7 @@ async function fetchLogo(domains) {
         });
         if (!res.ok) continue;
         const buf = Buffer.from(await res.arrayBuffer());
+        if (itemId && !acceptUniqueRaster(buf, itemId)) continue;
         const mime = sniffMime(buf) || res.headers.get("content-type")?.split(";")[0] || null;
         const hit = rasterFromBuf(buf, mime, { domain });
         if (hit) return hit;
@@ -573,11 +667,13 @@ if (CATEGORY_FILTER) {
   brandItems = brandItems.filter((it) => it.categoryId === CATEGORY_FILTER);
 }
 
+indexDuplicateMarks(brandItems);
+
 const todo = [];
 for (const item of brandItems) {
   const out = join(marksDir, `${item.id}.svg`);
   const existing = existsSync(out) ? readFileSync(out, "utf8") : "";
-  if (FORCE_IDS.has(item.id) || needsEnrich(existing)) todo.push(item);
+  if (FORCE_IDS.has(item.id) || needsEnrich(existing, item.id)) todo.push(item);
 }
 
 console.error(`Bulk-enriching ${todo.length} marks…`);
@@ -616,7 +712,7 @@ await mapPool(todo, CONCURRENCY, async (item) => {
     }
   }
 
-  const logo = await fetchLogo(domainsFor(item));
+  const logo = await fetchLogo(domainsFor(item), item.id);
   if (logo) {
     writeRasterMark(out, logo);
     fromLogo += 1;
@@ -677,6 +773,8 @@ await mapPool(stillWeak, WIKI_CONCURRENCY, async (item) => {
     }
   }
 
+  // Prefer a readable wordmark over a shared blank CDN square.
+  writeFileSync(out, emblemSvg(item.name));
   kept += 1;
 });
 
