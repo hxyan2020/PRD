@@ -69,21 +69,33 @@ function sanitizeGame(game: Game): Game {
   };
 }
 
-/** Collection grid: never show the same photographic cover on two games. */
+/**
+ * Best-effort unique covers on the Collection grid. Prefer an unused alternate
+ * photo from the same entry when the first cover was already claimed — but
+ * never strip a real photo down to a title card (shared thematic covers are OK).
+ */
 function ensureUniqueCatalogCovers(games: Game[]): Game[] {
   const used = new Set<string>();
   return games.map((game) => {
     const httpImages = (game.images ?? []).filter((u) => /^https?:\/\//.test(u));
-    const cover = httpImages[0];
-    if (cover && used.has(cover)) {
+    if (!httpImages.length) return game;
+
+    const uniqueAlt = httpImages.find((u) => !used.has(u));
+    if (uniqueAlt) {
+      used.add(uniqueAlt);
+      if (uniqueAlt === httpImages[0]) return game;
       return {
         ...game,
         images: [
-          encodeLudusCard(game.name, game.category, game.originCountry),
+          uniqueAlt,
+          ...httpImages.filter((u) => u !== uniqueAlt),
+          ...(game.images ?? []).filter((u) => !/^https?:\/\//.test(u)),
         ],
       };
     }
-    for (const u of httpImages) used.add(u);
+
+    // Every photo on this entry is already a cover elsewhere — keep the shared
+    // thematic image rather than falling back to a blank catalog card.
     return game;
   });
 }
