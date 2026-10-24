@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADIklEQVR42tWXz2ryTBTGn2k+AgHBKxGElIAiBIRCVoUWQahbUfQKlLqM9A4GBrqtm6x0oythVtk0IOYOCl31DoTyvBvjW/+PXz8X34GBMDmZ5zeHzDlnBEmY2O3trZnj2t7f34WJnzABSNOUcRxfoo9SqYRCoSB+DZCmKZvNJlzXxff3t5G4ZVlIkgSvr69nIW5MxKvVKqSUwnT3Ukpxd3eHZrOJNE1P75DkwbFcLul5Hnu9Hkni+fmZx3x3R+bb6/XoeR6Xy+XRb/9z8UshriJ+CcTVxE0hjMSVUoyiyBgmiiIqpWgCsRF3XXdP3PO8zUJRFHE8Hp+FGI/HG1ilFD3P4ykIVCoVSinZ6XQOhj2Kos2CURRxOp0ehZhOp1u+u1HL1u50OpRSslKpcCsPNBoNhmG4dd5rtZqwbRuTyYS1Wk0AwHw+3zvb2VytVhOTyYS5XA6Zf2ZhGIpGo0HjRJTZ/f29sG0bs9mMQRCI1WoFrfVmIa01V6sVgiAQs9mMtm0jCAKjxHVjmt2CIBCO42A+nzNbPI5jxnHM7P18PqfjOMbiAPDPJQXG932htabWmr7vCwBZFITWmpZlYT1vbDe40HzfF7ZtAwCTJMG6StK27YvF/xUAAORyuc3zGmZr7qoA2c9XLpfhui5c10W5XN56d1WAYrGIOI6hlEKSJEiSBEopxHGMYrF43Qh0u10uFgvU63V8fn7CdV3huq74+vpCvV7HYrFAt9vlVQCGwyGllBiNRsjn8+LnUatWqyKfz4vRaAQpJYbDoTnEuVSc5XSSNKmOa5+tYrSbilut1iYVn62Eb29vJEkppXE1XPty/e1eRSyVSn+L0c9yXCqV9iCklBeV4p/gGfQx8YMNySGI3fH09MQwDBmGIR8eHthqtWjSkOyKk9z+CQuFglBKQWuNfr/PMAzFYDA4+EN9fHwAABzHgWVZeHx83PMbDAYMw1D0+31qraGU2m/TjzWlJpEwbcUO7fxkV/xbCFNxkqdvRmmast1uw/d9vLy8iHa7bXS+lVKnw37p1azdbqNQKBjnFsuysFgszor/Py6n176e/wGcuqgx9efP3gAAAABJRU5ErkJggg==" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="PIRASTRO">
+  <text x="80" y="40" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="22" font-weight="700" letter-spacing="0.14em"
+        fill="#FFFFFF">PIRASTRO</text>
+  
 </svg>

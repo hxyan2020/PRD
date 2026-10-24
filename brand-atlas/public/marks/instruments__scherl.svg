@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAADbUlEQVR4nO3b23KEIAyA4bXT939le1OmlElIwmmF/b+r7qqIAsHg9vUCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAI1zvrsBM933f6e/ruo6+1lbf0QPym5pwc/f1FdlZavynKuu6U91XckeAXcPpdV0Xja9zRYBdGx+20BSwi9Rh6aw2swMQPs8WzgIsWofJR2O5TzlPp32tzscI7zd0CpAaVttWO46os06oA0RGnLTv6Ib1lEdnqhsWATyhv8azXzTkk73YHpEFjG4cGttvSgeoNcCKkFx7FsF/j4gAIzHnxwxJA59y01tfVPVGjJ0jzjEvg1rqdv+aUZ9dDJkCntjjrTpJozaZW7NnmfIMsHpUWQtQrCjqzA6wW4qWlpWl1cVPD/eScASI3sSVN937wEdH+OPKAsqXNfd93+XN9vzwYsboX/UeIZJhWC+7at9Z58z3K1c6W7IRdwSQKleOptrcu3qezR/oyoc7741O27Tt3s4m7WcduyrShl8GWQ0pbZ/Z+KPK9tzA2VlCqoOWoZT7ecuraVoIaukEnu3StBItW9I6ZXmmF29jeKcBTz285xg6BexCmh+9Wo7x3OQV01853XnPOfwXQe+Qp37p4r0hXRrlq6ex8vwrz3tMBMhHvtSI6cZ6pplPckQESPIRHRlJZST4pHWCozrA66X/FE0L7bVyPqEjHDMFoM1xHUBaoBpV7sjyNKufSY7rADntwQ9/juoAraNUe2CsdZwZUcZTt9HnPaoDaKy1/vyzJ1rMbnitDjPOe1QWIC2FStOAdiO1BaCW1LLXqvMeOTd6blh0zTw/rlaetBRd+0461iq79xoAAIh4wsJKTwpkHTfjCTtaZm+K13LsW9PAWY35BKsbsvV8TWmglmpJn3Pa+3ftPGn//Ak3f/fvrYOWAnry7cj1WWV5rs9znPd8nsygOwLU0p+yIla6o+0vnc9Th/Jzz8iq1Umrv7V9RFnaPt60sLkDXL/SZyn3HpGbSj/gKCNCS5mekVwrO3J9kTrWcn2NtubgOTb8z6H5aJLCV60C0UhQk5dljfz02bo55fdW2dp1eKa5sk7lvtr28njpGqTvNcN/Uj1i1Odltpanza09dempj1bmqPIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwuR8tNVgpCX4bhwAAAABJRU5ErkJggg==" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="SCHERL & ROTH">
+  <text x="80" y="40" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="18" font-weight="700" letter-spacing="0.14em"
+        fill="#FFFFFF">SCHERL & ROTH</text>
+  
 </svg>
