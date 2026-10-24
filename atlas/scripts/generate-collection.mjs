@@ -394,8 +394,14 @@ const CURATED_PHOTOS = {
     commons("Wooden_Mancala_board.jpg"),
     commons("Oware.jpg"),
   ],
-  Oware: [commons("Oware.jpg")],
-  Congkak: [commons("Congkak.jpg")],
+  Oware: [commons("Oware.jpg"), commons("Wooden_Mancala_board.jpg")],
+  Congkak: [
+    commons("Congkak.jpg"),
+    commons("Mancala.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+  ],
+  Dakon: [commons("Congkak.jpg"), commons("Mancala.jpg")],
+  Sungka: [commons("Congkak.jpg"), commons("Wooden_Mancala_board.jpg")],
   Backgammon: [commons("Backgammon_board_-_01.jpg")],
   Senet: [
     commons("Senet_(47429946982).jpg"),
@@ -950,6 +956,8 @@ const PHOTO_ALIASES = {
 /**
  * Category cover pools — reused across many catalog entries so cards never
  * fall back to an empty gradient when a title-specific photo is missing.
+ * Curated title covers that also appear here are stripped from exclusive
+ * spillover via CATEGORY_PHOTOS_SAFE so seeds can claim them first.
  */
 const CATEGORY_PHOTOS = {
   "Strategy & War": [
@@ -958,6 +966,9 @@ const CATEGORY_PHOTOS = {
     commons("Shogi-Set-06.JPG"),
     commons("International_draughts.jpg"),
     commons("Alquerque_game_board.jpg"),
+    commons("Go_--_2021_--_6732.jpg"),
+    commons("Blokus.jpg"),
+    commons("Reversi.jpg"),
   ],
   "Board & Race": [
     commons("Backgammon_board_-_01.jpg"),
@@ -965,6 +976,8 @@ const CATEGORY_PHOTOS = {
     commons("Ludo_board.svg"),
     commons("Senet_(47429946982).jpg"),
     commons("Patolli.jpg"),
+    commons("Snakes_and_ladders.jpg"),
+    commons("Board_game.jpg"),
   ],
   "Mancala & Sowing": [
     commons("Mancala.jpg"),
@@ -979,57 +992,117 @@ const CATEGORY_PHOTOS = {
     commons("Domino_--_2021_--_6766.jpg"),
     commons("UCB_Mahjong_Tiles.png"),
     commons("Cards_-Deck_Playing.jpg"),
+    commons("Playing_cards.jpg"),
+    commons("Rummikub.jpg"),
+    commons("Cribbage.jpg"),
   ],
   "Dice & Chance": [
     commons("Dice.jpg"),
     commons("Backgammon_board_-_01.jpg"),
     unsplash("1566694271453-390536dd1f0d"),
+    commons("Yahtzee.jpg"),
+    commons("Liar%27s_dice.jpg"),
+    commons("Farkle.jpg"),
   ],
   "String & Finger": [
     commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
     commons("Cup-and-ball.jpg"),
     unsplash("1556309294-98916e0aaca7"),
+    commons("Kendama.jpg"),
+    commons("Bilboquet.jpg"),
+    commons("Yo_yo_toy.jpg"),
   ],
   "Dolls & Figures": [
     commons("Matryoshka_dolls.jpg"),
     commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+    commons("Corn_husk_doll.jpg"),
+    commons("Kokeshi_dolls.jpg"),
+    commons("Teddy_bear.jpg"),
+    commons("Dollhouse.jpg"),
+    commons("Rocking_horse.jpg"),
+    commons("Toy_soldiers.jpg"),
+    commons("Worry_dolls.jpg"),
   ],
   "Ball & Sport": [
     commons("Jianzi.jpg"),
     commons("Shuttlecock.jpg"),
     commons("Glass_Marbles.jpg"),
+    commons("Sepak_takraw.jpg"),
+    commons("Hacky_Sack.jpg"),
+    commons("Frisbee.jpg"),
+    commons("Boules.jpg"),
+    commons("Bocce.jpg"),
+    commons("Croquet.jpg"),
+    commons("Badminton.jpg"),
+    commons("Table_tennis.jpg"),
+    commons("Dodgeball.jpg"),
   ],
   "Spinning & Tops": [
     commons("Spinning_top.jpg"),
     commons("Yo_yo_toy.jpg"),
     unsplash("1556309294-98916e0aaca7"),
+    commons("Diabolo.jpg"),
+    commons("Beigoma 01.jpg"),
+    commons("Whirligig.jpg"),
+    commons("Pinwheel_(toy).jpg"),
+    commons("Beyblade.jpg"),
   ],
   "Puzzles & Skill": [
     commons("Tangram-1.JPG"),
     commons("Rubiks_cube_by_keqs.jpg"),
     commons("PegSolitaire.jpg"),
     unsplash("1540149678796-1a36342a1372"),
+    commons("Soma_cube.jpg"),
+    commons("Tower_of_Hanoi.jpg"),
+    commons("Origami.jpg"),
+    commons("Paper_fortune_teller.jpg"),
   ],
   "Outdoor Folk": [
     commons("Kite.jpg"),
     commons("Hopscotch.jpg"),
     commons("Tug_of_war.jpg"),
+    commons("Hide_and_seek.jpg"),
+    commons("Sack_race.jpg"),
+    commons("Children_playing_hide_and_seek.jpg"),
+    commons("Circle_game.jpg"),
+    commons("Stilts.jpg"),
+    commons("Seesaw.jpg"),
+    commons("Swing_(seat).jpg"),
+    commons("Sandbox.jpg"),
+    commons("Paper_airplane.jpg"),
   ],
   "Musical Play": [
     commons("Maracas.jpg"),
     commons("Xylophone.jpg"),
     commons("Flute.jpg"),
+    commons("Rattle.jpg"),
+    commons("Hand_drum.jpg"),
+    commons("Whistle.jpg"),
+    commons("Wind_chime.jpg"),
+    commons("Plastic baby rattle toy 2.jpg"),
   ],
   Construction: [
     commons("A_pile_of_alphabet_wooden_blocks.jpg"),
     commons("Jenga_distorted.jpg"),
     unsplash("1587654780291-39c9404d746b"),
+    commons("Lego_bricks.jpg"),
+    commons("Wooden_toys.jpg"),
+    commons("Domino_--_2021_--_6766.jpg"),
   ],
   "Ritual & Ceremony": [
     commons("Senet_game_pieces_(Tutankhamun).jpg"),
-    commons("Patolli.jpg"),
+    commons("Piñata.jpg"),
+    commons("Kokeshi_dolls.jpg"),
+    commons("Wayang_kulit.jpg"),
+    commons("Matryoshka_dolls.jpg"),
   ],
-  "Memory & Word": [commons("Scrabble_game.jpg"), commons("Cards_-Deck_Playing.jpg")],
+  "Memory & Word": [
+    commons("Scrabble_game.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+    commons("Crossword.jpg"),
+    commons("Bingo_(game).jpg"),
+    commons("Circle_game.jpg"),
+  ],
 };
 
 /**
@@ -1787,6 +1860,10 @@ const ARCHETYPE_CURATED_ALIAS = {
   kite_local: "Kite flying",
   top_local: "Spinning top",
   ball_sewn: "Hacky sack / footbag",
+  sowing_local: "Mancala",
+  board_race_folk: "Pachisi",
+  cloth_doll_local: "Rag doll",
+  string_local: "Cat's cradle",
 };
 
 /**
@@ -2002,9 +2079,19 @@ const ARCHETYPE_URL_SET = new Set(
   Object.values(ARCHETYPE_PHOTOS).flatMap((pool) => pool || []),
 );
 
-/** Spillover bank with curated + archetype URLs removed. */
-const EXTRA_PHOTOS = EXTRA_UNIQUE_PHOTOS.filter(
-  (u) => !CURATED_URL_SET.has(u) && !ARCHETYPE_URL_SET.has(u),
+/**
+ * Spillover bank: never include curated title covers. Archetype URLs may appear
+ * here only when they are not also curated covers — anonymous extras must not
+ * steal Patolli.jpg / Congkak.jpg / Tangram-1.JPG before those seeds allocate.
+ */
+const EXTRA_PHOTOS = EXTRA_UNIQUE_PHOTOS.filter((u) => !CURATED_URL_SET.has(u));
+
+/** Category pools with curated covers stripped (same reason as EXTRA_PHOTOS). */
+const CATEGORY_PHOTOS_SAFE = Object.fromEntries(
+  Object.entries(CATEGORY_PHOTOS).map(([cat, pool]) => [
+    cat,
+    (pool || []).filter((u) => !CURATED_URL_SET.has(u)),
+  ]),
 );
 
 const imageBank = {
@@ -2018,35 +2105,36 @@ const imageBank = {
   extraCursor: 0,
 
   /**
-   * Catalog-wide exclusive claim. Soft reuse is intentionally disabled so the
-   * Collection grid never shows the same photo on dozens of locale variants.
+   * Claim a photo for a catalog lineage. Exclusive by default; `soft` allows
+   * reuse when every exclusive URL is already taken (better a shared correct
+   * subject than a blank title card).
    */
-  claimForLineage(url, lineage, _soft = false) {
+  claimForLineage(url, lineage, soft = false) {
     if (!url || !lineage) return null;
     const owner = this.urlOwner.get(url);
-    if (owner && owner !== lineage) return null;
+    if (owner && owner !== lineage) return soft ? url : null;
     this.urlOwner.set(url, lineage);
     return url;
   },
 
-  pickUnusedFromPool(pool, lineage, avoid, cursorKey, salt = "0") {
+  pickUnusedFromPool(pool, lineage, avoid, cursorKey, salt = "0", soft = false) {
     if (!pool?.length) return null;
     const start = (this.poolCursor.get(cursorKey) || hash(salt)) % pool.length;
     for (let i = 0; i < pool.length; i++) {
       const url = pool[(start + i) % pool.length];
       if (avoid.has(url)) continue;
-      // Curated/archetype URLs may be claimed from matching pools or from the
-      // global extra pass once thematic stock is exhausted.
-      const claimed = this.claimForLineage(url, lineage, false);
+      const claimed = this.claimForLineage(url, lineage, soft);
       if (claimed) {
-        this.poolCursor.set(cursorKey, (start + i + 1) % pool.length);
+        if (!soft) {
+          this.poolCursor.set(cursorKey, (start + i + 1) % pool.length);
+        }
         return claimed;
       }
     }
     return null;
   },
 
-  takeCuratedPhoto(gameName, lineage, avoid) {
+  takeCuratedPhoto(gameName, lineage, avoid, soft = false) {
     const key = resolvePhotoKey(gameName);
     if (!key) return null;
     return this.pickUnusedFromPool(
@@ -2055,10 +2143,11 @@ const imageBank = {
       avoid,
       `curated:${key}`,
       key,
+      soft,
     );
   },
 
-  takeArchetypePhoto(archetypeKey, lineage, avoid) {
+  takeArchetypePhoto(archetypeKey, lineage, avoid, soft = false) {
     if (!archetypeKey) return null;
     return this.pickUnusedFromPool(
       ARCHETYPE_PHOTOS[archetypeKey],
@@ -2066,28 +2155,35 @@ const imageBank = {
       avoid,
       `arch:${archetypeKey}`,
       archetypeKey,
+      soft,
     );
   },
 
-  takeCategoryPhoto(category, lineage, avoid, salt) {
+  takeCategoryPhoto(category, lineage, avoid, salt, soft = false) {
+    const pool = soft
+      ? CATEGORY_PHOTOS[category]
+      : CATEGORY_PHOTOS_SAFE[category] || CATEGORY_PHOTOS[category];
     return this.pickUnusedFromPool(
-      CATEGORY_PHOTOS[category],
+      pool,
       lineage,
       avoid,
-      `cat:${category}`,
+      `cat:${category}${soft ? ":soft" : ""}`,
       salt,
+      soft,
     );
   },
 
-  takeExtraPhoto(lineage, avoid, salt) {
+  takeExtraPhoto(lineage, avoid, salt, soft = false) {
     if (!EXTRA_PHOTOS.length) return null;
     const start = (this.extraCursor + hash(salt)) % EXTRA_PHOTOS.length;
     for (let i = 0; i < EXTRA_PHOTOS.length; i++) {
       const url = EXTRA_PHOTOS[(start + i) % EXTRA_PHOTOS.length];
       if (avoid.has(url)) continue;
-      const claimed = this.claimForLineage(url, lineage);
+      const claimed = this.claimForLineage(url, lineage, soft);
       if (claimed) {
-        this.extraCursor = (start + i + 1) % EXTRA_PHOTOS.length;
+        if (!soft) {
+          this.extraCursor = (start + i + 1) % EXTRA_PHOTOS.length;
+        }
         return claimed;
       }
     }
@@ -2107,8 +2203,8 @@ const imageBank = {
       archetypeKey,
       pageAvoid,
     } = opts;
-    // One exclusive lineage per catalog row / variation — never soft-share a
-    // photo across regional matrix clones on the Collection grid.
+    // Prefer one exclusive photo per catalog row; soft-reuse thematic pools
+    // only after exclusive stock is exhausted.
     const lineage = entryLineage(uniqueKey, name, archetypeKey, parentName);
     const themeKey = photoLineage(name, archetypeKey, parentName);
 
@@ -2131,40 +2227,49 @@ const imageBank = {
       return true;
     };
 
-    while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
-      if (!pushPhoto(this.takeCuratedPhoto(name, lineage, avoid))) break;
-    }
-    // Variations may borrow unused parent-pool photos, but never ones already
-    // claimed by the parent gallery or an earlier variation on this page.
-    if (photoCount < wantPhotos && parentName) {
+    const fillExclusive = () => {
       while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
-        if (!pushPhoto(this.takeCuratedPhoto(parentName, lineage, avoid)))
+        if (!pushPhoto(this.takeCuratedPhoto(name, lineage, avoid))) break;
+      }
+      // Variations may borrow unused parent-pool photos, but never ones already
+      // claimed by the parent gallery or an earlier variation on this page.
+      if (photoCount < wantPhotos && parentName) {
+        while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+          if (!pushPhoto(this.takeCuratedPhoto(parentName, lineage, avoid)))
+            break;
+        }
+      }
+      const aliasCurated =
+        archetypeKey && ARCHETYPE_CURATED_ALIAS[archetypeKey]
+          ? ARCHETYPE_CURATED_ALIAS[archetypeKey]
+          : null;
+      if (photoCount < wantPhotos && aliasCurated) {
+        while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+          if (!pushPhoto(this.takeCuratedPhoto(aliasCurated, lineage, avoid)))
+            break;
+        }
+      }
+      while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+        if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
           break;
       }
-    }
-    const aliasCurated =
-      archetypeKey && ARCHETYPE_CURATED_ALIAS[archetypeKey]
-        ? ARCHETYPE_CURATED_ALIAS[archetypeKey]
-        : null;
-    if (photoCount < wantPhotos && aliasCurated) {
-      while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
-        if (!pushPhoto(this.takeCuratedPhoto(aliasCurated, lineage, avoid)))
-          break;
-      }
-    }
-    while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
-      if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
-        break;
-    }
+      return aliasCurated;
+    };
 
-    // Spillover (category / global extras) is only for untitled generic rows.
-    // Named curated games and regional archetypes must not receive unrelated
-    // stock (toy piano on a whistle, bumper cars on a Rubik's Cube, etc.).
+    const aliasCurated = fillExclusive();
+
+    // Spillover (category / global extras) is for untitled generic rows, and
+    // for any row that still has no photo after thematic exclusive claims.
+    // Named curated games must not receive unrelated stock while they still
+    // have a chance at a thematic soft reuse below.
     const hasThematicPool =
       !!resolvePhotoKey(name) ||
       !!(parentName && resolvePhotoKey(parentName)) ||
       !!(aliasCurated && resolvePhotoKey(aliasCurated)) ||
       !!(archetypeKey && ARCHETYPE_PHOTOS[archetypeKey]?.length);
+    // Exclusive spillover for untitled rows / variations only. Themed titles
+    // that exhausted exclusive curated stock soft-reuse below — never grab
+    // unrelated extras (rattles on Dakon, bumper cars on Patolli).
     const allowSpillover = !hasThematicPool || !!parentName;
 
     if (allowSpillover) {
@@ -2188,6 +2293,66 @@ const imageBank = {
           )
         ) {
           break;
+        }
+      }
+    }
+
+    // Soft thematic reuse — shared correct subject beats a blank title card.
+    // Stay inside curated / archetype / category pools for themed rows.
+    if (photoCount < wantPhotos) {
+      while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+        if (!pushPhoto(this.takeCuratedPhoto(name, lineage, avoid, true)))
+          break;
+      }
+      if (parentName) {
+        while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+          if (
+            !pushPhoto(this.takeCuratedPhoto(parentName, lineage, avoid, true))
+          )
+            break;
+        }
+      }
+      if (aliasCurated) {
+        while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+          if (
+            !pushPhoto(
+              this.takeCuratedPhoto(aliasCurated, lineage, avoid, true),
+            )
+          )
+            break;
+        }
+      }
+      while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+        if (
+          !pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid, true))
+        )
+          break;
+      }
+      while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+        const url = this.takeCategoryPhoto(
+          category,
+          lineage,
+          avoid,
+          `${uniqueKey}:soft:${imgs.length}:${themeKey}`,
+          true,
+        );
+        if (!pushPhoto(url)) break;
+      }
+      // Unthemed rows may soft-share the global extra bank as a last resort.
+      if (!hasThematicPool) {
+        while (photoCount < wantPhotos && imgs.length < GALLERY_MAX) {
+          if (
+            !pushPhoto(
+              this.takeExtraPhoto(
+                lineage,
+                avoid,
+                `${uniqueKey}:soft:${imgs.length}:${themeKey}`,
+                true,
+              ),
+            )
+          ) {
+            break;
+          }
         }
       }
     }
@@ -3532,12 +3697,15 @@ async function main() {
 }
 
 /**
- * Enforce unique covers across the entire catalog (Collection grid). When a
- * photographic cover collides, reassign from unused extras or a title card.
+ * Best-effort unique covers on the Collection grid. When a photographic cover
+ * collides, try an unused exclusive spare — but never strip a real photo down
+ * to a title card, and never replace a thematic cover with unrelated extras
+ * (soft-shared Congkak/Patolli covers are intentional).
  */
 function dedupeCatalogCovers(games) {
   const coverOwner = new Map();
   let fixed = 0;
+  let keptShared = 0;
   for (const game of games) {
     const cover = (game.images || []).find(
       (u) => typeof u === "string" && /^https?:\/\//.test(u),
@@ -3561,8 +3729,7 @@ function dedupeCatalogCovers(games) {
         lineage,
         avoid,
         `dedupe:${game.slug}`,
-      ) ||
-      imageBank.takeExtraPhoto(lineage, avoid, `dedupe:${game.slug}`);
+      ) || imageBank.takeExtraPhoto(lineage, avoid, `dedupe:${game.slug}`);
     if (spare && !coverOwner.has(spare)) {
       game.images = [
         spare,
@@ -3571,19 +3738,16 @@ function dedupeCatalogCovers(games) {
         ),
       ].slice(0, GALLERY_MAX);
       coverOwner.set(spare, game.slug || game.id);
+      fixed += 1;
     } else {
-      game.images = [
-        encodeLudusCard(
-          game.name,
-          game.category || "Toy & Game",
-          game.originCountry || "",
-        ),
-      ];
+      // Keep the shared photographic cover.
+      keptShared += 1;
     }
-    fixed += 1;
   }
-  if (fixed) {
-    console.log(`Catalog cover dedupe: reassigned ${fixed} colliding covers`);
+  if (fixed || keptShared) {
+    console.log(
+      `Catalog cover dedupe: reassigned ${fixed} colliding covers, kept ${keptShared} shared`,
+    );
   }
 }
 
@@ -3627,9 +3791,27 @@ function dedupeProductPageImages(game) {
           pageUsed,
           `${game.id}:${v.name}`,
         ) ||
-        imageBank.takeExtraPhoto(lineage, pageUsed, `${game.id}:${v.name}`);
+        imageBank.takeExtraPhoto(lineage, pageUsed, `${game.id}:${v.name}`) ||
+        imageBank.takeCuratedPhoto(v.name, lineage, pageUsed, true) ||
+        imageBank.takeCuratedPhoto(game.name, lineage, pageUsed, true) ||
+        imageBank.takeCategoryPhoto(
+          game.category,
+          lineage,
+          pageUsed,
+          `${game.id}:${v.name}:soft`,
+          true,
+        ) ||
+        imageBank.takeExtraPhoto(
+          lineage,
+          pageUsed,
+          `${game.id}:${v.name}:soft`,
+          true,
+        );
       if (spare && !pageUsed.has(spare)) {
         pageUsed.add(spare);
+        photos = [spare];
+      } else if (spare) {
+        // Soft reuse may already be on the page — still prefer a photo over a card.
         photos = [spare];
       } else {
         photos = [

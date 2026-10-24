@@ -2,7 +2,7 @@ import type { CollectionMeta, Game, TutorialVideo } from "../types/game";
 import { readPool, POOL_EVENT } from "./pool";
 import { AUTH_EVENT } from "./auth";
 import { readStaging, STAGING_EVENT } from "./staging";
-import { encodeLudusCard, sanitizeImageList } from "./gameCardImage";
+import { sanitizeImageList } from "./gameCardImage";
 
 export type CollectionData = {
   meta: CollectionMeta & { brand?: string };
@@ -10,6 +10,9 @@ export type CollectionData = {
 };
 
 export const COLLECTION_EVENT = "ludus-atlas-collection-change";
+
+/** Bump when regenerating covers so Pages/CDN clients do not keep stale JSON. */
+const baseCacheVersion = "2026-10-24-photos";
 
 let baseCache: CollectionData | null = null;
 let tutorialsCache: Record<string, TutorialVideo> | null = null;
@@ -69,21 +72,33 @@ function sanitizeGame(game: Game): Game {
   };
 }
 
-/** Collection grid: never show the same photographic cover on two games. */
+/**
+ * Best-effort unique covers on the Collection grid. Prefer an unused alternate
+ * photo from the same entry when the first cover was already claimed — but
+ * never strip a real photo down to a title card (shared thematic covers are OK).
+ */
 function ensureUniqueCatalogCovers(games: Game[]): Game[] {
   const used = new Set<string>();
   return games.map((game) => {
     const httpImages = (game.images ?? []).filter((u) => /^https?:\/\//.test(u));
-    const cover = httpImages[0];
-    if (cover && used.has(cover)) {
+    if (!httpImages.length) return game;
+
+    const uniqueAlt = httpImages.find((u) => !used.has(u));
+    if (uniqueAlt) {
+      used.add(uniqueAlt);
+      if (uniqueAlt === httpImages[0]) return game;
       return {
         ...game,
         images: [
-          encodeLudusCard(game.name, game.category, game.originCountry),
+          uniqueAlt,
+          ...httpImages.filter((u) => u !== uniqueAlt),
+          ...(game.images ?? []).filter((u) => !/^https?:\/\//.test(u)),
         ],
       };
     }
-    for (const u of httpImages) used.add(u);
+
+    // Every photo on this entry is already a cover elsewhere — keep the shared
+    // thematic image rather than falling back to a blank catalog card.
     return game;
   });
 }
@@ -91,7 +106,8 @@ function ensureUniqueCatalogCovers(games: Game[]): Game[] {
 async function loadBase(): Promise<CollectionData> {
   if (baseCache) return baseCache;
   const [res, tutorials] = await Promise.all([
-    fetch(`${import.meta.env.BASE_URL}data/collection.json`),
+    // Cache-bust so GitHub Pages / CDN clients pick up photo backfills quickly.
+    fetch(`${import.meta.env.BASE_URL}data/collection.json?v=${encodeURIComponent(String(baseCacheVersion))}`),
     loadTutorials(),
   ]);
   if (!res.ok) throw new Error(`Failed to load collection (${res.status})`);
