@@ -27,7 +27,12 @@ for (const item of catalog.items) {
       item.cover = next;
       wired += 1;
     }
-  } else if (item.cover && String(item.cover).startsWith(`covers/${item.id}`)) {
+  } else if (
+    item.cover &&
+    String(item.cover).startsWith(`covers/${item.id}`) &&
+    !String(item.cover).startsWith("http")
+  ) {
+    // Drop broken local paths; keep remote Wikipedia/https covers.
     item.cover = null;
     cleared += 1;
   }

@@ -69,7 +69,8 @@ export function ItemDetail({
   const mark = markUrl(item);
   const stockCover = coverFailed ? null : coverUrl(item);
   const coverPhoto = unlock?.photoDataUrl || stockCover;
-  const showMark = Boolean(mark) && !unlock?.photoDataUrl && (!coverPhoto || !nature);
+  // Prefer real cover/species photos; marks only when no photo is available.
+  const showMark = Boolean(mark) && !unlock?.photoDataUrl && !coverPhoto;
 
   const copyLink = async () => {
     if (!permalink) return;

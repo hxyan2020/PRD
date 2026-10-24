@@ -22,11 +22,8 @@ export function ItemTile({ item, mode, onClick }: Props) {
   const photo = hasSighting ? unlock?.photoDataUrl : stockCover;
   const mark = markUrl(item);
   const nature = isNatureCategory(item.categoryId);
-  // Nature: species photo alone (greyscale until unlock). Brands: keep grey
-  // logo overlay on locked photo covers. Silhouette only when no photo.
-  const showMark =
-    !photo ||
-    (mode === "locked" && !hasSighting && Boolean(stockCover) && !nature);
+  // Prefer real cover/species photos alone. Marks/silhouettes only when no photo.
+  const showMark = !photo;
 
   const showName = nature || mode === "unlocked";
 
