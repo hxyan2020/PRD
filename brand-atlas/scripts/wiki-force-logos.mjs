@@ -22,9 +22,11 @@ const ONLY_EMBLEM = process.env.ONLY_EMBLEM !== "0";
 const INSTRUMENT_HINTS = JSON.parse(
   readFileSync(join(root, "scripts", "cover-title-hints-instruments.json"), "utf8"),
 );
+const TOY_HINTS = JSON.parse(readFileSync(join(root, "scripts", "toy-logo-hints.json"), "utf8"));
 
 const WIKI_SEARCH = {
   ...INSTRUMENT_HINTS,
+  ...TOY_HINTS,
   "cars__hummer": "Hummer",
   "cars__hyptec": "Hyptec",
   "cars__im-motors": "IM Motors",

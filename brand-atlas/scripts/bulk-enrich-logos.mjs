@@ -95,10 +95,13 @@ const EXTRA_DOMAINS = {
 const INSTRUMENT_HINTS = JSON.parse(
   readFileSync(join(root, "scripts", "cover-title-hints-instruments.json"), "utf8"),
 );
+const TOY_HINTS = JSON.parse(readFileSync(join(root, "scripts", "toy-logo-hints.json"), "utf8"));
+const RECHECK_WEAK = process.env.RECHECK_WEAK === "1";
 
 /** Explicit Wikidata search strings when the brand name alone is ambiguous. */
 const WIKI_SEARCH = {
   ...INSTRUMENT_HINTS,
+  ...TOY_HINTS,
   "cars__hummer": "Hummer",
   "cars__hyptec": "Hyptec",
   "cars__im-motors": "IM Motors",
@@ -136,6 +139,33 @@ function isEmblem(svg) {
   if (svg.length < 900 && !svg.includes("data:image")) return true;
   if (svg.includes("<path") && !svg.includes("<text")) return false;
   return true;
+}
+
+/** Detect solid-square / empty favicon blobs that look like "basic shapes". */
+function isWeakRaster(svg) {
+  if (!svg || !svg.includes("data:image")) return false;
+  const m = svg.match(/data:([^;]+);base64,([^"]+)/);
+  if (!m) return false;
+  try {
+    const buf = Buffer.from(m[2], "base64");
+    // Tiny favicons / near-empty after bad normalize
+    if (buf.length < 900) return true;
+    if (buf[0] === 0x89 && buf[1] === 0x50 && buf.length >= 26) {
+      const w = buf.readUInt32BE(16);
+      const h = buf.readUInt32BE(20);
+      // Near-square opaque favicons often wash out to a blob under invert
+      if (w <= 64 && h <= 64) return true;
+    }
+  } catch {
+    return true;
+  }
+  return false;
+}
+
+function needsEnrich(svg) {
+  if (isEmblem(svg)) return true;
+  if (RECHECK_WEAK && isWeakRaster(svg)) return true;
+  return false;
 }
 
 function wrapImage(b64, mime = "image/png") {
@@ -379,7 +409,7 @@ const todo = [];
 for (const item of brandItems) {
   const out = join(marksDir, `${item.id}.svg`);
   const existing = existsSync(out) ? readFileSync(out, "utf8") : "";
-  if (FORCE_IDS.has(item.id) || isEmblem(existing)) todo.push(item);
+  if (FORCE_IDS.has(item.id) || needsEnrich(existing)) todo.push(item);
 }
 
 console.error(`Bulk-enriching ${todo.length} marks…`);

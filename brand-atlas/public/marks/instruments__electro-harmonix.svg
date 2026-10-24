@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 72" role="img">
-  <text x="80" y="30" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" letter-spacing="0.12em" fill="#FFFFFF">ELECTRO-</text>
-  <text x="80" y="52" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" letter-spacing="0.12em" fill="#FFFFFF">HARMONIX</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="ELECTRO-HARMONIX">
+  <text x="80" y="40" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="700" letter-spacing="0.08em" fill="#FFFFFF">ELECTRO-HARMONIX</text>
 </svg>
