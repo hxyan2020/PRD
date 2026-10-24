@@ -71,18 +71,9 @@ export function ItemDetail({
   const [phase, setPhase] = useState("");
   const [scanError, setScanError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [cameraOn, setCameraOn] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraFileRef = useRef<HTMLInputElement>(null);
   const nature = isNatureCategory(item.categoryId);
-
-  const stopCamera = () => {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-    setCameraOn(false);
-  };
 
   useEffect(() => {
     setNote(unlock?.note ?? "");
@@ -94,10 +85,14 @@ export function ItemDetail({
       if (prev) URL.revokeObjectURL(prev);
       return null;
     });
-    stopCamera();
   }, [unlock?.note, item.id]);
 
-  useEffect(() => () => stopCamera(), []);
+  useEffect(
+    () => () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    },
+    [previewUrl],
+  );
 
   const permalink = unlock ? permanentLink(unlock.shareId) : null;
   const mark = markUrl(item);
@@ -109,28 +104,6 @@ export function ItemDetail({
 
   const authNext = `${location.pathname}${location.search}${location.hash}`;
   const loginHref = `/login?next=${encodeURIComponent(authNext)}&item=${encodeURIComponent(item.id)}`;
-
-  const startCamera = async () => {
-    if (!isLoggedIn) return;
-    try {
-      stopCamera();
-      setScanError(null);
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
-        audio: false,
-      });
-      streamRef.current = stream;
-      setCameraOn(true);
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          void videoRef.current.play();
-        }
-      });
-    } catch {
-      setScanError(t("detail.cameraBlocked"));
-    }
-  };
 
   const copyLink = async () => {
     if (!permalink) return;
@@ -197,33 +170,12 @@ export function ItemDetail({
     } finally {
       setBusy(false);
       setPhase("");
-      stopCamera();
     }
   };
 
   const onSightingFile = (file: File | null) => {
     if (!file) return;
     void processSighting(file);
-  };
-
-  const captureFromCamera = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(video, 0, 0);
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) return;
-        const f = new File([blob], "capture.jpg", { type: "image/jpeg" });
-        void processSighting(f);
-      },
-      "image/jpeg",
-      0.92,
-    );
   };
 
   const saveNote = () => {
@@ -308,14 +260,9 @@ export function ItemDetail({
                 <p className="muted detail-unlock__signed">
                   {t("detail.signedInAs", { email: email ?? "" })}
                 </p>
-                {(previewUrl || cameraOn) && (
+                {previewUrl && (
                   <div className="detail-unlock__preview">
-                    {cameraOn && (
-                      <video ref={videoRef} playsInline muted autoPlay />
-                    )}
-                    {!cameraOn && previewUrl && (
-                      <img src={previewUrl} alt="" />
-                    )}
+                    <img src={previewUrl} alt="" />
                   </div>
                 )}
                 <div className="cta-row detail-unlock__actions">
@@ -327,27 +274,6 @@ export function ItemDetail({
                   >
                     {t("scan.upload")}
                   </button>
-                  <button
-                    type="button"
-                    className="btn btn--quiet"
-                    disabled={busy}
-                    onClick={() =>
-                      cameraOn ? stopCamera() : void startCamera()
-                    }
-                  >
-                    {cameraOn ? t("scan.stopCamera") : t("scan.camera")}
-                  </button>
-                  {cameraOn && (
-                    <button
-                      type="button"
-                      className="btn btn--primary"
-                      disabled={busy}
-                      onClick={captureFromCamera}
-                    >
-                      {t("scan.capture")}
-                    </button>
-                  )}
-                  {/* Mobile cameras that prefer capture attribute */}
                   <button
                     type="button"
                     className="btn btn--quiet"
