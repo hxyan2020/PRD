@@ -23,9 +23,23 @@ mkdirSync(coversDir, { recursive: true });
 const UA = "SeenCatalogue/1.0 (educational; https://github.com/hxyan2020/PRD)";
 const CONCURRENCY = 10;
 
-const TITLE_HINTS = JSON.parse(
-  readFileSync(join(root, "scripts", "cover-title-hints.json"), "utf8"),
-);
+const TITLE_HINTS = {
+  ...JSON.parse(readFileSync(join(root, "scripts", "cover-title-hints.json"), "utf8")),
+  ...JSON.parse(
+    readFileSync(join(root, "scripts", "cover-title-hints-instruments.json"), "utf8"),
+  ),
+};
+const FORCE = process.env.FORCE === "1" || process.argv.includes("--force");
+
+const CATEGORY_DESC_HINTS = {
+  instruments:
+    /guitar|drum|piano|music|audio|cymbal|synth|microphone|amplifier|violin|trumpet|instrument|midi|studio|saxophone|flute|bass|pedal|keyboard|organ|harmonica|mandolin|ukulele|banjo|cello|clarinet|oboe|recording|daw|mixer/i,
+  watches: /watch|timepiece|horolog|clock|chronograph/i,
+  airlines: /airline|aviation|aircraft|airport|flag carrier/i,
+  banks: /bank|financ|credit|payment|fintech/i,
+  cars: /car|automobile|vehicle|motor|automotive/i,
+  motorcycles: /motorcycle|bike|scooter|motorbike/i,
+};
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -65,7 +79,27 @@ function searchQuery(item) {
   if (cat === "watches") return `${item.name} watch`;
   if (cat === "airlines") return `${item.name} airline`;
   if (cat === "banks") return `${item.name} bank`;
-  if (cat === "instruments") return `${item.name} instrument`;
+  if (cat === "instruments") {
+    const tip = item.tags?.[0];
+    const tipWord =
+      {
+        guitar: "guitar",
+        drums: "drums",
+        cymbals: "cymbals",
+        piano: "piano",
+        keys: "keyboard synthesizer",
+        synth: "synthesizer",
+        audio: "microphone audio",
+        winds: "woodwind instrument",
+        brass: "brass instrument",
+        strings: "violin strings",
+        effects: "guitar pedal",
+        amps: "guitar amplifier",
+        software: "music software",
+        retail: "music store",
+      }[tip] || "musical instrument";
+    return `${item.name} ${tipWord}`;
+  }
   if (cat === "toys") return `${item.name} toy`;
   if (cat === "motorcycles") return `${item.name} motorcycle`;
   if (cat === "birds") return `${item.name} bird`;
@@ -76,16 +110,18 @@ function searchQuery(item) {
   return item.name;
 }
 
-async function wikiThumb(title) {
+async function wikiThumb(title, categoryId) {
   const api =
     "https://en.wikipedia.org/w/api.php?" +
     new URLSearchParams({
       action: "query",
       format: "json",
       titles: title,
-      prop: "pageimages",
+      prop: "pageimages|pageterms|info",
       piprop: "thumbnail",
       pithumbsize: "640",
+      wbptterms: "description",
+      inprop: "displaytitle",
       redirects: "1",
       origin: "*",
     });
@@ -93,6 +129,15 @@ async function wikiThumb(title) {
   if (!res.ok) return null;
   const data = await res.json();
   const page = Object.values(data.query?.pages || {})[0];
+  if (!page || page.missing != null) return null;
+  const titleText = String(page.title || "");
+  const desc = String(page.terms?.description?.[0] || "");
+  if (/disambiguation/i.test(desc) || /disambiguation/i.test(titleText)) return null;
+  const hint = CATEGORY_DESC_HINTS[categoryId];
+  if (hint && desc && !hint.test(desc) && !hint.test(titleText)) {
+    // Reject clearly off-topic pages (e.g. "Pearl" the gem, "King" the person)
+    return null;
+  }
   const src = page?.thumbnail?.source;
   if (!src || /\.svg/i.test(src)) return null;
   return src.split("?")[0];
@@ -159,15 +204,27 @@ async function store(url, itemId) {
 }
 
 async function fetchOne(item) {
-  if (hasJpg(item.id)) return "skip";
+  if (hasJpg(item.id) && !FORCE) return "skip";
   const q = searchQuery(item);
-  const wikiTitle = TITLE_HINTS[item.id]?.replace(/\b(car|bottle|jar|can|watch|bag|pack|forest|field|animal|automobile|fashion|beer|wine|sake|coffee|tea|cigarettes|sneakers|cookies|chocolate|ketchup|whisky|cup)\b/gi, "").trim() || item.name;
+  const hintTitle = TITLE_HINTS[item.id] || null;
+  const wikiTitle =
+    hintTitle ||
+    item.name;
   let url = null;
   try {
-    url = await wikiThumb(wikiTitle);
-    if (!url) url = await wikiThumb(item.name);
+    if (hintTitle) url = await wikiThumb(hintTitle, item.categoryId);
+    if (!url) url = await wikiThumb(q, item.categoryId);
+    if (!url && wikiTitle !== q) url = await wikiThumb(wikiTitle, item.categoryId);
+    // Avoid bare short names for ambiguous brands — they pull unrelated pages.
+    if (!url && String(item.name).trim().split(/\s+/).length >= 2) {
+      url = await wikiThumb(item.name, item.categoryId);
+    }
     if (!url) url = await openverse(q);
-    if (!url) url = await openverse(item.name);
+    // Do not fall back to bare item.name on Openverse for instruments/watches —
+    // that is how birds/maps/portraits leak into brand shelves.
+    if (!url && !CATEGORY_DESC_HINTS[item.categoryId]) {
+      url = await openverse(item.name);
+    }
   } catch (e) {
     return `err:${e.message || e}`;
   }

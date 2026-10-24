@@ -19,26 +19,24 @@ export function ItemTile({ item, mode, onClick }: Props) {
   const hasSighting = Boolean(unlock?.photoDataUrl);
   const [coverFailed, setCoverFailed] = useState(false);
   const stockCover = coverFailed ? null : coverUrl(item);
-  const photo = hasSighting ? unlock?.photoDataUrl : stockCover;
   const mark = markUrl(item);
   const nature = isNatureCategory(item.categoryId);
-  // Prefer real cover/species photos alone. Marks/silhouettes only when no photo.
-  const showMark = !photo;
-
-  const showName = nature || mode === "unlocked";
+  // Nature shelves: species photos. Brand shelves: logos while locked — Wikipedia
+  // product shots for short brand names (Martin, Pearl, King…) often belong to
+  // another topic entirely and leaked into the wrong category.
+  const photo = hasSighting
+    ? unlock?.photoDataUrl
+    : nature || mode === "unlocked"
+      ? stockCover
+      : null;
+  const showMark = !photo && Boolean(mark);
 
   return (
     <button
       type="button"
       className={`item-tile is-${mode}${photo ? " has-cover" : ""}${nature ? " is-nature" : ""}`}
       onClick={onClick}
-      aria-label={
-        showName
-          ? item.name
-          : mode === "sneak"
-            ? `${t("catalog.sneak")}`
-            : t("catalog.locked")
-      }
+      aria-label={item.name}
     >
       <div
         className="item-tile__cover"
@@ -81,25 +79,13 @@ export function ItemTile({ item, mode, onClick }: Props) {
             <strong>{item.name}</strong>
             <small>{item.origin ?? "Worldwide"}</small>
           </>
-        ) : nature ? (
+        ) : (
           <>
             <strong>{item.name}</strong>
             <small>
               {mode === "sneak" ? t("catalog.sneak") : t("catalog.locked")} ·{" "}
               {t("catalog.scanForColour")}
             </small>
-          </>
-        ) : mode === "sneak" ? (
-          <>
-            <strong>????</strong>
-            <small>
-              {t("catalog.sneak")} · {t("catalog.scanForColour")}
-            </small>
-          </>
-        ) : (
-          <>
-            <strong>????</strong>
-            <small>{t("catalog.scanForColour")}</small>
           </>
         )}
       </div>

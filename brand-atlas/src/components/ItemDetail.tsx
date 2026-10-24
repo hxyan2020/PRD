@@ -68,8 +68,11 @@ export function ItemDetail({
   const permalink = unlock ? permanentLink(unlock.shareId) : null;
   const mark = markUrl(item);
   const stockCover = coverFailed ? null : coverUrl(item);
-  const coverPhoto = unlock?.photoDataUrl || stockCover;
-  // Prefer real cover/species photos; marks only when no photo is available.
+  // Brands while locked: logo only (stock covers are often off-topic).
+  // Nature + unlocked: prefer species/product photo.
+  const coverPhoto =
+    unlock?.photoDataUrl ||
+    (nature || mode === "unlocked" ? stockCover : null);
   const showMark = Boolean(mark) && !unlock?.photoDataUrl && !coverPhoto;
 
   const copyLink = async () => {
@@ -129,8 +132,8 @@ export function ItemDetail({
             <p className="muted">
               {t("catalog.locked")} · {categoryLabel}
             </p>
-            <h3>{nature ? item.name : t("unlocked.stillLocked")}</h3>
-            {nature && item.summary ? <p>{item.summary}</p> : null}
+            <h3>{item.name}</h3>
+            {item.summary ? <p>{item.summary}</p> : null}
             <p className="muted">{t("unlocked.stillLockedBlurb")}</p>
           </>
         )}
@@ -143,8 +146,8 @@ export function ItemDetail({
                 ? ` · ${t("unlocked.pctUnlocked", { pct: formatPct(categoryPct) })}`
                 : ""}
             </p>
-            <h3>{nature ? item.name : t("unlocked.colourPreview")}</h3>
-            {nature && item.summary ? <p>{item.summary}</p> : null}
+            <h3>{item.name}</h3>
+            {item.summary ? <p>{item.summary}</p> : null}
             <p className="muted">{t("unlocked.sneakBlurb")}</p>
           </>
         )}
