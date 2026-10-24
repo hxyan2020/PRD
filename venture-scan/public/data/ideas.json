@@ -44,8 +44,8 @@
         "strategy": "franchise_local",
         "summary": "Offer to become the franchise verification hub in your coastal city—run dive-partner onboarding and sell credits to local hotels while the parent platform handles settlement."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "biodiversity",
         "credits",
@@ -86,8 +86,8 @@
         "strategy": "localize_asia",
         "summary": "Copy the core night-ward workflow for Asian private hospital chains; localize language packs (JP/KR/ZH) and start with ICU wards where English charting already exists."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "healthcare",
         "AI",
@@ -127,8 +127,8 @@
         "strategy": "franchise_local",
         "summary": "Franchise a microfactory bay in your city using their software stack—own the local designer relationships while licensing Kiln’s job scheduler and materials pricing."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "hardware",
         "3d-print",
@@ -169,8 +169,8 @@
         "strategy": "partner_founders",
         "summary": "Ask the founding team for cooperation as their Southeast Asia or South Asia licensed operator—replicate the crate rental model with local solar EPC partners."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "agriculture",
         "coldchain",
@@ -211,8 +211,8 @@
         "strategy": "new_age_group",
         "summary": "Offer the same stack to a different age group—young remote workers caring for parents abroad—or rebundle as a corporate EAP benefit for employees with overseas elders."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "aging",
         "consumer",
@@ -248,8 +248,8 @@
         "strategy": "b2b_pivot",
         "summary": "Offer it as white-label compliance middleware to freight forwarders and banks in your market rather than competing for end SME logos directly."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "logistics",
         "SaaS",
@@ -295,8 +295,8 @@
         "strategy": "localize_asia",
         "summary": "Copy the kit + dashboard model for Asian enrichment centers; localize curriculum to contest pathways (Olympiads) and sell through tutoring franchise networks."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "education",
         "hardware",
@@ -342,8 +342,8 @@
         "strategy": "franchise_local",
         "summary": "Offer to become franchise depot operator in your city—VoltPath supplies packs and software; you secure land and courier contracts."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "EV",
         "logistics",
@@ -384,8 +384,8 @@
         "strategy": "vertical_spinout",
         "summary": "Spin out a vertical niche—e.g. beauty D2C only—with Xiaohongshu-native templates and sell to agencies that already specialize in that category."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "ads",
         "generative",
@@ -425,8 +425,8 @@
         "strategy": "partner_founders",
         "summary": "Ask the founding team for cooperation as their APAC reseller—bundle Harbor with your local immigration consultancy network and share MRR."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "legal",
         "SaaS",
@@ -467,8 +467,8 @@
         "strategy": "license_tech",
         "summary": "License the fermentation strain + process IP for a regional plant instead of importing finished protein—partner with a local CPG co-packer."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "food",
         "fermentation",
@@ -509,8 +509,8 @@
         "strategy": "localize_asia",
         "summary": "Copy the corridor design for Asia–Africa remittance lanes (e.g. Singapore/HK → East Africa) using the same merchant-payout positioning."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "payments",
         "remittance",
@@ -551,8 +551,8 @@
         "strategy": "localize_asia",
         "summary": "Port the mesh + alert stack to Southeast Asian peat-fire corridors, pairing with local telco LoRaWAN partners."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "climate",
         "sensors",
@@ -588,8 +588,8 @@
         "strategy": "franchise_local",
         "summary": "Franchise install crews in secondary Korean cities first, then adapt kits for Japanese wooden stock."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "retrofit",
         "energy",
@@ -630,8 +630,8 @@
         "strategy": "vertical_spinout",
         "summary": "Spin a ready-to-wear-only SKU module and sell it to mid-market brands that cannot afford full maison deployments."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "ESG",
         "fashion",
@@ -677,8 +677,8 @@
         "strategy": "localize_asia",
         "summary": "Reuse the voice POS UX for Bahasa/Tagalog informal retail corridors with local telco wallets."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "fintech",
         "POS",
@@ -713,8 +713,8 @@
         "strategy": "partner_founders",
         "summary": "Partner as the East Africa deployment operator—localize USSD flows and clinic integrations while Cape Clinic owns the core engine."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "health",
         "access",
@@ -755,8 +755,8 @@
         "strategy": "license_tech",
         "summary": "License the BMS + diagnostics stack to Asian EV OEMs seeking EU second-life compliance pathways."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "energy",
         "batteries",
@@ -792,8 +792,8 @@
         "strategy": "franchise_local",
         "summary": "Franchise co-op formation playbooks to secondary Vietnamese cities and Cambodian border parks."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "energy",
         "solar",
@@ -839,8 +839,8 @@
         "strategy": "b2b_pivot",
         "summary": "Sell the diligence white-label pack to regional VCs and corporate venture arms rather than chasing every startup logo."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "cyber",
         "DevSecOps",
@@ -881,8 +881,8 @@
         "strategy": "localize_asia",
         "summary": "Ship region-local IP pools and compliance packs for SEA SaaS exporters."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "email",
         "API",
@@ -922,8 +922,8 @@
         "strategy": "b2b_pivot",
         "summary": "Package vertical auth kits for fintech and health startups needing SOC2-ready orgs."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "auth",
         "B2B",
@@ -963,8 +963,8 @@
         "strategy": "vertical_spinout",
         "summary": "Spin an AI-agent database SKU with branch-per-agent presets."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "postgres",
         "serverless",
@@ -1004,8 +1004,8 @@
         "strategy": "b2b_pivot",
         "summary": "Sell agency/PM white-label workspaces for product studios."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "productivity",
         "PM",
@@ -1045,8 +1045,8 @@
         "strategy": "localize_asia",
         "summary": "Partner with regional neobanks for SEA expense rails under local compliance."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "spend",
         "card",
@@ -1086,8 +1086,8 @@
         "strategy": "franchise_local",
         "summary": "Franchise onboarding desks in major startup hubs outside the US."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "banking",
         "startups",
@@ -1127,8 +1127,8 @@
         "strategy": "vertical_spinout",
         "summary": "Spin a vertical SKU for AI labs with grant + burn tracking."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "AI",
         "spend",
@@ -1168,8 +1168,8 @@
         "strategy": "b2b_pivot",
         "summary": "Sell enterprise brand-kit workspaces to agencies and broadcasters."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "video",
         "generative",
@@ -1209,8 +1209,8 @@
         "strategy": "localize_asia",
         "summary": "Prioritize SEA language packs with local studio partners."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "voice",
         "API",
@@ -1250,8 +1250,8 @@
         "strategy": "b2b_pivot",
         "summary": "Ship a B2B research desk SKU with org controls for consulting firms."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "search",
         "answers",
@@ -1291,8 +1291,8 @@
         "strategy": "partner_founders",
         "summary": "Partner with boutique software houses to resell agent hours."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "agents",
         "coding",
@@ -1332,8 +1332,8 @@
         "strategy": "b2b_pivot",
         "summary": "Offer org-wide privacy mode SKUs for regulated engineering orgs."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "editor",
         "AI",
@@ -1373,8 +1373,8 @@
         "strategy": "vertical_spinout",
         "summary": "Spin marketplace analytics packs for two-sided platforms."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "analytics",
         "product",
@@ -1414,8 +1414,8 @@
         "strategy": "franchise_local",
         "summary": "Empower regional implementation partners for self-host installs."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "open-source",
         "analytics",
@@ -1455,8 +1455,8 @@
         "strategy": "partner_founders",
         "summary": "Co-sell with boutique data consultancies as their delivery analytics OS."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "data",
         "DuckDB",
@@ -1501,8 +1501,8 @@
         "strategy": "franchise_local",
         "summary": "Franchise merchant onboarding pods in secondary GCC cities."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "BNPL",
         "GCC",
@@ -1547,8 +1547,8 @@
         "strategy": "franchise_local",
         "summary": "City-level franchise ops for delivery dark stores."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "mobility",
         "Africa",
@@ -1588,8 +1588,8 @@
         "strategy": "partner_founders",
         "summary": "Partner with vertical SaaS to embed account verification in Africa markets."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "open-banking",
         "Africa",
@@ -1634,8 +1634,8 @@
         "strategy": "localize_asia",
         "summary": "Open diaspora corridors into SEA hubs with local partners."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "remittance",
         "Africa",
@@ -1680,8 +1680,8 @@
         "strategy": "franchise_local",
         "summary": "Franchise campus ambassador networks in secondary cities."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "savings",
         "Nigeria",
@@ -1721,8 +1721,8 @@
         "strategy": "b2b_pivot",
         "summary": "Sell retailer private-label modules to mid-market apparel groups."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "fashion",
         "carbon",
@@ -1762,8 +1762,8 @@
         "strategy": "partner_founders",
         "summary": "Partner with regional brokers to embed ratings in deal flow."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "carbon",
         "ratings",
@@ -1803,8 +1803,8 @@
         "strategy": "localize_asia",
         "summary": "Localize reporting packs for Asia CSRD-style regimes."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "climate",
         "enterprise",
@@ -1844,8 +1844,8 @@
         "strategy": "partner_founders",
         "summary": "JV with regional industrials for first commercial heat-battery sites."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "heat",
         "storage",
@@ -1885,8 +1885,8 @@
         "strategy": "franchise_local",
         "summary": "Franchise swap stations to local energy entrepreneurs city by city."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "EV",
         "swap",
@@ -1926,8 +1926,8 @@
         "strategy": "b2b_pivot",
         "summary": "Sell district PD bundles with human coaching overlays."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "teachers",
         "AI",
@@ -1967,8 +1967,8 @@
         "strategy": "franchise_local",
         "summary": "License cohort playbooks to after-school operators abroad."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "learning",
         "cohorts",
@@ -2008,8 +2008,8 @@
         "strategy": "b2b_pivot",
         "summary": "Bundle specialty packs for outpatient groups first."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "clinical",
         "AI",
@@ -2049,8 +2049,8 @@
         "strategy": "franchise_local",
         "summary": "City pods that recruit clinician supply for regional health systems."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "staffing",
         "marketplace",
@@ -2090,8 +2090,8 @@
         "strategy": "localize_asia",
         "summary": "Pilot specialty packs with private hospital groups in Asia hubs."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "clinical",
         "AI",
@@ -2131,8 +2131,8 @@
         "strategy": "franchise_local",
         "summary": "Accountant-partner franchise channels in Southern Europe."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "SME",
         "banking",
@@ -2172,8 +2172,8 @@
         "strategy": "partner_founders",
         "summary": "Co-build vertical banking skins with SaaS founders."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "BaaS",
         "embedded",
@@ -2213,8 +2213,8 @@
         "strategy": "b2b_pivot",
         "summary": "Package vertical CRM kits for agencies and marketplace operators."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "CRM",
         "SaaS",
@@ -2254,8 +2254,8 @@
         "strategy": "vertical_spinout",
         "summary": "Spin vertical checkout kits for education and healthcare SMBs."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "payments",
         "India",
@@ -2295,8 +2295,8 @@
         "strategy": "b2b_pivot",
         "summary": "Sell agency workspaces with white-label domains for regional marketers."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "links",
         "attribution",
@@ -2341,8 +2341,8 @@
         "strategy": "new_age_group",
         "summary": "Expand younger prime segments with education-linked savings products."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "neobank",
         "consumer",
@@ -2382,8 +2382,8 @@
         "strategy": "b2b_pivot",
         "summary": "Package industry playbooks for fintech and health on-call teams."
       },
-      "source": "daily-0700-utc8",
-      "scannedAt": "2026-10-24T04:52:14.596Z",
+      "source": "snapshot-export",
+      "scannedAt": "2026-10-24T04:52:30.404Z",
       "tags": [
         "incidents",
         "devops",

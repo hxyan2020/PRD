@@ -72,6 +72,14 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Deploy GitHub Pages
+        run: npm run deploy:pages
+        env:
+          # deploy-gh-pages.mjs pushes origin/gh-pages using checkout credentials.
+          GIT_TERMINAL_PROMPT: "0"
+
+      # Commit after deploy so main keeps the same ideas.json the site published
+      # (build:static re-exports the snapshot while preserving daily schedule).
       - name: Commit catalog + ingest refresh
         working-directory: .
         run: |
@@ -89,9 +97,3 @@ jobs:
             # Push the branch Actions checked out (main on schedule).
             git push origin HEAD
           fi
-
-      - name: Deploy GitHub Pages
-        run: npm run deploy:pages
-        env:
-          # deploy-gh-pages.mjs pushes origin/gh-pages using checkout credentials.
-          GIT_TERMINAL_PROMPT: "0"
