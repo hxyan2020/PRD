@@ -17,8 +17,9 @@ const coversDir = join(root, "public", "covers");
 const UA = "SeenCatalogue/1.2 (educational; https://github.com/hxyan2020/PRD)";
 const NATURE = new Set(["trees", "flowers", "animals", "birds", "mushrooms"]);
 const FORCE = process.env.FORCE === "1";
-const CONCURRENCY = Number(process.env.GBIF_CONCURRENCY || 8);
-const CHECKPOINT_EVERY = Number(process.env.CHECKPOINT_EVERY || 200);
+const CONCURRENCY = Number(process.env.GBIF_CONCURRENCY || 16);
+const CHECKPOINT_EVERY = Number(process.env.CHECKPOINT_EVERY || 400);
+const REQUEST_GAP_MS = Number(process.env.GBIF_GAP_MS || 15);
 const categoryFilter = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 
 function sleep(ms) {
@@ -122,7 +123,7 @@ await mapPool(items, CONCURRENCY, async (item, idx) => {
   } else if ((idx + 1) % 100 === 0) {
     console.log(`… ${idx + 1}/${items.length} (ok ${ok}, fail ${fail})`);
   }
-  await sleep(40);
+  if (REQUEST_GAP_MS > 0) await sleep(REQUEST_GAP_MS);
 });
 
 writeFileSync(catalogPath, JSON.stringify(catalog));

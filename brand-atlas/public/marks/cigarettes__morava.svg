@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Morava">
-  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
-  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
-  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Morava</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <defs>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
+  </defs>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAAFKCAMAAABM9+Y3AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAB+UExURf/LBv/KBv/LBf/MBf7JBvy0CvyyCvy1Cf29CO8vIe4hI+4iI+4hJPA2IP7DB+8pIu0bJe4cJe0aJfAxIf7KBv2/CPywCu8oIvE9H+0YJe0XJe0WJe8tIe4gJPNUGvNZGvNYGvVnF/7GBv3AB//OBfAwIe0ZJf7EB/FEHQAAAOKICbIAAAABYktHRCnKt4UkAAAAB3RJTUUH6gkSDhYd+QubJQAAAdRJREFUeNrt3VFSwlAQRFF8ggTFJCbBoKCgiLj/FbqKqQrMuUs4Vf3ds5kkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZped+U+rJKLsswXD0Et58koq9XjU0jr5zobZdO+hNT1KFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRIkSJUqUKFGiRInyCihLWOkoh00V1OuYjLLejk1M49t7TLv9RCn7ro3p4/MQ0/Hre6qUMTNsm9NPVCUbZZXsMBklSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQoUaJEiRIlSpQ3Qnn+7WIas1Fe/s59TNtNMsrhUkc1JKOUJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJOlK+gef+2pAHBOGngAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyNi0wOS0xOFQxNDoyMjoyOSswMDowMIIJVREAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjYtMDktMThUMTQ6MjI6MjkrMDA6MDDzVO2tAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDI2LTA5LTE4VDE0OjIyOjI5KzAwOjAwpEHMcgAAAABJRU5ErkJggg==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>
