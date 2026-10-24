@@ -6,6 +6,29 @@ import { useI18n } from "../i18n/I18nProvider";
 
 type AuthMode = "login" | "signup";
 
+/** Only allow in-app relative return paths (block open redirects). */
+function resolveReturnTo(params: URLSearchParams): string {
+  const raw = params.get("next") || "/catalog";
+  const path = raw.startsWith("/") && !raw.startsWith("//") ? raw : "/catalog";
+  const item = params.get("item");
+  if (!item) return path;
+  const qIndex = path.indexOf("?");
+  const hIndex = path.indexOf("#");
+  const pathname = path.slice(
+    0,
+    qIndex >= 0 ? qIndex : hIndex >= 0 ? hIndex : path.length,
+  );
+  const search =
+    qIndex >= 0
+      ? path.slice(qIndex + 1, hIndex >= 0 ? hIndex : undefined)
+      : "";
+  const hash = hIndex >= 0 ? path.slice(hIndex) : "";
+  const qs = new URLSearchParams(search);
+  qs.set("item", item);
+  const q = qs.toString();
+  return `${pathname}${q ? `?${q}` : ""}${hash}`;
+}
+
 export function AuthPage({ mode: initialMode = "login" }: { mode?: AuthMode }) {
   const { t } = useI18n();
   const { isLoggedIn } = useAuth();
@@ -14,6 +37,7 @@ export function AuthPage({ mode: initialMode = "login" }: { mode?: AuthMode }) {
   const paramMode = params.get("mode");
   const startMode: AuthMode =
     initialMode === "signup" || paramMode === "signup" ? "signup" : "login";
+  const returnTo = resolveReturnTo(params);
 
   const [mode, setMode] = useState<AuthMode>(startMode);
   const [email, setEmail] = useState("");
@@ -22,7 +46,7 @@ export function AuthPage({ mode: initialMode = "login" }: { mode?: AuthMode }) {
   const [busy, setBusy] = useState(false);
 
   if (isLoggedIn) {
-    return <Navigate to="/catalog" replace />;
+    return <Navigate to={returnTo} replace />;
   }
 
   const submit = async (e: FormEvent) => {
@@ -35,7 +59,7 @@ export function AuthPage({ mode: initialMode = "login" }: { mode?: AuthMode }) {
       setError(res.error);
       return;
     }
-    navigate("/catalog");
+    navigate(returnTo);
   };
 
   const switchMode = (next: AuthMode) => {
