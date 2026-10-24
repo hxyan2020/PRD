@@ -37,13 +37,22 @@ async function probeSource(url: string): Promise<Omit<SourceIngestRow, "lastSour
       signal: ctrl.signal,
       headers: { "user-agent": UA, accept: "*/*" },
     });
-    // Some desks reject HEAD — fall back to a light GET.
-    if (res.status === 405 || res.status === 403 || res.status === 501) {
+    // Some desks reject HEAD / return bot challenges — fall back to a light GET.
+    if (
+      res.status === 405 ||
+      res.status === 403 ||
+      res.status === 406 ||
+      res.status === 429 ||
+      res.status === 501
+    ) {
       res = await fetch(url, {
         method: "GET",
         redirect: "follow",
         signal: ctrl.signal,
-        headers: { "user-agent": UA, accept: "text/html,*/*" },
+        headers: {
+          "user-agent": UA,
+          accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
       });
     }
     const ok = res.ok || (res.status >= 200 && res.status < 400);

@@ -28,7 +28,10 @@ describe("daily scan schedule", () => {
     );
     expect(yml).toContain(`cron: "${DAILY_SCAN_CRON_UTC}"`);
     expect(yml).toContain("npm run scan:daily");
+    expect(yml).toContain("npm run verify:daily");
     expect(yml).toContain("07:00");
+    expect(yml).toContain("workflow_dispatch");
+    expect(yml).toContain("branches: [main]");
   });
 
   it("applies ingest timestamps onto live data sources", () => {

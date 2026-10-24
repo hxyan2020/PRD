@@ -11,6 +11,7 @@
     "seed": "tsx scripts/seed.ts",
     "scan": "tsx scripts/scan.ts",
     "scan:daily": "tsx scripts/daily-scan.ts",
+    "verify:daily": "tsx scripts/verify-daily-refresh.ts",
     "export:ideas": "tsx scripts/export-ideas-snapshot.ts",
     "extract:media": "node scripts/extract-source-media.mjs",
     "extract:articles": "node scripts/extract-idea-articles.mjs",
