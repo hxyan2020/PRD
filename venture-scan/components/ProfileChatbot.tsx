@@ -1,19 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IndustryIcon } from "@/components/IndustryIcon";
+import { ProfileBubbleField } from "@/components/ProfileBubbleField";
 import { SectorLabel } from "@/components/SectorLabel";
-import { matchProfile } from "@/lib/client-api";
-import {
-  assessAnswer,
-  redirectMessageKey,
-  type ChatStepId,
-} from "@/lib/chat-guardrails";
+import { authMe, matchProfile } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
-import type { MessageKey } from "@/lib/i18n/messages";
 import { presentMatch } from "@/lib/i18n/present-match";
+import {
+  BUSINESS_BUBBLES,
+  DOMAIN_BUBBLES,
+  MAJOR_BUBBLES,
+  MARKET_BUBBLES,
+  SKILL_BUBBLES,
+} from "@/lib/profile-options";
 import {
   clearProfileStorage,
   emptyProfile,
@@ -24,78 +26,81 @@ import {
 } from "@/lib/profile";
 import type { IdeaMatch, StartupIdea, UserProfile } from "@/lib/types";
 
-type ChatRole = "bot" | "user";
-type ChatMessage = { id: string; role: ChatRole; text: string };
-
-type StepId = ChatStepId | "done";
-
-const STEP_DEFS: { id: ChatStepId; promptKey: MessageKey }[] = [
-  { id: "name", promptKey: "match.step.name" },
-  { id: "skills", promptKey: "match.step.skills" },
-  { id: "major", promptKey: "match.step.major" },
-  { id: "business", promptKey: "match.step.business" },
-  { id: "domains", promptKey: "match.step.domains" },
-  { id: "markets", promptKey: "match.step.markets" },
-];
-
 type Ranked = { idea: StartupIdea; match: IdeaMatch };
 
 type ProfileChatbotProps = {
-  /** Called after a profile is newly completed (or rematch finishes) so Today can show the pick. */
   onProfileSaved?: () => void;
 };
 
 export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
   const { t, locale } = useI18n();
   const [profile, setProfile] = useState<UserProfile>(() => emptyProfile());
-  const [stepIndex, setStepIndex] = useState(0);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
   const [hydrated, setHydrated] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [loginPrompt, setLoginPrompt] = useState(false);
   const [ranking, setRanking] = useState(false);
   const [ranked, setRanked] = useState<Ranked[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [nameDraft, setNameDraft] = useState("");
+  const [skillsDraft, setSkillsDraft] = useState("");
+  const [majorDraft, setMajorDraft] = useState("");
+  const [businessDraft, setBusinessDraft] = useState("");
+  const [domainsDraft, setDomainsDraft] = useState("");
+  const [marketsDraft, setMarketsDraft] = useState("");
 
-  const step = STEP_DEFS[stepIndex] ?? null;
-  const complete = stepIndex >= STEP_DEFS.length;
+  const locked = loggedIn === false;
 
   useEffect(() => {
-    const saved = loadProfileFromStorage();
-    if (saved && isProfileReady(saved)) {
-      setProfile(saved);
-      setStepIndex(STEP_DEFS.length);
-      setMessages([
-        {
-          id: "welcome-saved",
-          role: "bot",
-          text: `Welcome back${saved.displayName ? `, ${saved.displayName}` : ""}. I loaded your profile and can rematch ideas anytime.`,
-        },
-        {
-          id: "summary-saved",
-          role: "bot",
-          text: summarizeProfile(saved),
-        },
-      ]);
-      void runMatch(saved);
-    } else {
-      setMessages([
-        {
-          id: "welcome",
-          role: "bot",
-          text: t(STEP_DEFS[0].promptKey),
-        },
-      ]);
-    }
-    setHydrated(true);
+    let cancelled = false;
+    void (async () => {
+      const me = await authMe();
+      if (cancelled) return;
+      setLoggedIn(Boolean(me));
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, ranked, ranking]);
+    const saved = loadProfileFromStorage();
+    if (saved) {
+      setProfile(saved);
+      setNameDraft(saved.displayName);
+      if (isProfileReady(saved)) void runMatch(saved);
+    }
+    setHydrated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const topMatches = useMemo(() => ranked.slice(0, 5), [ranked]);
+  const ready = isProfileReady(profile);
+
+  function requireLogin() {
+    setLoginPrompt(true);
+    if (typeof document !== "undefined") {
+      requestAnimationFrame(() => {
+        document.getElementById("profile-login-gate")?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      });
+    }
+  }
+
+  function updateProfile(next: UserProfile) {
+    setProfile(next);
+    if (loggedIn) {
+      saveProfileToStorage(next);
+    }
+  }
+
+  function toggleInList(list: string[], label: string, multi: boolean): string[] {
+    const exists = list.some((x) => x.toLowerCase() === label.toLowerCase());
+    if (!multi) return exists ? [] : [label];
+    if (exists) return list.filter((x) => x.toLowerCase() !== label.toLowerCase());
+    return [...list, label];
+  }
 
   async function runMatch(next: UserProfile) {
     if (!isProfileReady(next)) {
@@ -119,111 +124,46 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
     }
   }
 
-  function applyAnswer(current: UserProfile, stepId: ChatStepId, answer: string): UserProfile {
-    const text = answer.trim();
-    switch (stepId) {
-      case "name":
-        return { ...current, displayName: extractDisplayName(text) };
-      case "skills":
-        return { ...current, skills: parseListInput(text) };
-      case "major":
-        return { ...current, major: text === "skip" ? "" : text };
-      case "business":
-        return { ...current, currentBusiness: text === "skip" ? "" : text };
-      case "domains":
-        return { ...current, interestedDomains: parseListInput(text) };
-      case "markets":
-        return {
-          ...current,
-          preferredMarkets: text.toLowerCase() === "skip" ? [] : parseListInput(text),
-        };
-      default:
-        return current;
-    }
-  }
-
-  async function submit() {
-    const answer = input.trim();
-    if (!answer || !step) return;
-
-    const userMsg: ChatMessage = {
-      id: `u-${Date.now()}`,
-      role: "user",
-      text: answer,
-    };
-    setInput("");
-    setMessages((prev) => [...prev, userMsg]);
-
-    const assessment = assessAnswer(step.id, answer);
-    if (!assessment.ok) {
-      // Redirect copy already re-asks the current step — do not append the
-      // original prompt or the bot repeats the same question twice.
-      const redirectKey = redirectMessageKey(step.id, assessment.kind);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `b-redirect-${Date.now()}`,
-          role: "bot",
-          text: t(redirectKey),
-        },
-      ]);
-      queueMicrotask(() => inputRef.current?.focus());
+  async function saveAndMatch() {
+    if (locked) {
+      requireLogin();
       return;
     }
-
-    const nextProfile = applyAnswer(profile, step.id, answer);
-    const nextIndex = stepIndex + 1;
-    setProfile(nextProfile);
-    setStepIndex(nextIndex);
-
-    if (nextIndex < STEP_DEFS.length) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `b-${Date.now()}`,
-          role: "bot",
-          text: t(STEP_DEFS[nextIndex].promptKey),
-        },
-      ]);
-      queueMicrotask(() => inputRef.current?.focus());
+    if (!isProfileReady(profile)) {
+      setError(t("match.needMore"));
       return;
     }
-
-    const finished: UserProfile = {
-      ...nextProfile,
+    const next = {
+      ...profile,
+      displayName: nameDraft.trim() || profile.displayName,
       updatedAt: new Date().toISOString(),
     };
-    saveProfileToStorage(finished);
-    setProfile(finished);
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `b-summary-${Date.now()}`,
-        role: "bot",
-        text: `Got it. ${summarizeProfile(finished)} I'll score every sourced idea against this profile.`,
-      },
-    ]);
-    await runMatch(finished);
+    saveProfileToStorage(next);
+    setProfile(next);
+    await runMatch(next);
+    onProfileSaved?.();
   }
 
-  function resetChat() {
+  function resetForm() {
+    if (locked) {
+      requireLogin();
+      return;
+    }
     clearProfileStorage();
     const fresh = emptyProfile();
     setProfile(fresh);
-    setStepIndex(0);
+    setNameDraft("");
+    setSkillsDraft("");
+    setMajorDraft("");
+    setBusinessDraft("");
+    setDomainsDraft("");
+    setMarketsDraft("");
     setRanked([]);
     setError(null);
-    setMessages([
-      {
-        id: `welcome-${Date.now()}`,
-        role: "bot",
-        text: t(STEP_DEFS[0].promptKey),
-      },
-    ]);
-    queueMicrotask(() => inputRef.current?.focus());
+    setLoginPrompt(false);
   }
 
-  if (!hydrated) {
+  if (!hydrated || loggedIn === null) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-sm text-mist sm:px-6">
         {t("match.loading")}
@@ -232,8 +172,8 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
   }
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-6 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[1.1fr_0.9fr]">
-      <section className="flex min-h-[65vh] flex-col rounded-2xl border border-black/10 bg-ink-2/60 shadow-panel sm:min-h-[70vh]">
+    <div className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-6 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[1.15fr_0.85fr]">
+      <section className="rounded-2xl border border-black/10 bg-ink-2/60 shadow-panel">
         <div className="border-b border-black/10 px-4 py-4 sm:px-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
             {t("match.kicker")}
@@ -242,75 +182,226 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
           <p className="mt-2 text-sm text-mist">{t("match.body")}</p>
         </div>
 
-        <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5 sm:py-5">
-          {messages.map((m) => (
+        <div className="space-y-8 px-4 py-5 sm:px-5 sm:py-6">
+          {loginPrompt ? (
             <div
-              key={m.id}
-              className={`max-w-[92%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
-                m.role === "bot"
-                  ? "bg-black/[0.04] text-foam"
-                  : "ml-auto bg-celadon/20 text-foam"
-              }`}
+              id="profile-login-gate"
+              role="status"
+              className="rounded-xl border border-copper/25 bg-copper/10 px-4 py-3 text-sm text-foam"
             >
-              {m.text}
+              <p className="font-medium">{t("match.loginTitle")}</p>
+              <p className="mt-1 text-mist">{t("match.loginBody")}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link href="/account?mode=login" className="btn-primary btn-block-mobile">
+                  {t("auth.login")}
+                </Link>
+                <Link href="/account" className="btn-ghost btn-block-mobile">
+                  {t("nav.register")}
+                </Link>
+              </div>
             </div>
-          ))}
-          <div ref={bottomRef} />
+          ) : null}
+
+          <fieldset className="space-y-3">
+            <legend className="font-mono text-[10px] uppercase tracking-[0.18em] text-mist">
+              {t("match.name")}
+            </legend>
+            <input
+              className="field"
+              value={nameDraft}
+              placeholder={t("match.namePlaceholder")}
+              autoComplete="nickname"
+              onFocus={() => {
+                if (locked) requireLogin();
+              }}
+              onChange={(e) => {
+                if (locked) {
+                  requireLogin();
+                  return;
+                }
+                setNameDraft(e.target.value);
+                updateProfile({ ...profile, displayName: e.target.value });
+              }}
+              onKeyDown={(e) => {
+                if (locked && e.key !== "Tab") {
+                  e.preventDefault();
+                  requireLogin();
+                }
+              }}
+            />
+          </fieldset>
+
+          <ProfileBubbleField
+            label={t("match.skills")}
+            hint={t("match.skillsHint")}
+            bubbles={SKILL_BUBBLES}
+            selected={profile.skills}
+            draft={skillsDraft}
+            onDraftChange={setSkillsDraft}
+            multi
+            locked={locked}
+            onLockedAttempt={requireLogin}
+            placeholder={t("match.skillsPlaceholder")}
+            actionLabel={t("match.add")}
+            onToggleBubble={(label) =>
+              updateProfile({
+                ...profile,
+                skills: toggleInList(profile.skills, label, true),
+              })
+            }
+            onAddCustom={() => {
+              const added = parseListInput(skillsDraft);
+              if (!added.length) return;
+              const next = [...profile.skills];
+              for (const item of added) {
+                if (!next.some((x) => x.toLowerCase() === item.toLowerCase())) next.push(item);
+              }
+              updateProfile({ ...profile, skills: next });
+              setSkillsDraft("");
+            }}
+          />
+
+          <ProfileBubbleField
+            label={t("match.major")}
+            hint={t("match.majorHint")}
+            bubbles={MAJOR_BUBBLES}
+            selected={profile.major ? [profile.major] : []}
+            draft={majorDraft}
+            onDraftChange={setMajorDraft}
+            multi={false}
+            locked={locked}
+            onLockedAttempt={requireLogin}
+            placeholder={t("match.majorPlaceholder")}
+            actionLabel={t("match.set")}
+            onToggleBubble={(label) =>
+              updateProfile({
+                ...profile,
+                major: profile.major.toLowerCase() === label.toLowerCase() ? "" : label,
+              })
+            }
+            onAddCustom={() => {
+              const value = majorDraft.trim();
+              if (!value) return;
+              updateProfile({ ...profile, major: value });
+              setMajorDraft("");
+            }}
+          />
+
+          <ProfileBubbleField
+            label={t("match.business")}
+            hint={t("match.businessHint")}
+            bubbles={BUSINESS_BUBBLES}
+            selected={profile.currentBusiness ? [profile.currentBusiness] : []}
+            draft={businessDraft}
+            onDraftChange={setBusinessDraft}
+            multi={false}
+            locked={locked}
+            onLockedAttempt={requireLogin}
+            placeholder={t("match.businessPlaceholder")}
+            actionLabel={t("match.set")}
+            onToggleBubble={(label) =>
+              updateProfile({
+                ...profile,
+                currentBusiness:
+                  profile.currentBusiness.toLowerCase() === label.toLowerCase() ? "" : label,
+              })
+            }
+            onAddCustom={() => {
+              const value = businessDraft.trim();
+              if (!value) return;
+              updateProfile({ ...profile, currentBusiness: value });
+              setBusinessDraft("");
+            }}
+          />
+
+          <ProfileBubbleField
+            label={t("match.domains")}
+            hint={t("match.domainsHint")}
+            bubbles={DOMAIN_BUBBLES}
+            selected={profile.interestedDomains}
+            draft={domainsDraft}
+            onDraftChange={setDomainsDraft}
+            multi
+            locked={locked}
+            onLockedAttempt={requireLogin}
+            placeholder={t("match.domainsPlaceholder")}
+            actionLabel={t("match.add")}
+            onToggleBubble={(label) =>
+              updateProfile({
+                ...profile,
+                interestedDomains: toggleInList(profile.interestedDomains, label, true),
+              })
+            }
+            onAddCustom={() => {
+              const added = parseListInput(domainsDraft);
+              if (!added.length) return;
+              const next = [...profile.interestedDomains];
+              for (const item of added) {
+                if (!next.some((x) => x.toLowerCase() === item.toLowerCase())) next.push(item);
+              }
+              updateProfile({ ...profile, interestedDomains: next });
+              setDomainsDraft("");
+            }}
+          />
+
+          <ProfileBubbleField
+            label={t("match.markets")}
+            hint={t("match.marketsHint")}
+            bubbles={MARKET_BUBBLES}
+            selected={profile.preferredMarkets}
+            draft={marketsDraft}
+            onDraftChange={setMarketsDraft}
+            multi
+            locked={locked}
+            onLockedAttempt={requireLogin}
+            placeholder={t("match.marketsPlaceholder")}
+            actionLabel={t("match.add")}
+            onToggleBubble={(label) =>
+              updateProfile({
+                ...profile,
+                preferredMarkets: toggleInList(profile.preferredMarkets, label, true),
+              })
+            }
+            onAddCustom={() => {
+              const added = parseListInput(marketsDraft);
+              if (!added.length) return;
+              const next = [...profile.preferredMarkets];
+              for (const item of added) {
+                if (!next.some((x) => x.toLowerCase() === item.toLowerCase())) next.push(item);
+              }
+              updateProfile({ ...profile, preferredMarkets: next });
+              setMarketsDraft("");
+            }}
+          />
         </div>
 
         <div className="sticky bottom-0 border-t border-black/10 bg-ink-2/95 px-4 py-3 backdrop-blur sm:static sm:bg-transparent sm:px-5 sm:py-4 sm:backdrop-blur-none">
-          {!complete ? (
-            <form
-              className="flex gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                void submit();
-              }}
+          <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
+            <button
+              type="button"
+              className="btn-primary btn-block-mobile"
+              disabled={ranking}
+              onClick={() => void saveAndMatch()}
             >
-              <input
-                ref={inputRef}
-                className="field"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={t("match.placeholder")}
-                aria-label={t("match.placeholder")}
-                autoComplete="off"
-                enterKeyHint="send"
-              />
-              <button type="submit" className="btn-primary shrink-0">
-                {t("match.send")}
-              </button>
-            </form>
-          ) : (
-            <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
-              {onProfileSaved ? (
-                <button
-                  type="button"
-                  className="btn-primary btn-block-mobile"
-                  onClick={() => onProfileSaved()}
-                >
-                  {t("teaser.open")}
-                </button>
-              ) : (
-                <Link href="/today" className="btn-primary btn-block-mobile">
-                  {t("teaser.open")}
-                </Link>
-              )}
+              {ranking ? t("match.scoring") : t("match.saveMatch")}
+            </button>
+            {ready ? (
               <button
                 type="button"
                 className="btn-ghost btn-block-mobile"
                 onClick={() => void runMatch(profile)}
+                disabled={locked || ranking}
               >
-                {ranking ? t("match.scoring") : t("match.rematch")}
+                {t("match.rematch")}
               </button>
-              <button type="button" className="btn-ghost btn-block-mobile" onClick={resetChat}>
-                {t("match.rebuild")}
-              </button>
-              <Link href="/ideas" className="btn-ghost btn-block-mobile">
-                {t("match.viewLedger")}
-              </Link>
-            </div>
-          )}
+            ) : null}
+            <button type="button" className="btn-ghost btn-block-mobile" onClick={resetForm}>
+              {t("match.rebuild")}
+            </button>
+            <Link href="/ideas" className="btn-ghost btn-block-mobile">
+              {t("match.viewLedger")}
+            </Link>
+          </div>
           {error ? <p className="mt-2 text-xs text-copper">{error}</p> : null}
         </div>
       </section>
@@ -331,17 +422,13 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
             <ProfileRow
               label={t("match.domains")}
               value={
-                profile.interestedDomains.length
-                  ? profile.interestedDomains.join(", ")
-                  : "—"
+                profile.interestedDomains.length ? profile.interestedDomains.join(", ") : "—"
               }
             />
             <ProfileRow
               label={t("match.markets")}
               value={
-                profile.preferredMarkets.length
-                  ? profile.preferredMarkets.join(", ")
-                  : "—"
+                profile.preferredMarkets.length ? profile.preferredMarkets.join(", ") : "—"
               }
             />
           </dl>
@@ -360,7 +447,7 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
             </span>
           </div>
 
-          {!complete && !ranked.length ? (
+          {!ready && !ranked.length ? (
             <p className="mt-4 text-sm text-mist">{t("match.finishHint")}</p>
           ) : null}
 
@@ -369,37 +456,40 @@ export function ProfileChatbot({ onProfileSaved }: ProfileChatbotProps = {}) {
               const view = localizeIdea(idea, locale);
               const presented = presentMatch(match, view, profile, t, locale);
               return (
-              <li key={idea.id} className="py-3">
-                <Link href={`/ideas/${idea.slug}`} scroll className="group block">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-display text-xl text-foam group-hover:text-black">
-                        {view.name}
-                      </h3>
-                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-mist">
-                        <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
-                          <IndustryIcon industry={idea.industry} className="shrink-0 text-celadon" />
-                          <span className="truncate">{view.industry}</span>
-                        </span>
-                        <SectorLabel sector={idea.sector} label={view.sector} />
+                <li key={idea.id} className="py-3">
+                  <Link href={`/ideas/${idea.slug}`} scroll className="group block">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-display text-xl text-foam group-hover:text-black">
+                          {view.name}
+                        </h3>
+                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-mist">
+                          <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+                            <IndustryIcon
+                              industry={idea.industry}
+                              className="shrink-0 text-celadon"
+                            />
+                            <span className="truncate">{view.industry}</span>
+                          </span>
+                          <SectorLabel sector={idea.sector} label={view.sector} />
+                        </div>
                       </div>
+                      <ScorePill score={presented.score} />
                     </div>
-                    <ScorePill score={presented.score} />
-                  </div>
-                  {presented.matched[0] ? (
-                    <p className="mt-2 text-xs text-celadon/90">
-                      {t("today.matched")} · {presented.matched[0].dimension}:{" "}
-                      {presented.matched[0].detail}
-                    </p>
-                  ) : null}
-                  {presented.gaps[0] ? (
-                    <p className="mt-1 text-xs text-mist">
-                      {t("today.gaps")} · {presented.gaps[0].dimension}:{" "}
-                      {presented.gaps[0].closeGap}
-                    </p>
-                  ) : null}
-                </Link>
-              </li>
+                    {presented.matched[0] ? (
+                      <p className="mt-2 text-xs text-celadon/90">
+                        {t("today.matched")} · {presented.matched[0].dimension}:{" "}
+                        {presented.matched[0].detail}
+                      </p>
+                    ) : null}
+                    {presented.gaps[0] ? (
+                      <p className="mt-1 text-xs text-mist">
+                        {t("today.gaps")} · {presented.gaps[0].dimension}:{" "}
+                        {presented.gaps[0].closeGap}
+                      </p>
+                    ) : null}
+                  </Link>
+                </li>
               );
             })}
           </ul>
@@ -420,31 +510,14 @@ function ProfileRow({ label, value }: { label: string; value: string }) {
 
 function ScorePill({ score }: { score: number }) {
   const tone =
-    score >= 70 ? "border-celadon/40 bg-celadon/15 text-celadon" : score >= 40
-      ? "border-copper/40 bg-copper/15 text-copper"
-      : "border-black/15 bg-black/[0.04] text-mist";
+    score >= 70
+      ? "border-celadon/40 bg-celadon/15 text-celadon"
+      : score >= 40
+        ? "border-copper/40 bg-copper/15 text-copper"
+        : "border-black/15 bg-black/[0.04] text-mist";
   return (
     <span className={`shrink-0 rounded-full border px-2.5 py-1 font-mono text-xs ${tone}`}>
       {score}%
     </span>
   );
-}
-
-function summarizeProfile(p: UserProfile): string {
-  const bits = [
-    p.skills.length ? `skills in ${p.skills.join(", ")}` : null,
-    p.major ? `background in ${p.major}` : null,
-    p.currentBusiness ? `currently focused on ${p.currentBusiness}` : null,
-    p.interestedDomains.length ? `interested in ${p.interestedDomains.join(", ")}` : null,
-    p.preferredMarkets.length ? `markets: ${p.preferredMarkets.join(", ")}` : null,
-  ].filter(Boolean);
-  return bits.length ? `Profile locked: ${bits.join("; ")}.` : "Profile is still thin.";
-}
-
-function extractDisplayName(raw: string): string {
-  const titled = raw.match(
-    /(?:i'?m|i am|my name is|this is|call me|i'm called)\s+(.+)$/i,
-  );
-  if (titled?.[1]) return titled[1].trim().replace(/[!！.。]+$/, "");
-  return raw.trim();
 }
