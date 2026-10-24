@@ -278,6 +278,7 @@
   "ledger.statusArchived": "状态：已归档",
   "ledger.archived": "已归档",
   "ledger.archiveHint": "搜索可找到归档中的历史创意。",
+  "ledger.photos": "{count} 张来源照片",
   "dossier.archived": "已归档的历史创意 — 保留供搜索与参考。",
   "hero.seeToday": "查看今日 {count} 个创意",
   "home.todayKicker": "今日",

@@ -278,6 +278,7 @@
   "ledger.statusArchived": "स्थिति: संग्रहीत",
   "ledger.archived": "संग्रहीत",
   "ledger.archiveHint": "खोज से संग्रह में ऐतिहासिक विचार मिलते हैं।",
+  "ledger.photos": "{count} स्रोत फ़ोटो",
   "dossier.archived": "संग्रहीत ऐतिहासिक विचार — खोज और संदर्भ के लिए रखा गया।",
   "hero.seeToday": "आज के {count} आइडिया देखें",
   "home.todayKicker": "आज",

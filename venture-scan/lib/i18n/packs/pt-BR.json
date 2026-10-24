@@ -278,6 +278,7 @@
   "ledger.statusArchived": "Status: arquivados",
   "ledger.archived": "Arquivado",
   "ledger.archiveHint": "A busca encontra ideias históricas no arquivo.",
+  "ledger.photos": "{count} fotos de origem",
   "dossier.archived": "Ideia histórica arquivada — mantida para busca e referência.",
   "hero.seeToday": "Ver as {count} ideias de hoje",
   "home.todayKicker": "Hoje",

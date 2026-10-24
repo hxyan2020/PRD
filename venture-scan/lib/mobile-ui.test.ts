@@ -46,6 +46,7 @@ describe("mobile UI affordances", () => {
     expect(src).toContain("sm:contents");
     expect(row).toContain("idea-ledger-row");
     expect(row).toContain("idea-ledger-meta");
+    expect(row).toContain("IdeaLedgerPhotos");
     expect(home).toContain("todaysIdeas");
     expect(home).toContain("home.browseHistory");
     expect(home).toContain("YESTERDAY_HASH");

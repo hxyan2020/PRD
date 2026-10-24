@@ -278,6 +278,7 @@
   "ledger.statusArchived": "Status: gearchiveerd",
   "ledger.archived": "Gearchiveerd",
   "ledger.archiveHint": "Zoeken vindt historische ideeën in het archief.",
+  "ledger.photos": "{count} bronfoto's",
   "dossier.archived": "Gearchiveerd historisch idee — bewaard voor zoeken en referentie.",
   "hero.seeToday": "Bekijk {count} ideeën van vandaag",
   "home.todayKicker": "Vandaag",

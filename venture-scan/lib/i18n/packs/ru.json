@@ -278,6 +278,7 @@
   "ledger.statusArchived": "Статус: в архиве",
   "ledger.archived": "В архиве",
   "ledger.archiveHint": "Поиск находит исторические идеи в архиве.",
+  "ledger.photos": "{count} исходных фото",
   "dossier.archived": "Архивная историческая идея — сохранена для поиска и справки.",
   "hero.seeToday": "Смотреть {count} идей сегодня",
   "home.todayKicker": "Сегодня",

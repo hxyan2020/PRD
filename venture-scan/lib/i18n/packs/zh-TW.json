@@ -278,6 +278,7 @@
   "ledger.statusArchived": "狀態：已封存",
   "ledger.archived": "已封存",
   "ledger.archiveHint": "搜尋可找到封存中的歷史構想。",
+  "ledger.photos": "{count} 張來源照片",
   "dossier.archived": "已封存的歷史構想 — 保留供搜尋與參考。",
   "hero.seeToday": "查看今日 {count} 個構想",
   "home.todayKicker": "今日",
