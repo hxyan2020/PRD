@@ -295,6 +295,7 @@
   "ledger.statusArchived": "ステータス：アーカイブ",
   "ledger.archived": "アーカイブ",
   "ledger.archiveHint": "検索するとアーカイブ済みの過去アイデアも見つかります。",
+  "ledger.photos": "出典写真 {count} 枚",
   "dossier.archived": "アーカイブ済みの過去アイデア — 検索・参照用に保持。",
   "hero.seeToday": "今日の {count} 件を見る",
   "home.todayKicker": "今日",

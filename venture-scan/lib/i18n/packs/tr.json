@@ -295,6 +295,7 @@
   "ledger.statusArchived": "Durum: arşiv",
   "ledger.archived": "Arşivlendi",
   "ledger.archiveHint": "Arama arşivdeki tarihsel fikirleri bulur.",
+  "ledger.photos": "{count} kaynak fotoğraf",
   "dossier.archived": "Arşivlenmiş tarihsel fikir — arama ve başvuru için saklanır.",
   "hero.seeToday": "Bugünün {count} fikrini gör",
   "home.todayKicker": "Bugün",

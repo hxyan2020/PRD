@@ -295,6 +295,7 @@
   "ledger.statusArchived": "Status: diarsipkan",
   "ledger.archived": "Diarsipkan",
   "ledger.archiveHint": "Pencarian menemukan ide historis di arsip.",
+  "ledger.photos": "{count} foto sumber",
   "dossier.archived": "Ide historis terarsip — disimpan untuk pencarian dan referensi.",
   "hero.seeToday": "Lihat {count} ide hari ini",
   "home.todayKicker": "Hari ini",

@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { catalogActiveIdeas } from "./catalog";
@@ -23,5 +23,14 @@ describe("idea photo albums", () => {
         expect((photo.sourceUrl || "").toLowerCase(), idea.slug).not.toContain("wikipedia.org");
       }
     }
+  });
+
+  it("surfaces sourced photos on Ideas ledger rows", () => {
+    const row = readFileSync(join(process.cwd(), "components/IdeaLedgerRow.tsx"), "utf8");
+    const strip = readFileSync(join(process.cwd(), "components/IdeaLedgerPhotos.tsx"), "utf8");
+    expect(row).toContain("IdeaLedgerPhotos");
+    expect(strip).toContain("photosForIdea");
+    expect(strip).toContain("idea-ledger-photos");
+    expect(strip).toContain("ledger.photos");
   });
 });

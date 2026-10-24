@@ -295,6 +295,7 @@
   "ledger.statusArchived": "الحالة: مؤرشف",
   "ledger.archived": "مؤرشف",
   "ledger.archiveHint": "البحث يعثر على الأفكار التاريخية في الأرشيف.",
+  "ledger.photos": "{count} صور مصدرية",
   "dossier.archived": "فكرة تاريخية مؤرشفة — محفوظة للبحث والمرجعية.",
   "hero.seeToday": "عرض {count} أفكار اليوم",
   "home.todayKicker": "اليوم",

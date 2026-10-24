@@ -295,6 +295,7 @@
   "ledger.statusArchived": "สถานะ: เก็บถาวร",
   "ledger.archived": "เก็บถาวร",
   "ledger.archiveHint": "การค้นหาพบไอเดียในอดีตที่เก็บถาวรไว้",
+  "ledger.photos": "{count} รูปจากแหล่งข้อมูล",
   "dossier.archived": "ไอเดียในอดีตที่เก็บถาวร — เก็บไว้สำหรับการค้นหาและอ้างอิง",
   "hero.seeToday": "ดู {count} ไอเดียวันนี้",
   "home.todayKicker": "วันนี้",

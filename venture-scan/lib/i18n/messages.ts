@@ -134,6 +134,7 @@ const en = {
   "ledger.statusArchived": "Status: archived",
   "ledger.archived": "Archived",
   "ledger.archiveHint": "Search finds historical ideas kept in the archive.",
+  "ledger.photos": "{count} sourced photos",
   "dossier.archived": "Archived historical idea — retained for search and reference.",
 
   "footer.tagline": "worldwide startup ideas & fundraising ledger",
