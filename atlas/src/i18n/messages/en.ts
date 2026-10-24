@@ -368,6 +368,10 @@ export const en = {
   "detail.loading": "Loading entry…",
   "detail.notFound": "Game not found.",
   "detail.showImage": "Show image {n}",
+  "detail.expandImage": "Expand image to full screen",
+  "detail.closeLightbox": "Close full screen image",
+  "detail.prevImage": "Previous image",
+  "detail.nextImage": "Next image",
 
   "detail.assistant.title": "Ask about this game",
   "detail.assistant.sub":

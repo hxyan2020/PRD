@@ -2,7 +2,7 @@ import type { CollectionMeta, Game, TutorialVideo } from "../types/game";
 import { readPool, POOL_EVENT } from "./pool";
 import { AUTH_EVENT } from "./auth";
 import { readStaging, STAGING_EVENT } from "./staging";
-import { encodeLudusCard, sanitizeImageList } from "./gameCardImage";
+import { sanitizeImageList } from "./gameCardImage";
 
 export type CollectionData = {
   meta: CollectionMeta & { brand?: string };
@@ -10,6 +10,9 @@ export type CollectionData = {
 };
 
 export const COLLECTION_EVENT = "ludus-atlas-collection-change";
+
+/** Bump when regenerating covers so Pages/CDN clients do not keep stale JSON. */
+const baseCacheVersion = "2026-10-24-photos";
 
 let baseCache: CollectionData | null = null;
 let tutorialsCache: Record<string, TutorialVideo> | null = null;
@@ -103,7 +106,8 @@ function ensureUniqueCatalogCovers(games: Game[]): Game[] {
 async function loadBase(): Promise<CollectionData> {
   if (baseCache) return baseCache;
   const [res, tutorials] = await Promise.all([
-    fetch(`${import.meta.env.BASE_URL}data/collection.json`),
+    // Cache-bust so GitHub Pages / CDN clients pick up photo backfills quickly.
+    fetch(`${import.meta.env.BASE_URL}data/collection.json?v=${encodeURIComponent(String(baseCacheVersion))}`),
     loadTutorials(),
   ]);
   if (!res.ok) throw new Error(`Failed to load collection (${res.status})`);
