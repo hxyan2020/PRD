@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="GREEN">
-  <text x="80" y="40" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-weight="700" letter-spacing="0.08em" fill="#FFFFFF">GREEN</text>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="256" height="256" rx="32" fill="#3AE66D"/>
+<path d="M182.115 54.5029L195.593 41.4248L205.346 43.708L163.669 84.8848L97.0991 67.9541V154.061L86.1646 165.036C94.6837 181.743 111.869 192.565 131.786 192.565C146.876 192.565 158.772 186.939 174.003 173.207V146.528L114.221 146.548L142.16 118.71H205.807V215.103H174.003V183.91C157.935 200.255 139.215 218 114.221 218C78.4721 218 50.1929 192.945 50.1929 146.882C50.193 120.646 59.0658 97.5744 79.1333 77.5068C79.3183 77.3219 79.505 77.1385 79.6909 76.9541L118.607 38L182.115 54.5029Z" fill="black"/>
 </svg>
