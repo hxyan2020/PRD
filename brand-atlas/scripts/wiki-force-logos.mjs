@@ -19,7 +19,12 @@ const CONCURRENCY = Number(process.env.WIKI_CONCURRENCY || 4);
 const CATEGORY = process.env.MARK_CATEGORY || "";
 const ONLY_EMBLEM = process.env.ONLY_EMBLEM !== "0";
 
+const INSTRUMENT_HINTS = JSON.parse(
+  readFileSync(join(root, "scripts", "cover-title-hints-instruments.json"), "utf8"),
+);
+
 const WIKI_SEARCH = {
+  ...INSTRUMENT_HINTS,
   "cars__hummer": "Hummer",
   "cars__hyptec": "Hyptec",
   "cars__im-motors": "IM Motors",
@@ -105,8 +110,11 @@ function isEmblem(svg) {
   if (!svg) return true;
   if (svg.includes("data:image")) return false;
   if (svg.includes('viewBox="0 0 24 24"')) return false;
+  if (svg.includes("<text")) return true;
+  // Tiny path-only stubs / icon stand-ins are not real brand logos.
+  if (svg.length < 900 && !svg.includes("data:image")) return true;
   if (svg.includes("<path") && !svg.includes("<text")) return false;
-  return svg.includes("<text");
+  return true;
 }
 
 function wrapImage(b64, mime = "image/png") {

@@ -28,6 +28,16 @@ const UA = "SeenMarksBot/1.1 (brand-atlas logo enrichment; local)";
 /** Force re-fetch even if a raster already exists (wrong brand / stand-in). */
 const FORCE_IDS = new Set([
   "cars__hummer", // previously resolved to GMC logo
+  // Wrong stand-ins / text emblems on the instruments shelf
+  "instruments__apogee",
+  "instruments__elixir",
+  "instruments__ludwig",
+  "instruments__steinberg",
+  "instruments__zildjian",
+  "instruments__guitar-center",
+  "instruments__ableton",
+  "instruments__fazioli",
+  "instruments__focusrite",
 ]);
 
 const EXTRA_DOMAINS = {
@@ -82,8 +92,13 @@ const EXTRA_DOMAINS = {
   "cars__tesla": "tesla.com",
 };
 
+const INSTRUMENT_HINTS = JSON.parse(
+  readFileSync(join(root, "scripts", "cover-title-hints-instruments.json"), "utf8"),
+);
+
 /** Explicit Wikidata search strings when the brand name alone is ambiguous. */
 const WIKI_SEARCH = {
+  ...INSTRUMENT_HINTS,
   "cars__hummer": "Hummer",
   "cars__hyptec": "Hyptec",
   "cars__im-motors": "IM Motors",
@@ -117,8 +132,10 @@ function isEmblem(svg) {
   if (!svg) return true;
   if (svg.includes("data:image")) return false;
   if (svg.includes('viewBox="0 0 24 24"')) return false;
+  if (svg.includes("<text")) return true;
+  if (svg.length < 900 && !svg.includes("data:image")) return true;
   if (svg.includes("<path") && !svg.includes("<text")) return false;
-  return svg.includes("<text");
+  return true;
 }
 
 function wrapImage(b64, mime = "image/png") {
