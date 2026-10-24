@@ -5,72 +5,72 @@
     "timezoneIana": "Asia/Shanghai",
     "cronUtc": "0 23 * * *"
   },
-  "scannedAt": "2026-10-24T05:02:00.679Z",
+  "scannedAt": "2026-10-24T05:16:39.464Z",
   "source": "daily-0700-utc8",
   "ideasTotal": 120,
   "sources": {
     "techcrunch": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "crunchbase-news": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "36kr": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "krasia": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "techinasia": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "nikkei-asia": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "platum": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "yourstory": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "startup-india": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "sifted": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "eu-startups": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
@@ -82,43 +82,43 @@
       "error": "HTTP 403"
     },
     "gruenderszene": {
-      "lastSourcedAt": "2026-10-24T04:51:56.933Z",
-      "ok": false,
-      "status": 403,
-      "error": "HTTP 403"
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
+      "ok": true,
+      "status": 200,
+      "error": null
     },
     "africarena": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "wamda": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "contxto": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "startupbase-br": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "israel-tech": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "afrilabs": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
@@ -136,61 +136,61 @@
       "error": "HTTP 429"
     },
     "rest-of-world": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "startupdaily-au": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "nordic-startup-news": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "webrazzi": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "vnexpress-startup": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "technode": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "pulse-ng": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "inc42": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "startupchile": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
     },
     "dealstreetasia": {
-      "lastSourcedAt": "2026-10-24T05:02:00.679Z",
+      "lastSourcedAt": "2026-10-24T05:16:39.464Z",
       "ok": true,
       "status": 200,
       "error": null
