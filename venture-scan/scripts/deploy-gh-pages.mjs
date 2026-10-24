@@ -59,6 +59,14 @@ if (existsSync(join(out, "404.html"))) {
 writeFileSync(join(target, ".nojekyll"), "");
 writeFileSync(join(target, "PUBLIC_URL.txt"), `${permanentUrl}\n`);
 
+// CI runners have no default git identity — required before commit.
+run("git", ["config", "user.name", "venture-scan-bot"], worktree);
+run(
+  "git",
+  ["config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"],
+  worktree,
+);
+
 run("git", ["add", "venture-scan"], worktree);
 const status = spawnSync("git", ["status", "--porcelain"], {
   cwd: worktree,
