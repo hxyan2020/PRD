@@ -1,0 +1,199 @@
+# Fate-telling methods catalogued
+
+## Africa (21)
+- Afa (Igba Afa)
+- Akan Day Names
+- Amathambo (Zulu Bones)
+- Awdunigist (Star Counting)
+- Benge (Poison Oracle)
+- Dlera (Crab Divination)
+- Dogon Fox Tracks
+- Egyptian Decan Astrology
+- Egyptian Dream Books / Incubation
+- Falak (Swahili Astrology)
+- Fá (Fon)
+- Giriama Spirit / Elder Divination
+- Hakata (Bone Tablets)
+- Ifá
+- Ilm al-Raml (Sand Geomancy)
+- Mérìndínlógún (Sixteen Cowries)
+- Nggàm (Spider / Crab Divination)
+- Ngombo / Bone Throwing
+- Obi Divination
+- Sikidy
+- Zāʾirja
+
+## Asia (88)
+- Abjad Numerology
+- Aṅka Jyotiṣa (Indian Numerology)
+- Aṣṭamaṅgala Praśna
+- Ba Zhai (Eight Mansions)
+- Bazi (Four Pillars of Destiny)
+- Belomancy (Arrow Lots)
+- Ben Ming Nian (Fan Tai Sui)
+- Blood Type Personality
+- Bone-Weighing Fate (Chenggu Suanming)
+- Bói Kiều (Kieu Fortune-Telling)
+- Chabashira (Tea-Stalk Fortune)
+- Chinese Almanac Day Selection (Zeri)
+- Chinese Character Divination (Cezi)
+- Chinese Zodiac (Twelve Animals)
+- Da Liu Ren
+- Feng Shui
+- Firdaria (Persian Time-Lords)
+- Flying Star Feng Shui (Xuan Kong)
+- Futomani
+- Fāl-e Ḥāfeẓ
+- Gunghap (Korean Compatibility)
+- I Ching / Zhou Yi
+- Ikhtiyārāt (Electional Astrology)
+- Islamic Astrology
+- Istikhāra
+- Jafr
+- Jiaobei (Poe Blocks)
+- KP (Krishnamurti Paddhati)
+- Kabbalah Numerology / Gematria
+- Kasō (Japanese House Divination)
+- Kau Chim / Chi Chi Sticks
+- Khmer Horasastra
+- Kiboku (Tortoise Shell)
+- Kurşun Dökme (Lead Pouring)
+- Lao Calendar Divination
+- Ling Qi Jing
+- Lunar Mansions (Manāzil)
+- Mahabote (Eight-Day Astrology)
+- Mazalot (Hebrew Zodiac)
+- Mesopotamian Dream Omens
+- Mesopotamian Extispicy
+- Mian Xiang (Face Reading)
+- Mo (Tibetan Dice Divination)
+- Mogu (Bone Palmistry)
+- Moleosophy / Mole Reading
+- Mongolian Zurhai
+- Nine Star Ki
+- Omikuji
+- Onmyōdō Almanac
+- Panchanga
+- Parrot Astrology (Kili Josiyam)
+- Pawukon (Balinese)
+- Plum Blossom Numerology (Mei Hua Yi Shu)
+- Qimen Dunjia
+- Qizheng Siyu (Seven Governors)
+- Ramala Shastra
+- Rokuyō (Six-Day Cycle)
+- Saju Palja (Korean Four Pillars)
+- Sanmeigaku
+- Sarvatobhadra Chakra
+- Scapulimancy (Central Asia)
+- Seimei Handan (Name Divination)
+- Shagai (Ankle-Bone Dice)
+- Shang Oracle Bones
+- Shichū Suimei
+- Shou Xiang (Chinese Palmistry)
+- Sinhala Nekath
+- Six Lines / Na Jia (Liu Yao)
+- Sukuyō (Esoteric Buddhist Astrology)
+- Svara Śāstra
+- Sāmudrika Śāstra
+- Tai Yi Shen Shu
+- Taksa (Thai Naming Astrology)
+- Tamil Numerology
+- Thai Horasat
+- Thai Weekday Divination
+- Tibetan Astrology
+- Tie Ban Shen Shu (Iron Plate)
+- Tojeong Bigyeol
+- Turkish Coffee Reading
+- Tứ Trụ (Vietnamese Four Pillars)
+- Tử Vi Đẩu Số
+- Urim and Thummim
+- Vastu Shastra
+- Vedic Astrology (Jyotish)
+- Weton (Javanese)
+- Xiao Liu Ren
+- Zi Wei Dou Shu (Purple Star Astrology)
+
+## Europe (47)
+- Anglo-Saxon Futhorc
+- Apple Peel Divination
+- Astragalomancy (Knucklebones)
+- Augury
+- Aura Reading
+- Baltic & Finnic Folk Divination
+- Bibliomancy (Sortes)
+- Biorhythm
+- Capnomancy (Smoke)
+- Celtic Tree Astrology
+- Ceromancy (Wax)
+- Cleromancy (Casting Lots)
+- Crystal / Mirror Scrying
+- Delphic Oracle / Pythia
+- Domino Divination
+- Dowsing / Pendulum
+- Dream Interpretation
+- Egg Divination (Oomancy)
+- Goralot (Jewish Lot Books)
+- Graphology
+- Haruspicy / Extispicy
+- Horary Astrology
+- Human Design
+- Hydromancy
+- Isopsephy
+- Kipper Cards
+- Lenormand Cards
+- Metoposcopy
+- Mordovian Marriage Divination
+- Nephomancy (Cloud Reading)
+- Ogham Divination
+- Onychomancy (Nail Reading)
+- Oracle Cards
+- Palmistry (Chiromancy)
+- Playing-Card Cartomancy
+- Pyromancy (Fire)
+- Russian Svyatki Fortune-Telling
+- Sibilla Deck
+- Slavic Folk Divination
+- Spanish Deck Cartomancy
+- Tarot
+- Tea-Leaf Reading
+- Western Astrology
+- Western Geomancy
+- Western Numerology
+- Western Physiognomy
+- Younger Futhark Runes
+
+## North America (13)
+- Afro-Cuban Ifá
+- Angel Numbers
+- Astrocartography
+- Diloggún (Afro-Cuban Cowries)
+- Innu Caribou Scapulimancy
+- Maize Seed Casting
+- Mazatec Divinatory Curing
+- Midewiwin Scroll Lore
+- Northern Dene Stellar Scintillation
+- Shaking Tent Ceremony
+- Tonalpohualli (Aztec Day Count)
+- Tzolk’in (Maya Calendar Divination)
+- Zapotec / Mixtec Day Count
+
+## Oceania (9)
+- Aboriginal Australian Sky Knowledge
+- Fijian Draunikau / Dream Omens
+- Hawaiian Kilo (Observation Divination)
+- Micronesian Star Path Navigation Omens
+- Māori Maramataka (Moon Nights)
+- New Guinea Smoke / Sorcery Oracles
+- Samoan Tofa / Spirit Consultation
+- Tahitian Moon Nights
+- Torres Strait Stellar Scintillation
+
+## South America (7)
+- Andean / Inca Wata
+- Ayahuasca Visionary Diagnosis
+- Coca Leaf Divination
+- Despacho / Offering Omens
+- Jogo de Búzios
+- Mapuche Dream & Machi Divination
+- Wauja Tobacco Vision Divination
+
