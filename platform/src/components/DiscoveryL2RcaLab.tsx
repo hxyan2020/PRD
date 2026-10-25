@@ -18,7 +18,7 @@ export function DiscoveryL2RcaLab() {
   const prototypeSrc = useMemo(() => {
     const base = publicBasePath();
     const lang = zh ? "zh-Hant" : "en";
-    const q = new URLSearchParams({ embed: "1", lang, base });
+    const q = new URLSearchParams({ embed: "1", lang, base, tab: "aggregate" });
     return `${base}/prototypes/monitor2-discovery-l2-rca.html?${q.toString()}`;
   }, [zh]);
 
