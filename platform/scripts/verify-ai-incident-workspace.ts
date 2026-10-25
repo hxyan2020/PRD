@@ -20,6 +20,10 @@ assert.match(html, /mode:'static'/);
 assert.match(html, /surface:DEFAULT_SURFACE/);
 assert.match(html, /dict=\{[\s\S]*zh:\{/);
 assert.match(html, /en:\{/);
+assert.match(html, /--brand:#0b6e6a/);
+assert.match(html, /--vantage:#044855/);
+assert.match(html, /Source Sans 3/);
+assert.doesNotMatch(html, /font-family:Inter/);
 
 const page = read("src/app/admin/ai-incident/page.tsx");
 assert.match(page, /AiIncidentWorkspace/);

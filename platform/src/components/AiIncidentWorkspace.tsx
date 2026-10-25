@@ -9,6 +9,8 @@ import { publicBasePath } from "@/lib/static-export";
 /**
  * Hosts the Monitor 2.0 bilingual AI Incident Workspace HTML prototype
  * (INC-1028 LP-A / XAUUSD demo) inside CRMP Admin with demo data only.
+ * Chrome uses CRMP panel / btn / token patterns; the iframe CSS mirrors
+ * Vantage teal / accent tokens so the embedded demo matches the desk.
  */
 export function AiIncidentWorkspace() {
   const { locale } = useUiLocale();
@@ -21,14 +23,14 @@ export function AiIncidentWorkspace() {
   }, []);
 
   return (
-    <div className="space-y-3" data-testid="ai-incident-workspace">
-      <div className="panel p-3 sm:p-4 space-y-2">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <div className="min-w-0">
-            <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">
+    <div className="space-y-4" data-testid="ai-incident-workspace">
+      <div className="panel p-3 sm:p-4 space-y-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 space-y-1">
+            <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
               INC-1028 · LP-A · XAUUSD · P2
             </div>
-            <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">
+            <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh
                 en="Interactive bilingual prototype from Monitor2_AI_Report_Web_Bilingual_v3 — Web Console + Lark, Static (read-only) vs Dynamic (multi-turn investigation), E-01…E-08 evidence, nested human feedback. All actions use simulated demo data (no production AI / Lark)."
                 zh="來自 Monitor2_AI_Report_Web_Bilingual_v3 的雙語互動原型 — 網頁＋Lark、靜態（只讀）／動態（多輪調查）、E-01…E-08 證據、巢狀人工回饋。所有動作皆為模擬示範資料（無正式 AI／Lark）。"
@@ -47,7 +49,7 @@ export function AiIncidentWorkspace() {
             </AdminLink>
           </div>
         </div>
-        <ul className="text-xs text-[var(--muted)] grid sm:grid-cols-2 gap-1 list-disc pl-4">
+        <ul className="text-xs text-[var(--muted)] grid sm:grid-cols-2 gap-x-4 gap-y-1.5 list-disc pl-4">
           <li>
             <EnZh
               en="Static mode: read RCA + evidence only — ACK / assign / escalate disabled"
@@ -76,22 +78,20 @@ export function AiIncidentWorkspace() {
       </div>
 
       <div className="panel overflow-hidden" data-testid="ai-incident-frame-wrap">
-        <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-[var(--border)] bg-[var(--panel-2,#f8fafc)]">
+        <div className="flex items-center justify-between gap-2 px-3 py-2.5 border-b border-[var(--line)] bg-[var(--panel)]">
           <span className="text-xs font-semibold text-[var(--ink)]">
-            {zh ? "內嵌原型工作台" : "Embedded prototype workspace"}
+            <EnZh en="Embedded prototype workspace" zh="內嵌原型工作台" />
           </span>
           <button
             type="button"
             className="btn btn-sm"
             onClick={() => setSurfaceHint((s) => (s === "embedded" ? "blank" : "embedded"))}
           >
-            {surfaceHint === "embedded"
-              ? zh
-                ? "重新載入"
-                : "Reload"
-              : zh
-                ? "顯示內嵌"
-                : "Show embedded"}
+            {surfaceHint === "embedded" ? (
+              <EnZh en="Reload" zh="重新載入" />
+            ) : (
+              <EnZh en="Show embedded" zh="顯示內嵌" />
+            )}
           </button>
         </div>
         {surfaceHint === "embedded" ? (
@@ -99,7 +99,7 @@ export function AiIncidentWorkspace() {
             key={prototypeSrc}
             title={zh ? "AI 事故工作台演示" : "AI Incident Workspace demo"}
             src={prototypeSrc}
-            className="w-full border-0 bg-white"
+            className="w-full border-0 bg-[var(--bg)]"
             style={{ height: "min(82vh, 920px)" }}
             data-testid="ai-incident-iframe"
           />
