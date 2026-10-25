@@ -50,6 +50,8 @@
   "hero.body": "全球創業與募資事件的新鮮訊號，以及你的下一步",
   "hero.browse": "瀏覽 {count} 個構想",
   "hero.today": "今日推薦",
+  "hero.catalogue": "查看完整目錄",
+  "hero.lastRefresh": "上次刷新 {when}",
   "hero.match": "聊天匹配",
   "hero.chips": "名稱 · 模式 · 團隊 · 募資 · 路徑",
   "teaser.kicker": "每日推薦",

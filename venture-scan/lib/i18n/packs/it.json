@@ -50,6 +50,8 @@
   "hero.body": "Segnali freschi da startup e eventi di fundraising in tutto il mondo, gestiti in un database e surf aced con i campi è necessario decidere la tua prossima mossa.",
   "hero.browse": "Sfoglia le idee {count}",
   "hero.today": "La scelta di oggi",
+  "hero.catalogue": "Vedi catalogo completo",
+  "hero.lastRefresh": "Ultimo aggiornamento {when}",
   "hero.match": "Abbinamento con chatbot",
   "hero.chips": "Nome · modello · squadra · finanziamento · gioco",
   "teaser.kicker": "Raccomandazione di ogni giorno",

@@ -50,6 +50,8 @@
   "hero.body": "Señales frescas de startups y rondas en todo el mundo, guardadas en base de datos y mostradas con los campos que necesitas para decidir tu próximo paso.",
   "hero.browse": "Ver {count} ideas",
   "hero.today": "Pick de hoy",
+  "hero.catalogue": "Ver catálogo completo",
+  "hero.lastRefresh": "Última actualización {when}",
   "hero.match": "Emparejar con chatbot",
   "hero.chips": "Nombre · modelo · equipo · funding · jugada",
   "teaser.kicker": "Recomendación diaria",

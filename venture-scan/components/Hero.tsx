@@ -3,10 +3,21 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/BrandLogo";
 import { withBase } from "@/lib/base-path";
+import { formatRefreshTimestamp } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 
-export function Hero({ count }: { count: number }) {
-  const { t } = useI18n();
+export function Hero({
+  count,
+  lastRefreshedAt,
+}: {
+  count: number;
+  lastRefreshedAt?: string;
+}) {
+  const { t, locale } = useI18n();
+  const refreshed =
+    lastRefreshedAt && Number.isFinite(Date.parse(lastRefreshedAt))
+      ? formatRefreshTimestamp(lastRefreshedAt, locale)
+      : null;
 
   return (
     <section className="relative isolate min-h-[100svh] overflow-hidden bg-paper">
@@ -52,10 +63,15 @@ export function Hero({ count }: { count: number }) {
             <a href="#todays-ideas" className="btn-primary btn-block-mobile">
               {t("hero.seeToday", { count })}
             </a>
-            <Link href="/today" className="btn-ghost btn-block-mobile">
-              {t("hero.today")}
+            <Link href="/ideas" className="btn-ghost btn-block-mobile">
+              {t("hero.catalogue")}
             </Link>
           </div>
+          {refreshed ? (
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-mist/90 sm:text-[11px]">
+              {t("hero.lastRefresh", { when: refreshed })}
+            </p>
+          ) : null}
         </div>
       </div>
     </section>

@@ -50,6 +50,8 @@
   "hero.body": "Tín hiệu mới từ những người khởi động và các sự kiện gây quỹ trên toàn thế giới được lưu trữ trong cơ sở dữ liệu và lướt sóng đồng ruộng cần phải quyết định bước đi tiếp theo.",
   "hero.browse": "Duyệt {count} ý tưởng",
   "hero.today": "Hôm nay chọn",
+  "hero.catalogue": "Xem toàn bộ danh mục",
+  "hero.lastRefresh": "Cập nhật lần cuối {when}",
   "hero.match": "Khớp với chatbot",
   "hero.chips": "Name",
   "teaser.kicker": "Đề nghị hàng ngày",

@@ -50,6 +50,8 @@
   "hero.body": "Frische Signale zu Startups und Fundraising weltweit — in der Datenbank gespeichert und mit den Feldern gezeigt, die du für den nächsten Schritt brauchst.",
   "hero.browse": "{count} Ideen ansehen",
   "hero.today": "Tipp des Tages",
+  "hero.catalogue": "Vollständigen Katalog ansehen",
+  "hero.lastRefresh": "Zuletzt aktualisiert {when}",
   "hero.match": "Per Chatbot matchen",
   "hero.chips": "Name · Modell · Team · Funding · Spielzug",
   "teaser.kicker": "Tägliche Empfehlung",

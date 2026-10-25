@@ -50,6 +50,8 @@
   "hero.body": "Signaux frais de startups et de fundraising dans le monde, stockés en base et affichés avec les champs utiles pour décider votre prochain pas.",
   "hero.browse": "Parcourir {count} idées",
   "hero.today": "Choix du jour",
+  "hero.catalogue": "Voir le catalogue complet",
+  "hero.lastRefresh": "Dernière actualisation {when}",
   "hero.match": "Match via chatbot",
   "hero.chips": "Nom · modèle · équipe · funding · piste",
   "teaser.kicker": "Recommandation quotidienne",

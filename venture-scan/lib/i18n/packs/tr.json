@@ -50,6 +50,8 @@
   "hero.body": "Dünya çapında başlangıçlardan gelen taze sinyaller – bir veritabanında ve sörfte depolandı Bir sonraki hareketinize karar vermek için ihtiyacınız olan alanlarla birlikte.",
   "hero.browse": "{count} fikre göz at",
   "hero.today": "Bugünün seçimi",
+  "hero.catalogue": "Tam kataloğu gör",
+  "hero.lastRefresh": "Son yenileme {when}",
   "hero.match": "chatbot ile Maç",
   "hero.chips": "Ad · model · takım · finansman · oyun",
   "teaser.kicker": "Günlük tavsiye",
