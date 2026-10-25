@@ -50,6 +50,8 @@
   "hero.body": "전 세계 스타트업·펀딩 시그널을 스캔해 DB에 저장하고, 다음 결정을 위한 필드를 프론트에 보여줍니다.",
   "hero.browse": "{count}개 아이디어 보기",
   "hero.today": "오늘의 추천",
+  "hero.catalogue": "전체 카탈로그 보기",
+  "hero.lastRefresh": "마지막 새로고침 {when}",
   "hero.match": "챗봇 매칭",
   "hero.chips": "이름 · 모델 · 팀 · 펀딩 · 다음 수",
   "teaser.kicker": "매일 추천",

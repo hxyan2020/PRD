@@ -50,6 +50,8 @@
   "hero.body": "Nieuwe signalen van start-ups en fondsenwerving evenementen wereldwijd opgeslagen in een voorgelegde database en surfenworven met de velden die je nodig hebt om je volgende stap te bepalen.",
   "hero.browse": "Blader door {count} ideeën",
   "hero.today": "De keuze van vandaag",
+  "hero.catalogue": "Volledige catalogus bekijken",
+  "hero.lastRefresh": "Laatst vernieuwd {when}",
   "hero.match": "Match met chatbot",
   "hero.chips": "Naam · model · team · financiering · play",
   "teaser.kicker": "Dagelijkse aanbeveling",

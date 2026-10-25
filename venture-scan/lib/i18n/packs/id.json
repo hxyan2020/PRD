@@ -50,6 +50,8 @@
   "hero.body": "Sinyal segar startup dan fundraising dunia disimpan ke database dan ditampilkan di frontend.",
   "hero.browse": "Jelajahi {count} ide",
   "hero.today": "Pilihan hari ini",
+  "hero.catalogue": "Lihat katalog lengkap",
+  "hero.lastRefresh": "Terakhir diperbarui {when}",
   "hero.match": "Cocok dengan Chatbot",
   "hero.chips": "Nama",
   "teaser.kicker": "RePeler harian",

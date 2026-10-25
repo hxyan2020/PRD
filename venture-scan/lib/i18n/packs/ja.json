@@ -50,6 +50,8 @@
   "hero.body": "世界中のスタートアップと資金調達シグナルをスキャンし、データベースに保存してフロントで表示します。",
   "hero.browse": "{count} 件のアイデアを見る",
   "hero.today": "今日の推薦",
+  "hero.catalogue": "カタログ全体を見る",
+  "hero.lastRefresh": "最終更新 {when}",
   "hero.match": "チャットでマッチ",
   "hero.chips": "名前・モデル・チーム・資金調達・プレイ",
   "teaser.kicker": "毎日の推薦",

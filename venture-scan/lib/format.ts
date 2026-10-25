@@ -49,6 +49,22 @@ export function socialLabel(platform: SocialPlatform): string {
   return map[platform];
 }
 
+/** Absolute refresh stamp in the daily-scan zone (Asia/Shanghai / UTC+8). */
+export function formatRefreshTimestamp(iso: string, locale = "en"): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "—";
+  const formatted = new Intl.DateTimeFormat(locale, {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+  return `${formatted} UTC+8`;
+}
+
 export function relativeTime(
   iso: string,
   now = Date.now(),

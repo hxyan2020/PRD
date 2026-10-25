@@ -79,6 +79,8 @@ const en = {
   "hero.browse": "Browse {count} ideas",
   "hero.seeToday": "See today's {count} ideas",
   "hero.today": "Today's pick",
+  "hero.catalogue": "See full catalogue",
+  "hero.lastRefresh": "Last refreshed {when}",
   "hero.match": "Match with chatbot",
   "hero.chips": "Name · model · team · funding · play",
 
