@@ -9,11 +9,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **9 hours** (48 cases).
+- Full pack suggested window ≈ **9 hours** (49 cases).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, P0–P3 severity re-recommend with reason codes, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Unknown Risk Discovery, Indicator Aggregation (linear membership → wait → RO single/aggregate), Realtime Alert & Tracker, Risk Domains, AI Admin, AI Performance (read-only eval incl. weekly severity formula + monthly P0–P3→weights pack), Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (severity formula loop · dimensions × coefficients · ESC-DEFAULT · monthly severity weight pack), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back; every mutating admin/Lark path + failed login), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, P0–P3 severity re-recommend with reason codes, recommended controls, sync, closed-thread persistence, INC-1028 AI Incident Workspace deep link) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Unknown Risk Discovery, Indicator Aggregation (linear membership → wait → RO single/aggregate), AI Incident Workspace (bilingual INC-1028 Static/Dynamic HTML prototype), Realtime Alert & Tracker, Risk Domains, AI Admin, AI Performance (read-only eval incl. weekly severity formula + monthly P0–P3→weights pack), Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (severity formula loop · dimensions × coefficients · ESC-DEFAULT · monthly severity weight pack), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back; every mutating admin/Lark path + failed login), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -76,7 +76,8 @@ graph TD
 | 45 | UAT-45 | 484m | 12m | High | Risk + AI | UAT-33 or UAT-37; open AI_REPORT thread | P0–P3 severity re-recommend feeds monthly factor-weight pack | Demo Messenger, Escalation Routes, AI Performance |
 | 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45; Escalation formula loop seeded | Severity formula loop: ops reason codes → weekly AI → RO approve | Demo Messenger, Escalation Routes, AI Admin, AI Performance |
 | 47 | UAT-48 | 508m | 12m | High | Risk + AI + Ops | UAT-02; Indicator Aggregation seeded | Indicator aggregation: membership → wait → RO single / aggregate / force-aggregate + L2 severity | Indicator Aggregation, AI Skills, RAG, Admin Home |
-| 48 | UAT-46 | 520m | 15m | Critical | Risk Owner | UAT-01–45, UAT-47 and UAT-48 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
+| 48 | UAT-49 | 520m | 12m | High | Risk + AI | UAT-33; INC-1028 Messenger seed | AI Incident Workspace — bilingual INC-1028 Static/Dynamic prototype | AI Incident Workspace, Demo Messenger |
+| 49 | UAT-46 | 532m | 15m | Critical | Risk Owner | UAT-01–45, UAT-47, UAT-48 and UAT-49 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
 
@@ -912,9 +913,27 @@ graph TD
 **Pass:** Linear stepper visible; four outcomes demonstrated (incl. force-aggregate); L2 severity ≥ max L1; EN or zh-Hant chrome readable.
 **Evidence:** Screenshots of linear rail, single path, wait window, aggregated + force-aggregated sessions, L2 severity panel (and optional homepage demo).
 
+### UAT-49 — AI Incident Workspace — bilingual INC-1028 Static/Dynamic prototype
+
+- **Severity:** High · **BU:** Risk + AI · **Depends:** UAT-33; INC-1028 Messenger seed · **Window:** T+520m / 12m
+- **Covers:** AI Incident Workspace, Demo Messenger
+- **Why:** Ops need a bilingual Monitor 2.0 incident report surface (Static read-only vs Dynamic investigation) wired from Messenger without production AI/Lark.
+- **Goal:** Open `/admin/ai-incident`, prove Static blocks ops actions and Dynamic + EN/zh-Hant work; confirm INC-1028 Messenger deep link lands on the workspace.
+
+**Steps**
+
+1. Open **AI Incident Workspace** from left nav (Monitor & risk). Confirm the INC-1028 toolbar (Web ↔ Lark · Static ↔ Dynamic · 中文 ↔ EN) and embedded prototype (`ai-incident-iframe`).
+2. Stay in **Static**. Attempt ACK / assign / escalate (or confirm those controls are disabled). Open an **E-01…E-08** evidence sample — SQL/API content should render.
+3. Switch to **Dynamic**. Run at least one investigate action (Fallback / client impact / history / market / Admin logs). Confirm report version or tool panel updates. Toggle EN ↔ 中文 — chrome and report copy remain readable.
+4. Optionally **Export** demo JSON (`INC-1028-demo-report.json`).
+5. Open **Demo Messenger** → thread **INC-1028** / LP Quote Delay → AI_REPORT **AI Incident Workspace** surface (or Open in admin). Confirm landing on `/admin/ai-incident` (Pages path stays under `/PRD/crmp-admin/`).
+
+**Pass:** Workspace + nav present; Static refuses ops; Dynamic + bilingual readable; Messenger deep link reaches the page; no production AI/Lark required.
+**Evidence:** Screenshots of Static block, Dynamic tool result, EN/zh toggle, Messenger INC-1028 surface → workspace.
+
 ### UAT-46 — Risk Owner exit sign-off
 
-- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–45, UAT-47 and UAT-48 results recorded · **Window:** T+520m / 15m
+- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–45, UAT-47, UAT-48 and UAT-49 results recorded · **Window:** T+532m / 15m
 - **Covers:** UAT Checklist, Audit Log
 - **Why:** UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.
 - **Goal:** Tally Critical/High results against the exit rules and file a signed decision.
@@ -923,7 +942,7 @@ graph TD
 
 1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
-3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), and aggregation flow (UAT-48) passed or waived.
+3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), and AI Incident Workspace (UAT-49) passed or waived.
 4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 

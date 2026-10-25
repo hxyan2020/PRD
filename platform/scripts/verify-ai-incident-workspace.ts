@@ -57,10 +57,33 @@ assert.match(phrases, /INC-1028 LP-A XAUUSD/);
 const wf = fs.readFileSync(path.join(repo, ".github/workflows/crmp-pages.yml"), "utf8");
 assert.match(wf, /cursor\/ai-incident-workspace-a935/);
 
+const uatCases = read("src/lib/docs/uat-cases.ts");
+assert.match(uatCases, /id: \"UAT-49\"/);
+assert.match(uatCases, /AI Incident Workspace/);
+assert.match(uatCases, /AI 事故工作台/);
+assert.match(uatCases, /INC-1028/);
+
+const openIssues = read("src/lib/docs/open-issues.ts");
+assert.match(openIssues, /AI Incident Workspace/);
+assert.match(openIssues, /AI 事故工作台/);
+assert.match(openIssues, /UAT-49/);
+
 for (const [rel, markers] of [
-  ["docs/USER_GUIDE.md", [/AI Incident Workspace/, /INC-1028/, /\/admin\/ai-incident/]],
-  ["docs/USER_GUIDE.zh-Hant.md", [/AI 事故工作台/, /INC-1028/, /\/admin\/ai-incident/]],
-  ["docs/CHANGELOG.md", [/AI Incident Workspace|ai-incident|INC-1028/]],
+  ["docs/USER_GUIDE.md", [/## 14C\. AI Incident Workspace/, /INC-1028/, /\/admin\/ai-incident/, /§9\.2/]],
+  ["docs/USER_GUIDE.zh-Hant.md", [/## 14C\. AI 事故工作台/, /INC-1028/, /\/admin\/ai-incident/]],
+  ["docs/PRD.md", [/### 6\.9 AI Incident Workspace/, /UAT-49/, /\/admin\/ai-incident/]],
+  ["docs/PRD.zh-Hant.md", [/### 6\.9 AI 事故工作台/, /UAT-49/, /\/admin\/ai-incident/]],
+  ["docs/TSD.md", [/### 11\.8 AI Incident Workspace/, /\/admin\/ai-incident/, /ensureInc1028MessengerThread/]],
+  ["docs/TSD.zh-Hant.md", [/### 11\.8 AI 事故工作台/, /\/admin\/ai-incident/, /ensureInc1028MessengerThread/]],
+  ["docs/UAT.md", [/UAT-49/, /AI Incident Workspace/, /49 cases/, /INC-1028/]],
+  ["docs/UAT.zh-Hant.md", [/UAT-49/, /AI 事故工作台/, /49 案/, /INC-1028/]],
+  ["docs/PROGRESS.md", [/AI Incident Workspace/, /\/admin\/ai-incident/, /UAT-49/]],
+  ["docs/PROGRESS.zh-Hant.md", [/AI 事故工作台/, /\/admin\/ai-incident/, /UAT-49/]],
+  ["docs/ROADMAP.md", [/AI Incident Workspace/, /\/admin\/ai-incident/]],
+  ["docs/ROADMAP.zh-Hant.md", [/AI 事故工作台/, /\/admin\/ai-incident/]],
+  ["docs/OPEN_ISSUES.md", [/AI Incident Workspace/, /UAT-49/]],
+  ["docs/OPEN_ISSUES.zh-Hant.md", [/AI 事故工作台/, /UAT-49/]],
+  ["docs/CHANGELOG.md", [/AI Incident Workspace|ai-incident|INC-1028/, /UAT-49|§6\.9|§11\.8|§14C/]],
 ] as Array<[string, RegExp[]]>) {
   const src = read(rel);
   for (const m of markers) {
@@ -68,4 +91,4 @@ for (const [rel, markers] of [
   }
 }
 
-console.log("ok: AI Incident Workspace (bilingual HTML prototype + INC-1028 demo)");
+console.log("ok: AI Incident Workspace (bilingual HTML prototype + INC-1028 demo + docs EN/zh)");

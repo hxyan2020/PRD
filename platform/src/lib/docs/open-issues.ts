@@ -365,7 +365,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
       eta: "2026-Q4／2027-Q1",
     },
     checklist: [
-      { en: "Execute interactive UAT-01…48 with evidence notes", zh: "執行互動式 UAT-01…48 並留證據註記" },
+      { en: "Execute interactive UAT-01…49 with evidence notes", zh: "執行互動式 UAT-01…49 並留證據註記" },
       { en: "Sign UAT exit criteria (pass thresholds)", zh: "簽核 UAT 退出標準（通過門檻）" },
       { en: "Set second-AI severity policy (default BREACH)", zh: "設定第二 AI 嚴重度政策（預設 BREACH）" },
       { en: "Accept ESC-DEFAULT catch-all + dimension coefficients", zh: "接受 ESC-DEFAULT 兜底＋維度係數" },
@@ -528,15 +528,15 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Prototype AI desk features — UAT window",
       detail:
-        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, AI Performance eval board, Indicator Aggregation linear flow (FR-40), grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back + mutation coverage. Formal UAT sign-off still open (OI-09).",
-      dependencies: "UAT-01…48; Risk Owner calendar",
+        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, AI Performance eval board, Indicator Aggregation linear flow (FR-40), AI Incident Workspace (INC-1028 bilingual prototype / UAT-49), grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back + mutation coverage. Formal UAT sign-off still open (OI-09).",
+      dependencies: "UAT-01…49; Risk Owner calendar",
       eta: "2026-10 / 2026-11 UAT",
     },
     zh: {
       title: "原型 AI 台面功能 — UAT 窗口",
       detail:
-        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、AI 績效評估看板、指標聚合線型流程（FR-40）、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾＋變更覆蓋。正式 UAT 簽核仍開放（OI-09）。",
-      dependencies: "UAT-01…48；風險負責人行程",
+        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、AI 績效評估看板、指標聚合線型流程（FR-40）、AI 事故工作台（INC-1028 雙語原型／UAT-49）、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾＋變更覆蓋。正式 UAT 簽核仍開放（OI-09）。",
+      dependencies: "UAT-01…49；風險負責人行程",
       eta: "2026-10／2026-11 UAT",
     },
     checklist: [
@@ -575,6 +575,11 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "指標聚合線型流程（/admin/indicator-aggregation，FR-40／UAT-48）",
         done: true,
       },
+      {
+        en: "AI Incident Workspace (/admin/ai-incident, INC-1028 bilingual prototype / UAT-49)",
+        zh: "AI 事故工作台（/admin/ai-incident，INC-1028 雙語原型／UAT-49）",
+        done: true,
+      },
       { en: "Formal UAT sign-off (OI-09)", zh: "正式 UAT 簽核（OI-09）" },
     ],
   },
@@ -589,14 +594,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; AI Performance; Indicator Aggregation FR-40; audit tabs + Roll back + mutation coverage).",
+        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; AI Performance; Indicator Aggregation FR-40; AI Incident Workspace INC-1028; audit tabs + Roll back + mutation coverage).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；AI 績效；指標聚合 FR-40；稽核分頁＋回滾＋變更覆蓋）。",
+        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；AI 績效；指標聚合 FR-40；AI 事故工作台 INC-1028；稽核分頁＋回滾＋變更覆蓋）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },

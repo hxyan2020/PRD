@@ -504,7 +504,8 @@ graph TD
 | **Escalate** | Moves Primary → Secondary → Risk Owner → Exec along the route |
 | **Dismiss** | False alarm. Closes the thread and the alert |
 | **Close (accept AI)** | Accepts the analysis and closes the ticket |
-| **Severity feedback (P0–P3)** (also: Re-recommend severity) | On the Lark AI incident report card: **Monitor 2.0 surfaces** (hub / indicator / realtime alerts / L1→L2 aggregation); one-tap **AI severity is accurate — nothing wrong** (`ai_accurate`); or pick a corrected P0–P3 with reason codes. Feeds weekly formula recommend + monthly escalation weight pack (Escalation Routes → RO approve) |
+| **Severity feedback (P0–P3)** (also: Re-recommend severity) | On the Lark AI incident report card: **Monitor 2.0 surfaces** (hub / indicator / realtime alerts / L1→L2 aggregation / **AI Incident Workspace**); one-tap **AI severity is accurate — nothing wrong** (`ai_accurate`); or pick a corrected P0–P3 with reason codes. Feeds weekly formula recommend + monthly escalation weight pack (Escalation Routes → RO approve) |
+| **INC-1028 demo thread** | Seeded AI_REPORT for LP-A / XAUUSD pricing delay — open the **AI Incident Workspace** surface (`/admin/ai-incident`) for the bilingual Static/Dynamic report (User Guide §14C) |
 | **Recommended actions** | Block user, halt trading, cut max leverage, pre-widen spreads, pause copy joining |
 | **Double-confirm…** then **Yes, send to Vantage admin** | Creates an admin reference + link (often Interventions) |
 | **Checker approve (go live)** | When the system says a checker is required |
@@ -788,16 +789,6 @@ Each hit becomes a candidate with proposed indicator name, dimension, suggested 
 
 Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/admin/docs/tsd).
 
-## 14A. AI Incident Workspace — `/admin/ai-incident`
-
-**What it is.** The bilingual **Monitor 2.0 AI Incident Report** interactive prototype (from `Monitor2_AI_Report_Web_Bilingual_v3`) hosted inside CRMP with **demo data only**.
-
-**What you see.** Toolbar: Web Console ↔ Lark · Static (read-only) ↔ Dynamic (investigate) · 中文 ↔ EN. Demo incident **INC-1028** (LP-A · XAUUSD · Pricing Engine SG-02 · P2): KPIs (4.8s quote age / 7.2s freeze / 3 L1 → 1 L2), five RCA hypotheses with **E-01…E-08** evidence (SQL/API samples), nested human-feedback taxonomy, on-call roster routing, escalation chain oncall→lead→manager→commander, JSON export.
-
-**What to click.** Open the embedded workspace (or full-page). In Static mode, open evidence links only — ACK/assign/escalate are blocked. Switch to Dynamic, run Fallback / client impact / history / market / Admin logs. From Demo Messenger, open the INC-1028 AI_REPORT card → AI Incident Workspace surface.
-
-**Good looks like.** Static refuses ops actions; Dynamic bumps report version when tools return; EN and 中文 copy both readable; export downloads `INC-1028-demo-report.json`. No production AI or Lark calls.
-
 ## 14B. Indicator Aggregation Flow — `/admin/indicator-aggregation`
 
 **What it is.** A **linear** process board that shows how a single-indicator alert becomes either a single RO case or an aggregated multi-indicator pack. Admin Home also hosts an animated **L1 → L2 aggregation demo** (`HomeL1L2AggregationDemo`).
@@ -827,6 +818,18 @@ flowchart LR
 
 Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
 
+## 14C. AI Incident Workspace — `/admin/ai-incident`
+
+**What it is.** The bilingual **Monitor 2.0 AI Incident Report** interactive prototype (from `Monitor2_AI_Report_Web_Bilingual_v3`) hosted inside CRMP with **demo data only**.
+
+**What you see.** Toolbar: Web Console ↔ Lark · Static (read-only) ↔ Dynamic (investigate) · 中文 ↔ EN. Demo incident **INC-1028** (LP-A · XAUUSD · Pricing Engine SG-02 · P2): KPIs (4.8s quote age / 7.2s freeze / 3 L1 → 1 L2), five RCA hypotheses with **E-01…E-08** evidence (SQL/API samples), nested human-feedback taxonomy, on-call roster routing, escalation chain oncall→lead→manager→commander, JSON export.
+
+**What to click.** Open the embedded workspace (or full-page). In Static mode, open evidence links only — ACK/assign/escalate are blocked. Switch to Dynamic, run Fallback / client impact / history / market / Admin logs. From Demo Messenger, open the INC-1028 AI_REPORT card → AI Incident Workspace surface.
+
+**Good looks like.** Static refuses ops actions; Dynamic bumps report version when tools return; EN and 中文 copy both readable; export downloads `INC-1028-demo-report.json`. No production AI or Lark calls.
+
+Product: [PRD §6.9](/admin/docs/prd). Build: [TSD §11.8](/admin/docs/tsd). UAT: UAT-49.
+
 ---
 
 ## 15. Document control
@@ -849,6 +852,6 @@ Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
 | 1.16 | 2026-10-14 | §8.2A / §9.2 / §9.4 primary severity formula loop: live formula → ops reason codes → weekly AI → RO approve |
 | 1.17 | 2026-10-14 | §14B Indicator Aggregation linear flow (FR-40) |
 | 1.18 | 2026-10-18 | §7.4 threshold full-flow demo; §8.2A/§9.2 accurate severity + Monitor 2.0 surfaces; §14B force-aggregate + L2 severity |
-| 1.19 | 2026-10-25 | §14A AI Incident Workspace — bilingual INC-1028 HTML prototype + Messenger seed |
+| 1.19 | 2026-10-25 | §14C AI Incident Workspace — bilingual INC-1028 HTML prototype + Messenger seed; §9.2 INC-1028 deep link |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

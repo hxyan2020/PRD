@@ -503,7 +503,8 @@ graph TD
 | **升級** | 沿路徑 Primary → Secondary → 風險負責人 → 高階 |
 | **排除** | 誤報。關閉執行緒與警報 |
 | **結案（接受 AI）** | 接受分析並關閉工單 |
-| **嚴重度回饋（P0–P3）**（亦稱重新推薦嚴重度） | 在 Lark AI 事故報告卡：**Monitor 2.0 可用介面**（中心／指標／即時警報／L1→L2 聚合）；一鍵 **AI 嚴重度準確 — 沒什麼不准**（`ai_accurate`）；或不準時選正確 P0–P3 並勾原因代碼。匯入每週公式建議＋每月升級權重組合（升級路徑 → RO 核准） |
+| **嚴重度回饋（P0–P3）**（亦稱重新推薦嚴重度） | 在 Lark AI 事故報告卡：**Monitor 2.0 可用介面**（中心／指標／即時警報／L1→L2 聚合／**AI 事故工作台**）；一鍵 **AI 嚴重度準確 — 沒什麼不准**（`ai_accurate`）；或不準時選正確 P0–P3 並勾原因代碼。匯入每週公式建議＋每月升級權重組合（升級路徑 → RO 核准） |
+| **INC-1028 示範執行緒** | 種子 AI_REPORT（LP-A／XAUUSD 報價延遲）— 開 **AI 事故工作台**介面（`/admin/ai-incident`）看雙語靜態／動態報告（使用手冊 §14C） |
 | **建議動作** | 封鎖使用者、停交易、降最高槓桿、預先加寬點差、暫停跟單加入 |
 | **雙重確認…** 再 **是，送至 Vantage 管理後台** | 產生管理參照 + 連結（常是人工干預） |
 | **Checker 核准（上線）** | 系統說需要 Checker 時 |
@@ -787,16 +788,6 @@ flowchart LR
 
 產品需求：[PRD §6.5](/admin/docs/prd)。實作細節：[TSD §11A](/admin/docs/tsd)。
 
-## 14A. AI 事故工作台 — `/admin/ai-incident`
-
-**這頁是什麼。** 將雙語 **Monitor 2.0 AI 事故報告**互動原型（`Monitor2_AI_Report_Web_Bilingual_v3`）掛進 CRMP，**僅示範資料**。
-
-**會看到什麼。** 工具列：網頁 ↔ Lark · 靜態（只讀）↔ 動態（調查）· 中文 ↔ EN。示範事故 **INC-1028**（LP-A · XAUUSD · Pricing Engine SG-02 · P2）：KPI（報價年齡 4.8s／凍結 7.2s／3 L1 → 1 L2）、五條 RCA 假設與 **E-01…E-08** 證據（SQL／API 樣本）、巢狀人工回饋分類、值班排班路由、升級鏈 oncall→lead→manager→commander、JSON 匯出。
-
-**要點什麼。** 開內嵌工作台（或全頁）。靜態模式只開證據連結 — ACK／轉派／升級被擋。切到動態，跑 Fallback／客戶影響／歷史／市場／Admin 日誌。從示範 Messenger 開 INC-1028 的 AI_REPORT 卡 → AI 事故工作台介面。
-
-**怎樣算正常。** 靜態拒絕值班操作；動態在工具回傳後升報告版本；英與中文皆可讀；匯出下載 `INC-1028-demo-report.json`。無正式 AI 或 Lark 呼叫。
-
 ## 14B. 指標聚合流程 — `/admin/indicator-aggregation`
 
 **這頁是什麼。** 以**線型**流程展示：單一指標告警如何成為單一 RO 案件，或變成多指標聚合包。管理首頁另有動態 **L1 → L2 聚合演示**（`HomeL1L2AggregationDemo`）。
@@ -826,6 +817,18 @@ flowchart LR
 
 產品：[PRD §6.8](/admin/docs/prd)。實作：[TSD §11.7](/admin/docs/tsd)。
 
+## 14C. AI 事故工作台 — `/admin/ai-incident`
+
+**這頁是什麼。** 將雙語 **Monitor 2.0 AI 事故報告**互動原型（`Monitor2_AI_Report_Web_Bilingual_v3`）掛進 CRMP，**僅示範資料**。
+
+**會看到什麼。** 工具列：網頁 ↔ Lark · 靜態（只讀）↔ 動態（調查）· 中文 ↔ EN。示範事故 **INC-1028**（LP-A · XAUUSD · Pricing Engine SG-02 · P2）：KPI（報價年齡 4.8s／凍結 7.2s／3 L1 → 1 L2）、五條 RCA 假設與 **E-01…E-08** 證據（SQL／API 樣本）、巢狀人工回饋分類、值班排班路由、升級鏈 oncall→lead→manager→commander、JSON 匯出。
+
+**要點什麼。** 開內嵌工作台（或全頁）。靜態模式只開證據連結 — ACK／轉派／升級被擋。切到動態，跑 Fallback／客戶影響／歷史／市場／Admin 日誌。從示範 Messenger 開 INC-1028 的 AI_REPORT 卡 → AI 事故工作台介面。
+
+**怎樣算正常。** 靜態拒絕值班操作；動態在工具回傳後升報告版本；英與中文皆可讀；匯出下載 `INC-1028-demo-report.json`。無正式 AI 或 Lark 呼叫。
+
+產品：[PRD §6.9](/admin/docs/prd)。實作：[TSD §11.8](/admin/docs/tsd)。UAT：UAT-49。
+
 ---
 
 ## 15. 文件控制
@@ -848,6 +851,6 @@ flowchart LR
 | 1.16 | 2026-10-14 | §8.2A／§9.2／§9.4 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准 |
 | 1.17 | 2026-10-14 | §14B 指標聚合線型流程（FR-40） |
 | 1.18 | 2026-10-18 | §7.4 門檻全流程演示；§8.2A／§9.2 準確嚴重度＋Monitor 2.0 介面；§14B 強制聚合＋L2 嚴重度 |
-| 1.19 | 2026-10-25 | §14A AI 事故工作台 — 雙語 INC-1028 HTML 原型＋Messenger 種子 |
+| 1.19 | 2026-10-25 | §14C AI 事故工作台 — 雙語 INC-1028 HTML 原型＋Messenger 種子；§9.2 INC-1028 深鏈 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

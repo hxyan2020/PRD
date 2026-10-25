@@ -173,7 +173,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - [ ] Tag corpus rows to Monitor `M2-*` where applicable  
 
 #### OI-14 — Prototype AI desk features — UAT window
-**BU:** AI · **Status:** UAT · **ETA:** 2026-10 / 11 · **Depends:** UAT-01…48; RO calendar
+**BU:** AI · **Status:** UAT · **ETA:** 2026-10 / 11 · **Depends:** UAT-01…49; RO calendar
 
 - [x] Realtime Alert & Tracker + Detectors merged into Monitor 2.0  
 - [x] First/second-line AI Admin · grouped pipeline · intervention actioner email  
@@ -182,6 +182,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - [x] AI Performance evaluation board (`/admin/ai-performance`) — skill match, challenger, feedback, training  
 - [x] Audit mutation coverage — every admin/Lark/messenger path + `LOGIN_FAILED` (`test:audit`)  
 - [x] Indicator Aggregation linear flow (`/admin/indicator-aggregation`, FR-40 / UAT-48) — membership → wait → RO single or aggregate  
+- [x] AI Incident Workspace (`/admin/ai-incident`, INC-1028 bilingual prototype / UAT-49) — Static/Dynamic · E-01…E-08 · Messenger deep link  
 - [ ] Formal UAT sign-off (OI-09)  
 
 ---
@@ -221,7 +222,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 #### OI-09 — Risk Owner UAT exit + policy thresholds
 **BU:** Risk Owner · **Status:** Started · **ETA:** 2026-Q4 / 2027-Q1 · **Depends:** UAT pack; BU and Teams RACI; AI Admin
 
-- [ ] Execute interactive UAT-01…48 with evidence notes  
+- [ ] Execute interactive UAT-01…49 with evidence notes  
 - [ ] Sign UAT exit criteria (pass thresholds)  
 - [ ] Set second-AI severity policy (default BREACH)  
 - [ ] Accept ESC-DEFAULT catch-all + dimension coefficients  
@@ -266,5 +267,6 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 | 1.3 | 2026-10-05 | Detailed per-BU checklists; OI-16 observability, OI-17 kill-switches, OI-18 tenancy; board renders checklist lines |
 | 1.4 | 2026-10-12 | OI-14 AI Performance board + audit mutation coverage shipped; OI-12 coverage guards |
 | 1.5 | 2026-10-14 | OI-14 Indicator Aggregation linear flow (FR-40 / UAT-48) shipped |
+| 1.6 | 2026-10-25 | OI-14 AI Incident Workspace (`/admin/ai-incident`, INC-1028 / UAT-49) shipped |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)
