@@ -51,6 +51,12 @@ export function monitor2DeepLinks(monitorId?: string | null): MonitorDeepLink[] 
     zh: "L1→L2 指標聚合台",
   });
   links.push({
+    id: "l2_rca",
+    href: "/admin/l2-rca",
+    en: "L2 → AI RCA Lab (Discovery→L2→RCA)",
+    zh: "L2 → AI RCA 實驗室（發現→L2→RCA）",
+  });
+  links.push({
     id: "ai_incident",
     href: "/admin/ai-incident",
     en: "AI Incident Workspace (INC-1028 demo)",

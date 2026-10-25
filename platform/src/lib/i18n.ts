@@ -14,6 +14,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
   "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
+  "/admin/l2-rca": { en: "L2 → AI RCA Lab", "zh-Hant": "L2 → AI RCA 實驗室" },
   "/admin/ai-incident": { en: "AI Incident Workspace", "zh-Hant": "AI 事故工作台" },
   "/admin/noise-reduction": { en: "Noise Reduction Lab", "zh-Hant": "降噪實驗室" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
@@ -101,6 +102,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "Linear process: single alert → skill/RAG lookup → aggregate membership → wait window for related indicators → RO as single or aggregated case.",
       "zh-Hant": "線型流程：單一告警 → Skill／RAG 檢索 → 聚合成員資格 → 關聯指標等待視窗 → RO 按單一或聚合案件處理。",
+    },
+  },
+  "l2-rca": {
+    title: { en: "L2 → AI RCA Lab", "zh-Hant": "L2 → AI RCA 實驗室" },
+    subtitle: {
+      en: "Bilingual Discovery → L1/L2 → AI RCA end-to-end lab. After L2 dispatch, continue into the AI Incident Workspace (INC-1028). Demo data only.",
+      "zh-Hant": "雙語 發現 → L1/L2 → AI RCA 端到端實驗室。L2 發車後繼續進入 AI 事故工作台（INC-1028）。僅示範資料。",
     },
   },
   "ai-incident": {

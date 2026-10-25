@@ -427,6 +427,18 @@ flowchart LR
 
 **Acceptance:** Page and nav entry present; P0 bypass skips Persistence / L2 / AI wait; unknown stays OPEN (never auto-FP); EN/zh-Hant readable. Operator: User Guide §14D · Build: TSD §11.9 · UAT-50.
 
+### 6.11 L2 → AI RCA Lab — bilingual Discovery → L1/L2 → AI RCA
+
+**Surface:** `/admin/l2-rca` hosts the interactive **Monitor2_Integrated_Discovery_L2_RCA_v6** HTML lab with **demo data only**. Flow: known-incident reverse engineering → unknown-risk models → L1→L2 live aggregate (AND/OR/SEQUENCE) → AI RCA draft. **After L2 dispatch**, CTA opens `/admin/ai-incident` (INC-1028). Indicator Aggregation post-L2 actions also link to the AI RCA workspace and this lab.
+
+| Layer | Detail |
+|---|---|
+| **Data** | Embedded demo pack in `public/prototypes/monitor2-discovery-l2-rca.html` |
+| **Flow** | Tab ③ scenario → Risk Ops confirm L2 → INC-1028 RCA draft → AI Incident Workspace |
+| **Surface** | `DiscoveryL2RcaLab` · iframe / full-page · `monitor_links.l2_rca` · aggregation board CTAs |
+
+**Acceptance:** Page and nav entry present; L2 confirm yields INC-1028 draft + working CTA to `/admin/ai-incident`; aggregation board post-L2 links present; EN/zh-Hant readable. Operator: User Guide §14E · Build: TSD §11.10 · UAT-51.
+
 ---
 
 ## 7. Non-functional requirements
@@ -559,5 +571,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 surfaces + accurate severity confirm; FR-40 force-aggregate + L2 severity = max(L1)×weight; Monitor 2.0 threshold adjustment full-flow demo |
 | 1.17 | 2026-10-25 | §6.9 AI Incident Workspace `/admin/ai-incident` bilingual INC-1028 prototype (Static/Dynamic · E-01…E-08 · nested feedback); Messenger deep link; UAT-49 |
 | 1.18 | 2026-10-25 | §6.10 Noise Reduction Lab `/admin/noise-reduction` bilingual end-to-end demo (six scenarios · knobs · AI feedback); UAT-50 |
+| 1.19 | 2026-10-25 | §6.11 L2 → AI RCA Lab `/admin/l2-rca` Discovery→L2→RCA handoff to INC-1028; UAT-51 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

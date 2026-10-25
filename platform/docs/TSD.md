@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.17  
+**Version:** 1.18  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -32,6 +32,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 - Demo Messenger + Lark channel registry (mock webhooks)
 - AI Incident Workspace (`/admin/ai-incident`) — bilingual Monitor 2.0 HTML prototype (INC-1028 demo)
 - Noise Reduction Lab (`/admin/noise-reduction`) — bilingual Monitor 2.0 noise-reduction end-to-end HTML lab
+- L2 → AI RCA Lab (`/admin/l2-rca`) — bilingual Discovery → L1/L2 → AI RCA HTML lab with INC-1028 handoff
 - Market Intelligence 5-minute scanner + outbox
 - Bilingual docs (EN / zh-Hant) and responsive admin shell
 
@@ -183,6 +184,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
 | Monitor | `/admin/discovery` | **Unknown Risk Discovery** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read` / `ai.approve` | **§11A** |
 | Monitor | `/admin/indicator-aggregation` | **Indicator Aggregation** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read` / `monitor.operate` | **§11.7** |
+| Monitor | `/admin/l2-rca` | **L2 → AI RCA Lab** · `DiscoveryL2RcaLab` · static HTML lab → AI Incident | `monitor.read` | **§11.10** |
 | Monitor | `/admin/ai-incident` | **AI Incident Workspace** · `AiIncidentWorkspace` · static HTML prototype | `monitor.read` | **§11.8** |
 | Monitor | `/admin/noise-reduction` | **Noise Reduction Lab** · `NoiseReductionLab` · static HTML lab | `monitor.read` | **§11.9** |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
@@ -630,6 +632,21 @@ Hosted demo of the **Monitor2_Noise_Reduction_End_to_End_Demo** interactive nois
 | Guards | `npm run test:noise-reduction` · `test:noise-reduction-smoke` |
 | Operator / UAT | User Guide §14D · UAT-50 |
 
+### 11.10 L2 → AI RCA Lab (bilingual Discovery → L1/L2 → AI RCA)
+
+Hosted demo of **Monitor2_Integrated_Discovery_L2_RCA_v6** inside CRMP Admin. **Demo data only.** After L2 dispatch, CTA opens AI Incident Workspace (`/admin/ai-incident`, INC-1028).
+
+| Item | Spec |
+|---|---|
+| Surface | `/admin/l2-rca` · `DiscoveryL2RcaLab` · iframe + full-page link |
+| Static asset | `public/prototypes/monitor2-discovery-l2-rca.html` |
+| Tabs | overview · discovery · L1→L2 + AI RCA · rule parameters · delivery |
+| L2 handoff | Risk Ops confirm → incident id **INC-1028** → CTA `target=_top` → `/admin/ai-incident` |
+| Aggregation board | `IndicatorAggregationBoard` post-L2 CTAs → AI Incident Workspace + this lab |
+| Deep links | `lib/monitor-deep-links.ts` includes `l2_rca` |
+| Guards | `npm run test:l2-rca` · `test:l2-rca-smoke` |
+| Operator / UAT | User Guide §14E · UAT-51 |
+
 ---
 
 ## 11A. Unknown Risk Discovery (AI suggestion card)
@@ -930,6 +947,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.15 | 2026-10-18 | §11.6 Monitor 2.0 surfaces + `ai_accurate`; §11.7 force-aggregate + L2 severity; §16.5 threshold full-flow demo |
 | 1.16 | 2026-10-25 | §11.8 / §7.2 AI Incident Workspace `/admin/ai-incident` (INC-1028 bilingual HTML prototype + Messenger seed) |
 | 1.17 | 2026-10-25 | §11.9 / §7.2 Noise Reduction Lab `/admin/noise-reduction` (bilingual E2E HTML lab) |
+| 1.18 | 2026-10-25 | §11.10 / §7.2 L2 → AI RCA Lab `/admin/l2-rca` (Discovery→L2→RCA handoff to INC-1028) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

@@ -845,6 +845,20 @@ flowchart LR
 
 ---
 
+## 14E. L2 → AI RCA 實驗室 — `/admin/l2-rca`
+
+**這頁是什麼。** 將雙語 **發現 → L1/L2 → AI RCA** 互動實驗室（`Monitor2_Integrated_Discovery_L2_RCA_v6`）掛進 CRMP，**僅示範資料**。L2 發車後**自然銜接**[AI 事故工作台](/admin/ai-incident)（INC-1028）。
+
+**會看到什麼。** 五個分頁：總覽 · 已知→未知發現 · L1→L2 即時＋AI RCA · 四項規則參數 · 交付／治理。分頁③跑場景 A–G（AND／OR／SEQUENCE、假日情境、僅 L1）。Risk Ops 確認後產生 **INC-1028**，並顯示帶工作台 CTA 的 AI RCA 草稿。
+
+**要點什麼。** 開分頁③ → 場景 A → 播放／下一步 → **確認 L2** → **開啟 AI 事故工作台**。自[指標聚合](/admin/indicator-aggregation)在聚合／強制聚合後用 **開啟 AI RCA 報告（INC-1028）**。
+
+**怎樣算正常。** L2 確認產出 INC-1028 草稿＋可用 CTA 至 `/admin/ai-incident`；英／繁中介面可讀；聚合台 L2 之後連結存在。無正式 Monitor／AI／Lark 呼叫。
+
+產品：[PRD §6.11](/admin/docs/prd)。實作：[TSD §11.10](/admin/docs/tsd)。UAT：UAT-51。
+
+---
+
 ## 15. 文件控制
 
 | 版次 | 日期 | 說明 |
@@ -867,5 +881,6 @@ flowchart LR
 | 1.18 | 2026-10-18 | §7.4 門檻全流程演示；§8.2A／§9.2 準確嚴重度＋Monitor 2.0 介面；§14B 強制聚合＋L2 嚴重度 |
 | 1.19 | 2026-10-25 | §14C AI 事故工作台 — 雙語 INC-1028 HTML 原型＋Messenger 種子；§9.2 INC-1028 深鏈 |
 | 1.20 | 2026-10-25 | §14D 降噪實驗室 — 雙語端到端 HTML 實驗室＋UAT-50 |
+| 1.21 | 2026-10-25 | §14E L2 → AI RCA 實驗室 — 發現→L2→RCA 銜接 INC-1028＋UAT-51 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

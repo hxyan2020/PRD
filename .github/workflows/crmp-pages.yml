@@ -18,6 +18,7 @@ on:
         cursor/docs-recent-flows-a935,
         cursor/ai-incident-workspace-a935,
         cursor/noise-reduction-a935,
+        cursor/l2-rca-a935,
         main,
       ]
     paths:

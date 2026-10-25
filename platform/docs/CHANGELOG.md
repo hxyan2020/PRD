@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-25T10:00:00.000Z | L2 → AI RCA Lab `/admin/l2-rca`: host Monitor2_Integrated_Discovery_L2_RCA_v6 (Discovery→L2→RCA), natural handoff to AI Incident Workspace INC-1028, aggregation board post-L2 CTAs; EN+zh-Hant UG §14E / PRD §6.11 / TSD §11.10 / UAT-51; Pages branch `cursor/l2-rca-a935` |
 | 2026-10-25T09:30:00.000Z | Noise Reduction Lab `/admin/noise-reduction`: host Monitor2_Noise_Reduction_End_to_End_Demo HTML (six scenarios · knobs · AI feedback), EN+zh-Hant UG §14D / PRD §6.10 / TSD §11.9 / UAT-50 · Progress/Roadmap/Open Issues BAU; Pages branch `cursor/noise-reduction-a935` |
 | 2026-10-25T08:40:00.000Z | AI Incident Workspace desk fit: embed mode hides nested Monitor sidebar; Traditional Chinese copy; sync lang from CRMP shell; flat panel chrome |
 | 2026-10-25T08:25:00.000Z | AI Incident Workspace visual parity: prototype CSS uses CRMP Vantage teal/accent tokens + Source Sans 3; host chrome matches panel/btn patterns |

@@ -27,6 +27,8 @@
     "test:ai-incident-smoke": "tsx scripts/smoke-ai-incident-workspace.ts",
     "test:noise-reduction": "tsx scripts/verify-noise-reduction.ts",
     "test:noise-reduction-smoke": "tsx scripts/smoke-noise-reduction.ts",
+    "test:l2-rca": "tsx scripts/verify-l2-rca.ts",
+    "test:l2-rca-smoke": "tsx scripts/smoke-l2-rca.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {
