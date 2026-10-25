@@ -533,5 +533,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.14 | 2026-10-14 | FR-39 primary severity formula loop (§6.7): live formula → ops reason codes → weekly AI → RO approve; UAT-47 |
 | 1.15 | 2026-10-14 | FR-40 indicator aggregation linear flow (§6.8) on `/admin/indicator-aggregation` |
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 surfaces + accurate severity confirm; FR-40 force-aggregate + L2 severity = max(L1)×weight; Monitor 2.0 threshold adjustment full-flow demo |
+| 1.17 | 2026-10-25 | AI Incident Workspace `/admin/ai-incident` hosts bilingual INC-1028 prototype (Static/Dynamic · E-01…E-08 · nested feedback); Messenger deep link |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

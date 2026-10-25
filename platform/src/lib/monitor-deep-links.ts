@@ -50,5 +50,11 @@ export function monitor2DeepLinks(monitorId?: string | null): MonitorDeepLink[] 
     en: "L1→L2 aggregation board",
     zh: "L1→L2 指標聚合台",
   });
+  links.push({
+    id: "ai_incident",
+    href: "/admin/ai-incident",
+    en: "AI Incident Workspace (INC-1028 demo)",
+    zh: "AI 事故工作台（INC-1028 演示）",
+  });
   return links;
 }

@@ -23,6 +23,8 @@
     "test:indicator-aggregation-smoke": "tsx scripts/smoke-indicator-aggregation.ts",
     "test:threshold-flow": "tsx scripts/verify-threshold-flow.ts",
     "test:threshold-flow-smoke": "tsx scripts/smoke-threshold-flow.ts",
+    "test:ai-incident": "tsx scripts/verify-ai-incident-workspace.ts",
+    "test:ai-incident-smoke": "tsx scripts/smoke-ai-incident-workspace.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {

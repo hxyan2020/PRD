@@ -94,7 +94,7 @@ The left pane is grouped so you are not staring at one long list:
 | Group | What lives there |
 |---|---|
 | **Overview** | Admin Home (includes spine stage ticket counts) |
-| **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Unknown Risk Discovery → Indicator Aggregation → Risk Log → Risk Domains |
+| **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Unknown Risk Discovery → Indicator Aggregation → AI Incident Workspace → Risk Log → Risk Domains |
 | **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin → AI Performance (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
 | **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
@@ -700,6 +700,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
 | Monitor & risk | Unknown Risk Discovery | Notebook-parity AI suggestion card; RO review; optional promote to skill + Monitor 2.0 |
 | Monitor & risk | Indicator Aggregation | Linear flow: single alert → skill/RAG → membership → wait window → RO single or aggregate |
+| Monitor & risk | AI Incident Workspace | Bilingual INC-1028 demo: Web + Lark, Static/Dynamic AI report, E-01…E-08 evidence |
 | Monitor & risk | Risk Log Analytics | 90-day charts, closed packs, loss vs prevented, loopholes |
 | Monitor & risk | Risk Domains | P0–P3 scenarios hooked to Monitor 2.0 |
 | AI & knowledge | AI Skills | Browse playbooks; Enter the full SKILL.md; one escalation bind |
@@ -787,6 +788,16 @@ Each hit becomes a candidate with proposed indicator name, dimension, suggested 
 
 Product requirements: [PRD §6.5](/admin/docs/prd). Build detail: [TSD §11A](/admin/docs/tsd).
 
+## 14A. AI Incident Workspace — `/admin/ai-incident`
+
+**What it is.** The bilingual **Monitor 2.0 AI Incident Report** interactive prototype (from `Monitor2_AI_Report_Web_Bilingual_v3`) hosted inside CRMP with **demo data only**.
+
+**What you see.** Toolbar: Web Console ↔ Lark · Static (read-only) ↔ Dynamic (investigate) · 中文 ↔ EN. Demo incident **INC-1028** (LP-A · XAUUSD · Pricing Engine SG-02 · P2): KPIs (4.8s quote age / 7.2s freeze / 3 L1 → 1 L2), five RCA hypotheses with **E-01…E-08** evidence (SQL/API samples), nested human-feedback taxonomy, on-call roster routing, escalation chain oncall→lead→manager→commander, JSON export.
+
+**What to click.** Open the embedded workspace (or full-page). In Static mode, open evidence links only — ACK/assign/escalate are blocked. Switch to Dynamic, run Fallback / client impact / history / market / Admin logs. From Demo Messenger, open the INC-1028 AI_REPORT card → AI Incident Workspace surface.
+
+**Good looks like.** Static refuses ops actions; Dynamic bumps report version when tools return; EN and 中文 copy both readable; export downloads `INC-1028-demo-report.json`. No production AI or Lark calls.
+
 ## 14B. Indicator Aggregation Flow — `/admin/indicator-aggregation`
 
 **What it is.** A **linear** process board that shows how a single-indicator alert becomes either a single RO case or an aggregated multi-indicator pack. Admin Home also hosts an animated **L1 → L2 aggregation demo** (`HomeL1L2AggregationDemo`).
@@ -838,5 +849,6 @@ Product: [PRD §6.8](/admin/docs/prd). Build: [TSD §11.7](/admin/docs/tsd).
 | 1.16 | 2026-10-14 | §8.2A / §9.2 / §9.4 primary severity formula loop: live formula → ops reason codes → weekly AI → RO approve |
 | 1.17 | 2026-10-14 | §14B Indicator Aggregation linear flow (FR-40) |
 | 1.18 | 2026-10-18 | §7.4 threshold full-flow demo; §8.2A/§9.2 accurate severity + Monitor 2.0 surfaces; §14B force-aggregate + L2 severity |
+| 1.19 | 2026-10-25 | §14A AI Incident Workspace — bilingual INC-1028 HTML prototype + Messenger seed |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

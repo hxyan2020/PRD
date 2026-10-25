@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-25T07:40:00.000Z | AI Incident Workspace `/admin/ai-incident`: host Monitor2_AI_Report_Web_Bilingual_v3 HTML (INC-1028 LP-A XAUUSD demo), Messenger seed + deep link, EN+zh-Hant UG/URL/phrases, Pages branch `cursor/ai-incident-workspace-a935` |
 | 2026-10-18T10:45:00.000Z | URL catalog zh-Hant phrases for updated Admin Home / Monitor 2.0 / Messenger / aggregation descriptions; UG EN+zh `ai_accurate` token parity |
 | 2026-10-18T10:30:00.000Z | Docs parity for recent flows: FR-39 AI_REPORT Monitor 2.0 surfaces + `ai_accurate`; FR-40 force-aggregate + L2 severity = max(L1)×weight + homepage demo; Monitor 2.0 / Admin Home threshold full-flow demo; UAT-45/48 + URL catalog + Progress BAU note; EN+zh-Hant |
 | 2026-10-14T04:40:00.000Z | FR-40 zh-Hant parity polish: UAT-48 dependency/covers 繁中、URL catalog phrases、interactive UAT board `dependency_zh`/`covers_zh` |

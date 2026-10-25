@@ -534,6 +534,79 @@ function seedSyntheticMessengerThread(db: Database.Database) {
   addDemoEscalation(db, tid, "BREACH");
 }
 
+/** Demo pack from Monitor2_AI_Report_Web_Bilingual_v3 — LP quote delay → L2 parent P2. */
+export function ensureInc1028MessengerThread(db: Database.Database = getDb()) {
+  ensureMessengerSchema(db);
+  const existing = db
+    .prepare(
+      `SELECT id FROM messenger_threads WHERE title LIKE '%LP Quote Delay%' OR title LIKE '%INC-1028%' OR thread_id = 'THR-INC-1028' LIMIT 1`
+    )
+    .get() as { id: number } | undefined;
+  if (existing) {
+    // Keep AI_REPORT monitor_links fresh (includes /admin/ai-incident).
+    const msgs = db
+      .prepare(`SELECT id, meta_json FROM messenger_messages WHERE thread_id = ? AND kind = 'AI_REPORT'`)
+      .all(existing.id) as Array<{ id: number; meta_json: string }>;
+    const m2 = aiReportMonitorMeta("M2-LP-022");
+    for (const msg of msgs) {
+      let meta: Record<string, unknown> = {};
+      try {
+        meta = JSON.parse(msg.meta_json || "{}") as Record<string, unknown>;
+      } catch {
+        meta = {};
+      }
+      Object.assign(meta, m2, { incident_id: "INC-1028", workspace_url: "/admin/ai-incident" });
+      db.prepare(`UPDATE messenger_messages SET meta_json = ? WHERE id = ?`).run(JSON.stringify(meta), msg.id);
+    }
+    return;
+  }
+
+  const info = db
+    .prepare(
+      `INSERT INTO messenger_threads
+        (thread_id, channel_name, title, severity, status, alert_id, analysis_id, escalation_step)
+       VALUES (?, ?, ?, ?, 'OPEN', NULL, NULL, 0)`
+    )
+    .run(
+      "THR-INC-1028",
+      "Monitor 2.0 · Incident Response",
+      "INC-1028 · LP Quote Delay & Final Quote Staleness (XAUUSD)",
+      "BREACH"
+    );
+  const tid = Number(info.lastInsertRowid);
+  addMessage(
+    db,
+    tid,
+    "ALERT",
+    "Monitor 2.0",
+    "🚨 BREACH · INC-1028 · LP-A XAUUSD quote delay + final quote staleness\nL1: LP_QUOTE_DELAY (P3) · FINAL_QUOTE_STALE (P2) · QUOTE_PUBLISH_LAG (P3)\nL2: PRICING_FEED_PROPAGATION · Parent P2 Medium\nPricing Engine SG-02 · 16 Oct 2026 00:01 SGT\nAlert: ALT-INC-1028",
+    {
+      alert_id: "ALT-INC-1028",
+      monitor_id: "M2-LP-022",
+      incident_id: "INC-1028",
+      l1_codes: ["LP_QUOTE_DELAY", "FINAL_QUOTE_STALE", "QUOTE_PUBLISH_LAG"],
+      l2_code: "PRICING_FEED_PROPAGATION",
+    }
+  );
+  const m2 = aiReportMonitorMeta("M2-LP-022");
+  const m2Lines = m2.monitor_links.map((l) => `· ${l.en}: ${l.href}`).join("\n");
+  addMessage(
+    db,
+    tid,
+    "AI_REPORT",
+    "Risk AI Bot",
+    `🤖 AI Incident Report INC-1028\nMode: STATIC_SNAPSHOT → DYNAMIC_INVESTIGATE\nLP-A XAUUSD quote age peaked at 4.8s; Broker final quote freeze 7.2s. Evidence supports an upstream LP feed anomaly; Fallback takeover and client/order impact remain unverified.\nSeverity: P2 Medium (not closable by AI alone).\n\nOpen the bilingual workspace for Static/Dynamic modes, E-01…E-08 evidence, and nested human feedback:\n· /admin/ai-incident\n\nMonitor 2.0 surfaces:\n${m2Lines}\n\nSeverity: confirm if accurate, or re-recommend P0–P3 with reason codes.`,
+    {
+      analysis_id: "AIA-INC-1028",
+      incident_id: "INC-1028",
+      admin_url: "/admin/ai-incident",
+      workspace_url: "/admin/ai-incident",
+      ...m2,
+    }
+  );
+  addDemoEscalation(db, tid, "BREACH");
+}
+
 function threadKinds(db: Database.Database, threadDbId: number) {
   return (
     db.prepare(`SELECT DISTINCT kind FROM messenger_messages WHERE thread_id = ?`).all(threadDbId) as Array<{
@@ -546,11 +619,13 @@ function threadKinds(db: Database.Database, threadDbId: number) {
 export function ensureMessengerDemoMessages(db: Database.Database = getDb()) {
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
+  ensureInc1028MessengerThread(db);
   const threads = db
     .prepare(`SELECT id, title, severity FROM messenger_threads`)
     .all() as Array<{ id: number; title: string; severity: string }>;
   if (!threads.length) {
     seedSyntheticMessengerThread(db);
+    ensureInc1028MessengerThread(db);
     return;
   }
   for (const thread of threads) {
@@ -576,7 +651,7 @@ export function ensureMessengerDemoMessages(db: Database.Database = getDb()) {
         monitor_id: resolveThreadMonitorId(db, thread.id, null),
       });
     } else {
-      // Refresh Monitor 2.0 deep-link pack on existing AI_REPORT cards.
+      // Refresh Monitor 2.0 deep-link pack on existing AI_REPORT cards (incl. AI Incident Workspace).
       const msgs = db
         .prepare(`SELECT id, meta_json FROM messenger_messages WHERE thread_id = ? AND kind = 'AI_REPORT'`)
         .all(thread.id) as Array<{ id: number; meta_json: string }>;
@@ -589,7 +664,9 @@ export function ensureMessengerDemoMessages(db: Database.Database = getDb()) {
         } catch {
           meta = {};
         }
-        if (!Array.isArray(meta.monitor_links) || !meta.monitor_links.length) {
+        const links = Array.isArray(meta.monitor_links) ? (meta.monitor_links as Array<{ id?: string }>) : [];
+        const needsRefresh = !links.length || !links.some((l) => l.id === "ai_incident");
+        if (needsRefresh) {
           Object.assign(meta, m2);
           db.prepare(`UPDATE messenger_messages SET meta_json = ? WHERE id = ?`).run(
             JSON.stringify(meta),
@@ -622,6 +699,40 @@ function relinkMessengerToAnalyses(db: Database.Database) {
     .prepare(`SELECT id, alert_id FROM messenger_threads`)
     .all() as Array<{ id: number; alert_id: number | null }>;
   for (const thread of threads) {
+    const msgsProbe = db
+      .prepare(`SELECT meta_json FROM messenger_messages WHERE thread_id = ? AND kind = 'AI_REPORT' LIMIT 1`)
+      .get(thread.id) as { meta_json: string } | undefined;
+    let probeMeta: Record<string, unknown> = {};
+    try {
+      probeMeta = JSON.parse(msgsProbe?.meta_json || "{}") as Record<string, unknown>;
+    } catch {
+      probeMeta = {};
+    }
+    /** Keep the bilingual AI Incident Workspace entry for INC-1028. */
+    if (probeMeta.incident_id === "INC-1028" || probeMeta.workspace_url === "/admin/ai-incident") {
+      const mid =
+        (typeof probeMeta.monitor_id === "string" && probeMeta.monitor_id) ||
+        resolveThreadMonitorId(db, thread.id, "M2-LP-022");
+      const m2 = aiReportMonitorMeta(mid);
+      const msgs = db
+        .prepare(`SELECT id, meta_json FROM messenger_messages WHERE thread_id = ? AND kind = 'AI_REPORT'`)
+        .all(thread.id) as Array<{ id: number; meta_json: string }>;
+      for (const msg of msgs) {
+        let meta: Record<string, unknown> = {};
+        try {
+          meta = JSON.parse(msg.meta_json || "{}") as Record<string, unknown>;
+        } catch {
+          meta = {};
+        }
+        Object.assign(meta, m2, {
+          incident_id: "INC-1028",
+          workspace_url: "/admin/ai-incident",
+          admin_url: "/admin/ai-incident",
+        });
+        db.prepare(`UPDATE messenger_messages SET meta_json = ? WHERE id = ?`).run(JSON.stringify(meta), msg.id);
+      }
+      continue;
+    }
     const linked = (thread.alert_id != null ? byAlert.get(thread.alert_id) : undefined) || analyses[0];
     db.prepare(`UPDATE messenger_threads SET analysis_id = ? WHERE id = ?`).run(linked.id, thread.id);
     const msgs = db

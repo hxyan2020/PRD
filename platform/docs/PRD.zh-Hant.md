@@ -533,5 +533,6 @@ flowchart LR
 | 1.14 | 2026-10-14 | FR-39 主迴路（§6.7）：線上公式 → 值班原因代碼 → 每週 AI → RO 核准；UAT-47 |
 | 1.15 | 2026-10-14 | FR-40 指標聚合線型流程（§6.8）`/admin/indicator-aggregation` |
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 介面＋準確確認；FR-40 強制聚合＋L2 嚴重度 = max(L1)×權重；Monitor 2.0 門檻調整全流程演示 |
+| 1.17 | 2026-10-25 | AI 事故工作台 `/admin/ai-incident` 掛載雙語 INC-1028 原型（靜態／動態 · E-01…E-08 · 巢狀回饋）；Messenger 深鏈 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

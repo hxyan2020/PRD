@@ -14,6 +14,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
   "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
+  "/admin/ai-incident": { en: "AI Incident Workspace", "zh-Hant": "AI 事故工作台" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
   "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
@@ -99,6 +100,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "Linear process: single alert → skill/RAG lookup → aggregate membership → wait window for related indicators → RO as single or aggregated case.",
       "zh-Hant": "線型流程：單一告警 → Skill／RAG 檢索 → 聚合成員資格 → 關聯指標等待視窗 → RO 按單一或聚合案件處理。",
+    },
+  },
+  "ai-incident": {
+    title: { en: "AI Incident Workspace", "zh-Hant": "AI 事故工作台" },
+    subtitle: {
+      en: "Bilingual Monitor 2.0 AI report prototype — Web + Lark, Static/Dynamic modes, E-01…E-08 evidence, nested feedback. Demo INC-1028 (LP-A · XAUUSD) with simulated data only.",
+      "zh-Hant": "雙語 Monitor 2.0 AI 事故報告原型 — 網頁＋Lark、靜態／動態模式、E-01…E-08 證據、巢狀回饋。示範 INC-1028（LP-A · XAUUSD），僅模擬資料。",
     },
   },
   detectors: {
