@@ -4,7 +4,7 @@
 **Audience:** Risk Owner, Platform Owner, engineering, GRC  
 **How to read:** the admin page `/admin/docs/roadmap` is the operator view (expandable cards). This file is the printable twin. Each `RM-xx` states **today’s prototype**, **what to build**, **done-when**, **where in the code**, and **skip risk**.
 
-This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit + home spine**. Shipped desk polish (Realtime Alert & Tracker naming; Detectors merged into Monitor 2.0; grouped AI pipeline; MonitorCode; RAG leaves; ESC-DEFAULT + dimension coefficients; BU and Teams; first/second-line AI Admin; **AI Performance** read-only eval board; **Indicator Aggregation** linear flow for correlated monitors; editable Roles; audit CRMP / Vantage Markets Admin tabs + Roll back + mutation coverage for every admin/Lark path; mobile card lists) is tracked as BAU docs; **programme open issues** with ETAs/BU live in [Open Issues](/admin/docs/open-issues) / [Progress Tracker](/admin/docs/progress). Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, and logged-only “executions”.
+This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit + home spine**. Shipped desk polish (Realtime Alert & Tracker naming; Detectors merged into Monitor 2.0; grouped AI pipeline; MonitorCode; RAG leaves; ESC-DEFAULT + dimension coefficients; BU and Teams; first/second-line AI Admin; **AI Performance** read-only eval board; **Indicator Aggregation** linear flow for correlated monitors; **AI Incident Workspace** bilingual INC-1028 prototype; editable Roles; audit CRMP / Vantage Markets Admin tabs + Roll back + mutation coverage for every admin/Lark path; mobile card lists) is tracked as BAU docs; **programme open issues** with ETAs/BU live in [Open Issues](/admin/docs/open-issues) / [Progress Tracker](/admin/docs/progress). Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, and logged-only “executions”.
 
 **Effort key:** S = one vertical slice · M = multi-day module · L = cross-team module · XL = programme-sized
 
@@ -492,7 +492,7 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 |---|---|
 | RM-01 | [Demo Messenger](/admin/messenger) · [Lark](/admin/lark) |
 | RM-02 | [Monitor 2.0](/admin/monitor-2) · [Realtime Alert & Tracker](/admin/alerts) |
-| RM-03 / RM-04 | [Realtime Alert & Tracker](/admin/alerts) · [AI Admin](/admin/ai-admin) · [AI Performance](/admin/ai-performance) · [Indicator Aggregation](/admin/indicator-aggregation) |
+| RM-03 / RM-04 | [Realtime Alert & Tracker](/admin/alerts) · [AI Admin](/admin/ai-admin) · [AI Performance](/admin/ai-performance) · [Indicator Aggregation](/admin/indicator-aggregation) · [AI Incident Workspace](/admin/ai-incident) |
 | RM-05 | [Users](/admin/users) · [Roles](/admin/roles) |
 | RM-09 | [Human Intervention](/admin/interventions) · [AI Access Security](/admin/security/ai-access) |
 | RM-11 | [Daily Performance](/admin/dashboard) · [Risk Log](/admin/risk-log) |
@@ -510,5 +510,6 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; RM-02/RM-12 today facts; mobile card lists noted |
 | 1.9 | 2026-10-12 | AI Performance eval board + audit mutation coverage as BAU; RM-03 links |
 | 2.0 | 2026-10-14 | Indicator Aggregation linear flow (FR-40) as BAU; `/admin/indicator-aggregation` |
+| 2.1 | 2026-10-25 | AI Incident Workspace `/admin/ai-incident` (INC-1028 bilingual prototype) as BAU; UAT-49 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

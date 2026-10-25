@@ -1938,13 +1938,56 @@ export const UAT_CASES: UatCase[] = [
   },
   {
     seq: 48,
-    id: "UAT-46",
+    id: "UAT-49",
     t_start_min: 520,
+    duration_min: 12,
+    severity: "High",
+    bu: "Risk + AI",
+    dependency: "UAT-33; INC-1028 Messenger seed",
+    dependency_zh: "UAT-33；INC-1028 Messenger 種子",
+    covers: ["AI Incident Workspace", "Demo Messenger"],
+    covers_zh: ["AI 事故工作台", "示範 Messenger"],
+    en: {
+      title: "AI Incident Workspace — bilingual INC-1028 Static/Dynamic prototype",
+      why: "Ops need a bilingual Monitor 2.0 incident report surface (Static read-only vs Dynamic investigation) wired from Messenger without production AI/Lark.",
+      objective:
+        "Open /admin/ai-incident, prove Static blocks ops actions and Dynamic + EN/zh-Hant work; confirm INC-1028 Messenger deep link lands on the workspace.",
+      steps: [
+        "Open AI Incident Workspace from left nav (Monitor & risk). Confirm the INC-1028 toolbar (Web ↔ Lark · Static ↔ Dynamic · 中文 ↔ EN) and embedded prototype (ai-incident-iframe).",
+        "Stay in Static. Attempt ACK / assign / escalate (or confirm those controls are disabled). Open an E-01…E-08 evidence sample — SQL/API content should render.",
+        "Switch to Dynamic. Run at least one investigate action (Fallback / client impact / history / market / Admin logs). Confirm report version or tool panel updates. Toggle EN ↔ 中文 — chrome and report copy remain readable.",
+        "Optionally Export demo JSON (INC-1028-demo-report.json).",
+        "Open Demo Messenger → thread INC-1028 / LP Quote Delay → AI_REPORT AI Incident Workspace surface (or Open in admin). Confirm landing on /admin/ai-incident (Pages path stays under /PRD/crmp-admin/).",
+      ],
+      pass: "Workspace + nav present; Static refuses ops; Dynamic + bilingual readable; Messenger deep link reaches the page; no production AI/Lark required.",
+      evidence:
+        "Screenshots of Static block, Dynamic tool result, EN/zh toggle, Messenger INC-1028 surface → workspace.",
+    },
+    zh: {
+      title: "AI 事故工作台 — 雙語 INC-1028 靜態／動態原型",
+      why: "值班需要雙語 Monitor 2.0 事故報告介面（靜態只讀 vs 動態調查），並由 Messenger 深鏈，且不依賴正式 AI／Lark。",
+      objective:
+        "開啟 /admin/ai-incident，證明靜態擋住值班操作、動態與英／繁中可用；確認 INC-1028 Messenger 深鏈落地工作台。",
+      steps: [
+        "自左側選單（監控與風險）開啟 AI 事故工作台。確認 INC-1028 工具列（網頁 ↔ Lark · 靜態 ↔ 動態 · 中文 ↔ EN）與內嵌原型（ai-incident-iframe）。",
+        "維持靜態。嘗試 ACK／轉派／升級（或確認控制項已停用）。開啟 E-01…E-08 證據樣本 — 應顯示 SQL／API 內容。",
+        "切到動態。至少跑一項調查（Fallback／客戶影響／歷史／市場／Admin 日誌）。確認報告版本或工具面板有更新。切換 EN ↔ 中文 — 介面與報告文案皆可讀。",
+        "可選匯出示範 JSON（INC-1028-demo-report.json）。",
+        "開啟示範 Messenger → 執行緒 INC-1028／LP Quote Delay → AI_REPORT AI 事故工作台介面（或在管理後台開啟）。確認落地 /admin/ai-incident（Pages 路徑留在 /PRD/crmp-admin/ 下）。",
+      ],
+      pass: "工作台＋選單存在；靜態拒絕值班操作；動態＋雙語可讀；Messenger 深鏈到達該頁；無需正式 AI／Lark。",
+      evidence: "靜態阻擋、動態工具結果、EN／繁中切換、Messenger INC-1028 介面 → 工作台截圖。",
+    },
+  },
+  {
+    seq: 49,
+    id: "UAT-46",
+    t_start_min: 532,
     duration_min: 15,
     severity: "Critical",
     bu: "Risk Owner",
-    dependency: "UAT-01–45, UAT-47 and UAT-48 results recorded",
-    dependency_zh: "UAT-01–45、UAT-47、UAT-48 結果已記錄",
+    dependency: "UAT-01–45, UAT-47, UAT-48 and UAT-49 results recorded",
+    dependency_zh: "UAT-01–45、UAT-47、UAT-48、UAT-49 結果已記錄",
     covers: [
       "UAT Checklist",
       "Audit Log",
@@ -1957,7 +2000,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.",
         "Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.",
-        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), and aggregation flow (UAT-48) passed or waived.",
+        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), and AI Incident Workspace (UAT-49) passed or waived.",
         "Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).",
         "File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.",
       ],
@@ -1971,7 +2014,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。",
         "統計 High：最多兩項 WAIVE，每項附一句書面風險接受。",
-        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）通過或豁免。",
+        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）、AI 事故工作台（UAT-49）通過或豁免。",
         "記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。",
         "將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。",
       ],

@@ -403,6 +403,18 @@ flowchart LR
 
 **驗收（FR-40）：** 線型步驟可見；示範工作階段涵蓋無成員、視窗逾時、已聚合、強制聚合；L2 嚴重度面板顯示 max(L1) 底線＋權重；首頁 L1→L2 演示；英＋繁中。操作：使用手冊 §14B · 實作：TSD §11.7 · UAT-48。
 
+### 6.9 AI 事故工作台 — 雙語 Monitor 2.0 報告原型
+
+**畫面：** `/admin/ai-incident` 掛載互動式 **Monitor2_AI_Report_Web_Bilingual_v3** HTML 原型，**僅示範資料**（無正式 AI／Lark）。示範事故 **INC-1028**（LP-A · XAUUSD · Pricing Engine SG-02 · P2）涵蓋網頁 ↔ Lark、靜態（只讀）↔ 動態（調查）、含 **E-01…E-08** 的 RCA、巢狀人工回饋、值班路由、升級鏈與 JSON 匯出。示範 Messenger 種子 `THR-INC-1028`，AI_REPORT 深鏈進工作台。
+
+| 層級 | 細節 |
+|---|---|
+| **資料** | `public/prototypes/monitor2-ai-report.html` 內嵌示範包；Messenger 種子 `ensureInc1028MessengerThread` |
+| **流程** | 開工作台 → 靜態證據審閱 **或** 動態工具執行 → 可選匯出；Messenger 介面 → 工作台 |
+| **畫面** | `AiIncidentWorkspace` · iframe／全頁 · `monitor_links.ai_incident` |
+
+**驗收：** 頁面與選單存在；靜態擋住 ACK／轉派／升級；動態＋英／繁中可讀；INC-1028 Messenger 深鏈落地 `/admin/ai-incident`。操作：使用手冊 §14C · 實作：TSD §11.8 · UAT-49。
+
 ---
 
 ## 7. 非功能需求
@@ -533,5 +545,6 @@ flowchart LR
 | 1.14 | 2026-10-14 | FR-39 主迴路（§6.7）：線上公式 → 值班原因代碼 → 每週 AI → RO 核准；UAT-47 |
 | 1.15 | 2026-10-14 | FR-40 指標聚合線型流程（§6.8）`/admin/indicator-aggregation` |
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 介面＋準確確認；FR-40 強制聚合＋L2 嚴重度 = max(L1)×權重；Monitor 2.0 門檻調整全流程演示 |
+| 1.17 | 2026-10-25 | §6.9 AI 事故工作台 `/admin/ai-incident` 雙語 INC-1028 原型（靜態／動態 · E-01…E-08 · 巢狀回饋）；Messenger 深鏈；UAT-49 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

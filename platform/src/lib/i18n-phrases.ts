@@ -1238,6 +1238,10 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Indicator Aggregation": "指標聚合流程",
   "Indicator Aggregation Flow": "指標聚合流程",
   "Indicator Aggregation API": "指標聚合 API",
+  "AI Incident Workspace": "AI 事故工作台",
+  "Bilingual Monitor 2.0 AI report prototype (Web + Lark, Static/Dynamic): INC-1028 LP-A XAUUSD demo with E-01…E-08 evidence, nested feedback, simulated ops — no production AI/Lark":
+    "雙語 Monitor 2.0 AI 事故報告原型（網頁＋Lark、靜態／動態）：INC-1028 LP-A XAUUSD 演示，含 E-01…E-08 證據、巢狀回饋、模擬值班操作 — 無正式 AI／Lark",
+  "AI Incident Workspace (INC-1028 demo)": "AI 事故工作台（INC-1028 演示）",
   "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait window → RO as single or aggregate (from linked timeline chains)":
     "線型聚合介面：單一告警 → Skill／RAG → 成員資格檢查 → 關聯等待視窗 → RO 按單一或聚合（來自連結時間鏈）",
   "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait → RO as single / aggregate / force-aggregate (FORCE_AGGREGATED); L2 severity = max(fired L1)×weight; post-L2 flow":

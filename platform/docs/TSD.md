@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.15  
+**Version:** 1.16  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -30,6 +30,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
+- AI Incident Workspace (`/admin/ai-incident`) — bilingual Monitor 2.0 HTML prototype (INC-1028 demo)
 - Market Intelligence 5-minute scanner + outbox
 - Bilingual docs (EN / zh-Hant) and responsive admin shell
 
@@ -181,6 +182,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
 | Monitor | `/admin/discovery` | **Unknown Risk Discovery** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read` / `ai.approve` | **§11A** |
 | Monitor | `/admin/indicator-aggregation` | **Indicator Aggregation** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read` / `monitor.operate` | **§11.7** |
+| Monitor | `/admin/ai-incident` | **AI Incident Workspace** · `AiIncidentWorkspace` · static HTML prototype | `monitor.read` | **§11.8** |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -594,6 +596,22 @@ Weekly formula changes require RO approval (maker ≠ checker). Monthly coeffici
 | Post-L2 | `POST_L2_FLOW_STAGES` starts with `L2_SEVERITY` → AI_RCA → MESSENGER → HUMAN_GATE → CONTROL |
 | Guards | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
 
+### 11.8 AI Incident Workspace (bilingual Monitor 2.0 HTML prototype)
+
+Hosted demo of the **Monitor2_AI_Report_Web_Bilingual_v3** interactive incident report inside CRMP Admin. **Demo data only** — no production AI or Lark calls.
+
+| Item | Spec |
+|---|---|
+| Surface | `/admin/ai-incident` · `AiIncidentWorkspace` · iframe + full-page link |
+| Static asset | `public/prototypes/monitor2-ai-report.html` |
+| Demo incident | **INC-1028** — LP-A · XAUUSD · Pricing Engine SG-02 · P2 (quote age / freeze KPIs; 3 L1 → 1 L2) |
+| Modes | Web Console ↔ Lark · **Static** (read-only; ACK/assign/escalate blocked) ↔ **Dynamic** (investigate Fallback / impact / history / market / Admin logs) · 中文 ↔ EN |
+| Evidence | RCA hypotheses with **E-01…E-08** (SQL/API samples); nested human-feedback taxonomy; on-call roster + escalation chain; JSON export `INC-1028-demo-report.json` |
+| Messenger seed | `ensureInc1028MessengerThread` in `lib/messenger/demo.ts` → `THR-INC-1028` AI_REPORT with `monitor_links` / `workspace_url` → `/admin/ai-incident` |
+| Deep links | `lib/monitor-deep-links.ts` includes `ai_incident` |
+| Guards | `npm run test:ai-incident` · `test:ai-incident-smoke` |
+| Operator / UAT | User Guide §14C · UAT-49 |
+
 ---
 
 ## 11A. Unknown Risk Discovery (AI suggestion card)
@@ -892,6 +910,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.13 | 2026-10-14 | §11.6 / §16.15 FR-39 primary loop: live formula → ops reason codes → weekly AI → RO approve (`SEVERITY_FORMULA`) |
 | 1.14 | 2026-10-14 | §11.7 FR-40 indicator aggregation linear flow |
 | 1.15 | 2026-10-18 | §11.6 Monitor 2.0 surfaces + `ai_accurate`; §11.7 force-aggregate + L2 severity; §16.5 threshold full-flow demo |
+| 1.16 | 2026-10-25 | §11.8 / §7.2 AI Incident Workspace `/admin/ai-incident` (INC-1028 bilingual HTML prototype + Messenger seed) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

@@ -16,6 +16,7 @@ on:
         cursor/lark-ai-report-sev-a935,
         cursor/threshold-flow-demo-a935,
         cursor/docs-recent-flows-a935,
+        cursor/ai-incident-workspace-a935,
         main,
       ]
     paths:

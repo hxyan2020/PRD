@@ -403,6 +403,18 @@ flowchart LR
 
 **Acceptance (FR-40):** Linear stepper visible; demo sessions cover no-membership, window-timeout, aggregated, and force-aggregated paths; L2 severity panel shows max(L1) floor + weight; homepage L1→L2 demo; EN + zh-Hant. Operator: User Guide §14B · Build: TSD §11.7 · UAT-48.
 
+### 6.9 AI Incident Workspace — bilingual Monitor 2.0 report prototype
+
+**Surface:** `/admin/ai-incident` hosts the interactive **Monitor2_AI_Report_Web_Bilingual_v3** HTML prototype with **demo data only** (no production AI / Lark). Demo incident **INC-1028** (LP-A · XAUUSD · Pricing Engine SG-02 · P2) covers Web ↔ Lark, Static (read-only) ↔ Dynamic (investigate), RCA with **E-01…E-08**, nested human feedback, on-call routing, escalation chain, and JSON export. Demo Messenger seeds `THR-INC-1028` with an AI_REPORT deep link into the workspace.
+
+| Layer | Detail |
+|---|---|
+| **Data** | Embedded demo pack in `public/prototypes/monitor2-ai-report.html`; Messenger seed `ensureInc1028MessengerThread` |
+| **Flow** | Open workspace → Static evidence review **or** Dynamic tool runs → optional export; Messenger surface → workspace |
+| **Surface** | `AiIncidentWorkspace` · iframe / full-page · `monitor_links.ai_incident` |
+
+**Acceptance:** Page and nav entry present; Static blocks ACK/assign/escalate; Dynamic + EN/zh-Hant readable; INC-1028 Messenger deep link lands on `/admin/ai-incident`. Operator: User Guide §14C · Build: TSD §11.8 · UAT-49.
+
 ---
 
 ## 7. Non-functional requirements
@@ -533,5 +545,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.14 | 2026-10-14 | FR-39 primary severity formula loop (§6.7): live formula → ops reason codes → weekly AI → RO approve; UAT-47 |
 | 1.15 | 2026-10-14 | FR-40 indicator aggregation linear flow (§6.8) on `/admin/indicator-aggregation` |
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 surfaces + accurate severity confirm; FR-40 force-aggregate + L2 severity = max(L1)×weight; Monitor 2.0 threshold adjustment full-flow demo |
+| 1.17 | 2026-10-25 | §6.9 AI Incident Workspace `/admin/ai-incident` bilingual INC-1028 prototype (Static/Dynamic · E-01…E-08 · nested feedback); Messenger deep link; UAT-49 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

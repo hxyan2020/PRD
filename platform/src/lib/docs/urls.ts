@@ -43,6 +43,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
     permission: "monitor.read",
   },
   {
+    category: "Risk",
+    title: "AI Incident Workspace",
+    path: "/admin/ai-incident",
+    description:
+      "Bilingual Monitor 2.0 AI report prototype (Web + Lark, Static/Dynamic): INC-1028 LP-A XAUUSD demo with E-01…E-08 evidence, nested feedback, simulated ops — no production AI/Lark",
+    permission: "monitor.read",
+  },
+  {
     category: "Docs",
     title: "Risk discovery notebook (HTML)",
     path: "https://hxyan2020.github.io/PRD/risk-discovery/",

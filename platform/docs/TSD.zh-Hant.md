@@ -1,7 +1,7 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.15  
+**版本：** 1.17  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -30,6 +30,7 @@
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
+- AI 事故工作台（`/admin/ai-incident`）— 雙語 Monitor 2.0 HTML 原型（INC-1028 演示）
 - 市場情報 5 分鐘掃描與 outbox
 - 雙語文件（英／繁中）與響應式管理殼層
 
@@ -181,6 +182,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/discovery` | **未知風險探索** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read`／`ai.approve` | **§11A** |
 | 監控 | `/admin/indicator-aggregation` | **指標聚合流程** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read`／`monitor.operate` | **§11.7** |
+| 監控 | `/admin/ai-incident` | **AI 事故工作台** · `AiIncidentWorkspace` · 靜態 HTML 原型 | `monitor.read` | **§11.8** |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
@@ -590,6 +592,22 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 | L2 之後 | `POST_L2_FLOW_STAGES` 自 `L2_SEVERITY` → AI_RCA → MESSENGER → HUMAN_GATE → CONTROL |
 | 守護 | `npm run test:indicator-aggregation` · `test:indicator-aggregation-smoke` |
 
+### 11.8 AI 事故工作台（雙語 Monitor 2.0 HTML 原型）
+
+將 **Monitor2_AI_Report_Web_Bilingual_v3** 互動事故報告掛進 CRMP 管理後台。**僅示範資料** — 無正式 AI 或 Lark 呼叫。
+
+| 項目 | 規格 |
+|---|---|
+| 畫面 | `/admin/ai-incident` · `AiIncidentWorkspace` · iframe＋全頁連結 |
+| 靜態資產 | `public/prototypes/monitor2-ai-report.html` |
+| 示範事故 | **INC-1028** — LP-A · XAUUSD · Pricing Engine SG-02 · P2（報價年齡／凍結 KPI；3 L1 → 1 L2） |
+| 模式 | 網頁 ↔ Lark · **靜態**（只讀；ACK／轉派／升級停用）↔ **動態**（調查 Fallback／影響／歷史／市場／Admin 日誌）· 中文 ↔ EN |
+| 證據 | RCA 假設與 **E-01…E-08**（SQL／API 樣本）；巢狀人工回饋分類；值班排班＋升級鏈；JSON 匯出 `INC-1028-demo-report.json` |
+| Messenger 種子 | `lib/messenger/demo.ts` 的 `ensureInc1028MessengerThread` → `THR-INC-1028` AI_REPORT，`monitor_links`／`workspace_url` → `/admin/ai-incident` |
+| 深鏈 | `lib/monitor-deep-links.ts` 含 `ai_incident` |
+| 守護 | `npm run test:ai-incident` · `test:ai-incident-smoke` |
+| 操作／UAT | 使用手冊 §14C · UAT-49 |
+
 ---
 
 ## 11A. 未知風險探索（AI 建議卡）
@@ -888,6 +906,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.14 | 2026-10-14 | §11.6／§16.15 FR-39 主迴路：線上公式 → 值班原因代碼 → 每週 AI → RO 核准（`SEVERITY_FORMULA`） |
 | 1.15 | 2026-10-14 | §11.7 FR-40 指標聚合線型流程 |
 | 1.16 | 2026-10-18 | §11.6 Monitor 2.0 介面＋`ai_accurate`；§11.7 強制聚合＋L2 嚴重度；§16.5 門檻全流程演示 |
+| 1.17 | 2026-10-25 | §11.8／§7.2 AI 事故工作台 `/admin/ai-incident`（INC-1028 雙語 HTML 原型＋Messenger 種子） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
