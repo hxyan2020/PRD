@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AdminLink } from "@/components/AdminLink";
 import { Badge } from "@/components/ui";
 import { EnZh } from "@/components/EnZh";
 import { useUiLocale } from "@/hooks/useUiLocale";
@@ -462,6 +463,20 @@ export function IndicatorAggregationBoard({
                   >
                     <EnZh en="Continue post-L2 flow" zh="繼續 L2 之後流程" />
                   </button>
+                  <AdminLink
+                    className="btn btn-primary !min-h-10 text-xs"
+                    href="/admin/ai-incident"
+                    data-testid="indicator-agg-open-ai-rca"
+                  >
+                    <EnZh en="Open AI RCA report (INC-1028)" zh="開啟 AI RCA 報告（INC-1028）" />
+                  </AdminLink>
+                  <AdminLink
+                    className="btn !min-h-10 text-xs"
+                    href="/admin/l2-rca"
+                    data-testid="indicator-agg-open-l2-rca-lab"
+                  >
+                    <EnZh en="L2 → AI RCA Lab" zh="L2 → AI RCA 實驗室" />
+                  </AdminLink>
                 </div>
               ) : null}
 

@@ -427,6 +427,18 @@ flowchart LR
 
 **驗收：** 頁面與選單存在；P0 旁路跳過 Persistence／L2／AI 等待；未知維持 OPEN（永不自動誤報）；英／繁中可讀。操作：使用手冊 §14D · 實作：TSD §11.9 · UAT-50。
 
+### 6.11 L2 → AI RCA 實驗室 — 雙語 發現 → L1/L2 → AI RCA
+
+**畫面：** `/admin/l2-rca` 掛載互動式 **Monitor2_Integrated_Discovery_L2_RCA_v6** HTML 實驗室，**僅示範資料**。流程：已知事故反推 → 未知風險模型 → L1→L2 即時聚合（AND／OR／SEQUENCE）→ AI RCA 草稿。**L2 發車後**，CTA 開啟 `/admin/ai-incident`（INC-1028）。指標聚合台 L2 之後動作亦連結至 AI RCA 工作台與本實驗室。
+
+| 層級 | 細節 |
+|---|---|
+| **資料** | `public/prototypes/monitor2-discovery-l2-rca.html` 內嵌示範包 |
+| **流程** | 分頁③場景 → Risk Ops 確認 L2 → INC-1028 RCA 草稿 → AI 事故工作台 |
+| **畫面** | `DiscoveryL2RcaLab` · iframe／全頁 · `monitor_links.l2_rca` · 聚合台 CTA |
+
+**驗收：** 頁面與選單存在；L2 確認產出 INC-1028 草稿＋可用 CTA 至 `/admin/ai-incident`；聚合台 L2 之後連結存在；英／繁中可讀。操作：使用手冊 §14E · 實作：TSD §11.10 · UAT-51。
+
 ---
 
 ## 7. 非功能需求
@@ -559,5 +571,6 @@ flowchart LR
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 介面＋準確確認；FR-40 強制聚合＋L2 嚴重度 = max(L1)×權重；Monitor 2.0 門檻調整全流程演示 |
 | 1.17 | 2026-10-25 | §6.9 AI 事故工作台 `/admin/ai-incident` 雙語 INC-1028 原型（靜態／動態 · E-01…E-08 · 巢狀回饋）；Messenger 深鏈；UAT-49 |
 | 1.18 | 2026-10-25 | §6.10 降噪實驗室 `/admin/noise-reduction` 雙語端到端演示（六場景 · 旋鈕 · AI 回饋）；UAT-50 |
+| 1.19 | 2026-10-25 | §6.11 L2 → AI RCA 實驗室 `/admin/l2-rca` 發現→L2→RCA 銜接 INC-1028；UAT-51 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

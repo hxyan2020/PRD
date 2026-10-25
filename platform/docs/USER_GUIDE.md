@@ -846,6 +846,20 @@ Product: [PRD §6.10](/admin/docs/prd). Build: [TSD §11.9](/admin/docs/tsd). UA
 
 ---
 
+## 14E. L2 → AI RCA Lab — `/admin/l2-rca`
+
+**What it is.** The bilingual **Discovery → L1/L2 → AI RCA** interactive lab (from `Monitor2_Integrated_Discovery_L2_RCA_v6`) hosted inside CRMP with **demo data only**. After L2 dispatch it **naturally links** into the [AI Incident Workspace](/admin/ai-incident) (INC-1028).
+
+**What you see.** Five tabs: overview · known→unknown discovery · L1→L2 live + AI RCA · four rule parameters · delivery/governance. Tab ③ runs scenarios A–G (AND/OR/SEQUENCE, holiday context, L1-only). Risk Ops confirm creates **INC-1028** and shows an AI RCA draft with a CTA to the workspace.
+
+**What to click.** Open tab ③ → scenario A → Run/Step → **Confirm L2** → **Open AI Incident Workspace**. From [Indicator Aggregation](/admin/indicator-aggregation), after aggregate/force-aggregate use **Open AI RCA report (INC-1028)**.
+
+**Good looks like.** L2 confirm yields INC-1028 draft + working CTA to `/admin/ai-incident`; EN/繁中 chrome readable; aggregation board post-L2 links present. No production Monitor / AI / Lark calls.
+
+Product: [PRD §6.11](/admin/docs/prd). Build: [TSD §11.10](/admin/docs/tsd). UAT: UAT-51.
+
+---
+
 ## 15. Document control
 
 | Ver | Date | Notes |
@@ -868,5 +882,6 @@ Product: [PRD §6.10](/admin/docs/prd). Build: [TSD §11.9](/admin/docs/tsd). UA
 | 1.18 | 2026-10-18 | §7.4 threshold full-flow demo; §8.2A/§9.2 accurate severity + Monitor 2.0 surfaces; §14B force-aggregate + L2 severity |
 | 1.19 | 2026-10-25 | §14C AI Incident Workspace — bilingual INC-1028 HTML prototype + Messenger seed; §9.2 INC-1028 deep link |
 | 1.20 | 2026-10-25 | §14D Noise Reduction Lab — bilingual end-to-end HTML lab + UAT-50 |
+| 1.21 | 2026-10-25 | §14E L2 → AI RCA Lab — Discovery→L2→RCA handoff to INC-1028 + UAT-51 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -2024,13 +2024,56 @@ export const UAT_CASES: UatCase[] = [
   },
   {
     seq: 50,
-    id: "UAT-46",
+    id: "UAT-51",
     t_start_min: 544,
+    duration_min: 12,
+    severity: "High",
+    bu: "Risk + AI",
+    dependency: "UAT-48; UAT-49; Discovery→L2→RCA seed HTML",
+    dependency_zh: "UAT-48；UAT-49；發現→L2→RCA 種子 HTML",
+    covers: ["L2 → AI RCA Lab", "Indicator Aggregation", "AI Incident Workspace"],
+    covers_zh: ["L2 → AI RCA 實驗室", "指標聚合流程", "AI 事故工作台"],
+    en: {
+      title: "L2 → AI RCA Lab — bilingual Discovery→L2→RCA with handoff",
+      why: "Ops need an integrated Discovery → L1/L2 → AI RCA path where L2 dispatch naturally opens the AI Incident Workspace report.",
+      objective:
+        "Open /admin/l2-rca, run an L1→L2 scenario to Risk Ops confirm, prove the INC-1028 AI RCA CTA lands on /admin/ai-incident; confirm EN/zh-Hant and the aggregation board post-L2 link.",
+      steps: [
+        "Open L2 → AI RCA Lab from left nav (Monitor & risk). Confirm toolbar 繁中 ↔ EN and embedded prototype (discovery-l2-rca-iframe).",
+        "Open tab ③ (L1→L2 live + AI RCA). Pick scenario A (success aggregate), Run or Step until Risk Ops can Confirm L2.",
+        "Confirm L2. Confirm AI RCA draft shows INC-1028 and the CTA Open AI Incident Workspace.",
+        "Click the CTA (target _top). Confirm landing on /admin/ai-incident. Toggle EN ↔ 繁中 on the lab — chrome remains readable.",
+        "Open Indicator Aggregation board → aggregate or force-aggregate a session → confirm Open AI RCA report (INC-1028) and L2 → AI RCA Lab links.",
+      ],
+      pass: "Lab + nav present; L2 confirm yields INC-1028 RCA draft + workspace CTA; aggregation board post-L2 links work; EN/zh-Hant readable; demo data only.",
+      evidence:
+        "Screenshots of L2 confirm, INC-1028 RCA CTA, workspace landing, aggregation board post-L2 links, EN/zh toggle.",
+    },
+    zh: {
+      title: "L2 → AI RCA 實驗室 — 雙語 發現→L2→RCA 與銜接",
+      why: "值班需要整合的 發現 → L1/L2 → AI RCA 路徑，且 L2 發車後能自然開啟 AI 事故工作台報告。",
+      objective:
+        "開啟 /admin/l2-rca，跑一條 L1→L2 至 Risk Ops 確認，證明 INC-1028 AI RCA CTA 落地 /admin/ai-incident；確認英／繁中與聚合台 L2 之後連結。",
+      steps: [
+        "自左側選單（監控與風險）開啟 L2 → AI RCA 實驗室。確認工具列 繁中 ↔ EN 與內嵌原型（discovery-l2-rca-iframe）。",
+        "開分頁③（L1→L2 即時＋AI RCA）。選場景 A（成功聚合），自動或逐步直到 Risk Ops 可確認 L2。",
+        "確認 L2。確認 AI RCA 草稿顯示 INC-1028，並有「開啟 AI 事故工作台」CTA。",
+        "點 CTA（target _top）。確認落地 /admin/ai-incident。於實驗室切換 EN ↔ 繁中 — 介面可讀。",
+        "開指標聚合台 → 聚合或強制聚合一個工作階段 → 確認「開啟 AI RCA 報告（INC-1028）」與「L2 → AI RCA 實驗室」連結。",
+      ],
+      pass: "實驗室＋選單存在；L2 確認產出 INC-1028 RCA 草稿＋工作台 CTA；聚合台 L2 之後連結可用；英／繁中可讀；僅示範資料。",
+      evidence: "L2 確認、INC-1028 RCA CTA、工作台落地、聚合台 L2 之後連結、EN／繁中切換截圖。",
+    },
+  },
+  {
+    seq: 51,
+    id: "UAT-46",
+    t_start_min: 556,
     duration_min: 15,
     severity: "Critical",
     bu: "Risk Owner",
-    dependency: "UAT-01–45, UAT-47, UAT-48, UAT-49 and UAT-50 results recorded",
-    dependency_zh: "UAT-01–45、UAT-47、UAT-48、UAT-49、UAT-50 結果已記錄",
+    dependency: "UAT-01–45, UAT-47, UAT-48, UAT-49, UAT-50 and UAT-51 results recorded",
+    dependency_zh: "UAT-01–45、UAT-47、UAT-48、UAT-49、UAT-50、UAT-51 結果已記錄",
     covers: [
       "UAT Checklist",
       "Audit Log",
@@ -2043,7 +2086,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.",
         "Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.",
-        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), AI Incident Workspace (UAT-49), and Noise Reduction Lab (UAT-50) passed or waived.",
+        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), AI Incident Workspace (UAT-49), Noise Reduction Lab (UAT-50), and L2 → AI RCA Lab (UAT-51) passed or waived.",
         "Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).",
         "File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.",
       ],
@@ -2057,7 +2100,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。",
         "統計 High：最多兩項 WAIVE，每項附一句書面風險接受。",
-        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）、AI 事故工作台（UAT-49）、降噪實驗室（UAT-50）通過或豁免。",
+        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）、AI 事故工作台（UAT-49）、降噪實驗室（UAT-50）、L2 → AI RCA 實驗室（UAT-51）通過或豁免。",
         "記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。",
         "將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。",
       ],

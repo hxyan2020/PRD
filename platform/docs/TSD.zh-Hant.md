@@ -1,7 +1,7 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.18  
+**版本：** 1.19  
 
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
@@ -33,6 +33,7 @@
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
 - AI 事故工作台（`/admin/ai-incident`）— 雙語 Monitor 2.0 HTML 原型（INC-1028 演示）
 - 降噪實驗室（`/admin/noise-reduction`）— 雙語 Monitor 2.0 降噪端到端 HTML 實驗室
+- L2 → AI RCA 實驗室（`/admin/l2-rca`）— 雙語 發現 → L1/L2 → AI RCA HTML 實驗室，銜接 INC-1028
 - 市場情報 5 分鐘掃描與 outbox
 - 雙語文件（英／繁中）與響應式管理殼層
 
@@ -184,6 +185,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/discovery` | **未知風險探索** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read`／`ai.approve` | **§11A** |
 | 監控 | `/admin/indicator-aggregation` | **指標聚合流程** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read`／`monitor.operate` | **§11.7** |
+| 監控 | `/admin/l2-rca` | **L2 → AI RCA 實驗室** · `DiscoveryL2RcaLab` · 靜態 HTML → AI 事故 | `monitor.read` | **§11.10** |
 | 監控 | `/admin/ai-incident` | **AI 事故工作台** · `AiIncidentWorkspace` · 靜態 HTML 原型 | `monitor.read` | **§11.8** |
 | 監控 | `/admin/noise-reduction` | **降噪實驗室** · `NoiseReductionLab` · 靜態 HTML 實驗室 | `monitor.read` | **§11.9** |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
@@ -627,6 +629,21 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 | 守護 | `npm run test:noise-reduction` · `test:noise-reduction-smoke` |
 | 操作／UAT | 使用手冊 §14D · UAT-50 |
 
+### 11.10 L2 → AI RCA 實驗室（雙語 發現 → L1/L2 → AI RCA）
+
+將 **Monitor2_Integrated_Discovery_L2_RCA_v6** 掛進 CRMP 管理後台。**僅示範資料。** L2 發車後，CTA 開啟 AI 事故工作台（`/admin/ai-incident`，INC-1028）。
+
+| 項目 | 規格 |
+|---|---|
+| 畫面 | `/admin/l2-rca` · `DiscoveryL2RcaLab` · iframe＋全頁連結 |
+| 靜態資產 | `public/prototypes/monitor2-discovery-l2-rca.html` |
+| 分頁 | 總覽 · 發現 · L1→L2＋AI RCA · 規則參數 · 交付 |
+| L2 銜接 | Risk Ops 確認 → 事故 id **INC-1028** → CTA `target=_top` → `/admin/ai-incident` |
+| 聚合台 | `IndicatorAggregationBoard` L2 之後 CTA → AI 事故工作台＋本實驗室 |
+| 深鏈 | `lib/monitor-deep-links.ts` 含 `l2_rca` |
+| 守護 | `npm run test:l2-rca` · `test:l2-rca-smoke` |
+| 操作／UAT | 使用手冊 §14E · UAT-51 |
+
 ---
 
 ## 11A. 未知風險探索（AI 建議卡）
@@ -927,6 +944,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.16 | 2026-10-18 | §11.6 Monitor 2.0 介面＋`ai_accurate`；§11.7 強制聚合＋L2 嚴重度；§16.5 門檻全流程演示 |
 | 1.17 | 2026-10-25 | §11.8／§7.2 AI 事故工作台 `/admin/ai-incident`（INC-1028 雙語 HTML 原型＋Messenger 種子） |
 | 1.18 | 2026-10-25 | §11.9／§7.2 降噪實驗室 `/admin/noise-reduction`（雙語端到端 HTML 實驗室） |
+| 1.19 | 2026-10-25 | §11.10／§7.2 L2 → AI RCA 實驗室 `/admin/l2-rca`（發現→L2→RCA 銜接 INC-1028） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

@@ -44,6 +44,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
   },
   {
     category: "Risk",
+    title: "L2 → AI RCA Lab",
+    path: "/admin/l2-rca",
+    description:
+      "Bilingual Discovery → L1/L2 → AI RCA lab: known-incident reverse engineering, unknown-risk models, L1→L2 live aggregate (AND/OR/SEQUENCE), then natural handoff to AI Incident Workspace (INC-1028) — demo data only",
+    permission: "monitor.read",
+  },
+  {
+    category: "Risk",
     title: "AI Incident Workspace",
     path: "/admin/ai-incident",
     description:

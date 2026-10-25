@@ -528,15 +528,15 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Prototype AI desk features — UAT window",
       detail:
-        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, AI Performance eval board, Indicator Aggregation linear flow (FR-40), AI Incident Workspace (INC-1028 bilingual prototype / UAT-49), Noise Reduction Lab (bilingual E2E demo / UAT-50), grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back + mutation coverage. Formal UAT sign-off still open (OI-09).",
-      dependencies: "UAT-01…50; Risk Owner calendar",
+        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, AI Performance eval board, Indicator Aggregation linear flow (FR-40), AI Incident Workspace (INC-1028 bilingual prototype / UAT-49), Noise Reduction Lab (bilingual E2E demo / UAT-50), L2 → AI RCA Lab (Discovery→L2→RCA handoff / UAT-51), grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back + mutation coverage. Formal UAT sign-off still open (OI-09).",
+      dependencies: "UAT-01…51; Risk Owner calendar",
       eta: "2026-10 / 2026-11 UAT",
     },
     zh: {
       title: "原型 AI 台面功能 — UAT 窗口",
       detail:
-        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、AI 績效評估看板、指標聚合線型流程（FR-40）、AI 事故工作台（INC-1028 雙語原型／UAT-49）、降噪實驗室（雙語端到端演示／UAT-50）、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾＋變更覆蓋。正式 UAT 簽核仍開放（OI-09）。",
-      dependencies: "UAT-01…50；風險負責人行程",
+        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、AI 績效評估看板、指標聚合線型流程（FR-40）、AI 事故工作台（INC-1028 雙語原型／UAT-49）、降噪實驗室（雙語端到端演示／UAT-50）、L2 → AI RCA 實驗室（發現→L2→RCA 銜接／UAT-51）、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾＋變更覆蓋。正式 UAT 簽核仍開放（OI-09）。",
+      dependencies: "UAT-01…51；風險負責人行程",
       eta: "2026-10／2026-11 UAT",
     },
     checklist: [
@@ -599,14 +599,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; AI Performance; Indicator Aggregation FR-40; AI Incident Workspace INC-1028; Noise Reduction Lab; audit tabs + Roll back + mutation coverage).",
+        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; AI Performance; Indicator Aggregation FR-40; AI Incident Workspace INC-1028; Noise Reduction Lab; L2 → AI RCA Lab; audit tabs + Roll back + mutation coverage).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；AI 績效；指標聚合 FR-40；AI 事故工作台 INC-1028；降噪實驗室；稽核分頁＋回滾＋變更覆蓋）。",
+        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；AI 績效；指標聚合 FR-40；AI 事故工作台 INC-1028；降噪實驗室；L2 → AI RCA 實驗室；稽核分頁＋回滾＋變更覆蓋）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },
