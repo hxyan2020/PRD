@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-25T08:40:00.000Z | AI Incident Workspace desk fit: embed mode hides nested Monitor sidebar; Traditional Chinese copy; sync lang from CRMP shell; flat panel chrome |
 | 2026-10-25T08:25:00.000Z | AI Incident Workspace visual parity: prototype CSS uses CRMP Vantage teal/accent tokens + Source Sans 3; host chrome matches panel/btn patterns |
 | 2026-10-25T08:10:00.000Z | Docs parity for AI Incident Workspace: PRD §6.9 · UG §14C/§9.2 · TSD §11.8 · UAT-49 · Progress/Roadmap/Open Issues BAU; EN+zh-Hant |
 | 2026-10-25T07:40:00.000Z | AI Incident Workspace `/admin/ai-incident`: host Monitor2_AI_Report_Web_Bilingual_v3 HTML (INC-1028 LP-A XAUUSD demo), Messenger seed + deep link, EN+zh-Hant UG/URL/phrases, Pages branch `cursor/ai-incident-workspace-a935` |

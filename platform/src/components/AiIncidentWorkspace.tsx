@@ -19,8 +19,9 @@ export function AiIncidentWorkspace() {
 
   const prototypeSrc = useMemo(() => {
     const base = publicBasePath();
-    return `${base}/prototypes/monitor2-ai-report.html`;
-  }, []);
+    const lang = zh ? "zh-Hant" : "en";
+    return `${base}/prototypes/monitor2-ai-report.html?embed=1&lang=${lang}`;
+  }, [zh]);
 
   return (
     <div className="space-y-4" data-testid="ai-incident-workspace">

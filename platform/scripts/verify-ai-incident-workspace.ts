@@ -24,6 +24,10 @@ assert.match(html, /--brand:#0b6e6a/);
 assert.match(html, /--vantage:#044855/);
 assert.match(html, /Source Sans 3/);
 assert.doesNotMatch(html, /font-family:Inter/);
+assert.match(html, /html\.crmp-embed/);
+assert.match(html, /報價/);
+assert.doesNotMatch(html, /报价/);
+assert.match(html, /繁中/);
 
 const page = read("src/app/admin/ai-incident/page.tsx");
 assert.match(page, /AiIncidentWorkspace/);
@@ -32,6 +36,8 @@ const board = read("src/components/AiIncidentWorkspace.tsx");
 assert.match(board, /ai-incident-workspace/);
 assert.match(board, /monitor2-ai-report\.html/);
 assert.match(board, /ai-incident-iframe/);
+assert.match(board, /embed=1/);
+assert.match(board, /zh-Hant/);
 
 const nav = read("src/lib/nav.ts");
 assert.match(nav, /\/admin\/ai-incident/);
