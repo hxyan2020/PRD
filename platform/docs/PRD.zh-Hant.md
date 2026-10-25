@@ -415,6 +415,18 @@ flowchart LR
 
 **驗收：** 頁面與選單存在；靜態擋住 ACK／轉派／升級；動態＋英／繁中可讀；INC-1028 Messenger 深鏈落地 `/admin/ai-incident`。操作：使用手冊 §14C · 實作：TSD §11.8 · UAT-49。
 
+### 6.10 降噪實驗室 — 雙語 Monitor 2.0 端到端演示
+
+**畫面：** `/admin/noise-reduction` 掛載互動式 **Monitor2_Noise_Reduction_End_to_End_Demo** HTML 實驗室，**僅示範資料**（無正式 Monitor／AI／Lark）。六場景（跨 BU L2、尖峰、去重、良性、未知、P0 旁路）、八階管線、旋鈕（閾值／Persistence／L2 分數／視窗）、AI 證據＋人工回饋 → 回測／Shadow／核准／回滾，以及 JSON 匯出。Monitor 介面提供深鏈 id `noise_reduction`。
+
+| 層級 | 細節 |
+|---|---|
+| **資料** | `public/prototypes/monitor2-noise-reduction.html` 內嵌示範包 |
+| **流程** | 選場景 → 注入／自動播放 → 調旋鈕 → AI 回饋 → 治理 → 匯出 |
+| **畫面** | `NoiseReductionLab` · iframe／全頁 · `monitor_links.noise_reduction` |
+
+**驗收：** 頁面與選單存在；P0 旁路跳過 Persistence／L2／AI 等待；未知維持 OPEN（永不自動誤報）；英／繁中可讀。操作：使用手冊 §14D · 實作：TSD §11.9 · UAT-50。
+
 ---
 
 ## 7. 非功能需求
@@ -546,5 +558,6 @@ flowchart LR
 | 1.15 | 2026-10-14 | FR-40 指標聚合線型流程（§6.8）`/admin/indicator-aggregation` |
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 介面＋準確確認；FR-40 強制聚合＋L2 嚴重度 = max(L1)×權重；Monitor 2.0 門檻調整全流程演示 |
 | 1.17 | 2026-10-25 | §6.9 AI 事故工作台 `/admin/ai-incident` 雙語 INC-1028 原型（靜態／動態 · E-01…E-08 · 巢狀回饋）；Messenger 深鏈；UAT-49 |
+| 1.18 | 2026-10-25 | §6.10 降噪實驗室 `/admin/noise-reduction` 雙語端到端演示（六場景 · 旋鈕 · AI 回饋）；UAT-50 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

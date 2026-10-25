@@ -492,7 +492,7 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 |---|---|
 | RM-01 | [Demo Messenger](/admin/messenger) · [Lark](/admin/lark) |
 | RM-02 | [Monitor 2.0](/admin/monitor-2) · [Realtime Alert & Tracker](/admin/alerts) |
-| RM-03 / RM-04 | [Realtime Alert & Tracker](/admin/alerts) · [AI Admin](/admin/ai-admin) · [AI Performance](/admin/ai-performance) · [Indicator Aggregation](/admin/indicator-aggregation) · [AI Incident Workspace](/admin/ai-incident) |
+| RM-03 / RM-04 | [Realtime Alert & Tracker](/admin/alerts) · [AI Admin](/admin/ai-admin) · [AI Performance](/admin/ai-performance) · [Indicator Aggregation](/admin/indicator-aggregation) · [AI Incident Workspace](/admin/ai-incident) · [Noise Reduction Lab](/admin/noise-reduction) |
 | RM-05 | [Users](/admin/users) · [Roles](/admin/roles) |
 | RM-09 | [Human Intervention](/admin/interventions) · [AI Access Security](/admin/security/ai-access) |
 | RM-11 | [Daily Performance](/admin/dashboard) · [Risk Log](/admin/risk-log) |
@@ -511,5 +511,6 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 | 1.9 | 2026-10-12 | AI Performance eval board + audit mutation coverage as BAU; RM-03 links |
 | 2.0 | 2026-10-14 | Indicator Aggregation linear flow (FR-40) as BAU; `/admin/indicator-aggregation` |
 | 2.1 | 2026-10-25 | AI Incident Workspace `/admin/ai-incident` (INC-1028 bilingual prototype) as BAU; UAT-49 |
+| 2.2 | 2026-10-25 | Noise Reduction Lab `/admin/noise-reduction` (bilingual E2E demo) as BAU; UAT-50 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -1,7 +1,8 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.17  
+**版本：** 1.18  
+
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -31,6 +32,7 @@
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
 - AI 事故工作台（`/admin/ai-incident`）— 雙語 Monitor 2.0 HTML 原型（INC-1028 演示）
+- 降噪實驗室（`/admin/noise-reduction`）— 雙語 Monitor 2.0 降噪端到端 HTML 實驗室
 - 市場情報 5 分鐘掃描與 outbox
 - 雙語文件（英／繁中）與響應式管理殼層
 
@@ -183,6 +185,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/discovery` | **未知風險探索** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read`／`ai.approve` | **§11A** |
 | 監控 | `/admin/indicator-aggregation` | **指標聚合流程** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read`／`monitor.operate` | **§11.7** |
 | 監控 | `/admin/ai-incident` | **AI 事故工作台** · `AiIncidentWorkspace` · 靜態 HTML 原型 | `monitor.read` | **§11.8** |
+| 監控 | `/admin/noise-reduction` | **降噪實驗室** · `NoiseReductionLab` · 靜態 HTML 實驗室 | `monitor.read` | **§11.9** |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
@@ -608,6 +611,22 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 | 守護 | `npm run test:ai-incident` · `test:ai-incident-smoke` |
 | 操作／UAT | 使用手冊 §14C · UAT-49 |
 
+### 11.9 降噪實驗室（雙語 Monitor 2.0 HTML 端到端演示）
+
+將 **Monitor2_Noise_Reduction_End_to_End_Demo** 互動降噪實驗室掛進 CRMP 管理後台。**僅示範資料** — 無正式 Monitor／AI／Lark 呼叫。
+
+| 項目 | 規格 |
+|---|---|
+| 畫面 | `/admin/noise-reduction` · `NoiseReductionLab` · iframe＋全頁連結 |
+| 靜態資產 | `public/prototypes/monitor2-noise-reduction.html` |
+| 場景 | cross · spike · duplicate · benign · unknown · critical（P0 旁路） |
+| 管線 | 品質 → 關鍵旁路 → 動態閾值 → Persistence → 去重 → L2 → 嚴重度 → AI |
+| 旋鈕 | 閾值倍數 · Persistence 秒數 · L2 分數門檻 · L2 視窗 |
+| 治理 | 人工 TP／FP／UNKNOWN → 回測 → Shadow → BU＋RO 核准 → 回滾；JSON 匯出 |
+| 深鏈 | `lib/monitor-deep-links.ts` 含 `noise_reduction` |
+| 守護 | `npm run test:noise-reduction` · `test:noise-reduction-smoke` |
+| 操作／UAT | 使用手冊 §14D · UAT-50 |
+
 ---
 
 ## 11A. 未知風險探索（AI 建議卡）
@@ -907,6 +926,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.15 | 2026-10-14 | §11.7 FR-40 指標聚合線型流程 |
 | 1.16 | 2026-10-18 | §11.6 Monitor 2.0 介面＋`ai_accurate`；§11.7 強制聚合＋L2 嚴重度；§16.5 門檻全流程演示 |
 | 1.17 | 2026-10-25 | §11.8／§7.2 AI 事故工作台 `/admin/ai-incident`（INC-1028 雙語 HTML 原型＋Messenger 種子） |
+| 1.18 | 2026-10-25 | §11.9／§7.2 降噪實驗室 `/admin/noise-reduction`（雙語端到端 HTML 實驗室） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

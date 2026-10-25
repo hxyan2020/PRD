@@ -183,6 +183,7 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 - [x] 稽核變更覆蓋 — 每次管理／Lark／Messenger 路徑＋`LOGIN_FAILED`（`test:audit`）  
 - [x] 指標聚合線型流程（`/admin/indicator-aggregation`，FR-40／UAT-48）— 成員 → 等待 → RO 單一或聚合  
 - [x] AI 事故工作台（`/admin/ai-incident`，INC-1028 雙語原型／UAT-49）— 靜態／動態 · E-01…E-08 · Messenger 深鏈  
+- [x] 降噪實驗室（`/admin/noise-reduction`，雙語端到端演示／UAT-50）— 六場景 · 旋鈕 · AI 回饋  
 - [ ] 正式 UAT 簽核（OI-09）  
 
 ---
@@ -268,5 +269,6 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 | 1.4 | 2026-10-12 | OI-14 AI 績效看板＋稽核變更覆蓋已交付；OI-12 覆蓋守護 |
 | 1.5 | 2026-10-14 | OI-14 指標聚合線型流程（FR-40／UAT-48）已交付 |
 | 1.6 | 2026-10-25 | OI-14 AI 事故工作台（`/admin/ai-incident`，INC-1028／UAT-49）已交付 |
+| 1.7 | 2026-10-25 | OI-14 降噪實驗室（`/admin/noise-reduction`／UAT-50）已交付 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

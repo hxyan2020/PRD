@@ -1242,6 +1242,10 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Bilingual Monitor 2.0 AI report prototype (Web + Lark, Static/Dynamic): INC-1028 LP-A XAUUSD demo with E-01…E-08 evidence, nested feedback, simulated ops — no production AI/Lark":
     "雙語 Monitor 2.0 AI 事故報告原型（網頁＋Lark、靜態／動態）：INC-1028 LP-A XAUUSD 演示，含 E-01…E-08 證據、巢狀回饋、模擬值班操作 — 無正式 AI／Lark",
   "AI Incident Workspace (INC-1028 demo)": "AI 事故工作台（INC-1028 演示）",
+  "Noise Reduction Lab": "降噪實驗室",
+  "Bilingual Monitor 2.0 noise-reduction end-to-end lab: six scenarios (cross-BU L2, spike, dedup, benign, unknown, P0 bypass), knobs for threshold / persistence / L2 score / window, AI evidence + human feedback → backtest / shadow / approve — demo data only":
+    "雙語 Monitor 2.0 降噪端到端實驗室：六場景（跨 BU L2、尖峰、去重、良性、未知、P0 旁路）、閾值／Persistence／L2 分數／視窗旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准 — 僅示範資料",
+  "Noise Reduction Lab (E2E demo)": "降噪實驗室（端到端演示）",
   "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait window → RO as single or aggregate (from linked timeline chains)":
     "線型聚合介面：單一告警 → Skill／RAG → 成員資格檢查 → 關聯等待視窗 → RO 按單一或聚合（來自連結時間鏈）",
   "Linear aggregation UI: single alert → skill/RAG → membership check → correlation wait → RO as single / aggregate / force-aggregate (FORCE_AGGREGATED); L2 severity = max(fired L1)×weight; post-L2 flow":

@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.16  
+**Version:** 1.17  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -31,6 +31,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
 - AI Incident Workspace (`/admin/ai-incident`) — bilingual Monitor 2.0 HTML prototype (INC-1028 demo)
+- Noise Reduction Lab (`/admin/noise-reduction`) — bilingual Monitor 2.0 noise-reduction end-to-end HTML lab
 - Market Intelligence 5-minute scanner + outbox
 - Bilingual docs (EN / zh-Hant) and responsive admin shell
 
@@ -183,6 +184,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/discovery` | **Unknown Risk Discovery** · `DiscoverySuggestionBoard` · `/api/discovery` | `monitor.read` / `ai.approve` | **§11A** |
 | Monitor | `/admin/indicator-aggregation` | **Indicator Aggregation** · `IndicatorAggregationBoard` · `/api/indicator-aggregation` | `monitor.read` / `monitor.operate` | **§11.7** |
 | Monitor | `/admin/ai-incident` | **AI Incident Workspace** · `AiIncidentWorkspace` · static HTML prototype | `monitor.read` | **§11.8** |
+| Monitor | `/admin/noise-reduction` | **Noise Reduction Lab** · `NoiseReductionLab` · static HTML lab | `monitor.read` | **§11.9** |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -612,6 +614,22 @@ Hosted demo of the **Monitor2_AI_Report_Web_Bilingual_v3** interactive incident 
 | Guards | `npm run test:ai-incident` · `test:ai-incident-smoke` |
 | Operator / UAT | User Guide §14C · UAT-49 |
 
+### 11.9 Noise Reduction Lab (bilingual Monitor 2.0 HTML end-to-end demo)
+
+Hosted demo of the **Monitor2_Noise_Reduction_End_to_End_Demo** interactive noise-reduction lab inside CRMP Admin. **Demo data only** — no production Monitor / AI / Lark calls.
+
+| Item | Spec |
+|---|---|
+| Surface | `/admin/noise-reduction` · `NoiseReductionLab` · iframe + full-page link |
+| Static asset | `public/prototypes/monitor2-noise-reduction.html` |
+| Scenarios | cross · spike · duplicate · benign · unknown · critical (P0 bypass) |
+| Pipeline | quality → critical bypass → dynamic threshold → persistence → dedup → L2 → severity → AI |
+| Knobs | threshold multiplier · Persistence seconds · L2 score gate · L2 window |
+| Governance | human TP/FP/UNKNOWN → backtest → shadow → BU+RO approve → rollback; JSON export |
+| Deep links | `lib/monitor-deep-links.ts` includes `noise_reduction` |
+| Guards | `npm run test:noise-reduction` · `test:noise-reduction-smoke` |
+| Operator / UAT | User Guide §14D · UAT-50 |
+
 ---
 
 ## 11A. Unknown Risk Discovery (AI suggestion card)
@@ -911,6 +929,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.14 | 2026-10-14 | §11.7 FR-40 indicator aggregation linear flow |
 | 1.15 | 2026-10-18 | §11.6 Monitor 2.0 surfaces + `ai_accurate`; §11.7 force-aggregate + L2 severity; §16.5 threshold full-flow demo |
 | 1.16 | 2026-10-25 | §11.8 / §7.2 AI Incident Workspace `/admin/ai-incident` (INC-1028 bilingual HTML prototype + Messenger seed) |
+| 1.17 | 2026-10-25 | §11.9 / §7.2 Noise Reduction Lab `/admin/noise-reduction` (bilingual E2E HTML lab) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

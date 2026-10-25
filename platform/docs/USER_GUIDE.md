@@ -832,6 +832,20 @@ Product: [PRD §6.9](/admin/docs/prd). Build: [TSD §11.8](/admin/docs/tsd). UAT
 
 ---
 
+## 14D. Noise Reduction Lab — `/admin/noise-reduction`
+
+**What it is.** The bilingual **Monitor 2.0 Noise Reduction** end-to-end interactive lab (from `Monitor2_Noise_Reduction_End_to_End_Demo`) hosted inside CRMP with **demo data only**.
+
+**What you see.** Toolbar 繁中 ↔ EN; six scenarios (cross-BU L2, pricing spike, Admin dedup, verified benign, unknown-must-not-FP, P0 critical bypass); eight-stage pipeline (quality → critical bypass → dynamic threshold → persistence → dedup → L2 → severity → AI); knobs for threshold / persistence / L2 score / window; AI evidence + human TP/FP/UNKNOWN feedback → backtest / shadow / BU+RO approve / rollback; JSON export.
+
+**What to click.** Open the embedded lab (or full-page). Run Scenario A step-by-step or Play. Switch to Scenario F to prove P0 skips Persistence / L2 window / AI. Switch to Scenario E to prove unknown stays OPEN. Toggle language; adjust a knob and Reset to replay.
+
+**Good looks like.** P0 notifies immediately; unknown never auto-marks FP; EN and 繁中 chrome + scenario titles readable; export downloads `Monitor2_Noise_Reduction_<scenario>.json`. No production Monitor / AI / Lark calls.
+
+Product: [PRD §6.10](/admin/docs/prd). Build: [TSD §11.9](/admin/docs/tsd). UAT: UAT-50.
+
+---
+
 ## 15. Document control
 
 | Ver | Date | Notes |
@@ -853,5 +867,6 @@ Product: [PRD §6.9](/admin/docs/prd). Build: [TSD §11.8](/admin/docs/tsd). UAT
 | 1.17 | 2026-10-14 | §14B Indicator Aggregation linear flow (FR-40) |
 | 1.18 | 2026-10-18 | §7.4 threshold full-flow demo; §8.2A/§9.2 accurate severity + Monitor 2.0 surfaces; §14B force-aggregate + L2 severity |
 | 1.19 | 2026-10-25 | §14C AI Incident Workspace — bilingual INC-1028 HTML prototype + Messenger seed; §9.2 INC-1028 deep link |
+| 1.20 | 2026-10-25 | §14D Noise Reduction Lab — bilingual end-to-end HTML lab + UAT-50 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

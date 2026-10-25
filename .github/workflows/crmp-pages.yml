@@ -17,6 +17,7 @@ on:
         cursor/threshold-flow-demo-a935,
         cursor/docs-recent-flows-a935,
         cursor/ai-incident-workspace-a935,
+        cursor/noise-reduction-a935,
         main,
       ]
     paths:

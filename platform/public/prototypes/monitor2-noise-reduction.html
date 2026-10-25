@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monitor 2.0 · Noise Reduction Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{color-scheme:light;--bg:#f4f6f8;--panel:#ffffff;--panel2:#f8fafc;--line:#d7dee7;--text:#0f1b2d;--muted:#5b6b7c;--blue:#0b6e6a;--aqua:#0b6e6a;--amber:#c45c26;--red:#b83f42;--green:#14866a;--purple:#084f4c;--brand:#0b6e6a;--brand-ink:#084f4c;--vantage:#044855;--sidebar:#10233a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.55 "Source Sans 3","Noto Sans TC","Segoe UI",sans-serif;color:var(--text)}
+button,select,input,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}
+.layout{max-width:1660px;margin:auto;padding:20px 22px 48px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:16px}
+.eyebrow{letter-spacing:2px;text-transform:uppercase;font-size:11px;color:var(--brand);font-weight:800}
+.top h1{font-size:24px;margin:5px 0 7px;letter-spacing:-.4px;color:var(--ink,var(--text))}
+.sub{color:var(--muted);margin:0;max-width:870px}
+.mark{background:#e6f5f4;border:1px solid #c5e3e0;color:var(--brand-ink);border-radius:999px;padding:6px 12px;font-weight:750;font-size:12px;white-space:nowrap}
+.controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:18px 0}
+.btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:10px 14px;border-radius:10px;font-weight:700}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn:hover{background:#f3f7f7}.btn.primary:hover{background:var(--brand-ink)}
+select{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--text);min-width:260px}
+.controls .push{margin-left:auto}.seg{display:inline-flex;padding:3px;background:#eef2f5;border:1px solid #e2e8ee;border-radius:9px;gap:2px}
+.seg button{background:transparent;border:0;padding:8px 12px;border-radius:7px;color:#65758e;font-size:11px;font-weight:750}
+.seg button.selected{background:#fff;color:var(--brand-ink);box-shadow:0 0 0 1px #c5e3e0 inset}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.stat{padding:14px 16px}.stat .k{color:var(--muted);font-size:12px}
+.stat .v{font-weight:850;font-size:26px;line-height:1.15;margin:8px 0 4px;font-variant-numeric:tabular-nums}
+.stat .hint{font-size:11px;color:var(--muted)}.v.red{color:var(--red)}.v.green{color:var(--green)}.v.aqua{color:var(--aqua)}.v.amber{color:var(--amber)}
+.workspace{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(340px,1fr);gap:14px}
+.panel{padding:18px;min-width:0}
+.paneltitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.paneltitle h2{font-size:16px;margin:0}.small{font-size:12px;color:var(--muted)}
+.pipeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stage{border:1px solid var(--line);border-radius:12px;background:var(--panel2);min-height:118px;padding:12px;position:relative;transition:all .3s}
+.stage.active{border-color:var(--brand);box-shadow:0 0 0 2px #0b6e6a24;background:#e6f5f4}
+.stage b{font-size:12px;color:var(--brand)}.stage strong{display:block;font-size:13px;margin:7px 0}.stage span{font-size:11px;color:var(--muted)}
+.stage .count{position:absolute;top:10px;right:10px;background:#e6f5f4;color:var(--brand-ink);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800}
+.flowhint{background:#e6f5f4;border:1px solid #c5e3e0;border-radius:10px;padding:12px 14px;color:var(--brand-ink);font-size:13px;margin-bottom:12px}
+.eventrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.eventcard{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:12px;min-height:140px}
+.eventcard h3{margin:0 0 8px;font-size:13px}.cardcontent{font-size:12px;color:var(--muted);max-height:220px;overflow:auto}
+.minirow{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #e8eef2}
+.chip{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:750;border:1px solid}
+.chip.amber{background:#fff1e8;border-color:#f0d0b8;color:#9a4a1c}.chip.red{background:#ffebec;border-color:#f9bbc1;color:#a92331}
+.chip.blue{background:#e6f5f4;border-color:#c5e3e0;color:var(--brand-ink)}.chip.green{background:#e6f7f0;border-color:#b7e4d0;color:#13765d}
+.incident{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:#fff}
+.incident.warn{border-color:#f0d0b8;background:#fff8f1}.incident.critical{border-color:#f9bbc1;background:#fff5f6}
+.incident strong{font-size:12px}.incident p{margin:4px 0 0;font-size:11px;color:var(--muted)}
+.log{max-height:280px;overflow:auto;font-size:12px}.logitem{display:grid;grid-template-columns:64px 88px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid #eef2f5}
+.logitem .time{color:var(--muted);font-variant-numeric:tabular-nums}.logitem .action{font-weight:750;color:var(--brand-ink)}
+.logitem .action.ok{color:var(--green)}.logitem .action.drop{color:var(--amber)}.logitem .action.alert{color:var(--red)}
+.empty,.muted{color:var(--muted)}.knob{margin:10px 0}.knob label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px}
+.knob input[type=range]{width:100%}.ai-box,.gov-box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;font-size:12px}
+.ai-box pre{background:#10233a;color:#e1ebf9;padding:10px;border-radius:8px;overflow:auto;font-size:11px;white-space:pre-wrap}
+table.ds{width:100%;border-collapse:collapse;font-size:11px}table.ds th,table.ds td{border-bottom:1px solid #eef2f5;padding:8px;text-align:left;vertical-align:top}
+table.ds th{color:var(--muted);background:#f8fafc}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr)}.workspace,.eventrow{grid-template-columns:1fr}.pipeline{grid-template-columns:repeat(2,1fr)}}
+html.crmp-embed,html.crmp-embed body{background:transparent}
+html.crmp-embed .layout{padding:0;max-width:none}
+html.crmp-embed .top{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:12px}
+html.crmp-embed .stat,html.crmp-embed .panel{box-shadow:none}
+
+</style>
+</head>
+
+<body>
+<div class="layout">
+<header class="top"><div><div class="eyebrow">VANTAGE · MONITOR 2.0 · DESIGN DEMO</div><h1 data-ui="brand">Alert Noise Reduction · 降噪全流程實驗室</h1><p class="sub" data-ui="sub">模擬資料驅動演示…</p></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="seg" role="group" aria-label="Language"><button type="button" id="langZh" class="selected">繁中</button><button type="button" id="langEn">EN</button></div><div class="mark" data-ui="mark">● 離線模擬 · 非生產</div></div></header>
+<section class="controls"><select id="scenario" aria-label="scenario"></select><button class="btn primary" id="next" data-ui="inject">▶ 注入下一事件</button><button class="btn" id="run" data-ui="auto">▷ 自動播放</button><button class="btn" id="reset" data-ui="reset">↻ 重置</button><button class="btn push" id="export" data-ui="export">↓ 匯出實驗 JSON</button></section>
+<section class="stats">
+<div class="stat"><div class="k" data-ui="raw">原始事件 / Raw</div><div class="v" id="sRaw">0</div><div class="hint" data-ui="rawHint">所有輸入均保留稽核</div></div>
+<div class="stat"><div class="k" data-ui="reduced">過濾或合併 / Reduced</div><div class="v aqua" id="sReduced">0</div><div class="hint" data-ui="reducedHint">品質過濾、抖動、重複</div></div>
+<div class="stat"><div class="k" data-ui="l1">獨立 L1 事件</div><div class="v red" id="sL1">0</div><div class="hint" data-ui="l1Hint">L1 真正告警數量</div></div>
+<div class="stat"><div class="k" data-ui="l2">L2 Parent Incident</div><div class="v green" id="sL2">0</div><div class="hint" data-ui="l2Hint">跨系統聚合</div></div>
+<div class="stat"><div class="k" data-ui="notify">通知數 / Notifications</div><div class="v amber" id="sNotify">0</div><div class="hint" data-ui="notifyHint">非原始事件數</div></div>
+<div class="stat"><div class="k" data-ui="ai">AI 調查完成</div><div class="v" id="sAi">0</div><div class="hint" data-ui="aiHint">包含未確認結果</div></div>
+</section>
+<div class="workspace">
+<section class="panel">
+<div class="paneltitle"><h2 data-ui="pipe">01 · 檢測鏈路</h2><span class="small" id="progress">等待注入事件</span></div>
+<div class="flowhint" id="narrative"></div>
+<div class="pipeline" id="pipeline"></div>
+<div class="eventrow">
+<div class="eventcard"><h3><span data-ui="pool">候選信號池</span> <span class="chip amber" id="poolCount">0</span></h3><div id="poolBody" class="cardcontent"><span class="muted">—</span></div></div>
+<div class="eventcard"><h3><span data-ui="incidents">Incident & 通知</span> <span class="chip blue" id="incCount">0</span></h3><div id="incBody" class="cardcontent"><span class="muted">—</span></div></div>
+</div>
+<div class="paneltitle" style="margin-top:17px"><h2 data-ui="logTitle">02 · 處理軌跡</h2></div>
+<div class="log" id="log"><div class="empty">—</div></div>
+<div class="paneltitle" style="margin-top:17px"><h2 data-ui="dataset">06 · 事件資料集</h2></div>
+<div style="overflow:auto"><table class="ds"><thead><tr><th>BU</th><th>Indicator</th><th>Value</th><th>Solo</th><th>Contrib</th><th>Dur</th><th>Status</th></tr></thead><tbody id="dataset"></tbody></table></div>
+</section>
+<aside class="panel">
+<div class="paneltitle"><h2 data-ui="params">03 · 參數實驗</h2></div>
+<div class="knob"><label><span data-ui="thr">動態閾值倍數</span><b id="tValue">1.00×</b></label><input id="threshold" type="range" min="0.8" max="1.4" step="0.05" value="1"></div>
+<div class="knob"><label><span data-ui="pers">Persistence</span><b id="pValue">8s</b></label><input id="persist" type="range" min="1" max="20" step="1" value="8"></div>
+<div class="knob"><label><span data-ui="sc">L2 分數門檻</span><b id="sValue">60分</b></label><input id="score" type="range" min="40" max="90" step="5" value="60"></div>
+<div class="knob"><label><span data-ui="win">L2 視窗</span><b id="wValue">30s</b></label><input id="window" type="range" min="10" max="60" step="5" value="30"></div>
+<label style="display:flex;gap:8px;align-items:center;font-size:12px;margin:10px 0"><input id="aiEnabled" type="checkbox" checked> <span data-ui="aiOn">啟用 AI 調查（模擬）</span></label>
+<div class="ai-box">
+<div class="paneltitle"><h2 data-ui="aiBox">04 · AI 證據調查</h2><span class="chip blue" id="aiState">WAITING</span></div>
+<p id="aiSummary" class="muted">—</p>
+<pre id="sql">-- Waiting…</pre>
+<p id="aiOutcome" class="muted">—</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+<button class="btn" id="fbTP" data-ui="fbTP">真實風險 TP</button>
+<button class="btn" id="fbFP" data-ui="fbFP">確認良性 FP</button>
+<button class="btn" id="fbUnk" data-ui="fbUnk">證據不足</button>
+</div>
+<p id="feedbackMsg" class="muted" style="margin-top:8px">—</p>
+</div>
+<div class="gov-box">
+<div class="paneltitle"><h2 data-ui="gov">05 · 人工回饋與規則治理</h2></div>
+<p id="proposal" class="muted">—</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+<button class="btn" id="backtest" data-ui="bt">歷史回測</button>
+<button class="btn" id="shadow" data-ui="sh">Shadow Run</button>
+<button class="btn primary" id="approve" data-ui="ap">BU＋RO 核准發布</button>
+<button class="btn" id="rollback" data-ui="rb">Rollback</button>
+</div>
+<p id="governance" class="muted">—</p>
+</div>
+<p class="small" style="margin-top:12px" data-ui="offline">僅示範資料</p>
+</aside>
+</div>
+</div>
+
+<script>
+
+'use strict';
+
+/* EN overlays — UI chrome + scenarios (logic keys unchanged) */
+const UI={
+zh:{
+ brand:'Alert Noise Reduction · 降噪全流程實驗室',
+ sub:'模擬資料驅動演示：資料品質 → 關鍵告警旁路 → 動態閾值 → Persistence／Hysteresis → Dedup → 跨 BU L2 → Severity → AI 證據調查 → 人工回饋及規則迭代。',
+ mark:'● 離線模擬 · 非生產',
+ inject:'▶ 注入下一事件', auto:'▷ 自動播放', pause:'Ⅱ 暫停', reset:'↻ 重置', export:'↓ 匯出實驗 JSON',
+ raw:'原始事件 / Raw', reduced:'過濾或合併 / Reduced', l1:'獨立 L1 事件', l2:'L2 Parent Incident', notify:'通知數 / Notifications', ai:'AI 調查完成',
+ rawHint:'所有輸入均保留稽核', reducedHint:'品質過濾、抖動、重複', l1Hint:'L1 真正告警數量', l2Hint:'跨系統聚合', notifyHint:'非原始事件數', aiHint:'包含未確認結果',
+ pipe:'01 · 檢測鏈路 / Processing Pipeline', wait:'等待注入事件',
+ pool:'候選信號池 / Candidate Pool', incidents:'Incident & 通知',
+ logTitle:'02 · 處理軌跡 / Decision Log', params:'03 · 參數實驗 / Knobs',
+ aiBox:'04 · AI 證據調查 / Read-only Skills', gov:'05 · 人工回饋與規則治理',
+ dataset:'06 · 事件資料集 / Event Dataset',
+ thr:'動態閾值倍數', pers:'Persistence', sc:'L2 分數門檻', win:'L2 視窗',
+ aiOn:'啟用 AI 調查（模擬）',
+ fbTP:'真實風險 TP', fbFP:'確認良性 FP', fbUnk:'證據不足',
+ bt:'歷史回測', sh:'Shadow Run', ap:'BU＋RO 核准發布', rb:'Rollback',
+ langZh:'繁中', langEn:'EN', offline:'僅示範資料 · 無正式 Monitor／AI／Lark'
+},
+en:{
+ brand:'Alert Noise Reduction · End-to-end lab',
+ sub:'Simulated demo: data quality → critical bypass → dynamic thresholds → persistence / hysteresis → dedup → cross-BU L2 → severity → AI evidence → human feedback & rule iteration.',
+ mark:'● OFFLINE SIMULATION · NOT PRODUCTION',
+ inject:'▶ Inject next event', auto:'▷ Auto-play', pause:'Ⅱ Pause', reset:'↻ Reset', export:'↓ Export lab JSON',
+ raw:'Raw events', reduced:'Filtered / merged', l1:'Independent L1', l2:'L2 parent incidents', notify:'Notifications', ai:'AI investigations',
+ rawHint:'All inputs kept for audit', reducedHint:'Quality, jitter, duplicates', l1Hint:'True L1 alert count', l2Hint:'Cross-system aggregates', notifyHint:'Not raw event count', aiHint:'Includes unconfirmed outcomes',
+ pipe:'01 · Processing pipeline', wait:'Waiting for events',
+ pool:'Candidate pool', incidents:'Incidents & notices',
+ logTitle:'02 · Decision log', params:'03 · Knobs',
+ aiBox:'04 · AI evidence (read-only skills)', gov:'05 · Human feedback & rule governance',
+ dataset:'06 · Event dataset',
+ thr:'Dynamic threshold multiplier', pers:'Persistence', sc:'L2 score gate', win:'L2 window',
+ aiOn:'Enable AI investigation (simulated)',
+ fbTP:'True risk TP', fbFP:'Confirmed benign FP', fbUnk:'Insufficient evidence',
+ bt:'Historical backtest', sh:'Shadow run', ap:'BU + RO approve publish', rb:'Rollback',
+ langZh:'繁中', langEn:'EN', offline:'Demo data only · no production Monitor / AI / Lark'
+}
+};
+const SCENARIO_EN={
+ cross:{title:'Cross-BU fault propagation (L2 aggregate)',description:'Admin DB backlog drives Pricing quote delay; different solo vs L2 contribution thresholds let three candidates form a Parent Incident early.'},
+ spike:{title:'Pricing spike (dynamic threshold + persistence)',description:'In real market volatility, brief spikes are filtered by Persistence; sustained anomalies remain. Change Persistence seconds to compare.'},
+ duplicate:{title:'Admin duplicate events (dedup)',description:'Same DB cluster reports repeatedly: keep all raw evidence, merge into one L1 incident, cut duplicate notices.'},
+ benign:{title:'Verified benign maintenance (AI triage)',description:'Approved maintenance window Admin fluctuation; AI finds change ticket + recovery. Suppress/Close only when whitelist + checks pass.'},
+ unknown:{title:'Unknown cause (must not mark FP)',description:'Quote delay is a real alert but RAG/queries find no trusted explanation; keep OPEN and escalate to humans.'},
+ critical:{title:'Critical control failure (P0 bypass)',description:'Stop-out enforcement failure: skip Persistence, L2 window and AI — notify 24/7 Risk Ops immediately.'}
+};
+const STAGE_EN=[['1','Data quality','Validate fields / timestamps / nulls'],['2','Critical bypass','P0 / P1 hard limit'],['3','Dynamic threshold','Session / symbol / market state'],['4','Persistence + hysteresis','Duration gates'],['5','Dedup merge','Rule + entity + episode'],['6','L2 correlation','Window / key / score'],['7','Severity & impact','Client impact / exposure'],['8','AI evidence','Read-only skills / RAG / tools']];
+let uiLang='zh';
+const boot=new URLSearchParams(location.search);
+if(boot.get('embed')==='1'||window.self!==window.top)document.documentElement.classList.add('crmp-embed');
+if(boot.get('lang')==='en')uiLang='en';
+function ui(k){return (UI[uiLang]||UI.zh)[k]||k}
+function ensureScenarioOptions(){const sel=document.getElementById('scenario');if(!sel||sel.options.length)return;['cross','spike','duplicate','benign','unknown','critical'].forEach(v=>{const o=document.createElement('option');o.value=v;sel.appendChild(o);});}
+function applyChrome(){ensureScenarioOptions();
+  const set=(id,t)=>{const n=document.getElementById(id);if(n)n.textContent=t};
+  document.querySelectorAll('[data-ui]').forEach(el=>{const k=el.getAttribute('data-ui');if(k)el.textContent=ui(k)});
+  document.documentElement.lang=uiLang==='zh'?'zh-Hant':'en';const z=document.getElementById('langZh'),e=document.getElementById('langEn');if(z&&e){z.classList.toggle('selected',uiLang==='zh');e.classList.toggle('selected',uiLang==='en');}
+  // scenario option titles
+  const sel=document.getElementById('scenario');
+  if(sel){
+    const map=uiLang==='en'?{
+      cross:'Scenario A · Admin + Pricing cross-BU propagation',
+      spike:'Scenario B · Pricing spike & dynamic threshold',
+      duplicate:'Scenario C · Admin duplicates & dedup',
+      benign:'Scenario D · AI-verified benign maintenance',
+      unknown:'Scenario E · Unknown anomaly (keep open)',
+      critical:'Scenario F · P0 critical control bypass'
+    }:{
+      cross:'場景 A｜Admin + Pricing 跨 BU 故障傳播',
+      spike:'場景 B｜Pricing 行情尖峰與動態閾值',
+      duplicate:'場景 C｜Admin 重複告警與去重',
+      benign:'場景 D｜AI 驗證的良性維護事件',
+      unknown:'場景 E｜AI 無法證實的未知異常',
+      critical:'場景 F｜P0 關鍵控制失效旁路'
+    };
+    [...sel.options].forEach(o=>{if(map[o.value])o.textContent=map[o.value]});
+  }
+}
+
+const $=id=>document.getElementById(id);
+const stageNames=[['1','數據質量','校驗字段 / 時間戳 / 缺失值'],['2','關鍵風險旁路','P0 / P1 Hard Limit'],['3','動態閾值','Session / Symbol / 市場狀態'],['4','持續性與滯回','Persistence + Hysteresis'],['5','重複事件合併','Rule + Entity + Episode'],['6','L2關聯聚合','窗口 / Correlation Key / Score'],['7','Severity與影響','客戶影響 / 風險暴露'],['8','AI證據調查','只讀Skills / RAG / Tools']];
+const commonSQL={admin:"SELECT event_time, service_id, p99_latency_ms, queue_lag\nFROM observability.service_metrics\nWHERE service_id = :service_id\n AND event_time BETWEEN :start AND :end\nORDER BY event_time;",pricing:"SELECT event_time, symbol, lp_id, quote_age_ms, final_quote_age_ms\nFROM pricing.quote_metrics\nWHERE symbol = :symbol\n AND event_time BETWEEN :start AND :end\nORDER BY event_time;",cross:"SELECT event_time, service_id, symbol, order_id, delay_ms\nFROM risk_readonly.cross_bu_events\nWHERE correlation_id = :correlation_id\n AND event_time BETWEEN :start AND :end;"};
+function e(id,t,bu,name,value,solo,contrib,duration,weight,key,opts={}){return {id,t,bu,name,value,solo,contrib,duration,weight,key,unit:opts.unit||'ms',quality:opts.quality!==false,critical:!!opts.critical,benign:!!opts.benign,unknown:!!opts.unknown,origin:opts.origin||'',note:opts.note||''}};
+const scenarios={
+ cross:{title:'跨BU故障傳播（L2聚合）',description:'Admin DB積壓引發Pricing報價延遲；單點與L2貢獻閾值不同，三個候選信號可提前觸發Parent Incident。',sql:'cross',events:[e('X1',0,'Admin','DB Query P99',190,240,120,18,25,'DB-A|XAUUSD'),e('X2',6,'Admin','Queue Backlog Age',280,300,140,12,24,'DB-A|XAUUSD'),e('X3',13,'Pricing','Quote Generation Delay',285,330,160,10,25,'DB-A|XAUUSD'),e('X4',20,'Pricing','Final Quote Age',440,350,150,16,38,'DB-A|XAUUSD')]},
+ spike:{title:'Pricing瞬時尖峯（動態閾值+持續性）',description:'真實市場波動中，行情短暫跳變被Persistence過濾；持續異常仍保留。可改變Persistence秒數觀察差異。',sql:'pricing',events:[e('P1',0,'Pricing','Spread Spike',5.2,4,2.5,2,21,'LP-A|EURUSD',{unit:'pips'}),e('P2',6,'Pricing','Spread Spike',4.8,4,2.5,1,21,'LP-B|EURUSD',{unit:'pips'}),e('P3',12,'Pricing','Final Quote Age',450,350,160,14,39,'LP-A|EURUSD'),e('P4',17,'Pricing','Reference Deviation',11,9,5,8,30,'LP-A|EURUSD',{unit:'pips'})]},
+ duplicate:{title:'Admin重複事件（Dedup）',description:'同一DB集羣連續上報異常：保留全部原始證據，合併至同一L1 Incident，減少重複通知。',sql:'admin',events:[e('D1',0,'Admin','DB Connection Pool Usage',97,90,80,15,30,'DB-PROD',{unit:'%'}),e('D2',3,'Admin','DB Connection Pool Usage',96,90,80,15,30,'DB-PROD',{unit:'%'}),e('D3',7,'Admin','DB Connection Pool Usage',98,90,80,15,30,'DB-PROD',{unit:'%'}),e('D4',11,'Admin','DB Connection Pool Usage',95,90,80,15,30,'DB-PROD',{unit:'%'})]},
+ benign:{title:'已驗證良性維護（AI證據分流）',description:'模擬批准的維護窗口內出現Admin服務波動，AI檢索變更單與恢復狀態；只有證據充分且符合白名單時可建議抑制。',sql:'admin',events:[e('B1',0,'Admin','Service Restart Count',3,2,1,10,20,'SERVICE-ALPHA',{unit:'次',benign:true}),e('B2',9,'Admin','API Error Rate',6,5,2,12,25,'SERVICE-ALPHA',{unit:'%',benign:true}),e('B3',14,'Admin','API P99 Latency',280,240,130,9,20,'SERVICE-ALPHA',{benign:true})]},
+ unknown:{title:'原因未知（不得歸類誤報）',description:'價格數據延遲觸發真實告警，但RAG/查詢未找到可信解釋；未知必須保留告警並轉人工調查。',sql:'pricing',events:[e('U1',0,'Pricing','Quote Age',530,350,140,12,40,'LP-C|GBPUSD',{unknown:true}),e('U2',11,'Pricing','Reference Deviation',10.8,8,4.5,9,28,'LP-C|GBPUSD',{unit:'pips',unknown:true})]},
+ critical:{title:'關鍵控制失效（P0立即旁路）',description:'模擬Stop-out控制失效：不等待Persistence、L2窗口或AI分析，立即通知24/7 Risk Ops。',sql:'admin',events:[e('C1',0,'Admin','Stop-out Enforcement Failure',1,0,0,0,100,'RISK-ENGINE',{unit:'次',critical:true}),e('C2',3,'Admin','Margin Engine Availability',0,1,1,0,100,'RISK-ENGINE',{unit:'狀態',critical:true}),e('C3',10,'Admin','Invalid Timestamp Event',99,100,60,12,5,'RISK-ENGINE',{quality:false})]}
+};
+let state,timer=null;const r=()=>({scenario:$('scenario').value,events:scenarios[$('scenario').value].events,index:0,raw:0,reduced:0,solo:[],signals:[],incidents:[],notifications:0,ai:0,log:[],stageCount:Array(8).fill(0),lastStage:-1,proposals:[],feedback:[],version:'v1.0',backtest:false,shadow:false,approved:false});
+const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+const cfg=()=>({threshold:+$('threshold').value,persist:+$('persist').value,score:+$('score').value,window:+$('window').value,ai:$('aiEnabled').checked});
+function log(action,msg,t,typ=''){state.log.unshift({action,msg,t,typ});}
+function tick(stage){state.stageCount[stage]++;state.lastStage=stage;}
+function narrative(msg){$('narrative').textContent=msg;}
+function analyze(ev,incident){if(!cfg().ai)return;tick(7);state.ai++;const src=scenarios[state.scenario];$('aiState').textContent='ANALYSIS READY';$('aiSummary').textContent=`Skill：${src.sql==='cross'?'cross_bu_dependency_trace':src.sql==='admin'?'admin_incident_triage':'pricing_quote_rca'} · Read-only · ${ev.id}`;$('sql').textContent=(commonSQL[src.sql]||commonSQL.cross)+`\n\n-- BIND: ${esc(ev.key)} | t=${ev.t}s\n-- SIMULATED. NOT EXECUTED.`;
+let finding='AI提示：發生指標異常，建議核實上下遊時間線及影響範圍。';if(ev.benign)finding='模擬證據：批准變更單 CHG-4821、維護窗口匹配、服務恢復驗證。僅在事先批准的低風險白名單和逐單檢查通過時，建議Suppress / Close；否則人工確認。';if(ev.unknown)finding='AI結論：無充分證據證明良性或共同根因，保持OPEN並交由值班人員調查；不得自動標記FP。';if(ev.critical)finding='P0控制失效：先通知及人工接管；AI只可輔助讀取日誌，不得延遲告警或自行修改關鍵控制。';$('aiOutcome').textContent=finding;log('AI調查',`${ev.id}：${finding}`,ev.t,'ok');}
+function evaluate(ev){state.raw++;let severity='observed',outcome='',conf=cfg();const expired=state.signals.filter(x=>ev.t-x.t>conf.window&&!state.incidents.some(y=>y.children.includes(x.id)));if(expired.length)log('窗口到期',`${expired.length}條未形成L2的候選釋放：已觸發單點L1照常保留，其餘僅歸檔觀測`,ev.t,'drop');state.signals=state.signals.filter(x=>ev.t-x.t<=conf.window||state.incidents.some(y=>y.children.includes(x.id)));tick(0);log('接入',`${ev.bu} / ${ev.name} = ${ev.value}${ev.unit} · key=${ev.key}`,ev.t);if(!ev.quality){state.reduced++;outcome='數據質量過濾：缺失或非法時間戳；保留審計，不觸發業務告警';log('質量過濾',outcome,ev.t,'drop');narrative(outcome);return outcome;}tick(1);if(ev.critical){const existing=state.incidents.find(x=>x.key===ev.key&&x.critical);if(existing){existing.children.push(ev.id);log('P0更新','追加證據到關鍵事故 '+existing.id,ev.t,'alert');}else{state.incidents.push({id:'INC-P0-001',key:ev.key,kind:'P0',critical:true,children:[ev.id],score:100,desc:'關鍵Hard Limit失效',t:ev.t});state.notifications++;log('立即通知','P0 → Risk Ops on-call + 管理層；不等待AI、Persistence或L2窗口',ev.t,'alert');}analyze(ev);outcome='P0關鍵Hard Limit旁路：立即告警和人工接管';narrative(outcome);return outcome;}
+tick(2);const soloHit=ev.value>=ev.solo*conf.threshold,contribHit=ev.value>=ev.contrib*conf.threshold;log('雙閾值',`獨立閾值 ${+(ev.solo*conf.threshold).toFixed(2)}${ev.unit} = ${soloHit?'命中':'未命中'}；L2貢獻閾值 ${+(ev.contrib*conf.threshold).toFixed(2)}${ev.unit} = ${contribHit?'命中':'未命中'}`,ev.t);if(!soloHit&&!contribHit){state.reduced++;outcome='動態閾值未命中，記錄正常觀測，不報警';log('動態基線',outcome,ev.t,'drop');narrative(outcome);return outcome;}
+tick(3);let durable=ev.duration>=conf.persist;if(soloHit&&!durable){state.reduced++;log('Persistence',`單點異常持續${ev.duration}s < ${conf.persist}s，不觸發獨立L1`,ev.t,'drop');}if(soloHit&&durable){tick(4);const duplicate=state.solo.find(x=>x.name===ev.name&&x.key===ev.key&&ev.t-x.t<=conf.window);if(duplicate){duplicate.count++;duplicate.last=ev.t;state.reduced++;log('Dedup',`命中 ${duplicate.id}，重複次數=${duplicate.count}；不再次通知`,ev.t,'drop');}else{const item={id:'L1-'+ev.id,name:ev.name,key:ev.key,bu:ev.bu,t:ev.t,last:ev.t,count:1,value:ev.value};state.solo.push(item);state.notifications++;log('L1告警',`${item.id} 獨立觸發 → 已通知Owner`,ev.t,'alert');analyze(ev);}}
+if(contribHit){tick(5);state.signals.push({id:ev.id,name:ev.name,key:ev.key,bu:ev.bu,weight:ev.weight,t:ev.t,solo:soloHit&&durable});let matching=state.signals.filter(x=>x.key===ev.key&&ev.t-x.t<=conf.window);let unique=[...new Map(matching.map(x=>[x.name,x])).values()];let score=Math.min(100,unique.reduce((s,x)=>s+x.weight,0));log('L2候選',`${unique.length}種不同指標；動態評分 ${score}/${conf.score}；窗口${conf.window}s`,ev.t);let inc=state.incidents.find(x=>x.key===ev.key&&!x.critical);if(inc){const old=inc.score;inc.score=Math.max(old,score);inc.children=[...new Set([...inc.children,...unique.map(x=>x.id)])];inc.kind=inc.score>=85?'P1':'P2';log('L2更新',`${inc.id} 分數 ${old}→${inc.score}；補充 ${ev.id} 證據`,ev.t,'ok');}else if(unique.length>=2&&score>=conf.score){tick(6);inc={id:'INC-L2-'+String(state.incidents.length+1).padStart(3,'0'),key:ev.key,kind:score>=85?'P1':'P2',score,children:unique.map(x=>x.id),t:ev.t,desc:'跨指標關聯風險（根因待證實）'};state.incidents.push(inc);state.notifications++;log('L2生成',`${inc.id}：${unique.length}個不同L1貢獻信號，${score}分，自動指派Risk Ops。`,ev.t,'ok');analyze(ev,inc);}else{log('等待關聯',`尚未形成L2；相同關聯鍵繼續等待，窗口內單點L1仍獨立處理`,ev.t);}outcome=inc?`${inc.id} 關聯成功：${score}分；單點與Parent保留證據關係`:`L2候選${score}分，尚未達到${conf.score}分；繼續等待`;}
+else{outcome=durable?'僅獨立L1（未達到L2貢獻閾值）':'未形成獨立告警';}
+const next=state.events[state.index];if(!next||next.t-ev.t>conf.window){const candidates=state.signals.filter(x=>!state.incidents.some(y=>y.children.includes(x.id)));if(candidates.length){log('窗口到期',`未形成L2的${candidates.length}條候選解散：獨立L1保留，低閾值觀測歸檔`,ev.t+conf.window,'drop');}}
+narrative(outcome);return outcome;}
+function render(){const n=state.events.length;const scTitle=uiLang==='en'?(SCENARIO_EN[state.scenario]?.title||scenarios[state.scenario].title):scenarios[state.scenario].title;$('progress').textContent=uiLang==='en'?`${state.index} / ${n} events processed · ${scTitle}`:`${state.index} / ${n} 條事件已處理 · ${scTitle}`;$('sRaw').textContent=state.raw;$('sReduced').textContent=state.reduced;$('sL1').textContent=state.solo.length;$('sL2').textContent=state.incidents.filter(x=>!x.critical).length;$('sNotify').textContent=state.notifications;$('sAi').textContent=state.ai;$('next').disabled=state.index>=n;
+const stages=(uiLang==='en'?STAGE_EN:stageNames);$('pipeline').innerHTML=stages.map(([num,title,desc],i)=>`<div class="stage ${state.lastStage===i?'active':''}"><b>STEP ${num}</b><span class="count">${state.stageCount[i]}</span><strong>${title}</strong><span>${desc}</span></div>`).join('');$('poolCount').textContent=state.signals.length+' 條';$('poolBody').innerHTML=state.signals.length?state.signals.map(x=>`<div class="minirow"><span>${esc(x.bu)} · ${esc(x.name)}</span><span class="chip ${x.solo?'red':'amber'}">+${x.weight}分</span></div>`).join(''):'<span class="muted">無L2候選信號。</span>';$('incCount').textContent=state.incidents.length+' 個';$('incBody').innerHTML=state.incidents.length?state.incidents.map(x=>`<div class="incident ${x.critical?'critical':x.kind==='P1'?'warn':''}"><strong>${esc(x.id)} · ${x.kind} · ${x.score}分</strong><p>${esc(x.desc)} · ${x.children.length}條子證據</p><p>Owner：Risk Ops On-call　狀態：OPEN</p></div>`).join(''):'<span class="muted">暫無Incident。</span>';$('log').innerHTML=state.log.length?state.log.map(x=>`<div class="logitem"><span class="time">T+${x.t}s</span><span class="action ${x.typ}">${esc(x.action)}</span><span>${esc(x.msg)}</span></div>`).join(''):'<div class="empty">日誌將隨事件注入逐行顯示。</div>';
+$('dataset').innerHTML=state.events.map((ev,i)=>{let solo=ev.value>=ev.solo*cfg().threshold;let contrib=ev.value>=ev.contrib*cfg().threshold;let s=i>=state.index?'待處理':ev.critical?'P0立即通知':!ev.quality?'數據過濾':solo&&ev.duration>=cfg().persist?'獨立L1'+(contrib?' + L2候選':''):contrib?'僅L2候選':'未告警';let cls=i>=state.index?'':' '+(ev.critical?'red':solo&&ev.duration>=cfg().persist?'red':contrib?'amber':'green');return `<tr><td>${esc(ev.bu)}</td><td>${esc(ev.name)}<br><span class="muted">${esc(ev.id)} · ${esc(ev.key)}</span></td><td><b>${ev.value}${esc(ev.unit)}</b></td><td>${ev.solo}${esc(ev.unit)}</td><td>${ev.contrib}${esc(ev.unit)}</td><td>${ev.duration}s</td><td><span class="chip${cls}">${s}</span></td></tr>`}).join('');}
+function stop(){if(timer){clearInterval(timer);timer=null;$('run').textContent=ui('auto');}}function next(){if(state.index>=state.events.length){stop();return;}const ev=state.events[state.index];state.index++;evaluate(ev);render();if(state.index>=state.events.length){const remainder=state.signals.filter(x=>!state.incidents.some(y=>y.children.includes(x.id)));if(remainder.length){log('候選窗口收口',`${remainder.length}條L2候選在模擬窗口結束後釋放；獨立L1不受影響。`,ev.t+cfg().window,'drop');state.signals=state.signals.filter(x=>state.incidents.some(y=>y.children.includes(x.id)));render();}stop();}}
+function reset(){stop();state=r();$('aiState').textContent='WAITING';$('aiSummary').textContent='L2形成或獨立L1告警出現後，AI根據批准Runbook讀取證據並產生分流建議。';$('aiOutcome').textContent='尚未調用Skill。';$('sql').textContent='-- Waiting for alert...\nSELECT * FROM approved_metrics LIMIT 0;';$('feedbackMsg').textContent='人工反饋將計入閾值優化樣本，不會即時改動生產規則。';$('proposal').textContent='暫無反饋。演示可點擊AI調查區的人工分類按鈕。';$('governance').textContent='規則版本：v1.0 · 未有待發布變更';const scDesc=uiLang==='en'?(SCENARIO_EN[state.scenario]?.description||scenarios[state.scenario].description):scenarios[state.scenario].description;narrative(scDesc);applyChrome();render();}
+$('scenario').addEventListener('change',reset);$('next').onclick=next;$('reset').onclick=reset;$('run').onclick=()=>{if(timer){stop();return;}if(state.index>=state.events.length)reset();$('run').textContent=ui('pause');timer=setInterval(next,850);};for(const [a,b,f] of [['threshold','tValue',v=>Number(v).toFixed(2)+'×'],['persist','pValue',v=>v+'s'],['score','sValue',v=>v+'分'],['window','wValue',v=>v+'s']]){$(a).addEventListener('input',()=>{$(b).textContent=f($(a).value);$('progress').textContent=uiLang==='en'?'Knobs changed — reset to replay all events.':'參數已改變；請重置以重放全部事件。';});}
+function feedback(type){const labels={TP:'真實風險',FP:'確認良性',UNKNOWN:'證據不足'};state.feedback.push({type,scenario:state.scenario,at:'simulation',reviewer:'Risk Ops (demo)'});$('feedbackMsg').textContent=`已記錄人工反饋「${labels[type]}」；將用於離線評估，不直接關閉事故或修改生產規則。`;$('proposal').innerHTML=`<b>候選優化建議 · Draft</b><br>人工標記：${labels[type]}。建議重新評估Persistence、動態閾值及L2權重；必須比較歷史TP/FP/FN、Detection Delay與關鍵覆蓋率。` ;state.proposals.push({type,status:'DRAFT'});state.backtest=false;state.shadow=false;state.approved=false;log('人工反饋',`${labels[type]} / 待離線回測`,state.events[Math.max(0,state.index-1)].t,'ok');render();} $('fbTP').onclick=()=>feedback('TP');$('fbFP').onclick=()=>feedback('FP');$('fbUnk').onclick=()=>feedback('UNKNOWN');
+$('backtest').onclick=()=>{if(!state.proposals.length){$('governance').textContent='請先選擇人工反饋，生成優化提案。';return;}state.backtest=true;state.shadow=false;state.approved=false;$('governance').textContent='歷史回測（演示）完成：等待BU覆核真實樣本與漏報風險；此處不聲稱達到任何真實KPI。';log('回測','離線回放任務完成（模擬），需人工檢查TP/FP/FN和檢測延遲',state.index,'ok');render();};$('shadow').onclick=()=>{if(!state.backtest){$('governance').textContent='請先運行歷史回測。';return;}state.shadow=true;$('governance').textContent='Shadow Run（演示）完成：僅計算不通知、不自動改動生產；等待BU及Risk Ops審批。';log('Shadow','完成模擬影子運行，現行生產版本保持不變',state.index,'ok');render();};$('approve').onclick=()=>{if(!state.shadow){$('governance').textContent='審批前需先完成回測和Shadow Run。';return;}const yes=window.confirm('模擬確認：BU SME 與 Risk Ops 均已審批？本操作僅切換演示版本，不連接生產。');if(!yes)return;state.approved=true;state.version='v1.1';$('governance').textContent='演示版本 v1.1 已發布；審批與Rollback信息已記錄（無生產操作）。';log('規則發布','BU + Risk Ops審批（模擬）→ R&D發布v1.1',state.index,'ok');render();};$('rollback').onclick=()=>{state.version='v1.0';state.approved=false;$('governance').textContent='已模擬回滾至 v1.0，規則配置恢復到批准的舊版本。';log('Rollback','回退舊規則 v1.0，記錄操作人、時間和原因',state.index,'alert');render();};
+$('export').onclick=()=>{const out={demo:'Monitor 2.0 Noise Reduction E2E',simulation:true,config:cfg(),scenario:state.scenario,raw:state.raw,filteredOrMerged:state.reduced,independentL1:state.solo,l2AndCriticalIncidents:state.incidents,logs:[...state.log].reverse(),humanFeedback:state.feedback,ruleVersion:state.version};const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Monitor2_Noise_Reduction_'+state.scenario+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);};document.getElementById('langZh')?.addEventListener('click',()=>{uiLang='zh';applyChrome();reset();});document.getElementById('langEn')?.addEventListener('click',()=>{uiLang='en';applyChrome();reset();});applyChrome();reset();
+
+</script>
+</body>
+</html>

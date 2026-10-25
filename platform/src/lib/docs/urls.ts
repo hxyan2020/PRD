@@ -51,6 +51,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
     permission: "monitor.read",
   },
   {
+    category: "Risk",
+    title: "Noise Reduction Lab",
+    path: "/admin/noise-reduction",
+    description:
+      "Bilingual Monitor 2.0 noise-reduction end-to-end lab: six scenarios (cross-BU L2, spike, dedup, benign, unknown, P0 bypass), knobs for threshold / persistence / L2 score / window, AI evidence + human feedback → backtest / shadow / approve — demo data only",
+    permission: "monitor.read",
+  },
+  {
     category: "Docs",
     title: "Risk discovery notebook (HTML)",
     path: "https://hxyan2020.github.io/PRD/risk-discovery/",

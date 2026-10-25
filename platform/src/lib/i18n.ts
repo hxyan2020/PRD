@@ -15,6 +15,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
   "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
   "/admin/ai-incident": { en: "AI Incident Workspace", "zh-Hant": "AI 事故工作台" },
+  "/admin/noise-reduction": { en: "Noise Reduction Lab", "zh-Hant": "降噪實驗室" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
   "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
@@ -107,6 +108,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "Bilingual Monitor 2.0 AI report prototype — Web + Lark, Static/Dynamic modes, E-01…E-08 evidence, nested feedback. Demo INC-1028 (LP-A · XAUUSD) with simulated data only.",
       "zh-Hant": "雙語 Monitor 2.0 AI 事故報告原型 — 網頁＋Lark、靜態／動態模式、E-01…E-08 證據、巢狀回饋。示範 INC-1028（LP-A · XAUUSD），僅模擬資料。",
+    },
+  },
+  "noise-reduction": {
+    title: { en: "Noise Reduction Lab", "zh-Hant": "降噪實驗室" },
+    subtitle: {
+      en: "Bilingual Monitor 2.0 noise-reduction end-to-end lab — six scenarios, pipeline knobs, AI evidence + human feedback → backtest / shadow / approve. Demo data only.",
+      "zh-Hant": "雙語 Monitor 2.0 降噪端到端實驗室 — 六場景、管線旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准。僅示範資料。",
     },
   },
   detectors: {

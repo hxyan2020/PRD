@@ -415,6 +415,18 @@ flowchart LR
 
 **Acceptance:** Page and nav entry present; Static blocks ACK/assign/escalate; Dynamic + EN/zh-Hant readable; INC-1028 Messenger deep link lands on `/admin/ai-incident`. Operator: User Guide §14C · Build: TSD §11.8 · UAT-49.
 
+### 6.10 Noise Reduction Lab — bilingual Monitor 2.0 end-to-end demo
+
+**Surface:** `/admin/noise-reduction` hosts the interactive **Monitor2_Noise_Reduction_End_to_End_Demo** HTML lab with **demo data only** (no production Monitor / AI / Lark). Six scenarios (cross-BU L2, spike, dedup, benign, unknown, P0 bypass), eight-stage pipeline, knobs (threshold / persistence / L2 score / window), AI evidence + human feedback → backtest / shadow / approve / rollback, and JSON export. Deep link id `noise_reduction` is available from Monitor surfaces.
+
+| Layer | Detail |
+|---|---|
+| **Data** | Embedded demo pack in `public/prototypes/monitor2-noise-reduction.html` |
+| **Flow** | Pick scenario → inject / auto-play → tune knobs → AI feedback → governance → export |
+| **Surface** | `NoiseReductionLab` · iframe / full-page · `monitor_links.noise_reduction` |
+
+**Acceptance:** Page and nav entry present; P0 bypass skips Persistence / L2 / AI wait; unknown stays OPEN (never auto-FP); EN/zh-Hant readable. Operator: User Guide §14D · Build: TSD §11.9 · UAT-50.
+
 ---
 
 ## 7. Non-functional requirements
@@ -546,5 +558,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-46). The pack
 | 1.15 | 2026-10-14 | FR-40 indicator aggregation linear flow (§6.8) on `/admin/indicator-aggregation` |
 | 1.16 | 2026-10-18 | FR-39 AI_REPORT Monitor 2.0 surfaces + accurate severity confirm; FR-40 force-aggregate + L2 severity = max(L1)×weight; Monitor 2.0 threshold adjustment full-flow demo |
 | 1.17 | 2026-10-25 | §6.9 AI Incident Workspace `/admin/ai-incident` bilingual INC-1028 prototype (Static/Dynamic · E-01…E-08 · nested feedback); Messenger deep link; UAT-49 |
+| 1.18 | 2026-10-25 | §6.10 Noise Reduction Lab `/admin/noise-reduction` bilingual end-to-end demo (six scenarios · knobs · AI feedback); UAT-50 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

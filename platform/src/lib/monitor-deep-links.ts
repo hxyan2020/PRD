@@ -56,5 +56,11 @@ export function monitor2DeepLinks(monitorId?: string | null): MonitorDeepLink[] 
     en: "AI Incident Workspace (INC-1028 demo)",
     zh: "AI 事故工作台（INC-1028 演示）",
   });
+  links.push({
+    id: "noise_reduction",
+    href: "/admin/noise-reduction",
+    en: "Noise Reduction Lab (E2E demo)",
+    zh: "降噪實驗室（端到端演示）",
+  });
   return links;
 }
