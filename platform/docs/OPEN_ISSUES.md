@@ -183,6 +183,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - [x] Audit mutation coverage — every admin/Lark/messenger path + `LOGIN_FAILED` (`test:audit`)  
 - [x] Indicator Aggregation linear flow (`/admin/indicator-aggregation`, FR-40 / UAT-48) — membership → wait → RO single or aggregate  
 - [x] AI Incident Workspace (`/admin/ai-incident`, INC-1028 bilingual prototype / UAT-49) — Static/Dynamic · E-01…E-08 · Messenger deep link  
+- [x] Noise Reduction Lab (`/admin/noise-reduction`, bilingual E2E demo / UAT-50) — six scenarios · knobs · AI feedback  
 - [ ] Formal UAT sign-off (OI-09)  
 
 ---
@@ -268,5 +269,6 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 | 1.4 | 2026-10-12 | OI-14 AI Performance board + audit mutation coverage shipped; OI-12 coverage guards |
 | 1.5 | 2026-10-14 | OI-14 Indicator Aggregation linear flow (FR-40 / UAT-48) shipped |
 | 1.6 | 2026-10-25 | OI-14 AI Incident Workspace (`/admin/ai-incident`, INC-1028 / UAT-49) shipped |
+| 1.7 | 2026-10-25 | OI-14 Noise Reduction Lab (`/admin/noise-reduction` / UAT-50) shipped |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)

@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-25T09:30:00.000Z | Noise Reduction Lab `/admin/noise-reduction`: host Monitor2_Noise_Reduction_End_to_End_Demo HTML (six scenarios · knobs · AI feedback), EN+zh-Hant UG §14D / PRD §6.10 / TSD §11.9 / UAT-50 · Progress/Roadmap/Open Issues BAU; Pages branch `cursor/noise-reduction-a935` |
 | 2026-10-25T08:40:00.000Z | AI Incident Workspace desk fit: embed mode hides nested Monitor sidebar; Traditional Chinese copy; sync lang from CRMP shell; flat panel chrome |
 | 2026-10-25T08:25:00.000Z | AI Incident Workspace visual parity: prototype CSS uses CRMP Vantage teal/accent tokens + Source Sans 3; host chrome matches panel/btn patterns |
 | 2026-10-25T08:10:00.000Z | Docs parity for AI Incident Workspace: PRD §6.9 · UG §14C/§9.2 · TSD §11.8 · UAT-49 · Progress/Roadmap/Open Issues BAU; EN+zh-Hant |

@@ -1,6 +1,6 @@
 # CRMP Progress Tracker
 
-**Document ID:** CRMP-PT-001 · **Version:** 1.7 · **Interactive board:** [/admin/docs/progress](/admin/docs/progress) · **Open issues:** [/admin/docs/open-issues](/admin/docs/open-issues)
+**Document ID:** CRMP-PT-001 · **Version:** 1.8 · **Interactive board:** [/admin/docs/progress](/admin/docs/progress) · **Open issues:** [/admin/docs/open-issues](/admin/docs/open-issues)
 
 Maps **every open issue** onto a tracker:
 
@@ -13,7 +13,7 @@ Each column header labels the **responsible BU**. Cell colour = status: **Planne
 
 Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 18 issues). Filter by status and BU on the board.
 
-Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back + mutation coverage for every admin/Lark path), **AI Performance** read-only eval board, editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, severity formula loop (FR-39: AI_REPORT **accurate confirm** + Monitor 2.0 surfaces) + **Indicator Aggregation** linear flow (`/admin/indicator-aggregation`, FR-40: force-aggregate `FORCE_AGGREGATED` + L2 severity = max(L1)×weight + homepage L1→L2 demo), **AI Incident Workspace** (`/admin/ai-incident`: bilingual INC-1028 Static/Dynamic HTML prototype + Messenger seed / UAT-49), Monitor 2.0 **threshold adjustment full-flow** demo, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
+Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back + mutation coverage for every admin/Lark path), **AI Performance** read-only eval board, editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, severity formula loop (FR-39: AI_REPORT **accurate confirm** + Monitor 2.0 surfaces) + **Indicator Aggregation** linear flow (`/admin/indicator-aggregation`, FR-40: force-aggregate `FORCE_AGGREGATED` + L2 severity = max(L1)×weight + homepage L1→L2 demo), **AI Incident Workspace** (`/admin/ai-incident`: bilingual INC-1028 Static/Dynamic HTML prototype + Messenger seed / UAT-49), **Noise Reduction Lab** (`/admin/noise-reduction`: bilingual six-scenario end-to-end HTML lab / UAT-50), Monitor 2.0 **threshold adjustment full-flow** demo, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
 
 ### Issue → BU → status → window
 
@@ -83,5 +83,6 @@ gantt
 | 1.5 | 2026-10-12 | BAU: AI Performance board + audit mutation coverage |
 | 1.6 | 2026-10-18 | BAU: FR-39 Monitor 2.0 surfaces + `ai_accurate`; FR-40 force-aggregate + L2 severity; threshold full-flow demo |
 | 1.7 | 2026-10-25 | BAU: AI Incident Workspace `/admin/ai-incident` (INC-1028 bilingual prototype + UAT-49) |
+| 1.8 | 2026-10-25 | BAU: Noise Reduction Lab `/admin/noise-reduction` (bilingual E2E demo + UAT-50) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [PROGRESS.zh-Hant.md](./PROGRESS.zh-Hant.md)

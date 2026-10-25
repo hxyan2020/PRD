@@ -494,7 +494,7 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 |---|---|
 | RM-01 | [示範 Messenger](/admin/messenger) · [Lark](/admin/lark) |
 | RM-02 | [Monitor 2.0](/admin/monitor-2) · [即時警報與追蹤](/admin/alerts) |
-| RM-03／RM-04 | [即時警報與追蹤](/admin/alerts) · [AI 管理](/admin/ai-admin) · [AI 績效](/admin/ai-performance) · [指標聚合](/admin/indicator-aggregation) · [AI 事故工作台](/admin/ai-incident) |
+| RM-03／RM-04 | [即時警報與追蹤](/admin/alerts) · [AI 管理](/admin/ai-admin) · [AI 績效](/admin/ai-performance) · [指標聚合](/admin/indicator-aggregation) · [AI 事故工作台](/admin/ai-incident) · [降噪實驗室](/admin/noise-reduction) |
 | RM-05 | [使用者](/admin/users) · [角色](/admin/roles) |
 | RM-09 | [人工干預](/admin/interventions) · [AI 存取安全](/admin/security/ai-access) |
 | RM-11 | [每日績效](/admin/dashboard) · [風險日誌](/admin/risk-log) |
@@ -513,5 +513,6 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 | 1.9 | 2026-10-12 | AI 績效評估看板＋稽核變更覆蓋列為日常；RM-03 連結 |
 | 2.0 | 2026-10-14 | 指標聚合線型流程（FR-40）列為日常；`/admin/indicator-aggregation` |
 | 2.1 | 2026-10-25 | AI 事故工作台 `/admin/ai-incident`（INC-1028 雙語原型）列為日常；UAT-49 |
+| 2.2 | 2026-10-25 | 降噪實驗室 `/admin/noise-reduction`（雙語端到端演示）列為日常；UAT-50 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

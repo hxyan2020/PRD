@@ -831,6 +831,20 @@ flowchart LR
 
 ---
 
+## 14D. 降噪實驗室 — `/admin/noise-reduction`
+
+**這頁是什麼。** 將雙語 **Monitor 2.0 降噪**端到端互動實驗室（`Monitor2_Noise_Reduction_End_to_End_Demo`）掛進 CRMP，**僅示範資料**。
+
+**會看到什麼。** 工具列 繁中 ↔ EN；六場景（跨 BU L2、報價尖峰、Admin 去重、已驗證良性、未知不得標誤報、P0 關鍵旁路）；八階管線（品質 → 關鍵旁路 → 動態閾值 → Persistence → 去重 → L2 → 嚴重度 → AI）；閾值／Persistence／L2 分數／視窗旋鈕；AI 證據＋人工 TP／FP／UNKNOWN 回饋 → 回測／Shadow／BU＋RO 核准／回滾；JSON 匯出。
+
+**要點什麼。** 開內嵌實驗室（或全頁）。跑場景 A 逐步或播放。切場景 F 證明 P0 跳過 Persistence／L2 視窗／AI。切場景 E 證明未知維持 OPEN。切換語言；調旋鈕後重置重放。
+
+**怎樣算正常。** P0 立即通知；未知永不自動標誤報；英與繁中介面＋場景標題可讀；匯出下載 `Monitor2_Noise_Reduction_<scenario>.json`。無正式 Monitor／AI／Lark 呼叫。
+
+產品：[PRD §6.10](/admin/docs/prd)。實作：[TSD §11.9](/admin/docs/tsd)。UAT：UAT-50。
+
+---
+
 ## 15. 文件控制
 
 | 版次 | 日期 | 說明 |
@@ -852,5 +866,6 @@ flowchart LR
 | 1.17 | 2026-10-14 | §14B 指標聚合線型流程（FR-40） |
 | 1.18 | 2026-10-18 | §7.4 門檻全流程演示；§8.2A／§9.2 準確嚴重度＋Monitor 2.0 介面；§14B 強制聚合＋L2 嚴重度 |
 | 1.19 | 2026-10-25 | §14C AI 事故工作台 — 雙語 INC-1028 HTML 原型＋Messenger 種子；§9.2 INC-1028 深鏈 |
+| 1.20 | 2026-10-25 | §14D 降噪實驗室 — 雙語端到端 HTML 實驗室＋UAT-50 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

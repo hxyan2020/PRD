@@ -9,11 +9,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **9 hours** (49 cases).
+- Full pack suggested window ≈ **9 hours** (50 cases).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, P0–P3 severity re-recommend with reason codes, recommended controls, sync, closed-thread persistence, INC-1028 AI Incident Workspace deep link) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Unknown Risk Discovery, Indicator Aggregation (linear membership → wait → RO single/aggregate), AI Incident Workspace (bilingual INC-1028 Static/Dynamic HTML prototype), Realtime Alert & Tracker, Risk Domains, AI Admin, AI Performance (read-only eval incl. weekly severity formula + monthly P0–P3→weights pack), Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (severity formula loop · dimensions × coefficients · ESC-DEFAULT · monthly severity weight pack), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back; every mutating admin/Lark path + failed login), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, P0–P3 severity re-recommend with reason codes, recommended controls, sync, closed-thread persistence, INC-1028 AI Incident Workspace deep link) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Unknown Risk Discovery, Indicator Aggregation (linear membership → wait → RO single/aggregate), AI Incident Workspace (bilingual INC-1028 Static/Dynamic HTML prototype), Noise Reduction Lab (bilingual end-to-end six-scenario demo), Realtime Alert & Tracker, Risk Domains, AI Admin, AI Performance (read-only eval incl. weekly severity formula + monthly P0–P3→weights pack), Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (severity formula loop · dimensions × coefficients · ESC-DEFAULT · monthly severity weight pack), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back; every mutating admin/Lark path + failed login), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -77,7 +77,8 @@ graph TD
 | 46 | UAT-47 | 496m | 12m | High | Ops + Risk Owner + AI | UAT-45; Escalation formula loop seeded | Severity formula loop: ops reason codes → weekly AI → RO approve | Demo Messenger, Escalation Routes, AI Admin, AI Performance |
 | 47 | UAT-48 | 508m | 12m | High | Risk + AI + Ops | UAT-02; Indicator Aggregation seeded | Indicator aggregation: membership → wait → RO single / aggregate / force-aggregate + L2 severity | Indicator Aggregation, AI Skills, RAG, Admin Home |
 | 48 | UAT-49 | 520m | 12m | High | Risk + AI | UAT-33; INC-1028 Messenger seed | AI Incident Workspace — bilingual INC-1028 Static/Dynamic prototype | AI Incident Workspace, Demo Messenger |
-| 49 | UAT-46 | 532m | 15m | Critical | Risk Owner | UAT-01–45, UAT-47, UAT-48 and UAT-49 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
+| 49 | UAT-50 | 532m | 12m | High | Risk + AI | UAT-02; Noise Reduction Lab seed HTML | Noise Reduction Lab — bilingual end-to-end demo | Noise Reduction Lab, Monitor 2.0, Indicator Aggregation |
+| 50 | UAT-46 | 544m | 15m | Critical | Risk Owner | UAT-01–45, UAT-47, UAT-48, UAT-49 and UAT-50 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
 
@@ -931,9 +932,27 @@ graph TD
 **Pass:** Workspace + nav present; Static refuses ops; Dynamic + bilingual readable; Messenger deep link reaches the page; no production AI/Lark required.
 **Evidence:** Screenshots of Static block, Dynamic tool result, EN/zh toggle, Messenger INC-1028 surface → workspace.
 
+### UAT-50 — Noise Reduction Lab — bilingual end-to-end demo
+
+- **Severity:** High · **BU:** Risk + AI · **Depends:** UAT-02; Noise Reduction Lab seed HTML · **Window:** T+532m / 12m
+- **Covers:** Noise Reduction Lab, Monitor 2.0, Indicator Aggregation
+- **Why:** Ops need an interactive Monitor 2.0 noise-reduction lab (quality → bypass → threshold → persistence → dedup → L2 → AI → feedback) with EN/zh-Hant and demo data only.
+- **Goal:** Open `/admin/noise-reduction`, run at least two scenarios (incl. P0 bypass and unknown-must-not-FP), prove knobs + bilingual chrome, and export a demo JSON.
+
+**Steps**
+
+1. Open **Noise Reduction Lab** from left nav (Monitor & risk). Confirm toolbar 繁中 ↔ EN, six scenarios, embedded prototype (`noise-reduction-iframe`).
+2. Run **Scenario A** (cross-BU L2) step-by-step or Play. Confirm pipeline stages light up and L2 / notifications counters move.
+3. Switch to **Scenario F** (P0 critical bypass). Confirm Persistence / L2 window / AI are skipped and Risk Ops is notified immediately.
+4. Switch to **Scenario E** (unknown). Confirm outcome stays OPEN and is not auto-marked false positive. Toggle EN ↔ 繁中 — chrome and scenario copy remain readable.
+5. Adjust a knob (threshold / persistence / L2 score / window), re-run; optionally **Export** demo JSON. Open full-page demo or deep link from Monitor surfaces if listed.
+
+**Pass:** Lab + nav present; P0 bypass skips wait stages; unknown stays OPEN; EN/zh-Hant readable; no production Monitor/AI/Lark required.
+**Evidence:** Screenshots of cross-BU L2, P0 bypass, unknown OPEN, EN/zh toggle, optional export filename.
+
 ### UAT-46 — Risk Owner exit sign-off
 
-- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–45, UAT-47, UAT-48 and UAT-49 results recorded · **Window:** T+532m / 15m
+- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–45, UAT-47, UAT-48, UAT-49 and UAT-50 results recorded · **Window:** T+544m / 15m
 - **Covers:** UAT Checklist, Audit Log
 - **Why:** UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.
 - **Goal:** Tally Critical/High results against the exit rules and file a signed decision.
@@ -942,7 +961,7 @@ graph TD
 
 1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
-3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), and AI Incident Workspace (UAT-49) passed or waived.
+3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), AI Incident Workspace (UAT-49), and Noise Reduction Lab (UAT-50) passed or waived.
 4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 

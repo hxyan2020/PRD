@@ -1981,13 +1981,56 @@ export const UAT_CASES: UatCase[] = [
   },
   {
     seq: 49,
-    id: "UAT-46",
+    id: "UAT-50",
     t_start_min: 532,
+    duration_min: 12,
+    severity: "High",
+    bu: "Risk + AI",
+    dependency: "UAT-02; Noise Reduction Lab seed HTML",
+    dependency_zh: "UAT-02；降噪實驗室種子 HTML",
+    covers: ["Noise Reduction Lab", "Monitor 2.0", "Indicator Aggregation"],
+    covers_zh: ["降噪實驗室", "Monitor 2.0", "指標聚合流程"],
+    en: {
+      title: "Noise Reduction Lab — bilingual end-to-end demo",
+      why: "Ops need an interactive Monitor 2.0 noise-reduction lab (quality → bypass → threshold → persistence → dedup → L2 → AI → feedback) with EN/zh-Hant and demo data only.",
+      objective:
+        "Open /admin/noise-reduction, run at least two scenarios (incl. P0 bypass and unknown-must-not-FP), prove knobs + bilingual chrome, and export a demo JSON.",
+      steps: [
+        "Open Noise Reduction Lab from left nav (Monitor & risk). Confirm toolbar 繁中 ↔ EN, six scenarios, embedded prototype (noise-reduction-iframe).",
+        "Run Scenario A (cross-BU L2) step-by-step or Play. Confirm pipeline stages light up and L2 / notifications counters move.",
+        "Switch to Scenario F (P0 critical bypass). Confirm Persistence / L2 window / AI are skipped and Risk Ops is notified immediately.",
+        "Switch to Scenario E (unknown). Confirm outcome stays OPEN and is not auto-marked false positive. Toggle EN ↔ 繁中 — chrome and scenario copy remain readable.",
+        "Adjust a knob (threshold / persistence / L2 score / window), re-run; optionally Export demo JSON. Open full-page demo or deep link from Monitor surfaces if listed.",
+      ],
+      pass: "Lab + nav present; P0 bypass skips wait stages; unknown stays OPEN; EN/zh-Hant readable; no production Monitor/AI/Lark required.",
+      evidence:
+        "Screenshots of cross-BU L2, P0 bypass, unknown OPEN, EN/zh toggle, optional export filename.",
+    },
+    zh: {
+      title: "降噪實驗室 — 雙語端到端演示",
+      why: "值班需要互動式 Monitor 2.0 降噪實驗室（品質 → 旁路 → 閾值 → Persistence → 去重 → L2 → AI → 回饋），支援英／繁中，且僅示範資料。",
+      objective:
+        "開啟 /admin/noise-reduction，至少跑兩場景（含 P0 旁路與未知不得標誤報），證明旋鈕＋雙語介面，並匯出示範 JSON。",
+      steps: [
+        "自左側選單（監控與風險）開啟降噪實驗室。確認工具列 繁中 ↔ EN、六場景、內嵌原型（noise-reduction-iframe）。",
+        "跑場景 A（跨 BU L2）逐步或播放。確認管線步驟亮起，L2／通知計數有變動。",
+        "切到場景 F（P0 關鍵旁路）。確認跳過 Persistence／L2 視窗／AI，並立即通知 Risk Ops。",
+        "切到場景 E（未知）。確認結果維持 OPEN，不會自動標成誤報。切換 EN ↔ 繁中 — 介面與場景文案皆可讀。",
+        "調整旋鈕（閾值／Persistence／L2 分數／視窗）後重跑；可選匯出示範 JSON。必要時開全頁演示或從 Monitor 深鏈進入。",
+      ],
+      pass: "實驗室＋選單存在；P0 旁路跳過等待階段；未知維持 OPEN；英／繁中可讀；無需正式 Monitor／AI／Lark。",
+      evidence: "跨 BU L2、P0 旁路、未知 OPEN、EN／繁中切換、可選匯出檔名截圖。",
+    },
+  },
+  {
+    seq: 50,
+    id: "UAT-46",
+    t_start_min: 544,
     duration_min: 15,
     severity: "Critical",
     bu: "Risk Owner",
-    dependency: "UAT-01–45, UAT-47, UAT-48 and UAT-49 results recorded",
-    dependency_zh: "UAT-01–45、UAT-47、UAT-48、UAT-49 結果已記錄",
+    dependency: "UAT-01–45, UAT-47, UAT-48, UAT-49 and UAT-50 results recorded",
+    dependency_zh: "UAT-01–45、UAT-47、UAT-48、UAT-49、UAT-50 結果已記錄",
     covers: [
       "UAT Checklist",
       "Audit Log",
@@ -2000,7 +2043,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.",
         "Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.",
-        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), and AI Incident Workspace (UAT-49) passed or waived.",
+        "Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), severity→weights (UAT-45), formula→RO (UAT-47), aggregation flow (UAT-48), AI Incident Workspace (UAT-49), and Noise Reduction Lab (UAT-50) passed or waived.",
         "Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).",
         "File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.",
       ],
@@ -2014,7 +2057,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。",
         "統計 High：最多兩項 WAIVE，每項附一句書面風險接受。",
-        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）、AI 事故工作台（UAT-49）通過或豁免。",
+        "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、嚴重度→權重（UAT-45）、公式→RO（UAT-47）、聚合流程（UAT-48）、AI 事故工作台（UAT-49）、降噪實驗室（UAT-50）通過或豁免。",
         "記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。",
         "將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。",
       ],
