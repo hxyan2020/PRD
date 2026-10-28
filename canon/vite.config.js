@@ -15,7 +15,7 @@ export default defineConfig(({ command }) => ({
     strictPort: true,
     proxy: {
       "/api/hx-viewership": {
-        target: "http://188.166.214.47:3520",
+        target: "https://viewership.168.144.109.12.nip.io",
         changeOrigin: true,
         rewrite: () => "/collect",
       },
@@ -27,7 +27,7 @@ export default defineConfig(({ command }) => ({
     strictPort: true,
     proxy: {
       "/api/hx-viewership": {
-        target: "http://188.166.214.47:3520",
+        target: "https://viewership.168.144.109.12.nip.io",
         changeOrigin: true,
         rewrite: () => "/collect",
       },

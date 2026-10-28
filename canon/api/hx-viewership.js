@@ -1,4 +1,4 @@
-const COLLECT_URL = "http://188.166.214.47:3520/collect";
+const COLLECT_URL = "https://viewership.168.144.109.12.nip.io/collect";
 
 /** Same-origin proxy so HTTPS Vercel never posts mixed-content HTTP to HX. */
 export default async function handler(req, res) {
@@ -26,9 +26,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    const forwarded = String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "")
+      .split(",")[0]
+      .trim();
     const upstream = await fetch(COLLECT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(forwarded ? { "X-Forwarded-For": forwarded } : {}),
+        "User-Agent": String(req.headers["user-agent"] || ""),
+      },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(4000),
     });

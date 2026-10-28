@@ -2,7 +2,7 @@ import { publicUrl } from "./urls.js";
 
 export const HX_SLUG = "canon";
 export const HX_NAME = "Canon";
-export const HX_COLLECT_URL = "http://188.166.214.47:3520/collect";
+export const HX_COLLECT_URL = "https://viewership.168.144.109.12.nip.io/collect";
 export const HX_BEACON_PATH = "/api/hx-viewership";
 export const HX_PUBLIC_ORIGIN = "https://canon-ivory.vercel.app";
 
@@ -33,7 +33,7 @@ export async function sendHxBeacon(details = {}, fetchImpl, location = globalThi
   if (!post) return { ok: false, skipped: true };
   const targets = [hxBeaconPath()];
   const protocol = location?.protocol || "";
-  if (!(protocol === "https:" && String(HX_COLLECT_URL).startsWith("http:"))) {
+  if (!(protocol === "https:" && String(HX_COLLECT_URL).startsWith("http://"))) {
     targets.push(HX_COLLECT_URL);
   }
   for (const url of targets) {
@@ -44,7 +44,7 @@ export async function sendHxBeacon(details = {}, fetchImpl, location = globalThi
         body: payload,
         keepalive: true,
       });
-      if (res?.ok || res?.status === 202) return { ok: true };
+      if (res?.ok && res.status !== 202) return { ok: true };
     } catch {
       /* try the next target */
     }
