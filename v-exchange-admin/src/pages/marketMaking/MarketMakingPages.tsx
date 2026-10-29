@@ -1,11 +1,36 @@
 import { useState, type ReactNode } from 'react'
-import { Button, Card, Col, Empty, Form, Input, Modal, Row, Select, Space, Table, Typography, message } from 'antd'
+import {
+  Button,
+  Card,
+  Col,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Space,
+  Table,
+  Tabs,
+  Tag,
+  Typography,
+  message,
+} from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import { PageFrame } from '../../components/PageFrame'
 import { QueryResetButtons } from '../../components/QueryResetButtons'
-import { dbFundFlowRecords, dbFundFlowTypes, dbTakeoverAccount } from '../../mock/marketMakingData'
+import {
+  dbAlarmAddTypeOptions,
+  dbAlarmConfigs,
+  dbAlarmRecords,
+  dbAlarmTypeOptions,
+  dbFundFlowRecords,
+  dbFundFlowTypes,
+  dbTakeoverAccount,
+} from '../../mock/marketMakingData'
 import { fh } from '../../components/FieldHelpLabel'
 
-const { Text, Title } = Typography
+const { Text } = Typography
 
 function Metric({ label, value }: { label: ReactNode; value: string }) {
   return (
@@ -172,12 +197,136 @@ export function DbTakeoverFundFlowPage() {
 }
 
 export function DbAccountAlarmPage() {
+  const [form] = Form.useForm()
+  const [configForm] = Form.useForm()
+  const [addForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
+
   return (
     <PageFrame title="DB账户告警">
-      <Title level={5} style={{ marginTop: 0 }}>
-        DB账户告警
-      </Title>
-      <Empty description="等待后续截图补充" />
+      <Tabs
+        items={[
+          {
+            key: 'records',
+            label: '告警记录',
+            children: (
+              <>
+                <Form form={form} layout="inline" style={{ marginBottom: 16 }} initialValues={{ type: '全部' }}>
+                  <Form.Item label={fh('告警类型')} name="type">
+                    <Select style={{ width: 200 }} options={dbAlarmTypeOptions} />
+                  </Form.Item>
+                  <Form.Item>
+                    <QueryResetButtons onReset={() => form.resetFields()} />
+                  </Form.Item>
+                </Form>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={dbAlarmRecords}
+                  pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
+                  columns={[
+                    { title: fh('告警类型'), dataIndex: 'type', width: 160 },
+                    { title: '告警信息', dataIndex: 'info' },
+                    { title: '告警时间', dataIndex: 'time', width: 180 },
+                    { title: '告警方式', dataIndex: 'channel', width: 100 },
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            key: 'config',
+            label: '监控配置',
+            children: (
+              <>
+                <Form form={configForm} layout="inline" style={{ marginBottom: 12 }} initialValues={{ type: '全部' }}>
+                  <Form.Item label={fh('告警类型')} name="type">
+                    <Select style={{ width: 200 }} options={dbAlarmTypeOptions} />
+                  </Form.Item>
+                  <Form.Item>
+                    <QueryResetButtons onReset={() => configForm.resetFields()} />
+                  </Form.Item>
+                  <Form.Item style={{ marginLeft: 'auto' }}>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>
+                      增加监控
+                    </Button>
+                  </Form.Item>
+                </Form>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={dbAlarmConfigs}
+                  pagination={{ total: 8, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: fh('告警类型'), dataIndex: 'type', width: 160 },
+                    { title: fh('告警值'), dataIndex: 'value' },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt', width: 170 },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', ellipsis: true, width: 200 },
+                    {
+                      title: fh('状态'),
+                      dataIndex: 'status',
+                      width: 90,
+                      render: (s: string) => <Tag color="success">{s}</Tag>,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      width: 120,
+                      render: () => (
+                        <Space>
+                          <Button type="link" danger size="small">
+                            停用
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
+              </>
+            ),
+          },
+        ]}
+      />
+      <Modal
+        title="新增 - 监控配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="c" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success('已新增 DB 账户告警监控')
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={addForm} layout="vertical">
+          <Form.Item label={fh('告警类型')} name="type" rules={[{ required: true }]}>
+            <Select placeholder="请选择告警类型" options={dbAlarmAddTypeOptions} />
+          </Form.Item>
+          <Form.Item
+            label={fh('预警群')}
+            name="webhook"
+            rules={[{ required: true }]}
+            extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
+          >
+            <Input.TextArea rows={3} placeholder="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </PageFrame>
   )
 }
