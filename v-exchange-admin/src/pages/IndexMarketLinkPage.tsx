@@ -3,7 +3,6 @@ import { PlusOutlined } from '@ant-design/icons'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { indexNameOptions } from '../config/pairs'
-import { indexMarketLinkRecords } from '../mock/pairMarketData'
 
 export function IndexMarketLinkPage() {
   const [form] = Form.useForm()
@@ -45,11 +44,11 @@ export function IndexMarketLinkPage() {
         </Form.Item>
       </Form>
       <Table
-        rowKey={(r) => `${r.indexName}-${r.marketSource}`}
+        rowKey="indexName"
         size="small"
         bordered
         columns={columns}
-        dataSource={indexMarketLinkRecords}
+        dataSource={[]}
         locale={{ emptyText: <Empty description="暂无数据" /> }}
         pagination={false}
       />

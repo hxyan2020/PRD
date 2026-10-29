@@ -69,6 +69,7 @@ export type PageKey =
   | 'risk-spread-alert'
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
+  | 'risk-peer-spread-monitor'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -118,15 +119,16 @@ export const pageLabels: Record<PageKey, string> = {
   'tools-close-position': 'Close Position',
   'tools-global-frequency': 'GlobalFrequencyGroup',
   'tools-open-bottom-position': 'Open Bottom Position',
-  'risk-funding-fee-change': 'Funding Fee Change',
-  'risk-liquidation-switch': 'Liquidation Switch',
-  'risk-market-price-limit': 'Market Price Limit',
-  'risk-reserve-list': 'Risk Reserve List',
-  'risk-reserve-detail': 'Risk Reserve Detail',
-  'risk-trading-restriction': 'Trading Restriction',
-  'risk-spread-alert': 'Spread Alert',
-  'risk-no-trade-monitor': 'No Trade Monitor',
-  'risk-depth-monitor': 'Depth Monitor',
+  'risk-funding-fee-change': '资金费率修改',
+  'risk-liquidation-switch': '强平引擎开关',
+  'risk-market-price-limit': '市价交易限制',
+  'risk-reserve-list': '风险基金列表',
+  'risk-reserve-detail': '风险基金明细',
+  'risk-trading-restriction': '开平仓限制',
+  'risk-spread-alert': '价差预警监控',
+  'risk-no-trade-monitor': '无交易监控',
+  'risk-depth-monitor': '档位深度监控',
+  'risk-peer-spread-monitor': '友商价差监控',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -252,17 +254,25 @@ export const sideMenuItems: MenuProps['items'] = [
   {
     key: 'risk-monitor',
     icon: <WarningOutlined />,
-    label: 'Risk Monitor',
+    label: '风控管理',
     children: [
-      { key: 'risk-funding-fee-change', label: 'Funding Fee Change' },
-      { key: 'risk-liquidation-switch', label: 'Liquidation Switch' },
-      { key: 'risk-market-price-limit', label: 'Market Price Limit' },
-      { key: 'risk-reserve-list', label: 'Risk Reserve List' },
-      { key: 'risk-reserve-detail', label: 'Risk Reserve Detail' },
-      { key: 'risk-trading-restriction', label: 'Trading Restriction' },
-      { key: 'risk-spread-alert', label: 'Spread Alert' },
-      { key: 'risk-no-trade-monitor', label: 'No Trade Monitor' },
-      { key: 'risk-depth-monitor', label: 'Depth Monitor' },
+      { key: 'risk-funding-fee-change', label: '资金费率修改' },
+      { key: 'risk-liquidation-switch', label: '强平引擎开关' },
+      { key: 'risk-market-price-limit', label: '市价交易限制' },
+      { key: 'risk-reserve-list', label: '风险基金列表' },
+      { key: 'risk-reserve-detail', label: '风险基金明细' },
+      { key: 'risk-trading-restriction', label: '开平仓限制' },
+    ],
+  },
+  {
+    key: 'alarm-monitor',
+    icon: <WarningOutlined />,
+    label: '监控告警',
+    children: [
+      { key: 'risk-spread-alert', label: '价差预警监控' },
+      { key: 'risk-no-trade-monitor', label: '无交易监控' },
+      { key: 'risk-depth-monitor', label: '档位深度监控' },
+      { key: 'risk-peer-spread-monitor', label: '友商价差监控' },
     ],
   },
 ]
@@ -283,4 +293,5 @@ export const defaultOpenKeys = [
   'api-mgmt',
   'tools-mgmt',
   'risk-monitor',
+  'alarm-monitor',
 ]

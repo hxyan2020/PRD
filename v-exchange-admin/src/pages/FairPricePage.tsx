@@ -1,12 +1,30 @@
-import { Button, Form, Select, Space, Table } from 'antd'
+import { useState } from 'react'
+import { Button, Form, InputNumber, Modal, Radio, Select, Space, Switch, Table, message } from 'antd'
 import { DownloadOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { perpContractOptions } from '../config/pairs'
-import { fairPriceRecords } from '../mock/data'
+import { fairPriceRecords, type FairPriceRecord } from '../mock/data'
 
 export function FairPricePage() {
   const [form] = Form.useForm()
+  const [editForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
+  const [current, setCurrent] = useState<FairPriceRecord | null>(null)
+
+  const openEdit = (record: FairPriceRecord) => {
+    setCurrent(record)
+    editForm.setFieldsValue({
+      contractName: record.contractName,
+      basisMaPeriod: record.basisMaPeriod,
+      spreadThreshold: Number(record.spreadThreshold.replace('%', '')),
+      observeThreshold: record.observeThreshold,
+      recoveryThreshold: record.recoveryThreshold,
+      newAlgoEnabled: record.newAlgoStatus === '启用',
+      adoptStatus: record.adoptStatus === '新算法' ? '新算法' : '老算法',
+    })
+    setOpen(true)
+  }
 
   const columns = [
     { title: '合约名称', dataIndex: 'contractName', width: 130 },
@@ -41,8 +59,8 @@ export function FairPricePage() {
       title: '操作',
       key: 'action',
       width: 80,
-      render: () => (
-        <Button type="primary" size="small">
+      render: (_: unknown, record: FairPriceRecord) => (
+        <Button type="primary" size="small" onClick={() => openEdit(record)}>
           编辑
         </Button>
       ),
@@ -84,7 +102,7 @@ export function FairPricePage() {
             style={{ width: 140 }}
             options={[
               { value: '新算法', label: '新算法' },
-              { value: '旧算法', label: '旧算法' },
+              { value: '老算法', label: '老算法' },
             ]}
           />
         </Form.Item>
@@ -101,6 +119,59 @@ export function FairPricePage() {
         dataSource={fairPriceRecords}
         pagination={{ total: 2, showTotal: (t) => `共 ${t} 条`, pageSize: 10, showSizeChanger: true }}
       />
+
+      <Modal
+        title="编辑合理价格"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="cancel" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success(`已保存合理价格：${current?.contractName ?? ''}`)
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={editForm} layout="vertical">
+          <Form.Item label="合约名称" name="contractName">
+            <Select options={perpContractOptions} />
+          </Form.Item>
+          <Form.Item label="基差移动平均值周期(秒)" name="basisMaPeriod">
+            <InputNumber style={{ width: '100%' }} min={1} />
+          </Form.Item>
+          <Form.Item label="期现价差阈值比例" name="spreadThreshold">
+            <InputNumber style={{ width: '100%' }} min={0} addonAfter="%" />
+          </Form.Item>
+          <Form.Item label="观察阈值(秒)" name="observeThreshold">
+            <InputNumber style={{ width: '100%' }} min={0} />
+          </Form.Item>
+          <Form.Item label="恢复阈值(秒)" name="recoveryThreshold">
+            <InputNumber style={{ width: '100%' }} min={0} />
+          </Form.Item>
+          <Form.Item label="新算法计算状态" name="newAlgoEnabled" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+          <Form.Item label="采用状态" name="adoptStatus">
+            <Radio.Group>
+              <Radio value="老算法">老算法</Radio>
+              <Radio value="新算法">新算法</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <div style={{ color: '#8c8c8c', fontSize: 12 }}>
+            老算法价格: -- · 新算法价格:{' '}
+            {current?.contractName?.startsWith('BTC') ? '85149.80' : '4348.55'}
+          </div>
+        </Form>
+      </Modal>
     </PageFrame>
   )
 }

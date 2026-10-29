@@ -54,8 +54,18 @@ import {
   UserRateConfigPage,
   UserRiskSettingsPage,
 } from './user/UserPages'
-
-const underDev = () => <PlaceholderPage />
+import {
+  RiskDepthMonitorPage,
+  RiskFundingFeeChangePage,
+  RiskLiquidationSwitchPage,
+  RiskMarketPriceLimitPage,
+  RiskNoTradeMonitorPage,
+  RiskPeerSpreadMonitorPage,
+  RiskReserveDetailPage,
+  RiskReserveListPage,
+  RiskSpreadAlertPage,
+  RiskTradingRestrictionPage,
+} from './risk/RiskPages'
 
 export const pageComponents: Record<PageKey, () => ReactElement> = {
   overview: OverviewPage,
@@ -105,13 +115,14 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'tools-close-position': ClosePositionPage,
   'tools-global-frequency': GlobalFrequencyPage,
   'tools-open-bottom-position': OpenBottomPositionPage,
-  'risk-funding-fee-change': underDev,
-  'risk-liquidation-switch': underDev,
-  'risk-market-price-limit': underDev,
-  'risk-reserve-list': underDev,
-  'risk-reserve-detail': underDev,
-  'risk-trading-restriction': underDev,
-  'risk-spread-alert': underDev,
-  'risk-no-trade-monitor': underDev,
-  'risk-depth-monitor': underDev,
+  'risk-funding-fee-change': RiskFundingFeeChangePage,
+  'risk-liquidation-switch': RiskLiquidationSwitchPage,
+  'risk-market-price-limit': RiskMarketPriceLimitPage,
+  'risk-reserve-list': RiskReserveListPage,
+  'risk-reserve-detail': RiskReserveDetailPage,
+  'risk-trading-restriction': RiskTradingRestrictionPage,
+  'risk-spread-alert': RiskSpreadAlertPage,
+  'risk-no-trade-monitor': RiskNoTradeMonitorPage,
+  'risk-depth-monitor': RiskDepthMonitorPage,
+  'risk-peer-spread-monitor': RiskPeerSpreadMonitorPage,
 }
