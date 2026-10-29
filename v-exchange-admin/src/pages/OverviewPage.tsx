@@ -1,7 +1,13 @@
 import { Card, Col, Row, Statistic, Table, Tag, Typography } from 'antd'
 import { Link } from 'react-router-dom'
 import { PageFrame } from '../components/PageFrame'
-import { contractRecords, fairPriceRecords, fundingRateRecords, indexPriceRecords } from '../mock/data'
+import {
+  contractRecords,
+  fairPriceRecords,
+  fundingRateRecords,
+  indexPriceRecords,
+  marketSourceRecords,
+} from '../mock/data'
 import { pairMarketSnapshots } from '../mock/pairMarketData'
 import { positionRecords } from '../mock/extendedData'
 import { PAIR_LIST } from '../config/pairs'
@@ -44,7 +50,7 @@ export function OverviewPage() {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card size="small">
-            <Statistic title="Market Sources" value={17} />
+            <Statistic title="Market Sources" value={marketSourceRecords.length} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>

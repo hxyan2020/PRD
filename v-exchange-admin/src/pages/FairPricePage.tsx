@@ -2,6 +2,7 @@ import { Button, Form, Select, Space, Table } from 'antd'
 import { DownloadOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
+import { perpContractOptions } from '../config/pairs'
 import { fairPriceRecords } from '../mock/data'
 
 export function FairPricePage() {
@@ -54,7 +55,7 @@ export function FairPricePage() {
       extra={
         <Space>
           <Button type="primary" icon={<PlusOutlined />}>
-            增加
+            添加
           </Button>
           <Button type="primary" icon={<DownloadOutlined />}>
             下载
@@ -64,13 +65,28 @@ export function FairPricePage() {
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
         <Form.Item label="合约名称" name="contract">
-          <Select placeholder="请选择" allowClear style={{ width: 160 }} />
+          <Select placeholder="请选择" allowClear style={{ width: 160 }} options={perpContractOptions} />
         </Form.Item>
         <Form.Item label="新算法计算状态" name="newAlgo" initialValue="all">
-          <Select style={{ width: 140 }} options={[{ value: 'all', label: '全部' }]} />
+          <Select
+            style={{ width: 140 }}
+            options={[
+              { value: 'all', label: '全部' },
+              { value: 'on', label: '启用' },
+              { value: 'off', label: '禁用' },
+            ]}
+          />
         </Form.Item>
         <Form.Item label="采用状态" name="adopt">
-          <Select placeholder="请选择" allowClear style={{ width: 140 }} />
+          <Select
+            placeholder="请选择"
+            allowClear
+            style={{ width: 140 }}
+            options={[
+              { value: '新算法', label: '新算法' },
+              { value: '旧算法', label: '旧算法' },
+            ]}
+          />
         </Form.Item>
         <Form.Item>
           <QueryResetButtons onReset={() => form.resetFields()} />
