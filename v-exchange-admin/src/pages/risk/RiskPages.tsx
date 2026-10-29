@@ -24,6 +24,8 @@ import {
   externalFundingAlerts,
   externalFundingConfigs,
   internalFundingConfigs,
+  adlAbnormalConfigs,
+  largeLiqNotifyConfigs,
   largeLiqNotifyRecords,
   largeLiqWarningConfigs,
   marketPriceLimits,
@@ -913,14 +915,6 @@ export function RiskPeerSpreadMonitorPage() {
   )
 }
 
-function PlaceholderAlarmPage({ title }: { title: string }) {
-  return (
-    <PageFrame title={title}>
-      <Empty description="页面结构已就绪，等待后续截图补充字段与数据" />
-    </PageFrame>
-  )
-}
-
 export function RiskExternalFundingMonitorPage() {
   const [form] = Form.useForm()
   const [addForm] = Form.useForm()
@@ -1339,6 +1333,8 @@ export function RiskLargeLiqWarningPage() {
 
 export function RiskLargeLiqNotifyPage() {
   const [form] = Form.useForm()
+  const [addForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
   return (
     <PageFrame title="大额爆仓后通知">
       <Tabs
@@ -1379,20 +1375,189 @@ export function RiskLargeLiqNotifyPage() {
             children: (
               <>
                 <div style={{ textAlign: 'right', marginBottom: 12 }}>
-                  <Button type="primary" icon={<PlusOutlined />}>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>
                     增加监控
                   </Button>
                 </div>
-                <Empty description="等待后续截图补充配置表" />
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={largeLiqNotifyConfigs}
+                  pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '爆仓通知仓位价值阈值 (USD)', dataIndex: 'valueThreshold' },
+                    { title: '更新时间', dataIndex: 'updatedAt' },
+                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    {
+                      title: '状态',
+                      dataIndex: 'status',
+                      render: (s: string) => <StatusTag status={s} />,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      render: () => (
+                        <Space>
+                          <Button type="link" danger size="small">
+                            停用
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
               </>
             ),
           },
         ]}
       />
+      <Modal
+        title="新增 - 监控配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="c" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success('已新增大额爆仓后通知配置')
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={addForm} layout="vertical">
+          <Form.Item label="爆仓通知仓位价值阈值" name="valueThreshold" rules={[{ required: true }]}>
+            <InputNumber style={{ width: '100%' }} addonAfter="USD" min={0} />
+          </Form.Item>
+          <Form.Item
+            label="预警群"
+            name="webhook"
+            rules={[{ required: true }]}
+            extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
+          >
+            <Input.TextArea rows={3} placeholder="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </PageFrame>
   )
 }
 
 export function RiskAdlAbnormalPage() {
-  return <PlaceholderAlarmPage title="ADL异常记录" />
+  const [addForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
+  return (
+    <PageFrame title="ADL异常记录">
+      <Tabs
+        items={[
+          {
+            key: 'records',
+            label: '告警记录',
+            children: (
+              <Table
+                size="small"
+                bordered
+                rowKey="id"
+                dataSource={[]}
+                locale={{ emptyText: <Empty description="暂无数据" /> }}
+                pagination={false}
+                columns={[
+                  { title: '告警类型', dataIndex: 'alarmType' },
+                  { title: '告警时间', dataIndex: 'time' },
+                  { title: '告警方式', dataIndex: 'channel' },
+                ]}
+              />
+            ),
+          },
+          {
+            key: 'config',
+            label: '监控配置',
+            children: (
+              <>
+                <div style={{ textAlign: 'right', marginBottom: 12 }}>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>
+                    增加监控
+                  </Button>
+                </div>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={adlAbnormalConfigs}
+                  pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '告警类型', dataIndex: 'alarmType' },
+                    { title: '更新时间', dataIndex: 'updatedAt' },
+                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    {
+                      title: '状态',
+                      dataIndex: 'status',
+                      render: (s: string) => <StatusTag status={s} />,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      render: () => (
+                        <Space>
+                          <Button type="link" danger size="small">
+                            停用
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
+              </>
+            ),
+          },
+        ]}
+      />
+      <Modal
+        title="新增 - 监控配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="c" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success('已新增 ADL 异常监控')
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={addForm} layout="vertical">
+          <Form.Item
+            label="报警群"
+            name="webhook"
+            rules={[{ required: true }]}
+            extra="填写 Lark 机器人 URL，多个 URL 请用英文分号间隔"
+          >
+            <Input.TextArea rows={4} placeholder="填写 Lark 机器人 URL，多个 URL 请用英文分号间隔" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </PageFrame>
+  )
 }

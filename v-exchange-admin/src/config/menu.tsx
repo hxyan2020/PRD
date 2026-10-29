@@ -7,6 +7,7 @@ import {
   LineChartOutlined,
   SettingOutlined,
   ShoppingOutlined,
+  StockOutlined,
   TeamOutlined,
   ToolOutlined,
   WarningOutlined,
@@ -75,6 +76,9 @@ export type PageKey =
   | 'risk-large-liq-warning'
   | 'risk-large-liq-notify'
   | 'risk-adl-abnormal'
+  | 'mm-db-takeover-account'
+  | 'mm-db-fund-flow'
+  | 'mm-db-account-alarm'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -139,6 +143,9 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-large-liq-warning': '大额爆仓预警',
   'risk-large-liq-notify': '大额爆仓后通知',
   'risk-adl-abnormal': 'ADL异常记录',
+  'mm-db-takeover-account': 'DB接仓账户管理',
+  'mm-db-fund-flow': 'DB接仓账户资金流水',
+  'mm-db-account-alarm': 'DB账户告警',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -290,6 +297,16 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-adl-abnormal', label: 'ADL异常记录' },
     ],
   },
+  {
+    key: 'market-making',
+    icon: <StockOutlined />,
+    label: '做市管理',
+    children: [
+      { key: 'mm-db-takeover-account', label: 'DB接仓账户管理' },
+      { key: 'mm-db-fund-flow', label: 'DB接仓账户资金流水' },
+      { key: 'mm-db-account-alarm', label: 'DB账户告警' },
+    ],
+  },
 ]
 
 export function isPageKey(key: string): key is PageKey {
@@ -309,4 +326,5 @@ export const defaultOpenKeys = [
   'tools-mgmt',
   'risk-monitor',
   'alarm-monitor',
+  'market-making',
 ]

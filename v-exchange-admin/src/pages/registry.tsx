@@ -55,6 +55,11 @@ import {
   UserRiskSettingsPage,
 } from './user/UserPages'
 import {
+  DbAccountAlarmPage,
+  DbTakeoverAccountPage,
+  DbTakeoverFundFlowPage,
+} from './marketMaking/MarketMakingPages'
+import {
   RiskAdlAbnormalPage,
   RiskDepthMonitorPage,
   RiskExternalFundingMonitorPage,
@@ -135,4 +140,7 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'risk-large-liq-warning': RiskLargeLiqWarningPage,
   'risk-large-liq-notify': RiskLargeLiqNotifyPage,
   'risk-adl-abnormal': RiskAdlAbnormalPage,
+  'mm-db-takeover-account': DbTakeoverAccountPage,
+  'mm-db-fund-flow': DbTakeoverFundFlowPage,
+  'mm-db-account-alarm': DbAccountAlarmPage,
 }

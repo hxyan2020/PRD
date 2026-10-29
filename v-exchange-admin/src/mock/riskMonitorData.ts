@@ -163,6 +163,27 @@ export const largeLiqNotifyRecords = [
   { accountId: '1000000000014', position: 'XAU_USD-1张-LONG', mode: '逐仓', time: '2026-09-28 08:45:07', channel: 'Lark' },
 ]
 
+export const largeLiqNotifyConfigs = [
+  {
+    id: 1,
+    valueThreshold: '100,000',
+    updatedAt: '2026-09-22 13:38:13',
+    updatedBy: 'alex.huang@hytechc.com',
+    status: '生效中',
+  },
+]
+
+export const adlAbnormalConfigs = [
+  {
+    id: 1,
+    alarmType: 'ADL失败，重试中',
+    alarmGroup: 'alex.huang@hytechc.com',
+    updatedAt: '2026-09-22 13:39:02',
+    updatedBy: 'alex.huang@hytechc.com',
+    status: '生效中',
+  },
+]
+
 export const peerExchangeOptions = ['OKX', 'Bybit', 'Bitget', 'Binance'].map((v) => ({ value: v, label: v }))
 
 export const riskFundList = [
