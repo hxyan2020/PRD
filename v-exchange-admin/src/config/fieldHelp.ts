@@ -1,18 +1,8 @@
 /** Bilingual field help + launch recommendations for XAU_USD / BTC_USD. */
+import { GENERATED_FIELD_HELP } from './fieldHelp.generated'
+import type { FieldHelpItem } from './fieldHelpTypes'
 
-export type FieldHelpItem = {
-  nameZh: string
-  nameEn: string
-  explainZh: string
-  explainEn: string
-  /** Value observed in uploaded screenshots / current mock */
-  oldParam?: string
-  /** Recommended for first pair launch */
-  xauRec?: string
-  btcRec?: string
-  reason?: string
-  module?: 'price' | 'risk' | 'alert' | 'mm' | 'common'
-}
+export type { FieldHelpItem }
 
 export const FIELD_HELP: Record<string, FieldHelpItem> = {
   合约名称: {
@@ -167,19 +157,40 @@ export const FIELD_HELP: Record<string, FieldHelpItem> = {
   告警类型: {
     nameZh: '告警类型',
     nameEn: 'Alarm Type',
-    explainZh: 'ADL 等异常的分类标签，如「ADL失败，重试中」。',
-    explainEn: 'Category label for ADL/abnormal events, e.g. “ADL failed, retrying”.',
-    oldParam: 'ADL失败，重试中',
-    xauRec: 'ADL失败，重试中',
-    btcRec: 'ADL失败，重试中',
-    reason: 'Keep same ADL failure taxonomy for both pairs.',
+    explainZh: '告警分类，如价差、资金费率、ADL、DB心跳等。',
+    explainEn: 'Alert category, e.g. spread, funding, ADL, or DB heartbeat.',
+    oldParam: 'ADL失败，重试中 / DB心跳预警',
+    xauRec: '按业务启用对应类型',
+    btcRec: '按业务启用对应类型',
+    reason: 'Same taxonomy for both pairs; enable DB/ADL monitors from day one.',
     module: 'alert',
   },
   告警值: {
     nameZh: '告警值',
-    nameEn: 'Alarm Value',
-    explainZh: '触发时的价差或费率偏离数值。',
-    explainEn: 'Measured spread/funding deviation at trigger time.',
+    nameEn: 'Alarm Value / Threshold',
+    explainZh: '触发条件：事件触发，或持仓时间/仓位价值等数值阈值。',
+    explainEn: 'Trigger condition: event-based, or numeric thresholds like hold time / notional.',
+    module: 'alert',
+  },
+  告警信息: {
+    nameZh: '告警信息',
+    nameEn: 'Alert Message',
+    explainZh: '告警触发时的简要说明，如「触发心跳撤单」。',
+    explainEn: 'Short description when the alert fires, e.g. heartbeat cancel triggered.',
+    module: 'alert',
+  },
+  告警时间: {
+    nameZh: '告警时间',
+    nameEn: 'Alert Time',
+    explainZh: '告警实际触发的时间戳。',
+    explainEn: 'Timestamp when the alert was triggered.',
+    module: 'alert',
+  },
+  告警方式: {
+    nameZh: '告警方式',
+    nameEn: 'Alert Channel',
+    explainZh: '通知渠道，通常为 Lark 机器人。',
+    explainEn: 'Notification channel, usually a Lark bot.',
     module: 'alert',
   },
   基差移动平均值周期: {
@@ -455,8 +466,20 @@ export const FIELD_HELP: Record<string, FieldHelpItem> = {
   },
 }
 
-export function getFieldHelp(key: string): FieldHelpItem | undefined {
-  return FIELD_HELP[key] ?? FIELD_HELP[key.replace(/[：:]/g, '').trim()]
+function fallbackHelp(key: string): FieldHelpItem {
+  return {
+    nameZh: key,
+    nameEn: key,
+    explainZh: `「${key}」字段：用于配置或展示相关业务数据，请按业务规则填写/筛选。`,
+    explainEn: `"${key}" — used to configure or display related business data; fill or filter per ops rules.`,
+    module: 'common',
+  }
+}
+
+/** Curated entries win over generated; always returns a help object. */
+export function getFieldHelp(key: string): FieldHelpItem {
+  const cleaned = key.replace(/[：:]/g, '').trim()
+  return FIELD_HELP[key] ?? FIELD_HELP[cleaned] ?? GENERATED_FIELD_HELP[key] ?? GENERATED_FIELD_HELP[cleaned] ?? fallbackHelp(key)
 }
 
 export const LAUNCH_SHEET_ROWS = Object.values(FIELD_HELP).filter(

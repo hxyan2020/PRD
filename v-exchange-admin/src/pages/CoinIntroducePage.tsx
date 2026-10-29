@@ -11,10 +11,10 @@ export function CoinIntroducePage() {
   const columns = [
     { title: fh('合约名称'), dataIndex: 'contractName' },
     { title: fh('合约展示名称'), dataIndex: 'displayName' },
-    { title: '币种名称', dataIndex: 'currencyName' },
+    { title: fh('币种名称'), dataIndex: 'currencyName' },
     { title: fh('更新时间'), dataIndex: 'updatedAt', width: 180 },
     {
-      title: '操作记录',
+      title: fh('操作记录'),
       key: 'record',
       width: 100,
       render: () => (
@@ -24,7 +24,7 @@ export function CoinIntroducePage() {
       ),
     },
     {
-      title: '操作',
+      title: fh('操作'),
       key: 'action',
       width: 220,
       render: () => (
@@ -53,7 +53,7 @@ export function CoinIntroducePage() {
       }
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约" name="contract">
+        <Form.Item label={fh('合约')} name="contract">
           <Select placeholder="请选择" allowClear style={{ width: 180 }} />
         </Form.Item>
         <Form.Item name="keyword">

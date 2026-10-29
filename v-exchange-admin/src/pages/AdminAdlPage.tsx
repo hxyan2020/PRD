@@ -12,10 +12,10 @@ export function AdminAdlPage() {
         <Form.Item label={fh('合约名称')} name="contractName" rules={[{ required: true }]}>
           <Select placeholder="合约名称" options={perpContractOptions} />
         </Form.Item>
-        <Form.Item label="合约FID" name="contractFid" rules={[{ required: true }]}>
+        <Form.Item label={fh('合约FID')} name="contractFid" rules={[{ required: true }]}>
           <Input placeholder="合约FID" />
         </Form.Item>
-        <Form.Item label="方向" name="direction" rules={[{ required: true }]}>
+        <Form.Item label={fh('方向')} name="direction" rules={[{ required: true }]}>
           <Select
             options={[
               { value: 'long', label: '多' },
@@ -23,7 +23,7 @@ export function AdminAdlPage() {
             ]}
           />
         </Form.Item>
-        <Form.Item label="价格" name="price">
+        <Form.Item label={fh('价格')} name="price">
           <Input placeholder="价格" />
         </Form.Item>
         <Form.Item>

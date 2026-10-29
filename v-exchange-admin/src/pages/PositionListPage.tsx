@@ -12,34 +12,34 @@ export function PositionListPage() {
   const [form] = Form.useForm()
 
   const columns = [
-    { title: '合约FID', dataIndex: 'contractFid', width: 100 },
-    { title: '仓位ID', dataIndex: 'positionId', width: 100 },
+    { title: fh('合约FID'), dataIndex: 'contractFid', width: 100 },
+    { title: fh('仓位ID'), dataIndex: 'positionId', width: 100 },
     { title: fh('合约展示名称'), dataIndex: 'displayName', width: 120 },
     { title: fh('合约名称'), dataIndex: 'contractName', width: 110 },
-    { title: '仓位类型', dataIndex: 'positionType', width: 90 },
-    { title: '开仓类型', dataIndex: 'openType', width: 90 },
-    { title: '持仓状态', dataIndex: 'status', width: 90 },
-    { title: '开仓均价', dataIndex: 'avgPrice', width: 100 },
-    { title: '自动追加保证金', dataIndex: 'autoMargin', width: 120 },
-    { title: '持仓量', dataIndex: 'quantity', width: 90, sorter: true },
-    { title: '可平量', dataIndex: 'closable', width: 90 },
-    { title: '仓位价值', dataIndex: 'value', width: 100, sorter: true },
-    { title: '初始杠杆', dataIndex: 'leverage', width: 90 },
-    { title: '合理价格', dataIndex: 'fairPrice', width: 90 },
-    { title: '仓位保证金', dataIndex: 'margin', width: 100 },
-    { title: '保证金率字段', dataIndex: 'marginRate', width: 110 },
-    { title: '强平价格', dataIndex: 'liqPrice', width: 90 },
-    { title: '破产价格', dataIndex: 'bankruptcyPrice', width: 90 },
-    { title: '浮动盈亏', dataIndex: 'floatingPnl', width: 90 },
-    { title: '已实现盈亏', dataIndex: 'realizedPnl', width: 100 },
-    { title: '已平盈亏', dataIndex: 'closedPnl', width: 90 },
-    { title: '手续费', dataIndex: 'fee', width: 80 },
-    { title: '资金费率盈亏', dataIndex: 'fundingPnl', width: 110 },
-    { title: '盈亏%', dataIndex: 'pnlPct', width: 80 },
-    { title: 'ROI%', dataIndex: 'roi', width: 80 },
-    { title: '杠杆变更', dataIndex: 'leverageChange', width: 90 },
+    { title: fh('仓位类型'), dataIndex: 'positionType', width: 90 },
+    { title: fh('开仓类型'), dataIndex: 'openType', width: 90 },
+    { title: fh('持仓状态'), dataIndex: 'status', width: 90 },
+    { title: fh('开仓均价'), dataIndex: 'avgPrice', width: 100 },
+    { title: fh('自动追加保证金'), dataIndex: 'autoMargin', width: 120 },
+    { title: fh('持仓量'), dataIndex: 'quantity', width: 90, sorter: true },
+    { title: fh('可平量'), dataIndex: 'closable', width: 90 },
+    { title: fh('仓位价值'), dataIndex: 'value', width: 100, sorter: true },
+    { title: fh('初始杠杆'), dataIndex: 'leverage', width: 90 },
+    { title: fh('合理价格'), dataIndex: 'fairPrice', width: 90 },
+    { title: fh('仓位保证金'), dataIndex: 'margin', width: 100 },
+    { title: fh('保证金率字段'), dataIndex: 'marginRate', width: 110 },
+    { title: fh('强平价格'), dataIndex: 'liqPrice', width: 90 },
+    { title: fh('破产价格'), dataIndex: 'bankruptcyPrice', width: 90 },
+    { title: fh('浮动盈亏'), dataIndex: 'floatingPnl', width: 90 },
+    { title: fh('已实现盈亏'), dataIndex: 'realizedPnl', width: 100 },
+    { title: fh('已平盈亏'), dataIndex: 'closedPnl', width: 90 },
+    { title: fh('手续费'), dataIndex: 'fee', width: 80 },
+    { title: fh('资金费率盈亏'), dataIndex: 'fundingPnl', width: 110 },
+    { title: fh('盈亏%'), dataIndex: 'pnlPct', width: 80 },
+    { title: fh('ROI%'), dataIndex: 'roi', width: 80 },
+    { title: fh('杠杆变更'), dataIndex: 'leverageChange', width: 90 },
     { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
-    { title: '下单时间', dataIndex: 'orderTime', width: 160 },
+    { title: fh('下单时间'), dataIndex: 'orderTime', width: 160 },
   ]
 
   return (
@@ -50,28 +50,28 @@ export function PositionListPage() {
         </Button>
       </Space>
       <Form form={form} layout="inline" style={{ marginBottom: 12, rowGap: 12 }}>
-        <Form.Item label="仓位ID" name="positionId">
+        <Form.Item label={fh('仓位ID')} name="positionId">
           <Input style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="合约FID" name="contractFid">
+        <Form.Item label={fh('合约FID')} name="contractFid">
           <Input style={{ width: 120 }} />
         </Form.Item>
         <Form.Item label={fh('合约名称')} name="contractName">
           <Select allowClear placeholder="请选择" style={{ width: 160 }} options={perpContractOptions} />
         </Form.Item>
-        <Form.Item label="持仓量>=" name="quantityMin">
+        <Form.Item label={fh('持仓量>=')} name="quantityMin">
           <Input style={{ width: 100 }} />
         </Form.Item>
-        <Form.Item label="仓位价值>=" name="valueMin">
+        <Form.Item label={fh('仓位价值>=')} name="valueMin">
           <Input style={{ width: 100 }} />
         </Form.Item>
-        <Form.Item label="持仓状态" name="status">
+        <Form.Item label={fh('持仓状态')} name="status">
           <Select placeholder="请选择" allowClear style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="仓位类型" name="positionType">
+        <Form.Item label={fh('仓位类型')} name="positionType">
           <Select placeholder="请选择" allowClear style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="开仓类型" name="openType">
+        <Form.Item label={fh('开仓类型')} name="openType">
           <Select placeholder="请选择" allowClear style={{ width: 120 }} />
         </Form.Item>
         <Form.Item>

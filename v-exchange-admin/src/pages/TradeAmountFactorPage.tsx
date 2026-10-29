@@ -1,6 +1,7 @@
 import { Button, Form, InputNumber, Radio, Space, Typography } from 'antd'
 import { PageFrame } from '../components/PageFrame'
 import { tradeAmountFactorConfig } from '../mock/data'
+import { fh } from '../components/FieldHelpLabel'
 
 const { Text, Paragraph } = Typography
 
@@ -30,19 +31,19 @@ export function TradeAmountFactorPage() {
           adjustmentAmplitude: tradeAmountFactorConfig.adjustmentAmplitude,
         }}
       >
-        <Form.Item label="目标系数" name="targetFactor" rules={[{ required: true }]}>
+        <Form.Item label={fh('目标系数')} name="targetFactor" rules={[{ required: true }]}>
           <InputNumber min={0} style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item label="生效模式" name="effectiveMode" rules={[{ required: true }]}>
+        <Form.Item label={fh('生效模式')} name="effectiveMode" rules={[{ required: true }]}>
           <Radio.Group>
             <Radio value="immediate">立即生效</Radio>
             <Radio value="smooth">平滑过渡</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="调整间隔时间" name="adjustmentIntervalMinutes" rules={[{ required: true }]}>
+        <Form.Item label={fh('调整间隔时间')} name="adjustmentIntervalMinutes" rules={[{ required: true }]}>
           <InputNumber min={1} addonAfter="分钟" style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item label="调整幅度" name="adjustmentAmplitude" rules={[{ required: true }]}>
+        <Form.Item label={fh('调整幅度')} name="adjustmentAmplitude" rules={[{ required: true }]}>
           <InputNumber min={0} step={0.01} style={{ width: '100%' }} />
         </Form.Item>
       </Form>

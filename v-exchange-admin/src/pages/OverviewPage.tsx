@@ -12,6 +12,7 @@ import { pairMarketSnapshots } from '../mock/pairMarketData'
 import { positionRecords } from '../mock/extendedData'
 import { PAIR_LIST } from '../config/pairs'
 import './OverviewPage.css'
+import { fh } from '../components/FieldHelpLabel'
 
 const { Text } = Typography
 
@@ -120,15 +121,15 @@ export function OverviewPage() {
           pagination={false}
           dataSource={configRows}
           columns={[
-            { title: '合约', dataIndex: 'symbol', width: 100 },
-            { title: '指数', dataIndex: 'indexName', width: 90 },
-            { title: '合约状态', dataIndex: 'contractStatus', width: 90 },
-            { title: '指数源', dataIndex: 'indexEnabled', width: 80 },
-            { title: '标记价算法', dataIndex: 'fairAlgo', width: 100 },
-            { title: '资金费周期', dataIndex: 'fundingPeriod', width: 100 },
-            { title: '杠杆', dataIndex: 'leverage', width: 90 },
+            { title: fh('合约'), dataIndex: 'symbol', width: 100 },
+            { title: fh('指数'), dataIndex: 'indexName', width: 90 },
+            { title: fh('合约状态'), dataIndex: 'contractStatus', width: 90 },
+            { title: fh('指数源'), dataIndex: 'indexEnabled', width: 80 },
+            { title: fh('标记价算法'), dataIndex: 'fairAlgo', width: 100 },
+            { title: fh('资金费周期'), dataIndex: 'fundingPeriod', width: 100 },
+            { title: fh('杠杆'), dataIndex: 'leverage', width: 90 },
             {
-              title: '快捷入口',
+              title: fh('快捷入口'),
               key: 'links',
               render: (_, row) => (
                 <>

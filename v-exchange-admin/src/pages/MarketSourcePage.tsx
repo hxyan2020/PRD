@@ -48,20 +48,20 @@ export function MarketSourcePage() {
   }
 
   const columns = [
-    { title: '市场名称', dataIndex: 'marketName', width: 140 },
-    { title: '显示名称', dataIndex: 'displayName', width: 120 },
-    { title: '是否需要设置价差监控', dataIndex: 'spreadMonitor', width: 160 },
-    { title: '描述信息', dataIndex: 'description', ellipsis: true },
-    { title: '进入观察期 (秒)', dataIndex: 'observationSeconds', width: 130 },
-    { title: '重新启用 (秒)', dataIndex: 'reenableSeconds', width: 120 },
+    { title: fh('市场名称'), dataIndex: 'marketName', width: 140 },
+    { title: fh('显示名称'), dataIndex: 'displayName', width: 120 },
+    { title: fh('是否需要设置价差监控'), dataIndex: 'spreadMonitor', width: 160 },
+    { title: fh('描述信息'), dataIndex: 'description', ellipsis: true },
+    { title: fh('进入观察期 (秒)'), dataIndex: 'observationSeconds', width: 130 },
+    { title: fh('重新启用 (秒)'), dataIndex: 'reenableSeconds', width: 120 },
     {
-      title: '是否启用',
+      title: fh('是否启用'),
       dataIndex: 'enabled',
       width: 100,
       render: (enabled: boolean) => <Switch checked={enabled} size="small" />,
     },
     {
-      title: '操作记录',
+      title: fh('操作记录'),
       key: 'record',
       width: 100,
       render: () => (
@@ -71,7 +71,7 @@ export function MarketSourcePage() {
       ),
     },
     {
-      title: '操作',
+      title: fh('操作'),
       key: 'action',
       width: 80,
       render: (_: unknown, record: MarketSourceRecord) => (
@@ -92,10 +92,10 @@ export function MarketSourcePage() {
       }
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="市场名称" name="marketName">
+        <Form.Item label={fh('市场名称')} name="marketName">
           <Input placeholder="请输入" style={{ width: 160 }} />
         </Form.Item>
-        <Form.Item label="显示名称" name="displayName">
+        <Form.Item label={fh('显示名称')} name="displayName">
           <Input placeholder="请输入" style={{ width: 160 }} />
         </Form.Item>
         <Form.Item label={fh('状态')} name="status">
@@ -150,49 +150,49 @@ export function MarketSourcePage() {
         ]}
       >
         <Form form={editForm} layout="vertical" style={{ maxHeight: '70vh', overflow: 'auto', paddingRight: 8 }}>
-          <Form.Item label="市场名称" name="marketName">
+          <Form.Item label={fh('市场名称')} name="marketName">
             <Input disabled />
           </Form.Item>
-          <Form.Item label="显示名称" name="displayName">
+          <Form.Item label={fh('显示名称')} name="displayName">
             <Input disabled />
           </Form.Item>
-          <Form.Item label="进入观察期 (秒)" name="observationSeconds">
+          <Form.Item label={fh('进入观察期 (秒)')} name="observationSeconds">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
-          <Form.Item label="重新启用 (秒)" name="reenableSeconds">
+          <Form.Item label={fh('重新启用 (秒)')} name="reenableSeconds">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
-          <Form.Item label="是否启用" name="enabled">
+          <Form.Item label={fh('是否启用')} name="enabled">
             <Radio.Group>
               <Radio value={true}>启用</Radio>
               <Radio value={false}>禁用</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="行情url" name="marketUrl">
+          <Form.Item label={fh('行情url')} name="marketUrl">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item label="交易量url" name="volumeUrl">
+          <Form.Item label={fh('交易量url')} name="volumeUrl">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item label="正向资金费率URL" name="forwardFundingUrl">
+          <Form.Item label={fh('正向资金费率URL')} name="forwardFundingUrl">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item label="反向资金费率URL" name="inverseFundingUrl">
+          <Form.Item label={fh('反向资金费率URL')} name="inverseFundingUrl">
             <Input.TextArea rows={2} />
           </Form.Item>
           <Form.Item name="spreadMonitor" valuePropName="checked">
             <Checkbox>是否需要设置价差监控</Checkbox>
           </Form.Item>
-          <Form.Item label="获取最新价URL" name="latestPriceUrl" required>
+          <Form.Item label={fh('获取最新价URL')} name="latestPriceUrl" required>
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item label="获取指数价URL" name="indexPriceUrl" required>
+          <Form.Item label={fh('获取指数价URL')} name="indexPriceUrl" required>
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item label="获取合理价URL" name="fairPriceUrl" required>
+          <Form.Item label={fh('获取合理价URL')} name="fairPriceUrl" required>
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item label="描述信息" name="description">
+          <Form.Item label={fh('描述信息')} name="description">
             <Input.TextArea rows={2} />
           </Form.Item>
         </Form>

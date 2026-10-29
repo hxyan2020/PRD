@@ -72,9 +72,9 @@ export function RiskFundingFeeChangePage() {
         rowKey="contract"
         columns={[
           { title: fh('合约名称'), dataIndex: 'contract' },
-          { title: '本期结算费率', dataIndex: 'settlementRate' },
-          { title: '是否启用', dataIndex: 'enabled' },
-          { title: '操作', key: 'action', width: 100 },
+          { title: fh('本期结算费率'), dataIndex: 'settlementRate' },
+          { title: fh('是否启用'), dataIndex: 'enabled' },
+          { title: fh('操作'), key: 'action', width: 100 },
         ]}
         dataSource={[]}
         locale={{ emptyText: <Empty description="暂无数据" /> }}
@@ -105,9 +105,9 @@ export function RiskLiquidationSwitchPage() {
           },
         ]}
         columns={[
-          { title: '类型', dataIndex: 'type' },
+          { title: fh('类型'), dataIndex: 'type' },
           { title: fh('更新时间'), dataIndex: 'updatedAt', width: 180 },
-          { title: '操作人员', dataIndex: 'operator', width: 120 },
+          { title: fh('操作人员'), dataIndex: 'operator', width: 120 },
           {
             title: fh('状态'),
             dataIndex: 'status',
@@ -116,7 +116,7 @@ export function RiskLiquidationSwitchPage() {
               status === '开启' ? <Tag color="success">开启</Tag> : <Tag>关闭</Tag>,
           },
           {
-            title: '操作',
+            title: fh('操作'),
             key: 'action',
             width: 120,
             render: () => (
@@ -175,16 +175,16 @@ export function RiskMarketPriceLimitPage() {
         columns={[
           { title: fh('合约展示名称'), dataIndex: 'displayName', width: 130 },
           { title: fh('合约名称'), dataIndex: 'contractName', width: 100 },
-          { title: '大于20F系数', dataIndex: 'gt20f', width: 110 },
-          { title: '小于20F系数', dataIndex: 'lt20f', width: 110 },
-          { title: '默认档位', dataIndex: 'defaultTier', width: 90 },
+          { title: fh('大于20F系数'), dataIndex: 'gt20f', width: 110 },
+          { title: fh('小于20F系数'), dataIndex: 'lt20f', width: 110 },
+          { title: fh('默认档位'), dataIndex: 'defaultTier', width: 90 },
           { title: fh('市价最大吃单档位'), dataIndex: 'maxMarketTier', width: 130 },
           { title: fh('市价单最大偏离系数'), dataIndex: 'maxDeviation', width: 140 },
-          { title: '市价提示开关及阈值设置', dataIndex: 'alertSwitch', width: 180 },
+          { title: fh('市价提示开关及阈值设置'), dataIndex: 'alertSwitch', width: 180 },
           { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
-          { title: '操作者', dataIndex: 'operator', width: 200, ellipsis: true },
+          { title: fh('操作者'), dataIndex: 'operator', width: 200, ellipsis: true },
           {
-            title: '操作',
+            title: fh('操作'),
             key: 'action',
             width: 80,
             fixed: 'right' as const,
@@ -212,7 +212,7 @@ export function RiskReserveListPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="币对名称" name="pair">
+                  <Form.Item label={fh('币对名称')} name="pair">
                     <Input placeholder="请输入" style={{ width: 160 }} />
                   </Form.Item>
                   <Form.Item>
@@ -228,12 +228,12 @@ export function RiskReserveListPage() {
                   columns={[
                     { title: fh('合约展示名称'), dataIndex: 'displayName' },
                     { title: fh('合约名称'), dataIndex: 'contractName' },
-                    { title: '手续费汇总更新', dataIndex: 'feeSummary' },
-                    { title: '可用额度', dataIndex: 'available' },
-                    { title: '净值', dataIndex: 'netValue' },
-                    { title: '已归集资金', dataIndex: 'collected' },
+                    { title: fh('手续费汇总更新'), dataIndex: 'feeSummary' },
+                    { title: fh('可用额度'), dataIndex: 'available' },
+                    { title: fh('净值'), dataIndex: 'netValue' },
+                    { title: fh('已归集资金'), dataIndex: 'collected' },
                     {
-                      title: '基金变动明细',
+                      title: fh('基金变动明细'),
                       key: 'detail',
                       render: () => (
                         <Button type="link" size="small">
@@ -242,7 +242,7 @@ export function RiskReserveListPage() {
                       ),
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       width: 320,
                       render: (_: unknown, row: (typeof riskFundList)[0]) => (
@@ -288,7 +288,7 @@ export function RiskReserveDetailPage() {
         <Form.Item label={fh('合约展示名称')} name="displayName">
           <Input style={{ width: 140 }} />
         </Form.Item>
-        <Form.Item label="变动记录ID" name="recordId">
+        <Form.Item label={fh('变动记录ID')} name="recordId">
           <Input style={{ width: 120 }} />
         </Form.Item>
         <Form.Item>
@@ -304,11 +304,11 @@ export function RiskReserveDetailPage() {
         columns={[
           { title: fh('合约展示名称'), dataIndex: 'displayName', width: 130 },
           { title: fh('合约名称'), dataIndex: 'contractName', width: 100 },
-          { title: '变动记录ID', dataIndex: 'recordId', width: 100 },
-          { title: '合约ID', dataIndex: 'contractId', width: 80 },
-          { title: '变动类型', dataIndex: 'changeType', width: 160 },
-          { title: '变动金额', dataIndex: 'amount', width: 140 },
-          { title: '创建时间', dataIndex: 'createdAt', width: 170 },
+          { title: fh('变动记录ID'), dataIndex: 'recordId', width: 100 },
+          { title: fh('合约ID'), dataIndex: 'contractId', width: 80 },
+          { title: fh('变动类型'), dataIndex: 'changeType', width: 160 },
+          { title: fh('变动金额'), dataIndex: 'amount', width: 140 },
+          { title: fh('创建时间'), dataIndex: 'createdAt', width: 170 },
         ]}
       />
     </PageFrame>
@@ -334,13 +334,13 @@ export function RiskTradingRestrictionPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="ID类型" name="idType" initialValue="all">
+                  <Form.Item label={fh('ID类型')} name="idType" initialValue="all">
                     <Select style={{ width: 120 }} options={[{ value: 'all', label: '全部' }]} />
                   </Form.Item>
-                  <Form.Item label="ID" name="id">
+                  <Form.Item label={fh('ID')} name="id">
                     <Input placeholder="账户ID或用户ID" style={{ width: 160 }} />
                   </Form.Item>
-                  <Form.Item label="所属Broker" name="broker" initialValue="all">
+                  <Form.Item label={fh('所属Broker')} name="broker" initialValue="all">
                     <Select style={{ width: 120 }} options={[{ value: 'all', label: '全部' }]} />
                   </Form.Item>
                   <Form.Item>
@@ -355,15 +355,15 @@ export function RiskTradingRestrictionPage() {
                   locale={{ emptyText: <Empty description="暂无数据" /> }}
                   pagination={false}
                   columns={[
-                    { title: 'ID类型', dataIndex: 'idType' },
-                    { title: 'ID', dataIndex: 'id' },
-                    { title: '所属Broker', dataIndex: 'broker' },
-                    { title: '限制状态', dataIndex: 'status' },
-                    { title: '执行来源', dataIndex: 'source' },
-                    { title: '最近处置人', dataIndex: 'operator' },
-                    { title: '最近处置时间', dataIndex: 'time' },
-                    { title: '处置原因', dataIndex: 'reason' },
-                    { title: '操作', key: 'action', width: 100 },
+                    { title: fh('ID类型'), dataIndex: 'idType' },
+                    { title: fh('ID'), dataIndex: 'id' },
+                    { title: fh('所属Broker'), dataIndex: 'broker' },
+                    { title: fh('限制状态'), dataIndex: 'status' },
+                    { title: fh('执行来源'), dataIndex: 'source' },
+                    { title: fh('最近处置人'), dataIndex: 'operator' },
+                    { title: fh('最近处置时间'), dataIndex: 'time' },
+                    { title: fh('处置原因'), dataIndex: 'reason' },
+                    { title: fh('操作'), key: 'action', width: 100 },
                   ]}
                 />
               </>
@@ -410,15 +410,15 @@ export function RiskSpreadAlertPage() {
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
                   scroll={{ x: 1200 }}
                   columns={[
-                    { title: '合约', dataIndex: 'contract', width: 100 },
+                    { title: fh('合约'), dataIndex: 'contract', width: 100 },
                     { title: fh('告警值'), dataIndex: 'value', width: 80 },
-                    { title: '监控类型1', dataIndex: 'type1', width: 110 },
-                    { title: '价格1', dataIndex: 'price1', width: 100 },
-                    { title: '监控类型2', dataIndex: 'type2', width: 110 },
-                    { title: '价格2', dataIndex: 'price2', width: 100 },
+                    { title: fh('监控类型1'), dataIndex: 'type1', width: 110 },
+                    { title: fh('价格1'), dataIndex: 'price1', width: 100 },
+                    { title: fh('监控类型2'), dataIndex: 'type2', width: 110 },
+                    { title: fh('价格2'), dataIndex: 'price2', width: 100 },
                     { title: fh('监控周期'), dataIndex: 'period', width: 90 },
-                    { title: '告警时间', dataIndex: 'time', width: 160 },
-                    { title: '告警方式', dataIndex: 'channel', width: 80 },
+                    { title: fh('告警时间'), dataIndex: 'time', width: 160 },
+                    { title: fh('告警方式'), dataIndex: 'channel', width: 80 },
                   ]}
                 />
               </>
@@ -442,11 +442,11 @@ export function RiskSpreadAlertPage() {
                   pagination={{ total: 7, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   scroll={{ x: 1200 }}
                   columns={[
-                    { title: '监控类型1', dataIndex: 'type1', width: 120 },
-                    { title: '监控类型2', dataIndex: 'type2', width: 120 },
+                    { title: fh('监控类型1'), dataIndex: 'type1', width: 120 },
+                    { title: fh('监控类型2'), dataIndex: 'type2', width: 120 },
                     { title: fh('告警值'), dataIndex: 'alarmValue', width: 80 },
                     { title: fh('监控周期'), dataIndex: 'period', width: 90 },
-                    { title: '关联合约', dataIndex: 'contracts', width: 90 },
+                    { title: fh('关联合约'), dataIndex: 'contracts', width: 90 },
                     { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
                     { title: fh('更新人'), dataIndex: 'updatedBy', width: 200, ellipsis: true },
                     {
@@ -456,7 +456,7 @@ export function RiskSpreadAlertPage() {
                       render: (s: string) => <StatusTag status={s} />,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       width: 120,
                       render: () => (
@@ -519,7 +519,7 @@ export function RiskSpreadAlertPage() {
               </Form.Item>
             </Space.Compact>
           </Form.Item>
-          <Form.Item label="关联合约" name="contracts" rules={[{ required: true }]}>
+          <Form.Item label={fh('关联合约')} name="contracts" rules={[{ required: true }]}>
             <Select mode="multiple" placeholder="请选择关联合约" options={symbolOptions} />
           </Form.Item>
           <Form.Item
@@ -565,11 +565,11 @@ export function RiskNoTradeMonitorPage() {
                   dataSource={noTradeAlertRecords}
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
-                    { title: '合约', dataIndex: 'contract' },
+                    { title: fh('合约'), dataIndex: 'contract' },
                     { title: fh('告警类型'), dataIndex: 'type' },
                     { title: fh('告警值'), dataIndex: 'value' },
-                    { title: '告警时间', dataIndex: 'time' },
-                    { title: '告警方式', dataIndex: 'channel' },
+                    { title: fh('告警时间'), dataIndex: 'time' },
+                    { title: fh('告警方式'), dataIndex: 'channel' },
                   ]}
                 />
               </>
@@ -600,7 +600,7 @@ export function RiskNoTradeMonitorPage() {
                       render: (s: string) => <StatusTag status={s} />,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       render: () => (
                         <Space>
@@ -643,7 +643,7 @@ export function RiskNoTradeMonitorPage() {
         ]}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item label="持续时长" required>
+          <Form.Item label={fh('持续时长')} required>
             <Space.Compact style={{ width: '100%' }}>
               <Form.Item name="duration" noStyle rules={[{ required: true }]}>
                 <InputNumber style={{ width: '60%' }} placeholder="请输入持续时长数值" min={1} />
@@ -653,7 +653,7 @@ export function RiskNoTradeMonitorPage() {
               </Form.Item>
             </Space.Compact>
           </Form.Item>
-          <Form.Item label="关联合约" name="contracts" rules={[{ required: true }]}>
+          <Form.Item label={fh('关联合约')} name="contracts" rules={[{ required: true }]}>
             <Select mode="multiple" placeholder="请选择关联合约" options={symbolOptions} />
           </Form.Item>
           <Form.Item
@@ -696,11 +696,11 @@ export function RiskDepthMonitorPage() {
                   dataSource={depthAlertRecords}
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
-                    { title: '合约', dataIndex: 'contract' },
+                    { title: fh('合约'), dataIndex: 'contract' },
                     { title: fh('告警类型'), dataIndex: 'type' },
                     { title: fh('告警值'), dataIndex: 'value' },
-                    { title: '告警时间', dataIndex: 'time' },
-                    { title: '告警方式', dataIndex: 'channel' },
+                    { title: fh('告警时间'), dataIndex: 'time' },
+                    { title: fh('告警方式'), dataIndex: 'channel' },
                   ]}
                 />
               </>
@@ -725,7 +725,7 @@ export function RiskDepthMonitorPage() {
                   columns={[
                     { title: fh('告警类型'), dataIndex: 'alertType' },
                     { title: fh('告警值'), dataIndex: 'alertValue' },
-                    { title: '关联合约', dataIndex: 'contracts' },
+                    { title: fh('关联合约'), dataIndex: 'contracts' },
                     { title: fh('更新时间'), dataIndex: 'updatedAt' },
                     { title: fh('更新人'), dataIndex: 'updatedBy', ellipsis: true },
                     {
@@ -734,7 +734,7 @@ export function RiskDepthMonitorPage() {
                       render: (s: string) => <StatusTag status={s} />,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       render: () => (
                         <Space>
@@ -787,13 +787,13 @@ export function RiskPeerSpreadMonitorPage() {
                   dataSource={peerSpreadRecords}
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
-                    { title: '合约', dataIndex: 'contract' },
+                    { title: fh('合约'), dataIndex: 'contract' },
                     { title: fh('监控周期'), dataIndex: 'period' },
-                    { title: '监控对标友商', dataIndex: 'peer' },
-                    { title: '偏差类型', dataIndex: 'priceType' },
-                    { title: '偏差值', dataIndex: 'deviation' },
-                    { title: '告警时间', dataIndex: 'time' },
-                    { title: '告警方式', dataIndex: 'channel' },
+                    { title: fh('监控对标友商'), dataIndex: 'peer' },
+                    { title: fh('偏差类型'), dataIndex: 'priceType' },
+                    { title: fh('偏差值'), dataIndex: 'deviation' },
+                    { title: fh('告警时间'), dataIndex: 'time' },
+                    { title: fh('告警方式'), dataIndex: 'channel' },
                   ]}
                 />
               </>
@@ -816,10 +816,10 @@ export function RiskPeerSpreadMonitorPage() {
                   dataSource={peerSpreadConfigs}
                   pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '监控友商', dataIndex: 'peers', width: 220 },
-                    { title: '监控信息', dataIndex: 'info', width: 260 },
+                    { title: fh('监控友商'), dataIndex: 'peers', width: 220 },
+                    { title: fh('监控信息'), dataIndex: 'info', width: 260 },
                     { title: fh('监控周期'), dataIndex: 'period', width: 90 },
-                    { title: '关联合约', dataIndex: 'contracts', width: 90 },
+                    { title: fh('关联合约'), dataIndex: 'contracts', width: 90 },
                     { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
                     { title: fh('更新人'), dataIndex: 'updatedBy', width: 200, ellipsis: true },
                     {
@@ -829,7 +829,7 @@ export function RiskPeerSpreadMonitorPage() {
                       render: (s: string) => <Tag>{s}</Tag>,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       width: 120,
                       render: () => (
@@ -899,7 +899,7 @@ export function RiskPeerSpreadMonitorPage() {
               </Form.Item>
             </Space.Compact>
           </Form.Item>
-          <Form.Item label="关联合约" name="contracts" rules={[{ required: true }]}>
+          <Form.Item label={fh('关联合约')} name="contracts" rules={[{ required: true }]}>
             <Select mode="multiple" placeholder="请选择关联合约" options={symbolOptions} />
           </Form.Item>
           <Form.Item
@@ -945,14 +945,14 @@ export function RiskExternalFundingMonitorPage() {
                   scroll={{ x: 1200 }}
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
-                    { title: '合约', dataIndex: 'contract', width: 100 },
-                    { title: '资金费率数值', dataIndex: 'rate', width: 120 },
-                    { title: '收取周期 (Hour)', dataIndex: 'period', width: 120 },
+                    { title: fh('合约'), dataIndex: 'contract', width: 100 },
+                    { title: fh('资金费率数值'), dataIndex: 'rate', width: 120 },
+                    { title: fh('收取周期 (Hour)'), dataIndex: 'period', width: 120 },
                     { title: fh('对标交易所'), dataIndex: 'peer', width: 110 },
-                    { title: '对标交易所资金费率', dataIndex: 'peerRate', width: 150 },
-                    { title: '对标交易所收取周期 (Hour)', dataIndex: 'peerPeriod', width: 180 },
-                    { title: '告警时间', dataIndex: 'time', width: 160 },
-                    { title: '告警方式', dataIndex: 'channel', width: 90 },
+                    { title: fh('对标交易所资金费率'), dataIndex: 'peerRate', width: 150 },
+                    { title: fh('对标交易所收取周期 (Hour)'), dataIndex: 'peerPeriod', width: 180 },
+                    { title: fh('告警时间'), dataIndex: 'time', width: 160 },
+                    { title: fh('告警方式'), dataIndex: 'channel', width: 90 },
                   ]}
                 />
               </>
@@ -988,7 +988,7 @@ export function RiskExternalFundingMonitorPage() {
                         s === '生效中' ? <StatusTag status={s} /> : <Tag>{s}</Tag>,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       width: 120,
                       render: (_: unknown, row: (typeof externalFundingConfigs)[0]) => (
@@ -1086,13 +1086,13 @@ export function RiskInternalFundingMonitorPage() {
                   locale={{ emptyText: <Empty description="暂无数据" /> }}
                   pagination={false}
                   columns={[
-                    { title: '合约', dataIndex: 'contract' },
-                    { title: '平台资金费率', dataIndex: 'rate' },
+                    { title: fh('合约'), dataIndex: 'contract' },
+                    { title: fh('平台资金费率'), dataIndex: 'rate' },
                     { title: fh('监控周期'), dataIndex: 'period' },
                     { title: fh('监控费率上限'), dataIndex: 'upper' },
                     { title: fh('监控费率下限'), dataIndex: 'lower' },
-                    { title: '告警时间', dataIndex: 'time' },
-                    { title: '告警方式', dataIndex: 'channel' },
+                    { title: fh('告警时间'), dataIndex: 'time' },
+                    { title: fh('告警方式'), dataIndex: 'channel' },
                   ]}
                 />
               </>
@@ -1128,7 +1128,7 @@ export function RiskInternalFundingMonitorPage() {
                         s === '生效中' ? <StatusTag status={s} /> : <Tag>{s}</Tag>,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       render: (_: unknown, row: (typeof internalFundingConfigs)[0]) => (
                         <Space>
@@ -1232,12 +1232,12 @@ export function RiskLargeLiqWarningPage() {
                   locale={{ emptyText: <Empty description="暂无数据" /> }}
                   pagination={false}
                   columns={[
-                    { title: '合约账户ID', dataIndex: 'accountId' },
-                    { title: '持仓信息', dataIndex: 'position' },
-                    { title: '仓位模式', dataIndex: 'mode' },
-                    { title: 'MMR', dataIndex: 'mmr' },
-                    { title: '告警时间', dataIndex: 'time' },
-                    { title: '告警方式', dataIndex: 'channel' },
+                    { title: fh('合约账户ID'), dataIndex: 'accountId' },
+                    { title: fh('持仓信息'), dataIndex: 'position' },
+                    { title: fh('仓位模式'), dataIndex: 'mode' },
+                    { title: fh('MMR'), dataIndex: 'mmr' },
+                    { title: fh('告警时间'), dataIndex: 'time' },
+                    { title: fh('告警方式'), dataIndex: 'channel' },
                   ]}
                 />
               </>
@@ -1270,7 +1270,7 @@ export function RiskLargeLiqWarningPage() {
                       render: (s: string) => <StatusTag status={s} />,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       render: () => (
                         <Space>
@@ -1360,11 +1360,11 @@ export function RiskLargeLiqNotifyPage() {
                   dataSource={largeLiqNotifyRecords}
                   pagination={{ total: 5, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '合约账户ID', dataIndex: 'accountId' },
-                    { title: '持仓信息', dataIndex: 'position' },
-                    { title: '仓位模式', dataIndex: 'mode' },
-                    { title: '告警时间', dataIndex: 'time' },
-                    { title: '告警方式', dataIndex: 'channel' },
+                    { title: fh('合约账户ID'), dataIndex: 'accountId' },
+                    { title: fh('持仓信息'), dataIndex: 'position' },
+                    { title: fh('仓位模式'), dataIndex: 'mode' },
+                    { title: fh('告警时间'), dataIndex: 'time' },
+                    { title: fh('告警方式'), dataIndex: 'channel' },
                   ]}
                 />
               </>
@@ -1396,7 +1396,7 @@ export function RiskLargeLiqNotifyPage() {
                       render: (s: string) => <StatusTag status={s} />,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       render: () => (
                         <Space>
@@ -1475,8 +1475,8 @@ export function RiskAdlAbnormalPage() {
                 pagination={false}
                 columns={[
                   { title: fh('告警类型'), dataIndex: 'alarmType' },
-                  { title: '告警时间', dataIndex: 'time' },
-                  { title: '告警方式', dataIndex: 'channel' },
+                  { title: fh('告警时间'), dataIndex: 'time' },
+                  { title: fh('告警方式'), dataIndex: 'channel' },
                 ]}
               />
             ),
@@ -1507,7 +1507,7 @@ export function RiskAdlAbnormalPage() {
                       render: (s: string) => <StatusTag status={s} />,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       render: () => (
                         <Space>

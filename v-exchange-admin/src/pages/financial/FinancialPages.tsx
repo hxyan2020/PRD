@@ -18,7 +18,7 @@ export function FinancialReportPage() {
       title="Financial Report"
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="Report Type" name="type">
+          <Form.Item label={fh('Report Type')} name="type">
             <Select placeholder="请选择" style={{ width: 160 }} />
           </Form.Item>
           <Form.Item name="range">
@@ -31,9 +31,9 @@ export function FinancialReportPage() {
       }
       rowKey="id"
       columns={[
-        { title: 'Report ID', dataIndex: 'id' },
-        { title: 'Type', dataIndex: 'type' },
-        { title: 'Generated At', dataIndex: 'generatedAt' },
+        { title: fh('Report ID'), dataIndex: 'id' },
+        { title: fh('Type'), dataIndex: 'type' },
+        { title: fh('Generated At'), dataIndex: 'generatedAt' },
       ]}
       dataSource={[]}
       locale={emptyLocale}
@@ -49,7 +49,7 @@ export function TransferRecordPage() {
       title="Transfer Record"
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="Account ID" name="accountId">
+          <Form.Item label={fh('Account ID')} name="accountId">
             <Input style={{ width: 140 }} />
           </Form.Item>
           <Form.Item name="range">
@@ -62,10 +62,10 @@ export function TransferRecordPage() {
       }
       rowKey="id"
       columns={[
-        { title: 'From', dataIndex: 'from' },
-        { title: 'To', dataIndex: 'to' },
-        { title: 'Amount', dataIndex: 'amount' },
-        { title: 'Time', dataIndex: 'time' },
+        { title: fh('From'), dataIndex: 'from' },
+        { title: fh('To'), dataIndex: 'to' },
+        { title: fh('Amount'), dataIndex: 'amount' },
+        { title: fh('Time'), dataIndex: 'time' },
       ]}
       dataSource={[]}
       locale={emptyLocale}
@@ -104,11 +104,11 @@ export function FinancialAccountPage() {
           rowKey="updatedAt"
           pagination={false}
           columns={[
-            { title: 'Account ID', dataIndex: 'accountId' },
-            { title: 'Flow Type', dataIndex: 'flowType' },
-            { title: 'Trigger Type', dataIndex: 'triggerType' },
-            { title: 'Flow Amount (USD)', dataIndex: 'amountUsd' },
-            { title: 'Updated At', dataIndex: 'updatedAt' },
+            { title: fh('Account ID'), dataIndex: 'accountId' },
+            { title: fh('Flow Type'), dataIndex: 'flowType' },
+            { title: fh('Trigger Type'), dataIndex: 'triggerType' },
+            { title: fh('Flow Amount (USD)'), dataIndex: 'amountUsd' },
+            { title: fh('Updated At'), dataIndex: 'updatedAt' },
           ]}
           dataSource={financialFundRecords}
         />
@@ -122,10 +122,10 @@ export function FinancialReconPage() {
   const alertTable = (
     <>
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="User">
+        <Form.Item label={fh('User')}>
           <Select defaultValue="BROKER" style={{ width: 120 }} options={[{ value: 'BROKER', label: 'BROKER' }]} />
         </Form.Item>
-        <Form.Item label="Alert Type" name="alertType" initialValue="all">
+        <Form.Item label={fh('Alert Type')} name="alertType" initialValue="all">
           <Select style={{ width: 120 }} options={[{ value: 'all', label: 'All' }]} />
         </Form.Item>
         <Form.Item>
@@ -137,12 +137,12 @@ export function FinancialReconPage() {
         bordered
         locale={emptyLocale}
         columns={[
-          { title: 'User ID', dataIndex: 'userId' },
-          { title: 'Alert ID', dataIndex: 'alertId' },
-          { title: 'Alert Type', dataIndex: 'alertType' },
-          { title: 'Trigger Detail', dataIndex: 'detail' },
-          { title: 'Alert Time', dataIndex: 'alertTime' },
-          { title: 'Alert Method', dataIndex: 'method' },
+          { title: fh('User ID'), dataIndex: 'userId' },
+          { title: fh('Alert ID'), dataIndex: 'alertId' },
+          { title: fh('Alert Type'), dataIndex: 'alertType' },
+          { title: fh('Trigger Detail'), dataIndex: 'detail' },
+          { title: fh('Alert Time'), dataIndex: 'alertTime' },
+          { title: fh('Alert Method'), dataIndex: 'method' },
         ]}
         dataSource={[]}
         pagination={{ pageSize: 10 }}
@@ -169,19 +169,19 @@ export function FinanceFlowPage() {
       title="financeFlow"
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16, rowGap: 12 }}>
-          <Form.Item label="用户合约FID" name="fid">
+          <Form.Item label={fh('用户合约FID')} name="fid">
             <Select placeholder="请选择" style={{ width: 140 }} />
           </Form.Item>
           <Form.Item label={fh('合约名称')} name="contract">
             <Select placeholder="请选择" style={{ width: 140 }} />
           </Form.Item>
-          <Form.Item label="币种" name="coin">
+          <Form.Item label={fh('币种')} name="coin">
             <Select placeholder="请选择" style={{ width: 120 }} />
           </Form.Item>
-          <Form.Item label="类型" name="type">
+          <Form.Item label={fh('类型')} name="type">
             <Select placeholder="请选择" style={{ width: 120 }} />
           </Form.Item>
-          <Form.Item label="出入金类型" name="flowType">
+          <Form.Item label={fh('出入金类型')} name="flowType">
             <Select placeholder="请选择" style={{ width: 140 }} />
           </Form.Item>
           <Form.Item name="range">
@@ -194,13 +194,13 @@ export function FinanceFlowPage() {
       }
       rowKey="fid"
       columns={[
-        { title: '合约FID', dataIndex: 'fid' },
+        { title: fh('合约FID'), dataIndex: 'fid' },
         { title: fh('合约名称'), dataIndex: 'contractName' },
-        { title: '币种', dataIndex: 'coin' },
-        { title: '类型', dataIndex: 'type' },
-        { title: '入/出', dataIndex: 'direction' },
-        { title: '金额', dataIndex: 'amount' },
-        { title: '时间', dataIndex: 'time' },
+        { title: fh('币种'), dataIndex: 'coin' },
+        { title: fh('类型'), dataIndex: 'type' },
+        { title: fh('入/出'), dataIndex: 'direction' },
+        { title: fh('金额'), dataIndex: 'amount' },
+        { title: fh('时间'), dataIndex: 'time' },
       ]}
       dataSource={[]}
       locale={emptyLocale}

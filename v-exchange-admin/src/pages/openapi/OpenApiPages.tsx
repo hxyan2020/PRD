@@ -4,6 +4,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { ListPageShell } from '../../components/ListPageShell'
 import { PageFrame } from '../../components/PageFrame'
 import { marketMakerWhitelist } from '../../mock/openapiFinancialData'
+import { fh } from '../../components/FieldHelpLabel'
 
 const emptyLocale = { emptyText: <Empty description="暂无数据" /> }
 
@@ -25,12 +26,12 @@ export function OpenApiWhitelistPage() {
               }
               rowKey="ip"
               columns={[
-                { title: 'IP地址', dataIndex: 'ip' },
-                { title: '备注', dataIndex: 'remark' },
-                { title: '创建者', dataIndex: 'creator' },
-                { title: '创建时间', dataIndex: 'createdAt' },
+                { title: fh('IP地址'), dataIndex: 'ip' },
+                { title: fh('备注'), dataIndex: 'remark' },
+                { title: fh('创建者'), dataIndex: 'creator' },
+                { title: fh('创建时间'), dataIndex: 'createdAt' },
                 {
-                  title: '操作',
+                  title: fh('操作'),
                   key: 'op',
                   render: () => (
                     <Button danger size="small">
@@ -57,11 +58,11 @@ export function OpenApiWhitelistPage() {
               }
               rowKey="uid"
               columns={[
-                { title: 'UID', dataIndex: 'uid' },
-                { title: '备注', dataIndex: 'remark' },
-                { title: '创建者', dataIndex: 'creator' },
-                { title: '创建时间', dataIndex: 'createdAt' },
-                { title: '操作', key: 'op', render: () => <Button danger size="small">删除</Button> },
+                { title: fh('UID'), dataIndex: 'uid' },
+                { title: fh('备注'), dataIndex: 'remark' },
+                { title: fh('创建者'), dataIndex: 'creator' },
+                { title: fh('创建时间'), dataIndex: 'createdAt' },
+                { title: fh('操作'), key: 'op', render: () => <Button danger size="small">删除</Button> },
               ]}
               dataSource={[]}
               locale={emptyLocale}
@@ -101,12 +102,12 @@ export function OpenApiMarketMakerPage() {
       }
       rowKey="contractFid"
       columns={[
-        { title: '做市商合约FID', dataIndex: 'contractFid' },
-        { title: '备注', dataIndex: 'remark' },
-        { title: '创建者', dataIndex: 'creator' },
-        { title: '创建时间', dataIndex: 'createdAt', width: 170 },
+        { title: fh('做市商合约FID'), dataIndex: 'contractFid' },
+        { title: fh('备注'), dataIndex: 'remark' },
+        { title: fh('创建者'), dataIndex: 'creator' },
+        { title: fh('创建时间'), dataIndex: 'createdAt', width: 170 },
         {
-          title: '操作',
+          title: fh('操作'),
           key: 'op',
           width: 90,
           render: () => (
@@ -133,13 +134,13 @@ export function OpenApiMmBlacklistPage() {
       }
       rowKey="contractFid"
       columns={[
-        { title: '做市商合约FID', dataIndex: 'contractFid' },
-        { title: '备注', dataIndex: 'remark' },
-        { title: '已拉黑用户FID', dataIndex: 'blockedFid' },
-        { title: '创建者', dataIndex: 'creator' },
-        { title: '创建时间', dataIndex: 'createdAt' },
+        { title: fh('做市商合约FID'), dataIndex: 'contractFid' },
+        { title: fh('备注'), dataIndex: 'remark' },
+        { title: fh('已拉黑用户FID'), dataIndex: 'blockedFid' },
+        { title: fh('创建者'), dataIndex: 'creator' },
+        { title: fh('创建时间'), dataIndex: 'createdAt' },
         {
-          title: '操作',
+          title: fh('操作'),
           key: 'op',
           render: () => (
             <Button danger size="small">

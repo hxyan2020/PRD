@@ -3,6 +3,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { QueryResetButtons } from '../../components/QueryResetButtons'
 import { ListPageShell } from '../../components/ListPageShell'
 import { redisKeyRecords, redisValueRecords } from '../../mock/extendedData'
+import { fh } from '../../components/FieldHelpLabel'
 
 export function RedisKeyManagePage() {
   const [form] = Form.useForm()
@@ -16,7 +17,7 @@ export function RedisKeyManagePage() {
       }
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="Key" name="key">
+          <Form.Item label={fh('Key')} name="key">
             <Input style={{ width: 240 }} />
           </Form.Item>
           <Form.Item>
@@ -29,13 +30,13 @@ export function RedisKeyManagePage() {
       }
       rowKey="key"
       columns={[
-        { title: 'Key', dataIndex: 'key', ellipsis: true },
-        { title: '类型', dataIndex: 'type', width: 100 },
-        { title: 'Tag', dataIndex: 'tag', width: 80 },
-        { title: '备注', dataIndex: 'remark', ellipsis: true },
-        { title: '创建时间', dataIndex: 'createdAt', width: 170 },
+        { title: fh('Key'), dataIndex: 'key', ellipsis: true },
+        { title: fh('类型'), dataIndex: 'type', width: 100 },
+        { title: fh('Tag'), dataIndex: 'tag', width: 80 },
+        { title: fh('备注'), dataIndex: 'remark', ellipsis: true },
+        { title: fh('创建时间'), dataIndex: 'createdAt', width: 170 },
         {
-          title: '操作',
+          title: fh('操作'),
           key: 'op',
           width: 160,
           render: () => (
@@ -66,7 +67,7 @@ export function RedisValueManagePage() {
       title="合约Redis Value管理"
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="Key" name="key">
+          <Form.Item label={fh('Key')} name="key">
             <Input style={{ width: 280 }} />
           </Form.Item>
           <Form.Item>
@@ -79,11 +80,11 @@ export function RedisValueManagePage() {
       }
       rowKey="key"
       columns={[
-        { title: 'Key', dataIndex: 'key', width: 280 },
-        { title: 'Value', dataIndex: 'value', width: 120 },
-        { title: '备注', dataIndex: 'remark', ellipsis: true },
+        { title: fh('Key'), dataIndex: 'key', width: 280 },
+        { title: fh('Value'), dataIndex: 'value', width: 120 },
+        { title: fh('备注'), dataIndex: 'remark', ellipsis: true },
         {
-          title: '操作',
+          title: fh('操作'),
           key: 'op',
           width: 140,
           render: () => (

@@ -24,16 +24,16 @@ export function UserAssetPage() {
         </Button>
       </Space>
       <Form form={form} layout="inline" style={{ marginBottom: 16, rowGap: 12 }}>
-        <Form.Item label="合约ID" name="contractId">
+        <Form.Item label={fh('合约ID')} name="contractId">
           <Input style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="币种" name="coin">
+        <Form.Item label={fh('币种')} name="coin">
           <Select placeholder="请选择" style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="最小总权益" name="minEquity">
+        <Form.Item label={fh('最小总权益')} name="minEquity">
           <Input style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="账户类型" name="accountType">
+        <Form.Item label={fh('账户类型')} name="accountType">
           <Select placeholder="请选择" style={{ width: 120 }} />
         </Form.Item>
         <Form.Item>
@@ -63,16 +63,16 @@ export function UserRateConfigPage() {
       }
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="合约FID" name="fid">
+          <Form.Item label={fh('合约FID')} name="fid">
             <Input style={{ width: 120 }} />
           </Form.Item>
-          <Form.Item label="UID" name="uid">
+          <Form.Item label={fh('UID')} name="uid">
             <Input style={{ width: 120 }} />
           </Form.Item>
-          <Form.Item label="是否是做市商" name="mm">
+          <Form.Item label={fh('是否是做市商')} name="mm">
             <Select placeholder="请选择" style={{ width: 140 }} />
           </Form.Item>
-          <Form.Item label="用户类型" name="userType">
+          <Form.Item label={fh('用户类型')} name="userType">
             <Select placeholder="请选择" style={{ width: 140 }} />
           </Form.Item>
           <Form.Item>
@@ -83,24 +83,24 @@ export function UserRateConfigPage() {
       rowKey="remark"
       scroll={{ x: 2200 }}
       columns={[
-        { title: '合约FID', dataIndex: 'contractFid', width: 100 },
-        { title: 'UID', dataIndex: 'uid', width: 80 },
+        { title: fh('合约FID'), dataIndex: 'contractFid', width: 100 },
+        { title: fh('UID'), dataIndex: 'uid', width: 80 },
         {
-          title: '是否做市商',
+          title: fh('是否做市商'),
           dataIndex: 'isMarketMaker',
           width: 100,
           render: (v: boolean) => (v ? '✓' : ''),
         },
-        { title: '用户类型', dataIndex: 'userType', width: 110 },
+        { title: fh('用户类型'), dataIndex: 'userType', width: 110 },
         {
-          title: '费率/折扣/代理',
+          title: fh('费率/折扣/代理'),
           key: 'rates',
           width: 180,
           render: (_: unknown, row: (typeof userRateConfigRecords)[0]) =>
             `Maker:${row.makerRate} Taker:${row.takerRate} 是否为代理:${row.isAgent}`,
         },
         {
-          title: '合约/费率组',
+          title: fh('合约/费率组'),
           key: 'group',
           width: 140,
           render: (_: unknown, row: (typeof userRateConfigRecords)[0]) => (
@@ -113,14 +113,14 @@ export function UserRateConfigPage() {
           ),
         },
         {
-          title: '开启全局费率优惠',
+          title: fh('开启全局费率优惠'),
           dataIndex: 'globalDiscount',
           width: 140,
           render: (v: boolean) => (v ? '✓' : ''),
         },
-        { title: '优惠模式', dataIndex: 'discountMode', width: 100 },
+        { title: fh('优惠模式'), dataIndex: 'discountMode', width: 100 },
         {
-          title: '持仓类型',
+          title: fh('持仓类型'),
           dataIndex: 'positionType',
           width: 120,
           render: (text: string) => (
@@ -132,9 +132,9 @@ export function UserRateConfigPage() {
             </Space>
           ),
         },
-        { title: '备注', dataIndex: 'remark', width: 140 },
+        { title: fh('备注'), dataIndex: 'remark', width: 140 },
         {
-          title: '操作记录',
+          title: fh('操作记录'),
           key: 'log',
           width: 90,
           render: () => (
@@ -144,7 +144,7 @@ export function UserRateConfigPage() {
           ),
         },
         {
-          title: '操作',
+          title: fh('操作'),
           key: 'op',
           width: 120,
           render: () => (
@@ -210,13 +210,13 @@ export function UserRiskSettingsPage() {
         ]}
       />
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约FID" name="fid">
+        <Form.Item label={fh('合约FID')} name="fid">
           <Input style={{ width: 120 }} />
         </Form.Item>
         <Form.Item label={fh('合约名称')} name="contract">
           <Input style={{ width: 140 }} />
         </Form.Item>
-        <Form.Item label="持仓类型" name="positionType">
+        <Form.Item label={fh('持仓类型')} name="positionType">
           <Select placeholder="请选择" style={{ width: 120 }} />
         </Form.Item>
         <Form.Item>
@@ -245,13 +245,13 @@ export function UserBlacklistPage() {
       }
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="合约FID1" name="fid1">
+          <Form.Item label={fh('合约FID1')} name="fid1">
             <Input style={{ width: 140 }} />
           </Form.Item>
-          <Form.Item label="合约FID2" name="fid2">
+          <Form.Item label={fh('合约FID2')} name="fid2">
             <Input style={{ width: 140 }} />
           </Form.Item>
-          <Form.Item label="启用状态" name="status">
+          <Form.Item label={fh('启用状态')} name="status">
             <Select placeholder="请选择" style={{ width: 120 }} />
           </Form.Item>
           <Form.Item>
@@ -262,10 +262,10 @@ export function UserBlacklistPage() {
       rowKey="fid1"
       columns={[
         { title: fh('更新时间'), dataIndex: 'updatedAt' },
-        { title: '合约FID1', dataIndex: 'fid1' },
-        { title: '合约FID2', dataIndex: 'fid2' },
+        { title: fh('合约FID1'), dataIndex: 'fid1' },
+        { title: fh('合约FID2'), dataIndex: 'fid2' },
         { title: fh('状态'), dataIndex: 'status' },
-        { title: '操作', key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
+        { title: fh('操作'), key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
       ]}
       dataSource={[]}
       locale={emptyLocale}
@@ -296,7 +296,7 @@ export function BlacklistGroupPage() {
       }
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="分组名称" name="groupName">
+        <Form.Item label={fh('分组名称')} name="groupName">
           <Input style={{ width: 160 }} />
         </Form.Item>
         <Form.Item>
@@ -342,14 +342,14 @@ export function MarginChangePage() {
       rowKey="positionId"
       scroll={{ x: 1400 }}
       columns={[
-        { title: '合约FID', dataIndex: 'contractFid', width: 140 },
-        { title: '仓位ID', dataIndex: 'positionId', width: 90 },
+        { title: fh('合约FID'), dataIndex: 'contractFid', width: 140 },
+        { title: fh('仓位ID'), dataIndex: 'positionId', width: 90 },
         { title: fh('合约名称'), dataIndex: 'contractName', width: 120 },
-        { title: '方向', dataIndex: 'direction', width: 80 },
-        { title: '类型', dataIndex: 'type', width: 100 },
-        { title: '金额', dataIndex: 'amount', width: 80 },
-        { title: '强平价格', dataIndex: 'liqPrice', width: 140 },
-        { title: '修改时间', dataIndex: 'updatedAt', width: 160 },
+        { title: fh('方向'), dataIndex: 'direction', width: 80 },
+        { title: fh('类型'), dataIndex: 'type', width: 100 },
+        { title: fh('金额'), dataIndex: 'amount', width: 80 },
+        { title: fh('强平价格'), dataIndex: 'liqPrice', width: 140 },
+        { title: fh('修改时间'), dataIndex: 'updatedAt', width: 160 },
       ]}
       dataSource={marginChangeRecords}
       pagination={{

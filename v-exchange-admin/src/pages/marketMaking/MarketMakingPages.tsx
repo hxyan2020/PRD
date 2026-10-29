@@ -54,7 +54,7 @@ export function DbTakeoverAccountPage() {
       <Card size="small" title="账户基础信息" style={{ marginBottom: 16 }} extra={<Button type="primary">回笼资金</Button>}>
         <Row gutter={24}>
           <Col span={6}>
-            <Metric label="账户ID" value={a.accountId} />
+            <Metric label={fh('账户ID')} value={a.accountId} />
           </Col>
           <Col span={6}>
             <Metric label={fh('钱包余额')} value={a.walletBalance} />
@@ -90,16 +90,16 @@ export function DbTakeoverAccountPage() {
       <Card size="small" title="账户持仓信息">
         <Row gutter={16} style={{ marginBottom: 16 }}>
           <Col span={5}>
-            <Metric label="总占用保证金" value={a.totalMargin} />
+            <Metric label={fh('总占用保证金')} value={a.totalMargin} />
           </Col>
           <Col span={4}>
-            <Metric label="持仓总额" value={a.totalPosition} />
+            <Metric label={fh('持仓总额')} value={a.totalPosition} />
           </Col>
           <Col span={5}>
-            <Metric label="总未实现盈亏" value={a.totalUnrealizedPnl} />
+            <Metric label={fh('总未实现盈亏')} value={a.totalUnrealizedPnl} />
           </Col>
           <Col span={5}>
-            <Metric label="账户权益" value={a.accountEquity} />
+            <Metric label={fh('账户权益')} value={a.accountEquity} />
           </Col>
           <Col span={5}>
             <Metric label={fh('账户MMR')} value={a.accountMmr} />
@@ -122,14 +122,14 @@ export function DbTakeoverAccountPage() {
           pagination={false}
           columns={[
             { title: fh('合约名称'), dataIndex: 'contract' },
-            { title: '持仓方向', dataIndex: 'side' },
-            { title: '持仓均价', dataIndex: 'avgPrice' },
+            { title: fh('持仓方向'), dataIndex: 'side' },
+            { title: fh('持仓均价'), dataIndex: 'avgPrice' },
             {
               title: <span style={{ color: '#cf1322' }}>持仓合约价值 (USD)</span>,
               dataIndex: 'contractValue',
             },
-            { title: '占用保证金 (USD)', dataIndex: 'margin' },
-            { title: '未实现盈亏 (USD)', dataIndex: 'upnl' },
+            { title: fh('占用保证金 (USD)'), dataIndex: 'margin' },
+            { title: fh('未实现盈亏 (USD)'), dataIndex: 'upnl' },
           ]}
         />
       </Card>
@@ -145,7 +145,7 @@ export function DbTakeoverAccountPage() {
         }}
       >
         <Form form={editForm} layout="vertical">
-          <Form.Item label="水位线 (USD)" name="value" rules={[{ required: true }]}>
+          <Form.Item label={fh('水位线 (USD)')} name="value" rules={[{ required: true }]}>
             <Input placeholder="请输入金额" addonAfter="USD" />
           </Form.Item>
         </Form>
@@ -173,8 +173,8 @@ export function DbTakeoverFundFlowPage() {
         dataSource={dbFundFlowRecords}
         pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
         columns={[
-          { title: '账户ID', dataIndex: 'accountId', width: 120 },
-          { title: '流水ID', dataIndex: 'flowId', width: 120 },
+          { title: fh('账户ID'), dataIndex: 'accountId', width: 120 },
+          { title: fh('流水ID'), dataIndex: 'flowId', width: 120 },
           { title: fh('流水类型'), dataIndex: 'type', width: 120 },
           {
             title: fh('金额 (USD)'),
@@ -227,9 +227,9 @@ export function DbAccountAlarmPage() {
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
                     { title: fh('告警类型'), dataIndex: 'type', width: 160 },
-                    { title: '告警信息', dataIndex: 'info' },
-                    { title: '告警时间', dataIndex: 'time', width: 180 },
-                    { title: '告警方式', dataIndex: 'channel', width: 100 },
+                    { title: fh('告警信息'), dataIndex: 'info' },
+                    { title: fh('告警时间'), dataIndex: 'time', width: 180 },
+                    { title: fh('告警方式'), dataIndex: 'channel', width: 100 },
                   ]}
                 />
               </>
@@ -271,7 +271,7 @@ export function DbAccountAlarmPage() {
                       render: (s: string) => <Tag color="success">{s}</Tag>,
                     },
                     {
-                      title: '操作',
+                      title: fh('操作'),
                       key: 'action',
                       width: 120,
                       render: () => (

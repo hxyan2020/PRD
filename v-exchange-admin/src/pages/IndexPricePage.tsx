@@ -86,13 +86,13 @@ export function IndexPricePage() {
   }, [current])
 
   const columns = [
-    { title: '指数名称', dataIndex: 'indexName', width: 100, fixed: 'left' as const },
-    { title: '基础币种', dataIndex: 'baseCoin', width: 90 },
-    { title: '计价币种', dataIndex: 'quoteCoin', width: 90 },
-    { title: '价格精度', dataIndex: 'pricePrecision', width: 100 },
-    { title: '最小行情源数', dataIndex: 'minSourceCount', width: 110 },
+    { title: fh('指数名称'), dataIndex: 'indexName', width: 100, fixed: 'left' as const },
+    { title: fh('基础币种'), dataIndex: 'baseCoin', width: 90 },
+    { title: fh('计价币种'), dataIndex: 'quoteCoin', width: 90 },
+    { title: fh('价格精度'), dataIndex: 'pricePrecision', width: 100 },
+    { title: fh('最小行情源数'), dataIndex: 'minSourceCount', width: 110 },
     {
-      title: '行情源',
+      title: fh('行情源'),
       dataIndex: 'priceSources',
       width: 280,
       render: (text: string) => (
@@ -102,7 +102,7 @@ export function IndexPricePage() {
       ),
     },
     {
-      title: '行情源交易量白名单',
+      title: fh('行情源交易量白名单'),
       dataIndex: 'whitelist',
       width: 260,
       render: (text: string, record: IndexPriceRecord) => (
@@ -116,11 +116,11 @@ export function IndexPricePage() {
         </div>
       ),
     },
-    { title: '计算方式', dataIndex: 'calcMethod', width: 160 },
-    { title: '订阅币种', dataIndex: 'subscriptionCoin', width: 90 },
-    { title: '放大倍数', dataIndex: 'magnification', width: 90 },
+    { title: fh('计算方式'), dataIndex: 'calcMethod', width: 160 },
+    { title: fh('订阅币种'), dataIndex: 'subscriptionCoin', width: 90 },
+    { title: fh('放大倍数'), dataIndex: 'magnification', width: 90 },
     {
-      title: '是否启用',
+      title: fh('是否启用'),
       dataIndex: 'enabled',
       width: 100,
       render: (enabled: boolean) =>
@@ -131,7 +131,7 @@ export function IndexPricePage() {
         ),
     },
     {
-      title: '操作记录',
+      title: fh('操作记录'),
       key: 'record',
       width: 90,
       render: () => (
@@ -141,7 +141,7 @@ export function IndexPricePage() {
       ),
     },
     {
-      title: '操作',
+      title: fh('操作'),
       key: 'action',
       width: 80,
       fixed: 'right' as const,
@@ -157,7 +157,7 @@ export function IndexPricePage() {
     ? [
         ...columns.slice(0, 7),
         {
-          title: '权重详情',
+          title: fh('权重详情'),
           key: 'weights',
           width: 100,
           render: (_: unknown, record: IndexPriceRecord) => (
@@ -189,10 +189,10 @@ export function IndexPricePage() {
       }
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16, rowGap: 12 }}>
-        <Form.Item label="基础币种" name="base">
+        <Form.Item label={fh('基础币种')} name="base">
           <Select placeholder="请选择" allowClear style={{ width: 120 }} options={baseCoinOptions} />
         </Form.Item>
-        <Form.Item label="计价币种" name="quote">
+        <Form.Item label={fh('计价币种')} name="quote">
           <Select
             placeholder="请选择"
             allowClear
@@ -211,10 +211,10 @@ export function IndexPricePage() {
             ]}
           />
         </Form.Item>
-        <Form.Item label="计算方式" name="calc">
+        <Form.Item label={fh('计算方式')} name="calc">
           <Select placeholder="请选择" allowClear style={{ width: 180 }} options={calcMethodOptions} />
         </Form.Item>
-        <Form.Item label="行情源" name="source">
+        <Form.Item label={fh('行情源')} name="source">
           <Select
             placeholder="请选择"
             allowClear
@@ -222,7 +222,7 @@ export function IndexPricePage() {
             options={marketSourceRecords.map((s) => ({ value: s.marketName, label: s.marketName }))}
           />
         </Form.Item>
-        <Form.Item label="权重展示开关">
+        <Form.Item label={fh('权重展示开关')}>
           <Switch checked={showWeights} onChange={setShowWeights} />
         </Form.Item>
         <Form.Item>
@@ -262,51 +262,51 @@ export function IndexPricePage() {
         ]}
       >
         <Form form={editForm} layout="vertical">
-          <Form.Item label="基础货币" name="baseCoin">
+          <Form.Item label={fh('基础货币')} name="baseCoin">
             <Input disabled />
           </Form.Item>
-          <Form.Item label="计价货币" name="quoteCoin">
+          <Form.Item label={fh('计价货币')} name="quoteCoin">
             <Input disabled />
           </Form.Item>
-          <Form.Item label="订阅币种" name="subscriptionCoin">
+          <Form.Item label={fh('订阅币种')} name="subscriptionCoin">
             <Input disabled />
           </Form.Item>
           <Form.Item
-            label="放大倍数"
+            label={fh('放大倍数')}
             name="magnification"
             extra="需输入10的倍数，设置后不能修改"
           >
             <InputNumber style={{ width: '100%' }} min={0} step={10} />
           </Form.Item>
-          <Form.Item label="价格精度" name="pricePrecision" extra="例如 2 → 0.01">
+          <Form.Item label={fh('价格精度')} name="pricePrecision" extra="例如 2 → 0.01">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
-          <Form.Item label="最小行情源数" name="minSourceCount">
+          <Form.Item label={fh('最小行情源数')} name="minSourceCount">
             <InputNumber style={{ width: '100%' }} min={1} />
           </Form.Item>
-          <Form.Item label="是否启用" name="enabled">
+          <Form.Item label={fh('是否启用')} name="enabled">
             <Radio.Group>
               <Radio value={true}>启用</Radio>
               <Radio value={false}>禁用</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="中位数偏差限制开关" name="medianDeviationSwitch" valuePropName="checked">
+          <Form.Item label={fh('中位数偏差限制开关')} name="medianDeviationSwitch" valuePropName="checked">
             <Switch />
           </Form.Item>
-          <Form.Item label="中位数偏差比例" name="medianDeviationRatio">
+          <Form.Item label={fh('中位数偏差比例')} name="medianDeviationRatio">
             <InputNumber style={{ width: '100%' }} min={0} addonAfter="%" />
           </Form.Item>
-          <Form.Item label="超出偏差值的调整机制" name="deviationAdjust">
+          <Form.Item label={fh('超出偏差值的调整机制')} name="deviationAdjust">
             <Radio.Group>
               <Radio value="修正后纳入计算">修正后纳入计算</Radio>
               <Radio value="直接剔除">直接剔除</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="计算方式" name="calcMethod">
+          <Form.Item label={fh('计算方式')} name="calcMethod">
             <Radio.Group options={calcMethodOptions} />
           </Form.Item>
           <Form.Item
-            label="行情源"
+            label={fh('行情源')}
             name="sources"
             extra={
               current?.calcMethod === '交易量自动权重计算'
@@ -352,10 +352,10 @@ export function IndexPricePage() {
           description="建议先在测试环境或模拟盘进行演练，确定无异常再到线上配置"
         />
         <Form form={weightForm} layout="vertical">
-          <Form.Item label="计算方式" name="calcMethod">
+          <Form.Item label={fh('计算方式')} name="calcMethod">
             <Radio.Group options={calcMethodOptions} />
           </Form.Item>
-          <Form.Item label="行情源" name="sources">
+          <Form.Item label={fh('行情源')} name="sources">
             <Checkbox.Group options={sourceCheckboxOptions} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }} />
           </Form.Item>
         </Form>
@@ -368,15 +368,15 @@ export function IndexPricePage() {
           columns={
             current?.indexName === 'BTCUSD'
               ? [
-                  { title: '已选行情源', dataIndex: 'source' },
-                  { title: '行情源价格', dataIndex: 'price' },
-                  { title: '各行情源交易量加权系数', dataIndex: 'value' },
-                  { title: '权重', dataIndex: 'weight' },
+                  { title: fh('已选行情源'), dataIndex: 'source' },
+                  { title: fh('行情源价格'), dataIndex: 'price' },
+                  { title: fh('各行情源交易量加权系数'), dataIndex: 'value' },
+                  { title: fh('权重'), dataIndex: 'weight' },
                 ]
               : [
-                  { title: '已选行情源', dataIndex: 'source' },
-                  { title: '数值', dataIndex: 'value' },
-                  { title: '权重', dataIndex: 'weight' },
+                  { title: fh('已选行情源'), dataIndex: 'source' },
+                  { title: fh('数值'), dataIndex: 'value' },
+                  { title: fh('权重'), dataIndex: 'weight' },
                 ]
           }
         />

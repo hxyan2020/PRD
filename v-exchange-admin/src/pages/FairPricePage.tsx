@@ -35,7 +35,7 @@ export function FairPricePage() {
     { title: fh('观察阈值(秒)'), dataIndex: 'observeThreshold', width: 110 },
     { title: fh('恢复阈值(秒)'), dataIndex: 'recoveryThreshold', width: 110 },
     {
-      title: '近24小时计算记录',
+      title: fh('近24小时计算记录'),
       key: 'calc24',
       width: 150,
       render: () => (
@@ -44,10 +44,10 @@ export function FairPricePage() {
         </Button>
       ),
     },
-    { title: '新算法计算状态', dataIndex: 'newAlgoStatus', width: 130 },
-    { title: '采用状态', dataIndex: 'adoptStatus', width: 100 },
+    { title: fh('新算法计算状态'), dataIndex: 'newAlgoStatus', width: 130 },
+    { title: fh('采用状态'), dataIndex: 'adoptStatus', width: 100 },
     {
-      title: '操作记录',
+      title: fh('操作记录'),
       key: 'record',
       width: 100,
       render: () => (
@@ -57,7 +57,7 @@ export function FairPricePage() {
       ),
     },
     {
-      title: '操作',
+      title: fh('操作'),
       key: 'action',
       width: 80,
       render: (_: unknown, record: FairPriceRecord) => (
@@ -86,7 +86,7 @@ export function FairPricePage() {
         <Form.Item label={fh('合约名称')} name="contract">
           <Select placeholder="请选择" allowClear style={{ width: 160 }} options={perpContractOptions} />
         </Form.Item>
-        <Form.Item label="新算法计算状态" name="newAlgo" initialValue="all">
+        <Form.Item label={fh('新算法计算状态')} name="newAlgo" initialValue="all">
           <Select
             style={{ width: 140 }}
             options={[
@@ -96,7 +96,7 @@ export function FairPricePage() {
             ]}
           />
         </Form.Item>
-        <Form.Item label="采用状态" name="adopt">
+        <Form.Item label={fh('采用状态')} name="adopt">
           <Select
             placeholder="请选择"
             allowClear
@@ -158,10 +158,10 @@ export function FairPricePage() {
           <Form.Item label={fh('恢复阈值(秒)')} name="recoveryThreshold">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
-          <Form.Item label="新算法计算状态" name="newAlgoEnabled" valuePropName="checked">
+          <Form.Item label={fh('新算法计算状态')} name="newAlgoEnabled" valuePropName="checked">
             <Switch />
           </Form.Item>
-          <Form.Item label="采用状态" name="adoptStatus">
+          <Form.Item label={fh('采用状态')} name="adoptStatus">
             <Radio.Group>
               <Radio value="老算法">老算法</Radio>
               <Radio value="新算法">新算法</Radio>

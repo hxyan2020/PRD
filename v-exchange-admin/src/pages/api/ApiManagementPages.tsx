@@ -2,6 +2,7 @@ import { Button, Empty, Form, Input, Space, Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { QueryResetButtons } from '../../components/QueryResetButtons'
 import { ListPageShell } from '../../components/ListPageShell'
+import { fh } from '../../components/FieldHelpLabel'
 
 const { Text } = Typography
 const emptyLocale = { emptyText: <Empty description="暂无数据" /> }
@@ -14,7 +15,7 @@ export function ApiOpenListPage() {
         title="API 开放白名单"
         filters={
           <Form form={form} layout="inline" style={{ marginBottom: 8 }}>
-            <Form.Item label="用户合约 UID" name="uid">
+            <Form.Item label={fh('用户合约 UID')} name="uid">
               <Input style={{ width: 180 }} />
             </Form.Item>
             <Form.Item>
@@ -24,11 +25,11 @@ export function ApiOpenListPage() {
         }
         rowKey="uid"
         columns={[
-          { title: '用户合约 UID', dataIndex: 'uid' },
-          { title: '备注', dataIndex: 'remark' },
-          { title: '创建者', dataIndex: 'creator' },
-          { title: '创建时间', dataIndex: 'createdAt' },
-          { title: '操作', key: 'op', render: () => <Button danger size="small">删除</Button> },
+          { title: fh('用户合约 UID'), dataIndex: 'uid' },
+          { title: fh('备注'), dataIndex: 'remark' },
+          { title: fh('创建者'), dataIndex: 'creator' },
+          { title: fh('创建时间'), dataIndex: 'createdAt' },
+          { title: fh('操作'), key: 'op', render: () => <Button danger size="small">删除</Button> },
         ]}
         dataSource={[]}
         locale={emptyLocale}
@@ -47,9 +48,9 @@ export function ApiRatioConfigPage() {
       title="限额系数配置"
       rowKey="userType"
       columns={[
-        { title: '系数', dataIndex: 'ratio' },
-        { title: '用户类型', dataIndex: 'userType' },
-        { title: '操作', key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
+        { title: fh('系数'), dataIndex: 'ratio' },
+        { title: fh('用户类型'), dataIndex: 'userType' },
+        { title: fh('操作'), key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
       ]}
       dataSource={[]}
       locale={emptyLocale}
@@ -70,7 +71,7 @@ export function ApiUserLimitConfigPage() {
       }
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="用户UID" name="uid">
+          <Form.Item label={fh('用户UID')} name="uid">
             <Input style={{ width: 160 }} />
           </Form.Item>
           <Form.Item>
@@ -80,12 +81,12 @@ export function ApiUserLimitConfigPage() {
       }
       rowKey="uid"
       columns={[
-        { title: 'UID', dataIndex: 'uid' },
-        { title: 'uri', dataIndex: 'uri' },
-        { title: '间隔', dataIndex: 'interval' },
-        { title: '请求次数', dataIndex: 'requests' },
-        { title: '描述', dataIndex: 'description' },
-        { title: '操作', key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
+        { title: fh('UID'), dataIndex: 'uid' },
+        { title: fh('uri'), dataIndex: 'uri' },
+        { title: fh('间隔'), dataIndex: 'interval' },
+        { title: fh('请求次数'), dataIndex: 'requests' },
+        { title: fh('描述'), dataIndex: 'description' },
+        { title: fh('操作'), key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
       ]}
       dataSource={[]}
       locale={emptyLocale}
@@ -114,9 +115,9 @@ export function ApiUserTakerBlacklistPage() {
       }
       rowKey="uid"
       columns={[
-        { title: 'UID', dataIndex: 'uid' },
-        { title: 'taker黑名单', dataIndex: 'blacklist' },
-        { title: '操作', key: 'op', render: () => <Button danger size="small">删除</Button> },
+        { title: fh('UID'), dataIndex: 'uid' },
+        { title: fh('taker黑名单'), dataIndex: 'blacklist' },
+        { title: fh('操作'), key: 'op', render: () => <Button danger size="small">删除</Button> },
       ]}
       dataSource={[]}
       locale={emptyLocale}
@@ -151,7 +152,7 @@ export function ApiUserTakerConfigPage() {
       }
       filters={
         <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-          <Form.Item label="用户UID" name="uid">
+          <Form.Item label={fh('用户UID')} name="uid">
             <Input style={{ width: 160 }} />
           </Form.Item>
           <Form.Item>
@@ -167,13 +168,13 @@ export function ApiUserTakerConfigPage() {
       rowKey="uid"
       scroll={{ x: 1200 }}
       columns={[
-        { title: '用户UID', dataIndex: 'uid' },
-        { title: '币对', dataIndex: 'pair' },
-        { title: '间隔', dataIndex: 'interval' },
-        { title: '请求次数', dataIndex: 'requests' },
-        { title: '描述', dataIndex: 'description' },
-        { title: '标签', dataIndex: 'tags' },
-        { title: '操作', key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
+        { title: fh('用户UID'), dataIndex: 'uid' },
+        { title: fh('币对'), dataIndex: 'pair' },
+        { title: fh('间隔'), dataIndex: 'interval' },
+        { title: fh('请求次数'), dataIndex: 'requests' },
+        { title: fh('描述'), dataIndex: 'description' },
+        { title: fh('标签'), dataIndex: 'tags' },
+        { title: fh('操作'), key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
       ]}
       dataSource={[]}
       locale={emptyLocale}

@@ -47,7 +47,7 @@ export function FundingRatePage() {
   }
 
   const columns = [
-    { title: '对应合约对', dataIndex: 'contract', width: 130, fixed: 'left' as const },
+    { title: fh('对应合约对'), dataIndex: 'contract', width: 130, fixed: 'left' as const },
     { title: fh('合约展示名称'), dataIndex: 'displayName', width: 120 },
     { title: fh('费率收取周期(小时)'), dataIndex: 'periodHours', width: 140 },
     { title: fh('首次收取时间(小时)'), dataIndex: 'firstCollectHour', width: 140 },
@@ -60,20 +60,20 @@ export function FundingRatePage() {
       width: 140,
       render: (v: boolean) => (v ? '是' : <CloseOutlined style={{ color: '#ff4d4f' }} />),
     },
-    { title: '行情源', dataIndex: 'marketSource', width: 100 },
-    { title: '资金费自动调整系数区间', dataIndex: 'adjustFactorRange', width: 180 },
-    { title: '费率精度', dataIndex: 'ratePrecision', width: 120 },
-    { title: '老算法利率', dataIndex: 'oldAlgoRate', width: 100 },
-    { title: '新算法利率', dataIndex: 'newAlgoRate', width: 110 },
-    { title: '结算费率', dataIndex: 'settlementRate', width: 90 },
+    { title: fh('行情源'), dataIndex: 'marketSource', width: 100 },
+    { title: fh('资金费自动调整系数区间'), dataIndex: 'adjustFactorRange', width: 180 },
+    { title: fh('费率精度'), dataIndex: 'ratePrecision', width: 120 },
+    { title: fh('老算法利率'), dataIndex: 'oldAlgoRate', width: 100 },
+    { title: fh('新算法利率'), dataIndex: 'newAlgoRate', width: 110 },
+    { title: fh('结算费率'), dataIndex: 'settlementRate', width: 90 },
     {
-      title: '是否启用',
+      title: fh('是否启用'),
       dataIndex: 'enabled',
       width: 90,
       render: (enabled: boolean) => <Checkbox checked={enabled}>启用</Checkbox>,
     },
     {
-      title: '操作记录',
+      title: fh('操作记录'),
       key: 'record',
       width: 100,
       render: () => (
@@ -83,7 +83,7 @@ export function FundingRatePage() {
       ),
     },
     {
-      title: '操作',
+      title: fh('操作'),
       key: 'action',
       width: 80,
       fixed: 'right' as const,
@@ -124,7 +124,7 @@ export function FundingRatePage() {
             ]}
           />
         </Form.Item>
-        <Form.Item label="行情源" name="source">
+        <Form.Item label={fh('行情源')} name="source">
           <Select
             placeholder="请选择行情源"
             allowClear
@@ -169,20 +169,20 @@ export function FundingRatePage() {
         ]}
       >
         <Form form={editForm} layout="vertical" style={{ maxHeight: '70vh', overflow: 'auto' }}>
-          <Form.Item label="对应合约对" name="contract">
+          <Form.Item label={fh('对应合约对')} name="contract">
             <Select options={perpContractOptions} />
           </Form.Item>
           <Form.Item
-            label="费率收取周期 (小时)"
+            label={fh('费率收取周期 (小时)')}
             name="periodHours"
             extra="最小 1, 最大 24, 取值只能是 1, 2, 3, 4, 6, 8, 12, 24"
           >
             <InputNumber style={{ width: '100%' }} min={1} max={24} />
           </Form.Item>
-          <Form.Item label="首次收取时间 (小时)" name="firstCollectHour" extra="最小 0, 最大 24">
+          <Form.Item label={fh('首次收取时间 (小时)')} name="firstCollectHour" extra="最小 0, 最大 24">
             <InputNumber style={{ width: '100%' }} min={0} max={24} />
           </Form.Item>
-          <Form.Item label="距离新周期启用时间" name="notifyMinutes" extra="分钟前通知用户">
+          <Form.Item label={fh('距离新周期启用时间')} name="notifyMinutes" extra="分钟前通知用户">
             <Input placeholder="请输入…分钟前通知用户" />
           </Form.Item>
           <Form.Item label={fh('费率浮动下限')} name="lowerLimit" extra="百分比">
@@ -191,13 +191,13 @@ export function FundingRatePage() {
           <Form.Item label={fh('费率浮动上限')} name="upperLimit" extra="百分比">
             <InputNumber style={{ width: '100%' }} addonAfter="%" />
           </Form.Item>
-          <Form.Item label="费率精度" name="ratePrecision" extra="0.000001">
+          <Form.Item label={fh('费率精度')} name="ratePrecision" extra="0.000001">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
-          <Form.Item label="老算法利率" name="oldAlgoRate" extra="百分比">
+          <Form.Item label={fh('老算法利率')} name="oldAlgoRate" extra="百分比">
             <InputNumber style={{ width: '100%' }} addonAfter="%" />
           </Form.Item>
-          <Form.Item label="采用新算法资金费率" name="useNewAlgo" valuePropName="checked">
+          <Form.Item label={fh('采用新算法资金费率')} name="useNewAlgo" valuePropName="checked">
             <Switch />
           </Form.Item>
           <div style={{ marginTop: -8, marginBottom: 12, color: '#8c8c8c', fontSize: 12 }}>
@@ -210,13 +210,13 @@ export function FundingRatePage() {
           >
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
-          <Form.Item label="新算法利率" name="newAlgoRate" extra="百分比">
+          <Form.Item label={fh('新算法利率')} name="newAlgoRate" extra="百分比">
             <InputNumber style={{ width: '100%' }} addonAfter="%" />
           </Form.Item>
-          <Form.Item label="是否开启自动调整资金费率" name="autoAdjust" valuePropName="checked">
+          <Form.Item label={fh('是否开启自动调整资金费率')} name="autoAdjust" valuePropName="checked">
             <Switch />
           </Form.Item>
-          <Form.Item label="是否启用" name="enabled">
+          <Form.Item label={fh('是否启用')} name="enabled">
             <Radio.Group>
               <Radio value={true}>启用</Radio>
               <Radio value={false}>禁用</Radio>

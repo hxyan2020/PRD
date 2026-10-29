@@ -3,16 +3,17 @@ import { PlusOutlined } from '@ant-design/icons'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { indexNameOptions } from '../config/pairs'
+import { fh } from '../components/FieldHelpLabel'
 
 export function IndexMarketLinkPage() {
   const [form] = Form.useForm()
 
   const columns = [
-    { title: '指数名称', dataIndex: 'indexName' },
-    { title: '目标交易对', dataIndex: 'targetPair' },
-    { title: '行情源', dataIndex: 'marketSource' },
+    { title: fh('指数名称'), dataIndex: 'indexName' },
+    { title: fh('目标交易对'), dataIndex: 'targetPair' },
+    { title: fh('行情源'), dataIndex: 'marketSource' },
     {
-      title: '操作',
+      title: fh('操作'),
       key: 'action',
       width: 100,
       render: () => (
@@ -33,10 +34,10 @@ export function IndexMarketLinkPage() {
       }
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="行情源" name="source">
+        <Form.Item label={fh('行情源')} name="source">
           <Select placeholder="请选择" allowClear style={{ width: 160 }} />
         </Form.Item>
-        <Form.Item label="指数名称" name="indexName">
+        <Form.Item label={fh('指数名称')} name="indexName">
           <Select placeholder="请选择" allowClear style={{ width: 160 }} options={indexNameOptions} />
         </Form.Item>
         <Form.Item>

@@ -18,7 +18,7 @@ export function ClosePositionPage() {
             <Select placeholder="请选择" options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
           </Form.Item>
           <Form.Item
-            label="多仓UID"
+            label={fh('多仓UID')}
             name="longUid"
             extra={
               <Text type="secondary" style={{ fontSize: 12 }}>
@@ -32,7 +32,7 @@ export function ClosePositionPage() {
             <Input />
           </Form.Item>
           <Form.Item
-            label="空仓UID"
+            label={fh('空仓UID')}
             name="shortUid"
             extra={
               <Text type="secondary" style={{ fontSize: 12 }}>
@@ -45,10 +45,10 @@ export function ClosePositionPage() {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="成交价格" name="price">
+          <Form.Item label={fh('成交价格')} name="price">
             <Input placeholder="当前合理价" />
           </Form.Item>
-          <Form.Item label="数量" name="qty" extra="若不输入，取多空最小值">
+          <Form.Item label={fh('数量')} name="qty" extra="若不输入，取多空最小值">
             <Input placeholder="请输入数量" />
           </Form.Item>
           <Form.Item>
@@ -79,13 +79,13 @@ export function GlobalFrequencyPage() {
       }
       rowKey="groupName"
       columns={[
-        { title: '组名', dataIndex: 'groupName' },
-        { title: '占比', dataIndex: 'ratio' },
-        { title: '操作人', dataIndex: 'operator' },
-        { title: '创建时间', dataIndex: 'createdAt', width: 170 },
+        { title: fh('组名'), dataIndex: 'groupName' },
+        { title: fh('占比'), dataIndex: 'ratio' },
+        { title: fh('操作人'), dataIndex: 'operator' },
+        { title: fh('创建时间'), dataIndex: 'createdAt', width: 170 },
         { title: fh('更新时间'), dataIndex: 'updatedAt', width: 170 },
         {
-          title: '操作',
+          title: fh('操作'),
           key: 'op',
           width: 200,
           render: () => (
@@ -113,7 +113,7 @@ export function OpenBottomPositionPage() {
         <Form.Item label={fh('合约名称')} name="contract">
           <Select placeholder="请选择" />
         </Form.Item>
-        <Form.Item label="UID" name="uid">
+        <Form.Item label={fh('UID')} name="uid">
           <Input />
         </Form.Item>
         <Form.Item>
