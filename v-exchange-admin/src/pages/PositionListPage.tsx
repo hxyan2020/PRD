@@ -4,6 +4,7 @@ import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { perpContractOptions } from '../config/pairs'
 import { positionRecords } from '../mock/extendedData'
+import { fh } from '../components/FieldHelpLabel'
 
 const { Text } = Typography
 
@@ -13,8 +14,8 @@ export function PositionListPage() {
   const columns = [
     { title: '合约FID', dataIndex: 'contractFid', width: 100 },
     { title: '仓位ID', dataIndex: 'positionId', width: 100 },
-    { title: '合约展示名称', dataIndex: 'displayName', width: 120 },
-    { title: '合约名称', dataIndex: 'contractName', width: 110 },
+    { title: fh('合约展示名称'), dataIndex: 'displayName', width: 120 },
+    { title: fh('合约名称'), dataIndex: 'contractName', width: 110 },
     { title: '仓位类型', dataIndex: 'positionType', width: 90 },
     { title: '开仓类型', dataIndex: 'openType', width: 90 },
     { title: '持仓状态', dataIndex: 'status', width: 90 },
@@ -37,7 +38,7 @@ export function PositionListPage() {
     { title: '盈亏%', dataIndex: 'pnlPct', width: 80 },
     { title: 'ROI%', dataIndex: 'roi', width: 80 },
     { title: '杠杆变更', dataIndex: 'leverageChange', width: 90 },
-    { title: '更新时间', dataIndex: 'updatedAt', width: 160 },
+    { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
     { title: '下单时间', dataIndex: 'orderTime', width: 160 },
   ]
 
@@ -55,7 +56,7 @@ export function PositionListPage() {
         <Form.Item label="合约FID" name="contractFid">
           <Input style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="合约名称" name="contractName">
+        <Form.Item label={fh('合约名称')} name="contractName">
           <Select allowClear placeholder="请选择" style={{ width: 160 }} options={perpContractOptions} />
         </Form.Item>
         <Form.Item label="持仓量>=" name="quantityMin">

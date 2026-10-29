@@ -10,6 +10,7 @@ import { QueryResetButtons } from '../../components/QueryResetButtons'
 import { ListPageShell } from '../../components/ListPageShell'
 import { PageFrame } from '../../components/PageFrame'
 import { marginChangeRecords, userRateConfigRecords } from '../../mock/extendedData'
+import { fh } from '../../components/FieldHelpLabel'
 
 const emptyLocale = { emptyText: <Empty description="暂无数据" /> }
 
@@ -212,7 +213,7 @@ export function UserRiskSettingsPage() {
         <Form.Item label="合约FID" name="fid">
           <Input style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="合约名称" name="contract">
+        <Form.Item label={fh('合约名称')} name="contract">
           <Input style={{ width: 140 }} />
         </Form.Item>
         <Form.Item label="持仓类型" name="positionType">
@@ -260,10 +261,10 @@ export function UserBlacklistPage() {
       }
       rowKey="fid1"
       columns={[
-        { title: '更新时间', dataIndex: 'updatedAt' },
+        { title: fh('更新时间'), dataIndex: 'updatedAt' },
         { title: '合约FID1', dataIndex: 'fid1' },
         { title: '合约FID2', dataIndex: 'fid2' },
-        { title: '状态', dataIndex: 'status' },
+        { title: fh('状态'), dataIndex: 'status' },
         { title: '操作', key: 'op', render: () => <Button type="primary" size="small">编辑</Button> },
       ]}
       dataSource={[]}
@@ -343,7 +344,7 @@ export function MarginChangePage() {
       columns={[
         { title: '合约FID', dataIndex: 'contractFid', width: 140 },
         { title: '仓位ID', dataIndex: 'positionId', width: 90 },
-        { title: '合约名称', dataIndex: 'contractName', width: 120 },
+        { title: fh('合约名称'), dataIndex: 'contractName', width: 120 },
         { title: '方向', dataIndex: 'direction', width: 80 },
         { title: '类型', dataIndex: 'type', width: 100 },
         { title: '金额', dataIndex: 'amount', width: 80 },

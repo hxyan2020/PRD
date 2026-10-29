@@ -282,7 +282,7 @@ export function RiskReserveDetailPage() {
   return (
     <PageFrame title="风险基金明细">
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约" name="contract">
+        <Form.Item label={fh('合约')} name="contract">
           <Select placeholder="请选择" allowClear style={{ width: 140 }} options={symbolOptions} />
         </Form.Item>
         <Form.Item label={fh('合约展示名称')} name="displayName">
@@ -500,10 +500,10 @@ export function RiskSpreadAlertPage() {
         ]}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item label="监控类型1" name="type1" rules={[{ required: true }]}>
+          <Form.Item label={fh('监控类型1')} name="type1" rules={[{ required: true }]}>
             <Select placeholder="请选择监控类型1" options={monitorTypeOptions} />
           </Form.Item>
-          <Form.Item label="监控类型2" name="type2" rules={[{ required: true }]}>
+          <Form.Item label={fh('监控类型2')} name="type2" rules={[{ required: true }]}>
             <Select placeholder="请选择监控类型2" options={monitorTypeOptions} />
           </Form.Item>
           <Form.Item label={fh('告警值')} name="alarmValue" rules={[{ required: true }]}>
@@ -873,10 +873,10 @@ export function RiskPeerSpreadMonitorPage() {
         ]}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item label="监控友商" name="peers" rules={[{ required: true }]}>
+          <Form.Item label={fh('监控友商')} name="peers" rules={[{ required: true }]}>
             <Select mode="multiple" placeholder="请选择监控友商" options={peerExchangeOptions} />
           </Form.Item>
-          <Form.Item label="监控信息" required>
+          <Form.Item label={fh('监控信息')} required>
             <Space direction="vertical" style={{ width: '100%' }}>
               <Form.Item name="lastPrice" noStyle rules={[{ required: true, message: '请输入最新价偏差阈值' }]}>
                 <InputNumber style={{ width: '100%' }} addonBefore="最新价" addonAfter="%" placeholder="请输入最新价偏差阈值" />
@@ -889,7 +889,7 @@ export function RiskPeerSpreadMonitorPage() {
               </Form.Item>
             </Space>
           </Form.Item>
-          <Form.Item label="监控间隔" required>
+          <Form.Item label={fh('监控间隔')} required>
             <Space.Compact style={{ width: '100%' }}>
               <Form.Item name="interval" noStyle rules={[{ required: true }]}>
                 <InputNumber style={{ width: '60%' }} placeholder="请输入监控间隔数值" min={1} />
@@ -1217,7 +1217,7 @@ export function RiskLargeLiqWarningPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约账户ID" name="accountId">
+                  <Form.Item label={fh('合约账户ID')} name="accountId">
                     <Input placeholder="请输入合约账户ID" style={{ width: 200 }} />
                   </Form.Item>
                   <Form.Item>
@@ -1346,7 +1346,7 @@ export function RiskLargeLiqNotifyPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约账户ID" name="accountId">
+                  <Form.Item label={fh('合约账户ID')} name="accountId">
                     <Input placeholder="请输入合约账户ID" style={{ width: 200 }} />
                   </Form.Item>
                   <Form.Item>

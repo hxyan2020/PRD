@@ -3,6 +3,7 @@ import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { baseCoinOptions } from '../config/pairs'
 import { contractRecords } from '../mock/data'
+import { fh } from '../components/FieldHelpLabel'
 
 export function ContractListPage() {
   const [form] = Form.useForm()
@@ -22,7 +23,7 @@ export function ContractListPage() {
     { title: '默认Taker费率', dataIndex: 'takerFee', width: 120 },
     { title: '默认Maker费率', dataIndex: 'makerFee', width: 120 },
     {
-      title: '状态',
+      title: fh('状态'),
       dataIndex: 'status',
       width: 90,
       render: (status: string) =>
@@ -53,7 +54,7 @@ export function ContractListPage() {
         <Form.Item label="计价币种" name="quote">
           <Select placeholder="请选择" allowClear style={{ width: 120 }} options={[{ value: 'USD', label: 'USD' }]} />
         </Form.Item>
-        <Form.Item label="状态" name="status">
+        <Form.Item label={fh('状态')} name="status">
           <Select placeholder="请选择" allowClear style={{ width: 120 }} options={[{ value: 'on', label: '启用中' }, { value: 'off', label: '下架' }]} />
         </Form.Item>
         <Form.Item label="考核区状态" name="assessment">
@@ -62,7 +63,7 @@ export function ContractListPage() {
         <Form.Item label="定时结算状态" name="settlement">
           <Select placeholder="请选择" allowClear style={{ width: 140 }} />
         </Form.Item>
-        <Form.Item label="合约名称" name="name">
+        <Form.Item label={fh('合约名称')} name="name">
           <Input placeholder="请输入" style={{ width: 140 }} />
         </Form.Item>
         <Form.Item label="方向" name="direction">

@@ -3,15 +3,16 @@ import { EyeOutlined, PlusOutlined } from '@ant-design/icons'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { coinIntroduceRecords } from '../mock/data'
+import { fh } from '../components/FieldHelpLabel'
 
 export function CoinIntroducePage() {
   const [form] = Form.useForm()
 
   const columns = [
-    { title: '合约名称', dataIndex: 'contractName' },
-    { title: '合约展示名称', dataIndex: 'displayName' },
+    { title: fh('合约名称'), dataIndex: 'contractName' },
+    { title: fh('合约展示名称'), dataIndex: 'displayName' },
     { title: '币种名称', dataIndex: 'currencyName' },
-    { title: '更新时间', dataIndex: 'updatedAt', width: 180 },
+    { title: fh('更新时间'), dataIndex: 'updatedAt', width: 180 },
     {
       title: '操作记录',
       key: 'record',

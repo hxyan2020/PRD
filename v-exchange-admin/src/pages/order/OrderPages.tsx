@@ -6,6 +6,7 @@ import { ListPageShell } from '../../components/ListPageShell'
 import { perpContractOptions } from '../../config/pairs'
 import { activeOrderHistoryDeals } from '../../mock/extendedData'
 import { positionValueStats } from '../../mock/pairMarketData'
+import { fh } from '../../components/FieldHelpLabel'
 
 const emptyLocale = { emptyText: <Empty description="暂无数据" /> }
 
@@ -27,14 +28,14 @@ export function PositionValueStatsPage() {
       title="仓位价值统计"
       filters={
         <OrderFilterBar>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select placeholder="请选择" style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
         </OrderFilterBar>
       }
       rowKey="id"
       columns={[
-        { title: '合约名称', dataIndex: 'contractName' },
+        { title: fh('合约名称'), dataIndex: 'contractName' },
         { title: '多仓价值', dataIndex: 'longValue' },
         { title: '空仓价值', dataIndex: 'shortValue' },
       ]}
@@ -60,7 +61,7 @@ export function ActiveOrderPage() {
           <Form.Item label="订单ID" name="orderId">
             <Input style={{ width: 160 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select placeholder="请选择" style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
         </OrderFilterBar>
@@ -71,7 +72,7 @@ export function ActiveOrderPage() {
         { title: '合约FID', dataIndex: 'contractFid', width: 110 },
         { title: 'UID', dataIndex: 'uid', width: 90 },
         { title: '订单ID', dataIndex: 'orderId', width: 180 },
-        { title: '合约名称', dataIndex: 'contractName', width: 120 },
+        { title: fh('合约名称'), dataIndex: 'contractName', width: 120 },
         { title: '订单类型', dataIndex: 'orderType', width: 120 },
         { title: '订单方向', dataIndex: 'direction', width: 100 },
         { title: '委托价格', dataIndex: 'entrustPrice', width: 100 },
@@ -105,7 +106,7 @@ export function TriggerOrderPage() {
           <Form.Item label="订单ID" name="orderId">
             <Input style={{ width: 160 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="开仓类型" name="openType">
@@ -126,7 +127,7 @@ export function TriggerOrderPage() {
           <Form.Item label="创建时间" name="created">
             <DatePicker.RangePicker showTime />
           </Form.Item>
-          <Form.Item label="更新时间" name="updated">
+          <Form.Item label={fh('更新时间')} name="updated">
             <DatePicker.RangePicker showTime />
           </Form.Item>
         </OrderFilterBar>
@@ -138,7 +139,7 @@ export function TriggerOrderPage() {
         { title: 'UID', dataIndex: 'uid', width: 90 },
         { title: '订单ID', dataIndex: 'orderId', width: 180 },
         { title: '仓位模式', dataIndex: 'positionMode', width: 90 },
-        { title: '合约名称', dataIndex: 'contractName', width: 120 },
+        { title: fh('合约名称'), dataIndex: 'contractName', width: 120 },
         { title: '开仓类型', dataIndex: 'openType', width: 90 },
         { title: '订单方向', dataIndex: 'direction', width: 90 },
         { title: '杠杆倍数', dataIndex: 'leverage', width: 90 },
@@ -172,7 +173,7 @@ export function StopOrderPage() {
           <Form.Item label="仓位ID" name="positionId">
             <Input style={{ width: 120 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="订单方向" name="direction">
@@ -193,7 +194,7 @@ export function StopOrderPage() {
         { title: 'UID', dataIndex: 'uid' },
         { title: '订单ID', dataIndex: 'orderId' },
         { title: '仓位ID', dataIndex: 'positionId' },
-        { title: '合约名称', dataIndex: 'contractName' },
+        { title: fh('合约名称'), dataIndex: 'contractName' },
         { title: '订单方向', dataIndex: 'direction' },
         { title: '委托数量', dataIndex: 'qty' },
         { title: '止盈/止损', dataIndex: 'tpSl' },
@@ -223,7 +224,7 @@ export function ActiveOrderHistoryDealPage() {
           <Form.Item label="订单ID" name="orderId">
             <Input style={{ width: 160 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Input style={{ width: 140 }} />
           </Form.Item>
           <Form.Item label="订单状态" name="status" initialValue="done">
@@ -232,7 +233,7 @@ export function ActiveOrderHistoryDealPage() {
           <Form.Item label="下单时间" name="orderTime">
             <DatePicker.RangePicker showTime />
           </Form.Item>
-          <Form.Item label="更新时间" name="updateTime">
+          <Form.Item label={fh('更新时间')} name="updateTime">
             <DatePicker.RangePicker showTime />
           </Form.Item>
         </OrderFilterBar>
@@ -243,7 +244,7 @@ export function ActiveOrderHistoryDealPage() {
         { title: '合约FID', dataIndex: 'contractFid', width: 110 },
         { title: 'UID', dataIndex: 'uid', width: 80 },
         { title: '订单ID', dataIndex: 'orderId', width: 180 },
-        { title: '合约名称', dataIndex: 'contractName', width: 120 },
+        { title: fh('合约名称'), dataIndex: 'contractName', width: 120 },
         { title: '订单类型', dataIndex: 'orderType', width: 130 },
         { title: '订单方向', dataIndex: 'direction', width: 100 },
         { title: '委托类型', dataIndex: 'entrustType', width: 100 },
@@ -268,7 +269,7 @@ export function ActiveOrderHistoryDealPage() {
         },
         { title: '只减仓', dataIndex: 'reduceOnly', width: 80 },
         { title: '下单时间', dataIndex: 'orderTime', width: 160 },
-        { title: '更新时间', dataIndex: 'updateTime', width: 160 },
+        { title: fh('更新时间'), dataIndex: 'updateTime', width: 160 },
       ]}
       dataSource={activeOrderHistoryDeals}
       pagination={{ total: activeOrderHistoryDeals.length, pageSize: 10, showSizeChanger: true }}
@@ -294,7 +295,7 @@ export function TriggerOrderHistoryDealPage() {
           <Form.Item label="订单ID" name="orderId">
             <Input style={{ width: 160 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="执行状态" name="status">
@@ -315,7 +316,7 @@ export function TriggerOrderHistoryDealPage() {
         { title: 'UID', dataIndex: 'uid' },
         { title: '计划委托订单ID', dataIndex: 'triggerOrderId' },
         { title: '订单ID', dataIndex: 'orderId' },
-        { title: '合约名称', dataIndex: 'contractName' },
+        { title: fh('合约名称'), dataIndex: 'contractName' },
         { title: '执行状态', dataIndex: 'status' },
         { title: '触发价格', dataIndex: 'triggerPrice' },
         { title: '创建时间', dataIndex: 'createdAt' },
@@ -330,7 +331,7 @@ export function TriggerOrderHistoryDealPage() {
 function liquidationColumns() {
   return [
     { title: 'UID', dataIndex: 'uid', width: 90 },
-    { title: '合约名称', dataIndex: 'contractName', width: 120 },
+    { title: fh('合约名称'), dataIndex: 'contractName', width: 120 },
     { title: '平仓账户ID', dataIndex: 'closeAccountId', width: 120 },
     { title: '平仓仓位ID', dataIndex: 'closePositionId', width: 120 },
     { title: '合理价', dataIndex: 'fairPrice', width: 90 },
@@ -354,10 +355,10 @@ export function LiquidateHistoryPage() {
           <Form.Item label="UID" name="uid">
             <Input style={{ width: 120 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
-          <Form.Item label="状态" name="status">
+          <Form.Item label={fh('状态')} name="status">
             <Select defaultValue="done" style={{ width: 160 }} options={[{ value: 'done', label: '强平流程完成' }]} />
           </Form.Item>
           <Form.Item label="保险基金划出金额 >=" name="fundAmount">
@@ -390,10 +391,10 @@ export function AdlHistoryPage() {
           <Form.Item label="UID" name="uid">
             <Input style={{ width: 120 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
-          <Form.Item label="状态" name="status">
+          <Form.Item label={fh('状态')} name="status">
             <Select defaultValue="done" style={{ width: 160 }} options={[{ value: 'done', label: '强平流程完成' }]} />
           </Form.Item>
           <Form.Item name="range">
@@ -442,10 +443,10 @@ export function StopOrderHistoryDealPage() {
           <Form.Item label="触发时间" name="triggerTime">
             <DatePicker.RangePicker />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select defaultValue={perpContractOptions[1]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
-          <Form.Item label="状态" name="status">
+          <Form.Item label={fh('状态')} name="status">
             <Select defaultValue="all" style={{ width: 120 }} options={[{ value: 'all', label: '全部' }]} />
           </Form.Item>
         </OrderFilterBar>
@@ -457,8 +458,8 @@ export function StopOrderHistoryDealPage() {
         { title: 'UID', dataIndex: 'uid' },
         { title: '止盈止损订单ID', dataIndex: 'stopOrderId' },
         { title: '订单ID', dataIndex: 'orderId' },
-        { title: '合约名称', dataIndex: 'contractName' },
-        { title: '状态', dataIndex: 'status' },
+        { title: fh('合约名称'), dataIndex: 'contractName' },
+        { title: fh('状态'), dataIndex: 'status' },
         { title: '下单时间', dataIndex: 'orderTime' },
       ]}
       dataSource={[]}

@@ -6,6 +6,7 @@ import {
   financialAccountInfo,
   financialFundRecords,
 } from '../../mock/openapiFinancialData'
+import { fh } from '../../components/FieldHelpLabel'
 
 const { Text, Title } = Typography
 const emptyLocale = { emptyText: <Empty description="暂无数据" /> }
@@ -171,7 +172,7 @@ export function FinanceFlowPage() {
           <Form.Item label="用户合约FID" name="fid">
             <Select placeholder="请选择" style={{ width: 140 }} />
           </Form.Item>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Select placeholder="请选择" style={{ width: 140 }} />
           </Form.Item>
           <Form.Item label="币种" name="coin">
@@ -194,7 +195,7 @@ export function FinanceFlowPage() {
       rowKey="fid"
       columns={[
         { title: '合约FID', dataIndex: 'fid' },
-        { title: '合约名称', dataIndex: 'contractName' },
+        { title: fh('合约名称'), dataIndex: 'contractName' },
         { title: '币种', dataIndex: 'coin' },
         { title: '类型', dataIndex: 'type' },
         { title: '入/出', dataIndex: 'direction' },

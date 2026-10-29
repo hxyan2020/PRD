@@ -1,6 +1,7 @@
 import { Button, Form, Input, Select, Space } from 'antd'
 import { PageFrame } from '../components/PageFrame'
 import { perpContractOptions } from '../config/pairs'
+import { fh } from '../components/FieldHelpLabel'
 
 export function AdminAdlPage() {
   const [form] = Form.useForm()
@@ -8,7 +9,7 @@ export function AdminAdlPage() {
   return (
     <PageFrame title="一键平仓">
       <Form form={form} layout="vertical" style={{ maxWidth: 480 }} initialValues={{ direction: 'long' }}>
-        <Form.Item label="合约名称" name="contractName" rules={[{ required: true }]}>
+        <Form.Item label={fh('合约名称')} name="contractName" rules={[{ required: true }]}>
           <Select placeholder="合约名称" options={perpContractOptions} />
         </Form.Item>
         <Form.Item label="合约FID" name="contractFid" rules={[{ required: true }]}>

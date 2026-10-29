@@ -3,6 +3,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { ListPageShell } from '../../components/ListPageShell'
 import { PageFrame } from '../../components/PageFrame'
 import { globalFrequencyGroups } from '../../mock/openapiFinancialData'
+import { fh } from '../../components/FieldHelpLabel'
 
 const { Text } = Typography
 
@@ -13,7 +14,7 @@ export function ClosePositionPage() {
       <div style={{ maxWidth: 520, margin: '0 auto', padding: 24, border: '1px solid #f0f0f0' }}>
         <Typography.Title level={5}>账户平台</Typography.Title>
         <Form form={form} layout="vertical">
-          <Form.Item label="合约名称" name="contract" rules={[{ required: true }]}>
+          <Form.Item label={fh('合约名称')} name="contract" rules={[{ required: true }]}>
             <Select placeholder="请选择" options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
           </Form.Item>
           <Form.Item
@@ -82,7 +83,7 @@ export function GlobalFrequencyPage() {
         { title: '占比', dataIndex: 'ratio' },
         { title: '操作人', dataIndex: 'operator' },
         { title: '创建时间', dataIndex: 'createdAt', width: 170 },
-        { title: '更新时间', dataIndex: 'updatedAt', width: 170 },
+        { title: fh('更新时间'), dataIndex: 'updatedAt', width: 170 },
         {
           title: '操作',
           key: 'op',
@@ -109,7 +110,7 @@ export function OpenBottomPositionPage() {
   return (
     <PageFrame title="Open Bottom Position">
       <Form layout="vertical" style={{ maxWidth: 480 }}>
-        <Form.Item label="合约名称" name="contract">
+        <Form.Item label={fh('合约名称')} name="contract">
           <Select placeholder="请选择" />
         </Form.Item>
         <Form.Item label="UID" name="uid">
