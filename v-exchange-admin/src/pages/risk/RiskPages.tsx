@@ -20,10 +20,14 @@ import { QueryResetButtons } from '../../components/QueryResetButtons'
 import { perpContractOptions, symbolOptions } from '../../config/pairs'
 import {
   depthAlertRecords,
+  depthMonitorConfigs,
+  externalFundingAlerts,
   marketPriceLimits,
   monitorTypeOptions,
   noTradeAlertRecords,
   noTradeConfigs,
+  peerExchangeOptions,
+  peerSpreadConfigs,
   peerSpreadRecords,
   riskFundDetails,
   riskFundList,
@@ -683,13 +687,13 @@ export function RiskDepthMonitorPage() {
                   bordered
                   rowKey={(_, i) => String(i)}
                   dataSource={depthAlertRecords}
-                  pagination={{ showTotal: (t) => `共 ${t} 条` }}
+                  pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
                     { title: '合约', dataIndex: 'contract' },
-                    { title: '类型', dataIndex: 'type' },
-                    { title: '阈值', dataIndex: 'threshold' },
-                    { title: '时间', dataIndex: 'time' },
-                    { title: '方式', dataIndex: 'channel' },
+                    { title: '告警类型', dataIndex: 'type' },
+                    { title: '告警值', dataIndex: 'value' },
+                    { title: '告警时间', dataIndex: 'time' },
+                    { title: '告警方式', dataIndex: 'channel' },
                   ]}
                 />
               </>
@@ -705,7 +709,39 @@ export function RiskDepthMonitorPage() {
                     增加监控
                   </Button>
                 </div>
-                <Empty description="暂无配置（可继续追加截图）" />
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={depthMonitorConfigs}
+                  pagination={{ total: 2, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '告警类型', dataIndex: 'alertType' },
+                    { title: '告警值', dataIndex: 'alertValue' },
+                    { title: '关联合约', dataIndex: 'contracts' },
+                    { title: '更新时间', dataIndex: 'updatedAt' },
+                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    {
+                      title: '状态',
+                      dataIndex: 'status',
+                      render: (s: string) => <StatusTag status={s} />,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      render: () => (
+                        <Space>
+                          <Button type="link" danger size="small">
+                            停用
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
               </>
             ),
           },
@@ -717,32 +753,158 @@ export function RiskDepthMonitorPage() {
 
 export function RiskPeerSpreadMonitorPage() {
   const [form] = Form.useForm()
+  const [addForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
+
   return (
     <PageFrame title="友商价差监控">
-      <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约名称" name="contract">
-          <Input placeholder="请输入合约名称" style={{ width: 180 }} />
-        </Form.Item>
-        <Form.Item>
-          <QueryResetButtons onReset={() => form.resetFields()} />
-        </Form.Item>
-      </Form>
-      <Table
-        size="small"
-        bordered
-        rowKey={(_, i) => String(i)}
-        dataSource={peerSpreadRecords}
-        pagination={{ showTotal: (t) => `共 ${t} 条` }}
-        columns={[
-          { title: '合约', dataIndex: 'contract' },
-          { title: '监控周期', dataIndex: 'period' },
-          { title: '对标友商', dataIndex: 'peer' },
-          { title: '价格类型', dataIndex: 'priceType' },
-          { title: '偏差值', dataIndex: 'deviation' },
-          { title: '告警时间', dataIndex: 'time' },
-          { title: '方式', dataIndex: 'channel' },
+      <Tabs
+        items={[
+          {
+            key: 'records',
+            label: '告警记录',
+            children: (
+              <>
+                <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
+                  <Form.Item label="合约名称" name="contract">
+                    <Input placeholder="请输入合约名称" style={{ width: 180 }} />
+                  </Form.Item>
+                  <Form.Item>
+                    <QueryResetButtons onReset={() => form.resetFields()} />
+                  </Form.Item>
+                </Form>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey={(_, i) => String(i)}
+                  dataSource={peerSpreadRecords}
+                  pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
+                  columns={[
+                    { title: '合约', dataIndex: 'contract' },
+                    { title: '监控周期', dataIndex: 'period' },
+                    { title: '监控对标友商', dataIndex: 'peer' },
+                    { title: '偏差类型', dataIndex: 'priceType' },
+                    { title: '偏差值', dataIndex: 'deviation' },
+                    { title: '告警时间', dataIndex: 'time' },
+                    { title: '告警方式', dataIndex: 'channel' },
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            key: 'config',
+            label: '监控配置',
+            children: (
+              <>
+                <div style={{ textAlign: 'right', marginBottom: 12 }}>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>
+                    增加监控
+                  </Button>
+                </div>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={peerSpreadConfigs}
+                  pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '监控友商', dataIndex: 'peers', width: 220 },
+                    { title: '监控信息', dataIndex: 'info', width: 260 },
+                    { title: '监控周期', dataIndex: 'period', width: 90 },
+                    { title: '关联合约', dataIndex: 'contracts', width: 90 },
+                    { title: '更新时间', dataIndex: 'updatedAt', width: 160 },
+                    { title: '更新人', dataIndex: 'updatedBy', width: 200, ellipsis: true },
+                    {
+                      title: '状态',
+                      dataIndex: 'status',
+                      width: 90,
+                      render: (s: string) => <Tag>{s}</Tag>,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      width: 120,
+                      render: () => (
+                        <Space>
+                          <Button type="link" size="small">
+                            启用
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
+              </>
+            ),
+          },
         ]}
       />
+
+      <Modal
+        title="新增 - 监控配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="c" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success('已新增友商价差监控配置')
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={addForm} layout="vertical">
+          <Form.Item label="监控友商" name="peers" rules={[{ required: true }]}>
+            <Select mode="multiple" placeholder="请选择监控友商" options={peerExchangeOptions} />
+          </Form.Item>
+          <Form.Item label="监控信息" required>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <Form.Item name="lastPrice" noStyle rules={[{ required: true, message: '请输入最新价偏差阈值' }]}>
+                <InputNumber style={{ width: '100%' }} addonBefore="最新价" addonAfter="%" placeholder="请输入最新价偏差阈值" />
+              </Form.Item>
+              <Form.Item name="indexPrice" noStyle rules={[{ required: true, message: '请输入指数价偏差阈值' }]}>
+                <InputNumber style={{ width: '100%' }} addonBefore="指数价" addonAfter="%" placeholder="请输入指数价偏差阈值" />
+              </Form.Item>
+              <Form.Item name="markPrice" noStyle rules={[{ required: true, message: '请输入标记价偏差阈值' }]}>
+                <InputNumber style={{ width: '100%' }} addonBefore="标记价" addonAfter="%" placeholder="请输入标记价偏差阈值" />
+              </Form.Item>
+            </Space>
+          </Form.Item>
+          <Form.Item label="监控间隔" required>
+            <Space.Compact style={{ width: '100%' }}>
+              <Form.Item name="interval" noStyle rules={[{ required: true }]}>
+                <InputNumber style={{ width: '60%' }} placeholder="请输入监控间隔数值" min={1} />
+              </Form.Item>
+              <Form.Item name="intervalUnit" noStyle rules={[{ required: true }]}>
+                <Select style={{ width: '40%' }} placeholder="单位" options={periodUnitOptions} />
+              </Form.Item>
+            </Space.Compact>
+          </Form.Item>
+          <Form.Item label="关联合约" name="contracts" rules={[{ required: true }]}>
+            <Select mode="multiple" placeholder="请选择关联合约" options={symbolOptions} />
+          </Form.Item>
+          <Form.Item
+            label="报警群"
+            name="lark"
+            rules={[{ required: true }]}
+            extra="请在 Lark 搜索个人/群组，多个以回车、换行或空格分割"
+          >
+            <Input.TextArea rows={3} placeholder="请在 Lark 搜索个人/群组，多个以回车、换行或空格分割" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </PageFrame>
   )
 }
@@ -756,7 +918,63 @@ function PlaceholderAlarmPage({ title }: { title: string }) {
 }
 
 export function RiskExternalFundingMonitorPage() {
-  return <PlaceholderAlarmPage title="外部资金费率监控" />
+  const [form] = Form.useForm()
+  return (
+    <PageFrame title="外部资金费率监控">
+      <Tabs
+        items={[
+          {
+            key: 'records',
+            label: '告警记录',
+            children: (
+              <>
+                <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
+                  <Form.Item label="合约名称" name="contract">
+                    <Input placeholder="请输入合约名称" style={{ width: 180 }} />
+                  </Form.Item>
+                  <Form.Item>
+                    <QueryResetButtons onReset={() => form.resetFields()} />
+                  </Form.Item>
+                </Form>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey={(_, i) => String(i)}
+                  dataSource={externalFundingAlerts}
+                  scroll={{ x: 1200 }}
+                  pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
+                  columns={[
+                    { title: '合约', dataIndex: 'contract', width: 100 },
+                    { title: '资金费率数值', dataIndex: 'rate', width: 120 },
+                    { title: '收取周期 (Hour)', dataIndex: 'period', width: 120 },
+                    { title: '对标交易所', dataIndex: 'peer', width: 110 },
+                    { title: '对标交易所资金费率', dataIndex: 'peerRate', width: 150 },
+                    { title: '对标交易所收取周期 (Hour)', dataIndex: 'peerPeriod', width: 180 },
+                    { title: '告警时间', dataIndex: 'time', width: 160 },
+                    { title: '告警方式', dataIndex: 'channel', width: 90 },
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            key: 'config',
+            label: '监控配置',
+            children: (
+              <>
+                <div style={{ textAlign: 'right', marginBottom: 12 }}>
+                  <Button type="primary" icon={<PlusOutlined />}>
+                    增加监控
+                  </Button>
+                </div>
+                <Empty description="等待后续截图补充配置表" />
+              </>
+            ),
+          },
+        ]}
+      />
+    </PageFrame>
+  )
 }
 
 export function RiskInternalFundingMonitorPage() {

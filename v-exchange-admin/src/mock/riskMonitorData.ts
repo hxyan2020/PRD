@@ -32,17 +32,75 @@ export const noTradeAlertRecords = [
 ]
 
 export const depthAlertRecords = [
-  { contract: 'XAU_USD', type: '深度告警', threshold: '0.1% < ~50,000 USD', time: '2026-09-22 07:38:16', channel: 'Lark' },
-  { contract: 'XAU_USD', type: '档位告警', threshold: '<=25 档', time: '2026-09-22 07:38:16', channel: 'Lark' },
-  { contract: 'BTC_USD', type: '档位告警', threshold: '<=25 档', time: '2026-09-22 07:40:01', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-29 22:43:49', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-29 21:38:49', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-29 14:03:49', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-29 11:18:49', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-29 10:23:49', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-28 22:40:48', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-28 18:10:48', channel: 'Lark' },
+  { contract: 'XAU_USD', type: '深度告警', value: '0.1% <= 300 USD', time: '2026-10-08 17:23:47', channel: 'Lark' },
+  { contract: 'BTC_USD', type: '档位告警', value: '<= 25 档', time: '2026-10-28 15:00:00', channel: 'Lark' },
+]
+
+export const depthMonitorConfigs = [
+  {
+    id: 1,
+    alertType: '深度告警',
+    alertValue: '0.1% <= 300 USD',
+    contracts: 1,
+    updatedAt: '2026-09-25 10:04:12',
+    updatedBy: 'natalie.chen@hytechc.com',
+    status: '生效中',
+  },
+  {
+    id: 2,
+    alertType: '档位告警',
+    alertValue: '<= 25 档',
+    contracts: 1,
+    updatedAt: '2026-09-22 18:16:29',
+    updatedBy: 'natalie.chen@hytechc.com',
+    status: '生效中',
+  },
 ]
 
 export const peerSpreadRecords = [
-  { contract: 'XAU_USD', period: '5分钟', peer: 'Binance', priceType: '标记价', deviation: '0.5%', time: '2024-09-23 10:55:07', channel: 'Lark' },
-  { contract: 'XAU_USD', period: '5分钟', peer: 'Bybit', priceType: '标记价', deviation: '0.5%', time: '2024-09-23 10:55:07', channel: 'Lark' },
-  { contract: 'BTC_USD', period: '5分钟', peer: 'Binance', priceType: '指数价', deviation: '0.3%', time: '2024-09-23 10:55:07', channel: 'Lark' },
-  { contract: 'BTC_USD', period: '5分钟', peer: 'OKX', priceType: '指数价', deviation: '0.3%', time: '2024-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'Binance', priceType: '标记价', deviation: '0.5%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'Bybit', priceType: '标记价', deviation: '0.5%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'Binance', priceType: '指数价', deviation: '0.3%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'OKX', priceType: '指数价', deviation: '0.3%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'OKX', priceType: '标记价', deviation: '0.5%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'Bitget', priceType: '标记价', deviation: '0.5%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'Bybit', priceType: '指数价', deviation: '0.3%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'Bitget', priceType: '指数价', deviation: '0.3%', time: '2026-09-23 10:55:07', channel: 'Lark' },
+  { contract: 'XAU_USD', period: '5分钟', peer: 'Binance', priceType: '指数价', deviation: '0.3%', time: '2026-09-23 10:50:07', channel: 'Lark' },
+  { contract: 'BTC_USD', period: '5分钟', peer: 'Binance', priceType: '标记价', deviation: '0.5%', time: '2026-09-23 10:55:07', channel: 'Lark' },
 ]
+
+export const peerSpreadConfigs = [
+  {
+    id: 1,
+    peers: 'OKX, Bybit, Bitget, Binance',
+    info: '最新价 1%, 指数价 0.3%, 标记价 0.5%',
+    period: '5 分钟',
+    contracts: 1,
+    updatedAt: '2026-09-23 10:58:51',
+    updatedBy: 'natalie.chen@hytechc.com',
+    status: '已停用',
+  },
+]
+
+export const externalFundingAlerts = [
+  { contract: 'XAU_USD', rate: '0.1003%', period: '4h', peer: 'BINANCE', peerRate: '0%', peerPeriod: '4h', time: '2026-10-15 13:10:39', channel: 'Lark' },
+  { contract: 'XAU_USD', rate: '0.1003%', period: '4h', peer: 'BITGET', peerRate: '0%', peerPeriod: '4h', time: '2026-10-15 13:10:39', channel: 'Lark' },
+  { contract: 'XAU_USD', rate: '0.1003%', period: '4h', peer: 'BYBIT', peerRate: '0%', peerPeriod: '4h', time: '2026-10-15 13:10:39', channel: 'Lark' },
+  { contract: 'XAU_USD', rate: '0.1003%', period: '4h', peer: 'OKEX', peerRate: '0%', peerPeriod: '8h', time: '2026-10-15 13:10:39', channel: 'Lark' },
+  { contract: 'XAU_USD', rate: '0.1%', period: '4h', peer: 'BINANCE', peerRate: '0%', peerPeriod: '4h', time: '2026-10-15 13:00:39', channel: 'Lark' },
+  { contract: 'XAU_USD', rate: '0.1004%', period: '4h', peer: 'BYBIT', peerRate: '0%', peerPeriod: '4h', time: '2026-10-15 12:50:39', channel: 'Lark' },
+  { contract: 'BTC_USD', rate: '0.0095%', period: '8h', peer: 'BINANCE', peerRate: '0.01%', peerPeriod: '8h', time: '2026-10-15 12:00:00', channel: 'Lark' },
+]
+
+export const peerExchangeOptions = ['OKX', 'Bybit', 'Bitget', 'Binance'].map((v) => ({ value: v, label: v }))
 
 export const riskFundList = [
   {
