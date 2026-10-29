@@ -1,8 +1,10 @@
 /** Bilingual field help + launch recommendations for XAU_USD / BTC_USD. */
 import { GENERATED_FIELD_HELP } from './fieldHelp.generated'
 import type { FieldHelpItem } from './fieldHelpTypes'
+import { LAUNCH_RECOMMENDATIONS, withLaunchRecs } from './launchRecommendations'
 
 export type { FieldHelpItem }
+export { LAUNCH_RECOMMENDATIONS }
 
 export const FIELD_HELP: Record<string, FieldHelpItem> = {
   合约名称: {
@@ -476,12 +478,18 @@ function fallbackHelp(key: string): FieldHelpItem {
   }
 }
 
-/** Curated entries win over generated; always returns a help object. */
+/** Curated entries win over generated; launch recs overlay last. Always returns help. */
 export function getFieldHelp(key: string): FieldHelpItem {
   const cleaned = key.replace(/[：:]/g, '').trim()
-  return FIELD_HELP[key] ?? FIELD_HELP[cleaned] ?? GENERATED_FIELD_HELP[key] ?? GENERATED_FIELD_HELP[cleaned] ?? fallbackHelp(key)
+  const base =
+    FIELD_HELP[key] ??
+    FIELD_HELP[cleaned] ??
+    GENERATED_FIELD_HELP[key] ??
+    GENERATED_FIELD_HELP[cleaned] ??
+    fallbackHelp(key)
+  return withLaunchRecs(key, withLaunchRecs(cleaned, base))
 }
 
-export const LAUNCH_SHEET_ROWS = Object.values(FIELD_HELP).filter(
-  (f) => f.xauRec || f.btcRec || f.oldParam,
-)
+export const LAUNCH_SHEET_ROWS: FieldHelpItem[] = Object.keys(LAUNCH_RECOMMENDATIONS)
+  .map((key) => getFieldHelp(key))
+  .filter((f) => f.xauRec || f.btcRec || f.oldParam)

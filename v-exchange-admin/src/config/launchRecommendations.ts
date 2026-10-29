@@ -1,0 +1,351 @@
+import type { FieldHelpItem } from './fieldHelpTypes'
+
+/**
+ * First-token-launch recommendations for XAUUSD / BTCUSD.
+ * Merged into field tooltips (EN/中文 + reason) and pair-launch-params.html.
+ */
+export const LAUNCH_RECOMMENDATIONS: Record<string, Partial<FieldHelpItem>> = {
+  // —— Price management ——
+  '基差移动平均值周期(秒)': {
+    module: 'price',
+    oldParam: 'XAU 30s / BTC 300s (screenshot mock)',
+    xauRec: '60s',
+    btcRec: '60s',
+    reason: 'Screenshot XAU 30s is too jumpy for gold; BTC 300s is slow. Align both to 60s at launch, then tune.',
+  },
+  期现价差阈值比例: {
+    module: 'price',
+    oldParam: 'XAU 3% / BTC 1%',
+    xauRec: '1.5%',
+    btcRec: '0.8%',
+    reason: '3% on gold is loose for fair-price protect; tighten but keep wider than BTC.',
+  },
+  '观察阈值(秒)': {
+    module: 'price',
+    oldParam: 'XAU 60s / BTC 120s',
+    xauRec: '90s',
+    btcRec: '60s',
+    reason: 'Give XAU more confirm time vs FX feeds; BTC can act faster.',
+  },
+  '恢复阈值(秒)': {
+    module: 'price',
+    oldParam: 'XAU 60s / BTC 60s',
+    xauRec: '120s',
+    btcRec: '60s',
+    reason: 'Recovery hysteresis ≥ observe window to avoid fair-price flapping on gold.',
+  },
+  '费率收取周期(小时)': {
+    module: 'price',
+    oldParam: 'XAU 4h / BTC 8h',
+    xauRec: '4h',
+    btcRec: '8h',
+    reason: 'Keep screenshot peer conventions (gold often 4h, BTC 8h).',
+  },
+  '首次收取时间(小时)': {
+    module: 'price',
+    oldParam: 'XAU 20 / BTC 0',
+    xauRec: '0',
+    btcRec: '0',
+    reason: 'Normalize both to UTC 00:00 for ops simplicity at launch; shift XAU later if peers require.',
+  },
+  费率浮动上限: {
+    module: 'price',
+    oldParam: 'XAU 0.5% / BTC 0.3%',
+    xauRec: '0.5%',
+    btcRec: '0.375%',
+    reason: 'Keep XAU cap; slightly raise BTC toward common 0.375% while staying above internal alert bounds.',
+  },
+  费率浮动下限: {
+    module: 'price',
+    oldParam: 'XAU -0.5% / BTC -0.3%',
+    xauRec: '-0.5%',
+    btcRec: '-0.375%',
+    reason: 'Symmetric to upper funding caps.',
+  },
+  自动调整资金费率: {
+    module: 'price',
+    oldParam: '否 (both)',
+    xauRec: '是 (开启)',
+    btcRec: '是 (开启)',
+    reason: 'Enable auto-adjust from day one so rates track peers without manual edits.',
+  },
+  保证金影响额: {
+    module: 'price',
+    oldParam: 'XAU 200 USDT / BTC 50000 USDT',
+    xauRec: '500 USDT',
+    btcRec: '50000 USDT',
+    reason: 'Slightly raise XAU impact for meaningful funding; keep BTC screenshot baseline.',
+  },
+  费率精度: {
+    module: 'price',
+    oldParam: '6 (0.000001)',
+    xauRec: '6 (0.000001)',
+    btcRec: '6 (0.000001)',
+    reason: 'Industry-standard 1e-6 funding precision for both.',
+  },
+  指数权重: {
+    module: 'price',
+    oldParam: 'XAU manual / BTC volume-auto',
+    xauRec: '手工：LMAX/ISPrime/Velocity 为主',
+    btcRec: '自动成交量：Binance/OKX/Bybit/Bitget',
+    reason: 'Gold liquidity sits on FX/prime; BTC depth is on major CEX.',
+  },
+  '进入观察期 (秒)': {
+    module: 'price',
+    oldParam: '120',
+    xauRec: '180',
+    btcRec: '120',
+    reason: 'Longer XAU quarantine when a source spreads; BTC keep 120s.',
+  },
+  '重新启用 (秒)': {
+    module: 'price',
+    oldParam: '30–120',
+    xauRec: '120',
+    btcRec: '60',
+    reason: 'Avoid flapping bad gold venues back into the index too fast.',
+  },
+  是否需要设置价差监控: {
+    module: 'price',
+    oldParam: 'CEX spot 是 / index 否',
+    xauRec: 'LMAX/ISPrime 等成交源：是',
+    btcRec: 'CEX spot：是；纯指数源：否',
+    reason: 'Only sources that publish tradable prices need spread monitors.',
+  },
+  最小行情源数: {
+    module: 'price',
+    oldParam: '—',
+    xauRec: '3',
+    btcRec: '3',
+    reason: 'Need ≥3 live sources before index is trustworthy at launch.',
+  },
+
+  // —— Risk management ——
+  大于20F系数: {
+    module: 'risk',
+    oldParam: 'XAU 1% / BTC 20%',
+    xauRec: '2%',
+    btcRec: '10%',
+    reason: 'BTC 20% is very wide; tighten for launch. XAU keep tight protection.',
+  },
+  小于20F系数: {
+    module: 'risk',
+    oldParam: '0.5% both',
+    xauRec: '0.5%',
+    btcRec: '0.5%',
+    reason: 'Keep screenshot near-touch protection for small books.',
+  },
+  默认档位: {
+    module: 'risk',
+    oldParam: '15 both',
+    xauRec: '10',
+    btcRec: '15',
+    reason: 'Shallower default sweep on gold while MM depth builds.',
+  },
+  市价最大吃单档位: {
+    module: 'risk',
+    oldParam: 'XAU 10 / BTC 20',
+    xauRec: '8',
+    btcRec: '20',
+    reason: 'Cap XAU market sweeps tighter; BTC depth can support 20.',
+  },
+  市价单最大偏离系数: {
+    module: 'risk',
+    oldParam: '0.1% both',
+    xauRec: '0.15%',
+    btcRec: '0.1%',
+    reason: 'Slightly wider XAU slip tolerance vs FX gaps; BTC keep 0.1%.',
+  },
+  市价提示开关及阈值设置: {
+    module: 'risk',
+    oldParam: '已开启/-- USD',
+    xauRec: '开启 · 提示阈值 5,000 USD',
+    btcRec: '开启 · 提示阈值 20,000 USD',
+    reason: 'Force trader confirm on large market orders; lower bar for gold.',
+  },
+
+  // —— Alert / monitor ——
+  对标交易所: {
+    module: 'alert',
+    oldParam: 'OKX, Bybit, Bitget, Binance',
+    xauRec: 'OKX, Bybit, Bitget, Binance (+ LMAX when ready)',
+    btcRec: 'OKX, Bybit, Bitget, Binance',
+    reason: 'Major CEX median; add LMAX for gold when feed is stable.',
+  },
+  监控阈值: {
+    module: 'alert',
+    oldParam: '0.05% (external funding) / 1% spread',
+    xauRec: '价差 1.2% · 外资金费率差 0.08%',
+    btcRec: '价差 1.0% · 外资金费率差 0.05%',
+    reason: 'Gold quotes noisier — slightly looser spread/funding gap alerts.',
+  },
+  监控频率: {
+    module: 'alert',
+    oldParam: '5 min',
+    xauRec: '5 min',
+    btcRec: '5 min',
+    reason: 'Good latency vs Lark noise trade-off.',
+  },
+  监控周期: {
+    module: 'alert',
+    oldParam: '内部资金费率 10 分钟',
+    xauRec: '10 分钟',
+    btcRec: '5 分钟',
+    reason: 'BTC funding moves faster; XAU keep longer confirm.',
+  },
+  监控费率上限: {
+    module: 'alert',
+    oldParam: 'XAU 0.45% / BTC 0.25%',
+    xauRec: '0.375%',
+    btcRec: '0.25%',
+    reason: 'Alert before hitting hard funding cap (~75% of platform upper).',
+  },
+  监控费率下限: {
+    module: 'alert',
+    oldParam: 'XAU -0.45% / BTC -0.25%',
+    xauRec: '-0.375%',
+    btcRec: '-0.25%',
+    reason: 'Symmetric to upper internal-funding monitors.',
+  },
+  '爆仓预警仓位价值阈值 (USD)': {
+    module: 'alert',
+    oldParam: '100,000',
+    xauRec: '50,000',
+    btcRec: '100,000',
+    reason: 'Thin XAU book — warn earlier; BTC keep screenshot 100k.',
+  },
+  爆仓预警仓位价值阈值: {
+    module: 'alert',
+    oldParam: '100,000 USD',
+    xauRec: '50,000 USD',
+    btcRec: '100,000 USD',
+    reason: 'Same as table column recommendation.',
+  },
+  爆仓预警MMR阈值: {
+    module: 'alert',
+    oldParam: '95%',
+    xauRec: '90%',
+    btcRec: '95%',
+    reason: 'More lead time for gold ops; BTC keep tight 95%.',
+  },
+  '爆仓通知仓位价值阈值 (USD)': {
+    module: 'alert',
+    oldParam: '100,000',
+    xauRec: '50,000',
+    btcRec: '100,000',
+    reason: 'Align post-liq notify with pre-liq warning per pair.',
+  },
+  爆仓通知仓位价值阈值: {
+    module: 'alert',
+    oldParam: '100,000 USD',
+    xauRec: '50,000 USD',
+    btcRec: '100,000 USD',
+    reason: 'Align with warning thresholds.',
+  },
+  告警值: {
+    module: 'alert',
+    oldParam: '价差多为 1%；买卖一价差 0.1%；无交易 40s；深度 0.1%≤300USD；档位 ≤25',
+    xauRec: '价差 1.2% · 无交易 60s · 深度 0.15%≤500USD · 档位 ≤20',
+    btcRec: '价差 1.0% · 无交易 40s · 深度 0.1%≤2000USD · 档位 ≤25',
+    reason: 'Tune each alert family to liquidity: looser XAU, deeper BTC USD thresholds.',
+  },
+  监控类型1: {
+    module: 'alert',
+    oldParam: '标记/最新/买一/卖一/中间价',
+    xauRec: '优先：标记价格 vs 指数价格',
+    btcRec: '优先：标记价格 vs 指数价格',
+    reason: 'Mark–index is the core fair-price sanity check for both.',
+  },
+  监控类型2: {
+    module: 'alert',
+    oldParam: '指数价格 / 标记价格 / 卖一',
+    xauRec: '指数价格',
+    btcRec: '指数价格',
+    reason: 'Pair type1 mark with index for primary spread alert.',
+  },
+  预警群: {
+    module: 'alert',
+    oldParam: 'Lark webhook(s)',
+    xauRec: '专用 XAU 值班群 webhook',
+    btcRec: '专用 BTC 值班群 webhook（可共用值班）',
+    reason: 'Separate channels reduce noise; share only if one desk covers both.',
+  },
+  报警群: {
+    module: 'alert',
+    oldParam: 'Lark webhook (ADL uses ;)',
+    xauRec: 'ADL/DB 值班 webhook',
+    btcRec: 'ADL/DB 值班 webhook',
+    reason: 'Critical path alerts should hit the same always-on ops channel.',
+  },
+  告警类型: {
+    module: 'alert',
+    oldParam: 'ADL失败重试中；DB心跳/大额/长时间持仓等',
+    xauRec: '启用：ADL失败、DB心跳、大额持仓、长时间持仓、注资/回拨',
+    btcRec: '启用：同左',
+    reason: 'Turn on full MM + ADL suite before public launch.',
+  },
+
+  // —— Market making ——
+  自动注资水位线: {
+    module: 'mm',
+    oldParam: '40,000 USD',
+    xauRec: '50,000 USD',
+    btcRec: '50,000 USD',
+    reason: 'Shared DB wallet — raise floor slightly so both pairs stay funded.',
+  },
+  注资目标水位线: {
+    module: 'mm',
+    oldParam: '200,000 USD',
+    xauRec: '250,000 USD',
+    btcRec: '250,000 USD',
+    reason: 'Headroom for gold + BTC inventory shocks in one takeover account.',
+  },
+  钱包余额: {
+    module: 'mm',
+    oldParam: '~200,560 USD',
+    xauRec: '保持 ≥ 注资目标',
+    btcRec: '保持 ≥ 注资目标',
+    reason: 'Operational target, not a config knob — monitor after inject.',
+  },
+  当前注资金额: {
+    module: 'mm',
+    oldParam: '200,000 USD',
+    xauRec: '250,000 USD 起',
+    btcRec: '250,000 USD 起',
+    reason: 'Match inject-target waterline at launch.',
+  },
+  最大可转金额: {
+    module: 'mm',
+    oldParam: '~200,560 USD',
+    xauRec: '保留 ≥ 水位线后才回笼',
+    btcRec: '保留 ≥ 水位线后才回笼',
+    reason: 'Never recall below auto-inject floor.',
+  },
+  账户MMR: {
+    module: 'mm',
+    oldParam: '1000000% (no position)',
+    xauRec: '持仓时告警 < 200%',
+    btcRec: '持仓时告警 < 200%',
+    reason: 'Huge % is empty-book artifact; alert when real MMR compresses.',
+  },
+  流水类型: {
+    module: 'mm',
+    oldParam: '自动减仓 / 资金费用',
+    xauRec: '关注：自动注资、回笼、自动减仓、资金费用',
+    btcRec: '同左',
+    reason: 'Filter ledger by type when diagnosing takeover PnL.',
+  },
+}
+
+/** Apply launch recs onto a help item (launch wins for rec fields). */
+export function withLaunchRecs(key: string, base: FieldHelpItem): FieldHelpItem {
+  const rec = LAUNCH_RECOMMENDATIONS[key]
+  if (!rec) return base
+  return {
+    ...base,
+    ...rec,
+    nameZh: base.nameZh,
+    nameEn: base.nameEn,
+    explainZh: base.explainZh,
+    explainEn: base.explainEn,
+  }
+}

@@ -12,14 +12,14 @@ type Props = {
   label?: ReactNode
 }
 
-/** Hover/click help: EN + 中文 explanation, plus XAU/BTC launch recs when available. */
+/** Hover/click help: EN + 中文 + XAU/BTC launch recommendations when available. */
 export function FieldHelpLabel({ name, label }: Props) {
   const help = getFieldHelp(name)
   const visible = label ?? name
-  if (!help) return <>{visible}</>
+  const hasLaunch = !!(help.xauRec || help.btcRec || help.oldParam || help.reason)
 
   const tip = (
-    <div style={{ maxWidth: 360 }}>
+    <div style={{ maxWidth: 380 }}>
       <div style={{ marginBottom: 6 }}>
         <Text strong style={{ color: '#fff' }}>
           {help.nameEn}
@@ -34,29 +34,30 @@ export function FieldHelpLabel({ name, label }: Props) {
         <Text style={{ color: '#91caff' }}>中文: </Text>
         <Text style={{ color: '#fff' }}>{help.explainZh}</Text>
       </div>
-      {(help.xauRec || help.btcRec) && (
-        <div style={{ marginTop: 8, borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: 6 }}>
+      {hasLaunch && (
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(255,255,255,0.25)', paddingTop: 8 }}>
+          <div style={{ marginBottom: 4, color: '#ffe58f', fontWeight: 600 }}>首发建议 / Launch tips</div>
           {help.oldParam && (
             <div>
-              <Text style={{ color: '#ffe58f' }}>旧参数 / Old: </Text>
+              <Text style={{ color: '#ffe58f' }}>旧参数 Old: </Text>
               <Text style={{ color: '#fff' }}>{help.oldParam}</Text>
             </div>
           )}
           {help.xauRec && (
             <div>
-              <Text style={{ color: '#b7eb8f' }}>XAUUSD 建议: </Text>
+              <Text style={{ color: '#b7eb8f' }}>XAUUSD: </Text>
               <Text style={{ color: '#fff' }}>{help.xauRec}</Text>
             </div>
           )}
           {help.btcRec && (
             <div>
-              <Text style={{ color: '#b7eb8f' }}>BTCUSD 建议: </Text>
+              <Text style={{ color: '#b7eb8f' }}>BTCUSD: </Text>
               <Text style={{ color: '#fff' }}>{help.btcRec}</Text>
             </div>
           )}
           {help.reason && (
             <div style={{ marginTop: 4 }}>
-              <Text style={{ color: '#91caff' }}>原因 / Why: </Text>
+              <Text style={{ color: '#91caff' }}>原因 Why: </Text>
               <Text style={{ color: '#fff' }}>{help.reason}</Text>
             </div>
           )}
@@ -69,7 +70,9 @@ export function FieldHelpLabel({ name, label }: Props) {
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
       <span>{visible}</span>
       <Tooltip title={tip} trigger={['hover', 'click']}>
-        <QuestionCircleOutlined style={{ color: '#1677ff', cursor: 'help', fontSize: 12 }} />
+        <QuestionCircleOutlined
+          style={{ color: hasLaunch ? '#52c41a' : '#1677ff', cursor: 'help', fontSize: 12 }}
+        />
       </Tooltip>
     </span>
   )

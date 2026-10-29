@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "merge-alarm-doc": "node scripts/merge-alarm-list.mjs",
     "generate-field-help": "node scripts/generate-field-help.mjs",
-    "build:pages": "npm run merge-alarm-doc && npm run generate-field-help && GITHUB_PAGES=true tsc -b && GITHUB_PAGES=true vite build",
+    "sync-launch-params": "node scripts/sync-launch-params-html.mjs",
+    "build:pages": "npm run merge-alarm-doc && npm run generate-field-help && npm run sync-launch-params && GITHUB_PAGES=true tsc -b && GITHUB_PAGES=true vite build",
     "lint": "oxlint",
     "preview": "vite preview"
   },
