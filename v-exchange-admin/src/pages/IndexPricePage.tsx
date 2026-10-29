@@ -22,6 +22,7 @@ import { QueryResetButtons } from '../components/QueryResetButtons'
 import { baseCoinOptions } from '../config/pairs'
 import { indexPriceRecords, marketSourceRecords, type IndexPriceRecord } from '../mock/data'
 import { btcVolumeWeights, xauManualWeights } from '../mock/marketSourceDetails'
+import { fh } from '../components/FieldHelpLabel'
 
 const { Text } = Typography
 
@@ -199,7 +200,7 @@ export function IndexPricePage() {
             options={[{ value: 'USD', label: 'USD' }]}
           />
         </Form.Item>
-        <Form.Item label="状态" name="status">
+        <Form.Item label={fh('状态')} name="status">
           <Select
             placeholder="请选择"
             allowClear

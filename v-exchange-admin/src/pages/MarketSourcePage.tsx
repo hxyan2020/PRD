@@ -17,6 +17,7 @@ import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { marketSourceRecords, type MarketSourceRecord } from '../mock/data'
 import { marketSourceDetails } from '../mock/marketSourceDetails'
+import { fh } from '../components/FieldHelpLabel'
 
 export function MarketSourcePage() {
   const [form] = Form.useForm()
@@ -97,7 +98,7 @@ export function MarketSourcePage() {
         <Form.Item label="显示名称" name="displayName">
           <Input placeholder="请输入" style={{ width: 160 }} />
         </Form.Item>
-        <Form.Item label="状态" name="status">
+        <Form.Item label={fh('状态')} name="status">
           <Select
             placeholder="请选择"
             allowClear

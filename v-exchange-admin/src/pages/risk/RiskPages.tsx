@@ -40,6 +40,7 @@ import {
   spreadAlertRecords,
   spreadMonitorConfigs,
 } from '../../mock/riskMonitorData'
+import { fh } from '../../components/FieldHelpLabel'
 
 const { Text } = Typography
 
@@ -58,7 +59,7 @@ export function RiskFundingFeeChangePage() {
   return (
     <PageFrame title="资金费率修改">
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约名称" name="contract">
+        <Form.Item label={fh('合约名称')} name="contract">
           <Select placeholder="请选择" allowClear style={{ width: 180 }} options={perpContractOptions} />
         </Form.Item>
         <Form.Item>
@@ -70,7 +71,7 @@ export function RiskFundingFeeChangePage() {
         bordered
         rowKey="contract"
         columns={[
-          { title: '合约名称', dataIndex: 'contract' },
+          { title: fh('合约名称'), dataIndex: 'contract' },
           { title: '本期结算费率', dataIndex: 'settlementRate' },
           { title: '是否启用', dataIndex: 'enabled' },
           { title: '操作', key: 'action', width: 100 },
@@ -105,10 +106,10 @@ export function RiskLiquidationSwitchPage() {
         ]}
         columns={[
           { title: '类型', dataIndex: 'type' },
-          { title: '更新时间', dataIndex: 'updatedAt', width: 180 },
+          { title: fh('更新时间'), dataIndex: 'updatedAt', width: 180 },
           { title: '操作人员', dataIndex: 'operator', width: 120 },
           {
-            title: '状态',
+            title: fh('状态'),
             dataIndex: 'status',
             width: 100,
             render: (status: string) =>
@@ -172,15 +173,15 @@ export function RiskMarketPriceLimitPage() {
         dataSource={marketPriceLimits}
         pagination={{ total: 2, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
         columns={[
-          { title: '合约展示名称', dataIndex: 'displayName', width: 130 },
-          { title: '合约名称', dataIndex: 'contractName', width: 100 },
+          { title: fh('合约展示名称'), dataIndex: 'displayName', width: 130 },
+          { title: fh('合约名称'), dataIndex: 'contractName', width: 100 },
           { title: '大于20F系数', dataIndex: 'gt20f', width: 110 },
           { title: '小于20F系数', dataIndex: 'lt20f', width: 110 },
           { title: '默认档位', dataIndex: 'defaultTier', width: 90 },
-          { title: '市价最大吃单档位', dataIndex: 'maxMarketTier', width: 130 },
-          { title: '市价单最大偏离系数', dataIndex: 'maxDeviation', width: 140 },
+          { title: fh('市价最大吃单档位'), dataIndex: 'maxMarketTier', width: 130 },
+          { title: fh('市价单最大偏离系数'), dataIndex: 'maxDeviation', width: 140 },
           { title: '市价提示开关及阈值设置', dataIndex: 'alertSwitch', width: 180 },
-          { title: '更新时间', dataIndex: 'updatedAt', width: 160 },
+          { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
           { title: '操作者', dataIndex: 'operator', width: 200, ellipsis: true },
           {
             title: '操作',
@@ -225,8 +226,8 @@ export function RiskReserveListPage() {
                   dataSource={riskFundList}
                   pagination={{ total: 2, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
                   columns={[
-                    { title: '合约展示名称', dataIndex: 'displayName' },
-                    { title: '合约名称', dataIndex: 'contractName' },
+                    { title: fh('合约展示名称'), dataIndex: 'displayName' },
+                    { title: fh('合约名称'), dataIndex: 'contractName' },
                     { title: '手续费汇总更新', dataIndex: 'feeSummary' },
                     { title: '可用额度', dataIndex: 'available' },
                     { title: '净值', dataIndex: 'netValue' },
@@ -284,7 +285,7 @@ export function RiskReserveDetailPage() {
         <Form.Item label="合约" name="contract">
           <Select placeholder="请选择" allowClear style={{ width: 140 }} options={symbolOptions} />
         </Form.Item>
-        <Form.Item label="合约展示名称" name="displayName">
+        <Form.Item label={fh('合约展示名称')} name="displayName">
           <Input style={{ width: 140 }} />
         </Form.Item>
         <Form.Item label="变动记录ID" name="recordId">
@@ -301,8 +302,8 @@ export function RiskReserveDetailPage() {
         dataSource={riskFundDetails}
         pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
         columns={[
-          { title: '合约展示名称', dataIndex: 'displayName', width: 130 },
-          { title: '合约名称', dataIndex: 'contractName', width: 100 },
+          { title: fh('合约展示名称'), dataIndex: 'displayName', width: 130 },
+          { title: fh('合约名称'), dataIndex: 'contractName', width: 100 },
           { title: '变动记录ID', dataIndex: 'recordId', width: 100 },
           { title: '合约ID', dataIndex: 'contractId', width: 80 },
           { title: '变动类型', dataIndex: 'changeType', width: 160 },
@@ -394,7 +395,7 @@ export function RiskSpreadAlertPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约名称" name="contract">
+                  <Form.Item label={fh('合约名称')} name="contract">
                     <Input placeholder="请输入合约名称" style={{ width: 180 }} />
                   </Form.Item>
                   <Form.Item>
@@ -410,12 +411,12 @@ export function RiskSpreadAlertPage() {
                   scroll={{ x: 1200 }}
                   columns={[
                     { title: '合约', dataIndex: 'contract', width: 100 },
-                    { title: '告警值', dataIndex: 'value', width: 80 },
+                    { title: fh('告警值'), dataIndex: 'value', width: 80 },
                     { title: '监控类型1', dataIndex: 'type1', width: 110 },
                     { title: '价格1', dataIndex: 'price1', width: 100 },
                     { title: '监控类型2', dataIndex: 'type2', width: 110 },
                     { title: '价格2', dataIndex: 'price2', width: 100 },
-                    { title: '监控周期', dataIndex: 'period', width: 90 },
+                    { title: fh('监控周期'), dataIndex: 'period', width: 90 },
                     { title: '告警时间', dataIndex: 'time', width: 160 },
                     { title: '告警方式', dataIndex: 'channel', width: 80 },
                   ]}
@@ -443,13 +444,13 @@ export function RiskSpreadAlertPage() {
                   columns={[
                     { title: '监控类型1', dataIndex: 'type1', width: 120 },
                     { title: '监控类型2', dataIndex: 'type2', width: 120 },
-                    { title: '告警值', dataIndex: 'alarmValue', width: 80 },
-                    { title: '监控周期', dataIndex: 'period', width: 90 },
+                    { title: fh('告警值'), dataIndex: 'alarmValue', width: 80 },
+                    { title: fh('监控周期'), dataIndex: 'period', width: 90 },
                     { title: '关联合约', dataIndex: 'contracts', width: 90 },
-                    { title: '更新时间', dataIndex: 'updatedAt', width: 160 },
-                    { title: '更新人', dataIndex: 'updatedBy', width: 200, ellipsis: true },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', width: 200, ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       width: 90,
                       render: (s: string) => <StatusTag status={s} />,
@@ -505,10 +506,10 @@ export function RiskSpreadAlertPage() {
           <Form.Item label="监控类型2" name="type2" rules={[{ required: true }]}>
             <Select placeholder="请选择监控类型2" options={monitorTypeOptions} />
           </Form.Item>
-          <Form.Item label="告警值" name="alarmValue" rules={[{ required: true }]}>
+          <Form.Item label={fh('告警值')} name="alarmValue" rules={[{ required: true }]}>
             <InputNumber style={{ width: '100%' }} addonAfter="%" placeholder="请输入告警值" />
           </Form.Item>
-          <Form.Item label="监控周期" required>
+          <Form.Item label={fh('监控周期')} required>
             <Space.Compact style={{ width: '100%' }}>
               <Form.Item name="periodValue" noStyle rules={[{ required: true, message: '请输入数值' }]}>
                 <InputNumber style={{ width: '60%' }} placeholder="请输入监控周期数值" min={1} />
@@ -522,7 +523,7 @@ export function RiskSpreadAlertPage() {
             <Select mode="multiple" placeholder="请选择关联合约" options={symbolOptions} />
           </Form.Item>
           <Form.Item
-            label="预警群"
+            label={fh('预警群')}
             name="webhook"
             rules={[{ required: true }]}
             extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
@@ -550,7 +551,7 @@ export function RiskNoTradeMonitorPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约名称" name="contract">
+                  <Form.Item label={fh('合约名称')} name="contract">
                     <Input placeholder="请输入合约名称" style={{ width: 180 }} />
                   </Form.Item>
                   <Form.Item>
@@ -565,8 +566,8 @@ export function RiskNoTradeMonitorPage() {
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
                     { title: '合约', dataIndex: 'contract' },
-                    { title: '告警类型', dataIndex: 'type' },
-                    { title: '告警值', dataIndex: 'value' },
+                    { title: fh('告警类型'), dataIndex: 'type' },
+                    { title: fh('告警值'), dataIndex: 'value' },
                     { title: '告警时间', dataIndex: 'time' },
                     { title: '告警方式', dataIndex: 'channel' },
                   ]}
@@ -591,10 +592,10 @@ export function RiskNoTradeMonitorPage() {
                   dataSource={noTradeConfigs}
                   pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '告警类型', dataIndex: 'alertType' },
-                    { title: '告警值', dataIndex: 'alertValue' },
+                    { title: fh('告警类型'), dataIndex: 'alertType' },
+                    { title: fh('告警值'), dataIndex: 'alertValue' },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       render: (s: string) => <StatusTag status={s} />,
                     },
@@ -656,7 +657,7 @@ export function RiskNoTradeMonitorPage() {
             <Select mode="multiple" placeholder="请选择关联合约" options={symbolOptions} />
           </Form.Item>
           <Form.Item
-            label="预警群"
+            label={fh('预警群')}
             name="webhook"
             rules={[{ required: true }]}
             extra="填写 lark 机器人 token，多个以英文逗号分隔"
@@ -681,7 +682,7 @@ export function RiskDepthMonitorPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约名称" name="contract">
+                  <Form.Item label={fh('合约名称')} name="contract">
                     <Input placeholder="请输入合约名称" style={{ width: 180 }} />
                   </Form.Item>
                   <Form.Item>
@@ -696,8 +697,8 @@ export function RiskDepthMonitorPage() {
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
                     { title: '合约', dataIndex: 'contract' },
-                    { title: '告警类型', dataIndex: 'type' },
-                    { title: '告警值', dataIndex: 'value' },
+                    { title: fh('告警类型'), dataIndex: 'type' },
+                    { title: fh('告警值'), dataIndex: 'value' },
                     { title: '告警时间', dataIndex: 'time' },
                     { title: '告警方式', dataIndex: 'channel' },
                   ]}
@@ -722,13 +723,13 @@ export function RiskDepthMonitorPage() {
                   dataSource={depthMonitorConfigs}
                   pagination={{ total: 2, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '告警类型', dataIndex: 'alertType' },
-                    { title: '告警值', dataIndex: 'alertValue' },
+                    { title: fh('告警类型'), dataIndex: 'alertType' },
+                    { title: fh('告警值'), dataIndex: 'alertValue' },
                     { title: '关联合约', dataIndex: 'contracts' },
-                    { title: '更新时间', dataIndex: 'updatedAt' },
-                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt' },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       render: (s: string) => <StatusTag status={s} />,
                     },
@@ -772,7 +773,7 @@ export function RiskPeerSpreadMonitorPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约名称" name="contract">
+                  <Form.Item label={fh('合约名称')} name="contract">
                     <Input placeholder="请输入合约名称" style={{ width: 180 }} />
                   </Form.Item>
                   <Form.Item>
@@ -787,7 +788,7 @@ export function RiskPeerSpreadMonitorPage() {
                   pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
                   columns={[
                     { title: '合约', dataIndex: 'contract' },
-                    { title: '监控周期', dataIndex: 'period' },
+                    { title: fh('监控周期'), dataIndex: 'period' },
                     { title: '监控对标友商', dataIndex: 'peer' },
                     { title: '偏差类型', dataIndex: 'priceType' },
                     { title: '偏差值', dataIndex: 'deviation' },
@@ -817,12 +818,12 @@ export function RiskPeerSpreadMonitorPage() {
                   columns={[
                     { title: '监控友商', dataIndex: 'peers', width: 220 },
                     { title: '监控信息', dataIndex: 'info', width: 260 },
-                    { title: '监控周期', dataIndex: 'period', width: 90 },
+                    { title: fh('监控周期'), dataIndex: 'period', width: 90 },
                     { title: '关联合约', dataIndex: 'contracts', width: 90 },
-                    { title: '更新时间', dataIndex: 'updatedAt', width: 160 },
-                    { title: '更新人', dataIndex: 'updatedBy', width: 200, ellipsis: true },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt', width: 160 },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', width: 200, ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       width: 90,
                       render: (s: string) => <Tag>{s}</Tag>,
@@ -902,7 +903,7 @@ export function RiskPeerSpreadMonitorPage() {
             <Select mode="multiple" placeholder="请选择关联合约" options={symbolOptions} />
           </Form.Item>
           <Form.Item
-            label="报警群"
+            label={fh('报警群')}
             name="lark"
             rules={[{ required: true }]}
             extra="请在 Lark 搜索个人/群组，多个以回车、换行或空格分割"
@@ -929,7 +930,7 @@ export function RiskExternalFundingMonitorPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约名称" name="contract">
+                  <Form.Item label={fh('合约名称')} name="contract">
                     <Input placeholder="请输入合约名称" style={{ width: 180 }} />
                   </Form.Item>
                   <Form.Item>
@@ -947,7 +948,7 @@ export function RiskExternalFundingMonitorPage() {
                     { title: '合约', dataIndex: 'contract', width: 100 },
                     { title: '资金费率数值', dataIndex: 'rate', width: 120 },
                     { title: '收取周期 (Hour)', dataIndex: 'period', width: 120 },
-                    { title: '对标交易所', dataIndex: 'peer', width: 110 },
+                    { title: fh('对标交易所'), dataIndex: 'peer', width: 110 },
                     { title: '对标交易所资金费率', dataIndex: 'peerRate', width: 150 },
                     { title: '对标交易所收取周期 (Hour)', dataIndex: 'peerPeriod', width: 180 },
                     { title: '告警时间', dataIndex: 'time', width: 160 },
@@ -974,13 +975,13 @@ export function RiskExternalFundingMonitorPage() {
                   dataSource={externalFundingConfigs}
                   pagination={{ total: 2, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '合约名称', dataIndex: 'contract', width: 110 },
-                    { title: '对标交易所', dataIndex: 'peers', width: 220 },
-                    { title: '监控阈值', dataIndex: 'threshold', width: 100 },
-                    { title: '监控频率', dataIndex: 'frequency', width: 100 },
-                    { title: '预警群', dataIndex: 'alarmGroup', ellipsis: true },
+                    { title: fh('合约名称'), dataIndex: 'contract', width: 110 },
+                    { title: fh('对标交易所'), dataIndex: 'peers', width: 220 },
+                    { title: fh('监控阈值'), dataIndex: 'threshold', width: 100 },
+                    { title: fh('监控频率'), dataIndex: 'frequency', width: 100 },
+                    { title: fh('预警群'), dataIndex: 'alarmGroup', ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       width: 90,
                       render: (s: string) =>
@@ -1030,20 +1031,20 @@ export function RiskExternalFundingMonitorPage() {
         ]}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item label="合约名称" name="contract" rules={[{ required: true }]}>
+          <Form.Item label={fh('合约名称')} name="contract" rules={[{ required: true }]}>
             <Select placeholder="请选择合约名称" options={symbolOptions} />
           </Form.Item>
-          <Form.Item label="对标交易所" name="peers" rules={[{ required: true }]}>
+          <Form.Item label={fh('对标交易所')} name="peers" rules={[{ required: true }]}>
             <Select mode="multiple" placeholder="请选择对标交易所" options={peerExchangeOptions} />
           </Form.Item>
-          <Form.Item label="监控阈值" name="threshold" rules={[{ required: true }]}>
+          <Form.Item label={fh('监控阈值')} name="threshold" rules={[{ required: true }]}>
             <Input placeholder="请输入监控阈值" />
           </Form.Item>
-          <Form.Item label="监控频率" name="frequency" rules={[{ required: true }]}>
+          <Form.Item label={fh('监控频率')} name="frequency" rules={[{ required: true }]}>
             <InputNumber style={{ width: '100%' }} addonAfter="min" placeholder="请输入监控频率" min={1} />
           </Form.Item>
           <Form.Item
-            label="预警群"
+            label={fh('预警群')}
             name="webhook"
             rules={[{ required: true }]}
             extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
@@ -1070,7 +1071,7 @@ export function RiskInternalFundingMonitorPage() {
             children: (
               <>
                 <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-                  <Form.Item label="合约名称" name="contract">
+                  <Form.Item label={fh('合约名称')} name="contract">
                     <Input placeholder="请输入合约名称" style={{ width: 180 }} />
                   </Form.Item>
                   <Form.Item>
@@ -1087,9 +1088,9 @@ export function RiskInternalFundingMonitorPage() {
                   columns={[
                     { title: '合约', dataIndex: 'contract' },
                     { title: '平台资金费率', dataIndex: 'rate' },
-                    { title: '监控周期', dataIndex: 'period' },
-                    { title: '监控费率上限', dataIndex: 'upper' },
-                    { title: '监控费率下限', dataIndex: 'lower' },
+                    { title: fh('监控周期'), dataIndex: 'period' },
+                    { title: fh('监控费率上限'), dataIndex: 'upper' },
+                    { title: fh('监控费率下限'), dataIndex: 'lower' },
                     { title: '告警时间', dataIndex: 'time' },
                     { title: '告警方式', dataIndex: 'channel' },
                   ]}
@@ -1114,14 +1115,14 @@ export function RiskInternalFundingMonitorPage() {
                   dataSource={internalFundingConfigs}
                   pagination={{ total: 2, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '合约名称', dataIndex: 'contract' },
-                    { title: '监控周期', dataIndex: 'period' },
-                    { title: '监控费率上限', dataIndex: 'upper' },
-                    { title: '监控费率下限', dataIndex: 'lower' },
-                    { title: '更新时间', dataIndex: 'updatedAt' },
-                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    { title: fh('合约名称'), dataIndex: 'contract' },
+                    { title: fh('监控周期'), dataIndex: 'period' },
+                    { title: fh('监控费率上限'), dataIndex: 'upper' },
+                    { title: fh('监控费率下限'), dataIndex: 'lower' },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt' },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       render: (s: string) =>
                         s === '生效中' ? <StatusTag status={s} /> : <Tag>{s}</Tag>,
@@ -1169,16 +1170,16 @@ export function RiskInternalFundingMonitorPage() {
         ]}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item label="合约名称" name="contract" rules={[{ required: true }]}>
+          <Form.Item label={fh('合约名称')} name="contract" rules={[{ required: true }]}>
             <Select placeholder="请选择合约名称" options={symbolOptions} />
           </Form.Item>
-          <Form.Item label="监控费率上限" name="upper">
+          <Form.Item label={fh('监控费率上限')} name="upper">
             <InputNumber style={{ width: '100%' }} addonAfter="%" placeholder="请输入监控费率上限" />
           </Form.Item>
-          <Form.Item label="监控费率下限" name="lower">
+          <Form.Item label={fh('监控费率下限')} name="lower">
             <InputNumber style={{ width: '100%' }} addonAfter="%" placeholder="请输入监控费率下限" />
           </Form.Item>
-          <Form.Item label="监控周期" required>
+          <Form.Item label={fh('监控周期')} required>
             <Space.Compact style={{ width: '100%' }}>
               <Form.Item name="period" noStyle rules={[{ required: true }]}>
                 <InputNumber style={{ width: '60%' }} placeholder="请输入监控周期" min={1} />
@@ -1189,7 +1190,7 @@ export function RiskInternalFundingMonitorPage() {
             </Space.Compact>
           </Form.Item>
           <Form.Item
-            label="报警群"
+            label={fh('报警群')}
             name="webhook"
             rules={[{ required: true }]}
             extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
@@ -1259,12 +1260,12 @@ export function RiskLargeLiqWarningPage() {
                   dataSource={largeLiqWarningConfigs}
                   pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '爆仓预警仓位价值阈值 (USD)', dataIndex: 'valueThreshold' },
-                    { title: '爆仓预警MMR阈值', dataIndex: 'mmrThreshold' },
-                    { title: '更新时间', dataIndex: 'updatedAt' },
-                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    { title: fh('爆仓预警仓位价值阈值 (USD)'), dataIndex: 'valueThreshold' },
+                    { title: fh('爆仓预警MMR阈值'), dataIndex: 'mmrThreshold' },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt' },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       render: (s: string) => <StatusTag status={s} />,
                     },
@@ -1311,14 +1312,14 @@ export function RiskLargeLiqWarningPage() {
         ]}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item label="爆仓预警仓位价值阈值" name="valueThreshold" rules={[{ required: true }]}>
+          <Form.Item label={fh('爆仓预警仓位价值阈值')} name="valueThreshold" rules={[{ required: true }]}>
             <InputNumber style={{ width: '100%' }} addonAfter="USD" min={0} />
           </Form.Item>
-          <Form.Item label="爆仓预警MMR阈值" name="mmrThreshold" rules={[{ required: true }]}>
+          <Form.Item label={fh('爆仓预警MMR阈值')} name="mmrThreshold" rules={[{ required: true }]}>
             <InputNumber style={{ width: '100%' }} addonAfter="%" min={0} max={100} />
           </Form.Item>
           <Form.Item
-            label="预警群"
+            label={fh('预警群')}
             name="webhook"
             rules={[{ required: true }]}
             extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
@@ -1386,11 +1387,11 @@ export function RiskLargeLiqNotifyPage() {
                   dataSource={largeLiqNotifyConfigs}
                   pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '爆仓通知仓位价值阈值 (USD)', dataIndex: 'valueThreshold' },
-                    { title: '更新时间', dataIndex: 'updatedAt' },
-                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    { title: fh('爆仓通知仓位价值阈值 (USD)'), dataIndex: 'valueThreshold' },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt' },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       render: (s: string) => <StatusTag status={s} />,
                     },
@@ -1437,11 +1438,11 @@ export function RiskLargeLiqNotifyPage() {
         ]}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item label="爆仓通知仓位价值阈值" name="valueThreshold" rules={[{ required: true }]}>
+          <Form.Item label={fh('爆仓通知仓位价值阈值')} name="valueThreshold" rules={[{ required: true }]}>
             <InputNumber style={{ width: '100%' }} addonAfter="USD" min={0} />
           </Form.Item>
           <Form.Item
-            label="预警群"
+            label={fh('预警群')}
             name="webhook"
             rules={[{ required: true }]}
             extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
@@ -1473,7 +1474,7 @@ export function RiskAdlAbnormalPage() {
                 locale={{ emptyText: <Empty description="暂无数据" /> }}
                 pagination={false}
                 columns={[
-                  { title: '告警类型', dataIndex: 'alarmType' },
+                  { title: fh('告警类型'), dataIndex: 'alarmType' },
                   { title: '告警时间', dataIndex: 'time' },
                   { title: '告警方式', dataIndex: 'channel' },
                 ]}
@@ -1497,11 +1498,11 @@ export function RiskAdlAbnormalPage() {
                   dataSource={adlAbnormalConfigs}
                   pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
                   columns={[
-                    { title: '告警类型', dataIndex: 'alarmType' },
-                    { title: '更新时间', dataIndex: 'updatedAt' },
-                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    { title: fh('告警类型'), dataIndex: 'alarmType' },
+                    { title: fh('更新时间'), dataIndex: 'updatedAt' },
+                    { title: fh('更新人'), dataIndex: 'updatedBy', ellipsis: true },
                     {
-                      title: '状态',
+                      title: fh('状态'),
                       dataIndex: 'status',
                       render: (s: string) => <StatusTag status={s} />,
                     },
@@ -1549,7 +1550,7 @@ export function RiskAdlAbnormalPage() {
       >
         <Form form={addForm} layout="vertical">
           <Form.Item
-            label="报警群"
+            label={fh('报警群')}
             name="webhook"
             rules={[{ required: true }]}
             extra="填写 Lark 机器人 URL，多个 URL 请用英文分号间隔"

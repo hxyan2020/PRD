@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Button, Card, Col, Empty, Form, Input, Modal, Row, Select, Space, Table, Typography, message } from 'antd'
 import { PageFrame } from '../../components/PageFrame'
 import { QueryResetButtons } from '../../components/QueryResetButtons'
 import { dbFundFlowRecords, dbFundFlowTypes, dbTakeoverAccount } from '../../mock/marketMakingData'
+import { fh } from '../../components/FieldHelpLabel'
 
 const { Text, Title } = Typography
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({ label, value }: { label: ReactNode; value: string }) {
   return (
     <div style={{ marginBottom: 8 }}>
       <Text type="secondary" style={{ marginRight: 8 }}>
@@ -31,13 +32,13 @@ export function DbTakeoverAccountPage() {
             <Metric label="账户ID" value={a.accountId} />
           </Col>
           <Col span={6}>
-            <Metric label="钱包余额" value={a.walletBalance} />
+            <Metric label={fh('钱包余额')} value={a.walletBalance} />
           </Col>
           <Col span={6}>
-            <Metric label="最大可转金额" value={a.maxTransferable} />
+            <Metric label={fh('最大可转金额')} value={a.maxTransferable} />
           </Col>
           <Col span={6}>
-            <Metric label="当前注资金额" value={a.injectedAmount} />
+            <Metric label={fh('当前注资金额')} value={a.injectedAmount} />
           </Col>
         </Row>
       </Card>
@@ -45,14 +46,14 @@ export function DbTakeoverAccountPage() {
       <Card size="small" title="参数设置" style={{ marginBottom: 16 }}>
         <Space size="large" wrap>
           <span>
-            <Text type="secondary">自动注资水位线: </Text>
+            <Text type="secondary">{fh('自动注资水位线')}: </Text>
             <Text strong>{a.autoInjectWaterline}</Text>{' '}
             <Button type="link" size="small" onClick={() => setEditOpen('auto')}>
               编辑
             </Button>
           </span>
           <span>
-            <Text type="secondary">注资目标水位线: </Text>
+            <Text type="secondary">{fh('注资目标水位线')}: </Text>
             <Text strong>{a.injectTargetWaterline}</Text>{' '}
             <Button type="link" size="small" onClick={() => setEditOpen('target')}>
               编辑
@@ -76,11 +77,11 @@ export function DbTakeoverAccountPage() {
             <Metric label="账户权益" value={a.accountEquity} />
           </Col>
           <Col span={5}>
-            <Metric label="账户MMR" value={a.accountMmr} />
+            <Metric label={fh('账户MMR')} value={a.accountMmr} />
           </Col>
         </Row>
         <Form form={form} layout="inline" style={{ marginBottom: 12 }}>
-          <Form.Item label="合约名称" name="contract">
+          <Form.Item label={fh('合约名称')} name="contract">
             <Input placeholder="请输入合约名称" style={{ width: 180 }} />
           </Form.Item>
           <Form.Item>
@@ -95,7 +96,7 @@ export function DbTakeoverAccountPage() {
           locale={{ emptyText: <Empty description="暂无数据" /> }}
           pagination={false}
           columns={[
-            { title: '合约名称', dataIndex: 'contract' },
+            { title: fh('合约名称'), dataIndex: 'contract' },
             { title: '持仓方向', dataIndex: 'side' },
             { title: '持仓均价', dataIndex: 'avgPrice' },
             {
@@ -133,7 +134,7 @@ export function DbTakeoverFundFlowPage() {
   return (
     <PageFrame title="DB接仓账户资金流水">
       <Form form={form} layout="inline" style={{ marginBottom: 16 }} initialValues={{ type: '全部' }}>
-        <Form.Item label="流水类型" name="type">
+        <Form.Item label={fh('流水类型')} name="type">
           <Select style={{ width: 160 }} options={dbFundFlowTypes} />
         </Form.Item>
         <Form.Item>
@@ -149,9 +150,9 @@ export function DbTakeoverFundFlowPage() {
         columns={[
           { title: '账户ID', dataIndex: 'accountId', width: 120 },
           { title: '流水ID', dataIndex: 'flowId', width: 120 },
-          { title: '流水类型', dataIndex: 'type', width: 120 },
+          { title: fh('流水类型'), dataIndex: 'type', width: 120 },
           {
-            title: '金额 (USD)',
+            title: fh('金额 (USD)'),
             dataIndex: 'amount',
             width: 160,
             render: (v: number) => {
@@ -163,7 +164,7 @@ export function DbTakeoverFundFlowPage() {
               )
             },
           },
-          { title: '更新时间', dataIndex: 'time', width: 180 },
+          { title: fh('更新时间'), dataIndex: 'time', width: 180 },
         ]}
       />
     </PageFrame>

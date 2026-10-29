@@ -18,6 +18,7 @@ import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { perpContractOptions } from '../config/pairs'
 import { fundingRateRecords, marketSourceRecords, type FundingRateRecord } from '../mock/data'
+import { fh } from '../components/FieldHelpLabel'
 
 export function FundingRatePage() {
   const [form] = Form.useForm()
@@ -47,14 +48,14 @@ export function FundingRatePage() {
 
   const columns = [
     { title: '对应合约对', dataIndex: 'contract', width: 130, fixed: 'left' as const },
-    { title: '合约展示名称', dataIndex: 'displayName', width: 120 },
-    { title: '费率收取周期(小时)', dataIndex: 'periodHours', width: 140 },
-    { title: '首次收取时间(小时)', dataIndex: 'firstCollectHour', width: 140 },
-    { title: '费率浮动上限', dataIndex: 'upperLimit', width: 110 },
-    { title: '费率浮动下限', dataIndex: 'lowerLimit', width: 110 },
-    { title: '保证金影响额', dataIndex: 'marginImpact', width: 120 },
+    { title: fh('合约展示名称'), dataIndex: 'displayName', width: 120 },
+    { title: fh('费率收取周期(小时)'), dataIndex: 'periodHours', width: 140 },
+    { title: fh('首次收取时间(小时)'), dataIndex: 'firstCollectHour', width: 140 },
+    { title: fh('费率浮动上限'), dataIndex: 'upperLimit', width: 110 },
+    { title: fh('费率浮动下限'), dataIndex: 'lowerLimit', width: 110 },
+    { title: fh('保证金影响额'), dataIndex: 'marginImpact', width: 120 },
     {
-      title: '自动调整资金费率',
+      title: fh('自动调整资金费率'),
       dataIndex: 'autoAdjust',
       width: 140,
       render: (v: boolean) => (v ? '是' : <CloseOutlined style={{ color: '#ff4d4f' }} />),
@@ -109,10 +110,10 @@ export function FundingRatePage() {
       }
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约名称" name="contract">
+        <Form.Item label={fh('合约名称')} name="contract">
           <Select placeholder="请选择合约名称" allowClear style={{ width: 180 }} options={perpContractOptions} />
         </Form.Item>
-        <Form.Item label="状态" name="status">
+        <Form.Item label={fh('状态')} name="status">
           <Select
             placeholder="请选择状态"
             allowClear
@@ -184,10 +185,10 @@ export function FundingRatePage() {
           <Form.Item label="距离新周期启用时间" name="notifyMinutes" extra="分钟前通知用户">
             <Input placeholder="请输入…分钟前通知用户" />
           </Form.Item>
-          <Form.Item label="费率浮动下限" name="lowerLimit" extra="百分比">
+          <Form.Item label={fh('费率浮动下限')} name="lowerLimit" extra="百分比">
             <InputNumber style={{ width: '100%' }} addonAfter="%" />
           </Form.Item>
-          <Form.Item label="费率浮动上限" name="upperLimit" extra="百分比">
+          <Form.Item label={fh('费率浮动上限')} name="upperLimit" extra="百分比">
             <InputNumber style={{ width: '100%' }} addonAfter="%" />
           </Form.Item>
           <Form.Item label="费率精度" name="ratePrecision" extra="0.000001">
@@ -203,7 +204,7 @@ export function FundingRatePage() {
             新算法资金费率: {current?.newAlgoRate ?? '--'} · 老算法资金费率: {current?.oldAlgoRate ?? '--'}
           </div>
           <Form.Item
-            label="保证金影响额"
+            label={fh('保证金影响额')}
             name="marginImpact"
             extra="U本位合约单位为USDT, 币本位合约单位为USD"
           >

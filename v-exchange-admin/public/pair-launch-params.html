@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XAUUSD / BTCUSD 首发参数建议 | V-Exchange</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #fff;
+      --ink: #1f2329;
+      --muted: #646a73;
+      --line: #e5e6eb;
+      --blue: #1677ff;
+      --green: #389e0d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Noto Sans SC", "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #eef3ff 0%, var(--bg) 40%);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    .sub { color: var(--muted); margin-bottom: 24px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .panel { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; overflow: auto; }
+    .panel.active { display: block; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border: 1px solid var(--line); padding: 10px 8px; vertical-align: top; text-align: left; }
+    th { background: #f0f5ff; position: sticky; top: 0; }
+    tr:nth-child(even) td { background: #fafbff; }
+    .mod { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #e6f4ff; color: #0958d9; font-size: 12px; }
+    .mod.risk { background: #fff1f0; color: #cf1322; }
+    .mod.alert { background: #fff7e6; color: #d46b08; }
+    .mod.mm { background: #f6ffed; color: var(--green); }
+    .mod.common { background: #f5f5f5; color: #595959; }
+    code { background: #f5f5f5; padding: 1px 4px; border-radius: 4px; }
+    a { color: var(--blue); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>XAUUSD / BTCUSD 首发参数建议表</h1>
+    <p class="sub">
+      Field explanations (EN + 中文) and launch recommendations for Price / Risk / Alert / Market-Making.
+      Admin tooltips use the same glossary. Related docs:
+      <a href="./alarm-list.html">告警清单 &amp; SOP</a>
+    </p>
+    <div class="tabs">
+      <button class="tab active" data-tab="sheet">参数对照表 Parameter Sheet</button>
+      <button class="tab" data-tab="explain">字段说明 Field Explanations</button>
+    </div>
+
+    <div id="sheet" class="panel active">
+      <table>
+        <thead>
+          <tr>
+            <th>模块 Module</th>
+            <th>字段 Field</th>
+            <th>旧参数 Old (from screenshots)</th>
+            <th>XAUUSD 建议</th>
+            <th>BTCUSD 建议</th>
+            <th>推荐原因 Reason</th>
+          </tr>
+        </thead>
+        <tbody id="sheet-body"></tbody>
+      </table>
+    </div>
+
+    <div id="explain" class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>字段</th>
+            <th>English</th>
+            <th>中文说明</th>
+            <th>EN explanation</th>
+          </tr>
+        </thead>
+        <tbody id="explain-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    // Keep in sync with src/config/fieldHelp.ts
+    const FIELDS = [
+      { module:'alert', nameZh:'对标交易所', nameEn:'Benchmark Exchanges', explainZh:'用于价差/资金费率对比的外部交易所列表。', explainEn:'Peer venues used for spread / funding-rate comparison.', oldParam:'OKX, Bybit, Bitget, Binance', xauRec:'OKX, Bybit, Bitget, Binance', btcRec:'OKX, Bybit, Bitget, Binance', reason:'Keep major CEX peers for robust median; gold may later add LMAX/ISPrime when live.' },
+      { module:'alert', nameZh:'监控阈值', nameEn:'Monitor Threshold', explainZh:'触发告警的偏离阈值（价差或费率差）。', explainEn:'Deviation level that triggers an alert.', oldParam:'0.05%', xauRec:'0.08%', btcRec:'0.05%', reason:'XAU quotes are noisier across venues; BTC is deeper so a tighter 0.05% is fine.' },
+      { module:'alert', nameZh:'监控频率', nameEn:'Monitor Frequency', explainZh:'轮询检查间隔（分钟）。', explainEn:'How often the monitor polls (minutes).', oldParam:'5 min', xauRec:'5 min', btcRec:'5 min', reason:'Balances alert latency vs Lark noise.' },
+      { module:'alert', nameZh:'监控周期', nameEn:'Monitor Period', explainZh:'连续观察窗口，用于确认异常是否持续。', explainEn:'Observation window to confirm a sustained anomaly.', oldParam:'10 分钟', xauRec:'10 分钟', btcRec:'5 分钟', reason:'BTC moves faster; XAU keep 10m to avoid false positives.' },
+      { module:'alert', nameZh:'监控费率上限', nameEn:'Funding Rate Upper Bound', explainZh:'内部资金费率高于该值则告警。', explainEn:'Alert when internal funding exceeds upper bound.', oldParam:'XAU 0.45% / BTC 0.25%', xauRec:'0.375%', btcRec:'0.25%', reason:'Align near 75% of platform funding cap; BTC keep screenshot 0.25%.' },
+      { module:'alert', nameZh:'监控费率下限', nameEn:'Funding Rate Lower Bound', explainZh:'内部资金费率低于该值则告警。', explainEn:'Alert when internal funding falls below lower bound.', oldParam:'XAU -0.45% / BTC -0.25%', xauRec:'-0.375%', btcRec:'-0.25%', reason:'Symmetric to upper bound.' },
+      { module:'alert', nameZh:'爆仓预警仓位价值阈值 (USD)', nameEn:'Large Liq Warning Notional', explainZh:'仓位名义价值达阈值时发出爆仓预警。', explainEn:'Warn when position notional reaches this USD threshold.', oldParam:'100,000', xauRec:'50,000', btcRec:'100,000', reason:'XAU thinner book at launch; BTC keep screenshot baseline.' },
+      { module:'alert', nameZh:'爆仓预警MMR阈值', nameEn:'Large Liq Warning MMR', explainZh:'维持保证金率接近该百分比时预警。', explainEn:'Warn when MMR approaches this %.', oldParam:'95%', xauRec:'90%', btcRec:'95%', reason:'Give XAU ops more lead time; BTC keep 95%.' },
+      { module:'alert', nameZh:'爆仓通知仓位价值阈值 (USD)', nameEn:'Post-Liq Notify Notional', explainZh:'爆仓完成后名义价值≥阈值则事后通知。', explainEn:'Notify after liquidation if notional ≥ threshold.', oldParam:'100,000', xauRec:'50,000', btcRec:'100,000', reason:'Align with warning thresholds per pair.' },
+      { module:'alert', nameZh:'告警类型', nameEn:'Alarm Type', explainZh:'ADL 等异常分类标签。', explainEn:'ADL/abnormal event category label.', oldParam:'ADL失败，重试中', xauRec:'ADL失败，重试中', btcRec:'ADL失败，重试中', reason:'Same ADL failure taxonomy for both pairs.' },
+      { module:'price', nameZh:'基差移动平均值周期(秒)', nameEn:'Basis MA Period (s)', explainZh:'合理价格基差平滑窗口。', explainEn:'Fair-price basis MA smoothing window.', oldParam:'见截图', xauRec:'300s', btcRec:'60s', reason:'Gold basis is slower; BTC needs faster MA.' },
+      { module:'price', nameZh:'期现价差阈值比例', nameEn:'Futures-Spot Spread Threshold', explainZh:'期现价差超过该比例进入观察逻辑。', explainEn:'Basis ratio that engages observe/switch logic.', oldParam:'见截图', xauRec:'0.5%', btcRec:'0.3%', reason:'XAU RFQ/OTC venues can gap more than BTC.' },
+      { module:'price', nameZh:'观察阈值(秒)', nameEn:'Observe Threshold (s)', explainZh:'价差异常需持续多久才动作。', explainEn:'How long abnormal spread must persist.', oldParam:'见截图', xauRec:'60s', btcRec:'30s', reason:'Avoid flapping on gold; BTC can react faster.' },
+      { module:'price', nameZh:'恢复阈值(秒)', nameEn:'Recovery Threshold (s)', explainZh:'价差恢复后需持续多久才切回。', explainEn:'Healthy-spread persistence before recovery.', oldParam:'见截图', xauRec:'120s', btcRec:'60s', reason:'Recovery hysteresis longer than observe window.' },
+      { module:'price', nameZh:'费率收取周期(小时)', nameEn:'Funding Interval (h)', explainZh:'资金费率结算间隔。', explainEn:'Hours between funding settlements.', oldParam:'常见 4h / 8h', xauRec:'4h', btcRec:'8h', reason:'Match common CEX gold 4h vs BTC 8h conventions.' },
+      { module:'price', nameZh:'首次收取时间(小时)', nameEn:'First Funding Hour (UTC)', explainZh:'每日首次资金费收取整点。', explainEn:'UTC hour of first daily funding.', oldParam:'—', xauRec:'0', btcRec:'0', reason:'Align to UTC 00:00 for ops simplicity.' },
+      { module:'price', nameZh:'费率浮动上限', nameEn:'Funding Cap Upper', explainZh:'平台资金费率最大正值。', explainEn:'Max positive platform funding rate.', oldParam:'—', xauRec:'0.5%', btcRec:'0.375%', reason:'Slightly above internal monitor bounds.' },
+      { module:'price', nameZh:'费率浮动下限', nameEn:'Funding Cap Lower', explainZh:'平台资金费率最小负值。', explainEn:'Most negative platform funding allowed.', oldParam:'—', xauRec:'-0.5%', btcRec:'-0.375%', reason:'Symmetric to upper caps.' },
+      { module:'price', nameZh:'自动调整资金费率', nameEn:'Auto-Adjust Funding', explainZh:'是否自动微调资金费率。', explainEn:'Whether funding auto-tunes.', oldParam:'开启/截图', xauRec:'开启', btcRec:'开启', reason:'Enable day one to track peers.' },
+      { module:'price', nameZh:'指数权重', nameEn:'Index Weight', explainZh:'各行情源在指数中的权重。', explainEn:'Market-source weights in the index.', oldParam:'截图手工/自动', xauRec:'手工（LMAX/ISPrime 为主）', btcRec:'自动成交量加权（Binance/OKX/Bybit/Bitget）', reason:'BTC has deep CEX books; XAU relies on FX/prime venues.' },
+      { module:'risk', nameZh:'市价最大吃单档位', nameEn:'Max Market Sweep Depth', explainZh:'市价单最多可吃档位数。', explainEn:'Max book levels a market order may sweep.', oldParam:'见市价限制表', xauRec:'偏严', btcRec:'标准', reason:'Tighten XAU while liquidity is thin.' },
+      { module:'risk', nameZh:'市价单最大偏离系数', nameEn:'Max Market Deviation', explainZh:'市价相对标记价最大偏离。', explainEn:'Max fill deviation vs mark for market orders.', oldParam:'见市价限制表', xauRec:'较严', btcRec:'标准', reason:'Extra protection for XAU launch.' },
+      { module:'mm', nameZh:'自动注资水位线', nameEn:'Auto-Inject Waterline', explainZh:'余额低于该值触发自动注资。', explainEn:'Auto-inject when wallet falls below this.', oldParam:'40000 USD', xauRec:'40000 USD', btcRec:'40000 USD', reason:'Keep screenshot baseline until live PnL volatility known.' },
+      { module:'mm', nameZh:'注资目标水位线', nameEn:'Inject Target Waterline', explainZh:'注资后目标余额。', explainEn:'Target balance after auto-injection.', oldParam:'200000 USD', xauRec:'200000 USD', btcRec:'200000 USD', reason:'Shared DB takeover wallet covers both pairs at launch.' }
+    ]
+
+    function modClass(m) {
+      return 'mod ' + (m === 'price' ? '' : m)
+    }
+    function modLabel(m) {
+      return ({ price:'Price 价格', risk:'Risk 风控', alert:'Alert 告警', mm:'MM 做市', common:'Common' })[m] || m
+    }
+
+    const sheetBody = document.getElementById('sheet-body')
+    const explainBody = document.getElementById('explain-body')
+    FIELDS.forEach((f) => {
+      sheetBody.insertAdjacentHTML('beforeend', `<tr>
+        <td><span class="${modClass(f.module)}">${modLabel(f.module)}</span></td>
+        <td><strong>${f.nameZh}</strong><br/><span style="color:#646a73">${f.nameEn}</span></td>
+        <td>${f.oldParam || '—'}</td>
+        <td><code>${f.xauRec || '—'}</code></td>
+        <td><code>${f.btcRec || '—'}</code></td>
+        <td>${f.reason || '—'}</td>
+      </tr>`)
+      explainBody.insertAdjacentHTML('beforeend', `<tr>
+        <td><strong>${f.nameZh}</strong></td>
+        <td>${f.nameEn}</td>
+        <td>${f.explainZh}</td>
+        <td>${f.explainEn}</td>
+      </tr>`)
+    })
+
+    document.querySelectorAll('.tab').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'))
+        document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'))
+        btn.classList.add('active')
+        document.getElementById(btn.dataset.tab).classList.add('active')
+      })
+    })
+  </script>
+</body>
+</html>

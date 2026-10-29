@@ -5,6 +5,7 @@ import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
 import { perpContractOptions } from '../config/pairs'
 import { fairPriceRecords, type FairPriceRecord } from '../mock/data'
+import { fh } from '../components/FieldHelpLabel'
 
 export function FairPricePage() {
   const [form] = Form.useForm()
@@ -27,12 +28,12 @@ export function FairPricePage() {
   }
 
   const columns = [
-    { title: '合约名称', dataIndex: 'contractName', width: 130 },
-    { title: '合约展示名称', dataIndex: 'displayName', width: 120 },
-    { title: '基差移动平均值周期(秒)', dataIndex: 'basisMaPeriod', width: 180 },
-    { title: '期现价差阈值比例', dataIndex: 'spreadThreshold', width: 140 },
-    { title: '观察阈值(秒)', dataIndex: 'observeThreshold', width: 110 },
-    { title: '恢复阈值(秒)', dataIndex: 'recoveryThreshold', width: 110 },
+    { title: fh('合约名称'), dataIndex: 'contractName', width: 130 },
+    { title: fh('合约展示名称'), dataIndex: 'displayName', width: 120 },
+    { title: fh('基差移动平均值周期(秒)'), dataIndex: 'basisMaPeriod', width: 180 },
+    { title: fh('期现价差阈值比例'), dataIndex: 'spreadThreshold', width: 140 },
+    { title: fh('观察阈值(秒)'), dataIndex: 'observeThreshold', width: 110 },
+    { title: fh('恢复阈值(秒)'), dataIndex: 'recoveryThreshold', width: 110 },
     {
       title: '近24小时计算记录',
       key: 'calc24',
@@ -82,7 +83,7 @@ export function FairPricePage() {
       }
     >
       <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约名称" name="contract">
+        <Form.Item label={fh('合约名称')} name="contract">
           <Select placeholder="请选择" allowClear style={{ width: 160 }} options={perpContractOptions} />
         </Form.Item>
         <Form.Item label="新算法计算状态" name="newAlgo" initialValue="all">
@@ -142,19 +143,19 @@ export function FairPricePage() {
         ]}
       >
         <Form form={editForm} layout="vertical">
-          <Form.Item label="合约名称" name="contractName">
+          <Form.Item label={fh('合约名称')} name="contractName">
             <Select options={perpContractOptions} />
           </Form.Item>
-          <Form.Item label="基差移动平均值周期(秒)" name="basisMaPeriod">
+          <Form.Item label={fh('基差移动平均值周期(秒)')} name="basisMaPeriod">
             <InputNumber style={{ width: '100%' }} min={1} />
           </Form.Item>
-          <Form.Item label="期现价差阈值比例" name="spreadThreshold">
+          <Form.Item label={fh('期现价差阈值比例')} name="spreadThreshold">
             <InputNumber style={{ width: '100%' }} min={0} addonAfter="%" />
           </Form.Item>
-          <Form.Item label="观察阈值(秒)" name="observeThreshold">
+          <Form.Item label={fh('观察阈值(秒)')} name="observeThreshold">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
-          <Form.Item label="恢复阈值(秒)" name="recoveryThreshold">
+          <Form.Item label={fh('恢复阈值(秒)')} name="recoveryThreshold">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
           <Form.Item label="新算法计算状态" name="newAlgoEnabled" valuePropName="checked">

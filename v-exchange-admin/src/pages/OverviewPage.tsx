@@ -148,6 +148,23 @@ export function OverviewPage() {
         />
       </Card>
 
+      <Card size="small" title="文档 / Docs" style={{ marginBottom: 16 }}>
+        <Text>
+          <a href={`${import.meta.env.BASE_URL}pair-launch-params.html`} target="_blank" rel="noreferrer">
+            XAUUSD / BTCUSD 首发参数建议表
+          </a>
+          {' · '}
+          <a href={`${import.meta.env.BASE_URL}alarm-list.html`} target="_blank" rel="noreferrer">
+            告警清单 &amp; SOP
+          </a>
+        </Text>
+        <div>
+          <Text type="secondary" style={{ fontSize: 12 }}>
+            表格字段旁的 ? 图标可悬停/点击查看中英说明与首发建议值。
+          </Text>
+        </div>
+      </Card>
+
       <Text type="secondary" style={{ fontSize: 12 }}>
         后续批次截图将按页面逐项对齐 UI 与字段；XAU_USD / BTC_USD 配置与筛选已作为全局基准。
       </Text>
