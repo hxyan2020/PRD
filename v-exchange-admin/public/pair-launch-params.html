@@ -10,19 +10,21 @@
     body { margin:0; font-family:"PingFang SC","Noto Sans SC","Segoe UI",sans-serif; background:linear-gradient(180deg,#eef3ff 0%,var(--bg) 40%); color:var(--ink); line-height:1.55; }
     .wrap { max-width:1200px; margin:0 auto; padding:32px 20px 64px; }
     h1 { font-size:28px; margin:0 0 8px; }
-    .sub { color:var(--muted); margin-bottom:20px; }
+    .sub { color:var(--muted); margin-bottom:16px; }
     .note { background:#fffbe6; border:1px solid #ffe58f; padding:10px 12px; border-radius:8px; margin-bottom:16px; font-size:13px; }
-    table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card); }
+    .count { color:var(--muted); font-size:13px; margin-bottom:12px; }
+    .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:auto; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
     th, td { border:1px solid var(--line); padding:10px 8px; vertical-align:top; text-align:left; }
     th { background:#f0f5ff; position:sticky; top:0; z-index:1; }
     tr:nth-child(even) td { background:#fafbff; }
-    .mod { display:inline-block; padding:2px 8px; border-radius:999px; background:#e6f4ff; color:#0958d9; font-size:12px; }
+    .mod { display:inline-block; padding:2px 8px; border-radius:999px; background:#e6f4ff; color:#0958d9; font-size:12px; white-space:nowrap; }
     .mod.risk { background:#fff1f0; color:#cf1322; }
     .mod.alert { background:#fff7e6; color:#d46b08; }
     .mod.mm { background:#f6ffed; color:var(--green); }
-    code { background:#f5f5f5; padding:1px 4px; border-radius:4px; }
+    .mod.common { background:#f5f5f5; color:#595959; }
+    code { background:#f5f5f5; padding:1px 4px; border-radius:4px; word-break:break-word; }
     a { color:var(--blue); }
-    .count { color:var(--muted); font-size:13px; margin-bottom:12px; }
   </style>
 </head>
 <body>
@@ -34,87 +36,31 @@
       Related: <a href="./alarm-list.html">告警清单 &amp; SOP</a>
     </p>
     <div class="note">
-      <strong>How to use:</strong> For each field under Price / Risk / Alert / MM, set XAU_USD and BTC_USD to the recommended values before public launch, then tighten after 1–2 weeks of live volume.
+      <strong>How to use:</strong> For each field under Price / Risk / Alert / MM, set <code>XAU_USD</code> and <code>BTC_USD</code> to the recommended values before public launch, then tighten after 1–2 weeks of live volume.
     </div>
-    <p class="count">42 launch fields · synced from <code>src/config/launchRecommendations.ts</code></p>
-    <table>
-      <thead>
-        <tr>
-          <th>模块 Module</th>
-          <th>字段 Field</th>
-          <th>旧参数 Old</th>
-          <th>XAUUSD 建议</th>
-          <th>BTCUSD 建议</th>
-          <th>推荐原因 Reason</th>
-        </tr>
-      </thead>
-      <tbody>
+    <p class="count">
+      46 fields ·
+      Price 16 ·
+      Risk 6 ·
+      Alert 17 ·
+      MM 7
+      · synced from <code>src/config/launchRecommendations.ts</code>
+    </p>
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>模块 Module</th>
+            <th>字段 Field</th>
+            <th>旧参数 Old</th>
+            <th>XAUUSD 建议</th>
+            <th>BTCUSD 建议</th>
+            <th>推荐原因 Reason</th>
+          </tr>
+        </thead>
+        <tbody>
       <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>期现价差阈值比例</strong></td>
-        <td>XAU 3% / BTC 1%</td>
-        <td><code>1.5%</code></td>
-        <td><code>0.8%</code></td>
-        <td>3% on gold is loose for fair-price protect; tighten but keep wider than BTC.</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>观察阈值(秒)</strong></td>
-        <td>XAU 60s / BTC 120s</td>
-        <td><code>90s</code></td>
-        <td><code>60s</code></td>
-        <td>Give XAU more confirm time vs FX feeds; BTC can act faster.</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>恢复阈值(秒)</strong></td>
-        <td>XAU 60s / BTC 60s</td>
-        <td><code>120s</code></td>
-        <td><code>60s</code></td>
-        <td>Recovery hysteresis ≥ observe window to avoid fair-price flapping on gold.</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>费率收取周期(小时)</strong></td>
-        <td>XAU 4h / BTC 8h</td>
-        <td><code>4h</code></td>
-        <td><code>8h</code></td>
-        <td>Keep screenshot peer conventions (gold often 4h, BTC 8h).</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>首次收取时间(小时)</strong></td>
-        <td>XAU 20 / BTC 0</td>
-        <td><code>0</code></td>
-        <td><code>0</code></td>
-        <td>Normalize both to UTC 00:00 for ops simplicity at launch; shift XAU later if peers require.</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>费率浮动上限</strong></td>
-        <td>XAU 0.5% / BTC 0.3%</td>
-        <td><code>0.5%</code></td>
-        <td><code>0.375%</code></td>
-        <td>Keep XAU cap; slightly raise BTC toward common 0.375% while staying above internal alert bounds.</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>费率浮动下限</strong></td>
-        <td>XAU -0.5% / BTC -0.3%</td>
-        <td><code>-0.5%</code></td>
-        <td><code>-0.375%</code></td>
-        <td>Symmetric to upper funding caps.</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>自动调整资金费率</strong></td>
-        <td>否 (both)</td>
-        <td><code>是 (开启)</code></td>
-        <td><code>是 (开启)</code></td>
-        <td>Enable auto-adjust from day one so rates track peers without manual edits.</td>
-      </tr>
-      <tr>
-        <td><span class="mod ">Price 价格</span></td>
+        <td><span class="mod">Price 价格</span></td>
         <td><strong>保证金影响额</strong></td>
         <td>XAU 200 USDT / BTC 50000 USDT</td>
         <td><code>500 USDT</code></td>
@@ -122,7 +68,23 @@
         <td>Slightly raise XAU impact for meaningful funding; keep BTC screenshot baseline.</td>
       </tr>
       <tr>
-        <td><span class="mod ">Price 价格</span></td>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>费率浮动上限</strong></td>
+        <td>XAU 0.5% / BTC 0.3%</td>
+        <td><code>0.5%</code></td>
+        <td><code>0.375%</code></td>
+        <td>Keep XAU cap; slightly raise BTC toward common 0.375% while staying above internal alert bounds.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>费率浮动下限</strong></td>
+        <td>XAU -0.5% / BTC -0.3%</td>
+        <td><code>-0.5%</code></td>
+        <td><code>-0.375%</code></td>
+        <td>Symmetric to upper funding caps.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
         <td><strong>费率精度</strong></td>
         <td>6 (0.000001)</td>
         <td><code>6 (0.000001)</code></td>
@@ -130,15 +92,39 @@
         <td>Industry-standard 1e-6 funding precision for both.</td>
       </tr>
       <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>指数权重</strong></td>
-        <td>XAU manual / BTC volume-auto</td>
-        <td><code>手工：LMAX/ISPrime/Velocity 为主</code></td>
-        <td><code>自动成交量：Binance/OKX/Bybit/Bitget</code></td>
-        <td>Gold liquidity sits on FX/prime; BTC depth is on major CEX.</td>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>费率收取周期(小时)</strong></td>
+        <td>XAU 4h / BTC 8h</td>
+        <td><code>4h</code></td>
+        <td><code>8h</code></td>
+        <td>Keep screenshot peer conventions (gold often 4h, BTC 8h).</td>
       </tr>
       <tr>
-        <td><span class="mod ">Price 价格</span></td>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>观察阈值(秒)</strong></td>
+        <td>XAU 60s / BTC 120s</td>
+        <td><code>90s</code></td>
+        <td><code>60s</code></td>
+        <td>Give XAU more confirm time vs FX feeds; BTC can act faster.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>恢复阈值(秒)</strong></td>
+        <td>XAU 60s / BTC 60s</td>
+        <td><code>120s</code></td>
+        <td><code>60s</code></td>
+        <td>Recovery hysteresis ≥ observe window to avoid fair-price flapping on gold.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>基差移动平均值周期(秒)</strong></td>
+        <td>XAU 30s / BTC 300s (screenshot mock)</td>
+        <td><code>60s</code></td>
+        <td><code>60s</code></td>
+        <td>Screenshot XAU 30s is too jumpy for gold; BTC 300s is slow. Align both to 60s at launch, then tune.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
         <td><strong>进入观察期 (秒)</strong></td>
         <td>120</td>
         <td><code>180</code></td>
@@ -146,15 +132,15 @@
         <td>Longer XAU quarantine when a source spreads; BTC keep 120s.</td>
       </tr>
       <tr>
-        <td><span class="mod ">Price 价格</span></td>
-        <td><strong>重新启用 (秒)</strong></td>
-        <td>30–120</td>
-        <td><code>120</code></td>
-        <td><code>60</code></td>
-        <td>Avoid flapping bad gold venues back into the index too fast.</td>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>期现价差阈值比例</strong></td>
+        <td>XAU 3% / BTC 1%</td>
+        <td><code>1.5%</code></td>
+        <td><code>0.8%</code></td>
+        <td>3% on gold is loose for fair-price protect; tighten but keep wider than BTC.</td>
       </tr>
       <tr>
-        <td><span class="mod ">Price 价格</span></td>
+        <td><span class="mod">Price 价格</span></td>
         <td><strong>是否需要设置价差监控</strong></td>
         <td>CEX spot 是 / index 否</td>
         <td><code>LMAX/ISPrime 等成交源：是</code></td>
@@ -162,7 +148,39 @@
         <td>Only sources that publish tradable prices need spread monitors.</td>
       </tr>
       <tr>
-        <td><span class="mod ">Price 价格</span></td>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>首次收取时间(小时)</strong></td>
+        <td>XAU 20 / BTC 0</td>
+        <td><code>0</code></td>
+        <td><code>0</code></td>
+        <td>Normalize both to UTC 00:00 for ops simplicity at launch; shift XAU later if peers require.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>指数权重</strong></td>
+        <td>XAU manual / BTC volume-auto</td>
+        <td><code>手工：LMAX/ISPrime/Velocity 为主</code></td>
+        <td><code>自动成交量：Binance/OKX/Bybit/Bitget</code></td>
+        <td>Gold liquidity sits on FX/prime; BTC depth is on major CEX.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>重新启用 (秒)</strong></td>
+        <td>30–120</td>
+        <td><code>120</code></td>
+        <td><code>60</code></td>
+        <td>Avoid flapping bad gold venues back into the index too fast.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
+        <td><strong>自动调整资金费率</strong></td>
+        <td>否 (both)</td>
+        <td><code>是 (开启)</code></td>
+        <td><code>是 (开启)</code></td>
+        <td>Enable auto-adjust from day one so rates track peers without manual edits.</td>
+      </tr>
+      <tr>
+        <td><span class="mod">Price 价格</span></td>
         <td><strong>最小行情源数</strong></td>
         <td>—</td>
         <td><code>3</code></td>
@@ -171,11 +189,11 @@
       </tr>
       <tr>
         <td><span class="mod risk">Risk 风控</span></td>
-        <td><strong>小于20F系数</strong></td>
-        <td>0.5% both</td>
-        <td><code>0.5%</code></td>
-        <td><code>0.5%</code></td>
-        <td>Keep screenshot near-touch protection for small books.</td>
+        <td><strong>大于20F系数</strong></td>
+        <td>XAU 1% / BTC 20%</td>
+        <td><code>2%</code></td>
+        <td><code>10%</code></td>
+        <td>BTC 20% is very wide; tighten for launch. XAU keep tight protection.</td>
       </tr>
       <tr>
         <td><span class="mod risk">Risk 风控</span></td>
@@ -184,14 +202,6 @@
         <td><code>10</code></td>
         <td><code>15</code></td>
         <td>Shallower default sweep on gold while MM depth builds.</td>
-      </tr>
-      <tr>
-        <td><span class="mod risk">Risk 风控</span></td>
-        <td><strong>市价最大吃单档位</strong></td>
-        <td>XAU 10 / BTC 20</td>
-        <td><code>8</code></td>
-        <td><code>20</code></td>
-        <td>Cap XAU market sweeps tighter; BTC depth can support 20.</td>
       </tr>
       <tr>
         <td><span class="mod risk">Risk 风控</span></td>
@@ -210,28 +220,92 @@
         <td>Force trader confirm on large market orders; lower bar for gold.</td>
       </tr>
       <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>监控阈值</strong></td>
-        <td>0.05% (external funding) / 1% spread</td>
-        <td><code>价差 1.2% · 外资金费率差 0.08%</code></td>
-        <td><code>价差 1.0% · 外资金费率差 0.05%</code></td>
-        <td>Gold quotes noisier — slightly looser spread/funding gap alerts.</td>
+        <td><span class="mod risk">Risk 风控</span></td>
+        <td><strong>市价最大吃单档位</strong></td>
+        <td>XAU 10 / BTC 20</td>
+        <td><code>8</code></td>
+        <td><code>20</code></td>
+        <td>Cap XAU market sweeps tighter; BTC depth can support 20.</td>
+      </tr>
+      <tr>
+        <td><span class="mod risk">Risk 风控</span></td>
+        <td><strong>小于20F系数</strong></td>
+        <td>0.5% both</td>
+        <td><code>0.5%</code></td>
+        <td><code>0.5%</code></td>
+        <td>Keep screenshot near-touch protection for small books.</td>
       </tr>
       <tr>
         <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>监控频率</strong></td>
-        <td>5 min</td>
-        <td><code>5 min</code></td>
-        <td><code>5 min</code></td>
-        <td>Good latency vs Lark noise trade-off.</td>
+        <td><strong>报警群</strong></td>
+        <td>Lark webhook (ADL uses ;)</td>
+        <td><code>ADL/DB 值班 webhook</code></td>
+        <td><code>ADL/DB 值班 webhook</code></td>
+        <td>Critical path alerts should hit the same always-on ops channel.</td>
       </tr>
       <tr>
         <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>监控周期</strong></td>
-        <td>内部资金费率 10 分钟</td>
-        <td><code>10 分钟</code></td>
-        <td><code>5 分钟</code></td>
-        <td>BTC funding moves faster; XAU keep longer confirm.</td>
+        <td><strong>爆仓通知仓位价值阈值</strong></td>
+        <td>100,000 USD</td>
+        <td><code>50,000 USD</code></td>
+        <td><code>100,000 USD</code></td>
+        <td>Align with warning thresholds.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>爆仓通知仓位价值阈值 (USD)</strong></td>
+        <td>100,000</td>
+        <td><code>50,000</code></td>
+        <td><code>100,000</code></td>
+        <td>Align post-liq notify with pre-liq warning per pair.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>爆仓预警仓位价值阈值</strong></td>
+        <td>100,000 USD</td>
+        <td><code>50,000 USD</code></td>
+        <td><code>100,000 USD</code></td>
+        <td>Same as table column recommendation.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>爆仓预警仓位价值阈值 (USD)</strong></td>
+        <td>100,000</td>
+        <td><code>50,000</code></td>
+        <td><code>100,000</code></td>
+        <td>Thin XAU book — warn earlier; BTC keep screenshot 100k.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>爆仓预警MMR阈值</strong></td>
+        <td>95%</td>
+        <td><code>90%</code></td>
+        <td><code>95%</code></td>
+        <td>More lead time for gold ops; BTC keep tight 95%.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>对标交易所</strong></td>
+        <td>OKX, Bybit, Bitget, Binance</td>
+        <td><code>OKX, Bybit, Bitget, Binance (+ LMAX when ready)</code></td>
+        <td><code>OKX, Bybit, Bitget, Binance</code></td>
+        <td>Major CEX median; add LMAX for gold when feed is stable.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>告警类型</strong></td>
+        <td>ADL失败重试中；DB心跳/大额/长时间持仓等</td>
+        <td><code>启用：ADL失败、DB心跳、大额持仓、长时间持仓、注资/回拨</code></td>
+        <td><code>启用：同左</code></td>
+        <td>Turn on full MM + ADL suite before public launch.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>告警值</strong></td>
+        <td>价差多为 1%；买卖一价差 0.1%；无交易 40s；深度 0.1%≤300USD；档位 ≤25</td>
+        <td><code>价差 1.2% · 无交易 60s · 深度 0.15%≤500USD · 档位 ≤20</code></td>
+        <td><code>价差 1.0% · 无交易 40s · 深度 0.1%≤2000USD · 档位 ≤25</code></td>
+        <td>Tune each alert family to liquidity: looser XAU, deeper BTC USD thresholds.</td>
       </tr>
       <tr>
         <td><span class="mod alert">Alert 告警</span></td>
@@ -251,54 +325,6 @@
       </tr>
       <tr>
         <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>爆仓预警仓位价值阈值 (USD)</strong></td>
-        <td>100,000</td>
-        <td><code>50,000</code></td>
-        <td><code>100,000</code></td>
-        <td>Thin XAU book — warn earlier; BTC keep screenshot 100k.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>爆仓预警仓位价值阈值</strong></td>
-        <td>100,000 USD</td>
-        <td><code>50,000 USD</code></td>
-        <td><code>100,000 USD</code></td>
-        <td>Same as table column recommendation.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>爆仓预警MMR阈值</strong></td>
-        <td>95%</td>
-        <td><code>90%</code></td>
-        <td><code>95%</code></td>
-        <td>More lead time for gold ops; BTC keep tight 95%.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>爆仓通知仓位价值阈值 (USD)</strong></td>
-        <td>100,000</td>
-        <td><code>50,000</code></td>
-        <td><code>100,000</code></td>
-        <td>Align post-liq notify with pre-liq warning per pair.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>爆仓通知仓位价值阈值</strong></td>
-        <td>100,000 USD</td>
-        <td><code>50,000 USD</code></td>
-        <td><code>100,000 USD</code></td>
-        <td>Align with warning thresholds.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>告警值</strong></td>
-        <td>价差多为 1%；买卖一价差 0.1%；无交易 40s；深度 0.1%≤300USD；档位 ≤25</td>
-        <td><code>价差 1.2% · 无交易 60s · 深度 0.15%≤500USD · 档位 ≤20</code></td>
-        <td><code>价差 1.0% · 无交易 40s · 深度 0.1%≤2000USD · 档位 ≤25</code></td>
-        <td>Tune each alert family to liquidity: looser XAU, deeper BTC USD thresholds.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
         <td><strong>监控类型1</strong></td>
         <td>标记/最新/买一/卖一/中间价</td>
         <td><code>优先：标记价格 vs 指数价格</code></td>
@@ -315,43 +341,35 @@
       </tr>
       <tr>
         <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>监控频率</strong></td>
+        <td>5 min</td>
+        <td><code>5 min</code></td>
+        <td><code>5 min</code></td>
+        <td>Good latency vs Lark noise trade-off.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>监控阈值</strong></td>
+        <td>0.05% (external funding) / 1% spread</td>
+        <td><code>价差 1.2% · 外资金费率差 0.08%</code></td>
+        <td><code>价差 1.0% · 外资金费率差 0.05%</code></td>
+        <td>Gold quotes noisier — slightly looser spread/funding gap alerts.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
+        <td><strong>监控周期</strong></td>
+        <td>内部资金费率 10 分钟</td>
+        <td><code>10 分钟</code></td>
+        <td><code>5 分钟</code></td>
+        <td>BTC funding moves faster; XAU keep longer confirm.</td>
+      </tr>
+      <tr>
+        <td><span class="mod alert">Alert 告警</span></td>
         <td><strong>预警群</strong></td>
         <td>Lark webhook(s)</td>
         <td><code>专用 XAU 值班群 webhook</code></td>
         <td><code>专用 BTC 值班群 webhook（可共用值班）</code></td>
         <td>Separate channels reduce noise; share only if one desk covers both.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>报警群</strong></td>
-        <td>Lark webhook (ADL uses ;)</td>
-        <td><code>ADL/DB 值班 webhook</code></td>
-        <td><code>ADL/DB 值班 webhook</code></td>
-        <td>Critical path alerts should hit the same always-on ops channel.</td>
-      </tr>
-      <tr>
-        <td><span class="mod alert">Alert 告警</span></td>
-        <td><strong>告警类型</strong></td>
-        <td>ADL失败重试中；DB心跳/大额/长时间持仓等</td>
-        <td><code>启用：ADL失败、DB心跳、大额持仓、长时间持仓、注资/回拨</code></td>
-        <td><code>启用：同左</code></td>
-        <td>Turn on full MM + ADL suite before public launch.</td>
-      </tr>
-      <tr>
-        <td><span class="mod mm">MM 做市</span></td>
-        <td><strong>注资目标水位线</strong></td>
-        <td>200,000 USD</td>
-        <td><code>250,000 USD</code></td>
-        <td><code>250,000 USD</code></td>
-        <td>Headroom for gold + BTC inventory shocks in one takeover account.</td>
-      </tr>
-      <tr>
-        <td><span class="mod mm">MM 做市</span></td>
-        <td><strong>钱包余额</strong></td>
-        <td>~200,560 USD</td>
-        <td><code>保持 ≥ 注资目标</code></td>
-        <td><code>保持 ≥ 注资目标</code></td>
-        <td>Operational target, not a config knob — monitor after inject.</td>
       </tr>
       <tr>
         <td><span class="mod mm">MM 做市</span></td>
@@ -363,11 +381,19 @@
       </tr>
       <tr>
         <td><span class="mod mm">MM 做市</span></td>
-        <td><strong>最大可转金额</strong></td>
+        <td><strong>流水类型</strong></td>
+        <td>自动减仓 / 资金费用</td>
+        <td><code>关注：自动注资、回笼、自动减仓、资金费用</code></td>
+        <td><code>同左</code></td>
+        <td>Filter ledger by type when diagnosing takeover PnL.</td>
+      </tr>
+      <tr>
+        <td><span class="mod mm">MM 做市</span></td>
+        <td><strong>钱包余额</strong></td>
         <td>~200,560 USD</td>
-        <td><code>保留 ≥ 水位线后才回笼</code></td>
-        <td><code>保留 ≥ 水位线后才回笼</code></td>
-        <td>Never recall below auto-inject floor.</td>
+        <td><code>保持 ≥ 注资目标</code></td>
+        <td><code>保持 ≥ 注资目标</code></td>
+        <td>Operational target, not a config knob — monitor after inject.</td>
       </tr>
       <tr>
         <td><span class="mod mm">MM 做市</span></td>
@@ -379,14 +405,31 @@
       </tr>
       <tr>
         <td><span class="mod mm">MM 做市</span></td>
-        <td><strong>流水类型</strong></td>
-        <td>自动减仓 / 资金费用</td>
-        <td><code>关注：自动注资、回笼、自动减仓、资金费用</code></td>
-        <td><code>同左</code></td>
-        <td>Filter ledger by type when diagnosing takeover PnL.</td>
+        <td><strong>注资目标水位线</strong></td>
+        <td>200,000 USD</td>
+        <td><code>250,000 USD</code></td>
+        <td><code>250,000 USD</code></td>
+        <td>Headroom for gold + BTC inventory shocks in one takeover account.</td>
       </tr>
-      </tbody>
-    </table>
+      <tr>
+        <td><span class="mod mm">MM 做市</span></td>
+        <td><strong>自动注资水位线</strong></td>
+        <td>40,000 USD</td>
+        <td><code>50,000 USD</code></td>
+        <td><code>50,000 USD</code></td>
+        <td>Shared DB wallet — raise floor slightly so both pairs stay funded.</td>
+      </tr>
+      <tr>
+        <td><span class="mod mm">MM 做市</span></td>
+        <td><strong>最大可转金额</strong></td>
+        <td>~200,560 USD</td>
+        <td><code>保留 ≥ 水位线后才回笼</code></td>
+        <td><code>保留 ≥ 水位线后才回笼</code></td>
+        <td>Never recall below auto-inject floor.</td>
+      </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </body>
 </html>
