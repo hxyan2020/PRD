@@ -60,6 +60,7 @@ function NoteBody({ html, className }: { html: string; className?: string }) {
           const src = img.getAttribute('src') || ''
           if (!src) return
           e.preventDefault()
+          e.stopPropagation()
           setLightbox({ src, alt: img.getAttribute('alt') || '' })
         }}
       />

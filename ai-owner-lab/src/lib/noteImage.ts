@@ -99,8 +99,8 @@ function createProgressReporter(onProgress?: (pct: number) => void): {
       if (!onProgress || heartbeat) return
       // Keep the bar moving when FileReader/network is quiet between events.
       heartbeat = setInterval(() => {
-        if (current < 90) report(current + 1)
-      }, 100)
+        if (current < 90) report(current + 3)
+      }, 50)
     },
     stop: () => {
       if (heartbeat) {
