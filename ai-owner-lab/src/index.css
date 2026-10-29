@@ -3333,7 +3333,8 @@ body.menu-open {
 .note-fullscreen {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  /* Portaled to body — must sit above .topbar (z-index 30) stacking context. */
+  z-index: 400;
   display: grid;
   place-items: stretch;
   padding: 0;
@@ -3394,6 +3395,8 @@ body.menu-open {
   flex: 0 0 auto;
   white-space: nowrap;
   min-width: 5.5rem;
+  min-height: 2.6rem;
+  font-weight: 700;
 }
 
 .note-fullscreen-meta {
@@ -4064,11 +4067,12 @@ button.notebook-category-badge.on {
 .note-image-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 320;
+  /* Portaled to body — above note fullscreen (400) and topbar. */
+  z-index: 500;
   display: grid;
   place-items: stretch;
   padding: 0;
-  background: rgba(10, 16, 24, 0.92);
+  background: rgba(10, 16, 24, 0.94);
 }
 
 .note-image-lightbox-panel {
@@ -4090,8 +4094,23 @@ button.notebook-category-badge.on {
   align-items: center;
   justify-content: flex-end;
   padding: 0.75rem 1rem;
-  background: rgba(10, 16, 24, 0.88);
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+  background: rgba(10, 16, 24, 0.96);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.note-image-lightbox-close {
+  min-width: 5.5rem;
+  min-height: 2.6rem;
+  font-weight: 700;
+}
+
+.note-image-lightbox-download {
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
 }
 
 .note-image-lightbox-error {
