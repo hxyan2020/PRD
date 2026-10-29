@@ -55,8 +55,13 @@ import {
   UserRiskSettingsPage,
 } from './user/UserPages'
 import {
+  RiskAdlAbnormalPage,
   RiskDepthMonitorPage,
+  RiskExternalFundingMonitorPage,
   RiskFundingFeeChangePage,
+  RiskInternalFundingMonitorPage,
+  RiskLargeLiqNotifyPage,
+  RiskLargeLiqWarningPage,
   RiskLiquidationSwitchPage,
   RiskMarketPriceLimitPage,
   RiskNoTradeMonitorPage,
@@ -125,4 +130,9 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'risk-no-trade-monitor': RiskNoTradeMonitorPage,
   'risk-depth-monitor': RiskDepthMonitorPage,
   'risk-peer-spread-monitor': RiskPeerSpreadMonitorPage,
+  'risk-external-funding': RiskExternalFundingMonitorPage,
+  'risk-internal-funding': RiskInternalFundingMonitorPage,
+  'risk-large-liq-warning': RiskLargeLiqWarningPage,
+  'risk-large-liq-notify': RiskLargeLiqNotifyPage,
+  'risk-adl-abnormal': RiskAdlAbnormalPage,
 }

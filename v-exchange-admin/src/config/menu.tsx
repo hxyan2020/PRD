@@ -70,6 +70,11 @@ export type PageKey =
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
   | 'risk-peer-spread-monitor'
+  | 'risk-external-funding'
+  | 'risk-internal-funding'
+  | 'risk-large-liq-warning'
+  | 'risk-large-liq-notify'
+  | 'risk-adl-abnormal'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -121,7 +126,7 @@ export const pageLabels: Record<PageKey, string> = {
   'tools-open-bottom-position': 'Open Bottom Position',
   'risk-funding-fee-change': '资金费率修改',
   'risk-liquidation-switch': '强平引擎开关',
-  'risk-market-price-limit': '市价交易限制',
+  'risk-market-price-limit': '市价交易限制配置',
   'risk-reserve-list': '风险基金列表',
   'risk-reserve-detail': '风险基金明细',
   'risk-trading-restriction': '开平仓限制',
@@ -129,6 +134,11 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-no-trade-monitor': '无交易监控',
   'risk-depth-monitor': '档位深度监控',
   'risk-peer-spread-monitor': '友商价差监控',
+  'risk-external-funding': '外部资金费率监控',
+  'risk-internal-funding': '内部资金费率监控',
+  'risk-large-liq-warning': '大额爆仓预警',
+  'risk-large-liq-notify': '大额爆仓后通知',
+  'risk-adl-abnormal': 'ADL异常记录',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -258,7 +268,7 @@ export const sideMenuItems: MenuProps['items'] = [
     children: [
       { key: 'risk-funding-fee-change', label: '资金费率修改' },
       { key: 'risk-liquidation-switch', label: '强平引擎开关' },
-      { key: 'risk-market-price-limit', label: '市价交易限制' },
+      { key: 'risk-market-price-limit', label: '市价交易限制配置' },
       { key: 'risk-reserve-list', label: '风险基金列表' },
       { key: 'risk-reserve-detail', label: '风险基金明细' },
       { key: 'risk-trading-restriction', label: '开平仓限制' },
@@ -273,6 +283,11 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-no-trade-monitor', label: '无交易监控' },
       { key: 'risk-depth-monitor', label: '档位深度监控' },
       { key: 'risk-peer-spread-monitor', label: '友商价差监控' },
+      { key: 'risk-external-funding', label: '外部资金费率监控' },
+      { key: 'risk-internal-funding', label: '内部资金费率监控' },
+      { key: 'risk-large-liq-warning', label: '大额爆仓预警' },
+      { key: 'risk-large-liq-notify', label: '大额爆仓后通知' },
+      { key: 'risk-adl-abnormal', label: 'ADL异常记录' },
     ],
   },
 ]
