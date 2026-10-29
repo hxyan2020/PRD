@@ -3880,6 +3880,46 @@ button.notebook-category-badge.on {
   color: var(--teal-deep);
 }
 
+.rte-image-progress {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.15rem 0 0.35rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: rgba(15, 118, 110, 0.06);
+}
+
+.rte-image-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--teal-deep);
+}
+
+.rte-image-progress-meta strong {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.rte-image-progress-track {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: rgba(11, 31, 42, 0.1);
+  overflow: hidden;
+}
+
+.rte-image-progress-fill {
+  height: 100%;
+  min-width: 0.35rem;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--teal), var(--signal));
+  transition: width 0.12s linear;
+}
+
 .rte-u {
   text-decoration: underline;
   text-underline-offset: 2px;

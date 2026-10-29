@@ -44,11 +44,22 @@ export function isSafeImageSrc(src: string): boolean {
   return false
 }
 
-function blobToDataUrl(blob: Blob): Promise<string> {
+function blobToDataUrl(
+  blob: Blob,
+  onProgress?: (pct: number) => void,
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result || ''))
+    reader.onprogress = (e) => {
+      if (!e.lengthComputable || e.total <= 0) return
+      onProgress?.(Math.min(99, Math.round((e.loaded / e.total) * 100)))
+    }
+    reader.onload = () => {
+      onProgress?.(100)
+      resolve(String(reader.result || ''))
+    }
     reader.onerror = () => reject(new Error('Could not encode image'))
+    onProgress?.(0)
     reader.readAsDataURL(blob)
   })
 }
@@ -73,8 +84,12 @@ function asImageFile(file: Blob): File {
  * Store a notebook image at full resolution (no downscale / quality crush).
  * Prefer private Vercel Blob when signed in so large pastes have no practical size limit;
  * otherwise embed the original bytes as a data URL.
+ * `onProgress` receives 0–100 for upload / local encode.
  */
-export async function fileToNoteImageDataUrl(file: Blob): Promise<string> {
+export async function fileToNoteImageDataUrl(
+  file: Blob,
+  onProgress?: (pct: number) => void,
+): Promise<string> {
   const mime = (file.type || '').toLowerCase()
   if (!isAllowedImageMime(mime)) {
     throw new Error('Unsupported image type')
@@ -83,7 +98,11 @@ export async function fileToNoteImageDataUrl(file: Blob): Promise<string> {
   // Signed-in: store original bytes on private Blob (no practical size / resolution cap).
   if (loadCachedAccountUser()) {
     try {
-      const uploaded = await uploadNotebookFile(asImageFile(file))
+      onProgress?.(0)
+      const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
+        onProgress?.(Math.max(0, Math.min(100, Math.round(pct))))
+      })
+      onProgress?.(100)
       return notebookInlineImageSrc(uploaded.pathname)
     } catch {
       // Fall through to local data URL when upload is unavailable.
@@ -91,7 +110,7 @@ export async function fileToNoteImageDataUrl(file: Blob): Promise<string> {
   }
 
   // Keep original bytes — never canvas-resize or recompress.
-  return blobToDataUrl(file)
+  return blobToDataUrl(file, onProgress)
 }
 
 export function guessImageFilename(src: string, fallback = 'ownlab-image'): string {

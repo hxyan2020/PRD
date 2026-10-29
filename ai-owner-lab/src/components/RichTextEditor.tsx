@@ -287,6 +287,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const placeholderId = useId()
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
+  const [imageProgress, setImageProgress] = useState<number | null>(null)
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
@@ -419,9 +420,13 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
       return
     }
     setImageBusy(true)
+    setImageProgress(0)
     setImageError(null)
     try {
-      const src = await fileToNoteImageDataUrl(file)
+      const src = await fileToNoteImageDataUrl(file, (pct) => {
+        setImageProgress(pct)
+      })
+      setImageProgress(100)
       const pathname = blobPathnameFromSrc(src)
       const blobAttr = pathname
         ? ` data-ownlab-blob="${pathname.replace(/"/g, '')}"`
@@ -440,6 +445,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
       setImageError(err instanceof Error ? err.message : t('editorImageFailed'))
     } finally {
       setImageBusy(false)
+      setImageProgress(null)
     }
   }
 
@@ -763,9 +769,30 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
         </p>
       ) : null}
       {imageBusy ? (
-        <p className="rte-image-status" role="status">
-          {t('editorImageProcessing')}
-        </p>
+        <div className="rte-image-progress" role="status" aria-live="polite">
+          <div className="rte-image-progress-meta">
+            <span>
+              {imageProgress != null
+                ? t('editorImageUploading', { pct: Math.round(imageProgress) })
+                : t('editorImageProcessing')}
+            </span>
+            {imageProgress != null ? (
+              <strong>{Math.round(imageProgress)}%</strong>
+            ) : null}
+          </div>
+          <div
+            className="rte-image-progress-track"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={imageProgress != null ? Math.round(imageProgress) : 0}
+            role="progressbar"
+          >
+            <div
+              className="rte-image-progress-fill"
+              style={{ width: `${Math.max(2, Math.min(100, imageProgress ?? 0))}%` }}
+            />
+          </div>
+        </div>
       ) : null}
 
       <div
