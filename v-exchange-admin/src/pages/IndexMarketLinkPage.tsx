@@ -1,7 +1,9 @@
-import { Button, Empty, Form, Input, Select, Table } from 'antd'
+import { Button, Empty, Form, Select, Table } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
+import { indexNameOptions } from '../config/pairs'
+import { indexMarketLinkRecords } from '../mock/pairMarketData'
 
 export function IndexMarketLinkPage() {
   const [form] = Form.useForm()
@@ -36,18 +38,18 @@ export function IndexMarketLinkPage() {
           <Select placeholder="请选择" allowClear style={{ width: 160 }} />
         </Form.Item>
         <Form.Item label="指数名称" name="indexName">
-          <Input placeholder="请输入" style={{ width: 160 }} />
+          <Select placeholder="请选择" allowClear style={{ width: 160 }} options={indexNameOptions} />
         </Form.Item>
         <Form.Item>
           <QueryResetButtons onReset={() => form.resetFields()} />
         </Form.Item>
       </Form>
       <Table
-        rowKey="indexName"
+        rowKey={(r) => `${r.indexName}-${r.marketSource}`}
         size="small"
         bordered
         columns={columns}
-        dataSource={[]}
+        dataSource={indexMarketLinkRecords}
         locale={{ emptyText: <Empty description="暂无数据" /> }}
         pagination={false}
       />

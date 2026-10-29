@@ -60,8 +60,14 @@ export type CoinIntroduceRecord = {
 export const coinIntroduceRecords: CoinIntroduceRecord[] = [
   {
     contractName: 'XAU_USD永续',
-    displayName: '--',
+    displayName: '黄金永续',
     currencyName: 'XAU',
+    updatedAt: '2024-05-22 17:12:01',
+  },
+  {
+    contractName: 'BTC_USD永续',
+    displayName: 'BTC永续',
+    currencyName: 'BTC',
     updatedAt: '2024-05-22 17:12:01',
   },
 ]

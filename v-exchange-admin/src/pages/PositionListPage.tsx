@@ -2,6 +2,8 @@ import { Button, Form, Input, Select, Space, Table, Typography } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
+import { perpContractOptions } from '../config/pairs'
+import { positionRecords } from '../mock/extendedData'
 
 const { Text } = Typography
 
@@ -54,7 +56,7 @@ export function PositionListPage() {
           <Input style={{ width: 120 }} />
         </Form.Item>
         <Form.Item label="合约名称" name="contractName">
-          <Input style={{ width: 120 }} />
+          <Select allowClear placeholder="请选择" style={{ width: 160 }} options={perpContractOptions} />
         </Form.Item>
         <Form.Item label="持仓量>=" name="quantityMin">
           <Input style={{ width: 100 }} />
@@ -87,7 +89,7 @@ export function PositionListPage() {
         bordered
         scroll={{ x: 3600 }}
         columns={columns}
-        dataSource={[]}
+        dataSource={positionRecords}
         locale={{ emptyText: '暂无数据' }}
         pagination={{
           showSizeChanger: true,

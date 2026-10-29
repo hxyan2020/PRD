@@ -1,6 +1,7 @@
 import { Button, Form, Input, Select, Table, Tag } from 'antd'
 import { PageFrame } from '../components/PageFrame'
 import { QueryResetButtons } from '../components/QueryResetButtons'
+import { baseCoinOptions } from '../config/pairs'
 import { contractRecords } from '../mock/data'
 
 export function ContractListPage() {
@@ -47,7 +48,7 @@ export function ContractListPage() {
           <Select placeholder="请选择" allowClear style={{ width: 140 }} options={[{ value: 'perp', label: '永续' }]} />
         </Form.Item>
         <Form.Item label="基础币种" name="base">
-          <Select placeholder="请选择" allowClear style={{ width: 120 }} options={[{ value: 'BTC', label: 'BTC' }, { value: 'XAU', label: 'XAU' }]} />
+          <Select placeholder="请选择" allowClear style={{ width: 120 }} options={baseCoinOptions} />
         </Form.Item>
         <Form.Item label="计价币种" name="quote">
           <Select placeholder="请选择" allowClear style={{ width: 120 }} options={[{ value: 'USD', label: 'USD' }]} />

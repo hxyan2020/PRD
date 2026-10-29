@@ -1,5 +1,6 @@
 import { Button, DatePicker, Form, Input, Select } from 'antd'
 import { PageFrame } from '../components/PageFrame'
+import { symbolOptions } from '../config/pairs'
 
 export function KlineManagePage() {
   const [form] = Form.useForm()
@@ -8,7 +9,7 @@ export function KlineManagePage() {
     <PageFrame title="K线管理">
       <Form form={form} layout="vertical" style={{ maxWidth: 720 }}>
         <Form.Item label="交易对" name="pair" rules={[{ required: true }]}>
-          <Select placeholder="请选择" options={[{ value: 'BTC_USD', label: 'BTC_USD' }, { value: 'XAU_USD', label: 'XAU_USD' }]} />
+          <Select placeholder="请选择" options={symbolOptions} />
         </Form.Item>
         <Form.Item label="周期" name="period" rules={[{ required: true }]}>
           <Select placeholder="请选择" options={[{ value: '1m', label: '1m' }, { value: '5m', label: '5m' }, { value: '1h', label: '1h' }]} />

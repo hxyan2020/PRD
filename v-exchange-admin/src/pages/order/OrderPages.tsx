@@ -3,7 +3,9 @@ import { Button, DatePicker, Empty, Form, Input, Select } from 'antd'
 import { EyeOutlined, UndoOutlined } from '@ant-design/icons'
 import { QueryResetButtons } from '../../components/QueryResetButtons'
 import { ListPageShell } from '../../components/ListPageShell'
+import { perpContractOptions } from '../../config/pairs'
 import { activeOrderHistoryDeals } from '../../mock/extendedData'
+import { positionValueStats } from '../../mock/pairMarketData'
 
 const emptyLocale = { emptyText: <Empty description="暂无数据" /> }
 
@@ -26,7 +28,7 @@ export function PositionValueStatsPage() {
       filters={
         <OrderFilterBar>
           <Form.Item label="合约名称" name="contract">
-            <Select placeholder="请选择" style={{ width: 160 }} />
+            <Select placeholder="请选择" style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
         </OrderFilterBar>
       }
@@ -36,7 +38,7 @@ export function PositionValueStatsPage() {
         { title: '多仓价值', dataIndex: 'longValue' },
         { title: '空仓价值', dataIndex: 'shortValue' },
       ]}
-      dataSource={[]}
+      dataSource={positionValueStats}
       locale={emptyLocale}
       pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
     />
@@ -59,7 +61,7 @@ export function ActiveOrderPage() {
             <Input style={{ width: 160 }} />
           </Form.Item>
           <Form.Item label="合约名称" name="contract">
-            <Select placeholder="请选择" style={{ width: 160 }} options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
+            <Select placeholder="请选择" style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
         </OrderFilterBar>
       }
@@ -104,7 +106,7 @@ export function TriggerOrderPage() {
             <Input style={{ width: 160 }} />
           </Form.Item>
           <Form.Item label="合约名称" name="contract">
-            <Select defaultValue="BTC_USD永续" style={{ width: 160 }} options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
+            <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="开仓类型" name="openType">
             <Select placeholder="请选择" style={{ width: 120 }} />
@@ -171,7 +173,7 @@ export function StopOrderPage() {
             <Input style={{ width: 120 }} />
           </Form.Item>
           <Form.Item label="合约名称" name="contract">
-            <Select defaultValue="BTC_USD永续" style={{ width: 160 }} options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
+            <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="订单方向" name="direction">
             <Select placeholder="请选择" style={{ width: 120 }} />
@@ -293,7 +295,7 @@ export function TriggerOrderHistoryDealPage() {
             <Input style={{ width: 160 }} />
           </Form.Item>
           <Form.Item label="合约名称" name="contract">
-            <Select defaultValue="BTC_USD永续" style={{ width: 160 }} options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
+            <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="执行状态" name="status">
             <Select defaultValue="executed" style={{ width: 120 }} options={[{ value: 'executed', label: '已执行' }]} />
@@ -353,7 +355,7 @@ export function LiquidateHistoryPage() {
             <Input style={{ width: 120 }} />
           </Form.Item>
           <Form.Item label="合约名称" name="contract">
-            <Select defaultValue="BTC_USD永续" style={{ width: 160 }} options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
+            <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="状态" name="status">
             <Select defaultValue="done" style={{ width: 160 }} options={[{ value: 'done', label: '强平流程完成' }]} />
@@ -389,7 +391,7 @@ export function AdlHistoryPage() {
             <Input style={{ width: 120 }} />
           </Form.Item>
           <Form.Item label="合约名称" name="contract">
-            <Select defaultValue="BTC_USD永续" style={{ width: 160 }} options={[{ value: 'BTC_USD永续', label: 'BTC_USD永续' }]} />
+            <Select defaultValue={perpContractOptions[0]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="状态" name="status">
             <Select defaultValue="done" style={{ width: 160 }} options={[{ value: 'done', label: '强平流程完成' }]} />
@@ -441,7 +443,7 @@ export function StopOrderHistoryDealPage() {
             <DatePicker.RangePicker />
           </Form.Item>
           <Form.Item label="合约名称" name="contract">
-            <Select defaultValue="BTC_USD_永续" style={{ width: 160 }} options={[{ value: 'BTC_USD_永续', label: 'BTC_USD_永续' }]} />
+            <Select defaultValue={perpContractOptions[1]?.value} style={{ width: 160 }} options={perpContractOptions} />
           </Form.Item>
           <Form.Item label="状态" name="status">
             <Select defaultValue="all" style={{ width: 120 }} options={[{ value: 'all', label: '全部' }]} />

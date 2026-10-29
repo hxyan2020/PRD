@@ -1,0 +1,42 @@
+.overview-pair-card {
+  height: 100%;
+}
+
+.overview-pair-card .pair-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.overview-pair-card .pair-symbol {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.overview-pair-card .pair-index {
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+.overview-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+}
+
+.overview-metric-grid .label {
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+.overview-metric-grid .value {
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-config-table .ant-table-cell {
+  font-size: 13px;
+}
