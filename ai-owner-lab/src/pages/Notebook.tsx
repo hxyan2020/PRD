@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import { CloudSetupCard } from '../components/CloudSetupCard'
 import { NoteAttachments } from '../components/NoteAttachments'
 import { NoteCardImages } from '../components/NoteCardImages'
+import { NoteImageLightbox } from '../components/NoteImageLightbox'
 import { NoteTree } from '../components/NoteTree'
 import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
@@ -42,15 +43,33 @@ function typeLabel(
 }
 
 function NoteBody({ html, className }: { html: string; className?: string }) {
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   const looksLikeHtml = /<\/?[a-z][\s\S]*>/i.test(html)
   if (!looksLikeHtml) {
     return <blockquote className={className}>{html}</blockquote>
   }
   return (
-    <blockquote
-      className={`${className ?? ''} notebook-rich`.trim()}
-      dangerouslySetInnerHTML={{ __html: renderNoteHtml(html) }}
-    />
+    <>
+      <blockquote
+        className={`${className ?? ''} notebook-rich`.trim()}
+        dangerouslySetInnerHTML={{ __html: renderNoteHtml(html) }}
+        onClick={(e) => {
+          const img = (e.target as HTMLElement | null)?.closest?.('img')
+          if (!img) return
+          const src = img.getAttribute('src') || ''
+          if (!src) return
+          e.preventDefault()
+          setLightbox({ src, alt: img.getAttribute('alt') || '' })
+        }}
+      />
+      {lightbox ? (
+        <NoteImageLightbox
+          src={lightbox.src}
+          alt={lightbox.alt}
+          onClose={() => setLightbox(null)}
+        />
+      ) : null}
+    </>
   )
 }
 

@@ -4058,6 +4058,80 @@ button.notebook-category-badge.on {
   border-radius: 0.35rem;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.7);
+  cursor: zoom-in;
+}
+
+.note-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 320;
+  display: grid;
+  place-items: stretch;
+  padding: 0;
+  background: rgba(10, 16, 24, 0.92);
+}
+
+.note-image-lightbox-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.note-image-lightbox-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+  background: rgba(10, 16, 24, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.note-image-lightbox-error {
+  margin: 0;
+  padding: 0.45rem 1rem;
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.55);
+  font-size: 0.9rem;
+}
+
+.note-image-lightbox-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+}
+
+.note-image-lightbox-stage img {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 5.5rem);
+  object-fit: contain;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: default;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+@media (min-width: 900px) {
+  .note-image-lightbox-stage img {
+    max-width: min(100%, 100vw);
+    max-height: calc(100dvh - 5.5rem);
+  }
 }
 
 .rte-table-controls,

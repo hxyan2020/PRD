@@ -14,9 +14,14 @@ import {
   type CodeLanguageId,
 } from '../lib/codeHighlight'
 import { sanitizeHtml } from '../lib/sanitizeHtml'
-import { fileToNoteImageDataUrl, isAllowedImageMime } from '../lib/noteImage'
+import {
+  blobPathnameFromSrc,
+  fileToNoteImageDataUrl,
+  isAllowedImageMime,
+} from '../lib/noteImage'
 import { clearHighlightInRange, highlightRange } from '../lib/rangeHighlight'
 import { useLanguage } from '../i18n/LanguageContext'
+import { NoteImageLightbox } from './NoteImageLightbox'
 
 const COLORS = [
   { value: '#14212b', labelKey: 'editorColorInk' as const },
@@ -282,6 +287,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const placeholderId = useId()
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
   const [tableCols, setTableCols] = useState(3)
@@ -415,10 +421,14 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     setImageBusy(true)
     setImageError(null)
     try {
-      const dataUrl = await fileToNoteImageDataUrl(file)
+      const src = await fileToNoteImageDataUrl(file)
+      const pathname = blobPathnameFromSrc(src)
+      const blobAttr = pathname
+        ? ` data-ownlab-blob="${pathname.replace(/"/g, '')}"`
+        : ''
       withFocus(() => {
         const safe = sanitizeHtml(
-          `<img src="${dataUrl}" alt="" style="max-width: 100%; height: auto" />`,
+          `<img src="${src.replace(/"/g, '')}"${blobAttr} alt="" style="max-width: 100%; height: auto" />`,
         )
         if (!document.execCommand('insertHTML', false, safe)) {
           const el = editorRef.current
@@ -426,8 +436,8 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           el.insertAdjacentHTML('beforeend', safe)
         }
       })
-    } catch {
-      setImageError(t('editorImageTooLarge'))
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : t('editorImageFailed'))
     } finally {
       setImageBusy(false)
     }
@@ -835,6 +845,15 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           }}
           onMouseUp={captureSelection}
           onSelect={captureSelection}
+          onClick={(e) => {
+            const img = (e.target as HTMLElement | null)?.closest?.('img')
+            if (!img || !editorRef.current?.contains(img)) return
+            const src = img.getAttribute('src') || ''
+            if (!src) return
+            e.preventDefault()
+            e.stopPropagation()
+            setLightbox({ src, alt: img.getAttribute('alt') || '' })
+          }}
           onPaste={(e) => {
             const items = e.clipboardData?.items
             const imageItems = items
@@ -864,6 +883,13 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           }}
         />
       </div>
+      {lightbox ? (
+        <NoteImageLightbox
+          src={lightbox.src}
+          alt={lightbox.alt}
+          onClose={() => setLightbox(null)}
+        />
+      ) : null}
     </div>
   )
 })

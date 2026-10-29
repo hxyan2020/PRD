@@ -120,7 +120,11 @@ function sanitizeImg(el: HTMLElement) {
       else el.removeAttribute('style')
       continue
     }
-    if ((name === 'width' || name === 'height') && /^\d{1,4}$/.test(attr.value)) {
+    // Preserve Blob pathname marker for lightbox / download helpers.
+    if (name === 'data-ownlab-blob' && /^[\w./\- %]+$/.test(attr.value) && attr.value.length < 500) {
+      continue
+    }
+    if ((name === 'width' || name === 'height') && /^\d{1,5}$/.test(attr.value)) {
       continue
     }
     el.removeAttribute(attr.name)
@@ -130,6 +134,7 @@ function sanitizeImg(el: HTMLElement) {
   if (!/max-width/i.test(style)) {
     el.setAttribute('style', `${style ? `${style}; ` : ''}max-width: 100%; height: auto`)
   }
+  el.setAttribute('data-note-image', '1')
   return true
 }
 

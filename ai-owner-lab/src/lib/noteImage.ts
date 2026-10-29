@@ -1,10 +1,35 @@
-const MAX_EDGE = 960
-/** Soft cap for notebook images stored as data URLs inside IndexedDB notes. */
-const MAX_BYTES = 550_000
+import { loadCachedAccountUser } from './notebookAccountSync'
+import { notebookFileDownloadUrl, uploadNotebookFile } from './notebookAttachments'
+
 const ACCEPTED = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'])
 
 export function isAllowedImageMime(type: string): boolean {
   return ACCEPTED.has(type.toLowerCase())
+}
+
+export function isBlobImageSrc(src: string): boolean {
+  try {
+    const url = new URL(src, typeof window !== 'undefined' ? window.location.origin : 'https://ownlab.local')
+    return url.pathname === '/api/blob/download' && url.searchParams.has('pathname')
+  } catch {
+    return false
+  }
+}
+
+export function blobPathnameFromSrc(src: string): string | null {
+  try {
+    const url = new URL(src, typeof window !== 'undefined' ? window.location.origin : 'https://ownlab.local')
+    if (url.pathname !== '/api/blob/download') return null
+    return url.searchParams.get('pathname')
+  } catch {
+    return null
+  }
+}
+
+export function notebookInlineImageSrc(pathname: string): string {
+  // Relative same-origin URL so <img> sends the session cookie and the API redirects
+  // to a short-lived signed Blob URL (full original resolution).
+  return `/api/blob/download?pathname=${encodeURIComponent(pathname)}&redirect=1`
 }
 
 export function isSafeImageSrc(src: string): boolean {
@@ -14,40 +39,9 @@ export function isSafeImageSrc(src: string): boolean {
   if (/^https:\/\//i.test(value) && !/[\s"']/.test(value) && !/javascript:/i.test(value)) {
     return true
   }
+  // Same-origin private Blob images (session cookie + redirect to signed URL).
+  if (isBlobImageSrc(value)) return true
   return false
-}
-
-function loadImage(file: Blob): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file)
-    const img = new Image()
-    img.onload = () => {
-      URL.revokeObjectURL(url)
-      resolve(img)
-    }
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Could not read image'))
-    }
-    img.src = url
-  })
-}
-
-async function canvasToBlob(
-  canvas: HTMLCanvasElement,
-  type: string,
-  quality: number,
-): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) reject(new Error('Could not encode image'))
-        else resolve(blob)
-      },
-      type,
-      quality,
-    )
-  })
 }
 
 function blobToDataUrl(blob: Blob): Promise<string> {
@@ -59,61 +53,105 @@ function blobToDataUrl(blob: Blob): Promise<string> {
   })
 }
 
-/** Resize/compress a local image for notebook storage (data URL). */
+function extForMime(mime: string): string {
+  const type = mime.toLowerCase()
+  if (type.includes('png')) return 'png'
+  if (type.includes('webp')) return 'webp'
+  if (type.includes('gif')) return 'gif'
+  if (type.includes('jpeg') || type.includes('jpg')) return 'jpg'
+  return 'img'
+}
+
+function asImageFile(file: Blob): File {
+  if (file instanceof File && file.name) return file
+  const mime = (file.type || 'image/png').toLowerCase()
+  const name = `note-image-${Date.now()}.${extForMime(mime)}`
+  return new File([file], name, { type: mime })
+}
+
+/**
+ * Store a notebook image at full resolution (no downscale / quality crush).
+ * Prefer private Vercel Blob when signed in so large pastes have no practical size limit;
+ * otherwise embed the original bytes as a data URL.
+ */
 export async function fileToNoteImageDataUrl(file: Blob): Promise<string> {
   const mime = (file.type || '').toLowerCase()
   if (!isAllowedImageMime(mime)) {
     throw new Error('Unsupported image type')
   }
 
-  // Keep small GIFs as-is (animation); reject huge ones.
-  if (mime === 'image/gif') {
-    if (file.size > MAX_BYTES) throw new Error('Image is too large')
-    return blobToDataUrl(file)
-  }
-
-  const img = await loadImage(file)
-  const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height, 1))
-  const width = Math.max(1, Math.round(img.width * scale))
-  const height = Math.max(1, Math.round(img.height * scale))
-  const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-  const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('Could not process image')
-  // White fill so JPEG doesn't turn transparent PNG areas black.
-  ctx.fillStyle = '#ffffff'
-  ctx.fillRect(0, 0, width, height)
-  ctx.drawImage(img, 0, 0, width, height)
-
-  // Prefer JPEG for diagrams/screenshots — much smaller than PNG in notes.
-  let outType = 'image/jpeg'
-  let quality = 0.78
-  let blob = await canvasToBlob(canvas, outType, quality)
-
-  while (blob.size > MAX_BYTES && quality > 0.4) {
-    quality -= 0.08
-    blob = await canvasToBlob(canvas, outType, quality)
-  }
-
-  // Last resort: shrink dimensions further.
-  if (blob.size > MAX_BYTES) {
-    const shrink = Math.sqrt(MAX_BYTES / blob.size) * 0.92
-    const w2 = Math.max(1, Math.round(width * shrink))
-    const h2 = Math.max(1, Math.round(height * shrink))
-    canvas.width = w2
-    canvas.height = h2
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, w2, h2)
-    ctx.drawImage(img, 0, 0, w2, h2)
-    quality = 0.72
-    blob = await canvasToBlob(canvas, outType, quality)
-    while (blob.size > MAX_BYTES && quality > 0.38) {
-      quality -= 0.08
-      blob = await canvasToBlob(canvas, outType, quality)
+  // Signed-in: store original bytes on private Blob (no practical size / resolution cap).
+  if (loadCachedAccountUser()) {
+    try {
+      const uploaded = await uploadNotebookFile(asImageFile(file))
+      return notebookInlineImageSrc(uploaded.pathname)
+    } catch {
+      // Fall through to local data URL when upload is unavailable.
     }
   }
 
-  if (blob.size > MAX_BYTES) throw new Error('Image is too large')
-  return blobToDataUrl(blob)
+  // Keep original bytes — never canvas-resize or recompress.
+  return blobToDataUrl(file)
+}
+
+export function guessImageFilename(src: string, fallback = 'ownlab-image'): string {
+  const pathname = blobPathnameFromSrc(src)
+  if (pathname) {
+    const base = pathname.split('/').pop() || fallback
+    return base.replace(/-[A-Za-z0-9]{10,}(?=\.[^.]+$)/, '') || fallback
+  }
+  const match = /^data:image\/([\w+.-]+);/i.exec(src)
+  const ext = match?.[1]?.toLowerCase().replace('jpeg', 'jpg') || 'png'
+  return `${fallback}.${ext}`
+}
+
+/** Download the full-resolution image (data URL, https, or private Blob). */
+export async function downloadNoteImage(src: string, filename?: string): Promise<void> {
+  const name = filename || guessImageFilename(src)
+  const pathname = blobPathnameFromSrc(src)
+
+  if (pathname) {
+    const res = await fetch(notebookFileDownloadUrl(pathname), {
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    })
+    if (!res.ok) throw new Error(`Download failed (${res.status})`)
+    const body = (await res.json()) as { url?: string }
+    if (!body.url) throw new Error('Download URL missing')
+    const fileRes = await fetch(body.url)
+    if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
+    const blob = await fileRes.blob()
+    const objectUrl = URL.createObjectURL(blob)
+    try {
+      triggerDownload(objectUrl, name)
+    } finally {
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000)
+    }
+    return
+  }
+
+  if (src.startsWith('data:')) {
+    triggerDownload(src, name)
+    return
+  }
+
+  const fileRes = await fetch(src, { credentials: 'include' })
+  if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
+  const blob = await fileRes.blob()
+  const objectUrl = URL.createObjectURL(blob)
+  try {
+    triggerDownload(objectUrl, name)
+  } finally {
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000)
+  }
+}
+
+function triggerDownload(href: string, filename: string): void {
+  const a = document.createElement('a')
+  a.href = href
+  a.download = filename
+  a.rel = 'noopener'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
 }
