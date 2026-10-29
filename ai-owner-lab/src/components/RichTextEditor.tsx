@@ -771,20 +771,14 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
       {imageBusy ? (
         <div className="rte-image-progress" role="status" aria-live="polite">
           <div className="rte-image-progress-meta">
-            <span>
-              {imageProgress != null
-                ? t('editorImageUploading', { pct: Math.round(imageProgress) })
-                : t('editorImageProcessing')}
-            </span>
-            {imageProgress != null ? (
-              <strong>{Math.round(imageProgress)}%</strong>
-            ) : null}
+            <span>{t('editorImageUploading')}</span>
+            <strong>{Math.round(imageProgress ?? 0)}%</strong>
           </div>
           <div
             className="rte-image-progress-track"
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-valuenow={imageProgress != null ? Math.round(imageProgress) : 0}
+            aria-valuenow={Math.round(imageProgress ?? 0)}
             role="progressbar"
           >
             <div

@@ -80,6 +80,37 @@ function asImageFile(file: Blob): File {
   return new File([file], name, { type: mime })
 }
 
+function createProgressReporter(onProgress?: (pct: number) => void): {
+  report: (pct: number) => void
+  startHeartbeat: () => void
+  stop: () => void
+} {
+  let current = 0
+  let heartbeat: ReturnType<typeof setInterval> | null = null
+  const report = (pct: number) => {
+    const next = Math.max(current, Math.min(100, Math.round(pct)))
+    if (next === current && next !== 0) return
+    current = next
+    onProgress?.(current)
+  }
+  return {
+    report,
+    startHeartbeat: () => {
+      if (!onProgress || heartbeat) return
+      // Keep the bar moving when FileReader/network is quiet between events.
+      heartbeat = setInterval(() => {
+        if (current < 90) report(current + 1)
+      }, 100)
+    },
+    stop: () => {
+      if (heartbeat) {
+        clearInterval(heartbeat)
+        heartbeat = null
+      }
+    },
+  }
+}
+
 /**
  * Store a notebook image at full resolution (no downscale / quality crush).
  * Prefer private Vercel Blob when signed in so large pastes have no practical size limit;
@@ -95,22 +126,29 @@ export async function fileToNoteImageDataUrl(
     throw new Error('Unsupported image type')
   }
 
-  // Signed-in: store original bytes on private Blob (no practical size / resolution cap).
-  if (loadCachedAccountUser()) {
-    try {
-      onProgress?.(0)
-      const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
-        onProgress?.(Math.max(0, Math.min(100, Math.round(pct))))
-      })
-      onProgress?.(100)
-      return notebookInlineImageSrc(uploaded.pathname)
-    } catch {
-      // Fall through to local data URL when upload is unavailable.
-    }
-  }
+  const progress = createProgressReporter(onProgress)
+  progress.report(0)
+  progress.startHeartbeat()
 
-  // Keep original bytes — never canvas-resize or recompress.
-  return blobToDataUrl(file, onProgress)
+  try {
+    // Signed-in: store original bytes on private Blob (no practical size / resolution cap).
+    if (loadCachedAccountUser()) {
+      try {
+        const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
+          progress.report(pct)
+        })
+        progress.report(100)
+        return notebookInlineImageSrc(uploaded.pathname)
+      } catch {
+        // Fall through to local data URL when upload is unavailable.
+      }
+    }
+
+    // Keep original bytes — never canvas-resize or recompress.
+    return await blobToDataUrl(file, (pct) => progress.report(pct))
+  } finally {
+    progress.stop()
+  }
 }
 
 export function guessImageFilename(src: string, fallback = 'ownlab-image'): string {
