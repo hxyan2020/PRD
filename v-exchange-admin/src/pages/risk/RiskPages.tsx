@@ -22,6 +22,10 @@ import {
   depthAlertRecords,
   depthMonitorConfigs,
   externalFundingAlerts,
+  externalFundingConfigs,
+  internalFundingConfigs,
+  largeLiqNotifyRecords,
+  largeLiqWarningConfigs,
   marketPriceLimits,
   monitorTypeOptions,
   noTradeAlertRecords,
@@ -919,6 +923,8 @@ function PlaceholderAlarmPage({ title }: { title: string }) {
 
 export function RiskExternalFundingMonitorPage() {
   const [form] = Form.useForm()
+  const [addForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
   return (
     <PageFrame title="外部资金费率监控">
       <Tabs
@@ -963,6 +969,416 @@ export function RiskExternalFundingMonitorPage() {
             children: (
               <>
                 <div style={{ textAlign: 'right', marginBottom: 12 }}>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>
+                    增加监控
+                  </Button>
+                </div>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={externalFundingConfigs}
+                  pagination={{ total: 2, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '合约名称', dataIndex: 'contract', width: 110 },
+                    { title: '对标交易所', dataIndex: 'peers', width: 220 },
+                    { title: '监控阈值', dataIndex: 'threshold', width: 100 },
+                    { title: '监控频率', dataIndex: 'frequency', width: 100 },
+                    { title: '预警群', dataIndex: 'alarmGroup', ellipsis: true },
+                    {
+                      title: '状态',
+                      dataIndex: 'status',
+                      width: 90,
+                      render: (s: string) =>
+                        s === '生效中' ? <StatusTag status={s} /> : <Tag>{s}</Tag>,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      width: 120,
+                      render: (_: unknown, row: (typeof externalFundingConfigs)[0]) => (
+                        <Space>
+                          <Button type="link" size="small" danger={row.status === '生效中'}>
+                            {row.status === '生效中' ? '停用' : '启用'}
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
+              </>
+            ),
+          },
+        ]}
+      />
+      <Modal
+        title="新增 - 监控配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="c" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success('已新增外部资金费率监控')
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={addForm} layout="vertical">
+          <Form.Item label="合约名称" name="contract" rules={[{ required: true }]}>
+            <Select placeholder="请选择合约名称" options={symbolOptions} />
+          </Form.Item>
+          <Form.Item label="对标交易所" name="peers" rules={[{ required: true }]}>
+            <Select mode="multiple" placeholder="请选择对标交易所" options={peerExchangeOptions} />
+          </Form.Item>
+          <Form.Item label="监控阈值" name="threshold" rules={[{ required: true }]}>
+            <Input placeholder="请输入监控阈值" />
+          </Form.Item>
+          <Form.Item label="监控频率" name="frequency" rules={[{ required: true }]}>
+            <InputNumber style={{ width: '100%' }} addonAfter="min" placeholder="请输入监控频率" min={1} />
+          </Form.Item>
+          <Form.Item
+            label="预警群"
+            name="webhook"
+            rules={[{ required: true }]}
+            extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
+          >
+            <Input.TextArea rows={3} placeholder="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </PageFrame>
+  )
+}
+
+export function RiskInternalFundingMonitorPage() {
+  const [form] = Form.useForm()
+  const [addForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
+  return (
+    <PageFrame title="内部资金费率监控">
+      <Tabs
+        items={[
+          {
+            key: 'records',
+            label: '告警记录',
+            children: (
+              <>
+                <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
+                  <Form.Item label="合约名称" name="contract">
+                    <Input placeholder="请输入合约名称" style={{ width: 180 }} />
+                  </Form.Item>
+                  <Form.Item>
+                    <QueryResetButtons onReset={() => form.resetFields()} />
+                  </Form.Item>
+                </Form>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={[]}
+                  locale={{ emptyText: <Empty description="暂无数据" /> }}
+                  pagination={false}
+                  columns={[
+                    { title: '合约', dataIndex: 'contract' },
+                    { title: '平台资金费率', dataIndex: 'rate' },
+                    { title: '监控周期', dataIndex: 'period' },
+                    { title: '监控费率上限', dataIndex: 'upper' },
+                    { title: '监控费率下限', dataIndex: 'lower' },
+                    { title: '告警时间', dataIndex: 'time' },
+                    { title: '告警方式', dataIndex: 'channel' },
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            key: 'config',
+            label: '监控配置',
+            children: (
+              <>
+                <div style={{ textAlign: 'right', marginBottom: 12 }}>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>
+                    增加监控
+                  </Button>
+                </div>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={internalFundingConfigs}
+                  pagination={{ total: 2, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '合约名称', dataIndex: 'contract' },
+                    { title: '监控周期', dataIndex: 'period' },
+                    { title: '监控费率上限', dataIndex: 'upper' },
+                    { title: '监控费率下限', dataIndex: 'lower' },
+                    { title: '更新时间', dataIndex: 'updatedAt' },
+                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    {
+                      title: '状态',
+                      dataIndex: 'status',
+                      render: (s: string) =>
+                        s === '生效中' ? <StatusTag status={s} /> : <Tag>{s}</Tag>,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      render: (_: unknown, row: (typeof internalFundingConfigs)[0]) => (
+                        <Space>
+                          <Button type="link" size="small" danger={row.status === '生效中'}>
+                            {row.status === '生效中' ? '停用' : '启用'}
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
+              </>
+            ),
+          },
+        ]}
+      />
+      <Modal
+        title="新增 - 监控配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="c" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success('已新增内部资金费率监控')
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={addForm} layout="vertical">
+          <Form.Item label="合约名称" name="contract" rules={[{ required: true }]}>
+            <Select placeholder="请选择合约名称" options={symbolOptions} />
+          </Form.Item>
+          <Form.Item label="监控费率上限" name="upper">
+            <InputNumber style={{ width: '100%' }} addonAfter="%" placeholder="请输入监控费率上限" />
+          </Form.Item>
+          <Form.Item label="监控费率下限" name="lower">
+            <InputNumber style={{ width: '100%' }} addonAfter="%" placeholder="请输入监控费率下限" />
+          </Form.Item>
+          <Form.Item label="监控周期" required>
+            <Space.Compact style={{ width: '100%' }}>
+              <Form.Item name="period" noStyle rules={[{ required: true }]}>
+                <InputNumber style={{ width: '60%' }} placeholder="请输入监控周期" min={1} />
+              </Form.Item>
+              <Form.Item name="periodUnit" noStyle rules={[{ required: true }]}>
+                <Select style={{ width: '40%' }} options={periodUnitOptions} />
+              </Form.Item>
+            </Space.Compact>
+          </Form.Item>
+          <Form.Item
+            label="报警群"
+            name="webhook"
+            rules={[{ required: true }]}
+            extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
+          >
+            <Input.TextArea rows={3} placeholder="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </PageFrame>
+  )
+}
+
+export function RiskLargeLiqWarningPage() {
+  const [form] = Form.useForm()
+  const [addForm] = Form.useForm()
+  const [open, setOpen] = useState(false)
+  return (
+    <PageFrame title="大额爆仓预警">
+      <Tabs
+        items={[
+          {
+            key: 'records',
+            label: '告警记录',
+            children: (
+              <>
+                <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
+                  <Form.Item label="合约账户ID" name="accountId">
+                    <Input placeholder="请输入合约账户ID" style={{ width: 200 }} />
+                  </Form.Item>
+                  <Form.Item>
+                    <QueryResetButtons onReset={() => form.resetFields()} />
+                  </Form.Item>
+                </Form>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={[]}
+                  locale={{ emptyText: <Empty description="暂无数据" /> }}
+                  pagination={false}
+                  columns={[
+                    { title: '合约账户ID', dataIndex: 'accountId' },
+                    { title: '持仓信息', dataIndex: 'position' },
+                    { title: '仓位模式', dataIndex: 'mode' },
+                    { title: 'MMR', dataIndex: 'mmr' },
+                    { title: '告警时间', dataIndex: 'time' },
+                    { title: '告警方式', dataIndex: 'channel' },
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            key: 'config',
+            label: '监控配置',
+            children: (
+              <>
+                <div style={{ textAlign: 'right', marginBottom: 12 }}>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>
+                    增加监控
+                  </Button>
+                </div>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey="id"
+                  dataSource={largeLiqWarningConfigs}
+                  pagination={{ total: 1, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '爆仓预警仓位价值阈值 (USD)', dataIndex: 'valueThreshold' },
+                    { title: '爆仓预警MMR阈值', dataIndex: 'mmrThreshold' },
+                    { title: '更新时间', dataIndex: 'updatedAt' },
+                    { title: '更新人', dataIndex: 'updatedBy', ellipsis: true },
+                    {
+                      title: '状态',
+                      dataIndex: 'status',
+                      render: (s: string) => <StatusTag status={s} />,
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      render: () => (
+                        <Space>
+                          <Button type="link" danger size="small">
+                            停用
+                          </Button>
+                          <Button type="link" size="small">
+                            编辑
+                          </Button>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                />
+              </>
+            ),
+          },
+        ]}
+      />
+      <Modal
+        title="新增 - 监控配置"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={[
+          <Button key="c" onClick={() => setOpen(false)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => {
+              message.success('已新增大额爆仓预警配置')
+              setOpen(false)
+            }}
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <Form form={addForm} layout="vertical">
+          <Form.Item label="爆仓预警仓位价值阈值" name="valueThreshold" rules={[{ required: true }]}>
+            <InputNumber style={{ width: '100%' }} addonAfter="USD" min={0} />
+          </Form.Item>
+          <Form.Item label="爆仓预警MMR阈值" name="mmrThreshold" rules={[{ required: true }]}>
+            <InputNumber style={{ width: '100%' }} addonAfter="%" min={0} max={100} />
+          </Form.Item>
+          <Form.Item
+            label="预警群"
+            name="webhook"
+            rules={[{ required: true }]}
+            extra="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔"
+          >
+            <Input.TextArea rows={3} placeholder="填写 Lark 机器人 URL，多个 URL 使用英文逗号分隔" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </PageFrame>
+  )
+}
+
+export function RiskLargeLiqNotifyPage() {
+  const [form] = Form.useForm()
+  return (
+    <PageFrame title="大额爆仓后通知">
+      <Tabs
+        items={[
+          {
+            key: 'records',
+            label: '告警记录',
+            children: (
+              <>
+                <Form form={form} layout="inline" style={{ marginBottom: 16 }}>
+                  <Form.Item label="合约账户ID" name="accountId">
+                    <Input placeholder="请输入合约账户ID" style={{ width: 200 }} />
+                  </Form.Item>
+                  <Form.Item>
+                    <QueryResetButtons onReset={() => form.resetFields()} />
+                  </Form.Item>
+                </Form>
+                <Table
+                  size="small"
+                  bordered
+                  rowKey={(_, i) => String(i)}
+                  dataSource={largeLiqNotifyRecords}
+                  pagination={{ total: 5, showTotal: (t) => `共 ${t} 条记录`, pageSize: 20 }}
+                  columns={[
+                    { title: '合约账户ID', dataIndex: 'accountId' },
+                    { title: '持仓信息', dataIndex: 'position' },
+                    { title: '仓位模式', dataIndex: 'mode' },
+                    { title: '告警时间', dataIndex: 'time' },
+                    { title: '告警方式', dataIndex: 'channel' },
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            key: 'config',
+            label: '监控配置',
+            children: (
+              <>
+                <div style={{ textAlign: 'right', marginBottom: 12 }}>
                   <Button type="primary" icon={<PlusOutlined />}>
                     增加监控
                   </Button>
@@ -975,18 +1391,6 @@ export function RiskExternalFundingMonitorPage() {
       />
     </PageFrame>
   )
-}
-
-export function RiskInternalFundingMonitorPage() {
-  return <PlaceholderAlarmPage title="内部资金费率监控" />
-}
-
-export function RiskLargeLiqWarningPage() {
-  return <PlaceholderAlarmPage title="大额爆仓预警" />
-}
-
-export function RiskLargeLiqNotifyPage() {
-  return <PlaceholderAlarmPage title="大额爆仓后通知" />
 }
 
 export function RiskAdlAbnormalPage() {

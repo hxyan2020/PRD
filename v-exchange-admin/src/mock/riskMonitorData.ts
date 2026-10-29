@@ -100,6 +100,69 @@ export const externalFundingAlerts = [
   { contract: 'BTC_USD', rate: '0.0095%', period: '8h', peer: 'BINANCE', peerRate: '0.01%', peerPeriod: '8h', time: '2026-10-15 12:00:00', channel: 'Lark' },
 ]
 
+export const externalFundingConfigs = [
+  {
+    id: 1,
+    contract: 'XAU_USD',
+    peers: 'OKX, Bybit, Bitget, Binance',
+    threshold: '0.05%',
+    frequency: '5 min',
+    alarmGroup: 'alex.huang@hytechc.com, natalie.chen@hytechc.com',
+    status: '生效中',
+  },
+  {
+    id: 2,
+    contract: 'BTC_USD',
+    peers: 'OKX, Bybit, Bitget, Binance',
+    threshold: '0.05%',
+    frequency: '5 min',
+    alarmGroup: 'natalie.chen@hytechc.com',
+    status: '已停用',
+  },
+]
+
+export const internalFundingConfigs = [
+  {
+    id: 1,
+    contract: 'XAU_USD',
+    period: '10 分钟',
+    upper: '0.45%',
+    lower: '-0.45%',
+    updatedAt: '2024-09-22 13:37:03',
+    updatedBy: 'alex.huang@hytechc.com',
+    status: '生效中',
+  },
+  {
+    id: 2,
+    contract: 'BTC_USD',
+    period: '10 分钟',
+    upper: '0.25%',
+    lower: '-0.25%',
+    updatedAt: '2024-09-22 18:13:23',
+    updatedBy: 'natalie.chen@hytechc.com',
+    status: '已停用',
+  },
+]
+
+export const largeLiqWarningConfigs = [
+  {
+    id: 1,
+    valueThreshold: '100,000',
+    mmrThreshold: '95%',
+    updatedAt: '2024-09-22 13:37:59',
+    updatedBy: 'alex.huang@hytechc.com',
+    status: '生效中',
+  },
+]
+
+export const largeLiqNotifyRecords = [
+  { accountId: '1000000000014', position: 'XAU_USD-1张-LONG', mode: '逐仓', time: '2026-09-28 22:46:26', channel: 'Lark' },
+  { accountId: '1000000000018', position: 'XAU_USD-1张-LONG', mode: '逐仓', time: '2026-09-28 22:40:26', channel: 'Lark' },
+  { accountId: '1000000000025', position: 'XAU_USD-3张-LONG', mode: '逐仓', time: '2026-09-28 22:38:16', channel: 'Lark' },
+  { accountId: '1000000000017', position: 'XAU_USD-2张-LONG', mode: '逐仓', time: '2026-09-28 15:38:29', channel: 'Lark' },
+  { accountId: '1000000000014', position: 'XAU_USD-1张-LONG', mode: '逐仓', time: '2026-09-28 08:45:07', channel: 'Lark' },
+]
+
 export const peerExchangeOptions = ['OKX', 'Bybit', 'Bitget', 'Binance'].map((v) => ({ value: v, label: v }))
 
 export const riskFundList = [
