@@ -292,7 +292,7 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'adl-failure', label: 'ADL异常记录' },
     ],
   },
-  ,{
+  {
     key: 'parameter-recommendations',
     icon: <FileTextOutlined />,
     label: '推荐参数列表',
