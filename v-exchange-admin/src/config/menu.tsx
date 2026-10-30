@@ -69,6 +69,9 @@ export type PageKey =
   | 'risk-spread-alert'
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
+  | 'db-account-alert'
+  | 'db-takeover-account'
+  | 'db-takeover-fund-record'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -127,6 +130,9 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-spread-alert': 'Spread Alert',
   'risk-no-trade-monitor': 'No Trade Monitor',
   'risk-depth-monitor': 'Depth Monitor',
+  'db-account-alert': 'DB账户告警',
+  'db-takeover-account': 'DB接仓账户管理',
+  'db-takeover-fund-record': 'DB接仓账户资金流水',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -250,6 +256,16 @@ export const sideMenuItems: MenuProps['items'] = [
     ],
   },
   {
+    key: 'market-making',
+    icon: <DollarOutlined />,
+    label: '做市管理',
+    children: [
+      { key: 'db-takeover-account', label: 'DB接仓账户管理' },
+      { key: 'db-takeover-fund-record', label: 'DB接仓账户资金流水' },
+      { key: 'db-account-alert', label: 'DB账户告警' },
+    ],
+  },
+  {
     key: 'risk-monitor',
     icon: <WarningOutlined />,
     label: 'Risk Monitor',
@@ -283,4 +299,5 @@ export const defaultOpenKeys = [
   'api-mgmt',
   'tools-mgmt',
   'risk-monitor',
+  'market-making',
 ]
