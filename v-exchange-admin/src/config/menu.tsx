@@ -69,6 +69,7 @@ export type PageKey =
   | 'risk-spread-alert'
   | 'risk-no-trade-monitor'
   | 'risk-depth-monitor'
+  | 'large-liquidation-warning'
   | 'large-liquidation-notify'
   | 'adl-failure'
   | 'db-account-alert'
@@ -132,6 +133,7 @@ export const pageLabels: Record<PageKey, string> = {
   'risk-spread-alert': 'Spread Alert',
   'risk-no-trade-monitor': 'No Trade Monitor',
   'risk-depth-monitor': 'Depth Monitor',
+  'large-liquidation-warning': '大额爆仓预警',
   'large-liquidation-notify': '大额爆仓后通知',
   'adl-failure': 'ADL异常记录',
   'db-account-alert': 'DB账户告警',
@@ -283,6 +285,7 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'risk-spread-alert', label: 'Spread Alert' },
       { key: 'risk-no-trade-monitor', label: 'No Trade Monitor' },
       { key: 'risk-depth-monitor', label: 'Depth Monitor' },
+      { key: 'large-liquidation-warning', label: '大额爆仓预警' },
       { key: 'large-liquidation-notify', label: '大额爆仓后通知' },
       { key: 'adl-failure', label: 'ADL异常记录' },
     ],
