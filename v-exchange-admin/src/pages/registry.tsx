@@ -1,3 +1,4 @@
+import { ParameterRecommendationsPage } from './ParameterRecommendationsPage'
 import type { ReactElement } from 'react'
 import type { PageKey } from '../config/menu'
 import {
@@ -123,4 +124,5 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'db-account-alert': DbAccountAlertPage,
   'db-takeover-account': DbTakeoverAccountPage,
   'db-takeover-fund-record': DbTakeoverFundRecordPage,
+  'parameter-recommendations': ParameterRecommendationsPage,
 }
