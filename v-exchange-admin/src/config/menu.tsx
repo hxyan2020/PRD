@@ -75,6 +75,7 @@ export type PageKey =
   | 'db-account-alert'
   | 'db-takeover-account'
   | 'db-takeover-fund-record'
+  | 'parameter-recommendations'
 
 export const pageLabels: Record<PageKey, string> = {
   overview: 'Overview',
@@ -139,6 +140,7 @@ export const pageLabels: Record<PageKey, string> = {
   'db-account-alert': 'DB账户告警',
   'db-takeover-account': 'DB接仓账户管理',
   'db-takeover-fund-record': 'DB接仓账户资金流水',
+  'parameter-recommendations': '推荐参数列表',
 }
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -290,6 +292,11 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'adl-failure', label: 'ADL异常记录' },
     ],
   },
+  ,{
+    key: 'parameter-recommendations',
+    icon: <FileTextOutlined />,
+    label: '推荐参数列表',
+  }
 ]
 
 export function isPageKey(key: string): key is PageKey {
