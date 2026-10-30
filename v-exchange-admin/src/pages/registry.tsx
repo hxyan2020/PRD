@@ -30,6 +30,7 @@ import { IndexPricePage } from './IndexPricePage'
 import { KlineManagePage } from './KlineManagePage'
 import { MarketSourcePage } from './MarketSourcePage'
 import { OverviewPage } from './OverviewPage'
+import { RiskFundingFeeChangePage, RiskLiquidationSwitchPage } from './RiskControlsScreenshotPages'
 import { PlaceholderPage } from './PlaceholderPage'
 import { PositionListPage } from './PositionListPage'
 import { TradeAmountFactorPage } from './TradeAmountFactorPage'
@@ -105,8 +106,8 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'tools-close-position': ClosePositionPage,
   'tools-global-frequency': GlobalFrequencyPage,
   'tools-open-bottom-position': OpenBottomPositionPage,
-  'risk-funding-fee-change': underDev,
-  'risk-liquidation-switch': underDev,
+  'risk-funding-fee-change': RiskFundingFeeChangePage,
+  'risk-liquidation-switch': RiskLiquidationSwitchPage,
   'risk-market-price-limit': underDev,
   'risk-reserve-list': underDev,
   'risk-reserve-detail': underDev,
