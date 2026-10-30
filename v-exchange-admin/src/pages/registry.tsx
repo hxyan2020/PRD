@@ -1,3 +1,4 @@
+import { AdditionalRiskPage } from './AdditionalRiskPages'
 import { ParameterRecommendationsPage } from './ParameterRecommendationsPage'
 import type { ReactElement } from 'react'
 import type { PageKey } from '../config/menu'
@@ -34,7 +35,6 @@ import { OverviewPage } from './OverviewPage'
 import { RiskFundingFeeChangePage, RiskLiquidationSwitchPage } from './RiskControlsScreenshotPages'
 import { LargeLiquidationNotifyPage, LargeLiquidationWarningPage, AdlFailurePage } from './LiquidationScreenshotPages'
 import { DbAccountAlertPage, DbTakeoverAccountPage, DbTakeoverFundRecordPage } from './DbTakeoverScreenshotPages'
-import { PlaceholderPage } from './PlaceholderPage'
 import { PositionListPage } from './PositionListPage'
 import { TradeAmountFactorPage } from './TradeAmountFactorPage'
 import {
@@ -59,13 +59,12 @@ import {
   UserRiskSettingsPage,
 } from './user/UserPages'
 
-const underDev = () => <PlaceholderPage />
 
 export const pageComponents: Record<PageKey, () => ReactElement> = {
   overview: OverviewPage,
   'contract-list': ContractListPage,
   'coin-introduce': CoinIntroducePage,
-  'funding-fee-list': () => <PlaceholderPage message="Funding Fee List" />,
+  'funding-fee-list': () => <AdditionalRiskPage page="funding-fee-list" />,
   'kline-manage': KlineManagePage,
   'trade-amount-factor': TradeAmountFactorPage,
   'admin-adl': AdminAdlPage,
@@ -111,13 +110,13 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'tools-open-bottom-position': OpenBottomPositionPage,
   'risk-funding-fee-change': RiskFundingFeeChangePage,
   'risk-liquidation-switch': RiskLiquidationSwitchPage,
-  'risk-market-price-limit': underDev,
-  'risk-reserve-list': underDev,
-  'risk-reserve-detail': underDev,
-  'risk-trading-restriction': underDev,
-  'risk-spread-alert': underDev,
-  'risk-no-trade-monitor': underDev,
-  'risk-depth-monitor': underDev,
+  'risk-market-price-limit': () => <AdditionalRiskPage page="market-price-limit" />,
+  'risk-reserve-list': () => <AdditionalRiskPage page="reserve-list" />,
+  'risk-reserve-detail': () => <AdditionalRiskPage page="reserve-detail" />,
+  'risk-trading-restriction': () => <AdditionalRiskPage page="trading-restriction" />,
+  'risk-spread-alert': () => <AdditionalRiskPage page="spread-alert" />,
+  'risk-no-trade-monitor': () => <AdditionalRiskPage page="no-trade-monitor" />,
+  'risk-depth-monitor': () => <AdditionalRiskPage page="depth-monitor" />,
   'large-liquidation-warning': LargeLiquidationWarningPage,
   'large-liquidation-notify': LargeLiquidationNotifyPage,
   'adl-failure': AdlFailurePage,
