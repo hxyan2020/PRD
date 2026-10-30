@@ -41,3 +41,18 @@ export function LargeLiquidationNotifyPage(){
 export function AdlFailurePage(){
  return <PageFrame title="ADL异常记录"><Tabs items={[{key:'record',label:'告警记录',children:<Alerts adl/>},{key:'config',label:'监控配置',children:<RuleManager adl/>}]} /></PageFrame>
 }
+
+export function LargeLiquidationWarningPage(){
+ const [rows,setRows]=useState<Rule[]>([{key:'1',value:'300000',group:'',enabled:true,updated:'2026-09-22 15:24:43',operator:'DEMO'},{key:'2',value:'500000',group:'',enabled:true,updated:'2026-09-22 15:24:55',operator:'DEMO'}])
+ const [open,setOpen]=useState(false)
+ const [form]=Form.useForm()
+ return <PageFrame title="大额爆仓预警">
+  <Tabs items={[{key:'records',label:'告警记录',children:<Alerts/>},{key:'settings',label:'监控配置',children:<>
+   <Button type="primary" style={{float:'right',marginBottom:12}} onClick={()=>setOpen(true)}>＋ 增加监控</Button>
+   <Table rowKey="key" size="small" dataSource={rows} columns={[{title:'仓位价值阈值（USD）',dataIndex:'value'},{title:'更新时间',dataIndex:'updated'},{title:'更新人',dataIndex:'operator'},{title:'状态',render:(_,x:Rule)=>x.enabled?<Tag color="success">生效中</Tag>:<Tag>已停用</Tag>},{title:'操作',render:(_,x:Rule)=><Button type="link" onClick={()=>setRows(v=>v.map(y=>y.key===x.key?{...y,enabled:!y.enabled}:y))}>{x.enabled?'停用':'启用'}</Button>}]} />
+   </>}]} defaultActiveKey="settings"/>
+  <Modal title="新增 — 监控配置" open={open} onCancel={()=>setOpen(false)} onOk={async()=>{try{const v=await form.validateFields();setRows(x=>[...x,{key:String(Date.now()),value:String(v.value),group:v.group,enabled:true,updated:'演示数据',operator:'DEMO'}]);setOpen(false);form.resetFields();message.info('演示数据，未修改生产系统')}catch{}}}>
+   <Form form={form} layout="vertical"><Form.Item name="value" label="仓位价值阈值（USD）" rules={[{required:true}]}><Input type="number"/></Form.Item><Form.Item name="group" label="预警群" rules={[{required:true}]}><Input.TextArea placeholder="Lark 机器人 URL"/></Form.Item></Form>
+  </Modal>
+ </PageFrame>
+}
