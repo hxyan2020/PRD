@@ -1,0 +1,51 @@
+name: Deploy V Exchange Admin
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v-exchange-admin/**'
+      - '.github/workflows/deploy-v-exchange-admin.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-v-exchange-admin
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: v-exchange-admin/package-lock.json
+
+      - name: Install and build
+        working-directory: v-exchange-admin
+        run: |
+          npm ci
+          npm run build:pages
+          cp dist/index.html dist/404.html
+
+      # Publish MatchingManagement at /PRD/ root WITHOUT wiping sibling sites
+      # (crmp-admin/, risk-discovery/, venture-scan/, …). Never use force_orphan here.
+      - name: Stage at Pages root (keep sibling sites)
+        run: |
+          mkdir -p publish
+          cp -a v-exchange-admin/dist/. publish/
+          touch publish/.nojekyll
+
+      - name: Publish to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: publish
+          publish_branch: gh-pages
+          keep_files: true
