@@ -31,6 +31,7 @@ import { KlineManagePage } from './KlineManagePage'
 import { MarketSourcePage } from './MarketSourcePage'
 import { OverviewPage } from './OverviewPage'
 import { RiskFundingFeeChangePage, RiskLiquidationSwitchPage } from './RiskControlsScreenshotPages'
+import { LargeLiquidationNotifyPage, AdlFailurePage } from './LiquidationScreenshotPages'
 import { DbAccountAlertPage, DbTakeoverAccountPage, DbTakeoverFundRecordPage } from './DbTakeoverScreenshotPages'
 import { PlaceholderPage } from './PlaceholderPage'
 import { PositionListPage } from './PositionListPage'
@@ -116,6 +117,8 @@ export const pageComponents: Record<PageKey, () => ReactElement> = {
   'risk-spread-alert': underDev,
   'risk-no-trade-monitor': underDev,
   'risk-depth-monitor': underDev,
+  'large-liquidation-notify': LargeLiquidationNotifyPage,
+  'adl-failure': AdlFailurePage,
   'db-account-alert': DbAccountAlertPage,
   'db-takeover-account': DbTakeoverAccountPage,
   'db-takeover-fund-record': DbTakeoverFundRecordPage,
