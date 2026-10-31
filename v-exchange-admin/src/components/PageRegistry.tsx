@@ -12,6 +12,7 @@ import { FundingRateModifyPage } from '../pages/FundingRateModifyPage';
 import { FundingRatePage } from '../pages/FundingRatePage';
 import { IndexMarketLinkPage } from '../pages/IndexMarketLinkPage';
 import { IndexPricePage } from '../pages/IndexPricePage';
+import { InternalFundingRateMonitorPage } from '../pages/InternalFundingRateMonitorPage';
 import { KLineManagePage } from '../pages/KLineManagePage';
 import { MarketSourcePage } from '../pages/MarketSourcePage';
 import { MarketTradeLimitPage } from '../pages/MarketTradeLimitPage';
@@ -71,6 +72,8 @@ export function renderPage(key: PageKey) {
       return <CompetitorSpreadMonitorPage />;
     case 'external-funding-rate-monitor':
       return <ExternalFundingRateMonitorPage />;
+    case 'internal-funding-rate-monitor':
+      return <InternalFundingRateMonitorPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
