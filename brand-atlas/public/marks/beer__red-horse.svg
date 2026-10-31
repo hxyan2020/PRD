@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="RED HORSE">
-  <text x="80" y="40" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" letter-spacing="0.08em" fill="#FFFFFF">RED HORSE</text>
+<!-- Generator: Adobe Illustrator 27.8.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Lag_1" x="0px" y="0px" viewBox="0 0 340.4 227.4" style="enable-background:new 0 0 340.4 227.4;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#B20E10;}
+</style>
+<path class="st0" d="M4.56,0C2.05,0,0,2.07,0,4.57v218.24c0,2.57,2.05,4.59,4.56,4.59h88.26c2.52,0,4.56-2.02,4.56-4.59V52.72h65.47  c39.33,0,42.53,8.3,42.53,18.37v17.37c0,11-3.13,19.39-42.53,19.39h-38.71c-1.21,0-2.37,0.45-3.22,1.32  c-0.85,0.86-1.33,2.02-1.33,3.21v23.76c0,1.43,0.64,2.75,1.73,3.61l106.98,86.69c0.8,0.59,1.79,0.95,2.81,0.95h104.75  c1.92,0,3.65-1.23,4.29-3.07c0.17-0.5,0.26-1.02,0.26-1.52c0-1.32-0.62-2.64-1.73-3.55c0,0-75.7-59.7-87.73-69.18  c34.69-10.16,51.79-28.69,51.79-56.7V66.5c0-45.97-41.68-66.5-135.16-66.5H4.56z"></path>
 </svg>

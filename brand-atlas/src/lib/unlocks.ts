@@ -1,27 +1,50 @@
-const STORAGE_KEY = "seen.unlocks.v1";
+import { getSession } from "./auth";
+
+const LEGACY_KEY = "seen.unlocks.v1";
 
 export interface UnlockRecord {
   itemId: string;
   unlockedAt: string;
-  method: "scan" | "manual" | "contribute";
+  method: "scan" | "manual" | "contribute" | "detail";
   /** Data URL of the user's uploaded sighting photo */
   photoDataUrl?: string | null;
   /** Freeform field note */
   note?: string;
   /** Stable share id for permanent link */
   shareId: string;
+  /** Account email that recorded this unlock (when logged in). */
+  unlockedBy?: string;
+}
+
+function storageKey(): string {
+  const session = getSession();
+  if (!session?.email) return LEGACY_KEY;
+  return `${LEGACY_KEY}:${session.email}`;
 }
 
 function readAll(): Record<string, UnlockRecord> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const key = storageKey();
+    let raw = localStorage.getItem(key);
+    // First login: adopt legacy guest unlocks so prior progress isn’t lost.
+    if (!raw && key !== LEGACY_KEY) {
+      const legacy = localStorage.getItem(LEGACY_KEY);
+      if (legacy) {
+        localStorage.setItem(key, legacy);
+        raw = legacy;
+      }
+    }
     if (!raw) return {};
     const parsed = JSON.parse(raw) as Record<string, UnlockRecord>;
-    // migrate older records missing shareId
     let dirty = false;
+    const email = getSession()?.email;
     for (const [id, rec] of Object.entries(parsed)) {
       if (!rec.shareId) {
         rec.shareId = makeShareId(id);
+        dirty = true;
+      }
+      if (email && !rec.unlockedBy) {
+        rec.unlockedBy = email;
         dirty = true;
       }
     }
@@ -32,8 +55,42 @@ function readAll(): Record<string, UnlockRecord> {
   }
 }
 
+function isQuotaError(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as { name?: string; code?: number };
+  return e.name === "QuotaExceededError" || e.name === "NS_ERROR_DOM_QUOTA_REACHED" || e.code === 22;
+}
+
 function writeAll(map: Record<string, UnlockRecord>) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+  localStorage.setItem(storageKey(), JSON.stringify(map));
+}
+
+/** Persist unlocks; if storage is full, drop sighting photos oldest-first then retry. */
+function writeAllResilient(map: Record<string, UnlockRecord>): void {
+  try {
+    writeAll(map);
+    return;
+  } catch (err) {
+    if (!isQuotaError(err)) throw err;
+  }
+
+  const withPhotos = Object.values(map)
+    .filter((r) => r.photoDataUrl)
+    .sort((a, b) => a.unlockedAt.localeCompare(b.unlockedAt));
+
+  for (const rec of withPhotos) {
+    rec.photoDataUrl = null;
+    try {
+      writeAll(map);
+      window.dispatchEvent(new CustomEvent("seen:unlocks"));
+      return;
+    } catch (err) {
+      if (!isQuotaError(err)) throw err;
+    }
+  }
+
+  // Last resort: write without any photos (already stripped) still failed — rethrow.
+  writeAll(map);
 }
 
 function makeShareId(itemId: string): string {
@@ -73,6 +130,7 @@ export function unlockItem(
   } = {},
 ): UnlockRecord {
   const map = readAll();
+  const email = getSession()?.email;
   if (map[itemId]) {
     let dirty = false;
     if (opts.photoDataUrl) {
@@ -83,8 +141,18 @@ export function unlockItem(
       map[itemId].note = opts.note;
       dirty = true;
     }
+    if (email && map[itemId].unlockedBy !== email) {
+      map[itemId].unlockedBy = email;
+      dirty = true;
+    }
     if (dirty) {
-      writeAll(map);
+      try {
+        writeAllResilient(map);
+      } catch {
+        // Photo too large even after stripping others — keep unlock, drop new photo.
+        map[itemId].photoDataUrl = undefined;
+        writeAllResilient(map);
+      }
       window.dispatchEvent(new CustomEvent("seen:unlocks"));
     }
     return map[itemId];
@@ -96,9 +164,15 @@ export function unlockItem(
     photoDataUrl: opts.photoDataUrl ?? null,
     note: opts.note ?? "",
     shareId: makeShareId(itemId),
+    unlockedBy: email,
   };
   map[itemId] = rec;
-  writeAll(map);
+  try {
+    writeAllResilient(map);
+  } catch {
+    rec.photoDataUrl = null;
+    writeAllResilient(map);
+  }
   window.dispatchEvent(new CustomEvent("seen:unlocks"));
   return rec;
 }
@@ -107,7 +181,7 @@ export function updateUnlockNote(itemId: string, note: string): UnlockRecord | n
   const map = readAll();
   if (!map[itemId]) return null;
   map[itemId].note = note;
-  writeAll(map);
+  writeAllResilient(map);
   window.dispatchEvent(new CustomEvent("seen:unlocks"));
   return map[itemId];
 }
@@ -119,7 +193,12 @@ export function updateUnlockPhoto(
   const map = readAll();
   if (!map[itemId]) return null;
   map[itemId].photoDataUrl = photoDataUrl;
-  writeAll(map);
+  try {
+    writeAllResilient(map);
+  } catch {
+    map[itemId].photoDataUrl = null;
+    writeAllResilient(map);
+  }
   window.dispatchEvent(new CustomEvent("seen:unlocks"));
   return map[itemId];
 }
@@ -140,9 +219,11 @@ export function permanentLink(shareId: string): string {
 export function subscribeUnlocks(cb: () => void): () => void {
   const handler = () => cb();
   window.addEventListener("seen:unlocks", handler);
+  window.addEventListener("seen:auth", handler);
   window.addEventListener("storage", handler);
   return () => {
     window.removeEventListener("seen:unlocks", handler);
+    window.removeEventListener("seen:auth", handler);
     window.removeEventListener("storage", handler);
   };
 }
