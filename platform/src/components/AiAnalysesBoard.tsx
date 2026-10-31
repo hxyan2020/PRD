@@ -55,16 +55,22 @@ export function AiAnalysesBoard({
     }
     const detailId = data.analysis?.id;
     const pct = Math.round((data.analysis?.confidence || 0) * 100);
+    const llmBit =
+      data.llm?.source || data.llm_enabled === false
+        ? ` · LLM ${String(data.llm?.source || (data.llm_enabled ? "ready" : "off"))}`
+        : data.llm_runs
+          ? ` · LLM runs ${Array.isArray(data.llm_runs) ? data.llm_runs.length : ""}`
+          : "";
     setMsg(
       action === "analyze_open"
-        ? t("ai.ensured", { n: data.count })
+        ? `${t("ai.ensured", { n: data.count })}${llmBit}`
         : action === "simulate_alarm"
           ? `${t("ai.alarmRaised", { id: data.analysis?.analysis_id, mode: data.analysis?.mode, pct })}${
               data.challenge ? ` · ${t("ai.challenged", { verdict: data.challenge.verdict })}` : ""
-            }`
+            }${llmBit}`
           : action === "backfill_challenges"
             ? t("ai.backfilled", { n: data.count })
-            : t("ai.done")
+            : `${t("ai.done")}${llmBit}`
     );
     router.refresh();
     if (action === "simulate_alarm") {

@@ -345,8 +345,11 @@ async function updateIndicatorAndMaybeAlarm(highImpactCount: number, topFindingT
   });
   const analysisRow = bundle.analysis as { id?: number } | null | undefined;
   if (analysisRow?.id) {
-    const { maybeEnrichAnalysisWithLlm } = await import("@/lib/ai/llm-enrich");
+    const { maybeEnrichAnalysisWithLlm, maybeEnrichChallengeWithLlm } = await import(
+      "@/lib/ai/llm-enrich"
+    );
     await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+    await maybeEnrichChallengeWithLlm(Number(analysisRow.id));
   }
 }
 

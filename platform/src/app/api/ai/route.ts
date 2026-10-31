@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { analyzeAlert, analyzeOpenAlerts, createAlarmAndAnalyze, getAnalysisBundle } from "@/lib/ai/analyze";
-import { maybeEnrichAnalysisWithLlm } from "@/lib/ai/llm-enrich";
+import { maybeEnrichAnalysisWithLlm, maybeEnrichChallengeWithLlm } from "@/lib/ai/llm-enrich";
 import { backfillChallenges } from "@/lib/ai/challenger";
 import { runDummyAlertDemo } from "@/lib/ai/dummy-spine";
 import { getUiLocale } from "@/lib/i18n-server";
@@ -55,14 +55,18 @@ export async function POST(req: Request) {
       enriched: false,
       source: "SKIPPED",
     };
+    let challengeLlm: Awaited<ReturnType<typeof maybeEnrichChallengeWithLlm>> | null = null;
     if (analysisRow?.id) {
       llm = await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+      challengeLlm = await maybeEnrichChallengeWithLlm(Number(analysisRow.id));
     }
     const refreshed = analysisRow?.id ? getAnalysisBundle(Number(analysisRow.id)) : bundle;
     return NextResponse.json({
       ok: true,
       ...refreshed,
       llm,
+      challenge_llm: challengeLlm,
+      thinking_steps: [...(llm.thinking_steps || []), ...(challengeLlm?.thinking_steps || [])],
       llm_available: openaiKeyConfigured(),
       llm_enabled: llmEnrichmentEnabled(),
     });
@@ -74,6 +78,7 @@ export async function POST(req: Request) {
     const llmRuns = [];
     for (const r of created.slice(0, 8)) {
       llmRuns.push(await maybeEnrichAnalysisWithLlm(r.analysis_db_id));
+      llmRuns.push(await maybeEnrichChallengeWithLlm(r.analysis_db_id));
     }
     return NextResponse.json({
       ok: true,
@@ -108,8 +113,11 @@ export async function POST(req: Request) {
           }
         | null
         | undefined;
+      let llmSim: Awaited<ReturnType<typeof maybeEnrichAnalysisWithLlm>> | null = null;
+      let challengeLlmSim: Awaited<ReturnType<typeof maybeEnrichChallengeWithLlm>> | null = null;
       if (analysisRow?.id) {
-        await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+        llmSim = await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+        challengeLlmSim = await maybeEnrichChallengeWithLlm(Number(analysisRow.id));
       }
       const refreshed = analysisRow?.id
         ? getAnalysisBundle(Number(analysisRow.id))
@@ -158,6 +166,9 @@ export async function POST(req: Request) {
               item_count: Array.isArray(improvement.items) ? improvement.items.length : 0,
             }
           : null,
+        llm: llmSim,
+        challenge_llm: challengeLlmSim,
+        thinking_steps: [...(llmSim?.thinking_steps || []), ...(challengeLlmSim?.thinking_steps || [])],
         llm_available: openaiKeyConfigured(),
         llm_enabled: llmEnrichmentEnabled(),
       });

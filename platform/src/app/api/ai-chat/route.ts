@@ -65,7 +65,12 @@ export async function POST(req: Request) {
   const result = {
     ...heuristic,
     reply: llm.reply,
-    llm: { used: llm.used_llm, model: llm.model ?? null },
+    llm: {
+      used: llm.used_llm,
+      model: llm.model ?? null,
+      thinking_steps: llm.thinking_steps || [],
+    },
+    thinking_steps: llm.thinking_steps || [],
   };
 
   try {

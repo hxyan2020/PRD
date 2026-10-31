@@ -165,11 +165,174 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
   }
 }
 
-/** Enrich up to `limit` analyses created by detectors / dummy / batch paths. */
+/**
+ * Second-line challenger LLM rewrite — only when a challenge row already exists
+ * (heuristic challenger ran for BREACH/CRITICAL). Records thinking on evidence.
+ */
+export async function maybeEnrichChallengeWithLlm(analysisDbId: number): Promise<LlmEnrichResult> {
+  const thinkId = `CHL-LLM-${randomBytes(3).toString("hex").toUpperCase()}`;
+  if (!llmEnrichmentEnabled()) {
+    return {
+      enriched: false,
+      source: "SKIPPED",
+      thinking_steps: [`${thinkId}: challenger LLM skipped (no key / CRMP_AI_LLM=off)`],
+    };
+  }
+  const db = getDb();
+  const challenge = db
+    .prepare(`SELECT * FROM ai_analysis_challenges WHERE analysis_id = ?`)
+    .get(analysisDbId) as
+    | {
+        id: number;
+        challenge_id: string;
+        model_name: string;
+        verdict: string;
+        confidence: number;
+        summary: string;
+        critique_json: string;
+        improvements_json: string;
+        alternatives_json: string;
+      }
+    | undefined;
+  if (!challenge) {
+    return {
+      enriched: false,
+      source: "SKIPPED",
+      thinking_steps: [`${thinkId}: no challenger row (severity below second-opinion threshold)`],
+    };
+  }
+
+  const primary = db
+    .prepare(
+      `SELECT a.analysis_id, a.mode, a.summary, a.explanations_json, m.alert_id, i.monitor_id
+       FROM ai_analyses a
+       JOIN monitor_alerts m ON m.id = a.alert_id
+       JOIN monitor_indicators i ON i.id = m.indicator_id
+       WHERE a.id = ?`
+    )
+    .get(analysisDbId) as
+    | {
+        analysis_id: string;
+        mode: string;
+        summary: string;
+        explanations_json: string;
+        alert_id: string;
+        monitor_id: string;
+      }
+    | undefined;
+  if (!primary) {
+    return { enriched: false, source: "SKIPPED", error: "analysis not found", thinking_steps: [`${thinkId}: analysis missing`] };
+  }
+
+  const thinking_steps = [
+    `${thinkId} @ ${new Date().toISOString()}: load heuristic challenger ${challenge.challenge_id} (${challenge.verdict})`,
+    `Cross-check primary ${primary.analysis_id} (${primary.mode}) on ${primary.monitor_id}`,
+    `Call OpenAI (${defaultOpenAiModel()}) for independent second-line reasoning`,
+  ];
+
+  const result = await chatCompletionJson({
+    system: `You are an independent second-line AI risk challenger for a CFD broker (CRMP).
+Return JSON only: { "verdict": "AGREE"|"PARTIAL"|"DISAGREE", "confidence": number, "summary": string, "thinking_steps": string[], "critiques": [ { "point": string, "severity": "INFO"|"WARN"|"CRITICAL" } ], "improvements": [ { "area": string, "recommendation": string, "priority": "HIGH"|"MEDIUM"|"LOW" } ], "alternative_hypotheses": [ { "hypothesis": string, "rationale": string, "confidence": number } ] }.
+Challenge correlation vs causation. Prefer ${FOREX_INCIDENT_1028.incident_id} narrative only when evidence supports it.`,
+    user: JSON.stringify({
+      think_id: thinkId,
+      primary,
+      heuristic_challenge: {
+        verdict: challenge.verdict,
+        summary: challenge.summary,
+        critiques: JSON.parse(challenge.critique_json || "[]"),
+        improvements: JSON.parse(challenge.improvements_json || "[]"),
+        alternatives: JSON.parse(challenge.alternatives_json || "[]"),
+      },
+    }).slice(0, 12000),
+    max_tokens: 1400,
+  });
+
+  if (!result.ok) {
+    thinking_steps.push(`OpenAI failed → keep heuristic challenger (${result.error})`);
+    db.prepare(
+      `INSERT INTO ai_analysis_evidence (analysis_id, evidence_type, ref_id, title, excerpt, url, score)
+       VALUES (?, 'LLM', ?, ?, ?, NULL, 0.2)`
+    ).run(analysisDbId, result.model || "none", `Challenger LLM skipped (${thinkId})`, thinking_steps.join(" → "));
+    return { enriched: false, source: "HEURISTIC", error: result.error, thinking_steps, model: result.model };
+  }
+
+  try {
+    const parsed = JSON.parse(result.content) as {
+      verdict?: string;
+      confidence?: number;
+      summary?: string;
+      thinking_steps?: string[];
+      critiques?: unknown[];
+      improvements?: unknown[];
+      alternative_hypotheses?: unknown[];
+    };
+    const verdictRaw = String(parsed.verdict || challenge.verdict).toUpperCase();
+    const verdict = ["AGREE", "PARTIAL", "DISAGREE"].includes(verdictRaw) ? verdictRaw : challenge.verdict;
+    const summary = String(parsed.summary || challenge.summary);
+    const confidence = Math.min(0.95, Math.max(0.1, Number(parsed.confidence) || challenge.confidence));
+    const critiques = Array.isArray(parsed.critiques) ? parsed.critiques : JSON.parse(challenge.critique_json || "[]");
+    const improvements = Array.isArray(parsed.improvements)
+      ? parsed.improvements
+      : JSON.parse(challenge.improvements_json || "[]");
+    const alternatives = Array.isArray(parsed.alternative_hypotheses)
+      ? parsed.alternative_hypotheses
+      : JSON.parse(challenge.alternatives_json || "[]");
+    const llmSteps = Array.isArray(parsed.thinking_steps)
+      ? parsed.thinking_steps.map(String).filter(Boolean)
+      : [];
+    const allSteps = [...thinking_steps, ...llmSteps, `OpenAI challenger ok in ${result.latency_ms}ms`];
+    const modelName = `${result.model}+challenger`;
+
+    db.prepare(
+      `UPDATE ai_analysis_challenges
+       SET model_name = ?, verdict = ?, confidence = ?, summary = ?,
+           critique_json = ?, improvements_json = ?, alternatives_json = ?,
+           created_at = datetime('now')
+       WHERE analysis_id = ?`
+    ).run(
+      modelName,
+      verdict,
+      confidence,
+      summary,
+      JSON.stringify(critiques),
+      JSON.stringify(improvements),
+      JSON.stringify(alternatives),
+      analysisDbId
+    );
+    db.prepare(`UPDATE ai_analyses SET challenged = 1, challenge_verdict = ? WHERE id = ?`).run(verdict, analysisDbId);
+    if (verdict !== "AGREE") {
+      db.prepare(`UPDATE ai_analyses SET needs_human = 1 WHERE id = ?`).run(analysisDbId);
+    }
+    db.prepare(
+      `INSERT INTO ai_analysis_evidence (analysis_id, evidence_type, ref_id, title, excerpt, url, score)
+       VALUES (?, 'LLM', ?, ?, ?, NULL, 0.92)`
+    ).run(
+      analysisDbId,
+      result.model,
+      `Challenger OpenAI (${result.model}) · ${thinkId}`,
+      `verdict=${verdict}; thinking=${allSteps.slice(0, 6).join(" | ")}`
+    );
+    return { enriched: true, source: "OPENAI_API", thinking_steps: allSteps, model: result.model };
+  } catch (err) {
+    return {
+      enriched: false,
+      source: "HEURISTIC",
+      error: err instanceof Error ? err.message : "parse failed",
+      thinking_steps: [...thinking_steps, "challenger parse failed → heuristic retained"],
+    };
+  }
+}
+
+/** Enrich primary RCA (+ challenger when present) for up to `limit` analyses. */
 export async function enrichAnalysesWithLlm(analysisDbIds: number[], limit = 8): Promise<LlmEnrichResult[]> {
   const out: LlmEnrichResult[] = [];
   for (const id of analysisDbIds.filter(Boolean).slice(0, limit)) {
     out.push(await maybeEnrichAnalysisWithLlm(id));
+    const ch = await maybeEnrichChallengeWithLlm(id);
+    if (ch.source !== "SKIPPED" || (ch.thinking_steps && ch.thinking_steps.length > 1)) {
+      out.push(ch);
+    }
   }
   return out;
 }
@@ -181,11 +344,20 @@ export async function maybeAnswerDeskChatWithLlm(input: {
   locale: "en" | "zh-Hant";
   heuristicReply: string;
   sources: Array<{ title: string; href?: string }>;
-}): Promise<{ reply: string; used_llm: boolean; model?: string | null }> {
+}): Promise<{ reply: string; used_llm: boolean; model?: string | null; thinking_steps?: string[] }> {
+  const thinkId = `CHAT-${randomBytes(3).toString("hex").toUpperCase()}`;
   if (!llmEnrichmentEnabled()) {
-    return { reply: input.heuristicReply, used_llm: false };
+    return {
+      reply: input.heuristicReply,
+      used_llm: false,
+      thinking_steps: [`${thinkId}: heuristic only (OPENAI_API_KEY missing or CRMP_AI_LLM=off)`],
+    };
   }
   const zh = input.locale === "zh-Hant";
+  const thinking_steps = [
+    `${thinkId} @ ${new Date().toISOString()}: ground on desk heuristic + RAG sources`,
+    `Call OpenAI (${defaultOpenAiModel()}) for rewrite — fresh each turn`,
+  ];
   const result = await chatCompletionText({
     system: zh
       ? `你是 Vantage CRMP 管理後台的值班助理。只用提供的 CRMP 脈絡回答，不可捏造正式交易系統結果。繁體中文作答。提及外匯示範時優先使用 ${FOREX_INCIDENT_1028.incident_id}（${FOREX_INCIDENT_1028.lp}·${FOREX_INCIDENT_1028.symbol}）。`
@@ -196,6 +368,7 @@ export async function maybeAnswerDeskChatWithLlm(input: {
       question: input.question.slice(0, 1200),
       grounded_reply: input.heuristicReply.slice(0, 4000),
       sources: input.sources.slice(0, 8),
+      think_id: thinkId,
       forex_demo: {
         id: FOREX_INCIDENT_1028.incident_id,
         monitors: FOREX_INCIDENT_1028.monitors,
@@ -204,6 +377,18 @@ export async function maybeAnswerDeskChatWithLlm(input: {
     }),
     max_tokens: 700,
   });
-  if (!result.ok) return { reply: input.heuristicReply, used_llm: false, model: result.model };
-  return { reply: result.content.trim(), used_llm: true, model: result.model };
+  if (!result.ok) {
+    return {
+      reply: input.heuristicReply,
+      used_llm: false,
+      model: result.model,
+      thinking_steps: [...thinking_steps, `OpenAI failed → heuristic (${result.error})`],
+    };
+  }
+  return {
+    reply: result.content.trim(),
+    used_llm: true,
+    model: result.model,
+    thinking_steps: [...thinking_steps, `OpenAI ok in ${result.latency_ms}ms (${result.model})`],
+  };
 }

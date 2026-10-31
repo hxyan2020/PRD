@@ -153,16 +153,19 @@ async function walkOne(tpl: DummyTemplate, locale: UiLocale): Promise<DummySpine
     | undefined
     | null;
   if (analysis?.id) {
-    const { maybeEnrichAnalysisWithLlm } = await import("@/lib/ai/llm-enrich");
+    const { maybeEnrichAnalysisWithLlm, maybeEnrichChallengeWithLlm } = await import(
+      "@/lib/ai/llm-enrich"
+    );
     const llm = await maybeEnrichAnalysisWithLlm(analysis.id);
-    if (llm.enriched) {
+    const challengeLlm = await maybeEnrichChallengeWithLlm(analysis.id);
+    if (llm.enriched || challengeLlm.enriched || llm.source !== "SKIPPED") {
       const refreshed = analyzeAlert(raised.alert_db_id, { force: false });
       analysis =
         (refreshed?.analysis as { id: number; analysis_id: string; mode: string } | undefined | null) ||
         analysis;
       logSpineEvent({
         stage: "AI_RCA",
-        title: `DUMMY LLM enrich ${analysis.analysis_id} (${llm.source})`,
+        title: `DUMMY LLM enrich ${analysis.analysis_id} (${llm.source}/${challengeLlm.source})`,
         product: raised.product,
         ref_type: "ai_analysis",
         ref_id: analysis.analysis_id,
@@ -170,8 +173,12 @@ async function walkOne(tpl: DummyTemplate, locale: UiLocale): Promise<DummySpine
         detail: {
           dummy: true,
           llm_source: llm.source,
-          thinking_steps: llm.thinking_steps?.slice(0, 6),
-          model: llm.model ?? null,
+          challenge_llm_source: challengeLlm.source,
+          thinking_steps: [...(llm.thinking_steps || []), ...(challengeLlm.thinking_steps || [])].slice(
+            0,
+            8
+          ),
+          model: llm.model ?? challengeLlm.model ?? null,
         },
         actor: "home-dummy",
       });
