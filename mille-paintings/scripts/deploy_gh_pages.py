@@ -38,7 +38,18 @@ def main() -> None:
     shutil.copytree(DIST, dest)
     (worktree / ".nojekyll").write_text("", encoding="utf-8")
 
-    run(["git", "add", TARGET, ".nojekyll"], cwd=worktree)
+    # Root 404.html used relative ./fate-atlas/, which under /mille/ loops as
+    # /mille/fate-atlas/fate-atlas/... Absolute path keeps other apps reachable.
+    not_found = worktree / "404.html"
+    if not_found.exists():
+        text = not_found.read_text(encoding="utf-8")
+        if "./fate-atlas/" in text:
+            not_found.write_text(
+                text.replace("./fate-atlas/", "/PRD/fate-atlas/"),
+                encoding="utf-8",
+            )
+
+    run(["git", "add", TARGET, ".nojekyll", "404.html"], cwd=worktree)
     status = subprocess.check_output(["git", "status", "--porcelain"], cwd=worktree, text=True).strip()
     if not status:
         print("No changes to deploy.")
