@@ -1,0 +1,81 @@
+name: Deploy Fatum Atlas
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref that contains fate-atlas (branch or SHA)'
+        required: true
+        default: 'cursor/choice-btn-contrast-3d44'
+  push:
+    branches:
+      - cursor/pages-root-fate-3d44
+      - cursor/choice-btn-contrast-3d44
+      - cursor/fate-telling-atlas-3d44
+    paths:
+      - 'fate-atlas/**'
+      - 'pages-root/**'
+      - '.github/workflows/deploy-fate-atlas.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-fate-atlas
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Fatum Atlas sources
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - name: Prepare publish dirs
+        run: |
+          test -f fate-atlas/index.html
+          touch fate-atlas/.nojekyll
+          mkdir -p /tmp/pages-root
+          if [ -f pages-root/index.html ]; then
+            cp pages-root/index.html /tmp/pages-root/index.html
+          else
+            cat > /tmp/pages-root/index.html <<'EOF'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Fatum Atlas</title>
+              <link rel="canonical" href="https://hxyan2020.github.io/PRD/fate-atlas/" />
+              <meta http-equiv="refresh" content="0; url=./fate-atlas/" />
+              <script>location.replace("./fate-atlas/"+location.search+location.hash);</script>
+            </head>
+            <body>
+              <p><a href="./fate-atlas/">Continue to Fatum Atlas</a></p>
+            </body>
+          </html>
+          EOF
+            # strip the 10-space indent from the heredoc above
+            sed -i 's/^          //' /tmp/pages-root/index.html
+          fi
+          cp /tmp/pages-root/index.html /tmp/pages-root/404.html
+          touch /tmp/pages-root/.nojekyll
+
+      - name: Publish Fatum Atlas under /fate-atlas (keep sibling apps)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: fate-atlas
+          destination_dir: fate-atlas
+          publish_branch: gh-pages
+          keep_files: true
+
+      - name: Publish root redirect to Fatum Atlas (keep sibling apps)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/pages-root
+          publish_branch: gh-pages
+          keep_files: true
