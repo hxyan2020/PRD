@@ -40,7 +40,7 @@ function wasmLocate(file: string) {
 }
 
 /** Prefetch WASM ourselves so sql.js never falls back to a broken relative URL. */
-async function fetchWasmBinary(zh: boolean): Promise<Uint8Array> {
+async function fetchWasmBinary(zh: boolean): Promise<ArrayBuffer> {
   const candidates = ["sql-wasm-browser.wasm", "sql-wasm.wasm"];
   const errors: string[] = [];
   for (const name of candidates) {
@@ -51,7 +51,7 @@ async function fetchWasmBinary(zh: boolean): Promise<Uint8Array> {
         errors.push(`${url} → HTTP ${res.status}`);
         continue;
       }
-      return new Uint8Array(await res.arrayBuffer());
+      return await res.arrayBuffer();
     } catch (err) {
       errors.push(`${url} → ${err instanceof Error ? err.message : String(err)}`);
     }

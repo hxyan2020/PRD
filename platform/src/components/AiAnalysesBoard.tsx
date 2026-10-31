@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { EnZh } from "@/components/EnZh";
 import { MonitorCode } from "@/components/MonitorCode";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
@@ -30,9 +31,13 @@ type Analysis = {
 export function AiAnalysesBoard({
   analyses,
   canOperate,
+  llmAvailable = false,
+  llmEnabled = false,
 }: {
   analyses: Analysis[];
   canOperate: boolean;
+  llmAvailable?: boolean;
+  llmEnabled?: boolean;
 }) {
   const router = useRouter();
   const { t } = useT();
@@ -89,6 +94,26 @@ export function AiAnalysesBoard({
 
   return (
     <div className="space-y-4">
+      <div
+        className={`panel p-3 text-sm ${
+          llmEnabled
+            ? "border-teal-200 bg-teal-50/70 text-teal-950"
+            : "border-amber-200 bg-amber-50/80 text-amber-950"
+        }`}
+        data-testid="ai-llm-status"
+      >
+        {llmEnabled ? (
+          <EnZh
+            en="OpenAI enrichment ON — analyze / simulate / detectors call the live model and store a thinking trail on each RCA."
+            zh="OpenAI 強化已開啟 — 分析／模擬／偵測器會呼叫即時模型，並在每次 RCA 寫入思考軌跡。"
+          />
+        ) : (
+          <EnZh
+            en={`OpenAI enrichment OFF (${llmAvailable ? "disabled by CRMP_AI_LLM" : "OPENAI_API_KEY missing"}). Heuristic RCA still runs; set the server secret to call real AI.`}
+            zh={`OpenAI 強化關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 OPENAI_API_KEY"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰以呼叫真實 AI。`}
+          />
+        )}
+      </div>
       {canOperate && (
         <div className="panel p-4" data-testid="ai-pipeline-controls">
           <h3 className="font-semibold">{t("ai.pipeline")}</h3>

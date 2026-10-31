@@ -8,11 +8,22 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 import { FOREX_INCIDENT_1028, forexIncidentChip } from "@/lib/demo/forex-incident-1028";
 import { publicBasePath } from "@/lib/static-export";
 
+export type NoiseLabMonitor = {
+  monitor_id: string;
+  name: string;
+  status: string;
+  last_value: number | null;
+  threshold_warn: number | null;
+  threshold_breach: number | null;
+  unit: string | null;
+};
+
 /**
  * Hosts the Monitor 2.0 Noise Reduction end-to-end HTML lab inside CRMP Admin
  * with demo data only (quality → bypass → threshold → persistence → dedup → L2 → AI → feedback).
+ * Live SQLite pack monitors are shown above the HTML so the desk spine stays visible.
  */
-export function NoiseReductionLab() {
+export function NoiseReductionLab({ liveMonitors = [] }: { liveMonitors?: NoiseLabMonitor[] }) {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
   const fx = FOREX_INCIDENT_1028;
@@ -27,6 +38,52 @@ export function NoiseReductionLab() {
   return (
     <div className="space-y-4" data-testid="noise-reduction-lab">
       <ForexDeskPackLinks mode="compact" />
+      {liveMonitors.length ? (
+        <div className="panel p-3 sm:p-4 border-teal-200 bg-teal-50/50 space-y-2" data-testid="noise-live-sqlite">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="text-xs font-semibold uppercase tracking-[0.08em] text-teal-900">
+              <EnZh
+                en={`Live SQLite spine · ${fx.incident_id} pack`}
+                zh={`即時 SQLite 脊柱 · ${fx.incident_id} 組合`}
+              />
+            </div>
+            <AdminLink className="btn btn-sm" href="/admin/docs/simulated-data">
+              <EnZh en="Query in Simulated Data / SQL" zh="在模擬資料／SQL 查詢" />
+            </AdminLink>
+          </div>
+          <p className="text-[11px] text-teal-900/80">
+            <EnZh
+              en="HTML lab below uses offline scenarios. These values come from vantage_risk.db (same seed as Discovery / L2 / RCA)."
+              zh="下方 HTML 實驗室使用離線場景。這些數值來自 vantage_risk.db（與探索／L2／RCA 同一種子）。"
+            />
+          </p>
+          <ul className="grid sm:grid-cols-2 gap-2 text-xs">
+            {liveMonitors.map((m) => (
+              <li
+                key={m.monitor_id}
+                className="rounded-md border border-teal-200/80 bg-white/70 px-2.5 py-2 flex items-start justify-between gap-2"
+              >
+                <div className="min-w-0">
+                  <AdminLink
+                    className="font-mono text-[12px] text-teal-950 underline-offset-2 hover:underline"
+                    href={`/admin/monitor-2?monitor_id=${m.monitor_id}`}
+                  >
+                    {m.monitor_id}
+                  </AdminLink>
+                  <div className="text-[11px] text-[var(--muted)] truncate">{m.name}</div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="font-semibold tabular-nums">
+                    {m.last_value ?? "—"}
+                    {m.unit ? ` ${m.unit}` : ""}
+                  </div>
+                  <div className="text-[10px] uppercase tracking-wide text-[var(--muted)]">{m.status}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">

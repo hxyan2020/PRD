@@ -7,6 +7,7 @@ import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { T } from "@/components/T";
 import { redirect } from "next/navigation";
 import { readSearchParams } from "@/lib/static-export";
+import { llmEnrichmentEnabled, openaiKeyConfigured } from "@/lib/ai/openai-client";
 
 export default async function AlertsPage({
   searchParams,
@@ -45,6 +46,8 @@ export default async function AlertsPage({
         canOperate={hasPermission(user.role_code, "monitor.operate")}
         canOperateAi={hasPermission(user.role_code, "ai.operate")}
         initialMonitorId={monitorId}
+        llmAvailable={openaiKeyConfigured()}
+        llmEnabled={llmEnrichmentEnabled()}
       />
     </div>
   );
