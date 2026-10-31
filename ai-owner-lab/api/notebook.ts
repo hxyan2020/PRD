@@ -93,8 +93,9 @@ export default async function handler(
 
   try {
     if (req.method === 'GET') {
+      let meta: { uploadedAt?: Date | string; size?: number }
       try {
-        await head(pathname, { token })
+        meta = await head(pathname, { token })
       } catch {
         res.status(404).json({
           error:
@@ -119,6 +120,12 @@ export default async function handler(
         useCache: false,
       })
       const downloadUrl = getDownloadUrl(presignedUrl)
+      const uploadedAt =
+        meta.uploadedAt instanceof Date
+          ? meta.uploadedAt.toISOString()
+          : typeof meta.uploadedAt === 'string'
+            ? meta.uploadedAt
+            : null
 
       res.setHeader('Cache-Control', 'private, no-store')
       res.setHeader('Content-Type', 'application/json; charset=utf-8')
@@ -126,6 +133,8 @@ export default async function handler(
         url: downloadUrl,
         pathname,
         mode,
+        uploadedAt,
+        size: typeof meta.size === 'number' ? meta.size : null,
       })
       return
     }

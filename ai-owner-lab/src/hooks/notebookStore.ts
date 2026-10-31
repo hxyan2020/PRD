@@ -22,6 +22,7 @@ import {
   isAccountSyncReady,
   isVercelNotebookHost,
   loadCachedAccountUser,
+  notebookContentFingerprint,
   pullAccountBackup,
   pushAccountBackup,
   saveAccountSyncEnabled,
@@ -552,11 +553,23 @@ async function pullAndMergeCloudQuiet(): Promise<{
   etag: string | null
   missing: boolean
   cloudNoteCount: number
+  cloudFingerprint: string | null
+  uploadedAt: string | null
 }> {
   if (isAccountSyncReady()) {
     const pulled = await pullAccountBackup()
-    if (!pulled) return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
+    if (!pulled) {
+      return {
+        merged: false,
+        etag: cloudEtag,
+        missing: true,
+        cloudNoteCount: 0,
+        cloudFingerprint: null,
+        uploadedAt: null,
+      }
+    }
     cloudEtag = pulled.etag
+    const cloudFingerprint = notebookContentFingerprint(pulled.content)
     await notebookStore.importBackup(pulled.content, { syncCloud: false })
     setLastAccountSyncAt()
     return {
@@ -564,12 +577,23 @@ async function pullAndMergeCloudQuiet(): Promise<{
       etag: pulled.etag,
       missing: false,
       cloudNoteCount: pulled.noteCount,
+      cloudFingerprint,
+      uploadedAt: pulled.uploadedAt,
     }
   }
   if (isVercelSyncReady()) {
     const { cloudKey } = loadVercelSyncSettings()
     const pulled = await pullVercelBackup(cloudKey)
-    if (!pulled) return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
+    if (!pulled) {
+      return {
+        merged: false,
+        etag: cloudEtag,
+        missing: true,
+        cloudNoteCount: 0,
+        cloudFingerprint: null,
+        uploadedAt: null,
+      }
+    }
     cloudEtag = pulled.etag
     await notebookStore.importBackup(pulled.content, { syncCloud: false })
     setLastVercelSyncAt()
@@ -578,19 +602,53 @@ async function pullAndMergeCloudQuiet(): Promise<{
       etag: pulled.etag,
       missing: false,
       cloudNoteCount: pulled.noteCount,
+      cloudFingerprint: null,
+      uploadedAt: null,
     }
   }
-  if (!isCloudSyncReady()) return { merged: false, etag: null, missing: true, cloudNoteCount: 0 }
+  if (!isCloudSyncReady()) {
+    return {
+      merged: false,
+      etag: null,
+      missing: true,
+      cloudNoteCount: 0,
+      cloudFingerprint: null,
+      uploadedAt: null,
+    }
+  }
   const settings = loadGistSettings()
   if (!settings.token || !settings.gistId) {
-    return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
+    return {
+      merged: false,
+      etag: cloudEtag,
+      missing: true,
+      cloudNoteCount: 0,
+      cloudFingerprint: null,
+      uploadedAt: null,
+    }
   }
   const meta = await pullGistBackupMeta(settings)
-  if (!meta) return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
+  if (!meta) {
+    return {
+      merged: false,
+      etag: cloudEtag,
+      missing: true,
+      cloudNoteCount: 0,
+      cloudFingerprint: null,
+      uploadedAt: null,
+    }
+  }
   cloudEtag = meta.etag
   await notebookStore.importBackup(meta.content, { syncCloud: false })
   setLastCloudSyncAt()
-  return { merged: true, etag: meta.etag, missing: false, cloudNoteCount: 0 }
+  return {
+    merged: true,
+    etag: meta.etag,
+    missing: false,
+    cloudNoteCount: 0,
+    cloudFingerprint: null,
+    uploadedAt: null,
+  }
 }
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
@@ -810,12 +868,14 @@ async function flushCloudSync() {
         let pullFailed = false
         let cloudMissing = false
         let cloudNoteCount = 0
+        let cloudFingerprint: string | null = null
         // Merge remote first so a slower device doesn't clobber notes from another.
         try {
           const pulled = await pullAndMergeCloudQuiet()
           etag = pulled.etag
           cloudMissing = pulled.missing
           cloudNoteCount = pulled.cloudNoteCount
+          cloudFingerprint = pulled.cloudFingerprint
         } catch (err) {
           pullFailed = true
           // Account sync: never push a partial local notebook over cloud when pull
@@ -847,15 +907,65 @@ async function flushCloudSync() {
               `Local notebook looks incomplete (${localCount}) vs cloud (${cloudNoteCount}) — retry sync`,
             )
           }
-          const result = await pushAccountBackup(buildBackupJson())
-          cloudEtag = result.etag
-          setCloudRuntime({
-            state: 'synced',
-            lastSyncedAt: new Date().toISOString(),
-            error: null,
-            gistId: `account:${loadCachedAccountUser()}`,
-          })
-          pushed = true
+
+          const localJson = buildBackupJson()
+          const localFingerprint = notebookContentFingerprint(localJson)
+          // Idle phones were pull+push every 10s with identical content, racing the
+          // laptop's richer upload and wiping the new note. Skip no-op pushes.
+          if (!cloudMissing && cloudFingerprint && cloudFingerprint === localFingerprint) {
+            setCloudRuntime({
+              state: 'synced',
+              lastSyncedAt: new Date().toISOString(),
+              error: null,
+              gistId: `account:${loadCachedAccountUser()}`,
+            })
+            pushed = true
+          } else {
+            // Freshness pass: re-pull right before upload so we absorb a concurrent
+            // laptop push instead of overwriting it with a stale local snapshot.
+            try {
+              const fresh = await pullAndMergeCloudQuiet()
+              cloudMissing = fresh.missing
+              cloudNoteCount = fresh.cloudNoteCount
+              cloudFingerprint = fresh.cloudFingerprint
+              etag = fresh.etag
+            } catch (err) {
+              throw new Error(
+                err instanceof Error
+                  ? `Could not refresh cloud notebook before save: ${err.message}`
+                  : 'Could not refresh cloud notebook before save',
+              )
+            }
+            if (cloudPushDirty) continue
+
+            const localJson2 = buildBackupJson()
+            const localFingerprint2 = notebookContentFingerprint(localJson2)
+            const localCount2 = cache.entries.length + cache.trash.length
+            if (!cloudMissing && cloudNoteCount > localCount2) {
+              throw new Error(
+                `Local notebook looks incomplete (${localCount2}) vs cloud (${cloudNoteCount}) — retry sync`,
+              )
+            }
+            if (!cloudMissing && cloudFingerprint && cloudFingerprint === localFingerprint2) {
+              setCloudRuntime({
+                state: 'synced',
+                lastSyncedAt: new Date().toISOString(),
+                error: null,
+                gistId: `account:${loadCachedAccountUser()}`,
+              })
+              pushed = true
+            } else {
+              const result = await pushAccountBackup(localJson2)
+              cloudEtag = result.etag
+              setCloudRuntime({
+                state: 'synced',
+                lastSyncedAt: new Date().toISOString(),
+                error: null,
+                gistId: `account:${loadCachedAccountUser()}`,
+              })
+              pushed = true
+            }
+          }
         } else if (isVercelSyncReady()) {
           const { cloudKey } = loadVercelSyncSettings()
           const result = await pushVercelBackup(buildBackupJson(), cloudKey)

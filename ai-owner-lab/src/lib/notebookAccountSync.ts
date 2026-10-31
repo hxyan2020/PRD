@@ -126,27 +126,76 @@ export type AccountPullResult = {
   content: string
   etag: string | null
   noteCount: number
+  uploadedAt: string | null
+  entryIds: string[]
+}
+
+/** Stable fingerprint so we can skip no-op cloud pushes (stops overwrite races). */
+export function notebookContentFingerprint(json: string): string {
+  const parsed = JSON.parse(json) as {
+    entries?: Array<{ id?: string; updatedAt?: string; selectedText?: string; title?: string }>
+    trash?: Array<{ id?: string; deletedAt?: string; selectedText?: string; title?: string }>
+    categories?: Array<{ id?: string; name?: string; color?: string }>
+    purgedIds?: string[]
+  }
+  const entries = Array.isArray(parsed.entries) ? parsed.entries : []
+  const trash = Array.isArray(parsed.trash) ? parsed.trash : []
+  const categories = Array.isArray(parsed.categories) ? parsed.categories : []
+  const purgedIds = Array.isArray(parsed.purgedIds) ? [...parsed.purgedIds].sort() : []
+  const normEntries = entries
+    .filter((e) => e && typeof e.id === 'string')
+    .map((e) => ({
+      id: e.id,
+      updatedAt: e.updatedAt || '',
+      title: e.title || '',
+      selectedText: e.selectedText || '',
+    }))
+    .sort((a, b) => a.id!.localeCompare(b.id!))
+  const normTrash = trash
+    .filter((e) => e && typeof e.id === 'string')
+    .map((e) => ({
+      id: e.id,
+      deletedAt: e.deletedAt || '',
+      title: e.title || '',
+      selectedText: e.selectedText || '',
+    }))
+    .sort((a, b) => a.id!.localeCompare(b.id!))
+  const normCategories = categories
+    .filter((c) => c && typeof c.id === 'string')
+    .map((c) => ({ id: c.id, name: c.name || '', color: c.color || '' }))
+    .sort((a, b) => a.id!.localeCompare(b.id!))
+  return JSON.stringify({ entries: normEntries, trash: normTrash, categories: normCategories, purgedIds })
 }
 
 async function readNotebookContentFromResponse(res: Response): Promise<{
   content: string
   etag: string | null
+  uploadedAt: string | null
 }> {
   const etag = res.headers.get('etag')
   const raw = await res.text()
   // New API returns a signed Blob URL so large notebooks skip the serverless cap.
   try {
-    const parsed = JSON.parse(raw) as { url?: unknown; entries?: unknown }
+    const parsed = JSON.parse(raw) as {
+      url?: unknown
+      entries?: unknown
+      uploadedAt?: unknown
+    }
+    const uploadedAt = typeof parsed.uploadedAt === 'string' ? parsed.uploadedAt : null
     if (typeof parsed.url === 'string' && parsed.url && !Array.isArray(parsed.entries)) {
       const fileRes = await fetch(parsed.url)
       if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
-      return { content: await fileRes.text(), etag: fileRes.headers.get('etag') || etag }
+      return {
+        content: await fileRes.text(),
+        etag: fileRes.headers.get('etag') || etag,
+        uploadedAt,
+      }
     }
   } catch (err) {
     if (err instanceof Error && /download failed/i.test(err.message)) throw err
     /* fall through — raw may already be the notebook JSON */
   }
-  return { content: raw, etag }
+  return { content: raw, etag, uploadedAt: null }
 }
 
 export async function pullAccountBackup(): Promise<AccountPullResult | null> {
@@ -154,19 +203,25 @@ export async function pullAccountBackup(): Promise<AccountPullResult | null> {
   if (res.status === 401) throw new Error('Sign in required')
   if (res.status === 404) return null
   if (!res.ok) throw new Error(await readError(res))
-  const { content, etag } = await readNotebookContentFromResponse(res)
+  const { content, etag, uploadedAt } = await readNotebookContentFromResponse(res)
   let noteCount = 0
+  const entryIds: string[] = []
   try {
     const parsed = JSON.parse(content) as { entries?: unknown; trash?: unknown }
-    const entries = Array.isArray(parsed.entries) ? parsed.entries.length : 0
-    const trash = Array.isArray(parsed.trash) ? parsed.trash.length : 0
+    const entries = Array.isArray(parsed.entries) ? parsed.entries : []
+    const trash = Array.isArray(parsed.trash) ? parsed.trash : []
+    for (const item of [...entries, ...trash]) {
+      if (item && typeof item === 'object' && typeof (item as { id?: unknown }).id === 'string') {
+        entryIds.push((item as { id: string }).id)
+      }
+    }
     // Dustbin notes are part of the cloud notebook — count them so login/merge
     // does not treat a trash-only backup as "empty" and skip (or overwrite) it.
-    noteCount = entries + trash
+    noteCount = entryIds.length
   } catch {
     throw new Error('Cloud notebook was not valid JSON')
   }
-  return { content, etag, noteCount }
+  return { content, etag, noteCount, uploadedAt, entryIds }
 }
 
 /**
