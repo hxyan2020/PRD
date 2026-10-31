@@ -12,6 +12,7 @@ import { IndexPricePage } from '../pages/IndexPricePage';
 import { KLineManagePage } from '../pages/KLineManagePage';
 import { MarketSourcePage } from '../pages/MarketSourcePage';
 import { MarketTradeLimitPage } from '../pages/MarketTradeLimitPage';
+import { OpenCloseLimitPage } from '../pages/OpenCloseLimitPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
 import { PositionListPage } from '../pages/PositionListPage';
@@ -53,6 +54,8 @@ export function renderPage(key: PageKey) {
       return <RiskFundListPage />;
     case 'risk-fund-detail':
       return <RiskFundDetailPage />;
+    case 'open-close-limit':
+      return <OpenCloseLimitPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
