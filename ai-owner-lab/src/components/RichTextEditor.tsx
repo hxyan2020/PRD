@@ -445,8 +445,8 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
       setImageError(err instanceof Error ? err.message : t('editorImageFailed'))
     } finally {
       setImageProgress(100)
-      // Brief pause so the realtime bar is visible even on fast local encodes.
-      await new Promise((r) => window.setTimeout(r, 320))
+      // Brief pause so 100% is readable before the bar dismisses.
+      await new Promise((r) => window.setTimeout(r, 180))
       setImageBusy(false)
       setImageProgress(null)
     }
