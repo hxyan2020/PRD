@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
+import { CelebrateModal } from "../components/CelebrateModal";
 import { ItemDetail } from "../components/ItemDetail";
 import { ItemTile } from "../components/ItemTile";
 import { ContributeUploadPanel } from "../components/ContributeUploadPanel";
@@ -9,7 +10,7 @@ import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
 import { categoryLabel } from "../i18n/labels";
 import { categoryIcon } from "../lib/categoryIcons";
-import { itemsForCategory } from "../lib/catalog";
+import { findItem, itemsForCategory } from "../lib/catalog";
 import {
   categoryProgress,
   revealMode,
@@ -17,6 +18,7 @@ import {
 } from "../lib/progress";
 import { formatPct } from "../lib/unlocks";
 import { NATURE_CATEGORY_IDS as NATURE_IDS } from "../lib/nature";
+import type { CatalogItem } from "../types/catalog";
 
 /** Nature mega-lists drown "All" in identical silhouettes — keep them behind their own shelf. */
 const NATURE_CATEGORY_IDS = new Set<string>(NATURE_IDS);
@@ -34,13 +36,16 @@ type ShelfTab = "contribute" | "add" | "catalogue";
 
 export function CatalogPage() {
   const { categoryId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { catalog, loading, error, refresh, packVersion } = useCatalog();
-  const { version, isUnlocked, getUnlock, updateNote, updatePhoto } = useUnlocks();
+  const { version, isUnlocked, getUnlock, unlock, updateNote, updatePhoto } =
+    useUnlocks();
   const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "locked" | "unlocked" | "sneak">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [shelfTab, setShelfTab] = useState<ShelfTab>("catalogue");
+  const [celebrating, setCelebrating] = useState<CatalogItem | null>(null);
 
   useEffect(() => {
     setShelfTab("catalogue");
@@ -48,6 +53,16 @@ export function CatalogPage() {
     setFilter("all");
     setSelectedId(null);
   }, [categoryId]);
+
+  // Restore item detail after login redirect (?item=…)
+  useEffect(() => {
+    const itemId = searchParams.get("item");
+    if (!itemId) return;
+    setSelectedId(itemId);
+    const next = new URLSearchParams(searchParams);
+    next.delete("item");
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     if (!categoryId) return;
@@ -123,7 +138,8 @@ export function CatalogPage() {
     return list.sort((a, b) => a.name.localeCompare(b.name));
   }, [categoryItems, query, filter, isUnlocked, peekByCategory]);
 
-  const selected = categoryItems.find((it) => it.id === selectedId) ?? items.find((it) => it.id === selectedId);
+  const selected =
+    selectedId && catalog ? findItem(catalog, selectedId) ?? null : null;
   const selectedPeek = selected
     ? peekByCategory.get(selected.categoryId) ?? new Set()
     : new Set<string>();
@@ -373,9 +389,28 @@ export function CatalogPage() {
           mode={selectedMode}
           unlock={getUnlock(selected.id)}
           categoryPct={selectedCatPct}
+          catalog={catalog}
           onClose={() => setSelectedId(null)}
           onSaveNote={(n) => updateNote(selected.id, n)}
           onSavePhoto={(p) => updatePhoto(selected.id, p)}
+          onUnlockFromSighting={(photoDataUrl) => {
+            unlock(selected.id, { method: "detail", photoDataUrl });
+            setCelebrating(selected);
+            setSelectedId(null);
+          }}
+        />
+      )}
+
+      {celebrating && catalog && (
+        <CelebrateModal
+          item={celebrating}
+          categoryLabel={categoryLabel(
+            t,
+            celebrating.categoryId,
+            catalog.categories.find((c) => c.id === celebrating.categoryId)?.label ??
+              "",
+          )}
+          onClose={() => setCelebrating(null)}
         />
       )}
     </main>

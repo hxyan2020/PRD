@@ -7,6 +7,7 @@ import { useI18n } from "../i18n/I18nProvider";
 import { categoryLabel } from "../i18n/labels";
 import { findItem, getCategory } from "../lib/catalog";
 import { identifyImage } from "../lib/identify";
+import { fileToSightingDataUrl } from "../lib/sightingPhoto";
 import type { CatalogItem, Guess, IdentifyResult } from "../types/catalog";
 
 export function ScanPage() {
@@ -17,6 +18,8 @@ export function ScanPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [confirmBusy, setConfirmBusy] = useState(false);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
   const [phase, setPhase] = useState("");
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<IdentifyResult | null>(null);
@@ -133,28 +136,38 @@ export function ScanPage() {
     }
   };
 
-  const fileToDataUrl = (f: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(f);
-    });
-
   const confirmGuess = async () => {
-    if (!catalog || !picked) return;
+    if (!catalog || !picked || confirmBusy) return;
     const item = findItem(catalog, picked);
-    if (!item) return;
-    let photoDataUrl: string | null = null;
-    if (file) {
-      try {
-        photoDataUrl = await fileToDataUrl(file);
-      } catch {
-        photoDataUrl = null;
-      }
+    if (!item) {
+      setConfirmError(t("scan.confirmMissing"));
+      return;
     }
-    unlock(item.id, { method: "scan", photoDataUrl });
-    setCelebrating(item);
+    setConfirmBusy(true);
+    setConfirmError(null);
+    try {
+      let photoDataUrl: string | null = null;
+      if (file) {
+        try {
+          photoDataUrl = await fileToSightingDataUrl(file);
+        } catch {
+          photoDataUrl = null;
+        }
+      }
+      try {
+        unlock(item.id, { method: "scan", photoDataUrl });
+      } catch {
+        // Storage may still reject a large photo — unlock without the image.
+        unlock(item.id, { method: "scan", photoDataUrl: null });
+      }
+      setCelebrating(item);
+    } catch (e) {
+      setConfirmError(
+        e instanceof Error ? e.message : t("scan.confirmFailed"),
+      );
+    } finally {
+      setConfirmBusy(false);
+    }
   };
 
   const guesses: Guess[] = useMemo(
@@ -236,17 +249,19 @@ export function ScanPage() {
             />
           </div>
 
-          <button
-            type="button"
-            className="btn btn--primary"
-            style={{ marginTop: "0.9rem", width: "100%" }}
-            disabled={!file || busy || !catalog}
-            onClick={() => void runIdentify()}
-          >
-            {busy ? t("scan.scanning") : t("scan.identify")}
-          </button>
+          {file && (
+            <button
+              type="button"
+              className="btn btn--primary"
+              style={{ marginTop: "0.9rem", width: "100%" }}
+              disabled={busy || !catalog}
+              onClick={() => void runIdentify()}
+            >
+              {busy ? t("scan.scanning") : t("scan.identify")}
+            </button>
+          )}
 
-          {busy && (
+          {file && busy && (
             <div>
               <p className="muted">{phase}</p>
               <div className="progress-bar" aria-hidden>
@@ -306,11 +321,16 @@ export function ScanPage() {
                 type="button"
                 className="btn btn--forest"
                 style={{ marginTop: "0.9rem", width: "100%" }}
-                disabled={!picked}
+                disabled={!picked || confirmBusy}
                 onClick={() => void confirmGuess()}
               >
-                {t("scan.confirm")}
+                {confirmBusy ? t("scan.confirming") : t("scan.confirm")}
               </button>
+              {confirmError && (
+                <div className="banner banner--warn" style={{ marginTop: "0.75rem" }}>
+                  {confirmError}
+                </div>
+              )}
               <p className="muted" style={{ marginTop: "0.7rem" }}>
                 {t("scan.wrongSet")}{" "}
                 <button
@@ -319,6 +339,7 @@ export function ScanPage() {
                   onClick={() => {
                     setResult(null);
                     setPicked(null);
+                    setConfirmError(null);
                   }}
                 >
                   {t("scan.tryAnother")}
