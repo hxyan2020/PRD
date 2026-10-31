@@ -28,17 +28,19 @@ export function ListPageShell<T extends object>({
 }: ListPageShellProps<T>) {
   return (
     <PageFrame title={title} extra={extra}>
-      {filters}
-      <Table
-        size="small"
-        bordered
-        rowKey={rowKey}
-        columns={columns}
-        dataSource={dataSource}
-        scroll={scroll}
-        pagination={pagination}
-        locale={locale}
-      />
+      {filters ? <div className="list-page-filters">{filters}</div> : null}
+      <div className="admin-table-scroll">
+        <Table
+          size="small"
+          bordered
+          rowKey={rowKey}
+          columns={columns}
+          dataSource={dataSource}
+          scroll={scroll ?? { x: true }}
+          pagination={pagination}
+          locale={locale}
+        />
+      </div>
     </PageFrame>
   )
 }

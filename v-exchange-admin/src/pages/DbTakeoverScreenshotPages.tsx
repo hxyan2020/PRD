@@ -36,9 +36,12 @@ const types = [
 
 function Metric({ name, value }: { name: string; value: string }) {
   return (
-    <span style={{ marginRight: 24 }}>
-      <BilingualText name={name} />: {value}
-    </span>
+    <div className="db-metric">
+      <span className="db-metric__label">
+        <BilingualText name={name} />
+      </span>
+      <span className="db-metric__value">{value}</span>
+    </div>
   )
 }
 
@@ -70,21 +73,21 @@ export function DbAccountAlertPage() {
   }
   return (
     <PageFrame title={label('DB账户告警')}>
-      <div style={{ marginBottom: 16 }}>
+      <div className="db-alert-toolbar">
         <Select
           allowClear
           placeholder={`${label('告警类型')}: ${en ? 'All' : lang === 'both' ? 'All / 全部' : '全部'}`}
-          style={{ width: 280 }}
+          className="db-alert-toolbar__select"
           value={filter}
           onChange={setFilter}
           options={types.map((x) => ({ label: label(x), value: x }))}
         />
-        <Button style={{ marginLeft: 8 }} onClick={() => setFilter(undefined)}>
+        <Button onClick={() => setFilter(undefined)}>
           {en ? 'Reset' : lang === 'both' ? 'Reset / 重置' : '重置'}
         </Button>
         <Button
           type="primary"
-          style={{ float: 'right' }}
+          className="db-alert-toolbar__add"
           onClick={() => {
             setEditing(null)
             form.resetFields()
@@ -94,11 +97,13 @@ export function DbAccountAlertPage() {
           ＋ {en ? 'Add monitor' : lang === 'both' ? 'Add / 增加监控' : '增加监控'}
         </Button>
       </div>
+      <div className="admin-table-scroll">
       <Table
         size="small"
         rowKey="key"
+        scroll={{ x: true }}
         dataSource={rows.filter((x) => !filter || x.type === filter)}
-        pagination={{ pageSize: 20 }}
+        pagination={{ pageSize: 20, simple: true }}
         columns={[
           {
             title: <BilingualText name="告警类型" />,
@@ -154,6 +159,7 @@ export function DbAccountAlertPage() {
           },
         ]}
       />
+      </div>
       <Modal
         title={
           editing
@@ -172,6 +178,7 @@ export function DbAccountAlertPage() {
         onCancel={() => setOpen(false)}
         onOk={save}
         okText={en ? 'OK' : '确定'}
+        styles={{ body: { maxHeight: '70vh', overflow: 'auto' } }}
       >
         <Form form={form} layout="vertical">
           <Form.Item name="type" label={<BilingualText name="告警类型" />} rules={[{ required: true }]}>
@@ -201,33 +208,32 @@ export function DbTakeoverAccountPage() {
   ]
   return (
     <PageFrame title={label('DB接仓账户管理')}>
-      <div style={{ lineHeight: 2.8 }}>
+      <div className="db-metric-grid">
         <Metric name="账户ID" value="100000002" />
         <Metric name="钱包余额" value="200560.26 USD" />
         <Metric name="最大可转金额" value="200560.26 USD" />
-      </div>
-      <div style={{ lineHeight: 2.8 }}>
         <Metric name="自动注资水位线" value="40000 USD" />
         <Metric name="注资目标水位线" value="200000 USD" />
-      </div>
-      <div style={{ lineHeight: 2.8, marginBottom: 12 }}>
         <Metric name="总占用保证金" value="0 USD" />
         <Metric name="持仓总额" value="0 USD" />
         <Metric name="总未实现盈亏" value="0 USD" />
         <Metric name="账户权益" value="200560.26 USD" />
       </div>
-      <Table
-        rowKey="contract"
-        size="small"
-        dataSource={[]}
-        locale={{
-          emptyText: lang === 'en' ? 'No data' : lang === 'both' ? 'No data / 暂无数据' : '暂无数据',
-        }}
-        columns={columns.map((title) => ({
-          title: <BilingualText name={title} />,
-          dataIndex: title,
-        }))}
-      />
+      <div className="admin-table-scroll">
+        <Table
+          rowKey="contract"
+          size="small"
+          dataSource={[]}
+          scroll={{ x: true }}
+          locale={{
+            emptyText: lang === 'en' ? 'No data' : lang === 'both' ? 'No data / 暂无数据' : '暂无数据',
+          }}
+          columns={columns.map((title) => ({
+            title: <BilingualText name={title} />,
+            dataIndex: title,
+          }))}
+        />
+      </div>
     </PageFrame>
   )
 }
@@ -241,22 +247,25 @@ export function DbTakeoverFundRecordPage() {
   ]
   return (
     <PageFrame title={label('DB接仓账户资金流水')}>
-      <Table
-        rowKey="key"
-        size="small"
-        dataSource={data}
-        columns={[
-          { title: <BilingualText name="账户ID" />, render: () => '100000002' },
-          { title: <BilingualText name="流水ID" />, dataIndex: 'key' },
-          {
-            title: <BilingualText name="流水类型" />,
-            dataIndex: 'type',
-            render: (v: string) => label(v),
-          },
-          { title: <BilingualText name="金额 (USD)" />, dataIndex: 'amount' },
-          { title: <BilingualText name="更新时间" />, render: () => '2026-10-26' },
-        ]}
-      />
+      <div className="admin-table-scroll">
+        <Table
+          rowKey="key"
+          size="small"
+          dataSource={data}
+          scroll={{ x: true }}
+          columns={[
+            { title: <BilingualText name="账户ID" />, render: () => '100000002' },
+            { title: <BilingualText name="流水ID" />, dataIndex: 'key' },
+            {
+              title: <BilingualText name="流水类型" />,
+              dataIndex: 'type',
+              render: (v: string) => label(v),
+            },
+            { title: <BilingualText name="金额 (USD)" />, dataIndex: 'amount' },
+            { title: <BilingualText name="更新时间" />, render: () => '2026-10-26' },
+          ]}
+        />
+      </div>
     </PageFrame>
   )
 }

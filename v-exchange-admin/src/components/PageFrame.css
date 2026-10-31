@@ -1,6 +1,7 @@
 .page-frame {
   position: relative;
   min-height: calc(100vh - 180px);
+  min-height: calc(100dvh - 180px);
   background: #fff;
   overflow: hidden;
 }
@@ -15,6 +16,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   margin-bottom: 16px;
 }
 
@@ -23,4 +26,24 @@
   font-size: 16px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.85);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+@media (max-width: 767px) {
+  .page-frame {
+    min-height: calc(100dvh - 96px);
+  }
+
+  .page-frame-inner {
+    padding: 12px 12px 20px;
+  }
+
+  .page-frame-header {
+    margin-bottom: 12px;
+  }
+
+  .page-frame-title {
+    font-size: 15px;
+  }
 }
