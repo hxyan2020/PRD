@@ -74,6 +74,16 @@ function contentTypeForUpload(file: File): string {
   return 'application/octet-stream'
 }
 
+/** Multipart has extra round-trips; use it only for large payloads. */
+const MULTIPART_MIN_BYTES = 8 * 1024 * 1024
+
+function normalizeUploadPct(percentage: number): number {
+  if (!Number.isFinite(percentage)) return 0
+  // Client reports 0–100; tolerate a 0–1 fraction just in case.
+  const pct = percentage > 0 && percentage <= 1 ? percentage * 100 : percentage
+  return Math.max(0, Math.min(100, Math.round(pct)))
+}
+
 export async function uploadNotebookFile(
   file: File,
   onProgress?: (pct: number) => void,
@@ -83,13 +93,16 @@ export async function uploadNotebookFile(
 
   const contentType = contentTypeForUpload(file)
   const pathname = `ownlab-accounts/${username}/files/${safeFileName(file.name)}`
+  const useMultipart = file.size >= MULTIPART_MIN_BYTES
+  onProgress?.(0)
   const result = await upload(pathname, file, {
     access: 'private',
     handleUploadUrl: `${window.location.origin}/api/blob/upload`,
-    multipart: true,
+    multipart: useMultipart,
     contentType,
-    onUploadProgress: ({ percentage }) => onProgress?.(percentage),
+    onUploadProgress: ({ percentage }) => onProgress?.(normalizeUploadPct(percentage)),
   })
+  onProgress?.(100)
 
   return {
     id: uid(),

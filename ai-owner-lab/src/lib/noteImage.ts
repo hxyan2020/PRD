@@ -80,36 +80,26 @@ function asImageFile(file: Blob): File {
   return new File([file], name, { type: mime })
 }
 
+/**
+ * Progress follows real upload/encode bytes only.
+ * Never invent a high fake %, which used to stall at ~90% while the network finished.
+ */
 function createProgressReporter(onProgress?: (pct: number) => void): {
   report: (pct: number) => void
-  startHeartbeat: () => void
-  stop: () => void
 } {
-  let current = 0
-  let heartbeat: ReturnType<typeof setInterval> | null = null
-  const report = (pct: number) => {
-    const next = Math.max(current, Math.min(100, Math.round(pct)))
-    if (next === current && next !== 0) return
-    current = next
-    onProgress?.(current)
-  }
+  let current = -1
   return {
-    report,
-    startHeartbeat: () => {
-      if (!onProgress || heartbeat) return
-      // Keep the bar moving when FileReader/network is quiet between events.
-      heartbeat = setInterval(() => {
-        if (current < 90) report(current + 3)
-      }, 50)
-    },
-    stop: () => {
-      if (heartbeat) {
-        clearInterval(heartbeat)
-        heartbeat = null
-      }
+    report: (pct: number) => {
+      const next = Math.max(0, Math.min(100, Math.round(pct)))
+      if (next === current) return
+      current = next
+      onProgress?.(current)
     },
   }
 }
+
+/** Prefer instant local embed for typical phone photos; Blob only when large / needed. */
+const BLOB_UPLOAD_MIN_BYTES = 3 * 1024 * 1024
 
 /**
  * Store a notebook image at full resolution (no downscale / quality crush).
@@ -128,27 +118,26 @@ export async function fileToNoteImageDataUrl(
 
   const progress = createProgressReporter(onProgress)
   progress.report(0)
-  progress.startHeartbeat()
 
-  try {
-    // Signed-in: store original bytes on private Blob (no practical size / resolution cap).
-    if (loadCachedAccountUser()) {
-      try {
-        const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
-          progress.report(pct)
-        })
-        progress.report(100)
-        return notebookInlineImageSrc(uploaded.pathname)
-      } catch {
-        // Fall through to local data URL when upload is unavailable.
-      }
+  const signedIn = Boolean(loadCachedAccountUser())
+  const preferBlob = signedIn && file.size >= BLOB_UPLOAD_MIN_BYTES
+
+  // Signed-in large images: private Blob with live upload %.
+  if (preferBlob) {
+    try {
+      const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
+        progress.report(pct)
+      })
+      progress.report(100)
+      return notebookInlineImageSrc(uploaded.pathname)
+    } catch {
+      // Fall through to local data URL when upload is unavailable.
     }
-
-    // Keep original bytes — never canvas-resize or recompress.
-    return await blobToDataUrl(file, (pct) => progress.report(pct))
-  } finally {
-    progress.stop()
   }
+
+  // Keep original bytes — never canvas-resize or recompress.
+  // Small/medium photos stay local for snappy full-res insert.
+  return blobToDataUrl(file, (pct) => progress.report(pct))
 }
 
 export function guessImageFilename(src: string, fallback = 'ownlab-image'): string {
