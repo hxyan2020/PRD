@@ -14,6 +14,7 @@ import { IndexMarketLinkPage } from '../pages/IndexMarketLinkPage';
 import { IndexPricePage } from '../pages/IndexPricePage';
 import { InternalFundingRateMonitorPage } from '../pages/InternalFundingRateMonitorPage';
 import { KLineManagePage } from '../pages/KLineManagePage';
+import { LargeLiquidationAlertPage } from '../pages/LargeLiquidationAlertPage';
 import { MarketSourcePage } from '../pages/MarketSourcePage';
 import { MarketTradeLimitPage } from '../pages/MarketTradeLimitPage';
 import { NoTradeMonitorPage } from '../pages/NoTradeMonitorPage';
@@ -74,6 +75,8 @@ export function renderPage(key: PageKey) {
       return <ExternalFundingRateMonitorPage />;
     case 'internal-funding-rate-monitor':
       return <InternalFundingRateMonitorPage />;
+    case 'large-liquidation-alert':
+      return <LargeLiquidationAlertPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
