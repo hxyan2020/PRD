@@ -2776,6 +2776,24 @@ body.menu-open {
   border: 1px solid rgba(13, 148, 136, 0.22);
 }
 
+.notebook-cloud-pill-btn {
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  max-width: 100%;
+}
+
+.notebook-cloud-pill-btn:disabled {
+  cursor: wait;
+  opacity: 0.85;
+}
+
+.notebook-cloud-pill-btn:not(:disabled):hover {
+  filter: brightness(0.97);
+}
+
 .notebook-cloud-verify-btn {
   font-size: 0.8rem;
   padding: 0.25rem 0.7rem;
@@ -3942,6 +3960,20 @@ button.notebook-category-badge.on {
   border-radius: inherit;
   background: linear-gradient(90deg, var(--teal), var(--signal));
   transition: width 0.12s linear;
+}
+
+.rte-image-progress-fill.is-indeterminate {
+  width: 36% !important;
+  animation: rte-progress-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes rte-progress-pulse {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(280%);
+  }
 }
 
 .rte-u {

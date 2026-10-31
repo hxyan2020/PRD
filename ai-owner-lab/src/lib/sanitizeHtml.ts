@@ -124,6 +124,10 @@ function sanitizeImg(el: HTMLElement) {
     if (name === 'data-ownlab-blob' && /^[\w./\- %]+$/.test(attr.value) && attr.value.length < 500) {
       continue
     }
+    // Temporary id while an optimistic local preview uploads to Blob.
+    if (name === 'data-ownlab-uploading' && /^[\w.-]+$/.test(attr.value) && attr.value.length < 80) {
+      continue
+    }
     if ((name === 'width' || name === 'height') && /^\d{1,5}$/.test(attr.value)) {
       continue
     }

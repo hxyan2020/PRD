@@ -3,6 +3,23 @@ import { notebookFileDownloadUrl, uploadNotebookFile } from './notebookAttachmen
 
 const ACCEPTED = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'])
 
+/** In-flight note image uploads — cloud sync waits so blob: previews are not pushed. */
+const pendingNoteImageUploads = new Set<Promise<unknown>>()
+
+export function trackNoteImageUpload<T>(promise: Promise<T>): Promise<T> {
+  pendingNoteImageUploads.add(promise)
+  void promise.finally(() => {
+    pendingNoteImageUploads.delete(promise)
+  })
+  return promise
+}
+
+export async function awaitPendingNoteImageUploads(): Promise<void> {
+  while (pendingNoteImageUploads.size > 0) {
+    await Promise.allSettled([...pendingNoteImageUploads])
+  }
+}
+
 export function isAllowedImageMime(type: string): boolean {
   return ACCEPTED.has(type.toLowerCase())
 }
@@ -41,6 +58,8 @@ export function isSafeImageSrc(src: string): boolean {
   }
   // Same-origin private Blob images (session cookie + redirect to signed URL).
   if (isBlobImageSrc(value)) return true
+  // Temporary optimistic previews while a full-res Blob upload finishes.
+  if (/^blob:/i.test(value)) return true
   return false
 }
 
@@ -98,8 +117,14 @@ function createProgressReporter(onProgress?: (pct: number) => void): {
   }
 }
 
-/** Prefer instant local embed for typical phone photos; Blob only when large / needed. */
-const BLOB_UPLOAD_MIN_BYTES = 3 * 1024 * 1024
+/**
+ * Only hit the network for larger images. Sub‑1MB photos encode to a data URL
+ * in milliseconds; Blob upload was waiting on a serverless token handshake so
+ * even a 473KB image looked “stuck” at a few percent.
+ * `compactInlineImagesForCloud` still offloads embedded data: URLs before sync
+ * so cloud save stays under the 4.5MB serverless limit.
+ */
+const BLOB_UPLOAD_MIN_BYTES = 1024 * 1024
 
 /**
  * Store a notebook image at full resolution (no downscale / quality crush).
@@ -122,22 +147,25 @@ export async function fileToNoteImageDataUrl(
   const signedIn = Boolean(loadCachedAccountUser())
   const preferBlob = signedIn && file.size >= BLOB_UPLOAD_MIN_BYTES
 
-  // Signed-in large images: private Blob with live upload %.
+  // Large signed-in images: private Blob (never base64 — that freezes on 10MB+).
   if (preferBlob) {
-    try {
-      const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
-        progress.report(pct)
-      })
-      progress.report(100)
-      return notebookInlineImageSrc(uploaded.pathname)
-    } catch {
-      // Fall through to local data URL when upload is unavailable.
-    }
+    const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
+      progress.report(pct)
+    })
+    progress.report(100)
+    return notebookInlineImageSrc(uploaded.pathname)
   }
 
   // Keep original bytes — never canvas-resize or recompress.
-  // Small/medium photos stay local for snappy full-res insert.
+  // Sub‑1MB photos stay local for snappy full-res insert.
   return blobToDataUrl(file, (pct) => progress.report(pct))
+}
+
+/**
+ * Instant local preview URL for optimistic insert (revoked by the caller after swap).
+ */
+export function createNoteImagePreviewUrl(file: Blob): string {
+  return URL.createObjectURL(file)
 }
 
 export function guessImageFilename(src: string, fallback = 'ownlab-image'): string {

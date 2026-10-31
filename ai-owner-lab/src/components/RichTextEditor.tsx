@@ -16,9 +16,12 @@ import {
 import { sanitizeHtml } from '../lib/sanitizeHtml'
 import {
   blobPathnameFromSrc,
+  createNoteImagePreviewUrl,
   fileToNoteImageDataUrl,
   isAllowedImageMime,
+  trackNoteImageUpload,
 } from '../lib/noteImage'
+import { formatFileSize } from '../lib/notebookAttachments'
 import {
   plainTextListsToHtml,
   structuredClipboardHtml,
@@ -296,6 +299,9 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
   const [imageProgress, setImageProgress] = useState<number | null>(null)
+  const [imageBytes, setImageBytes] = useState<{ loaded: number; total: number } | null>(
+    null,
+  )
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
@@ -447,51 +453,116 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     if (!selectionInsideCode(editorRef.current)) paintCodeColors()
   }
 
-  async function insertImageFile(file: Blob) {
-    if (!isAllowedImageMime(file.type || '')) {
-      setImageError(t('editorImageTypeError'))
+  function insertHtmlAtCaret(html: string) {
+    withFocus(() => {
+      const safe = sanitizeHtml(html)
+      if (!document.execCommand('insertHTML', false, safe)) {
+        const el = editorRef.current
+        if (!el) return
+        el.insertAdjacentHTML('beforeend', safe)
+      }
+    })
+  }
+
+  function newImageTempId(): string {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID()
+    return `img-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  }
+
+  function uploadAndSwapPreview(
+    file: Blob,
+    tempId: string,
+    previewUrl: string,
+    onPct?: (pct: number) => void,
+  ): Promise<void> {
+    return trackNoteImageUpload(
+      (async () => {
+        try {
+          const src = await fileToNoteImageDataUrl(file, (pct) => onPct?.(pct))
+          const pathname = blobPathnameFromSrc(src)
+          const img = editorRef.current?.querySelector(
+            `img[data-ownlab-uploading="${tempId}"]`,
+          ) as HTMLImageElement | null
+          if (img) {
+            img.src = src
+            img.removeAttribute('data-ownlab-uploading')
+            if (pathname) img.setAttribute('data-ownlab-blob', pathname)
+            else img.removeAttribute('data-ownlab-blob')
+            emitChange()
+          }
+        } catch (err) {
+          editorRef.current
+            ?.querySelector(`img[data-ownlab-uploading="${tempId}"]`)
+            ?.remove()
+          emitChange()
+          setImageError(err instanceof Error ? err.message : t('editorImageFailed'))
+          throw err
+        } finally {
+          URL.revokeObjectURL(previewUrl)
+        }
+      })(),
+    )
+  }
+
+  async function insertImageFiles(files: Blob[]) {
+    const images = files.filter((f) => isAllowedImageMime(f.type || ''))
+    if (!images.length) {
+      if (files.length) setImageError(t('editorImageTypeError'))
       return
     }
     setImageBusy(true)
     setImageProgress(0)
+    setImageBytes({
+      loaded: 0,
+      total: images.reduce((sum, file) => sum + (file.size || 0), 0),
+    })
     setImageError(null)
+
+    // Insert local previews synchronously (instant), then upload in parallel.
+    const jobs = images.map((file) => {
+      const tempId = newImageTempId()
+      const previewUrl = createNoteImagePreviewUrl(file)
+      insertHtmlAtCaret(
+        `<img src="${previewUrl.replace(/"/g, '')}" data-ownlab-uploading="${tempId}" alt="" style="max-width: 100%; height: auto" />`,
+      )
+      return { file, tempId, previewUrl }
+    })
+    emitChange()
+
+    const progresses = jobs.map(() => 0)
+    const loadedBytes = jobs.map(() => 0)
+    const report = () => {
+      const avg = progresses.reduce((a, b) => a + b, 0) / Math.max(1, progresses.length)
+      setImageProgress(avg)
+      setImageBytes({
+        loaded: loadedBytes.reduce((a, b) => a + b, 0),
+        total: jobs.reduce((sum, job) => sum + (job.file.size || 0), 0),
+      })
+    }
     try {
-      const src = await fileToNoteImageDataUrl(file, (pct) => {
-        setImageProgress(pct)
-      })
+      await Promise.all(
+        jobs.map((job, index) =>
+          uploadAndSwapPreview(job.file, job.tempId, job.previewUrl, (pct) => {
+            progresses[index] = pct
+            loadedBytes[index] = Math.round(((job.file.size || 0) * pct) / 100)
+            report()
+          }).catch(() => {
+            /* per-image error already shown */
+          }),
+        ),
+      )
       setImageProgress(100)
-      const pathname = blobPathnameFromSrc(src)
-      const blobAttr = pathname
-        ? ` data-ownlab-blob="${pathname.replace(/"/g, '')}"`
-        : ''
-      withFocus(() => {
-        const safe = sanitizeHtml(
-          `<img src="${src.replace(/"/g, '')}"${blobAttr} alt="" style="max-width: 100%; height: auto" />`,
-        )
-        if (!document.execCommand('insertHTML', false, safe)) {
-          const el = editorRef.current
-          if (!el) return
-          el.insertAdjacentHTML('beforeend', safe)
-        }
-      })
-    } catch (err) {
-      setImageError(err instanceof Error ? err.message : t('editorImageFailed'))
     } finally {
-      setImageProgress(100)
-      // Brief pause so 100% is readable before the bar dismisses.
-      await new Promise((r) => window.setTimeout(r, 180))
+      await new Promise((r) => window.setTimeout(r, 120))
       setImageBusy(false)
       setImageProgress(null)
+      setImageBytes(null)
     }
   }
 
   async function onPickFiles(files: FileList | null) {
     if (!files?.length) return
-    for (const file of Array.from(files)) {
-      if (file.type.startsWith('image/')) {
-        await insertImageFile(file)
-      }
-    }
+    await insertImageFiles(Array.from(files))
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -805,8 +876,17 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
       {imageBusy ? (
         <div className="rte-image-progress" role="status" aria-live="polite">
           <div className="rte-image-progress-meta">
-            <span>{t('editorImageUploading')}</span>
-            <strong>{Math.round(imageProgress ?? 0)}%</strong>
+            <span>
+              {imageBytes && imageBytes.total > 0
+                ? t('editorImageUploadingDetail', {
+                    loaded: formatFileSize(imageBytes.loaded),
+                    total: formatFileSize(imageBytes.total),
+                  })
+                : t('editorImageUploading')}
+            </span>
+            <strong>
+              {(imageProgress ?? 0) <= 0 ? '…' : `${Math.round(imageProgress ?? 0)}%`}
+            </strong>
           </div>
           <div
             className="rte-image-progress-track"
@@ -816,8 +896,12 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
             role="progressbar"
           >
             <div
-              className="rte-image-progress-fill"
-              style={{ width: `${Math.max(2, Math.min(100, imageProgress ?? 0))}%` }}
+              className={`rte-image-progress-fill${
+                (imageProgress ?? 0) <= 0 ? ' is-indeterminate' : ''
+              }`}
+              style={{
+                width: `${Math.max(2, Math.min(100, imageProgress ?? 0))}%`,
+              }}
             />
           </div>
         </div>
@@ -837,9 +921,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           const images = Array.from(files).filter((f) => f.type.startsWith('image/'))
           if (!images.length) return
           e.preventDefault()
-          void (async () => {
-            for (const file of images) await insertImageFile(file)
-          })()
+          void insertImageFiles(images)
         }}
       >
         <div
@@ -939,12 +1021,10 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
               : []
             if (imageItems.length) {
               e.preventDefault()
-              void (async () => {
-                for (const item of imageItems) {
-                  const file = item.getAsFile()
-                  if (file) await insertImageFile(file)
-                }
-              })()
+              const blobs = imageItems
+                .map((item) => item.getAsFile())
+                .filter((file): file is File => Boolean(file))
+              void insertImageFiles(blobs)
               return
             }
             e.preventDefault()
