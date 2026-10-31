@@ -85,21 +85,24 @@ export async function POST(req: Request) {
       return NextResponse.json(runDiscoveryParallel({ actor: user.name, trigger: "MANUAL" }));
     }
 
-    if (body.action === "connect_openai") {
+    if (body.action === "connect_openai" || body.action === "connect_llm") {
       if (!canOperate(user.role_code) && !canReview(user.role_code)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
-      const model = String(body.model || "gpt-4.1-mini");
-      const status = enableDiscoveryOpenAi(model);
+      const provider = body.provider ? String(body.provider) : undefined;
+      const model = body.model ? String(body.model) : undefined;
+      const status = enableDiscoveryOpenAi(model, provider);
       writeAudit(user, "DISCOVERY_CONNECT_OPENAI", "risk_discovery", "ai_mode", {
         mode: status.mode,
+        mode_canonical: status.mode_canonical,
         model: status.model,
+        provider: status.provider,
         key_configured: status.key_configured,
       });
       return NextResponse.json({ ok: true, status });
     }
 
-    if (body.action === "disconnect_openai") {
+    if (body.action === "disconnect_openai" || body.action === "disconnect_llm") {
       if (!canOperate(user.role_code) && !canReview(user.role_code)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }

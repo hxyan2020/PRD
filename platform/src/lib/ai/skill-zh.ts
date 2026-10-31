@@ -332,6 +332,10 @@ export const CHAIN_ZH: Record<string, { name: string; description: string }> = {
     name: "LP 拒單風暴 → 對沖缺口 → 權益壓力",
     description: "執行品質惡化後庫存暴露。",
   },
+  "CHAIN-PRICING-FEED-PROPAGATION": {
+    name: "LP 報價延遲 → 最終報價陳舊 → 定價發布延遲（INC-1028）",
+    description: "INC-1028 標準外匯故事：LP-A XAUUSD 報價年齡與券商最終報價凍結沿定價鏈傳播。",
+  },
   "CHAIN-FEED-LIQUIDATION-ERROR": {
     name: "過期饋送 → 錯誤保證金壓力 → 權益雜訊",
     description: "錯誤價格驅動的假強平風險。",

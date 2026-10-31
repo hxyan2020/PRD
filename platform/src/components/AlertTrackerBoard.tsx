@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, Copy, ExternalLink } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { EnZh } from "@/components/EnZh";
 import { MonitorCode } from "@/components/MonitorCode";
 import { AlertTrackerFilters } from "@/components/AlertTrackerFilters";
 import { publicAdminHref } from "@/lib/static-export";
@@ -18,6 +19,7 @@ import {
 } from "@/lib/alert-filters";
 import type { AlertTrackerPack, TrackerEvent, TrackerGate, TrackerPerson } from "@/lib/alert-tracker";
 import { AiImprovementPanel } from "@/components/AiImprovementPanel";
+import { LlmProviderPicker } from "@/components/LlmProviderPicker";
 
 function gateClass(code: TrackerGate["code"]) {
   switch (code) {
@@ -527,16 +529,29 @@ export function AlertTrackerBoard({
   canOperate,
   canOperateAi,
   initialMonitorId = "",
+  llmAvailable = false,
+  llmEnabled = false,
+  llmProvider = null,
+  llmModel = null,
+  llmProviders = [],
 }: {
   packs: AlertTrackerPack[];
   canOperate: boolean;
   canOperateAi: boolean;
   initialMonitorId?: string;
+  llmAvailable?: boolean;
+  llmEnabled?: boolean;
+  llmProvider?: string | null;
+  llmModel?: string | null;
+  llmProviders?: Array<{ id: string; label: string; configured: boolean }>;
 }) {
   const router = useRouter();
   const { t } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [activeProvider, setActiveProvider] = useState(llmProvider);
+  const [activeModel, setActiveModel] = useState(llmModel);
+  const [activeEnabled, setActiveEnabled] = useState(llmEnabled);
   const [hash, setHash] = useState("");
   const [filters, setFilters] = useState<AlertFilterState>({
     ...DEFAULT_ALERT_FILTERS,
@@ -592,18 +607,27 @@ export function AlertTrackerBoard({
       };
       const challenge = (data.challenge || null) as { verdict?: string } | null;
       const pct = Math.round((analysis.confidence || 0) * 100);
+      const llm = (data.llm || null) as { source?: string; enriched?: boolean; provider?: string } | null;
+      const llmRuns = Array.isArray(data.llm_runs) ? (data.llm_runs as Array<{ enriched?: boolean; source?: string }>) : [];
+      const enrichedCount = Number(data.llm_enriched ?? llmRuns.filter((r) => r.enriched).length);
+      const realAiOn = data.llm_calls_real_ai === true || data.llm_enabled === true;
+      const llmBit = realAiOn
+        ? ` · real AI ${String(llm?.source || llm?.provider || (enrichedCount ? "LLM_API" : "ready"))}${
+            enrichedCount ? ` · ${enrichedCount} enriched` : ""
+          }`
+        : " · real AI off (set server LLM key)";
       setMsg(
         action === "analyze_open"
-          ? t("ai.ensured", { n: Number(data.count) || 0 })
+          ? `${t("ai.ensured", { n: Number(data.count) || 0 })}${llmBit}`
           : action === "simulate_alarm"
             ? `${t("ai.alarmRaised", {
                 id: analysis.analysis_id || "—",
                 mode: analysis.mode || "—",
                 pct,
-              })}${challenge?.verdict ? ` · ${t("ai.challenged", { verdict: challenge.verdict })}` : ""}`
+              })}${challenge?.verdict ? ` · ${t("ai.challenged", { verdict: challenge.verdict })}` : ""}${llmBit}`
             : action === "backfill_challenges"
               ? t("ai.backfilled", { n: Number(data.count) || 0 })
-              : t("ai.done")
+              : `${t("ai.done")}${llmBit}`
       );
       router.refresh();
       if (action === "simulate_alarm") {
@@ -625,6 +649,39 @@ export function AlertTrackerBoard({
 
   return (
     <div className="space-y-4">
+      <div
+        className={`panel p-3 text-sm space-y-2 ${
+          activeEnabled
+            ? "border-teal-200 bg-teal-50/70 text-teal-950"
+            : "border-amber-200 bg-amber-50/80 text-amber-950"
+        }`}
+        data-testid="ai-llm-status"
+      >
+        {activeEnabled ? (
+          <EnZh
+            en={`Real AI ON (${activeProvider || "auto"}${activeModel ? ` / ${activeModel}` : ""}) — ChatGPT, DeepSeek, Gemini, or Claude. Analyze open / Simulate / detectors call the selected LLM.`}
+            zh={`真實 AI 已開啟（${activeProvider || "auto"}${activeModel ? ` / ${activeModel}` : ""}）— 可選 ChatGPT／DeepSeek／Gemini／Claude。「分析未結」／模擬／偵測器會呼叫所選 LLM。`}
+          />
+        ) : (
+          <EnZh
+            en={`Real AI OFF (${llmAvailable ? "disabled by CRMP_AI_LLM" : "no ChatGPT/DeepSeek/Gemini/Claude key"}). Heuristic RCA still runs until you set a server secret. ${llmProviders?.length ? `Providers: ${llmProviders.map((p) => `${p.id}${p.configured ? "✓" : "✗"}`).join(", ")}.` : ""}`}
+            zh={`真實 AI 關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 ChatGPT／DeepSeek／Gemini／Claude 金鑰"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰後才會呼叫真實 AI。`}
+          />
+        )}
+        {canOperateAi ? (
+          <LlmProviderPicker
+            providers={llmProviders}
+            value={activeProvider}
+            disabled={busy}
+            onChanged={(provider, meta) => {
+              setActiveProvider(provider);
+              setActiveModel(meta.model ?? null);
+              setActiveEnabled(meta.enabled ?? true);
+              setMsg(`LLM → ${provider}${meta.model ? ` / ${meta.model}` : ""}`);
+            }}
+          />
+        ) : null}
+      </div>
       {canOperateAi ? (
         <div className="panel p-4" data-testid="ai-pipeline-controls">
           <h3 className="font-semibold">{t("ai.pipeline")}</h3>

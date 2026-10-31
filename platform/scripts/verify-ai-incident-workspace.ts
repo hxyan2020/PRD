@@ -40,7 +40,9 @@ assert.match(board, /embed=1/);
 assert.match(board, /zh-Hant/);
 
 const nav = read("src/lib/nav.ts");
-assert.match(nav, /\/admin\/ai-incident/);
+// Nested under Monitor labs; deep link /admin/ai-incident still works.
+assert.match(nav, /\/admin\/monitor-labs/);
+assert.doesNotMatch(nav, /href: \"\/admin\/ai-incident\"/);
 
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /\/admin\/ai-incident/);
@@ -49,16 +51,19 @@ assert.match(i18n, /"ai-incident"/);
 
 const links = read("src/lib/monitor-deep-links.ts");
 assert.match(links, /ai_incident/);
-assert.match(links, /\/admin\/ai-incident/);
+assert.match(links, /FOREX_INCIDENT_1028|workspace_path/);
+const pack = read("src/lib/demo/forex-incident-1028.ts");
+assert.match(pack, /workspace_path:\s*\"\/admin\/ai-incident\"/);
 
 const messenger = read("src/lib/messenger/demo.ts");
 assert.match(messenger, /ensureInc1028MessengerThread/);
-assert.match(messenger, /THR-INC-1028/);
-assert.match(messenger, /INC-1028/);
+assert.match(messenger, /FOREX_INCIDENT_1028/);
+assert.match(messenger, /INC-1028|thread_id/);
+assert.match(pack, /thread_id:\s*\"THR-INC-1028\"/);
 
 const urls = read("src/lib/docs/urls.ts");
 assert.match(urls, /\/admin\/ai-incident/);
-assert.match(urls, /E-01/);
+assert.match(html, /E-01/);
 
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /"AI Incident Workspace": "AI 事故工作台"/);

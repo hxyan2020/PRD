@@ -17,18 +17,20 @@ assert.match(board, /Analyse selected|分析所選/);
 assert.match(board, /Approve for validation|核准進入驗證/);
 assert.match(board, /Ask for more info|要求更多資訊/);
 assert.match(board, /Disconnect \/ Mock|中斷／Mock/);
-assert.match(board, /Connect OpenAI/);
+assert.match(board, /Connect LLM|Connect OpenAI/);
+assert.match(board, /discovery-llm-provider/);
+assert.match(board, /LlmProviderPicker|DeepSeek|Gemini|Claude/);
 assert.match(board, /discovery-suggestion-card/);
 assert.match(board, /RISK_DISCOVERY_NOTEBOOK/);
-assert.match(board, /discovery-notebook-colab/);
 assert.match(board, /discovery-notebook-html/);
-assert.match(board, /discovery-notebook-ipynb/);
-assert.match(board, /Open Jupyter \(Colab\)|開啟 Jupyter（Colab）/);
+assert.match(board, /Open notebook \(HTML\)|開啟筆記本（HTML）/);
 
 const page = read("src/app/admin/discovery/page.tsx");
 assert.match(page, /discovery-header-notebook-colab/);
+assert.match(page, /discovery-header-notebook-ipynb/);
 assert.match(page, /RISK_DISCOVERY_NOTEBOOK/);
 assert.match(page, /Jupyter notebook|Jupyter 筆記本/);
+assert.match(page, /SimSpinePackStrip/);
 
 const links = read("src/lib/ai/discovery-links.ts");
 assert.match(links, /colab\.research\.google\.com/);
@@ -42,9 +44,27 @@ assert.match(urls, /colab\.research\.google\.com/);
 const analyse = read("src/lib/ai/discovery-analyse.ts");
 assert.match(analyse, /deterministicSuggestion/);
 assert.match(analyse, /enableDiscoveryOpenAi/);
-assert.match(analyse, /OPENAI_API_KEY/);
-assert.match(analyse, /MOCK 回應/);
+assert.match(analyse, /OPENAI_API_KEY|DEEPSEEK_API_KEY|ANTHROPIC_API_KEY|GEMINI_API_KEY/);
+assert.match(analyse, /MOCK 思考完成|MOCK thinking complete/);
+assert.match(analyse, /thinking_steps/);
+assert.match(analyse, /llmEnrichmentEnabled/);
+assert.match(analyse, /forexPackMonitorIds|FOREX_INCIDENT_1028/);
 assert.match(analyse, /zh-Hant/);
+assert.match(analyse, /fresh thinking each call|不快取/);
+assert.match(analyse, /loadSimulatedMonitorSnapshot/);
+assert.match(analyse, /LIVE_LLM|enableDiscoveryOpenAi/);
+assert.match(analyse, /setRuntimeLlmProvider|resolveLlmProvider/);
+
+const discovery = read("src/lib/ai/discovery.ts");
+assert.match(discovery, /sampleFeatureWindow/);
+assert.match(discovery, /detector_runs/);
+assert.match(discovery, /scan_seed/);
+assert.match(discovery, /thinking_steps/);
+assert.match(discovery, /simulated_from_monitor_indicators/);
+assert.match(discovery, /live_sqlite_feature_window/);
+
+assert.match(board, /discovery-scan-thinking/);
+assert.match(board, /Scan process trail|掃描過程軌跡/);
 
 const nextCfg = read("next.config.ts");
 assert.match(nextCfg, /crmp-admin/);
@@ -83,6 +103,20 @@ assert.match(i18n, /discovery:\s*\{[\s\S]*zh-Hant": "未知風險探索"/);
 
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /"Unknown Risk Discovery": "未知風險探索"/);
+
+const indDoc = read("docs/INDICATORS_SCENARIOS.md");
+assert.match(indDoc, /Audience map|Admin \/ Risk Owner/);
+assert.match(indDoc, /All indicators|Pricing lens/);
+assert.match(indDoc, /real thinking each trigger|scan_seed/);
+const indDocZh = read("docs/INDICATORS_SCENARIOS.zh-Hant.md");
+assert.match(indDocZh, /受眾對照|管理／風險負責人/);
+assert.match(indDocZh, /全部指標|定價視角/);
+assert.match(indDocZh, /每次觸發真實思考|scan_seed/);
+
+const llmEnrich = read("src/lib/ai/llm-enrich.ts");
+assert.match(llmEnrich, /enrichAnalysesWithLlm/);
+assert.match(llmEnrich, /thinking_steps/);
+assert.match(llmEnrich, /think_id|LLM-/);
 
 const wf = fs.readFileSync(path.join(repo, ".github/workflows/crmp-pages.yml"), "utf8");
 assert.match(wf, /crmp-admin/);

@@ -4,6 +4,7 @@ import { ensureDiscoverySchema } from "@/lib/ai/discovery-schema";
 import { logSpineEvent } from "@/lib/ai/spine";
 import { decideChangeRequest, proposeChange } from "@/lib/ai/admin";
 import { seedDetectors } from "@/lib/ai/detectors";
+import { forexPackMonitorIds } from "@/lib/demo/forex-incident-1028";
 
 type Actor = { id: number; name: string; role_code: string };
 
@@ -60,8 +61,72 @@ function skillCodeFor(c: RawCandidate) {
   return `SKILL-DISC-${slugPart(c.method).slice(0, 8)}-${slugPart(c.proposed_indicator).slice(0, 14)}`;
 }
 
-/** Build a short realtime feature window from live monitor indicators. */
-function sampleFeatureWindow(db: ReturnType<typeof getDb>) {
+type MonitorRow = {
+  monitor_id: string;
+  name: string;
+  domain_code: string;
+  product: string;
+  last_value: number | null;
+  threshold_warn: number | null;
+  threshold_breach: number | null;
+  status: string;
+  unit: string | null;
+};
+
+type FeatureWindowMeta = {
+  scan_seed: string;
+  triggered_at: string;
+  data_source: "detector_runs" | "mixed" | "simulated_from_monitor_indicators";
+  monitor_count: number;
+  series_points: number;
+  detector_run_points: number;
+  simulated_series: number;
+  forex_pack_monitors: string[];
+  sqlite_snapshot: Array<{
+    monitor_id: string;
+    last_value: number | null;
+    status: string;
+    threshold_warn: number | null;
+  }>;
+  thinking_steps: string[];
+};
+
+/** Load recent detector_runs for a monitor (actual simulated spine history). */
+function loadDetectorSeries(
+  db: ReturnType<typeof getDb>,
+  monitorId: string,
+  limit = 48
+): Array<{ t: number; v: number }> {
+  const runs = db
+    .prepare(
+      `SELECT r.observed_value, r.created_at
+       FROM detector_runs r
+       JOIN detectors d ON d.id = r.detector_id
+       WHERE d.monitor_id = ?
+         AND r.observed_value IS NOT NULL
+       ORDER BY r.id DESC
+       LIMIT ?`
+    )
+    .all(monitorId, limit) as Array<{ observed_value: number; created_at: string }>;
+  return runs
+    .reverse()
+    .map((r) => ({
+      t: Date.parse(r.created_at.replace(" ", "T") + "Z") || Date.now(),
+      v: Number(r.observed_value),
+    }));
+}
+
+/**
+ * Build a realtime feature window from live SQLite monitor_indicators,
+ * preferring detector_runs history when present; otherwise synthesize ticks
+ * from seeded last_value (still grounded in vantage_risk.db).
+ * Every trigger gets a unique scan_seed so consecutive scans recompute fresh.
+ */
+function sampleFeatureWindow(db: ReturnType<typeof getDb>): {
+  rows: MonitorRow[];
+  points: Array<Record<string, number>>;
+  meta: FeatureWindowMeta;
+} {
   const rows = db
     .prepare(
       `SELECT monitor_id, name, domain_code, product, last_value, threshold_warn, threshold_breach, status, unit
@@ -69,39 +134,104 @@ function sampleFeatureWindow(db: ReturnType<typeof getDb>) {
        WHERE COALESCE(paused, 0) = 0
        ORDER BY monitor_id`
     )
-    .all() as Array<{
-    monitor_id: string;
-    name: string;
-    domain_code: string;
-    product: string;
-    last_value: number | null;
-    threshold_warn: number | null;
-    threshold_breach: number | null;
-    status: string;
-    unit: string | null;
-  }>;
+    .all() as MonitorRow[];
 
+  const forexPack = new Set(forexPackMonitorIds());
+  const scanSeed = randomBytes(6).toString("hex");
   const now = Date.now();
-  const points: Array<Record<string, number>> = [];
-  for (let i = 0; i < 48; i++) {
-    const point: Record<string, number> = { t: now - (47 - i) * 5 * 60 * 1000 };
-    for (const r of rows) {
+  const WINDOW = 48;
+  const seriesByMonitor = new Map<string, number[]>();
+  let detectorRunPoints = 0;
+  let simulatedSeries = 0;
+
+  for (const r of rows) {
+    const hist = loadDetectorSeries(db, r.monitor_id, WINDOW);
+    if (hist.length >= 8) {
+      detectorRunPoints += hist.length;
+      // Pad / trim to WINDOW using last observed + light jitter unique per scan.
+      const values = hist.map((h) => h.v);
+      while (values.length < WINDOW) {
+        const last = values[values.length - 1] ?? r.last_value ?? 0;
+        const jitter =
+          (Math.sin(values.length + scanSeed.length) + (parseInt(scanSeed.slice(0, 2), 16) / 255 - 0.5)) *
+          Math.max(0.3, Math.abs(last) * 0.02);
+        values.push(Math.round((last + jitter) * 1000) / 1000);
+      }
+      seriesByMonitor.set(r.monitor_id, values.slice(-WINDOW));
+    } else {
+      simulatedSeries++;
       const base = r.last_value ?? 0;
-      const noise = (Math.sin(i / 3 + r.monitor_id.length) + Math.random() - 0.4) * Math.max(0.5, Math.abs(base) * 0.04);
-      // Inject a late-window spike on a few series so discovery finds something in demo.
-      const spike =
-        i >= 40 &&
-        (r.monitor_id.includes("LP") ||
-          r.monitor_id.includes("HEDGE") ||
-          r.monitor_id.includes("MRG") ||
-          r.monitor_id.includes("FEED"))
-          ? Math.abs(base) * 0.22 + (r.threshold_warn ?? 1) * 0.15
-          : 0;
-      point[r.monitor_id] = Math.round((base + noise + spike) * 1000) / 1000;
+      const values: number[] = [];
+      for (let i = 0; i < WINDOW; i++) {
+        const noise =
+          (Math.sin(i / 3 + r.monitor_id.length + parseInt(scanSeed.slice(2, 4), 16)) +
+            Math.random() -
+            0.4) *
+          Math.max(0.5, Math.abs(base) * 0.04);
+        const spike =
+          i >= 40 &&
+          (forexPack.has(r.monitor_id) ||
+            r.monitor_id.includes("LP") ||
+            r.monitor_id.includes("HEDGE") ||
+            r.monitor_id.includes("MRG") ||
+            r.monitor_id.includes("FEED"))
+            ? Math.abs(base) * (forexPack.has(r.monitor_id) ? 0.28 : 0.22) +
+              (r.threshold_warn ?? 1) * (forexPack.has(r.monitor_id) ? 0.2 : 0.15)
+            : 0;
+        values.push(Math.round((base + noise + spike) * 1000) / 1000);
+      }
+      seriesByMonitor.set(r.monitor_id, values);
+    }
+  }
+
+  const points: Array<Record<string, number>> = [];
+  for (let i = 0; i < WINDOW; i++) {
+    const point: Record<string, number> = { t: now - (WINDOW - 1 - i) * 5 * 60 * 1000 };
+    for (const r of rows) {
+      point[r.monitor_id] = seriesByMonitor.get(r.monitor_id)?.[i] ?? 0;
     }
     points.push(point);
   }
-  return { rows, points };
+
+  const data_source: FeatureWindowMeta["data_source"] =
+    simulatedSeries === 0 && rows.length
+      ? "detector_runs"
+      : detectorRunPoints > 0
+        ? "mixed"
+        : "simulated_from_monitor_indicators";
+
+  const packIds = [...forexPack].filter((id) => rows.some((r) => r.monitor_id === id));
+  const thinking_steps = [
+    `Trigger scan_seed=${scanSeed} at ${new Date(now).toISOString()}`,
+    `Read ${rows.length} active monitor_indicators from SQLite (vantage_risk.db)`,
+    detectorRunPoints
+      ? `Grounded ${detectorRunPoints} points on detector_runs history; ${simulatedSeries} series synthesized from last_value`
+      : `No detector_runs history yet — synthesized ${WINDOW}-tick window from seeded last_value + forex-pack late spike`,
+    `Data source=${data_source}; forex pack anchors: ${packIds.slice(0, 6).join(", ") || "none"}`,
+    "Run parallel statistical / ML detectors on this fresh window (not cached)",
+  ];
+
+  return {
+    rows,
+    points,
+    meta: {
+      scan_seed: scanSeed,
+      triggered_at: new Date(now).toISOString(),
+      data_source,
+      monitor_count: rows.length,
+      series_points: WINDOW,
+      detector_run_points: detectorRunPoints,
+      simulated_series: simulatedSeries,
+      forex_pack_monitors: packIds,
+      sqlite_snapshot: rows.slice(0, 24).map((r) => ({
+        monitor_id: r.monitor_id,
+        last_value: r.last_value,
+        status: r.status,
+        threshold_warn: r.threshold_warn,
+      })),
+      thinking_steps,
+    },
+  };
 }
 
 function mean(xs: number[]) {
@@ -121,14 +251,39 @@ function percentile(xs: number[], p: number) {
   return sorted[idx];
 }
 
-function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
-  const { rows, points } = sampleFeatureWindow(db);
-  if (!rows.length || points.length < 10) return [];
+type DiscoveryPass = {
+  candidates: RawCandidate[];
+  meta: FeatureWindowMeta;
+  method_thinking: string[];
+};
+
+function seriesTail(points: Array<Record<string, number>>, monitorId: string, n = 6) {
+  return points.slice(-n).map((p) => p[monitorId] ?? 0);
+}
+
+function discoverCandidates(db: ReturnType<typeof getDb>): DiscoveryPass {
+  const { rows, points, meta } = sampleFeatureWindow(db);
+  const method_thinking: string[] = [...meta.thinking_steps];
+  if (!rows.length || points.length < 10) {
+    method_thinking.push("Abort: insufficient monitor rows or series points in SQLite window");
+    return { candidates: [], meta, method_thinking };
+  }
 
   const out: RawCandidate[] = [];
   const split = Math.floor(points.length * 0.6);
   const recent = points.slice(-8);
   const baseline = points.slice(0, split);
+  const windowIso = {
+    window_start: new Date(recent[0].t).toISOString(),
+    window_end: new Date(recent[recent.length - 1].t).toISOString(),
+  };
+  const baseEvidence = {
+    scan_seed: meta.scan_seed,
+    data_source: meta.data_source,
+    monitor_count: meta.monitor_count,
+    series_points: meta.series_points,
+    triggered_at: meta.triggered_at,
+  };
 
   // Method 1 — Isolation-style multivariate score (z-score sum of extremes)
   {
@@ -149,6 +304,11 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         };
       }
     }
+    method_thinking.push(
+      best
+        ? `isolation_forest: peak z=${best.score.toFixed(2)} on ${best.monitor_id}`
+        : "isolation_forest: no candidate"
+    );
     if (best && best.score >= 2.2) {
       out.push({
         method: "isolation_forest",
@@ -159,12 +319,18 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         severity: best.score >= 3.5 ? "BREACH" : "WARN",
         product: best.product,
         evidence: {
+          ...baseEvidence,
           anchor_monitor: best.monitor_id,
           z_score: best.score,
+          recent_tail: seriesTail(points, best.monitor_id),
           method_note: "Simplified isolation / extreme z proxy on live Monitor 2.0 series",
+          thinking: [
+            `Loaded SQLite window seed ${meta.scan_seed}`,
+            `Computed baseline z on ${split} ticks; recent max |z|=${best.score.toFixed(2)}`,
+            "Flag as unknown-risk candidate pending RO review",
+          ],
         },
-        window_start: new Date(recent[0].t).toISOString(),
-        window_end: new Date(recent[recent.length - 1].t).toISOString(),
+        ...windowIso,
       });
     }
   }
@@ -184,6 +350,7 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         cusum = Math.max(0, cusum + z - k);
         peak = Math.max(peak, cusum);
       }
+      method_thinking.push(`cusum: peak=${peak.toFixed(2)} on ${lp.monitor_id}`);
       if (peak >= 3) {
         out.push({
           method: "cusum",
@@ -193,11 +360,22 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
           score: peak,
           severity: peak >= 6 ? "BREACH" : "WARN",
           product: lp.product.includes("Crypto") ? "CRYPTO" : "CFD",
-          evidence: { anchor_monitor: lp.monitor_id, cusum_peak: peak, baseline_mean: mu },
-          window_start: new Date(recent[0].t).toISOString(),
-          window_end: new Date(recent[recent.length - 1].t).toISOString(),
+          evidence: {
+            ...baseEvidence,
+            anchor_monitor: lp.monitor_id,
+            cusum_peak: peak,
+            baseline_mean: mu,
+            recent_tail: seriesTail(points, lp.monitor_id),
+            thinking: [
+              `CUSUM on SQLite series ${lp.monitor_id} (seed ${meta.scan_seed})`,
+              `Peak ${peak.toFixed(2)} vs threshold 3`,
+            ],
+          },
+          ...windowIso,
         });
       }
+    } else {
+      method_thinking.push("cusum: no LP/reject monitor in SQLite seed");
     }
   }
 
@@ -211,6 +389,7 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
       const za = (v: number) => (v - mean(sa.slice(0, split))) / Math.max(std(sa.slice(0, split)), 1e-6);
       const zb = (v: number) => (v - mean(sb.slice(0, split))) / Math.max(std(sb.slice(0, split)), 1e-6);
       const dist = Math.hypot(za(sa[sa.length - 1]), zb(sb[sb.length - 1]));
+      method_thinking.push(`mahalanobis: joint_distance=${dist.toFixed(2)} ${a.monitor_id}×${b.monitor_id}`);
       if (dist >= 2.5) {
         out.push({
           method: "mahalanobis",
@@ -220,11 +399,17 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
           score: dist,
           severity: dist >= 4 ? "BREACH" : "WARN",
           product: "CFD",
-          evidence: { monitors: [a.monitor_id, b.monitor_id], joint_distance: dist },
-          window_start: new Date(recent[0].t).toISOString(),
-          window_end: new Date(recent[recent.length - 1].t).toISOString(),
+          evidence: {
+            ...baseEvidence,
+            monitors: [a.monitor_id, b.monitor_id],
+            joint_distance: dist,
+            thinking: [`Joint distance on seed ${meta.scan_seed}`, `dist=${dist.toFixed(2)}`],
+          },
+          ...windowIso,
         });
       }
+    } else {
+      method_thinking.push("mahalanobis: missing LP/FEED × HEDGE/EQ pair");
     }
   }
 
@@ -241,6 +426,7 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         hit = r;
       }
     }
+    method_thinking.push(`lof: best warn_ratio=${bestRatio.toFixed(2)} on ${hit?.monitor_id ?? "?"}`);
     if (bestRatio >= 1.15) {
       out.push({
         method: "lof",
@@ -250,9 +436,14 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         score: bestRatio,
         severity: bestRatio >= 1.6 ? "BREACH" : "WARN",
         product: hit.product.includes("Crypto") ? "CRYPTO" : "CFD",
-        evidence: { anchor_monitor: hit.monitor_id, warn_ratio: bestRatio },
-        window_start: new Date(recent[0].t).toISOString(),
-        window_end: new Date(recent[recent.length - 1].t).toISOString(),
+        evidence: {
+          ...baseEvidence,
+          anchor_monitor: hit.monitor_id,
+          warn_ratio: bestRatio,
+          recent_tail: seriesTail(points, hit.monitor_id),
+          thinking: [`Peer-relative LOF vs SQLite threshold_warn`, `ratio=${bestRatio.toFixed(2)}`],
+        },
+        ...windowIso,
       });
     }
   }
@@ -279,6 +470,7 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         bestKey = k;
       }
     }
+    method_thinking.push(`subgroup: best_lift=${bestLift.toFixed(3)} slice=${bestKey || "none"}`);
     if (bestKey && bestLift >= 0.18) {
       const [product, domain] = bestKey.split("|");
       out.push({
@@ -289,9 +481,13 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         score: bestLift,
         severity: bestLift >= 0.35 ? "BREACH" : "WARN",
         product: product.includes("Crypto") ? "CRYPTO" : "CFD",
-        evidence: { slice: bestKey, relative_lift: bestLift },
-        window_start: new Date(recent[0].t).toISOString(),
-        window_end: new Date(recent[recent.length - 1].t).toISOString(),
+        evidence: {
+          ...baseEvidence,
+          slice: bestKey,
+          relative_lift: bestLift,
+          thinking: [`Slice contrast across product×domain from SQLite`, `lift=${bestLift.toFixed(3)}`],
+        },
+        ...windowIso,
       });
     }
   }
@@ -318,6 +514,9 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
         }
       }
       const rate = cond ? hits / cond : 0;
+      method_thinking.push(
+        `sequence: P=${rate.toFixed(2)} n=${cond} ${lead.monitor_id}→${lag.monitor_id}`
+      );
       if (rate >= 0.35 && cond >= 2) {
         out.push({
           method: "sequence",
@@ -327,19 +526,30 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
           score: rate,
           severity: rate >= 0.55 ? "BREACH" : "WARN",
           product: "CFD",
-          evidence: { lead: lead.monitor_id, lag: lag.monitor_id, conditional_rate: rate, support: cond },
+          evidence: {
+            ...baseEvidence,
+            lead: lead.monitor_id,
+            lag: lag.monitor_id,
+            conditional_rate: rate,
+            support: cond,
+            thinking: [`Lead-lag precursor on seed ${meta.scan_seed}`, `P=${rate.toFixed(2)} n=${cond}`],
+          },
           window_start: new Date(baseline[0].t).toISOString(),
           window_end: new Date(recent[recent.length - 1].t).toISOString(),
         });
       }
+    } else {
+      method_thinking.push("sequence: missing lead/lag monitors");
     }
   }
 
   // Method 7 — Correlation network shift
   {
-    const pick = rows.filter((r) =>
-      ["LP", "HEDGE", "FEED", "MRG", "EQ", "CRYPTO"].some((k) => r.monitor_id.includes(k))
-    ).slice(0, 5);
+    const pick = rows
+      .filter((r) =>
+        ["LP", "HEDGE", "FEED", "MRG", "EQ", "CRYPTO"].some((k) => r.monitor_id.includes(k))
+      )
+      .slice(0, 5);
     if (pick.length >= 3) {
       const corr = (xs: number[], ys: number[]) => {
         const mx = mean(xs);
@@ -373,6 +583,7 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
           }
         }
       }
+      method_thinking.push(`corr_network: max_shift=${maxShift.toFixed(2)} pair=${pair || "none"}`);
       if (maxShift >= 0.35) {
         out.push({
           method: "corr_network",
@@ -382,15 +593,24 @@ function discoverCandidates(db: ReturnType<typeof getDb>): RawCandidate[] {
           score: maxShift,
           severity: maxShift >= 0.55 ? "BREACH" : "WARN",
           product: "CFD",
-          evidence: { pair, corr_shift: maxShift },
-          window_start: new Date(recent[0].t).toISOString(),
-          window_end: new Date(recent[recent.length - 1].t).toISOString(),
+          evidence: {
+            ...baseEvidence,
+            pair,
+            corr_shift: maxShift,
+            thinking: [`Correlation shift on seed ${meta.scan_seed}`, `Δρ=${maxShift.toFixed(2)}`],
+          },
+          ...windowIso,
         });
       }
+    } else {
+      method_thinking.push("corr_network: fewer than 3 network monitors");
     }
   }
 
-  return out;
+  method_thinking.push(
+    `Pass complete: ${out.length} raw candidate(s) from ${meta.data_source} window (seed ${meta.scan_seed})`
+  );
+  return { candidates: out, meta, method_thinking };
 }
 
 export function listDiscoveryCandidates(status?: string, limit = 80) {
@@ -480,7 +700,8 @@ export function runDiscoveryParallel(opts: { actor?: string; trigger?: string } 
     return { ok: true, skipped: true, scan_id: scanId, candidates_new: 0, candidates: [] as string[] };
   }
 
-  const raw = discoverCandidates(db);
+  const pass = discoverCandidates(db);
+  const raw = pass.candidates;
   // Within-method percentile ranking
   const byMethod = new Map<string, number[]>();
   for (const c of raw) {
@@ -551,24 +772,53 @@ export function runDiscoveryParallel(opts: { actor?: string; trigger?: string } 
         indicator: c.proposed_indicator,
         dimension: c.proposed_dimension,
         scan_id: scanId,
+        scan_seed: pass.meta.scan_seed,
+        data_source: pass.meta.data_source,
       },
       actor: opts.actor ?? "discovery-engine",
     });
   }
+
+  const detail = {
+    methods: [...byMethod.keys()],
+    scan_seed: pass.meta.scan_seed,
+    data_source: pass.meta.data_source,
+    triggered_at: pass.meta.triggered_at,
+    monitor_count: pass.meta.monitor_count,
+    series_points: pass.meta.series_points,
+    detector_run_points: pass.meta.detector_run_points,
+    simulated_series: pass.meta.simulated_series,
+    forex_pack_monitors: pass.meta.forex_pack_monitors,
+    sqlite_snapshot: pass.meta.sqlite_snapshot,
+    thinking_steps: pass.method_thinking,
+    process: "live_sqlite_feature_window→parallel_stat_ml→fingerprint_dedupe→PENDING_RO",
+  };
 
   db.prepare(
     `UPDATE risk_discovery_scans
      SET finished_at = datetime('now'), status = 'COMPLETED',
          candidates_new = ?, candidates_total = ?, detail_json = ?
      WHERE scan_id = ?`
-  ).run(created, raw.length, JSON.stringify({ methods: [...byMethod.keys()] }), scanId);
+  ).run(created, raw.length, JSON.stringify(detail), scanId);
 
   writeAudit({ name: opts.actor ?? "discovery-engine" }, "RUN_DISCOVERY", "risk_discovery", scanId, {
     candidates_new: created,
     candidates_total: raw.length,
+    scan_seed: pass.meta.scan_seed,
+    data_source: pass.meta.data_source,
   });
 
-  return { ok: true, skipped: false, scan_id: scanId, candidates_new: created, candidates: ids };
+  return {
+    ok: true,
+    skipped: false,
+    scan_id: scanId,
+    candidates_new: created,
+    candidates: ids,
+    thinking_steps: pass.method_thinking,
+    data_source: pass.meta.data_source,
+    scan_seed: pass.meta.scan_seed,
+    detail,
+  };
 }
 
 function buildPromotePayload(row: {

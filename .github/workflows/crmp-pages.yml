@@ -20,6 +20,7 @@ on:
         cursor/noise-reduction-a935,
         cursor/l2-rca-a935,
         cursor/restore-crmp-pages-a935,
+        cursor/crmp-data-sql-a935,
         main,
       ]
     paths:

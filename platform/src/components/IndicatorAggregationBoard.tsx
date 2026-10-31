@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui";
 import { EnZh } from "@/components/EnZh";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase } from "@/lib/i18n";
+import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 import {
   LINEAR_AGGREGATION_STEPS,
   type AggregateDefinition,
@@ -465,17 +466,26 @@ export function IndicatorAggregationBoard({
                   </button>
                   <AdminLink
                     className="btn btn-primary !min-h-10 text-xs"
-                    href="/admin/ai-incident"
+                    href={FOREX_INCIDENT_1028.workspace_path}
                     data-testid="indicator-agg-open-ai-rca"
                   >
-                    <EnZh en="Open AI RCA report (INC-1028)" zh="開啟 AI RCA 報告（INC-1028）" />
+                    <EnZh
+                      en={`Open AI RCA (${FOREX_INCIDENT_1028.incident_id})`}
+                      zh={`開啟 AI RCA（${FOREX_INCIDENT_1028.incident_id}）`}
+                    />
                   </AdminLink>
                   <AdminLink
                     className="btn !min-h-10 text-xs"
-                    href="/admin/l2-rca"
+                    href={FOREX_INCIDENT_1028.l2_labs_path}
                     data-testid="indicator-agg-open-l2-rca-lab"
                   >
                     <EnZh en="L2 → AI RCA Lab" zh="L2 → AI RCA 實驗室" />
+                  </AdminLink>
+                  <AdminLink className="btn !min-h-10 text-xs" href="/admin/messenger">
+                    <EnZh en="Ops Inbox" zh="值班收件匣" />
+                  </AdminLink>
+                  <AdminLink className="btn !min-h-10 text-xs" href={FOREX_INCIDENT_1028.risk_log_path}>
+                    <EnZh en="Closed Risk Log" zh="已結風險日誌" />
                   </AdminLink>
                 </div>
               ) : null}

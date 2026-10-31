@@ -53,7 +53,8 @@ expect(
 );
 expect(phrase("dummy_spine failed", zh) === "虛擬脊柱演練失敗", "api error");
 
-const single = runDummyAlertDemo({ mode: "single", locale: zh });
+async function main() {
+const single = await runDummyAlertDemo({ mode: "single", locale: zh });
 expect(single.ok, "single ok");
 expect(single.runs.length === 1, `single run count ${single.runs.length}`);
 const run = single.runs[0];
@@ -103,7 +104,7 @@ const zhChat = db
   .get(run.thread_id, "%虛擬首頁演練%") as { c: number };
 expect(zhChat.c >= 1, `zh messenger chat ${zhChat.c}`);
 
-const group = runDummyAlertDemo({ mode: "group" });
+const group = await runDummyAlertDemo({ mode: "group" });
 expect(group.runs.length === 3, `group count ${group.runs.length} errors=${group.errors.join("; ")}`);
 expect(
   group.runs.every((r) => r.closed && r.alert_id && r.thread_id),
@@ -121,3 +122,9 @@ console.log(
     2
   )
 );
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

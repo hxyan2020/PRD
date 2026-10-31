@@ -20,11 +20,11 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },
 
   // Home
-  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), L1→L2 aggregation demo + threshold adjustment full-flow demo, stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
+  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview: stats, dummy spine walk, desk-flow shortcuts (Monitor → Open Alerts → Labs → Aggregation → Discovery → Messenger → Skills → Risk Log) on shared forex pack INC-1028, expandable open-alert tracker; full L1→L2 / threshold demos live on their canonical pages", permission: "admin.access" },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
-  { category: "Risk", title: "Risk Log Analytics", path: "/admin/risk-log", description: "Closed tracker packs + 90-day historical charts (alerts/open book, loss vs prevented, latency) + timeline", permission: "monitor.read" },
+  { category: "Risk", title: "Closed Risk Log", path: "/admin/risk-log", description: "Closed tracker packs + 90-day historical charts (alerts/open book, loss vs prevented, latency) + timeline", permission: "monitor.read" },
   { category: "Risk", title: "Market Intelligence", path: "/admin/market-intel", description: "5-min news/social scan + messenger outbox", permission: "monitor.read" },
   {
     category: "Risk",
@@ -44,10 +44,18 @@ export const PLATFORM_URLS: UrlEntry[] = [
   },
   {
     category: "Risk",
+    title: "Monitor labs",
+    path: "/admin/monitor-labs",
+    description:
+      "Single left-nav hub for HTML labs (?tab=l2-rca|ai-incident|noise-reduction). Deep links /admin/l2-rca, /admin/ai-incident, /admin/noise-reduction still work — demo data only",
+    permission: "monitor.read",
+  },
+  {
+    category: "Risk",
     title: "L2 → AI RCA Lab",
     path: "/admin/l2-rca",
     description:
-      "Bilingual Discovery → L1/L2 → AI RCA lab: known-incident reverse engineering, unknown-risk models, L1→L2 live aggregate (AND/OR/SEQUENCE), then natural handoff to AI Incident Workspace (INC-1028) — demo data only",
+      "Deep link into Monitor labs → L2→AI RCA tab. Discovery → L1/L2 → AI RCA then handoff to INC-1028 — demo data only",
     permission: "monitor.read",
   },
   {
@@ -55,7 +63,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
     title: "AI Incident Workspace",
     path: "/admin/ai-incident",
     description:
-      "Bilingual Monitor 2.0 AI report prototype (Web + Lark, Static/Dynamic): INC-1028 LP-A XAUUSD demo with E-01…E-08 evidence, nested feedback, simulated ops — no production AI/Lark",
+      "Deep link into Monitor labs → AI Incident tab. INC-1028 LP-A XAUUSD demo — no production AI/Lark",
     permission: "monitor.read",
   },
   {
@@ -63,7 +71,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
     title: "Noise Reduction Lab",
     path: "/admin/noise-reduction",
     description:
-      "Bilingual Monitor 2.0 noise-reduction end-to-end lab: six scenarios (cross-BU L2, spike, dedup, benign, unknown, P0 bypass), knobs for threshold / persistence / L2 score / window, AI evidence + human feedback → backtest / shadow / approve — demo data only",
+      "Deep link into Monitor labs → Noise Reduction tab. Six scenarios + knobs — demo data only",
     permission: "monitor.read",
   },
   {
@@ -84,9 +92,9 @@ export const PLATFORM_URLS: UrlEntry[] = [
     path: "https://colab.research.google.com/drive/1xIEKvbEDWn88zIySa60X3j88M_stKlnP?usp=sharing",
     description: "Interactive Google Colab Jupyter notebook for unknown-risk discovery",
   },
-  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); threshold adjustment full-flow demo; alerts & tickets live on Realtime Alert & Tracker; deep-link ?monitor_id= (from Lark AI_REPORT) highlights M2-* rows", permission: "monitor.read" },
+  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); threshold adjustment full-flow demo; open tickets live on Open Alerts; deep-link ?monitor_id= (from Lark AI_REPORT) highlights M2-* rows", permission: "monitor.read" },
   { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Not in left nav — redirects to Monitor 2.0 (detectors merged into indicator registry)", permission: "detectors.read" },
-  { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + grouped AI pipeline controls (rank note) + AI RCA; M2-* MonitorCode tooltips/links; closed tickets → Risk Log; AI Analyses list redirects here", permission: "monitor.read" },
+  { category: "Risk", title: "Open Alerts", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + AI pipeline controls + AI RCA; closed tickets → Closed Risk Log; AI Analyses list redirects here", permission: "monitor.read" },
   { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0 (M2-* chips)", permission: "monitor.read" },
 
   // AI
@@ -102,9 +110,9 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "AI Access Security", path: "/admin/security/ai-access", description: "Human-only pages/functions/fields blocklist (includes FN-RAG-WRITE / propose_rag only)", permission: "audit.read" },
 
   // Response (messenger / intervention / escalation)
-  { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close; AI_REPORT Monitor 2.0 surfaces + accurate severity confirm / P0–P3 re-recommend + reason codes; controls", permission: "lark.read" },
+  { category: "Messenger", title: "Ops Inbox (Demo)", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC; evidence, chat, escalate, dismiss, close; severity feedback + controls", permission: "lark.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
-  { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
+  { category: "Messenger", title: "Lark channels (config)", path: "/admin/lark", description: "Channel registry & mock notify (config twin of Ops Inbox)", permission: "lark.read" },
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; monthly P0–P3 severity weight pack (apply → ESC-DEFAULT); skill binds one route code; no separate Path name column", permission: "escalation.read" },
 
   // Org
@@ -131,8 +139,25 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "Open Issues", path: "/admin/docs/open-issues", description: "18-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product) — ETA, dependencies, detailed ticks; Monitor still adding indicators; CRMP initial design", permission: "admin.access" },
   { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "X = open issues (columns), Y = timeline now→end-2027 (rows); status colours; responsible BU on every column", permission: "admin.access" },
   { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths", permission: "admin.access" },
+  {
+    category: "Docs",
+    title: "Simulated Data / SQL",
+    path: "/admin/docs/simulated-data",
+    description:
+      "Browse seeded SQLite tables/schemas and run read-only SQL (live: /api/sql; GitHub Pages: sql.js against vantage_risk.demo.db)",
+    permission: "admin.access",
+  },
+  {
+    category: "Docs",
+    title: "Indicators & Risk Scenarios",
+    path: "/admin/docs/indicators-scenarios",
+    description:
+      "Admin/Pricing/Dealing catalogue + Full handbook (EN/繁中 tables of all indicators, domain scenarios, skills); canonical forex demo INC-1028 (LP-A · XAUUSD)",
+    permission: "admin.access",
+  },
 
   // APIs
+  { category: "API", title: "SQL explorer", path: "/api/sql", description: "GET catalog of simulated tables · POST { sql } read-only SELECT/WITH/EXPLAIN/PRAGMA (admin.access); secrets masked" },
   { category: "API", title: "AI API", path: "/api/ai", description: "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges" },
   { category: "API", title: "AI improve chat", path: "/api/ai-improve", description: "GET/POST how-to-improve review · pull data / add fact / challenge / regenerate / accept" },
   { category: "API", title: "Desk selection chat", path: "/api/ai-chat", description: "POST selected text + follow-ups → grounded CRMP explanation" },

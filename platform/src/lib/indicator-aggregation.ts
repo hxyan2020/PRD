@@ -12,6 +12,7 @@ import { getDb, writeAudit } from "@/lib/db";
 import { LINKED_SCENARIOS } from "@/lib/ai/risk-scenarios-catalog";
 import { listLinkedScenarios, seedSkillsIfEmpty } from "@/lib/ai/skills";
 import type { LinkedScenario, TimelineEvent } from "@/lib/ai/scenario-types";
+import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 import {
   LINEAR_AGGREGATION_STEPS,
   POST_L2_FLOW_STAGES,
@@ -92,6 +93,7 @@ function zhChainName(code: string, fallback: string): string {
   const map: Record<string, string> = {
     "CHAIN-CREDIT-CASCADE": "跟單集中 → 保證金尖峰 → 權益回撤",
     "CHAIN-LP-HEDGE-GAP": "LP 拒單風暴 → 對沖覆蓋缺口 → 權益壓力",
+    "CHAIN-PRICING-FEED-PROPAGATION": "LP 報價延遲 → 最終報價陳舊 → 定價發布延遲（INC-1028）",
     "CHAIN-FEED-LIQUIDATION-ERROR": "陳舊行情 → 假保證金壓力 → 權益雜訊",
   };
   return map[code] || fallback;
@@ -101,6 +103,7 @@ function zhChainDesc(code: string, fallback: string): string {
   const map: Record<string, string> = {
     "CHAIN-CREDIT-CASCADE": "經典 CFD 信用傳染：單一提供者主導、跟單者觸及保證金、公司權益下滑。",
     "CHAIN-LP-HEDGE-GAP": "流動性失效使帳簿在波動中未對沖。",
+    "CHAIN-PRICING-FEED-PROPAGATION": "INC-1028 標準外匯故事：LP-A XAUUSD 報價年齡與券商最終報價凍結沿定價鏈傳播。",
     "CHAIN-FEED-LIQUIDATION-ERROR": "錯誤價格造成人為保證金使用率與錯誤強平。",
   };
   return map[code] || fallback;
@@ -554,9 +557,24 @@ export function seedAggregationDemosIfEmpty(db: Database.Database = getDb()) {
   const existing = loadSessions(db);
   if (existing.length > 0) return existing;
 
+  // Prefer the shared forex CFD pack chain (INC-1028) when present.
+  const fxMonitors = new Set<string>(FOREX_INCIDENT_1028.monitors as readonly string[]);
   const defs = listAggregateDefinitions(db);
-  const chain = defs.find((d) => d.member_monitors.length >= 2) || defs[0];
+  const forexChain =
+    defs.find((d) => d.code === FOREX_INCIDENT_1028.chain_code) ||
+    defs.find((d) => d.code === "CHAIN-LP-HEDGE-GAP") ||
+    defs.find((d) => d.member_monitors.includes("M2-FEED-003") && d.member_monitors.includes("M2-LP-022")) ||
+    defs.find((d) => d.member_monitors.includes(FOREX_INCIDENT_1028.primary_monitor_id) && d.member_monitors.includes("M2-FEED-003")) ||
+    defs.find((d) => d.member_monitors.filter((m) => fxMonitors.has(m)).length >= 2);
+  const chain = forexChain || defs.find((d) => d.member_monitors.length >= 2) || defs[0];
   const orphanMonitor = "M2-ORPHAN-999";
+  const trigger =
+    (chain?.member_monitors.includes(FOREX_INCIDENT_1028.primary_monitor_id)
+      ? FOREX_INCIDENT_1028.primary_monitor_id
+      : null) ||
+    chain?.member_monitors.find((m) => fxMonitors.has(m)) ||
+    chain?.member_monitors[0] ||
+    FOREX_INCIDENT_1028.primary_monitor_id;
 
   // Path A: not in any aggregate
   const a = startAggregationSession({
@@ -568,7 +586,7 @@ export function seedAggregationDemosIfEmpty(db: Database.Database = getDb()) {
 
   // Path B: in aggregate, window times out
   const b = startAggregationSession({
-    trigger_monitor: chain?.member_monitors[0] || "M2-COPY-009",
+    trigger_monitor: trigger,
     trigger_severity: "BREACH",
     actor: { id: null, name: "seed" },
     db,
@@ -577,15 +595,20 @@ export function seedAggregationDemosIfEmpty(db: Database.Database = getDb()) {
     closeWaitWindowAsSingle({ session_id: b.session_id, actor: { id: null, name: "seed" }, db });
   }
 
-  // Path C: in aggregate, related fires → RO aggregate
+  // Path C: in aggregate, related fires → RO aggregate (prefer forex companion monitor)
   const c = startAggregationSession({
-    trigger_monitor: chain?.member_monitors[0] || "M2-COPY-009",
+    trigger_monitor: trigger,
     trigger_severity: "BREACH",
     actor: { id: null, name: "seed" },
     db,
   });
+  // Related must be a member of the session's own aggregate (not a preferred chain that diverged).
+  const sessionDef = defs.find((d) => d.code === c.aggregate_code) || chain;
   const related =
-    chain?.member_monitors.find((m) => m !== c.trigger_monitor) || chain?.member_monitors[1];
+    sessionDef?.member_monitors.find((m) => m !== c.trigger_monitor && fxMonitors.has(m)) ||
+    sessionDef?.member_monitors.find((m) => m !== c.trigger_monitor) ||
+    sessionDef?.member_monitors[1] ||
+    null;
   if (c.step === "CORRELATED_WAIT" && related) {
     injectRelatedAlert({
       session_id: c.session_id,

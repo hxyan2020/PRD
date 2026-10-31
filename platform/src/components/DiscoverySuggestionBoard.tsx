@@ -9,6 +9,7 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { MonitorCode } from "@/components/MonitorCode";
 import { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";
+import { LlmProviderPicker } from "@/components/LlmProviderPicker";
 
 type DiscoverySuggestion = {
   assessment: string;
@@ -22,6 +23,7 @@ type DiscoverySuggestion = {
   confidence: string;
   analysis_source: string;
   model?: string | null;
+  thinking_steps?: string[];
 };
 
 type Candidate = {
@@ -48,11 +50,24 @@ type Candidate = {
   created_at: string;
 };
 
+type LlmProviderInfo = {
+  id: string;
+  label: string;
+  configured: boolean;
+  default_model: string;
+  env_key: string;
+};
+
 type AiStatus = {
   mode: string;
+  mode_canonical?: string;
   model: string | null;
+  provider?: string | null;
+  providers?: LlmProviderInfo[];
   key_configured: boolean;
   can_go_live: boolean;
+  auto_live?: boolean;
+  operator_forced_mock?: boolean;
 };
 
 type Roles = {
@@ -83,6 +98,19 @@ function SuggestionCard({
   const zh = locale === "zh-Hant";
   const rows: Array<[string, string, ReactNode]> = [
     [zh ? "評估" : "Assessment", "assessment", suggestion.assessment],
+    ...(suggestion.thinking_steps?.length
+      ? ([
+          [
+            zh ? "思考步驟" : "Thinking steps",
+            "thinking",
+            <ol key="t" className="list-decimal pl-5 space-y-0.5 font-mono text-xs">
+              {suggestion.thinking_steps.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
+            </ol>,
+          ],
+        ] as Array<[string, string, ReactNode]>)
+      : []),
     [
       zh ? "可能根因" : "Possible root causes",
       "causes",
@@ -175,6 +203,7 @@ export function DiscoverySuggestionBoard({
       candidates_total: number;
       status: string;
       trigger_mode: string;
+      detail_json?: string;
     }>;
     pending_count: number;
     settings: Array<{ key: string; value: string }>;
@@ -187,6 +216,11 @@ export function DiscoverySuggestionBoard({
   const [candidates, setCandidates] = useState(initial.candidates);
   const [pendingCount, setPendingCount] = useState(initial.pending_count);
   const [aiStatus, setAiStatus] = useState(initial.ai_status);
+  const [selectedProvider, setSelectedProvider] = useState(
+    initial.ai_status.provider ||
+      initial.ai_status.providers?.find((p) => p.configured)?.id ||
+      "openai"
+  );
   const [selected, setSelected] = useState(
     initial.candidates.find((c) => c.status === "PENDING_RO")?.candidate_id ??
       initial.candidates[0]?.candidate_id ??
@@ -199,6 +233,31 @@ export function DiscoverySuggestionBoard({
   const [suggestion, setSuggestion] = useState<DiscoverySuggestion | null>(null);
   const [filter, setFilter] = useState("PENDING_RO");
   const [showEvidence, setShowEvidence] = useState(false);
+  const [scanTrail, setScanTrail] = useState<{
+    scan_id: string;
+    scan_seed?: string;
+    data_source?: string;
+    thinking_steps: string[];
+  } | null>(() => {
+    const latest = initial.scans[0];
+    if (!latest?.detail_json) return null;
+    try {
+      const d = JSON.parse(latest.detail_json) as {
+        thinking_steps?: string[];
+        scan_seed?: string;
+        data_source?: string;
+      };
+      if (!d.thinking_steps?.length) return null;
+      return {
+        scan_id: latest.scan_id,
+        scan_seed: d.scan_seed,
+        data_source: d.data_source,
+        thinking_steps: d.thinking_steps,
+      };
+    } catch {
+      return null;
+    }
+  });
 
   const enabled =
     initial.settings.find((s) => s.key === "discovery.enabled")?.value !== "false";
@@ -239,8 +298,27 @@ export function DiscoverySuggestionBoard({
     try {
       const data = await post({ action: "scan_now" });
       const n = Number(data.candidates_new || 0);
+      const steps = Array.isArray(data.thinking_steps)
+        ? (data.thinking_steps as string[])
+        : Array.isArray(data.detail?.thinking_steps)
+          ? (data.detail.thinking_steps as string[])
+          : [];
+      if (steps.length) {
+        setScanTrail({
+          scan_id: String(data.scan_id || ""),
+          scan_seed: data.scan_seed ? String(data.scan_seed) : data.detail?.scan_seed,
+          data_source: data.data_source
+            ? String(data.data_source)
+            : data.detail?.data_source
+              ? String(data.detail.data_source)
+              : undefined,
+          thinking_steps: steps,
+        });
+      }
       setMsg(
-        locale === "zh-Hant" ? `掃描完成：新增 ${n} 個候選` : `Scan complete: ${n} new candidate(s)`
+        locale === "zh-Hant"
+          ? `掃描完成：新增 ${n} 個候選 · 來源 ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
+          : `Scan complete: ${n} new candidate(s) · source ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
       );
       if (n > 0) bumpNavBadge("/admin/discovery", n);
       router.refresh();
@@ -255,13 +333,21 @@ export function DiscoverySuggestionBoard({
     setBusy(live ? "connect" : "disconnect");
     setMsg(null);
     try {
-      const data = await post({ action: live ? "connect_openai" : "disconnect_openai" });
+      const data = await post({
+        action: live ? "connect_llm" : "disconnect_llm",
+        provider: live ? selectedProvider : undefined,
+      });
       setAiStatus(data.status || data);
+      if (data.status?.provider) setSelectedProvider(data.status.provider);
+      const label =
+        data.status?.providers?.find((p: LlmProviderInfo) => p.id === data.status?.provider)?.label ||
+        data.status?.provider ||
+        "LLM";
       setMsg(
         live
           ? locale === "zh-Hant"
-            ? `已連線 OpenAI（${data.status?.model || "live"}）— 分析才會呼叫 API`
-            : `Live OpenAI (${data.status?.model || "live"}) — no call until Analyse`
+            ? `已連線 ${label}（${data.status?.model || "live"}）— 分析才會呼叫 API`
+            : `Live ${label} (${data.status?.model || "live"}) — no call until Analyse`
           : locale === "zh-Hant"
             ? "已切換 Mock — 不呼叫外部 API"
             : "Mock mode — no external AI calls"
@@ -408,8 +494,8 @@ export function DiscoverySuggestionBoard({
             </p>
             <p className="text-[var(--muted)] text-[13px] leading-relaxed">
               <EnZh
-                en="1 Connect AI → 2 Analyse candidate → 3 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
-                zh="① 連線 AI → ② 分析候選 → ③ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
+                en="1 Scan on live SQLite seed (stat/ML process trail) → 2 Connect AI → 3 Analyse (fresh thinking each trigger) → 4 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
+                zh="① 以即時 SQLite 種子掃描（統計／ML 過程軌跡）→ ② 連線 AI → ③ 分析（每次觸發重新思考）→ ④ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
               />
             </p>
           </div>
@@ -418,17 +504,11 @@ export function DiscoverySuggestionBoard({
               {enabled ? <EnZh en="ENABLED" zh="已啟用" /> : <EnZh en="DISABLED" zh="已停用" />}
             </Badge>
             <Badge data-testid="discovery-ai-mode">
-              AI: {aiStatus.mode === "LIVE_OPENAI" ? `LIVE (${aiStatus.model})` : "MOCK"}
+              AI:{" "}
+              {aiStatus.mode === "LIVE_OPENAI" || aiStatus.mode_canonical === "LIVE_LLM"
+                ? `LIVE (${aiStatus.provider || "llm"} / ${aiStatus.model})`
+                : "MOCK"}
             </Badge>
-            <a
-              className="btn btn-primary !min-h-9 text-xs"
-              href={RISK_DISCOVERY_NOTEBOOK.colab}
-              target="_blank"
-              rel="noreferrer"
-              data-testid="discovery-notebook-colab"
-            >
-              <EnZh en="Open Jupyter (Colab)" zh="開啟 Jupyter（Colab）" />
-            </a>
             <a
               className="btn !min-h-9 text-xs"
               href={RISK_DISCOVERY_NOTEBOOK.html}
@@ -437,15 +517,6 @@ export function DiscoverySuggestionBoard({
               data-testid="discovery-notebook-html"
             >
               <EnZh en="Open notebook (HTML)" zh="開啟筆記本（HTML）" />
-            </a>
-            <a
-              className="btn !min-h-9 text-xs"
-              href={RISK_DISCOVERY_NOTEBOOK.ipynb}
-              target="_blank"
-              rel="noreferrer"
-              data-testid="discovery-notebook-ipynb"
-            >
-              <EnZh en="Download .ipynb" zh="下載 .ipynb" />
             </a>
             <Link
               className="btn !min-h-9 text-xs"
@@ -552,21 +623,33 @@ export function DiscoverySuggestionBoard({
                 <p className="text-sm font-semibold mt-0.5" data-testid="discovery-ai-status-label">
                   <EnZh
                     en={
-                      aiStatus.mode === "LIVE_OPENAI"
-                        ? `AI: LIVE OpenAI (${aiStatus.model}) — API calls cost tokens`
+                      aiStatus.mode === "LIVE_OPENAI" || aiStatus.mode_canonical === "LIVE_LLM"
+                        ? `AI: LIVE ${aiStatus.provider || "LLM"} (${aiStatus.model}) — API calls cost tokens`
                         : "AI: MOCK — no API calls"
                     }
                     zh={
-                      aiStatus.mode === "LIVE_OPENAI"
-                        ? `AI：即時 OpenAI（${aiStatus.model}）— API 會產生費用`
+                      aiStatus.mode === "LIVE_OPENAI" || aiStatus.mode_canonical === "LIVE_LLM"
+                        ? `AI：即時 ${aiStatus.provider || "LLM"}（${aiStatus.model}）— API 會產生費用`
                         : "AI：Mock — 不呼叫 API"
                     }
                   />
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 items-center">
                 {initial.roles.can_operate || initial.roles.can_review ? (
                   <>
+                    <div data-testid="discovery-llm-provider">
+                      <LlmProviderPicker
+                        providers={aiStatus.providers || []}
+                        value={selectedProvider}
+                        disabled={!!busy}
+                        testId="discovery-llm-provider-picker"
+                        onChanged={(provider) => {
+                          setSelectedProvider(provider);
+                          setAiStatus((prev) => ({ ...prev, provider }));
+                        }}
+                      />
+                    </div>
                     <button
                       type="button"
                       className="btn btn-primary !min-h-10 text-xs"
@@ -574,7 +657,7 @@ export function DiscoverySuggestionBoard({
                       onClick={() => setAiMode(true)}
                       data-testid="discovery-connect-openai"
                     >
-                      <EnZh en="Connect OpenAI" zh="連線 OpenAI（Secrets／環境變數）" />
+                      <EnZh en="Connect LLM" zh="連線 LLM（Secrets／環境變數）" />
                     </button>
                     <button
                       type="button"
@@ -600,6 +683,34 @@ export function DiscoverySuggestionBoard({
                 ) : null}
               </div>
             </div>
+            {scanTrail?.thinking_steps?.length ? (
+              <div
+                className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 space-y-2"
+                data-testid="discovery-scan-thinking"
+              >
+                <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-700">
+                  <EnZh en="Scan process trail" zh="掃描過程軌跡" />
+                  <Badge className="normal-case tracking-normal font-mono text-[10px]">
+                    {scanTrail.scan_id}
+                  </Badge>
+                  {scanTrail.data_source ? (
+                    <Badge className="normal-case tracking-normal text-[10px]">
+                      {scanTrail.data_source}
+                    </Badge>
+                  ) : null}
+                  {scanTrail.scan_seed ? (
+                    <Badge className="normal-case tracking-normal font-mono text-[10px]">
+                      seed {scanTrail.scan_seed}
+                    </Badge>
+                  ) : null}
+                </div>
+                <ol className="list-decimal pl-5 space-y-0.5 font-mono text-xs text-slate-800">
+                  {scanTrail.thinking_steps.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+              </div>
+            ) : null}
           </section>
 
           {selectedRow ? (

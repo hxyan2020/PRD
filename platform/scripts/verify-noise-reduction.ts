@@ -41,8 +41,8 @@ assert.match(board, /embed=1/);
 assert.match(board, /zh-Hant/);
 
 const nav = read("src/lib/nav.ts");
-assert.match(nav, /\/admin\/noise-reduction/);
-assert.match(nav, /Filter/);
+assert.match(nav, /\/admin\/monitor-labs/);
+assert.doesNotMatch(nav, /href: \"\/admin\/noise-reduction\"/);
 
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /\/admin\/noise-reduction/);
@@ -51,11 +51,13 @@ assert.match(i18n, /"noise-reduction"/);
 
 const links = read("src/lib/monitor-deep-links.ts");
 assert.match(links, /noise_reduction/);
-assert.match(links, /\/admin\/noise-reduction/);
+assert.match(links, /noise_labs_path|FOREX_INCIDENT_1028/);
+const pack = read("src/lib/demo/forex-incident-1028.ts");
+assert.match(pack, /noise_labs_path:.*noise-reduction/);
 
 const urls = read("src/lib/docs/urls.ts");
 assert.match(urls, /\/admin\/noise-reduction/);
-assert.match(urls, /six scenarios/);
+assert.match(urls, /[Ss]ix scenarios/);
 
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /"Noise Reduction Lab": "降噪實驗室"/);

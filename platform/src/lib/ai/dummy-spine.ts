@@ -3,6 +3,7 @@ import { analyzeAlert, raiseMonitorAlarm } from "@/lib/ai/analyze";
 import { logSpineEvent, type SpineStage } from "@/lib/ai/spine";
 import { decideIntervention } from "@/lib/ai/intervention";
 import { messengerAction, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
+import { FOREX_COMPANION_CASES, FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 import type { UiLocale } from "@/lib/i18n";
 
 export type DummySpineMode = "single" | "group";
@@ -18,39 +19,41 @@ export type DummyTemplate = {
   message: string;
 };
 
+const fx = FOREX_INCIDENT_1028;
+const staleCompanion = FOREX_COMPANION_CASES.find((c) => c.id === "STALE-FEED-LIQ")!;
+const hedgeCompanion = FOREX_COMPANION_CASES.find((c) => c.id === "LP-HEDGE-GAP")!;
+
+/** Forex CFD pack first so home dummy spine walks the same INC-1028 book. */
 export const DUMMY_SPINE_TEMPLATES: DummyTemplate[] = [
   {
-    key: "copy",
-    monitor_id: "M2-COPY-009",
+    key: "lp-quote",
+    monitor_id: fx.primary_monitor_id,
     severity: "BREACH",
-    observed_value: 33,
+    observed_value: 5.2,
     prefer_rag: false,
-    action_code: "PAUSE_COPY",
-    title: "DUMMY · Copy concentration breach",
-    message:
-      "Home dummy: top signal provider now at 33% of copy equity after a viral strategy share. Walk the full spine to closure.",
+    action_code: "DISABLE_LP",
+    title: `DUMMY · ${fx.incident_id} LP reject / quote delay`,
+    message: `Home dummy: ${fx.lp} ${fx.symbol} reject rate / quote age rising — same book as ${fx.incident_id}. Walk DETECT→Messenger→close.`,
   },
   {
-    key: "eq",
-    monitor_id: "M2-EQ-001",
+    key: "feed-stale",
+    monitor_id: staleCompanion.primary_monitor_id,
     severity: "WARN",
-    observed_value: 3.8,
+    observed_value: 8,
     prefer_rag: true,
     action_code: "WIDEN_SPREAD",
-    title: "DUMMY · Equity drawdown warn",
-    message:
-      "Home dummy: company CFD book drawdown rising through the US session after CPI volatility. RAG path + human review.",
+    title: `DUMMY · ${fx.incident_id} stale quotes`,
+    message: `Home dummy: stale-quote symbols climbing on the ${fx.symbol} book (companion ${staleCompanion.id}). RAG path + human review.`,
   },
   {
-    key: "mrg",
-    monitor_id: "M2-MRG-014",
-    severity: "CRITICAL",
-    observed_value: 220,
+    key: "hedge-gap",
+    monitor_id: "M2-HEDGE-007",
+    severity: "BREACH",
+    observed_value: 68,
     prefer_rag: false,
-    action_code: "CUT_LEVERAGE",
-    title: "DUMMY · Margin utilisation CRITICAL",
-    message:
-      "Home dummy: book-wide margin utilisation spiked and LP rejects are rising. Dual-AI RCA and maker/checker required.",
+    action_code: "INCREASE_ABOOK",
+    title: `DUMMY · ${fx.incident_id} hedge coverage gap`,
+    message: `Home dummy: hedge coverage slipped while LP rejects rise — companion ${hedgeCompanion.chain_code} on the same CFD book as ${fx.incident_id}.`,
   },
 ];
 
@@ -106,7 +109,7 @@ function markStage(stages: SpineStage[], stage: SpineStage) {
   if (!stages.includes(stage)) stages.push(stage);
 }
 
-function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
+async function walkOne(tpl: DummyTemplate, locale: UiLocale): Promise<DummySpineRun> {
   const db = getDb();
   const stages: SpineStage[] = [];
   const maker = userByEmail(MAKER_EMAIL, MAKER_FALLBACK);
@@ -145,25 +148,62 @@ function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
   markStage(stages, "ALARM");
 
   const bundle = analyzeAlert(raised.alert_db_id, { force: true, prefer_rag: tpl.prefer_rag });
-  const analysis = bundle?.analysis as
+  let analysis = bundle?.analysis as
     | { id: number; analysis_id: string; mode: string }
     | undefined
     | null;
-  if (analysis) {
-    markStage(stages, "AI_RCA");
-    if (String(analysis.mode).includes("SKILL") || tpl.prefer_rag === false) {
-      markStage(stages, "SKILL_EXECUTE");
-    } else {
-      markStage(stages, "SKILL_EXECUTE");
+  if (analysis?.id) {
+    const { maybeEnrichAnalysisWithLlm, maybeEnrichChallengeWithLlm } = await import(
+      "@/lib/ai/llm-enrich"
+    );
+    const llm = await maybeEnrichAnalysisWithLlm(analysis.id);
+    const challengeLlm = await maybeEnrichChallengeWithLlm(analysis.id);
+    if (llm.enriched || challengeLlm.enriched || llm.source !== "SKIPPED") {
+      const refreshed = analyzeAlert(raised.alert_db_id, { force: false });
+      analysis =
+        (refreshed?.analysis as { id: number; analysis_id: string; mode: string } | undefined | null) ||
+        analysis;
+      logSpineEvent({
+        stage: "AI_RCA",
+        title: `DUMMY LLM enrich ${analysis.analysis_id} (${llm.source}/${challengeLlm.source})`,
+        product: raised.product,
+        ref_type: "ai_analysis",
+        ref_id: analysis.analysis_id,
+        severity: raised.severity,
+        detail: {
+          dummy: true,
+          llm_source: llm.source,
+          challenge_llm_source: challengeLlm.source,
+          thinking_steps: [...(llm.thinking_steps || []), ...(challengeLlm.thinking_steps || [])].slice(
+            0,
+            8
+          ),
+          model: llm.model ?? challengeLlm.model ?? null,
+        },
+        actor: "home-dummy",
+      });
     }
   }
+  if (analysis) {
+    markStage(stages, "AI_RCA");
+    markStage(stages, "SKILL_EXECUTE");
+  }
 
-  syncNewAlertsToMessenger(8);
-  const thread = db
+  syncNewAlertsToMessenger(24);
+  let thread = db
     .prepare(
       `SELECT id, thread_id FROM messenger_threads WHERE alert_id = ? ORDER BY id DESC LIMIT 1`
     )
     .get(raised.alert_db_id) as { id: number; thread_id: string } | undefined;
+  if (!thread) {
+    // Ensure this walk's alert is mirrored even if batch sync was saturated.
+    syncNewAlertsToMessenger(40);
+    thread = db
+      .prepare(
+        `SELECT id, thread_id FROM messenger_threads WHERE alert_id = ? ORDER BY id DESC LIMIT 1`
+      )
+      .get(raised.alert_db_id) as { id: number; thread_id: string } | undefined;
+  }
 
   if (thread) {
     messengerAction({
@@ -313,7 +353,7 @@ function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
   };
 }
 
-export function runDummyAlertDemo(input: { mode?: DummySpineMode; locale?: UiLocale } = {}) {
+export async function runDummyAlertDemo(input: { mode?: DummySpineMode; locale?: UiLocale } = {}) {
   const mode: DummySpineMode = input.mode === "group" ? "group" : "single";
   const locale: UiLocale = input.locale === "zh-Hant" ? "zh-Hant" : "en";
   const templates = mode === "group" ? DUMMY_SPINE_TEMPLATES : [DUMMY_SPINE_TEMPLATES[0]];
@@ -322,7 +362,7 @@ export function runDummyAlertDemo(input: { mode?: DummySpineMode; locale?: UiLoc
 
   for (const tpl of templates) {
     try {
-      runs.push(walkOne(tpl, locale));
+      runs.push(await walkOne(tpl, locale));
     } catch (e) {
       errors.push(`${tpl.key}: ${e instanceof Error ? e.message : String(e)}`);
     }

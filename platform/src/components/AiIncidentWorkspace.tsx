@@ -3,7 +3,10 @@
 import { useMemo, useState } from "react";
 import { AdminLink } from "@/components/AdminLink";
 import { EnZh } from "@/components/EnZh";
+import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { useUiLocale } from "@/hooks/useUiLocale";
+import { FOREX_INCIDENT_1028, forexIncidentChip } from "@/lib/demo/forex-incident-1028";
+import type { ForexPackLiveMonitor, ForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 import { publicBasePath } from "@/lib/static-export";
 
 /**
@@ -12,9 +15,19 @@ import { publicBasePath } from "@/lib/static-export";
  * Chrome uses CRMP panel / btn / token patterns; the iframe CSS mirrors
  * Vantage teal / accent tokens so the embedded demo matches the desk.
  */
-export function AiIncidentWorkspace() {
+export function AiIncidentWorkspace({
+  liveMonitors = [],
+  liveSpine = null,
+  showPackChrome = true,
+}: {
+  liveMonitors?: ForexPackLiveMonitor[];
+  liveSpine?: ForexPackLiveSpine | null;
+  /** When false, parent (Monitor Labs hub) already rendered the spine strip. */
+  showPackChrome?: boolean;
+}) {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
+  const fx = FOREX_INCIDENT_1028;
   const [surfaceHint, setSurfaceHint] = useState<"embedded" | "blank">("embedded");
 
   const prototypeSrc = useMemo(() => {
@@ -25,11 +38,12 @@ export function AiIncidentWorkspace() {
 
   return (
     <div className="space-y-4" data-testid="ai-incident-workspace">
+      {showPackChrome ? <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} /> : null}
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
-              INC-1028 · LP-A · XAUUSD · P2
+              {forexIncidentChip(locale)}
             </div>
             <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh
@@ -43,9 +57,9 @@ export function AiIncidentWorkspace() {
               <EnZh en="Open full-page demo" zh="開全頁演示" />
             </a>
             <AdminLink className="btn" href="/admin/messenger" data-testid="ai-incident-open-messenger">
-              <EnZh en="Demo Messenger" zh="示範 Messenger" />
+              <EnZh en="Ops Inbox" zh="值班收件匣" />
             </AdminLink>
-            <AdminLink className="btn" href="/admin/indicator-aggregation">
+            <AdminLink className="btn" href={fx.aggregation_path}>
               <EnZh en="L1→L2 board" zh="L1→L2 聚合台" />
             </AdminLink>
           </div>
@@ -71,8 +85,8 @@ export function AiIncidentWorkspace() {
           </li>
           <li>
             <EnZh
-              en="Messenger thread INC-1028 links here from AI_REPORT surfaces"
-              zh="Messenger 執行緒 INC-1028 可自 AI_REPORT 介面連到此頁"
+              en={`Messenger thread ${fx.thread_id} links here from AI_REPORT surfaces`}
+              zh={`Messenger 執行緒 ${fx.thread_id} 可自 AI_REPORT 介面連到此頁`}
             />
           </li>
         </ul>

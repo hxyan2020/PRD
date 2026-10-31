@@ -3,16 +3,29 @@
 import { useMemo, useState } from "react";
 import { AdminLink } from "@/components/AdminLink";
 import { EnZh } from "@/components/EnZh";
+import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { useUiLocale } from "@/hooks/useUiLocale";
+import { FOREX_INCIDENT_1028, forexIncidentChip } from "@/lib/demo/forex-incident-1028";
+import type { ForexPackLiveMonitor, ForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 import { publicBasePath } from "@/lib/static-export";
 
 /**
  * Hosts the Monitor 2.0 Discovery → L1/L2 → AI RCA HTML lab inside CRMP Admin.
  * After L2 dispatch the prototype links into the AI Incident Workspace (INC-1028).
  */
-export function DiscoveryL2RcaLab() {
+export function DiscoveryL2RcaLab({
+  liveMonitors = [],
+  liveSpine = null,
+  showPackChrome = true,
+}: {
+  liveMonitors?: ForexPackLiveMonitor[];
+  liveSpine?: ForexPackLiveSpine | null;
+  /** When false, parent (Monitor Labs hub) already rendered the spine strip. */
+  showPackChrome?: boolean;
+}) {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
+  const fx = FOREX_INCIDENT_1028;
   const [surfaceHint, setSurfaceHint] = useState<"embedded" | "blank">("embedded");
 
   const prototypeSrc = useMemo(() => {
@@ -24,16 +37,19 @@ export function DiscoveryL2RcaLab() {
 
   return (
     <div className="space-y-4" data-testid="discovery-l2-rca-lab">
+      {showPackChrome ? <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} /> : null}
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
-              Monitor 2.0 · Discovery → L2 → AI RCA
+              {zh
+                ? `Monitor 2.0 · 探索 → L2 → AI RCA · ${forexIncidentChip(locale)}`
+                : `Monitor 2.0 · Discovery → L2 → AI RCA · ${forexIncidentChip(locale)}`}
             </div>
             <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh
-                en="Integrated lab from Monitor2_Integrated_Discovery_L2_RCA_v6 — known-incident reverse engineering → unknown-risk models → L1→L2 live aggregate (AND/OR/SEQUENCE) → AI RCA draft. After L2 dispatch, open the bilingual AI Incident Workspace (INC-1028). Demo data only."
-                zh="來自 Monitor2_Integrated_Discovery_L2_RCA_v6 的整合實驗室 — 已知事故反推 → 未知風險模型 → L1→L2 即時聚合（AND／OR／SEQUENCE）→ AI RCA 草稿。L2 發車後開啟雙語 AI 事故工作台（INC-1028）。僅示範資料。"
+                en={`Integrated lab — known-incident reverse engineering → unknown-risk models → L1→L2 live aggregate → AI RCA draft. After L2 dispatch, continue into ${fx.incident_id} (${fx.lp} · ${fx.symbol}). Demo data only.`}
+                zh={`整合實驗室 — 已知事故反推 → 未知風險模型 → L1→L2 即時聚合 → AI RCA 草稿。L2 發車後繼續進入 ${fx.incident_id}（${fx.lp} · ${fx.symbol}）。僅示範資料。`}
               />
             </p>
           </div>
@@ -41,13 +57,13 @@ export function DiscoveryL2RcaLab() {
             <a className="btn" href={prototypeSrc} target="_blank" rel="noreferrer" data-testid="l2rca-open-blank">
               <EnZh en="Open full-page demo" zh="開全頁演示" />
             </a>
-            <AdminLink className="btn" href="/admin/indicator-aggregation" data-testid="l2rca-open-agg">
+            <AdminLink className="btn" href={fx.aggregation_path} data-testid="l2rca-open-agg">
               <EnZh en="L1→L2 board" zh="L1→L2 聚合台" />
             </AdminLink>
-            <AdminLink className="btn btn-primary" href="/admin/ai-incident" data-testid="l2rca-open-ai">
+            <AdminLink className="btn btn-primary" href={fx.workspace_path} data-testid="l2rca-open-ai">
               <EnZh en="AI Incident Workspace" zh="AI 事故工作台" />
             </AdminLink>
-            <AdminLink className="btn" href="/admin/discovery">
+            <AdminLink className="btn" href={fx.discovery_path}>
               <EnZh en="Unknown Risk Discovery" zh="未知風險探索" />
             </AdminLink>
           </div>
@@ -55,14 +71,14 @@ export function DiscoveryL2RcaLab() {
         <ul className="text-xs text-[var(--muted)] grid sm:grid-cols-2 gap-x-4 gap-y-1.5 list-disc pl-4">
           <li>
             <EnZh
-              en="Tab ③: run L1→L2 scenarios A–G, then Risk Ops confirm → L2 INC-1028"
-              zh="分頁③：跑 L1→L2 場景 A–G，Risk Ops 確認 → L2 INC-1028"
+              en={`Tab ③: run L1→L2 scenarios, then Risk Ops confirm → L2 ${fx.incident_id}`}
+              zh={`分頁③：跑 L1→L2 場景，風險營運確認 → L2 ${fx.incident_id}`}
             />
           </li>
           <li>
             <EnZh
-              en="After L2, the embedded CTA opens /admin/ai-incident (AI RCA report)"
-              zh="L2 之後，內嵌 CTA 開啟 /admin/ai-incident（AI RCA 報告）"
+              en={`After L2, the embedded CTA opens ${fx.workspace_path} (AI RCA report)`}
+              zh={`L2 之後，內嵌 CTA 開啟 ${fx.workspace_path}（AI RCA 報告）`}
             />
           </li>
           <li>
