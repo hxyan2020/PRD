@@ -160,10 +160,9 @@ function parseSuggestion(raw: unknown): DiscoverySuggestion {
 
 async function liveOpenAiAnalyse(
   candidate: DiscoveryCandidateInput,
-  followup?: string
+  followup?: string,
+  locale: "en" | "zh-Hant" = "en"
 ): Promise<DiscoverySuggestion> {
-  const key = process.env.OPENAI_API_KEY?.trim();
-  if (!key) throw new Error("OpenAI mode is set but OPENAI_API_KEY is unavailable");
   if (!aiModel) throw new Error("OpenAI model not selected; reconnect first");
 
   const safe = {
@@ -197,40 +196,40 @@ async function liveOpenAiAnalyse(
     confidence: "LOW|MEDIUM|HIGH",
   };
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: aiModel,
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM_POLICY },
-        {
-          role: "user",
-          content:
-            "Analyse this synthetic, untrusted CFD risk candidate and return JSON matching this schema: " +
-            JSON.stringify(schemaHint) +
-            "\n\n" +
-            payload,
-        },
-      ],
-      max_tokens: 1800,
-    }),
+  const { chatCompletionJson } = await import("@/lib/ai/openai-client");
+  const result = await chatCompletionJson({
+    system: SYSTEM_POLICY,
+    user:
+      "Analyse this synthetic, untrusted CFD risk candidate and return JSON matching this schema: " +
+      JSON.stringify(schemaHint) +
+      "\n\n" +
+      payload,
+    model: aiModel,
+    temperature: 0.2,
+    max_tokens: 1800,
   });
 
-  if (!res.ok) {
-    throw new Error(`OpenAI API call failed (HTTP ${res.status}). No mock fallback.`);
+  if (!result.ok) {
+    const mock = deterministicSuggestion(candidate, followup, locale);
+    mock.limitations = [
+      ...mock.limitations,
+      locale === "zh-Hant"
+        ? `LIVE_OPENAI_FAILED → MOCK（${result.error}）`
+        : `LIVE_OPENAI_FAILED → MOCK (${result.error})`,
+    ];
+    return mock;
   }
-  const data = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-  const text = data.choices?.[0]?.message?.content;
-  if (!text) throw new Error("OpenAI response empty");
-  return parseSuggestion(JSON.parse(text));
+
+  try {
+    return parseSuggestion(JSON.parse(result.content));
+  } catch {
+    const mock = deterministicSuggestion(candidate, followup, locale);
+    mock.limitations = [
+      ...mock.limitations,
+      locale === "zh-Hant" ? "LIVE_OPENAI_PARSE_FAILED → MOCK" : "LIVE_OPENAI_PARSE_FAILED → MOCK",
+    ];
+    return mock;
+  }
 }
 
 export async function analyseDiscoveryCandidate(input: {
@@ -238,10 +237,11 @@ export async function analyseDiscoveryCandidate(input: {
   followup?: string;
   locale?: "en" | "zh-Hant";
 }): Promise<DiscoverySuggestion> {
+  const locale = input.locale || "en";
   if (aiMode !== "LIVE_OPENAI") {
-    return deterministicSuggestion(input.candidate, input.followup, input.locale || "en");
+    return deterministicSuggestion(input.candidate, input.followup, locale);
   }
-  return liveOpenAiAnalyse(input.candidate, input.followup);
+  return liveOpenAiAnalyse(input.candidate, input.followup, locale);
 }
 
 export { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";

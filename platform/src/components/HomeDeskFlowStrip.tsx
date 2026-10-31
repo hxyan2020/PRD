@@ -99,9 +99,14 @@ export function HomeDeskFlowStrip() {
             />
           </p>
         </div>
-        <Link className="btn btn-sm" href="/admin/docs/simulated-data">
-          <EnZh en="Simulated data / SQL" zh="模擬資料／SQL" />
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link className="btn btn-sm" href="/admin/docs/indicators-scenarios">
+            <EnZh en="Indicators & scenarios" zh="指標與情境" />
+          </Link>
+          <Link className="btn btn-sm" href="/admin/docs/simulated-data">
+            <EnZh en="Simulated data / SQL" zh="模擬資料／SQL" />
+          </Link>
+        </div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2">
         {STEPS.map((s) => {

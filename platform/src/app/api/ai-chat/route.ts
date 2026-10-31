@@ -3,6 +3,7 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb, writeAudit } from "@/lib/db";
 import { retrieveRag } from "@/lib/ai/rag";
 import { answerDeskChat, type DeskChatMessage } from "@/lib/ai/desk-chat";
+import { maybeAnswerDeskChatWithLlm } from "@/lib/ai/llm-enrich";
 import { parseUiLocale } from "@/lib/i18n";
 
 export async function POST(req: Request) {
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
     ragSnippets = [];
   }
 
-  const result = answerDeskChat({
+  const heuristic = answerDeskChat({
     selection,
     question: question || (locale === "zh-Hant" ? "請解釋這段文字" : "Explain this selection"),
     pagePath,
@@ -52,10 +53,26 @@ export async function POST(req: Request) {
     history,
   });
 
+  const llm = await maybeAnswerDeskChatWithLlm({
+    selection,
+    question: question || heuristic.reply.slice(0, 80),
+    pagePath,
+    locale,
+    heuristicReply: heuristic.reply,
+    sources: heuristic.sources,
+  });
+
+  const result = {
+    ...heuristic,
+    reply: llm.reply,
+    llm: { used: llm.used_llm, model: llm.model ?? null },
+  };
+
   try {
     writeAudit(user, "DESK_CHAT", "selection", pagePath.slice(0, 80), {
       selection_len: selection.length,
       question_len: question.length,
+      llm: llm.used_llm,
     });
   } catch {
     /* ignore */

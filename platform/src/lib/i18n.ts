@@ -36,6 +36,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/roadmap": { en: "Improvement Roadmap", "zh-Hant": "改進路線圖" },
   "/admin/docs/urls": { en: "URL Catalog", "zh-Hant": "網址目錄" },
   "/admin/docs/simulated-data": { en: "Simulated Data / SQL", "zh-Hant": "模擬資料／SQL" },
+  "/admin/docs/indicators-scenarios": { en: "Indicators & Scenarios", "zh-Hant": "指標與情境" },
   "/admin/docs/open-issues": { en: "Open Issues", "zh-Hant": "開放議題" },
   "/admin/docs/progress": { en: "Progress Tracker", "zh-Hant": "進度追蹤" },
   "/admin/messenger": { en: "Ops Inbox (Demo)", "zh-Hant": "值班收件匣（示範）" },
@@ -97,6 +98,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     subtitle: {
       en: "Browse every seeded SQLite table and schema, then run your own read-only SQL against the CRMP demo database.",
       "zh-Hant": "瀏覽所有種子 SQLite 資料表與結構，並對 CRMP 示範資料庫執行自訂唯讀 SQL。",
+    },
+  },
+  "indicators-scenarios": {
+    title: { en: "Indicators & Risk Scenarios", "zh-Hant": "指標與風險情境" },
+    subtitle: {
+      en: "Admin / Pricing / Dealing catalogue — Monitor 2.0 indicators, domain scenarios, skill playbooks, and the canonical forex demo INC-1028 (LP-A · XAUUSD).",
+      "zh-Hant": "管理／定價／交易目錄 — Monitor 2.0 指標、領域情境、技能劇本，以及標準外匯示範 INC-1028（LP-A · XAUUSD）。",
     },
   },
   "market-intel": {

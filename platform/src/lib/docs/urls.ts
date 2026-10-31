@@ -147,6 +147,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
       "Browse seeded SQLite tables/schemas and run read-only SQL (live: /api/sql; GitHub Pages: sql.js against vantage_risk.demo.db)",
     permission: "admin.access",
   },
+  {
+    category: "Docs",
+    title: "Indicators & Risk Scenarios",
+    path: "/admin/docs/indicators-scenarios",
+    description:
+      "Admin/Pricing/Dealing catalogue of Monitor 2.0 indicators + domain/skill/linked scenarios; canonical forex demo INC-1028 (LP-A · XAUUSD)",
+    permission: "admin.access",
+  },
 
   // APIs
   { category: "API", title: "SQL explorer", path: "/api/sql", description: "GET catalog of simulated tables · POST { sql } read-only SELECT/WITH/EXPLAIN/PRAGMA (admin.access); secrets masked" },

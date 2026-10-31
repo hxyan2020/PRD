@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { analyzeAlert, analyzeOpenAlerts, createAlarmAndAnalyze, getAnalysisBundle } from "@/lib/ai/analyze";
+import { maybeEnrichAnalysisWithLlm } from "@/lib/ai/llm-enrich";
 import { backfillChallenges } from "@/lib/ai/challenger";
 import { runDummyAlertDemo } from "@/lib/ai/dummy-spine";
 import { getUiLocale } from "@/lib/i18n-server";
+import { llmEnrichmentEnabled, openaiKeyConfigured } from "@/lib/ai/openai-client";
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
@@ -48,18 +50,40 @@ export async function POST(req: Request) {
         { status: 409 }
       );
     }
-    return NextResponse.json({ ok: true, ...bundle });
+    const analysisRow = bundle.analysis as { id?: number } | null | undefined;
+    let llm: Awaited<ReturnType<typeof maybeEnrichAnalysisWithLlm>> = {
+      enriched: false,
+      source: "SKIPPED",
+    };
+    if (analysisRow?.id) {
+      llm = await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+    }
+    const refreshed = analysisRow?.id ? getAnalysisBundle(Number(analysisRow.id)) : bundle;
+    return NextResponse.json({
+      ok: true,
+      ...refreshed,
+      llm,
+      llm_available: openaiKeyConfigured(),
+      llm_enabled: llmEnrichmentEnabled(),
+    });
   }
 
   if (body.action === "analyze_open") {
     const results = analyzeOpenAlerts({ force: !!body.force });
-    const created = results.filter((r) => r.created).length;
+    const created = results.filter((r) => r.created);
+    const llmRuns = [];
+    for (const r of created.slice(0, 8)) {
+      llmRuns.push(await maybeEnrichAnalysisWithLlm(r.analysis_db_id));
+    }
     return NextResponse.json({
       ok: true,
       count: results.length,
-      created,
-      reused: results.length - created,
+      created: created.length,
+      reused: results.length - created.length,
       results,
+      llm_runs: llmRuns,
+      llm_available: openaiKeyConfigured(),
+      llm_enabled: llmEnrichmentEnabled(),
     });
   }
 
@@ -73,35 +97,69 @@ export async function POST(req: Request) {
         observed_value: Number(body.observed_value ?? 0),
         prefer_rag: !!body.prefer_rag,
       });
+      const analysisRow = bundle.analysis as
+        | {
+            id?: number;
+            analysis_id?: string;
+            mode?: string;
+            confidence?: number;
+            status?: string;
+            needs_human?: number;
+          }
+        | null
+        | undefined;
+      if (analysisRow?.id) {
+        await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+      }
+      const refreshed = analysisRow?.id
+        ? getAnalysisBundle(Number(analysisRow.id))
+        : bundle;
+      const analysis = (refreshed.analysis || analysisRow) as
+        | {
+            id?: number;
+            analysis_id?: string;
+            mode?: string;
+            confidence?: number;
+            status?: string;
+            needs_human?: number;
+          }
+        | null
+        | undefined;
+      const challenge = refreshed.challenge as { challenge_id?: string; verdict?: string } | null;
+      const improvement = refreshed.improvement as {
+        review_id?: string;
+        status?: string;
+        items?: unknown[];
+      } | null;
       // Keep simulate responses light so the UI stays responsive after improvement packs.
       return NextResponse.json({
         ok: true,
         monitor_alert_id: bundle.monitor_alert_id,
-        analysis: bundle.analysis
+        analysis: analysis
           ? {
-              id: bundle.analysis.id,
-              analysis_id: bundle.analysis.analysis_id,
-              mode: bundle.analysis.mode,
-              confidence: bundle.analysis.confidence,
-              status: bundle.analysis.status,
-              needs_human: bundle.analysis.needs_human,
+              id: analysis.id,
+              analysis_id: analysis.analysis_id,
+              mode: analysis.mode,
+              confidence: analysis.confidence,
+              status: analysis.status,
+              needs_human: analysis.needs_human,
             }
           : null,
-        challenge: bundle.challenge
+        challenge: challenge
           ? {
-              challenge_id: bundle.challenge.challenge_id,
-              verdict: bundle.challenge.verdict,
+              challenge_id: challenge.challenge_id,
+              verdict: challenge.verdict,
             }
           : null,
-        improvement: bundle.improvement
+        improvement: improvement
           ? {
-              review_id: bundle.improvement.review_id,
-              status: bundle.improvement.status,
-              item_count: Array.isArray(bundle.improvement.items)
-                ? bundle.improvement.items.length
-                : 0,
+              review_id: improvement.review_id,
+              status: improvement.status,
+              item_count: Array.isArray(improvement.items) ? improvement.items.length : 0,
             }
           : null,
+        llm_available: openaiKeyConfigured(),
+        llm_enabled: llmEnrichmentEnabled(),
       });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "simulate_alarm failed";

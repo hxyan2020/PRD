@@ -239,7 +239,7 @@ export function SimulatedDataBoard() {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <Badge tone="teal">{modeLabel}</Badge>
+            <Badge className="bg-teal-100 text-teal-900 border-teal-200">{modeLabel}</Badge>
             <button type="button" className="btn btn-sm" onClick={() => void refresh()} disabled={busy}>
               <RefreshCw className={`h-3.5 w-3.5 ${busy ? "animate-spin" : ""}`} aria-hidden />
               <EnZh en="Reload" zh="重新載入" />

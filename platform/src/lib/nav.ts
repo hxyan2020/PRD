@@ -104,6 +104,7 @@ export const NAV_ITEMS = [
   { href: "/admin/security/ai-access", label: "AI Access Security", icon: Lock, permission: "audit.read", group: "platform" },
 
   { href: "/admin/docs/user-guide", label: "User Guide", icon: BookOpen, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/indicators-scenarios", label: "Indicators & Scenarios", icon: Waypoints, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/simulated-data", label: "Simulated Data / SQL", icon: Table2, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/urls", label: "URL Catalog", icon: ListTree, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/uat", label: "UAT Checklist", icon: ClipboardCheck, permission: "admin.access", group: "docs" },
