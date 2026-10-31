@@ -547,33 +547,50 @@ function anyCloudBackendReady(): boolean {
   return isAccountSyncReady() || isVercelSyncReady() || isCloudSyncReady()
 }
 
-async function pullAndMergeCloudQuiet(): Promise<{ merged: boolean; etag: string | null }> {
+async function pullAndMergeCloudQuiet(): Promise<{
+  merged: boolean
+  etag: string | null
+  missing: boolean
+  cloudNoteCount: number
+}> {
   if (isAccountSyncReady()) {
     const pulled = await pullAccountBackup()
-    if (!pulled) return { merged: false, etag: cloudEtag }
+    if (!pulled) return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
     cloudEtag = pulled.etag
     await notebookStore.importBackup(pulled.content, { syncCloud: false })
     setLastAccountSyncAt()
-    return { merged: true, etag: pulled.etag }
+    return {
+      merged: true,
+      etag: pulled.etag,
+      missing: false,
+      cloudNoteCount: pulled.noteCount,
+    }
   }
   if (isVercelSyncReady()) {
     const { cloudKey } = loadVercelSyncSettings()
     const pulled = await pullVercelBackup(cloudKey)
-    if (!pulled) return { merged: false, etag: cloudEtag }
+    if (!pulled) return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
     cloudEtag = pulled.etag
     await notebookStore.importBackup(pulled.content, { syncCloud: false })
     setLastVercelSyncAt()
-    return { merged: true, etag: pulled.etag }
+    return {
+      merged: true,
+      etag: pulled.etag,
+      missing: false,
+      cloudNoteCount: pulled.noteCount,
+    }
   }
-  if (!isCloudSyncReady()) return { merged: false, etag: null }
+  if (!isCloudSyncReady()) return { merged: false, etag: null, missing: true, cloudNoteCount: 0 }
   const settings = loadGistSettings()
-  if (!settings.token || !settings.gistId) return { merged: false, etag: cloudEtag }
+  if (!settings.token || !settings.gistId) {
+    return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
+  }
   const meta = await pullGistBackupMeta(settings)
-  if (!meta) return { merged: false, etag: cloudEtag }
+  if (!meta) return { merged: false, etag: cloudEtag, missing: true, cloudNoteCount: 0 }
   cloudEtag = meta.etag
   await notebookStore.importBackup(meta.content, { syncCloud: false })
   setLastCloudSyncAt()
-  return { merged: true, etag: meta.etag }
+  return { merged: true, etag: meta.etag, missing: false, cloudNoteCount: 0 }
 }
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
@@ -790,12 +807,26 @@ async function flushCloudSync() {
       while (cloudPushDirty) {
         cloudPushDirty = false
         let etag: string | null = cloudEtag
+        let pullFailed = false
+        let cloudMissing = false
+        let cloudNoteCount = 0
         // Merge remote first so a slower device doesn't clobber notes from another.
         try {
           const pulled = await pullAndMergeCloudQuiet()
           etag = pulled.etag
-        } catch {
-          /* push local anyway if pull fails (offline / rate limit) */
+          cloudMissing = pulled.missing
+          cloudNoteCount = pulled.cloudNoteCount
+        } catch (err) {
+          pullFailed = true
+          // Account sync: never push a partial local notebook over cloud when pull
+          // failed — that was wiping the laptop's newer notes from the phone.
+          if (isAccountSyncReady()) {
+            throw new Error(
+              err instanceof Error
+                ? `Could not refresh cloud notebook before save: ${err.message}`
+                : 'Could not refresh cloud notebook before save',
+            )
+          }
         }
         if (cloudPushDirty) continue
 
@@ -808,6 +839,14 @@ async function flushCloudSync() {
 
         let pushed = false
         if (isAccountSyncReady()) {
+          const localCount = cache.entries.length + cache.trash.length
+          // After a successful pull+merge, local must cover cloud. If it doesn't,
+          // refuse push so a thinner device cannot wipe a richer notebook.
+          if (!cloudMissing && !pullFailed && cloudNoteCount > localCount) {
+            throw new Error(
+              `Local notebook looks incomplete (${localCount}) vs cloud (${cloudNoteCount}) — retry sync`,
+            )
+          }
           const result = await pushAccountBackup(buildBackupJson())
           cloudEtag = result.etag
           setCloudRuntime({

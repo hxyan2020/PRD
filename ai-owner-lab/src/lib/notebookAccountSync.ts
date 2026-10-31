@@ -128,12 +128,33 @@ export type AccountPullResult = {
   noteCount: number
 }
 
+async function readNotebookContentFromResponse(res: Response): Promise<{
+  content: string
+  etag: string | null
+}> {
+  const etag = res.headers.get('etag')
+  const raw = await res.text()
+  // New API returns a signed Blob URL so large notebooks skip the serverless cap.
+  try {
+    const parsed = JSON.parse(raw) as { url?: unknown; entries?: unknown }
+    if (typeof parsed.url === 'string' && parsed.url && !Array.isArray(parsed.entries)) {
+      const fileRes = await fetch(parsed.url)
+      if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
+      return { content: await fileRes.text(), etag: fileRes.headers.get('etag') || etag }
+    }
+  } catch (err) {
+    if (err instanceof Error && /download failed/i.test(err.message)) throw err
+    /* fall through — raw may already be the notebook JSON */
+  }
+  return { content: raw, etag }
+}
+
 export async function pullAccountBackup(): Promise<AccountPullResult | null> {
   const res = await fetch(api('/api/notebook'), { method: 'GET', credentials: 'include' })
   if (res.status === 401) throw new Error('Sign in required')
   if (res.status === 404) return null
   if (!res.ok) throw new Error(await readError(res))
-  const content = await res.text()
+  const { content, etag } = await readNotebookContentFromResponse(res)
   let noteCount = 0
   try {
     const parsed = JSON.parse(content) as { entries?: unknown; trash?: unknown }
@@ -145,7 +166,7 @@ export async function pullAccountBackup(): Promise<AccountPullResult | null> {
   } catch {
     throw new Error('Cloud notebook was not valid JSON')
   }
-  return { content, etag: res.headers.get('etag'), noteCount }
+  return { content, etag, noteCount }
 }
 
 /**
