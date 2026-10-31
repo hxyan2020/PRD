@@ -211,7 +211,9 @@ function reconcileEntriesAndTrash(
     const entry = entryMap.get(id)
     const trashed = trashMap.get(id)
     if (entry && trashed) {
-      if (entryTime(entry) > new Date(trashed.deletedAt).getTime()) {
+      // Prefer the live note when it was edited/restored at or after delete time,
+      // so Recover is not undone by a stale cloud dustbin copy on the next sync.
+      if (entryTime(entry) >= new Date(trashed.deletedAt).getTime()) {
         nextEntries.push(entry)
       } else {
         nextTrash.push(trashed)
@@ -1482,11 +1484,11 @@ export const notebookStore = {
       const pulled = await pullAccountBackup()
       if (pulled) {
         cloudNoteCount = pulled.noteCount
-        if (cloudNoteCount > 0 || cache.entries.length === 0) {
-          await notebookStore.importBackup(pulled.content, { syncCloud: false })
-          restoredFromCloud = cloudNoteCount > 0
-          setLastAccountSyncAt()
-        }
+        // Always merge — importBackup unions entries + trash. Skipping when
+        // cloud only had dustbin notes used to wipe trash on the next push.
+        await notebookStore.importBackup(pulled.content, { syncCloud: false })
+        restoredFromCloud = cloudNoteCount > 0
+        setLastAccountSyncAt()
       }
     } catch (err) {
       if (restoringEmptyDevice) {
@@ -1560,11 +1562,9 @@ export const notebookStore = {
       const pulled = await pullVercelBackup(cloudKey)
       if (pulled) {
         cloudNoteCount = pulled.noteCount
-        if (cloudNoteCount > 0 || cache.entries.length === 0) {
-          await notebookStore.importBackup(pulled.content, { syncCloud: false })
-          restoredFromCloud = cloudNoteCount > 0
-          setLastVercelSyncAt()
-        }
+        await notebookStore.importBackup(pulled.content, { syncCloud: false })
+        restoredFromCloud = cloudNoteCount > 0
+        setLastVercelSyncAt()
       }
     } catch (err) {
       if (restoringEmptyDevice) {
@@ -1931,10 +1931,14 @@ export const notebookStore = {
       const index = trash.findIndex((e) => e.id === id)
       if (index < 0) return null
       const trashed = trash[index]
+      // Keep updatedAt strictly after deletedAt so a later cloud merge cannot
+      // put the note back in the dustbin from a stale trash copy.
+      const deletedMs = new Date(trashed.deletedAt).getTime()
+      const restoreMs = Math.max(Date.now(), deletedMs + 1)
       let restoredEntry: NotebookEntry = {
         id: trashed.id,
         createdAt: trashed.createdAt,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date(restoreMs).toISOString(),
         type: trashed.type,
         title: trashed.title,
         selectedText: trashed.selectedText,

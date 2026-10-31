@@ -193,8 +193,10 @@ export type OwnlabGistMatch = {
 function countNotesInBackupJson(raw: string | null): number {
   if (!raw) return 0
   try {
-    const parsed = JSON.parse(raw) as { entries?: unknown }
-    return Array.isArray(parsed.entries) ? parsed.entries.length : 0
+    const parsed = JSON.parse(raw) as { entries?: unknown; trash?: unknown }
+    const entries = Array.isArray(parsed.entries) ? parsed.entries.length : 0
+    const trash = Array.isArray(parsed.trash) ? parsed.trash.length : 0
+    return entries + trash
   } catch {
     return 0
   }

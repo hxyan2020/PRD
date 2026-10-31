@@ -3189,7 +3189,7 @@ body.menu-open {
 }
 
 /* Note cards as blocks — 1 col mobile, 3 cols desktop */
-.notebook-timeline:not(.dustbin-timeline) {
+.notebook-timeline {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.85rem;
@@ -3197,14 +3197,14 @@ body.menu-open {
 }
 
 @media (min-width: 720px) {
-  .notebook-timeline:not(.dustbin-timeline) {
+  .notebook-timeline {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.9rem;
   }
 }
 
 @media (min-width: 1024px) {
-  .notebook-timeline:not(.dustbin-timeline) {
+  .notebook-timeline {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
   }

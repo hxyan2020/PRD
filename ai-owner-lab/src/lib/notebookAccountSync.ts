@@ -135,8 +135,12 @@ export async function pullAccountBackup(): Promise<AccountPullResult | null> {
   const content = await res.text()
   let noteCount = 0
   try {
-    const parsed = JSON.parse(content) as { entries?: unknown }
-    noteCount = Array.isArray(parsed.entries) ? parsed.entries.length : 0
+    const parsed = JSON.parse(content) as { entries?: unknown; trash?: unknown }
+    const entries = Array.isArray(parsed.entries) ? parsed.entries.length : 0
+    const trash = Array.isArray(parsed.trash) ? parsed.trash.length : 0
+    // Dustbin notes are part of the cloud notebook — count them so login/merge
+    // does not treat a trash-only backup as "empty" and skip (or overwrite) it.
+    noteCount = entries + trash
   } catch {
     throw new Error('Cloud notebook was not valid JSON')
   }
