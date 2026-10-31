@@ -1,6 +1,7 @@
 import { Button, Space, Table, Tag, message } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 
 export interface DbAccountAlertRecord {
   key: string;
@@ -119,6 +120,7 @@ const INITIAL_ALERTS: DbAccountAlertRecord[] = [
 ];
 
 export function DbAccountAlertPage() {
+  const ui = useUi();
   const [alerts, setAlerts] = useState(INITIAL_ALERTS);
 
   const toggleEnabled = (key: string) => {
@@ -133,19 +135,19 @@ export function DbAccountAlertPage() {
   };
 
   const columns = [
-    { title: '告警名称', dataIndex: 'name', width: 180 },
-    { title: '触发条件', dataIndex: 'condition', width: 280 },
-    { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '接收邮箱', dataIndex: 'recipient', width: 220 },
+    { title: ui.t('告警名称', 'Alert name'), dataIndex: 'name', width: 180 },
+    { title: ui.t('触发条件', 'Trigger condition'), dataIndex: 'condition', width: 280 },
+    { title: ui.t('更新时间', 'Updated at'), dataIndex: 'updateTime', width: 170 },
+    { title: ui.t('接收邮箱', 'Email'), dataIndex: 'recipient', width: 220 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 100,
       render: (enabled: boolean) =>
         enabled ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>,
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: DbAccountAlertRecord) => (
@@ -154,7 +156,7 @@ export function DbAccountAlertPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.name}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -170,7 +172,7 @@ export function DbAccountAlertPage() {
         dataSource={alerts}
         pagination={{
           total: alerts.length,
-          showTotal: (t) => `共 ${t} 条`,
+          showTotal: (t) => ui.total(t),
           pageSize: 20,
           showSizeChanger: false,
         }}

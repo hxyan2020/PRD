@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
 
 const { TextArea } = Input;
@@ -82,6 +83,7 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
 ];
 
 export function ExternalFundingRateMonitorPage() {
+  const ui = useUi();
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
@@ -135,31 +137,31 @@ export function ExternalFundingRateMonitorPage() {
   };
 
   const alertColumns = [
-    { title: '合约', dataIndex: 'contract', width: 110 },
-    { title: '资金费率数值', dataIndex: 'fundingRate', width: 120 },
-    { title: '收取周期 (Hour)', dataIndex: 'cycle', width: 130 },
-    { title: '对标交易所', dataIndex: 'exchange', width: 110 },
-    { title: '对标交易所资金费率', dataIndex: 'exchangeRate', width: 180 },
-    { title: '对标交易所收取周期 (Hour)', dataIndex: 'exchangeCycle', width: 190 },
-    { title: '告警时间', dataIndex: 'alertTime', width: 170 },
-    { title: '告警方式', dataIndex: 'method', width: 90 },
+    { title: ui.t('合约', 'Contract'), dataIndex: 'contract', width: 110 },
+    { title: ui.t('资金费率数值', 'Funding rate value'), dataIndex: 'fundingRate', width: 120 },
+    { title: ui.t('收取周期 (Hour)', 'Fee cycle (Hour)'), dataIndex: 'cycle', width: 130 },
+    { title: ui.t('对标交易所', 'Benchmark exchange'), dataIndex: 'exchange', width: 110 },
+    { title: ui.t('对标交易所资金费率', 'Benchmark funding rate'), dataIndex: 'exchangeRate', width: 180 },
+    { title: ui.t('对标交易所收取周期 (Hour)', 'Benchmark fee cycle (Hour)'), dataIndex: 'exchangeCycle', width: 190 },
+    { title: ui.t('告警时间', 'Alert time'), dataIndex: 'alertTime', width: 170 },
+    { title: ui.t('告警方式', 'Alert method'), dataIndex: 'method', width: 90 },
   ];
 
   const configColumns = [
-    { title: '合约名称', dataIndex: 'contract', width: 110 },
-    { title: '对标交易所', dataIndex: 'exchanges', width: 220 },
-    { title: '监控阈值', dataIndex: 'threshold', width: 100 },
-    { title: '监控频率 (min)', dataIndex: 'frequency', width: 130 },
-    { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '更新人', dataIndex: 'updatedBy', width: 220 },
+    { title: ui.t('合约名称', 'Contract'), dataIndex: 'contract', width: 110 },
+    { title: ui.t('对标交易所', 'Benchmark exchange'), dataIndex: 'exchanges', width: 220 },
+    { title: ui.t('监控阈值', 'Monitor threshold'), dataIndex: 'threshold', width: 100 },
+    { title: ui.t('监控频率 (min)', 'Monitor frequency (min)'), dataIndex: 'frequency', width: 130 },
+    { title: ui.t('更新时间', 'Updated at'), dataIndex: 'updateTime', width: 170 },
+    { title: ui.t('更新人', 'Updated by'), dataIndex: 'updatedBy', width: 220 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 90,
       render: (v: boolean) => (v ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
@@ -173,7 +175,7 @@ export function ExternalFundingRateMonitorPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.contract}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -182,14 +184,14 @@ export function ExternalFundingRateMonitorPage() {
 
   return (
     <AdminPageShell>
-      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>监控告警 / 外部资金费率监控</div>
+      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>{ui.t('监控告警', 'Monitor & Alert')} / {ui.pageTitle('external-funding-rate-monitor')}</div>
 
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'records', label: '告警记录' },
-          { key: 'config', label: '监控配置' },
+          { key: 'records', label: ui.alertRecords },
+          { key: 'config', label: ui.monitorConfig },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -198,15 +200,15 @@ export function ExternalFundingRateMonitorPage() {
         <>
           <div className="filter-toolbar">
             <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
-              <Form.Item label="合约名称" name="contractName">
-                <Input placeholder="请输入合约名称" style={{ width: 200 }} />
+              <Form.Item label={ui.contractName} name="contractName">
+                <Input placeholder={ui.t("请输入合约名称", "Enter contract name")} style={{ width: 200 }} />
               </Form.Item>
             </Form>
             <Space>
               <Button type="primary" icon={<SearchOutlined />}>
-                查询
+                {ui.search}
               </Button>
-              <Button onClick={() => filterForm.resetFields()}>重置</Button>
+              <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
             </Space>
           </div>
           <Table
@@ -214,7 +216,7 @@ export function ExternalFundingRateMonitorPage() {
             columns={alertColumns}
             dataSource={ALERT_ROWS}
             scroll={{ x: 1200 }}
-            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -234,7 +236,7 @@ export function ExternalFundingRateMonitorPage() {
             scroll={{ x: 1200 }}
             pagination={{
               total: configs.length,
-              showTotal: (t) => `共 ${t} 条记录`,
+              showTotal: (t) => ui.total(t),
               pageSize: 20,
               showSizeChanger: true,
               pageSizeOptions: ['10', '20', '50'],
@@ -257,40 +259,40 @@ export function ExternalFundingRateMonitorPage() {
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
           <Form.Item
-            label="合约名称"
+            label={ui.contractName}
             name="contract"
-            rules={[{ required: true, message: '请选择合约名称' }]}
+            rules={[{ required: true, message: ui.t('请选择合约名称', 'Select contract') }]}
           >
-            <Select placeholder="请选择合约名称" options={contractNameOptions} />
+            <Select placeholder={ui.t('请选择合约名称', 'Select contract')} options={contractNameOptions} />
           </Form.Item>
 
-          <Form.Item label="对标交易所" name="exchanges">
+          <Form.Item label={ui.t('对标交易所', 'Benchmark exchange')} name="exchanges">
             <Select
               mode="multiple"
               allowClear
-              placeholder="请选择对标交易所"
+              placeholder={ui.t('请选择对标交易所', 'Select benchmark exchange')}
               options={EXCHANGE_OPTIONS}
             />
           </Form.Item>
 
           <Form.Item
-            label="监控阈值"
+            label={ui.t('监控阈值', 'Monitor threshold')}
             name="threshold"
-            rules={[{ required: true, message: '请输入监控阈值' }]}
+            rules={[{ required: true, message: ui.t('请输入监控阈值', 'Enter monitor threshold') }]}
           >
-            <Input placeholder="请输入监控阈值" />
+            <Input placeholder={ui.t('请输入监控阈值', 'Enter monitor threshold')} />
           </Form.Item>
 
           <Form.Item
-            label="监控频率"
+            label={ui.t('监控频率', 'Monitor frequency')}
             name="frequency"
-            rules={[{ required: true, message: '请输入监控频率' }]}
+            rules={[{ required: true, message: ui.t('请输入监控频率', 'Enter monitor frequency') }]}
           >
-            <Input placeholder="请输入监控频率" suffix="min" />
+            <Input placeholder={ui.t('请输入监控频率', 'Enter monitor frequency')} suffix="min" />
           </Form.Item>
 
           <Form.Item
-            label="预警群"
+            label={ui.t('预警群', 'Alert group')}
             name="notify"
             rules={[{ required: true, message: '请填写 Lark 机器人 URL' }]}
           >

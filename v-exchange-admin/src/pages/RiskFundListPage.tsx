@@ -2,6 +2,7 @@ import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Form, Select, Space, Table, Tabs, message } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
 
 interface ContractFundRow {
@@ -49,28 +50,29 @@ const CURRENCY_ROWS: CurrencyFundRow[] = [
 ];
 
 export function RiskFundListPage() {
+  const ui = useUi();
   const [filterForm] = Form.useForm();
   const [tab, setTab] = useState('by-contract');
 
   const contractColumns = [
-    { title: '合约展示名称', dataIndex: 'displayName', width: 140 },
-    { title: '合约名称', dataIndex: 'contractName', width: 120 },
-    { title: '手动充值金额', dataIndex: 'manualRecharge', width: 130 },
-    { title: '可用额度', dataIndex: 'available', width: 120 },
-    { title: '净值', dataIndex: 'netValue', width: 120 },
-    { title: '已归集资金', dataIndex: 'collected', width: 120 },
+    { title: ui.t('合约展示名称', 'Contract display name'), dataIndex: 'displayName', width: 140 },
+    { title: ui.t('合约名称', 'Contract'), dataIndex: 'contractName', width: 120 },
+    { title: ui.t('手动充值金额', 'Manual top-up amount'), dataIndex: 'manualRecharge', width: 130 },
+    { title: ui.t('可用额度', 'Available quota'), dataIndex: 'available', width: 120 },
+    { title: ui.t('净值', 'Net value'), dataIndex: 'netValue', width: 120 },
+    { title: ui.t('已归集资金', 'Collected funds'), dataIndex: 'collected', width: 120 },
     {
-      title: '基金变动明细',
+      title: ui.t('基金变动明细', 'Fund change details'),
       key: 'detail',
       width: 120,
       render: () => (
         <Button type="link" size="small" icon={<EyeOutlined />}>
-          查看
+          {ui.t('查看', 'View')}
         </Button>
       ),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 320,
       render: (_: unknown, record: ContractFundRow) => (
@@ -92,18 +94,18 @@ export function RiskFundListPage() {
   ];
 
   const currencyColumns = [
-    { title: '币种', dataIndex: 'currency', width: 160 },
-    { title: '可用额度', dataIndex: 'available', width: 200 },
+    { title: ui.t('币种', 'Currency'), dataIndex: 'currency', width: 160 },
+    { title: ui.t('可用额度', 'Available quota'), dataIndex: 'available', width: 200 },
   ];
 
   return (
-    <AdminPageShell title="风险基金列表">
+    <AdminPageShell title={ui.pageTitle('risk-fund-list')}>
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'by-contract', label: '按合约双边汇总' },
-          { key: 'by-currency', label: '按币种汇总' },
+          { key: 'by-contract', label: ui.t('按合约双边汇总', 'By contract (both sides)') },
+          { key: 'by-currency', label: ui.t('按币种汇总', 'By currency') },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -111,9 +113,9 @@ export function RiskFundListPage() {
       {tab === 'by-contract' && (
         <>
           <Form form={filterForm} layout="inline" style={{ marginBottom: 16 }}>
-            <Form.Item label="合约名称" name="contractName">
+            <Form.Item label={ui.contractName} name="contractName">
               <Select
-                placeholder="请选择"
+                placeholder={ui.pleaseSelect}
                 allowClear
                 style={{ width: 180 }}
                 options={contractNameOptions}
@@ -122,9 +124,9 @@ export function RiskFundListPage() {
             <Form.Item>
               <Space>
                 <Button type="primary" icon={<SearchOutlined />}>
-                  查询
+                  {ui.search}
                 </Button>
-                <Button onClick={() => filterForm.resetFields()}>重置</Button>
+                <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
               </Space>
             </Form.Item>
           </Form>
@@ -133,7 +135,7 @@ export function RiskFundListPage() {
             columns={contractColumns}
             dataSource={CONTRACT_ROWS}
             scroll={{ x: 1200 }}
-            pagination={{ total: 2, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: 2, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -144,7 +146,7 @@ export function RiskFundListPage() {
           rowKey="key"
           columns={currencyColumns}
           dataSource={CURRENCY_ROWS}
-          pagination={{ total: 1, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+          pagination={{ total: 1, showTotal: (t) => ui.total(t), pageSize: 10 }}
           size="small"
         />
       )}

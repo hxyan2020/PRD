@@ -1,12 +1,14 @@
 import { Button, Form, Input, Select, Space } from 'antd';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
 
 export function AdminAdlPage() {
+  const ui = useUi();
   const [form] = Form.useForm();
 
   return (
-    <AdminPageShell title="一键平仓">
+    <AdminPageShell title={ui.pageTitle('admin-adl')}>
       <Form
         form={form}
         layout="horizontal"
@@ -15,30 +17,30 @@ export function AdminAdlPage() {
         style={{ maxWidth: 640, marginTop: 24 }}
         initialValues={{ direction: 'long' }}
       >
-        <Form.Item label="合约名称" name="contract" rules={[{ required: true }]}>
-          <Select placeholder="请选择" options={contractNameOptions} />
+        <Form.Item label={ui.contractName} name="contract" rules={[{ required: true }]}>
+          <Select placeholder={ui.pleaseSelect} options={contractNameOptions} />
         </Form.Item>
-        <Form.Item label="合约FID" name="fid" rules={[{ required: true }]}>
-          <Input placeholder="请输入" />
+        <Form.Item label={ui.t('合约FID', 'Contract FID')} name="fid" rules={[{ required: true }]}>
+          <Input placeholder={ui.pleaseInput} />
         </Form.Item>
-        <Form.Item label="方向" name="direction" rules={[{ required: true }]}>
+        <Form.Item label={ui.t('方向', 'Direction')} name="direction" rules={[{ required: true }]}>
           <Select
             options={[
-              { label: '多', value: 'long' },
-              { label: '空', value: 'short' },
+              { label: ui.t('多', 'Long'), value: 'long' },
+              { label: ui.t('空', 'Short'), value: 'short' },
             ]}
           />
         </Form.Item>
-        <Form.Item label="价格" name="price">
-          <Input placeholder="请输入" />
+        <Form.Item label={ui.t('价格', 'Price')} name="price">
+          <Input placeholder={ui.pleaseInput} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4 }}>
           <Space>
-            <Button type="primary">确定</Button>
+            <Button type="primary">{ui.confirm}</Button>
             <Button type="primary" onClick={() => form.resetFields()}>
-              重置
+              {ui.reset}
             </Button>
-            <Button>查看持仓</Button>
+            <Button>{ui.t('查看持仓', 'View positions')}</Button>
           </Space>
         </Form.Item>
       </Form>

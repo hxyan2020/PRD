@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 
 const { TextArea } = Input;
 
@@ -34,6 +35,7 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
 ];
 
 export function AdlAbnormalRecordPage() {
+  const ui = useUi();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
   const [open, setOpen] = useState(false);
@@ -76,23 +78,23 @@ export function AdlAbnormalRecordPage() {
   };
 
   const alertColumns = [
-    { title: '告警类型', dataIndex: 'alertType', width: 200 },
-    { title: '告警时间', dataIndex: 'alertTime', width: 180 },
-    { title: '告警方式', dataIndex: 'method', width: 120 },
+    { title: ui.t('告警类型', 'Alert type'), dataIndex: 'alertType', width: 200 },
+    { title: ui.t('告警时间', 'Alert time'), dataIndex: 'alertTime', width: 180 },
+    { title: ui.t('告警方式', 'Alert method'), dataIndex: 'method', width: 120 },
   ];
 
   const configColumns = [
-    { title: '告警类型', dataIndex: 'alertType', width: 200 },
-    { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '更新人', dataIndex: 'updatedBy', width: 220 },
+    { title: ui.t('告警类型', 'Alert type'), dataIndex: 'alertType', width: 200 },
+    { title: ui.t('更新时间', 'Updated at'), dataIndex: 'updateTime', width: 170 },
+    { title: ui.t('更新人', 'Updated by'), dataIndex: 'updatedBy', width: 220 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 90,
       render: (v: boolean) => (v ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
@@ -106,7 +108,7 @@ export function AdlAbnormalRecordPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.alertType}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -115,14 +117,14 @@ export function AdlAbnormalRecordPage() {
 
   return (
     <AdminPageShell>
-      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>监控告警 / ADL异常记录</div>
+      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>{ui.t('监控告警', 'Monitor & Alert')} / {ui.pageTitle('adl-abnormal-record')}</div>
 
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'records', label: '告警记录' },
-          { key: 'config', label: '监控配置' },
+          { key: 'records', label: ui.alertRecords },
+          { key: 'config', label: ui.monitorConfig },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -132,8 +134,8 @@ export function AdlAbnormalRecordPage() {
           rowKey="key"
           columns={alertColumns}
           dataSource={[]}
-          locale={{ emptyText: '暂无数据' }}
-          pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+          locale={{ emptyText: ui.empty }}
+          pagination={{ showTotal: (t) => ui.total(t), pageSize: 10 }}
           size="small"
         />
       )}
@@ -151,7 +153,7 @@ export function AdlAbnormalRecordPage() {
             dataSource={configs}
             pagination={{
               total: configs.length,
-              showTotal: (t) => `共 ${t} 条记录`,
+              showTotal: (t) => ui.total(t),
               pageSize: 20,
               showSizeChanger: true,
               pageSizeOptions: ['10', '20', '50'],
@@ -174,7 +176,7 @@ export function AdlAbnormalRecordPage() {
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
           <Form.Item
-            label="预警群"
+            label={ui.t('预警群', 'Alert group')}
             name="notify"
             rules={[{ required: true, message: '请填写 Lark 机器人 URL' }]}
           >

@@ -16,6 +16,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
 
 const { Text } = Typography;
@@ -26,11 +27,6 @@ const COMPETITOR_OPTIONS = [
   { label: 'Bybit', value: 'Bybit' },
   { label: 'OKX', value: 'OKX' },
   { label: 'Bitget', value: 'Bitget' },
-];
-
-const PERIOD_UNITS = [
-  { label: '秒', value: '秒' },
-  { label: '分钟', value: '分钟' },
 ];
 
 const LABEL_WIDTH = 56;
@@ -82,6 +78,11 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
 ];
 
 export function CompetitorSpreadMonitorPage() {
+  const ui = useUi();
+const PERIOD_UNITS = [
+  { label: ui.t('秒', 'sec'), value: '秒' },
+  { label: ui.t('分钟', 'min'), value: '分钟' },
+];
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
@@ -166,21 +167,21 @@ export function CompetitorSpreadMonitorPage() {
   };
 
   const alertColumns = [
-    { title: '合约', dataIndex: 'contract', width: 110 },
-    { title: '监控周期', dataIndex: 'period', width: 100 },
-    { title: '监控对标友商', dataIndex: 'competitor', width: 120 },
-    { title: '偏差类型', dataIndex: 'deviationType', width: 100 },
-    { title: '偏差值', dataIndex: 'deviationValue', width: 90 },
-    { title: '告警时间', dataIndex: 'alertTime', width: 170 },
-    { title: '告警方式', dataIndex: 'method', width: 90 },
+    { title: ui.t('合约', 'Contract'), dataIndex: 'contract', width: 110 },
+    { title: ui.t('监控周期', 'Monitor period'), dataIndex: 'period', width: 100 },
+    { title: ui.t('监控对标友商', 'Benchmark competitor'), dataIndex: 'competitor', width: 120 },
+    { title: ui.t('偏差类型', 'Deviation type'), dataIndex: 'deviationType', width: 100 },
+    { title: ui.t('偏差值', 'Deviation'), dataIndex: 'deviationValue', width: 90 },
+    { title: ui.t('告警时间', 'Alert time'), dataIndex: 'alertTime', width: 170 },
+    { title: ui.t('告警方式', 'Alert method'), dataIndex: 'method', width: 90 },
   ];
 
   const configColumns = [
-    { title: '监控友商', dataIndex: 'competitors', width: 220 },
-    { title: '监控信息', dataIndex: 'monitorInfo', width: 240 },
-    { title: '监控周期', dataIndex: 'period', width: 100 },
+    { title: ui.t('监控友商', 'Competitor'), dataIndex: 'competitors', width: 220 },
+    { title: ui.t('监控信息', 'Monitor info'), dataIndex: 'monitorInfo', width: 240 },
+    { title: ui.t('监控周期', 'Monitor period'), dataIndex: 'period', width: 100 },
     {
-      title: '关联合约',
+      title: ui.t('关联合约', 'Linked contract'),
       dataIndex: 'contractCount',
       width: 90,
       render: (v: number) => (
@@ -189,16 +190,16 @@ export function CompetitorSpreadMonitorPage() {
         </Button>
       ),
     },
-    { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '更新人', dataIndex: 'updatedBy', width: 220 },
+    { title: ui.t('更新时间', 'Updated at'), dataIndex: 'updateTime', width: 170 },
+    { title: ui.t('更新人', 'Updated by'), dataIndex: 'updatedBy', width: 220 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 90,
       render: (v: boolean) => (v ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
@@ -212,7 +213,7 @@ export function CompetitorSpreadMonitorPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.competitors}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -221,14 +222,14 @@ export function CompetitorSpreadMonitorPage() {
 
   return (
     <AdminPageShell>
-      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>监控告警 / 友商价差监控</div>
+      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>{ui.t('监控告警', 'Monitor & Alert')} / {ui.pageTitle('competitor-spread-monitor')}</div>
 
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'records', label: '告警记录' },
-          { key: 'config', label: '监控配置' },
+          { key: 'records', label: ui.alertRecords },
+          { key: 'config', label: ui.monitorConfig },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -237,15 +238,15 @@ export function CompetitorSpreadMonitorPage() {
         <>
           <div className="filter-toolbar">
             <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
-              <Form.Item label="合约名称" name="contractName">
-                <Input placeholder="请输入合约名称" style={{ width: 200 }} />
+              <Form.Item label={ui.contractName} name="contractName">
+                <Input placeholder={ui.t("请输入合约名称", "Enter contract name")} style={{ width: 200 }} />
               </Form.Item>
             </Form>
             <Space>
               <Button type="primary" icon={<SearchOutlined />}>
-                查询
+                {ui.search}
               </Button>
-              <Button onClick={() => filterForm.resetFields()}>重置</Button>
+              <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
             </Space>
           </div>
           <Table
@@ -253,7 +254,7 @@ export function CompetitorSpreadMonitorPage() {
             columns={alertColumns}
             dataSource={ALERT_ROWS}
             scroll={{ x: 900 }}
-            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -273,7 +274,7 @@ export function CompetitorSpreadMonitorPage() {
             scroll={{ x: 1300 }}
             pagination={{
               total: configs.length,
-              showTotal: (t) => `共 ${t} 条记录`,
+              showTotal: (t) => ui.total(t),
               pageSize: 20,
               showSizeChanger: true,
               pageSizeOptions: ['10', '20', '50'],
@@ -296,19 +297,19 @@ export function CompetitorSpreadMonitorPage() {
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
           <Form.Item
-            label="监控友商"
+            label={ui.t('监控友商', 'Competitor')}
             name="competitors"
-            rules={[{ required: true, message: '请选择监控友商' }]}
+            rules={[{ required: true, message: ui.t('请选择监控友商', 'Select competitor') }]}
           >
             <Select
               mode="multiple"
               allowClear
-              placeholder="请选择监控友商"
+              placeholder={ui.t('请选择监控友商', 'Select competitor')}
               options={COMPETITOR_OPTIONS}
             />
           </Form.Item>
 
-          <Form.Item label="监控信息" required style={{ marginBottom: 8 }}>
+          <Form.Item label={ui.t('监控信息', 'Monitor info')} required style={{ marginBottom: 8 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Form.Item name="enableLatest" valuePropName="checked" noStyle>
@@ -317,7 +318,7 @@ export function CompetitorSpreadMonitorPage() {
                 <Text style={{ width: LABEL_WIDTH, flexShrink: 0 }}>最新价</Text>
                 <Form.Item name="latestPct" noStyle>
                   <Input
-                    placeholder="请输入最新价偏差阈值"
+                    placeholder={ui.t('请输入最新价偏差阈值', 'Enter last price deviation')}
                     suffix="%"
                     disabled={!enableLatest}
                     style={{ flex: 1 }}
@@ -331,7 +332,7 @@ export function CompetitorSpreadMonitorPage() {
                 <Text style={{ width: LABEL_WIDTH, flexShrink: 0 }}>指数价</Text>
                 <Form.Item name="indexPct" noStyle>
                   <Input
-                    placeholder="请输入指数价偏差阈值"
+                    placeholder={ui.t('请输入指数价偏差阈值', 'Enter index price deviation')}
                     suffix="%"
                     disabled={!enableIndex}
                     style={{ flex: 1 }}
@@ -345,7 +346,7 @@ export function CompetitorSpreadMonitorPage() {
                 <Text style={{ width: LABEL_WIDTH, flexShrink: 0 }}>标记价</Text>
                 <Form.Item name="markPct" noStyle>
                   <Input
-                    placeholder="请输入标记价偏差阈值"
+                    placeholder={ui.t('请输入标记价偏差阈值', 'Enter mark price deviation')}
                     suffix="%"
                     disabled={!enableMark}
                     style={{ flex: 1 }}
@@ -355,27 +356,27 @@ export function CompetitorSpreadMonitorPage() {
             </div>
           </Form.Item>
 
-          <Form.Item label="监控周期" required style={{ marginBottom: 0 }}>
+          <Form.Item label={ui.t('监控周期', 'Monitor period')} required style={{ marginBottom: 0 }}>
             <Space align="start" style={{ width: '100%' }}>
               <Form.Item
                 name="periodValue"
-                rules={[{ required: true, message: '请输入监控周期数值' }]}
+                rules={[{ required: true, message: ui.t('请输入监控周期数值', 'Enter monitor period') }]}
                 style={{ flex: 1, marginBottom: 24 }}
               >
                 <InputNumber
                   min={1}
                   style={{ width: 240 }}
-                  placeholder="请输入监控周期数值"
+                  placeholder={ui.t('请输入监控周期数值', 'Enter monitor period')}
                 />
               </Form.Item>
               <Form.Item
                 name="periodUnit"
-                rules={[{ required: true, message: '请选择监控周期单位' }]}
+                rules={[{ required: true, message: ui.t('请选择监控周期单位', 'Select period unit') }]}
                 style={{ marginBottom: 24 }}
               >
                 <Select
                   style={{ width: 200 }}
-                  placeholder="请选择监控周期单位"
+                  placeholder={ui.t('请选择监控周期单位', 'Select period unit')}
                   options={PERIOD_UNITS}
                 />
               </Form.Item>
@@ -383,20 +384,20 @@ export function CompetitorSpreadMonitorPage() {
           </Form.Item>
 
           <Form.Item
-            label="关联合约"
+            label={ui.t('关联合约', 'Linked contract')}
             name="contracts"
-            rules={[{ required: true, message: '请选择关联合约' }]}
+            rules={[{ required: true, message: ui.t('请选择关联合约', 'Select linked contract') }]}
           >
             <Select
               mode="multiple"
               allowClear
-              placeholder="请选择关联合约"
+              placeholder={ui.t('请选择关联合约', 'Select linked contract')}
               options={contractNameOptions}
             />
           </Form.Item>
 
           <Form.Item
-            label="预警群"
+            label={ui.t('预警群', 'Alert group')}
             name="notify"
             rules={[{ required: true, message: '请填写 Lark 机器人 URL' }]}
           >

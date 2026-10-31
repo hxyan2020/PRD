@@ -1,6 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select, Space, Table, Typography, message } from 'antd';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { globalFrequencyGroups } from '../mock/financialData';
 import { contractNameOptions } from '../mock/data';
 
@@ -8,22 +9,28 @@ const { Text, Title } = Typography;
 
 export function ClosePositionPage() {
   const [form] = Form.useForm();
+  const ui = useUi();
+
   return (
-    <AdminPageShell title="平仓工具">
+    <AdminPageShell title={ui.pageTitle('tools-close-position')}>
       <div style={{ maxWidth: 520, margin: '0 auto', padding: 24, border: '1px solid #f0f0f0' }}>
-        <Title level={5}>账户平台</Title>
+        <Title level={5}>{ui.t('账户平台', 'Account platform')}</Title>
         <Form form={form} layout="vertical">
-          <Form.Item label="合约名称" name="contract" rules={[{ required: true, message: '请选择合约名称' }]}>
-            <Select placeholder="请选择" options={contractNameOptions} />
+          <Form.Item
+            label={ui.contractName}
+            name="contract"
+            rules={[{ required: true, message: ui.t('请选择合约名称', 'Please select a contract') }]}
+          >
+            <Select placeholder={ui.pleaseSelect} options={contractNameOptions} />
           </Form.Item>
           <Form.Item
-            label="多仓UID"
+            label={ui.t('多仓UID', 'Long UID')}
             name="longUid"
             extra={
               <Text type="secondary" style={{ fontSize: 12 }}>
-                uid 与空仓 uid 相同为自成交{' '}
+                {ui.t('uid 与空仓 uid 相同为自成交', 'Same UID as short means self-trade')}{' '}
                 <Button type="link" size="small" style={{ padding: 0 }}>
-                  查看多仓持仓
+                  {ui.t('查看多仓持仓', 'View long position')}
                 </Button>
               </Text>
             }
@@ -31,40 +38,44 @@ export function ClosePositionPage() {
             <Input />
           </Form.Item>
           <Form.Item
-            label="空仓UID"
+            label={ui.t('空仓UID', 'Short UID')}
             name="shortUid"
             extra={
               <Text type="secondary" style={{ fontSize: 12 }}>
-                uid 与多仓 uid 相同为自成交{' '}
+                {ui.t('uid 与多仓 uid 相同为自成交', 'Same UID as long means self-trade')}{' '}
                 <Button type="link" size="small" style={{ padding: 0 }}>
-                  查看空仓持仓
+                  {ui.t('查看空仓持仓', 'View short position')}
                 </Button>
               </Text>
             }
           >
             <Input />
           </Form.Item>
-          <Form.Item label="成交价格" name="price">
-            <Input placeholder="当前合理价" />
+          <Form.Item label={ui.t('成交价格', 'Fill price')} name="price">
+            <Input placeholder={ui.t('当前合理价', 'Current fair price')} />
           </Form.Item>
-          <Form.Item label="数量" name="qty" extra="若不输入，取多空最小值">
-            <Input placeholder="请输入数量" />
+          <Form.Item
+            label={ui.t('数量', 'Quantity')}
+            name="qty"
+            extra={ui.t('若不输入，取多空最小值', 'If empty, uses the min of long/short')}
+          >
+            <Input placeholder={ui.t('请输入数量', 'Enter quantity')} />
           </Form.Item>
           <Form.Item>
             <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={() => form.resetFields()}>取消</Button>
+              <Button onClick={() => form.resetFields()}>{ui.cancel}</Button>
               <Button
                 type="primary"
                 onClick={async () => {
                   try {
                     await form.validateFields();
-                    message.success('已提交');
+                    message.success(ui.t('已提交', 'Submitted'));
                   } catch {
                     /* validation */
                   }
                 }}
               >
-                确定
+                {ui.confirm}
               </Button>
             </Space>
           </Form.Item>
@@ -75,36 +86,38 @@ export function ClosePositionPage() {
 }
 
 export function GlobalFrequencyPage() {
+  const ui = useUi();
+
   return (
-    <AdminPageShell title="全局频率分组">
+    <AdminPageShell title={ui.pageTitle('tools-global-frequency')}>
       <div className="table-toolbar" style={{ justifyContent: 'space-between' }}>
         <Text>
-          安全水位线: <Text strong>30000/s</Text>
+          {ui.t('安全水位线', 'Safe watermark')}: <Text strong>30000/s</Text>
         </Text>
         <Button type="primary" icon={<PlusOutlined />}>
-          增加
+          {ui.t('增加', 'Add')}
         </Button>
       </div>
       <Table
         rowKey="key"
         size="small"
         columns={[
-          { title: '组名', dataIndex: 'groupName', width: 120 },
-          { title: '占比', dataIndex: 'ratio', width: 180 },
-          { title: '操作人', dataIndex: 'operator', width: 200 },
-          { title: '创建时间', dataIndex: 'createdAt', width: 170 },
-          { title: '更新时间', dataIndex: 'updatedAt', width: 170 },
+          { title: ui.t('组名', 'Group'), dataIndex: 'groupName', width: 120 },
+          { title: ui.t('占比', 'Share'), dataIndex: 'ratio', width: 180 },
+          { title: ui.operator, dataIndex: 'operator', width: 200 },
+          { title: ui.createdAt, dataIndex: 'createdAt', width: 170 },
+          { title: ui.updatedAt, dataIndex: 'updatedAt', width: 170 },
           {
-            title: '操作',
+            title: ui.action,
             key: 'op',
             width: 160,
             render: () => (
               <Space>
                 <Button type="primary" size="small">
-                  编辑
+                  {ui.edit}
                 </Button>
                 <Button danger size="small">
-                  删除
+                  {ui.delete}
                 </Button>
               </Space>
             ),
@@ -112,7 +125,7 @@ export function GlobalFrequencyPage() {
         ]}
         dataSource={globalFrequencyGroups}
         scroll={{ x: 1000 }}
-        pagination={{ pageSize: 10, showTotal: (t) => `共 ${t} 条` }}
+        pagination={{ pageSize: 10, showTotal: (n) => ui.total(n) }}
       />
     </AdminPageShell>
   );
@@ -120,13 +133,23 @@ export function GlobalFrequencyPage() {
 
 export function OpenBottomPositionPage() {
   const [form] = Form.useForm();
+  const ui = useUi();
+
   return (
-    <AdminPageShell title="开底仓">
+    <AdminPageShell title={ui.pageTitle('tools-open-bottom-position')}>
       <Form form={form} layout="vertical" style={{ maxWidth: 480 }}>
-        <Form.Item label="合约名称" name="contract" rules={[{ required: true, message: '请选择合约名称' }]}>
-          <Select placeholder="请选择" options={contractNameOptions} />
+        <Form.Item
+          label={ui.contractName}
+          name="contract"
+          rules={[{ required: true, message: ui.t('请选择合约名称', 'Please select a contract') }]}
+        >
+          <Select placeholder={ui.pleaseSelect} options={contractNameOptions} />
         </Form.Item>
-        <Form.Item label="UID" name="uid" rules={[{ required: true, message: '请输入 UID' }]}>
+        <Form.Item
+          label="UID"
+          name="uid"
+          rules={[{ required: true, message: ui.t('请输入 UID', 'Please enter UID') }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item>
@@ -135,13 +158,13 @@ export function OpenBottomPositionPage() {
             onClick={async () => {
               try {
                 await form.validateFields();
-                message.success('已提交');
+                message.success(ui.t('已提交', 'Submitted'));
               } catch {
                 /* validation */
               }
             }}
           >
-            提交
+            {ui.submit}
           </Button>
         </Form.Item>
       </Form>

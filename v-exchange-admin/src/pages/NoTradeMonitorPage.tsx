@@ -14,12 +14,8 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
-
-const DURATION_UNITS = [
-  { label: '秒', value: '秒' },
-  { label: '分钟', value: '分钟' },
-];
 
 interface AlertRecord {
   key: string;
@@ -86,6 +82,11 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
 ];
 
 export function NoTradeMonitorPage() {
+  const ui = useUi();
+const DURATION_UNITS = [
+  { label: ui.t('秒', 'sec'), value: '秒' },
+  { label: ui.t('分钟', 'min'), value: '分钟' },
+];
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
@@ -131,25 +132,25 @@ export function NoTradeMonitorPage() {
   };
 
   const alertColumns = [
-    { title: '合约', dataIndex: 'contract', width: 120 },
-    { title: '告警类型', dataIndex: 'alertType', width: 140 },
-    { title: '告警值', dataIndex: 'alertValue', width: 100 },
-    { title: '告警时间', dataIndex: 'alertTime', width: 180 },
-    { title: '告警方式', dataIndex: 'method', width: 100 },
+    { title: ui.t('合约', 'Contract'), dataIndex: 'contract', width: 120 },
+    { title: ui.t('告警类型', 'Alert type'), dataIndex: 'alertType', width: 140 },
+    { title: ui.t('告警值', 'Alert value'), dataIndex: 'alertValue', width: 100 },
+    { title: ui.t('告警时间', 'Alert time'), dataIndex: 'alertTime', width: 180 },
+    { title: ui.t('告警方式', 'Alert method'), dataIndex: 'method', width: 100 },
   ];
 
   const configColumns = [
-    { title: '告警类型', dataIndex: 'alertType', width: 140 },
-    { title: '告警值', dataIndex: 'alertValue', width: 120 },
-    { title: '关联合约', dataIndex: 'contract', width: 120 },
+    { title: ui.t('告警类型', 'Alert type'), dataIndex: 'alertType', width: 140 },
+    { title: ui.t('告警值', 'Alert value'), dataIndex: 'alertValue', width: 120 },
+    { title: ui.t('关联合约', 'Linked contract'), dataIndex: 'contract', width: 120 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 100,
       render: (v: boolean) => (v ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
@@ -158,7 +159,7 @@ export function NoTradeMonitorPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.contract}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -167,14 +168,14 @@ export function NoTradeMonitorPage() {
 
   return (
     <AdminPageShell>
-      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>监控告警 / 无交易监控</div>
+      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>{ui.t('监控告警', 'Monitor & Alert')} / {ui.pageTitle('no-trade-monitor')}</div>
 
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'records', label: '告警记录' },
-          { key: 'config', label: '监控配置' },
+          { key: 'records', label: ui.alertRecords },
+          { key: 'config', label: ui.monitorConfig },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -182,15 +183,15 @@ export function NoTradeMonitorPage() {
       {tab === 'records' && (
         <>
           <Form form={filterForm} layout="inline" style={{ marginBottom: 16 }}>
-            <Form.Item label="合约名称" name="contractName">
-              <Input placeholder="请输入合约名称" style={{ width: 200 }} />
+            <Form.Item label={ui.contractName} name="contractName">
+              <Input placeholder={ui.t("请输入合约名称", "Enter contract name")} style={{ width: 200 }} />
             </Form.Item>
             <Form.Item>
               <Space>
                 <Button type="primary" icon={<SearchOutlined />}>
-                  查询
+                  {ui.search}
                 </Button>
-                <Button onClick={() => filterForm.resetFields()}>重置</Button>
+                <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
               </Space>
             </Form.Item>
           </Form>
@@ -198,7 +199,7 @@ export function NoTradeMonitorPage() {
             rowKey="key"
             columns={alertColumns}
             dataSource={ALERT_ROWS}
-            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -215,7 +216,7 @@ export function NoTradeMonitorPage() {
             rowKey="key"
             columns={configColumns}
             dataSource={configs}
-            pagination={{ total: configs.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: configs.length, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -233,25 +234,25 @@ export function NoTradeMonitorPage() {
         maskClosable={false}
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
-          <Form.Item label="持续时长" required style={{ marginBottom: 0 }}>
+          <Form.Item label={ui.t('持续时长', 'Duration')} required style={{ marginBottom: 0 }}>
             <Space align="start">
               <Form.Item
                 name="durationValue"
-                rules={[{ required: true, message: '请输入持续时长数值' }]}
+                rules={[{ required: true, message: ui.t('请输入持续时长数值', 'Enter duration value') }]}
               >
                 <InputNumber
                   min={1}
                   style={{ width: 200 }}
-                  placeholder="请输入持续时长数值"
+                  placeholder={ui.t('请输入持续时长数值', 'Enter duration value')}
                 />
               </Form.Item>
               <Form.Item
                 name="durationUnit"
-                rules={[{ required: true, message: '请选择持续时长单位' }]}
+                rules={[{ required: true, message: ui.t('请选择持续时长单位', 'Select duration unit') }]}
               >
                 <Select
                   style={{ width: 180 }}
-                  placeholder="请选择持续时长单位"
+                  placeholder={ui.t('请选择持续时长单位', 'Select duration unit')}
                   options={DURATION_UNITS}
                 />
               </Form.Item>
@@ -259,15 +260,15 @@ export function NoTradeMonitorPage() {
           </Form.Item>
 
           <Form.Item
-            label="关联合约"
+            label={ui.t('关联合约', 'Linked contract')}
             name="contract"
-            rules={[{ required: true, message: '请选择关联合约' }]}
+            rules={[{ required: true, message: ui.t('请选择关联合约', 'Select linked contract') }]}
           >
-            <Select placeholder="请选择关联合约" options={contractNameOptions} />
+            <Select placeholder={ui.t('请选择关联合约', 'Select linked contract')} options={contractNameOptions} />
           </Form.Item>
 
           <Form.Item
-            label="预警群"
+            label={ui.t('预警群', 'Alert group')}
             name="notify"
             rules={[{ required: true, message: '请填写 Lark 机器人 URL' }]}
           >

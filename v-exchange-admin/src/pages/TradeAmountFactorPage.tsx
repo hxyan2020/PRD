@@ -1,17 +1,19 @@
 import { Button, Form, Input, Radio, Space, Typography } from 'antd';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 
 const { Text } = Typography;
 
 export function TradeAmountFactorPage() {
+  const ui = useUi();
   return (
-    <AdminPageShell title="交易额系数配置">
+    <AdminPageShell title={ui.pageTitle('trade-amount-factor')}>
       <div style={{ marginBottom: 24 }}>
         <Space>
           <Text>当前系数: 1</Text>
           <Button size="small">刷新</Button>
           <Button type="primary" size="small">
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       </div>
@@ -26,22 +28,22 @@ export function TradeAmountFactorPage() {
         initialValues={{ factor: '1', mode: 'smooth', interval: '1', step: '0.01' }}
         style={{ maxWidth: 720 }}
       >
-        <Form.Item label="目标系数" name="factor">
+        <Form.Item label={ui.t('目标系数', 'Target factor')} name="factor">
           <Input />
         </Form.Item>
-        <Form.Item label="生效模式" name="mode">
+        <Form.Item label={ui.t('生效模式', 'Effective mode')} name="mode">
           <Radio.Group>
             <Radio value="immediate">立即生效</Radio>
             <Radio value="smooth">平滑过渡</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="调整间隔时间" name="interval">
+        <Form.Item label={ui.t('调整间隔时间', 'Adjust interval')} name="interval">
           <Space>
             <Input style={{ width: 80 }} />
             <span>分钟</span>
           </Space>
         </Form.Item>
-        <Form.Item label="调整幅度" name="step">
+        <Form.Item label={ui.t('调整幅度', 'Adjust step')} name="step">
           <Input style={{ width: 120 }} />
         </Form.Item>
       </Form>

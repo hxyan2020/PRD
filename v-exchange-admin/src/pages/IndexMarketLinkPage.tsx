@@ -18,6 +18,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { indexPriceList } from '../mock/data';
 
 /** From production 新增指数映射 modal screenshot */
@@ -66,6 +67,7 @@ const LINK_TIPS = {
 };
 
 export function IndexMarketLinkPage() {
+  const ui = useUi();
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -123,14 +125,14 @@ export function IndexMarketLinkPage() {
       key: 'action',
       render: () => (
         <Button type="primary" size="small">
-          编辑
+          {ui.t('编辑', 'Edit')}
         </Button>
       ),
     },
   ];
 
   return (
-    <AdminPageShell titleTag="指数价格关联">
+    <AdminPageShell titleTag={ui.t('指数价格关联', 'Index market link')}>
       <Form form={filterForm} layout="inline" style={{ marginBottom: 16 }}>
         <Form.Item
           label={
@@ -142,7 +144,7 @@ export function IndexMarketLinkPage() {
           name="marketSource"
         >
           <Select
-            placeholder="请选择"
+            placeholder={ui.t('请选择', 'Please select')}
             allowClear
             style={{ width: 160 }}
             options={MARKET_SOURCE_OPTIONS.map((v) => ({ label: v, value: v }))}
@@ -157,15 +159,15 @@ export function IndexMarketLinkPage() {
           }
           name="indexName"
         >
-          <Input placeholder="请输入" style={{ width: 160 }} />
+          <Input placeholder={ui.t('请输入', 'Please enter')} style={{ width: 160 }} />
         </Form.Item>
         <Form.Item>
           <Space>
             <Button type="primary" icon={<SearchOutlined />}>
-              查询
+              {ui.search}
             </Button>
             <Button icon={<ReloadOutlined />} onClick={() => filterForm.resetFields()}>
-              重置
+              {ui.reset}
             </Button>
           </Space>
         </Form.Item>
@@ -173,7 +175,7 @@ export function IndexMarketLinkPage() {
 
       <div className="table-toolbar">
         <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-          添加
+          {ui.add}
         </Button>
       </div>
 
@@ -181,7 +183,7 @@ export function IndexMarketLinkPage() {
         rowKey="indexName"
         columns={columns}
         dataSource={[]}
-        locale={{ emptyText: '暂无数据' }}
+        locale={{ emptyText: ui.empty }}
         size="small"
       />
 
@@ -207,7 +209,7 @@ export function IndexMarketLinkPage() {
             name="indexName"
             rules={[{ required: true, message: '请选择指数名称' }]}
           >
-            <Select placeholder="指数名称" options={indexNameOptions} />
+            <Select placeholder={ui.t('指数名称', 'Index name')} options={indexNameOptions} />
           </Form.Item>
 
           <Form.Item
@@ -234,9 +236,9 @@ export function IndexMarketLinkPage() {
               </span>
             }
             name="targetPair"
-            rules={[{ required: true, message: '请填写目标交易对' }]}
+            rules={[{ required: true, message: ui.t('请填写目标交易对', 'Enter target pair') }]}
           >
-            <Input placeholder="请填写目标交易对" />
+            <Input placeholder={ui.t('请填写目标交易对', 'Enter target pair')} />
           </Form.Item>
         </Form>
       </Modal>

@@ -25,6 +25,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { indexPriceList, type IndexPriceRecord } from '../mock/data';
 
 const { Text } = Typography;
@@ -81,6 +82,7 @@ const INDEX_FIELD_TIPS = {
 };
 
 export function IndexPricePage() {
+  const ui = useUi();
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -153,19 +155,19 @@ export function IndexPricePage() {
   };
 
   const columns = [
-    { title: '指数名称', dataIndex: 'indexName', width: 100 },
-    { title: '基础币种', dataIndex: 'baseCurrency', width: 80 },
-    { title: '计价币种', dataIndex: 'quoteCurrency', width: 80 },
-    { title: '价格精度', dataIndex: 'pricePrecision', width: 100 },
-    { title: '最小行情源数', dataIndex: 'minMarketSources', width: 110 },
+    { title: ui.t('指数名称', 'Index name'), dataIndex: 'indexName', width: 100 },
+    { title: ui.t('基础币种', 'Base currency'), dataIndex: 'baseCurrency', width: 80 },
+    { title: ui.t('计价币种', 'Quote currency'), dataIndex: 'quoteCurrency', width: 80 },
+    { title: ui.t('价格精度', 'Price precision'), dataIndex: 'pricePrecision', width: 100 },
+    { title: ui.t('最小行情源数', 'Min market sources'), dataIndex: 'minMarketSources', width: 110 },
     {
-      title: '行情源',
+      title: ui.t('行情源', 'Market source'),
       dataIndex: 'marketSources',
       width: 200,
       render: (sources: string[]) => sources.join(', '),
     },
     {
-      title: '行情源交易量白名单',
+      title: ui.t('行情源交易量白名单', 'Volume whitelist'),
       dataIndex: 'volumeWhitelist',
       width: 180,
       render: (list: string[]) =>
@@ -175,72 +177,72 @@ export function IndexPricePage() {
           </Tag>
         )),
     },
-    { title: '计算方式', dataIndex: 'calculationMethod', width: 160 },
-    { title: '订阅币种', dataIndex: 'subscriptionCurrency', width: 90 },
+    { title: ui.t('计算方式', 'Calculation method'), dataIndex: 'calculationMethod', width: 160 },
+    { title: ui.t('订阅币种', 'Subscribe currency'), dataIndex: 'subscriptionCurrency', width: 90 },
     {
-      title: '是否启用',
+      title: ui.t('是否启用', 'Enabled'),
       dataIndex: 'enabled',
       width: 90,
       render: (v: boolean) => <Switch checked={v} size="small" />,
     },
-    { title: '放大倍数', dataIndex: 'magnification', width: 80 },
+    { title: ui.t('放大倍数', 'Magnification'), dataIndex: 'magnification', width: 80 },
     {
-      title: '操作记录',
+      title: ui.t('操作记录', 'Operation log'),
       key: 'log',
       width: 90,
       render: () => (
         <Button type="link" size="small" icon={<EyeOutlined />}>
-          查看
+          {ui.t('查看', 'View')}
         </Button>
       ),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 80,
       render: (_: unknown, record: IndexPriceRecord) => (
         <Button type="primary" size="small" onClick={() => openEdit(record)}>
-          编辑
+          {ui.t('编辑', 'Edit')}
         </Button>
       ),
     },
   ];
 
   return (
-    <AdminPageShell title="指数价格">
+    <AdminPageShell title={ui.pageTitle('index-price')}>
       <Form form={filterForm} layout="inline" style={{ marginBottom: 16, flexWrap: 'wrap' }}>
-        <Form.Item label="基础币种" name="base">
+        <Form.Item label={ui.t('基础币种', 'Base currency')} name="base">
           <Select allowClear style={{ width: 100 }} />
         </Form.Item>
-        <Form.Item label="计价币种" name="quote">
+        <Form.Item label={ui.t('计价币种', 'Quote currency')} name="quote">
           <Select allowClear style={{ width: 100 }} />
         </Form.Item>
-        <Form.Item label="状态" name="status">
+        <Form.Item label={ui.status} name="status">
           <Select allowClear style={{ width: 100 }} />
         </Form.Item>
-        <Form.Item label="计算方式" name="method">
+        <Form.Item label={ui.t('计算方式', 'Calculation method')} name="method">
           <Select allowClear style={{ width: 140 }} />
         </Form.Item>
-        <Form.Item label="行情源" name="source">
+        <Form.Item label={ui.t('行情源', 'Market source')} name="source">
           <Select allowClear style={{ width: 120 }} />
         </Form.Item>
         <Form.Item>
           <Space>
             <Button type="primary" icon={<SearchOutlined />}>
-              查询
+              {ui.search}
             </Button>
-            <Button onClick={() => filterForm.resetFields()}>重置</Button>
+            <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
           </Space>
         </Form.Item>
-        <Form.Item label="权重展示开关">
+        <Form.Item label={ui.t('权重展示开关', 'Show weights')}>
           <Switch size="small" />
         </Form.Item>
       </Form>
       <div className="table-toolbar">
         <Space>
-          <Button danger>批量取消行情源</Button>
+          <Button danger>{ui.t('批量取消行情源', 'Batch cancel sources')}</Button>
           <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-            添加
+            {ui.add}
           </Button>
           <Button type="primary" icon={<DownloadOutlined />}>
             导出
@@ -255,7 +257,7 @@ export function IndexPricePage() {
         columns={columns}
         dataSource={indexPriceList}
         scroll={{ x: 1800 }}
-        pagination={{ total: 2, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+        pagination={{ total: 2, showTotal: (t) => ui.total(t), pageSize: 10 }}
         size="small"
       />
 
@@ -287,9 +289,9 @@ export function IndexPricePage() {
                   </span>
                 }
                 name="baseCurrency"
-                rules={[{ required: true, message: '请输入基础货币' }]}
+                rules={[{ required: true, message: ui.t('请输入基础货币', 'Enter base currency') }]}
               >
-                <Input placeholder="请输入" />
+                <Input placeholder={ui.pleaseInput} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -301,9 +303,9 @@ export function IndexPricePage() {
                   </span>
                 }
                 name="quoteCurrency"
-                rules={[{ required: true, message: '请输入计价货币' }]}
+                rules={[{ required: true, message: ui.t('请输入计价货币', 'Enter quote currency') }]}
               >
-                <Input placeholder="请输入" />
+                <Input placeholder={ui.pleaseInput} />
               </Form.Item>
             </Col>
           </Row>
@@ -318,9 +320,9 @@ export function IndexPricePage() {
                   </span>
                 }
                 name="subscriptionCurrency"
-                rules={[{ required: true, message: '请输入订阅币种' }]}
+                rules={[{ required: true, message: ui.t('请输入订阅币种', 'Enter subscribe currency') }]}
               >
-                <Input placeholder="请输入" />
+                <Input placeholder={ui.pleaseInput} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -350,7 +352,7 @@ export function IndexPricePage() {
                   },
                 ]}
               >
-                <Input placeholder="请输入" style={{ width: 160 }} disabled={mode === 'edit'} />
+                <Input placeholder={ui.pleaseInput} style={{ width: 160 }} disabled={mode === 'edit'} />
               </Form.Item>
             </Col>
           </Row>
@@ -365,7 +367,7 @@ export function IndexPricePage() {
                   </span>
                 }
                 name="pricePrecision"
-                rules={[{ required: true, message: '请输入价格精度' }]}
+                rules={[{ required: true, message: ui.t('请输入价格精度', 'Enter price precision') }]}
               >
                 <Input style={{ width: 160 }} />
               </Form.Item>
@@ -379,7 +381,7 @@ export function IndexPricePage() {
                   </span>
                 }
                 name="minMarketSources"
-                rules={[{ required: true, message: '请输入最小行情源数' }]}
+                rules={[{ required: true, message: ui.t('请输入最小行情源数', 'Enter min market sources') }]}
               >
                 <Input style={{ width: 160 }} />
               </Form.Item>
@@ -409,7 +411,7 @@ export function IndexPricePage() {
                 </span>
               }
               name="medianDeviationRatio"
-              rules={[{ required: true, message: '请输入中位数偏离比例' }]}
+              rules={[{ required: true, message: ui.t('请输入中位数偏离比例', 'Enter median deviation ratio') }]}
             >
               <Input style={{ width: 160 }} />
             </Form.Item>

@@ -1,68 +1,70 @@
 import { DownloadOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select, Space, Table } from 'antd';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { fairPriceList } from '../mock/data';
 
 export function FairPricePage() {
+  const ui = useUi();
   const columns = [
-    { title: '合约名称', dataIndex: 'contractName', width: 130 },
-    { title: '合约显示名称', dataIndex: 'contractDisplayName', width: 120 },
-    { title: '基准移动平均值周期(秒)', dataIndex: 'baselineMaPeriodSec', width: 180 },
-    { title: '期现价差阈值比例', dataIndex: 'spreadThresholdRatio', width: 140 },
-    { title: '观察阈值(秒)', dataIndex: 'observationThresholdSec', width: 110 },
-    { title: '恢复阈值(秒)', dataIndex: 'recoveryThresholdSec', width: 110 },
+    { title: ui.t('合约名称', 'Contract'), dataIndex: 'contractName', width: 130 },
+    { title: ui.t('合约显示名称', 'Contract display name'), dataIndex: 'contractDisplayName', width: 120 },
+    { title: ui.t('基准移动平均值周期(秒)', 'Baseline MA period (sec)'), dataIndex: 'baselineMaPeriodSec', width: 180 },
+    { title: ui.t('期现价差阈值比例', 'Basis spread threshold'), dataIndex: 'spreadThresholdRatio', width: 140 },
+    { title: ui.t('观察阈值(秒)', 'Observation threshold (sec)'), dataIndex: 'observationThresholdSec', width: 110 },
+    { title: ui.t('恢复阈值(秒)', 'Recovery threshold (sec)'), dataIndex: 'recoveryThresholdSec', width: 110 },
     {
-      title: '近24小时计算记录',
+      title: ui.t('近24小时计算记录', '24h calc records'),
       key: 'calc24h',
       width: 150,
       render: () => (
         <Button type="link" size="small">
-          查看
+          {ui.t('查看', 'View')}
         </Button>
       ),
     },
-    { title: '新算法计算状态', dataIndex: 'newAlgorithmStatus', width: 130 },
-    { title: '采用状态', dataIndex: 'adoptionStatus', width: 100 },
+    { title: ui.t('新算法计算状态', 'New algo status'), dataIndex: 'newAlgorithmStatus', width: 130 },
+    { title: ui.t('采用状态', 'Adoption status'), dataIndex: 'adoptionStatus', width: 100 },
     {
-      title: '操作记录',
+      title: ui.t('操作记录', 'Operation log'),
       key: 'log',
       width: 100,
       render: () => (
         <Button type="link" size="small" icon={<EyeOutlined />}>
-          查看
+          {ui.t('查看', 'View')}
         </Button>
       ),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 80,
       render: () => (
         <Button type="primary" size="small">
-          编辑
+          {ui.t('编辑', 'Edit')}
         </Button>
       ),
     },
   ];
 
   return (
-    <AdminPageShell title="合理价格">
+    <AdminPageShell title={ui.pageTitle('fair-price')}>
       <Form layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="合约名称">
-          <Input placeholder="请输入" style={{ width: 140 }} />
+        <Form.Item label={ui.contractName}>
+          <Input placeholder={ui.pleaseInput} style={{ width: 140 }} />
         </Form.Item>
-        <Form.Item label="新算法计算状态">
+        <Form.Item label={ui.t('新算法计算状态', 'New algo status')}>
           <Select allowClear style={{ width: 120 }} />
         </Form.Item>
-        <Form.Item label="采用状态">
+        <Form.Item label={ui.t('采用状态', 'Adoption status')}>
           <Select allowClear style={{ width: 120 }} />
         </Form.Item>
         <Form.Item>
           <Space>
             <Button type="primary" icon={<SearchOutlined />}>
-              查询
+              {ui.search}
             </Button>
-            <Button>重置</Button>
+            <Button>{ui.reset}</Button>
           </Space>
         </Form.Item>
       </Form>
@@ -76,7 +78,7 @@ export function FairPricePage() {
         rowKey="key"
         columns={columns}
         dataSource={fairPriceList}
-        pagination={{ total: 2, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+        pagination={{ total: 2, showTotal: (t) => ui.total(t), pageSize: 10 }}
         size="small"
       />
     </AdminPageShell>

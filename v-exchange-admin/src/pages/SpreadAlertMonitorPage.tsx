@@ -14,21 +14,8 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
-
-const MONITOR_TYPE_OPTIONS = [
-  { label: '买一价格', value: '买一价格' },
-  { label: '卖一价格', value: '卖一价格' },
-  { label: '标记价格', value: '标记价格' },
-  { label: '最新成交价', value: '最新成交价' },
-  { label: '买卖中间价', value: '买卖中间价' },
-  { label: '指数价格', value: '指数价格' },
-];
-
-const PERIOD_UNIT_OPTIONS = [
-  { label: '秒', value: '秒' },
-  { label: '分钟', value: '分钟' },
-];
 
 interface AlertRecord {
   key: string;
@@ -139,6 +126,19 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
 ];
 
 export function SpreadAlertMonitorPage() {
+  const ui = useUi();
+const MONITOR_TYPE_OPTIONS = [
+  { label: ui.t('买一价格', 'Best bid'), value: '买一价格' },
+  { label: ui.t('卖一价格', 'Best ask'), value: '卖一价格' },
+  { label: ui.t('标记价格', 'Mark price'), value: '标记价格' },
+  { label: ui.t('最新成交价', 'Last trade price'), value: '最新成交价' },
+  { label: ui.t('买卖中间价', 'Mid price'), value: '买卖中间价' },
+  { label: ui.t('指数价格', 'Index price'), value: '指数价格' },
+];
+const PERIOD_UNIT_OPTIONS = [
+  { label: ui.t('秒', 'sec'), value: '秒' },
+  { label: ui.t('分钟', 'min'), value: '分钟' },
+];
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
@@ -186,32 +186,32 @@ export function SpreadAlertMonitorPage() {
   };
 
   const alertColumns = [
-    { title: '合约', dataIndex: 'contract', width: 110 },
-    { title: '告警值', dataIndex: 'alertValue', width: 90 },
-    { title: '监控类型1', dataIndex: 'type1', width: 110 },
-    { title: '价格1', dataIndex: 'price1', width: 110 },
-    { title: '监控类型2', dataIndex: 'type2', width: 110 },
-    { title: '价格2', dataIndex: 'price2', width: 110 },
-    { title: '监控周期', dataIndex: 'period', width: 100 },
-    { title: '告警时间', dataIndex: 'alertTime', width: 170 },
-    { title: '告警方式', dataIndex: 'method', width: 90 },
+    { title: ui.t('合约', 'Contract'), dataIndex: 'contract', width: 110 },
+    { title: ui.t('告警值', 'Alert value'), dataIndex: 'alertValue', width: 90 },
+    { title: ui.t('监控类型1', 'Monitor type 1'), dataIndex: 'type1', width: 110 },
+    { title: ui.t('价格1', 'Price 1'), dataIndex: 'price1', width: 110 },
+    { title: ui.t('监控类型2', 'Monitor type 2'), dataIndex: 'type2', width: 110 },
+    { title: ui.t('价格2', 'Price 2'), dataIndex: 'price2', width: 110 },
+    { title: ui.t('监控周期', 'Monitor period'), dataIndex: 'period', width: 100 },
+    { title: ui.t('告警时间', 'Alert time'), dataIndex: 'alertTime', width: 170 },
+    { title: ui.t('告警方式', 'Alert method'), dataIndex: 'method', width: 90 },
   ];
 
   const configColumns = [
-    { title: '监控类型1', dataIndex: 'type1', width: 120 },
-    { title: '监控类型2', dataIndex: 'type2', width: 120 },
-    { title: '告警值', dataIndex: 'alertValue', width: 90 },
-    { title: '监控周期', dataIndex: 'period', width: 100 },
-    { title: '关联合约', dataIndex: 'contract', width: 110 },
-    { title: '预警群/通知', dataIndex: 'notify', width: 200 },
+    { title: ui.t('监控类型1', 'Monitor type 1'), dataIndex: 'type1', width: 120 },
+    { title: ui.t('监控类型2', 'Monitor type 2'), dataIndex: 'type2', width: 120 },
+    { title: ui.t('告警值', 'Alert value'), dataIndex: 'alertValue', width: 90 },
+    { title: ui.t('监控周期', 'Monitor period'), dataIndex: 'period', width: 100 },
+    { title: ui.t('关联合约', 'Linked contract'), dataIndex: 'contract', width: 110 },
+    { title: ui.t('预警群/通知', 'Alert group / notify'), dataIndex: 'notify', width: 200 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 90,
       render: (v: boolean) => (v ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
@@ -220,7 +220,7 @@ export function SpreadAlertMonitorPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.contract}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -229,14 +229,14 @@ export function SpreadAlertMonitorPage() {
 
   return (
     <AdminPageShell>
-      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>监控告警 / 价差预警监控</div>
+      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>{ui.t('监控告警', 'Monitor & Alert')} / {ui.pageTitle('spread-alert-monitor')}</div>
 
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'records', label: '告警记录' },
-          { key: 'config', label: '监控配置' },
+          { key: 'records', label: ui.alertRecords },
+          { key: 'config', label: ui.monitorConfig },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -244,15 +244,15 @@ export function SpreadAlertMonitorPage() {
       {tab === 'records' && (
         <>
           <Form form={filterForm} layout="inline" style={{ marginBottom: 16 }}>
-            <Form.Item label="合约名称" name="contractName">
-              <Input placeholder="请输入合约名称" style={{ width: 200 }} />
+            <Form.Item label={ui.contractName} name="contractName">
+              <Input placeholder={ui.t("请输入合约名称", "Enter contract name")} style={{ width: 200 }} />
             </Form.Item>
             <Form.Item>
               <Space>
                 <Button type="primary" icon={<SearchOutlined />}>
-                  查询
+                  {ui.search}
                 </Button>
-                <Button onClick={() => filterForm.resetFields()}>重置</Button>
+                <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
               </Space>
             </Form.Item>
           </Form>
@@ -261,7 +261,7 @@ export function SpreadAlertMonitorPage() {
             columns={alertColumns}
             dataSource={ALERT_ROWS}
             scroll={{ x: 1100 }}
-            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -279,7 +279,7 @@ export function SpreadAlertMonitorPage() {
             columns={configColumns}
             dataSource={configs}
             scroll={{ x: 1100 }}
-            pagination={{ total: configs.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: configs.length, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -298,31 +298,31 @@ export function SpreadAlertMonitorPage() {
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
           <Form.Item
-            label="监控类型1"
+            label={ui.t('监控类型1', 'Monitor type 1')}
             name="type1"
-            rules={[{ required: true, message: '请选择监控类型1' }]}
+            rules={[{ required: true, message: ui.t('请选择监控类型1', 'Select monitor type 1') }]}
           >
-            <Select placeholder="请选择监控类型1" options={MONITOR_TYPE_OPTIONS} />
+            <Select placeholder={ui.t('请选择监控类型1', 'Select monitor type 1')} options={MONITOR_TYPE_OPTIONS} />
           </Form.Item>
           <Form.Item
-            label="监控类型2"
+            label={ui.t('监控类型2', 'Monitor type 2')}
             name="type2"
-            rules={[{ required: true, message: '请选择监控类型2' }]}
+            rules={[{ required: true, message: ui.t('请选择监控类型2', 'Select monitor type 2') }]}
           >
-            <Select placeholder="请选择监控类型2" options={MONITOR_TYPE_OPTIONS} />
+            <Select placeholder={ui.t('请选择监控类型2', 'Select monitor type 2')} options={MONITOR_TYPE_OPTIONS} />
           </Form.Item>
           <Form.Item
-            label="告警值"
+            label={ui.t('告警值', 'Alert value')}
             name="alertValue"
-            rules={[{ required: true, message: '请输入告警值' }]}
+            rules={[{ required: true, message: ui.t('请输入告警值', 'Enter alert value') }]}
           >
-            <InputNumber addonAfter="%" style={{ width: '100%' }} placeholder="请输入告警值" min={0} step={0.01} />
+            <InputNumber addonAfter="%" style={{ width: '100%' }} placeholder={ui.t('请输入告警值', 'Enter alert value')} min={0} step={0.01} />
           </Form.Item>
-          <Form.Item label="监控周期" required style={{ marginBottom: 0 }}>
+          <Form.Item label={ui.t('监控周期', 'Monitor period')} required style={{ marginBottom: 0 }}>
             <Space align="start">
               <Form.Item
                 name="periodValue"
-                rules={[{ required: true, message: '请输入周期' }]}
+                rules={[{ required: true, message: ui.t('请输入周期', 'Enter period') }]}
               >
                 <InputNumber min={1} style={{ width: 120 }} />
               </Form.Item>
@@ -335,16 +335,16 @@ export function SpreadAlertMonitorPage() {
             </Space>
           </Form.Item>
           <Form.Item
-            label="关联合约"
+            label={ui.t('关联合约', 'Linked contract')}
             name="contract"
-            rules={[{ required: true, message: '请选择关联合约' }]}
+            rules={[{ required: true, message: ui.t('请选择关联合约', 'Select linked contract') }]}
           >
-            <Select placeholder="请选择关联合约" options={contractNameOptions} />
+            <Select placeholder={ui.t('请选择关联合约', 'Select linked contract')} options={contractNameOptions} />
           </Form.Item>
           <Form.Item
-            label="预警群"
+            label={ui.t('预警群', 'Alert group')}
             name="notify"
-            rules={[{ required: true, message: '请输入 Lark 机器人 URL' }]}
+            rules={[{ required: true, message: ui.t('请输入 Lark 机器人 URL', 'Enter Lark bot URL') }]}
           >
             <Input.TextArea
               rows={3}

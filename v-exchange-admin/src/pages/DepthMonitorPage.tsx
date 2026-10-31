@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
 
 const { Text } = Typography;
@@ -73,6 +74,7 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
 ];
 
 export function DepthMonitorPage() {
+  const ui = useUi();
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
@@ -149,18 +151,18 @@ export function DepthMonitorPage() {
   };
 
   const alertColumns = [
-    { title: '合约', dataIndex: 'contract', width: 120 },
-    { title: '告警类型', dataIndex: 'alertType', width: 120 },
-    { title: '告警值', dataIndex: 'alertValue', width: 120 },
-    { title: '告警时间', dataIndex: 'alertTime', width: 180 },
-    { title: '告警方式', dataIndex: 'method', width: 100 },
+    { title: ui.t('合约', 'Contract'), dataIndex: 'contract', width: 120 },
+    { title: ui.t('告警类型', 'Alert type'), dataIndex: 'alertType', width: 120 },
+    { title: ui.t('告警值', 'Alert value'), dataIndex: 'alertValue', width: 120 },
+    { title: ui.t('告警时间', 'Alert time'), dataIndex: 'alertTime', width: 180 },
+    { title: ui.t('告警方式', 'Alert method'), dataIndex: 'method', width: 100 },
   ];
 
   const configColumns = [
-    { title: '告警类型', dataIndex: 'alertType', width: 110 },
-    { title: '告警值', dataIndex: 'alertValue', width: 160 },
+    { title: ui.t('告警类型', 'Alert type'), dataIndex: 'alertType', width: 110 },
+    { title: ui.t('告警值', 'Alert value'), dataIndex: 'alertValue', width: 160 },
     {
-      title: '关联合约',
+      title: ui.t('关联合约', 'Linked contract'),
       dataIndex: 'contractCount',
       width: 100,
       render: (v: number) => (
@@ -169,16 +171,16 @@ export function DepthMonitorPage() {
         </Button>
       ),
     },
-    { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '更新人', dataIndex: 'updatedBy', width: 220 },
+    { title: ui.t('更新时间', 'Updated at'), dataIndex: 'updateTime', width: 170 },
+    { title: ui.t('更新人', 'Updated by'), dataIndex: 'updatedBy', width: 220 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 90,
       render: (v: boolean) => (v ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
@@ -192,7 +194,7 @@ export function DepthMonitorPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.alertType}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -201,14 +203,14 @@ export function DepthMonitorPage() {
 
   return (
     <AdminPageShell>
-      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>监控告警 / 档位深度监控</div>
+      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>{ui.t('监控告警', 'Monitor & Alert')} / {ui.pageTitle('depth-monitor')}</div>
 
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'records', label: '告警记录' },
-          { key: 'config', label: '监控配置' },
+          { key: 'records', label: ui.alertRecords },
+          { key: 'config', label: ui.monitorConfig },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -217,15 +219,15 @@ export function DepthMonitorPage() {
         <>
           <div className="filter-toolbar">
             <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
-              <Form.Item label="合约名称" name="contractName">
-                <Input placeholder="请输入合约名称" style={{ width: 200 }} />
+              <Form.Item label={ui.contractName} name="contractName">
+                <Input placeholder={ui.t("请输入合约名称", "Enter contract name")} style={{ width: 200 }} />
               </Form.Item>
             </Form>
             <Space>
               <Button type="primary" icon={<SearchOutlined />}>
-                查询
+                {ui.search}
               </Button>
-              <Button onClick={() => filterForm.resetFields()}>重置</Button>
+              <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
             </Space>
           </div>
           <Table
@@ -233,7 +235,7 @@ export function DepthMonitorPage() {
             columns={alertColumns}
             dataSource={ALERT_ROWS}
             scroll={{ x: 720 }}
-            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            pagination={{ total: ALERT_ROWS.length, showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -253,7 +255,7 @@ export function DepthMonitorPage() {
             scroll={{ x: 1100 }}
             pagination={{
               total: configs.length,
-              showTotal: (t) => `共 ${t} 条记录`,
+              showTotal: (t) => ui.total(t),
               pageSize: 20,
               showSizeChanger: true,
               pageSizeOptions: ['10', '20', '50'],
@@ -275,7 +277,7 @@ export function DepthMonitorPage() {
         maskClosable={false}
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
-          <Form.Item label="告警类型" required style={{ marginBottom: 8 }}>
+          <Form.Item label={ui.t('告警类型', 'Alert type')} required style={{ marginBottom: 8 }}>
             <div className="alert-type-stack">
               <div className="alert-type-row">
                 <Form.Item name="enableLevel" valuePropName="checked" noStyle>
@@ -296,7 +298,7 @@ export function DepthMonitorPage() {
                 <Text className="alert-type-label">深度价值</Text>
                 <Form.Item name="depthPct" noStyle className="alert-type-field alert-type-field--sm">
                   <Input
-                    placeholder="请输入累计深度"
+                    placeholder={ui.t('请输入累计深度', 'Enter cumulative depth')}
                     suffix="%"
                     disabled={!enableDepth}
                   />
@@ -316,15 +318,15 @@ export function DepthMonitorPage() {
           </Form.Item>
 
           <Form.Item
-            label="关联合约"
+            label={ui.t('关联合约', 'Linked contract')}
             name="contract"
-            rules={[{ required: true, message: '请选择关联合约' }]}
+            rules={[{ required: true, message: ui.t('请选择关联合约', 'Select linked contract') }]}
           >
-            <Select placeholder="请选择关联合约" options={contractNameOptions} />
+            <Select placeholder={ui.t('请选择关联合约', 'Select linked contract')} options={contractNameOptions} />
           </Form.Item>
 
           <Form.Item
-            label="预警群"
+            label={ui.t('预警群', 'Alert group')}
             name="notify"
             rules={[{ required: true, message: '请填写 Lark 机器人 URL' }]}
           >

@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 
 const { TextArea } = Input;
 
@@ -36,6 +37,7 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
 ];
 
 export function LargeLiquidationAlertPage() {
+  const ui = useUi();
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
@@ -85,27 +87,27 @@ export function LargeLiquidationAlertPage() {
   };
 
   const alertColumns = [
-    { title: '合约账户ID', dataIndex: 'accountId', width: 140 },
-    { title: '持仓信息', dataIndex: 'positionInfo', width: 180 },
-    { title: '仓位模式', dataIndex: 'positionMode', width: 110 },
+    { title: ui.t('合约账户ID', 'Contract account ID'), dataIndex: 'accountId', width: 140 },
+    { title: ui.t('持仓信息', 'Position info'), dataIndex: 'positionInfo', width: 180 },
+    { title: ui.t('仓位模式', 'Position mode'), dataIndex: 'positionMode', width: 110 },
     { title: 'MMR', dataIndex: 'mmr', width: 100 },
-    { title: '告警时间', dataIndex: 'alertTime', width: 170 },
-    { title: '告警方式', dataIndex: 'method', width: 90 },
+    { title: ui.t('告警时间', 'Alert time'), dataIndex: 'alertTime', width: 170 },
+    { title: ui.t('告警方式', 'Alert method'), dataIndex: 'method', width: 90 },
   ];
 
   const configColumns = [
-    { title: '爆仓预警仓位价值阈值 (USD)', dataIndex: 'positionValue', width: 220 },
-    { title: '爆仓预警MMR阈值', dataIndex: 'mmrThreshold', width: 160 },
-    { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '更新人', dataIndex: 'updatedBy', width: 220 },
+    { title: ui.t('爆仓预警仓位价值阈值 (USD)', 'Liq. alert position value (USD)'), dataIndex: 'positionValue', width: 220 },
+    { title: ui.t('爆仓预警MMR阈值', 'Liq. alert MMR threshold'), dataIndex: 'mmrThreshold', width: 160 },
+    { title: ui.t('更新时间', 'Updated at'), dataIndex: 'updateTime', width: 170 },
+    { title: ui.t('更新人', 'Updated by'), dataIndex: 'updatedBy', width: 220 },
     {
-      title: '状态',
+      title: ui.t('状态', 'Status'),
       dataIndex: 'enabled',
       width: 90,
       render: (v: boolean) => (v ? <Tag color="success">生效中</Tag> : <Tag>已停用</Tag>),
     },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
@@ -119,7 +121,7 @@ export function LargeLiquidationAlertPage() {
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.positionValue}`)}>
-            编辑
+            {ui.t('编辑', 'Edit')}
           </Button>
         </Space>
       ),
@@ -128,14 +130,14 @@ export function LargeLiquidationAlertPage() {
 
   return (
     <AdminPageShell>
-      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>监控告警 / 大额爆仓预警</div>
+      <div style={{ marginBottom: 8, color: '#666', fontSize: 13 }}>{ui.t('监控告警', 'Monitor & Alert')} / {ui.pageTitle('large-liquidation-alert')}</div>
 
       <Tabs
         activeKey={tab}
         onChange={setTab}
         items={[
-          { key: 'records', label: '告警记录' },
-          { key: 'config', label: '监控配置' },
+          { key: 'records', label: ui.alertRecords },
+          { key: 'config', label: ui.monitorConfig },
         ]}
         style={{ marginBottom: 8 }}
       />
@@ -144,23 +146,23 @@ export function LargeLiquidationAlertPage() {
         <>
           <div className="filter-toolbar">
             <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
-              <Form.Item label="合约账户ID" name="accountId">
-                <Input placeholder="请输入合约账户ID" style={{ width: 220 }} />
+              <Form.Item label={ui.t("合约账户ID", "Account ID")} name="accountId">
+                <Input placeholder={ui.t("请输入合约账户ID", "Enter account ID")} style={{ width: 220 }} />
               </Form.Item>
             </Form>
             <Space>
               <Button type="primary" icon={<SearchOutlined />}>
-                查询
+                {ui.search}
               </Button>
-              <Button onClick={() => filterForm.resetFields()}>重置</Button>
+              <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
             </Space>
           </div>
           <Table
             rowKey="key"
             columns={alertColumns}
             dataSource={[]}
-            locale={{ emptyText: '暂无数据' }}
-            pagination={{ showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+            locale={{ emptyText: ui.empty }}
+            pagination={{ showTotal: (t) => ui.total(t), pageSize: 10 }}
             size="small"
           />
         </>
@@ -180,7 +182,7 @@ export function LargeLiquidationAlertPage() {
             scroll={{ x: 1000 }}
             pagination={{
               total: configs.length,
-              showTotal: (t) => `共 ${t} 条记录`,
+              showTotal: (t) => ui.total(t),
               pageSize: 20,
               showSizeChanger: true,
               pageSizeOptions: ['10', '20', '50'],
@@ -203,23 +205,23 @@ export function LargeLiquidationAlertPage() {
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
           <Form.Item
-            label="爆仓预警仓位价值阈值"
+            label={ui.t('爆仓预警仓位价值阈值', 'Liq. alert position value')}
             name="positionValue"
-            rules={[{ required: true, message: '请输入爆仓预警仓位价值阈值' }]}
+            rules={[{ required: true, message: ui.t('请输入爆仓预警仓位价值阈值', 'Enter liq. alert position value') }]}
           >
-            <Input placeholder="请输入爆仓预警仓位价值阈值" suffix="USD" />
+            <Input placeholder={ui.t('请输入爆仓预警仓位价值阈值', 'Enter liq. alert position value')} suffix="USD" />
           </Form.Item>
 
           <Form.Item
-            label="爆仓预警MMR阈值"
+            label={ui.t('爆仓预警MMR阈值', 'Liq. alert MMR threshold')}
             name="mmrThreshold"
-            rules={[{ required: true, message: '请输入爆仓预警MMR阈值' }]}
+            rules={[{ required: true, message: ui.t('请输入爆仓预警MMR阈值', 'Enter liq. alert MMR') }]}
           >
-            <Input placeholder="请输入爆仓预警MMR阈值" suffix="%" />
+            <Input placeholder={ui.t('请输入爆仓预警MMR阈值', 'Enter liq. alert MMR')} suffix="%" />
           </Form.Item>
 
           <Form.Item
-            label="预警群"
+            label={ui.t('预警群', 'Alert group')}
             name="notify"
             rules={[{ required: true, message: '请填写 Lark 机器人 URL' }]}
           >

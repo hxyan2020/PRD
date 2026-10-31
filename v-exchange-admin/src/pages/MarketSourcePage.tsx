@@ -21,6 +21,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { marketSourceList, type MarketSourceRecord } from '../mock/data';
 
 const { TextArea } = Input;
@@ -61,6 +62,7 @@ const FIELD_TIPS = {
 };
 
 export function MarketSourcePage() {
+  const ui = useUi();
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -97,7 +99,7 @@ export function MarketSourcePage() {
   const handleOk = async () => {
     try {
       await form.validateFields();
-      message.success(mode === 'create' ? '新增成功' : '修改成功');
+      message.success(mode === 'create' ? ui.t('新增成功', 'Created') : ui.t('修改成功', 'Updated'));
       setOpen(false);
     } catch {
       /* validation errors shown inline */
@@ -105,77 +107,77 @@ export function MarketSourcePage() {
   };
 
   const columns = [
-    { title: '市场名称', dataIndex: 'marketName', width: 140 },
-    { title: '显示名称', dataIndex: 'displayName', width: 120 },
+    { title: ui.t('市场名称', 'Market name'), dataIndex: 'marketName', width: 140 },
+    { title: ui.t('显示名称', 'Display name'), dataIndex: 'displayName', width: 120 },
     {
-      title: '是否需要设置价差监控',
+      title: ui.t('是否需要设置价差监控', 'Spread monitoring'),
       dataIndex: 'spreadMonitoring',
       width: 160,
-      render: (v: boolean) => (v ? '是' : '否'),
+      render: (v: boolean) => (v ? ui.t('是', 'Yes') : ui.t('否', 'No')),
     },
-    { title: '描述信息', dataIndex: 'description', width: 220 },
-    { title: '进入观察期 (秒)', dataIndex: 'observationPeriodSec', width: 130 },
-    { title: '重新启用 (秒)', dataIndex: 'reEnableSec', width: 120 },
+    { title: ui.t('描述信息', 'Description'), dataIndex: 'description', width: 220 },
+    { title: ui.t('进入观察期 (秒)', 'Observation (sec)'), dataIndex: 'observationPeriodSec', width: 130 },
+    { title: ui.t('重新启用 (秒)', 'Re-enable (sec)'), dataIndex: 'reEnableSec', width: 120 },
     {
-      title: '是否启用',
+      title: ui.t('是否启用', 'Enabled'),
       dataIndex: 'enabled',
       width: 100,
       render: (v: boolean) =>
         v ? (
           <Space size={4}>
-            <span style={{ color: '#1677ff' }}>启用</span>
+            <span style={{ color: '#1677ff' }}>{ui.enable}</span>
             <EditOutlined style={{ color: '#1677ff' }} />
           </Space>
         ) : (
-          '禁用'
+          ui.t('禁用', 'Disabled')
         ),
     },
     {
-      title: '操作记录',
+      title: ui.t('操作记录', 'Op log'),
       key: 'log',
       width: 100,
       render: () => (
         <Button type="link" size="small" icon={<EyeOutlined />}>
-          查看
+          {ui.t('查看', 'View')}
         </Button>
       ),
     },
     {
-      title: '操作',
+      title: ui.action,
       key: 'action',
       width: 90,
       render: (_: unknown, record: MarketSourceRecord) => (
         <Button type="primary" size="small" onClick={() => openEdit(record)}>
-          编辑
+          {ui.t('编辑', 'Edit')}
         </Button>
       ),
     },
   ];
 
   return (
-    <AdminPageShell title="行情源">
+    <AdminPageShell title={ui.pageTitle('market-source')}>
       <Form form={filterForm} layout="inline" style={{ marginBottom: 16 }}>
-        <Form.Item label="市场名称" name="marketName">
-          <Input placeholder="请输入" style={{ width: 140 }} />
+        <Form.Item label={ui.t('市场名称', 'Market name')} name="marketName">
+          <Input placeholder={ui.pleaseInput} style={{ width: 140 }} />
         </Form.Item>
-        <Form.Item label="显示名称" name="displayName">
-          <Input placeholder="请输入" style={{ width: 140 }} />
+        <Form.Item label={ui.t('显示名称', 'Display name')} name="displayName">
+          <Input placeholder={ui.pleaseInput} style={{ width: 140 }} />
         </Form.Item>
-        <Form.Item label="状态" name="status">
-          <Select placeholder="请选择" allowClear style={{ width: 120 }} />
+        <Form.Item label={ui.status} name="status">
+          <Select placeholder={ui.t('请选择', 'Please select')} allowClear style={{ width: 120 }} />
         </Form.Item>
         <Form.Item>
           <Space>
             <Button type="primary" icon={<SearchOutlined />}>
-              查询
+              {ui.search}
             </Button>
-            <Button onClick={() => filterForm.resetFields()}>重置</Button>
+            <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
           </Space>
         </Form.Item>
       </Form>
       <div className="table-toolbar">
         <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-          添加
+          {ui.add}
         </Button>
       </div>
       <Table
@@ -183,17 +185,17 @@ export function MarketSourcePage() {
         columns={columns}
         dataSource={marketSourceList}
         scroll={{ x: 1200 }}
-        pagination={{ total: 17, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+        pagination={{ total: 17, showTotal: (t) => ui.total(t), pageSize: 10 }}
         size="small"
       />
 
       <Modal
-        title={mode === 'create' ? '新增指数市场' : '修改指数市场'}
+        title={mode === 'create' ? ui.t('新增指数市场', 'Add market source') : ui.t('修改指数市场', 'Edit market source')}
         open={open}
         onCancel={() => setOpen(false)}
         onOk={handleOk}
-        okText="确定"
-        cancelText="取消"
+        okText={ui.confirm}
+        cancelText={ui.cancel}
         width={640}
         destroyOnClose
         maskClosable={false}
@@ -209,20 +211,20 @@ export function MarketSourcePage() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label={<LabelWithTip label="市场名称" tip={FIELD_TIPS.marketName} />}
+                label={<LabelWithTip label={ui.t('市场名称', 'Market name')} tip={FIELD_TIPS.marketName} />}
                 name="marketName"
-                rules={[{ required: true, message: '请输入市场名称' }]}
+                rules={[{ required: true, message: ui.t('请输入市场名称', 'Enter market name') }]}
               >
-                <Input placeholder="请输入" disabled={mode === 'edit'} />
+                <Input placeholder={ui.pleaseInput} disabled={mode === 'edit'} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label={<LabelWithTip label="显示名称" tip={FIELD_TIPS.displayName} />}
+                label={<LabelWithTip label={ui.t('显示名称', 'Display name')} tip={FIELD_TIPS.displayName} />}
                 name="displayName"
-                rules={[{ required: true, message: '请输入显示名称' }]}
+                rules={[{ required: true, message: ui.t('请输入显示名称', 'Enter display name') }]}
               >
-                <Input placeholder="请输入" />
+                <Input placeholder={ui.pleaseInput} />
               </Form.Item>
             </Col>
           </Row>
@@ -230,51 +232,51 @@ export function MarketSourcePage() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label={<LabelWithTip label="进入观察期 (秒)" tip={FIELD_TIPS.observationPeriodSec} />}
+                label={<LabelWithTip label={ui.t('进入观察期 (秒)', 'Observation period (sec)')} tip={FIELD_TIPS.observationPeriodSec} />}
                 name="observationPeriodSec"
-                rules={[{ required: true, message: '请输入进入观察期' }]}
+                rules={[{ required: true, message: ui.t('请输入进入观察期', 'Enter observation period') }]}
               >
-                <Input placeholder="请输入" />
+                <Input placeholder={ui.pleaseInput} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label={<LabelWithTip label="重新启用 (秒)" tip={FIELD_TIPS.reEnableSec} />}
+                label={<LabelWithTip label={ui.t('重新启用 (秒)', 'Re-enable (sec)')} tip={FIELD_TIPS.reEnableSec} />}
                 name="reEnableSec"
-                rules={[{ required: true, message: '请输入重新启用秒数' }]}
+                rules={[{ required: true, message: ui.t('请输入重新启用秒数', 'Enter re-enable seconds') }]}
               >
-                <Input placeholder="请输入" />
+                <Input placeholder={ui.pleaseInput} />
               </Form.Item>
             </Col>
           </Row>
 
           <Form.Item
-            label={<LabelWithTip label="市场url" tip={FIELD_TIPS.marketUrl} />}
+            label={<LabelWithTip label={ui.t('市场url', 'Market URL')} tip={FIELD_TIPS.marketUrl} />}
             name="marketUrl"
-            rules={[{ required: true, message: '请输入市场url' }]}
+            rules={[{ required: true, message: ui.t('请输入市场url', 'Enter market URL') }]}
           >
-            <TextArea placeholder="请输入" rows={3} />
+            <TextArea placeholder={ui.pleaseInput} rows={3} />
           </Form.Item>
 
           <Form.Item
-            label={<LabelWithTip label="交易量url" tip={FIELD_TIPS.volumeUrl} />}
+            label={<LabelWithTip label={ui.t('交易量url', 'Volume URL')} tip={FIELD_TIPS.volumeUrl} />}
             name="volumeUrl"
           >
-            <TextArea placeholder="请输入" rows={3} />
+            <TextArea placeholder={ui.pleaseInput} rows={3} />
           </Form.Item>
 
           <Form.Item
-            label={<LabelWithTip label="正向资金费率URL" tip={FIELD_TIPS.positiveFundingUrl} />}
+            label={<LabelWithTip label={ui.t('正向资金费率URL', 'Positive funding URL')} tip={FIELD_TIPS.positiveFundingUrl} />}
             name="positiveFundingUrl"
           >
-            <TextArea placeholder="请输入" rows={3} />
+            <TextArea placeholder={ui.pleaseInput} rows={3} />
           </Form.Item>
 
           <Form.Item
-            label={<LabelWithTip label="反向资金费率URL" tip={FIELD_TIPS.inverseFundingUrl} />}
+            label={<LabelWithTip label={ui.t('反向资金费率URL', 'Inverse funding URL')} tip={FIELD_TIPS.inverseFundingUrl} />}
             name="inverseFundingUrl"
           >
-            <TextArea placeholder="请输入" rows={3} />
+            <TextArea placeholder={ui.pleaseInput} rows={3} />
           </Form.Item>
 
           <Form.Item
@@ -283,16 +285,16 @@ export function MarketSourcePage() {
             style={{ marginBottom: 16 }}
           >
             <Space>
-              <LabelWithTip label="是否需要设置价差监控" tip={FIELD_TIPS.spreadMonitoring} />
+              <LabelWithTip label={ui.t('是否需要设置价差监控', 'Need spread monitoring')} tip={FIELD_TIPS.spreadMonitoring} />
               <Checkbox />
             </Space>
           </Form.Item>
 
           <Form.Item
-            label={<LabelWithTip label="描述信息" tip={FIELD_TIPS.description} />}
+            label={<LabelWithTip label={ui.t('描述信息', 'Description')} tip={FIELD_TIPS.description} />}
             name="description"
           >
-            <TextArea placeholder="请输入" rows={3} />
+            <TextArea placeholder={ui.pleaseInput} rows={3} />
           </Form.Item>
         </Form>
       </Modal>

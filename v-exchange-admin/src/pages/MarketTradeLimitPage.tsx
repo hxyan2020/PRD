@@ -16,6 +16,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { AdminPageShell } from '../components/AdminPageShell';
+import { useUi } from '../i18n/useUi';
 import { contractNameOptions } from '../mock/data';
 
 const { Text } = Typography;
@@ -68,15 +69,15 @@ const DEFAULT_LEVEL_OPTIONS = Array.from({ length: 20 }, (_, i) => ({
   value: i + 1,
 }));
 
-const PROMPT_POSITIONS = [
-  { key: '1', label: '提示位置一' },
-  { key: '2', label: '提示位置二' },
-  { key: '3', label: '提示位置三' },
-  { key: '4', label: '提示位置四' },
-  { key: '5', label: '提示位置五' },
-];
-
 export function MarketTradeLimitPage() {
+  const ui = useUi();
+const PROMPT_POSITIONS = [
+  { key: '1', label: ui.t('提示位置一', 'Tip position 1') },
+  { key: '2', label: ui.t('提示位置二', 'Tip position 2') },
+  { key: '3', label: ui.t('提示位置三', 'Tip position 3') },
+  { key: '4', label: ui.t('提示位置四', 'Tip position 4') },
+  { key: '5', label: ui.t('提示位置五', 'Tip position 5') },
+];
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -120,61 +121,61 @@ export function MarketTradeLimitPage() {
         />
       ),
     },
-    { title: '合约展示名称', dataIndex: 'displayName', width: 130 },
-    { title: '合约名称', dataIndex: 'contractName', width: 110 },
-    { title: '大于20档系数', dataIndex: 'coefOver20', width: 120 },
-    { title: '小于20档系数', dataIndex: 'coefUnder20', width: 120 },
-    { title: '默认档位', dataIndex: 'defaultLevel', width: 90 },
-    { title: '市价最大吃单档位', dataIndex: 'maxTakerLevel', width: 140 },
-    { title: '市价单最大偏离系数', dataIndex: 'maxDeviation', width: 150 },
-    { title: '市价提示开关及阈值设置', dataIndex: 'promptStatus', width: 180 },
-    { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '操作者', dataIndex: 'operator', width: 200 },
+    { title: ui.t('合约展示名称', 'Contract display name'), dataIndex: 'displayName', width: 130 },
+    { title: ui.t('合约名称', 'Contract'), dataIndex: 'contractName', width: 110 },
+    { title: ui.t('大于20档系数', 'Coeff. (>20 levels)'), dataIndex: 'coefOver20', width: 120 },
+    { title: ui.t('小于20档系数', 'Coeff. (<20 levels)'), dataIndex: 'coefUnder20', width: 120 },
+    { title: ui.t('默认档位', 'Default level'), dataIndex: 'defaultLevel', width: 90 },
+    { title: ui.t('市价最大吃单档位', 'Max market take levels'), dataIndex: 'maxTakerLevel', width: 140 },
+    { title: ui.t('市价单最大偏离系数', 'Max market deviation'), dataIndex: 'maxDeviation', width: 150 },
+    { title: ui.t('市价提示开关及阈值设置', 'Market tip switch & thresholds'), dataIndex: 'promptStatus', width: 180 },
+    { title: ui.t('更新时间', 'Updated at'), dataIndex: 'updateTime', width: 170 },
+    { title: ui.t('操作者', 'Operator'), dataIndex: 'operator', width: 200 },
     {
-      title: '操作',
+      title: ui.t('操作', 'Action'),
       key: 'action',
       fixed: 'right' as const,
       width: 80,
       render: () => (
         <Button type="link" size="small">
-          编辑
+          {ui.t('编辑', 'Edit')}
         </Button>
       ),
     },
   ];
 
   return (
-    <AdminPageShell title="市价交易限制配置">
+    <AdminPageShell title={ui.pageTitle('market-trade-limit')}>
       <Text type="secondary" style={{ display: 'block', marginBottom: 12, color: '#1677ff' }}>
         新上线合约会由系统自动写入默认市价交易限制（系数、档位、偏离与提示开关等）；上线后请按品种流动性复核并按需调整。
       </Text>
 
       <Form form={filterForm} layout="inline" style={{ marginBottom: 16, flexWrap: 'wrap' }}>
-        <Form.Item label="合约名称" name="contractName">
+        <Form.Item label={ui.contractName} name="contractName">
           <Select
-            placeholder="请选择"
+            placeholder={ui.pleaseSelect}
             allowClear
             style={{ width: 160 }}
             options={contractNameOptions}
           />
         </Form.Item>
-        <Form.Item label="市价提示开关" name="promptSwitch">
+        <Form.Item label={ui.t('市价提示开关', 'Market tip switch')} name="promptSwitch">
           <Select
-            placeholder="请选择"
+            placeholder={ui.pleaseSelect}
             allowClear
             style={{ width: 140 }}
             options={[
-              { label: '开启', value: 'on' },
-              { label: '关闭', value: 'off' },
+              { label: ui.t('开启', 'On'), value: 'on' },
+              { label: ui.t('关闭', 'Off'), value: 'off' },
             ]}
           />
         </Form.Item>
         <Form.Item>
           <Space>
             <Button type="primary" icon={<SearchOutlined />}>
-              查询
+              {ui.search}
             </Button>
-            <Button onClick={() => filterForm.resetFields()}>重置</Button>
+            <Button onClick={() => filterForm.resetFields()}>{ui.reset}</Button>
             <Button
               disabled={!selectedKeys.length}
               onClick={() => message.info(`批量编辑 ${selectedKeys.length} 条`)}
@@ -193,7 +194,7 @@ export function MarketTradeLimitPage() {
         columns={columns}
         dataSource={INITIAL_ROWS}
         scroll={{ x: 1700 }}
-        pagination={{ total: 2, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
+        pagination={{ total: 2, showTotal: (t) => ui.total(t), pageSize: 10 }}
         size="small"
       />
 
@@ -215,55 +216,55 @@ export function MarketTradeLimitPage() {
       >
         <Form form={form} layout="vertical" requiredMark colon style={{ marginTop: 8 }}>
           <Form.Item
-            label="合约名称"
+            label={ui.contractName}
             name="contractName"
-            rules={[{ required: true, message: '请选择合约名称' }]}
+            rules={[{ required: true, message: ui.t('请选择合约名称', 'Select contract') }]}
           >
-            <Select placeholder="合约名称" options={contractNameOptions} />
+            <Select placeholder={ui.t('合约名称', 'Contract')} options={contractNameOptions} />
           </Form.Item>
 
           <Form.Item
-            label="大于20档系数"
+            label={ui.t('大于20档系数', 'Coeff. (>20 levels)')}
             name="coefOver20"
-            rules={[{ required: true, message: '请输入大于20档系数' }]}
+            rules={[{ required: true, message: ui.t('请输入大于20档系数', 'Enter coeff. (>20)') }]}
           >
             <InputNumber addonAfter="%" style={{ width: '100%' }} placeholder="%" min={0} />
           </Form.Item>
 
           <Form.Item
-            label="小于20档系数"
+            label={ui.t('小于20档系数', 'Coeff. (<20 levels)')}
             name="coefUnder20"
-            rules={[{ required: true, message: '请输入小于20档系数' }]}
+            rules={[{ required: true, message: ui.t('请输入小于20档系数', 'Enter coeff. (<20)') }]}
           >
             <InputNumber addonAfter="%" style={{ width: '100%' }} placeholder="%" min={0} />
           </Form.Item>
 
           <Form.Item
-            label="默认档位"
+            label={ui.t('默认档位', 'Default level')}
             name="defaultLevel"
-            rules={[{ required: true, message: '请选择默认档位' }]}
+            rules={[{ required: true, message: ui.t('请选择默认档位', 'Select default level') }]}
           >
-            <Select placeholder="请选择默认档位" options={DEFAULT_LEVEL_OPTIONS} />
+            <Select placeholder={ui.t('请选择默认档位', 'Select default level')} options={DEFAULT_LEVEL_OPTIONS} />
           </Form.Item>
 
           <Form.Item
-            label="市价最大吃单档位"
+            label={ui.t('市价最大吃单档位', 'Max market take levels')}
             name="maxTakerLevel"
-            rules={[{ required: true, message: '请输入市价最大吃单档位' }]}
+            rules={[{ required: true, message: ui.t('请输入市价最大吃单档位', 'Enter max market take levels') }]}
           >
-            <Input placeholder="请输入" />
+            <Input placeholder={ui.pleaseInput} />
           </Form.Item>
 
           <Form.Item
-            label="市价单最大偏离系数"
+            label={ui.t('市价单最大偏离系数', 'Max market deviation')}
             name="maxDeviation"
-            rules={[{ required: true, message: '请输入市价单最大偏离系数' }]}
+            rules={[{ required: true, message: ui.t('请输入市价单最大偏离系数', 'Enter max market deviation') }]}
           >
             <InputNumber addonAfter="%" style={{ width: '100%' }} min={0} step={0.1} />
           </Form.Item>
 
           <Form.Item
-            label="市价提示开关及阈值设置"
+            label={ui.t('市价提示开关及阈值设置', 'Market tip switch & thresholds')}
             required
             style={{ marginBottom: 8 }}
           >
@@ -280,7 +281,7 @@ export function MarketTradeLimitPage() {
             />
           </Form.Item>
 
-          <Form.Item label="开关" name="promptEnabled" valuePropName="checked" rules={[{ required: true }]}>
+          <Form.Item label={ui.t('开关', 'Switch')} name="promptEnabled" valuePropName="checked" rules={[{ required: true }]}>
             <Switch />
           </Form.Item>
           <Form.Item name="promptPos" hidden initialValue="1">
