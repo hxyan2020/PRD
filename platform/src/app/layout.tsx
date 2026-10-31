@@ -16,7 +16,11 @@ export const metadata: Metadata = {
   title: "Vantage CRMP Admin",
   description: "Centralised Risk Management Platform — Admin Control Plane",
   icons: {
-    icon: "/vantage-markets-logo.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/vantage-markets-logo.png", type: "image/png", sizes: "447x447" },
+    ],
+    shortcut: "/favicon.ico",
     apple: "/vantage-markets-logo.png",
   },
 };
