@@ -53,6 +53,18 @@ function Tip({ text }: { text: string }) {
   );
 }
 
+const LINK_TIPS = {
+  indexName:
+    '要关联的指数价格名称（与「指数价格」模块中的指数一致），例如 BTCUSD、XAUUSD。',
+  targetPair:
+    '该行情源上对应的交易对符号，须与源站命名一致（如 BTCUSDT、XAUUSD）。映射错误会导致取价失败。',
+  marketSource:
+    '提供该交易对行情的外部行情源。同一指数可对多个源分别建立映射。',
+  action: '对本条指数映射执行编辑等操作。',
+  filterMarketSource: '按行情源筛选已配置的指数映射，便于核对某一源的覆盖情况。',
+  filterIndexName: '按指数名称关键字筛选映射列表。',
+};
+
 export function IndexMarketLinkPage() {
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
@@ -78,7 +90,7 @@ export function IndexMarketLinkPage() {
       title: (
         <span>
           指数名称
-          <Tip text="关联的指数价格名称，如 BTCUSD、XAUUSD。" />
+          <Tip text={LINK_TIPS.indexName} />
         </span>
       ),
       dataIndex: 'indexName',
@@ -87,7 +99,7 @@ export function IndexMarketLinkPage() {
       title: (
         <span>
           目标交易对
-          <Tip text="行情源上对应的目标交易对符号。" />
+          <Tip text={LINK_TIPS.targetPair} />
         </span>
       ),
       dataIndex: 'targetPair',
@@ -96,7 +108,7 @@ export function IndexMarketLinkPage() {
       title: (
         <span>
           行情源
-          <Tip text="该映射所使用的外部行情源。" />
+          <Tip text={LINK_TIPS.marketSource} />
         </span>
       ),
       dataIndex: 'marketSource',
@@ -105,7 +117,7 @@ export function IndexMarketLinkPage() {
       title: (
         <span>
           操作
-          <Tip text="编辑或删除该指数映射。" />
+          <Tip text={LINK_TIPS.action} />
         </span>
       ),
       key: 'action',
@@ -124,7 +136,7 @@ export function IndexMarketLinkPage() {
           label={
             <span>
               行情源
-              <Tip text="按行情源筛选已配置的指数映射。" />
+              <Tip text={LINK_TIPS.filterMarketSource} />
             </span>
           }
           name="marketSource"
@@ -140,7 +152,7 @@ export function IndexMarketLinkPage() {
           label={
             <span>
               指数名称
-              <Tip text="按指数名称筛选。" />
+              <Tip text={LINK_TIPS.filterIndexName} />
             </span>
           }
           name="indexName"
@@ -186,7 +198,12 @@ export function IndexMarketLinkPage() {
       >
         <Form form={form} layout="vertical" requiredMark colon style={{ marginTop: 8 }}>
           <Form.Item
-            label="指数名称"
+            label={
+              <span>
+                指数名称
+                <Tip text={LINK_TIPS.indexName} />
+              </span>
+            }
             name="indexName"
             rules={[{ required: true, message: '请选择指数名称' }]}
           >
@@ -194,7 +211,12 @@ export function IndexMarketLinkPage() {
           </Form.Item>
 
           <Form.Item
-            label="行情源"
+            label={
+              <span>
+                行情源
+                <Tip text={LINK_TIPS.marketSource} />
+              </span>
+            }
             name="marketSource"
             rules={[{ required: true, message: '请选择行情源' }]}
           >
@@ -205,7 +227,12 @@ export function IndexMarketLinkPage() {
           </Form.Item>
 
           <Form.Item
-            label="目标交易对"
+            label={
+              <span>
+                目标交易对
+                <Tip text={LINK_TIPS.targetPair} />
+              </span>
+            }
             name="targetPair"
             rules={[{ required: true, message: '请填写目标交易对' }]}
           >

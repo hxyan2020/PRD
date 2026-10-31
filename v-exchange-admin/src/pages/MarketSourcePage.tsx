@@ -39,16 +39,25 @@ function LabelWithTip({ label, tip }: { label: string; tip: string }) {
 }
 
 const FIELD_TIPS = {
-  marketName: '行情源唯一标识，如 BINANCE、OKEX_INDEX，创建后一般不可随意修改。',
-  displayName: '后台列表与配置中展示的名称，可与市场名称不同（如 OKEX 显示为 OKX）。',
-  observationPeriodSec: '行情源异常后进入观察期的时长（秒）。观察期内不参与指数计算。',
-  reEnableSec: '观察期结束后，重新启用该行情源前需等待的秒数。',
-  marketUrl: '行情价格订阅/拉取地址，支持填写完整 HTTP(S) URL 或内部路由。',
-  volumeUrl: '交易量数据拉取地址，用于交易量权重计算；可留空。',
-  positiveFundingUrl: '正向合约资金费率拉取地址；可留空。',
-  inverseFundingUrl: '反向/币本位合约资金费率拉取地址；可留空。',
-  spreadMonitoring: '勾选后启用该行情源与其他源之间的价差监控告警。',
-  description: '备注说明，便于运维识别该行情源用途。',
+  marketName:
+    '行情源在系统内的唯一标识（如 BINANCE、OKEX_INDEX）。创建后会被指数价格、映射等配置引用，一般不可随意改名。',
+  displayName:
+    '后台列表与筛选项中展示的名称，可与市场名称不同（例如市场名 OKEX、显示名 OKX），便于运营识别。',
+  observationPeriodSec:
+    '行情源出现异常后进入观察期的时长（秒）。观察期内该源不参与指数合成，避免瞬时脏数据污染价格。',
+  reEnableSec:
+    '观察期结束后，重新启用该行情源前仍需等待的秒数。用于确认源已恢复稳定，再重新纳入计算。',
+  marketUrl:
+    '行情价格订阅或拉取地址。可填完整 HTTP(S) URL，或内部约定的路由标识；指数合成依赖此地址取价。',
+  volumeUrl:
+    '交易量数据拉取地址，用于「交易量自动权重」类指数计算。不需要按量加权时可留空。',
+  positiveFundingUrl:
+    '正向（U 本位）合约资金费率拉取地址。若该源不提供资金费率或暂不接入，可留空。',
+  inverseFundingUrl:
+    '反向（币本位）合约资金费率拉取地址。若该源不提供或暂不接入，可留空。',
+  spreadMonitoring:
+    '勾选后，系统会监控本行情源与其他已接入源之间的价差；超出阈值时触发运维告警。',
+  description: '运维备注，说明该行情源用途、接入环境或特殊注意事项，仅后台可见。',
 };
 
 export function MarketSourcePage() {

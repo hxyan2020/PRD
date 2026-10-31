@@ -146,7 +146,7 @@ export function MarketTradeLimitPage() {
   return (
     <AdminPageShell title="市价交易限制配置">
       <Text type="secondary" style={{ display: 'block', marginBottom: 12, color: '#1677ff' }}>
-        新上合约系统会自动刷入初始配置
+        新上线合约会由系统自动写入默认市价交易限制（系数、档位、偏离与提示开关等）；上线后请按品种流动性复核并按需调整。
       </Text>
 
       <Form form={filterForm} layout="inline" style={{ marginBottom: 16, flexWrap: 'wrap' }}>

@@ -57,7 +57,28 @@ function LabelTip({ tip }: { tip: string }) {
 
 /** 放大倍数：生产原文「需输入10的倍」语义不清；按现有数据（含 1）解释为 10 的整数次幂。 */
 const MAGNIFICATION_HELP =
-  '请填写 10 的整数次幂（如 1、10、100）。指数价格对外展示时会乘以该倍数；保存后不可再修改，请确认后再提交。';
+  '填写 10 的整数次幂（1、10、100、1000…）。指数价格对外展示/推送时会乘以该倍数（例如原始 0.0123、倍数 100 → 展示 1.23）。创建后不可修改，请确认后再提交。';
+
+const INDEX_FIELD_TIPS = {
+  baseCurrency: '指数的基础资产代码，如 BTC、XAU。与计价货币共同组成指数名称。',
+  quoteCurrency: '指数的计价货币代码，如 USD、USDT。决定指数价格以何种货币计量。',
+  subscriptionCurrency:
+    '行情订阅与对账时使用的币种标识，通常与基础货币或报价侧约定一致；须与下游订阅方配置对齐。',
+  pricePrecision:
+    '指数价格保留的小数位数（精度）。影响展示与下游撮合/风控取值，请与合约价格精度策略保持一致。',
+  minMarketSources:
+    '合成指数所需的最少有效行情源数量。可用源少于此值时指数将视为不可用或进入降级逻辑。',
+  medianDeviationEnabled:
+    '开启后，系统会计算各行情源相对中位数的偏离；超出下方比例的源按「调整机制」处理，降低异常报价影响。',
+  medianDeviationRatio:
+    '相对中位数价格的最大允许偏离比例（如 3%）。超过该比例的行情源将触发剔除或修正。',
+  deviationAdjust:
+    '行情源偏离超限时的处理：直接剔除（不再参与合成），或将价格修正到允许范围后再纳入计算。',
+  calculationMethod:
+    '指数合成算法：几何平均对异常值更稳健；手动权重由运营指定各源占比；交易量自动权重按各源成交量动态分配。',
+  marketSources:
+    '勾选参与本指数合成的行情源。勾选数量须 ≥「最小行情源数」；建议先点「试算」确认结果再保存。',
+};
 
 export function IndexPricePage() {
   const [form] = Form.useForm();
@@ -259,7 +280,12 @@ export function IndexPricePage() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="基础货币"
+                label={
+                  <span>
+                    基础货币
+                    <LabelTip tip={INDEX_FIELD_TIPS.baseCurrency} />
+                  </span>
+                }
                 name="baseCurrency"
                 rules={[{ required: true, message: '请输入基础货币' }]}
               >
@@ -268,7 +294,12 @@ export function IndexPricePage() {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="计价货币"
+                label={
+                  <span>
+                    计价货币
+                    <LabelTip tip={INDEX_FIELD_TIPS.quoteCurrency} />
+                  </span>
+                }
                 name="quoteCurrency"
                 rules={[{ required: true, message: '请输入计价货币' }]}
               >
@@ -280,7 +311,12 @@ export function IndexPricePage() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="订阅币种"
+                label={
+                  <span>
+                    订阅币种
+                    <LabelTip tip={INDEX_FIELD_TIPS.subscriptionCurrency} />
+                  </span>
+                }
                 name="subscriptionCurrency"
                 rules={[{ required: true, message: '请输入订阅币种' }]}
               >
@@ -322,7 +358,12 @@ export function IndexPricePage() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="价格精度"
+                label={
+                  <span>
+                    价格精度
+                    <LabelTip tip={INDEX_FIELD_TIPS.pricePrecision} />
+                  </span>
+                }
                 name="pricePrecision"
                 rules={[{ required: true, message: '请输入价格精度' }]}
               >
@@ -331,7 +372,12 @@ export function IndexPricePage() {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="最小行情源数"
+                label={
+                  <span>
+                    最小行情源数
+                    <LabelTip tip={INDEX_FIELD_TIPS.minMarketSources} />
+                  </span>
+                }
                 name="minMarketSources"
                 rules={[{ required: true, message: '请输入最小行情源数' }]}
               >
@@ -344,7 +390,7 @@ export function IndexPricePage() {
             label={
               <span>
                 中位数偏离限制开关
-                <LabelTip tip="开启后，偏离中位数过多的行情源将按下方比例与调整机制处理。" />
+                <LabelTip tip={INDEX_FIELD_TIPS.medianDeviationEnabled} />
               </span>
             }
             name="medianDeviationEnabled"
@@ -356,7 +402,12 @@ export function IndexPricePage() {
 
           {medianEnabled !== false && (
             <Form.Item
-              label="中位数偏离比例"
+              label={
+                <span>
+                  中位数偏离比例
+                  <LabelTip tip={INDEX_FIELD_TIPS.medianDeviationRatio} />
+                </span>
+              }
               name="medianDeviationRatio"
               rules={[{ required: true, message: '请输入中位数偏离比例' }]}
             >
@@ -368,7 +419,7 @@ export function IndexPricePage() {
             label={
               <span>
                 超出偏离值的调整机制
-                <LabelTip tip="行情源价格偏离中位数超过比例时的处理方式：直接剔除，或修正后再参与指数计算。" />
+                <LabelTip tip={INDEX_FIELD_TIPS.deviationAdjust} />
               </span>
             }
             name="deviationAdjust"
@@ -384,7 +435,7 @@ export function IndexPricePage() {
             label={
               <span>
                 计算方式
-                <LabelTip tip="几何平均 / 手动权重 / 按交易量自动分配权重，三种合成指数价格的算法。" />
+                <LabelTip tip={INDEX_FIELD_TIPS.calculationMethod} />
               </span>
             }
             name="calculationMethod"
@@ -402,7 +453,7 @@ export function IndexPricePage() {
             label={
               <span>
                 行情源
-                <LabelTip tip="勾选参与该指数合成的行情源；数量须不少于「最小行情源数」。" />
+                <LabelTip tip={INDEX_FIELD_TIPS.marketSources} />
               </span>
             }
             name="marketSources"
@@ -422,9 +473,9 @@ export function IndexPricePage() {
                 试算
               </Button>
               <div>
-                <div style={{ color: '#ff4d4f' }}>请先完成试算，再操作保存</div>
+                <div style={{ color: '#ff4d4f' }}>请先完成试算，确认合成价格合理后再保存。</div>
                 <div style={{ color: '#ff4d4f' }}>
-                  建议先在测试环境模拟极端行情演练，确定无异常再到线上配置。
+                  建议先在测试环境用极端行情（单源失效、大幅偏离）演练，确认剔除/修正逻辑无误后再上线配置。
                 </div>
               </div>
             </Space>

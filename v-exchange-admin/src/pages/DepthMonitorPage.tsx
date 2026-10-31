@@ -323,7 +323,7 @@ export function DepthMonitorPage() {
               </div>
             </div>
             <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
-              同类型的告警间隔最少5分钟
+              同类型告警最短间隔 5 分钟：档位数量告警与深度价值告警各自独立计时，避免盘口抖动时重复刷屏。
             </Text>
           </Form.Item>
 

@@ -184,9 +184,12 @@ export function OpenCloseLimitPage() {
             label="ID"
             name="ids"
             rules={[{ required: true, message: '请输入ID' }]}
-            extra="单个直接输入，批量输入使用中英文逗号分隔"
+            extra="填写账户 ID 或用户 ID（与上方 ID 类型一致）。单个直接输入；批量用中文或英文逗号分隔，例如 10001,10002。"
           >
-            <TextArea rows={4} placeholder="单个直接输入，批量输入使用中英文逗号分隔" />
+            <TextArea
+              rows={4}
+              placeholder="单个直接输入；批量用中英文逗号分隔，如 10001,10002"
+            />
           </Form.Item>
 
           <Form.Item
