@@ -22,7 +22,6 @@ import {
   isAccountSyncReady,
   isVercelNotebookHost,
   loadCachedAccountUser,
-  notebookContentFingerprint,
   pullAccountBackup,
   pushAccountBackup,
   saveAccountSyncEnabled,
@@ -553,7 +552,7 @@ async function pullAndMergeCloudQuiet(): Promise<{
   etag: string | null
   missing: boolean
   cloudNoteCount: number
-  cloudFingerprint: string | null
+  cloudContent: string | null
   uploadedAt: string | null
 }> {
   if (isAccountSyncReady()) {
@@ -564,12 +563,11 @@ async function pullAndMergeCloudQuiet(): Promise<{
         etag: cloudEtag,
         missing: true,
         cloudNoteCount: 0,
-        cloudFingerprint: null,
+        cloudContent: null,
         uploadedAt: null,
       }
     }
     cloudEtag = pulled.etag
-    const cloudFingerprint = notebookContentFingerprint(pulled.content)
     await notebookStore.importBackup(pulled.content, { syncCloud: false })
     setLastAccountSyncAt()
     return {
@@ -577,7 +575,7 @@ async function pullAndMergeCloudQuiet(): Promise<{
       etag: pulled.etag,
       missing: false,
       cloudNoteCount: pulled.noteCount,
-      cloudFingerprint,
+      cloudContent: pulled.content,
       uploadedAt: pulled.uploadedAt,
     }
   }
@@ -590,7 +588,7 @@ async function pullAndMergeCloudQuiet(): Promise<{
         etag: cloudEtag,
         missing: true,
         cloudNoteCount: 0,
-        cloudFingerprint: null,
+        cloudContent: null,
         uploadedAt: null,
       }
     }
@@ -602,7 +600,7 @@ async function pullAndMergeCloudQuiet(): Promise<{
       etag: pulled.etag,
       missing: false,
       cloudNoteCount: pulled.noteCount,
-      cloudFingerprint: null,
+      cloudContent: pulled.content,
       uploadedAt: null,
     }
   }
@@ -612,7 +610,7 @@ async function pullAndMergeCloudQuiet(): Promise<{
       etag: null,
       missing: true,
       cloudNoteCount: 0,
-      cloudFingerprint: null,
+      cloudContent: null,
       uploadedAt: null,
     }
   }
@@ -623,7 +621,7 @@ async function pullAndMergeCloudQuiet(): Promise<{
       etag: cloudEtag,
       missing: true,
       cloudNoteCount: 0,
-      cloudFingerprint: null,
+      cloudContent: null,
       uploadedAt: null,
     }
   }
@@ -634,7 +632,7 @@ async function pullAndMergeCloudQuiet(): Promise<{
       etag: cloudEtag,
       missing: true,
       cloudNoteCount: 0,
-      cloudFingerprint: null,
+      cloudContent: null,
       uploadedAt: null,
     }
   }
@@ -646,21 +644,91 @@ async function pullAndMergeCloudQuiet(): Promise<{
     etag: meta.etag,
     missing: false,
     cloudNoteCount: 0,
-    cloudFingerprint: null,
+    cloudContent: meta.content,
     uploadedAt: null,
   }
+}
+
+/**
+ * True when local cache has notes (or newer edits) that cloud does not.
+ * Used to skip uploads that would only rewrite the same notebook and race
+ * other devices.
+ */
+function localIsAheadOfCloud(cloudContent: string): boolean {
+  let parsed: {
+    entries?: Array<{ id?: string; updatedAt?: string; createdAt?: string }>
+    trash?: Array<{ id?: string; deletedAt?: string }>
+  }
+  try {
+    parsed = JSON.parse(cloudContent) as typeof parsed
+  } catch {
+    return true
+  }
+  const cloudEntries = new Map<string, number>()
+  for (const entry of Array.isArray(parsed.entries) ? parsed.entries : []) {
+    if (!entry?.id) continue
+    cloudEntries.set(entry.id, new Date(entry.updatedAt || entry.createdAt || 0).getTime())
+  }
+  const cloudTrash = new Map<string, number>()
+  for (const entry of Array.isArray(parsed.trash) ? parsed.trash : []) {
+    if (!entry?.id) continue
+    cloudTrash.set(entry.id, new Date(entry.deletedAt || 0).getTime())
+  }
+  for (const entry of cache.entries) {
+    const cloudTime = cloudEntries.get(entry.id)
+    if (cloudTime == null) return true
+    if (entryTime(entry) > cloudTime) return true
+  }
+  for (const entry of cache.trash) {
+    const cloudTime = cloudTrash.get(entry.id)
+    if (cloudTime == null) return true
+    if (new Date(entry.deletedAt).getTime() > cloudTime) return true
+  }
+  return false
 }
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
 async function pullCloudIfConfigured() {
   if (!anyCloudBackendReady()) return
-  // flushCloudSync already pull-merges before each push — one serialized path.
+  // Never share the push lock for idle pulls — phones were pull+push every 10s
+  // and overwrote richer laptop uploads while stuck on "Saving to cloud…".
+  if (cloudPushInFlight) return cloudPushInFlight
   if (cloudPullInFlight) return cloudPullInFlight
   cloudPullInFlight = (async () => {
     try {
-      await flushCloudSync()
-    } catch {
-      /* ignore offline / auth errors */
+      setCloudRuntime({ state: 'syncing', error: null })
+      if (isAccountSyncReady()) {
+        const latest = await pullAccountBackup()
+        if (latest) {
+          const ahead = localIsAheadOfCloud(latest.content)
+          await notebookStore.importBackup(latest.content, { syncCloud: false })
+          setLastAccountSyncAt()
+          cloudEtag = latest.etag
+          if (ahead) {
+            await flushCloudSync()
+            return
+          }
+        } else if (cache.entries.length + cache.trash.length > 0) {
+          // Cloud empty but this device has notes — upload.
+          await flushCloudSync()
+          return
+        }
+      } else {
+        // Legacy backends: keep prior pull+push behavior via flush.
+        await flushCloudSync()
+        return
+      }
+      setCloudRuntime({
+        state: 'synced',
+        lastSyncedAt: new Date().toISOString(),
+        error: null,
+        gistId: unifiedCloudSyncStatus().gistId,
+      })
+    } catch (err) {
+      setCloudRuntime({
+        state: 'error',
+        error: err instanceof Error ? err.message : 'Cloud sync failed',
+      })
     } finally {
       cloudPullInFlight = null
     }
@@ -671,12 +739,12 @@ async function pullCloudIfConfigured() {
 function startPeriodicCloudSync() {
   if (typeof window === 'undefined') return
   if (periodicSyncTimer) return
-  // New devices sitting idle never pulled other-device notes — poll while visible.
+  // Pull while visible so phones pick up laptop notes without re-uploading.
   periodicSyncTimer = window.setInterval(() => {
     if (document.visibilityState !== 'visible') return
     if (!anyCloudBackendReady()) return
     void pullCloudIfConfigured()
-  }, 10_000)
+  }, 15_000)
 }
 
 // Kick off hydration as soon as the module loads in the browser.
@@ -860,22 +928,26 @@ async function flushCloudSync() {
   cloudPushDirty = true
   if (cloudPushInFlight) return cloudPushInFlight
   setCloudRuntime({ state: 'syncing', error: null })
+  const syncDeadline = Date.now() + 90_000
   cloudPushInFlight = (async () => {
     try {
       while (cloudPushDirty) {
+        if (Date.now() > syncDeadline) {
+          throw new Error('Cloud sync timed out — tap the status pill to retry')
+        }
         cloudPushDirty = false
         let etag: string | null = cloudEtag
         let pullFailed = false
         let cloudMissing = false
         let cloudNoteCount = 0
-        let cloudFingerprint: string | null = null
+        let cloudContent: string | null = null
         // Merge remote first so a slower device doesn't clobber notes from another.
         try {
           const pulled = await pullAndMergeCloudQuiet()
           etag = pulled.etag
           cloudMissing = pulled.missing
           cloudNoteCount = pulled.cloudNoteCount
-          cloudFingerprint = pulled.cloudFingerprint
+          cloudContent = pulled.cloudContent
         } catch (err) {
           pullFailed = true
           // Account sync: never push a partial local notebook over cloud when pull
@@ -908,11 +980,12 @@ async function flushCloudSync() {
             )
           }
 
-          const localJson = buildBackupJson()
-          const localFingerprint = notebookContentFingerprint(localJson)
-          // Idle phones were pull+push every 10s with identical content, racing the
-          // laptop's richer upload and wiping the new note. Skip no-op pushes.
-          if (!cloudMissing && cloudFingerprint && cloudFingerprint === localFingerprint) {
+          // Only upload when this device has extra notes or newer edits than the
+          // cloud snapshot we just merged. Prevents idle phones rewriting cloud.
+          const shouldUpload =
+            cloudMissing || !cloudContent || localIsAheadOfCloud(cloudContent)
+
+          if (!shouldUpload) {
             setCloudRuntime({
               state: 'synced',
               lastSyncedAt: new Date().toISOString(),
@@ -921,50 +994,15 @@ async function flushCloudSync() {
             })
             pushed = true
           } else {
-            // Freshness pass: re-pull right before upload so we absorb a concurrent
-            // laptop push instead of overwriting it with a stale local snapshot.
-            try {
-              const fresh = await pullAndMergeCloudQuiet()
-              cloudMissing = fresh.missing
-              cloudNoteCount = fresh.cloudNoteCount
-              cloudFingerprint = fresh.cloudFingerprint
-              etag = fresh.etag
-            } catch (err) {
-              throw new Error(
-                err instanceof Error
-                  ? `Could not refresh cloud notebook before save: ${err.message}`
-                  : 'Could not refresh cloud notebook before save',
-              )
-            }
-            if (cloudPushDirty) continue
-
-            const localJson2 = buildBackupJson()
-            const localFingerprint2 = notebookContentFingerprint(localJson2)
-            const localCount2 = cache.entries.length + cache.trash.length
-            if (!cloudMissing && cloudNoteCount > localCount2) {
-              throw new Error(
-                `Local notebook looks incomplete (${localCount2}) vs cloud (${cloudNoteCount}) — retry sync`,
-              )
-            }
-            if (!cloudMissing && cloudFingerprint && cloudFingerprint === localFingerprint2) {
-              setCloudRuntime({
-                state: 'synced',
-                lastSyncedAt: new Date().toISOString(),
-                error: null,
-                gistId: `account:${loadCachedAccountUser()}`,
-              })
-              pushed = true
-            } else {
-              const result = await pushAccountBackup(localJson2)
-              cloudEtag = result.etag
-              setCloudRuntime({
-                state: 'synced',
-                lastSyncedAt: new Date().toISOString(),
-                error: null,
-                gistId: `account:${loadCachedAccountUser()}`,
-              })
-              pushed = true
-            }
+            const result = await pushAccountBackup(buildBackupJson())
+            cloudEtag = result.etag
+            setCloudRuntime({
+              state: 'synced',
+              lastSyncedAt: new Date().toISOString(),
+              error: null,
+              gistId: `account:${loadCachedAccountUser()}`,
+            })
+            pushed = true
           }
         } else if (isVercelSyncReady()) {
           const { cloudKey } = loadVercelSyncSettings()
