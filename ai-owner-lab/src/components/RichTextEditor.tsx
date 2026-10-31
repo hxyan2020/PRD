@@ -149,7 +149,9 @@ function applyList(editor: HTMLElement | null, tag: 'UL' | 'OL') {
 
 function hasVisibleContent(html: string): boolean {
   if (!html) return false
-  if (/<(img|table|pre|code)\b/i.test(html)) return true
+  // Lists / media / tables count even before the user types into them — e.g.
+  // clicking Bullet inserts <ul><li><br></li></ul> with no text yet.
+  if (/<(img|table|pre|code|ul|ol|li)\b/i.test(html)) return true
   return Boolean(html.replace(/<br\s*\/?>|&nbsp;|\s|<\/?[^>]+>/gi, '').trim())
 }
 
@@ -437,6 +439,8 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     prepareCodeForEditing()
     restoreSelection()
     action()
+    // Toolbar actions (bullet, table, …) must clear the placeholder immediately.
+    syncPlaceholderVisibility()
     emitChange()
     captureSelection()
     // Re-apply colors after structural inserts (table / code) when caret left the block.
