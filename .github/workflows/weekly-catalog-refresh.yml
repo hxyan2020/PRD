@@ -1,0 +1,43 @@
+name: Weekly catalogue refresh
+
+on:
+  schedule:
+    # Every Monday 06:00 UTC
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: brand-atlas
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: brand-atlas/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Run weekly refresh
+        run: npm run refresh
+
+      - name: Commit catalogue updates
+        working-directory: .
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add brand-atlas/public/data/catalog.json brand-atlas/public/data/changelog.json
+          if git diff --staged --quiet; then
+            echo "No catalogue changes this week."
+          else
+            git commit -m "chore(catalog): weekly refresh $(date -u +%Y-%m-%d)"
+            git push
+          fi
