@@ -5,21 +5,24 @@ import {
   chatCompletionText,
   defaultOpenAiModel,
   llmEnrichmentEnabled,
+  resolveLlmProvider,
 } from "@/lib/ai/openai-client";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 
 export type LlmEnrichResult = {
   enriched: boolean;
-  source: "OPENAI_API" | "HEURISTIC" | "SKIPPED";
+  source: "OPENAI_API" | "LLM_API" | "HEURISTIC" | "SKIPPED";
   error?: string;
   thinking_steps?: string[];
   model?: string | null;
+  provider?: string | null;
 };
 
 /**
- * After heuristic RCA, call OpenAI to rewrite the summary/explanations
- * using the same seed evidence. Records a visible thinking trail on the analysis.
- * Falls back silently when the key is missing or the call fails.
+ * After heuristic RCA, call the configured LLM (ChatGPT / DeepSeek / Gemini / Claude)
+ * to rewrite the summary/explanations using the same seed evidence.
+ * Records a visible thinking trail on the analysis.
+ * Falls back silently when no key is present or the call fails.
  */
 export async function maybeEnrichAnalysisWithLlm(analysisDbId: number): Promise<LlmEnrichResult> {
   const thinkId = `LLM-${randomBytes(3).toString("hex").toUpperCase()}`;
@@ -28,7 +31,7 @@ export async function maybeEnrichAnalysisWithLlm(analysisDbId: number): Promise<
       enriched: false,
       source: "SKIPPED",
       thinking_steps: [
-        `${thinkId}: LLM enrichment skipped (OPENAI_API_KEY missing or CRMP_AI_LLM=off)`,
+        `${thinkId}: LLM enrichment skipped (no ChatGPT/DeepSeek/Gemini/Claude key, or CRMP_AI_LLM=off)`,
       ],
     };
   }
@@ -71,10 +74,11 @@ export async function maybeEnrichAnalysisWithLlm(analysisDbId: number): Promise<
     )
     .all(analysisDbId) as Array<{ evidence_type: string; title: string; excerpt: string }>;
 
+  const provider = resolveLlmProvider();
   const thinking_steps = [
     `${thinkId} @ ${new Date().toISOString()}: load heuristic RCA ${row.analysis_id} (${row.mode})`,
     `Ground on SQLite alert ${row.monitor_alert_id} · ${row.monitor_id}=${row.observed_value}`,
-    `Call OpenAI (${defaultOpenAiModel()}) for causal rewrite — not cached`,
+    `Call LLM (${provider || "auto"} / ${defaultOpenAiModel()}) for causal rewrite — not cached`,
   ];
 
   const result = await chatCompletionJson({
@@ -108,7 +112,7 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
   });
 
   if (!result.ok) {
-    thinking_steps.push(`OpenAI failed → keep heuristic (${result.error})`);
+    thinking_steps.push(`LLM failed → keep heuristic (${result.error})`);
     db.prepare(
       `INSERT INTO ai_analysis_evidence (analysis_id, evidence_type, ref_id, title, excerpt, url, score)
        VALUES (?, 'LLM', ?, ?, ?, NULL, 0.2)`
@@ -118,7 +122,14 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
       `LLM thinking skipped (${thinkId})`,
       thinking_steps.join(" → ")
     );
-    return { enriched: false, source: "HEURISTIC", error: result.error, thinking_steps, model: result.model };
+    return {
+      enriched: false,
+      source: "HEURISTIC",
+      error: result.error,
+      thinking_steps,
+      model: result.model,
+      provider: result.provider,
+    };
   }
 
   try {
@@ -138,7 +149,11 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
     const llmSteps = Array.isArray(parsed.thinking_steps)
       ? parsed.thinking_steps.map(String).filter(Boolean)
       : [];
-    const allSteps = [...thinking_steps, ...llmSteps, `OpenAI ok in ${result.latency_ms}ms (${result.model})`];
+    const allSteps = [
+      ...thinking_steps,
+      ...llmSteps,
+      `LLM ok in ${result.latency_ms}ms (${result.provider}/${result.model})`,
+    ];
 
     db.prepare(
       `UPDATE ai_analyses SET summary = ?, explanations_json = ?, confidence = ?, mode = CASE WHEN mode = 'SKILL_MATCH' THEN mode ELSE 'RAG_LLM' END WHERE id = ?`
@@ -150,17 +165,24 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
     ).run(
       analysisDbId,
       result.model,
-      `OpenAI enrichment (${result.model}) · ${thinkId}`,
+      `LLM enrichment (${result.provider}/${result.model}) · ${thinkId}`,
       `latency_ms=${result.latency_ms}; thinking=${allSteps.slice(0, 6).join(" | ")}; limitations=${limitations.slice(0, 3).join(" | ") || "n/a"}`
     );
 
-    return { enriched: true, source: "OPENAI_API", thinking_steps: allSteps, model: result.model };
+    return {
+      enriched: true,
+      source: "LLM_API",
+      thinking_steps: allSteps,
+      model: result.model,
+      provider: result.provider,
+    };
   } catch (err) {
     return {
       enriched: false,
       source: "HEURISTIC",
       error: err instanceof Error ? err.message : "parse failed",
       thinking_steps: [...thinking_steps, "parse failed → heuristic retained"],
+      provider,
     };
   }
 }
@@ -224,10 +246,11 @@ export async function maybeEnrichChallengeWithLlm(analysisDbId: number): Promise
     return { enriched: false, source: "SKIPPED", error: "analysis not found", thinking_steps: [`${thinkId}: analysis missing`] };
   }
 
+  const provider = resolveLlmProvider();
   const thinking_steps = [
     `${thinkId} @ ${new Date().toISOString()}: load heuristic challenger ${challenge.challenge_id} (${challenge.verdict})`,
     `Cross-check primary ${primary.analysis_id} (${primary.mode}) on ${primary.monitor_id}`,
-    `Call OpenAI (${defaultOpenAiModel()}) for independent second-line reasoning`,
+    `Call LLM (${provider || "auto"} / ${defaultOpenAiModel()}) for independent second-line reasoning`,
   ];
 
   const result = await chatCompletionJson({
@@ -249,12 +272,19 @@ Challenge correlation vs causation. Prefer ${FOREX_INCIDENT_1028.incident_id} na
   });
 
   if (!result.ok) {
-    thinking_steps.push(`OpenAI failed → keep heuristic challenger (${result.error})`);
+    thinking_steps.push(`LLM failed → keep heuristic challenger (${result.error})`);
     db.prepare(
       `INSERT INTO ai_analysis_evidence (analysis_id, evidence_type, ref_id, title, excerpt, url, score)
        VALUES (?, 'LLM', ?, ?, ?, NULL, 0.2)`
     ).run(analysisDbId, result.model || "none", `Challenger LLM skipped (${thinkId})`, thinking_steps.join(" → "));
-    return { enriched: false, source: "HEURISTIC", error: result.error, thinking_steps, model: result.model };
+    return {
+      enriched: false,
+      source: "HEURISTIC",
+      error: result.error,
+      thinking_steps,
+      model: result.model,
+      provider: result.provider,
+    };
   }
 
   try {
@@ -281,8 +311,12 @@ Challenge correlation vs causation. Prefer ${FOREX_INCIDENT_1028.incident_id} na
     const llmSteps = Array.isArray(parsed.thinking_steps)
       ? parsed.thinking_steps.map(String).filter(Boolean)
       : [];
-    const allSteps = [...thinking_steps, ...llmSteps, `OpenAI challenger ok in ${result.latency_ms}ms`];
-    const modelName = `${result.model}+challenger`;
+    const allSteps = [
+      ...thinking_steps,
+      ...llmSteps,
+      `LLM challenger ok in ${result.latency_ms}ms (${result.provider}/${result.model})`,
+    ];
+    const modelName = `${result.provider || "llm"}:${result.model}+challenger`;
 
     db.prepare(
       `UPDATE ai_analysis_challenges
@@ -310,16 +344,23 @@ Challenge correlation vs causation. Prefer ${FOREX_INCIDENT_1028.incident_id} na
     ).run(
       analysisDbId,
       result.model,
-      `Challenger OpenAI (${result.model}) · ${thinkId}`,
+      `Challenger LLM (${result.provider}/${result.model}) · ${thinkId}`,
       `verdict=${verdict}; thinking=${allSteps.slice(0, 6).join(" | ")}`
     );
-    return { enriched: true, source: "OPENAI_API", thinking_steps: allSteps, model: result.model };
+    return {
+      enriched: true,
+      source: "LLM_API",
+      thinking_steps: allSteps,
+      model: result.model,
+      provider: result.provider,
+    };
   } catch (err) {
     return {
       enriched: false,
       source: "HEURISTIC",
       error: err instanceof Error ? err.message : "parse failed",
       thinking_steps: [...thinking_steps, "challenger parse failed → heuristic retained"],
+      provider,
     };
   }
 }
@@ -344,19 +385,22 @@ export async function maybeAnswerDeskChatWithLlm(input: {
   locale: "en" | "zh-Hant";
   heuristicReply: string;
   sources: Array<{ title: string; href?: string }>;
-}): Promise<{ reply: string; used_llm: boolean; model?: string | null; thinking_steps?: string[] }> {
+}): Promise<{ reply: string; used_llm: boolean; model?: string | null; provider?: string | null; thinking_steps?: string[] }> {
   const thinkId = `CHAT-${randomBytes(3).toString("hex").toUpperCase()}`;
   if (!llmEnrichmentEnabled()) {
     return {
       reply: input.heuristicReply,
       used_llm: false,
-      thinking_steps: [`${thinkId}: heuristic only (OPENAI_API_KEY missing or CRMP_AI_LLM=off)`],
+      thinking_steps: [
+        `${thinkId}: heuristic only (no ChatGPT/DeepSeek/Gemini/Claude key, or CRMP_AI_LLM=off)`,
+      ],
     };
   }
   const zh = input.locale === "zh-Hant";
+  const provider = resolveLlmProvider();
   const thinking_steps = [
     `${thinkId} @ ${new Date().toISOString()}: ground on desk heuristic + RAG sources`,
-    `Call OpenAI (${defaultOpenAiModel()}) for rewrite — fresh each turn`,
+    `Call LLM (${provider || "auto"} / ${defaultOpenAiModel()}) for rewrite — fresh each turn`,
   ];
   const result = await chatCompletionText({
     system: zh
@@ -382,13 +426,15 @@ export async function maybeAnswerDeskChatWithLlm(input: {
       reply: input.heuristicReply,
       used_llm: false,
       model: result.model,
-      thinking_steps: [...thinking_steps, `OpenAI failed → heuristic (${result.error})`],
+      provider: result.provider,
+      thinking_steps: [...thinking_steps, `LLM failed → heuristic (${result.error})`],
     };
   }
   return {
     reply: result.content.trim(),
     used_llm: true,
     model: result.model,
-    thinking_steps: [...thinking_steps, `OpenAI ok in ${result.latency_ms}ms (${result.model})`],
+    provider: result.provider,
+    thinking_steps: [...thinking_steps, `LLM ok in ${result.latency_ms}ms (${result.provider}/${result.model})`],
   };
 }

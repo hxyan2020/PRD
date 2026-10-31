@@ -1192,6 +1192,7 @@ function runEnsureAiLayer(db: Database.Database) {
   );
   upsert.run("ai.auto_on_alarm", "true", "Auto-trigger AI analysis when Monitor indicators alarm");
   upsert.run("ai.skill_certainty_only", "true", "Auto-execute skills only when conditions match with certainty");
+  upsert.run("ai.llm.provider", "openai", "Active LLM backend: openai|deepseek|gemini|claude");
   upsert.run(
     "ai.second_opinion_severity",
     "BREACH",
@@ -1218,9 +1219,24 @@ function runEnsureAiLayer(db: Database.Database) {
     .catch((e) => console.error("[market-intel] boot seed failed", e));
 }
 
+function hydrateLlmProvider(db: Database.Database) {
+  try {
+    const { hydrateLlmProviderFromSettings } = require("@/lib/ai/openai-client") as typeof import("@/lib/ai/openai-client");
+    hydrateLlmProviderFromSettings((key) => {
+      const row = db.prepare(`SELECT value FROM platform_settings WHERE key = ?`).get(key) as
+        | { value: string }
+        | undefined;
+      return row?.value ?? null;
+    });
+  } catch {
+    /* optional — LLM client may be unavailable during early boot scripts */
+  }
+}
+
 export function getDb() {
   if (global.__vantageRiskDb) {
     ensureAiLayer(global.__vantageRiskDb);
+    hydrateLlmProvider(global.__vantageRiskDb);
     return global.__vantageRiskDb;
   }
   ensureDataDir();
@@ -1228,6 +1244,7 @@ export function getDb() {
   createSchema(db);
   seedIfEmpty(db);
   ensureAiLayer(db);
+  hydrateLlmProvider(db);
   global.__vantageRiskDb = db;
   return db;
 }

@@ -7,7 +7,7 @@ import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { T } from "@/components/T";
 import { redirect } from "next/navigation";
 import { readSearchParams } from "@/lib/static-export";
-import { llmEnrichmentEnabled, openaiKeyConfigured } from "@/lib/ai/openai-client";
+import { getLlmStatus, llmEnrichmentEnabled, openaiKeyConfigured } from "@/lib/ai/openai-client";
 
 export default async function AlertsPage({
   searchParams,
@@ -25,6 +25,7 @@ export default async function AlertsPage({
   const sp = await readSearchParams(searchParams);
   const monitorId = (sp.monitor_id || "").trim();
   const packs = listAlertTrackerPacks({ limit: 200, order: "severity", status: "open" });
+  const llm = getLlmStatus();
 
   return (
     <div>
@@ -48,6 +49,9 @@ export default async function AlertsPage({
         initialMonitorId={monitorId}
         llmAvailable={openaiKeyConfigured()}
         llmEnabled={llmEnrichmentEnabled()}
+        llmProvider={llm.provider}
+        llmModel={llm.model}
+        llmProviders={llm.providers}
       />
     </div>
   );

@@ -11,6 +11,7 @@ export const AI_PARAM_KEYS = [
   "ai.second_opinion_severity",
   "ai.line1.model",
   "ai.line2.model",
+  "ai.llm.provider",
   "ai.maker_checker_required",
   "detectors.auto_raise_alarms",
 ] as const;
@@ -31,6 +32,7 @@ export function seedAiAdminIfEmpty(db = getDb()) {
   upsert.run("ai.second_opinion_severity", "BREACH", "Severities that trigger a second AI challenger (CRITICAL/BREACH)");
   upsert.run("ai.line1.model", "crmp-rca-v0", "First-line AI model for RCA / skill match / RAG reasoning");
   upsert.run("ai.line2.model", "crmp-challenger-v0", "Second-line AI challenger model that challenges first-line output");
+  upsert.run("ai.llm.provider", "openai", "Active LLM backend: openai|deepseek|gemini|claude");
   upsert.run("ai.maker_checker_required", "true", "Skill/RAG/param changes require maker ≠ checker approval");
 
   const trainCount = (db.prepare(`SELECT COUNT(*) AS c FROM ai_training_runs`).get() as { c: number }).c;

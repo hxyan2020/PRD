@@ -33,11 +33,15 @@ export function AiAnalysesBoard({
   canOperate,
   llmAvailable = false,
   llmEnabled = false,
+  llmProvider = null,
+  llmModel = null,
 }: {
   analyses: Analysis[];
   canOperate: boolean;
   llmAvailable?: boolean;
   llmEnabled?: boolean;
+  llmProvider?: string | null;
+  llmModel?: string | null;
 }) {
   const router = useRouter();
   const { t } = useT();
@@ -104,13 +108,13 @@ export function AiAnalysesBoard({
       >
         {llmEnabled ? (
           <EnZh
-            en="OpenAI enrichment ON — analyze / simulate / detectors call the live model and store a thinking trail on each RCA."
-            zh="OpenAI 強化已開啟 — 分析／模擬／偵測器會呼叫即時模型，並在每次 RCA 寫入思考軌跡。"
+            en={`LLM enrichment ON (${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}) — analyze / simulate / detectors call ChatGPT, DeepSeek, Gemini, or Claude and store a thinking trail on each RCA.`}
+            zh={`LLM 強化已開啟（${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}）— 分析／模擬／偵測器會呼叫 ChatGPT／DeepSeek／Gemini／Claude，並在每次 RCA 寫入思考軌跡。`}
           />
         ) : (
           <EnZh
-            en={`OpenAI enrichment OFF (${llmAvailable ? "disabled by CRMP_AI_LLM" : "OPENAI_API_KEY missing"}). Heuristic RCA still runs; set the server secret to call real AI.`}
-            zh={`OpenAI 強化關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 OPENAI_API_KEY"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰以呼叫真實 AI。`}
+            en={`LLM enrichment OFF (${llmAvailable ? "disabled by CRMP_AI_LLM" : "no ChatGPT/DeepSeek/Gemini/Claude key"}). Heuristic RCA still runs; set a server secret to call real AI.`}
+            zh={`LLM 強化關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 ChatGPT／DeepSeek／Gemini／Claude 金鑰"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰以呼叫真實 AI。`}
           />
         )}
       </div>

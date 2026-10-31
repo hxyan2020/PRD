@@ -6,7 +6,18 @@ import { maybeEnrichAnalysisWithLlm, maybeEnrichChallengeWithLlm } from "@/lib/a
 import { backfillChallenges } from "@/lib/ai/challenger";
 import { runDummyAlertDemo } from "@/lib/ai/dummy-spine";
 import { getUiLocale } from "@/lib/i18n-server";
-import { llmEnrichmentEnabled, openaiKeyConfigured } from "@/lib/ai/openai-client";
+import { getLlmStatus, llmEnrichmentEnabled, openaiKeyConfigured } from "@/lib/ai/openai-client";
+
+function llmMeta() {
+  const status = getLlmStatus();
+  return {
+    llm_available: openaiKeyConfigured(),
+    llm_enabled: llmEnrichmentEnabled(),
+    llm_provider: status.provider,
+    llm_model: status.model,
+    llm_providers: status.providers,
+  };
+}
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
@@ -67,8 +78,7 @@ export async function POST(req: Request) {
       llm,
       challenge_llm: challengeLlm,
       thinking_steps: [...(llm.thinking_steps || []), ...(challengeLlm?.thinking_steps || [])],
-      llm_available: openaiKeyConfigured(),
-      llm_enabled: llmEnrichmentEnabled(),
+      ...llmMeta(),
     });
   }
 
@@ -87,8 +97,7 @@ export async function POST(req: Request) {
       reused: results.length - created.length,
       results,
       llm_runs: llmRuns,
-      llm_available: openaiKeyConfigured(),
-      llm_enabled: llmEnrichmentEnabled(),
+      ...llmMeta(),
     });
   }
 
@@ -169,8 +178,7 @@ export async function POST(req: Request) {
         llm: llmSim,
         challenge_llm: challengeLlmSim,
         thinking_steps: [...(llmSim?.thinking_steps || []), ...(challengeLlmSim?.thinking_steps || [])],
-        llm_available: openaiKeyConfigured(),
-        llm_enabled: llmEnrichmentEnabled(),
+        ...llmMeta(),
       });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "simulate_alarm failed";
@@ -191,8 +199,7 @@ export async function POST(req: Request) {
         mode: result.mode,
         highlight_stages: result.highlight_stages,
         errors: result.errors,
-        llm_available: openaiKeyConfigured(),
-        llm_enabled: llmEnrichmentEnabled(),
+        ...llmMeta(),
         runs: result.runs.map((r) => ({
           key: r.key,
           alert_id: r.alert_id,

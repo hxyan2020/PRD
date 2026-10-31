@@ -1,5 +1,6 @@
 /**
- * Prove AI paths call OpenAI (mocked) and record thinking trails.
+ * Prove AI paths call the configured LLM (mocked HTTP) and record thinking trails.
+ * Covers ChatGPT (OpenAI), DeepSeek, Gemini, and Claude routing.
  */
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -17,53 +18,107 @@ for (const f of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`]) {
 }
 process.env.CRMP_DB_PATH = dbPath;
 process.env.OPENAI_API_KEY = "sk-test-smoke-not-real";
+process.env.DEEPSEEK_API_KEY = "sk-deepseek-smoke";
+process.env.GEMINI_API_KEY = "gemini-smoke";
+process.env.ANTHROPIC_API_KEY = "claude-smoke";
 process.env.CRMP_AI_LLM = "auto";
 process.env.OPENAI_MODEL = "gpt-4.1-mini";
+process.env.CRMP_LLM_PROVIDER = "openai";
 
 let openaiCalls = 0;
+let deepseekCalls = 0;
+let geminiCalls = 0;
+let claudeCalls = 0;
+
+function mockJsonContent(sys: string, isJson: boolean) {
+  if (/challenger/i.test(sys)) {
+    return JSON.stringify({
+      verdict: "PARTIAL",
+      confidence: 0.7,
+      summary: "Mock LLM challenger partial agree",
+      thinking_steps: ["Mock challenger step A", "Mock challenger step B"],
+      critiques: [{ point: "Need feed latency corroboration", severity: "WARN" }],
+      improvements: [{ area: "EVIDENCE", recommendation: "Pull LP reject series", priority: "HIGH" }],
+      alternative_hypotheses: [{ hypothesis: "Benign burst", rationale: "Session open", confidence: 0.4 }],
+    });
+  }
+  if (isJson) {
+    return JSON.stringify({
+      summary: "Mock LLM RCA summary grounded on seed evidence",
+      thinking_steps: ["Mock RCA load SQLite", "Mock RCA call LLM", "Mock RCA conclude"],
+      explanations: [
+        {
+          hypothesis: "LP reject / quote delay on INC-1028 book",
+          likelihood: "HIGH",
+          confidence: 0.82,
+          rationale: "Mock thinking from seeded monitors",
+        },
+      ],
+      limitations: ["Mock LLM response"],
+      assessment: "Mock discovery LIVE assessment on INC-1028",
+      possible_root_causes: ["LP quote delay"],
+      proposed_risk_scenario: "LP reject cascade",
+      proposed_indicator_formula: "rejects / quotes",
+      proposed_dimensions: ["LP", "XAUUSD"],
+      recommended_validation_steps: ["Check M2-LP-022"],
+      priority: "HIGH",
+      confidence: "MEDIUM",
+    });
+  }
+  return "Mock desk chat LLM reply with INC-1028 grounding.";
+}
 
 const originalFetch = globalThis.fetch;
 globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
   const url = String(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
+  const body = JSON.parse(String(init?.body || "{}")) as {
+    messages?: Array<{ role: string; content: string }>;
+    system?: string;
+    response_format?: { type?: string };
+    contents?: unknown[];
+    generationConfig?: { responseMimeType?: string };
+  };
+
   if (url.includes("api.openai.com")) {
     openaiCalls += 1;
-    const body = JSON.parse(String(init?.body || "{}")) as {
-      messages?: Array<{ role: string; content: string }>;
-      response_format?: { type?: string };
-    };
     const isJson = body.response_format?.type === "json_object";
     const sys = body.messages?.find((m) => m.role === "system")?.content || "";
-    let content: string;
-    if (/challenger/i.test(sys)) {
-      content = JSON.stringify({
-        verdict: "PARTIAL",
-        confidence: 0.7,
-        summary: "Mock LLM challenger partial agree",
-        thinking_steps: ["Mock challenger step A", "Mock challenger step B"],
-        critiques: [{ point: "Need feed latency corroboration", severity: "WARN" }],
-        improvements: [{ area: "EVIDENCE", recommendation: "Pull LP reject series", priority: "HIGH" }],
-        alternative_hypotheses: [{ hypothesis: "Benign burst", rationale: "Session open", confidence: 0.4 }],
-      });
-    } else if (isJson) {
-      content = JSON.stringify({
-        summary: "Mock LLM RCA summary grounded on seed evidence",
-        thinking_steps: ["Mock RCA load SQLite", "Mock RCA call OpenAI", "Mock RCA conclude"],
-        explanations: [
-          {
-            hypothesis: "LP reject / quote delay on INC-1028 book",
-            likelihood: "HIGH",
-            confidence: 0.82,
-            rationale: "Mock thinking from seeded monitors",
-          },
-        ],
-        limitations: ["Mock OpenAI response"],
-      });
-    } else {
-      content = "Mock desk chat LLM reply with INC-1028 grounding.";
-    }
+    return new Response(JSON.stringify({ choices: [{ message: { content: mockJsonContent(sys, !!isJson) } }] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  if (url.includes("api.deepseek.com")) {
+    deepseekCalls += 1;
+    const isJson = body.response_format?.type === "json_object";
+    const sys = body.messages?.find((m) => m.role === "system")?.content || "";
+    return new Response(JSON.stringify({ choices: [{ message: { content: mockJsonContent(sys, !!isJson) } }] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  if (url.includes("generativelanguage.googleapis.com")) {
+    geminiCalls += 1;
+    const isJson = body.generationConfig?.responseMimeType === "application/json";
+    const sys = typeof body.system === "string" ? body.system : "";
+    // Gemini body uses systemInstruction; approximate from JSON
+    const sysFromParts =
+      (body as { systemInstruction?: { parts?: Array<{ text?: string }> } }).systemInstruction?.parts?.[0]?.text ||
+      sys;
     return new Response(
       JSON.stringify({
-        choices: [{ message: { content } }],
+        candidates: [{ content: { parts: [{ text: mockJsonContent(sysFromParts, !!isJson || true) }] } }],
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  }
+  if (url.includes("api.anthropic.com")) {
+    claudeCalls += 1;
+    const sys = typeof body.system === "string" ? body.system : "";
+    const isJson = /JSON/i.test(String((body.messages || [])[0]?.content || "")) || /Return ONLY valid JSON/i.test(sys);
+    return new Response(
+      JSON.stringify({
+        content: [{ type: "text", text: mockJsonContent(sys, true) }],
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
@@ -86,11 +141,19 @@ async function main() {
   } = await import("../src/lib/ai/discovery-analyse");
   const { runDiscoveryParallel, listDiscoveryCandidates } = await import("../src/lib/ai/discovery");
   const { FOREX_INCIDENT_1028 } = await import("../src/lib/demo/forex-incident-1028");
-  const { llmEnrichmentEnabled, openaiKeyConfigured } = await import("../src/lib/ai/openai-client");
+  const {
+    llmEnrichmentEnabled,
+    openaiKeyConfigured,
+    listLlmProviders,
+    setRuntimeLlmProvider,
+    chatCompletionJson,
+  } = await import("../src/lib/ai/openai-client");
 
   getDb();
   assert.equal(openaiKeyConfigured(), true);
   assert.equal(llmEnrichmentEnabled(), true);
+  const providers = listLlmProviders();
+  assert.equal(providers.filter((p) => p.configured).length, 4);
 
   const before = openaiCalls;
   const bundle = createAlarmAndAnalyze({
@@ -103,15 +166,16 @@ async function main() {
   const analysis = bundle.analysis as { id: number; analysis_id: string } | undefined;
   assert.ok(analysis?.id);
 
+  setRuntimeLlmProvider("openai");
   const llm = await maybeEnrichAnalysisWithLlm(analysis!.id);
   assert.equal(llm.enriched, true);
-  assert.equal(llm.source, "OPENAI_API");
-  assert.ok((llm.thinking_steps || []).some((s) => /Mock RCA|OpenAI|LLM-/i.test(s)));
+  assert.ok(llm.source === "LLM_API" || llm.source === "OPENAI_API");
+  assert.equal(llm.provider, "openai");
+  assert.ok((llm.thinking_steps || []).some((s) => /Mock RCA|LLM-|Call LLM/i.test(s)));
 
   const challengeLlm = await maybeEnrichChallengeWithLlm(analysis!.id);
-  // BREACH should have challenger row from analyzeAlert
-  assert.ok(challengeLlm.source === "OPENAI_API" || challengeLlm.source === "SKIPPED");
-  if (challengeLlm.source === "OPENAI_API") {
+  assert.ok(challengeLlm.source === "LLM_API" || challengeLlm.source === "OPENAI_API" || challengeLlm.source === "SKIPPED");
+  if (challengeLlm.source === "LLM_API" || challengeLlm.source === "OPENAI_API") {
     assert.ok((challengeLlm.thinking_steps || []).length >= 2);
   }
 
@@ -128,11 +192,12 @@ async function main() {
   });
   assert.equal(chat.used_llm, true);
   assert.match(chat.reply, /Mock desk chat/);
-  assert.ok((chat.thinking_steps || []).some((s) => /OpenAI ok|Call OpenAI/i.test(s)));
+  assert.ok((chat.thinking_steps || []).some((s) => /LLM ok|Call LLM/i.test(s)));
   assert.ok(openaiCalls > chatBefore);
 
-  enableDiscoveryOpenAi("gpt-4.1-mini");
+  enableDiscoveryOpenAi("gpt-4.1-mini", "openai");
   assert.equal(getDiscoveryAiStatus().mode, "LIVE_OPENAI");
+  assert.equal(getDiscoveryAiStatus().provider, "openai");
   const scan = runDiscoveryParallel({ actor: "llm-smoke", trigger: "SMOKE" });
   assert.ok((scan.candidates_new ?? 0) >= 1 || listDiscoveryCandidates("PENDING_RO", 5).length >= 1);
   const pending = listDiscoveryCandidates("PENDING_RO", 5) as Array<{
@@ -147,9 +212,49 @@ async function main() {
   assert.ok(pending[0]);
   const discBefore = openaiCalls;
   const suggestion = await analyseDiscoveryCandidate({ candidate: pending[0] });
-  assert.equal(suggestion.analysis_source, "OPENAI_API");
+  assert.ok(suggestion.analysis_source === "LLM_API" || suggestion.analysis_source === "OPENAI_API");
   assert.ok((suggestion.thinking_steps || []).length >= 1);
-  assert.ok(openaiCalls > discBefore, "Discovery Analyse must call OpenAI when LIVE");
+  assert.ok(openaiCalls > discBefore, "Discovery Analyse must call LLM when LIVE");
+
+  // Provider routing smoke — DeepSeek / Gemini / Claude
+  setRuntimeLlmProvider("deepseek");
+  const dsBefore = deepseekCalls;
+  const ds = await chatCompletionJson({
+    system: "You are a test harness.",
+    user: JSON.stringify({ ping: true }),
+    max_tokens: 200,
+    provider: "deepseek",
+  });
+  assert.equal(ds.ok, true);
+  assert.equal(ds.provider, "deepseek");
+  assert.ok(deepseekCalls > dsBefore);
+
+  setRuntimeLlmProvider("gemini");
+  const gemBefore = geminiCalls;
+  const gem = await chatCompletionJson({
+    system: "You are a test harness.",
+    user: JSON.stringify({ ping: true }),
+    max_tokens: 200,
+    provider: "gemini",
+  });
+  assert.equal(gem.ok, true);
+  assert.equal(gem.provider, "gemini");
+  assert.ok(geminiCalls > gemBefore);
+
+  setRuntimeLlmProvider("claude");
+  const clBefore = claudeCalls;
+  const cl = await chatCompletionJson({
+    system: "You are a test harness.",
+    user: JSON.stringify({ ping: true }),
+    max_tokens: 200,
+    provider: "claude",
+  });
+  assert.equal(cl.ok, true);
+  assert.equal(cl.provider, "claude");
+  assert.ok(claudeCalls > clBefore);
+
+  enableDiscoveryOpenAi(undefined, "deepseek");
+  assert.equal(getDiscoveryAiStatus().provider, "deepseek");
 
   const evidence = getDb()
     .prepare(
@@ -163,12 +268,17 @@ async function main() {
       {
         ok: true,
         openai_calls: openaiCalls,
+        deepseek_calls: deepseekCalls,
+        gemini_calls: geminiCalls,
+        claude_calls: claudeCalls,
         analysis_id: analysis!.analysis_id,
         rca_source: llm.source,
+        rca_provider: llm.provider,
         challenge_source: challengeLlm.source,
         chat_used_llm: chat.used_llm,
         discovery_source: suggestion.analysis_source,
         llm_evidence_rows: evidence.length,
+        providers_configured: providers.filter((p) => p.configured).map((p) => p.id),
       },
       null,
       2

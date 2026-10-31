@@ -100,8 +100,9 @@ export async function POST(req: Request) {
       .map((r: { analysis_id?: number | null }) => r.analysis_id)
       .filter((id: number | null | undefined): id is number => typeof id === "number" && id > 0);
     const { enrichAnalysesWithLlm } = await import("@/lib/ai/llm-enrich");
-    const { llmEnrichmentEnabled, openaiKeyConfigured } = await import("@/lib/ai/openai-client");
+    const { getLlmStatus, llmEnrichmentEnabled, openaiKeyConfigured } = await import("@/lib/ai/openai-client");
     const llm_runs = await enrichAnalysesWithLlm(analysisIds);
+    const llm = getLlmStatus();
 
     let discovery: Record<string, unknown> | null = null;
     const autoDiscovery =
@@ -122,6 +123,9 @@ export async function POST(req: Request) {
       llm_runs,
       llm_available: openaiKeyConfigured(),
       llm_enabled: llmEnrichmentEnabled(),
+      llm_provider: llm.provider,
+      llm_model: llm.model,
+      llm_providers: llm.providers,
     });
   }
 

@@ -49,9 +49,20 @@ type Candidate = {
   created_at: string;
 };
 
+type LlmProviderInfo = {
+  id: string;
+  label: string;
+  configured: boolean;
+  default_model: string;
+  env_key: string;
+};
+
 type AiStatus = {
   mode: string;
+  mode_canonical?: string;
   model: string | null;
+  provider?: string | null;
+  providers?: LlmProviderInfo[];
   key_configured: boolean;
   can_go_live: boolean;
   auto_live?: boolean;
@@ -204,6 +215,11 @@ export function DiscoverySuggestionBoard({
   const [candidates, setCandidates] = useState(initial.candidates);
   const [pendingCount, setPendingCount] = useState(initial.pending_count);
   const [aiStatus, setAiStatus] = useState(initial.ai_status);
+  const [selectedProvider, setSelectedProvider] = useState(
+    initial.ai_status.provider ||
+      initial.ai_status.providers?.find((p) => p.configured)?.id ||
+      "openai"
+  );
   const [selected, setSelected] = useState(
     initial.candidates.find((c) => c.status === "PENDING_RO")?.candidate_id ??
       initial.candidates[0]?.candidate_id ??
@@ -316,13 +332,21 @@ export function DiscoverySuggestionBoard({
     setBusy(live ? "connect" : "disconnect");
     setMsg(null);
     try {
-      const data = await post({ action: live ? "connect_openai" : "disconnect_openai" });
+      const data = await post({
+        action: live ? "connect_llm" : "disconnect_llm",
+        provider: live ? selectedProvider : undefined,
+      });
       setAiStatus(data.status || data);
+      if (data.status?.provider) setSelectedProvider(data.status.provider);
+      const label =
+        data.status?.providers?.find((p: LlmProviderInfo) => p.id === data.status?.provider)?.label ||
+        data.status?.provider ||
+        "LLM";
       setMsg(
         live
           ? locale === "zh-Hant"
-            ? `已連線 OpenAI（${data.status?.model || "live"}）— 分析才會呼叫 API`
-            : `Live OpenAI (${data.status?.model || "live"}) — no call until Analyse`
+            ? `已連線 ${label}（${data.status?.model || "live"}）— 分析才會呼叫 API`
+            : `Live ${label} (${data.status?.model || "live"}) — no call until Analyse`
           : locale === "zh-Hant"
             ? "已切換 Mock — 不呼叫外部 API"
             : "Mock mode — no external AI calls"
@@ -479,7 +503,10 @@ export function DiscoverySuggestionBoard({
               {enabled ? <EnZh en="ENABLED" zh="已啟用" /> : <EnZh en="DISABLED" zh="已停用" />}
             </Badge>
             <Badge data-testid="discovery-ai-mode">
-              AI: {aiStatus.mode === "LIVE_OPENAI" ? `LIVE (${aiStatus.model})` : "MOCK"}
+              AI:{" "}
+              {aiStatus.mode === "LIVE_OPENAI" || aiStatus.mode_canonical === "LIVE_LLM"
+                ? `LIVE (${aiStatus.provider || "llm"} / ${aiStatus.model})`
+                : "MOCK"}
             </Badge>
             <a
               className="btn btn-primary !min-h-9 text-xs"
@@ -613,21 +640,42 @@ export function DiscoverySuggestionBoard({
                 <p className="text-sm font-semibold mt-0.5" data-testid="discovery-ai-status-label">
                   <EnZh
                     en={
-                      aiStatus.mode === "LIVE_OPENAI"
-                        ? `AI: LIVE OpenAI (${aiStatus.model}) — API calls cost tokens`
+                      aiStatus.mode === "LIVE_OPENAI" || aiStatus.mode_canonical === "LIVE_LLM"
+                        ? `AI: LIVE ${aiStatus.provider || "LLM"} (${aiStatus.model}) — API calls cost tokens`
                         : "AI: MOCK — no API calls"
                     }
                     zh={
-                      aiStatus.mode === "LIVE_OPENAI"
-                        ? `AI：即時 OpenAI（${aiStatus.model}）— API 會產生費用`
+                      aiStatus.mode === "LIVE_OPENAI" || aiStatus.mode_canonical === "LIVE_LLM"
+                        ? `AI：即時 ${aiStatus.provider || "LLM"}（${aiStatus.model}）— API 會產生費用`
                         : "AI：Mock — 不呼叫 API"
                     }
                   />
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 items-center">
                 {initial.roles.can_operate || initial.roles.can_review ? (
                   <>
+                    <label className="text-xs text-[var(--muted)] flex items-center gap-1.5">
+                      <EnZh en="LLM" zh="LLM" />
+                      <select
+                        className="rounded-md border border-[var(--line)] px-2 py-1.5 text-xs bg-white"
+                        value={selectedProvider}
+                        onChange={(e) => setSelectedProvider(e.target.value)}
+                        data-testid="discovery-llm-provider"
+                      >
+                        {(aiStatus.providers || [
+                          { id: "openai", label: "ChatGPT (OpenAI)", configured: false, default_model: "", env_key: "" },
+                          { id: "deepseek", label: "DeepSeek", configured: false, default_model: "", env_key: "" },
+                          { id: "gemini", label: "Gemini", configured: false, default_model: "", env_key: "" },
+                          { id: "claude", label: "Claude", configured: false, default_model: "", env_key: "" },
+                        ]).map((p) => (
+                          <option key={p.id} value={p.id} disabled={!p.configured && !aiStatus.key_configured}>
+                            {p.label}
+                            {p.configured ? "" : " (no key)"}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                     <button
                       type="button"
                       className="btn btn-primary !min-h-10 text-xs"
@@ -635,7 +683,7 @@ export function DiscoverySuggestionBoard({
                       onClick={() => setAiMode(true)}
                       data-testid="discovery-connect-openai"
                     >
-                      <EnZh en="Connect OpenAI" zh="連線 OpenAI（Secrets／環境變數）" />
+                      <EnZh en="Connect LLM" zh="連線 LLM（Secrets／環境變數）" />
                     </button>
                     <button
                       type="button"

@@ -117,8 +117,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   discovery: {
     title: { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
     subtitle: {
-      en: "Runs on simulated SQLite (INC-1028 forex book). Analyse uses OpenAI when OPENAI_API_KEY is set (Connect optional); else MOCK with visible thinking. RO still gates promote.",
-      "zh-Hant": "在模擬 SQLite（INC-1028 外匯帳簿）上執行。設定 OPENAI_API_KEY 時分析走 OpenAI（連線可選）；否則 MOCK 並顯示思考步驟。晉升仍需 RO 把關。",
+      en: "Runs on simulated SQLite (INC-1028 forex book). Analyse uses ChatGPT / DeepSeek / Gemini / Claude when any API key is set (Connect optional); else MOCK with visible thinking. RO still gates promote.",
+      "zh-Hant": "在模擬 SQLite（INC-1028 外匯帳簿）上執行。設定 ChatGPT／DeepSeek／Gemini／Claude 任一金鑰時分析走真實 LLM（連線可選）；否則 MOCK 並顯示思考步驟。晉升仍需 RO 把關。",
     },
   },
   "indicator-aggregation": {

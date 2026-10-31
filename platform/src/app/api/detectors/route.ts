@@ -48,13 +48,17 @@ export async function POST(req: Request) {
     .map((r) => r.analysis_id)
     .filter((id): id is number => typeof id === "number" && id > 0);
   const { enrichAnalysesWithLlm } = await import("@/lib/ai/llm-enrich");
-  const { llmEnrichmentEnabled, openaiKeyConfigured } = await import("@/lib/ai/openai-client");
+  const { getLlmStatus, llmEnrichmentEnabled, openaiKeyConfigured } = await import("@/lib/ai/openai-client");
   const llm_runs = await enrichAnalysesWithLlm(analysisIds);
+  const llm = getLlmStatus();
   return NextResponse.json({
     ok: true,
     results,
     llm_runs,
     llm_available: openaiKeyConfigured(),
     llm_enabled: llmEnrichmentEnabled(),
+    llm_provider: llm.provider,
+    llm_model: llm.model,
+    llm_providers: llm.providers,
   });
 }
