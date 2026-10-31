@@ -1,6 +1,7 @@
 import type { PageKey } from '../config/menu';
 import { AdminAdlPage } from '../pages/AdminAdlPage';
 import { CoinIntroducePage } from '../pages/CoinIntroducePage';
+import { CompetitorSpreadMonitorPage } from '../pages/CompetitorSpreadMonitorPage';
 import { ContractListPage } from '../pages/ContractListPage';
 import { DbAccountAlertPage } from '../pages/DbAccountAlertPage';
 import { DbTakeoverAccountPage } from '../pages/DbTakeoverAccountPage';
@@ -65,6 +66,8 @@ export function renderPage(key: PageKey) {
       return <NoTradeMonitorPage />;
     case 'depth-monitor':
       return <DepthMonitorPage />;
+    case 'competitor-spread-monitor':
+      return <CompetitorSpreadMonitorPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
