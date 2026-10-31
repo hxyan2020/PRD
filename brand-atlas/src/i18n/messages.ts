@@ -90,6 +90,7 @@ export type MessageKey =
   | "auth.accountTabs"
   | "unlocked.note"
   | "unlocked.saveNote"
+  | "unlocked.noteSaved"
   | "unlocked.share"
   | "unlocked.seenAt"
   | "unlocked.stillLocked"
@@ -316,6 +317,7 @@ const en: Pack = {
   "auth.accountTabs": "Account",
   "unlocked.note": "Your field note",
   "unlocked.saveNote": "Save note",
+  "unlocked.noteSaved": "Note saved",
   "unlocked.share": "Copy permanent link",
   "unlocked.seenAt": "Seen at (UTC)",
   "unlocked.stillLocked": "Still locked",

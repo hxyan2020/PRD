@@ -406,7 +406,7 @@ export function ItemDetail({
 
                 <div className="cta-row" style={{ justifyContent: "center" }}>
                   <button type="button" className="btn btn--forest" onClick={saveNote}>
-                    {savedFlash ? t("unlocked.copied") : t("unlocked.saveNote")}
+                    {savedFlash ? t("unlocked.noteSaved") : t("unlocked.saveNote")}
                   </button>
                   <button type="button" className="btn btn--quiet" onClick={() => void copyLink()}>
                     {copied ? t("unlocked.copied") : t("unlocked.share")}
