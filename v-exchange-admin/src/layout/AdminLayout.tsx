@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Avatar, Layout, Menu, Tabs, Typography } from 'antd'
+import { Avatar, Layout, Menu, Segmented, Tabs, Typography } from 'antd'
 import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -9,6 +9,8 @@ import {
   sideMenuItems,
   type PageKey,
 } from '../config/menu'
+import { useLocale } from '../i18n/LocaleContext'
+import type { UiLang } from '../i18n/financeTerms'
 import './AdminLayout.css'
 
 const { Header, Sider, Content } = Layout
@@ -23,6 +25,7 @@ export function AdminLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const activeKey = pathToKey(location.pathname)
+  const { lang, setLang, label } = useLocale()
 
   const [collapsed, setCollapsed] = useState(false)
   const [openKeys, setOpenKeys] = useState<string[]>(defaultOpenKeys)
@@ -70,11 +73,27 @@ export function AdminLayout() {
     () =>
       tabs.map((key) => ({
         key,
-        label: pageLabels[key],
+        label: label(pageLabels[key]),
         closable: key !== 'overview',
       })),
-    [tabs],
+    [tabs, label],
   )
+
+  const menuItems = useMemo(() => {
+    const mapItems = (items: typeof sideMenuItems): typeof sideMenuItems =>
+      (items || []).map((item) => {
+        if (!item || typeof item !== 'object') return item
+        const next = { ...item } as {
+          key?: string
+          label?: unknown
+          children?: typeof sideMenuItems
+        }
+        if (typeof next.label === 'string') next.label = label(next.label)
+        if (next.children) next.children = mapItems(next.children)
+        return next
+      }) as typeof sideMenuItems
+    return mapItems(sideMenuItems)
+  }, [label])
 
   return (
     <Layout className="admin-root">
@@ -96,7 +115,7 @@ export function AdminLayout() {
           selectedKeys={[activeKey]}
           openKeys={collapsed ? [] : openKeys}
           onOpenChange={setOpenKeys}
-          items={sideMenuItems}
+          items={menuItems}
           onClick={onMenuClick}
         />
       </Sider>
@@ -111,6 +130,17 @@ export function AdminLayout() {
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </button>
           <div className="admin-header-right">
+            <Segmented<UiLang>
+              size="small"
+              value={lang}
+              onChange={(v) => setLang(v)}
+              options={[
+                { label: '中文', value: 'zh' },
+                { label: 'EN', value: 'en' },
+                { label: '中英', value: 'both' },
+              ]}
+              aria-label="UI language"
+            />
             <Avatar size="small" icon={<UserOutlined />} />
             <Text>Haixiang Yan</Text>
           </div>
