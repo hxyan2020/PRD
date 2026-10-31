@@ -33,11 +33,15 @@ jobs:
           npm ci
           npm run build:pages
           cp dist/index.html dist/404.html
+          touch dist/.nojekyll
 
-      - name: Publish to gh-pages branch
+      # Publish under /matching-management/ only.
+      # Never force_orphan — that wipes /fate-atlas/, /ownlab/, /crmp-admin/, etc.
+      - name: Publish MatchingManagement to gh-pages/matching-management
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: v-exchange-admin/dist
+          destination_dir: matching-management
           publish_branch: gh-pages
-          force_orphan: true
+          keep_files: true
