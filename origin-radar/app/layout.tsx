@@ -25,9 +25,18 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mighty-clover-777.harvis.page"),
   title: "OriginRadar — factory-direct opportunities",
   description:
     "Recently popular factory-direct products from 1688 and other China sources, scored against Google search heat, TikTok and Xiaohongshu chatter, and ecommerce gaps in North America, Southeast Asia, and Europe.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
