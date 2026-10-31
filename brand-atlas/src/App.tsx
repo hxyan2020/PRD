@@ -133,11 +133,31 @@ function Header() {
               aria-label={t("header.unlocked", { count: String(count) })}
               onClick={closeMenu}
             >
+              <svg
+                className="header-progress__icon"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  fill="currentColor"
+                  d="M6.2 3.5h10.1c1.1 0 2 .9 2 2v13.2c0 .7-.6 1.3-1.3 1.3H7.1c-1.3 0-2.4-1.1-2.4-2.4V5.5c0-1.1.9-2 2-2Zm0 1.5c-.3 0-.5.2-.5.5v12.1c0 .5.4.9.9.9h9.6c.1 0 .3-.1.3-.3V5.5c0-.3-.2-.5-.5-.5H6.2Z"
+                />
+                <path
+                  fill="currentColor"
+                  d="M8.2 7.2h7.1c.4 0 .7.3.7.7s-.3.7-.7.7H8.2c-.4 0-.7-.3-.7-.7s.3-.7.7-.7Zm0 3.2h7.1c.4 0 .7.3.7.7s-.3.7-.7.7H8.2c-.4 0-.7-.3-.7-.7s.3-.7.7-.7Zm0 3.2h4.6c.4 0 .7.3.7.7s-.3.7-.7.7H8.2c-.4 0-.7-.3-.7-.7s.3-.7.7-.7Z"
+                />
+              </svg>
               <span className="header-progress__full">
                 {t("header.unlocked", { count: String(count) })}
               </span>
               <span className="header-progress__short" aria-hidden="true">
-                {count}
+                <span className="header-progress__label">
+                  {t("header.collectionShort")}
+                </span>
+                <span className="header-progress__count">{count}</span>
               </span>
             </NavLink>
             <LanguagePicker />
