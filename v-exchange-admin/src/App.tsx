@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { isPageKey, type PageKey } from './config/menu'
 import { AdminLayout } from './layout/AdminLayout'
 import { pageComponents } from './pages/registry'
+import './fieldHelpFloating.css'
 
 
 const help: Record<string,string> = {
@@ -117,9 +118,13 @@ const extendedHelp:Record<string,string>={
  'DB账户权益预警':'账户权益下降触发风险处置；结合未实现亏损和可转金额。',
  '爆仓预警':'持仓接近强平的预警，建议与维持保证金覆盖率联动。',
  '仓位模式':'逐仓/全仓，决定保证金共享范围。',
- '持仓均价':'当前持仓的平均开仓价格，用于计算未实现盈亏。',
- '未实现盈亏 (USD)':'按标记价计算的浮动盈亏，影响账户权益。',
- '总未实现盈亏':'账户所有未平仓头寸的浮动盈亏。',
+ '持仓方向':'多头（Long）或空头（Short）。永续合约支持双向持仓。',
+ '持仓均价':'当前持仓的加权平均开仓价格，用于计算未实现盈亏。',
+ '持仓仓位价值 (USD)':'该仓位的美元名义价值（notional）。',
+ '持仓合约价值 (USD)':'该仓位的美元名义价值（notional）。',
+ '占用保证金 (USD)':'该仓位占用的保证金（美元）；杠杆越高相对名义价值占用越低。',
+ '未实现盈亏 (USD)':'按标记价（mark price）计算的浮动盈亏，平仓前不计入钱包余额。',
+ '总未实现盈亏':'账户所有未平仓头寸的浮动盈亏合计。',
  '总占用保证金':'账户全部仓位与订单占用的保证金，需核对是否包含挂单冻结。',
  '持仓总额':'账户所有仓位的名义价值合计。',
  '账户ID':'账户唯一标识，定位 DB 或用户风险。',
@@ -132,42 +137,214 @@ const extendedHelp:Record<string,string>={
  '预警群':'Lark 告警通知地址。按风险等级配置值班、负责人和备用群，避免敏感信息外泄。',
  '告警方式':'告警推送渠道；关键事件建议 Lark+备用通知。',
 }
-function helpText(label:string):string {
- const k=label.replace(/[＊*:：]/g,'').trim().replace(/\s+/g,' ')
- if(extendedHelp[k])return extendedHelp[k]
- if(help[k])return help[k]
- const found=Object.keys(extendedHelp).find(x=>k.includes(x)||x.includes(k)) || Object.keys(help).find(x=>k.includes(x)||x.includes(k))
- return found?(extendedHelp[found]||help[found]):`字段「${k}」用于查询、配置或展示对应的监控数据；建议核对业务定义、单位与计算口径后设定阈值。`
+/** English finance/trading terms for bilingual hover tips (paired with Chinese maps above). */
+const helpEn: Record<string, string> = {
+  '合约名称': 'Select the contract to monitor. Configure XAU_USD and BTC_USD separately — volatility profiles differ.',
+  '合约': 'Underlying instrument. XAUUSD = gold perpetual; BTCUSD = bitcoin perpetual.',
+  '持仓方向': 'Position side: Long or Short. Perpetual futures allow two-way positions.',
+  '持仓均价': 'Volume-weighted average entry price; used to compute unrealized PnL (uPnL).',
+  '持仓仓位价值 (USD)': 'USD notional of the position (size × multiplier × mark, per venue convention).',
+  '持仓合约价值 (USD)': 'USD notional of the position (same as position value).',
+  '占用保证金 (USD)': 'USD margin allocated to this position. Higher leverage uses less margin vs notional.',
+  '未实现盈亏 (USD)': 'Mark-to-market floating PnL in USD; feeds account equity until the position is closed.',
+  '总未实现盈亏': 'Sum of mark-to-market floating PnL across all open positions.',
+  '总占用保证金': 'Total margin locked by positions and working orders (initial / maintenance margin used).',
+  '占用保证金': 'Margin locked by positions and orders — not the same as full account equity.',
+  '持仓总额': 'Aggregate notional value of all open positions.',
+  '持仓名义价值': 'Current position notional marked to the mark price.',
+  '账户ID': 'Unique account id used to locate DB takeover or user risk.',
+  '钱包余额': 'Settled wallet balance (excludes unrealized PnL). Analogous to cash in free margin.',
+  '最大可转金额': 'Largest amount that can be recalled/withdrawn without breaching minimum safe margin.',
+  '可转金额': 'Funds that can leave the account without eroding the takeover safety buffer.',
+  '自动注资水位线': 'When DB takeover wallet falls below this waterline, the system auto top-ups capital.',
+  '注资目标水位线': 'Target wallet balance the auto top-up aims to restore after injection.',
+  '账户权益': 'Account equity ≈ balance + unrealized PnL. Core input for liquidation and risk controls.',
+  '账户MMR': 'Maintenance margin rate. Rising MMR means higher liquidation risk; confirm venue formula.',
+  '流水类型': 'Ledger type: inject/recall, funding fee, auto-deleveraging (ADL), etc.',
+  '金额 (USD)': 'Signed USD ledger amount; + inflow / − outflow.',
+  '流水ID': 'Unique fund-flow id for reconciliation and audit.',
+  '仓位模式': 'Isolated vs cross margin — determines how margin is shared and liquidation scope.',
+  '预警群': 'Lark bot webhook for alerts. Route by severity; keep P0 on-call exclusive.',
+  '告警方式': 'Alert delivery channel (e.g. Lark). Critical events should have a backup path.',
+  '监控阈值': 'Deviation that triggers an alert (spread or funding gap). Backtest per pair.',
+  '资金费率数值': 'Observed external funding rate. Normalize to the same settlement interval before comparing.',
+  '平台资金费率': 'Internal platform funding rate; compare on the same settlement interval as peers.',
 }
-function FieldHelp(){
- useEffect(()=>{
-  const decorate=()=>{
-   document.querySelectorAll<HTMLElement>('.ant-form-item-label label, .ant-table-thead th, .ant-descriptions-item-label, .ant-form-item .ant-input-group-addon, .ant-modal .ant-form-item-label label').forEach(el=>{
-    if(el.dataset.helpReady)return
-    const label=(el.textContent||'').trim()
-    if(!label)return
-    el.dataset.helpReady='1'
-    el.title=helpText(label)
-    el.style.cursor='help'
-    el.setAttribute('aria-label',label+'：'+helpText(label))
-    if(!el.querySelector('.field-help-mark')){
-      const mark=document.createElement('span')
-      mark.className='field-help-mark'
-      mark.textContent=' ⓘ'
-      mark.style.color='#1677ff'
-      mark.style.fontSize='12px'
-      mark.style.fontWeight='normal'
-      mark.title=helpText(label)
-      el.appendChild(mark)
+
+function normalizeLabel(label: string): string {
+  return label
+    .replace(/[＊*ⓘℹ️]/g, '')
+    .replace(/[：:]/g, '')
+    .trim()
+    .replace(/\s+/g, ' ')
+}
+
+function resolveHelpKey(label: string): string {
+  const k = normalizeLabel(label)
+  if (extendedHelp[k] || help[k] || helpEn[k]) return k
+  const found =
+    Object.keys(extendedHelp).find((x) => k.includes(x) || x.includes(k)) ||
+    Object.keys(help).find((x) => k.includes(x) || x.includes(k)) ||
+    Object.keys(helpEn).find((x) => k.includes(x) || x.includes(k))
+  return found || k
+}
+
+function helpTextZh(label: string): string {
+  const k = resolveHelpKey(label)
+  return (
+    extendedHelp[k] ||
+    help[k] ||
+    `字段「${k}」用于查询、配置或展示对应的监控数据；建议核对业务定义、单位与计算口径后设定阈值。`
+  )
+}
+
+function helpTextEn(label: string): string {
+  const k = resolveHelpKey(label)
+  return (
+    helpEn[k] ||
+    `"${k}" — used to configure or display related trading/risk data; confirm definition, unit, and calculation before setting thresholds.`
+  )
+}
+
+function FieldHelp() {
+  useEffect(() => {
+    let tipEl: HTMLDivElement | null = null
+    let hideTimer: ReturnType<typeof setTimeout> | null = null
+    let activeAnchor: HTMLElement | null = null
+
+    const clearHide = () => {
+      if (hideTimer) {
+        clearTimeout(hideTimer)
+        hideTimer = null
+      }
     }
-   })
-  }
-  decorate()
-  const observer=new MutationObserver(decorate)
-  observer.observe(document.body,{childList:true,subtree:true})
-  return()=>observer.disconnect()
- },[])
- return null
+
+    const ensureTip = () => {
+      if (tipEl) return tipEl
+      tipEl = document.createElement('div')
+      tipEl.className = 'field-help-floating'
+      tipEl.setAttribute('role', 'tooltip')
+      tipEl.style.display = 'none'
+      tipEl.addEventListener('mouseenter', () => clearHide())
+      tipEl.addEventListener('mouseleave', () => scheduleHide())
+      document.body.appendChild(tipEl)
+      return tipEl
+    }
+
+    const placeTip = (anchor: HTMLElement) => {
+      const tip = ensureTip()
+      const r = anchor.getBoundingClientRect()
+      tip.style.display = 'block'
+      const tipW = tip.offsetWidth || 360
+      const tipH = tip.offsetHeight || 120
+      const gap = 8
+      let left = r.left
+      let top = r.top - tipH - gap
+      if (top < 8) top = r.bottom + gap
+      if (left + tipW > window.innerWidth - 8) left = Math.max(8, window.innerWidth - tipW - 8)
+      if (left < 8) left = 8
+      tip.style.left = `${left}px`
+      tip.style.top = `${top}px`
+    }
+
+    const showTip = (anchor: HTMLElement, label: string) => {
+      clearHide()
+      activeAnchor = anchor
+      const tip = ensureTip()
+      const zh = helpTextZh(label)
+      const en = helpTextEn(label)
+      const key = resolveHelpKey(label)
+      tip.replaceChildren()
+      const title = document.createElement('div')
+      title.className = 'field-help-floating__title'
+      title.append(document.createTextNode(key))
+      const muted = document.createElement('span')
+      muted.className = 'field-help-floating__muted'
+      muted.textContent = ' · field help'
+      title.append(muted)
+      const row = (lang: string, text: string) => {
+        const r = document.createElement('div')
+        r.className = 'field-help-floating__row'
+        const l = document.createElement('span')
+        l.className = 'field-help-floating__lang'
+        l.textContent = lang
+        const t = document.createElement('span')
+        t.textContent = text
+        r.append(l, t)
+        return r
+      }
+      tip.append(title, row('EN', en), row('中文', zh))
+      placeTip(anchor)
+      requestAnimationFrame(() => placeTip(anchor))
+    }
+
+    const scheduleHide = () => {
+      clearHide()
+      hideTimer = setTimeout(() => {
+        if (tipEl) tipEl.style.display = 'none'
+        activeAnchor = null
+      }, 120)
+    }
+
+    const bindHover = (target: HTMLElement, label: string) => {
+      if (target.dataset.helpBound) return
+      target.dataset.helpBound = '1'
+      target.addEventListener('mouseenter', () => showTip(target, label))
+      target.addEventListener('mouseleave', () => scheduleHide())
+      target.addEventListener('focus', () => showTip(target, label))
+      target.addEventListener('blur', () => scheduleHide())
+    }
+
+    const decorate = () => {
+      document
+        .querySelectorAll<HTMLElement>(
+          '.ant-form-item-label label, .ant-table-thead th, .ant-descriptions-item-label, .ant-form-item .ant-input-group-addon, .ant-modal .ant-form-item-label label',
+        )
+        .forEach((el) => {
+          if (el.dataset.helpReady) return
+          const raw = (el.textContent || '').trim()
+          if (!raw) return
+          const label = normalizeLabel(raw)
+          if (!label) return
+          el.dataset.helpReady = '1'
+          // Do NOT set native title — browser tooltips are delayed/unreliable and conflict with the floating panel.
+          el.removeAttribute('title')
+          el.style.cursor = 'help'
+          el.setAttribute('aria-label', `${label}: ${helpTextEn(label)} / ${helpTextZh(label)}`)
+          let mark = el.querySelector<HTMLElement>('.field-help-mark')
+          if (!mark) {
+            mark = document.createElement('span')
+            mark.className = 'field-help-mark'
+            mark.textContent = ' ⓘ'
+            mark.setAttribute('tabindex', '0')
+            mark.setAttribute('aria-label', `Help: ${label}`)
+            el.appendChild(mark)
+          }
+          mark.removeAttribute('title')
+          bindHover(mark, label)
+          bindHover(el, label)
+        })
+    }
+
+    const onScroll = () => {
+      if (activeAnchor && tipEl && tipEl.style.display !== 'none') placeTip(activeAnchor)
+    }
+
+    decorate()
+    const observer = new MutationObserver(decorate)
+    observer.observe(document.body, { childList: true, subtree: true })
+    window.addEventListener('scroll', onScroll, true)
+    window.addEventListener('resize', onScroll)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', onScroll, true)
+      window.removeEventListener('resize', onScroll)
+      clearHide()
+      tipEl?.remove()
+      tipEl = null
+    }
+  }, [])
+  return null
 }
 
 const routeKeys = Object.keys(pageComponents) as PageKey[]
