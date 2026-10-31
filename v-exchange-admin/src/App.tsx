@@ -316,6 +316,12 @@ function FieldHelp() {
       target.addEventListener('mouseleave', () => scheduleHide())
       target.addEventListener('focus', () => showTip(target, label))
       target.addEventListener('blur', () => scheduleHide())
+      // Mobile: tap ⓘ / label to open help (hover is unreliable on touch).
+      target.addEventListener('click', (ev) => {
+        ev.preventDefault()
+        ev.stopPropagation()
+        showTip(target, label)
+      })
     }
 
     const decorate = () => {
