@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'v-exchange-admin/**'
+      - 'pages-root/**'
       - '.github/workflows/deploy-v-exchange-admin.yml'
   workflow_dispatch:
 
@@ -27,17 +28,30 @@ jobs:
           cache: npm
           cache-dependency-path: v-exchange-admin/package-lock.json
 
-      - name: Install and build
+      - name: Install and build MatchingManagement
         working-directory: v-exchange-admin
         run: |
           npm ci
           npm run build:pages
           cp dist/index.html dist/404.html
+          touch dist/.nojekyll
 
-      - name: Publish to gh-pages branch
+      # Keep sibling sites (fate-atlas, crmp-admin, venture-scan, …).
+      # Never use force_orphan — that wipes the whole gh-pages branch.
+      - name: Publish MatchingManagement under /matching-management
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: v-exchange-admin/dist
+          destination_dir: matching-management
           publish_branch: gh-pages
-          force_orphan: true
+          keep_files: true
+
+      # Root directory page (no auto-redirect to Fatum Atlas).
+      - name: Publish PRD directory entry (replace fate root hijack)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: pages-root
+          publish_branch: gh-pages
+          keep_files: true
