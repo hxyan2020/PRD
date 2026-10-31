@@ -1,6 +1,13 @@
-import type { PageKey } from '../config/menu';
+import { pageTitles, type PageKey } from '../config/menu';
 import { AdlAbnormalRecordPage } from '../pages/AdlAbnormalRecordPage';
 import { AdminAdlPage } from '../pages/AdminAdlPage';
+import {
+  ApiOpenListPage,
+  ApiRatioConfigPage,
+  ApiUserLimitConfigPage,
+  ApiUserTakerBlacklistPage,
+  ApiUserTakerConfigPage,
+} from '../pages/ApiManagementPages';
 import { CoinIntroducePage } from '../pages/CoinIntroducePage';
 import { CompetitorSpreadMonitorPage } from '../pages/CompetitorSpreadMonitorPage';
 import { ContractListPage } from '../pages/ContractListPage';
@@ -9,6 +16,13 @@ import { DbTakeoverAccountPage } from '../pages/DbTakeoverAccountPage';
 import { DepthMonitorPage } from '../pages/DepthMonitorPage';
 import { ExternalFundingRateMonitorPage } from '../pages/ExternalFundingRateMonitorPage';
 import { FairPricePage } from '../pages/FairPricePage';
+import {
+  FinanceFlowPage,
+  FinancialAccountPage,
+  FinancialReconPage,
+  FinancialReportPage,
+  TransferRecordPage,
+} from '../pages/FinancialPages';
 import { FundingRateModifyPage } from '../pages/FundingRateModifyPage';
 import { FundingRatePage } from '../pages/FundingRatePage';
 import { IndexMarketLinkPage } from '../pages/IndexMarketLinkPage';
@@ -27,6 +41,7 @@ import { PositionListPage } from '../pages/PositionListPage';
 import { RiskFundDetailPage } from '../pages/RiskFundDetailPage';
 import { RiskFundListPage } from '../pages/RiskFundListPage';
 import { SpreadAlertMonitorPage } from '../pages/SpreadAlertMonitorPage';
+import { ClosePositionPage, GlobalFrequencyPage, OpenBottomPositionPage } from '../pages/ToolsPages';
 import { TradeAmountFactorPage } from '../pages/TradeAmountFactorPage';
 
 export function renderPage(key: PageKey) {
@@ -55,6 +70,32 @@ export function renderPage(key: PageKey) {
       return <FundingRatePage />;
     case 'position-list':
       return <PositionListPage />;
+    case 'financial-report':
+      return <FinancialReportPage />;
+    case 'transfer-record':
+      return <TransferRecordPage />;
+    case 'financial-account':
+      return <FinancialAccountPage />;
+    case 'financial-recon':
+      return <FinancialReconPage />;
+    case 'finance-flow':
+      return <FinanceFlowPage />;
+    case 'api-open-list':
+      return <ApiOpenListPage />;
+    case 'api-ratio-config':
+      return <ApiRatioConfigPage />;
+    case 'api-user-limit-config':
+      return <ApiUserLimitConfigPage />;
+    case 'api-user-taker-blacklist':
+      return <ApiUserTakerBlacklistPage />;
+    case 'api-user-taker-config':
+      return <ApiUserTakerConfigPage />;
+    case 'tools-close-position':
+      return <ClosePositionPage />;
+    case 'tools-global-frequency':
+      return <GlobalFrequencyPage />;
+    case 'tools-open-bottom-position':
+      return <OpenBottomPositionPage />;
     case 'funding-rate-modify':
       return <FundingRateModifyPage />;
     case 'market-trade-limit':
@@ -88,6 +129,6 @@ export function renderPage(key: PageKey) {
     case 'db-account-alert':
       return <DbAccountAlertPage />;
     default:
-      return <PlaceholderPage />;
+      return <PlaceholderPage title={pageTitles[key]} />;
   }
 }

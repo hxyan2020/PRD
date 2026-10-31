@@ -1,9 +1,12 @@
 import type { MenuProps } from 'antd';
 import {
   AlertOutlined,
+  ApiOutlined,
+  DollarOutlined,
   FundOutlined,
   SafetyCertificateOutlined,
   TeamOutlined,
+  ToolOutlined,
 } from '@ant-design/icons';
 
 export type PageKey =
@@ -21,8 +24,14 @@ export type PageKey =
   | 'funding-rate'
   | 'position-list'
   | 'position-value-search'
-  | 'order-list'
-  | 'deal-list'
+  | 'active-order'
+  | 'trigger-order'
+  | 'stop-order'
+  | 'active-order-history-deal'
+  | 'trigger-order-history-deal'
+  | 'liquidate-history'
+  | 'adl-history'
+  | 'stop-order-history-deal'
   | 'user-asset'
   | 'user-rate-config'
   | 'user-info'
@@ -34,6 +43,23 @@ export type PageKey =
   | 'redis-value-manage'
   | 'openapi-white-list'
   | 'openapi-market'
+  | 'openapi-mm-blacklist'
+  // 财务管理
+  | 'financial-report'
+  | 'transfer-record'
+  | 'financial-account'
+  | 'financial-recon'
+  | 'finance-flow'
+  // API 管理
+  | 'api-open-list'
+  | 'api-ratio-config'
+  | 'api-user-limit-config'
+  | 'api-user-taker-blacklist'
+  | 'api-user-taker-config'
+  // 工具管理
+  | 'tools-close-position'
+  | 'tools-global-frequency'
+  | 'tools-open-bottom-position'
   // 风控管理
   | 'funding-rate-modify'
   | 'liquidation-engine-switch'
@@ -72,8 +98,14 @@ export const pageTitles: Record<PageKey, string> = {
   'funding-rate': '资金费率',
   'position-list': '持仓列表',
   'position-value-search': '仓位价值查询',
-  'order-list': '订单列表',
-  'deal-list': '成交列表',
+  'active-order': '当前委托',
+  'trigger-order': '计划委托',
+  'stop-order': '止盈止损',
+  'active-order-history-deal': '委托成交历史',
+  'trigger-order-history-deal': '计划委托成交历史',
+  'liquidate-history': '强平历史',
+  'adl-history': 'ADL历史',
+  'stop-order-history-deal': '止盈止损成交历史',
   'user-asset': '用户资产',
   'user-rate-config': '用户费率配置',
   'user-info': '用户信息',
@@ -85,6 +117,20 @@ export const pageTitles: Record<PageKey, string> = {
   'redis-value-manage': 'Redis Value 管理',
   'openapi-white-list': 'OpenAPI 白名单',
   'openapi-market': 'OpenAPI 行情',
+  'openapi-mm-blacklist': 'OpenAPI 做市黑名单',
+  'financial-report': '财务报表',
+  'transfer-record': '划转记录',
+  'financial-account': '财务账户管理',
+  'financial-recon': '财务对账监控',
+  'finance-flow': '资金流水',
+  'api-open-list': 'API开放白名单',
+  'api-ratio-config': '限额系数配置',
+  'api-user-limit-config': '用户限额配置',
+  'api-user-taker-blacklist': '用户 Taker 黑名单',
+  'api-user-taker-config': '用户 Taker 配置',
+  'tools-close-position': '平仓工具',
+  'tools-global-frequency': '全局频率分组',
+  'tools-open-bottom-position': '开底仓',
   'funding-rate-modify': '资金费率修改',
   'liquidation-engine-switch': '强平引擎开关',
   'market-trade-limit': '市价交易限制配置',
@@ -137,8 +183,26 @@ export const sideMenuItems: MenuProps['items'] = [
     children: [
       { key: 'position-list', label: '持仓列表' },
       { key: 'position-value-search', label: '仓位价值查询' },
-      { key: 'order-list', label: '订单列表' },
-      { key: 'deal-list', label: '成交列表' },
+      {
+        key: 'order-list-group',
+        label: '订单列表',
+        children: [
+          { key: 'active-order', label: '当前委托' },
+          { key: 'trigger-order', label: '计划委托' },
+          { key: 'stop-order', label: '止盈止损' },
+        ],
+      },
+      {
+        key: 'deal-list-group',
+        label: '成交列表',
+        children: [
+          { key: 'active-order-history-deal', label: '委托成交历史' },
+          { key: 'trigger-order-history-deal', label: '计划委托成交历史' },
+          { key: 'liquidate-history', label: '强平历史' },
+          { key: 'adl-history', label: 'ADL历史' },
+          { key: 'stop-order-history-deal', label: '止盈止损成交历史' },
+        ],
+      },
     ],
   },
   {
@@ -162,9 +226,43 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'redis-value-manage', label: 'Redis Value 管理' },
       { key: 'openapi-white-list', label: 'OpenAPI 白名单' },
       { key: 'openapi-market', label: 'OpenAPI 行情' },
+      { key: 'openapi-mm-blacklist', label: 'OpenAPI 做市黑名单' },
     ],
   },
-  // 两个分开的一级菜单：风控管理 / 监控告警
+  {
+    key: 'financial-manage',
+    icon: <DollarOutlined style={{ color: '#389e0d' }} />,
+    label: '财务管理',
+    children: [
+      { key: 'financial-report', label: '财务报表' },
+      { key: 'transfer-record', label: '划转记录' },
+      { key: 'financial-account', label: '财务账户管理' },
+      { key: 'financial-recon', label: '财务对账监控' },
+      { key: 'finance-flow', label: '资金流水' },
+    ],
+  },
+  {
+    key: 'api-manage',
+    icon: <ApiOutlined style={{ color: '#13c2c2' }} />,
+    label: 'API管理',
+    children: [
+      { key: 'api-open-list', label: 'API开放白名单' },
+      { key: 'api-ratio-config', label: '限额系数配置' },
+      { key: 'api-user-limit-config', label: '用户限额配置' },
+      { key: 'api-user-taker-blacklist', label: '用户 Taker 黑名单' },
+      { key: 'api-user-taker-config', label: '用户 Taker 配置' },
+    ],
+  },
+  {
+    key: 'tools-manage',
+    icon: <ToolOutlined />,
+    label: '工具管理',
+    children: [
+      { key: 'tools-close-position', label: '平仓工具' },
+      { key: 'tools-global-frequency', label: '全局频率分组' },
+      { key: 'tools-open-bottom-position', label: '开底仓' },
+    ],
+  },
   {
     key: 'risk-manage',
     icon: <SafetyCertificateOutlined style={{ color: '#722ed1' }} />,
