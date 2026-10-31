@@ -5,6 +5,19 @@
     <link rel="icon" type="image/svg+xml" href="/PRD/matching-management/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MatchingManagement — V Exchange Admin</title>
+    <script>
+      // GitHub Pages SPA deep-link restore (paired with /PRD/404.html).
+      (function () {
+        try {
+          var redirect = sessionStorage.getItem('prd-pages-redirect')
+          if (!redirect) return
+          sessionStorage.removeItem('prd-pages-redirect')
+          if (redirect !== location.href) {
+            history.replaceState(null, '', redirect)
+          }
+        } catch (e) {}
+      })()
+    </script>
     <script type="module" crossorigin src="/PRD/matching-management/assets/index-DSFY9nGS.js"></script>
     <link rel="stylesheet" crossorigin href="/PRD/matching-management/assets/index-DaaRsT1Y.css">
   </head>
