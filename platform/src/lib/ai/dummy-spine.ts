@@ -109,7 +109,7 @@ function markStage(stages: SpineStage[], stage: SpineStage) {
   if (!stages.includes(stage)) stages.push(stage);
 }
 
-function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
+async function walkOne(tpl: DummyTemplate, locale: UiLocale): Promise<DummySpineRun> {
   const db = getDb();
   const stages: SpineStage[] = [];
   const maker = userByEmail(MAKER_EMAIL, MAKER_FALLBACK);
@@ -148,25 +148,55 @@ function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
   markStage(stages, "ALARM");
 
   const bundle = analyzeAlert(raised.alert_db_id, { force: true, prefer_rag: tpl.prefer_rag });
-  const analysis = bundle?.analysis as
+  let analysis = bundle?.analysis as
     | { id: number; analysis_id: string; mode: string }
     | undefined
     | null;
-  if (analysis) {
-    markStage(stages, "AI_RCA");
-    if (String(analysis.mode).includes("SKILL") || tpl.prefer_rag === false) {
-      markStage(stages, "SKILL_EXECUTE");
-    } else {
-      markStage(stages, "SKILL_EXECUTE");
+  if (analysis?.id) {
+    const { maybeEnrichAnalysisWithLlm } = await import("@/lib/ai/llm-enrich");
+    const llm = await maybeEnrichAnalysisWithLlm(analysis.id);
+    if (llm.enriched) {
+      const refreshed = analyzeAlert(raised.alert_db_id, { force: false });
+      analysis =
+        (refreshed?.analysis as { id: number; analysis_id: string; mode: string } | undefined | null) ||
+        analysis;
+      logSpineEvent({
+        stage: "AI_RCA",
+        title: `DUMMY LLM enrich ${analysis.analysis_id} (${llm.source})`,
+        product: raised.product,
+        ref_type: "ai_analysis",
+        ref_id: analysis.analysis_id,
+        severity: raised.severity,
+        detail: {
+          dummy: true,
+          llm_source: llm.source,
+          thinking_steps: llm.thinking_steps?.slice(0, 6),
+          model: llm.model ?? null,
+        },
+        actor: "home-dummy",
+      });
     }
   }
+  if (analysis) {
+    markStage(stages, "AI_RCA");
+    markStage(stages, "SKILL_EXECUTE");
+  }
 
-  syncNewAlertsToMessenger(8);
-  const thread = db
+  syncNewAlertsToMessenger(24);
+  let thread = db
     .prepare(
       `SELECT id, thread_id FROM messenger_threads WHERE alert_id = ? ORDER BY id DESC LIMIT 1`
     )
     .get(raised.alert_db_id) as { id: number; thread_id: string } | undefined;
+  if (!thread) {
+    // Ensure this walk's alert is mirrored even if batch sync was saturated.
+    syncNewAlertsToMessenger(40);
+    thread = db
+      .prepare(
+        `SELECT id, thread_id FROM messenger_threads WHERE alert_id = ? ORDER BY id DESC LIMIT 1`
+      )
+      .get(raised.alert_db_id) as { id: number; thread_id: string } | undefined;
+  }
 
   if (thread) {
     messengerAction({
@@ -316,7 +346,7 @@ function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
   };
 }
 
-export function runDummyAlertDemo(input: { mode?: DummySpineMode; locale?: UiLocale } = {}) {
+export async function runDummyAlertDemo(input: { mode?: DummySpineMode; locale?: UiLocale } = {}) {
   const mode: DummySpineMode = input.mode === "group" ? "group" : "single";
   const locale: UiLocale = input.locale === "zh-Hant" ? "zh-Hant" : "en";
   const templates = mode === "group" ? DUMMY_SPINE_TEMPLATES : [DUMMY_SPINE_TEMPLATES[0]];
@@ -325,7 +355,7 @@ export function runDummyAlertDemo(input: { mode?: DummySpineMode; locale?: UiLoc
 
   for (const tpl of templates) {
     try {
-      runs.push(walkOne(tpl, locale));
+      runs.push(await walkOne(tpl, locale));
     } catch (e) {
       errors.push(`${tpl.key}: ${e instanceof Error ? e.message : String(e)}`);
     }

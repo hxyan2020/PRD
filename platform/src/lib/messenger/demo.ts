@@ -68,6 +68,24 @@ export const RECOMMENDED_ACTIONS = [
     priority: "soft" as const,
     permission: "monitor.operate",
   },
+  {
+    code: "DISABLE_LP",
+    label: "Disable rejecting LP",
+    description: "Route away from the LP with elevated rejects / quote delay (INC-1028 book).",
+    admin_path: "/admin/interventions",
+    needs_checker: true,
+    priority: "critical" as const,
+    permission: "intervene.operate",
+  },
+  {
+    code: "INCREASE_ABOOK",
+    label: "Increase A-book share",
+    description: "Tilt hedge coverage by raising A-book allocation on the stressed book.",
+    admin_path: "/admin/interventions",
+    needs_checker: true,
+    priority: "control" as const,
+    permission: "intervene.operate",
+  },
 ] as const;
 
 export type MessengerPoc = {
@@ -1362,20 +1380,25 @@ export function syncNewAlertsToMessenger(
   ensureMessengerSchema();
   seedMessengerIfEmpty();
   const db = getDb();
+  // One row per alert (latest analysis). Alias alert pk explicitly — never rely on
+  // bare `id` when joining ai_analyses (driver can surface the wrong id).
   const rows = db
     .prepare(
-      `SELECT a.id, a.alert_id, a.severity, a.title, a.message, i.monitor_id, i.name AS indicator_name,
+      `SELECT a.id AS alert_db_id, a.alert_id, a.severity, a.title, a.message,
+              i.monitor_id, i.name AS indicator_name,
               an.id AS analysis_db_id, an.analysis_id, an.summary, an.mode, an.challenge_verdict
        FROM monitor_alerts a
        JOIN monitor_indicators i ON i.id = a.indicator_id
-       LEFT JOIN ai_analyses an ON an.alert_id = a.id
        LEFT JOIN messenger_threads t ON t.alert_id = a.id
+       LEFT JOIN ai_analyses an ON an.id = (
+         SELECT MAX(x.id) FROM ai_analyses x WHERE x.alert_id = a.id
+       )
        WHERE t.id IS NULL AND a.severity IN ('WARN','BREACH','CRITICAL')
        ORDER BY a.id DESC
        LIMIT ?`
     )
     .all(limit) as Array<{
-    id: number;
+    alert_db_id: number;
     alert_id: string;
     severity: string;
     title: string;
@@ -1402,7 +1425,7 @@ export function syncNewAlertsToMessenger(
         a.severity === "CRITICAL" ? "Risk Critical Bridge" : a.severity === "BREACH" ? "Risk Desk" : "Ops Watch",
         a.title,
         a.severity,
-        a.id,
+        a.alert_db_id,
         a.analysis_db_id
       );
     const tid = Number(info.lastInsertRowid);
@@ -1435,6 +1458,7 @@ export function syncNewAlertsToMessenger(
     writeAudit(actor ?? { name: "system" }, "MESSENGER_SYNC", "messenger_thread", "batch", {
       synced: rows.length,
       alert_ids: rows.map((r) => r.alert_id),
+      alert_db_ids: rows.map((r) => r.alert_db_id),
     });
   }
   return rows.length;

@@ -286,7 +286,7 @@ function pushToLark(findingId: string, message: string) {
   return msgId;
 }
 
-function updateIndicatorAndMaybeAlarm(highImpactCount: number, topFindingTitle: string) {
+async function updateIndicatorAndMaybeAlarm(highImpactCount: number, topFindingTitle: string) {
   const db = getDb();
   const raise =
     (
@@ -336,13 +336,18 @@ function updateIndicatorAndMaybeAlarm(highImpactCount: number, topFindingTitle: 
 
   if (recent) return;
 
-  createAlarmAndAnalyze({
+  const bundle = createAlarmAndAnalyze({
     monitor_id: INDICATOR_ID,
     severity: status,
     title: `Market intel high-impact hits ${status}`,
     message: `${highImpactCount} high-impact market intelligence finding(s) in latest 5m scan. Top: ${topFindingTitle}`,
     observed_value: highImpactCount,
   });
+  const analysisRow = bundle.analysis as { id?: number } | null | undefined;
+  if (analysisRow?.id) {
+    const { maybeEnrichAnalysisWithLlm } = await import("@/lib/ai/llm-enrich");
+    await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+  }
 }
 
 export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"; actor?: string } = {}) {
@@ -438,7 +443,7 @@ export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"
   const indicatorHits = windowHit.c || highImpact;
   const indicatorTitle = windowHit.top_title || topTitle || "n/a";
   try {
-    updateIndicatorAndMaybeAlarm(indicatorHits, indicatorTitle);
+    await updateIndicatorAndMaybeAlarm(indicatorHits, indicatorTitle);
   } catch (alarmErr) {
     console.error("[market-intel] indicator/alarm update failed", alarmErr);
   }

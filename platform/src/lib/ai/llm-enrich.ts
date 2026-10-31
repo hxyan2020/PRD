@@ -1,17 +1,37 @@
+import { randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
-import { chatCompletionJson, chatCompletionText, llmEnrichmentEnabled } from "@/lib/ai/openai-client";
+import {
+  chatCompletionJson,
+  chatCompletionText,
+  defaultOpenAiModel,
+  llmEnrichmentEnabled,
+} from "@/lib/ai/openai-client";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 
-/**
- * After heuristic RCA, optionally call OpenAI to rewrite the summary/explanations
- * using the same seed evidence. Falls back silently when the key is missing or the call fails.
- */
-export async function maybeEnrichAnalysisWithLlm(analysisDbId: number): Promise<{
+export type LlmEnrichResult = {
   enriched: boolean;
   source: "OPENAI_API" | "HEURISTIC" | "SKIPPED";
   error?: string;
-}> {
-  if (!llmEnrichmentEnabled()) return { enriched: false, source: "SKIPPED" };
+  thinking_steps?: string[];
+  model?: string | null;
+};
+
+/**
+ * After heuristic RCA, call OpenAI to rewrite the summary/explanations
+ * using the same seed evidence. Records a visible thinking trail on the analysis.
+ * Falls back silently when the key is missing or the call fails.
+ */
+export async function maybeEnrichAnalysisWithLlm(analysisDbId: number): Promise<LlmEnrichResult> {
+  const thinkId = `LLM-${randomBytes(3).toString("hex").toUpperCase()}`;
+  if (!llmEnrichmentEnabled()) {
+    return {
+      enriched: false,
+      source: "SKIPPED",
+      thinking_steps: [
+        `${thinkId}: LLM enrichment skipped (OPENAI_API_KEY missing or CRMP_AI_LLM=off)`,
+      ],
+    };
+  }
   const db = getDb();
   const row = db
     .prepare(
@@ -41,7 +61,9 @@ export async function maybeEnrichAnalysisWithLlm(analysisDbId: number): Promise<
         product: string;
       }
     | undefined;
-  if (!row) return { enriched: false, source: "SKIPPED", error: "analysis not found" };
+  if (!row) {
+    return { enriched: false, source: "SKIPPED", error: "analysis not found", thinking_steps: [`${thinkId}: analysis not found`] };
+  }
 
   const evidence = db
     .prepare(
@@ -49,9 +71,15 @@ export async function maybeEnrichAnalysisWithLlm(analysisDbId: number): Promise<
     )
     .all(analysisDbId) as Array<{ evidence_type: string; title: string; excerpt: string }>;
 
+  const thinking_steps = [
+    `${thinkId} @ ${new Date().toISOString()}: load heuristic RCA ${row.analysis_id} (${row.mode})`,
+    `Ground on SQLite alert ${row.monitor_alert_id} · ${row.monitor_id}=${row.observed_value}`,
+    `Call OpenAI (${defaultOpenAiModel()}) for causal rewrite — not cached`,
+  ];
+
   const result = await chatCompletionJson({
     system: `You are the first-line AI RCA engine for a forex CFD broker risk desk (CRMP).
-Return JSON only: { "summary": string, "explanations": [ { "hypothesis": string, "likelihood": "HIGH"|"MEDIUM"|"LOW"|"UNKNOWN", "confidence": number, "rationale": string } ], "limitations": string[] }.
+Return JSON only: { "summary": string, "thinking_steps": string[], "explanations": [ { "hypothesis": string, "likelihood": "HIGH"|"MEDIUM"|"LOW"|"UNKNOWN", "confidence": number, "rationale": string } ], "limitations": string[] }.
 Ground every claim in the provided Monitor/RAG evidence. Never invent live LP fills or client P&L.
 If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.lp} ${FOREX_INCIDENT_1028.symbol}), prefer that narrative but still respect the supplied evidence.`,
     user: JSON.stringify({
@@ -74,15 +102,29 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
       },
       evidence,
       canonical_forex_demo: FOREX_INCIDENT_1028,
+      think_id: thinkId,
     }).slice(0, 14000),
     max_tokens: 1600,
   });
 
-  if (!result.ok) return { enriched: false, source: "HEURISTIC", error: result.error };
+  if (!result.ok) {
+    thinking_steps.push(`OpenAI failed → keep heuristic (${result.error})`);
+    db.prepare(
+      `INSERT INTO ai_analysis_evidence (analysis_id, evidence_type, ref_id, title, excerpt, url, score)
+       VALUES (?, 'LLM', ?, ?, ?, NULL, 0.2)`
+    ).run(
+      analysisDbId,
+      result.model || "none",
+      `LLM thinking skipped (${thinkId})`,
+      thinking_steps.join(" → ")
+    );
+    return { enriched: false, source: "HEURISTIC", error: result.error, thinking_steps, model: result.model };
+  }
 
   try {
     const parsed = JSON.parse(result.content) as {
       summary?: string;
+      thinking_steps?: string[];
       explanations?: Array<Record<string, unknown>>;
       limitations?: string[];
     };
@@ -93,6 +135,10 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
     const limitations = Array.isArray(parsed.limitations) ? parsed.limitations : [];
     const confidences = explanations.map((e: Record<string, unknown>) => Number(e.confidence) || 0);
     const confidence = Math.min(0.95, Math.max(row.confidence, ...confidences, 0));
+    const llmSteps = Array.isArray(parsed.thinking_steps)
+      ? parsed.thinking_steps.map(String).filter(Boolean)
+      : [];
+    const allSteps = [...thinking_steps, ...llmSteps, `OpenAI ok in ${result.latency_ms}ms (${result.model})`];
 
     db.prepare(
       `UPDATE ai_analyses SET summary = ?, explanations_json = ?, confidence = ?, mode = CASE WHEN mode = 'SKILL_MATCH' THEN mode ELSE 'RAG_LLM' END WHERE id = ?`
@@ -104,18 +150,28 @@ If the case resembles ${FOREX_INCIDENT_1028.incident_id} (${FOREX_INCIDENT_1028.
     ).run(
       analysisDbId,
       result.model,
-      `OpenAI enrichment (${result.model})`,
-      `latency_ms=${result.latency_ms}; limitations=${limitations.slice(0, 3).join(" | ") || "n/a"}`
+      `OpenAI enrichment (${result.model}) · ${thinkId}`,
+      `latency_ms=${result.latency_ms}; thinking=${allSteps.slice(0, 6).join(" | ")}; limitations=${limitations.slice(0, 3).join(" | ") || "n/a"}`
     );
 
-    return { enriched: true, source: "OPENAI_API" };
+    return { enriched: true, source: "OPENAI_API", thinking_steps: allSteps, model: result.model };
   } catch (err) {
     return {
       enriched: false,
       source: "HEURISTIC",
       error: err instanceof Error ? err.message : "parse failed",
+      thinking_steps: [...thinking_steps, "parse failed → heuristic retained"],
     };
   }
+}
+
+/** Enrich up to `limit` analyses created by detectors / dummy / batch paths. */
+export async function enrichAnalysesWithLlm(analysisDbIds: number[], limit = 8): Promise<LlmEnrichResult[]> {
+  const out: LlmEnrichResult[] = [];
+  for (const id of analysisDbIds.filter(Boolean).slice(0, limit)) {
+    out.push(await maybeEnrichAnalysisWithLlm(id));
+  }
+  return out;
 }
 
 export async function maybeAnswerDeskChatWithLlm(input: {

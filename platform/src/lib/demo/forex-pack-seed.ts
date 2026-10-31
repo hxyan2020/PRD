@@ -200,12 +200,20 @@ export function ensureForexPackDeskSeed(db: Database.Database) {
     ).run(closedId);
   }
 
-  // Attach messenger INC-1028 thread to the live alert row when present.
+  // Attach the canonical INC-1028 messenger thread to the live pack alert.
+  // Do not rewrite DUMMY / discovery titles that merely mention INC-1028.
   if (primaryAlertId != null) {
     db.prepare(
       `UPDATE messenger_threads
        SET alert_id = ?, severity = 'BREACH', status = CASE WHEN status = 'CLOSED' THEN 'OPEN' ELSE status END
-       WHERE thread_id = ? OR title LIKE '%INC-1028%' OR title LIKE '%LP Quote Delay%'`
+       WHERE thread_id = ?
+          OR (
+            title NOT LIKE 'DUMMY%'
+            AND (
+              title LIKE 'INC-1028 ·%'
+              OR title LIKE '%LP Quote Delay & Final Quote Staleness%'
+            )
+          )`
     ).run(primaryAlertId, fx.thread_id);
   }
 }

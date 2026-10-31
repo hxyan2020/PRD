@@ -100,6 +100,18 @@ assert.match(i18n, /discovery:\s*\{[\s\S]*zh-Hant": "未知風險探索"/);
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /"Unknown Risk Discovery": "未知風險探索"/);
 
+const indDoc = read("docs/INDICATORS_SCENARIOS.md");
+assert.match(indDoc, /Audience map|Admin \/ Risk Owner/);
+assert.match(indDoc, /real thinking each trigger|scan_seed/);
+const indDocZh = read("docs/INDICATORS_SCENARIOS.zh-Hant.md");
+assert.match(indDocZh, /受眾對照|管理／風險負責人/);
+assert.match(indDocZh, /每次觸發真實思考|scan_seed/);
+
+const llmEnrich = read("src/lib/ai/llm-enrich.ts");
+assert.match(llmEnrich, /enrichAnalysesWithLlm/);
+assert.match(llmEnrich, /thinking_steps/);
+assert.match(llmEnrich, /think_id|LLM-/);
+
 const wf = fs.readFileSync(path.join(repo, ".github/workflows/crmp-pages.yml"), "utf8");
 assert.match(wf, /crmp-admin/);
 assert.match(wf, /cursor\/risk-discovery-admin-28bc|cursor\/crmp-admin-pages-a935/);

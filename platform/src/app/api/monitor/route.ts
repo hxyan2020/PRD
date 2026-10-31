@@ -96,6 +96,13 @@ export async function POST(req: Request) {
     });
     writeAudit(user, "RUN_DETECTORS", "monitor", "all", { count: results.length });
 
+    const analysisIds = results
+      .map((r: { analysis_id?: number | null }) => r.analysis_id)
+      .filter((id: number | null | undefined): id is number => typeof id === "number" && id > 0);
+    const { enrichAnalysesWithLlm } = await import("@/lib/ai/llm-enrich");
+    const { llmEnrichmentEnabled, openaiKeyConfigured } = await import("@/lib/ai/openai-client");
+    const llm_runs = await enrichAnalysesWithLlm(analysisIds);
+
     let discovery: Record<string, unknown> | null = null;
     const autoDiscovery =
       (
@@ -108,7 +115,14 @@ export async function POST(req: Request) {
       discovery = runDiscoveryParallel({ actor: user.name, trigger: "PARALLEL_DETECTORS" });
     }
 
-    return NextResponse.json({ ok: true, results, discovery });
+    return NextResponse.json({
+      ok: true,
+      results,
+      discovery,
+      llm_runs,
+      llm_available: openaiKeyConfigured(),
+      llm_enabled: llmEnrichmentEnabled(),
+    });
   }
 
   if (action === "run_discovery") {

@@ -171,7 +171,7 @@ export async function POST(req: Request) {
   if (body.action === "dummy_spine") {
     try {
       const locale = await getUiLocale();
-      const result = runDummyAlertDemo({
+      const result = await runDummyAlertDemo({
         mode: body.mode === "group" ? "group" : "single",
         locale,
       });
@@ -180,6 +180,8 @@ export async function POST(req: Request) {
         mode: result.mode,
         highlight_stages: result.highlight_stages,
         errors: result.errors,
+        llm_available: openaiKeyConfigured(),
+        llm_enabled: llmEnrichmentEnabled(),
         runs: result.runs.map((r) => ({
           key: r.key,
           alert_id: r.alert_id,

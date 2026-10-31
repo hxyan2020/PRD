@@ -44,5 +44,17 @@ export async function POST(req: Request) {
     raiseAlarms: body.raiseAlarms !== false,
     actor: user.name,
   });
-  return NextResponse.json({ ok: true, results });
+  const analysisIds = results
+    .map((r) => r.analysis_id)
+    .filter((id): id is number => typeof id === "number" && id > 0);
+  const { enrichAnalysesWithLlm } = await import("@/lib/ai/llm-enrich");
+  const { llmEnrichmentEnabled, openaiKeyConfigured } = await import("@/lib/ai/openai-client");
+  const llm_runs = await enrichAnalysesWithLlm(analysisIds);
+  return NextResponse.json({
+    ok: true,
+    results,
+    llm_runs,
+    llm_available: openaiKeyConfigured(),
+    llm_enabled: llmEnrichmentEnabled(),
+  });
 }
