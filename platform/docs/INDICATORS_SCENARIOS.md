@@ -21,11 +21,21 @@ Seed SQL explorer: `/admin/docs/simulated-data`
 
 1. **Monitor 2.0** — inspect `M2-LP-022` / `M2-FEED-003`
 2. **Open Alerts** — live queue + AI RCA (`analyze_alert` may enrich via OpenAI when `OPENAI_API_KEY` is set)
-3. **Indicator Aggregation** — L1 → L2 wait window
-4. **Monitor labs → L2→RCA** — HTML walkthrough
+3. **Indicator Aggregation** — L1 → L2 wait window (seed prefers forex pack monitors)
+4. **Monitor labs → L2→RCA / Noise** — HTML walkthroughs on the same book
 5. **AI Incident Workspace** — INC-1028 Static/Dynamic report
 6. **Ops Inbox** — Messenger thread `THR-INC-1028`
 7. **Closed Risk Log** — after close
+
+Home dummy spine, discovery spikes, aggregation seeds, and lab chrome all import `lib/demo/forex-incident-1028.ts`.
+
+### Companion cases (same CFD book)
+
+| Id | Story | Monitors |
+|----|--------|----------|
+| LP-HEDGE-GAP | LP reject storm → hedge coverage gap | `M2-LP-022`, `M2-HEDGE-007` |
+| XAU-WEEKEND | XAUUSD247 weekend exposure build-up | `M2-XAU-247`, `M2-HEDGE-007`, `M2-LP-022` |
+| STALE-FEED-LIQ | Stale feed → liquidation / credit contagion | `M2-FEED-003`, `M2-MRG-014`, `M2-EQ-001` |
 
 ### BU lens
 

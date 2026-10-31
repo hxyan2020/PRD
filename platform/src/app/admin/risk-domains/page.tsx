@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { DeptBadge, Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { MonitorCode } from "@/components/MonitorCode";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { T } from "@/components/T";
 import { Phrase } from "@/components/Phrase";
 import { EnZh } from "@/components/EnZh";
@@ -367,6 +368,9 @@ export default function RiskDomainsPage() {
   return (
     <div>
       <AdminPageHeader pageKey="risk-domains" />
+      <div className="mb-4">
+        <ForexDeskPackLinks mode="banner" />
+      </div>
       <Legend />
       <div className="grid lg:grid-cols-2 gap-4">
         <Sphere

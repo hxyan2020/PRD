@@ -12,26 +12,30 @@ import {
   Sparkles,
 } from "lucide-react";
 import { EnZh } from "@/components/EnZh";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
+import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
+
+const fx = FOREX_INCIDENT_1028;
 
 const STEPS = [
   {
-    href: "/admin/monitor-2",
+    href: `/admin/monitor-2?monitor_id=${fx.primary_monitor_id}`,
     icon: Activity,
     en: "Monitor 2.0",
     zh: "Monitor 2.0",
-    hintEn: "Indicators + detectors",
-    hintZh: "指標＋偵測器",
+    hintEn: `${fx.primary_monitor_id} · ${fx.symbol}`,
+    hintZh: `${fx.primary_monitor_id} · ${fx.symbol}`,
   },
   {
-    href: "/admin/alerts",
+    href: `/admin/alerts?monitor_id=${fx.primary_monitor_id}`,
     icon: Bell,
     en: "Open Alerts",
     zh: "未結警報",
-    hintEn: "Live queue + AI RCA",
-    hintZh: "未結佇列＋AI 根因",
+    hintEn: `Queue · ${fx.incident_id}`,
+    hintZh: `佇列 · ${fx.incident_id}`,
   },
   {
-    href: "/admin/discovery",
+    href: fx.discovery_path,
     icon: Compass,
     en: "Discovery",
     zh: "未知風險",
@@ -128,12 +132,9 @@ export function HomeDeskFlowStrip() {
           );
         })}
       </div>
-      <p className="text-[11px] text-[var(--muted)] mt-3">
-        <EnZh
-          en="Threshold full-flow demo stays on Monitor 2.0. Live L1→L2 aggregation stays on Indicator Aggregation."
-          zh="門檻全流程演示留在 Monitor 2.0。即時 L1→L2 聚合留在指標聚合頁。"
-        />
-      </p>
+      <div className="mt-3">
+        <ForexDeskPackLinks mode="banner" />
+      </div>
     </section>
   );
 }

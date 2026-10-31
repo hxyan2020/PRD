@@ -12,6 +12,7 @@ import { getDb, writeAudit } from "@/lib/db";
 import { LINKED_SCENARIOS } from "@/lib/ai/risk-scenarios-catalog";
 import { listLinkedScenarios, seedSkillsIfEmpty } from "@/lib/ai/skills";
 import type { LinkedScenario, TimelineEvent } from "@/lib/ai/scenario-types";
+import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 import {
   LINEAR_AGGREGATION_STEPS,
   POST_L2_FLOW_STAGES,
@@ -554,9 +555,19 @@ export function seedAggregationDemosIfEmpty(db: Database.Database = getDb()) {
   const existing = loadSessions(db);
   if (existing.length > 0) return existing;
 
+  // Prefer the shared forex CFD pack chain (INC-1028 monitors) when present.
+  const fxMonitors = new Set<string>(FOREX_INCIDENT_1028.monitors as readonly string[]);
   const defs = listAggregateDefinitions(db);
-  const chain = defs.find((d) => d.member_monitors.length >= 2) || defs[0];
+  const forexChain =
+    defs.find((d) => d.member_monitors.filter((m) => fxMonitors.has(m)).length >= 2) ||
+    defs.find((d) => d.member_monitors.includes(FOREX_INCIDENT_1028.primary_monitor_id)) ||
+    defs.find((d) => d.member_monitors.includes("M2-FEED-003"));
+  const chain = forexChain || defs.find((d) => d.member_monitors.length >= 2) || defs[0];
   const orphanMonitor = "M2-ORPHAN-999";
+  const trigger =
+    chain?.member_monitors.find((m) => fxMonitors.has(m)) ||
+    chain?.member_monitors[0] ||
+    FOREX_INCIDENT_1028.primary_monitor_id;
 
   // Path A: not in any aggregate
   const a = startAggregationSession({
@@ -568,7 +579,7 @@ export function seedAggregationDemosIfEmpty(db: Database.Database = getDb()) {
 
   // Path B: in aggregate, window times out
   const b = startAggregationSession({
-    trigger_monitor: chain?.member_monitors[0] || "M2-COPY-009",
+    trigger_monitor: trigger,
     trigger_severity: "BREACH",
     actor: { id: null, name: "seed" },
     db,
@@ -577,15 +588,18 @@ export function seedAggregationDemosIfEmpty(db: Database.Database = getDb()) {
     closeWaitWindowAsSingle({ session_id: b.session_id, actor: { id: null, name: "seed" }, db });
   }
 
-  // Path C: in aggregate, related fires → RO aggregate
+  // Path C: in aggregate, related fires → RO aggregate (prefer forex companion monitor)
   const c = startAggregationSession({
-    trigger_monitor: chain?.member_monitors[0] || "M2-COPY-009",
+    trigger_monitor: trigger,
     trigger_severity: "BREACH",
     actor: { id: null, name: "seed" },
     db,
   });
   const related =
-    chain?.member_monitors.find((m) => m !== c.trigger_monitor) || chain?.member_monitors[1];
+    chain?.member_monitors.find((m) => m !== c.trigger_monitor && fxMonitors.has(m)) ||
+    chain?.member_monitors.find((m) => m !== c.trigger_monitor) ||
+    chain?.member_monitors[1] ||
+    "M2-FEED-003";
   if (c.step === "CORRELATED_WAIT" && related) {
     injectRelatedAlert({
       session_id: c.session_id,

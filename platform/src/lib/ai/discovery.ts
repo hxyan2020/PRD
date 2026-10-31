@@ -89,13 +89,18 @@ function sampleFeatureWindow(db: ReturnType<typeof getDb>) {
       const base = r.last_value ?? 0;
       const noise = (Math.sin(i / 3 + r.monitor_id.length) + Math.random() - 0.4) * Math.max(0.5, Math.abs(base) * 0.04);
       // Inject a late-window spike on a few series so discovery finds something in demo.
+      // Prefer the shared forex CFD pack monitors (INC-1028 book) so discovery
+      // and desk demos stay on the same use-case set each scan.
+      const forexPack = new Set(["M2-LP-022", "M2-FEED-003", "M2-XAU-247", "M2-HEDGE-007"]);
       const spike =
         i >= 40 &&
-        (r.monitor_id.includes("LP") ||
+        (forexPack.has(r.monitor_id) ||
+          r.monitor_id.includes("LP") ||
           r.monitor_id.includes("HEDGE") ||
           r.monitor_id.includes("MRG") ||
           r.monitor_id.includes("FEED"))
-          ? Math.abs(base) * 0.22 + (r.threshold_warn ?? 1) * 0.15
+          ? Math.abs(base) * (forexPack.has(r.monitor_id) ? 0.28 : 0.22) +
+            (r.threshold_warn ?? 1) * (forexPack.has(r.monitor_id) ? 0.2 : 0.15)
           : 0;
       point[r.monitor_id] = Math.round((base + noise + spike) * 1000) / 1000;
     }

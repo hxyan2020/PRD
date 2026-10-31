@@ -5,9 +5,11 @@ import Link from "next/link";
 import { FileSearch, Filter, GitMerge } from "lucide-react";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { EnZh } from "@/components/EnZh";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { DiscoveryL2RcaLab } from "@/components/DiscoveryL2RcaLab";
 import { AiIncidentWorkspace } from "@/components/AiIncidentWorkspace";
 import { NoiseReductionLab } from "@/components/NoiseReductionLab";
+import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 
 export type MonitorLabTab = "l2-rca" | "ai-incident" | "noise-reduction";
 
@@ -22,9 +24,9 @@ const TABS: Array<{
   {
     id: "ai-incident",
     icon: FileSearch,
-    en: "AI Incident (INC-1028)",
-    zh: "AI 事故（INC-1028）",
-    href: "/admin/ai-incident",
+    en: `AI Incident (${FOREX_INCIDENT_1028.incident_id})`,
+    zh: `AI 事故（${FOREX_INCIDENT_1028.incident_id}）`,
+    href: FOREX_INCIDENT_1028.workspace_path,
   },
   {
     id: "noise-reduction",
@@ -61,10 +63,11 @@ export function MonitorLabsBoard({ initialTab }: { initialTab?: MonitorLabTab })
 
   return (
     <div className="space-y-4">
+      <ForexDeskPackLinks mode="banner" />
       <div className="panel p-3 sm:p-4 text-sm border-amber-200 bg-amber-50/70 text-amber-950">
         <EnZh
-          en="HTML end-to-end labs (demo data only). Production desk path stays Monitor 2.0 → Open Alerts → Messenger / Interventions → Closed Risk Log. Deep links to each lab URL still work."
-          zh="HTML 端到端實驗室（僅示範資料）。正式台面路徑仍是 Monitor 2.0 → 未結警報 → Messenger／人工干預 → 已結風險日誌。各實驗室舊網址仍可用。"
+          en={`HTML labs for the shared forex CFD pack (${FOREX_INCIDENT_1028.incident_id}). Live desk path stays Monitor 2.0 → Open Alerts → Messenger → Closed Risk Log.`}
+          zh={`共用外匯 CFD 組合（${FOREX_INCIDENT_1028.incident_id}）的 HTML 實驗室。正式台面路徑仍是 Monitor 2.0 → 未結警報 → Messenger → 已結風險日誌。`}
         />
       </div>
 

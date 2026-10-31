@@ -165,15 +165,21 @@ export function IndicatorsScenariosBoard({
           <div className="grid sm:grid-cols-3 gap-2 text-xs">
             <div className="panel p-2 bg-white">
               <div className="font-semibold">Admin</div>
-              <p className="text-[var(--muted)] mt-1">{forex.bu_roles.admin}</p>
+              <p className="text-[var(--muted)] mt-1">
+                {zh ? forex.bu_roles.admin.zh : forex.bu_roles.admin.en}
+              </p>
             </div>
             <div className="panel p-2 bg-white">
               <div className="font-semibold">Pricing</div>
-              <p className="text-[var(--muted)] mt-1">{forex.bu_roles.pricing}</p>
+              <p className="text-[var(--muted)] mt-1">
+                {zh ? forex.bu_roles.pricing.zh : forex.bu_roles.pricing.en}
+              </p>
             </div>
             <div className="panel p-2 bg-white">
               <div className="font-semibold">Dealing</div>
-              <p className="text-[var(--muted)] mt-1">{forex.bu_roles.dealing}</p>
+              <p className="text-[var(--muted)] mt-1">
+                {zh ? forex.bu_roles.dealing.zh : forex.bu_roles.dealing.en}
+              </p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">

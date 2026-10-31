@@ -716,11 +716,14 @@ function relinkMessengerToAnalyses(db: Database.Database) {
     } catch {
       probeMeta = {};
     }
-    /** Keep the bilingual AI Incident Workspace entry for INC-1028. */
-    if (probeMeta.incident_id === "INC-1028" || probeMeta.workspace_url === "/admin/ai-incident") {
+    /** Keep the bilingual AI Incident Workspace entry for the shared forex pack. */
+    if (
+      probeMeta.incident_id === FOREX_INCIDENT_1028.incident_id ||
+      probeMeta.workspace_url === FOREX_INCIDENT_1028.workspace_path
+    ) {
       const mid =
         (typeof probeMeta.monitor_id === "string" && probeMeta.monitor_id) ||
-        resolveThreadMonitorId(db, thread.id, "M2-LP-022");
+        resolveThreadMonitorId(db, thread.id, FOREX_INCIDENT_1028.primary_monitor_id);
       const m2 = aiReportMonitorMeta(mid);
       const msgs = db
         .prepare(`SELECT id, meta_json FROM messenger_messages WHERE thread_id = ? AND kind = 'AI_REPORT'`)
@@ -733,9 +736,10 @@ function relinkMessengerToAnalyses(db: Database.Database) {
           meta = {};
         }
         Object.assign(meta, m2, {
-          incident_id: "INC-1028",
-          workspace_url: "/admin/ai-incident",
-          admin_url: "/admin/ai-incident",
+          incident_id: FOREX_INCIDENT_1028.incident_id,
+          workspace_url: FOREX_INCIDENT_1028.workspace_path,
+          admin_url: FOREX_INCIDENT_1028.workspace_path,
+          monitors: FOREX_INCIDENT_1028.monitors,
         });
         db.prepare(`UPDATE messenger_messages SET meta_json = ? WHERE id = ?`).run(JSON.stringify(meta), msg.id);
       }

@@ -56,17 +56,24 @@ export function monitor2DeepLinks(monitorId?: string | null): MonitorDeepLink[] 
     en: "L2 → AI RCA Lab (Discovery→L2→RCA)",
     zh: "L2 → AI RCA 實驗室（發現→L2→RCA）",
   });
+  // Lazy import avoided — keep static strings aligned with forex pack IDs.
   links.push({
     id: "ai_incident",
     href: "/admin/ai-incident",
-    en: "AI Incident Workspace (INC-1028 demo)",
-    zh: "AI 事故工作台（INC-1028 演示）",
+    en: "AI Incident Workspace (INC-1028 · LP-A · XAUUSD)",
+    zh: "AI 事故工作台（INC-1028 · LP-A · XAUUSD）",
   });
   links.push({
     id: "noise_reduction",
-    href: "/admin/noise-reduction",
-    en: "Noise Reduction Lab (E2E demo)",
-    zh: "降噪實驗室（端到端演示）",
+    href: "/admin/monitor-labs?tab=noise-reduction",
+    en: "Noise Reduction Lab (same forex book)",
+    zh: "降噪實驗室（同一外匯帳簿）",
+  });
+  links.push({
+    id: "messenger_inc",
+    href: "/admin/messenger",
+    en: "Ops Inbox (INC-1028 thread)",
+    zh: "值班收件匣（INC-1028 執行緒）",
   });
   return links;
 }

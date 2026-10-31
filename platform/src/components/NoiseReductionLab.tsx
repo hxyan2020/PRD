@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react";
 import { AdminLink } from "@/components/AdminLink";
 import { EnZh } from "@/components/EnZh";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { useUiLocale } from "@/hooks/useUiLocale";
+import { FOREX_INCIDENT_1028, forexIncidentChip } from "@/lib/demo/forex-incident-1028";
 import { publicBasePath } from "@/lib/static-export";
 
 /**
@@ -13,6 +15,7 @@ import { publicBasePath } from "@/lib/static-export";
 export function NoiseReductionLab() {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
+  const fx = FOREX_INCIDENT_1028;
   const [surfaceHint, setSurfaceHint] = useState<"embedded" | "blank">("embedded");
 
   const prototypeSrc = useMemo(() => {
@@ -23,16 +26,17 @@ export function NoiseReductionLab() {
 
   return (
     <div className="space-y-4" data-testid="noise-reduction-lab">
+      <ForexDeskPackLinks mode="compact" />
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
-              Monitor 2.0 · Noise Reduction
+              Monitor 2.0 · Noise Reduction · {forexIncidentChip(locale)}
             </div>
             <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh
-                en="Interactive end-to-end lab from Monitor2_Noise_Reduction_End_to_End_Demo — six scenarios (cross-BU L2, spike, dedup, benign, unknown, P0 bypass), knobs for threshold / persistence / L2 score / window, AI evidence + human feedback → backtest / shadow / approve. Demo data only."
-                zh="來自 Monitor2_Noise_Reduction_End_to_End_Demo 的端到端降噪實驗室 — 六場景（跨 BU L2、尖峰、去重、良性、未知、P0 旁路）、閾值／Persistence／L2 分數／視窗旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准。僅示範資料。"
+                en={`Interactive end-to-end lab — six scenarios, knobs for threshold / persistence / L2 score / window, AI evidence + human feedback. Tuned against the same ${fx.symbol} / LP book as ${fx.incident_id}. Demo data only.`}
+                zh={`端到端降噪實驗室 — 六場景、閾值／Persistence／L2 分數／視窗旋鈕、AI 證據＋人工回饋。與 ${fx.incident_id} 同一 ${fx.symbol}／LP 帳簿。僅示範資料。`}
               />
             </p>
           </div>
@@ -40,13 +44,17 @@ export function NoiseReductionLab() {
             <a className="btn" href={prototypeSrc} target="_blank" rel="noreferrer" data-testid="noise-open-blank">
               <EnZh en="Open full-page demo" zh="開全頁演示" />
             </a>
-            <AdminLink className="btn" href="/admin/monitor-2" data-testid="noise-open-monitor">
+            <AdminLink
+              className="btn"
+              href={`/admin/monitor-2?monitor_id=${fx.primary_monitor_id}`}
+              data-testid="noise-open-monitor"
+            >
               <EnZh en="Monitor 2.0" zh="Monitor 2.0" />
             </AdminLink>
-            <AdminLink className="btn" href="/admin/indicator-aggregation">
+            <AdminLink className="btn" href={fx.aggregation_path}>
               <EnZh en="L1→L2 board" zh="L1→L2 聚合台" />
             </AdminLink>
-            <AdminLink className="btn" href="/admin/ai-incident">
+            <AdminLink className="btn" href={fx.workspace_path}>
               <EnZh en="AI Incident Workspace" zh="AI 事故工作台" />
             </AdminLink>
           </div>

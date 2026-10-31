@@ -3,6 +3,7 @@ import { analyzeAlert, raiseMonitorAlarm } from "@/lib/ai/analyze";
 import { logSpineEvent, type SpineStage } from "@/lib/ai/spine";
 import { decideIntervention } from "@/lib/ai/intervention";
 import { messengerAction, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
+import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 import type { UiLocale } from "@/lib/i18n";
 
 export type DummySpineMode = "single" | "group";
@@ -18,39 +19,39 @@ export type DummyTemplate = {
   message: string;
 };
 
+const fx = FOREX_INCIDENT_1028;
+
+/** Forex CFD pack first so home dummy spine walks the same INC-1028 book. */
 export const DUMMY_SPINE_TEMPLATES: DummyTemplate[] = [
   {
-    key: "copy",
-    monitor_id: "M2-COPY-009",
+    key: "lp-quote",
+    monitor_id: fx.primary_monitor_id,
     severity: "BREACH",
-    observed_value: 33,
+    observed_value: 5.2,
     prefer_rag: false,
-    action_code: "PAUSE_COPY",
-    title: "DUMMY · Copy concentration breach",
-    message:
-      "Home dummy: top signal provider now at 33% of copy equity after a viral strategy share. Walk the full spine to closure.",
+    action_code: "DISABLE_LP",
+    title: `DUMMY · ${fx.incident_id} LP reject / quote delay`,
+    message: `Home dummy: ${fx.lp} ${fx.symbol} reject rate / quote age rising — same book as ${fx.incident_id}. Walk DETECT→Messenger→close.`,
   },
   {
-    key: "eq",
-    monitor_id: "M2-EQ-001",
+    key: "feed-stale",
+    monitor_id: "M2-FEED-003",
     severity: "WARN",
-    observed_value: 3.8,
+    observed_value: 8,
     prefer_rag: true,
     action_code: "WIDEN_SPREAD",
-    title: "DUMMY · Equity drawdown warn",
-    message:
-      "Home dummy: company CFD book drawdown rising through the US session after CPI volatility. RAG path + human review.",
+    title: `DUMMY · ${fx.incident_id} stale quotes`,
+    message: `Home dummy: stale-quote symbols climbing on the ${fx.symbol} book (companion to ${fx.incident_id} FINAL_QUOTE_STALE). RAG path + human review.`,
   },
   {
-    key: "mrg",
-    monitor_id: "M2-MRG-014",
-    severity: "CRITICAL",
-    observed_value: 220,
+    key: "hedge-gap",
+    monitor_id: "M2-HEDGE-007",
+    severity: "BREACH",
+    observed_value: 68,
     prefer_rag: false,
-    action_code: "CUT_LEVERAGE",
-    title: "DUMMY · Margin utilisation CRITICAL",
-    message:
-      "Home dummy: book-wide margin utilisation spiked and LP rejects are rising. Dual-AI RCA and maker/checker required.",
+    action_code: "INCREASE_ABOOK",
+    title: `DUMMY · ${fx.incident_id} hedge coverage gap`,
+    message: `Home dummy: hedge coverage slipped while LP rejects rise — companion CHAIN-LP-HEDGE-GAP on the same CFD book as ${fx.incident_id}.`,
   },
 ];
 
