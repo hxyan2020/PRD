@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
+import { BrandMark } from "../components/BrandMark";
 import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
 import { loadCollection } from "../lib/collection";
@@ -298,8 +299,6 @@ export function GuidePage() {
           ?.quickReplies ?? []
       : [];
 
-  const logoSrc = `${import.meta.env.BASE_URL}logo-cat.png`;
-
   return (
     <>
       <section className="section chat-page">
@@ -308,7 +307,7 @@ export function GuidePage() {
             <header className="chat-app-header">
               <div className="chat-app-identity">
                 <span className="chat-avatar" aria-hidden="true">
-                  <img src={logoSrc} alt="" width={44} height={44} />
+                  <BrandMark size={44} />
                   <span className="chat-online-dot" />
                 </span>
                 <div className="chat-app-titles">
@@ -324,7 +323,7 @@ export function GuidePage() {
                 <div key={m.id} className={`chat-row chat-row-${m.role}`}>
                   {m.role === "assistant" ? (
                     <span className="chat-avatar chat-avatar-sm" aria-hidden="true">
-                      <img src={logoSrc} alt="" width={32} height={32} />
+                      <BrandMark size={32} />
                     </span>
                   ) : null}
                   <div className={`chat-bubble chat-${m.role}`}>
@@ -341,7 +340,7 @@ export function GuidePage() {
               {status === "thinking" ? (
                 <div className="chat-row chat-row-assistant">
                   <span className="chat-avatar chat-avatar-sm" aria-hidden="true">
-                    <img src={logoSrc} alt="" width={32} height={32} />
+                    <BrandMark size={32} />
                   </span>
                   <div
                     className="chat-think"
@@ -379,7 +378,7 @@ export function GuidePage() {
               {status === "typing" && typingMsg ? (
                 <div className="chat-row chat-row-assistant">
                   <span className="chat-avatar chat-avatar-sm" aria-hidden="true">
-                    <img src={logoSrc} alt="" width={32} height={32} />
+                    <BrandMark size={32} />
                   </span>
                   <div className="chat-bubble chat-assistant chat-bubble-typing">
                     <div className="chat-bubble-meta">{t("guide.botName")}</div>

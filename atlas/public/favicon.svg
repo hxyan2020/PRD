@@ -1,18 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="12" fill="#0a0a0a"/>
-  <path
-    fill="#BC0234"
-    d="M20 6 H29 V16 H35 V6 H44
-       C52 10 57 20 57 32
-       C57 48 46 58 32 58
-       C18 58 7 48 7 32
-       C7 20 12 10 20 6 Z"
-  />
-  <rect x="16" y="28" width="12" height="4.5" rx="1" fill="#0a0a0a"/>
-  <rect x="19.75" y="24.25" width="4.5" height="12" rx="1" fill="#0a0a0a"/>
-  <circle cx="42" cy="25.5" r="2.6" fill="#0a0a0a"/>
-  <circle cx="37" cy="30.5" r="2.6" fill="#0a0a0a"/>
-  <circle cx="47" cy="30.5" r="2.6" fill="#0a0a0a"/>
-  <circle cx="42" cy="35.5" r="2.6" fill="#0a0a0a"/>
-  <path d="M32 40 L36.5 47 L27.5 47 Z" fill="#0a0a0a"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Ludus Atlas">
+  <!-- Same mark as logo.svg / logo-cat.png — black tile for browser tabs -->
+  <rect width="64" height="64" fill="#0a0a0a"/>
+  <path fill="#BC0234" d="M17.28 2.56 H26.88 V11.52 H37.12 V2.56 H46.72
+      C54.4 5.76 59.52 15.36 59.52 28.16
+      C59.52 46.08 48.0 60.16 32.0 60.16
+      C16.0 60.16 4.48 46.08 4.48 28.16
+      C4.48 15.36 9.6 5.76 17.28 2.56
+      Z"/>
+  <rect x="14.08" y="26.24" width="13.44" height="4.8" rx="0.8" fill="#0a0a0a"/>
+  <rect x="18.4" y="21.92" width="4.8" height="13.44" rx="0.8" fill="#0a0a0a"/>
+  <circle cx="42.88" cy="23.68" r="2.72" fill="#0a0a0a"/>
+  <circle cx="37.44" cy="29.12" r="2.72" fill="#0a0a0a"/>
+  <circle cx="48.32" cy="29.12" r="2.72" fill="#0a0a0a"/>
+  <circle cx="42.88" cy="34.56" r="2.72" fill="#0a0a0a"/>
+  <path d="M32.0 40.32 L37.12 48.0 L26.88 48.0 Z" fill="#0a0a0a"/>
 </svg>

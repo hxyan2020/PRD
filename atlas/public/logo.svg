@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" role="img" aria-label="Ludus Atlas">
-  <!-- Flat-topped cat/controller head matching the brand mark -->
+  <!-- Website logo: flat-topped cat / controller head (source for favicon.svg) -->
+  <rect width="200" height="200" fill="#0a0a0a"/>
   <path
     fill="#BC0234"
     d="

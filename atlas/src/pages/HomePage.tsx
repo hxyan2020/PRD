@@ -10,6 +10,7 @@ import {
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
 import { dailyPickGames, todayKey } from "../lib/dailyRotate";
+import { BrandMark } from "../components/BrandMark";
 
 export function HomePage() {
   const [data, setData] = useState<CollectionData | null>(null);
@@ -51,14 +52,7 @@ export function HomePage() {
         <div className="hero-media" aria-hidden="true" />
         <div className="container hero-content">
           <p className="hero-brand">
-            <img
-              className="hero-brand-mark"
-              src={`${import.meta.env.BASE_URL}logo-cat.png`}
-              alt=""
-              width={72}
-              height={72}
-              aria-hidden="true"
-            />
+            <BrandMark className="hero-brand-mark" size={72} />
             <span className="hero-brand-wordmark">
               <span>Ludus</span>
               <span>Atlas</span>
