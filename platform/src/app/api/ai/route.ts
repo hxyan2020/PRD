@@ -63,7 +63,7 @@ export async function GET(req: Request) {
        LIMIT 100`
     )
     .all();
-  return NextResponse.json({ analyses });
+  return NextResponse.json({ analyses, ...llmMeta() });
 }
 
 export async function POST(req: Request) {
