@@ -2,11 +2,17 @@ import type { MenuProps } from 'antd';
 import {
   AlertOutlined,
   ApiOutlined,
+  AppstoreOutlined,
   DollarOutlined,
+  FileTextOutlined,
   FundOutlined,
+  LineChartOutlined,
   SafetyCertificateOutlined,
+  SettingOutlined,
+  ShoppingOutlined,
   TeamOutlined,
   ToolOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import type { AppLang } from '../i18n/locale';
 
@@ -278,9 +284,10 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
   const g = lang === 'zh' ? groupLabelsZh : groupLabelsEn;
 
   return [
-    { key: 'overview', label: p.overview },
+    { key: 'overview', icon: <AppstoreOutlined />, label: p.overview },
     {
       key: 'contract-manage',
+      icon: <FileTextOutlined />,
       label: g['contract-manage'],
       children: [
         { key: 'contract-list', label: p['contract-list'] },
@@ -293,6 +300,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'price-manage',
+      icon: <LineChartOutlined />,
       label: g['price-manage'],
       children: [
         { key: 'market-source', label: p['market-source'] },
@@ -304,6 +312,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'order-manage',
+      icon: <ShoppingOutlined />,
       label: g['order-manage'],
       children: [
         { key: 'position-list', label: p['position-list'] },
@@ -332,6 +341,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'user-manage',
+      icon: <UserOutlined />,
       label: g['user-manage'],
       children: [
         { key: 'user-asset', label: p['user-asset'] },
@@ -345,6 +355,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'contract-config',
+      icon: <SettingOutlined />,
       label: g['contract-config'],
       children: [
         { key: 'redis-key-manage', label: p['redis-key-manage'] },
@@ -356,7 +367,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'financial-manage',
-      icon: <DollarOutlined style={{ color: '#389e0d' }} />,
+      icon: <DollarOutlined />,
       label: g['financial-manage'],
       children: [
         { key: 'financial-report', label: p['financial-report'] },
@@ -368,7 +379,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'api-manage',
-      icon: <ApiOutlined style={{ color: '#13c2c2' }} />,
+      icon: <ApiOutlined />,
       label: g['api-manage'],
       children: [
         { key: 'api-open-list', label: p['api-open-list'] },
@@ -390,7 +401,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'risk-manage',
-      icon: <SafetyCertificateOutlined style={{ color: '#722ed1' }} />,
+      icon: <SafetyCertificateOutlined />,
       label: g['risk-manage'],
       children: [
         { key: 'funding-rate-modify', label: p['funding-rate-modify'] },
@@ -403,7 +414,7 @@ export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
     },
     {
       key: 'monitor-alert',
-      icon: <AlertOutlined style={{ color: '#fa8c16' }} />,
+      icon: <AlertOutlined />,
       label: g['monitor-alert'],
       children: [
         { key: 'spread-alert-monitor', label: p['spread-alert-monitor'] },
