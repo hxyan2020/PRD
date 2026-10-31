@@ -40,7 +40,7 @@ export default async function AlertsPage({
         }
       />
       <div className="mb-3">
-        <ForexDeskPackLinks mode="banner" />
+        <ForexDeskPackLinks mode="compact" />
       </div>
       <AlertTrackerBoard
         packs={packs}

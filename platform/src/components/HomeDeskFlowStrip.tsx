@@ -12,7 +12,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { EnZh } from "@/components/EnZh";
-import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 
 const fx = FOREX_INCIDENT_1028;
@@ -112,7 +111,7 @@ export function HomeDeskFlowStrip() {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2" data-testid="home-desk-flow-steps">
         {STEPS.map((s) => {
           const Icon = s.icon;
           return (
@@ -131,9 +130,6 @@ export function HomeDeskFlowStrip() {
             </Link>
           );
         })}
-      </div>
-      <div className="mt-3">
-        <ForexDeskPackLinks mode="banner" />
       </div>
     </section>
   );

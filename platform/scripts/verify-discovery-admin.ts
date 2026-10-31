@@ -22,15 +22,15 @@ assert.match(board, /discovery-llm-provider/);
 assert.match(board, /LlmProviderPicker|DeepSeek|Gemini|Claude/);
 assert.match(board, /discovery-suggestion-card/);
 assert.match(board, /RISK_DISCOVERY_NOTEBOOK/);
-assert.match(board, /discovery-notebook-colab/);
 assert.match(board, /discovery-notebook-html/);
-assert.match(board, /discovery-notebook-ipynb/);
-assert.match(board, /Open Jupyter \(Colab\)|開啟 Jupyter（Colab）/);
+assert.match(board, /Open notebook \(HTML\)|開啟筆記本（HTML）/);
 
 const page = read("src/app/admin/discovery/page.tsx");
 assert.match(page, /discovery-header-notebook-colab/);
+assert.match(page, /discovery-header-notebook-ipynb/);
 assert.match(page, /RISK_DISCOVERY_NOTEBOOK/);
 assert.match(page, /Jupyter notebook|Jupyter 筆記本/);
+assert.match(page, /SimSpinePackStrip/);
 
 const links = read("src/lib/ai/discovery-links.ts");
 assert.match(links, /colab\.research\.google\.com/);

@@ -510,15 +510,6 @@ export function DiscoverySuggestionBoard({
                 : "MOCK"}
             </Badge>
             <a
-              className="btn btn-primary !min-h-9 text-xs"
-              href={RISK_DISCOVERY_NOTEBOOK.colab}
-              target="_blank"
-              rel="noreferrer"
-              data-testid="discovery-notebook-colab"
-            >
-              <EnZh en="Open Jupyter (Colab)" zh="開啟 Jupyter（Colab）" />
-            </a>
-            <a
               className="btn !min-h-9 text-xs"
               href={RISK_DISCOVERY_NOTEBOOK.html}
               target="_blank"
@@ -526,15 +517,6 @@ export function DiscoverySuggestionBoard({
               data-testid="discovery-notebook-html"
             >
               <EnZh en="Open notebook (HTML)" zh="開啟筆記本（HTML）" />
-            </a>
-            <a
-              className="btn !min-h-9 text-xs"
-              href={RISK_DISCOVERY_NOTEBOOK.ipynb}
-              target="_blank"
-              rel="noreferrer"
-              data-testid="discovery-notebook-ipynb"
-            >
-              <EnZh en="Download .ipynb" zh="下載 .ipynb" />
             </a>
             <Link
               className="btn !min-h-9 text-xs"

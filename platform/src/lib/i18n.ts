@@ -117,8 +117,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   discovery: {
     title: { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
     subtitle: {
-      en: "Runs on simulated SQLite (INC-1028 forex book). Analyse uses ChatGPT / DeepSeek / Gemini / Claude when any API key is set (Connect optional); else MOCK with visible thinking. RO still gates promote.",
-      "zh-Hant": "在模擬 SQLite（INC-1028 外匯帳簿）上執行。設定 ChatGPT／DeepSeek／Gemini／Claude 任一金鑰時分析走真實 LLM（連線可選）；否則 MOCK 並顯示思考步驟。晉升仍需 RO 把關。",
+      en: "Unknown-risk candidates on simulated SQLite. Analyse uses the selected LLM when a key is set; else MOCK. RO still gates promote.",
+      "zh-Hant": "模擬 SQLite 上的未知風險候選。有金鑰時分析走所選 LLM；否則 MOCK。晉升仍需 RO 把關。",
     },
   },
   "indicator-aggregation": {
@@ -159,8 +159,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   alerts: {
     title: { en: "Open Alerts", "zh-Hant": "未結警報" },
     subtitle: {
-      en: "Open queue — includes forex pack ALT-INC-1028 (LP-A · XAUUSD) + companions. Expand for facts / AI RCA / improve / POC / action log. Closed → Risk Log.",
-      "zh-Hant": "未結佇列 — 含外匯組合 ALT-INC-1028（LP-A · XAUUSD）與伴隨案例。展開可看事實／AI 根因／改進／承辦／動作紀錄。已關閉 → 風險日誌。",
+      en: "Open queue — expand for facts / AI RCA / improve / POC / action log. Closed → Risk Log.",
+      "zh-Hant": "未結佇列 — 展開可看事實／AI 根因／改進／承辦／動作紀錄。已關閉 → 風險日誌。",
     },
   },
   "ai-analyses": {
@@ -222,8 +222,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   messenger: {
     title: { en: "Ops Inbox (Demo)", "zh-Hant": "值班收件匣（示範）" },
     subtitle: {
-      en: "Lark-style ops inbox — seeded THR-INC-1028 (LP-A · XAUUSD) plus synced alerts. Evidence, chatbot, escalate / dismiss / close, P0–P3 feedback. Channel registry under Lark channels.",
-      "zh-Hant": "Lark 風格值班收件匣 — 種子 THR-INC-1028（LP-A · XAUUSD）與同步警報。證據、聊天機器人、升級／排除／結案、P0–P3 回饋。頻道登錄在 Lark 頻道。",
+      en: "Lark-style ops inbox — evidence, chatbot, escalate / dismiss / close, P0–P3 feedback. Channel registry under Lark channels.",
+      "zh-Hant": "Lark 風格值班收件匣 — 證據、聊天機器人、升級／排除／結案、P0–P3 回饋。頻道登錄在 Lark 頻道。",
     },
   },
   "ai-access": {
@@ -236,8 +236,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "monitor-2": {
     title: { en: "Monitor 2.0 Integration Hub", "zh-Hant": "Monitor 2.0 整合中心" },
     subtitle: {
-      en: "Unified indicator + detector registry. Forex pack M2-LP-022 / FEED-003 / XAU-247 / HEDGE-007 seed in WARN/BREACH for INC-1028. Threshold flow demo above the table; open queue under Open Alerts.",
-      "zh-Hant": "統一指標與偵測器登錄。外匯組合 M2-LP-022／FEED-003／XAU-247／HEDGE-007 以 WARN／BREACH 種子對應 INC-1028。表格上方為門檻流程演示；未結佇列請至未結警報。",
+      en: "Unified indicator + detector registry. Threshold flow demo above the table; open queue under Open Alerts.",
+      "zh-Hant": "統一指標與偵測器登錄。表格上方為門檻流程演示；未結佇列請至未結警報。",
     },
   },
   lark: {

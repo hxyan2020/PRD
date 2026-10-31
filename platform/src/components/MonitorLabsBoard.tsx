@@ -72,7 +72,7 @@ export function MonitorLabsBoard({
 
   return (
     <div className="space-y-4">
-      <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} context="lab" />
+      <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} context="lab" showDeskLinks={false} />
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label={zh ? "監控實驗室" : "Monitor labs"}>
         {TABS.map((t) => {

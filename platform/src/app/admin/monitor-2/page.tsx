@@ -104,7 +104,7 @@ export default async function Monitor2Page({
       <AdminPageHeader pageKey="monitor-2" />
 
       <div className="mt-3 mb-3">
-        <ForexDeskPackLinks mode="banner" />
+        <ForexDeskPackLinks mode="compact" />
       </div>
 
       <ThresholdAdjustmentFlowDemo />

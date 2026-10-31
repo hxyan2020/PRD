@@ -369,7 +369,7 @@ export default function RiskDomainsPage() {
     <div>
       <AdminPageHeader pageKey="risk-domains" />
       <div className="mb-4">
-        <ForexDeskPackLinks mode="banner" />
+        <ForexDeskPackLinks mode="compact" />
       </div>
       <Legend />
       <div className="grid lg:grid-cols-2 gap-4">

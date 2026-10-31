@@ -32,7 +32,12 @@ export default async function IndicatorAggregationPage() {
   return (
     <div className="space-y-4">
       <AdminPageHeader pageKey="indicator-aggregation" />
-      <SimSpinePackStrip monitors={liveSpine.monitors} spine={liveSpine} context="compact" />
+      <SimSpinePackStrip
+        monitors={liveSpine.monitors}
+        spine={liveSpine}
+        context="compact"
+        showDeskLinks={false}
+      />
       <IndicatorAggregationBoard
         definitions={pack.definitions}
         initialSessions={pack.sessions}

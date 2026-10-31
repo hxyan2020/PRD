@@ -73,7 +73,12 @@ export default async function DiscoveryPage() {
         }
       />
       <div className="mb-3">
-        <SimSpinePackStrip monitors={liveSpine.monitors} spine={liveSpine} context="compact" />
+        <SimSpinePackStrip
+          monitors={liveSpine.monitors}
+          spine={liveSpine}
+          context="compact"
+          showDeskLinks={false}
+        />
       </div>
       <DiscoverySuggestionBoard
         initial={{
