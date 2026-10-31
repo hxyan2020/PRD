@@ -19,7 +19,11 @@ import {
   fileToNoteImageDataUrl,
   isAllowedImageMime,
 } from '../lib/noteImage'
-import { structuredClipboardHtml, tsvPlainTextToTableHtml } from '../lib/pasteIntoEditor'
+import {
+  plainTextListsToHtml,
+  structuredClipboardHtml,
+  tsvPlainTextToTableHtml,
+} from '../lib/pasteIntoEditor'
 import { clearHighlightInRange, highlightRange } from '../lib/rangeHighlight'
 import { useLanguage } from '../i18n/LanguageContext'
 import { NoteImageLightbox } from './NoteImageLightbox'
@@ -908,11 +912,13 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
             const html = e.clipboardData.getData('text/html') || ''
             const plain = (e.clipboardData.getData('text/plain') || '').replace(/\r\n?/g, '\n')
             const fromHtml = structuredClipboardHtml(html)
-            const fromTsv =
-              !fromHtml || !/<table[\s>]/i.test(fromHtml)
-                ? tsvPlainTextToTableHtml(plain)
-                : null
-            const rich = fromHtml && /<table[\s>]/i.test(fromHtml) ? fromHtml : fromTsv || fromHtml
+            const tableFromHtml = fromHtml && /<table[\s>]/i.test(fromHtml) ? fromHtml : null
+            const listFromHtml = fromHtml && /<(ul|ol)[\s>]/i.test(fromHtml) ? fromHtml : null
+            const tableFromTsv = tableFromHtml ? null : tsvPlainTextToTableHtml(plain)
+            const listFromPlain =
+              tableFromHtml || listFromHtml || tableFromTsv ? null : plainTextListsToHtml(plain)
+            const rich =
+              tableFromHtml || listFromHtml || tableFromTsv || listFromPlain || fromHtml
 
             if (rich) {
               insertHtmlAtSelection(rich, editorRef.current)
