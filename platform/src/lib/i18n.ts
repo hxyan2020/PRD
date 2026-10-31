@@ -10,16 +10,17 @@ type Pair = { en: string; "zh-Hant": string };
 const NAV_I18N: Record<string, Pair> = {
   "/admin": { en: "Admin Home", "zh-Hant": "管理首頁" },
   "/admin/dashboard": { en: "Daily Performance", "zh-Hant": "每日績效" },
-  "/admin/risk-log": { en: "Risk Log Analytics", "zh-Hant": "風險日誌分析" },
+  "/admin/risk-log": { en: "Closed Risk Log", "zh-Hant": "已結風險日誌" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
   "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
+  "/admin/monitor-labs": { en: "Monitor labs", "zh-Hant": "監控實驗室" },
   "/admin/l2-rca": { en: "L2 → AI RCA Lab", "zh-Hant": "L2 → AI RCA 實驗室" },
   "/admin/ai-incident": { en: "AI Incident Workspace", "zh-Hant": "AI 事故工作台" },
   "/admin/noise-reduction": { en: "Noise Reduction Lab", "zh-Hant": "降噪實驗室" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
-  "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
-  "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
+  "/admin/alerts": { en: "Open Alerts", "zh-Hant": "未結警報" },
+  "/admin/ai-analyses": { en: "Open Alerts", "zh-Hant": "未結警報" },
   "/admin/ai-admin": { en: "AI Admin", "zh-Hant": "AI 管理" },
   "/admin/ai-performance": { en: "AI Performance", "zh-Hant": "AI 績效" },
   "/admin/interventions": { en: "Human Intervention", "zh-Hant": "人工干預" },
@@ -34,9 +35,10 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/ecosystem": { en: "Ecosystem Eval", "zh-Hant": "生態導入評估" },
   "/admin/docs/roadmap": { en: "Improvement Roadmap", "zh-Hant": "改進路線圖" },
   "/admin/docs/urls": { en: "URL Catalog", "zh-Hant": "網址目錄" },
+  "/admin/docs/simulated-data": { en: "Simulated Data / SQL", "zh-Hant": "模擬資料／SQL" },
   "/admin/docs/open-issues": { en: "Open Issues", "zh-Hant": "開放議題" },
   "/admin/docs/progress": { en: "Progress Tracker", "zh-Hant": "進度追蹤" },
-  "/admin/messenger": { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
+  "/admin/messenger": { en: "Ops Inbox (Demo)", "zh-Hant": "值班收件匣（示範）" },
   "/admin/security/ai-access": { en: "AI Access Security", "zh-Hant": "AI 存取安全" },
   "/admin/departments": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
   "/admin/teams": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
@@ -45,7 +47,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/risk-domains": { en: "Risk Domains", "zh-Hant": "風險領域" },
   "/admin/data-sources": { en: "Data Sources", "zh-Hant": "資料來源" },
   "/admin/monitor-2": { en: "Monitor 2.0", "zh-Hant": "Monitor 2.0" },
-  "/admin/lark": { en: "Lark Integration", "zh-Hant": "Lark 整合" },
+  "/admin/lark": { en: "Lark channels (config)", "zh-Hant": "Lark 頻道（設定）" },
   "/admin/escalation": { en: "Escalation Routes", "zh-Hant": "升級路徑" },
   "/admin/audit": { en: "Audit Log", "zh-Hant": "稽核日誌" },
   "/admin/settings": { en: "Platform Settings", "zh-Hant": "平台設定" },
@@ -58,8 +60,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "管理儀表板",
     },
     subtitle: {
-      en: "Click any card to open its page — dummy spine buttons, counts, alerts, the messenger demo, and the rest of the desk.",
-      "zh-Hant": "點任何卡片即可開啟對應頁面 — 虛擬脊柱按鈕、計數、警報、Messenger 示範與其他功能。",
+      en: "Desk hub — stats, dummy spine walk, desk-flow shortcuts, and recent open alerts. Full demos live on their canonical pages.",
+      "zh-Hant": "台面中樞 — 統計、虛擬脊柱演練、流程捷徑與最近未結警報。完整演示在各自正式頁面。",
     },
   },
   login: {
@@ -77,10 +79,24 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   "risk-log": {
-    title: { en: "Risk Log & Alerts Analytics", "zh-Hant": "風險日誌與警報分析" },
+    title: { en: "Closed Risk Log", "zh-Hant": "已結風險日誌" },
     subtitle: {
-      en: "Closed tickets land here with the same tracker pack as Realtime Alert — ticket-closed status, AI analysis, AI/BU action logs, mandated solution — plus 90-day historical charts (backfilled), category, handling time, loss vs prevented, and loophole areas.",
-      "zh-Hant": "已關閉工單以與即時警報相同的追蹤包落地於此 — 工單已關閉狀態、AI 分析、AI／各 BU 動作紀錄、核定方案 — 另含 90 天歷史圖表（已回填）、類別、處理時間、損失 vs 防損與漏洞領域。",
+      en: "Closed tickets only — same tracker pack as Open Alerts (status, AI RCA, action logs, mandated solution) plus 90-day historical charts, handling time, loss vs prevented.",
+      "zh-Hant": "僅已關閉工單 — 與未結警報相同的追蹤包（狀態、AI 根因、動作紀錄、核定方案），另含 90 天歷史圖表、處理時間、損失 vs 防損。",
+    },
+  },
+  "monitor-labs": {
+    title: { en: "Monitor labs", "zh-Hant": "監控實驗室" },
+    subtitle: {
+      en: "One hub for HTML walkthroughs: L2→AI RCA, AI Incident (INC-1028), Noise Reduction. Demo data only — not the live desk queue.",
+      "zh-Hant": "HTML 演練集中處：L2→AI RCA、AI 事故（INC-1028）、降噪。僅示範資料 — 不是即時台面佇列。",
+    },
+  },
+  "simulated-data": {
+    title: { en: "Simulated Data / SQL", "zh-Hant": "模擬資料／SQL" },
+    subtitle: {
+      en: "Browse every seeded SQLite table and schema, then run your own read-only SQL against the CRMP demo database.",
+      "zh-Hant": "瀏覽所有種子 SQLite 資料表與結構，並對 CRMP 示範資料庫執行自訂唯讀 SQL。",
     },
   },
   "market-intel": {
@@ -133,17 +149,17 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   alerts: {
-    title: { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
+    title: { en: "Open Alerts", "zh-Hant": "未結警報" },
     subtitle: {
-      en: "Open queue only — includes AI pipeline controls (analyze open, simulate skill/RAG/CRITICAL, backfill 2nd AI). Expand a ticket for facts, AI RCA, improve review, POC and action log. Closed tickets live in Risk Log Analytics.",
-      "zh-Hant": "僅顯示未結佇列 — 含 AI 管線控制（分析未結、模擬技能／RAG／危急、補跑第二 AI）。展開工單可看事實、AI 根因、改進審查、承辦與動作紀錄。已關閉工單在風險日誌分析。",
+      en: "Open queue only — AI pipeline controls, expand for facts / AI RCA / improve / POC / action log. Closed tickets → Closed Risk Log.",
+      "zh-Hant": "僅未結佇列 — AI 管線控制，展開可看事實／AI 根因／改進／承辦／動作紀錄。已關閉工單 → 已結風險日誌。",
     },
   },
   "ai-analyses": {
     title: { en: "AI Analyses", "zh-Hant": "AI 分析" },
     subtitle: {
-      en: "List merged into Realtime Alert & Tracker. This URL redirects. Detail packs remain at /admin/ai-analyses/[id].",
-      "zh-Hant": "列表已合併到即時警報與追蹤。此網址會轉址。詳細證據包仍在 /admin/ai-analyses/[id]。",
+      en: "List merged into Open Alerts. This URL redirects. Detail packs remain at /admin/ai-analyses/[id].",
+      "zh-Hant": "列表已合併到未結警報。此網址會轉址。詳細證據包仍在 /admin/ai-analyses/[id]。",
     },
   },
   "ai-admin": {
@@ -196,10 +212,10 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   messenger: {
-    title: { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
+    title: { en: "Ops Inbox (Demo)", "zh-Hant": "值班收件匣（示範）" },
     subtitle: {
-      en: "Prototype Lark-style inbox: one case, split chat windows per POC on the escalation path — bird-eye relay from desk to desk, plus evidence, chatbot, escalate, dismiss, close, P0–P3 severity re-recommend (feeds monthly factor weights), and controls.",
-      "zh-Hant": "原型 Lark 風格收件匣：同一案件依升級路徑承辦拆成多個聊天窗 — 鳥瞰台面轉遞，並含證據、聊天機器人、升級、排除、結案、P0–P3 嚴重度重推薦（匯入每月因子權重）與控制動作。",
+      en: "Lark-style ops inbox demo: split chat windows per POC, evidence, chatbot, escalate / dismiss / close, P0–P3 severity feedback, and controls. Channel registry lives under Lark channels (config).",
+      "zh-Hant": "Lark 風格值班收件匣示範：依承辦拆窗、證據、聊天機器人、升級／排除／結案、P0–P3 嚴重度回饋與控制。頻道登錄在 Lark 頻道（設定）。",
     },
   },
   "ai-access": {
@@ -217,10 +233,10 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   lark: {
-    title: { en: "Lark Integration", "zh-Hant": "Lark 整合" },
+    title: { en: "Lark channels (config)", "zh-Hant": "Lark 頻道（設定）" },
     subtitle: {
-      en: "Company messenger for severity-routed escalations, on-call pages and dual-control approvals.",
-      "zh-Hant": "依嚴重度路由升級、值班叫應與雙重控制核准之企業即時通訊。",
+      en: "Channel registry and mock webhooks for severity-routed escalations — not the ops inbox (see Ops Inbox demo).",
+      "zh-Hant": "依嚴重度路由的頻道登錄與模擬 webhook — 不是值班收件匣（請見值班收件匣示範）。",
     },
   },
   escalation: {
@@ -289,8 +305,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   urls: {
     title: { en: "URL Catalog", "zh-Hant": "網址目錄" },
     subtitle: {
-      en: "Admin pages (incl. redirects: Detectors→Monitor 2.0, AI Analyses→Realtime Alert, Spine→Home, Teams→BU and Teams), APIs, SQLite path, and core DB tables.",
-      "zh-Hant": "管理頁（含轉址：偵測器→Monitor 2.0、AI 分析→即時警報與追蹤、脊柱→首頁、團隊→BU 與團隊）、API、SQLite 路徑與核心資料表。",
+      en: "Admin pages (incl. redirects), APIs, SQLite path, and table catalog. To browse rows and run SQL, open Simulated Data / SQL.",
+      "zh-Hant": "管理頁（含轉址）、API、SQLite 路徑與資料表目錄。要瀏覽列資料並執行 SQL，請開模擬資料／SQL。",
     },
   },
 };

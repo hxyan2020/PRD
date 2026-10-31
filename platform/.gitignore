@@ -44,6 +44,10 @@ next-env.d.ts
 /data/*.db
 /data/*.db-*
 
+# Generated for Docs → Simulated Data / SQL (see scripts/prepare-demo-db.sh)
+/public/data/
+/public/sql-wasm/
+
 # static export stashes
 /.api-stash-pages
 /.actions-stash-pages.ts

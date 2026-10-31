@@ -22,8 +22,7 @@ import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
 import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
 import { HomeDummyAlertButtons } from "@/components/HomeDummyAlertButtons";
-import { HomeL1L2AggregationDemo } from "@/components/HomeL1L2AggregationDemo";
-import { ThresholdAdjustmentFlowDemo } from "@/components/ThresholdAdjustmentFlowDemo";
+import { HomeDeskFlowStrip } from "@/components/HomeDeskFlowStrip";
 import { spineStageCounts } from "@/lib/ai/spine";
 import { FINISHED_AT, finishedAtLabel } from "@/lib/build-stamp";
 import { getUiLocale } from "@/lib/i18n-server";
@@ -207,8 +206,8 @@ export default async function AdminDashboardPage({
       href: "/admin/risk-log",
       labelEn: "RESOLVED",
       labelZh: "已解決",
-      detailEn: "Tickets closed in the last 24h — outcomes feed Risk Log Analytics.",
-      detailZh: "近 24 小時結案工單 — 結果進入風險日誌分析。",
+      detailEn: "Tickets closed in the last 24h — outcomes feed Closed Risk Log.",
+      detailZh: "近 24 小時結案工單 — 結果進入已結風險日誌。",
       count: closedTickets24h,
       countLabelEn: "tickets closed / 24h",
       countLabelZh: "24h 結案工單",
@@ -338,7 +337,7 @@ export default async function AdminDashboardPage({
           cta={openCta}
         />
         <StatCard
-          href="/admin/monitor-2"
+          href="/admin/alerts"
           icon={<Ticket aria-hidden />}
           label={<T k="home.stat.openTickets" />}
           value={counts.openTickets}
@@ -365,9 +364,7 @@ export default async function AdminDashboardPage({
 
       <HomeDummyAlertButtons />
 
-      <HomeL1L2AggregationDemo />
-
-      <ThresholdAdjustmentFlowDemo />
+      <HomeDeskFlowStrip />
 
       <section className="panel p-3 sm:p-4 min-w-0 mt-6">
         <div className="flex items-start justify-between gap-2">
