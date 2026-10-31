@@ -146,6 +146,11 @@ export async function pushVercelBackup(
     body: json,
   })
   if (!res.ok) {
+    if (res.status === 413) {
+      throw new Error(
+        'Notebook too large to sync (413). Sign in with username/password so large images upload separately.',
+      )
+    }
     let message = `Cloud upload failed (${res.status})`
     try {
       const body = (await res.json()) as { error?: string }

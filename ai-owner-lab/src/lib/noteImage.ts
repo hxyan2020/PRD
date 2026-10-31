@@ -98,8 +98,12 @@ function createProgressReporter(onProgress?: (pct: number) => void): {
   }
 }
 
-/** Prefer instant local embed for typical phone photos; Blob only when large / needed. */
-const BLOB_UPLOAD_MIN_BYTES = 3 * 1024 * 1024
+/**
+ * When signed in, prefer Blob for anything past a small thumbnail so the
+ * notebook JSON does not hit cloud-save HTTP 413 (4.5MB serverless body).
+ * Unsigned-in sessions still embed as data URLs.
+ */
+const BLOB_UPLOAD_MIN_BYTES = 64 * 1024
 
 /**
  * Store a notebook image at full resolution (no downscale / quality crush).
@@ -122,7 +126,7 @@ export async function fileToNoteImageDataUrl(
   const signedIn = Boolean(loadCachedAccountUser())
   const preferBlob = signedIn && file.size >= BLOB_UPLOAD_MIN_BYTES
 
-  // Signed-in large images: private Blob with live upload %.
+  // Signed-in images: private Blob with live upload % (keeps cloud notebook small).
   if (preferBlob) {
     try {
       const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {

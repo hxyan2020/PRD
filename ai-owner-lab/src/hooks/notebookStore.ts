@@ -47,6 +47,7 @@ import {
   type NotebookSnapshot,
 } from '../lib/notebookPersistence'
 import { parseAttachments, type NotebookAttachment } from '../lib/notebookAttachments'
+import { replaceLargeDataImagesInHtml } from '../lib/notebookCompactImages'
 import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
 const LS_ENTRIES = 'ownlab-notebook-v1'
@@ -713,6 +714,56 @@ function scheduleFolderBackup() {
 }
 
 /**
+ * Offload large inline data:image payloads to Blob before cloud push so the
+ * notebook JSON does not trip HTTP 413 (Vercel ~4.5MB body limit).
+ */
+async function compactInlineImagesForCloud(): Promise<void> {
+  if (!isAccountSyncReady()) return
+  const probe = buildBackupJson()
+  if (probe.length < 2_000_000 && !probe.includes('data:image')) return
+
+  let changed = false
+  const nextEntries: NotebookEntry[] = []
+  for (const entry of cache.entries) {
+    const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
+    if (body.replaced > 0) {
+      changed = true
+      nextEntries.push({
+        ...entry,
+        selectedText: body.html,
+        updatedAt: new Date().toISOString(),
+      })
+    } else {
+      nextEntries.push(entry)
+    }
+  }
+  const nextTrash: TrashedNotebookEntry[] = []
+  for (const entry of cache.trash) {
+    const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
+    if (body.replaced > 0) {
+      changed = true
+      nextTrash.push({ ...entry, selectedText: body.html })
+    } else {
+      nextTrash.push(entry)
+    }
+  }
+  if (!changed) return
+
+  await enqueueWrite(async () => {
+    const entries = sortEntries(nextEntries)
+    const trash = sortTrash(nextTrash)
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+    await persistKey(IDB_KEYS.entries, entries)
+    await persistKey(IDB_KEYS.trash, trash)
+    cache.entries = entries
+    cache.trash = trash
+    entryListeners.forEach((listener) => listener(entries))
+    trashListeners.forEach((listener) => listener(trash))
+    await saveSnapshot(cache.entries, cache.trash, cache.categories)
+  })
+}
+
+/**
  * Push notebook to cloud when sync is enabled.
  * Coalesces overlapping writes: if notes change mid-upload, run another push with
  * the latest cache (previously those notes were dropped and never uploaded).
@@ -737,6 +788,13 @@ async function flushCloudSync() {
           etag = pulled.etag
         } catch {
           /* push local anyway if pull fails (offline / rate limit) */
+        }
+        if (cloudPushDirty) continue
+
+        try {
+          await compactInlineImagesForCloud()
+        } catch {
+          /* still attempt push with current JSON */
         }
         if (cloudPushDirty) continue
 

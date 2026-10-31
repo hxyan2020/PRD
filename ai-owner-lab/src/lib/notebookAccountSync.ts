@@ -3,6 +3,7 @@
  * No cloud key / restore required once signed in.
  */
 
+import { upload } from '@vercel/blob/client'
 import { isVercelNotebookHost } from './notebookVercelSync'
 
 export { isVercelNotebookHost }
@@ -147,7 +148,10 @@ export async function pullAccountBackup(): Promise<AccountPullResult | null> {
   return { content, etag: res.headers.get('etag'), noteCount }
 }
 
-export async function pushAccountBackup(json: string): Promise<{ etag: string | null }> {
+/** Stay under Vercel serverless request body (~4.5MB); larger notebooks use Blob client. */
+const PUT_SAFE_CHARS = 3_200_000
+
+async function pushAccountBackupViaPut(json: string): Promise<{ etag: string | null }> {
   const res = await fetch(api('/api/notebook'), {
     method: 'PUT',
     credentials: 'include',
@@ -155,8 +159,45 @@ export async function pushAccountBackup(json: string): Promise<{ etag: string | 
     body: json,
   })
   if (res.status === 401) throw new Error('Sign in required')
+  if (res.status === 413) {
+    throw new Error('Notebook too large for direct save (413)')
+  }
   if (!res.ok) throw new Error(await readError(res))
   const body = (await res.json().catch(() => null)) as { etag?: string } | null
-  setLastAccountSyncAt()
   return { etag: body?.etag ?? res.headers.get('etag') }
+}
+
+/** Direct browser → Blob upload (no serverless body limit). */
+async function pushAccountBackupViaBlob(json: string): Promise<{ etag: string | null }> {
+  const username = loadCachedAccountUser()
+  if (!username) throw new Error('Sign in required')
+  const pathname = `ownlab-accounts/${username}/notebook.json`
+  const file = new File([json], 'notebook.json', {
+    type: 'application/json;charset=utf-8',
+  })
+  await upload(pathname, file, {
+    access: 'private',
+    handleUploadUrl: api('/api/blob/upload'),
+    multipart: file.size >= 8 * 1024 * 1024,
+    contentType: 'application/json;charset=utf-8',
+  })
+  return { etag: null }
+}
+
+export async function pushAccountBackup(json: string): Promise<{ etag: string | null }> {
+  try {
+    if (json.length <= PUT_SAFE_CHARS) {
+      const result = await pushAccountBackupViaPut(json)
+      setLastAccountSyncAt()
+      return result
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : ''
+    if (!/413|too large/i.test(message)) throw err
+    // Fall through to direct Blob upload.
+  }
+
+  const result = await pushAccountBackupViaBlob(json)
+  setLastAccountSyncAt()
+  return result
 }
