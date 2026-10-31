@@ -3962,6 +3962,20 @@ button.notebook-category-badge.on {
   transition: width 0.12s linear;
 }
 
+.rte-image-progress-fill.is-indeterminate {
+  width: 36% !important;
+  animation: rte-progress-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes rte-progress-pulse {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(280%);
+  }
+}
+
 .rte-u {
   text-decoration: underline;
   text-underline-offset: 2px;

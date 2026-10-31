@@ -3,6 +3,23 @@ import { notebookFileDownloadUrl, uploadNotebookFile } from './notebookAttachmen
 
 const ACCEPTED = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'])
 
+/** In-flight note image uploads — cloud sync waits so blob: previews are not pushed. */
+const pendingNoteImageUploads = new Set<Promise<unknown>>()
+
+export function trackNoteImageUpload<T>(promise: Promise<T>): Promise<T> {
+  pendingNoteImageUploads.add(promise)
+  void promise.finally(() => {
+    pendingNoteImageUploads.delete(promise)
+  })
+  return promise
+}
+
+export async function awaitPendingNoteImageUploads(): Promise<void> {
+  while (pendingNoteImageUploads.size > 0) {
+    await Promise.allSettled([...pendingNoteImageUploads])
+  }
+}
+
 export function isAllowedImageMime(type: string): boolean {
   return ACCEPTED.has(type.toLowerCase())
 }
@@ -41,6 +58,8 @@ export function isSafeImageSrc(src: string): boolean {
   }
   // Same-origin private Blob images (session cookie + redirect to signed URL).
   if (isBlobImageSrc(value)) return true
+  // Temporary optimistic previews while a full-res Blob upload finishes.
+  if (/^blob:/i.test(value)) return true
   return false
 }
 
@@ -142,6 +161,13 @@ export async function fileToNoteImageDataUrl(
   // Keep original bytes — never canvas-resize or recompress.
   // Small/medium photos stay local for snappy full-res insert.
   return blobToDataUrl(file, (pct) => progress.report(pct))
+}
+
+/**
+ * Instant local preview URL for optimistic insert (revoked by the caller after swap).
+ */
+export function createNoteImagePreviewUrl(file: Blob): string {
+  return URL.createObjectURL(file)
 }
 
 export function guessImageFilename(src: string, fallback = 'ownlab-image'): string {

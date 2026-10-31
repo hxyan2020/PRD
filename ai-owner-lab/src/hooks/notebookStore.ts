@@ -48,6 +48,7 @@ import {
 } from '../lib/notebookPersistence'
 import { parseAttachments, type NotebookAttachment } from '../lib/notebookAttachments'
 import { replaceLargeDataImagesInHtml } from '../lib/notebookCompactImages'
+import { awaitPendingNoteImageUploads } from '../lib/noteImage'
 import type { NotebookCategory, NotebookEntry, TrashedNotebookEntry } from './useNotebook'
 
 const LS_ENTRIES = 'ownlab-notebook-v1'
@@ -959,6 +960,14 @@ async function flushCloudSync() {
                 : 'Could not refresh cloud notebook before save',
             )
           }
+        }
+        if (cloudPushDirty) continue
+
+        // Wait for optimistic picture uploads so we never push blob: preview URLs.
+        try {
+          await awaitPendingNoteImageUploads()
+        } catch {
+          /* individual insert handlers already surfaced errors */
         }
         if (cloudPushDirty) continue
 
