@@ -115,31 +115,36 @@ export interface MarketSourceRecord {
   key: string;
   marketName: string;
   displayName: string;
-  spreadMonitoring: string;
+  spreadMonitoring: boolean;
   description: string;
   observationPeriodSec: number;
-  updateCycleSec: number;
+  /** 重新启用 (秒) — matches production column label */
+  reEnableSec: number;
+  marketUrl: string;
+  volumeUrl: string;
+  positiveFundingUrl: string;
+  inverseFundingUrl: string;
   enabled: boolean;
 }
 
 export const marketSourceList: MarketSourceRecord[] = [
-  { key: '1', marketName: 'BINANCE', displayName: 'BINANCE', spreadMonitoring: '是', description: 'BINANCE现货成交价订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '2', marketName: 'OKEX', displayName: 'OKX', spreadMonitoring: '是', description: 'OKEX现货成交价订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '3', marketName: 'BITGET', displayName: 'BITGET', spreadMonitoring: '是', description: 'BITGET现货成交价订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '4', marketName: 'BYBIT', displayName: 'BYBIT', spreadMonitoring: '是', description: 'BYBIT现货成交价订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '5', marketName: 'BINANCE_INDEX', displayName: 'BINANCE_INDEX', spreadMonitoring: '否', description: 'BINANCE指数价格订阅', observationPeriodSec: 120, updateCycleSec: 30, enabled: true },
-  { key: '6', marketName: 'OKEX_INDEX', displayName: 'OKEX_INDEX', spreadMonitoring: '否', description: 'OKEX指数价格订阅', observationPeriodSec: 120, updateCycleSec: 30, enabled: true },
-  { key: '7', marketName: 'BYBIT_INDEX', displayName: 'BYBIT_INDEX', spreadMonitoring: '否', description: 'BYBIT指数价格订阅', observationPeriodSec: 120, updateCycleSec: 30, enabled: true },
-  { key: '8', marketName: 'BITGET_INDEX', displayName: 'BITGET_INDEX', spreadMonitoring: '否', description: 'BITGET指数价格订阅', observationPeriodSec: 120, updateCycleSec: 30, enabled: true },
-  { key: '9', marketName: 'GATEIO_INDEX', displayName: 'GATEIO_INDEX', spreadMonitoring: '否', description: 'GATEIO指数价格订阅', observationPeriodSec: 120, updateCycleSec: 30, enabled: true },
-  { key: '10', marketName: 'LMAX', displayName: 'LMAX', spreadMonitoring: '是', description: 'LMAX贵金属行情订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '11', marketName: 'ISPRIME', displayName: 'ISPRIME', spreadMonitoring: '是', description: 'ISPRIME贵金属行情订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '12', marketName: 'STARPRIME', displayName: 'STARPRIME', spreadMonitoring: '是', description: 'STARPRIME贵金属行情订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '13', marketName: 'VELOCITY', displayName: 'VELOCITY', spreadMonitoring: '是', description: 'VELOCITY贵金属行情订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '14', marketName: 'RC_INDEX', displayName: 'RC_INDEX', spreadMonitoring: '否', description: 'RC指数价格订阅', observationPeriodSec: 120, updateCycleSec: 30, enabled: true },
-  { key: '15', marketName: 'GATEIO', displayName: 'GATEIO', spreadMonitoring: '是', description: 'GATEIO现货成交价订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '16', marketName: 'HUOBI', displayName: 'HUOBI', spreadMonitoring: '是', description: 'HUOBI现货成交价订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
-  { key: '17', marketName: 'KUCOIN', displayName: 'KUCOIN', spreadMonitoring: '是', description: 'KUCOIN现货成交价订阅', observationPeriodSec: 120, updateCycleSec: 120, enabled: true },
+  { key: '1', marketName: 'BINANCE', displayName: 'BINANCE', spreadMonitoring: true, description: 'BINANCE现货成交价订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '2', marketName: 'OKEX', displayName: 'OKX', spreadMonitoring: true, description: 'OKEX现货成交价订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '3', marketName: 'BITGET', displayName: 'BITGET', spreadMonitoring: true, description: 'BITGET现货成交价订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '4', marketName: 'BYBIT', displayName: 'BYBIT', spreadMonitoring: true, description: 'BYBIT现货成交价订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '5', marketName: 'BINANCE_INDEX', displayName: 'BINANCE_INDEX', spreadMonitoring: false, description: 'BINANCE指数价格订阅', observationPeriodSec: 120, reEnableSec: 30, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '6', marketName: 'OKEX_INDEX', displayName: 'OKEX_INDEX', spreadMonitoring: false, description: 'OKEX指数价格订阅', observationPeriodSec: 120, reEnableSec: 30, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '7', marketName: 'BYBIT_INDEX', displayName: 'BYBIT_INDEX', spreadMonitoring: false, description: 'BYBIT指数价格订阅', observationPeriodSec: 120, reEnableSec: 30, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '8', marketName: 'BITGET_INDEX', displayName: 'BITGET_INDEX', spreadMonitoring: false, description: 'BITGET指数价格订阅', observationPeriodSec: 120, reEnableSec: 30, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '9', marketName: 'GATEIO_INDEX', displayName: 'GATEIO_INDEX', spreadMonitoring: false, description: 'GATEIO指数价格订阅', observationPeriodSec: 120, reEnableSec: 30, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '10', marketName: 'LMAX', displayName: 'LMAX', spreadMonitoring: true, description: 'LMAX贵金属行情订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '11', marketName: 'ISPRIME', displayName: 'ISPRIME', spreadMonitoring: true, description: 'ISPRIME贵金属行情订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '12', marketName: 'STARPRIME', displayName: 'STARPRIME', spreadMonitoring: true, description: 'STARPRIME贵金属行情订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '13', marketName: 'VELOCITY', displayName: 'VELOCITY', spreadMonitoring: true, description: 'VELOCITY贵金属行情订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '14', marketName: 'RC_INDEX', displayName: 'RC_INDEX', spreadMonitoring: false, description: 'RC指数价格订阅', observationPeriodSec: 120, reEnableSec: 30, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '15', marketName: 'GATEIO', displayName: 'GATEIO', spreadMonitoring: true, description: 'GATEIO现货成交价订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '16', marketName: 'HUOBI', displayName: 'HUOBI', spreadMonitoring: true, description: 'HUOBI现货成交价订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
+  { key: '17', marketName: 'KUCOIN', displayName: 'KUCOIN', spreadMonitoring: true, description: 'KUCOIN现货成交价订阅', observationPeriodSec: 120, reEnableSec: 120, marketUrl: '', volumeUrl: '', positiveFundingUrl: '', inverseFundingUrl: '', enabled: true },
 ];
 
 export interface IndexPriceRecord {
