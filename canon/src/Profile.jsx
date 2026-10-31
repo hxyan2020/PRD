@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   changePassword,
   createAccount,
+  credentialsFromForm,
   getCurrentUser,
   login,
   logout,
   resetPassword,
+  syncSessionToRemote,
   updateProfileName,
 } from "./auth.js";
 import { useI18n } from "./I18n.jsx";
@@ -17,6 +19,7 @@ const ERROR_KEYS = {
   no_account: "authErrorNoAccount",
   bad_password: "authErrorBadPassword",
   not_signed_in: "authErrorNotSignedIn",
+  unavailable: "authErrorUnavailable",
 };
 
 function emptyForm() {
@@ -40,6 +43,18 @@ export default function Profile() {
   });
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!getCurrentUser()) return undefined;
+    let cancelled = false;
+    void syncSessionToRemote().then((result) => {
+      if (!cancelled && result?.user) setUser(result.user);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function field(name, value) {
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -73,53 +88,73 @@ export default function Profile() {
     }
   }
 
-  async function onCreate(event) {
+  async function submit(event, run) {
     event.preventDefault();
-    if (form.password !== form.confirm) {
-      setStatus("");
-      setError("authErrorMismatch");
-      return;
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      await run(credentialsFromForm(event.currentTarget, form));
+    } catch {
+      fail("unavailable");
+    } finally {
+      setBusy(false);
     }
-    await apply(await createAccount({ email: form.email, password: form.password, name: form.name }), "profileCreated");
+  }
+
+  async function onCreate(event) {
+    await submit(event, async (fields) => {
+      if (fields.password !== fields.confirm) {
+        setStatus("");
+        setError("authErrorMismatch");
+        return;
+      }
+      await apply(await createAccount({ email: fields.email, password: fields.password, name: fields.name }), "profileCreated");
+    });
   }
 
   async function onSignIn(event) {
-    event.preventDefault();
-    await apply(await login({ email: form.email, password: form.password }), "");
+    await submit(event, async (fields) => {
+      await apply(await login({ email: fields.email, password: fields.password }), "");
+    });
   }
 
   async function onReset(event) {
-    event.preventDefault();
-    if (form.newPassword !== form.confirm) {
-      setStatus("");
-      setError("authErrorMismatch");
-      return;
-    }
-    await apply(await resetPassword({ email: form.email, newPassword: form.newPassword }), "profilePasswordReset");
+    await submit(event, async (fields) => {
+      if (fields.newPassword !== fields.confirm) {
+        setStatus("");
+        setError("authErrorMismatch");
+        return;
+      }
+      await apply(await resetPassword({ email: fields.email, newPassword: fields.newPassword }), "profilePasswordReset");
+    });
   }
 
   async function onChangePassword(event) {
-    event.preventDefault();
-    if (form.newPassword !== form.confirm) {
-      setStatus("");
-      setError("authErrorMismatch");
-      return;
-    }
-    await apply(
-      await changePassword({ currentPassword: form.currentPassword, newPassword: form.newPassword }),
-      "profilePasswordChanged",
-    );
+    await submit(event, async (fields) => {
+      if (fields.newPassword !== fields.confirm) {
+        setStatus("");
+        setError("authErrorMismatch");
+        return;
+      }
+      await apply(
+        await changePassword({ currentPassword: fields.currentPassword, newPassword: fields.newPassword }),
+        "profilePasswordChanged",
+      );
+    });
   }
 
-  function onSaveName(event) {
-    event.preventDefault();
-    const result = updateProfileName(form.name);
-    if (!result.ok) {
-      fail(result.error);
-      return;
-    }
-    setUser(result.user);
-    flash("profileNameSaved");
+  async function onSaveName(event) {
+    await submit(event, async (fields) => {
+      const result = await updateProfileName(fields.name);
+      if (!result.ok) {
+        fail(result.error);
+        return;
+      }
+      setUser(result.user);
+      setForm((prev) => ({ ...prev, name: result.user?.name || fields.name }));
+      flash("profileNameSaved");
+    });
   }
 
   function onSignOut() {
@@ -131,6 +166,7 @@ export default function Profile() {
   }
 
   const displayName = user?.name || user?.email || "";
+  const working = busy ? t("profileWorking") : "";
 
   return (
     <section className="daily daily-prefs profile" aria-label={t("profileTitle")}>
@@ -152,7 +188,7 @@ export default function Profile() {
 
         {user ? (
           <>
-            <form className="daily-form profile-form" onSubmit={onSaveName}>
+            <form className="daily-form profile-form" onSubmit={onSaveName} aria-busy={busy}>
               <label>
                 {t("profileName")}
                 <input
@@ -168,14 +204,16 @@ export default function Profile() {
                 <input type="email" value={user.email} readOnly />
               </label>
               <div className="daily-actions">
-                <button type="submit">{t("profileSaveName")}</button>
-                <button type="button" className="ghost" onClick={onSignOut}>
+                <button type="submit" disabled={busy}>
+                  {busy ? working : t("profileSaveName")}
+                </button>
+                <button type="button" className="ghost" onClick={onSignOut} disabled={busy}>
                   {t("profileSignOut")}
                 </button>
               </div>
             </form>
 
-            <form className="daily-form profile-form" onSubmit={onChangePassword}>
+            <form className="daily-form profile-form" onSubmit={onChangePassword} aria-busy={busy}>
               <label>
                 {t("profileCurrentPassword")}
                 <input
@@ -213,26 +251,28 @@ export default function Profile() {
               </label>
               <p className="profile-hint">{t("profilePasswordHint")}</p>
               <div className="daily-actions">
-                <button type="submit">{t("profileChangePassword")}</button>
+                <button type="submit" disabled={busy}>
+                  {busy ? working : t("profileChangePassword")}
+                </button>
               </div>
             </form>
           </>
         ) : (
           <>
             <div className="profile-modes" role="tablist" aria-label={t("profileTitle")}>
-              <button type="button" className={mode === "signin" ? "is-on" : ""} onClick={() => setMode("signin")}>
+              <button type="button" className={mode === "signin" ? "is-on" : ""} onClick={() => setMode("signin")} disabled={busy}>
                 {t("profileSignIn")}
               </button>
-              <button type="button" className={mode === "create" ? "is-on" : ""} onClick={() => setMode("create")}>
+              <button type="button" className={mode === "create" ? "is-on" : ""} onClick={() => setMode("create")} disabled={busy}>
                 {t("profileNeedAccount")}
               </button>
-              <button type="button" className={mode === "reset" ? "is-on" : ""} onClick={() => setMode("reset")}>
+              <button type="button" className={mode === "reset" ? "is-on" : ""} onClick={() => setMode("reset")} disabled={busy}>
                 {t("profileForgot")}
               </button>
             </div>
 
             {mode === "create" ? (
-              <form className="daily-form profile-form" onSubmit={onCreate}>
+              <form className="daily-form profile-form" onSubmit={onCreate} aria-busy={busy}>
                 <label>
                   {t("profileName")}
                   <input
@@ -280,13 +320,15 @@ export default function Profile() {
                 </label>
                 <p className="profile-hint">{t("profilePasswordHint")}</p>
                 <div className="daily-actions">
-                  <button type="submit">{t("profileCreate")}</button>
+                  <button type="submit" disabled={busy}>
+                    {busy ? working : t("profileCreate")}
+                  </button>
                 </div>
               </form>
             ) : null}
 
             {mode === "signin" ? (
-              <form className="daily-form profile-form" onSubmit={onSignIn}>
+              <form className="daily-form profile-form" onSubmit={onSignIn} aria-busy={busy}>
                 <label>
                   {t("profileEmail")}
                   <input
@@ -311,13 +353,15 @@ export default function Profile() {
                   />
                 </label>
                 <div className="daily-actions">
-                  <button type="submit">{t("profileSignIn")}</button>
+                  <button type="submit" disabled={busy}>
+                    {busy ? working : t("profileSignIn")}
+                  </button>
                 </div>
               </form>
             ) : null}
 
             {mode === "reset" ? (
-              <form className="daily-form profile-form" onSubmit={onReset}>
+              <form className="daily-form profile-form" onSubmit={onReset} aria-busy={busy}>
                 <label>
                   {t("profileEmail")}
                   <input
@@ -355,7 +399,9 @@ export default function Profile() {
                 </label>
                 <p className="profile-hint">{t("profilePasswordHint")}</p>
                 <div className="daily-actions">
-                  <button type="submit">{t("profileReset")}</button>
+                  <button type="submit" disabled={busy}>
+                    {busy ? working : t("profileReset")}
+                  </button>
                 </div>
               </form>
             ) : null}

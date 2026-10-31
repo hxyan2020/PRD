@@ -18,7 +18,7 @@ Every entry has:
 - **Play on Spotify** — clicking it opens the recording on Spotify. If an operator has set `VITE_SPOTIFY_CLIENT_ID`, the same click can also authorize your account and save the track to Liked Songs and a private Canon playlist. There is no client-ID form and no Spotify card on the homepage
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). Language lives in the top menu (on phones, next to the hamburger)
 - A top **menu**: For you (home), Preferences, The 1,000 (`#archive` — the 1,000-work catalog), Collections, Recommendation log, and My profile (`#profile`). Phones use a hamburger icon. About and Terms of use sit in the footer
-- **My profile** — optional local sign-in, sign-out, and password reset in this browser (no Canon account server; listening does not require an account)
+- **My profile** — optional sign-in, sign-out, and password reset. Profiles are saved so you can sign in on another device; a copy also stays in this browser. Canon cannot email a reset link. Listening does not require an account.
 - Anonymous page views go to HX viewership (`slug: canon`). Telegram **HX Bots Dashboard** polls `/hx/health.json` (not in-app tabs)
 
 ## Run

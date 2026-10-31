@@ -26,6 +26,7 @@ import { publicUrl } from "./urls.js";
 import CoverImage from "./CoverImage.jsx";
 import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
+import { syncSessionToRemote } from "./auth.js";
 import { displayPersonName, splitCredits } from "./portraits.js";
 import { creditLabel, popularityLabel } from "./uiText.js";
 import BootScreen from "./BootScreen.jsx";
@@ -61,6 +62,10 @@ export default function App() {
   const [extras] = useState(loadExtraTracks);
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const spotify = useSpotify();
+
+  useEffect(() => {
+    void syncSessionToRemote();
+  }, []);
 
   useEffect(() => {
     fetch(publicUrl("catalog.json"))

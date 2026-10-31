@@ -692,6 +692,12 @@ button.surprise {
   color: var(--paper);
 }
 
+.daily-form button:disabled,
+.profile-modes button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 .daily-form .ghost:disabled {
   opacity: 0.4;
   cursor: default;
