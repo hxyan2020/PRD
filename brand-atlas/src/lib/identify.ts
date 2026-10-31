@@ -342,6 +342,7 @@ export async function identifyImage(
   if (cues.contrast < 0.08 && cues.brightness < 0.12) {
     return {
       status: "unclear",
+      reason: "dark",
       message:
         "This photo is too dark or flat. Aim at the brand logo or upload a clearer picture with distinct characteristics.",
     };
@@ -349,6 +350,7 @@ export async function identifyImage(
   if (cues.contrast < 0.1 && cues.brightness > 0.85) {
     return {
       status: "unclear",
+      reason: "blank",
       message:
         "This photo looks overexposed or blank. Frame the logo or distinctive features and try again.",
     };
@@ -426,16 +428,18 @@ export async function identifyImage(
     if (!weak.length || !normalize(ocrText)) {
       return {
         status: "unclear",
+        reason: "noSignal",
         message:
-          "I can't spot a clear brand mark or distinctive type. Aim the camera at the logo, label text, or a clear silhouette, then upload again.",
+          "I can't tell what's in this image. Please upload a relevant photo of the logo, label text, or a clear view of the item, then try again.",
       };
     }
     // Drop near-tied noise: if the leader isn't clearly ahead, ask for a clearer shot.
     if (weak.length >= 2 && weak[0].score - weak[1].score < 0.08 && weak[0].score < 0.4) {
       return {
         status: "unclear",
+        reason: "ambiguous",
         message:
-          "The label text is ambiguous against several catalogue marks. Zoom in on the brand name and try again.",
+          "The label text is ambiguous against several catalogue marks. Zoom in on the brand name and upload again.",
       };
     }
     const guesses = toGuesses(weak.slice(0, 5), catalog);
