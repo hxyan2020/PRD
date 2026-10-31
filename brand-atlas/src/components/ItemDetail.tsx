@@ -1,14 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import { coverGradient } from "../lib/catalog";
+import { identifyImage } from "../lib/identify";
 import { coverUrl, markUrl } from "../lib/marks";
 import { isNatureCategory } from "../lib/nature";
+import { fileToSightingDataUrl } from "../lib/sightingPhoto";
 import {
   formatPct,
   formatUtc,
   permanentLink,
   type UnlockRecord,
 } from "../lib/unlocks";
-import type { CatalogItem } from "../types/catalog";
+import type { Catalog, CatalogItem } from "../types/catalog";
 import { useI18n } from "../i18n/I18nProvider";
 
 interface Props {
@@ -17,9 +21,11 @@ interface Props {
   mode: "unlocked" | "sneak" | "locked";
   unlock?: UnlockRecord;
   categoryPct?: number;
+  catalog?: Catalog | null;
   onClose: () => void;
   onSaveNote?: (note: string) => void;
   onSavePhoto?: (dataUrl: string | null) => void;
+  onUnlockFromSighting?: (photoDataUrl: string) => void;
 }
 
 const FACT_LABELS: Record<string, string> = {
@@ -49,31 +55,56 @@ export function ItemDetail({
   mode,
   unlock,
   categoryPct,
+  catalog,
   onClose,
   onSaveNote,
   onSavePhoto,
+  onUnlockFromSighting,
 }: Props) {
   const { t } = useI18n();
+  const { isLoggedIn, email } = useAuth();
+  const location = useLocation();
   const [note, setNote] = useState(unlock?.note ?? "");
   const [copied, setCopied] = useState(false);
   const [savedFlash, setSavedFlash] = useState(false);
   const [coverFailed, setCoverFailed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState("");
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const cameraFileRef = useRef<HTMLInputElement>(null);
   const nature = isNatureCategory(item.categoryId);
 
   useEffect(() => {
     setNote(unlock?.note ?? "");
     setCoverFailed(false);
+    setScanError(null);
+    setBusy(false);
+    setPhase("");
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
   }, [unlock?.note, item.id]);
+
+  useEffect(
+    () => () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    },
+    [previewUrl],
+  );
 
   const permalink = unlock ? permanentLink(unlock.shareId) : null;
   const mark = markUrl(item);
   const stockCover = coverFailed ? null : coverUrl(item);
-  // Brands while locked: logo only (stock covers are often off-topic).
-  // Nature + unlocked: prefer species/product photo.
   const coverPhoto =
     unlock?.photoDataUrl ||
     (nature || mode === "unlocked" ? stockCover : null);
   const showMark = Boolean(mark) && !unlock?.photoDataUrl && !coverPhoto;
+
+  const authNext = `${location.pathname}${location.search}${location.hash}`;
+  const loginHref = `/login?next=${encodeURIComponent(authNext)}&item=${encodeURIComponent(item.id)}`;
 
   const copyLink = async () => {
     if (!permalink) return;
@@ -84,9 +115,64 @@ export function ItemDetail({
 
   const onPhotoFile = (file: File | null) => {
     if (!file || !onSavePhoto) return;
-    const reader = new FileReader();
-    reader.onload = () => onSavePhoto(String(reader.result));
-    reader.readAsDataURL(file);
+    void (async () => {
+      try {
+        onSavePhoto(await fileToSightingDataUrl(file));
+      } catch {
+        /* ignore encode failures */
+      }
+    })();
+  };
+
+  const processSighting = async (file: File) => {
+    if (!isLoggedIn) return;
+    if (!catalog || !onUnlockFromSighting) {
+      setScanError(t("detail.catalogMissing"));
+      return;
+    }
+    setBusy(true);
+    setScanError(null);
+    setPhase(t("scan.scanning"));
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(URL.createObjectURL(file));
+    try {
+      const result = await identifyImage(
+        file,
+        catalog,
+        [item.categoryId],
+        (p) => setPhase(p),
+      );
+      if (result.status === "unclear") {
+        setScanError(result.message);
+        return;
+      }
+      const guesses = result.status === "guesses" ? result.guesses : [];
+      const hit = guesses.find((g) => g.itemId === item.id);
+      const top = guesses[0];
+      if (!hit) {
+        setScanError(
+          t("detail.noMatch", {
+            name: item.name,
+            guess: top?.name ?? "—",
+          }),
+        );
+        return;
+      }
+      const dataUrl = await fileToSightingDataUrl(file);
+      onUnlockFromSighting(dataUrl);
+    } catch (e) {
+      setScanError(
+        e instanceof Error ? e.message : t("detail.identifyFailed"),
+      );
+    } finally {
+      setBusy(false);
+      setPhase("");
+    }
+  };
+
+  const onSightingFile = (file: File | null) => {
+    if (!file) return;
+    void processSighting(file);
   };
 
   const saveNote = () => {
@@ -94,6 +180,8 @@ export function ItemDetail({
     setSavedFlash(true);
     setTimeout(() => setSavedFlash(false), 1600);
   };
+
+  const showUnlockActions = mode === "locked" || mode === "sneak";
 
   return (
     <div className="celebrate" role="dialog" aria-modal="true" onClick={onClose}>
@@ -152,6 +240,80 @@ export function ItemDetail({
           </>
         )}
 
+        {showUnlockActions && (
+          <div className="detail-unlock">
+            {!isLoggedIn ? (
+              <div className="banner banner--warn detail-unlock__gate">
+                <strong>{t("detail.loginRequiredTitle")}</strong>
+                <p style={{ margin: "0.4rem 0 0.75rem" }}>
+                  {t("detail.loginRequiredBody")}
+                </p>
+                <Link className="btn btn--forest" to={loginHref} onClick={onClose}>
+                  {t("nav.login")}
+                </Link>
+              </div>
+            ) : (
+              <>
+                <p className="muted detail-unlock__signed">
+                  {t("detail.signedInAs", { email: email ?? "" })}
+                </p>
+                {previewUrl && (
+                  <div className="detail-unlock__preview">
+                    <img src={previewUrl} alt="" />
+                  </div>
+                )}
+                <div className="cta-row detail-unlock__actions">
+                  <button
+                    type="button"
+                    className="btn btn--forest"
+                    disabled={busy}
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    {t("scan.upload")}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn--quiet"
+                    disabled={busy}
+                    onClick={() => cameraFileRef.current?.click()}
+                  >
+                    {t("detail.takePhoto")}
+                  </button>
+                </div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) =>
+                    onSightingFile(e.target.files?.[0] ?? null)
+                  }
+                />
+                <input
+                  ref={cameraFileRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  hidden
+                  onChange={(e) =>
+                    onSightingFile(e.target.files?.[0] ?? null)
+                  }
+                />
+                {busy && (
+                  <p className="muted" style={{ marginTop: "0.65rem" }}>
+                    {phase || t("scan.scanning")}
+                  </p>
+                )}
+                {scanError && (
+                  <p className="banner banner--warn" style={{ marginTop: "0.75rem" }}>
+                    {scanError}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
         {mode === "unlocked" && (
           <>
             <p className="muted">
@@ -176,6 +338,12 @@ export function ItemDetail({
                   <strong>{t("unlocked.seenAt")}:</strong>{" "}
                   <span className="mono">{formatUtc(unlock.unlockedAt)}</span>
                 </p>
+                {unlock.unlockedBy && (
+                  <p>
+                    <strong>{t("detail.recordedBy")}:</strong>{" "}
+                    <span className="mono">{unlock.unlockedBy}</span>
+                  </p>
+                )}
 
                 <div className="sighting-block">
                   <strong>{t("unlocked.sightingPhoto")}</strong>
@@ -238,7 +406,7 @@ export function ItemDetail({
 
                 <div className="cta-row" style={{ justifyContent: "center" }}>
                   <button type="button" className="btn btn--forest" onClick={saveNote}>
-                    {savedFlash ? t("unlocked.copied") : t("unlocked.saveNote")}
+                    {savedFlash ? t("unlocked.noteSaved") : t("unlocked.saveNote")}
                   </button>
                   <button type="button" className="btn btn--quiet" onClick={() => void copyLink()}>
                     {copied ? t("unlocked.copied") : t("unlocked.share")}

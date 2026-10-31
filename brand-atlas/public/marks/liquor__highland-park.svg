@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="HIGHLAND PARK">
-  <text x="80" y="40" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="700" letter-spacing="0.08em" fill="#FFFFFF">HIGHLAND PARK</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <rect width="24" height="24" rx="4.5" fill="#f0eee6"/>
+  <path fill="#cc785c" d="M12 2 14 10 22 12 14 14 12 22 10 14 2 12 10 10z"/>
 </svg>
