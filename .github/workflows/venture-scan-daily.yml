@@ -82,6 +82,7 @@ jobs:
           git add \
             venture-scan/public/data/ideas.json \
             venture-scan/public/data/source-ingest.json \
+            venture-scan/public/data/daily-ledger.json \
             venture-scan/public/idea-photos \
             || true
           if git diff --staged --quiet; then

@@ -52,6 +52,7 @@
   "hero.today": "Выбор дня",
   "hero.catalogue": "Смотреть полный каталог",
   "hero.lastRefresh": "Последнее обновление {when}",
+  "hero.lastRefreshWithHeadlines": "Последнее обновление {when} · получено заголовков: {count}",
   "hero.match": "Совпадение с чат-ботом",
   "hero.chips": "Название · модель · команда · финансирование · игра",
   "teaser.kicker": "Ежедневные рекомендации",

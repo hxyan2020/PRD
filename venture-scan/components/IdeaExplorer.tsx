@@ -11,7 +11,7 @@ import { SectorPicker } from "@/components/SectorPicker";
 import { isActiveIdea, isArchivedIdea } from "@/lib/archived-ideas";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { collectFundingStages } from "@/lib/funding-stages";
-import { TODAY_HASH, YESTERDAY_HASH } from "@/lib/idea-day";
+import { TODAY_HASH, YESTERDAY_HASH, todaysIdeas } from "@/lib/idea-day";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeIdea } from "@/lib/i18n/localize-idea";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
@@ -140,8 +140,12 @@ export function IdeaExplorer({
 
   const todayRows = useMemo(() => {
     if (statusFilter === "archived") return [];
-    return baseFiltered.filter(isActiveIdea);
-  }, [baseFiltered, statusFilter]);
+    const todaySlugs = new Set(todaysIdeas(ideas).map((i) => i.slug));
+    // Prefer the daily live cohort; if a status/search filter shrinks the set,
+    // still only show cohort members that remain visible.
+    const cohort = baseFiltered.filter((i) => todaySlugs.has(i.slug));
+    return cohort.length ? cohort : baseFiltered.filter(isActiveIdea);
+  }, [baseFiltered, statusFilter, ideas]);
 
   // Always include history so /ideas#yesterday has a stable scroll target.
   const yesterdayRows = useMemo(

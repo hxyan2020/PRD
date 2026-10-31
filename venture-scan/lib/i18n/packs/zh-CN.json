@@ -52,6 +52,7 @@
   "hero.today": "今日推荐",
   "hero.catalogue": "查看完整目录",
   "hero.lastRefresh": "上次刷新 {when}",
+  "hero.lastRefreshWithHeadlines": "上次刷新 {when} · 已抓取 {count} 条头条",
   "hero.match": "聊天匹配",
   "hero.chips": "名称 · 模式 · 团队 · 融资 · 路径",
   "teaser.kicker": "每日推荐",

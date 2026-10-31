@@ -9,9 +9,12 @@ import { useI18n } from "@/lib/i18n/context";
 export function Hero({
   count,
   lastRefreshedAt,
+  headlineCount = 0,
 }: {
   count: number;
   lastRefreshedAt?: string;
+  /** Funding/startup headlines sourced in the latest daily scan. */
+  headlineCount?: number;
 }) {
   const { t, locale } = useI18n();
   const refreshed =
@@ -69,7 +72,12 @@ export function Hero({
           </div>
           {refreshed ? (
             <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-mist/90 sm:text-[11px]">
-              {t("hero.lastRefresh", { when: refreshed })}
+              {headlineCount > 0
+                ? t("hero.lastRefreshWithHeadlines", {
+                    when: refreshed,
+                    count: headlineCount,
+                  })
+                : t("hero.lastRefresh", { when: refreshed })}
             </p>
           ) : null}
         </div>

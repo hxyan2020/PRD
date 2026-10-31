@@ -15,7 +15,13 @@ import {
   DAILY_SCAN_TIMEZONE_IANA,
   dailyScanSchedule,
 } from "../lib/daily-scan";
+import {
+  buildTodayCohort,
+  scanDayKey,
+  type DailyLedgerFile,
+} from "../lib/daily-ledger";
 import { countIdeas, listIdeas } from "../lib/db";
+import { collectDailyHeadlines } from "../lib/rss-headlines";
 import { ensureSeeded, runScan } from "../lib/scanner";
 import type { SourceIngestFile, SourceIngestRow } from "../lib/source-ingest";
 
@@ -23,6 +29,7 @@ const root = path.join(import.meta.dirname, "..");
 const outDir = path.join(root, "public", "data");
 const ingestPath = path.join(outDir, "source-ingest.json");
 const ideasPath = path.join(outDir, "ideas.json");
+const ledgerPath = path.join(outDir, "daily-ledger.json");
 
 const UA =
   "Mozilla/5.0 (compatible; VentureScanDailyBot/1.0; +https://hxyan2020.github.io/PRD/venture-scan/)";
@@ -112,6 +119,23 @@ async function main() {
   const active = ideas.filter((i) => (i.status ?? "active") === "active").length;
   const archived = ideas.length - active;
 
+  console.log(JSON.stringify({ phase: "rss-headlines", feeds: "start" }));
+  const { headlines, feedsOk, feedsTotal } = await collectDailyHeadlines(ideas);
+  const day = scanDayKey(new Date(scannedAt));
+  const todaySlugs = buildTodayCohort(ideas, headlines, day);
+  const matchedIdeaCount = new Set(headlines.flatMap((h) => h.matchedSlugs)).size;
+  const ledger: DailyLedgerFile = {
+    day,
+    scannedAt,
+    timezone: DAILY_SCAN_TIMEZONE_IANA,
+    todaySlugs,
+    headlineCount: headlines.length,
+    feedsOk,
+    feedsTotal,
+    matchedIdeaCount,
+    headlines,
+  };
+
   mkdirSync(outDir, { recursive: true });
   writeFileSync(
     ideasPath,
@@ -121,6 +145,8 @@ async function main() {
         total: ideas.length,
         active,
         archived,
+        todayCount: todaySlugs.length,
+        headlineCount: headlines.length,
         schedule,
         source: DAILY_SCAN_SOURCE,
         ideas,
@@ -129,6 +155,7 @@ async function main() {
       2,
     ) + "\n",
   );
+  writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2) + "\n");
 
   const ingest: SourceIngestFile = {
     schedule: {
@@ -152,11 +179,17 @@ async function main() {
         sourcesProbed: DATA_SOURCES.length,
         sourcesOk: okCount,
         ideas: ideas.length,
+        todayCount: todaySlugs.length,
+        headlines: headlines.length,
+        feedsOk,
+        feedsTotal,
+        matchedIdeaCount,
         dbCount: countIdeas(),
         inserted: scan.inserted,
         updated: scan.updated,
         ingestPath,
         ideasPath,
+        ledgerPath,
       },
       null,
       2,
