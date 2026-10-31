@@ -11,7 +11,15 @@ import { isPageKey, pageTitles, sideMenuItems, type PageKey } from '../config/me
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
 
-const defaultOpenKeys = ['contract-manage', 'price-manage', 'order-manage', 'user-manage', 'contract-config'];
+const defaultOpenKeys = [
+  'contract-manage',
+  'price-manage',
+  'order-manage',
+  'user-manage',
+  'contract-config',
+  'risk-manage',
+  'monitor-alert',
+];
 
 export function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);

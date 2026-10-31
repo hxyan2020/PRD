@@ -3,6 +3,7 @@ import { AdminAdlPage } from '../pages/AdminAdlPage';
 import { CoinIntroducePage } from '../pages/CoinIntroducePage';
 import { ContractListPage } from '../pages/ContractListPage';
 import { FairPricePage } from '../pages/FairPricePage';
+import { FundingRateModifyPage } from '../pages/FundingRateModifyPage';
 import { FundingRatePage } from '../pages/FundingRatePage';
 import { IndexMarketLinkPage } from '../pages/IndexMarketLinkPage';
 import { IndexPricePage } from '../pages/IndexPricePage';
@@ -39,6 +40,8 @@ export function renderPage(key: PageKey) {
       return <FundingRatePage />;
     case 'position-list':
       return <PositionListPage />;
+    case 'funding-rate-modify':
+      return <FundingRateModifyPage />;
     default:
       return <PlaceholderPage />;
   }

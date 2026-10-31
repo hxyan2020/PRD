@@ -1,4 +1,10 @@
 import type { MenuProps } from 'antd';
+import {
+  AlertOutlined,
+  FundOutlined,
+  SafetyCertificateOutlined,
+  TeamOutlined,
+} from '@ant-design/icons';
 
 export type PageKey =
   | 'overview'
@@ -27,7 +33,27 @@ export type PageKey =
   | 'redis-key-manage'
   | 'redis-value-manage'
   | 'openapi-white-list'
-  | 'openapi-market';
+  | 'openapi-market'
+  // 风控管理
+  | 'funding-rate-modify'
+  | 'liquidation-engine-switch'
+  | 'market-trade-limit'
+  | 'risk-fund-list'
+  | 'risk-fund-detail'
+  | 'open-close-limit'
+  // 监控告警
+  | 'spread-alert-monitor'
+  | 'no-trade-monitor'
+  | 'depth-monitor'
+  | 'competitor-spread-monitor'
+  | 'external-funding-rate-monitor'
+  | 'internal-funding-rate-monitor'
+  | 'large-liquidation-alert'
+  | 'large-position-notify'
+  | 'adl-abnormal-record'
+  // 做市 / Broker
+  | 'mm-overview'
+  | 'broker-overview';
 
 export const pageTitles: Record<PageKey, string> = {
   overview: 'Overview',
@@ -57,6 +83,23 @@ export const pageTitles: Record<PageKey, string> = {
   'redis-value-manage': 'Redis Value Manage',
   'openapi-white-list': 'OpenApi White List',
   'openapi-market': 'OpenApi Market',
+  'funding-rate-modify': '资金费率修改',
+  'liquidation-engine-switch': '强平引擎开关',
+  'market-trade-limit': '市价交易限制',
+  'risk-fund-list': '风险基金列表',
+  'risk-fund-detail': '风险基金明细',
+  'open-close-limit': '开平仓限制',
+  'spread-alert-monitor': '价差预警监控',
+  'no-trade-monitor': '无交易监控',
+  'depth-monitor': '档位深度监控',
+  'competitor-spread-monitor': '友商价差监控',
+  'external-funding-rate-monitor': '外部资金费率监控',
+  'internal-funding-rate-monitor': '内部资金费率监控',
+  'large-liquidation-alert': '大额爆仓预警',
+  'large-position-notify': '大额持仓通知',
+  'adl-abnormal-record': 'ADL异常记录',
+  'mm-overview': '做市管理',
+  'broker-overview': 'Broker管理',
 };
 
 export const sideMenuItems: MenuProps['items'] = [
@@ -116,6 +159,48 @@ export const sideMenuItems: MenuProps['items'] = [
       { key: 'openapi-white-list', label: 'OpenApi White List' },
       { key: 'openapi-market', label: 'OpenApi Market' },
     ],
+  },
+  // 两个分开的一级菜单：风控管理 / 监控告警
+  {
+    key: 'risk-manage',
+    icon: <SafetyCertificateOutlined style={{ color: '#722ed1' }} />,
+    label: '风控管理',
+    children: [
+      { key: 'funding-rate-modify', label: '资金费率修改' },
+      { key: 'liquidation-engine-switch', label: '强平引擎开关' },
+      { key: 'market-trade-limit', label: '市价交易限制' },
+      { key: 'risk-fund-list', label: '风险基金列表' },
+      { key: 'risk-fund-detail', label: '风险基金明细' },
+      { key: 'open-close-limit', label: '开平仓限制' },
+    ],
+  },
+  {
+    key: 'monitor-alert',
+    icon: <AlertOutlined style={{ color: '#fa8c16' }} />,
+    label: '监控告警',
+    children: [
+      { key: 'spread-alert-monitor', label: '价差预警监控' },
+      { key: 'no-trade-monitor', label: '无交易监控' },
+      { key: 'depth-monitor', label: '档位深度监控' },
+      { key: 'competitor-spread-monitor', label: '友商价差监控' },
+      { key: 'external-funding-rate-monitor', label: '外部资金费率监控' },
+      { key: 'internal-funding-rate-monitor', label: '内部资金费率监控' },
+      { key: 'large-liquidation-alert', label: '大额爆仓预警' },
+      { key: 'large-position-notify', label: '大额持仓通知' },
+      { key: 'adl-abnormal-record', label: 'ADL异常记录' },
+    ],
+  },
+  {
+    key: 'mm-manage',
+    icon: <FundOutlined />,
+    label: '做市管理',
+    children: [{ key: 'mm-overview', label: '做市概览' }],
+  },
+  {
+    key: 'broker-manage',
+    icon: <TeamOutlined />,
+    label: 'Broker管理',
+    children: [{ key: 'broker-overview', label: 'Broker概览' }],
   },
 ];
 
