@@ -1,0 +1,97 @@
+.painting-card {
+  display: block;
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  animation: rise 560ms ease both;
+}
+
+.painting-card-media {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink-soft);
+}
+
+.painting-card-media img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  transition: transform 700ms ease, filter 700ms ease;
+  filter: saturate(0.95) contrast(1.02);
+}
+
+.painting-card:hover .painting-card-media img {
+  transform: scale(1.04);
+  filter: saturate(1.05) contrast(1.05);
+}
+
+.rank-badge,
+.lost-badge,
+.collected-badge {
+  position: absolute;
+  top: 0.75rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.55rem;
+  backdrop-filter: blur(8px);
+}
+
+.rank-badge {
+  left: 0.75rem;
+  background: rgba(16, 20, 18, 0.7);
+  color: var(--brass-soft);
+  border: 1px solid rgba(214, 167, 86, 0.35);
+}
+
+.lost-badge {
+  right: 0.75rem;
+  background: rgba(196, 92, 72, 0.88);
+  color: #fff;
+}
+
+.collected-badge {
+  right: 0.75rem;
+  background: rgba(143, 191, 138, 0.9);
+  color: #102014;
+}
+
+.lost-badge + .collected-badge {
+  top: 2.55rem;
+}
+
+.painting-card-meta {
+  padding: 0.9rem 0.15rem 0.2rem;
+}
+
+.painting-card-meta h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.painting-card-meta p {
+  margin: 0.35rem 0 0;
+  color: var(--paper-dim);
+  font-size: 0.92rem;
+}
+
+.painting-card-meta > p > span {
+  display: inline-block;
+  margin-left: 0.45rem;
+  opacity: 0.8;
+}
+
+.painting-card-meta .country-line {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.84rem;
+}
+
+.painting-card-meta .genre {
+  color: var(--sage);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
