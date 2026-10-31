@@ -11,21 +11,25 @@
         if (path.indexOf(base) === 0) path = path.slice(base.length)
         path = path.replace(/^\/+/, '')
 
-        var prefixes = [
-          'matching-management/',
-          'fate-atlas/',
-          'crmp-admin/',
-          'crmp-plus/',
-          'venture-scan/',
-          'brand-atlas/',
-          'ludus-atlas/',
-          'mille/',
-          'seen/',
-          'risk-discovery/',
+        // Nested static apps: send browser to that app root and let it restore the path.
+        // GitHub Pages only serves the repo-root 404.html, so SPA deep links need this handshake.
+        var nested = [
+          { prefix: 'matching-management/', home: base + '/matching-management/' },
+          { prefix: 'fate-atlas/', home: base + '/fate-atlas/' },
+          { prefix: 'crmp-admin/', home: base + '/crmp-admin/' },
+          { prefix: 'venture-scan/', home: base + '/venture-scan/' },
+          { prefix: 'brand-atlas/', home: base + '/brand-atlas/' },
+          { prefix: 'ludus-atlas/', home: base + '/ludus-atlas/' },
+          { prefix: 'mille/', home: base + '/mille/' },
+          { prefix: 'seen/', home: base + '/seen/' },
+          { prefix: 'risk-discovery/', home: base + '/risk-discovery/' },
         ]
-        for (var i = 0; i < prefixes.length; i++) {
-          if (path.indexOf(prefixes[i]) === 0) {
-            location.replace(base + '/' + path + location.search + location.hash)
+        for (var i = 0; i < nested.length; i++) {
+          if (path.indexOf(nested[i].prefix) === 0) {
+            try {
+              sessionStorage.setItem('prd-pages-redirect', location.href)
+            } catch (e) {}
+            location.replace(nested[i].home + location.search + location.hash)
             return
           }
         }
@@ -101,7 +105,11 @@
         }
         var first = path.split('/')[0]
         if (mm[first]) {
-          location.replace(base + '/matching-management/' + path + location.search + location.hash)
+          var target = base + '/matching-management/' + path + location.search + location.hash
+          try {
+            sessionStorage.setItem('prd-pages-redirect', target)
+          } catch (e) {}
+          location.replace(base + '/matching-management/')
           return
         }
 
@@ -110,6 +118,6 @@
     </script>
   </head>
   <body>
-    <p><a href="/PRD/">Back to PRD directory</a></p>
+    <p><a href="/PRD/">Back to PRD directory</a> · <a href="/PRD/matching-management/">MatchingManagement</a></p>
   </body>
 </html>
