@@ -32,7 +32,8 @@ export const FOREX_INCIDENT_1028 = {
   monitors: ["M2-LP-022", "M2-FEED-003", "M2-XAU-247", "M2-HEDGE-007"] as const,
   primary_monitor_id: "M2-LP-022",
   related_monitors: ["M2-FEED-003", "M2-XAU-247", "M2-HEDGE-007"] as const,
-  chain_code: "CHAIN-FEED-LIQUIDATION-ERROR",
+  /** Distinct from companion STALE-FEED-LIQ (CHAIN-FEED-LIQUIDATION-ERROR). */
+  chain_code: "CHAIN-PRICING-FEED-PROPAGATION",
   skill_codes: ["SKILL-LP-REJECT-STORM", "SKILL-STALE-FEED", "SKILL-HEDGE-COVERAGE"] as const,
   domain_scenarios: ["SCN-LP-REJECT-STORM", "SCN-STALE-FEED", "SCN-XAU247", "SCN-HEDGE-COVERAGE"] as const,
   workspace_path: "/admin/ai-incident",
@@ -67,6 +68,7 @@ export const FOREX_INCIDENT_1028 = {
 export const FOREX_COMPANION_CASES = [
   {
     id: "LP-HEDGE-GAP",
+    alert_id: "ALT-LP-HEDGE-GAP",
     chain_code: "CHAIN-LP-HEDGE-GAP",
     title_en: "LP reject storm → hedge coverage gap",
     title_zh: "LP 拒絕風暴 → 對沖覆蓋缺口",
@@ -74,9 +76,11 @@ export const FOREX_COMPANION_CASES = [
     primary_monitor_id: "M2-LP-022",
     skill_codes: ["SKILL-LP-REJECT-STORM", "SKILL-HEDGE-COVERAGE"] as const,
     domain_scenarios: ["SCN-LP-REJECT-STORM", "SCN-HEDGE-COVERAGE"] as const,
+    href: "/admin/monitor-2?monitor_id=M2-HEDGE-007",
   },
   {
     id: "XAU-WEEKEND",
+    alert_id: "ALT-XAU-WEEKEND",
     chain_code: "CHAIN-METALS-WEEKEND",
     title_en: "XAUUSD247 weekend exposure build-up",
     title_zh: "XAUUSD247 週末曝險累積",
@@ -84,9 +88,11 @@ export const FOREX_COMPANION_CASES = [
     primary_monitor_id: "M2-XAU-247",
     skill_codes: ["SKILL-XAU247-EXPOSURE"] as const,
     domain_scenarios: ["SCN-XAU247"] as const,
+    href: "/admin/monitor-2?monitor_id=M2-XAU-247",
   },
   {
     id: "STALE-FEED-LIQ",
+    alert_id: "ALT-STALE-FEED-LIQ",
     chain_code: "CHAIN-FEED-LIQUIDATION-ERROR",
     title_en: "Stale feed → liquidation / credit contagion",
     title_zh: "陳舊行情 → 強平／信用傳染",
@@ -94,8 +100,18 @@ export const FOREX_COMPANION_CASES = [
     primary_monitor_id: "M2-FEED-003",
     skill_codes: ["SKILL-STALE-FEED"] as const,
     domain_scenarios: ["SCN-STALE-FEED"] as const,
+    href: "/admin/monitor-2?monitor_id=M2-FEED-003",
   },
 ] as const;
+
+/** Union of primary + companion monitors for desk filters / discovery spikes. */
+export function forexPackMonitorIds(): string[] {
+  const ids = new Set<string>([...FOREX_INCIDENT_1028.monitors]);
+  for (const c of FOREX_COMPANION_CASES) {
+    for (const m of c.monitors) ids.add(m);
+  }
+  return [...ids];
+}
 
 export type ForexIncident1028 = typeof FOREX_INCIDENT_1028;
 
@@ -128,11 +144,10 @@ export function forexIncidentDeskLinks() {
       en: "Open Alerts",
       zh: "未結警報",
     },
+    { href: i.labs_path, en: "Monitor labs (AI / L2 / Noise)", zh: "監控實驗室（AI／L2／降噪）" },
     { href: i.aggregation_path, en: "Aggregation L1→L2", zh: "指標聚合 L1→L2" },
     { href: i.discovery_path, en: "Unknown Risk Discovery", zh: "未知風險探索" },
-    { href: i.l2_labs_path, en: "L2 → AI RCA lab", zh: "L2 → AI RCA 實驗室" },
     { href: i.workspace_path, en: "AI Incident Workspace", zh: "AI 事故工作台" },
-    { href: i.noise_labs_path, en: "Noise Reduction lab", zh: "降噪實驗室" },
     { href: "/admin/messenger", en: "Ops Inbox (INC-1028)", zh: "值班收件匣（INC-1028）" },
     { href: i.risk_log_path, en: "Closed Risk Log", zh: "已結風險日誌" },
     { href: "/admin/docs/indicators-scenarios", en: "Indicators & scenarios", zh: "指標與情境" },
@@ -140,14 +155,18 @@ export function forexIncidentDeskLinks() {
   ] as const;
 }
 
-/** Compact next-step strip used on most desk pages. */
+/**
+ * Canonical walkthrough order (matches nav Monitor & risk):
+ * Monitor → Open Alerts → Labs → Aggregation → Discovery → Messenger → Risk Log
+ */
 export function forexPrimaryNextSteps() {
   const i = FOREX_INCIDENT_1028;
   return [
     { href: `/admin/monitor-2?monitor_id=${i.primary_monitor_id}`, en: "Monitor", zh: "監控" },
     { href: `/admin/alerts?monitor_id=${i.primary_monitor_id}`, en: "Alerts", zh: "警報" },
+    { href: i.labs_path, en: "Labs", zh: "實驗室" },
     { href: i.aggregation_path, en: "Aggregate", zh: "聚合" },
-    { href: i.workspace_path, en: "AI RCA", zh: "AI 根因" },
+    { href: i.discovery_path, en: "Discovery", zh: "探索" },
     { href: "/admin/messenger", en: "Messenger", zh: "Messenger" },
     { href: i.risk_log_path, en: "Risk Log", zh: "風險日誌" },
   ] as const;
@@ -155,5 +174,5 @@ export function forexPrimaryNextSteps() {
 
 export function isForexPackMonitor(monitorId: string | null | undefined) {
   if (!monitorId) return false;
-  return (FOREX_INCIDENT_1028.monitors as readonly string[]).includes(monitorId);
+  return forexPackMonitorIds().includes(monitorId);
 }

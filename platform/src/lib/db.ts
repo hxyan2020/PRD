@@ -613,6 +613,48 @@ function seedIfEmpty(db: Database.Database) {
   insertAlert.run("ALT-1003", 6, "WARN", "Hot wallet float elevated", "Hot wallet float at 18.2% of total custody.", 18.2, "ACKNOWLEDGED", "TKT-88390");
   insertAlert.run("ALT-1004", 1, "WARN", "Equity drawdown rising", "Company CFD book drawdown at 3.4%.", 3.4, "OPEN", "TKT-88445");
   insertAlert.run("ALT-1005", 4, "WARN", "Hedge coverage below target", "Hedge coverage ratio at 82% (warn <85%).", 82, "OPEN", "TKT-88450");
+  // Canonical forex CFD pack (INC-1028) — same IDs as lib/demo/forex-incident-1028.ts
+  // indicator ids: 3=M2-LP-022, 5=M2-XAU-247, 9=M2-FEED-003 (seed order above).
+  insertAlert.run(
+    "ALT-INC-1028",
+    3,
+    "BREACH",
+    "INC-1028 · LP Quote Delay & Final Quote Staleness (XAUUSD)",
+    "LP-A XAUUSD quote age peaked at 4.8s; broker final quote freeze 7.2s. Evidence supports an upstream LP feed anomaly; fallback takeover and client/order impact remain unverified.",
+    5.2,
+    "OPEN",
+    "TKT-INC-1028"
+  );
+  insertAlert.run(
+    "ALT-LP-HEDGE-GAP",
+    4,
+    "WARN",
+    "LP reject storm → hedge coverage gap",
+    "LP-HEDGE-GAP: hedge coverage slipped while LP rejects rise on the XAUUSD book (companion to INC-1028).",
+    78,
+    "OPEN",
+    "TKT-LP-HEDGE-GAP"
+  );
+  insertAlert.run(
+    "ALT-XAU-WEEKEND",
+    5,
+    "WARN",
+    "XAUUSD247 weekend exposure build-up",
+    "XAU-WEEKEND: weekend metals exposure climbing on XAUUSD247 (same CFD book as INC-1028).",
+    11800,
+    "OPEN",
+    "TKT-XAU-WEEKEND"
+  );
+  insertAlert.run(
+    "ALT-STALE-FEED-LIQ",
+    9,
+    "BREACH",
+    "Stale feed → liquidation / credit contagion",
+    "STALE-FEED-LIQ: stale feed contagion path closed after symbol halt + margin review (book shared with INC-1028).",
+    11,
+    "CLOSED",
+    "TKT-STALE-FEED-LIQ"
+  );
 
   const insertTicket = db.prepare(
     `INSERT INTO monitor_tickets (ticket_id, alert_id, title, status, severity, assignee_user_id, department_code, lark_message_id)
@@ -623,6 +665,10 @@ function seedIfEmpty(db: Database.Database) {
   insertTicket.run("TKT-88390", 3, "Crypto hot wallet float", "IN_PROGRESS", "WARN", 6, "SYSTEM", "om_lark_88390");
   insertTicket.run("TKT-88445", 4, "CFD book drawdown warn", "OPEN", "WARN", 2, "RISK_CONTROL", null);
   insertTicket.run("TKT-88450", 5, "Hedge coverage warn", "OPEN", "WARN", 5, "SYSTEM", null);
+  insertTicket.run("TKT-INC-1028", 6, "INC-1028 · LP-A XAUUSD quote delay", "ESCALATED", "BREACH", 2, "RISK_CONTROL", "om_lark_ALT-INC-1028");
+  insertTicket.run("TKT-LP-HEDGE-GAP", 7, "LP reject storm → hedge coverage gap", "OPEN", "WARN", 5, "SYSTEM", "om_lark_ALT-LP-HEDGE-GAP");
+  insertTicket.run("TKT-XAU-WEEKEND", 8, "XAUUSD247 weekend exposure build-up", "OPEN", "WARN", 2, "RISK_CONTROL", "om_lark_ALT-XAU-WEEKEND");
+  insertTicket.run("TKT-STALE-FEED-LIQ", 9, "Stale feed → liquidation / credit contagion", "RESOLVED", "BREACH", 2, "RISK_CONTROL", "om_lark_ALT-STALE-FEED-LIQ");
 
   const insertLark = db.prepare(
     `INSERT INTO lark_channels (name, chat_id, purpose, department_code, severity_min, enabled, webhook_url)
@@ -687,13 +733,13 @@ const MONITOR_SEED_ROWS: Array<{
 }> = [
   { monitor_id: "M2-EQ-001", name: "Company Equity Drawdown", domain_code: "MARKET_PRICING", product: "CFD", warn: 3, breach: 5, unit: "%", status: "WARN", last_value: 3.4, tickets: 1 },
   { monitor_id: "M2-MRG-014", name: "Accounts >90% Margin Utilisation", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 50, breach: 100, unit: "count", status: "BREACH", last_value: 128, tickets: 2 },
-  { monitor_id: "M2-LP-022", name: "LP Reject Rate (oneZero)", domain_code: "LP_HEDGE", product: "CFD", warn: 2, breach: 5, unit: "%", status: "HEALTHY", last_value: 0.8, tickets: 0 },
-  { monitor_id: "M2-HEDGE-007", name: "Hedge Coverage Ratio", domain_code: "LP_HEDGE", product: "CFD", warn: 85, breach: 70, unit: "%", status: "WARN", last_value: 82, tickets: 1 },
-  { monitor_id: "M2-XAU-247", name: "XAUUSD247 Net Exposure", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 10000, breach: 15000, unit: "lots", status: "HEALTHY", last_value: 4200, tickets: 0 },
+  { monitor_id: "M2-LP-022", name: "LP Reject Rate (oneZero)", domain_code: "LP_HEDGE", product: "CFD", warn: 2, breach: 5, unit: "%", status: "BREACH", last_value: 5.2, tickets: 1 },
+  { monitor_id: "M2-HEDGE-007", name: "Hedge Coverage Ratio", domain_code: "LP_HEDGE", product: "CFD", warn: 85, breach: 70, unit: "%", status: "WARN", last_value: 78, tickets: 1 },
+  { monitor_id: "M2-XAU-247", name: "XAUUSD247 Net Exposure", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 10000, breach: 15000, unit: "lots", status: "WARN", last_value: 11800, tickets: 1 },
   { monitor_id: "M2-CRYPTO-WALLET", name: "Hot Wallet Float Ratio", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 15, breach: 25, unit: "%", status: "WARN", last_value: 18.2, tickets: 1 },
   { monitor_id: "M2-CRYPTO-LIQ", name: "Liquidation Engine Backlog", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 50, breach: 200, unit: "orders", status: "HEALTHY", last_value: 12, tickets: 0 },
   { monitor_id: "M2-COPY-009", name: "Top Signal Provider Copier Concentration", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 15, breach: 25, unit: "%", status: "BREACH", last_value: 31, tickets: 1 },
-  { monitor_id: "M2-FEED-003", name: "Stale Quote Symbols", domain_code: "MARKET_PRICING", product: "CFD", warn: 3, breach: 10, unit: "symbols", status: "HEALTHY", last_value: 1, tickets: 0 },
+  { monitor_id: "M2-FEED-003", name: "Stale Quote Symbols", domain_code: "MARKET_PRICING", product: "CFD", warn: 3, breach: 10, unit: "symbols", status: "WARN", last_value: 8, tickets: 1 },
   { monitor_id: "M2-FRAUD-011", name: "Multi-account Cluster Score", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 0.7, breach: 0.85, unit: "score", status: "WARN", last_value: 0.74, tickets: 1 },
   { monitor_id: "M2-STOP-018", name: "Stop-out Count (5m window)", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 20, breach: 40, unit: "count/5m", status: "HEALTHY", last_value: 8, tickets: 0 },
   { monitor_id: "M2-NBP-016", name: "Negative Balance Account Count", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 2, breach: 5, unit: "accounts", status: "HEALTHY", last_value: 0, tickets: 0 },
@@ -1123,6 +1169,10 @@ function runEnsureAiLayer(db: Database.Database) {
   seedInterventionsIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
+  // After messenger exists so INC-1028 thread can attach to the live alert row.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { ensureForexPackDeskSeed } = require("@/lib/demo/forex-pack-seed") as typeof import("@/lib/demo/forex-pack-seed");
+  ensureForexPackDeskSeed(db);
   // Lazy require — severity-feedback imports db helpers.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { ensureSeverityFeedbackSchema, seedSeverityFeedbackIfEmpty } =

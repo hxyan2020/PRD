@@ -35,12 +35,12 @@ const STEPS = [
     hintZh: `佇列 · ${fx.incident_id}`,
   },
   {
-    href: fx.discovery_path,
-    icon: Compass,
-    en: "Discovery",
-    zh: "未知風險",
-    hintEn: "Candidate intake",
-    hintZh: "候選收件",
+    href: "/admin/monitor-labs",
+    icon: FlaskConical,
+    en: "Monitor labs",
+    zh: "監控實驗室",
+    hintEn: "AI / L2 / Noise",
+    hintZh: "AI／L2／降噪",
   },
   {
     href: "/admin/indicator-aggregation",
@@ -51,12 +51,20 @@ const STEPS = [
     hintZh: "L1 → L2 看板",
   },
   {
+    href: fx.discovery_path,
+    icon: Compass,
+    en: "Discovery",
+    zh: "未知風險",
+    hintEn: "Candidate intake",
+    hintZh: "候選收件",
+  },
+  {
     href: "/admin/messenger",
     icon: MessageSquare,
     en: "Messenger",
     zh: "Messenger",
-    hintEn: "Ops inbox demo",
-    hintZh: "值班收件示範",
+    hintEn: `${fx.incident_id} inbox`,
+    hintZh: `${fx.incident_id} 收件`,
   },
   {
     href: "/admin/skills",
@@ -74,14 +82,6 @@ const STEPS = [
     hintEn: "Closed analytics",
     hintZh: "結案分析",
   },
-  {
-    href: "/admin/monitor-labs",
-    icon: FlaskConical,
-    en: "Monitor labs",
-    zh: "監控實驗室",
-    hintEn: "HTML walkthroughs",
-    hintZh: "HTML 演練",
-  },
 ] as const;
 
 /**
@@ -98,8 +98,8 @@ export function HomeDeskFlowStrip() {
           </h2>
           <p className="text-xs text-[var(--muted)] mt-0.5">
             <EnZh
-              en="One path — detect → open queue → understand → act → close. Labs are demos only."
-              zh="一條路徑 — 偵測 → 未結佇列 → 理解 → 行動 → 結案。實驗室僅供示範。"
+              en="One forex path — Monitor → Alerts → Labs → Aggregation → Discovery → Messenger → close."
+              zh="一條外匯路徑 — 監控 → 警報 → 實驗室 → 聚合 → 探索 → Messenger → 結案。"
             />
           </p>
         </div>

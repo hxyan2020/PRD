@@ -102,16 +102,24 @@ export function HomeDummyAlertButtons() {
           en={`Dummy spine now raises the shared forex CFD pack (${FOREX_INCIDENT_1028.incident_id} · ${FOREX_INCIDENT_1028.lp} · ${FOREX_INCIDENT_1028.symbol}). Continue:`}
           zh={`虛擬脊柱現在走共用外匯 CFD 組合（${FOREX_INCIDENT_1028.incident_id} · ${FOREX_INCIDENT_1028.lp} · ${FOREX_INCIDENT_1028.symbol}）。下一步：`}
         />{" "}
-        <Link className="underline text-teal-800" href={`/admin/alerts?monitor_id=${FOREX_INCIDENT_1028.primary_monitor_id}`}>
-          <EnZh en="Open Alerts" zh="未結警報" />
-        </Link>
-        {" · "}
         <Link className="underline text-teal-800" href="/admin/messenger">
           <EnZh en="Ops Inbox" zh="值班收件匣" />
         </Link>
         {" · "}
+        <Link className="underline text-teal-800" href={FOREX_INCIDENT_1028.risk_log_path}>
+          <EnZh en="Risk Log" zh="風險日誌" />
+        </Link>
+        {" · "}
+        <Link className="underline text-teal-800" href={FOREX_INCIDENT_1028.aggregation_path}>
+          <EnZh en="Aggregation" zh="指標聚合" />
+        </Link>
+        {" · "}
         <Link className="underline text-teal-800" href={FOREX_INCIDENT_1028.workspace_path}>
           <EnZh en="AI Incident" zh="AI 事故" />
+        </Link>
+        {" · "}
+        <Link className="underline text-teal-800" href={`/admin/alerts?monitor_id=${FOREX_INCIDENT_1028.primary_monitor_id}`}>
+          <EnZh en="Open Alerts (pack)" zh="未結警報（組合）" />
         </Link>
       </p>
     </section>

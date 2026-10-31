@@ -43,7 +43,10 @@ const analyse = read("src/lib/ai/discovery-analyse.ts");
 assert.match(analyse, /deterministicSuggestion/);
 assert.match(analyse, /enableDiscoveryOpenAi/);
 assert.match(analyse, /OPENAI_API_KEY/);
-assert.match(analyse, /MOCK 回應/);
+assert.match(analyse, /MOCK 思考完成|MOCK thinking complete/);
+assert.match(analyse, /thinking_steps/);
+assert.match(analyse, /llmEnrichmentEnabled/);
+assert.match(analyse, /forexPackMonitorIds|FOREX_INCIDENT_1028/);
 assert.match(analyse, /zh-Hant/);
 
 const nextCfg = read("next.config.ts");

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { RiskLogDashboard } from "@/components/RiskLogDashboard";
 import { getRiskLogDashboard } from "@/lib/ai/risk-log";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
@@ -24,6 +25,9 @@ export default async function RiskLogPage() {
   return (
     <div>
       <AdminPageHeader pageKey="risk-log" />
+      <div className="mb-3">
+        <ForexDeskPackLinks mode="compact" />
+      </div>
       <RiskLogDashboard data={data} closedPacks={closedPacks} />
     </div>
   );

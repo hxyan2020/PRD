@@ -3,7 +3,7 @@ import { analyzeAlert, raiseMonitorAlarm } from "@/lib/ai/analyze";
 import { logSpineEvent, type SpineStage } from "@/lib/ai/spine";
 import { decideIntervention } from "@/lib/ai/intervention";
 import { messengerAction, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
-import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
+import { FOREX_COMPANION_CASES, FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 import type { UiLocale } from "@/lib/i18n";
 
 export type DummySpineMode = "single" | "group";
@@ -20,6 +20,8 @@ export type DummyTemplate = {
 };
 
 const fx = FOREX_INCIDENT_1028;
+const staleCompanion = FOREX_COMPANION_CASES.find((c) => c.id === "STALE-FEED-LIQ")!;
+const hedgeCompanion = FOREX_COMPANION_CASES.find((c) => c.id === "LP-HEDGE-GAP")!;
 
 /** Forex CFD pack first so home dummy spine walks the same INC-1028 book. */
 export const DUMMY_SPINE_TEMPLATES: DummyTemplate[] = [
@@ -35,13 +37,13 @@ export const DUMMY_SPINE_TEMPLATES: DummyTemplate[] = [
   },
   {
     key: "feed-stale",
-    monitor_id: "M2-FEED-003",
+    monitor_id: staleCompanion.primary_monitor_id,
     severity: "WARN",
     observed_value: 8,
     prefer_rag: true,
     action_code: "WIDEN_SPREAD",
     title: `DUMMY · ${fx.incident_id} stale quotes`,
-    message: `Home dummy: stale-quote symbols climbing on the ${fx.symbol} book (companion to ${fx.incident_id} FINAL_QUOTE_STALE). RAG path + human review.`,
+    message: `Home dummy: stale-quote symbols climbing on the ${fx.symbol} book (companion ${staleCompanion.id}). RAG path + human review.`,
   },
   {
     key: "hedge-gap",
@@ -51,7 +53,7 @@ export const DUMMY_SPINE_TEMPLATES: DummyTemplate[] = [
     prefer_rag: false,
     action_code: "INCREASE_ABOOK",
     title: `DUMMY · ${fx.incident_id} hedge coverage gap`,
-    message: `Home dummy: hedge coverage slipped while LP rejects rise — companion CHAIN-LP-HEDGE-GAP on the same CFD book as ${fx.incident_id}.`,
+    message: `Home dummy: hedge coverage slipped while LP rejects rise — companion ${hedgeCompanion.chain_code} on the same CFD book as ${fx.incident_id}.`,
   },
 ];
 

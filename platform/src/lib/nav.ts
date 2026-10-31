@@ -53,27 +53,16 @@ export const NAV_GROUPS: Array<{ id: NavGroupId; en: string; "zh-Hant": string }
 ];
 
 /**
- * Left-pane order follows the desk workflow:
- * detect → open queue → understand → act → close → org → platform → docs.
- * HTML labs are nested under one "Monitor labs" item (deep links kept).
+ * Left-pane order follows the forex desk walkthrough:
+ * Monitor → Open Alerts → Monitor labs → Aggregation → Discovery →
+ * Risk Domains / MI / Daily → Closed Risk Log → Response → org → platform → docs.
+ * HTML labs nested under "Monitor labs" (deep links kept).
  */
 export const NAV_ITEMS = [
   { href: "/admin", label: "Admin Home", icon: LayoutDashboard, permission: "admin.access", group: "overview" },
 
   { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read", group: "monitor" },
   { href: "/admin/alerts", label: "Open Alerts", icon: Bell, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/risk-log", label: "Closed Risk Log", icon: ScrollText, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
-  {
-    href: "/admin/indicator-aggregation",
-    label: "Indicator Aggregation",
-    icon: Link2,
-    permission: "monitor.read",
-    group: "monitor",
-  },
-  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
   {
     href: "/admin/monitor-labs",
     label: "Monitor labs",
@@ -81,6 +70,18 @@ export const NAV_ITEMS = [
     permission: "monitor.read",
     group: "monitor",
   },
+  {
+    href: "/admin/indicator-aggregation",
+    label: "Indicator Aggregation",
+    icon: Link2,
+    permission: "monitor.read",
+    group: "monitor",
+  },
+  { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
+  { href: "/admin/risk-log", label: "Closed Risk Log", icon: ScrollText, permission: "monitor.read", group: "monitor" },
 
   { href: "/admin/skills", label: "AI Skills", icon: Sparkles, permission: "skills.read", group: "ai" },
   { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read", group: "ai" },

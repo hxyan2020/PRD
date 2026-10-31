@@ -8,6 +8,7 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { StatusBadge, Badge, SeverityBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { T } from "@/components/T";
 import { Phrase } from "@/components/Phrase";
 import { EnZh } from "@/components/EnZh";
@@ -101,6 +102,10 @@ export default async function Monitor2Page({
   return (
     <div>
       <AdminPageHeader pageKey="monitor-2" />
+
+      <div className="mt-3 mb-3">
+        <ForexDeskPackLinks mode="banner" />
+      </div>
 
       <ThresholdAdjustmentFlowDemo />
 

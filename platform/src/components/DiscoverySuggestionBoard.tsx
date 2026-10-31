@@ -22,6 +22,7 @@ type DiscoverySuggestion = {
   confidence: string;
   analysis_source: string;
   model?: string | null;
+  thinking_steps?: string[];
 };
 
 type Candidate = {
@@ -53,6 +54,8 @@ type AiStatus = {
   model: string | null;
   key_configured: boolean;
   can_go_live: boolean;
+  auto_live?: boolean;
+  operator_forced_mock?: boolean;
 };
 
 type Roles = {
@@ -83,6 +86,19 @@ function SuggestionCard({
   const zh = locale === "zh-Hant";
   const rows: Array<[string, string, ReactNode]> = [
     [zh ? "評估" : "Assessment", "assessment", suggestion.assessment],
+    ...(suggestion.thinking_steps?.length
+      ? ([
+          [
+            zh ? "思考步驟" : "Thinking steps",
+            "thinking",
+            <ol key="t" className="list-decimal pl-5 space-y-0.5 font-mono text-xs">
+              {suggestion.thinking_steps.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
+            </ol>,
+          ],
+        ] as Array<[string, string, ReactNode]>)
+      : []),
     [
       zh ? "可能根因" : "Possible root causes",
       "causes",

@@ -589,6 +589,43 @@ const BASE_LINKED_SCENARIOS: LinkedScenario[] = [
     ],
   },
   {
+    code: "CHAIN-PRICING-FEED-PROPAGATION",
+    name: "LP quote delay → final quote stale → pricing publish lag (INC-1028)",
+    description:
+      "Canonical forex CFD pack INC-1028: LP-A XAUUSD quote age and broker final-quote freeze propagate through pricing before client impact is confirmed.",
+    product: "CFD",
+    domain: "MARKET_PRICING",
+    severity: "BREACH",
+    sequence: [
+      { t_minutes: 0, monitor_id: "M2-LP-022", severity: "WARN", signal: "LP reject / quote age rising" },
+      { t_minutes: 3, monitor_id: "M2-LP-022", severity: "BREACH", signal: "LP reject rate ≥5% / quote age peak" },
+      { t_minutes: 5, monitor_id: "M2-FEED-003", severity: "WARN", signal: "Final quote stale symbols climbing" },
+      { t_minutes: 8, monitor_id: "M2-FEED-003", severity: "BREACH", signal: "Broker final quote freeze ≥7s" },
+      { t_minutes: 12, monitor_id: "M2-HEDGE-007", severity: "WARN", signal: "Coverage soft while LP flaky" },
+    ],
+    causes: ["Upstream LP feed anomaly", "Aggregator lag", "No fallback takeover yet", "Publish lag on Pricing Engine SG-02"],
+    escalation_plan: [
+      { after_minutes: 0, team: "Pricing Engine SG-02", channel: "oc_trading_infra", action: "Confirm LP-A quote age + final quote freeze" },
+      { after_minutes: 5, team: "Risk Control", channel: "oc_risk_control_desk", action: "Open INC-1028 workspace + aggregation" },
+      { after_minutes: 15, team: "Risk Owner", channel: "oc_risk_control_desk", action: "Approve L2 PRICING_FEED_PROPAGATION" },
+    ],
+    corrections: [
+      { action: "failover_feed", bu: "SYSTEM", description: "Switch secondary LP / feed", requires_human: true },
+      { action: "suggest_symbol_halt", bu: "RISK_CONTROL", description: "Halt XAUUSD if freeze persists", requires_human: true },
+      { action: "suggest_lp_disable", bu: "SYSTEM", description: "Disable LP-A if rejects persist", requires_human: true },
+    ],
+    linked_skills: ["SKILL-LP-REJECT-STORM", "SKILL-STALE-FEED", "SKILL-HEDGE-COVERAGE"],
+    past_cases: [
+      {
+        case_id: "CASE-INC-1028",
+        date: "2026-10-16",
+        alert_id: "ALT-INC-1028",
+        outcome: "OPEN",
+        summary: "LP-A XAUUSD quote delay — primary desk story across Monitor → Labs → Messenger.",
+      },
+    ],
+  },
+  {
     code: "CHAIN-FEED-LIQUIDATION-ERROR",
     name: "Stale feed → false margin stress → equity noise",
     description: "Bad prices create artificial margin utilisation and wrong liquidations.",

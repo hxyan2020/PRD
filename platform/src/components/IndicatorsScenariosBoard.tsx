@@ -189,6 +189,24 @@ export function IndicatorsScenariosBoard({
               </Link>
             ))}
           </div>
+          {forex.companions?.length ? (
+            <div className="text-xs border-t border-teal-200/80 pt-3 mt-1">
+              <div className="font-semibold mb-1.5">
+                <EnZh en="Companion cases (same LP/XAU book)" zh="伴隨案例（同一 LP／XAU 帳簿）" />
+              </div>
+              <ul className="space-y-1.5">
+                {forex.companions.map((c) => (
+                  <li key={c.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <Link className="font-mono underline text-teal-800" href={c.href}>
+                      {c.id}
+                    </Link>
+                    <span>{zh ? c.title_zh : c.title_en}</span>
+                    <span className="text-[var(--muted)] font-mono">{c.chain_code}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </section>
       ) : null}
 

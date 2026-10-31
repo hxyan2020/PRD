@@ -1,7 +1,12 @@
 import { getDb } from "@/lib/db";
 import { DOMAIN_SCENARIOS } from "@/lib/ai/risk-domain-scenarios";
 import { SKILL_SCENARIOS, LINKED_SCENARIOS } from "@/lib/ai/risk-scenarios-catalog";
-import { FOREX_INCIDENT_1028, forexIncidentDeskLinks } from "@/lib/demo/forex-incident-1028";
+import {
+  FOREX_COMPANION_CASES,
+  FOREX_INCIDENT_1028,
+  forexIncidentDeskLinks,
+  forexPackMonitorIds,
+} from "@/lib/demo/forex-incident-1028";
 import { getIndicatorMeta } from "@/lib/monitor-indicator-meta";
 
 export type IndicatorCatalogRow = {
@@ -68,7 +73,7 @@ export function listIndicatorCatalog(): IndicatorCatalogRow[] {
     last_value: number | null;
   }>;
 
-  const demo = new Set<string>(FOREX_INCIDENT_1028.monitors);
+  const demo = new Set<string>(forexPackMonitorIds());
   return rows.map((r) => {
     const meta = getIndicatorMeta(r.monitor_id, { name: r.name, unit: r.unit });
     return {
@@ -120,5 +125,15 @@ export function forexDemoPack() {
   return {
     ...FOREX_INCIDENT_1028,
     links: forexIncidentDeskLinks(),
+    companions: FOREX_COMPANION_CASES.map((c) => ({
+      id: c.id,
+      alert_id: c.alert_id,
+      chain_code: c.chain_code,
+      title_en: c.title_en,
+      title_zh: c.title_zh,
+      primary_monitor_id: c.primary_monitor_id,
+      monitors: [...c.monitors],
+      href: c.href,
+    })),
   };
 }

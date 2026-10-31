@@ -3,6 +3,7 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { AdminLink } from "@/components/AdminLink";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { T } from "@/components/T";
 import { redirect } from "next/navigation";
 import { readSearchParams } from "@/lib/static-export";
@@ -36,6 +37,9 @@ export default async function AlertsPage({
           </span>
         }
       />
+      <div className="mb-3">
+        <ForexDeskPackLinks mode="banner" />
+      </div>
       <AlertTrackerBoard
         packs={packs}
         canOperate={hasPermission(user.role_code, "monitor.operate")}

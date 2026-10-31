@@ -65,6 +65,11 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
     "ALT-1003": { ackMin: 18, resolveMin: 210, by: 6 },
     "ALT-1004": { ackMin: 25, by: 1 },
     "ALT-1005": { ackMin: 15, resolveMin: 80, by: 2 },
+    // Forex CFD pack — keep INC-1028 open (ack only); close stale-feed companion for Risk Log.
+    "ALT-INC-1028": { ackMin: 6, by: 2 },
+    "ALT-LP-HEDGE-GAP": { ackMin: 10, by: 5 },
+    "ALT-XAU-WEEKEND": { ackMin: 14, by: 2 },
+    "ALT-STALE-FEED-LIQ": { ackMin: 9, resolveMin: 110, by: 2 },
   };
 
   for (const a of openAlerts) {
@@ -146,6 +151,42 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
       750000,
       "hedge_gap",
       "LP coverage restored after inventory skew validation.",
+    ],
+    [
+      "ALT-INC-1028",
+      "NEAR_MISS",
+      65000,
+      420000,
+      1800000,
+      "pricing_feed_gap",
+      "INC-1028 LP-A XAUUSD quote delay — fallback path reviewed; client impact unverified; still open on desk.",
+    ],
+    [
+      "ALT-LP-HEDGE-GAP",
+      "OPEN",
+      18000,
+      90000,
+      620000,
+      "hedge_gap",
+      "Companion LP-HEDGE-GAP — coverage slip while LP rejects rise on the INC-1028 book.",
+    ],
+    [
+      "ALT-XAU-WEEKEND",
+      "OPEN",
+      22000,
+      110000,
+      980000,
+      "product_exposure",
+      "Companion XAU-WEEKEND — metals weekend exposure on same CFD book as INC-1028.",
+    ],
+    [
+      "ALT-STALE-FEED-LIQ",
+      "PREVENTED",
+      48000,
+      510000,
+      2400000,
+      "pricing_feed_gap",
+      "Companion STALE-FEED-LIQ closed — symbol halt + margin review stopped contagion into liquidations.",
     ],
   ];
 

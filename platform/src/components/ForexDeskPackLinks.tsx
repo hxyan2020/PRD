@@ -43,8 +43,8 @@ export function ForexDeskPackLinks({
             <p className="text-xs mt-1 text-teal-900/85">{zh ? fx.title_zh : fx.title_en}</p>
             <p className="text-[11px] mt-1 text-teal-800/75">
               <EnZh
-                en="Same story across Monitor → Alerts → Aggregation → Labs → Messenger → Risk Log. Companions share the LP/XAU book."
-                zh="同一故事貫穿 監控 → 警報 → 聚合 → 實驗室 → Messenger → 風險日誌。伴隨案例共用 LP／XAU 帳簿。"
+                en="Same story across Monitor → Alerts → Labs → Aggregation → Discovery → Messenger → Risk Log. Companions share the LP/XAU book."
+                zh="同一故事貫穿 監控 → 警報 → 實驗室 → 聚合 → 探索 → Messenger → 風險日誌。伴隨案例共用 LP／XAU 帳簿。"
               />
             </p>
           </div>
@@ -59,15 +59,19 @@ export function ForexDeskPackLinks({
             </Link>
           ))}
         </div>
-        <div className="mt-3 text-[11px] text-teal-900/80">
+        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-teal-900/80">
           <span className="font-semibold">
             <EnZh en="Companions:" zh="伴隨案例：" />
-          </span>{" "}
-          {FOREX_COMPANION_CASES.map((c, idx) => (
-            <span key={c.id}>
-              {idx ? " · " : ""}
+          </span>
+          {FOREX_COMPANION_CASES.map((c) => (
+            <Link
+              key={c.id}
+              href={c.href}
+              className="underline decoration-teal-600/40 hover:decoration-teal-800"
+              data-testid={`forex-companion-${c.id}`}
+            >
               {zh ? c.title_zh : c.title_en}
-            </span>
+            </Link>
           ))}
         </div>
       </div>

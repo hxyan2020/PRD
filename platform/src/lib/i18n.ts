@@ -117,15 +117,15 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   discovery: {
     title: { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
     subtitle: {
-      en: "Notebook-parity AI suggestion card: Connect OpenAI / Mock → Analyse → Approve for validation / Ask more info / Dismiss. Optional promote to skill + Monitor 2.0 after RO check.",
-      "zh-Hant": "與筆記本對齊的 AI 建議卡：連線 OpenAI／Mock → 分析 → 核准驗證／要求更多資訊／駁回。可選經 RO 覆核後晉升為技能＋Monitor 2.0。",
+      en: "Runs on simulated SQLite (INC-1028 forex book). Analyse uses OpenAI when OPENAI_API_KEY is set (Connect optional); else MOCK with visible thinking. RO still gates promote.",
+      "zh-Hant": "在模擬 SQLite（INC-1028 外匯帳簿）上執行。設定 OPENAI_API_KEY 時分析走 OpenAI（連線可選）；否則 MOCK 並顯示思考步驟。晉升仍需 RO 把關。",
     },
   },
   "indicator-aggregation": {
     title: { en: "Indicator Aggregation Flow", "zh-Hant": "指標聚合流程" },
     subtitle: {
-      en: "Linear process: single alert → skill/RAG lookup → aggregate membership → wait window for related indicators → RO as single or aggregated case.",
-      "zh-Hant": "線型流程：單一告警 → Skill／RAG 檢索 → 聚合成員資格 → 關聯指標等待視窗 → RO 按單一或聚合案件處理。",
+      en: "Linear L1→L2 on the shared forex pack (CHAIN-PRICING-FEED-PROPAGATION / INC-1028): single alert → skill/RAG → aggregate wait → RO as single or aggregated case.",
+      "zh-Hant": "共用外匯組合（CHAIN-PRICING-FEED-PROPAGATION／INC-1028）的線型 L1→L2：單一告警 → Skill／RAG → 聚合等待 → RO 按單一或聚合案件處理。",
     },
   },
   "l2-rca": {
@@ -159,8 +159,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   alerts: {
     title: { en: "Open Alerts", "zh-Hant": "未結警報" },
     subtitle: {
-      en: "Open queue only — AI pipeline controls, expand for facts / AI RCA / improve / POC / action log. Closed tickets → Closed Risk Log.",
-      "zh-Hant": "僅未結佇列 — AI 管線控制，展開可看事實／AI 根因／改進／承辦／動作紀錄。已關閉工單 → 已結風險日誌。",
+      en: "Open queue — includes forex pack ALT-INC-1028 (LP-A · XAUUSD) + companions. Expand for facts / AI RCA / improve / POC / action log. Closed → Risk Log.",
+      "zh-Hant": "未結佇列 — 含外匯組合 ALT-INC-1028（LP-A · XAUUSD）與伴隨案例。展開可看事實／AI 根因／改進／承辦／動作紀錄。已關閉 → 風險日誌。",
     },
   },
   "ai-analyses": {
@@ -222,8 +222,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   messenger: {
     title: { en: "Ops Inbox (Demo)", "zh-Hant": "值班收件匣（示範）" },
     subtitle: {
-      en: "Lark-style ops inbox demo: split chat windows per POC, evidence, chatbot, escalate / dismiss / close, P0–P3 severity feedback, and controls. Channel registry lives under Lark channels (config).",
-      "zh-Hant": "Lark 風格值班收件匣示範：依承辦拆窗、證據、聊天機器人、升級／排除／結案、P0–P3 嚴重度回饋與控制。頻道登錄在 Lark 頻道（設定）。",
+      en: "Lark-style ops inbox — seeded THR-INC-1028 (LP-A · XAUUSD) plus synced alerts. Evidence, chatbot, escalate / dismiss / close, P0–P3 feedback. Channel registry under Lark channels.",
+      "zh-Hant": "Lark 風格值班收件匣 — 種子 THR-INC-1028（LP-A · XAUUSD）與同步警報。證據、聊天機器人、升級／排除／結案、P0–P3 回饋。頻道登錄在 Lark 頻道。",
     },
   },
   "ai-access": {
@@ -236,8 +236,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "monitor-2": {
     title: { en: "Monitor 2.0 Integration Hub", "zh-Hant": "Monitor 2.0 整合中心" },
     subtitle: {
-      en: "Unified indicator + detector registry — thresholds, sampling runs, risk scenarios and combinations. Animated threshold adjustment full flow (observe → AI X→Y → CR → dual control → apply → audit) sits above the table. Alerts live under Realtime Alert & Tracker.",
-      "zh-Hant": "統一指標與偵測器登錄 — 門檻、採樣執行、風險情境與組合。表格上方有門檻調整全流程動態演示（取樣 → AI X→Y → CR → 雙重控制 → 套用 → 稽核）。警報請至「即時警報與追蹤」。",
+      en: "Unified indicator + detector registry. Forex pack M2-LP-022 / FEED-003 / XAU-247 / HEDGE-007 seed in WARN/BREACH for INC-1028. Threshold flow demo above the table; open queue under Open Alerts.",
+      "zh-Hant": "統一指標與偵測器登錄。外匯組合 M2-LP-022／FEED-003／XAU-247／HEDGE-007 以 WARN／BREACH 種子對應 INC-1028。表格上方為門檻流程演示；未結佇列請至未結警報。",
     },
   },
   lark: {

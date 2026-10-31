@@ -4,6 +4,7 @@ import { ensureDiscoverySchema } from "@/lib/ai/discovery-schema";
 import { logSpineEvent } from "@/lib/ai/spine";
 import { decideChangeRequest, proposeChange } from "@/lib/ai/admin";
 import { seedDetectors } from "@/lib/ai/detectors";
+import { forexPackMonitorIds } from "@/lib/demo/forex-incident-1028";
 
 type Actor = { id: number; name: string; role_code: string };
 
@@ -91,7 +92,8 @@ function sampleFeatureWindow(db: ReturnType<typeof getDb>) {
       // Inject a late-window spike on a few series so discovery finds something in demo.
       // Prefer the shared forex CFD pack monitors (INC-1028 book) so discovery
       // and desk demos stay on the same use-case set each scan.
-      const forexPack = new Set(["M2-LP-022", "M2-FEED-003", "M2-XAU-247", "M2-HEDGE-007"]);
+      // Prefer shared forex CFD pack monitors (INC-1028 + companions).
+      const forexPack = new Set(forexPackMonitorIds());
       const spike =
         i >= 40 &&
         (forexPack.has(r.monitor_id) ||

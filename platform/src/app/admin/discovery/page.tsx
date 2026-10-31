@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { DiscoverySuggestionBoard } from "@/components/DiscoverySuggestionBoard";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { EnZh } from "@/components/EnZh";
 import {
   discoveryPendingCount,
@@ -68,6 +69,9 @@ export default async function DiscoveryPage() {
           </>
         }
       />
+      <div className="mb-3">
+        <ForexDeskPackLinks mode="banner" />
+      </div>
       <DiscoverySuggestionBoard
         initial={{
           candidates: listDiscoveryCandidates(undefined, 100) as React.ComponentProps<

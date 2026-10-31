@@ -64,8 +64,11 @@ async function main() {
     followup: "需要驗證計畫",
     locale: "zh-Hant",
   });
-  assert.match(suggestionZh.assessment, /MOCK 回應/);
-  assert.ok(suggestionZh.possible_root_causes.some((c) => /市場|流動性/.test(c)));
+  assert.match(suggestionZh.assessment, /MOCK 思考完成|MOCK 回應/);
+  assert.ok(suggestionZh.thinking_steps?.length);
+  assert.ok(
+    suggestionZh.possible_root_causes.some((c) => /市場|流動性|行情|拒絕|對沖|報價/.test(c))
+  );
 
   const ro = getDb()
     .prepare(`SELECT id, name, role_code FROM users WHERE email=?`)
