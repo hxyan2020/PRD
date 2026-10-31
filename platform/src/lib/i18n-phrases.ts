@@ -1308,7 +1308,9 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "AI Incident Report": "AI 事故報告",
   "Monitor 2.0 · Incident Response": "Monitor 2.0 · 事故應變",
   "LP Quote Delay & Final Quote Staleness (XAUUSD)": "LP 報價延遲與最終報價陳舊（XAUUSD）",
-  "Medium": "中",
+  "P2 Medium": "P2 中",
+  "Parent P2 Medium": "父級 P2 中",
+  "Severity: P2 Medium": "嚴重度：P2 中",
 
   // URL catalog desk-flow copy (phrase on /admin/docs/urls)
   "Control-plane overview: stats, dummy spine walk, desk-flow shortcuts (Monitor → Open Alerts → Labs → Aggregation → Discovery → Messenger → Skills → Risk Log) on shared forex pack INC-1028, expandable open-alert tracker; full L1→L2 / threshold demos live on their canonical pages":
@@ -1364,6 +1366,9 @@ export const DUMMY_PHRASE_FRAGMENTS = [
   "Severity: confirm if accurate, or re-recommend P0–P3 with reason codes.",
   "AI Incident Report",
   "LP Quote Delay & Final Quote Staleness (XAUUSD)",
+  "Parent P2 Medium",
+  "Severity: P2 Medium",
+  "P2 Medium",
   "Home dummy",
   "home-dummy",
 ] as const;

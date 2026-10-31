@@ -48,6 +48,19 @@ assert.match(analyse, /thinking_steps/);
 assert.match(analyse, /llmEnrichmentEnabled/);
 assert.match(analyse, /forexPackMonitorIds|FOREX_INCIDENT_1028/);
 assert.match(analyse, /zh-Hant/);
+assert.match(analyse, /fresh thinking each call|不快取/);
+assert.match(analyse, /loadSimulatedMonitorSnapshot/);
+
+const discovery = read("src/lib/ai/discovery.ts");
+assert.match(discovery, /sampleFeatureWindow/);
+assert.match(discovery, /detector_runs/);
+assert.match(discovery, /scan_seed/);
+assert.match(discovery, /thinking_steps/);
+assert.match(discovery, /simulated_from_monitor_indicators/);
+assert.match(discovery, /live_sqlite_feature_window/);
+
+assert.match(board, /discovery-scan-thinking/);
+assert.match(board, /Scan process trail|掃描過程軌跡/);
 
 const nextCfg = read("next.config.ts");
 assert.match(nextCfg, /crmp-admin/);

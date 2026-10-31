@@ -191,6 +191,7 @@ export function DiscoverySuggestionBoard({
       candidates_total: number;
       status: string;
       trigger_mode: string;
+      detail_json?: string;
     }>;
     pending_count: number;
     settings: Array<{ key: string; value: string }>;
@@ -215,6 +216,31 @@ export function DiscoverySuggestionBoard({
   const [suggestion, setSuggestion] = useState<DiscoverySuggestion | null>(null);
   const [filter, setFilter] = useState("PENDING_RO");
   const [showEvidence, setShowEvidence] = useState(false);
+  const [scanTrail, setScanTrail] = useState<{
+    scan_id: string;
+    scan_seed?: string;
+    data_source?: string;
+    thinking_steps: string[];
+  } | null>(() => {
+    const latest = initial.scans[0];
+    if (!latest?.detail_json) return null;
+    try {
+      const d = JSON.parse(latest.detail_json) as {
+        thinking_steps?: string[];
+        scan_seed?: string;
+        data_source?: string;
+      };
+      if (!d.thinking_steps?.length) return null;
+      return {
+        scan_id: latest.scan_id,
+        scan_seed: d.scan_seed,
+        data_source: d.data_source,
+        thinking_steps: d.thinking_steps,
+      };
+    } catch {
+      return null;
+    }
+  });
 
   const enabled =
     initial.settings.find((s) => s.key === "discovery.enabled")?.value !== "false";
@@ -255,8 +281,27 @@ export function DiscoverySuggestionBoard({
     try {
       const data = await post({ action: "scan_now" });
       const n = Number(data.candidates_new || 0);
+      const steps = Array.isArray(data.thinking_steps)
+        ? (data.thinking_steps as string[])
+        : Array.isArray(data.detail?.thinking_steps)
+          ? (data.detail.thinking_steps as string[])
+          : [];
+      if (steps.length) {
+        setScanTrail({
+          scan_id: String(data.scan_id || ""),
+          scan_seed: data.scan_seed ? String(data.scan_seed) : data.detail?.scan_seed,
+          data_source: data.data_source
+            ? String(data.data_source)
+            : data.detail?.data_source
+              ? String(data.detail.data_source)
+              : undefined,
+          thinking_steps: steps,
+        });
+      }
       setMsg(
-        locale === "zh-Hant" ? `掃描完成：新增 ${n} 個候選` : `Scan complete: ${n} new candidate(s)`
+        locale === "zh-Hant"
+          ? `掃描完成：新增 ${n} 個候選 · 來源 ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
+          : `Scan complete: ${n} new candidate(s) · source ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
       );
       if (n > 0) bumpNavBadge("/admin/discovery", n);
       router.refresh();
@@ -424,8 +469,8 @@ export function DiscoverySuggestionBoard({
             </p>
             <p className="text-[var(--muted)] text-[13px] leading-relaxed">
               <EnZh
-                en="1 Connect AI → 2 Analyse candidate → 3 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
-                zh="① 連線 AI → ② 分析候選 → ③ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
+                en="1 Scan on live SQLite seed (stat/ML process trail) → 2 Connect AI → 3 Analyse (fresh thinking each trigger) → 4 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
+                zh="① 以即時 SQLite 種子掃描（統計／ML 過程軌跡）→ ② 連線 AI → ③ 分析（每次觸發重新思考）→ ④ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
               />
             </p>
           </div>
@@ -616,6 +661,34 @@ export function DiscoverySuggestionBoard({
                 ) : null}
               </div>
             </div>
+            {scanTrail?.thinking_steps?.length ? (
+              <div
+                className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 space-y-2"
+                data-testid="discovery-scan-thinking"
+              >
+                <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-700">
+                  <EnZh en="Scan process trail" zh="掃描過程軌跡" />
+                  <Badge className="normal-case tracking-normal font-mono text-[10px]">
+                    {scanTrail.scan_id}
+                  </Badge>
+                  {scanTrail.data_source ? (
+                    <Badge className="normal-case tracking-normal text-[10px]">
+                      {scanTrail.data_source}
+                    </Badge>
+                  ) : null}
+                  {scanTrail.scan_seed ? (
+                    <Badge className="normal-case tracking-normal font-mono text-[10px]">
+                      seed {scanTrail.scan_seed}
+                    </Badge>
+                  ) : null}
+                </div>
+                <ol className="list-decimal pl-5 space-y-0.5 font-mono text-xs text-slate-800">
+                  {scanTrail.thinking_steps.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+              </div>
+            ) : null}
           </section>
 
           {selectedRow ? (

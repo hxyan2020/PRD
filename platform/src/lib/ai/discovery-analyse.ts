@@ -7,6 +7,7 @@
  * Connect remains available for explicit model selection / audit, but is not required.
  */
 
+import { randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
 import {
   FOREX_COMPANION_CASES,
@@ -150,29 +151,45 @@ function loadSimulatedMonitorSnapshot() {
   return { monitors: rows, open_pack_alerts: openPackAlerts };
 }
 
+function parseCandidateEvidence(evidenceJson?: string) {
+  try {
+    return JSON.parse(evidenceJson || "{}") as Record<string, unknown>;
+  } catch {
+    return {} as Record<string, unknown>;
+  }
+}
+
 export function deterministicSuggestion(
   candidate: DiscoveryCandidateInput,
   followup?: string,
   locale: "en" | "zh-Hant" = "en"
 ): DiscoverySuggestion {
   const zh = locale === "zh-Hant";
+  const analyseId = `ANL-${randomBytes(4).toString("hex").toUpperCase()}`;
   const snap = loadSimulatedMonitorSnapshot();
+  const evidence = parseCandidateEvidence(candidate.evidence_json);
   const hot = snap.monitors.filter((m) => m.status === "WARN" || m.status === "BREACH");
   const follow = followup?.trim()
     ? zh
       ? ` 審查人追問：${followup.trim().slice(0, 400)}`
       : ` Reviewer follow-up: ${followup.trim().slice(0, 400)}`
     : "";
+  const scanSeed = evidence.scan_seed ? String(evidence.scan_seed) : "n/a";
+  const dataSource = evidence.data_source ? String(evidence.data_source) : "sqlite_snapshot";
 
   const thinking_steps = zh
     ? [
+        `觸發 ${analyseId} @ ${new Date().toISOString()}（每次重新思考，不快取）`,
         `讀取模擬 SQLite 監控快照（${snap.monitors.length} 個 INC-1028 帳簿指標）`,
+        `候選證據 scan_seed=${scanSeed} · data_source=${dataSource}`,
         `熱點狀態：${hot.map((m) => `${m.monitor_id}=${m.status}@${m.last_value}`).join(" · ") || "無"}`,
         `候選方法 ${candidate.method} · 分數 ${candidate.score} — 對照 ${FOREX_INCIDENT_1028.incident_id} 與伴隨案例`,
         "區分相關與因果；未呼叫 OpenAI（MOCK）",
       ]
     : [
+        `Trigger ${analyseId} @ ${new Date().toISOString()} (fresh thinking each call; not cached)`,
         `Read simulated SQLite monitor snapshot (${snap.monitors.length} INC-1028-book indicators)`,
+        `Candidate evidence scan_seed=${scanSeed} · data_source=${dataSource}`,
         `Hot status: ${hot.map((m) => `${m.monitor_id}=${m.status}@${m.last_value}`).join(" · ") || "none"}`,
         `Candidate method ${candidate.method} · score ${candidate.score} — cross-check ${FOREX_INCIDENT_1028.incident_id} + companions`,
         "Separate correlation from causation; no OpenAI call (MOCK)",
@@ -269,16 +286,22 @@ async function liveOpenAiAnalyse(
 ): Promise<DiscoverySuggestion> {
   const model = aiModel || defaultOpenAiModel();
   aiModel = model;
+  const analyseId = `ANL-${randomBytes(4).toString("hex").toUpperCase()}`;
   const snap = loadSimulatedMonitorSnapshot();
+  const evidence = parseCandidateEvidence(candidate.evidence_json);
   const thinking_steps =
     locale === "zh-Hant"
       ? [
+          `觸發 ${analyseId} @ ${new Date().toISOString()}（LIVE，不快取）`,
           "載入模擬 SQLite 監控／警報快照",
+          `候選 scan_seed=${evidence.scan_seed ?? "n/a"} · data_source=${evidence.data_source ?? "sqlite"}`,
           `呼叫 OpenAI（${model}）進行根因推理`,
           `對齊 ${FOREX_INCIDENT_1028.incident_id} 外匯台面組合`,
         ]
       : [
+          `Trigger ${analyseId} @ ${new Date().toISOString()} (LIVE; not cached)`,
           "Load simulated SQLite monitor / alert snapshot",
+          `Candidate scan_seed=${evidence.scan_seed ?? "n/a"} · data_source=${evidence.data_source ?? "sqlite"}`,
           `Call OpenAI (${model}) for causal reasoning`,
           `Align with ${FOREX_INCIDENT_1028.incident_id} forex desk pack`,
         ];
@@ -290,9 +313,10 @@ async function liveOpenAiAnalyse(
     proposed_indicator: candidate.proposed_indicator,
     proposed_dimension: candidate.proposed_dimension,
     score: candidate.score,
-    evidence: JSON.parse(candidate.evidence_json || "{}"),
+    evidence,
     window_start: candidate.window_start,
     window_end: candidate.window_end,
+    analyse_id: analyseId,
   };
   const payload = JSON.stringify({
     candidate: safe,
@@ -366,6 +390,7 @@ export async function analyseDiscoveryCandidate(input: {
   locale?: "en" | "zh-Hant";
 }): Promise<DiscoverySuggestion> {
   const locale = input.locale || "en";
+  // Always recompute — never return a cached suggestion card.
   // Auto-link to LLM whenever the server key is present (unless operator forced Mock).
   if (ensureLiveIfPossible()) {
     return liveOpenAiAnalyse(input.candidate, input.followup, locale);
