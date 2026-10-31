@@ -1,9 +1,12 @@
 import { ConfigProvider } from 'antd';
+import { LocaleProvider, useLocale } from './i18n/locale';
 import { MainLayout } from './layouts/MainLayout';
 
-function App() {
+function AppShell() {
+  const { antdLocale } = useLocale();
   return (
     <ConfigProvider
+      locale={antdLocale}
       theme={{
         token: {
           colorPrimary: '#1677ff',
@@ -14,6 +17,14 @@ function App() {
     >
       <MainLayout />
     </ConfigProvider>
+  );
+}
+
+function App() {
+  return (
+    <LocaleProvider>
+      <AppShell />
+    </LocaleProvider>
   );
 }
 

@@ -1,4 +1,5 @@
-import { pageTitles, type PageKey } from '../config/menu';
+import { getPageTitles, type PageKey } from '../config/menu';
+import { useLocale } from '../i18n/locale';
 import { AdlAbnormalRecordPage } from '../pages/AdlAbnormalRecordPage';
 import { AdminAdlPage } from '../pages/AdminAdlPage';
 import {
@@ -43,6 +44,11 @@ import { RiskFundListPage } from '../pages/RiskFundListPage';
 import { SpreadAlertMonitorPage } from '../pages/SpreadAlertMonitorPage';
 import { ClosePositionPage, GlobalFrequencyPage, OpenBottomPositionPage } from '../pages/ToolsPages';
 import { TradeAmountFactorPage } from '../pages/TradeAmountFactorPage';
+
+function StubPage({ pageKey }: { pageKey: PageKey }) {
+  const { lang } = useLocale();
+  return <PlaceholderPage title={getPageTitles(lang)[pageKey]} />;
+}
 
 export function renderPage(key: PageKey) {
   switch (key) {
@@ -129,6 +135,6 @@ export function renderPage(key: PageKey) {
     case 'db-account-alert':
       return <DbAccountAlertPage />;
     default:
-      return <PlaceholderPage title={pageTitles[key]} />;
+      return <StubPage pageKey={key} />;
   }
 }

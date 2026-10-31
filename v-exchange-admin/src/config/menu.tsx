@@ -8,6 +8,7 @@ import {
   TeamOutlined,
   ToolOutlined,
 } from '@ant-design/icons';
+import type { AppLang } from '../i18n/locale';
 
 export type PageKey =
   | 'overview'
@@ -44,30 +45,25 @@ export type PageKey =
   | 'openapi-white-list'
   | 'openapi-market'
   | 'openapi-mm-blacklist'
-  // 财务管理
   | 'financial-report'
   | 'transfer-record'
   | 'financial-account'
   | 'financial-recon'
   | 'finance-flow'
-  // API 管理
   | 'api-open-list'
   | 'api-ratio-config'
   | 'api-user-limit-config'
   | 'api-user-taker-blacklist'
   | 'api-user-taker-config'
-  // 工具管理
   | 'tools-close-position'
   | 'tools-global-frequency'
   | 'tools-open-bottom-position'
-  // 风控管理
   | 'funding-rate-modify'
   | 'liquidation-engine-switch'
   | 'market-trade-limit'
   | 'risk-fund-list'
   | 'risk-fund-detail'
   | 'open-close-limit'
-  // 监控告警
   | 'spread-alert-monitor'
   | 'no-trade-monitor'
   | 'depth-monitor'
@@ -77,13 +73,12 @@ export type PageKey =
   | 'large-liquidation-alert'
   | 'large-position-notify'
   | 'adl-abnormal-record'
-  // 做市 / Broker
   | 'db-takeover-account'
   | 'db-takeover-asset'
   | 'db-account-alert'
   | 'broker-overview';
 
-export const pageTitles: Record<PageKey, string> = {
+const pageTitlesZh: Record<PageKey, string> = {
   overview: '总览',
   'contract-list': '合约列表',
   'coin-introduce': '币种介绍',
@@ -152,164 +147,298 @@ export const pageTitles: Record<PageKey, string> = {
   'broker-overview': 'Broker 概览',
 };
 
-export const sideMenuItems: MenuProps['items'] = [
-  { key: 'overview', label: '总览' },
-  {
-    key: 'contract-manage',
-    label: '合约管理',
-    children: [
-      { key: 'contract-list', label: '合约列表' },
-      { key: 'coin-introduce', label: '币种介绍' },
-      { key: 'funding-fee-list', label: '资金费用列表' },
-      { key: 'kline-manage', label: 'K线管理' },
-      { key: 'trade-amount-factor', label: '交易额系数配置' },
-      { key: 'admin-adl', label: '一键平仓' },
-    ],
-  },
-  {
-    key: 'price-manage',
-    label: '价格管理',
-    children: [
-      { key: 'market-source', label: '行情源' },
-      { key: 'index-price', label: '指数价格' },
-      { key: 'fair-price', label: '合理价格' },
-      { key: 'index-market-link', label: '指数行情映射' },
-      { key: 'funding-rate', label: '资金费率' },
-    ],
-  },
-  {
-    key: 'order-manage',
-    label: '订单管理',
-    children: [
-      { key: 'position-list', label: '持仓列表' },
-      { key: 'position-value-search', label: '仓位价值查询' },
-      {
-        key: 'order-list-group',
-        label: '订单列表',
-        children: [
-          { key: 'active-order', label: '当前委托' },
-          { key: 'trigger-order', label: '计划委托' },
-          { key: 'stop-order', label: '止盈止损' },
-        ],
-      },
-      {
-        key: 'deal-list-group',
-        label: '成交列表',
-        children: [
-          { key: 'active-order-history-deal', label: '委托成交历史' },
-          { key: 'trigger-order-history-deal', label: '计划委托成交历史' },
-          { key: 'liquidate-history', label: '强平历史' },
-          { key: 'adl-history', label: 'ADL历史' },
-          { key: 'stop-order-history-deal', label: '止盈止损成交历史' },
-        ],
-      },
-    ],
-  },
-  {
-    key: 'user-manage',
-    label: '用户管理',
-    children: [
-      { key: 'user-asset', label: '用户资产' },
-      { key: 'user-rate-config', label: '用户费率配置' },
-      { key: 'user-info', label: '用户信息' },
-      { key: 'user-risk-settings', label: '用户风控设置' },
-      { key: 'user-blacklist', label: '用户黑名单' },
-      { key: 'blacklist-group', label: '黑名单分组' },
-      { key: 'margin-change', label: '保证金变更' },
-    ],
-  },
-  {
-    key: 'contract-config',
-    label: '合约配置',
-    children: [
-      { key: 'redis-key-manage', label: 'Redis Key 管理' },
-      { key: 'redis-value-manage', label: 'Redis Value 管理' },
-      { key: 'openapi-white-list', label: 'OpenAPI 白名单' },
-      { key: 'openapi-market', label: 'OpenAPI 行情' },
-      { key: 'openapi-mm-blacklist', label: 'OpenAPI 做市黑名单' },
-    ],
-  },
-  {
-    key: 'financial-manage',
-    icon: <DollarOutlined style={{ color: '#389e0d' }} />,
-    label: '财务管理',
-    children: [
-      { key: 'financial-report', label: '财务报表' },
-      { key: 'transfer-record', label: '划转记录' },
-      { key: 'financial-account', label: '财务账户管理' },
-      { key: 'financial-recon', label: '财务对账监控' },
-      { key: 'finance-flow', label: '资金流水' },
-    ],
-  },
-  {
-    key: 'api-manage',
-    icon: <ApiOutlined style={{ color: '#13c2c2' }} />,
-    label: 'API管理',
-    children: [
-      { key: 'api-open-list', label: 'API开放白名单' },
-      { key: 'api-ratio-config', label: '限额系数配置' },
-      { key: 'api-user-limit-config', label: '用户限额配置' },
-      { key: 'api-user-taker-blacklist', label: '用户 Taker 黑名单' },
-      { key: 'api-user-taker-config', label: '用户 Taker 配置' },
-    ],
-  },
-  {
-    key: 'tools-manage',
-    icon: <ToolOutlined />,
-    label: '工具管理',
-    children: [
-      { key: 'tools-close-position', label: '平仓工具' },
-      { key: 'tools-global-frequency', label: '全局频率分组' },
-      { key: 'tools-open-bottom-position', label: '开底仓' },
-    ],
-  },
-  {
-    key: 'risk-manage',
-    icon: <SafetyCertificateOutlined style={{ color: '#722ed1' }} />,
-    label: '风控管理',
-    children: [
-      { key: 'funding-rate-modify', label: '资金费率修改' },
-      { key: 'liquidation-engine-switch', label: '强平引擎开关' },
-      { key: 'market-trade-limit', label: '市价交易限制配置' },
-      { key: 'risk-fund-list', label: '风险基金列表' },
-      { key: 'risk-fund-detail', label: '风险基金明细' },
-      { key: 'open-close-limit', label: '开平仓限制' },
-    ],
-  },
-  {
-    key: 'monitor-alert',
-    icon: <AlertOutlined style={{ color: '#fa8c16' }} />,
-    label: '监控告警',
-    children: [
-      { key: 'spread-alert-monitor', label: '价差预警监控' },
-      { key: 'no-trade-monitor', label: '无交易监控' },
-      { key: 'depth-monitor', label: '档位深度监控' },
-      { key: 'competitor-spread-monitor', label: '友商价差监控' },
-      { key: 'external-funding-rate-monitor', label: '外部资金费率监控' },
-      { key: 'internal-funding-rate-monitor', label: '内部资金费率监控' },
-      { key: 'large-liquidation-alert', label: '大额爆仓预警' },
-      { key: 'large-position-notify', label: '大额爆仓后通知' },
-      { key: 'adl-abnormal-record', label: 'ADL异常记录' },
-    ],
-  },
-  {
-    key: 'mm-manage',
-    icon: <FundOutlined />,
-    label: '做市管理',
-    children: [
-      { key: 'db-takeover-account', label: 'DB接仓账户管理' },
-      { key: 'db-takeover-asset', label: 'DB接仓账户资金' },
-      { key: 'db-account-alert', label: 'DB账户告警' },
-    ],
-  },
-  {
-    key: 'broker-manage',
-    icon: <TeamOutlined />,
-    label: 'Broker 管理',
-    children: [{ key: 'broker-overview', label: 'Broker 概览' }],
-  },
-];
+const pageTitlesEn: Record<PageKey, string> = {
+  overview: 'Overview',
+  'contract-list': 'Contract List',
+  'coin-introduce': 'Coin Introduce',
+  'funding-fee-list': 'Funding Fee List',
+  'kline-manage': 'KLine Manage',
+  'trade-amount-factor': 'Trade Amount Factor',
+  'admin-adl': 'Close Position (Admin)',
+  'market-source': 'Market Source',
+  'index-price': 'Index Price',
+  'fair-price': 'Fair Price',
+  'index-market-link': 'Index Market Link',
+  'funding-rate': 'Funding Rate',
+  'position-list': 'Position List',
+  'position-value-search': 'Position Value Search',
+  'active-order': 'Active Order',
+  'trigger-order': 'Trigger Order',
+  'stop-order': 'Stop Order',
+  'active-order-history-deal': 'Active Order History',
+  'trigger-order-history-deal': 'Trigger Order History',
+  'liquidate-history': 'Liquidation History',
+  'adl-history': 'ADL History',
+  'stop-order-history-deal': 'Stop Order History',
+  'user-asset': 'User Asset',
+  'user-rate-config': 'User Rate Config',
+  'user-info': 'User Info',
+  'user-risk-settings': 'User Risk Settings',
+  'user-blacklist': 'User Blacklist',
+  'blacklist-group': 'Blacklist Group',
+  'margin-change': 'Margin Change',
+  'redis-key-manage': 'Redis Key Manage',
+  'redis-value-manage': 'Redis Value Manage',
+  'openapi-white-list': 'OpenAPI Whitelist',
+  'openapi-market': 'OpenAPI Market',
+  'openapi-mm-blacklist': 'OpenAPI MM Blacklist',
+  'financial-report': 'Financial Report',
+  'transfer-record': 'Transfer Record',
+  'financial-account': 'Financial Account',
+  'financial-recon': 'Financial Reconciliation',
+  'finance-flow': 'Finance Flow',
+  'api-open-list': 'API Open List',
+  'api-ratio-config': 'Ratio Config',
+  'api-user-limit-config': 'User Limit Config',
+  'api-user-taker-blacklist': 'User Taker Blacklist',
+  'api-user-taker-config': 'User Taker Config',
+  'tools-close-position': 'Close Position Tool',
+  'tools-global-frequency': 'Global Frequency Group',
+  'tools-open-bottom-position': 'Open Bottom Position',
+  'funding-rate-modify': 'Funding Rate Modify',
+  'liquidation-engine-switch': 'Liquidation Engine Switch',
+  'market-trade-limit': 'Market Trade Limit',
+  'risk-fund-list': 'Risk Fund List',
+  'risk-fund-detail': 'Risk Fund Detail',
+  'open-close-limit': 'Open/Close Limit',
+  'spread-alert-monitor': 'Spread Alert Monitor',
+  'no-trade-monitor': 'No-Trade Monitor',
+  'depth-monitor': 'Depth Monitor',
+  'competitor-spread-monitor': 'Competitor Spread Monitor',
+  'external-funding-rate-monitor': 'External Funding Rate Monitor',
+  'internal-funding-rate-monitor': 'Internal Funding Rate Monitor',
+  'large-liquidation-alert': 'Large Liquidation Alert',
+  'large-position-notify': 'Large Liquidation Notify',
+  'adl-abnormal-record': 'ADL Abnormal Record',
+  'db-takeover-account': 'DB Takeover Account',
+  'db-takeover-asset': 'DB Takeover Asset',
+  'db-account-alert': 'DB Account Alert',
+  'broker-overview': 'Broker Overview',
+};
+
+/** @deprecated Prefer getPageTitles(lang); kept for callers that default to zh. */
+export const pageTitles = pageTitlesZh;
+
+export function getPageTitles(lang: AppLang): Record<PageKey, string> {
+  return lang === 'zh' ? pageTitlesZh : pageTitlesEn;
+}
+
+type GroupKey =
+  | 'contract-manage'
+  | 'price-manage'
+  | 'order-manage'
+  | 'order-list-group'
+  | 'deal-list-group'
+  | 'user-manage'
+  | 'contract-config'
+  | 'financial-manage'
+  | 'api-manage'
+  | 'tools-manage'
+  | 'risk-manage'
+  | 'monitor-alert'
+  | 'mm-manage'
+  | 'broker-manage';
+
+const groupLabelsZh: Record<GroupKey, string> = {
+  'contract-manage': '合约管理',
+  'price-manage': '价格管理',
+  'order-manage': '订单管理',
+  'order-list-group': '订单列表',
+  'deal-list-group': '成交列表',
+  'user-manage': '用户管理',
+  'contract-config': '合约配置',
+  'financial-manage': '财务管理',
+  'api-manage': 'API管理',
+  'tools-manage': '工具管理',
+  'risk-manage': '风控管理',
+  'monitor-alert': '监控告警',
+  'mm-manage': '做市管理',
+  'broker-manage': 'Broker 管理',
+};
+
+const groupLabelsEn: Record<GroupKey, string> = {
+  'contract-manage': 'Contract Manage',
+  'price-manage': 'Price Manage',
+  'order-manage': 'Order Manage',
+  'order-list-group': 'Order List',
+  'deal-list-group': 'Deal List',
+  'user-manage': 'User Manage',
+  'contract-config': 'Contract Config',
+  'financial-manage': 'Financial Management',
+  'api-manage': 'API Management',
+  'tools-manage': 'Tools Management',
+  'risk-manage': 'Risk Management',
+  'monitor-alert': 'Monitor & Alert',
+  'mm-manage': 'Market Making',
+  'broker-manage': 'Broker Manage',
+};
+
+export function getSideMenuItems(lang: AppLang): MenuProps['items'] {
+  const p = getPageTitles(lang);
+  const g = lang === 'zh' ? groupLabelsZh : groupLabelsEn;
+
+  return [
+    { key: 'overview', label: p.overview },
+    {
+      key: 'contract-manage',
+      label: g['contract-manage'],
+      children: [
+        { key: 'contract-list', label: p['contract-list'] },
+        { key: 'coin-introduce', label: p['coin-introduce'] },
+        { key: 'funding-fee-list', label: p['funding-fee-list'] },
+        { key: 'kline-manage', label: p['kline-manage'] },
+        { key: 'trade-amount-factor', label: p['trade-amount-factor'] },
+        { key: 'admin-adl', label: p['admin-adl'] },
+      ],
+    },
+    {
+      key: 'price-manage',
+      label: g['price-manage'],
+      children: [
+        { key: 'market-source', label: p['market-source'] },
+        { key: 'index-price', label: p['index-price'] },
+        { key: 'fair-price', label: p['fair-price'] },
+        { key: 'index-market-link', label: p['index-market-link'] },
+        { key: 'funding-rate', label: p['funding-rate'] },
+      ],
+    },
+    {
+      key: 'order-manage',
+      label: g['order-manage'],
+      children: [
+        { key: 'position-list', label: p['position-list'] },
+        { key: 'position-value-search', label: p['position-value-search'] },
+        {
+          key: 'order-list-group',
+          label: g['order-list-group'],
+          children: [
+            { key: 'active-order', label: p['active-order'] },
+            { key: 'trigger-order', label: p['trigger-order'] },
+            { key: 'stop-order', label: p['stop-order'] },
+          ],
+        },
+        {
+          key: 'deal-list-group',
+          label: g['deal-list-group'],
+          children: [
+            { key: 'active-order-history-deal', label: p['active-order-history-deal'] },
+            { key: 'trigger-order-history-deal', label: p['trigger-order-history-deal'] },
+            { key: 'liquidate-history', label: p['liquidate-history'] },
+            { key: 'adl-history', label: p['adl-history'] },
+            { key: 'stop-order-history-deal', label: p['stop-order-history-deal'] },
+          ],
+        },
+      ],
+    },
+    {
+      key: 'user-manage',
+      label: g['user-manage'],
+      children: [
+        { key: 'user-asset', label: p['user-asset'] },
+        { key: 'user-rate-config', label: p['user-rate-config'] },
+        { key: 'user-info', label: p['user-info'] },
+        { key: 'user-risk-settings', label: p['user-risk-settings'] },
+        { key: 'user-blacklist', label: p['user-blacklist'] },
+        { key: 'blacklist-group', label: p['blacklist-group'] },
+        { key: 'margin-change', label: p['margin-change'] },
+      ],
+    },
+    {
+      key: 'contract-config',
+      label: g['contract-config'],
+      children: [
+        { key: 'redis-key-manage', label: p['redis-key-manage'] },
+        { key: 'redis-value-manage', label: p['redis-value-manage'] },
+        { key: 'openapi-white-list', label: p['openapi-white-list'] },
+        { key: 'openapi-market', label: p['openapi-market'] },
+        { key: 'openapi-mm-blacklist', label: p['openapi-mm-blacklist'] },
+      ],
+    },
+    {
+      key: 'financial-manage',
+      icon: <DollarOutlined style={{ color: '#389e0d' }} />,
+      label: g['financial-manage'],
+      children: [
+        { key: 'financial-report', label: p['financial-report'] },
+        { key: 'transfer-record', label: p['transfer-record'] },
+        { key: 'financial-account', label: p['financial-account'] },
+        { key: 'financial-recon', label: p['financial-recon'] },
+        { key: 'finance-flow', label: p['finance-flow'] },
+      ],
+    },
+    {
+      key: 'api-manage',
+      icon: <ApiOutlined style={{ color: '#13c2c2' }} />,
+      label: g['api-manage'],
+      children: [
+        { key: 'api-open-list', label: p['api-open-list'] },
+        { key: 'api-ratio-config', label: p['api-ratio-config'] },
+        { key: 'api-user-limit-config', label: p['api-user-limit-config'] },
+        { key: 'api-user-taker-blacklist', label: p['api-user-taker-blacklist'] },
+        { key: 'api-user-taker-config', label: p['api-user-taker-config'] },
+      ],
+    },
+    {
+      key: 'tools-manage',
+      icon: <ToolOutlined />,
+      label: g['tools-manage'],
+      children: [
+        { key: 'tools-close-position', label: p['tools-close-position'] },
+        { key: 'tools-global-frequency', label: p['tools-global-frequency'] },
+        { key: 'tools-open-bottom-position', label: p['tools-open-bottom-position'] },
+      ],
+    },
+    {
+      key: 'risk-manage',
+      icon: <SafetyCertificateOutlined style={{ color: '#722ed1' }} />,
+      label: g['risk-manage'],
+      children: [
+        { key: 'funding-rate-modify', label: p['funding-rate-modify'] },
+        { key: 'liquidation-engine-switch', label: p['liquidation-engine-switch'] },
+        { key: 'market-trade-limit', label: p['market-trade-limit'] },
+        { key: 'risk-fund-list', label: p['risk-fund-list'] },
+        { key: 'risk-fund-detail', label: p['risk-fund-detail'] },
+        { key: 'open-close-limit', label: p['open-close-limit'] },
+      ],
+    },
+    {
+      key: 'monitor-alert',
+      icon: <AlertOutlined style={{ color: '#fa8c16' }} />,
+      label: g['monitor-alert'],
+      children: [
+        { key: 'spread-alert-monitor', label: p['spread-alert-monitor'] },
+        { key: 'no-trade-monitor', label: p['no-trade-monitor'] },
+        { key: 'depth-monitor', label: p['depth-monitor'] },
+        { key: 'competitor-spread-monitor', label: p['competitor-spread-monitor'] },
+        { key: 'external-funding-rate-monitor', label: p['external-funding-rate-monitor'] },
+        { key: 'internal-funding-rate-monitor', label: p['internal-funding-rate-monitor'] },
+        { key: 'large-liquidation-alert', label: p['large-liquidation-alert'] },
+        { key: 'large-position-notify', label: p['large-position-notify'] },
+        { key: 'adl-abnormal-record', label: p['adl-abnormal-record'] },
+      ],
+    },
+    {
+      key: 'mm-manage',
+      icon: <FundOutlined />,
+      label: g['mm-manage'],
+      children: [
+        { key: 'db-takeover-account', label: p['db-takeover-account'] },
+        { key: 'db-takeover-asset', label: p['db-takeover-asset'] },
+        { key: 'db-account-alert', label: p['db-account-alert'] },
+      ],
+    },
+    {
+      key: 'broker-manage',
+      icon: <TeamOutlined />,
+      label: g['broker-manage'],
+      children: [{ key: 'broker-overview', label: p['broker-overview'] }],
+    },
+  ];
+}
+
+/** @deprecated Prefer getSideMenuItems(lang) */
+export const sideMenuItems = getSideMenuItems('zh');
 
 export function isPageKey(key: string): key is PageKey {
-  return key in pageTitles;
+  return key in pageTitlesZh;
 }

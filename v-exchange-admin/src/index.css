@@ -41,6 +41,63 @@ body {
   min-width: 0;
 }
 
+.profile-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  padding: 4px 6px;
+  margin: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  line-height: 1;
+  color: inherit;
+}
+
+.profile-trigger:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.profile-menu-user {
+  min-width: 180px;
+  padding: 4px 0;
+}
+
+.profile-menu-name {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.profile-menu-email {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.profile-menu-lang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.admin-mobile-drawer-menu {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-mobile-drawer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  background: #fff;
+}
+
 .admin-header-left {
   flex: 1;
   gap: 4px;

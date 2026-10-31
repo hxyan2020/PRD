@@ -1,13 +1,33 @@
 import {
+  GlobalOutlined,
   MenuFoldOutlined,
   MenuOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Drawer, Grid, Layout, Menu, Tabs, theme, Typography } from 'antd';
+import {
+  Avatar,
+  Button,
+  Drawer,
+  Dropdown,
+  Grid,
+  Layout,
+  Menu,
+  Segmented,
+  Space,
+  Tabs,
+  theme,
+  Typography,
+} from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { renderPage } from '../components/PageRegistry';
-import { isPageKey, pageTitles, sideMenuItems, type PageKey } from '../config/menu';
+import {
+  getPageTitles,
+  getSideMenuItems,
+  isPageKey,
+  type PageKey,
+} from '../config/menu';
+import { useLocale, type AppLang } from '../i18n/locale';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -29,6 +49,10 @@ const defaultOpenKeys = [
 ];
 
 export function MainLayout() {
+  const { lang, setLang, t } = useLocale();
+  const pageTitles = useMemo(() => getPageTitles(lang), [lang]);
+  const sideMenuItems = useMemo(() => getSideMenuItems(lang), [lang]);
+
   const screens = Grid.useBreakpoint();
   // Treat unresolved breakpoints as desktop to avoid a sider flash on first paint.
   const isMobile = screens.md === false;
@@ -87,6 +111,45 @@ export function MainLayout() {
 
   const selectedKeys = useMemo(() => [activeKey], [activeKey]);
 
+  const langSwitch = (
+    <Segmented
+      size="small"
+      value={lang}
+      onChange={(v) => setLang(v as AppLang)}
+      options={[
+        { label: '中文', value: 'zh' },
+        { label: 'EN', value: 'en' },
+      ]}
+    />
+  );
+
+  const profileMenu = {
+    items: [
+      {
+        key: 'user',
+        label: (
+          <div className="profile-menu-user">
+            <div className="profile-menu-name">Haixiang Yan</div>
+            <div className="profile-menu-email">hxyan.2015@gmail.com</div>
+          </div>
+        ),
+        disabled: true,
+      },
+      { type: 'divider' as const },
+      {
+        key: 'lang',
+        label: (
+          <div className="profile-menu-lang" onClick={(e) => e.stopPropagation()}>
+            <span>
+              <GlobalOutlined /> {t('语言', 'Language')}
+            </span>
+            {langSwitch}
+          </div>
+        ),
+      },
+    ],
+  };
+
   const sideMenu = (
     <Menu
       mode="inline"
@@ -100,7 +163,10 @@ export function MainLayout() {
   );
 
   return (
-    <Layout className={isMobile ? 'admin-layout admin-layout--mobile' : 'admin-layout'} style={{ minHeight: '100vh' }}>
+    <Layout
+      className={isMobile ? 'admin-layout admin-layout--mobile' : 'admin-layout'}
+      style={{ minHeight: '100vh' }}
+    >
       {!isMobile && (
         <Sider
           collapsible
@@ -120,11 +186,27 @@ export function MainLayout() {
         open={isMobile && mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
         width={280}
-        styles={{ body: { padding: 0 } }}
+        styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column' } }}
         className="admin-mobile-drawer"
         destroyOnClose={false}
+        extra={
+          <Dropdown
+            menu={profileMenu}
+            trigger={['click']}
+            placement="bottomRight"
+            getPopupContainer={(node) => node.parentElement || document.body}
+          >
+            <Button type="text" className="profile-trigger" aria-label={t('用户菜单', 'User menu')}>
+              <Avatar size="small" icon={<UserOutlined />} />
+            </Button>
+          </Dropdown>
+        }
       >
-        {sideMenu}
+        <div className="admin-mobile-drawer-menu">{sideMenu}</div>
+        <div className="admin-mobile-drawer-footer">
+          <Text type="secondary">{t('语言', 'Language')}</Text>
+          {langSwitch}
+        </div>
       </Drawer>
 
       <Layout className="admin-main">
@@ -144,7 +226,13 @@ export function MainLayout() {
           <div className="admin-header-left">
             <Button
               type="text"
-              aria-label={isMobile ? '打开菜单' : collapsed ? '展开侧栏' : '收起侧栏'}
+              aria-label={
+                isMobile
+                  ? t('打开菜单', 'Open menu')
+                  : collapsed
+                    ? t('展开侧栏', 'Expand sidebar')
+                    : t('收起侧栏', 'Collapse sidebar')
+              }
               icon={
                 isMobile ? (
                   <MenuOutlined />
@@ -164,8 +252,15 @@ export function MainLayout() {
             </Text>
           </div>
           <div className="admin-header-right">
-            <Avatar size="small" icon={<UserOutlined />} />
-            {!isMobile && <Text>Haixiang Yan</Text>}
+            {!isMobile && langSwitch}
+            <Dropdown menu={profileMenu} trigger={['click']} placement="bottomRight">
+              <button type="button" className="profile-trigger" aria-label={t('用户菜单', 'User menu')}>
+                <Space size={8}>
+                  <Avatar size="small" icon={<UserOutlined />} />
+                  {!isMobile && <Text>Haixiang Yan</Text>}
+                </Space>
+              </button>
+            </Dropdown>
           </div>
         </Header>
         <Content style={{ padding: 0, background: '#f5f5f5' }}>
