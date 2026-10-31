@@ -3,14 +3,113 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fatum Atlas</title>
-    <link rel="canonical" href="https://hxyan2020.github.io/PRD/fate-atlas/" />
-    <meta http-equiv="refresh" content="0; url=/PRD/fate-atlas/" />
+    <title>Redirecting…</title>
     <script>
-      location.replace("/PRD/fate-atlas/" + location.search + location.hash);
+      (function () {
+        var base = '/PRD'
+        var path = location.pathname
+        if (path.indexOf(base) === 0) path = path.slice(base.length)
+        path = path.replace(/^\/+/, '')
+
+        var prefixes = [
+          'matching-management/',
+          'fate-atlas/',
+          'crmp-admin/',
+          'crmp-plus/',
+          'venture-scan/',
+          'brand-atlas/',
+          'ludus-atlas/',
+          'mille/',
+          'seen/',
+          'risk-discovery/',
+        ]
+        for (var i = 0; i < prefixes.length; i++) {
+          if (path.indexOf(prefixes[i]) === 0) {
+            location.replace(base + '/' + path + location.search + location.hash)
+            return
+          }
+        }
+
+        // Legacy MatchingManagement deep links that used to live at /PRD/<page>
+        var mm = {
+          overview: 1,
+          'contract-list': 1,
+          'coin-introduce': 1,
+          'funding-fee-list': 1,
+          'kline-manage': 1,
+          'trade-amount-factor': 1,
+          'admin-adl': 1,
+          'market-source': 1,
+          'index-price': 1,
+          'fair-price': 1,
+          'index-market-link': 1,
+          'funding-rate': 1,
+          'position-list': 1,
+          'position-value-stats': 1,
+          'active-order': 1,
+          'trigger-order': 1,
+          'stop-order': 1,
+          'active-order-history-deal': 1,
+          'trigger-order-history-deal': 1,
+          'liquidate-history': 1,
+          'adl-history': 1,
+          'stop-order-history-deal': 1,
+          'user-asset': 1,
+          'user-rate-config': 1,
+          'user-info': 1,
+          'user-risk-settings': 1,
+          'user-blacklist': 1,
+          'blacklist-group': 1,
+          'margin-change': 1,
+          'redis-key-manage': 1,
+          'redis-value-manage': 1,
+          'openapi-whitelist': 1,
+          'openapi-market': 1,
+          'openapi-mm-blacklist': 1,
+          'financial-report': 1,
+          'transfer-record': 1,
+          'financial-account': 1,
+          'financial-recon': 1,
+          'finance-flow': 1,
+          'api-open-list': 1,
+          'api-ratio-config': 1,
+          'api-user-limit-config': 1,
+          'api-user-taker-blacklist': 1,
+          'api-user-taker-config': 1,
+          'tools-close-position': 1,
+          'tools-global-frequency': 1,
+          'tools-open-bottom-position': 1,
+          'risk-funding-fee-change': 1,
+          'risk-liquidation-switch': 1,
+          'risk-market-price-limit': 1,
+          'risk-reserve-list': 1,
+          'risk-reserve-detail': 1,
+          'risk-trading-restriction': 1,
+          'risk-spread-alert': 1,
+          'risk-no-trade-monitor': 1,
+          'risk-depth-monitor': 1,
+          'large-liquidation-warning': 1,
+          'large-liquidation-notify': 1,
+          'adl-failure': 1,
+          'db-account-alert': 1,
+          'db-takeover-account': 1,
+          'db-takeover-fund-record': 1,
+          'parameter-recommendations': 1,
+          'mm-db-takeover-account': 1,
+          'mm-db-fund-flow': 1,
+          'mm-db-account-alarm': 1,
+        }
+        var first = path.split('/')[0]
+        if (mm[first]) {
+          location.replace(base + '/matching-management/' + path + location.search + location.hash)
+          return
+        }
+
+        location.replace(base + '/' + location.search + location.hash)
+      })()
     </script>
   </head>
   <body>
-    <p><a href="/PRD/fate-atlas/">Continue to Fatum Atlas</a></p>
+    <p><a href="/PRD/">Back to PRD directory</a></p>
   </body>
 </html>

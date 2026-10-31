@@ -3,14 +3,108 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fatum Atlas</title>
-    <link rel="canonical" href="https://hxyan2020.github.io/PRD/fate-atlas/" />
-    <meta http-equiv="refresh" content="0; url=./fate-atlas/" />
-    <script>
-      location.replace("./fate-atlas/" + location.search + location.hash);
-    </script>
+    <title>PRD Sites</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #142033;
+        --muted: #5b6b7c;
+        --line: #d9e2ec;
+        --bg: #f7fafc;
+        --card: #fff;
+        --accent: #0f6e56;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, #e6fffa 0, transparent 42%),
+          linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 48px 20px 64px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.8rem;
+      }
+      .lead {
+        margin: 0 0 28px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .grid {
+        display: grid;
+        gap: 14px;
+      }
+      a.card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px 18px;
+        transition: border-color 0.15s ease, transform 0.15s ease;
+      }
+      a.card:hover {
+        border-color: #7fdbca;
+        transform: translateY(-1px);
+      }
+      a.card.primary {
+        border-color: #7fdbca;
+        box-shadow: 0 8px 24px rgba(15, 110, 86, 0.08);
+      }
+      .name {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .desc {
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+      .path {
+        margin-top: 8px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.82rem;
+        color: var(--accent);
+      }
+    </style>
   </head>
   <body>
-    <p><a href="./fate-atlas/">Continue to Fatum Atlas</a></p>
+    <main>
+      <h1>PRD site directory</h1>
+      <p class="lead">
+        Multiple apps share this GitHub Pages host. MatchingManagement is no longer overwritten by Fatum Atlas at the root.
+      </p>
+      <div class="grid">
+        <a class="card primary" href="./matching-management/">
+          <div class="name">MatchingManagement — V Exchange Admin</div>
+          <div class="desc">Contract, price, risk, and DB接管账户管理 admin replica (EN / 中文).</div>
+          <div class="path">/PRD/matching-management/</div>
+        </a>
+        <a class="card" href="./fate-atlas/">
+          <div class="name">Fatum Atlas</div>
+          <div class="desc">Fate-telling / oracle atlas.</div>
+          <div class="path">/PRD/fate-atlas/</div>
+        </a>
+        <a class="card" href="./crmp-admin/admin/">
+          <div class="name">CRMP Admin</div>
+          <div class="desc">Vantage CRMP operations console.</div>
+          <div class="path">/PRD/crmp-admin/admin/</div>
+        </a>
+        <a class="card" href="./venture-scan/">
+          <div class="name">VentureScan</div>
+          <div class="desc">Daily venture / market scan pages.</div>
+          <div class="path">/PRD/venture-scan/</div>
+        </a>
+      </div>
+    </main>
   </body>
 </html>
