@@ -87,7 +87,7 @@ export const pageTitles: Record<PageKey, string> = {
   'openapi-market': 'OpenApi Market',
   'funding-rate-modify': '资金费率修改',
   'liquidation-engine-switch': '强平引擎开关',
-  'market-trade-limit': '市价交易限制',
+  'market-trade-limit': '市价交易限制配置',
   'risk-fund-list': '风险基金列表',
   'risk-fund-detail': '风险基金明细',
   'open-close-limit': '开平仓限制',
@@ -172,7 +172,7 @@ export const sideMenuItems: MenuProps['items'] = [
     children: [
       { key: 'funding-rate-modify', label: '资金费率修改' },
       { key: 'liquidation-engine-switch', label: '强平引擎开关' },
-      { key: 'market-trade-limit', label: '市价交易限制' },
+      { key: 'market-trade-limit', label: '市价交易限制配置' },
       { key: 'risk-fund-list', label: '风险基金列表' },
       { key: 'risk-fund-detail', label: '风险基金明细' },
       { key: 'open-close-limit', label: '开平仓限制' },

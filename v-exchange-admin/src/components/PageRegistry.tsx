@@ -11,6 +11,7 @@ import { IndexMarketLinkPage } from '../pages/IndexMarketLinkPage';
 import { IndexPricePage } from '../pages/IndexPricePage';
 import { KLineManagePage } from '../pages/KLineManagePage';
 import { MarketSourcePage } from '../pages/MarketSourcePage';
+import { MarketTradeLimitPage } from '../pages/MarketTradeLimitPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
 import { PositionListPage } from '../pages/PositionListPage';
@@ -44,6 +45,8 @@ export function renderPage(key: PageKey) {
       return <PositionListPage />;
     case 'funding-rate-modify':
       return <FundingRateModifyPage />;
+    case 'market-trade-limit':
+      return <MarketTradeLimitPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
