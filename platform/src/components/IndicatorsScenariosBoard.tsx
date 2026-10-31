@@ -16,7 +16,7 @@ type ForexPack = ReturnType<typeof forexDemoPack>;
 type SkillRow = { code: string; name: string; monitor_id: string; related: string[]; owner_department: string };
 type LinkedRow = { code: string; name: string; monitors: string[] };
 
-type Tab = "forex" | "indicators" | "scenarios" | "skills";
+type Tab = "forex" | "indicators" | "scenarios" | "skills" | "handbook";
 
 export function IndicatorsScenariosBoard({
   forex,
@@ -24,12 +24,16 @@ export function IndicatorsScenariosBoard({
   scenarios,
   skills,
   linked,
+  handbookHtmlEn,
+  handbookHtmlZh,
 }: {
   forex: ForexPack;
   indicators: IndicatorCatalogRow[];
   scenarios: ScenarioCatalogRow[];
   skills: SkillRow[];
   linked: LinkedRow[];
+  handbookHtmlEn?: string;
+  handbookHtmlZh?: string;
 }) {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
@@ -68,6 +72,7 @@ export function IndicatorsScenariosBoard({
     { id: "indicators", en: "Indicators", zh: "指標" },
     { id: "scenarios", en: "Domain scenarios", zh: "領域情境" },
     { id: "skills", en: "Skills / linked", zh: "技能／連結鏈" },
+    { id: "handbook", en: "Full handbook", zh: "完整手冊" },
   ];
 
   return (
@@ -86,7 +91,7 @@ export function IndicatorsScenariosBoard({
         ))}
       </div>
 
-      {tab !== "forex" ? (
+      {tab !== "forex" && tab !== "handbook" ? (
         <div className="flex flex-wrap gap-2 items-center">
           <input
             className="input text-sm min-w-[12rem] flex-1"
@@ -329,6 +334,16 @@ export function IndicatorsScenariosBoard({
             </ul>
           </section>
         </div>
+      ) : null}
+
+      {tab === "handbook" ? (
+        <article
+          className="panel p-4 sm:p-6 prose prose-sm max-w-none overflow-x-auto"
+          data-testid="indicators-scenarios-handbook"
+          dangerouslySetInnerHTML={{
+            __html: (zh ? handbookHtmlZh : handbookHtmlEn) || "<p>—</p>",
+          }}
+        />
       ) : null}
     </div>
   );

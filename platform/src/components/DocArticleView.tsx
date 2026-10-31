@@ -80,6 +80,14 @@ const META: Record<
     zhSub: "X＝開放議題（欄）、Y＝時間軸現在→2027 年底；狀態色塊；每欄標示負責 BU。",
     href: "/admin/docs/progress",
   },
+  INDICATORS_SCENARIOS: {
+    code: "CRMP-IND-001",
+    enTitle: "Indicators & Risk Scenarios",
+    zhTitle: "指標與風險情境",
+    enSub: "Full Admin / Pricing / Dealing catalogue: Monitor 2.0 indicators, domain scenarios, skills, linked timelines, INC-1028 forex pack.",
+    zhSub: "管理／定價／交易完整目錄：Monitor 2.0 指標、領域情境、技能、連結時間鏈、INC-1028 外匯組合。",
+    href: "/admin/docs/indicators-scenarios",
+  },
 };
 
 export function DocArticleView({

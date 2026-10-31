@@ -102,9 +102,11 @@ assert.match(phrases, /"Unknown Risk Discovery": "未知風險探索"/);
 
 const indDoc = read("docs/INDICATORS_SCENARIOS.md");
 assert.match(indDoc, /Audience map|Admin \/ Risk Owner/);
+assert.match(indDoc, /All indicators|Pricing lens/);
 assert.match(indDoc, /real thinking each trigger|scan_seed/);
 const indDocZh = read("docs/INDICATORS_SCENARIOS.zh-Hant.md");
 assert.match(indDocZh, /受眾對照|管理／風險負責人/);
+assert.match(indDocZh, /全部指標|定價視角/);
 assert.match(indDocZh, /每次觸發真實思考|scan_seed/);
 
 const llmEnrich = read("src/lib/ai/llm-enrich.ts");

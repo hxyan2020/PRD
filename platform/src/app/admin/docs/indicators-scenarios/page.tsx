@@ -10,6 +10,7 @@ import {
   listScenarioCatalog,
   listSkillScenarioSummary,
 } from "@/lib/docs/indicators-scenarios";
+import { markdownToHtml, readDocMarkdown } from "@/lib/docs";
 import { EnZh } from "@/components/EnZh";
 
 export default async function IndicatorsScenariosPage() {
@@ -21,6 +22,8 @@ export default async function IndicatorsScenariosPage() {
   const scenarios = listScenarioCatalog();
   const skills = listSkillScenarioSummary();
   const linked = listLinkedScenarioSummary();
+  const handbookHtmlEn = markdownToHtml(readDocMarkdown("INDICATORS_SCENARIOS", "en"));
+  const handbookHtmlZh = markdownToHtml(readDocMarkdown("INDICATORS_SCENARIOS", "zh-Hant"));
 
   return (
     <div>
@@ -39,8 +42,8 @@ export default async function IndicatorsScenariosPage() {
       />
       <p className="text-sm text-[var(--muted)] mb-4">
         <EnZh
-          en="Admin · Pricing · Dealing catalogue of Monitor 2.0 indicators and risk scenarios. Canonical forex walkthrough is INC-1028 (LP-A · XAUUSD)."
-          zh="管理／定價／交易（Dealing）用的 Monitor 2.0 指標與風險情境目錄。標準外匯走查為 INC-1028（LP-A · XAUUSD）。"
+          en={`Admin · Pricing · Dealing catalogue — ${indicators.length} indicators, ${scenarios.length} domain scenarios, skills & linked timelines. Open Full handbook for the complete EN/繁中 tables. Canonical forex walkthrough: INC-1028 (LP-A · XAUUSD).`}
+          zh={`管理／定價／交易目錄 — ${indicators.length} 項指標、${scenarios.length} 項領域情境、技能與連結時間鏈。開啟「完整手冊」可看 EN／繁中完整表。標準外匯走查：INC-1028（LP-A · XAUUSD）。`}
         />
       </p>
       <IndicatorsScenariosBoard
@@ -49,6 +52,8 @@ export default async function IndicatorsScenariosPage() {
         scenarios={scenarios}
         skills={skills}
         linked={linked}
+        handbookHtmlEn={handbookHtmlEn}
+        handbookHtmlZh={handbookHtmlZh}
       />
     </div>
   );

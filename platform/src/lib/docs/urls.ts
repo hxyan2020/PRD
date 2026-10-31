@@ -152,7 +152,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
     title: "Indicators & Risk Scenarios",
     path: "/admin/docs/indicators-scenarios",
     description:
-      "Admin/Pricing/Dealing catalogue of Monitor 2.0 indicators + domain/skill/linked scenarios; canonical forex demo INC-1028 (LP-A · XAUUSD)",
+      "Admin/Pricing/Dealing catalogue + Full handbook (EN/繁中 tables of all indicators, domain scenarios, skills); canonical forex demo INC-1028 (LP-A · XAUUSD)",
     permission: "admin.access",
   },
 

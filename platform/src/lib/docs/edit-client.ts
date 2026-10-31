@@ -11,7 +11,8 @@ export type AdminDocKey =
   | "ROADMAP"
   | "URLS"
   | "OPEN_ISSUES"
-  | "PROGRESS";
+  | "PROGRESS"
+  | "INDICATORS_SCENARIOS";
 
 function slot(doc: string, locale: string) {
   return `${doc}::${locale}`;
