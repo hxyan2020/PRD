@@ -249,17 +249,19 @@ export function ScanPage() {
             />
           </div>
 
-          <button
-            type="button"
-            className="btn btn--primary"
-            style={{ marginTop: "0.9rem", width: "100%" }}
-            disabled={!file || busy || !catalog}
-            onClick={() => void runIdentify()}
-          >
-            {busy ? t("scan.scanning") : t("scan.identify")}
-          </button>
+          {file && (
+            <button
+              type="button"
+              className="btn btn--primary"
+              style={{ marginTop: "0.9rem", width: "100%" }}
+              disabled={busy || !catalog}
+              onClick={() => void runIdentify()}
+            >
+              {busy ? t("scan.scanning") : t("scan.identify")}
+            </button>
+          )}
 
-          {busy && (
+          {file && busy && (
             <div>
               <p className="muted">{phase}</p>
               <div className="progress-bar" aria-hidden>
