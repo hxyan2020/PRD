@@ -52,10 +52,17 @@ export type MessageKey =
   | "scan.identify"
   | "scan.scanning"
   | "scan.confirm"
+  | "scan.confirming"
+  | "scan.confirmMissing"
+  | "scan.confirmFailed"
   | "scan.upload"
   | "scan.camera"
   | "scan.stopCamera"
+  | "scan.cancel"
   | "scan.capture"
+  | "scan.cameraStarting"
+  | "scan.cameraBlocked"
+  | "scan.cameraNotReady"
   | "scan.categoriesHint"
   | "scan.allCategories"
   | "scan.dropHint"
@@ -98,6 +105,15 @@ export type MessageKey =
   | "unlocked.noteHint"
   | "unlocked.permalink"
   | "unlocked.copied"
+  | "detail.loginRequiredTitle"
+  | "detail.loginRequiredBody"
+  | "detail.signedInAs"
+  | "detail.takePhoto"
+  | "detail.cameraBlocked"
+  | "detail.catalogMissing"
+  | "detail.noMatch"
+  | "detail.identifyFailed"
+  | "detail.recordedBy"
   | "about.title"
   | "about.blurb"
   | "about.catalogueTitle"
@@ -261,10 +277,17 @@ const en: Pack = {
   "scan.identify": "Identify with AI",
   "scan.scanning": "Scanning…",
   "scan.confirm": "Confirm selection",
+  "scan.confirming": "Unlocking…",
+  "scan.confirmMissing": "That pick is no longer in the catalogue. Try another guess.",
+  "scan.confirmFailed": "Could not save this unlock. Free some browser storage and try again.",
   "scan.upload": "Upload image",
   "scan.camera": "Use camera",
   "scan.stopCamera": "Stop camera",
+  "scan.cancel": "Cancel",
   "scan.capture": "Capture",
+  "scan.cameraStarting": "Starting camera…",
+  "scan.cameraBlocked": "Camera access was blocked. Upload an image instead, or allow camera permission and retry.",
+  "scan.cameraNotReady": "Camera is still starting — tap Capture again in a moment.",
   "scan.categoriesHint": "Categories (optional — leave empty to search all)",
   "scan.allCategories": "All categories",
   "scan.dropHint": "Drop an image, upload, or use the camera",
@@ -307,6 +330,15 @@ const en: Pack = {
   "unlocked.noteHint": "Edit anytime — saves when you leave the field or tap Save.",
   "unlocked.permalink": "Permanent link",
   "unlocked.copied": "Copied",
+  "detail.loginRequiredTitle": "Log in to record this sighting",
+  "detail.loginRequiredBody": "Sign in so upload and camera unlocks are saved to your account.",
+  "detail.signedInAs": "Recording as {email}",
+  "detail.takePhoto": "Take photo",
+  "detail.cameraBlocked": "Camera access blocked. Allow the camera, or use Upload / Take photo instead.",
+  "detail.catalogMissing": "Catalogue is still loading — try again in a moment.",
+  "detail.noMatch": "That photo looks more like {guess} than {name}. Try a clearer shot of this mark.",
+  "detail.identifyFailed": "Could not identify that photo. Try another angle or a clearer logo.",
+  "detail.recordedBy": "Recorded by",
   "about.title": "How Seen works",
   "about.blurb": "A living catalogue you unlock by noticing the world.",
   "about.catalogueTitle": "Catalogue",

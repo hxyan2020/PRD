@@ -639,6 +639,43 @@ img {
   overflow: auto;
 }
 
+.detail-unlock {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+.detail-unlock__gate {
+  text-align: left;
+}
+
+.detail-unlock__signed {
+  margin: 0 0 0.65rem;
+  font-size: 0.88rem;
+}
+
+.detail-unlock__preview {
+  margin: 0 0 0.75rem;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--mist);
+  aspect-ratio: 16 / 10;
+}
+
+.detail-unlock__preview video,
+.detail-unlock__preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-unlock__actions {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
 /* base detail-cover sizing; mark layout rules appear with item-tile styles */
 
 .fact-list {
@@ -1914,12 +1951,20 @@ img {
 }
 
 .dropzone img,
-.dropzone video {
+.dropzone video,
+.dropzone__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: #111;
+}
+
+.dropzone--camera {
+  background: #111;
+  border-style: solid;
+  border-color: color-mix(in oklab, var(--forest) 45%, transparent);
 }
 
 .dropzone__hint {
@@ -1928,8 +1973,24 @@ img {
   max-width: 18rem;
 }
 
-.dropzone.has-media .dropzone__hint {
+.dropzone.has-media:not(.dropzone--camera) .dropzone__hint {
   display: none;
+}
+
+.dropzone--camera .dropzone__hint {
+  color: white;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 55%);
+}
+
+.cta-row--camera {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 0.65rem;
+}
+
+.cta-row--camera .btn {
+  width: 100%;
+  justify-content: center;
 }
 
 .guess-list {
@@ -1989,7 +2050,8 @@ img {
 .celebrate {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  /* Above sticky header (40) and mobile nav backdrop (45). */
+  z-index: 80;
   display: grid;
   place-items: center;
   padding: 1.2rem;
