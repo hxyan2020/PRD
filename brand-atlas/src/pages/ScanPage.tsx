@@ -363,12 +363,8 @@ export function ScanPage() {
         </div>
 
         <div>
-          {(!result || result.status === "unclear") && !busy && (
-            <div className="banner">{t("scan.tip")}</div>
-          )}
-
           {result?.status === "unclear" && (
-            <div className="banner banner--warn" style={{ marginTop: "0.75rem" }}>
+            <div className="banner banner--warn">
               <strong>{t("scan.cantAnalyse")}</strong>
               <p style={{ margin: "0.4rem 0 0" }}>
                 {t(unclearDetailKey(result.reason))}
@@ -397,6 +393,15 @@ export function ScanPage() {
                   {t("scan.contributeOnly")}
                 </p>
               )}
+            </div>
+          )}
+
+          {(!result || result.status === "unclear") && !busy && (
+            <div
+              className="banner"
+              style={result?.status === "unclear" ? { marginTop: "0.75rem" } : undefined}
+            >
+              {t("scan.tip")}
             </div>
           )}
 
