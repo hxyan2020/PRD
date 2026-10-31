@@ -44,6 +44,8 @@ export default async function handler(
         ? (JSON.parse(req.body) as HandleUploadBody)
         : (req.body as HandleUploadBody)
 
+    // No onUploadCompleted — that forces a post-upload callback hop to this
+    // serverless function and adds latency for every picture.
     const jsonResponse = await handleUpload({
       body,
       request: req as never,
@@ -70,9 +72,6 @@ export default async function handler(
           maximumSizeInBytes: MAX_BYTES,
           tokenPayload: JSON.stringify({ username }),
         }
-      },
-      onUploadCompleted: async () => {
-        /* metadata is stored client-side on the note */
       },
     })
 

@@ -104,17 +104,16 @@ export async function uploadNotebookFile(
   const contentType = contentTypeForUpload(file)
   const pathname = `ownlab-accounts/${username}/files/${safeFileName(file.name)}`
   const useMultipart = file.size >= MULTIPART_MIN_BYTES
-  // Token handshake has no byte progress — nudge off 0% so the UI is not frozen.
-  onProgress?.(3, { pct: 3, loaded: 0, total: file.size })
+  // Handshake has no byte progress — keep UI at 0 until real bytes move (a fake
+  // 5% floor made a 473KB file look stuck at “23.7 KB / 473.1 KB”).
+  onProgress?.(0, { pct: 0, loaded: 0, total: file.size })
   const result = await upload(pathname, file, {
     access: 'private',
     handleUploadUrl: `${window.location.origin}/api/blob/upload`,
     multipart: useMultipart,
     contentType,
     onUploadProgress: ({ percentage, loaded, total }) => {
-      const raw = normalizeUploadPct(percentage)
-      // Map network progress into 5–99 so the handshake phase stays visible.
-      const pct = Math.max(5, Math.min(99, raw))
+      const pct = Math.min(99, normalizeUploadPct(percentage))
       onProgress?.(pct, {
         pct,
         loaded: typeof loaded === 'number' ? loaded : undefined,

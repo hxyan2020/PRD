@@ -885,7 +885,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
                 : t('editorImageUploading')}
             </span>
             <strong>
-              {(imageProgress ?? 0) < 5 ? '…' : `${Math.round(imageProgress ?? 0)}%`}
+              {(imageProgress ?? 0) <= 0 ? '…' : `${Math.round(imageProgress ?? 0)}%`}
             </strong>
           </div>
           <div
@@ -897,7 +897,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           >
             <div
               className={`rte-image-progress-fill${
-                (imageProgress ?? 0) < 5 ? ' is-indeterminate' : ''
+                (imageProgress ?? 0) <= 0 ? ' is-indeterminate' : ''
               }`}
               style={{
                 width: `${Math.max(2, Math.min(100, imageProgress ?? 0))}%`,

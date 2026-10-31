@@ -118,11 +118,13 @@ function createProgressReporter(onProgress?: (pct: number) => void): {
 }
 
 /**
- * When signed in, prefer Blob for anything past a small thumbnail so the
- * notebook JSON does not hit cloud-save HTTP 413 (4.5MB serverless body).
- * Unsigned-in sessions still embed as data URLs.
+ * Only hit the network for larger images. Sub‑1MB photos encode to a data URL
+ * in milliseconds; Blob upload was waiting on a serverless token handshake so
+ * even a 473KB image looked “stuck” at a few percent.
+ * `compactInlineImagesForCloud` still offloads embedded data: URLs before sync
+ * so cloud save stays under the 4.5MB serverless limit.
  */
-const BLOB_UPLOAD_MIN_BYTES = 64 * 1024
+const BLOB_UPLOAD_MIN_BYTES = 1024 * 1024
 
 /**
  * Store a notebook image at full resolution (no downscale / quality crush).
@@ -145,9 +147,7 @@ export async function fileToNoteImageDataUrl(
   const signedIn = Boolean(loadCachedAccountUser())
   const preferBlob = signedIn && file.size >= BLOB_UPLOAD_MIN_BYTES
 
-  // Signed-in images: private Blob with live upload % (keeps cloud notebook small).
-  // Never fall back to data-URL encoding for large files — base64 of a 15MB photo
-  // freezes the tab for a long time and then breaks cloud sync (413).
+  // Large signed-in images: private Blob (never base64 — that freezes on 10MB+).
   if (preferBlob) {
     const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
       progress.report(pct)
@@ -157,7 +157,7 @@ export async function fileToNoteImageDataUrl(
   }
 
   // Keep original bytes — never canvas-resize or recompress.
-  // Small photos stay local for snappy full-res insert.
+  // Sub‑1MB photos stay local for snappy full-res insert.
   return blobToDataUrl(file, (pct) => progress.report(pct))
 }
 
