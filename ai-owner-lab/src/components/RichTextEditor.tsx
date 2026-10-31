@@ -19,6 +19,7 @@ import {
   fileToNoteImageDataUrl,
   isAllowedImageMime,
 } from '../lib/noteImage'
+import { structuredClipboardHtml, tsvPlainTextToTableHtml } from '../lib/pasteIntoEditor'
 import { clearHighlightInRange, highlightRange } from '../lib/rangeHighlight'
 import { useLanguage } from '../i18n/LanguageContext'
 import { NoteImageLightbox } from './NoteImageLightbox'
@@ -895,15 +896,36 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
             }
             e.preventDefault()
             const inCode = selectionInsideCode(editorRef.current)
-            if (inCode) prepareCodeForEditing()
-            const text = (e.clipboardData.getData('text/plain') || '').replace(
-              /\r\n?/g,
-              '\n',
-            )
-            runCommand('insertText', text)
+            if (inCode) {
+              prepareCodeForEditing()
+              const text = (e.clipboardData.getData('text/plain') || '').replace(/\r\n?/g, '\n')
+              runCommand('insertText', text)
+              emitChange()
+              captureSelection()
+              return
+            }
+
+            const html = e.clipboardData.getData('text/html') || ''
+            const plain = (e.clipboardData.getData('text/plain') || '').replace(/\r\n?/g, '\n')
+            const fromHtml = structuredClipboardHtml(html)
+            const fromTsv =
+              !fromHtml || !/<table[\s>]/i.test(fromHtml)
+                ? tsvPlainTextToTableHtml(plain)
+                : null
+            const rich = fromHtml && /<table[\s>]/i.test(fromHtml) ? fromHtml : fromTsv || fromHtml
+
+            if (rich) {
+              insertHtmlAtSelection(rich, editorRef.current)
+              emitChange()
+              captureSelection()
+              paintCodeColors()
+              return
+            }
+
+            runCommand('insertText', plain)
             emitChange()
             captureSelection()
-            if (!selectionInsideCode(editorRef.current)) paintCodeColors()
+            paintCodeColors()
           }}
         />
       </div>
