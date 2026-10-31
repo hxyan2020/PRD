@@ -4,6 +4,7 @@ import { coverGradient } from "../lib/catalog";
 import { coverUrl } from "../lib/marks";
 import { useI18n } from "../i18n/I18nProvider";
 import { formatUtc, getUnlock } from "../lib/unlocks";
+import { FireworksOverlay } from "./FireworksOverlay";
 
 interface Props {
   item: CatalogItem;
@@ -18,6 +19,7 @@ export function CelebrateModal({ item, categoryLabel, onClose }: Props) {
 
   return (
     <div className="celebrate" role="dialog" aria-modal="true" aria-labelledby="bingo-title">
+      <FireworksOverlay bursts={6} />
       <div className="celebrate__card">
         <div
           style={{
