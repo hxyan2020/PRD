@@ -1,6 +1,42 @@
 import { createWorker } from "tesseract.js";
 import type { Catalog, CatalogItem, Guess, IdentifyResult } from "../types/catalog";
 
+/** Product / shelf words that steer matching toward the right kind of brand. */
+const CATEGORY_HINTS: Record<string, string[]> = {
+  alcohol: [
+    "vermouth",
+    "aperitivo",
+    "aperitif",
+    "gin",
+    "vodka",
+    "whisky",
+    "whiskey",
+    "bourbon",
+    "rum",
+    "tequila",
+    "liqueur",
+    "cognac",
+    "brandy",
+    "beer",
+    "lager",
+    "ale",
+    "wine",
+    "champagne",
+    "prosecco",
+    "sake",
+    "soju",
+    "absinthe",
+    "pastis",
+    "amaro",
+    "distilled",
+    "distillery",
+  ],
+  cigarettes: ["cigarette", "tobacco", "nicotine", "filter", "menthol"],
+  cars: ["motor", "automotive", "automobile", "hybrid", "sedan", "suv"],
+  softdrinks: ["cola", "soda", "sparkling water", "energy drink"],
+  hotdrinks: ["coffee", "espresso", "latte", "tea", "matcha"],
+};
+
 function normalize(s: string): string {
   return s
     .toLowerCase()
@@ -11,31 +47,160 @@ function normalize(s: string): string {
     .trim();
 }
 
-function tokens(s: string): string[] {
+/** Generic label words that should not identify a brand by themselves. */
+const WEAK_TOKENS = new Set([
+  "extra",
+  "dry",
+  "special",
+  "royal",
+  "select",
+  "original",
+  "classic",
+  "premium",
+  "light",
+  "dark",
+  "red",
+  "blue",
+  "black",
+  "white",
+  "gold",
+  "silver",
+  "old",
+  "new",
+  "fine",
+  "pure",
+  "real",
+  "best",
+  "super",
+  "ultra",
+  "dal",
+  "with",
+  "and",
+  "the",
+  "des",
+  "les",
+  "une",
+  "aperitivo",
+  "vermouth",
+  "liqueur",
+  "distilled",
+  "sophisticated",
+  "bright",
+  "essences",
+]);
+
+function tokens(s: string, minLen = 2): string[] {
   return normalize(s)
     .split(" ")
-    .filter((t) => t.length >= 2);
+    .filter((t) => t.length >= minLen);
 }
 
-function scoreAgainstText(item: CatalogItem, text: string): number {
+function hasWholeWord(haystack: string, needle: string): boolean {
+  const n = normalize(needle);
+  const h = normalize(haystack);
+  if (!n || !h) return false;
+  return new RegExp(
+    `(?:^|\\s)${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`,
+  ).test(` ${h} `);
+}
+
+function categoryHintBoost(categoryId: string, text: string): number {
+  const hints = CATEGORY_HINTS[categoryId];
+  if (!hints) return 0;
+  const nText = normalize(text);
+  let boost = 0;
+  for (const hint of hints) {
+    if (hasWholeWord(nText, hint)) {
+      boost = Math.max(boost, hint.length >= 6 ? 0.12 : 0.08);
+    }
+  }
+  return boost;
+}
+
+/**
+ * Score a catalogue item against OCR / filename text.
+ * Prefers whole-word brand matches and ignores noisy short / generic tokens.
+ */
+export function scoreAgainstText(item: CatalogItem, text: string): number {
   const nText = normalize(text);
   if (!nText) return 0;
-  const names = [item.name, ...item.aliases, ...item.tags];
+  const textToks = new Set(tokens(nText, 2));
+  const names = [item.name, ...item.aliases];
   let best = 0;
+
   for (const name of names) {
     const n = normalize(name);
     if (!n) continue;
-    if (nText.includes(n) || n.includes(nText)) {
-      best = Math.max(best, n.length >= 5 ? 1 : 0.85);
+
+    // Exact brand phrase as whole words — strongest logo OCR signal.
+    if (hasWholeWord(nText, n)) {
+      if (WEAK_TOKENS.has(n)) continue;
+      // Prefer the catalogue entry whose full name is exactly what appears on the label.
+      const exactness = n === normalize(item.name) ? 1 : 0.94;
+      best = Math.max(
+        best,
+        n.length >= 5 ? exactness : n.length >= 4 ? 0.9 : 0.5,
+      );
       continue;
     }
-    const nameToks = tokens(name);
-    const textToks = new Set(tokens(nText));
-    if (!nameToks.length) continue;
-    const hit = nameToks.filter((t) => textToks.has(t)).length;
-    const ratio = hit / nameToks.length;
-    if (ratio >= 0.6) best = Math.max(best, 0.45 + ratio * 0.4);
+
+    // Very short names (MG, MS, DR) only when OCR is basically that mark alone.
+    if (n.length <= 2) {
+      if (textToks.has(n) && textToks.size <= 2) best = Math.max(best, 0.35);
+      continue;
+    }
+    if (n.length === 3) {
+      if (WEAK_TOKENS.has(n)) continue;
+      if (hasWholeWord(nText, n) && textToks.size <= 4) best = Math.max(best, 0.55);
+      continue;
+    }
+
+    const rawParts = n.split(" ").filter(Boolean);
+    const isMultiWord = rawParts.length >= 2;
+    const nameToks = tokens(name, 3);
+    const distinctive = nameToks.filter((t) => t.length >= 4 && !WEAK_TOKENS.has(t));
+    const hitDistinctive = distinctive.filter((t) => hasWholeWord(nText, t));
+
+    if (hitDistinctive.length) {
+      const longest = Math.max(...hitDistinctive.map((t) => t.length));
+      // Fragment of a multi-word brand (e.g. "raspberry" ≠ "Raspberry Pi") stays weak.
+      if (isMultiWord && hitDistinctive.length < 2) {
+        best = Math.max(best, 0.32 + Math.min(0.12, (longest - 4) * 0.02));
+        continue;
+      }
+      // Exact single-token brand (Martini) beats multi-word names that only share that token (China Martini).
+      const coversAllDistinctive =
+        distinctive.length > 0 && hitDistinctive.length === distinctive.length;
+      const isPrimaryName = n === normalize(item.name);
+      let score = 0.72 + Math.min(0.2, (longest - 4) * 0.03);
+      if (coversAllDistinctive && distinctive.length === 1 && isPrimaryName && !isMultiWord) {
+        score = 0.98;
+      } else if (coversAllDistinctive) {
+        score = Math.max(score, 0.86);
+      } else {
+        score = 0.72 + (hitDistinctive.length / distinctive.length) * 0.12;
+      }
+      best = Math.max(best, score);
+      continue;
+    }
+
+    const strongNameToks = nameToks.filter((t) => !WEAK_TOKENS.has(t));
+    if (!strongNameToks.length) continue;
+    const hit = strongNameToks.filter((t) => hasWholeWord(nText, t)).length;
+    const ratio = hit / strongNameToks.length;
+    if (ratio >= 0.75 && hit >= 1) best = Math.max(best, 0.55 + ratio * 0.2);
   }
+
+  // Tags only nudge an existing textual match — never create a top hit alone.
+  if (best >= 0.55) {
+    for (const tag of item.tags) {
+      const t = normalize(tag);
+      if (t.length < 5 || WEAK_TOKENS.has(t)) continue;
+      if (hasWholeWord(nText, t)) best = Math.min(1, best + 0.04);
+    }
+  }
+
+  if (best > 0) best = Math.min(1, best + categoryHintBoost(item.categoryId, nText));
   return best;
 }
 
@@ -89,10 +254,22 @@ function natureCueBoost(
 ): number {
   const tags = new Set([item.slug, ...item.tags, item.name.toLowerCase()]);
   let boost = 0;
-  if (cues.greenness > 0.12 && (tags.has("deciduous") || tags.has("conifer") || item.categoryId === "trees" || item.categoryId === "flowers")) {
+  if (
+    cues.greenness > 0.12 &&
+    (tags.has("deciduous") ||
+      tags.has("conifer") ||
+      item.categoryId === "trees" ||
+      item.categoryId === "flowers")
+  ) {
     boost += 0.12;
   }
-  if (cues.warmness > 0.2 && (item.slug.includes("rose") || item.slug.includes("sunflower") || item.slug.includes("marigold") || item.slug.includes("poppy"))) {
+  if (
+    cues.warmness > 0.2 &&
+    (item.slug.includes("rose") ||
+      item.slug.includes("sunflower") ||
+      item.slug.includes("marigold") ||
+      item.slug.includes("poppy"))
+  ) {
     boost += 0.1;
   }
   if (cues.contrast < 0.15) boost -= 0.2;
@@ -109,14 +286,17 @@ function toGuesses(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
   if (!top.length) return [];
-  const sum = top.reduce((a, s) => a + s.score, 0);
+
+  // Softmax-ish: strong leaders keep most of the confidence mass.
+  const tempered = top.map((s) => Math.pow(Math.max(s.score, 0.01), 1.65));
+  const sum = tempered.reduce((a, s) => a + s, 0);
   let remaining = 100;
   return top.map((s, i) => {
     const cat = catalog.categories.find((c) => c.id === s.item.categoryId);
     let confidence =
       i === top.length - 1
         ? remaining
-        : Math.max(1, Math.round((s.score / sum) * 100));
+        : Math.max(1, Math.round((tempered[i] / sum) * 100));
     if (i < top.length - 1) remaining -= confidence;
     if (i === top.length - 1) confidence = Math.max(1, remaining);
     return {
@@ -177,7 +357,9 @@ export async function identifyImage(
   onProgress?.("Scanning for logos & labels…", 0.15);
   let ocrText = "";
   try {
-    ocrText = await runOcr(file, (p) => onProgress?.("Scanning for logos & labels…", 0.15 + p * 0.7));
+    ocrText = await runOcr(file, (p) =>
+      onProgress?.("Scanning for logos & labels…", 0.15 + p * 0.7),
+    );
   } catch {
     ocrText = "";
   }
@@ -190,9 +372,14 @@ export async function identifyImage(
 
   onProgress?.("Matching to catalogue…", 0.9);
 
+  const hintedCategory = (Object.keys(CATEGORY_HINTS) as string[]).find(
+    (cat) => categoryHintBoost(cat, ocrText) > 0,
+  );
+
   const scored = pool.map((item) => {
     let score = scoreAgainstText(item, ocrText);
-    let reason = score > 0 ? "Matched text / logo cues from the image" : "Visual cue only";
+    let reason =
+      score > 0 ? "Matched text / logo cues from the image" : "Visual cue only";
     if (
       item.categoryId === "trees" ||
       item.categoryId === "flowers" ||
@@ -203,7 +390,8 @@ export async function identifyImage(
       const boost = natureCueBoost(item, cues);
       if (boost > 0) {
         score = Math.min(1, score + boost);
-        reason = score > boost ? "Text + colour cues" : "Colour / texture cues (nature)";
+        reason =
+          score > boost ? "Text + colour cues" : "Colour / texture cues (nature)";
       }
     }
     // Filename hint (e.g. toyota.jpg) helps demos & camera roll naming
@@ -214,17 +402,40 @@ export async function identifyImage(
         reason = "Matched filename hint";
       }
     }
+    // When the label clearly names a product family (vermouth, gin, …),
+    // demote cross-category collisions from shared dictionary words.
+    if (
+      hintedCategory &&
+      item.categoryId !== hintedCategory &&
+      score > 0 &&
+      score < 1
+    ) {
+      score *= 0.4;
+    }
     return { item, score, reason };
   });
 
-  const meaningful = scored.filter((s) => s.score >= 0.35);
+  const meaningful = scored
+    .filter((s) => s.score >= 0.45)
+    .sort((a, b) => b.score - a.score);
+
   if (!meaningful.length) {
-    const weak = scored.filter((s) => s.score > 0.1).sort((a, b) => b.score - a.score);
+    const weak = scored
+      .filter((s) => s.score >= 0.28)
+      .sort((a, b) => b.score - a.score);
     if (!weak.length || !normalize(ocrText)) {
       return {
         status: "unclear",
         message:
           "I can't spot a clear brand mark or distinctive type. Aim the camera at the logo, label text, or a clear silhouette, then upload again.",
+      };
+    }
+    // Drop near-tied noise: if the leader isn't clearly ahead, ask for a clearer shot.
+    if (weak.length >= 2 && weak[0].score - weak[1].score < 0.08 && weak[0].score < 0.4) {
+      return {
+        status: "unclear",
+        message:
+          "The label text is ambiguous against several catalogue marks. Zoom in on the brand name and try again.",
       };
     }
     const guesses = toGuesses(weak.slice(0, 5), catalog);
@@ -236,12 +447,17 @@ export async function identifyImage(
     };
   }
 
-  const guesses = toGuesses(meaningful.slice(0, 5), catalog);
+  // Keep followers within a reasonable band of the leader so weak 2-letter hits don't pad the list.
+  const leader = meaningful[0].score;
+  const tight = meaningful.filter((s) => s.score >= leader * 0.55 || s.score >= 0.7);
+  const guesses = toGuesses(tight.slice(0, 5), catalog);
   const top = guesses[0];
   const message =
     guesses.length === 1 && top.confidence >= 70
       ? `I think this is ${top.name}. Please confirm.`
-      : "Here are my top guesses — confidences add up to 100%. Confirm the match.";
+      : top.confidence >= 55
+        ? `Strongest match: ${top.name}. Confirm, or pick another guess.`
+        : "Here are my top guesses — confidences add up to 100%. Confirm the match.";
 
   return { status: "guesses", guesses, message };
 }
