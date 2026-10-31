@@ -66,15 +66,41 @@ export function FieldHelpLabel({ name, label }: Props) {
     </div>
   )
 
+  // Whole label is the hover target (not only the tiny ?).
+  // Native <span> child so Tooltip can attach listeners/ref; portal to body
+  // so table overflow / sticky headers do not clip the popup.
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-      <span>{visible}</span>
-      <Tooltip title={tip} trigger={['hover', 'click']}>
+    <Tooltip
+      title={tip}
+      trigger={['hover', 'click', 'focus']}
+      mouseEnterDelay={0.05}
+      mouseLeaveDelay={0.1}
+      placement="topLeft"
+      getPopupContainer={() => document.body}
+      styles={{ root: { maxWidth: 420, zIndex: 11000 } }}
+    >
+      <span
+        role="button"
+        tabIndex={0}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 4,
+          cursor: 'help',
+          maxWidth: '100%',
+        }}
+      >
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{visible}</span>
         <QuestionCircleOutlined
-          style={{ color: hasLaunch ? '#52c41a' : '#1677ff', cursor: 'help', fontSize: 12 }}
+          aria-label={`Help: ${name}`}
+          style={{
+            color: hasLaunch ? '#52c41a' : '#1677ff',
+            fontSize: 13,
+            flexShrink: 0,
+          }}
         />
-      </Tooltip>
-    </span>
+      </span>
+    </Tooltip>
   )
 }
 
