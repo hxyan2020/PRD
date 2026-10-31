@@ -567,18 +567,25 @@ export function Notebook() {
         </p>
         {accountSynced ? (
           <div className="notebook-cloud-status-row">
-            <p
-              className={`notebook-cloud-pill${cloudState === 'error' ? ' err' : ''}${
-                cloudState === 'syncing' ? ' syncing' : ''
-              }`}
-              title={t('authSignedInHint')}
+            <button
+              type="button"
+              className={`notebook-cloud-pill notebook-cloud-pill-btn${
+                cloudState === 'error' ? ' err' : ''
+              }${cloudState === 'syncing' ? ' syncing' : ''}`}
+              title={t('authSyncTap')}
+              disabled={cloudState === 'syncing'}
+              onClick={() => {
+                void notebookStore.syncDurableNow().catch(() => {
+                  /* runtime pill shows the error */
+                })
+              }}
             >
               {cloudState === 'syncing'
                 ? t('cloudSyncing')
                 : cloudState === 'error'
                   ? t('cloudSyncError', { error: cloudError || 'error' })
                   : t('authSyncOn', { user: authUser || '' })}
-            </p>
+            </button>
           </div>
         ) : (
           <p className="notebook-cloud-pill off" title={t('authRequiredTitle')}>

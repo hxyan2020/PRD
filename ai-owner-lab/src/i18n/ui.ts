@@ -196,6 +196,8 @@ const en = {
   authLedeShort: 'Same account on any phone — notes sync automatically.',
   authSignedInHint: 'Notes sync to this account automatically on every device you sign into.',
   authSyncOn: 'Signed in as {user} — notes sync automatically',
+  authSyncTap: 'Tap to sync now with your other devices',
+  authSyncPulling: 'Refreshing notes from cloud…',
   authRequiredTitle: 'Sign in to sync notes (like Murex Hub)',
   authRequiredBody:
     'Use Sign in in the top bar. Create an account once, then the same username/password on any phone loads your notes — no cloud key or Restore step.',
@@ -717,6 +719,8 @@ const zh: Record<UiKey, string> = {
   authLedeShort: '同一账号登录任意手机，笔记自动同步。',
   authSignedInHint: '在你登录的每台设备上，笔记都会自动同步到此账号。',
   authSyncOn: '已登录为 {user} — 笔记自动同步',
+  authSyncTap: '点按立即与其他设备同步',
+  authSyncPulling: '正在从云端刷新笔记…',
   authRequiredTitle: '登录以同步笔记（与 Murex Hub 相同）',
   authRequiredBody:
     '点击顶栏「登录」。创建一次账号后，在任何手机用同一用户名/密码即可看到笔记——无需云密钥或「恢复」。',

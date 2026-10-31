@@ -601,7 +601,7 @@ function startPeriodicCloudSync() {
     if (document.visibilityState !== 'visible') return
     if (!anyCloudBackendReady()) return
     void pullCloudIfConfigured()
-  }, 20_000)
+  }, 10_000)
 }
 
 // Kick off hydration as soon as the module loads in the browser.
@@ -612,6 +612,12 @@ if (typeof window !== 'undefined') {
     if (document.visibilityState === 'visible') void pullCloudIfConfigured()
   })
   window.addEventListener('focus', () => {
+    void pullCloudIfConfigured()
+  })
+  window.addEventListener('pageshow', () => {
+    void pullCloudIfConfigured()
+  })
+  window.addEventListener('online', () => {
     void pullCloudIfConfigured()
   })
 }
@@ -719,8 +725,10 @@ function scheduleFolderBackup() {
  */
 async function compactInlineImagesForCloud(): Promise<void> {
   if (!isAccountSyncReady()) return
-  const probe = buildBackupJson()
-  if (probe.length < 2_000_000 && !probe.includes('data:image')) return
+  if (!cache.entries.some((e) => (e.selectedText || '').includes('data:image')) &&
+    !cache.trash.some((e) => (e.selectedText || '').includes('data:image'))) {
+    return
+  }
 
   let changed = false
   const nextEntries: NotebookEntry[] = []
