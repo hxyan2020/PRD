@@ -1,0 +1,224 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { NAV_ITEMS } from "@/lib/nav";
+import { cn } from "@/lib/utils";
+import type { SessionUser } from "@/lib/types";
+import { LogOut, Menu, X } from "lucide-react";
+import { UI_LOCALE_COOKIE, navLabel, shellCopy, type UiLocale } from "@/lib/i18n";
+
+function readLocaleCookie(): UiLocale {
+  if (typeof document === "undefined") return "en";
+  const m = document.cookie.match(new RegExp(`(?:^|; )${UI_LOCALE_COOKIE}=([^;]*)`));
+  const v = m?.[1] ? decodeURIComponent(m[1]) : "en";
+  return v === "zh-Hant" || v === "zh-TW" || v === "zh" ? "zh-Hant" : "en";
+}
+
+export function AdminShell({
+  user,
+  permissions,
+  children,
+}: {
+  user: SessionUser;
+  permissions: string[];
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [locale, setLocale] = useState<UiLocale>("en");
+  const can = (perm: string) => permissions.includes("*") || permissions.includes(perm);
+  const copy = shellCopy(locale);
+
+  useEffect(() => {
+    setLocale(readLocaleCookie());
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.classList.toggle("nav-open", open);
+    return () => document.body.classList.remove("nav-open");
+  }, [open]);
+
+  function setLang(next: UiLocale) {
+    document.cookie = `${UI_LOCALE_COOKIE}=${encodeURIComponent(next)}; path=/; max-age=31536000; samesite=lax`;
+    setLocale(next);
+  }
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  }
+
+  const langToggle = (
+    <div className="flex gap-1">
+      <button
+        type="button"
+        className={cn(
+          "rounded-lg px-2.5 py-1.5 border text-[11px] min-h-8",
+          locale === "en" ? "bg-white/15 border-white/30 text-white" : "border-white/15 text-slate-300"
+        )}
+        onClick={() => setLang("en")}
+      >
+        EN
+      </button>
+      <button
+        type="button"
+        className={cn(
+          "rounded-lg px-2.5 py-1.5 border text-[11px] min-h-8",
+          locale === "zh-Hant" ? "bg-white/15 border-white/30 text-white" : "border-white/15 text-slate-300"
+        )}
+        onClick={() => setLang("zh-Hant")}
+      >
+        繁中
+      </button>
+    </div>
+  );
+
+  const nav = (
+    <>
+      <div className="pr-8 lg:pr-0">
+        <div className="text-[0.7rem] uppercase tracking-[0.18em] text-teal-200/80">{copy.brandEyebrow}</div>
+        <div className="mt-1 font-[family-name:var(--font-display)] text-xl text-white">{copy.brandTitle}</div>
+        <div className="mt-1 text-xs text-slate-300">{copy.brandSub}</div>
+      </div>
+
+      <nav className="flex flex-col gap-0.5 flex-1 overflow-y-auto overscroll-contain pr-1 -mx-1 px-1">
+        {NAV_ITEMS.filter((item) => can(item.permission)).map((item) => {
+          const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition min-h-11",
+                active ? "bg-white/12 text-white" : "text-slate-300 hover:bg-white/8 hover:text-white"
+              )}
+            >
+              <Icon size={16} className="shrink-0" />
+              <span className="leading-snug">{navLabel(item.href, locale, item.label)}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs shrink-0">
+        <div className="font-semibold text-white">{user.name}</div>
+        <div className="mt-0.5 text-slate-300 break-all">{user.email}</div>
+        <div className="mt-2 flex flex-wrap gap-1">
+          <span className="badge border-teal-400/30 bg-teal-400/10 text-teal-100">{user.role_code}</span>
+          {user.department_code && (
+            <span className="badge border-white/20 bg-white/10 text-slate-100">{user.department_code}</span>
+          )}
+        </div>
+        <div className="mt-3">{langToggle}</div>
+        <button
+          onClick={logout}
+          className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10"
+        >
+          <LogOut size={14} /> {copy.signOut}
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen lg:grid lg:grid-cols-[260px_minmax(0,1fr)]">
+      <aside className="hidden lg:flex bg-[var(--sidebar)] text-[var(--sidebar-ink)] px-4 py-5 flex-col gap-5 sticky top-0 h-screen pt-[max(1.25rem,var(--safe-top))]">
+        {nav}
+      </aside>
+
+      {open && (
+        <div className="lg:hidden fixed inset-0 z-50">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/45"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+          />
+          <aside className="relative z-50 h-full w-[min(88vw,320px)] bg-[var(--sidebar)] text-[var(--sidebar-ink)] px-4 py-5 flex flex-col gap-5 shadow-xl overflow-hidden pt-[max(1.25rem,var(--safe-top))] pb-[max(1rem,var(--safe-bottom))]">
+            <button
+              type="button"
+              className="absolute right-3 top-[max(0.75rem,var(--safe-top))] text-slate-200 min-h-10 min-w-10 inline-flex items-center justify-center"
+              aria-label="Close"
+              onClick={() => setOpen(false)}
+            >
+              <X size={20} />
+            </button>
+            {nav}
+          </aside>
+        </div>
+      )}
+
+      <main className="min-w-0 flex flex-col">
+        <header className="border-b border-[var(--line)] bg-white/90 backdrop-blur px-3 sm:px-6 py-2.5 sm:py-3 sticky top-0 z-30 pt-[max(0.65rem,var(--safe-top))]">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="lg:hidden">
+                <button
+                  type="button"
+                  className="btn px-2.5 py-2"
+                  aria-label={copy.menu}
+                  aria-expanded={open}
+                  onClick={() => setOpen(true)}
+                >
+                  <Menu size={18} />
+                </button>
+              </div>
+              <div className="min-w-0">
+                <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
+                  {copy.headerEyebrow}
+                </div>
+                <div className="font-[family-name:var(--font-display)] text-sm sm:text-lg text-[var(--ink)] truncate">
+                  {copy.headerTitle}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="hidden sm:block text-right text-[11px] sm:text-xs text-[var(--muted)]">
+                <div>
+                  {copy.messenger}: <strong className="text-[var(--ink)]">Lark</strong>
+                </div>
+                <div>
+                  {copy.indicators}: <strong className="text-[var(--ink)]">Monitor 2.0</strong>
+                </div>
+              </div>
+              <div className="lg:hidden flex gap-1">
+                <button
+                  type="button"
+                  className={cn(
+                    "btn !min-h-9 !px-2 text-[11px]",
+                    locale === "en" ? "btn-primary" : ""
+                  )}
+                  onClick={() => setLang("en")}
+                >
+                  EN
+                </button>
+                <button
+                  type="button"
+                  className={cn(
+                    "btn !min-h-9 !px-2 text-[11px]",
+                    locale === "zh-Hant" ? "btn-primary" : ""
+                  )}
+                  onClick={() => setLang("zh-Hant")}
+                >
+                  繁中
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <div className="p-3 sm:p-6 pb-[max(1rem,var(--safe-bottom))] flex-1 min-w-0 max-w-full overflow-x-clip">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}
