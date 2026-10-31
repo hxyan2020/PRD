@@ -1,9 +1,9 @@
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   Button,
+  Checkbox,
   Form,
   Input,
-  InputNumber,
   Modal,
   Select,
   Space,
@@ -72,29 +72,54 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
   },
 ];
 
+const LABEL_WIDTH = 72;
+
 export function DepthMonitorPage() {
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
   const [tab, setTab] = useState('records');
   const [open, setOpen] = useState(false);
   const [configs, setConfigs] = useState(INITIAL_CONFIGS);
+  const enableLevel = Form.useWatch('enableLevel', form);
+  const enableDepth = Form.useWatch('enableDepth', form);
 
   const openCreate = () => {
     form.resetFields();
+    form.setFieldsValue({ enableLevel: false, enableDepth: false });
     setOpen(true);
   };
 
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
+      if (!values.enableLevel && !values.enableDepth) {
+        message.warning('请至少选择一种告警类型');
+        return;
+      }
+      if (values.enableLevel && (values.levelCount == null || values.levelCount === '')) {
+        message.warning('请填写档位数量');
+        return;
+      }
+      if (values.enableDepth && (values.depthPct == null || values.depthPct === '' || values.depthValue == null || values.depthValue === '')) {
+        message.warning('请填写深度价值');
+        return;
+      }
+
       const parts: string[] = [];
-      if (values.levelCount != null && values.levelCount !== '') {
+      if (values.enableLevel) {
         parts.push(`<=${values.levelCount} 档`);
       }
-      if (values.depthPct != null && values.depthValue != null) {
+      if (values.enableDepth) {
         parts.push(`${values.depthPct}% <=${values.depthValue} USD`);
       }
-      const alertType = values.levelCount != null && !values.depthPct ? '档位告警' : values.depthPct != null && values.levelCount == null ? '深度告警' : '档位/深度告警';
+
+      const alertType =
+        values.enableLevel && !values.enableDepth
+          ? '档位告警'
+          : values.enableDepth && !values.enableLevel
+            ? '深度告警'
+            : '档位/深度告警';
+
       setConfigs((prev) => [
         {
           key: String(Date.now()),
@@ -136,9 +161,18 @@ export function DepthMonitorPage() {
   const configColumns = [
     { title: '告警类型', dataIndex: 'alertType', width: 110 },
     { title: '告警值', dataIndex: 'alertValue', width: 160 },
-    { title: '关联合约', dataIndex: 'contractCount', width: 100 },
+    {
+      title: '关联合约',
+      dataIndex: 'contractCount',
+      width: 100,
+      render: (v: number) => (
+        <Button type="link" size="small" style={{ padding: 0 }} onClick={() => message.info(`关联合约：${v}`)}>
+          {v}
+        </Button>
+      ),
+    },
     { title: '更新时间', dataIndex: 'updateTime', width: 170 },
-    { title: '更新人', dataIndex: 'updatedBy', width: 200 },
+    { title: '更新人', dataIndex: 'updatedBy', width: 220 },
     {
       title: '状态',
       dataIndex: 'enabled',
@@ -151,7 +185,12 @@ export function DepthMonitorPage() {
       width: 140,
       render: (_: unknown, record: ConfigRecord) => (
         <Space size={4}>
-          <Button type="link" size="small" onClick={() => toggleConfig(record.key)}>
+          <Button
+            type="link"
+            size="small"
+            danger={record.enabled}
+            onClick={() => toggleConfig(record.key)}
+          >
             {record.enabled ? '停用' : '启用'}
           </Button>
           <Button type="link" size="small" onClick={() => message.info(`编辑：${record.alertType}`)}>
@@ -178,19 +217,27 @@ export function DepthMonitorPage() {
 
       {tab === 'records' && (
         <>
-          <Form form={filterForm} layout="inline" style={{ marginBottom: 16 }}>
-            <Form.Item label="合约名称" name="contractName">
-              <Input placeholder="请输入合约名称" style={{ width: 200 }} />
-            </Form.Item>
-            <Form.Item>
-              <Space>
-                <Button type="primary" icon={<SearchOutlined />}>
-                  查询
-                </Button>
-                <Button onClick={() => filterForm.resetFields()}>重置</Button>
-              </Space>
-            </Form.Item>
-          </Form>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              marginBottom: 16,
+              gap: 16,
+            }}
+          >
+            <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
+              <Form.Item label="合约名称" name="contractName">
+                <Input placeholder="请输入合约名称" style={{ width: 200 }} />
+              </Form.Item>
+            </Form>
+            <Space>
+              <Button type="primary" icon={<SearchOutlined />}>
+                查询
+              </Button>
+              <Button onClick={() => filterForm.resetFields()}>重置</Button>
+            </Space>
+          </div>
           <Table
             rowKey="key"
             columns={alertColumns}
@@ -213,7 +260,13 @@ export function DepthMonitorPage() {
             columns={configColumns}
             dataSource={configs}
             scroll={{ x: 1100 }}
-            pagination={{ total: configs.length, showTotal: (t) => `共 ${t} 条`, pageSize: 20 }}
+            pagination={{
+              total: configs.length,
+              showTotal: (t) => `共 ${t} 条记录`,
+              pageSize: 20,
+              showSizeChanger: true,
+              pageSizeOptions: ['10', '20', '50'],
+            }}
             size="small"
           />
         </>
@@ -226,30 +279,48 @@ export function DepthMonitorPage() {
         onOk={handleOk}
         okText="确定"
         cancelText="取消"
-        width={640}
+        width={680}
         destroyOnClose
         maskClosable={false}
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
           <Form.Item label="告警类型" required style={{ marginBottom: 8 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <Space align="center" wrap>
-                <Text style={{ width: 72 }}>档位数量</Text>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Form.Item name="enableLevel" valuePropName="checked" noStyle>
+                  <Checkbox />
+                </Form.Item>
+                <Text style={{ width: LABEL_WIDTH, flexShrink: 0 }}>档位数量</Text>
                 <Form.Item name="levelCount" noStyle>
-                  <Input placeholder="≤设置的档位数量会告警" style={{ width: 360 }} />
+                  <Input
+                    placeholder="≤设置的档位数量会告警"
+                    disabled={!enableLevel}
+                    style={{ flex: 1 }}
+                  />
                 </Form.Item>
-              </Space>
-              <Space align="center" wrap>
-                <Text style={{ width: 72 }}>深度价值</Text>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Form.Item name="enableDepth" valuePropName="checked" noStyle>
+                  <Checkbox />
+                </Form.Item>
+                <Text style={{ width: LABEL_WIDTH, flexShrink: 0 }}>深度价值</Text>
                 <Form.Item name="depthPct" noStyle>
-                  <InputNumber min={0} step={0.1} style={{ width: 90 }} />
+                  <Input
+                    placeholder="请输入累计深度"
+                    suffix="%"
+                    disabled={!enableDepth}
+                    style={{ width: 160 }}
+                  />
                 </Form.Item>
-                <Text>%</Text>
                 <Form.Item name="depthValue" noStyle>
-                  <Input placeholder="≤设置的深度价值会告警" style={{ width: 240 }} />
+                  <Input
+                    placeholder="≤设置的深度价值会告警"
+                    suffix="USD"
+                    disabled={!enableDepth}
+                    style={{ flex: 1 }}
+                  />
                 </Form.Item>
-                <Text>USD</Text>
-              </Space>
+              </div>
             </div>
             <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
               同类型的告警间隔最少5分钟
