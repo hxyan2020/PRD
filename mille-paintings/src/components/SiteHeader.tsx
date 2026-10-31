@@ -34,18 +34,8 @@ export function SiteHeader() {
   return (
     <header className={`site-header ${open ? 'menu-open' : ''}`}>
       <Link to="/" className="brand" onClick={close}>
-        <img
-          className="brand-logo"
-          src={`${import.meta.env.BASE_URL}logo.svg?v=mille-logo`}
-          width={40}
-          height={40}
-          alt=""
-          decoding="async"
-        />
-        <span className="brand-text">
-          <span className="brand-mark">{t('brand')}</span>
-          <span className="brand-sub">{t('brandSub')}</span>
-        </span>
+        <span className="brand-mark">{t('brand')}</span>
+        <span className="brand-sub">{t('brandSub')}</span>
       </Link>
 
       <div className="header-stats-slot">
