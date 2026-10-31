@@ -19,6 +19,7 @@ const defaultOpenKeys = [
   'contract-config',
   'risk-manage',
   'monitor-alert',
+  'mm-manage',
 ];
 
 export function MainLayout() {

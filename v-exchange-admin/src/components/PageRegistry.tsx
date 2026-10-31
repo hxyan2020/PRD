@@ -2,6 +2,7 @@ import type { PageKey } from '../config/menu';
 import { AdminAdlPage } from '../pages/AdminAdlPage';
 import { CoinIntroducePage } from '../pages/CoinIntroducePage';
 import { ContractListPage } from '../pages/ContractListPage';
+import { DbTakeoverAccountPage } from '../pages/DbTakeoverAccountPage';
 import { FairPricePage } from '../pages/FairPricePage';
 import { FundingRateModifyPage } from '../pages/FundingRateModifyPage';
 import { FundingRatePage } from '../pages/FundingRatePage';
@@ -42,6 +43,8 @@ export function renderPage(key: PageKey) {
       return <PositionListPage />;
     case 'funding-rate-modify':
       return <FundingRateModifyPage />;
+    case 'db-takeover-account':
+      return <DbTakeoverAccountPage />;
     default:
       return <PlaceholderPage />;
   }

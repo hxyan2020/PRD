@@ -52,7 +52,9 @@ export type PageKey =
   | 'large-position-notify'
   | 'adl-abnormal-record'
   // 做市 / Broker
-  | 'mm-overview'
+  | 'db-takeover-account'
+  | 'db-takeover-asset'
+  | 'db-account-alert'
   | 'broker-overview';
 
 export const pageTitles: Record<PageKey, string> = {
@@ -98,7 +100,9 @@ export const pageTitles: Record<PageKey, string> = {
   'large-liquidation-alert': '大额爆仓预警',
   'large-position-notify': '大额持仓通知',
   'adl-abnormal-record': 'ADL异常记录',
-  'mm-overview': '做市管理',
+  'db-takeover-account': 'DB接仓账户管理',
+  'db-takeover-asset': 'DB接仓账户资金',
+  'db-account-alert': 'DB账户告警',
   'broker-overview': 'Broker管理',
 };
 
@@ -194,7 +198,11 @@ export const sideMenuItems: MenuProps['items'] = [
     key: 'mm-manage',
     icon: <FundOutlined />,
     label: '做市管理',
-    children: [{ key: 'mm-overview', label: '做市概览' }],
+    children: [
+      { key: 'db-takeover-account', label: 'DB接仓账户管理' },
+      { key: 'db-takeover-asset', label: 'DB接仓账户资金' },
+      { key: 'db-account-alert', label: 'DB账户告警' },
+    ],
   },
   {
     key: 'broker-manage',
