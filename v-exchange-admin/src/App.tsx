@@ -3,6 +3,13 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { isPageKey, type PageKey } from './config/menu'
 import { AdminLayout } from './layout/AdminLayout'
 import { pageComponents } from './pages/registry'
+import { useLocale } from './i18n/LocaleContext'
+import {
+  formatTermLabel,
+  getFinanceTerm,
+  normalizeTermKey,
+  resolveTermKey,
+} from './i18n/financeTerms'
 import './fieldHelpFloating.css'
 
 
@@ -137,76 +144,68 @@ const extendedHelp:Record<string,string>={
  '预警群':'Lark 告警通知地址。按风险等级配置值班、负责人和备用群，避免敏感信息外泄。',
  '告警方式':'告警推送渠道；关键事件建议 Lark+备用通知。',
 }
-/** English finance/trading terms for bilingual hover tips (paired with Chinese maps above). */
-const helpEn: Record<string, string> = {
-  '合约名称': 'Select the contract to monitor. Configure XAU_USD and BTC_USD separately — volatility profiles differ.',
-  '合约': 'Underlying instrument. XAUUSD = gold perpetual; BTCUSD = bitcoin perpetual.',
-  '持仓方向': 'Position side: Long or Short. Perpetual futures allow two-way positions.',
-  '持仓均价': 'Volume-weighted average entry price; used to compute unrealized PnL (uPnL).',
-  '持仓仓位价值 (USD)': 'USD notional of the position (size × multiplier × mark, per venue convention).',
-  '持仓合约价值 (USD)': 'USD notional of the position (same as position value).',
-  '占用保证金 (USD)': 'USD margin allocated to this position. Higher leverage uses less margin vs notional.',
-  '未实现盈亏 (USD)': 'Mark-to-market floating PnL in USD; feeds account equity until the position is closed.',
-  '总未实现盈亏': 'Sum of mark-to-market floating PnL across all open positions.',
-  '总占用保证金': 'Total margin locked by positions and working orders (initial / maintenance margin used).',
-  '占用保证金': 'Margin locked by positions and orders — not the same as full account equity.',
-  '持仓总额': 'Aggregate notional value of all open positions.',
-  '持仓名义价值': 'Current position notional marked to the mark price.',
-  '账户ID': 'Unique account id used to locate DB takeover or user risk.',
-  '钱包余额': 'Settled wallet balance (excludes unrealized PnL). Analogous to cash in free margin.',
-  '最大可转金额': 'Largest amount that can be recalled/withdrawn without breaching minimum safe margin.',
-  '可转金额': 'Funds that can leave the account without eroding the takeover safety buffer.',
-  '自动注资水位线': 'When DB takeover wallet falls below this waterline, the system auto top-ups capital.',
-  '注资目标水位线': 'Target wallet balance the auto top-up aims to restore after injection.',
-  '账户权益': 'Account equity ≈ balance + unrealized PnL. Core input for liquidation and risk controls.',
-  '账户MMR': 'Maintenance margin rate. Rising MMR means higher liquidation risk; confirm venue formula.',
-  '流水类型': 'Ledger type: inject/recall, funding fee, auto-deleveraging (ADL), etc.',
-  '金额 (USD)': 'Signed USD ledger amount; + inflow / − outflow.',
-  '流水ID': 'Unique fund-flow id for reconciliation and audit.',
-  '仓位模式': 'Isolated vs cross margin — determines how margin is shared and liquidation scope.',
-  '预警群': 'Lark bot webhook for alerts. Route by severity; keep P0 on-call exclusive.',
-  '告警方式': 'Alert delivery channel (e.g. Lark). Critical events should have a backup path.',
-  '监控阈值': 'Deviation that triggers an alert (spread or funding gap). Backtest per pair.',
-  '资金费率数值': 'Observed external funding rate. Normalize to the same settlement interval before comparing.',
-  '平台资金费率': 'Internal platform funding rate; compare on the same settlement interval as peers.',
-}
-
-function normalizeLabel(label: string): string {
-  return label
-    .replace(/[＊*ⓘℹ️]/g, '')
-    .replace(/[：:]/g, '')
-    .trim()
-    .replace(/\s+/g, ' ')
-}
-
-function resolveHelpKey(label: string): string {
-  const k = normalizeLabel(label)
-  if (extendedHelp[k] || help[k] || helpEn[k]) return k
-  const found =
-    Object.keys(extendedHelp).find((x) => k.includes(x) || x.includes(k)) ||
-    Object.keys(help).find((x) => k.includes(x) || x.includes(k)) ||
-    Object.keys(helpEn).find((x) => k.includes(x) || x.includes(k))
-  return found || k
+/** Extra EN explanations for keys not yet in FINANCE_TERMS (price-engine / URL fields). */
+const helpEnFallback: Record<string, string> = {
+  '市场地址': 'Venue WebSocket/API endpoint; check TLS, heartbeat and failover.',
+  '交易量 URL': 'Endpoint for external traded volume; use comparable product volume only.',
+  '正向资金费率 URL': 'Linear-contract funding endpoint; watch quote asset and settlement interval.',
+  '反向资金费率 URL': 'Inverse-contract funding endpoint; do not mix with linear funding.',
+  '获取最新价 URL': 'Last traded price feed; do not use alone as liquidation price.',
+  '获取指数价 URL': 'External index price feed; verify symbol and currency.',
+  '获取合理价 URL': 'External mark/fair price feed; convention may differ from internal mark.',
+  '进入观察期 (秒)': 'Seconds a bad source stays bad before exclusion (debounce).',
+  '进入观察期（秒）': 'Seconds a bad source stays bad before exclusion (debounce).',
+  '重新启用 (秒)': 'Seconds a recovered source must stay healthy before re-inclusion.',
+  '重新启用（秒）': 'Seconds a recovered source must stay healthy before re-inclusion.',
+  '是否需要设置价差监控': 'Whether to monitor bid/ask anomalies for this source.',
+  '描述信息': 'Ops notes: source, contract convention, failover and contacts.',
+  '行情源交易量白名单': 'Sources allowed in volume weighting; exclude non-comparable gold quotes.',
+  '各行情源交易量加权系数': 'Manual source weights; normalize and cap single-source concentration.',
+  '权重展示开关': 'Show index source weights for concentration checks.',
+  '目标交易对': 'External market symbol mapped to the index; verify XAU/USD vs BTC/USD units.',
+  '订阅币种': 'Subscribed asset; must match the index underlying.',
+  '放大倍数': 'Index scale factor; keep 1 unless quote units require conversion.',
+  '超出偏离值的调整机制': 'How outlier quotes are handled (prefer drop + alert).',
+  '基差移动平均值周期(秒)': 'Smoothing window for futures–spot basis.',
+  '期现价差阈值比例': 'Mark vs index basis alert threshold (not a liquidation trigger by itself).',
+  '观察阈值(秒)': 'How long basis must stay abnormal before protection engages.',
+  '恢复阈值(秒)': 'How long basis must stay normal before protection clears.',
+  '新算法计算状态': 'Whether the new mark algorithm is healthy; compare in parallel before cutover.',
+  '采用状态': 'Which mark algorithm is live; switches need approval and rollback.',
+  '近24小时计算记录': 'Recent Mark/Index calculations for RCA.',
+  '首次收取时间(小时)': 'First funding settlement hour (state timezone, usually UTC).',
+  '保证金影响额': 'How funding settlement hits available margin; confirm risk-engine inclusion.',
+  '资金费自动调整系数区间': 'Allowed auto-funding adjustment coefficient range (risk-approved).',
+  '费率精度': 'Funding decimal precision; verify rounding.',
+  '老算法利率': 'Legacy funding algorithm output for migration compare.',
+  '新算法利率': 'New funding algorithm output; check skew before go-live.',
+  '结算费率': 'Funding rate actually charged/paid this period.',
+  '本期结算费率': 'Applied funding for this period; manual edits need dual approval.',
+  '距离新周期启用时间（分钟）': 'Lead time before a funding change takes effect.',
+  '采用新算法资金费率': 'Use the new funding engine; needs backtest, canary and rollback.',
+  '对标交易所收取周期 (Hour)': 'Peer venue funding interval; do not compare raw 4h vs 8h rates.',
+  '合约账户ID': 'Derivatives account id used to locate liquidation events.',
+  '持仓信息': 'Side, size and contract tied to a liquidation event.',
+  '爆仓通知仓位价值阈值': 'Notional threshold for post-liquidation large-size notices.',
+  '爆仓通知仓位价值阈值 (USD)': 'USD notional threshold for post-liquidation notices.',
+  '爆仓通知仓位价值阈值（USD）': 'USD notional threshold for post-liquidation notices.',
 }
 
 function helpTextZh(label: string): string {
-  const k = resolveHelpKey(label)
-  return (
-    extendedHelp[k] ||
-    help[k] ||
-    `字段「${k}」用于查询、配置或展示对应的监控数据；建议核对业务定义、单位与计算口径后设定阈值。`
-  )
+  const term = getFinanceTerm(label)
+  const k = resolveTermKey(label)
+  return extendedHelp[k] || help[k] || term.explainZh
 }
 
 function helpTextEn(label: string): string {
-  const k = resolveHelpKey(label)
-  return (
-    helpEn[k] ||
-    `"${k}" — used to configure or display related trading/risk data; confirm definition, unit, and calculation before setting thresholds.`
-  )
+  const k = resolveTermKey(label)
+  if (helpEnFallback[k]) return helpEnFallback[k]
+  return getFinanceTerm(label).explainEn
 }
 
 function FieldHelp() {
+  const { lang, bilingualTitle } = useLocale()
+
   useEffect(() => {
     let tipEl: HTMLDivElement | null = null
     let hideTimer: ReturnType<typeof setTimeout> | null = null
@@ -253,29 +252,53 @@ function FieldHelp() {
       const tip = ensureTip()
       const zh = helpTextZh(label)
       const en = helpTextEn(label)
-      const key = resolveHelpKey(label)
       tip.replaceChildren()
       const title = document.createElement('div')
       title.className = 'field-help-floating__title'
-      title.append(document.createTextNode(key))
+      title.append(document.createTextNode(bilingualTitle(label)))
       const muted = document.createElement('span')
       muted.className = 'field-help-floating__muted'
       muted.textContent = ' · field help'
       title.append(muted)
-      const row = (lang: string, text: string) => {
+      const row = (langTag: string, text: string) => {
         const r = document.createElement('div')
         r.className = 'field-help-floating__row'
         const l = document.createElement('span')
         l.className = 'field-help-floating__lang'
-        l.textContent = lang
+        l.textContent = langTag
         const t = document.createElement('span')
         t.textContent = text
         r.append(l, t)
         return r
       }
+      // Tooltips always expose both languages so EN and 中文 stay available together.
       tip.append(title, row('EN', en), row('中文', zh))
       placeTip(anchor)
       requestAnimationFrame(() => placeTip(anchor))
+    }
+
+    let applyingLabels = false
+
+    const applyVisibleLabel = (el: HTMLElement, zhLabel: string) => {
+      let textHost = el.querySelector<HTMLElement>('.field-help-text')
+      if (!textHost) {
+        // Wrap existing text nodes (before ⓘ) into a span we can rewrite on lang change.
+        textHost = document.createElement('span')
+        textHost.className = 'field-help-text'
+        const mark = el.querySelector('.field-help-mark')
+        const nodes = [...el.childNodes].filter((n) => n !== mark)
+        nodes.forEach((n) => textHost!.appendChild(n))
+        if (mark) el.insertBefore(textHost, mark)
+        else el.appendChild(textHost)
+      }
+      const next = formatTermLabel(zhLabel, lang)
+      if (textHost.textContent === next) return
+      applyingLabels = true
+      textHost.textContent = next
+      // Release on next tick so MutationObserver ignores our own rewrite.
+      queueMicrotask(() => {
+        applyingLabels = false
+      })
     }
 
     const scheduleHide = () => {
@@ -296,31 +319,38 @@ function FieldHelp() {
     }
 
     const decorate = () => {
+      if (applyingLabels) return
       document
         .querySelectorAll<HTMLElement>(
           '.ant-form-item-label label, .ant-table-thead th, .ant-descriptions-item-label, .ant-form-item .ant-input-group-addon, .ant-modal .ant-form-item-label label',
         )
         .forEach((el) => {
-          if (el.dataset.helpReady) return
+          if (el.dataset.helpReady) {
+            const zh = el.dataset.labelZh
+            if (zh) applyVisibleLabel(el, zh)
+            return
+          }
           const raw = (el.textContent || '').trim()
           if (!raw) return
-          const label = normalizeLabel(raw)
+          const label = normalizeTermKey(raw)
           if (!label) return
           el.dataset.helpReady = '1'
+          el.dataset.labelZh = label
           // Do NOT set native title — browser tooltips are delayed/unreliable and conflict with the floating panel.
           el.removeAttribute('title')
           el.style.cursor = 'help'
-          el.setAttribute('aria-label', `${label}: ${helpTextEn(label)} / ${helpTextZh(label)}`)
+          el.setAttribute('aria-label', `${bilingualTitle(label)}: ${helpTextEn(label)} / ${helpTextZh(label)}`)
           let mark = el.querySelector<HTMLElement>('.field-help-mark')
           if (!mark) {
             mark = document.createElement('span')
             mark.className = 'field-help-mark'
             mark.textContent = ' ⓘ'
             mark.setAttribute('tabindex', '0')
-            mark.setAttribute('aria-label', `Help: ${label}`)
+            mark.setAttribute('aria-label', `Help: ${bilingualTitle(label)}`)
             el.appendChild(mark)
           }
           mark.removeAttribute('title')
+          applyVisibleLabel(el, label)
           bindHover(mark, label)
           bindHover(el, label)
         })
@@ -331,7 +361,10 @@ function FieldHelp() {
     }
 
     decorate()
-    const observer = new MutationObserver(decorate)
+    const observer = new MutationObserver(() => {
+      if (applyingLabels) return
+      decorate()
+    })
     observer.observe(document.body, { childList: true, subtree: true })
     window.addEventListener('scroll', onScroll, true)
     window.addEventListener('resize', onScroll)
@@ -343,7 +376,7 @@ function FieldHelp() {
       tipEl?.remove()
       tipEl = null
     }
-  }, [])
+  }, [lang, bilingualTitle])
   return null
 }
 
