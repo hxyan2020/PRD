@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0b0f14;
+  --paper: #f3eee4;
+  --rust: #e85d04;
+  --signal: #2dd4bf;
+  --gold: #e8b86d;
+}
+
+html,
+body {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+body {
+  background-image:
+    radial-gradient(1200px 600px at 80% -10%, rgba(232, 93, 4, 0.16), transparent 55%),
+    radial-gradient(900px 500px at -10% 20%, rgba(45, 212, 191, 0.08), transparent 50%),
+    linear-gradient(180deg, #0b0f14 0%, #10161f 100%);
+  min-height: 100vh;
+}
+
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  opacity: 0.045;
+  z-index: 50;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+}
+
+.radar-sweep {
+  background:
+    conic-gradient(from 0deg, transparent 0deg, rgba(232, 93, 4, 0.28) 38deg, transparent 70deg);
+  animation: sweep 7s linear infinite;
+}
+
+@keyframes sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.score-hot {
+  color: #ff8a3d;
+}
+.score-warm {
+  color: #e8b86d;
+}
+.score-cool {
+  color: #8b97a8;
+}
+
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.14em] text-mist;
+}
+
+.chip-gold {
+  @apply border-gold/40 bg-gold/10 text-gold;
+}
+
+.chip-signal {
+  @apply border-signal/30 bg-signal/10 text-signal;
+}
+
+.chip-rust {
+  @apply border-rust/40 bg-rust/10 text-rust;
+}
+
+.panel {
+  @apply rounded-2xl border border-white/10 bg-ink-2/80 shadow-card backdrop-blur;
+}
+
+.kicker {
+  @apply font-mono text-[11px] uppercase tracking-[0.22em] text-rust;
+}
