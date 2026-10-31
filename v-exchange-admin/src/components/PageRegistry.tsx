@@ -1,4 +1,5 @@
 import type { PageKey } from '../config/menu';
+import { AdlAbnormalRecordPage } from '../pages/AdlAbnormalRecordPage';
 import { AdminAdlPage } from '../pages/AdminAdlPage';
 import { CoinIntroducePage } from '../pages/CoinIntroducePage';
 import { CompetitorSpreadMonitorPage } from '../pages/CompetitorSpreadMonitorPage';
@@ -80,6 +81,8 @@ export function renderPage(key: PageKey) {
       return <LargeLiquidationAlertPage />;
     case 'large-position-notify':
       return <LargeLiquidationNotifyPage />;
+    case 'adl-abnormal-record':
+      return <AdlAbnormalRecordPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
