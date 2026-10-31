@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { AdminLink } from "@/components/AdminLink";
 import { EnZh } from "@/components/EnZh";
-import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { FOREX_INCIDENT_1028, forexIncidentChip } from "@/lib/demo/forex-incident-1028";
@@ -21,9 +20,12 @@ export type NoiseLabMonitor = ForexPackLiveMonitor;
 export function NoiseReductionLab({
   liveMonitors = [],
   liveSpine = null,
+  showPackChrome = true,
 }: {
   liveMonitors?: ForexPackLiveMonitor[];
   liveSpine?: ForexPackLiveSpine | null;
+  /** When false, parent (Monitor Labs hub) already rendered the spine strip. */
+  showPackChrome?: boolean;
 }) {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
@@ -38,8 +40,7 @@ export function NoiseReductionLab({
 
   return (
     <div className="space-y-4" data-testid="noise-reduction-lab">
-      <ForexDeskPackLinks mode="compact" />
-      <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} />
+      {showPackChrome ? <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} /> : null}
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">

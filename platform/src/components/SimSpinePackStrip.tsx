@@ -1,18 +1,25 @@
 "use client";
 
+import Link from "next/link";
 import { AdminLink } from "@/components/AdminLink";
 import { EnZh } from "@/components/EnZh";
-import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
+import { useUiLocale } from "@/hooks/useUiLocale";
+import {
+  FOREX_INCIDENT_1028,
+  forexIncidentChip,
+  forexPrimaryNextSteps,
+} from "@/lib/demo/forex-incident-1028";
 import type { ForexPackLiveMonitor, ForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 
 /**
- * Shows live vantage_risk.db pack values above HTML labs so SQL / Discovery /
- * L2 / RCA / Noise share one visible simulation spine.
+ * Shows live vantage_risk.db pack values above labs / Discovery / aggregation
+ * so SQL and desk modules share one visible simulation spine (no second banner).
  */
 export function SimSpinePackStrip({
   monitors = [],
   spine,
   context = "lab",
+  showDeskLinks = true,
 }: {
   monitors?: ForexPackLiveMonitor[];
   spine?: Pick<
@@ -20,7 +27,11 @@ export function SimSpinePackStrip({
     "analysis_id" | "thread_id" | "discovery_candidates" | "aggregation_sessions" | "detector_runs" | "risk_log_days"
   > | null;
   context?: "lab" | "compact";
+  /** Desk next-step chips — replaces a separate ForexDeskPackLinks when true. */
+  showDeskLinks?: boolean;
 }) {
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const fx = FOREX_INCIDENT_1028;
   const rows = monitors.length ? monitors : [];
   if (!rows.length && !spine) return null;
@@ -31,11 +42,16 @@ export function SimSpinePackStrip({
       data-testid="sim-spine-pack-strip"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="text-xs font-semibold uppercase tracking-[0.08em] text-teal-900">
-          <EnZh
-            en={`Live SQLite spine · ${fx.incident_id} pack`}
-            zh={`即時 SQLite 脊柱 · ${fx.incident_id} 組合`}
-          />
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-[0.08em] text-teal-900">
+            <EnZh
+              en={`Live SQLite spine · ${fx.incident_id} pack`}
+              zh={`即時 SQLite 脊柱 · ${fx.incident_id} 組合`}
+            />
+          </div>
+          <div className="font-mono text-[11px] font-semibold text-teal-950/90 mt-0.5">
+            {forexIncidentChip(locale)}
+          </div>
         </div>
         <div className="action-row">
           <AdminLink className="btn btn-sm" href="/admin/docs/simulated-data">
@@ -93,6 +109,15 @@ export function SimSpinePackStrip({
             </li>
           ))}
         </ul>
+      ) : null}
+      {showDeskLinks ? (
+        <div className="flex flex-wrap gap-1.5 pt-1" data-testid="sim-spine-desk-links">
+          {forexPrimaryNextSteps().map((l) => (
+            <Link key={l.href} className="btn btn-sm" href={l.href}>
+              {zh ? l.zh : l.en}
+            </Link>
+          ))}
+        </div>
       ) : null}
     </div>
   );

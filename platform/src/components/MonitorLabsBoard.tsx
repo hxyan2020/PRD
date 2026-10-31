@@ -5,10 +5,10 @@ import Link from "next/link";
 import { FileSearch, Filter, GitMerge } from "lucide-react";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { EnZh } from "@/components/EnZh";
-import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { DiscoveryL2RcaLab } from "@/components/DiscoveryL2RcaLab";
 import { AiIncidentWorkspace } from "@/components/AiIncidentWorkspace";
 import { NoiseReductionLab } from "@/components/NoiseReductionLab";
+import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
 import type { ForexPackLiveMonitor, ForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 
@@ -72,13 +72,7 @@ export function MonitorLabsBoard({
 
   return (
     <div className="space-y-4">
-      <ForexDeskPackLinks mode="banner" />
-      <div className="panel p-3 sm:p-4 text-sm border-amber-200 bg-amber-50/70 text-amber-950">
-        <EnZh
-          en={`HTML labs for the shared forex CFD pack (${FOREX_INCIDENT_1028.incident_id}). Live desk path: Monitor 2.0 → Open Alerts → Labs → Aggregation → Discovery → Messenger → Closed Risk Log.`}
-          zh={`共用外匯 CFD 組合（${FOREX_INCIDENT_1028.incident_id}）的 HTML 實驗室。正式台面路徑：Monitor 2.0 → 未結警報 → 實驗室 → 聚合 → 探索 → Messenger → 已結風險日誌。`}
-        />
-      </div>
+      <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} context="lab" />
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label={zh ? "監控實驗室" : "Monitor labs"}>
         {TABS.map((t) => {
@@ -107,12 +101,14 @@ export function MonitorLabsBoard({
         </Link>
       </p>
 
-      {tab === "l2-rca" ? <DiscoveryL2RcaLab liveMonitors={liveMonitors} liveSpine={liveSpine} /> : null}
+      {tab === "l2-rca" ? (
+        <DiscoveryL2RcaLab liveMonitors={liveMonitors} liveSpine={liveSpine} showPackChrome={false} />
+      ) : null}
       {tab === "ai-incident" ? (
-        <AiIncidentWorkspace liveMonitors={liveMonitors} liveSpine={liveSpine} />
+        <AiIncidentWorkspace liveMonitors={liveMonitors} liveSpine={liveSpine} showPackChrome={false} />
       ) : null}
       {tab === "noise-reduction" ? (
-        <NoiseReductionLab liveMonitors={liveMonitors} liveSpine={liveSpine} />
+        <NoiseReductionLab liveMonitors={liveMonitors} liveSpine={liveSpine} showPackChrome={false} />
       ) : null}
     </div>
   );

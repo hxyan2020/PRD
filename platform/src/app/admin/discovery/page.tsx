@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { DiscoverySuggestionBoard } from "@/components/DiscoverySuggestionBoard";
-import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { EnZh } from "@/components/EnZh";
 import {
@@ -73,8 +72,7 @@ export default async function DiscoveryPage() {
           </>
         }
       />
-      <div className="mb-3 space-y-3">
-        <ForexDeskPackLinks mode="banner" />
+      <div className="mb-3">
         <SimSpinePackStrip monitors={liveSpine.monitors} spine={liveSpine} context="compact" />
       </div>
       <DiscoverySuggestionBoard

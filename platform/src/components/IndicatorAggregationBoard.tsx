@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { AdminLink } from "@/components/AdminLink";
 import { Badge } from "@/components/ui";
 import { EnZh } from "@/components/EnZh";
-import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase } from "@/lib/i18n";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
@@ -106,7 +105,6 @@ export function IndicatorAggregationBoard({
 
   return (
     <div className="space-y-4" data-testid="indicator-agg-board">
-      <ForexDeskPackLinks mode="compact" />
       <section className="panel p-4 border-teal-200 bg-teal-50/30 space-y-3">
         <div>
           <div className="text-xs uppercase tracking-[0.12em] text-teal-900">
