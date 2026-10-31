@@ -11,7 +11,7 @@ const en = {
   navOps: 'Ops playbook',
   navCareer: 'Career',
   footer:
-    'OWNLAB · Select text to save clips or ask AI · Notes auto-save locally — use Backup for folder / GitHub sync',
+    'OWNLAB · Select text to save clips or ask AI · Sign in to sync notes across devices',
   langEn: 'EN',
   langZh: '中文',
   startDay1: 'Start Day 1',
@@ -142,7 +142,7 @@ const en = {
   cloudSyncing: 'Saving to cloud…',
   cloudSynced: 'Saved to cloud',
   cloudSyncError: 'Cloud save failed: {error}',
-  cloudSyncOffBanner: 'Cloud sync is off — new notes are only on this device.',
+  cloudSyncOffBanner: 'Not signed in — notes stay on this device until you sign in.',
   cloudVerify: 'Double-check cloud sync',
   cloudVerifyOk:
     'Cloud sync is working. Local {local} note(s), cloud {cloud} note(s). Notebook id {id}.',
@@ -199,7 +199,7 @@ const en = {
   authRequiredTitle: 'Sign in to sync notes (like Murex Hub)',
   authRequiredBody:
     'Use Sign in in the top bar. Create an account once, then the same username/password on any phone loads your notes — no cloud key or Restore step.',
-  authRequiredHint: 'Advanced options below (cloud key / GitHub) are optional if you prefer not to use an account.',
+  authRequiredHint: 'Without signing in, notes stay on this device only.',
   vercelCloudTab: 'Vercel cloud key',
   gistCloudTab: 'GitHub gist',
   vercelRequiredBody:
@@ -540,7 +540,7 @@ const zh: Record<UiKey, string> = {
   navUseCases: '用例',
   navOps: '运维手册',
   navCareer: '职业',
-  footer: 'OWNLAB · 选中文字可保存或问 AI · 笔记自动本地保存——用「备份」做文件夹 / GitHub 同步',
+  footer: 'OWNLAB · 选中文字可保存或问 AI · 登录后可在各设备间同步笔记'
   langEn: 'EN',
   langZh: '中文',
   startDay1: '开始第 1 天',
@@ -666,7 +666,7 @@ const zh: Record<UiKey, string> = {
   cloudSyncing: '正在保存到云端…',
   cloudSynced: '已保存到云端',
   cloudSyncError: '云端保存失败：{error}',
-  cloudSyncOffBanner: '云同步未开启——新笔记仅保存在本设备。',
+  cloudSyncOffBanner: '未登录——登录前笔记仅保存在本设备。',
   cloudVerify: '检查云同步是否正常',
   cloudVerifyOk: '云同步正常。本地 {local} 条，云端 {cloud} 条。笔记本 ID {id}。',
   cloudVerifyEmptyOk: '云同步已连接（还没有笔记）。添加一条笔记应会自动上传。笔记本 ID {id}。',
@@ -720,7 +720,7 @@ const zh: Record<UiKey, string> = {
   authRequiredTitle: '登录以同步笔记（与 Murex Hub 相同）',
   authRequiredBody:
     '点击顶栏「登录」。创建一次账号后，在任何手机用同一用户名/密码即可看到笔记——无需云密钥或「恢复」。',
-  authRequiredHint: '若不想用账号，下方仍可选用云密钥 / GitHub（高级选项）。',
+  authRequiredHint: '未登录时，笔记仅保存在本设备。',
   vercelCloudTab: 'Vercel 云密钥',
   gistCloudTab: 'GitHub Gist',
   vercelRequiredBody:
