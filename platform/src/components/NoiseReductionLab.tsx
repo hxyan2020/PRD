@@ -31,7 +31,9 @@ export function NoiseReductionLab() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
-              Monitor 2.0 · Noise Reduction · {forexIncidentChip(locale)}
+              {zh
+                ? `Monitor 2.0 · 降噪 · ${forexIncidentChip(locale)}`
+                : `Monitor 2.0 · Noise Reduction · ${forexIncidentChip(locale)}`}
             </div>
             <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh

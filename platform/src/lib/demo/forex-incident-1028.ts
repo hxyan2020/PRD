@@ -167,7 +167,7 @@ export function forexPrimaryNextSteps() {
     { href: i.labs_path, en: "Labs", zh: "實驗室" },
     { href: i.aggregation_path, en: "Aggregate", zh: "聚合" },
     { href: i.discovery_path, en: "Discovery", zh: "探索" },
-    { href: "/admin/messenger", en: "Messenger", zh: "Messenger" },
+    { href: "/admin/messenger", en: "Messenger", zh: "值班收件匣" },
     { href: i.risk_log_path, en: "Risk Log", zh: "風險日誌" },
   ] as const;
 }

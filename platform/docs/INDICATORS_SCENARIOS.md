@@ -19,13 +19,13 @@ Seed SQL explorer: `/admin/docs/simulated-data`
 
 ### Desk flow (same story across modules)
 
-1. **Monitor 2.0** — inspect `M2-LP-022` / `M2-FEED-003`
-2. **Open Alerts** — live queue + AI RCA (`analyze_alert` may enrich via OpenAI when `OPENAI_API_KEY` is set)
-3. **Indicator Aggregation** — L1 → L2 wait window (seed prefers forex pack monitors)
-4. **Monitor labs → L2→RCA / Noise** — HTML walkthroughs on the same book
-5. **AI Incident Workspace** — INC-1028 Static/Dynamic report
+1. **Monitor 2.0** — inspect `M2-LP-022` / `M2-FEED-003` (pack seeds WARN/BREACH)
+2. **Open Alerts** — live `ALT-INC-1028` + companions; AI RCA may enrich via OpenAI when keyed
+3. **Monitor labs** — L2→RCA / AI Incident / Noise HTML walkthroughs on the same book
+4. **Indicator Aggregation** — L1 → L2 via `CHAIN-PRICING-FEED-PROPAGATION`
+5. **Unknown Risk Discovery** — ML scan on simulated SQLite; Analyse → OpenAI or MOCK thinking
 6. **Ops Inbox** — Messenger thread `THR-INC-1028`
-7. **Closed Risk Log** — after close
+7. **Closed Risk Log** — closed companion trail (e.g. `ALT-STALE-FEED-LIQ`)
 
 Home dummy spine, discovery spikes, aggregation seeds, and lab chrome all import `lib/demo/forex-incident-1028.ts`.
 

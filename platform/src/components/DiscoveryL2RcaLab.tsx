@@ -32,7 +32,9 @@ export function DiscoveryL2RcaLab() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
-              Monitor 2.0 · Discovery → L2 → AI RCA · {forexIncidentChip(locale)}
+              {zh
+                ? `Monitor 2.0 · 探索 → L2 → AI RCA · ${forexIncidentChip(locale)}`
+                : `Monitor 2.0 · Discovery → L2 → AI RCA · ${forexIncidentChip(locale)}`}
             </div>
             <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh
@@ -60,7 +62,7 @@ export function DiscoveryL2RcaLab() {
           <li>
             <EnZh
               en={`Tab ③: run L1→L2 scenarios, then Risk Ops confirm → L2 ${fx.incident_id}`}
-              zh={`分頁③：跑 L1→L2 場景，Risk Ops 確認 → L2 ${fx.incident_id}`}
+              zh={`分頁③：跑 L1→L2 場景，風險營運確認 → L2 ${fx.incident_id}`}
             />
           </li>
           <li>

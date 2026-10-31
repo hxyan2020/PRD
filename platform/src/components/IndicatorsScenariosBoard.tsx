@@ -10,6 +10,7 @@ import type {
   ScenarioCatalogRow,
 } from "@/lib/docs/indicators-scenarios";
 import type { forexDemoPack } from "@/lib/docs/indicators-scenarios";
+import { CHAIN_ZH } from "@/lib/ai/skill-zh";
 
 type ForexPack = ReturnType<typeof forexDemoPack>;
 type SkillRow = { code: string; name: string; monitor_id: string; related: string[]; owner_department: string };
@@ -127,7 +128,8 @@ export function IndicatorsScenariosBoard({
               <h2 className="font-semibold text-lg font-mono">{forex.incident_id}</h2>
               <p className="text-sm mt-1">{zh ? forex.title_zh : forex.title_en}</p>
               <p className="text-xs text-[var(--muted)] mt-1">
-                {forex.lp} · {forex.symbol} · {forex.severity} {forex.severity_label} · {forex.desk}
+                {forex.lp} · {forex.symbol} · {forex.severity}{" "}
+                {zh ? forex.severity_label_zh : forex.severity_label} · {forex.desk}
               </p>
             </div>
             <Badge className="bg-teal-100 text-teal-900 border-teal-200">
@@ -164,19 +166,25 @@ export function IndicatorsScenariosBoard({
           </div>
           <div className="grid sm:grid-cols-3 gap-2 text-xs">
             <div className="panel p-2 bg-white">
-              <div className="font-semibold">Admin</div>
+              <div className="font-semibold">
+                <EnZh en="Admin" zh="管理" />
+              </div>
               <p className="text-[var(--muted)] mt-1">
                 {zh ? forex.bu_roles.admin.zh : forex.bu_roles.admin.en}
               </p>
             </div>
             <div className="panel p-2 bg-white">
-              <div className="font-semibold">Pricing</div>
+              <div className="font-semibold">
+                <EnZh en="Pricing" zh="定價" />
+              </div>
               <p className="text-[var(--muted)] mt-1">
                 {zh ? forex.bu_roles.pricing.zh : forex.bu_roles.pricing.en}
               </p>
             </div>
             <div className="panel p-2 bg-white">
-              <div className="font-semibold">Dealing</div>
+              <div className="font-semibold">
+                <EnZh en="Dealing" zh="交易" />
+              </div>
               <p className="text-[var(--muted)] mt-1">
                 {zh ? forex.bu_roles.dealing.zh : forex.bu_roles.dealing.en}
               </p>
@@ -306,7 +314,9 @@ export function IndicatorsScenariosBoard({
               {linked.map((s) => (
                 <li key={s.code} className="border-b border-[var(--border)]/50 pb-2">
                   <div className="font-mono text-[var(--muted)]">{s.code}</div>
-                  <div className="font-medium mt-0.5">{s.name}</div>
+                  <div className="font-medium mt-0.5">
+                    {zh ? CHAIN_ZH[s.code]?.name || s.name : s.name}
+                  </div>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {s.monitors.map((m) => (
                       <span key={m} className="font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded">

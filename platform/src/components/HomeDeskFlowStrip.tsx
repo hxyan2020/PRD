@@ -62,7 +62,7 @@ const STEPS = [
     href: "/admin/messenger",
     icon: MessageSquare,
     en: "Messenger",
-    zh: "Messenger",
+    zh: "值班收件匣",
     hintEn: `${fx.incident_id} inbox`,
     hintZh: `${fx.incident_id} 收件`,
   },

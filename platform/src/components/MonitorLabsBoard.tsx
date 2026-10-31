@@ -66,8 +66,8 @@ export function MonitorLabsBoard({ initialTab }: { initialTab?: MonitorLabTab })
       <ForexDeskPackLinks mode="banner" />
       <div className="panel p-3 sm:p-4 text-sm border-amber-200 bg-amber-50/70 text-amber-950">
         <EnZh
-          en={`HTML labs for the shared forex CFD pack (${FOREX_INCIDENT_1028.incident_id}). Live desk path stays Monitor 2.0 → Open Alerts → Messenger → Closed Risk Log.`}
-          zh={`共用外匯 CFD 組合（${FOREX_INCIDENT_1028.incident_id}）的 HTML 實驗室。正式台面路徑仍是 Monitor 2.0 → 未結警報 → Messenger → 已結風險日誌。`}
+          en={`HTML labs for the shared forex CFD pack (${FOREX_INCIDENT_1028.incident_id}). Live desk path: Monitor 2.0 → Open Alerts → Labs → Aggregation → Discovery → Messenger → Closed Risk Log.`}
+          zh={`共用外匯 CFD 組合（${FOREX_INCIDENT_1028.incident_id}）的 HTML 實驗室。正式台面路徑：Monitor 2.0 → 未結警報 → 實驗室 → 聚合 → 探索 → Messenger → 已結風險日誌。`}
         />
       </div>
 
