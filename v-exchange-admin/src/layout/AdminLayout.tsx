@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Avatar, Layout, Menu, Segmented, Tabs, Typography } from 'antd'
+import { Avatar, Drawer, Grid, Layout, Menu, Segmented, Tabs, Typography } from 'antd'
 import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -15,6 +15,7 @@ import './AdminLayout.css'
 
 const { Header, Sider, Content } = Layout
 const { Text } = Typography
+const { useBreakpoint } = Grid
 
 function pathToKey(pathname: string): PageKey {
   const segment = pathname.replace(/^\//, '') || 'overview'
@@ -26,14 +27,22 @@ export function AdminLayout() {
   const location = useLocation()
   const activeKey = pathToKey(location.pathname)
   const { lang, setLang, label } = useLocale()
+  const screens = useBreakpoint()
+  const isMobile = !screens.md
 
   const [collapsed, setCollapsed] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const [openKeys, setOpenKeys] = useState<string[]>(defaultOpenKeys)
   const [tabs, setTabs] = useState<PageKey[]>(['overview'])
 
   useEffect(() => {
     setTabs((prev) => (prev.includes(activeKey) ? prev : [...prev, activeKey]))
   }, [activeKey])
+
+  useEffect(() => {
+    if (!isMobile) setMobileOpen(false)
+    else setOpenKeys([])
+  }, [isMobile])
 
   const ensureTab = useCallback(
     (key: PageKey) => {
@@ -46,6 +55,7 @@ export function AdminLayout() {
   const onMenuClick = ({ key }: { key: string }) => {
     if (!isPageKey(key)) return
     ensureTab(key)
+    if (isMobile) setMobileOpen(false)
   }
 
   const onTabChange = (key: string) => {
@@ -95,43 +105,77 @@ export function AdminLayout() {
     return mapItems(sideMenuItems)
   }, [label])
 
+  const sideMenu = (
+    <>
+      <div className="admin-brand">
+        <Text strong className="admin-brand-title">
+          {collapsed && !isMobile ? 'MM' : 'MatchingManagement'}
+        </Text>
+      </div>
+      <Menu
+        mode="inline"
+        selectedKeys={[activeKey]}
+        openKeys={collapsed && !isMobile ? [] : openKeys}
+        onOpenChange={setOpenKeys}
+        items={menuItems}
+        onClick={onMenuClick}
+      />
+    </>
+  )
+
   return (
-    <Layout className="admin-root">
-      <Sider
-        className="admin-sider"
-        width={240}
-        collapsible
-        collapsed={collapsed}
-        trigger={null}
-        theme="light"
-      >
-        <div className="admin-brand">
-          <Text strong className="admin-brand-title">
-            {collapsed ? 'MM' : 'MatchingManagement'}
-          </Text>
-        </div>
-        <Menu
-          mode="inline"
-          selectedKeys={[activeKey]}
-          openKeys={collapsed ? [] : openKeys}
-          onOpenChange={setOpenKeys}
-          items={menuItems}
-          onClick={onMenuClick}
-        />
-      </Sider>
-      <Layout>
+    <Layout className={`admin-root${isMobile ? ' admin-root--mobile' : ''}`}>
+      {!isMobile && (
+        <Sider
+          className="admin-sider"
+          width={240}
+          collapsible
+          collapsed={collapsed}
+          trigger={null}
+          theme="light"
+        >
+          {sideMenu}
+        </Sider>
+      )}
+
+      {isMobile && (
+        <Drawer
+          className="admin-mobile-drawer"
+          placement="left"
+          width={280}
+          open={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          styles={{ body: { padding: 0 } }}
+          title="MatchingManagement"
+        >
+          {sideMenu}
+        </Drawer>
+      )}
+
+      <Layout className="admin-main">
         <Header className="admin-header">
           <button
             type="button"
             className="admin-collapse-btn"
-            onClick={() => setCollapsed((c) => !c)}
+            onClick={() => (isMobile ? setMobileOpen((o) => !o) : setCollapsed((c) => !c))}
             aria-label="Toggle menu"
           >
-            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            {isMobile ? (
+              mobileOpen ? (
+                <MenuFoldOutlined />
+              ) : (
+                <MenuUnfoldOutlined />
+              )
+            ) : collapsed ? (
+              <MenuUnfoldOutlined />
+            ) : (
+              <MenuFoldOutlined />
+            )}
           </button>
           <div className="admin-header-right">
             <Segmented<UiLang>
               size="small"
+              className="admin-lang-switch"
               value={lang}
               onChange={(v) => setLang(v)}
               options={[
@@ -142,7 +186,7 @@ export function AdminLayout() {
               aria-label="UI language"
             />
             <Avatar size="small" icon={<UserOutlined />} />
-            <Text>Haixiang Yan</Text>
+            {!isMobile && <Text className="admin-user-name">Haixiang Yan</Text>}
           </div>
         </Header>
         <Content className="admin-content">

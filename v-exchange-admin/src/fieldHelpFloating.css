@@ -10,8 +10,8 @@
 .field-help-floating {
   position: fixed;
   z-index: 11000;
-  max-width: 420px;
-  min-width: 260px;
+  max-width: min(420px, calc(100vw - 16px));
+  min-width: min(260px, calc(100vw - 16px));
   padding: 10px 12px;
   border-radius: 8px;
   background: rgba(22, 27, 34, 0.96);
