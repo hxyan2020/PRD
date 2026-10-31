@@ -10,6 +10,8 @@
     "start": "next start -p 3000",
     "lint": "next lint",
     "test:sql-explorer": "tsx scripts/verify-sql-explorer.ts",
+    "test:simulation-spine": "tsx scripts/verify-simulation-spine.ts",
+
     "test:mermaid": "npx tsx scripts/verify-mermaid-edges.ts",
     "docs:indicators": "tsx scripts/gen-indicators-scenarios-doc.ts",
     "test:discovery": "tsx scripts/verify-discovery-admin.ts",

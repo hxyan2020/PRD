@@ -4,15 +4,23 @@ import { useMemo, useState } from "react";
 import { AdminLink } from "@/components/AdminLink";
 import { EnZh } from "@/components/EnZh";
 import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
+import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { FOREX_INCIDENT_1028, forexIncidentChip } from "@/lib/demo/forex-incident-1028";
+import type { ForexPackLiveMonitor, ForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 import { publicBasePath } from "@/lib/static-export";
 
 /**
  * Hosts the Monitor 2.0 Discovery → L1/L2 → AI RCA HTML lab inside CRMP Admin.
  * After L2 dispatch the prototype links into the AI Incident Workspace (INC-1028).
  */
-export function DiscoveryL2RcaLab() {
+export function DiscoveryL2RcaLab({
+  liveMonitors = [],
+  liveSpine = null,
+}: {
+  liveMonitors?: ForexPackLiveMonitor[];
+  liveSpine?: ForexPackLiveSpine | null;
+}) {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
   const fx = FOREX_INCIDENT_1028;
@@ -28,6 +36,7 @@ export function DiscoveryL2RcaLab() {
   return (
     <div className="space-y-4" data-testid="discovery-l2-rca-lab">
       <ForexDeskPackLinks mode="compact" />
+      <SimSpinePackStrip monitors={liveMonitors} spine={liveSpine} />
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">

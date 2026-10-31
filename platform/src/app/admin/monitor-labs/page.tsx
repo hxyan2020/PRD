@@ -3,6 +3,8 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { MonitorLabsBoard, type MonitorLabTab } from "@/components/MonitorLabsBoard";
 import { readSearchParams } from "@/lib/static-export";
+import { getDb } from "@/lib/db";
+import { loadForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 
 export default async function MonitorLabsPage({
   searchParams,
@@ -26,11 +28,16 @@ export default async function MonitorLabsPage({
   const raw = sp.tab;
   const initialTab: MonitorLabTab | undefined =
     raw === "ai-incident" || raw === "noise-reduction" || raw === "l2-rca" ? raw : undefined;
+  const liveSpine = loadForexPackLiveSpine(getDb());
 
   return (
     <div className="space-y-4">
       <AdminPageHeader pageKey="monitor-labs" />
-      <MonitorLabsBoard initialTab={initialTab} />
+      <MonitorLabsBoard
+        initialTab={initialTab}
+        liveMonitors={liveSpine.monitors}
+        liveSpine={liveSpine}
+      />
     </div>
   );
 }

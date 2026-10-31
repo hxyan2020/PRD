@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { IndicatorAggregationBoard } from "@/components/IndicatorAggregationBoard";
+import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { getAggregationBoardPack } from "@/lib/indicator-aggregation";
+import { getDb } from "@/lib/db";
+import { loadForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 
 export default async function IndicatorAggregationPage() {
   const user = await getCurrentUser();
@@ -18,6 +21,7 @@ export default async function IndicatorAggregationPage() {
   }
 
   const pack = getAggregationBoardPack();
+  const liveSpine = loadForexPackLiveSpine(getDb());
   const canOperate =
     hasPermission(user.role_code, "monitor.operate") ||
     hasPermission(user.role_code, "ai.operate") ||
@@ -28,6 +32,7 @@ export default async function IndicatorAggregationPage() {
   return (
     <div className="space-y-4">
       <AdminPageHeader pageKey="indicator-aggregation" />
+      <SimSpinePackStrip monitors={liveSpine.monitors} spine={liveSpine} context="compact" />
       <IndicatorAggregationBoard
         definitions={pack.definitions}
         initialSessions={pack.sessions}

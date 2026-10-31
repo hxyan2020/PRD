@@ -10,6 +10,7 @@ import { DiscoveryL2RcaLab } from "@/components/DiscoveryL2RcaLab";
 import { AiIncidentWorkspace } from "@/components/AiIncidentWorkspace";
 import { NoiseReductionLab } from "@/components/NoiseReductionLab";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
+import type { ForexPackLiveMonitor, ForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 
 export type MonitorLabTab = "l2-rca" | "ai-incident" | "noise-reduction";
 
@@ -44,7 +45,15 @@ function readTab(): MonitorLabTab {
   return "l2-rca";
 }
 
-export function MonitorLabsBoard({ initialTab }: { initialTab?: MonitorLabTab }) {
+export function MonitorLabsBoard({
+  initialTab,
+  liveMonitors = [],
+  liveSpine = null,
+}: {
+  initialTab?: MonitorLabTab;
+  liveMonitors?: ForexPackLiveMonitor[];
+  liveSpine?: ForexPackLiveSpine | null;
+}) {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
   const [tab, setTab] = useState<MonitorLabTab>(initialTab || "l2-rca");
@@ -98,9 +107,13 @@ export function MonitorLabsBoard({ initialTab }: { initialTab?: MonitorLabTab })
         </Link>
       </p>
 
-      {tab === "l2-rca" ? <DiscoveryL2RcaLab /> : null}
-      {tab === "ai-incident" ? <AiIncidentWorkspace /> : null}
-      {tab === "noise-reduction" ? <NoiseReductionLab /> : null}
+      {tab === "l2-rca" ? <DiscoveryL2RcaLab liveMonitors={liveMonitors} liveSpine={liveSpine} /> : null}
+      {tab === "ai-incident" ? (
+        <AiIncidentWorkspace liveMonitors={liveMonitors} liveSpine={liveSpine} />
+      ) : null}
+      {tab === "noise-reduction" ? (
+        <NoiseReductionLab liveMonitors={liveMonitors} liveSpine={liveSpine} />
+      ) : null}
     </div>
   );
 }
