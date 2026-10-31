@@ -1,9 +1,15 @@
-import type { ReactNode } from 'react'
-import { Tooltip, Typography } from 'antd'
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react'
+import { createPortal } from 'react-dom'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { getFieldHelp } from '../config/fieldHelp'
-
-const { Text } = Typography
+import './FieldHelpLabel.css'
 
 type Props = {
   /** Chinese field name used as lookup key (and default visible label) */
@@ -12,53 +18,118 @@ type Props = {
   label?: ReactNode
 }
 
-/** Hover/click help: EN + 中文 + XAU/BTC launch recommendations when available. */
+type TipPos = { top: number; left: number }
+
+/**
+ * Hover/click field help: EN + 中文 (+ XAU/BTC launch tips).
+ * Uses a body-portaled panel (not native title / not Ant Tooltip) so table
+ * header overflow and sticky cells cannot clip or swallow the tip.
+ */
 export function FieldHelpLabel({ name, label }: Props) {
   const help = getFieldHelp(name)
   const visible = label ?? name
   const hasLaunch = !!(help.xauRec || help.btcRec || help.oldParam || help.reason)
+  const tipId = useId()
+  const anchorRef = useRef<HTMLSpanElement>(null)
+  const tipRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const [pos, setPos] = useState<TipPos>({ top: 0, left: 0 })
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const clearClose = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current)
+      closeTimer.current = null
+    }
+  }
+
+  const place = () => {
+    const el = anchorRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const tipW = tipRef.current?.offsetWidth ?? 380
+    const tipH = tipRef.current?.offsetHeight ?? 120
+    const gap = 8
+    let left = r.left
+    let top = r.top - tipH - gap
+    if (top < 8) top = r.bottom + gap
+    if (left + tipW > window.innerWidth - 8) left = Math.max(8, window.innerWidth - tipW - 8)
+    if (left < 8) left = 8
+    setPos({ top, left })
+  }
+
+  const show = () => {
+    clearClose()
+    setOpen(true)
+  }
+
+  const hideSoon = () => {
+    clearClose()
+    closeTimer.current = setTimeout(() => setOpen(false), 120)
+  }
+
+  useEffect(() => {
+    if (!open) return
+    const raf = requestAnimationFrame(() => place())
+    const onScroll = () => place()
+    window.addEventListener('scroll', onScroll, true)
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll, true)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [open])
+
+  useEffect(() => () => clearClose(), [])
 
   const tip = (
-    <div style={{ maxWidth: 380 }}>
-      <div style={{ marginBottom: 6 }}>
-        <Text strong style={{ color: '#fff' }}>
-          {help.nameEn}
-        </Text>
-        <Text style={{ color: 'rgba(255,255,255,0.65)' }}> / {help.nameZh}</Text>
+    <div
+      ref={tipRef}
+      id={tipId}
+      role="tooltip"
+      className="field-help-floating"
+      style={{ top: pos.top, left: pos.left }}
+      onMouseEnter={show}
+      onMouseLeave={hideSoon}
+    >
+      <div className="field-help-floating__title">
+        <strong>{help.nameEn}</strong>
+        <span className="field-help-floating__muted"> / {help.nameZh}</span>
       </div>
-      <div style={{ marginBottom: 4 }}>
-        <Text style={{ color: '#91caff' }}>EN: </Text>
-        <Text style={{ color: '#fff' }}>{help.explainEn}</Text>
+      <div className="field-help-floating__row">
+        <span className="field-help-floating__lang">EN</span>
+        <span>{help.explainEn}</span>
       </div>
-      <div style={{ marginBottom: 4 }}>
-        <Text style={{ color: '#91caff' }}>中文: </Text>
-        <Text style={{ color: '#fff' }}>{help.explainZh}</Text>
+      <div className="field-help-floating__row">
+        <span className="field-help-floating__lang">中文</span>
+        <span>{help.explainZh}</span>
       </div>
       {hasLaunch && (
-        <div style={{ marginTop: 8, borderTop: '1px solid rgba(255,255,255,0.25)', paddingTop: 8 }}>
-          <div style={{ marginBottom: 4, color: '#ffe58f', fontWeight: 600 }}>首发建议 / Launch tips</div>
+        <div className="field-help-floating__launch">
+          <div className="field-help-floating__launch-title">首发建议 / Launch tips</div>
           {help.oldParam && (
             <div>
-              <Text style={{ color: '#ffe58f' }}>旧参数 Old: </Text>
-              <Text style={{ color: '#fff' }}>{help.oldParam}</Text>
+              <span className="field-help-floating__tag-old">旧参数 Old: </span>
+              {help.oldParam}
             </div>
           )}
           {help.xauRec && (
             <div>
-              <Text style={{ color: '#b7eb8f' }}>XAUUSD: </Text>
-              <Text style={{ color: '#fff' }}>{help.xauRec}</Text>
+              <span className="field-help-floating__tag-pair">XAUUSD: </span>
+              {help.xauRec}
             </div>
           )}
           {help.btcRec && (
             <div>
-              <Text style={{ color: '#b7eb8f' }}>BTCUSD: </Text>
-              <Text style={{ color: '#fff' }}>{help.btcRec}</Text>
+              <span className="field-help-floating__tag-pair">BTCUSD: </span>
+              {help.btcRec}
             </div>
           )}
           {help.reason && (
-            <div style={{ marginTop: 4 }}>
-              <Text style={{ color: '#91caff' }}>原因 Why: </Text>
-              <Text style={{ color: '#fff' }}>{help.reason}</Text>
+            <div className="field-help-floating__why">
+              <span className="field-help-floating__lang">原因 Why: </span>
+              {help.reason}
             </div>
           )}
         </div>
@@ -66,45 +137,51 @@ export function FieldHelpLabel({ name, label }: Props) {
     </div>
   )
 
-  // Whole label is the hover target (not only the tiny ?).
-  // Native <span> child so Tooltip can attach listeners/ref; portal to body
-  // so table overflow / sticky headers do not clip the popup.
   return (
-    <Tooltip
-      title={tip}
-      trigger={['hover', 'click', 'focus']}
-      mouseEnterDelay={0.05}
-      mouseLeaveDelay={0.1}
-      placement="topLeft"
-      getPopupContainer={() => document.body}
-      styles={{ root: { maxWidth: 420, zIndex: 11000 } }}
-    >
+    <>
       <span
+        ref={anchorRef}
+        className="field-help-label"
+        data-field-help="1"
         role="button"
         tabIndex={0}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 4,
-          cursor: 'help',
-          maxWidth: '100%',
+        aria-describedby={open ? tipId : undefined}
+        onMouseEnter={show}
+        onMouseLeave={hideSoon}
+        onFocus={show}
+        onBlur={hideSoon}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          if (open) hideSoon()
+          else show()
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setOpen((v) => !v)
+          } else if (e.key === 'Escape') {
+            setOpen(false)
+          }
         }}
       >
-        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{visible}</span>
+        <span className="field-help-label__text">{visible}</span>
         <QuestionCircleOutlined
           aria-label={`Help: ${name}`}
-          style={{
-            color: hasLaunch ? '#52c41a' : '#1677ff',
-            fontSize: 13,
-            flexShrink: 0,
-          }}
+          className={hasLaunch ? 'field-help-label__icon field-help-label__icon--launch' : 'field-help-label__icon'}
         />
       </span>
-    </Tooltip>
+      {open ? createPortal(tip, document.body) : null}
+    </>
   )
 }
 
 /** Convenience for table column titles / Form labels */
 export function fh(name: string): ReactNode {
   return <FieldHelpLabel name={name} />
+}
+
+/** Colored label + help (e.g. red notional column) */
+export function fhStyled(name: string, style: CSSProperties): ReactNode {
+  return <FieldHelpLabel name={name} label={<span style={style}>{name}</span>} />
 }

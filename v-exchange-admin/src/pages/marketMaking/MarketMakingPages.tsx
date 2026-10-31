@@ -28,7 +28,7 @@ import {
   dbFundFlowTypes,
   dbTakeoverAccount,
 } from '../../mock/marketMakingData'
-import { fh } from '../../components/FieldHelpLabel'
+import { fh, fhStyled } from '../../components/FieldHelpLabel'
 
 const { Text } = Typography
 
@@ -125,7 +125,7 @@ export function DbTakeoverAccountPage() {
             { title: fh('持仓方向'), dataIndex: 'side' },
             { title: fh('持仓均价'), dataIndex: 'avgPrice' },
             {
-              title: <span style={{ color: '#cf1322' }}>持仓合约价值 (USD)</span>,
+              title: fhStyled('持仓合约价值 (USD)', { color: '#cf1322' }),
               dataIndex: 'contractValue',
             },
             { title: fh('占用保证金 (USD)'), dataIndex: 'margin' },

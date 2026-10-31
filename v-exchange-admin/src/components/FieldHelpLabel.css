@@ -1,0 +1,84 @@
+.field-help-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: help;
+  max-width: 100%;
+  vertical-align: bottom;
+}
+
+.field-help-label__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.field-help-label__icon {
+  color: #1677ff;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.field-help-label__icon--launch {
+  color: #52c41a;
+}
+
+.field-help-floating {
+  position: fixed;
+  z-index: 11000;
+  max-width: 420px;
+  min-width: 260px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(22, 27, 34, 0.96);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.55;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  pointer-events: auto;
+}
+
+.field-help-floating__title {
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.field-help-floating__muted {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.field-help-floating__row {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.field-help-floating__lang {
+  color: #91caff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.field-help-floating__launch {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.field-help-floating__launch-title {
+  margin-bottom: 4px;
+  color: #ffe58f;
+  font-weight: 600;
+}
+
+.field-help-floating__tag-old {
+  color: #ffe58f;
+}
+
+.field-help-floating__tag-pair {
+  color: #b7eb8f;
+}
+
+.field-help-floating__why {
+  margin-top: 4px;
+}
