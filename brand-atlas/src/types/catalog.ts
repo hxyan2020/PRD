@@ -56,8 +56,16 @@ export interface Guess {
   reason: string;
 }
 
+/** Why identify could not return usable guesses. */
+export type IdentifyUnclearReason =
+  | "dark"
+  | "blank"
+  | "noSignal"
+  | "ambiguous"
+  | "failed";
+
 export type IdentifyResult =
-  | { status: "unclear"; message: string }
+  | { status: "unclear"; message: string; reason: IdentifyUnclearReason }
   | { status: "guesses"; guesses: Guess[]; message: string };
 
 export type RevealMode = "locked" | "sneak" | "unlocked";

@@ -5,6 +5,7 @@ import { ExpandablePhoto } from "../components/ExpandablePhoto";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
+import { unclearDetailKey } from "../i18n/identifyCopy";
 import { categoryLabel } from "../i18n/labels";
 import { findItem, getCategory } from "../lib/catalog";
 import { identifyImage } from "../lib/identify";
@@ -165,6 +166,7 @@ export function ScanPage() {
     } catch (e) {
       setResult({
         status: "unclear",
+        reason: "failed",
         message:
           e instanceof Error
             ? e.message
@@ -361,14 +363,31 @@ export function ScanPage() {
         </div>
 
         <div>
-          {!result && !busy && (
+          {(!result || result.status === "unclear") && !busy && (
             <div className="banner">{t("scan.tip")}</div>
           )}
 
           {result?.status === "unclear" && (
-            <div className="banner banner--warn">
-              <strong>{t("scan.needClearer")}</strong>
-              <p style={{ margin: "0.4rem 0 0" }}>{result.message}</p>
+            <div className="banner banner--warn" style={{ marginTop: "0.75rem" }}>
+              <strong>{t("scan.cantAnalyse")}</strong>
+              <p style={{ margin: "0.4rem 0 0" }}>
+                {t(unclearDetailKey(result.reason))}
+              </p>
+              <p style={{ margin: "0.55rem 0 0" }}>{t("scan.reuploadAdvice")}</p>
+              <div className="cta-row" style={{ marginTop: "0.75rem" }}>
+                <button
+                  type="button"
+                  className="btn btn--forest"
+                  onClick={() => {
+                    setResult(null);
+                    setPicked(null);
+                    setConfirmError(null);
+                    fileRef.current?.click();
+                  }}
+                >
+                  {t("scan.uploadAnother")}
+                </button>
+              </div>
               {selectedCats.length === 1 && (
                 <p style={{ margin: "0.65rem 0 0" }}>
                   {t("scan.notInCatalogue")}{" "}

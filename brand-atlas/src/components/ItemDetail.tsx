@@ -14,6 +14,7 @@ import {
 } from "../lib/unlocks";
 import type { Catalog, CatalogItem } from "../types/catalog";
 import { useI18n } from "../i18n/I18nProvider";
+import { unclearDetailKey } from "../i18n/identifyCopy";
 import { ExpandablePhoto } from "./ExpandablePhoto";
 
 interface Props {
@@ -144,7 +145,9 @@ export function ItemDetail({
         (p) => setPhase(p),
       );
       if (result.status === "unclear") {
-        setScanError(result.message);
+        setScanError(
+          `${t("scan.cantAnalyse")} ${t(unclearDetailKey(result.reason))} ${t("scan.reuploadAdvice")}`,
+        );
         return;
       }
       const guesses = result.status === "guesses" ? result.guesses : [];
