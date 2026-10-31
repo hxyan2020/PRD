@@ -4,6 +4,7 @@ import { CoinIntroducePage } from '../pages/CoinIntroducePage';
 import { ContractListPage } from '../pages/ContractListPage';
 import { DbAccountAlertPage } from '../pages/DbAccountAlertPage';
 import { DbTakeoverAccountPage } from '../pages/DbTakeoverAccountPage';
+import { DepthMonitorPage } from '../pages/DepthMonitorPage';
 import { FairPricePage } from '../pages/FairPricePage';
 import { FundingRateModifyPage } from '../pages/FundingRateModifyPage';
 import { FundingRatePage } from '../pages/FundingRatePage';
@@ -62,6 +63,8 @@ export function renderPage(key: PageKey) {
       return <SpreadAlertMonitorPage />;
     case 'no-trade-monitor':
       return <NoTradeMonitorPage />;
+    case 'depth-monitor':
+      return <DepthMonitorPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
