@@ -83,26 +83,25 @@ for (let attempt = 1; attempt <= 8 && !deployed; attempt++) {
 
   try {
     stageSeenInto(worktree);
-    run("git", ["add", "brand-atlas", "seen"], worktree);
+    run("git", ["add", "--", "brand-atlas", "seen"], worktree);
 
-    const status = spawnSync("git", ["status", "--porcelain"], {
-      cwd: worktree,
-      encoding: "utf8",
-    });
+    const staged = spawnSync(
+      "git",
+      ["diff", "--cached", "--name-only", "-z"],
+      { cwd: worktree, encoding: "utf8" },
+    );
+    const stagedPaths = (staged.stdout || "")
+      .split("\0")
+      .map((p) => p.trim())
+      .filter(Boolean);
 
-    if (!status.stdout.trim()) {
+    if (!stagedPaths.length) {
       console.log("No changes to publish.");
       deployed = true;
     } else {
-      // Ensure we do not stage unrelated root wipes if git somehow marks them.
-      const porcelain = status.stdout
-        .trim()
-        .split("\n")
-        .filter(Boolean);
-      const unexpected = porcelain.filter((line) => {
-        const path = line.slice(3).trim();
-        return !path.startsWith("brand-atlas") && !path.startsWith("seen");
-      });
+      const unexpected = stagedPaths.filter(
+        (path) => !path.startsWith("brand-atlas/") && path !== "brand-atlas" && !path.startsWith("seen/") && path !== "seen",
+      );
       if (unexpected.length) {
         throw new Error(
           `Refusing to publish unexpected gh-pages paths:\n${unexpected.join("\n")}`,
