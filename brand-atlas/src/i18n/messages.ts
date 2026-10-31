@@ -80,6 +80,7 @@ export type MessageKey =
   | "scan.loading"
   | "bingo.title"
   | "bingo.body"
+  | "bingo.openLink"
   | "bingo.keep"
   | "auth.email"
   | "auth.password"
@@ -305,6 +306,7 @@ const en: Pack = {
   "scan.loading": "Loading catalogue…",
   "bingo.title": "You unlocked {name}",
   "bingo.body": "Greyscale lifted. Colour cover restored in your catalogue.",
+  "bingo.openLink": "Open link",
   "bingo.keep": "Keep exploring",
   "auth.email": "Email",
   "auth.password": "Password",

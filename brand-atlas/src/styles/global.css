@@ -2095,6 +2095,16 @@ img {
   margin: 0.6rem 0 0.4rem;
 }
 
+.celebrate__actions {
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.celebrate__actions .btn {
+  min-width: 8.5rem;
+  justify-content: center;
+}
+
 .progress-bar {
   height: 8px;
   border-radius: 999px;
