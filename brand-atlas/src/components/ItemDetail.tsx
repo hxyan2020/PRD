@@ -14,6 +14,7 @@ import {
 } from "../lib/unlocks";
 import type { Catalog, CatalogItem } from "../types/catalog";
 import { useI18n } from "../i18n/I18nProvider";
+import { ExpandablePhoto } from "./ExpandablePhoto";
 
 interface Props {
   item: CatalogItem;
@@ -194,16 +195,24 @@ export function ItemDetail({
               : coverGradient(item.coverHue, mode !== "locked"),
           }}
         >
-          {coverPhoto && (
-            <img
+          {coverPhoto && unlock?.photoDataUrl ? (
+            <ExpandablePhoto
               className="detail-cover__photo"
-              src={coverPhoto}
+              src={unlock.photoDataUrl}
               alt=""
-              draggable={false}
-              onError={() => {
-                if (!unlock?.photoDataUrl) setCoverFailed(true);
-              }}
             />
+          ) : (
+            coverPhoto && (
+              <img
+                className="detail-cover__photo"
+                src={coverPhoto}
+                alt=""
+                draggable={false}
+                onError={() => {
+                  if (!unlock?.photoDataUrl) setCoverFailed(true);
+                }}
+              />
+            )
           )}
           {showMark && mark && (
             <img
@@ -259,7 +268,7 @@ export function ItemDetail({
                 </p>
                 {previewUrl && (
                   <div className="detail-unlock__preview">
-                    <img src={previewUrl} alt="" />
+                    <ExpandablePhoto src={previewUrl} alt="" />
                   </div>
                 )}
                 <div className="cta-row detail-unlock__actions">
@@ -348,7 +357,7 @@ export function ItemDetail({
                 <div className="sighting-block">
                   <strong>{t("unlocked.sightingPhoto")}</strong>
                   {unlock.photoDataUrl ? (
-                    <img
+                    <ExpandablePhoto
                       className="sighting-photo"
                       src={unlock.photoDataUrl}
                       alt=""

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { ExpandablePhoto } from "../components/ExpandablePhoto";
 import { useCatalog } from "../hooks/useCatalog";
 import { coverGradient, findItem, getCategory } from "../lib/catalog";
 import { coverUrl } from "../lib/marks";
@@ -64,12 +65,20 @@ export function SharePage() {
               : coverGradient(item.coverHue, true),
           }}
         >
-          {(unlock?.photoDataUrl || coverUrl(item)) && (
-            <img
+          {unlock?.photoDataUrl ? (
+            <ExpandablePhoto
               className="detail-cover__photo"
-              src={unlock?.photoDataUrl || coverUrl(item) || undefined}
+              src={unlock.photoDataUrl}
               alt=""
             />
+          ) : (
+            coverUrl(item) && (
+              <img
+                className="detail-cover__photo"
+                src={coverUrl(item) || undefined}
+                alt=""
+              />
+            )
           )}
         </div>
         <p className="muted">{cat?.label}</p>
@@ -95,7 +104,11 @@ export function SharePage() {
           </p>
         )}
         {unlock?.photoDataUrl && (
-          <img className="sighting-photo" src={unlock.photoDataUrl} alt="Sighting" />
+          <ExpandablePhoto
+            className="sighting-photo"
+            src={unlock.photoDataUrl}
+            alt="Sighting"
+          />
         )}
         <div className="permalink-box">
           <strong>Permanent GitHub Pages link</strong>

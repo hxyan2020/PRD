@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CelebrateModal } from "../components/CelebrateModal";
+import { ExpandablePhoto } from "../components/ExpandablePhoto";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
@@ -265,7 +266,9 @@ export function ScanPage() {
                 autoPlay
               />
             )}
-            {!cameraOn && previewUrl && <img src={previewUrl} alt="" />}
+            {!cameraOn && previewUrl && (
+              <ExpandablePhoto className="dropzone__photo" src={previewUrl} alt="" />
+            )}
             {!cameraOn && !previewUrl && (
               <div className="dropzone__hint">
                 <strong>{t("scan.dropHint")}</strong>

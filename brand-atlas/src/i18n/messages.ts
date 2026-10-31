@@ -215,6 +215,8 @@ export type MessageKey =
   | "cat.birds"
   | "cat.mushrooms"
   | "common.close"
+  | "photo.expand"
+  | "photo.expanded"
   | "nav.unlocked"
   | "unlockedPage.title"
   | "unlockedPage.blurb"
@@ -442,6 +444,8 @@ const en: Pack = {
   "cat.birds": "Birds",
   "cat.mushrooms": "Mushrooms & fungi",
   "common.close": "Close",
+  "photo.expand": "Expand photo",
+  "photo.expanded": "Full-size photo",
   "nav.unlocked": "Unlocked",
   "unlockedPage.title": "Your unlocks",
   "unlockedPage.blurb": "Everything you’ve unlocked, grouped by catalogue — with when you collected it and your field notes.",
@@ -733,6 +737,8 @@ const packs: Record<string, Pack> = {
   "cat.birds": "Vögel",
   "cat.mushrooms": "Pilze",
   "common.close": "Schließen",
+  "photo.expand": "Foto vergrößern",
+  "photo.expanded": "Foto in voller Größe",
   "nav.unlocked": "Freigeschaltet",
   "unlockedPage.title": "Deine Freischaltungen",
   "unlockedPage.blurb": "Alles, was du freigeschaltet hast — nach Katalog gruppiert, mit Zeitpunkt und Feldnotiz.",
@@ -938,6 +944,8 @@ const packs: Record<string, Pack> = {
   "cat.birds": "Aves",
   "cat.mushrooms": "Setas y hongos",
   "common.close": "Cerrar",
+  "photo.expand": "Ampliar foto",
+  "photo.expanded": "Foto a tamaño completo",
   "nav.unlocked": "Desbloqueados",
   "unlockedPage.title": "Tus desbloqueos",
   "unlockedPage.blurb": "Todo lo que has desbloqueado, agrupado por catálogo — con fecha y notas de campo.",
@@ -1177,6 +1185,8 @@ const packs: Record<string, Pack> = {
   "cat.birds": "Oiseaux",
   "cat.mushrooms": "Champignons",
   "common.close": "Fermer",
+  "photo.expand": "Agrandir la photo",
+  "photo.expanded": "Photo en taille réelle",
   "nav.unlocked": "Débloqués",
   "unlockedPage.title": "Vos déblocages",
   "unlockedPage.blurb": "Tout ce que vous avez débloqué, groupé par catalogue — avec horodatage et notes de terrain.",
@@ -1610,6 +1620,8 @@ const packs: Record<string, Pack> = {
   "cat.birds": "鳥",
   "cat.mushrooms": "きのこ",
   "common.close": "閉じる",
+  "photo.expand": "写真を拡大",
+  "photo.expanded": "フルサイズの写真",
   "nav.unlocked": "解除済み",
   "unlockedPage.title": "あなたの解除",
   "unlockedPage.blurb": "カタログ別に、解除した項目・収集時刻・フィールドメモを表示します。",
@@ -2649,6 +2661,8 @@ const packs: Record<string, Pack> = {
   "cat.birds": "鸟类",
   "cat.mushrooms": "蘑菇与真菌",
   "common.close": "关闭",
+  "photo.expand": "放大照片",
+  "photo.expanded": "全尺寸照片",
   "nav.unlocked": "已解锁",
   "unlockedPage.title": "我的解锁",
   "unlockedPage.blurb": "按图鉴分类展示你已解锁的条目，含收藏时间与田野笔记。",
@@ -2854,6 +2868,8 @@ const packs: Record<string, Pack> = {
   "cat.birds": "鳥類",
   "cat.mushrooms": "蘑菇與真菌",
   "common.close": "關閉",
+  "photo.expand": "放大照片",
+  "photo.expanded": "全尺寸照片",
   "nav.unlocked": "已解鎖",
   "unlockedPage.title": "我的解鎖",
   "unlockedPage.blurb": "依圖鑑分類顯示你已解鎖的項目，含收藏時間與田野筆記。",

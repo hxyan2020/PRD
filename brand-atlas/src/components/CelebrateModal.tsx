@@ -4,6 +4,7 @@ import { coverGradient } from "../lib/catalog";
 import { coverUrl } from "../lib/marks";
 import { useI18n } from "../i18n/I18nProvider";
 import { formatUtc, getUnlock } from "../lib/unlocks";
+import { ExpandablePhoto } from "./ExpandablePhoto";
 import { FireworksOverlay } from "./FireworksOverlay";
 
 interface Props {
@@ -15,23 +16,32 @@ interface Props {
 export function CelebrateModal({ item, categoryLabel, onClose }: Props) {
   const { t } = useI18n();
   const unlock = getUnlock(item.id);
-  const photo = unlock?.photoDataUrl || coverUrl(item);
+  const userPhoto = unlock?.photoDataUrl;
+  const stockPhoto = coverUrl(item);
+  const photo = userPhoto || stockPhoto;
 
   return (
     <div className="celebrate" role="dialog" aria-modal="true" aria-labelledby="bingo-title">
       <FireworksOverlay bursts={6} />
       <div className="celebrate__card">
-        <div
-          style={{
-            height: 140,
-            borderRadius: 16,
-            background: photo ? undefined : coverGradient(item.coverHue, true),
-            backgroundImage: photo ? `url(${photo})` : undefined,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            animation: "unlockBloom 0.9s ease",
-          }}
-        />
+        {userPhoto ? (
+          <ExpandablePhoto
+            className="celebrate__photo"
+            src={userPhoto}
+            alt=""
+          />
+        ) : (
+          <div
+            className="celebrate__photo celebrate__photo--static"
+            style={{
+              background: photo ? undefined : coverGradient(item.coverHue, true),
+              backgroundImage: photo ? `url(${photo})` : undefined,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              animation: "unlockBloom 0.9s ease",
+            }}
+          />
+        )}
         <p className="muted" style={{ marginTop: "0.9rem" }}>
           Bingo · {categoryLabel}
         </p>
