@@ -56,11 +56,9 @@ export function MarketSourcePage() {
   const [filterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<ModalMode>('create');
-  const [editing, setEditing] = useState<MarketSourceRecord | null>(null);
 
   const openCreate = () => {
     setMode('create');
-    setEditing(null);
     form.resetFields();
     form.setFieldsValue({
       observationPeriodSec: 120,
@@ -72,7 +70,6 @@ export function MarketSourcePage() {
 
   const openEdit = (record: MarketSourceRecord) => {
     setMode('edit');
-    setEditing(record);
     form.setFieldsValue({
       marketName: record.marketName,
       displayName: record.displayName,
