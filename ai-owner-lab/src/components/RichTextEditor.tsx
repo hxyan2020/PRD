@@ -149,7 +149,9 @@ function applyList(editor: HTMLElement | null, tag: 'UL' | 'OL') {
 
 function hasVisibleContent(html: string): boolean {
   if (!html) return false
-  if (/<(img|table|pre|code)\b/i.test(html)) return true
+  // Lists / media / tables count even before the user types into them — e.g.
+  // clicking Bullet inserts <ul><li><br></li></ul> with no text yet.
+  if (/<(img|table|pre|code|ul|ol|li)\b/i.test(html)) return true
   return Boolean(html.replace(/<br\s*\/?>|&nbsp;|\s|<\/?[^>]+>/gi, '').trim())
 }
 
@@ -290,6 +292,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   // skip writing into an empty contentEditable and the editor stays blank.
   const lastHtml = useRef<string | null>(null)
   const placeholderId = useId()
+  const placeholderRef = useRef<HTMLDivElement | null>(null)
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
   const [imageProgress, setImageProgress] = useState<number | null>(null)
@@ -297,6 +300,20 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
   const [tableCols, setTableCols] = useState(3)
+
+  /** Toggle placeholder with an inline style on a ref — React className re-renders
+   *  were putting `is-empty` back while the controlled `value` still lagged. */
+  function syncPlaceholderVisibility() {
+    const el = editorRef.current
+    const ph = placeholderRef.current
+    if (!ph) return
+    const isEmpty = el ? !hasVisibleContent(el.innerHTML) : !hasVisibleContent(value)
+    ph.style.display = isEmpty ? 'block' : 'none'
+    if (el) {
+      if (isEmpty) el.setAttribute('aria-describedby', placeholderId)
+      else el.removeAttribute('aria-describedby')
+    }
+  }
 
   useImperativeHandle(
     ref,
@@ -322,6 +339,15 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     const el = editorRef.current
     if (!el) return
 
+    const focused = document.activeElement === el
+
+    // While focused, never rewrite from props — a lagging empty `value` was
+    // wiping keystrokes and bringing the placeholder back.
+    if (focused && lastHtml.current !== null) {
+      syncPlaceholderVisibility()
+      return
+    }
+
     const domEmpty = !el.innerHTML.trim()
     const needsInitialSync = lastHtml.current === null || (domEmpty && Boolean(value))
 
@@ -329,14 +355,12 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     // differs cosmetically from browser innerHTML (table rows, <br>, attrs).
     // Rewriting innerHTML here resets the caret to the start — skip that.
     if (!needsInitialSync && value === lastHtml.current) {
-      if (document.activeElement !== el) {
-        highlightCodeBlocksInElement(el)
-      }
+      if (!focused) highlightCodeBlocksInElement(el)
+      syncPlaceholderVisibility()
       return
     }
 
     // First mount, or external value change (clear composer, load another draft).
-    const focused = document.activeElement === el
     const caret = focused ? getCaretTextOffset(el) : 0
     el.innerHTML = value || ''
     lastHtml.current = value
@@ -346,7 +370,8 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     } else {
       highlightCodeBlocksInElement(el)
     }
-  }, [value])
+    syncPlaceholderVisibility()
+  }, [value, placeholderId])
 
   useEffect(() => {
     if (!autoFocus) return
@@ -389,6 +414,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   function emitChange() {
     const el = editorRef.current
     if (!el) return
+    syncPlaceholderVisibility()
     const html = sanitizeHtml(el.innerHTML)
     if (html === lastHtml.current) return
     lastHtml.current = html
@@ -413,6 +439,8 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     prepareCodeForEditing()
     restoreSelection()
     action()
+    // Toolbar actions (bullet, table, …) must clear the placeholder immediately.
+    syncPlaceholderVisibility()
     emitChange()
     captureSelection()
     // Re-apply colors after structural inserts (table / code) when caret left the block.
@@ -466,8 +494,6 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     }
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
-
-  const empty = !hasVisibleContent(value)
 
   return (
     <div className="rte">
@@ -816,11 +842,14 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           })()
         }}
       >
-        {empty ? (
-          <div className="rte-placeholder" id={placeholderId} aria-hidden="true">
-            {placeholder}
-          </div>
-        ) : null}
+        <div
+          ref={placeholderRef}
+          className="rte-placeholder"
+          id={placeholderId}
+          aria-hidden="true"
+        >
+          {placeholder}
+        </div>
         <div
           ref={editorRef}
           className="rte-editor"
@@ -829,13 +858,24 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           role="textbox"
           aria-multiline="true"
           aria-label={ariaLabel || placeholder}
-          aria-describedby={empty ? placeholderId : undefined}
           suppressContentEditableWarning
           onFocus={() => {
             prepareCodeForEditing()
             captureSelection()
+            syncPlaceholderVisibility()
+          }}
+          onCompositionStart={() => {
+            if (placeholderRef.current) placeholderRef.current.style.display = 'none'
+          }}
+          onCompositionEnd={() => {
+            captureSelection()
+            emitChange()
+          }}
+          onBeforeInput={() => {
+            if (placeholderRef.current) placeholderRef.current.style.display = 'none'
           }}
           onInput={() => {
+            syncPlaceholderVisibility()
             captureSelection()
             emitChange()
           }}
@@ -845,6 +885,15 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           }}
           onKeyUp={captureSelection}
           onKeyDown={(e) => {
+            if (
+              !e.ctrlKey &&
+              !e.metaKey &&
+              !e.altKey &&
+              e.key.length === 1 &&
+              placeholderRef.current
+            ) {
+              placeholderRef.current.style.display = 'none'
+            }
             if (e.key === 'Enter' && selectionInsideCode(editorRef.current)) {
               e.preventDefault()
               // Keep newlines inside code blocks instead of splitting the <pre>.

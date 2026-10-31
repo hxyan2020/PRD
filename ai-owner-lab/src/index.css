@@ -3976,12 +3976,16 @@ button.notebook-category-badge.on {
 }
 
 .rte-placeholder {
+  /* Visibility is toggled via inline style in RichTextEditor (ref), not React
+     className — controlled `value` lag was putting the overlay back while typing. */
+  display: block;
   position: absolute;
   inset: 0.75rem 0.85rem auto;
   color: var(--ink-soft);
   opacity: 0.75;
   pointer-events: none;
   line-height: 1.45;
+  z-index: 1;
 }
 
 .rte-editor {
