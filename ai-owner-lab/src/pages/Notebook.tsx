@@ -825,11 +825,14 @@ export function Notebook() {
               const entryCategories = (entry.categoryIds ?? [])
                 .map((id) => categoryMap.get(id))
                 .filter((c): c is NotebookCategory => Boolean(c))
+              const bodySummary = htmlToPlainText(entry.selectedText).trim()
+              const explanationSummary = (entry.explanation || '').replace(/\*\*/g, '').trim()
+              const summary = [bodySummary, explanationSummary].filter(Boolean).join('\n\n')
               return (
                 <li
                   key={entry.id}
                   data-entry-id={entry.id}
-                  className={`notebook-entry ${entry.type} dustbin-entry`}
+                  className={`notebook-entry notebook-entry-card ${entry.type} dustbin-entry`}
                 >
                   <div className="notebook-meta">
                     <time dateTime={entry.deletedAt}>
@@ -850,15 +853,8 @@ export function Notebook() {
                       : null}
                   </div>
                   {entry.title ? <h3 className="notebook-entry-title">{entry.title}</h3> : null}
-                  <NoteBody html={entry.selectedText} className="notebook-quote" />
-                  {entry.explanation ? (
-                    <div className="notebook-explanation">
-                      {entry.explanation.split(/\n\n+/).map((block, index) => (
-                        <p key={`${entry.id}-b-${index}`}>{block.replace(/\*\*/g, '')}</p>
-                      ))}
-                    </div>
-                  ) : null}
-                  <div className="notebook-actions">
+                  {summary ? <p className="notebook-entry-summary">{summary}</p> : null}
+                  <div className="notebook-actions notebook-entry-card-actions">
                     <button
                       type="button"
                       className="btn primary"
