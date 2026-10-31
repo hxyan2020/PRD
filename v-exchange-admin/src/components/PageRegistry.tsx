@@ -15,6 +15,7 @@ import { MarketTradeLimitPage } from '../pages/MarketTradeLimitPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
 import { PositionListPage } from '../pages/PositionListPage';
+import { RiskFundDetailPage } from '../pages/RiskFundDetailPage';
 import { RiskFundListPage } from '../pages/RiskFundListPage';
 import { TradeAmountFactorPage } from '../pages/TradeAmountFactorPage';
 
@@ -50,6 +51,8 @@ export function renderPage(key: PageKey) {
       return <MarketTradeLimitPage />;
     case 'risk-fund-list':
       return <RiskFundListPage />;
+    case 'risk-fund-detail':
+      return <RiskFundDetailPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
