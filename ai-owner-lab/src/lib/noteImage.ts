@@ -146,20 +146,18 @@ export async function fileToNoteImageDataUrl(
   const preferBlob = signedIn && file.size >= BLOB_UPLOAD_MIN_BYTES
 
   // Signed-in images: private Blob with live upload % (keeps cloud notebook small).
+  // Never fall back to data-URL encoding for large files — base64 of a 15MB photo
+  // freezes the tab for a long time and then breaks cloud sync (413).
   if (preferBlob) {
-    try {
-      const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
-        progress.report(pct)
-      })
-      progress.report(100)
-      return notebookInlineImageSrc(uploaded.pathname)
-    } catch {
-      // Fall through to local data URL when upload is unavailable.
-    }
+    const uploaded = await uploadNotebookFile(asImageFile(file), (pct) => {
+      progress.report(pct)
+    })
+    progress.report(100)
+    return notebookInlineImageSrc(uploaded.pathname)
   }
 
   // Keep original bytes — never canvas-resize or recompress.
-  // Small/medium photos stay local for snappy full-res insert.
+  // Small photos stay local for snappy full-res insert.
   return blobToDataUrl(file, (pct) => progress.report(pct))
 }
 

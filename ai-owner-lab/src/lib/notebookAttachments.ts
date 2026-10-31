@@ -75,10 +75,11 @@ function contentTypeForUpload(file: File): string {
 }
 
 /**
- * Multipart adds part-init round-trips. For typical phone photos (under ~16MB)
- * a single PUT is faster; keep multipart for very large files/zips.
+ * Multipart splits the file and uploads parts in parallel (with retries).
+ * For ~8–20MB phone photos a single PUT saturates poorly (esp. Asia → US Blob);
+ * parallel parts finish much faster. Tiny files stay on one PUT (less overhead).
  */
-const MULTIPART_MIN_BYTES = 16 * 1024 * 1024
+const MULTIPART_MIN_BYTES = 4 * 1024 * 1024
 
 function normalizeUploadPct(percentage: number): number {
   if (!Number.isFinite(percentage)) return 0
@@ -87,9 +88,15 @@ function normalizeUploadPct(percentage: number): number {
   return Math.max(0, Math.min(100, Math.round(pct)))
 }
 
+export type UploadProgress = {
+  pct: number
+  loaded?: number
+  total?: number
+}
+
 export async function uploadNotebookFile(
   file: File,
-  onProgress?: (pct: number) => void,
+  onProgress?: (pct: number, detail?: UploadProgress) => void,
 ): Promise<NotebookAttachment> {
   const username = loadCachedAccountUser()
   if (!username) throw new Error('Sign in to upload files')
@@ -98,19 +105,24 @@ export async function uploadNotebookFile(
   const pathname = `ownlab-accounts/${username}/files/${safeFileName(file.name)}`
   const useMultipart = file.size >= MULTIPART_MIN_BYTES
   // Token handshake has no byte progress — nudge off 0% so the UI is not frozen.
-  onProgress?.(3)
+  onProgress?.(3, { pct: 3, loaded: 0, total: file.size })
   const result = await upload(pathname, file, {
     access: 'private',
     handleUploadUrl: `${window.location.origin}/api/blob/upload`,
     multipart: useMultipart,
     contentType,
-    onUploadProgress: ({ percentage }) => {
+    onUploadProgress: ({ percentage, loaded, total }) => {
       const raw = normalizeUploadPct(percentage)
       // Map network progress into 5–99 so the handshake phase stays visible.
-      onProgress?.(Math.max(5, Math.min(99, raw)))
+      const pct = Math.max(5, Math.min(99, raw))
+      onProgress?.(pct, {
+        pct,
+        loaded: typeof loaded === 'number' ? loaded : undefined,
+        total: typeof total === 'number' ? total : file.size,
+      })
     },
   })
-  onProgress?.(100)
+  onProgress?.(100, { pct: 100, loaded: file.size, total: file.size })
 
   return {
     id: uid(),

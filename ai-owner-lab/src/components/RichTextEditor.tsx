@@ -21,6 +21,7 @@ import {
   isAllowedImageMime,
   trackNoteImageUpload,
 } from '../lib/noteImage'
+import { formatFileSize } from '../lib/notebookAttachments'
 import {
   plainTextListsToHtml,
   structuredClipboardHtml,
@@ -298,6 +299,9 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
   const [imageProgress, setImageProgress] = useState<number | null>(null)
+  const [imageBytes, setImageBytes] = useState<{ loaded: number; total: number } | null>(
+    null,
+  )
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
@@ -508,6 +512,10 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     }
     setImageBusy(true)
     setImageProgress(0)
+    setImageBytes({
+      loaded: 0,
+      total: images.reduce((sum, file) => sum + (file.size || 0), 0),
+    })
     setImageError(null)
 
     // Insert local previews synchronously (instant), then upload in parallel.
@@ -522,15 +530,21 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     emitChange()
 
     const progresses = jobs.map(() => 0)
+    const loadedBytes = jobs.map(() => 0)
     const report = () => {
       const avg = progresses.reduce((a, b) => a + b, 0) / Math.max(1, progresses.length)
       setImageProgress(avg)
+      setImageBytes({
+        loaded: loadedBytes.reduce((a, b) => a + b, 0),
+        total: jobs.reduce((sum, job) => sum + (job.file.size || 0), 0),
+      })
     }
     try {
       await Promise.all(
         jobs.map((job, index) =>
           uploadAndSwapPreview(job.file, job.tempId, job.previewUrl, (pct) => {
             progresses[index] = pct
+            loadedBytes[index] = Math.round(((job.file.size || 0) * pct) / 100)
             report()
           }).catch(() => {
             /* per-image error already shown */
@@ -542,6 +556,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
       await new Promise((r) => window.setTimeout(r, 120))
       setImageBusy(false)
       setImageProgress(null)
+      setImageBytes(null)
     }
   }
 
@@ -861,7 +876,14 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
       {imageBusy ? (
         <div className="rte-image-progress" role="status" aria-live="polite">
           <div className="rte-image-progress-meta">
-            <span>{t('editorImageUploading')}</span>
+            <span>
+              {imageBytes && imageBytes.total > 0
+                ? t('editorImageUploadingDetail', {
+                    loaded: formatFileSize(imageBytes.loaded),
+                    total: formatFileSize(imageBytes.total),
+                  })
+                : t('editorImageUploading')}
+            </span>
             <strong>
               {(imageProgress ?? 0) < 5 ? '…' : `${Math.round(imageProgress ?? 0)}%`}
             </strong>
