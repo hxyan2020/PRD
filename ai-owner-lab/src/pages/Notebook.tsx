@@ -2,12 +2,10 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { CloudSetupCard } from '../components/CloudSetupCard'
 import { NoteAttachments } from '../components/NoteAttachments'
 import { NoteCardImages } from '../components/NoteCardImages'
 import { NoteImageLightbox } from '../components/NoteImageLightbox'
 import { NoteTree } from '../components/NoteTree'
-import { NotebookBackupPanel } from '../components/NotebookBackupPanel'
 import { RichTextEditor, type RichTextEditorHandle } from '../components/RichTextEditor'
 import {
   NotebookStorageError,
@@ -220,14 +218,9 @@ export function Notebook() {
     addCategory,
     removeCategory,
     recoverFromBackups,
-    exportBackup,
-    dumpRecoveryStorage,
-    importBackup,
   } = useNotebook()
   const { lang, t } = useLanguage()
-  const [view, setView] = useState<
-    'notes' | 'add' | 'tree' | 'categories' | 'dustbin' | 'backup'
-  >('notes')
+  const [view, setView] = useState<'notes' | 'add' | 'tree' | 'categories' | 'dustbin'>('notes')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
@@ -246,31 +239,20 @@ export function Notebook() {
   const [recoverToast, setRecoverToast] = useState(false)
   const [deletedForeverToast, setDeletedForeverToast] = useState(false)
   const [storageToast, setStorageToast] = useState<string | null>(null)
-  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null)
-  const [recoveryBusy, setRecoveryBusy] = useState(false)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
   const { available: authAvailable, username: authUser } = useAuth()
-  const [cloudOn, setCloudOn] = useState(() => notebookStore.getCloudSyncStatus().configured)
   const [cloudState, setCloudState] = useState<CloudRuntimeState>(() =>
     notebookStore.getCloudRuntime().state,
   )
   const [cloudError, setCloudError] = useState<string | null>(null)
-  const [skipCloudRestore, setSkipCloudRestore] = useState(false)
   const accountSynced = Boolean(authAvailable && authUser)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
-  const importInputRef = useRef<HTMLInputElement | null>(null)
   const autoRecoverTried = useRef(false)
-  const cloudSetupRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (accountSynced) setCloudOn(true)
-  }, [accountSynced])
 
   useEffect(() => {
     if (!ready) return
-    setCloudOn(accountSynced || notebookStore.getCloudSyncStatus().configured)
     let message: string | null = null
     if (notebookStore.consumeRecoveryNotice()) message = t('notesRecoveredToast')
     else if (notebookStore.consumeMigrationNotice()) message = t('notebookStorageUpgraded')
@@ -278,26 +260,14 @@ export function Notebook() {
     setStorageToast(message)
     const timer = window.setTimeout(() => setStorageToast(null), 5200)
     return () => window.clearTimeout(timer)
-  }, [ready, t, accountSynced])
+  }, [ready, t])
 
   useEffect(() => {
     return notebookStore.subscribeCloudRuntime((runtime) => {
       setCloudState(runtime.state)
       setCloudError(runtime.error)
-      setCloudOn(
-        accountSynced ||
-          notebookStore.getCloudSyncStatus().configured ||
-          runtime.state === 'syncing' ||
-          runtime.state === 'synced',
-      )
     })
-  }, [accountSynced])
-
-  useEffect(() => {
-    if (view !== 'backup') {
-      setCloudOn(accountSynced || notebookStore.getCloudSyncStatus().configured)
-    }
-  }, [view, count, accountSynced])
+  }, [])
 
   useEffect(() => {
     if (!openedNoteId) return
@@ -317,95 +287,10 @@ export function Notebook() {
     if (!ready || autoRecoverTried.current) return
     if (count > 0) return
     autoRecoverTried.current = true
-    void recoverFromBackups()
-      .then((result) => {
-        if (result.restored > 0) {
-          setRecoveryMessage(
-            t('recoverNotesFound', { restored: result.restored, total: result.total }),
-          )
-        }
-      })
-      .catch(() => {
-        /* ignore auto-recover errors */
-      })
-  }, [ready, count, recoverFromBackups, t])
-
-  async function onRecoverNotes() {
-    setRecoveryBusy(true)
-    setRecoveryMessage(null)
-    try {
-      const result = await recoverFromBackups()
-      if (result.restored > 0 || result.total > 0) {
-        setRecoveryMessage(
-          t('recoverNotesFound', { restored: result.restored, total: result.total }),
-        )
-      } else {
-        setRecoveryMessage(t('recoverNotesNone'))
-      }
-    } catch {
-      setRecoveryMessage(t('recoverNotesNone'))
-    } finally {
-      setRecoveryBusy(false)
-    }
-  }
-
-  function onExportNotes() {
-    const json = exportBackup()
-    const blob = new Blob([json], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `ownlab-notebook-backup-${new Date().toISOString().slice(0, 10)}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
-  async function onRecoveryDump() {
-    setRecoveryBusy(true)
-    setRecoveryMessage(null)
-    try {
-      const dump = await dumpRecoveryStorage()
-      const blob = new Blob([dump.json], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `ownlab-recovery-dump-${new Date().toISOString().slice(0, 10)}.json`
-      a.click()
-      URL.revokeObjectURL(url)
-      if (dump.entryCount > 0) {
-        // Also merge into the live notebook immediately.
-        await importBackup(dump.json)
-        setRecoveryMessage(
-          t('recoveryDumpFound', {
-            count: dump.entryCount,
-            sources: dump.sources.join(', ') || 'storage',
-          }),
-        )
-      } else {
-        setRecoveryMessage(t('recoveryDumpEmpty'))
-      }
-    } catch {
-      setRecoveryMessage(t('recoveryDumpFail'))
-    } finally {
-      setRecoveryBusy(false)
-    }
-  }
-
-  async function onImportFile(file: File | null) {
-    if (!file) return
-    setRecoveryBusy(true)
-    setRecoveryMessage(null)
-    try {
-      const text = await file.text()
-      const result = await importBackup(text)
-      setRecoveryMessage(t('recoverNotesFound', { restored: result.total, total: result.total }))
-    } catch {
-      setRecoveryMessage(t('recoverNotesNone'))
-    } finally {
-      setRecoveryBusy(false)
-      if (importInputRef.current) importInputRef.current.value = ''
-    }
-  }
+    void recoverFromBackups().catch(() => {
+      /* ignore auto-recover errors */
+    })
+  }, [ready, count, recoverFromBackups])
 
   const categoryMap = useMemo(() => {
     const map = new Map<string, NotebookCategory>()
@@ -539,12 +424,6 @@ export function Notebook() {
       setNewAttachments([])
       setComposerError(null)
       setView('notes')
-      if (!notebookStore.getCloudSyncStatus().configured) {
-        setCloudOn(false)
-        window.requestAnimationFrame(() => {
-          cloudSetupRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        })
-      }
     } catch (err) {
       if (err instanceof NotebookStorageError && err.code === 'quota') {
         setComposerError(t('notebookStorageFull'))
@@ -671,11 +550,9 @@ export function Notebook() {
               ? t('treeTitle')
               : view === 'categories'
                 ? t('categoriesTitle')
-                : view === 'backup'
-                  ? t('backupTitle')
-                  : view === 'add'
-                    ? t('viewAdd')
-                    : t('notebookTitle')}
+                : view === 'add'
+                  ? t('viewAdd')
+                  : t('notebookTitle')}
         </h1>
         <p className="section-lede">
           {view === 'dustbin'
@@ -684,57 +561,30 @@ export function Notebook() {
               ? t('treeLede')
               : view === 'categories'
                 ? t('categoriesLede')
-                : view === 'backup'
-                  ? t('backupLede')
-                  : view === 'add'
-                    ? t('viewAddLede')
-                    : t('notebookLede')}
+                : view === 'add'
+                  ? t('viewAddLede')
+                  : t('notebookLede')}
         </p>
-        {cloudOn || accountSynced ? (
+        {accountSynced ? (
           <div className="notebook-cloud-status-row">
             <p
               className={`notebook-cloud-pill${cloudState === 'error' ? ' err' : ''}${
                 cloudState === 'syncing' ? ' syncing' : ''
               }`}
-              title={accountSynced ? t('authSignedInHint') : t('cloudTitle')}
+              title={t('authSignedInHint')}
             >
-              {accountSynced
-                ? cloudState === 'syncing'
-                  ? t('cloudSyncing')
-                  : cloudState === 'error'
-                    ? t('cloudSyncError', { error: cloudError || 'error' })
-                    : t('authSyncOn', { user: authUser || '' })
-                : cloudState === 'syncing'
-                  ? t('cloudSyncing')
-                  : cloudState === 'error'
-                    ? t('cloudSyncError', { error: cloudError || 'error' })
-                    : t('cloudSynced')}
+              {cloudState === 'syncing'
+                ? t('cloudSyncing')
+                : cloudState === 'error'
+                  ? t('cloudSyncError', { error: cloudError || 'error' })
+                  : t('authSyncOn', { user: authUser || '' })}
             </p>
-            <button
-              type="button"
-              className="btn ghost notebook-cloud-verify-btn"
-              onClick={() => setView('backup')}
-            >
-              {t('cloudVerify')}
-            </button>
-            {count > 0 ? (
-              <Link className="btn ghost notebook-cloud-verify-btn" to="/notes-html">
-                {t('publicHtmlNav')}
-              </Link>
-            ) : null}
           </div>
         ) : (
-          <p className="notebook-cloud-pill off" title={t('cloudRequiredTitle')}>
+          <p className="notebook-cloud-pill off" title={t('authRequiredTitle')}>
             {t('cloudSyncOffBanner')}
           </p>
         )}
-        {!cloudOn && count > 0 ? (
-          <div className="notebook-cloud-status-row">
-            <Link className="btn ghost notebook-cloud-verify-btn" to="/notes-html">
-              {t('publicHtmlNav')}
-            </Link>
-          </div>
-        ) : null}
         <div className="notebook-view-switch" role="tablist" aria-label={t('notebookTitle')}>
           <button
             type="button"
@@ -793,16 +643,6 @@ export function Notebook() {
             {t('dustbin')}
             <span className="notebook-view-count">{trashCount}</span>
           </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={view === 'backup'}
-            className={`notebook-view-tab${view === 'backup' ? ' on' : ''}`}
-            onClick={() => setView('backup')}
-          >
-            <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-backup" />
-            {t('viewBackup')}
-          </button>
         </div>
         {view === 'notes' || view === 'dustbin' ? (
           <div className="notebook-toolbar">
@@ -841,45 +681,21 @@ export function Notebook() {
                     </select>
                   </label>
                 ) : null}
-                {view === 'notes' && count > 0 ? (
-                  <button type="button" className="btn ghost" onClick={onExportNotes}>
-                    {t('exportNotes')}
-                  </button>
-                ) : null}
               </div>
             ) : null}
           </div>
         ) : null}
       </header>
 
-      {!accountSynced && !cloudOn && (view === 'notes' || view === 'backup') ? (
-        <div ref={cloudSetupRef} className="notebook-cloud-setup-anchor">
-          {authAvailable ? (
-            <section className="notebook-cloud-setup" aria-label={t('authSignIn')}>
-              <div className="notebook-cloud-setup-head">
-                <h2>{t('authRequiredTitle')}</h2>
-                <p>{t('authRequiredBody')}</p>
-                <p className="notebook-cloud-setup-note">{t('authRequiredHint')}</p>
-              </div>
-            </section>
-          ) : null}
-          <CloudSetupCard
-            restoreMode={count === 0 && !skipCloudRestore}
-            onEnabled={() => {
-              setCloudOn(true)
-              setCloudState('synced')
-              setSkipCloudRestore(false)
-            }}
-          />
-          {count === 0 && !skipCloudRestore ? (
-            <button
-              type="button"
-              className="btn ghost notebook-cloud-skip"
-              onClick={() => setSkipCloudRestore(true)}
-            >
-              {t('cloudSkipRestore')}
-            </button>
-          ) : null}
+      {!accountSynced && authAvailable && view === 'notes' ? (
+        <div className="notebook-cloud-setup-anchor">
+          <section className="notebook-cloud-setup" aria-label={t('authSignIn')}>
+            <div className="notebook-cloud-setup-head">
+              <h2>{t('authRequiredTitle')}</h2>
+              <p>{t('authRequiredBody')}</p>
+              <p className="notebook-cloud-setup-note">{t('authRequiredHint')}</p>
+            </div>
+          </section>
         </div>
       ) : null}
 
@@ -992,9 +808,7 @@ export function Notebook() {
           )
         : null}
 
-      {view === 'backup' ? (
-        <NotebookBackupPanel />
-      ) : view === 'dustbin' ? (
+      {view === 'dustbin' ? (
         trashCount === 0 ? (
           <div className="callout dustbin-empty">
             <h2>{t('dustbinEmpty')}</h2>
@@ -1206,8 +1020,6 @@ export function Notebook() {
             </div>
           </div>
         </section>
-      ) : !cloudOn && count === 0 && !skipCloudRestore ? (
-        null
       ) : (
         <>
       {count > 0 || categories.length > 0 ? (
@@ -1283,58 +1095,6 @@ export function Notebook() {
             >
               {t('viewAdd')}
             </button>
-          </div>
-          <p className="notebook-recover-hint">{t('recoverNotesHint')}</p>
-          <p className="notebook-recover-hint">{t('recoveryDumpHint')}</p>
-          {recoveryMessage ? (
-            <p className="notebook-recover-status" role="status">
-              {recoveryMessage}
-            </p>
-          ) : null}
-          <div className="notebook-actions">
-            <button
-              type="button"
-              className="btn primary"
-              disabled={recoveryBusy}
-              onClick={() => void onRecoveryDump()}
-            >
-              {t('recoveryDump')}
-            </button>
-            <button
-              type="button"
-              className="btn primary"
-              disabled={recoveryBusy}
-              onClick={() => void onRecoverNotes()}
-            >
-              {t('recoverNotes')}
-            </button>
-            <button type="button" className="btn ghost" onClick={() => setView('backup')}>
-              {t('viewBackup')}
-            </button>
-            <button
-              type="button"
-              className="btn ghost"
-              disabled={recoveryBusy}
-              onClick={onExportNotes}
-            >
-              {t('exportNotes')}
-            </button>
-            <button
-              type="button"
-              className="btn ghost"
-              disabled={recoveryBusy}
-              onClick={() => importInputRef.current?.click()}
-            >
-              {t('importNotes')}
-            </button>
-            <input
-              ref={importInputRef}
-              type="file"
-              accept="application/json,.json"
-              className="sr-only"
-              tabIndex={-1}
-              onChange={(e) => void onImportFile(e.target.files?.[0] ?? null)}
-            />
           </div>
         </div>
       ) : visibleEntries.length === 0 ? (
