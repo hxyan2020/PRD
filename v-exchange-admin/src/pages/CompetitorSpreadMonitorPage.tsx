@@ -235,15 +235,7 @@ export function CompetitorSpreadMonitorPage() {
 
       {tab === 'records' && (
         <>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: 16,
-              gap: 16,
-            }}
-          >
+          <div className="filter-toolbar">
             <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
               <Form.Item label="合约名称" name="contractName">
                 <Input placeholder="请输入合约名称" style={{ width: 200 }} />

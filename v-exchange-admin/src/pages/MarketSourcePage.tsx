@@ -182,6 +182,7 @@ export function MarketSourcePage() {
         rowKey="key"
         columns={columns}
         dataSource={marketSourceList}
+        scroll={{ x: 1200 }}
         pagination={{ total: 17, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
         size="small"
       />

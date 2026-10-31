@@ -150,15 +150,7 @@ export function LargeLiquidationNotifyPage() {
 
       {tab === 'records' && (
         <>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: 16,
-              gap: 16,
-            }}
-          >
+          <div className="filter-toolbar">
             <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
               <Form.Item label="合约账户ID" name="accountId">
                 <Input placeholder="请输入合约账户ID" style={{ width: 220 }} />

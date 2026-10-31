@@ -72,8 +72,6 @@ const INITIAL_CONFIGS: ConfigRecord[] = [
   },
 ];
 
-const LABEL_WIDTH = 72;
-
 export function DepthMonitorPage() {
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
@@ -217,15 +215,7 @@ export function DepthMonitorPage() {
 
       {tab === 'records' && (
         <>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: 16,
-              gap: 16,
-            }}
-          >
+          <div className="filter-toolbar">
             <Form form={filterForm} layout="inline" style={{ flex: 1 }}>
               <Form.Item label="合约名称" name="contractName">
                 <Input placeholder="请输入合约名称" style={{ width: 200 }} />
@@ -242,6 +232,7 @@ export function DepthMonitorPage() {
             rowKey="key"
             columns={alertColumns}
             dataSource={ALERT_ROWS}
+            scroll={{ x: 720 }}
             pagination={{ total: ALERT_ROWS.length, showTotal: (t) => `共 ${t} 条`, pageSize: 10 }}
             size="small"
           />
@@ -285,39 +276,36 @@ export function DepthMonitorPage() {
       >
         <Form form={form} layout="vertical" requiredMark style={{ marginTop: 8 }}>
           <Form.Item label="告警类型" required style={{ marginBottom: 8 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className="alert-type-stack">
+              <div className="alert-type-row">
                 <Form.Item name="enableLevel" valuePropName="checked" noStyle>
                   <Checkbox />
                 </Form.Item>
-                <Text style={{ width: LABEL_WIDTH, flexShrink: 0 }}>档位数量</Text>
-                <Form.Item name="levelCount" noStyle>
+                <Text className="alert-type-label">档位数量</Text>
+                <Form.Item name="levelCount" noStyle className="alert-type-field">
                   <Input
                     placeholder="≤设置的档位数量会告警"
                     disabled={!enableLevel}
-                    style={{ flex: 1 }}
                   />
                 </Form.Item>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div className="alert-type-row">
                 <Form.Item name="enableDepth" valuePropName="checked" noStyle>
                   <Checkbox />
                 </Form.Item>
-                <Text style={{ width: LABEL_WIDTH, flexShrink: 0 }}>深度价值</Text>
-                <Form.Item name="depthPct" noStyle>
+                <Text className="alert-type-label">深度价值</Text>
+                <Form.Item name="depthPct" noStyle className="alert-type-field alert-type-field--sm">
                   <Input
                     placeholder="请输入累计深度"
                     suffix="%"
                     disabled={!enableDepth}
-                    style={{ width: 160 }}
                   />
                 </Form.Item>
-                <Form.Item name="depthValue" noStyle>
+                <Form.Item name="depthValue" noStyle className="alert-type-field">
                   <Input
                     placeholder="≤设置的深度价值会告警"
                     suffix="USD"
                     disabled={!enableDepth}
-                    style={{ flex: 1 }}
                   />
                 </Form.Item>
               </div>
