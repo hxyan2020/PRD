@@ -52,6 +52,7 @@
   "hero.today": "Pick de hoy",
   "hero.catalogue": "Ver catálogo completo",
   "hero.lastRefresh": "Última actualización {when}",
+  "hero.lastRefreshWithHeadlines": "Última actualización {when} · {count} titulares obtenidos",
   "hero.match": "Emparejar con chatbot",
   "hero.chips": "Nombre · modelo · equipo · funding · jugada",
   "teaser.kicker": "Recomendación diaria",

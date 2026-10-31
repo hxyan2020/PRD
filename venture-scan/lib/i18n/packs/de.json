@@ -52,6 +52,7 @@
   "hero.today": "Tipp des Tages",
   "hero.catalogue": "Vollständigen Katalog ansehen",
   "hero.lastRefresh": "Zuletzt aktualisiert {when}",
+  "hero.lastRefreshWithHeadlines": "Zuletzt aktualisiert {when} · {count} Schlagzeilen erfasst",
   "hero.match": "Per Chatbot matchen",
   "hero.chips": "Name · Modell · Team · Funding · Spielzug",
   "teaser.kicker": "Tägliche Empfehlung",

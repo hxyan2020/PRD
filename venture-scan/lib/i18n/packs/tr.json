@@ -52,6 +52,7 @@
   "hero.today": "Bugünün seçimi",
   "hero.catalogue": "Tam kataloğu gör",
   "hero.lastRefresh": "Son yenileme {when}",
+  "hero.lastRefreshWithHeadlines": "Son yenileme {when} · {count} manşet alındı",
   "hero.match": "chatbot ile Maç",
   "hero.chips": "Ad · model · takım · finansman · oyun",
   "teaser.kicker": "Günlük tavsiye",

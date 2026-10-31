@@ -52,6 +52,7 @@
   "hero.today": "Pilihan hari ini",
   "hero.catalogue": "Lihat katalog lengkap",
   "hero.lastRefresh": "Terakhir diperbarui {when}",
+  "hero.lastRefreshWithHeadlines": "Terakhir diperbarui {when} · {count} headline diambil",
   "hero.match": "Cocok dengan Chatbot",
   "hero.chips": "Nama",
   "teaser.kicker": "RePeler harian",

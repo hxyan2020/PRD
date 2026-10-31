@@ -52,6 +52,7 @@
   "hero.today": "今日の推薦",
   "hero.catalogue": "カタログ全体を見る",
   "hero.lastRefresh": "最終更新 {when}",
+  "hero.lastRefreshWithHeadlines": "最終更新 {when} · ヘッドライン {count} 件を取得",
   "hero.match": "チャットでマッチ",
   "hero.chips": "名前・モデル・チーム・資金調達・プレイ",
   "teaser.kicker": "毎日の推薦",

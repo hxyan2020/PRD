@@ -52,6 +52,7 @@
   "hero.today": "De keuze van vandaag",
   "hero.catalogue": "Volledige catalogus bekijken",
   "hero.lastRefresh": "Laatst vernieuwd {when}",
+  "hero.lastRefreshWithHeadlines": "Laatst vernieuwd {when} · {count} koppen opgehaald",
   "hero.match": "Match met chatbot",
   "hero.chips": "Naam · model · team · financiering · play",
   "teaser.kicker": "Dagelijkse aanbeveling",

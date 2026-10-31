@@ -81,6 +81,8 @@ const en = {
   "hero.today": "Today's pick",
   "hero.catalogue": "See full catalogue",
   "hero.lastRefresh": "Last refreshed {when}",
+  "hero.lastRefreshWithHeadlines":
+    "Last refreshed {when} · {count} headlines sourced",
   "hero.match": "Match with chatbot",
   "hero.chips": "Name · model · team · funding · play",
 

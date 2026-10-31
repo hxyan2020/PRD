@@ -52,6 +52,7 @@
   "hero.today": "오늘의 추천",
   "hero.catalogue": "전체 카탈로그 보기",
   "hero.lastRefresh": "마지막 새로고침 {when}",
+  "hero.lastRefreshWithHeadlines": "마지막 새로고침 {when} · 헤드라인 {count}건 수집",
   "hero.match": "챗봇 매칭",
   "hero.chips": "이름 · 모델 · 팀 · 펀딩 · 다음 수",
   "teaser.kicker": "매일 추천",

@@ -52,6 +52,7 @@
   "hero.today": "Hôm nay chọn",
   "hero.catalogue": "Xem toàn bộ danh mục",
   "hero.lastRefresh": "Cập nhật lần cuối {when}",
+  "hero.lastRefreshWithHeadlines": "Cập nhật lần cuối {when} · đã lấy {count} tiêu đề",
   "hero.match": "Khớp với chatbot",
   "hero.chips": "Name",
   "teaser.kicker": "Đề nghị hàng ngày",

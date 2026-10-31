@@ -1,10 +1,14 @@
-import { isActiveIdea, isArchivedIdea, partitionIdeas } from "./archived-ideas";
+import { isArchivedIdea, partitionIdeas } from "./archived-ideas";
+import { resolveTodaysIdeas } from "./daily-ledger";
 import { rankByFundingSecured } from "./rank-ideas";
 import type { StartupIdea } from "./types";
 
-/** Live scan ideas shown as "today" on the homepage and ideas ledger. */
+/**
+ * Live scan ideas shown as "today" on the homepage and ideas ledger.
+ * Prefers the daily RSS-matched / date-rotated cohort from daily-ledger.json.
+ */
 export function todaysIdeas(ideas: StartupIdea[]): StartupIdea[] {
-  return rankByFundingSecured(ideas.filter(isActiveIdea));
+  return resolveTodaysIdeas(ideas);
 }
 
 /**
@@ -19,9 +23,9 @@ export function splitIdeasByDay(ideas: StartupIdea[]): {
   today: StartupIdea[];
   yesterday: StartupIdea[];
 } {
-  const { active, archived } = partitionIdeas(ideas);
+  const { archived } = partitionIdeas(ideas);
   return {
-    today: rankByFundingSecured(active),
+    today: resolveTodaysIdeas(ideas),
     yesterday: rankByFundingSecured(archived),
   };
 }

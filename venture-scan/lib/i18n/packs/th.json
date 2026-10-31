@@ -52,6 +52,7 @@
   "hero.today": "เลือกวันนี้",
   "hero.catalogue": "ดูแคตตาล็อกทั้งหมด",
   "hero.lastRefresh": "รีเฟรชล่าสุด {when}",
+  "hero.lastRefreshWithHeadlines": "รีเฟรชล่าสุด {when} · ดึงหัวข้อข่าว {count} รายการ",
   "hero.match": "ตรงกับ แชทบอท",
   "hero.chips": "ชื่อ Model Model ทีมงาน evolution play",
   "teaser.kicker": "แนะนําทุกวัน",

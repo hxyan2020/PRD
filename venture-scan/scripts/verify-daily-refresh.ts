@@ -15,6 +15,7 @@ import type { SourceIngestFile } from "../lib/source-ingest";
 const root = path.join(import.meta.dirname, "..");
 const ideasPath = path.join(root, "public/data/ideas.json");
 const ingestPath = path.join(root, "public/data/source-ingest.json");
+const ledgerPath = path.join(root, "public/data/daily-ledger.json");
 /** Fail if the last scan is older than this (CI runs immediately after scan). */
 const MAX_AGE_MS = 30 * 60 * 1000;
 
@@ -25,6 +26,7 @@ function fail(msg: string): never {
 
 if (!existsSync(ideasPath)) fail(`missing ${ideasPath}`);
 if (!existsSync(ingestPath)) fail(`missing ${ingestPath}`);
+if (!existsSync(ledgerPath)) fail(`missing ${ledgerPath}`);
 
 const ideas = JSON.parse(readFileSync(ideasPath, "utf8")) as {
   generatedAt?: string;
@@ -80,6 +82,22 @@ if (sourceRows.length < 1) fail("source-ingest has no sources");
 const okCount = sourceRows.filter((s) => s.ok).length;
 if (okCount < 1) fail("no data sources responded ok");
 
+const ledger = JSON.parse(readFileSync(ledgerPath, "utf8")) as {
+  day?: string;
+  scannedAt?: string;
+  todaySlugs?: string[];
+  headlineCount?: number;
+  feedsOk?: number;
+};
+if (!ledger.scannedAt) fail("daily-ledger.json missing scannedAt");
+if (!Array.isArray(ledger.todaySlugs) || ledger.todaySlugs.length < 1) {
+  fail("daily-ledger.json missing todaySlugs cohort");
+}
+if ((ledger.headlineCount ?? 0) < 1) {
+  fail("daily-ledger.json has no sourced headlines — RSS ingest produced nothing");
+}
+if ((ledger.feedsOk ?? 0) < 1) fail("daily-ledger.json reports zero RSS feeds ok");
+
 console.log(
   JSON.stringify(
     {
@@ -89,6 +107,9 @@ console.log(
       ideas: ideaCount,
       active: ideas.active,
       archived: ideas.archived,
+      todayCount: ledger.todaySlugs.length,
+      headlines: ledger.headlineCount,
+      feedsOk: ledger.feedsOk,
       sourcesOk: okCount,
       sourcesTotal: sourceRows.length,
       cronUtc: ingest.schedule.cronUtc,
