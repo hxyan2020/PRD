@@ -3188,11 +3188,34 @@ body.menu-open {
   color: var(--ink-soft);
 }
 
-/* Uniform list cards — full note opens in .note-fullscreen */
+/* Note cards as blocks — 1 col mobile, 3 cols desktop */
 .notebook-timeline:not(.dustbin-timeline) {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.85rem;
+  align-items: stretch;
+}
+
+@media (min-width: 720px) {
+  .notebook-timeline:not(.dustbin-timeline) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .notebook-timeline:not(.dustbin-timeline) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+.notebook-entry.notebook-entry-card {
+  min-width: 0;
+}
+
+.notebook-entry.notebook-entry-card.editing {
+  grid-column: 1 / -1;
 }
 
 .notebook-entry.notebook-entry-card:not(.editing) {
@@ -3203,6 +3226,7 @@ body.menu-open {
   max-height: 19rem;
   overflow: hidden;
   box-sizing: border-box;
+  border-radius: 0.55rem;
 }
 
 .notebook-entry.notebook-entry-card:not(.editing) .notebook-meta {
