@@ -180,7 +180,7 @@ export async function POST(req: Request) {
       pulled_alerts: 5,
       pushed_acks: 1,
     });
-    // Auto-trigger AI analysis for open alarms (idempotent unless force)
+    // Auto-trigger AI analysis for open alarms, then call live LLM when a key is set
     const auto =
       (
         getDb().prepare(`SELECT value FROM platform_settings WHERE key = 'ai.auto_on_alarm'`).get() as
@@ -188,16 +188,24 @@ export async function POST(req: Request) {
           | undefined
       )?.value !== "false";
     let aiCount = 0;
+    let llmEnriched = 0;
     if (auto) {
       const results = analyzeOpenAlerts({ force: false });
       aiCount = results.length;
+      const { enrichAnalysesWithLlm } = await import("@/lib/ai/llm-enrich");
+      const llmRuns = await enrichAnalysesWithLlm(
+        results.map((r) => r.analysis_db_id),
+        12
+      );
+      llmEnriched = llmRuns.filter((r) => r.enriched).length;
     }
     return NextResponse.json({
       ok: true,
-      message: `Prototype sync with Monitor 2.0 completed; AI analyses ensured for ${aiCount} open alarm(s)`,
+      message: `Prototype sync with Monitor 2.0 completed; AI analyses ensured for ${aiCount} open alarm(s); live LLM enriched ${llmEnriched}`,
       pulled_alerts: 5,
       pushed_acks: 1,
       ai_analyses: aiCount,
+      llm_enriched: llmEnriched,
     });
   }
 

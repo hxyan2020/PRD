@@ -133,6 +133,8 @@ async function main() {
     maybeEnrichAnalysisWithLlm,
     maybeEnrichChallengeWithLlm,
     maybeAnswerDeskChatWithLlm,
+    enrichAnalysesWithLlm,
+    analysisHasLiveLlmEvidence,
   } = await import("../src/lib/ai/llm-enrich");
   const {
     analyseDiscoveryCandidate,
@@ -172,6 +174,7 @@ async function main() {
   assert.ok(llm.source === "LLM_API" || llm.source === "OPENAI_API");
   assert.equal(llm.provider, "openai");
   assert.ok((llm.thinking_steps || []).some((s) => /Mock RCA|LLM-|Call LLM/i.test(s)));
+  assert.equal(analysisHasLiveLlmEvidence(analysis!.id), true);
 
   const challengeLlm = await maybeEnrichChallengeWithLlm(analysis!.id);
   assert.ok(challengeLlm.source === "LLM_API" || challengeLlm.source === "OPENAI_API" || challengeLlm.source === "SKIPPED");
@@ -180,6 +183,15 @@ async function main() {
   }
 
   assert.ok(openaiCalls > before, "OpenAI fetch must be invoked for RCA enrich");
+
+  // "Analyze open" must enrich reused rows that lack LLM evidence; skip when already live.
+  const reuseBefore = openaiCalls;
+  const reuse = await enrichAnalysesWithLlm([analysis!.id], 4, { force: false });
+  assert.ok(reuse.some((r) => r.source === "SKIPPED"), "already-enriched analysis should skip without force");
+  assert.equal(openaiCalls, reuseBefore, "skip must not call the provider again");
+  const forced = await enrichAnalysesWithLlm([analysis!.id], 4, { force: true });
+  assert.ok(forced.some((r) => r.enriched), "force must call real AI again");
+  assert.ok(openaiCalls > reuseBefore, "force enrich must hit the LLM HTTP API");
 
   const chatBefore = openaiCalls;
   const chat = await maybeAnswerDeskChatWithLlm({

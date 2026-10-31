@@ -365,10 +365,52 @@ Challenge correlation vs causation. Prefer ${FOREX_INCIDENT_1028.incident_id} na
   }
 }
 
-/** Enrich primary RCA (+ challenger when present) for up to `limit` analyses. */
-export async function enrichAnalysesWithLlm(analysisDbIds: number[], limit = 8): Promise<LlmEnrichResult[]> {
+/** True when a successful live-LLM evidence row already exists for this analysis. */
+export function analysisHasLiveLlmEvidence(analysisDbId: number) {
+  const db = getDb();
+  const row = db
+    .prepare(
+      `SELECT id FROM ai_analysis_evidence
+       WHERE analysis_id = ? AND evidence_type = 'LLM' AND score >= 0.8
+       LIMIT 1`
+    )
+    .get(analysisDbId) as { id: number } | undefined;
+  return Boolean(row);
+}
+
+/**
+ * Enrich primary RCA (+ challenger when present) for up to `limit` analyses.
+ * By default skips rows that already have a successful LLM evidence trail unless `force`.
+ * Always attempts enrichment when a provider key is configured — this is the path that
+ * turns heuristic RCA into real AI analysis.
+ */
+export async function enrichAnalysesWithLlm(
+  analysisDbIds: number[],
+  limit = 8,
+  opts: { force?: boolean } = {}
+): Promise<LlmEnrichResult[]> {
   const out: LlmEnrichResult[] = [];
-  for (const id of analysisDbIds.filter(Boolean).slice(0, limit)) {
+  const ids = analysisDbIds.filter(Boolean).slice(0, Math.max(1, limit));
+  for (const id of ids) {
+    if (!opts.force && analysisHasLiveLlmEvidence(id)) {
+      out.push({
+        enriched: false,
+        source: "SKIPPED",
+        thinking_steps: [`analysis ${id}: live LLM evidence already present — skip`],
+      });
+      continue;
+    }
+    if (!llmEnrichmentEnabled()) {
+      out.push({
+        enriched: false,
+        source: "SKIPPED",
+        thinking_steps: [
+          `analysis ${id}: real AI skipped — set OPENAI_API_KEY / DEEPSEEK_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY (CRMP_AI_LLM not off)`,
+        ],
+        error: "LLM_KEY_MISSING",
+      });
+      continue;
+    }
     out.push(await maybeEnrichAnalysisWithLlm(id));
     const ch = await maybeEnrichChallengeWithLlm(id);
     if (ch.source !== "SKIPPED" || (ch.thinking_steps && ch.thinking_steps.length > 1)) {
@@ -376,6 +418,29 @@ export async function enrichAnalysesWithLlm(analysisDbIds: number[], limit = 8):
     }
   }
   return out;
+}
+
+/** Operator-facing guard: when CRMP_AI_LLM=require, refuse analysis without a live key. */
+export function assertLiveLlmAvailableForAnalysis(): { ok: true } | { ok: false; error: string; status: number } {
+  const flag = (process.env.CRMP_AI_LLM || process.env.CRMP_LLM || "auto").toLowerCase();
+  if (flag === "0" || flag === "false" || flag === "off") {
+    return {
+      ok: false,
+      error: "CRMP_AI_LLM is off — turn it to auto/on to call real AI for analysis",
+      status: 503,
+    };
+  }
+  if (!llmEnrichmentEnabled()) {
+    if (flag === "require" || flag === "1" || flag === "true" || flag === "on") {
+      return {
+        ok: false,
+        error:
+          "Real AI required but no LLM API key is configured. Set OPENAI_API_KEY, DEEPSEEK_API_KEY, GEMINI_API_KEY, or ANTHROPIC_API_KEY on the server.",
+        status: 503,
+      };
+    }
+  }
+  return { ok: true };
 }
 
 export async function maybeAnswerDeskChatWithLlm(input: {

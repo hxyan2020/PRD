@@ -111,6 +111,11 @@ export function llmEnrichmentEnabled() {
   return true;
 }
 
+/** Prefer live LLM for operator analyse actions whenever a key exists (same as llmEnrichmentEnabled). */
+export function shouldCallLiveLlmForAnalysis() {
+  return llmEnrichmentEnabled();
+}
+
 /** Apply ai.llm.provider from SQLite when env has no explicit CRMP_LLM_PROVIDER. */
 export function hydrateLlmProviderFromSettings(getSetting: (key: string) => string | null) {
   if (process.env.CRMP_LLM_PROVIDER?.trim() || process.env.CRMP_AI_PROVIDER?.trim()) return;

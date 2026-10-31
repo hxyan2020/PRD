@@ -603,18 +603,27 @@ export function AlertTrackerBoard({
       };
       const challenge = (data.challenge || null) as { verdict?: string } | null;
       const pct = Math.round((analysis.confidence || 0) * 100);
+      const llm = (data.llm || null) as { source?: string; enriched?: boolean; provider?: string } | null;
+      const llmRuns = Array.isArray(data.llm_runs) ? (data.llm_runs as Array<{ enriched?: boolean; source?: string }>) : [];
+      const enrichedCount = Number(data.llm_enriched ?? llmRuns.filter((r) => r.enriched).length);
+      const realAiOn = data.llm_calls_real_ai === true || data.llm_enabled === true;
+      const llmBit = realAiOn
+        ? ` · real AI ${String(llm?.source || llm?.provider || (enrichedCount ? "LLM_API" : "ready"))}${
+            enrichedCount ? ` · ${enrichedCount} enriched` : ""
+          }`
+        : " · real AI off (set server LLM key)";
       setMsg(
         action === "analyze_open"
-          ? t("ai.ensured", { n: Number(data.count) || 0 })
+          ? `${t("ai.ensured", { n: Number(data.count) || 0 })}${llmBit}`
           : action === "simulate_alarm"
             ? `${t("ai.alarmRaised", {
                 id: analysis.analysis_id || "—",
                 mode: analysis.mode || "—",
                 pct,
-              })}${challenge?.verdict ? ` · ${t("ai.challenged", { verdict: challenge.verdict })}` : ""}`
+              })}${challenge?.verdict ? ` · ${t("ai.challenged", { verdict: challenge.verdict })}` : ""}${llmBit}`
             : action === "backfill_challenges"
               ? t("ai.backfilled", { n: Number(data.count) || 0 })
-              : t("ai.done")
+              : `${t("ai.done")}${llmBit}`
       );
       router.refresh();
       if (action === "simulate_alarm") {
@@ -646,13 +655,13 @@ export function AlertTrackerBoard({
       >
         {llmEnabled ? (
           <EnZh
-            en={`LLM enrichment ON (${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}) — analyze / simulate / detectors call ChatGPT, DeepSeek, Gemini, or Claude and store a thinking trail on each RCA.`}
-            zh={`LLM 強化已開啟（${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}）— 分析／模擬／偵測器會呼叫 ChatGPT／DeepSeek／Gemini／Claude，並在每次 RCA 寫入思考軌跡。`}
+            en={`Real AI ON (${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}) — Analyze open / Simulate / detectors call the live LLM and write a thinking trail on each RCA.`}
+            zh={`真實 AI 已開啟（${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}）—「分析未結」／模擬／偵測器會呼叫即時 LLM，並在每次 RCA 寫入思考軌跡。`}
           />
         ) : (
           <EnZh
-            en={`LLM enrichment OFF (${llmAvailable ? "disabled by CRMP_AI_LLM" : "no ChatGPT/DeepSeek/Gemini/Claude key"}). Heuristic RCA still runs; set a server secret to call real AI.${llmProviders?.length ? ` Providers: ${llmProviders.map((p) => `${p.id}${p.configured ? "✓" : "✗"}`).join(", ")}.` : ""}`}
-            zh={`LLM 強化關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 ChatGPT／DeepSeek／Gemini／Claude 金鑰"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰以呼叫真實 AI。`}
+            en={`Real AI OFF (${llmAvailable ? "disabled by CRMP_AI_LLM" : "no ChatGPT/DeepSeek/Gemini/Claude key"}). Heuristic RCA still runs until you set a server secret. ${llmProviders?.length ? `Providers: ${llmProviders.map((p) => `${p.id}${p.configured ? "✓" : "✗"}`).join(", ")}.` : ""}`}
+            zh={`真實 AI 關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 ChatGPT／DeepSeek／Gemini／Claude 金鑰"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰後才會呼叫真實 AI。`}
           />
         )}
       </div>
