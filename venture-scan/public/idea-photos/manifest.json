@@ -3181,7 +3181,98 @@
     }
   ],
   "revolut-neo-bank": [],
-  "klarna-bnpl-rails": [],
+  "klarna-bnpl-rails": [
+    {
+      "id": "klarna-bnpl-rails-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 105175
+    },
+    {
+      "id": "klarna-bnpl-rails-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 48215
+    },
+    {
+      "id": "klarna-bnpl-rails-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 65315
+    },
+    {
+      "id": "klarna-bnpl-rails-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 44640
+    },
+    {
+      "id": "klarna-bnpl-rails-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 52702
+    },
+    {
+      "id": "klarna-bnpl-rails-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 52702
+    },
+    {
+      "id": "klarna-bnpl-rails-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 65839
+    },
+    {
+      "id": "klarna-bnpl-rails-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 64943
+    },
+    {
+      "id": "klarna-bnpl-rails-8",
+      "file": "08.jpg",
+      "imagePath": "/idea-photos/klarna-bnpl-rails/08.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.klarna.com/",
+      "sourceLabel": "klarna.com",
+      "bytes": 29893
+    }
+  ],
   "spotify-audio-graph": [],
   "industrial-climate-os": [
     {
@@ -4037,7 +4128,88 @@
       "bytes": 9131
     }
   ],
-  "pieter-patreon-creators": [],
+  "pieter-patreon-creators": [
+    {
+      "id": "pieter-patreon-creators-0",
+      "file": "00.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/00.jpg",
+      "kind": "official-og",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 101425
+    },
+    {
+      "id": "pieter-patreon-creators-1",
+      "file": "01.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/01.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 4701
+    },
+    {
+      "id": "pieter-patreon-creators-2",
+      "file": "02.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/02.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 6960
+    },
+    {
+      "id": "pieter-patreon-creators-3",
+      "file": "03.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/03.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 6438
+    },
+    {
+      "id": "pieter-patreon-creators-4",
+      "file": "04.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/04.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 7542
+    },
+    {
+      "id": "pieter-patreon-creators-5",
+      "file": "05.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/05.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 7022
+    },
+    {
+      "id": "pieter-patreon-creators-6",
+      "file": "06.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/06.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 4297
+    },
+    {
+      "id": "pieter-patreon-creators-7",
+      "file": "07.jpg",
+      "imagePath": "/idea-photos/pieter-patreon-creators/07.jpg",
+      "kind": "official-content",
+      "caption": "Official site",
+      "sourceUrl": "https://www.patreon.com/",
+      "sourceLabel": "patreon.com",
+      "bytes": 7309
+    }
+  ],
   "airtable-ops-db": [
     {
       "id": "airtable-ops-db-0",
