@@ -327,8 +327,7 @@ export function ScanPage() {
                 <input
                   ref={fileRef}
                   type="file"
-                  accept="image/*"
-                  capture="environment"
+                  accept="image/*,.heic,.heif"
                   hidden
                   onChange={(e) => onFile(e.target.files?.[0] ?? null)}
                 />

@@ -363,8 +363,7 @@ export function ItemDetail({
                         : t("unlocked.attachPhoto")}
                       <input
                         type="file"
-                        accept="image/*"
-                        capture="environment"
+                        accept="image/*,.heic,.heif"
                         hidden
                         onChange={(e) => onPhotoFile(e.target.files?.[0] ?? null)}
                       />
