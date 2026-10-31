@@ -5,6 +5,7 @@ import { coverGradient } from "../lib/catalog";
 import { identifyImage } from "../lib/identify";
 import { coverUrl, markUrl } from "../lib/marks";
 import { isNatureCategory } from "../lib/nature";
+import { fileToSightingDataUrl } from "../lib/sightingPhoto";
 import {
   formatPct,
   formatUtc,
@@ -13,6 +14,7 @@ import {
 } from "../lib/unlocks";
 import type { Catalog, CatalogItem } from "../types/catalog";
 import { useI18n } from "../i18n/I18nProvider";
+import { ExpandablePhoto } from "./ExpandablePhoto";
 
 interface Props {
   item: CatalogItem;
@@ -114,18 +116,14 @@ export function ItemDetail({
 
   const onPhotoFile = (file: File | null) => {
     if (!file || !onSavePhoto) return;
-    const reader = new FileReader();
-    reader.onload = () => onSavePhoto(String(reader.result));
-    reader.readAsDataURL(file);
+    void (async () => {
+      try {
+        onSavePhoto(await fileToSightingDataUrl(file));
+      } catch {
+        /* ignore encode failures */
+      }
+    })();
   };
-
-  const fileToDataUrl = (f: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(f);
-    });
 
   const processSighting = async (file: File) => {
     if (!isLoggedIn) return;
@@ -161,7 +159,7 @@ export function ItemDetail({
         );
         return;
       }
-      const dataUrl = await fileToDataUrl(file);
+      const dataUrl = await fileToSightingDataUrl(file);
       onUnlockFromSighting(dataUrl);
     } catch (e) {
       setScanError(
@@ -197,16 +195,24 @@ export function ItemDetail({
               : coverGradient(item.coverHue, mode !== "locked"),
           }}
         >
-          {coverPhoto && (
-            <img
+          {coverPhoto && unlock?.photoDataUrl ? (
+            <ExpandablePhoto
               className="detail-cover__photo"
-              src={coverPhoto}
+              src={unlock.photoDataUrl}
               alt=""
-              draggable={false}
-              onError={() => {
-                if (!unlock?.photoDataUrl) setCoverFailed(true);
-              }}
             />
+          ) : (
+            coverPhoto && (
+              <img
+                className="detail-cover__photo"
+                src={coverPhoto}
+                alt=""
+                draggable={false}
+                onError={() => {
+                  if (!unlock?.photoDataUrl) setCoverFailed(true);
+                }}
+              />
+            )
           )}
           {showMark && mark && (
             <img
@@ -262,7 +268,7 @@ export function ItemDetail({
                 </p>
                 {previewUrl && (
                   <div className="detail-unlock__preview">
-                    <img src={previewUrl} alt="" />
+                    <ExpandablePhoto src={previewUrl} alt="" />
                   </div>
                 )}
                 <div className="cta-row detail-unlock__actions">
@@ -351,7 +357,7 @@ export function ItemDetail({
                 <div className="sighting-block">
                   <strong>{t("unlocked.sightingPhoto")}</strong>
                   {unlock.photoDataUrl ? (
-                    <img
+                    <ExpandablePhoto
                       className="sighting-photo"
                       src={unlock.photoDataUrl}
                       alt=""
@@ -366,8 +372,7 @@ export function ItemDetail({
                         : t("unlocked.attachPhoto")}
                       <input
                         type="file"
-                        accept="image/*"
-                        capture="environment"
+                        accept="image/*,.heic,.heif"
                         hidden
                         onChange={(e) => onPhotoFile(e.target.files?.[0] ?? null)}
                       />
@@ -409,7 +414,7 @@ export function ItemDetail({
 
                 <div className="cta-row" style={{ justifyContent: "center" }}>
                   <button type="button" className="btn btn--forest" onClick={saveNote}>
-                    {savedFlash ? t("unlocked.copied") : t("unlocked.saveNote")}
+                    {savedFlash ? t("unlocked.noteSaved") : t("unlocked.saveNote")}
                   </button>
                   <button type="button" className="btn btn--quiet" onClick={() => void copyLink()}>
                     {copied ? t("unlocked.copied") : t("unlocked.share")}

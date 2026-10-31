@@ -55,8 +55,42 @@ function readAll(): Record<string, UnlockRecord> {
   }
 }
 
+function isQuotaError(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as { name?: string; code?: number };
+  return e.name === "QuotaExceededError" || e.name === "NS_ERROR_DOM_QUOTA_REACHED" || e.code === 22;
+}
+
 function writeAll(map: Record<string, UnlockRecord>) {
   localStorage.setItem(storageKey(), JSON.stringify(map));
+}
+
+/** Persist unlocks; if storage is full, drop sighting photos oldest-first then retry. */
+function writeAllResilient(map: Record<string, UnlockRecord>): void {
+  try {
+    writeAll(map);
+    return;
+  } catch (err) {
+    if (!isQuotaError(err)) throw err;
+  }
+
+  const withPhotos = Object.values(map)
+    .filter((r) => r.photoDataUrl)
+    .sort((a, b) => a.unlockedAt.localeCompare(b.unlockedAt));
+
+  for (const rec of withPhotos) {
+    rec.photoDataUrl = null;
+    try {
+      writeAll(map);
+      window.dispatchEvent(new CustomEvent("seen:unlocks"));
+      return;
+    } catch (err) {
+      if (!isQuotaError(err)) throw err;
+    }
+  }
+
+  // Last resort: write without any photos (already stripped) still failed — rethrow.
+  writeAll(map);
 }
 
 function makeShareId(itemId: string): string {
@@ -112,7 +146,13 @@ export function unlockItem(
       dirty = true;
     }
     if (dirty) {
-      writeAll(map);
+      try {
+        writeAllResilient(map);
+      } catch {
+        // Photo too large even after stripping others — keep unlock, drop new photo.
+        map[itemId].photoDataUrl = undefined;
+        writeAllResilient(map);
+      }
       window.dispatchEvent(new CustomEvent("seen:unlocks"));
     }
     return map[itemId];
@@ -127,7 +167,12 @@ export function unlockItem(
     unlockedBy: email,
   };
   map[itemId] = rec;
-  writeAll(map);
+  try {
+    writeAllResilient(map);
+  } catch {
+    rec.photoDataUrl = null;
+    writeAllResilient(map);
+  }
   window.dispatchEvent(new CustomEvent("seen:unlocks"));
   return rec;
 }
@@ -136,7 +181,7 @@ export function updateUnlockNote(itemId: string, note: string): UnlockRecord | n
   const map = readAll();
   if (!map[itemId]) return null;
   map[itemId].note = note;
-  writeAll(map);
+  writeAllResilient(map);
   window.dispatchEvent(new CustomEvent("seen:unlocks"));
   return map[itemId];
 }
@@ -148,7 +193,12 @@ export function updateUnlockPhoto(
   const map = readAll();
   if (!map[itemId]) return null;
   map[itemId].photoDataUrl = photoDataUrl;
-  writeAll(map);
+  try {
+    writeAllResilient(map);
+  } catch {
+    map[itemId].photoDataUrl = null;
+    writeAllResilient(map);
+  }
   window.dispatchEvent(new CustomEvent("seen:unlocks"));
   return map[itemId];
 }
