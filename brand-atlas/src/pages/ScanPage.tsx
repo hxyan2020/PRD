@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CelebrateModal } from "../components/CelebrateModal";
 import { useCatalog } from "../hooks/useCatalog";
@@ -20,12 +20,14 @@ export function ScanPage() {
   const [busy, setBusy] = useState(false);
   const [confirmBusy, setConfirmBusy] = useState(false);
   const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
   const [phase, setPhase] = useState("");
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<IdentifyResult | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
   const [celebrating, setCelebrating] = useState<CatalogItem | null>(null);
   const [cameraOn, setCameraOn] = useState(false);
+  const [cameraStarting, setCameraStarting] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -43,30 +45,62 @@ export function ScanPage() {
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
     setCameraOn(false);
+    setCameraStarting(false);
   };
 
+  // Attach the stream after <video> mounts — rAF in startCamera often ran too early.
+  useEffect(() => {
+    if (!cameraOn) return;
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    if (!video || !stream) return;
+    video.srcObject = stream;
+    video.muted = true;
+    video.setAttribute("playsinline", "true");
+    void video.play().catch(() => {
+      /* autoplay can be blocked; Capture still works once frames arrive */
+    });
+  }, [cameraOn]);
+
+  useEffect(
+    () => () => {
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    },
+    [],
+  );
+
   const startCamera = async () => {
+    if (
+      typeof navigator === "undefined" ||
+      !navigator.mediaDevices?.getUserMedia
+    ) {
+      setCameraError(t("scan.cameraBlocked"));
+      return;
+    }
+    setCameraError(null);
+    setCameraStarting(true);
     try {
       stopCamera();
+      setCameraStarting(true);
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
+        video: {
+          facingMode: { ideal: "environment" },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
         audio: false,
       });
       streamRef.current = stream;
       setCameraOn(true);
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          void videoRef.current.play();
-        }
-      });
+      setCameraStarting(false);
     } catch {
-      setResult({
-        status: "unclear",
-        message:
-          "Camera access was blocked. Upload an image instead, or allow camera permission and retry.",
-      });
+      stopCamera();
+      setCameraError(t("scan.cameraBlocked"));
     }
   };
 
@@ -78,14 +112,20 @@ export function ScanPage() {
     setPreviewUrl(URL.createObjectURL(f));
     setResult(null);
     setPicked(null);
+    setCameraError(null);
   };
 
   const captureFromCamera = () => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !streamRef.current) return;
+    if (!video.videoWidth || !video.videoHeight) {
+      setCameraError(t("scan.cameraNotReady"));
+      return;
+    }
+    setCameraError(null);
     const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.drawImage(video, 0, 0);
@@ -94,7 +134,6 @@ export function ScanPage() {
         if (!blob) return;
         const f = new File([blob], "capture.jpg", { type: "image/jpeg" });
         onFile(f);
-        stopCamera();
       },
       "image/jpeg",
       0.92,
@@ -214,60 +253,108 @@ export function ScanPage() {
 
       <div className="scan-panel">
         <div>
-          <div className={`dropzone ${(previewUrl || cameraOn) ? "has-media" : ""}`}>
-            {cameraOn && <video ref={videoRef} playsInline muted autoPlay />}
-            {!cameraOn && previewUrl && <img src={previewUrl} alt="" />}
-            <div className="dropzone__hint">
-              <strong>{t("scan.dropHint")}</strong>
-              <p className="muted">{t("scan.dropSub")}</p>
-            </div>
-          </div>
-
-          <div className="cta-row" style={{ marginTop: "0.9rem" }}>
-            <button type="button" className="btn btn--forest" onClick={() => fileRef.current?.click()}>
-              {t("scan.upload")}
-            </button>
-            <button
-              type="button"
-              className="btn btn--quiet"
-              onClick={() => (cameraOn ? stopCamera() : void startCamera())}
-            >
-              {cameraOn ? t("scan.stopCamera") : t("scan.camera")}
-            </button>
+          <div
+            className={`dropzone ${(previewUrl || cameraOn) ? "has-media" : ""}${cameraOn ? " dropzone--camera" : ""}`}
+          >
             {cameraOn && (
-              <button type="button" className="btn btn--primary" onClick={captureFromCamera}>
-                {t("scan.capture")}
-              </button>
+              <video
+                ref={videoRef}
+                className="dropzone__video"
+                playsInline
+                muted
+                autoPlay
+              />
             )}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              hidden
-              onChange={(e) => onFile(e.target.files?.[0] ?? null)}
-            />
+            {!cameraOn && previewUrl && <img src={previewUrl} alt="" />}
+            {!cameraOn && !previewUrl && (
+              <div className="dropzone__hint">
+                <strong>{t("scan.dropHint")}</strong>
+                <p className="muted">{t("scan.dropSub")}</p>
+              </div>
+            )}
+            {cameraOn && cameraStarting && (
+              <div className="dropzone__hint">
+                <strong>{t("scan.cameraStarting")}</strong>
+              </div>
+            )}
           </div>
 
-          {file && (
-            <button
-              type="button"
-              className="btn btn--primary"
-              style={{ marginTop: "0.9rem", width: "100%" }}
-              disabled={busy || !catalog}
-              onClick={() => void runIdentify()}
-            >
-              {busy ? t("scan.scanning") : t("scan.identify")}
-            </button>
+          {cameraError && (
+            <div className="banner banner--warn" style={{ marginTop: "0.75rem" }}>
+              {cameraError}
+            </div>
           )}
 
-          {file && busy && (
-            <div>
-              <p className="muted">{phase}</p>
-              <div className="progress-bar" aria-hidden>
-                <span style={{ width: `${Math.round(progress * 100)}%` }} />
-              </div>
+          {cameraOn ? (
+            <div className="cta-row cta-row--camera" style={{ marginTop: "0.9rem" }}>
+              <button
+                type="button"
+                className="btn btn--quiet"
+                onClick={() => {
+                  stopCamera();
+                  setCameraError(null);
+                }}
+              >
+                {t("scan.cancel")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--primary"
+                disabled={cameraStarting}
+                onClick={captureFromCamera}
+              >
+                {t("scan.capture")}
+              </button>
             </div>
+          ) : (
+            <>
+              <div className="cta-row" style={{ marginTop: "0.9rem" }}>
+                <button
+                  type="button"
+                  className="btn btn--forest"
+                  onClick={() => fileRef.current?.click()}
+                >
+                  {t("scan.upload")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--quiet"
+                  disabled={cameraStarting}
+                  onClick={() => void startCamera()}
+                >
+                  {cameraStarting ? t("scan.cameraStarting") : t("scan.camera")}
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  hidden
+                  onChange={(e) => onFile(e.target.files?.[0] ?? null)}
+                />
+              </div>
+
+              {file && (
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  style={{ marginTop: "0.9rem", width: "100%" }}
+                  disabled={busy || !catalog}
+                  onClick={() => void runIdentify()}
+                >
+                  {busy ? t("scan.scanning") : t("scan.identify")}
+                </button>
+              )}
+
+              {file && busy && (
+                <div>
+                  <p className="muted">{phase}</p>
+                  <div className="progress-bar" aria-hidden>
+                    <span style={{ width: `${Math.round(progress * 100)}%` }} />
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 

@@ -58,7 +58,11 @@ export type MessageKey =
   | "scan.upload"
   | "scan.camera"
   | "scan.stopCamera"
+  | "scan.cancel"
   | "scan.capture"
+  | "scan.cameraStarting"
+  | "scan.cameraBlocked"
+  | "scan.cameraNotReady"
   | "scan.categoriesHint"
   | "scan.allCategories"
   | "scan.dropHint"
@@ -279,7 +283,11 @@ const en: Pack = {
   "scan.upload": "Upload image",
   "scan.camera": "Use camera",
   "scan.stopCamera": "Stop camera",
+  "scan.cancel": "Cancel",
   "scan.capture": "Capture",
+  "scan.cameraStarting": "Starting camera…",
+  "scan.cameraBlocked": "Camera access was blocked. Upload an image instead, or allow camera permission and retry.",
+  "scan.cameraNotReady": "Camera is still starting — tap Capture again in a moment.",
   "scan.categoriesHint": "Categories (optional — leave empty to search all)",
   "scan.allCategories": "All categories",
   "scan.dropHint": "Drop an image, upload, or use the camera",
