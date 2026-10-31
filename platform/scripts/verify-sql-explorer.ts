@@ -49,6 +49,40 @@ assert.match(board, /wasmBinary/);
 const prepare = fs.readFileSync(path.join(root, "scripts/prepare-demo-db.sh"), "utf8");
 assert.match(prepare, /sql-wasm-browser\.wasm/);
 
+const spine = fs.readFileSync(path.join(root, "src/lib/demo/forex-pack-spine.ts"), "utf8");
+assert.match(spine, /ensureForexPackSimulationSpine/);
+assert.match(spine, /AIA-INC-1028|analysis_id/);
+
+// Boot spine must leave SQL samples non-empty for desk modules.
+const { ensureForexPackSimulationSpine } = require("../src/lib/demo/forex-pack-spine") as typeof import("../src/lib/demo/forex-pack-spine");
+ensureForexPackSimulationSpine(db);
+assert.ok(
+  (db.prepare(`SELECT COUNT(*) AS c FROM risk_log_daily`).get() as { c: number }).c >= 30,
+  "risk_log_daily seeded"
+);
+assert.ok(
+  (db.prepare(`SELECT COUNT(*) AS c FROM detector_runs`).get() as { c: number }).c >= 100,
+  "detector_runs seeded"
+);
+assert.ok(
+  (db.prepare(`SELECT COUNT(*) AS c FROM ai_analyses WHERE analysis_id = ?`).get("AIA-INC-1028") as { c: number })
+    .c >= 1,
+  "AIA-INC-1028 present"
+);
+assert.ok(
+  (db.prepare(`SELECT COUNT(*) AS c FROM messenger_threads WHERE thread_id = ?`).get("THR-INC-1028") as {
+    c: number;
+  }).c >= 1,
+  "THR-INC-1028 present"
+);
+
+for (const sample of SAMPLE_QUERIES) {
+  const result = runReadOnlySql(sample.sql, db);
+  if (sample.id === "risk-log" || sample.id === "detector-runs" || sample.id === "inc-1028") {
+    assert.ok(result.rowCount > 0, `${sample.id} should return rows after spine seed`);
+  }
+}
+
 const home = fs.readFileSync(path.join(root, "src/app/admin/page.tsx"), "utf8");
 assert.match(home, /HomeDeskFlowStrip/);
 assert.doesNotMatch(home, /HomeL1L2AggregationDemo/);

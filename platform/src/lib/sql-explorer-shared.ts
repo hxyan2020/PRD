@@ -129,6 +129,39 @@ FROM risk_discovery_candidates
 ORDER BY created_at DESC;`,
   },
   {
+    id: "detector-runs",
+    en: "Detector run history (Discovery spine)",
+    "zh-Hant": "偵測器執行歷史（探索脊柱）",
+    sql: `SELECT d.code, d.monitor_id, r.observed_value, r.status, r.severity, r.created_at
+FROM detector_runs r
+JOIN detectors d ON d.id = r.detector_id
+ORDER BY r.id DESC
+LIMIT 80;`,
+  },
+  {
+    id: "l2-chains",
+    en: "L2 scenario chains (aggregation)",
+    "zh-Hant": "L2 情境鏈（聚合）",
+    sql: `SELECT code, name, product, domain, severity, status, sequence_json, linked_skills_json
+FROM risk_scenario_chains
+ORDER BY code
+LIMIT 40;`,
+  },
+  {
+    id: "inc-1028",
+    en: "INC-1028 pack (alert + RCA + thread)",
+    "zh-Hant": "INC-1028 組合（警報＋RCA＋執行緒）",
+    sql: `SELECT a.alert_id, a.title, a.status AS alert_status,
+       an.analysis_id, an.confidence, an.status AS rca_status,
+       t.thread_id, t.title AS thread_title
+FROM monitor_alerts a
+LEFT JOIN ai_analyses an ON an.alert_id = a.id
+LEFT JOIN messenger_threads t ON t.alert_id = a.id
+WHERE a.alert_id = 'ALT-INC-1028'
+   OR an.analysis_id = 'AIA-INC-1028'
+   OR t.thread_id = 'THR-INC-1028';`,
+  },
+  {
     id: "risk-log",
     en: "90-day risk log daily",
     "zh-Hant": "90 日風險日誌彙總",

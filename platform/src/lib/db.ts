@@ -1173,6 +1173,11 @@ function runEnsureAiLayer(db: Database.Database) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { ensureForexPackDeskSeed } = require("@/lib/demo/forex-pack-seed") as typeof import("@/lib/demo/forex-pack-seed");
   ensureForexPackDeskSeed(db);
+  // Detector history + risk_log_daily + AIA/THR-INC-1028 + aggregation demos for SQL / modules.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { ensureForexPackSimulationSpine } =
+    require("@/lib/demo/forex-pack-spine") as typeof import("@/lib/demo/forex-pack-spine");
+  ensureForexPackSimulationSpine(db);
   // Lazy require — severity-feedback imports db helpers.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { ensureSeverityFeedbackSchema, seedSeverityFeedbackIfEmpty } =
