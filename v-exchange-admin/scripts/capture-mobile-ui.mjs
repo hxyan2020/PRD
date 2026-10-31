@@ -31,9 +31,9 @@ async function main() {
   await openMenu(page);
   await shot(page, 'mobile-drawer-menu.png');
 
-  await page.getByRole('menuitem', { name: 'Price Manage' }).click();
+  await page.getByRole('menuitem', { name: '价格管理' }).click();
   await page.waitForTimeout(250);
-  await page.getByRole('menuitem', { name: 'Market Source' }).click();
+  await page.getByRole('menuitem', { name: '行情源' }).click();
   await page.waitForTimeout(500);
   await shot(page, 'mobile-market-source.png');
 

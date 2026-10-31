@@ -38,7 +38,7 @@ export function CoinIntroducePage() {
   ];
 
   return (
-    <AdminPageShell title="合约币种概览配置" titleTag="Coin Introduce">
+    <AdminPageShell title="合约币种概览配置" titleTag="币种介绍">
       <Form layout="inline" style={{ marginBottom: 16 }}>
         <Form.Item label="合约名称">
           <Select placeholder="请选择" style={{ width: 160 }} allowClear />

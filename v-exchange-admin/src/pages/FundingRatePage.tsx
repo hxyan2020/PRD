@@ -63,7 +63,7 @@ export function FundingRatePage() {
   ];
 
   return (
-    <AdminPageShell title="Funding Rate">
+    <AdminPageShell title="资金费率">
       <Form layout="inline" style={{ marginBottom: 16 }}>
         <Form.Item label="合约名称">
           <Select allowClear style={{ width: 140 }} />

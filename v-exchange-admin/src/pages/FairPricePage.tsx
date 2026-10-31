@@ -46,7 +46,7 @@ export function FairPricePage() {
   ];
 
   return (
-    <AdminPageShell title="Fair Price">
+    <AdminPageShell title="合理价格">
       <Form layout="inline" style={{ marginBottom: 16 }}>
         <Form.Item label="合约名称">
           <Input placeholder="请输入" style={{ width: 140 }} />
