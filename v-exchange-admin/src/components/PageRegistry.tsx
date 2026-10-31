@@ -18,6 +18,7 @@ import { PlaceholderPage } from '../pages/PlaceholderPage';
 import { PositionListPage } from '../pages/PositionListPage';
 import { RiskFundDetailPage } from '../pages/RiskFundDetailPage';
 import { RiskFundListPage } from '../pages/RiskFundListPage';
+import { SpreadAlertMonitorPage } from '../pages/SpreadAlertMonitorPage';
 import { TradeAmountFactorPage } from '../pages/TradeAmountFactorPage';
 
 export function renderPage(key: PageKey) {
@@ -56,6 +57,8 @@ export function renderPage(key: PageKey) {
       return <RiskFundDetailPage />;
     case 'open-close-limit':
       return <OpenCloseLimitPage />;
+    case 'spread-alert-monitor':
+      return <SpreadAlertMonitorPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
