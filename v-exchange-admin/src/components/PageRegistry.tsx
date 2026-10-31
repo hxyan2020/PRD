@@ -6,6 +6,7 @@ import { ContractListPage } from '../pages/ContractListPage';
 import { DbAccountAlertPage } from '../pages/DbAccountAlertPage';
 import { DbTakeoverAccountPage } from '../pages/DbTakeoverAccountPage';
 import { DepthMonitorPage } from '../pages/DepthMonitorPage';
+import { ExternalFundingRateMonitorPage } from '../pages/ExternalFundingRateMonitorPage';
 import { FairPricePage } from '../pages/FairPricePage';
 import { FundingRateModifyPage } from '../pages/FundingRateModifyPage';
 import { FundingRatePage } from '../pages/FundingRatePage';
@@ -68,6 +69,8 @@ export function renderPage(key: PageKey) {
       return <DepthMonitorPage />;
     case 'competitor-spread-monitor':
       return <CompetitorSpreadMonitorPage />;
+    case 'external-funding-rate-monitor':
+      return <ExternalFundingRateMonitorPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
