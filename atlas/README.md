@@ -22,10 +22,14 @@ Open the printed local URL (default `http://localhost:5173`).
 
 **https://hxyan2020.github.io/PRD/ludus-atlas/**
 
-Publish an update to GitHub Pages:
+Use that full path. The repo root `https://hxyan2020.github.io/PRD/` hosts **MatchingManagement** (a different product). Opening `/PRD/` or `/PRD/overview` is not Ludus Atlas.
+
+Publish an update to GitHub Pages (writes only the `ludus-atlas/` folder on `gh-pages`, leaving sibling apps intact):
 
 ```bash
-npm run deploy:pages
+npm run deploy:pages:keep-data   # keep current collection.json
+# or
+npm run deploy:pages             # regenerate data then deploy
 ```
 
 ## Build
