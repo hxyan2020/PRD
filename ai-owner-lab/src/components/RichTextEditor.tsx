@@ -290,9 +290,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   // skip writing into an empty contentEditable and the editor stays blank.
   const lastHtml = useRef<string | null>(null)
   const placeholderId = useId()
-  // Track emptiness from the live DOM so the placeholder hides on the first
-  // keystroke / IME composition — not only after the parent `value` round-trip.
-  const [empty, setEmpty] = useState(() => !hasVisibleContent(value))
+  const placeholderRef = useRef<HTMLDivElement | null>(null)
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
   const [imageProgress, setImageProgress] = useState<number | null>(null)
@@ -301,13 +299,18 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const [tableRows, setTableRows] = useState(3)
   const [tableCols, setTableCols] = useState(3)
 
-  function refreshEmptyFromDom() {
+  /** Toggle placeholder with an inline style on a ref — React className re-renders
+   *  were putting `is-empty` back while the controlled `value` still lagged. */
+  function syncPlaceholderVisibility() {
     const el = editorRef.current
-    if (!el) {
-      setEmpty(!hasVisibleContent(value))
-      return
+    const ph = placeholderRef.current
+    if (!ph) return
+    const isEmpty = el ? !hasVisibleContent(el.innerHTML) : !hasVisibleContent(value)
+    ph.style.display = isEmpty ? 'block' : 'none'
+    if (el) {
+      if (isEmpty) el.setAttribute('aria-describedby', placeholderId)
+      else el.removeAttribute('aria-describedby')
     }
-    setEmpty(!hasVisibleContent(el.innerHTML))
   }
 
   useImperativeHandle(
@@ -334,6 +337,15 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     const el = editorRef.current
     if (!el) return
 
+    const focused = document.activeElement === el
+
+    // While focused, never rewrite from props — a lagging empty `value` was
+    // wiping keystrokes and bringing the placeholder back.
+    if (focused && lastHtml.current !== null) {
+      syncPlaceholderVisibility()
+      return
+    }
+
     const domEmpty = !el.innerHTML.trim()
     const needsInitialSync = lastHtml.current === null || (domEmpty && Boolean(value))
 
@@ -341,14 +353,12 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     // differs cosmetically from browser innerHTML (table rows, <br>, attrs).
     // Rewriting innerHTML here resets the caret to the start — skip that.
     if (!needsInitialSync && value === lastHtml.current) {
-      if (document.activeElement !== el) {
-        highlightCodeBlocksInElement(el)
-      }
+      if (!focused) highlightCodeBlocksInElement(el)
+      syncPlaceholderVisibility()
       return
     }
 
     // First mount, or external value change (clear composer, load another draft).
-    const focused = document.activeElement === el
     const caret = focused ? getCaretTextOffset(el) : 0
     el.innerHTML = value || ''
     lastHtml.current = value
@@ -358,8 +368,8 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     } else {
       highlightCodeBlocksInElement(el)
     }
-    setEmpty(!hasVisibleContent(value))
-  }, [value])
+    syncPlaceholderVisibility()
+  }, [value, placeholderId])
 
   useEffect(() => {
     if (!autoFocus) return
@@ -402,7 +412,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   function emitChange() {
     const el = editorRef.current
     if (!el) return
-    refreshEmptyFromDom()
+    syncPlaceholderVisibility()
     const html = sanitizeHtml(el.innerHTML)
     if (html === lastHtml.current) return
     lastHtml.current = html
@@ -828,11 +838,14 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           })()
         }}
       >
-        {empty ? (
-          <div className="rte-placeholder" id={placeholderId} aria-hidden="true">
-            {placeholder}
-          </div>
-        ) : null}
+        <div
+          ref={placeholderRef}
+          className="rte-placeholder"
+          id={placeholderId}
+          aria-hidden="true"
+        >
+          {placeholder}
+        </div>
         <div
           ref={editorRef}
           className="rte-editor"
@@ -841,23 +854,24 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           role="textbox"
           aria-multiline="true"
           aria-label={ariaLabel || placeholder}
-          aria-describedby={empty ? placeholderId : undefined}
           suppressContentEditableWarning
           onFocus={() => {
             prepareCodeForEditing()
             captureSelection()
-            refreshEmptyFromDom()
+            syncPlaceholderVisibility()
           }}
           onCompositionStart={() => {
-            // Hide placeholder as soon as an IME session begins (CJK input).
-            setEmpty(false)
+            if (placeholderRef.current) placeholderRef.current.style.display = 'none'
           }}
           onCompositionEnd={() => {
             captureSelection()
             emitChange()
           }}
+          onBeforeInput={() => {
+            if (placeholderRef.current) placeholderRef.current.style.display = 'none'
+          }}
           onInput={() => {
-            refreshEmptyFromDom()
+            syncPlaceholderVisibility()
             captureSelection()
             emitChange()
           }}
@@ -867,15 +881,14 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           }}
           onKeyUp={captureSelection}
           onKeyDown={(e) => {
-            // Hide placeholder on the first printable key before `input` fires.
             if (
-              empty &&
               !e.ctrlKey &&
               !e.metaKey &&
               !e.altKey &&
-              e.key.length === 1
+              e.key.length === 1 &&
+              placeholderRef.current
             ) {
-              setEmpty(false)
+              placeholderRef.current.style.display = 'none'
             }
             if (e.key === 'Enter' && selectionInsideCode(editorRef.current)) {
               e.preventDefault()
