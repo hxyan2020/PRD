@@ -24,14 +24,13 @@ const worktree = join("/tmp", `ludus-atlas-gh-pages-${process.pid}`);
 const target = join(worktree, "ludus-atlas");
 const permanentUrl = "https://hxyan2020.github.io/PRD/ludus-atlas/";
 
-/** Sibling paths that must survive this deploy (MatchingManagement owns `/`). */
-const PROTECTED_SIBLINGS = [
-  "index.html",
-  "assets",
-  "crmp-admin",
-  "venture-scan",
-  "risk-discovery",
-];
+/**
+ * Root MatchingManagement SPA must remain. Other sibling folders are optional —
+ * MatchingManagement orphan deploys sometimes wipe them; we still restore
+ * ludus-atlas/ alongside whatever is left.
+ */
+const REQUIRED_ROOT = ["index.html", "assets"];
+const OPTIONAL_SIBLINGS = ["crmp-admin", "venture-scan", "risk-discovery"];
 
 function run(cmd, args, cwd = root, env = process.env) {
   const res = spawnSync(cmd, args, {
@@ -45,18 +44,22 @@ function run(cmd, args, cwd = root, env = process.env) {
   }
 }
 
-function assertSiblingsIntact() {
-  const missing = PROTECTED_SIBLINGS.filter(
-    (rel) => !existsSync(join(worktree, rel)),
-  );
+function assertRootSpaIntact() {
+  const missing = REQUIRED_ROOT.filter((rel) => !existsSync(join(worktree, rel)));
   if (missing.length) {
     throw new Error(
-      `Refusing to push: protected gh-pages siblings missing (${missing.join(", ")}). ` +
-        "MatchingManagement (or another app) may have wiped the branch — restore siblings first.",
+      `Refusing to push: MatchingManagement root missing (${missing.join(", ")}).`,
+    );
+  }
+  const gone = OPTIONAL_SIBLINGS.filter((rel) => !existsSync(join(worktree, rel)));
+  if (gone.length) {
+    console.warn(
+      `Note: optional sibling Pages folders missing (${gone.join(", ")}); ` +
+        "continuing with ludus-atlas restore only.",
     );
   }
   const rootHtml = readFileSync(join(worktree, "index.html"), "utf8");
-  if (/Ludus Atlas/i.test(rootHtml) && !/MatchingManagement/i.test(rootHtml)) {
+  if (!/MatchingManagement/i.test(rootHtml)) {
     console.warn(
       "Warning: root index.html does not look like MatchingManagement; leaving it untouched.",
     );
@@ -80,7 +83,7 @@ run(
 );
 
 // Only replace ludus-atlas/ — never delete MatchingManagement at repo root.
-assertSiblingsIntact();
+assertRootSpaIntact();
 
 rmSync(target, { recursive: true, force: true });
 mkdirSync(target, { recursive: true });
@@ -93,7 +96,7 @@ writeFileSync(
   `# Published path (not a DNS CNAME): ${permanentUrl}\n`,
 );
 
-assertSiblingsIntact();
+assertRootSpaIntact();
 if (!existsSync(join(target, "index.html"))) {
   throw new Error("ludus-atlas/index.html missing after copy");
 }
