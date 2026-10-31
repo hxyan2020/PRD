@@ -2026,7 +2026,8 @@ img {
 .celebrate {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  /* Above sticky header (40) and mobile nav backdrop (45). */
+  z-index: 80;
   display: grid;
   place-items: center;
   padding: 1.2rem;

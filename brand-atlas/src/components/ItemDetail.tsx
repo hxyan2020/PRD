@@ -5,6 +5,7 @@ import { coverGradient } from "../lib/catalog";
 import { identifyImage } from "../lib/identify";
 import { coverUrl, markUrl } from "../lib/marks";
 import { isNatureCategory } from "../lib/nature";
+import { fileToSightingDataUrl } from "../lib/sightingPhoto";
 import {
   formatPct,
   formatUtc,
@@ -114,18 +115,14 @@ export function ItemDetail({
 
   const onPhotoFile = (file: File | null) => {
     if (!file || !onSavePhoto) return;
-    const reader = new FileReader();
-    reader.onload = () => onSavePhoto(String(reader.result));
-    reader.readAsDataURL(file);
+    void (async () => {
+      try {
+        onSavePhoto(await fileToSightingDataUrl(file));
+      } catch {
+        /* ignore encode failures */
+      }
+    })();
   };
-
-  const fileToDataUrl = (f: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(f);
-    });
 
   const processSighting = async (file: File) => {
     if (!isLoggedIn) return;
@@ -161,7 +158,7 @@ export function ItemDetail({
         );
         return;
       }
-      const dataUrl = await fileToDataUrl(file);
+      const dataUrl = await fileToSightingDataUrl(file);
       onUnlockFromSighting(dataUrl);
     } catch (e) {
       setScanError(

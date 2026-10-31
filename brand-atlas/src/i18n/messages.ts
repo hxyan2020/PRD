@@ -52,6 +52,9 @@ export type MessageKey =
   | "scan.identify"
   | "scan.scanning"
   | "scan.confirm"
+  | "scan.confirming"
+  | "scan.confirmMissing"
+  | "scan.confirmFailed"
   | "scan.upload"
   | "scan.camera"
   | "scan.stopCamera"
@@ -270,6 +273,9 @@ const en: Pack = {
   "scan.identify": "Identify with AI",
   "scan.scanning": "Scanning…",
   "scan.confirm": "Confirm selection",
+  "scan.confirming": "Unlocking…",
+  "scan.confirmMissing": "That pick is no longer in the catalogue. Try another guess.",
+  "scan.confirmFailed": "Could not save this unlock. Free some browser storage and try again.",
   "scan.upload": "Upload image",
   "scan.camera": "Use camera",
   "scan.stopCamera": "Stop camera",
