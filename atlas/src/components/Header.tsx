@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useJournal } from "../hooks/useJournal";
 import { useAuth } from "../hooks/useAuth";
 import { LanguageSwitcher, useI18n } from "../i18n";
+import { BrandMark } from "./BrandMark";
 
 export function Header() {
   const { counts } = useJournal();
@@ -35,14 +36,7 @@ export function Header() {
     <header className={`site-header${menuOpen ? " is-open" : ""}`}>
       <div className="inner">
         <NavLink to="/" className="brand" end>
-          <img
-            className="brand-mark"
-            src={`${import.meta.env.BASE_URL}logo-cat.png`}
-            alt=""
-            width={36}
-            height={36}
-            aria-hidden="true"
-          />
+          <BrandMark className="brand-mark" size={36} />
           <span className="brand-wordmark">
             <span>Ludus</span>
             <span>Atlas</span>
