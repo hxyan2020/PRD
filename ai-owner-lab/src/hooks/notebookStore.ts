@@ -697,7 +697,8 @@ async function pullCloudIfConfigured() {
   if (cloudPullInFlight) return cloudPullInFlight
   cloudPullInFlight = (async () => {
     try {
-      setCloudRuntime({ state: 'syncing', error: null })
+      // "pulling" ≠ saving — idle refresh was mislabeled "Saving to cloud…".
+      setCloudRuntime({ state: 'pulling', error: null })
       if (isAccountSyncReady()) {
         const latest = await pullAccountBackup()
         if (latest) {
@@ -786,7 +787,7 @@ let cloudPushInFlight: Promise<void> | null = null
 /** Set when a write happens while a cloud push is in flight — flush must run again. */
 let cloudPushDirty = false
 
-export type CloudRuntimeState = 'off' | 'syncing' | 'synced' | 'error'
+export type CloudRuntimeState = 'off' | 'pulling' | 'syncing' | 'synced' | 'error'
 
 type CloudRuntime = {
   state: CloudRuntimeState
@@ -863,9 +864,14 @@ function scheduleFolderBackup() {
   }, 1200)
 }
 
+/** Stay under Vercel’s ~4.5MB body comfort zone; only compact when needed. */
+const COMPACT_IMAGES_MIN_JSON_CHARS = 2_500_000
+
 /**
  * Offload large inline data:image payloads to Blob before cloud push so the
  * notebook JSON does not trip HTTP 413 (Vercel ~4.5MB body limit).
+ * Skip when the notebook is still small — re-uploading every sub‑1MB paste
+ * made “Saving to cloud…” hang after each picture.
  */
 async function compactInlineImagesForCloud(): Promise<void> {
   if (!isAccountSyncReady()) return
@@ -873,6 +879,8 @@ async function compactInlineImagesForCloud(): Promise<void> {
     !cache.trash.some((e) => (e.selectedText || '').includes('data:image'))) {
     return
   }
+  const approxChars = buildBackupJson().length
+  if (approxChars < COMPACT_IMAGES_MIN_JSON_CHARS) return
 
   let changed = false
   const nextEntries: NotebookEntry[] = []
@@ -963,9 +971,14 @@ async function flushCloudSync() {
         }
         if (cloudPushDirty) continue
 
-        // Wait for optimistic picture uploads so we never push blob: preview URLs.
+        // Wait briefly for optimistic picture uploads so we never push blob: previews.
         try {
-          await awaitPendingNoteImageUploads()
+          await Promise.race([
+            awaitPendingNoteImageUploads(),
+            new Promise<void>((resolve) => {
+              window.setTimeout(resolve, 20_000)
+            }),
+          ])
         } catch {
           /* individual insert handlers already surfaced errors */
         }

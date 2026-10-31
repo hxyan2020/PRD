@@ -571,9 +571,9 @@ export function Notebook() {
               type="button"
               className={`notebook-cloud-pill notebook-cloud-pill-btn${
                 cloudState === 'error' ? ' err' : ''
-              }${cloudState === 'syncing' ? ' syncing' : ''}`}
+              }${cloudState === 'syncing' || cloudState === 'pulling' ? ' syncing' : ''}`}
               title={t('authSyncTap')}
-              disabled={cloudState === 'syncing'}
+              disabled={cloudState === 'syncing' || cloudState === 'pulling'}
               onClick={() => {
                 void notebookStore.syncDurableNow().catch(() => {
                   /* runtime pill shows the error */
@@ -582,9 +582,11 @@ export function Notebook() {
             >
               {cloudState === 'syncing'
                 ? t('cloudSyncing')
-                : cloudState === 'error'
-                  ? t('cloudSyncError', { error: cloudError || 'error' })
-                  : t('authSyncOn', { user: authUser || '' })}
+                : cloudState === 'pulling'
+                  ? t('cloudPulling')
+                  : cloudState === 'error'
+                    ? t('cloudSyncError', { error: cloudError || 'error' })
+                    : t('authSyncOn', { user: authUser || '' })}
             </button>
           </div>
         ) : (
