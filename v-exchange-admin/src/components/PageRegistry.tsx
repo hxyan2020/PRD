@@ -12,6 +12,7 @@ import { IndexPricePage } from '../pages/IndexPricePage';
 import { KLineManagePage } from '../pages/KLineManagePage';
 import { MarketSourcePage } from '../pages/MarketSourcePage';
 import { MarketTradeLimitPage } from '../pages/MarketTradeLimitPage';
+import { NoTradeMonitorPage } from '../pages/NoTradeMonitorPage';
 import { OpenCloseLimitPage } from '../pages/OpenCloseLimitPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { PlaceholderPage } from '../pages/PlaceholderPage';
@@ -59,6 +60,8 @@ export function renderPage(key: PageKey) {
       return <OpenCloseLimitPage />;
     case 'spread-alert-monitor':
       return <SpreadAlertMonitorPage />;
+    case 'no-trade-monitor':
+      return <NoTradeMonitorPage />;
     case 'db-takeover-account':
       return <DbTakeoverAccountPage />;
     case 'db-account-alert':
