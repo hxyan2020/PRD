@@ -1,0 +1,56 @@
+name: Deploy OWNLAB
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref that contains ai-owner-lab (branch or SHA)'
+        required: true
+        default: 'cursor/ownlab-table-code-90e3'
+  push:
+    branches:
+      - cursor/ownlab-table-code-90e3
+      - cursor/ai-product-owner-academy-90e3
+    paths:
+      - 'ai-owner-lab/**'
+      - '.github/workflows/deploy-ownlab.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-ownlab
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout OWNLAB sources
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: ai-owner-lab/package-lock.json
+
+      - name: Install and build
+        working-directory: ai-owner-lab
+        run: |
+          npm ci
+          npm run build
+          # SPA fallback for non-hash paths under /ownlab/
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+
+      - name: Publish OWNLAB to gh-pages/ownlab (keep sibling apps)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ai-owner-lab/dist
+          destination_dir: ownlab
+          publish_branch: gh-pages
+          keep_files: true
