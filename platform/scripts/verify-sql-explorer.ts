@@ -42,6 +42,13 @@ assert.doesNotMatch(nav, /href: "\/admin\/noise-reduction"/);
 const page = fs.readFileSync(path.join(root, "src/app/admin/docs/simulated-data/page.tsx"), "utf8");
 assert.match(page, /SimulatedDataBoard/);
 
+const board = fs.readFileSync(path.join(root, "src/components/SimulatedDataBoard.tsx"), "utf8");
+assert.match(board, /sql-wasm-browser\.wasm/);
+assert.match(board, /wasmBinary/);
+
+const prepare = fs.readFileSync(path.join(root, "scripts/prepare-demo-db.sh"), "utf8");
+assert.match(prepare, /sql-wasm-browser\.wasm/);
+
 const home = fs.readFileSync(path.join(root, "src/app/admin/page.tsx"), "utf8");
 assert.match(home, /HomeDeskFlowStrip/);
 assert.doesNotMatch(home, /HomeL1L2AggregationDemo/);

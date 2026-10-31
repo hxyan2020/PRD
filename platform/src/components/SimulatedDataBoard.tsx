@@ -35,7 +35,32 @@ function demoDbUrl() {
 
 function wasmLocate(file: string) {
   const base = publicBasePath();
+  // sql.js package "browser" export requests sql-wasm-browser.wasm; default asks for sql-wasm.wasm.
   return `${base}/sql-wasm/${file}`;
+}
+
+/** Prefetch WASM ourselves so sql.js never falls back to a broken relative URL. */
+async function fetchWasmBinary(zh: boolean): Promise<Uint8Array> {
+  const candidates = ["sql-wasm-browser.wasm", "sql-wasm.wasm"];
+  const errors: string[] = [];
+  for (const name of candidates) {
+    const url = wasmLocate(name);
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        errors.push(`${url} → HTTP ${res.status}`);
+        continue;
+      }
+      return new Uint8Array(await res.arrayBuffer());
+    } catch (err) {
+      errors.push(`${url} → ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+  throw new Error(
+    zh
+      ? `無法載入 sql.js WASM（${errors.join("; ") || "unknown"}）`
+      : `Failed to load sql.js WASM (${errors.join("; ") || "unknown"})`
+  );
 }
 
 function runOnSqlJs(db: SqlJsDatabase, rawSql: string): SqlQueryResult {
@@ -134,7 +159,10 @@ export function SimulatedDataBoard() {
 
   const loadSqlJs = useCallback(async () => {
     const initSqlJs = (await import("sql.js")).default;
-    const SQL = await initSqlJs({ locateFile: wasmLocate });
+    // Pass wasmBinary so the browser build does not fetch sql-wasm-browser.wasm via a relative path
+    // that 404s when only sql-wasm.wasm was published (classic Pages failure mode).
+    const wasmBinary = await fetchWasmBinary(zh);
+    const SQL = await initSqlJs({ wasmBinary, locateFile: wasmLocate });
     const buf = await fetch(demoDbUrl()).then((r) => {
       if (!r.ok) throw new Error(zh ? "找不到示範資料庫快照" : "Demo database snapshot missing");
       return r.arrayBuffer();

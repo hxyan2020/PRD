@@ -23,9 +23,12 @@ if command -v sqlite3 >/dev/null 2>&1; then
 fi
 
 cp -f data/vantage_risk.db public/data/vantage_risk.demo.db
-# sql.js browser WASM + glue used by SimulatedDataBoard
+# sql.js browser export requests sql-wasm-browser.wasm; node/default asks for sql-wasm.wasm.
+# Ship both names (same binary) so locateFile never 404s on GitHub Pages.
 cp -f node_modules/sql.js/dist/sql-wasm.wasm public/sql-wasm/sql-wasm.wasm
+cp -f node_modules/sql.js/dist/sql-wasm-browser.wasm public/sql-wasm/sql-wasm-browser.wasm
 cp -f node_modules/sql.js/dist/sql-wasm.js public/sql-wasm/sql-wasm.js
+cp -f node_modules/sql.js/dist/sql-wasm-browser.js public/sql-wasm/sql-wasm-browser.js
 
-ls -lh public/data/vantage_risk.demo.db public/sql-wasm/sql-wasm.wasm
+ls -lh public/data/vantage_risk.demo.db public/sql-wasm/sql-wasm.wasm public/sql-wasm/sql-wasm-browser.wasm
 echo "Demo DB + sql.js WASM ready under public/"
