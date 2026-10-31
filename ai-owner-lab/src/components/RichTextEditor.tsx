@@ -290,6 +290,9 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   // skip writing into an empty contentEditable and the editor stays blank.
   const lastHtml = useRef<string | null>(null)
   const placeholderId = useId()
+  // Track emptiness from the live DOM so the placeholder hides on the first
+  // keystroke / IME composition — not only after the parent `value` round-trip.
+  const [empty, setEmpty] = useState(() => !hasVisibleContent(value))
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageBusy, setImageBusy] = useState(false)
   const [imageProgress, setImageProgress] = useState<number | null>(null)
@@ -297,6 +300,15 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
   const [tableCols, setTableCols] = useState(3)
+
+  function refreshEmptyFromDom() {
+    const el = editorRef.current
+    if (!el) {
+      setEmpty(!hasVisibleContent(value))
+      return
+    }
+    setEmpty(!hasVisibleContent(el.innerHTML))
+  }
 
   useImperativeHandle(
     ref,
@@ -346,6 +358,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     } else {
       highlightCodeBlocksInElement(el)
     }
+    setEmpty(!hasVisibleContent(value))
   }, [value])
 
   useEffect(() => {
@@ -389,6 +402,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   function emitChange() {
     const el = editorRef.current
     if (!el) return
+    refreshEmptyFromDom()
     const html = sanitizeHtml(el.innerHTML)
     if (html === lastHtml.current) return
     lastHtml.current = html
@@ -466,8 +480,6 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     }
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
-
-  const empty = !hasVisibleContent(value)
 
   return (
     <div className="rte">
@@ -834,8 +846,18 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           onFocus={() => {
             prepareCodeForEditing()
             captureSelection()
+            refreshEmptyFromDom()
+          }}
+          onCompositionStart={() => {
+            // Hide placeholder as soon as an IME session begins (CJK input).
+            setEmpty(false)
+          }}
+          onCompositionEnd={() => {
+            captureSelection()
+            emitChange()
           }}
           onInput={() => {
+            refreshEmptyFromDom()
             captureSelection()
             emitChange()
           }}
@@ -845,6 +867,16 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           }}
           onKeyUp={captureSelection}
           onKeyDown={(e) => {
+            // Hide placeholder on the first printable key before `input` fires.
+            if (
+              empty &&
+              !e.ctrlKey &&
+              !e.metaKey &&
+              !e.altKey &&
+              e.key.length === 1
+            ) {
+              setEmpty(false)
+            }
             if (e.key === 'Enter' && selectionInsideCode(editorRef.current)) {
               e.preventDefault()
               // Keep newlines inside code blocks instead of splitting the <pre>.
