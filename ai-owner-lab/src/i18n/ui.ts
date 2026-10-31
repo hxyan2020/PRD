@@ -540,7 +540,7 @@ const zh: Record<UiKey, string> = {
   navUseCases: '用例',
   navOps: '运维手册',
   navCareer: '职业',
-  footer: 'OWNLAB · 选中文字可保存或问 AI · 登录后可在各设备间同步笔记'
+  footer: 'OWNLAB · 选中文字可保存或问 AI · 登录后可在各设备间同步笔记',
   langEn: 'EN',
   langZh: '中文',
   startDay1: '开始第 1 天',
