@@ -9,6 +9,7 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { MonitorCode } from "@/components/MonitorCode";
 import { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";
+import { LlmProviderPicker } from "@/components/LlmProviderPicker";
 
 type DiscoverySuggestion = {
   assessment: string;
@@ -655,27 +656,18 @@ export function DiscoverySuggestionBoard({
               <div className="flex flex-wrap gap-2 items-center">
                 {initial.roles.can_operate || initial.roles.can_review ? (
                   <>
-                    <label className="text-xs text-[var(--muted)] flex items-center gap-1.5">
-                      <EnZh en="LLM" zh="LLM" />
-                      <select
-                        className="rounded-md border border-[var(--line)] px-2 py-1.5 text-xs bg-white"
+                    <div data-testid="discovery-llm-provider">
+                      <LlmProviderPicker
+                        providers={aiStatus.providers || []}
                         value={selectedProvider}
-                        onChange={(e) => setSelectedProvider(e.target.value)}
-                        data-testid="discovery-llm-provider"
-                      >
-                        {(aiStatus.providers || [
-                          { id: "openai", label: "ChatGPT (OpenAI)", configured: false, default_model: "", env_key: "" },
-                          { id: "deepseek", label: "DeepSeek", configured: false, default_model: "", env_key: "" },
-                          { id: "gemini", label: "Gemini", configured: false, default_model: "", env_key: "" },
-                          { id: "claude", label: "Claude", configured: false, default_model: "", env_key: "" },
-                        ]).map((p) => (
-                          <option key={p.id} value={p.id} disabled={!p.configured && !aiStatus.key_configured}>
-                            {p.label}
-                            {p.configured ? "" : " (no key)"}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                        disabled={!!busy}
+                        testId="discovery-llm-provider-picker"
+                        onChanged={(provider) => {
+                          setSelectedProvider(provider);
+                          setAiStatus((prev) => ({ ...prev, provider }));
+                        }}
+                      />
+                    </div>
                     <button
                       type="button"
                       className="btn btn-primary !min-h-10 text-xs"

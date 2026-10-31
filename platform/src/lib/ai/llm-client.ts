@@ -63,25 +63,39 @@ export function listLlmProviders(): LlmProviderInfo[] {
   });
 }
 
+const PROVIDER_ALIASES: Record<string, LlmProviderId> = {
+  openai: "openai",
+  chatgpt: "openai",
+  gpt: "openai",
+  deepseek: "deepseek",
+  gemini: "gemini",
+  google: "gemini",
+  claude: "claude",
+  anthropic: "claude",
+};
+
+function parseProviderId(raw: string): LlmProviderId | null {
+  return PROVIDER_ALIASES[raw.trim().toLowerCase()] || null;
+}
+
+/**
+ * Resolve which LLM backend to use.
+ * Explicit / env-selected providers never silently fall back to another vendor —
+ * ChatGPT, DeepSeek, Gemini, and Claude are distinct selectable backends.
+ */
 export function resolveLlmProvider(explicit?: string | null): LlmProviderId | null {
-  const raw = (explicit || process.env.CRMP_LLM_PROVIDER || process.env.CRMP_AI_PROVIDER || "")
-    .trim()
-    .toLowerCase();
-  const alias: Record<string, LlmProviderId> = {
-    openai: "openai",
-    chatgpt: "openai",
-    gpt: "openai",
-    deepseek: "deepseek",
-    gemini: "gemini",
-    google: "gemini",
-    claude: "claude",
-    anthropic: "claude",
-  };
-  if (raw && alias[raw]) {
-    const id = alias[raw];
-    if (readKey(PROVIDERS[id].envKey)) return id;
+  if (explicit != null && String(explicit).trim()) {
+    const id = parseProviderId(String(explicit));
+    if (!id) return null;
+    return readKey(PROVIDERS[id].envKey) ? id : null;
   }
-  // Prefer explicitly ordered fallbacks when provider unset.
+  const fromEnv = (process.env.CRMP_LLM_PROVIDER || process.env.CRMP_AI_PROVIDER || "").trim();
+  if (fromEnv) {
+    const id = parseProviderId(fromEnv);
+    if (!id) return null;
+    return readKey(PROVIDERS[id].envKey) ? id : null;
+  }
+  // Auto-pick first configured provider when none selected.
   const order: LlmProviderId[] = ["openai", "deepseek", "claude", "gemini"];
   for (const id of order) {
     if (readKey(PROVIDERS[id].envKey)) return id;
@@ -346,5 +360,31 @@ export function setRuntimeLlmProvider(provider: string | null) {
     delete process.env.CRMP_LLM_PROVIDER;
     return;
   }
-  process.env.CRMP_LLM_PROVIDER = provider;
+  const id = parseProviderId(provider);
+  process.env.CRMP_LLM_PROVIDER = id || provider;
+}
+
+/**
+ * Select ChatGPT / DeepSeek / Gemini / Claude for all analysis paths.
+ * Returns the resolved provider id or throws if the key is missing / unknown.
+ */
+export function selectLlmProvider(provider: string): LlmProviderId {
+  const id = parseProviderId(provider);
+  if (!id) {
+    throw new Error(`Unknown LLM provider "${provider}". Use openai, deepseek, gemini, or claude.`);
+  }
+  if (!readKey(PROVIDERS[id].envKey)) {
+    throw new Error(
+      `${PROVIDERS[id].label} selected but ${PROVIDERS[id].envKey} is not configured on the server.`
+    );
+  }
+  setRuntimeLlmProvider(id);
+  return id;
+}
+
+export function persistLlmProviderSetting(
+  provider: LlmProviderId,
+  upsert: (key: string, value: string, description: string) => void
+) {
+  upsert("ai.llm.provider", provider, "Active LLM backend: openai|deepseek|gemini|claude");
 }

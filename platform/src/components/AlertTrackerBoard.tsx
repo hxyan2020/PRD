@@ -19,6 +19,7 @@ import {
 } from "@/lib/alert-filters";
 import type { AlertTrackerPack, TrackerEvent, TrackerGate, TrackerPerson } from "@/lib/alert-tracker";
 import { AiImprovementPanel } from "@/components/AiImprovementPanel";
+import { LlmProviderPicker } from "@/components/LlmProviderPicker";
 
 function gateClass(code: TrackerGate["code"]) {
   switch (code) {
@@ -548,6 +549,9 @@ export function AlertTrackerBoard({
   const { t } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [activeProvider, setActiveProvider] = useState(llmProvider);
+  const [activeModel, setActiveModel] = useState(llmModel);
+  const [activeEnabled, setActiveEnabled] = useState(llmEnabled);
   const [hash, setHash] = useState("");
   const [filters, setFilters] = useState<AlertFilterState>({
     ...DEFAULT_ALERT_FILTERS,
@@ -646,17 +650,17 @@ export function AlertTrackerBoard({
   return (
     <div className="space-y-4">
       <div
-        className={`panel p-3 text-sm ${
-          llmEnabled
+        className={`panel p-3 text-sm space-y-2 ${
+          activeEnabled
             ? "border-teal-200 bg-teal-50/70 text-teal-950"
             : "border-amber-200 bg-amber-50/80 text-amber-950"
         }`}
         data-testid="ai-llm-status"
       >
-        {llmEnabled ? (
+        {activeEnabled ? (
           <EnZh
-            en={`Real AI ON (${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}) — Analyze open / Simulate / detectors call the live LLM and write a thinking trail on each RCA.`}
-            zh={`真實 AI 已開啟（${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}）—「分析未結」／模擬／偵測器會呼叫即時 LLM，並在每次 RCA 寫入思考軌跡。`}
+            en={`Real AI ON (${activeProvider || "auto"}${activeModel ? ` / ${activeModel}` : ""}) — ChatGPT, DeepSeek, Gemini, or Claude. Analyze open / Simulate / detectors call the selected LLM.`}
+            zh={`真實 AI 已開啟（${activeProvider || "auto"}${activeModel ? ` / ${activeModel}` : ""}）— 可選 ChatGPT／DeepSeek／Gemini／Claude。「分析未結」／模擬／偵測器會呼叫所選 LLM。`}
           />
         ) : (
           <EnZh
@@ -664,6 +668,19 @@ export function AlertTrackerBoard({
             zh={`真實 AI 關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 ChatGPT／DeepSeek／Gemini／Claude 金鑰"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰後才會呼叫真實 AI。`}
           />
         )}
+        {canOperateAi ? (
+          <LlmProviderPicker
+            providers={llmProviders}
+            value={activeProvider}
+            disabled={busy}
+            onChanged={(provider, meta) => {
+              setActiveProvider(provider);
+              setActiveModel(meta.model ?? null);
+              setActiveEnabled(meta.enabled ?? true);
+              setMsg(`LLM → ${provider}${meta.model ? ` / ${meta.model}` : ""}`);
+            }}
+          />
+        ) : null}
       </div>
       {canOperateAi ? (
         <div className="panel p-4" data-testid="ai-pipeline-controls">

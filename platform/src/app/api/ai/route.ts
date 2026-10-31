@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { getDb, writeAudit } from "@/lib/db";
 import { analyzeAlert, analyzeOpenAlerts, createAlarmAndAnalyze, getAnalysisBundle } from "@/lib/ai/analyze";
 import {
   assertLiveLlmAvailableForAnalysis,
@@ -11,7 +11,13 @@ import {
 import { backfillChallenges } from "@/lib/ai/challenger";
 import { runDummyAlertDemo } from "@/lib/ai/dummy-spine";
 import { getUiLocale } from "@/lib/i18n-server";
-import { getLlmStatus, llmEnrichmentEnabled, openaiKeyConfigured } from "@/lib/ai/openai-client";
+import {
+  getLlmStatus,
+  llmEnrichmentEnabled,
+  openaiKeyConfigured,
+  persistLlmProviderSetting,
+  selectLlmProvider,
+} from "@/lib/ai/openai-client";
 
 function llmMeta() {
   const status = getLlmStatus();
@@ -66,6 +72,30 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const body = await req.json();
+
+  if (body.action === "set_llm_provider") {
+    try {
+      const provider = selectLlmProvider(String(body.provider || ""));
+      persistLlmProviderSetting(provider, (key, value, description) => {
+        getDb()
+          .prepare(
+            `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+             ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`
+          )
+          .run(key, value, description);
+      });
+      writeAudit(user, "SET_LLM_PROVIDER", "platform_settings", "ai.llm.provider", {
+        provider,
+        model: getLlmStatus().model,
+      });
+      return NextResponse.json({ ok: true, ...llmMeta() });
+    } catch (e) {
+      return NextResponse.json(
+        { error: e instanceof Error ? e.message : "Failed to set LLM provider", ...llmMeta() },
+        { status: 400 }
+      );
+    }
+  }
 
   if (body.action === "analyze_alert") {
     const blocked = refuseIfLlmRequired();

@@ -22,7 +22,9 @@ import {
   listLlmProviders,
   llmEnrichmentEnabled,
   openaiKeyConfigured,
+  persistLlmProviderSetting,
   resolveLlmProvider,
+  selectLlmProvider,
   setRuntimeLlmProvider,
   type LlmProviderId,
 } from "@/lib/ai/openai-client";
@@ -104,7 +106,7 @@ export function enableDiscoveryOpenAi(model = defaultOpenAiModel(), provider?: s
       "No LLM API key configured. Set server-side OPENAI_API_KEY, DEEPSEEK_API_KEY, GEMINI_API_KEY, or ANTHROPIC_API_KEY (never paste keys into the browser). Until then use Mock mode."
     );
   }
-  const resolved = resolveLlmProvider(provider);
+  const resolved = provider ? selectLlmProvider(provider) : resolveLlmProvider();
   if (!resolved) {
     throw new Error(
       "Selected LLM provider has no API key. Configure OPENAI / DEEPSEEK / GEMINI / ANTHROPIC secrets, or pick a configured provider."
@@ -132,10 +134,12 @@ export function disableDiscoveryOpenAi() {
 function persistProviderSetting(provider: LlmProviderId) {
   try {
     const db = getDb();
-    db.prepare(
-      `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
-       ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`
-    ).run("ai.llm.provider", provider, "Active LLM backend: openai|deepseek|gemini|claude");
+    persistLlmProviderSetting(provider, (key, value, description) => {
+      db.prepare(
+        `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+         ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`
+      ).run(key, value, description);
+    });
   } catch {
     /* db may be unavailable in unit scripts before getDb */
   }

@@ -19,7 +19,7 @@ assert.match(board, /Ask for more info|要求更多資訊/);
 assert.match(board, /Disconnect \/ Mock|中斷／Mock/);
 assert.match(board, /Connect LLM|Connect OpenAI/);
 assert.match(board, /discovery-llm-provider/);
-assert.match(board, /DeepSeek|Gemini|Claude/);
+assert.match(board, /LlmProviderPicker|DeepSeek|Gemini|Claude/);
 assert.match(board, /discovery-suggestion-card/);
 assert.match(board, /RISK_DISCOVERY_NOTEBOOK/);
 assert.match(board, /discovery-notebook-colab/);

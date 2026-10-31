@@ -148,6 +148,7 @@ async function main() {
     openaiKeyConfigured,
     listLlmProviders,
     setRuntimeLlmProvider,
+    resolveLlmProvider,
     chatCompletionJson,
   } = await import("../src/lib/ai/openai-client");
 
@@ -228,45 +229,43 @@ async function main() {
   assert.ok((suggestion.thinking_steps || []).length >= 1);
   assert.ok(openaiCalls > discBefore, "Discovery Analyse must call LLM when LIVE");
 
-  // Provider routing smoke — DeepSeek / Gemini / Claude
-  setRuntimeLlmProvider("deepseek");
-  const dsBefore = deepseekCalls;
-  const ds = await chatCompletionJson({
-    system: "You are a test harness.",
-    user: JSON.stringify({ ping: true }),
-    max_tokens: 200,
-    provider: "deepseek",
-  });
-  assert.equal(ds.ok, true);
-  assert.equal(ds.provider, "deepseek");
-  assert.ok(deepseekCalls > dsBefore);
+  // Full RCA enrich through each selectable LLM (ChatGPT / DeepSeek / Gemini / Claude)
+  const { selectLlmProvider } = await import("../src/lib/ai/openai-client");
+  for (const provider of ["openai", "deepseek", "gemini", "claude"] as const) {
+    selectLlmProvider(provider);
+    const beforeCalls =
+      provider === "openai"
+        ? openaiCalls
+        : provider === "deepseek"
+          ? deepseekCalls
+          : provider === "gemini"
+            ? geminiCalls
+            : claudeCalls;
+    const run = await maybeEnrichAnalysisWithLlm(analysis!.id);
+    assert.equal(run.enriched, true, `${provider} must enrich RCA`);
+    assert.equal(run.provider, provider, `${provider} must stick (no silent fallback)`);
+    const afterCalls =
+      provider === "openai"
+        ? openaiCalls
+        : provider === "deepseek"
+          ? deepseekCalls
+          : provider === "gemini"
+            ? geminiCalls
+            : claudeCalls;
+    assert.ok(afterCalls > beforeCalls, `${provider} HTTP API must be invoked`);
+  }
 
-  setRuntimeLlmProvider("gemini");
-  const gemBefore = geminiCalls;
-  const gem = await chatCompletionJson({
-    system: "You are a test harness.",
-    user: JSON.stringify({ ping: true }),
-    max_tokens: 200,
-    provider: "gemini",
-  });
-  assert.equal(gem.ok, true);
-  assert.equal(gem.provider, "gemini");
-  assert.ok(geminiCalls > gemBefore);
-
-  setRuntimeLlmProvider("claude");
-  const clBefore = claudeCalls;
-  const cl = await chatCompletionJson({
-    system: "You are a test harness.",
-    user: JSON.stringify({ ping: true }),
-    max_tokens: 200,
-    provider: "claude",
-  });
-  assert.equal(cl.ok, true);
-  assert.equal(cl.provider, "claude");
-  assert.ok(claudeCalls > clBefore);
-
+  // Explicit DeepSeek selection must not fall back to OpenAI when DeepSeek key exists
+  selectLlmProvider("deepseek");
+  assert.equal(resolveLlmProvider(), "deepseek");
+  enableDiscoveryOpenAi(undefined, "chatgpt");
+  assert.equal(getDiscoveryAiStatus().provider, "openai", "chatgpt alias → openai");
   enableDiscoveryOpenAi(undefined, "deepseek");
   assert.equal(getDiscoveryAiStatus().provider, "deepseek");
+  enableDiscoveryOpenAi(undefined, "gemini");
+  assert.equal(getDiscoveryAiStatus().provider, "gemini");
+  enableDiscoveryOpenAi(undefined, "claude");
+  assert.equal(getDiscoveryAiStatus().provider, "claude");
 
   const evidence = getDb()
     .prepare(
