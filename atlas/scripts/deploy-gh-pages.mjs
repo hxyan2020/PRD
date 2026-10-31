@@ -1,8 +1,19 @@
 /**
- * Builds Ludus Atlas for GitHub Pages and publishes to origin/gh-pages under /ludus-atlas/.
+ * Builds Ludus Atlas for GitHub Pages and publishes under /ludus-atlas/ only.
  * Permanent URL: https://hxyan2020.github.io/PRD/ludus-atlas/
+ *
+ * IMPORTANT: This repo’s gh-pages root hosts MatchingManagement and other sibling
+ * apps (crmp-admin, venture-scan, …). Never orphan-replace the whole branch —
+ * only add/update the `ludus-atlas/` folder so siblings stay live.
  */
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -13,6 +24,15 @@ const worktree = join("/tmp", `ludus-atlas-gh-pages-${process.pid}`);
 const target = join(worktree, "ludus-atlas");
 const permanentUrl = "https://hxyan2020.github.io/PRD/ludus-atlas/";
 
+/** Sibling paths that must survive this deploy (MatchingManagement owns `/`). */
+const PROTECTED_SIBLINGS = [
+  "index.html",
+  "assets",
+  "crmp-admin",
+  "venture-scan",
+  "risk-discovery",
+];
+
 function run(cmd, args, cwd = root, env = process.env) {
   const res = spawnSync(cmd, args, {
     cwd,
@@ -22,6 +42,24 @@ function run(cmd, args, cwd = root, env = process.env) {
   });
   if (res.status !== 0) {
     throw new Error(`${cmd} ${args.join(" ")} failed (${res.status})`);
+  }
+}
+
+function assertSiblingsIntact() {
+  const missing = PROTECTED_SIBLINGS.filter(
+    (rel) => !existsSync(join(worktree, rel)),
+  );
+  if (missing.length) {
+    throw new Error(
+      `Refusing to push: protected gh-pages siblings missing (${missing.join(", ")}). ` +
+        "MatchingManagement (or another app) may have wiped the branch — restore siblings first.",
+    );
+  }
+  const rootHtml = readFileSync(join(worktree, "index.html"), "utf8");
+  if (/Ludus Atlas/i.test(rootHtml) && !/MatchingManagement/i.test(rootHtml)) {
+    console.warn(
+      "Warning: root index.html does not look like MatchingManagement; leaving it untouched.",
+    );
   }
 }
 
@@ -41,6 +79,9 @@ run(
   repoRoot,
 );
 
+// Only replace ludus-atlas/ — never delete MatchingManagement at repo root.
+assertSiblingsIntact();
+
 rmSync(target, { recursive: true, force: true });
 mkdirSync(target, { recursive: true });
 cpSync(dist, target, { recursive: true });
@@ -52,6 +93,11 @@ writeFileSync(
   `# Published path (not a DNS CNAME): ${permanentUrl}\n`,
 );
 
+assertSiblingsIntact();
+if (!existsSync(join(target, "index.html"))) {
+  throw new Error("ludus-atlas/index.html missing after copy");
+}
+
 run("git", ["add", "ludus-atlas"], worktree);
 const status = spawnSync("git", ["status", "--porcelain"], {
   cwd: worktree,
@@ -60,12 +106,28 @@ const status = spawnSync("git", ["status", "--porcelain"], {
 if (!status.stdout.trim()) {
   console.log("No changes to publish.");
 } else {
+  // Guard: staged paths must stay under ludus-atlas/
+  const staged = spawnSync("git", ["diff", "--cached", "--name-only"], {
+    cwd: worktree,
+    encoding: "utf8",
+  });
+  const bad = (staged.stdout || "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .filter((p) => !p.startsWith("ludus-atlas/"));
+  if (bad.length) {
+    throw new Error(
+      `Refusing to commit non-ludus-atlas paths: ${bad.slice(0, 8).join(", ")}`,
+    );
+  }
+
   run(
     "git",
     [
       "commit",
       "-m",
-      "Deploy Ludus Atlas to GitHub Pages (/ludus-atlas)",
+      "Restore Ludus Atlas on GitHub Pages (/ludus-atlas)",
     ],
     worktree,
   );
@@ -91,3 +153,6 @@ if (!status.stdout.trim()) {
 
 run("git", ["worktree", "remove", "--force", worktree], repoRoot);
 console.log("Live permanent link:", permanentUrl);
+console.log(
+  "Note: https://hxyan2020.github.io/PRD/ is MatchingManagement — Ludus Atlas lives only under /ludus-atlas/.",
+);
