@@ -3,6 +3,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { ArchivedBriefingsPage, BriefingArchive } from './components/BriefingArchive'
 import { HealthDashboard } from './components/HealthDashboard'
 import { RulesPanel } from './components/RulesPanel'
+import { RiskCopilotPage } from './copilot/components/RiskCopilotPage'
 import { useLocale } from './i18n/locale'
 import type { AppLang } from './i18n/messages'
 import { useMonitor } from './hooks/useMonitor'
@@ -47,6 +48,7 @@ export default function App() {
         <NavLink to="/health">{t('navHealth')}</NavLink>
         <NavLink to="/rules">{t('navRules')}</NavLink>
         <NavLink to="/archive">{t('navArchive')}</NavLink>
+        <NavLink to="/copilot">{t('navCopilot')}</NavLink>
       </nav>
 
       <Routes>
@@ -88,6 +90,7 @@ export default function App() {
             />
           }
         />
+        <Route path="/copilot" element={<RiskCopilotPage />} />
         <Route path="/briefings" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

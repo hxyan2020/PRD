@@ -1,0 +1,22 @@
+[
+  {
+    "title": "业务范围",
+    "body": "V Exchange MVP：XAUUSD 永续合约，USD 计价结算；USDT/USDC 入金按 1:1 记 USD。Kraken 主价格源，Binance/Bybit/OKX 备源；友商对比还涉及 Bitget。生产实现及公式需核实。"
+  },
+  {
+    "title": "安全与权限",
+    "body": "L1/L2 同步聚合使用确定性规则与只读 SQL/MCP；AI 异步生成根因报告和优化建议。AI 不得直接执行生产下单、划转、改价、改保证金、强平、ADL 或结算。P0 立即升级。"
+  },
+  {
+    "title": "根因分析规范",
+    "body": "明确区分：已证实事实、候选根因、待验证假设。优先查时间戳、对象 ID、原始指标、上下游依赖、变更记录、业务影响。给出谁查什么、何时、分叉、升级、收口及 Preferred Action。"
+  },
+  {
+    "title": "XAUUSD 源监控简报",
+    "body": "价格异动简报区分「原因」（新闻/宏观）与「观察」（bps/基差/场所结构）。多源 Alert≥3 或 2 交易所+1 LP，或综合价 5 分钟≥35bps 才触发。红=立刻处理，黄=排查升高，绿=常见观察。归档简报可在本机 localStorage key xauusd-monitor-briefings-v8 读取并作为本 Copilot 事故输入。"
+  },
+  {
+    "title": "指数与 Mark",
+    "body": "Index 依赖多源加权；坏源剔除/恢复有观察期。Mark 相对 Index 偏离超阈值进入观察或降级。强平与 ADL 依赖 Mark；错误强平按 P0。"
+  }
+]

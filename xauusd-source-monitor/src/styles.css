@@ -1466,3 +1466,114 @@ td.mono,
     font-size: 1.25rem;
   }
 }
+
+/* Risk Copilot */
+.copilot-page .copilot-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 18px;
+}
+.copilot-page .copilot-tabs button {
+  border: 1px solid var(--line);
+  background: rgba(255, 252, 246, 0.7);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.copilot-page .copilot-tabs button.active {
+  background: var(--ink);
+  color: #faf7f0;
+  border-color: var(--ink);
+}
+.copilot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.copilot-page .field-label {
+  display: block;
+  margin: 12px 0 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.copilot-page input[type='text'],
+.copilot-page input:not([type]),
+.copilot-page input[type='password'],
+.copilot-page textarea,
+.copilot-page select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fffdf8;
+  font: inherit;
+}
+.copilot-preview {
+  max-width: 100%;
+  max-height: 220px;
+  border-radius: 10px;
+  margin-top: 8px;
+  border: 1px solid var(--line);
+}
+.copilot-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.copilot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.copilot-report {
+  white-space: pre-wrap;
+  background: #f7f2e8;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  line-height: 1.55;
+  max-height: 520px;
+  overflow: auto;
+  font-family: inherit;
+  font-size: 0.92rem;
+}
+.briefing-pick-list {
+  max-height: 160px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  margin-bottom: 8px;
+  background: #fffdf8;
+}
+.briefing-pick {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 0.88rem;
+  margin: 6px 0;
+}
+.item-block {
+  border-top: 1px solid var(--line);
+  padding: 12px 0;
+}
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.copilot-history-mini {
+  margin-top: 8px;
+}
+@media (max-width: 900px) {
+  .copilot-grid,
+  .copilot-row {
+    grid-template-columns: 1fr;
+  }
+}
