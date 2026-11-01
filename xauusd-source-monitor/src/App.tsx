@@ -42,15 +42,16 @@ export default function App() {
 
       <nav className="nav">
         <NavLink to="/" end>
-          {t('navHealth')}
+          {t('navBriefings')}
         </NavLink>
+        <NavLink to="/health">{t('navHealth')}</NavLink>
         <NavLink to="/rules">{t('navRules')}</NavLink>
-        <NavLink to="/briefings">{t('navBriefings')}</NavLink>
       </nav>
 
       <Routes>
+        <Route path="/" element={<BriefingArchive briefings={mon.briefings} />} />
         <Route
-          path="/"
+          path="/health"
           element={
             <HealthDashboard
               health={mon.health}
@@ -72,7 +73,7 @@ export default function App() {
           }
         />
         <Route path="/rules" element={<RulesPanel rules={mon.rules} setRules={mon.setRules} />} />
-        <Route path="/briefings" element={<BriefingArchive briefings={mon.briefings} />} />
+        <Route path="/briefings" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
