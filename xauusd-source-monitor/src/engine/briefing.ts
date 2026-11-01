@@ -47,6 +47,103 @@ function techNote(history: { t: number; px: number }[], composite: number, lang:
   return `Local ${window.length}-tick window: ${ret >= 0 ? '+' : ''}${ret.toFixed(3)}%, range ${rangeBps.toFixed(1)} bps; last ${last.toFixed(2)} vs window high ${max.toFixed(2)} / low ${min.toFixed(2)}.`
 }
 
+type BriefingCause =
+  | { kind: 'known'; en: string; zh: string }
+  | { kind: 'undeclared' }
+
+/**
+ * Name a concrete cause when checks support one; otherwise mark undeclared so
+ * the title states that investigation found no clear driver for the move.
+ */
+function inferBriefingCause(args: {
+  severity: BriefingSeverity
+  breached: SourceHealth[]
+  exch: SourceHealth[]
+  lps: SourceHealth[]
+  move: number
+  basis: number | null
+  firedAt: number
+}): BriefingCause {
+  const { severity, breached, exch, lps, move, basis, firedAt } = args
+  const hour = new Date(firedAt).getUTCHours()
+
+  // Isolated LP soft vs a couple of exchanges — common inventory skew.
+  if (severity === 'watch' && lps.length >= 1 && exch.length <= 2 && breached.length <= 3) {
+    return {
+      kind: 'known',
+      en: 'LP soft vs exchanges (common)',
+      zh: 'LP 相對交易所偏弱（常見誘因）',
+    }
+  }
+
+  // Wide crypto–spot basis is a concrete structural driver.
+  if (basis != null && Math.abs(basis) > 40) {
+    return {
+      kind: 'known',
+      en: 'wide crypto–spot basis',
+      zh: '加密相對現貨基差偏寬',
+    }
+  }
+
+  // London cash open with moderate composite move — known session pattern.
+  if (hour >= 7 && hour < 9 && Math.abs(move) < 40 && severity === 'alert') {
+    return {
+      kind: 'known',
+      en: 'London open dislocation',
+      zh: '倫敦開盤錯位',
+    }
+  }
+
+  // No named macro/session/basis driver after the usual checks.
+  return { kind: 'undeclared' }
+}
+
+function titleForCause(args: {
+  lang: AppLang
+  severity: BriefingSeverity
+  breachedCount: number
+  cause: BriefingCause
+}): string {
+  const { lang, severity, breachedCount, cause } = args
+  const undeclared =
+    cause.kind === 'undeclared'
+      ? lang === 'zh-Hant'
+        ? '排查後未發現造成異常變動的明確原因'
+        : 'no clear cause found after checks'
+      : null
+  const known = cause.kind === 'known' ? (lang === 'zh-Hant' ? cause.zh : cause.en) : null
+
+  if (lang === 'zh-Hant') {
+    if (severity === 'critical') {
+      return undeclared
+        ? `【紅】突發衝擊 — ${breachedCount} 源越界；${undeclared}`
+        : `【紅】突發衝擊 — ${breachedCount} 源越界；${known}`
+    }
+    if (severity === 'alert') {
+      return undeclared
+        ? `【黃】多源錯位升高 — ${undeclared}`
+        : `【黃】多源錯位升高 — ${known}`
+    }
+    return undeclared
+      ? `【綠】跨層級觀察 — ${undeclared}`
+      : `【綠】常見誘因 — ${known}`
+  }
+
+  if (severity === 'critical') {
+    return undeclared
+      ? `[RED] Sudden stress — ${breachedCount} sources breached; ${undeclared}`
+      : `[RED] Sudden stress — ${breachedCount} sources breached; ${known}`
+  }
+  if (severity === 'alert') {
+    return undeclared
+      ? `[YELLOW] Elevated multi-source dislocation — ${undeclared}`
+      : `[YELLOW] Elevated multi-source dislocation — ${known}`
+  }
+  return undeclared
+    ? `[GREEN] Cross-tier watch — ${undeclared}`
+    : `[GREEN] Common catalyst — ${known}`
+}
+
 export async function generateBriefing(args: {
   trigger: TriggerEvent
   health: SourceHealth[]
@@ -68,22 +165,29 @@ export async function generateBriefing(args: {
     spot != null && Number.isFinite(spot) ? ((composite - spot) / spot) * 10_000 : null
   const session = sessionBucket(new Date(trigger.firedAt), lang)
   const severity: BriefingSeverity = trigger.severity
-
-  const title =
-    lang === 'zh-Hant'
-      ? severity === 'critical'
-        ? `【紅】突發衝擊 — ${breached.length} 源越界，需立刻處理`
-        : severity === 'alert'
-          ? `【黃】多源錯位升高 — 請排查指數輸入`
-          : `【綠】常見誘因 — 跨層級觀察，無特殊風險點`
-      : severity === 'critical'
-        ? `[RED] Sudden stress — ${breached.length} sources breached; handle now`
-        : severity === 'alert'
-          ? `[YELLOW] Elevated multi-source dislocation — investigate index inputs`
-          : `[GREEN] Common catalyst — cross-tier watch, no special risk`
+  const cause = inferBriefingCause({
+    severity,
+    breached,
+    exch,
+    lps,
+    move,
+    basis,
+    firedAt: trigger.firedAt,
+  })
+  const title = titleForCause({
+    lang,
+    severity,
+    breachedCount: breached.length,
+    cause,
+  })
 
   const why: string[] = []
   if (lang === 'zh-Hant') {
+    why.push(
+      cause.kind === 'undeclared'
+        ? `原因判定：已對照時段、基差與跨場所結構後，仍未發現造成此次異常變動的明確外部催化 — 標題已標註「排查後未發現明確原因」。`
+        : `原因判定：${cause.zh}（已寫入標題）。`,
+    )
     why.push(`觸發：${trigger.reason}。時段背景：${session}（UTC）。`)
     why.push(
       `綜合中位數 ${composite.toFixed(2)}；5 分鐘綜合變動 ${move >= 0 ? '+' : ''}${move.toFixed(1)} bps；越界源平均 |偏離| ${avgDev.toFixed(1)} bps（${directionWord(move, lang)}）。`,
@@ -119,6 +223,11 @@ export async function generateBriefing(args: {
       '請點開下方「可驗證來源」中的單篇新聞與即時 API/合約頁核對催化劑（非官網首頁）。',
     )
   } else {
+    why.push(
+      cause.kind === 'undeclared'
+        ? `Cause call: after session, basis, and cross-venue structure checks, no clear external catalyst for this abnormal move — title states “no clear cause found after checks”.`
+        : `Cause call: ${cause.en} (stated in the title).`,
+    )
     why.push(`Trigger: ${trigger.reason}. Session context: ${session} (UTC).`)
     why.push(
       `Composite median ${composite.toFixed(2)}; 5m composite move ${move >= 0 ? '+' : ''}${move.toFixed(1)} bps; average |deviation| of breached sources ${avgDev.toFixed(1)} bps (${directionWord(move, lang)}).`,
@@ -191,7 +300,7 @@ export async function generateBriefing(args: {
   }
 }
 
-const STORAGE_KEY = 'xauusd-monitor-briefings-v6'
+const STORAGE_KEY = 'xauusd-monitor-briefings-v7'
 
 function seedCitations(lang: AppLang) {
   // Full deep-link catalog (APIs, instrument pages, single articles) — not landing pages.
@@ -291,14 +400,16 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 2 * 3600_000,
       severity: 'critical',
       lang: 'en',
-      title: '[RED] Flash multi-venue break — index inputs diverged hard',
+      title:
+        '[RED] Sudden stress — 6 sources breached; no clear cause found after checks',
       triggerReason: '6 sources in Alert; composite 5m move +52 bps',
       breachedSources: ['BINANCE', 'BYBIT', 'OKEX', 'BITGET', 'ISPRIME', 'VELOCITY'],
       compositePrice: 3861.4,
       why: [
+        'Cause call: after session, basis, and cross-venue structure checks, no clear external catalyst for this abnormal move — title states “no clear cause found after checks”.',
         'Simultaneous exchange + LP alerts with a >50 bps composite jump in 5 minutes — beyond routine open noise.',
-        'Live anchors and derived mirrors both printed away from spot; basis briefly >60 bps.',
-        'Pattern matches an urgent index-input event: traders face mark jumps / liquidation risk if basket weights stay unchanged.',
+        'Live anchors and derived mirrors reprinted together; DXY/yields and spot gold showed no matching shock in the same window.',
+        'Treat as urgent index-input stress without a named external driver: traders face mark jumps / liquidation risk if basket weights stay unchanged.',
       ],
       impact: [
         'Index/mark/traders: fair/mark can gap vs peers within seconds — high-leverage XAUUSD perps at immediate liquidation risk.',
@@ -318,14 +429,15 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 2 * 3600_000 + 1,
       severity: 'critical',
       lang: 'zh-Hant',
-      title: '【紅】多場所閃崩錯位 — 指數輸入嚴重背離',
+      title: '【紅】突發衝擊 — 6 源越界；排查後未發現造成異常變動的明確原因',
       triggerReason: '6 個來源告警；綜合價 5 分鐘 +52 bps',
       breachedSources: ['BINANCE', 'BYBIT', 'OKEX', 'BITGET', 'ISPRIME', 'VELOCITY'],
       compositePrice: 3861.4,
       why: [
+        '原因判定：已對照時段、基差與跨場所結構後，仍未發現造成此次異常變動的明確外部催化 — 標題已標註「排查後未發現明確原因」。',
         '交易所與 LP 同時告警，且綜合價 5 分鐘跳動 >50 bps — 已超出例行開盤噪音。',
-        '即時錨點與衍生鏡像相對現貨同步偏離；基差短暫 >60 bps。',
-        '屬需立刻處理的指數輸入事件：若不調權重，交易者面臨標記跳動/強平。',
+        '即時錨點與衍生鏡像同步重印；同窗口 DXY／收益率與現貨黃金未見對應衝擊。',
+        '按無明確外部催化的指數輸入壓力處理：若不調權重，交易者面臨標記跳動/強平。',
       ],
       impact: [
         '指數/標記/交易者：公允與標記可在數秒內相對同行跳空 — 高槓桿 XAUUSD 永續強平風險立即上升。',
@@ -345,11 +457,12 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 36 * 3600_000,
       severity: 'alert',
       lang: 'en',
-      title: '[YELLOW] Multi-source alert — London open dislocation',
+      title: '[YELLOW] Elevated multi-source dislocation — London open dislocation',
       triggerReason: '4 sources in Alert (≥3 required)',
       breachedSources: ['BINANCE', 'BYBIT', 'ISPRIME', 'VELOCITY'],
       compositePrice: 3884.2,
       why: [
+        'Cause call: London open dislocation (stated in the title).',
         'London cash open coincided with crypto XAUUSDT catching up to spot after a quiet Asia session.',
         'Exchange perps reprinted higher first; LP quotes lagged ~10–20 bps for ~3 minutes.',
         'Basis vs spot briefly widened then compressed — typical open auction catch-up, not a macro surprise.',
@@ -372,11 +485,12 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 36 * 3600_000 + 1,
       severity: 'alert',
       lang: 'zh-Hant',
-      title: '【黃】多源告警 — 倫敦開盤錯位',
+      title: '【黃】多源錯位升高 — 倫敦開盤錯位',
       triggerReason: '4 個來源處於告警（需 ≥3）',
       breachedSources: ['BINANCE', 'BYBIT', 'ISPRIME', 'VELOCITY'],
       compositePrice: 3884.2,
       why: [
+        '原因判定：倫敦開盤錯位（已寫入標題）。',
         '倫敦現貨開盤時，加密 XAUUSDT 在亞洲安靜時段後追上現貨。',
         '交易所永續先上修；LP 報價落後約 10–20 bps，持續約 3 分鐘。',
         '相對現貨基差短暫走闊後收斂 — 典型開盤追價，非宏觀意外。',
@@ -399,11 +513,12 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 5 * 3600_000,
       severity: 'watch',
       lang: 'en',
-      title: '[GREEN] Cross-tier watch — LP soft vs exchanges (common)',
+      title: '[GREEN] Common catalyst — LP soft vs exchanges (common)',
       triggerReason: 'Cross-tier dislocation: 2 exchange + 1 LP at Watch/Alert',
       breachedSources: ['OKEX', 'BITGET', 'STARPRIME'],
       compositePrice: 3890.55,
       why: [
+        'Cause call: LP soft vs exchanges (common) (stated in the title).',
         'STARPRIME quoted soft vs OKX/Bitget while indexes stayed tight.',
         'Isolated LP inventory skew; composite move under shock threshold.',
       ],
@@ -425,11 +540,12 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 5 * 3600_000 + 1,
       severity: 'watch',
       lang: 'zh-Hant',
-      title: '【綠】跨層級觀察 — LP 相對交易所偏弱（常見誘因）',
+      title: '【綠】常見誘因 — LP 相對交易所偏弱（常見誘因）',
       triggerReason: '跨層級錯位：2 個交易所 + 1 個 LP 處於觀察/告警',
       breachedSources: ['OKEX', 'BITGET', 'STARPRIME'],
       compositePrice: 3890.55,
       why: [
+        '原因判定：LP 相對交易所偏弱（常見誘因）（已寫入標題）。',
         'STARPRIME 相對 OKX/Bitget 報價偏弱，指數源仍緊密。',
         '屬單一 LP 庫存偏斜；綜合價變動未達衝擊閾值。',
       ],
