@@ -253,7 +253,7 @@ export function HealthDashboard(props: {
       composite={composite}
       spot={spot}
     />
-    <InfoSourcesPanel />
+    <InfoSourcesPanel monitorHealth={health} />
     </>
   )
 }

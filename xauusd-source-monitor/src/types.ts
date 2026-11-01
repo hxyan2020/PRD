@@ -107,12 +107,15 @@ export interface PricePoint {
 }
 
 export type ProbeStatus = 'ok' | 'degraded' | 'down' | 'checking'
+export type InfoSourceKind = 'price' | 'venue' | 'macro' | 'policy' | 'news'
 
 export interface InfoSourceProbe {
   id: string
   label: string
   url: string
-  kind: 'price' | 'news' | 'macro' | 'policy'
+  kind: InfoSourceKind
+  /** How this health check is performed */
+  check: 'json' | 'http' | 'cors_opaque'
   status: ProbeStatus
   latencyMs: number | null
   detail?: string
