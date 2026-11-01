@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { isBriefingActive } from '../engine/briefing'
 import { useLocale } from '../i18n/locale'
 import { severityLabelKey, severityTone } from '../lib/severity'
 import type { Briefing, PricePoint } from '../types'
@@ -49,7 +50,10 @@ export function PriceChart(props: {
   const padB = 36
 
   const visibleBriefings = useMemo(
-    () => briefings.filter((b) => !b.lang || b.lang === lang).slice(0, 40),
+    () =>
+      briefings
+        .filter((b) => isBriefingActive(b) && (!b.lang || b.lang === lang))
+        .slice(0, 40),
     [briefings, lang],
   )
 

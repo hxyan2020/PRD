@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_RULES } from '../config/rules'
-import { generateBriefing, loadBriefings, saveBriefings } from '../engine/briefing'
+import {
+  archiveBriefingInList,
+  generateBriefing,
+  isBriefingActive,
+  loadBriefings,
+  saveBriefings,
+} from '../engine/briefing'
 import { buildTick } from '../engine/health'
 import { evaluateTrigger, toTriggerEvent } from '../engine/trigger'
 import type { AppLang } from '../i18n/messages'
@@ -63,7 +69,9 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
         if (!seededFromBriefings.current) {
           seededFromBriefings.current = true
           const fromBriefings = loadBriefings()
-            .filter((b) => result.tickAt - b.createdAt < 48 * 3600_000)
+            .filter(
+              (b) => isBriefingActive(b) && result.tickAt - b.createdAt < 48 * 3600_000,
+            )
             .map((b) => ({
               t: b.createdAt,
               px: b.compositePrice,
@@ -128,6 +136,14 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
     return () => window.clearInterval(id)
   }, [polling, rules.pollIntervalMs, tick])
 
+  const archiveBriefing = useCallback((id: string) => {
+    setBriefings((prev) => {
+      const next = archiveBriefingInList(prev, id)
+      saveBriefings(next)
+      return next
+    })
+  }, [])
+
   return {
     rules,
     setRules,
@@ -137,6 +153,7 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
     tickAt,
     anchorsLive,
     briefings,
+    archiveBriefing,
     lastTriggerReason,
     compositeMoveBps5m,
     polling,

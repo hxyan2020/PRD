@@ -274,6 +274,15 @@ export function saveBriefings(list: Briefing[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list.slice(0, 100)))
 }
 
+export function isBriefingActive(b: Briefing): boolean {
+  return b.archivedAt == null
+}
+
+/** Mark a briefing archived so it no longer appears in the active list. */
+export function archiveBriefingInList(list: Briefing[], id: string, at = Date.now()): Briefing[] {
+  return list.map((b) => (b.id === id ? { ...b, archivedAt: at } : b))
+}
+
 function seedBriefings(): Briefing[] {
   const now = Date.now()
   return [

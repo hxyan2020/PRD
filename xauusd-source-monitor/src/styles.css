@@ -474,6 +474,51 @@ td.mono,
   box-shadow: inset 4px 0 0 #22c55e;
   background: #f7fff9;
 }
+
+.briefing-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 8px;
+}
+
+.archive-btn {
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.archive-btn:hover,
+.archive-btn:focus-visible {
+  color: var(--ink);
+  border-color: rgba(28, 25, 20, 0.28);
+}
+
+.archive-btn.primary-archive {
+  background: var(--ink);
+  color: #faf7f0;
+  border-color: var(--ink);
+}
+
+.briefing-body-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.briefing-body-actions .bottom-fold {
+  margin-top: 0;
+}
+
+.archived-count {
+  margin: -6px 0 12px !important;
+  font-weight: 600;
+  color: var(--muted);
+}
 .pill.stale,
 .pill.offline {
   background: #e7e5e4;

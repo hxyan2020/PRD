@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { isBriefingActive } from '../engine/briefing'
 import { useLocale } from '../i18n/locale'
 import { severityHintKey, severityLabelKey, severityTone } from '../lib/severity'
 import type { Briefing, BriefingCitation, BriefingSeverity, CitationCategory } from '../types'
@@ -76,7 +77,13 @@ function CitationList({
   )
 }
 
-function BriefingCard({ briefing: b }: { briefing: Briefing }) {
+function BriefingCard({
+  briefing: b,
+  onArchive,
+}: {
+  briefing: Briefing
+  onArchive: (id: string) => void
+}) {
   const { t } = useLocale()
   const [open, setOpen] = useState(false)
   const citationCount = b.citations?.length || b.sourcesConsulted?.length || 0
@@ -85,6 +92,18 @@ function BriefingCard({ briefing: b }: { briefing: Briefing }) {
 
   return (
     <article className={`briefing tone-${tone} ${open ? 'open' : 'collapsed'}`}>
+      <div className="briefing-actions">
+        <button
+          type="button"
+          className="archive-btn"
+          onClick={(e) => {
+            e.stopPropagation()
+            onArchive(b.id)
+          }}
+        >
+          {t('archiveAction')}
+        </button>
+      </div>
       <button
         type="button"
         className="briefing-toggle"
@@ -168,23 +187,43 @@ function BriefingCard({ briefing: b }: { briefing: Briefing }) {
               </ul>
             )}
           </section>
-          <button type="button" className="fold-hint is-open bottom-fold" onClick={() => setOpen(false)}>
-            {t('collapseBriefing')}
-          </button>
+          <div className="briefing-body-actions">
+            <button
+              type="button"
+              className="archive-btn primary-archive"
+              onClick={() => onArchive(b.id)}
+            >
+              {t('archiveAction')}
+            </button>
+            <button type="button" className="fold-hint is-open bottom-fold" onClick={() => setOpen(false)}>
+              {t('collapseBriefing')}
+            </button>
+          </div>
         </div>
       ) : null}
     </article>
   )
 }
 
-export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
+export function BriefingArchive({
+  briefings,
+  onArchive,
+}: {
+  briefings: Briefing[]
+  onArchive: (id: string) => void
+}) {
   const { t, lang } = useLocale()
-  const visible = briefings.filter((b) => !b.lang || b.lang === lang)
+  const forLang = briefings.filter((b) => !b.lang || b.lang === lang)
+  const visible = forLang.filter(isBriefingActive)
+  const archivedCount = forLang.length - visible.length
 
   return (
     <div className="panel">
       <h2>{t('archiveTitle')}</h2>
       <p className="sub">{t('archiveSub')}</p>
+      {archivedCount > 0 ? (
+        <p className="sub archived-count">{t('archivedCount').replace('{n}', String(archivedCount))}</p>
+      ) : null}
 
       <div className="sev-legend" aria-label={t('sevLegendTitle')}>
         <div className="sev-legend-title">{t('sevLegendTitle')}</div>
@@ -199,7 +238,7 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
       {visible.length === 0 ? (
         <p className="sub">{t('archiveEmpty')}</p>
       ) : (
-        visible.map((b) => <BriefingCard key={b.id} briefing={b} />)
+        visible.map((b) => <BriefingCard key={b.id} briefing={b} onArchive={onArchive} />)
       )}
     </div>
   )

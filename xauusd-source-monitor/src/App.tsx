@@ -49,7 +49,12 @@ export default function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={<BriefingArchive briefings={mon.briefings} />} />
+        <Route
+          path="/"
+          element={
+            <BriefingArchive briefings={mon.briefings} onArchive={mon.archiveBriefing} />
+          }
+        />
         <Route
           path="/health"
           element={

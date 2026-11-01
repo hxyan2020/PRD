@@ -90,6 +90,8 @@ export interface Briefing {
   sourcesConsulted: string[]
   /** Verifiable deep links (APIs, instrument pages, specific articles) */
   citations: BriefingCitation[]
+  /** When set, briefing is archived and hidden from the main list */
+  archivedAt?: number
 }
 
 export interface MacroSnapshot {
