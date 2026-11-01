@@ -523,6 +523,61 @@ td.mono,
   margin: 4px 0;
 }
 
+.citation-groups {
+  display: grid;
+  gap: 12px;
+}
+
+.citation-group h5 {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.citation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.citation-list li {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 253, 248, 0.95);
+}
+
+.citation-list a {
+  color: var(--gold-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.citation-url {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.citation-url a {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.citation-note {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
 .footer-note {
   margin-top: 18px;
   color: var(--muted);

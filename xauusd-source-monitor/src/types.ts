@@ -60,6 +60,19 @@ export interface TriggerEvent {
   compositeMoveBps5m: number
 }
 
+export type CitationCategory = 'price_api' | 'venue' | 'macro' | 'news' | 'positioning'
+
+export interface BriefingCitation {
+  id: string
+  /** Short human label */
+  label: string
+  /** Exact URL to open for verification (API endpoint, instrument page, or article) */
+  url: string
+  category: CitationCategory
+  /** Optional snapshot note, e.g. last price at briefing time */
+  note?: string
+}
+
 export interface Briefing {
   id: string
   createdAt: number
@@ -73,7 +86,10 @@ export interface Briefing {
   why: string[]
   impact: string[]
   actions: string[]
+  /** @deprecated Prefer citations with clickable URLs */
   sourcesConsulted: string[]
+  /** Verifiable deep links (APIs, instrument pages, specific articles) */
+  citations: BriefingCitation[]
 }
 
 export interface MacroSnapshot {

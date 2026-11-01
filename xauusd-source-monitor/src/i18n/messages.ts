@@ -98,6 +98,16 @@ const en: Dict = {
   impactTitle: 'Impact on V Exchange',
   actionsTitle: 'Next steps / safeguards',
   consultedTitle: 'Sources consulted',
+  citationsTitle: 'Verify sources (clickable)',
+  citationsSub:
+    'Each link is a specific API endpoint, instrument page, or article — not a generic homepage.',
+  citationCat_price_api: 'Price API',
+  citationCat_venue: 'Venue',
+  citationCat_macro: 'Macro / futures',
+  citationCat_news: 'News article',
+  citationCat_positioning: 'Event map',
+  openLink: 'Open',
+
   footer:
     'Public permanent page for XAUUSD MVP perp ops. Live anchors: OKX XAU-USDT-SWAP, Bitget XAUUSDT, gold-api XAU spot. Derived mirrors cover BINANCE / BYBIT / indexes / ISPRIME / STARPRIME / VELOCITY when venue CORS or geo blocks prevent direct browser pulls.',
   noTrigger: 'No trigger',
@@ -192,6 +202,15 @@ const zhHant: Dict = {
   impactTitle: '對 V Exchange 的影響',
   actionsTitle: '下一步 / 防範措施',
   consultedTitle: '參考資訊源',
+  citationsTitle: '可驗證來源（可點開）',
+  citationsSub: '每條都是具體 API、合約頁或單篇新聞網址，不是官網首頁。',
+  citationCat_price_api: '行情 API',
+  citationCat_venue: '交易所/合約頁',
+  citationCat_macro: '宏觀 / 期貨',
+  citationCat_news: '新聞文章',
+  citationCat_positioning: '事件對照',
+  openLink: '開啟',
+
   footer:
     'XAUUSD MVP 永續公開常駐監控頁。即時錨點：OKX XAU-USDT-SWAP、Bitget XAUUSDT、gold-api XAU 現貨。BINANCE / BYBIT / 指數 / ISPRIME / STARPRIME / VELOCITY 在瀏覽器 CORS 或地區限制時使用衍生鏡像。',
   noTrigger: '未觸發',

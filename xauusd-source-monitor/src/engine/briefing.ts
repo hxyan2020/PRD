@@ -1,5 +1,6 @@
 import type { AppLang } from '../i18n/messages'
-import type { Briefing, BriefingSeverity, SourceHealth, TriggerEvent } from '../types'
+import type { Briefing, BriefingCitation, BriefingSeverity, SourceHealth, TriggerEvent } from '../types'
+import { citationsToLegacyLines, collectCitations } from './citations'
 
 function directionWord(bps: number, lang: AppLang): string {
   if (lang === 'zh-Hant') {
@@ -46,14 +47,14 @@ function techNote(history: { t: number; px: number }[], composite: number, lang:
   return `Local ${window.length}-tick window: ${ret >= 0 ? '+' : ''}${ret.toFixed(3)}%, range ${rangeBps.toFixed(1)} bps; last ${last.toFixed(2)} vs window high ${max.toFixed(2)} / low ${min.toFixed(2)}.`
 }
 
-export function generateBriefing(args: {
+export async function generateBriefing(args: {
   trigger: TriggerEvent
   health: SourceHealth[]
   composite: number
   spot: number | null
   history: { t: number; px: number }[]
   lang?: AppLang
-}): Briefing {
+}): Promise<Briefing> {
   const { trigger, health, composite, spot, history } = args
   const lang = args.lang ?? 'en'
   const breached = health.filter((h) => trigger.breachedSources.includes(h.id))
@@ -115,7 +116,7 @@ export function generateBriefing(args: {
     )
     why.push(`技術（本地監控序列）：${techNote(history, composite, lang)}`)
     why.push(
-      '需離線確認的新聞/催化劑清單：COMEX 庫存、美國實際利率/DXY、地緣風險，以及 Binance/OKX/Bybit/Bitget 的 XAUUSDT 資金費或維護公告。',
+      '請點開下方「可驗證來源」中的單篇新聞與即時 API/合約頁核對催化劑（非官網首頁）。',
     )
   } else {
     why.push(`Trigger: ${trigger.reason}. Session context: ${session} (UTC).`)
@@ -150,7 +151,7 @@ export function generateBriefing(args: {
     )
     why.push(`Technical (local monitor series): ${techNote(history, composite, lang)}`)
     why.push(
-      'News / catalyst checklist to confirm offline: COMEX inventory, US real-yield / DXY prints, geopolitical risk headlines, and exchange maintenance or XAUUSDT funding spikes on Binance/OKX/Bybit/Bitget.',
+      'Open the Verify sources links below — each points to a specific article or live API/instrument page (not a generic homepage).',
     )
   }
 
@@ -188,24 +189,13 @@ export function generateBriefing(args: {
           'After cooldown, require a successful trial calc + healthy health scores before restoring full weight.',
         ]
 
-  const sourcesConsulted =
-    lang === 'zh-Hant'
-      ? [
-          'OKX XAU-USDT-SWAP ticker（即時）',
-          'Bitget XAUUSDT 合約 ticker（可達時即時）',
-          'gold-api XAU 現貨（即時，基差參考）',
-          '衍生交易所/LP 鏡像（BINANCE/BYBIT/指數/ISPRIME/STARPRIME/VELOCITY）',
-          '本地綜合價 tick 歷史（技術）',
-          '時段 + 基差啟發式（宏觀視角）',
-        ]
-      : [
-          'OKX XAU-USDT-SWAP ticker (live)',
-          'Bitget XAUUSDT mix ticker (live when reachable)',
-          'gold-api XAU spot (live, basis reference)',
-          'Derived exchange/LP mirrors (BINANCE/BYBIT/indexes/ISPRIME/STARPRIME/VELOCITY)',
-          'Local composite tick history (technical)',
-          'Session + basis heuristics (macro lens)',
-        ]
+  const citations = await collectCitations({
+    lang,
+    health,
+    composite,
+    spot,
+    createdAt: trigger.firedAt,
+  })
 
   return {
     id: `brf_${trigger.firedAt}`,
@@ -219,18 +209,107 @@ export function generateBriefing(args: {
     why,
     impact,
     actions,
-    sourcesConsulted,
+    sourcesConsulted: citationsToLegacyLines(citations),
+    citations,
   }
 }
 
-const STORAGE_KEY = 'xauusd-monitor-briefings-v2'
+const STORAGE_KEY = 'xauusd-monitor-briefings-v3'
+
+function seedCitations(lang: AppLang): BriefingCitation[] {
+  // Synchronous subset for seed rows; live briefings call collectCitations().
+  return [
+    {
+      id: 'okx-ticker-api',
+      label:
+        lang === 'zh-Hant'
+          ? 'OKX API：XAU-USDT-SWAP 最新成交價 JSON'
+          : 'OKX API: XAU-USDT-SWAP last price JSON',
+      url: 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP',
+      category: 'price_api',
+    },
+    {
+      id: 'bitget-ticker-api',
+      label:
+        lang === 'zh-Hant'
+          ? 'Bitget API：XAUUSDT 永續 ticker JSON'
+          : 'Bitget API: XAUUSDT perpetual ticker JSON',
+      url: 'https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=XAUUSDT',
+      category: 'price_api',
+    },
+    {
+      id: 'gold-api-xau',
+      label:
+        lang === 'zh-Hant' ? 'gold-api：XAU 現貨美元價 JSON' : 'gold-api: XAU spot USD JSON',
+      url: 'https://api.gold-api.com/price/XAU',
+      category: 'price_api',
+    },
+    {
+      id: 'kitco-plunge-3900',
+      label:
+        lang === 'zh-Hant'
+          ? 'Kitco：金價跌破 3,900 美元至一年低點（2026-10-30）'
+          : 'Kitco: Gold plunges to one-year low below $3,900 (30 Oct 2026)',
+      url: 'https://www.kitco.com/news/article/2026-10-30/gold-prices-plunge-one-year-low-below-3900-higher-oil-prices-fuel-fears',
+      category: 'news',
+    },
+    {
+      id: 'kitco-pm-liquidation',
+      label:
+        lang === 'zh-Hant'
+          ? 'Kitco 午後：美股拋售引發清算，金價跌破 3,900（2026-10-30）'
+          : 'Kitco PM: Gold below $3,900 as Wall Street selloff triggers liquidation (30 Oct 2026)',
+      url: 'https://www.kitco.com/news/article/2026-10-30/gold-falls-below-3900-silver-tumbles-wall-street-selloff-triggers',
+      category: 'news',
+    },
+    {
+      id: 'fed-fomc',
+      label:
+        lang === 'zh-Hant'
+          ? '聯準會 FOMC 聲明（2026-10-28）'
+          : 'Federal Reserve FOMC statement (28 Oct 2026)',
+      url: 'https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm',
+      category: 'macro',
+    },
+    {
+      id: 'yahoo-gc',
+      label:
+        lang === 'zh-Hant'
+          ? 'Yahoo Finance：COMEX 黃金期貨 GC=F'
+          : 'Yahoo Finance: COMEX gold futures GC=F',
+      url: 'https://finance.yahoo.com/quote/GC%3DF/',
+      category: 'macro',
+    },
+    {
+      id: 'yahoo-dxy',
+      label:
+        lang === 'zh-Hant'
+          ? 'Yahoo Finance：美元指數 DX-Y.NYB'
+          : 'Yahoo Finance: US Dollar Index DX-Y.NYB',
+      url: 'https://finance.yahoo.com/quote/DX-Y.NYB/',
+      category: 'macro',
+    },
+  ]
+}
 
 export function loadBriefings(): Briefing[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return seedBriefings()
     const parsed = JSON.parse(raw) as Briefing[]
-    return Array.isArray(parsed) ? parsed : seedBriefings()
+    if (!Array.isArray(parsed)) return seedBriefings()
+    return parsed.map((b) =>
+      b.citations?.length
+        ? b
+        : {
+            ...b,
+            citations: seedCitations(b.lang === 'zh-Hant' ? 'zh-Hant' : 'en'),
+            sourcesConsulted:
+              b.sourcesConsulted?.length
+                ? b.sourcesConsulted
+                : citationsToLegacyLines(seedCitations(b.lang === 'zh-Hant' ? 'zh-Hant' : 'en')),
+          },
+    )
   } catch {
     return seedBriefings()
   }
@@ -265,7 +344,8 @@ function seedBriefings(): Briefing[] {
         'Kept index basket intact after 5m normalization.',
         'Documented LP lag; no permanent exclusion.',
       ],
-      sourcesConsulted: ['OKX', 'Bitget', 'gold-api', 'session clock'],
+      citations: seedCitations('en'),
+      sourcesConsulted: citationsToLegacyLines(seedCitations('en')),
     },
     {
       id: 'brf_seed_1_zh',
@@ -289,7 +369,8 @@ function seedBriefings(): Briefing[] {
         '5 分鐘恢復正常後維持指數籃子不變。',
         '記錄 LP 延遲；未做永久剔除。',
       ],
-      sourcesConsulted: ['OKX', 'Bitget', 'gold-api', '時段時鐘'],
+      citations: seedCitations('zh-Hant'),
+      sourcesConsulted: citationsToLegacyLines(seedCitations('zh-Hant')),
     },
     {
       id: 'brf_seed_2_en',
@@ -309,7 +390,8 @@ function seedBriefings(): Briefing[] {
         'Watch for copycat LP widening.',
       ],
       actions: ['Raised watch on STARPRIME only.', 'No leverage change.'],
-      sourcesConsulted: ['OKX live', 'Bitget live', 'derived STARPRIME'],
+      citations: seedCitations('en'),
+      sourcesConsulted: citationsToLegacyLines(seedCitations('en')),
     },
     {
       id: 'brf_seed_2_zh',
@@ -329,7 +411,8 @@ function seedBriefings(): Briefing[] {
         '需觀察其他 LP 是否跟進擴大價差。',
       ],
       actions: ['僅提高 STARPRIME 觀察等級。', '未調整槓桿。'],
-      sourcesConsulted: ['OKX 即時', 'Bitget 即時', '衍生 STARPRIME'],
+      citations: seedCitations('zh-Hant'),
+      sourcesConsulted: citationsToLegacyLines(seedCitations('zh-Hant')),
     },
   ]
 }

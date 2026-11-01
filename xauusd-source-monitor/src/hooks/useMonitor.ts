@@ -81,7 +81,7 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
           severityRank(evalResult.severity) > severityRank(lastSeverity.current)
         if (since >= rules.cooldownMs || escalate || lastBriefingAt.current === 0) {
           const trigger = toTriggerEvent(evalResult, result.composite, result.tickAt)
-          const briefing = generateBriefing({
+          const briefing = await generateBriefing({
             trigger,
             health: healthRows,
             composite: result.composite,

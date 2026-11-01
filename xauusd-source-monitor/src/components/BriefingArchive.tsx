@@ -1,5 +1,5 @@
 import { useLocale } from '../i18n/locale'
-import type { Briefing } from '../types'
+import type { Briefing, BriefingCitation, CitationCategory } from '../types'
 
 function fmtSgt(ts: number) {
   return new Date(ts).toLocaleString('en-SG', {
@@ -12,6 +12,48 @@ function fmtSgt(ts: number) {
     minute: '2-digit',
     second: '2-digit',
   })
+}
+
+function categoryKey(cat: CitationCategory): string {
+  return `citationCat_${cat}`
+}
+
+function CitationList({
+  citations,
+  t,
+}: {
+  citations: BriefingCitation[]
+  t: (key: string) => string
+}) {
+  const groups: CitationCategory[] = ['price_api', 'venue', 'macro', 'news', 'positioning']
+  return (
+    <div className="citation-groups">
+      {groups.map((cat) => {
+        const rows = citations.filter((c) => c.category === cat)
+        if (!rows.length) return null
+        return (
+          <div key={cat} className="citation-group">
+            <h5>{t(categoryKey(cat))}</h5>
+            <ul className="citation-list">
+              {rows.map((c) => (
+                <li key={c.id}>
+                  <a href={c.url} target="_blank" rel="noreferrer noopener">
+                    {c.label}
+                  </a>
+                  <div className="citation-url">
+                    <a href={c.url} target="_blank" rel="noreferrer noopener">
+                      {c.url}
+                    </a>
+                  </div>
+                  {c.note ? <div className="citation-note">{c.note}</div> : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
 export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
@@ -67,12 +109,19 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
               </ul>
             </section>
             <section>
-              <h4>{t('consultedTitle')}</h4>
-              <ul>
-                {b.sourcesConsulted.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
+              <h4>{t('citationsTitle')}</h4>
+              <p className="sub" style={{ marginTop: 0 }}>
+                {t('citationsSub')}
+              </p>
+              {b.citations?.length ? (
+                <CitationList citations={b.citations} t={t} />
+              ) : (
+                <ul>
+                  {b.sourcesConsulted.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              )}
             </section>
           </article>
         ))
