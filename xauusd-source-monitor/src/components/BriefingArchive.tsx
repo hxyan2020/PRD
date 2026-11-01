@@ -1,3 +1,4 @@
+import { useLocale } from '../i18n/locale'
 import type { Briefing } from '../types'
 
 function fmtSgt(ts: number) {
@@ -14,18 +15,18 @@ function fmtSgt(ts: number) {
 }
 
 export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
+  const { t, lang } = useLocale()
+  const visible = briefings.filter((b) => !b.lang || b.lang === lang)
+
   return (
     <div className="panel">
-      <h2>Briefing archive</h2>
-      <p className="sub">
-        Auto-generated when multi-source rules fire. Timestamps in Asia/Singapore. Stored in this
-        browser; seed history included for continuity.
-      </p>
+      <h2>{t('archiveTitle')}</h2>
+      <p className="sub">{t('archiveSub')}</p>
 
-      {briefings.length === 0 ? (
-        <p className="sub">No briefings yet. Enable Stress demo on Health if you want a sample fire.</p>
+      {visible.length === 0 ? (
+        <p className="sub">{t('archiveEmpty')}</p>
       ) : (
-        briefings.map((b) => (
+        visible.map((b) => (
           <article key={b.id} className="briefing">
             <header>
               <div>
@@ -37,12 +38,12 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
               </time>
             </header>
             <p className="sub" style={{ margin: 0 }}>
-              Trigger: {b.triggerReason} · Composite {b.compositePrice.toFixed(2)} · Breached:{' '}
-              {b.breachedSources.join(', ') || '—'}
+              {t('trigger')}: {b.triggerReason} · {t('composite')} {b.compositePrice.toFixed(2)} ·{' '}
+              {t('breached')}: {b.breachedSources.join(', ') || '—'}
             </p>
 
             <section>
-              <h4>Why prices moved</h4>
+              <h4>{t('whyTitle')}</h4>
               <ul>
                 {b.why.map((line) => (
                   <li key={line}>{line}</li>
@@ -50,7 +51,7 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
               </ul>
             </section>
             <section>
-              <h4>Impact on V Exchange</h4>
+              <h4>{t('impactTitle')}</h4>
               <ul>
                 {b.impact.map((line) => (
                   <li key={line}>{line}</li>
@@ -58,7 +59,7 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
               </ul>
             </section>
             <section>
-              <h4>Next steps / safeguards</h4>
+              <h4>{t('actionsTitle')}</h4>
               <ul>
                 {b.actions.map((line) => (
                   <li key={line}>{line}</li>
@@ -66,7 +67,7 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
               </ul>
             </section>
             <section>
-              <h4>Sources consulted</h4>
+              <h4>{t('consultedTitle')}</h4>
               <ul>
                 {b.sourcesConsulted.map((line) => (
                   <li key={line}>{line}</li>

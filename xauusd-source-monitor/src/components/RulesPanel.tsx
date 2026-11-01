@@ -1,11 +1,13 @@
 import type { ChangeEvent } from 'react'
-import { RULE_COPY } from '../config/rules'
+import { useLocale } from '../i18n/locale'
+import { RULE_KEYS } from '../i18n/messages'
 import type { MonitorRules } from '../types'
 
 export function RulesPanel(props: {
   rules: MonitorRules
   setRules: (r: MonitorRules) => void
 }) {
+  const { t } = useLocale()
   const { rules, setRules } = props
 
   const num =
@@ -19,27 +21,24 @@ export function RulesPanel(props: {
   return (
     <>
       <div className="panel">
-        <h2>Trigger rules</h2>
-        <p className="sub">
-          Defined for XAUUSD MVP perp across exchanges + LPs. Briefings fire only when multi-source
-          or composite-shock conditions clear — not on a single noisy venue.
-        </p>
+        <h2>{t('rulesTitle')}</h2>
+        <p className="sub">{t('rulesSub')}</p>
         <div className="rules-grid">
-          {RULE_COPY.map((r) => (
+          {RULE_KEYS.map((r) => (
             <article key={r.id} className="rule-card">
-              <h3>{r.title}</h3>
-              <p>{r.detail}</p>
+              <h3>{t(r.title)}</h3>
+              <p>{t(r.detail)}</p>
             </article>
           ))}
         </div>
       </div>
 
       <div className="panel">
-        <h2>Tunable thresholds</h2>
-        <p className="sub">Changes apply to the live evaluator in this browser session.</p>
+        <h2>{t('tunableTitle')}</h2>
+        <p className="sub">{t('tunableSub')}</p>
         <div className="form-grid">
           <label>
-            Watch deviation (bps)
+            {t('watchDev')}
             <input
               type="number"
               value={rules.watchDeviationBps}
@@ -47,7 +46,7 @@ export function RulesPanel(props: {
             />
           </label>
           <label>
-            Alert deviation (bps)
+            {t('alertDev')}
             <input
               type="number"
               value={rules.alertDeviationBps}
@@ -55,11 +54,11 @@ export function RulesPanel(props: {
             />
           </label>
           <label>
-            Min alert sources
+            {t('minAlertSources')}
             <input type="number" value={rules.minAlertSources} onChange={num('minAlertSources')} />
           </label>
           <label>
-            Min exchange watch
+            {t('minExchangeWatch')}
             <input
               type="number"
               value={rules.minExchangeWatch}
@@ -67,11 +66,11 @@ export function RulesPanel(props: {
             />
           </label>
           <label>
-            Min LP watch
+            {t('minLpWatch')}
             <input type="number" value={rules.minLpWatch} onChange={num('minLpWatch')} />
           </label>
           <label>
-            Composite 5m move (bps)
+            {t('compositeMove')}
             <input
               type="number"
               value={rules.compositeMoveBps5m}
@@ -79,15 +78,15 @@ export function RulesPanel(props: {
             />
           </label>
           <label>
-            Stale after (ms)
+            {t('staleAfter')}
             <input type="number" value={rules.staleAfterMs} onChange={num('staleAfterMs')} />
           </label>
           <label>
-            Cooldown (ms)
+            {t('cooldown')}
             <input type="number" value={rules.cooldownMs} onChange={num('cooldownMs')} />
           </label>
           <label>
-            Poll interval (ms)
+            {t('pollInterval')}
             <input type="number" value={rules.pollIntervalMs} onChange={num('pollIntervalMs')} />
           </label>
         </div>

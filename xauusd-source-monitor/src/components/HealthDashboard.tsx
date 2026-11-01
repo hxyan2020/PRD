@@ -1,5 +1,5 @@
-import { KIND_LABEL } from '../config/sources'
-import type { SourceHealth } from '../types'
+import { useLocale } from '../i18n/locale'
+import type { SourceHealth, SourceKind } from '../types'
 
 function fmtPx(n: number | null | undefined) {
   if (n == null || !Number.isFinite(n)) return '—'
@@ -34,6 +34,7 @@ export function HealthDashboard(props: {
   refresh: () => void
   error: string | null
 }) {
+  const { t } = useLocale()
   const {
     health,
     composite,
@@ -57,120 +58,165 @@ export function HealthDashboard(props: {
   const alertCount = health.filter((h) => h.health === 'alert').length
   const liveCount = health.filter((h) => h.mode === 'live').length
 
+  const kindLabel = (k: SourceKind) => {
+    if (k === 'exchange') return t('kindExchange')
+    if (k === 'exchange_index') return t('kindExchangeIndex')
+    if (k === 'lp') return t('kindLp')
+    return t('kindComposite')
+  }
+
+  const healthLabel = (h: SourceHealth['health']) => {
+    if (h === 'healthy') return t('healthHealthy')
+    if (h === 'watch') return t('healthWatch')
+    if (h === 'alert') return t('healthAlert')
+    if (h === 'stale') return t('healthStale')
+    return t('healthOffline')
+  }
+
+  const modeLabel = (m: SourceHealth['mode']) => {
+    if (m === 'live') return t('modeLive')
+    if (m === 'derived') return t('modeDerived')
+    return t('modeOffline')
+  }
+
   return (
-    <>
-      <div className="panel">
-        <h2>Live source health — XAUUSD</h2>
-        <p className="sub">
-          Composite median of healthy venues. Live anchors: OKX / Bitget; Spot XAU is a basis
-          reference only. Exchange indexes &amp; LPs use correlated mirrors when direct public
-          feeds are unavailable.
+    <div className="panel">
+      <h2>{t('healthTitle')}</h2>
+      <p className="sub">{t('healthSub')}</p>
+
+      <div className="toolbar">
+        <span className="pill healthy" style={{ gap: 8 }}>
+          {polling ? <span className="pulse" /> : null}
+          {polling ? t('livePolling') : t('paused')}
+        </span>
+        <button type="button" className="primary" onClick={() => refresh()}>
+          {t('refreshNow')}
+        </button>
+        <button type="button" onClick={() => setPolling(!polling)}>
+          {polling ? t('pause') : t('resume')}
+        </button>
+        <button
+          type="button"
+          className={forceStress ? 'primary' : 'ghost'}
+          onClick={() => setForceStress(!forceStress)}
+        >
+          {forceStress ? t('stressOn') : t('stressOff')}
+        </button>
+      </div>
+
+      {error ? (
+        <p className="sub" style={{ color: 'var(--critical)' }}>
+          {t('feedError')}: {error}
         </p>
+      ) : null}
 
-        <div className="toolbar">
-          <span className="pill healthy" style={{ gap: 8 }}>
-            {polling ? <span className="pulse" /> : null}
-            {polling ? 'Live polling' : 'Paused'}
-          </span>
-          <button type="button" className="primary" onClick={() => refresh()}>
-            Refresh now
-          </button>
-          <button type="button" onClick={() => setPolling(!polling)}>
-            {polling ? 'Pause' : 'Resume'}
-          </button>
-          <button
-            type="button"
-            className={forceStress ? 'primary' : 'ghost'}
-            onClick={() => setForceStress(!forceStress)}
-            title="Widen BINANCE/BYBIT/LP quotes to demonstrate multi-source trigger"
-          >
-            {forceStress ? 'Stress demo ON' : 'Stress demo'}
-          </button>
+      <div className="stats">
+        <div className="stat">
+          <div className="label">{t('composite')}</div>
+          <div className="value">{fmtPx(composite)}</div>
         </div>
-
-        {error ? (
-          <p className="sub" style={{ color: 'var(--critical)' }}>
-            Feed error: {error}
-          </p>
-        ) : null}
-
-        <div className="stats">
-          <div className="stat">
-            <div className="label">Composite</div>
-            <div className="value">{fmtPx(composite)}</div>
-          </div>
-          <div className="stat">
-            <div className="label">Spot XAU</div>
-            <div className="value">{fmtPx(spot)}</div>
-          </div>
-          <div className="stat">
-            <div className="label">5m move</div>
-            <div className="value">{fmtBps(compositeMoveBps5m)} bps</div>
-          </div>
-          <div className="stat">
-            <div className="label">Health avg</div>
-            <div className="value">{avgScore}</div>
-          </div>
-          <div className="stat">
-            <div className="label">Alerts / live</div>
-            <div className="value">
-              {alertCount} / {liveCount}
-            </div>
-          </div>
-          <div className="stat">
-            <div className="label">Last tick (SGT)</div>
-            <div className="value" style={{ fontSize: '0.85rem' }}>
-              {fmtTime(tickAt)}
-            </div>
+        <div className="stat">
+          <div className="label">{t('spotXau')}</div>
+          <div className="value">{fmtPx(spot)}</div>
+        </div>
+        <div className="stat">
+          <div className="label">{t('move5m')}</div>
+          <div className="value">{fmtBps(compositeMoveBps5m)} bps</div>
+        </div>
+        <div className="stat">
+          <div className="label">{t('healthAvg')}</div>
+          <div className="value">{avgScore}</div>
+        </div>
+        <div className="stat">
+          <div className="label">{t('alertsLive')}</div>
+          <div className="value">
+            {alertCount} / {liveCount}
           </div>
         </div>
-
-        <p className="sub" style={{ marginBottom: 8 }}>
-          Trigger evaluator: <strong>{lastTriggerReason}</strong>
-          <br />
-          Anchors — OKX {anchorsLive.okx ? '●' : '○'} · Bitget {anchorsLive.bitget ? '●' : '○'} ·
-          Spot {anchorsLive.spot ? '●' : '○'}
-        </p>
-
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Source</th>
-                <th>Kind</th>
-                <th>Price</th>
-                <th>Dev (bps)</th>
-                <th>Health</th>
-                <th>Score</th>
-                <th>Mode</th>
-                <th>Latency</th>
-              </tr>
-            </thead>
-            <tbody>
-              {health.map((h) => (
-                <tr key={h.id}>
-                  <td>
-                    <strong>{h.label}</strong>
-                  </td>
-                  <td>{KIND_LABEL[h.kind]}</td>
-                  <td className="mono">{fmtPx(h.price)}</td>
-                  <td className="mono">{fmtBps(h.deviationBps)}</td>
-                  <td>
-                    <span className={`pill ${h.health}`}>{h.health}</span>
-                  </td>
-                  <td>
-                    <div className="bar" title={`${h.score}`}>
-                      <span style={{ width: `${h.score}%` }} />
-                    </div>
-                  </td>
-                  <td>{h.mode}</td>
-                  <td className="mono">{h.latencyMs != null ? `${Math.round(h.latencyMs)}ms` : '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="stat">
+          <div className="label">{t('lastTick')}</div>
+          <div className="value" style={{ fontSize: '0.85rem' }}>
+            {fmtTime(tickAt)}
+          </div>
         </div>
       </div>
-    </>
+
+      <p className="sub" style={{ marginBottom: 8 }}>
+        {t('triggerEvaluator')}: <strong>{lastTriggerReason || t('waitingEval')}</strong>
+        <br />
+        {t('anchors')} — OKX {anchorsLive.okx ? '●' : '○'} · Bitget {anchorsLive.bitget ? '●' : '○'}{' '}
+        · Spot {anchorsLive.spot ? '●' : '○'}
+      </p>
+
+      <div className="table-wrap desktop-only">
+        <table>
+          <thead>
+            <tr>
+              <th>{t('colSource')}</th>
+              <th>{t('colKind')}</th>
+              <th>{t('colPrice')}</th>
+              <th>{t('colDev')}</th>
+              <th>{t('colHealth')}</th>
+              <th>{t('colScore')}</th>
+              <th>{t('colMode')}</th>
+              <th>{t('colLatency')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {health.map((h) => (
+              <tr key={h.id}>
+                <td>
+                  <strong>{h.label}</strong>
+                </td>
+                <td>{kindLabel(h.kind)}</td>
+                <td className="mono">{fmtPx(h.price)}</td>
+                <td className="mono">{fmtBps(h.deviationBps)}</td>
+                <td>
+                  <span className={`pill ${h.health}`}>{healthLabel(h.health)}</span>
+                </td>
+                <td>
+                  <div className="bar" title={`${h.score}`}>
+                    <span style={{ width: `${h.score}%` }} />
+                  </div>
+                </td>
+                <td>{modeLabel(h.mode)}</td>
+                <td className="mono">{h.latencyMs != null ? `${Math.round(h.latencyMs)}ms` : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="source-cards mobile-only">
+        {health.map((h) => (
+          <article key={h.id} className="source-card">
+            <header>
+              <strong>{h.label}</strong>
+              <span className={`pill ${h.health}`}>{healthLabel(h.health)}</span>
+            </header>
+            <div className="source-meta">{kindLabel(h.kind)} · {modeLabel(h.mode)}</div>
+            <div className="source-row">
+              <span>{t('colPrice')}</span>
+              <span className="mono">{fmtPx(h.price)}</span>
+            </div>
+            <div className="source-row">
+              <span>{t('colDev')}</span>
+              <span className="mono">{fmtBps(h.deviationBps)}</span>
+            </div>
+            <div className="source-row">
+              <span>{t('colScore')}</span>
+              <div className="bar" style={{ flex: 1 }}>
+                <span style={{ width: `${h.score}%` }} />
+              </div>
+              <span className="mono">{h.score}</span>
+            </div>
+            <div className="source-row">
+              <span>{t('colLatency')}</span>
+              <span className="mono">{h.latencyMs != null ? `${Math.round(h.latencyMs)}ms` : '—'}</span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
   )
 }

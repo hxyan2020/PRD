@@ -3,9 +3,10 @@ import { DEFAULT_RULES } from '../config/rules'
 import { generateBriefing, loadBriefings, saveBriefings } from '../engine/briefing'
 import { buildTick } from '../engine/health'
 import { evaluateTrigger, toTriggerEvent } from '../engine/trigger'
+import type { AppLang } from '../i18n/messages'
 import type { Briefing, MonitorRules, SourceHealth } from '../types'
 
-export function useMonitor(initialRules: MonitorRules = DEFAULT_RULES) {
+export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_RULES) {
   const [rules, setRules] = useState<MonitorRules>(initialRules)
   const [health, setHealth] = useState<SourceHealth[]>([])
   const [composite, setComposite] = useState<number | null>(null)
@@ -13,7 +14,7 @@ export function useMonitor(initialRules: MonitorRules = DEFAULT_RULES) {
   const [tickAt, setTickAt] = useState<number | null>(null)
   const [anchorsLive, setAnchorsLive] = useState({ okx: false, bitget: false, spot: false })
   const [briefings, setBriefings] = useState<Briefing[]>(() => loadBriefings())
-  const [lastTriggerReason, setLastTriggerReason] = useState('Waiting for first evaluation…')
+  const [lastTriggerReason, setLastTriggerReason] = useState('')
   const [compositeMoveBps5m, setCompositeMoveBps5m] = useState(0)
   const [polling, setPolling] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -23,13 +24,14 @@ export function useMonitor(initialRules: MonitorRules = DEFAULT_RULES) {
   const lastBriefingAt = useRef(0)
   const lastSeverity = useRef<Briefing['severity'] | null>(null)
   const busy = useRef(false)
+  const langRef = useRef(lang)
+  langRef.current = lang
 
   const tick = useCallback(async () => {
     if (busy.current) return
     busy.current = true
     try {
       const result = await buildTick(rules)
-      // Optional demo stress: push LP deviations over alert for verification
       let healthRows = result.health
       if (forceStress && result.composite != null) {
         healthRows = result.health.map((h) => {
@@ -67,6 +69,7 @@ export function useMonitor(initialRules: MonitorRules = DEFAULT_RULES) {
         historyRef.current,
         rules,
         result.tickAt,
+        langRef.current,
       )
       setLastTriggerReason(evalResult.reason)
       setCompositeMoveBps5m(evalResult.compositeMoveBps5m)
@@ -84,6 +87,7 @@ export function useMonitor(initialRules: MonitorRules = DEFAULT_RULES) {
             composite: result.composite,
             spot: result.spot,
             history: historyRef.current,
+            lang: langRef.current,
           })
           lastBriefingAt.current = result.tickAt
           lastSeverity.current = evalResult.severity

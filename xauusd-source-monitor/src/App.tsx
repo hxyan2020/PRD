@@ -2,29 +2,42 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { BriefingArchive } from './components/BriefingArchive'
 import { HealthDashboard } from './components/HealthDashboard'
 import { RulesPanel } from './components/RulesPanel'
+import { useLocale } from './i18n/locale'
+import type { AppLang } from './i18n/messages'
 import { useMonitor } from './hooks/useMonitor'
 
 export default function App() {
-  const mon = useMonitor()
+  const { t, lang, setLang, langLabel } = useLocale()
+  const mon = useMonitor(lang)
 
   return (
     <div className="app-shell">
       <header className="hero">
-        <p className="brand">V Exchange</p>
-        <h1>XAUUSD source monitor</h1>
-        <p>
-          Real-time health for MVP perpetual gold venues (exchanges + LPs). When multiple sources
-          breach thresholds, the monitor investigates microstructure, basis, and session context
-          and publishes an actionable briefing.
-        </p>
+        <div className="hero-top">
+          <p className="brand">{t('brand')}</p>
+          <div className="lang-switch" role="group" aria-label="Language">
+            {(Object.keys(langLabel) as AppLang[]).map((code) => (
+              <button
+                key={code}
+                type="button"
+                className={lang === code ? 'active' : ''}
+                onClick={() => setLang(code)}
+              >
+                {langLabel[code]}
+              </button>
+            ))}
+          </div>
+        </div>
+        <h1>{t('title')}</h1>
+        <p>{t('subtitle')}</p>
       </header>
 
       <nav className="nav">
         <NavLink to="/" end>
-          Health
+          {t('navHealth')}
         </NavLink>
-        <NavLink to="/rules">Rules</NavLink>
-        <NavLink to="/briefings">Briefings</NavLink>
+        <NavLink to="/rules">{t('navRules')}</NavLink>
+        <NavLink to="/briefings">{t('navBriefings')}</NavLink>
       </nav>
 
       <Routes>
@@ -48,19 +61,12 @@ export default function App() {
             />
           }
         />
-        <Route
-          path="/rules"
-          element={<RulesPanel rules={mon.rules} setRules={mon.setRules} />}
-        />
+        <Route path="/rules" element={<RulesPanel rules={mon.rules} setRules={mon.setRules} />} />
         <Route path="/briefings" element={<BriefingArchive briefings={mon.briefings} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      <p className="footer-note">
-        Public permanent page for XAUUSD MVP perp ops. Live anchors: OKX XAU-USDT-SWAP, Bitget
-        XAUUSDT, gold-api XAU spot. Derived mirrors cover BINANCE / BYBIT / indexes / ISPRIME /
-        STARPRIME / VELOCITY when venue CORS or geo blocks prevent direct browser pulls.
-      </p>
+      <p className="footer-note">{t('footer')}</p>
     </div>
   )
 }
