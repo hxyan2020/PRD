@@ -101,6 +101,12 @@ export function HealthDashboard(props: {
     <div className="panel">
       <h2>{t('healthTitle')}</h2>
       <p className="sub desktop-copy">{t('healthSub')}</p>
+      <p className="sub mobile-copy health-sub-short">{t('healthSubShort')}</p>
+
+      <div className="mobile-jump mobile-only" aria-label="Jump">
+        <a href="#price-chart">{t('jumpChart')}</a>
+        <a href="#info-sources">{t('jumpSources')}</a>
+      </div>
 
       <div className="toolbar">
         <span className="pill healthy status-pill" style={{ gap: 8 }}>

@@ -76,7 +76,8 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      <p className="footer-note">{t('footer')}</p>
+      <p className="footer-note desktop-copy">{t('footer')}</p>
+      <p className="footer-note mobile-copy">{t('footerShort')}</p>
     </div>
   )
 }

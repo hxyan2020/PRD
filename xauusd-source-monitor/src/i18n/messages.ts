@@ -18,6 +18,9 @@ const en: Dict = {
   healthTitle: 'Live source health — XAUUSD',
   healthSub:
     'Composite median of healthy venues. Live anchors: OKX / Bitget; Spot XAU is a basis reference only. Exchange indexes & LPs use correlated mirrors when direct public feeds are unavailable.',
+  healthSubShort: 'Composite of healthy venues. Anchors: OKX / Bitget; spot for basis only.',
+  jumpChart: 'Chart',
+  jumpSources: 'Sources',
   livePolling: 'Live polling',
   paused: 'Paused',
   refreshNow: 'Refresh now',
@@ -115,6 +118,7 @@ const en: Dict = {
   chartTitle: 'Realtime composite vs spot',
   chartSub:
     'Live ticks update every poll. Vertical markers = briefing times (SGT); tap a mark for tooltip (title, trigger, breached sources).',
+  chartSubShort: 'Live ticks. Tap briefing marks for tooltip.',
   chartEmpty: 'Collecting ticks… chart appears after two samples.',
   chartBriefingMark: 'Briefing mark',
   chartLive: 'Live',
@@ -122,6 +126,7 @@ const en: Dict = {
   infoSourcesTitle: 'All info sources & health checks',
   infoSourcesSub:
     'Not just prices: venue pages, Yahoo macro JSON/history, Fed policy HTML/JSON, and every Kitco article used in briefings. Each card is a concrete URL with a live browser probe.',
+  infoSourcesSubShort: 'APIs, venues, macro, Fed, Kitco articles — tap a group to expand. Each card has a deep link.',
   probing: 'Probing…',
   probeNow: 'Probe all now',
   infoTotal: 'Sources',
@@ -151,6 +156,7 @@ const en: Dict = {
 
   footer:
     'Public permanent page for XAUUSD MVP perp ops. Live anchors: OKX XAU-USDT-SWAP, Bitget XAUUSDT, gold-api XAU spot. Derived mirrors cover BINANCE / BYBIT / indexes / ISPRIME / STARPRIME / VELOCITY when venue CORS or geo blocks prevent direct browser pulls.',
+  footerShort: 'Live anchors: OKX · Bitget · gold-api. Other venues may use derived mirrors.',
   noTrigger: 'No trigger',
   waitingEval: 'Waiting for first evaluation…',
   more: 'More',
@@ -170,6 +176,9 @@ const zhHant: Dict = {
   healthTitle: '即時行情源健康度 — XAUUSD',
   healthSub:
     '以健康來源的中位數作為綜合價。即時錨點：OKX / Bitget；現貨 XAU 僅作基差參考。其他交易所指數與 LP 在無法直接拉取時使用相關衍生鏡像。',
+  healthSubShort: '健康來源綜合價。錨點：OKX / Bitget；現貨僅作基差。',
+  jumpChart: '圖表',
+  jumpSources: '資訊源',
   livePolling: '即時輪詢中',
   paused: '已暫停',
   refreshNow: '立即刷新',
@@ -258,6 +267,7 @@ const zhHant: Dict = {
   collapseBriefing: '點擊收起',
   chartTitle: '即時綜合價 vs 現貨',
   chartSub: '每次輪詢即時更新。垂直標記＝簡報時間（新加坡時間）；點標記可看 tooltip（標題、觸發條件、越界源）。',
+  chartSubShort: '即時 tick；點簡報標記看 tooltip。',
   chartEmpty: '正在收集 tick… 兩筆樣本後顯示圖表。',
   chartBriefingMark: '簡報標記',
   chartLive: '即時',
@@ -265,6 +275,7 @@ const zhHant: Dict = {
   infoSourcesTitle: '全部資訊源與健康檢查',
   infoSourcesSub:
     '不只價格：合約頁、Yahoo 宏觀 JSON/歷史、聯準會政策 HTML/JSON，以及簡報引用的每一篇 Kitco 文章。每張卡片都是可點開的精確網址，並做瀏覽器端探測。',
+  infoSourcesSubShort: 'API、合約頁、宏觀、聯準會、Kitco 文章 — 點分類展開。每卡含深鏈。',
   probing: '探測中…',
   probeNow: '全部探測',
   infoTotal: '來源數',
@@ -293,6 +304,7 @@ const zhHant: Dict = {
 
   footer:
     'XAUUSD MVP 永續公開常駐監控頁。即時錨點：OKX XAU-USDT-SWAP、Bitget XAUUSDT、gold-api XAU 現貨。BINANCE / BYBIT / 指數 / ISPRIME / STARPRIME / VELOCITY 在瀏覽器 CORS 或地區限制時使用衍生鏡像。',
+  footerShort: '即時錨點：OKX · Bitget · gold-api。其餘場所可能使用衍生鏡像。',
   noTrigger: '未觸發',
   waitingEval: '等待首次判定…',
   more: '展開',

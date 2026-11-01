@@ -172,7 +172,7 @@ export function PriceChart(props: {
 
   if (!chart) {
     return (
-      <div className="panel chart-panel">
+      <div className="panel chart-panel" id="price-chart">
         <h2>{t('chartTitle')}</h2>
         <p className="sub">{t('chartEmpty')}</p>
       </div>
@@ -180,11 +180,12 @@ export function PriceChart(props: {
   }
 
   return (
-    <div className="panel chart-panel">
+    <div className="panel chart-panel" id="price-chart">
       <div className="chart-heading">
         <div>
           <h2>{t('chartTitle')}</h2>
-          <p className="sub">{t('chartSub')}</p>
+          <p className="sub desktop-copy">{t('chartSub')}</p>
+          <p className="sub mobile-copy">{t('chartSubShort')}</p>
         </div>
         <span className="pill healthy chart-live">
           <span className="pulse" />

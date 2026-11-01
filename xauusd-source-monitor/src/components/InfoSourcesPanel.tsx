@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { probeInfoSources } from '../engine/infoProbes'
 import { useLocale } from '../i18n/locale'
 import type { InfoSourceKind, InfoSourceProbe, SourceHealth } from '../types'
@@ -16,10 +16,55 @@ function fmtSgt(ts: number | null) {
   })
 }
 
+function SourceGroup({
+  title,
+  sub,
+  count,
+  defaultOpen,
+  children,
+}: {
+  title: string
+  sub: string
+  count?: number
+  defaultOpen: boolean
+  children: ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className={`info-group ${open ? 'open' : 'collapsed'}`}>
+      <button type="button" className="info-group-toggle" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+        <h3>
+          {title} {count != null ? <span className="kind-count">({count})</span> : null}
+        </h3>
+        <span className={`fold-chevron ${open ? 'open' : ''}`} aria-hidden>
+          ▾
+        </span>
+      </button>
+      {open ? (
+        <>
+          <p className="sub">{sub}</p>
+          {children}
+        </>
+      ) : null}
+    </div>
+  )
+}
+
 export function InfoSourcesPanel({ monitorHealth }: { monitorHealth?: SourceHealth[] }) {
   const { t, lang } = useLocale()
   const [rows, setRows] = useState<InfoSourceProbe[]>([])
   const [busy, setBusy] = useState(false)
+  const [compact, setCompact] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 720px)').matches,
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 720px)')
+    const onChange = () => setCompact(mq.matches)
+    onChange()
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   const run = useCallback(async () => {
     setBusy(true)
@@ -55,7 +100,8 @@ export function InfoSourcesPanel({ monitorHealth }: { monitorHealth?: SourceHeal
   return (
     <div className="panel" id="info-sources">
       <h2>{t('infoSourcesTitle')}</h2>
-      <p className="sub">{t('infoSourcesSub')}</p>
+      <p className="sub desktop-copy">{t('infoSourcesSub')}</p>
+      <p className="sub mobile-copy">{t('infoSourcesSubShort')}</p>
 
       <div className="info-summary">
         <div className="stat">
@@ -83,12 +129,18 @@ export function InfoSourcesPanel({ monitorHealth }: { monitorHealth?: SourceHeal
       </div>
 
       {monitorHealth && monitorHealth.length > 0 ? (
-        <div className="info-group">
-          <h3>{t('infoKind_monitor')}</h3>
-          <p className="sub">{t('infoKind_monitorSub')}</p>
+        <SourceGroup
+          title={t('infoKind_monitor')}
+          sub={t('infoKind_monitorSub')}
+          count={monitorHealth.length}
+          defaultOpen={!compact}
+        >
           <div className="info-cards">
             {monitorHealth.map((h) => (
-              <article key={h.id} className={`info-card status-${h.health === 'healthy' ? 'ok' : h.health === 'watch' ? 'degraded' : 'down'}`}>
+              <article
+                key={h.id}
+                className={`info-card status-${h.health === 'healthy' ? 'ok' : h.health === 'watch' ? 'degraded' : 'down'}`}
+              >
                 <header>
                   <strong>
                     {h.label} · {h.id}
@@ -118,19 +170,20 @@ export function InfoSourcesPanel({ monitorHealth }: { monitorHealth?: SourceHeal
               </article>
             ))}
           </div>
-        </div>
+        </SourceGroup>
       ) : null}
 
       {groups.map((kind) => {
         const list = rows.filter((r) => r.kind === kind)
         if (!list.length) return null
         return (
-          <div key={kind} className="info-group">
-            <h3>
-              {t(`infoKind_${kind}`)}{' '}
-              <span className="kind-count">({list.length})</span>
-            </h3>
-            <p className="sub">{t(`infoKind_${kind}Sub`)}</p>
+          <SourceGroup
+            key={kind}
+            title={t(`infoKind_${kind}`)}
+            sub={t(`infoKind_${kind}Sub`)}
+            count={list.length}
+            defaultOpen={!compact && (kind === 'price' || kind === 'news')}
+          >
             <div className="info-cards">
               {list.map((r) => (
                 <article key={r.id} className={`info-card status-${r.status}`}>
@@ -165,7 +218,7 @@ export function InfoSourcesPanel({ monitorHealth }: { monitorHealth?: SourceHeal
                 </article>
               ))}
             </div>
-          </div>
+          </SourceGroup>
         )
       })}
     </div>
