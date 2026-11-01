@@ -71,33 +71,42 @@ function BriefingCard({ briefing: b }: { briefing: Briefing }) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        <header>
-          <div>
-            <span className={`pill ${b.severity}`}>{b.severity}</span>
-            <h3 style={{ marginTop: 8 }}>{b.title}</h3>
-          </div>
-          <time dateTime={new Date(b.createdAt).toISOString()}>
-            {fmtSgt(b.createdAt)} SGT
-          </time>
-        </header>
+        <div className="briefing-toggle-row">
+          <header>
+            <div>
+              <span className={`pill ${b.severity}`}>{b.severity}</span>
+              <h3 style={{ marginTop: 8 }}>{b.title}</h3>
+            </div>
+            <time dateTime={new Date(b.createdAt).toISOString()}>
+              {fmtSgt(b.createdAt)} SGT
+            </time>
+          </header>
+          <span className={`fold-chevron ${open ? 'open' : ''}`} aria-hidden>
+            ▾
+          </span>
+        </div>
         <p className="sub briefing-summary">
           {t('trigger')}: {b.triggerReason} · {t('composite')} {b.compositePrice.toFixed(2)} ·{' '}
           {t('breached')}: {b.breachedSources.join(', ') || '—'}
         </p>
-        <p className="sub citation-preview">
-          {t('citationCount').replace('{n}', String(citationCount))}
-          {previewUrls.length ? (
-            <>
-              {' · '}
-              <span className="mono">{previewUrls[0]}</span>
-            </>
-          ) : null}
-        </p>
-        <span className="fold-hint">{open ? t('collapseBriefing') : t('expandBriefing')}</span>
+        {!open ? (
+          <p className="sub citation-preview">
+            {t('citationCount').replace('{n}', String(citationCount))}
+            {previewUrls.length ? (
+              <>
+                {' · '}
+                <span className="mono">{previewUrls[0]}</span>
+              </>
+            ) : null}
+          </p>
+        ) : null}
+        <span className={`fold-hint ${open ? 'is-open' : ''}`}>
+          {open ? t('collapseBriefing') : t('expandBriefing')}
+        </span>
       </button>
 
       {open ? (
-        <div className="briefing-body">
+        <div className="briefing-body" id={`briefing-body-${b.id}`}>
           <section>
             <h4>{t('whyTitle')}</h4>
             <ul>
@@ -139,6 +148,9 @@ function BriefingCard({ briefing: b }: { briefing: Briefing }) {
               </ul>
             )}
           </section>
+          <button type="button" className="fold-hint is-open bottom-fold" onClick={() => setOpen(false)}>
+            {t('collapseBriefing')}
+          </button>
         </div>
       ) : null}
     </article>
