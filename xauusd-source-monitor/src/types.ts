@@ -83,7 +83,15 @@ export interface Briefing {
   triggerReason: string
   breachedSources: string[]
   compositePrice: number
+  /**
+   * Market structure / price observations (bps, basis, venue lag) — not root causes.
+   * @deprecated Prefer `observations` + `causes`
+   */
   why: string[]
+  /** What we saw in prices / venues — observations only */
+  observations: string[]
+  /** Root drivers: news, macro indicators, policy — or an explicit undeclared call */
+  causes: string[]
   impact: string[]
   actions: string[]
   /** @deprecated Prefer citations with clickable URLs */

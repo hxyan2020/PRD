@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { isBriefingActive } from '../engine/briefing'
+import { isBriefingActive, isBriefingArchived } from '../engine/briefing'
 import { useLocale } from '../i18n/locale'
 import { severityHintKey, severityLabelKey, severityTone } from '../lib/severity'
 import type { Briefing, BriefingCitation, BriefingSeverity, CitationCategory } from '../types'
@@ -77,32 +77,75 @@ function CitationList({
   )
 }
 
+function BulletSection({
+  title,
+  caption,
+  lines,
+}: {
+  title: string
+  caption?: string
+  lines: string[]
+}) {
+  if (!lines.length) return null
+  return (
+    <section>
+      <h4>{title}</h4>
+      {caption ? <p className="sub section-cap">{caption}</p> : null}
+      <ul>
+        {lines.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 function BriefingCard({
   briefing: b,
+  mode,
   onArchive,
+  onUnarchive,
 }: {
   briefing: Briefing
-  onArchive: (id: string) => void
+  mode: 'active' | 'vault'
+  onArchive?: (id: string) => void
+  onUnarchive?: (id: string) => void
 }) {
   const { t } = useLocale()
   const [open, setOpen] = useState(false)
   const citationCount = b.citations?.length || b.sourcesConsulted?.length || 0
   const previewUrls = (b.citations || []).slice(0, 2).map((c) => c.url)
   const tone = severityTone(b.severity)
+  const observations = b.observations?.length ? b.observations : b.why || []
+  const causes = b.causes?.length ? b.causes : []
 
   return (
     <article className={`briefing tone-${tone} ${open ? 'open' : 'collapsed'}`}>
       <div className="briefing-actions">
-        <button
-          type="button"
-          className="archive-btn"
-          onClick={(e) => {
-            e.stopPropagation()
-            onArchive(b.id)
-          }}
-        >
-          {t('archiveAction')}
-        </button>
+        {mode === 'active' && onArchive ? (
+          <button
+            type="button"
+            className="archive-btn"
+            onClick={(e) => {
+              e.stopPropagation()
+              onArchive(b.id)
+            }}
+          >
+            {t('archiveAction')}
+          </button>
+        ) : null}
+        {mode === 'vault' && onUnarchive ? (
+          <button
+            type="button"
+            className="archive-btn"
+            onClick={(e) => {
+              e.stopPropagation()
+              onUnarchive(b.id)
+            }}
+          >
+            {t('unarchiveAction')}
+          </button>
+        ) : null}
       </div>
       <button
         type="button"
@@ -118,6 +161,14 @@ function BriefingCard({
             </div>
             <time dateTime={new Date(b.createdAt).toISOString()}>
               {fmtSgt(b.createdAt)} SGT
+              {b.archivedAt ? (
+                <>
+                  <br />
+                  <span className="archived-at">
+                    {t('archivedAtLabel')}: {fmtSgt(b.archivedAt)} SGT
+                  </span>
+                </>
+              ) : null}
             </time>
           </header>
           <span className={`fold-chevron ${open ? 'open' : ''}`} aria-hidden>
@@ -146,14 +197,16 @@ function BriefingCard({
 
       {open ? (
         <div className="briefing-body" id={`briefing-body-${b.id}`}>
-          <section>
-            <h4>{t('whyTitle')}</h4>
-            <ul>
-              {b.why.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          </section>
+          <BulletSection
+            title={t('causesTitle')}
+            caption={t('causesSub')}
+            lines={causes}
+          />
+          <BulletSection
+            title={t('observationsTitle')}
+            caption={t('observationsSub')}
+            lines={observations}
+          />
           <section>
             <h4>{t('impactTitle')}</h4>
             <p className="sub section-cap">{t('impactSub')}</p>
@@ -188,13 +241,24 @@ function BriefingCard({
             )}
           </section>
           <div className="briefing-body-actions">
-            <button
-              type="button"
-              className="archive-btn primary-archive"
-              onClick={() => onArchive(b.id)}
-            >
-              {t('archiveAction')}
-            </button>
+            {mode === 'active' && onArchive ? (
+              <button
+                type="button"
+                className="archive-btn primary-archive"
+                onClick={() => onArchive(b.id)}
+              >
+                {t('archiveAction')}
+              </button>
+            ) : null}
+            {mode === 'vault' && onUnarchive ? (
+              <button
+                type="button"
+                className="archive-btn primary-archive"
+                onClick={() => onUnarchive(b.id)}
+              >
+                {t('unarchiveAction')}
+              </button>
+            ) : null}
             <button type="button" className="fold-hint is-open bottom-fold" onClick={() => setOpen(false)}>
               {t('collapseBriefing')}
             </button>
@@ -205,6 +269,22 @@ function BriefingCard({
   )
 }
 
+function SevLegend() {
+  const { t } = useLocale()
+  return (
+    <div className="sev-legend" aria-label={t('sevLegendTitle')}>
+      <div className="sev-legend-title">{t('sevLegendTitle')}</div>
+      {(['critical', 'alert', 'watch'] as BriefingSeverity[]).map((s) => (
+        <div key={s} className={`sev-legend-row tone-${severityTone(s)}`}>
+          <span className={`pill sev-${severityTone(s)}`}>{t(severityLabelKey(s))}</span>
+          <span>{t(severityHintKey(s))}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/** Active briefings tab — hides archived items. */
 export function BriefingArchive({
   briefings,
   onArchive,
@@ -215,7 +295,7 @@ export function BriefingArchive({
   const { t, lang } = useLocale()
   const forLang = briefings.filter((b) => !b.lang || b.lang === lang)
   const visible = forLang.filter(isBriefingActive)
-  const archivedCount = forLang.length - visible.length
+  const archivedCount = forLang.filter(isBriefingArchived).length
 
   return (
     <div className="panel">
@@ -224,21 +304,44 @@ export function BriefingArchive({
       {archivedCount > 0 ? (
         <p className="sub archived-count">{t('archivedCount').replace('{n}', String(archivedCount))}</p>
       ) : null}
-
-      <div className="sev-legend" aria-label={t('sevLegendTitle')}>
-        <div className="sev-legend-title">{t('sevLegendTitle')}</div>
-        {(['critical', 'alert', 'watch'] as BriefingSeverity[]).map((s) => (
-          <div key={s} className={`sev-legend-row tone-${severityTone(s)}`}>
-            <span className={`pill sev-${severityTone(s)}`}>{t(severityLabelKey(s))}</span>
-            <span>{t(severityHintKey(s))}</span>
-          </div>
-        ))}
-      </div>
-
+      <SevLegend />
       {visible.length === 0 ? (
         <p className="sub">{t('archiveEmpty')}</p>
       ) : (
-        visible.map((b) => <BriefingCard key={b.id} briefing={b} onArchive={onArchive} />)
+        visible.map((b) => (
+          <BriefingCard key={b.id} briefing={b} mode="active" onArchive={onArchive} />
+        ))
+      )}
+    </div>
+  )
+}
+
+/** Fourth page — all archived briefings. */
+export function ArchivedBriefingsPage({
+  briefings,
+  onUnarchive,
+}: {
+  briefings: Briefing[]
+  onUnarchive: (id: string) => void
+}) {
+  const { t, lang } = useLocale()
+  const forLang = briefings.filter((b) => !b.lang || b.lang === lang)
+  const archived = forLang
+    .filter(isBriefingArchived)
+    .slice()
+    .sort((a, b) => (b.archivedAt ?? 0) - (a.archivedAt ?? 0))
+
+  return (
+    <div className="panel">
+      <h2>{t('vaultTitle')}</h2>
+      <p className="sub">{t('vaultSub')}</p>
+      <SevLegend />
+      {archived.length === 0 ? (
+        <p className="sub">{t('vaultEmpty')}</p>
+      ) : (
+        archived.map((b) => (
+          <BriefingCard key={b.id} briefing={b} mode="vault" onUnarchive={onUnarchive} />
+        ))
       )}
     </div>
   )
