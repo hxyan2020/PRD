@@ -155,31 +155,16 @@ export async function generateBriefing(args: {
     )
   }
 
-  const impact =
-    lang === 'zh-Hant'
-      ? [
-          '指數/標記：越界源若仍在籃子內，公允與標記價會相對同行漂移，交易者面臨跳動與強平風險上升。',
-          '做市對沖：加密所領先 LP 時，LMAX/ISPrime 對沖落後，庫存與資金費承受逆向選擇。',
-          '運維誤報：價差/深度/無成交監控在錯位解除前更容易觸發，佔用值班帶寬。',
-        ]
-      : [
-          'Index/mark: breached sources still in the basket drift fair/mark vs peers — traders see jumps and higher liquidation risk.',
-          'MM hedge: when crypto venues lead LPs, LMAX/ISPrime hedges lag and face adverse selection on inventory/funding.',
-          'Ops noise: spread/depth/no-trade monitors false-fire until dislocation clears, consuming on-call bandwidth.',
-        ]
-
-  const actions =
-    lang === 'zh-Hant'
-      ? [
-          '核對即時錨點 vs 衍生鏡像；≥3 源持續 >15 bps 超過 2 分鐘則剔除最差離群並重跑試算。',
-          '收緊觀察/重啟窗口，Critical 持續 >5 分鐘則降槓桿/吃單檔並暫停新開倉。',
-          '通知做市商擴大報價、改在健康場所對沖；冷卻後需試算+健康分恢復才恢復權重。',
-        ]
-      : [
-          'Verify live anchors vs derived mirrors; if ≥3 sources stay >15 bps for >2m, drop worst outlier(s) and re-run trial calc.',
-          'Tighten observation/re-enable windows; if Critical lasts >5m, cut leverage/take levels and pause new opens.',
-          'Tell MMs to widen quotes and hedge on healthy venues; restore weights only after trial calc + healthy scores.',
-        ]
+  const { impact, actions } = buildImpactActions({
+    lang,
+    severity,
+    breached,
+    exch,
+    lps,
+    avgDev,
+    move,
+    basis,
+  })
 
   const citations = await collectCitations({
     lang,
@@ -199,18 +184,67 @@ export async function generateBriefing(args: {
     breachedSources: trigger.breachedSources,
     compositePrice: composite,
     why,
-    impact,
-    actions,
+    impact: impact.slice(0, 3),
+    actions: actions.slice(0, 3),
     sourcesConsulted: citationsToLegacyLines(citations),
     citations,
   }
 }
 
-const STORAGE_KEY = 'xauusd-monitor-briefings-v4'
+const STORAGE_KEY = 'xauusd-monitor-briefings-v5'
 
 function seedCitations(lang: AppLang) {
   // Full deep-link catalog (APIs, instrument pages, single articles) — not landing pages.
   return staticCitationCatalog(lang)
+}
+
+/** Exactly 3 dense bullets each — pack useful points, do not drop them. */
+function buildImpactActions(args: {
+  lang: AppLang
+  severity: BriefingSeverity
+  breached: SourceHealth[]
+  exch: SourceHealth[]
+  lps: SourceHealth[]
+  avgDev: number
+  move: number
+  basis: number | null
+}): { impact: string[]; actions: string[] } {
+  const { lang, severity, breached, exch, lps, avgDev, move, basis } = args
+  const names = breached.map((h) => h.id).join('/') || '—'
+  const exchNames = exch.map((h) => h.id).join('/') || '—'
+  const lpNames = lps.map((h) => h.id).join('/') || '—'
+  const moveTxt = `${move >= 0 ? '+' : ''}${move.toFixed(1)}`
+  const basisTxt =
+    basis == null ? null : `${basis >= 0 ? '+' : ''}${basis.toFixed(1)} bps`
+  const sevHi = severity === 'critical' || severity === 'alert'
+
+  if (lang === 'zh-Hant') {
+    return {
+      impact: [
+        `指數/標記/交易者：越界源 ${names}（均偏 ${avgDev.toFixed(1)} bps，5m ${moveTxt}）若仍入籃，公允與標記相對同行漂移；高槓桿 XAUUSD 永續易見跳動、對手基差擴大與強平風險上升。`,
+        `做市/資金：${exch.length ? `交易所側 ${exchNames} 領先時，` : ''}${lps.length ? `LP ${lpNames} ` : 'LP '}對沖（LMAX/ISPrime 等）落後 → 庫存與資金費逆向選擇；${basisTxt ? `相對現貨基差 ${basisTxt}。` : '需交叉核對現貨基差。'}`,
+        `運維/競品：價差·深度·無成交監控在錯位解除前更易誤報佔用值班；同時對照 Binance/OKX/Bybit 標記與指數，避免誤判為單源故障。`,
+      ],
+      actions: [
+        `核對：即時錨點（OKX/Bitget/gold-api）vs 衍生鏡像；≥3 源持續 >15 bps 逾 2 分鐘 → 暫剔最差離群、重跑試算並記錄權重變更。`,
+        `風控：收緊 ${names} 觀察/重啟窗口，避免尖峰後自動加回過期 LP；${sevHi ? 'Alert/Critical' : 'Watch'} 若升 Critical 且持續 >5 分鐘 → 降槓桿/吃單檔並暫停新開倉。`,
+        `對沖恢復：通知做市商擴大報價、優先在健康場所對沖；冷卻後須試算成功 + 健康分恢復，才恢復完整權重（點「可驗證來源」核對 API/單篇新聞）。`,
+      ],
+    }
+  }
+
+  return {
+    impact: [
+      `Index/mark/traders: breached ${names} (avg |dev| ${avgDev.toFixed(1)} bps, 5m ${moveTxt}) still in the basket drift fair/mark vs peers — XAUUSD MVP perps see jumps, wider competitor basis, and higher liquidation risk at high leverage.`,
+      `MM/funding: ${exch.length ? `exchange-side ${exchNames} leading → ` : ''}${lps.length ? `LP ${lpNames} ` : 'LP '}hedges (LMAX/ISPrime etc.) lag → inventory & funding adverse selection; ${basisTxt ? `spot basis ${basisTxt}.` : 'cross-check spot basis.'}`,
+      `Ops/peers: spread·depth·no-trade monitors false-fire until dislocation clears (on-call noise); cross-check Binance/OKX/Bybit mark/index so this is not misread as a single-venue outage.`,
+    ],
+    actions: [
+      `Verify: live anchors (OKX/Bitget/gold-api) vs derived mirrors; if ≥3 sources stay >15 bps for >2m → temporarily drop worst outlier(s), re-run trial calc, log weight changes.`,
+      `Risk: tighten observation/re-enable windows on ${names} (avoid auto-reintroducing a stale LP after a spike); if severity hits Critical >5m → cut leverage/market-take and pause new opens.`,
+      `Hedge/restore: tell MMs to widen quotes and hedge on healthy venues; restore full weights only after successful trial calc + healthy scores (use Verify sources for API/article deep links).`,
+    ],
+  }
 }
 
 export function loadBriefings(): Briefing[] {
@@ -258,14 +292,14 @@ function seedBriefings(): Briefing[] {
         'Basis vs spot briefly widened then compressed — typical open auction catch-up, not a macro surprise.',
       ],
       impact: [
-        'Index/mark: high Binance/Bybit weight risked a short-lived mark bounce.',
-        'MM hedges on LPs lagged exchange-led moves for ~3 minutes.',
-        'No lasting basket change after 5m normalization.',
+        'Index/mark/traders: BINANCE/BYBIT/ISPRIME/VELOCITY in basket risked a short mark bounce vs peers; high-leverage XAUUSD perps saw jump + liquidation risk for ~3m.',
+        'MM/funding: exchange perps led; LP hedges (LMAX/ISPrime path) lagged ~10–20 bps → inventory/funding adverse selection until catch-up.',
+        'Ops/peers: spread/depth monitors noisier at London open; cross-checked OKX/Bitget/gold-api — open-auction microstructure, not a lasting basket fault.',
       ],
       actions: [
-        'Kept index basket intact after 5m normalization.',
-        'Documented LP lag; no permanent exclusion.',
-        'Cross-check OKX/Bitget/gold-api links in Verify sources.',
+        'Verified live anchors vs derived mirrors; held basket after 5m normalization (no permanent exclusion); logged LP lag for weight review.',
+        'Tightened observation/re-enable on ISPRIME/VELOCITY to avoid auto-reintroducing stale LP quotes after the open spike.',
+        'MM desk widened briefly and hedged on healthier venues; restore full weights only after trial calc + healthy scores (see Verify sources).',
       ],
       citations: seedCitations('en'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('en')),
@@ -285,14 +319,14 @@ function seedBriefings(): Briefing[] {
         '相對現貨基差短暫走闊後收斂 — 典型開盤追價，非宏觀意外。',
       ],
       impact: [
-        '指數/標記：Binance/Bybit 權重偏高時可能短暫標記上跳。',
-        '做市對沖：LP 對沖落後交易所主導行情約 3 分鐘。',
-        '5 分鐘恢復後籃子無需永久調整。',
+        '指數/標記/交易者：BINANCE/BYBIT/ISPRIME/VELOCITY 仍入籃時標記相對同行短暫上跳；高槓桿 XAUUSD 永續約 3 分鐘內跳動與強平風險上升。',
+        '做市/資金：交易所永續領先，LP（LMAX/ISPrime 路徑）落後約 10–20 bps → 庫存與資金費逆向選擇，直至追價完成。',
+        '運維/競品：倫敦開盤價差·深度監控更易誤報；已交叉核對 OKX/Bitget/gold-api — 屬開盤微結構，非持久籃子故障。',
       ],
       actions: [
-        '5 分鐘恢復正常後維持指數籃子不變。',
-        '記錄 LP 延遲；未做永久剔除。',
-        '點開「可驗證來源」核對 OKX/Bitget/gold-api 與單篇新聞。',
+        '核對即時錨點 vs 衍生鏡像；5 分鐘恢復後維持籃子（未永久剔除），並記錄 LP 延遲供權重覆核。',
+        '收緊 ISPRIME/VELOCITY 觀察/重啟窗口，避免開盤尖峰後自動加回過期 LP 報價。',
+        '做市商短暫擴大報價並改在健康場所對沖；須試算成功 + 健康分恢復才恢復完整權重（見可驗證來源）。',
       ],
       citations: seedCitations('zh-Hant'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('zh-Hant')),
@@ -311,14 +345,14 @@ function seedBriefings(): Briefing[] {
         'Isolated LP inventory skew; composite move under shock threshold.',
       ],
       impact: [
-        'Limited index impact if STARPRIME weight is low.',
-        'Watch for copycat LP widening.',
-        'Ops noise: single-LP watch should not alone fire multi-source alerts.',
+        'Index/mark/traders: STARPRIME soft vs OKEX/BITGET — limited mark drift if LP weight is low; traders unlikely to see a multi-venue liquidation spike from this alone.',
+        'MM/funding: isolated LP inventory skew; hedges on other LPs stay intact, but copycat widening would raise adverse-selection risk.',
+        'Ops/peers: keep as Watch (not multi-source Alert); cross-check OKX/Bitget tickers so ops does not escalate a single-LP soft quote.',
       ],
       actions: [
-        'Raised watch on STARPRIME only.',
-        'No leverage change.',
-        'Verify OKX/Bitget ticker JSON links before escalating.',
+        'Raised watch on STARPRIME only; no basket exclusion and no leverage/take change while composite shock stays below threshold.',
+        'Tighten STARPRIME observation window; re-check in 5–10m for copycat LP widening before any weight cut.',
+        'Verify OKX/Bitget ticker JSON + gold-api before escalating; restore normal watch only after healthy scores (see Verify sources).',
       ],
       citations: seedCitations('en'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('en')),
@@ -337,14 +371,14 @@ function seedBriefings(): Briefing[] {
         '屬單一 LP 庫存偏斜；綜合價變動未達衝擊閾值。',
       ],
       impact: [
-        '若 STARPRIME 權重不高，指數影響有限。',
-        '需觀察其他 LP 是否跟進擴大價差。',
-        '運維：單一 LP 觀察不應單獨升級為多源告警。',
+        '指數/標記/交易者：STARPRIME 相對 OKEX/BITGET 偏弱 — LP 權重不高則標記漂移有限，不足以單獨觸發多場所強平潮。',
+        '做市/資金：屬單一 LP 庫存偏斜，其他 LP 對沖仍可用；若出現跟進擴大價差才會抬升逆向選擇。',
+        '運維/競品：維持 Watch（非多源 Alert）；交叉核對 OKX/Bitget ticker，避免把單 LP 軟報價升級為系統事件。',
       ],
       actions: [
-        '僅提高 STARPRIME 觀察等級。',
-        '未調整槓桿。',
-        '升級前先點開 OKX/Bitget ticker JSON 核對。',
+        '僅提高 STARPRIME 觀察；綜合衝擊未超閾值前不剔除籃子、不改槓桿/吃單檔。',
+        '收緊 STARPRIME 觀察窗口；5–10 分鐘內複查是否有其他 LP 跟進擴大，再決定是否降權。',
+        '升級前核對 OKX/Bitget ticker JSON 與 gold-api；健康分恢復後才解除加強觀察（見可驗證來源）。',
       ],
       citations: seedCitations('zh-Hant'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('zh-Hant')),

@@ -514,6 +514,11 @@ td.mono,
   color: var(--muted);
 }
 
+.briefing .section-cap {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+}
+
 .briefing ul {
   margin: 0;
   padding-left: 1.1rem;

@@ -108,16 +108,18 @@ function BriefingCard({ briefing: b }: { briefing: Briefing }) {
           </section>
           <section>
             <h4>{t('impactTitle')}</h4>
+            <p className="sub section-cap">{t('impactSub')}</p>
             <ul>
-              {b.impact.map((line) => (
+              {b.impact.slice(0, 3).map((line) => (
                 <li key={line}>{line}</li>
               ))}
             </ul>
           </section>
           <section>
             <h4>{t('actionsTitle')}</h4>
+            <p className="sub section-cap">{t('actionsSub')}</p>
             <ul>
-              {b.actions.map((line) => (
+              {b.actions.slice(0, 3).map((line) => (
                 <li key={line}>{line}</li>
               ))}
             </ul>
