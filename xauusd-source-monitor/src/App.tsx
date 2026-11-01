@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { BriefingArchive } from './components/BriefingArchive'
 import { HealthDashboard } from './components/HealthDashboard'
@@ -9,6 +10,7 @@ import { useMonitor } from './hooks/useMonitor'
 export default function App() {
   const { t, lang, setLang, langLabel } = useLocale()
   const mon = useMonitor(lang)
+  const [heroOpen, setHeroOpen] = useState(false)
 
   return (
     <div className="app-shell">
@@ -29,7 +31,13 @@ export default function App() {
           </div>
         </div>
         <h1>{t('title')}</h1>
-        <p>{t('subtitle')}</p>
+        <p className="hero-sub desktop-copy">{t('subtitle')}</p>
+        <p className="hero-sub mobile-copy">
+          {heroOpen ? t('subtitle') : t('subtitleShort')}{' '}
+          <button type="button" className="text-link" onClick={() => setHeroOpen((v) => !v)}>
+            {heroOpen ? t('less') : t('more')}
+          </button>
+        </p>
       </header>
 
       <nav className="nav">

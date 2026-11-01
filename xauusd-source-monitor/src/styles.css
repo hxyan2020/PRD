@@ -51,6 +51,76 @@ a {
   max-width: 1180px;
   margin: 0 auto;
   padding: 20px 18px 48px;
+  padding-left: max(18px, env(safe-area-inset-left));
+  padding-right: max(18px, env(safe-area-inset-right));
+  padding-bottom: max(48px, calc(24px + env(safe-area-inset-bottom)));
+}
+
+.desktop-copy {
+  display: block;
+}
+
+.mobile-copy {
+  display: none;
+}
+
+.text-link {
+  display: inline;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gold-deep);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.hero-sub {
+  margin: 0;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.trigger-line .anchor-line {
+  display: block;
+  margin-top: 4px;
+}
+
+.tick-value {
+  font-size: 0.85rem;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+  margin-top: 8px;
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metric-value {
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.source-card.tone-alert {
+  border-color: rgba(194, 65, 12, 0.35);
+}
+
+.source-card.tone-watch {
+  border-color: rgba(161, 98, 7, 0.35);
+}
+
+.source-card.tone-critical {
+  border-color: rgba(153, 27, 27, 0.4);
 }
 
 .hero {
@@ -105,12 +175,6 @@ a {
   letter-spacing: -0.02em;
 }
 
-.hero p {
-  margin: 0;
-  color: var(--muted);
-  max-width: 62ch;
-}
-
 .nav {
   display: flex;
   flex-wrap: nowrap;
@@ -120,6 +184,7 @@ a {
   top: 0;
   z-index: 20;
   padding: 8px 0;
+  padding-top: max(8px, env(safe-area-inset-top));
   background: linear-gradient(180deg, rgba(243, 239, 230, 0.96), rgba(243, 239, 230, 0.88));
   backdrop-filter: blur(8px);
   overflow-x: auto;
@@ -137,6 +202,7 @@ a {
   min-height: 42px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 
 .nav a.active {
@@ -486,29 +552,92 @@ td.mono,
 
 @media (max-width: 720px) {
   .app-shell {
-    padding: 12px 12px 36px;
+    padding: 10px 12px 28px;
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: max(28px, calc(16px + env(safe-area-inset-bottom)));
+  }
+
+  .hero {
+    gap: 6px;
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+  }
+
+  .brand {
+    font-size: 1.45rem;
   }
 
   .hero h1 {
-    font-size: 1.2rem;
+    font-size: 1.12rem;
+    line-height: 1.25;
   }
 
-  .hero p {
-    font-size: 0.92rem;
+  .hero-sub {
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  .desktop-copy {
+    display: none !important;
+  }
+
+  .mobile-copy {
+    display: inline;
+  }
+
+  .nav {
+    gap: 6px;
+    margin: 0 0 12px;
+  }
+
+  .nav a {
+    flex: 1 1 0;
+    padding: 10px 8px;
+    font-size: 0.88rem;
+    border-radius: 12px;
   }
 
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .toolbar {
     gap: 8px;
   }
 
-  .toolbar button,
-  .toolbar .pill {
-    flex: 1 1 calc(50% - 8px);
+  .stat {
+    padding: 10px;
+  }
+
+  .stat .label {
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+  }
+
+  .stat .value {
+    font-size: 1.02rem;
+  }
+
+  .tick-value {
+    font-size: 0.78rem !important;
+    word-break: break-word;
+  }
+
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .toolbar .status-pill {
+    grid-column: 1 / -1;
     justify-content: center;
+    min-height: 40px;
+  }
+
+  .toolbar button {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 8px;
+    font-size: 0.88rem;
   }
 
   .desktop-only {
@@ -519,8 +648,34 @@ td.mono,
     display: grid;
   }
 
+  .source-cards {
+    gap: 8px;
+  }
+
+  .source-card {
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .source-card header {
+    align-items: flex-start;
+  }
+
+  .source-meta {
+    margin: 2px 0 0;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .form-grid input {
+    min-height: 44px;
+    font-size: 16px; /* avoid iOS zoom */
+  }
+
+  .briefing {
+    padding: 12px;
   }
 
   .briefing header {
@@ -528,8 +683,26 @@ td.mono,
     align-items: flex-start;
   }
 
+  .briefing li {
+    font-size: 0.92rem;
+  }
+
   .panel {
-    padding: 14px 12px;
+    padding: 12px;
     border-radius: 14px;
+  }
+
+  .panel h2 {
+    font-size: 1rem;
+  }
+
+  .trigger-line {
+    font-size: 0.86rem;
+    margin-bottom: 10px !important;
+  }
+
+  .footer-note {
+    font-size: 0.75rem;
+    line-height: 1.35;
   }
 }

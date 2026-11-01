@@ -102,6 +102,10 @@ const en: Dict = {
     'Public permanent page for XAUUSD MVP perp ops. Live anchors: OKX XAU-USDT-SWAP, Bitget XAUUSDT, gold-api XAU spot. Derived mirrors cover BINANCE / BYBIT / indexes / ISPRIME / STARPRIME / VELOCITY when venue CORS or geo blocks prevent direct browser pulls.',
   noTrigger: 'No trigger',
   waitingEval: 'Waiting for first evaluation…',
+  more: 'More',
+  less: 'Less',
+  subtitleShort:
+    'Live exchange + LP health for XAUUSD MVP perp. Multi-source breaches auto-publish briefings.',
 }
 
 const zhHant: Dict = {
@@ -192,6 +196,9 @@ const zhHant: Dict = {
     'XAUUSD MVP 永續公開常駐監控頁。即時錨點：OKX XAU-USDT-SWAP、Bitget XAUUSDT、gold-api XAU 現貨。BINANCE / BYBIT / 指數 / ISPRIME / STARPRIME / VELOCITY 在瀏覽器 CORS 或地區限制時使用衍生鏡像。',
   noTrigger: '未觸發',
   waitingEval: '等待首次判定…',
+  more: '展開',
+  less: '收起',
+  subtitleShort: 'XAUUSD MVP 永續的交易所與 LP 即時健康度；多源越界時自動產出簡報。',
 }
 
 export const messages: Record<AppLang, Dict> = { en, 'zh-Hant': zhHant }

@@ -11,8 +11,19 @@ function fmtBps(n: number | null | undefined) {
   return `${n >= 0 ? '+' : ''}${n.toFixed(1)}`
 }
 
-function fmtTime(ts: number | null) {
+function fmtTime(ts: number | null, compact = false) {
   if (!ts) return '—'
+  if (compact) {
+    return new Date(ts).toLocaleString('en-SG', {
+      timeZone: 'Asia/Singapore',
+      hour12: false,
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+  }
   return new Date(ts).toLocaleString('en-SG', {
     timeZone: 'Asia/Singapore',
     hour12: false,
@@ -82,10 +93,10 @@ export function HealthDashboard(props: {
   return (
     <div className="panel">
       <h2>{t('healthTitle')}</h2>
-      <p className="sub">{t('healthSub')}</p>
+      <p className="sub desktop-copy">{t('healthSub')}</p>
 
       <div className="toolbar">
-        <span className="pill healthy" style={{ gap: 8 }}>
+        <span className="pill healthy status-pill" style={{ gap: 8 }}>
           {polling ? <span className="pulse" /> : null}
           {polling ? t('livePolling') : t('paused')}
         </span>
@@ -135,17 +146,19 @@ export function HealthDashboard(props: {
         </div>
         <div className="stat">
           <div className="label">{t('lastTick')}</div>
-          <div className="value" style={{ fontSize: '0.85rem' }}>
-            {fmtTime(tickAt)}
+          <div className="value tick-value">
+            <span className="desktop-copy">{fmtTime(tickAt)}</span>
+            <span className="mobile-copy">{fmtTime(tickAt, true)}</span>
           </div>
         </div>
       </div>
 
-      <p className="sub" style={{ marginBottom: 8 }}>
+      <p className="sub trigger-line">
         {t('triggerEvaluator')}: <strong>{lastTriggerReason || t('waitingEval')}</strong>
-        <br />
-        {t('anchors')} — OKX {anchorsLive.okx ? '●' : '○'} · Bitget {anchorsLive.bitget ? '●' : '○'}{' '}
-        · Spot {anchorsLive.spot ? '●' : '○'}
+        <span className="anchor-line">
+          {t('anchors')} — OKX {anchorsLive.okx ? '●' : '○'} · Bitget {anchorsLive.bitget ? '●' : '○'}{' '}
+          · Spot {anchorsLive.spot ? '●' : '○'}
+        </span>
       </p>
 
       <div className="table-wrap desktop-only">
@@ -189,30 +202,38 @@ export function HealthDashboard(props: {
 
       <div className="source-cards mobile-only">
         {health.map((h) => (
-          <article key={h.id} className="source-card">
+          <article key={h.id} className={`source-card tone-${h.health}`}>
             <header>
-              <strong>{h.label}</strong>
+              <div>
+                <strong>{h.label}</strong>
+                <div className="source-meta">
+                  {kindLabel(h.kind)} · {modeLabel(h.mode)}
+                </div>
+              </div>
               <span className={`pill ${h.health}`}>{healthLabel(h.health)}</span>
             </header>
-            <div className="source-meta">{kindLabel(h.kind)} · {modeLabel(h.mode)}</div>
-            <div className="source-row">
-              <span>{t('colPrice')}</span>
-              <span className="mono">{fmtPx(h.price)}</span>
-            </div>
-            <div className="source-row">
-              <span>{t('colDev')}</span>
-              <span className="mono">{fmtBps(h.deviationBps)}</span>
-            </div>
-            <div className="source-row">
-              <span>{t('colScore')}</span>
-              <div className="bar" style={{ flex: 1 }}>
-                <span style={{ width: `${h.score}%` }} />
+            <div className="metric-grid">
+              <div>
+                <span className="metric-label">{t('colPrice')}</span>
+                <span className="mono metric-value">{fmtPx(h.price)}</span>
               </div>
-              <span className="mono">{h.score}</span>
-            </div>
-            <div className="source-row">
-              <span>{t('colLatency')}</span>
-              <span className="mono">{h.latencyMs != null ? `${Math.round(h.latencyMs)}ms` : '—'}</span>
+              <div>
+                <span className="metric-label">{t('colDev')}</span>
+                <span className="mono metric-value">{fmtBps(h.deviationBps)}</span>
+              </div>
+              <div>
+                <span className="metric-label">{t('colScore')}</span>
+                <span className="mono metric-value">{h.score}</span>
+                <div className="bar">
+                  <span style={{ width: `${h.score}%` }} />
+                </div>
+              </div>
+              <div>
+                <span className="metric-label">{t('colLatency')}</span>
+                <span className="mono metric-value">
+                  {h.latencyMs != null ? `${Math.round(h.latencyMs)}ms` : '—'}
+                </span>
+              </div>
             </div>
           </article>
         ))}
