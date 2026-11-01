@@ -62,8 +62,9 @@ export function HealthDashboard(props: {
       <div className="panel">
         <h2>Live source health — XAUUSD</h2>
         <p className="sub">
-          Composite median of healthy venues. Live anchors: OKX / Bitget / gold spot. Other
-          exchange indexes &amp; LPs are derived mirrors when direct public feeds are unavailable.
+          Composite median of healthy venues. Live anchors: OKX / Bitget; Spot XAU is a basis
+          reference only. Exchange indexes &amp; LPs use correlated mirrors when direct public
+          feeds are unavailable.
         </p>
 
         <div className="toolbar">

@@ -58,24 +58,17 @@ export async function buildTick(rules: MonitorRules, now = Date.now()): Promise<
         mode: 'live',
       }
     }
-    if (src.id === 'RC_INDEX' && anchors.spot != null) {
-      // Spot gold as composite-index style reference
-      return {
-        id: src.id,
-        price: anchors.spot,
-        updatedAt: now,
-        latencyMs: anchors.latency.spot ?? null,
-        mode: 'live',
-      }
-    }
-    if (src.id === 'LMAX' && anchors.spot != null) {
+    // RC_INDEX tracks crypto XAU composite (not LBMA spot) so basis vs spot is reported separately.
+    if (src.id === 'RC_INDEX' && anchorMid != null) {
       const noise = seededNoise(src.id, now, src.noiseBps)
       return {
         id: src.id,
-        price: anchors.spot * (1 + (src.basisBps + noise) / 10_000),
+        price: anchorMid * (1 + (src.basisBps + noise) / 10_000),
         updatedAt: now,
-        latencyMs: anchors.latency.spot ?? null,
-        mode: 'derived',
+        latencyMs: Math.round(
+          ((anchors.latency.okx ?? 120) + (anchors.latency.bitget ?? 120)) / 2,
+        ),
+        mode: anchors.okx != null || anchors.bitget != null ? 'live' : 'derived',
       }
     }
 
