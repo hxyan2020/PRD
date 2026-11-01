@@ -393,16 +393,86 @@ td.mono,
   color: var(--ok);
 }
 .pill.watch {
-  background: #fef3c7;
-  color: var(--watch);
+  background: #dcfce7;
+  color: #166534;
 }
 .pill.alert {
-  background: #ffedd5;
-  color: var(--alert);
+  background: #fef3c7;
+  color: #a16207;
 }
 .pill.critical {
   background: #fee2e2;
-  color: var(--critical);
+  color: #991b1b;
+}
+
+/* Briefing traffic lights: red / yellow / green */
+.pill.sev-red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.pill.sev-yellow {
+  background: #fef3c7;
+  color: #a16207;
+}
+.pill.sev-green {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.sev-legend {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 248, 0.9);
+}
+
+.sev-legend-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.sev-legend-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.severity-badge {
+  display: grid;
+  gap: 4px;
+}
+
+.severity-badge .sev-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.briefing.tone-red {
+  border-color: rgba(153, 27, 27, 0.45);
+  box-shadow: inset 4px 0 0 #dc2626;
+  background: #fff7f7;
+}
+
+.briefing.tone-yellow {
+  border-color: rgba(161, 98, 7, 0.4);
+  box-shadow: inset 4px 0 0 #eab308;
+  background: #fffdf5;
+}
+
+.briefing.tone-green {
+  border-color: rgba(22, 101, 52, 0.35);
+  box-shadow: inset 4px 0 0 #22c55e;
+  background: #f7fff9;
 }
 .pill.stale,
 .pill.offline {
@@ -800,18 +870,22 @@ td.mono,
 }
 
 .price-chart .briefing-dot {
-  fill: var(--alert);
+  fill: #eab308;
   stroke: #fff;
   stroke-width: 1.5;
   pointer-events: none;
 }
 
-.price-chart .briefing-dot.critical {
-  fill: var(--critical);
+.price-chart .briefing-dot.tone-red {
+  fill: #dc2626;
 }
 
-.price-chart .briefing-dot.watch {
-  fill: var(--watch);
+.price-chart .briefing-dot.tone-yellow {
+  fill: #eab308;
+}
+
+.price-chart .briefing-dot.tone-green {
+  fill: #16a34a;
 }
 
 .price-chart .mark-time {

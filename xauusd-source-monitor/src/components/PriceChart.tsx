@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useLocale } from '../i18n/locale'
+import { severityLabelKey, severityTone } from '../lib/severity'
 import type { Briefing, PricePoint } from '../types'
 
 function fmtClock(ts: number) {
@@ -155,14 +156,15 @@ export function PriceChart(props: {
     xPct: number
     yPct: number
   }, pinned: boolean) => {
+    const tone = severityTone(m.briefing.severity)
     setTip({
       xPct: m.xPct,
       yPct: m.yPct,
       title: m.briefing.title,
-      severity: m.briefing.severity,
+      severity: tone,
       pinned,
       lines: [
-        `${fmtClock(m.briefing.createdAt)} SGT`,
+        `${t(severityLabelKey(m.briefing.severity))} · ${fmtClock(m.briefing.createdAt)} SGT`,
         `${t('composite')} ${m.briefing.compositePrice.toFixed(2)}`,
         m.briefing.triggerReason,
         `${t('breached')}: ${m.briefing.breachedSources.join(', ') || '—'}`,
@@ -255,7 +257,12 @@ export function PriceChart(props: {
                   else openTip(m, true)
                 }}
               />
-              <circle cx={m.x} cy={m.y} r={6} className={`briefing-dot ${m.briefing.severity}`} />
+              <circle
+                cx={m.x}
+                cy={m.y}
+                r={6}
+                className={`briefing-dot tone-${severityTone(m.briefing.severity)}`}
+              />
               <text x={m.x} y={m.y - 10} textAnchor="middle" className="mark-time">
                 {m.label}
               </text>
@@ -278,7 +285,7 @@ export function PriceChart(props: {
             onClick={() => setTip(null)}
           >
             <div className="tip-top">
-              <span className={`pill ${tip.severity}`}>{tip.severity}</span>
+              <span className={`pill sev-${tip.severity}`}>{t(`sev_${tip.severity}`)}</span>
               {tip.pinned ? <span className="tip-pin">{lang === 'zh-Hant' ? '已固定' : 'pinned'}</span> : null}
             </div>
             <strong>{tip.title}</strong>
@@ -302,7 +309,9 @@ export function PriceChart(props: {
                 className="mark-chip"
                 onClick={() => openTip(m, true)}
               >
-                <span className={`pill ${m.briefing.severity}`}>{m.briefing.severity}</span>
+                <span className={`pill sev-${severityTone(m.briefing.severity)}`}>
+                  {t(severityLabelKey(m.briefing.severity))}
+                </span>
                 <span className="mono">{m.label} SGT</span>
                 <span className="mark-chip-title">{m.briefing.title}</span>
               </button>

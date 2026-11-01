@@ -72,15 +72,15 @@ export async function generateBriefing(args: {
   const title =
     lang === 'zh-Hant'
       ? severity === 'critical'
-        ? `Critical XAUUSD 場所壓力 — ${breached.length} 個來源越界`
+        ? `【紅】突發衝擊 — ${breached.length} 源越界，需立刻處理`
         : severity === 'alert'
-          ? `XAUUSD 多源告警 — 請檢查指數輸入`
-          : `XAUUSD 跨層級觀察 — 交易所/LP 錯位`
+          ? `【黃】多源錯位升高 — 請排查指數輸入`
+          : `【綠】常見誘因 — 跨層級觀察，無特殊風險點`
       : severity === 'critical'
-        ? `Critical XAUUSD venue stress — ${breached.length} sources breached`
+        ? `[RED] Sudden stress — ${breached.length} sources breached; handle now`
         : severity === 'alert'
-          ? `XAUUSD multi-source alert — investigate index inputs`
-          : `XAUUSD cross-tier watch — exchange/LP dislocation`
+          ? `[YELLOW] Elevated multi-source dislocation — investigate index inputs`
+          : `[GREEN] Common catalyst — cross-tier watch, no special risk`
 
   const why: string[] = []
   if (lang === 'zh-Hant') {
@@ -191,7 +191,7 @@ export async function generateBriefing(args: {
   }
 }
 
-const STORAGE_KEY = 'xauusd-monitor-briefings-v5'
+const STORAGE_KEY = 'xauusd-monitor-briefings-v6'
 
 function seedCitations(lang: AppLang) {
   // Full deep-link catalog (APIs, instrument pages, single articles) — not landing pages.
@@ -278,11 +278,65 @@ function seedBriefings(): Briefing[] {
   const now = Date.now()
   return [
     {
+      id: 'brf_seed_0_en',
+      createdAt: now - 2 * 3600_000,
+      severity: 'critical',
+      lang: 'en',
+      title: '[RED] Flash multi-venue break — index inputs diverged hard',
+      triggerReason: '6 sources in Alert; composite 5m move +52 bps',
+      breachedSources: ['BINANCE', 'BYBIT', 'OKEX', 'BITGET', 'ISPRIME', 'VELOCITY'],
+      compositePrice: 3861.4,
+      why: [
+        'Simultaneous exchange + LP alerts with a >50 bps composite jump in 5 minutes — beyond routine open noise.',
+        'Live anchors and derived mirrors both printed away from spot; basis briefly >60 bps.',
+        'Pattern matches an urgent index-input event: traders face mark jumps / liquidation risk if basket weights stay unchanged.',
+      ],
+      impact: [
+        'Index/mark/traders: fair/mark can gap vs peers within seconds — high-leverage XAUUSD perps at immediate liquidation risk.',
+        'MM/funding: hedges across LMAX/ISPrime lag the crypto print → adverse selection and inventory blowouts until weights cut.',
+        'Ops: treat as exchange-critical — auto monitors will flood; decision window is minutes, not hours.',
+      ],
+      actions: [
+        'Immediately drop worst outliers from the index basket and re-run trial calc; pause new opens if Critical holds >2m.',
+        'Cut max leverage / market-take; notify MM desk to widen and hedge only on healthy venues.',
+        'Restore weights only after trial calc + healthy scores; verify OKX/Bitget/gold-api deep links in Verify sources.',
+      ],
+      citations: seedCitations('en'),
+      sourcesConsulted: citationsToLegacyLines(seedCitations('en')),
+    },
+    {
+      id: 'brf_seed_0_zh',
+      createdAt: now - 2 * 3600_000 + 1,
+      severity: 'critical',
+      lang: 'zh-Hant',
+      title: '【紅】多場所閃崩錯位 — 指數輸入嚴重背離',
+      triggerReason: '6 個來源告警；綜合價 5 分鐘 +52 bps',
+      breachedSources: ['BINANCE', 'BYBIT', 'OKEX', 'BITGET', 'ISPRIME', 'VELOCITY'],
+      compositePrice: 3861.4,
+      why: [
+        '交易所與 LP 同時告警，且綜合價 5 分鐘跳動 >50 bps — 已超出例行開盤噪音。',
+        '即時錨點與衍生鏡像相對現貨同步偏離；基差短暫 >60 bps。',
+        '屬需立刻處理的指數輸入事件：若不調權重，交易者面臨標記跳動/強平。',
+      ],
+      impact: [
+        '指數/標記/交易者：公允與標記可在數秒內相對同行跳空 — 高槓桿 XAUUSD 永續強平風險立即上升。',
+        '做市/資金：LMAX/ISPrime 對沖落後加密成交 → 逆向選擇與庫存衝擊，直到降權。',
+        '運維：按本所緊急事件處理 — 監控會暴衝；決策窗口是分鐘級。',
+      ],
+      actions: [
+        '立刻剔除最差離群源並重跑試算；Critical 持續 >2 分鐘則暫停新開倉。',
+        '降低最大槓桿/吃單檔；通知做市商擴大報價、僅在健康場所對沖。',
+        '須試算成功 + 健康分恢復才恢復權重；並核對可驗證來源中的 OKX/Bitget/gold-api。',
+      ],
+      citations: seedCitations('zh-Hant'),
+      sourcesConsulted: citationsToLegacyLines(seedCitations('zh-Hant')),
+    },
+    {
       id: 'brf_seed_1_en',
       createdAt: now - 36 * 3600_000,
       severity: 'alert',
       lang: 'en',
-      title: 'XAUUSD multi-source alert — London open dislocation',
+      title: '[YELLOW] Multi-source alert — London open dislocation',
       triggerReason: '4 sources in Alert (≥3 required)',
       breachedSources: ['BINANCE', 'BYBIT', 'ISPRIME', 'VELOCITY'],
       compositePrice: 3884.2,
@@ -309,7 +363,7 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 36 * 3600_000 + 1,
       severity: 'alert',
       lang: 'zh-Hant',
-      title: 'XAUUSD 多源告警 — 倫敦開盤錯位',
+      title: '【黃】多源告警 — 倫敦開盤錯位',
       triggerReason: '4 個來源處於告警（需 ≥3）',
       breachedSources: ['BINANCE', 'BYBIT', 'ISPRIME', 'VELOCITY'],
       compositePrice: 3884.2,
@@ -336,7 +390,7 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 5 * 3600_000,
       severity: 'watch',
       lang: 'en',
-      title: 'XAUUSD cross-tier watch — LP soft vs exchanges',
+      title: '[GREEN] Cross-tier watch — LP soft vs exchanges (common)',
       triggerReason: 'Cross-tier dislocation: 2 exchange + 1 LP at Watch/Alert',
       breachedSources: ['OKEX', 'BITGET', 'STARPRIME'],
       compositePrice: 3890.55,
@@ -362,7 +416,7 @@ function seedBriefings(): Briefing[] {
       createdAt: now - 5 * 3600_000 + 1,
       severity: 'watch',
       lang: 'zh-Hant',
-      title: 'XAUUSD 跨層級觀察 — LP 相對交易所偏弱',
+      title: '【綠】跨層級觀察 — LP 相對交易所偏弱（常見誘因）',
       triggerReason: '跨層級錯位：2 個交易所 + 1 個 LP 處於觀察/告警',
       breachedSources: ['OKEX', 'BITGET', 'STARPRIME'],
       compositePrice: 3890.55,

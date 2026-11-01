@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLocale } from '../i18n/locale'
-import type { Briefing, BriefingCitation, CitationCategory } from '../types'
+import { severityHintKey, severityLabelKey, severityTone } from '../lib/severity'
+import type { Briefing, BriefingCitation, BriefingSeverity, CitationCategory } from '../types'
 
 function fmtSgt(ts: number) {
   return new Date(ts).toLocaleString('en-SG', {
@@ -17,6 +18,24 @@ function fmtSgt(ts: number) {
 
 function categoryKey(cat: CitationCategory): string {
   return `citationCat_${cat}`
+}
+
+function SeverityBadge({
+  severity,
+  t,
+  showHint = false,
+}: {
+  severity: BriefingSeverity
+  t: (key: string) => string
+  showHint?: boolean
+}) {
+  const tone = severityTone(severity)
+  return (
+    <div className={`severity-badge tone-${tone}`}>
+      <span className={`pill sev-${tone}`}>{t(severityLabelKey(severity))}</span>
+      {showHint ? <span className="sev-hint">{t(severityHintKey(severity))}</span> : null}
+    </div>
+  )
 }
 
 function CitationList({
@@ -62,9 +81,10 @@ function BriefingCard({ briefing: b }: { briefing: Briefing }) {
   const [open, setOpen] = useState(false)
   const citationCount = b.citations?.length || b.sourcesConsulted?.length || 0
   const previewUrls = (b.citations || []).slice(0, 2).map((c) => c.url)
+  const tone = severityTone(b.severity)
 
   return (
-    <article className={`briefing ${open ? 'open' : 'collapsed'}`}>
+    <article className={`briefing tone-${tone} ${open ? 'open' : 'collapsed'}`}>
       <button
         type="button"
         className="briefing-toggle"
@@ -74,7 +94,7 @@ function BriefingCard({ briefing: b }: { briefing: Briefing }) {
         <div className="briefing-toggle-row">
           <header>
             <div>
-              <span className={`pill ${b.severity}`}>{b.severity}</span>
+              <SeverityBadge severity={b.severity} t={t} showHint />
               <h3 style={{ marginTop: 8 }}>{b.title}</h3>
             </div>
             <time dateTime={new Date(b.createdAt).toISOString()}>
@@ -165,6 +185,16 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
     <div className="panel">
       <h2>{t('archiveTitle')}</h2>
       <p className="sub">{t('archiveSub')}</p>
+
+      <div className="sev-legend" aria-label={t('sevLegendTitle')}>
+        <div className="sev-legend-title">{t('sevLegendTitle')}</div>
+        {(['critical', 'alert', 'watch'] as BriefingSeverity[]).map((s) => (
+          <div key={s} className={`sev-legend-row tone-${severityTone(s)}`}>
+            <span className={`pill sev-${severityTone(s)}`}>{t(severityLabelKey(s))}</span>
+            <span>{t(severityHintKey(s))}</span>
+          </div>
+        ))}
+      </div>
 
       {visible.length === 0 ? (
         <p className="sub">{t('archiveEmpty')}</p>
