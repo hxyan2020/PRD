@@ -514,6 +514,12 @@ td.mono,
   margin-top: 0;
 }
 
+.archived-at {
+  font-size: 0.78rem;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
 .archived-count {
   margin: -6px 0 12px !important;
   font-weight: 600;

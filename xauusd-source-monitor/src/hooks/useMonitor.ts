@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_RULES } from '../config/rules'
 import {
   archiveBriefingInList,
+  unarchiveBriefingInList,
   generateBriefing,
   isBriefingActive,
   loadBriefings,
@@ -144,6 +145,14 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
     })
   }, [])
 
+  const unarchiveBriefing = useCallback((id: string) => {
+    setBriefings((prev) => {
+      const next = unarchiveBriefingInList(prev, id)
+      saveBriefings(next)
+      return next
+    })
+  }, [])
+
   return {
     rules,
     setRules,
@@ -154,6 +163,7 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
     anchorsLive,
     briefings,
     archiveBriefing,
+    unarchiveBriefing,
     lastTriggerReason,
     compositeMoveBps5m,
     polling,

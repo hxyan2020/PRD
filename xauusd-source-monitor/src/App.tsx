@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
-import { BriefingArchive } from './components/BriefingArchive'
+import { ArchivedBriefingsPage, BriefingArchive } from './components/BriefingArchive'
 import { HealthDashboard } from './components/HealthDashboard'
 import { RulesPanel } from './components/RulesPanel'
 import { useLocale } from './i18n/locale'
@@ -46,6 +46,7 @@ export default function App() {
         </NavLink>
         <NavLink to="/health">{t('navHealth')}</NavLink>
         <NavLink to="/rules">{t('navRules')}</NavLink>
+        <NavLink to="/archive">{t('navArchive')}</NavLink>
       </nav>
 
       <Routes>
@@ -78,6 +79,15 @@ export default function App() {
           }
         />
         <Route path="/rules" element={<RulesPanel rules={mon.rules} setRules={mon.setRules} />} />
+        <Route
+          path="/archive"
+          element={
+            <ArchivedBriefingsPage
+              briefings={mon.briefings}
+              onUnarchive={mon.unarchiveBriefing}
+            />
+          }
+        />
         <Route path="/briefings" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
