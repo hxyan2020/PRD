@@ -99,3 +99,22 @@ export interface MacroSnapshot {
   sessionNote: string
   fetchedAt: number
 }
+
+export interface PricePoint {
+  t: number
+  px: number
+  spot?: number
+}
+
+export type ProbeStatus = 'ok' | 'degraded' | 'down' | 'checking'
+
+export interface InfoSourceProbe {
+  id: string
+  label: string
+  url: string
+  kind: 'price' | 'news' | 'macro' | 'policy'
+  status: ProbeStatus
+  latencyMs: number | null
+  detail?: string
+  checkedAt: number | null
+}

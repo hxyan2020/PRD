@@ -66,6 +66,8 @@ export default function App() {
               setForceStress={mon.setForceStress}
               refresh={mon.refresh}
               error={mon.error}
+              priceHistory={mon.priceHistory}
+              briefings={mon.briefings}
             />
           }
         />

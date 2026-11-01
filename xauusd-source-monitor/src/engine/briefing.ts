@@ -1,6 +1,6 @@
 import type { AppLang } from '../i18n/messages'
-import type { Briefing, BriefingCitation, BriefingSeverity, SourceHealth, TriggerEvent } from '../types'
-import { citationsToLegacyLines, collectCitations } from './citations'
+import type { Briefing, BriefingSeverity, SourceHealth, TriggerEvent } from '../types'
+import { citationsToLegacyLines, collectCitations, staticCitationCatalog } from './citations'
 
 function directionWord(bps: number, lang: AppLang): string {
   if (lang === 'zh-Hant') {
@@ -158,35 +158,27 @@ export async function generateBriefing(args: {
   const impact =
     lang === 'zh-Hant'
       ? [
-          '若指數仍納入越界來源，V Exchange XAUUSD 指數可能暫時高估或低估，公允/標記價相對同行漂移。',
-          'XAUUSD MVP 永續交易者可能看到標記價跳動、相對競爭對手基差擴大，高槓桿時強平風險上升。',
-          '資金/庫存：若加密所領先 LP，在 LMAX/ISPrime 對沖的做市商可能在 LP 追價前承受逆向選擇。',
-          '運維負載：價差、深度、無成交等監控更容易誤報，直到錯位解除。',
+          '指數/標記：越界源若仍在籃子內，公允與標記價會相對同行漂移，交易者面臨跳動與強平風險上升。',
+          '做市對沖：加密所領先 LP 時，LMAX/ISPrime 對沖落後，庫存與資金費承受逆向選擇。',
+          '運維誤報：價差/深度/無成交監控在錯位解除前更容易觸發，佔用值班帶寬。',
         ]
       : [
-          'V Exchange XAUUSD index may temporarily overweight or underweight a diverging venue if the index still includes breached sources — fair/mark can drift vs peers.',
-          'Traders on V Exchange may see mark-price jumps, wider basis vs competitors, and elevated liquidation risk if leverage is high on XAUUSD MVP perp.',
-          'Funding / inventory: if crypto exchanges lead LPs, V Exchange market makers hedging on LMAX/ISPrime may face adverse selection until LP quotes catch up.',
-          'Ops load: risk monitors (spread, depth, no-trade) are more likely to false-positive until the dislocation clears.',
+          'Index/mark: breached sources still in the basket drift fair/mark vs peers — traders see jumps and higher liquidation risk.',
+          'MM hedge: when crypto venues lead LPs, LMAX/ISPrime hedges lag and face adverse selection on inventory/funding.',
+          'Ops noise: spread/depth/no-trade monitors false-fire until dislocation clears, consuming on-call bandwidth.',
         ]
 
   const actions =
     lang === 'zh-Hant'
       ? [
-          '確認越界來源，並區分即時錨點（OKEX/BITGET 等）與衍生鏡像是否在拉動中位數。',
-          '若 ≥3 個來源持續 >15 bps 超過 2 分鐘，暫時剔除最差離群源並重跑試算。',
-          '收緊該場所的觀察/重新啟用窗口；避免尖峰後自動把過期 LP 加回。',
-          '提升 XAUUSD 風控：降低最大槓桿/市價吃單檔位；Critical 持續 >5 分鐘則暫停新開倉。',
-          '通知做市商擴大報價，優先在健康場所對沖；同時觀察 Binance/OKX/Bybit 的標記/指數。',
-          '冷卻結束後，需試算成功且健康分恢復，才恢復完整權重。',
+          '核對即時錨點 vs 衍生鏡像；≥3 源持續 >15 bps 超過 2 分鐘則剔除最差離群並重跑試算。',
+          '收緊觀察/重啟窗口，Critical 持續 >5 分鐘則降槓桿/吃單檔並暫停新開倉。',
+          '通知做市商擴大報價、改在健康場所對沖；冷卻後需試算+健康分恢復才恢復權重。',
         ]
       : [
-          'Confirm which sources breached and whether live (OKEX/BITGET/RC_INDEX) vs derived mirrors are driving the median.',
-          'If ≥3 sources remain >15 bps for >2 minutes, temporarily exclude the worst outlier(s) from the XAUUSD index basket and re-run trial calc.',
-          'Tighten observation / re-enable windows on the offending venue; avoid auto-reintroducing a stale LP after a spike.',
-          'Raise XAUUSD risk: reduce max leverage / market-take levels; pause new opens if Critical severity persists >5 minutes.',
-          'Notify MM desk to widen quotes and hedge preferentially on healthy venues; watch competitor mark/index on Binance/OKX/Bybit.',
-          'After cooldown, require a successful trial calc + healthy health scores before restoring full weight.',
+          'Verify live anchors vs derived mirrors; if ≥3 sources stay >15 bps for >2m, drop worst outlier(s) and re-run trial calc.',
+          'Tighten observation/re-enable windows; if Critical lasts >5m, cut leverage/take levels and pause new opens.',
+          'Tell MMs to widen quotes and hedge on healthy venues; restore weights only after trial calc + healthy scores.',
         ]
 
   const citations = await collectCitations({
@@ -214,82 +206,11 @@ export async function generateBriefing(args: {
   }
 }
 
-const STORAGE_KEY = 'xauusd-monitor-briefings-v3'
+const STORAGE_KEY = 'xauusd-monitor-briefings-v4'
 
-function seedCitations(lang: AppLang): BriefingCitation[] {
-  // Synchronous subset for seed rows; live briefings call collectCitations().
-  return [
-    {
-      id: 'okx-ticker-api',
-      label:
-        lang === 'zh-Hant'
-          ? 'OKX API：XAU-USDT-SWAP 最新成交價 JSON'
-          : 'OKX API: XAU-USDT-SWAP last price JSON',
-      url: 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP',
-      category: 'price_api',
-    },
-    {
-      id: 'bitget-ticker-api',
-      label:
-        lang === 'zh-Hant'
-          ? 'Bitget API：XAUUSDT 永續 ticker JSON'
-          : 'Bitget API: XAUUSDT perpetual ticker JSON',
-      url: 'https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=XAUUSDT',
-      category: 'price_api',
-    },
-    {
-      id: 'gold-api-xau',
-      label:
-        lang === 'zh-Hant' ? 'gold-api：XAU 現貨美元價 JSON' : 'gold-api: XAU spot USD JSON',
-      url: 'https://api.gold-api.com/price/XAU',
-      category: 'price_api',
-    },
-    {
-      id: 'kitco-plunge-3900',
-      label:
-        lang === 'zh-Hant'
-          ? 'Kitco：金價跌破 3,900 美元至一年低點（2026-10-30）'
-          : 'Kitco: Gold plunges to one-year low below $3,900 (30 Oct 2026)',
-      url: 'https://www.kitco.com/news/article/2026-10-30/gold-prices-plunge-one-year-low-below-3900-higher-oil-prices-fuel-fears',
-      category: 'news',
-    },
-    {
-      id: 'kitco-pm-liquidation',
-      label:
-        lang === 'zh-Hant'
-          ? 'Kitco 午後：美股拋售引發清算，金價跌破 3,900（2026-10-30）'
-          : 'Kitco PM: Gold below $3,900 as Wall Street selloff triggers liquidation (30 Oct 2026)',
-      url: 'https://www.kitco.com/news/article/2026-10-30/gold-falls-below-3900-silver-tumbles-wall-street-selloff-triggers',
-      category: 'news',
-    },
-    {
-      id: 'fed-fomc',
-      label:
-        lang === 'zh-Hant'
-          ? '聯準會 FOMC 聲明（2026-10-28）'
-          : 'Federal Reserve FOMC statement (28 Oct 2026)',
-      url: 'https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm',
-      category: 'macro',
-    },
-    {
-      id: 'yahoo-gc',
-      label:
-        lang === 'zh-Hant'
-          ? 'Yahoo Finance：COMEX 黃金期貨 GC=F'
-          : 'Yahoo Finance: COMEX gold futures GC=F',
-      url: 'https://finance.yahoo.com/quote/GC%3DF/',
-      category: 'macro',
-    },
-    {
-      id: 'yahoo-dxy',
-      label:
-        lang === 'zh-Hant'
-          ? 'Yahoo Finance：美元指數 DX-Y.NYB'
-          : 'Yahoo Finance: US Dollar Index DX-Y.NYB',
-      url: 'https://finance.yahoo.com/quote/DX-Y.NYB/',
-      category: 'macro',
-    },
-  ]
+function seedCitations(lang: AppLang) {
+  // Full deep-link catalog (APIs, instrument pages, single articles) — not landing pages.
+  return staticCitationCatalog(lang)
 }
 
 export function loadBriefings(): Briefing[] {
@@ -337,12 +258,14 @@ function seedBriefings(): Briefing[] {
         'Basis vs spot briefly widened then compressed — typical open auction catch-up, not a macro surprise.',
       ],
       impact: [
-        'V Exchange index risked a short-lived mark bounce if Binance/Bybit weights were high.',
-        'MM hedges on LPs may have been late vs exchange-led moves.',
+        'Index/mark: high Binance/Bybit weight risked a short-lived mark bounce.',
+        'MM hedges on LPs lagged exchange-led moves for ~3 minutes.',
+        'No lasting basket change after 5m normalization.',
       ],
       actions: [
         'Kept index basket intact after 5m normalization.',
         'Documented LP lag; no permanent exclusion.',
+        'Cross-check OKX/Bitget/gold-api links in Verify sources.',
       ],
       citations: seedCitations('en'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('en')),
@@ -362,12 +285,14 @@ function seedBriefings(): Briefing[] {
         '相對現貨基差短暫走闊後收斂 — 典型開盤追價，非宏觀意外。',
       ],
       impact: [
-        '若 Binance/Bybit 權重偏高，V Exchange 指數可能短暫標記上跳。',
-        '在 LP 對沖的做市商可能落後於交易所主導行情。',
+        '指數/標記：Binance/Bybit 權重偏高時可能短暫標記上跳。',
+        '做市對沖：LP 對沖落後交易所主導行情約 3 分鐘。',
+        '5 分鐘恢復後籃子無需永久調整。',
       ],
       actions: [
         '5 分鐘恢復正常後維持指數籃子不變。',
         '記錄 LP 延遲；未做永久剔除。',
+        '點開「可驗證來源」核對 OKX/Bitget/gold-api 與單篇新聞。',
       ],
       citations: seedCitations('zh-Hant'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('zh-Hant')),
@@ -388,8 +313,13 @@ function seedBriefings(): Briefing[] {
       impact: [
         'Limited index impact if STARPRIME weight is low.',
         'Watch for copycat LP widening.',
+        'Ops noise: single-LP watch should not alone fire multi-source alerts.',
       ],
-      actions: ['Raised watch on STARPRIME only.', 'No leverage change.'],
+      actions: [
+        'Raised watch on STARPRIME only.',
+        'No leverage change.',
+        'Verify OKX/Bitget ticker JSON links before escalating.',
+      ],
       citations: seedCitations('en'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('en')),
     },
@@ -409,8 +339,13 @@ function seedBriefings(): Briefing[] {
       impact: [
         '若 STARPRIME 權重不高，指數影響有限。',
         '需觀察其他 LP 是否跟進擴大價差。',
+        '運維：單一 LP 觀察不應單獨升級為多源告警。',
       ],
-      actions: ['僅提高 STARPRIME 觀察等級。', '未調整槓桿。'],
+      actions: [
+        '僅提高 STARPRIME 觀察等級。',
+        '未調整槓桿。',
+        '升級前先點開 OKX/Bitget ticker JSON 核對。',
+      ],
       citations: seedCitations('zh-Hant'),
       sourcesConsulted: citationsToLegacyLines(seedCitations('zh-Hant')),
     },

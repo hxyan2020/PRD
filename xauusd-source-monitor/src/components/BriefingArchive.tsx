@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLocale } from '../i18n/locale'
 import type { Briefing, BriefingCitation, CitationCategory } from '../types'
 
@@ -56,6 +57,92 @@ function CitationList({
   )
 }
 
+function BriefingCard({ briefing: b }: { briefing: Briefing }) {
+  const { t } = useLocale()
+  const [open, setOpen] = useState(false)
+  const citationCount = b.citations?.length || b.sourcesConsulted?.length || 0
+  const previewUrls = (b.citations || []).slice(0, 2).map((c) => c.url)
+
+  return (
+    <article className={`briefing ${open ? 'open' : 'collapsed'}`}>
+      <button
+        type="button"
+        className="briefing-toggle"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <header>
+          <div>
+            <span className={`pill ${b.severity}`}>{b.severity}</span>
+            <h3 style={{ marginTop: 8 }}>{b.title}</h3>
+          </div>
+          <time dateTime={new Date(b.createdAt).toISOString()}>
+            {fmtSgt(b.createdAt)} SGT
+          </time>
+        </header>
+        <p className="sub briefing-summary">
+          {t('trigger')}: {b.triggerReason} · {t('composite')} {b.compositePrice.toFixed(2)} ·{' '}
+          {t('breached')}: {b.breachedSources.join(', ') || '—'}
+        </p>
+        <p className="sub citation-preview">
+          {t('citationCount').replace('{n}', String(citationCount))}
+          {previewUrls.length ? (
+            <>
+              {' · '}
+              <span className="mono">{previewUrls[0]}</span>
+            </>
+          ) : null}
+        </p>
+        <span className="fold-hint">{open ? t('collapseBriefing') : t('expandBriefing')}</span>
+      </button>
+
+      {open ? (
+        <div className="briefing-body">
+          <section>
+            <h4>{t('whyTitle')}</h4>
+            <ul>
+              {b.why.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </section>
+          <section>
+            <h4>{t('impactTitle')}</h4>
+            <ul>
+              {b.impact.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </section>
+          <section>
+            <h4>{t('actionsTitle')}</h4>
+            <ul>
+              {b.actions.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </section>
+          <section className="citations-section">
+            <h4>{t('citationsTitle')}</h4>
+            <p className="sub" style={{ marginTop: 0 }}>
+              {t('citationsSub')}
+            </p>
+            {b.citations?.length ? (
+              <CitationList citations={b.citations} t={t} />
+            ) : (
+              <ul>
+                {b.sourcesConsulted.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+      ) : null}
+    </article>
+  )
+}
+
 export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
   const { t, lang } = useLocale()
   const visible = briefings.filter((b) => !b.lang || b.lang === lang)
@@ -68,63 +155,7 @@ export function BriefingArchive({ briefings }: { briefings: Briefing[] }) {
       {visible.length === 0 ? (
         <p className="sub">{t('archiveEmpty')}</p>
       ) : (
-        visible.map((b) => (
-          <article key={b.id} className="briefing">
-            <header>
-              <div>
-                <span className={`pill ${b.severity}`}>{b.severity}</span>
-                <h3 style={{ marginTop: 8 }}>{b.title}</h3>
-              </div>
-              <time dateTime={new Date(b.createdAt).toISOString()}>
-                {fmtSgt(b.createdAt)} SGT
-              </time>
-            </header>
-            <p className="sub" style={{ margin: 0 }}>
-              {t('trigger')}: {b.triggerReason} · {t('composite')} {b.compositePrice.toFixed(2)} ·{' '}
-              {t('breached')}: {b.breachedSources.join(', ') || '—'}
-            </p>
-
-            <section>
-              <h4>{t('whyTitle')}</h4>
-              <ul>
-                {b.why.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </section>
-            <section>
-              <h4>{t('impactTitle')}</h4>
-              <ul>
-                {b.impact.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </section>
-            <section>
-              <h4>{t('actionsTitle')}</h4>
-              <ul>
-                {b.actions.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </section>
-            <section>
-              <h4>{t('citationsTitle')}</h4>
-              <p className="sub" style={{ marginTop: 0 }}>
-                {t('citationsSub')}
-              </p>
-              {b.citations?.length ? (
-                <CitationList citations={b.citations} t={t} />
-              ) : (
-                <ul>
-                  {b.sourcesConsulted.map((line) => (
-                    <li key={line}>{line}</li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          </article>
-        ))
+        visible.map((b) => <BriefingCard key={b.id} briefing={b} />)
       )}
     </div>
   )

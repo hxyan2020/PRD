@@ -1,5 +1,7 @@
 import { useLocale } from '../i18n/locale'
-import type { SourceHealth, SourceKind } from '../types'
+import type { Briefing, PricePoint, SourceHealth, SourceKind } from '../types'
+import { InfoSourcesPanel } from './InfoSourcesPanel'
+import { PriceChart } from './PriceChart'
 
 function fmtPx(n: number | null | undefined) {
   if (n == null || !Number.isFinite(n)) return '—'
@@ -44,6 +46,8 @@ export function HealthDashboard(props: {
   setForceStress: (v: boolean) => void
   refresh: () => void
   error: string | null
+  priceHistory: PricePoint[]
+  briefings: Briefing[]
 }) {
   const { t } = useLocale()
   const {
@@ -60,6 +64,8 @@ export function HealthDashboard(props: {
     setForceStress,
     refresh,
     error,
+    priceHistory,
+    briefings,
   } = props
 
   const avgScore =
@@ -91,6 +97,7 @@ export function HealthDashboard(props: {
   }
 
   return (
+    <>
     <div className="panel">
       <h2>{t('healthTitle')}</h2>
       <p className="sub desktop-copy">{t('healthSub')}</p>
@@ -239,5 +246,14 @@ export function HealthDashboard(props: {
         ))}
       </div>
     </div>
+
+    <PriceChart
+      history={priceHistory}
+      briefings={briefings}
+      composite={composite}
+      spot={spot}
+    />
+    <InfoSourcesPanel />
+    </>
   )
 }

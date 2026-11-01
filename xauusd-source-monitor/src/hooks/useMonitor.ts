@@ -4,7 +4,7 @@ import { generateBriefing, loadBriefings, saveBriefings } from '../engine/briefi
 import { buildTick } from '../engine/health'
 import { evaluateTrigger, toTriggerEvent } from '../engine/trigger'
 import type { AppLang } from '../i18n/messages'
-import type { Briefing, MonitorRules, SourceHealth } from '../types'
+import type { Briefing, MonitorRules, PricePoint, SourceHealth } from '../types'
 
 export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_RULES) {
   const [rules, setRules] = useState<MonitorRules>(initialRules)
@@ -19,8 +19,9 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
   const [polling, setPolling] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [forceStress, setForceStress] = useState(false)
+  const [priceHistory, setPriceHistory] = useState<PricePoint[]>([])
 
-  const historyRef = useRef<{ t: number; px: number }[]>([])
+  const historyRef = useRef<PricePoint[]>([])
   const lastBriefingAt = useRef(0)
   const lastSeverity = useRef<Briefing['severity'] | null>(null)
   const busy = useRef(false)
@@ -59,8 +60,9 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
       if (result.composite != null) {
         historyRef.current = [
           ...historyRef.current.filter((p) => result.tickAt - p.t < 30 * 60_000),
-          { t: result.tickAt, px: result.composite },
+          { t: result.tickAt, px: result.composite, spot: result.spot ?? undefined },
         ]
+        setPriceHistory(historyRef.current)
       }
 
       const evalResult = evaluateTrigger(
@@ -129,6 +131,7 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
     forceStress,
     setForceStress,
     refresh: tick,
+    priceHistory,
   }
 }
 

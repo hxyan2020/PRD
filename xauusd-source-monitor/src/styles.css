@@ -578,6 +578,223 @@ td.mono,
   color: var(--muted);
 }
 
+.briefing-toggle {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.briefing-summary,
+.citation-preview {
+  margin: 6px 0 0;
+}
+
+.citation-preview .mono {
+  font-size: 0.7rem;
+  word-break: break-all;
+}
+
+.fold-hint {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.briefing.collapsed {
+  background: #fff;
+}
+
+.briefing-body {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.citations-section {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+
+.chart-panel {
+  margin-top: 14px;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.chart-legend .swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 4px;
+  vertical-align: -1px;
+}
+
+.chart-legend .swatch.composite {
+  background: var(--gold-deep);
+}
+
+.chart-legend .swatch.spot {
+  background: #6b7280;
+}
+
+.chart-legend .swatch.briefing {
+  background: var(--alert);
+  border-radius: 50%;
+}
+
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.price-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.9), #fff);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.price-chart .axis {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.price-chart .axis-label {
+  fill: var(--muted);
+  font-size: 10px;
+  font-family: var(--mono);
+}
+
+.price-chart .line-composite {
+  fill: none;
+  stroke: var(--gold-deep);
+  stroke-width: 2;
+}
+
+.price-chart .line-spot {
+  fill: none;
+  stroke: #6b7280;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+.price-chart .briefing-guide {
+  stroke: rgba(180, 83, 9, 0.25);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.price-chart .briefing-dot {
+  fill: var(--alert);
+  stroke: #fff;
+  stroke-width: 1.5;
+  cursor: pointer;
+}
+
+.price-chart .briefing-dot.critical {
+  fill: var(--critical);
+}
+
+.price-chart .briefing-dot.watch {
+  fill: var(--watch);
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 2;
+  max-width: 220px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 248, 0.97);
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.12);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.chart-tooltip strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+}
+
+.chart-tooltip .tip-hint {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.info-group {
+  margin-top: 14px;
+}
+
+.info-group h3 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+
+.info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.info-card {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.info-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.info-card.status-down {
+  border-color: rgba(153, 27, 27, 0.35);
+}
+
+.info-card.status-degraded {
+  border-color: rgba(180, 83, 9, 0.35);
+}
+
+.info-link {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  word-break: break-all;
+  color: var(--gold-deep);
+}
+
 .footer-note {
   margin-top: 18px;
   color: var(--muted);
