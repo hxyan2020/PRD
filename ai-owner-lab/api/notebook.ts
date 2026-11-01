@@ -2,9 +2,12 @@
  * Cross-device notebook backup on Vercel Blob.
  * Preferred auth: signed session cookie (account login).
  * Fallback: shared cloud key header `x-ownlab-cloud-key`.
+ *
+ * Large notebooks must NOT pass through the serverless request/response body
+ * (Vercel ~4.5MB). GET returns a signed Blob URL; clients upload via Blob client.
  */
 import { createHash } from 'node:crypto'
-import { head, put } from '@vercel/blob'
+import { getDownloadUrl, head, issueSignedToken, put, presignUrl } from '@vercel/blob'
 import {
   accountNotebookPath,
   blobToken,
@@ -90,7 +93,7 @@ export default async function handler(
 
   try {
     if (req.method === 'GET') {
-      let meta: { url: string; downloadUrl?: string } | null = null
+      let meta: { uploadedAt?: Date | string; size?: number }
       try {
         meta = await head(pathname, { token })
       } catch {
@@ -102,21 +105,37 @@ export default async function handler(
         })
         return
       }
-      const downloadUrl = meta.downloadUrl || meta.url
-      const upstream = await fetch(downloadUrl, {
-        headers: { Authorization: `Bearer ${token}` },
+
+      // Signed URL — browser downloads from Blob CDN (no serverless response cap).
+      const signed = await issueSignedToken({
+        token,
+        pathname,
+        operations: ['get'],
+        validUntil: Date.now() + 15 * 60 * 1000,
       })
-      if (!upstream.ok) {
-        res.status(upstream.status === 404 ? 404 : 502).json({
-          error: upstream.status === 404 ? 'No notebook saved yet' : 'Blob download failed',
-        })
-        return
-      }
-      const text = await upstream.text()
-      const etag = upstream.headers.get('etag') || createHash('sha256').update(text).digest('hex')
+      const { presignedUrl } = await presignUrl(signed, {
+        access: 'private',
+        operation: 'get',
+        pathname,
+        useCache: false,
+      })
+      const downloadUrl = getDownloadUrl(presignedUrl)
+      const uploadedAt =
+        meta.uploadedAt instanceof Date
+          ? meta.uploadedAt.toISOString()
+          : typeof meta.uploadedAt === 'string'
+            ? meta.uploadedAt
+            : null
+
+      res.setHeader('Cache-Control', 'private, no-store')
       res.setHeader('Content-Type', 'application/json; charset=utf-8')
-      res.setHeader('ETag', etag)
-      res.status(200).send(text)
+      res.status(200).json({
+        url: downloadUrl,
+        pathname,
+        mode,
+        uploadedAt,
+        size: typeof meta.size === 'number' ? meta.size : null,
+      })
       return
     }
 
@@ -128,7 +147,10 @@ export default async function handler(
             ? ''
             : JSON.stringify(req.body)
       if (!body || body.length > MAX_BODY_CHARS) {
-        res.status(400).json({ error: 'Notebook payload missing or too large' })
+        res.status(400).json({
+          error:
+            'Notebook payload missing or too large — use account Blob upload for big notebooks',
+        })
         return
       }
       try {

@@ -36,20 +36,33 @@ export default async function handler(
       return
     }
     const username = session.u
-    const prefix = `ownlab-accounts/${username}/files/`
+    const filesPrefix = `ownlab-accounts/${username}/files/`
+    const notebookPath = `ownlab-accounts/${username}/notebook.json`
 
     const body =
       typeof req.body === 'string'
         ? (JSON.parse(req.body) as HandleUploadBody)
         : (req.body as HandleUploadBody)
 
+    // No onUploadCompleted — that forces a post-upload callback hop to this
+    // serverless function and adds latency for every picture.
     const jsonResponse = await handleUpload({
       body,
       request: req as never,
       token: blobToken(),
       onBeforeGenerateToken: async (pathname) => {
         const clean = String(pathname || '').replace(/^\/+/, '')
-        if (!clean.startsWith(prefix)) {
+        // Large notebooks bypass the 4.5MB serverless PUT limit via direct Blob upload.
+        if (clean === notebookPath) {
+          return {
+            access: 'private',
+            addRandomSuffix: false,
+            allowOverwrite: true,
+            maximumSizeInBytes: MAX_BYTES,
+            tokenPayload: JSON.stringify({ username, kind: 'notebook' }),
+          }
+        }
+        if (!clean.startsWith(filesPrefix)) {
           throw new Error('Upload path must be under your account folder')
         }
         return {
@@ -59,9 +72,6 @@ export default async function handler(
           maximumSizeInBytes: MAX_BYTES,
           tokenPayload: JSON.stringify({ username }),
         }
-      },
-      onUploadCompleted: async () => {
-        /* metadata is stored client-side on the note */
       },
     })
 

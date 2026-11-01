@@ -114,7 +114,21 @@ export async function pullVercelBackup(cloudKey: string): Promise<VercelPullResu
     }
     throw new Error(message)
   }
-  const content = await res.text()
+  const etagHeader = res.headers.get('etag')
+  const raw = await res.text()
+  let content = raw
+  let etag = etagHeader
+  try {
+    const parsed = JSON.parse(raw) as { url?: unknown; entries?: unknown }
+    if (typeof parsed.url === 'string' && parsed.url && !Array.isArray(parsed.entries)) {
+      const fileRes = await fetch(parsed.url)
+      if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
+      content = await fileRes.text()
+      etag = fileRes.headers.get('etag') || etagHeader
+    }
+  } catch (err) {
+    if (err instanceof Error && /download failed/i.test(err.message)) throw err
+  }
   let noteCount = 0
   try {
     const parsed = JSON.parse(content) as { entries?: unknown; trash?: unknown }
@@ -126,7 +140,7 @@ export async function pullVercelBackup(cloudKey: string): Promise<VercelPullResu
   }
   return {
     content,
-    etag: res.headers.get('etag'),
+    etag,
     noteCount,
   }
 }
@@ -146,6 +160,11 @@ export async function pushVercelBackup(
     body: json,
   })
   if (!res.ok) {
+    if (res.status === 413) {
+      throw new Error(
+        'Notebook too large to sync (413). Sign in with username/password so large images upload separately.',
+      )
+    }
     let message = `Cloud upload failed (${res.status})`
     try {
       const body = (await res.json()) as { error?: string }
