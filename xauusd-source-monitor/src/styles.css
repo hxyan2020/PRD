@@ -635,6 +635,24 @@ td.mono,
   margin-top: 14px;
 }
 
+.chart-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.chart-heading h2 {
+  margin-bottom: 2px;
+}
+
+.chart-live {
+  gap: 8px;
+  white-space: nowrap;
+}
+
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
@@ -686,6 +704,11 @@ td.mono,
   stroke-width: 1;
 }
 
+.price-chart .grid {
+  stroke: rgba(28, 25, 23, 0.06);
+  stroke-width: 1;
+}
+
 .price-chart .axis-label {
   fill: var(--muted);
   font-size: 10px;
@@ -695,7 +718,7 @@ td.mono,
 .price-chart .line-composite {
   fill: none;
   stroke: var(--gold-deep);
-  stroke-width: 2;
+  stroke-width: 2.25;
 }
 
 .price-chart .line-spot {
@@ -706,16 +729,22 @@ td.mono,
 }
 
 .price-chart .briefing-guide {
-  stroke: rgba(180, 83, 9, 0.25);
-  stroke-width: 1;
+  stroke: rgba(180, 83, 9, 0.35);
+  stroke-width: 1.25;
   stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+
+.price-chart .briefing-hit {
+  fill: transparent;
+  cursor: pointer;
 }
 
 .price-chart .briefing-dot {
   fill: var(--alert);
   stroke: #fff;
   stroke-width: 1.5;
-  cursor: pointer;
+  pointer-events: none;
 }
 
 .price-chart .briefing-dot.critical {
@@ -726,18 +755,41 @@ td.mono,
   fill: var(--watch);
 }
 
+.price-chart .mark-time {
+  fill: var(--gold-deep);
+  font-size: 9px;
+  font-family: var(--mono);
+  font-weight: 600;
+  pointer-events: none;
+}
+
 .chart-tooltip {
   position: absolute;
-  z-index: 2;
-  max-width: 220px;
+  z-index: 3;
+  width: min(240px, 78%);
   padding: 8px 10px;
   border-radius: 10px;
   border: 1px solid var(--line);
-  background: rgba(255, 253, 248, 0.97);
-  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.12);
+  background: rgba(255, 253, 248, 0.98);
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.14);
   font-size: 0.78rem;
   line-height: 1.35;
-  pointer-events: none;
+  cursor: pointer;
+}
+
+.chart-tooltip .tip-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.chart-tooltip .tip-pin {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .chart-tooltip strong {
@@ -750,6 +802,46 @@ td.mono,
   margin-top: 4px;
   color: var(--muted);
   font-size: 0.7rem;
+}
+
+.chart-mark-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.mark-chip {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 8px;
+  align-items: center;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.mark-chip .mono {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.mark-chip-title {
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-empty-marks {
+  margin: 8px 0 0;
 }
 
 .info-group {

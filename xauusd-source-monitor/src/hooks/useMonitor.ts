@@ -19,12 +19,13 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
   const [polling, setPolling] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [forceStress, setForceStress] = useState(false)
-  const [priceHistory, setPriceHistory] = useState<PricePoint[]>([])
+  const [priceHistory, setPriceHistory] = useState<PricePoint[]>(() => loadPriceHistory())
 
-  const historyRef = useRef<PricePoint[]>([])
+  const historyRef = useRef<PricePoint[]>(loadPriceHistory())
   const lastBriefingAt = useRef(0)
   const lastSeverity = useRef<Briefing['severity'] | null>(null)
   const busy = useRef(false)
+  const seededFromBriefings = useRef(false)
   const langRef = useRef(lang)
   langRef.current = lang
 
@@ -58,11 +59,24 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
       setError(null)
 
       if (result.composite != null) {
-        historyRef.current = [
-          ...historyRef.current.filter((p) => result.tickAt - p.t < 30 * 60_000),
+        // One-time: stitch briefing timestamps into the series so markers show immediately.
+        if (!seededFromBriefings.current) {
+          seededFromBriefings.current = true
+          const fromBriefings = loadBriefings()
+            .filter((b) => result.tickAt - b.createdAt < 48 * 3600_000)
+            .map((b) => ({
+              t: b.createdAt,
+              px: b.compositePrice,
+              spot: result.spot ?? undefined,
+            }))
+          historyRef.current = mergePoints([...fromBriefings, ...historyRef.current])
+        }
+        historyRef.current = mergePoints([
+          ...historyRef.current.filter((p) => result.tickAt - p.t < 2 * 3600_000),
           { t: result.tickAt, px: result.composite, spot: result.spot ?? undefined },
-        ]
+        ])
         setPriceHistory(historyRef.current)
+        savePriceHistory(historyRef.current)
       }
 
       const evalResult = evaluateTrigger(
@@ -137,4 +151,36 @@ export function useMonitor(lang: AppLang, initialRules: MonitorRules = DEFAULT_R
 
 function severityRank(s: Briefing['severity']): number {
   return s === 'watch' ? 1 : s === 'alert' ? 2 : 3
+}
+
+const HISTORY_KEY = 'xauusd-monitor-price-history-v1'
+
+function mergePoints(points: PricePoint[]): PricePoint[] {
+  const map = new Map<number, PricePoint>()
+  for (const p of points) {
+    const key = Math.round(p.t / 1000) * 1000
+    map.set(key, p)
+  }
+  return [...map.values()].sort((a, b) => a.t - b.t)
+}
+
+function loadPriceHistory(): PricePoint[] {
+  try {
+    const raw = sessionStorage.getItem(HISTORY_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as PricePoint[]
+    if (!Array.isArray(parsed)) return []
+    const cutoff = Date.now() - 2 * 3600_000
+    return parsed.filter((p) => p && typeof p.t === 'number' && typeof p.px === 'number' && p.t >= cutoff)
+  } catch {
+    return []
+  }
+}
+
+function savePriceHistory(list: PricePoint[]) {
+  try {
+    sessionStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(-500)))
+  } catch {
+    /* ignore quota */
+  }
 }
