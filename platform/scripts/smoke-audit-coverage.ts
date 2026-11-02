@@ -34,7 +34,7 @@ async function main() {
     .get("risk.owner@vantagemarkets.com") as { id: number; name: string; role_code: string };
   assert.ok(ro);
 
-  runDiscoveryParallel({ actor: ro.name, trigger: "AUDIT_SMOKE" });
+  await runDiscoveryParallel({ actor: ro.name, trigger: "AUDIT_SMOKE", llm: false });
   const pending = listDiscoveryCandidates("PENDING_RO", 5) as Array<{
     candidate_id: string;
     method: string;

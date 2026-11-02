@@ -417,29 +417,22 @@ async function liveLlmAnalyse(
   });
 
   if (!result.ok) {
-    const mock = deterministicSuggestion(candidate, followup, locale);
-    mock.limitations = [
-      ...mock.limitations,
+    // Do not silently sell MOCK as real AI when the operator asked for LIVE.
+    throw new Error(
       locale === "zh-Hant"
-        ? `LIVE_LLM_FAILED → MOCK（${result.error}）`
-        : `LIVE_LLM_FAILED → MOCK (${result.error})`,
-    ];
-    mock.thinking_steps = [
-      ...(mock.thinking_steps || []),
-      locale === "zh-Hant" ? `LLM 失敗：${result.error}` : `LLM failed: ${result.error}`,
-    ];
-    return mock;
+        ? `LIVE LLM 失敗，未回落 MOCK：${result.error}`
+        : `LIVE LLM failed — refusing silent MOCK fallback: ${result.error}`
+    );
   }
 
   try {
     return parseSuggestion(JSON.parse(result.content), thinking_steps, result.provider);
   } catch {
-    const mock = deterministicSuggestion(candidate, followup, locale);
-    mock.limitations = [
-      ...mock.limitations,
-      locale === "zh-Hant" ? "LIVE_LLM_PARSE_FAILED → MOCK" : "LIVE_LLM_PARSE_FAILED → MOCK",
-    ];
-    return mock;
+    throw new Error(
+      locale === "zh-Hant"
+        ? "LIVE LLM 回傳無法解析為 JSON — 拒絕回落 MOCK"
+        : "LIVE LLM response was not valid JSON — refusing silent MOCK fallback"
+    );
   }
 }
 
@@ -447,12 +440,21 @@ export async function analyseDiscoveryCandidate(input: {
   candidate: DiscoveryCandidateInput;
   followup?: string;
   locale?: "en" | "zh-Hant";
+  /** When true, refuse MOCK even if Connect was not clicked (keys must exist). */
+  require_live?: boolean;
 }): Promise<DiscoverySuggestion> {
   const locale = input.locale || "en";
   // Always recompute — never return a cached suggestion card.
   // Auto-link to LLM whenever a server key is present (unless operator forced Mock).
   if (ensureLiveIfPossible()) {
     return liveLlmAnalyse(input.candidate, input.followup, locale);
+  }
+  if (input.require_live || (process.env.CRMP_AI_LLM || "").toLowerCase() === "require") {
+    throw new Error(
+      locale === "zh-Hant"
+        ? "需要真實 AI：請設定 OPENAI／DEEPSEEK／GEMINI／ANTHROPIC 金鑰並連線 LLM（禁止 MOCK 偵測／分析）。"
+        : "Real AI required: configure OPENAI/DEEPSEEK/GEMINI/ANTHROPIC keys and Connect LLM (MOCK analyse refused)."
+    );
   }
   return deterministicSuggestion(input.candidate, input.followup, locale);
 }

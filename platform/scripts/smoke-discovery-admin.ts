@@ -34,7 +34,8 @@ async function main() {
   disableDiscoveryOpenAi();
   assert.equal(getDiscoveryAiStatus().mode, "MOCK");
 
-  const scan = runDiscoveryParallel({ actor: "smoke", trigger: "SMOKE" });
+  // Stats-only path for offline smoke (no real provider keys in CI).
+  const scan = await runDiscoveryParallel({ actor: "smoke", trigger: "SMOKE", llm: false });
   assert.ok((scan.candidates_new ?? 0) >= 1);
   assert.ok(scan.scan_seed);
   assert.ok(scan.data_source);
@@ -46,7 +47,7 @@ async function main() {
     )
   );
 
-  const scan2 = runDiscoveryParallel({ actor: "smoke", trigger: "SMOKE2" });
+  const scan2 = await runDiscoveryParallel({ actor: "smoke", trigger: "SMOKE2", llm: false });
   assert.ok(scan2.scan_seed);
   assert.notEqual(scan.scan_seed, scan2.scan_seed, "each scan must use a fresh feature window seed");
   assert.ok(Array.isArray(scan2.thinking_steps) && scan2.thinking_steps.length >= 4);

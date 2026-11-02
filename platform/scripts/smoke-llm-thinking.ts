@@ -42,6 +42,26 @@ function mockJsonContent(sys: string, isJson: boolean) {
       alternative_hypotheses: [{ hypothesis: "Benign burst", rationale: "Session open", confidence: 0.4 }],
     });
   }
+  if (/unknown-risk discovery engine/i.test(sys) || /Detect UNKNOWN risk scenarios/i.test(sys)) {
+    return JSON.stringify({
+      thinking_steps: [
+        "Inspect hot monitors vs known M2 catalogue",
+        "Propose latent LP×margin joint gap not covered by solo thresholds",
+      ],
+      candidates: [
+        {
+          scenario: "Latent LP reject × margin stress joint gap on XAUUSD (unknown combination)",
+          proposed_indicator: "LP reject × margin joint stress index",
+          proposed_indicator_formula: "z(LP_reject) + z(margin_util) over 5m",
+          proposed_dimension: "MODEL_AI",
+          severity: "BREACH",
+          product: "CFD",
+          score: 0.88,
+          rationale: "Statistical solo scanners miss the joint regime on INC-1028 book",
+        },
+      ],
+    });
+  }
   if (isJson) {
     return JSON.stringify({
       summary: "Mock LLM RCA summary grounded on seed evidence",
@@ -211,9 +231,10 @@ async function main() {
   enableDiscoveryOpenAi("gpt-4.1-mini", "openai");
   assert.equal(getDiscoveryAiStatus().mode, "LIVE_OPENAI");
   assert.equal(getDiscoveryAiStatus().provider, "openai");
-  const scan = runDiscoveryParallel({ actor: "llm-smoke", trigger: "SMOKE" });
+  const scan = await runDiscoveryParallel({ actor: "llm-smoke", trigger: "SMOKE", llm: true });
   assert.ok((scan.candidates_new ?? 0) >= 1 || listDiscoveryCandidates("PENDING_RO", 5).length >= 1);
-  const pending = listDiscoveryCandidates("PENDING_RO", 5) as Array<{
+  assert.equal(scan.llm_detection, "LIVE_LLM", "Scan must run LIVE LLM unknown-risk detection when keys present");
+  const pending = listDiscoveryCandidates("PENDING_RO", 20) as Array<{
     candidate_id: string;
     method: string;
     scenario: string;
@@ -222,9 +243,10 @@ async function main() {
     score: number;
     evidence_json: string;
   }>;
+  assert.ok(pending.some((p) => p.method === "llm_unknown"), "Scan must create llm_unknown candidates");
   assert.ok(pending[0]);
   const discBefore = openaiCalls;
-  const suggestion = await analyseDiscoveryCandidate({ candidate: pending[0] });
+  const suggestion = await analyseDiscoveryCandidate({ candidate: pending[0], require_live: true });
   assert.ok(suggestion.analysis_source === "LLM_API" || suggestion.analysis_source === "OPENAI_API");
   assert.ok((suggestion.thinking_steps || []).length >= 1);
   assert.ok(openaiCalls > discBefore, "Discovery Analyse must call LLM when LIVE");

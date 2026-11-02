@@ -315,10 +315,23 @@ export function DiscoverySuggestionBoard({
           thinking_steps: steps,
         });
       }
+      const llmTag = String(data.llm_detection || data.detail?.llm_detection || "");
+      const llmNote =
+        llmTag === "LIVE_LLM"
+          ? locale === "zh-Hant"
+            ? ` · 真實 AI 未知風險偵測（${data.llm_provider || data.detail?.llm_provider || "llm"}）`
+            : ` · real AI unknown-risk detection (${data.llm_provider || data.detail?.llm_provider || "llm"})`
+          : llmTag === "SKIPPED_NO_KEY"
+            ? locale === "zh-Hant"
+              ? " · 警告：無 LLM 金鑰 — 僅統計啟發式"
+              : " · warn: no LLM key — statistical heuristics only"
+            : llmTag
+              ? ` · llm=${llmTag}`
+              : "";
       setMsg(
         locale === "zh-Hant"
-          ? `掃描完成：新增 ${n} 個候選 · 來源 ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
-          : `Scan complete: ${n} new candidate(s) · source ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
+          ? `掃描完成：新增 ${n} 個候選 · 來源 ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}${llmNote}`
+          : `Scan complete: ${n} new candidate(s) · source ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}${llmNote}`
       );
       if (n > 0) bumpNavBadge("/admin/discovery", n);
       router.refresh();
@@ -346,8 +359,8 @@ export function DiscoverySuggestionBoard({
       setMsg(
         live
           ? locale === "zh-Hant"
-            ? `已連線 ${label}（${data.status?.model || "live"}）— 分析才會呼叫 API`
-            : `Live ${label} (${data.status?.model || "live"}) — no call until Analyse`
+            ? `已連線 ${label}（${data.status?.model || "live"}）— 掃描與分析都會呼叫真實 AI`
+            : `Live ${label} (${data.status?.model || "live"}) — Scan + Analyse call real AI`
           : locale === "zh-Hant"
             ? "已切換 Mock — 不呼叫外部 API"
             : "Mock mode — no external AI calls"
@@ -494,8 +507,8 @@ export function DiscoverySuggestionBoard({
             </p>
             <p className="text-[var(--muted)] text-[13px] leading-relaxed">
               <EnZh
-                en="1 Scan on live SQLite seed (stat/ML process trail) → 2 Connect AI → 3 Analyse (fresh thinking each trigger) → 4 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
-                zh="① 以即時 SQLite 種子掃描（統計／ML 過程軌跡）→ ② 連線 AI → ③ 分析（每次觸發重新思考）→ ④ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
+                en="1 Scan live SQLite (stat/ML + real LLM unknown-risk scenarios/indicators when keys are set) → 2 Connect AI → 3 Analyse with LIVE LLM (no silent MOCK fallback) → 4 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
+                zh="① 即時 SQLite 掃描（統計／ML＋有金鑰時以真實 LLM 偵測未知情境／指標）→ ② 連線 AI → ③ LIVE LLM 分析（禁止靜默回落 MOCK）→ ④ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
               />
             </p>
           </div>

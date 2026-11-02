@@ -113,7 +113,11 @@ export async function POST(req: Request) {
       )?.value !== "false";
     if (autoDiscovery) {
       const { runDiscoveryParallel } = await import("@/lib/ai/discovery");
-      discovery = runDiscoveryParallel({ actor: user.name, trigger: "PARALLEL_DETECTORS" });
+      discovery = await runDiscoveryParallel({
+        actor: user.name,
+        trigger: "PARALLEL_DETECTORS",
+        llm: true,
+      });
     }
 
     return NextResponse.json({
@@ -131,8 +135,11 @@ export async function POST(req: Request) {
 
   if (action === "run_discovery") {
     const { runDiscoveryParallel } = await import("@/lib/ai/discovery");
-    const discovery = runDiscoveryParallel({ actor: user.name, trigger: "MANUAL" });
+    const discovery = await runDiscoveryParallel({ actor: user.name, trigger: "MANUAL", llm: true });
     writeAudit(user, "RUN_DISCOVERY", "risk_discovery", String(discovery.scan_id), discovery);
+    if (discovery && "ok" in discovery && discovery.ok === false) {
+      return NextResponse.json({ ok: false, discovery }, { status: 503 });
+    }
     return NextResponse.json({ ok: true, discovery });
   }
 
