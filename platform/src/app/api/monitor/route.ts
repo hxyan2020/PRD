@@ -64,6 +64,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  if (action === "close_desk_alert") {
+    const { closeDeskAlertForReal } = await import("@/lib/ai/risk-log");
+    const outcomeRaw = String(body.outcome || "PREVENTED").toUpperCase();
+    const outcome =
+      outcomeRaw === "LOSS" ||
+      outcomeRaw === "NEAR_MISS" ||
+      outcomeRaw === "FALSE_POSITIVE" ||
+      outcomeRaw === "PREVENTED"
+        ? (outcomeRaw as "PREVENTED" | "LOSS" | "NEAR_MISS" | "FALSE_POSITIVE")
+        : "PREVENTED";
+    const result = closeDeskAlertForReal({
+      alert_id: String(body.alert_id || ""),
+      actor: { id: user.id, name: user.name },
+      outcome,
+      estimated_loss_usd: body.estimated_loss_usd != null ? Number(body.estimated_loss_usd) : 0,
+      prevented_loss_usd: body.prevented_loss_usd != null ? Number(body.prevented_loss_usd) : outcome === "PREVENTED" ? 150000 : 0,
+      exposure_usd: body.exposure_usd != null ? Number(body.exposure_usd) : undefined,
+      loophole_tag: body.loophole_tag ? String(body.loophole_tag) : undefined,
+      notes: body.notes ? String(body.notes) : undefined,
+      department: body.department ? String(body.department) : undefined,
+    });
+    writeAudit(user, "CLOSE_TICKET", "monitor_alert", result.alert_id, {
+      ...result,
+      real_e2e_close: true,
+    });
+    return NextResponse.json({ ok: true, close: result });
+  }
+
   if (action === "toggle_pause") {
     const indicatorId = Number(body.indicator_id);
     const paused = body.paused ? 1 : 0;

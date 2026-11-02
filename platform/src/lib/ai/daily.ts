@@ -142,6 +142,75 @@ export function refreshTodayPerformance() {
     });
   }
 
+  // Closed Risk Log roll-up for today — only impacts stamped by a real E2E close walk.
+  const closedToday = database
+    .prepare(
+      `SELECT
+         COUNT(*) AS closed_count,
+         ROUND(SUM(CASE WHEN imp.notes LIKE '%real E2E close%' THEN COALESCE(imp.estimated_loss_usd,0) ELSE 0 END), 0) AS loss_usd,
+         ROUND(SUM(CASE WHEN imp.notes LIKE '%real E2E close%' THEN COALESCE(imp.prevented_loss_usd,0) ELSE 0 END), 0) AS prevented_usd
+       FROM monitor_alerts a
+       LEFT JOIN alert_impacts imp ON imp.alert_id = a.id
+       LEFT JOIN monitor_tickets t ON t.alert_id = a.id
+       WHERE a.status != 'SUPERSEDED'
+         AND (
+           a.status IN ('CLOSED','RESOLVED')
+           OR t.status IN ('RESOLVED','CLOSED')
+         )
+         AND date(COALESCE(t.resolved_at, a.acknowledged_at, a.created_at)) = date(?)`
+    )
+    .get(date) as { closed_count: number; loss_usd: number; prevented_usd: number };
+
+  const closedCount = Number(closedToday?.closed_count || 0);
+  const lossUsd = Number(closedToday?.loss_usd || 0);
+  const preventedUsd = Number(closedToday?.prevented_usd || 0);
+  rows.push(
+    {
+      report_date: date,
+      product: "CFD",
+      metric_key: "closed_alerts_e2e",
+      metric_label: "Closed alerts (E2E)",
+      value: closedCount,
+      unit: "count",
+      target: null,
+      status: closedCount > 0 ? "OK" : "WARN",
+      notes: "From real E2E closes only",
+    },
+    {
+      report_date: date,
+      product: "CFD",
+      metric_key: "prevented_usd_e2e",
+      metric_label: "Prevented USD (E2E closes)",
+      value: preventedUsd,
+      unit: "USD",
+      target: null,
+      status: preventedUsd > 0 ? "OK" : "WARN",
+      notes: "From real E2E closes only",
+    },
+    {
+      report_date: date,
+      product: "CFD",
+      metric_key: "loss_usd_e2e",
+      metric_label: "Loss USD (E2E closes)",
+      value: lossUsd,
+      unit: "USD",
+      target: null,
+      status: lossUsd > 0 ? "BREACH" : "OK",
+      notes: "From real E2E closes only",
+    },
+    {
+      report_date: date,
+      product: "CFD",
+      metric_key: "net_risk_usd_e2e",
+      metric_label: "Net risk USD (E2E closes)",
+      value: lossUsd - preventedUsd,
+      unit: "USD",
+      target: null,
+      status: lossUsd - preventedUsd > 0 ? "WARN" : "OK",
+      notes: "loss − prevented from real E2E closes",
+    }
+  );
+
   const tx = database.transaction(() => {
     for (const r of rows) upsert.run(r);
   });

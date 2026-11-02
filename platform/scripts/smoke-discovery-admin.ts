@@ -7,7 +7,8 @@ import path from "node:path";
 
 const dataDir = path.resolve(__dirname, "../data");
 fs.mkdirSync(dataDir, { recursive: true });
-const dbPath = path.join(dataDir, "vantage_risk.db");
+// Isolated smoke DB — never delete the live Next.js vantage_risk.db inode.
+const dbPath = path.join(dataDir, "vantage_risk.smoke-discovery.db");
 for (const f of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`]) {
   try {
     fs.unlinkSync(f);

@@ -145,8 +145,8 @@ function liveDailyAggregates(db: Database.Database): Map<string, Omit<RiskLogDay
               COUNT(*) AS alerts_raised,
               SUM(CASE WHEN a.severity IN ('BREACH','CRITICAL') THEN 1 ELSE 0 END) AS breaches,
               SUM(CASE WHEN a.severity = 'WARN' THEN 1 ELSE 0 END) AS warns,
-              ROUND(SUM(COALESCE(imp.estimated_loss_usd, 0)), 0) AS loss_usd,
-              ROUND(SUM(COALESCE(imp.prevented_loss_usd, 0)), 0) AS prevented_usd,
+              ROUND(SUM(CASE WHEN imp.notes LIKE '%real E2E close%' THEN COALESCE(imp.estimated_loss_usd, 0) ELSE 0 END), 0) AS loss_usd,
+              ROUND(SUM(CASE WHEN imp.notes LIKE '%real E2E close%' THEN COALESCE(imp.prevented_loss_usd, 0) ELSE 0 END), 0) AS prevented_usd,
               ROUND(SUM(COALESCE(imp.exposure_usd, 0)), 0) AS exposure_usd,
               ROUND(AVG(
                 CASE WHEN a.acknowledged_at IS NOT NULL

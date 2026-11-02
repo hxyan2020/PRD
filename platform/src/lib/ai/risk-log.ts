@@ -312,28 +312,224 @@ const CLOSED_ALERT_SQL = `(a.status IN ('CLOSED','RESOLVED') OR EXISTS (
   WHERE t.alert_id = a.id AND t.status IN ('RESOLVED','CLOSED')
 )) AND a.status != 'SUPERSEDED'`;
 
+const REAL_CLOSE_MONEY = `CASE WHEN imp.notes LIKE '%real E2E close%' THEN COALESCE(imp.estimated_loss_usd,0) ELSE 0 END`;
+const REAL_CLOSE_PREVENTED = `CASE WHEN imp.notes LIKE '%real E2E close%' THEN COALESCE(imp.prevented_loss_usd,0) ELSE 0 END`;
+
+export type DeskCloseOutcome = "PREVENTED" | "LOSS" | "NEAR_MISS" | "FALSE_POSITIVE";
+
+/**
+ * Canonical desk close: alert + ticket + impact money stamped as a real E2E walk.
+ * Closed Risk Log / Daily Performance must only count these stamped closes.
+ */
+export function closeDeskAlertForReal(input: {
+  alert_id: string; // business code e.g. ALT-PRC-SWAP, or numeric id as string
+  actor: { id?: number | null; name?: string | null };
+  outcome: DeskCloseOutcome;
+  estimated_loss_usd?: number;
+  prevented_loss_usd?: number;
+  exposure_usd?: number;
+  loophole_tag?: string;
+  notes?: string;
+  department?: string;
+}) {
+  const database = db();
+  ensureRiskLogSchema(database);
+
+  const row = (
+    /^\d+$/.test(input.alert_id)
+      ? database
+          .prepare(
+            `SELECT a.id, a.alert_id, a.title, t.ticket_id, t.id AS ticket_row_id, i.monitor_id, i.domain_code, i.product
+             FROM monitor_alerts a
+             JOIN monitor_indicators i ON i.id = a.indicator_id
+             LEFT JOIN monitor_tickets t ON t.alert_id = a.id
+             WHERE a.id = ?`
+          )
+          .get(Number(input.alert_id))
+      : database
+          .prepare(
+            `SELECT a.id, a.alert_id, a.title, t.ticket_id, t.id AS ticket_row_id, i.monitor_id, i.domain_code, i.product
+             FROM monitor_alerts a
+             JOIN monitor_indicators i ON i.id = a.indicator_id
+             LEFT JOIN monitor_tickets t ON t.alert_id = a.id
+             WHERE a.alert_id = ?`
+          )
+          .get(input.alert_id)
+  ) as
+    | {
+        id: number;
+        alert_id: string;
+        title: string;
+        ticket_id: string | null;
+        ticket_row_id: number | null;
+        monitor_id: string;
+        domain_code: string;
+        product: string;
+      }
+    | undefined;
+
+  if (!row) throw new Error(`Alert not found: ${input.alert_id}`);
+  if (row.alert_id.startsWith("ALT-100") || row.alert_id.includes("SUPERSEDED")) {
+    throw new Error(`Refusing to close superseded legacy alert ${row.alert_id}`);
+  }
+
+  const loss = Math.max(0, Number(input.estimated_loss_usd || 0));
+  const prevented = Math.max(0, Number(input.prevented_loss_usd || 0));
+  const exposure = Math.max(
+    0,
+    Number(
+      input.exposure_usd != null
+        ? input.exposure_usd
+        : (
+            database.prepare(`SELECT exposure_usd FROM alert_impacts WHERE alert_id = ?`).get(row.id) as
+              | { exposure_usd: number }
+              | undefined
+          )?.exposure_usd || 0
+    )
+  );
+  const tag =
+    input.loophole_tag ||
+    (row.domain_code === "LP_HEDGE"
+      ? "hedge_gap"
+      : row.domain_code === "MARKET_PRICING"
+        ? "pricing_feed_gap"
+        : row.domain_code === "CREDIT_CLIENT"
+          ? "client_credit_gap"
+          : "process_gap");
+  const dept = input.department || "RISK_CONTROL";
+  const actorName = input.actor.name || "desk-operator";
+  const noteCore =
+    input.notes?.trim() ||
+    `${actorName} closed ${row.alert_id} (${row.monitor_id}) after desk E2E control — outcome ${input.outcome}.`;
+  const notes = `${noteCore} · real E2E close`;
+
+  const now = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  database.prepare(`UPDATE monitor_alerts SET status = 'CLOSED', acknowledged_at = COALESCE(acknowledged_at, ?), acknowledged_by = COALESCE(acknowledged_by, ?) WHERE id = ?`).run(
+    now,
+    input.actor.id ?? null,
+    row.id
+  );
+  database
+    .prepare(
+      `UPDATE monitor_tickets
+       SET status = 'RESOLVED', resolved_at = COALESCE(resolved_at, ?), updated_at = ?,
+           assignee_user_id = COALESCE(assignee_user_id, ?)
+       WHERE alert_id = ?`
+    )
+    .run(now, now, input.actor.id ?? null, row.id);
+
+  database
+    .prepare(
+      `INSERT INTO alert_impacts (alert_id, outcome, estimated_loss_usd, prevented_loss_usd, exposure_usd, loophole_tag, notes, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(alert_id) DO UPDATE SET
+         outcome = excluded.outcome,
+         estimated_loss_usd = excluded.estimated_loss_usd,
+         prevented_loss_usd = excluded.prevented_loss_usd,
+         exposure_usd = excluded.exposure_usd,
+         loophole_tag = excluded.loophole_tag,
+         notes = excluded.notes,
+         updated_at = excluded.updated_at`
+    )
+    .run(row.id, input.outcome, loss, prevented, exposure, tag, notes, now);
+
+  database
+    .prepare(
+      `INSERT INTO audit_logs (actor_user_id, actor_name, action, entity_type, entity_id, details_json, created_at)
+       VALUES (?, ?, 'CLOSE_TICKET', 'monitor_alert', ?, ?, ?)`
+    )
+    .run(
+      input.actor.id ?? null,
+      actorName,
+      row.alert_id,
+      JSON.stringify({
+        ticket: row.ticket_id,
+        department: dept,
+        outcome: input.outcome,
+        estimated_loss_usd: loss,
+        prevented_loss_usd: prevented,
+        real_e2e_close: true,
+        note: notes,
+      }),
+      now
+    );
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("@/lib/ai/spine").logSpineEvent({
+      stage: "RESOLVED",
+      title: `E2E closed ${row.alert_id} · ${input.outcome}`,
+      product: row.product,
+      ref_type: "monitor_alert",
+      ref_id: row.alert_id,
+      severity: "INFO",
+      detail: { real_e2e_close: true, outcome: input.outcome, loss, prevented },
+      actor: actorName,
+    });
+  } catch {
+    /* optional */
+  }
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("@/lib/ai/daily").refreshTodayPerformance();
+  } catch {
+    /* optional */
+  }
+
+  return {
+    ok: true as const,
+    alert_id: row.alert_id,
+    ticket_id: row.ticket_id,
+    outcome: input.outcome,
+    estimated_loss_usd: loss,
+    prevented_loss_usd: prevented,
+    notes,
+  };
+}
+
 export function getRiskLogDashboard() {
   const database = db();
   ensureRiskLogSchema(database);
   seedRiskLogIfEmpty(database);
   ensureRiskLogHistory(database);
 
-  // Scrub invented loss/prevented on still-open impacts (legacy backfill).
+  // Scrub invented loss/prevented unless the alert is truly closed AND impact was stamped by a real close walk.
   database
     .prepare(
       `UPDATE alert_impacts
        SET estimated_loss_usd = 0,
            prevented_loss_usd = 0,
            outcome = 'OPEN',
-           notes = COALESCE(notes, '') || CASE WHEN notes LIKE '%real close%' THEN '' ELSE ' · scrubbed fake close money (open)' END
-       WHERE outcome != 'OPEN'
-         AND alert_id IN (
-           SELECT a.id FROM monitor_alerts a
-           WHERE a.status IN ('OPEN','ACKNOWLEDGED','ESCALATED')
-             AND NOT EXISTS (
-               SELECT 1 FROM monitor_tickets t
-               WHERE t.alert_id = a.id AND t.status IN ('RESOLVED','CLOSED')
+           notes = CASE
+             WHEN notes LIKE '%scrubbed fake%' THEN notes
+             ELSE COALESCE(notes, '') || ' · scrubbed fake close money (not a real E2E close)'
+           END
+       WHERE (
+           notes IS NULL
+           OR notes NOT LIKE '%real E2E close%'
+         )
+         AND (
+           alert_id IN (
+             SELECT a.id FROM monitor_alerts a
+             WHERE a.status = 'SUPERSEDED'
+                OR (
+                  a.status IN ('OPEN','ACKNOWLEDGED','ESCALATED')
+                  AND NOT EXISTS (
+                    SELECT 1 FROM monitor_tickets t
+                    WHERE t.alert_id = a.id AND t.status IN ('RESOLVED','CLOSED')
+                  )
+                )
              )
+           OR (
+             -- Closed without a real-close stamp: keep the closed card, zero invented PnL
+             alert_id IN (
+               SELECT a.id FROM monitor_alerts a
+               WHERE ${CLOSED_ALERT_SQL}
+             )
+             AND (notes IS NULL OR notes NOT LIKE '%real E2E close%')
+           )
          )`
     )
     .run();
@@ -346,9 +542,9 @@ export function getRiskLogDashboard() {
               a.severity,
               COUNT(*) AS alert_count,
               0 AS open_count,
-              ROUND(AVG(COALESCE(imp.estimated_loss_usd,0)), 0) AS avg_loss_usd,
-              ROUND(SUM(COALESCE(imp.prevented_loss_usd,0)), 0) AS prevented_usd,
-              ROUND(SUM(COALESCE(imp.estimated_loss_usd,0)), 0) AS loss_usd
+              ROUND(AVG(${REAL_CLOSE_MONEY}), 0) AS avg_loss_usd,
+              ROUND(SUM(${REAL_CLOSE_PREVENTED}), 0) AS prevented_usd,
+              ROUND(SUM(${REAL_CLOSE_MONEY}), 0) AS loss_usd
        FROM monitor_alerts a
        JOIN monitor_indicators i ON i.id = a.indicator_id
        LEFT JOIN risk_domains d ON d.code = i.domain_code
@@ -366,8 +562,8 @@ export function getRiskLogDashboard() {
               COUNT(*) AS alert_count,
               SUM(CASE WHEN a.severity IN ('BREACH','CRITICAL') THEN 1 ELSE 0 END) AS breach_count,
               ROUND(100.0 * SUM(CASE WHEN a.severity IN ('BREACH','CRITICAL') THEN 1 ELSE 0 END) / COUNT(*), 1) AS breach_rate_pct,
-              ROUND(SUM(COALESCE(imp.estimated_loss_usd,0)), 0) AS loss_usd,
-              ROUND(SUM(COALESCE(imp.prevented_loss_usd,0)), 0) AS prevented_usd,
+              ROUND(SUM(${REAL_CLOSE_MONEY}), 0) AS loss_usd,
+              ROUND(SUM(${REAL_CLOSE_PREVENTED}), 0) AS prevented_usd,
               ROUND(SUM(COALESCE(imp.exposure_usd,0)), 0) AS exposure_usd
        FROM monitor_alerts a
        JOIN monitor_indicators i ON i.id = a.indicator_id
@@ -379,6 +575,7 @@ export function getRiskLogDashboard() {
     )
     .all();
 
+  // Money KPIs: only impacts stamped by a real E2E close walk (never seed / scrub leftovers).
   const money = database
     .prepare(
       `SELECT
@@ -392,7 +589,8 @@ export function getRiskLogDashboard() {
          SUM(CASE WHEN imp.outcome='OPEN' THEN 1 ELSE 0 END) AS open_events
        FROM alert_impacts imp
        JOIN monitor_alerts a ON a.id = imp.alert_id
-       WHERE ${CLOSED_ALERT_SQL}`
+       WHERE ${CLOSED_ALERT_SQL}
+         AND imp.notes LIKE '%real E2E close%'`
     )
     .get() as Record<string, number>;
 
@@ -487,8 +685,8 @@ export function getRiskLogDashboard() {
          i.product,
          COUNT(*) AS incidents,
          SUM(CASE WHEN a.severity IN ('BREACH','CRITICAL') THEN 1 ELSE 0 END) AS breach_incidents,
-         ROUND(SUM(COALESCE(imp.estimated_loss_usd,0)), 0) AS loss_usd,
-         ROUND(SUM(COALESCE(imp.prevented_loss_usd,0)), 0) AS prevented_usd,
+         ROUND(SUM(${REAL_CLOSE_MONEY}), 0) AS loss_usd,
+         ROUND(SUM(${REAL_CLOSE_PREVENTED}), 0) AS prevented_usd,
          ROUND(AVG(
            CASE WHEN a.acknowledged_at IS NOT NULL
              THEN (julianday(a.acknowledged_at) - julianday(a.created_at)) * 24 * 60

@@ -23,7 +23,8 @@ import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
 import { DEPARTMENT_LIST, ROLE_CHARTERS } from "@/lib/org-catalog";
 
 const DATA_DIR = path.join(process.cwd(), "data");
-const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
+/** Prefer CRMP_DB_PATH so smoke/scripts never clobber the live desk DB while Next holds it open. */
+const DB_PATH = process.env.CRMP_DB_PATH?.trim() || path.join(DATA_DIR, "vantage_risk.db");
 
 declare global {
   var __vantageRiskDb: Database.Database | undefined;
