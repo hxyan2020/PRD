@@ -197,7 +197,7 @@ export const FULL_FLOW_STEPS: Array<{
   {
     id: "indicator-aggregation",
     href: "/admin/indicator-aggregation",
-    en: "Indicator Aggregation",
+    en: "Indicator Aggregation Flow",
     zh: "指標聚合流程",
     hintEn: "L1→L2 on linked desk chains",
     hintZh: "連動櫃台鏈路的 L1→L2",

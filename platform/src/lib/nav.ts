@@ -88,7 +88,7 @@ export const NAV_ITEMS = [
   { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
   {
     href: "/admin/indicator-aggregation",
-    label: "Indicator Aggregation",
+    label: "Indicator Aggregation Flow",
     icon: Link2,
     permission: "monitor.read",
     group: "monitor",
