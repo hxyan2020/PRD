@@ -13,7 +13,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/risk-log": { en: "Closed Risk Log", "zh-Hant": "已結風險日誌" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
-  "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
+  "/admin/indicator-aggregation": { en: "Indicator Aggregation Flow", "zh-Hant": "指標聚合流程" },
   "/admin/monitor-labs": { en: "Full-flow demo", "zh-Hant": "全流程demo" },
   "/admin/l2-rca": { en: "L2 → AI RCA Lab", "zh-Hant": "L2 → AI RCA 實驗室" },
   "/admin/ai-incident": { en: "AI Root Cause Analysis", "zh-Hant": "AI根因分析" },
