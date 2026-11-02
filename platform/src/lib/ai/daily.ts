@@ -51,31 +51,8 @@ const TEMPLATE: MetricSeed[] = [
 export function seedDailyPerformance(db: Database.Database) {
   const count = db.prepare(`SELECT COUNT(*) AS c FROM daily_performance`).get() as { c: number };
   if (count.c > 0) return;
-
-  const insert = db.prepare(
-    `INSERT INTO daily_performance
-      (report_date, product, metric_key, metric_label, value, unit, target, status, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  );
-
-  for (let day = 0; day < 7; day++) {
-    const date = daysAgo(day);
-    for (const m of TEMPLATE) {
-      const drift = (Math.random() - 0.5) * (Math.abs(m.value) * 0.08 + 1);
-      const value = Math.round((m.value + (day === 0 ? 0 : drift)) * 100) / 100;
-      insert.run(
-        date,
-        m.product,
-        m.metric_key,
-        m.metric_label,
-        value,
-        m.unit,
-        m.target ?? null,
-        day === 0 ? m.status : "OK",
-        m.notes ?? null
-      );
-    }
-  }
+  // Intentionally leave empty — refreshTodayPerformance fills today from live desk state.
+  // Do not invent multi-day fake history for the Daily Performance board.
 }
 
 /** Refresh today's metrics from live platform state. */

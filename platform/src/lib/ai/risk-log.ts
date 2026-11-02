@@ -58,18 +58,20 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
     `UPDATE monitor_tickets SET status = ?, resolved_at = ?, updated_at = ? WHERE alert_id = ? AND resolved_at IS NULL`
   );
 
-  // Deterministic handling windows for demo realism
+  // Ack-only timing for realism. Do NOT auto-resolve — Closed Risk Log must come from a real close walk.
   const timing: Record<string, { ackMin: number; resolveMin?: number; by: number }> = {
-    "ALT-1001": { ackMin: 12, resolveMin: 95, by: 2 },
-    "ALT-1002": { ackMin: 8, resolveMin: 140, by: 1 },
-    "ALT-1003": { ackMin: 18, resolveMin: 210, by: 6 },
-    "ALT-1004": { ackMin: 25, by: 1 },
-    "ALT-1005": { ackMin: 15, resolveMin: 80, by: 2 },
-    // Forex CFD pack — keep INC-1028 open (ack only); close stale-feed companion for Risk Log.
     "ALT-INC-1028": { ackMin: 6, by: 2 },
     "ALT-LP-HEDGE-GAP": { ackMin: 10, by: 5 },
-    "ALT-XAU-WEEKEND": { ackMin: 14, by: 2 },
-    "ALT-STALE-FEED-LIQ": { ackMin: 9, resolveMin: 110, by: 2 },
+    "ALT-ADM-SEG-GAP": { ackMin: 11, by: 1 },
+    "ALT-ADM-IB-WASH": { ackMin: 9, by: 2 },
+    "ALT-ADM-WD-SURGE": { ackMin: 14, by: 3 },
+    "ALT-PRC-SPREAD": { ackMin: 7, by: 5 },
+    "ALT-PRC-SWAP": { ackMin: 20, by: 5 },
+    "ALT-DL-LP-REJECT": { ackMin: 4, by: 2 },
+    "ALT-DL-TOXIC": { ackMin: 8, by: 2 },
+    "ALT-PERP-ORACLE": { ackMin: 5, by: 6 },
+    "ALT-PERP-LIQ": { ackMin: 3, by: 6 },
+    "ALT-PERP-INS": { ackMin: 12, by: 1 },
   };
 
   for (const a of openAlerts) {
@@ -106,88 +108,20 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
      VALUES (?, ?, ?, ?, ?, ?, ?)`
   );
 
+  // Exposure estimates for open desk-12 alerts only — outcome stays OPEN until a real close walk.
   const seeds: Array<[string, string, number, number, number, string, string]> = [
-    [
-      "ALT-1001",
-      "PREVENTED",
-      42000,
-      380000,
-      2100000,
-      "margin_cascade",
-      "Group leverage tighten + copy overlap check prevented cascade liquidations into US open.",
-    ],
-    [
-      "ALT-1002",
-      "NEAR_MISS",
-      95000,
-      260000,
-      1800000,
-      "copy_concentration",
-      "Top provider share hit 31%; pause new copies delayed — residual PnL drag.",
-    ],
-    [
-      "ALT-1003",
-      "PREVENTED",
-      12000,
-      520000,
-      6400000,
-      "hot_wallet_float",
-      "Cold sweep + withdrawal throttle avoided custody exposure breach.",
-    ],
-    [
-      "ALT-1004",
-      "LOSS",
-      180000,
-      40000,
-      900000,
-      "equity_drawdown",
-      "Book drawdown realised during volatile metals session before hedge rebalance.",
-    ],
-    [
-      "ALT-1005",
-      "PREVENTED",
-      28000,
-      210000,
-      750000,
-      "hedge_gap",
-      "LP coverage restored after inventory skew validation.",
-    ],
-    [
-      "ALT-INC-1028",
-      "NEAR_MISS",
-      65000,
-      420000,
-      1800000,
-      "pricing_feed_gap",
-      "INC-1028 LP-A XAUUSD quote delay — fallback path reviewed; client impact unverified; still open on desk.",
-    ],
-    [
-      "ALT-LP-HEDGE-GAP",
-      "OPEN",
-      18000,
-      90000,
-      620000,
-      "hedge_gap",
-      "Companion LP-HEDGE-GAP — coverage slip while LP rejects rise on the INC-1028 book.",
-    ],
-    [
-      "ALT-XAU-WEEKEND",
-      "OPEN",
-      22000,
-      110000,
-      980000,
-      "product_exposure",
-      "Companion XAU-WEEKEND — metals weekend exposure on same CFD book as INC-1028.",
-    ],
-    [
-      "ALT-STALE-FEED-LIQ",
-      "PREVENTED",
-      48000,
-      510000,
-      2400000,
-      "pricing_feed_gap",
-      "Companion STALE-FEED-LIQ closed — symbol halt + margin review stopped contagion into liquidations.",
-    ],
+    ["ALT-ADM-SEG-GAP", "OPEN", 0, 0, 318000, "client_money_seg", "Trust ledger lag vs MT5 equity — open until recon closes."],
+    ["ALT-ADM-IB-WASH", "OPEN", 0, 0, 940000, "ib_wash", "IB rebate + wash cluster — payout hold pending RO."],
+    ["ALT-ADM-WD-SURGE", "OPEN", 0, 0, 4850000, "withdrawal_velocity", "NFP rumour withdrawal surge — queue triage open."],
+    ["ALT-INC-1028", "OPEN", 0, 0, 1800000, "pricing_feed_gap", "INC-1028 LP-A XAUUSD quote delay — still open on desk."],
+    ["ALT-PRC-SPREAD", "OPEN", 0, 0, 95000000, "spread_shock", "USDJPY CPI spread shock — protection band open."],
+    ["ALT-PRC-SWAP", "OPEN", 0, 0, 0, "swap_misconfig", "DST swap divergence — config publish open."],
+    ["ALT-DL-LP-REJECT", "OPEN", 0, 0, 1200000, "lp_reject_storm", "EURUSD LP reject storm — dealing reroute open."],
+    ["ALT-LP-HEDGE-GAP", "OPEN", 0, 0, 620000, "hedge_gap", "Hedge coverage companion to INC-1028 — open."],
+    ["ALT-DL-TOXIC", "OPEN", 0, 0, 780000, "toxic_flow", "NAS100 latency-arb toxicity — last-look open."],
+    ["ALT-PERP-ORACLE", "OPEN", 0, 0, 4100000, "oracle_lag", "BTCUSDT mark oracle lag — exchange risk open."],
+    ["ALT-PERP-LIQ", "OPEN", 0, 0, 8900000, "liq_backlog", "ETHUSDT liquidation backlog — ADL watch open."],
+    ["ALT-PERP-INS", "OPEN", 0, 0, 2200000, "insurance_dd", "Insurance fund drawdown after concentrated OI — open."],
   ];
 
   for (const [code, outcome, loss, prevented, exposure, tag, notes] of seeds) {
