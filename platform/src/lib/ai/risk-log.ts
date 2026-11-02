@@ -531,6 +531,17 @@ export function getRiskLogDashboard() {
       .get() as { c: number }
   ).c;
 
+  const moneySafe = {
+    total_loss_usd: Number(money?.total_loss_usd || 0),
+    total_prevented_usd: Number(money?.total_prevented_usd || 0),
+    total_exposure_usd: Number(money?.total_exposure_usd || 0),
+    loss_events: Number(money?.loss_events || 0),
+    prevented_events: Number(money?.prevented_events || 0),
+    near_miss_events: Number(money?.near_miss_events || 0),
+    false_positive_events: Number(money?.false_positive_events || 0),
+    open_events: Number(money?.open_events || 0),
+  };
+
   return {
     summary: {
       alerts_total: closedTotal,
@@ -541,8 +552,8 @@ export function getRiskLogDashboard() {
           )
           .get() as { c: number }
       ).c,
-      ...money,
-      net_risk_usd: Number(money.total_loss_usd || 0) - Number(money.total_prevented_usd || 0),
+      ...moneySafe,
+      net_risk_usd: moneySafe.total_loss_usd - moneySafe.total_prevented_usd,
       ...handling,
     },
     by_category: byCategory,
