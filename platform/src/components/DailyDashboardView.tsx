@@ -203,7 +203,7 @@ function Sphere({
         </div>
       </div>
 
-      <div className="relative mt-5 grid sm:grid-cols-2 gap-3">
+      <div className="relative mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
         {rows.map((m) => (
           <MetricTile key={m.metric_key} metric={m} tone={tone} />
         ))}

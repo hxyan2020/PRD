@@ -512,7 +512,7 @@ export function DiscoverySuggestionBoard({
               />
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 items-center shrink-0">
+          <div className="flex w-full min-w-0 flex-wrap gap-2 items-center sm:w-auto">
             <Badge className={enabled ? "bg-emerald-100 text-emerald-900 border-emerald-200" : "bg-slate-100"}>
               {enabled ? <EnZh en="ENABLED" zh="已啟用" /> : <EnZh en="DISABLED" zh="已停用" />}
             </Badge>
@@ -523,7 +523,7 @@ export function DiscoverySuggestionBoard({
                 : "MOCK"}
             </Badge>
             <a
-              className="btn !min-h-9 text-xs"
+              className="btn !min-h-11 sm:!min-h-9 text-xs w-full sm:w-auto justify-center"
               href={RISK_DISCOVERY_NOTEBOOK.html}
               target="_blank"
               rel="noreferrer"
@@ -532,7 +532,7 @@ export function DiscoverySuggestionBoard({
               <EnZh en="Open notebook (HTML)" zh="開啟筆記本（HTML）" />
             </a>
             <Link
-              className="btn !min-h-9 text-xs"
+              className="btn !min-h-11 sm:!min-h-9 text-xs w-full sm:w-auto justify-center"
               href={locale === "zh-Hant" ? "/admin/docs/user-guide?lang=zh-Hant" : "/admin/docs/user-guide"}
             >
               <EnZh en="Methods & flow (docs)" zh="方法與流程（文件）" />
