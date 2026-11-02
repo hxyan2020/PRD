@@ -134,3 +134,53 @@ export function ensureDesk12PackSeed(db: Database.Database) {
   });
   tx();
 }
+
+/** Honest RCA packs for desk-12 opens + relabel/hide fake seeded demos. */
+export function ensureDesk12Analyses(db: Database.Database) {
+  // Relabel any seed packs that still look like live LLM output.
+  db.prepare(
+    `UPDATE ai_analyses
+     SET summary = 'HEURISTIC_SEED · ' || summary
+     WHERE (analysis_id LIKE 'AIA-DEMO-%' OR analysis_id = 'AIA-INC-1028')
+       AND summary NOT LIKE 'HEURISTIC_%'
+       AND summary NOT LIKE 'LIVE_LLM%'`
+  ).run();
+
+  // Detach analyses that point at SUPERSEDED legacy alerts so they don't surface as live AI.
+  db.prepare(
+    `UPDATE ai_analyses
+     SET status = 'SUPERSEDED',
+         summary = CASE
+           WHEN summary LIKE 'HEURISTIC_%' THEN summary
+           ELSE 'HEURISTIC_SEED · superseded with legacy alert'
+         END
+     WHERE alert_id IN (SELECT id FROM monitor_alerts WHERE status = 'SUPERSEDED')
+       AND status != 'SUPERSEDED'`
+  ).run();
+
+  // Ensure each open desk-12 alert has a fresh heuristic analysis (skill match once skills exist).
+  // Lazy require avoids cycle with analyze.ts → db.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { analyzeAlert } = require("@/lib/ai/analyze") as typeof import("@/lib/ai/analyze");
+  const rows = db
+    .prepare(
+      `SELECT a.id, a.alert_id FROM monitor_alerts a
+       WHERE a.alert_id IN (${DESK_12_SCENARIOS.map(() => "?").join(",")})
+         AND a.status NOT IN ('SUPERSEDED','CLOSED','RESOLVED')`
+    )
+    .all(...DESK_12_SCENARIOS.map((s) => s.alert_id)) as Array<{ id: number; alert_id: string }>;
+
+  for (const row of rows) {
+    const existing = db
+      .prepare(
+        `SELECT id, status FROM ai_analyses WHERE alert_id = ? AND status != 'SUPERSEDED' ORDER BY id DESC LIMIT 1`
+      )
+      .get(row.id) as { id: number; status: string } | undefined;
+    if (existing) continue;
+    try {
+      analyzeAlert(row.id, { force: true });
+    } catch {
+      /* keep boot resilient */
+    }
+  }
+}

@@ -25,8 +25,8 @@ export function FullFlowDemoBoard() {
         </p>
         <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl sm:text-2xl leading-snug">
           <EnZh
-            en="Walk Risk Domains → Open Alerts → Indicators → Discovery → Aggregation → Market Intel → AI RCA → Noise → Closed Log → Daily"
-            zh="依序走完：風險領域 → 未結警報 → 已知指標 → 未知探索 → 聚合 → 市場情報 → AI根因 → 降噪 → 已結日誌 → 每日績效"
+            en="Walk Risk Domains → Indicators → Open Alerts → Discovery → Aggregation → Market Intel → AI RCA → Noise → Closed Log → Daily"
+            zh="依序走完：風險領域 → 已知指標 → 未結警報 → 未知探索 → 聚合 → 市場情報 → AI根因 → 降噪 → 已結日誌 → 每日績效"
           />
         </h2>
         <p className="mt-2 text-sm text-[var(--muted)] max-w-3xl">

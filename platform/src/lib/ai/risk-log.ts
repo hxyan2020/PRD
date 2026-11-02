@@ -274,11 +274,6 @@ function backfillImpactsForMissing(db: Database.Database) {
   );
 
   for (const m of missing) {
-    const severityMul = m.severity === "CRITICAL" ? 3 : m.severity === "BREACH" ? 2 : 1;
-    const base = m.product === "Crypto" || m.product === "CRYPTO" ? 90000 : 60000;
-    const exposure = base * 12 * severityMul;
-    const prevented = Math.round(base * 4.5 * severityMul);
-    const loss = Math.round(base * 0.35 * severityMul);
     const tag =
       m.domain_code === "CREDIT_CLIENT"
         ? "client_credit_gap"
@@ -291,25 +286,57 @@ function backfillImpactsForMissing(db: Database.Database) {
               : m.domain_code === "MARKET_PRICING"
                 ? "pricing_feed_gap"
                 : "process_gap";
-    const outcome =
-      m.severity === "BREACH" || m.severity === "CRITICAL" ? "NEAR_MISS" : m.severity === "WARN" ? "OPEN" : "FALSE_POSITIVE";
+    // Open alerts: exposure estimate only — never invent loss/prevented until a real close walk.
+    const exposure =
+      m.product === "Crypto" || m.product === "CRYPTO"
+        ? m.severity === "CRITICAL"
+          ? 2_000_000
+          : 900_000
+        : m.severity === "CRITICAL"
+          ? 1_500_000
+          : 600_000;
     ins.run(
       m.id,
-      outcome,
-      loss,
-      prevented,
+      "OPEN",
+      0,
+      0,
       exposure,
       tag,
-      `Auto-estimated impact for ${m.monitor_id} / ${m.title}`
+      `Open exposure estimate for ${m.monitor_id} / ${m.title} — loss/prevented filled only after real close.`
     );
   }
 }
+
+const CLOSED_ALERT_SQL = `(a.status IN ('CLOSED','RESOLVED') OR EXISTS (
+  SELECT 1 FROM monitor_tickets t
+  WHERE t.alert_id = a.id AND t.status IN ('RESOLVED','CLOSED')
+)) AND a.status != 'SUPERSEDED'`;
 
 export function getRiskLogDashboard() {
   const database = db();
   ensureRiskLogSchema(database);
   seedRiskLogIfEmpty(database);
   ensureRiskLogHistory(database);
+
+  // Scrub invented loss/prevented on still-open impacts (legacy backfill).
+  database
+    .prepare(
+      `UPDATE alert_impacts
+       SET estimated_loss_usd = 0,
+           prevented_loss_usd = 0,
+           outcome = 'OPEN',
+           notes = COALESCE(notes, '') || CASE WHEN notes LIKE '%real close%' THEN '' ELSE ' · scrubbed fake close money (open)' END
+       WHERE outcome != 'OPEN'
+         AND alert_id IN (
+           SELECT a.id FROM monitor_alerts a
+           WHERE a.status IN ('OPEN','ACKNOWLEDGED','ESCALATED')
+             AND NOT EXISTS (
+               SELECT 1 FROM monitor_tickets t
+               WHERE t.alert_id = a.id AND t.status IN ('RESOLVED','CLOSED')
+             )
+         )`
+    )
+    .run();
 
   const byCategory = database
     .prepare(
@@ -318,7 +345,7 @@ export function getRiskLogDashboard() {
               i.product,
               a.severity,
               COUNT(*) AS alert_count,
-              SUM(CASE WHEN a.status IN ('OPEN','ACKNOWLEDGED','ESCALATED') THEN 1 ELSE 0 END) AS open_count,
+              0 AS open_count,
               ROUND(AVG(COALESCE(imp.estimated_loss_usd,0)), 0) AS avg_loss_usd,
               ROUND(SUM(COALESCE(imp.prevented_loss_usd,0)), 0) AS prevented_usd,
               ROUND(SUM(COALESCE(imp.estimated_loss_usd,0)), 0) AS loss_usd
@@ -326,6 +353,7 @@ export function getRiskLogDashboard() {
        JOIN monitor_indicators i ON i.id = a.indicator_id
        LEFT JOIN risk_domains d ON d.code = i.domain_code
        LEFT JOIN alert_impacts imp ON imp.alert_id = a.id
+       WHERE ${CLOSED_ALERT_SQL}
        GROUP BY i.domain_code, i.product, a.severity
        ORDER BY alert_count DESC, loss_usd DESC`
     )
@@ -345,6 +373,7 @@ export function getRiskLogDashboard() {
        JOIN monitor_indicators i ON i.id = a.indicator_id
        LEFT JOIN risk_domains d ON d.code = i.domain_code
        LEFT JOIN alert_impacts imp ON imp.alert_id = a.id
+       WHERE ${CLOSED_ALERT_SQL}
        GROUP BY i.domain_code
        ORDER BY breach_count DESC, alert_count DESC`
     )
@@ -353,15 +382,17 @@ export function getRiskLogDashboard() {
   const money = database
     .prepare(
       `SELECT
-         ROUND(SUM(estimated_loss_usd), 0) AS total_loss_usd,
-         ROUND(SUM(prevented_loss_usd), 0) AS total_prevented_usd,
-         ROUND(SUM(exposure_usd), 0) AS total_exposure_usd,
-         SUM(CASE WHEN outcome='LOSS' THEN 1 ELSE 0 END) AS loss_events,
-         SUM(CASE WHEN outcome='PREVENTED' THEN 1 ELSE 0 END) AS prevented_events,
-         SUM(CASE WHEN outcome='NEAR_MISS' THEN 1 ELSE 0 END) AS near_miss_events,
-         SUM(CASE WHEN outcome='FALSE_POSITIVE' THEN 1 ELSE 0 END) AS false_positive_events,
-         SUM(CASE WHEN outcome='OPEN' THEN 1 ELSE 0 END) AS open_events
-       FROM alert_impacts`
+         ROUND(SUM(COALESCE(imp.estimated_loss_usd,0)), 0) AS total_loss_usd,
+         ROUND(SUM(COALESCE(imp.prevented_loss_usd,0)), 0) AS total_prevented_usd,
+         ROUND(SUM(COALESCE(imp.exposure_usd,0)), 0) AS total_exposure_usd,
+         SUM(CASE WHEN imp.outcome='LOSS' THEN 1 ELSE 0 END) AS loss_events,
+         SUM(CASE WHEN imp.outcome='PREVENTED' THEN 1 ELSE 0 END) AS prevented_events,
+         SUM(CASE WHEN imp.outcome='NEAR_MISS' THEN 1 ELSE 0 END) AS near_miss_events,
+         SUM(CASE WHEN imp.outcome='FALSE_POSITIVE' THEN 1 ELSE 0 END) AS false_positive_events,
+         SUM(CASE WHEN imp.outcome='OPEN' THEN 1 ELSE 0 END) AS open_events
+       FROM alert_impacts imp
+       JOIN monitor_alerts a ON a.id = imp.alert_id
+       WHERE ${CLOSED_ALERT_SQL}`
     )
     .get() as Record<string, number>;
 
@@ -405,6 +436,7 @@ export function getRiskLogDashboard() {
        LEFT JOIN monitor_tickets t ON t.alert_id = a.id
        LEFT JOIN alert_impacts imp ON imp.alert_id = a.id
        LEFT JOIN escalation_routes er ON er.domain_code = i.domain_code AND er.severity = a.severity AND er.enabled = 1
+       WHERE ${CLOSED_ALERT_SQL}
        ORDER BY a.created_at DESC, a.id DESC
        LIMIT 200`
     )
@@ -466,6 +498,7 @@ export function getRiskLogDashboard() {
        JOIN monitor_indicators i ON i.id = a.indicator_id
        LEFT JOIN risk_domains d ON d.code = i.domain_code
        LEFT JOIN alert_impacts imp ON imp.alert_id = a.id
+       WHERE ${CLOSED_ALERT_SQL}
        GROUP BY COALESCE(imp.loophole_tag, 'unclassified'), i.domain_code, i.product
        ORDER BY breach_incidents DESC, incidents DESC, loss_usd DESC`
     )
@@ -492,14 +525,20 @@ export function getRiskLogDashboard() {
   const history = listRiskLogHistory(database);
   const history_totals = riskLogHistoryTotals(history);
 
+  const closedTotal = (
+    database
+      .prepare(`SELECT COUNT(*) AS c FROM monitor_alerts a WHERE ${CLOSED_ALERT_SQL}`)
+      .get() as { c: number }
+  ).c;
+
   return {
     summary: {
-      alerts_total: (
-        database.prepare(`SELECT COUNT(*) AS c FROM monitor_alerts`).get() as { c: number }
-      ).c,
+      alerts_total: closedTotal,
       open_alerts: (
         database
-          .prepare(`SELECT COUNT(*) AS c FROM monitor_alerts WHERE status IN ('OPEN','ACKNOWLEDGED','ESCALATED')`)
+          .prepare(
+            `SELECT COUNT(*) AS c FROM monitor_alerts WHERE status IN ('OPEN','ACKNOWLEDGED','ESCALATED')`
+          )
           .get() as { c: number }
       ).c,
       ...money,

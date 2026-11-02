@@ -1175,8 +1175,11 @@ function runEnsureAiLayer(db: Database.Database) {
   ensureForexPackDeskSeed(db);
   // Canonical 12 desk scenarios (admin/pricing/dealing/perp) — open alerts only.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { ensureDesk12PackSeed } = require("@/lib/demo/desk-12-seed") as typeof import("@/lib/demo/desk-12-seed");
+  const { ensureDesk12PackSeed, ensureDesk12Analyses } =
+    require("@/lib/demo/desk-12-seed") as typeof import("@/lib/demo/desk-12-seed");
   ensureDesk12PackSeed(db);
+  // After skills upsert — attach honest heuristic RCA packs to desk-12 opens.
+  ensureDesk12Analyses(db);
   // Detector history + risk_log_daily + AIA/THR-INC-1028 + aggregation demos for SQL / modules.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { ensureForexPackSimulationSpine } =

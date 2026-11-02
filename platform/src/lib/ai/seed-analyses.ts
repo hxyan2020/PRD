@@ -11,6 +11,7 @@ export function seedAiAnalysesIfEmpty(db: Database.Database) {
               i.monitor_id, i.name AS indicator_name, i.unit, i.threshold_warn, i.threshold_breach
        FROM monitor_alerts a
        JOIN monitor_indicators i ON i.id = a.indicator_id
+       WHERE a.status NOT IN ('SUPERSEDED','CLOSED','RESOLVED')
        ORDER BY a.id
        LIMIT 5`
     )
@@ -92,7 +93,7 @@ export function seedAiAnalysesIfEmpty(db: Database.Database) {
       alert.monitor_id,
       mode,
       confidence,
-      `${alert.title}: ${alert.message} Primary RCA generated from Monitor 2.0 + RAG playbook. Human review required.`,
+      `HEURISTIC_SEED · ${alert.title}: ${alert.message} — seeded browse pack from Monitor 2.0 + local RAG snippets (NOT a live LLM call). Human review required.`,
       JSON.stringify(explanations),
       JSON.stringify(actions),
       "NEEDS_HUMAN",

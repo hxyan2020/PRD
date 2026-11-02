@@ -216,61 +216,48 @@ function openCountOnOrBefore(db: Database.Database, date: string): number {
 }
 
 /**
- * Ensure ~90 days of daily risk-log history exist.
- * Synthetic backfill fills gaps; live alert aggregates overwrite matching days.
+ * Ensure risk-log daily history from LIVE alert aggregates only.
+ * Do not invent synthetic PnL / close counts — Closed Risk Log must reflect real desk walks.
  */
 export function ensureRiskLogHistory(db: Database.Database, days = HISTORY_DAYS) {
   ensureRiskLogHistorySchema(db);
   const end = todayUTC();
   const start = addDaysUTC(end, -(days - 1));
-  const count = (
-    db
-      .prepare(`SELECT COUNT(*) AS c FROM risk_log_daily WHERE report_date BETWEEN ? AND ?`)
-      .get(start, end) as { c: number }
-  ).c;
-
   const live = liveDailyAggregates(db);
-  let openCarry = 8 + Math.floor(unit(dayHash(start), 20) * 10);
 
-  // Always regenerate the window so newly raised alerts fold into charts.
   const upsert = db.transaction(() => {
+    // Drop prior synthetic/merged backfill so charts cannot show invented closes.
+    db.prepare(
+      `DELETE FROM risk_log_daily WHERE report_date BETWEEN ? AND ? AND source IN ('backfill','merged','synthetic')`
+    ).run(start, end);
+
     for (let i = 0; i < days; i++) {
       const date = addDaysUTC(start, i);
-      const synth = synthesizeHistoryDay(date, openCarry);
       const liveDay = live.get(date);
-      let day: RiskLogDay;
-      if (liveDay && liveDay.alerts_raised > 0) {
-        // Blend: keep synthetic floor for quiet days, prefer live money/counts when present.
-        day = {
-          report_date: date,
-          alerts_raised: Math.max(liveDay.alerts_raised, Math.round(synth.alerts_raised * 0.35)),
-          breaches: Math.max(liveDay.breaches, Math.round(synth.breaches * 0.25)),
-          warns: Math.max(liveDay.warns, Math.round(synth.warns * 0.25)),
-          loss_usd: Math.max(liveDay.loss_usd, Math.round(synth.loss_usd * 0.4)),
-          prevented_usd: Math.max(liveDay.prevented_usd, Math.round(synth.prevented_usd * 0.4)),
-          exposure_usd: Math.max(liveDay.exposure_usd, Math.round(synth.exposure_usd * 0.4)),
-          avg_ack_minutes: liveDay.avg_ack_minutes ?? synth.avg_ack_minutes,
-          avg_resolve_minutes: liveDay.avg_resolve_minutes ?? synth.avg_resolve_minutes,
-          open_eod: Math.max(liveDay.alerts_raised, openCarry),
-          source: count < days / 2 ? "merged" : "live",
-        };
-        // Prefer true open queue for recent end-of-day when we can.
-        if (date === end) {
-          day.open_eod = (
-            db
-              .prepare(
-                `SELECT COUNT(*) AS c FROM monitor_alerts WHERE status IN ('OPEN','ACKNOWLEDGED','ESCALATED')`
-              )
-              .get() as { c: number }
-          ).c;
-        } else {
-          day.open_eod = Math.max(openCountOnOrBefore(db, date), Math.round(openCarry * 0.7));
-        }
-      } else {
-        day = synth;
-      }
-      openCarry = day.open_eod;
-      upsertDay(db, day);
+      if (!liveDay || liveDay.alerts_raised <= 0) continue;
+      const open_eod =
+        date === end
+          ? (
+              db
+                .prepare(
+                  `SELECT COUNT(*) AS c FROM monitor_alerts WHERE status IN ('OPEN','ACKNOWLEDGED','ESCALATED')`
+                )
+                .get() as { c: number }
+            ).c
+          : Math.max(openCountOnOrBefore(db, date), liveDay.alerts_raised);
+      upsertDay(db, {
+        report_date: date,
+        alerts_raised: liveDay.alerts_raised,
+        breaches: liveDay.breaches,
+        warns: liveDay.warns,
+        loss_usd: liveDay.loss_usd,
+        prevented_usd: liveDay.prevented_usd,
+        exposure_usd: liveDay.exposure_usd,
+        avg_ack_minutes: liveDay.avg_ack_minutes,
+        avg_resolve_minutes: liveDay.avg_resolve_minutes,
+        open_eod,
+        source: "live",
+      });
     }
   });
   upsert();
