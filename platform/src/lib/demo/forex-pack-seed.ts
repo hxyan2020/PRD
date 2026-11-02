@@ -170,35 +170,8 @@ export function ensureForexPackDeskSeed(db: Database.Database) {
     ticket_status: "OPEN",
   });
 
-  // Closed trail for Risk Log — stale-feed companion resolved.
-  const stale = FOREX_COMPANION_CASES.find((c) => c.id === "STALE-FEED-LIQ")!;
-  const closedId = ensureAlert(db, {
-    alert_id: stale.alert_id,
-    monitor_id: "M2-FEED-003",
-    severity: "BREACH",
-    title: stale.title_en,
-    message: `${stale.id}: stale feed contagion path closed after symbol halt + margin review (book shared with ${fx.incident_id}).`,
-    observed_value: 11,
-    status: "CLOSED",
-    ticket_id: "TKT-STALE-FEED-LIQ",
-    ticket_title: stale.title_en,
-    ticket_status: "RESOLVED",
-  });
-
-  if (closedId != null) {
-    db.prepare(
-      `UPDATE monitor_tickets
-       SET status = 'RESOLVED', resolved_at = COALESCE(resolved_at, datetime('now', '-2 hours')), updated_at = datetime('now')
-       WHERE alert_id = ?`
-    ).run(closedId);
-    db.prepare(
-      `UPDATE monitor_alerts
-       SET status = 'CLOSED',
-           acknowledged_at = COALESCE(acknowledged_at, datetime('now', '-3 hours')),
-           acknowledged_by = COALESCE(acknowledged_by, 2)
-       WHERE id = ?`
-    ).run(closedId);
-  }
+  // Do not seed a fake CLOSED companion — Closed Risk Log must come from a real close walk.
+  // Legacy ALT-STALE-FEED-LIQ is retired by ensureDesk12PackSeed.
 
   // Attach the canonical INC-1028 messenger thread to the live pack alert.
   // Do not rewrite DUMMY / discovery titles that merely mention INC-1028.

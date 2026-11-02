@@ -10,7 +10,7 @@ Full operator catalogue for **Admin**, **Pricing**, and **Dealing** desks.
 | Domain scenario map | `/admin/risk-domains` |
 | Skill playbooks | `/admin/skills` |
 
-Generated from live SQLite `monitor_indicators` + domain/skill catalogs (2026-10-31). Counts: **50** indicators · **37** domain scenarios · **47** skills · **40** linked timelines.
+Generated from live SQLite `monitor_indicators` + domain/skill catalogs (2026-11-02). Counts: **50** indicators · **12** domain scenarios · **47** skills · **40** linked timelines.
 
 ## Audience map
 
@@ -65,7 +65,6 @@ Generated from live SQLite `monitor_indicators` + domain/skill catalogs (2026-10
 | `M2-PAY-017` | Payment Fraud Model Score | FRAUD_CONDUCT | CFD | shared | 0.65 | 0.8 | score |  |
 | `M2-WASH-020` | Wash/Collusion Detection Score | FRAUD_CONDUCT | CFD+Crypto | shared | 0.55 | 0.75 | score |  |
 | `M2-ABOOK-008` | A-book Volume Ratio (session) | LP_HEDGE | CFD | dealing | 40 | 30 | % |  |
-| `M2-DISC-CUSUM-LP-REJECT-RATE` | LP Reject Rate (oneZero) CUSUM regime score | LP_HEDGE | CFD | dealing | 1 | 1.5 | score |  |
 | `M2-HEDGE-007` | Hedge Coverage Ratio | LP_HEDGE | CFD | dealing | 85 | 70 | % | yes |
 | `M2-LP-022` | LP Reject Rate (oneZero) | LP_HEDGE | CFD | dealing | 2 | 5 | % | yes |
 | `M2-CORR-004` | Corr Matrix Drift vs Baseline | MARKET_PRICING | CFD | pricing | 0.2 | 0.35 | Δρ |  |
@@ -76,6 +75,7 @@ Generated from live SQLite `monitor_indicators` + domain/skill catalogs (2026-10
 | `M2-SLIP-021` | Avg Client Slippage (majors, 15m) | MARKET_PRICING | CFD | pricing | 2 | 3.5 | pips |  |
 | `M2-VAR-002` | 1-day VaR Utilisation | MARKET_PRICING | CFD | pricing | 85 | 95 | % |  |
 | `M2-MODEL-006` | Detector Precision (7d rolling) | MODEL_AI | CFD+Crypto | admin | 80 | 70 | % |  |
+| `M2-ORPHAN-999` | Orphan demo monitor (no aggregate) | OPS | CFD | admin | 10 | 20 | score |  |
 | `M2-FUND-010` | Funding Exceptions (1h) | OPS_PROCESS | CFD | admin | 30 | 80 | count/h |  |
 | `M2-RECON-BRK` | Reconciliation Breaks (open) | OPS_PROCESS | CFD+Crypto | admin | 5 | 20 | count |  |
 | `M2-WD-015` | Withdrawal Volume (1h USD) | OPS_PROCESS | CFD+Crypto | admin | 2000000 | 5000000 | USD |  |
@@ -126,7 +126,7 @@ Indicators owned by Pricing, shared domains, or on the INC-1028 forex demo book.
 | `M2-KILL-COUNT` | Active Symbol Kill-Switches | TECH_INFRA | CFD+Crypto | shared | 2 | 5 | symbols |  |
 | `M2-MT-DISC` | Trading Platform Disconnect Rate | TECH_INFRA | CFD+Crypto | shared | 1 | 5 | % |  |
 
-### Dealing lens (23)
+### Dealing lens (22)
 
 Indicators owned by Dealing / LP, shared domains, or on the INC-1028 forex demo book.
 
@@ -145,7 +145,6 @@ Indicators owned by Dealing / LP, shared domains, or on the INC-1028 forex demo 
 | `M2-PAY-017` | Payment Fraud Model Score | FRAUD_CONDUCT | CFD | shared | 0.65 | 0.8 | score |  |
 | `M2-WASH-020` | Wash/Collusion Detection Score | FRAUD_CONDUCT | CFD+Crypto | shared | 0.55 | 0.75 | score |  |
 | `M2-ABOOK-008` | A-book Volume Ratio (session) | LP_HEDGE | CFD | dealing | 40 | 30 | % |  |
-| `M2-DISC-CUSUM-LP-REJECT-RATE` | LP Reject Rate (oneZero) CUSUM regime score | LP_HEDGE | CFD | dealing | 1 | 1.5 | score |  |
 | `M2-HEDGE-007` | Hedge Coverage Ratio | LP_HEDGE | CFD | dealing | 85 | 70 | % | yes |
 | `M2-LP-022` | LP Reject Rate (oneZero) | LP_HEDGE | CFD | dealing | 2 | 5 | % | yes |
 | `M2-EQ-001` | Company Equity Drawdown | MARKET_PRICING | CFD | pricing | 3 | 5 | % | yes |
@@ -156,156 +155,67 @@ Indicators owned by Dealing / LP, shared domains, or on the INC-1028 forex demo 
 | `M2-KILL-COUNT` | Active Symbol Kill-Switches | TECH_INFRA | CFD+Crypto | shared | 2 | 5 | symbols |  |
 | `M2-MT-DISC` | Trading Platform Disconnect Rate | TECH_INFRA | CFD+Crypto | shared | 1 | 5 | % |  |
 
-## Domain scenarios (37)
+## Domain scenarios (12)
 
 | Code | Name | Domain | Priority | Product | Primary indicators | Audience |
 |------|------|--------|----------|---------|--------------------|----------|
-| `SCN-CROSS-BOOK-CONTAGION` | Cross-book contagion into firm equity | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | admin, pricing, dealing |
-| `SCN-NEWS-WINDOW-GROSS` | Tier-1 news window gross notional overload | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | admin, pricing, dealing |
-| `SCN-MARGIN-UTIL-SPIKE` | Margin utilisation spike (≥100 accounts >90%) | CREDIT_CLIENT | P0 | CFD | `M2-MRG-014` | dealing, admin |
-| `SCN-COPY-CONCENTRATION` | Copy provider concentration breach | CREDIT_CLIENT | P1 | CFD | `M2-COPY-009` | dealing, admin |
-| `SCN-STOPOUT-VELOCITY` | Stop-out velocity surge (5-minute window) | CREDIT_CLIENT | P1 | CFD | `M2-STOP-018` | dealing, admin |
-| `SCN-NEGATIVE-BALANCE` | Negative balance protection breach | CREDIT_CLIENT | P1 | CFD | `M2-NBP-016` | dealing, admin |
-| `SCN-LATENCY-ARB` | Latency arbitrage / toxic flow | CREDIT_CLIENT | P2 | CFD | `M2-ARB-026` | dealing, admin |
-| `SCN-COPY-CHURN` | Copy follower panic unwind | CREDIT_CLIENT | P2 | CFD | `M2-COPY-CHURN` | dealing, admin |
-| `SCN-EQUITY-DRAWDOWN` | Company equity drawdown | MARKET_PRICING | P0 | CFD | `M2-EQ-001` | pricing, admin |
-| `SCN-STALE-FEED` | Stale or crossed quote feed | MARKET_PRICING | P1 | CFD | `M2-FEED-003` | pricing, admin |
-| `SCN-SLIPPAGE-SPIKE` | Client slippage spike on majors | MARKET_PRICING | P2 | CFD | `M2-SLIP-021` | pricing, admin |
-| `SCN-VAR-CORR` | VaR utilisation and correlation break | MARKET_PRICING | P1 | CFD | `M2-VAR-002`, `M2-CORR-004` | pricing, admin |
-| `SCN-MARKET-INTEL` | High-impact market intelligence hit | MARKET_PRICING | P1 | CFD + Crypto | `M2-MKT-INTEL` | pricing, admin |
-| `SCN-LP-REJECT-STORM` | LP reject storm (oneZero / prime) | LP_HEDGE | P0 | CFD | `M2-LP-022` | dealing, admin |
-| `SCN-HEDGE-COVERAGE` | Hedge coverage below target | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | dealing, admin |
-| `SCN-ABOOK-RATIO` | A-book volume ratio collapse | LP_HEDGE | P2 | CFD | `M2-ABOOK-008` | dealing, admin |
-| `SCN-HOT-WALLET` | Hot wallet float elevated | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | admin, pricing, dealing |
-| `SCN-CRYPTO-LIQ` | Liquidation engine backlog | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | admin, pricing, dealing |
-| `SCN-ORACLE-BASIS` | Mark oracle lag and perp basis blowout | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
-| `SCN-FUNDING-STABLE` | Extreme funding and stablecoin depeg exposure | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | admin, pricing, dealing |
-| `SCN-CRYPTO-OI-DEP` | OI concentration and deposit spike | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | admin, pricing, dealing |
-| `SCN-CRYPTO-INSURANCE` | Insurance fund daily drawdown | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | admin, pricing, dealing |
-| `SCN-MULTI-ACCOUNT` | Multi-account fraud cluster | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | admin, pricing, dealing |
-| `SCN-PAYMENT-CHARGEBACK` | Payment fraud and chargeback surge | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | admin, pricing, dealing |
-| `SCN-WASH-IB` | Wash trading and IB rebate anomaly | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | admin, pricing, dealing |
-| `SCN-BONUS-BURN` | Bonus converted to cash abuse | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | admin, pricing, dealing |
-| `SCN-XAU247` | XAUUSD247 net exposure overload | PRODUCT_CONFIG | P1 | CFD | `M2-XAU-247` | pricing, admin |
-| `SCN-GAP-SPREAD-LEV` | Gap exposure, spread anomaly, max leverage onboard | PRODUCT_CONFIG | P2 | CFD | `M2-GAP-012`, `M2-SPREAD-005`, `M2-LEV-019` | pricing, admin |
-| `SCN-SWAP-MISCONFIG` | Swap versus benchmark misconfiguration | PRODUCT_CONFIG | P3 | CFD | `M2-SWAP-027` | pricing, admin |
-| `SCN-FUNDING-WD` | Funding exceptions and withdrawal velocity | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | admin, pricing, dealing |
-| `SCN-RECON-BREAKS` | Open reconciliation breaks | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | admin, pricing, dealing |
-| `SCN-BRIDGE-API` | Bridge latency and trading API errors | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | admin, pricing, dealing |
-| `SCN-PLATFORM-KILL` | Platform disconnects and active kill-switches | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | admin, pricing, dealing |
-| `SCN-CAPITAL-SEG` | Entity capital buffer and client money segregation | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | admin, pricing, dealing |
-| `SCN-DETECTOR-DRIFT` | Detector precision drift / false positives | MODEL_AI | P2 | Platform | `M2-MODEL-006` | admin, pricing, dealing |
-| `SCN-VENDOR-DEGRADED` | Critical vendor degraded or offline | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | admin, pricing, dealing |
-| `SCN-COMPLAINT-SPIKE` | Client complaint velocity spike | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | admin, pricing, dealing |
+| `SCN-ADM-SEG-GAP` | Client-money segregation gap after weekend deposits | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | admin, pricing, dealing |
+| `SCN-ADM-IB-WASH` | IB rebate + wash cluster on correlated MT5 logins | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | admin, pricing, dealing |
+| `SCN-ADM-WD-SURGE` | Withdrawal velocity surge after NFP social rumour | OPS_PROCESS | P1 | CFD | `M2-WD-015` | admin, pricing, dealing |
+| `SCN-PRC-STALE-XAU` | LP-A XAUUSD quote delay & final-quote freeze (INC-1028) | MARKET_PRICING | P0 | CFD | `M2-LP-022`, `M2-FEED-003` | pricing, admin |
+| `SCN-PRC-SPREAD-SHOCK` | USDJPY spread shock into US CPI print | PRODUCT_CONFIG | P1 | CFD | `M2-SPREAD-005`, `M2-NEWS-GROSS` | pricing, admin |
+| `SCN-PRC-SWAP-FLIP` | Swap vs benchmark divergence after DST roll | PRODUCT_CONFIG | P2 | CFD | `M2-SWAP-027` | pricing, admin |
+| `SCN-DL-LP-REJECT` | LP reject storm on EURUSD at London open | LP_HEDGE | P0 | CFD | `M2-LP-022` | dealing, admin |
+| `SCN-DL-HEDGE-GAP` | Hedge coverage gap after LP throttle (companion INC-1028) | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | dealing, admin |
+| `SCN-DL-TOXIC` | Latency-arb toxic flow on NAS100 at cash open | CREDIT_CLIENT | P1 | CFD | `M2-ARB-026` | dealing, admin |
+| `SCN-PERP-ORACLE` | BTCUSDT mark oracle lag with basis blowout | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
+| `SCN-PERP-LIQ` | ETHUSDT liquidation backlog into funding flip | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | admin, pricing, dealing |
+| `SCN-PERP-INS` | Insurance fund drawdown after concentrated OI liquidation | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | admin, pricing, dealing |
 
-### Admin audience (37)
+### Admin audience (12)
 
 | Code | Name | Domain | Priority | Product | Primary indicators | Audience |
 |------|------|--------|----------|---------|--------------------|----------|
-| `SCN-CROSS-BOOK-CONTAGION` | Cross-book contagion into firm equity | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | admin, pricing, dealing |
-| `SCN-NEWS-WINDOW-GROSS` | Tier-1 news window gross notional overload | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | admin, pricing, dealing |
-| `SCN-MARGIN-UTIL-SPIKE` | Margin utilisation spike (≥100 accounts >90%) | CREDIT_CLIENT | P0 | CFD | `M2-MRG-014` | dealing, admin |
-| `SCN-COPY-CONCENTRATION` | Copy provider concentration breach | CREDIT_CLIENT | P1 | CFD | `M2-COPY-009` | dealing, admin |
-| `SCN-STOPOUT-VELOCITY` | Stop-out velocity surge (5-minute window) | CREDIT_CLIENT | P1 | CFD | `M2-STOP-018` | dealing, admin |
-| `SCN-NEGATIVE-BALANCE` | Negative balance protection breach | CREDIT_CLIENT | P1 | CFD | `M2-NBP-016` | dealing, admin |
-| `SCN-LATENCY-ARB` | Latency arbitrage / toxic flow | CREDIT_CLIENT | P2 | CFD | `M2-ARB-026` | dealing, admin |
-| `SCN-COPY-CHURN` | Copy follower panic unwind | CREDIT_CLIENT | P2 | CFD | `M2-COPY-CHURN` | dealing, admin |
-| `SCN-EQUITY-DRAWDOWN` | Company equity drawdown | MARKET_PRICING | P0 | CFD | `M2-EQ-001` | pricing, admin |
-| `SCN-STALE-FEED` | Stale or crossed quote feed | MARKET_PRICING | P1 | CFD | `M2-FEED-003` | pricing, admin |
-| `SCN-SLIPPAGE-SPIKE` | Client slippage spike on majors | MARKET_PRICING | P2 | CFD | `M2-SLIP-021` | pricing, admin |
-| `SCN-VAR-CORR` | VaR utilisation and correlation break | MARKET_PRICING | P1 | CFD | `M2-VAR-002`, `M2-CORR-004` | pricing, admin |
-| `SCN-MARKET-INTEL` | High-impact market intelligence hit | MARKET_PRICING | P1 | CFD + Crypto | `M2-MKT-INTEL` | pricing, admin |
-| `SCN-LP-REJECT-STORM` | LP reject storm (oneZero / prime) | LP_HEDGE | P0 | CFD | `M2-LP-022` | dealing, admin |
-| `SCN-HEDGE-COVERAGE` | Hedge coverage below target | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | dealing, admin |
-| `SCN-ABOOK-RATIO` | A-book volume ratio collapse | LP_HEDGE | P2 | CFD | `M2-ABOOK-008` | dealing, admin |
-| `SCN-HOT-WALLET` | Hot wallet float elevated | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | admin, pricing, dealing |
-| `SCN-CRYPTO-LIQ` | Liquidation engine backlog | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | admin, pricing, dealing |
-| `SCN-ORACLE-BASIS` | Mark oracle lag and perp basis blowout | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
-| `SCN-FUNDING-STABLE` | Extreme funding and stablecoin depeg exposure | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | admin, pricing, dealing |
-| `SCN-CRYPTO-OI-DEP` | OI concentration and deposit spike | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | admin, pricing, dealing |
-| `SCN-CRYPTO-INSURANCE` | Insurance fund daily drawdown | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | admin, pricing, dealing |
-| `SCN-MULTI-ACCOUNT` | Multi-account fraud cluster | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | admin, pricing, dealing |
-| `SCN-PAYMENT-CHARGEBACK` | Payment fraud and chargeback surge | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | admin, pricing, dealing |
-| `SCN-WASH-IB` | Wash trading and IB rebate anomaly | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | admin, pricing, dealing |
-| `SCN-BONUS-BURN` | Bonus converted to cash abuse | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | admin, pricing, dealing |
-| `SCN-XAU247` | XAUUSD247 net exposure overload | PRODUCT_CONFIG | P1 | CFD | `M2-XAU-247` | pricing, admin |
-| `SCN-GAP-SPREAD-LEV` | Gap exposure, spread anomaly, max leverage onboard | PRODUCT_CONFIG | P2 | CFD | `M2-GAP-012`, `M2-SPREAD-005`, `M2-LEV-019` | pricing, admin |
-| `SCN-SWAP-MISCONFIG` | Swap versus benchmark misconfiguration | PRODUCT_CONFIG | P3 | CFD | `M2-SWAP-027` | pricing, admin |
-| `SCN-FUNDING-WD` | Funding exceptions and withdrawal velocity | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | admin, pricing, dealing |
-| `SCN-RECON-BREAKS` | Open reconciliation breaks | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | admin, pricing, dealing |
-| `SCN-BRIDGE-API` | Bridge latency and trading API errors | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | admin, pricing, dealing |
-| `SCN-PLATFORM-KILL` | Platform disconnects and active kill-switches | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | admin, pricing, dealing |
-| `SCN-CAPITAL-SEG` | Entity capital buffer and client money segregation | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | admin, pricing, dealing |
-| `SCN-DETECTOR-DRIFT` | Detector precision drift / false positives | MODEL_AI | P2 | Platform | `M2-MODEL-006` | admin, pricing, dealing |
-| `SCN-VENDOR-DEGRADED` | Critical vendor degraded or offline | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | admin, pricing, dealing |
-| `SCN-COMPLAINT-SPIKE` | Client complaint velocity spike | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | admin, pricing, dealing |
+| `SCN-ADM-SEG-GAP` | Client-money segregation gap after weekend deposits | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | admin, pricing, dealing |
+| `SCN-ADM-IB-WASH` | IB rebate + wash cluster on correlated MT5 logins | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | admin, pricing, dealing |
+| `SCN-ADM-WD-SURGE` | Withdrawal velocity surge after NFP social rumour | OPS_PROCESS | P1 | CFD | `M2-WD-015` | admin, pricing, dealing |
+| `SCN-PRC-STALE-XAU` | LP-A XAUUSD quote delay & final-quote freeze (INC-1028) | MARKET_PRICING | P0 | CFD | `M2-LP-022`, `M2-FEED-003` | pricing, admin |
+| `SCN-PRC-SPREAD-SHOCK` | USDJPY spread shock into US CPI print | PRODUCT_CONFIG | P1 | CFD | `M2-SPREAD-005`, `M2-NEWS-GROSS` | pricing, admin |
+| `SCN-PRC-SWAP-FLIP` | Swap vs benchmark divergence after DST roll | PRODUCT_CONFIG | P2 | CFD | `M2-SWAP-027` | pricing, admin |
+| `SCN-DL-LP-REJECT` | LP reject storm on EURUSD at London open | LP_HEDGE | P0 | CFD | `M2-LP-022` | dealing, admin |
+| `SCN-DL-HEDGE-GAP` | Hedge coverage gap after LP throttle (companion INC-1028) | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | dealing, admin |
+| `SCN-DL-TOXIC` | Latency-arb toxic flow on NAS100 at cash open | CREDIT_CLIENT | P1 | CFD | `M2-ARB-026` | dealing, admin |
+| `SCN-PERP-ORACLE` | BTCUSDT mark oracle lag with basis blowout | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
+| `SCN-PERP-LIQ` | ETHUSDT liquidation backlog into funding flip | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | admin, pricing, dealing |
+| `SCN-PERP-INS` | Insurance fund drawdown after concentrated OI liquidation | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | admin, pricing, dealing |
 
-### Pricing audience (28)
+### Pricing audience (9)
 
 | Code | Name | Domain | Priority | Product | Primary indicators | Audience |
 |------|------|--------|----------|---------|--------------------|----------|
-| `SCN-CROSS-BOOK-CONTAGION` | Cross-book contagion into firm equity | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | admin, pricing, dealing |
-| `SCN-NEWS-WINDOW-GROSS` | Tier-1 news window gross notional overload | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | admin, pricing, dealing |
-| `SCN-EQUITY-DRAWDOWN` | Company equity drawdown | MARKET_PRICING | P0 | CFD | `M2-EQ-001` | pricing, admin |
-| `SCN-STALE-FEED` | Stale or crossed quote feed | MARKET_PRICING | P1 | CFD | `M2-FEED-003` | pricing, admin |
-| `SCN-SLIPPAGE-SPIKE` | Client slippage spike on majors | MARKET_PRICING | P2 | CFD | `M2-SLIP-021` | pricing, admin |
-| `SCN-VAR-CORR` | VaR utilisation and correlation break | MARKET_PRICING | P1 | CFD | `M2-VAR-002`, `M2-CORR-004` | pricing, admin |
-| `SCN-MARKET-INTEL` | High-impact market intelligence hit | MARKET_PRICING | P1 | CFD + Crypto | `M2-MKT-INTEL` | pricing, admin |
-| `SCN-HOT-WALLET` | Hot wallet float elevated | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | admin, pricing, dealing |
-| `SCN-CRYPTO-LIQ` | Liquidation engine backlog | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | admin, pricing, dealing |
-| `SCN-ORACLE-BASIS` | Mark oracle lag and perp basis blowout | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
-| `SCN-FUNDING-STABLE` | Extreme funding and stablecoin depeg exposure | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | admin, pricing, dealing |
-| `SCN-CRYPTO-OI-DEP` | OI concentration and deposit spike | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | admin, pricing, dealing |
-| `SCN-CRYPTO-INSURANCE` | Insurance fund daily drawdown | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | admin, pricing, dealing |
-| `SCN-MULTI-ACCOUNT` | Multi-account fraud cluster | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | admin, pricing, dealing |
-| `SCN-PAYMENT-CHARGEBACK` | Payment fraud and chargeback surge | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | admin, pricing, dealing |
-| `SCN-WASH-IB` | Wash trading and IB rebate anomaly | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | admin, pricing, dealing |
-| `SCN-BONUS-BURN` | Bonus converted to cash abuse | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | admin, pricing, dealing |
-| `SCN-XAU247` | XAUUSD247 net exposure overload | PRODUCT_CONFIG | P1 | CFD | `M2-XAU-247` | pricing, admin |
-| `SCN-GAP-SPREAD-LEV` | Gap exposure, spread anomaly, max leverage onboard | PRODUCT_CONFIG | P2 | CFD | `M2-GAP-012`, `M2-SPREAD-005`, `M2-LEV-019` | pricing, admin |
-| `SCN-SWAP-MISCONFIG` | Swap versus benchmark misconfiguration | PRODUCT_CONFIG | P3 | CFD | `M2-SWAP-027` | pricing, admin |
-| `SCN-FUNDING-WD` | Funding exceptions and withdrawal velocity | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | admin, pricing, dealing |
-| `SCN-RECON-BREAKS` | Open reconciliation breaks | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | admin, pricing, dealing |
-| `SCN-BRIDGE-API` | Bridge latency and trading API errors | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | admin, pricing, dealing |
-| `SCN-PLATFORM-KILL` | Platform disconnects and active kill-switches | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | admin, pricing, dealing |
-| `SCN-CAPITAL-SEG` | Entity capital buffer and client money segregation | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | admin, pricing, dealing |
-| `SCN-DETECTOR-DRIFT` | Detector precision drift / false positives | MODEL_AI | P2 | Platform | `M2-MODEL-006` | admin, pricing, dealing |
-| `SCN-VENDOR-DEGRADED` | Critical vendor degraded or offline | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | admin, pricing, dealing |
-| `SCN-COMPLAINT-SPIKE` | Client complaint velocity spike | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | admin, pricing, dealing |
+| `SCN-ADM-SEG-GAP` | Client-money segregation gap after weekend deposits | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | admin, pricing, dealing |
+| `SCN-ADM-IB-WASH` | IB rebate + wash cluster on correlated MT5 logins | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | admin, pricing, dealing |
+| `SCN-ADM-WD-SURGE` | Withdrawal velocity surge after NFP social rumour | OPS_PROCESS | P1 | CFD | `M2-WD-015` | admin, pricing, dealing |
+| `SCN-PRC-STALE-XAU` | LP-A XAUUSD quote delay & final-quote freeze (INC-1028) | MARKET_PRICING | P0 | CFD | `M2-LP-022`, `M2-FEED-003` | pricing, admin |
+| `SCN-PRC-SPREAD-SHOCK` | USDJPY spread shock into US CPI print | PRODUCT_CONFIG | P1 | CFD | `M2-SPREAD-005`, `M2-NEWS-GROSS` | pricing, admin |
+| `SCN-PRC-SWAP-FLIP` | Swap vs benchmark divergence after DST roll | PRODUCT_CONFIG | P2 | CFD | `M2-SWAP-027` | pricing, admin |
+| `SCN-PERP-ORACLE` | BTCUSDT mark oracle lag with basis blowout | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
+| `SCN-PERP-LIQ` | ETHUSDT liquidation backlog into funding flip | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | admin, pricing, dealing |
+| `SCN-PERP-INS` | Insurance fund drawdown after concentrated OI liquidation | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | admin, pricing, dealing |
 
-### Dealing audience (29)
+### Dealing audience (9)
 
 | Code | Name | Domain | Priority | Product | Primary indicators | Audience |
 |------|------|--------|----------|---------|--------------------|----------|
-| `SCN-CROSS-BOOK-CONTAGION` | Cross-book contagion into firm equity | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | admin, pricing, dealing |
-| `SCN-NEWS-WINDOW-GROSS` | Tier-1 news window gross notional overload | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | admin, pricing, dealing |
-| `SCN-MARGIN-UTIL-SPIKE` | Margin utilisation spike (≥100 accounts >90%) | CREDIT_CLIENT | P0 | CFD | `M2-MRG-014` | dealing, admin |
-| `SCN-COPY-CONCENTRATION` | Copy provider concentration breach | CREDIT_CLIENT | P1 | CFD | `M2-COPY-009` | dealing, admin |
-| `SCN-STOPOUT-VELOCITY` | Stop-out velocity surge (5-minute window) | CREDIT_CLIENT | P1 | CFD | `M2-STOP-018` | dealing, admin |
-| `SCN-NEGATIVE-BALANCE` | Negative balance protection breach | CREDIT_CLIENT | P1 | CFD | `M2-NBP-016` | dealing, admin |
-| `SCN-LATENCY-ARB` | Latency arbitrage / toxic flow | CREDIT_CLIENT | P2 | CFD | `M2-ARB-026` | dealing, admin |
-| `SCN-COPY-CHURN` | Copy follower panic unwind | CREDIT_CLIENT | P2 | CFD | `M2-COPY-CHURN` | dealing, admin |
-| `SCN-LP-REJECT-STORM` | LP reject storm (oneZero / prime) | LP_HEDGE | P0 | CFD | `M2-LP-022` | dealing, admin |
-| `SCN-HEDGE-COVERAGE` | Hedge coverage below target | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | dealing, admin |
-| `SCN-ABOOK-RATIO` | A-book volume ratio collapse | LP_HEDGE | P2 | CFD | `M2-ABOOK-008` | dealing, admin |
-| `SCN-HOT-WALLET` | Hot wallet float elevated | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | admin, pricing, dealing |
-| `SCN-CRYPTO-LIQ` | Liquidation engine backlog | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | admin, pricing, dealing |
-| `SCN-ORACLE-BASIS` | Mark oracle lag and perp basis blowout | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
-| `SCN-FUNDING-STABLE` | Extreme funding and stablecoin depeg exposure | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | admin, pricing, dealing |
-| `SCN-CRYPTO-OI-DEP` | OI concentration and deposit spike | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | admin, pricing, dealing |
-| `SCN-CRYPTO-INSURANCE` | Insurance fund daily drawdown | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | admin, pricing, dealing |
-| `SCN-MULTI-ACCOUNT` | Multi-account fraud cluster | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | admin, pricing, dealing |
-| `SCN-PAYMENT-CHARGEBACK` | Payment fraud and chargeback surge | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | admin, pricing, dealing |
-| `SCN-WASH-IB` | Wash trading and IB rebate anomaly | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | admin, pricing, dealing |
-| `SCN-BONUS-BURN` | Bonus converted to cash abuse | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | admin, pricing, dealing |
-| `SCN-FUNDING-WD` | Funding exceptions and withdrawal velocity | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | admin, pricing, dealing |
-| `SCN-RECON-BREAKS` | Open reconciliation breaks | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | admin, pricing, dealing |
-| `SCN-BRIDGE-API` | Bridge latency and trading API errors | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | admin, pricing, dealing |
-| `SCN-PLATFORM-KILL` | Platform disconnects and active kill-switches | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | admin, pricing, dealing |
-| `SCN-CAPITAL-SEG` | Entity capital buffer and client money segregation | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | admin, pricing, dealing |
-| `SCN-DETECTOR-DRIFT` | Detector precision drift / false positives | MODEL_AI | P2 | Platform | `M2-MODEL-006` | admin, pricing, dealing |
-| `SCN-VENDOR-DEGRADED` | Critical vendor degraded or offline | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | admin, pricing, dealing |
-| `SCN-COMPLAINT-SPIKE` | Client complaint velocity spike | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | admin, pricing, dealing |
+| `SCN-ADM-SEG-GAP` | Client-money segregation gap after weekend deposits | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | admin, pricing, dealing |
+| `SCN-ADM-IB-WASH` | IB rebate + wash cluster on correlated MT5 logins | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | admin, pricing, dealing |
+| `SCN-ADM-WD-SURGE` | Withdrawal velocity surge after NFP social rumour | OPS_PROCESS | P1 | CFD | `M2-WD-015` | admin, pricing, dealing |
+| `SCN-DL-LP-REJECT` | LP reject storm on EURUSD at London open | LP_HEDGE | P0 | CFD | `M2-LP-022` | dealing, admin |
+| `SCN-DL-HEDGE-GAP` | Hedge coverage gap after LP throttle (companion INC-1028) | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | dealing, admin |
+| `SCN-DL-TOXIC` | Latency-arb toxic flow on NAS100 at cash open | CREDIT_CLIENT | P1 | CFD | `M2-ARB-026` | dealing, admin |
+| `SCN-PERP-ORACLE` | BTCUSDT mark oracle lag with basis blowout | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | admin, pricing, dealing |
+| `SCN-PERP-LIQ` | ETHUSDT liquidation backlog into funding flip | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | admin, pricing, dealing |
+| `SCN-PERP-INS` | Insurance fund drawdown after concentrated OI liquidation | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | admin, pricing, dealing |
 
 ## Skill playbooks (47)
 

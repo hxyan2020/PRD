@@ -1,8 +1,11 @@
 import type Database from "better-sqlite3";
 import { LINKED_SCENARIOS, SKILL_SCENARIOS } from "@/lib/ai/risk-scenarios-catalog";
+import { DESK_12_SKILL_SCENARIOS } from "@/lib/ai/desk-12-skills";
 import type { SkillScenario } from "@/lib/ai/scenario-types";
 import { finalizeSkill, type SkillPlaybook } from "@/lib/ai/skill-playbook";
 import type { UiLocale } from "@/lib/i18n";
+
+const DESK_12_SKILL_CODES = new Set(DESK_12_SKILL_SCENARIOS.map((s) => s.code));
 
 export function ensureSkillScenarioColumns(db: Database.Database) {
   const cols = db.prepare(`PRAGMA table_info(ai_skills)`).all() as Array<{ name: string }>;
@@ -203,19 +206,24 @@ export function matchSkill(
   severity: string,
   observed: number | null
 ): { skill: Record<string, unknown>; certainty: true } | null {
-  const skills = db
-    .prepare(`SELECT * FROM ai_skills WHERE status = 'ACTIVE'`)
-    .all() as Array<{
-    id: number;
-    code: string;
-    name: string;
-    description: string;
-    indicator_patterns_json: string;
-    conditions_json: string;
-    steps_json: string;
-    auto_execute: number;
-    owner_department: string;
-  }>;
+  const skills = (
+    db.prepare(`SELECT * FROM ai_skills WHERE status = 'ACTIVE'`).all() as Array<{
+      id: number;
+      code: string;
+      name: string;
+      description: string;
+      indicator_patterns_json: string;
+      conditions_json: string;
+      steps_json: string;
+      auto_execute: number;
+      owner_department: string;
+    }>
+  ).slice().sort((a, b) => {
+    // Prefer desk-12 pack skills over older generic matches for the same monitor.
+    const da = DESK_12_SKILL_CODES.has(a.code) ? 0 : 1;
+    const dbPref = DESK_12_SKILL_CODES.has(b.code) ? 0 : 1;
+    return da - dbPref || a.code.localeCompare(b.code);
+  });
 
   for (const skill of skills) {
     const patterns = JSON.parse(skill.indicator_patterns_json) as string[];

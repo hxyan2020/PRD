@@ -6,8 +6,11 @@ import { EnZh } from "@/components/EnZh";
 import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { FOREX_INCIDENT_1028, forexIncidentChip } from "@/lib/demo/forex-incident-1028";
+import { DESK_12_SCENARIOS } from "@/lib/demo/desk-12-pack";
 import type { ForexPackLiveMonitor, ForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 import { publicBasePath } from "@/lib/static-export";
+
+const INC_SKILL = DESK_12_SCENARIOS.find((s) => s.alert_id === "ALT-INC-1028");
 
 /**
  * Hosts the Monitor 2.0 bilingual AI Incident Workspace HTML prototype
@@ -47,10 +50,16 @@ export function AiIncidentWorkspace({
             </div>
             <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh
-                en="Interactive bilingual prototype from Monitor2_AI_Report_Web_Bilingual_v3 — Web Console + Lark, Static (read-only) vs Dynamic (multi-turn investigation), E-01…E-08 evidence, nested human feedback. All actions use simulated demo data (no production AI / Lark)."
-                zh="來自 Monitor2_AI_Report_Web_Bilingual_v3 的雙語互動原型 — 網頁＋Lark、靜態（只讀）／動態（多輪調查）、E-01…E-08 證據、巢狀人工回饋。所有動作皆為模擬示範資料（無正式 AI／Lark）。"
+                en="AI Root Cause Analysis for the desk-12 pack. Live analyse path uses the selected LLM provider with Skill match + RAG retrieval (noted on each alert). Prototype below rehearses Web + Lark, Static/Dynamic modes, E-01…E-08 evidence."
+                zh="desk-12 組合的 AI 根因分析。即時分析路徑使用所選 LLM，並走技能匹配＋RAG 檢索（每則警報已註明）。下方原型演練網頁＋Lark、靜態／動態、E-01…E-08 證據。"
               />
             </p>
+            {INC_SKILL ? (
+              <p className="text-xs text-[var(--muted)]" data-testid="ai-rca-skill-rag-note">
+                <span className="font-semibold text-slate-700">Skill</span> {INC_SKILL.skill_code} ·{" "}
+                <span className="font-semibold text-slate-700">RAG</span> {INC_SKILL.rag_topics.join(" · ")}
+              </p>
+            ) : null}
           </div>
           <div className="action-row">
             <a className="btn" href={prototypeSrc} target="_blank" rel="noreferrer" data-testid="ai-incident-open-blank">

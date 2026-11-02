@@ -1,6 +1,7 @@
 import type { LinkedScenario, SkillScenario } from "@/lib/ai/scenario-types";
 import { EXTRA_LINKED_SCENARIOS, EXTRA_SKILL_SCENARIOS } from "@/lib/ai/risk-scenarios-extra";
 import { COVERAGE_LINKED_SCENARIOS, COVERAGE_SKILL_SCENARIOS } from "@/lib/ai/risk-scenarios-coverage";
+import { DESK_12_SKILL_SCENARIOS } from "@/lib/ai/desk-12-skills";
 
 /** Single-indicator skill scenarios — rich RCA playbooks */
 const BASE_SKILL_SCENARIOS: SkillScenario[] = [
@@ -517,6 +518,7 @@ export const SKILL_SCENARIOS: SkillScenario[] = [
   ...BASE_SKILL_SCENARIOS,
   ...EXTRA_SKILL_SCENARIOS,
   ...COVERAGE_SKILL_SCENARIOS,
+  ...DESK_12_SKILL_SCENARIOS,
 ];
 
 /** Multi-indicator linked timeline scenarios */

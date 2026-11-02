@@ -1084,7 +1084,21 @@ export function messengerAction(input: {
       thread.id
     );
     if (thread.alert_id) {
-      db.prepare(`UPDATE monitor_alerts SET status = 'CLOSED' WHERE id = ?`).run(thread.alert_id);
+      const alertCode = db
+        .prepare(`SELECT alert_id FROM monitor_alerts WHERE id = ?`)
+        .get(thread.alert_id) as { alert_id: string } | undefined;
+      if (alertCode?.alert_id) {
+        const { closeDeskAlertForReal } = require("@/lib/ai/risk-log") as typeof import("@/lib/ai/risk-log");
+        closeDeskAlertForReal({
+          alert_id: alertCode.alert_id,
+          actor: { name: input.user_name },
+          outcome: "FALSE_POSITIVE",
+          estimated_loss_usd: 0,
+          prevented_loss_usd: 0,
+          notes: `${input.user_name} dismissed as false alarm via Messenger`,
+          department: "RISK_CONTROL",
+        });
+      }
     }
     addMessage(
       db,
@@ -1105,7 +1119,21 @@ export function messengerAction(input: {
       thread.id
     );
     if (thread.alert_id) {
-      db.prepare(`UPDATE monitor_alerts SET status = 'CLOSED' WHERE id = ?`).run(thread.alert_id);
+      const alertCode = db
+        .prepare(`SELECT alert_id FROM monitor_alerts WHERE id = ?`)
+        .get(thread.alert_id) as { alert_id: string } | undefined;
+      if (alertCode?.alert_id) {
+        const { closeDeskAlertForReal } = require("@/lib/ai/risk-log") as typeof import("@/lib/ai/risk-log");
+        closeDeskAlertForReal({
+          alert_id: alertCode.alert_id,
+          actor: { name: input.user_name },
+          outcome: "PREVENTED",
+          estimated_loss_usd: 0,
+          prevented_loss_usd: 180000,
+          notes: `${input.user_name} accepted AI analysis and closed via Messenger`,
+          department: "RISK_CONTROL",
+        });
+      }
     }
     addMessage(
       db,

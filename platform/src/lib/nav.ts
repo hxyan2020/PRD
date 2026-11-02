@@ -56,14 +56,13 @@ export const NAV_GROUPS: Array<{ id: NavGroupId; en: string; "zh-Hant": string }
 
 /**
  * Left-pane monitor order (desk walkthrough):
- * Risk Domains → Full-flow demo → Monitor 2.0 Open Alerts → Known indicators →
+ * Full-flow demo → Risk Domains → Known indicators → Monitor 2.0 Open Alerts →
  * Discovery → Aggregation → MI → AI RCA → Noise reduction → Closed Risk Log → Daily.
  * L2→AI RCA stays nested under Full-flow demo (deep link /admin/l2-rca).
  */
 export const NAV_ITEMS = [
   { href: "/admin", label: "Admin Home", icon: LayoutDashboard, permission: "admin.access", group: "overview" },
 
-  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
   {
     href: "/admin/monitor-labs",
     label: "Full-flow demo",
@@ -71,17 +70,18 @@ export const NAV_ITEMS = [
     permission: "monitor.read",
     group: "monitor",
   },
-  {
-    href: "/admin/alerts",
-    label: "Monitor 2.0 Open Alerts",
-    icon: Bell,
-    permission: "monitor.read",
-    group: "monitor",
-  },
+  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
   {
     href: "/admin/monitor-2",
     label: "Known indicator definitions",
     icon: Activity,
+    permission: "monitor.read",
+    group: "monitor",
+  },
+  {
+    href: "/admin/alerts",
+    label: "Monitor 2.0 Open Alerts",
+    icon: Bell,
     permission: "monitor.read",
     group: "monitor",
   },

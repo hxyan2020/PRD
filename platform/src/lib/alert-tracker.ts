@@ -158,12 +158,13 @@ const CLOSED_TICKET_EXISTS = `EXISTS (
 
 function statusWhereSql(status: "open" | "closed" | "all"): string {
   if (status === "open") {
-    return `WHERE a.status NOT IN ('CLOSED','RESOLVED') AND NOT ${CLOSED_TICKET_EXISTS}`;
+    return `WHERE a.status NOT IN ('CLOSED','RESOLVED','SUPERSEDED') AND NOT ${CLOSED_TICKET_EXISTS}`;
   }
   if (status === "closed") {
-    return `WHERE a.status IN ('CLOSED','RESOLVED') OR ${CLOSED_TICKET_EXISTS}`;
+    // Exclude SUPERSEDED legacy demos — closed cards must come from a real close walk.
+    return `WHERE a.status != 'SUPERSEDED' AND (a.status IN ('CLOSED','RESOLVED') OR ${CLOSED_TICKET_EXISTS})`;
   }
-  return "";
+  return `WHERE a.status != 'SUPERSEDED'`;
 }
 
 function parseJsonObject(raw: string | null | undefined): Record<string, unknown> {

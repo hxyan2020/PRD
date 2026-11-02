@@ -10,7 +10,7 @@
 | 領域情境圖 | `/admin/risk-domains` |
 | 技能劇本 | `/admin/skills` |
 
-由即時 SQLite `monitor_indicators` 與領域／技能目錄產生（2026-10-31）。數量：**50** 項指標 · **37** 項領域情境 · **47** 項技能 · **40** 條連結時間鏈。
+由即時 SQLite `monitor_indicators` 與領域／技能目錄產生（2026-11-02）。數量：**50** 項指標 · **12** 項領域情境 · **47** 項技能 · **40** 條連結時間鏈。
 
 ## 受眾對照
 
@@ -65,7 +65,6 @@
 | `M2-PAY-017` | Payment Fraud Model Score | FRAUD_CONDUCT | CFD | 共用 | 0.65 | 0.8 | score |  |
 | `M2-WASH-020` | Wash/Collusion Detection Score | FRAUD_CONDUCT | CFD+Crypto | 共用 | 0.55 | 0.75 | score |  |
 | `M2-ABOOK-008` | A-book Volume Ratio (session) | LP_HEDGE | CFD | 交易 | 40 | 30 | % |  |
-| `M2-DISC-CUSUM-LP-REJECT-RATE` | LP Reject Rate (oneZero) CUSUM regime score | LP_HEDGE | CFD | 交易 | 1 | 1.5 | score |  |
 | `M2-HEDGE-007` | Hedge Coverage Ratio | LP_HEDGE | CFD | 交易 | 85 | 70 | % | 是 |
 | `M2-LP-022` | LP Reject Rate (oneZero) | LP_HEDGE | CFD | 交易 | 2 | 5 | % | 是 |
 | `M2-CORR-004` | Corr Matrix Drift vs Baseline | MARKET_PRICING | CFD | 定價 | 0.2 | 0.35 | Δρ |  |
@@ -76,6 +75,7 @@
 | `M2-SLIP-021` | Avg Client Slippage (majors, 15m) | MARKET_PRICING | CFD | 定價 | 2 | 3.5 | pips |  |
 | `M2-VAR-002` | 1-day VaR Utilisation | MARKET_PRICING | CFD | 定價 | 85 | 95 | % |  |
 | `M2-MODEL-006` | Detector Precision (7d rolling) | MODEL_AI | CFD+Crypto | 管理 | 80 | 70 | % |  |
+| `M2-ORPHAN-999` | Orphan demo monitor (no aggregate) | OPS | CFD | 管理 | 10 | 20 | score |  |
 | `M2-FUND-010` | Funding Exceptions (1h) | OPS_PROCESS | CFD | 管理 | 30 | 80 | count/h |  |
 | `M2-RECON-BRK` | Reconciliation Breaks (open) | OPS_PROCESS | CFD+Crypto | 管理 | 5 | 20 | count |  |
 | `M2-WD-015` | Withdrawal Volume (1h USD) | OPS_PROCESS | CFD+Crypto | 管理 | 2000000 | 5000000 | USD |  |
@@ -126,7 +126,7 @@
 | `M2-KILL-COUNT` | Active Symbol Kill-Switches | TECH_INFRA | CFD+Crypto | 共用 | 2 | 5 | symbols |  |
 | `M2-MT-DISC` | Trading Platform Disconnect Rate | TECH_INFRA | CFD+Crypto | 共用 | 1 | 5 | % |  |
 
-### 交易視角（23）
+### 交易視角（22）
 
 交易／LP 負責、共用領域，或落在 INC-1028 外匯示範帳簿的指標。
 
@@ -145,7 +145,6 @@
 | `M2-PAY-017` | Payment Fraud Model Score | FRAUD_CONDUCT | CFD | 共用 | 0.65 | 0.8 | score |  |
 | `M2-WASH-020` | Wash/Collusion Detection Score | FRAUD_CONDUCT | CFD+Crypto | 共用 | 0.55 | 0.75 | score |  |
 | `M2-ABOOK-008` | A-book Volume Ratio (session) | LP_HEDGE | CFD | 交易 | 40 | 30 | % |  |
-| `M2-DISC-CUSUM-LP-REJECT-RATE` | LP Reject Rate (oneZero) CUSUM regime score | LP_HEDGE | CFD | 交易 | 1 | 1.5 | score |  |
 | `M2-HEDGE-007` | Hedge Coverage Ratio | LP_HEDGE | CFD | 交易 | 85 | 70 | % | 是 |
 | `M2-LP-022` | LP Reject Rate (oneZero) | LP_HEDGE | CFD | 交易 | 2 | 5 | % | 是 |
 | `M2-EQ-001` | Company Equity Drawdown | MARKET_PRICING | CFD | 定價 | 3 | 5 | % | 是 |
@@ -156,156 +155,67 @@
 | `M2-KILL-COUNT` | Active Symbol Kill-Switches | TECH_INFRA | CFD+Crypto | 共用 | 2 | 5 | symbols |  |
 | `M2-MT-DISC` | Trading Platform Disconnect Rate | TECH_INFRA | CFD+Crypto | 共用 | 1 | 5 | % |  |
 
-## 領域情境（37）
+## 領域情境（12）
 
 | 代碼 | 名稱 | 領域 | 優先 | 產品 | 主要指標 | 受眾 |
 |------|------|------|------|------|----------|------|
-| `SCN-CROSS-BOOK-CONTAGION` | 跨帳簿傳染打到公司權益 | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | 管理、定價、交易 |
-| `SCN-NEWS-WINDOW-GROSS` | 一級新聞窗口名義部位過載 | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | 管理、定價、交易 |
-| `SCN-MARGIN-UTIL-SPIKE` | 保證金使用率暴衝（≥100 帳戶 >90%） | CREDIT_CLIENT | P0 | CFD | `M2-MRG-014` | 交易、管理 |
-| `SCN-COPY-CONCENTRATION` | 跟單提供者集中度違規 | CREDIT_CLIENT | P1 | CFD | `M2-COPY-009` | 交易、管理 |
-| `SCN-STOPOUT-VELOCITY` | 強平速度暴衝（5 分鐘視窗） | CREDIT_CLIENT | P1 | CFD | `M2-STOP-018` | 交易、管理 |
-| `SCN-NEGATIVE-BALANCE` | 負餘額保護失守 | CREDIT_CLIENT | P1 | CFD | `M2-NBP-016` | 交易、管理 |
-| `SCN-LATENCY-ARB` | 延遲套利／有毒流量 | CREDIT_CLIENT | P2 | CFD | `M2-ARB-026` | 交易、管理 |
-| `SCN-COPY-CHURN` | 跟單跟隨者恐慌退出 | CREDIT_CLIENT | P2 | CFD | `M2-COPY-CHURN` | 交易、管理 |
-| `SCN-EQUITY-DRAWDOWN` | 公司權益回撤 | MARKET_PRICING | P0 | CFD | `M2-EQ-001` | 定價、管理 |
-| `SCN-STALE-FEED` | 過期或交叉報價饋送 | MARKET_PRICING | P1 | CFD | `M2-FEED-003` | 定價、管理 |
-| `SCN-SLIPPAGE-SPIKE` | 主要商品客戶滑點暴衝 | MARKET_PRICING | P2 | CFD | `M2-SLIP-021` | 定價、管理 |
-| `SCN-VAR-CORR` | VaR 使用率與相關性破裂 | MARKET_PRICING | P1 | CFD | `M2-VAR-002`, `M2-CORR-004` | 定價、管理 |
-| `SCN-MARKET-INTEL` | 高影響市場情報命中 | MARKET_PRICING | P1 | CFD + Crypto | `M2-MKT-INTEL` | 定價、管理 |
-| `SCN-LP-REJECT-STORM` | LP 拒單風暴（oneZero／prime） | LP_HEDGE | P0 | CFD | `M2-LP-022` | 交易、管理 |
-| `SCN-HEDGE-COVERAGE` | 對沖覆蓋低於目標 | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | 交易、管理 |
-| `SCN-ABOOK-RATIO` | A-book 成交占比崩落 | LP_HEDGE | P2 | CFD | `M2-ABOOK-008` | 交易、管理 |
-| `SCN-HOT-WALLET` | 熱錢包浮額偏高 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | 管理、定價、交易 |
-| `SCN-CRYPTO-LIQ` | 強平引擎積壓 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | 管理、定價、交易 |
-| `SCN-ORACLE-BASIS` | 標記預言機延遲與永續基差失控 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
-| `SCN-FUNDING-STABLE` | 極端資金費與穩定幣脫鉤曝險 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | 管理、定價、交易 |
-| `SCN-CRYPTO-OI-DEP` | 未平倉集中度與入金暴衝 | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | 管理、定價、交易 |
-| `SCN-CRYPTO-INSURANCE` | 保險基金單日回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | 管理、定價、交易 |
-| `SCN-MULTI-ACCOUNT` | 多帳戶詐欺叢集 | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | 管理、定價、交易 |
-| `SCN-PAYMENT-CHARGEBACK` | 支付詐欺與退單暴增 | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | 管理、定價、交易 |
-| `SCN-WASH-IB` | 對敲交易與 IB 返佣異常 | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | 管理、定價、交易 |
-| `SCN-BONUS-BURN` | 獎金兌現濫用 | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | 管理、定價、交易 |
-| `SCN-XAU247` | XAUUSD247 淨曝險過載 | PRODUCT_CONFIG | P1 | CFD | `M2-XAU-247` | 定價、管理 |
-| `SCN-GAP-SPREAD-LEV` | 跳空曝險、點差異常、最高槓桿開戶 | PRODUCT_CONFIG | P2 | CFD | `M2-GAP-012`, `M2-SPREAD-005`, `M2-LEV-019` | 定價、管理 |
-| `SCN-SWAP-MISCONFIG` | 隔夜利息相對基準設定錯誤 | PRODUCT_CONFIG | P3 | CFD | `M2-SWAP-027` | 定價、管理 |
-| `SCN-FUNDING-WD` | 資金異常與出金速度 | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | 管理、定價、交易 |
-| `SCN-RECON-BREAKS` | 未結對帳差異 | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | 管理、定價、交易 |
-| `SCN-BRIDGE-API` | 橋接延遲與交易 API 錯誤 | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | 管理、定價、交易 |
-| `SCN-PLATFORM-KILL` | 平台斷線與作用中熔斷 | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | 管理、定價、交易 |
-| `SCN-CAPITAL-SEG` | 實體資本緩衝與客戶資金隔離 | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | 管理、定價、交易 |
-| `SCN-DETECTOR-DRIFT` | 偵測器精準度漂移／誤報 | MODEL_AI | P2 | Platform | `M2-MODEL-006` | 管理、定價、交易 |
-| `SCN-VENDOR-DEGRADED` | 關鍵供應商降級或離線 | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | 管理、定價、交易 |
-| `SCN-COMPLAINT-SPIKE` | 客戶投訴速度暴衝 | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | 管理、定價、交易 |
+| `SCN-ADM-SEG-GAP` | 週末入金後客戶資金隔離缺口 | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | 管理、定價、交易 |
+| `SCN-ADM-IB-WASH` | 相關 MT5 登入上的 IB 返佣＋對倒集群 | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | 管理、定價、交易 |
+| `SCN-ADM-WD-SURGE` | NFP 社群謠傳後出金速度暴衝 | OPS_PROCESS | P1 | CFD | `M2-WD-015` | 管理、定價、交易 |
+| `SCN-PRC-STALE-XAU` | LP-A XAUUSD 報價延遲與最終報價凍結（INC-1028） | MARKET_PRICING | P0 | CFD | `M2-LP-022`, `M2-FEED-003` | 定價、管理 |
+| `SCN-PRC-SPREAD-SHOCK` | 美國 CPI 公布前 USDJPY 點差衝擊 | PRODUCT_CONFIG | P1 | CFD | `M2-SPREAD-005`, `M2-NEWS-GROSS` | 定價、管理 |
+| `SCN-PRC-SWAP-FLIP` | 夏令時間換日後掉期相對基準偏離 | PRODUCT_CONFIG | P2 | CFD | `M2-SWAP-027` | 定價、管理 |
+| `SCN-DL-LP-REJECT` | 倫敦開盤 EURUSD LP 拒單風暴 | LP_HEDGE | P0 | CFD | `M2-LP-022` | 交易、管理 |
+| `SCN-DL-HEDGE-GAP` | LP 限流後對沖覆蓋缺口（伴隨 INC-1028） | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | 交易、管理 |
+| `SCN-DL-TOXIC` | 美股開盤 NAS100 延遲套利毒性流 | CREDIT_CLIENT | P1 | CFD | `M2-ARB-026` | 交易、管理 |
+| `SCN-PERP-ORACLE` | BTCUSDT 標記價格預言機延遲並基差擴大 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
+| `SCN-PERP-LIQ` | ETHUSDT 強平積壓碰上資金費翻轉 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | 管理、定價、交易 |
+| `SCN-PERP-INS` | 集中持倉強平後保險基金回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | 管理、定價、交易 |
 
-### 管理受眾（37）
+### 管理受眾（12）
 
 | 代碼 | 名稱 | 領域 | 優先 | 產品 | 主要指標 | 受眾 |
 |------|------|------|------|------|----------|------|
-| `SCN-CROSS-BOOK-CONTAGION` | 跨帳簿傳染打到公司權益 | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | 管理、定價、交易 |
-| `SCN-NEWS-WINDOW-GROSS` | 一級新聞窗口名義部位過載 | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | 管理、定價、交易 |
-| `SCN-MARGIN-UTIL-SPIKE` | 保證金使用率暴衝（≥100 帳戶 >90%） | CREDIT_CLIENT | P0 | CFD | `M2-MRG-014` | 交易、管理 |
-| `SCN-COPY-CONCENTRATION` | 跟單提供者集中度違規 | CREDIT_CLIENT | P1 | CFD | `M2-COPY-009` | 交易、管理 |
-| `SCN-STOPOUT-VELOCITY` | 強平速度暴衝（5 分鐘視窗） | CREDIT_CLIENT | P1 | CFD | `M2-STOP-018` | 交易、管理 |
-| `SCN-NEGATIVE-BALANCE` | 負餘額保護失守 | CREDIT_CLIENT | P1 | CFD | `M2-NBP-016` | 交易、管理 |
-| `SCN-LATENCY-ARB` | 延遲套利／有毒流量 | CREDIT_CLIENT | P2 | CFD | `M2-ARB-026` | 交易、管理 |
-| `SCN-COPY-CHURN` | 跟單跟隨者恐慌退出 | CREDIT_CLIENT | P2 | CFD | `M2-COPY-CHURN` | 交易、管理 |
-| `SCN-EQUITY-DRAWDOWN` | 公司權益回撤 | MARKET_PRICING | P0 | CFD | `M2-EQ-001` | 定價、管理 |
-| `SCN-STALE-FEED` | 過期或交叉報價饋送 | MARKET_PRICING | P1 | CFD | `M2-FEED-003` | 定價、管理 |
-| `SCN-SLIPPAGE-SPIKE` | 主要商品客戶滑點暴衝 | MARKET_PRICING | P2 | CFD | `M2-SLIP-021` | 定價、管理 |
-| `SCN-VAR-CORR` | VaR 使用率與相關性破裂 | MARKET_PRICING | P1 | CFD | `M2-VAR-002`, `M2-CORR-004` | 定價、管理 |
-| `SCN-MARKET-INTEL` | 高影響市場情報命中 | MARKET_PRICING | P1 | CFD + Crypto | `M2-MKT-INTEL` | 定價、管理 |
-| `SCN-LP-REJECT-STORM` | LP 拒單風暴（oneZero／prime） | LP_HEDGE | P0 | CFD | `M2-LP-022` | 交易、管理 |
-| `SCN-HEDGE-COVERAGE` | 對沖覆蓋低於目標 | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | 交易、管理 |
-| `SCN-ABOOK-RATIO` | A-book 成交占比崩落 | LP_HEDGE | P2 | CFD | `M2-ABOOK-008` | 交易、管理 |
-| `SCN-HOT-WALLET` | 熱錢包浮額偏高 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | 管理、定價、交易 |
-| `SCN-CRYPTO-LIQ` | 強平引擎積壓 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | 管理、定價、交易 |
-| `SCN-ORACLE-BASIS` | 標記預言機延遲與永續基差失控 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
-| `SCN-FUNDING-STABLE` | 極端資金費與穩定幣脫鉤曝險 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | 管理、定價、交易 |
-| `SCN-CRYPTO-OI-DEP` | 未平倉集中度與入金暴衝 | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | 管理、定價、交易 |
-| `SCN-CRYPTO-INSURANCE` | 保險基金單日回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | 管理、定價、交易 |
-| `SCN-MULTI-ACCOUNT` | 多帳戶詐欺叢集 | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | 管理、定價、交易 |
-| `SCN-PAYMENT-CHARGEBACK` | 支付詐欺與退單暴增 | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | 管理、定價、交易 |
-| `SCN-WASH-IB` | 對敲交易與 IB 返佣異常 | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | 管理、定價、交易 |
-| `SCN-BONUS-BURN` | 獎金兌現濫用 | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | 管理、定價、交易 |
-| `SCN-XAU247` | XAUUSD247 淨曝險過載 | PRODUCT_CONFIG | P1 | CFD | `M2-XAU-247` | 定價、管理 |
-| `SCN-GAP-SPREAD-LEV` | 跳空曝險、點差異常、最高槓桿開戶 | PRODUCT_CONFIG | P2 | CFD | `M2-GAP-012`, `M2-SPREAD-005`, `M2-LEV-019` | 定價、管理 |
-| `SCN-SWAP-MISCONFIG` | 隔夜利息相對基準設定錯誤 | PRODUCT_CONFIG | P3 | CFD | `M2-SWAP-027` | 定價、管理 |
-| `SCN-FUNDING-WD` | 資金異常與出金速度 | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | 管理、定價、交易 |
-| `SCN-RECON-BREAKS` | 未結對帳差異 | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | 管理、定價、交易 |
-| `SCN-BRIDGE-API` | 橋接延遲與交易 API 錯誤 | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | 管理、定價、交易 |
-| `SCN-PLATFORM-KILL` | 平台斷線與作用中熔斷 | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | 管理、定價、交易 |
-| `SCN-CAPITAL-SEG` | 實體資本緩衝與客戶資金隔離 | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | 管理、定價、交易 |
-| `SCN-DETECTOR-DRIFT` | 偵測器精準度漂移／誤報 | MODEL_AI | P2 | Platform | `M2-MODEL-006` | 管理、定價、交易 |
-| `SCN-VENDOR-DEGRADED` | 關鍵供應商降級或離線 | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | 管理、定價、交易 |
-| `SCN-COMPLAINT-SPIKE` | 客戶投訴速度暴衝 | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | 管理、定價、交易 |
+| `SCN-ADM-SEG-GAP` | 週末入金後客戶資金隔離缺口 | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | 管理、定價、交易 |
+| `SCN-ADM-IB-WASH` | 相關 MT5 登入上的 IB 返佣＋對倒集群 | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | 管理、定價、交易 |
+| `SCN-ADM-WD-SURGE` | NFP 社群謠傳後出金速度暴衝 | OPS_PROCESS | P1 | CFD | `M2-WD-015` | 管理、定價、交易 |
+| `SCN-PRC-STALE-XAU` | LP-A XAUUSD 報價延遲與最終報價凍結（INC-1028） | MARKET_PRICING | P0 | CFD | `M2-LP-022`, `M2-FEED-003` | 定價、管理 |
+| `SCN-PRC-SPREAD-SHOCK` | 美國 CPI 公布前 USDJPY 點差衝擊 | PRODUCT_CONFIG | P1 | CFD | `M2-SPREAD-005`, `M2-NEWS-GROSS` | 定價、管理 |
+| `SCN-PRC-SWAP-FLIP` | 夏令時間換日後掉期相對基準偏離 | PRODUCT_CONFIG | P2 | CFD | `M2-SWAP-027` | 定價、管理 |
+| `SCN-DL-LP-REJECT` | 倫敦開盤 EURUSD LP 拒單風暴 | LP_HEDGE | P0 | CFD | `M2-LP-022` | 交易、管理 |
+| `SCN-DL-HEDGE-GAP` | LP 限流後對沖覆蓋缺口（伴隨 INC-1028） | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | 交易、管理 |
+| `SCN-DL-TOXIC` | 美股開盤 NAS100 延遲套利毒性流 | CREDIT_CLIENT | P1 | CFD | `M2-ARB-026` | 交易、管理 |
+| `SCN-PERP-ORACLE` | BTCUSDT 標記價格預言機延遲並基差擴大 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
+| `SCN-PERP-LIQ` | ETHUSDT 強平積壓碰上資金費翻轉 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | 管理、定價、交易 |
+| `SCN-PERP-INS` | 集中持倉強平後保險基金回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | 管理、定價、交易 |
 
-### 定價受眾（28）
+### 定價受眾（9）
 
 | 代碼 | 名稱 | 領域 | 優先 | 產品 | 主要指標 | 受眾 |
 |------|------|------|------|------|----------|------|
-| `SCN-CROSS-BOOK-CONTAGION` | 跨帳簿傳染打到公司權益 | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | 管理、定價、交易 |
-| `SCN-NEWS-WINDOW-GROSS` | 一級新聞窗口名義部位過載 | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | 管理、定價、交易 |
-| `SCN-EQUITY-DRAWDOWN` | 公司權益回撤 | MARKET_PRICING | P0 | CFD | `M2-EQ-001` | 定價、管理 |
-| `SCN-STALE-FEED` | 過期或交叉報價饋送 | MARKET_PRICING | P1 | CFD | `M2-FEED-003` | 定價、管理 |
-| `SCN-SLIPPAGE-SPIKE` | 主要商品客戶滑點暴衝 | MARKET_PRICING | P2 | CFD | `M2-SLIP-021` | 定價、管理 |
-| `SCN-VAR-CORR` | VaR 使用率與相關性破裂 | MARKET_PRICING | P1 | CFD | `M2-VAR-002`, `M2-CORR-004` | 定價、管理 |
-| `SCN-MARKET-INTEL` | 高影響市場情報命中 | MARKET_PRICING | P1 | CFD + Crypto | `M2-MKT-INTEL` | 定價、管理 |
-| `SCN-HOT-WALLET` | 熱錢包浮額偏高 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | 管理、定價、交易 |
-| `SCN-CRYPTO-LIQ` | 強平引擎積壓 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | 管理、定價、交易 |
-| `SCN-ORACLE-BASIS` | 標記預言機延遲與永續基差失控 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
-| `SCN-FUNDING-STABLE` | 極端資金費與穩定幣脫鉤曝險 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | 管理、定價、交易 |
-| `SCN-CRYPTO-OI-DEP` | 未平倉集中度與入金暴衝 | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | 管理、定價、交易 |
-| `SCN-CRYPTO-INSURANCE` | 保險基金單日回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | 管理、定價、交易 |
-| `SCN-MULTI-ACCOUNT` | 多帳戶詐欺叢集 | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | 管理、定價、交易 |
-| `SCN-PAYMENT-CHARGEBACK` | 支付詐欺與退單暴增 | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | 管理、定價、交易 |
-| `SCN-WASH-IB` | 對敲交易與 IB 返佣異常 | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | 管理、定價、交易 |
-| `SCN-BONUS-BURN` | 獎金兌現濫用 | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | 管理、定價、交易 |
-| `SCN-XAU247` | XAUUSD247 淨曝險過載 | PRODUCT_CONFIG | P1 | CFD | `M2-XAU-247` | 定價、管理 |
-| `SCN-GAP-SPREAD-LEV` | 跳空曝險、點差異常、最高槓桿開戶 | PRODUCT_CONFIG | P2 | CFD | `M2-GAP-012`, `M2-SPREAD-005`, `M2-LEV-019` | 定價、管理 |
-| `SCN-SWAP-MISCONFIG` | 隔夜利息相對基準設定錯誤 | PRODUCT_CONFIG | P3 | CFD | `M2-SWAP-027` | 定價、管理 |
-| `SCN-FUNDING-WD` | 資金異常與出金速度 | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | 管理、定價、交易 |
-| `SCN-RECON-BREAKS` | 未結對帳差異 | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | 管理、定價、交易 |
-| `SCN-BRIDGE-API` | 橋接延遲與交易 API 錯誤 | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | 管理、定價、交易 |
-| `SCN-PLATFORM-KILL` | 平台斷線與作用中熔斷 | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | 管理、定價、交易 |
-| `SCN-CAPITAL-SEG` | 實體資本緩衝與客戶資金隔離 | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | 管理、定價、交易 |
-| `SCN-DETECTOR-DRIFT` | 偵測器精準度漂移／誤報 | MODEL_AI | P2 | Platform | `M2-MODEL-006` | 管理、定價、交易 |
-| `SCN-VENDOR-DEGRADED` | 關鍵供應商降級或離線 | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | 管理、定價、交易 |
-| `SCN-COMPLAINT-SPIKE` | 客戶投訴速度暴衝 | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | 管理、定價、交易 |
+| `SCN-ADM-SEG-GAP` | 週末入金後客戶資金隔離缺口 | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | 管理、定價、交易 |
+| `SCN-ADM-IB-WASH` | 相關 MT5 登入上的 IB 返佣＋對倒集群 | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | 管理、定價、交易 |
+| `SCN-ADM-WD-SURGE` | NFP 社群謠傳後出金速度暴衝 | OPS_PROCESS | P1 | CFD | `M2-WD-015` | 管理、定價、交易 |
+| `SCN-PRC-STALE-XAU` | LP-A XAUUSD 報價延遲與最終報價凍結（INC-1028） | MARKET_PRICING | P0 | CFD | `M2-LP-022`, `M2-FEED-003` | 定價、管理 |
+| `SCN-PRC-SPREAD-SHOCK` | 美國 CPI 公布前 USDJPY 點差衝擊 | PRODUCT_CONFIG | P1 | CFD | `M2-SPREAD-005`, `M2-NEWS-GROSS` | 定價、管理 |
+| `SCN-PRC-SWAP-FLIP` | 夏令時間換日後掉期相對基準偏離 | PRODUCT_CONFIG | P2 | CFD | `M2-SWAP-027` | 定價、管理 |
+| `SCN-PERP-ORACLE` | BTCUSDT 標記價格預言機延遲並基差擴大 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
+| `SCN-PERP-LIQ` | ETHUSDT 強平積壓碰上資金費翻轉 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | 管理、定價、交易 |
+| `SCN-PERP-INS` | 集中持倉強平後保險基金回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | 管理、定價、交易 |
 
-### 交易受眾（29）
+### 交易受眾（9）
 
 | 代碼 | 名稱 | 領域 | 優先 | 產品 | 主要指標 | 受眾 |
 |------|------|------|------|------|----------|------|
-| `SCN-CROSS-BOOK-CONTAGION` | 跨帳簿傳染打到公司權益 | SYSTEMIC_FIRM | P0 | CFD + Crypto | `M2-CROSS-BOOK`, `M2-EQ-001`, `M2-VAR-002` | 管理、定價、交易 |
-| `SCN-NEWS-WINDOW-GROSS` | 一級新聞窗口名義部位過載 | SYSTEMIC_FIRM | P0 | CFD | `M2-NEWS-GROSS`, `M2-EQ-001` | 管理、定價、交易 |
-| `SCN-MARGIN-UTIL-SPIKE` | 保證金使用率暴衝（≥100 帳戶 >90%） | CREDIT_CLIENT | P0 | CFD | `M2-MRG-014` | 交易、管理 |
-| `SCN-COPY-CONCENTRATION` | 跟單提供者集中度違規 | CREDIT_CLIENT | P1 | CFD | `M2-COPY-009` | 交易、管理 |
-| `SCN-STOPOUT-VELOCITY` | 強平速度暴衝（5 分鐘視窗） | CREDIT_CLIENT | P1 | CFD | `M2-STOP-018` | 交易、管理 |
-| `SCN-NEGATIVE-BALANCE` | 負餘額保護失守 | CREDIT_CLIENT | P1 | CFD | `M2-NBP-016` | 交易、管理 |
-| `SCN-LATENCY-ARB` | 延遲套利／有毒流量 | CREDIT_CLIENT | P2 | CFD | `M2-ARB-026` | 交易、管理 |
-| `SCN-COPY-CHURN` | 跟單跟隨者恐慌退出 | CREDIT_CLIENT | P2 | CFD | `M2-COPY-CHURN` | 交易、管理 |
-| `SCN-LP-REJECT-STORM` | LP 拒單風暴（oneZero／prime） | LP_HEDGE | P0 | CFD | `M2-LP-022` | 交易、管理 |
-| `SCN-HEDGE-COVERAGE` | 對沖覆蓋低於目標 | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | 交易、管理 |
-| `SCN-ABOOK-RATIO` | A-book 成交占比崩落 | LP_HEDGE | P2 | CFD | `M2-ABOOK-008` | 交易、管理 |
-| `SCN-HOT-WALLET` | 熱錢包浮額偏高 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-WALLET` | 管理、定價、交易 |
-| `SCN-CRYPTO-LIQ` | 強平引擎積壓 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ` | 管理、定價、交易 |
-| `SCN-ORACLE-BASIS` | 標記預言機延遲與永續基差失控 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
-| `SCN-FUNDING-STABLE` | 極端資金費與穩定幣脫鉤曝險 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-FUNDING-RATE`, `M2-STABLE-EXP` | 管理、定價、交易 |
-| `SCN-CRYPTO-OI-DEP` | 未平倉集中度與入金暴衝 | CRYPTO_EXCHANGE | P2 | Crypto | `M2-CRYPTO-OI`, `M2-CRYPTO-DEP` | 管理、定價、交易 |
-| `SCN-CRYPTO-INSURANCE` | 保險基金單日回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS` | 管理、定價、交易 |
-| `SCN-MULTI-ACCOUNT` | 多帳戶詐欺叢集 | FRAUD_CONDUCT | P1 | CFD | `M2-FRAUD-011` | 管理、定價、交易 |
-| `SCN-PAYMENT-CHARGEBACK` | 支付詐欺與退單暴增 | FRAUD_CONDUCT | P1 | CFD | `M2-PAY-017`, `M2-CHARGEBACK` | 管理、定價、交易 |
-| `SCN-WASH-IB` | 對敲交易與 IB 返佣異常 | FRAUD_CONDUCT | P2 | CFD + Crypto | `M2-WASH-020`, `M2-IB-PAYOUT` | 管理、定價、交易 |
-| `SCN-BONUS-BURN` | 獎金兌現濫用 | FRAUD_CONDUCT | P2 | CFD | `M2-BONUS-013` | 管理、定價、交易 |
-| `SCN-FUNDING-WD` | 資金異常與出金速度 | OPS_PROCESS | P1 | CFD + Crypto | `M2-FUND-010`, `M2-WD-015` | 管理、定價、交易 |
-| `SCN-RECON-BREAKS` | 未結對帳差異 | OPS_PROCESS | P2 | CFD + Crypto | `M2-RECON-BRK` | 管理、定價、交易 |
-| `SCN-BRIDGE-API` | 橋接延遲與交易 API 錯誤 | TECH_INFRA | P1 | CFD + Crypto | `M2-BRIDGE-LAT`, `M2-API-023` | 管理、定價、交易 |
-| `SCN-PLATFORM-KILL` | 平台斷線與作用中熔斷 | TECH_INFRA | P0 | CFD + Crypto | `M2-MT-DISC`, `M2-KILL-COUNT` | 管理、定價、交易 |
-| `SCN-CAPITAL-SEG` | 實體資本緩衝與客戶資金隔離 | REG_CAPITAL | P1 | CFD + Crypto | `M2-CAP-024`, `M2-SEG-025` | 管理、定價、交易 |
-| `SCN-DETECTOR-DRIFT` | 偵測器精準度漂移／誤報 | MODEL_AI | P2 | Platform | `M2-MODEL-006` | 管理、定價、交易 |
-| `SCN-VENDOR-DEGRADED` | 關鍵供應商降級或離線 | THIRD_PARTY_VENDOR | P3 | CFD + Crypto | `M2-VENDOR-OUT` | 管理、定價、交易 |
-| `SCN-COMPLAINT-SPIKE` | 客戶投訴速度暴衝 | REPUTATION_COMMS | P3 | CFD + Crypto | `M2-COMPLAINT` | 管理、定價、交易 |
+| `SCN-ADM-SEG-GAP` | 週末入金後客戶資金隔離缺口 | REG_CAPITAL | P0 | CFD | `M2-SEG-025` | 管理、定價、交易 |
+| `SCN-ADM-IB-WASH` | 相關 MT5 登入上的 IB 返佣＋對倒集群 | FRAUD_CONDUCT | P1 | CFD | `M2-IB-PAYOUT`, `M2-WASH-020` | 管理、定價、交易 |
+| `SCN-ADM-WD-SURGE` | NFP 社群謠傳後出金速度暴衝 | OPS_PROCESS | P1 | CFD | `M2-WD-015` | 管理、定價、交易 |
+| `SCN-DL-LP-REJECT` | 倫敦開盤 EURUSD LP 拒單風暴 | LP_HEDGE | P0 | CFD | `M2-LP-022` | 交易、管理 |
+| `SCN-DL-HEDGE-GAP` | LP 限流後對沖覆蓋缺口（伴隨 INC-1028） | LP_HEDGE | P1 | CFD | `M2-HEDGE-007` | 交易、管理 |
+| `SCN-DL-TOXIC` | 美股開盤 NAS100 延遲套利毒性流 | CREDIT_CLIENT | P1 | CFD | `M2-ARB-026` | 交易、管理 |
+| `SCN-PERP-ORACLE` | BTCUSDT 標記價格預言機延遲並基差擴大 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-ORACLE`, `M2-PERP-BASIS` | 管理、定價、交易 |
+| `SCN-PERP-LIQ` | ETHUSDT 強平積壓碰上資金費翻轉 | CRYPTO_EXCHANGE | P0 | Crypto | `M2-CRYPTO-LIQ`, `M2-FUNDING-RATE` | 管理、定價、交易 |
+| `SCN-PERP-INS` | 集中持倉強平後保險基金回撤 | CRYPTO_EXCHANGE | P1 | Crypto | `M2-CRYPTO-INS`, `M2-CRYPTO-OI` | 管理、定價、交易 |
 
 ## 技能劇本（47）
 

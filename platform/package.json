@@ -11,7 +11,6 @@
     "lint": "next lint",
     "test:sql-explorer": "tsx scripts/verify-sql-explorer.ts",
     "test:simulation-spine": "tsx scripts/verify-simulation-spine.ts",
-
     "test:mermaid": "npx tsx scripts/verify-mermaid-edges.ts",
     "docs:indicators": "tsx scripts/gen-indicators-scenarios-doc.ts",
     "test:discovery": "tsx scripts/verify-discovery-admin.ts",
@@ -59,6 +58,7 @@
     "@types/sql.js": "^1.4.11",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
+    "playwright": "^1.64.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.5",
     "typescript": "^5"

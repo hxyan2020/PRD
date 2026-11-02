@@ -4,7 +4,15 @@ import { ensureDiscoverySchema } from "@/lib/ai/discovery-schema";
 import { logSpineEvent } from "@/lib/ai/spine";
 import { decideChangeRequest, proposeChange } from "@/lib/ai/admin";
 import { seedDetectors } from "@/lib/ai/detectors";
-import { forexPackMonitorIds } from "@/lib/demo/forex-incident-1028";
+import { forexPackMonitorIds, FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
+import {
+  anyLlmKeyConfigured,
+  chatCompletionJson,
+  defaultOpenAiModel,
+  llmEnrichmentEnabled,
+  resolveLlmProvider,
+  setRuntimeLlmProvider,
+} from "@/lib/ai/openai-client";
 
 type Actor = { id: number; name: string; role_code: string };
 
@@ -608,9 +616,167 @@ function discoverCandidates(db: ReturnType<typeof getDb>): DiscoveryPass {
   }
 
   method_thinking.push(
-    `Pass complete: ${out.length} raw candidate(s) from ${meta.data_source} window (seed ${meta.scan_seed})`
+    `Pass complete: ${out.length} raw statistical candidate(s) from ${meta.data_source} window (seed ${meta.scan_seed})`
   );
   return { candidates: out, meta, method_thinking };
+}
+
+/** Discovery LLM policy: auto (default) | require | off. Also respects CRMP_AI_LLM=off. */
+export function discoveryLlmMode(): "auto" | "require" | "off" {
+  const raw = (process.env.CRMP_DISCOVERY_LLM || process.env.CRMP_AI_LLM || "auto").toLowerCase();
+  if (raw === "0" || raw === "false" || raw === "off") return "off";
+  if (raw === "require" || raw === "1" || raw === "true" || raw === "on") return "require";
+  return "auto";
+}
+
+function shouldRunDiscoveryLlm(explicit?: boolean): boolean {
+  if (explicit === false) return false;
+  if (explicit === true) return true;
+  const mode = discoveryLlmMode();
+  if (mode === "off") return false;
+  if (mode === "require") return true;
+  return llmEnrichmentEnabled();
+}
+
+/**
+ * Real-AI unknown-risk detection: LLM proposes novel risk scenarios + indicator formulas
+ * grounded in the live SQLite monitor snapshot (not a replay of known skill catalogue).
+ */
+async function discoverUnknownWithLlm(
+  db: ReturnType<typeof getDb>,
+  pass: DiscoveryPass
+): Promise<{ candidates: RawCandidate[]; thinking: string[]; provider: string | null; model: string | null; error?: string }> {
+  const thinking: string[] = [];
+  if (!anyLlmKeyConfigured() || !llmEnrichmentEnabled()) {
+    thinking.push("llm_unknown: SKIPPED_NO_KEY — set OPENAI/DEEPSEEK/GEMINI/ANTHROPIC for real AI detection");
+    return { candidates: [], thinking, provider: null, model: null, error: "LLM_KEY_MISSING" };
+  }
+
+  const provider = resolveLlmProvider();
+  if (!provider) {
+    thinking.push("llm_unknown: SKIPPED — no resolvable provider");
+    return { candidates: [], thinking, provider: null, model: null, error: "LLM_PROVIDER_MISSING" };
+  }
+  setRuntimeLlmProvider(provider);
+  const model = defaultOpenAiModel();
+  thinking.push(`llm_unknown: calling LIVE ${provider}/${model} for unknown scenarios + indicators`);
+
+  const ids = forexPackMonitorIds();
+  const placeholders = ids.map(() => "?").join(",");
+  const rows = db
+    .prepare(
+      `SELECT monitor_id, name, domain_code, status, last_value, threshold_warn, threshold_breach, unit, ticket_open_count
+       FROM monitor_indicators
+       WHERE monitor_id IN (${placeholders})
+       ORDER BY monitor_id`
+    )
+    .all(...ids) as Array<Record<string, unknown>>;
+
+  const hot = rows.filter((r) => String(r.status || "") !== "OK").slice(0, 12);
+  const priorMethods = pass.candidates.map((c) => c.method);
+  const payload = {
+    task: "Detect UNKNOWN risk scenarios and propose NEW risk indicators not already covered by known Monitor 2.0 skills.",
+    canonical_incident: FOREX_INCIDENT_1028.incident_id,
+    scan_seed: pass.meta.scan_seed,
+    data_source: pass.meta.data_source,
+    statistical_methods_already_run: priorMethods,
+    hot_monitors: hot,
+    monitor_snapshot: rows.slice(0, 40),
+    constraints: [
+      "Do not merely restate known M2-* indicators; propose novel combinations, latent gaps, or regime shifts.",
+      "Ground every proposal in the supplied SQLite snapshot — never invent live LP fills.",
+      "Return 1–3 candidates.",
+    ],
+  };
+
+  const result = await chatCompletionJson({
+    system: `You are a CFD / perpetual-exchange unknown-risk discovery engine.
+Propose novel risk scenarios and measurable indicator formulas that statistical scanners may miss.
+Return JSON only: { "thinking_steps": string[], "candidates": [ {
+  "scenario": string,
+  "proposed_indicator": string,
+  "proposed_indicator_formula": string,
+  "proposed_dimension": string,
+  "severity": "WARN"|"BREACH"|"CRITICAL",
+  "product": "CFD"|"CRYPTO",
+  "score": number,
+  "rationale": string
+} ] }`,
+    user: JSON.stringify(payload).slice(0, 14000),
+    model,
+    temperature: 0.25,
+    max_tokens: 1600,
+    provider,
+  });
+
+  if (!result.ok) {
+    thinking.push(`llm_unknown: LIVE_LLM_FAILED — ${result.error}`);
+    return { candidates: [], thinking, provider, model, error: result.error };
+  }
+
+  let parsed: {
+    thinking_steps?: string[];
+    candidates?: Array<Record<string, unknown>>;
+  };
+  try {
+    parsed = JSON.parse(result.content) as typeof parsed;
+  } catch {
+    thinking.push("llm_unknown: LIVE_LLM_PARSE_FAILED");
+    return { candidates: [], thinking, provider, model, error: "LLM_PARSE_FAILED" };
+  }
+
+  for (const step of parsed.thinking_steps || []) {
+    if (typeof step === "string" && step.trim()) thinking.push(`llm_unknown: ${step.trim()}`);
+  }
+
+  const windowIso = pass.candidates[0]
+    ? { window_start: pass.candidates[0].window_start, window_end: pass.candidates[0].window_end }
+    : {
+        window_start: pass.meta.triggered_at,
+        window_end: pass.meta.triggered_at,
+      };
+
+  const out: RawCandidate[] = [];
+  for (const raw of (parsed.candidates || []).slice(0, 3)) {
+    const scenario = String(raw.scenario || "").trim();
+    const indicator = String(raw.proposed_indicator || raw.proposed_indicator_formula || "").trim();
+    if (!scenario || !indicator) continue;
+    const score = Math.max(0.1, Number(raw.score) || 0.75);
+    const severity = ["WARN", "BREACH", "CRITICAL"].includes(String(raw.severity))
+      ? String(raw.severity)
+      : score >= 0.85
+        ? "BREACH"
+        : "WARN";
+    const product = String(raw.product || "").toUpperCase() === "CRYPTO" ? "CRYPTO" : "CFD";
+    out.push({
+      method: "llm_unknown",
+      scenario,
+      proposed_indicator: indicator,
+      proposed_dimension: String(raw.proposed_dimension || "MODEL_AI").slice(0, 64) || "MODEL_AI",
+      score,
+      severity,
+      product,
+      evidence: {
+        scan_seed: pass.meta.scan_seed,
+        data_source: pass.meta.data_source,
+        triggered_at: pass.meta.triggered_at,
+        detection_engine: "LIVE_LLM",
+        llm_provider: result.provider,
+        llm_model: result.model,
+        proposed_indicator_formula: String(raw.proposed_indicator_formula || indicator),
+        rationale: String(raw.rationale || "").slice(0, 800),
+        thinking: [
+          `LIVE LLM (${result.provider}/${result.model}) unknown-risk detection`,
+          `scan_seed=${pass.meta.scan_seed}`,
+          String(raw.rationale || scenario).slice(0, 240),
+        ],
+      },
+      ...windowIso,
+    });
+  }
+
+  thinking.push(`llm_unknown: accepted ${out.length} LIVE LLM candidate(s)`);
+  return { candidates: out, thinking, provider, model };
 }
 
 export function listDiscoveryCandidates(status?: string, limit = 80) {
@@ -672,7 +838,9 @@ export function discoveryPendingCount() {
   ).c;
 }
 
-export function runDiscoveryParallel(opts: { actor?: string; trigger?: string } = {}) {
+export async function runDiscoveryParallel(
+  opts: { actor?: string; trigger?: string; /** false = stats only (seed/smoke); default auto */ llm?: boolean } = {}
+) {
   const db = getDb();
   ensureDiscoverySchema(db);
 
@@ -700,8 +868,60 @@ export function runDiscoveryParallel(opts: { actor?: string; trigger?: string } 
     return { ok: true, skipped: true, scan_id: scanId, candidates_new: 0, candidates: [] as string[] };
   }
 
+  const wantLlm = shouldRunDiscoveryLlm(opts.llm);
+  if (wantLlm && discoveryLlmMode() === "require" && !anyLlmKeyConfigured()) {
+    const err =
+      "Real AI required for unknown-risk detection but no LLM API key is configured (OPENAI_API_KEY / DEEPSEEK_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY).";
+    db.prepare(
+      `UPDATE risk_discovery_scans
+       SET finished_at = datetime('now'), status = 'FAILED', detail_json = ?
+       WHERE scan_id = ?`
+    ).run(JSON.stringify({ reason: "LLM_KEY_MISSING", llm_detection: "REQUIRED" }), scanId);
+    return {
+      ok: false,
+      skipped: false,
+      error: err,
+      scan_id: scanId,
+      candidates_new: 0,
+      candidates: [] as string[],
+      llm_detection: "REQUIRED_MISSING_KEY" as const,
+    };
+  }
+
   const pass = discoverCandidates(db);
-  const raw = pass.candidates;
+  let raw = pass.candidates;
+  let llmDetection:
+    | "LIVE_LLM"
+    | "SKIPPED_NO_KEY"
+    | "SKIPPED_OFF"
+    | "SKIPPED_EXPLICIT"
+    | "FAILED"
+    | "NONE" = "NONE";
+  let llmProvider: string | null = null;
+  let llmModel: string | null = null;
+
+  if (wantLlm) {
+    const llmPass = await discoverUnknownWithLlm(db, pass);
+    pass.method_thinking.push(...llmPass.thinking);
+    llmProvider = llmPass.provider;
+    llmModel = llmPass.model;
+    if (llmPass.error === "LLM_KEY_MISSING") llmDetection = "SKIPPED_NO_KEY";
+    else if (llmPass.error) llmDetection = "FAILED";
+    else if (llmPass.candidates.length) {
+      llmDetection = "LIVE_LLM";
+      raw = [...raw, ...llmPass.candidates];
+    } else {
+      llmDetection = "FAILED";
+      pass.method_thinking.push("llm_unknown: LIVE call returned zero candidates");
+    }
+  } else if (opts.llm === false) {
+    llmDetection = "SKIPPED_EXPLICIT";
+    pass.method_thinking.push("llm_unknown: skipped (explicit llm=false — seed/smoke stats path)");
+  } else {
+    llmDetection = "SKIPPED_OFF";
+    pass.method_thinking.push("llm_unknown: skipped (CRMP_DISCOVERY_LLM/CRMP_AI_LLM off)");
+  }
+
   // Within-method percentile ranking
   const byMethod = new Map<string, number[]>();
   for (const c of raw) {
@@ -791,7 +1011,13 @@ export function runDiscoveryParallel(opts: { actor?: string; trigger?: string } 
     forex_pack_monitors: pass.meta.forex_pack_monitors,
     sqlite_snapshot: pass.meta.sqlite_snapshot,
     thinking_steps: pass.method_thinking,
-    process: "live_sqlite_feature_window→parallel_stat_ml→fingerprint_dedupe→PENDING_RO",
+    llm_detection: llmDetection,
+    llm_provider: llmProvider,
+    llm_model: llmModel,
+    process:
+      llmDetection === "LIVE_LLM"
+        ? "live_sqlite_feature_window→parallel_stat_ml→LIVE_LLM_unknown→fingerprint_dedupe→PENDING_RO"
+        : "live_sqlite_feature_window→parallel_stat_ml→fingerprint_dedupe→PENDING_RO",
   };
 
   db.prepare(
@@ -806,6 +1032,8 @@ export function runDiscoveryParallel(opts: { actor?: string; trigger?: string } 
     candidates_total: raw.length,
     scan_seed: pass.meta.scan_seed,
     data_source: pass.meta.data_source,
+    llm_detection: llmDetection,
+    llm_provider: llmProvider,
   });
 
   return {
@@ -817,6 +1045,9 @@ export function runDiscoveryParallel(opts: { actor?: string; trigger?: string } 
     thinking_steps: pass.method_thinking,
     data_source: pass.meta.data_source,
     scan_seed: pass.meta.scan_seed,
+    llm_detection: llmDetection,
+    llm_provider: llmProvider,
+    llm_model: llmModel,
     detail,
   };
 }
@@ -1208,5 +1439,6 @@ export function seedDiscoveryIfEmpty(db = getDb()) {
   const count = (db.prepare(`SELECT COUNT(*) AS c FROM risk_discovery_candidates`).get() as { c: number }).c;
   if (count > 0) return;
   // Seed via a first parallel scan so demo desks always see PENDING_RO items.
-  runDiscoveryParallel({ actor: "seed", trigger: "SEED" });
+  // Stats-only: do not block DB boot on external LLM keys.
+  void runDiscoveryParallel({ actor: "seed", trigger: "SEED", llm: false });
 }
