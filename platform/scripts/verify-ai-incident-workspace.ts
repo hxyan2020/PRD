@@ -40,13 +40,13 @@ assert.match(board, /embed=1/);
 assert.match(board, /zh-Hant/);
 
 const nav = read("src/lib/nav.ts");
-// Nested under Monitor labs; deep link /admin/ai-incident still works.
 assert.match(nav, /\/admin\/monitor-labs/);
-assert.doesNotMatch(nav, /href: \"\/admin\/ai-incident\"/);
+assert.match(nav, /href: \"\/admin\/ai-incident\"/);
+assert.match(nav, /AI Root Cause Analysis/);
 
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /\/admin\/ai-incident/);
-assert.match(i18n, /AI 事故工作台/);
+assert.match(i18n, /AI根因分析/);
 assert.match(i18n, /"ai-incident"/);
 
 const links = read("src/lib/monitor-deep-links.ts");

@@ -14,13 +14,13 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
   "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
-  "/admin/monitor-labs": { en: "Monitor labs", "zh-Hant": "監控實驗室" },
+  "/admin/monitor-labs": { en: "Full-flow demo", "zh-Hant": "全流程demo" },
   "/admin/l2-rca": { en: "L2 → AI RCA Lab", "zh-Hant": "L2 → AI RCA 實驗室" },
-  "/admin/ai-incident": { en: "AI Incident Workspace", "zh-Hant": "AI 事故工作台" },
-  "/admin/noise-reduction": { en: "Noise Reduction Lab", "zh-Hant": "降噪實驗室" },
+  "/admin/ai-incident": { en: "AI Root Cause Analysis", "zh-Hant": "AI根因分析" },
+  "/admin/noise-reduction": { en: "Noise reduction flow", "zh-Hant": "降噪流程" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
-  "/admin/alerts": { en: "Open Alerts", "zh-Hant": "未結警報" },
-  "/admin/ai-analyses": { en: "Open Alerts", "zh-Hant": "未結警報" },
+  "/admin/alerts": { en: "Monitor 2.0 Open Alerts", "zh-Hant": "Monitor 2.0 未結警報" },
+  "/admin/ai-analyses": { en: "Monitor 2.0 Open Alerts", "zh-Hant": "Monitor 2.0 未結警報" },
   "/admin/ai-admin": { en: "AI Admin", "zh-Hant": "AI 管理" },
   "/admin/ai-performance": { en: "AI Performance", "zh-Hant": "AI 績效" },
   "/admin/interventions": { en: "Human Intervention", "zh-Hant": "人工干預" },
@@ -47,7 +47,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/users": { en: "Users", "zh-Hant": "使用者" },
   "/admin/risk-domains": { en: "Risk Domains", "zh-Hant": "風險領域" },
   "/admin/data-sources": { en: "Data Sources", "zh-Hant": "資料來源" },
-  "/admin/monitor-2": { en: "Monitor 2.0", "zh-Hant": "Monitor 2.0" },
+  "/admin/monitor-2": { en: "Known indicator definitions", "zh-Hant": "已知指標定義" },
   "/admin/lark": { en: "Lark channels (config)", "zh-Hant": "Lark 頻道（設定）" },
   "/admin/escalation": { en: "Escalation Routes", "zh-Hant": "升級路徑" },
   "/admin/audit": { en: "Audit Log", "zh-Hant": "稽核日誌" },
@@ -87,7 +87,7 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   "monitor-labs": {
-    title: { en: "Monitor labs", "zh-Hant": "監控實驗室" },
+    title: { en: "Full-flow demo", "zh-Hant": "全流程demo" },
     subtitle: {
       en: "One hub for HTML walkthroughs: L2→AI RCA, AI Incident (INC-1028), Noise Reduction. Demo data only — not the live desk queue.",
       "zh-Hant": "HTML 演練集中處：L2→AI RCA、AI 事故（INC-1028）、降噪。僅示範資料 — 不是即時台面佇列。",
@@ -136,14 +136,14 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   "ai-incident": {
-    title: { en: "AI Incident Workspace", "zh-Hant": "AI 事故工作台" },
+    title: { en: "AI Root Cause Analysis", "zh-Hant": "AI根因分析" },
     subtitle: {
       en: "Bilingual Monitor 2.0 AI report prototype — Web + Lark, Static/Dynamic modes, E-01…E-08 evidence, nested feedback. Demo INC-1028 (LP-A · XAUUSD) with simulated data only.",
       "zh-Hant": "雙語 Monitor 2.0 AI 事故報告原型 — 網頁＋Lark、靜態／動態模式、E-01…E-08 證據、巢狀回饋。示範 INC-1028（LP-A · XAUUSD），僅模擬資料。",
     },
   },
   "noise-reduction": {
-    title: { en: "Noise Reduction Lab", "zh-Hant": "降噪實驗室" },
+    title: { en: "Noise reduction flow", "zh-Hant": "降噪流程" },
     subtitle: {
       en: "Bilingual Monitor 2.0 noise-reduction end-to-end lab — six scenarios, pipeline knobs, AI evidence + human feedback → backtest / shadow / approve. Demo data only.",
       "zh-Hant": "雙語 Monitor 2.0 降噪端到端實驗室 — 六場景、管線旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准。僅示範資料。",
@@ -157,7 +157,7 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   alerts: {
-    title: { en: "Open Alerts", "zh-Hant": "未結警報" },
+    title: { en: "Monitor 2.0 Open Alerts", "zh-Hant": "Monitor 2.0 未結警報" },
     subtitle: {
       en: "Open queue — expand for facts / AI RCA / improve / POC / action log. Closed → Risk Log.",
       "zh-Hant": "未結佇列 — 展開可看事實／AI 根因／改進／承辦／動作紀錄。已關閉 → 風險日誌。",
@@ -234,10 +234,10 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   "monitor-2": {
-    title: { en: "Monitor 2.0 Integration Hub", "zh-Hant": "Monitor 2.0 整合中心" },
+    title: { en: "Known indicator definitions", "zh-Hant": "已知指標定義" },
     subtitle: {
-      en: "Unified indicator + detector registry. Threshold flow demo above the table; open queue under Open Alerts.",
-      "zh-Hant": "統一指標與偵測器登錄。表格上方為門檻流程演示；未結佇列請至未結警報。",
+      en: "Unified indicator + detector registry. Threshold flow demo above the table; open queue under Monitor 2.0 Open Alerts.",
+      "zh-Hant": "統一指標與偵測器登錄。表格上方為門檻流程演示；未結佇列請至 Monitor 2.0 未結警報。",
     },
   },
   lark: {

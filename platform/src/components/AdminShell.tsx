@@ -34,12 +34,8 @@ function navKey(href: string, pathname: string) {
     );
   }
   if (href === "/admin/monitor-labs") {
-    return (
-      pathname.startsWith("/admin/monitor-labs") ||
-      pathname.startsWith("/admin/l2-rca") ||
-      pathname.startsWith("/admin/ai-incident") ||
-      pathname.startsWith("/admin/noise-reduction")
-    );
+    // Full-flow demo hub + nested L2→AI RCA; AI RCA / noise have their own nav rows.
+    return pathname.startsWith("/admin/monitor-labs") || pathname.startsWith("/admin/l2-rca");
   }
   if (href === "/admin/departments") {
     return pathname.startsWith("/admin/departments") || pathname.startsWith("/admin/teams");

@@ -35,9 +35,9 @@ assert.ok(users.rows.every((r) => r.password === "***"));
 const nav = fs.readFileSync(path.join(root, "src/lib/nav.ts"), "utf8");
 assert.match(nav, /\/admin\/docs\/simulated-data/);
 assert.match(nav, /\/admin\/monitor-labs/);
+assert.match(nav, /href: "\/admin\/ai-incident"/);
+assert.match(nav, /href: "\/admin\/noise-reduction"/);
 assert.doesNotMatch(nav, /href: "\/admin\/l2-rca"/);
-assert.doesNotMatch(nav, /href: "\/admin\/ai-incident"/);
-assert.doesNotMatch(nav, /href: "\/admin\/noise-reduction"/);
 
 const page = fs.readFileSync(path.join(root, "src/app/admin/docs/simulated-data/page.tsx"), "utf8");
 assert.match(page, /SimulatedDataBoard/);

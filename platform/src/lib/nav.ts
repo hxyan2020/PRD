@@ -6,7 +6,9 @@ import {
   ClipboardCheck,
   Compass,
   Database,
+  FileSearch,
   FileText,
+  Filter,
   FlaskConical,
   Gauge,
   GitBranch,
@@ -53,23 +55,37 @@ export const NAV_GROUPS: Array<{ id: NavGroupId; en: string; "zh-Hant": string }
 ];
 
 /**
- * Left-pane order follows the forex desk walkthrough:
- * Monitor → Open Alerts → Monitor labs → Aggregation → Discovery →
- * Risk Domains / MI / Daily → Closed Risk Log → Response → org → platform → docs.
- * HTML labs nested under "Monitor labs" (deep links kept).
+ * Left-pane monitor order (desk walkthrough):
+ * Risk Domains → Full-flow demo → Monitor 2.0 Open Alerts → Known indicators →
+ * Discovery → Aggregation → MI → AI RCA → Noise reduction → Closed Risk Log → Daily.
+ * L2→AI RCA stays nested under Full-flow demo (deep link /admin/l2-rca).
  */
 export const NAV_ITEMS = [
   { href: "/admin", label: "Admin Home", icon: LayoutDashboard, permission: "admin.access", group: "overview" },
 
-  { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/alerts", label: "Open Alerts", icon: Bell, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
   {
     href: "/admin/monitor-labs",
-    label: "Monitor labs",
+    label: "Full-flow demo",
     icon: FlaskConical,
     permission: "monitor.read",
     group: "monitor",
   },
+  {
+    href: "/admin/alerts",
+    label: "Monitor 2.0 Open Alerts",
+    icon: Bell,
+    permission: "monitor.read",
+    group: "monitor",
+  },
+  {
+    href: "/admin/monitor-2",
+    label: "Known indicator definitions",
+    icon: Activity,
+    permission: "monitor.read",
+    group: "monitor",
+  },
+  { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
   {
     href: "/admin/indicator-aggregation",
     label: "Indicator Aggregation",
@@ -77,11 +93,23 @@ export const NAV_ITEMS = [
     permission: "monitor.read",
     group: "monitor",
   },
-  { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
   { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
+  {
+    href: "/admin/ai-incident",
+    label: "AI Root Cause Analysis",
+    icon: FileSearch,
+    permission: "monitor.read",
+    group: "monitor",
+  },
+  {
+    href: "/admin/noise-reduction",
+    label: "Noise reduction flow",
+    icon: Filter,
+    permission: "monitor.read",
+    group: "monitor",
+  },
   { href: "/admin/risk-log", label: "Closed Risk Log", icon: ScrollText, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
 
   { href: "/admin/skills", label: "AI Skills", icon: Sparkles, permission: "skills.read", group: "ai" },
   { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read", group: "ai" },

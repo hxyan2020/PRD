@@ -42,11 +42,12 @@ assert.match(board, /zh-Hant/);
 
 const nav = read("src/lib/nav.ts");
 assert.match(nav, /\/admin\/monitor-labs/);
-assert.doesNotMatch(nav, /href: \"\/admin\/noise-reduction\"/);
+assert.match(nav, /href: \"\/admin\/noise-reduction\"/);
+assert.match(nav, /Noise reduction flow/);
 
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /\/admin\/noise-reduction/);
-assert.match(i18n, /降噪實驗室/);
+assert.match(i18n, /降噪流程/);
 assert.match(i18n, /"noise-reduction"/);
 
 const links = read("src/lib/monitor-deep-links.ts");
