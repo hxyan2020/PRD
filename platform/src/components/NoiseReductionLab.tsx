@@ -51,8 +51,8 @@ export function NoiseReductionLab({
             </div>
             <p className="text-sm text-[var(--muted)] max-w-3xl leading-relaxed">
               <EnZh
-                en={`Interactive end-to-end lab — six scenarios, knobs for threshold / persistence / L2 score / window, AI evidence + human feedback. Tuned against the same ${fx.symbol} / LP book as ${fx.incident_id}. Demo data only.`}
-                zh={`端到端降噪實驗室 — 六場景、閾值／Persistence／L2 分數／視窗旋鈕、AI 證據＋人工回饋。與 ${fx.incident_id} 同一 ${fx.symbol}／LP 帳簿。僅示範資料。`}
+                en={`Interactive lab (complements Desk-12 methods above) — pipeline knobs for threshold, severity, persistence, and more (quality, bypass, dedup, L2, AI feedback → backtest/shadow/approve). Tuned against the same ${fx.symbol} / LP book as ${fx.incident_id}. Demo data only.`}
+                zh={`互動實驗室（搭配上方 Desk-12 方法）— 管線旋鈕涵蓋閾值、嚴重度、持續性等（品質、旁路、去重、L2、AI 回饋 → 回測／Shadow／核准）。與 ${fx.incident_id} 同一 ${fx.symbol}／LP 帳簿。僅示範資料。`}
               />
             </p>
           </div>

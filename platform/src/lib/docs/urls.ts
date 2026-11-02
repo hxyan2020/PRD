@@ -71,7 +71,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
     title: "Noise Reduction Lab",
     path: "/admin/noise-reduction",
     description:
-      "Deep link into Monitor labs → Noise Reduction tab. Six scenarios + knobs — demo data only",
+      "Deep link into Monitor labs → Noise Reduction tab. Desk-12 methods cover threshold / severity / persistence and more; interactive lab knobs — demo data only",
     permission: "monitor.read",
   },
   {

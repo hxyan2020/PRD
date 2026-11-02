@@ -145,8 +145,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "noise-reduction": {
     title: { en: "Noise reduction flow", "zh-Hant": "降噪流程" },
     subtitle: {
-      en: "Bilingual Monitor 2.0 noise-reduction end-to-end lab — six scenarios, pipeline knobs, AI evidence + human feedback → backtest / shadow / approve. Demo data only.",
-      "zh-Hant": "雙語 Monitor 2.0 降噪端到端實驗室 — 六場景、管線旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准。僅示範資料。",
+      en: "Desk-12 noise methods covering — and not limited to — threshold optimisation, severity optimisation, and persistence, plus hysteresis, quality gates, flapping, rate-limits, SEQUENCE/AND, P0 bypass, shadow, batching, feedback, and backtest→shadow→approve. Lab knobs + bilingual demo data.",
+      "zh-Hant": "Desk-12 降噪方法必須涵蓋且不限於閾值優化、嚴重度優化、持續性；另含滯後帶、質量閘門、抖動抑制、限速、SEQUENCE／AND、P0 旁路、Shadow、批次合併、人工回饋、回測→Shadow→核准。含管線旋鈕與雙語示範資料。",
     },
   },
   detectors: {

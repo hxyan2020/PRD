@@ -1245,6 +1245,10 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Noise Reduction Lab": "降噪實驗室",
   "Bilingual Monitor 2.0 noise-reduction end-to-end lab: six scenarios (cross-BU L2, spike, dedup, benign, unknown, P0 bypass), knobs for threshold / persistence / L2 score / window, AI evidence + human feedback → backtest / shadow / approve — demo data only":
     "雙語 Monitor 2.0 降噪端到端實驗室：六場景（跨 BU L2、尖峰、去重、良性、未知、P0 旁路）、閾值／Persistence／L2 分數／視窗旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准 — 僅示範資料",
+  "Desk-12 noise methods covering — and not limited to — threshold optimisation, severity optimisation, and persistence, plus hysteresis, quality gates, flapping, rate-limits, SEQUENCE/AND, P0 bypass, shadow, batching, feedback, and backtest→shadow→approve. Lab knobs + bilingual demo data.":
+    "Desk-12 降噪方法必須涵蓋且不限於閾值優化、嚴重度優化、持續性；另含滯後帶、質量閘門、抖動抑制、限速、SEQUENCE／AND、P0 旁路、Shadow、批次合併、人工回饋、回測→Shadow→核准。含管線旋鈕與雙語示範資料。",
+  "Deep link into Monitor labs → Noise Reduction tab. Desk-12 methods cover threshold / severity / persistence and more; interactive lab knobs — demo data only":
+    "深連結進監控實驗室 → 降噪分頁。Desk-12 方法涵蓋閾值／嚴重度／持續性等；含互動實驗室旋鈕 — 僅示範資料",
   "Noise Reduction Lab (E2E demo)": "降噪實驗室（端到端演示）",
   "L2 → AI RCA Lab": "L2 → AI RCA 實驗室",
   "Bilingual Discovery → L1/L2 → AI RCA lab: known-incident reverse engineering, unknown-risk models, L1→L2 live aggregate (AND/OR/SEQUENCE), then natural handoff to AI Incident Workspace (INC-1028) — demo data only":

@@ -8,45 +8,61 @@ import type { DomainScenario } from "@/lib/ai/risk-domain-scenarios";
 
 export type DeskAudience = "broker_admin" | "cfd_pricing" | "cfd_dealing" | "perp_exchange";
 
+export type NoiseTechniqueId =
+  | "threshold_optimisation"
+  | "severity_optimisation"
+  | "persistence"
+  | "hysteresis"
+  | "dedup"
+  | "sequence"
+  | "p0_bypass"
+  | "shadow"
+  | "batching"
+  | "dynamic_multiplier"
+  | "quality_gate"
+  | "flapping_suppression"
+  | "rate_limit"
+  | "human_feedback_loop"
+  | "backtest_shadow_approve";
+
 export type DeskNoiseMethod = {
   code: string;
   en: string;
   zh: string;
-  /** Technique tags — covers threshold / severity / persistence and more */
-  techniques: Array<
-    | "threshold_optimisation"
-    | "severity_optimisation"
-    | "persistence"
-    | "dedup"
-    | "sequence"
-    | "p0_bypass"
-    | "shadow"
-    | "batching"
-    | "dynamic_multiplier"
-  >;
+  /** Technique tags — covers threshold / severity / persistence and more (not limited to those three). */
+  techniques: NoiseTechniqueId[];
   knobs: Array<{ en: string; zh: string }>;
 };
 
-/** Catalogue of noise-reduction techniques used across the desk-12 pack (not limited to these). */
+/** Catalogue of noise-reduction techniques used across the desk-12 pack (extensible — not a closed set). */
 export const NOISE_TECHNIQUE_CATALOGUE: Array<{
-  id: DeskNoiseMethod["techniques"][number];
+  id: NoiseTechniqueId;
   en: string;
   zh: string;
+  core?: boolean;
 }> = [
   {
     id: "threshold_optimisation",
+    core: true,
     en: "Threshold optimisation — warn/breach bands tuned to desk reality",
     zh: "閾值優化 — 依櫃台實況調整警告／違規帶",
   },
   {
     id: "severity_optimisation",
+    core: true,
     en: "Severity optimisation — promote/demote WARN↔BREACH↔CRITICAL with context",
     zh: "嚴重度優化 — 依情境提升／降級 WARN↔BREACH↔CRITICAL",
   },
   {
     id: "persistence",
+    core: true,
     en: "Persistence — require sustained breach across N windows before paging",
     zh: "持續性 — 需連續 N 個視窗違規才通知",
+  },
+  {
+    id: "hysteresis",
+    en: "Hysteresis — separate clear vs fire levels to stop chatter",
+    zh: "滯後帶 — 分開觸發／解除水位，抑制抖動",
   },
   {
     id: "dedup",
@@ -78,7 +94,42 @@ export const NOISE_TECHNIQUE_CATALOGUE: Array<{
     en: "Dynamic multiplier — raise bands in known news windows when rails healthy",
     zh: "動態倍數 — 通道健康時於已知新聞窗口提高閾值帶",
   },
+  {
+    id: "quality_gate",
+    en: "Data-quality gate — drop null/stale timestamps before business rules",
+    zh: "數據質量閘門 — 業務規則前丟棄空值／過期時間戳",
+  },
+  {
+    id: "flapping_suppression",
+    en: "Flapping suppression — ignore recover-within-window toggles",
+    zh: "抖動抑制 — 忽略視窗內來回恢復的抖動",
+  },
+  {
+    id: "rate_limit",
+    en: "Notification rate-limit — cap pages per symbol/LP per minute",
+    zh: "通知限速 — 限制每商品／LP 每分鐘通知數",
+  },
+  {
+    id: "human_feedback_loop",
+    en: "Human feedback loop — TP/FP/UNKNOWN labels drive offline retune",
+    zh: "人工回饋迴路 — TP／FP／UNKNOWN 標註驅動離線調參",
+  },
+  {
+    id: "backtest_shadow_approve",
+    en: "Backtest → Shadow → Approve — never hot-edit production rules",
+    zh: "回測 → Shadow → 核准 — 禁止熱改生產規則",
+  },
 ];
+
+/** Assert core trio is always present in the catalogue (threshold / severity / persistence). */
+export function noiseCatalogueCoversCoreTrio(): boolean {
+  const ids = new Set(NOISE_TECHNIQUE_CATALOGUE.map((t) => t.id));
+  return (
+    ids.has("threshold_optimisation") &&
+    ids.has("severity_optimisation") &&
+    ids.has("persistence")
+  );
+}
 
 export type Desk12Scenario = DomainScenario & {
   audience: DeskAudience;
@@ -230,7 +281,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-CAP-024", "M2-FUND-010", "M2-RECON-BRK"],
     noise: {
       code: "NR-ADM-SEG-PERSIST",
-      techniques: ["persistence", "threshold_optimisation"],
+      techniques: ["persistence", "hysteresis", "threshold_optimisation", "human_feedback_loop"],
       en: "Require 2 consecutive recon cycles above breach before paging Compliance",
       zh: "連續 2 輪對帳超違規才通知合規",
       knobs: [
@@ -274,7 +325,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-FRAUD-011", "M2-BONUS-013", "M2-CHARGEBACK"],
     noise: {
       code: "NR-ADM-IB-DEDUP",
-      techniques: ["dedup", "severity_optimisation"],
+      techniques: ["dedup", "severity_optimisation", "rate_limit", "batching"],
       en: "Deduplicate IB + wash alerts into one parent when same cluster_id",
       zh: "同一 cluster_id 時將 IB＋洗倉警報去重為單一父事件",
       knobs: [
@@ -318,7 +369,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-FUND-010", "M2-COMPLAINT", "M2-CAP-024"],
     noise: {
       code: "NR-ADM-WD-THRESHOLD",
-      techniques: ["dynamic_multiplier", "threshold_optimisation"],
+      techniques: ["dynamic_multiplier", "threshold_optimisation", "severity_optimisation", "quality_gate"],
       en: "Raise dynamic threshold 1.2× during known news windows if bank rails healthy",
       zh: "銀行通道健康時，已知新聞窗口動態閾值提高 1.2×",
       knobs: [
@@ -364,7 +415,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-HEDGE-007", "M2-XAU-247", "M2-SLIP-021"],
     noise: {
       code: "NR-PRC-FEED-FLAP",
-      techniques: ["persistence", "threshold_optimisation"],
+      techniques: ["persistence", "flapping_suppression", "hysteresis", "threshold_optimisation"],
       en: "Suppress flap if quote age recovers <1.5s within 8s persistence window",
       zh: "若報價年齡在 8 秒持續窗內恢復到 <1.5 秒則抑制抖動",
       knobs: [
@@ -408,7 +459,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-GAP-012", "M2-EQ-001", "M2-MKT-INTEL"],
     noise: {
       code: "NR-PRC-NEWS-BYPASS",
-      techniques: ["p0_bypass", "severity_optimisation"],
+      techniques: ["p0_bypass", "severity_optimisation", "dynamic_multiplier", "quality_gate"],
       en: "P0 bypass: never auto-suppress spread alerts inside Tier-1 calendar ±10m",
       zh: "P0 旁路：一級財經日曆 ±10 分鐘內不得自動抑制點差警報",
       knobs: [
@@ -451,7 +502,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-XAU-247", "M2-RECON-BRK"],
     noise: {
       code: "NR-PRC-SWAP-BATCH",
-      techniques: ["batching", "dedup"],
+      techniques: ["batching", "dedup", "threshold_optimisation", "backtest_shadow_approve"],
       en: "Batch per-symbol swap warnings into one daily config ticket",
       zh: "將逐商品掉期警告合併為每日一張設定工單",
       knobs: [
@@ -497,7 +548,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-ABOOK-008", "M2-HEDGE-007", "M2-BRIDGE-LAT"],
     noise: {
       code: "NR-DL-REJECT-BURST",
-      techniques: ["batching", "severity_optimisation", "p0_bypass"],
+      techniques: ["batching", "severity_optimisation", "p0_bypass", "rate_limit"],
       en: "Aggregate reject micro-bursts <30s into one L1 unless CRITICAL threshold crossed",
       zh: "將 <30 秒的拒單微爆發聚為單一 L1，除非已越 CRITICAL 閾值",
       knobs: [
@@ -540,7 +591,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-LP-022", "M2-EQ-001", "M2-XAU-247"],
     noise: {
       code: "NR-DL-HEDGE-LINK",
-      techniques: ["dedup", "sequence"],
+      techniques: ["dedup", "sequence", "severity_optimisation", "persistence"],
       en: "Link hedge-gap WARN under parent INC-1028 L2 when same symbol+LP",
       zh: "同商品＋LP 時將對沖缺口 WARN 掛到 INC-1028 L2 父事件下",
       knobs: [
@@ -584,7 +635,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-SLIP-021", "M2-BRIDGE-LAT", "M2-FRAUD-011"],
     noise: {
       code: "NR-DL-TOXIC-SCORE",
-      techniques: ["shadow", "threshold_optimisation", "severity_optimisation"],
+      techniques: ["shadow", "threshold_optimisation", "severity_optimisation", "human_feedback_loop"],
       en: "Shadow-mode score for 5m before WARN page unless score ≥0.70",
       zh: "分數未達 0.70 前先 Shadow 5 分鐘再 WARN 通知",
       knobs: [
@@ -630,7 +681,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-FUNDING-RATE", "M2-CRYPTO-LIQ", "M2-MKT-INTEL"],
     noise: {
       code: "NR-PERP-ORACLE-SEQ",
-      techniques: ["sequence", "threshold_optimisation"],
+      techniques: ["sequence", "threshold_optimisation", "persistence", "quality_gate"],
       en: "SEQUENCE: only raise L2 when oracle lag AND basis both breach within 60s",
       zh: "SEQUENCE：60 秒內預言機延遲與基差同時違規才升 L2",
       knobs: [
@@ -674,7 +725,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-CRYPTO-INS", "M2-CRYPTO-OI", "M2-KILL-COUNT"],
     noise: {
       code: "NR-PERP-LIQ-P0",
-      techniques: ["p0_bypass", "severity_optimisation"],
+      techniques: ["p0_bypass", "severity_optimisation", "rate_limit", "backtest_shadow_approve"],
       en: "Never shadow-suppress liquidation backlog once ≥ breach — P0 bypass",
       zh: "強平積壓一旦 ≥ 違規閾值禁止 Shadow 抑制 — P0 旁路",
       knobs: [
@@ -718,7 +769,7 @@ export const DESK_12_SCENARIOS: Desk12Scenario[] = [
     related_indicators: ["M2-CRYPTO-LIQ", "M2-STABLE-EXP", "M2-CRYPTO-WALLET"],
     noise: {
       code: "NR-PERP-INS-ROLL",
-      techniques: ["threshold_optimisation", "sequence", "persistence"],
+      techniques: ["threshold_optimisation", "sequence", "persistence", "hysteresis", "shadow"],
       en: "Use 1h rolling drawdown to cut overnight false spikes from mark prints",
       zh: "使用 1 小時滾動回撤，減少標記價造成的隔夜假尖峰",
       knobs: [
