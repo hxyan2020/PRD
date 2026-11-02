@@ -53,14 +53,14 @@ export function SimSpinePackStrip({
             {forexIncidentChip(locale)}
           </div>
         </div>
-        <div className="action-row">
-          <AdminLink className="btn btn-sm" href="/admin/docs/simulated-data">
+        <div className="action-row w-full sm:w-auto">
+          <AdminLink className="btn btn-sm !min-h-10 sm:!min-h-8 flex-1 sm:flex-none justify-center" href="/admin/docs/simulated-data">
             <EnZh en="Simulated Data / SQL" zh="模擬資料／SQL" />
           </AdminLink>
-          <AdminLink className="btn btn-sm" href="/admin/discovery">
+          <AdminLink className="btn btn-sm !min-h-10 sm:!min-h-8 flex-1 sm:flex-none justify-center" href="/admin/discovery">
             <EnZh en="Discovery" zh="探索" />
           </AdminLink>
-          <AdminLink className="btn btn-sm" href={fx.aggregation_path}>
+          <AdminLink className="btn btn-sm !min-h-10 sm:!min-h-8 w-full sm:w-auto justify-center" href={fx.aggregation_path}>
             <EnZh en="L2 aggregation" zh="L2 聚合" />
           </AdminLink>
         </div>

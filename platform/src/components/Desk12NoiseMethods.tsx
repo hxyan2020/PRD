@@ -50,11 +50,11 @@ export function Desk12NoiseMethods() {
         </p>
       </div>
 
-      <ul className="flex flex-wrap gap-1.5" data-testid="noise-technique-catalogue">
+      <ul className="flex flex-col sm:flex-wrap sm:flex-row gap-1.5" data-testid="noise-technique-catalogue">
         {NOISE_TECHNIQUE_CATALOGUE.map((t) => (
           <li
             key={t.id}
-            className={`rounded-md border px-2 py-1 text-[11px] ${
+            className={`rounded-md border px-2 py-1.5 text-[11px] leading-snug ${
               t.core
                 ? "border-teal-400 bg-teal-100/80 text-teal-950 font-semibold"
                 : "border-teal-200 bg-teal-50/70 text-teal-950"
@@ -66,11 +66,17 @@ export function Desk12NoiseMethods() {
         ))}
       </ul>
 
-      <div className="overflow-x-auto" data-testid="noise-coverage-matrix">
+      <p className="text-[11px] text-[var(--muted)] sm:hidden">
+        <EnZh en="Swipe sideways to read the coverage matrix." zh="可左右滑動查看覆蓋矩陣。" />
+      </p>
+      <div
+        className="overflow-x-auto overscroll-x-contain touch-pan-x [-webkit-overflow-scrolling:touch] -mx-1 px-1"
+        data-testid="noise-coverage-matrix"
+      >
         <table className="w-full min-w-[720px] text-left text-[11px]">
           <thead>
             <tr className="border-b border-black/10 text-[var(--muted)]">
-              <th className="py-2 pr-2 font-semibold sticky left-0 bg-white/95">
+              <th className="py-2 pr-2 font-semibold sticky left-0 z-10 bg-white/95 shadow-[2px_0_4px_rgba(0,0,0,0.06)]">
                 <EnZh en="Technique" zh="手法" />
               </th>
               {DESK_12_SCENARIOS.map((s) => (
@@ -83,7 +89,7 @@ export function Desk12NoiseMethods() {
           <tbody>
             {coverage.map((t) => (
               <tr key={t.id} className="border-b border-black/5">
-                <td className="py-1.5 pr-2 sticky left-0 bg-white/95">
+                <td className="py-1.5 pr-2 sticky left-0 z-10 bg-white/95 shadow-[2px_0_4px_rgba(0,0,0,0.06)]">
                   <span className={t.core ? "font-semibold text-teal-900" : ""}>
                     {(zh ? t.zh : t.en).split(" — ")[0]}
                   </span>
@@ -107,7 +113,7 @@ export function Desk12NoiseMethods() {
         </table>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto overscroll-x-contain touch-pan-x [-webkit-overflow-scrolling:touch] -mx-1 px-1">
         <table className="w-full min-w-[640px] text-left text-xs">
           <thead>
             <tr className="border-b border-black/10 text-[var(--muted)]">

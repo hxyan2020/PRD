@@ -690,7 +690,7 @@ export function AlertTrackerBoard({
           <div className="mt-3 action-row">
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-primary w-full sm:w-auto !min-h-11 sm:!min-h-9 justify-center"
               data-testid="ai-btn-analyze-open"
               disabled={busy}
               onClick={() => run("analyze_open")}
@@ -699,7 +699,7 @@ export function AlertTrackerBoard({
             </button>
             <button
               type="button"
-              className="btn"
+              className="btn w-full sm:w-auto !min-h-11 sm:!min-h-9 justify-center"
               data-testid="ai-btn-backfill"
               disabled={busy}
               onClick={() => run("backfill_challenges")}
