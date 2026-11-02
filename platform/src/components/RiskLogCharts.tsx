@@ -131,12 +131,13 @@ function SeriesChart({
           ))}
         </div>
       </div>
-      <div className="mt-3 overflow-x-auto">
+      <div className="mt-3 min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x [-webkit-overflow-scrolling:touch]">
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          className="w-full min-w-[520px] h-auto"
+          className="h-auto w-full min-w-0 max-w-full"
           role="img"
           aria-label={title}
+          preserveAspectRatio="xMidYMid meet"
         >
           {yTicks.map((t) => (
             <g key={t.label}>

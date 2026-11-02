@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { DeptBadge, Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { MonitorCode } from "@/components/MonitorCode";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import { T } from "@/components/T";
 import { Phrase } from "@/components/Phrase";
 import { EnZh } from "@/components/EnZh";
@@ -12,6 +13,11 @@ import {
   scenariosForDomain,
   type DomainScenario,
 } from "@/lib/ai/risk-domain-scenarios";
+import {
+  DESK_12_SCENARIOS,
+  DESK_AUDIENCE_LABEL,
+  type DeskAudience,
+} from "@/lib/demo/desk-12-pack";
 
 type Domain = {
   id: number;
@@ -367,6 +373,29 @@ export default function RiskDomainsPage() {
   return (
     <div>
       <AdminPageHeader pageKey="risk-domains" />
+      <div className="mb-4">
+        <ForexDeskPackLinks mode="compact" />
+      </div>
+      <div className="mb-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4" data-testid="desk-12-audience-strip">
+        {(["broker_admin", "cfd_pricing", "cfd_dealing", "perp_exchange"] as DeskAudience[]).map((aud) => {
+          const rows = DESK_12_SCENARIOS.filter((s) => s.audience === aud);
+          const label = DESK_AUDIENCE_LABEL[aud];
+          return (
+            <div key={aud} className="rounded-xl border border-black/10 bg-white/90 px-3 py-2">
+              <div className="text-xs font-semibold">
+                <EnZh en={label.en} zh={label.zh} />
+              </div>
+              <ul className="mt-1 space-y-0.5 text-[11px] text-[var(--muted)]">
+                {rows.map((s) => (
+                  <li key={s.code}>
+                    P{s.priority} · <EnZh en={s.name.en} zh={s.name.zh} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
       <Legend />
       <div className="grid lg:grid-cols-2 gap-4">
         <Sphere

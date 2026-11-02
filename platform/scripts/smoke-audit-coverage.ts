@@ -7,7 +7,7 @@ import path from "node:path";
 
 const dataDir = path.resolve(__dirname, "../data");
 fs.mkdirSync(dataDir, { recursive: true });
-const dbPath = path.join(dataDir, "vantage_risk.db");
+const dbPath = path.join(dataDir, "vantage_risk.smoke-audit.db");
 for (const f of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`]) {
   try {
     fs.unlinkSync(f);
@@ -15,6 +15,7 @@ for (const f of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`]) {
     /* ok */
   }
 }
+process.env.CRMP_DB_PATH = dbPath;
 
 async function main() {
   const { getDb, writeAudit } = await import("../src/lib/db");
@@ -34,7 +35,7 @@ async function main() {
     .get("risk.owner@vantagemarkets.com") as { id: number; name: string; role_code: string };
   assert.ok(ro);
 
-  runDiscoveryParallel({ actor: ro.name, trigger: "AUDIT_SMOKE" });
+  await runDiscoveryParallel({ actor: ro.name, trigger: "AUDIT_SMOKE", llm: false });
   const pending = listDiscoveryCandidates("PENDING_RO", 5) as Array<{
     candidate_id: string;
     method: string;

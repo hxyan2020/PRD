@@ -82,24 +82,36 @@ export async function POST(req: Request) {
       if (!canOperate(user.role_code)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
-      return NextResponse.json(runDiscoveryParallel({ actor: user.name, trigger: "MANUAL" }));
+      // Prefer real AI unknown-risk detection when keys are configured (llm: true forces attempt).
+      const result = await runDiscoveryParallel({
+        actor: user.name,
+        trigger: "MANUAL",
+        llm: body.llm === false ? false : true,
+      });
+      if (result && "ok" in result && result.ok === false) {
+        return NextResponse.json(result, { status: 503 });
+      }
+      return NextResponse.json(result);
     }
 
-    if (body.action === "connect_openai") {
+    if (body.action === "connect_openai" || body.action === "connect_llm") {
       if (!canOperate(user.role_code) && !canReview(user.role_code)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
-      const model = String(body.model || "gpt-4.1-mini");
-      const status = enableDiscoveryOpenAi(model);
+      const provider = body.provider ? String(body.provider) : undefined;
+      const model = body.model ? String(body.model) : undefined;
+      const status = enableDiscoveryOpenAi(model, provider);
       writeAudit(user, "DISCOVERY_CONNECT_OPENAI", "risk_discovery", "ai_mode", {
         mode: status.mode,
+        mode_canonical: status.mode_canonical,
         model: status.model,
+        provider: status.provider,
         key_configured: status.key_configured,
       });
       return NextResponse.json({ ok: true, status });
     }
 
-    if (body.action === "disconnect_openai") {
+    if (body.action === "disconnect_openai" || body.action === "disconnect_llm") {
       if (!canOperate(user.role_code) && !canReview(user.role_code)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
@@ -133,10 +145,15 @@ export async function POST(req: Request) {
       if (!row) return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
       const localeRaw = String(body.locale || "en");
       const locale = localeRaw === "zh-Hant" ? "zh-Hant" : "en";
+      const requireLive =
+        body.require_live === true ||
+        getDiscoveryAiStatus().mode_canonical === "LIVE_LLM" ||
+        String(process.env.CRMP_AI_LLM || "").toLowerCase() === "require";
       const suggestion = await analyseDiscoveryCandidate({
         candidate: row,
         followup: body.followup ? String(body.followup) : undefined,
         locale,
+        require_live: requireLive,
       });
       writeAudit(user, "DISCOVERY_ANALYSE", "risk_discovery", candidateId, {
         method: row.method,
@@ -145,6 +162,7 @@ export async function POST(req: Request) {
         confidence: suggestion.confidence,
         followup: Boolean(body.followup),
         locale,
+        require_live: requireLive,
       });
       return NextResponse.json({ ok: true, suggestion, ai_status: getDiscoveryAiStatus() });
     }

@@ -13,7 +13,8 @@ export type DocId =
   | "ECOSYSTEM"
   | "ROADMAP"
   | "OPEN_ISSUES"
-  | "PROGRESS";
+  | "PROGRESS"
+  | "INDICATORS_SCENARIOS";
 
 export { markdownToHtml } from "./docs-markdown";
 
@@ -26,6 +27,10 @@ const DOC_FILES: Record<DocId, { en: string; "zh-Hant": string }> = {
   ROADMAP: { en: "ROADMAP.md", "zh-Hant": "ROADMAP.zh-Hant.md" },
   OPEN_ISSUES: { en: "OPEN_ISSUES.md", "zh-Hant": "OPEN_ISSUES.zh-Hant.md" },
   PROGRESS: { en: "PROGRESS.md", "zh-Hant": "PROGRESS.zh-Hant.md" },
+  INDICATORS_SCENARIOS: {
+    en: "INDICATORS_SCENARIOS.md",
+    "zh-Hant": "INDICATORS_SCENARIOS.zh-Hant.md",
+  },
 };
 
 export function resolveDocLocale(raw?: string | null): DocLocale {

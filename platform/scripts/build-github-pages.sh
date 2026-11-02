@@ -37,5 +37,6 @@ trap cleanup EXIT
 export NEXT_PUBLIC_STATIC_EXPORT=1
 export STATIC_EXPORT=1
 export NEXT_PUBLIC_BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-/PRD/crmp-admin}"
+bash "$ROOT/scripts/prepare-demo-db.sh"
 npx next build
 echo "Static snapshot written to out"

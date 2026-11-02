@@ -9,7 +9,8 @@ export type AdminDocKey =
   | "ROADMAP"
   | "URLS"
   | "OPEN_ISSUES"
-  | "PROGRESS";
+  | "PROGRESS"
+  | "INDICATORS_SCENARIOS";
 
 const KEYS = new Set<AdminDocKey>([
   "TSD",
@@ -21,6 +22,7 @@ const KEYS = new Set<AdminDocKey>([
   "URLS",
   "OPEN_ISSUES",
   "PROGRESS",
+  "INDICATORS_SCENARIOS",
 ]);
 
 export function isAdminDocKey(raw: string): raw is AdminDocKey {

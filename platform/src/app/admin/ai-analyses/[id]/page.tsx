@@ -9,6 +9,7 @@ import { AiImprovementPanel } from "@/components/AiImprovementPanel";
 import { PageHeader, Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { MonitorCode } from "@/components/MonitorCode";
 import { T } from "@/components/T";
+import { EnZh } from "@/components/EnZh";
 import type { ImprovementReview } from "@/lib/ai/improvement-model";
 
 export async function generateStaticParams() {
@@ -93,6 +94,13 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
     status: string;
     detail_json: string;
   }>;
+  const llmEvidence = evidence.filter((ev) => ev.evidence_type === "LLM");
+  const llmThinkingSteps = llmEvidence.flatMap((ev) =>
+    String(ev.excerpt || "")
+      .split(/\s*\|\s*| → /)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 8)
+  );
 
   return (
     <div>
@@ -111,11 +119,18 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
           className={
             analysis.mode === "SKILL_MATCH"
               ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-              : "bg-amber-50 text-amber-900 border-amber-200"
+              : analysis.mode === "RAG_LLM"
+                ? "bg-teal-50 text-teal-900 border-teal-200"
+                : "bg-amber-50 text-amber-900 border-amber-200"
           }
         >
           {analysis.mode}
         </Badge>
+        {llmEvidence.length ? (
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200" data-testid="ai-llm-badge">
+            LLM · {llmEvidence.length}
+          </Badge>
+        ) : null}
         <StatusBadge value={analysis.status} />
         <Badge className="bg-slate-100 text-slate-700 border-slate-200">
           <T k="common.confidence" /> {(analysis.confidence * 100).toFixed(0)}%
@@ -136,6 +151,22 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
           </Badge>
         ) : null}
       </div>
+
+      {llmThinkingSteps.length ? (
+        <section
+          className="panel p-3 sm:p-4 mb-4 border-teal-200 bg-teal-50/40"
+          data-testid="ai-llm-thinking"
+        >
+          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-teal-900">
+            <EnZh en="LLM thinking trail" zh="LLM 思考軌跡" />
+          </h2>
+          <ol className="mt-2 list-decimal pl-5 space-y-0.5 font-mono text-xs text-slate-800">
+            {llmThinkingSteps.slice(0, 12).map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
 
       <div className="mb-4">
         <AiChallengePanel challenge={challenge} />

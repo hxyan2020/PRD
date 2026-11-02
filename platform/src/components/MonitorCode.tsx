@@ -70,7 +70,8 @@ export function MonitorCode({
       <span
         role="tooltip"
         className={cn(
-          "pointer-events-none absolute left-0 top-full z-40 mt-1.5 w-72 max-w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-3 text-left shadow-lg",
+          "pointer-events-none absolute top-full z-40 mt-1.5 w-72 max-w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-3 text-left shadow-lg",
+          "hidden sm:block left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0",
           "opacity-0 translate-y-1 transition duration-150",
           "group-hover/m2:opacity-100 group-hover/m2:translate-y-0 group-hover/m2:pointer-events-auto",
           "group-focus-within/m2:opacity-100 group-focus-within/m2:translate-y-0 group-focus-within/m2:pointer-events-auto"

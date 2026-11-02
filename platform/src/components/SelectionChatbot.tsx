@@ -11,7 +11,13 @@ import { cn } from "@/lib/utils";
 
 type Fab = { x: number; y: number; text: string };
 
-type UiMsg = DeskChatMessage & { sources?: DeskChatSource[]; suggestions?: string[] };
+type UiMsg = DeskChatMessage & {
+  sources?: DeskChatSource[];
+  suggestions?: string[];
+  thinking_steps?: string[];
+  llm_used?: boolean;
+  llm_model?: string | null;
+};
 
 function inEditable(node: Node | null) {
   let el: HTMLElement | null = node instanceof HTMLElement ? node : node?.parentElement || null;
@@ -135,10 +141,24 @@ export function SelectionChatbot() {
           }),
         });
         if (res.ok) {
-          const data = (await res.json()) as { reply: string; sources?: DeskChatSource[]; suggestions?: string[] };
+          const data = (await res.json()) as {
+            reply: string;
+            sources?: DeskChatSource[];
+            suggestions?: string[];
+            thinking_steps?: string[];
+            llm?: { used?: boolean; model?: string | null; thinking_steps?: string[] };
+          };
           setMessages((prev) => [
             ...prev,
-            { role: "assistant", content: data.reply, sources: data.sources, suggestions: data.suggestions },
+            {
+              role: "assistant",
+              content: data.reply,
+              sources: data.sources,
+              suggestions: data.suggestions,
+              thinking_steps: data.thinking_steps || data.llm?.thinking_steps,
+              llm_used: Boolean(data.llm?.used),
+              llm_model: data.llm?.model ?? null,
+            },
           ]);
           setBusy(false);
           return;
@@ -239,6 +259,29 @@ export function SelectionChatbot() {
                   >
                     {m.content}
                   </div>
+                  {m.role === "assistant" && (m.llm_used || m.thinking_steps?.length) ? (
+                    <div
+                      className="mt-1.5 rounded-lg border border-teal-200 bg-teal-50/60 px-2.5 py-1.5 text-[11px]"
+                      data-testid="desk-chat-llm-thinking"
+                    >
+                      <div className="font-semibold text-teal-900">
+                        {m.llm_used
+                          ? zh
+                            ? `LLM 思考${m.llm_model ? ` · ${m.llm_model}` : ""}`
+                            : `LLM thinking${m.llm_model ? ` · ${m.llm_model}` : ""}`
+                          : zh
+                            ? "啟發式思考（未連 LLM）"
+                            : "Heuristic thinking (LLM off)"}
+                      </div>
+                      {m.thinking_steps?.length ? (
+                        <ol className="mt-1 list-decimal pl-4 space-y-0.5 font-mono text-slate-700">
+                          {m.thinking_steps.slice(0, 6).map((step) => (
+                            <li key={step}>{step}</li>
+                          ))}
+                        </ol>
+                      ) : null}
+                    </div>
+                  ) : null}
                   {m.sources?.length ? (
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {m.sources.map((s) =>

@@ -9,9 +9,9 @@ import {
   FileSearch,
   FileText,
   Filter,
+  FlaskConical,
   Gauge,
   GitBranch,
-  GitMerge,
   Globe2,
   LayoutDashboard,
   Library,
@@ -29,6 +29,7 @@ import {
   Shield,
   SlidersHorizontal,
   Sparkles,
+  Table2,
   UserCheck,
   Users,
   Waypoints,
@@ -54,58 +55,72 @@ export const NAV_GROUPS: Array<{ id: NavGroupId; en: string; "zh-Hant": string }
 ];
 
 /**
- * Left-pane order follows the desk workflow:
- * see the day → detect → understand → act → org → platform → docs.
+ * Left-pane monitor order (desk walkthrough):
+ * Full-flow demo → Risk Domains → Known indicators → Monitor 2.0 Open Alerts →
+ * Discovery → Aggregation → MI → AI RCA → Noise reduction → Closed Risk Log → Daily.
+ * L2→AI RCA stays nested under Full-flow demo (deep link /admin/l2-rca).
  */
 export const NAV_ITEMS = [
   { href: "/admin", label: "Admin Home", icon: LayoutDashboard, permission: "admin.access", group: "overview" },
 
-  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
-  { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/alerts", label: "Realtime Alert & Tracker", icon: Bell, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
+  {
+    href: "/admin/monitor-labs",
+    label: "Full-flow demo",
+    icon: FlaskConical,
+    permission: "monitor.read",
+    group: "monitor",
+  },
+  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
+  {
+    href: "/admin/monitor-2",
+    label: "Known indicator definitions",
+    icon: Activity,
+    permission: "monitor.read",
+    group: "monitor",
+  },
+  {
+    href: "/admin/alerts",
+    label: "Monitor 2.0 Open Alerts",
+    icon: Bell,
+    permission: "monitor.read",
+    group: "monitor",
+  },
   { href: "/admin/discovery", label: "Unknown Risk Discovery", icon: Compass, permission: "monitor.read", group: "monitor" },
   {
     href: "/admin/indicator-aggregation",
-    label: "Indicator Aggregation",
+    label: "Indicator Aggregation Flow",
     icon: Link2,
     permission: "monitor.read",
     group: "monitor",
   },
-  {
-    href: "/admin/l2-rca",
-    label: "L2 → AI RCA Lab",
-    icon: GitMerge,
-    permission: "monitor.read",
-    group: "monitor",
-  },
+  { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
   {
     href: "/admin/ai-incident",
-    label: "AI Incident Workspace",
+    label: "AI Root Cause Analysis",
     icon: FileSearch,
     permission: "monitor.read",
     group: "monitor",
   },
   {
     href: "/admin/noise-reduction",
-    label: "Noise Reduction Lab",
+    label: "Noise reduction flow",
     icon: Filter,
     permission: "monitor.read",
     group: "monitor",
   },
-  { href: "/admin/risk-log", label: "Risk Log Analytics", icon: ScrollText, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/risk-log", label: "Closed Risk Log", icon: ScrollText, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
 
   { href: "/admin/skills", label: "AI Skills", icon: Sparkles, permission: "skills.read", group: "ai" },
-  { href: "/admin/knowledge-tree", label: "Knowledge Tree", icon: Network, permission: "rag.read", group: "ai" },
   { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read", group: "ai" },
+  { href: "/admin/knowledge-tree", label: "Knowledge Tree", icon: Network, permission: "rag.read", group: "ai" },
   { href: "/admin/ai-admin", label: "AI Admin", icon: SlidersHorizontal, permission: "ai.admin", group: "ai" },
   { href: "/admin/ai-performance", label: "AI Performance", icon: Gauge, permission: "ai.read", group: "ai" },
 
-  { href: "/admin/messenger", label: "Demo Messenger", icon: MessagesSquare, permission: "lark.read", group: "response" },
+  { href: "/admin/messenger", label: "Ops Inbox (Demo)", icon: MessagesSquare, permission: "lark.read", group: "response" },
   { href: "/admin/interventions", label: "Human Intervention", icon: UserCheck, permission: "intervene.operate", group: "response" },
   { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read", group: "response" },
-  { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read", group: "response" },
+  { href: "/admin/lark", label: "Lark channels (config)", icon: MessageSquare, permission: "lark.read", group: "response" },
 
   /** Combined former Departments + Teams pages. */
   { href: "/admin/departments", label: "BU and Teams", icon: Building2, permission: "teams.read", group: "org" },
@@ -118,6 +133,8 @@ export const NAV_ITEMS = [
   { href: "/admin/security/ai-access", label: "AI Access Security", icon: Lock, permission: "audit.read", group: "platform" },
 
   { href: "/admin/docs/user-guide", label: "User Guide", icon: BookOpen, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/indicators-scenarios", label: "Indicators & Scenarios", icon: Waypoints, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/simulated-data", label: "Simulated Data / SQL", icon: Table2, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/urls", label: "URL Catalog", icon: ListTree, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/uat", label: "UAT Checklist", icon: ClipboardCheck, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/prd", label: "PRD", icon: FileText, permission: "admin.access", group: "docs" },

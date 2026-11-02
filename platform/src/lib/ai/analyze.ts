@@ -141,13 +141,13 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean; prefer_ra
       requires_human?: boolean;
     }>;
 
-    const summary = `Known issue matched skill ${skillMatch.skill.code} with certainty. Executing playbook steps (prototype/mock).`;
+    const summary = `HEURISTIC_SKILL_MATCH · ${skillMatch.skill.code} (rules engine — not a live LLM call). Playbook steps logged as EXECUTED_MOCK / AWAITING_HUMAN.`;
     const explanations = [
       {
         hypothesis: String(skillMatch.skill.description),
         likelihood: "HIGH",
         confidence: 1,
-        rationale: `Indicator ${indicator.monitor_id} + severity ${alert.severity} + observed ${alert.observed_value} satisfy all skill conditions.`,
+        rationale: `Indicator ${indicator.monitor_id} + severity ${alert.severity} + observed ${alert.observed_value} satisfy skill conditions. Source=HEURISTIC_SKILL_MATCH (no LLM unless enrich runs with a configured provider key).`,
       },
     ];
 
@@ -269,7 +269,7 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean; prefer_ra
 
   // Overall confidence = max explanation confidence, capped below 1.0 for RAG path
   const confidence = Math.min(0.92, Math.max(...explanations.map((e) => Number(e.confidence) || 0)));
-  const summary = `No certain skill match for ${indicator.monitor_id}. Generated ${explanations.length} plausible explanation(s) from RAG + external macro evidence. Human review required (confidence ${confidence.toFixed(2)} < 1.00).`;
+  const summary = `HEURISTIC_RAG · no skill match for ${indicator.monitor_id}. ${explanations.length} explanation(s) from local RAG corpus + macro table (not a live LLM call unless enrich runs with a provider key). Human review required (confidence ${confidence.toFixed(2)}).`;
 
   const humanSkill = db
     .prepare(`SELECT id FROM ai_skills WHERE code = 'SKILL-GENERIC-HUMAN-REVIEW'`)

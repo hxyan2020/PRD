@@ -64,6 +64,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  if (action === "close_desk_alert") {
+    const { closeDeskAlertForReal } = await import("@/lib/ai/risk-log");
+    const outcomeRaw = String(body.outcome || "PREVENTED").toUpperCase();
+    const outcome =
+      outcomeRaw === "LOSS" ||
+      outcomeRaw === "NEAR_MISS" ||
+      outcomeRaw === "FALSE_POSITIVE" ||
+      outcomeRaw === "PREVENTED"
+        ? (outcomeRaw as "PREVENTED" | "LOSS" | "NEAR_MISS" | "FALSE_POSITIVE")
+        : "PREVENTED";
+    const result = closeDeskAlertForReal({
+      alert_id: String(body.alert_id || ""),
+      actor: { id: user.id, name: user.name },
+      outcome,
+      estimated_loss_usd: body.estimated_loss_usd != null ? Number(body.estimated_loss_usd) : 0,
+      prevented_loss_usd: body.prevented_loss_usd != null ? Number(body.prevented_loss_usd) : outcome === "PREVENTED" ? 150000 : 0,
+      exposure_usd: body.exposure_usd != null ? Number(body.exposure_usd) : undefined,
+      loophole_tag: body.loophole_tag ? String(body.loophole_tag) : undefined,
+      notes: body.notes ? String(body.notes) : undefined,
+      department: body.department ? String(body.department) : undefined,
+    });
+    writeAudit(user, "CLOSE_TICKET", "monitor_alert", result.alert_id, {
+      ...result,
+      real_e2e_close: true,
+    });
+    return NextResponse.json({ ok: true, close: result });
+  }
+
   if (action === "toggle_pause") {
     const indicatorId = Number(body.indicator_id);
     const paused = body.paused ? 1 : 0;
@@ -96,6 +124,14 @@ export async function POST(req: Request) {
     });
     writeAudit(user, "RUN_DETECTORS", "monitor", "all", { count: results.length });
 
+    const analysisIds = results
+      .map((r: { analysis_id?: number | null }) => r.analysis_id)
+      .filter((id: number | null | undefined): id is number => typeof id === "number" && id > 0);
+    const { enrichAnalysesWithLlm } = await import("@/lib/ai/llm-enrich");
+    const { getLlmStatus, llmEnrichmentEnabled, openaiKeyConfigured } = await import("@/lib/ai/openai-client");
+    const llm_runs = await enrichAnalysesWithLlm(analysisIds);
+    const llm = getLlmStatus();
+
     let discovery: Record<string, unknown> | null = null;
     const autoDiscovery =
       (
@@ -105,16 +141,33 @@ export async function POST(req: Request) {
       )?.value !== "false";
     if (autoDiscovery) {
       const { runDiscoveryParallel } = await import("@/lib/ai/discovery");
-      discovery = runDiscoveryParallel({ actor: user.name, trigger: "PARALLEL_DETECTORS" });
+      discovery = await runDiscoveryParallel({
+        actor: user.name,
+        trigger: "PARALLEL_DETECTORS",
+        llm: true,
+      });
     }
 
-    return NextResponse.json({ ok: true, results, discovery });
+    return NextResponse.json({
+      ok: true,
+      results,
+      discovery,
+      llm_runs,
+      llm_available: openaiKeyConfigured(),
+      llm_enabled: llmEnrichmentEnabled(),
+      llm_provider: llm.provider,
+      llm_model: llm.model,
+      llm_providers: llm.providers,
+    });
   }
 
   if (action === "run_discovery") {
     const { runDiscoveryParallel } = await import("@/lib/ai/discovery");
-    const discovery = runDiscoveryParallel({ actor: user.name, trigger: "MANUAL" });
+    const discovery = await runDiscoveryParallel({ actor: user.name, trigger: "MANUAL", llm: true });
     writeAudit(user, "RUN_DISCOVERY", "risk_discovery", String(discovery.scan_id), discovery);
+    if (discovery && "ok" in discovery && discovery.ok === false) {
+      return NextResponse.json({ ok: false, discovery }, { status: 503 });
+    }
     return NextResponse.json({ ok: true, discovery });
   }
 
@@ -162,7 +215,7 @@ export async function POST(req: Request) {
       pulled_alerts: 5,
       pushed_acks: 1,
     });
-    // Auto-trigger AI analysis for open alarms (idempotent unless force)
+    // Auto-trigger AI analysis for open alarms, then call live LLM when a key is set
     const auto =
       (
         getDb().prepare(`SELECT value FROM platform_settings WHERE key = 'ai.auto_on_alarm'`).get() as
@@ -170,16 +223,24 @@ export async function POST(req: Request) {
           | undefined
       )?.value !== "false";
     let aiCount = 0;
+    let llmEnriched = 0;
     if (auto) {
       const results = analyzeOpenAlerts({ force: false });
       aiCount = results.length;
+      const { enrichAnalysesWithLlm } = await import("@/lib/ai/llm-enrich");
+      const llmRuns = await enrichAnalysesWithLlm(
+        results.map((r) => r.analysis_db_id),
+        12
+      );
+      llmEnriched = llmRuns.filter((r) => r.enriched).length;
     }
     return NextResponse.json({
       ok: true,
-      message: `Prototype sync with Monitor 2.0 completed; AI analyses ensured for ${aiCount} open alarm(s)`,
+      message: `Prototype sync with Monitor 2.0 completed; AI analyses ensured for ${aiCount} open alarm(s); live LLM enriched ${llmEnriched}`,
       pulled_alerts: 5,
       pushed_acks: 1,
       ai_analyses: aiCount,
+      llm_enriched: llmEnriched,
     });
   }
 

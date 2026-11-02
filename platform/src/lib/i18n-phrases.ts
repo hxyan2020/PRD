@@ -569,6 +569,33 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Margin breach → Risk Desk": "保證金違規 → 風險台",
   "LP reject storm": "LP 拒單風暴",
   "Hot wallet float": "熱錢包浮額",
+  // Daily Performance metric tiles (metric_label / notes / units)
+  "Book P&L": "帳簿損益",
+  "Equity drawdown": "權益回撤",
+  "Hedge coverage": "對沖覆蓋",
+  "Accounts >90% margin": "保證金>90%帳戶數",
+  "Top copy provider share": "頭部跟單提供者佔比",
+  "XAUUSD247 net lots": "XAUUSD247 淨手數",
+  "Open CFD alerts": "未結 CFD 警報",
+  "Open crypto alerts": "未結加密警報",
+  "AI skill-match rate": "AI 技能匹配率",
+  "Pending interventions": "待處理干預",
+  "Liquidation backlog": "強平積壓",
+  "Withdrawal queue": "出金佇列",
+  "Spot volume": "現貨成交量",
+  "Exchange P&L": "交易所損益",
+  "Closed alerts (E2E)": "已結警報（端到端）",
+  "Prevented USD (E2E closes)": "防損美元（端到端關單）",
+  "Loss USD (E2E closes)": "損失美元（端到端關單）",
+  "Net risk USD (E2E closes)": "淨風險美元（端到端關單）",
+  "From real E2E closes only": "僅來自真實端到端關單",
+  "loss − prevented from real E2E closes": "損失 − 防損（真實端到端關單）",
+  "US session volatility": "美盤波動",
+  Live: "即時",
+  "Shared queue": "共用佇列",
+  count: "筆",
+  orders: "筆訂單",
+  lots: "手",
   "Copy concentration": "跟單集中度",
   "Feed stale quotes": "過期報價饋送",
   "Funding exception surge": "資金例外暴增",
@@ -1245,6 +1272,10 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Noise Reduction Lab": "降噪實驗室",
   "Bilingual Monitor 2.0 noise-reduction end-to-end lab: six scenarios (cross-BU L2, spike, dedup, benign, unknown, P0 bypass), knobs for threshold / persistence / L2 score / window, AI evidence + human feedback → backtest / shadow / approve — demo data only":
     "雙語 Monitor 2.0 降噪端到端實驗室：六場景（跨 BU L2、尖峰、去重、良性、未知、P0 旁路）、閾值／Persistence／L2 分數／視窗旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准 — 僅示範資料",
+  "Desk-12 noise methods covering — and not limited to — threshold optimisation, severity optimisation, and persistence, plus hysteresis, quality gates, flapping, rate-limits, SEQUENCE/AND, P0 bypass, shadow, batching, feedback, and backtest→shadow→approve. Lab knobs + bilingual demo data.":
+    "Desk-12 降噪方法必須涵蓋且不限於閾值優化、嚴重度優化、持續性；另含滯後帶、質量閘門、抖動抑制、限速、SEQUENCE／AND、P0 旁路、Shadow、批次合併、人工回饋、回測→Shadow→核准。含管線旋鈕與雙語示範資料。",
+  "Deep link into Monitor labs → Noise Reduction tab. Desk-12 methods cover threshold / severity / persistence and more; interactive lab knobs — demo data only":
+    "深連結進監控實驗室 → 降噪分頁。Desk-12 方法涵蓋閾值／嚴重度／持續性等；含互動實驗室旋鈕 — 僅示範資料",
   "Noise Reduction Lab (E2E demo)": "降噪實驗室（端到端演示）",
   "L2 → AI RCA Lab": "L2 → AI RCA 實驗室",
   "Bilingual Discovery → L1/L2 → AI RCA lab: known-incident reverse engineering, unknown-risk models, L1→L2 live aggregate (AND/OR/SEQUENCE), then natural handoff to AI Incident Workspace (INC-1028) — demo data only":
@@ -1274,6 +1305,71 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "GET 候選 · POST scan_now／connect_openai／disconnect_openai／analyse／review（核准驗證｜要求更多資訊｜駁回｜核准納入監控）",
   "Unknown-risk discovery candidates, scans, and RO review actions":
     "未知風險探索候選、掃描與 RO 審查動作",
+
+  // Forex CFD pack INC-1028 — Open Alerts / Risk Log / Messenger titles & messages
+  "INC-1028 · LP Quote Delay & Final Quote Staleness (XAUUSD)":
+    "INC-1028 · LP 報價延遲與最終報價陳舊（XAUUSD）",
+  "LP-A XAUUSD quote age peaked at 4.8s; broker final quote freeze 7.2s. Evidence supports an upstream LP feed anomaly; fallback takeover and client/order impact remain unverified.":
+    "LP-A 的 XAUUSD 報價年齡峰值 4.8 秒；券商最終報價凍結 7.2 秒。證據支持上游 LP 行情異常；備援接管與客戶／訂單影響尚未核實。",
+  "INC-1028 · LP-A XAUUSD quote delay": "INC-1028 · LP-A XAUUSD 報價延遲",
+  "LP reject storm → hedge coverage gap": "LP 拒絕風暴 → 對沖覆蓋缺口",
+  "LP-HEDGE-GAP: hedge coverage slipped while LP rejects rise on the XAUUSD book (companion to INC-1028).":
+    "LP-HEDGE-GAP：對沖覆蓋下滑，同時 LP 拒單在 XAUUSD 帳簿上升（INC-1028 伴隨案例）。",
+  "XAUUSD247 weekend exposure build-up": "XAUUSD247 週末曝險累積",
+  "XAU-WEEKEND: weekend metals exposure climbing on XAUUSD247 (same CFD book as INC-1028).":
+    "XAU-WEEKEND：XAUUSD247 週末金屬曝險上升（與 INC-1028 同一 CFD 帳簿）。",
+  "Stale feed → liquidation / credit contagion": "陳舊行情 → 強平／信用傳染",
+  "STALE-FEED-LIQ: stale feed contagion path closed after symbol halt + margin review (book shared with INC-1028).":
+    "STALE-FEED-LIQ：商品熔斷＋保證金覆核後陳舊行情傳染路徑已結案（與 INC-1028 共用帳簿）。",
+  "DUMMY · INC-1028 LP reject / quote delay": "虛擬 · INC-1028 LP 拒單／報價延遲",
+  "DUMMY · INC-1028 stale quotes": "虛擬 · INC-1028 過期報價",
+  "DUMMY · INC-1028 hedge coverage gap": "虛擬 · INC-1028 對沖覆蓋缺口",
+  "Home dummy: LP-A XAUUSD reject rate / quote age rising — same book as INC-1028. Walk DETECT→Messenger→close.":
+    "首頁虛擬：LP-A XAUUSD 拒單率／報價年齡上升 — 與 INC-1028 同一帳簿。走完 DETECT→Messenger→結案。",
+  "Home dummy: stale-quote symbols climbing on the XAUUSD book (companion STALE-FEED-LIQ). RAG path + human review.":
+    "首頁虛擬：XAUUSD 帳簿過期報價商品上升（伴隨 STALE-FEED-LIQ）。RAG 路徑＋人工覆核。",
+  "Home dummy: hedge coverage slipped while LP rejects rise — companion CHAIN-LP-HEDGE-GAP on the same CFD book as INC-1028.":
+    "首頁虛擬：對沖覆蓋下滑且 LP 拒單上升 — 伴隨 CHAIN-LP-HEDGE-GAP，與 INC-1028 同一 CFD 帳簿。",
+  "quote delay + final quote staleness": "報價延遲＋最終報價陳舊",
+  "not closable by AI alone": "不可由 AI 單獨結案",
+  "Open the bilingual workspace for Static/Dynamic modes, E-01…E-08 evidence, and nested human feedback":
+    "開啟雙語工作台以使用靜態／動態模式、E-01…E-08 證據與巢狀人工回饋",
+  "Severity: confirm if accurate, or re-recommend P0–P3 with reason codes.":
+    "嚴重度：確認是否準確，或附原因代碼重推 P0–P3。",
+  "AI Incident Report": "AI 事故報告",
+  "Monitor 2.0 · Incident Response": "Monitor 2.0 · 事故應變",
+  "LP Quote Delay & Final Quote Staleness (XAUUSD)": "LP 報價延遲與最終報價陳舊（XAUUSD）",
+  "P2 Medium": "P2 中",
+  "Parent P2 Medium": "父級 P2 中",
+  "Severity: P2 Medium": "嚴重度：P2 中",
+
+  // URL catalog desk-flow copy (phrase on /admin/docs/urls)
+  "Control-plane overview: stats, dummy spine walk, desk-flow shortcuts (Monitor → Open Alerts → Labs → Aggregation → Discovery → Messenger → Skills → Risk Log) on shared forex pack INC-1028, expandable open-alert tracker; full L1→L2 / threshold demos live on their canonical pages":
+    "控制平面總覽：統計、虛擬脊柱演練、台面流程捷徑（監控 → 未結警報 → 實驗室 → 聚合 → 探索 → Messenger → 技能 → 風險日誌）共用外匯組合 INC-1028、可展開未結警報追蹤；完整 L1→L2／門檻演示在各自正式頁",
+  "Single left-nav hub for HTML labs (?tab=l2-rca|ai-incident|noise-reduction). Deep links /admin/l2-rca, /admin/ai-incident, /admin/noise-reduction still work — demo data only":
+    "左側導覽單一 HTML 實驗室中樞（?tab=l2-rca｜ai-incident｜noise-reduction）。深連結 /admin/l2-rca、/admin/ai-incident、/admin/noise-reduction 仍可用 — 僅示範資料",
+  "Deep link into Monitor labs → L2→AI RCA tab. Discovery → L1/L2 → AI RCA then handoff to INC-1028 — demo data only":
+    "深連結進監控實驗室 → L2→AI RCA 分頁。發現 → L1/L2 → AI RCA 後銜接 INC-1028 — 僅示範資料",
+  "Deep link into Monitor labs → AI Incident tab. INC-1028 LP-A XAUUSD demo — no production AI/Lark":
+    "深連結進監控實驗室 → AI 事故分頁。INC-1028 LP-A XAUUSD 演示 — 無正式 AI／Lark",
+  "Deep link into Monitor labs → Noise Reduction tab. Six scenarios + knobs — demo data only":
+    "深連結進監控實驗室 → 降噪分頁。六場景＋旋鈕 — 僅示範資料",
+  "Admin/Pricing/Dealing catalogue of Monitor 2.0 indicators + domain/skill/linked scenarios; canonical forex demo INC-1028 (LP-A · XAUUSD)":
+    "管理／定價／交易目錄：Monitor 2.0 指標＋領域／技能／連結情境；標準外匯示範 INC-1028（LP-A · XAUUSD）",
+  "Browse seeded SQLite tables/schemas and run read-only SQL (live: /api/sql; GitHub Pages: sql.js against vantage_risk.demo.db)":
+    "瀏覽種子 SQLite 資料表／結構，並執行唯讀 SQL（即時：/api/sql；GitHub Pages：sql.js 對 vantage_risk.demo.db）",
+  "Indicators & Risk Scenarios": "指標與風險情境",
+  "Simulated Data / SQL": "模擬資料／SQL",
+  "Monitor labs": "監控實驗室",
+  "Full-flow demo": "全流程demo",
+  "Known indicator definitions": "已知指標定義",
+  "Monitor 2.0 Open Alerts": "Monitor 2.0 未結警報",
+  "AI Root Cause Analysis": "AI根因分析",
+  "Noise reduction flow": "降噪流程",
+  "Shared forex use-case": "共用外匯用例",
+  "Forex CFD desk pack": "外匯 CFD 台面組合",
+  "Thinking steps": "思考步驟",
+  "Companion cases (same LP/XAU book)": "伴隨案例（同一 LP／XAU 帳簿）",
 };
 
 /** Longest-first English fragments rewritten inside mixed dummy / log strings. */
@@ -1281,8 +1377,14 @@ export const DUMMY_PHRASE_FRAGMENTS = [
   "Home dummy: top signal provider now at 33% of copy equity after a viral strategy share. Walk the full spine to closure.",
   "Home dummy: company CFD book drawdown rising through the US session after CPI volatility. RAG path + human review.",
   "Home dummy: book-wide margin utilisation spiked and LP rejects are rising. Dual-AI RCA and maker/checker required.",
+  "Home dummy: LP-A XAUUSD reject rate / quote age rising — same book as INC-1028. Walk DETECT→Messenger→close.",
+  "Home dummy: stale-quote symbols climbing on the XAUUSD book (companion STALE-FEED-LIQ). RAG path + human review.",
+  "Home dummy: hedge coverage slipped while LP rejects rise — companion CHAIN-LP-HEDGE-GAP on the same CFD book as INC-1028.",
   "Dummy home run — Risk Owner auto-approved after messenger maker/checker.",
   "Dummy home run: accepting the AI pack and walking maker/checker through to closure.",
+  "DUMMY · INC-1028 LP reject / quote delay",
+  "DUMMY · INC-1028 stale quotes",
+  "DUMMY · INC-1028 hedge coverage gap",
   "DUMMY · Copy concentration breach",
   "DUMMY · Equity drawdown warn",
   "DUMMY · Margin utilisation CRITICAL",
@@ -1294,6 +1396,15 @@ export const DUMMY_PHRASE_FRAGMENTS = [
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, P0–P3 severity re-recommend, controls",
   "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close; AI_REPORT Monitor 2.0 surfaces + accurate severity confirm / P0–P3 re-recommend + reason codes; controls",
+  "quote delay + final quote staleness",
+  "not closable by AI alone",
+  "Open the bilingual workspace for Static/Dynamic modes, E-01…E-08 evidence, and nested human feedback",
+  "Severity: confirm if accurate, or re-recommend P0–P3 with reason codes.",
+  "AI Incident Report",
+  "LP Quote Delay & Final Quote Staleness (XAUUSD)",
+  "Parent P2 Medium",
+  "Severity: P2 Medium",
+  "P2 Medium",
   "Home dummy",
   "home-dummy",
 ] as const;

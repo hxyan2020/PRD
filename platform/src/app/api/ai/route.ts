@@ -1,10 +1,43 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { getDb, writeAudit } from "@/lib/db";
 import { analyzeAlert, analyzeOpenAlerts, createAlarmAndAnalyze, getAnalysisBundle } from "@/lib/ai/analyze";
+import {
+  assertLiveLlmAvailableForAnalysis,
+  enrichAnalysesWithLlm,
+  maybeEnrichAnalysisWithLlm,
+  maybeEnrichChallengeWithLlm,
+} from "@/lib/ai/llm-enrich";
 import { backfillChallenges } from "@/lib/ai/challenger";
 import { runDummyAlertDemo } from "@/lib/ai/dummy-spine";
 import { getUiLocale } from "@/lib/i18n-server";
+import {
+  getLlmStatus,
+  llmEnrichmentEnabled,
+  openaiKeyConfigured,
+  persistLlmProviderSetting,
+  selectLlmProvider,
+} from "@/lib/ai/openai-client";
+
+function llmMeta() {
+  const status = getLlmStatus();
+  return {
+    llm_available: openaiKeyConfigured(),
+    llm_enabled: llmEnrichmentEnabled(),
+    llm_provider: status.provider,
+    llm_model: status.model,
+    llm_providers: status.providers,
+    llm_calls_real_ai: llmEnrichmentEnabled(),
+  };
+}
+
+function refuseIfLlmRequired() {
+  const gate = assertLiveLlmAvailableForAnalysis();
+  if (!gate.ok && (process.env.CRMP_AI_LLM || "").toLowerCase() === "require") {
+    return NextResponse.json({ error: gate.error, ...llmMeta() }, { status: gate.status });
+  }
+  return null;
+}
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
@@ -30,7 +63,7 @@ export async function GET(req: Request) {
        LIMIT 100`
     )
     .all();
-  return NextResponse.json({ analyses });
+  return NextResponse.json({ analyses, ...llmMeta() });
 }
 
 export async function POST(req: Request) {
@@ -40,7 +73,33 @@ export async function POST(req: Request) {
   }
   const body = await req.json();
 
+  if (body.action === "set_llm_provider") {
+    try {
+      const provider = selectLlmProvider(String(body.provider || ""));
+      persistLlmProviderSetting(provider, (key, value, description) => {
+        getDb()
+          .prepare(
+            `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+             ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`
+          )
+          .run(key, value, description);
+      });
+      writeAudit(user, "SET_LLM_PROVIDER", "platform_settings", "ai.llm.provider", {
+        provider,
+        model: getLlmStatus().model,
+      });
+      return NextResponse.json({ ok: true, ...llmMeta() });
+    } catch (e) {
+      return NextResponse.json(
+        { error: e instanceof Error ? e.message : "Failed to set LLM provider", ...llmMeta() },
+        { status: 400 }
+      );
+    }
+  }
+
   if (body.action === "analyze_alert") {
+    const blocked = refuseIfLlmRequired();
+    if (blocked) return blocked;
     const bundle = analyzeAlert(Number(body.alert_id), { force: !!body.force });
     if (!bundle) {
       return NextResponse.json(
@@ -48,22 +107,74 @@ export async function POST(req: Request) {
         { status: 409 }
       );
     }
-    return NextResponse.json({ ok: true, ...bundle });
+    const analysisRow = bundle.analysis as { id?: number } | null | undefined;
+    let llm: Awaited<ReturnType<typeof maybeEnrichAnalysisWithLlm>> = {
+      enriched: false,
+      source: "SKIPPED",
+    };
+    let challengeLlm: Awaited<ReturnType<typeof maybeEnrichChallengeWithLlm>> | null = null;
+    if (analysisRow?.id) {
+      // Always call live LLM for operator-triggered analyse (force refresh of AI trail).
+      llm = await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+      challengeLlm = await maybeEnrichChallengeWithLlm(Number(analysisRow.id));
+    }
+    const refreshed = analysisRow?.id ? getAnalysisBundle(Number(analysisRow.id)) : bundle;
+    return NextResponse.json({
+      ok: true,
+      ...refreshed,
+      llm,
+      challenge_llm: challengeLlm,
+      thinking_steps: [...(llm.thinking_steps || []), ...(challengeLlm?.thinking_steps || [])],
+      ...llmMeta(),
+    });
   }
 
   if (body.action === "analyze_open") {
+    const blocked = refuseIfLlmRequired();
+    if (blocked) return blocked;
     const results = analyzeOpenAlerts({ force: !!body.force });
-    const created = results.filter((r) => r.created).length;
+    const created = results.filter((r) => r.created);
+    // Enrich every open analysis that still lacks a live LLM trail (not only newly created).
+    const llmRuns = await enrichAnalysesWithLlm(
+      results.map((r) => r.analysis_db_id),
+      12,
+      { force: !!body.force }
+    );
     return NextResponse.json({
       ok: true,
       count: results.length,
-      created,
-      reused: results.length - created,
+      created: created.length,
+      reused: results.length - created.length,
       results,
+      llm_runs: llmRuns,
+      llm_enriched: llmRuns.filter((r) => r.enriched).length,
+      ...llmMeta(),
+    });
+  }
+
+  if (body.action === "enrich_llm") {
+    const blocked = refuseIfLlmRequired();
+    if (blocked) return blocked;
+    const ids = Array.isArray(body.analysis_ids)
+      ? body.analysis_ids.map((x: unknown) => Number(x)).filter(Boolean)
+      : body.analysis_id
+        ? [Number(body.analysis_id)]
+        : [];
+    if (!ids.length) {
+      return NextResponse.json({ error: "analysis_id or analysis_ids required" }, { status: 400 });
+    }
+    const llm_runs = await enrichAnalysesWithLlm(ids, 12, { force: true });
+    return NextResponse.json({
+      ok: true,
+      llm_runs,
+      llm_enriched: llm_runs.filter((r) => r.enriched).length,
+      ...llmMeta(),
     });
   }
 
   if (body.action === "simulate_alarm") {
+    const blocked = refuseIfLlmRequired();
+    if (blocked) return blocked;
     try {
       const bundle = createAlarmAndAnalyze({
         monitor_id: body.monitor_id,
@@ -73,35 +184,74 @@ export async function POST(req: Request) {
         observed_value: Number(body.observed_value ?? 0),
         prefer_rag: !!body.prefer_rag,
       });
+      const analysisRow = bundle.analysis as
+        | {
+            id?: number;
+            analysis_id?: string;
+            mode?: string;
+            confidence?: number;
+            status?: string;
+            needs_human?: number;
+          }
+        | null
+        | undefined;
+      let llmSim: Awaited<ReturnType<typeof maybeEnrichAnalysisWithLlm>> | null = null;
+      let challengeLlmSim: Awaited<ReturnType<typeof maybeEnrichChallengeWithLlm>> | null = null;
+      if (analysisRow?.id) {
+        llmSim = await maybeEnrichAnalysisWithLlm(Number(analysisRow.id));
+        challengeLlmSim = await maybeEnrichChallengeWithLlm(Number(analysisRow.id));
+      }
+      const refreshed = analysisRow?.id
+        ? getAnalysisBundle(Number(analysisRow.id))
+        : bundle;
+      const analysis = (refreshed.analysis || analysisRow) as
+        | {
+            id?: number;
+            analysis_id?: string;
+            mode?: string;
+            confidence?: number;
+            status?: string;
+            needs_human?: number;
+          }
+        | null
+        | undefined;
+      const challenge = refreshed.challenge as { challenge_id?: string; verdict?: string } | null;
+      const improvement = refreshed.improvement as {
+        review_id?: string;
+        status?: string;
+        items?: unknown[];
+      } | null;
       // Keep simulate responses light so the UI stays responsive after improvement packs.
       return NextResponse.json({
         ok: true,
         monitor_alert_id: bundle.monitor_alert_id,
-        analysis: bundle.analysis
+        analysis: analysis
           ? {
-              id: bundle.analysis.id,
-              analysis_id: bundle.analysis.analysis_id,
-              mode: bundle.analysis.mode,
-              confidence: bundle.analysis.confidence,
-              status: bundle.analysis.status,
-              needs_human: bundle.analysis.needs_human,
+              id: analysis.id,
+              analysis_id: analysis.analysis_id,
+              mode: analysis.mode,
+              confidence: analysis.confidence,
+              status: analysis.status,
+              needs_human: analysis.needs_human,
             }
           : null,
-        challenge: bundle.challenge
+        challenge: challenge
           ? {
-              challenge_id: bundle.challenge.challenge_id,
-              verdict: bundle.challenge.verdict,
+              challenge_id: challenge.challenge_id,
+              verdict: challenge.verdict,
             }
           : null,
-        improvement: bundle.improvement
+        improvement: improvement
           ? {
-              review_id: bundle.improvement.review_id,
-              status: bundle.improvement.status,
-              item_count: Array.isArray(bundle.improvement.items)
-                ? bundle.improvement.items.length
-                : 0,
+              review_id: improvement.review_id,
+              status: improvement.status,
+              item_count: Array.isArray(improvement.items) ? improvement.items.length : 0,
             }
           : null,
+        llm: llmSim,
+        challenge_llm: challengeLlmSim,
+        thinking_steps: [...(llmSim?.thinking_steps || []), ...(challengeLlmSim?.thinking_steps || [])],
+        ...llmMeta(),
       });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "simulate_alarm failed";
@@ -113,7 +263,7 @@ export async function POST(req: Request) {
   if (body.action === "dummy_spine") {
     try {
       const locale = await getUiLocale();
-      const result = runDummyAlertDemo({
+      const result = await runDummyAlertDemo({
         mode: body.mode === "group" ? "group" : "single",
         locale,
       });
@@ -122,6 +272,7 @@ export async function POST(req: Request) {
         mode: result.mode,
         highlight_stages: result.highlight_stages,
         errors: result.errors,
+        ...llmMeta(),
         runs: result.runs.map((r) => ({
           key: r.key,
           alert_id: r.alert_id,

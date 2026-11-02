@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { EnZh } from "@/components/EnZh";
 import { MonitorCode } from "@/components/MonitorCode";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
@@ -30,9 +31,17 @@ type Analysis = {
 export function AiAnalysesBoard({
   analyses,
   canOperate,
+  llmAvailable = false,
+  llmEnabled = false,
+  llmProvider = null,
+  llmModel = null,
 }: {
   analyses: Analysis[];
   canOperate: boolean;
+  llmAvailable?: boolean;
+  llmEnabled?: boolean;
+  llmProvider?: string | null;
+  llmModel?: string | null;
 }) {
   const router = useRouter();
   const { t } = useT();
@@ -55,16 +64,22 @@ export function AiAnalysesBoard({
     }
     const detailId = data.analysis?.id;
     const pct = Math.round((data.analysis?.confidence || 0) * 100);
+    const llmBit =
+      data.llm?.source || data.llm_enabled === false
+        ? ` · LLM ${String(data.llm?.source || (data.llm_enabled ? "ready" : "off"))}`
+        : data.llm_runs
+          ? ` · LLM runs ${Array.isArray(data.llm_runs) ? data.llm_runs.length : ""}`
+          : "";
     setMsg(
       action === "analyze_open"
-        ? t("ai.ensured", { n: data.count })
+        ? `${t("ai.ensured", { n: data.count })}${llmBit}`
         : action === "simulate_alarm"
           ? `${t("ai.alarmRaised", { id: data.analysis?.analysis_id, mode: data.analysis?.mode, pct })}${
               data.challenge ? ` · ${t("ai.challenged", { verdict: data.challenge.verdict })}` : ""
-            }`
+            }${llmBit}`
           : action === "backfill_challenges"
             ? t("ai.backfilled", { n: data.count })
-            : t("ai.done")
+            : `${t("ai.done")}${llmBit}`
     );
     router.refresh();
     if (action === "simulate_alarm") {
@@ -83,6 +98,26 @@ export function AiAnalysesBoard({
 
   return (
     <div className="space-y-4">
+      <div
+        className={`panel p-3 text-sm ${
+          llmEnabled
+            ? "border-teal-200 bg-teal-50/70 text-teal-950"
+            : "border-amber-200 bg-amber-50/80 text-amber-950"
+        }`}
+        data-testid="ai-llm-status"
+      >
+        {llmEnabled ? (
+          <EnZh
+            en={`LLM enrichment ON (${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}) — analyze / simulate / detectors call ChatGPT, DeepSeek, Gemini, or Claude and store a thinking trail on each RCA.`}
+            zh={`LLM 強化已開啟（${llmProvider || "auto"}${llmModel ? ` / ${llmModel}` : ""}）— 分析／模擬／偵測器會呼叫 ChatGPT／DeepSeek／Gemini／Claude，並在每次 RCA 寫入思考軌跡。`}
+          />
+        ) : (
+          <EnZh
+            en={`LLM enrichment OFF (${llmAvailable ? "disabled by CRMP_AI_LLM" : "no ChatGPT/DeepSeek/Gemini/Claude key"}). Heuristic RCA still runs; set a server secret to call real AI.`}
+            zh={`LLM 強化關閉（${llmAvailable ? "被 CRMP_AI_LLM 停用" : "缺少 ChatGPT／DeepSeek／Gemini／Claude 金鑰"}）。啟發式 RCA 仍會執行；請在伺服器設定密鑰以呼叫真實 AI。`}
+          />
+        )}
+      </div>
       {canOperate && (
         <div className="panel p-4" data-testid="ai-pipeline-controls">
           <h3 className="font-semibold">{t("ai.pipeline")}</h3>

@@ -51,7 +51,9 @@ assert.match(lib, /applyL2Severity|computeL2Severity/);
 assert.match(lib, /l2_severity_calc/);
 
 const homePage = read("src/app/admin/page.tsx");
-assert.match(homePage, /HomeL1L2AggregationDemo/);
+// Full L1→L2 demo lives on /admin/indicator-aggregation; home keeps the desk-flow strip.
+assert.match(homePage, /HomeDeskFlowStrip/);
+assert.doesNotMatch(homePage, /HomeL1L2AggregationDemo/);
 
 const api = read("src/app/api/indicator-aggregation/route.ts");
 assert.match(api, /inject_related/);

@@ -33,16 +33,16 @@ assert.match(board, /discovery-l2-rca-lab/);
 assert.match(board, /monitor2-discovery-l2-rca\.html/);
 assert.match(board, /discovery-l2-rca-iframe/);
 assert.match(board, /embed:\s*[\"']1[\"']/);
-assert.match(board, /\/admin\/ai-incident/);
+assert.match(board, /workspace_path|FOREX_INCIDENT_1028/);
 
 const agg = read("src/components/IndicatorAggregationBoard.tsx");
 assert.match(agg, /indicator-agg-open-ai-rca/);
-assert.match(agg, /\/admin\/ai-incident/);
-assert.match(agg, /\/admin\/l2-rca/);
+assert.match(agg, /workspace_path|\/admin\/ai-incident|FOREX_INCIDENT_1028/);
+assert.match(agg, /l2_labs_path|\/admin\/l2-rca|monitor-labs/);
 
 const nav = read("src/lib/nav.ts");
-assert.match(nav, /\/admin\/l2-rca/);
-assert.match(nav, /GitMerge/);
+assert.match(nav, /\/admin\/monitor-labs/);
+assert.doesNotMatch(nav, /href: \"\/admin\/l2-rca\"/);
 
 const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /\/admin\/l2-rca/);
@@ -51,7 +51,9 @@ assert.match(i18n, /"l2-rca"/);
 
 const links = read("src/lib/monitor-deep-links.ts");
 assert.match(links, /l2_rca/);
-assert.match(links, /\/admin\/l2-rca/);
+assert.match(links, /l2_labs_path|FOREX_INCIDENT_1028/);
+const pack = read("src/lib/demo/forex-incident-1028.ts");
+assert.match(pack, /l2_labs_path:.*l2-rca/);
 
 const urls = read("src/lib/docs/urls.ts");
 assert.match(urls, /\/admin\/l2-rca/);

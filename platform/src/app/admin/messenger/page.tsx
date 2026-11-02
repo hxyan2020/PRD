@@ -3,6 +3,7 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { listMessengerInbox, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
 import { DemoMessenger } from "@/components/DemoMessenger";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { ForexDeskPackLinks } from "@/components/ForexDeskPackLinks";
 import Link from "next/link";
 import { ActionLabel } from "@/components/ActionLabel";
 import { T } from "@/components/T";
@@ -62,6 +63,9 @@ export default async function MessengerDemoPage() {
             {PUBLIC_MESSENGER_URL}
           </a>
         </p>
+        <div className="mb-3">
+          <ForexDeskPackLinks mode="compact" />
+        </div>
       </div>
       <div className="flex-1 min-h-0">
         <DemoMessenger

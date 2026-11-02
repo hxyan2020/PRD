@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { DiscoverySuggestionBoard } from "@/components/DiscoverySuggestionBoard";
+import { SimSpinePackStrip } from "@/components/SimSpinePackStrip";
 import { EnZh } from "@/components/EnZh";
 import {
   discoveryPendingCount,
@@ -12,6 +13,7 @@ import {
 import { getDiscoveryAiStatus } from "@/lib/ai/discovery-analyse";
 import { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";
 import { getDb } from "@/lib/db";
+import { loadForexPackLiveSpine } from "@/lib/demo/forex-pack-live";
 
 export default async function DiscoveryPage() {
   const user = await getCurrentUser();
@@ -27,7 +29,9 @@ export default async function DiscoveryPage() {
   }
 
   seedDiscoveryIfEmpty();
-  const settings = getDb()
+  const db = getDb();
+  const liveSpine = loadForexPackLiveSpine(db);
+  const settings = db
     .prepare(`SELECT key, value FROM platform_settings WHERE key LIKE 'discovery.%'`)
     .all() as Array<{ key: string; value: string }>;
 
@@ -68,6 +72,14 @@ export default async function DiscoveryPage() {
           </>
         }
       />
+      <div className="mb-3">
+        <SimSpinePackStrip
+          monitors={liveSpine.monitors}
+          spine={liveSpine}
+          context="compact"
+          showDeskLinks={false}
+        />
+      </div>
       <DiscoverySuggestionBoard
         initial={{
           candidates: listDiscoveryCandidates(undefined, 100) as React.ComponentProps<

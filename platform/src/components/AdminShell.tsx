@@ -33,6 +33,13 @@ function navKey(href: string, pathname: string) {
       pathname.startsWith("/admin/ai-analyses")
     );
   }
+  if (href === "/admin/monitor-labs") {
+    // Full-flow demo hub + nested L2→AI RCA; AI RCA / noise have their own nav rows.
+    return pathname.startsWith("/admin/monitor-labs") || pathname.startsWith("/admin/l2-rca");
+  }
+  if (href === "/admin/departments") {
+    return pathname.startsWith("/admin/departments") || pathname.startsWith("/admin/teams");
+  }
   return pathname === href || pathname.startsWith(`${href}/`) || pathname.startsWith(href);
 }
 
@@ -205,12 +212,7 @@ export function AdminShell({
                 {locale === "zh-Hant" ? group["zh-Hant"] : group.en}
               </div>
               {items.map((item) => {
-                const active =
-                  item.href === "/admin/alerts"
-                    ? pathname.startsWith("/admin/alerts") || pathname.startsWith("/admin/ai-analyses")
-                    : item.href === "/admin/departments"
-                      ? pathname.startsWith("/admin/departments") || pathname.startsWith("/admin/teams")
-                      : pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+                const active = navKey(item.href, pathname);
                 const Icon = item.icon;
                 const effective = (totals[item.href] || 0) + (extra[item.href] || 0);
                 const viewed = seen[item.href] ?? 0;
