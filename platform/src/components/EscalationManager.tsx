@@ -12,6 +12,7 @@ import {
   parseCoefficients,
   type EscalationCoefficients,
 } from "@/lib/escalation/match";
+import { pagesReadOnlyHint, postDeskJson, readResponseJson } from "@/lib/fetch-json";
 
 type Route = {
   id: number;
@@ -129,24 +130,30 @@ export function EscalationManager({
   const [weightPack, setWeightPack] = useState<MonthlySuggestion | null>(monthlySuggestion);
   const [weightBusy, setWeightBusy] = useState(false);
 
+  async function escPost(body: Record<string, unknown>) {
+    const parsed = await postDeskJson<Record<string, unknown>>("/api/escalation", body);
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      throw new Error(pagesReadOnlyHint(zh));
+    }
+    if (!parsed.ok) throw new Error(String(parsed.data.error || "Request failed"));
+    return parsed.data;
+  }
+
   async function applyWeightPack() {
     if (!canManage || !weightPack) return;
     setWeightBusy(true);
     setMsg(null);
     try {
-      const res = await fetch("/api/escalation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "apply_severity_weights", month: weightPack.month_key }),
+      const data = await escPost({
+        action: "apply_severity_weights",
+        month: weightPack.month_key,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Apply failed");
-      setWeightPack(data.suggestion);
+      setWeightPack(data.suggestion as MonthlySuggestion);
       setMsg(zh ? "已套用本月嚴重度因子權重至 ESC-DEFAULT" : "Applied monthly severity factor weights to ESC-DEFAULT");
       router.refresh();
     } catch (e) {
       const raw = e instanceof Error ? e.message : String(e);
-      setMsg(phrase(raw, zh ? "zh-Hant" : "en") || raw);
+      setMsg(phrase(raw) || raw);
     } finally {
       setWeightBusy(false);
     }
@@ -169,40 +176,45 @@ export function EscalationManager({
       setMsg(zh ? "不可停用預設路徑 ESC-DEFAULT" : "Cannot disable ESC-DEFAULT");
       return;
     }
-    const res = await fetch("/api/escalation", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "toggle", id: r.id, enabled: !r.enabled }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      setMsg(data.error || t("common.failed"));
-      return;
+    try {
+      await escPost({ action: "toggle", id: r.id, enabled: !r.enabled });
+      router.refresh();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : t("common.failed"));
     }
-    router.refresh();
   }
 
   async function probeMatch() {
-    const res = await fetch(
-      `/api/escalation?match=1&domain=${encodeURIComponent(probe.domain)}&severity=${encodeURIComponent(probe.severity)}`
-    );
-    const data = await res.json();
-    if (!res.ok || !data.matched) {
-      setProbe((p) => ({ ...p, result: zh ? "比對失敗" : "Match failed" }));
-      return;
+    try {
+      const res = await fetch(
+        `/api/escalation?match=1&domain=${encodeURIComponent(probe.domain)}&severity=${encodeURIComponent(probe.severity)}`
+      );
+      const parsed = await readResponseJson<Record<string, unknown>>(res);
+      if (parsed.apiUnavailable || parsed.nonJson || !parsed.ok || !parsed.data.matched) {
+        setProbe((p) => ({
+          ...p,
+          result: parsed.apiUnavailable || parsed.nonJson ? pagesReadOnlyHint(zh) : zh ? "比對失敗" : "Match failed",
+        }));
+        return;
+      }
+      const m = parsed.data.matched as {
+        route_code: string;
+        match_kind: string;
+        sla_minutes: number;
+        primary_team: string;
+      };
+      setProbe((p) => ({
+        ...p,
+        result: `${m.route_code} · ${m.match_kind} · SLA ${m.sla_minutes}m → ${m.primary_team}`,
+      }));
+    } catch {
+      setProbe((p) => ({ ...p, result: pagesReadOnlyHint(zh) }));
     }
-    const m = data.matched;
-    setProbe((p) => ({
-      ...p,
-      result: `${m.route_code} · ${m.match_kind} · SLA ${m.sla_minutes}m → ${m.primary_team}`,
-    }));
   }
 
   async function create() {
-    const res = await fetch("/api/escalation", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      const data = await escPost({
         name: form.name || form.route_code || `${form.severity}-${form.domain_code}`,
         domain_code: form.domain_code,
         severity: form.severity,
@@ -221,15 +233,12 @@ export function EscalationManager({
           : null,
         requires_human: form.requires_human,
         coefficients: formCoeffs,
-      }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("common.failed"));
-      return;
+      });
+      setMsg(t("esc.created", { id: String(data.id ?? "—") }));
+      router.refresh();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : t("common.failed"));
     }
-    setMsg(t("esc.created", { id: data.id }));
-    router.refresh();
   }
 
   function openEdit(r: Route) {
@@ -244,10 +253,8 @@ export function EscalationManager({
   }
 
   async function saveEdit(r: Route) {
-    const res = await fetch("/api/escalation", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      await escPost({
         action: "update",
         id: r.id,
         coefficients: coeffs,
@@ -260,16 +267,13 @@ export function EscalationManager({
           .map((x) => x.trim())
           .filter(Boolean),
         requires_human: editMeta.requires_human,
-      }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("common.failed"));
-      return;
+      });
+      setEditId(null);
+      setMsg(zh ? "已儲存維度與係數" : "Dimensions & coefficients saved");
+      router.refresh();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : t("common.failed"));
     }
-    setEditId(null);
-    setMsg(zh ? "已儲存維度與係數" : "Dimensions & coefficients saved");
-    router.refresh();
   }
 
   return (

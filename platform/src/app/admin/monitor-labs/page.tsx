@@ -27,7 +27,9 @@ export default async function MonitorLabsPage({
   const sp = await readSearchParams(searchParams);
   const raw = sp.tab;
   const initialTab: MonitorLabTab | undefined =
-    raw === "ai-incident" || raw === "noise-reduction" || raw === "l2-rca" ? raw : undefined;
+    raw === "ai-incident" || raw === "noise-reduction" || raw === "l2-rca" || raw === "full-flow"
+      ? raw
+      : undefined;
   const liveSpine = loadForexPackLiveSpine(getDb());
 
   return (

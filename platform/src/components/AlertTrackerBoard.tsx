@@ -10,6 +10,7 @@ import { MonitorCode } from "@/components/MonitorCode";
 import { AlertTrackerFilters } from "@/components/AlertTrackerFilters";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { postDeskJson } from "@/lib/fetch-json";
 import { useT } from "@/hooks/useUiLocale";
 import { cn } from "@/lib/utils";
 import {
@@ -360,11 +361,11 @@ export function AlertTrackerCard({
   async function ack(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    await fetch("/api/monitor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "ack_alert", alert_id: pack.id }),
+    const parsed = await postDeskJson("/api/monitor", {
+      action: "ack_alert",
+      alert_id: pack.id,
     });
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) return;
     router.refresh();
   }
 
@@ -584,19 +585,13 @@ export function AlertTrackerBoard({
     setBusy(true);
     setMsg(t("ai.working"));
     try {
-      const res = await fetch("/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, ...body }),
-      });
-      let data: Record<string, unknown> = {};
-      try {
-        data = (await res.json()) as Record<string, unknown>;
-      } catch {
-        setMsg(t("ai.badResponse", { status: res.status }));
+      const parsed = await postDeskJson<Record<string, unknown>>("/api/ai", { action, ...body });
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        setMsg(t("ai.badResponse", { status: parsed.status || 405 }));
         return;
       }
-      if (!res.ok) {
+      const data = parsed.data;
+      if (!parsed.ok) {
         setMsg(String(data.error || t("common.failed")));
         return;
       }
@@ -690,7 +685,7 @@ export function AlertTrackerBoard({
           <div className="mt-3 action-row">
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-primary w-full sm:w-auto !min-h-11 sm:!min-h-9 justify-center"
               data-testid="ai-btn-analyze-open"
               disabled={busy}
               onClick={() => run("analyze_open")}
@@ -699,7 +694,7 @@ export function AlertTrackerBoard({
             </button>
             <button
               type="button"
-              className="btn"
+              className="btn w-full sm:w-auto !min-h-11 sm:!min-h-9 justify-center"
               data-testid="ai-btn-backfill"
               disabled={busy}
               onClick={() => run("backfill_challenges")}

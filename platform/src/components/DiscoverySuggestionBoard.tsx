@@ -10,6 +10,7 @@ import { bumpNavBadge } from "@/lib/nav-badges";
 import { MonitorCode } from "@/components/MonitorCode";
 import { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";
 import { LlmProviderPicker } from "@/components/LlmProviderPicker";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 type DiscoverySuggestion = {
   assessment: string;
@@ -213,6 +214,7 @@ export function DiscoverySuggestionBoard({
 }) {
   const router = useRouter();
   const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [candidates, setCandidates] = useState(initial.candidates);
   const [pendingCount, setPendingCount] = useState(initial.pending_count);
   const [aiStatus, setAiStatus] = useState(initial.ai_status);
@@ -281,15 +283,13 @@ export function DiscoverySuggestionBoard({
     ["ALL", "All", "全部"],
   ] as const;
 
-  async function post(body: Record<string, unknown>) {
-    const res = await fetch("/api/discovery", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || "Request failed");
-    return data;
+  async function post(body: Record<string, unknown>): Promise<Record<string, any>> {
+    const parsed = await postDeskJson<Record<string, any>>("/api/discovery", body);
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      throw new Error(pagesReadOnlyHint(zh));
+    }
+    if (!parsed.ok) throw new Error(String(parsed.data.error || "Request failed"));
+    return parsed.data;
   }
 
   async function scanNow() {
@@ -315,10 +315,23 @@ export function DiscoverySuggestionBoard({
           thinking_steps: steps,
         });
       }
+      const llmTag = String(data.llm_detection || data.detail?.llm_detection || "");
+      const llmNote =
+        llmTag === "LIVE_LLM"
+          ? locale === "zh-Hant"
+            ? ` · 真實 AI 未知風險偵測（${data.llm_provider || data.detail?.llm_provider || "llm"}）`
+            : ` · real AI unknown-risk detection (${data.llm_provider || data.detail?.llm_provider || "llm"})`
+          : llmTag === "SKIPPED_NO_KEY"
+            ? locale === "zh-Hant"
+              ? " · 警告：無 LLM 金鑰 — 僅統計啟發式"
+              : " · warn: no LLM key — statistical heuristics only"
+            : llmTag
+              ? ` · llm=${llmTag}`
+              : "";
       setMsg(
         locale === "zh-Hant"
-          ? `掃描完成：新增 ${n} 個候選 · 來源 ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
-          : `Scan complete: ${n} new candidate(s) · source ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}`
+          ? `掃描完成：新增 ${n} 個候選 · 來源 ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}${llmNote}`
+          : `Scan complete: ${n} new candidate(s) · source ${data.data_source || "sqlite"} · seed ${data.scan_seed || "—"}${llmNote}`
       );
       if (n > 0) bumpNavBadge("/admin/discovery", n);
       router.refresh();
@@ -346,8 +359,8 @@ export function DiscoverySuggestionBoard({
       setMsg(
         live
           ? locale === "zh-Hant"
-            ? `已連線 ${label}（${data.status?.model || "live"}）— 分析才會呼叫 API`
-            : `Live ${label} (${data.status?.model || "live"}) — no call until Analyse`
+            ? `已連線 ${label}（${data.status?.model || "live"}）— 掃描與分析都會呼叫真實 AI`
+            : `Live ${label} (${data.status?.model || "live"}) — Scan + Analyse call real AI`
           : locale === "zh-Hant"
             ? "已切換 Mock — 不呼叫外部 API"
             : "Mock mode — no external AI calls"
@@ -494,12 +507,12 @@ export function DiscoverySuggestionBoard({
             </p>
             <p className="text-[var(--muted)] text-[13px] leading-relaxed">
               <EnZh
-                en="1 Scan on live SQLite seed (stat/ML process trail) → 2 Connect AI → 3 Analyse (fresh thinking each trigger) → 4 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
-                zh="① 以即時 SQLite 種子掃描（統計／ML 過程軌跡）→ ② 連線 AI → ③ 分析（每次觸發重新思考）→ ④ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
+                en="1 Scan live SQLite (stat/ML + real LLM unknown-risk scenarios/indicators when keys are set) → 2 Connect AI → 3 Analyse with LIVE LLM (no silent MOCK fallback) → 4 RO review. Approve never auto-deploys; monitoring promote needs maker≠checker."
+                zh="① 即時 SQLite 掃描（統計／ML＋有金鑰時以真實 LLM 偵測未知情境／指標）→ ② 連線 AI → ③ LIVE LLM 分析（禁止靜默回落 MOCK）→ ④ RO 審查。核准不會自動部署；納入監控需 Maker≠Checker。"
               />
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 items-center shrink-0">
+          <div className="flex w-full min-w-0 flex-wrap gap-2 items-center sm:w-auto">
             <Badge className={enabled ? "bg-emerald-100 text-emerald-900 border-emerald-200" : "bg-slate-100"}>
               {enabled ? <EnZh en="ENABLED" zh="已啟用" /> : <EnZh en="DISABLED" zh="已停用" />}
             </Badge>
@@ -510,7 +523,7 @@ export function DiscoverySuggestionBoard({
                 : "MOCK"}
             </Badge>
             <a
-              className="btn !min-h-9 text-xs"
+              className="btn !min-h-11 sm:!min-h-9 text-xs w-full sm:w-auto justify-center"
               href={RISK_DISCOVERY_NOTEBOOK.html}
               target="_blank"
               rel="noreferrer"
@@ -519,7 +532,7 @@ export function DiscoverySuggestionBoard({
               <EnZh en="Open notebook (HTML)" zh="開啟筆記本（HTML）" />
             </a>
             <Link
-              className="btn !min-h-9 text-xs"
+              className="btn !min-h-11 sm:!min-h-9 text-xs w-full sm:w-auto justify-center"
               href={locale === "zh-Hant" ? "/admin/docs/user-guide?lang=zh-Hant" : "/admin/docs/user-guide"}
             >
               <EnZh en="Methods & flow (docs)" zh="方法與流程（文件）" />

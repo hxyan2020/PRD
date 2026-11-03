@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DeptBadge, SeverityBadge, StatusBadge } from "@/components/ui";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 type Channel = {
   id: number;
@@ -27,6 +28,8 @@ export function LarkManager({
 }) {
   const router = useRouter();
   const { t, phrase } = useT();
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [msg, setMsg] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
@@ -39,44 +42,49 @@ export function LarkManager({
 
   async function testNotify(channelId: number, channelName: string) {
     setMsg(null);
-    const res = await fetch("/api/lark", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "test_notify",
-        channel_id: channelId,
-        message: t("lark.testMsg"),
-      }),
+    const parsed = await postDeskJson<{ error?: string; note?: string }>("/api/lark", {
+      action: "test_notify",
+      channel_id: channelId,
+      message: t("lark.testMsg"),
     });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("lark.notifyFailed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    setMsg(t("lark.logged", { name: channelName, note: data.note || t("lark.delivered") }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("lark.notifyFailed"));
+      return;
+    }
+    setMsg(t("lark.logged", { name: channelName, note: parsed.data.note || t("lark.delivered") }));
   }
 
   async function toggle(channel: Channel) {
-    await fetch("/api/lark", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "toggle_channel", channel_id: channel.id, enabled: !channel.enabled }),
+    const parsed = await postDeskJson("/api/lark", {
+      action: "toggle_channel",
+      channel_id: channel.id,
+      enabled: !channel.enabled,
     });
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
     router.refresh();
   }
 
   async function create() {
-    const res = await fetch("/api/lark", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "create_channel", ...form }),
+    const parsed = await postDeskJson<{ error?: string; id?: number }>("/api/lark", {
+      action: "create_channel",
+      ...form,
     });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("common.failed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    setMsg(t("lark.created", { id: data.id }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("common.failed"));
+      return;
+    }
+    setMsg(t("lark.created", { id: parsed.data.id ?? "—" }));
     router.refresh();
   }
 

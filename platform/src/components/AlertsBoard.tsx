@@ -6,6 +6,7 @@ import { SeverityBadge, StatusBadge, Badge } from "@/components/ui";
 import { MonitorCode } from "@/components/MonitorCode";
 import { cn } from "@/lib/utils";
 import { useT } from "@/hooks/useUiLocale";
+import { postDeskJson } from "@/lib/fetch-json";
 
 type Alert = {
   id: number;
@@ -40,11 +41,11 @@ export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperat
   }, []);
 
   async function ack(id: number) {
-    await fetch("/api/monitor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "ack_alert", alert_id: id }),
+    const parsed = await postDeskJson("/api/monitor", {
+      action: "ack_alert",
+      alert_id: id,
     });
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) return;
     router.refresh();
   }
 

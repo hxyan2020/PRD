@@ -11,7 +11,6 @@
     "lint": "next lint",
     "test:sql-explorer": "tsx scripts/verify-sql-explorer.ts",
     "test:simulation-spine": "tsx scripts/verify-simulation-spine.ts",
-
     "test:mermaid": "npx tsx scripts/verify-mermaid-edges.ts",
     "docs:indicators": "tsx scripts/gen-indicators-scenarios-doc.ts",
     "test:discovery": "tsx scripts/verify-discovery-admin.ts",
@@ -28,6 +27,8 @@
     "test:severity-formula-smoke": "tsx scripts/smoke-severity-formula.ts",
     "test:indicator-aggregation": "tsx scripts/verify-indicator-aggregation.ts",
     "test:indicator-aggregation-smoke": "tsx scripts/smoke-indicator-aggregation.ts",
+    "test:desk-button-json": "tsx scripts/verify-desk-button-json.ts",
+
     "test:threshold-flow": "tsx scripts/verify-threshold-flow.ts",
     "test:threshold-flow-smoke": "tsx scripts/smoke-threshold-flow.ts",
     "test:ai-incident": "tsx scripts/verify-ai-incident-workspace.ts",
@@ -59,6 +60,7 @@
     "@types/sql.js": "^1.4.11",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
+    "playwright": "^1.64.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.5",
     "typescript": "^5"

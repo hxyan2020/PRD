@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CandlestickChart, Coins } from "lucide-react";
 import { Badge, StatusBadge } from "@/components/ui";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 import { cn } from "@/lib/utils";
 
 type Metric = {
@@ -25,8 +26,9 @@ function MetricTile({
   metric: Metric;
   tone: "cfd" | "ex";
 }) {
-  const { t } = useT();
+  const { t, phrase } = useT();
   const cfd = tone === "cfd";
+  const unitLabel = metric.unit ? phrase(metric.unit) || metric.unit : null;
   return (
     <div
       className={cn(
@@ -37,16 +39,18 @@ function MetricTile({
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="text-xs uppercase tracking-wide text-[var(--muted)] leading-snug">{metric.metric_label}</div>
+        <div className="text-xs uppercase tracking-wide text-[var(--muted)] leading-snug">
+          {phrase(metric.metric_label) || metric.metric_label}
+        </div>
         <StatusBadge value={metric.status === "OK" ? "HEALTHY" : metric.status} />
       </div>
       <div className="mt-2 text-2xl font-semibold tabular-nums tracking-tight">
         {typeof metric.value === "number" ? metric.value.toLocaleString() : metric.value}
-        {metric.unit ? <span className="ml-1 text-sm font-normal text-[var(--muted)]">{metric.unit}</span> : null}
+        {unitLabel ? <span className="ml-1 text-sm font-normal text-[var(--muted)]">{unitLabel}</span> : null}
       </div>
       <div className="mt-1 text-xs text-[var(--muted)]">
         {metric.target != null ? `${t("dash.target", { n: `${metric.target}${metric.unit ?? ""}` })} · ` : ""}
-        {metric.notes ?? ""}
+        {metric.notes ? phrase(metric.notes) : ""}
       </div>
     </div>
   );
@@ -200,7 +204,7 @@ function Sphere({
         </div>
       </div>
 
-      <div className="relative mt-5 grid sm:grid-cols-2 gap-3">
+      <div className="relative mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
         {rows.map((m) => (
           <MetricTile key={m.metric_key} metric={m} tone={tone} />
         ))}
@@ -227,16 +231,25 @@ export function DailyDashboardView({
 }) {
   const router = useRouter();
   const { t } = useT();
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [msg, setMsg] = useState<string | null>(null);
 
   async function refresh() {
-    const res = await fetch("/api/dashboard", { method: "POST" });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("dash.refreshFailed"));
+    const parsed = await postDeskJson<{
+      error?: string;
+      date?: string;
+      metrics?: number;
+    }>("/api/dashboard", {});
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    setMsg(t("dash.refreshed", { date: data.date, n: data.metrics }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("dash.refreshFailed"));
+      return;
+    }
+    setMsg(t("dash.refreshed", { date: parsed.data.date || "—", n: parsed.data.metrics ?? 0 }));
     router.refresh();
   }
 

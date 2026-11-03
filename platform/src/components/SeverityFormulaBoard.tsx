@@ -14,6 +14,7 @@ import {
   type WeeklyFormulaSuggestion,
 } from "@/lib/severity-formula-shared";
 import { scoreSeverityFormula } from "@/lib/severity-formula-score";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 type FeedbackLite = {
   feedback_id: string;
@@ -59,14 +60,15 @@ export function SeverityFormulaBoard({
     setBusy(true);
     setMsg(null);
     try {
-      const res = await fetch("/api/escalation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "propose_severity_formula", week: pack.week_key }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Propose failed");
-      setPack(data.suggestion);
+      const parsed = await postDeskJson<{ error?: string; suggestion?: WeeklyFormulaSuggestion }>(
+        "/api/escalation",
+        { action: "propose_severity_formula", week: pack.week_key }
+      );
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        throw new Error(pagesReadOnlyHint(zh));
+      }
+      if (!parsed.ok) throw new Error(parsed.data.error || "Propose failed");
+      if (parsed.data.suggestion) setPack(parsed.data.suggestion);
       setMsg(zh ? "已提交每週公式變更申請，待風險負責人核准" : "Weekly formula CR submitted — awaiting Risk Owner approval");
       router.refresh();
     } catch (e) {
@@ -82,25 +84,23 @@ export function SeverityFormulaBoard({
     setBusy(true);
     setMsg(null);
     try {
-      const res = await fetch("/api/ai-admin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "decide",
-          id: pack.pending_cr_id,
-          decision,
-          note:
-            decision === "APPROVED"
-              ? zh
-                ? "RO 核准每週嚴重度公式"
-                : "RO approved weekly severity formula"
-              : zh
-                ? "RO 駁回每週嚴重度公式"
-                : "RO rejected weekly severity formula",
-        }),
+      const parsed = await postDeskJson<{ error?: string }>("/api/ai-admin", {
+        action: "decide",
+        id: pack.pending_cr_id,
+        decision,
+        note:
+          decision === "APPROVED"
+            ? zh
+              ? "RO 核准每週嚴重度公式"
+              : "RO approved weekly severity formula"
+            : zh
+              ? "RO 駁回每週嚴重度公式"
+              : "RO rejected weekly severity formula",
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Decide failed");
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        throw new Error(pagesReadOnlyHint(zh));
+      }
+      if (!parsed.ok) throw new Error(parsed.data.error || "Decide failed");
       setPack((prev) => ({
         ...prev,
         pending_status: decision,

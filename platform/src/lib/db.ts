@@ -23,7 +23,8 @@ import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
 import { DEPARTMENT_LIST, ROLE_CHARTERS } from "@/lib/org-catalog";
 
 const DATA_DIR = path.join(process.cwd(), "data");
-const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
+/** Prefer CRMP_DB_PATH so smoke/scripts never clobber the live desk DB while Next holds it open. */
+const DB_PATH = process.env.CRMP_DB_PATH?.trim() || path.join(DATA_DIR, "vantage_risk.db");
 
 declare global {
   var __vantageRiskDb: Database.Database | undefined;
@@ -1173,6 +1174,13 @@ function runEnsureAiLayer(db: Database.Database) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { ensureForexPackDeskSeed } = require("@/lib/demo/forex-pack-seed") as typeof import("@/lib/demo/forex-pack-seed");
   ensureForexPackDeskSeed(db);
+  // Canonical 12 desk scenarios (admin/pricing/dealing/perp) — open alerts only.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { ensureDesk12PackSeed, ensureDesk12Analyses } =
+    require("@/lib/demo/desk-12-seed") as typeof import("@/lib/demo/desk-12-seed");
+  ensureDesk12PackSeed(db);
+  // After skills upsert — attach honest heuristic RCA packs to desk-12 opens.
+  ensureDesk12Analyses(db);
   // Detector history + risk_log_daily + AIA/THR-INC-1028 + aggregation demos for SQL / modules.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { ensureForexPackSimulationSpine } =

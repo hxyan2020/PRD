@@ -32,6 +32,40 @@ assert.match(html, /報價/);
 
 const page = read("src/app/admin/noise-reduction/page.tsx");
 assert.match(page, /NoiseReductionLab/);
+assert.match(page, /Desk12NoiseMethods/);
+
+const deskMethods = read("src/components/Desk12NoiseMethods.tsx");
+assert.match(deskMethods, /desk-12-noise-methods/);
+assert.match(deskMethods, /noise-technique-catalogue/);
+assert.match(deskMethods, /noise-coverage-matrix/);
+assert.match(deskMethods, /noise-core-trio/);
+assert.match(deskMethods, /threshold optimisation/);
+assert.match(deskMethods, /severity optimisation/);
+assert.match(deskMethods, /persistence/);
+assert.match(deskMethods, /not limited to/);
+
+const deskPack = read("src/lib/demo/desk-12-pack.ts");
+for (const id of [
+  "threshold_optimisation",
+  "severity_optimisation",
+  "persistence",
+  "hysteresis",
+  "dedup",
+  "sequence",
+  "p0_bypass",
+  "shadow",
+  "batching",
+  "dynamic_multiplier",
+  "quality_gate",
+  "flapping_suppression",
+  "rate_limit",
+  "human_feedback_loop",
+  "backtest_shadow_approve",
+]) {
+  assert.match(deskPack, new RegExp(`id: "${id}"`), `catalogue missing ${id}`);
+}
+assert.match(deskPack, /noiseCatalogueCoversCoreTrio/);
+assert.match(deskPack, /core: true/);
 
 const board = read("src/components/NoiseReductionLab.tsx");
 assert.match(board, /noise-reduction-lab/);
@@ -39,6 +73,9 @@ assert.match(board, /monitor2-noise-reduction\.html/);
 assert.match(board, /noise-reduction-iframe/);
 assert.match(board, /embed=1/);
 assert.match(board, /zh-Hant/);
+assert.match(board, /threshold/);
+assert.match(board, /severity|Severity/);
+assert.match(board, /persistence/);
 
 const nav = read("src/lib/nav.ts");
 assert.match(nav, /\/admin\/monitor-labs/);
@@ -49,6 +86,10 @@ const i18n = read("src/lib/i18n.ts");
 assert.match(i18n, /\/admin\/noise-reduction/);
 assert.match(i18n, /降噪流程/);
 assert.match(i18n, /"noise-reduction"/);
+assert.match(i18n, /threshold optimisation/);
+assert.match(i18n, /severity optimisation/);
+assert.match(i18n, /persistence/);
+assert.match(i18n, /not limited to/);
 
 const links = read("src/lib/monitor-deep-links.ts");
 assert.match(links, /noise_reduction/);
@@ -58,7 +99,9 @@ assert.match(pack, /noise_labs_path:.*noise-reduction/);
 
 const urls = read("src/lib/docs/urls.ts");
 assert.match(urls, /\/admin\/noise-reduction/);
-assert.match(urls, /[Ss]ix scenarios/);
+assert.match(urls, /threshold/);
+assert.match(urls, /severity/);
+assert.match(urls, /persistence/);
 
 const phrases = read("src/lib/i18n-phrases.ts");
 assert.match(phrases, /"Noise Reduction Lab": "降噪實驗室"/);

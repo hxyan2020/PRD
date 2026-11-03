@@ -21,6 +21,11 @@ on:
         cursor/l2-rca-a935,
         cursor/restore-crmp-pages-a935,
         cursor/crmp-data-sql-a935,
+        cursor/nav-reorder-a935,
+        cursor/crmp-12-scenarios-a935,
+        cursor/desk-bilingual-a935,
+        cursor/desk-mobile-a935,
+        cursor/agg-button-json-fix-a935,
         main,
       ]
     paths:

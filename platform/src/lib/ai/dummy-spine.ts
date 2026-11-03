@@ -295,11 +295,19 @@ async function walkOne(tpl: DummyTemplate, locale: UiLocale): Promise<DummySpine
       locale,
     });
   } else {
-    db.prepare(`UPDATE monitor_alerts SET status = 'CLOSED' WHERE id = ?`).run(raised.alert_db_id);
+    const { closeDeskAlertForReal } = require("@/lib/ai/risk-log") as typeof import("@/lib/ai/risk-log");
+    closeDeskAlertForReal({
+      alert_id: raised.alert_id,
+      actor: { id: checker.id, name: checker.name },
+      outcome: "PREVENTED",
+      estimated_loss_usd: 0,
+      prevented_loss_usd: 120000,
+      notes: `DUMMY spine E2E close for ${raised.alert_id}`,
+    });
   }
 
   db.prepare(
-    `UPDATE monitor_tickets SET status = 'RESOLVED', updated_at = datetime('now') WHERE alert_id = ? OR ticket_id = ?`
+    `UPDATE monitor_tickets SET status = 'RESOLVED', updated_at = datetime('now'), resolved_at = COALESCE(resolved_at, datetime('now')) WHERE alert_id = ? OR ticket_id = ?`
   ).run(raised.alert_db_id, raised.ticket_id);
 
   if (!stages.includes("RESOLVED")) {

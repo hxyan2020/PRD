@@ -38,7 +38,18 @@ assert.match(board, /indicator-agg-linear-steps/);
 assert.match(board, /indicator-agg-force/);
 assert.match(board, /indicator-agg-l2-severity/);
 assert.match(board, /from \"@\/lib\/indicator-aggregation-shared\"/);
+assert.match(board, /runClientAggregationAction/);
+assert.match(board, /postDeskJson/);
+assert.match(board, /isPublicSnapshot/);
 assert.doesNotMatch(board, /from \"@\/lib\/indicator-aggregation\"/);
+assert.doesNotMatch(board, /await res\.json\(\)/);
+
+const clientLib = read("src/lib/indicator-aggregation-client.ts");
+assert.match(clientLib, /export function runClientAggregationAction/);
+
+const fetchJson = read("src/lib/fetch-json.ts");
+assert.match(fetchJson, /readResponseJson/);
+assert.match(fetchJson, /postDeskJson/);
 
 const homeDemo = read("src/components/HomeL1L2AggregationDemo.tsx");
 assert.match(homeDemo, /home-l1-l2-demo/);

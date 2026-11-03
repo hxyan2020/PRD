@@ -54,6 +54,8 @@ assert.match(analyse, /fresh thinking each call|不快取/);
 assert.match(analyse, /loadSimulatedMonitorSnapshot/);
 assert.match(analyse, /LIVE_LLM|enableDiscoveryOpenAi/);
 assert.match(analyse, /setRuntimeLlmProvider|resolveLlmProvider/);
+assert.match(analyse, /refusing silent MOCK fallback|拒絕.*MOCK/);
+assert.match(analyse, /require_live/);
 
 const discovery = read("src/lib/ai/discovery.ts");
 assert.match(discovery, /sampleFeatureWindow/);
@@ -62,6 +64,9 @@ assert.match(discovery, /scan_seed/);
 assert.match(discovery, /thinking_steps/);
 assert.match(discovery, /simulated_from_monitor_indicators/);
 assert.match(discovery, /live_sqlite_feature_window/);
+assert.match(discovery, /discoverUnknownWithLlm|llm_unknown/);
+assert.match(discovery, /LIVE_LLM/);
+assert.match(discovery, /CRMP_DISCOVERY_LLM|discoveryLlmMode/);
 
 assert.match(board, /discovery-scan-thinking/);
 assert.match(board, /Scan process trail|掃描過程軌跡/);

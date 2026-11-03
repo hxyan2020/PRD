@@ -2,31 +2,36 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 export function MonitorRunAllButton() {
   const router = useRouter();
   const { t } = useT();
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
   async function runAll() {
     setBusy(true);
     setMsg(null);
-    const res = await fetch("/api/monitor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "run_detectors", raiseAlarms: true }),
-    });
-    const data = await res.json().catch(() => ({}));
+    const parsed = await postDeskJson<{
+      error?: string;
+      results?: Array<{ status: string }>;
+    }>("/api/monitor", { action: "run_detectors", raiseAlarms: true });
     setBusy(false);
-    if (!res.ok) {
-      setMsg(data.error || t("common.actionFailed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    const alarms = (data.results || []).filter((r: { status: string }) => r.status !== "HEALTHY").length;
-    setMsg(t("det.ran", { n: data.results?.length ?? 0, alarms }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("common.actionFailed"));
+      return;
+    }
+    const alarms = (parsed.data.results || []).filter((r) => r.status !== "HEALTHY").length;
+    setMsg(t("det.ran", { n: parsed.data.results?.length ?? 0, alarms }));
     if (alarms > 0) {
       bumpNavBadge("/admin/monitor-2", alarms);
       bumpNavBadge("/admin/alerts", alarms);
@@ -65,16 +70,13 @@ export function IndicatorPauseToggle({
 
   async function toggle() {
     setBusy(true);
-    await fetch("/api/monitor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "toggle_pause",
-        indicator_id: indicatorId,
-        paused: !paused,
-      }),
+    const parsed = await postDeskJson("/api/monitor", {
+      action: "toggle_pause",
+      indicator_id: indicatorId,
+      paused: !paused,
     });
     setBusy(false);
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) return;
     router.refresh();
   }
 

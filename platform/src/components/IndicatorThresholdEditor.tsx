@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
 import { EnZh } from "@/components/EnZh";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 export function IndicatorThresholdEditor({
   indicatorId,
@@ -23,6 +24,8 @@ export function IndicatorThresholdEditor({
 }) {
   const router = useRouter();
   const { t } = useT();
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [warnVal, setWarnVal] = useState(warn == null ? "" : String(warn));
   const [breachVal, setBreachVal] = useState(breach == null ? "" : String(breach));
   const [busy, setBusy] = useState(false);
@@ -45,20 +48,19 @@ export function IndicatorThresholdEditor({
     }
     setBusy(true);
     setMsg(null);
-    const res = await fetch("/api/monitor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "update_thresholds",
-        indicator_id: indicatorId,
-        threshold_warn: w,
-        threshold_breach: b,
-      }),
+    const parsed = await postDeskJson<{ error?: string }>("/api/monitor", {
+      action: "update_thresholds",
+      indicator_id: indicatorId,
+      threshold_warn: w,
+      threshold_breach: b,
     });
-    const data = await res.json().catch(() => ({}));
     setBusy(false);
-    if (!res.ok) {
-      setMsg(data.error || t("common.actionFailed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("common.actionFailed"));
       return;
     }
     setMsg(t("common.updated"));

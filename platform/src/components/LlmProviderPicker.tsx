@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { EnZh } from "@/components/EnZh";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 export type LlmProviderOption = {
   id: string;
@@ -47,16 +48,20 @@ export function LlmProviderPicker({
     setBusy(true);
     setErr(null);
     try {
-      const res = await fetch("/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "set_llm_provider", provider: next }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to set LLM provider");
-      onChanged?.(data.llm_provider || next, {
-        model: data.llm_model ?? null,
-        enabled: data.llm_enabled,
+      const parsed = await postDeskJson<{
+        error?: string;
+        llm_provider?: string;
+        llm_model?: string | null;
+        llm_enabled?: boolean;
+      }>("/api/ai", { action: "set_llm_provider", provider: next });
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        setErr(pagesReadOnlyHint(true));
+        return;
+      }
+      if (!parsed.ok) throw new Error(parsed.data.error || "Failed to set LLM provider");
+      onChanged?.(parsed.data.llm_provider || next, {
+        model: parsed.data.llm_model ?? null,
+        enabled: parsed.data.llm_enabled,
       });
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));

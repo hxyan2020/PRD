@@ -22,8 +22,24 @@ assert.match(html, /降噪/);
 
 const pagePath = path.join(root, "src/app/admin/noise-reduction/page.tsx");
 assert.ok(fs.existsSync(pagePath), "admin page missing");
+assert.match(fs.readFileSync(pagePath, "utf8"), /Desk12NoiseMethods/);
+
+const packPath = path.join(root, "src/lib/demo/desk-12-pack.ts");
+assert.ok(fs.existsSync(packPath), "desk-12 pack missing");
+const pack = fs.readFileSync(packPath, "utf8");
+for (const core of ["threshold_optimisation", "severity_optimisation", "persistence"]) {
+  assert.match(pack, new RegExp(`id: "${core}"`));
+  assert.match(pack, new RegExp(`core: true,[\\s\\S]{0,80}id: "${core}"|id: "${core}",[\\s\\S]{0,40}core: true`));
+}
+assert.match(pack, /NOISE_TECHNIQUE_CATALOGUE/);
+assert.match(pack, /noiseCatalogueCoversCoreTrio/);
+
+const methodsPath = path.join(root, "src/components/Desk12NoiseMethods.tsx");
+assert.ok(fs.existsSync(methodsPath), "Desk12NoiseMethods missing");
+assert.match(fs.readFileSync(methodsPath, "utf8"), /noise-coverage-matrix/);
 
 console.log("ok: smoke Noise Reduction Lab", {
   htmlBytes: html.length,
   scenarios: ["cross", "spike", "duplicate", "benign", "unknown", "critical"],
+  desk12Core: ["threshold_optimisation", "severity_optimisation", "persistence"],
 });

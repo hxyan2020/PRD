@@ -5,7 +5,8 @@ import { useState } from "react";
 import { Badge, StatusBadge, SeverityBadge } from "@/components/ui";
 import { MonitorCode } from "@/components/MonitorCode";
 import { bumpNavBadge } from "@/lib/nav-badges";
-import { useT } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
 
 type Detector = {
   id: number;
@@ -46,25 +47,29 @@ export function DetectorsBoard({
 }) {
   const router = useRouter();
   const { t, phrase } = useT();
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function runAll() {
     setBusy(true);
     setMsg(null);
-    const res = await fetch("/api/detectors", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ raiseAlarms: true }),
-    });
-    const data = await res.json();
+    const parsed = await postDeskJson<{
+      error?: string;
+      results?: Array<{ status: string }>;
+    }>("/api/detectors", { raiseAlarms: true });
     setBusy(false);
-    if (!res.ok) {
-      setMsg(data.error || t("common.failed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    const alarms = (data.results || []).filter((r: { status: string }) => r.status !== "HEALTHY").length;
-    setMsg(t("det.ran", { n: data.results?.length ?? 0, alarms }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("common.failed"));
+      return;
+    }
+    const alarms = (parsed.data.results || []).filter((r) => r.status !== "HEALTHY").length;
+    setMsg(t("det.ran", { n: parsed.data.results?.length ?? 0, alarms }));
     if (alarms > 0) {
       bumpNavBadge("/admin/detectors", alarms);
       bumpNavBadge("/admin/alerts", alarms);
@@ -73,11 +78,15 @@ export function DetectorsBoard({
   }
 
   async function toggle(d: Detector) {
-    await fetch("/api/detectors", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "toggle", id: d.id, enabled: !d.enabled }),
+    const parsed = await postDeskJson("/api/detectors", {
+      action: "toggle",
+      id: d.id,
+      enabled: !d.enabled,
     });
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
     router.refresh();
   }
 

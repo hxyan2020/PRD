@@ -49,7 +49,15 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     db,
     `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM monitor_tickets WHERE status NOT IN ('RESOLVED','CLOSED')`
   );
-  const riskLog = scalar(db, `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM alert_impacts`);
+  // Closed Risk Log badge = truly closed alerts only (never open impact rows).
+  const riskLog = scalar(
+    db,
+    `SELECT COUNT(*) AS c, MAX(COALESCE(t.resolved_at, a.created_at)) AS ts
+     FROM monitor_alerts a
+     LEFT JOIN monitor_tickets t ON t.alert_id = a.id
+     WHERE a.status IN ('CLOSED','RESOLVED')
+        OR t.status IN ('RESOLVED','CLOSED')`
+  );
   const detectorAlarms = scalar(
     db,
     `SELECT COUNT(*) AS c, MAX(last_run_at) AS ts FROM detectors WHERE last_status IN ('WARN','BREACH')`

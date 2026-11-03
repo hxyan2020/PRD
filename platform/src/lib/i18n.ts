@@ -13,7 +13,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/risk-log": { en: "Closed Risk Log", "zh-Hant": "已結風險日誌" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/discovery": { en: "Unknown Risk Discovery", "zh-Hant": "未知風險探索" },
-  "/admin/indicator-aggregation": { en: "Indicator Aggregation", "zh-Hant": "指標聚合流程" },
+  "/admin/indicator-aggregation": { en: "Indicator Aggregation Flow", "zh-Hant": "指標聚合流程" },
   "/admin/monitor-labs": { en: "Full-flow demo", "zh-Hant": "全流程demo" },
   "/admin/l2-rca": { en: "L2 → AI RCA Lab", "zh-Hant": "L2 → AI RCA 實驗室" },
   "/admin/ai-incident": { en: "AI Root Cause Analysis", "zh-Hant": "AI根因分析" },
@@ -145,8 +145,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "noise-reduction": {
     title: { en: "Noise reduction flow", "zh-Hant": "降噪流程" },
     subtitle: {
-      en: "Bilingual Monitor 2.0 noise-reduction end-to-end lab — six scenarios, pipeline knobs, AI evidence + human feedback → backtest / shadow / approve. Demo data only.",
-      "zh-Hant": "雙語 Monitor 2.0 降噪端到端實驗室 — 六場景、管線旋鈕、AI 證據＋人工回饋 → 回測／Shadow／核准。僅示範資料。",
+      en: "Desk-12 noise methods covering — and not limited to — threshold optimisation, severity optimisation, and persistence, plus hysteresis, quality gates, flapping, rate-limits, SEQUENCE/AND, P0 bypass, shadow, batching, feedback, and backtest→shadow→approve. Lab knobs + bilingual demo data.",
+      "zh-Hant": "Desk-12 降噪方法必須涵蓋且不限於閾值優化、嚴重度優化、持續性；另含滯後帶、質量閘門、抖動抑制、限速、SEQUENCE／AND、P0 旁路、Shadow、批次合併、人工回饋、回測→Shadow→核准。含管線旋鈕與雙語示範資料。",
     },
   },
   detectors: {
