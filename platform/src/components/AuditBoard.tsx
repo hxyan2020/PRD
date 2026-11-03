@@ -14,6 +14,7 @@ import {
   type AuditLogRow,
   type AuditPlane,
 } from "@/lib/audit";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 export function AuditBoard({ logs }: { logs: AuditLogRow[] }) {
   const { locale } = useUiLocale();
@@ -46,14 +47,15 @@ export function AuditBoard({ logs }: { logs: AuditLogRow[] }) {
     setBusyId(row.id);
     setMessage(null);
     try {
-      const res = await fetch("/api/audit/rollback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ audit_id: row.id }),
+      const parsed = await postDeskJson<{ error?: string }>("/api/audit/rollback", {
+        audit_id: row.id,
       });
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) {
-        setMessage(data.error || t("audit.rollbackFailed", locale));
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        setMessage(pagesReadOnlyHint(locale === "zh-Hant"));
+        return;
+      }
+      if (!parsed.ok) {
+        setMessage(parsed.data.error || t("audit.rollbackFailed", locale));
         return;
       }
       setMessage(t("audit.rollbackOk", locale));

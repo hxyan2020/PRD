@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { DeptBadge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
 import { deptLabelI18n, phrase } from "@/lib/i18n";
+import { pagesReadOnlyHint, postDeskJson, readResponseJson } from "@/lib/fetch-json";
 
 type UserRow = {
   id: number;
@@ -44,36 +45,52 @@ export function UsersManager({
 
   const roleOptions = useMemo(() => roles, [roles]);
 
+  const zh = locale === "zh-Hant";
+
   async function createUser() {
     setMessage(null);
-    const res = await fetch("/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        team_id: form.team_id ? Number(form.team_id) : null,
-      }),
+    const parsed = await postDeskJson<{ error?: string; id?: number }>("/api/users", {
+      ...form,
+      team_id: form.team_id ? Number(form.team_id) : null,
     });
-    const data = await res.json();
-    if (!res.ok) {
-      setMessage(data.error || t("users.createFailed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMessage(pagesReadOnlyHint(zh));
       return;
     }
-    setMessage(t("users.created", { id: data.id }));
+    if (!parsed.ok) {
+      setMessage(parsed.data.error || t("users.createFailed"));
+      return;
+    }
+    setMessage(t("users.created", { id: parsed.data.id ?? "—" }));
     router.refresh();
-    const list = await fetch("/api/users").then((r) => r.json());
-    setUsers(list.users);
+    try {
+      const listRes = await fetch("/api/users");
+      const listParsed = await readResponseJson<{ users?: UserRow[] }>(listRes);
+      if (Array.isArray(listParsed.data.users)) setUsers(listParsed.data.users);
+    } catch {
+      /* ignore list refresh on Pages */
+    }
   }
 
   async function toggleStatus(u: UserRow) {
     const status = u.status === "ACTIVE" ? "DISABLED" : "ACTIVE";
-    await fetch("/api/users", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: u.id, status }),
-    });
-    const list = await fetch("/api/users").then((r) => r.json());
-    setUsers(list.users);
+    try {
+      const res = await fetch("/api/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: u.id, status }),
+      });
+      const parsed = await readResponseJson(res);
+      if (parsed.apiUnavailable || parsed.nonJson) {
+        setMessage(pagesReadOnlyHint(zh));
+        return;
+      }
+      const listRes = await fetch("/api/users");
+      const listParsed = await readResponseJson<{ users?: UserRow[] }>(listRes);
+      if (Array.isArray(listParsed.data.users)) setUsers(listParsed.data.users);
+    } catch {
+      setMessage(pagesReadOnlyHint(zh));
+    }
   }
 
   return (

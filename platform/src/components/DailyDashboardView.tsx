@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CandlestickChart, Coins } from "lucide-react";
 import { Badge, StatusBadge } from "@/components/ui";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 import { cn } from "@/lib/utils";
 
 type Metric = {
@@ -230,16 +231,25 @@ export function DailyDashboardView({
 }) {
   const router = useRouter();
   const { t } = useT();
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [msg, setMsg] = useState<string | null>(null);
 
   async function refresh() {
-    const res = await fetch("/api/dashboard", { method: "POST" });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("dash.refreshFailed"));
+    const parsed = await postDeskJson<{
+      error?: string;
+      date?: string;
+      metrics?: number;
+    }>("/api/dashboard", {});
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    setMsg(t("dash.refreshed", { date: data.date, n: data.metrics }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("dash.refreshFailed"));
+      return;
+    }
+    setMsg(t("dash.refreshed", { date: parsed.data.date || "—", n: parsed.data.metrics ?? 0 }));
     router.refresh();
   }
 

@@ -8,6 +8,7 @@ import { EnZh } from "@/components/EnZh";
 import { MonitorCode } from "@/components/MonitorCode";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { postDeskJson } from "@/lib/fetch-json";
 import { useT } from "@/hooks/useUiLocale";
 
 type Analysis = {
@@ -51,14 +52,22 @@ export function AiAnalysesBoard({
   async function run(action: string, body: Record<string, unknown> = {}) {
     setBusy(true);
     setMsg(null);
-    const res = await fetch("/api/ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action, ...body }),
-    });
-    const data = await res.json();
+    const parsed = await postDeskJson<{
+      error?: string;
+      count?: number;
+      analysis?: { id?: number; analysis_id?: string; confidence?: number; mode?: string };
+      challenge?: { verdict?: string };
+      llm?: { source?: string };
+      llm_enabled?: boolean;
+      llm_runs?: unknown;
+    }>("/api/ai", { action, ...body });
     setBusy(false);
-    if (!res.ok) {
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(t("ai.badResponse", { status: parsed.status || 405 }));
+      return;
+    }
+    const data = parsed.data;
+    if (!parsed.ok) {
       setMsg(data.error || t("common.failed"));
       return;
     }
@@ -72,13 +81,19 @@ export function AiAnalysesBoard({
           : "";
     setMsg(
       action === "analyze_open"
-        ? `${t("ai.ensured", { n: data.count })}${llmBit}`
+        ? `${t("ai.ensured", { n: data.count ?? 0 })}${llmBit}`
         : action === "simulate_alarm"
-          ? `${t("ai.alarmRaised", { id: data.analysis?.analysis_id, mode: data.analysis?.mode, pct })}${
-              data.challenge ? ` · ${t("ai.challenged", { verdict: data.challenge.verdict })}` : ""
+          ? `${t("ai.alarmRaised", {
+              id: data.analysis?.analysis_id || "—",
+              mode: data.analysis?.mode || "—",
+              pct,
+            })}${
+              data.challenge
+                ? ` · ${t("ai.challenged", { verdict: data.challenge.verdict || "—" })}`
+                : ""
             }${llmBit}`
           : action === "backfill_challenges"
-            ? t("ai.backfilled", { n: data.count })
+            ? t("ai.backfilled", { n: data.count ?? 0 })
             : `${t("ai.done")}${llmBit}`
     );
     router.refresh();

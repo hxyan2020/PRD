@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminLink } from "@/components/AdminLink";
 import { Badge } from "@/components/ui";
@@ -8,12 +8,15 @@ import { EnZh } from "@/components/EnZh";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase } from "@/lib/i18n";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
+import { runClientAggregationAction } from "@/lib/indicator-aggregation-client";
 import {
   LINEAR_AGGREGATION_STEPS,
   type AggregateDefinition,
   type AggregationSession,
   type AggregationStepId,
 } from "@/lib/indicator-aggregation-shared";
+import { pagesMutationHint, postDeskJson } from "@/lib/fetch-json";
+import { isPublicSnapshot } from "@/lib/static-export";
 
 function stepIndex(step: AggregationStepId): number {
   const order: AggregationStepId[] = [
@@ -56,9 +59,14 @@ export function IndicatorAggregationBoard({
   const [activeId, setActiveId] = useState(initialSessions[0]?.session_id || "");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [localDemo, setLocalDemo] = useState(false);
   const [demoMonitor, setDemoMonitor] = useState(
     definitions[0]?.member_monitors[0] || "M2-COPY-009"
   );
+
+  useEffect(() => {
+    if (isPublicSnapshot()) setLocalDemo(true);
+  }, []);
 
   const active = useMemo(
     () => sessions.find((s) => s.session_id === activeId) || sessions[0] || null,
@@ -70,23 +78,43 @@ export function IndicatorAggregationBoard({
   );
   const visited = active ? pathVisited(active) : new Set<AggregationStepId>();
 
+  function applyLocal(action: string, body: Record<string, unknown>) {
+    const result = runClientAggregationAction(action, sessions, definitions, body);
+    setSessions(result.sessions);
+    if (result.session?.session_id) setActiveId(result.session.session_id);
+    const base = zh
+      ? result.message_zh || result.message || "已更新"
+      : result.message || result.message_zh || "Updated";
+    setMsg(localDemo || isPublicSnapshot() ? `${base} · ${pagesMutationHint(zh)}` : base);
+  }
+
   async function run(action: string, body: Record<string, unknown> = {}) {
     setBusy(true);
     setMsg(null);
     try {
-      const res = await fetch("/api/indicator-aggregation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, ...body }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Request failed");
-      if (Array.isArray(data.sessions)) setSessions(data.sessions);
-      if (data.session?.session_id) setActiveId(data.session.session_id);
+      if (localDemo || isPublicSnapshot()) {
+        applyLocal(action, body);
+        return;
+      }
+      const parsed = await postDeskJson<{
+        error?: string;
+        sessions?: AggregationSession[];
+        session?: AggregationSession;
+        message?: string;
+        message_zh?: string;
+      }>("/api/indicator-aggregation", { action, ...body });
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        setLocalDemo(true);
+        applyLocal(action, body);
+        return;
+      }
+      if (!parsed.ok) throw new Error(parsed.data.error || "Request failed");
+      if (Array.isArray(parsed.data.sessions)) setSessions(parsed.data.sessions);
+      if (parsed.data.session?.session_id) setActiveId(parsed.data.session.session_id);
       setMsg(
         zh
-          ? data.message_zh || data.message || "已更新"
-          : data.message || data.message_zh || "Updated"
+          ? parsed.data.message_zh || parsed.data.message || "已更新"
+          : parsed.data.message || parsed.data.message_zh || "Updated"
       );
       router.refresh();
     } catch (e) {

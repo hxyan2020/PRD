@@ -6,6 +6,7 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Sparkles, Send, X } from "lucide-react";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { isPublicSnapshot } from "@/lib/static-export";
+import { postDeskJson } from "@/lib/fetch-json";
 import { answerDeskChat, type DeskChatMessage, type DeskChatSource } from "@/lib/ai/desk-chat";
 import { cn } from "@/lib/utils";
 
@@ -129,30 +130,26 @@ export function SelectionChatbot() {
 
     try {
       if (!isPublicSnapshot()) {
-        const res = await fetch("/api/ai-chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            selection: sel,
-            question: q,
-            pagePath: pathname,
-            locale,
-            messages: nextHistory,
-          }),
+        const parsed = await postDeskJson<{
+          reply?: string;
+          sources?: DeskChatSource[];
+          suggestions?: string[];
+          thinking_steps?: string[];
+          llm?: { used?: boolean; model?: string | null; thinking_steps?: string[] };
+        }>("/api/ai-chat", {
+          selection: sel,
+          question: q,
+          pagePath: pathname,
+          locale,
+          messages: nextHistory,
         });
-        if (res.ok) {
-          const data = (await res.json()) as {
-            reply: string;
-            sources?: DeskChatSource[];
-            suggestions?: string[];
-            thinking_steps?: string[];
-            llm?: { used?: boolean; model?: string | null; thinking_steps?: string[] };
-          };
+        if (parsed.ok && !parsed.nonJson && parsed.data.reply) {
+          const data = parsed.data;
           setMessages((prev) => [
             ...prev,
             {
               role: "assistant",
-              content: data.reply,
+              content: String(data.reply),
               sources: data.sources,
               suggestions: data.suggestions,
               thinking_steps: data.thinking_steps || data.llm?.thinking_steps,

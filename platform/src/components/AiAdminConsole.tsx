@@ -7,6 +7,7 @@ import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
 import { MonitorCode } from "@/components/MonitorCode";
 import { navLabel } from "@/lib/i18n";
 import { useT } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 type Roles = {
   can_propose: boolean;
@@ -186,20 +187,20 @@ export function AiAdminConsole({
   async function post(body: Record<string, unknown>) {
     setMsg(null);
     setErr(null);
-    const res = await fetch("/api/ai-admin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      setErr(data.error || t("adm.failedDetail", { err: String(res.status) }));
+    const parsed = await postDeskJson<Record<string, unknown>>("/api/ai-admin", body);
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setErr(pagesReadOnlyHint(locale === "zh-Hant"));
       return null;
     }
+    if (!parsed.ok) {
+      setErr(String(parsed.data.error || t("adm.failedDetail", { err: String(parsed.status) })));
+      return null;
+    }
+    const data = parsed.data;
     setMsg(
       data.request_id
         ? t("adm.submitted", { what: String(data.request_id) })
-        : data.status || t("common.ok")
+        : String(data.status || t("common.ok"))
     );
     router.refresh();
     return data;

@@ -25,6 +25,7 @@ on:
         cursor/crmp-12-scenarios-a935,
         cursor/desk-bilingual-a935,
         cursor/desk-mobile-a935,
+        cursor/agg-button-json-fix-a935,
         main,
       ]
     paths:

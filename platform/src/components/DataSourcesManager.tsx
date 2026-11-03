@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { DeptBadge, StatusBadge, Badge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
 import { deptLabelI18n } from "@/lib/i18n";
+import { pagesReadOnlyHint, postDeskJson, readResponseJson } from "@/lib/fetch-json";
 
 type Source = {
   id: number;
@@ -63,36 +64,57 @@ export function DataSourcesManager({
     });
   }, [sources, category, q]);
 
+  const zh = locale === "zh-Hant";
+
   async function refresh() {
-    const params = new URLSearchParams();
-    const res = await fetch(`/api/data-sources?${params.toString()}`);
-    const data = await res.json();
-    setSources(data.sources);
+    try {
+      const params = new URLSearchParams();
+      const res = await fetch(`/api/data-sources?${params.toString()}`);
+      const parsed = await readResponseJson<{ sources?: Source[] }>(res);
+      if (parsed.apiUnavailable || parsed.nonJson) {
+        setMsg(pagesReadOnlyHint(zh));
+        return;
+      }
+      if (Array.isArray(parsed.data.sources)) setSources(parsed.data.sources);
+    } catch {
+      setMsg(pagesReadOnlyHint(zh));
+    }
   }
 
   async function createSource() {
     setMsg(null);
-    const res = await fetch("/api/data-sources", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+    const parsed = await postDeskJson<{ error?: string; id?: number }>("/api/data-sources", {
+      ...form,
     });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("rag.createFailed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    setMsg(t("src.created", { id: data.id }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("rag.createFailed"));
+      return;
+    }
+    setMsg(t("src.created", { id: parsed.data.id ?? "—" }));
     setForm({ ...form, name: "", url: "", description: "", notes: "" });
     await refresh();
   }
 
   async function toggleStatus(s: Source) {
-    await fetch("/api/data-sources", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: s.id, status: s.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }),
-    });
+    try {
+      const res = await fetch("/api/data-sources", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: s.id, status: s.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }),
+      });
+      const parsed = await readResponseJson(res);
+      if (parsed.apiUnavailable || parsed.nonJson) {
+        setMsg(pagesReadOnlyHint(zh));
+        return;
+      }
+    } catch {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
     await refresh();
   }
 

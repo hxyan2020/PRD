@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Badge, StatusBadge } from "@/components/ui";
 import { RagAiHumanGatePanel } from "@/components/RagAiHumanGatePanel";
 import type { AiBlockItem } from "@/lib/security/ai-access-blocklist";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson, readResponseJson } from "@/lib/fetch-json";
 
 type Doc = {
   id: number;
@@ -62,6 +63,8 @@ export function RagManager({
   });
   const [editId, setEditId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
 
   const filtered = useMemo(() => {
     return docs.filter((d) => {
@@ -73,66 +76,101 @@ export function RagManager({
   }, [docs, category, q]);
 
   async function refresh() {
-    const res = await fetch("/api/rag");
-    const data = await res.json();
-    setDocs(data.documents);
+    try {
+      const res = await fetch("/api/rag");
+      const parsed = await readResponseJson<{ documents?: Doc[] }>(res);
+      if (parsed.apiUnavailable || parsed.nonJson) {
+        setMsg(pagesReadOnlyHint(zh));
+        return;
+      }
+      if (Array.isArray(parsed.data.documents)) setDocs(parsed.data.documents);
+    } catch {
+      setMsg(pagesReadOnlyHint(zh));
+    }
   }
 
   async function retrieve() {
-    const res = await fetch(`/api/rag?mode=retrieve&q=${encodeURIComponent(retrieveQ)}&limit=6`);
-    const data = await res.json();
-    setHits(data.hits);
+    try {
+      const res = await fetch(`/api/rag?mode=retrieve&q=${encodeURIComponent(retrieveQ)}&limit=6`);
+      const parsed = await readResponseJson<{ hits?: Doc[] }>(res);
+      if (parsed.apiUnavailable || parsed.nonJson) {
+        setMsg(pagesReadOnlyHint(zh));
+        return;
+      }
+      setHits(Array.isArray(parsed.data.hits) ? parsed.data.hits : []);
+    } catch {
+      setMsg(pagesReadOnlyHint(zh));
+    }
   }
 
   async function createDoc() {
     setMsg(null);
-    const res = await fetch("/api/rag", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        tags: form.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-      }),
+    const parsed = await postDeskJson<{ error?: string; id?: number }>("/api/rag", {
+      ...form,
+      tags: form.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
     });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("rag.createFailed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    setMsg(t("rag.created", { id: data.id }));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("rag.createFailed"));
+      return;
+    }
+    setMsg(t("rag.created", { id: parsed.data.id ?? "—" }));
     setForm({ ...form, doc_key: "", title: "", content: "", source_ref: "", tags: "" });
     await refresh();
     router.refresh();
   }
 
   async function saveEdit(id: number) {
-    await fetch("/api/rag", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, content: editContent }),
-    });
+    try {
+      const res = await fetch("/api/rag", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, content: editContent }),
+      });
+      const parsed = await readResponseJson(res);
+      if (parsed.apiUnavailable || parsed.nonJson) {
+        setMsg(pagesReadOnlyHint(zh));
+        return;
+      }
+    } catch {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
     setEditId(null);
     await refresh();
   }
 
   async function toggleStatus(d: Doc) {
-    await fetch("/api/rag", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: d.id, status: d.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }),
-    });
+    try {
+      const res = await fetch("/api/rag", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: d.id, status: d.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }),
+      });
+      const parsed = await readResponseJson(res);
+      if (parsed.apiUnavailable || parsed.nonJson) {
+        setMsg(pagesReadOnlyHint(zh));
+        return;
+      }
+    } catch {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
     await refresh();
   }
 
   async function reindex() {
-    await fetch("/api/rag", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "reindex" }),
-    });
+    const parsed = await postDeskJson("/api/rag", { action: "reindex" });
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
     setMsg(t("rag.reindexed"));
   }
 

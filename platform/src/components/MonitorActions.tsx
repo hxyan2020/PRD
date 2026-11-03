@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 export function MonitorActions({
   mode,
@@ -19,6 +20,8 @@ export function MonitorActions({
 }) {
   const router = useRouter();
   const { t } = useT();
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -29,18 +32,17 @@ export function MonitorActions({
     if (mode === "sync") body = { action: "sync_monitor2" };
     if (mode === "ack") body = { action: "ack_alert", alert_id: alertId };
     if (mode === "ticket") body = { action: "update_ticket", ticket_id: ticketId, status };
-    const res = await fetch("/api/monitor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
+    const parsed = await postDeskJson<{ error?: string; message?: string }>("/api/monitor", body);
     setBusy(false);
-    if (!res.ok) {
-      setMsg(data.error || t("common.actionFailed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
       return;
     }
-    setMsg(mode === "sync" ? data.message || t("common.synced") : t("common.updated"));
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("common.actionFailed"));
+      return;
+    }
+    setMsg(mode === "sync" ? parsed.data.message || t("common.synced") : t("common.updated"));
     router.refresh();
   }
 

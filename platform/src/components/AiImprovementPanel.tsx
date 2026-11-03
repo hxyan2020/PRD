@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui";
 import { useT, useUiLocale } from "@/hooks/useUiLocale";
 import { isPublicSnapshot } from "@/lib/static-export";
+import { postDeskJson } from "@/lib/fetch-json";
 import {
   applyImprovementTurn,
   classifyImproveIntent,
@@ -165,19 +166,17 @@ export function AiImprovementPanel({
 
     try {
       if (!isPublicSnapshot()) {
-        const res = await fetch("/api/ai-improve", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        const parsed = await postDeskJson<{ review?: ImprovementReview; current?: ImprovementReview }>(
+          "/api/ai-improve",
+          {
             action: classifyImproveIntent(text),
             analysis_id: analysisId,
             message: text,
             locale,
-          }),
-        });
-        if (res.ok) {
-          const data = (await res.json()) as { review?: ImprovementReview; current?: ImprovementReview };
-          setReview(data.current || data.review || optimistic?.review || null);
+          }
+        );
+        if (parsed.ok && !parsed.nonJson) {
+          setReview(parsed.data.current || parsed.data.review || optimistic?.review || null);
           setBusy(false);
           return;
         }

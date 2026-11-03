@@ -7,6 +7,7 @@ import { useT } from "@/hooks/useUiLocale";
 import { EnZh } from "@/components/EnZh";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { FOREX_INCIDENT_1028 } from "@/lib/demo/forex-incident-1028";
+import { postDeskJson } from "@/lib/fetch-json";
 
 type DummyRun = { alert_id?: string; analysis_mode?: string | null; ticket_id?: string };
 
@@ -20,19 +21,16 @@ export function HomeDummyAlertButtons() {
     setBusy(mode);
     setMsg(t("home.dummyWorking"));
     try {
-      const res = await fetch("/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "dummy_spine", mode }),
+      const parsed = await postDeskJson<Record<string, unknown>>("/api/ai", {
+        action: "dummy_spine",
+        mode,
       });
-      let data: Record<string, unknown> = {};
-      try {
-        data = (await res.json()) as Record<string, unknown>;
-      } catch {
-        setMsg(t("ai.badResponse", { status: res.status }));
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        setMsg(t("ai.badResponse", { status: parsed.status || 405 }));
         return;
       }
-      if (!res.ok) {
+      const data = parsed.data;
+      if (!parsed.ok) {
         const err = String(data.error || "");
         setMsg(err ? phrase(err) : t("home.dummyFailed"));
         return;

@@ -8,7 +8,8 @@ import { T } from "@/components/T";
 import { EnZh } from "@/components/EnZh";
 import { DepartmentCharterView } from "@/components/OrgCharter";
 import { departmentCharter } from "@/lib/org-catalog";
-import { useT } from "@/hooks/useUiLocale";
+import { useT, useUiLocale } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 type Dept = {
   id: number;
@@ -45,21 +46,22 @@ export function BuTeamsBoard({
   const [mission, setMission] = useState("");
   const [onCall, setOnCall] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
 
   async function saveTeam(team: Team) {
-    const res = await fetch("/api/org", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "update_team",
-        id: team.id,
-        mission,
-        on_call_rotation: onCall,
-      }),
+    const parsed = await postDeskJson<{ error?: string }>("/api/org", {
+      action: "update_team",
+      id: team.id,
+      mission,
+      on_call_rotation: onCall,
     });
-    const data = await res.json();
-    if (!res.ok) {
-      setMsg(data.error || t("common.failed"));
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      setMsg(pagesReadOnlyHint(zh));
+      return;
+    }
+    if (!parsed.ok) {
+      setMsg(parsed.data.error || t("common.failed"));
       return;
     }
     setEditId(null);

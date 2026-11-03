@@ -9,6 +9,7 @@ import { AdminLink } from "@/components/AdminLink";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, phrase, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { postDeskJson, readResponseJson } from "@/lib/fetch-json";
 import { THINKING_ACTIONS, thinkingSteps } from "@/lib/messenger/thinking";
 import {
   SEVERITY_ACCURATE_CODE,
@@ -1103,14 +1104,22 @@ export function DemoMessenger({
 
       const snapshot = packRef.current.messages;
       const localThought = [...snapshot].reverse().find((m) => m.kind === "THINKING");
-      const res = await fetch("/api/messenger", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, thread_id: activeId, ...extra }),
+      const parsed = await postDeskJson<Record<string, unknown>>("/api/messenger", {
+        action,
+        thread_id: activeId,
+        ...extra,
       });
-      const data = await res.json();
       if (gen !== runGen.current) return;
-      if (!res.ok) {
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        setStatusMsg(
+          locale === "zh-Hant"
+            ? "公開快照無即時 Messenger API — 請開啟靜態示範模式或本機管理台。"
+            : "Public snapshot has no live Messenger API — use static demo mode or localhost."
+        );
+        return;
+      }
+      const data = parsed.data;
+      if (!parsed.ok) {
         if (action === "escalate" && pocWindows.length) {
           const from = pocWindows.find((w) => w.status === "active") || pocWindows[0];
           const to =
@@ -1134,28 +1143,34 @@ export function DemoMessenger({
         return;
       }
       if (action === "sync") {
-        setThreads(data.threads || []);
-        setStatusMsg(t("msg.synced", locale, { n: data.synced ?? 0 }));
+        setThreads((data.threads as typeof threads) || []);
+        setStatusMsg(t("msg.synced", locale, { n: Number(data.synced ?? 0) }));
         bumpNavBadge("/admin/messenger", Number(data.synced) || 1);
         router.refresh();
         return;
       }
-      const serverMsgs: Message[] = data.messages || [];
+      const serverMsgs: Message[] = (data.messages as Message[]) || [];
       const nextMessages =
         thought && localThought ? mergeThought(serverMsgs, localThought, action, snapshot) : serverMsgs;
       setMessages(nextMessages);
-      setPending(data.pending || []);
-      setRecommended(data.recommended_actions || []);
+      setPending((data.pending as typeof pending) || []);
+      setRecommended((data.recommended_actions as typeof recommended) || []);
       if (Array.isArray(data.poc_windows)) {
         setPocWindows(data.poc_windows as PocWindow[]);
         if (typeof data.current_step === "number") setFocusedHop(data.current_step);
       }
       setConfirmId(null);
       setChat("");
-      const listRes = await fetch("/api/messenger");
-      const listData = await listRes.json();
-      if (gen !== runGen.current) return;
-      if (listRes.ok) setThreads(listData.threads || []);
+      try {
+        const listRes = await fetch("/api/messenger");
+        const listParsed = await readResponseJson<{ threads?: typeof threads }>(listRes);
+        if (gen !== runGen.current) return;
+        if (listParsed.ok && Array.isArray(listParsed.data.threads)) {
+          setThreads(listParsed.data.threads);
+        }
+      } catch {
+        /* ignore list refresh failures */
+      }
       setStatusMsg(t("msg.actionDone", locale, { action }));
       if (action === "escalate") bumpNavBadge("/admin/messenger", 1);
       if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);

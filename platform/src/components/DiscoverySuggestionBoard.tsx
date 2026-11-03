@@ -10,6 +10,7 @@ import { bumpNavBadge } from "@/lib/nav-badges";
 import { MonitorCode } from "@/components/MonitorCode";
 import { RISK_DISCOVERY_NOTEBOOK } from "@/lib/ai/discovery-links";
 import { LlmProviderPicker } from "@/components/LlmProviderPicker";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 type DiscoverySuggestion = {
   assessment: string;
@@ -213,6 +214,7 @@ export function DiscoverySuggestionBoard({
 }) {
   const router = useRouter();
   const { locale } = useUiLocale();
+  const zh = locale === "zh-Hant";
   const [candidates, setCandidates] = useState(initial.candidates);
   const [pendingCount, setPendingCount] = useState(initial.pending_count);
   const [aiStatus, setAiStatus] = useState(initial.ai_status);
@@ -281,15 +283,13 @@ export function DiscoverySuggestionBoard({
     ["ALL", "All", "全部"],
   ] as const;
 
-  async function post(body: Record<string, unknown>) {
-    const res = await fetch("/api/discovery", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || "Request failed");
-    return data;
+  async function post(body: Record<string, unknown>): Promise<Record<string, any>> {
+    const parsed = await postDeskJson<Record<string, any>>("/api/discovery", body);
+    if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+      throw new Error(pagesReadOnlyHint(zh));
+    }
+    if (!parsed.ok) throw new Error(String(parsed.data.error || "Request failed"));
+    return parsed.data;
   }
 
   async function scanNow() {

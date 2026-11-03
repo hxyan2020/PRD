@@ -10,6 +10,7 @@ import { RoleCharterView } from "@/components/OrgCharter";
 import { roleCharter } from "@/lib/org-catalog";
 import { ALL_PERMISSIONS, PERMISSION_GROUPS } from "@/lib/permissions-catalog";
 import { useT } from "@/hooks/useUiLocale";
+import { pagesReadOnlyHint, postDeskJson } from "@/lib/fetch-json";
 
 type Role = {
   id: number;
@@ -83,21 +84,20 @@ export function RolesEditorBoard({
     setSaving(true);
     setMsg(null);
     try {
-      const res = await fetch("/api/roles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "update_role",
-          id: r.id,
-          name,
-          description,
-          department_code: departmentCode || null,
-          permissions: perms,
-        }),
+      const parsed = await postDeskJson<{ error?: string }>("/api/roles", {
+        action: "update_role",
+        id: r.id,
+        name,
+        description,
+        department_code: departmentCode || null,
+        permissions: perms,
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setMsg(data.error || t("common.failed"));
+      if (parsed.apiUnavailable || parsed.skippedPublic || parsed.nonJson) {
+        setMsg(pagesReadOnlyHint(zh));
+        return;
+      }
+      if (!parsed.ok) {
+        setMsg(parsed.data.error || t("common.failed"));
         return;
       }
       setEditId(null);
