@@ -1,0 +1,4 @@
+node_modules
+canon/node_modules
+canon/dist
+.DS_Store
