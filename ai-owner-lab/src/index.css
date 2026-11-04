@@ -3941,6 +3941,11 @@ button.notebook-category-badge.on {
 
 .rte-btn:disabled {
   opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.rte-btn:disabled.rte-btn-busy,
+.rte-btn-busy:disabled {
   cursor: wait;
 }
 

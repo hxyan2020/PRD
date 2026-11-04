@@ -223,6 +223,147 @@ function selectionInsideCode(editor: HTMLElement | null): HTMLElement | null {
   return code && editor.contains(code) ? (code as HTMLElement) : null
 }
 
+function selectionTableCell(editor: HTMLElement | null): HTMLTableCellElement | null {
+  const selection = window.getSelection()
+  if (!editor || !selection || !selection.rangeCount) return null
+  const node = selection.getRangeAt(0).startContainer
+  const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
+  const cell = el?.closest('td, th') as HTMLTableCellElement | null
+  if (!cell || !editor.contains(cell)) return null
+  const table = cell.closest('table')
+  return table && editor.contains(table) ? cell : null
+}
+
+function tableColumnCount(table: HTMLTableElement): number {
+  let max = 0
+  for (const row of Array.from(table.rows)) {
+    max = Math.max(max, row.cells.length)
+  }
+  return max
+}
+
+function cellColumnIndex(cell: HTMLTableCellElement): number {
+  const row = cell.parentElement as HTMLTableRowElement | null
+  if (!row) return 0
+  return Array.from(row.cells).indexOf(cell)
+}
+
+function focusTableCell(cell: HTMLTableCellElement | null) {
+  if (!cell) return
+  const selection = window.getSelection()
+  if (!selection) return
+  const range = document.createRange()
+  range.selectNodeContents(cell)
+  range.collapse(true)
+  selection.removeAllRanges()
+  selection.addRange(range)
+}
+
+function makeTableCell(tag: 'td' | 'th'): HTMLTableCellElement {
+  const cell = document.createElement(tag)
+  cell.appendChild(document.createElement('br'))
+  return cell
+}
+
+/** Insert a row below the caret (header → new body row; body → sibling body row). */
+function insertTableRowBelow(editor: HTMLElement | null): boolean {
+  const cell = selectionTableCell(editor)
+  if (!cell) return false
+  const row = cell.parentElement as HTMLTableRowElement | null
+  const table = cell.closest('table')
+  if (!row || !table) return false
+
+  const cols = Math.max(row.cells.length, tableColumnCount(table), 1)
+  const inHead = Boolean(row.closest('thead'))
+  const newRow = document.createElement('tr')
+  for (let i = 0; i < cols; i++) {
+    newRow.appendChild(makeTableCell(inHead ? 'td' : row.cells[i]?.tagName === 'TH' ? 'th' : 'td'))
+  }
+
+  if (inHead) {
+    let tbody = table.tBodies[0]
+    if (!tbody) {
+      tbody = document.createElement('tbody')
+      table.appendChild(tbody)
+    }
+    tbody.insertBefore(newRow, tbody.firstChild)
+  } else {
+    row.after(newRow)
+  }
+
+  focusTableCell(newRow.cells[Math.min(cellColumnIndex(cell), newRow.cells.length - 1)] ?? null)
+  return true
+}
+
+/** Insert a column to the right of the caret across every row. */
+function insertTableColumnRight(editor: HTMLElement | null): boolean {
+  const cell = selectionTableCell(editor)
+  if (!cell) return false
+  const table = cell.closest('table')
+  if (!table) return false
+
+  const index = cellColumnIndex(cell)
+  let focused: HTMLTableCellElement | null = null
+  for (const row of Array.from(table.rows)) {
+    const tag: 'td' | 'th' =
+      row.closest('thead') || row.cells[index]?.tagName === 'TH' ? 'th' : 'td'
+    const newCell = makeTableCell(tag)
+    const ref = row.cells[index] ?? null
+    if (ref) ref.after(newCell)
+    else row.appendChild(newCell)
+    if (row === cell.parentElement) focused = newCell
+  }
+  focusTableCell(focused)
+  return true
+}
+
+function deleteTableRow(editor: HTMLElement | null): boolean {
+  const cell = selectionTableCell(editor)
+  if (!cell) return false
+  const row = cell.parentElement as HTMLTableRowElement | null
+  const table = cell.closest('table')
+  if (!row || !table) return false
+  if (table.rows.length <= 1) return false
+
+  const col = cellColumnIndex(cell)
+  const rowIndex = row.rowIndex
+  row.remove()
+  // Drop empty section wrappers so sanitize stays clean.
+  for (const section of Array.from(table.querySelectorAll('thead, tbody, tfoot'))) {
+    if (!section.querySelector('tr')) section.remove()
+  }
+  if (!table.rows.length) {
+    table.remove()
+    return true
+  }
+  const next =
+    table.rows[Math.min(rowIndex, table.rows.length - 1)] ??
+    table.rows[table.rows.length - 1]
+  focusTableCell(next?.cells[Math.min(col, (next?.cells.length ?? 1) - 1)] ?? null)
+  return true
+}
+
+function deleteTableColumn(editor: HTMLElement | null): boolean {
+  const cell = selectionTableCell(editor)
+  if (!cell) return false
+  const table = cell.closest('table')
+  if (!table) return false
+  if (tableColumnCount(table) <= 1) return false
+
+  const index = cellColumnIndex(cell)
+  const rowIndex = (cell.parentElement as HTMLTableRowElement | null)?.rowIndex ?? 0
+  for (const row of Array.from(table.rows)) {
+    const target = row.cells[index]
+    if (target) target.remove()
+  }
+  const nextRow =
+    table.rows[Math.min(rowIndex, table.rows.length - 1)] ??
+    table.rows[table.rows.length - 1]
+  const nextIndex = Math.min(index, Math.max(0, (nextRow?.cells.length ?? 1) - 1))
+  focusTableCell(nextRow?.cells[nextIndex] ?? null)
+  return true
+}
+
 /** Text-offset caret bookmark so we can restore after a rare controlled HTML rewrite. */
 function getCaretTextOffset(root: HTMLElement): number {
   const selection = window.getSelection()
@@ -306,6 +447,11 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguageId>('python')
   const [tableRows, setTableRows] = useState(3)
   const [tableCols, setTableCols] = useState(3)
+  const [tableEdit, setTableEdit] = useState({
+    active: false,
+    canDeleteRow: false,
+    canDeleteCol: false,
+  })
 
   /** Toggle placeholder with an inline style on a ref — React className re-renders
    *  were putting `is-empty` back while the controlled `value` still lagged. */
@@ -393,13 +539,34 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
     savedRange.current = range.cloneRange()
   }, [autoFocus])
 
+  function refreshTableEditState() {
+    const cell = selectionTableCell(editorRef.current)
+    if (!cell) {
+      setTableEdit({ active: false, canDeleteRow: false, canDeleteCol: false })
+      return
+    }
+    const table = cell.closest('table')
+    setTableEdit({
+      active: true,
+      canDeleteRow: Boolean(table && table.rows.length > 1),
+      canDeleteCol: Boolean(table && tableColumnCount(table) > 1),
+    })
+  }
+
   function captureSelection() {
     const editor = editorRef.current
     const selection = window.getSelection()
-    if (!editor || !selection || !selection.rangeCount) return
+    if (!editor || !selection || !selection.rangeCount) {
+      refreshTableEditState()
+      return
+    }
     const range = selection.getRangeAt(0)
-    if (!editor.contains(range.commonAncestorContainer)) return
+    if (!editor.contains(range.commonAncestorContainer)) {
+      refreshTableEditState()
+      return
+    }
     savedRange.current = range.cloneRange()
+    refreshTableEditState()
   }
 
   function restoreSelection(): boolean {
@@ -781,6 +948,62 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           >
             ▦
           </button>
+          <button
+            type="button"
+            className="rte-btn"
+            title={t('editorTableAddRow')}
+            aria-label={t('editorTableAddRow')}
+            disabled={!tableEdit.active}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              captureSelection()
+            }}
+            onClick={() => withFocus(() => insertTableRowBelow(editorRef.current))}
+          >
+            ＋R
+          </button>
+          <button
+            type="button"
+            className="rte-btn"
+            title={t('editorTableDeleteRow')}
+            aria-label={t('editorTableDeleteRow')}
+            disabled={!tableEdit.canDeleteRow}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              captureSelection()
+            }}
+            onClick={() => withFocus(() => deleteTableRow(editorRef.current))}
+          >
+            －R
+          </button>
+          <button
+            type="button"
+            className="rte-btn"
+            title={t('editorTableAddCol')}
+            aria-label={t('editorTableAddCol')}
+            disabled={!tableEdit.active}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              captureSelection()
+            }}
+            onClick={() => withFocus(() => insertTableColumnRight(editorRef.current))}
+          >
+            ＋C
+          </button>
+          <button
+            type="button"
+            className="rte-btn"
+            title={t('editorTableDeleteCol')}
+            aria-label={t('editorTableDeleteCol')}
+            disabled={!tableEdit.canDeleteCol}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              captureSelection()
+            }}
+            onClick={() => withFocus(() => deleteTableColumn(editorRef.current))}
+          >
+            －C
+          </button>
         </div>
         <div className="rte-code-controls" role="group" aria-label={t('editorInsertCode')}>
           <label className="rte-select-wrap">
@@ -839,7 +1062,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
         </div>
         <button
           type="button"
-          className="rte-btn rte-btn-image"
+          className={`rte-btn rte-btn-image${imageBusy ? ' rte-btn-busy' : ''}`}
           title={t('editorInsertImage')}
           aria-label={t('editorInsertImage')}
           disabled={imageBusy}
