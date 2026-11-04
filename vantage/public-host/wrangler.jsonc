@@ -1,0 +1,6 @@
+{
+  "name": "vantage-market-intelligence",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-26",
+  "workers_dev": true
+}
