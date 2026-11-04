@@ -1,0 +1,632 @@
+#!/usr/bin/env python3
+"""Emit plan.json. Run from this directory. Not used by the website at runtime."""
+
+import json
+from pathlib import Path
+
+WEEKS = [
+    {
+        "n": 1,
+        "block": "Derivatives and margin",
+        "title": "Option payoffs and the Greeks",
+        "paths": ["trading", "multi"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Hull, Options, Futures, and Other Derivatives, 11th ed., Ch. 10 (mechanics of options markets), Ch. 11 (properties of stock options), and the payoff diagrams in Ch. 12. Stop after you can price a position by payoff, not after the whole book. Core ideas: intrinsic versus time value, and put-call parity."},
+            {"h": 2.0, "kind": "Build", "text": "One-page Greek sheet. For a long at-the-money call and a short at-the-money put, write the sign of delta, gamma, vega, and theta. Then eight lines: what a short-gamma book does in a 10% gap, and which desk would feel it first."},
+            {"h": 1.5, "kind": "Lab", "text": "Price a European call with S=100, K=100, r=0.02, sigma=0.20, T=0.5. Implement Black–Scholes twice, once with math.erf and once with scipy.stats.norm.cdf. Print price, delta, gamma, vega, and theta."},
+            {"h": 0.5, "kind": "Industry", "text": "Write a list of 8 named people: 3 trading-risk managers, 3 risk product managers, 2 people who ship AI into a risk workflow. Firm, role, and why each person is on the list. Send nothing this week."},
+        ],
+        "criteria": [
+            "Greek sheet exists on one page, with signs for delta, gamma, vega, and theta on both positions, plus the 8-line gap note.",
+            "The two Black–Scholes implementations agree to 1e-6, and the notebook prints price, delta, gamma, vega, and theta.",
+            "The 8-person list is saved with a reason for each name. No pitch sent.",
+        ],
+    },
+    {
+        "n": 2,
+        "block": "Derivatives and margin",
+        "title": "Basis, futures hedge, and EWMA volatility",
+        "paths": ["trading", "multi"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Hull 11th ed. Ch. 3 (hedging with futures and basis risk) and Ch. 5 (forward and futures prices: contango, backwardation, cost of carry). Then Ch. 15.4 and 15.11 only: what volatility means, and implied volatility. Skip the Black–Scholes PDE derivation."},
+            {"h": 2.0, "kind": "Build", "text": "Basis memo on one market you can observe without internal data (BTC perp versus spot, or a listed equity index future). Define basis, state the hedge ratio for a 1-week horizon, and name one assumption that fails in a liquidation cascade."},
+            {"h": 1.5, "kind": "Lab", "text": "On 60 daily returns (public prices are fine), compute 20-day realized volatility and RiskMetrics EWMA with lambda 0.94. Print both on the same dates."},
+            {"h": 0.5, "kind": "Industry", "text": "Send two notes of at most five sentences. Each note contains one observation from week 1 and one specific question. No CV attached. Log the person and the date."},
+        ],
+        "criteria": [
+            "Basis memo states the formula, a numeric hedge ratio, and one cascade failure mode.",
+            "EWMA and 20-day realized volatility are printed for the same 60-day series.",
+            "Two notes are sent. Person and date are logged.",
+        ],
+    },
+    {
+        "n": 3,
+        "block": "Derivatives and margin",
+        "title": "Margin tiers, haircuts, and liquidation",
+        "paths": ["trading", "multi"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Read OKX public docs end to end for one path: tiered maintenance margin, isolated versus cross, and adjusted equity after collateral discounts (the v5 fields adjEq, mmr, and mgnRatio). Write five lines on how this differs from the liquidation and ADL path you already know from exchange trading risk."},
+            {"h": 2.0, "kind": "Build", "text": "Build a 6-row tier table for a hypothetical perpetual: notional band, maintenance margin rate, max leverage, and liquidation buffer. Under the top tier, write one sentence of the form: this tier exists because a clip of size X cannot be closed inside Y bps without moving the book."},
+            {"h": 1.5, "kind": "Lab", "text": "Equity 100, position notional 500, maintenance margin rate 2%. Compute the margin ratio and the price move that reaches liquidation. Repeat for a two-asset cross book where asset B has a 10% collateral haircut. Show the arithmetic."},
+            {"h": 0.5, "kind": "Industry", "text": "Leave one substantive public comment on a risk or product post. The comment must add a distinction, not praise. Log the URL."},
+        ],
+        "criteria": [
+            "Tier table has 6 rows and a written reason for the top tier that mentions exit capacity.",
+            "Isolated liquidation move and the haircut-adjusted cross case are both computed by hand, with formulas visible.",
+            "One public comment URL is logged.",
+        ],
+    },
+    {
+        "n": 4,
+        "block": "Derivatives and margin",
+        "title": "Why this threshold is 5% and not 3%",
+        "paths": ["trading", "multi"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 1.5, "kind": "Study", "text": "Hull 11th ed. Ch. 22.1–22.2 only: the definitions of VaR and expected shortfall. Then draft, from memory, the four costs of a bad threshold: missed loss, false positives, time to react, and who owns the decision."},
+            {"h": 2.5, "kind": "Build", "text": "Threshold memo, at most 700 words, for one control you can describe without confidential numbers (abnormal price, concentration, or liquidation buffer). Required headings: decision, metric definition, loss if the band is too wide, alert volume if the band is too tight, owner, evidence that would change the number, rollback."},
+            {"h": 1.5, "kind": "Ownership", "text": "Ten-line risk finding written to a Head of Risk. Include current exposure, the limit you recommend, and the exact decision you need. Use synthetic numbers."},
+            {"h": 0.5, "kind": "Industry", "text": "Ask one person on the week-1 list for a 20-minute conversation in the next six weeks. One ask. Log it."},
+        ],
+        "criteria": [
+            "Memo contains both a loss argument and a false-positive argument, plus an owner and a rollback.",
+            "The 10-line finding asks for one explicit decision.",
+            "One meeting request is sent and logged.",
+        ],
+    },
+    {
+        "n": 5,
+        "block": "Risk product",
+        "title": "Own one slice: problem, non-goals, acceptance tests",
+        "paths": ["product"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 1.5, "kind": "Study", "text": "Read Marty Cagan’s writing on product discovery versus delivery (Inspired, the discovery chapters, or the SVPG article Product Discovery at svpg.com/product-discovery). Extract only this distinction: what you must learn before you write requirements."},
+            {"h": 2.5, "kind": "Build", "text": "One-page roadmap for a single risk-control slice you could own. Required: problem, user (risk officer, trader, or engineer), three outcomes, explicit non-goals, and two risks to the slice. If it does not fit on one page, cut scope, not font size."},
+            {"h": 1.5, "kind": "Build", "text": "Five acceptance tests in Given / When / Then. A tester who has not spoken to you must be able to mark each one pass or fail."},
+            {"h": 0.5, "kind": "Industry", "text": "Send the problem statement, not the solution, to one engineer and one trader. Ask what you got wrong. Log both replies, including silence after a reasonable wait."},
+        ],
+        "criteria": [
+            "Roadmap is one page and names at least one non-goal.",
+            "Five Given / When / Then tests are writable as pass or fail without you in the room.",
+            "Two people were asked what is wrong with the problem statement, and the replies are logged.",
+        ],
+    },
+    {
+        "n": 6,
+        "block": "Risk product",
+        "title": "Metrics that move after launch",
+        "paths": ["product"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 1.5, "kind": "Study", "text": "Read one metrics frame and apply it to an internal tool, not a consumer app. Use the HEART framework’s task-success and adoption parts, or the one-metric chapter of Lean Analytics. Ignore vanity launch metrics."},
+            {"h": 2.5, "kind": "Build", "text": "Metric dictionary for the week-5 slice. Six rows: false-positive rate, incident rate, detection coverage, manual minutes per case, loss exposure, decision latency. Each row needs a formula, a source, a baseline you will measure, and a 90-day target."},
+            {"h": 1.5, "kind": "Build", "text": "Mark two metrics computable from data you already have, and two that are blocked. For the blocked pair, name the missing field."},
+            {"h": 0.5, "kind": "Industry", "text": "Show the dictionary to one risk colleague. Ask them to delete one metric. Record which one and why."},
+        ],
+        "criteria": [
+            "Six metrics each have a formula, a source, a baseline, and a 90-day target.",
+            "Two metrics are marked computable now, and two blocked metrics name the missing field.",
+            "One colleague has argued for deleting a metric, and that argument is written down.",
+        ],
+    },
+    {
+        "n": 7,
+        "block": "Risk product",
+        "title": "Parameter dictionary and maker-checker",
+        "paths": ["product", "trading"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Read one public OKX position-tier change notice from start to finish (okx.com help center). Map it onto proposer, approver, effective time, and rollback. This is the public pattern for parameter governance, not a template to copy onto an employer system."},
+            {"h": 2.5, "kind": "Build", "text": "Parameter dictionary with 8 rows: threshold, haircut, tier bound, stale-price window, max leverage, concentration cap, alert cooldown, maker-checker limit. Columns: name, unit, owner, who may change it, simulation required, backtest required, what is monitored after the change."},
+            {"h": 1.0, "kind": "Build", "text": "Write the approval workflow in six steps. Step one must state who is forbidden from approving their own change."},
+            {"h": 0.5, "kind": "Industry", "text": "Ask one risk or product person how their firm separates the person who proposes a parameter change from the person who approves it. Write their answer in five lines."},
+        ],
+        "criteria": [
+            "Eight parameters are documented with owner, change right, and whether simulation and backtest are required.",
+            "The six-step workflow blocks self-approval in writing.",
+            "One practitioner’s answer on proposer versus approver is saved.",
+        ],
+    },
+    {
+        "n": 8,
+        "block": "Risk product",
+        "title": "Replay the change before it ships",
+        "paths": ["product", "trading"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 1.5, "kind": "Study", "text": "Define, in your own words, historical replay, stress, and production shadow. Reread stress_testing.py in this repo and list what it does not do: no Greeks, no collateral-haircut path, no partial liquidation."},
+            {"h": 2.5, "kind": "Build", "text": "Specify one parameter change: raise a concentration cap from X to Y, using synthetic X and Y. Define population, window, metric, and a numeric pass rule. The pass rule must be a number, not the word acceptable."},
+            {"h": 1.5, "kind": "Lab", "text": "Run the replay on 20 synthetic accounts. Print alert counts before and after the change. Keep the seed in the notebook so you can rerun it."},
+            {"h": 0.5, "kind": "Industry", "text": "Send only the pass rule, not the data, to one person. Ask whether it is too tight. Log the answer."},
+        ],
+        "criteria": [
+            "The pass rule is a single number with a unit.",
+            "The notebook prints before and after alert counts on 20 synthetic accounts and shows the random seed.",
+            "One review of the pass rule is logged.",
+        ],
+    },
+    {
+        "n": 9,
+        "block": "Risk platform",
+        "title": "Events, APIs, and the path from tick to alert",
+        "paths": ["platform"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Design a limit as a REST resource: GET and POST, and what makes a POST idempotent. Then read Martin Fowler, What do you mean by Event-Driven? (martinfowler.com/articles/201701-event-driven.html). You are learning the vocabulary, not standing up Kafka."},
+            {"h": 2.0, "kind": "Build", "text": "One-page box-and-arrow diagram: market tick, position, metric, rule, alert, human acknowledgement. Mark each arrow sync or async. Name the system of record at each box."},
+            {"h": 1.5, "kind": "Build", "text": "Write JSON examples, not just schemas, for AlertEvent and for a parameter-change command. Both include a correlation id and an inputs hash."},
+            {"h": 0.5, "kind": "Industry", "text": "Ask one engineer which arrow on your diagram is actually a queue today. Write down the answer, including I do not know."},
+        ],
+        "criteria": [
+            "Diagram marks every arrow sync or async and names a system of record.",
+            "Both JSON examples contain a correlation id and an inputs hash, and a second example you type by hand still matches the fields.",
+            "One engineer’s answer about the queue is logged.",
+        ],
+    },
+    {
+        "n": 10,
+        "block": "Risk platform",
+        "title": "System of record and five pages worth sending",
+        "paths": ["platform"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Write the difference between the store that serves today’s decision and the store that replays last quarter. Then apply three operational signals to a risk calculation: lag, error rate, and saturation. A textbook chapter is optional. Kleppmann, Designing Data-Intensive Applications, Ch. 1 and the replication overview in Ch. 5 are enough if you already own the book."},
+            {"h": 2.0, "kind": "Build", "text": "Storage note with four domains: positions, marks, parameters, decisions. For each: system of record, who may write, and how long an RCA pack must keep it."},
+            {"h": 1.5, "kind": "Build", "text": "Five pages an on-call would wake up for: calc lag, missing marks, rule-engine errors, queue depth, parameter-publish failure. Each needs a numeric threshold and an owner."},
+            {"h": 0.5, "kind": "Industry", "text": "One message or conversation: how does an incident get detected before a trader complains? Log the answer in five lines."},
+        ],
+        "criteria": [
+            "Four domains each have a system of record, a writer, and a retention statement.",
+            "Five paging alerts each have a number and an owner.",
+            "One detection-before-complaint note is saved.",
+        ],
+    },
+    {
+        "n": 11,
+        "block": "Risk platform",
+        "title": "Ship a risk change with a rollback",
+        "paths": ["platform"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 1.5, "kind": "Study", "text": "Write a minimal delivery path: test, review, staged config, rollback. Do not take a Kubernetes course. The test of understanding is whether rollback is a config action."},
+            {"h": 2.5, "kind": "Build", "text": "Release plan for the week-8 parameter change. Include the tests that must pass, who signs UAT, the shadow period, the rollback action, and the two numbers you watch for 48 hours."},
+            {"h": 1.5, "kind": "Build", "text": "Name three automated checks: schema valid, no self-approval, replay still meets the week-8 pass rule. Describe each check as an input and a pass/fail output."},
+            {"h": 0.5, "kind": "Industry", "text": "Ask someone who has shipped a risk change what they wish had been monitored in the first day. Log it."},
+        ],
+        "criteria": [
+            "Release plan contains a rollback that is a config or parameter revert, and two numbers watched for 48 hours.",
+            "Three checks are specified as input plus pass/fail output.",
+            "One production monitoring lesson is logged.",
+        ],
+    },
+    {
+        "n": 12,
+        "block": "Quant risk",
+        "title": "Historical and parametric VaR, computed",
+        "paths": ["quant", "trading"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Hull 11th ed. Ch. 22 on historical simulation and the model-building (variance-covariance) approach. Do the arithmetic. Skip any section you can already recite from FRM without a calculation."},
+            {"h": 2.5, "kind": "Lab", "text": "Seed numpy Generator with 7. Draw 250 days by 2 standard normals. Apply correlation 0.4, daily vols 1% and 2%, weights 60/40, book value 1,000,000. Report 99% 1-day historical VaR using NumPy’s default quantile, and parametric VaR using 2.326 as the normal factor."},
+            {"h": 1.0, "kind": "Write", "text": "Eight lines: on which days these two VaR numbers diverge, and which one you would not show a treasurer without a footnote."},
+            {"h": 0.5, "kind": "Industry", "text": "If a week-4 conversation is due a follow-up, send it. If not, read one public market-risk note and file five lines plus the URL."},
+        ],
+        "criteria": [
+            "Historical 99% VaR prints between 29,300 and 29,450. Parametric 99% VaR prints between 27,300 and 27,450. Seed 7 is in the notebook.",
+            "The eight-line note names a case where the two methods diverge.",
+            "Either a follow-up was sent, or a public note is filed with a URL.",
+        ],
+    },
+    {
+        "n": 13,
+        "block": "Quant risk",
+        "title": "Expected shortfall, Kupiec, Christoffersen",
+        "paths": ["quant"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Hull Ch. 22 on expected shortfall. Then BIS MAR32 (backtesting and P&L attribution): 99% one-day VaR against actual and hypothetical P&L. Kupiec 1995 tests unconditional coverage. Christoffersen 1998 adds independence. At 95%, the chi-square critical values to remember are 3.84 (1 df) and 5.99 (2 df). Classic Basel zones over 250 days at 99%: 0–4 green, 5–9 amber, 10 or more red. Read MAR32 far enough to note that FRTB also looks at 97.5% and at both APL and HPL."},
+            {"h": 2.5, "kind": "Lab", "text": "Using the week-12 series, compute 97.5% expected shortfall and a 250-day exception count against historical 99% VaR. Compute the Kupiec likelihood-ratio statistic. Assign a traffic-light zone and show the count you used."},
+            {"h": 1.0, "kind": "Write", "text": "Ten lines, in your own words: why a capital rule can use expected shortfall while the backtest still counts VaR exceptions."},
+            {"h": 0.5, "kind": "Industry", "text": "Send those ten lines to one quant or market-risk contact. Ask what they backtest in production. Log the reply."},
+        ],
+        "criteria": [
+            "Notebook prints 97.5% expected shortfall, the exception count, the Kupiec statistic, and a traffic-light zone.",
+            "The ten-line note distinguishes the capital measure from the backtest measure.",
+            "The note was sent to one practitioner, and the question about production backtests is logged.",
+        ],
+    },
+    {
+        "n": 14,
+        "block": "Quant risk",
+        "title": "EWMA, GARCH(1,1), and correlation",
+        "paths": ["quant", "multi"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Hull Ch. 23: exponentially weighted moving average, GARCH(1,1), and how correlation enters a covariance matrix. Write the GARCH(1,1) recursion once by hand before you code it."},
+            {"h": 2.5, "kind": "Lab", "text": "Fit the recursion in NumPy on the same return series as week 2. Do not add a new library unless you also keep the NumPy version. Print next-day volatility from GARCH next to week-2 EWMA."},
+            {"h": 1.0, "kind": "Write", "text": "One limitation, half a page: what a gap opening does to a GARCH forecast that only saw yesterday’s close."},
+            {"h": 0.5, "kind": "Industry", "text": "Reply to the week-13 contact, or leave one precise comment on a public volatility or stress note. Log the URL or the reply."},
+        ],
+        "criteria": [
+            "GARCH(1,1) recursion is in the notebook, and next-day vol sits beside the week-2 EWMA number.",
+            "The gap-opening limitation is written in your own words and names what the model cannot see.",
+            "One external touch from this week is logged.",
+        ],
+    },
+    {
+        "n": 15,
+        "block": "Quant risk",
+        "title": "Monte Carlo, stress, and a liquidity add-on",
+        "paths": ["quant", "multi"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Hull Ch. 21, Monte Carlo for a European option only, enough to simulate a lognormal path. Then define a liquidity add-on you can compute: half-spread times size, plus an extra penalty when the exit is larger than 5% of assumed daily volume. This is not an Almgren–Chriss model. Say so in the notebook."},
+            {"h": 2.5, "kind": "Lab", "text": "Five thousand paths. Book: short an option or hold the ETH and BTC notionals from a −30% ETH shock (50 ETH at 3,000 and 1 BTC at 100,000 is a fine synthetic book). Report 95% loss and expected shortfall. Add the liquidity penalty on any path whose exit exceeds 5% of your assumed volume."},
+            {"h": 1.0, "kind": "Write", "text": "One paragraph to a Head of Risk: which number you would show, the Monte Carlo loss or the week-12 VaR, and the one caveat."},
+            {"h": 0.5, "kind": "Industry", "text": "If the 20-minute call is not yet booked, send one new ask this week. If it is booked, write the three questions you will ask."},
+        ],
+        "criteria": [
+            "Notebook reports 95% loss, expected shortfall, and a liquidity penalty, and states that the penalty is not a market-impact model.",
+            "The paragraph chooses one number to show a Head of Risk and names one caveat.",
+            "Either a new meeting ask is sent, or three call questions are written down.",
+        ],
+    },
+    {
+        "n": 16,
+        "block": "Quant risk",
+        "title": "Model validation pack a reviewer can read",
+        "paths": ["quant", "trading"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Read the Federal Reserve SR 11-7 supervisory guidance on model risk management (federalreserve.gov/supervisionreg/srletters/sr1107.htm): purpose, conceptual soundness, outcomes analysis, ongoing monitoring. You are writing a model a validator could open, not becoming a validation team."},
+            {"h": 2.5, "kind": "Build", "text": "Validation pack for the week-12 VaR, at most four pages: intended use, data, assumptions, limitations, challenger model (historical versus parametric), backtest result from week 13, monitoring metric, owner."},
+            {"h": 1.0, "kind": "Write", "text": "List three decisions this model must not make alone. Each line names the human who still decides."},
+            {"h": 0.5, "kind": "Industry", "text": "Ask one person who signs model changes what they read on page 1. Log their answer."},
+        ],
+        "criteria": [
+            "Validation pack is four pages or fewer and names a challenger model plus the week-13 backtest result.",
+            "Three decisions are reserved for a named human role.",
+            "One signer’s page-1 expectation is logged.",
+        ],
+    },
+    {
+        "n": 17,
+        "block": "AI engineer and AI risk",
+        "title": "Classify alerts: precision at a fixed recall",
+        "paths": ["airisk"],
+        "aiEngineer": True,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Classification metrics for a risk queue: precision, recall, false-positive rate, and the precision-recall curve. Accuracy is the wrong headline. Source: Géron, Hands-On Machine Learning, Ch. 3, or the scikit-learn precision-recall example. Write the definition of precision at 80% recall before you fit a model."},
+            {"h": 2.5, "kind": "Lab", "text": "Synthetic alerts only, 200 rows you label yourself: true incident versus noise. Features: return z-score, volume multiple, hour of day, account concentration. Fit a regularized logistic regression. Report precision at recall 0.80, and the threshold that gets you there."},
+            {"h": 1.0, "kind": "Write", "text": "Name one feature a risk officer should reject as gameable or unstable. Say what a trader would do if that feature became the control."},
+            {"h": 0.5, "kind": "Industry", "text": "Tell one risk officer, in writing, which feature you rejected and why. Log the reply."},
+        ],
+        "criteria": [
+            "Notebook reports precision at recall 0.80 and the probability threshold used.",
+            "The rejected feature is named, with the behavior a trader would use to game it.",
+            "One risk officer received that note, and the exchange is logged.",
+        ],
+    },
+    {
+        "n": 18,
+        "block": "AI engineer and AI risk",
+        "title": "Anomalies, then a human close-out",
+        "paths": ["airisk"],
+        "aiEngineer": True,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Median absolute deviation versus isolation forest. Write down when an unlabeled method is honest, and when it only rediscovers a holiday or a corporate action. A survey paper is unnecessary."},
+            {"h": 2.0, "kind": "Lab", "text": "Run MAD and sklearn.ensemble.IsolationForest on the same synthetic series. Print the top 10 dates from each. Mark which dates both methods flag."},
+            {"h": 1.5, "kind": "Build", "text": "Investigation card: the five fields an investigator sees, the action that closes the alert, and the action that escalates it. No free-text-only close."},
+            {"h": 0.5, "kind": "Industry", "text": "Ask one team how they measure false positives today. Record the formula. If they have no formula, write that sentence down."},
+        ],
+        "criteria": [
+            "Top 10 dates from both detectors are printed, and the overlap is marked.",
+            "The investigation card has a structured close reason, not only a comment box.",
+            "A real false-positive formula, or the absence of one, is logged.",
+        ],
+    },
+    {
+        "n": 19,
+        "block": "AI engineer and AI risk",
+        "title": "RAG over your own memos, with a refusal",
+        "paths": ["airisk"],
+        "aiEngineer": True,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "AI-engineer retrieval block: chunk size, overlap, embeddings, and why an answer must cite a chunk. Read the definitions of faithfulness and response relevancy in the RAGAS docs (docs.ragas.io). You will score by hand this week. Do not index employer documents, client names, or live thresholds."},
+            {"h": 2.5, "kind": "Lab", "text": "Index only memos you wrote in weeks 1–8. Ask: why was the threshold 5% rather than 3%? The answer must quote the week-4 memo. Keep the index local."},
+            {"h": 1.0, "kind": "Build", "text": "Write one question the system must refuse because the memos do not contain the fact. Show the refusal."},
+            {"h": 0.5, "kind": "Industry", "text": "In six lines, describe the prototype to one engineer. Ask which data they would never put in the index. Log the answer."},
+        ],
+        "criteria": [
+            "The threshold answer quotes the week-4 memo, and the quoted sentence is visible in the output.",
+            "One out-of-corpus question is refused, and the refusal is saved.",
+            "An engineer’s do-not-index list is logged. No employer data is in the index.",
+        ],
+    },
+    {
+        "n": 20,
+        "block": "AI engineer and AI risk",
+        "title": "A tool-calling agent that cannot approve",
+        "paths": ["airisk", "platform"],
+        "aiEngineer": True,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "AI-engineer agent block: tool schema, a stop condition, and least privilege. Read two OWASP LLM Top 10 items only: prompt injection, and excessive agency (owasp.org, Top 10 for LLM applications). Write the tools the agent is not allowed to have."},
+            {"h": 2.5, "kind": "Lab", "text": "Agent with exactly three tools: search_memos, compute_var (the week-12 function), and draft_finding. It cannot send, approve, or change a parameter. A finding is saved only after you type APPROVE."},
+            {"h": 1.0, "kind": "Build", "text": "Save one full trace: user question, each tool call and result, and the final draft. Include the stop reason."},
+            {"h": 0.5, "kind": "Industry", "text": "Show the redacted trace to one person. Ask where they would stop the agent. Log the step they name."},
+        ],
+        "criteria": [
+            "The agent has three tools and no send, approve, or parameter-change tool. A finding is stored only after the typed word APPROVE.",
+            "One trace shows tool calls, results, final draft, and stop reason.",
+            "One reviewer names the step where they would stop the agent.",
+        ],
+    },
+    {
+        "n": 21,
+        "block": "AI engineer and AI risk",
+        "title": "Evals, guardrails, and the model-risk note",
+        "paths": ["airisk"],
+        "aiEngineer": True,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "NIST AI Risk Management Framework 1.0: read the short descriptions of Govern, Map, Measure, Manage (nist.gov, AI RMF). Your eval set is the Measure step. An unscored demo is not an AI-engineer deliverable."},
+            {"h": 2.5, "kind": "Lab", "text": "Fifteen questions with an expected fact or an expected refusal. Score the week-19 and week-20 system as grounded, correctly refused, or wrong. Target: at least 12 of 15 grounded or correctly refused. If you miss the target, change the index or the prompt and rerun. Do not lower the target."},
+            {"h": 1.0, "kind": "Build", "text": "Control note on one page: who can read the index, how a bad answer is overridden, and what is logged (prompt version, model version, retrieved sources)."},
+            {"h": 0.5, "kind": "Industry", "text": "Send the score and one wrong answer to a risk or AI contact. Ask which failure would block a pilot. Log it."},
+        ],
+        "criteria": [
+            "Eval sheet has 15 rows and a score of at least 12 of 15 after the rerun, or a written note of the changes that still left it short and the remaining failures.",
+            "Control note names readers, the override, and the three things logged.",
+            "One contact has said which failure would block a pilot.",
+        ],
+    },
+    {
+        "n": 22,
+        "block": "Prime brokerage and cross-asset",
+        "title": "Repo, stock borrow, collateral, rehypothecation",
+        "paths": ["pb"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.5, "kind": "Study", "text": "Learn the economic difference between a repo, a securities loan, and a secured loan. Use ICMA’s public description of the Professional Repo and Collateral Workshop (icmagroup.org) for the topic list: haircut, margin call, general collateral versus specials, documentation. Then read a public overview of rehypothecation in prime brokerage (the FSB securities-lending discussion is enough). Treat any numeric cap, including the often-cited US 140% illustration, as an example to verify, not as a rule to apply."},
+            {"h": 2.0, "kind": "Build", "text": "Two-column table: crypto-venue margin and liquidation versus prime-broker margin, financing, and counterparty exposure. At least eight rows. Use your weeks 3 and 4 language on one side so the bridge is explicit."},
+            {"h": 1.0, "kind": "Lab", "text": "Repo arithmetic. Bond value 1,000,000, haircut 2%, repo rate 4% actual/365, term 7 days. Show cash received, interest, and the margin gap if the bond is marked down 5%. Show each formula."},
+            {"h": 0.5, "kind": "Industry", "text": "Name three prime-brokerage or buy-side risk people. Send one note that refers to a row in your table. Do not attach a job ask."},
+        ],
+        "criteria": [
+            "The comparison table has at least eight rows and uses your own margin language on the crypto-venue side.",
+            "Cash, interest, and the 5% mark-down gap are shown with formulas, and a second hand calculation matches.",
+            "One note was sent to a prime-brokerage or buy-side risk person, with no job ask.",
+        ],
+    },
+    {
+        "n": 23,
+        "block": "Prime brokerage and cross-asset",
+        "title": "One book, four shocks, one dominant sleeve",
+        "paths": ["pb", "multi", "quant"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 2.0, "kind": "Study", "text": "Set up one portfolio with four risk channels: option delta, futures basis, collateral gap, and counterparty. Use Hull Ch. 17 only if you need a refresher on FX or index options. Otherwise reuse the week-15 shock method."},
+            {"h": 2.5, "kind": "Lab", "text": "Synthetic book: a EURUSD option, a BTC perpetual, and the financed bond from week 22. Shocks applied together: 10% USD move against the option, 20% BTC move, bond price −3%, funding +200 bps. Report P&L by sleeve and the margin call."},
+            {"h": 1.0, "kind": "Write", "text": "State which sleeve dominates the loss, and which single control from weeks 3–8 would have caught it first."},
+            {"h": 0.5, "kind": "Industry", "text": "Hold the 20-minute call if it has not happened. Prepare three questions and log the answers. If the call already happened, send a thank-you that names one thing you changed in this plan."},
+        ],
+        "criteria": [
+            "P&L is reported by sleeve, and the margin call is a separate number.",
+            "One sleeve is named as the dominant loss, and one earlier control is named as the first catch.",
+            "Call notes, or a thank-you that names a plan change, are saved.",
+        ],
+    },
+    {
+        "n": 24,
+        "block": "Capstone",
+        "title": "The commercial sentence for a risk product",
+        "paths": ["tpm", "product"],
+        "aiEngineer": False,
+        "sessions": [
+            {"h": 1.5, "kind": "Study", "text": "For an internal risk tool, write the difference between the user (the desk) and the economic buyer (the person who funds the work, often Head of Risk). Do not run a consumer discovery script. This is the trading-product gap the analysis named, kept inside risk product on purpose."},
+            {"h": 2.0, "kind": "Build", "text": "One-page commercial note: hours times people in the manual process, the loss the control is aimed at, what adoption means (weekly active reviewers), and two outcomes you will not claim. Revenue and conversion are on the will-not-claim list unless you truly own them."},
+            {"h": 1.5, "kind": "Build", "text": "Scan two public venue documents you already used (OKX margin is one) and one TradFi analogue you know from Murex-style limit workflows, described only at the level of public product behavior. Three bullets: what they govern that your memo does not."},
+            {"h": 1.0, "kind": "Industry", "text": "Ask one product manager or desk head which single number would make them fund the slice. Record the number they name, even if you disagree."},
+        ],
+        "criteria": [
+            "The note separates user from economic buyer and lists two outcomes you will not claim.",
+            "Three gaps versus public venue or TradFi limit practice are written as bullets.",
+            "One funder-style number is recorded from a real person.",
+        ],
+    },
+    {
+        "n": 25,
+        "block": "Capstone",
+        "title": "Assemble the portfolio and fix the weakest file",
+        "paths": ["trading", "product", "platform", "quant", "airisk", "multi"],
+        "aiEngineer": True,
+        "sessions": [
+            {"h": 5.0, "kind": "Build", "text": "Put the artifacts in one private folder: Greek sheet, basis memo, tier table, threshold memo, roadmap, metric dictionary, parameter dictionary, replay notebook, event diagram, release plan, VaR notebook, backtest, validation pack, classifier, anomaly card, RAG refusal, agent trace, eval sheet, repo table, cross-asset case, commercial note. A missing file means that week is not done. Reopen it."},
+            {"h": 0.5, "kind": "Build", "text": "Open the weakest artifact and repair it until it meets that week’s original criteria. Do not add a new topic."},
+            {"h": 0.5, "kind": "Industry", "text": "Send the table of contents, not the files, to two people from different paths: one risk, one engineering or AI. Ask which artifact they would open first. Log both answers."},
+        ],
+        "criteria": [
+            "The folder contains every artifact named above, or the missing week is unchecked again.",
+            "One weak artifact was revised against its original criteria, and the change is visible.",
+            "Two people named the artifact they would open first.",
+        ],
+    },
+    {
+        "n": 26,
+        "block": "Capstone",
+        "title": "The narrative, the spoken defense, the next 90 days",
+        "paths": ["trading", "product", "platform", "quant", "airisk", "multi", "pb", "tpm"],
+        "aiEngineer": True,
+        "sessions": [
+            {"h": 3.0, "kind": "Build", "text": "900 words. The identity is trading risk, risk product, and risk platform, with AI as the way the work is done. Quant and multi-asset appear as proof. Include one number from the VaR backtest and one number from the agent eval. Do not claim a five-year product-manager title you do not have."},
+            {"h": 1.5, "kind": "Build", "text": "Record a five-minute spoken walkthrough of the threshold decision and the human gate on the agent. Listen once. Cut any sentence you cannot defend with a file in the folder."},
+            {"h": 1.0, "kind": "Industry", "text": "Write a 90-day connection plan: six conversations already named, two communities you will actually attend (a GARP chapter you can reach, and one risk-technology meetup in the city where you work), and one public note that contains no employer data."},
+            {"h": 0.5, "kind": "Industry", "text": "Send the 900 words to one person and book the next conversation before the week ends. Log the date."},
+        ],
+        "criteria": [
+            "The 900-word note includes the VaR number, the eval number, and no inflated title.",
+            "A five-minute recording exists, and you have listened to it once.",
+            "The 90-day plan names six people, two communities, and one public note. The next conversation has a date.",
+        ],
+    },
+]
+
+
+def check(weeks):
+    assert len(weeks) == 26
+    for w in weeks:
+        total = round(sum(s["h"] for s in w["sessions"]), 2)
+        if total != 6.0:
+            raise SystemExit(f"week {w['n']} hours {total}")
+        if len(w["criteria"]) < 3:
+            raise SystemExit(f"week {w['n']} needs 3 criteria")
+        if not w["paths"]:
+            raise SystemExit(f"week {w['n']} has no paths")
+
+
+check(WEEKS)
+
+PATHS = [
+    {
+        "id": "trading",
+        "name": "Trading Risk Manager / Lead",
+        "fitNow": 88,
+        "fitAfter": 94,
+        "role": "Main line",
+        "summary": "The shortest path. The plan adds derivatives depth, a written threshold method, and a finding you can put in front of a Head of Risk.",
+        "gaps": [
+            {"name": "Options, Greeks, volatility, basis, hedging", "weeks": [1, 2, 15]},
+            {"name": "Margin methodology and liquidation", "weeks": [3]},
+            {"name": "Formal ownership of a risk domain", "weeks": [4, 16]},
+            {"name": "Methodology: why 5% and not 3%", "weeks": [4, 7, 8]},
+        ],
+    },
+    {
+        "id": "product",
+        "name": "Risk Product Manager / Trading Risk Product",
+        "fitNow": 82,
+        "fitAfter": 94,
+        "role": "Main line",
+        "summary": "The fast compounder. Study does not create a five-year product-manager title. The counter to title screens is a real slice: roadmap, metrics, parameter governance, and a replay.",
+        "gaps": [
+            {"name": "Formal ownership, roadmap, acceptance tests", "weeks": [5]},
+            {"name": "Product metrics after launch", "weeks": [6, 24]},
+            {"name": "Parameter governance, simulation, backtest", "weeks": [7, 8]},
+            {"name": "Title screen of 5+ years as a PM", "weeks": [25, 26]},
+        ],
+    },
+    {
+        "id": "platform",
+        "name": "Risk Platform / Risk Technology",
+        "fitNow": 84,
+        "fitAfter": 93,
+        "role": "Main line",
+        "summary": "Design the platform. Do not try to become a senior software engineer inside this hour cap. The artifacts are an event path, a system of record, paging rules, and a rollback.",
+        "gaps": [
+            {"name": "APIs and event-driven risk flow", "weeks": [9]},
+            {"name": "Data stores and observability", "weeks": [10]},
+            {"name": "Release, UAT, and rollback", "weeks": [11]},
+            {"name": "A bounded agent as a platform component", "weeks": [20]},
+        ],
+    },
+    {
+        "id": "quant",
+        "name": "Quantitative Risk",
+        "fitNow": 65,
+        "fitAfter": 87,
+        "role": "Second backup",
+        "summary": "The widest gap, and the one that needs notebooks rather than vocabulary. Target is a defensible VaR, a backtest, a volatility model, a Monte Carlo stress, and a validation pack. That is a competitive foundation, not a claim of many years of model-development tenure.",
+        "gaps": [
+            {"name": "VaR and expected shortfall you compute", "weeks": [12, 13]},
+            {"name": "Volatility, correlation, GARCH", "weeks": [14]},
+            {"name": "Monte Carlo and liquidity-aware stress", "weeks": [15]},
+            {"name": "Validation, challenger, and model limits", "weeks": [16]},
+        ],
+    },
+    {
+        "id": "airisk",
+        "name": "AI Risk / Risk Transformation",
+        "fitNow": 85,
+        "fitAfter": 94,
+        "role": "First backup",
+        "summary": "The edge is knowing which risk workflow is worth an AI system. This block is also the AI-engineer syllabus: retrieval, tools, evals, and guardrails, aimed at alerts and investigations.",
+        "gaps": [
+            {"name": "Classification and false positives", "weeks": [17]},
+            {"name": "Anomaly detection and human close-out", "weeks": [18]},
+            {"name": "RAG with citations and refusal", "weeks": [19]},
+            {"name": "Agents, evals, NIST-style controls", "weeks": [20, 21]},
+        ],
+    },
+    {
+        "id": "multi",
+        "name": "Derivatives / Multi-Asset Market Risk",
+        "fitNow": 78,
+        "fitAfter": 92,
+        "role": "Second backup",
+        "summary": "Instrument breadth, then one cross-asset book. Rates, credit, and commodities appear as sleeves in the case, not as a second master’s degree.",
+        "gaps": [
+            {"name": "Options, Greeks, volatility surface intuition", "weeks": [1, 2, 14]},
+            {"name": "Futures basis and hedging", "weeks": [2]},
+            {"name": "Margin and portfolio shocks", "weeks": [3, 15]},
+            {"name": "Cross-asset case with a financed bond", "weeks": [23]},
+        ],
+    },
+    {
+        "id": "pb",
+        "name": "Prime Brokerage / Buy-side Risk",
+        "fitNow": 72,
+        "fitAfter": 88,
+        "role": "Bridge",
+        "summary": "A high-quality TradFi bridge, not the shortest path. Two weeks cover financing, collateral, and a book that includes a repo.",
+        "gaps": [
+            {"name": "Repo, stock borrow, haircuts, rehypothecation", "weeks": [22]},
+            {"name": "Counterparty, liquidity, and client-book stress", "weeks": [22, 23]},
+        ],
+    },
+    {
+        "id": "tpm",
+        "name": "Trading / Financial Product Manager",
+        "fitNow": 72,
+        "fitAfter": 87,
+        "role": "Narrow slice",
+        "summary": "Kept on purpose inside risk product. One week builds the commercial sentence: user, buyer, cost, adoption, and what you will not claim.",
+        "gaps": [
+            {"name": "User versus economic buyer", "weeks": [24]},
+            {"name": "Adoption and cost, not vanity launch metrics", "weeks": [6, 24]},
+        ],
+    },
+]
+
+plan = {
+    "title": "Six hours",
+    "start": "2026-09-28",
+    "hoursPerWeek": 6,
+    "totalWeeks": 26,
+    "totalHours": 156,
+    "stance": "The fit scores are taken as given. This plan does not try to max every path. The main line is trading risk, risk product, and risk platform. AI risk, practiced as an AI engineer, is the first backup. Quant risk and multi-asset risk are the second backup. Prime brokerage and generic trading product stay as bridges.",
+    "hardLimit": "A five-year formal product-manager title cannot be manufactured in 156 hours. The substitute is the portfolio from weeks 5 to 8 and 24 to 26.",
+    "privacy": "Use public documents and synthetic numbers. Do not put employer positions, client names, or live thresholds into the notebooks, the RAG index, or a public repository.",
+    "paths": PATHS,
+    "weeks": WEEKS,
+    "sources": [
+        {"name": "Hull, Options, Futures, and Other Derivatives, 11th ed.", "url": "https://www.pearson.com/en-us/subject-catalog/p/Hull-Options-Futures-and-Other-Derivatives-RENTAL-11th-Edition/P200000005938/9780136939917", "use": "Ch. 3, 5, 10–12, 15.4, 15.11, 17, 19–23 as assigned. Ch. 19 is the Greek-letter reference behind week 1."},
+        {"name": "OKX tiered maintenance margin", "url": "https://www.okx.com/en-gb/help/v-tiered-maintenance-margin-ratio-rules", "use": "Public pattern for tiers, maintenance margin, and why a large clip has a higher rate."},
+        {"name": "OKX API v5, adjusted equity and MMR", "url": "https://www.okx.com/docs-v5/en/", "use": "adjEq, mmr, and mgnRatio as the vocabulary for haircuts and liquidation."},
+        {"name": "BIS MAR32, backtesting and P&L attribution", "url": "https://www.bis.org/basel_framework/chapter/MAR/32.htm", "use": "Current FRTB backtest obligations. Pair with the classic 250-day traffic light."},
+        {"name": "Federal Reserve SR 11-7, model risk", "url": "https://www.federalreserve.gov/supervisionreg/srletters/sr1107.htm", "use": "Structure of the week-16 validation pack."},
+        {"name": "NIST AI Risk Management Framework", "url": "https://www.nist.gov/itl/ai-risk-management-framework", "use": "Govern, Map, Measure, Manage for the week-21 control note."},
+        {"name": "OWASP Top 10 for LLM applications", "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/", "use": "Prompt injection and excessive agency, week 20 only."},
+        {"name": "RAGAS metrics", "url": "https://docs.ragas.io/", "use": "Faithfulness and response relevancy, scored by hand in week 19."},
+        {"name": "Martin Fowler, Event-Driven", "url": "https://martinfowler.com/articles/201701-event-driven.html", "use": "Week 9 vocabulary for the tick-to-alert diagram."},
+        {"name": "SVPG, Product Discovery", "url": "https://www.svpg.com/product-discovery/", "use": "Week 5, discovery before requirements."},
+        {"name": "ICMA Professional Repo and Collateral Workshop", "url": "https://www.icmagroup.org/executive-education/icma-executive-education-courses/professional-repo-and-collateral-workshop-prcw/", "use": "Topic list for week 22. The course itself is optional and not inside the 6-hour cap."},
+        {"name": "scikit-learn precision-recall", "url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html", "use": "Week 17 metric, precision at a fixed recall."},
+    ],
+}
+
+out = Path(__file__).resolve().parent / "plan.json"
+out.write_text(json.dumps(plan, indent=2), encoding="utf-8")
+print(f"wrote {out} weeks={len(WEEKS)} hours={sum(sum(s['h'] for s in w['sessions']) for w in WEEKS)}")
