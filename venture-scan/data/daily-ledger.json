@@ -1,107 +1,117 @@
 {
-  "day": "2026-11-06",
-  "scannedAt": "2026-11-06T02:57:51.336Z",
+  "day": "2026-11-07",
+  "scannedAt": "2026-11-07T02:27:53.152Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
-    "mercado-voice-pos",
-    "kiln-microfactory",
-    "heaptrace-observability",
-    "neon-serverless-postgres",
-    "harbor-legal-ops",
-    "carbonfact-fashion",
-    "tabby-bnpl-gcc",
-    "clerk-auth",
-    "elderloop-companion",
-    "perplexity-answer",
-    "voltpath-depot",
-    "bushfire-mesh-sensors",
-    "motherduck-analytics",
+    "ramp-spend",
+    "cashfree-merchant",
     "alan-health",
-    "incident-ops",
-    "piggyvest-savings",
-    "abridge-clinical",
-    "cuecraft-ads",
-    "batterysmart-swap",
-    "mercury-banking",
-    "magicschool-ai",
-    "mono-africa-open-banking",
-    "swan-baas",
-    "dub-link-os",
-    "hanok-energy-retrofit",
+    "neon-serverless-postgres",
+    "ledgerlane-freight",
+    "farmstack-coldchain",
+    "elevenlabs-voice",
+    "mercado-voice-pos",
+    "runway-ml",
     "posthog-product-os",
-    "brex-finance",
-    "runway-ml"
+    "saigon-microgrid-coops",
+    "hanok-energy-retrofit",
+    "playpane-classroom",
+    "perplexity-answer",
+    "swan-baas",
+    "synthesis-school",
+    "cape-clinic-triage",
+    "mono-africa-open-banking",
+    "bushfire-mesh-sensors",
+    "kiln-microfactory",
+    "cognition-devin",
+    "attio-crm",
+    "abridge-clinical",
+    "spore-kitchen",
+    "chipper-cash",
+    "sylvera-carbon",
+    "iron-dome-devsecops"
   ],
   "headlineCount": 40,
-  "feedsOk": 5,
+  "feedsOk": 6,
   "feedsTotal": 8,
-  "matchedIdeaCount": 0,
+  "matchedIdeaCount": 2,
   "headlines": [
     {
       "id": "techcrunch-0",
       "sourceId": "techcrunch",
-      "title": "OpenAI president Greg Brockman says company could be IPO ready in 2027",
-      "url": "https://techcrunch.com/2026/11/05/openai-president-greg-brockman-says-company-could-be-ipo-ready-in-2027/",
-      "excerpt": "Speaking at a Wall Street Journal tech conference on Wednesday, the executive touted how the company had been gaining ground in the enterprise market, where rival Anthropic had already successfully made inroads.",
-      "publishedAt": "Thu, 05 Nov 2026 18:02:27 +0000",
+      "title": "OpenAI reportedly raises an additional $11 billion at a $1.25 trillion valuation",
+      "url": "https://techcrunch.com/2026/11/06/openai-reportedly-raises-an-additional-11-billion-at-a-1-25-trillion-valuation/",
+      "excerpt": "OpenAI has reportedly raised an additional $11 billion as part of a funding round that hasn't closed yet but is expected to in the coming weeks.",
+      "publishedAt": "Fri, 06 Nov 2026 22:53:46 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-1",
       "sourceId": "techcrunch",
-      "title": "The ex-Secret Service agent who flipped a hacker is now raising a second $250M cybersecurity fund",
-      "url": "https://techcrunch.com/2026/11/05/the-ex-secret-service-agent-who-flipped-a-hacker-is-now-raising-a-second-250m-cybersecurity-fund/",
-      "excerpt": "Stephen Ward, a former Secret Service agent and Home Depot CISO, is preparing a second fund of roughly $250 million for Brightmind Partners.",
-      "publishedAt": "Thu, 05 Nov 2026 18:00:00 +0000",
+      "title": "Pentagon offers battery startup 6K $250M loan to build US factory",
+      "url": "https://techcrunch.com/2026/11/06/pentagon-offers-battery-startup-6k-250m-loan-to-build-u-s-factory/",
+      "excerpt": "The Pentagon has conditionally approved a $250 million loan to help 6K scale up its microwave-plasma battery material manufacturing process.",
+      "publishedAt": "Fri, 06 Nov 2026 16:50:01 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-2",
       "sourceId": "techcrunch",
-      "title": "Harbinger raises $240M after expanding into defense",
-      "url": "https://techcrunch.com/2026/11/05/harbinger-raises-240m-after-expanding-into-defense/",
-      "excerpt": "The Los Angeles-based startup has now raised more than $650 million, and is working on electric trucks, emergency vehicles, and a driverless platform for the military.",
-      "publishedAt": "Thu, 05 Nov 2026 17:52:44 +0000",
+      "title": "Fox completes its $22B acquisition of Roku",
+      "url": "https://techcrunch.com/2026/11/06/fox-completes-its-22b-acquisition-of-roku/",
+      "excerpt": "A few months after DOJ investigators were probing the deal, Fox just completed its $22B acquisition of the streaming giant Roku.",
+      "publishedAt": "Fri, 06 Nov 2026 16:05:36 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-3",
       "sourceId": "techcrunch",
-      "title": "Food delivery startup Wonder files for IPO as it explores its next big bite",
-      "url": "https://techcrunch.com/2026/11/05/food-delivery-startup-wonder-files-for-ipo-as-it-explores-its-next-big-bite/",
-      "excerpt": "Following years of fundraising, acquisitions, and expansion, food delivery startup Wonder is moving closer to becoming a publicly traded company.",
-      "publishedAt": "Thu, 05 Nov 2026 17:11:48 +0000",
-      "matchedSlugs": []
+      "title": "Ramp data shows AI spending stalling just as Anthropic nears its IPO",
+      "url": "https://techcrunch.com/2026/11/06/ramp-data-shows-ai-spending-stalling-just-as-anthropic-nears-its-ipo/",
+      "excerpt": "AI usage keeps climbing, but spending has stalled. Price cuts and smarter cost controls among the biggest spenders could challenge investor assumptions about AI hypergrowth.",
+      "publishedAt": "Fri, 06 Nov 2026 15:54:47 +0000",
+      "matchedSlugs": [
+        "ramp-spend"
+      ]
     },
     {
       "id": "techcrunch-4",
       "sourceId": "techcrunch",
-      "title": "Axiom Math wants to keep AI slop out of mathematics",
-      "url": "https://techcrunch.com/2026/11/05/axiom-math-wants-to-keep-ai-slop-out-of-mathematics/",
-      "excerpt": "As AI floods math with unchecked proofs, Axiom Math is betting on verification. The startup’s AI agents just formally verified the Stacks Project, one of the field’s biggest libraries.",
-      "publishedAt": "Thu, 05 Nov 2026 16:16:45 +0000",
+      "title": "Physicl raises $10M to make the digital world real enough for robots",
+      "url": "https://techcrunch.com/2026/11/06/physicl-raises-10m-to-make-the-digital-world-real-enough-for-robots/",
+      "excerpt": "Physicl is trying to solve the sim-to-real gap with a pipeline originally built to market goods online.",
+      "publishedAt": "Fri, 06 Nov 2026 13:00:00 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-5",
       "sourceId": "techcrunch",
-      "title": "Zipline hits $21.5B valuation as Walmart expands bet on drone delivery",
-      "url": "https://techcrunch.com/2026/11/05/zipline-hits-21-5b-valuation-as-walmart-expands-bet-on-drone-delivery/",
-      "excerpt": "Zipline raised $1.5 billion and ramped up its partnership with Walmart.",
-      "publishedAt": "Thu, 05 Nov 2026 15:40:34 +0000",
+      "title": "Palo Alto Networks in talks to buy AI agent security startup Clutch for $500M",
+      "url": "https://techcrunch.com/2026/11/05/palo-alto-networks-in-talks-to-buy-ai-agent-security-startup-clutch-for-500m/",
+      "excerpt": "Clutch, backed by Lightspeed and SignalFire, was last valued at $85 million, according to a source.",
+      "publishedAt": "Fri, 06 Nov 2026 06:28:32 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-6",
-      "sourceId": "techcrunch",
-      "title": "Dropbox acquires Tigris Data for $350M to bolster its AI infrastructure",
-      "url": "https://techcrunch.com/2026/11/05/dropbox-acquires-tigris-data-for-350m-to-bolster-its-ai-iinfrastructure/",
-      "excerpt": "The deal is expected to support the development of DBX Agent Cloud, a new storage platform aimed at developers building AI models and agents.",
-      "publishedAt": "Thu, 05 Nov 2026 15:19:05 +0000",
+      "id": "crunchbase-news-6",
+      "sourceId": "crunchbase-news",
+      "title": "The Week’s 10 Biggest Funding Rounds: AI, Defense And Space Tech Lead For Large Rounds",
+      "url": "https://news.crunchbase.com/venture/biggest-startup-rounds-ai-defense-space-tech-shield-zipline/",
+      "excerpt": "This week brought another plethora of large funding rounds for startups and growth-stage companies. Shield AI, a defense tech player focused on autonomy and virtual simulations, secured the largest financing, bringing in $2 billion. Next on the list was drone delivery provider Zi",
+      "publishedAt": "Fri, 06 Nov 2026 19:29:06 +0000",
       "matchedSlugs": []
     },
     {
       "id": "crunchbase-news-7",
+      "sourceId": "crunchbase-news",
+      "title": "General Catalyst Tops Lead Investors For October In Busy Month For US Startup Dealmaking",
+      "url": "https://news.crunchbase.com/venture/october-2026-lead-startup-investors/",
+      "excerpt": "October was a busy month for U.S. startup funding, led by well-known venture investors with a healthy appetite for big deals. We take a look at active investor rankings across three categories: lead deal count, largest lead investments and total venture rounds.",
+      "publishedAt": "Fri, 06 Nov 2026 12:00:03 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "Exclusive: Nurx And Journey Clinical Co-Founders Raise $6M For Mental Health Startup Siggy",
       "url": "https://news.crunchbase.com/venture/nurx-journey-clinical-founders-raise-mental-health-startup-siggy/",
@@ -110,7 +120,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-9",
       "sourceId": "crunchbase-news",
       "title": "Dropbox Plans $350M AI Infrastructure Deal With Tigris Buy, Its Biggest Acquisition Yet",
       "url": "https://news.crunchbase.com/ma/dbx-ai-infrastructure-deal-tigris-acquisition/",
@@ -119,7 +129,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
+      "id": "crunchbase-news-10",
       "sourceId": "crunchbase-news",
       "title": "Sector Snapshot: Construction Robotics Funding Soars To $1.6B, Tripling Previous Peak",
       "url": "https://news.crunchbase.com/venture/sector-snapshot-2026-construction-robotics-funding-soars-bedrock/",
@@ -128,7 +138,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-10",
+      "id": "crunchbase-news-11",
       "sourceId": "crunchbase-news",
       "title": "Crunchbase Data: Less Than 2% Of 2026 Venture Funding Went To Post-Election Red States",
       "url": "https://news.crunchbase.com/venture/2026-post-election-funding-red-states-drops/",
@@ -137,7 +147,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-11",
+      "id": "crunchbase-news-12",
       "sourceId": "crunchbase-news",
       "title": "Most Venture Capital Is Going To Companies That Are Founded Or Led By Billionaires",
       "url": "https://news.crunchbase.com/venture/startup-billionaire-founders-ai-defense-anthropic-spcx/",
@@ -146,7 +156,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-12",
+      "id": "crunchbase-news-13",
       "sourceId": "crunchbase-news",
       "title": "China’s Largest Startup Deal Ever Lifts Global Venture Funding To $59B In October",
       "url": "https://news.crunchbase.com/venture/october-2026-global-startup-funding-strong-china-deepseek/",
@@ -155,34 +165,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-13",
-      "sourceId": "crunchbase-news",
-      "title": "More Money, Fewer Checks: These 3 Charts Show The Divide Behind VC&#8217;s Record Funding Year",
-      "url": "https://news.crunchbase.com/venture/q3-2026-charts-funding-amounts-vs-round-counts/",
-      "excerpt": "Record venture funding in 2026 has been increasingly concentrated in massive AI rounds, while seed- and early-stage deal counts are on the decline. Using Crunchbase data we provide a look at how third-quarter funding continued the year's dollars-up-but-deals-down trend.",
-      "publishedAt": "Mon, 02 Nov 2026 12:00:28 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "crunchbase-news-14",
-      "sourceId": "crunchbase-news",
-      "title": "The Week’s 10 Biggest Funding Rounds: Physical AI And Predictions Lead The Lineup",
-      "url": "https://news.crunchbase.com/venture/biggest-rounds-startups-physical-ai-predictions-robotics-rebuild/",
-      "excerpt": "This week featured a robust lineup of large rounds, led by manufacturing startup Re:Build, which closed on $2.1 billion, and predictions marketplace Kalshi, which picked up another $1 billion.",
-      "publishedAt": "Fri, 30 Oct 2026 16:33:59 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "crunchbase-news-15",
-      "sourceId": "crunchbase-news",
-      "title": "Sector Snapshot: Travel Tech Funding Heads Toward Multiyear Low Despite AI Push",
-      "url": "https://news.crunchbase.com/travel-tourism/travel-tech-startup-venture-funding-low-ai/",
-      "excerpt": "Travel demand appears to be holding up, but at the same time, investor appetite for travel tech startups has cooled. Even a wave of startups promising to improve travel with AI hasn’t managed to reverse the funding slowdown. We share what a review of Crunchbase data shows.",
-      "publishedAt": "Fri, 30 Oct 2026 11:00:49 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "sifted-16",
+      "id": "sifted-14",
       "sourceId": "sifted",
       "title": "Exclusive: Helsing CEO backs AI learning startup Mindmax in £2.5m raise",
       "url": "https://sifted.eu/articles/memrise-mindmax-helsing-funding-round-memory/",
@@ -191,7 +174,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-17",
+      "id": "sifted-15",
       "sourceId": "sifted",
       "title": "Founders make terrible employees — here’s why every startup should hire them",
       "url": "https://sifted.eu/articles/founders-make-terrible-employees/",
@@ -200,7 +183,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-18",
+      "id": "sifted-16",
       "sourceId": "sifted",
       "title": "Ex-LocalGlobe partner closes $17m debut fund",
       "url": "https://sifted.eu/articles/evertrue-capital-closes-17m-debut-fund/",
@@ -209,7 +192,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-19",
+      "id": "sifted-17",
       "sourceId": "sifted",
       "title": "Lovable backer Creandum raises $750m for largest-ever fund to back AI boom",
       "url": "https://sifted.eu/articles/creandum-750-largest-vc-fund-back-ai-san-francisco/",
@@ -218,7 +201,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-20",
+      "id": "sifted-18",
       "sourceId": "sifted",
       "title": "Missile startup Hypersonica raises €100m from Lightspeed, General Catalyst as missile defence takes off",
       "url": "https://sifted.eu/articles/missile-startup-hypersonica-fundraise-lightspeed-general-catalyst-europe/",
@@ -227,106 +210,106 @@
       "matchedSlugs": []
     },
     {
+      "id": "techinasia-19",
+      "sourceId": "techinasia",
+      "title": "Intel to buy Israeli quantum software startup Classiq for $1.9b",
+      "url": "https://www.techinasia.com/news/intel-buy-israeli-quantum-software-startup-classiq-19b",
+      "excerpt": "Classiq raised US$110 million in 2025, and IonQ, AMD, and Qualcomm Ventures joined a later round.",
+      "publishedAt": "Sat, 07 Nov 2026 01:51:02 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-20",
+      "sourceId": "techinasia",
+      "title": "OpenAI taps AI security startup Hacktron to test systems",
+      "url": "https://www.techinasia.com/news/openai-taps-ai-security-startup-hacktron-test-systems",
+      "excerpt": "Hacktron previously raised US$2.9 million to build an AI-powered security testing platform.",
+      "publishedAt": "Sat, 07 Nov 2026 01:43:14 +0000",
+      "matchedSlugs": []
+    },
+    {
       "id": "techinasia-21",
       "sourceId": "techinasia",
-      "title": "Chinese video startup Sand AI raises $200m",
-      "url": "https://www.techinasia.com/news/chinese-video-startup-sand-ai-raises-200m",
-      "excerpt": "Sand AI said the round brings its total funding over the past 10 months to US$300 million.",
-      "publishedAt": "Fri, 06 Nov 2026 01:12:38 +0000",
+      "title": "OpenAI raises $11b at $1.25t valuation in funding round",
+      "url": "https://www.techinasia.com/news/openai-raises-11b-125t-valuation-funding",
+      "excerpt": "OpenAI had earlier aimed to raise US$30 billion or more at a US$1.4 trillion valuation.",
+      "publishedAt": "Sat, 07 Nov 2026 01:13:15 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-22",
       "sourceId": "techinasia",
-      "title": "Monee is growing fast, but can its model work beyond Shopee?",
-      "url": "https://www.techinasia.com/monee-growing-fast-model-work-shopee",
-      "excerpt": "Monee, Sea’s fintech arm, has posted soaring revenue and is reportedly eyeing an IPO. But how much of that success depends on Shopee?",
-      "publishedAt": "Fri, 06 Nov 2026 01:00:04 +0000",
+      "title": "Google acquires Wyoming data center site from AI firm Crusoe",
+      "url": "https://www.techinasia.com/news/google-acquires-wyoming-data-center-site-ai-firm-crusoe",
+      "excerpt": "Crusoe handled the project's site selection, government approvals, and power planning.",
+      "publishedAt": "Sat, 07 Nov 2026 00:38:06 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-23",
       "sourceId": "techinasia",
-      "title": "Honeywell-backed Quantinuum posts $9.1m Q3 revenue",
-      "url": "https://www.techinasia.com/news/honeywellbacked-quantinuum-posts-91m-q3-revenue",
-      "excerpt": "The company raised its 2026 revenue outlook to US$31 million-US$34 million, up from US$28 million-US$32 million.",
-      "publishedAt": "Fri, 06 Nov 2026 00:58:04 +0000",
+      "title": "Still some sparkle in store",
+      "url": "https://www.techinasia.com/still-some-sparkle-in-store",
+      "excerpt": "Sand.ai, Giva, Fact Base, and more raised funds this week.",
+      "publishedAt": "Sat, 07 Nov 2026 00:30:16 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-24",
       "sourceId": "techinasia",
-      "title": "Dropbox to buy US AI storage startup Tigris for $350m",
-      "url": "https://www.techinasia.com/news/dropbox-buy-ai-storage-startup-tigris-350m",
-      "excerpt": "Tigris sells object storage and markets it as compatible with Amazon S3 tools for AI agents.",
-      "publishedAt": "Fri, 06 Nov 2026 00:52:30 +0000",
+      "title": "Tata Capital growth fund taps Siguler Guff veteran as partner",
+      "url": "https://www.techinasia.com/news/tata-capital-growth-fund-taps-siguler-guff-veteran-partner",
+      "excerpt": "Jain has nearly two decades of experience investing and managing institutional portfolios across alternative and public markets.",
+      "publishedAt": "Fri, 06 Nov 2026 09:11:48 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-25",
       "sourceId": "techinasia",
-      "title": "Indian spacetech startup Cosmoserve raises $6m seed",
-      "url": "https://www.techinasia.com/news/indian-spacetech-startup-cosmoserve-raises-6m-seed",
-      "excerpt": "The company said the round brings its total funding to more than US$9 million",
-      "publishedAt": "Fri, 06 Nov 2026 00:32:46 +0000",
+      "title": "Singapore chip startup Symatics unveils AI architecture",
+      "url": "https://www.techinasia.com/news/singapore-chip-startup-symatics-unveils-ai-architecture",
+      "excerpt": "The company said the MPU was aimed at interactive AI and reasoning tasks.",
+      "publishedAt": "Fri, 06 Nov 2026 09:09:18 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-26",
       "sourceId": "techinasia",
-      "title": "SeaCloud: A costly puzzle for investors?",
-      "url": "https://www.techinasia.com/seacloud-a-costly-puzzle-for-investors",
-      "excerpt": "Sea’s surprise AI cloud push raises questions about its next big move, while Australian AI unicorn Heidi Health slashes 18% of its workforce.",
-      "publishedAt": "Fri, 06 Nov 2026 00:30:17 +0000",
+      "title": "Startup helps firms navigate the shift from Google to AI search",
+      "url": "https://www.techinasia.com/startup-helps-firms-navigate-shift-google-ai-search",
+      "excerpt": "Canlah AI builds AI agents that optimize business visibility inside ChatGPT and Google AI Overviews.",
+      "publishedAt": "Fri, 06 Nov 2026 07:45:47 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-27",
       "sourceId": "techinasia",
-      "title": "China blocks SoftBank&#8217;s $5.4b ABB robotics deal",
-      "url": "https://www.techinasia.com/news/china-blocks-softbanks-5-4b-abb-robotics-deal",
-      "excerpt": "SoftBank Robotics develops humanoid and service robots. SoftBank said the acquisition would broaden its industrial automation capabilities.",
-      "publishedAt": "Thu, 05 Nov 2026 09:53:27 +0000",
+      "title": "SoftBank credit risk hits four-year high over AI debt fears",
+      "url": "https://www.techinasia.com/news/softbank-credit-risk-hits-fouryear-high-ai-debt-fears",
+      "excerpt": "SoftBank has a reported US$64.6 billion investment in OpenAI.",
+      "publishedAt": "Fri, 06 Nov 2026 06:20:53 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-28",
       "sourceId": "techinasia",
-      "title": "Indian Institute of Science venom drug startup raises $2.7m",
-      "url": "https://www.techinasia.com/news/indian-institute-science-venom-drug-startup-raises-27m",
-      "excerpt": "Venomics AI uses molecular sequencing, AI, and lab testing to identify venom-derived molecules that could be developed into drug candidates.",
-      "publishedAt": "Thu, 05 Nov 2026 05:45:08 +0000",
+      "title": "Qiming-backed Nature Select raises $100m for AI social app",
+      "url": "https://www.techinasia.com/news/qiming-backed-nature-select-raises-100m-for-ai-social-app",
+      "excerpt": "Nature Select, a China-based developer of AI social app Elys, raised more than US$100 million in a series A+ funding round.",
+      "publishedAt": "Fri, 06 Nov 2026 03:19:32 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-29",
       "sourceId": "techinasia",
-      "title": "AI chip startup Tenspresso seeks $50m at $500m valuation",
-      "url": "https://www.techinasia.com/news/ai-chip-startup-tenspresso-seeks-50m-at-500m-valuation",
-      "excerpt": "Tenspresso raised US$20 million from Striker Venture Partners weeks earlier.",
-      "publishedAt": "Thu, 05 Nov 2026 04:49:19 +0000",
+      "title": "This startup makes lab cell growth animal-free",
+      "url": "https://www.techinasia.com/this-startup-makes-lab-cell-growth-animal-free",
+      "excerpt": "Cellivate Technologies uses magnetic fields to produce an animal-free serum replacer, solving a major bottleneck in lab cell growth.",
+      "publishedAt": "Fri, 06 Nov 2026 03:00:04 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-30",
-      "sourceId": "techinasia",
-      "title": "Meta acquires AI coding startup Conductor",
-      "url": "https://www.techinasia.com/news/meta-acquires-ai-coding-startup-conductor",
-      "excerpt": "Meta confirmed on November 4 that it acquired Conductor, an AI coding startup founded in 2024, as it expands its AI coding tools.",
-      "publishedAt": "Thu, 05 Nov 2026 04:41:25 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-31",
-      "sourceId": "techinasia",
-      "title": "AI meets laptop refurbishment in this startup&#8217;s facility",
-      "url": "https://www.techinasia.com/ai-meets-laptop-refurbishment-startups-facility",
-      "excerpt": "Edify Club buys used business laptops, restores them using AI grading, and sells them online for 30% to 50% less than the cost of a new device.",
-      "publishedAt": "Thu, 05 Nov 2026 04:30:53 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-32",
+      "id": "yourstory-30",
       "sourceId": "yourstory",
       "title": "Why operational excellence will define the next phase of India’s startup growth",
       "url": "https://yourstory.com/2026/10/why-operational-excellence-will-define-the-next-phase-indias-startup-growth",
@@ -335,7 +318,43 @@
       "matchedSlugs": []
     },
     {
+      "id": "yourstory-31",
+      "sourceId": "yourstory",
+      "title": "When code is cheap, trust is not: Inside the AI-era engineering roundtable",
+      "url": "https://yourstory.com/2026/11/when-code-is-cheap-trust-is-not-inside-the-ai-era-engineering-roundtable",
+      "excerpt": "In a closed-door roundtable, leaders from logistics, healthcare, telecom, fintech, and e-commerce discussed where to automate, where to keep humans in charge, and why observability can no longer be an afterthought.",
+      "publishedAt": "Fri, 06 Nov 2026 07:41:01 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "yourstory-32",
+      "sourceId": "yourstory",
+      "title": "Startup news and updates: Daily roundup (November 6, 2026)",
+      "url": "https://yourstory.com/2026/11/startup-news-and-updates-daily-roundup-november-6-2026",
+      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here's the roundup for Friday, November 06, 2026.",
+      "publishedAt": "Fri, 06 Nov 2026 09:33:12 GMT",
+      "matchedSlugs": []
+    },
+    {
       "id": "yourstory-33",
+      "sourceId": "yourstory",
+      "title": "(Weekly funding roundup Oct 31-Nov 6) Sharp rise in capital inflow",
+      "url": "https://yourstory.com/2026/11/weekly-funding-roundup-oct-31-nov-6-sharp-rise-in-capital-inflow",
+      "excerpt": "The total funding for the first week of November was $263 million across 23 deals, compared to just $115 million in the previous week.",
+      "publishedAt": "Fri, 06 Nov 2026 14:18:16 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "yourstory-34",
+      "sourceId": "yourstory",
+      "title": "Northern Arc's diversified debt fund hits first close at over Rs 400 Cr",
+      "url": "https://yourstory.com/2026/11/northern-arcs-diversified-debt-fund-hits-first-close-at-over-rs-400-crore",
+      "excerpt": "The 15th private credit fund from Northern Arc Investment Managers targets a Rs 1,500 crore corpus and a 16% XIRR, as its India Impact Fund matures after deploying Rs 1,398 crore.",
+      "publishedAt": "Fri, 06 Nov 2026 08:31:14 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "yourstory-35",
       "sourceId": "yourstory",
       "title": "Aina launches Rs 47,000 ring to bring AI agents to your fingertips",
       "url": "https://yourstory.com/2026/11/aina-ai-smart-ring-price-features-launch-india",
@@ -344,58 +363,42 @@
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-34",
-      "sourceId": "yourstory",
-      "title": "Startup news and updates: daily roundup (November 05, 2026)",
-      "url": "https://yourstory.com/2026/11/startup-news-and-updates-daily-roundup-november-05-2026",
-      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here's the roundup for Thursday, November 05, 2026.",
-      "publishedAt": "Thu, 05 Nov 2026 09:05:13 GMT",
+      "id": "inc42-36",
+      "sourceId": "inc42",
+      "title": "OYO Parent PRISM’s Profit Jumps 17% YoY To ₹353 Cr In Q1",
+      "url": "https://inc42.com/buzz/oyo-parent-prisms-profit-jumps-17-yoy-to-%e2%82%b9353-cr-in-q1/",
+      "excerpt": "IPO-bound hospitality chain PRISM, the parent entity of OYO, reported a consolidated profit after tax (PAT) of ₹353 Cr in&#8230;",
+      "publishedAt": "Sat, 07 Nov 2026 01:30:12 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-35",
-      "sourceId": "yourstory",
-      "title": "Amagi Q2 net profit jumps to Rs 75 Cr; revenue rises 27%",
-      "url": "https://yourstory.com/2026/11/amagi-q2-net-profit-jumps-rs-75-cr-revenue-rises-27-percent",
-      "excerpt": "Amagi's revenue grew 27% year-on-year to Rs 475.82 crore. The SaaS company also launched four AI products during the quarter and plans to make selective investments while focusing on improving operating leverage and cash conversion.",
-      "publishedAt": "Thu, 05 Nov 2026 12:52:36 GMT",
+      "id": "inc42-37",
+      "sourceId": "inc42",
+      "title": "MakeMyTrip Acquires Majority Stake In Quick Ride To Enter Ride Pooling",
+      "url": "https://inc42.com/buzz/makemytrip-acquires-majority-stake-in-quick-ride-to-enter-ride-pooling/",
+      "excerpt": "Nasdaq-listed traveltech major MakeMyTrip has expanded into the carpooling segment via the acquisition of a majority stake in Bengaluru-based Quick&#8230;",
+      "publishedAt": "Fri, 06 Nov 2026 10:50:39 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-36",
-      "sourceId": "yourstory",
-      "title": "Spacetech startup Cosmoserve raises $6M in seed round",
-      "url": "https://yourstory.com/2026/11/spacetech-startup-cosmoserve-raises-6-million-in-seed-round",
-      "excerpt": "Cosmoserve also opened a facility in Hyderabad which will be utilised for satellite servicing and space debris recovery.",
-      "publishedAt": "Thu, 05 Nov 2026 13:35:19 GMT",
+      "id": "inc42-38",
+      "sourceId": "inc42",
+      "title": "MDR And AI: Inside The Two Acronyms That Could Shape Razorpay’s ₹6,000 Cr IPO",
+      "url": "https://inc42.com/features/mdr-and-ai-inside-the-two-acronyms-that-could-shape-razorpays-%e2%82%b96000-cr-ipo/",
+      "excerpt": "In March this year, on the sidelines of Razorpay’s annual flagship event FTX, CEO Harshil Mathur told Inc42 that what&#8230;",
+      "publishedAt": "Fri, 06 Nov 2026 08:17:42 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-37",
-      "sourceId": "yourstory",
-      "title": "CERT-In warns NBFCs and fintech firms of AI-driven attacks",
-      "url": "https://yourstory.com/2026/11/cert-in-warns-nbfcs-and-fintech-firms-of-ai-driven-attacks",
-      "excerpt": "An advisory from the government body said the AI-assisted financial threat is still active and warns BFSI entities to treat it as an “immediate and continuing threat”.",
-      "publishedAt": "Thu, 05 Nov 2026 08:12:32 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-38",
-      "sourceId": "yourstory",
-      "title": "Daksham Capital raises Rs 125 Cr in first close of Rs 300 Cr fund",
-      "url": "https://yourstory.com/2026/11/daksham-capital-raises-rs-125-cr-first-close-rs-300-cr-fund",
-      "excerpt": "The fund will invest in startups at the pre-Series A and Series A stages, with cheque sizes ranging from Rs 5 crore to Rs 20 crore. It will focus on D2C brands, consumer enablers, B2B2C businesses, supply chains and consumer AI.",
-      "publishedAt": "Thu, 05 Nov 2026 13:15:45 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-39",
-      "sourceId": "yourstory",
-      "title": "VC funding into Indian B2C ecommerce companies dips 33%: Tracxn",
-      "url": "https://yourstory.com/2026/11/vc-funding-into-indian-b2c-ecommerce-companies-dips-33-tracxn",
-      "excerpt": "Late- and seed-stage funding nearly halved in the period between January 1 and November 3 this year, while early-stage funding remained stable compared to last year.",
-      "publishedAt": "Thu, 05 Nov 2026 10:41:45 GMT",
-      "matchedSlugs": []
+      "id": "inc42-39",
+      "sourceId": "inc42",
+      "title": "Cashfree Launches ‘Checkout For Agents’ To Enable AI-Led Payments",
+      "url": "https://inc42.com/buzz/cashfree-launches-checkout-for-agents-to-enable-ai-led-payments/",
+      "excerpt": "Fintech soonicorn Cashfree Payments has launched ‘Checkout for Agents’, a new tool that enables AI agents to process customer payments&#8230;",
+      "publishedAt": "Fri, 06 Nov 2026 06:00:55 +0000",
+      "matchedSlugs": [
+        "cashfree-merchant"
+      ]
     }
   ]
 }
