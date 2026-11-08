@@ -50,6 +50,7 @@ export default function App() {
   const [error, setError] = useState("");
   const [bootReady, setBootReady] = useState(false);
   const [bootStarted] = useState(() => Date.now());
+  const [queryDraft, setQueryDraft] = useState("");
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState("All genres");
   const [era, setEra] = useState("All eras");
@@ -141,7 +142,7 @@ export default function App() {
       }
       setOutside(result.tracks);
       setOutsideStatus(result.tracks.length ? "ok" : "empty");
-    }, 400);
+    }, query ? 0 : 400);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
@@ -335,14 +336,30 @@ export default function App() {
         <SiteDoc page={page} />
       ) : page === "archive" ? (
         <>
-      <section className="controls" aria-label={t("filterArchive")}>
-        <input
-          className="search"
-          type="search"
-          placeholder={t("searchPlaceholder")}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+      <form
+        className="controls"
+        aria-label={t("filterArchive")}
+        onSubmit={(event) => {
+          event.preventDefault();
+          setQuery(queryDraft.trim());
+        }}
+      >
+        <div className="search-row">
+          <input
+            className="search"
+            type="search"
+            placeholder={t("searchPlaceholder")}
+            value={queryDraft}
+            onChange={(e) => {
+              const value = e.target.value;
+              setQueryDraft(value);
+              if (!value.trim() && query) setQuery("");
+            }}
+          />
+          <button className="search-submit" type="submit">
+            {t("searchAction")}
+          </button>
+        </div>
         <select value={genre} onChange={(e) => setGenre(e.target.value)} aria-label={t("allGenres")}>
           <option value={ALL_GENRES}>{t("allGenres")}</option>
           {facets.genres.map((item) => {
@@ -383,7 +400,7 @@ export default function App() {
           <option value="year-desc">{t("sortNewest")}</option>
           <option value="name">{t("sortTitle")}</option>
         </select>
-      </section>
+      </form>
 
       <p className="result-count">{t("showing", { n: visible.length, total: tracks.length })}</p>
       {visible.length === 0 ? (

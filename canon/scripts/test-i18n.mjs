@@ -40,6 +40,7 @@ for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(MESSAGES[locale]).sort(), enKeys, `${locale} is missing or extra keys`);
 }
 
+assert.equal(t("en", "searchAction"), "Search");
 assert.equal(t("en", "collect"), "Collect");
 assert.equal(t("en", "menu"), "Menu");
 assert.equal(t("en", "listenNav"), "For you");
