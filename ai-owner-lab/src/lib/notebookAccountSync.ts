@@ -261,27 +261,102 @@ export async function pullAccountMeta(): Promise<AccountCloudMeta | null> {
   }
 }
 
+function mapDownloadError(err: unknown): Error {
+  const message = err instanceof Error ? err.message : String(err || 'download failed')
+  // Safari/WebKit surfaces cross-origin Blob failures as bare "Load failed".
+  if (/load failed|failed to fetch|networkerror|network request failed/i.test(message)) {
+    return new Error(
+      'Could not download cloud notebook on this device. Tap the status pill to retry (same-origin download).',
+    )
+  }
+  return err instanceof Error ? err : new Error(message)
+}
+
+async function downloadViaSameOrigin(
+  size: number | null,
+): Promise<{ content: string; etag: string | null; uploadedAt: string | null } | null> {
+  try {
+    const res = await fetchWithTimeout(
+      api('/api/notebook/content'),
+      { method: 'GET', credentials: 'include' },
+      downloadTimeoutForSize(size),
+      'Cloud notebook download',
+    )
+    if (res.status === 404) return null
+    if (res.status === 401) throw new Error('Sign in required')
+    if (!res.ok) throw new Error(await readError(res))
+    const contentType = res.headers.get('content-type') || ''
+    const content = await res.text()
+    // SPA fallback HTML must not be treated as a notebook.
+    if (!contentType.includes('application/json') && !content.trim().startsWith('{')) {
+      throw new Error('Cloud notebook proxy returned a non-JSON body')
+    }
+    return {
+      content,
+      etag: res.headers.get('etag'),
+      uploadedAt: res.headers.get('x-ownlab-uploaded-at'),
+    }
+  } catch (err) {
+    throw mapDownloadError(err)
+  }
+}
+
+async function downloadViaSignedUrl(
+  meta: AccountCloudMeta,
+): Promise<{ content: string; etag: string | null }> {
+  if (!meta.url) throw new Error('Cloud notebook download URL missing')
+  let lastErr: unknown
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const fileRes = await fetchWithTimeout(
+        meta.url,
+        { mode: 'cors', credentials: 'omit', cache: 'no-store' },
+        downloadTimeoutForSize(meta.size),
+        'Cloud notebook download',
+      )
+      if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
+      return {
+        content: await fileRes.text(),
+        etag: fileRes.headers.get('etag') || meta.etag,
+      }
+    } catch (err) {
+      lastErr = err
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 400 * (attempt + 1))
+      })
+    }
+  }
+  throw mapDownloadError(lastErr)
+}
+
 async function downloadAccountNotebook(
   meta: AccountCloudMeta,
   legacyBody?: string,
-): Promise<{ content: string; etag: string | null }> {
+): Promise<{ content: string; etag: string | null; uploadedAt?: string | null }> {
   if (!meta.url) {
     if (typeof legacyBody === 'string' && legacyBody) {
-      return { content: legacyBody, etag: meta.etag }
+      return { content: legacyBody, etag: meta.etag, uploadedAt: meta.uploadedAt }
     }
     throw new Error('Cloud notebook download URL missing')
   }
-  const fileRes = await fetchWithTimeout(
-    meta.url,
-    undefined,
-    downloadTimeoutForSize(meta.size),
-    'Cloud notebook download',
-  )
-  if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
-  return {
-    content: await fileRes.text(),
-    etag: fileRes.headers.get('etag') || meta.etag,
+
+  // Prefer same-origin Edge stream — iOS Safari often throws "Load failed" on
+  // cross-origin private Blob URLs even when the signed link is valid.
+  try {
+    const proxied = await downloadViaSameOrigin(meta.size)
+    if (proxied) {
+      return {
+        content: proxied.content,
+        etag: proxied.etag || meta.etag,
+        uploadedAt: proxied.uploadedAt || meta.uploadedAt,
+      }
+    }
+  } catch (err) {
+    // Fall back to signed URL once; still better than failing closed on desktop.
+    if (err instanceof Error && /Sign in required/i.test(err.message)) throw err
   }
+
+  return downloadViaSignedUrl(meta)
 }
 
 function parseNotebookCounts(content: string): { noteCount: number; entryIds: string[] } {
@@ -304,6 +379,26 @@ function parseNotebookCounts(content: string): { noteCount: number; entryIds: st
 }
 
 export async function pullAccountBackup(): Promise<AccountPullResult | null> {
+  // Same-origin Edge stream first (avoids Safari "Load failed" on Blob CDN).
+  try {
+    const proxied = await downloadViaSameOrigin(null)
+    if (proxied) {
+      const { noteCount, entryIds } = parseNotebookCounts(proxied.content)
+      return {
+        content: proxied.content,
+        etag: proxied.etag,
+        noteCount,
+        uploadedAt: proxied.uploadedAt,
+        entryIds,
+        size: proxied.content.length,
+      }
+    }
+    return null
+  } catch (err) {
+    if (err instanceof Error && /Sign in required/i.test(err.message)) throw err
+    // Fall back to meta + signed URL for older deploys / edge failures.
+  }
+
   const res = await fetchWithTimeout(
     api('/api/notebook'),
     { method: 'GET', credentials: 'include' },
@@ -337,13 +432,13 @@ export async function pullAccountBackup(): Promise<AccountPullResult | null> {
     legacyBody = raw
   }
 
-  const { content, etag } = await downloadAccountNotebook(meta, legacyBody)
-  const { noteCount, entryIds } = parseNotebookCounts(content)
+  const downloaded = await downloadAccountNotebook(meta, legacyBody)
+  const { noteCount, entryIds } = parseNotebookCounts(downloaded.content)
   return {
-    content,
-    etag,
+    content: downloaded.content,
+    etag: downloaded.etag,
     noteCount,
-    uploadedAt: meta.uploadedAt,
+    uploadedAt: downloaded.uploadedAt ?? meta.uploadedAt,
     entryIds,
     size: meta.size,
   }
