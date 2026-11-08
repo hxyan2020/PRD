@@ -51,23 +51,39 @@ export async function replaceLargeDataImagesInHtml(html: string): Promise<{
   }
   if (!unique.size) return { html, replaced: 0 }
 
+  const entries = [...unique.entries()]
+  const replacements = new Map<string, string>()
+  const concurrency = 3
+  let cursor = 0
+
+  async function worker() {
+    while (cursor < entries.length) {
+      const index = cursor
+      cursor += 1
+      const [dataUrl, original] = entries[index]
+      const file = dataUrlToFile(dataUrl, index)
+      if (!file) continue
+      try {
+        const uploaded = await uploadNotebookFile(file)
+        const src = notebookInlineImageSrc(uploaded.pathname)
+        replacements.set(original, src)
+        if (original !== dataUrl) replacements.set(dataUrl, src)
+      } catch {
+        /* keep data URL if upload fails */
+      }
+    }
+  }
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, entries.length) }, () => worker()),
+  )
+
   let next = html
   let replaced = 0
-  let index = 0
-
-  for (const [dataUrl, original] of unique) {
-    const file = dataUrlToFile(dataUrl, index)
-    index += 1
-    if (!file) continue
-    try {
-      const uploaded = await uploadNotebookFile(file)
-      const src = notebookInlineImageSrc(uploaded.pathname)
-      next = next.split(original).join(src)
-      if (original !== dataUrl) next = next.split(dataUrl).join(src)
-      replaced += 1
-    } catch {
-      /* keep data URL if upload fails */
-    }
+  for (const [from, to] of replacements) {
+    if (!next.includes(from)) continue
+    next = next.split(from).join(to)
+    replaced += 1
   }
 
   return { html: next, replaced }

@@ -80,6 +80,41 @@ async function readError(res: Response): Promise<string> {
   return `Request failed (${res.status})`
 }
 
+/** Abort hung sync fetches so the UI cannot stick on “Saving to cloud…”. */
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit | undefined,
+  timeoutMs: number,
+  label: string,
+): Promise<Response> {
+  const ctrl = new AbortController()
+  const timer = window.setTimeout(() => ctrl.abort(), timeoutMs)
+  try {
+    return await fetch(input, { ...init, signal: ctrl.signal })
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error(`${label} timed out`)
+    }
+    throw err
+  } finally {
+    window.clearTimeout(timer)
+  }
+}
+
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
+  let timer: number | undefined
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = window.setTimeout(() => reject(new Error(`${label} timed out`)), timeoutMs)
+      }),
+    ])
+  } finally {
+    if (timer != null) window.clearTimeout(timer)
+  }
+}
+
 export async function fetchAccountMe(): Promise<{ username: string } | null> {
   if (!isVercelNotebookHost()) return null
   const res = await fetch(api('/api/auth/me'), { credentials: 'include' })
@@ -183,7 +218,12 @@ async function readNotebookContentFromResponse(res: Response): Promise<{
     }
     const uploadedAt = typeof parsed.uploadedAt === 'string' ? parsed.uploadedAt : null
     if (typeof parsed.url === 'string' && parsed.url && !Array.isArray(parsed.entries)) {
-      const fileRes = await fetch(parsed.url)
+      const fileRes = await fetchWithTimeout(
+        parsed.url,
+        undefined,
+        60_000,
+        'Cloud notebook download',
+      )
       if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
       return {
         content: await fileRes.text(),
@@ -192,14 +232,24 @@ async function readNotebookContentFromResponse(res: Response): Promise<{
       }
     }
   } catch (err) {
-    if (err instanceof Error && /download failed/i.test(err.message)) throw err
+    if (
+      err instanceof Error &&
+      (/download failed/i.test(err.message) || /timed out/i.test(err.message))
+    ) {
+      throw err
+    }
     /* fall through — raw may already be the notebook JSON */
   }
   return { content: raw, etag, uploadedAt: null }
 }
 
 export async function pullAccountBackup(): Promise<AccountPullResult | null> {
-  const res = await fetch(api('/api/notebook'), { method: 'GET', credentials: 'include' })
+  const res = await fetchWithTimeout(
+    api('/api/notebook'),
+    { method: 'GET', credentials: 'include' },
+    25_000,
+    'Cloud notebook check',
+  )
   if (res.status === 401) throw new Error('Sign in required')
   if (res.status === 404) return null
   if (!res.ok) throw new Error(await readError(res))
@@ -236,13 +286,19 @@ export async function pushAccountBackup(json: string): Promise<{ etag: string | 
   const file = new File([json], 'notebook.json', {
     type: 'application/json;charset=utf-8',
   })
+  // Larger notebooks use multipart; give them more time but never hang forever.
+  const uploadTimeoutMs = file.size >= 4 * 1024 * 1024 ? 120_000 : 60_000
   try {
-    await upload(pathname, file, {
-      access: 'private',
-      handleUploadUrl: api('/api/blob/upload'),
-      multipart: file.size >= 4 * 1024 * 1024,
-      contentType: 'application/json;charset=utf-8',
-    })
+    await withTimeout(
+      upload(pathname, file, {
+        access: 'private',
+        handleUploadUrl: api('/api/blob/upload'),
+        multipart: file.size >= 4 * 1024 * 1024,
+        contentType: 'application/json;charset=utf-8',
+      }),
+      uploadTimeoutMs,
+      'Cloud notebook upload',
+    )
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Cloud upload failed'
     if (/413|too large|payload/i.test(message)) {

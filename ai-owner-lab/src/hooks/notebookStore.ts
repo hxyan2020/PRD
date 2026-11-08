@@ -659,6 +659,7 @@ function localIsAheadOfCloud(cloudContent: string): boolean {
   let parsed: {
     entries?: Array<{ id?: string; updatedAt?: string; createdAt?: string }>
     trash?: Array<{ id?: string; deletedAt?: string }>
+    categories?: Array<{ id?: string; name?: string; color?: string }>
   }
   try {
     parsed = JSON.parse(cloudContent) as typeof parsed
@@ -675,6 +676,11 @@ function localIsAheadOfCloud(cloudContent: string): boolean {
     if (!entry?.id) continue
     cloudTrash.set(entry.id, new Date(entry.deletedAt || 0).getTime())
   }
+  const cloudCategories = new Set(
+    (Array.isArray(parsed.categories) ? parsed.categories : [])
+      .map((c) => c?.id)
+      .filter((id): id is string => Boolean(id)),
+  )
   for (const entry of cache.entries) {
     const cloudTime = cloudEntries.get(entry.id)
     if (cloudTime == null) return true
@@ -685,8 +691,21 @@ function localIsAheadOfCloud(cloudContent: string): boolean {
     if (cloudTime == null) return true
     if (new Date(entry.deletedAt).getTime() > cloudTime) return true
   }
+  for (const category of cache.categories) {
+    if (!cloudCategories.has(category.id)) return true
+  }
   return false
 }
+
+type ReusedAccountPull = {
+  content: string
+  etag: string | null
+  noteCount: number
+  uploadedAt: string | null
+}
+
+let cloudSyncRetryTimer: number | null = null
+let cloudSyncCooldownUntil = 0
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
 async function pullCloudIfConfigured() {
@@ -695,6 +714,7 @@ async function pullCloudIfConfigured() {
   // and overwrote richer laptop uploads while stuck on "Saving to cloud…".
   if (cloudPushInFlight) return cloudPushInFlight
   if (cloudPullInFlight) return cloudPullInFlight
+  if (Date.now() < cloudSyncCooldownUntil) return
   cloudPullInFlight = (async () => {
     try {
       // "pulling" ≠ saving — idle refresh was mislabeled "Saving to cloud…".
@@ -707,12 +727,20 @@ async function pullCloudIfConfigured() {
           setLastAccountSyncAt()
           cloudEtag = latest.etag
           if (ahead) {
-            await flushCloudSync()
+            // Reuse this pull — flush used to download the notebook a second time.
+            await flushCloudSync({
+              reusePull: {
+                content: latest.content,
+                etag: latest.etag,
+                noteCount: latest.noteCount,
+                uploadedAt: latest.uploadedAt,
+              },
+            })
             return
           }
         } else if (cache.entries.length + cache.trash.length > 0) {
           // Cloud empty but this device has notes — upload.
-          await flushCloudSync()
+          await flushCloudSync({ reusePull: null, cloudMissing: true })
           return
         }
       } else {
@@ -731,6 +759,7 @@ async function pullCloudIfConfigured() {
         state: 'error',
         error: err instanceof Error ? err.message : 'Cloud sync failed',
       })
+      cloudSyncCooldownUntil = Date.now() + 20_000
     } finally {
       cloudPullInFlight = null
     }
@@ -768,18 +797,15 @@ if (typeof window !== 'undefined') {
 }
 
 function buildBackupJson(): string {
-  return JSON.stringify(
-    {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      entries: cache.entries,
-      trash: cache.trash,
-      categories: cache.categories,
-      purgedIds: cache.purgedIds,
-    },
-    null,
-    2,
-  )
+  // Compact JSON — pretty-print nearly doubled upload size/time for large notebooks.
+  return JSON.stringify({
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    entries: cache.entries,
+    trash: cache.trash,
+    categories: cache.categories,
+    purgedIds: cache.purgedIds,
+  })
 }
 
 let durableTimer: number | null = null
@@ -872,8 +898,9 @@ const COMPACT_IMAGES_MIN_JSON_CHARS = 2_500_000
  * notebook JSON does not trip HTTP 413 (Vercel ~4.5MB body limit).
  * Skip when the notebook is still small — re-uploading every sub‑1MB paste
  * made “Saving to cloud…” hang after each picture.
+ * Stops early near the sync deadline so we still upload progress instead of hanging.
  */
-async function compactInlineImagesForCloud(): Promise<void> {
+async function compactInlineImagesForCloud(deadlineMs: number): Promise<void> {
   if (!isAccountSyncReady()) return
   if (!cache.entries.some((e) => (e.selectedText || '').includes('data:image')) &&
     !cache.trash.some((e) => (e.selectedText || '').includes('data:image'))) {
@@ -885,6 +912,10 @@ async function compactInlineImagesForCloud(): Promise<void> {
   let changed = false
   const nextEntries: NotebookEntry[] = []
   for (const entry of cache.entries) {
+    if (Date.now() > deadlineMs - 20_000) {
+      nextEntries.push(entry)
+      continue
+    }
     const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
     if (body.replaced > 0) {
       changed = true
@@ -899,6 +930,10 @@ async function compactInlineImagesForCloud(): Promise<void> {
   }
   const nextTrash: TrashedNotebookEntry[] = []
   for (const entry of cache.trash) {
+    if (Date.now() > deadlineMs - 20_000) {
+      nextTrash.push(entry)
+      continue
+    }
     const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
     if (body.replaced > 0) {
       changed = true
@@ -923,25 +958,50 @@ async function compactInlineImagesForCloud(): Promise<void> {
   })
 }
 
+function scheduleCloudSyncRetry(delayMs: number) {
+  if (typeof window === 'undefined') return
+  if (cloudSyncRetryTimer) window.clearTimeout(cloudSyncRetryTimer)
+  cloudSyncRetryTimer = window.setTimeout(() => {
+    cloudSyncRetryTimer = null
+    if (!anyCloudBackendReady()) return
+    if (cloudPushInFlight || cloudPullInFlight) return
+    void flushCloudSync()
+  }, delayMs)
+}
+
+type FlushCloudOptions = {
+  /** Skip a second full download when the caller already pulled+merged. */
+  reusePull?: ReusedAccountPull | null
+  cloudMissing?: boolean
+}
+
 /**
  * Push notebook to cloud when sync is enabled.
  * Coalesces overlapping writes: if notes change mid-upload, run another push with
  * the latest cache (previously those notes were dropped and never uploaded).
  * Retries on Gist ETag conflicts so two devices adding notes don't clobber each other.
  */
-async function flushCloudSync() {
+async function flushCloudSync(options?: FlushCloudOptions) {
   if (!anyCloudBackendReady()) {
     setCloudRuntime({ state: 'off', error: null })
     return
   }
   cloudPushDirty = true
   if (cloudPushInFlight) return cloudPushInFlight
+  if (Date.now() < cloudSyncCooldownUntil && !options?.reusePull && !options?.cloudMissing) {
+    scheduleCloudSyncRetry(Math.max(1_000, cloudSyncCooldownUntil - Date.now()))
+    return
+  }
   setCloudRuntime({ state: 'syncing', error: null })
-  const syncDeadline = Date.now() + 90_000
+  // Large notebooks need more than 90s once; still hard-cap so UI cannot hang forever.
+  const syncDeadline = Date.now() + 150_000
+  let reusedPullOnce = Boolean(options?.reusePull) || options?.cloudMissing === true
   cloudPushInFlight = (async () => {
+    let timedOut = false
     try {
       while (cloudPushDirty) {
         if (Date.now() > syncDeadline) {
+          timedOut = true
           throw new Error('Cloud sync timed out — tap the status pill to retry')
         }
         cloudPushDirty = false
@@ -950,46 +1010,79 @@ async function flushCloudSync() {
         let cloudMissing = false
         let cloudNoteCount = 0
         let cloudContent: string | null = null
-        // Merge remote first so a slower device doesn't clobber notes from another.
-        try {
-          const pulled = await pullAndMergeCloudQuiet()
-          etag = pulled.etag
-          cloudMissing = pulled.missing
-          cloudNoteCount = pulled.cloudNoteCount
-          cloudContent = pulled.cloudContent
-        } catch (err) {
-          pullFailed = true
-          // Account sync: never push a partial local notebook over cloud when pull
-          // failed — that was wiping the laptop's newer notes from the phone.
-          if (isAccountSyncReady()) {
-            throw new Error(
-              err instanceof Error
-                ? `Could not refresh cloud notebook before save: ${err.message}`
-                : 'Could not refresh cloud notebook before save',
-            )
+
+        if (reusedPullOnce && options?.cloudMissing) {
+          reusedPullOnce = false
+          cloudMissing = true
+        } else if (reusedPullOnce && options?.reusePull) {
+          reusedPullOnce = false
+          etag = options.reusePull.etag
+          cloudNoteCount = options.reusePull.noteCount
+          cloudContent = options.reusePull.content
+          cloudMissing = false
+        } else {
+          // Merge remote first so a slower device doesn't clobber notes from another.
+          try {
+            const pulled = await pullAndMergeCloudQuiet()
+            if (Date.now() > syncDeadline) {
+              timedOut = true
+              throw new Error('Cloud sync timed out — tap the status pill to retry')
+            }
+            etag = pulled.etag
+            cloudMissing = pulled.missing
+            cloudNoteCount = pulled.cloudNoteCount
+            cloudContent = pulled.cloudContent
+          } catch (err) {
+            if (err instanceof Error && /timed out/i.test(err.message)) {
+              timedOut = true
+              throw err
+            }
+            pullFailed = true
+            // Account sync: never push a partial local notebook over cloud when pull
+            // failed — that was wiping the laptop's newer notes from the phone.
+            if (isAccountSyncReady()) {
+              throw new Error(
+                err instanceof Error
+                  ? `Could not refresh cloud notebook before save: ${err.message}`
+                  : 'Could not refresh cloud notebook before save',
+              )
+            }
           }
         }
         if (cloudPushDirty) continue
+        if (Date.now() > syncDeadline) {
+          timedOut = true
+          throw new Error('Cloud sync timed out — tap the status pill to retry')
+        }
 
         // Wait briefly for optimistic picture uploads so we never push blob: previews.
         try {
+          const waitMs = Math.max(0, Math.min(12_000, syncDeadline - Date.now() - 30_000))
           await Promise.race([
             awaitPendingNoteImageUploads(),
             new Promise<void>((resolve) => {
-              window.setTimeout(resolve, 20_000)
+              window.setTimeout(resolve, waitMs)
             }),
           ])
         } catch {
           /* individual insert handlers already surfaced errors */
         }
         if (cloudPushDirty) continue
+        if (Date.now() > syncDeadline) {
+          timedOut = true
+          throw new Error('Cloud sync timed out — tap the status pill to retry')
+        }
 
         try {
-          await compactInlineImagesForCloud()
+          await compactInlineImagesForCloud(syncDeadline)
         } catch {
           /* still attempt push with current JSON */
         }
         if (cloudPushDirty) continue
+        if (Date.now() > syncDeadline) {
+          timedOut = true
+          throw new Error('Cloud sync timed out — tap the status pill to retry')
+        }
 
         let pushed = false
         if (isAccountSyncReady()) {
@@ -1069,15 +1162,24 @@ async function flushCloudSync() {
           throw new Error('Cloud sync conflicted with another device too many times')
         }
       }
+      cloudSyncCooldownUntil = 0
     } catch (err) {
       setCloudRuntime({
         state: 'error',
         error: err instanceof Error ? err.message : 'Cloud sync failed',
       })
+      // Stop infinite “Saving to cloud…” restart loops after timeouts / hung uploads.
+      cloudSyncCooldownUntil = Date.now() + (timedOut ? 45_000 : 20_000)
     } finally {
       cloudPushInFlight = null
       // A write may have landed between the last loop check and this finally.
-      if (cloudPushDirty) void flushCloudSync()
+      if (cloudPushDirty) {
+        if (Date.now() < cloudSyncCooldownUntil) {
+          scheduleCloudSyncRetry(cloudSyncCooldownUntil - Date.now())
+        } else {
+          void flushCloudSync()
+        }
+      }
     }
   })()
   return cloudPushInFlight
@@ -1391,6 +1493,8 @@ export const notebookStore = {
     htmlUrl?: string | null
   }> {
     await ensureReady()
+    // Manual tap always retries immediately (clears timeout cooldown).
+    cloudSyncCooldownUntil = 0
     const json = buildBackupJson()
     let folder = false
     try {

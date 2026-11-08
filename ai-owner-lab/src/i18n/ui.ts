@@ -142,7 +142,7 @@ const en = {
   cloudSyncing: 'Saving to cloud…',
   cloudPulling: 'Checking cloud…',
   cloudSynced: 'Saved to cloud',
-  cloudSyncError: 'Cloud save failed: {error}',
+  cloudSyncError: 'Cloud sync issue: {error}',
   cloudSyncOffBanner: 'Not signed in — notes stay on this device until you sign in.',
   cloudVerify: 'Double-check cloud sync',
   cloudVerifyOk:
@@ -674,7 +674,7 @@ const zh: Record<UiKey, string> = {
   cloudSyncing: '正在保存到云端…',
   cloudPulling: '正在检查云端…',
   cloudSynced: '已保存到云端',
-  cloudSyncError: '云端保存失败：{error}',
+  cloudSyncError: '云同步异常：{error}',
   cloudSyncOffBanner: '未登录——登录前笔记仅保存在本设备。',
   cloudVerify: '检查云同步是否正常',
   cloudVerifyOk: '云同步正常。本地 {local} 条，云端 {cloud} 条。笔记本 ID {id}。',
