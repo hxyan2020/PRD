@@ -6,6 +6,8 @@
  */
 export const config = {
   runtime: 'edge',
+  // Large notebooks need more than the default Edge budget on slow mobile links.
+  maxDuration: 60,
 }
 
 const SESSION_COOKIE = 'ownlab_session'
@@ -135,8 +137,6 @@ export default async function handler(req: Request): Promise<Response> {
       uploadedAt?: string
       etag?: string
       size?: number
-      downloadUrl?: string
-      url?: string
     }
     uploadedAt = typeof meta.uploadedAt === 'string' ? meta.uploadedAt : null
     etag = typeof meta.etag === 'string' ? meta.etag : null
@@ -166,11 +166,13 @@ export default async function handler(req: Request): Promise<Response> {
   const headers = new Headers({
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'private, no-store',
+    // Avoid Content-Length: Safari aborts with "Load failed" if the streamed
+    // body length does not match the declared size exactly.
     'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Allow-Origin': '*',
   })
   if (etag) headers.set('ETag', etag)
-  if (typeof size === 'number') headers.set('Content-Length', String(size))
+  if (typeof size === 'number') headers.set('X-Ownlab-Size', String(size))
   if (uploadedAt) headers.set('X-Ownlab-Uploaded-At', uploadedAt)
 
   return new Response(blobRes.body, { status: 200, headers })

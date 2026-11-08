@@ -182,7 +182,55 @@ export type AccountCloudMeta = {
 function downloadTimeoutForSize(size: number | null): number {
   // Mobile networks often need minutes for 20–50MB notebooks.
   const bytes = typeof size === 'number' && size > 0 ? size : 8_000_000
-  return Math.min(300_000, Math.max(120_000, Math.round(bytes / 1024) * 40))
+  return Math.min(300_000, Math.max(180_000, Math.round(bytes / 1024) * 50))
+}
+
+function isLikelyIosWebKit(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent || ''
+  if (/iP(hone|ad|od)/i.test(ua)) return true
+  // iPadOS desktop UA
+  return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1
+}
+
+/** Read a response body without AbortSignal so a header timeout cannot kill mid-stream. */
+async function readResponseText(res: Response, timeoutMs: number): Promise<string> {
+  if (!res.body) return res.text()
+  const reader = res.body.getReader()
+  const chunks: Uint8Array[] = []
+  let received = 0
+  const deadline = Date.now() + timeoutMs
+  try {
+    while (true) {
+      if (Date.now() > deadline) {
+        try {
+          await reader.cancel()
+        } catch {
+          /* ignore */
+        }
+        throw new Error('Cloud notebook download timed out')
+      }
+      const { done, value } = await reader.read()
+      if (done) break
+      if (value && value.byteLength) {
+        chunks.push(value)
+        received += value.byteLength
+      }
+    }
+  } finally {
+    try {
+      reader.releaseLock()
+    } catch {
+      /* ignore */
+    }
+  }
+  const merged = new Uint8Array(received)
+  let offset = 0
+  for (const chunk of chunks) {
+    merged.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+  return new TextDecoder('utf-8').decode(merged)
 }
 
 function uploadTimeoutForSize(bytes: number): number {
@@ -275,30 +323,45 @@ function mapDownloadError(err: unknown): Error {
 async function downloadViaSameOrigin(
   size: number | null,
 ): Promise<{ content: string; etag: string | null; uploadedAt: string | null } | null> {
-  try {
-    const res = await fetchWithTimeout(
-      api('/api/notebook/content'),
-      { method: 'GET', credentials: 'include' },
-      downloadTimeoutForSize(size),
-      'Cloud notebook download',
-    )
-    if (res.status === 404) return null
-    if (res.status === 401) throw new Error('Sign in required')
-    if (!res.ok) throw new Error(await readError(res))
-    const contentType = res.headers.get('content-type') || ''
-    const content = await res.text()
-    // SPA fallback HTML must not be treated as a notebook.
-    if (!contentType.includes('application/json') && !content.trim().startsWith('{')) {
-      throw new Error('Cloud notebook proxy returned a non-JSON body')
+  const attempts = isLikelyIosWebKit() ? 3 : 2
+  let lastErr: unknown
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const ctrl = new AbortController()
+    // Only abort if headers never arrive — never abort while reading the body
+    // (that was a common Safari "Load failed" / truncated stream cause).
+    const headerTimer = window.setTimeout(() => ctrl.abort(), 45_000)
+    try {
+      const res = await fetch(api('/api/notebook/content'), {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-store',
+        signal: ctrl.signal,
+      })
+      window.clearTimeout(headerTimer)
+      if (res.status === 404) return null
+      if (res.status === 401) throw new Error('Sign in required')
+      if (!res.ok) throw new Error(await readError(res))
+      const contentType = res.headers.get('content-type') || ''
+      const content = await readResponseText(res, downloadTimeoutForSize(size))
+      // SPA fallback HTML must not be treated as a notebook.
+      if (!contentType.includes('application/json') && !content.trim().startsWith('{')) {
+        throw new Error('Cloud notebook proxy returned a non-JSON body')
+      }
+      return {
+        content,
+        etag: res.headers.get('etag'),
+        uploadedAt: res.headers.get('x-ownlab-uploaded-at'),
+      }
+    } catch (err) {
+      window.clearTimeout(headerTimer)
+      if (err instanceof Error && /Sign in required/i.test(err.message)) throw err
+      lastErr = err
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 600 * (attempt + 1))
+      })
     }
-    return {
-      content,
-      etag: res.headers.get('etag'),
-      uploadedAt: res.headers.get('x-ownlab-uploaded-at'),
-    }
-  } catch (err) {
-    throw mapDownloadError(err)
   }
+  throw mapDownloadError(lastErr)
 }
 
 async function downloadViaSignedUrl(
@@ -352,8 +415,9 @@ async function downloadAccountNotebook(
       }
     }
   } catch (err) {
-    // Fall back to signed URL once; still better than failing closed on desktop.
     if (err instanceof Error && /Sign in required/i.test(err.message)) throw err
+    // Signed Blob URLs reliably fail on iOS WebKit — do not waste retries there.
+    if (isLikelyIosWebKit()) throw mapDownloadError(err)
   }
 
   return downloadViaSignedUrl(meta)
@@ -396,7 +460,9 @@ export async function pullAccountBackup(): Promise<AccountPullResult | null> {
     return null
   } catch (err) {
     if (err instanceof Error && /Sign in required/i.test(err.message)) throw err
-    // Fall back to meta + signed URL for older deploys / edge failures.
+    // On iOS the signed-URL fallback almost always fails the same way.
+    if (isLikelyIosWebKit()) throw mapDownloadError(err)
+    // Desktop: fall back to meta + signed URL for older deploys / edge failures.
   }
 
   const res = await fetchWithTimeout(
