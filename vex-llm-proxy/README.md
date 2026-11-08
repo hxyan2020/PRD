@@ -1,11 +1,19 @@
 # vex-llm-proxy
 
-Minimal Vercel serverless OpenAI proxy for the V Exchange Risk Tool desk.
+Vercel project name for the Risk Tool production host:
 
-- `GET /api/chat` → health
-- `POST /api/chat` → OpenAI chat (requires `X-Desk-Token`)
+**https://vex-llm-proxy.vercel.app**
 
-## Env (Vercel)
+The live site is the full `xauusd-source-monitor` SPA (login → desk) plus
+`POST /api/chat`. Deploy from that folder:
+
+```bash
+cd ../xauusd-source-monitor
+npx vercel link --yes --project vex-llm-proxy
+npx vercel deploy --prod --yes
+```
+
+## Env (Vercel Production)
 
 | Name | Required | Purpose |
 | --- | --- | --- |
@@ -13,14 +21,4 @@ Minimal Vercel serverless OpenAI proxy for the V Exchange Risk Tool desk.
 | `DESK_GATEWAY_TOKEN` | yes | Must match desk `llm-config.json` `deskToken` |
 | `DAILY_BUDGET_USD` | no | Default `10` |
 
-## Deploy
-
-```bash
-npx vercel login
-npx vercel --prod \
-  --env OPENAI_API_KEY=… \
-  --env DESK_GATEWAY_TOKEN=… \
-  --yes
-```
-
-Point `xauusd-source-monitor/public/llm-config.json` `proxyBase` at the production URL.
+Login sessions persist forever in the browser `localStorage` until Log out.
