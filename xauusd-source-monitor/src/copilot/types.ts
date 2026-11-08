@@ -118,6 +118,8 @@ export interface CopilotSettings {
   openrouterKey: string
   /** Optional custom proxy base, e.g. https://xxx.vercel.app */
   proxyBase: string
+  /** Desk auth token for managed LLM gateway (from llm-config.json). */
+  deskToken: string
 }
 
 export interface RuleAnalysis {

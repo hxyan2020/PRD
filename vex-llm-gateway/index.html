@@ -25,15 +25,16 @@
   <main>
     <h1>V Exchange <span>LLM Gateway</span></h1>
     <p>
-      Server-side <code>/api/chat</code> for the Risk Tool desk on GitHub Pages.
-      API keys stay on the host — the SPA never asks operators to paste them.
+      Authenticated <code>/api/chat</code> for the Risk Tool desk.
+      Requires a signed-in Cursor viewer or desk token. Daily spend capped at USD 10.
     </p>
     <p id="status">Checking…</p>
   </main>
   <script>
     fetch('/api/chat').then(r => r.json()).then(d => {
+      const spend = d.spend ? ` · spent $${d.spend.spentUsd}/${d.spend.budgetUsd}` : ''
       document.getElementById('status').textContent = d.openai
-        ? 'OpenAI connected'
+        ? `OpenAI ready${spend}`
         : 'Waiting for OPENAI_API_KEY on host'
     }).catch(() => {
       document.getElementById('status').textContent = 'Gateway unreachable'

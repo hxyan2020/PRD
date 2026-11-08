@@ -70,14 +70,15 @@ async function callProxy(
   for (const base of bases) {
     const url = `${base}/api/chat`
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (settings.deskToken?.trim()) headers['X-Desk-Token'] = settings.deskToken.trim()
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           provider: settings.provider,
           model: settings.model,
           messages,
-          apiKey: keyFor(settings) || undefined,
         }),
       })
       if (!res.ok) continue

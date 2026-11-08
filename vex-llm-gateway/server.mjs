@@ -8,20 +8,18 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.env.PORT || 8791)
 
-for (const p of [
-  path.join(__dirname, '.env'),
-  path.join(__dirname, '../xauusd-source-monitor/.env'),
-]) {
-  try {
-    if (!fs.existsSync(p)) continue
-    for (const line of fs.readFileSync(p, 'utf8').split(/\n/)) {
+// Local-only: load this folder's .env. Never pull secrets from sibling apps.
+try {
+  const envPath = path.join(__dirname, '.env')
+  if (fs.existsSync(envPath)) {
+    for (const line of fs.readFileSync(envPath, 'utf8').split(/\n/)) {
       const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/)
       if (!m || process.env[m[1]]) continue
       process.env[m[1]] = m[2].replace(/^["']|["']$/g, '')
     }
-  } catch {
-    /* ignore */
   }
+} catch {
+  /* ignore */
 }
 
 const chat = await import(pathToFileURL(path.join(__dirname, 'api/chat.js')).href)
@@ -61,5 +59,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`vex-llm-gateway http://127.0.0.1:${PORT}`)
-  console.log(`openai=${Boolean(process.env.OPENAI_API_KEY)}`)
+  console.log(
+    `openai=${Boolean(process.env.OPENAI_API_KEY)} deskToken=${Boolean(process.env.DESK_GATEWAY_TOKEN)} budget=${process.env.DAILY_BUDGET_USD || 10}`,
+  )
 })

@@ -39,6 +39,7 @@ const DEFAULT_SETTINGS: CopilotSettings = {
   openrouterKey: '',
   /** Managed /api/chat base — filled from llm-config.json or build define. */
   proxyBase: builtInProxyBase(),
+  deskToken: '',
 }
 
 function readJson<T>(key: string, fallback: T): T {
@@ -274,12 +275,14 @@ export async function applyManagedLlmConfig(
       provider?: CopilotSettings['provider']
       model?: string
       proxyBase?: string
+      deskToken?: string
     }
     const next: CopilotSettings = {
       ...current,
       provider: cfg.provider || current.provider || 'openai',
       model: cfg.model || current.model || 'gpt-4o-mini',
       proxyBase: (cfg.proxyBase || current.proxyBase || '').replace(/\/$/, ''),
+      deskToken: (cfg.deskToken || current.deskToken || '').trim(),
       openaiKey: '',
       anthropicKey: '',
       geminiKey: '',
