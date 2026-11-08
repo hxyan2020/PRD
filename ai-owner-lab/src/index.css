@@ -3934,6 +3934,12 @@ button.notebook-category-badge.on {
   cursor: pointer;
 }
 
+.rte-btn-checklist {
+  font-size: 1.05rem;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
 .rte-btn:hover {
   background: rgba(13, 148, 136, 0.1);
   border-color: rgba(13, 148, 136, 0.25);

@@ -843,13 +843,13 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
         </button>
         <button
           type="button"
-          className="rte-btn"
+          className="rte-btn rte-btn-checklist"
           title={t('editorChecklist')}
           aria-label={t('editorChecklist')}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => withFocus(() => applyChecklist(editorRef.current))}
         >
-          ☑
+          ☐
         </button>
         <button
           type="button"
