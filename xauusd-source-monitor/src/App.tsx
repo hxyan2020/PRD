@@ -12,10 +12,10 @@ import { InvestigatePage } from './pages/InvestigatePage'
 import { StatsPage } from './pages/StatsPage'
 
 const NAV = [
+  { to: '/investigate', full: 'navInvestigate', short: 'navInvestigateShort' },
   { to: '/market', full: 'navMarket', short: 'navMarketShort' },
   { to: '/skills', full: 'navSkills', short: 'navSkillsShort' },
   { to: '/knowledge', full: 'navKnowledge', short: 'navKnowledgeShort' },
-  { to: '/investigate', full: 'navInvestigate', short: 'navInvestigateShort' },
   { to: '/stats', full: 'navStats', short: 'navStatsShort' },
 ] as const
 
@@ -87,13 +87,13 @@ export default function App() {
           <Route path="/knowledge" element={<KnowledgePage />} />
           <Route path="/investigate" element={<InvestigatePage />} />
           <Route path="/stats" element={<StatsPage />} />
-          <Route path="/" element={<Navigate to="/market" replace />} />
+          <Route path="/" element={<Navigate to="/investigate" replace />} />
           <Route path="/health" element={<Navigate to="/market/health" replace />} />
           <Route path="/rules" element={<Navigate to="/market/rules" replace />} />
           <Route path="/archive" element={<Navigate to="/market/archive" replace />} />
           <Route path="/briefings" element={<Navigate to="/market" replace />} />
           <Route path="/copilot" element={<Navigate to="/investigate" replace />} />
-          <Route path="*" element={<Navigate to="/market" replace />} />
+          <Route path="*" element={<Navigate to="/investigate" replace />} />
         </Routes>
       </main>
 

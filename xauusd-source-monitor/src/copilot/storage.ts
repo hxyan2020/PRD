@@ -18,16 +18,27 @@ export const BRIEFINGS_KEY = 'xauusd-monitor-briefings-v8'
 
 declare const __VEX_LLM_PROXY_BASE__: string
 
+function builtInProxyBase(): string {
+  if (typeof __VEX_LLM_PROXY_BASE__ === 'string' && __VEX_LLM_PROXY_BASE__.trim()) {
+    return __VEX_LLM_PROXY_BASE__.replace(/\/$/, '')
+  }
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    if (host === 'localhost' || host === '127.0.0.1') return 'http://127.0.0.1:8791'
+  }
+  return ''
+}
+
 const DEFAULT_SETTINGS: CopilotSettings = {
-  /** Prefer real LLM; falls back to local rules if no key / proxy. */
+  /** Prefer real LLM via managed gateway; falls back to local rules if offline. */
   provider: 'openai',
   model: 'gpt-4o-mini',
   openaiKey: '',
   anthropicKey: '',
   geminiKey: '',
   openrouterKey: '',
-  /** Optional hosted /api/chat base (Vercel or local llm-proxy). */
-  proxyBase: typeof __VEX_LLM_PROXY_BASE__ === 'string' ? __VEX_LLM_PROXY_BASE__ : '',
+  /** Managed /api/chat base — filled from llm-config.json or build define. */
+  proxyBase: builtInProxyBase(),
 }
 
 function readJson<T>(key: string, fallback: T): T {
@@ -228,11 +239,57 @@ export function saveSkills(list: SkillRecord[]) {
 }
 
 export function loadSettings(): CopilotSettings {
-  return { ...DEFAULT_SETTINGS, ...readJson(SETTINGS_KEY, {}) }
+  const stored = readJson<Partial<CopilotSettings>>(SETTINGS_KEY, {})
+  const merged: CopilotSettings = { ...DEFAULT_SETTINGS, ...stored }
+  // Prefer managed proxy over empty / stale local overrides that block autoconnect.
+  if (!merged.proxyBase.trim()) {
+    merged.proxyBase = builtInProxyBase()
+  }
+  // Desk is pre-connected — clear leftover BYOK keys so the UI never depends on them.
+  merged.openaiKey = ''
+  merged.anthropicKey = ''
+  merged.geminiKey = ''
+  merged.openrouterKey = ''
+  if (merged.provider === 'rules') {
+    merged.provider = 'openai'
+    merged.model = merged.model || 'gpt-4o-mini'
+  }
+  return merged
 }
 
 export function saveSettings(s: CopilotSettings) {
   writeJson(SETTINGS_KEY, s)
+}
+
+/** Pull managed proxy URL from public/llm-config.json (no secrets in the file). */
+export async function applyManagedLlmConfig(
+  current: CopilotSettings,
+): Promise<CopilotSettings> {
+  try {
+    const base = import.meta.env.BASE_URL || '/'
+    const url = `${base}llm-config.json?v=${Date.now()}`
+    const res = await fetch(url, { cache: 'no-store' })
+    if (!res.ok) return current
+    const cfg = (await res.json()) as {
+      provider?: CopilotSettings['provider']
+      model?: string
+      proxyBase?: string
+    }
+    const next: CopilotSettings = {
+      ...current,
+      provider: cfg.provider || current.provider || 'openai',
+      model: cfg.model || current.model || 'gpt-4o-mini',
+      proxyBase: (cfg.proxyBase || current.proxyBase || '').replace(/\/$/, ''),
+      openaiKey: '',
+      anthropicKey: '',
+      geminiKey: '',
+      openrouterKey: '',
+    }
+    saveSettings(next)
+    return next
+  } catch {
+    return current
+  }
 }
 
 export interface ImportedBriefing {

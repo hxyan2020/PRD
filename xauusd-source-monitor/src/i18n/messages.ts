@@ -31,6 +31,8 @@ const en: Dict = {
   llmNeedKey:
     'Add your OpenAI (or Gemini/OpenRouter) key in Settings — stored only in this browser. Or point Proxy base at a hosted /api/chat.',
   llmOpenAiHint: 'Provider defaults to OpenAI gpt-4o-mini. Paste API key below, then Run investigation.',
+  llmConnected: 'OpenAI connected',
+  llmConnecting: 'Connecting…',
   authTitle: 'Sign in — V Exchange Risk Tool',
   authSub: 'Hytech email required. Demo accounts are seeded for this Pages build.',
   authEmail: 'Hytech email',
@@ -365,6 +367,8 @@ const zhHant: Dict = {
   llmNeedKey:
     '請在設置填寫 OpenAI（或 Gemini／OpenRouter）Key — 僅存本瀏覽器。或將 Proxy 指向已部署的 /api/chat。',
   llmOpenAiHint: '預設使用 OpenAI gpt-4o-mini。請在下方貼上 API Key，再執行排查。',
+  llmConnected: 'OpenAI 已連線',
+  llmConnecting: '連線中…',
   authTitle: '登入 — V Exchange 風險工具',
   authSub: '需使用 Hytech 郵箱。本 Pages 演示已預置示範帳號。',
   authEmail: 'Hytech 郵箱',

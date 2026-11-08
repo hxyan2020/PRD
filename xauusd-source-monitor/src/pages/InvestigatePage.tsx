@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
-import { hasLlmCredentials, modelOptions, runLlm } from '../copilot/engine/llm'
+import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import {
+  applyManagedLlmConfig,
   flattenKbDocs,
   loadHistory,
   loadKnowledgeTree,
@@ -10,15 +11,9 @@ import {
   loadSettings,
   loadSkills,
   saveHistory,
-  saveSettings,
   type ImportedBriefing,
 } from '../copilot/storage'
-import type {
-  CopilotSettings,
-  IncidentRecord,
-  LlmProvider,
-  SeverityChoice,
-} from '../copilot/types'
+import type { CopilotSettings, IncidentRecord, SeverityChoice } from '../copilot/types'
 import { useLocale } from '../i18n/locale'
 
 function briefingToFacts(b: ImportedBriefing): string {
@@ -57,17 +52,25 @@ export function InvestigatePage() {
   const [active, setActive] = useState<IncidentRecord | null>(null)
   const [followUp, setFollowUp] = useState('')
   const [selectedBriefingIds, setSelectedBriefingIds] = useState<string[]>([])
-  const [showSettings, setShowSettings] = useState(() => !hasLlmCredentials(loadSettings()))
+  const [llmReady, setLlmReady] = useState(() => hasLlmCredentials(loadSettings()))
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      const next = await applyManagedLlmConfig(loadSettings())
+      if (cancelled) return
+      setSettings(next)
+      setLlmReady(hasLlmCredentials(next))
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const briefings = useMemo(() => {
     const all = loadMonitorBriefings()
     return all.filter((b) => !b.lang || b.lang === (lang === 'zh-Hant' ? 'zh-Hant' : 'en'))
   }, [lang])
-
-  const persistSettings = (next: CopilotSettings) => {
-    setSettings(next)
-    saveSettings(next)
-  }
 
   const persistHistory = (next: IncidentRecord[]) => {
     setHistory(next)
@@ -139,43 +142,39 @@ export function InvestigatePage() {
       let modelLabel = 'rules'
       let llmNote: string | null = null
 
-      if (settings.provider !== 'rules') {
-        if (!hasLlmCredentials(settings)) {
+      if (settings.provider !== 'rules' && hasLlmCredentials(settings)) {
+        try {
+          modelLabel = `${settings.provider}/${settings.model}`
+          const llmText = await runLlm({
+            settings,
+            userPrompt: analysisText,
+            skillContext: rules.skillContext,
+            kbContext:
+              rules.kbContext ||
+              knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
+          })
+          report = [
+            `# LLM RCA（${modelLabel}）`,
+            '',
+            llmText,
+            '',
+            '----------',
+            '',
+            '# Local skills + knowledge report',
+            '',
+            rules.body,
+          ].join('\n')
+        } catch (llmErr) {
           provider = 'rules'
           modelLabel = 'rules'
-          llmNote = t('llmNeedKey')
-        } else {
-          try {
-            modelLabel = `${settings.provider}/${settings.model}`
-            const llmText = await runLlm({
-              settings,
-              userPrompt: analysisText,
-              skillContext: rules.skillContext,
-              kbContext:
-                rules.kbContext ||
-                knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
-            })
-            report = [
-              `# LLM RCA（${modelLabel}）`,
-              '',
-              llmText,
-              '',
-              '----------',
-              '',
-              '# Local skills + knowledge report',
-              '',
-              rules.body,
-            ].join('\n')
-          } catch (llmErr) {
-            provider = 'rules'
-            modelLabel = 'rules'
-            llmNote = `${t('llmFallbackRules')} ${
-              llmErr instanceof Error ? llmErr.message : String(llmErr)
-            }`
-          }
+          // Keep going with local skills — never block the desk on key prompts.
+          llmNote = `${t('llmFallbackRules')} ${
+            llmErr instanceof Error ? llmErr.message : String(llmErr)
+          }`
         }
       } else {
         provider = 'rules'
+        modelLabel = 'rules'
       }
 
       if (llmNote) setError(llmNote)
@@ -294,76 +293,10 @@ export function InvestigatePage() {
           <h2>{t('investigateTitle')}</h2>
           <p className="sub">{t('investigateSub')}</p>
         </div>
-        <button
-          type="button"
-          className="archive-btn"
-          onClick={() => setShowSettings((v) => !v)}
-        >
-          {t('copilotTabSettings')}
-        </button>
+        <span className={`pill ${llmReady ? 'healthy' : 'watch'}`}>
+          {llmReady ? t('llmConnected') : t('llmConnecting')}
+        </span>
       </div>
-
-      {showSettings ? (
-        <div className="item-block">
-          <h3>{t('copilotSettingsTitle')}</h3>
-          <p className="sub">{t('copilotSettingsSub')}</p>
-          {!hasLlmCredentials(settings) ? <p className="banner-warn">{t('llmOpenAiHint')}</p> : null}
-          <label className="field-label">OpenAI API Key</label>
-          <input
-            type="password"
-            value={settings.openaiKey}
-            onChange={(e) =>
-              persistSettings({
-                ...settings,
-                openaiKey: e.target.value,
-                provider: settings.provider === 'rules' ? 'openai' : settings.provider,
-                model: settings.provider === 'rules' || !settings.model ? 'gpt-4o-mini' : settings.model,
-              })
-            }
-            autoComplete="off"
-            placeholder="sk-…"
-          />
-          <label className="field-label">Gemini API Key</label>
-          <input
-            type="password"
-            value={settings.geminiKey}
-            onChange={(e) => persistSettings({ ...settings, geminiKey: e.target.value })}
-            autoComplete="off"
-          />
-          <label className="field-label">Anthropic API Key</label>
-          <input
-            type="password"
-            value={settings.anthropicKey}
-            onChange={(e) => persistSettings({ ...settings, anthropicKey: e.target.value })}
-            autoComplete="off"
-          />
-          <label className="field-label">OpenRouter API Key</label>
-          <input
-            type="password"
-            value={settings.openrouterKey}
-            onChange={(e) => persistSettings({ ...settings, openrouterKey: e.target.value })}
-            autoComplete="off"
-          />
-          <label className="field-label">{t('copilotProxyBase')}</label>
-          <input
-            value={settings.proxyBase}
-            onChange={(e) => persistSettings({ ...settings, proxyBase: e.target.value })}
-            placeholder="http://127.0.0.1:8790"
-          />
-          <p className="sub">
-            {t('copilotSettingsHint')}{' '}
-            <a href={`${import.meta.env.BASE_URL}setup-llm.html`}>setup-llm.html</a>
-            {' · '}
-            <a
-              href="https://github.com/hxyan2020/PRD/tree/main/lark-messenger-server"
-              target="_blank"
-              rel="noreferrer"
-            >
-              lark-messenger-server
-            </a>
-          </p>
-        </div>
-      ) : null}
 
       {error ? <p className="feed-error">{error}</p> : null}
 
@@ -437,38 +370,9 @@ export function InvestigatePage() {
             </div>
             <div>
               <label className="field-label">{t('copilotProvider')}</label>
-              <select
-                value={settings.provider}
-                onChange={(e) => {
-                  const provider = e.target.value as LlmProvider
-                  const models = modelOptions(provider)
-                  persistSettings({
-                    ...settings,
-                    provider,
-                    model: models[0]?.id || 'rules',
-                  })
-                }}
-              >
-                <option value="rules">{t('copilotProviderRules')}</option>
-                <option value="gemini">Gemini</option>
-                <option value="openai">OpenAI</option>
-                <option value="anthropic">Claude</option>
-                <option value="openrouter">OpenRouter</option>
-              </select>
-            </div>
-            <div>
-              <label className="field-label">{t('copilotModel')}</label>
-              <select
-                value={settings.model}
-                onChange={(e) => persistSettings({ ...settings, model: e.target.value })}
-                disabled={settings.provider === 'rules'}
-              >
-                {modelOptions(settings.provider).map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
+              <p className="sub" style={{ margin: '10px 0 0' }}>
+                OpenAI · {settings.model || 'gpt-4o-mini'}
+              </p>
             </div>
           </div>
 
