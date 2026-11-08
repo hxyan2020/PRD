@@ -1527,6 +1527,50 @@ td.mono,
   color: var(--muted);
   font-weight: 600;
 }
+.thinking-panel {
+  margin: 8px 0 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(180, 83, 9, 0.25);
+  background: linear-gradient(180deg, #fff8ef 0%, #fffcf7 100%);
+}
+.thinking-panel h4 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: #b45309;
+}
+.thinking-panel.thinking-live h4::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  margin-left: 8px;
+  border-radius: 50%;
+  background: #b45309;
+  animation: think-pulse 1s ease-in-out infinite;
+  vertical-align: middle;
+}
+.thinking-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.thinking-steps li {
+  margin: 0.35rem 0;
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+@keyframes think-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 .file-upload-btn {
   display: flex;
   align-items: center;

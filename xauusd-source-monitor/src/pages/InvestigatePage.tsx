@@ -63,7 +63,12 @@ export function InvestigatePage() {
   const [active, setActive] = useState<IncidentRecord | null>(null)
   const [followUp, setFollowUp] = useState('')
   const [boundBriefings, setBoundBriefings] = useState<ImportedBriefing[]>([])
+  const [liveThinking, setLiveThinking] = useState<string[]>([])
   const [llmReady, setLlmReady] = useState(() => hasLlmCredentials(loadSettings()))
+
+  const pushThink = (line: string) => {
+    setLiveThinking((prev) => [...prev, line])
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -136,11 +141,20 @@ export function InvestigatePage() {
     if (!title.trim() && matched[0]) setTitle(autoTitle)
 
     setBusy(true)
+    setLiveThinking([t('investigateThinkMatch')])
+    setActive(null)
     const startedAt = Date.now()
     try {
       const skills = loadSkills()
       const tree = loadKnowledgeTree()
       const knowledge = flattenKbDocs(tree)
+      pushThink(
+        matched.length
+          ? t('investigateAutoBoundThinking').replace('{n}', String(matched.length)) +
+              `: ${matched.map((b) => b.title).join(' · ')}`
+          : t('investigateAutoBoundNone'),
+      )
+      pushThink(t('investigateThinkSkills'))
       // Always auto-recommend severity from input + matched skills.
       const rules = analyzeWithRules({
         text: analysisText,
@@ -157,6 +171,7 @@ export function InvestigatePage() {
 
       if (settings.provider !== 'rules' && hasLlmCredentials(settings)) {
         try {
+          pushThink(t('investigateThinkLlm'))
           modelLabel = `${settings.provider}/${settings.model}`
           const llmText = await runLlm({
             settings,
@@ -196,8 +211,18 @@ export function InvestigatePage() {
         modelLabel = 'rules'
       }
 
+      pushThink(t('investigateThinkDone'))
       if (llmNote) setError(llmNote)
 
+      const thinking = [
+        matched.length
+          ? t('investigateAutoBoundThinking').replace(
+              '{n}',
+              String(matched.length),
+            ) + `: ${matched.map((b) => b.title).join(' · ')}`
+          : t('investigateAutoBoundNone'),
+        ...rules.thinking,
+      ]
       const rec: IncidentRecord = {
         id: `inc_${Date.now()}`,
         createdAt: startedAt,
@@ -212,15 +237,7 @@ export function InvestigatePage() {
         imageDataUrl: images[0] || null,
         imageDataUrls: images,
         briefingIds: matched.map((b) => b.id),
-        thinking: [
-          matched.length
-            ? t('investigateAutoBoundThinking').replace(
-                '{n}',
-                String(matched.length),
-              ) + `: ${matched.map((b) => b.title).join(' · ')}`
-            : t('investigateAutoBoundNone'),
-          ...rules.thinking,
-        ],
+        thinking,
         timeline: rules.timeline,
         skillsUsed: rules.skillsUsed,
         knowledgeUsed: rules.knowledgeUsed,
@@ -233,8 +250,10 @@ export function InvestigatePage() {
       const next = [rec, ...history]
       persistHistory(next)
       setActive(rec)
+      setLiveThinking(thinking)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
+      setLiveThinking([])
     } finally {
       setBusy(false)
     }
@@ -421,6 +440,7 @@ export function InvestigatePage() {
                 setImages([])
                 setBoundBriefings([])
                 setActive(null)
+                setLiveThinking([])
               }}
             >
               {t('copilotClear')}
@@ -431,7 +451,19 @@ export function InvestigatePage() {
 
         <div>
           <h3>{t('copilotReport')}</h3>
-          {active ? (
+
+          {(busy || liveThinking.length > 0) && (
+            <div className={`thinking-panel${busy ? ' thinking-live' : ''}`}>
+              <h4>{busy ? t('investigateThinkingLive') : t('investigateThinking')}</h4>
+              <ol className="investigate-list thinking-steps">
+                {(busy ? liveThinking : active?.thinking || liveThinking).map((line, i) => (
+                  <li key={`${i}-${line.slice(0, 24)}`}>{line}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          {active && !busy ? (
             <>
               <div className="copilot-row" style={{ alignItems: 'end', marginBottom: 8 }}>
                 <div>
@@ -509,12 +541,16 @@ export function InvestigatePage() {
                 )}
               </ul>
 
-              <h4>{t('investigateThinking')}</h4>
-              <ul className="investigate-list">
-                {(active.thinking || []).map((line, i) => (
-                  <li key={i}>{line}</li>
-                ))}
-              </ul>
+              {!liveThinking.length ? (
+                <>
+                  <h4>{t('investigateThinking')}</h4>
+                  <ul className="investigate-list">
+                    {(active.thinking || []).map((line, i) => (
+                      <li key={i}>{line}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
 
               <h4>{t('investigateTimeline')}</h4>
               <ol className="investigate-timeline">
@@ -585,38 +621,60 @@ export function InvestigatePage() {
                 {t('copilotSendFollowUp')}
               </button>
             </>
-          ) : (
+          ) : !busy ? (
             <p className="sub">{t('copilotReportEmpty')}</p>
-          )}
+          ) : null}
 
-          <h3 style={{ marginTop: 24 }}>{t('copilotRecent')}</h3>
-          <div className="copilot-history-mini">
-            {openIncidents.slice(0, 8).map((h) => (
-              <div key={h.id} className="item-row">
-                <button type="button" className="text-link" onClick={() => setActive(h)}>
-                  {h.title}
-                </button>
-                <span className="sub">{h.severity}</span>
+          {history.length > 0 ? (
+            <>
+              <h3 style={{ marginTop: 24 }}>{t('copilotRecent')}</h3>
+              <div className="copilot-history-mini">
+                {openIncidents.slice(0, 8).map((h) => (
+                  <div key={h.id} className="item-row">
+                    <button
+                      type="button"
+                      className="text-link"
+                      onClick={() => {
+                        setActive(h)
+                        setLiveThinking(h.thinking || [])
+                      }}
+                    >
+                      {h.title}
+                    </button>
+                    <span className="sub">{h.severity}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <h3 style={{ marginTop: 16 }}>{t('copilotArchiveTitle')}</h3>
-          <p className="sub">{t('investigateArchiveNote')}</p>
-          {archivedIncidents.length === 0 ? (
-            <p className="sub">{t('copilotArchiveEmpty')}</p>
-          ) : (
-            archivedIncidents.slice(0, 6).map((h) => (
-              <div key={h.id} className="item-row">
-                <button type="button" className="text-link" onClick={() => setActive(h)}>
-                  {h.title}
-                </button>
-                <button type="button" className="archive-btn" onClick={() => unarchiveIncident(h.id)}>
-                  {t('unarchiveAction')}
-                </button>
-              </div>
-            ))
-          )}
+              <h3 style={{ marginTop: 16 }}>{t('copilotArchiveTitle')}</h3>
+              <p className="sub">{t('investigateArchiveNote')}</p>
+              {archivedIncidents.length === 0 ? (
+                <p className="sub">{t('copilotArchiveEmpty')}</p>
+              ) : (
+                archivedIncidents.slice(0, 6).map((h) => (
+                  <div key={h.id} className="item-row">
+                    <button
+                      type="button"
+                      className="text-link"
+                      onClick={() => {
+                        setActive(h)
+                        setLiveThinking(h.thinking || [])
+                      }}
+                    >
+                      {h.title}
+                    </button>
+                    <button
+                      type="button"
+                      className="archive-btn"
+                      onClick={() => unarchiveIncident(h.id)}
+                    >
+                      {t('unarchiveAction')}
+                    </button>
+                  </div>
+                ))
+              )}
+            </>
+          ) : null}
         </div>
       </div>
     </div>
