@@ -1,17 +1,15 @@
 /**
  * Same-origin stream of the account notebook.json.
- * Mobile Safari often fails cross-origin Blob signed-URL fetches with "Load failed";
- * streaming through Edge avoids that and the Node 4.5MB response cap.
+ * Mobile Safari often fails cross-origin Blob signed-URL fetches with "Load failed".
  *
- * Keep this file free of node: imports — it runs on the Edge runtime.
+ * Edge runtime + raw fetch only (no @vercel/blob SDK — it pulls in Node modules).
  */
-import { get, head } from '@vercel/blob'
-
 export const config = {
   runtime: 'edge',
 }
 
 const SESSION_COOKIE = 'ownlab_session'
+const BLOB_API = 'https://vercel.com/api/blob'
 
 function normalizeUsername(raw: string): string {
   return raw.trim().toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 32)
@@ -40,6 +38,11 @@ function b64urlFromBytes(bytes: ArrayBuffer): string {
 function b64urlDecodeToString(input: string): string {
   const padded = input.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((input.length + 3) % 4)
   return atob(padded)
+}
+
+function storeIdFromToken(token: string): string | null {
+  const match = /^vercel_blob_rw_([A-Za-z0-9]+)_/.exec(token)
+  return match?.[1] || null
 }
 
 async function verifySessionEdge(
@@ -90,8 +93,8 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   const secret = process.env.OWNLAB_AUTH_SECRET
-  const token = process.env.BLOB_READ_WRITE_TOKEN
-  if (!secret || !token) {
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+  if (!secret || !blobToken) {
     return Response.json({ error: 'Server auth/storage is not configured' }, { status: 500 })
   }
 
@@ -104,15 +107,60 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   const pathname = accountNotebookPath(session.u)
-  try {
-    await head(pathname, { token })
-  } catch {
-    return Response.json({ error: 'No notebook saved for this account yet' }, { status: 404 })
+  const storeId = process.env.BLOB_STORE_ID || storeIdFromToken(blobToken)
+  if (!storeId) {
+    return Response.json({ error: 'Blob store id missing' }, { status: 500 })
   }
 
-  const result = await get(pathname, { access: 'private', token, useCache: false })
-  if (!result || result.statusCode !== 200 || !result.stream) {
-    return Response.json({ error: 'Cloud notebook missing' }, { status: 404 })
+  // Confirm the object exists (and grab uploadedAt/etag/size).
+  let uploadedAt: string | null = null
+  let etag: string | null = null
+  let size: number | null = null
+  try {
+    const metaRes = await fetch(`${BLOB_API}?url=${encodeURIComponent(pathname)}`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${blobToken}` },
+    })
+    if (metaRes.status === 404) {
+      return Response.json({ error: 'No notebook saved for this account yet' }, { status: 404 })
+    }
+    if (!metaRes.ok) {
+      const text = await metaRes.text()
+      return Response.json(
+        { error: text || `Blob meta failed (${metaRes.status})` },
+        { status: 502 },
+      )
+    }
+    const meta = (await metaRes.json()) as {
+      uploadedAt?: string
+      etag?: string
+      size?: number
+      downloadUrl?: string
+      url?: string
+    }
+    uploadedAt = typeof meta.uploadedAt === 'string' ? meta.uploadedAt : null
+    etag = typeof meta.etag === 'string' ? meta.etag : null
+    size = typeof meta.size === 'number' ? meta.size : null
+  } catch (err) {
+    return Response.json(
+      { error: err instanceof Error ? err.message : 'Blob meta failed' },
+      { status: 502 },
+    )
+  }
+
+  const blobUrl = `https://${storeId}.private.blob.vercel-storage.com/${pathname}?cache=0`
+  const blobRes = await fetch(blobUrl, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${blobToken}` },
+  })
+  if (blobRes.status === 404) {
+    return Response.json({ error: 'No notebook saved for this account yet' }, { status: 404 })
+  }
+  if (!blobRes.ok || !blobRes.body) {
+    return Response.json(
+      { error: `Cloud notebook download failed (${blobRes.status})` },
+      { status: 502 },
+    )
   }
 
   const headers = new Headers({
@@ -121,17 +169,9 @@ export default async function handler(req: Request): Promise<Response> {
     'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Allow-Origin': '*',
   })
-  if (result.blob.etag) headers.set('ETag', result.blob.etag)
-  if (typeof result.blob.size === 'number') {
-    headers.set('Content-Length', String(result.blob.size))
-  }
-  if (result.blob.uploadedAt) {
-    const uploadedAt =
-      result.blob.uploadedAt instanceof Date
-        ? result.blob.uploadedAt.toISOString()
-        : String(result.blob.uploadedAt)
-    headers.set('X-Ownlab-Uploaded-At', uploadedAt)
-  }
+  if (etag) headers.set('ETag', etag)
+  if (typeof size === 'number') headers.set('Content-Length', String(size))
+  if (uploadedAt) headers.set('X-Ownlab-Uploaded-At', uploadedAt)
 
-  return new Response(result.stream, { status: 200, headers })
+  return new Response(blobRes.body, { status: 200, headers })
 }
