@@ -117,7 +117,12 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
 
 export async function fetchAccountMe(): Promise<{ username: string } | null> {
   if (!isVercelNotebookHost()) return null
-  const res = await fetch(api('/api/auth/me'), { credentials: 'include' })
+  const res = await fetchWithTimeout(
+    api('/api/auth/me'),
+    { credentials: 'include' },
+    15_000,
+    'Session check',
+  )
   if (res.status === 401) return null
   if (!res.ok) throw new Error(await readError(res))
   return (await res.json()) as { username: string }

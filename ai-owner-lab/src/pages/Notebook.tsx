@@ -575,20 +575,18 @@ export function Notebook() {
                 cloudState === 'error' ? ' err' : ''
               }${cloudState === 'syncing' || cloudState === 'pulling' ? ' syncing' : ''}`}
               title={t('authSyncTap')}
-              disabled={cloudState === 'syncing' || cloudState === 'pulling'}
               onClick={() => {
                 void notebookStore.syncDurableNow().catch(() => {
                   /* runtime pill shows the error */
                 })
               }}
             >
-              {cloudState === 'syncing'
-                ? cloudDetail || t('cloudSyncing')
-                : cloudState === 'pulling'
-                  ? t('cloudPulling')
-                  : cloudState === 'error'
-                    ? t('cloudSyncError', { error: cloudError || 'error' })
-                    : t('authSyncOn', { user: authUser || '' })}
+              {cloudState === 'syncing' || cloudState === 'pulling'
+                ? cloudDetail ||
+                  (cloudState === 'syncing' ? t('cloudSyncing') : t('cloudPulling'))
+                : cloudState === 'error'
+                  ? t('cloudSyncError', { error: cloudError || 'error' })
+                  : t('authSyncOn', { user: authUser || '' })}
             </button>
           </div>
         ) : (

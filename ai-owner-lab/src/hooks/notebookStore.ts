@@ -714,6 +714,8 @@ type ReusedAccountPull = {
 
 let cloudSyncRetryTimer: number | null = null
 let cloudSyncCooldownUntil = 0
+/** True while login/session attach is downloading — blocks idle pull races. */
+let accountAttachInFlight = false
 /** Last successful cloud snapshot — reuse to avoid re-downloading a huge notebook.json. */
 let lastCloudSnapshot: { at: number; pull: ReusedAccountPull } | null = null
 /** Soft TTL when meta probe is unavailable; meta uploadedAt match always wins. */
@@ -779,6 +781,7 @@ async function pullCloudIfConfigured() {
   if (!anyCloudBackendReady()) return
   // Never share the push lock for idle pulls — phones were pull+push every 10s
   // and overwrote richer laptop uploads while stuck on "Saving to cloud…".
+  if (accountAttachInFlight) return
   if (cloudPushInFlight) return cloudPushInFlight
   if (cloudPullInFlight) return cloudPullInFlight
   if (Date.now() < cloudSyncCooldownUntil) return
@@ -2117,42 +2120,88 @@ export const notebookStore = {
     saveGistSettings({ enabled: false })
     refreshCloudRuntimeFromSettings()
 
+    accountAttachInFlight = true
     try {
-      const pulled = await pullAccountBackup()
-      if (pulled) {
-        cloudNoteCount = pulled.noteCount
-        // Always merge — importBackup unions entries + trash. Skipping when
-        // cloud only had dustbin notes used to wipe trash on the next push.
-        await notebookStore.importBackup(pulled.content, { syncCloud: false })
-        restoredFromCloud = cloudNoteCount > 0
-        setLastAccountSyncAt()
+      try {
+        setCloudRuntime({ state: 'pulling', error: null, detail: 'Checking cloud…' })
+        const meta = await pullAccountMeta()
+        if (meta) {
+          const snap = lastCloudSnapshot
+          const persisted = loadPersistedCloudMeta()
+          const sameUpload =
+            (snap?.pull.uploadedAt && snap.pull.uploadedAt === meta.uploadedAt) ||
+            (persisted?.uploadedAt && persisted.uploadedAt === meta.uploadedAt)
+          if (sameUpload && snap?.pull.content) {
+            cloudNoteCount = snap.pull.noteCount
+            await notebookStore.importBackup(snap.pull.content, { syncCloud: false })
+            restoredFromCloud = cloudNoteCount > 0
+            setLastAccountSyncAt()
+            cloudEtag = snap.pull.etag
+          } else {
+            setCloudRuntime({
+              state: 'pulling',
+              error: null,
+              detail:
+                meta.size && meta.size > 1_000_000
+                  ? `Downloading ~${Math.max(1, Math.round(meta.size / (1024 * 1024)))}MB…`
+                  : 'Downloading notebook…',
+            })
+            const pulled = await pullAccountBackup()
+            if (pulled) {
+              cloudNoteCount = pulled.noteCount
+              // Always merge — importBackup unions entries + trash. Skipping when
+              // cloud only had dustbin notes used to wipe trash on the next push.
+              await notebookStore.importBackup(pulled.content, { syncCloud: false })
+              restoredFromCloud = cloudNoteCount > 0
+              setLastAccountSyncAt()
+              cloudEtag = pulled.etag
+              rememberCloudSnapshot(
+                {
+                  content: pulled.content,
+                  etag: pulled.etag,
+                  noteCount: pulled.noteCount,
+                  uploadedAt: pulled.uploadedAt,
+                },
+                pulled.size,
+              )
+            }
+          }
+        }
+      } catch (err) {
+        if (restoringEmptyDevice) {
+          saveAccountSyncEnabled(false)
+          refreshCloudRuntimeFromSettings()
+          throw err instanceof Error
+            ? new NotebookStorageError('unknown', err.message)
+            : new NotebookStorageError('unknown', 'Could not download account notebook')
+        }
+        setCloudRuntime({
+          state: 'error',
+          error: err instanceof Error ? err.message : 'Cloud sync failed',
+          detail: null,
+        })
       }
-    } catch (err) {
-      if (restoringEmptyDevice) {
+
+      // Empty local + empty cloud on first register is OK (allowCreateEmpty).
+      if (restoringEmptyDevice && cloudNoteCount === 0) {
         saveAccountSyncEnabled(false)
         refreshCloudRuntimeFromSettings()
-        throw err instanceof Error
-          ? new NotebookStorageError('unknown', err.message)
-          : new NotebookStorageError('unknown', 'Could not download account notebook')
+        throw new NotebookStorageError(
+          'unknown',
+          'No notes on this account yet. Sign in on the device that has your notes first (they upload automatically), then open OWNLAB here again while signed in.',
+        )
       }
-    }
 
-    // Empty local + empty cloud on first register is OK (allowCreateEmpty).
-    if (restoringEmptyDevice && cloudNoteCount === 0) {
-      saveAccountSyncEnabled(false)
-      refreshCloudRuntimeFromSettings()
-      throw new NotebookStorageError(
-        'unknown',
-        'No notes on this account yet. Sign in on the device that has your notes first (they upload automatically), then open OWNLAB here again while signed in.',
-      )
-    }
-
-    await scheduleDurableSync()
-    return {
-      username,
-      total: cache.entries.length,
-      restoredFromCloud,
-      cloudNoteCount,
+      // Push any local-ahead notes; snapshot reuse avoids a second full download.
+      await scheduleDurableSync()
+      return {
+        username,
+        total: cache.entries.length,
+        restoredFromCloud,
+        cloudNoteCount,
+      }
+    } finally {
+      accountAttachInFlight = false
     }
   },
   disableAccountCloudSync() {
