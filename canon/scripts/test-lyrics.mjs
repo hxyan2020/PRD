@@ -4,6 +4,7 @@ import {
   fetchLyrics,
   lyricsAlbum,
   lyricsArtist,
+  lyricsTitleVariants,
   lyricsCacheKey,
   lyricsOvhUrl,
   lrclibGetUrl,
@@ -18,6 +19,7 @@ assert.equal(
   "The Weeknd"
 );
 assert.equal(lyricsAlbum({ extra: true, musicCompany: "After Hours" }), "After Hours");
+assert.deepEqual(lyricsTitleVariants({ name: "K." }), ["K.", "K"]);
 assert.equal(lyricsAlbum({ extra: false, musicCompany: "Republic" }), "");
 assert.match(lrclibGetUrl({ artistName: "The Weeknd", trackName: "Blinding Lights" }), /track_name=Blinding/);
 assert.match(lrclibSearchUrl({ artistName: "Queen", trackName: "Bohemian Rhapsody" }), /artist_name=Queen/);

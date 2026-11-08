@@ -1532,9 +1532,12 @@ option {
   line-height: 1.4;
 }
 
-.album-ask-actions .ghost {
-  background: transparent;
-  color: var(--ink);
+.album-ask-actions {
+  margin-top: 0;
+}
+
+.album-ask-actions button {
+  min-height: 40px;
 }
 
 .close {

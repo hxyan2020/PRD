@@ -17,6 +17,19 @@ export function lyricsTitle(track) {
   return String(track?.name || track?.spotifyTitle || "").trim();
 }
 
+export function lyricsTitleVariants(track) {
+  const name = lyricsTitle(track);
+  const variants = [];
+  const add = (value) => {
+    const next = String(value || "").replace(/\s+/g, " ").trim();
+    if (next && !variants.includes(next)) variants.push(next);
+  };
+  add(name);
+  add(name.replace(/[.’'"…]+$/g, ""));
+  add(name.replace(/\s*[\(\[].*?[\)\]]\s*/g, " "));
+  return variants;
+}
+
 export function lyricsAlbum(track) {
   if (!track?.extra) return "";
   const raw = String(track.musicCompany || "").trim();
@@ -123,26 +136,28 @@ async function tryFetch(url, fetchFn) {
 }
 
 export async function fetchLyrics(track, { fetchFn = fetch, cache = memoryCache } = {}) {
-  const trackName = lyricsTitle(track);
+  const titles = lyricsTitleVariants(track);
   const artistName = lyricsArtist(track);
-  if (!trackName) return { status: "missing", text: "", source: "" };
+  if (!titles.length) return { status: "missing", text: "", source: "" };
 
-  const key = lyricsCacheKey(artistName, trackName);
+  const key = lyricsCacheKey(artistName, titles[0]);
   if (cache?.has?.(key)) return cache.get(key);
 
   const albumName = lyricsAlbum(track);
-  let result = parseLyricsPayload(
-    await readJson(await tryFetch(lrclibGetUrl({ artistName, trackName, albumName }), fetchFn)),
-    "lrclib"
-  );
-
-  if (!result) {
+  let result = null;
+  for (const trackName of titles) {
+    result = parseLyricsPayload(
+      await readJson(await tryFetch(lrclibGetUrl({ artistName, trackName, albumName }), fetchFn)),
+      "lrclib"
+    );
+    if (result) break;
     const searchHits = await readJson(await tryFetch(lrclibSearchUrl({ artistName, trackName }), fetchFn));
     result = parseLyricsPayload(pickSearchHit(searchHits, trackName, artistName), "lrclib");
-  }
-
-  if (!result && artistName) {
-    result = parseLyricsPayload(await readJson(await tryFetch(lyricsOvhUrl(artistName, trackName), fetchFn)), "ovh");
+    if (result) break;
+    if (artistName) {
+      result = parseLyricsPayload(await readJson(await tryFetch(lyricsOvhUrl(artistName, trackName), fetchFn)), "ovh");
+    }
+    if (result) break;
   }
 
   const out = result || { status: "missing", text: "", source: "" };

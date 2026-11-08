@@ -11,6 +11,7 @@ import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
 import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
+import { enrichExtraTrack } from "./enrich-extra.js";
 import { searchOutsideMusic } from "./music-search.js";
 import {
   ALL_COUNTRIES,
@@ -170,6 +171,22 @@ export default function App() {
     if (albumAskDismissed.has(selected.id)) return;
     setAlbumAskId(selected.id);
   }, [selected, collectedIds, albumAskDismissed, spotify.saved]);
+
+  useEffect(() => {
+    if (selected?.extra) setLyricsOpen(true);
+  }, [selectedId]);
+
+  useEffect(() => {
+    if (!selected?.extra || selected.enriched) return undefined;
+    let cancelled = false;
+    enrichExtraTrack(selected).then((result) => {
+      if (cancelled || !result?.track) return;
+      rememberExtras([result.track]);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId, selected?.enriched]);
 
   const facets = useMemo(() => {
     const genres = uniqueSorted(tracks.flatMap((item) => (item.genres?.length ? item.genres : [item.genre])));
@@ -472,11 +489,11 @@ export default function App() {
           {selected.extra && albumAskId === selected.id ? (
             <div className="album-ask" role="region" aria-label={t("albumAsk", { name: selected.name })}>
               <p>{t("albumAsk", { name: selected.name })}</p>
-              <div className="drawer-actions album-ask-actions">
+              <div className="card-actions drawer-actions album-ask-actions">
                 <button type="button" onClick={() => addOutsideToAlbum(selected)}>
                   {t("albumAskYes")}
                 </button>
-                <button type="button" className="ghost" onClick={() => dismissAlbumAsk(selected.id)}>
+                <button type="button" onClick={() => dismissAlbumAsk(selected.id)}>
                   {t("albumAskNo")}
                 </button>
               </div>
@@ -546,11 +563,12 @@ export default function App() {
           <h3>{t("whyShortlisted")}</h3>
           <p className="why">
             {selected.extra
-              ? selected.extraSource === "itunes" || selected.extraSource === "name"
-                ? t("beyondWhyName")
-                : loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
-                  ? t("beyondWhy")
-                  : t("beyondWhyPopular")
+              ? selected.whyShortlisted ||
+                (selected.extraSource === "itunes" || selected.extraSource === "name"
+                  ? t("beyondWhyName")
+                  : loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
+                    ? t("beyondWhy")
+                    : t("beyondWhyPopular"))
               : selected.whyShortlisted}
           </p>
           {selected.wikipediaUrl ? (
@@ -564,14 +582,14 @@ export default function App() {
             <PortraitGallery
               key={`singer-${name}`}
               name={`${t("singerAnecdote")} · ${displayPersonName(name)}`}
-              portrait={portraits.people?.[name]}
+              portrait={selected.people?.[name] || portraits.people?.[name]}
             />
           ))}
           {splitCredits(selected.band).map((name) => (
             <PortraitGallery
               key={`band-${name}`}
               name={`${t("bandAnecdote")} · ${displayPersonName(name)}`}
-              portrait={portraits.people?.[name]}
+              portrait={selected.people?.[name] || portraits.people?.[name]}
             />
           ))}
           <LyricsPanel track={selected} open={lyricsOpen} onClose={() => setLyricsOpen(false)} />
