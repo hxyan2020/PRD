@@ -30,7 +30,7 @@ function TreeNodeView({
   const kids = childrenOf(nodes, node.id)
   const open = expanded.has(node.id)
   return (
-    <div className="kb-tree-node" style={{ marginLeft: depth * 14 }}>
+    <div className="kb-tree-node" style={{ marginLeft: depth * 12 }}>
       <div className={`kb-tree-row${selectedId === node.id ? ' selected' : ''}`}>
         {kids.length ? (
           <button type="button" className="kb-twist" onClick={() => onToggle(node.id)}>
@@ -63,19 +63,25 @@ function TreeNodeView({
 
 export function KnowledgePage() {
   const { t } = useLocale()
-  const { isAdmin } = useAuth()
+  const { user } = useAuth()
+  const canWrite = Boolean(user)
   const [nodes, setNodes] = useState<KbNode[]>(() => loadKnowledgeTree())
   const [selectedId, setSelectedId] = useState<string | null>(() => {
     const tree = loadKnowledgeTree()
     return tree.find((n) => n.parentId === null)?.id ?? tree[0]?.id ?? null
   })
   const [expanded, setExpanded] = useState<Set<string>>(() => {
-    const roots = loadKnowledgeTree().filter((n) => n.parentId === null).map((n) => n.id)
+    const roots = loadKnowledgeTree()
+      .filter((n) => n.parentId === null)
+      .map((n) => n.id)
     return new Set(roots)
   })
+  const [editing, setEditing] = useState(false)
+  const [draftTitle, setDraftTitle] = useState('')
+  const [draftBody, setDraftBody] = useState('')
 
   const persist = (next: KbNode[]) => {
-    if (!isAdmin) return
+    if (!canWrite) return
     setNodes(next)
     saveKnowledgeTree(next)
   }
@@ -86,18 +92,36 @@ export function KnowledgePage() {
   )
 
   const roots = childrenOf(nodes, null)
+  const childCount = selected ? childrenOf(nodes, selected.id).length : 0
 
-  const updateSelected = (patch: Partial<KbNode>) => {
-    if (!selected) return
+  const beginEdit = () => {
+    if (!selected || !canWrite) return
+    setDraftTitle(selected.title)
+    setDraftBody(selected.body)
+    setEditing(true)
+  }
+
+  const cancelEdit = () => {
+    setEditing(false)
+    setDraftTitle('')
+    setDraftBody('')
+  }
+
+  const saveEdit = () => {
+    if (!selected || !canWrite) return
+    const title = draftTitle.trim() || selected.title
     persist(
       nodes.map((n) =>
-        n.id === selected.id ? { ...n, ...patch, updatedAt: Date.now() } : n,
+        n.id === selected.id
+          ? { ...n, title, body: draftBody, updatedAt: Date.now() }
+          : n,
       ),
     )
+    setEditing(false)
   }
 
   const addChild = () => {
-    if (!selected) return
+    if (!selected || !canWrite) return
     const siblings = childrenOf(nodes, selected.id)
     const id = `kb_${Date.now()}`
     const node: KbNode = {
@@ -111,10 +135,13 @@ export function KnowledgePage() {
     persist([...nodes, node])
     setExpanded((prev) => new Set(prev).add(selected.id))
     setSelectedId(id)
+    setDraftTitle(node.title)
+    setDraftBody('')
+    setEditing(true)
   }
 
   const addSibling = () => {
-    if (!selected) return
+    if (!selected || !canWrite) return
     const parentId = selected.parentId
     const siblings = childrenOf(nodes, parentId)
     const id = `kb_${Date.now()}`
@@ -128,10 +155,13 @@ export function KnowledgePage() {
     }
     persist([...nodes, node])
     setSelectedId(id)
+    setDraftTitle(node.title)
+    setDraftBody('')
+    setEditing(true)
   }
 
   const deleteNode = () => {
-    if (!selected || selected.parentId === null) return
+    if (!selected || selected.parentId === null || !canWrite) return
     if (!confirm(t('copilotKbDeleteConfirm'))) return
     const doomed = new Set<string>()
     const walk = (id: string) => {
@@ -142,10 +172,11 @@ export function KnowledgePage() {
     const next = nodes.filter((n) => !doomed.has(n.id))
     persist(next)
     setSelectedId(selected.parentId)
+    setEditing(false)
   }
 
   const move = (dir: -1 | 1) => {
-    if (!selected) return
+    if (!selected || !canWrite) return
     const siblings = childrenOf(nodes, selected.parentId)
     const idx = siblings.findIndex((s) => s.id === selected.id)
     const swap = siblings[idx + dir]
@@ -160,9 +191,8 @@ export function KnowledgePage() {
   }
 
   const moveUnder = (newParentId: string) => {
-    if (!selected || selected.parentId === null) return
+    if (!selected || selected.parentId === null || !canWrite) return
     if (newParentId === selected.id) return
-    // Prevent cycles
     const descendants = new Set<string>()
     const walk = (id: string) => {
       descendants.add(id)
@@ -192,10 +222,9 @@ export function KnowledgePage() {
     <div className="panel knowledge-page">
       <h2>{t('kbTitle')}</h2>
       <p className="sub">{t('kbSub')}</p>
-      {!isAdmin ? <p className="banner-warn">{t('adminOnlyWrite')}</p> : null}
 
       <div className="kb-layout">
-        <aside className="kb-tree-pane">
+        <aside className="kb-tree-pane std-side">
           <h3>{t('kbTree')}</h3>
           {roots.map((r) => (
             <TreeNodeView
@@ -213,75 +242,128 @@ export function KnowledgePage() {
                   return next
                 })
               }
-              onSelect={setSelectedId}
+              onSelect={(id) => {
+                setSelectedId(id)
+                setEditing(false)
+              }}
             />
           ))}
         </aside>
 
         <section className="kb-editor-pane">
           {selected ? (
-            <>
-              <h3>{t('kbEditor')}</h3>
-              <label className="field-label">{t('copilotKbItemTitle')}</label>
-              <input
-                value={selected.title}
-                disabled={!isAdmin}
-                onChange={(e) => updateSelected({ title: e.target.value })}
-              />
-              <label className="field-label">{t('copilotKbBody')}</label>
-              <textarea
-                rows={12}
-                value={selected.body}
-                disabled={!isAdmin}
-                onChange={(e) => updateSelected({ body: e.target.value })}
-              />
-              {isAdmin && selected.parentId !== null ? (
-                <>
-                  <label className="field-label">{t('kbMoveUnder')}</label>
-                  <select
-                    value={selected.parentId}
-                    onChange={(e) => moveUnder(e.target.value)}
-                  >
-                    {parentOptions.map((n) => (
-                      <option key={n.id} value={n.id}>
-                        {n.title}
-                      </option>
-                    ))}
-                  </select>
-                </>
-              ) : null}
-              {isAdmin ? (
-                <div className="copilot-actions">
-                  <button type="button" className="archive-btn primary-archive" onClick={addChild}>
-                    {t('kbAddChild')}
-                  </button>
+            editing && canWrite ? (
+              <article className="std-card std-card-edit">
+                <header className="std-card-head">
+                  <div className="std-card-title-block">
+                    <span className="std-badge">KB</span>
+                    <h3>{t('kbEditor')}</h3>
+                  </div>
+                </header>
+                <div className="std-editor-grid">
+                  <label className="std-field full">
+                    <span>{t('copilotKbItemTitle')}</span>
+                    <input value={draftTitle} onChange={(e) => setDraftTitle(e.target.value)} />
+                  </label>
+                  <label className="std-field full">
+                    <span>{t('copilotKbBody')}</span>
+                    <textarea
+                      rows={12}
+                      value={draftBody}
+                      onChange={(e) => setDraftBody(e.target.value)}
+                    />
+                  </label>
                   {selected.parentId !== null ? (
-                    <>
-                      <button type="button" className="archive-btn" onClick={addSibling}>
-                        {t('kbAddSibling')}
-                      </button>
-                      <button type="button" className="archive-btn" onClick={() => move(-1)}>
-                        {t('kbMoveUp')}
-                      </button>
-                      <button type="button" className="archive-btn" onClick={() => move(1)}>
-                        {t('kbMoveDown')}
-                      </button>
-                      <button type="button" className="archive-btn" onClick={deleteNode}>
-                        {t('copilotKbDelete')}
-                      </button>
-                    </>
+                    <label className="std-field full">
+                      <span>{t('kbMoveUnder')}</span>
+                      <select
+                        value={selected.parentId}
+                        onChange={(e) => moveUnder(e.target.value)}
+                      >
+                        {parentOptions.map((n) => (
+                          <option key={n.id} value={n.id}>
+                            {n.title}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   ) : null}
                 </div>
-              ) : null}
-              <p className="sub">
-                id={selected.id} · {t('archivedAtLabel')}:{' '}
-                {selected.updatedAt
-                  ? new Date(selected.updatedAt).toLocaleString('en-SG', {
-                      timeZone: 'Asia/Singapore',
-                    })
-                  : '—'}
-              </p>
-            </>
+                <div className="std-card-actions">
+                  <button type="button" className="archive-btn primary-archive" onClick={saveEdit}>
+                    {t('skillsSave')}
+                  </button>
+                  <button type="button" className="archive-btn" onClick={cancelEdit}>
+                    {t('skillsCancel')}
+                  </button>
+                </div>
+              </article>
+            ) : (
+              <article className="std-card">
+                <header className="std-card-head">
+                  <div className="std-card-title-block">
+                    <div className="std-card-badges">
+                      <span className="std-badge">KB</span>
+                      {selected.parentId === null ? (
+                        <span className="std-badge soft">root</span>
+                      ) : (
+                        <span className="std-badge soft">node</span>
+                      )}
+                      {childCount ? (
+                        <span className="std-badge soft">{childCount} child</span>
+                      ) : null}
+                    </div>
+                    <h3>{selected.title}</h3>
+                    <p className="std-desc">
+                      id={selected.id}
+                      {selected.updatedAt
+                        ? ` · ${new Date(selected.updatedAt).toLocaleString('en-SG', {
+                            timeZone: 'Asia/Singapore',
+                          })} SGT`
+                        : ''}
+                    </p>
+                  </div>
+                </header>
+
+                <section className="std-section">
+                  <h4>{t('copilotKbBody')}</h4>
+                  <p className="std-pre">
+                    {selected.body.trim() ? selected.body : '—'}
+                  </p>
+                </section>
+
+                {canWrite ? (
+                  <div className="std-card-actions">
+                    <button
+                      type="button"
+                      className="archive-btn primary-archive"
+                      onClick={beginEdit}
+                    >
+                      {t('skillsEdit')}
+                    </button>
+                    <button type="button" className="archive-btn" onClick={addChild}>
+                      {t('kbAddChild')}
+                    </button>
+                    {selected.parentId !== null ? (
+                      <>
+                        <button type="button" className="archive-btn" onClick={addSibling}>
+                          {t('kbAddSibling')}
+                        </button>
+                        <button type="button" className="archive-btn" onClick={() => move(-1)}>
+                          {t('kbMoveUp')}
+                        </button>
+                        <button type="button" className="archive-btn" onClick={() => move(1)}>
+                          {t('kbMoveDown')}
+                        </button>
+                        <button type="button" className="archive-btn" onClick={deleteNode}>
+                          {t('copilotKbDelete')}
+                        </button>
+                      </>
+                    ) : null}
+                  </div>
+                ) : null}
+              </article>
+            )
           ) : (
             <p className="sub">{t('kbSelectNode')}</p>
           )}

@@ -43,7 +43,7 @@ const en: Dict = {
   authFailed: 'Email or password incorrect. Check demo credentials in README.',
   authDemoHint:
     'Demo: ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026! (also risk.ops@ / analyst@ with RiskDemo2026!)',
-  adminOnlyWrite: 'View only — Skills and Knowledge edits require Admin.',
+  adminOnlyWrite: 'Signed-in operators can edit Skills and Knowledge in this browser.',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
   skillsTitle: 'Skills',
@@ -398,7 +398,7 @@ const zhHant: Dict = {
   authFailed: '郵箱或密碼錯誤。請查看 README 示範帳密。',
   authDemoHint:
     '示範：ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026!（另有 risk.ops@ / analyst@ 密碼 RiskDemo2026!）',
-  adminOnlyWrite: '唯讀 — 編輯 Skills／知識庫需 Admin。',
+  adminOnlyWrite: '已登入即可在本瀏覽器編輯 Skills／知識庫。',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
   skillsTitle: 'Skills',
