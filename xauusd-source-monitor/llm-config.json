@@ -1,7 +1,7 @@
 {
   "provider": "openai",
   "model": "gpt-4o-mini",
-  "proxyBase": "https://zippy-platinum-n9fhgtg.tmp.now",
+  "proxyBase": "https://vex-llm-proxy.vercel.app",
   "deskToken": "2602552a6687ac6b9920dadebf4640a67f6820c113460d4c",
-  "note": "Active Vercel LLM proxy (claim the deploy to keep it permanent). OpenAI key stays on Vercel only."
+  "note": "Production Vercel LLM proxy — OpenAI key stays server-side; desk token required."
 }
