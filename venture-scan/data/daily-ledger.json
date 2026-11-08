@@ -1,43 +1,50 @@
 {
-  "day": "2026-11-07",
-  "scannedAt": "2026-11-07T02:27:53.152Z",
+  "day": "2026-11-08",
+  "scannedAt": "2026-11-08T01:57:23.645Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
     "ramp-spend",
-    "cashfree-merchant",
-    "alan-health",
-    "neon-serverless-postgres",
-    "ledgerlane-freight",
-    "farmstack-coldchain",
-    "elevenlabs-voice",
-    "mercado-voice-pos",
-    "runway-ml",
-    "posthog-product-os",
-    "saigon-microgrid-coops",
-    "hanok-energy-retrofit",
-    "playpane-classroom",
-    "perplexity-answer",
-    "swan-baas",
-    "synthesis-school",
+    "tabby-bnpl-gcc",
+    "reef-credit-exchange",
     "cape-clinic-triage",
-    "mono-africa-open-banking",
-    "bushfire-mesh-sensors",
-    "kiln-microfactory",
+    "mercury-banking",
+    "fi-money",
+    "incident-ops",
+    "cuecraft-ads",
     "cognition-devin",
-    "attio-crm",
-    "abridge-clinical",
-    "spore-kitchen",
-    "chipper-cash",
-    "sylvera-carbon",
-    "iron-dome-devsecops"
+    "magicschool-ai",
+    "perplexity-answer",
+    "harbor-legal-ops",
+    "fjord-battery-secondlife",
+    "cursor-coding",
+    "elderloop-companion",
+    "bushfire-mesh-sensors",
+    "antora-heat-battery",
+    "linear-issue-ops",
+    "posthog-product-os",
+    "mono-africa-open-banking",
+    "synthesis-school",
+    "ledgerlane-freight",
+    "playpane-classroom",
+    "kiln-microfactory",
+    "chipper-cash"
   ],
   "headlineCount": 40,
-  "feedsOk": 6,
+  "feedsOk": 5,
   "feedsTotal": 8,
-  "matchedIdeaCount": 2,
+  "matchedIdeaCount": 1,
   "headlines": [
     {
       "id": "techcrunch-0",
+      "sourceId": "techcrunch",
+      "title": "Binance CFO is leaving to &#8216;pursue a new venture&#8217; after $6.3 billion hack",
+      "url": "https://techcrunch.com/2026/11/07/binance-cfo-is-leaving-to-pursue-a-new-venture-after-6-3-billion-hack/",
+      "excerpt": "The announcement comes barely more than a week after hackers stole $6.3 billion worth of cryptocurrency from Binance users.",
+      "publishedAt": "Sat, 07 Nov 2026 17:24:07 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-1",
       "sourceId": "techcrunch",
       "title": "OpenAI reportedly raises an additional $11 billion at a $1.25 trillion valuation",
       "url": "https://techcrunch.com/2026/11/06/openai-reportedly-raises-an-additional-11-billion-at-a-1-25-trillion-valuation/",
@@ -46,7 +53,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-1",
+      "id": "techcrunch-2",
       "sourceId": "techcrunch",
       "title": "Pentagon offers battery startup 6K $250M loan to build US factory",
       "url": "https://techcrunch.com/2026/11/06/pentagon-offers-battery-startup-6k-250m-loan-to-build-u-s-factory/",
@@ -55,7 +62,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-2",
+      "id": "techcrunch-3",
       "sourceId": "techcrunch",
       "title": "Fox completes its $22B acquisition of Roku",
       "url": "https://techcrunch.com/2026/11/06/fox-completes-its-22b-acquisition-of-roku/",
@@ -64,7 +71,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-3",
+      "id": "techcrunch-4",
       "sourceId": "techcrunch",
       "title": "Ramp data shows AI spending stalling just as Anthropic nears its IPO",
       "url": "https://techcrunch.com/2026/11/06/ramp-data-shows-ai-spending-stalling-just-as-anthropic-nears-its-ipo/",
@@ -75,21 +82,12 @@
       ]
     },
     {
-      "id": "techcrunch-4",
+      "id": "techcrunch-5",
       "sourceId": "techcrunch",
       "title": "Physicl raises $10M to make the digital world real enough for robots",
       "url": "https://techcrunch.com/2026/11/06/physicl-raises-10m-to-make-the-digital-world-real-enough-for-robots/",
       "excerpt": "Physicl is trying to solve the sim-to-real gap with a pipeline originally built to market goods online.",
       "publishedAt": "Fri, 06 Nov 2026 13:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techcrunch-5",
-      "sourceId": "techcrunch",
-      "title": "Palo Alto Networks in talks to buy AI agent security startup Clutch for $500M",
-      "url": "https://techcrunch.com/2026/11/05/palo-alto-networks-in-talks-to-buy-ai-agent-security-startup-clutch-for-500m/",
-      "excerpt": "Clutch, backed by Lightspeed and SignalFire, was last valued at $85 million, according to a source.",
-      "publishedAt": "Fri, 06 Nov 2026 06:28:32 +0000",
       "matchedSlugs": []
     },
     {
@@ -210,7 +208,115 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-19",
+      "id": "eu-startups-19",
+      "sourceId": "eu-startups",
+      "title": "Weekly funding round-up! All of the European startup funding rounds we tracked this week (Nov. 02– Nov. 06)",
+      "url": "https://www.eu-startups.com/2026/11/weekly-funding-round-up-all-of-the-european-startup-funding-rounds-we-tracked-this-week-nov-02-nov-06/",
+      "excerpt": "This article is visible for CLUB members only. If you are already a member but don’t see the content of this article, please login here. If you’re not a CLUB member yet, but you’d like to read members-only content like this one, have unrestricted access to the site and benefit fr",
+      "publishedAt": "Fri, 06 Nov 2026 16:55:23 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-20",
+      "sourceId": "eu-startups",
+      "title": "DefenceTech unicorn TEKEVER strengthens Nordic ambitions amid €520 million funding round",
+      "url": "https://www.eu-startups.com/2026/11/defencetech-unicorn-tekever-strengthens-nordic-ambitions-amid-e520-million-funding-round/",
+      "excerpt": "Portuguese DefenceTech scale-up TEKEVER has today announced that they have secured €13 million from EIFO as part of their Series D raise of €520 million ($580 million) at a €5.7 billion ($6.4 billion) valuation to support the company’s continued growth. The first close was announ",
+      "publishedAt": "Fri, 06 Nov 2026 15:17:01 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-21",
+      "sourceId": "eu-startups",
+      "title": "AutoStore to acquire Dutch warehouse and horticulture automation firm Logiqs for up to €30 million",
+      "url": "https://www.eu-startups.com/2026/11/autostore-to-acquire-dutch-warehouse-and-horticulture-automation-firm-logiqs-for-up-to-e30-million/",
+      "excerpt": "AutoStore, a Norwegian company specialising in intelligent fulfilment, has announced an agreement to acquire Logiqs, a Maasdijk-based provider of roaming pallet Automated Storage and Retrieval Systems (AS/RS), for up to €30 million. AutoStore noted that it will fund the purchase ",
+      "publishedAt": "Fri, 06 Nov 2026 13:04:20 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-22",
+      "sourceId": "eu-startups",
+      "title": "OPINION: Europe&#8217;s quantum startups need more than research funding",
+      "url": "https://www.eu-startups.com/2026/11/opinion-europes-quantum-startups-need-more-than-research-funding/",
+      "excerpt": "According to McKinsey&#8217;s 2026 Quantum Technology Monitor, investment in quantum technology startups reached €11.15 billion ($12.6 billion) in 2025, 6.3 times more than a year earlier. Only 3% came from public sources, including governments, sovereign wealth funds and univers",
+      "publishedAt": "Fri, 06 Nov 2026 10:25:53 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-23",
+      "sourceId": "eu-startups",
+      "title": "With a new equity round in sight, Candi Solar secures €44 million for solar projects in India",
+      "url": "https://www.eu-startups.com/2026/11/with-a-new-equity-round-in-sight-candi-solar-secures-e44-million-for-solar-projects-in-india/",
+      "excerpt": "Candi Solar, a Swiss clean energy company distributing solar solutions, announced a €44 million ($50 million) financing partnership to build rooftop, ground-mounted, and open-access solar installations paired with BESS across key business hubs in India. This facility from Pentagr",
+      "publishedAt": "Fri, 06 Nov 2026 09:56:17 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-24",
+      "sourceId": "eu-startups",
+      "title": "Bioliberty raises €2.95 million to bring its AI-powered rehabilitation technology into the home",
+      "url": "https://www.eu-startups.com/2026/11/bioliberty-raises-e2-95-million-to-bring-its-ai-powered-rehabilitation-technology-into-the-home/",
+      "excerpt": "Bioliberty, an Edinburgh- and Boston-based rehabilitation technology startup, has raised a €2.95 million ($3.3 million) Series A extension, bringing its total funding to €12.07 million ($13.5 million). The Series A extension adds four new institutional backers: TGH Ventures, the ",
+      "publishedAt": "Fri, 06 Nov 2026 09:13:13 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-25",
+      "sourceId": "eu-startups",
+      "title": "Oxford spin-out Alethio Therapeutics raises €80.46 million Series A to advance targeted blood cancer therapies",
+      "url": "https://www.eu-startups.com/2026/11/oxford-spin-out-alethio-therapeutics-raises-e80-46-million-series-a-to-advance-targeted-blood-cancer-therapies/",
+      "excerpt": "Alethio Therapeutics (Alethio), an Abingdon-on-Thames-based biopharmaceutical company developing next-generation therapies for myeloproliferative neoplasms (MPNs), has announced the completion of an oversubscribed €80.46 million ($90 million/£67 million) Series A financing. The r",
+      "publishedAt": "Fri, 06 Nov 2026 08:17:05 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-26",
+      "sourceId": "eu-startups",
+      "title": "Helsinki’s Vensum Power secures €9 million to scale its software-defined power conversion platform",
+      "url": "https://www.eu-startups.com/2026/11/helsinkis-vensum-power-secures-e9-million-to-scale-its-software-defined-power-conversion-platform/",
+      "excerpt": "Vensum Power, a Helsinki-based developer of Software-Defined Power Conversion (SDPC) solution, has closed a €9 million Series A round. The round was co-led by existing backer Lifeline Ventures alongside two new investors, Larsen &#38; Toubro Group and Eviny Ventures. The round al",
+      "publishedAt": "Fri, 06 Nov 2026 07:49:11 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-27",
+      "sourceId": "eu-startups",
+      "title": "The EIC confirms €1.8 billion for startups in 2027, with expanded defence and women-led startup support",
+      "url": "https://www.eu-startups.com/2026/11/the-eic-confirms-e1-8-billion-for-startups-and-deeptech-in-2027-with-expanded-defence-and-women-led-startup-support/",
+      "excerpt": "The European Commission has adopted the 2027 European Innovation Council (EIC) Work Programme, allocating €1.8 billion to support DeepTech startups, scale-ups and researchers across Europe. The funding package aims to help promising technologies move from early-stage research to ",
+      "publishedAt": "Thu, 05 Nov 2026 15:47:02 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-28",
+      "sourceId": "eu-startups",
+      "title": "Germany&#8217;s VÆRIDION raises €124 million to bring electric regional flights closer to reality",
+      "url": "https://www.eu-startups.com/2026/11/germanys-vaeridion-raises-e124-million-to-bring-electric-regional-flights-closer-to-reality/",
+      "excerpt": "Munich-based aviation startup VÆRIDION has raised €30 million in a Series A2 funding round and selected for a €94.5 million grant from the European Commission’s Innovation Fund, bringing the combined value to €124.5 million. The investment round was co-led by Dutch investors SHIF",
+      "publishedAt": "Thu, 05 Nov 2026 12:10:04 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-29",
+      "sourceId": "techinasia",
+      "title": "Nvidia-backed Groq seeks $8b valuation in new round",
+      "url": "https://www.techinasia.com/news/nvidiabacked-groq-seeks-8b-valuation",
+      "excerpt": "The Nvidia-backed firm has launched data center operations in Helsinki, Finland.",
+      "publishedAt": "Sun, 08 Nov 2026 01:23:28 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-30",
+      "sourceId": "techinasia",
+      "title": "50 rising startups in Vietnam",
+      "url": "https://www.techinasia.com/top-50-rising-startups-vietnam",
+      "excerpt": "Check out this constantly updated list of startups in Vietnam who've recently raised funding.",
+      "publishedAt": "Sat, 07 Nov 2026 07:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-31",
       "sourceId": "techinasia",
       "title": "Intel to buy Israeli quantum software startup Classiq for $1.9b",
       "url": "https://www.techinasia.com/news/intel-buy-israeli-quantum-software-startup-classiq-19b",
@@ -219,7 +325,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-20",
+      "id": "techinasia-32",
       "sourceId": "techinasia",
       "title": "OpenAI taps AI security startup Hacktron to test systems",
       "url": "https://www.techinasia.com/news/openai-taps-ai-security-startup-hacktron-test-systems",
@@ -228,7 +334,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-21",
+      "id": "techinasia-33",
       "sourceId": "techinasia",
       "title": "OpenAI raises $11b at $1.25t valuation in funding round",
       "url": "https://www.techinasia.com/news/openai-raises-11b-125t-valuation-funding",
@@ -237,7 +343,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-22",
+      "id": "techinasia-34",
       "sourceId": "techinasia",
       "title": "Google acquires Wyoming data center site from AI firm Crusoe",
       "url": "https://www.techinasia.com/news/google-acquires-wyoming-data-center-site-ai-firm-crusoe",
@@ -246,7 +352,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-23",
+      "id": "techinasia-35",
       "sourceId": "techinasia",
       "title": "Still some sparkle in store",
       "url": "https://www.techinasia.com/still-some-sparkle-in-store",
@@ -255,7 +361,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-24",
+      "id": "techinasia-36",
       "sourceId": "techinasia",
       "title": "Tata Capital growth fund taps Siguler Guff veteran as partner",
       "url": "https://www.techinasia.com/news/tata-capital-growth-fund-taps-siguler-guff-veteran-partner",
@@ -264,7 +370,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-25",
+      "id": "techinasia-37",
       "sourceId": "techinasia",
       "title": "Singapore chip startup Symatics unveils AI architecture",
       "url": "https://www.techinasia.com/news/singapore-chip-startup-symatics-unveils-ai-architecture",
@@ -273,7 +379,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-26",
+      "id": "techinasia-38",
       "sourceId": "techinasia",
       "title": "Startup helps firms navigate the shift from Google to AI search",
       "url": "https://www.techinasia.com/startup-helps-firms-navigate-shift-google-ai-search",
@@ -282,123 +388,13 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-27",
+      "id": "techinasia-39",
       "sourceId": "techinasia",
       "title": "SoftBank credit risk hits four-year high over AI debt fears",
       "url": "https://www.techinasia.com/news/softbank-credit-risk-hits-fouryear-high-ai-debt-fears",
       "excerpt": "SoftBank has a reported US$64.6 billion investment in OpenAI.",
       "publishedAt": "Fri, 06 Nov 2026 06:20:53 +0000",
       "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-28",
-      "sourceId": "techinasia",
-      "title": "Qiming-backed Nature Select raises $100m for AI social app",
-      "url": "https://www.techinasia.com/news/qiming-backed-nature-select-raises-100m-for-ai-social-app",
-      "excerpt": "Nature Select, a China-based developer of AI social app Elys, raised more than US$100 million in a series A+ funding round.",
-      "publishedAt": "Fri, 06 Nov 2026 03:19:32 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-29",
-      "sourceId": "techinasia",
-      "title": "This startup makes lab cell growth animal-free",
-      "url": "https://www.techinasia.com/this-startup-makes-lab-cell-growth-animal-free",
-      "excerpt": "Cellivate Technologies uses magnetic fields to produce an animal-free serum replacer, solving a major bottleneck in lab cell growth.",
-      "publishedAt": "Fri, 06 Nov 2026 03:00:04 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-30",
-      "sourceId": "yourstory",
-      "title": "Why operational excellence will define the next phase of India’s startup growth",
-      "url": "https://yourstory.com/2026/10/why-operational-excellence-will-define-the-next-phase-indias-startup-growth",
-      "excerpt": "Startups often prioritise funding, sales and expansion while overlooking the operational foundations needed to sustain growth. The article explores why strong processes, reliable data and governance are essential to building scalable businesses.",
-      "publishedAt": "Fri, 06 Nov 2026 02:30:00 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-31",
-      "sourceId": "yourstory",
-      "title": "When code is cheap, trust is not: Inside the AI-era engineering roundtable",
-      "url": "https://yourstory.com/2026/11/when-code-is-cheap-trust-is-not-inside-the-ai-era-engineering-roundtable",
-      "excerpt": "In a closed-door roundtable, leaders from logistics, healthcare, telecom, fintech, and e-commerce discussed where to automate, where to keep humans in charge, and why observability can no longer be an afterthought.",
-      "publishedAt": "Fri, 06 Nov 2026 07:41:01 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-32",
-      "sourceId": "yourstory",
-      "title": "Startup news and updates: Daily roundup (November 6, 2026)",
-      "url": "https://yourstory.com/2026/11/startup-news-and-updates-daily-roundup-november-6-2026",
-      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here's the roundup for Friday, November 06, 2026.",
-      "publishedAt": "Fri, 06 Nov 2026 09:33:12 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-33",
-      "sourceId": "yourstory",
-      "title": "(Weekly funding roundup Oct 31-Nov 6) Sharp rise in capital inflow",
-      "url": "https://yourstory.com/2026/11/weekly-funding-roundup-oct-31-nov-6-sharp-rise-in-capital-inflow",
-      "excerpt": "The total funding for the first week of November was $263 million across 23 deals, compared to just $115 million in the previous week.",
-      "publishedAt": "Fri, 06 Nov 2026 14:18:16 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-34",
-      "sourceId": "yourstory",
-      "title": "Northern Arc's diversified debt fund hits first close at over Rs 400 Cr",
-      "url": "https://yourstory.com/2026/11/northern-arcs-diversified-debt-fund-hits-first-close-at-over-rs-400-crore",
-      "excerpt": "The 15th private credit fund from Northern Arc Investment Managers targets a Rs 1,500 crore corpus and a 16% XIRR, as its India Impact Fund matures after deploying Rs 1,398 crore.",
-      "publishedAt": "Fri, 06 Nov 2026 08:31:14 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-35",
-      "sourceId": "yourstory",
-      "title": "Aina launches Rs 47,000 ring to bring AI agents to your fingertips",
-      "url": "https://yourstory.com/2026/11/aina-ai-smart-ring-price-features-launch-india",
-      "excerpt": "Aina AI ring launches at Rs 47,000, with AI agents, voice commands and gesture controls. The Bengaluru startup offers an early-bird price of Rs 37,700.",
-      "publishedAt": "Thu, 05 Nov 2026 20:31:57 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "inc42-36",
-      "sourceId": "inc42",
-      "title": "OYO Parent PRISM’s Profit Jumps 17% YoY To ₹353 Cr In Q1",
-      "url": "https://inc42.com/buzz/oyo-parent-prisms-profit-jumps-17-yoy-to-%e2%82%b9353-cr-in-q1/",
-      "excerpt": "IPO-bound hospitality chain PRISM, the parent entity of OYO, reported a consolidated profit after tax (PAT) of ₹353 Cr in&#8230;",
-      "publishedAt": "Sat, 07 Nov 2026 01:30:12 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "inc42-37",
-      "sourceId": "inc42",
-      "title": "MakeMyTrip Acquires Majority Stake In Quick Ride To Enter Ride Pooling",
-      "url": "https://inc42.com/buzz/makemytrip-acquires-majority-stake-in-quick-ride-to-enter-ride-pooling/",
-      "excerpt": "Nasdaq-listed traveltech major MakeMyTrip has expanded into the carpooling segment via the acquisition of a majority stake in Bengaluru-based Quick&#8230;",
-      "publishedAt": "Fri, 06 Nov 2026 10:50:39 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "inc42-38",
-      "sourceId": "inc42",
-      "title": "MDR And AI: Inside The Two Acronyms That Could Shape Razorpay’s ₹6,000 Cr IPO",
-      "url": "https://inc42.com/features/mdr-and-ai-inside-the-two-acronyms-that-could-shape-razorpays-%e2%82%b96000-cr-ipo/",
-      "excerpt": "In March this year, on the sidelines of Razorpay’s annual flagship event FTX, CEO Harshil Mathur told Inc42 that what&#8230;",
-      "publishedAt": "Fri, 06 Nov 2026 08:17:42 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "inc42-39",
-      "sourceId": "inc42",
-      "title": "Cashfree Launches ‘Checkout For Agents’ To Enable AI-Led Payments",
-      "url": "https://inc42.com/buzz/cashfree-launches-checkout-for-agents-to-enable-ai-led-payments/",
-      "excerpt": "Fintech soonicorn Cashfree Payments has launched ‘Checkout for Agents’, a new tool that enables AI agents to process customer payments&#8230;",
-      "publishedAt": "Fri, 06 Nov 2026 06:00:55 +0000",
-      "matchedSlugs": [
-        "cashfree-merchant"
-      ]
     }
   ]
 }
