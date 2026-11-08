@@ -2,6 +2,8 @@ export type LlmProvider = 'rules' | 'openai' | 'anthropic' | 'gemini' | 'openrou
 
 export type SeverityChoice = '自动建议' | 'P0' | 'P1' | 'P2' | 'P3'
 
+export type SkillLevel = 'L1' | 'L2'
+
 export interface L1Skill {
   id: string
   name: string
@@ -20,6 +22,25 @@ export interface L2Chain {
   opt: string
 }
 
+/** Editable skill record (L1 or L2) persisted in browser storage. */
+export interface SkillRecord {
+  id: string
+  level: SkillLevel
+  name: string
+  severity: string
+  description: string
+  matchHints: string
+  linkedL1: string
+  check: string
+  action: string
+  opt: string
+  disabled: boolean
+  archivedAt?: number
+  custom: boolean
+  updatedAt: number
+}
+
+/** Flat legacy knowledge item (migrated into tree). */
 export interface KnowledgeItem {
   id: string
   title: string
@@ -27,10 +48,38 @@ export interface KnowledgeItem {
   updatedAt: number
 }
 
+/** Tree knowledge node for RAG visualisation + retrieval. */
+export interface KbNode {
+  id: string
+  parentId: string | null
+  title: string
+  body: string
+  order: number
+  updatedAt: number
+}
+
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
   at: number
+}
+
+export interface TimelineEvent {
+  at: number
+  label: string
+}
+
+export interface SkillHitRef {
+  id: string
+  name: string
+  level: SkillLevel
+  severity?: string
+}
+
+export interface KnowledgeHitRef {
+  id: string
+  title: string
+  path: string
 }
 
 export interface IncidentRecord {
@@ -45,10 +94,17 @@ export interface IncidentRecord {
   hits: string[]
   l2: string[]
   imageDataUrl?: string | null
+  imageDataUrls?: string[]
   /** Linked XAUUSD briefing ids used as input */
   briefingIds?: string[]
   messages?: ChatMessage[]
+  /** Archive gates weekly optimisation inputs only — stats always count. */
   archivedAt?: number
+  thinking?: string[]
+  timeline?: TimelineEvent[]
+  skillsUsed?: SkillHitRef[]
+  knowledgeUsed?: KnowledgeHitRef[]
+  nextSteps?: string[]
 }
 
 export interface CopilotSettings {
@@ -71,4 +127,9 @@ export interface RuleAnalysis {
   l2: string[]
   skillContext: string
   kbContext: string
+  thinking: string[]
+  timeline: TimelineEvent[]
+  skillsUsed: SkillHitRef[]
+  knowledgeUsed: KnowledgeHitRef[]
+  nextSteps: string[]
 }
