@@ -1499,7 +1499,8 @@ option {
   inset-inline-end: min(440px, 100vw);
 }
 
-.dock-frame {
+.dock-frame,
+.dock-audio {
   pointer-events: auto;
   width: min(480px, 100%);
   height: 152px;
@@ -1507,6 +1508,14 @@ option {
   border-radius: 12px;
   background: #000;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.dock-audio {
+  height: 54px;
+}
+
+.archive-outside {
+  margin: 28px 0 12px;
 }
 
 .close {
@@ -2107,10 +2116,15 @@ body.portrait-lightbox-open {
     padding-inline-end: max(10px, env(safe-area-inset-right, 0px));
   }
 
-  .dock-frame {
+  .dock-frame,
+  .dock-audio {
     width: 100%;
     height: 80px;
     border-radius: 10px;
+  }
+
+  .dock-audio {
+    height: 48px;
   }
 
   .app.has-drawer {

@@ -128,6 +128,7 @@ export function mapSpotifyTrack(item, prefs = {}) {
   return {
     id: extraId(spotifyId),
     extra: true,
+    extraSource: prefs.extraSource || "spotify",
     rank: 0,
     name: String(item.name || "Untitled"),
     composer: "—",
@@ -148,7 +149,74 @@ export function mapSpotifyTrack(item, prefs = {}) {
     popularity: Number(item.popularity || 0),
     whyShortlisted: "",
     wikipediaUrl: "",
+    previewUrl: "",
   };
+}
+
+export function extraItunesId(trackId) {
+  const id = String(trackId || "").trim();
+  return id ? `${EXTRA_PREFIX}itunes-${id}` : "";
+}
+
+export function itunesArtworkUrl(url) {
+  return String(url || "").replace(/100x100bb/i, "600x600bb").replace(/100x100/i, "600x600");
+}
+
+export function mapItunesTrack(item) {
+  const trackId = String(item?.trackId || "").trim();
+  const name = String(item?.trackName || "Untitled");
+  const artist = String(item?.artistName || "").trim();
+  const yearRaw = String(item?.releaseDate || "").slice(0, 4);
+  const query = [name, artist].filter(Boolean).join(" ");
+  return {
+    id: extraItunesId(trackId),
+    extra: true,
+    extraSource: "itunes",
+    rank: 0,
+    name,
+    composer: "—",
+    singer: artist || "—",
+    band: "—",
+    writer: "—",
+    musicCompany: String(item?.collectionName || "—"),
+    year: yearRaw ? Number(yearRaw) : 0,
+    releaseCountry: "—",
+    genre: String(item?.primaryGenreName || "—"),
+    genres: [String(item?.primaryGenreName || "").trim()].filter(Boolean),
+    spotifyId: "",
+    spotifyUrl: query ? `https://open.spotify.com/search/${encodeURIComponent(query)}` : "",
+    spotifyEmbedUrl: "",
+    previewUrl: String(item?.previewUrl || ""),
+    coverUrl: itunesArtworkUrl(item?.artworkUrl100 || item?.artworkUrl60 || ""),
+    spotifyTitle: name,
+    streams: 0,
+    popularity: 0,
+    whyShortlisted: "",
+    wikipediaUrl: "",
+  };
+}
+
+export function extrasFromItunes(payload, { catalogNames = new Set(), alreadyIds = new Set() } = {}) {
+  const items = payload?.results || [];
+  const out = [];
+  const seen = new Set(alreadyIds);
+  for (const item of items) {
+    if (item?.wrapperType && item.wrapperType !== "track") continue;
+    if (item?.kind && item.kind !== "song") continue;
+    const mapped = mapItunesTrack(item);
+    if (!mapped.id || seen.has(mapped.id)) continue;
+    const key = `${String(mapped.name || "").toLowerCase()}|${String(mapped.singer || "").toLowerCase()}`;
+    if (catalogNames.has(key)) continue;
+    seen.add(mapped.id);
+    out.push(mapped);
+  }
+  return out;
+}
+
+export function catalogNameKeys(tracks = []) {
+  return new Set(
+    (tracks || []).map((track) => `${String(track.name || "").toLowerCase()}|${String(track.singer || "").toLowerCase()}`),
+  );
 }
 
 export function catalogSpotifyIds(tracks = []) {

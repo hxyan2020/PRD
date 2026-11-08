@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { createAuthHandler } from "./api/auth.js";
+import { createMusicSearchHandler } from "./api/music-search.js";
 
 const localUsers = [];
 const localAuth = createAuthHandler({
@@ -10,6 +11,7 @@ const localAuth = createAuthHandler({
     localUsers.splice(0, localUsers.length, ...next);
   },
 });
+const localMusicSearch = createMusicSearchHandler();
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -31,6 +33,16 @@ function localAuthPlugin() {
   const attach = (server) => {
     server.middlewares.use(async (req, res, next) => {
       const path = String(req.url || "").split("?")[0];
+      if (path === "/api/music-search") {
+        try {
+          await localMusicSearch(req, res);
+        } catch {
+          res.statusCode = 503;
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify({ ok: false, error: "unavailable", tracks: [] }));
+        }
+        return;
+      }
       if (path !== "/api/auth") {
         next();
         return;

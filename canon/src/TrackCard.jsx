@@ -29,9 +29,11 @@ export default function TrackCard({
         <p className="meta-line">
           {yearLabel(track.year, t)} · {displayGenre(track.genre, locale)}
         </p>
-        <p className="plays">
-          {track.extra ? t("spotifyPopularity", { n: track.popularity || 0 }) : playsLabel(track.streams, t)}
-        </p>
+        {track.extra && !track.popularity ? null : (
+          <p className="plays">
+            {track.extra ? t("spotifyPopularity", { n: track.popularity || 0 }) : playsLabel(track.streams, t)}
+          </p>
+        )}
         {collected ? <p className="collected-date">{collectedStamp(collectedAt?.[track.id], t, locale)}</p> : null}
         <div className="card-actions">
           <button type="button" onClick={() => onOpen(track, true)}>

@@ -10,7 +10,9 @@ import RecommendLog from "./RecommendLog.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
-import { loadExtraTracks } from "./beyond.js";
+import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
+import { searchMusicByName } from "./music-search.js";
+import { MIN_NAME_QUERY, trackMatchesQuery } from "./search.js";
 import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, formatCollectedAt } from "./collections.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
@@ -59,7 +61,9 @@ export default function App() {
     return merged;
   });
   const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
-  const [extras] = useState(loadExtraTracks);
+  const [extras, setExtras] = useState(loadExtraTracks);
+  const [outside, setOutside] = useState([]);
+  const [outsideStatus, setOutsideStatus] = useState("");
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const spotify = useSpotify();
 
@@ -107,14 +111,41 @@ export default function App() {
     });
   }, [page, selectedId]);
 
+  useEffect(() => {
+    const q = query.trim();
+    if (page !== "archive" || q.length < MIN_NAME_QUERY) {
+      setOutside([]);
+      setOutsideStatus("");
+      return undefined;
+    }
+    let cancelled = false;
+    setOutsideStatus("working");
+    const timer = window.setTimeout(async () => {
+      const result = await searchMusicByName(q);
+      if (cancelled) return;
+      if (!result.ok) {
+        setOutside([]);
+        setOutsideStatus("error");
+        return;
+      }
+      setOutside(result.tracks);
+      setOutsideStatus(result.tracks.length ? "ok" : "empty");
+    }, 400);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [page, query]);
+
   const tracks = data?.tracks || [];
   const extraList = Object.values(extras);
   const library = useMemo(() => {
     const byId = new Map();
     for (const track of tracks) byId.set(track.id, track);
     for (const track of extraList) if (!byId.has(track.id)) byId.set(track.id, track);
+    for (const track of outside) if (!byId.has(track.id)) byId.set(track.id, track);
     return [...byId.values()];
-  }, [tracks, extras]);
+  }, [tracks, extras, outside]);
   const selected = library.find((item) => item.id === selectedId) || null;
   const playing = library.find((item) => item.id === playingId) || selected;
 
@@ -136,20 +167,7 @@ export default function App() {
       if (era !== "All eras" && decadeOf(item.year) !== era) return false;
       if (country !== "All countries" && !releaseIncludesCountry(item.releaseCountry, country)) return false;
       if (!q) return true;
-      const blob = [
-        item.name,
-        item.composer,
-        item.singer,
-        item.band,
-        item.writer,
-        item.musicCompany,
-        item.genre,
-        item.releaseCountry,
-        String(item.year || ""),
-      ]
-        .join(" ")
-        .toLowerCase();
-      return blob.includes(q);
+      return trackMatchesQuery(item, q);
     });
     list = [...list].sort((a, b) => {
       if (sort === "streams") return (b.streams || 0) - (a.streams || 0);
@@ -171,7 +189,17 @@ export default function App() {
     });
   }
 
+  function rememberExtras(list) {
+    if (!list?.length) return;
+    setExtras((current) => {
+      const next = mergeExtraTracks(current, list);
+      saveExtraTracks(next);
+      return next;
+    });
+  }
+
   function openTrack(track, play = false, lyrics = false) {
+    if (track?.extra) rememberExtras([track]);
     rememberView(track.id);
     window.location.hash = routeHash(page, track.id);
     if (play) setPlayingId(track.id);
@@ -305,7 +333,9 @@ export default function App() {
       </section>
 
       <p className="result-count">{t("showing", { n: visible.length, total: tracks.length })}</p>
-      {visible.length === 0 && <p className="empty">{t("emptyFilters")}</p>}
+      {visible.length === 0 ? (
+        <p className="empty">{query.trim() ? t("emptyInCanon", { q: query.trim() }) : t("emptyFilters")}</p>
+      ) : null}
 
       <main className="grid" aria-label={t("catalog")}>
         {visible.map((track) => (
@@ -321,6 +351,34 @@ export default function App() {
           />
         ))}
       </main>
+      {query.trim().length >= MIN_NAME_QUERY ? (
+        <section className="beyond archive-outside" aria-label={t("beyondEyebrow")}>
+          <div className="collections-head">
+            <p className="eyebrow">{t("beyondEyebrow")}</p>
+            <h2>{t("searchOutsideTitle")}</h2>
+            {outsideStatus === "working" ? <p>{t("searchOutsideWorking")}</p> : null}
+            {outsideStatus === "error" ? <p className="spotify-status">{t("searchOutsideUnavailable")}</p> : null}
+            {outsideStatus === "empty" ? <p className="spotify-status">{t("searchOutsideEmpty")}</p> : null}
+            {outside.length > 0 ? <p className="result-count">{t("searchOutsideCount", { n: outside.length })}</p> : null}
+          </div>
+          {outside.length > 0 ? (
+            <div className="grid collections-grid">
+              {outside.map((track) => (
+                <TrackCard
+                  key={track.id}
+                  track={track}
+                  selected={selectedId === track.id}
+                  collectedIds={collectedIds}
+                  collectedAt={collectedAt}
+                  onToggleCollect={onToggleCollect}
+                  onOpen={openTrack}
+                  spotify={spotify}
+                />
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
         </>
       ) : page === "collections" ? (
         <>
@@ -415,6 +473,7 @@ export default function App() {
               <dt>{t("genre")}</dt>
               <dd>{displayGenre(selected.genre, locale) || creditLabel(selected.genre, t)}</dd>
             </div>
+            {selected.extra && !selected.popularity ? null : (
             <div>
               <dt>{t("popularity")}</dt>
               <dd>
@@ -423,6 +482,7 @@ export default function App() {
                   : popularityLabel(selected.streams, t)}
               </dd>
             </div>
+            )}
             {collectedIds.includes(selected.id) ? (
               <div>
                 <dt>{t("collected")}</dt>
@@ -435,9 +495,11 @@ export default function App() {
           <h3>{t("whyShortlisted")}</h3>
           <p className="why">
             {selected.extra
-              ? loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
-                ? t("beyondWhy")
-                : t("beyondWhyPopular")
+              ? selected.extraSource === "itunes" || selected.extraSource === "name"
+                ? t("beyondWhyName")
+                : loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
+                  ? t("beyondWhy")
+                  : t("beyondWhyPopular")
               : selected.whyShortlisted}
           </p>
           {selected.wikipediaUrl ? (
@@ -477,16 +539,20 @@ export default function App() {
 
       <SiteFooter page={page} />
 
-      {playing && (
+      {playing && (playing.spotifyEmbedUrl || playing.previewUrl) ? (
         <footer className="dock">
-          <iframe
-            className="dock-frame"
-            title={t("nowPlaying")}
-            src={playing.spotifyEmbedUrl}
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          />
+          {playing.spotifyEmbedUrl ? (
+            <iframe
+              className="dock-frame"
+              title={t("nowPlaying")}
+              src={playing.spotifyEmbedUrl}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            />
+          ) : (
+            <audio className="dock-audio" title={t("nowPlaying")} controls autoPlay src={playing.previewUrl} />
+          )}
         </footer>
-      )}
+      ) : null}
     </div>
   );
 }

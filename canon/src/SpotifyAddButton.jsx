@@ -6,7 +6,7 @@ export default function SpotifyAddButton({ track, spotify }) {
   const saved = Boolean(spotify.saved[track.spotifyId]);
   const href = spotifyOpenUrl(track);
 
-  if (!spotify.configured && href) {
+  if ((!spotify.configured || !track.spotifyId) && href) {
     return (
       <a className="spotify-link" href={href} target="_blank" rel="noreferrer">
         {t("addToSpotify")}
