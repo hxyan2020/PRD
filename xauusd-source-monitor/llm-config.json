@@ -1,0 +1,6 @@
+{
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "proxyBase": "https://teeth-application-quad-task.trycloudflare.com",
+  "note": "Managed LLM gateway — keys stay on the server. Desk loads this at runtime."
+}
