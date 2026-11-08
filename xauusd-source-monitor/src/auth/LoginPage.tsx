@@ -1,13 +1,13 @@
 import { useState, type FormEvent } from 'react'
 import { useLocale } from '../i18n/locale'
-import { DEMO_USERS, isHytechEmail } from './users'
+import { isHytechEmail } from './users'
 import { useAuth } from './AuthContext'
 
 export function LoginPage() {
   const { t, lang, setLang, langLabel } = useLocale()
   const { login } = useAuth()
-  const [email, setEmail] = useState(DEMO_USERS[0]!.email)
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('ops@hytech.com')
+  const [password, setPassword] = useState('OpsDemo2026!')
   const [error, setError] = useState<string | null>(null)
 
   const onSubmit = (e: FormEvent) => {

@@ -19,6 +19,8 @@ export interface AuthSession {
 
 type AuthCtx = {
   user: AuthSession | null
+  role: UserRole | null
+  isAdmin: boolean
   login: (email: string, password: string) => { ok: true } | { ok: false; error: string }
   logout: () => void
 }
@@ -80,7 +82,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
-  const value = useMemo(() => ({ user, login, logout }), [user, login, logout])
+  const value = useMemo(
+    () => ({
+      user,
+      role: user?.role ?? null,
+      isAdmin: user?.role === 'admin',
+      login,
+      logout,
+    }),
+    [user, login, logout],
+  )
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 

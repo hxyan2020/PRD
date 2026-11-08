@@ -1846,3 +1846,12 @@ td.mono,
     grid-template-columns: 1fr;
   }
 }
+
+.banner-warn {
+  margin: 8px 0 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(161, 98, 7, 0.12);
+  color: var(--gold-deep);
+  font-size: 0.88rem;
+}

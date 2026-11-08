@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useAuth } from '../auth/AuthContext'
 import { useLocale } from '../i18n/locale'
 import { loadSkills, saveSkills } from '../copilot/storage'
 import type { SkillLevel, SkillRecord } from '../copilot/types'
@@ -21,6 +22,7 @@ const emptyDraft = (): SkillRecord => ({
 
 export function SkillsPage() {
   const { t } = useLocale()
+  const { isAdmin } = useAuth()
   const [skills, setSkills] = useState<SkillRecord[]>(() => loadSkills())
   const [q, setQ] = useState('')
   const [levelFilter, setLevelFilter] = useState<'all' | SkillLevel>('all')
@@ -29,6 +31,7 @@ export function SkillsPage() {
   const [creating, setCreating] = useState(false)
 
   const persist = (next: SkillRecord[]) => {
+    if (!isAdmin) return
     setSkills(next)
     saveSkills(next)
   }
@@ -46,12 +49,13 @@ export function SkillsPage() {
   }, [skills, q, levelFilter, showArchived])
 
   const startCreate = () => {
+    if (!isAdmin) return
     setCreating(true)
     setEditing(emptyDraft())
   }
 
   const saveEditor = () => {
-    if (!editing) return
+    if (!isAdmin || !editing) return
     const id = editing.id.trim()
     const name = editing.name.trim()
     if (!id || !name) return
@@ -73,6 +77,7 @@ export function SkillsPage() {
   }
 
   const toggleDisable = (id: string) => {
+    if (!isAdmin) return
     persist(
       skills.map((s) =>
         s.id === id ? { ...s, disabled: !s.disabled, updatedAt: Date.now() } : s,
@@ -81,6 +86,7 @@ export function SkillsPage() {
   }
 
   const archiveSkill = (id: string) => {
+    if (!isAdmin) return
     persist(
       skills.map((s) =>
         s.id === id ? { ...s, archivedAt: Date.now(), disabled: true, updatedAt: Date.now() } : s,
@@ -89,6 +95,7 @@ export function SkillsPage() {
   }
 
   const restoreSkill = (id: string) => {
+    if (!isAdmin) return
     persist(
       skills.map((s) => {
         if (s.id !== id) return s
@@ -102,6 +109,7 @@ export function SkillsPage() {
     <div className="panel skills-page">
       <h2>{t('skillsTitle')}</h2>
       <p className="sub">{t('skillsSub')}</p>
+      {!isAdmin ? <p className="banner-warn">{t('adminOnlyWrite')}</p> : null}
 
       <div className="skills-toolbar">
         <input
@@ -125,12 +133,14 @@ export function SkillsPage() {
           />
           {t('skillsShowArchived')}
         </label>
-        <button type="button" className="archive-btn primary-archive" onClick={startCreate}>
-          {t('skillsCreate')}
-        </button>
+        {isAdmin ? (
+          <button type="button" className="archive-btn primary-archive" onClick={startCreate}>
+            {t('skillsCreate')}
+          </button>
+        ) : null}
       </div>
 
-      {editing ? (
+      {editing && isAdmin ? (
         <div className="skill-editor item-block">
           <h3>{creating ? t('skillsCreate') : t('skillsEdit')}</h3>
           <div className="copilot-row">
@@ -255,30 +265,32 @@ export function SkillsPage() {
           <p className="sub">
             <b>{t('copilotOpt')}:</b> {s.opt}
           </p>
-          <div className="copilot-actions">
-            <button
-              type="button"
-              className="archive-btn"
-              onClick={() => {
-                setCreating(false)
-                setEditing({ ...s })
-              }}
-            >
-              {t('skillsEdit')}
-            </button>
-            <button type="button" className="archive-btn" onClick={() => toggleDisable(s.id)}>
-              {s.disabled ? t('skillsEnable') : t('skillsDisable')}
-            </button>
-            {s.archivedAt ? (
-              <button type="button" className="archive-btn" onClick={() => restoreSkill(s.id)}>
-                {t('unarchiveAction')}
+          {isAdmin ? (
+            <div className="copilot-actions">
+              <button
+                type="button"
+                className="archive-btn"
+                onClick={() => {
+                  setCreating(false)
+                  setEditing({ ...s })
+                }}
+              >
+                {t('skillsEdit')}
               </button>
-            ) : (
-              <button type="button" className="archive-btn" onClick={() => archiveSkill(s.id)}>
-                {t('archiveAction')}
+              <button type="button" className="archive-btn" onClick={() => toggleDisable(s.id)}>
+                {s.disabled ? t('skillsEnable') : t('skillsDisable')}
               </button>
-            )}
-          </div>
+              {s.archivedAt ? (
+                <button type="button" className="archive-btn" onClick={() => restoreSkill(s.id)}>
+                  {t('unarchiveAction')}
+                </button>
+              ) : (
+                <button type="button" className="archive-btn" onClick={() => archiveSkill(s.id)}>
+                  {t('archiveAction')}
+                </button>
+              )}
+            </div>
+          ) : null}
         </article>
       ))}
     </div>

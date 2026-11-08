@@ -31,7 +31,10 @@ const en: Dict = {
   authHytechOnly: 'Use a Hytech email (@hytech.com / @hytechc.com / @hytechpro.com).',
   authFailed: 'Email or password incorrect. Check demo credentials in README.',
   authDemoHint:
-    'Demo: risk.ops@hytech.com · analyst@hytechc.com · admin@hytech.com — password RiskDemo2026!',
+    'Demo: ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026! (also risk.ops@ / analyst@ with RiskDemo2026!)',
+  adminOnlyWrite: 'View only — Skills and Knowledge edits require Admin.',
+  roleAdmin: 'Admin',
+  roleOps: 'Ops',
   skillsTitle: 'Skills',
   skillsSub:
     'Create, edit, disable, and archive L1/L2 investigation skills. Stored in this browser; localhost/API can replace the store later.',
@@ -353,7 +356,10 @@ const zhHant: Dict = {
   authHytechOnly: '請使用 Hytech 郵箱（@hytech.com / @hytechc.com / @hytechpro.com）。',
   authFailed: '郵箱或密碼錯誤。請查看 README 示範帳密。',
   authDemoHint:
-    '示範：risk.ops@hytech.com · analyst@hytechc.com · admin@hytech.com — 密碼 RiskDemo2026!',
+    '示範：ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026!（另有 risk.ops@ / analyst@ 密碼 RiskDemo2026!）',
+  adminOnlyWrite: '唯讀 — 編輯 Skills／知識庫需 Admin。',
+  roleAdmin: 'Admin',
+  roleOps: 'Ops',
   skillsTitle: 'Skills',
   skillsSub: '建立、編輯、停用與歸檔 L1/L2 排查技能。保存在本瀏覽器；之後可由 localhost/API 取代。',
   skillsCreate: '新建 Skill',

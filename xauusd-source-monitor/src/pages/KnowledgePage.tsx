@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useAuth } from '../auth/AuthContext'
 import { useLocale } from '../i18n/locale'
 import { loadKnowledgeTree, saveKnowledgeTree } from '../copilot/storage'
 import type { KbNode } from '../copilot/types'
@@ -62,6 +63,7 @@ function TreeNodeView({
 
 export function KnowledgePage() {
   const { t } = useLocale()
+  const { isAdmin } = useAuth()
   const [nodes, setNodes] = useState<KbNode[]>(() => loadKnowledgeTree())
   const [selectedId, setSelectedId] = useState<string | null>(() => {
     const tree = loadKnowledgeTree()
@@ -73,6 +75,7 @@ export function KnowledgePage() {
   })
 
   const persist = (next: KbNode[]) => {
+    if (!isAdmin) return
     setNodes(next)
     saveKnowledgeTree(next)
   }
@@ -189,6 +192,7 @@ export function KnowledgePage() {
     <div className="panel knowledge-page">
       <h2>{t('kbTitle')}</h2>
       <p className="sub">{t('kbSub')}</p>
+      {!isAdmin ? <p className="banner-warn">{t('adminOnlyWrite')}</p> : null}
 
       <div className="kb-layout">
         <aside className="kb-tree-pane">
@@ -221,15 +225,17 @@ export function KnowledgePage() {
               <label className="field-label">{t('copilotKbItemTitle')}</label>
               <input
                 value={selected.title}
+                disabled={!isAdmin}
                 onChange={(e) => updateSelected({ title: e.target.value })}
               />
               <label className="field-label">{t('copilotKbBody')}</label>
               <textarea
                 rows={12}
                 value={selected.body}
+                disabled={!isAdmin}
                 onChange={(e) => updateSelected({ body: e.target.value })}
               />
-              {selected.parentId !== null ? (
+              {isAdmin && selected.parentId !== null ? (
                 <>
                   <label className="field-label">{t('kbMoveUnder')}</label>
                   <select
@@ -244,27 +250,29 @@ export function KnowledgePage() {
                   </select>
                 </>
               ) : null}
-              <div className="copilot-actions">
-                <button type="button" className="archive-btn primary-archive" onClick={addChild}>
-                  {t('kbAddChild')}
-                </button>
-                {selected.parentId !== null ? (
-                  <>
-                    <button type="button" className="archive-btn" onClick={addSibling}>
-                      {t('kbAddSibling')}
-                    </button>
-                    <button type="button" className="archive-btn" onClick={() => move(-1)}>
-                      {t('kbMoveUp')}
-                    </button>
-                    <button type="button" className="archive-btn" onClick={() => move(1)}>
-                      {t('kbMoveDown')}
-                    </button>
-                    <button type="button" className="archive-btn" onClick={deleteNode}>
-                      {t('copilotKbDelete')}
-                    </button>
-                  </>
-                ) : null}
-              </div>
+              {isAdmin ? (
+                <div className="copilot-actions">
+                  <button type="button" className="archive-btn primary-archive" onClick={addChild}>
+                    {t('kbAddChild')}
+                  </button>
+                  {selected.parentId !== null ? (
+                    <>
+                      <button type="button" className="archive-btn" onClick={addSibling}>
+                        {t('kbAddSibling')}
+                      </button>
+                      <button type="button" className="archive-btn" onClick={() => move(-1)}>
+                        {t('kbMoveUp')}
+                      </button>
+                      <button type="button" className="archive-btn" onClick={() => move(1)}>
+                        {t('kbMoveDown')}
+                      </button>
+                      <button type="button" className="archive-btn" onClick={deleteNode}>
+                        {t('copilotKbDelete')}
+                      </button>
+                    </>
+                  ) : null}
+                </div>
+              ) : null}
               <p className="sub">
                 id={selected.id} · {t('archivedAtLabel')}:{' '}
                 {selected.updatedAt

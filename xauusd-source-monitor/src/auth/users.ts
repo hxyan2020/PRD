@@ -10,20 +10,26 @@ export interface DemoUser {
 /** Seeded demo accounts for GitHub Pages (no backend). */
 export const DEMO_USERS: DemoUser[] = [
   {
+    email: 'ops@hytech.com',
+    password: 'OpsDemo2026!',
+    name: 'Risk Ops',
+    role: 'risk_ops',
+  },
+  {
     email: 'risk.ops@hytech.com',
     password: 'RiskDemo2026!',
     name: 'Risk Ops',
     role: 'risk_ops',
   },
   {
-    email: 'analyst@hytechc.com',
+    email: 'analyst@hytech.com',
     password: 'RiskDemo2026!',
     name: 'Risk Analyst',
     role: 'analyst',
   },
   {
     email: 'admin@hytech.com',
-    password: 'RiskDemo2026!',
+    password: 'AdminDemo2026!',
     name: 'Risk Admin',
     role: 'admin',
   },
