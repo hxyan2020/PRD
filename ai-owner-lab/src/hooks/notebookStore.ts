@@ -694,6 +694,13 @@ function localIsAheadOfCloud(cloudContent: string): boolean {
   for (const category of cache.categories) {
     if (!cloudCategories.has(category.id)) return true
   }
+  // Count mismatch (e.g. PC 125 vs cloud 115) must always force upload even if
+  // timestamps look equal after a partial merge.
+  const cloudEntryCount = cloudEntries.size
+  const cloudTrashCount = cloudTrash.size
+  if (cache.entries.length > cloudEntryCount) return true
+  if (cache.trash.length > cloudTrashCount) return true
+  if (cache.categories.length > cloudCategories.size) return true
   return false
 }
 
@@ -993,8 +1000,8 @@ async function flushCloudSync(options?: FlushCloudOptions) {
     return
   }
   setCloudRuntime({ state: 'syncing', error: null })
-  // Large notebooks need more than 90s once; still hard-cap so UI cannot hang forever.
-  const syncDeadline = Date.now() + 150_000
+  // Large notebooks (100+ notes / images) need a long budget; hard-cap so UI cannot hang forever.
+  const syncDeadline = Date.now() + 240_000
   let reusedPullOnce = Boolean(options?.reusePull) || options?.cloudMissing === true
   cloudPushInFlight = (async () => {
     let timedOut = false
@@ -1098,7 +1105,10 @@ async function flushCloudSync(options?: FlushCloudOptions) {
           // Only upload when this device has extra notes or newer edits than the
           // cloud snapshot we just merged. Prevents idle phones rewriting cloud.
           const shouldUpload =
-            cloudMissing || !cloudContent || localIsAheadOfCloud(cloudContent)
+            cloudMissing ||
+            !cloudContent ||
+            localCount > cloudNoteCount ||
+            localIsAheadOfCloud(cloudContent)
 
           if (!shouldUpload) {
             setCloudRuntime({
@@ -1109,7 +1119,21 @@ async function flushCloudSync(options?: FlushCloudOptions) {
             })
             pushed = true
           } else {
-            const result = await pushAccountBackup(buildBackupJson())
+            const payload = buildBackupJson()
+            const approxMb = Math.max(1, Math.round(payload.length / (1024 * 1024)))
+            setCloudRuntime({
+              state: 'syncing',
+              error: null,
+              gistId: `account:${loadCachedAccountUser()}`,
+            })
+            // Keep the pill informative for large uploads (was looking "stuck").
+            if (approxMb >= 2) {
+              setCloudRuntime({
+                state: 'syncing',
+                error: `Uploading ~${approxMb}MB (${localCount} notes)…`,
+              })
+            }
+            const result = await pushAccountBackup(payload)
             cloudEtag = result.etag
             setCloudRuntime({
               state: 'synced',

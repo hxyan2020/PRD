@@ -286,14 +286,19 @@ export async function pushAccountBackup(json: string): Promise<{ etag: string | 
   const file = new File([json], 'notebook.json', {
     type: 'application/json;charset=utf-8',
   })
-  // Larger notebooks use multipart; give them more time but never hang forever.
-  const uploadTimeoutMs = file.size >= 4 * 1024 * 1024 ? 120_000 : 60_000
+  // Prefer multipart for anything above ~1.5MB — large notebooks were timing out
+  // on a single PUT. Budget scales with size but still hard-caps.
+  const useMultipart = file.size >= 1.5 * 1024 * 1024
+  const uploadTimeoutMs = Math.min(
+    240_000,
+    Math.max(90_000, Math.round(file.size / 1024) * 25),
+  )
   try {
     await withTimeout(
       upload(pathname, file, {
         access: 'private',
         handleUploadUrl: api('/api/blob/upload'),
-        multipart: file.size >= 4 * 1024 * 1024,
+        multipart: useMultipart,
         contentType: 'application/json;charset=utf-8',
       }),
       uploadTimeoutMs,

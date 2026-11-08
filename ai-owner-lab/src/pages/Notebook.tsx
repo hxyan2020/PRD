@@ -581,7 +581,9 @@ export function Notebook() {
               }}
             >
               {cloudState === 'syncing'
-                ? t('cloudSyncing')
+                ? cloudError && /Uploading ~/i.test(cloudError)
+                  ? cloudError
+                  : t('cloudSyncing')
                 : cloudState === 'pulling'
                   ? t('cloudPulling')
                   : cloudState === 'error'
