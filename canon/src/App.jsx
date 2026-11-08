@@ -11,8 +11,16 @@ import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
 import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
-import { searchMusicByName } from "./music-search.js";
-import { MIN_NAME_QUERY, trackMatchesQuery } from "./search.js";
+import { searchOutsideMusic } from "./music-search.js";
+import {
+  ALL_COUNTRIES,
+  ALL_ERAS,
+  ALL_GENRES,
+  extraMatchesEra,
+  hasOutsideSearch,
+  sortTracks,
+  trackMatchesQuery,
+} from "./search.js";
 import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, formatCollectedAt } from "./collections.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
@@ -64,6 +72,8 @@ export default function App() {
   const [extras, setExtras] = useState(loadExtraTracks);
   const [outside, setOutside] = useState([]);
   const [outsideStatus, setOutsideStatus] = useState("");
+  const [albumAskId, setAlbumAskId] = useState("");
+  const [albumAskDismissed, setAlbumAskDismissed] = useState(() => new Set());
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const spotify = useSpotify();
 
@@ -112,8 +122,8 @@ export default function App() {
   }, [page, selectedId]);
 
   useEffect(() => {
-    const q = query.trim();
-    if (page !== "archive" || q.length < MIN_NAME_QUERY) {
+    const filters = { query, genre, era, country };
+    if (page !== "archive" || !hasOutsideSearch(filters)) {
       setOutside([]);
       setOutsideStatus("");
       return undefined;
@@ -121,7 +131,7 @@ export default function App() {
     let cancelled = false;
     setOutsideStatus("working");
     const timer = window.setTimeout(async () => {
-      const result = await searchMusicByName(q);
+      const result = await searchOutsideMusic(filters);
       if (cancelled) return;
       if (!result.ok) {
         setOutside([]);
@@ -135,7 +145,7 @@ export default function App() {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [page, query]);
+  }, [page, query, genre, era, country]);
 
   const tracks = data?.tracks || [];
   const extraList = Object.values(extras);
@@ -153,6 +163,14 @@ export default function App() {
     if (selected) spotify.checkSaved(selected);
   }, [selectedId, spotify.user]);
 
+  useEffect(() => {
+    if (!selected?.extra) return;
+    if (collectedIds.includes(selected.id)) return;
+    if (selected.spotifyId && spotify.saved[selected.spotifyId]) return;
+    if (albumAskDismissed.has(selected.id)) return;
+    setAlbumAskId(selected.id);
+  }, [selected, collectedIds, albumAskDismissed, spotify.saved]);
+
   const facets = useMemo(() => {
     const genres = uniqueSorted(tracks.flatMap((item) => (item.genres?.length ? item.genres : [item.genre])));
     const eras = uniqueSorted(tracks.map((item) => decadeOf(item.year)));
@@ -161,23 +179,21 @@ export default function App() {
   }, [tracks]);
 
   const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    let list = tracks.filter((item) => {
-      if (genre !== "All genres" && item.genre !== genre && !(item.genres || []).includes(genre)) return false;
-      if (era !== "All eras" && decadeOf(item.year) !== era) return false;
-      if (country !== "All countries" && !releaseIncludesCountry(item.releaseCountry, country)) return false;
+    const q = query.trim();
+    const list = tracks.filter((item) => {
+      if (genre !== ALL_GENRES && item.genre !== genre && !(item.genres || []).includes(genre)) return false;
+      if (era !== ALL_ERAS && decadeOf(item.year) !== era) return false;
+      if (country !== ALL_COUNTRIES && !releaseIncludesCountry(item.releaseCountry, country)) return false;
       if (!q) return true;
       return trackMatchesQuery(item, q);
     });
-    list = [...list].sort((a, b) => {
-      if (sort === "streams") return (b.streams || 0) - (a.streams || 0);
-      if (sort === "year-asc") return (a.year || 9999) - (b.year || 9999);
-      if (sort === "year-desc") return (b.year || 0) - (a.year || 0);
-      if (sort === "name") return a.name.localeCompare(b.name);
-      return a.rank - b.rank;
-    });
-    return list;
+    return sortTracks(list, sort);
   }, [tracks, query, genre, era, country, sort]);
+
+  const outsideVisible = useMemo(() => {
+    const list = outside.filter((item) => extraMatchesEra(item, era, decadeOf));
+    return sortTracks(list, sort === "influence" ? "streams" : sort);
+  }, [outside, era, sort]);
 
   function rememberView(id) {
     if (!id) return;
@@ -204,6 +220,26 @@ export default function App() {
     window.location.hash = routeHash(page, track.id);
     if (play) setPlayingId(track.id);
     setLyricsOpen(Boolean(lyrics));
+    if (
+      track?.extra &&
+      !collectedIds.includes(track.id) &&
+      !spotify.saved[track.spotifyId] &&
+      !albumAskDismissed.has(track.id)
+    ) {
+      setAlbumAskId(track.id);
+    }
+  }
+
+  function dismissAlbumAsk(id) {
+    setAlbumAskDismissed((current) => new Set(current).add(id));
+    setAlbumAskId("");
+  }
+
+  async function addOutsideToAlbum(track) {
+    if (!track?.id) return;
+    if (!collectedIds.includes(track.id)) onToggleCollect(track.id);
+    if (track.spotifyId) await spotify.addTrack(track);
+    dismissAlbumAsk(track.id);
   }
 
   function onToggleCollect(id) {
@@ -291,7 +327,7 @@ export default function App() {
           onChange={(e) => setQuery(e.target.value)}
         />
         <select value={genre} onChange={(e) => setGenre(e.target.value)} aria-label={t("allGenres")}>
-          <option value="All genres">{t("allGenres")}</option>
+          <option value={ALL_GENRES}>{t("allGenres")}</option>
           {facets.genres.map((item) => {
             const label = displayGenre(item, locale);
             return (
@@ -302,7 +338,7 @@ export default function App() {
           })}
         </select>
         <select value={era} onChange={(e) => setEra(e.target.value)} aria-label={t("allEras")}>
-          <option value="All eras">{t("allEras")}</option>
+          <option value={ALL_ERAS}>{t("allEras")}</option>
           {facets.eras.map((item) => {
             const label = displayEraLabel(item, t, locale);
             return (
@@ -313,7 +349,7 @@ export default function App() {
           })}
         </select>
         <select value={country} onChange={(e) => setCountry(e.target.value)} aria-label={t("allCountries")}>
-          <option value="All countries">{t("allCountries")}</option>
+          <option value={ALL_COUNTRIES}>{t("allCountries")}</option>
           {facets.countries.map((item) => {
             const label = displayReleaseCountry(item, locale, t);
             return (
@@ -351,19 +387,21 @@ export default function App() {
           />
         ))}
       </main>
-      {query.trim().length >= MIN_NAME_QUERY ? (
+      {hasOutsideSearch({ query, genre, era, country }) ? (
         <section className="beyond archive-outside" aria-label={t("beyondEyebrow")}>
           <div className="collections-head">
             <p className="eyebrow">{t("beyondEyebrow")}</p>
             <h2>{t("searchOutsideTitle")}</h2>
             {outsideStatus === "working" ? <p>{t("searchOutsideWorking")}</p> : null}
             {outsideStatus === "error" ? <p className="spotify-status">{t("searchOutsideUnavailable")}</p> : null}
-            {outsideStatus === "empty" ? <p className="spotify-status">{t("searchOutsideEmpty")}</p> : null}
-            {outside.length > 0 ? <p className="result-count">{t("searchOutsideCount", { n: outside.length })}</p> : null}
+            {outsideStatus === "empty" || (outsideStatus === "ok" && outsideVisible.length === 0) ? (
+              <p className="spotify-status">{t("searchOutsideEmpty")}</p>
+            ) : null}
+            {outsideVisible.length > 0 ? <p className="result-count">{t("searchOutsideCount", { n: outsideVisible.length })}</p> : null}
           </div>
-          {outside.length > 0 ? (
+          {outsideVisible.length > 0 ? (
             <div className="grid collections-grid">
-              {outside.map((track) => (
+              {outsideVisible.map((track) => (
                 <TrackCard
                   key={track.id}
                   track={track}
@@ -431,6 +469,19 @@ export default function App() {
           <p className="eyebrow">{selected.extra ? t("beyondOutside") : t("canonRank", { n: selected.rank })}</p>
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
+          {selected.extra && albumAskId === selected.id ? (
+            <div className="album-ask" role="region" aria-label={t("albumAsk", { name: selected.name })}>
+              <p>{t("albumAsk", { name: selected.name })}</p>
+              <div className="drawer-actions album-ask-actions">
+                <button type="button" onClick={() => addOutsideToAlbum(selected)}>
+                  {t("albumAskYes")}
+                </button>
+                <button type="button" className="ghost" onClick={() => dismissAlbumAsk(selected.id)}>
+                  {t("albumAskNo")}
+                </button>
+              </div>
+            </div>
+          ) : null}
           {selected.anecdote ? (
             <section className="anecdote-block">
               <h3>{t("songAnecdote")}</h3>

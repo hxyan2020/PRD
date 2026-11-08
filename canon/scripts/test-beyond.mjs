@@ -85,4 +85,15 @@ saveExtraTracks(merged, memory);
 assert.ok(memory.getItem(EXTRA_KEY));
 assert.equal(loadExtraTracks(memory)[filtered[0].id].name, "New song");
 
+const itunesExtra = {
+  id: "ext-itunes-9",
+  extra: true,
+  extraSource: "itunes",
+  name: "Apocalypse",
+  spotifyId: "",
+};
+const itunesMerged = mergeExtraTracks({}, [itunesExtra]);
+saveExtraTracks(itunesMerged, memory);
+assert.equal(loadExtraTracks(memory)["ext-itunes-9"].name, "Apocalypse");
+
 console.log("beyond tests ok");

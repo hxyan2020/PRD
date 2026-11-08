@@ -162,12 +162,14 @@ export function itunesArtworkUrl(url) {
   return String(url || "").replace(/100x100bb/i, "600x600bb").replace(/100x100/i, "600x600");
 }
 
-export function mapItunesTrack(item) {
+export function mapItunesTrack(item, hints = {}) {
   const trackId = String(item?.trackId || "").trim();
   const name = String(item?.trackName || "Untitled");
   const artist = String(item?.artistName || "").trim();
   const yearRaw = String(item?.releaseDate || "").slice(0, 4);
   const query = [name, artist].filter(Boolean).join(" ");
+  const genre = String(hints.genre || item?.primaryGenreName || "—").trim() || "—";
+  const country = String(hints.country || "").trim();
   return {
     id: extraItunesId(trackId),
     extra: true,
@@ -180,8 +182,8 @@ export function mapItunesTrack(item) {
     writer: "—",
     musicCompany: String(item?.collectionName || "—"),
     year: yearRaw ? Number(yearRaw) : 0,
-    releaseCountry: "—",
-    genre: String(item?.primaryGenreName || "—"),
+    releaseCountry: country || "—",
+    genre,
     genres: [String(item?.primaryGenreName || "").trim()].filter(Boolean),
     spotifyId: "",
     spotifyUrl: query ? `https://open.spotify.com/search/${encodeURIComponent(query)}` : "",
@@ -196,14 +198,14 @@ export function mapItunesTrack(item) {
   };
 }
 
-export function extrasFromItunes(payload, { catalogNames = new Set(), alreadyIds = new Set() } = {}) {
+export function extrasFromItunes(payload, { catalogNames = new Set(), alreadyIds = new Set(), hints = {} } = {}) {
   const items = payload?.results || [];
   const out = [];
   const seen = new Set(alreadyIds);
   for (const item of items) {
     if (item?.wrapperType && item.wrapperType !== "track") continue;
     if (item?.kind && item.kind !== "song") continue;
-    const mapped = mapItunesTrack(item);
+    const mapped = mapItunesTrack(item, hints);
     if (!mapped.id || seen.has(mapped.id)) continue;
     const key = `${String(mapped.name || "").toLowerCase()}|${String(mapped.singer || "").toLowerCase()}`;
     if (catalogNames.has(key)) continue;
@@ -245,7 +247,7 @@ export function loadExtraTracks(storage) {
     if (!parsed || typeof parsed !== "object") return {};
     const out = {};
     for (const [id, track] of Object.entries(parsed)) {
-      if (track && typeof track === "object" && track.spotifyId) out[id] = track;
+      if (track && typeof track === "object" && (track.id || id)) out[id] = { ...track, id: track.id || id };
     }
     return out;
   } catch {
@@ -262,7 +264,7 @@ export function saveExtraTracks(map, storage) {
 export function mergeExtraTracks(current, list) {
   const next = { ...(current || {}) };
   for (const track of list || []) {
-    if (track?.id && track.spotifyId) next[track.id] = track;
+    if (track?.id) next[track.id] = track;
   }
   return next;
 }

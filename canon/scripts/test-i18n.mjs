@@ -130,6 +130,8 @@ for (const locale of LANGUAGE_IDS) {
 
 const beyondKeys = Object.keys(BEYOND.en).sort();
 assert.ok(beyondKeys.includes("beyondFind"));
+assert.ok(beyondKeys.includes("albumAsk"));
+assert.match(t("en", "albumAsk", { name: "Apocalypse" }), /Apocalypse/);
 for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(BEYOND[locale]).sort(), beyondKeys, `${locale} beyond copy keys`);
   assert.match(t(locale, "beyondTitle"), /./);
