@@ -88,7 +88,7 @@ function sanitizeStyle(style: string): string {
 }
 
 function isSafeClassName(className: string): boolean {
-  return /^(language-[\w+-]+|hljs(-[\w+-]+)?|notebook-table|notebook-code(-block)?|rte-table)$/.test(
+  return /^(language-[\w+-]+|hljs(-[\w+-]+)?|notebook-table|notebook-checklist|notebook-code(-block)?|rte-table)$/.test(
     className,
   )
 }
@@ -263,10 +263,25 @@ export function sanitizeHtml(input: string): string {
             const cleaned = sanitizeClassAttr(attr.value)
             if (cleaned) el.setAttribute('class', cleaned)
             else el.removeAttribute('class')
+          } else if (
+            el.tagName === 'LI' &&
+            name === 'data-checked' &&
+            (attr.value === 'true' || attr.value === 'false')
+          ) {
+            // Checklist item state — kept for notebook todo lists.
           } else if (el.tagName === 'FONT' && (name === 'color' || name === 'size' || name === 'face')) {
             // keep legacy font attrs from execCommand
           } else {
             el.removeAttribute(attr.name)
+          }
+        }
+        if (el.tagName === 'UL' && el.classList.contains('notebook-checklist')) {
+          for (const li of Array.from(el.children)) {
+            if (li.tagName !== 'LI') continue
+            const checked = li.getAttribute('data-checked')
+            if (checked !== 'true' && checked !== 'false') {
+              li.setAttribute('data-checked', 'false')
+            }
           }
         }
         walk(el)

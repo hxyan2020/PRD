@@ -137,6 +137,16 @@ function applyList(editor: HTMLElement | null, tag: 'UL' | 'OL') {
     runCommand(tag === 'UL' ? 'insertUnorderedList' : 'insertOrderedList')
     return
   }
+  // Leaving a checklist restores a normal bullet/number list.
+  for (const li of items) {
+    const list = li.parentElement
+    if (list?.tagName === 'UL' && list.classList.contains('notebook-checklist')) {
+      list.classList.remove('notebook-checklist')
+      for (const child of Array.from(list.children)) {
+        if (child.tagName === 'LI') child.removeAttribute('data-checked')
+      }
+    }
+  }
   const alreadyThisType = items.every((li) => li.parentElement?.tagName === tag)
   const canNest = items.some((li) => li.previousElementSibling?.tagName === 'LI')
   if (alreadyThisType && canNest) {
@@ -148,6 +158,60 @@ function applyList(editor: HTMLElement | null, tag: 'UL' | 'OL') {
     return
   }
   runCommand(tag === 'UL' ? 'insertUnorderedList' : 'insertOrderedList')
+}
+
+function isChecklistList(list: Element | null): list is HTMLUListElement {
+  return Boolean(list && list.tagName === 'UL' && list.classList.contains('notebook-checklist'))
+}
+
+function markChecklistItems(list: HTMLElement) {
+  for (const child of Array.from(list.children)) {
+    if (child.tagName !== 'LI') continue
+    const checked = child.getAttribute('data-checked')
+    if (checked !== 'true' && checked !== 'false') {
+      child.setAttribute('data-checked', 'false')
+    }
+  }
+}
+
+function normalizeChecklistItems(editor: HTMLElement | null) {
+  if (!editor) return
+  for (const list of Array.from(editor.querySelectorAll('ul.notebook-checklist'))) {
+    markChecklistItems(list as HTMLElement)
+  }
+}
+
+/** Insert or convert the current selection into a checklist; toggle off if already one. */
+function applyChecklist(editor: HTMLElement | null) {
+  if (!editor) return
+  const items = selectedListItems(editor)
+  if (!items.length) {
+    insertHtmlAtSelection(
+      '<ul class="notebook-checklist"><li data-checked="false"><br></li></ul><p><br></p>',
+      editor,
+    )
+    return
+  }
+  const list = items[0]?.parentElement
+  if (isChecklistList(list)) {
+    list.classList.remove('notebook-checklist')
+    for (const child of Array.from(list.children)) {
+      if (child.tagName === 'LI') child.removeAttribute('data-checked')
+    }
+    return
+  }
+  if (list?.tagName === 'OL') {
+    const ul = document.createElement('ul')
+    ul.className = 'notebook-checklist'
+    while (list.firstChild) ul.appendChild(list.firstChild)
+    list.replaceWith(ul)
+    markChecklistItems(ul)
+    return
+  }
+  if (list?.tagName === 'UL') {
+    list.classList.add('notebook-checklist')
+    markChecklistItems(list)
+  }
 }
 
 function hasVisibleContent(html: string): boolean {
@@ -780,6 +844,16 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
         <button
           type="button"
           className="rte-btn"
+          title={t('editorChecklist')}
+          aria-label={t('editorChecklist')}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => withFocus(() => applyChecklist(editorRef.current))}
+        >
+          ☑
+        </button>
+        <button
+          type="button"
+          className="rte-btn"
           title={t('editorNumbered')}
           aria-label={t('editorNumbered')}
           onMouseDown={(e) => e.preventDefault()}
@@ -1180,6 +1254,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
             if (placeholderRef.current) placeholderRef.current.style.display = 'none'
           }}
           onInput={() => {
+            normalizeChecklistItems(editorRef.current)
             syncPlaceholderVisibility()
             captureSelection()
             emitChange()
@@ -1229,8 +1304,25 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function R
           onMouseUp={captureSelection}
           onSelect={captureSelection}
           onClick={(e) => {
-            const img = (e.target as HTMLElement | null)?.closest?.('img')
-            if (!img || !editorRef.current?.contains(img)) return
+            const target = e.target as HTMLElement | null
+            const editor = editorRef.current
+            const li = target?.closest?.('li') as HTMLLIElement | null
+            const checklist = li?.closest?.('ul.notebook-checklist') as HTMLElement | null
+            if (li && checklist && editor?.contains(checklist)) {
+              const rect = li.getBoundingClientRect()
+              // Toggle only when the click hits the checkbox gutter on the left.
+              if (e.clientX <= rect.left + 28) {
+                e.preventDefault()
+                e.stopPropagation()
+                const checked = li.getAttribute('data-checked') === 'true'
+                li.setAttribute('data-checked', checked ? 'false' : 'true')
+                emitChange()
+                captureSelection()
+                return
+              }
+            }
+            const img = target?.closest?.('img')
+            if (!img || !editor?.contains(img)) return
             const src = img.getAttribute('src') || ''
             if (!src) return
             e.preventDefault()

@@ -4103,6 +4103,56 @@ button.notebook-category-badge.on {
   list-style: disc;
 }
 
+.rte-editor ul.notebook-checklist,
+.notebook-rich ul.notebook-checklist,
+.notebook-quote ul.notebook-checklist {
+  list-style: none;
+  margin-left: 0.35rem;
+  padding-left: 0.15rem;
+}
+
+.rte-editor ul.notebook-checklist > li,
+.notebook-rich ul.notebook-checklist > li,
+.notebook-quote ul.notebook-checklist > li {
+  position: relative;
+  padding-left: 1.65rem;
+  margin: 0.28rem 0;
+}
+
+.rte-editor ul.notebook-checklist > li::before,
+.notebook-rich ul.notebook-checklist > li::before,
+.notebook-quote ul.notebook-checklist > li::before {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 0.22rem;
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid rgba(20, 33, 43, 0.45);
+  border-radius: 0.22rem;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.rte-editor ul.notebook-checklist > li[data-checked='true']::before,
+.notebook-rich ul.notebook-checklist > li[data-checked='true']::before,
+.notebook-quote ul.notebook-checklist > li[data-checked='true']::before {
+  border-color: #0f766e;
+  background: #0f766e;
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.rte-editor ul.notebook-checklist > li[data-checked='true'],
+.notebook-rich ul.notebook-checklist > li[data-checked='true'],
+.notebook-quote ul.notebook-checklist > li[data-checked='true'] {
+  color: rgba(20, 33, 43, 0.55);
+  text-decoration: line-through;
+}
+
+.rte-editor[contenteditable='true'] ul.notebook-checklist > li {
+  cursor: text;
+}
+
 .rte-editor ol,
 .notebook-rich ol,
 .notebook-quote ol {
