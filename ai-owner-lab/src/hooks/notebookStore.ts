@@ -23,6 +23,7 @@ import {
   isVercelNotebookHost,
   loadCachedAccountUser,
   pullAccountBackup,
+  pullAccountMeta,
   pushAccountBackup,
   saveAccountSyncEnabled,
   saveCachedAccountUser,
@@ -659,6 +660,7 @@ function localIsAheadOfCloud(cloudContent: string): boolean {
   let parsed: {
     entries?: Array<{ id?: string; updatedAt?: string; createdAt?: string }>
     trash?: Array<{ id?: string; deletedAt?: string }>
+    categories?: Array<{ id?: string; name?: string; color?: string }>
   }
   try {
     parsed = JSON.parse(cloudContent) as typeof parsed
@@ -675,6 +677,11 @@ function localIsAheadOfCloud(cloudContent: string): boolean {
     if (!entry?.id) continue
     cloudTrash.set(entry.id, new Date(entry.deletedAt || 0).getTime())
   }
+  const cloudCategories = new Set(
+    (Array.isArray(parsed.categories) ? parsed.categories : [])
+      .map((c) => c?.id)
+      .filter((id): id is string => Boolean(id)),
+  )
   for (const entry of cache.entries) {
     const cloudTime = cloudEntries.get(entry.id)
     if (cloudTime == null) return true
@@ -685,7 +692,88 @@ function localIsAheadOfCloud(cloudContent: string): boolean {
     if (cloudTime == null) return true
     if (new Date(entry.deletedAt).getTime() > cloudTime) return true
   }
+  for (const category of cache.categories) {
+    if (!cloudCategories.has(category.id)) return true
+  }
+  // Count mismatch (e.g. PC 125 vs cloud 115) must always force upload even if
+  // timestamps look equal after a partial merge.
+  const cloudEntryCount = cloudEntries.size
+  const cloudTrashCount = cloudTrash.size
+  if (cache.entries.length > cloudEntryCount) return true
+  if (cache.trash.length > cloudTrashCount) return true
+  if (cache.categories.length > cloudCategories.size) return true
   return false
+}
+
+type ReusedAccountPull = {
+  content: string
+  etag: string | null
+  noteCount: number
+  uploadedAt: string | null
+}
+
+let cloudSyncRetryTimer: number | null = null
+let cloudSyncCooldownUntil = 0
+/** True while login/session attach is downloading — blocks idle pull races. */
+let accountAttachInFlight = false
+/** Last successful cloud snapshot — reuse to avoid re-downloading a huge notebook.json. */
+let lastCloudSnapshot: { at: number; pull: ReusedAccountPull } | null = null
+/** Soft TTL when meta probe is unavailable; meta uploadedAt match always wins. */
+const SKIP_PULL_TTL_MS = 5 * 60_000
+const CLOUD_META_LS = 'ownlab-cloud-snap-meta'
+
+type PersistedCloudMeta = {
+  uploadedAt: string | null
+  noteCount: number
+  size?: number | null
+}
+
+function loadPersistedCloudMeta(): PersistedCloudMeta | null {
+  try {
+    const raw = sessionStorage.getItem(CLOUD_META_LS)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as PersistedCloudMeta
+    if (!parsed || typeof parsed.noteCount !== 'number') return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+function persistCloudMeta(pull: ReusedAccountPull, size?: number | null) {
+  try {
+    const payload: PersistedCloudMeta = {
+      uploadedAt: pull.uploadedAt,
+      noteCount: pull.noteCount,
+      size: size ?? null,
+    }
+    sessionStorage.setItem(CLOUD_META_LS, JSON.stringify(payload))
+  } catch {
+    /* ignore quota */
+  }
+}
+
+/** Estimate notebook JSON size without a full JSON.stringify (avoids UI freezes). */
+function approxNotebookChars(): number {
+  let n = 256 + cache.categories.length * 64 + cache.purgedIds.length * 48
+  for (const entry of cache.entries) {
+    n += 160 + (entry.title?.length || 0) + (entry.selectedText?.length || 0)
+  }
+  for (const entry of cache.trash) {
+    n += 160 + (entry.title?.length || 0) + (entry.selectedText?.length || 0)
+  }
+  return n
+}
+
+function rememberCloudSnapshot(pull: ReusedAccountPull, size?: number | null) {
+  lastCloudSnapshot = { at: Date.now(), pull }
+  persistCloudMeta(pull, size)
+}
+
+async function yieldToUi() {
+  await new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 0)
+  })
 }
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
@@ -693,27 +781,88 @@ async function pullCloudIfConfigured() {
   if (!anyCloudBackendReady()) return
   // Never share the push lock for idle pulls — phones were pull+push every 10s
   // and overwrote richer laptop uploads while stuck on "Saving to cloud…".
+  if (accountAttachInFlight) return
   if (cloudPushInFlight) return cloudPushInFlight
   if (cloudPullInFlight) return cloudPullInFlight
+  if (Date.now() < cloudSyncCooldownUntil) return
   cloudPullInFlight = (async () => {
     try {
       // "pulling" ≠ saving — idle refresh was mislabeled "Saving to cloud…".
-      setCloudRuntime({ state: 'pulling', error: null })
+      setCloudRuntime({ state: 'pulling', error: null, detail: 'Checking cloud…' })
       if (isAccountSyncReady()) {
-        const latest = await pullAccountBackup()
-        if (latest) {
-          const ahead = localIsAheadOfCloud(latest.content)
-          await notebookStore.importBackup(latest.content, { syncCloud: false })
-          setLastAccountSyncAt()
-          cloudEtag = latest.etag
-          if (ahead) {
-            await flushCloudSync()
+        const meta = await pullAccountMeta()
+        if (!meta) {
+          if (cache.entries.length + cache.trash.length > 0) {
+            await flushCloudSync({ reusePull: null, cloudMissing: true })
             return
           }
-        } else if (cache.entries.length + cache.trash.length > 0) {
-          // Cloud empty but this device has notes — upload.
-          await flushCloudSync()
-          return
+        } else {
+          const snap = lastCloudSnapshot
+          const persisted = loadPersistedCloudMeta()
+          const sameUpload =
+            (snap?.pull.uploadedAt && snap.pull.uploadedAt === meta.uploadedAt) ||
+            (persisted?.uploadedAt && persisted.uploadedAt === meta.uploadedAt)
+          // Cloud unchanged since last successful sync — skip multi‑MB download.
+          if (sameUpload && snap?.pull.content) {
+            const ahead = localIsAheadOfCloud(snap.pull.content)
+            if (ahead) {
+              await flushCloudSync({ reusePull: snap.pull })
+              return
+            }
+            setCloudRuntime({
+              state: 'synced',
+              lastSyncedAt: new Date().toISOString(),
+              error: null,
+              detail: null,
+              gistId: unifiedCloudSyncStatus().gistId,
+            })
+            return
+          }
+          if (sameUpload && !snap?.pull.content) {
+            // Meta matches but we lost the in-memory body (reload). Local edits
+            // still need a push; skip re-download and upload this device's notes.
+            const localCount = cache.entries.length + cache.trash.length
+            const cloudCount = persisted?.noteCount ?? localCount
+            if (localCount >= cloudCount) {
+              await flushCloudSync({
+                reusePull: {
+                  content: '',
+                  etag: meta.etag,
+                  noteCount: cloudCount,
+                  uploadedAt: meta.uploadedAt,
+                },
+                skipAheadCheck: true,
+              })
+              return
+            }
+          }
+
+          setCloudRuntime({
+            state: 'pulling',
+            error: null,
+            detail:
+              meta.size && meta.size > 1_000_000
+                ? `Downloading ~${Math.max(1, Math.round(meta.size / (1024 * 1024)))}MB…`
+                : 'Downloading notebook…',
+          })
+          const latest = await pullAccountBackup()
+          if (latest) {
+            const next: ReusedAccountPull = {
+              content: latest.content,
+              etag: latest.etag,
+              noteCount: latest.noteCount,
+              uploadedAt: latest.uploadedAt,
+            }
+            rememberCloudSnapshot(next, latest.size)
+            const ahead = localIsAheadOfCloud(latest.content)
+            await notebookStore.importBackup(latest.content, { syncCloud: false })
+            setLastAccountSyncAt()
+            cloudEtag = latest.etag
+            if (ahead) {
+              await flushCloudSync({ reusePull: next })
+              return
+            }
+          }
         }
       } else {
         // Legacy backends: keep prior pull+push behavior via flush.
@@ -724,13 +873,16 @@ async function pullCloudIfConfigured() {
         state: 'synced',
         lastSyncedAt: new Date().toISOString(),
         error: null,
+        detail: null,
         gistId: unifiedCloudSyncStatus().gistId,
       })
     } catch (err) {
       setCloudRuntime({
         state: 'error',
         error: err instanceof Error ? err.message : 'Cloud sync failed',
+        detail: null,
       })
+      cloudSyncCooldownUntil = Date.now() + 20_000
     } finally {
       cloudPullInFlight = null
     }
@@ -768,18 +920,15 @@ if (typeof window !== 'undefined') {
 }
 
 function buildBackupJson(): string {
-  return JSON.stringify(
-    {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      entries: cache.entries,
-      trash: cache.trash,
-      categories: cache.categories,
-      purgedIds: cache.purgedIds,
-    },
-    null,
-    2,
-  )
+  // Compact JSON — pretty-print nearly doubled upload size/time for large notebooks.
+  return JSON.stringify({
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    entries: cache.entries,
+    trash: cache.trash,
+    categories: cache.categories,
+    purgedIds: cache.purgedIds,
+  })
 }
 
 let durableTimer: number | null = null
@@ -793,6 +942,8 @@ type CloudRuntime = {
   state: CloudRuntimeState
   lastSyncedAt: string | null
   error: string | null
+  /** Non-error progress text while state is syncing/pulling (e.g. Uploading ~12MB…). */
+  detail: string | null
   gistId: string
 }
 
@@ -826,6 +977,7 @@ let cloudRuntime: CloudRuntime = {
   state: anyCloudBackendReady() ? 'synced' : 'off',
   lastSyncedAt: unifiedCloudSyncStatus().lastSyncedAt,
   error: null,
+  detail: null,
   gistId: unifiedCloudSyncStatus().gistId,
 }
 
@@ -868,26 +1020,34 @@ function scheduleFolderBackup() {
 const COMPACT_IMAGES_MIN_JSON_CHARS = 2_500_000
 
 /**
- * Offload large inline data:image payloads to Blob before cloud push so the
- * notebook JSON does not trip HTTP 413 (Vercel ~4.5MB body limit).
- * Skip when the notebook is still small — re-uploading every sub‑1MB paste
- * made “Saving to cloud…” hang after each picture.
+ * Offload a limited number of inline data:image payloads to Blob.
+ * Account sync uploads via Blob client (no 4.5MB serverless cap), so this is
+ * only a size optimization — never block a save for a full notebook rewrite.
  */
-async function compactInlineImagesForCloud(): Promise<void> {
+async function compactInlineImagesForCloud(deadlineMs: number, maxNotes = 4): Promise<void> {
   if (!isAccountSyncReady()) return
   if (!cache.entries.some((e) => (e.selectedText || '').includes('data:image')) &&
     !cache.trash.some((e) => (e.selectedText || '').includes('data:image'))) {
     return
   }
-  const approxChars = buildBackupJson().length
-  if (approxChars < COMPACT_IMAGES_MIN_JSON_CHARS) return
+  if (approxNotebookChars() < COMPACT_IMAGES_MIN_JSON_CHARS) return
 
   let changed = false
+  let touched = 0
   const nextEntries: NotebookEntry[] = []
   for (const entry of cache.entries) {
+    if (touched >= maxNotes || Date.now() > deadlineMs) {
+      nextEntries.push(entry)
+      continue
+    }
+    if (!(entry.selectedText || '').includes('data:image')) {
+      nextEntries.push(entry)
+      continue
+    }
     const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
     if (body.replaced > 0) {
       changed = true
+      touched += 1
       nextEntries.push({
         ...entry,
         selectedText: body.html,
@@ -899,9 +1059,18 @@ async function compactInlineImagesForCloud(): Promise<void> {
   }
   const nextTrash: TrashedNotebookEntry[] = []
   for (const entry of cache.trash) {
+    if (touched >= maxNotes || Date.now() > deadlineMs) {
+      nextTrash.push(entry)
+      continue
+    }
+    if (!(entry.selectedText || '').includes('data:image')) {
+      nextTrash.push(entry)
+      continue
+    }
     const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
     if (body.replaced > 0) {
       changed = true
+      touched += 1
       nextTrash.push({ ...entry, selectedText: body.html })
     } else {
       nextTrash.push(entry)
@@ -923,25 +1092,55 @@ async function compactInlineImagesForCloud(): Promise<void> {
   })
 }
 
+function scheduleCloudSyncRetry(delayMs: number) {
+  if (typeof window === 'undefined') return
+  if (cloudSyncRetryTimer) window.clearTimeout(cloudSyncRetryTimer)
+  cloudSyncRetryTimer = window.setTimeout(() => {
+    cloudSyncRetryTimer = null
+    if (!anyCloudBackendReady()) return
+    if (cloudPushInFlight || cloudPullInFlight) return
+    void flushCloudSync()
+  }, delayMs)
+}
+
+type FlushCloudOptions = {
+  /** Skip a second full download when the caller already pulled+merged. */
+  reusePull?: ReusedAccountPull | null
+  cloudMissing?: boolean
+  /** When true, treat dirty local as ahead without parsing cloud JSON. */
+  skipAheadCheck?: boolean
+}
+
 /**
  * Push notebook to cloud when sync is enabled.
  * Coalesces overlapping writes: if notes change mid-upload, run another push with
  * the latest cache (previously those notes were dropped and never uploaded).
  * Retries on Gist ETag conflicts so two devices adding notes don't clobber each other.
  */
-async function flushCloudSync() {
+async function flushCloudSync(options?: FlushCloudOptions) {
   if (!anyCloudBackendReady()) {
     setCloudRuntime({ state: 'off', error: null })
     return
   }
   cloudPushDirty = true
   if (cloudPushInFlight) return cloudPushInFlight
-  setCloudRuntime({ state: 'syncing', error: null })
-  const syncDeadline = Date.now() + 90_000
+  if (Date.now() < cloudSyncCooldownUntil && !options?.reusePull && !options?.cloudMissing) {
+    scheduleCloudSyncRetry(Math.max(1_000, cloudSyncCooldownUntil - Date.now()))
+    return
+  }
+  setCloudRuntime({ state: 'syncing', error: null, detail: 'Preparing…' })
+  // Large notebooks need several minutes on mobile. Per-op timeouts still apply;
+  // this is only a last-resort wall clock. Once upload starts we stop checking it.
+  const syncDeadline = Date.now() + (isAccountSyncReady() ? 6 * 60_000 : 120_000)
+  let reusedPullOnce = Boolean(options?.reusePull) || options?.cloudMissing === true
+  const skipAheadOnce = Boolean(options?.skipAheadCheck)
   cloudPushInFlight = (async () => {
+    let timedOut = false
+    let uploadStarted = false
     try {
       while (cloudPushDirty) {
-        if (Date.now() > syncDeadline) {
+        if (!uploadStarted && Date.now() > syncDeadline) {
+          timedOut = true
           throw new Error('Cloud sync timed out — tap the status pill to retry')
         }
         cloudPushDirty = false
@@ -950,33 +1149,126 @@ async function flushCloudSync() {
         let cloudMissing = false
         let cloudNoteCount = 0
         let cloudContent: string | null = null
-        // Merge remote first so a slower device doesn't clobber notes from another.
-        try {
-          const pulled = await pullAndMergeCloudQuiet()
-          etag = pulled.etag
-          cloudMissing = pulled.missing
-          cloudNoteCount = pulled.cloudNoteCount
-          cloudContent = pulled.cloudContent
-        } catch (err) {
-          pullFailed = true
-          // Account sync: never push a partial local notebook over cloud when pull
-          // failed — that was wiping the laptop's newer notes from the phone.
-          if (isAccountSyncReady()) {
-            throw new Error(
-              err instanceof Error
-                ? `Could not refresh cloud notebook before save: ${err.message}`
-                : 'Could not refresh cloud notebook before save',
-            )
+        let forceUpload = skipAheadOnce
+
+        if (reusedPullOnce && options?.cloudMissing) {
+          reusedPullOnce = false
+          cloudMissing = true
+        } else if (reusedPullOnce && options?.reusePull) {
+          reusedPullOnce = false
+          etag = options.reusePull.etag
+          cloudNoteCount = options.reusePull.noteCount
+          cloudContent = options.reusePull.content || null
+          cloudMissing = false
+          if (options.reusePull.content) {
+            rememberCloudSnapshot(options.reusePull)
+          } else {
+            persistCloudMeta(options.reusePull)
           }
+        } else if (isAccountSyncReady()) {
+          // Cheap meta probe: skip multi‑MB download when cloud is unchanged.
+          setCloudRuntime({ state: 'pulling', error: null, detail: 'Checking cloud…' })
+          try {
+            const meta = await pullAccountMeta()
+            if (!meta) {
+              cloudMissing = true
+            } else {
+              const snap = lastCloudSnapshot
+              const persisted = loadPersistedCloudMeta()
+              const sameUpload =
+                (snap?.pull.uploadedAt && snap.pull.uploadedAt === meta.uploadedAt) ||
+                (persisted?.uploadedAt && persisted.uploadedAt === meta.uploadedAt)
+              if (sameUpload && snap?.pull.content) {
+                etag = snap.pull.etag
+                cloudNoteCount = snap.pull.noteCount
+                cloudContent = snap.pull.content
+              } else if (sameUpload && Date.now() - (snap?.at || 0) < SKIP_PULL_TTL_MS) {
+                etag = snap?.pull.etag || meta.etag
+                cloudNoteCount = snap?.pull.noteCount || persisted?.noteCount || 0
+                cloudContent = snap?.pull.content || null
+                forceUpload = true
+              } else if (
+                sameUpload &&
+                persisted &&
+                cache.entries.length + cache.trash.length >= persisted.noteCount
+              ) {
+                etag = meta.etag
+                cloudNoteCount = persisted.noteCount
+                cloudContent = null
+                forceUpload = true
+              } else {
+                setCloudRuntime({
+                  state: 'pulling',
+                  error: null,
+                  detail:
+                    meta.size && meta.size > 1_000_000
+                      ? `Downloading ~${Math.max(1, Math.round(meta.size / (1024 * 1024)))}MB…`
+                      : 'Downloading notebook…',
+                })
+                const pulled = await pullAndMergeCloudQuiet()
+                etag = pulled.etag
+                cloudMissing = pulled.missing
+                cloudNoteCount = pulled.cloudNoteCount
+                cloudContent = pulled.cloudContent
+                if (pulled.cloudContent) {
+                  rememberCloudSnapshot({
+                    content: pulled.cloudContent,
+                    etag: pulled.etag,
+                    noteCount: pulled.cloudNoteCount,
+                    uploadedAt: pulled.uploadedAt,
+                  }, meta.size)
+                }
+              }
+            }
+          } catch (err) {
+            if (err instanceof Error && /timed out/i.test(err.message)) {
+              timedOut = true
+              throw err
+            }
+            pullFailed = true
+            if (isAccountSyncReady()) {
+              throw new Error(
+                err instanceof Error
+                  ? `Could not refresh cloud notebook before save: ${err.message}`
+                  : 'Could not refresh cloud notebook before save',
+              )
+            }
+          }
+          setCloudRuntime({ state: 'syncing', error: null, detail: 'Preparing…' })
+        } else {
+          // Merge remote first so a slower device doesn't clobber notes from another.
+          setCloudRuntime({ state: 'pulling', error: null, detail: null })
+          try {
+            const pulled = await pullAndMergeCloudQuiet()
+            if (Date.now() > syncDeadline) {
+              timedOut = true
+              throw new Error('Cloud sync timed out — tap the status pill to retry')
+            }
+            etag = pulled.etag
+            cloudMissing = pulled.missing
+            cloudNoteCount = pulled.cloudNoteCount
+            cloudContent = pulled.cloudContent
+          } catch (err) {
+            if (err instanceof Error && /timed out/i.test(err.message)) {
+              timedOut = true
+              throw err
+            }
+            pullFailed = true
+          }
+          setCloudRuntime({ state: 'syncing', error: null, detail: 'Preparing…' })
         }
         if (cloudPushDirty) continue
+        if (!uploadStarted && Date.now() > syncDeadline) {
+          timedOut = true
+          throw new Error('Cloud sync timed out — tap the status pill to retry')
+        }
 
         // Wait briefly for optimistic picture uploads so we never push blob: previews.
         try {
           await Promise.race([
             awaitPendingNoteImageUploads(),
             new Promise<void>((resolve) => {
-              window.setTimeout(resolve, 20_000)
+              window.setTimeout(resolve, 1_500)
             }),
           ])
         } catch {
@@ -984,12 +1276,20 @@ async function flushCloudSync() {
         }
         if (cloudPushDirty) continue
 
-        try {
-          await compactInlineImagesForCloud()
-        } catch {
-          /* still attempt push with current JSON */
+        // Legacy backends still need compact for body-size limits. Account sync
+        // uploads via Blob client — never block the save on image rewriting.
+        if (!isAccountSyncReady()) {
+          try {
+            await compactInlineImagesForCloud(Math.min(syncDeadline, Date.now() + 30_000), 4)
+          } catch {
+            /* still attempt push with current JSON */
+          }
         }
         if (cloudPushDirty) continue
+        if (!uploadStarted && Date.now() > syncDeadline) {
+          timedOut = true
+          throw new Error('Cloud sync timed out — tap the status pill to retry')
+        }
 
         let pushed = false
         if (isAccountSyncReady()) {
@@ -1005,26 +1305,77 @@ async function flushCloudSync() {
           // Only upload when this device has extra notes or newer edits than the
           // cloud snapshot we just merged. Prevents idle phones rewriting cloud.
           const shouldUpload =
-            cloudMissing || !cloudContent || localIsAheadOfCloud(cloudContent)
+            forceUpload ||
+            cloudMissing ||
+            !cloudContent ||
+            localCount > cloudNoteCount ||
+            (cloudContent ? localIsAheadOfCloud(cloudContent) : false)
 
           if (!shouldUpload) {
             setCloudRuntime({
               state: 'synced',
               lastSyncedAt: new Date().toISOString(),
               error: null,
+              detail: null,
               gistId: `account:${loadCachedAccountUser()}`,
             })
             pushed = true
           } else {
-            const result = await pushAccountBackup(buildBackupJson())
+            const approxMb = Math.max(1, Math.round(approxNotebookChars() / (1024 * 1024)))
+            setCloudRuntime({
+              state: 'syncing',
+              error: null,
+              detail: `Preparing ~${approxMb}MB (${localCount} notes)…`,
+              gistId: `account:${loadCachedAccountUser()}`,
+            })
+            await yieldToUi()
+            const payload = buildBackupJson()
+            await yieldToUi()
+            const exactMb = Math.max(1, Math.round(payload.length / (1024 * 1024)))
+            setCloudRuntime({
+              state: 'syncing',
+              error: null,
+              detail: `Uploading ~${exactMb}MB (${localCount} notes)…`,
+              gistId: `account:${loadCachedAccountUser()}`,
+            })
+            await yieldToUi()
+            uploadStarted = true
+            const result = await pushAccountBackup(payload)
             cloudEtag = result.etag
+            // Re-read Blob meta so the next probe matches Vercel's uploadedAt
+            // (a local clock stamp would force a useless full re-download).
+            let uploadedAt = new Date().toISOString()
+            let cloudSize: number | null = payload.length
+            try {
+              const meta = await pullAccountMeta()
+              if (meta?.uploadedAt) uploadedAt = meta.uploadedAt
+              if (typeof meta?.size === 'number') cloudSize = meta.size
+            } catch {
+              /* keep local stamp */
+            }
+            rememberCloudSnapshot(
+              {
+                content: payload,
+                etag: result.etag,
+                noteCount: localCount,
+                uploadedAt,
+              },
+              cloudSize,
+            )
             setCloudRuntime({
               state: 'synced',
               lastSyncedAt: new Date().toISOString(),
               error: null,
+              detail: null,
               gistId: `account:${loadCachedAccountUser()}`,
             })
             pushed = true
+            // Background: shrink data: URLs so the *next* upload is smaller.
+            if (payload.length >= COMPACT_IMAGES_MIN_JSON_CHARS) {
+              window.setTimeout(() => {
+                void compactInlineImagesForCloud(Date.now() + 60_000, 6).catch(() => {})
+              }, 2_000)
+            }
           }
         } else if (isVercelSyncReady()) {
           const { cloudKey } = loadVercelSyncSettings()
@@ -1034,6 +1385,7 @@ async function flushCloudSync() {
             state: 'synced',
             lastSyncedAt: new Date().toISOString(),
             error: null,
+            detail: null,
             gistId: `vercel:${cloudKey.slice(0, 8)}…`,
           })
           pushed = true
@@ -1048,6 +1400,7 @@ async function flushCloudSync() {
                 state: 'synced',
                 lastSyncedAt: new Date().toISOString(),
                 error: null,
+                detail: null,
                 gistId: result.gistId,
               })
               pushed = true
@@ -1069,15 +1422,25 @@ async function flushCloudSync() {
           throw new Error('Cloud sync conflicted with another device too many times')
         }
       }
+      cloudSyncCooldownUntil = 0
     } catch (err) {
       setCloudRuntime({
         state: 'error',
         error: err instanceof Error ? err.message : 'Cloud sync failed',
+        detail: null,
       })
+      // Stop infinite “Saving to cloud…” restart loops after timeouts / hung uploads.
+      cloudSyncCooldownUntil = Date.now() + (timedOut ? 45_000 : 20_000)
     } finally {
       cloudPushInFlight = null
       // A write may have landed between the last loop check and this finally.
-      if (cloudPushDirty) void flushCloudSync()
+      if (cloudPushDirty) {
+        if (Date.now() < cloudSyncCooldownUntil) {
+          scheduleCloudSyncRetry(cloudSyncCooldownUntil - Date.now())
+        } else {
+          void flushCloudSync()
+        }
+      }
     }
   })()
   return cloudPushInFlight
@@ -1391,6 +1754,8 @@ export const notebookStore = {
     htmlUrl?: string | null
   }> {
     await ensureReady()
+    // Manual tap always retries immediately (clears timeout cooldown).
+    cloudSyncCooldownUntil = 0
     const json = buildBackupJson()
     let folder = false
     try {
@@ -1755,42 +2120,88 @@ export const notebookStore = {
     saveGistSettings({ enabled: false })
     refreshCloudRuntimeFromSettings()
 
+    accountAttachInFlight = true
     try {
-      const pulled = await pullAccountBackup()
-      if (pulled) {
-        cloudNoteCount = pulled.noteCount
-        // Always merge — importBackup unions entries + trash. Skipping when
-        // cloud only had dustbin notes used to wipe trash on the next push.
-        await notebookStore.importBackup(pulled.content, { syncCloud: false })
-        restoredFromCloud = cloudNoteCount > 0
-        setLastAccountSyncAt()
+      try {
+        setCloudRuntime({ state: 'pulling', error: null, detail: 'Checking cloud…' })
+        const meta = await pullAccountMeta()
+        if (meta) {
+          const snap = lastCloudSnapshot
+          const persisted = loadPersistedCloudMeta()
+          const sameUpload =
+            (snap?.pull.uploadedAt && snap.pull.uploadedAt === meta.uploadedAt) ||
+            (persisted?.uploadedAt && persisted.uploadedAt === meta.uploadedAt)
+          if (sameUpload && snap?.pull.content) {
+            cloudNoteCount = snap.pull.noteCount
+            await notebookStore.importBackup(snap.pull.content, { syncCloud: false })
+            restoredFromCloud = cloudNoteCount > 0
+            setLastAccountSyncAt()
+            cloudEtag = snap.pull.etag
+          } else {
+            setCloudRuntime({
+              state: 'pulling',
+              error: null,
+              detail:
+                meta.size && meta.size > 1_000_000
+                  ? `Downloading ~${Math.max(1, Math.round(meta.size / (1024 * 1024)))}MB…`
+                  : 'Downloading notebook…',
+            })
+            const pulled = await pullAccountBackup()
+            if (pulled) {
+              cloudNoteCount = pulled.noteCount
+              // Always merge — importBackup unions entries + trash. Skipping when
+              // cloud only had dustbin notes used to wipe trash on the next push.
+              await notebookStore.importBackup(pulled.content, { syncCloud: false })
+              restoredFromCloud = cloudNoteCount > 0
+              setLastAccountSyncAt()
+              cloudEtag = pulled.etag
+              rememberCloudSnapshot(
+                {
+                  content: pulled.content,
+                  etag: pulled.etag,
+                  noteCount: pulled.noteCount,
+                  uploadedAt: pulled.uploadedAt,
+                },
+                pulled.size,
+              )
+            }
+          }
+        }
+      } catch (err) {
+        if (restoringEmptyDevice) {
+          saveAccountSyncEnabled(false)
+          refreshCloudRuntimeFromSettings()
+          throw err instanceof Error
+            ? new NotebookStorageError('unknown', err.message)
+            : new NotebookStorageError('unknown', 'Could not download account notebook')
+        }
+        setCloudRuntime({
+          state: 'error',
+          error: err instanceof Error ? err.message : 'Cloud sync failed',
+          detail: null,
+        })
       }
-    } catch (err) {
-      if (restoringEmptyDevice) {
+
+      // Empty local + empty cloud on first register is OK (allowCreateEmpty).
+      if (restoringEmptyDevice && cloudNoteCount === 0) {
         saveAccountSyncEnabled(false)
         refreshCloudRuntimeFromSettings()
-        throw err instanceof Error
-          ? new NotebookStorageError('unknown', err.message)
-          : new NotebookStorageError('unknown', 'Could not download account notebook')
+        throw new NotebookStorageError(
+          'unknown',
+          'No notes on this account yet. Sign in on the device that has your notes first (they upload automatically), then open OWNLAB here again while signed in.',
+        )
       }
-    }
 
-    // Empty local + empty cloud on first register is OK (allowCreateEmpty).
-    if (restoringEmptyDevice && cloudNoteCount === 0) {
-      saveAccountSyncEnabled(false)
-      refreshCloudRuntimeFromSettings()
-      throw new NotebookStorageError(
-        'unknown',
-        'No notes on this account yet. Sign in on the device that has your notes first (they upload automatically), then open OWNLAB here again while signed in.',
-      )
-    }
-
-    await scheduleDurableSync()
-    return {
-      username,
-      total: cache.entries.length,
-      restoredFromCloud,
-      cloudNoteCount,
+      // Push any local-ahead notes; snapshot reuse avoids a second full download.
+      await scheduleDurableSync()
+      return {
+        username,
+        total: cache.entries.length,
+        restoredFromCloud,
+        cloudNoteCount,
+      }
+    } finally {
+      accountAttachInFlight = false
     }
   },
   disableAccountCloudSync() {

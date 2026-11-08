@@ -54,21 +54,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUsername(me.username)
           saveCachedAccountUser(me.username)
           saveAccountSyncEnabled(true)
-          // Soft pull if already signed in on this browser.
-          try {
-            await notebookStore.enableAccountCloudSync({
+          // Never block the auth bar on notebook download/upload — that made
+          // phones sit on “Checking session…” for minutes.
+          if (!cancelled) setLoading(false)
+          void notebookStore
+            .enableAccountCloudSync({
               username: me.username,
               allowCreateEmpty: true,
             })
-          } catch {
-            /* empty cloud on first visit is fine */
-          }
-        } else {
-          setUsername(null)
-          saveCachedAccountUser(null)
-          saveAccountSyncEnabled(false)
-          notebookStore.disableAccountCloudSync()
+            .catch(() => {
+              /* empty / slow cloud — pill shows progress or error */
+            })
+          return
         }
+        setUsername(null)
+        saveCachedAccountUser(null)
+        saveAccountSyncEnabled(false)
+        notebookStore.disableAccountCloudSync()
       } catch {
         if (!cancelled) {
           /* keep cached username offline; sync will retry later */
@@ -86,10 +88,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUsername(user)
     saveCachedAccountUser(user)
     saveAccountSyncEnabled(true)
-    await notebookStore.enableAccountCloudSync({
-      username: user,
-      allowCreateEmpty: true,
-    })
+    // Login/register should return immediately; notebook sync reports on the pill.
+    void notebookStore
+      .enableAccountCloudSync({
+        username: user,
+        allowCreateEmpty: true,
+      })
+      .catch(() => {
+        /* pill shows error */
+      })
   }, [])
 
   const login = useCallback(
