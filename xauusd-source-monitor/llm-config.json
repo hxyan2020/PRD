@@ -3,5 +3,5 @@
   "model": "gpt-4o-mini",
   "proxyBase": "https://teeth-application-quad-task.trycloudflare.com",
   "deskToken": "2602552a6687ac6b9920dadebf4640a67f6820c113460d4c",
-  "note": "Managed LLM gateway with desk auth token and 10 USD daily spend cap."
+  "note": "Managed LLM gateway with desk auth + USD 10/day cap. OpenAI key stays server-side only."
 }
