@@ -1,10 +1,13 @@
 /**
  * Authenticated LLM gateway: POST /api/chat
- * - Desk token only (DESK_GATEWAY_TOKEN via x-desk-token) — no open Cursor-identity spend
+ * - requireIdentity: verified Cursor viewer (or gate-admitted API key)
+ * - plus DESK_GATEWAY_TOKEN via x-desk-token (defense in depth)
+ * - Reject simulated identity on deployed hosts
  * - Per-caller daily spend cap (default USD 10) + basic rate limit
  * Host OPENAI_API_KEY never accepted from the client body.
  */
 import { createHash, timingSafeEqual } from 'node:crypto'
+import { getIdentity, requireIdentity } from '../cursor/identity.js'
 
 const DAILY_BUDGET_USD = Number(process.env.DAILY_BUDGET_USD || 10)
 const RATE_LIMIT_PER_MIN = Number(process.env.RATE_LIMIT_PER_MIN || 20)
@@ -20,6 +23,10 @@ function dayKey() {
 
 function callerBudgetKey(caller) {
   return `${dayKey()}:${caller}`
+}
+
+function isDeployed() {
+  return Boolean(process.env.CURSOR_APP_ID || process.env.VERCEL)
 }
 
 function corsHeaders(request) {
@@ -51,6 +58,13 @@ function json(request, status, body) {
   })
 }
 
+function withCors(request, response) {
+  const headers = new Headers(response.headers)
+  const extra = corsHeaders(request)
+  for (const [k, v] of Object.entries(extra)) headers.set(k, v)
+  return new Response(response.body, { status: response.status, headers })
+}
+
 function safeEqual(a, b) {
   const aa = Buffer.from(String(a || ''), 'utf8')
   const bb = Buffer.from(String(b || ''), 'utf8')
@@ -58,24 +72,36 @@ function safeEqual(a, b) {
   return timingSafeEqual(aa, bb)
 }
 
-function fingerprintToken(token) {
-  return createHash('sha256').update(String(token), 'utf8').digest('hex').slice(0, 24)
+function deskTokenOk(request) {
+  const expected = process.env.DESK_GATEWAY_TOKEN || ''
+  if (!expected) return false
+  const provided = request.headers.get('x-desk-token') || ''
+  return safeEqual(expected, provided)
 }
 
 /**
- * Public-safe auth: only a matching DESK_GATEWAY_TOKEN authorizes spend.
- * Cursor identity alone is never enough (would let any signed-in visitor spend).
+ * Paid spend requires a verified Cursor viewer (requireIdentity) AND a matching desk token.
+ * Simulated local identity is allowed only on the non-deployed preview server.
  */
-function authorize(request) {
-  const expected = process.env.DESK_GATEWAY_TOKEN || ''
-  if (!expected) {
-    return { ok: false, reason: 'desk_token_not_configured' }
+async function authorize(request) {
+  const identityOrResponse = await requireIdentity(request)
+  if (identityOrResponse instanceof Response) {
+    return { ok: false, response: withCors(request, identityOrResponse), reason: 'identity_required' }
   }
-  const provided = request.headers.get('x-desk-token') || ''
-  if (!safeEqual(expected, provided)) {
+  const identity = identityOrResponse
+  if (identity.simulated && isDeployed()) {
+    return { ok: false, reason: 'simulated_identity_rejected' }
+  }
+  if (!deskTokenOk(request)) {
     return { ok: false, reason: 'invalid_desk_token' }
   }
-  return { ok: true, caller: `desk:${fingerprintToken(provided)}`, kind: 'desk' }
+  const sub = identity.sub || identity.userId || identity.ownerUserId || 'unknown'
+  return {
+    ok: true,
+    caller: `id:${createHash('sha256').update(String(sub), 'utf8').digest('hex').slice(0, 24)}`,
+    kind: 'cursor+desk',
+    identity,
+  }
 }
 
 function rateLimit(caller) {
@@ -107,7 +133,6 @@ function estimateUsd(usage, model) {
   if (prompt + completion > 0) {
     return (prompt * inRate + completion * outRate) / 1_000_000
   }
-  // Unknown usage — charge a small floor so unbounded free calls are impossible.
   void model
   return 0.01
 }
@@ -138,10 +163,11 @@ export async function OPTIONS(request) {
 
 export async function POST(request) {
   try {
-    const auth = authorize(request)
+    const auth = await authorize(request)
     if (!auth.ok) {
+      if (auth.response) return auth.response
       return json(request, 401, {
-        error: 'Unauthorized — send a valid desk token.',
+        error: 'Unauthorized — sign in to the app and send a valid desk token.',
         reason: auth.reason,
       })
     }
@@ -162,7 +188,6 @@ export async function POST(request) {
     const model = body.model || 'gpt-4o-mini'
     const messages = body.messages || []
     if (!messages.length) return json(request, 400, { error: 'messages required' })
-    // Reject client-supplied secrets even if present.
     if (body.apiKey) return json(request, 400, { error: 'client apiKey not allowed' })
 
     const key = process.env.OPENAI_API_KEY || ''
@@ -196,13 +221,17 @@ export async function POST(request) {
   }
 }
 
-/** Public GET: no config, keys, or spend. Authenticated GET returns that caller's spend only. */
+/** Unauthenticated GET: no config or spend. Authenticated (identity + desk) GET: that caller's spend only. */
 export async function GET(request) {
-  const auth = authorize(request)
-  if (!auth.ok) {
+  const identity = await getIdentity(request)
+  const signedIn =
+    identity.verified && !(identity.simulated && isDeployed()) && deskTokenOk(request)
+  if (!signedIn) {
     return json(request, 200, { ok: true, service: 'vex-llm-gateway' })
   }
-  const budget = budgetState(auth.caller)
+  const sub = identity.sub || identity.userId || identity.ownerUserId || 'unknown'
+  const caller = `id:${createHash('sha256').update(String(sub), 'utf8').digest('hex').slice(0, 24)}`
+  const budget = budgetState(caller)
   return json(request, 200, {
     ok: true,
     service: 'vex-llm-gateway',
