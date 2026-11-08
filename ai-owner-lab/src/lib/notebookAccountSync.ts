@@ -163,6 +163,25 @@ export type AccountPullResult = {
   noteCount: number
   uploadedAt: string | null
   entryIds: string[]
+  size: number | null
+}
+
+/** Cheap cloud probe — size/uploadedAt without downloading notebook.json. */
+export type AccountCloudMeta = {
+  url: string
+  uploadedAt: string | null
+  size: number | null
+  etag: string | null
+}
+
+function downloadTimeoutForSize(size: number | null): number {
+  // Mobile networks often need minutes for 20–50MB notebooks.
+  const bytes = typeof size === 'number' && size > 0 ? size : 8_000_000
+  return Math.min(300_000, Math.max(120_000, Math.round(bytes / 1024) * 40))
+}
+
+function uploadTimeoutForSize(bytes: number): number {
+  return Math.min(360_000, Math.max(120_000, Math.round(bytes / 1024) * 35))
 }
 
 /** Stable fingerprint so we can skip no-op cloud pushes (stops overwrite races). */
@@ -202,59 +221,65 @@ export function notebookContentFingerprint(json: string): string {
   return JSON.stringify({ entries: normEntries, trash: normTrash, categories: normCategories, purgedIds })
 }
 
-async function readNotebookContentFromResponse(res: Response): Promise<{
-  content: string
-  etag: string | null
-  uploadedAt: string | null
-}> {
-  const etag = res.headers.get('etag')
-  const raw = await res.text()
-  // New API returns a signed Blob URL so large notebooks skip the serverless cap.
-  try {
-    const parsed = JSON.parse(raw) as {
-      url?: unknown
-      entries?: unknown
-      uploadedAt?: unknown
-    }
-    const uploadedAt = typeof parsed.uploadedAt === 'string' ? parsed.uploadedAt : null
-    if (typeof parsed.url === 'string' && parsed.url && !Array.isArray(parsed.entries)) {
-      const fileRes = await fetchWithTimeout(
-        parsed.url,
-        undefined,
-        60_000,
-        'Cloud notebook download',
-      )
-      if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
-      return {
-        content: await fileRes.text(),
-        etag: fileRes.headers.get('etag') || etag,
-        uploadedAt,
-      }
-    }
-  } catch (err) {
-    if (
-      err instanceof Error &&
-      (/download failed/i.test(err.message) || /timed out/i.test(err.message))
-    ) {
-      throw err
-    }
-    /* fall through — raw may already be the notebook JSON */
-  }
-  return { content: raw, etag, uploadedAt: null }
-}
-
-export async function pullAccountBackup(): Promise<AccountPullResult | null> {
+/**
+ * HEAD-equivalent: ask the API for signed URL + size/uploadedAt only.
+ * Avoids downloading a multi‑MB notebook.json just to learn nothing changed.
+ */
+export async function pullAccountMeta(): Promise<AccountCloudMeta | null> {
   const res = await fetchWithTimeout(
     api('/api/notebook'),
     { method: 'GET', credentials: 'include' },
-    25_000,
+    30_000,
     'Cloud notebook check',
   )
   if (res.status === 401) throw new Error('Sign in required')
   if (res.status === 404) return null
   if (!res.ok) throw new Error(await readError(res))
-  const { content, etag, uploadedAt } = await readNotebookContentFromResponse(res)
-  let noteCount = 0
+  const etag = res.headers.get('etag')
+  const raw = await res.text()
+  try {
+    const parsed = JSON.parse(raw) as {
+      url?: unknown
+      entries?: unknown
+      uploadedAt?: unknown
+      size?: unknown
+    }
+    const uploadedAt = typeof parsed.uploadedAt === 'string' ? parsed.uploadedAt : null
+    const size = typeof parsed.size === 'number' ? parsed.size : null
+    if (typeof parsed.url === 'string' && parsed.url && !Array.isArray(parsed.entries)) {
+      return { url: parsed.url, uploadedAt, size, etag }
+    }
+    // Legacy: body was the notebook itself — no separate download URL.
+    return { url: '', uploadedAt, size: raw.length, etag }
+  } catch {
+    return { url: '', uploadedAt: null, size: raw.length, etag }
+  }
+}
+
+async function downloadAccountNotebook(
+  meta: AccountCloudMeta,
+  legacyBody?: string,
+): Promise<{ content: string; etag: string | null }> {
+  if (!meta.url) {
+    if (typeof legacyBody === 'string' && legacyBody) {
+      return { content: legacyBody, etag: meta.etag }
+    }
+    throw new Error('Cloud notebook download URL missing')
+  }
+  const fileRes = await fetchWithTimeout(
+    meta.url,
+    undefined,
+    downloadTimeoutForSize(meta.size),
+    'Cloud notebook download',
+  )
+  if (!fileRes.ok) throw new Error(`Cloud notebook download failed (${fileRes.status})`)
+  return {
+    content: await fileRes.text(),
+    etag: fileRes.headers.get('etag') || meta.etag,
+  }
+}
+
+function parseNotebookCounts(content: string): { noteCount: number; entryIds: string[] } {
   const entryIds: string[] = []
   try {
     const parsed = JSON.parse(content) as { entries?: unknown; trash?: unknown }
@@ -265,13 +290,58 @@ export async function pullAccountBackup(): Promise<AccountPullResult | null> {
         entryIds.push((item as { id: string }).id)
       }
     }
-    // Dustbin notes are part of the cloud notebook — count them so login/merge
-    // does not treat a trash-only backup as "empty" and skip (or overwrite) it.
-    noteCount = entryIds.length
   } catch {
     throw new Error('Cloud notebook was not valid JSON')
   }
-  return { content, etag, noteCount, uploadedAt, entryIds }
+  // Dustbin notes are part of the cloud notebook — count them so login/merge
+  // does not treat a trash-only backup as "empty" and skip (or overwrite) it.
+  return { noteCount: entryIds.length, entryIds }
+}
+
+export async function pullAccountBackup(): Promise<AccountPullResult | null> {
+  const res = await fetchWithTimeout(
+    api('/api/notebook'),
+    { method: 'GET', credentials: 'include' },
+    30_000,
+    'Cloud notebook check',
+  )
+  if (res.status === 401) throw new Error('Sign in required')
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(await readError(res))
+  const headerEtag = res.headers.get('etag')
+  const raw = await res.text()
+  let meta: AccountCloudMeta
+  let legacyBody: string | undefined
+  try {
+    const parsed = JSON.parse(raw) as {
+      url?: unknown
+      entries?: unknown
+      uploadedAt?: unknown
+      size?: unknown
+    }
+    const uploadedAt = typeof parsed.uploadedAt === 'string' ? parsed.uploadedAt : null
+    const size = typeof parsed.size === 'number' ? parsed.size : null
+    if (typeof parsed.url === 'string' && parsed.url && !Array.isArray(parsed.entries)) {
+      meta = { url: parsed.url, uploadedAt, size, etag: headerEtag }
+    } else {
+      meta = { url: '', uploadedAt, size: raw.length, etag: headerEtag }
+      legacyBody = raw
+    }
+  } catch {
+    meta = { url: '', uploadedAt: null, size: raw.length, etag: headerEtag }
+    legacyBody = raw
+  }
+
+  const { content, etag } = await downloadAccountNotebook(meta, legacyBody)
+  const { noteCount, entryIds } = parseNotebookCounts(content)
+  return {
+    content,
+    etag,
+    noteCount,
+    uploadedAt: meta.uploadedAt,
+    entryIds,
+    size: meta.size,
+  }
 }
 
 /**
@@ -287,12 +357,9 @@ export async function pushAccountBackup(json: string): Promise<{ etag: string | 
     type: 'application/json;charset=utf-8',
   })
   // Prefer multipart for anything above ~1.5MB — large notebooks were timing out
-  // on a single PUT. Budget scales with size but still hard-caps.
+  // on a single PUT. Budget scales with size but still hard-caps (~6 min).
   const useMultipart = file.size >= 1.5 * 1024 * 1024
-  const uploadTimeoutMs = Math.min(
-    240_000,
-    Math.max(90_000, Math.round(file.size / 1024) * 25),
-  )
+  const uploadTimeoutMs = uploadTimeoutForSize(file.size)
   try {
     await withTimeout(
       upload(pathname, file, {
