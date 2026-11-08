@@ -295,6 +295,14 @@ export async function applyManagedLlmConfig(
   }
 }
 
+export interface ImportedBriefingCitation {
+  id?: string
+  label: string
+  url: string
+  category?: string
+  note?: string
+}
+
 export interface ImportedBriefing {
   id: string
   title: string
@@ -310,6 +318,10 @@ export interface ImportedBriefing {
   createdAt?: number
   archivedAt?: number
   lang?: string
+  /** Clickable deep links from Market Condition scan */
+  citations?: ImportedBriefingCitation[]
+  /** Legacy string lines that may embed URLs */
+  sourcesConsulted?: string[]
 }
 
 export function loadMonitorBriefings(): ImportedBriefing[] {

@@ -1,19 +1,44 @@
 import type { CopilotSettings, LlmProvider } from '../types'
+import type { AppLang } from '../../i18n/messages'
 
-export const SYSTEM_PROMPT = `你是 V Exchange 永续合约 Risk Copilot（风险归因助手）。
-业务范围：XAUUSD MVP 永续、指数源/Mark、LP、强平/ADL、对冲与监控。
-你必须输出结构化中文报告，包含：
-1) 根因判定（区分：已证实事实 / 候选根因 / 待验证假设；找不到外部新闻或宏观催化时要明确声明）
-2) 排查路径（按优先级，引用匹配到的 L1 指标技能与 L2 链路）
-3) 推荐解决方案 / Preferred Action（须标注需人工审批，禁止声称已自动执行）
-4) 后续优化点
-5) 缺失证据清单
+export const SYSTEM_PROMPT_ZH = `你是 V Exchange 永續合約 Risk Copilot（風險歸因助手）。
+業務範圍：XAUUSD MVP 永續、指數源/Mark、LP、強平/ADL、對沖與監控。
+你必須輸出結構化繁體中文報告，包含：
+1) 根因判定（區分：已證實事實 / 候選根因 / 待驗證假設；找不到外部新聞或宏觀催化時要明確聲明）
+2) 排查路徑（按優先級，引用匹配到的 L1 指標技能與 L2 鏈路）
+3) 使用的數據來源（必須列出直連 URL：行情 API、場所頁、新聞／宏觀文章；沒有就寫「無」）
+4) 推薦解決方案 / Preferred Action（須標註需人工審批，禁止聲稱已自動執行）
+5) 後續優化點
+6) 缺失證據清單
 
-规则：
-- 不得建议未经授权的生产操作（下单、改价、强平执行、划转）。
-- 价格异动「观察」（bps/基差/场所结构）≠「原因」（新闻/宏观/政策）。
-- 优先使用用户提供的 Skill 上下文与 RAG 知识库；没有证据就说不确定。
-- 若输入含 XAUUSD 源监控简报，把它当作事故输入量，不要忽略其中的原因/观察分栏。`
+規則：
+- 不得建議未經授權的生產操作（下單、改價、強平執行、劃轉）。
+- 價格異動「觀察」（bps/基差/場所結構）≠「原因」（新聞/宏觀/政策）。
+- 優先使用用戶提供的 Skill 上下文、RAG 知識庫與簡報引用連結；沒有證據就說不確定。
+- 若輸入含 XAUUSD 源監控簡報，把它當作事故輸入量，並保留其中的原因／觀察／citations URL。`
+
+export const SYSTEM_PROMPT_EN = `You are V Exchange perpetual Risk Copilot (root-cause assistant).
+Scope: XAUUSD MVP perpetual, index/Mark sources, LPs, liquidation/ADL, hedge and monitoring.
+You MUST output a structured English report with:
+1) Root-cause judgement (confirmed facts / candidate causes / unverified hypotheses; explicitly say when no external news/macro catalyst is found)
+2) Investigation path (priority order; cite matched L1 indicator skills and L2 chains)
+3) Data sources used (MUST list direct URLs: price APIs, venue pages, news/macro articles; write "none" if unavailable)
+4) Recommended solutions / Preferred Action (mark approval-required; never claim auto-execution)
+5) Follow-on optimisation points
+6) Missing-evidence checklist
+
+Rules:
+- Do not suggest unauthorised production actions (orders, reprice, liquidation execution, transfers).
+- Price "observations" (bps/basis/venue structure) ≠ "causes" (news/macro/policy).
+- Prefer Skill context, RAG knowledge, and briefing citation URLs; say uncertain when evidence is missing.
+- If the input includes an XAUUSD source-monitor briefing, treat it as incident input and keep its causes/observations/citation URLs.`
+
+/** @deprecated Prefer systemPromptFor(lang) */
+export const SYSTEM_PROMPT = SYSTEM_PROMPT_ZH
+
+export function systemPromptFor(lang: AppLang = 'zh-Hant'): string {
+  return lang === 'en' ? SYSTEM_PROMPT_EN : SYSTEM_PROMPT_ZH
+}
 
 export function modelOptions(provider: LlmProvider): { id: string; label: string }[] {
   switch (provider) {
@@ -98,7 +123,7 @@ async function callGeminiDirect(
   const key = settings.geminiKey.trim()
   if (!key) throw new Error('请在设置中填写 Gemini API Key（或配置 /api/chat 代理）。')
   const model = settings.model || 'gemini-2.0-flash'
-  const system = messages.find((m) => m.role === 'system')?.content ?? SYSTEM_PROMPT
+  const system = messages.find((m) => m.role === 'system')?.content ?? SYSTEM_PROMPT_ZH
   const contents = messages
     .filter((m) => m.role !== 'system')
     .map((m) => ({
@@ -188,26 +213,44 @@ export async function runLlm(args: {
   skillContext: string
   kbContext: string
   priorMessages?: { role: 'user' | 'assistant'; content: string }[]
+  lang?: AppLang
 }): Promise<string> {
   const { settings } = args
+  const lang: AppLang = args.lang === 'en' ? 'en' : 'zh-Hant'
   if (settings.provider === 'rules') {
     throw new Error('规则模式请使用本地分析，不走 LLM。')
   }
 
   const messages = [
-    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'system', content: systemPromptFor(lang) },
     {
       role: 'user',
-      content: [
-        '## Skill 上下文（L1/L2）',
-        args.skillContext || '（无）',
-        '',
-        '## RAG 知识库摘录',
-        args.kbContext || '（无匹配条目）',
-        '',
-        '## 用户输入 / 对话',
-        args.userPrompt,
-      ].join('\n'),
+      content:
+        lang === 'en'
+          ? [
+              '## Skill context (L1/L2)',
+              args.skillContext || '(none)',
+              '',
+              '## RAG knowledge excerpts',
+              args.kbContext || '(no matches)',
+              '',
+              '## User input / dialogue',
+              args.userPrompt,
+              '',
+              'Respond in English. Keep the investigation path, data-source URLs, and approval-gated recommendations explicit.',
+            ].join('\n')
+          : [
+              '## Skill 上下文（L1/L2）',
+              args.skillContext || '（無）',
+              '',
+              '## RAG 知識庫摘錄',
+              args.kbContext || '（無匹配條目）',
+              '',
+              '## 用戶輸入／對話',
+              args.userPrompt,
+              '',
+              '請用繁體中文回覆。排查路徑、數據來源直連 URL、需審批的建議方案必須清楚列出。',
+            ].join('\n'),
     },
     ...(args.priorMessages || []).map((m) => ({ role: m.role, content: m.content })),
   ]

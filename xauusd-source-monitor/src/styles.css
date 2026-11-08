@@ -1736,6 +1736,38 @@ td.mono,
   font: inherit;
 }
 
+/* DM Sans lacks password-mask glyphs → tofu boxes on iOS/Safari.
+   Force a system UI stack so masked passwords render as • / * . */
+.login-form .password-input,
+.login-form input[type='password'] {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.login-form .password-input[type='text'] {
+  letter-spacing: normal;
+}
+
+.password-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.password-reveal {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 252, 246, 0.92);
+  font-size: 0.85rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
 .login-submit {
   margin-top: 10px;
   width: 100%;
@@ -1744,6 +1776,26 @@ td.mono,
 .login-hint {
   margin-top: 16px;
   font-size: 0.85rem;
+}
+
+.investigate-sources li {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+}
+
+.investigate-sources a {
+  font-weight: 650;
+  color: var(--gold-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.investigate-sources .source-url {
+  font-size: 0.72rem;
+  color: var(--muted);
+  word-break: break-all;
 }
 
 .skills-toolbar {

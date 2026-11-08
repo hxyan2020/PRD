@@ -18,26 +18,57 @@ import type { CopilotSettings, IncidentRecord, SeverityChoice } from '../copilot
 import { useLocale } from '../i18n/locale'
 
 function briefingToFacts(b: ImportedBriefing): string {
+  const citationLines =
+    b.citations?.length
+      ? b.citations.map((c) => `• ${c.label} — ${c.url}${c.note ? ` (${c.note})` : ''}`)
+      : (b.sourcesConsulted || []).map((x) => `• ${x}`)
   const lines = [
-    `【XAUUSD 源监控简报输入】${b.title}`,
+    `【XAUUSD source-monitor briefing】${b.title}`,
     `severity=${b.severity ?? '—'} · trigger=${b.triggerReason ?? '—'} · composite=${b.compositePrice ?? '—'}`,
     `breached=${(b.breachedSources || []).join(', ') || '—'}`,
     '',
-    '【价格变动原因（新闻/宏观）】',
-    ...(b.causes?.length ? b.causes.map((x) => `• ${x}`) : ['• （无）']),
+    '【Causes (news/macro)】',
+    ...(b.causes?.length ? b.causes.map((x) => `• ${x}`) : ['• (none)']),
     '',
-    '【价格变动观察】',
+    '【Observations (price/venue)】',
     ...(b.observations?.length
       ? b.observations.map((x) => `• ${x}`)
       : (b.why || []).map((x) => `• ${x}`)),
     '',
-    '【影响】',
+    '【Impact】',
     ...(b.impact || []).map((x) => `• ${x}`),
     '',
-    '【建议动作】',
+    '【Actions】',
     ...(b.actions || []).map((x) => `• ${x}`),
+    '',
+    '【Data sources (direct links)】',
+    ...(citationLines.length ? citationLines : ['• (none)']),
   ]
   return lines.join('\n')
+}
+
+function collectDataSources(
+  briefings: ImportedBriefing[],
+): { label: string; url: string }[] {
+  const out: { label: string; url: string }[] = []
+  const seen = new Set<string>()
+  for (const b of briefings) {
+    for (const c of b.citations || []) {
+      const url = (c.url || '').trim()
+      if (!url || seen.has(url)) continue
+      seen.add(url)
+      out.push({ label: c.label || url, url })
+    }
+    for (const line of b.sourcesConsulted || []) {
+      const m = line.match(/https?:\/\/\S+/)
+      if (!m) continue
+      const url = m[0].replace(/[),.;]+$/, '')
+      if (seen.has(url)) continue
+      seen.add(url)
+      out.push({ label: line.replace(url, '').replace(/[—\-–]\s*$/, '').trim() || url, url })
+    }
+  }
+  return out
 }
 
 const SEVERITY_OPTIONS: SeverityChoice[] = ['P0', 'P1', 'P2', 'P3']
@@ -128,6 +159,7 @@ export function InvestigatePage() {
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
     const matched = matchRelevantBriefings(query, briefings, 3)
     setBoundBriefings(matched)
+    const dataSources = collectDataSources(matched)
     const briefingBits = matched.map(briefingToFacts).join('\n\n----\n\n')
     const text = [userText, briefingBits].filter(Boolean).join('\n\n')
     const analysisText =
@@ -163,6 +195,8 @@ export function InvestigatePage() {
         knowledge,
         tree,
         startedAt,
+        lang,
+        dataSources,
       })
       let report = rules.body
       let provider = settings.provider
@@ -175,6 +209,7 @@ export function InvestigatePage() {
           modelLabel = `${settings.provider}/${settings.model}`
           const llmText = await runLlm({
             settings,
+            lang,
             userPrompt: [
               analysisText,
               '',
@@ -182,6 +217,11 @@ export function InvestigatePage() {
                 ? `【Auto-bound market events】${matched.map((b) => b.title).join(' · ')}`
                 : '【Auto-bound market events】none matched',
               `【Recommended severity】${rules.sev}`,
+              dataSources.length
+                ? `【Data sources (direct links)】\n${dataSources
+                    .map((s) => `- ${s.label}: ${s.url}`)
+                    .join('\n')}`
+                : '【Data sources (direct links)】none',
             ].join('\n'),
             skillContext: rules.skillContext,
             kbContext:
@@ -281,7 +321,7 @@ export function InvestigatePage() {
     try {
       let reply: string
       if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
-        reply = followUpWithRules(followUp.trim(), active.facts)
+        reply = followUpWithRules(followUp.trim(), active.facts, lang)
       } else {
         const skills = loadSkills()
         const tree = loadKnowledgeTree()
@@ -292,9 +332,11 @@ export function InvestigatePage() {
           skills,
           knowledge,
           tree,
+          lang,
         })
         reply = await runLlm({
           settings,
+          lang,
           userPrompt: `${followUp.trim()}\n\n[System reminder: If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
           skillContext: rules.skillContext,
           kbContext:
@@ -348,6 +390,13 @@ export function InvestigatePage() {
   const archivedIncidents = history.filter((h) => h.archivedAt)
   const shownBound = boundBriefings.length ? boundBriefings : previewBound
   const activeSev = active ? normalizeSev(active.severity) : '待判定'
+  const activeSources = active
+    ? collectDataSources(
+        (active.briefingIds || [])
+          .map((id) => briefings.find((b) => b.id === id))
+          .filter((b): b is ImportedBriefing => !!b),
+      )
+    : collectDataSources(shownBound)
 
   return (
     <div className="panel copilot-page investigate-page">
@@ -408,13 +457,33 @@ export function InvestigatePage() {
               {t('investigateAutoBoundHint')}
             </p>
             {shownBound.length ? (
-              <ul className="investigate-list">
-                {shownBound.map((b) => (
-                  <li key={b.id}>
-                    <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="investigate-list">
+                  {shownBound.map((b) => (
+                    <li key={b.id}>
+                      <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
+                    </li>
+                  ))}
+                </ul>
+                {collectDataSources(shownBound).length ? (
+                  <div style={{ marginTop: 8 }}>
+                    <p className="field-label" style={{ marginBottom: 4 }}>
+                      {t('investigateDataSources')}
+                    </p>
+                    <ul className="investigate-list investigate-sources">
+                      {collectDataSources(shownBound)
+                        .slice(0, 6)
+                        .map((s) => (
+                          <li key={s.url}>
+                            <a href={s.url} target="_blank" rel="noreferrer noopener">
+                              {s.label}
+                            </a>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </>
             ) : (
               <p className="sub">{t('investigateAutoBoundPending')}</p>
             )}
@@ -516,6 +585,37 @@ export function InvestigatePage() {
                 </>
               ) : null}
 
+              <h4>{t('investigateDataSources')}</h4>
+              <p className="sub">{t('investigateDataSourcesHint')}</p>
+              {activeSources.length ? (
+                <ul className="investigate-list investigate-sources">
+                  {activeSources.map((s) => (
+                    <li key={s.url}>
+                      <a href={s.url} target="_blank" rel="noreferrer noopener">
+                        {s.label}
+                      </a>
+                      <span className="source-url mono">{s.url}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="sub">{t('investigateDataSourcesNone')}</p>
+              )}
+
+              <h4>{t('investigatePath')}</h4>
+              <ol className="investigate-timeline">
+                {(active.timeline || []).map((e, i) => (
+                  <li key={i}>
+                    <span className="mono">
+                      {new Date(e.at).toLocaleTimeString('en-SG', {
+                        timeZone: 'Asia/Singapore',
+                      })}
+                    </span>{' '}
+                    {e.label}
+                  </li>
+                ))}
+              </ol>
+
               <h4>{t('investigateSkillsUsed')}</h4>
               <ul className="investigate-list">
                 {(active.skillsUsed || []).length ? (
@@ -552,21 +652,7 @@ export function InvestigatePage() {
                 </>
               ) : null}
 
-              <h4>{t('investigateTimeline')}</h4>
-              <ol className="investigate-timeline">
-                {(active.timeline || []).map((e, i) => (
-                  <li key={i}>
-                    <span className="mono">
-                      {new Date(e.at).toLocaleTimeString('en-SG', {
-                        timeZone: 'Asia/Singapore',
-                      })}
-                    </span>{' '}
-                    {e.label}
-                  </li>
-                ))}
-              </ol>
-
-              <h4>{t('investigateNextSteps')}</h4>
+              <h4>{t('investigateRecommendations')}</h4>
               <ol className="investigate-list">
                 {(active.nextSteps || []).map((s, i) => (
                   <li key={i}>{s}</li>

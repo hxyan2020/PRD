@@ -8,6 +8,7 @@ export function LoginPage() {
   const { login } = useAuth()
   const [email, setEmail] = useState('ops@hytech.com')
   const [password, setPassword] = useState('OpsDemo2026!')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const onSubmit = (e: FormEvent) => {
@@ -58,13 +59,26 @@ export function LoginPage() {
           <label className="field-label" htmlFor="login-password">
             {t('authPassword')}
           </label>
-          <input
-            id="login-password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="password-field">
+            <input
+              id="login-password"
+              className="password-input"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              spellCheck={false}
+            />
+            <button
+              type="button"
+              className="password-reveal"
+              aria-pressed={showPassword}
+              aria-label={showPassword ? t('authHidePassword') : t('authShowPassword')}
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? t('authHidePassword') : t('authShowPassword')}
+            </button>
+          </div>
           {error ? <p className="feed-error">{error}</p> : null}
           <button type="submit" className="archive-btn primary-archive login-submit">
             {t('authLogin')}
