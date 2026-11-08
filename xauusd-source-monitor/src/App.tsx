@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './auth/AuthContext'
 import { LoginPage } from './auth/LoginPage'
@@ -23,58 +23,150 @@ export default function App() {
   const { t, lang, setLang, langLabel } = useLocale()
   const { user, logout } = useAuth()
   const mon = useMonitor(lang)
-  const [heroOpen, setHeroOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
 
   if (!user) return <LoginPage />
 
-  const renderNavLinks = (keyPrefix: string) =>
+  const renderNavLinks = (keyPrefix: string, onNavigate?: () => void) =>
     NAV.map((item) => (
-      <NavLink key={`${keyPrefix}${item.to}`} to={item.to} className="nav-item">
+      <NavLink
+        key={`${keyPrefix}${item.to}`}
+        to={item.to}
+        className="nav-item"
+        onClick={() => onNavigate?.()}
+      >
         <span className="nav-full">{t(item.full)}</span>
         <span className="nav-short">{t(item.short)}</span>
       </NavLink>
     ))
 
+  const langSwitch = (
+    <div className="lang-switch" role="group" aria-label={t('menuLanguage')}>
+      {(Object.keys(langLabel) as AppLang[]).map((code) => (
+        <button
+          key={code}
+          type="button"
+          className={lang === code ? 'active' : ''}
+          onClick={() => setLang(code)}
+        >
+          {langLabel[code]}
+        </button>
+      ))}
+    </div>
+  )
+
   return (
     <div className="app-shell">
-      <header className="hero">
-        <div className="hero-top">
+      <header className="hero topbar">
+        <div className="topbar-row">
           <div className="hero-brand-block">
             <p className="brand">{t('brand')}</p>
-            <h1 className="product-title">{t('title')}</h1>
+            <h1 className="product-title desktop-copy">{t('title')}</h1>
           </div>
-          <div className="hero-actions">
-            <div className="lang-switch" role="group" aria-label="Language">
-              {(Object.keys(langLabel) as AppLang[]).map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  className={lang === code ? 'active' : ''}
-                  onClick={() => setLang(code)}
-                >
-                  {langLabel[code]}
-                </button>
-              ))}
-            </div>
+
+          <div className="hero-actions desktop-only-flex">
+            {langSwitch}
             <div className="user-chip">
-              <span className="user-chip-name desktop-copy">
+              <span className="user-chip-name">
                 {user.name} · {user.email}
               </span>
-              <span className="user-chip-name mobile-copy">{user.name}</span>
               <button type="button" className="archive-btn" onClick={logout}>
                 {t('authLogout')}
               </button>
             </div>
           </div>
+
+          <button
+            type="button"
+            className="hamburger mobile-only-flex"
+            aria-label={menuOpen ? t('menuClose') : t('menuOpen')}
+            aria-expanded={menuOpen}
+            aria-controls="app-menu-drawer"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <span className={`hamburger-lines${menuOpen ? ' open' : ''}`} aria-hidden>
+              <i />
+              <i />
+              <i />
+            </span>
+          </button>
         </div>
         <p className="hero-sub desktop-copy">{t('subtitle')}</p>
-        <p className="hero-sub mobile-copy">
-          {heroOpen ? t('subtitle') : t('subtitleShort')}{' '}
-          <button type="button" className="text-link" onClick={() => setHeroOpen((v) => !v)}>
-            {heroOpen ? t('less') : t('more')}
-          </button>
-        </p>
       </header>
+
+      {menuOpen ? (
+        <div
+          className="menu-backdrop mobile-only-flex"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden
+        />
+      ) : null}
+
+      <aside
+        id="app-menu-drawer"
+        className={`menu-drawer mobile-only-flex${menuOpen ? ' open' : ''}`}
+        aria-hidden={!menuOpen}
+      >
+        <div className="menu-drawer-head">
+          <div>
+            <p className="brand menu-brand">{t('brand')}</p>
+            <p className="menu-title">{t('title')}</p>
+          </div>
+          <button
+            type="button"
+            className="archive-btn"
+            onClick={() => setMenuOpen(false)}
+          >
+            {t('menuClose')}
+          </button>
+        </div>
+
+        <section className="menu-section">
+          <h3>{t('menuAccount')}</h3>
+          <p className="menu-user-name">{user.name}</p>
+          <p className="menu-user-email">{user.email}</p>
+          <button
+            type="button"
+            className="archive-btn menu-logout"
+            onClick={() => {
+              setMenuOpen(false)
+              logout()
+            }}
+          >
+            {t('authLogout')}
+          </button>
+        </section>
+
+        <section className="menu-section">
+          <h3>{t('menuLanguage')}</h3>
+          {langSwitch}
+        </section>
+
+        <section className="menu-section menu-nav-section">
+          <h3>{t('menuNav')}</h3>
+          <nav className="menu-nav" aria-label="Menu navigation">
+            {renderNavLinks('menu', () => setMenuOpen(false))}
+          </nav>
+        </section>
+
+        <section className="menu-section">
+          <h3>{t('menuAbout')}</h3>
+          <p className="menu-about">{t('subtitle')}</p>
+        </section>
+      </aside>
 
       <nav className="nav main-nav desktop-nav" aria-label="Primary">
         {renderNavLinks('d')}
