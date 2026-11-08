@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { matchRelevantBriefings } from '../copilot/engine/briefingMatch'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import {
@@ -39,19 +40,29 @@ function briefingToFacts(b: ImportedBriefing): string {
   return lines.join('\n')
 }
 
+const SEVERITY_OPTIONS: SeverityChoice[] = ['P0', 'P1', 'P2', 'P3']
+
+function normalizeSev(raw: string): SeverityChoice | '待判定' {
+  const s = String(raw || '').toUpperCase()
+  if (s.startsWith('P0')) return 'P0'
+  if (s.startsWith('P1')) return 'P1'
+  if (s.startsWith('P2')) return 'P2'
+  if (s.startsWith('P3')) return 'P3'
+  return '待判定'
+}
+
 export function InvestigatePage() {
   const { t, lang } = useLocale()
   const [settings, setSettings] = useState<CopilotSettings>(() => loadSettings())
   const [history, setHistory] = useState<IncidentRecord[]>(() => loadHistory())
   const [title, setTitle] = useState('')
   const [facts, setFacts] = useState('')
-  const [sev, setSev] = useState<SeverityChoice>('自动建议')
   const [images, setImages] = useState<string[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [active, setActive] = useState<IncidentRecord | null>(null)
   const [followUp, setFollowUp] = useState('')
-  const [selectedBriefingIds, setSelectedBriefingIds] = useState<string[]>([])
+  const [boundBriefings, setBoundBriefings] = useState<ImportedBriefing[]>([])
   const [llmReady, setLlmReady] = useState(() => hasLlmCredentials(loadSettings()))
 
   useEffect(() => {
@@ -71,6 +82,12 @@ export function InvestigatePage() {
     const all = loadMonitorBriefings()
     return all.filter((b) => !b.lang || b.lang === (lang === 'zh-Hant' ? 'zh-Hant' : 'en'))
   }, [lang])
+
+  const previewBound = useMemo(() => {
+    const q = [title, facts].filter(Boolean).join('\n')
+    if (!q.trim() && !images.length) return []
+    return matchRelevantBriefings(q || 'XAUUSD', briefings, 3)
+  }, [title, facts, images.length, briefings])
 
   const persistHistory = (next: IncidentRecord[]) => {
     setHistory(next)
@@ -95,43 +112,39 @@ export function InvestigatePage() {
     ).then(setImages)
   }
 
-  const toggleBriefing = (id: string) => {
-    setSelectedBriefingIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    )
-  }
-
-  const importSelectedBriefings = () => {
-    const picked = briefings.filter((b) => selectedBriefingIds.includes(b.id))
-    if (!picked.length) return
-    const block = picked.map(briefingToFacts).join('\n\n----\n\n')
-    setFacts((prev) => (prev ? `${prev}\n\n${block}` : block))
-    if (!title.trim() && picked[0]) setTitle(`RCA · ${picked[0].title}`)
-  }
-
   const runAnalysis = async () => {
     setError(null)
-    const briefingBits = briefings
-      .filter((b) => selectedBriefingIds.includes(b.id))
-      .map(briefingToFacts)
-      .join('\n\n')
-    const text = [facts.trim(), briefingBits].filter(Boolean).join('\n\n')
-    if (!text && !images.length) {
+    const userText = facts.trim()
+    if (!userText && !images.length) {
       setError(t('copilotNeedFacts'))
       return
     }
+
+    const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
+    const matched = matchRelevantBriefings(query, briefings, 3)
+    setBoundBriefings(matched)
+    const briefingBits = matched.map(briefingToFacts).join('\n\n----\n\n')
+    const text = [userText, briefingBits].filter(Boolean).join('\n\n')
     const analysisText =
       text ||
       '[Screenshot uploaded — OCR text not available; please paste alert text for better skill matching.]'
+
+    const autoTitle =
+      title.trim() ||
+      (matched[0] ? `RCA · ${matched[0].title}` : '') ||
+      t('copilotUntitled')
+    if (!title.trim() && matched[0]) setTitle(autoTitle)
+
     setBusy(true)
     const startedAt = Date.now()
     try {
       const skills = loadSkills()
       const tree = loadKnowledgeTree()
       const knowledge = flattenKbDocs(tree)
+      // Always auto-recommend severity from input + matched skills.
       const rules = analyzeWithRules({
         text: analysisText,
-        severity: sev,
+        severity: '自动建议',
         skills,
         knowledge,
         tree,
@@ -147,7 +160,14 @@ export function InvestigatePage() {
           modelLabel = `${settings.provider}/${settings.model}`
           const llmText = await runLlm({
             settings,
-            userPrompt: analysisText,
+            userPrompt: [
+              analysisText,
+              '',
+              matched.length
+                ? `【Auto-bound market events】${matched.map((b) => b.title).join(' · ')}`
+                : '【Auto-bound market events】none matched',
+              `【Recommended severity】${rules.sev}`,
+            ].join('\n'),
             skillContext: rules.skillContext,
             kbContext:
               rules.kbContext ||
@@ -167,7 +187,6 @@ export function InvestigatePage() {
         } catch (llmErr) {
           provider = 'rules'
           modelLabel = 'rules'
-          // Keep going with local skills — never block the desk on key prompts.
           llmNote = `${t('llmFallbackRules')} ${
             llmErr instanceof Error ? llmErr.message : String(llmErr)
           }`
@@ -182,7 +201,7 @@ export function InvestigatePage() {
       const rec: IncidentRecord = {
         id: `inc_${Date.now()}`,
         createdAt: startedAt,
-        title: title.trim() || t('copilotUntitled'),
+        title: autoTitle,
         facts: analysisText,
         severity: rules.sev,
         provider,
@@ -192,8 +211,16 @@ export function InvestigatePage() {
         l2: rules.l2,
         imageDataUrl: images[0] || null,
         imageDataUrls: images,
-        briefingIds: selectedBriefingIds.slice(),
-        thinking: rules.thinking,
+        briefingIds: matched.map((b) => b.id),
+        thinking: [
+          matched.length
+            ? t('investigateAutoBoundThinking').replace(
+                '{n}',
+                String(matched.length),
+              ) + `: ${matched.map((b) => b.title).join(' · ')}`
+            : t('investigateAutoBoundNone'),
+          ...rules.thinking,
+        ],
         timeline: rules.timeline,
         skillsUsed: rules.skillsUsed,
         knowledgeUsed: rules.knowledgeUsed,
@@ -213,13 +240,28 @@ export function InvestigatePage() {
     }
   }
 
+  const updateSeverity = (nextSev: SeverityChoice) => {
+    if (!active) return
+    const updated: IncidentRecord = {
+      ...active,
+      severity: nextSev,
+      thinking: [
+        ...(active.thinking || []).filter((line) => !line.startsWith('[severity-override]')),
+        `[severity-override] ${t('investigateSeverityOverride')}: ${nextSev}`,
+      ],
+    }
+    const next = history.map((h) => (h.id === active.id ? updated : h))
+    persistHistory(next)
+    setActive(updated)
+  }
+
   const sendFollowUp = async () => {
     if (!active || !followUp.trim()) return
     setBusy(true)
     setError(null)
     try {
       let reply: string
-      if (settings.provider === 'rules') {
+      if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
         reply = followUpWithRules(followUp.trim(), active.facts)
       } else {
         const skills = loadSkills()
@@ -285,6 +327,8 @@ export function InvestigatePage() {
 
   const openIncidents = history.filter((h) => !h.archivedAt)
   const archivedIncidents = history.filter((h) => h.archivedAt)
+  const shownBound = boundBriefings.length ? boundBriefings : previewBound
+  const activeSev = active ? normalizeSev(active.severity) : '待判定'
 
   return (
     <div className="panel copilot-page investigate-page">
@@ -325,30 +369,6 @@ export function InvestigatePage() {
             </div>
           ) : null}
 
-          <label className="field-label">{t('copilotBriefingImport')}</label>
-          <div className="briefing-pick-list">
-            {briefings.length === 0 ? (
-              <p className="sub">{t('copilotNoBriefings')}</p>
-            ) : (
-              briefings.slice(0, 12).map((b) => (
-                <label key={b.id} className="briefing-pick">
-                  <input
-                    type="checkbox"
-                    checked={selectedBriefingIds.includes(b.id)}
-                    onChange={() => toggleBriefing(b.id)}
-                  />
-                  <span>
-                    {b.title}
-                    {b.archivedAt ? ` · ${t('copilotBriefingArchived')}` : ''}
-                  </span>
-                </label>
-              ))
-            )}
-          </div>
-          <button type="button" className="archive-btn" onClick={importSelectedBriefings}>
-            {t('copilotImportBriefings')}
-          </button>
-
           <label className="field-label">{t('copilotFacts')}</label>
           <textarea
             rows={10}
@@ -357,24 +377,27 @@ export function InvestigatePage() {
             placeholder={t('copilotFactsPh')}
           />
 
-          <div className="copilot-row">
-            <div>
-              <label className="field-label">{t('copilotSeverity')}</label>
-              <select value={sev} onChange={(e) => setSev(e.target.value as SeverityChoice)}>
-                {(['自动建议', 'P0', 'P1', 'P2', 'P3'] as SeverityChoice[]).map((x) => (
-                  <option key={x} value={x}>
-                    {x}
-                  </option>
+          <div className="item-block" style={{ borderTop: 'none', paddingTop: 4 }}>
+            <p className="field-label" style={{ marginBottom: 6 }}>
+              {t('investigateAutoBoundLabel')}
+            </p>
+            <p className="sub" style={{ marginTop: 0 }}>
+              {t('investigateAutoBoundHint')}
+            </p>
+            {shownBound.length ? (
+              <ul className="investigate-list">
+                {shownBound.map((b) => (
+                  <li key={b.id}>
+                    <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
+                  </li>
                 ))}
-              </select>
-            </div>
-            <div>
-              <label className="field-label">{t('copilotProvider')}</label>
-              <p className="sub" style={{ margin: '10px 0 0' }}>
-                OpenAI · {settings.model || 'gpt-4o-mini'}
-              </p>
-            </div>
+              </ul>
+            ) : (
+              <p className="sub">{t('investigateAutoBoundPending')}</p>
+            )}
           </div>
+
+          <p className="sub">{t('investigateSeverityHint')}</p>
 
           <p className="copilot-actions">
             <button
@@ -392,7 +415,7 @@ export function InvestigatePage() {
                 setTitle('')
                 setFacts('')
                 setImages([])
-                setSelectedBriefingIds([])
+                setBoundBriefings([])
                 setActive(null)
               }}
             >
@@ -406,14 +429,56 @@ export function InvestigatePage() {
           <h3>{t('copilotReport')}</h3>
           {active ? (
             <>
-              <p className="sub">
-                <span className="pill sev-yellow">{active.severity}</span> · {active.modelLabel} ·{' '}
-                {new Date(active.createdAt).toLocaleString('en-SG', {
-                  timeZone: 'Asia/Singapore',
-                })}{' '}
-                SGT
-                {active.archivedAt ? ` · ${t('investigateArchivedBadge')}` : ` · ${t('investigateOpenBadge')}`}
-              </p>
+              <div className="copilot-row" style={{ alignItems: 'end', marginBottom: 8 }}>
+                <div>
+                  <label className="field-label">{t('investigateSeverityRecommended')}</label>
+                  <select
+                    value={SEVERITY_OPTIONS.includes(activeSev as SeverityChoice) ? activeSev : 'P2'}
+                    onChange={(e) => updateSeverity(e.target.value as SeverityChoice)}
+                  >
+                    {SEVERITY_OPTIONS.map((x) => (
+                      <option key={x} value={x}>
+                        {x}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="sub" style={{ marginTop: 4 }}>
+                    {t('investigateSeverityCanEdit')}
+                  </p>
+                </div>
+                <p className="sub" style={{ margin: 0 }}>
+                  {active.modelLabel} ·{' '}
+                  {new Date(active.createdAt).toLocaleString('en-SG', {
+                    timeZone: 'Asia/Singapore',
+                  })}{' '}
+                  SGT
+                  {active.archivedAt
+                    ? ` · ${t('investigateArchivedBadge')}`
+                    : ` · ${t('investigateOpenBadge')}`}
+                </p>
+              </div>
+
+              {(active.briefingIds || []).length ? (
+                <>
+                  <h4>{t('investigateBoundEvents')}</h4>
+                  <ul className="investigate-list">
+                    {(active.briefingIds || []).map((id) => {
+                      const b = briefings.find((x) => x.id === id)
+                      return (
+                        <li key={id}>
+                          {b ? (
+                            <>
+                              <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
+                            </>
+                          ) : (
+                            id
+                          )}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </>
+              ) : null}
 
               <h4>{t('investigateSkillsUsed')}</h4>
               <ul className="investigate-list">
