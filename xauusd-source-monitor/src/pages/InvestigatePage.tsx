@@ -57,7 +57,7 @@ export function InvestigatePage() {
   const [active, setActive] = useState<IncidentRecord | null>(null)
   const [followUp, setFollowUp] = useState('')
   const [selectedBriefingIds, setSelectedBriefingIds] = useState<string[]>([])
-  const [showSettings, setShowSettings] = useState(false)
+  const [showSettings, setShowSettings] = useState(() => !hasLlmCredentials(loadSettings()))
 
   const briefings = useMemo(() => {
     const all = loadMonitorBriefings()
@@ -307,18 +307,27 @@ export function InvestigatePage() {
         <div className="item-block">
           <h3>{t('copilotSettingsTitle')}</h3>
           <p className="sub">{t('copilotSettingsSub')}</p>
+          {!hasLlmCredentials(settings) ? <p className="banner-warn">{t('llmOpenAiHint')}</p> : null}
+          <label className="field-label">OpenAI API Key</label>
+          <input
+            type="password"
+            value={settings.openaiKey}
+            onChange={(e) =>
+              persistSettings({
+                ...settings,
+                openaiKey: e.target.value,
+                provider: settings.provider === 'rules' ? 'openai' : settings.provider,
+                model: settings.provider === 'rules' || !settings.model ? 'gpt-4o-mini' : settings.model,
+              })
+            }
+            autoComplete="off"
+            placeholder="sk-…"
+          />
           <label className="field-label">Gemini API Key</label>
           <input
             type="password"
             value={settings.geminiKey}
             onChange={(e) => persistSettings({ ...settings, geminiKey: e.target.value })}
-            autoComplete="off"
-          />
-          <label className="field-label">OpenAI API Key</label>
-          <input
-            type="password"
-            value={settings.openaiKey}
-            onChange={(e) => persistSettings({ ...settings, openaiKey: e.target.value })}
             autoComplete="off"
           />
           <label className="field-label">Anthropic API Key</label>

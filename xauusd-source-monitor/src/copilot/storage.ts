@@ -20,8 +20,8 @@ declare const __VEX_LLM_PROXY_BASE__: string
 
 const DEFAULT_SETTINGS: CopilotSettings = {
   /** Prefer real LLM; falls back to local rules if no key / proxy. */
-  provider: 'gemini',
-  model: 'gemini-2.0-flash',
+  provider: 'openai',
+  model: 'gpt-4o-mini',
   openaiKey: '',
   anthropicKey: '',
   geminiKey: '',
