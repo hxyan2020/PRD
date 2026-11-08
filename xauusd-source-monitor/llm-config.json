@@ -1,7 +1,7 @@
 {
   "provider": "openai",
   "model": "gpt-4o-mini",
-  "proxyBase": "https://teeth-application-quad-task.trycloudflare.com",
+  "proxyBase": "https://vex-llm-gateway.apps.grok.bot",
   "deskToken": "2602552a6687ac6b9920dadebf4640a67f6820c113460d4c",
-  "note": "Managed LLM gateway with desk auth + USD 10/day cap. OpenAI key stays server-side only."
+  "note": "Managed LLM gateway at vex-llm-gateway.apps.grok.bot — USD 10/day cap; OpenAI key stays server-side."
 }
