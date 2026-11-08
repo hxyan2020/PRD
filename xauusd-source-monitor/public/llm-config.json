@@ -1,7 +1,7 @@
 {
   "provider": "openai",
   "model": "gpt-4o-mini",
-  "proxyBase": "",
+  "proxyBase": "https://zippy-platinum-n9fhgtg.tmp.now",
   "deskToken": "2602552a6687ac6b9920dadebf4640a67f6820c113460d4c",
-  "note": "Set proxyBase to your Vercel production URL (https://….vercel.app) after deploying xauusd-source-monitor with OPENAI_API_KEY + DESK_GATEWAY_TOKEN."
+  "note": "Active Vercel LLM proxy (claim the deploy to keep it permanent). OpenAI key stays on Vercel only."
 }
