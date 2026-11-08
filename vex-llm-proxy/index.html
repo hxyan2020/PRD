@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>V Exchange LLM Proxy</title>
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --ink: #1a1a1a;
+      --muted: #6b6560;
+      --accent: #b45309;
+      --ok: #166534;
+      --card: #fffcf7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "DM Sans", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 0%, #e8dcc8 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, #ddd2c0 0%, transparent 50%),
+        var(--bg);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    main {
+      width: min(440px, 100%);
+      background: var(--card);
+      border: 1px solid rgba(26, 26, 26, 0.08);
+      border-radius: 16px;
+      padding: 28px 24px;
+    }
+    .brand { font-family: Georgia, serif; color: var(--accent); margin: 0 0 4px; font-size: 1.05rem; }
+    h1 { margin: 0 0 10px; font-size: 1.35rem; letter-spacing: -0.02em; }
+    p { margin: 0 0 14px; color: var(--muted); line-height: 1.45; font-size: 0.95rem; }
+    .status {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px; border-radius: 10px;
+      background: #ecfdf5; color: var(--ok); font-size: 0.9rem; font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .status.bad { background: #fef2f2; color: #991b1b; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    a.cta {
+      display: inline-block; text-decoration: none; color: #fff; background: #111;
+      padding: 12px 16px; border-radius: 10px; font-weight: 600; font-size: 0.95rem;
+    }
+    code { font-size: 0.85em; color: var(--accent); }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <main>
+    <p class="brand">V Exchange</p>
+    <h1>LLM proxy is live</h1>
+    <p>Server-side OpenAI for the Risk Tool desk. Open Investigate on GitHub Pages — this URL is the API host, not the desk UI.</p>
+    <div class="status" id="status"><span class="dot"></span><span>Checking…</span></div>
+    <p>Endpoint: <code>POST /api/chat</code></p>
+    <a class="cta" href="https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate">Open Risk Tool desk</a>
+  </main>
+  <script>
+    fetch('/api/chat')
+      .then((r) => r.json())
+      .then((d) => {
+        const el = document.getElementById('status')
+        if (d && d.ok) {
+          el.innerHTML = '<span class="dot"></span><span>Online — OpenAI gateway ready</span>'
+        } else {
+          el.classList.add('bad')
+          el.innerHTML = '<span class="dot"></span><span>Unexpected response</span>'
+        }
+      })
+      .catch(() => {
+        const el = document.getElementById('status')
+        el.classList.add('bad')
+        el.innerHTML = '<span class="dot"></span><span>Gateway unreachable</span>'
+      })
+  </script>
+</body>
+</html>
