@@ -1,0 +1,21 @@
+{
+  "id": "follow-up",
+  "name": "Follow-up reply card",
+  "description": "Bot reply when an operator asks a follow-up in the Lark thread / DM.",
+  "variables": [
+    "incident_id",
+    "question",
+    "answer",
+    "severity",
+    "desk_url",
+    "time_sgt"
+  ],
+  "defaults": {
+    "incident_id": "RCA-DEMO",
+    "question": "Why is severity P0?",
+    "answer": "Multiple L1 price skills matched and no clear macro catalyst was found — on-duty must confirm.",
+    "severity": "P0",
+    "desk_url": "https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate",
+    "time_sgt": ""
+  }
+}

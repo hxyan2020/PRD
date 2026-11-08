@@ -1,0 +1,27 @@
+{
+  "id": "stats-digest",
+  "name": "Realtime stats digest",
+  "description": "Periodic or on-demand digest of RCA / alarm counters for the Risk Ops channel.",
+  "variables": [
+    "window_label",
+    "alarms_total",
+    "rca_total",
+    "rca_open",
+    "rca_archived",
+    "followups",
+    "top_severity",
+    "desk_url",
+    "time_sgt"
+  ],
+  "defaults": {
+    "window_label": "last 24h",
+    "alarms_total": "12",
+    "rca_total": "9",
+    "rca_open": "6",
+    "rca_archived": "3",
+    "followups": "14",
+    "top_severity": "P1",
+    "desk_url": "https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/stats",
+    "time_sgt": ""
+  }
+}

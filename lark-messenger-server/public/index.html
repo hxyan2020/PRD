@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lark Messenger · V Exchange</title>
+  <title>Lark desk · V Exchange Risk Tool</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0f1419;
-      --panel: #1a222c;
-      --line: #2a3544;
-      --text: #e8eef6;
-      --muted: #8b9bb0;
-      --accent: #e8792f;
-      --ok: #3dba7a;
-      --danger: #e35d5d;
+      --bg: #eef0f4;
+      --sidebar: #1f2329;
+      --sidebar-text: #c8cdd5;
+      --chat-bg: #f5f6f8;
+      --card: #fff;
+      --line: #e3e6eb;
+      --ink: #1f2329;
+      --muted: #646a73;
+      --accent: #3370ff;
+      --danger: #f54a45;
+      --warn: #ff8800;
+      --ok: #34c724;
+      --bot: #3370ff;
       --font: "IBM Plex Sans", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
@@ -25,226 +30,553 @@
       margin: 0;
       min-height: 100vh;
       font-family: var(--font);
-      color: var(--text);
-      background:
-        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(232,121,47,.18), transparent 50%),
-        radial-gradient(ellipse 60% 40% at 90% 0%, rgba(61,186,122,.08), transparent 45%),
-        var(--bg);
+      color: var(--ink);
+      background: var(--bg);
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr) 320px;
     }
-    header {
-      padding: 1.25rem 1.5rem;
+    @media (max-width: 960px) {
+      body { grid-template-columns: 1fr; }
+      aside, .inspector { display: none; }
+    }
+    aside {
+      background: var(--sidebar);
+      color: var(--sidebar-text);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    aside .brand {
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 4px 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 8px;
+    }
+    aside .brand small {
+      display: block;
+      font-weight: 400;
+      color: #8f959e;
+      margin-top: 4px;
+      font-size: 0.75rem;
+    }
+    .chan {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .chan.active, .chan:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: var(--chat-bg);
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+    }
+    .chat-head {
+      padding: 12px 16px;
+      background: #fff;
       border-bottom: 1px solid var(--line);
       display: flex;
-      flex-wrap: wrap;
-      gap: .75rem 1.25rem;
-      align-items: baseline;
       justify-content: space-between;
+      align-items: center;
+      gap: 12px;
     }
-    header h1 {
+    .chat-head h1 {
       margin: 0;
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: .02em;
+      font-size: 1rem;
+      font-weight: 650;
     }
-    header h1 span { color: var(--accent); }
-    header p { margin: 0; color: var(--muted); font-size: .85rem; }
-    main {
-      display: grid;
-      grid-template-columns: minmax(280px, 360px) 1fr;
-      gap: 1rem;
-      padding: 1rem 1.5rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    @media (max-width: 800px) {
-      main { grid-template-columns: 1fr; }
-    }
-    .panel {
-      background: var(--panel);
+    .chat-head p { margin: 2px 0 0; color: var(--muted); font-size: 0.78rem; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 1rem;
-    }
-    label {
-      display: block;
-      font-size: .75rem;
-      text-transform: uppercase;
-      letter-spacing: .06em;
+      font-size: 0.75rem;
+      background: #fff;
       color: var(--muted);
-      margin: .75rem 0 .35rem;
     }
-    label:first-child { margin-top: 0; }
-    select, input, textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      color: var(--text);
-      font: 400 .9rem/1.4 var(--font);
-      padding: .55rem .65rem;
-    }
-    textarea { font-family: var(--mono); font-size: .8rem; min-height: 140px; resize: vertical; }
-    .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
-    button {
-      font: 500 .85rem var(--font);
-      border: none;
-      border-radius: 6px;
-      padding: .55rem .9rem;
-      cursor: pointer;
-      background: var(--accent);
-      color: #111;
-    }
-    button.secondary { background: transparent; color: var(--text); border: 1px solid var(--line); }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    pre {
-      margin: 0;
-      font-family: var(--mono);
-      font-size: .75rem;
-      line-height: 1.45;
+    .pill.ok { color: var(--ok); border-color: rgba(52,199,36,.35); }
+    .stream {
+      flex: 1;
       overflow: auto;
-      max-height: 70vh;
+      padding: 18px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .msg {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 10px;
+      max-width: 720px;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bot);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .avatar.user { background: #646a73; }
+    .bubble-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .lark-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 520px;
+    }
+    .lark-card .hdr {
+      padding: 10px 12px;
+      color: #fff;
+      font-weight: 650;
+      font-size: 0.92rem;
+    }
+    .lark-card .hdr.red { background: #f54a45; }
+    .lark-card .hdr.orange { background: #ff8800; }
+    .lark-card .hdr.green { background: #34c724; }
+    .lark-card .hdr.blue { background: #3370ff; }
+    .lark-card .hdr.turquoise { background: #14c0c0; }
+    .lark-card .sub {
+      opacity: .9;
+      font-weight: 400;
+      font-size: 0.72rem;
+      margin-top: 2px;
+    }
+    .lark-card .body {
+      padding: 12px;
+      font-size: 0.88rem;
+      line-height: 1.45;
       white-space: pre-wrap;
       word-break: break-word;
     }
-    .status { font-size: .8rem; color: var(--muted); margin-top: .75rem; min-height: 1.2em; }
-    .status.ok { color: var(--ok); }
-    .status.err { color: var(--danger); }
-    .chip {
-      display: inline-block;
-      font-size: .7rem;
-      padding: .15rem .45rem;
-      border-radius: 4px;
-      background: rgba(232,121,47,.15);
-      color: var(--accent);
-      margin-left: .5rem;
-      vertical-align: middle;
+    .lark-card .body a { color: var(--accent); }
+    .lark-card .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 12px 12px;
+    }
+    .lark-card .actions button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 6px;
+      padding: 7px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .lark-card .actions button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .lark-card .actions button.danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+    .composer {
+      border-top: 1px solid var(--line);
+      background: #fff;
+      padding: 10px 12px 14px;
+      display: grid;
+      gap: 8px;
+    }
+    .composer textarea {
+      width: 100%;
+      min-height: 64px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      font: inherit;
+      resize: vertical;
+    }
+    .composer-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .composer-row button, .inspector button, .toolbtn {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .composer-row button.primary, .toolbtn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .inspector {
+      background: #fff;
+      padding: 14px 12px;
+      overflow: auto;
+      border-left: 1px solid var(--line);
+    }
+    .inspector h2 {
+      margin: 0 0 8px;
+      font-size: 0.85rem;
+    }
+    .inspector .hint {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin: 0 0 12px;
+      line-height: 1.4;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .stat .k { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .stat .v { font-size: 1.15rem; font-weight: 700; margin-top: 2px; }
+    .tools { display: grid; gap: 8px; margin: 12px 0; }
+    pre.log {
+      margin: 0;
+      background: #f5f6f8;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      max-height: 280px;
+      overflow: auto;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>Lark <span>Messenger</span> <span class="chip" id="healthChip">…</span></h1>
-      <p>Dynamic message templates for V Exchange Risk Tool · render &amp; send interactive cards</p>
+  <aside>
+    <div class="brand">
+      V Exchange
+      <small>Lark parallel desk</small>
     </div>
-    <p><a href="https://hxyan2020.github.io/PRD/xauusd-source-monitor/" style="color:var(--accent)">Open desk →</a></p>
-  </header>
-  <main>
-    <section class="panel">
-      <label for="tpl">Template</label>
-      <select id="tpl"></select>
-      <p id="tplDesc" style="color:var(--muted);font-size:.8rem;margin:.5rem 0 0"></p>
-      <label for="vars">Variables (JSON)</label>
-      <textarea id="vars" spellcheck="false"></textarea>
-      <label for="webhook">Webhook URL (optional override)</label>
-      <input id="webhook" type="url" placeholder="https://open.larksuite.com/open-apis/bot/v2/hook/…" />
-      <div class="actions">
-        <button type="button" id="btnRender">Render</button>
-        <button type="button" id="btnSend" class="secondary">Send to Lark</button>
-        <button type="button" id="btnChat" class="secondary">Test OpenAI</button>
+    <button class="chan active" type="button"># risk-ops-xauusd</button>
+    <button class="chan" type="button"># market-condition</button>
+    <button class="chan" type="button"># rca-archive</button>
+    <button class="chan" type="button">Risk Bot</button>
+  </aside>
+
+  <section class="shell">
+    <header class="chat-head">
+      <div>
+        <h1># risk-ops-xauusd</h1>
+        <p>Parallel Lark channel · auto alarms · auto RCA · follow-ups · stats</p>
       </div>
-      <div class="status" id="status"></div>
-    </section>
-    <section class="panel">
-      <label>Payload preview</label>
-      <pre id="out">{}</pre>
-    </section>
-  </main>
+      <span class="pill" id="healthPill">checking…</span>
+    </header>
+    <div class="stream" id="stream" aria-live="polite"></div>
+    <div class="composer">
+      <textarea id="followQ" placeholder="Ask a follow-up about the latest RCA… e.g. Why P0? Which sources?"></textarea>
+      <div class="composer-row">
+        <button class="primary" type="button" id="btnFollow">Send follow-up</button>
+        <button type="button" id="btnIngest">Simulate alarm ingest</button>
+        <button type="button" id="btnDigest">Post stats digest</button>
+        <span class="pill" id="incidentPill">no incident yet</span>
+      </div>
+    </div>
+  </section>
+
+  <aside class="inspector">
+    <h2>Realtime stats</h2>
+    <p class="hint">Collected automatically from alarm ingest, RCA runs, follow-ups, and card actions.</p>
+    <div class="stat-grid" id="statsGrid"></div>
+    <div class="tools">
+      <button class="toolbtn" type="button" id="btnRefresh">Refresh stats / logs</button>
+      <button class="toolbtn primary" type="button" id="btnDemoFlow">Run full demo flow</button>
+    </div>
+    <h2>Event log</h2>
+    <pre class="log" id="logBox">—</pre>
+  </aside>
+
   <script>
-    const $ = (id) => document.getElementById(id)
-    let templates = []
-    let lastPayload = null
+    const stream = document.getElementById('stream')
+    const healthPill = document.getElementById('healthPill')
+    const incidentPill = document.getElementById('incidentPill')
+    const statsGrid = document.getElementById('statsGrid')
+    const logBox = document.getElementById('logBox')
+    let lastIncidentId = null
 
-    function setStatus(msg, kind) {
-      const el = $('status')
-      el.textContent = msg || ''
-      el.className = 'status' + (kind ? ' ' + kind : '')
+    function colorFromTemplate(t) {
+      return t || 'blue'
     }
 
-    async function load() {
-      const h = await fetch('/health').then((r) => r.json())
-      $('healthChip').textContent = h.openai ? 'OpenAI ready' : 'no OpenAI key'
-      const data = await fetch('/api/templates').then((r) => r.json())
-      templates = data.templates || []
-      const sel = $('tpl')
-      sel.innerHTML = templates.map((t) => `<option value="${t.id}">${t.name}</option>`).join('')
-      sel.addEventListener('change', onTpl)
-      onTpl()
+    function extractMd(card) {
+      const els = card?.body?.elements || card?.elements || []
+      const texts = []
+      for (const el of els) {
+        if (el.tag === 'div' && el.text?.content) texts.push(el.text.content)
+      }
+      return texts.join('\n\n')
     }
 
-    function onTpl() {
-      const t = templates.find((x) => x.id === $('tpl').value)
-      if (!t) return
-      $('tplDesc').textContent = t.description || ''
-      $('vars').value = JSON.stringify(t.defaults || {}, null, 2)
+    function extractActions(card) {
+      const els = card?.body?.elements || card?.elements || []
+      for (const el of els) {
+        if (el.tag === 'action') return el.actions || []
+      }
+      return []
     }
 
-    async function render() {
-      setStatus('Rendering…')
-      let vars
-      try { vars = JSON.parse($('vars').value || '{}') } catch (e) {
-        setStatus('Invalid JSON variables', 'err')
+    function appendCard(payload, who = 'Risk Bot') {
+      const card = payload.card || payload
+      const hdr = card.header || {}
+      const msg = document.createElement('div')
+      msg.className = 'msg'
+      const actions = extractActions(card)
+      msg.innerHTML = `
+        <div class="avatar">RB</div>
+        <div>
+          <div class="bubble-meta"><strong>${who}</strong> · bot</div>
+          <div class="lark-card">
+            <div class="hdr ${colorFromTemplate(hdr.template)}">
+              ${hdr.title?.content || 'Card'}
+              <div class="sub">${hdr.subtitle?.content || ''}</div>
+            </div>
+            <div class="body"></div>
+            <div class="actions"></div>
+          </div>
+        </div>`
+      msg.querySelector('.body').textContent = extractMd(card)
+      const actionsEl = msg.querySelector('.actions')
+      for (const a of actions) {
+        const b = document.createElement('button')
+        b.type = 'button'
+        b.textContent = a.text?.content || 'Action'
+        if (a.type === 'primary') b.className = 'primary'
+        if (a.type === 'danger') b.className = 'danger'
+        b.addEventListener('click', () => handleAction(a))
+        actionsEl.appendChild(b)
+      }
+      stream.appendChild(msg)
+      stream.scrollTop = stream.scrollHeight
+    }
+
+    function appendUser(text) {
+      const msg = document.createElement('div')
+      msg.className = 'msg'
+      msg.innerHTML = `
+        <div class="avatar user">YOU</div>
+        <div>
+          <div class="bubble-meta"><strong>You</strong></div>
+          <div class="lark-card"><div class="body"></div></div>
+        </div>`
+      msg.querySelector('.body').textContent = text
+      stream.appendChild(msg)
+      stream.scrollTop = stream.scrollHeight
+    }
+
+    async function handleAction(a) {
+      if (a.url) {
+        window.open(a.url, '_blank', 'noopener')
         return
       }
-      const r = await fetch('/api/lark/render', {
+      let value = a.value
+      try { value = typeof value === 'string' ? JSON.parse(value) : value } catch {}
+      const res = await fetch('/api/lark/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ templateId: $('tpl').value, vars }),
+        body: JSON.stringify({ event: { action: { value }, operator: { open_id: 'demo-user' } } }),
       })
-      const data = await r.json()
-      if (!r.ok) { setStatus(data.error || 'render failed', 'err'); return }
-      lastPayload = data.payload
-      $('out').textContent = JSON.stringify(data.payload, null, 2)
-      setStatus('Rendered ' + data.templateId, 'ok')
+      const data = await res.json()
+      if (data.handled === 'run_rca') {
+        await refresh()
+        const recent = await (await fetch('/api/recent?limit=1')).json()
+        const inc = recent.incidents?.[0]
+        if (inc) {
+          lastIncidentId = inc.id
+          incidentPill.textContent = inc.id
+          const rendered = await (await fetch('/api/lark/render', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              templateId: 'rca-report',
+              vars: {
+                title: inc.title,
+                severity: inc.severity,
+                model: inc.model,
+                skills: inc.skills,
+                thinking: inc.thinking,
+                next_steps: inc.nextSteps,
+                sources: (inc.sources || []).map((u) => `- ${u}`).join('\n'),
+                incident_id: inc.id,
+                report_excerpt: (inc.report || '').slice(0, 900),
+              },
+            }),
+          })).json()
+          appendCard(rendered.payload)
+        }
+      }
+      await refresh()
     }
 
-    async function send() {
-      setStatus('Sending…')
-      let vars
-      try { vars = JSON.parse($('vars').value || '{}') } catch (e) {
-        setStatus('Invalid JSON variables', 'err')
-        return
-      }
-      const body = {
-        templateId: $('tpl').value,
-        vars,
-        webhookUrl: $('webhook').value.trim() || undefined,
-      }
-      const r = await fetch('/api/lark/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      const data = await r.json()
-      $('out').textContent = JSON.stringify(data, null, 2)
-      if (!r.ok) { setStatus(data.error || 'send failed', 'err'); return }
-      setStatus(data.dryRun ? 'Dry-run (set LARK_WEBHOOK_URL to deliver)' : 'Sent to Lark', data.dryRun ? '' : 'ok')
-    }
-
-    async function testChat() {
-      setStatus('Calling OpenAI…')
-      const r = await fetch('/api/chat', {
+    async function ingestDemo() {
+      const res = await fetch('/api/alarms/ingest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          provider: 'openai',
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: 'Reply in one short sentence.' },
-            { role: 'user', content: 'Confirm Lark messenger OpenAI proxy is live for V Exchange Risk Tool.' },
+          title: '[RED] Sudden stress — 6 sources breached; no clear cause found',
+          severity: 'P0',
+          contract: 'XAUUSD',
+          trigger: '≥3 sources in Alert vs composite',
+          breached: 'BINANCE, BYBIT, OKEX, LP_A, LP_B, LP_C',
+          summary: 'Index-input stress pattern. Traders face mark jumps / liquidation risk if basket weights stay unchanged.',
+          facts: 'XAUUSD MVP alert: multi-source breach vs composite. Sudden stress — no clear cause. Check Mark/Index and LP dislocation.',
+          sources: [
+            'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP',
+            'https://www.bitget.com/futures/usdt/XAUUSDT',
+            'https://www.kitco.com/news/article/2026-10-30/gold-prices-plunge-one-year-low-below-3900-higher-oil-prices-fuel-fears',
           ],
+          autoAnalyze: true,
         }),
       })
-      const data = await r.json()
-      $('out').textContent = JSON.stringify(data, null, 2)
-      if (!r.ok) { setStatus(data.error || 'chat failed', 'err'); return }
-      setStatus('OpenAI OK', 'ok')
+      const data = await res.json()
+      if (data.alertSend?.payload) appendCard(data.alertSend.payload)
+      else if (data.alarm) {
+        const rendered = await (await fetch('/api/lark/render', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            templateId: 'risk-alert',
+            vars: {
+              title: data.alarm.title,
+              severity: data.alarm.severity,
+              contract: data.alarm.contract,
+              trigger: data.alarm.trigger,
+              breached: data.alarm.breached,
+              summary: data.alarm.summary,
+              alert_id: data.alarm.id,
+            },
+          }),
+        })).json()
+        appendCard(rendered.payload)
+      }
+      if (data.rca?.incident) {
+        lastIncidentId = data.rca.incident.id
+        incidentPill.textContent = data.rca.incident.id
+        // fetch last send payload via re-render
+        const rendered = await (await fetch('/api/lark/render', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            templateId: 'rca-report',
+            vars: {
+              title: data.rca.incident.title,
+              severity: data.rca.incident.severity,
+              model: data.rca.incident.model,
+              skills: data.rca.incident.skills,
+              thinking: data.rca.incident.thinking,
+              next_steps: data.rca.incident.nextSteps,
+              incident_id: data.rca.incident.id,
+              sources: (data.rca.incident.sources || []).map((u) => `- ${u}`).join('\n'),
+              report_excerpt: (data.rca.incident.report || '').slice(0, 900),
+            },
+          }),
+        })).json()
+        appendCard(rendered.payload)
+      }
+      await refresh()
     }
 
-    $('btnRender').onclick = render
-    $('btnSend').onclick = send
-    $('btnChat').onclick = testChat
-    load().catch((e) => setStatus(String(e), 'err'))
+    async function sendFollow() {
+      const q = document.getElementById('followQ').value.trim()
+      if (!q) return
+      appendUser(q)
+      document.getElementById('followQ').value = ''
+      const res = await fetch('/api/followup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q, incidentId: lastIncidentId }),
+      })
+      const data = await res.json()
+      if (data.payload) appendCard(data.payload)
+      if (data.followUp?.incidentId) {
+        lastIncidentId = data.followUp.incidentId
+        incidentPill.textContent = lastIncidentId
+      }
+      await refresh()
+    }
+
+    async function postDigest() {
+      const res = await fetch('/api/stats/digest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      })
+      const data = await res.json()
+      if (data.payload) appendCard(data.payload)
+      await refresh()
+    }
+
+    async function refresh() {
+      const h = await (await fetch('/health')).json()
+      healthPill.textContent = h.ok
+        ? `ok · autoAnalyze ${h.autoAnalyze ? 'on' : 'off'} · openai ${h.openai ? 'yes' : 'no'}`
+        : 'down'
+      healthPill.className = 'pill ok'
+      const s = await (await fetch('/api/stats/summary')).json()
+      statsGrid.innerHTML = [
+        ['Alarms', s.alarmsTotal],
+        ['RCAs', s.rcaTotal],
+        ['Open', s.rcaOpen],
+        ['Follow-ups', s.followups],
+      ].map(([k, v]) => `<div class="stat"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')
+      const recent = await (await fetch('/api/recent?limit=12')).json()
+      logBox.textContent = (recent.logs || [])
+        .map((l) => `${new Date(l.at).toLocaleTimeString()}  ${l.kind}  ${l.alarmId || l.incidentId || l.followUpId || ''}`)
+        .join('\n') || '—'
+      if (!lastIncidentId && recent.incidents?.[0]) {
+        lastIncidentId = recent.incidents[0].id
+        incidentPill.textContent = lastIncidentId
+      }
+    }
+
+    document.getElementById('btnIngest').onclick = () => ingestDemo()
+    document.getElementById('btnFollow').onclick = () => sendFollow()
+    document.getElementById('btnDigest').onclick = () => postDigest()
+    document.getElementById('btnRefresh').onclick = () => refresh()
+    document.getElementById('btnDemoFlow').onclick = async () => {
+      stream.innerHTML = ''
+      await ingestDemo()
+      document.getElementById('followQ').value = 'Why is severity P0 and which data sources should I verify first?'
+      await sendFollow()
+      await postDigest()
+    }
+
+    refresh()
   </script>
 </body>
 </html>

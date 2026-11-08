@@ -14,12 +14,12 @@ async function req(path, body) {
 }
 
 const health = await req('/health')
-console.log('health', health.ok, 'templates', health.templates)
+console.log('health', health.ok, 'mode', health.mode, 'templates', health.templates)
 
 const list = await req('/api/templates')
 console.log('listed', list.templates.length)
 
-for (const id of ['risk-alert', 'rca-report', 'market-briefing']) {
+for (const id of ['risk-alert', 'rca-report', 'market-briefing', 'follow-up', 'stats-digest']) {
   const rendered = await req('/api/lark/render', {
     templateId: id,
     vars: { title: `Smoke ${id}`, severity: 'P1', severity_tag: 'YELLOW' },
@@ -33,6 +33,37 @@ const dry = await req('/api/lark/send', {
   vars: { title: 'Smoke send', alert_id: 'SMOKE-1' },
 })
 console.log('send dryRun', Boolean(dry.dryRun || dry.ok))
+
+const challenge = await req('/api/lark/events', { type: 'url_verification', challenge: 'abc' })
+if (challenge.challenge !== 'abc') throw new Error('url verification failed')
+console.log('events challenge ok')
+
+const ingest = await req('/api/alarms/ingest', {
+  title: 'Smoke multi-source alert',
+  severity: 'P0',
+  trigger: '≥3 alert sources',
+  breached: 'OKX, Bitget',
+  summary: 'Sudden stress — no clear cause',
+  facts: 'XAUUSD sources breached vs composite. Sudden stress. Check Mark/Index.',
+  autoAnalyze: true,
+})
+console.log('ingest alarm', ingest.alarm?.id, 'rca', ingest.rca?.incident?.id || 'none')
+
+const follow = await req('/api/followup', {
+  incidentId: ingest.rca?.incident?.id,
+  question: 'Why is severity P0?',
+})
+console.log('followup', Boolean(follow.followUp?.answer))
+
+const stats = await req('/api/stats/summary')
+console.log('stats', {
+  alarms: stats.alarmsTotal,
+  rca: stats.rcaTotal,
+  followups: stats.followups,
+})
+
+const digest = await req('/api/stats/digest', {})
+console.log('digest', Boolean(digest.payload?.msg_type))
 
 if (health.openai) {
   const chat = await req('/api/chat', {

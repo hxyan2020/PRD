@@ -1,39 +1,22 @@
-# Lark Messenger Server
+# Lark Messenger Server — parallel V Exchange Risk desk
 
-Dynamic **Lark interactive message templates** + **OpenAI chat proxy** for the V Exchange Risk Tool desk.
+Lark / Feishu channel that mirrors the web **V Exchange Risk Tool**:
 
-Repo path: `lark-messenger-server/` (lives beside `xauusd-source-monitor/` on GitHub).
+- Collect alarms automatically  
+- Trigger RCA automatically  
+- Answer follow-up questions automatically  
+- Log everything for realtime stats  
 
-## What it does
+Web desk (unchanged): `../xauusd-source-monitor/`  
+Deploy checklist: **[LARK_DEPLOY.md](./LARK_DEPLOY.md)**
 
-| Endpoint | Purpose |
-| --- | --- |
-| `GET /` | Template playground UI |
-| `GET /health` | Status + which keys are loaded |
-| `GET /api/templates` | List template metadata |
-| `POST /api/lark/render` | Build Lark card JSON from `templateId` + `vars` |
-| `POST /api/lark/send` | Render + POST to Lark bot webhook (or dry-run) |
-| `POST /api/chat` | OpenAI / Gemini / OpenRouter proxy (same shape as desk Investigate) |
-
-### Built-in templates
-
-- `risk-alert` — monitor / threshold alert card (Ack · Escalate · Open desk)
-- `rca-report` — Investigate RCA summary card
-- `market-briefing` — Market Condition red/yellow/green briefing
-
-Templates are JSON under `templates/`. Card layout is rendered in `server.mjs` (Lark interactive schema 2.0).
-
-## Run locally
+## Quick start
 
 ```bash
 cd lark-messenger-server
-# Optional: copy keys (never commit)
-cp ../xauusd-source-monitor/.env .env   # OPENAI_API_KEY=…
-# Optional Lark delivery
-# LARK_WEBHOOK_URL=https://open.larksuite.com/open-apis/bot/v2/hook/...
-
+# optional: OPENAI_API_KEY + LARK_WEBHOOK_URL in .env
 npm start
-# → http://127.0.0.1:8790/
+# → http://127.0.0.1:8790/   (Lark-style chat UI)
 ```
 
 Smoke:
@@ -42,43 +25,41 @@ Smoke:
 npm test
 ```
 
+## API
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /` | Lark message UI playground |
+| `GET /health` | Status |
+| `GET /api/templates` | Card templates |
+| `POST /api/lark/render` | Build card JSON |
+| `POST /api/lark/send` | Render + webhook (or dry-run) |
+| `POST /api/alarms/ingest` | **Collect alarm** → alert card → optional auto RCA |
+| `POST /api/rca/run` | **Trigger analysis** |
+| `POST /api/followup` | **Answer follow-up** |
+| `POST /api/lark/events` | Lark URL verification + card/IM callbacks |
+| `GET /api/stats/summary` | **Realtime counters** |
+| `POST /api/stats/digest` | Push stats card to Lark |
+| `GET /api/recent` | Recent alarms / RCAs / follow-ups / logs |
+| `POST /api/chat` | OpenAI / Gemini / OpenRouter proxy |
+
+## Templates
+
+- `risk-alert` — alarm card (Ack · Escalate · Run RCA · Open desk)  
+- `rca-report` — path, sources, recommendations  
+- `market-briefing` — Market Condition card  
+- `follow-up` — thread Q&A reply  
+- `stats-digest` — realtime stats  
+
 ## Env
 
-| Variable | Required | Notes |
-| --- | --- | --- |
-| `OPENAI_API_KEY` | for `/api/chat` | Also reads `../xauusd-source-monitor/.env` |
-| `LARK_WEBHOOK_URL` | for live send | Without it, `/api/lark/send` returns dry-run payload |
-| `PORT` | no | Default `8790` |
+See [LARK_DEPLOY.md](./LARK_DEPLOY.md). Minimal local:
 
-`.env` is gitignored. **Never** put keys in the gh-pages SPA bundle.
+| Variable | Notes |
+| --- | --- |
+| `OPENAI_API_KEY` | Better RCA + follow-ups (rules fallback if absent) |
+| `LARK_WEBHOOK_URL` | Live send; otherwise dry-run |
+| `LARK_AUTO_ANALYZE` | Default on (`0` to disable) |
+| `DESK_BASE_URL` | Deep links to the web desk |
 
-## Point the Risk Tool desk at this proxy
-
-1. Start this server (`npm start`).
-2. Open [setup-llm.html](https://hxyan2020.github.io/PRD/xauusd-source-monitor/setup-llm.html) (or local `xauusd-source-monitor/public/setup-llm.html`).
-3. Set **Proxy base** to `http://127.0.0.1:8790` (or your hosted URL) and save.
-4. Investigate → **Run RCA** uses `POST {proxyBase}/api/chat` instead of shipping the key in public JS.
-
-You can also paste a personal OpenAI key into Investigate settings (BYOK, localStorage only).
-
-## Host on your stack
-
-Any Node 20+ host works (Fly, Railway, Render, VPS):
-
-```bash
-git clone https://github.com/hxyan2020/PRD.git
-cd PRD/lark-messenger-server
-# set OPENAI_API_KEY + LARK_WEBHOOK_URL in the host secrets UI
-npm start
-```
-
-Expose HTTPS, then set the desk `proxyBase` / `LARK_WEBHOOK_URL` accordingly.
-
-## Example: render a risk alert
-
-```bash
-curl -s http://127.0.0.1:8790/api/lark/render \
-  -H 'Content-Type: application/json' \
-  -d '{"templateId":"risk-alert","vars":{"title":"OKX mark drift","severity":"P1","breached":"OKX","alert_id":"ALT-42"}}' \
-  | jq .
-```
+`.data/` holds the local event store (gitignored). Replace with Postgres in production.
