@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
-import { modelOptions, runLlm } from '../copilot/engine/llm'
+import { hasLlmCredentials, modelOptions, runLlm } from '../copilot/engine/llm'
 import {
   flattenKbDocs,
   loadHistory,
@@ -137,31 +137,48 @@ export function InvestigatePage() {
       let report = rules.body
       let provider = settings.provider
       let modelLabel = 'rules'
+      let llmNote: string | null = null
 
       if (settings.provider !== 'rules') {
-        modelLabel = `${settings.provider}/${settings.model}`
-        const llmText = await runLlm({
-          settings,
-          userPrompt: analysisText,
-          skillContext: rules.skillContext,
-          kbContext:
-            rules.kbContext ||
-            knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
-        })
-        report = [
-          `# LLM RCA（${modelLabel}）`,
-          '',
-          llmText,
-          '',
-          '----------',
-          '',
-          '# Local skills + knowledge report',
-          '',
-          rules.body,
-        ].join('\n')
+        if (!hasLlmCredentials(settings)) {
+          provider = 'rules'
+          modelLabel = 'rules'
+          llmNote = t('llmNeedKey')
+        } else {
+          try {
+            modelLabel = `${settings.provider}/${settings.model}`
+            const llmText = await runLlm({
+              settings,
+              userPrompt: analysisText,
+              skillContext: rules.skillContext,
+              kbContext:
+                rules.kbContext ||
+                knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
+            })
+            report = [
+              `# LLM RCA（${modelLabel}）`,
+              '',
+              llmText,
+              '',
+              '----------',
+              '',
+              '# Local skills + knowledge report',
+              '',
+              rules.body,
+            ].join('\n')
+          } catch (llmErr) {
+            provider = 'rules'
+            modelLabel = 'rules'
+            llmNote = `${t('llmFallbackRules')} ${
+              llmErr instanceof Error ? llmErr.message : String(llmErr)
+            }`
+          }
+        }
       } else {
         provider = 'rules'
       }
+
+      if (llmNote) setError(llmNote)
 
       const rec: IncidentRecord = {
         id: `inc_${Date.now()}`,

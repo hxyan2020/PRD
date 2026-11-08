@@ -16,14 +16,18 @@ const SETTINGS_KEY = 'vex_risk_copilot_settings_v1'
 /** Shared with xauusd-source-monitor briefings */
 export const BRIEFINGS_KEY = 'xauusd-monitor-briefings-v8'
 
+declare const __VEX_LLM_PROXY_BASE__: string
+
 const DEFAULT_SETTINGS: CopilotSettings = {
-  provider: 'rules',
-  model: 'rules',
+  /** Prefer real LLM; falls back to local rules if no key / proxy. */
+  provider: 'gemini',
+  model: 'gemini-2.0-flash',
   openaiKey: '',
   anthropicKey: '',
   geminiKey: '',
   openrouterKey: '',
-  proxyBase: '',
+  /** Optional hosted /api/chat base (Vercel or local llm-proxy). */
+  proxyBase: typeof __VEX_LLM_PROXY_BASE__ === 'string' ? __VEX_LLM_PROXY_BASE__ : '',
 }
 
 function readJson<T>(key: string, fallback: T): T {

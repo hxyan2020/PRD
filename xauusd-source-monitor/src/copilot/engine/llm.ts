@@ -126,34 +126,59 @@ async function callGeminiDirect(
   return text
 }
 
-async function callOpenRouterDirect(
+async function callOpenAiCompatible(
   settings: CopilotSettings,
   messages: { role: string; content: string }[],
+  kind: 'openai' | 'openrouter',
 ): Promise<string> {
-  const key = settings.openrouterKey.trim()
-  if (!key) throw new Error('请在设置中填写 OpenRouter API Key。')
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const key = kind === 'openai' ? settings.openaiKey.trim() : settings.openrouterKey.trim()
+  if (!key) {
+    throw new Error(
+      kind === 'openai'
+        ? '请在设置中填写 OpenAI API Key（或配置 /api/chat 代理）。'
+        : '请在设置中填写 OpenRouter API Key。',
+    )
+  }
+  const url =
+    kind === 'openrouter'
+      ? 'https://openrouter.ai/api/v1/chat/completions'
+      : 'https://api.openai.com/v1/chat/completions'
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${key}`,
-      'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : 'https://hxyan2020.github.io',
-      'X-Title': 'V Exchange Risk Copilot',
+      ...(kind === 'openrouter'
+        ? {
+            'HTTP-Referer':
+              typeof window !== 'undefined' ? window.location.origin : 'https://hxyan2020.github.io',
+            'X-Title': 'V Exchange Risk Copilot',
+          }
+        : {}),
     },
     body: JSON.stringify({
-      model: settings.model || 'openai/gpt-4o-mini',
+      model:
+        settings.model || (kind === 'openrouter' ? 'openai/gpt-4o-mini' : 'gpt-4o-mini'),
       messages,
       temperature: 0.2,
     }),
   })
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`OpenRouter 调用失败 (${res.status}): ${err.slice(0, 400)}`)
+    throw new Error(
+      `${kind === 'openrouter' ? 'OpenRouter' : 'OpenAI'} 调用失败 (${res.status}): ${err.slice(0, 400)}`,
+    )
   }
   const data = (await res.json()) as { choices?: { message?: { content?: string } }[] }
   const text = data.choices?.[0]?.message?.content || ''
-  if (!text) throw new Error('OpenRouter 返回空内容')
+  if (!text) throw new Error(`${kind === 'openrouter' ? 'OpenRouter' : 'OpenAI'} 返回空内容`)
   return text
+}
+
+export function hasLlmCredentials(settings: CopilotSettings): boolean {
+  if (settings.provider === 'rules') return false
+  if (settings.proxyBase.trim()) return true
+  return Boolean(keyFor(settings))
 }
 
 export async function runLlm(args: {
@@ -190,9 +215,10 @@ export async function runLlm(args: {
   if (viaProxy) return viaProxy
 
   if (settings.provider === 'gemini') return callGeminiDirect(settings, messages)
-  if (settings.provider === 'openrouter') return callOpenRouterDirect(settings, messages)
+  if (settings.provider === 'openrouter') return callOpenAiCompatible(settings, messages, 'openrouter')
+  if (settings.provider === 'openai') return callOpenAiCompatible(settings, messages, 'openai')
 
   throw new Error(
-    `${settings.provider} 需服务端代理（/api/chat）或改用 Gemini / OpenRouter BYOK。请在「Copilot 设置」填写密钥，或把 proxyBase 指到已配置密钥的 Vercel 部署。`,
+    `${settings.provider} 需服务端代理（/api/chat）或改用 Gemini / OpenRouter / OpenAI BYOK。请在「设置」填写密钥，或把 proxyBase 指到已配置密钥的部署。`,
   )
 }
