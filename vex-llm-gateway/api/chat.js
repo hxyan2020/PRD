@@ -1,12 +1,10 @@
 /**
  * Authenticated LLM gateway: POST /api/chat
- * - Cursor signed-in identity (private/team app), or
- * - DESK_GATEWAY_TOKEN via x-desk-token header
- * - Hard daily spend cap (default USD 10) + basic rate limit
+ * - Desk token only (DESK_GATEWAY_TOKEN via x-desk-token) — no open Cursor-identity spend
+ * - Per-caller daily spend cap (default USD 10) + basic rate limit
  * Host OPENAI_API_KEY never accepted from the client body.
  */
-import { timingSafeEqual } from 'node:crypto'
-import { getIdentity } from '../cursor/identity.js'
+import { createHash, timingSafeEqual } from 'node:crypto'
 
 const DAILY_BUDGET_USD = Number(process.env.DAILY_BUDGET_USD || 10)
 const RATE_LIMIT_PER_MIN = Number(process.env.RATE_LIMIT_PER_MIN || 20)
@@ -18,6 +16,10 @@ const recentCalls = new Map()
 
 function dayKey() {
   return new Date().toISOString().slice(0, 10)
+}
+
+function callerBudgetKey(caller) {
+  return `${dayKey()}:${caller}`
 }
 
 function corsHeaders(request) {
@@ -56,23 +58,24 @@ function safeEqual(a, b) {
   return timingSafeEqual(aa, bb)
 }
 
-async function authorize(request) {
-  const expected = process.env.DESK_GATEWAY_TOKEN || ''
-  const provided = request.headers.get('x-desk-token') || ''
-  if (expected && safeEqual(expected, provided)) {
-    return { ok: true, caller: 'desk-token', kind: 'desk' }
-  }
+function fingerprintToken(token) {
+  return createHash('sha256').update(String(token), 'utf8').digest('hex').slice(0, 24)
+}
 
-  const identity = await getIdentity(request)
-  // Accept only gate-verified Cursor viewers — never the local simulated identity
-  // (simulated would otherwise authorize every unauthenticated tunnel/Pages caller).
-  if (identity.verified && !identity.simulated) {
-    return { ok: true, caller: `id:${identity.sub}`, kind: 'cursor' }
+/**
+ * Public-safe auth: only a matching DESK_GATEWAY_TOKEN authorizes spend.
+ * Cursor identity alone is never enough (would let any signed-in visitor spend).
+ */
+function authorize(request) {
+  const expected = process.env.DESK_GATEWAY_TOKEN || ''
+  if (!expected) {
+    return { ok: false, reason: 'desk_token_not_configured' }
   }
-  return {
-    ok: false,
-    reason: identity.simulated ? 'simulated_identity_rejected' : identity.reason || 'unauthorized',
+  const provided = request.headers.get('x-desk-token') || ''
+  if (!safeEqual(expected, provided)) {
+    return { ok: false, reason: 'invalid_desk_token' }
   }
+  return { ok: true, caller: `desk:${fingerprintToken(provided)}`, kind: 'desk' }
 }
 
 function rateLimit(caller) {
@@ -85,8 +88,8 @@ function rateLimit(caller) {
   return true
 }
 
-function budgetState() {
-  const key = dayKey()
+function budgetState(caller) {
+  const key = callerBudgetKey(caller)
   let row = dailySpend.get(key)
   if (!row) {
     row = { spentUsd: 0, calls: 0 }
@@ -135,10 +138,10 @@ export async function OPTIONS(request) {
 
 export async function POST(request) {
   try {
-    const auth = await authorize(request)
+    const auth = authorize(request)
     if (!auth.ok) {
       return json(request, 401, {
-        error: 'Unauthorized — sign in to the gateway app or send a valid desk token.',
+        error: 'Unauthorized — send a valid desk token.',
         reason: auth.reason,
       })
     }
@@ -146,10 +149,10 @@ export async function POST(request) {
       return json(request, 429, { error: 'Rate limit exceeded. Try again in a minute.' })
     }
 
-    const budget = budgetState()
+    const budget = budgetState(auth.caller)
     if (budget.spentUsd >= DAILY_BUDGET_USD) {
       return json(request, 429, {
-        error: `Daily spend limit of USD ${DAILY_BUDGET_USD} reached. Resets at UTC midnight.`,
+        error: `Daily spend limit of USD ${DAILY_BUDGET_USD} reached for this caller. Resets at UTC midnight.`,
         spentUsd: Number(budget.spentUsd.toFixed(4)),
       })
     }
@@ -193,14 +196,17 @@ export async function POST(request) {
   }
 }
 
+/** Public GET: no config, keys, or spend. Authenticated GET returns that caller's spend only. */
 export async function GET(request) {
-  const auth = await authorize(request)
-  const budget = budgetState()
+  const auth = authorize(request)
+  if (!auth.ok) {
+    return json(request, 200, { ok: true, service: 'vex-llm-gateway' })
+  }
+  const budget = budgetState(auth.caller)
   return json(request, 200, {
     ok: true,
     service: 'vex-llm-gateway',
-    openai: Boolean(process.env.OPENAI_API_KEY),
-    authorized: auth.ok,
+    ready: Boolean(process.env.OPENAI_API_KEY),
     spend: {
       day: dayKey(),
       spentUsd: Number(budget.spentUsd.toFixed(4)),

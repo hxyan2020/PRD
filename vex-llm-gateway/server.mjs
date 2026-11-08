@@ -48,7 +48,9 @@ const server = http.createServer(async (req, res) => {
     const html = fs.readFileSync(path.join(__dirname, 'index.html'))
     response = new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } })
   } else if (url.pathname === '/health') {
-    response = await chat.GET(request)
+    response = new Response(JSON.stringify({ ok: true }), {
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    })
   } else {
     response = new Response('not found', { status: 404 })
   }
