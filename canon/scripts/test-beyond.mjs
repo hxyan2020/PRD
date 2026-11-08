@@ -96,4 +96,9 @@ const itunesMerged = mergeExtraTracks({}, [itunesExtra]);
 saveExtraTracks(itunesMerged, memory);
 assert.equal(loadExtraTracks(memory)["ext-itunes-9"].name, "Apocalypse");
 
+// Archive total grows with album extras (catalog seed + unique extras).
+const seedCount = 1000;
+const albumExtras = mergeExtraTracks(merged, [itunesExtra]);
+assert.equal(seedCount + Object.keys(albumExtras).length, 1002);
+
 console.log("beyond tests ok");

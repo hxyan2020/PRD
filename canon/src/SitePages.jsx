@@ -16,11 +16,12 @@ const FOOTER_LINKS = [
   ["terms", "termsNav"],
 ];
 
-export function SiteMenu({ page }) {
+export function SiteMenu({ page, archiveTotalLabel = "" }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
   const navId = useId();
+  const totalParams = archiveTotalLabel ? { total: archiveTotalLabel } : {};
 
   useEffect(() => {
     const onHash = () => setOpen(false);
@@ -68,7 +69,7 @@ export function SiteMenu({ page }) {
           const active = hash ? page === hash : page === "home";
           return (
             <a key={key} href={hash ? `#${hash}` : "#"} className={active ? "is-on" : ""}>
-              {t(key)}
+              {t(key, totalParams)}
             </a>
           );
         })}

@@ -53,7 +53,10 @@ assert.equal(t("zh", "termsNav"), "使用条款");
 assert.equal(t("zh", "listenNav"), "为你推荐");
 assert.equal(t("zh", "prefsNav"), "偏好");
 assert.equal(t("zh", "profileNav"), "我的资料");
-assert.equal(t("zh", "archiveNav"), "一千首");
+assert.equal(t("zh", "archiveNav", { total: "1,001" }), "1,001 首");
+assert.match(t("en", "lede", { total: "1,001" }), /1,001/);
+assert.match(t("en", "emptyInCanon", { q: "test", total: "1,001" }), /1,001/);
+assert.match(t("en", "statsNote", { total: "1,002" }), /1,002/);
 assert.equal(t("zh", "menu"), "菜单");
 assert.equal(t("zh", "collect"), "收藏");
 assert.equal(t("ar", "listen"), "استمع");
@@ -257,7 +260,7 @@ for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(PORTRAITS[locale]).sort(), portraitKeys, `${locale} portrait copy keys`);
   assert.match(t(locale, "portraitsOf", { name: "Queen" }), /Queen/);
 }
-assert.match(t("en", "docTitle"), /1000 Music/);
+assert.match(t("en", "docTitle", { total: "1,000" }), /1,000 Music/);
 assert.match(t("en", "lyricsMissing"), /Music/);
 assert.equal(t("en", "emptyFilters").includes("recordings"), false);
 

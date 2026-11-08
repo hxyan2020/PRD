@@ -26,7 +26,7 @@ import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, form
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
 import { useSpotify } from "./useSpotify.js";
-import { decadeOf, uniqueSorted } from "./format.js";
+import { decadeOf, formatCount, uniqueSorted } from "./format.js";
 import { formatStatus } from "./i18n.js";
 import { displayEraLabel, displayGenre, displayReleaseCountry } from "./display-labels.js";
 import { releaseIncludesCountry, uniqueSingleCountries } from "./country-flags.js";
@@ -151,15 +151,28 @@ export default function App() {
 
   const tracks = data?.tracks || [];
   const extraList = Object.values(extras);
-  const library = useMemo(() => {
+  /** Catalog + Music the listener added to their Canon album (persisted extras). */
+  const archiveTracks = useMemo(() => {
     const byId = new Map();
     for (const track of tracks) byId.set(track.id, track);
     for (const track of extraList) if (!byId.has(track.id)) byId.set(track.id, track);
+    return [...byId.values()];
+  }, [tracks, extraList]);
+  const archiveTotal = archiveTracks.length || Number(data?.count) || 0;
+  const totalLabel = formatCount(archiveTotal, locale);
+  const library = useMemo(() => {
+    const byId = new Map();
+    for (const track of archiveTracks) byId.set(track.id, track);
     for (const track of outside) if (!byId.has(track.id)) byId.set(track.id, track);
     return [...byId.values()];
-  }, [tracks, extras, outside]);
+  }, [archiveTracks, outside]);
   const selected = library.find((item) => item.id === selectedId) || null;
   const playing = library.find((item) => item.id === playingId) || selected;
+
+  useEffect(() => {
+    if (!archiveTotal) return;
+    document.title = t("docTitle", { total: totalLabel });
+  }, [archiveTotal, totalLabel, t, locale]);
 
   useEffect(() => {
     if (selected) spotify.checkSaved(selected);
@@ -190,15 +203,17 @@ export default function App() {
   }, [selectedId, selected?.enriched]);
 
   const facets = useMemo(() => {
-    const genres = uniqueSorted(tracks.flatMap((item) => (item.genres?.length ? item.genres : [item.genre])));
-    const eras = uniqueSorted(tracks.map((item) => decadeOf(item.year)));
-    const countries = uniqueSingleCountries(tracks.map((item) => item.releaseCountry));
+    const genres = uniqueSorted(
+      archiveTracks.flatMap((item) => (item.genres?.length ? item.genres : [item.genre])),
+    );
+    const eras = uniqueSorted(archiveTracks.map((item) => decadeOf(item.year)));
+    const countries = uniqueSingleCountries(archiveTracks.map((item) => item.releaseCountry));
     return { genres, eras, countries };
-  }, [tracks]);
+  }, [archiveTracks]);
 
   const visible = useMemo(() => {
     const q = query.trim();
-    const list = tracks.filter((item) => {
+    const list = archiveTracks.filter((item) => {
       if (genre !== ALL_GENRES && item.genre !== genre && !(item.genres || []).includes(genre)) return false;
       if (era !== ALL_ERAS && decadeOf(item.year) !== era) return false;
       if (country !== ALL_COUNTRIES && !releaseIncludesCountry(item.releaseCountry, country)) return false;
@@ -206,7 +221,7 @@ export default function App() {
       return trackMatchesQuery(item, q);
     });
     return sortTracks(list, sort);
-  }, [tracks, query, genre, era, country, sort]);
+  }, [archiveTracks, query, genre, era, country, sort]);
 
   const outsideVisible = useMemo(() => {
     const list = outside.filter((item) => extraMatchesEra(item, era, decadeOf));
@@ -288,7 +303,7 @@ export default function App() {
 
   return (
     <div className={`app ${selected ? "has-drawer" : ""}`}>
-      <SiteMenu page={page} />
+      <SiteMenu page={page} archiveTotalLabel={totalLabel} />
       {spotify.status ? (
         <p className="spotify-status app-spotify-status" role="status">
           {formatStatus(locale, spotify.status)}
@@ -303,7 +318,7 @@ export default function App() {
               <span className="brand-name">Canon</span>
             </a>
           </h1>
-          <p className="lede">{t("lede")}</p>
+          <p className="lede">{t("lede", { total: totalLabel })}</p>
         </div>
         <div className="stats-wrap">
           <dl className="stats" aria-label={t("libraryCounts")}>
@@ -311,7 +326,7 @@ export default function App() {
               <dt>{t("songsInArchive")}</dt>
               <dd>
                 <a href="#archive" className="stats-link">
-                  {data.count}
+                  {archiveTotal}
                 </a>
               </dd>
             </div>
@@ -328,7 +343,7 @@ export default function App() {
               </dd>
             </div>
           </dl>
-          <p className="stats-note">{t("statsNote")}</p>
+          <p className="stats-note">{t("statsNote", { total: totalLabel })}</p>
         </div>
       </header>
 
@@ -348,7 +363,7 @@ export default function App() {
           <input
             className="search"
             type="search"
-            placeholder={t("searchPlaceholder")}
+            placeholder={t("searchPlaceholder", { total: totalLabel })}
             value={queryDraft}
             onChange={(e) => {
               const value = e.target.value;
@@ -402,9 +417,15 @@ export default function App() {
         </select>
       </form>
 
-      <p className="result-count">{t("showing", { n: visible.length, total: tracks.length })}</p>
+      <p className="result-count">
+        {t("showing", { n: formatCount(visible.length, locale), total: totalLabel })}
+      </p>
       {visible.length === 0 ? (
-        <p className="empty">{query.trim() ? t("emptyInCanon", { q: query.trim() }) : t("emptyFilters")}</p>
+        <p className="empty">
+          {query.trim()
+            ? t("emptyInCanon", { q: query.trim(), total: totalLabel })
+            : t("emptyFilters")}
+        </p>
       ) : null}
 
       <main className="grid" aria-label={t("catalog")}>
@@ -475,7 +496,7 @@ export default function App() {
       ) : (
         <>
           <DailyRecommend
-            tracks={tracks}
+            tracks={archiveTracks}
             onListen={(track) => openTrack(track, true)}
             onView={(track) => rememberView(track.id)}
             onRecommend={onRecommend}
@@ -504,8 +525,12 @@ export default function App() {
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
           {selected.extra && albumAskId === selected.id ? (
-            <div className="album-ask" role="region" aria-label={t("albumAsk", { name: selected.name })}>
-              <p>{t("albumAsk", { name: selected.name })}</p>
+            <div
+              className="album-ask"
+              role="region"
+              aria-label={t("albumAsk", { name: selected.name, total: totalLabel })}
+            >
+              <p>{t("albumAsk", { name: selected.name, total: totalLabel })}</p>
               <div className="card-actions drawer-actions album-ask-actions">
                 <button type="button" onClick={() => addOutsideToAlbum(selected)}>
                   {t("albumAskYes")}

@@ -140,7 +140,7 @@ export function useSpotify() {
       setPendingBeyond(true);
       setStatus({ key: "spotify.needConnect" });
       await connect();
-      throw new Error("Authorize Spotify to stream titles beyond the 1,000-work canon.");
+      throw new Error("Authorize Spotify to stream titles beyond the listening archive.");
     }
     setBusy(true);
     try {
