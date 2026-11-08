@@ -347,20 +347,24 @@ export function InvestigatePage() {
       <div className="copilot-grid">
         <div>
           <h3>{t('copilotNewIncident')}</h3>
-          <label className="field-label">{t('copilotIncidentTitle')}</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="XAUUSD Mark/Index…"
-          />
 
-          <label className="field-label">{t('investigateScreenshots')}</label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(e) => onImages(e.target.files)}
-          />
+          <label className="field-label" htmlFor="investigate-screenshots">
+            {t('investigateScreenshots')}
+          </label>
+          <label className="file-upload-btn" htmlFor="investigate-screenshots">
+            <input
+              id="investigate-screenshots"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => onImages(e.target.files)}
+            />
+            <span>
+              {images.length
+                ? t('investigateUploadSelected').replace('{n}', String(images.length))
+                : t('investigateUploadCta')}
+            </span>
+          </label>
           {images.length ? (
             <div className="investigate-previews">
               {images.map((src, i) => (

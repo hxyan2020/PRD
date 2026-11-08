@@ -82,6 +82,8 @@ const en: Dict = {
   investigateSub:
     'Upload alert screenshot(s) and paste facts — relevant market events are auto-bound, and severity is recommended for you to confirm or edit. Every run feeds realtime stats.',
   investigateScreenshots: 'Alert screenshot(s)',
+  investigateUploadCta: 'Tap to upload alert screenshot(s)',
+  investigateUploadSelected: '{n} selected · tap to change',
   investigateRun: 'Run investigation',
   investigateAutoBoundLabel: 'Market events (auto-bound)',
   investigateAutoBoundHint:
@@ -428,6 +430,8 @@ const zhHant: Dict = {
   investigateSub:
     '上傳告警截圖並貼上事實即可 — 系統會自動綁定相關行情事件，並依輸入建議嚴重度（可再修改）。每次觸發計入即時統計。',
   investigateScreenshots: '告警截圖（可多張）',
+  investigateUploadCta: '點擊上傳告警截圖',
+  investigateUploadSelected: '已選 {n} 張 · 點擊更換',
   investigateRun: '執行排查',
   investigateAutoBoundLabel: '行情事件（自動綁定）',
   investigateAutoBoundHint: '無需手動勾選簡報。執行排查時會自動附上相符的行情條件事件。',
