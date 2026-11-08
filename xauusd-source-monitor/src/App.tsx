@@ -27,16 +27,13 @@ export default function App() {
 
   if (!user) return <LoginPage />
 
-  const navLinks = (
-    <>
-      {NAV.map((item) => (
-        <NavLink key={item.to} to={item.to} className="nav-item">
-          <span className="nav-full">{t(item.full)}</span>
-          <span className="nav-short">{t(item.short)}</span>
-        </NavLink>
-      ))}
-    </>
-  )
+  const renderNavLinks = (keyPrefix: string) =>
+    NAV.map((item) => (
+      <NavLink key={`${keyPrefix}${item.to}`} to={item.to} className="nav-item">
+        <span className="nav-full">{t(item.full)}</span>
+        <span className="nav-short">{t(item.short)}</span>
+      </NavLink>
+    ))
 
   return (
     <div className="app-shell">
@@ -80,7 +77,7 @@ export default function App() {
       </header>
 
       <nav className="nav main-nav desktop-nav" aria-label="Primary">
-        {navLinks}
+        {renderNavLinks('d')}
       </nav>
 
       <main className="app-main">
@@ -101,7 +98,7 @@ export default function App() {
       </main>
 
       <nav className="nav bottom-nav mobile-only-flex" aria-label="Primary mobile">
-        {navLinks}
+        {renderNavLinks('m')}
       </nav>
 
       <p className="footer-note desktop-copy">{t('footer')}</p>

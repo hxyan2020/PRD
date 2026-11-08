@@ -1917,10 +1917,18 @@ td.mono,
     left: 0;
     right: 0;
     bottom: 0;
+    /* Override .nav { top: 0 } — fixed + top+bottom stretches to full viewport */
+    top: auto;
+    height: auto;
+    max-height: none;
     z-index: 50;
     margin: 0;
     gap: 4px;
+    align-items: stretch;
+    overflow: visible;
     padding: 8px 8px max(8px, env(safe-area-inset-bottom));
+    /* Don't inherit sticky top safe-area padding from .nav */
+    padding-top: 8px;
     background: rgba(243, 239, 230, 0.96);
     border-top: 1px solid var(--line);
     box-shadow: 0 -8px 24px rgba(28, 25, 20, 0.08);
@@ -1932,16 +1940,19 @@ td.mono,
   .bottom-nav .nav-item {
     flex: 1 1 0;
     min-width: 0;
+    max-height: 56px;
     padding: 10px 4px;
     font-size: 0.72rem;
     font-weight: 650;
     border-radius: 12px;
     min-height: 48px;
+    height: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     line-height: 1.15;
+    white-space: nowrap;
   }
 
   .nav-full {
