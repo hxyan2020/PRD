@@ -246,6 +246,7 @@ export function Notebook() {
     notebookStore.getCloudRuntime().state,
   )
   const [cloudError, setCloudError] = useState<string | null>(null)
+  const [cloudDetail, setCloudDetail] = useState<string | null>(null)
   const accountSynced = Boolean(authAvailable && authUser)
   const composerEditorRef = useRef<RichTextEditorHandle | null>(null)
   const editEditorRef = useRef<RichTextEditorHandle | null>(null)
@@ -266,6 +267,7 @@ export function Notebook() {
     return notebookStore.subscribeCloudRuntime((runtime) => {
       setCloudState(runtime.state)
       setCloudError(runtime.error)
+      setCloudDetail(runtime.detail)
     })
   }, [])
 
@@ -581,9 +583,7 @@ export function Notebook() {
               }}
             >
               {cloudState === 'syncing'
-                ? cloudError && /Uploading ~/i.test(cloudError)
-                  ? cloudError
-                  : t('cloudSyncing')
+                ? cloudDetail || t('cloudSyncing')
                 : cloudState === 'pulling'
                   ? t('cloudPulling')
                   : cloudState === 'error'

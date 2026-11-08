@@ -826,6 +826,8 @@ type CloudRuntime = {
   state: CloudRuntimeState
   lastSyncedAt: string | null
   error: string | null
+  /** Non-error progress text while state is syncing/pulling (e.g. Uploading ~12MB…). */
+  detail: string | null
   gistId: string
 }
 
@@ -859,6 +861,7 @@ let cloudRuntime: CloudRuntime = {
   state: anyCloudBackendReady() ? 'synced' : 'off',
   lastSyncedAt: unifiedCloudSyncStatus().lastSyncedAt,
   error: null,
+  detail: null,
   gistId: unifiedCloudSyncStatus().gistId,
 }
 
@@ -901,13 +904,11 @@ function scheduleFolderBackup() {
 const COMPACT_IMAGES_MIN_JSON_CHARS = 2_500_000
 
 /**
- * Offload large inline data:image payloads to Blob before cloud push so the
- * notebook JSON does not trip HTTP 413 (Vercel ~4.5MB body limit).
- * Skip when the notebook is still small — re-uploading every sub‑1MB paste
- * made “Saving to cloud…” hang after each picture.
- * Stops early near the sync deadline so we still upload progress instead of hanging.
+ * Offload a limited number of inline data:image payloads to Blob.
+ * Account sync uploads via Blob client (no 4.5MB serverless cap), so this is
+ * only a size optimization — never block a save for a full notebook rewrite.
  */
-async function compactInlineImagesForCloud(deadlineMs: number): Promise<void> {
+async function compactInlineImagesForCloud(deadlineMs: number, maxNotes = 4): Promise<void> {
   if (!isAccountSyncReady()) return
   if (!cache.entries.some((e) => (e.selectedText || '').includes('data:image')) &&
     !cache.trash.some((e) => (e.selectedText || '').includes('data:image'))) {
@@ -917,15 +918,21 @@ async function compactInlineImagesForCloud(deadlineMs: number): Promise<void> {
   if (approxChars < COMPACT_IMAGES_MIN_JSON_CHARS) return
 
   let changed = false
+  let touched = 0
   const nextEntries: NotebookEntry[] = []
   for (const entry of cache.entries) {
-    if (Date.now() > deadlineMs - 20_000) {
+    if (touched >= maxNotes || Date.now() > deadlineMs) {
+      nextEntries.push(entry)
+      continue
+    }
+    if (!(entry.selectedText || '').includes('data:image')) {
       nextEntries.push(entry)
       continue
     }
     const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
     if (body.replaced > 0) {
       changed = true
+      touched += 1
       nextEntries.push({
         ...entry,
         selectedText: body.html,
@@ -937,13 +944,18 @@ async function compactInlineImagesForCloud(deadlineMs: number): Promise<void> {
   }
   const nextTrash: TrashedNotebookEntry[] = []
   for (const entry of cache.trash) {
-    if (Date.now() > deadlineMs - 20_000) {
+    if (touched >= maxNotes || Date.now() > deadlineMs) {
+      nextTrash.push(entry)
+      continue
+    }
+    if (!(entry.selectedText || '').includes('data:image')) {
       nextTrash.push(entry)
       continue
     }
     const body = await replaceLargeDataImagesInHtml(entry.selectedText || '')
     if (body.replaced > 0) {
       changed = true
+      touched += 1
       nextTrash.push({ ...entry, selectedText: body.html })
     } else {
       nextTrash.push(entry)
@@ -999,9 +1011,9 @@ async function flushCloudSync(options?: FlushCloudOptions) {
     scheduleCloudSyncRetry(Math.max(1_000, cloudSyncCooldownUntil - Date.now()))
     return
   }
-  setCloudRuntime({ state: 'syncing', error: null })
-  // Large notebooks (100+ notes / images) need a long budget; hard-cap so UI cannot hang forever.
-  const syncDeadline = Date.now() + 240_000
+  setCloudRuntime({ state: 'syncing', error: null, detail: null })
+  // Hard-cap so UI cannot hang forever; account Blob upload is the slow part, not compact.
+  const syncDeadline = Date.now() + 180_000
   let reusedPullOnce = Boolean(options?.reusePull) || options?.cloudMissing === true
   cloudPushInFlight = (async () => {
     let timedOut = false
@@ -1029,6 +1041,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
           cloudMissing = false
         } else {
           // Merge remote first so a slower device doesn't clobber notes from another.
+          setCloudRuntime({ state: 'pulling', error: null, detail: null })
           try {
             const pulled = await pullAndMergeCloudQuiet()
             if (Date.now() > syncDeadline) {
@@ -1055,6 +1068,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
               )
             }
           }
+          setCloudRuntime({ state: 'syncing', error: null, detail: null })
         }
         if (cloudPushDirty) continue
         if (Date.now() > syncDeadline) {
@@ -1064,26 +1078,39 @@ async function flushCloudSync(options?: FlushCloudOptions) {
 
         // Wait briefly for optimistic picture uploads so we never push blob: previews.
         try {
-          const waitMs = Math.max(0, Math.min(12_000, syncDeadline - Date.now() - 30_000))
           await Promise.race([
             awaitPendingNoteImageUploads(),
             new Promise<void>((resolve) => {
-              window.setTimeout(resolve, waitMs)
+              window.setTimeout(resolve, 2_500)
             }),
           ])
         } catch {
           /* individual insert handlers already surfaced errors */
         }
         if (cloudPushDirty) continue
-        if (Date.now() > syncDeadline) {
-          timedOut = true
-          throw new Error('Cloud sync timed out — tap the status pill to retry')
-        }
 
-        try {
-          await compactInlineImagesForCloud(syncDeadline)
-        } catch {
-          /* still attempt push with current JSON */
+        // Account sync uses Blob client upload (no serverless body limit). Only do a
+        // short, capped image shrink when the JSON is huge — never a full rewrite.
+        if (isAccountSyncReady()) {
+          const approxChars = buildBackupJson().length
+          if (approxChars >= 8_000_000) {
+            setCloudRuntime({
+              state: 'syncing',
+              detail: 'Shrinking a few large images…',
+              error: null,
+            })
+            try {
+              await compactInlineImagesForCloud(Date.now() + 20_000, 3)
+            } catch {
+              /* push current JSON anyway */
+            }
+          }
+        } else {
+          try {
+            await compactInlineImagesForCloud(Math.min(syncDeadline, Date.now() + 45_000))
+          } catch {
+            /* still attempt push with current JSON */
+          }
         }
         if (cloudPushDirty) continue
         if (Date.now() > syncDeadline) {
@@ -1115,6 +1142,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
               state: 'synced',
               lastSyncedAt: new Date().toISOString(),
               error: null,
+              detail: null,
               gistId: `account:${loadCachedAccountUser()}`,
             })
             pushed = true
@@ -1124,24 +1152,25 @@ async function flushCloudSync(options?: FlushCloudOptions) {
             setCloudRuntime({
               state: 'syncing',
               error: null,
+              detail: `Uploading ~${approxMb}MB (${localCount} notes)…`,
               gistId: `account:${loadCachedAccountUser()}`,
             })
-            // Keep the pill informative for large uploads (was looking "stuck").
-            if (approxMb >= 2) {
-              setCloudRuntime({
-                state: 'syncing',
-                error: `Uploading ~${approxMb}MB (${localCount} notes)…`,
-              })
-            }
             const result = await pushAccountBackup(payload)
             cloudEtag = result.etag
             setCloudRuntime({
               state: 'synced',
               lastSyncedAt: new Date().toISOString(),
               error: null,
+              detail: null,
               gistId: `account:${loadCachedAccountUser()}`,
             })
             pushed = true
+            // Background: keep shrinking remaining data: URLs for next sync.
+            if (payload.length >= COMPACT_IMAGES_MIN_JSON_CHARS) {
+              window.setTimeout(() => {
+                void compactInlineImagesForCloud(Date.now() + 60_000, 6).catch(() => {})
+              }, 2_000)
+            }
           }
         } else if (isVercelSyncReady()) {
           const { cloudKey } = loadVercelSyncSettings()
@@ -1151,6 +1180,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
             state: 'synced',
             lastSyncedAt: new Date().toISOString(),
             error: null,
+            detail: null,
             gistId: `vercel:${cloudKey.slice(0, 8)}…`,
           })
           pushed = true
@@ -1165,6 +1195,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
                 state: 'synced',
                 lastSyncedAt: new Date().toISOString(),
                 error: null,
+                detail: null,
                 gistId: result.gistId,
               })
               pushed = true
@@ -1191,6 +1222,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
       setCloudRuntime({
         state: 'error',
         error: err instanceof Error ? err.message : 'Cloud sync failed',
+        detail: null,
       })
       // Stop infinite “Saving to cloud…” restart loops after timeouts / hung uploads.
       cloudSyncCooldownUntil = Date.now() + (timedOut ? 45_000 : 20_000)
