@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lark Messenger · V Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a222c;
+      --line: #2a3544;
+      --text: #e8eef6;
+      --muted: #8b9bb0;
+      --accent: #e8792f;
+      --ok: #3dba7a;
+      --danger: #e35d5d;
+      --font: "IBM Plex Sans", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(232,121,47,.18), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 90% 0%, rgba(61,186,122,.08), transparent 45%),
+        var(--bg);
+    }
+    header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem 1.25rem;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    header h1 span { color: var(--accent); }
+    header p { margin: 0; color: var(--muted); font-size: .85rem; }
+    main {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) 1fr;
+      gap: 1rem;
+      padding: 1rem 1.5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 800px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    label {
+      display: block;
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin: .75rem 0 .35rem;
+    }
+    label:first-child { margin-top: 0; }
+    select, input, textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      font: 400 .9rem/1.4 var(--font);
+      padding: .55rem .65rem;
+    }
+    textarea { font-family: var(--mono); font-size: .8rem; min-height: 140px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+    button {
+      font: 500 .85rem var(--font);
+      border: none;
+      border-radius: 6px;
+      padding: .55rem .9rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #111;
+    }
+    button.secondary { background: transparent; color: var(--text); border: 1px solid var(--line); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    pre {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: .75rem;
+      line-height: 1.45;
+      overflow: auto;
+      max-height: 70vh;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .status { font-size: .8rem; color: var(--muted); margin-top: .75rem; min-height: 1.2em; }
+    .status.ok { color: var(--ok); }
+    .status.err { color: var(--danger); }
+    .chip {
+      display: inline-block;
+      font-size: .7rem;
+      padding: .15rem .45rem;
+      border-radius: 4px;
+      background: rgba(232,121,47,.15);
+      color: var(--accent);
+      margin-left: .5rem;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Lark <span>Messenger</span> <span class="chip" id="healthChip">…</span></h1>
+      <p>Dynamic message templates for V Exchange Risk Tool · render &amp; send interactive cards</p>
+    </div>
+    <p><a href="https://hxyan2020.github.io/PRD/xauusd-source-monitor/" style="color:var(--accent)">Open desk →</a></p>
+  </header>
+  <main>
+    <section class="panel">
+      <label for="tpl">Template</label>
+      <select id="tpl"></select>
+      <p id="tplDesc" style="color:var(--muted);font-size:.8rem;margin:.5rem 0 0"></p>
+      <label for="vars">Variables (JSON)</label>
+      <textarea id="vars" spellcheck="false"></textarea>
+      <label for="webhook">Webhook URL (optional override)</label>
+      <input id="webhook" type="url" placeholder="https://open.larksuite.com/open-apis/bot/v2/hook/…" />
+      <div class="actions">
+        <button type="button" id="btnRender">Render</button>
+        <button type="button" id="btnSend" class="secondary">Send to Lark</button>
+        <button type="button" id="btnChat" class="secondary">Test OpenAI</button>
+      </div>
+      <div class="status" id="status"></div>
+    </section>
+    <section class="panel">
+      <label>Payload preview</label>
+      <pre id="out">{}</pre>
+    </section>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id)
+    let templates = []
+    let lastPayload = null
+
+    function setStatus(msg, kind) {
+      const el = $('status')
+      el.textContent = msg || ''
+      el.className = 'status' + (kind ? ' ' + kind : '')
+    }
+
+    async function load() {
+      const h = await fetch('/health').then((r) => r.json())
+      $('healthChip').textContent = h.openai ? 'OpenAI ready' : 'no OpenAI key'
+      const data = await fetch('/api/templates').then((r) => r.json())
+      templates = data.templates || []
+      const sel = $('tpl')
+      sel.innerHTML = templates.map((t) => `<option value="${t.id}">${t.name}</option>`).join('')
+      sel.addEventListener('change', onTpl)
+      onTpl()
+    }
+
+    function onTpl() {
+      const t = templates.find((x) => x.id === $('tpl').value)
+      if (!t) return
+      $('tplDesc').textContent = t.description || ''
+      $('vars').value = JSON.stringify(t.defaults || {}, null, 2)
+    }
+
+    async function render() {
+      setStatus('Rendering…')
+      let vars
+      try { vars = JSON.parse($('vars').value || '{}') } catch (e) {
+        setStatus('Invalid JSON variables', 'err')
+        return
+      }
+      const r = await fetch('/api/lark/render', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateId: $('tpl').value, vars }),
+      })
+      const data = await r.json()
+      if (!r.ok) { setStatus(data.error || 'render failed', 'err'); return }
+      lastPayload = data.payload
+      $('out').textContent = JSON.stringify(data.payload, null, 2)
+      setStatus('Rendered ' + data.templateId, 'ok')
+    }
+
+    async function send() {
+      setStatus('Sending…')
+      let vars
+      try { vars = JSON.parse($('vars').value || '{}') } catch (e) {
+        setStatus('Invalid JSON variables', 'err')
+        return
+      }
+      const body = {
+        templateId: $('tpl').value,
+        vars,
+        webhookUrl: $('webhook').value.trim() || undefined,
+      }
+      const r = await fetch('/api/lark/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await r.json()
+      $('out').textContent = JSON.stringify(data, null, 2)
+      if (!r.ok) { setStatus(data.error || 'send failed', 'err'); return }
+      setStatus(data.dryRun ? 'Dry-run (set LARK_WEBHOOK_URL to deliver)' : 'Sent to Lark', data.dryRun ? '' : 'ok')
+    }
+
+    async function testChat() {
+      setStatus('Calling OpenAI…')
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: 'openai',
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'Reply in one short sentence.' },
+            { role: 'user', content: 'Confirm Lark messenger OpenAI proxy is live for V Exchange Risk Tool.' },
+          ],
+        }),
+      })
+      const data = await r.json()
+      $('out').textContent = JSON.stringify(data, null, 2)
+      if (!r.ok) { setStatus(data.error || 'chat failed', 'err'); return }
+      setStatus('OpenAI OK', 'ok')
+    }
+
+    $('btnRender').onclick = render
+    $('btnSend').onclick = send
+    $('btnChat').onclick = testChat
+    load().catch((e) => setStatus(String(e), 'err'))
+  </script>
+</body>
+</html>

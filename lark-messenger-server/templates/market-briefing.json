@@ -1,0 +1,25 @@
+{
+  "id": "market-briefing",
+  "name": "Market Condition briefing",
+  "description": "Lark card for XAUUSD multi-source price-move briefings (red/yellow/green).",
+  "variables": [
+    "title",
+    "severity_tag",
+    "trigger",
+    "causes",
+    "observations",
+    "actions",
+    "desk_url",
+    "time_sgt"
+  ],
+  "defaults": {
+    "title": "[YELLOW] Elevated multi-source dislocation",
+    "severity_tag": "YELLOW",
+    "trigger": "≥3 sources in Alert",
+    "causes": "Macro / news catalyst under review",
+    "observations": "Composite move elevated; venue bps widened",
+    "actions": "Verify index · Prepare safeguards · Monitor basis",
+    "desk_url": "https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/market",
+    "time_sgt": ""
+  }
+}

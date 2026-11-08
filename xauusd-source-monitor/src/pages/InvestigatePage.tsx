@@ -348,9 +348,20 @@ export function InvestigatePage() {
           <input
             value={settings.proxyBase}
             onChange={(e) => persistSettings({ ...settings, proxyBase: e.target.value })}
-            placeholder="https://vexchange-risk-copilot.vercel.app"
+            placeholder="http://127.0.0.1:8790"
           />
-          <p className="sub">{t('copilotSettingsHint')}</p>
+          <p className="sub">
+            {t('copilotSettingsHint')}{' '}
+            <a href={`${import.meta.env.BASE_URL}setup-llm.html`}>setup-llm.html</a>
+            {' · '}
+            <a
+              href="https://github.com/hxyan2020/PRD/tree/main/lark-messenger-server"
+              target="_blank"
+              rel="noreferrer"
+            >
+              lark-messenger-server
+            </a>
+          </p>
         </div>
       ) : null}
 

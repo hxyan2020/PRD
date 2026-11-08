@@ -1,0 +1,29 @@
+{
+  "id": "rca-report",
+  "name": "Investigate RCA card",
+  "description": "Posts a structured RCA summary from Investigate (skills, next steps, severity).",
+  "variables": [
+    "title",
+    "severity",
+    "model",
+    "skills",
+    "thinking",
+    "next_steps",
+    "report_excerpt",
+    "desk_url",
+    "incident_id",
+    "time_sgt"
+  ],
+  "defaults": {
+    "title": "Untitled incident",
+    "severity": "P2",
+    "model": "openai/gpt-4o-mini",
+    "skills": "MARK-01, PEER-03",
+    "thinking": "Matched L1 skills from alert facts.",
+    "next_steps": "1) Verify mark/index · 2) Check funding · 3) Archive if weekly opt",
+    "report_excerpt": "",
+    "desk_url": "https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate",
+    "incident_id": "RCA-DEMO",
+    "time_sgt": ""
+  }
+}

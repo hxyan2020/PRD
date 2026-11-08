@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Setup LLM · V Exchange Risk Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a222c;
+      --line: #2a3544;
+      --text: #e8eef6;
+      --muted: #8b9bb0;
+      --accent: #e8792f;
+      --ok: #3dba7a;
+      --font: "IBM Plex Sans", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 70% 45% at 0% 0%, rgba(232,121,47,.2), transparent 55%),
+        var(--bg);
+      padding: 1.5rem;
+    }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    h1 { font-size: 1.35rem; margin: 0 0 .35rem; }
+    h1 span { color: var(--accent); }
+    p { color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1.1rem;
+      margin-top: 1.25rem;
+    }
+    label {
+      display: block;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin: .85rem 0 .35rem;
+    }
+    label:first-child { margin-top: 0; }
+    input, select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      font: 400 .9rem var(--font);
+      padding: .55rem .65rem;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+    button, a.btn {
+      font: 500 .85rem var(--font);
+      border: none;
+      border-radius: 6px;
+      padding: .55rem .9rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #111;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button.secondary, a.btn.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .status { margin-top: .85rem; font-size: .85rem; min-height: 1.2em; }
+    .status.ok { color: var(--ok); }
+    .note {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      line-height: 1.45;
+    }
+    code { color: var(--accent); font-size: .85em; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Setup <span>LLM</span></h1>
+    <p>
+      GitHub Pages cannot ship a secret OpenAI key. Point Investigate at a local/hosted
+      <code>/api/chat</code> proxy (Lark Messenger server or <code>llm-proxy.mjs</code>),
+      or paste a BYOK key stored only in this browser.
+    </p>
+    <div class="panel">
+      <label for="provider">Provider</label>
+      <select id="provider">
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Gemini</option>
+        <option value="openrouter">OpenRouter</option>
+        <option value="anthropic">Anthropic (via proxy)</option>
+      </select>
+      <label for="model">Model</label>
+      <input id="model" value="gpt-4o-mini" />
+      <label for="proxy">Proxy base (no trailing slash)</label>
+      <input id="proxy" placeholder="http://127.0.0.1:8790" value="http://127.0.0.1:8790" />
+      <label for="key">OpenAI API key (optional BYOK — never uploaded to GitHub)</label>
+      <input id="key" type="password" autocomplete="off" placeholder="sk-…" />
+      <div class="actions">
+        <button type="button" id="save">Save to this browser</button>
+        <button type="button" id="ping" class="secondary">Ping proxy</button>
+        <a class="btn secondary" href="./#/investigate">Open Investigate</a>
+      </div>
+      <div class="status" id="status"></div>
+      <p class="note">
+        Writes <code>localStorage.vex_risk_copilot_settings_v1</code> used by the desk.
+        Start the repo server: <code>cd lark-messenger-server && npm start</code>
+        (port 8790). Rotate any key that was pasted in chat.
+      </p>
+    </div>
+  </div>
+  <script>
+    const KEY = 'vex_risk_copilot_settings_v1'
+    const $ = (id) => document.getElementById(id)
+    function load() {
+      try {
+        const s = JSON.parse(localStorage.getItem(KEY) || '{}')
+        if (s.provider) $('provider').value = s.provider
+        if (s.model) $('model').value = s.model
+        if (s.proxyBase) $('proxy').value = s.proxyBase
+        if (s.openaiKey) $('key').value = s.openaiKey
+      } catch { /* ignore */ }
+    }
+    function save() {
+      let prev = {}
+      try { prev = JSON.parse(localStorage.getItem(KEY) || '{}') } catch { /* */ }
+      const next = {
+        ...prev,
+        provider: $('provider').value,
+        model: $('model').value.trim() || 'gpt-4o-mini',
+        proxyBase: $('proxy').value.trim().replace(/\/$/, ''),
+        openaiKey: $('key').value.trim(),
+      }
+      localStorage.setItem(KEY, JSON.stringify(next))
+      const el = $('status')
+      el.textContent = 'Saved. Investigate will use proxy/BYOK on next Run.'
+      el.className = 'status ok'
+    }
+    async function ping() {
+      const base = $('proxy').value.trim().replace(/\/$/, '')
+      const el = $('status')
+      if (!base) { el.textContent = 'Set a proxy base first'; el.className = 'status'; return }
+      el.textContent = 'Pinging…'; el.className = 'status'
+      try {
+        const r = await fetch(base + '/health')
+        const data = await r.json()
+        el.textContent = r.ok
+          ? `Proxy OK · openai=${data.openai ? 'yes' : 'no'} · templates=${(data.templates || []).join(',')}`
+          : 'Proxy returned ' + r.status
+        el.className = r.ok ? 'status ok' : 'status'
+      } catch (e) {
+        el.textContent = 'Unreachable — start lark-messenger-server (npm start) or check CORS/URL. ' + e
+        el.className = 'status'
+      }
+    }
+    $('save').onclick = save
+    $('ping').onclick = ping
+    load()
+  </script>
+</body>
+</html>

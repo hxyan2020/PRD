@@ -1,0 +1,27 @@
+{
+  "id": "risk-alert",
+  "name": "Risk alert card",
+  "description": "Interactive Lark card for monitor / threshold alerts with Ack · Escalate · Dismiss.",
+  "variables": [
+    "title",
+    "severity",
+    "contract",
+    "trigger",
+    "breached",
+    "summary",
+    "desk_url",
+    "alert_id",
+    "time_sgt"
+  ],
+  "defaults": {
+    "title": "XAUUSD source alert",
+    "severity": "P1",
+    "contract": "XAUUSD",
+    "trigger": "multi-source alert",
+    "breached": "OKX, Bitget",
+    "summary": "Multiple venues breached watch/alert thresholds.",
+    "desk_url": "https://hxyan2020.github.io/PRD/xauusd-source-monitor/",
+    "alert_id": "ALT-DEMO",
+    "time_sgt": ""
+  }
+}

@@ -168,7 +168,7 @@ const en: Dict = {
     'Keys stay in this browser (BYOK). Gemini/OpenRouter can call from the page; OpenAI/Claude prefer /api/chat on Vercel with server env keys.',
   copilotProxyBase: 'Optional LLM proxy base (Vercel)',
   copilotSettingsHint:
-    'Tip: set Gemini or OpenRouter key here to analyze immediately. Point proxyBase at your Vercel deployment for OpenAI/Claude server keys.',
+    'Tip: paste OpenAI key (BYOK) or point proxyBase at lark-messenger-server (npm start → :8790) / llm-proxy / Vercel /api/chat. Use setup-llm.html on Pages.',
   healthTitle: 'Live source health — XAUUSD',
   healthSub:
     'Composite median of healthy venues. Live anchors: OKX / Bitget; Spot XAU is a basis reference only. Exchange indexes & LPs use correlated mirrors when direct public feeds are unavailable.',
@@ -497,7 +497,7 @@ const zhHant: Dict = {
     '密鑰僅存本瀏覽器（BYOK）。Gemini / OpenRouter 可直接調用；OpenAI / Claude 建議走 Vercel /api/chat 服務端密鑰。',
   copilotProxyBase: '可選 LLM 代理基址（Vercel）',
   copilotSettingsHint:
-    '提示：先填 Gemini 或 OpenRouter Key 即可立即分析；proxyBase 指向已配置環境變量的 Vercel 部署以使用 OpenAI/Claude。',
+    '提示：可貼 OpenAI Key（僅存本機），或將 proxyBase 指向 lark-messenger-server（npm start → :8790）／llm-proxy／Vercel /api/chat。Pages 可用 setup-llm.html。',
   healthTitle: '即時行情源健康度 — XAUUSD',
   healthSub:
     '以健康來源的中位數作為綜合價。即時錨點：OKX / Bitget；現貨 XAU 僅作基差參考。其他交易所指數與 LP 在無法直接拉取時使用相關衍生鏡像。',
