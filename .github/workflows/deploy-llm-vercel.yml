@@ -1,0 +1,41 @@
+name: Deploy LLM proxy to Vercel
+
+on:
+  push:
+    branches: [main, cursor/v-exchange-risk-tool-a935]
+    paths:
+      - 'xauusd-source-monitor/api/**'
+      - 'xauusd-source-monitor/vercel.json'
+      - 'xauusd-source-monitor/package.json'
+      - '.github/workflows/deploy-llm-vercel.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: xauusd-source-monitor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: xauusd-source-monitor/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo "Missing GitHub secret VERCEL_TOKEN."
+            echo "Import the repo at https://vercel.com/new from GitHub, or add VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID."
+            exit 0
+          fi
+          npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx vercel build --prod --token="$VERCEL_TOKEN"
+          npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"

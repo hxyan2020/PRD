@@ -52,3 +52,23 @@ npm run dev
 GITHUB_PAGES=1 npm run build
 bash scripts/deploy-gh-pages.sh
 ```
+
+## LLM proxy on Vercel (recommended)
+
+GitHub Pages serves the SPA; Vercel hosts `POST /api/chat` with the OpenAI key server-side.
+
+1. Import this repo at [vercel.com/new](https://vercel.com/new) (root directory: `xauusd-source-monitor`).
+2. Project → **Settings → Environment Variables** (Production):
+   - `OPENAI_API_KEY` — your OpenAI key
+   - `DESK_GATEWAY_TOKEN` — same value as `deskToken` in `public/llm-config.json`
+3. Deploy. Copy the production URL (e.g. `https://….vercel.app`).
+4. Set `public/llm-config.json` → `proxyBase` to that URL (no trailing slash), commit, then:
+   `bash scripts/deploy-gh-pages.sh`
+
+Or claim a one-off deploy, then link GitHub for ongoing deploys:
+
+```bash
+bash scripts/deploy-vercel.sh   # requires: npx vercel login
+```
+
+Optional GitHub Actions: add repo secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` (workflow `deploy-llm-vercel.yml`).
