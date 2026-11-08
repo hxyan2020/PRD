@@ -1,7 +1,7 @@
 {
   "provider": "openai",
   "model": "gpt-4o-mini",
-  "proxyBase": "https://vex-llm-gateway.apps.grok.bot",
+  "proxyBase": "",
   "deskToken": "2602552a6687ac6b9920dadebf4640a67f6820c113460d4c",
-  "note": "Managed LLM gateway at vex-llm-gateway.apps.grok.bot — USD 10/day cap; OpenAI key stays server-side."
+  "note": "Set proxyBase to your Vercel production URL (https://….vercel.app) after deploying xauusd-source-monitor with OPENAI_API_KEY + DESK_GATEWAY_TOKEN."
 }
