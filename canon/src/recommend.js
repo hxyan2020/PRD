@@ -250,7 +250,7 @@ export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0 } =
   const matchedTaste = hasPrefs && preferred.some((item) => item.id === track?.id);
   const reason = matchedTaste
     ? `Surprise: another Music from the canon, still matching ${bits.join(", ")}.`
-    : `Surprise: a different Music from the 1,000-work canon. Click again for another.`;
+    : `Surprise: a different Music from the listening archive. Click again for another.`;
 
   return {
     track,

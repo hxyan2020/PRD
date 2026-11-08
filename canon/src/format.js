@@ -6,6 +6,17 @@ export function formatStreams(n) {
   return n.toLocaleString("en-US");
 }
 
+/** Locale-aware whole-number formatting for archive totals in copy and stats. */
+export function formatCount(n, locale = "en") {
+  const value = Number(n);
+  if (!Number.isFinite(value)) return "0";
+  try {
+    return new Intl.NumberFormat(locale).format(value);
+  } catch {
+    return String(Math.trunc(value));
+  }
+}
+
 export function formatStreamsFull(n) {
   if (n == null || n === 0) return "Spotify has not published a play count for this Music";
   return `${n.toLocaleString("en-US")} plays on Spotify`;
