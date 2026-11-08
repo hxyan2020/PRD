@@ -29,23 +29,26 @@ const Ctx = createContext<AuthCtx | null>(null)
 
 function readSession(): AuthSession | null {
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY)
+    // Forever session: localStorage only (survives tab/browser restarts). No expiry.
+    const raw = localStorage.getItem(SESSION_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as AuthSession
+    const parsed = JSON.parse(raw) as AuthSession
+    if (!parsed?.email || !parsed?.role) return null
+    return parsed
   } catch {
     return null
   }
 }
 
-function writeSession(session: AuthSession | null, persist: boolean) {
+function writeSession(session: AuthSession | null) {
   try {
+    // Drop any legacy sessionStorage copy so logout/login stay consistent.
     sessionStorage.removeItem(SESSION_KEY)
-    localStorage.removeItem(SESSION_KEY)
-    if (session) {
-      const raw = JSON.stringify(session)
-      sessionStorage.setItem(SESSION_KEY, raw)
-      if (persist) localStorage.setItem(SESSION_KEY, raw)
+    if (!session) {
+      localStorage.removeItem(SESSION_KEY)
+      return
     }
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session))
   } catch {
     /* ignore */
   }
@@ -72,13 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { ok: false as const, error: 'auth_failed' }
     }
     const session = toSession(found)
-    writeSession(session, true)
+    writeSession(session)
     setUser(session)
     return { ok: true as const }
   }, [])
 
   const logout = useCallback(() => {
-    writeSession(null, false)
+    writeSession(null)
     setUser(null)
   }, [])
 
