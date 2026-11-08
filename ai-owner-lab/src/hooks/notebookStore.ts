@@ -713,6 +713,31 @@ type ReusedAccountPull = {
 
 let cloudSyncRetryTimer: number | null = null
 let cloudSyncCooldownUntil = 0
+/** Last successful cloud snapshot — reuse to avoid re-downloading a huge notebook.json. */
+let lastCloudSnapshot: { at: number; pull: ReusedAccountPull } | null = null
+const SKIP_PULL_TTL_MS = 90_000
+
+/** Estimate notebook JSON size without a full JSON.stringify (avoids UI freezes). */
+function approxNotebookChars(): number {
+  let n = 256 + cache.categories.length * 64 + cache.purgedIds.length * 48
+  for (const entry of cache.entries) {
+    n += 160 + (entry.title?.length || 0) + (entry.selectedText?.length || 0)
+  }
+  for (const entry of cache.trash) {
+    n += 160 + (entry.title?.length || 0) + (entry.selectedText?.length || 0)
+  }
+  return n
+}
+
+function rememberCloudSnapshot(pull: ReusedAccountPull) {
+  lastCloudSnapshot = { at: Date.now(), pull }
+}
+
+async function yieldToUi() {
+  await new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 0)
+  })
+}
 
 /** Pull cloud notes when the tab becomes visible again (other-device edits). */
 async function pullCloudIfConfigured() {
@@ -729,20 +754,20 @@ async function pullCloudIfConfigured() {
       if (isAccountSyncReady()) {
         const latest = await pullAccountBackup()
         if (latest) {
+          const snap: ReusedAccountPull = {
+            content: latest.content,
+            etag: latest.etag,
+            noteCount: latest.noteCount,
+            uploadedAt: latest.uploadedAt,
+          }
+          rememberCloudSnapshot(snap)
           const ahead = localIsAheadOfCloud(latest.content)
           await notebookStore.importBackup(latest.content, { syncCloud: false })
           setLastAccountSyncAt()
           cloudEtag = latest.etag
           if (ahead) {
             // Reuse this pull — flush used to download the notebook a second time.
-            await flushCloudSync({
-              reusePull: {
-                content: latest.content,
-                etag: latest.etag,
-                noteCount: latest.noteCount,
-                uploadedAt: latest.uploadedAt,
-              },
-            })
+            await flushCloudSync({ reusePull: snap })
             return
           }
         } else if (cache.entries.length + cache.trash.length > 0) {
@@ -914,8 +939,7 @@ async function compactInlineImagesForCloud(deadlineMs: number, maxNotes = 4): Pr
     !cache.trash.some((e) => (e.selectedText || '').includes('data:image'))) {
     return
   }
-  const approxChars = buildBackupJson().length
-  if (approxChars < COMPACT_IMAGES_MIN_JSON_CHARS) return
+  if (approxNotebookChars() < COMPACT_IMAGES_MIN_JSON_CHARS) return
 
   let changed = false
   let touched = 0
@@ -1011,9 +1035,10 @@ async function flushCloudSync(options?: FlushCloudOptions) {
     scheduleCloudSyncRetry(Math.max(1_000, cloudSyncCooldownUntil - Date.now()))
     return
   }
-  setCloudRuntime({ state: 'syncing', error: null, detail: null })
-  // Hard-cap so UI cannot hang forever; account Blob upload is the slow part, not compact.
-  const syncDeadline = Date.now() + 180_000
+  setCloudRuntime({ state: 'syncing', error: null, detail: 'Preparing…' })
+  // Fail with a retryable error rather than endless "Saving…" — upload itself
+  // still uses its own size-scaled timeout inside pushAccountBackup.
+  const syncDeadline = Date.now() + 120_000
   let reusedPullOnce = Boolean(options?.reusePull) || options?.cloudMissing === true
   cloudPushInFlight = (async () => {
     let timedOut = false
@@ -1039,6 +1064,17 @@ async function flushCloudSync(options?: FlushCloudOptions) {
           cloudNoteCount = options.reusePull.noteCount
           cloudContent = options.reusePull.content
           cloudMissing = false
+          rememberCloudSnapshot(options.reusePull)
+        } else if (
+          isAccountSyncReady() &&
+          lastCloudSnapshot &&
+          Date.now() - lastCloudSnapshot.at < SKIP_PULL_TTL_MS
+        ) {
+          // Skip re-downloading a huge notebook.json when we just pulled/pushed it.
+          etag = lastCloudSnapshot.pull.etag
+          cloudNoteCount = lastCloudSnapshot.pull.noteCount
+          cloudContent = lastCloudSnapshot.pull.content
+          cloudMissing = false
         } else {
           // Merge remote first so a slower device doesn't clobber notes from another.
           setCloudRuntime({ state: 'pulling', error: null, detail: null })
@@ -1052,6 +1088,14 @@ async function flushCloudSync(options?: FlushCloudOptions) {
             cloudMissing = pulled.missing
             cloudNoteCount = pulled.cloudNoteCount
             cloudContent = pulled.cloudContent
+            if (pulled.cloudContent) {
+              rememberCloudSnapshot({
+                content: pulled.cloudContent,
+                etag: pulled.etag,
+                noteCount: pulled.cloudNoteCount,
+                uploadedAt: pulled.uploadedAt,
+              })
+            }
           } catch (err) {
             if (err instanceof Error && /timed out/i.test(err.message)) {
               timedOut = true
@@ -1068,7 +1112,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
               )
             }
           }
-          setCloudRuntime({ state: 'syncing', error: null, detail: null })
+          setCloudRuntime({ state: 'syncing', error: null, detail: 'Preparing…' })
         }
         if (cloudPushDirty) continue
         if (Date.now() > syncDeadline) {
@@ -1081,7 +1125,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
           await Promise.race([
             awaitPendingNoteImageUploads(),
             new Promise<void>((resolve) => {
-              window.setTimeout(resolve, 2_500)
+              window.setTimeout(resolve, 1_500)
             }),
           ])
         } catch {
@@ -1089,25 +1133,11 @@ async function flushCloudSync(options?: FlushCloudOptions) {
         }
         if (cloudPushDirty) continue
 
-        // Account sync uses Blob client upload (no serverless body limit). Only do a
-        // short, capped image shrink when the JSON is huge — never a full rewrite.
-        if (isAccountSyncReady()) {
-          const approxChars = buildBackupJson().length
-          if (approxChars >= 8_000_000) {
-            setCloudRuntime({
-              state: 'syncing',
-              detail: 'Shrinking a few large images…',
-              error: null,
-            })
-            try {
-              await compactInlineImagesForCloud(Date.now() + 20_000, 3)
-            } catch {
-              /* push current JSON anyway */
-            }
-          }
-        } else {
+        // Legacy backends still need compact for body-size limits. Account sync
+        // uploads via Blob client — never block the save on image rewriting.
+        if (!isAccountSyncReady()) {
           try {
-            await compactInlineImagesForCloud(Math.min(syncDeadline, Date.now() + 45_000))
+            await compactInlineImagesForCloud(Math.min(syncDeadline, Date.now() + 30_000), 4)
           } catch {
             /* still attempt push with current JSON */
           }
@@ -1147,16 +1177,32 @@ async function flushCloudSync(options?: FlushCloudOptions) {
             })
             pushed = true
           } else {
-            const payload = buildBackupJson()
-            const approxMb = Math.max(1, Math.round(payload.length / (1024 * 1024)))
+            const approxMb = Math.max(1, Math.round(approxNotebookChars() / (1024 * 1024)))
             setCloudRuntime({
               state: 'syncing',
               error: null,
-              detail: `Uploading ~${approxMb}MB (${localCount} notes)…`,
+              detail: `Preparing ~${approxMb}MB (${localCount} notes)…`,
               gistId: `account:${loadCachedAccountUser()}`,
             })
+            await yieldToUi()
+            const payload = buildBackupJson()
+            await yieldToUi()
+            const exactMb = Math.max(1, Math.round(payload.length / (1024 * 1024)))
+            setCloudRuntime({
+              state: 'syncing',
+              error: null,
+              detail: `Uploading ~${exactMb}MB (${localCount} notes)…`,
+              gistId: `account:${loadCachedAccountUser()}`,
+            })
+            await yieldToUi()
             const result = await pushAccountBackup(payload)
             cloudEtag = result.etag
+            rememberCloudSnapshot({
+              content: payload,
+              etag: result.etag,
+              noteCount: localCount,
+              uploadedAt: new Date().toISOString(),
+            })
             setCloudRuntime({
               state: 'synced',
               lastSyncedAt: new Date().toISOString(),
@@ -1165,7 +1211,7 @@ async function flushCloudSync(options?: FlushCloudOptions) {
               gistId: `account:${loadCachedAccountUser()}`,
             })
             pushed = true
-            // Background: keep shrinking remaining data: URLs for next sync.
+            // Background: shrink data: URLs so the *next* upload is smaller.
             if (payload.length >= COMPACT_IMAGES_MIN_JSON_CHARS) {
               window.setTimeout(() => {
                 void compactInlineImagesForCloud(Date.now() + 60_000, 6).catch(() => {})
