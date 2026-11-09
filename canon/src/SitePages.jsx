@@ -16,8 +16,8 @@ const FOOTER_LINKS = [
   ["terms", "termsNav"],
 ];
 
-export function SiteMenu({ page }) {
-  const { t } = useI18n();
+export function SiteMenu({ page, archiveCount = 1000 }) {
+  const { locale, t } = useI18n();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
   const navId = useId();
@@ -66,9 +66,13 @@ export function SiteMenu({ page }) {
       <nav id={navId} className="menu-nav" aria-label={t("menu")}>
         {MENU_LINKS.map(([hash, key]) => {
           const active = hash ? page === hash : page === "home";
+          const label =
+            key === "archiveNav"
+              ? t("archiveNav", { n: Number(archiveCount).toLocaleString(locale === "ar" ? "ar" : undefined) })
+              : t(key);
           return (
             <a key={key} href={hash ? `#${hash}` : "#"} className={active ? "is-on" : ""}>
-              {t(key)}
+              {label}
             </a>
           );
         })}

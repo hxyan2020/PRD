@@ -53,7 +53,8 @@ assert.equal(t("zh", "termsNav"), "使用条款");
 assert.equal(t("zh", "listenNav"), "为你推荐");
 assert.equal(t("zh", "prefsNav"), "偏好");
 assert.equal(t("zh", "profileNav"), "我的资料");
-assert.equal(t("zh", "archiveNav"), "一千首");
+assert.equal(t("en", "archiveNav", { n: "1,000" }), "The 1,000");
+assert.equal(t("zh", "archiveNav", { n: "1,001" }), "1,001 首");
 assert.equal(t("zh", "menu"), "菜单");
 assert.equal(t("zh", "collect"), "收藏");
 assert.equal(t("ar", "listen"), "استمع");
@@ -132,6 +133,7 @@ for (const locale of LANGUAGE_IDS) {
 const beyondKeys = Object.keys(BEYOND.en).sort();
 assert.ok(beyondKeys.includes("beyondFind"));
 assert.ok(beyondKeys.includes("albumAsk"));
+assert.ok(beyondKeys.includes("albumInCanon"));
 assert.match(t("en", "albumAsk", { name: "Apocalypse" }), /Apocalypse/);
 for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(BEYOND[locale]).sort(), beyondKeys, `${locale} beyond copy keys`);

@@ -10,6 +10,7 @@ import RecommendLog from "./RecommendLog.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
+import SearchBox from "./SearchBox.jsx";
 import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
 import { enrichExtraTrack } from "./enrich-extra.js";
 import { searchOutsideMusic } from "./music-search.js";
@@ -23,6 +24,7 @@ import {
   trackMatchesQuery,
 } from "./search.js";
 import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, formatCollectedAt } from "./collections.js";
+import { addToAlbum, archiveTotal, loadAlbum, saveAlbum } from "./album.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
 import { useSpotify } from "./useSpotify.js";
@@ -50,7 +52,6 @@ export default function App() {
   const [error, setError] = useState("");
   const [bootReady, setBootReady] = useState(false);
   const [bootStarted] = useState(() => Date.now());
-  const [queryDraft, setQueryDraft] = useState("");
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState("All genres");
   const [era, setEra] = useState("All eras");
@@ -63,6 +64,8 @@ export default function App() {
   const [collection, setCollection] = useState(loadCollection);
   const collectedIds = collection.ids;
   const collectedAt = collection.collectedAt;
+  const [album, setAlbum] = useState(loadAlbum);
+  const albumIds = album.ids;
   const [viewedIds, setViewedIds] = useState(() => {
     const collected = loadCollectedIds();
     const viewed = loadViewedIds();
@@ -150,14 +153,24 @@ export default function App() {
   }, [page, query, genre, era, country]);
 
   const tracks = data?.tracks || [];
+  const catalogIds = useMemo(() => new Set(tracks.map((track) => track.id)), [tracks]);
   const extraList = Object.values(extras);
+  const albumExtras = useMemo(
+    () =>
+      albumIds
+        .map((id) => extras[id] || outside.find((track) => track.id === id))
+        .filter((track) => track && !catalogIds.has(track.id)),
+    [albumIds, extras, outside, catalogIds],
+  );
+  const archiveTracks = useMemo(() => [...tracks, ...albumExtras], [tracks, albumExtras]);
+  const archiveCount = archiveTotal(data?.count || tracks.length, albumIds, catalogIds);
   const library = useMemo(() => {
     const byId = new Map();
-    for (const track of tracks) byId.set(track.id, track);
+    for (const track of archiveTracks) byId.set(track.id, track);
     for (const track of extraList) if (!byId.has(track.id)) byId.set(track.id, track);
     for (const track of outside) if (!byId.has(track.id)) byId.set(track.id, track);
     return [...byId.values()];
-  }, [tracks, extras, outside]);
+  }, [archiveTracks, extras, outside]);
   const selected = library.find((item) => item.id === selectedId) || null;
   const playing = library.find((item) => item.id === playingId) || selected;
 
@@ -167,11 +180,11 @@ export default function App() {
 
   useEffect(() => {
     if (!selected?.extra) return;
-    if (collectedIds.includes(selected.id)) return;
+    if (albumIds.includes(selected.id)) return;
     if (selected.spotifyId && spotify.saved[selected.spotifyId]) return;
     if (albumAskDismissed.has(selected.id)) return;
     setAlbumAskId(selected.id);
-  }, [selected, collectedIds, albumAskDismissed, spotify.saved]);
+  }, [selected, albumIds, albumAskDismissed, spotify.saved]);
 
   useEffect(() => {
     if (selected?.extra) setLyricsOpen(true);
@@ -198,7 +211,7 @@ export default function App() {
 
   const visible = useMemo(() => {
     const q = query.trim();
-    const list = tracks.filter((item) => {
+    const list = archiveTracks.filter((item) => {
       if (genre !== ALL_GENRES && item.genre !== genre && !(item.genres || []).includes(genre)) return false;
       if (era !== ALL_ERAS && decadeOf(item.year) !== era) return false;
       if (country !== ALL_COUNTRIES && !releaseIncludesCountry(item.releaseCountry, country)) return false;
@@ -206,7 +219,7 @@ export default function App() {
       return trackMatchesQuery(item, q);
     });
     return sortTracks(list, sort);
-  }, [tracks, query, genre, era, country, sort]);
+  }, [archiveTracks, query, genre, era, country, sort]);
 
   const outsideVisible = useMemo(() => {
     const list = outside.filter((item) => extraMatchesEra(item, era, decadeOf));
@@ -240,7 +253,7 @@ export default function App() {
     setLyricsOpen(Boolean(lyrics));
     if (
       track?.extra &&
-      !collectedIds.includes(track.id) &&
+      !albumIds.includes(track.id) &&
       !spotify.saved[track.spotifyId] &&
       !albumAskDismissed.has(track.id)
     ) {
@@ -255,7 +268,12 @@ export default function App() {
 
   async function addOutsideToAlbum(track) {
     if (!track?.id) return;
-    if (!collectedIds.includes(track.id)) onToggleCollect(track.id);
+    if (track.extra) rememberExtras([track]);
+    setAlbum((current) => {
+      const next = addToAlbum(current, track.id);
+      saveAlbum(next);
+      return next;
+    });
     if (track.spotifyId) await spotify.addTrack(track);
     dismissAlbumAsk(track.id);
   }
@@ -288,7 +306,7 @@ export default function App() {
 
   return (
     <div className={`app ${selected ? "has-drawer" : ""}`}>
-      <SiteMenu page={page} />
+      <SiteMenu page={page} archiveCount={archiveCount} />
       {spotify.status ? (
         <p className="spotify-status app-spotify-status" role="status">
           {formatStatus(locale, spotify.status)}
@@ -311,7 +329,7 @@ export default function App() {
               <dt>{t("songsInArchive")}</dt>
               <dd>
                 <a href="#archive" className="stats-link">
-                  {data.count}
+                  {Number(archiveCount).toLocaleString(locale === "ar" ? "ar" : undefined)}
                 </a>
               </dd>
             </div>
@@ -336,30 +354,8 @@ export default function App() {
         <SiteDoc page={page} />
       ) : page === "archive" ? (
         <>
-      <form
-        className="controls"
-        aria-label={t("filterArchive")}
-        onSubmit={(event) => {
-          event.preventDefault();
-          setQuery(queryDraft.trim());
-        }}
-      >
-        <div className="search-row">
-          <input
-            className="search"
-            type="search"
-            placeholder={t("searchPlaceholder")}
-            value={queryDraft}
-            onChange={(e) => {
-              const value = e.target.value;
-              setQueryDraft(value);
-              if (!value.trim() && query) setQuery("");
-            }}
-          />
-          <button className="search-submit" type="submit">
-            {t("searchAction")}
-          </button>
-        </div>
+      <section className="controls" aria-label={t("filterArchive")}>
+        <SearchBox value={query} onSearch={setQuery} onClear={() => setQuery("")} />
         <select value={genre} onChange={(e) => setGenre(e.target.value)} aria-label={t("allGenres")}>
           <option value={ALL_GENRES}>{t("allGenres")}</option>
           {facets.genres.map((item) => {
@@ -400,9 +396,9 @@ export default function App() {
           <option value="year-desc">{t("sortNewest")}</option>
           <option value="name">{t("sortTitle")}</option>
         </select>
-      </form>
+      </section>
 
-      <p className="result-count">{t("showing", { n: visible.length, total: tracks.length })}</p>
+      <p className="result-count">{t("showing", { n: visible.length, total: archiveCount })}</p>
       {visible.length === 0 ? (
         <p className="empty">{query.trim() ? t("emptyInCanon", { q: query.trim() }) : t("emptyFilters")}</p>
       ) : null}
@@ -568,6 +564,12 @@ export default function App() {
               </dd>
             </div>
             )}
+            {albumIds.includes(selected.id) ? (
+              <div>
+                <dt>{t("albumLabel")}</dt>
+                <dd>{t("albumInCanon")}</dd>
+              </div>
+            ) : null}
             {collectedIds.includes(selected.id) ? (
               <div>
                 <dt>{t("collected")}</dt>

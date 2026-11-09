@@ -27,6 +27,8 @@ export const BEYOND = {
     albumAsk: "Add “{name}” to your Canon album of the 1,000?",
     albumAskYes: "Add to album",
     albumAskNo: "Not now",
+    albumLabel: "Canon album",
+    albumInCanon: "In your album of the 1,000",
   },
   zh: {
     beyondEyebrow: "一千首之外",
@@ -54,6 +56,8 @@ export const BEYOND = {
     albumAsk: "要把「{name}」加入你的一千首 Canon 专辑吗？",
     albumAskYes: "加入专辑",
     albumAskNo: "暂时不用",
+    albumLabel: "Canon 专辑",
+    albumInCanon: "已在你的一千首专辑中",
   },
   hi: {
     beyondEyebrow: "1,000 से बाहर",
@@ -82,6 +86,8 @@ export const BEYOND = {
     albumAsk: "“{name}” को अपने 1,000 के Canon एल्बम में जोड़ें?",
     albumAskYes: "एल्बम में जोड़ें",
     albumAskNo: "अभी नहीं",
+    albumLabel: "Canon एल्बम",
+    albumInCanon: "आपके 1,000 एल्बम में",
   },
   es: {
     beyondEyebrow: "Fuera de las 1.000",
@@ -110,6 +116,8 @@ export const BEYOND = {
     albumAsk: "¿Añadir «{name}» a tu álbum Canon de las 1.000?",
     albumAskYes: "Añadir al álbum",
     albumAskNo: "Ahora no",
+    albumLabel: "Álbum Canon",
+    albumInCanon: "En tu álbum de las 1.000",
   },
   fr: {
     beyondEyebrow: "Hors des 1 000",
@@ -138,6 +146,8 @@ export const BEYOND = {
     albumAsk: "Ajouter « {name} » à votre album Canon des 1 000 ?",
     albumAskYes: "Ajouter à l’album",
     albumAskNo: "Pas maintenant",
+    albumLabel: "Album Canon",
+    albumInCanon: "Dans votre album des 1 000",
   },
   ar: {
     beyondEyebrow: "خارج الألف",
@@ -166,6 +176,8 @@ export const BEYOND = {
     albumAsk: "إضافة «{name}» إلى ألبوم Canon للألف؟",
     albumAskYes: "أضف إلى الألبوم",
     albumAskNo: "ليس الآن",
+    albumLabel: "ألبوم Canon",
+    albumInCanon: "في ألبوم الألف لديك",
   },
   bn: {
     beyondEyebrow: "১,০০০-এর বাইরে",
@@ -194,6 +206,8 @@ export const BEYOND = {
     albumAsk: "“{name}” আপনার ১,০০০-এর Canon অ্যালবামে যোগ করবেন?",
     albumAskYes: "অ্যালবামে যোগ",
     albumAskNo: "এখন নয়",
+    albumLabel: "Canon অ্যালবাম",
+    albumInCanon: "আপনার ১,০০০ অ্যালবামে আছে",
   },
   pt: {
     beyondEyebrow: "Fora das 1.000",
@@ -222,5 +236,7 @@ export const BEYOND = {
     albumAsk: "Adicionar “{name}” ao seu álbum Canon das 1.000?",
     albumAskYes: "Adicionar ao álbum",
     albumAskNo: "Agora não",
+    albumLabel: "Álbum Canon",
+    albumInCanon: "No seu álbum das 1.000",
   },
 };
