@@ -244,6 +244,14 @@ assert.match(
   /setChangePasswordOpen\(true\)/,
 );
 assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/Profile.jsx"), "utf8"),
+  /onSignedOut\?\.\(\)/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /clearSignedOutRecords/,
+);
+assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
   /selected\.extra\s*\?\s*selected\.extraSource === "itunes"/,
 );

@@ -33,7 +33,7 @@ function emptyForm() {
   };
 }
 
-export default function Profile() {
+export default function Profile({ onSignedOut }) {
   const { t } = useI18n();
   const [user, setUser] = useState(() => getCurrentUser());
   const [mode, setMode] = useState("signin");
@@ -173,6 +173,7 @@ export default function Profile() {
 
   function onSignOut() {
     logout();
+    onSignedOut?.();
     setUser(null);
     setForm(emptyForm());
     setMode("signin");

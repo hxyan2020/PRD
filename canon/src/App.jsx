@@ -28,6 +28,7 @@ import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, form
 import { addToAlbum, archiveTotal, loadAlbum, saveAlbum } from "./album.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
+import { clearSignedOutRecords } from "./signedOutCleanup.js";
 import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
 import { formatStatus } from "./i18n.js";
@@ -292,6 +293,12 @@ export default function App() {
     });
   }
 
+  function onSignedOut() {
+    const cleared = clearSignedOutRecords();
+    setCollection(cleared.collection);
+    setRecommendLog(cleared.recommendLog);
+  }
+
   if (error) {
     return <BootScreen error message={t("loadError", { error })} />;
   }
@@ -459,7 +466,7 @@ export default function App() {
       ) : page === "prefs" ? (
         <ListenPrefs countries={facets.countries} genres={facets.genres} />
       ) : page === "profile" ? (
-        <Profile />
+        <Profile onSignedOut={onSignedOut} />
       ) : (
         <>
           <DailyRecommend
