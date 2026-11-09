@@ -94,7 +94,6 @@ export function InvestigatePage() {
   const [error, setError] = useState<string | null>(null)
   const [active, setActive] = useState<IncidentRecord | null>(null)
   const [followUp, setFollowUp] = useState('')
-  const [boundBriefings, setBoundBriefings] = useState<ImportedBriefing[]>([])
   const [liveThinking, setLiveThinking] = useState<string[]>([])
   const [llmReady, setLlmReady] = useState(() => hasLlmCredentials(loadSettings()))
 
@@ -125,12 +124,6 @@ export function InvestigatePage() {
     const all = loadMonitorBriefings()
     return all.filter((b) => !b.lang || b.lang === (replyLang === 'zh-Hant' ? 'zh-Hant' : 'en'))
   }, [replyLang])
-
-  const previewBound = useMemo(() => {
-    const q = [title, facts].filter(Boolean).join('\n')
-    if (!q.trim() && !images.length) return []
-    return matchRelevantBriefings(q || 'XAUUSD', briefings, 3)
-  }, [title, facts, images.length, briefings])
 
   const persistHistory = (next: IncidentRecord[]) => {
     setHistory(next)
@@ -166,7 +159,6 @@ export function InvestigatePage() {
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
     const analysisLang = detectReplyLang(userText || query, lang)
     const matched = matchRelevantBriefings(query, briefings, 3)
-    setBoundBriefings(matched)
     const dataSources = collectDataSources(matched)
     const briefingBits = matched.map(briefingToFacts).join('\n\n----\n\n')
     const text = [userText, briefingBits].filter(Boolean).join('\n\n')
@@ -404,15 +396,15 @@ export function InvestigatePage() {
 
   const openIncidents = history.filter((h) => !h.archivedAt)
   const archivedIncidents = history.filter((h) => h.archivedAt)
-  const shownBound = boundBriefings.length ? boundBriefings : previewBound
   const activeSev = active ? normalizeSev(active.severity) : '待判定'
+  // Bound events / data sources only appear on the finished report (collapsed details).
   const activeSources = active
     ? collectDataSources(
         (active.briefingIds || [])
           .map((id) => briefings.find((b) => b.id === id))
           .filter((b): b is ImportedBriefing => !!b),
       )
-    : collectDataSources(shownBound)
+    : []
 
   return (
     <div className="panel copilot-page investigate-page">
@@ -465,48 +457,6 @@ export function InvestigatePage() {
             placeholder={t('copilotFactsPh')}
           />
 
-          <div className="item-block" style={{ borderTop: 'none', paddingTop: 4 }}>
-            <p className="field-label" style={{ marginBottom: 6 }}>
-              {t('investigateAutoBoundLabel')}
-            </p>
-            <p className="sub" style={{ marginTop: 0 }}>
-              {t('investigateAutoBoundHint')}
-            </p>
-            {shownBound.length ? (
-              <>
-                <ul className="investigate-list">
-                  {shownBound.map((b) => (
-                    <li key={b.id}>
-                      <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
-                    </li>
-                  ))}
-                </ul>
-                {collectDataSources(shownBound).length ? (
-                  <div style={{ marginTop: 8 }}>
-                    <p className="field-label" style={{ marginBottom: 4 }}>
-                      {t('investigateDataSources')}
-                    </p>
-                    <ul className="investigate-list investigate-sources">
-                      {collectDataSources(shownBound)
-                        .slice(0, 6)
-                        .map((s) => (
-                          <li key={s.url}>
-                            <a href={s.url} target="_blank" rel="noreferrer noopener">
-                              {s.label}
-                            </a>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                ) : null}
-              </>
-            ) : (
-              <p className="sub">{t('investigateAutoBoundPending')}</p>
-            )}
-          </div>
-
-          <p className="sub">{t('investigateSeverityHint')}</p>
-
           <p className="copilot-actions">
             <button
               type="button"
@@ -523,7 +473,6 @@ export function InvestigatePage() {
                 setTitle('')
                 setFacts('')
                 setImages([])
-                setBoundBriefings([])
                 setActive(null)
                 setLiveThinking([])
               }}
