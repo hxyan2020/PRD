@@ -191,6 +191,8 @@ export function InvestigatePage() {
       // Reply language = user input language (analysisLang), not UI locale.
       const rules = analyzeWithRules({
         text: analysisText,
+        // Match skills from the operator alert — not from auto-bound briefing noise
+        matchFocus: userText || query,
         severity: '自动建议',
         skills,
         knowledge,
@@ -212,12 +214,17 @@ export function InvestigatePage() {
             settings,
             lang: analysisLang,
             userPrompt: [
-              analysisText,
+              '【PRIMARY ALERT / OPERATOR FACTS — root cause MUST cite these】',
+              userText || query,
               '',
+              '【Secondary context — do NOT treat as root cause unless alert agrees】',
               matched.length
-                ? `【Auto-bound market events】${matched.map((b) => b.title).join(' · ')}`
-                : '【Auto-bound market events】none matched',
-              `【Recommended severity】${rules.sev}`,
+                ? `Auto-bound market events: ${matched.map((b) => b.title).join(' · ')}`
+                : 'Auto-bound market events: none',
+              briefingBits ? `\n${briefingBits}` : '',
+              '',
+              `【Recommended severity from local rules】${rules.sev}`,
+              `【Local root-cause draft】\n${(rules.rootCauses || []).map((x) => `- ${x}`).join('\n')}`,
               dataSources.length
                 ? `【Data sources (direct links)】\n${dataSources
                     .map((s) => `- ${s.label}: ${s.url}`)

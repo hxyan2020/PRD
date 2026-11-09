@@ -188,13 +188,19 @@ export function saveSkillOverrides(v: SkillOverrides) {
 
 export function defaultSkills(): SkillRecord[] {
   const now = 0
+  const hintBoost: Record<string, string> = {
+    'IDX-01': '指数源变更剔除告警 剔除 BYBIT_INDEX source removal',
+    'IDX-02': '指数源变更恢复告警 恢复 BYBIT_INDEX source recovery',
+    'IDX-06': '指数价格线性过渡开始 线性过渡开始 linear transition start',
+    'IDX-07': '指数价格线性过渡结束 线性过渡结束 linear transition end',
+  }
   const l1: SkillRecord[] = L1_SKILLS.map((s) => ({
     id: s.id,
     level: 'L1',
     name: s.name,
     severity: s.severity,
     description: s.name,
-    matchHints: `${s.id} ${s.name}`,
+    matchHints: `${s.id} ${s.name} ${hintBoost[s.id] || ''}`.trim(),
     linkedL1: '',
     check: s.check,
     action: s.action,

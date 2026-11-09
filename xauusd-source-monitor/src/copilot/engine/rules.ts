@@ -25,6 +25,43 @@ export function skillsToL1(active: SkillRecord[]): L1Skill[] {
     }))
 }
 
+/** Extra alert phrases so catalog skills match production Lark/OCR wording. */
+const EXTRA_MATCH_HINTS: Record<string, string> = {
+  'IDX-01':
+    '指数源变更剔除告警 指数源剔除 剔除告警 剔除 源变更剔除 source removal removed constituent BYBIT_INDEX OKX_INDEX',
+  'IDX-02':
+    '指数源变更恢复告警 指数源恢复 恢复告警 恢复 源变更恢复 source recovery recovered constituent BYBIT_INDEX',
+  'IDX-05': 'Index 无有效源 无有效源 no valid source',
+  'IDX-06':
+    '指数价格线性过渡开始 线性过渡开始 线性过渡 平滑开始 linear transition start smoothing start',
+  'IDX-07':
+    '指数价格线性过渡结束 线性过渡结束 线性过渡 平滑结束 linear transition end smoothing end',
+  'IDX-08': '仅一家有效指数源 单源 single source',
+  'MARK-01': 'Mark 计算降级 mark degraded',
+  'PRICE-01': 'Mark vs Index mark/index',
+}
+
+function skillMatchKeys(s: SkillRecord): string[] {
+  const extra = EXTRA_MATCH_HINTS[s.id] || ''
+  const raw = `${s.id} ${s.name} ${s.matchHints} ${extra}`
+  const keys = new Set<string>()
+  keys.add(s.id.toLowerCase())
+  keys.add(s.name.toLowerCase())
+  for (const part of raw.split(/[\s,/|，、；;]+/).filter(Boolean)) {
+    if (part.length >= 2) keys.add(part.toLowerCase())
+  }
+  // Keep longer Chinese phrases intact for stronger hits
+  for (const phrase of [
+    s.name,
+    ...Object.entries(EXTRA_MATCH_HINTS)
+      .filter(([id]) => id === s.id)
+      .flatMap(([, v]) => v.split(/\s+/)),
+  ]) {
+    if (phrase && phrase.length >= 4) keys.add(phrase.toLowerCase())
+  }
+  return [...keys]
+}
+
 function matchSkills(
   text: string,
   skills: SkillRecord[],
@@ -33,25 +70,123 @@ function matchSkills(
   return skills
     .filter((s) => !s.disabled && !s.archivedAt)
     .map((s) => {
-      const keys = [
-        s.id.toLowerCase(),
-        s.name.toLowerCase(),
-        ...s.name.split(/\s+/),
-        ...s.matchHints.split(/[\s,/|]+/).filter(Boolean),
-      ]
       let score = 0
-      for (const k of keys) {
-        if (k.length >= 2 && t.includes(k.toLowerCase())) score += k.length >= 4 ? 2 : 1
+      for (const k of skillMatchKeys(s)) {
+        if (!t.includes(k)) continue
+        // Longer / more specific tokens weigh more; short generic tokens weigh less
+        if (k.length >= 8) score += 4
+        else if (k.length >= 4) score += 2
+        else if (k.length >= 3) score += 1
       }
-      for (const w of s.check.split(/[，、；;/\s]+/).filter((x) => x.length >= 3)) {
-        if (t.includes(w.toLowerCase())) score += 1
+      // Soft boost for check phrases only when already somewhat matched
+      if (score > 0) {
+        for (const w of s.check.split(/[，、；;/\s]+/).filter((x) => x.length >= 4)) {
+          if (t.includes(w.toLowerCase())) score += 1
+        }
       }
       return { s, score }
     })
-    .filter((x) => x.score > 0)
+    .filter((x) => x.score >= 3)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 8)
+    .slice(0, 6)
 }
+
+/** Pull confirmed facts that are literally present in the operator alert / OCR. */
+export function extractAlertFacts(text: string, zh: boolean): string[] {
+  const raw = String(text || '').trim()
+  if (!raw) return []
+  const facts: string[] = []
+  const idx = raw.match(/\bXAU[_\s-]?USD\b|\bXAUUSD\b/i)?.[0]
+  const venue = raw.match(
+    /\(?\s*(BYBIT_INDEX|OKX_INDEX|BINANCE_INDEX|BITGET_INDEX)[^\n\)]{0,40}\)?/i,
+  )?.[0]
+  const price = raw.match(/当前价格[：:]\s*([0-9.]+)|current price[：:]\s*([0-9.]+)/i)
+  const tRemove = raw.match(
+    /触发时间[：:]\s*([0-9:\-\s]+)|trigger(?:ed)?(?:\s*time)?[：:]\s*([0-9:\-\s]+)/i,
+  )
+
+  if (/指数源变更剔除|源变更剔除|指数源剔除|source removal|constituent.*removed|removed.*constituent/i.test(raw)) {
+    facts.push(
+      zh
+        ? `告警原文证实：指数成分被剔除${venue ? `（${venue.trim()}）` : ''}${idx ? ` · 指数 ${idx}` : ''} — 这是已陈述事实，不是推断。`
+        : `Alert text confirms: index constituent removed${venue ? ` (${venue.trim()})` : ''}${idx ? ` · index ${idx}` : ''} — stated fact, not inference.`,
+    )
+  }
+  if (/指数源变更恢复|源变更恢复|指数源恢复|source recovery|constituent.*recover|recovered.*constituent/i.test(raw)) {
+    facts.push(
+      zh
+        ? `告警原文证实：指数成分已恢复${venue ? `（${venue.trim()}）` : ''} — 需核对恢复后观察期与偏差。`
+        : `Alert text confirms: index constituent recovered${venue ? ` (${venue.trim()})` : ''} — verify post-recovery observation and deviation.`,
+    )
+  }
+  if (/线性过渡开始|平滑开始|linear transition start/i.test(raw)) {
+    facts.push(
+      zh
+        ? `告警原文证实：指数价格线性过渡开始${price ? ` · 价格 ${price[1] || price[2]}` : ''}。`
+        : `Alert text confirms: index linear transition started${price ? ` · price ${price[1] || price[2]}` : ''}.`,
+    )
+  }
+  if (/线性过渡结束|平滑结束|linear transition end/i.test(raw)) {
+    facts.push(
+      zh
+        ? `告警原文证实：指数价格线性过渡结束${price ? ` · 价格 ${price[1] || price[2]}` : ''}。`
+        : `Alert text confirms: index linear transition ended${price ? ` · price ${price[1] || price[2]}` : ''}.`,
+    )
+  }
+  if (tRemove && !facts.some((f) => f.includes('时间') || f.includes('time'))) {
+    const ts = (tRemove[1] || tRemove[2] || '').trim()
+    if (ts) {
+      facts.push(zh ? `告警触发时间（原文）：${ts}` : `Alert trigger time (from text): ${ts}`)
+    }
+  }
+  return facts
+}
+
+function buildRootCauses(args: {
+  zh: boolean
+  alertFacts: string[]
+  hits: { s: SkillRecord; score: number }[]
+  l2: { x: SkillRecord; score: number }[]
+}): string[] {
+  const { zh, alertFacts, hits, l2 } = args
+  const out: string[] = []
+
+  if (alertFacts.length) {
+    out.push(...alertFacts.map((f) => (zh ? `【已证实】${f}` : `【Confirmed】${f}`)))
+  }
+
+  const topHits = hits.slice(0, 3)
+  for (const h of topHits) {
+    out.push(
+      zh
+        ? `【候选】对齐 L1 ${h.s.id} ${h.s.name}：${h.s.check}（由告警关键词匹配，仍需日志核验）`
+        : `【Candidate】Aligns L1 ${h.s.id} ${h.s.name}: ${h.s.check} (keyword match — still needs log verification)`,
+    )
+  }
+
+  // Only keep L2 that are tightly linked to top L1 hits — never dump unrelated chains
+  const topIds = new Set(topHits.map((h) => h.s.id))
+  const tightL2 = l2
+    .filter((o) => o.x.linkedL1.split(/\s+/).some((id) => topIds.has(id)) || o.score >= 4)
+    .slice(0, 2)
+  for (const o of tightL2) {
+    out.push(
+      zh
+        ? `【待验证链路】${o.x.id} ${o.x.name} — ${o.x.check}`
+        : `【Unverified chain】${o.x.id} ${o.x.name} — ${o.x.check}`,
+    )
+  }
+
+  if (!out.length) {
+    out.push(
+      zh
+        ? '告警文本未能对齐具体 Skill；请粘贴完整告警标题、成分源名称、触发时间与价格后再分析。'
+        : 'Alert text did not align to a concrete skill — paste full alert title, constituent source, trigger time, and price.',
+    )
+  }
+  return out
+}
+
 
 function matchKnowledge(
   text: string,
@@ -81,6 +216,8 @@ function matchKnowledge(
 
 export function analyzeWithRules(args: {
   text: string
+  /** Prefer user alert / OCR for skill matching; ignore auto-bound briefing noise. */
+  matchFocus?: string
   severity: SeverityChoice
   skills: SkillRecord[]
   knowledge: KnowledgeItem[]
@@ -92,29 +229,25 @@ export function analyzeWithRules(args: {
   const lang: AppLang = args.lang === 'zh-Hant' ? 'zh-Hant' : 'en'
   const zh = lang === 'zh-Hant'
   const startedAt = args.startedAt ?? Date.now()
+  const focus = (args.matchFocus || args.text || '').trim() || args.text
   const l1Pool = args.skills.filter((s) => s.level === 'L1')
   const l2Pool = args.skills.filter((s) => s.level === 'L2')
-  const hits = matchSkills(args.text, l1Pool)
+  const hits = matchSkills(focus, l1Pool)
   const ids = hits.map((h) => h.s.id)
 
+  // L2 only when tightly linked to matched L1 — avoid dumping every related chain
   const l2 = l2Pool
     .filter((x) => !x.disabled && !x.archivedAt)
     .map((x) => ({
       x,
       score: x.linkedL1.split(/\s+/).filter((id) => ids.includes(id)).length,
     }))
-    .filter((o) => o.score > 0)
+    .filter((o) => o.score >= 2 || (o.score >= 1 && ids.length <= 2))
     .sort((a, b) => b.score - a.score)
-    .slice(0, 4)
+    .slice(0, 2)
 
-  const directL2 = matchSkills(args.text, l2Pool).filter(
-    (h) => !l2.some((o) => o.x.id === h.s.id),
-  )
-  for (const d of directL2.slice(0, 2)) {
-    l2.push({ x: d.s, score: d.score })
-  }
-
-  const k = matchKnowledge(args.text, args.knowledge, args.tree)
+  const k = matchKnowledge(focus, args.knowledge, args.tree)
+  const alertFacts = extractAlertFacts(focus, zh)
 
   const p0 =
     hits.some((h) => h.s.severity === 'P0') ||
@@ -134,13 +267,16 @@ export function analyzeWithRules(args: {
 
   const thinking: string[] = zh
     ? [
-        '已攝入告警文字／OCR 事實與可選行情簡報。',
+        '優先用「用戶告警／OCR」做 Skill 匹配；自動綁定行情簡報只作附帶上下文，不主導根因。',
+        alertFacts.length
+          ? `從告警原文抽出 ${alertFacts.length} 條已證實事實。`
+          : '告警原文未抽出結構化事實 — 請貼完整 Lark／監控告警標題與正文。',
         hits.length
-          ? `依 id／名稱／檢查項匹配到 ${hits.length} 個 L1 Skill。`
-          : '未能可靠匹配 L1 Skill — 請補充告警原文、合約與指標數值。',
+          ? `告警對齊 ${hits.length} 個 L1 Skill：${hits.map((h) => h.s.id).join(', ')}。`
+          : '未能可靠匹配 L1 Skill — 請補充告警標題、成分源、時間與價格。',
         l2.length
-          ? `由關聯 L1／直接命中彙總出 ${l2.length} 條 L2 鏈路候選。`
-          : '關聯 L1 證據不足，暫不強制 L2 根因鏈。',
+          ? `僅保留與命中 L1 緊密關聯的 ${l2.length} 條 L2 候選（不堆砌無關鏈路）。`
+          : '不強制輸出無關 L2 根因鏈。',
         k.length
           ? `知識樹檢索到 ${k.length} 份文件作為 RAG 上下文。`
           : '知識樹無關鍵詞命中 — 結論保持保守。',
@@ -148,13 +284,16 @@ export function analyzeWithRules(args: {
         `建議嚴重度：${sev}（需當班人員確認）。`,
       ]
     : [
-        'Ingest alert text / OCR facts and optional briefing import.',
+        'Skill matching uses operator alert / OCR first; auto-bound market briefings are secondary context only.',
+        alertFacts.length
+          ? `Extracted ${alertFacts.length} confirmed fact(s) from alert text.`
+          : 'No structured facts extracted — paste the full monitor/Lark alert title and body.',
         hits.length
-          ? `Matched ${hits.length} L1 skill(s) by id/name/check tokens.`
-          : 'No confident L1 skill match — need clearer alert text, contract, and metric values.',
+          ? `Alert aligned to ${hits.length} L1 skill(s): ${hits.map((h) => h.s.id).join(', ')}.`
+          : 'No confident L1 skill match — need alert title, constituent source, time, and price.',
         l2.length
-          ? `Aggregated ${l2.length} L2 chain candidate(s) from linked L1 / direct hits.`
-          : 'Insufficient linked L1 evidence to force an L2 root-cause chain.',
+          ? `Kept ${l2.length} tightly linked L2 candidate(s) only (no unrelated chain dump).`
+          : 'Not forcing unrelated L2 root-cause chains.',
         k.length
           ? `Retrieved ${k.length} knowledge-tree document(s) for RAG context.`
           : 'No knowledge-tree keyword hit — answer stays conservative.',
@@ -199,15 +338,20 @@ export function analyzeWithRules(args: {
     path: o.path,
   }))
 
+  const topForActions = hits.slice(0, 3)
   const nextSteps = [
-    ...hits.map((h) => `${h.s.id}: ${h.s.check}`),
-    ...l2.map((o) => `${o.x.id}: ${o.x.check}`),
-    ...hits.map((h) =>
+    ...topForActions.map((h) =>
+      zh ? `${h.s.id} 檢查：${h.s.check}` : `${h.s.id} check: ${h.s.check}`,
+    ),
+    ...l2.slice(0, 2).map((o) =>
+      zh ? `${o.x.id} 檢查：${o.x.check}` : `${o.x.id} check: ${o.x.check}`,
+    ),
+    ...topForActions.map((h) =>
       zh
         ? `${h.s.id} 建議動作（需審批）：${h.s.action}`
         : `${h.s.id} preferred action (approval required): ${h.s.action}`,
     ),
-    ...l2.map((o) =>
+    ...l2.slice(0, 2).map((o) =>
       zh
         ? `${o.x.id} 建議動作（需審批）：${o.x.action}`
         : `${o.x.id} preferred action (approval required): ${o.x.action}`,
@@ -233,44 +377,30 @@ export function analyzeWithRules(args: {
   const pathSteps = [
     ...(zh
       ? [
-          '攝入告警／截圖與自動綁定的行情事件',
-          '匹配 L1 指標 Skills → 彙總關聯 L2 鏈路',
-          '知識樹 RAG 檢索佐證',
-          '產出建議嚴重度與需審批的建議動作',
+          '核對告警原文：標題、成分源、觸發時間、價格／窗口（不以行情簡報替代告警）',
+          '用告警關鍵詞對齊 L1 Skills，再只展開緊密關聯的 L2',
+          '知識樹 RAG 僅作佐證，不覆蓋告警事實',
+          '產出建議嚴重度與需審批動作',
         ]
       : [
-          'Ingest alert / screenshots and auto-bound market events',
-          'Match L1 indicator skills → aggregate linked L2 chains',
-          'Knowledge-tree RAG for supporting evidence',
-          'Propose severity and approval-gated preferred actions',
+          'Verify alert text: title, constituent source, trigger time, price/window (do not let market briefings replace the alert)',
+          'Align L1 skills from alert keywords, then expand only tightly linked L2',
+          'Knowledge-tree RAG is supporting evidence only — never override alert facts',
+          'Propose severity and approval-gated actions',
         ]),
-    ...(hits.length
-      ? hits.map((h) =>
-          zh
-            ? `L1 ${h.s.id} ${h.s.name} — 檢查：${h.s.check}`
-            : `L1 ${h.s.id} ${h.s.name} — check: ${h.s.check}`,
-        )
-      : []),
-    ...(l2.length
-      ? l2.map((o) =>
-          zh
-            ? `L2 ${o.x.id} ${o.x.name} — 驗證上游是否早於下游`
-            : `L2 ${o.x.id} ${o.x.name} — verify upstream precedes downstream`,
-        )
-      : []),
+    ...(hits.slice(0, 4).map((h) =>
+      zh
+        ? `L1 ${h.s.id} ${h.s.name} — 檢查：${h.s.check}`
+        : `L1 ${h.s.id} ${h.s.name} — check: ${h.s.check}`,
+    )),
+    ...l2.map((o) =>
+      zh
+        ? `L2 ${o.x.id} ${o.x.name} — ${o.x.check}`
+        : `L2 ${o.x.id} ${o.x.name} — ${o.x.check}`,
+    ),
   ]
 
-  const rootCauses = l2.length
-    ? l2.map((o) =>
-        zh
-          ? `${o.x.name}：需驗證其上游故障是否早於下游異常（候選，尚未證實）`
-          : `${o.x.name}: verify whether upstream failure precedes downstream anomaly (candidate — not confirmed)`,
-      )
-    : [
-        zh
-          ? '尚無法鎖定單一根因；優先排查數據源、報價策略、帳戶風險、撮合／結算或監控自身異常。'
-          : 'No single root cause locked yet — prioritise data source, quoting, account risk, matching/settlement, or monitor self-fault.',
-      ]
+  const rootCauses = buildRootCauses({ zh, alertFacts, hits, l2 })
 
   const lines = zh
     ? [
