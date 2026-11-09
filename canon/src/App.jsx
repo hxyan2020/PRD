@@ -188,10 +188,6 @@ export default function App() {
   }, [selected, albumIds, albumAskDismissed, spotify.saved]);
 
   useEffect(() => {
-    if (selected?.extra) setLyricsOpen(true);
-  }, [selectedId]);
-
-  useEffect(() => {
     if (!selected?.extra || selected.enriched) return undefined;
     let cancelled = false;
     enrichExtraTrack(selected).then((result) => {
@@ -610,11 +606,8 @@ export default function App() {
           ))}
           <LyricsPanel track={selected} open={lyricsOpen} onClose={() => setLyricsOpen(false)} />
           <div className="card-actions drawer-actions">
-            <button type="button" onClick={() => setPlayingId(selected.id)}>
-              {t("streamInPlayer")}
-            </button>
-            <button type="button" onClick={() => setLyricsOpen(true)}>
-              {t("lyrics")}
+            <button type="button" onClick={() => setLyricsOpen((open) => !open)}>
+              {lyricsOpen ? t("lyricsHide") : t("lyrics")}
             </button>
             <CollectButton id={selected.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
             <SpotifyAddButton track={selected} spotify={spotify} />

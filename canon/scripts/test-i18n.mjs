@@ -223,6 +223,14 @@ assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
   /LyricsPanel[\s\S]*drawer-actions/s,
 );
+assert.doesNotMatch(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /streamInPlayer/,
+);
+assert.doesNotMatch(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /selected\?\.extra\) setLyricsOpen\(true\)/,
+);
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
   /uniqueSingleCountries/,
