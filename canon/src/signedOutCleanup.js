@@ -1,3 +1,4 @@
+import { getCurrentUser } from "./auth.js";
 import { parseAlbum, saveAlbum } from "./album.js";
 import { saveExtraTracks } from "./beyond.js";
 import { parseCollection, saveCollection } from "./collections.js";
@@ -29,4 +30,12 @@ export function clearSignedOutRecords(storage) {
   saveViewedIds(viewedIds, storage);
   saveExtraTracks(extras, storage);
   return { collection, recommendLog, album, viewedIds, extras };
+}
+
+/** Signed-out browsers always start from a blank personal slate. */
+export function loadPersonalRecords(storage) {
+  if (getCurrentUser(storage)) {
+    return null;
+  }
+  return clearSignedOutRecords(storage);
 }

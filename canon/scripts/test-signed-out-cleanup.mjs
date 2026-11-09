@@ -8,8 +8,10 @@ import {
   emptyAlbum,
   emptyCollection,
   emptyRecommendLog,
+  loadPersonalRecords,
 } from "../src/signedOutCleanup.js";
 import { VIEWED_KEY, loadViewedIds, saveViewedIds } from "../src/viewed.js";
+import { SESSION_KEY, USERS_KEY } from "../src/auth.js";
 
 function memoryStore() {
   return {
@@ -91,5 +93,33 @@ assert.ok(store.getItem(RECOMMEND_LOG_KEY));
 assert.ok(store.getItem(ALBUM_KEY));
 assert.ok(store.getItem(VIEWED_KEY));
 assert.ok(store.getItem(EXTRA_KEY));
+
+saveAlbum({ ids: ["ext-9"], addedAt: {} }, store);
+saveViewedIds(["Q9", "Q8"], store);
+assert.equal(loadAlbum(store).ids.length, 1);
+const bootCleared = loadPersonalRecords(store);
+assert.ok(bootCleared);
+assert.deepEqual(bootCleared.album.ids, []);
+assert.deepEqual(bootCleared.viewedIds, []);
+assert.deepEqual(loadAlbum(store).ids, []);
+assert.deepEqual(loadViewedIds(store), []);
+
+store.setItem(
+  USERS_KEY,
+  JSON.stringify([
+    {
+      email: "ada@example.com",
+      name: "Ada",
+      salt: "00",
+      hash: "00",
+      createdAt: "2026-11-09T00:00:00.000Z",
+      updatedAt: "2026-11-09T00:00:00.000Z",
+    },
+  ]),
+);
+store.setItem(SESSION_KEY, JSON.stringify({ email: "ada@example.com" }));
+saveAlbum({ ids: ["ext-keep"], addedAt: {} }, store);
+assert.equal(loadPersonalRecords(store), null);
+assert.deepEqual(loadAlbum(store).ids, ["ext-keep"]);
 
 console.log("signed-out cleanup tests ok");

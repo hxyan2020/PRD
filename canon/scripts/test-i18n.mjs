@@ -253,6 +253,14 @@ assert.match(
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /loadPersonalRecords/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /if \(!signedIn\) return;/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
   /selected\.extra\s*\?\s*selected\.extraSource === "itunes"/,
 );
 assert.match(

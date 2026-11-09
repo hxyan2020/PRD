@@ -28,7 +28,7 @@ import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, form
 import { addToAlbum, archiveTotal, loadAlbum, saveAlbum } from "./album.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
-import { clearSignedOutRecords } from "./signedOutCleanup.js";
+import { clearSignedOutRecords, loadPersonalRecords } from "./signedOutCleanup.js";
 import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
 import { formatStatus } from "./i18n.js";
@@ -41,11 +41,27 @@ import { publicUrl } from "./urls.js";
 import CoverImage from "./CoverImage.jsx";
 import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
-import { syncSessionToRemote } from "./auth.js";
+import { getCurrentUser, syncSessionToRemote } from "./auth.js";
 import { displayPersonName, splitCredits } from "./portraits.js";
 import { creditLabel, popularityLabel } from "./uiText.js";
 import BootScreen from "./BootScreen.jsx";
 import BrandMark from "./BrandMark.jsx";
+
+function initialPersonalState() {
+  const cleared = loadPersonalRecords();
+  if (cleared) return cleared;
+  const collected = loadCollectedIds();
+  const viewed = loadViewedIds();
+  const merged = mergeViewedWithCollected(viewed, collected);
+  if (merged.length !== viewed.length) saveViewedIds(merged);
+  return {
+    collection: loadCollection(),
+    recommendLog: loadRecommendLog(),
+    album: loadAlbum(),
+    viewedIds: merged,
+    extras: loadExtraTracks(),
+  };
+}
 
 export default function App() {
   const { locale, t } = useI18n();
@@ -63,29 +79,28 @@ export default function App() {
   const selectedId = pageAllowsTrack(route.page) ? route.trackId : "";
   const page = route.page;
   const [playingId, setPlayingId] = useState("");
-  const [collection, setCollection] = useState(loadCollection);
+  const [sessionUser, setSessionUser] = useState(() => getCurrentUser());
+  const [personal] = useState(initialPersonalState);
+  const [collection, setCollection] = useState(personal.collection);
   const collectedIds = collection.ids;
   const collectedAt = collection.collectedAt;
-  const [album, setAlbum] = useState(loadAlbum);
+  const [album, setAlbum] = useState(personal.album);
   const albumIds = album.ids;
-  const [viewedIds, setViewedIds] = useState(() => {
-    const collected = loadCollectedIds();
-    const viewed = loadViewedIds();
-    const merged = mergeViewedWithCollected(viewed, collected);
-    if (merged.length !== viewed.length) saveViewedIds(merged);
-    return merged;
-  });
-  const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
-  const [extras, setExtras] = useState(loadExtraTracks);
+  const [viewedIds, setViewedIds] = useState(personal.viewedIds);
+  const [recommendLog, setRecommendLog] = useState(personal.recommendLog);
+  const [extras, setExtras] = useState(personal.extras);
   const [outside, setOutside] = useState([]);
   const [outsideStatus, setOutsideStatus] = useState("");
   const [albumAskId, setAlbumAskId] = useState("");
   const [albumAskDismissed, setAlbumAskDismissed] = useState(() => new Set());
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const spotify = useSpotify();
+  const signedIn = Boolean(sessionUser);
 
   useEffect(() => {
-    void syncSessionToRemote();
+    void syncSessionToRemote().then((result) => {
+      if (result?.user) setSessionUser(result.user);
+    });
   }, []);
 
   useEffect(() => {
@@ -181,12 +196,12 @@ export default function App() {
   }, [selectedId, spotify.user]);
 
   useEffect(() => {
-    if (!selected?.extra) return;
+    if (!signedIn || !selected?.extra) return;
     if (albumIds.includes(selected.id)) return;
     if (selected.spotifyId && spotify.saved[selected.spotifyId]) return;
     if (albumAskDismissed.has(selected.id)) return;
     setAlbumAskId(selected.id);
-  }, [selected, albumIds, albumAskDismissed, spotify.saved]);
+  }, [signedIn, selected, albumIds, albumAskDismissed, spotify.saved]);
 
   useEffect(() => {
     if (!selected?.extra || !needsPortraitEnrichment(selected)) return undefined;
@@ -225,7 +240,7 @@ export default function App() {
   }, [outside, era, sort]);
 
   function rememberView(id) {
-    if (!id) return;
+    if (!signedIn || !id) return;
     setViewedIds((current) => {
       const next = markViewed(current, id);
       if (next === current || next.length === current.length) return current;
@@ -235,7 +250,7 @@ export default function App() {
   }
 
   function rememberExtras(list) {
-    if (!list?.length) return;
+    if (!signedIn || !list?.length) return;
     setExtras((current) => persistExtraTracks(current, list));
   }
 
@@ -246,6 +261,7 @@ export default function App() {
     if (play) setPlayingId(track.id);
     setLyricsOpen(Boolean(lyrics));
     if (
+      signedIn &&
       track?.extra &&
       !albumIds.includes(track.id) &&
       !spotify.saved[track.spotifyId] &&
@@ -261,7 +277,7 @@ export default function App() {
   }
 
   async function addOutsideToAlbum(track) {
-    if (!track?.id) return;
+    if (!signedIn || !track?.id) return;
     if (track.extra) rememberExtras([track]);
     setAlbum((current) => {
       const next = addToAlbum(current, track.id);
@@ -273,6 +289,7 @@ export default function App() {
   }
 
   function onToggleCollect(id) {
+    if (!signedIn) return;
     rememberView(id);
     const track = findTrackById(id, library, outside, extras);
     // Collecting a sourced title must persist its payload, or refresh drops the card.
@@ -285,6 +302,7 @@ export default function App() {
   }
 
   function onRecommend(entry) {
+    if (!signedIn) return;
     setRecommendLog((current) => {
       const next = appendRecommendation(current, entry);
       if (next === current) return current;
@@ -293,8 +311,7 @@ export default function App() {
     });
   }
 
-  function onSignedOut() {
-    const cleared = clearSignedOutRecords();
+  function applyClearedPersonal(cleared) {
     setCollection(cleared.collection);
     setRecommendLog(cleared.recommendLog);
     setAlbum(cleared.album);
@@ -304,6 +321,15 @@ export default function App() {
     setAlbumAskDismissed(new Set());
     setOutside([]);
     setOutsideStatus("");
+  }
+
+  function onSignedIn(user) {
+    setSessionUser(user || getCurrentUser());
+  }
+
+  function onSignedOut() {
+    setSessionUser(null);
+    applyClearedPersonal(clearSignedOutRecords());
   }
 
   if (error) {
@@ -473,7 +499,7 @@ export default function App() {
       ) : page === "prefs" ? (
         <ListenPrefs countries={facets.countries} genres={facets.genres} />
       ) : page === "profile" ? (
-        <Profile onSignedOut={onSignedOut} />
+        <Profile onSignedIn={onSignedIn} onSignedOut={onSignedOut} />
       ) : (
         <>
           <DailyRecommend
