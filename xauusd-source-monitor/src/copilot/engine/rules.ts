@@ -230,42 +230,60 @@ export function analyzeWithRules(args: {
   }
 
   const sources = (args.dataSources || []).filter((s) => s.url && s.label)
-  const pathLines = [
+  const pathSteps = [
     ...(zh
       ? [
-          '1. 攝入告警／截圖與自動綁定的行情事件',
-          '2. 匹配 L1 指標 Skills → 彙總關聯 L2 鏈路',
-          '3. 知識樹 RAG 檢索佐證',
-          '4. 產出建議嚴重度與需審批的建議動作',
+          '攝入告警／截圖與自動綁定的行情事件',
+          '匹配 L1 指標 Skills → 彙總關聯 L2 鏈路',
+          '知識樹 RAG 檢索佐證',
+          '產出建議嚴重度與需審批的建議動作',
         ]
       : [
-          '1. Ingest alert / screenshots and auto-bound market events',
-          '2. Match L1 indicator skills → aggregate linked L2 chains',
-          '3. Knowledge-tree RAG for supporting evidence',
-          '4. Propose severity and approval-gated preferred actions',
+          'Ingest alert / screenshots and auto-bound market events',
+          'Match L1 indicator skills → aggregate linked L2 chains',
+          'Knowledge-tree RAG for supporting evidence',
+          'Propose severity and approval-gated preferred actions',
         ]),
     ...(hits.length
-      ? hits.map((h, i) =>
+      ? hits.map((h) =>
           zh
-            ? `${i + 5}. L1 ${h.s.id} ${h.s.name} — 檢查：${h.s.check}`
-            : `${i + 5}. L1 ${h.s.id} ${h.s.name} — check: ${h.s.check}`,
+            ? `L1 ${h.s.id} ${h.s.name} — 檢查：${h.s.check}`
+            : `L1 ${h.s.id} ${h.s.name} — check: ${h.s.check}`,
         )
       : []),
     ...(l2.length
-      ? l2.map((o, i) =>
+      ? l2.map((o) =>
           zh
-            ? `${hits.length + i + 5}. L2 ${o.x.id} ${o.x.name} — 驗證上游是否早於下游`
-            : `${hits.length + i + 5}. L2 ${o.x.id} ${o.x.name} — verify upstream precedes downstream`,
+            ? `L2 ${o.x.id} ${o.x.name} — 驗證上游是否早於下游`
+            : `L2 ${o.x.id} ${o.x.name} — verify upstream precedes downstream`,
         )
       : []),
   ]
+
+  const rootCauses = l2.length
+    ? l2.map((o) =>
+        zh
+          ? `${o.x.name}：需驗證其上游故障是否早於下游異常（候選，尚未證實）`
+          : `${o.x.name}: verify whether upstream failure precedes downstream anomaly (candidate — not confirmed)`,
+      )
+    : [
+        zh
+          ? '尚無法鎖定單一根因；優先排查數據源、報價策略、帳戶風險、撮合／結算或監控自身異常。'
+          : 'No single root cause locked yet — prioritise data source, quoting, account risk, matching/settlement, or monitor self-fault.',
+      ]
 
   const lines = zh
     ? [
         `【建議嚴重度】${sev}（僅基於輸入和規則，需當班人員覆核）`,
         '',
+        '【根因】',
+        ...rootCauses.map((x) => `• ${x}`),
+        '',
         '【排查路徑】',
-        ...pathLines.map((x) => `• ${x}`),
+        ...pathSteps.map((x, i) => `${i + 1}. ${x}`),
+        '',
+        '【下一步／建議方案（需人工審批）】',
+        ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
         '',
         '【使用的數據來源（直連連結）】',
         ...(sources.length
@@ -297,14 +315,6 @@ export function analyzeWithRules(args: {
           ? knowledgeUsed.map((n) => `• ${n.path}`)
           : ['• 無關鍵詞匹配；請在知識庫補充相關節點。']),
         '',
-        '【候選根因／驗證方向】',
-        ...(l2.length
-          ? l2.map((o) => `• ${o.x.name}：需驗證其上游故障是否早於下游異常`)
-          : ['• 數據源、報價策略、帳戶風險、撮合／結算或監控自身異常；尚無法確定。']),
-        '',
-        '【建議方案（需人工審批）】',
-        ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
-        '',
         '【後續優化（僅歸檔 RCA 進入週優化輸入）】',
         ...hits.map((h) => `• ${h.s.opt}`),
         ...l2.map((o) => `• ${o.x.opt}`),
@@ -324,8 +334,14 @@ export function analyzeWithRules(args: {
     : [
         `【Recommended severity】${sev} (rules + input only — on-duty must confirm)`,
         '',
+        '【Root cause】',
+        ...rootCauses.map((x) => `• ${x}`),
+        '',
         '【Investigation path】',
-        ...pathLines.map((x) => `• ${x}`),
+        ...pathSteps.map((x, i) => `${i + 1}. ${x}`),
+        '',
+        '【Next steps / recommendations (approval required)】',
+        ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
         '',
         '【Data sources used (direct links)】',
         ...(sources.length
@@ -356,19 +372,6 @@ export function analyzeWithRules(args: {
         ...(knowledgeUsed.length
           ? knowledgeUsed.map((n) => `• ${n.path}`)
           : ['• No keyword hit — add related nodes in Knowledge Base.']),
-        '',
-        '【Candidate root causes / verification】',
-        ...(l2.length
-          ? l2.map(
-              (o) =>
-                `• ${o.x.name}: verify whether upstream failure preceded downstream anomaly`,
-            )
-          : [
-              '• Data source, quote policy, account risk, matching/settlement, or monitor self-fault — still unconfirmed.',
-            ]),
-        '',
-        '【Recommendations (approval required)】',
-        ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
         '',
         '【Follow-on optimisation (archived RCAs only enter weekly opt)】',
         ...hits.map((h) => `• ${h.s.opt}`),
@@ -420,6 +423,8 @@ export function analyzeWithRules(args: {
     skillsUsed,
     knowledgeUsed,
     nextSteps,
+    rootCauses,
+    pathSteps,
   }
 }
 

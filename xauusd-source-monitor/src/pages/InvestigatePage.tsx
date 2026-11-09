@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { matchRelevantBriefings } from '../copilot/engine/briefingMatch'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
+import { detectReplyLang } from '../copilot/engine/detectReplyLang'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import {
   applyManagedLlmConfig,
@@ -114,10 +115,16 @@ export function InvestigatePage() {
     }
   }, [])
 
+  /** Answer language follows typed facts, not the UI locale toggle. */
+  const replyLang = useMemo(
+    () => detectReplyLang([title, facts].filter(Boolean).join('\n'), lang),
+    [title, facts, lang],
+  )
+
   const briefings = useMemo(() => {
     const all = loadMonitorBriefings()
-    return all.filter((b) => !b.lang || b.lang === (lang === 'zh-Hant' ? 'zh-Hant' : 'en'))
-  }, [lang])
+    return all.filter((b) => !b.lang || b.lang === (replyLang === 'zh-Hant' ? 'zh-Hant' : 'en'))
+  }, [replyLang])
 
   const previewBound = useMemo(() => {
     const q = [title, facts].filter(Boolean).join('\n')
@@ -157,6 +164,7 @@ export function InvestigatePage() {
     }
 
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
+    const analysisLang = detectReplyLang(userText || query, lang)
     const matched = matchRelevantBriefings(query, briefings, 3)
     setBoundBriefings(matched)
     const dataSources = collectDataSources(matched)
@@ -188,6 +196,7 @@ export function InvestigatePage() {
       )
       pushThink(t('investigateThinkSkills'))
       // Always auto-recommend severity from input + matched skills.
+      // Reply language = user input language (analysisLang), not UI locale.
       const rules = analyzeWithRules({
         text: analysisText,
         severity: '自动建议',
@@ -195,7 +204,7 @@ export function InvestigatePage() {
         knowledge,
         tree,
         startedAt,
-        lang,
+        lang: analysisLang,
         dataSources,
       })
       let report = rules.body
@@ -209,7 +218,7 @@ export function InvestigatePage() {
           modelLabel = `${settings.provider}/${settings.model}`
           const llmText = await runLlm({
             settings,
-            lang,
+            lang: analysisLang,
             userPrompt: [
               analysisText,
               '',
@@ -282,6 +291,9 @@ export function InvestigatePage() {
         skillsUsed: rules.skillsUsed,
         knowledgeUsed: rules.knowledgeUsed,
         nextSteps: rules.nextSteps,
+        rootCauses: rules.rootCauses,
+        pathSteps: rules.pathSteps,
+        replyLang: analysisLang,
         messages: [
           { role: 'user', content: analysisText, at: startedAt },
           { role: 'assistant', content: report, at: Date.now() },
@@ -319,9 +331,13 @@ export function InvestigatePage() {
     setBusy(true)
     setError(null)
     try {
+      const followLang = detectReplyLang(
+        [followUp.trim(), active.facts].join('\n'),
+        active.replyLang || lang,
+      )
       let reply: string
       if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
-        reply = followUpWithRules(followUp.trim(), active.facts, lang)
+        reply = followUpWithRules(followUp.trim(), active.facts, followLang)
       } else {
         const skills = loadSkills()
         const tree = loadKnowledgeTree()
@@ -332,11 +348,11 @@ export function InvestigatePage() {
           skills,
           knowledge,
           tree,
-          lang,
+          lang: followLang,
         })
         reply = await runLlm({
           settings,
-          lang,
+          lang: followLang,
           userPrompt: `${followUp.trim()}\n\n[System reminder: If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
           skillContext: rules.skillContext,
           kbContext:
@@ -521,16 +537,16 @@ export function InvestigatePage() {
         <div>
           <h3>{t('copilotReport')}</h3>
 
-          {(busy || liveThinking.length > 0) && (
-            <div className={`thinking-panel${busy ? ' thinking-live' : ''}`}>
-              <h4>{busy ? t('investigateThinkingLive') : t('investigateThinking')}</h4>
+          {busy && liveThinking.length > 0 ? (
+            <div className="thinking-panel thinking-live">
+              <h4>{t('investigateThinkingLive')}</h4>
               <ol className="investigate-list thinking-steps">
-                {(busy ? liveThinking : active?.thinking || liveThinking).map((line, i) => (
+                {liveThinking.map((line, i) => (
                   <li key={`${i}-${line.slice(0, 24)}`}>{line}</li>
                 ))}
               </ol>
             </div>
-          )}
+          ) : null}
 
           {active && !busy ? (
             <>
@@ -563,104 +579,136 @@ export function InvestigatePage() {
                 </p>
               </div>
 
-              {(active.briefingIds || []).length ? (
-                <>
-                  <h4>{t('investigateBoundEvents')}</h4>
-                  <ul className="investigate-list">
-                    {(active.briefingIds || []).map((id) => {
-                      const b = briefings.find((x) => x.id === id)
-                      return (
-                        <li key={id}>
-                          {b ? (
-                            <>
-                              <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
-                            </>
-                          ) : (
-                            id
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </>
-              ) : null}
-
-              <h4>{t('investigateDataSources')}</h4>
-              <p className="sub">{t('investigateDataSourcesHint')}</p>
-              {activeSources.length ? (
-                <ul className="investigate-list investigate-sources">
-                  {activeSources.map((s) => (
-                    <li key={s.url}>
-                      <a href={s.url} target="_blank" rel="noreferrer noopener">
-                        {s.label}
-                      </a>
-                      <span className="source-url mono">{s.url}</span>
-                    </li>
-                  ))}
+              <section className="investigate-primary">
+                <h4>{t('investigateRootCause')}</h4>
+                <ul className="investigate-list investigate-root">
+                  {(active.rootCauses || []).length ? (
+                    active.rootCauses!.map((line, i) => <li key={i}>{line}</li>)
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
                 </ul>
-              ) : (
-                <p className="sub">{t('investigateDataSourcesNone')}</p>
-              )}
 
-              <h4>{t('investigatePath')}</h4>
-              <ol className="investigate-timeline">
-                {(active.timeline || []).map((e, i) => (
-                  <li key={i}>
-                    <span className="mono">
-                      {new Date(e.at).toLocaleTimeString('en-SG', {
-                        timeZone: 'Asia/Singapore',
+                <h4>{t('investigatePath')}</h4>
+                <ol className="investigate-list">
+                  {(active.pathSteps || []).length ? (
+                    active.pathSteps!.map((step, i) => <li key={i}>{step}</li>)
+                  ) : (active.timeline || []).length ? (
+                    (active.timeline || []).map((e, i) => (
+                      <li key={i}>
+                        <span className="mono">
+                          {new Date(e.at).toLocaleTimeString('en-SG', {
+                            timeZone: 'Asia/Singapore',
+                          })}
+                        </span>{' '}
+                        {e.label}
+                      </li>
+                    ))
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ol>
+
+                <h4>{t('investigateNextStepsTitle')}</h4>
+                <ol className="investigate-list">
+                  {(active.nextSteps || []).length ? (
+                    active.nextSteps!.map((s, i) => <li key={i}>{s}</li>)
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ol>
+              </section>
+
+              <p className="sub">{t('investigateCollapseHint')}</p>
+              <details className="investigate-more">
+                <summary>{t('investigateMoreDetails')}</summary>
+
+                {(active.briefingIds || []).length ? (
+                  <>
+                    <h4>{t('investigateBoundEvents')}</h4>
+                    <ul className="investigate-list">
+                      {(active.briefingIds || []).map((id) => {
+                        const b = briefings.find((x) => x.id === id)
+                        return (
+                          <li key={id}>
+                            {b ? (
+                              <>
+                                <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
+                              </>
+                            ) : (
+                              id
+                            )}
+                          </li>
+                        )
                       })}
-                    </span>{' '}
-                    {e.label}
-                  </li>
-                ))}
-              </ol>
+                    </ul>
+                  </>
+                ) : null}
 
-              <h4>{t('investigateSkillsUsed')}</h4>
-              <ul className="investigate-list">
-                {(active.skillsUsed || []).length ? (
-                  active.skillsUsed!.map((s) => (
-                    <li key={`${s.level}-${s.id}`}>
-                      [{s.level}] {s.id} {s.name}
-                      {s.severity ? ` (${s.severity})` : ''}
-                    </li>
-                  ))
-                ) : (
-                  <li>{t('investigateNoneMatched')}</li>
-                )}
-              </ul>
-
-              <h4>{t('investigateKbUsed')}</h4>
-              <ul className="investigate-list">
-                {(active.knowledgeUsed || []).length ? (
-                  active.knowledgeUsed!.map((n) => (
-                    <li key={n.id}>{n.path || n.title}</li>
-                  ))
-                ) : (
-                  <li>{t('investigateNoneMatched')}</li>
-                )}
-              </ul>
-
-              {!liveThinking.length ? (
-                <>
-                  <h4>{t('investigateThinking')}</h4>
-                  <ul className="investigate-list">
-                    {(active.thinking || []).map((line, i) => (
-                      <li key={i}>{line}</li>
+                <h4>{t('investigateDataSources')}</h4>
+                <p className="sub">{t('investigateDataSourcesHint')}</p>
+                {activeSources.length ? (
+                  <ul className="investigate-list investigate-sources">
+                    {activeSources.map((s) => (
+                      <li key={s.url}>
+                        <a href={s.url} target="_blank" rel="noreferrer noopener">
+                          {s.label}
+                        </a>
+                        <span className="source-url mono">{s.url}</span>
+                      </li>
                     ))}
                   </ul>
-                </>
-              ) : null}
+                ) : (
+                  <p className="sub">{t('investigateDataSourcesNone')}</p>
+                )}
 
-              <h4>{t('investigateRecommendations')}</h4>
-              <ol className="investigate-list">
-                {(active.nextSteps || []).map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ol>
+                <h4>{t('investigateTimeline')}</h4>
+                <ol className="investigate-timeline">
+                  {(active.timeline || []).map((e, i) => (
+                    <li key={i}>
+                      <span className="mono">
+                        {new Date(e.at).toLocaleTimeString('en-SG', {
+                          timeZone: 'Asia/Singapore',
+                        })}
+                      </span>{' '}
+                      {e.label}
+                    </li>
+                  ))}
+                </ol>
 
-              <details>
-                <summary>{t('investigateFullReport')}</summary>
+                <h4>{t('investigateSkillsUsed')}</h4>
+                <ul className="investigate-list">
+                  {(active.skillsUsed || []).length ? (
+                    active.skillsUsed!.map((s) => (
+                      <li key={`${s.level}-${s.id}`}>
+                        [{s.level}] {s.id} {s.name}
+                        {s.severity ? ` (${s.severity})` : ''}
+                      </li>
+                    ))
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ul>
+
+                <h4>{t('investigateKbUsed')}</h4>
+                <ul className="investigate-list">
+                  {(active.knowledgeUsed || []).length ? (
+                    active.knowledgeUsed!.map((n) => (
+                      <li key={n.id}>{n.path || n.title}</li>
+                    ))
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ul>
+
+                <h4>{t('investigateThinking')}</h4>
+                <ul className="investigate-list">
+                  {(active.thinking || []).map((line, i) => (
+                    <li key={i}>{line}</li>
+                  ))}
+                </ul>
+
+                <h4>{t('investigateFullReport')}</h4>
                 <pre className="copilot-report">{active.report}</pre>
               </details>
 

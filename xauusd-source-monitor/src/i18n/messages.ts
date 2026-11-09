@@ -105,8 +105,12 @@ const en: Dict = {
     'Every row is a concrete API, venue page, or article URL from the bound market scan — open to verify.',
   investigateDataSourcesNone:
     'No clickable citations on the bound briefings yet — open Market → Briefings after a scan.',
+  investigateRootCause: 'Root cause',
   investigatePath: 'Investigation path',
+  investigateNextStepsTitle: 'Next steps',
   investigateRecommendations: 'Recommendations (approval required)',
+  investigateMoreDetails: 'More details (thinking, sources, skills…)',
+  investigateCollapseHint: 'Other evidence is collapsed — expand to review.',
   investigateSeverityHint:
     'Severity is recommended from your input after you run — then you can change it on the report.',
   investigateSeverityRecommended: 'Recommended severity',
@@ -471,8 +475,12 @@ const zhHant: Dict = {
   investigateDataSourcesHint:
     '每一列都是綁定行情掃描中的具體 API、場所頁或新聞網址 — 點開即可核對。',
   investigateDataSourcesNone: '綁定簡報尚無可點連結 — 請先到「行情 → 簡報」完成一次掃描。',
+  investigateRootCause: '根因',
   investigatePath: '排查路徑',
+  investigateNextStepsTitle: '下一步',
   investigateRecommendations: '建議方案（需人工審批）',
+  investigateMoreDetails: '更多詳情（思考過程、數據來源、Skills…）',
+  investigateCollapseHint: '其餘佐證已收起 — 點開可查看。',
   investigateSeverityHint: '嚴重度會在執行後依輸入建議，你可在報告上修改。',
   investigateSeverityRecommended: '建議嚴重度',
   investigateSeverityCanEdit: '由分析建議 — 可依需要調整。',

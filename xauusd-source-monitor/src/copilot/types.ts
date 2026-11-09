@@ -105,6 +105,12 @@ export interface IncidentRecord {
   skillsUsed?: SkillHitRef[]
   knowledgeUsed?: KnowledgeHitRef[]
   nextSteps?: string[]
+  /** Candidate / stated root causes shown first in the report UI. */
+  rootCauses?: string[]
+  /** Investigation path steps shown after root cause. */
+  pathSteps?: string[]
+  /** Language of the user input — reply language follows this, not UI locale. */
+  replyLang?: 'en' | 'zh-Hant'
 }
 
 export interface CopilotSettings {
@@ -134,4 +140,6 @@ export interface RuleAnalysis {
   skillsUsed: SkillHitRef[]
   knowledgeUsed: KnowledgeHitRef[]
   nextSteps: string[]
+  rootCauses: string[]
+  pathSteps: string[]
 }
