@@ -41,6 +41,7 @@ for (const locale of LANGUAGE_IDS) {
 }
 
 assert.equal(t("en", "searchAction"), "Search");
+assert.equal(t("en", "showMore", { n: 48 }), "Show 48 more");
 assert.equal(t("en", "collect"), "Collect");
 assert.equal(t("en", "menu"), "Menu");
 assert.equal(t("en", "listenNav"), "For you");

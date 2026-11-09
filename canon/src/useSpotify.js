@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   addTrackToSpotifyAlbum,
   beginSpotifyLogin,
@@ -166,20 +166,23 @@ export function useSpotify() {
     }
   }
 
-  return {
-    user,
-    status,
-    busy,
-    saved,
-    clientId,
-    configured: Boolean(clientId),
-    connect,
-    disconnect,
-    addTrack,
-    addTracks,
-    checkSaved,
-    searchTracks,
-    setStatus,
-    redirect: typeof window !== "undefined" ? redirectUri() : "",
-  };
+  return useMemo(
+    () => ({
+      user,
+      status,
+      busy,
+      saved,
+      clientId,
+      configured: Boolean(clientId),
+      connect,
+      disconnect,
+      addTrack,
+      addTracks,
+      checkSaved,
+      searchTracks,
+      setStatus,
+      redirect: typeof window !== "undefined" ? redirectUri() : "",
+    }),
+    [user, status, busy, saved, clientId],
+  );
 }

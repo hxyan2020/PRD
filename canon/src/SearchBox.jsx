@@ -1,28 +1,36 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { useI18n } from "./I18n.jsx";
 
-export default function SearchBox({ value = "", onSearch, onClear }) {
+/** Uncontrolled so keystrokes never re-render the archive. */
+export default function SearchBox({ value = "", onSearch }) {
   const { t } = useI18n();
-  const [draft, setDraft] = useState(value);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current && inputRef.current.value !== value) {
+      inputRef.current.value = value;
+    }
+  }, [value]);
 
   function submit() {
-    onSearch?.(String(draft || "").trim());
+    const next = String(inputRef.current?.value || "").trim();
+    onSearch?.(next);
   }
 
   return (
     <div className="search-row">
       <input
+        ref={inputRef}
         className="search"
         type="search"
+        name="canon-archive-search"
         placeholder={t("searchPlaceholder")}
-        value={draft}
+        defaultValue={value}
         autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
         spellCheck={false}
-        onChange={(event) => {
-          const next = event.target.value;
-          setDraft(next);
-          if (!next.trim()) onClear?.();
-        }}
+        enterKeyHint="search"
         onKeyDown={(event) => {
           if (event.key === "Enter") {
             event.preventDefault();

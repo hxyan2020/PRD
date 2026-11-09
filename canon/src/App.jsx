@@ -11,6 +11,7 @@ import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
 import SearchBox from "./SearchBox.jsx";
+import ArchiveGrid from "./ArchiveGrid.jsx";
 import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
 import { enrichExtraTrack } from "./enrich-extra.js";
 import { searchOutsideMusic } from "./music-search.js";
@@ -355,7 +356,7 @@ export default function App() {
       ) : page === "archive" ? (
         <>
       <section className="controls" aria-label={t("filterArchive")}>
-        <SearchBox value={query} onSearch={setQuery} onClear={() => setQuery("")} />
+        <SearchBox value={query} onSearch={setQuery} />
         <select value={genre} onChange={(e) => setGenre(e.target.value)} aria-label={t("allGenres")}>
           <option value={ALL_GENRES}>{t("allGenres")}</option>
           {facets.genres.map((item) => {
@@ -403,20 +404,16 @@ export default function App() {
         <p className="empty">{query.trim() ? t("emptyInCanon", { q: query.trim() }) : t("emptyFilters")}</p>
       ) : null}
 
-      <main className="grid" aria-label={t("catalog")}>
-        {visible.map((track) => (
-          <TrackCard
-            key={track.id}
-            track={track}
-            selected={selectedId === track.id}
-            collectedIds={collectedIds}
-            collectedAt={collectedAt}
-            onToggleCollect={onToggleCollect}
-            onOpen={openTrack}
-            spotify={spotify}
-          />
-        ))}
-      </main>
+      <ArchiveGrid
+        tracks={visible}
+        selectedId={selectedId}
+        collectedIds={collectedIds}
+        collectedAt={collectedAt}
+        onToggleCollect={onToggleCollect}
+        onOpen={openTrack}
+        spotify={spotify}
+        resetKey={`${query}|${genre}|${era}|${country}|${sort}`}
+      />
       {hasOutsideSearch({ query, genre, era, country }) ? (
         <section className="beyond archive-outside" aria-label={t("beyondEyebrow")}>
           <div className="collections-head">

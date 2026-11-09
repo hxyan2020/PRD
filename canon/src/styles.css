@@ -864,7 +864,15 @@ option {
   gap: 22px;
 }
 
+.archive-more {
+  display: flex;
+  justify-content: center;
+  margin: 22px 0 8px;
+}
+
 .card {
+  content-visibility: auto;
+  contain-intrinsic-size: 360px;
   background: linear-gradient(180deg, rgba(255, 248, 234, 0.08), rgba(255, 248, 234, 0.03));
   border: 1px solid rgba(243, 234, 214, 0.1);
   border-radius: 18px;

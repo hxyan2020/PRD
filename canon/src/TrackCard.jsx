@@ -1,3 +1,4 @@
+import { memo } from "react";
 import CollectButton from "./CollectButton.jsx";
 import CoverImage from "./CoverImage.jsx";
 import { useI18n } from "./I18n.jsx";
@@ -5,7 +6,7 @@ import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { artistLabel, collectedStamp, playsLabel, yearLabel } from "./uiText.js";
 import { displayGenre } from "./display-labels.js";
 
-export default function TrackCard({
+function TrackCard({
   track,
   selected,
   collectedIds,
@@ -49,3 +50,5 @@ export default function TrackCard({
     </article>
   );
 }
+
+export default memo(TrackCard);
