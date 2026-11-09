@@ -177,6 +177,14 @@ function buildRootCauses(args: {
     )
   }
 
+  if (!hits.length) {
+    out.unshift(
+      zh
+        ? '【Skill 缺口】当前告警未匹配到已定义好的 L1/L2 Skill；下列仅为基于告警原文的可能 RCA 假设，需人工核验后才能当作结论。'
+        : '【Skill gap】No defined L1/L2 skill matched this alert; items below are possible RCA hypotheses from the alert text only — not confirmed conclusions.',
+    )
+  }
+
   if (!out.length) {
     out.push(
       zh
@@ -272,8 +280,8 @@ export function analyzeWithRules(args: {
           ? `從告警原文抽出 ${alertFacts.length} 條已證實事實。`
           : '告警原文未抽出結構化事實 — 請貼完整 Lark／監控告警標題與正文。',
         hits.length
-          ? `告警對齊 ${hits.length} 個 L1 Skill：${hits.map((h) => h.s.id).join(', ')}。`
-          : '未能可靠匹配 L1 Skill — 請補充告警標題、成分源、時間與價格。',
+          ? `告警對齊已定義 Skill：${hits.map((h) => h.s.id).join(', ')}。`
+          : '未匹配到已定義好的 Skill — 將先說明缺口，再動用 LLM 給出可能 RCA，並附外網核驗頁面。',
         l2.length
           ? `僅保留與命中 L1 緊密關聯的 ${l2.length} 條 L2 候選（不堆砌無關鏈路）。`
           : '不強制輸出無關 L2 根因鏈。',
@@ -289,8 +297,8 @@ export function analyzeWithRules(args: {
           ? `Extracted ${alertFacts.length} confirmed fact(s) from alert text.`
           : 'No structured facts extracted — paste the full monitor/Lark alert title and body.',
         hits.length
-          ? `Alert aligned to ${hits.length} L1 skill(s): ${hits.map((h) => h.s.id).join(', ')}.`
-          : 'No confident L1 skill match — need alert title, constituent source, time, and price.',
+          ? `Alert aligned to defined skill(s): ${hits.map((h) => h.s.id).join(', ')}.`
+          : 'No defined skill matched — will state the gap, then call LLM for possible RCA and attach external verification pages.',
         l2.length
           ? `Kept ${l2.length} tightly linked L2 candidate(s) only (no unrelated chain dump).`
           : 'Not forcing unrelated L2 root-cause chains.',
@@ -555,6 +563,7 @@ export function analyzeWithRules(args: {
     nextSteps,
     rootCauses,
     pathSteps,
+    skillMatched: hits.length > 0,
   }
 }
 

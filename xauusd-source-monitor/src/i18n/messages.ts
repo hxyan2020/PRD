@@ -123,6 +123,15 @@ const en: Dict = {
   investigateThinkMatch: 'Matching market events…',
   investigateThinkSkills: 'Matching skills and knowledge…',
   investigateThinkLlm: 'Calling OpenAI for RCA…',
+  investigateThinkNoSkill:
+    'No defined skill matched this alert — stating the gap, then asking the LLM for possible RCA.',
+  investigateThinkExternal: 'Collecting external verification pages…',
+  investigateThinkExternalDone: 'Attached {n} external page URL(s) for verification.',
+  investigateExternalPages: 'External pages (verify)',
+  investigateExternalPagesHint:
+    'Concrete venue / docs / news URLs related to this alert — open to verify on the live UI.',
+  investigateNoSkillBanner:
+    'No defined Skill matched. Possible RCA below is LLM-assisted hypothesis — not a catalog SOP.',
   investigateThinkDone: 'Analysis complete — assembling report…',
   investigateTimeline: 'Timeline',
   investigateNextSteps: 'Step-by-step next steps',
@@ -492,6 +501,12 @@ const zhHant: Dict = {
   investigateThinkMatch: '正在匹配行情事件…',
   investigateThinkSkills: '正在匹配 Skills 與知識庫…',
   investigateThinkLlm: '正在調用 OpenAI 生成 RCA…',
+  investigateThinkNoSkill: '未匹配到已定義 Skill — 先說明缺口，再請 LLM 給出可能 RCA。',
+  investigateThinkExternal: '正在收集外網核驗頁面…',
+  investigateThinkExternalDone: '已附上 {n} 個外網頁面 URL 供核驗。',
+  investigateExternalPages: '外網頁面（請核驗）',
+  investigateExternalPagesHint: '與本告警相關的場所／文檔／新聞深鏈 — 點開即可在真實界面核對。',
+  investigateNoSkillBanner: '未匹配到已定義 Skill。下列可能 RCA 為 LLM 輔助假設，不是目錄內 SOP。',
   investigateThinkDone: '分析完成 — 正在組裝報告…',
   investigateTimeline: '時間線',
   investigateNextSteps: '分步建議下一步',

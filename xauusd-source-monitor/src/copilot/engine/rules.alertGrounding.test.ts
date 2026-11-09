@@ -48,10 +48,26 @@ describe('alert-grounded RCA', () => {
       lang: 'zh-Hant',
     })
     expect(r.hits.some((id) => id.startsWith('IDX-'))).toBe(true)
+    expect(r.skillMatched).toBe(true)
     expect(r.rootCauses.some((x) => /已证实|BYBIT_INDEX|剔除/.test(x))).toBe(true)
     expect(r.rootCauses.every((x) => !/需驗證其上游故障是否早於下游異常/.test(x))).toBe(true)
     // Noisy briefing must not force funding/kline as primary root causes
     expect(r.rootCauses.some((x) => /Funding 异常|K线策略/.test(x))).toBe(false)
     expect(r.pathSteps[0]).toMatch(/告警原文|alert text/i)
+  })
+
+  it('states skill gap when nothing in the catalog matches', () => {
+    const r = analyzeWithRules({
+      text: '完全无关的内部代号 XYZ-999 没有技能覆盖',
+      matchFocus: '完全无关的内部代号 XYZ-999 没有技能覆盖',
+      severity: '自动建议',
+      skills: defaultSkills(),
+      knowledge: [],
+      tree: [],
+      lang: 'zh-Hant',
+    })
+    expect(r.skillMatched).toBe(false)
+    expect(r.hits.length).toBe(0)
+    expect(r.rootCauses.some((x) => /Skill 缺口|未匹配到已定义/.test(x))).toBe(true)
   })
 })

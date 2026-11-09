@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { matchRelevantBriefings } from '../copilot/engine/briefingMatch'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
 import { detectReplyLang } from '../copilot/engine/detectReplyLang'
+import { fetchExternalPagesForAlert } from '../copilot/engine/externalSources'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import {
   applyManagedLlmConfig,
@@ -201,12 +202,34 @@ export function InvestigatePage() {
         lang: analysisLang,
         dataSources,
       })
+      const skillMatched = rules.skillMatched
+      if (!skillMatched) pushThink(t('investigateThinkNoSkill'))
+
+      pushThink(t('investigateThinkExternal'))
+      const externalPages = await fetchExternalPagesForAlert({
+        alertText: userText || query,
+        settings,
+        lang: analysisLang,
+      })
+      pushThink(
+        t('investigateThinkExternalDone').replace('{n}', String(externalPages.length)),
+      )
+      const externalBlock = externalPages.length
+        ? externalPages.map((p) => `- ${p.label}: ${p.url}`).join('\n')
+        : '(none)'
+
       let report = rules.body
       let provider = settings.provider
       let modelLabel = 'rules'
       let llmNote: string | null = null
+      let rootCauses = [...(rules.rootCauses || [])]
+      let nextSteps = [...(rules.nextSteps || [])]
+      let pathSteps = [...(rules.pathSteps || [])]
 
-      if (settings.provider !== 'rules' && hasLlmCredentials(settings)) {
+      // No defined skill → state gap first, then LLM for possible RCA when gateway is available.
+      const canLlm = settings.provider !== 'rules' && hasLlmCredentials(settings)
+
+      if (canLlm) {
         try {
           pushThink(t('investigateThinkLlm'))
           modelLabel = `${settings.provider}/${settings.model}`
@@ -214,6 +237,10 @@ export function InvestigatePage() {
             settings,
             lang: analysisLang,
             userPrompt: [
+              skillMatched
+                ? '【Mode】Defined skills matched — refine RCA using those skills; do not invent unrelated chains.'
+                : '【Mode】NO DEFINED SKILL matched. First sentence MUST state that clearly. Then give possible RCA hypotheses only (label each as unverified). Cite external page URLs provided below.',
+              '',
               '【PRIMARY ALERT / OPERATOR FACTS — root cause MUST cite these】',
               userText || query,
               '',
@@ -224,39 +251,99 @@ export function InvestigatePage() {
               briefingBits ? `\n${briefingBits}` : '',
               '',
               `【Recommended severity from local rules】${rules.sev}`,
-              `【Local root-cause draft】\n${(rules.rootCauses || []).map((x) => `- ${x}`).join('\n')}`,
+              `【Local root-cause draft】\n${rootCauses.map((x) => `- ${x}`).join('\n')}`,
+              `【External pages to cite (MUST list these concrete URLs)】\n${externalBlock}`,
               dataSources.length
                 ? `【Data sources (direct links)】\n${dataSources
                     .map((s) => `- ${s.label}: ${s.url}`)
                     .join('\n')}`
                 : '【Data sources (direct links)】none',
             ].join('\n'),
-            skillContext: rules.skillContext,
+            skillContext: skillMatched
+              ? rules.skillContext
+              : '## Skills used\n- (none matched — catalog gap)',
             kbContext:
               rules.kbContext ||
               knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
           })
+          const gap =
+            analysisLang === 'en'
+              ? '【Skill gap】No defined Skill matched this alert. The following is an LLM possible-RCA hypothesis.'
+              : '【Skill 缺口】未匹配到已定义 Skill。以下为 LLM 给出的可能 RCA 假设。'
+          if (!skillMatched) {
+            rootCauses = [gap, ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x))]
+          }
           report = [
-            `# LLM RCA（${modelLabel}）`,
+            skillMatched ? `# LLM RCA（${modelLabel}）` : `# ${gap}\n\n# LLM possible RCA（${modelLabel}）`,
             '',
             llmText,
             '',
             '----------',
             '',
-            '# Local skills + knowledge report',
+            skillMatched ? '# Local skills + knowledge report' : '# Local rules draft (no skill match)',
             '',
             rules.body,
+            '',
+            '## External pages',
+            externalBlock,
           ].join('\n')
+          provider = settings.provider
+          if (externalPages.length) {
+            pathSteps = [
+              ...pathSteps,
+              ...externalPages.slice(0, 4).map((p) =>
+                analysisLang === 'en'
+                  ? `Verify on external page: ${p.label} — ${p.url}`
+                  : `外网核验：${p.label} — ${p.url}`,
+              ),
+            ]
+            nextSteps = [
+              analysisLang === 'en'
+                ? 'Open the attached external page URLs and confirm what the live UI shows.'
+                : '打开下方外网页面 URL，核验线上界面实际状态。',
+              ...nextSteps,
+            ]
+          }
         } catch (llmErr) {
           provider = 'rules'
           modelLabel = 'rules'
           llmNote = `${t('llmFallbackRules')} ${
             llmErr instanceof Error ? llmErr.message : String(llmErr)
           }`
+          if (!skillMatched) {
+            rootCauses = [
+              analysisLang === 'en'
+                ? '【Skill gap】No defined Skill matched; LLM unavailable — hypotheses limited to local rules.'
+                : '【Skill 缺口】未匹配到已定义 Skill，且 LLM 不可用 — 仅能基于本地规则给出有限假设。',
+              ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
+            ]
+          }
+          if (externalPages.length) {
+            report = `${rules.body}\n\n## External pages\n${externalBlock}`
+          }
         }
       } else {
         provider = 'rules'
         modelLabel = 'rules'
+        if (!skillMatched) {
+          rootCauses = [
+            analysisLang === 'en'
+              ? '【Skill gap】No defined Skill matched; configure LLM gateway to get possible RCA hypotheses.'
+              : '【Skill 缺口】未匹配到已定义 Skill；请配置 LLM 网关以生成可能 RCA 假设。',
+            ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
+          ]
+        }
+        if (externalPages.length) {
+          report = `${rules.body}\n\n## External pages\n${externalBlock}`
+          pathSteps = [
+            ...pathSteps,
+            ...externalPages.slice(0, 4).map((p) =>
+              analysisLang === 'en'
+                ? `Verify on external page: ${p.label} — ${p.url}`
+                : `外网核验：${p.label} — ${p.url}`,
+            ),
+          ]
+        }
       }
 
       pushThink(t('investigateThinkDone'))
@@ -289,10 +376,12 @@ export function InvestigatePage() {
         timeline: rules.timeline,
         skillsUsed: rules.skillsUsed,
         knowledgeUsed: rules.knowledgeUsed,
-        nextSteps: rules.nextSteps,
-        rootCauses: rules.rootCauses,
-        pathSteps: rules.pathSteps,
+        nextSteps,
+        rootCauses,
+        pathSteps,
         replyLang: analysisLang,
+        skillMatched,
+        externalPages: externalPages.map((p) => ({ label: p.label, url: p.url })),
         messages: [
           { role: 'user', content: analysisText, at: startedAt },
           { role: 'assistant', content: report, at: Date.now() },
@@ -536,6 +625,10 @@ export function InvestigatePage() {
               </div>
 
               <section className="investigate-primary">
+                {active.skillMatched === false ? (
+                  <p className="investigate-skill-gap">{t('investigateNoSkillBanner')}</p>
+                ) : null}
+
                 <h4>{t('investigateRootCause')}</h4>
                 <ul className="investigate-list investigate-root">
                   {(active.rootCauses || []).length ? (
@@ -573,6 +666,23 @@ export function InvestigatePage() {
                     <li>{t('investigateNoneMatched')}</li>
                   )}
                 </ol>
+
+                {(active.externalPages || []).length ? (
+                  <>
+                    <h4>{t('investigateExternalPages')}</h4>
+                    <p className="sub">{t('investigateExternalPagesHint')}</p>
+                    <ul className="investigate-list investigate-sources">
+                      {active.externalPages!.map((p) => (
+                        <li key={p.url}>
+                          <a href={p.url} target="_blank" rel="noreferrer noopener">
+                            {p.label}
+                          </a>
+                          <span className="source-url mono">{p.url}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
               </section>
 
               <p className="sub">{t('investigateCollapseHint')}</p>
