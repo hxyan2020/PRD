@@ -13,7 +13,7 @@ import TrackCard from "./TrackCard.jsx";
 import SearchBox from "./SearchBox.jsx";
 import ArchiveGrid from "./ArchiveGrid.jsx";
 import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
-import { enrichExtraTrack } from "./enrich-extra.js";
+import { enrichExtraTrack, needsPortraitEnrichment } from "./enrich-extra.js";
 import { searchOutsideMusic } from "./music-search.js";
 import {
   ALL_COUNTRIES,
@@ -188,7 +188,7 @@ export default function App() {
   }, [selected, albumIds, albumAskDismissed, spotify.saved]);
 
   useEffect(() => {
-    if (!selected?.extra || selected.enriched) return undefined;
+    if (!selected?.extra || !needsPortraitEnrichment(selected)) return undefined;
     let cancelled = false;
     enrichExtraTrack(selected).then((result) => {
       if (cancelled || !result?.track) return;
@@ -197,7 +197,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [selectedId, selected?.enriched]);
+  }, [selectedId, selected?.enriched, selected?.people]);
 
   const facets = useMemo(() => {
     const genres = uniqueSorted(tracks.flatMap((item) => (item.genres?.length ? item.genres : [item.genre])));
@@ -575,12 +575,11 @@ export default function App() {
           <h3>{t("whyShortlisted")}</h3>
           <p className="why">
             {selected.extra
-              ? selected.whyShortlisted ||
-                (selected.extraSource === "itunes" || selected.extraSource === "name"
-                  ? t("beyondWhyName")
-                  : loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
-                    ? t("beyondWhy")
-                    : t("beyondWhyPopular"))
+              ? selected.extraSource === "itunes" || selected.extraSource === "name"
+                ? t("beyondWhyName")
+                : loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
+                  ? t("beyondWhy")
+                  : t("beyondWhyPopular")
               : selected.whyShortlisted}
           </p>
           {selected.wikipediaUrl ? (

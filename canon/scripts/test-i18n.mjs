@@ -227,6 +227,18 @@ assert.doesNotMatch(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
   /streamInPlayer/,
 );
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /needsPortraitEnrichment/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /selected\.extra\s*\?\s*selected\.extraSource === "itunes"/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /: selected\.whyShortlisted/,
+);
 assert.doesNotMatch(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
   /selected\?\.extra\) setLyricsOpen\(true\)/,

@@ -3,8 +3,15 @@ import {
   fallbackSongAnecdote,
   isPlaceholderCredit,
   pickAnecdote,
+  searchName,
+  titleFitsName,
   uniqueImages,
 } from "./portraits.js";
+
+const SKIP_FILE =
+  /logo|icon|flag|signature|wordmark|wikidata|commons-logo|protection|oojs|gnome|gclef|speaker|padlock|disambig|question_book|edit-ltr|crystal|symbol_|pictogram|clipboard|nuvola|wikimedia|creative_commons|red_pencil|ambox|unsourced|increase|decrease|steady|featured|sound-icon|musical_notes|clef|vip\.svg|semi-protection|support\.svg|star_of|coat_of_arms|map_of|location_map/i;
+
+const MIN_PORTRAIT_IMAGES = 3;
 
 const NATIONALITY = {
   american: "United States",
@@ -130,12 +137,28 @@ function wikiApi(path) {
 
 async function readJson(url, fetchFn) {
   try {
-    const response = await fetchFn(url);
+    const response = await fetchFn(url, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
     if (!response?.ok) return null;
     return await response.json();
   } catch {
     return null;
   }
+}
+
+function commonsImageFits(name, image) {
+  const alt = String(image?.alt || "").replace(/\.[a-z0-9]+$/i, "");
+  if (titleFitsName(name, alt)) return true;
+  const token = String(searchName(name) || name)
+    .split(/\s+/)
+    .filter((word) => word.length > 2)
+    .slice(0, 3)
+    .join(" ");
+  if (!token) return false;
+  return new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(alt);
 }
 
 export function pickWikiTitle(hits, name, artist) {
@@ -196,6 +219,28 @@ async function wikiSummary(title, fetchFn) {
   return data;
 }
 
+function absSrc(src) {
+  if (!src) return "";
+  const raw = String(src).startsWith("//") ? `https:${src}` : String(src);
+  return raw.split("?")[0];
+}
+
+function filePathUrl(title) {
+  const file = String(title || "")
+    .replace(/^File:/i, "")
+    .replace(/ /g, "_");
+  if (!file) return "";
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=800`;
+}
+
+export function usablePortraitFile(title) {
+  const value = String(title || "");
+  if (!value) return false;
+  if (SKIP_FILE.test(value)) return false;
+  if (/\.svg$/i.test(value)) return false;
+  return /\.(jpe?g|png|webp|gif)$/i.test(value) || !/\.[a-z0-9]+$/i.test(value);
+}
+
 async function wikiMedia(title, fetchFn) {
   const data = await readJson(
     `https://en.wikipedia.org/api/rest_v1/page/media-list/${encodeURIComponent(title)}`,
@@ -204,15 +249,73 @@ async function wikiMedia(title, fetchFn) {
   const images = [];
   for (const item of data?.items || []) {
     if (item?.type && item.type !== "image") continue;
+    if (!usablePortraitFile(item.title || "")) continue;
     const src =
       item?.srcset?.[item.srcset.length - 1]?.src ||
+      item?.srcset?.[0]?.src ||
       item?.original?.source ||
       item?.thumbnail?.source ||
       "";
-    const abs = String(src || "").startsWith("//") ? `https:${src}` : String(src || "");
-    if (abs) images.push({ src: abs.split("?")[0], alt: String(item.title || title).replace(/^File:/i, "") });
+    const abs = absSrc(src) || filePathUrl(item.title);
+    if (abs) {
+      images.push({
+        src: abs,
+        alt: String(item.title || title).replace(/^File:/i, "").replace(/_/g, " "),
+      });
+    }
   }
-  return uniqueImages(images, 6);
+  return uniqueImages(images, 9);
+}
+
+async function commonsSearch(query, fetchFn) {
+  const data = await readJson(
+    "https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*" +
+      `&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrnamespace=6&gsrlimit=16` +
+      "&prop=imageinfo&iiprop=url|mime|size&iiurlwidth=800",
+    fetchFn,
+  );
+  const images = [];
+  for (const page of Object.values(data?.query?.pages || {})) {
+    const info = page.imageinfo?.[0];
+    if (!info) continue;
+    if (info.mime && !/^image\/(jpeg|png|webp|gif)$/i.test(info.mime)) continue;
+    if (!usablePortraitFile(page.title || "")) continue;
+    const src = absSrc(info.thumburl || info.url);
+    if (src) {
+      images.push({
+        src,
+        alt: String(page.title || "").replace(/^File:/i, "").replace(/_/g, " "),
+      });
+    }
+  }
+  return images;
+}
+
+export function portraitImageCount(track) {
+  const people = track?.people || {};
+  let max = 0;
+  for (const portrait of Object.values(people)) {
+    max = Math.max(max, (portrait?.images || []).length);
+  }
+  return max;
+}
+
+export function needsPortraitEnrichment(track) {
+  if (!track?.extra) return false;
+  if (!track.enriched) return true;
+  return portraitImageCount(track) < MIN_PORTRAIT_IMAGES;
+}
+
+async function collectPortraitImages(name, wikiTitle, coverUrl, fetchFn) {
+  const collected = [];
+  if (wikiTitle) collected.push(...(await wikiMedia(wikiTitle, fetchFn)));
+  const query = searchName(name) || name;
+  const commons = [];
+  if (collected.length < 6) commons.push(...(await commonsSearch(`${query} musician`, fetchFn)));
+  if (collected.length < 6) commons.push(...(await commonsSearch(query, fetchFn)));
+  collected.push(...commons.filter((image) => commonsImageFits(name, image)));
+  if (coverUrl) collected.push({ src: String(coverUrl).split("?")[0], alt: `${name} recording cover` });
+  return uniqueImages(collected, 9);
 }
 
 async function wikidataEntities(ids, fetchFn) {
@@ -254,15 +357,17 @@ function portraitFromSummary(name, summary, images, kind) {
   const anecdote = pickAnecdote(extract, fallbackPersonAnecdote(name, kind));
   const lead = summary?.originalimage?.source || summary?.thumbnail?.source || "";
   const all = uniqueImages(
-    [{ src: lead ? String(lead).split("?")[0] : "", alt: name }, ...images],
-    6,
+    [{ src: lead ? absSrc(lead) : "", alt: name }, ...images],
+    9,
   );
   return { anecdote, images: all };
 }
 
 export async function enrichExtraTrack(track, { fetchFn = fetch } = {}) {
   if (!track?.extra) return { track, people: track?.people || {} };
-  if (track.enriched) return { track, people: track.people || {} };
+  if (track.enriched && !needsPortraitEnrichment(track)) {
+    return { track, people: track.people || {} };
+  }
 
   try {
   const artist = artistNameOf(track);
@@ -294,9 +399,14 @@ export async function enrichExtraTrack(track, { fetchFn = fetch } = {}) {
   const extract = String(song?.extract || artistPage?.extract || "");
   const description = String(song?.description || artistPage?.description || "");
   const asBand = artistWd.asBand || looksLikeBand(`${description} ${extract} ${artistPage?.description || ""}`);
-  const people = {};
+  const people = { ...(track.people || {}) };
   if (artist && artistPage) {
-    const images = await wikiMedia(artistPage.title || artistTitle, fetchFn);
+    const images = await collectPortraitImages(
+      artist,
+      artistPage.title || artistTitle,
+      track.coverUrl,
+      fetchFn,
+    );
     people[artist] = portraitFromSummary(artist, artistPage, images, asBand ? "band" : "singer");
   }
 
@@ -307,12 +417,8 @@ export async function enrichExtraTrack(track, { fetchFn = fetch } = {}) {
     "";
 
   const anecdote = pickAnecdote(extract, fallbackSongAnecdote({ ...track, band: asBand ? artist : track.band }));
-  const who = asBand ? artist || track.band : artist || track.singer;
   const year = songWd.year || yearFromText(description) || yearFromText(extract) || track.year;
   const genre = songWd.genre || artistWd.genre || "";
-  const whyShortlisted = who
-    ? `${asBand ? "Recording by" : "Vocal track by"} ${who}${year ? `; ${year} studio recording` : ""}. Found outside the 1,000-work canon.`
-    : "";
 
   const next = applyExtraFacts(track, {
     artist: artistWd.performer || artist,
@@ -326,11 +432,12 @@ export async function enrichExtraTrack(track, { fetchFn = fetch } = {}) {
     label: songWd.label || artistWd.label,
     wikipediaUrl,
     anecdote,
-    whyShortlisted,
     people,
     description,
     extract,
   });
+  // Keep drawer copy locale-aware: never store English whyShortlisted on extras.
+  delete next.whyShortlisted;
 
   return { track: next, people: next.people || {} };
   } catch {

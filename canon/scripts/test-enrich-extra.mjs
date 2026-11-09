@@ -3,9 +3,11 @@ import {
   applyExtraFacts,
   enrichExtraTrack,
   looksLikeBand,
+  needsPortraitEnrichment,
   parseNationalityCountry,
   parseWrittenBy,
   pickWikiTitle,
+  usablePortraitFile,
 } from "../src/enrich-extra.js";
 
 assert.equal(parseNationalityCountry("a song by American band Cigarettes After Sex"), "United States");
@@ -105,7 +107,40 @@ const fetchFn = async (url) => {
     return {
       ok: true,
       json: async () => ({
-        items: [{ type: "image", srcset: [{ src: "https://example.com/cas-live.jpg" }], title: "File:CAS.jpg" }],
+        items: [
+          {
+            type: "image",
+            srcset: [{ src: "https://example.com/cas-live.jpg" }],
+            title: "File:CAS_live.jpg",
+          },
+        ],
+      }),
+    };
+  }
+  if (href.includes("commons.wikimedia.org") && href.includes("generator=search")) {
+    return {
+      ok: true,
+      json: async () => ({
+        query: {
+          pages: {
+            1: {
+              title: "File:Cigarettes After Sex Paris.jpg",
+              imageinfo: [{ mime: "image/jpeg", thumburl: "https://example.com/cas-paris.jpg" }],
+            },
+            2: {
+              title: "File:Cigarettes After Sex Festival.jpg",
+              imageinfo: [{ mime: "image/jpeg", thumburl: "https://example.com/cas-fest.jpg" }],
+            },
+            3: {
+              title: "File:Cigarettes After Sex Stage.png",
+              imageinfo: [{ mime: "image/png", thumburl: "https://example.com/cas-stage.png" }],
+            },
+            4: {
+              title: "File:Cigarettes After Sex logo.svg",
+              imageinfo: [{ mime: "image/svg+xml", thumburl: "https://example.com/cas-logo.svg" }],
+            },
+          },
+        },
       }),
     };
   }
@@ -158,8 +193,25 @@ assert.equal(result.track.band, "Cigarettes After Sex");
 assert.equal(result.track.composer, "Greg Gonzalez");
 assert.equal(result.track.releaseCountry, "United States");
 assert.ok(result.track.anecdote.includes("American band"));
-assert.ok(result.people["Cigarettes After Sex"].images.length >= 1);
+assert.ok(result.people["Cigarettes After Sex"].images.length >= 3);
 assert.equal(result.track.enriched, true);
+assert.equal(result.track.whyShortlisted, undefined);
+assert.equal(needsPortraitEnrichment(result.track), false);
+assert.equal(usablePortraitFile("File:Cigarettes After Sex logo.svg"), false);
+assert.equal(usablePortraitFile("File:Cigarettes After Sex Paris.jpg"), true);
+
+const sparse = {
+  ...result.track,
+  people: {
+    "Cigarettes After Sex": {
+      anecdote: "Band",
+      images: [{ src: "https://example.com/only.jpg", alt: "only" }],
+    },
+  },
+};
+assert.equal(needsPortraitEnrichment(sparse), true);
+const refreshed = await enrichExtraTrack(sparse, { fetchFn });
+assert.ok(refreshed.people["Cigarettes After Sex"].images.length >= 3);
 
 const cached = await enrichExtraTrack(result.track, { fetchFn });
 assert.equal(cached.track, result.track);
