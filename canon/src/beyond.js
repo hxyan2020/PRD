@@ -257,8 +257,13 @@ export function loadExtraTracks(storage) {
 
 export function saveExtraTracks(map, storage) {
   const store = storage || globalThis.localStorage;
-  if (!store?.setItem) return;
-  store.setItem(EXTRA_KEY, JSON.stringify(map || {}));
+  if (!store?.setItem) return false;
+  try {
+    store.setItem(EXTRA_KEY, JSON.stringify(map || {}));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function mergeExtraTracks(current, list) {
@@ -267,4 +272,26 @@ export function mergeExtraTracks(current, list) {
     if (track?.id) next[track.id] = track;
   }
   return next;
+}
+
+/** Keep sourced Music available after refresh when collected or opened. */
+export function persistExtraTracks(current, list, storage) {
+  const next = mergeExtraTracks(current, list);
+  saveExtraTracks(next, storage);
+  return next;
+}
+
+export function findTrackById(id, ...lists) {
+  const key = String(id || "");
+  if (!key) return null;
+  for (const list of lists) {
+    if (!list) continue;
+    if (Array.isArray(list)) {
+      const hit = list.find((track) => track?.id === key);
+      if (hit) return hit;
+      continue;
+    }
+    if (typeof list === "object" && list[key]) return list[key];
+  }
+  return null;
 }

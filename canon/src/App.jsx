@@ -12,7 +12,7 @@ import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
 import SearchBox from "./SearchBox.jsx";
 import ArchiveGrid from "./ArchiveGrid.jsx";
-import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
+import { findTrackById, loadExtraTracks, persistExtraTracks } from "./beyond.js";
 import { enrichExtraTrack, needsPortraitEnrichment } from "./enrich-extra.js";
 import { searchOutsideMusic } from "./music-search.js";
 import {
@@ -235,11 +235,7 @@ export default function App() {
 
   function rememberExtras(list) {
     if (!list?.length) return;
-    setExtras((current) => {
-      const next = mergeExtraTracks(current, list);
-      saveExtraTracks(next);
-      return next;
-    });
+    setExtras((current) => persistExtraTracks(current, list));
   }
 
   function openTrack(track, play = false, lyrics = false) {
@@ -277,6 +273,9 @@ export default function App() {
 
   function onToggleCollect(id) {
     rememberView(id);
+    const track = findTrackById(id, library, outside, extras);
+    // Collecting a sourced title must persist its payload, or refresh drops the card.
+    if (track?.extra) rememberExtras([track]);
     setCollection((current) => {
       const next = toggleCollected(current, id);
       saveCollection(next);

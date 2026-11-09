@@ -72,9 +72,14 @@ export function loadCollectedIds(storage) {
 
 export function saveCollection(collection, storage) {
   const store = storage || globalThis.localStorage;
-  if (!store?.setItem) return;
+  if (!store?.setItem) return false;
   const parsed = parseCollection(collection);
-  store.setItem(COLLECTION_KEY, JSON.stringify(parsed));
+  try {
+    store.setItem(COLLECTION_KEY, JSON.stringify(parsed));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function saveCollectedIds(ids, storage) {

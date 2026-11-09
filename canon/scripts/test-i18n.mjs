@@ -233,6 +233,10 @@ assert.match(
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /track\?\.extra\) rememberExtras\(\[track\]\)/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
   /selected\.extra\s*\?\s*selected\.extraSource === "itunes"/,
 );
 assert.match(

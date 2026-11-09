@@ -5,12 +5,14 @@ import {
   catalogSpotifyIds,
   extraId,
   extrasFromSearch,
+  findTrackById,
   isExtraId,
   loadExtraTracks,
   mapSpotifyTrack,
   marketForCountry,
   mergeExtraTracks,
   moodQueryTerms,
+  persistExtraTracks,
   saveExtraTracks,
   searchTracksPath,
 } from "../src/beyond.js";
@@ -95,5 +97,26 @@ const itunesExtra = {
 const itunesMerged = mergeExtraTracks({}, [itunesExtra]);
 saveExtraTracks(itunesMerged, memory);
 assert.equal(loadExtraTracks(memory)["ext-itunes-9"].name, "Apocalypse");
+
+const collectMemory = {
+  data: new Map(),
+  getItem(key) {
+    return this.data.has(key) ? this.data.get(key) : null;
+  },
+  setItem(key, value) {
+    this.data.set(key, String(value));
+  },
+};
+const outsideOnly = {
+  id: "ext-collect-1",
+  extra: true,
+  extraSource: "name",
+  name: "Apocalypse",
+  singer: "Cigarettes After Sex",
+};
+persistExtraTracks({}, [outsideOnly], collectMemory);
+assert.equal(loadExtraTracks(collectMemory)["ext-collect-1"].name, "Apocalypse");
+assert.equal(findTrackById("ext-collect-1", [], [outsideOnly], {}), outsideOnly);
+assert.equal(findTrackById("missing", [], [], {}), null);
 
 console.log("beyond tests ok");
