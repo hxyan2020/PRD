@@ -141,7 +141,9 @@ const en: Dict = {
     'Archive gates weekly optimisation only. Unarchived RCAs stay out of weekly opt inputs but still count in realtime statistics.',
   investigateStatsNote: 'Every triggered RCA is auto-counted in Realtime Statistics.',
   investigateFollowUpHint:
-    'Ask to understand more. The bot will say when it does not know. Internal admin info retrieval is Phase 2 — it will not invent admin DB answers.',
+    'Ask to understand more about this RCA. Off-topic questions are gently declined. The bot will say when it does not know. Internal admin info retrieval is Phase 2 — it will not invent admin DB answers.',
+  investigateOffTopic:
+    'That looks outside risk-investigate scope. Please paste an XAUUSD alert or related metrics.',
   investigateArchivedBadge: 'archived (weekly opt)',
   investigateOpenBadge: 'open',
   statsTitle: 'Realtime Statistics',
@@ -516,7 +518,8 @@ const zhHant: Dict = {
     '歸檔只決定是否進入週優化輸入。未歸檔 RCA 不進週優化，但仍計入即時統計。',
   investigateStatsNote: '每一次觸發的 RCA 都會自動計入即時統計。',
   investigateFollowUpHint:
-    '可追問以了解更多。助手不知道時會明確說明。內部管理台資訊檢索為 Phase 2 — 不會編造 admin DB 答案。',
+    '可追問以了解本次 RCA。無關問題會被溫和拒絕。助手不知道時會明確說明。內部管理台資訊檢索為 Phase 2 — 不會編造 admin DB 答案。',
+  investigateOffTopic: '這看起來超出風險排查範圍。請貼上 XAUUSD 告警或相關指標。',
   investigateArchivedBadge: '已歸檔（週優化）',
   investigateOpenBadge: '未歸檔',
   statsTitle: '即時統計',

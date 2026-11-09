@@ -11,6 +11,7 @@ import type {
   TimelineEvent,
 } from '../types'
 import type { AppLang } from '../../i18n/messages'
+import { assessFollowUpRelevance } from './relevance'
 
 export function skillsToL1(active: SkillRecord[]): L1Skill[] {
   return active
@@ -576,6 +577,9 @@ export function followUpWithRules(
   const q = question.trim()
   const lower = q.toLowerCase()
   const zh = lang === 'zh-Hant'
+  const relevance = assessFollowUpRelevance(q, activeFacts, lang)
+  if (!relevance.ok) return relevance.message
+
   const wantsAdmin =
     /admin|账号|账户|倉位|仓位|持仓|數據庫|数据库|db\b|sql|后台|管理台|內部數據|拉取|查詢用戶|查询用户/i.test(
       q,

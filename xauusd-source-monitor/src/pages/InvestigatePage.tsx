@@ -4,6 +4,7 @@ import { matchRelevantBriefings } from '../copilot/engine/briefingMatch'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
 import { detectReplyLang } from '../copilot/engine/detectReplyLang'
 import { fetchExternalPagesForAlert } from '../copilot/engine/externalSources'
+import { assessFollowUpRelevance, assessRelevance } from '../copilot/engine/relevance'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import {
   applyManagedLlmConfig,
@@ -159,6 +160,15 @@ export function InvestigatePage() {
 
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
     const analysisLang = detectReplyLang(userText || query, lang)
+    // Text-only off-topic asks are gently rejected; screenshot-only may still be an alert.
+    if (userText) {
+      const relevance = assessRelevance(userText, analysisLang)
+      if (!relevance.ok) {
+        setError(relevance.message)
+        setLiveThinking([])
+        return
+      }
+    }
     const matched = matchRelevantBriefings(query, briefings, 3)
     const dataSources = collectDataSources(matched)
     const briefingBits = matched.map(briefingToFacts).join('\n\n----\n\n')
@@ -423,6 +433,24 @@ export function InvestigatePage() {
         [followUp.trim(), active.facts].join('\n'),
         active.replyLang || lang,
       )
+      const relevance = assessFollowUpRelevance(followUp.trim(), active.facts, followLang)
+      if (!relevance.ok) {
+        const messages = [
+          ...(active.messages || []),
+          { role: 'user' as const, content: followUp.trim(), at: Date.now() },
+          { role: 'assistant' as const, content: relevance.message, at: Date.now() },
+        ]
+        const updated: IncidentRecord = {
+          ...active,
+          report: `${active.report}\n\n----\n【追问】${followUp.trim()}\n\n${relevance.message}`,
+          messages,
+        }
+        const next = history.map((h) => (h.id === active.id ? updated : h))
+        persistHistory(next)
+        setActive(updated)
+        setFollowUp('')
+        return
+      }
       let reply: string
       if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
         reply = followUpWithRules(followUp.trim(), active.facts, followLang)
@@ -441,7 +469,7 @@ export function InvestigatePage() {
         reply = await runLlm({
           settings,
           lang: followLang,
-          userPrompt: `${followUp.trim()}\n\n[System reminder: If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
+          userPrompt: `${followUp.trim()}\n\n[System reminder: Stay in V Exchange XAUUSD risk-investigate scope. Gently refuse off-topic asks. If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
           skillContext: rules.skillContext,
           kbContext:
             rules.kbContext ||
