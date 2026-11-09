@@ -723,6 +723,11 @@ button.surprise {
   max-width: 26rem;
 }
 
+.profile-change-password-toggle {
+  margin-top: 8px;
+  max-width: 26rem;
+}
+
 .profile-form input[readonly] {
   opacity: 0.72;
 }

@@ -44,6 +44,7 @@ export default function Profile() {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   useEffect(() => {
     if (!getCurrentUser()) return undefined;
@@ -137,11 +138,24 @@ export default function Profile() {
         setError("authErrorMismatch");
         return;
       }
-      await apply(
-        await changePassword({ currentPassword: fields.currentPassword, newPassword: fields.newPassword }),
-        "profilePasswordChanged",
-      );
+      const result = await changePassword({
+        currentPassword: fields.currentPassword,
+        newPassword: fields.newPassword,
+      });
+      await apply(result, "profilePasswordChanged");
+      if (result.ok) setChangePasswordOpen(false);
     });
+  }
+
+  function closeChangePassword() {
+    setChangePasswordOpen(false);
+    setForm((prev) => ({
+      ...prev,
+      currentPassword: "",
+      newPassword: "",
+      confirm: "",
+      password: "",
+    }));
   }
 
   async function onSaveName(event) {
@@ -162,6 +176,7 @@ export default function Profile() {
     setUser(null);
     setForm(emptyForm());
     setMode("signin");
+    setChangePasswordOpen(false);
     flash("profileSignedOut");
   }
 
@@ -213,49 +228,64 @@ export default function Profile() {
               </div>
             </form>
 
-            <form className="daily-form profile-form" onSubmit={onChangePassword} aria-busy={busy}>
-              <label>
-                {t("profileCurrentPassword")}
-                <input
-                  type="password"
-                  name="current-password"
-                  autoComplete="current-password"
-                  value={form.currentPassword}
-                  onChange={(event) => field("currentPassword", event.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                {t("profileNewPassword")}
-                <input
-                  type="password"
-                  name="new-password"
-                  autoComplete="new-password"
-                  value={form.newPassword}
-                  onChange={(event) => field("newPassword", event.target.value)}
-                  minLength={8}
-                  required
-                />
-              </label>
-              <label>
-                {t("profilePasswordConfirm")}
-                <input
-                  type="password"
-                  name="confirm-password"
-                  autoComplete="new-password"
-                  value={form.confirm}
-                  onChange={(event) => field("confirm", event.target.value)}
-                  minLength={8}
-                  required
-                />
-              </label>
-              <p className="profile-hint">{t("profilePasswordHint")}</p>
-              <div className="daily-actions">
-                <button type="submit" disabled={busy}>
-                  {busy ? working : t("profileChangePassword")}
+            {changePasswordOpen ? (
+              <form
+                className="daily-form profile-form profile-change-password"
+                onSubmit={onChangePassword}
+                aria-busy={busy}
+              >
+                <label>
+                  {t("profileCurrentPassword")}
+                  <input
+                    type="password"
+                    name="current-password"
+                    autoComplete="current-password"
+                    value={form.currentPassword}
+                    onChange={(event) => field("currentPassword", event.target.value)}
+                    required
+                  />
+                </label>
+                <label>
+                  {t("profileNewPassword")}
+                  <input
+                    type="password"
+                    name="new-password"
+                    autoComplete="new-password"
+                    value={form.newPassword}
+                    onChange={(event) => field("newPassword", event.target.value)}
+                    minLength={8}
+                    required
+                  />
+                </label>
+                <label>
+                  {t("profilePasswordConfirm")}
+                  <input
+                    type="password"
+                    name="confirm-password"
+                    autoComplete="new-password"
+                    value={form.confirm}
+                    onChange={(event) => field("confirm", event.target.value)}
+                    minLength={8}
+                    required
+                  />
+                </label>
+                <p className="profile-hint">{t("profilePasswordHint")}</p>
+                <div className="daily-actions">
+                  <button type="submit" disabled={busy}>
+                    {busy ? working : t("profileChangePassword")}
+                  </button>
+                  <button type="button" className="ghost" onClick={closeChangePassword} disabled={busy}>
+                    {t("close")}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="daily-actions profile-change-password-toggle">
+                <button type="button" className="ghost" onClick={() => setChangePasswordOpen(true)} disabled={busy}>
+                  {t("profileChangePassword")}
                 </button>
               </div>
-            </form>
+            )}
           </>
         ) : (
           <>
