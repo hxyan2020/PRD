@@ -297,6 +297,13 @@ export default function App() {
     const cleared = clearSignedOutRecords();
     setCollection(cleared.collection);
     setRecommendLog(cleared.recommendLog);
+    setAlbum(cleared.album);
+    setViewedIds(cleared.viewedIds);
+    setExtras(cleared.extras);
+    setAlbumAskId("");
+    setAlbumAskDismissed(new Set());
+    setOutside([]);
+    setOutsideStatus("");
   }
 
   if (error) {

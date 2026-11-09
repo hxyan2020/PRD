@@ -53,7 +53,7 @@ Permanent public site (Vercel production for project `canon`, does not expire):
 
 **https://canon-ivory.vercel.app/**
 
-Add that origin with a trailing slash (`https://canon-ivory.vercel.app/`) to your Spotify redirect URIs. The built files also live in `docs/` for GitHack. GitHub Pages (`https://hxyan2020.github.io/PRD/`) is configured in `.github/workflows/pages.yml` if you later turn it on under **Settings → Pages → Source: GitHub Actions**.
+Add that origin with a trailing slash (`https://canon-ivory.vercel.app/`) to your Spotify redirect URIs. The built files also live in `docs/` for GitHack. Production deploys are Vercel-only.
 
 Redeploy production:
 
