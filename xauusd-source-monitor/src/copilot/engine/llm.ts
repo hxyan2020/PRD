@@ -179,7 +179,7 @@ async function callOpenAiCompatible(
       ...(kind === 'openrouter'
         ? {
             'HTTP-Referer':
-              typeof window !== 'undefined' ? window.location.origin : 'https://hxyan2020.github.io',
+              typeof window !== 'undefined' ? window.location.origin : 'https://vex-llm-proxy.vercel.app',
             'X-Title': 'V Exchange Risk Copilot',
           }
         : {}),

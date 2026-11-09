@@ -1,12 +1,14 @@
 # V Exchange Risk Tool
 
-Public SPA for **XAUUSD MVP perpetual** risk ops on V Exchange (formerly branded XAUUSD Source Monitor).
+Public SPA for **XAUUSD MVP perpetual** risk ops on V Exchange.
 
-## Permanent link
+## Permanent link (Vercel only)
 
-https://hxyan2020.github.io/PRD/xauusd-source-monitor/
+https://vex-llm-proxy.vercel.app
 
-Risk desk entry: https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate
+Risk desk entry: https://vex-llm-proxy.vercel.app/#/investigate
+
+> **Deploy policy:** production is **Vercel only**. Do not publish this app to GitHub Pages.
 
 ## Product tabs
 
@@ -22,9 +24,9 @@ Auth is required. Seeded demo users (browser session / localStorage):
 
 | Email | Password | Role |
 | --- | --- | --- |
+| `ops@hytech.com` | `OpsDemo2026!` | risk_ops |
 | `risk.ops@hytech.com` | `RiskDemo2026!` | risk_ops |
-| `analyst@hytechc.com` | `RiskDemo2026!` | analyst |
-| `admin@hytech.com` | `RiskDemo2026!` | admin |
+| `admin@hytech.com` | `AdminDemo2026!` | admin |
 
 Accepted domains: `@hytech.com`, `@hytechc.com`, `@hytechpro.com`.
 
@@ -49,26 +51,22 @@ Other venues (BINANCE, BYBIT, indexes, ISPRIME, STARPRIME, VELOCITY) use correla
 ```bash
 npm install
 npm run dev
-GITHUB_PAGES=1 npm run build
-bash scripts/deploy-gh-pages.sh
 ```
 
-## LLM proxy on Vercel (recommended)
+## Deploy (Vercel only)
 
-GitHub Pages serves the SPA; Vercel hosts `POST /api/chat` with the OpenAI key server-side.
-
-1. Import this repo at [vercel.com/new](https://vercel.com/new) (root directory: `xauusd-source-monitor`).
-2. Project → **Settings → Environment Variables** (Production):
-   - `OPENAI_API_KEY` — your OpenAI key
-   - `DESK_GATEWAY_TOKEN` — same value as `deskToken` in `public/llm-config.json`
-3. Deploy. Copy the production URL (e.g. `https://….vercel.app`).
-4. Set `public/llm-config.json` → `proxyBase` to that URL (no trailing slash), commit, then:
-   `bash scripts/deploy-gh-pages.sh`
-
-Or claim a one-off deploy, then link GitHub for ongoing deploys:
+SPA + `POST /api/chat` ship together on the `vex-llm-proxy` Vercel project.
 
 ```bash
-bash scripts/deploy-vercel.sh   # requires: npx vercel login
+bash scripts/deploy-vercel.sh   # requires: npx vercel login  OR  VERCEL_TOKEN
 ```
 
-Optional GitHub Actions: add repo secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` (workflow `deploy-llm-vercel.yml`).
+Production env vars (Vercel project → Settings → Environment Variables):
+
+- `OPENAI_API_KEY` — server-side OpenAI key
+- `DESK_GATEWAY_TOKEN` — same value as `deskToken` in `public/llm-config.json`
+- `DAILY_BUDGET_USD` — optional (default 10)
+
+`public/llm-config.json` uses empty `proxyBase` so the browser calls same-origin `/api/chat`.
+
+Optional GitHub Actions: repo secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` (workflow `deploy-llm-vercel.yml`).

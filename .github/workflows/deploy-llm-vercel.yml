@@ -1,12 +1,10 @@
-name: Deploy LLM proxy to Vercel
+name: Deploy Risk Tool to Vercel
 
 on:
   push:
     branches: [main, cursor/v-exchange-risk-tool-a935]
     paths:
-      - 'xauusd-source-monitor/api/**'
-      - 'xauusd-source-monitor/vercel.json'
-      - 'xauusd-source-monitor/package.json'
+      - 'xauusd-source-monitor/**'
       - '.github/workflows/deploy-llm-vercel.yml'
   workflow_dispatch:
 

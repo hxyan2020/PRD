@@ -1,7 +1,7 @@
 {
   "provider": "openai",
   "model": "gpt-4o-mini",
-  "proxyBase": "https://vex-llm-proxy.vercel.app",
+  "proxyBase": "",
   "deskToken": "2602552a6687ac6b9920dadebf4640a67f6820c113460d4c",
-  "note": "Production Vercel LLM proxy — OpenAI key stays server-side; desk token required."
+  "note": "Production is Vercel-only (https://vex-llm-proxy.vercel.app). Empty proxyBase = same-origin /api/chat."
 }

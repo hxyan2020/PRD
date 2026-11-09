@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Deploy xauusd-source-monitor (SPA + /api/chat) to Vercel.
-# Requires: vercel CLI logged in, or VERCEL_TOKEN in the environment.
+# Deploy V Exchange Risk Tool (SPA + /api/chat) to Vercel production.
+# This is the ONLY supported deploy path — do not use GitHub Pages.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -16,14 +16,15 @@ if [[ -n "${VERCEL_TOKEN:-}" ]]; then
   ARGS+=(--token "$VERCEL_TOKEN")
 fi
 
-echo "==> Deploying to Vercel (production)…"
+echo "==> Deploying xauusd-source-monitor to Vercel (production)…"
+echo "    Project: vex-llm-proxy (SPA + /api/chat)"
 npx vercel deploy "${ARGS[@]}"
 
 echo ""
-echo "==> Set these Environment Variables in the Vercel project (Production):"
-echo "    OPENAI_API_KEY       = (your OpenAI key)"
+echo "==> Live: https://vex-llm-proxy.vercel.app"
+echo "    Investigate: https://vex-llm-proxy.vercel.app/#/investigate"
+echo ""
+echo "==> Ensure Production env vars on the Vercel project:"
+echo "    OPENAI_API_KEY       = (server-side OpenAI key)"
 echo "    DESK_GATEWAY_TOKEN   = (same as public/llm-config.json deskToken)"
 echo "    DAILY_BUDGET_USD     = 10   (optional)"
-echo ""
-echo "Then point public/llm-config.json proxyBase at https://<project>.vercel.app"
-echo "and run: bash scripts/deploy-gh-pages.sh"
