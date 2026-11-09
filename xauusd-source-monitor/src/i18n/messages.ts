@@ -105,8 +105,12 @@ const en: Dict = {
     'Every row is a concrete API, venue page, or article URL from the bound market scan — open to verify.',
   investigateDataSourcesNone:
     'No clickable citations on the bound briefings yet — open Market → Briefings after a scan.',
+  investigateRootCause: 'Root cause',
   investigatePath: 'Investigation path',
+  investigateNextStepsTitle: 'Next steps',
   investigateRecommendations: 'Recommendations (approval required)',
+  investigateMoreDetails: 'More details (thinking, sources, skills…)',
+  investigateCollapseHint: 'Other evidence is collapsed — expand to review.',
   investigateSeverityHint:
     'Severity is recommended from your input after you run — then you can change it on the report.',
   investigateSeverityRecommended: 'Recommended severity',
@@ -119,6 +123,15 @@ const en: Dict = {
   investigateThinkMatch: 'Matching market events…',
   investigateThinkSkills: 'Matching skills and knowledge…',
   investigateThinkLlm: 'Calling OpenAI for RCA…',
+  investigateThinkNoSkill:
+    'No defined skill matched this alert — stating the gap, then asking the LLM for possible RCA.',
+  investigateThinkExternal: 'Collecting external verification pages…',
+  investigateThinkExternalDone: 'Attached {n} external page URL(s) for verification.',
+  investigateExternalPages: 'External pages (verify)',
+  investigateExternalPagesHint:
+    'Concrete venue / docs / news URLs related to this alert — open to verify on the live UI.',
+  investigateNoSkillBanner:
+    'No defined Skill matched. Possible RCA below is LLM-assisted hypothesis — not a catalog SOP.',
   investigateThinkDone: 'Analysis complete — assembling report…',
   investigateTimeline: 'Timeline',
   investigateNextSteps: 'Step-by-step next steps',
@@ -128,7 +141,9 @@ const en: Dict = {
     'Archive gates weekly optimisation only. Unarchived RCAs stay out of weekly opt inputs but still count in realtime statistics.',
   investigateStatsNote: 'Every triggered RCA is auto-counted in Realtime Statistics.',
   investigateFollowUpHint:
-    'Ask to understand more. The bot will say when it does not know. Internal admin info retrieval is Phase 2 — it will not invent admin DB answers.',
+    'Ask to understand more about this RCA. Off-topic questions are gently declined. The bot will say when it does not know. Internal admin info retrieval is Phase 2 — it will not invent admin DB answers.',
+  investigateOffTopic:
+    'That looks outside risk-investigate scope. Please paste an XAUUSD alert or related metrics.',
   investigateArchivedBadge: 'archived (weekly opt)',
   investigateOpenBadge: 'open',
   statsTitle: 'Realtime Statistics',
@@ -471,8 +486,12 @@ const zhHant: Dict = {
   investigateDataSourcesHint:
     '每一列都是綁定行情掃描中的具體 API、場所頁或新聞網址 — 點開即可核對。',
   investigateDataSourcesNone: '綁定簡報尚無可點連結 — 請先到「行情 → 簡報」完成一次掃描。',
+  investigateRootCause: '根因',
   investigatePath: '排查路徑',
+  investigateNextStepsTitle: '下一步',
   investigateRecommendations: '建議方案（需人工審批）',
+  investigateMoreDetails: '更多詳情（思考過程、數據來源、Skills…）',
+  investigateCollapseHint: '其餘佐證已收起 — 點開可查看。',
   investigateSeverityHint: '嚴重度會在執行後依輸入建議，你可在報告上修改。',
   investigateSeverityRecommended: '建議嚴重度',
   investigateSeverityCanEdit: '由分析建議 — 可依需要調整。',
@@ -484,6 +503,12 @@ const zhHant: Dict = {
   investigateThinkMatch: '正在匹配行情事件…',
   investigateThinkSkills: '正在匹配 Skills 與知識庫…',
   investigateThinkLlm: '正在調用 OpenAI 生成 RCA…',
+  investigateThinkNoSkill: '未匹配到已定義 Skill — 先說明缺口，再請 LLM 給出可能 RCA。',
+  investigateThinkExternal: '正在收集外網核驗頁面…',
+  investigateThinkExternalDone: '已附上 {n} 個外網頁面 URL 供核驗。',
+  investigateExternalPages: '外網頁面（請核驗）',
+  investigateExternalPagesHint: '與本告警相關的場所／文檔／新聞深鏈 — 點開即可在真實界面核對。',
+  investigateNoSkillBanner: '未匹配到已定義 Skill。下列可能 RCA 為 LLM 輔助假設，不是目錄內 SOP。',
   investigateThinkDone: '分析完成 — 正在組裝報告…',
   investigateTimeline: '時間線',
   investigateNextSteps: '分步建議下一步',
@@ -493,7 +518,8 @@ const zhHant: Dict = {
     '歸檔只決定是否進入週優化輸入。未歸檔 RCA 不進週優化，但仍計入即時統計。',
   investigateStatsNote: '每一次觸發的 RCA 都會自動計入即時統計。',
   investigateFollowUpHint:
-    '可追問以了解更多。助手不知道時會明確說明。內部管理台資訊檢索為 Phase 2 — 不會編造 admin DB 答案。',
+    '可追問以了解本次 RCA。無關問題會被溫和拒絕。助手不知道時會明確說明。內部管理台資訊檢索為 Phase 2 — 不會編造 admin DB 答案。',
+  investigateOffTopic: '這看起來超出風險排查範圍。請貼上 XAUUSD 告警或相關指標。',
   investigateArchivedBadge: '已歸檔（週優化）',
   investigateOpenBadge: '未歸檔',
   statsTitle: '即時統計',

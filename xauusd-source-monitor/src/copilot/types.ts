@@ -105,6 +105,16 @@ export interface IncidentRecord {
   skillsUsed?: SkillHitRef[]
   knowledgeUsed?: KnowledgeHitRef[]
   nextSteps?: string[]
+  /** Candidate / stated root causes shown first in the report UI. */
+  rootCauses?: string[]
+  /** Investigation path steps shown after root cause. */
+  pathSteps?: string[]
+  /** Language of the user input — reply language follows this, not UI locale. */
+  replyLang?: 'en' | 'zh-Hant'
+  /** False when no catalog skill confidently matched the alert. */
+  skillMatched?: boolean
+  /** External UI / docs / news pages attached for verification. */
+  externalPages?: { label: string; url: string }[]
 }
 
 export interface CopilotSettings {
@@ -134,4 +144,8 @@ export interface RuleAnalysis {
   skillsUsed: SkillHitRef[]
   knowledgeUsed: KnowledgeHitRef[]
   nextSteps: string[]
+  rootCauses: string[]
+  pathSteps: string[]
+  /** True when at least one L1 skill confidently matched the alert. */
+  skillMatched: boolean
 }

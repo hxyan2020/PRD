@@ -10,11 +10,14 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 type Msg = { role: string; content: string }
 
 const ALLOWED_ORIGINS = new Set([
-  'https://hxyan2020.github.io',
+  'https://vex-llm-proxy.vercel.app',
+  'https://vex-llm-proxy-hxyan2015-1529s-projects.vercel.app',
   'http://127.0.0.1:4173',
   'http://127.0.0.1:5173',
+  'http://127.0.0.1:5180',
   'http://localhost:5173',
   'http://localhost:4173',
+  'http://localhost:5180',
 ])
 
 const DAILY_BUDGET_USD = Number(process.env.DAILY_BUDGET_USD || 10)
@@ -35,9 +38,24 @@ function safeEqual(a: string, b: string) {
   return timingSafeEqual(aa, bb)
 }
 
+function originAllowed(origin: string): boolean {
+  if (!origin) return false
+  if (ALLOWED_ORIGINS.has(origin)) return true
+  // Vercel production + preview aliases for this project
+  try {
+    const host = new URL(origin).hostname
+    return (
+      host === 'vex-llm-proxy.vercel.app' ||
+      host.endsWith('.vercel.app') && host.includes('vex-llm-proxy')
+    )
+  } catch {
+    return false
+  }
+}
+
 function applyCors(req: VercelRequest, res: VercelResponse) {
   const origin = String(req.headers.origin || '')
-  if (ALLOWED_ORIGINS.has(origin)) {
+  if (originAllowed(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin)
     res.setHeader('Vary', 'Origin')
   }
@@ -131,7 +149,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${key}`,
           ...(provider === 'openrouter'
-            ? { 'HTTP-Referer': 'https://hxyan2020.github.io', 'X-Title': 'V Exchange Risk Copilot' }
+            ? { 'HTTP-Referer': 'https://vex-llm-proxy.vercel.app', 'X-Title': 'V Exchange Risk Copilot' }
             : {}),
         },
         body: JSON.stringify({

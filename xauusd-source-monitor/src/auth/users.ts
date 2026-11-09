@@ -7,7 +7,7 @@ export interface DemoUser {
   role: UserRole
 }
 
-/** Seeded demo accounts for GitHub Pages (no backend). */
+/** Seeded demo accounts for the Vercel SPA (browser localStorage auth). */
 export const DEMO_USERS: DemoUser[] = [
   {
     email: 'ops@hytech.com',

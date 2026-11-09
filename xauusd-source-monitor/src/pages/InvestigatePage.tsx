@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { matchRelevantBriefings } from '../copilot/engine/briefingMatch'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
+import { detectReplyLang } from '../copilot/engine/detectReplyLang'
+import { fetchExternalPagesForAlert } from '../copilot/engine/externalSources'
+import { assessFollowUpRelevance, assessRelevance } from '../copilot/engine/relevance'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import {
   applyManagedLlmConfig,
@@ -93,7 +96,6 @@ export function InvestigatePage() {
   const [error, setError] = useState<string | null>(null)
   const [active, setActive] = useState<IncidentRecord | null>(null)
   const [followUp, setFollowUp] = useState('')
-  const [boundBriefings, setBoundBriefings] = useState<ImportedBriefing[]>([])
   const [liveThinking, setLiveThinking] = useState<string[]>([])
   const [llmReady, setLlmReady] = useState(() => hasLlmCredentials(loadSettings()))
 
@@ -114,16 +116,16 @@ export function InvestigatePage() {
     }
   }, [])
 
+  /** Answer language follows typed facts, not the UI locale toggle. */
+  const replyLang = useMemo(
+    () => detectReplyLang([title, facts].filter(Boolean).join('\n'), lang),
+    [title, facts, lang],
+  )
+
   const briefings = useMemo(() => {
     const all = loadMonitorBriefings()
-    return all.filter((b) => !b.lang || b.lang === (lang === 'zh-Hant' ? 'zh-Hant' : 'en'))
-  }, [lang])
-
-  const previewBound = useMemo(() => {
-    const q = [title, facts].filter(Boolean).join('\n')
-    if (!q.trim() && !images.length) return []
-    return matchRelevantBriefings(q || 'XAUUSD', briefings, 3)
-  }, [title, facts, images.length, briefings])
+    return all.filter((b) => !b.lang || b.lang === (replyLang === 'zh-Hant' ? 'zh-Hant' : 'en'))
+  }, [replyLang])
 
   const persistHistory = (next: IncidentRecord[]) => {
     setHistory(next)
@@ -157,8 +159,17 @@ export function InvestigatePage() {
     }
 
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
+    const analysisLang = detectReplyLang(userText || query, lang)
+    // Text-only off-topic asks are gently rejected; screenshot-only may still be an alert.
+    if (userText) {
+      const relevance = assessRelevance(userText, analysisLang)
+      if (!relevance.ok) {
+        setError(relevance.message)
+        setLiveThinking([])
+        return
+      }
+    }
     const matched = matchRelevantBriefings(query, briefings, 3)
-    setBoundBriefings(matched)
     const dataSources = collectDataSources(matched)
     const briefingBits = matched.map(briefingToFacts).join('\n\n----\n\n')
     const text = [userText, briefingBits].filter(Boolean).join('\n\n')
@@ -188,67 +199,161 @@ export function InvestigatePage() {
       )
       pushThink(t('investigateThinkSkills'))
       // Always auto-recommend severity from input + matched skills.
+      // Reply language = user input language (analysisLang), not UI locale.
       const rules = analyzeWithRules({
         text: analysisText,
+        // Match skills from the operator alert — not from auto-bound briefing noise
+        matchFocus: userText || query,
         severity: '自动建议',
         skills,
         knowledge,
         tree,
         startedAt,
-        lang,
+        lang: analysisLang,
         dataSources,
       })
+      const skillMatched = rules.skillMatched
+      if (!skillMatched) pushThink(t('investigateThinkNoSkill'))
+
+      pushThink(t('investigateThinkExternal'))
+      const externalPages = await fetchExternalPagesForAlert({
+        alertText: userText || query,
+        settings,
+        lang: analysisLang,
+      })
+      pushThink(
+        t('investigateThinkExternalDone').replace('{n}', String(externalPages.length)),
+      )
+      const externalBlock = externalPages.length
+        ? externalPages.map((p) => `- ${p.label}: ${p.url}`).join('\n')
+        : '(none)'
+
       let report = rules.body
       let provider = settings.provider
       let modelLabel = 'rules'
       let llmNote: string | null = null
+      let rootCauses = [...(rules.rootCauses || [])]
+      let nextSteps = [...(rules.nextSteps || [])]
+      let pathSteps = [...(rules.pathSteps || [])]
 
-      if (settings.provider !== 'rules' && hasLlmCredentials(settings)) {
+      // No defined skill → state gap first, then LLM for possible RCA when gateway is available.
+      const canLlm = settings.provider !== 'rules' && hasLlmCredentials(settings)
+
+      if (canLlm) {
         try {
           pushThink(t('investigateThinkLlm'))
           modelLabel = `${settings.provider}/${settings.model}`
           const llmText = await runLlm({
             settings,
-            lang,
+            lang: analysisLang,
             userPrompt: [
-              analysisText,
+              skillMatched
+                ? '【Mode】Defined skills matched — refine RCA using those skills; do not invent unrelated chains.'
+                : '【Mode】NO DEFINED SKILL matched. First sentence MUST state that clearly. Then give possible RCA hypotheses only (label each as unverified). Cite external page URLs provided below.',
               '',
+              '【PRIMARY ALERT / OPERATOR FACTS — root cause MUST cite these】',
+              userText || query,
+              '',
+              '【Secondary context — do NOT treat as root cause unless alert agrees】',
               matched.length
-                ? `【Auto-bound market events】${matched.map((b) => b.title).join(' · ')}`
-                : '【Auto-bound market events】none matched',
-              `【Recommended severity】${rules.sev}`,
+                ? `Auto-bound market events: ${matched.map((b) => b.title).join(' · ')}`
+                : 'Auto-bound market events: none',
+              briefingBits ? `\n${briefingBits}` : '',
+              '',
+              `【Recommended severity from local rules】${rules.sev}`,
+              `【Local root-cause draft】\n${rootCauses.map((x) => `- ${x}`).join('\n')}`,
+              `【External pages to cite (MUST list these concrete URLs)】\n${externalBlock}`,
               dataSources.length
                 ? `【Data sources (direct links)】\n${dataSources
                     .map((s) => `- ${s.label}: ${s.url}`)
                     .join('\n')}`
                 : '【Data sources (direct links)】none',
             ].join('\n'),
-            skillContext: rules.skillContext,
+            skillContext: skillMatched
+              ? rules.skillContext
+              : '## Skills used\n- (none matched — catalog gap)',
             kbContext:
               rules.kbContext ||
               knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
           })
+          const gap =
+            analysisLang === 'en'
+              ? '【Skill gap】No defined Skill matched this alert. The following is an LLM possible-RCA hypothesis.'
+              : '【Skill 缺口】未匹配到已定义 Skill。以下为 LLM 给出的可能 RCA 假设。'
+          if (!skillMatched) {
+            rootCauses = [gap, ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x))]
+          }
           report = [
-            `# LLM RCA（${modelLabel}）`,
+            skillMatched ? `# LLM RCA（${modelLabel}）` : `# ${gap}\n\n# LLM possible RCA（${modelLabel}）`,
             '',
             llmText,
             '',
             '----------',
             '',
-            '# Local skills + knowledge report',
+            skillMatched ? '# Local skills + knowledge report' : '# Local rules draft (no skill match)',
             '',
             rules.body,
+            '',
+            '## External pages',
+            externalBlock,
           ].join('\n')
+          provider = settings.provider
+          if (externalPages.length) {
+            pathSteps = [
+              ...pathSteps,
+              ...externalPages.slice(0, 4).map((p) =>
+                analysisLang === 'en'
+                  ? `Verify on external page: ${p.label} — ${p.url}`
+                  : `外网核验：${p.label} — ${p.url}`,
+              ),
+            ]
+            nextSteps = [
+              analysisLang === 'en'
+                ? 'Open the attached external page URLs and confirm what the live UI shows.'
+                : '打开下方外网页面 URL，核验线上界面实际状态。',
+              ...nextSteps,
+            ]
+          }
         } catch (llmErr) {
           provider = 'rules'
           modelLabel = 'rules'
           llmNote = `${t('llmFallbackRules')} ${
             llmErr instanceof Error ? llmErr.message : String(llmErr)
           }`
+          if (!skillMatched) {
+            rootCauses = [
+              analysisLang === 'en'
+                ? '【Skill gap】No defined Skill matched; LLM unavailable — hypotheses limited to local rules.'
+                : '【Skill 缺口】未匹配到已定义 Skill，且 LLM 不可用 — 仅能基于本地规则给出有限假设。',
+              ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
+            ]
+          }
+          if (externalPages.length) {
+            report = `${rules.body}\n\n## External pages\n${externalBlock}`
+          }
         }
       } else {
         provider = 'rules'
         modelLabel = 'rules'
+        if (!skillMatched) {
+          rootCauses = [
+            analysisLang === 'en'
+              ? '【Skill gap】No defined Skill matched; configure LLM gateway to get possible RCA hypotheses.'
+              : '【Skill 缺口】未匹配到已定义 Skill；请配置 LLM 网关以生成可能 RCA 假设。',
+            ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
+          ]
+        }
+        if (externalPages.length) {
+          report = `${rules.body}\n\n## External pages\n${externalBlock}`
+          pathSteps = [
+            ...pathSteps,
+            ...externalPages.slice(0, 4).map((p) =>
+              analysisLang === 'en'
+                ? `Verify on external page: ${p.label} — ${p.url}`
+                : `外网核验：${p.label} — ${p.url}`,
+            ),
+          ]
+        }
       }
 
       pushThink(t('investigateThinkDone'))
@@ -281,7 +386,12 @@ export function InvestigatePage() {
         timeline: rules.timeline,
         skillsUsed: rules.skillsUsed,
         knowledgeUsed: rules.knowledgeUsed,
-        nextSteps: rules.nextSteps,
+        nextSteps,
+        rootCauses,
+        pathSteps,
+        replyLang: analysisLang,
+        skillMatched,
+        externalPages: externalPages.map((p) => ({ label: p.label, url: p.url })),
         messages: [
           { role: 'user', content: analysisText, at: startedAt },
           { role: 'assistant', content: report, at: Date.now() },
@@ -319,9 +429,31 @@ export function InvestigatePage() {
     setBusy(true)
     setError(null)
     try {
+      const followLang = detectReplyLang(
+        [followUp.trim(), active.facts].join('\n'),
+        active.replyLang || lang,
+      )
+      const relevance = assessFollowUpRelevance(followUp.trim(), active.facts, followLang)
+      if (!relevance.ok) {
+        const messages = [
+          ...(active.messages || []),
+          { role: 'user' as const, content: followUp.trim(), at: Date.now() },
+          { role: 'assistant' as const, content: relevance.message, at: Date.now() },
+        ]
+        const updated: IncidentRecord = {
+          ...active,
+          report: `${active.report}\n\n----\n【追问】${followUp.trim()}\n\n${relevance.message}`,
+          messages,
+        }
+        const next = history.map((h) => (h.id === active.id ? updated : h))
+        persistHistory(next)
+        setActive(updated)
+        setFollowUp('')
+        return
+      }
       let reply: string
       if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
-        reply = followUpWithRules(followUp.trim(), active.facts, lang)
+        reply = followUpWithRules(followUp.trim(), active.facts, followLang)
       } else {
         const skills = loadSkills()
         const tree = loadKnowledgeTree()
@@ -332,12 +464,12 @@ export function InvestigatePage() {
           skills,
           knowledge,
           tree,
-          lang,
+          lang: followLang,
         })
         reply = await runLlm({
           settings,
-          lang,
-          userPrompt: `${followUp.trim()}\n\n[System reminder: If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
+          lang: followLang,
+          userPrompt: `${followUp.trim()}\n\n[System reminder: Stay in V Exchange XAUUSD risk-investigate scope. Gently refuse off-topic asks. If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
           skillContext: rules.skillContext,
           kbContext:
             rules.kbContext ||
@@ -388,15 +520,15 @@ export function InvestigatePage() {
 
   const openIncidents = history.filter((h) => !h.archivedAt)
   const archivedIncidents = history.filter((h) => h.archivedAt)
-  const shownBound = boundBriefings.length ? boundBriefings : previewBound
   const activeSev = active ? normalizeSev(active.severity) : '待判定'
+  // Bound events / data sources only appear on the finished report (collapsed details).
   const activeSources = active
     ? collectDataSources(
         (active.briefingIds || [])
           .map((id) => briefings.find((b) => b.id === id))
           .filter((b): b is ImportedBriefing => !!b),
       )
-    : collectDataSources(shownBound)
+    : []
 
   return (
     <div className="panel copilot-page investigate-page">
@@ -449,48 +581,6 @@ export function InvestigatePage() {
             placeholder={t('copilotFactsPh')}
           />
 
-          <div className="item-block" style={{ borderTop: 'none', paddingTop: 4 }}>
-            <p className="field-label" style={{ marginBottom: 6 }}>
-              {t('investigateAutoBoundLabel')}
-            </p>
-            <p className="sub" style={{ marginTop: 0 }}>
-              {t('investigateAutoBoundHint')}
-            </p>
-            {shownBound.length ? (
-              <>
-                <ul className="investigate-list">
-                  {shownBound.map((b) => (
-                    <li key={b.id}>
-                      <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
-                    </li>
-                  ))}
-                </ul>
-                {collectDataSources(shownBound).length ? (
-                  <div style={{ marginTop: 8 }}>
-                    <p className="field-label" style={{ marginBottom: 4 }}>
-                      {t('investigateDataSources')}
-                    </p>
-                    <ul className="investigate-list investigate-sources">
-                      {collectDataSources(shownBound)
-                        .slice(0, 6)
-                        .map((s) => (
-                          <li key={s.url}>
-                            <a href={s.url} target="_blank" rel="noreferrer noopener">
-                              {s.label}
-                            </a>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                ) : null}
-              </>
-            ) : (
-              <p className="sub">{t('investigateAutoBoundPending')}</p>
-            )}
-          </div>
-
-          <p className="sub">{t('investigateSeverityHint')}</p>
-
           <p className="copilot-actions">
             <button
               type="button"
@@ -507,7 +597,6 @@ export function InvestigatePage() {
                 setTitle('')
                 setFacts('')
                 setImages([])
-                setBoundBriefings([])
                 setActive(null)
                 setLiveThinking([])
               }}
@@ -521,16 +610,16 @@ export function InvestigatePage() {
         <div>
           <h3>{t('copilotReport')}</h3>
 
-          {(busy || liveThinking.length > 0) && (
-            <div className={`thinking-panel${busy ? ' thinking-live' : ''}`}>
-              <h4>{busy ? t('investigateThinkingLive') : t('investigateThinking')}</h4>
+          {busy && liveThinking.length > 0 ? (
+            <div className="thinking-panel thinking-live">
+              <h4>{t('investigateThinkingLive')}</h4>
               <ol className="investigate-list thinking-steps">
-                {(busy ? liveThinking : active?.thinking || liveThinking).map((line, i) => (
+                {liveThinking.map((line, i) => (
                   <li key={`${i}-${line.slice(0, 24)}`}>{line}</li>
                 ))}
               </ol>
             </div>
-          )}
+          ) : null}
 
           {active && !busy ? (
             <>
@@ -563,104 +652,157 @@ export function InvestigatePage() {
                 </p>
               </div>
 
-              {(active.briefingIds || []).length ? (
-                <>
-                  <h4>{t('investigateBoundEvents')}</h4>
-                  <ul className="investigate-list">
-                    {(active.briefingIds || []).map((id) => {
-                      const b = briefings.find((x) => x.id === id)
-                      return (
-                        <li key={id}>
-                          {b ? (
-                            <>
-                              <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
-                            </>
-                          ) : (
-                            id
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </>
-              ) : null}
+              <section className="investigate-primary">
+                {active.skillMatched === false ? (
+                  <p className="investigate-skill-gap">{t('investigateNoSkillBanner')}</p>
+                ) : null}
 
-              <h4>{t('investigateDataSources')}</h4>
-              <p className="sub">{t('investigateDataSourcesHint')}</p>
-              {activeSources.length ? (
-                <ul className="investigate-list investigate-sources">
-                  {activeSources.map((s) => (
-                    <li key={s.url}>
-                      <a href={s.url} target="_blank" rel="noreferrer noopener">
-                        {s.label}
-                      </a>
-                      <span className="source-url mono">{s.url}</span>
-                    </li>
-                  ))}
+                <h4>{t('investigateRootCause')}</h4>
+                <ul className="investigate-list investigate-root">
+                  {(active.rootCauses || []).length ? (
+                    active.rootCauses!.map((line, i) => <li key={i}>{line}</li>)
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
                 </ul>
-              ) : (
-                <p className="sub">{t('investigateDataSourcesNone')}</p>
-              )}
 
-              <h4>{t('investigatePath')}</h4>
-              <ol className="investigate-timeline">
-                {(active.timeline || []).map((e, i) => (
-                  <li key={i}>
-                    <span className="mono">
-                      {new Date(e.at).toLocaleTimeString('en-SG', {
-                        timeZone: 'Asia/Singapore',
+                <h4>{t('investigatePath')}</h4>
+                <ol className="investigate-list">
+                  {(active.pathSteps || []).length ? (
+                    active.pathSteps!.map((step, i) => <li key={i}>{step}</li>)
+                  ) : (active.timeline || []).length ? (
+                    (active.timeline || []).map((e, i) => (
+                      <li key={i}>
+                        <span className="mono">
+                          {new Date(e.at).toLocaleTimeString('en-SG', {
+                            timeZone: 'Asia/Singapore',
+                          })}
+                        </span>{' '}
+                        {e.label}
+                      </li>
+                    ))
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ol>
+
+                <h4>{t('investigateNextStepsTitle')}</h4>
+                <ol className="investigate-list">
+                  {(active.nextSteps || []).length ? (
+                    active.nextSteps!.map((s, i) => <li key={i}>{s}</li>)
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ol>
+
+                {(active.externalPages || []).length ? (
+                  <>
+                    <h4>{t('investigateExternalPages')}</h4>
+                    <p className="sub">{t('investigateExternalPagesHint')}</p>
+                    <ul className="investigate-list investigate-sources">
+                      {active.externalPages!.map((p) => (
+                        <li key={p.url}>
+                          <a href={p.url} target="_blank" rel="noreferrer noopener">
+                            {p.label}
+                          </a>
+                          <span className="source-url mono">{p.url}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
+              </section>
+
+              <p className="sub">{t('investigateCollapseHint')}</p>
+              <details className="investigate-more">
+                <summary>{t('investigateMoreDetails')}</summary>
+
+                {(active.briefingIds || []).length ? (
+                  <>
+                    <h4>{t('investigateBoundEvents')}</h4>
+                    <ul className="investigate-list">
+                      {(active.briefingIds || []).map((id) => {
+                        const b = briefings.find((x) => x.id === id)
+                        return (
+                          <li key={id}>
+                            {b ? (
+                              <>
+                                <span className="pill sev-yellow">{b.severity || '—'}</span> {b.title}
+                              </>
+                            ) : (
+                              id
+                            )}
+                          </li>
+                        )
                       })}
-                    </span>{' '}
-                    {e.label}
-                  </li>
-                ))}
-              </ol>
+                    </ul>
+                  </>
+                ) : null}
 
-              <h4>{t('investigateSkillsUsed')}</h4>
-              <ul className="investigate-list">
-                {(active.skillsUsed || []).length ? (
-                  active.skillsUsed!.map((s) => (
-                    <li key={`${s.level}-${s.id}`}>
-                      [{s.level}] {s.id} {s.name}
-                      {s.severity ? ` (${s.severity})` : ''}
-                    </li>
-                  ))
-                ) : (
-                  <li>{t('investigateNoneMatched')}</li>
-                )}
-              </ul>
-
-              <h4>{t('investigateKbUsed')}</h4>
-              <ul className="investigate-list">
-                {(active.knowledgeUsed || []).length ? (
-                  active.knowledgeUsed!.map((n) => (
-                    <li key={n.id}>{n.path || n.title}</li>
-                  ))
-                ) : (
-                  <li>{t('investigateNoneMatched')}</li>
-                )}
-              </ul>
-
-              {!liveThinking.length ? (
-                <>
-                  <h4>{t('investigateThinking')}</h4>
-                  <ul className="investigate-list">
-                    {(active.thinking || []).map((line, i) => (
-                      <li key={i}>{line}</li>
+                <h4>{t('investigateDataSources')}</h4>
+                <p className="sub">{t('investigateDataSourcesHint')}</p>
+                {activeSources.length ? (
+                  <ul className="investigate-list investigate-sources">
+                    {activeSources.map((s) => (
+                      <li key={s.url}>
+                        <a href={s.url} target="_blank" rel="noreferrer noopener">
+                          {s.label}
+                        </a>
+                        <span className="source-url mono">{s.url}</span>
+                      </li>
                     ))}
                   </ul>
-                </>
-              ) : null}
+                ) : (
+                  <p className="sub">{t('investigateDataSourcesNone')}</p>
+                )}
 
-              <h4>{t('investigateRecommendations')}</h4>
-              <ol className="investigate-list">
-                {(active.nextSteps || []).map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ol>
+                <h4>{t('investigateTimeline')}</h4>
+                <ol className="investigate-timeline">
+                  {(active.timeline || []).map((e, i) => (
+                    <li key={i}>
+                      <span className="mono">
+                        {new Date(e.at).toLocaleTimeString('en-SG', {
+                          timeZone: 'Asia/Singapore',
+                        })}
+                      </span>{' '}
+                      {e.label}
+                    </li>
+                  ))}
+                </ol>
 
-              <details>
-                <summary>{t('investigateFullReport')}</summary>
+                <h4>{t('investigateSkillsUsed')}</h4>
+                <ul className="investigate-list">
+                  {(active.skillsUsed || []).length ? (
+                    active.skillsUsed!.map((s) => (
+                      <li key={`${s.level}-${s.id}`}>
+                        [{s.level}] {s.id} {s.name}
+                        {s.severity ? ` (${s.severity})` : ''}
+                      </li>
+                    ))
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ul>
+
+                <h4>{t('investigateKbUsed')}</h4>
+                <ul className="investigate-list">
+                  {(active.knowledgeUsed || []).length ? (
+                    active.knowledgeUsed!.map((n) => (
+                      <li key={n.id}>{n.path || n.title}</li>
+                    ))
+                  ) : (
+                    <li>{t('investigateNoneMatched')}</li>
+                  )}
+                </ul>
+
+                <h4>{t('investigateThinking')}</h4>
+                <ul className="investigate-list">
+                  {(active.thinking || []).map((line, i) => (
+                    <li key={i}>{line}</li>
+                  ))}
+                </ul>
+
+                <h4>{t('investigateFullReport')}</h4>
                 <pre className="copilot-report">{active.report}</pre>
               </details>
 
