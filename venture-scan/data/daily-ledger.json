@@ -1,32 +1,32 @@
 {
-  "day": "2026-11-09",
-  "scannedAt": "2026-11-09T02:12:58.354Z",
+  "day": "2026-11-10",
+  "scannedAt": "2026-11-10T04:25:24.119Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
     "heaptrace-observability",
-    "batterysmart-swap",
-    "nightshift-nursing-ai",
-    "fjord-battery-secondlife",
-    "synthesis-school",
-    "saigon-microgrid-coops",
-    "watershed-climate",
-    "yassir-maghreb",
-    "atelier-carbon-ledger",
-    "dub-link-os",
-    "cashfree-merchant",
-    "ramp-spend",
     "farmstack-coldchain",
-    "resend-email-api",
-    "sideshift-care",
+    "spore-kitchen",
+    "elderloop-companion",
+    "mercury-banking",
     "meshpay-remit",
-    "voltpath-depot",
-    "hanok-energy-retrofit",
-    "fi-money",
-    "kiln-microfactory",
+    "fjord-battery-secondlife",
     "reef-credit-exchange",
-    "neon-serverless-postgres",
+    "saigon-microgrid-coops",
+    "bushfire-mesh-sensors",
+    "magicschool-ai",
+    "atelier-carbon-ledger",
     "playpane-classroom",
-    "cursor-coding"
+    "synthesis-school",
+    "mono-africa-open-banking",
+    "chipper-cash",
+    "resend-email-api",
+    "qonto-sme-bank",
+    "elevenlabs-voice",
+    "brex-finance",
+    "iron-dome-devsecops",
+    "ramp-spend",
+    "cognition-devin",
+    "posthog-product-os"
   ],
   "headlineCount": 40,
   "feedsOk": 6,
@@ -36,32 +36,50 @@
     {
       "id": "techcrunch-0",
       "sourceId": "techcrunch",
-      "title": "He arrested a hacker, then spent 18 months clearing his own name. Now he’s a cybersecurity VC.",
-      "url": "https://techcrunch.com/2026/11/08/the-ex-secret-service-agent-who-flipped-a-hacker-is-now-raising-a-second-250m-cybersecurity-fund/",
-      "excerpt": "Stephen Ward, a former Secret Service agent and Home Depot CISO, is preparing a second fund of roughly $250 million for Brightmind Partners.",
-      "publishedAt": "Sun, 08 Nov 2026 17:30:00 +0000",
+      "title": "Anthropic reportedly plans to move forward with IPO plans",
+      "url": "https://techcrunch.com/2026/11/09/anthropic-reportedly-plans-to-move-forward-with-ipo-plans/",
+      "excerpt": "The AI company is expected to set its valuation range this week, the Wall Street Journal reported.",
+      "publishedAt": "Tue, 10 Nov 2026 01:27:12 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-1",
       "sourceId": "techcrunch",
-      "title": "Binance CFO is leaving to &#8216;pursue a new venture&#8217; after $6.3 billion hack",
-      "url": "https://techcrunch.com/2026/11/07/binance-cfo-is-leaving-to-pursue-a-new-venture-after-6-3-billion-hack/",
-      "excerpt": "The announcement comes barely more than a week after hackers stole $6.3 billion worth of cryptocurrency from Binance users.",
-      "publishedAt": "Sat, 07 Nov 2026 17:24:07 +0000",
+      "title": "AI hardware startup Nominal triples valuation to $3B in 8 months",
+      "url": "https://techcrunch.com/2026/11/09/ai-hardware-startup-nominal-triples-valuation-to-3b-in-8-months/",
+      "excerpt": "Nominal, a startup that offers an AI platform for hardware engineering and claims Anduril as a major customer, has raised another big round of financing that triples its valuation.",
+      "publishedAt": "Mon, 09 Nov 2026 19:21:46 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-2",
       "sourceId": "techcrunch",
-      "title": "OpenAI reportedly raises an additional $11 billion at a $1.25 trillion valuation",
-      "url": "https://techcrunch.com/2026/11/06/openai-reportedly-raises-an-additional-11-billion-at-a-1-25-trillion-valuation/",
-      "excerpt": "OpenAI has reportedly raised an additional $11 billion as part of a funding round that hasn't closed yet but is expected to in the coming weeks.",
-      "publishedAt": "Fri, 06 Nov 2026 22:53:46 +0000",
+      "title": "Uber launches parking service following SpotHero acquisition, with an eye on robotaxis",
+      "url": "https://techcrunch.com/2026/11/09/uber-launches-parking-service-following-spothero-acquisition-with-an-eye-on-robotaxis/",
+      "excerpt": "Uber Parking is the latest example of the company offering products beyond its core ride-hailing service.",
+      "publishedAt": "Mon, 09 Nov 2026 17:00:00 +0000",
       "matchedSlugs": []
     },
     {
       "id": "crunchbase-news-3",
+      "sourceId": "crunchbase-news",
+      "title": "Series A In 2026: Capital Is Flowing Faster, But Fewer Startups Are Making The Cut",
+      "url": "https://news.crunchbase.com/venture/series-a-2026-startup-capital-up-deals-steady/",
+      "excerpt": "More money is pouring into Series A rounds, but it isn’t opening the door to more startups. U.S. companies have raised $42 billion at that stage this year through October, up roughly 60% year over year, while deal counts remain on pace with the past few years, Crunchbase data sho",
+      "publishedAt": "Mon, 09 Nov 2026 12:00:51 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "crunchbase-news-4",
+      "sourceId": "crunchbase-news",
+      "title": "Paper Unicorns Are Cheap. Building A $1B Revenue AI Company Takes A Multimarket Cap Table",
+      "url": "https://news.crunchbase.com/ai/building-unicorn-multimarket-cap-table-shazhaev-dizzaract/",
+      "excerpt": "AI startups should be judged by durable revenue, full-price renewals and healthy margins after delivery costs, with embedded customer workflows providing stronger defensibility as model access gets cheaper, rather than their paper valuation, writes guest author Ilman Shazhaev, fo",
+      "publishedAt": "Mon, 09 Nov 2026 12:00:32 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "crunchbase-news-5",
       "sourceId": "crunchbase-news",
       "title": "The Week’s 10 Biggest Funding Rounds: AI, Defense And Space Tech Lead For Large Rounds",
       "url": "https://news.crunchbase.com/venture/biggest-startup-rounds-ai-defense-space-tech-shield-zipline/",
@@ -70,7 +88,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-4",
+      "id": "crunchbase-news-6",
       "sourceId": "crunchbase-news",
       "title": "General Catalyst Tops Lead Investors For October In Busy Month For US Startup Dealmaking",
       "url": "https://news.crunchbase.com/venture/october-2026-lead-startup-investors/",
@@ -79,7 +97,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-5",
+      "id": "crunchbase-news-7",
       "sourceId": "crunchbase-news",
       "title": "Exclusive: Nurx And Journey Clinical Co-Founders Raise $6M For Mental Health Startup Siggy",
       "url": "https://news.crunchbase.com/venture/nurx-journey-clinical-founders-raise-mental-health-startup-siggy/",
@@ -88,7 +106,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-6",
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "Dropbox Plans $350M AI Infrastructure Deal With Tigris Buy, Its Biggest Acquisition Yet",
       "url": "https://news.crunchbase.com/ma/dbx-ai-infrastructure-deal-tigris-acquisition/",
@@ -97,7 +115,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-7",
+      "id": "crunchbase-news-9",
       "sourceId": "crunchbase-news",
       "title": "Sector Snapshot: Construction Robotics Funding Soars To $1.6B, Tripling Previous Peak",
       "url": "https://news.crunchbase.com/venture/sector-snapshot-2026-construction-robotics-funding-soars-bedrock/",
@@ -106,7 +124,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-10",
       "sourceId": "crunchbase-news",
       "title": "Crunchbase Data: Less Than 2% Of 2026 Venture Funding Went To Post-Election Red States",
       "url": "https://news.crunchbase.com/venture/2026-post-election-funding-red-states-drops/",
@@ -115,25 +133,52 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
-      "sourceId": "crunchbase-news",
-      "title": "Most Venture Capital Is Going To Companies That Are Founded Or Led By Billionaires",
-      "url": "https://news.crunchbase.com/venture/startup-billionaire-founders-ai-defense-anthropic-spcx/",
-      "excerpt": "More than half of all seed- through growth-stage venture capital raised in the U.S. so far in 2026 went to seven companies founded or led by men who are already billionaires. Together, these companies raised more than $260 billion in equity funding in the first 10 months of the y",
-      "publishedAt": "Wed, 04 Nov 2026 12:00:14 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "crunchbase-news-10",
-      "sourceId": "crunchbase-news",
-      "title": "China’s Largest Startup Deal Ever Lifts Global Venture Funding To $59B In October",
-      "url": "https://news.crunchbase.com/venture/october-2026-global-startup-funding-strong-china-deepseek/",
-      "excerpt": "Global venture funding in October totaled $59 billion, a 45% jump from a year earlier, per Crunchbase data, in large part due to a record-setting $15.9 billion funding round for China’s DeepSeek.",
-      "publishedAt": "Tue, 03 Nov 2026 12:00:44 +0000",
-      "matchedSlugs": []
-    },
-    {
       "id": "sifted-11",
+      "sourceId": "sifted",
+      "title": "Monzo in talks to raise up to £500m, reports say",
+      "url": "https://sifted.eu/articles/monzo-to-raise-up-to-500m/",
+      "excerpt": "",
+      "publishedAt": "Mon, 09 Nov 2026 16:56:48 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-12",
+      "sourceId": "sifted",
+      "title": "Onodrim raises $300m as European defence rollups heat up",
+      "url": "https://sifted.eu/articles/onodrim-300-european-defence-rollup/",
+      "excerpt": "",
+      "publishedAt": "Mon, 09 Nov 2026 10:34:35 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-13",
+      "sourceId": "sifted",
+      "title": "The winners and losers of Europe's fintech growth funding drought",
+      "url": "https://sifted.eu/articles/fintech-growth-drought/",
+      "excerpt": "",
+      "publishedAt": "Mon, 09 Nov 2026 05:00:32 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-14",
+      "sourceId": "sifted",
+      "title": "SF confidence, reality checks and AI bubble anxiety come to the Rise venture salon in the Alps",
+      "url": "https://sifted.eu/articles/sf-confidence-reality-checks-and-ai-bubble-anxiety-come-to-the-rise-venture-salon-in-the-alps/",
+      "excerpt": "",
+      "publishedAt": "Mon, 09 Nov 2026 05:00:20 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-15",
+      "sourceId": "sifted",
+      "title": "UCL spinouts looking to raise",
+      "url": "https://sifted.eu/articles/ucl-spinouts-looking-to-raise/",
+      "excerpt": "",
+      "publishedAt": "Mon, 09 Nov 2026 05:00:20 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-16",
       "sourceId": "sifted",
       "title": "Exclusive: Helsing CEO backs AI learning startup Mindmax in £2.5m raise",
       "url": "https://sifted.eu/articles/memrise-mindmax-helsing-funding-round-memory/",
@@ -142,7 +187,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-12",
+      "id": "sifted-17",
       "sourceId": "sifted",
       "title": "Founders make terrible employees — here’s why every startup should hire them",
       "url": "https://sifted.eu/articles/founders-make-terrible-employees/",
@@ -151,7 +196,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-13",
+      "id": "sifted-18",
       "sourceId": "sifted",
       "title": "Ex-LocalGlobe partner closes $17m debut fund",
       "url": "https://sifted.eu/articles/evertrue-capital-closes-17m-debut-fund/",
@@ -160,25 +205,88 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-14",
-      "sourceId": "sifted",
-      "title": "Lovable backer Creandum raises $750m for largest-ever fund to back AI boom",
-      "url": "https://sifted.eu/articles/creandum-750-largest-vc-fund-back-ai-san-francisco/",
-      "excerpt": "",
-      "publishedAt": "Mon, 02 Nov 2026 12:04:11 GMT",
+      "id": "eu-startups-19",
+      "sourceId": "eu-startups",
+      "title": "From tending graves to raising €1.7 million: Memora sets out to modernise Europe&#8217;s cemeteries",
+      "url": "https://www.eu-startups.com/2026/11/from-tending-graves-to-raising-e1-7-million-memora-sets-out-to-modernise-europes-cemeteries/",
+      "excerpt": "Danish startup Memora has raised €1.7 million (DKK 13 million) to connect cemetery managers, gardeners and families through one platform, bringing together administration, maintenance and communication. The round was led by venture capital firm True Collective. Chris Evans, forme",
+      "publishedAt": "Mon, 09 Nov 2026 16:33:47 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "sifted-15",
-      "sourceId": "sifted",
-      "title": "Missile startup Hypersonica raises €100m from Lightspeed, General Catalyst as missile defence takes off",
-      "url": "https://sifted.eu/articles/missile-startup-hypersonica-fundraise-lightspeed-general-catalyst-europe/",
-      "excerpt": "",
-      "publishedAt": "Mon, 02 Nov 2026 10:39:30 GMT",
+      "id": "eu-startups-20",
+      "sourceId": "eu-startups",
+      "title": "OPINION: Long sales cycles could be FinTech’s biggest competitive advantage",
+      "url": "https://www.eu-startups.com/2026/11/opinion-long-sales-cycles-could-be-fintechs-biggest-competitive-advantage/",
+      "excerpt": "Any FinTech founder raising in the UK this year will have seen the numbers &#8211; according to KPMG&#8217;s Pulse of FinTech, investment fell to €2.1 billion (£1.8 billion) in the first half of 2026, down around two-thirds on the same period last year and the lowest since the re",
+      "publishedAt": "Mon, 09 Nov 2026 15:48:55 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-16",
+      "id": "eu-startups-21",
+      "sourceId": "eu-startups",
+      "title": "SWISSto12 and UNIVITY work together to build sovereign 5G infrastructure in space",
+      "url": "https://www.eu-startups.com/2026/11/swissto12-and-univity-work-together-to-build-sovereign-5g-infrastructure-in-space/",
+      "excerpt": "Swiss SpaceTech startup SWISSto12 and French startup UNIVITY are advancing Europe&#8217;s ambitions for sovereign satellite communications after successfully completing a Critical Design Review (CDR) for two active antenna systems designed to deliver 5G connectivity from space. T",
+      "publishedAt": "Mon, 09 Nov 2026 15:07:17 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-22",
+      "sourceId": "eu-startups",
+      "title": "Jülich-based SRTD Biotech secures €31.5 million to develop precision mRNA therapies targeting diseased cells",
+      "url": "https://www.eu-startups.com/2026/11/julich-based-srtd-biotech-secures-e31-5-million-to-develop-precision-mrna-therapies-targeting-diseased-cells/",
+      "excerpt": "SRTD Biotech, a Jülich-based BioTech startup focused on developing next-generation precision mRNA therapeutics, has completed an oversubscribed €31.5 million Seed financing round. The funding was led by Mérieux Equity Partners, with NRW.BANK and Boehringer Ingelheim Venture Fund ",
+      "publishedAt": "Mon, 09 Nov 2026 12:43:19 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-23",
+      "sourceId": "eu-startups",
+      "title": "OPINION: Building open source gives startups a head start, not a moat",
+      "url": "https://www.eu-startups.com/2026/11/opinion-building-open-source-gives-startups-a-head-start-not-a-moat/",
+      "excerpt": "Every startup faces the same squeeze: big ambitions, small team and limited budget. Free open-source software, which can be used, modified, and redistributed under its license, can help founders ease the squeeze. It lets a small startup build products that once required a large e",
+      "publishedAt": "Mon, 09 Nov 2026 10:51:10 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-24",
+      "sourceId": "eu-startups",
+      "title": "Palantir alumni-founded DefenceTech Onodrim hits unicorn status with €268.01 million raise",
+      "url": "https://www.eu-startups.com/2026/11/palantir-alumni-founded-dutch-defencetech-scale-up-onodrim-hits-unicorn-status-after-raising-e268-01-million/",
+      "excerpt": "Onodrim, the Dutch European defence and industrial scale-up platform, has closed a €268.01 million ($300 million) Series A funding round at a €1.16 billion ($1.3 billion) valuation. The funding round was led by US investment group Lux Capital, with participation from existing inv",
+      "publishedAt": "Mon, 09 Nov 2026 10:30:26 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-25",
+      "sourceId": "eu-startups",
+      "title": "Bulgaria&#8217;s BlackPeak Capital reaches €125 million first close for new Southeast Europe growth fund",
+      "url": "https://www.eu-startups.com/2026/11/bulgarias-blackpeak-capital-reaches-e125-million-first-close-for-new-southeast-europe-growth-fund/",
+      "excerpt": "BlackPeak Capital, a Bulgarian private equity firm, today announced the first close of BlackPeak Southeast Europe Growth Equity Fund II SCSp (BPSEEF II) at €125 million to invest in fast-growing companies across Southeast Europe, with Bulgaria, Romania, Croatia, Slovenia and Serb",
+      "publishedAt": "Mon, 09 Nov 2026 10:09:11 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-26",
+      "sourceId": "eu-startups",
+      "title": "France’s Calogena secures €40 million EU grant to build its first commercial nuclear reactor",
+      "url": "https://www.eu-startups.com/2026/11/frances-calogena-secures-e40-million-eu-grant-to-build-its-first-commercial-nuclear-reactor/",
+      "excerpt": "Calogena, a French nuclear startup developing a small modular reactor (SMR) designed to supply low-carbon heat to district heating networks, has secured €40 million. The funding came in the form of a grant from the European Commission’s Innovation Fund ,and it marks the first tim",
+      "publishedAt": "Mon, 09 Nov 2026 08:52:28 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-27",
+      "sourceId": "eu-startups",
+      "title": "Marble Imaging raises €6 million to build Germany’s first commercial very-high-resolution satellite constellation",
+      "url": "https://www.eu-startups.com/2026/11/marble-imaging-raises-e6-million-to-build-germanys-first-commercial-very-high-resolution-satellite-constellation/",
+      "excerpt": "Marble Imaging, a Bremen-based big data Earth Observation (EO) company setting up Germany&#8217;s first commercial constellation of very-high-resolution (VHR) satellites, has raised an additional €6 million in a Seed extension round led by Cherry Ventures. In December 2025, the c",
+      "publishedAt": "Mon, 09 Nov 2026 08:01:42 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-28",
       "sourceId": "eu-startups",
       "title": "Weekly funding round-up! All of the European startup funding rounds we tracked this week (Nov. 02– Nov. 06)",
       "url": "https://www.eu-startups.com/2026/11/weekly-funding-round-up-all-of-the-european-startup-funding-rounds-we-tracked-this-week-nov-02-nov-06/",
@@ -187,210 +295,102 @@
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-17",
-      "sourceId": "eu-startups",
-      "title": "DefenceTech unicorn TEKEVER strengthens Nordic ambitions amid €520 million funding round",
-      "url": "https://www.eu-startups.com/2026/11/defencetech-unicorn-tekever-strengthens-nordic-ambitions-amid-e520-million-funding-round/",
-      "excerpt": "Portuguese DefenceTech scale-up TEKEVER has today announced that they have secured €13 million from EIFO as part of their Series D raise of €520 million ($580 million) at a €5.7 billion ($6.4 billion) valuation to support the company’s continued growth. The first close was announ",
-      "publishedAt": "Fri, 06 Nov 2026 15:17:01 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-18",
-      "sourceId": "eu-startups",
-      "title": "AutoStore to acquire Dutch warehouse and horticulture automation firm Logiqs for up to €30 million",
-      "url": "https://www.eu-startups.com/2026/11/autostore-to-acquire-dutch-warehouse-and-horticulture-automation-firm-logiqs-for-up-to-e30-million/",
-      "excerpt": "AutoStore, a Norwegian company specialising in intelligent fulfilment, has announced an agreement to acquire Logiqs, a Maasdijk-based provider of roaming pallet Automated Storage and Retrieval Systems (AS/RS), for up to €30 million. AutoStore noted that it will fund the purchase ",
-      "publishedAt": "Fri, 06 Nov 2026 13:04:20 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-19",
-      "sourceId": "eu-startups",
-      "title": "OPINION: Europe&#8217;s quantum startups need more than research funding",
-      "url": "https://www.eu-startups.com/2026/11/opinion-europes-quantum-startups-need-more-than-research-funding/",
-      "excerpt": "According to McKinsey&#8217;s 2026 Quantum Technology Monitor, investment in quantum technology startups reached €11.15 billion ($12.6 billion) in 2025, 6.3 times more than a year earlier. Only 3% came from public sources, including governments, sovereign wealth funds and univers",
-      "publishedAt": "Fri, 06 Nov 2026 10:25:53 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-20",
-      "sourceId": "eu-startups",
-      "title": "With a new equity round in sight, Candi Solar secures €44 million for solar projects in India",
-      "url": "https://www.eu-startups.com/2026/11/with-a-new-equity-round-in-sight-candi-solar-secures-e44-million-for-solar-projects-in-india/",
-      "excerpt": "Candi Solar, a Swiss clean energy company distributing solar solutions, announced a €44 million ($50 million) financing partnership to build rooftop, ground-mounted, and open-access solar installations paired with BESS across key business hubs in India. This facility from Pentagr",
-      "publishedAt": "Fri, 06 Nov 2026 09:56:17 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-21",
-      "sourceId": "eu-startups",
-      "title": "Bioliberty raises €2.95 million to bring its AI-powered rehabilitation technology into the home",
-      "url": "https://www.eu-startups.com/2026/11/bioliberty-raises-e2-95-million-to-bring-its-ai-powered-rehabilitation-technology-into-the-home/",
-      "excerpt": "Bioliberty, an Edinburgh- and Boston-based rehabilitation technology startup, has raised a €2.95 million ($3.3 million) Series A extension, bringing its total funding to €12.07 million ($13.5 million). The Series A extension adds four new institutional backers: TGH Ventures, the ",
-      "publishedAt": "Fri, 06 Nov 2026 09:13:13 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-22",
-      "sourceId": "eu-startups",
-      "title": "Oxford spin-out Alethio Therapeutics raises €80.46 million Series A to advance targeted blood cancer therapies",
-      "url": "https://www.eu-startups.com/2026/11/oxford-spin-out-alethio-therapeutics-raises-e80-46-million-series-a-to-advance-targeted-blood-cancer-therapies/",
-      "excerpt": "Alethio Therapeutics (Alethio), an Abingdon-on-Thames-based biopharmaceutical company developing next-generation therapies for myeloproliferative neoplasms (MPNs), has announced the completion of an oversubscribed €80.46 million ($90 million/£67 million) Series A financing. The r",
-      "publishedAt": "Fri, 06 Nov 2026 08:17:05 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-23",
-      "sourceId": "eu-startups",
-      "title": "Helsinki’s Vensum Power secures €9 million to scale its software-defined power conversion platform",
-      "url": "https://www.eu-startups.com/2026/11/helsinkis-vensum-power-secures-e9-million-to-scale-its-software-defined-power-conversion-platform/",
-      "excerpt": "Vensum Power, a Helsinki-based developer of Software-Defined Power Conversion (SDPC) solution, has closed a €9 million Series A round. The round was co-led by existing backer Lifeline Ventures alongside two new investors, Larsen &#38; Toubro Group and Eviny Ventures. The round al",
-      "publishedAt": "Fri, 06 Nov 2026 07:49:11 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-24",
-      "sourceId": "eu-startups",
-      "title": "The EIC confirms €1.8 billion for startups in 2027, with expanded defence and women-led startup support",
-      "url": "https://www.eu-startups.com/2026/11/the-eic-confirms-e1-8-billion-for-startups-and-deeptech-in-2027-with-expanded-defence-and-women-led-startup-support/",
-      "excerpt": "The European Commission has adopted the 2027 European Innovation Council (EIC) Work Programme, allocating €1.8 billion to support DeepTech startups, scale-ups and researchers across Europe. The funding package aims to help promising technologies move from early-stage research to ",
-      "publishedAt": "Thu, 05 Nov 2026 15:47:02 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-25",
-      "sourceId": "eu-startups",
-      "title": "Germany&#8217;s VÆRIDION raises €124 million to bring electric regional flights closer to reality",
-      "url": "https://www.eu-startups.com/2026/11/germanys-vaeridion-raises-e124-million-to-bring-electric-regional-flights-closer-to-reality/",
-      "excerpt": "Munich-based aviation startup VÆRIDION has raised €30 million in a Series A2 funding round and selected for a €94.5 million grant from the European Commission’s Innovation Fund, bringing the combined value to €124.5 million. The investment round was co-led by Dutch investors SHIF",
-      "publishedAt": "Thu, 05 Nov 2026 12:10:04 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-26",
-      "sourceId": "techinasia",
-      "title": "Z.ai links GLM models to China Mobile’s cloud platform",
-      "url": "https://www.techinasia.com/news/zai-links-glm-models-china-mobiles-cloud-platform",
-      "excerpt": "Beijing-based Zhipu, also known as Z.ai, has received funding from a Chinese state firm.",
-      "publishedAt": "Mon, 09 Nov 2026 01:08:45 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-27",
-      "sourceId": "techinasia",
-      "title": "Mapping India’s fintech key players",
-      "url": "https://www.techinasia.com/visual-story/india-fintech-landscape-map",
-      "excerpt": "Mapping India’s fintech sector: Key players, top investors, and funding insights in one report.",
-      "publishedAt": "Mon, 09 Nov 2026 00:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-28",
-      "sourceId": "techinasia",
-      "title": "50 rising startups in Korea",
-      "url": "https://www.techinasia.com/top-50-rising-startups-korea",
-      "excerpt": "Check out this constantly updated list of startups in Korea that have recently raised funding.",
-      "publishedAt": "Sun, 08 Nov 2026 07:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
       "id": "techinasia-29",
       "sourceId": "techinasia",
-      "title": "Nvidia-backed Groq seeks $8b valuation in new round",
-      "url": "https://www.techinasia.com/news/nvidiabacked-groq-seeks-8b-valuation",
-      "excerpt": "The Nvidia-backed firm has launched data center operations in Helsinki, Finland.",
-      "publishedAt": "Sun, 08 Nov 2026 01:23:28 +0000",
+      "title": "Lightspeed leads $240m round for AI hardware tester Nominal",
+      "url": "https://www.techinasia.com/news/lightspeed-leads-240m-ai-hardware-tester-nominal",
+      "excerpt": "Nominal CEO Cameron McCord previously worked at Anduril, one of the startup's 80 customers.",
+      "publishedAt": "Tue, 10 Nov 2026 03:30:58 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-30",
       "sourceId": "techinasia",
-      "title": "50 rising startups in Vietnam",
-      "url": "https://www.techinasia.com/top-50-rising-startups-vietnam",
-      "excerpt": "Check out this constantly updated list of startups in Vietnam who've recently raised funding.",
-      "publishedAt": "Sat, 07 Nov 2026 07:00:00 +0000",
+      "title": "Korean AI startup Sionic AI expands to Thailand, Singapore",
+      "url": "https://www.techinasia.com/news/korean-ai-startup-sionic-ai-expands-thailand-singapore",
+      "excerpt": "In Singapore, Sionic AI said a customer service chatbot proof of concept with a fintech company in insurance services is nearing completion.",
+      "publishedAt": "Tue, 10 Nov 2026 01:15:31 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-31",
       "sourceId": "techinasia",
-      "title": "Intel to buy Israeli quantum software startup Classiq for $1.9b",
-      "url": "https://www.techinasia.com/news/intel-buy-israeli-quantum-software-startup-classiq-19b",
-      "excerpt": "Classiq raised US$110 million in 2025, and IonQ, AMD, and Qualcomm Ventures joined a later round.",
-      "publishedAt": "Sat, 07 Nov 2026 01:51:02 +0000",
+      "title": "Australian AI startup AutoSwift raises nearly $6.9m",
+      "url": "https://www.techinasia.com/news/australian-ai-startup-autoswift-raises-69m",
+      "excerpt": "AutoSwift said dealerships representing brands including BYD, Zeekr, Land Rover, and Kia already use the platform.",
+      "publishedAt": "Tue, 10 Nov 2026 01:07:27 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-32",
       "sourceId": "techinasia",
-      "title": "OpenAI taps AI security startup Hacktron to test systems",
-      "url": "https://www.techinasia.com/news/openai-taps-ai-security-startup-hacktron-test-systems",
-      "excerpt": "Hacktron previously raised US$2.9 million to build an AI-powered security testing platform.",
-      "publishedAt": "Sat, 07 Nov 2026 01:43:14 +0000",
+      "title": "Anthropic unveils new AI models ahead of planned IPO",
+      "url": "https://www.techinasia.com/news/anthropic-unveils-ai-models-planned-ipo",
+      "excerpt": "Fable 5.2, due Monday, is built to coordinate more than 1,000 AI agents.",
+      "publishedAt": "Tue, 10 Nov 2026 01:06:57 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-33",
       "sourceId": "techinasia",
-      "title": "OpenAI raises $11b at $1.25t valuation in funding round",
-      "url": "https://www.techinasia.com/news/openai-raises-11b-125t-valuation-funding",
-      "excerpt": "OpenAI had earlier aimed to raise US$30 billion or more at a US$1.4 trillion valuation.",
-      "publishedAt": "Sat, 07 Nov 2026 01:13:15 +0000",
+      "title": "After missing China’s LLM wave, Gobi backs university labs",
+      "url": "https://www.techinasia.com/missing-chinas-llm-wave-gobi-backs-university-labs",
+      "excerpt": "Managing partner Chibo Tang explains the VC firm’s AI investment strategy and why it’s not interested in following the herd.",
+      "publishedAt": "Tue, 10 Nov 2026 01:00:27 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-34",
       "sourceId": "techinasia",
-      "title": "Google acquires Wyoming data center site from AI firm Crusoe",
-      "url": "https://www.techinasia.com/news/google-acquires-wyoming-data-center-site-ai-firm-crusoe",
-      "excerpt": "Crusoe handled the project's site selection, government approvals, and power planning.",
-      "publishedAt": "Sat, 07 Nov 2026 00:38:06 +0000",
+      "title": "Surviving the funding game: how timing can make or break your startup",
+      "url": "https://www.techinasia.com/visual-story/time-between-funding-stages",
+      "excerpt": "Industry realities, economic conditions, and market volatility can affect the time gap between funding rounds.",
+      "publishedAt": "Tue, 10 Nov 2026 00:00:00 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-35",
       "sourceId": "techinasia",
-      "title": "Still some sparkle in store",
-      "url": "https://www.techinasia.com/still-some-sparkle-in-store",
-      "excerpt": "Sand.ai, Giva, Fact Base, and more raised funds this week.",
-      "publishedAt": "Sat, 07 Nov 2026 00:30:16 +0000",
+      "title": "Nvidia, SK Telecom tap Korean chip startup for sovereign AI",
+      "url": "https://www.techinasia.com/news/nvidia-sk-telecom-tap-korean-chip-startup-sovereign-ai",
+      "excerpt": "SK Telecom plans to deploy the systems and link them to its AI models and services.",
+      "publishedAt": "Mon, 09 Nov 2026 09:04:13 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-36",
       "sourceId": "techinasia",
-      "title": "Tata Capital growth fund taps Siguler Guff veteran as partner",
-      "url": "https://www.techinasia.com/news/tata-capital-growth-fund-taps-siguler-guff-veteran-partner",
-      "excerpt": "Jain has nearly two decades of experience investing and managing institutional portfolios across alternative and public markets.",
-      "publishedAt": "Fri, 06 Nov 2026 09:11:48 +0000",
+      "title": "50 rising startups in Israel",
+      "url": "https://www.techinasia.com/top-50-rising-startups-israel",
+      "excerpt": "Check out this constantly updated list of startups in Israel that have recently raised funding.",
+      "publishedAt": "Mon, 09 Nov 2026 07:00:00 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-37",
       "sourceId": "techinasia",
-      "title": "Singapore chip startup Symatics unveils AI architecture",
-      "url": "https://www.techinasia.com/news/singapore-chip-startup-symatics-unveils-ai-architecture",
-      "excerpt": "The company said the MPU was aimed at interactive AI and reasoning tasks.",
-      "publishedAt": "Fri, 06 Nov 2026 09:09:18 +0000",
+      "title": "Capital SEA: Southeast Asia’s funding landscape",
+      "url": "https://www.techinasia.com/visual-story/capital-sea-southeast-asias-funding-landscape",
+      "excerpt": "Who are the new active investors on the block? Which funding rounds look like outliers? This visual story answers all this and more.",
+      "publishedAt": "Mon, 09 Nov 2026 04:00:00 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-38",
-      "sourceId": "yourstory",
-      "title": "Northern Arc's diversified debt fund hits first close at over Rs 400 Cr",
-      "url": "https://yourstory.com/2026/11/northern-arcs-diversified-debt-fund-hits-first-close-at-over-rs-400-crore",
-      "excerpt": "The 15th private credit fund from Northern Arc Investment Managers targets a Rs 1,500 crore corpus and a 16% XIRR, as its India Impact Fund matures after deploying Rs 1,398 crore.",
-      "publishedAt": "Fri, 06 Nov 2026 08:31:14 GMT",
+      "id": "techinasia-38",
+      "sourceId": "techinasia",
+      "title": "Gobi Partners finds 25% of Filipino workers use AI agents",
+      "url": "https://www.techinasia.com/news/gobi-partners-finds-25-filipino-workers-ai-agents",
+      "excerpt": "The venture firm said AI startups captured less than 1% of Philippine startup deal value in 2026 year to date.",
+      "publishedAt": "Mon, 09 Nov 2026 03:35:28 +0000",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-39",
       "sourceId": "yourstory",
-      "title": "When code is cheap, trust is not: Inside the AI-era engineering roundtable",
-      "url": "https://yourstory.com/2026/11/when-code-is-cheap-trust-is-not-inside-the-ai-era-engineering-roundtable",
-      "excerpt": "In a closed-door roundtable, leaders from logistics, healthcare, telecom, fintech, and e-commerce discussed where to automate, where to keep humans in charge, and why observability can no longer be an afterthought.",
-      "publishedAt": "Fri, 06 Nov 2026 07:41:01 GMT",
+      "title": "MakeMyTrip's India arm gets Sebi nod to float IPO",
+      "url": "https://yourstory.com/2026/11/makemytrip-india-arm-gets-sebi-nod-to-float-ipo",
+      "excerpt": "MakeMyTrip is listed on Nasdaq stock exchange The proceeds from the planned IPO will be utilised by MakeMyTrip for long term growth, inorganic opportunities and repurchase of different types shares Nasdaq-listed travel booking platform MakeMyTrip's India subsidiary has received S",
+      "publishedAt": "Mon, 09 Nov 2026 10:55:54 GMT",
       "matchedSlugs": []
     }
   ]
