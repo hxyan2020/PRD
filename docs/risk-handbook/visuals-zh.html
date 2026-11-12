@@ -1,0 +1,228 @@
+<section class="visual-maps" id="visual-maps-zh">
+  <h2>示意图</h2>
+  <p class="lead-viz">Finprime <strong>V-Exchange</strong>（ADGM / 毛里求斯主体；撮合 + 清结算 + 风控）。绿色 = Phase 1 已开通。琥珀色删除线 = Phase 2+ 仅文档、未投产。</p>
+
+  <div class="board">
+    <div class="board-title">1 · V-Exchange 业务版图</div>
+    <div class="lane">
+      <div class="lane-label">Phase 1 已开通 — 绿色</div>
+      <div class="flow-row">
+        <div class="node green">永续合约<small>含 XAUUSD 及其他已批永续</small></div>
+        <span class="arrow">→</span>
+        <div class="node green">永续账户 Perp Account<small>仅 USD / USDT</small></div>
+        <span class="arrow">→</span>
+        <div class="node green">撮合 · 开/持/平<small>风控与强平 · 清结算</small></div>
+      </div>
+    </div>
+    <div class="lane off">
+      <div class="lane-label">Phase 2+ — 手册保留，开关关闭</div>
+      <div class="flow-row">
+        <div class="node off">Spot 现货</div>
+        <div class="node off">USD Margin 逐仓+全仓</div>
+        <div class="node off">跨币种 Margin 全仓</div>
+        <div class="node off">组合保证金</div>
+        <div class="node off">期权</div>
+        <div class="node off">理财</div>
+        <div class="node off">公众 2C 自助注册</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">2 · 准入分层（2B / 2C）</div>
+    <div class="lane">
+      <div class="lane-label">2B — 线下开户接入 V-Exchange</div>
+      <div class="flow-row">
+        <div class="node">Broker 接入<small>Vantage 等子品牌 · 外部白标 / API</small></div>
+        <div class="node">机构直连<small>对冲基金 / HNW · 仅 API</small></div>
+        <div class="node">做市商接入<small>合作方流动性</small></div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lane-label">2C — 终端用户不能自助注册，必须经经纪商进入</div>
+      <div class="flow-row">
+        <div class="node navy">2C 终端用户</div>
+        <span class="arrow">→</span>
+        <div class="node">Broker 接入</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / 开户</div>
+        <span class="arrow">→</span>
+        <div class="node green">永续账户</div>
+      </div>
+      <p class="muted-note">无公众网站注册。无经纪商 / 机构 / 做市商标签却能交易的 UID，视为 L3 事件。</p>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">3 · 2C 用户交易生命周期（Phase 1 轨道）</div>
+    <div class="flow-row">
+      <div class="stack">
+        <div class="lane-label">Stage 1 开户</div>
+        <div class="node">KYC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">Open Account 开户</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 2 入金与划转（仅 USD/USDT）</div>
+        <div class="node">用户入金</div>
+        <span class="arrow down">↓</span>
+        <div class="flow-row">
+          <div class="node">MT 账户</div>
+          <div class="node">X-fund</div>
+        </div>
+        <span class="arrow down">↓ 划转 USD/USDT</span>
+        <div class="node green">永续账户 Perp Account</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 3 交易（绿色）</div>
+        <div class="node green">撮合引擎<small>开 / 持 / 平</small></div>
+        <span class="arrow down">↓</span>
+        <div class="node green">风控与强平</div>
+        <span class="arrow down">↓</span>
+        <div class="node green">清结算</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 4 出金</div>
+        <div class="node">用户出金</div>
+      </div>
+    </div>
+    <p class="muted-note">MT 与 X-fund 可互转。进入永续账户的划转仅限 USD/USDT。现货/杠杆钱包保持关闭。</p>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">4 · 三道防线</div>
+      <div class="stack">
+        <div class="node navy">第一道 — 产品 / TO / 撮合 / 钱包 / 上币 / 做市<small>承担 BAU 风险并执行控制</small></div>
+        <span class="arrow down">↓ 突破升级</span>
+        <div class="node">第二道 — 市场 / 信用 / 模型风险 + 合规 + 法务<small>偏好、挑战、独立监控</small></div>
+        <span class="arrow down">↓ 重大 / Sev-1</span>
+        <div class="node amber">CRO / 风险委员会</div>
+        <span class="arrow down">⇢ 第三道定期复审</span>
+        <div class="node">第三道 — 内部审计<small>独立鉴证</small></div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">5 · 永续控制链（Phase 1 主路径）</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node navy">指数（多所合成）</div>
+          <span class="arrow">→</span>
+          <div class="node">标记价</div>
+        </div>
+        <div class="flow-row">
+          <div class="node navy">最新价 / 中间价</div>
+          <span class="arrow">→</span>
+          <div class="node">撮合簿</div>
+        </div>
+        <span class="arrow down">↓ 共同进入保证金率</span>
+        <div class="node">保证金率</div>
+        <div class="flow-row">
+          <div class="node green">健康 → 可交易 / 可增险</div>
+          <div class="node red">突破 → 强平引擎</div>
+        </div>
+        <div class="flow-row">
+          <div class="node">保险基金</div>
+          <span class="arrow">→</span>
+          <div class="node red">不足 → ADL 队列</div>
+        </div>
+        <p class="muted-note">标记陈旧？按 PL-K06 / PF-K02 切源。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">6 · Phase 1 关键路径 BU</div>
+    <div class="flow-row">
+      <div class="node">经纪商 / 机构 / 做市 + 合规</div>
+      <span class="arrow">→</span>
+      <div class="node">开户</div>
+      <span class="arrow">→</span>
+      <div class="node green">永续账户</div>
+      <span class="arrow">→</span>
+      <div class="node">撮合（ME）</div>
+      <span class="arrow">→</span>
+      <div class="node">风控引擎（RE）</div>
+      <span class="arrow">→</span>
+      <div class="node">合约 TO / PM</div>
+      <span class="arrow">→</span>
+      <div class="node">RO / RO-OPS</div>
+      <span class="arrow">→</span>
+      <div class="node amber">CRO</div>
+    </div>
+    <p class="muted-note">钱包（WO）与资金（TS）挂在 MT / X-fund / 出入金轨道。清结算在 Stage 3 与风控引擎一起。</p>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">7 · 红黄绿分流</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node green">绿 → 先看时间戳</div>
+        </div>
+        <div class="flow-row">
+          <div class="node amber">黄 WARN → 15 分分流</div>
+        </div>
+        <div class="flow-row">
+          <div class="node red">红 BREACH → 5 分遏制</div>
+        </div>
+        <p class="muted-note">陈旧的绿 = 情景族 S9（假绿）。然后时钟 → 范围 → 数据 → 情景族 S1–S12。</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">8 · 升级阶梯</div>
+      <div class="stack">
+        <div class="node">L1 RO-OPS 工单</div>
+        <span class="arrow down">↓</span>
+        <div class="node amber">L2 RO + BU PIC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">L3 CRO + ME + RE + 传播</div>
+        <span class="arrow down">↓</span>
+        <div class="node red">L4 ELT + 法务 + 合规 + CISO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">9 · SOP-G02 停牌后复牌</div>
+    <div class="flow-row">
+      <div class="node">TO 提议</div>
+      <span class="arrow">→</span>
+      <div class="node">RO 批准</div>
+      <span class="arrow">→</span>
+      <div class="node">ME 停撮合</div>
+      <span class="arrow">→</span>
+      <div class="node">RE 定强平模式</div>
+      <span class="arrow">→</span>
+      <div class="node">传播 + 钱包政策</div>
+    </div>
+    <div class="flow-row">
+      <div class="node red">根因未控 → 继续停牌</div>
+      <div class="node green">已遏制 → RO+ME+RE 确认 → 分阶段复牌 + 超护 4h</div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">10 · 诊断顺序（先时钟）</div>
+    <div class="flow-row">
+      <div class="node navy">1 时钟</div>
+      <span class="arrow">→</span>
+      <div class="node navy">2 范围</div>
+      <span class="arrow">→</span>
+      <div class="node navy">3 数据</div>
+      <span class="arrow">→</span>
+      <div class="node">4 单指标</div>
+      <span class="arrow">→</span>
+      <div class="node">5 组合</div>
+      <span class="arrow">→</span>
+      <div class="node">6 排除</div>
+      <span class="arrow">→</span>
+      <div class="node amber">7 行动</div>
+      <span class="arrow">→</span>
+      <div class="node">8 写时间线</div>
+    </div>
+  </div>
+</section>
