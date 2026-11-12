@@ -1,41 +1,74 @@
 {
-  "day": "2026-11-11",
-  "scannedAt": "2026-11-11T02:22:26.480Z",
+  "day": "2026-11-12",
+  "scannedAt": "2026-11-12T03:29:24.274Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
-    "mercado-voice-pos",
-    "nightshift-nursing-ai",
-    "heaptrace-observability",
-    "mercury-banking",
-    "perplexity-answer",
-    "incident-ops",
-    "posthog-product-os",
-    "elevenlabs-voice",
-    "piggyvest-savings",
-    "cashfree-merchant",
-    "runway-ml",
-    "farmstack-coldchain",
-    "elderloop-companion",
-    "cursor-coding",
-    "voltpath-depot",
-    "abridge-clinical",
+    "ramp-spend",
     "atelier-carbon-ledger",
-    "saigon-microgrid-coops",
-    "dub-link-os",
-    "sylvera-carbon",
-    "swan-baas",
-    "yassir-maghreb",
-    "synthesis-school",
     "bushfire-mesh-sensors",
-    "carbonfact-fashion"
+    "carbonfact-fashion",
+    "brex-finance",
+    "runway-ml",
+    "cape-clinic-triage",
+    "watershed-climate",
+    "fi-money",
+    "hanok-energy-retrofit",
+    "resend-email-api",
+    "incident-ops",
+    "ledgerlane-freight",
+    "motherduck-analytics",
+    "kiln-microfactory",
+    "playpane-classroom",
+    "magicschool-ai",
+    "posthog-product-os",
+    "attio-crm",
+    "elevenlabs-voice",
+    "chipper-cash",
+    "spore-kitchen"
   ],
   "headlineCount": 40,
-  "feedsOk": 5,
+  "feedsOk": 6,
   "feedsTotal": 8,
-  "matchedIdeaCount": 0,
+  "matchedIdeaCount": 1,
   "headlines": [
     {
       "id": "techcrunch-0",
+      "sourceId": "techcrunch",
+      "title": "Olaf Sakkers is betting he can beat the emerging-manager squeeze",
+      "url": "https://techcrunch.com/2026/11/11/olaf-sakkers-is-betting-he-can-beat-the-emerging-manager-squeeze/",
+      "excerpt": "Entering into the world of venture capital has never been easy, especially as a first-time fund manager. But it's especially daunting right now. Olaf Sakkers has spent the past five years proving that difficult doesn't mean impossible.",
+      "publishedAt": "Wed, 11 Nov 2026 20:04:28 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-1",
+      "sourceId": "techcrunch",
+      "title": "CoreWeave turns to customer prepayments, shorter contracts to fund AI growth",
+      "url": "https://techcrunch.com/2026/11/11/coreweave-turns-to-customer-prepayments-shorter-contracts-to-fund-ai-growth/",
+      "excerpt": "CoreWeave is increasingly asking customers to pay up front, borrowing against specific contracts, and even looking to short-term deals that could lead to higher prices, according to the company’s third-quarter earnings.",
+      "publishedAt": "Wed, 11 Nov 2026 19:54:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-2",
+      "sourceId": "techcrunch",
+      "title": "With $720M round, Britain&#8217;s Fractile gets a leg up in the race for AI chips",
+      "url": "https://techcrunch.com/2026/11/11/with-720m-round-britains-fractile-gets-a-leg-up-in-the-race-for-ai-chips/",
+      "excerpt": "Fractile has now become one of the top-funded players in the race for purpose-built AI chips.",
+      "publishedAt": "Wed, 11 Nov 2026 19:34:55 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-3",
+      "sourceId": "techcrunch",
+      "title": "Is Jensen Huang’s bad behavior more commonplace than it seems?",
+      "url": "https://techcrunch.com/2026/11/11/is-jensen-huangs-bad-behavior-more-commonplace-than-it-seems/",
+      "excerpt": "“There are a lot of senior people in the industry that know this is happening, and are effectively condoning it,” an investment intel consultant said.",
+      "publishedAt": "Wed, 11 Nov 2026 16:16:07 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-4",
       "sourceId": "techcrunch",
       "title": "OpenAI acquires Odessia, travel startup created by Sonder founder",
       "url": "https://techcrunch.com/2026/11/10/openai-acquires-odessia-travel-startup-created-by-sonder-founder/",
@@ -44,7 +77,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-1",
+      "id": "techcrunch-5",
       "sourceId": "techcrunch",
       "title": "Proximal Ventures raises debut fund to back startups bringing AI to drug development",
       "url": "https://techcrunch.com/2026/11/10/proximal-ventures-raises-debut-fund-to-back-startups-bringing-ai-to-drug-development/",
@@ -53,25 +86,16 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-2",
-      "sourceId": "techcrunch",
-      "title": "All 7 Anthropic founders will each cash out about $250M in IPO",
-      "url": "https://techcrunch.com/2026/11/10/all-7-anthropic-founders-will-each-cash-out-about-250m-in-ipo/",
-      "excerpt": "Each of the seven co-founders plans to sell exactly the same number of shares in the IPO, which would bring each of them about $250 million in cash at the midpoint of the price range while leaving the group in control of the company.",
-      "publishedAt": "Tue, 10 Nov 2026 19:57:52 +0000",
+      "id": "crunchbase-news-6",
+      "sourceId": "crunchbase-news",
+      "title": "Exclusive: Nubank Alum Raises $14M For Colombia’s Palomma To Tackle Rent Payments, Landlord Financing",
+      "url": "https://news.crunchbase.com/fintech/nubank-alum-colombia-startup-palomma-ai-rental-services/",
+      "excerpt": "Colombia-based startup, Palomma, has raised $10 million in Series A funding led by Mexican venture firm Cometa to expand its financial services business for landlords, tenants and property managers, Crunchbase News has exclusively learned.",
+      "publishedAt": "Wed, 11 Nov 2026 13:00:04 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-3",
-      "sourceId": "techcrunch",
-      "title": "Oura to acquire AI-native primary care startup Counsel Health for $625M",
-      "url": "https://techcrunch.com/2026/11/10/oura-to-acquire-ai-native-primary-care-startup-counsel-health-for-625m/",
-      "excerpt": "The deal comes a few weeks after Oura postponed its up to $2.2 billion IPO indefinitely, citing “uncertainty in the IPO market.”",
-      "publishedAt": "Tue, 10 Nov 2026 19:23:34 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "crunchbase-news-4",
+      "id": "crunchbase-news-7",
       "sourceId": "crunchbase-news",
       "title": "Anthropic Seeks Record $88.5B Tied To Public Market Debut",
       "url": "https://news.crunchbase.com/ai/anthropic-record-ipo-ant-public-market-debut-spcx/",
@@ -80,7 +104,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-5",
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "The Crunchbase Unicorn Board Tops 1,900 Companies In October, With 34 Companies Joining — Half Under 4 Years Old",
       "url": "https://news.crunchbase.com/venture/october-2026-unicorn-board-gains-34-tops-1900-ai-defense/",
@@ -89,7 +113,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-6",
+      "id": "crunchbase-news-9",
       "sourceId": "crunchbase-news",
       "title": "Startup Founders Are Using AI To File Patents. Here&#8217;s Where DIY Becomes A Liability.",
       "url": "https://news.crunchbase.com/ai/startup-founder-diy-patents-legal-liabiity-drapkin-mutter-landfall/",
@@ -98,7 +122,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-7",
+      "id": "crunchbase-news-10",
       "sourceId": "crunchbase-news",
       "title": "Series A In 2026: Capital Is Flowing Faster, But Fewer Startups Are Making The Cut",
       "url": "https://news.crunchbase.com/venture/series-a-2026-startup-capital-up-deals-steady/",
@@ -107,7 +131,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-11",
       "sourceId": "crunchbase-news",
       "title": "Paper Unicorns Are Cheap. Building A $1B Revenue AI Company Takes A Multimarket Cap Table",
       "url": "https://news.crunchbase.com/ai/building-unicorn-multimarket-cap-table-shazhaev-dizzaract/",
@@ -116,7 +140,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
+      "id": "crunchbase-news-12",
       "sourceId": "crunchbase-news",
       "title": "The Week’s 10 Biggest Funding Rounds: AI, Defense And Space Tech Lead For Large Rounds",
       "url": "https://news.crunchbase.com/venture/biggest-startup-rounds-ai-defense-space-tech-shield-zipline/",
@@ -125,7 +149,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-10",
+      "id": "crunchbase-news-13",
       "sourceId": "crunchbase-news",
       "title": "General Catalyst Tops Lead Investors For October In Busy Month For US Startup Dealmaking",
       "url": "https://news.crunchbase.com/venture/october-2026-lead-startup-investors/",
@@ -134,7 +158,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-11",
+      "id": "crunchbase-news-14",
       "sourceId": "crunchbase-news",
       "title": "Exclusive: Nurx And Journey Clinical Co-Founders Raise $6M For Mental Health Startup Siggy",
       "url": "https://news.crunchbase.com/venture/nurx-journey-clinical-founders-raise-mental-health-startup-siggy/",
@@ -143,16 +167,34 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-12",
-      "sourceId": "crunchbase-news",
-      "title": "Dropbox Plans $350M AI Infrastructure Deal With Tigris Buy, Its Biggest Acquisition Yet",
-      "url": "https://news.crunchbase.com/ma/dbx-ai-infrastructure-deal-tigris-acquisition/",
-      "excerpt": "Dropbox has announced plans to acquire Tigris Data for $350 million in a transaction the company told Crunchbase News would mark its largest acquisition since its founding in 2007.",
-      "publishedAt": "Thu, 05 Nov 2026 14:00:20 +0000",
+      "id": "sifted-15",
+      "sourceId": "sifted",
+      "title": "Fractile confirms £540m raise first revealed by Sifted",
+      "url": "https://sifted.eu/articles/fractile-confirms-540m-raise-first-revealed-by-sifted/",
+      "excerpt": "",
+      "publishedAt": "Wed, 11 Nov 2026 16:09:13 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "sifted-13",
+      "id": "sifted-16",
+      "sourceId": "sifted",
+      "title": "UK AI startup Nscale weighs delaying $35bn IPO amid tech sell-off",
+      "url": "https://sifted.eu/articles/nscale-ipo-nvidia-delay/",
+      "excerpt": "",
+      "publishedAt": "Wed, 11 Nov 2026 13:24:45 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-17",
+      "sourceId": "sifted",
+      "title": "Defence startup Mistt raises £5m to build the ‘next GPS’ for autonomous systems and AI",
+      "url": "https://sifted.eu/articles/defence-mistt-fundraise-next-gps-data-autonomous-systems-world-models/",
+      "excerpt": "",
+      "publishedAt": "Wed, 11 Nov 2026 05:00:25 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-18",
       "sourceId": "sifted",
       "title": "Exclusive: Nvidia bet Hiverge quietly raises $19.4m backed by Plural",
       "url": "https://sifted.eu/articles/nvidia-bet-hiverge-plural-raise/",
@@ -161,7 +203,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-14",
+      "id": "sifted-19",
       "sourceId": "sifted",
       "title": "AI accounting startup Sumary raises $25m seed",
       "url": "https://sifted.eu/articles/sumary-seed-fundraise/",
@@ -170,7 +212,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-15",
+      "id": "sifted-20",
       "sourceId": "sifted",
       "title": "Monzo in talks to raise up to £500m, reports say",
       "url": "https://sifted.eu/articles/monzo-to-raise-up-to-500m/",
@@ -179,7 +221,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-16",
+      "id": "sifted-21",
       "sourceId": "sifted",
       "title": "Onodrim raises $300m as European defence rollups heat up",
       "url": "https://sifted.eu/articles/onodrim-300-european-defence-rollup/",
@@ -188,7 +230,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-17",
+      "id": "sifted-22",
       "sourceId": "sifted",
       "title": "The winners and losers of Europe's fintech growth funding drought",
       "url": "https://sifted.eu/articles/fintech-growth-drought/",
@@ -197,7 +239,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-18",
+      "id": "sifted-23",
       "sourceId": "sifted",
       "title": "SF confidence, reality checks and AI bubble anxiety come to the Rise venture salon in the Alps",
       "url": "https://sifted.eu/articles/sf-confidence-reality-checks-and-ai-bubble-anxiety-come-to-the-rise-venture-salon-in-the-alps/",
@@ -206,7 +248,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-19",
+      "id": "sifted-24",
       "sourceId": "sifted",
       "title": "UCL spinouts looking to raise",
       "url": "https://sifted.eu/articles/ucl-spinouts-looking-to-raise/",
@@ -215,169 +257,108 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-20",
-      "sourceId": "sifted",
-      "title": "Exclusive: Helsing CEO backs AI learning startup Mindmax in £2.5m raise",
-      "url": "https://sifted.eu/articles/memrise-mindmax-helsing-funding-round-memory/",
-      "excerpt": "",
-      "publishedAt": "Thu, 05 Nov 2026 05:00:27 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "sifted-21",
-      "sourceId": "sifted",
-      "title": "Founders make terrible employees — here’s why every startup should hire them",
-      "url": "https://sifted.eu/articles/founders-make-terrible-employees/",
-      "excerpt": "",
-      "publishedAt": "Wed, 04 Nov 2026 05:00:53 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-22",
-      "sourceId": "techinasia",
-      "title": "CoreWeave raises revenue forecast to $13b as AI demand grows",
-      "url": "https://www.techinasia.com/news/coreweave-raises-revenue-forecast-13b-ai-demand-grows",
-      "excerpt": "CoreWeave's net interest expense rose to US$846 million from US$310 million a year earlier.",
-      "publishedAt": "Wed, 11 Nov 2026 02:05:02 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-23",
-      "sourceId": "techinasia",
-      "title": "Nvidia scandal tests Singapore’s balancing act",
-      "url": "https://www.techinasia.com/nvidia-scandal-tests-singapores-balancing-act",
-      "excerpt": "We look at Singapore’s awkward role in the Nvidia fiasco, the US tech bonds flooding Asia’s capital markets, and Grab’s AI infrastructure investment.",
-      "publishedAt": "Wed, 11 Nov 2026 02:00:47 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-24",
-      "sourceId": "techinasia",
-      "title": "Nvidia-backed AI cloud Nscale may push $35b IPO to 2027",
-      "url": "https://www.techinasia.com/news/nvidiabacked-ai-cloud-nscale-push-35b-ipo-2027",
-      "excerpt": "Nscale plans to list on the New York Stock Exchange under the ticker symbol NSCL.",
-      "publishedAt": "Wed, 11 Nov 2026 01:57:20 +0000",
-      "matchedSlugs": []
-    },
-    {
       "id": "techinasia-25",
       "sourceId": "techinasia",
-      "title": "Openspace leads $4.6m round in optical chip startup Staera",
-      "url": "https://www.techinasia.com/news/openspace-leads-46m-optical-chip-startup-staera",
-      "excerpt": "Staera plans to commercialize Lightwire, its optical link product, in 2030.",
-      "publishedAt": "Wed, 11 Nov 2026 01:55:11 +0000",
+      "title": "Japanese cybersecurity startup Tempura joins Nvidia Inception",
+      "url": "https://www.techinasia.com/news/japanese-cybersecurity-startup-tempura-joins-nvidia-inception",
+      "excerpt": "Inception offers access to Nvidia technology, technical training, consulting, and market support.",
+      "publishedAt": "Thu, 12 Nov 2026 02:07:32 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-26",
       "sourceId": "techinasia",
-      "title": "Vodafone raises full-year earnings forecast after job cuts",
-      "url": "https://www.techinasia.com/news/vodafone-raises-fullyear-earnings-forecast-job-cuts",
-      "excerpt": "The telecom firm sold Vodafone Italy to Swisscom for €8 billion as part of its restructuring.",
-      "publishedAt": "Tue, 10 Nov 2026 09:50:22 +0000",
+      "title": "Siri co-founder backs US voice ID startup Helix in $6.2m round",
+      "url": "https://www.techinasia.com/news/siri-cofounder-backs-voice-id-startup-helix-62m",
+      "excerpt": "Siri co-founder Dag Kittlaus is backing Helix and will advise the startup.",
+      "publishedAt": "Thu, 12 Nov 2026 00:44:52 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-27",
       "sourceId": "techinasia",
-      "title": "ByteDance launches Seedream 5.5 with 100-round image editing",
-      "url": "https://www.techinasia.com/news/bytedance-launches-seedream-55-100round-image-editing",
-      "excerpt": "Tests found the model still made errors with human anatomy and small objects such as glasses.",
-      "publishedAt": "Tue, 10 Nov 2026 07:22:37 +0000",
+      "title": "OpenAI backer Altimeter seeks $2.5b for late-stage fund",
+      "url": "https://www.techinasia.com/news/openai-backer-altimeter-seeks-25b-latestage-fund",
+      "excerpt": "Altimeter has also invested in OpenAI and co-led Anthropic’s last fundraising round.",
+      "publishedAt": "Thu, 12 Nov 2026 00:36:23 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-28",
       "sourceId": "techinasia",
-      "title": "This startup helps enterprises adopt AI safely",
-      "url": "https://www.techinasia.com/startup-helps-enterprises-adopt-ai-safely",
-      "excerpt": "Backed by local groups Dart and Aleph, Scouter helps Singapore's enterprises implement the right AI security tools ahead of new regulations.",
-      "publishedAt": "Tue, 10 Nov 2026 07:00:19 +0000",
+      "title": "China&#8217;s YMTC targets $4.9b Shanghai IPO as soon as early 2027",
+      "url": "https://www.techinasia.com/news/chinas-ymtc-targets-49b-shanghai-ipo-early-2027",
+      "excerpt": "YMTC plans to raise 33 billion yuan (US$4.9 billion).",
+      "publishedAt": "Thu, 12 Nov 2026 00:23:36 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-29",
       "sourceId": "techinasia",
-      "title": "Southeast Asia&#8217;s top-funded tech companies in the last decade",
-      "url": "https://www.techinasia.com/visual-story/southeast-asias-topfunded-tech-companies-decade",
-      "excerpt": "As investors in Southeast Asia race to back the next industry leader, which tech firm will claim the region's funding crown?",
-      "publishedAt": "Tue, 10 Nov 2026 07:00:00 +0000",
+      "title": "SeaX leads $1.6m round for US cardiac wearable startup Skribe",
+      "url": "https://www.techinasia.com/news/seax-leads-16m-cardiac-wearable-startup-skribe",
+      "excerpt": "Skribe’s Aurora system combines a multi-sensor adhesive patch with AI analysis to estimate left ventricular ejection fraction.",
+      "publishedAt": "Wed, 11 Nov 2026 15:00:48 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-30",
       "sourceId": "techinasia",
-      "title": "Bandai Namco invests in Vietnamese digital media group Pops",
-      "url": "https://www.techinasia.com/news/bandai-namco-invests-vietnams-digital-media-group-pops",
-      "excerpt": "Bandai Namco Entertainment also runs the 021 Fund for entertainment startups.",
-      "publishedAt": "Tue, 10 Nov 2026 05:33:45 +0000",
+      "title": "Singapore fan app Huddle raises $1.3m seed round",
+      "url": "https://www.techinasia.com/news/singapore-fan-app-huddle-raises-13m-seed",
+      "excerpt": "Huddle said it has more than 150,000 registered users.",
+      "publishedAt": "Wed, 11 Nov 2026 10:10:28 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-31",
       "sourceId": "techinasia",
-      "title": "Lightspeed leads $240m round for AI hardware tester Nominal",
-      "url": "https://www.techinasia.com/news/lightspeed-leads-240m-ai-hardware-tester-nominal",
-      "excerpt": "Nominal CEO Cameron McCord previously worked at Anduril, one of the startup's 80 customers.",
-      "publishedAt": "Tue, 10 Nov 2026 03:30:58 +0000",
+      "title": "Airwallex to invest $1.6b+ in Singapore over five years",
+      "url": "https://www.techinasia.com/news/airwallex-invest-16b-singapore-years",
+      "excerpt": "Airwallex (Singapore) Pte Ltd is listed in the Monetary Authority of Singapore’s financial institutions directory.",
+      "publishedAt": "Wed, 11 Nov 2026 08:30:44 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-32",
-      "sourceId": "yourstory",
-      "title": "Private scandals that derailed tech execs’ careers; Neha Nagar’s new book on helping people invest",
-      "url": "https://yourstory.com/2026/11/private-scandals-derailed-tech-execs-careers-neha-nagars-new-book-helping-people-invest",
-      "excerpt": "Executive exits can result from violations of company policies, even when no criminal wrongdoing has been established. Brian Krzanich resigned from Intel over a consensual subordinate relationship, while Phaneesh Murthy was dismissed by iGate for failing to disclose a relationshi",
-      "publishedAt": "Wed, 11 Nov 2026 02:00:00 GMT",
-      "matchedSlugs": []
+      "id": "techinasia-32",
+      "sourceId": "techinasia",
+      "title": "A16z-backed localization startup General Translation raises $27m",
+      "url": "https://www.techinasia.com/news/a16z-backed-localization-startup-general-translation-raises-27m",
+      "excerpt": "General Translation counts Ramp, Okta, and ClickHouse among its customers.",
+      "publishedAt": "Wed, 11 Nov 2026 05:11:01 +0000",
+      "matchedSlugs": [
+        "ramp-spend"
+      ]
     },
     {
-      "id": "yourstory-33",
-      "sourceId": "yourstory",
-      "title": "Why storytelling can be a startup's strongest competitive moat",
-      "url": "https://yourstory.com/2026/11/techsparks-2026-masterclass-storytelling-strongest-competitive-moat-startups",
-      "excerpt": "At TechSparks 2026, Shweta Rajpal Kohli, President and CEO of Startup Policy Forum, explained why founders need to tell authentic, distinctive stories and how storytelling can help build trust and differentiate a business.",
-      "publishedAt": "Tue, 10 Nov 2026 09:04:09 GMT",
+      "id": "techinasia-33",
+      "sourceId": "techinasia",
+      "title": "Singapore, Thai asset managers sign cross-border investment MoU",
+      "url": "https://www.techinasia.com/news/singapore-thai-asset-managers-sign-crossborder-investment-mou",
+      "excerpt": "The announcement didn't say if the firms would use the ASEAN Collective Investment Scheme.",
+      "publishedAt": "Wed, 11 Nov 2026 04:41:27 +0000",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-34",
       "sourceId": "yourstory",
-      "title": "5 tech and startup leaders whose personal scandals shook their careers",
-      "url": "https://yourstory.com/2026/11/5-tech-startup-leaders-whose-personal-scandals-shook-their-careers",
-      "excerpt": "As Nvidia CEO Jensen Huang faces scrutiny over an extramarital affair, we look at five tech and startup leaders whose personal relationships or workplace controversies made headlines and, in some cases, led to resignations and dismissals.",
-      "publishedAt": "Tue, 10 Nov 2026 06:19:33 GMT",
+      "title": "Seed funding’s new reality check in the age of AI",
+      "url": "https://yourstory.com/2026/11/seed-fundings-new-reality-check-in-the-age-of-ai",
+      "excerpt": "At TechSparks 2026, investors from Snowflake for Startups, 247VC, and Endiya discussed how AI is changing seed-stage investing and why founders need to demonstrate more than a working product to secure funding.",
+      "publishedAt": "Wed, 11 Nov 2026 06:29:50 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-35",
       "sourceId": "yourstory",
-      "title": "National Startup Awards 6.0 opens applications; winners to receive Rs 25 lakh prize in 20 categories",
-      "url": "https://yourstory.com/2026/11/national-startup-awards-60-opens-applications-winners-to-receive-rs-25-lakh-prize-in-20-categories",
-      "excerpt": "The award exercise seeks to identify and recognise entrepreneurial ventures that make significant contributions across 20 sectoral categories, from agriculture to space technology.",
-      "publishedAt": "Tue, 10 Nov 2026 12:09:37 GMT",
+      "title": "Gaurav Munjal steps down as Unacademy CEO; Akhilendra Kumar to take charge",
+      "url": "https://yourstory.com/2026/11/gaurav-munjal-steps-down-as-unacademy-ceo-akhilendra-kumar-to-take-charge",
+      "excerpt": "The leadership change comes two months after upGrad completed its acquisition of Unacademy. Munjal, however, will stay involved in the company's operations as executive chairman.",
+      "publishedAt": "Wed, 11 Nov 2026 15:10:36 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-36",
-      "sourceId": "yourstory",
-      "title": "MakeMyTrip's India arm gets Sebi nod to float IPO",
-      "url": "https://yourstory.com/2026/11/makemytrip-india-arm-gets-sebi-nod-to-float-ipo",
-      "excerpt": "MakeMyTrip is listed on Nasdaq stock exchange The proceeds from the planned IPO will be utilised by MakeMyTrip for long term growth, inorganic opportunities and repurchase of different types shares Nasdaq-listed travel booking platform MakeMyTrip's India subsidiary has received S",
-      "publishedAt": "Mon, 09 Nov 2026 10:55:54 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-37",
-      "sourceId": "yourstory",
-      "title": "Arka Fincap raises Rs 525 Cr from The Rise Funds of TPG",
-      "url": "https://yourstory.com/2026/11/arka-fincap-raises-rs-525-crore-from-the-rise-funds-of-tpg",
-      "excerpt": "Arka Fincap was founded in 2018 Arka Fincap will use this capital for expansion, investments into technology and risk management capabilities Arka Fincap Limited, a Kirloskar Group-promoted non-banking financial company (NBFC) has raised an initial investment of Rs 525 crore from",
-      "publishedAt": "Tue, 10 Nov 2026 05:38:07 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-38",
       "sourceId": "yourstory",
       "title": "Anthropic targets upto $1.4T valuation with $70 to $78 IPO price range",
       "url": "https://yourstory.com/2026/11/anthropic-sets-70-to-78-price-range-for-its-ipo",
@@ -386,12 +367,30 @@
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-39",
+      "id": "yourstory-37",
       "sourceId": "yourstory",
-      "title": "SplashBI opens GCC in Hyderabad, to invest over $100M",
-      "url": "https://yourstory.com/2026/11/splashbi-opens-gcc-in-hyderabad-to-invest-over-100-million",
-      "excerpt": "The investment to be spread across 5 years The GCC of SplashBI will strengthen the company’s product engineering and delivery capabilities SplashBI, a Georgia (US)-headquartered enterprise data intelligence platform, opened its global capability centre (GCC) in Hyderabad. The com",
-      "publishedAt": "Mon, 09 Nov 2026 12:32:39 GMT",
+      "title": "Startup news and updates: daily roundup (November 11, 2026)",
+      "url": "https://yourstory.com/2026/11/startup-news-and-updates-daily-roundup-november-11-2026",
+      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here’s the roundup for Wednesday, November 11, 2026.",
+      "publishedAt": "Wed, 11 Nov 2026 08:32:08 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "yourstory-38",
+      "sourceId": "yourstory",
+      "title": "Private scandals that derailed tech execs’ careers; Neha Nagar’s new book on helping people invest",
+      "url": "https://yourstory.com/2026/11/private-scandals-derailed-tech-execs-careers-neha-nagars-new-book-helping-people-invest",
+      "excerpt": "Executive exits can result from violations of company policies, even when no criminal wrongdoing has been established. Brian Krzanich resigned from Intel over a consensual subordinate relationship, while Phaneesh Murthy was dismissed by iGate for failing to disclose a relationshi",
+      "publishedAt": "Wed, 11 Nov 2026 02:00:00 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "inc42-39",
+      "sourceId": "inc42",
+      "title": "[Update] Greenjoules Closes Series B Round At ₹150 Cr",
+      "url": "https://inc42.com/buzz/exclusive-greenjoules-raises-%e2%82%b962-cr-funding-from-amazon-singularity-to-scale-green-energy-operations/",
+      "excerpt": "Update &#124; November 11, 17:18 IST Months after Inc42 exclusively reported on Greenjoules’s fundraise, the cleantech startup announced the closure&#8230;",
+      "publishedAt": "Wed, 11 Nov 2026 11:48:36 +0000",
       "matchedSlugs": []
     }
   ]
