@@ -9,9 +9,18 @@ import {
   emptyCollection,
   emptyRecommendLog,
   loadPersonalRecords,
+  parkPersonalOnSignOut,
+  restorePersonalOnSignIn,
 } from "../src/signedOutCleanup.js";
+import {
+  PERSONAL_BY_USER_KEY,
+  mergePersonalRecords,
+  readActivePersonal,
+} from "../src/personalRecords.js";
 import { VIEWED_KEY, loadViewedIds, saveViewedIds } from "../src/viewed.js";
 import { SESSION_KEY, USERS_KEY } from "../src/auth.js";
+import { createPersonalHandler } from "../api/personal.js";
+import { normalizePersonalPayload } from "../src/personalApi.js";
 
 function memoryStore() {
   return {
@@ -94,15 +103,22 @@ assert.ok(store.getItem(ALBUM_KEY));
 assert.ok(store.getItem(VIEWED_KEY));
 assert.ok(store.getItem(EXTRA_KEY));
 
-saveAlbum({ ids: ["ext-9"], addedAt: {} }, store);
+saveAlbum({ ids: ["ext-9"], addedAt: { "ext-9": "2026-11-09T04:00:00.000Z" } }, store);
+saveExtraTracks({ "ext-9": { id: "ext-9", extra: true, name: "Apocalypse" } }, store);
 saveViewedIds(["Q9", "Q8"], store);
-assert.equal(loadAlbum(store).ids.length, 1);
-const bootCleared = loadPersonalRecords(store);
-assert.ok(bootCleared);
-assert.deepEqual(bootCleared.album.ids, []);
-assert.deepEqual(bootCleared.viewedIds, []);
+
+// Signed-out boot shows a blank slate but must not destroy parked album data.
+const bootView = loadPersonalRecords(store);
+assert.ok(bootView);
+assert.deepEqual(bootView.album.ids, []);
+assert.deepEqual(bootView.viewedIds, []);
+assert.deepEqual(loadAlbum(store).ids, ["ext-9"]);
+assert.deepEqual(loadViewedIds(store), ["Q9", "Q8"]);
+
+const parked = parkPersonalOnSignOut("ada@example.com", store);
+assert.deepEqual(parked.album.ids, []);
 assert.deepEqual(loadAlbum(store).ids, []);
-assert.deepEqual(loadViewedIds(store), []);
+assert.ok(store.getItem(PERSONAL_BY_USER_KEY));
 
 store.setItem(
   USERS_KEY,
@@ -118,8 +134,66 @@ store.setItem(
   ]),
 );
 store.setItem(SESSION_KEY, JSON.stringify({ email: "ada@example.com" }));
-saveAlbum({ ids: ["ext-keep"], addedAt: {} }, store);
+
+const restored = restorePersonalOnSignIn("ada@example.com", store);
+assert.deepEqual(restored.album.ids, ["ext-9"]);
+assert.equal(restored.extras["ext-9"].name, "Apocalypse");
+assert.deepEqual(loadAlbum(store).ids, ["ext-9"]);
 assert.equal(loadPersonalRecords(store), null);
-assert.deepEqual(loadAlbum(store).ids, ["ext-keep"]);
+
+const merged = mergePersonalRecords(
+  readActivePersonal(store),
+  { album: { ids: ["ext-10"], addedAt: {} }, extras: { "ext-10": { id: "ext-10", name: "K." } } },
+);
+assert.deepEqual(merged.album.ids, ["ext-9", "ext-10"]);
+assert.equal(merged.extras["ext-10"].name, "K.");
+
+const remoteStore = new Map();
+const handler = createPersonalHandler({
+  configured: () => true,
+  loadUsers: async () => [
+    {
+      email: "ada@example.com",
+      name: "Ada",
+      salt: "00",
+      hash: "00",
+      createdAt: "2026-11-09T00:00:00.000Z",
+      updatedAt: "2026-11-09T00:00:00.000Z",
+    },
+  ],
+  loadUserPersonal: async (email) => remoteStore.get(email) || null,
+  saveUserPersonal: async (email, personal) => {
+    remoteStore.set(email, normalizePersonalPayload(personal));
+  },
+});
+
+function invoke(action, body) {
+  return new Promise((resolve) => {
+    const chunks = [];
+    const res = {
+      statusCode: 200,
+      setHeader() {},
+      end(text) {
+        chunks.push(String(text || ""));
+        resolve({ statusCode: res.statusCode, body: JSON.parse(chunks.join("") || "{}") });
+      },
+    };
+    handler({ method: "POST", body: { action, email: "ada@example.com", hash: "00", salt: "00", ...body } }, res);
+  });
+}
+
+const put = await invoke("put", {
+  personal: {
+    album: { ids: ["ext-9"], addedAt: {} },
+    extras: { "ext-9": { id: "ext-9", extra: true, name: "Apocalypse" } },
+  },
+});
+assert.equal(put.statusCode, 200);
+assert.equal(put.body.ok, true);
+assert.deepEqual(put.body.personal.album.ids, ["ext-9"]);
+
+const got = await invoke("get", {});
+assert.equal(got.body.ok, true);
+assert.equal(got.body.personal.extras["ext-9"].name, "Apocalypse");
 
 console.log("signed-out cleanup tests ok");

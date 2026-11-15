@@ -2,13 +2,24 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { createAuthHandler } from "./api/auth.js";
 import { createMusicSearchHandler } from "./api/music-search.js";
+import { createPersonalHandler } from "./api/personal.js";
+import { normalizePersonalPayload } from "./src/personalApi.js";
 
 const localUsers = [];
+const localPersonal = new Map();
 const localAuth = createAuthHandler({
   configured: () => true,
   loadUsers: async () => localUsers,
   saveUsers: async (next) => {
     localUsers.splice(0, localUsers.length, ...next);
+  },
+});
+const localPersonalApi = createPersonalHandler({
+  configured: () => true,
+  loadUsers: async () => localUsers,
+  loadUserPersonal: async (email) => localPersonal.get(email) || null,
+  saveUserPersonal: async (email, personal) => {
+    localPersonal.set(email, normalizePersonalPayload(personal));
   },
 });
 const localMusicSearch = createMusicSearchHandler();
@@ -40,6 +51,17 @@ function localAuthPlugin() {
           res.statusCode = 503;
           res.setHeader("Content-Type", "application/json");
           res.end(JSON.stringify({ ok: false, error: "unavailable", tracks: [] }));
+        }
+        return;
+      }
+      if (path === "/api/personal") {
+        try {
+          req.body = req.method === "POST" ? await readJsonBody(req) : {};
+          await localPersonalApi(req, res);
+        } catch {
+          res.statusCode = 503;
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify({ ok: false, error: "unavailable" }));
         }
         return;
       }

@@ -147,6 +147,15 @@ export function getCurrentUser(storage) {
   return publicUser(loadUsers(storage).find((user) => user.email === email));
 }
 
+/** Local credential proof used to sync personal listening records. */
+export function getLocalAuthProof(email, storage) {
+  const normalized = normalizeEmail(email) || getSessionEmail(storage);
+  if (!normalized) return null;
+  const record = loadUsers(storage).find((user) => user.email === normalized);
+  if (!record?.hash || !record?.salt) return null;
+  return { email: normalized, hash: record.hash, salt: record.salt };
+}
+
 function findUser(email, storage) {
   const normalized = normalizeEmail(email);
   return loadUsers(storage).find((user) => user.email === normalized) || null;

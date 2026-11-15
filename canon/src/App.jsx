@@ -28,7 +28,14 @@ import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, form
 import { addToAlbum, archiveTotal, loadAlbum, saveAlbum } from "./album.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
-import { clearSignedOutRecords, loadPersonalRecords } from "./signedOutCleanup.js";
+import {
+  emptyPersonalRecords,
+  loadPersonalRecords,
+  parkPersonalOnSignOut,
+  persistSignedInPersonal,
+  readActivePersonal,
+  syncPersonalForUser,
+} from "./personalRecords.js";
 import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
 import { formatStatus } from "./i18n.js";
@@ -41,7 +48,7 @@ import { publicUrl } from "./urls.js";
 import CoverImage from "./CoverImage.jsx";
 import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
-import { getCurrentUser, syncSessionToRemote } from "./auth.js";
+import { getCurrentUser, getSessionEmail, syncSessionToRemote } from "./auth.js";
 import { displayPersonName, splitCredits } from "./portraits.js";
 import { creditLabel, popularityLabel } from "./uiText.js";
 import BootScreen from "./BootScreen.jsx";
@@ -98,8 +105,11 @@ export default function App() {
   const signedIn = Boolean(sessionUser);
 
   useEffect(() => {
-    void syncSessionToRemote().then((result) => {
-      if (result?.user) setSessionUser(result.user);
+    void syncSessionToRemote().then(async (result) => {
+      if (!result?.user) return;
+      setSessionUser(result.user);
+      const restored = await syncPersonalForUser(result.user.email);
+      applyPersonal(restored);
     });
   }, []);
 
@@ -244,14 +254,18 @@ export default function App() {
     setViewedIds((current) => {
       const next = markViewed(current, id);
       if (next === current || next.length === current.length) return current;
-      saveViewedIds(next);
+      persistSignedInPersonal(sessionUser?.email, { viewedIds: next });
       return next;
     });
   }
 
   function rememberExtras(list) {
     if (!signedIn || !list?.length) return;
-    setExtras((current) => persistExtraTracks(current, list));
+    setExtras((current) => {
+      const next = persistExtraTracks(current, list);
+      persistSignedInPersonal(sessionUser?.email, { extras: next });
+      return next;
+    });
   }
 
   function openTrack(track, play = false, lyrics = false) {
@@ -281,7 +295,7 @@ export default function App() {
     if (track.extra) rememberExtras([track]);
     setAlbum((current) => {
       const next = addToAlbum(current, track.id);
-      saveAlbum(next);
+      persistSignedInPersonal(sessionUser?.email, { album: next });
       return next;
     });
     if (track.spotifyId) await spotify.addTrack(track);
@@ -296,7 +310,7 @@ export default function App() {
     if (track?.extra) rememberExtras([track]);
     setCollection((current) => {
       const next = toggleCollected(current, id);
-      saveCollection(next);
+      persistSignedInPersonal(sessionUser?.email, { collection: next });
       return next;
     });
   }
@@ -306,17 +320,18 @@ export default function App() {
     setRecommendLog((current) => {
       const next = appendRecommendation(current, entry);
       if (next === current) return current;
-      saveRecommendLog(next);
+      persistSignedInPersonal(sessionUser?.email, { recommendLog: next });
       return next;
     });
   }
 
-  function applyClearedPersonal(cleared) {
-    setCollection(cleared.collection);
-    setRecommendLog(cleared.recommendLog);
-    setAlbum(cleared.album);
-    setViewedIds(cleared.viewedIds);
-    setExtras(cleared.extras);
+  function applyPersonal(next) {
+    const records = next || emptyPersonalRecords();
+    setCollection(records.collection);
+    setRecommendLog(records.recommendLog);
+    setAlbum(records.album);
+    setViewedIds(records.viewedIds);
+    setExtras(records.extras);
     setAlbumAskId("");
     setAlbumAskDismissed(new Set());
     setOutside([]);
@@ -324,12 +339,17 @@ export default function App() {
   }
 
   function onSignedIn(user) {
-    setSessionUser(user || getCurrentUser());
+    const nextUser = user || getCurrentUser();
+    setSessionUser(nextUser);
+    void syncPersonalForUser(nextUser?.email).then((restored) => {
+      applyPersonal(restored || readActivePersonal());
+    });
   }
 
-  function onSignedOut() {
+  function onSignedOut(email) {
+    const parked = parkPersonalOnSignOut(email || getSessionEmail());
     setSessionUser(null);
-    applyClearedPersonal(clearSignedOutRecords());
+    applyPersonal(parked);
   }
 
   if (error) {

@@ -245,15 +245,15 @@ assert.match(
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/Profile.jsx"), "utf8"),
-  /onSignedOut\?\.\(\)/,
+  /onSignedOut\?\.\(email\)/,
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
-  /clearSignedOutRecords/,
+  /parkPersonalOnSignOut/,
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
-  /loadPersonalRecords/,
+  /syncPersonalForUser/,
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),

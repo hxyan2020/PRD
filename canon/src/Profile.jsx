@@ -173,8 +173,9 @@ export default function Profile({ onSignedIn, onSignedOut }) {
   }
 
   function onSignOut() {
+    const email = user?.email || "";
     logout();
-    onSignedOut?.();
+    onSignedOut?.(email);
     setUser(null);
     setForm(emptyForm());
     setMode("signin");
