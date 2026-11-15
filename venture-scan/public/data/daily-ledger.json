@@ -1,36 +1,24 @@
 {
-  "day": "2026-11-14",
-  "scannedAt": "2026-11-14T02:47:47.286Z",
+  "day": "2026-11-15",
+  "scannedAt": "2026-11-15T02:16:55.370Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
-    "reef-credit-exchange",
-    "yassir-maghreb",
-    "alan-health",
-    "cursor-coding",
-    "ledgerlane-freight",
-    "heaptrace-observability",
-    "cognition-devin",
-    "synthesis-school",
-    "iron-dome-devsecops",
-    "spore-kitchen",
-    "mercado-voice-pos",
-    "magicschool-ai",
-    "cape-clinic-triage",
-    "batterysmart-swap",
-    "qonto-sme-bank",
-    "fi-money",
-    "perplexity-answer",
+    "mercury-banking",
     "abridge-clinical",
-    "mono-africa-open-banking",
-    "saigon-microgrid-coops",
-    "brex-finance",
-    "incident-ops",
-    "farmstack-coldchain",
-    "attio-crm",
-    "watershed-climate",
-    "bushfire-mesh-sensors",
     "elevenlabs-voice",
-    "motherduck-analytics"
+    "motherduck-analytics",
+    "antora-heat-battery",
+    "ledgerlane-freight",
+    "magicschool-ai",
+    "spore-kitchen",
+    "synthesis-school",
+    "clerk-auth",
+    "kiln-microfactory",
+    "brex-finance",
+    "tabby-bnpl-gcc",
+    "mercado-voice-pos",
+    "cape-clinic-triage",
+    "farmstack-coldchain"
   ],
   "headlineCount": 40,
   "feedsOk": 5,
@@ -74,25 +62,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-4",
-      "sourceId": "techcrunch",
-      "title": "Nebius tests the neocloud playbook with $40 billion in planned spending",
-      "url": "https://techcrunch.com/2026/11/12/nebius-tests-the-neocloud-playbook-with-40-billion-in-planned-spending/",
-      "excerpt": "Nebius plans to fund its $40 billion AI infrastructure expansion through customer prepayments and loans, even as delays at a Microsoft data center raise questions about its financing model.",
-      "publishedAt": "Thu, 12 Nov 2026 21:27:10 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techcrunch-5",
-      "sourceId": "techcrunch",
-      "title": "Jensen Huang’s exit puts Nvidia’s support for open source in question",
-      "url": "https://techcrunch.com/2026/11/12/jensen-huangs-exit-puts-nvidias-support-for-open-source-in-question/",
-      "excerpt": "Jensen Huang’s resignation raises questions about Nvidia’s commitment to open source AI, including its Hugging Face acquisition, open-weight models, and advocacy against restrictions, as the company navigates a leadership transition.",
-      "publishedAt": "Thu, 12 Nov 2026 18:39:23 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "crunchbase-news-6",
+      "id": "crunchbase-news-4",
       "sourceId": "crunchbase-news",
       "title": "Crunchbase Data: Nvidia’s Startup Funding Deals Hit A Record. What’s Next After Huang?",
       "url": "https://news.crunchbase.com/venture/huang-nvda-ai-startup-funding-record-2026/",
@@ -101,7 +71,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-7",
+      "id": "crunchbase-news-5",
       "sourceId": "crunchbase-news",
       "title": "The Week’s 10 Biggest Funding Rounds: Agentic AI And Infrastructure Are Still On A Roll",
       "url": "https://news.crunchbase.com/venture/biggest-startup-funding-rounds-agentic-ai-infrastructure-mirendil-mercor/",
@@ -110,7 +80,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-6",
       "sourceId": "crunchbase-news",
       "title": "VCs Are Still Chasing Protein, Even As Fake Meat Falls Out Of Favor",
       "url": "https://news.crunchbase.com/venture/protein-startups-raise-funding-medici/",
@@ -119,7 +89,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
+      "id": "crunchbase-news-7",
       "sourceId": "crunchbase-news",
       "title": "Exclusive: Nubank Alum Raises $14M For Colombia’s Palomma To Tackle Rent Payments, Landlord Financing",
       "url": "https://news.crunchbase.com/fintech/nubank-alum-colombia-startup-palomma-ai-rental-services/",
@@ -128,7 +98,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-10",
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "Anthropic Seeks Record $88.5B Tied To Public Market Debut",
       "url": "https://news.crunchbase.com/ai/anthropic-record-ipo-ant-public-market-debut-spcx/",
@@ -137,7 +107,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-11",
+      "id": "crunchbase-news-9",
       "sourceId": "crunchbase-news",
       "title": "The Crunchbase Unicorn Board Tops 1,900 Companies In October, With 34 Companies Joining — Half Under 4 Years Old",
       "url": "https://news.crunchbase.com/venture/october-2026-unicorn-board-gains-34-tops-1900-ai-defense/",
@@ -146,7 +116,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-12",
+      "id": "crunchbase-news-10",
       "sourceId": "crunchbase-news",
       "title": "Startup Founders Are Using AI To File Patents. Here&#8217;s Where DIY Becomes A Liability.",
       "url": "https://news.crunchbase.com/ai/startup-founder-diy-patents-legal-liabiity-drapkin-mutter-landfall/",
@@ -155,7 +125,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-13",
+      "id": "crunchbase-news-11",
       "sourceId": "crunchbase-news",
       "title": "Series A In 2026: Capital Is Flowing Faster, But Fewer Startups Are Making The Cut",
       "url": "https://news.crunchbase.com/venture/series-a-2026-startup-capital-up-deals-steady/",
@@ -164,7 +134,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-14",
+      "id": "sifted-12",
       "sourceId": "sifted",
       "title": "Drone startup Uforce raises $700m backed by Valor Equity Partners, UK National Wealth Fund",
       "url": "https://sifted.eu/articles/drone-startup-uforce-fundraise-uk-national-wealth-fund-scoop/",
@@ -173,7 +143,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-15",
+      "id": "sifted-13",
       "sourceId": "sifted",
       "title": "SoftBank leads $500m round for Agile Robots",
       "url": "https://sifted.eu/articles/softbank-leads-500m-round-for-agile-robots/",
@@ -182,7 +152,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-16",
+      "id": "sifted-14",
       "sourceId": "sifted",
       "title": "Accel leads $30m Series A for spatial AI defence startup SE3",
       "url": "https://sifted.eu/articles/accel-30m-spatial-ai-defence-startup-se3/",
@@ -191,7 +161,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-17",
+      "id": "sifted-15",
       "sourceId": "sifted",
       "title": "Exclusive: Orakl Oncology raises $34m to test cancer drugs on ‘virtual patients’",
       "url": "https://sifted.eu/articles/exclusive-orakl-oncology-fundraise/",
@@ -200,7 +170,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-18",
+      "id": "sifted-16",
       "sourceId": "sifted",
       "title": "European chips funding almost quadruples as investors back Nvidia’s inference challengers",
       "url": "https://sifted.eu/articles/european-chips-funding-almost-quadruples-as-investors-back-nvidias-inference-challengers/",
@@ -209,7 +179,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-19",
+      "id": "sifted-17",
       "sourceId": "sifted",
       "title": "Fractile confirms £540m raise first revealed by Sifted",
       "url": "https://sifted.eu/articles/fractile-confirms-540m-raise-first-revealed-by-sifted/",
@@ -218,7 +188,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-20",
+      "id": "sifted-18",
       "sourceId": "sifted",
       "title": "UK AI startup Nscale weighs delaying $35bn IPO amid tech sell-off",
       "url": "https://sifted.eu/articles/nscale-ipo-nvidia-delay/",
@@ -227,7 +197,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-21",
+      "id": "sifted-19",
       "sourceId": "sifted",
       "title": "Defence startup Mistt raises £5m to build the ‘next GPS’ for autonomous systems and AI",
       "url": "https://sifted.eu/articles/defence-mistt-fundraise-next-gps-data-autonomous-systems-world-models/",
@@ -236,7 +206,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-22",
+      "id": "sifted-20",
       "sourceId": "sifted",
       "title": "Exclusive: Nvidia bet Hiverge quietly raises $19.4m backed by Plural",
       "url": "https://sifted.eu/articles/nvidia-bet-hiverge-plural-raise/",
@@ -245,7 +215,34 @@
       "matchedSlugs": []
     },
     {
+      "id": "techinasia-21",
+      "sourceId": "techinasia",
+      "title": "20 largest exits in Japan",
+      "url": "https://www.techinasia.com/20-largest-exits-japan",
+      "excerpt": "Here's our regularly updated list of the country's biggest startup exits.",
+      "publishedAt": "Sat, 14 Nov 2026 09:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-22",
+      "sourceId": "techinasia",
+      "title": "India&#8217;s top-funded tech companies in the last decade",
+      "url": "https://www.techinasia.com/visual-story/indias-topfunded-tech-companies-decade",
+      "excerpt": "Which Indian tech players are on the rise? Our automated tracker spotlights their investment hauls in the last 10 years.",
+      "publishedAt": "Sat, 14 Nov 2026 07:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
       "id": "techinasia-23",
+      "sourceId": "techinasia",
+      "title": "China’s startup funding, as explained in charts",
+      "url": "https://www.techinasia.com/visual-story/capital-china-chinas-funding-landscape",
+      "excerpt": "Knowing where the money flows matters. Check out the current fundraising landscape in China.",
+      "publishedAt": "Sat, 14 Nov 2026 04:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-24",
       "sourceId": "techinasia",
       "title": "Mapping the players sweeping Korea&#8217;s cleantech space",
       "url": "https://www.techinasia.com/visual-story/mapping-koreas-notable-cleantech-players",
@@ -254,7 +251,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-24",
+      "id": "techinasia-25",
       "sourceId": "techinasia",
       "title": "Chinese investors face limits on Anthropic&#8217;s $1.4t IPO",
       "url": "https://www.techinasia.com/news/chinese-investors-face-limits-anthropics-14t-ipo",
@@ -263,7 +260,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-25",
+      "id": "techinasia-26",
       "sourceId": "techinasia",
       "title": "Nvidia fallout raises scrutiny of Southeast Asia&#8217;s AI sector",
       "url": "https://www.techinasia.com/news/nvidia-fallout-raises-scrutiny-southeast-asias-ai-sector",
@@ -272,7 +269,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-26",
+      "id": "techinasia-27",
       "sourceId": "techinasia",
       "title": "CapitalG leads $300m round for AI agent startup LangChain",
       "url": "https://www.techinasia.com/news/capitalg-leads-300m-ai-agent-startup-langchain",
@@ -281,7 +278,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-27",
+      "id": "techinasia-28",
       "sourceId": "techinasia",
       "title": "ByteDance plans up to $6b share buyback at $400b valuation",
       "url": "https://www.techinasia.com/news/bytedance-plans-6b-share-buyback-400b-valuation",
@@ -290,7 +287,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-28",
+      "id": "techinasia-29",
       "sourceId": "techinasia",
       "title": "No one stays at the top forever",
       "url": "https://www.techinasia.com/no-one-stays-at-the-top-forever",
@@ -299,7 +296,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-29",
+      "id": "techinasia-30",
       "sourceId": "techinasia",
       "title": "Meituan leads pre-A+ funding for Chinese chip startup Zhixin",
       "url": "https://www.techinasia.com/news/meituan-leads-pre-a-funding-for-chinese-chip-startup-zhixin",
@@ -308,7 +305,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-30",
+      "id": "techinasia-31",
       "sourceId": "techinasia",
       "title": "South Korea’s Hyundai Card launches AI tools for partners",
       "url": "https://www.techinasia.com/news/south-koreas-hyundai-card-launches-ai-tools-for-partners",
@@ -317,7 +314,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-31",
+      "id": "techinasia-32",
       "sourceId": "techinasia",
       "title": "20 largest exits in Indonesia",
       "url": "https://www.techinasia.com/20-largest-exits-indonesia",
@@ -326,7 +323,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-32",
+      "id": "techinasia-33",
       "sourceId": "techinasia",
       "title": "Rakuten Q3 revenue rises 10.9% on fintech, mobile growth",
       "url": "https://www.techinasia.com/news/rakuten-q3-revenue-rises-109-fintech-mobile-growth",
@@ -335,7 +332,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-33",
+      "id": "techinasia-34",
       "sourceId": "techinasia",
       "title": "China&#8217;s top-funded tech companies in the last decade",
       "url": "https://www.techinasia.com/visual-story/chinas-topfunded-tech-companies-decade",
@@ -344,57 +341,48 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-34",
-      "sourceId": "techinasia",
-      "title": "SG physical AI startup Ropedia expands robotics training data",
-      "url": "https://www.techinasia.com/news/sg-physical-ai-startup-ropedia-expands-robotics-training-data",
-      "excerpt": "The launch comes as robotics firms seek less resource-intensive ways to generate reusable training data. Ropedia has raised pre-A funding.",
-      "publishedAt": "Fri, 13 Nov 2026 04:46:55 +0000",
+      "id": "yourstory-35",
+      "sourceId": "yourstory",
+      "title": "MAGIC launches AIMM 2026, offers Rs 7 lakh in prizes for AI innovations",
+      "url": "https://yourstory.com/2026/11/magic-launches-aimm-2026-national-ai-innovation-challenge",
+      "excerpt": "Got an AI idea? MAGIC has opened applications for AIMM 2026, offering startups, MSMEs, students and researchers a chance to win Rs 7 lakh, with potential seed funding and incubation support.",
+      "publishedAt": "Sat, 14 Nov 2026 07:23:49 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-35",
-      "sourceId": "techinasia",
-      "title": "Mapping the players dominating China&#8217;s cleantech space",
-      "url": "https://www.techinasia.com/visual-story/mapping-chinas-leading-cleantech-players",
-      "excerpt": "Mapping China’s cleantech sector: Key players, top investors, and funding insights in one report.",
-      "publishedAt": "Fri, 13 Nov 2026 04:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-36",
-      "sourceId": "techinasia",
-      "title": "Mapping the AI startups making waves in Japan",
-      "url": "https://www.techinasia.com/visual-story/mapping-japans-leading-ai-startups",
-      "excerpt": "Mapping Japan's AI sector: Key players, top investors, and funding insights in one report.",
-      "publishedAt": "Fri, 13 Nov 2026 02:00:00 +0000",
+      "id": "yourstory-36",
+      "sourceId": "yourstory",
+      "title": "Stage III cancer to 200+ startups: How Tej Chingtham built the Northeast’s first incubator",
+      "url": "https://yourstory.com/2026/11/tej-chingtham-aic-smutbi-northeast-startups",
+      "excerpt": "From a push for better startup support to mentoring 200+ ventures, Prof. (Dr.) Tej Chingtham is helping shape Northeast India’s startup ecosystem through AIC-SMUTBI.",
+      "publishedAt": "Sat, 14 Nov 2026 07:13:27 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-37",
       "sourceId": "yourstory",
-      "title": "Canonicus Capital raises Rs 192 Cr in its first close of Special Situations Fund",
-      "url": "https://yourstory.com/2026/11/canonicus-capital-raises-rs-192-crore-first-close-of-special-situations-fund-",
-      "excerpt": "The firm will focus on deploying capital into selected opportunities across the National Capital Region (NCR), while continuing to build towards its Rs 500 crore target.",
-      "publishedAt": "Thu, 12 Nov 2026 12:44:34 GMT",
+      "title": "Odisha startup BabyCue wins national challenge with its rapid diagnostic test for children",
+      "url": "https://yourstory.com/2026/11/babycue-wins-rs-5-lakh-at-tribal-business-conclave-for-diacue-healthtech-innovation",
+      "excerpt": "Odisha-based BabyCue wins first prize at the Tribal Business Conclave Open Grand Challenge for DiaCue, its rapid test for childhood diarrhoea.",
+      "publishedAt": "Sat, 14 Nov 2026 08:03:59 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-38",
       "sourceId": "yourstory",
-      "title": "Razorpay, Sembcorp Green Infra get Sebi nod to float IPOs",
-      "url": "https://yourstory.com/2026/11/razorpay-sembcorp-green-infra-get-sebi-nod-float-ipos",
-      "excerpt": "Razorpay filed draft documents with Sebi via the confidential route in June for an IPO.",
-      "publishedAt": "Fri, 13 Nov 2026 12:43:18 GMT",
+      "title": "Adyar Ananda Bhavan sells majority stake to Bodhi Tree Systems for $180M",
+      "url": "https://yourstory.com/2026/11/bodhi-tree-systems-acquires-majority-stake-in-adyar-ananda-bhavan",
+      "excerpt": "Bodhi Tree Systems is a strategic investment and operating platform founded in 2021 by James Murdoch, son of media mogul Rupert Murdoch, and Uday Shankar, former Star India and Disney executive.",
+      "publishedAt": "Fri, 13 Nov 2026 04:50:52 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-39",
       "sourceId": "yourstory",
-      "title": "Kutlerri.ai raises $4M to help US restaurants grow revenue and cut costs using AI agents",
-      "url": "https://yourstory.com/2026/11/kutlerriai-raises-4m-to-help-us-restaurants-grow-revenue-and-cut-costs-using-ai-agents",
-      "excerpt": "Founded by former HighRadius executives Kiran Rana and Payal Tripathy, Kutlerri.ai charges restaurants a percentage of the revenue its AI agents generate or the costs they save.",
-      "publishedAt": "Thu, 12 Nov 2026 13:21:09 GMT",
+      "title": "28 Indian startups pitch air pollution solutions to VCs at AirEarth.org event",
+      "url": "https://yourstory.com/2026/11/airearth-28-startups-pitch-air-pollution-solutions-vcs",
+      "excerpt": "AirEarth.org hosted 28 Indian clean-air startups pitching to VCs like Blume and Rainmatter, pushing year-round pollution fixes.",
+      "publishedAt": "Sat, 14 Nov 2026 07:43:24 GMT",
       "matchedSlugs": []
     }
   ]
