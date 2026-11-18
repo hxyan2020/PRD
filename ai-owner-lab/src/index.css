@@ -3488,6 +3488,16 @@ body.menu-open {
   gap: 0.45rem;
 }
 
+.note-fullscreen-download-status {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.45rem 1.1rem 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
 @media (max-width: 720px) {
   .note-fullscreen-toolbar,
   .note-fullscreen-body,

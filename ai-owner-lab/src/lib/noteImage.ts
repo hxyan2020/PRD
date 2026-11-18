@@ -179,45 +179,24 @@ export function guessImageFilename(src: string, fallback = 'ownlab-image'): stri
   return `${fallback}.${ext}`
 }
 
-/** Download the full-resolution image (data URL, https, or private Blob). */
-export async function downloadNoteImage(src: string, filename?: string): Promise<void> {
-  const name = filename || guessImageFilename(src)
-  const pathname = blobPathnameFromSrc(src)
-
-  if (pathname) {
-    const res = await fetch(notebookFileDownloadUrl(pathname), {
-      credentials: 'include',
-      headers: { Accept: 'application/json' },
-    })
-    if (!res.ok) throw new Error(`Download failed (${res.status})`)
-    const body = (await res.json()) as { url?: string }
-    if (!body.url) throw new Error('Download URL missing')
-    const fileRes = await fetch(body.url)
-    if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
-    const blob = await fileRes.blob()
-    const objectUrl = URL.createObjectURL(blob)
-    try {
-      triggerDownload(objectUrl, name)
-    } finally {
-      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000)
-    }
-    return
+function mapDownloadError(err: unknown): Error {
+  const message = err instanceof Error ? err.message : String(err || 'download failed')
+  if (/load failed|failed to fetch|networkerror|network request failed/i.test(message)) {
+    return new Error('Could not download this picture. Check sign-in and try again.')
   }
+  return err instanceof Error ? err : new Error(message)
+}
 
-  if (src.startsWith('data:')) {
-    triggerDownload(src, name)
-    return
-  }
-
-  const fileRes = await fetch(src, { credentials: 'include' })
-  if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
-  const blob = await fileRes.blob()
-  const objectUrl = URL.createObjectURL(blob)
-  try {
-    triggerDownload(objectUrl, name)
-  } finally {
-    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000)
-  }
+function dataUrlToBlob(dataUrl: string): Blob {
+  const comma = dataUrl.indexOf(',')
+  if (comma < 0) throw new Error('Invalid image data')
+  const header = dataUrl.slice(0, comma)
+  const data = dataUrl.slice(comma + 1)
+  const mime = /data:([^;]+)/i.exec(header)?.[1] || 'application/octet-stream'
+  const binary = atob(data)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i)
+  return new Blob([bytes], { type: mime })
 }
 
 function triggerDownload(href: string, filename: string): void {
@@ -225,7 +204,114 @@ function triggerDownload(href: string, filename: string): void {
   a.href = href
   a.download = filename
   a.rel = 'noopener'
+  // iOS Safari often ignores programmatic downloads unless the node is in the DOM briefly.
+  a.style.display = 'none'
   document.body.appendChild(a)
   a.click()
   a.remove()
+}
+
+async function saveBlobAsFile(blob: Blob, filename: string): Promise<void> {
+  const objectUrl = URL.createObjectURL(blob)
+  try {
+    triggerDownload(objectUrl, filename)
+  } finally {
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000)
+  }
+}
+
+/** Same-origin Edge stream — avoids Safari failing on signed Blob CDN URLs. */
+async function fetchPrivateBlobFile(pathname: string): Promise<Blob> {
+  const proxyUrl = `/api/blob/content?pathname=${encodeURIComponent(pathname)}`
+  try {
+    const res = await fetch(proxyUrl, {
+      credentials: 'include',
+      cache: 'no-store',
+    })
+    if (res.status === 401) throw new Error('Sign in to download pictures')
+    if (!res.ok) throw new Error(`Download failed (${res.status})`)
+    return await res.blob()
+  } catch (err) {
+    // Older deploys without /api/blob/content — try JSON signed URL once.
+    if (err instanceof Error && /Sign in/i.test(err.message)) throw err
+    const res = await fetch(notebookFileDownloadUrl(pathname), {
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    })
+    if (!res.ok) throw mapDownloadError(err)
+    const body = (await res.json()) as { url?: string }
+    if (!body.url) throw mapDownloadError(err)
+    const fileRes = await fetch(body.url, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
+    if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
+    return fileRes.blob()
+  }
+}
+
+/** Download the full-resolution image (data URL, https, or private Blob). */
+export async function downloadNoteImage(src: string, filename?: string): Promise<void> {
+  const name = filename || guessImageFilename(src)
+  try {
+    const pathname = blobPathnameFromSrc(src)
+    if (pathname) {
+      const blob = await fetchPrivateBlobFile(pathname)
+      await saveBlobAsFile(blob, name)
+      return
+    }
+
+    if (src.startsWith('data:')) {
+      // iOS often refuses <a download> on huge data: URLs — convert to a Blob first.
+      await saveBlobAsFile(dataUrlToBlob(src), name)
+      return
+    }
+
+    const fileRes = await fetch(src, { credentials: 'include', cache: 'no-store' })
+    if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
+    await saveBlobAsFile(await fileRes.blob(), name)
+  } catch (err) {
+    throw mapDownloadError(err)
+  }
+}
+
+/** All safe image `src` values in note HTML (no card-preview limit). */
+export function extractAllNoteImageSrcs(html: string): string[] {
+  if (!html) return []
+  const out: string[] = []
+  const seen = new Set<string>()
+  const re = /<img\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1/gi
+  let match: RegExpExecArray | null
+  while ((match = re.exec(html))) {
+    const src = (match[2] || '').trim()
+    if (!src || seen.has(src) || !isSafeImageSrc(src)) continue
+    seen.add(src)
+    out.push(src)
+  }
+  return out
+}
+
+/**
+ * Download every inline image in a note, one after another.
+ * Sequential + short pause so iOS does not coalesce/block multi-downloads.
+ */
+export async function downloadAllNoteImages(
+  html: string,
+  options?: { onProgress?: (done: number, total: number) => void },
+): Promise<{ total: number; failed: number }> {
+  const srcs = extractAllNoteImageSrcs(html)
+  if (srcs.length === 0) return { total: 0, failed: 0 }
+  let failed = 0
+  for (let i = 0; i < srcs.length; i += 1) {
+    const src = srcs[i]!
+    options?.onProgress?.(i + 1, srcs.length)
+    try {
+      await downloadNoteImage(src, guessImageFilename(src, `ownlab-image-${i + 1}`))
+    } catch {
+      failed += 1
+    }
+    if (i < srcs.length - 1) {
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 450)
+      })
+    }
+  }
+  return { total: srcs.length, failed }
 }

@@ -23,6 +23,10 @@ import {
 import { useLanguage } from '../i18n/LanguageContext'
 import type { UiKey } from '../i18n/ui'
 import { categoryColorStyle } from '../lib/categoryColors'
+import {
+  downloadAllNoteImages,
+  extractAllNoteImageSrcs,
+} from '../lib/noteImage'
 import { htmlToPlainText, isBlankHtml, renderNoteHtml, sanitizeHtml } from '../lib/sanitizeHtml'
 
 type NotebookSort = 'created' | 'edited' | 'alpha'
@@ -241,6 +245,8 @@ export function Notebook() {
   const [storageToast, setStorageToast] = useState<string | null>(null)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
+  const [downloadAllBusy, setDownloadAllBusy] = useState(false)
+  const [downloadAllStatus, setDownloadAllStatus] = useState<string | null>(null)
   const { available: authAvailable, username: authUser } = useAuth()
   const [cloudState, setCloudState] = useState<CloudRuntimeState>(() =>
     notebookStore.getCloudRuntime().state,
@@ -316,6 +322,43 @@ export function Notebook() {
     () => (openedNoteId ? activeEntries.find((e) => e.id === openedNoteId) ?? null : null),
     [openedNoteId, activeEntries],
   )
+  const openedNoteImageCount = useMemo(
+    () => (openedNote ? extractAllNoteImageSrcs(openedNote.selectedText).length : 0),
+    [openedNote],
+  )
+
+  async function downloadOpenedNoteImages() {
+    if (!openedNote) return
+    setDownloadAllBusy(true)
+    setDownloadAllStatus(null)
+    try {
+      const result = await downloadAllNoteImages(openedNote.selectedText, {
+        onProgress: (done, total) => {
+          setDownloadAllStatus(t('editorImageDownloadAllProgress', { done, total }))
+        },
+      })
+      if (result.total === 0) {
+        setDownloadAllStatus(t('editorImageDownloadAllNone'))
+      } else if (result.failed > 0) {
+        setDownloadAllStatus(
+          `${t('editorImageDownloadAllDone', {
+            ok: result.total - result.failed,
+            total: result.total,
+          })} ${t('editorImageDownloadAllFailed')}`,
+        )
+      } else {
+        setDownloadAllStatus(
+          t('editorImageDownloadAllDone', { ok: result.total, total: result.total }),
+        )
+      }
+    } catch (err) {
+      setDownloadAllStatus(
+        err instanceof Error ? err.message : t('editorImageDownloadAllFailed'),
+      )
+    } finally {
+      setDownloadAllBusy(false)
+    }
+  }
 
   useEffect(() => {
     if (!treeFocusId) return
@@ -488,6 +531,8 @@ export function Notebook() {
 
   function closeOpenedNote() {
     setOpenedNoteId(null)
+    setDownloadAllBusy(false)
+    setDownloadAllStatus(null)
   }
 
   function moveToDustbin(id: string) {
@@ -792,10 +837,27 @@ export function Notebook() {
                     />
                   ) : null}
                 </div>
+                {downloadAllStatus ? (
+                  <p className="note-fullscreen-download-status" role="status">
+                    {downloadAllStatus}
+                  </p>
+                ) : null}
                 <div className="notebook-actions note-fullscreen-actions">
                   <button type="button" className="btn primary" onClick={closeOpenedNote}>
                     {t('closeNote')}
                   </button>
+                  {openedNoteImageCount > 0 ? (
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      disabled={downloadAllBusy}
+                      onClick={() => void downloadOpenedNoteImages()}
+                    >
+                      {downloadAllBusy
+                        ? downloadAllStatus || t('editorImageDownloading')
+                        : t('editorImageDownloadAll')}
+                    </button>
+                  ) : null}
                   <button
                     type="button"
                     className="btn ghost"
