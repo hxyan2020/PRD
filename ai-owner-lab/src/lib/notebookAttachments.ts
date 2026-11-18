@@ -135,8 +135,29 @@ function triggerBrowserDownload(href: string, filename: string): void {
 }
 
 export async function downloadNotebookFile(att: NotebookAttachment): Promise<void> {
-  // Ask the API for a short-lived signed Blob URL, then let the browser download
-  // directly from storage (supports large files without buffering through the app).
+  // Prefer same-origin Edge stream (Safari fails cross-origin signed Blob URLs).
+  const proxyUrl = `/api/blob/content?pathname=${encodeURIComponent(att.pathname)}`
+  try {
+    const res = await fetch(proxyUrl, { credentials: 'include', cache: 'no-store' })
+    if (res.status === 401) throw new Error('Sign in to download files')
+    if (!res.ok) throw new Error(`Download failed (${res.status})`)
+    const blob = await res.blob()
+    const typed =
+      isHtmlAttachment(att)
+        ? new Blob([blob], { type: att.contentType || 'text/html;charset=utf-8' })
+        : blob
+    const objectUrl = URL.createObjectURL(typed)
+    try {
+      triggerBrowserDownload(objectUrl, att.name || 'download')
+    } finally {
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000)
+    }
+    return
+  } catch (proxyErr) {
+    if (proxyErr instanceof Error && /Sign in/i.test(proxyErr.message)) throw proxyErr
+  }
+
+  // Fallback: signed URL JSON (desktop / older deploys).
   const res = await fetch(notebookFileDownloadUrl(att.pathname), {
     credentials: 'include',
     headers: { Accept: 'application/json' },
@@ -154,8 +175,6 @@ export async function downloadNotebookFile(att: NotebookAttachment): Promise<voi
   const body = (await res.json()) as { url?: string }
   if (!body.url) throw new Error('Download URL missing')
 
-  // HTML often opens in-tab if we only navigate to the signed URL. Prefer a
-  // same-origin blob download so .html/.htm always save as a file.
   if (isHtmlAttachment(att)) {
     try {
       const fileRes = await fetch(body.url)
@@ -171,7 +190,7 @@ export async function downloadNotebookFile(att: NotebookAttachment): Promise<voi
       }
       return
     } catch {
-      /* fall through to signed download URL */
+      /* fall through */
     }
   }
 
