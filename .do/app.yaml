@@ -1,0 +1,25 @@
+name: origin-radar
+region: nyc
+services:
+  - name: web
+    dockerfile_path: origin-radar/Dockerfile
+    source_dir: origin-radar
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    health_check:
+      http_path: /api/health
+    envs:
+      - key: ORIGIN_RADAR_DB
+        value: /data/storefront.sqlite
+    volumes:
+      - name: storefront-data
+        mount_path: /data
+        size_gib: 1
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: /
+      component:
+        name: web

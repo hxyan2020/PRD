@@ -1,0 +1,12 @@
+{
+  "owner": "HX",
+  "service": "origin-radar",
+  "health": "/api/health",
+  "monitor": "/api/hx",
+  "viewership": "/api/hx/viewership",
+  "probes": [
+    { "name": "health", "path": "/api/health", "intervalSec": 60 },
+    { "name": "radar", "path": "/", "intervalSec": 300 },
+    { "name": "queue", "path": "/queue", "intervalSec": 300 }
+  ]
+}
