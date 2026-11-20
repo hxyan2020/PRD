@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Edit handbook — English / 简体中文 · V-Exchange risk handbook</title>
+  <style>
+    :root {
+      --bg: #f6f4ef; --ink: #1c1916; --muted: #5c564e; --line: #d9d2c5;
+      --panel: #fffcf7; --accent: #0b6e4f; --sage: #e3ebe4; --kraft: #f0e6d4;
+      --tab: #efece5; --tab-active: #fffcf7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: Georgia, "Noto Serif SC", "Songti SC", serif;
+      line-height: 1.5;
+    }
+    .shell { max-width: 1280px; margin: 0 auto; padding: 18px 18px 48px; }
+    header.top {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
+      margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
+    }
+    header.top h1 { margin: 0; font-size: 1.35rem; }
+    header.top p { margin: 0.35rem 0 0; color: var(--muted); font-size: 0.92rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .links a {
+      color: var(--accent); text-decoration: none; font-size: 0.9rem;
+      border: 1px solid var(--line); background: #fff; padding: 6px 10px; border-radius: 8px;
+    }
+    .links a:hover { background: var(--sage); }
+    .links a.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 650; }
+    .note {
+      background: var(--kraft); border: 1px solid #e0d4bc; border-radius: 10px;
+      padding: 10px 14px; margin: 0 0 14px; font-size: 0.9rem; color: #3f3a34;
+    }
+    .note code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.86em; background: #fff8; padding: 0 4px; border-radius: 3px; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      margin-bottom: 10px;
+    }
+    .toolbar button, .toolbar label.file-btn {
+      appearance: none; border: 1px solid var(--line); background: #fff;
+      color: var(--ink); padding: 8px 12px; border-radius: 8px; font: inherit;
+      font-size: 0.88rem; cursor: pointer;
+    }
+    .toolbar button.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 650; }
+    .toolbar button:hover, .toolbar label.file-btn:hover { background: var(--sage); }
+    .toolbar button.primary:hover { background: #095a41; }
+    .toolbar button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .toolbar .status { font-size: 0.84rem; color: var(--muted); margin-left: auto; }
+    .toolbar .status.dirty { color: #8a4b2a; font-weight: 650; }
+    .toolbar .status.saved { color: var(--accent); }
+    .tabs {
+      display: flex; gap: 4px; border-bottom: 1px solid var(--line);
+      margin-bottom: 0;
+    }
+    .tabs button {
+      appearance: none; border: 1px solid transparent; border-bottom: none;
+      background: var(--tab); color: var(--muted); padding: 12px 18px;
+      font: inherit; font-size: 0.95rem; cursor: pointer;
+      border-radius: 10px 10px 0 0;
+    }
+    .tabs button[aria-selected="true"] {
+      background: var(--tab-active); color: var(--ink); border-color: var(--line);
+      font-weight: 650;
+    }
+    .tabs button .badge {
+      display: inline-block; min-width: 0.55rem; height: 0.55rem;
+      border-radius: 999px; background: #c45c26; margin-left: 6px;
+      vertical-align: middle;
+    }
+    .tabs button[aria-selected="true"] .badge { background: #c45c26; }
+    .workspace {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      border: 1px solid var(--line); border-radius: 0 12px 12px 12px;
+      background: var(--panel); min-height: 70vh; overflow: hidden;
+    }
+    .pane {
+      display: flex; flex-direction: column; min-width: 0; min-height: 70vh;
+    }
+    .pane + .pane { border-left: 1px solid var(--line); }
+    .pane-label {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; color: #4a534c;
+      padding: 8px 12px; background: #f3efe6; border-bottom: 1px solid var(--line);
+    }
+    textarea.editor {
+      flex: 1; width: 100%; border: 0; resize: none; padding: 14px 16px;
+      font-family: ui-monospace, Menlo, Consolas, "Noto Sans Mono CJK SC", monospace;
+      font-size: 0.86rem; line-height: 1.45; background: #fffcf7; color: var(--ink);
+      outline: none; min-height: 60vh;
+    }
+    .preview {
+      flex: 1; overflow: auto; padding: 16px 18px 28px; background: #fffcf7;
+      font-size: 0.92rem; min-height: 60vh;
+    }
+    .preview h1 { font-size: 1.35rem; margin-top: 0; }
+    .preview h2 { font-size: 1.15rem; margin-top: 1.4rem; border-left: 4px solid var(--accent); padding-left: 0.6rem; }
+    .preview h3 { font-size: 1.02rem; margin-top: 1.1rem; }
+    .preview table { border-collapse: collapse; width: 100%; font-size: 0.84rem; margin: 0.8rem 0; }
+    .preview th, .preview td { border: 1px solid var(--line); padding: 5px 7px; vertical-align: top; text-align: left; }
+    .preview th { background: #f6f0e6; }
+    .preview code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.84em; background: #f3efe6; padding: 0.1em 0.35em; border-radius: 3px; }
+    .preview pre { background: #1e2430; color: #e8eef7; padding: 10px 12px; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; }
+    .preview pre code { background: transparent; color: inherit; padding: 0; }
+    .preview blockquote { margin: 0.8rem 0; padding: 0.45rem 0.8rem; border-left: 4px solid var(--accent); background: #e8f0ea; border-radius: 0 8px 8px 0; }
+    .preview ul, .preview ol { padding-left: 1.2rem; }
+    .hidden { display: none !important; }
+    .lang-panel.hidden { display: none !important; }
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: 1fr; }
+      .pane + .pane { border-left: 0; border-top: 1px solid var(--line); }
+      .pane, textarea.editor, .preview { min-height: 42vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="top">
+      <div>
+        <h1>Edit handbook — English / 简体中文</h1>
+        <p>Finprime V-Exchange risk handbook · edit both language sources · drafts stay in this browser</p>
+      </div>
+      <div class="links">
+        <a href="./">← Handbook</a>
+        <a href="en.md">en.md</a>
+        <a href="zh-CN.md">zh-CN.md</a>
+        <a class="primary" href="https://github.com/hxyan2020/PRD/blob/cursor/exchange-risk-handbook-28bc/docs/risk-handbook" target="_blank" rel="noopener">Open on GitHub</a>
+      </div>
+    </header>
+
+    <p class="note">
+      Both languages are editable here. Changes save as <strong>browser drafts</strong> (localStorage) and can be
+      <strong>downloaded</strong> as <code>en.md</code> / <code>zh-CN.md</code>.
+      This static GitHub Pages site cannot write back to the repo — after editing, download both files and commit them
+      (then run <code>python3 build.py</code> to rebuild <code>index.html</code>).
+    </p>
+
+    <div class="toolbar" role="toolbar" aria-label="Editor actions">
+      <button type="button" class="primary" id="btn-save">Save drafts</button>
+      <button type="button" id="btn-reload">Reload from published files</button>
+      <button type="button" id="btn-download-en">Download en.md</button>
+      <button type="button" id="btn-download-zh">Download zh-CN.md</button>
+      <button type="button" id="btn-download-both">Download both</button>
+      <button type="button" id="btn-clear-drafts">Clear drafts</button>
+      <label class="file-btn">Import .md<input type="file" id="file-import" accept=".md,text/markdown,text/plain" hidden /></label>
+      <span class="status" id="status">Loading…</span>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Language to edit">
+      <button type="button" role="tab" id="tab-en" aria-controls="panel-en" aria-selected="true" data-lang="en">English <code>en.md</code><span class="badge hidden" id="badge-en" aria-hidden="true"></span></button>
+      <button type="button" role="tab" id="tab-zh" aria-controls="panel-zh" aria-selected="false" data-lang="zh">简体中文 <code>zh-CN.md</code><span class="badge hidden" id="badge-zh" aria-hidden="true"></span></button>
+    </div>
+
+    <div class="lang-panel" id="panel-en" role="tabpanel" aria-labelledby="tab-en">
+      <div class="workspace">
+        <div class="pane">
+          <div class="pane-label">Markdown source — English</div>
+          <textarea class="editor" id="editor-en" spellcheck="true" aria-label="English markdown"></textarea>
+        </div>
+        <div class="pane">
+          <div class="pane-label">Preview — English</div>
+          <div class="preview" id="preview-en" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lang-panel hidden" id="panel-zh" role="tabpanel" aria-labelledby="tab-zh" lang="zh-CN">
+      <div class="workspace">
+        <div class="pane">
+          <div class="pane-label">Markdown 原文 — 简体中文</div>
+          <textarea class="editor" id="editor-zh" spellcheck="true" aria-label="简体中文 markdown"></textarea>
+        </div>
+        <div class="pane">
+          <div class="pane-label">预览 — 简体中文</div>
+          <div class="preview" id="preview-zh" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <script>
+(function () {
+  var KEYS = { en: "risk-handbook-draft-en", zh: "risk-handbook-draft-zh" };
+  var FILES = { en: "en.md", zh: "zh-CN.md" };
+  var published = { en: "", zh: "" };
+  var editors = {
+    en: document.getElementById("editor-en"),
+    zh: document.getElementById("editor-zh")
+  };
+  var previews = {
+    en: document.getElementById("preview-en"),
+    zh: document.getElementById("preview-zh")
+  };
+  var badges = {
+    en: document.getElementById("badge-en"),
+    zh: document.getElementById("badge-zh")
+  };
+  var statusEl = document.getElementById("status");
+  var previewTimers = { en: null, zh: null };
+  var importTarget = "en";
+
+  function setStatus(msg, kind) {
+    statusEl.textContent = msg;
+    statusEl.className = "status" + (kind ? " " + kind : "");
+  }
+
+  function isDirty(lang) {
+    return editors[lang].value !== published[lang];
+  }
+
+  function updateBadges() {
+    ["en", "zh"].forEach(function (lang) {
+      var dirty = isDirty(lang);
+      badges[lang].classList.toggle("hidden", !dirty);
+      badges[lang].title = dirty ? "Unsaved vs published file" : "";
+    });
+    var dirtyAny = isDirty("en") || isDirty("zh");
+    if (dirtyAny) setStatus("Unsaved edits vs published files — Save drafts or Download", "dirty");
+    else setStatus("In sync with published files (or saved drafts match)", "saved");
+  }
+
+  function renderMarkdown(src) {
+    if (window.marked && typeof marked.parse === "function") {
+      try {
+        marked.setOptions({ gfm: true, breaks: false });
+        return marked.parse(src || "");
+      } catch (e) {
+        return "<pre>" + escapeHtml(src || "") + "</pre>";
+      }
+    }
+    return "<p><em>Preview library not loaded. Editing still works — use Download.</em></p><pre>" +
+      escapeHtml((src || "").slice(0, 4000)) + "</pre>";
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function schedulePreview(lang) {
+    clearTimeout(previewTimers[lang]);
+    previewTimers[lang] = setTimeout(function () {
+      previews[lang].innerHTML = renderMarkdown(editors[lang].value);
+      updateBadges();
+    }, 180);
+  }
+
+  function loadDraft(lang) {
+    try {
+      return localStorage.getItem(KEYS[lang]);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveDrafts() {
+    try {
+      localStorage.setItem(KEYS.en, editors.en.value);
+      localStorage.setItem(KEYS.zh, editors.zh.value);
+      setStatus("Drafts saved in this browser · " + new Date().toLocaleTimeString(), "saved");
+    } catch (e) {
+      setStatus("Could not save drafts (storage blocked): " + e.message, "dirty");
+    }
+  }
+
+  function clearDrafts() {
+    if (!confirm("Clear browser drafts for both English and Chinese? Editors will reload published files.")) return;
+    try {
+      localStorage.removeItem(KEYS.en);
+      localStorage.removeItem(KEYS.zh);
+    } catch (e) {}
+    editors.en.value = published.en;
+    editors.zh.value = published.zh;
+    schedulePreview("en");
+    schedulePreview("zh");
+    setStatus("Drafts cleared · showing published files", "saved");
+  }
+
+  function download(filename, text) {
+    var blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function activate(lang) {
+    importTarget = lang;
+    document.querySelectorAll(".tabs [role='tab']").forEach(function (btn) {
+      var on = btn.getAttribute("data-lang") === lang;
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    document.getElementById("panel-en").classList.toggle("hidden", lang !== "en");
+    document.getElementById("panel-zh").classList.toggle("hidden", lang !== "zh");
+    if (history.replaceState) {
+      history.replaceState(null, "", "#" + lang);
+    } else {
+      location.hash = lang;
+    }
+    editors[lang].focus();
+  }
+
+  function fetchPublished() {
+    setStatus("Loading published en.md and zh-CN.md…");
+    return Promise.all([
+      fetch(FILES.en, { cache: "no-store" }).then(function (r) {
+        if (!r.ok) throw new Error("en.md HTTP " + r.status);
+        return r.text();
+      }),
+      fetch(FILES.zh, { cache: "no-store" }).then(function (r) {
+        if (!r.ok) throw new Error("zh-CN.md HTTP " + r.status);
+        return r.text();
+      })
+    ]).then(function (pair) {
+      published.en = pair[0];
+      published.zh = pair[1];
+      var draftEn = loadDraft("en");
+      var draftZh = loadDraft("zh");
+      editors.en.value = draftEn != null ? draftEn : published.en;
+      editors.zh.value = draftZh != null ? draftZh : published.zh;
+      schedulePreview("en");
+      schedulePreview("zh");
+      var usedDraft = draftEn != null || draftZh != null;
+      setStatus(
+        usedDraft
+          ? "Loaded published files · restored browser drafts where present"
+          : "Loaded published English and Chinese sources",
+        usedDraft ? "dirty" : "saved"
+      );
+      updateBadges();
+    }).catch(function (err) {
+      setStatus("Load failed: " + err.message + " — you can still Import .md files", "dirty");
+    });
+  }
+
+  document.querySelector(".tabs").addEventListener("click", function (ev) {
+    var t = ev.target.closest("[role='tab']");
+    if (!t) return;
+    activate(t.getAttribute("data-lang"));
+  });
+
+  ["en", "zh"].forEach(function (lang) {
+    editors[lang].addEventListener("input", function () {
+      schedulePreview(lang);
+    });
+  });
+
+  document.getElementById("btn-save").addEventListener("click", saveDrafts);
+  document.getElementById("btn-reload").addEventListener("click", function () {
+    if ((isDirty("en") || isDirty("zh")) &&
+        !confirm("Reload published files? Unsaved editor text that was not saved as a draft will be lost.")) {
+      return;
+    }
+    fetchPublished();
+  });
+  document.getElementById("btn-download-en").addEventListener("click", function () {
+    download("en.md", editors.en.value);
+    setStatus("Downloaded en.md", "saved");
+  });
+  document.getElementById("btn-download-zh").addEventListener("click", function () {
+    download("zh-CN.md", editors.zh.value);
+    setStatus("Downloaded zh-CN.md", "saved");
+  });
+  document.getElementById("btn-download-both").addEventListener("click", function () {
+    download("en.md", editors.en.value);
+    setTimeout(function () { download("zh-CN.md", editors.zh.value); }, 250);
+    setStatus("Downloaded en.md and zh-CN.md", "saved");
+  });
+  document.getElementById("btn-clear-drafts").addEventListener("click", clearDrafts);
+
+  document.getElementById("file-import").addEventListener("change", function (ev) {
+    var file = ev.target.files && ev.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var text = String(reader.result || "");
+      var name = (file.name || "").toLowerCase();
+      var lang = importTarget;
+      if (name.indexOf("zh") !== -1 || name.indexOf("cn") !== -1) lang = "zh";
+      else if (name === "en.md" || name.indexOf("en") !== -1) lang = "en";
+      editors[lang].value = text;
+      activate(lang);
+      schedulePreview(lang);
+      setStatus("Imported " + file.name + " into " + (lang === "en" ? "English" : "简体中文"), "dirty");
+    };
+    reader.readAsText(file);
+    ev.target.value = "";
+  });
+
+  window.addEventListener("keydown", function (ev) {
+    if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "s") {
+      ev.preventDefault();
+      saveDrafts();
+    }
+  });
+
+  var hash = (location.hash || "").replace(/^#/, "");
+  if (hash === "zh" || hash === "zh-CN") activate("zh");
+  else activate("en");
+
+  fetchPublished();
+})();
+  </script>
+  <script src="./ai-chat.js" defer></script>
+</body>
+</html>
