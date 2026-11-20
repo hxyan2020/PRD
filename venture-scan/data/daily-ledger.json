@@ -1,72 +1,114 @@
 {
-  "day": "2026-11-19",
-  "scannedAt": "2026-11-19T03:54:34.014Z",
+  "day": "2026-11-20",
+  "scannedAt": "2026-11-20T03:47:03.779Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
-    "sylvera-carbon",
-    "alan-health",
-    "fi-money",
-    "swan-baas",
-    "motherduck-analytics",
     "mono-africa-open-banking",
+    "ledgerlane-freight",
+    "carbonfact-fashion",
+    "atelier-carbon-ledger",
+    "reef-credit-exchange",
+    "elevenlabs-voice",
+    "voltpath-depot",
+    "clerk-auth",
     "magicschool-ai",
-    "cognition-devin",
-    "runway-ml",
-    "playpane-classroom",
-    "cape-clinic-triage",
-    "nightshift-nursing-ai",
+    "harbor-legal-ops",
+    "antora-heat-battery",
     "mercado-voice-pos",
-    "batterysmart-swap",
-    "kiln-microfactory",
-    "mercury-banking",
-    "heaptrace-observability",
+    "cuecraft-ads",
+    "ramp-spend",
+    "fjord-battery-secondlife",
+    "playpane-classroom",
+    "brex-finance",
+    "nightshift-nursing-ai",
     "piggyvest-savings",
-    "sideshift-care",
-    "chipper-cash"
+    "heaptrace-observability",
+    "saigon-microgrid-coops",
+    "runway-ml",
+    "spore-kitchen",
+    "attio-crm",
+    "batterysmart-swap",
+    "linear-issue-ops"
   ],
   "headlineCount": 40,
-  "feedsOk": 6,
+  "feedsOk": 4,
   "feedsTotal": 8,
   "matchedIdeaCount": 0,
   "headlines": [
     {
       "id": "techcrunch-0",
       "sourceId": "techcrunch",
-      "title": "Anthropic prices IPO at $83 a share, above projected range",
-      "url": "https://techcrunch.com/2026/11/18/anthropic-reportedly-prices-ipo-at-83-a-share-above-projected-range/",
-      "excerpt": "The long-awaited IPO reportedly values the company at $1.5 trillion on a fully diluted basis.",
-      "publishedAt": "Wed, 18 Nov 2026 22:11:15 +0000",
+      "title": "Anthropic&#8217;s 7 founders cashed out nearly $2B in record-breaking IPO",
+      "url": "https://techcrunch.com/2026/11/19/anthropics-7-founders-cashed-out-nearly-2b-in-record-breaking-ipo/",
+      "excerpt": "At the upgraded $83/share IPO price, Anthropic's seven founders each pocketed $280 million, while the company nabbed nearly $105 billion.",
+      "publishedAt": "Fri, 20 Nov 2026 00:43:50 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-1",
       "sourceId": "techcrunch",
-      "title": "Spend management platform Payhawk announces $280M raise, 2B valuation",
-      "url": "https://techcrunch.com/2026/11/18/spend-management-platform-payhawk-announces-280m-raise-2b-valuation/",
-      "excerpt": "Founded in 2018, Payhawk is an enterprise financial management platform that helps companies track and manage expenses and procurement using AI agents.",
-      "publishedAt": "Wed, 18 Nov 2026 19:29:41 +0000",
+      "title": "Anthropic&#8217;s IPO could deliver $156B to charity",
+      "url": "https://techcrunch.com/2026/11/19/anthropics-ipo-could-deliver-156-billion-to-charity/",
+      "excerpt": "At a stock price of $95, the frontier lab's Public Benefit Foundation, its employee donations, and the company's match tot up to $156 billion.",
+      "publishedAt": "Thu, 19 Nov 2026 19:10:45 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-2",
       "sourceId": "techcrunch",
-      "title": "David Ellison says HBO will air critical Elon Musk documentary despite his $1B investment in Skydance",
-      "url": "https://techcrunch.com/2026/11/18/david-ellison-says-hbo-will-air-critical-elon-musk-documentary-despite-1b-investment-in-skydance/",
-      "excerpt": "Following news of the investment, questions emerged over how Musk's sizable stake in the company might affect Skydance's plans to distribute a documentary that is highly critical of him.",
-      "publishedAt": "Wed, 18 Nov 2026 17:30:56 +0000",
+      "title": "Former Alibaba exec&#8217;s Everful raises $48.5M to connect retailers with Chinese factories",
+      "url": "https://techcrunch.com/2026/11/19/former-alibaba-execs-everful-raises-48-5m-to-connect-retailers-with-chinese-factories/",
+      "excerpt": "Everful has raised $48.5 million to expand its factory-direct sourcing platform, helping retailers source products from overseas manufacturers.",
+      "publishedAt": "Thu, 19 Nov 2026 17:00:00 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-3",
+      "id": "techcrunch-3",
+      "sourceId": "techcrunch",
+      "title": "Anthropic hits Nasdaq exchanges at $111, 33% above IPO price",
+      "url": "https://techcrunch.com/2026/11/19/anthropic-hits-nasdaq-exchanges-at-110-27-above-ipo-price/",
+      "excerpt": "Anthropic's IPO price was set at $83, representing more than $80 billion in new capital raised.",
+      "publishedAt": "Thu, 19 Nov 2026 16:59:23 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-4",
+      "sourceId": "techcrunch",
+      "title": "Anthropic&#8217;s IPO puts AI&#8217;s circular financing boom to the test",
+      "url": "https://techcrunch.com/2026/11/19/anthropics-ipo-puts-ais-circular-financing-boom-to-the-test/",
+      "excerpt": "Anthropic faces enormous compute commitments as it goes public, but its biggest infrastructure partners, including Amazon and Google, could continue profiting from AI even if Anthropic loses its lead.",
+      "publishedAt": "Thu, 19 Nov 2026 14:54:39 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "crunchbase-news-5",
       "sourceId": "crunchbase-news",
-      "title": "Anthropic Prices IPO Shares At $83, Above Range",
+      "title": "The Blue Economy: The World’s Quietest Economic Engine And Its Smartest Cities",
+      "url": "https://news.crunchbase.com/startups/blue-economy-technology-defense-energy-onetti-mind-the-bridge/",
+      "excerpt": "The $2.6 trillion blue economy is creating startup opportunities in maritime automation, clean energy and logistics, with blue tech funding nearing $10 billion through Q3 2026, driven largely by major defense deals. Alberto Onetti, chairman of Mind the Bridge, writes that ports a",
+      "publishedAt": "Thu, 19 Nov 2026 12:00:45 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "crunchbase-news-6",
+      "sourceId": "crunchbase-news",
+      "title": "What’s Next For Recruiting, Job Hunting And HR? More AI, Of Course",
+      "url": "https://news.crunchbase.com/venture/data-recruiting-job-hunting-hr-ai-startups-mercor/",
+      "excerpt": "So far this year, venture backers have poured close to $4 billion into an assortment of global companies focused on recruiting, finding jobs and streamlining processes associated with HR and payroll management, Crunchbase data shows. Not surprisingly, the vast majority are also i",
+      "publishedAt": "Thu, 19 Nov 2026 12:00:23 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "crunchbase-news-7",
+      "sourceId": "crunchbase-news",
+      "title": "Anthropic Closes Up 17% After Massive IPO",
       "url": "https://news.crunchbase.com/public/ipo/anthropic-prices-ipo-ant-above-range/",
       "excerpt": "The offering promises to be the public market event of the season, with the Claude creator seeing investor demand for shares well in excess of its capital-raising goals.",
       "publishedAt": "Wed, 18 Nov 2026 22:15:36 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-4",
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "The Key Numbers I’m Watching As Anthropic Makes Its IPO Debut",
       "url": "https://news.crunchbase.com/ai/anthropic-ant-ipo-revenue-growth-risks-s1-analysis/",
@@ -75,7 +117,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-5",
+      "id": "crunchbase-news-9",
       "sourceId": "crunchbase-news",
       "title": "Sector Snapshot: Investors Turn Up The Volume On Voice AI",
       "url": "https://news.crunchbase.com/venture/voice-ai-startup-funding-peaks-2026/",
@@ -84,7 +126,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-6",
+      "id": "crunchbase-news-10",
       "sourceId": "crunchbase-news",
       "title": "Genesis AI Raises $500M At $3.5B Valuation To Bring Its Robots To Factories And Warehouses",
       "url": "https://news.crunchbase.com/venture/robot-factory-workers-genesis-ai-fundraise/",
@@ -93,7 +135,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-7",
+      "id": "crunchbase-news-11",
       "sourceId": "crunchbase-news",
       "title": "The Money Cleared The Bank. Now The Founder Is The Risk.",
       "url": "https://news.crunchbase.com/startups/founder-venture-funding-pressure-meerbott-you-loud-clear/",
@@ -102,7 +144,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-12",
       "sourceId": "crunchbase-news",
       "title": "PwC’s IPO Lead On A Selective Market, AI Valuations And The Outlook For 2027",
       "url": "https://news.crunchbase.com/public/ipo-ma-spac-ai-forecast-qa-pwcs-partner-bellin/",
@@ -111,25 +153,34 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
-      "sourceId": "crunchbase-news",
-      "title": "VC Firm Plural Closes On $1.1B To Invest In European Startups With Potential For ‘GDP-Level Impact’",
-      "url": "https://news.crunchbase.com/venture/plural-closes-billion-euro-fund-european-ai-robotics-defense-startup-investment/",
-      "excerpt": "London-based startup investor Plural, with a portfolio mix of energy, compute, defense, robotics, health and software, says it has closed on its largest fund to date — just over $1.1 billion, or 1 billion euros — to lead early-stage investments across Europe.",
-      "publishedAt": "Mon, 16 Nov 2026 07:00:39 +0000",
+      "id": "sifted-13",
+      "sourceId": "sifted",
+      "title": "Is AI in a bubble? Menlo Ventures’ Deedy Das on Anthropic’s IPO and Europe",
+      "url": "https://sifted.eu/articles/menlo-ventures-podcast/",
+      "excerpt": "",
+      "publishedAt": "Thu, 19 Nov 2026 13:55:11 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-10",
-      "sourceId": "crunchbase-news",
-      "title": "Crunchbase Data: Nvidia’s Startup Funding Deals Hit A Record. What’s Next After Huang?",
-      "url": "https://news.crunchbase.com/venture/huang-nvda-ai-startup-funding-record-2026/",
-      "excerpt": "Before it was thrust into crisis this week, Nvidia was steadily continuing its pace as one of the busiest startup investors around, including backing many of the biggest venture deals of 2026. We take a fresh look at where Nvidia and its venture arm NVentures have been investing ",
-      "publishedAt": "Fri, 13 Nov 2026 20:32:55 +0000",
+      "id": "sifted-14",
+      "sourceId": "sifted",
+      "title": "Exclusive: Schneider Electric's VC fund brings accelerator scheme to Europe",
+      "url": "https://sifted.eu/articles/schneider-electric-ventures-accelerator-scheme-europe/",
+      "excerpt": "",
+      "publishedAt": "Thu, 19 Nov 2026 05:00:42 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "sifted-11",
+      "id": "sifted-15",
+      "sourceId": "sifted",
+      "title": "The other Staniszewski brother just raised $4.7m – and Paul Graham is a backer",
+      "url": "https://sifted.eu/articles/lato-seed-round/",
+      "excerpt": "",
+      "publishedAt": "Thu, 19 Nov 2026 05:00:14 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-16",
       "sourceId": "sifted",
       "title": "How Payhawk raised $280m amid fintech downturn",
       "url": "https://sifted.eu/articles/payhawk-series-c/",
@@ -138,7 +189,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-12",
+      "id": "sifted-17",
       "sourceId": "sifted",
       "title": "Anthropic’s $1.4tn IPO puts Europe’s AI boom to the test",
       "url": "https://sifted.eu/articles/anthropic-ipo-puts-europe-ai-boom-to-the-test/",
@@ -147,7 +198,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-13",
+      "id": "sifted-18",
       "sourceId": "sifted",
       "title": "Exclusive: OpenAI and Meta insiders back startup policing rogue AI agents",
       "url": "https://sifted.eu/articles/disseqt-ai-agents-rogue/",
@@ -156,7 +207,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-14",
+      "id": "sifted-19",
       "sourceId": "sifted",
       "title": "Exclusive: Munich-based humanoid startup Vesoma seeks €50m",
       "url": "https://sifted.eu/articles/exclusive-munich-based-humanoid-startup-vesoma-seeks-e50m/",
@@ -165,7 +216,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-15",
+      "id": "sifted-20",
       "sourceId": "sifted",
       "title": "Robotics startup Genesis AI raises $500m backed by Nvidia",
       "url": "https://sifted.eu/articles/genesis-ai-raises-500m/",
@@ -174,7 +225,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-16",
+      "id": "sifted-21",
       "sourceId": "sifted",
       "title": "Isomorphic Labs raises $5bn backed by Sequoia and A16z",
       "url": "https://sifted.eu/articles/isomorphic-labs-raises-5bn-backed-by-sequoia-and-a16z/",
@@ -183,7 +234,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-17",
+      "id": "sifted-22",
       "sourceId": "sifted",
       "title": "EQT and FirstMark back trio of H Company alumni in $30m seed round",
       "url": "https://sifted.eu/articles/remanence-30m-seed-round/",
@@ -192,7 +243,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-18",
+      "id": "sifted-23",
       "sourceId": "sifted",
       "title": "Exclusive: Thiel-backed fintech Majority to merge with Rebtel",
       "url": "https://sifted.eu/articles/thiel-fintech-majority-rebtel-merge/",
@@ -201,7 +252,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-19",
+      "id": "sifted-24",
       "sourceId": "sifted",
       "title": "Plural raises fresh €1bn fund to back ‘non-obvious companies’",
       "url": "https://sifted.eu/articles/plural-new-fund-e1bn/",
@@ -210,183 +261,138 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-20",
-      "sourceId": "sifted",
-      "title": "‘Build what can’t be cloned’: Fintech’s AI-native back office is getting crowded",
-      "url": "https://sifted.eu/articles/ai-native-fintech-crowding/",
-      "excerpt": "",
-      "publishedAt": "Mon, 16 Nov 2026 05:00:48 GMT",
+      "id": "techinasia-25",
+      "sourceId": "techinasia",
+      "title": "US stocks fall as Anthropic IPO rally loses momentum",
+      "url": "https://www.techinasia.com/news/us-stocks-fall-as-anthropic-ipo-rally-loses-momentum",
+      "excerpt": "Anthropic’s market value briefly topped US$2 trillion during a closely watched test of investor appetite for AI stocks.",
+      "publishedAt": "Fri, 20 Nov 2026 02:40:05 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "sifted-21",
-      "sourceId": "sifted",
-      "title": "Exclusive: Italian robotics startup Mosaico raises €7.5m to tackle AI’s data problem",
-      "url": "https://sifted.eu/articles/robotics-software-ai-funding-round-mosaico/",
-      "excerpt": "",
-      "publishedAt": "Mon, 16 Nov 2026 05:00:44 GMT",
+      "id": "techinasia-26",
+      "sourceId": "techinasia",
+      "title": "These funds have not invested in Indonesia in the past year",
+      "url": "https://www.techinasia.com/funds-invested-indonesia-year",
+      "excerpt": "Pitching your startup to an investor? First, check if they’re still active in your market.",
+      "publishedAt": "Fri, 20 Nov 2026 02:00:00 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-22",
-      "sourceId": "eu-startups",
-      "title": "Ireland&#8217;s Disseqt AI raises €7.3 million to safely deploy AI agents",
-      "url": "https://www.eu-startups.com/2026/11/irelands-disseqt-ai-raises-e7-3-million-to-safely-deploy-ai-agents/",
-      "excerpt": "Disseqt AI, a Dublin-based AI assurance platform, has raised €7.3 million ($8 million) to help enterprises deploy AI agents safely, at scale and enable them to meet regulatory requirements. Gresham House Ventures led the round, with participation from Sure Valley Ventures (SVV), ",
-      "publishedAt": "Wed, 18 Nov 2026 15:09:19 +0000",
+      "id": "techinasia-27",
+      "sourceId": "techinasia",
+      "title": "Bending Spoons to acquire Intuit’s Mailchimp for $3.7b",
+      "url": "https://www.techinasia.com/news/bending-spoons-acquire-intuits-mailchimp-37b",
+      "excerpt": "Intuit bought Mailchimp for US$12 billion in 2021 as it sought to expand its small-business platform and sell more marketing tools.",
+      "publishedAt": "Fri, 20 Nov 2026 01:57:29 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-23",
-      "sourceId": "eu-startups",
-      "title": "Bulgaria’s first unicorn Payhawk raises €255.14 million at €1.82 billion valuation in Goldman Sachs-led Series C round",
-      "url": "https://www.eu-startups.com/2026/11/bulgarias-first-unicorn-payhawk-raises-e255-14-million-at-e1-82-billion-valuation-to-build-a-global-finance-os-for-the-ai-era/",
-      "excerpt": "Payhawk, a London-based AI-native spend management platform, today announced a €255.14 million ($280 million) Series C round, valuing the business at €1.82 billion ($2 billion) as it builds the global finance operating system (OS) for the AI era. The round was led by Growth Equit",
-      "publishedAt": "Wed, 18 Nov 2026 10:46:08 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-24",
-      "sourceId": "eu-startups",
-      "title": "5 key findings from Atomico&#8217;s State of European Tech 2026",
-      "url": "https://www.eu-startups.com/2026/11/5-key-findings-from-atomicos-state-of-european-tech-2026/",
-      "excerpt": "Europe&#8217;s tech ecosystem is heading for its second-best investment year on record, with bigger funding rounds, a new generation of founders and startups scaling at unprecedented speed. But the continent&#8217;s structural weaknesses remain: venture capital is increasingly co",
-      "publishedAt": "Wed, 18 Nov 2026 10:15:08 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-25",
-      "sourceId": "eu-startups",
-      "title": "French frugal AI infrastructure startup MountAIn raises €7.3 million to bring advanced AI to sub-€9 chips",
-      "url": "https://www.eu-startups.com/2026/11/french-frugal-ai-infrastructure-startup-mountain-raises-e7-3-million-to-bring-advanced-ai-to-sub-e9-chips/",
-      "excerpt": "MountAIn, a Grenoble-based frugal AI infrastructure company, has raised €7.3 million in Seed funding to run advanced AI on microcontrollers costing less than €9.11 ($10). The round was led by 360 Capital and Supernova Invest, with participation from Crédit Agricole Alpes Développ",
-      "publishedAt": "Wed, 18 Nov 2026 08:23:07 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-26",
-      "sourceId": "eu-startups",
-      "title": "Meatable co-founder’s new firm Iconic raises €9.1 million to build AI operating system for large capital projects",
-      "url": "https://www.eu-startups.com/2026/11/meatable-co-founders-new-firm-iconic-raises-e9-1-million-to-build-ai-operating-system-for-large-capital-projects/",
-      "excerpt": "Iconic, an Amsterdam-based startup building an AI operating system for large capital projects, has raised €9.1 million ($10 million) in Seed funding to bring AI-powered intelligence to these projects, with five major clients already onboard. Peak Capital, an early-stage venture c",
-      "publishedAt": "Wed, 18 Nov 2026 07:23:37 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-27",
-      "sourceId": "eu-startups",
-      "title": "London’s Perry AI raises €2 million to bring AI-powered legal intelligence to private capital funds",
-      "url": "https://www.eu-startups.com/2026/11/londons-perry-ai-raises-e2-million-to-bring-ai-powered-legal-intelligence-to-private-capital-funds/",
-      "excerpt": "Perry AI, the London-based startup building an AI-powered legal operating system for private equity and venture capital funds, has raised €2 million ($2.2 million) in a Seed funding round. The round was led by Haatch, with participation from Antler, Syncorp Ventures, Araya Ventur",
-      "publishedAt": "Wed, 18 Nov 2026 06:42:52 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-28",
-      "sourceId": "eu-startups",
-      "title": "AI drug discovery giant Isomorphic Labs raises €4.5 billion in blockbuster funding round",
-      "url": "https://www.eu-startups.com/2026/11/ai-drug-discovery-giant-isomorphic-labs-raises-e4-5-billion-in-blockbuster-funding-round/",
-      "excerpt": "Isomorphic Labs, an AI company focussed on designing and developing new medicines, today announced a €4.5 billion ($5 billion) Series C financing round to accelerate the scientific breakthroughs and proprietary AI advances. The round was co-led by Greenoaks and Sequoia Capital, a",
-      "publishedAt": "Tue, 17 Nov 2026 15:30:36 +0000",
+      "id": "techinasia-28",
+      "sourceId": "techinasia",
+      "title": "Singapore PIDG invest $11.7m in Indian waste recycler Nepra",
+      "url": "https://www.techinasia.com/news/singapore-pidg-invest-11-7m-in-indian-waste-recycler-nepra",
+      "excerpt": "The funding will support new material recovery facilities, expanded plastics recycling capacity, existing operations, and working capital in India.",
+      "publishedAt": "Fri, 20 Nov 2026 01:13:24 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-29",
       "sourceId": "techinasia",
-      "title": "Chinese AI firm MegaRobo raises $200m with Oman backing",
-      "url": "https://www.techinasia.com/news/chinese-ai-firm-megarobo-raises-200m-oman-backing",
-      "excerpt": "Oman Investment Authority manages the Sultanate of Oman’s funds and assets as the country’s sovereign wealth fund.",
-      "publishedAt": "Thu, 19 Nov 2026 03:18:44 +0000",
+      "title": "Anthropic’s big Wall Street moment",
+      "url": "https://www.techinasia.com/anthropics-big-wall-street-moment",
+      "excerpt": "Anthropic’s IPO puts the spotlight on the next big test for the AI industry, while potatoes put AI to the test on the farm.",
+      "publishedAt": "Fri, 20 Nov 2026 00:30:52 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-30",
       "sourceId": "techinasia",
-      "title": "Bahrain fintech firm Skyro to offer credit at Philippine shops",
-      "url": "https://www.techinasia.com/news/bahrain-fintech-firm-skyro-offer-credit-philippine-shops",
-      "excerpt": "With SkyroCredit, customers can pay in partner apps and at checkout using pre-approved credit without filing a new application.",
-      "publishedAt": "Thu, 19 Nov 2026 03:04:11 +0000",
+      "title": "India’s Paytm to invest $21.4m in Singapore’s CardUp",
+      "url": "https://www.techinasia.com/news/indias-paytm-to-invest-21-4m-in-singapores-cardup",
+      "excerpt": "An initial cash investment of about 1.6 billion rupees (US$17.4 million) will give it a 19.1% stake in CardUp.",
+      "publishedAt": "Fri, 20 Nov 2026 00:17:25 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-31",
       "sourceId": "techinasia",
-      "title": "Navigating Thai bureaucracy? This startup tracks every deadline",
-      "url": "https://www.techinasia.com/navigating-thai-bureaucracy-startup-tracks-deadline",
-      "excerpt": "Led by Deliveree’s former group CFO, Settlr Global reached a US$250,000 ARR in just four months by replacing multiple agencies with one platform.",
-      "publishedAt": "Thu, 19 Nov 2026 03:00:47 +0000",
+      "title": "Vertex Ventures leads $48.5m series A in AI commerce firm Everful",
+      "url": "https://www.techinasia.com/news/vertex-ventures-leads-48-5m-series-a-in-ai-commerce-firm-everful",
+      "excerpt": "Founded by former Alibaba Group executive Sisi Song and AI entrepreneur Kevin Han, Everful said it ships more than 5 million items a month.",
+      "publishedAt": "Fri, 20 Nov 2026 00:07:43 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-32",
       "sourceId": "techinasia",
-      "title": "These funds have not invested in Singapore in the past year",
-      "url": "https://www.techinasia.com/funds-invested-singapore-year",
-      "excerpt": "Pitching your startup to an investor? First, check if they’re still active in your market.",
-      "publishedAt": "Thu, 19 Nov 2026 02:00:00 +0000",
+      "title": "India&#8217;s funding round sizes over the past 5 years",
+      "url": "https://www.techinasia.com/visual-story/indias-funding-sizes-5-years",
+      "excerpt": "For startups, understanding how much their peers are raising could be crucial when they're pitching to investors.",
+      "publishedAt": "Fri, 20 Nov 2026 00:00:00 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-33",
       "sourceId": "techinasia",
-      "title": "US AI startup Rogo nears $350m funding at $3.8b valuation",
-      "url": "https://www.techinasia.com/news/ai-startup-rogo-nears-350m-funding-38b-valuation",
-      "excerpt": "Investment banks including Goldman Sachs, Wells Fargo, and JP Morgan use Rogo’s product.",
-      "publishedAt": "Thu, 19 Nov 2026 01:51:05 +0000",
+      "title": "Japanese investors seek $9.4b in Anthropic IPO shares",
+      "url": "https://www.techinasia.com/news/japanese-investors-seek-9-4b-in-anthropic-ipo-shares",
+      "excerpt": "They were ultimately allotted US$2.98 billion of shares, according to a filing.",
+      "publishedAt": "Thu, 19 Nov 2026 23:52:58 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-34",
       "sourceId": "techinasia",
-      "title": "Goldman Sachs leads $280m round in UK fintech firm Payhawk",
-      "url": "https://www.techinasia.com/news/goldman-sachs-leads-280m-uk-fintech-firm-payhawk",
-      "excerpt": "Payhawk said it reached US$100 million in annual recurring revenue in June.",
-      "publishedAt": "Thu, 19 Nov 2026 00:38:11 +0000",
+      "title": "Anthropic shares stay above IPO price in volatile debut",
+      "url": "https://www.techinasia.com/news/anthropic-shares-stay-ipo-price-volatile-debut",
+      "excerpt": "At 1:15 p.m. in New York, Anthropic’s stock traded at about US$94.61, nearly 14% above its IPO price of US$83.",
+      "publishedAt": "Thu, 19 Nov 2026 19:40:07 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-35",
       "sourceId": "techinasia",
-      "title": "Anthropic IPO could raise $90b, topping SpaceX&#8217;s deal",
-      "url": "https://www.techinasia.com/news/anthropic-ipo-raise-90b-topping-spacexs-deal",
-      "excerpt": "At that price, filings show Anthropic would have a fully diluted valuation of about US$1.4 trillion.",
-      "publishedAt": "Thu, 19 Nov 2026 00:34:36 +0000",
+      "title": "Anthropic indicated to open at $105, 27% above IPO price",
+      "url": "https://www.techinasia.com/news/anthropic-open-105-27-ipo-price",
+      "excerpt": "A source familiar with the matter said the stock was then expected to begin trading within the next hour.",
+      "publishedAt": "Thu, 19 Nov 2026 16:23:02 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-36",
       "sourceId": "techinasia",
-      "title": "Mapping India&#8217;s leading health startups",
-      "url": "https://www.techinasia.com/visual-story/india-health-landscape-map",
-      "excerpt": "Mapping India’s health sector: Key players, top investors, and funding insights in one report.",
-      "publishedAt": "Thu, 19 Nov 2026 00:00:00 +0000",
+      "title": "Anthropic IPO: More than 50% of investors said to miss out on shares",
+      "url": "https://www.techinasia.com/news/anthropic-ipo-50-investors-shares",
+      "excerpt": "Share allocations were heavily weighted toward American investors, with a large proportion of orders from overseas investors receiving no shares, sources said.",
+      "publishedAt": "Thu, 19 Nov 2026 15:35:12 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-37",
       "sourceId": "techinasia",
-      "title": "Indian physical AI startup Humyn Labs raises $47m series A",
-      "url": "https://www.techinasia.com/news/indian-physical-ai-startup-humyn-labs-raises-47m-series",
-      "excerpt": "The robotics training-data provider says it runs operations in more than 20 countries.",
-      "publishedAt": "Wed, 18 Nov 2026 12:30:24 +0000",
+      "title": "Singapore AI video startup Topview launches hybrid Film Studio",
+      "url": "https://www.techinasia.com/news/singapore-ai-video-startup-topview-launches-hybrid-film-studio",
+      "excerpt": "Topview says it premiered a trailer for hybrid film Encore at the Neu Wave AI Film Festival.",
+      "publishedAt": "Thu, 19 Nov 2026 13:00:06 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-38",
       "sourceId": "techinasia",
-      "title": "Mapping the noteworthy startups in China&#8217;s health sector",
-      "url": "https://www.techinasia.com/visual-story/mapping-chinas-prominent-health-startups",
-      "excerpt": "Mapping China’s health sector: Key players, top investors, and funding insights in one report.",
-      "publishedAt": "Wed, 18 Nov 2026 11:00:00 +0000",
+      "title": "Mapping the key players in China&#8217;s ecommerce arena",
+      "url": "https://www.techinasia.com/visual-story/mapping-chinas-ecommerce-standouts",
+      "excerpt": "Mapping China’s ecommerce sector: Key players, top investors, and funding insights in one report.",
+      "publishedAt": "Thu, 19 Nov 2026 11:00:00 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-39",
-      "sourceId": "yourstory",
-      "title": "Bengaluru leads India in AI startup funding: Innovation Report 2026",
-      "url": "https://yourstory.com/2026/11/bengaluru-leads-india-in-ai-startup-funding-innovation-report-2026",
-      "excerpt": "$85 billion raised, a growing AI ecosystem and a strong deep-tech pipeline. The Bengaluru Innovation Report 2026 maps the city's startup growth as Karnataka looks to spread its tech ambitions beyond the capital.",
-      "publishedAt": "Wed, 18 Nov 2026 12:24:12 GMT",
+      "id": "techinasia-39",
+      "sourceId": "techinasia",
+      "title": "LG Uplus to invest $592m in AI data center expansion",
+      "url": "https://www.techinasia.com/news/lg-uplus-to-invest-592m-in-ai-data-center-expansion",
+      "excerpt": "The company plans to bring the 200-megawatt facility’s four phases online in stage by 2028.",
+      "publishedAt": "Thu, 19 Nov 2026 10:00:23 +0000",
       "matchedSlugs": []
     }
   ]
