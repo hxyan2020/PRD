@@ -59,11 +59,11 @@ function SourcesModal({
 
   if (!open) return null
 
+  // Point links pass highlightIds → show ONLY those sources (count matches the "(n)" label).
+  // "All sources" opens with no highlightIds → full catalog.
   const hi = new Set(highlightIds || [])
-  const ordered = [
-    ...sources.filter((s) => hi.has(s.id)),
-    ...sources.filter((s) => !hi.has(s.id)),
-  ]
+  const scoped = hi.size > 0 ? sources.filter((s) => hi.has(s.id)) : sources
+  const ordered = scoped
 
   return (
     <div className="sources-modal-root" role="presentation">
@@ -80,7 +80,11 @@ function SourcesModal({
             {t('hourlyClose')}
           </button>
         </div>
-        <p className="sub sources-modal-sub">{t('hourlySourcesSub')}</p>
+        <p className="sub sources-modal-sub">
+          {hi.size > 0
+            ? t('hourlySourcesPointSub').replace('{n}', String(ordered.length))
+            : t('hourlySourcesSub')}
+        </p>
         {ordered.length === 0 ? (
           <p className="sub">{t('hourlyNoSources')}</p>
         ) : (
@@ -424,8 +428,10 @@ export function HourlyScanReport({
   }, [runScan])
 
   const openSources = (sources: ReportSource[], ids?: string[]) => {
-    setModalSources(sources)
-    setHighlightIds(ids)
+    const scoped =
+      ids && ids.length > 0 ? sources.filter((s) => ids.includes(s.id)) : sources
+    setModalSources(scoped)
+    setHighlightIds(ids && ids.length > 0 ? ids : undefined)
     setModalOpen(true)
   }
 

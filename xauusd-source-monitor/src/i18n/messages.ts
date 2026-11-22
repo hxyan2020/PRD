@@ -43,6 +43,8 @@ const en: Dict = {
   hourlySourcesTitle: 'Data sources',
   hourlySourcesSub:
     'Major news, exchange announcements, APIs, prices & indicators for XAUUSD perps. Each row shows health + last refresh (SGT). Tap to open.',
+  hourlySourcesPointSub:
+    'Showing the {n} source(s) linked to this point. Tap a row to open. Use “All sources” for the full catalog.',
   hourlyNoSources: 'No sources attached to this report.',
   hourlyLastRefreshed: 'Last refreshed: {time}',
   hourlyHealthOk: 'OK',
@@ -452,6 +454,8 @@ const zhHant: Dict = {
   hourlySourcesTitle: '數據來源',
   hourlySourcesSub:
     '涵蓋主要新聞、交易所公告、API、報價與指標（XAUUSD 永續相關）。每列顯示健康狀態與上次刷新（SGT）。點擊開啟。',
+  hourlySourcesPointSub:
+    '僅顯示此要點關聯的 {n} 個來源。點擊列開啟原文。完整目錄請用「全部來源」。',
   hourlyNoSources: '本報告未附來源。',
   hourlyLastRefreshed: '上次刷新：{time}',
   hourlyHealthOk: '正常',
