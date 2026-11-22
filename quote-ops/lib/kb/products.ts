@@ -9,8 +9,12 @@ export type ProductDef = {
   taglineEn: string;
   shortZh: string;
   shortEn: string;
-  /** Query tokens that strongly imply this product */
-  hintTokens: string[];
+  /** Compact switcher label */
+  switchZh: string;
+  switchEn: string;
+  /** Input scope badge */
+  scopeZh: string;
+  scopeEn: string;
 };
 
 export const PRODUCTS: Record<ProductId, ProductDef> = {
@@ -22,46 +26,23 @@ export const PRODUCTS: Record<ProductId, ProductDef> = {
     taglineEn: "Pricing squad KB: LP→PE→MT, 86 risk scenarios, CFD quote RCA",
     shortZh: "CFD Broker",
     shortEn: "CFD Broker",
-    hintTokens: [
-      "cfd",
-      "broker",
-      "lp",
-      "pe",
-      "mt",
-      "quoteops",
-      "报价",
-      "经纪",
-      "剥头皮",
-      "markout",
-      "b-book",
-    ],
+    switchZh: "CFD 经纪商",
+    switchEn: "CFD Broker",
+    scopeZh: "检索范围：CFD Broker 报价知识库",
+    scopeEn: "Scope: CFD Broker pricing KB",
   },
   "v-exchange-perp": {
     id: "v-exchange-perp",
-    brandZh: "V Exchange · 永续合约",
-    brandEn: "V Exchange · Perpetual",
+    brandZh: "V Exchange · 永续合约交易所",
+    brandEn: "V Exchange · Perpetual Exchange",
     taglineZh: "永续合约风控 Skill + RAG：Funding / Mark / Index / 强平 / DB 做市",
-    taglineEn: "Perp risk Skill + RAG: Funding / Mark / Index / liquidation / DB MM",
-    shortZh: "永续合约",
-    shortEn: "Perpetual",
-    hintTokens: [
-      "v exchange",
-      "vexchange",
-      "永续",
-      "perp",
-      "perpetual",
-      "funding",
-      "资金费率",
-      "mark price",
-      "标记价格",
-      "index",
-      "指数",
-      "adl",
-      "强平",
-      "做市",
-      "接仓",
-      "xauusd 永续",
-    ],
+    taglineEn: "Perp exchange risk Skill + RAG: Funding / Mark / Index / liq / DB MM",
+    shortZh: "永续交易所",
+    shortEn: "Perp Exchange",
+    switchZh: "V Exchange 永续",
+    switchEn: "V Exchange Perp",
+    scopeZh: "检索范围：V Exchange 永续合约知识库",
+    scopeEn: "Scope: V Exchange perpetual KB",
   },
 };
 
@@ -71,26 +52,126 @@ export function isProductId(v: unknown): v is ProductId {
   return v === "cfd-broker" || v === "v-exchange-perp";
 }
 
-export function productOfNode(payload: Record<string, unknown> | undefined, tags: string[] = []): ProductId {
+export function productOfNode(
+  payload: Record<string, unknown> | undefined,
+  tags: string[] = [],
+): ProductId {
   const fromPayload = payload?.product;
   if (isProductId(fromPayload)) return fromPayload;
-  if (tags.includes("v-exchange") || tags.includes("v-exchange-perp") || tags.includes("永续")) {
+  if (
+    tags.includes("v-exchange") ||
+    tags.includes("v-exchange-perp") ||
+    tags.includes("永续") ||
+    tags.includes("perpetual")
+  ) {
     return "v-exchange-perp";
   }
   return "cfd-broker";
 }
 
-/** Infer product from free-text question when user did not pick one. */
+/** Strong exclusive signals — prefer these over shared words like 强平/index. */
+const VE_STRONG: RegExp[] = [
+  /v\s*exchange/i,
+  /vexchange/i,
+  /永续合约/,
+  /永续交易所/,
+  /永续/,
+  /\bperp(?:etual)?\b/i,
+  /资金费率/,
+  /\bfunding\b/i,
+  /标记价格/,
+  /\bmark\s*price\b/i,
+  /premium\s*index/i,
+  /溢价指数/,
+  /\badl\b/i,
+  /接仓/,
+  /做市账户/,
+  /db\s*接仓/i,
+  /xauusd\s*永续/i,
+  /ve-inc/i,
+  /index\s*fallback/i,
+  /指数源/,
+  /价格源/,
+];
+
+const CFD_STRONG: RegExp[] = [
+  /\bcfd\b/i,
+  /经纪商/,
+  /quoteops/i,
+  /\blp\s*[→\->]+\s*pe\b/i,
+  /\blp\b.*\bpe\b.*\bmt\b/i,
+  /报价小队/,
+  /报价链路/,
+  /旧价/,
+  /stale\s*quote/i,
+  /quote\s*age/i,
+  /markout/i,
+  /剥头皮/,
+  /scalp/i,
+  /b-?book/i,
+  /latency\s*arb/i,
+  /时延套利/,
+  /quote\s*tick/i,
+  /healthy\s*vs\s*abusive/i,
+  /86\s*风险/,
+];
+
+/** Weaker hints — only count if no strong signal on the other side, and not alone for flip. */
+const VE_WEAK: RegExp[] = [
+  /\bmark\b/i,
+  /\bindex\b/i,
+  /指数/,
+  /盘口/,
+  /深度监控/,
+];
+
+const CFD_WEAK: RegExp[] = [
+  /\blp\b/i,
+  /\bpe\b/i,
+  /\bmt5\b/i,
+  /报价/,
+  /定价引擎/,
+];
+
+function scorePatterns(q: string, patterns: RegExp[]): number {
+  let n = 0;
+  for (const re of patterns) {
+    if (re.test(q)) n += 1;
+  }
+  return n;
+}
+
+/**
+ * Infer product from free-text while typing / asking.
+ * Returns null when ambiguous (e.g. shared word 强平 alone).
+ */
 export function inferProductFromQuery(q: string): ProductId | null {
-  const lower = q.toLowerCase();
-  let ve = 0;
-  let cfd = 0;
-  for (const t of PRODUCTS["v-exchange-perp"].hintTokens) {
-    if (lower.includes(t.toLowerCase())) ve += 1;
+  const text = q.trim();
+  if (text.length < 2) return null;
+
+  const veStrong = scorePatterns(text, VE_STRONG);
+  const cfdStrong = scorePatterns(text, CFD_STRONG);
+
+  if (veStrong > 0 && cfdStrong === 0) return "v-exchange-perp";
+  if (cfdStrong > 0 && veStrong === 0) return "cfd-broker";
+  if (veStrong > cfdStrong) return "v-exchange-perp";
+  if (cfdStrong > veStrong) return "cfd-broker";
+
+  // Both strong or neither — try weak only when one side clearly wins
+  const veWeak = scorePatterns(text, VE_WEAK);
+  const cfdWeak = scorePatterns(text, CFD_WEAK);
+  if (veStrong === 0 && cfdStrong === 0) {
+    if (veWeak >= 2 && cfdWeak === 0) return "v-exchange-perp";
+    if (cfdWeak >= 2 && veWeak === 0) return "cfd-broker";
+    return null;
   }
-  for (const t of PRODUCTS["cfd-broker"].hintTokens) {
-    if (lower.includes(t.toLowerCase())) cfd += 1;
-  }
-  if (ve === 0 && cfd === 0) return null;
-  return ve >= cfd ? "v-exchange-perp" : "cfd-broker";
+  // Conflicting strong signals → ambiguous
+  return null;
+}
+
+/** True when query clearly belongs to the other product line. */
+export function queryConflictsWithProduct(q: string, current: ProductId): ProductId | null {
+  const inferred = inferProductFromQuery(q);
+  if (inferred && inferred !== current) return inferred;
+  return null;
 }

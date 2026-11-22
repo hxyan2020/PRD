@@ -67,8 +67,14 @@ export function SiteHeader() {
             <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">
               {product === "v-exchange-perp" ? "V Exchange" : "QuoteOps"}
             </span>
-            <span className="ml-2 hidden text-[10px] uppercase tracking-[0.16em] text-mist md:inline">
-              {locale === "zh-CN" ? def.shortZh : def.shortEn}
+            <span
+              className={`ml-2 hidden rounded px-1.5 py-0.5 text-[10px] uppercase tracking-[0.14em] md:inline ${
+                product === "v-exchange-perp"
+                  ? "bg-teal-50 text-teal-800"
+                  : "bg-copper-soft/60 text-copper"
+              }`}
+            >
+              {locale === "zh-CN" ? def.switchZh : def.switchEn}
             </span>
           </Link>
           <div className="hidden sm:block">

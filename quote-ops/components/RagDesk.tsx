@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { HomeAdminStrip } from "@/components/HomeAdminStrip";
 import { HomeKnowledgeComposer } from "@/components/HomeKnowledgeComposer";
 import { LarkImportPanel } from "@/components/LarkImportPanel";
 import { ProductSwitcher } from "@/components/ProductSwitcher";
 import { useI18n } from "@/lib/i18n/context";
-import { PRODUCTS, inferProductFromQuery, type ProductId } from "@/lib/kb/products";
+import {
+  PRODUCTS,
+  queryConflictsWithProduct,
+  type ProductId,
+} from "@/lib/kb/products";
 import { useProduct } from "@/lib/product/context";
 import type { RagAnswer } from "@/lib/rag";
 
@@ -18,7 +22,7 @@ const EXAMPLES: Record<ProductId, { zh: string[]; en: string[] }> = {
       "LP 到 PE 到 MT 全流程",
       "Quote Tick 库访问地址",
       "Latency Arbitrage 如何检测",
-      "强平漏洞 RCA 步骤",
+      "Stop-out 漏洞 RCA 步骤",
       "如何区分 Healthy 和 Abusive",
     ],
     en: [
@@ -34,7 +38,7 @@ const EXAMPLES: Record<ProductId, { zh: string[]; en: string[] }> = {
     zh: [
       "外部 Funding 偏差超过 0.1% 怎么查？",
       "Mark Price 与 Index 偏离排查",
-      "Index 与友商价格偏离",
+      "永续合约 Index 与友商偏离",
       "DB 接仓失败 / ADL 异常",
       "资金费率为正是什么意思？",
       "周末黄金 Index 异常案例",
@@ -42,7 +46,7 @@ const EXAMPLES: Record<ProductId, { zh: string[]; en: string[] }> = {
     en: [
       "Investigate external Funding drift >0.1%",
       "Mark vs Index divergence RCA",
-      "Index vs peer exchange drift",
+      "Perp Index vs peer exchange drift",
       "DB takeover / ADL failure",
       "What does positive funding mean?",
       "Weekend gold Index incident",
@@ -57,16 +61,38 @@ export function RagDesk() {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState<RagAnswer | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [autoSwitched, setAutoSwitched] = useState<ProductId | null>(null);
+  const skipProductReset = useRef(false);
 
-  const typedHint = useMemo(() => {
-    const inferred = inferProductFromQuery(q);
-    if (inferred && inferred !== product) return inferred;
-    return null;
-  }, [q, product]);
+  const typedConflict = useMemo(
+    () => queryConflictsWithProduct(q, product),
+    [q, product],
+  );
 
-  async function ask(text?: string) {
+  useEffect(() => {
+    if (skipProductReset.current) {
+      skipProductReset.current = false;
+      return;
+    }
+    setAnswer(null);
+    setAutoSwitched(null);
+    setError(null);
+  }, [product]);
+
+  async function ask(text?: string, productOverride?: ProductId) {
     const question = (text ?? q).trim();
     if (!question) return;
+
+    const conflict = queryConflictsWithProduct(question, productOverride ?? product);
+    const scope = productOverride ?? (conflict ?? product);
+    if (scope !== product) {
+      skipProductReset.current = true;
+      setProduct(scope);
+      setAutoSwitched(scope);
+    } else {
+      setAutoSwitched(null);
+    }
+
     setQ(question);
     setLoading(true);
     setError(null);
@@ -74,7 +100,7 @@ export function RagDesk() {
       const res = await fetch("/api/rag", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question, locale, product }),
+        body: JSON.stringify({ question, locale, product: scope }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as RagAnswer;
@@ -106,9 +132,9 @@ export function RagDesk() {
         />
         <div className="relative px-4 py-8 sm:px-10 sm:py-14">
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <ProductSwitcher />
+            <ProductSwitcher variant="dark" />
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50">
-              {isPerp ? "XAUUSD · MVP" : "Pricing Squad"}
+              {isPerp ? "XAUUSD · Perp Exchange" : "CFD · Pricing Squad"}
             </span>
           </div>
           <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-sea-soft/80 sm:text-xs">
@@ -122,12 +148,26 @@ export function RagDesk() {
           </p>
           <p className="mt-2 max-w-2xl text-xs text-paper/45">
             {t(
-              "与另一产品线知识库隔离检索；切换上方产品线后问答与知识树范围同步切换。",
-              "Corpus is isolated per product line; switch above to change RAG + tree scope.",
+              "两条产品线知识库完全隔离：CFD 经纪商报价 ≠ V Exchange 永续交易所。键入时按关键词提示切换；提交时若明显跨线会自动切到正确库再检索。",
+              "Two isolated corpora: CFD Broker pricing ≠ V Exchange perpetual exchange. Typing shows switch hints; submit auto-routes clear cross-product queries.",
             )}
           </p>
+
+          <div
+            className={`mt-5 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] ${
+              isPerp
+                ? "border-teal-400/40 bg-teal-500/15 text-teal-100"
+                : "border-copper/40 bg-copper/20 text-amber-100"
+            }`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${isPerp ? "bg-teal-300" : "bg-amber-300"}`}
+            />
+            {locale === "zh-CN" ? def.scopeZh : def.scopeEn}
+          </div>
+
           <form
-            className="mt-6 flex max-w-3xl flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3"
+            className="mt-4 flex max-w-3xl flex-col gap-2 sm:mt-6 sm:flex-row sm:gap-3"
             onSubmit={(e) => {
               e.preventDefault();
               void ask();
@@ -138,10 +178,20 @@ export function RagDesk() {
               onChange={(e) => setQ(e.target.value)}
               placeholder={
                 isPerp
-                  ? t("输入永续告警、Funding / Mark / Index、接仓排查关键词…", "Ask perp alerts, Funding / Mark / Index, takeover RCA…")
-                  : t("输入报价问题、风险场景或排查关键词…", "Ask about pricing RCA, risks, or skills…")
+                  ? t(
+                      "输入永续告警、Funding / Mark / Index、接仓排查关键词…",
+                      "Ask perp alerts, Funding / Mark / Index, takeover RCA…",
+                    )
+                  : t(
+                      "输入 CFD 报价问题、风险场景或排查关键词…",
+                      "Ask CFD pricing RCA, risks, or skills…",
+                    )
               }
-              className="min-h-12 flex-1 rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-base text-paper outline-none ring-sea placeholder:text-paper/40 focus:ring-2 sm:text-sm"
+              className={`min-h-12 flex-1 rounded-lg border bg-white/10 px-4 py-3 text-base text-paper outline-none placeholder:text-paper/40 focus:ring-2 sm:text-sm ${
+                typedConflict
+                  ? "border-amber-300/50 ring-1 ring-amber-300/40 focus:ring-amber-300"
+                  : "border-white/15 ring-sea focus:ring-sea"
+              }`}
             />
             <button
               type="submit"
@@ -153,18 +203,42 @@ export function RagDesk() {
               {loading ? t("检索中…", "Retrieving…") : t("检索回答", "Ask RAG")}
             </button>
           </form>
-          {typedHint && (
-            <button
-              type="button"
-              onClick={() => setProduct(typedHint)}
-              className="mt-3 rounded-lg border border-amber-300/40 bg-amber-400/10 px-3 py-2 text-left text-xs text-amber-100 touch-manipulation hover:bg-amber-400/20"
-            >
-              {t(
-                `检测到「${PRODUCTS[typedHint].shortZh}」关键词 — 点此切换产品线（当前：${def.shortZh}）`,
-                `Detected “${PRODUCTS[typedHint].shortEn}” tokens — switch product line (now: ${def.shortEn})`,
-              )}
-            </button>
+
+          {typedConflict && (
+            <div className="mt-3 max-w-3xl rounded-lg border border-amber-300/40 bg-amber-400/10 px-3 py-2.5 text-xs text-amber-50">
+              <p>
+                {t(
+                  `当前在「${def.switchZh}」，但关键词更像「${PRODUCTS[typedConflict].switchZh}」——两库不互通。`,
+                  `You are in “${def.switchEn}”, but tokens look like “${PRODUCTS[typedConflict].switchEn}” — corpora do not mix.`,
+                )}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProduct(typedConflict);
+                  }}
+                  className="rounded-md border border-amber-200/40 bg-black/20 px-2.5 py-1.5 touch-manipulation hover:bg-black/30"
+                >
+                  {t(
+                    `仅切换到 ${PRODUCTS[typedConflict].switchZh}`,
+                    `Switch only to ${PRODUCTS[typedConflict].switchEn}`,
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void ask(q, typedConflict)}
+                  className="rounded-md bg-amber-200 px-2.5 py-1.5 font-medium text-ink touch-manipulation hover:bg-amber-100"
+                >
+                  {t(
+                    `切换到 ${PRODUCTS[typedConflict].switchZh} 并检索`,
+                    `Switch to ${PRODUCTS[typedConflict].switchEn} & search`,
+                  )}
+                </button>
+              </div>
+            </div>
           )}
+
           <div className="chip-scroll mt-4 sm:flex-wrap">
             {examples.map((ex) => (
               <button
@@ -199,18 +273,26 @@ export function RagDesk() {
               }`}
             >
               {locale === "zh-CN"
-                ? PRODUCTS[answer.product].shortZh
-                : PRODUCTS[answer.product].shortEn}
+                ? PRODUCTS[answer.product].switchZh
+                : PRODUCTS[answer.product].switchEn}
             </span>
+            {autoSwitched && (
+              <span className="rounded-md border border-amber-300/50 bg-amber-50 px-2 py-0.5 text-[10px] text-amber-800">
+                {t(
+                  `已按关键词自动切换至 ${PRODUCTS[autoSwitched].switchZh}`,
+                  `Auto-switched to ${PRODUCTS[autoSwitched].switchEn} from query tokens`,
+                )}
+              </span>
+            )}
             {answer.productHint && (
               <button
                 type="button"
-                onClick={() => setProduct(answer.productHint!)}
+                onClick={() => void ask(q, answer.productHint!)}
                 className="text-xs text-amber-700 underline"
               >
                 {t(
-                  `切换到 ${PRODUCTS[answer.productHint].shortZh}`,
-                  `Switch to ${PRODUCTS[answer.productHint].shortEn}`,
+                  `改在 ${PRODUCTS[answer.productHint].switchZh} 重检索`,
+                  `Re-search in ${PRODUCTS[answer.productHint].switchEn}`,
                 )}
               </button>
             )}
@@ -307,7 +389,7 @@ export function RagDesk() {
           : [
               {
                 href: "/tree",
-                title: t("知识树", "Knowledge tree"),
+                title: t("CFD 知识树", "CFD knowledge tree"),
                 body: t("动态节点关系，便于观察分类与从属", "Live node relations across the catalog"),
               },
               {
