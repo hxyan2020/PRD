@@ -37,10 +37,10 @@ export function ProductSwitcher({
           id === "v-exchange-perp"
             ? locale === "zh-CN"
               ? "永续"
-              : "Perp"
+              : "VE"
             : locale === "zh-CN"
-              ? "CFD"
-              : "CFD";
+              ? "定价"
+              : "Pricing";
         const activeCls =
           id === "v-exchange-perp"
             ? "bg-teal-700 text-white"

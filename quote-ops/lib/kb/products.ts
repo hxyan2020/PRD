@@ -1,8 +1,11 @@
-/** Two clearly separated knowledge products in QuoteOps. */
+/** Two clearly separated knowledge products. */
 export type ProductId = "cfd-broker" | "v-exchange-perp";
 
 export type ProductDef = {
   id: ProductId;
+  /** Primary UI title (header / hero). */
+  titleZh: string;
+  titleEn: string;
   brandZh: string;
   brandEn: string;
   taglineZh: string;
@@ -20,33 +23,41 @@ export type ProductDef = {
 export const PRODUCTS: Record<ProductId, ProductDef> = {
   "cfd-broker": {
     id: "cfd-broker",
-    brandZh: "QuoteOps · CFD Broker",
-    brandEn: "QuoteOps · CFD Broker",
-    taglineZh: "报价小队知识库：LP→PE→MT、86 风险场景、CFD 报价 RCA",
-    taglineEn: "Pricing squad KB: LP→PE→MT, 86 risk scenarios, CFD quote RCA",
-    shortZh: "CFD Broker",
-    shortEn: "CFD Broker",
-    switchZh: "CFD 经纪商",
-    switchEn: "CFD Broker",
-    scopeZh: "检索范围：CFD Broker 报价知识库",
+    titleZh: "定价",
+    titleEn: "Pricing",
+    brandZh: "Pricing · CFD Broker",
+    brandEn: "Pricing · CFD Broker",
+    taglineZh: "定价小队知识库：LP→PE→MT、86 风险场景、CFD 定价 RCA",
+    taglineEn: "Pricing squad KB: LP→PE→MT, 86 risk scenarios, CFD pricing RCA",
+    shortZh: "CFD 定价",
+    shortEn: "CFD Pricing",
+    switchZh: "CFD 定价",
+    switchEn: "Pricing",
+    scopeZh: "检索范围：CFD Broker 定价知识库",
     scopeEn: "Scope: CFD Broker pricing KB",
   },
   "v-exchange-perp": {
     id: "v-exchange-perp",
-    brandZh: "V Exchange · 永续合约交易所",
-    brandEn: "V Exchange · Perpetual Exchange",
+    titleZh: "V Exchange 知识库",
+    titleEn: "V Exchange Knowledge Base",
+    brandZh: "V Exchange 知识库 · 永续合约",
+    brandEn: "V Exchange Knowledge Base · Perpetual",
     taglineZh: "永续合约风控 Skill + RAG：Funding / Mark / Index / 强平 / DB 做市",
     taglineEn: "Perp exchange risk Skill + RAG: Funding / Mark / Index / liq / DB MM",
-    shortZh: "永续交易所",
-    shortEn: "Perp Exchange",
+    shortZh: "永续知识库",
+    shortEn: "Perp KB",
     switchZh: "V Exchange 永续",
-    switchEn: "V Exchange Perp",
+    switchEn: "V Exchange",
     scopeZh: "检索范围：V Exchange 永续合约知识库",
     scopeEn: "Scope: V Exchange perpetual KB",
   },
 };
 
 export const DEFAULT_PRODUCT: ProductId = "cfd-broker";
+
+/** App-level document title. */
+export const APP_TITLE_EN = "V Exchange Knowledge Base";
+export const APP_TITLE_ZH = "V Exchange 知识库";
 
 export function isProductId(v: unknown): v is ProductId {
   return v === "cfd-broker" || v === "v-exchange-perp";
@@ -98,10 +109,13 @@ const CFD_STRONG: RegExp[] = [
   /\bcfd\b/i,
   /经纪商/,
   /quoteops/i,
+  /\bpricing\b/i,
   /\blp\s*[→\->]+\s*pe\b/i,
   /\blp\b.*\bpe\b.*\bmt\b/i,
   /报价小队/,
+  /定价小队/,
   /报价链路/,
+  /定价链路/,
   /旧价/,
   /stale\s*quote/i,
   /quote\s*age/i,
@@ -130,6 +144,7 @@ const CFD_WEAK: RegExp[] = [
   /\bpe\b/i,
   /\bmt5\b/i,
   /报价/,
+  /定价/,
   /定价引擎/,
 ];
 

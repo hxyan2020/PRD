@@ -10,7 +10,7 @@ import { useProduct } from "@/lib/product/context";
 const NAV = [
   { href: "/", zh: "RAG", en: "RAG" },
   { href: "/tree", zh: "知识树", en: "Tree" },
-  { href: "/pipeline", zh: "报价链路", en: "Pipeline" },
+  { href: "/pipeline", zh: "定价链路", en: "Pricing" },
   { href: "/risks", zh: "风险", en: "Risks" },
   { href: "/skills", zh: "技能", en: "Skills" },
   { href: "/data", zh: "数据", en: "Data" },
@@ -69,7 +69,16 @@ export function SiteHeader() {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link href="/" className="min-w-0 shrink">
               <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">
-                {product === "v-exchange-perp" ? "V Exchange" : "QuoteOps"}
+                <span className="sm:hidden">
+                  {product === "v-exchange-perp"
+                    ? "V Exchange"
+                    : locale === "zh-CN"
+                      ? "定价"
+                      : "Pricing"}
+                </span>
+                <span className="hidden sm:inline">
+                  {locale === "zh-CN" ? def.titleZh : def.titleEn}
+                </span>
               </span>
               <span
                 className={`ml-2 hidden rounded px-1.5 py-0.5 text-[10px] uppercase tracking-[0.14em] md:inline ${

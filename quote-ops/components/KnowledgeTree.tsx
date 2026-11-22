@@ -131,8 +131,8 @@ export function KnowledgeTree() {
         locale,
         maxChildren: filter.trim() ? (compact ? 24 : 80) : compact ? 14 : 36,
         compact,
-        hubTitleZh: product === "v-exchange-perp" ? "V Exchange" : "QuoteOps",
-        hubTitleEn: product === "v-exchange-perp" ? "V Exchange" : "QuoteOps",
+        hubTitleZh: product === "v-exchange-perp" ? "V Exchange" : "定价",
+        hubTitleEn: product === "v-exchange-perp" ? "V Exchange" : "Pricing",
       }),
     [tree, size, expandId, locale, filter, product, compact],
   );
@@ -194,7 +194,7 @@ export function KnowledgeTree() {
     const raw = locale === "zh-CN" ? n.titleZh : n.titleEn || n.titleZh;
     const selected = active === n.id || hoverId === n.id;
     if (n.id === "__hub__") {
-      if (compact) return product === "v-exchange-perp" ? "VE" : "QO";
+      if (compact) return product === "v-exchange-perp" ? "VE" : "PR";
       return shortGraphLabel(raw, { max: 12 });
     }
     if (compact && !selected) return String(n.index ?? "");
@@ -237,8 +237,8 @@ export function KnowledgeTree() {
                 "Hub = V Exchange Perp; rings = alarms/pricing/SOP. Isolated from CFD Broker tree.",
               )
             : t(
-                "中心为 QuoteOps；外环为分类文件夹；选中分类后展开子节点。实线=从属，虚线=标签关联。",
-                "Center hub, outer ring = folders; select a folder to expand children.",
+                "中心为 Pricing；外环为分类文件夹；选中分类后展开子节点。实线=从属，虚线=标签关联。",
+                "Center hub = Pricing; outer ring = folders; select a folder to expand children.",
               )}
         </p>
       </header>

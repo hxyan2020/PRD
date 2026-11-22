@@ -1,5 +1,5 @@
 /**
- * V Exchange perpetual risk KB — kept separate from CFD Broker QuoteOps corpus.
+ * V Exchange perpetual risk KB — kept separate from CFD Broker Pricing corpus.
  * Source: internal draft V0.1 · 2026-11-22 · XAUUSD perp MVP
  */
 
@@ -53,7 +53,7 @@ export const VE_DOCS: VeDoc[] = [
 ## 重要限制
 AI **不允许**直接修改生产参数、切换价格源、停盘、注资、执行强平、强制成交或修改账本。只能提供只读分析和操作建议。
 
-> 产品线：V Exchange 永续合约（与 CFD Broker QuoteOps 分离）。`,
+> 产品线：V Exchange 永续合约（与 CFD Broker Pricing 分离）。`,
     bodyEn: `Audience: Risk Ops, RC leadership, Pricing, BIT, DB market maker, Finance, CS, Product.
 
 ## AI bot duties
@@ -68,7 +68,7 @@ AI **不允许**直接修改生产参数、切换价格源、停盘、注资、�
 ## Hard limit
 AI must NOT change production params, switch price sources, halt markets, inject funds, liquidate, force trades, or edit ledgers. Read-only analysis only.
 
-> Product line: V Exchange perpetual (separate from CFD Broker QuoteOps).`,
+> Product line: V Exchange perpetual (separate from CFD Broker Pricing).`,
   },
   {
     id: "ve-doc-product",

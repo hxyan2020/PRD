@@ -43,8 +43,8 @@ export function layoutKnowledgeGraph(
 ): { nodes: VizNode[]; edges: VizEdge[]; focus: TreeNode | null } {
   const { width, height, focusId } = opts;
   const compact = !!opts.compact;
-  const hubZh = opts.hubTitleZh ?? "QuoteOps";
-  const hubEn = opts.hubTitleEn ?? "QuoteOps";
+  const hubZh = opts.hubTitleZh ?? "定价";
+  const hubEn = opts.hubTitleEn ?? "Pricing";
   const maxChildren = opts.maxChildren ?? (compact ? 16 : 48);
   const cx = width / 2;
   const cy = height / 2;

@@ -1,6 +1,6 @@
-# QuoteOps — CFD Broker Pricing Squad KB
+# V Exchange Knowledge Base
 
-Interactive RAG knowledge base + editable skill/knowledge CMS for CFD broker pricing / dealing / risk ops.
+Interactive RAG knowledge base + editable skill/knowledge CMS for **V Exchange** perpetual risk and **CFD Pricing** (LP→PE→MT / dealing / risk ops).
 
 ## Features
 

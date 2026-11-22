@@ -143,15 +143,15 @@ export function RagDesk() {
             {locale === "zh-CN" ? def.brandZh : def.brandEn}
           </p>
           <h1 className="font-display text-3xl leading-tight sm:text-5xl">
-            {isPerp ? "V Exchange" : "QuoteOps"}
+            {locale === "zh-CN" ? def.titleZh : def.titleEn}
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-paper/75 sm:mt-4 sm:text-lg">
             {locale === "zh-CN" ? def.taglineZh : def.taglineEn}
           </p>
           <p className="mt-2 max-w-2xl text-xs text-paper/45">
             {t(
-              "两条产品线知识库完全隔离：CFD 经纪商报价 ≠ V Exchange 永续交易所。键入时按关键词提示切换；提交时若明显跨线会自动切到正确库再检索。",
-              "Two isolated corpora: CFD Broker pricing ≠ V Exchange perpetual exchange. Typing shows switch hints; submit auto-routes clear cross-product queries.",
+              "两条产品线知识库完全隔离：CFD Pricing ≠ V Exchange 永续。键入时按关键词提示切换；提交时若明显跨线会自动切到正确库再检索。",
+              "Two isolated corpora: CFD Pricing ≠ V Exchange Knowledge Base. Typing shows switch hints; submit auto-routes clear cross-product queries.",
             )}
           </p>
 
@@ -185,7 +185,7 @@ export function RagDesk() {
                       "Ask perp alerts, Funding / Mark / Index, takeover RCA…",
                     )
                   : t(
-                      "输入 CFD 报价问题、风险场景或排查关键词…",
+                      "输入 CFD 定价问题、风险场景或排查关键词…",
                       "Ask CFD pricing RCA, risks, or skills…",
                     )
               }
@@ -396,7 +396,7 @@ export function RagDesk() {
               },
               {
                 href: "/pipeline",
-                title: t("报价全流程", "Quote pipeline"),
+                title: t("定价全流程", "Pricing pipeline"),
                 body: t("LP → Ingest → PE → 分发 → MT → 对冲 → RCA", "LP → Ingest → PE → Fan-out → MT → Hedge → RCA"),
               },
               {

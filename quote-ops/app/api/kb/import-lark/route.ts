@@ -20,7 +20,7 @@ async function tryFetchDocText(url: string): Promise<string | null> {
     const res = await fetch(url, {
       redirect: "follow",
       headers: {
-        "user-agent": "QuoteOps-KB-Importer/1.0",
+        "user-agent": "VExchange-KB-Importer/1.0",
         accept: "text/html,application/xhtml+xml",
       },
       signal: AbortSignal.timeout(8000),

@@ -25,9 +25,9 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QuoteOps — CFD Broker & V Exchange Perp KB",
+  title: "V Exchange Knowledge Base",
   description:
-    "Interactive RAG knowledge base: CFD Broker pricing (LP→PE→MT, 86 risks) and V Exchange perpetual risk (Funding / Mark / Index).",
+    "V Exchange Knowledge Base: perpetual risk (Funding / Mark / Index) and CFD Broker Pricing (LP→PE→MT, 86 risks).",
 };
 
 export const viewport: Viewport = {
@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <footer className="mb-12 border-t border-line/70 px-3 py-4 text-center text-[11px] leading-relaxed text-mist sm:mb-0 sm:px-6 sm:py-5 sm:text-xs">
-            QuoteOps · CFD Broker · V Exchange Perp · Broker loss ≠ client abuse
+            V Exchange Knowledge Base · CFD Pricing · Broker loss ≠ client abuse
           </footer>
           <MobileBottomNav />
         </Providers>

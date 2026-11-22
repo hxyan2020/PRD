@@ -13,7 +13,7 @@ export function PipelineView() {
     <div className="space-y-6 animate-rise">
       <header>
         <h1 className="font-display text-3xl text-ink sm:text-4xl">
-          {t("报价全流程 · LP → PE → MT", "Pricing pipeline · LP → PE → MT")}
+          {t("定价全流程 · LP → PE → MT", "Pricing pipeline · LP → PE → MT")}
         </h1>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-mist">
           {locale === "zh-CN" ? PIPELINE_SUMMARY.principleZh : PIPELINE_SUMMARY.principle}

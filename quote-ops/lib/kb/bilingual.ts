@@ -6,10 +6,11 @@
 
 const GLOSSARY: Array<[RegExp, string]> = [
   [/剥头皮|短线剥头皮/g, "scalping"],
-  [/报价小队/g, "pricing squad"],
+  [/报价小队|定价小队/g, "pricing squad"],
   [/知识库/g, "knowledge base"],
   [/风险场景/g, "risk scenario"],
-  [/报价全流程/g, "pricing pipeline"],
+  [/报价全流程|定价全流程/g, "pricing pipeline"],
+  [/定价链路|报价链路/g, "pricing pipeline"],
   [/定价引擎/g, "pricing engine"],
   [/聚合器/g, "aggregator"],
   [/参考价/g, "reference price"],
