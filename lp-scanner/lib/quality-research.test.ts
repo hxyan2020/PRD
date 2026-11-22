@@ -45,12 +45,18 @@ describe("product-relative quality scores", () => {
     expect(report.overallScore).toBeGreaterThan(50);
     expect(report.overallScore).toBeLessThanOrEqual(100);
     expect(report.overallBand).toBe(scoreBand(report.overallScore));
+    expect(report.subjects.length).toBeGreaterThan(5);
     expect(report.subjects.every((s) => s.score <= 100 && s.band)).toBe(true);
     expect(report.subjects[0].band).toBe("green");
+    expect(report.lpCards.length).toBe(report.subjects.length);
+    expect(report.lpCards[0].realData.some((d) => d.fromLp)).toBe(true);
+    expect(report.quotingStrategy).toBeTruthy();
+    expect(["aggregation", "fv"]).toContain(report.quotingStrategy!.mode);
+    expect(report.quotingStrategy!.legs.length).toBeGreaterThan(0);
     expect(report.liveFindings.length).toBeGreaterThan(0);
     expect(report.dataBottleneck.hit).toBe(true);
     expect(report.verdict).toMatch(/data availability is the bottleneck/i);
-    expect(report.verdict).toMatch(/green|yellow|red/i);
+    expect(report.verdict).toMatch(/green|yellow|red|aggregation|fail-over|FV/i);
     expect(report.steps.every((s) => (s.analysis?.length ?? 0) > 0)).toBe(true);
     expect(report.steps.every((s) => (s.dataSources?.length ?? 0) > 0)).toBe(true);
     expect(report.steps.every((s) => (s.charts?.length ?? 0) > 0)).toBe(true);
@@ -66,6 +72,8 @@ describe("product-relative quality scores", () => {
     expect(html).toContain("How to get");
     expect(html).toContain("bar-fill");
     expect(html).toContain("Analysis");
+    expect(html).toContain("Quoting strategy");
+    expect(html).toContain("Per-LP quality reports");
   });
 
   it("scores crypto LP green on BTC and weaker on XAU context", () => {

@@ -28,17 +28,26 @@ export async function POST(request: NextRequest) {
   let report;
   if (mode === "product") {
     const ranked = rankLpsForProduct(all, query, locale);
-    const primary = ranked.rankings[0]?.lp;
-    const live = primary
-      ? await researchLp(all, primary.name, locale).catch(() => null)
-      : null;
+    const related = ranked.rankings.filter((r) => r.offersProduct);
+    const pool = related.length ? related : ranked.rankings;
+    const liveBySlug: Record<string, string[]> = {};
+    const liveFindings: string[] = [];
+    for (const row of pool.slice(0, 5)) {
+      const live = await researchLp(all, row.lp.name, locale).catch(() => null);
+      if (!live) continue;
+      liveBySlug[row.lp.slug] = live.liveFindings.slice(0, 4);
+      for (const f of live.liveFindings.slice(0, 2)) {
+        liveFindings.push(`${row.lp.name}: ${f}`);
+      }
+    }
     report = buildQualityReport({
       mode: "product",
       locale,
       product: ranked.product,
-      lps: ranked.rankings.map((r) => r.lp),
-      rankings: ranked.rankings,
-      liveFindings: live?.liveFindings?.slice(0, 4) ?? [],
+      lps: pool.map((r) => r.lp),
+      rankings: pool,
+      liveFindings: liveFindings.slice(0, 10),
+      liveBySlug,
     });
   } else {
     const matched = body.lpId

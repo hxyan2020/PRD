@@ -2,9 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
+import { QualityLpCardList } from "@/components/QualityLpCardList";
 import { QualityStepBody } from "@/components/QualityStepBody";
+import { QuotingStrategyPanel } from "@/components/QuotingStrategyPanel";
 import { useI18n } from "@/lib/i18n/context";
 import { isZh } from "@/lib/i18n/locale";
+import type { QualityLpCard } from "@/lib/quality-lp-cards";
+import type { QuotingStrategy } from "@/lib/quoting-strategy";
 import {
   scoreBandLabel,
   type QualityReport,
@@ -49,14 +53,17 @@ export function QualityResearchRunner({
   const [running, setRunning] = useState(false);
   const [liveMsg, setLiveMsg] = useState("");
   const [steps, setSteps] = useState<UiStep[]>([]);
+  const [lpCards, setLpCards] = useState<QualityLpCard[]>([]);
+  const [strategy, setStrategy] = useState<QuotingStrategy | null>(null);
   const [report, setReport] = useState<QualityReport | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [stepsOpen, setStepsOpen] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
   const started = useRef(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [steps, liveMsg]);
+  }, [steps, liveMsg, lpCards.length, strategy]);
 
   useEffect(() => {
     if (autoStart && !started.current) {
@@ -72,6 +79,9 @@ export function QualityResearchRunner({
     setError(null);
     setReport(null);
     setSteps([]);
+    setLpCards([]);
+    setStrategy(null);
+    setStepsOpen(true);
     setLiveMsg(isZh(locale) ? "启动实时质量研究…" : "Starting live quality research…");
 
     const params = new URLSearchParams({
@@ -158,9 +168,25 @@ export function QualityResearchRunner({
       });
       return;
     }
+    if (event === "lp_card") {
+      const card = payload as unknown as QualityLpCard;
+      setLpCards((prev) => {
+        if (prev.some((c) => c.id === card.id)) return prev;
+        return [...prev, card];
+      });
+      return;
+    }
+    if (event === "strategy") {
+      setStrategy(payload as unknown as QuotingStrategy);
+      return;
+    }
     if (event === "complete") {
       const full = payload.report as QualityReport;
       setReport(full);
+      if (full.lpCards?.length) setLpCards(full.lpCards);
+      if (full.quotingStrategy) setStrategy(full.quotingStrategy);
+      // After a product multi-LP run, collapse the long shared step log so strategy + LP cards lead.
+      if (full.mode === "product") setStepsOpen(false);
       setLiveMsg(isZh(loc) ? "研究完成" : "Research complete");
       return;
     }
@@ -250,40 +276,69 @@ export function QualityResearchRunner({
           <p className="text-sm text-mist">{t("quality.idle")}</p>
         )}
 
-        {steps.map((s) => (
-          <article
-            key={s.id}
-            className={`rounded-xl border px-3 py-3 sm:px-4 ${
-              s.uiStatus === "running"
-                ? "border-teal bg-teal-soft/40"
-                : s.uiStatus === "warn"
-                  ? "border-amber/40 bg-amber-soft/40"
-                  : "border-line bg-foam/80"
-            }`}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="min-w-0 flex-1 break-words font-semibold text-navy">
-                <span className="font-mono text-xs text-teal">{s.index}.</span> {s.title}
-              </h3>
-              <span
-                className={`chip ${
-                  s.uiStatus === "running"
-                    ? "bg-teal text-white"
-                    : s.uiStatus === "warn"
-                      ? "bg-amber-soft text-amber"
-                      : "bg-teal-soft text-teal"
-                }`}
-              >
-                {s.uiStatus === "running"
-                  ? t("quality.status.running")
-                  : s.uiStatus === "warn"
-                    ? t("quality.status.warn")
-                    : t("quality.status.done")}
+        {(strategy || report?.quotingStrategy) && (
+          <QuotingStrategyPanel strategy={strategy ?? report!.quotingStrategy!} />
+        )}
+
+        {(lpCards.length > 0 || (report?.lpCards?.length ?? 0) > 0) && (
+          <QualityLpCardList cards={lpCards.length ? lpCards : report!.lpCards} />
+        )}
+
+        {steps.length > 0 && (
+          <div className="rounded-xl border border-line bg-white/50">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between gap-2 px-3 py-3 text-left sm:px-4"
+              onClick={() => setStepsOpen((v) => !v)}
+              aria-expanded={stepsOpen}
+            >
+              <span className="text-sm font-semibold text-navy">
+                {t("quality.stepsLog")} ({steps.length})
               </span>
-            </div>
-            <QualityStepBody step={s} />
-          </article>
-        ))}
+              <span className="text-xs text-teal">
+                {stepsOpen ? t("quality.collapse") : t("quality.expand")}
+              </span>
+            </button>
+            {stepsOpen && (
+              <div className="space-y-3 border-t border-line px-3 py-3 sm:px-4">
+                {steps.map((s) => (
+                  <article
+                    key={s.id}
+                    className={`rounded-xl border px-3 py-3 sm:px-4 ${
+                      s.uiStatus === "running"
+                        ? "border-teal bg-teal-soft/40"
+                        : s.uiStatus === "warn"
+                          ? "border-amber/40 bg-amber-soft/40"
+                          : "border-line bg-foam/80"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h3 className="min-w-0 flex-1 break-words font-semibold text-navy">
+                        <span className="font-mono text-xs text-teal">{s.index}.</span> {s.title}
+                      </h3>
+                      <span
+                        className={`chip ${
+                          s.uiStatus === "running"
+                            ? "bg-teal text-white"
+                            : s.uiStatus === "warn"
+                              ? "bg-amber-soft text-amber"
+                              : "bg-teal-soft text-teal"
+                        }`}
+                      >
+                        {s.uiStatus === "running"
+                          ? t("quality.status.running")
+                          : s.uiStatus === "warn"
+                            ? t("quality.status.warn")
+                            : t("quality.status.done")}
+                      </span>
+                    </div>
+                    <QualityStepBody step={s} />
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {report?.dataBottleneck.hit && (
           <div

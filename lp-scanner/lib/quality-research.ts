@@ -1,9 +1,13 @@
 import { localizedLpLists } from "@/lib/i18n/lp-display";
 import { enrichQualitySteps } from "@/lib/quality-evidence";
+import { buildQualityLpCards, type QualityLpCard } from "@/lib/quality-lp-cards";
+import { buildQuotingStrategy, type QuotingStrategy } from "@/lib/quoting-strategy";
 import { formatOptimalRegions, resolveOptimalRegions } from "@/lib/regions";
 import { resolveProduct, type ProductProfile } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
 import { dateLocale, isZh } from "@/lib/i18n/locale";
+
+export type { QualityLpCard, QuotingStrategy };
 
 export type QualityStepStatus = "pending" | "running" | "done" | "warn";
 
@@ -81,6 +85,10 @@ export type QualityReport = {
   summaryCons: string[];
   steps: QualityStep[];
   subjects: QualitySubjectScore[];
+  /** Per-LP cards (product mode: all related LPs; collapsed in UI by default). */
+  lpCards: QualityLpCard[];
+  /** Product-level quoting recommendation after multi-LP quality run. */
+  quotingStrategy?: QuotingStrategy;
   dataBottleneck: DataBottleneck;
   /** Extra findings from KB ranking + optional live public lookup. */
   liveFindings: string[];
@@ -323,15 +331,34 @@ export function buildQualityReport(args: {
   rankings?: RankedLp[];
   /** Optional live public findings (Wikipedia/DDG etc.) already fetched by the API. */
   liveFindings?: string[];
+  /** Optional per-LP live blurbs keyed by slug (from public LP research). */
+  liveBySlug?: Record<string, string[]>;
 }): QualityReport {
-  const { mode, locale, product, lps, rankings, liveFindings: incomingLive = [] } = args;
+  const {
+    mode,
+    locale,
+    product,
+    lps,
+    rankings,
+    liveFindings: incomingLive = [],
+    liveBySlug = {},
+  } = args;
   const zh = isZh(locale);
 
+  // Product mode: every related (offersProduct) LP, priority high→low. Fall back to all ranked.
+  const relatedRankings =
+    mode === "product" && rankings?.length
+      ? (() => {
+          const offered = rankings.filter((r) => r.offersProduct);
+          return offered.length ? offered : rankings;
+        })()
+      : undefined;
+
   const subjects =
-    mode === "product" && rankings
-      ? rankings.slice(0, 5).map((r) => r.lp)
+    mode === "product" && relatedRankings
+      ? relatedRankings.map((r) => r.lp)
       : mode === "lp"
-        ? lps.slice(0, 5)
+        ? lps.slice(0, Math.max(1, lps.length))
         : lps.slice(0, 1);
 
   const primary = subjects[0];
@@ -794,33 +821,75 @@ export function buildQualityReport(args: {
     ],
   });
 
+  const chartSubjects = subjectScores.slice(0, 8);
   const enrichedSteps = enrichQualitySteps({
     locale,
     steps,
-    subjects: subjectScores,
-    lps: subjects,
+    subjects: chartSubjects,
+    lps: subjects.slice(0, 8),
     symbol,
     session,
   });
 
+  const lpCards = buildQualityLpCards({
+    locale,
+    product: symbol,
+    lps: subjects,
+    rankings: relatedRankings ?? rankings,
+    scores: subjectScores.map((s) => ({
+      slug: s.slug,
+      score: s.score,
+      band: s.band,
+      bandLabel: scoreBandLabel(s.band, locale),
+      offersProduct: s.offersProduct,
+    })),
+    liveBySlug,
+    scoreKey,
+  });
+
+  const quotingStrategy =
+    mode === "product" && symbol
+      ? buildQuotingStrategy({
+          locale,
+          product: symbol,
+          subjects: subjectScores,
+          lps: subjects,
+        })
+      : undefined;
+
+  const strategyVerdict =
+    quotingStrategy && zh
+      ? `报价策略建议：${quotingStrategy.modeLabel}。选用 ${quotingStrategy.legs
+          .slice(0, 5)
+          .map((l) => `${l.name}(${l.weightPct}%)`)
+          .join("、")}。${quotingStrategy.rationale}`
+      : quotingStrategy
+        ? `Quoting strategy: ${quotingStrategy.modeLabel}. Use ${quotingStrategy.legs
+            .slice(0, 5)
+            .map((l) => `${l.name}(${l.weightPct}%)`)
+            .join(", ")}. ${quotingStrategy.rationale}`
+        : undefined;
+
   return {
     mode,
-    subject: primary?.name ?? (mode === "product" ? symbol ?? "—" : "—"),
+    subject: mode === "product" ? symbol ?? "—" : primary?.name ?? "—",
     product: symbol,
     locale,
     generatedAt: new Date().toISOString(),
     overallScore: overall,
     overallBand,
-    verdict,
+    verdict: strategyVerdict ? `${verdict} ${strategyVerdict}` : verdict,
     summaryPros,
     summaryCons,
     steps: enrichedSteps,
     subjects: subjectScores,
+    lpCards,
+    quotingStrategy,
     dataBottleneck,
     liveFindings,
     disclaimer: zh
-      ? "本报告为知识库 + 启发式实时研究代理结果，不能替代实盘 TCA、牌照法律意见或授信审批。红/黄/绿分为相对该品种的代理适配度。请按最终方法论（UAT + 回测 + 影子 + 小额实盘）验证。若标明数据可得性是瓶颈，须先补齐实盘样本再下质量定论。"
-      : "This report combines KB + heuristic live-research proxies. It does not replace live TCA, legal licence opinions, or credit approval. Red/yellow/green scores are product-relative proxy fit only. Verify via the final methodology (UAT + backtest + shadow + small live). When data availability is the bottleneck, obtain live samples before a quality call.",
+      ? "本报告基于各 LP 仓库实档字段（产品表、定价、成本、延迟、时段、监管）与公开检索，不能替代实盘 TCA、牌照法律意见或授信审批。红/黄/绿分为相对该品种的代理适配度。报价策略（聚合/FV）为建议，须用真实 FIX/成交样本校准。若标明数据可得性是瓶颈，须先补齐实盘样本再下质量定论。"
+      : "This report uses each LP’s repository profile fields (products, pricing, cost, latency, hours, regulation) plus public research. It does not replace live TCA, legal licence opinions, or credit approval. RYG scores are product-relative proxies. Aggregation/FV quoting advice must be calibrated with real FIX/fill samples. When data availability is the bottleneck, obtain live samples before a quality call.",
   };
 }
 
@@ -1006,6 +1075,44 @@ export function buildPrintableHtml(
         ${s.reason ? ` <span class="meta">— ${esc(s.reason)}</span>` : ""}</li>`;
     })
     .join("")}</ul>
+
+  ${
+    report.quotingStrategy
+      ? `<h2>${zh ? "报价策略" : "Quoting strategy"}</h2>
+      <div class="verdict">
+        <p><strong>${esc(report.quotingStrategy.modeLabel)}</strong></p>
+        <p>${esc(report.quotingStrategy.rationale)}</p>
+        <ul>${report.quotingStrategy.legs
+          .map(
+            (l) =>
+              `<li>#${l.rank} ${esc(l.name)} · ${esc(l.role)} · ${l.weightPct}% · ${l.score}/100</li>`,
+          )
+          .join("")}</ul>
+        <ul>${report.quotingStrategy.howToApply.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>
+        <p class="meta">${esc(report.quotingStrategy.dataNote)}</p>
+      </div>`
+      : ""
+  }
+
+  ${
+    report.lpCards?.length
+      ? `<h2>${zh ? "单 LP 质量报告（基于 LP 仓库实档）" : "Per-LP quality reports (LP repository profiles)"}</h2>
+      ${report.lpCards
+        .map(
+          (c) => `<section class="step">
+          <h3>${c.rank != null ? `#${c.rank} ` : ""}${esc(c.name)}
+            <span class="chip ${c.band}">${c.score}/100 · ${esc(c.bandLabel)}</span></h3>
+          <p>${esc(c.summary)}</p>
+          <ul>${c.realData.map((d) => `<li><strong>${esc(d.label)}</strong>: ${esc(d.value)}</li>`).join("")}</ul>
+          <div class="pc">
+            <div><h4>${zh ? "优势" : "Pros"}</h4><ul>${c.pros.map((p) => `<li>${esc(p)}</li>`).join("") || "<li>—</li>"}</ul></div>
+            <div><h4>${zh ? "局限" : "Cons"}</h4><ul>${c.cons.map((x) => `<li>${esc(x)}</li>`).join("") || "<li>—</li>"}</ul></div>
+          </div>
+        </section>`,
+        )
+        .join("\n")}`
+      : ""
+  }
 
   <h2>${zh ? "分步研究记录" : "Step-by-step research log"}</h2>
   ${stepsHtml}
