@@ -290,6 +290,26 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
           </article>
         ))}
 
+        {report?.dataBottleneck.hit && (
+          <div
+            className="rounded-xl border border-amber/40 bg-amber-soft/50 px-4 py-3"
+            role="status"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber">
+              {t("quality.bottleneck")}
+            </p>
+            <p className="mt-1 text-sm text-navy-2">{report.dataBottleneck.message}</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-mist">
+              {t("quality.bottleneck.gaps")}
+            </p>
+            <ul className="mt-1 list-disc pl-4 text-sm text-navy-2">
+              {report.dataBottleneck.gaps.map((g, i) => (
+                <li key={i}>{g}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {report && (
           <div className="rounded-xl border border-teal/30 bg-teal-soft/30 px-4 py-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-teal">

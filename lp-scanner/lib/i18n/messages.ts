@@ -99,6 +99,8 @@ const en = {
   "quality.status.warn": "Needs check",
   "quality.runForProduct": "Run live quality research (top LPs)",
   "quality.runForLp": "Run live quality research",
+  "quality.bottleneck": "Data availability is the bottleneck",
+  "quality.bottleneck.gaps": "Missing inputs",
   "footer": "LP Scanner · Vantage CFD desk tool",
 } as const;
 
@@ -198,6 +200,8 @@ const zh = {
   "quality.status.warn": "需核查",
   "quality.runForProduct": "运行实时质量研究（推荐 LP）",
   "quality.runForLp": "运行实时质量研究",
+  "quality.bottleneck": "数据可得性是瓶颈",
+  "quality.bottleneck.gaps": "缺失输入",
   "footer": "LP Scanner · Vantage CFD 交易台工具",
 } as const;
 
