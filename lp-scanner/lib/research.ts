@@ -227,6 +227,16 @@ export function answerChat(
       contextText.toLowerCase().includes(lp.name.toLowerCase()),
   );
 
+  if (
+    /(test|slippage|last.?look|fill ratio|reject|latency|tca|best.?execution|poc|执行质量|滑点|拒单|延迟|测试)/i.test(
+      question + contextText,
+    )
+  ) {
+    return locale === "zh-CN"
+      ? `测 LP 质量请看「LP 测试」页：先按真实单量测可成交深度与有效成本，再查 last look/拒单原因，并在新闻/开盘/清淡时段做压力测试；上线后持续跟踪价差、冻结、延迟与滑点对称性。选中内容：「${contextText.slice(0, 120)}」。`
+      : `For LP quality testing see the LP Testing page: measure executable depth and all-in cost at real ticket sizes, interrogate last-look/reject codes, stress news/open/thin sessions, then monitor spreads, freezes, latency and slippage symmetry live. Selection: “${contextText.slice(0, 120)}”.`;
+  }
+
   if (/(xau|gold)/i.test(question) || /(xau|gold)/i.test(contextText)) {
     const top = [...lps]
       .filter((lp) => lp.scoreHints.gold >= 70)

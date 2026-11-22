@@ -6,6 +6,7 @@ const en = {
   "nav.home": "Home",
   "nav.knowledge": "Knowledge Base",
   "nav.repository": "Repository",
+  "nav.testing": "LP Testing",
   "nav.lang": "中文",
   "home.hero": "Scan LPs for a product or discover a new liquidity source",
   "home.sub":
@@ -62,6 +63,23 @@ const en = {
   "research.findings": "Live findings",
   "research.sources": "Sources",
   "research.new": "Not in repository yet",
+  "testing.updated": "Research compiled",
+  "testing.researchNote":
+    "Synthesised from public brokerage / LP selection and pre-deployment testing guidance.",
+  "testing.metrics": "Core metrics to instrument",
+  "testing.metricsSub":
+    "Track these per LP, symbol and session — quiet markets alone will mislead you.",
+  "testing.col.metric": "Metric",
+  "testing.col.what": "What it means",
+  "testing.col.how": "How to test",
+  "testing.col.target": "What “good” looks like",
+  "testing.phases": "Four-phase test programme",
+  "testing.phasesSub": "From desk diligence to monthly best-execution review.",
+  "testing.scorecard": "Scorecard",
+  "testing.scorecardSub":
+    "Re-weight for your book (e.g. raise crypto 24/7 depth if crypto CFD hedges dominate).",
+  "testing.sources": "Research sources",
+  "testing.sourcesSub": "Primary public references used for this guide.",
   "footer": "LP Scanner · Vantage CFD desk tool",
 } as const;
 
@@ -71,6 +89,7 @@ const zh = {
   "nav.home": "首页",
   "nav.knowledge": "知识库",
   "nav.repository": "仓库",
+  "nav.testing": "LP 测试",
   "nav.lang": "EN",
   "home.hero": "按品种扫描 LP，或发现新的流动性来源",
   "home.sub": "结合实时研究与静态知识库，对 Vantage 在用与候选 LP 排序。",
@@ -126,6 +145,21 @@ const zh = {
   "research.findings": "实时发现",
   "research.sources": "来源",
   "research.new": "尚未入库",
+  "testing.updated": "研究整理",
+  "testing.researchNote": "综合公开的经纪商 / LP 选型与上线前测试指南。",
+  "testing.metrics": "需落地的核心指标",
+  "testing.metricsSub": "按 LP、品种与时段跟踪——仅看平静市会误导。",
+  "testing.col.metric": "指标",
+  "testing.col.what": "含义",
+  "testing.col.how": "如何测",
+  "testing.col.target": "何为“好”",
+  "testing.phases": "四阶段测试方案",
+  "testing.phasesSub": "从桌面尽调到月度最佳执行复盘。",
+  "testing.scorecard": "评分卡",
+  "testing.scorecardSub":
+    "按你的账本重加权（若加密 CFD 对冲为主，可提高 24/7 深度权重）。",
+  "testing.sources": "研究来源",
+  "testing.sourcesSub": "本指南主要公开参考文献。",
   "footer": "LP Scanner · Vantage CFD 交易台工具",
 } as const;
 
