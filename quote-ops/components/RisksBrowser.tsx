@@ -59,13 +59,13 @@ export function RisksBrowser() {
         </p>
       </header>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="chip-scroll sm:flex-wrap">
         {CATS.map((c) => (
           <button
             key={c.id}
             type="button"
             onClick={() => setCat(c.id)}
-            className={`rounded-md px-3 py-1.5 text-sm ${
+            className={`shrink-0 rounded-md px-3 py-2.5 text-sm touch-manipulation sm:py-1.5 ${
               cat === c.id ? "bg-ink text-paper" : "border border-line bg-white text-ink-2"
             }`}
           >

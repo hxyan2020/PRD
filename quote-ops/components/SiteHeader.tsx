@@ -37,81 +37,152 @@ export function SiteHeader() {
       });
   }, []);
 
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   const items = NAV.filter((n) => n.href !== "/admin" || isAdmin);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6">
-        <Link href="/" className="shrink-0">
-          <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">QuoteOps</span>
-          <span className="ml-2 hidden text-[10px] uppercase tracking-[0.16em] text-mist md:inline">
-            {t("报价小队知识库", "Pricing Squad KB")}
-          </span>
-        </Link>
+    <>
+      <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6">
+          <Link href="/" className="min-w-0 shrink">
+            <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">QuoteOps</span>
+            <span className="ml-2 hidden text-[10px] uppercase tracking-[0.16em] text-mist md:inline">
+              {t("报价小队知识库", "Pricing Squad KB")}
+            </span>
+          </Link>
 
-        <button
-          type="button"
-          className="ml-auto rounded-md border border-line px-2 py-1 text-xs sm:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="menu"
-        >
-          {open ? "✕" : "☰"}
-        </button>
+          <button
+            type="button"
+            className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line text-base sm:hidden"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="site-nav"
+            aria-label={open ? t("关闭菜单", "Close menu") : t("打开菜单", "Open menu")}
+          >
+            {open ? "✕" : "☰"}
+          </button>
 
-        <nav
-          className={`${
-            open ? "flex" : "hidden"
-          } absolute left-0 right-0 top-full max-h-[70vh] flex-col gap-1 overflow-auto border-b border-line bg-paper p-3 sm:static sm:ml-auto sm:flex sm:max-h-none sm:flex-row sm:flex-wrap sm:items-center sm:gap-0.5 sm:overflow-visible sm:border-0 sm:bg-transparent sm:p-0`}
-        >
-          {items.map((item) => {
-            const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`rounded-md px-2.5 py-2 text-sm sm:py-1.5 ${
-                  active ? "bg-ink text-paper" : "text-ink-2 hover:bg-line/50"
+          {/* Desktop nav stays in-header */}
+          <nav className="ml-auto hidden items-center gap-0.5 sm:flex sm:flex-wrap">
+            {items.map((item) => {
+              const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`rounded-md px-2.5 py-1.5 text-sm ${
+                    active ? "bg-ink text-paper" : "text-ink-2 hover:bg-line/50"
+                  }`}
+                >
+                  {locale === "zh-CN" ? item.zh : item.en}
+                </Link>
+              );
+            })}
+            {roleReady && (
+              <span
+                className={`ml-2 rounded-md border px-2 py-1 text-[10px] uppercase tracking-wide ${
+                  isAdmin ? "border-sea/40 bg-sea-soft/50 text-sea" : "border-line bg-paper text-mist"
                 }`}
               >
-                {locale === "zh-CN" ? item.zh : item.en}
-              </Link>
-            );
-          })}
-          {roleReady && (
-            <span
-              className={`mt-2 rounded-md border px-2 py-1 text-[10px] uppercase tracking-wide sm:mt-0 sm:ml-2 ${
-                isAdmin
-                  ? "border-sea/40 bg-sea-soft/50 text-sea"
-                  : "border-line bg-paper text-mist"
+                {isAdmin ? t("管理员", "Admin") : t("只读", "Read-only")}
+              </span>
+            )}
+            <div className="ml-2 flex gap-1 rounded-md border border-line bg-white p-0.5 text-xs">
+              <button
+                type="button"
+                className={`rounded px-2 py-1 ${locale === "zh-CN" ? "bg-ink text-paper" : "text-mist"}`}
+                onClick={() => setLocale("zh-CN")}
+              >
+                中文
+              </button>
+              <button
+                type="button"
+                className={`rounded px-2 py-1 ${locale === "en" ? "bg-ink text-paper" : "text-mist"}`}
+                onClick={() => setLocale("en")}
+              >
+                EN
+              </button>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      {/* Mobile drawer outside blurred header so position:fixed covers the viewport */}
+      {open && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-ink/45 sm:hidden"
+          aria-label={t("关闭菜单", "Close menu")}
+          onClick={() => setOpen(false)}
+        />
+      )}
+      <nav
+        id="site-nav"
+        className={`${
+          open ? "flex" : "hidden"
+        } fixed inset-x-0 bottom-0 top-[calc(3.4rem+env(safe-area-inset-top))] z-50 max-h-[calc(100dvh-3.4rem-env(safe-area-inset-top))] flex-col gap-1 overflow-auto border-t border-line bg-paper p-3 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:hidden`}
+      >
+        {items.map((item) => {
+          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className={`rounded-lg px-3 py-3 text-base touch-manipulation ${
+                active ? "bg-ink text-paper" : "text-ink-2 hover:bg-line/50"
               }`}
-              title={
-                isAdmin
-                  ? t("管理员可编辑知识库", "Admin can edit the knowledge base")
-                  : t("只读访客", "Read-only viewer")
-              }
             >
-              {isAdmin ? t("管理员", "Admin") : t("只读", "Read-only")}
-            </span>
-          )}
-          <div className="mt-2 flex gap-1 rounded-md border border-line bg-white p-0.5 text-xs sm:mt-0 sm:ml-2">
-            <button
-              type="button"
-              className={`rounded px-2 py-1 ${locale === "zh-CN" ? "bg-ink text-paper" : "text-mist"}`}
-              onClick={() => setLocale("zh-CN")}
-            >
-              中文
-            </button>
-            <button
-              type="button"
-              className={`rounded px-2 py-1 ${locale === "en" ? "bg-ink text-paper" : "text-mist"}`}
-              onClick={() => setLocale("en")}
-            >
-              EN
-            </button>
-          </div>
-        </nav>
-      </div>
-    </header>
+              {locale === "zh-CN" ? item.zh : item.en}
+            </Link>
+          );
+        })}
+        {roleReady && (
+          <span
+            className={`mt-2 w-fit rounded-md border px-2 py-1.5 text-[10px] uppercase tracking-wide ${
+              isAdmin ? "border-sea/40 bg-sea-soft/50 text-sea" : "border-line bg-paper text-mist"
+            }`}
+          >
+            {isAdmin ? t("管理员", "Admin") : t("只读", "Read-only")}
+          </span>
+        )}
+        <div className="mt-2 flex gap-1 rounded-lg border border-line bg-white p-1 text-sm">
+          <button
+            type="button"
+            className={`min-h-10 flex-1 rounded-md px-3 py-2 touch-manipulation ${
+              locale === "zh-CN" ? "bg-ink text-paper" : "text-mist"
+            }`}
+            onClick={() => setLocale("zh-CN")}
+          >
+            中文
+          </button>
+          <button
+            type="button"
+            className={`min-h-10 flex-1 rounded-md px-3 py-2 touch-manipulation ${
+              locale === "en" ? "bg-ink text-paper" : "text-mist"
+            }`}
+            onClick={() => setLocale("en")}
+          >
+            EN
+          </button>
+        </div>
+      </nav>
+    </>
   );
 }

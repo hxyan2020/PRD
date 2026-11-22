@@ -227,17 +227,21 @@ export function HomeKnowledgeComposer() {
         </Link>
       </div>
 
-      <div className="mt-4 flex gap-1 rounded-lg border border-line bg-paper p-0.5 text-xs w-fit">
+      <div className="mt-4 grid w-full grid-cols-2 gap-1 rounded-lg border border-line bg-paper p-0.5 text-xs sm:inline-flex sm:w-fit">
         <button
           type="button"
-          className={`rounded-md px-3 py-1.5 ${mode === "create" ? "bg-ink text-paper" : "text-mist"}`}
+          className={`min-h-10 rounded-md px-3 py-2 touch-manipulation sm:min-h-0 sm:py-1.5 ${
+            mode === "create" ? "bg-ink text-paper" : "text-mist"
+          }`}
           onClick={() => setMode("create")}
         >
           {t("新建到节点", "Create under node")}
         </button>
         <button
           type="button"
-          className={`rounded-md px-3 py-1.5 ${mode === "append" ? "bg-ink text-paper" : "text-mist"}`}
+          className={`min-h-10 rounded-md px-3 py-2 touch-manipulation sm:min-h-0 sm:py-1.5 ${
+            mode === "append" ? "bg-ink text-paper" : "text-mist"
+          }`}
           onClick={() => setMode("append")}
         >
           {t("追加到已有页面", "Append to page")}
@@ -341,7 +345,7 @@ export function HomeKnowledgeComposer() {
           )}
         </span>
         <textarea
-          className="field min-h-[220px] font-mono text-xs leading-relaxed"
+          className="field min-h-[160px] font-mono text-sm leading-relaxed sm:min-h-[220px] sm:text-xs"
           value={bodyZh}
           onChange={(e) => setBodyZh(e.target.value)}
           placeholder={t(
@@ -354,26 +358,26 @@ export function HomeKnowledgeComposer() {
       <div className="mt-2 flex flex-wrap gap-2">
         <button
           type="button"
-          className="rounded-md border border-line bg-paper px-2.5 py-1.5 text-[11px]"
+          className="min-h-10 rounded-md border border-line bg-paper px-3 py-2 text-xs touch-manipulation sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-[11px]"
           onClick={() => insertSnippet(snippets.h2)}
         >
           {t("+ 标题", "+ Heading")}
         </button>
         <button
           type="button"
-          className="rounded-md border border-line bg-paper px-2.5 py-1.5 text-[11px]"
+          className="min-h-10 rounded-md border border-line bg-paper px-3 py-2 text-xs touch-manipulation sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-[11px]"
           onClick={() => insertSnippet(snippets.list)}
         >
           {t("+ 列表", "+ List")}
         </button>
         <button
           type="button"
-          className="rounded-md border border-line bg-paper px-2.5 py-1.5 text-[11px]"
+          className="min-h-10 rounded-md border border-line bg-paper px-3 py-2 text-xs touch-manipulation sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-[11px]"
           onClick={() => insertSnippet(snippets.table)}
         >
           {t("+ 表格", "+ Table")}
         </button>
-        <label className="cursor-pointer rounded-md border border-line bg-paper px-2.5 py-1.5 text-[11px]">
+        <label className="inline-flex min-h-10 cursor-pointer items-center rounded-md border border-line bg-paper px-3 py-2 text-xs touch-manipulation sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-[11px]">
           {t("+ 图片/视频/文件", "+ Image/video/file")}
           <input
             type="file"
@@ -384,10 +388,10 @@ export function HomeKnowledgeComposer() {
           />
         </label>
         {mode === "create" && (
-          <label className="ml-auto block min-w-[160px] flex-1 sm:max-w-xs">
+          <label className="block w-full min-w-0 sm:ml-auto sm:max-w-xs sm:flex-1">
             <span className="sr-only">tags</span>
             <input
-              className="field py-1.5 text-xs"
+              className="field py-2 text-sm sm:py-1.5 sm:text-xs"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               placeholder={t("标签，逗号分隔", "Tags, comma-separated")}
@@ -396,13 +400,13 @@ export function HomeKnowledgeComposer() {
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         {mode === "create" && (
           <button
             type="button"
             disabled={busy}
             onClick={() => void suggestPlacement()}
-            className="rounded-lg border border-sea/40 bg-sea-soft/50 px-4 py-2 text-sm text-sea disabled:opacity-50"
+            className="min-h-11 rounded-lg border border-sea/40 bg-sea-soft/50 px-4 py-2.5 text-sm text-sea touch-manipulation disabled:opacity-50"
           >
             {t("AI 推荐插入位置", "AI suggest placement")}
           </button>
@@ -411,7 +415,7 @@ export function HomeKnowledgeComposer() {
           type="button"
           disabled={busy}
           onClick={() => void save()}
-          className="rounded-lg bg-ink px-5 py-2 text-sm text-paper disabled:opacity-50"
+          className="min-h-11 rounded-lg bg-ink px-5 py-2.5 text-sm text-paper touch-manipulation disabled:opacity-50"
         >
           {busy
             ? "…"

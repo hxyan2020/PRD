@@ -128,28 +128,30 @@ export function HomeAdminStrip() {
         </button>
       </form>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        <select
-          className="field w-auto"
-          value={kind}
-          onChange={(e) => setKind(e.target.value as KbKind | "all")}
-        >
-          {KINDS.map((k) => (
-            <option key={k} value={k}>
-              {k === "all" ? t("全部类型", "All kinds") : k}
-            </option>
-          ))}
-        </select>
-        <select
-          className="field w-auto"
-          value={status}
-          onChange={(e) => setStatus(e.target.value as typeof status)}
-        >
-          <option value="all">{t("全部状态", "All status")}</option>
-          <option value="published">published</option>
-          <option value="draft">draft</option>
-        </select>
-        <div className="flex overflow-hidden rounded-lg border border-line text-xs">
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <select
+            className="field"
+            value={kind}
+            onChange={(e) => setKind(e.target.value as KbKind | "all")}
+          >
+            {KINDS.map((k) => (
+              <option key={k} value={k}>
+                {k === "all" ? t("全部类型", "All kinds") : k}
+              </option>
+            ))}
+          </select>
+          <select
+            className="field"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as typeof status)}
+          >
+            <option value="all">{t("全部状态", "All status")}</option>
+            <option value="published">published</option>
+            <option value="draft">draft</option>
+          </select>
+        </div>
+        <div className="chip-scroll rounded-lg border border-line text-xs sm:overflow-hidden">
           {(
             [
               ["updated", t("最近更改", "Updated")],
@@ -162,7 +164,7 @@ export function HomeAdminStrip() {
               key={key}
               type="button"
               onClick={() => toggleSort(key)}
-              className={`px-3 py-2 ${
+              className={`shrink-0 px-3 py-2.5 touch-manipulation sm:py-2 ${
                 sort === key ? "bg-ink text-paper" : "bg-white text-mist hover:bg-paper"
               }`}
             >
@@ -171,12 +173,55 @@ export function HomeAdminStrip() {
             </button>
           ))}
         </div>
-        <span className="self-center font-mono text-[11px] text-mist">
+        <span className="font-mono text-[11px] text-mist sm:self-center">
           {loading ? "…" : `${nodes.length}/${total}`}
         </span>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-line">
+      {/* Mobile: cards */}
+      <ul className="mt-4 space-y-2 md:hidden">
+        {nodes.map((n) => {
+          const title = locale === "zh-CN" ? n.titleZh : n.titleEn || n.titleZh;
+          const summary = locale === "zh-CN" ? n.summaryZh : n.summaryEn || n.summaryZh;
+          return (
+            <li key={n.id} className="rounded-xl border border-line bg-white/90 p-3">
+              <Link href={`/kb/${n.slug}`} className="font-medium text-ink">
+                <Highlight text={title} needle={q} />
+              </Link>
+              <p className="mt-1 font-mono text-[10px] text-mist">
+                {n.kind} · {n.status} · {formatTs(n.updatedAt, locale)}
+              </p>
+              {summary && (
+                <p className="mt-1 line-clamp-2 text-xs text-mist">
+                  <Highlight text={summary} needle={q} />
+                </p>
+              )}
+              <div className="mt-2 flex gap-2">
+                <Link
+                  href={`/kb/${n.slug}`}
+                  className="min-h-10 flex-1 rounded-lg border border-line px-3 py-2 text-center text-xs touch-manipulation"
+                >
+                  {t("打开", "Open")}
+                </Link>
+                <Link
+                  href="/admin"
+                  className="min-h-10 flex-1 rounded-lg border border-sea/40 px-3 py-2 text-center text-xs text-sea touch-manipulation"
+                >
+                  {t("编辑", "Edit")}
+                </Link>
+              </div>
+            </li>
+          );
+        })}
+        {nodes.length === 0 && (
+          <li className="rounded-xl border border-dashed border-line px-4 py-8 text-center text-sm text-mist">
+            {emptyHint}
+          </li>
+        )}
+      </ul>
+
+      {/* Desktop: table */}
+      <div className="mt-4 hidden overflow-x-auto rounded-xl border border-line md:block">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead className="border-b border-line bg-paper/80 text-[11px] uppercase tracking-wide text-mist">
             <tr>
@@ -235,9 +280,7 @@ export function HomeAdminStrip() {
                     {formatTs(n.updatedAt, locale)}
                     <div className="text-[10px]">{n.updatedBy || "—"}</div>
                   </td>
-                  <td className="px-3 py-2.5 text-xs text-mist">
-                    {formatTs(n.createdAt, locale)}
-                  </td>
+                  <td className="px-3 py-2.5 text-xs text-mist">{formatTs(n.createdAt, locale)}</td>
                   <td className="px-3 py-2.5">
                     <div className="flex flex-wrap gap-1">
                       <Link
@@ -247,7 +290,7 @@ export function HomeAdminStrip() {
                         {t("打开", "Open")}
                       </Link>
                       <Link
-                        href={`/admin`}
+                        href="/admin"
                         className="rounded border border-sea/40 px-2 py-1 text-[11px] text-sea"
                       >
                         {t("编辑", "Edit")}

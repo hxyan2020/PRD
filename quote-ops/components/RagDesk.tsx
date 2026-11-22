@@ -60,21 +60,19 @@ export function RagDesk() {
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-2xl border border-ink/10 bg-ink text-paper animate-rise">
         <div className="grid-noise absolute inset-0 opacity-40" />
-        <div className="relative px-5 py-10 sm:px-10 sm:py-14">
-          <p className="mb-3 font-mono text-xs uppercase tracking-[0.22em] text-sea-soft/80">
+        <div className="relative px-4 py-8 sm:px-10 sm:py-14">
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-sea-soft/80 sm:text-xs">
             CFD Broker · Pricing Squad
           </p>
-          <h1 className="font-display text-4xl leading-tight sm:text-5xl">
-            QuoteOps
-          </h1>
-          <p className="mt-4 max-w-2xl text-base text-paper/75 sm:text-lg">
+          <h1 className="font-display text-3xl leading-tight sm:text-5xl">QuoteOps</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-paper/75 sm:mt-4 sm:text-lg">
             {t(
               "交互式 RAG 知识库与 Skill 库：86 风险场景、LP→PE→MT 报价链路、数据架构占位、报价问题排查与修复流程。",
               "Interactive RAG KB + skill library: 86 risk scenarios, LP→PE→MT pipeline, data architecture placeholders, pricing RCA playbooks.",
             )}
           </p>
           <form
-            className="mt-8 flex max-w-3xl flex-col gap-3 sm:flex-row"
+            className="mt-6 flex max-w-3xl flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3"
             onSubmit={(e) => {
               e.preventDefault();
               void ask();
@@ -84,23 +82,23 @@ export function RagDesk() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={t("输入报价问题、风险场景或排查关键词…", "Ask about pricing RCA, risks, or skills…")}
-              className="flex-1 rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-paper outline-none ring-sea placeholder:text-paper/40 focus:ring-2"
+              className="min-h-12 flex-1 rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-base text-paper outline-none ring-sea placeholder:text-paper/40 focus:ring-2 sm:text-sm"
             />
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-copper px-5 py-3 text-sm font-medium text-white transition hover:bg-copper/90 disabled:opacity-60"
+              className="min-h-12 rounded-lg bg-copper px-5 py-3 text-sm font-medium text-white touch-manipulation transition hover:bg-copper/90 disabled:opacity-60"
             >
               {loading ? t("检索中…", "Retrieving…") : t("检索回答", "Ask RAG")}
             </button>
           </form>
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="chip-scroll mt-4 sm:flex-wrap">
             {examples.map((ex) => (
               <button
                 key={ex}
                 type="button"
                 onClick={() => void ask(ex)}
-                className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-paper/80 hover:bg-white/10"
+                className="shrink-0 rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs text-paper/80 touch-manipulation hover:bg-white/10"
               >
                 {ex}
               </button>
