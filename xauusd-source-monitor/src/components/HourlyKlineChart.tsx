@@ -1,5 +1,11 @@
-import { useMemo, useState } from 'react'
-import type { HourlyKlineSeries, KlineBar } from '../engine/hourlyScan'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  fetchOkxKline,
+  KLINE_INTERVALS,
+  type HourlyKlineSeries,
+  type KlineBar,
+  type KlineIntervalBar,
+} from '../engine/hourlyScan'
 import { useLocale } from '../i18n/locale'
 
 function fmtSgtShort(ts: number) {
@@ -17,6 +23,10 @@ function fmtPx(n: number) {
   return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+function isKlineBar(v: string | undefined): v is KlineIntervalBar {
+  return KLINE_INTERVALS.some((i) => i.bar === v)
+}
+
 export function HourlyKlineChart({
   series,
   onOpenSource,
@@ -25,10 +35,66 @@ export function HourlyKlineChart({
   onOpenSource?: (sourceId: string) => void
 }) {
   const { t } = useLocale()
+  const defaultBar: KlineIntervalBar = isKlineBar(series?.interval) ? series.interval : '1H'
+  const [tf, setTf] = useState<KlineIntervalBar>(defaultBar)
+  const [live, setLive] = useState<HourlyKlineSeries | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [hover, setHover] = useState<KlineBar | null>(null)
+  const cacheRef = useRef<Partial<Record<KlineIntervalBar, HourlyKlineSeries>>>({})
+
+  // Seed cache with the scan’s default series (usually 1H).
+  useEffect(() => {
+    if (!series?.bars?.length) return
+    const bar = isKlineBar(series.interval) ? series.interval : '1H'
+    cacheRef.current[bar] = series
+    if (tf === bar) {
+      setLive(series)
+      setError(null)
+    }
+  }, [series, tf])
+
+  useEffect(() => {
+    const cached = cacheRef.current[tf]
+    if (cached?.bars?.length) {
+      setLive(cached)
+      setError(null)
+      setLoading(false)
+      return
+    }
+
+    // Prefer report payload when it already matches the selected interval.
+    if (series?.bars?.length && series.interval === tf) {
+      cacheRef.current[tf] = series
+      setLive(series)
+      setError(null)
+      setLoading(false)
+      return
+    }
+
+    const ac = new AbortController()
+    setLoading(true)
+    setError(null)
+    setHover(null)
+    fetchOkxKline(tf, undefined, ac.signal)
+      .then((next) => {
+        cacheRef.current[tf] = next
+        setLive(next)
+        setLoading(false)
+      })
+      .catch((err: unknown) => {
+        if (ac.signal.aborted) return
+        setLive(null)
+        setLoading(false)
+        setError(err instanceof Error ? err.message : String(err))
+      })
+    return () => ac.abort()
+  }, [tf, series])
+
+  const activeSeries = live
 
   const layout = useMemo(() => {
-    const bars = series?.bars || []
+    const bars = activeSeries?.bars || []
     if (bars.length === 0) return null
 
     const W = 640
@@ -91,13 +157,38 @@ export function HourlyKlineChart({
     }
 
     return { W, H, padL, padT, plotW, plotH, candles, ticks, timeLabels, last, bodyW, hitW }
-  }, [series])
+  }, [activeSeries])
 
-  if (!series || !layout) {
+  const intervalSwitcher = (
+    <div className="hourly-kline-intervals" role="group" aria-label={t('hourlyKlineInterval')}>
+      {KLINE_INTERVALS.map((opt) => (
+        <button
+          key={opt.bar}
+          type="button"
+          className={tf === opt.bar ? 'hourly-kline-tf is-active' : 'hourly-kline-tf'}
+          aria-pressed={tf === opt.bar}
+          disabled={loading && tf === opt.bar}
+          onClick={() => setTf(opt.bar)}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  )
+
+  if (!activeSeries || !layout) {
     return (
       <section className="hourly-section hourly-kline">
-        <h3>{t('hourlyKlineTitle')}</h3>
-        <p className="hourly-empty">{t('hourlyKlineEmpty')}</p>
+        <div className="hourly-kline-head">
+          <div>
+            <h3>{t('hourlyKlineTitle')}</h3>
+            <p className="sub">
+              {loading ? t('hourlyKlineLoading') : t('hourlyKlineEmpty')}
+            </p>
+          </div>
+          {intervalSwitcher}
+        </div>
+        {error ? <p className="hourly-empty hourly-kline-error">{error}</p> : null}
       </section>
     )
   }
@@ -112,21 +203,27 @@ export function HourlyKlineChart({
           <h3>{t('hourlyKlineTitle')}</h3>
           <p className="sub">
             {t('hourlyKlineSub')
-              .replace('{symbol}', series.symbol)
-              .replace('{interval}', series.interval)
-              .replace('{n}', String(series.bars.length))}
+              .replace('{symbol}', activeSeries.symbol)
+              .replace('{interval}', activeSeries.interval)
+              .replace('{n}', String(activeSeries.bars.length))}
+            {loading ? ` · ${t('hourlyKlineLoading')}` : ''}
           </p>
         </div>
-        {onOpenSource ? (
-          <button
-            type="button"
-            className="text-link hourly-sources-link"
-            onClick={() => onOpenSource(series.sourceId)}
-          >
-            {t('hourlyViewSources').replace('{n}', '1')}
-          </button>
-        ) : null}
+        <div className="hourly-kline-head-actions">
+          {intervalSwitcher}
+          {onOpenSource ? (
+            <button
+              type="button"
+              className="text-link hourly-sources-link"
+              onClick={() => onOpenSource(activeSeries.sourceId)}
+            >
+              {t('hourlyViewSources').replace('{n}', '1')}
+            </button>
+          ) : null}
+        </div>
       </div>
+
+      {error ? <p className="hourly-empty hourly-kline-error">{error}</p> : null}
 
       <div className="hourly-kline-meta" aria-live="polite">
         <span className="mono">{fmtSgtShort(active.t)} SGT</span>
@@ -146,7 +243,7 @@ export function HourlyKlineChart({
         </span>
       </div>
 
-      <div className="hourly-kline-wrap">
+      <div className={`hourly-kline-wrap${loading ? ' is-loading' : ''}`}>
         <svg
           className="hourly-kline-svg"
           viewBox={`0 0 ${layout.W} ${layout.H}`}
@@ -187,7 +284,6 @@ export function HourlyKlineChart({
                 height={bodyH}
                 rx={1}
               />
-              {/* Hit area — must stay unfilled (see .hourly-kline-hit) */}
               <rect
                 className="hourly-kline-hit"
                 x={cx - layout.hitW / 2}

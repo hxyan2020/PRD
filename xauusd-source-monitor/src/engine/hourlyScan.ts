@@ -150,8 +150,8 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     id: 'okx-candles',
     kind: 'price',
     url: OKX_CANDLES,
-    captionEn: 'OKX API: XAU-USDT-SWAP 1H K-line (36 bars)',
-    captionZh: 'OKX API：XAU-USDT-SWAP 1H K 線（36 根）',
+    captionEn: 'OKX API: XAU-USDT-SWAP K-line (15m / 1H / 4H / 1D)',
+    captionZh: 'OKX API：XAU-USDT-SWAP K 線（15m / 1H / 4H / 1D）',
     json: true,
   },
   {
@@ -700,8 +700,18 @@ function bitgetLast(data: unknown): number | null {
   }
 }
 
+/** OKX candle bar sizes supported by the report K-line switcher */
+export const KLINE_INTERVALS = [
+  { bar: '15m', label: '15m', limit: 48 },
+  { bar: '1H', label: '1H', limit: 36 },
+  { bar: '4H', label: '4H', limit: 42 },
+  { bar: '1D', label: '1D', limit: 60 },
+] as const
+
+export type KlineIntervalBar = (typeof KLINE_INTERVALS)[number]['bar']
+
 /** OKX candles: [ts, o, h, l, c, vol, volCcy, volCcyQuote, confirm] newest-first */
-function okxCandles(data: unknown): KlineBar[] {
+export function okxCandles(data: unknown): KlineBar[] {
   try {
     const rows = (data as { data?: string[][] })?.data
     if (!Array.isArray(rows)) return []
@@ -728,6 +738,36 @@ function okxCandles(data: unknown): KlineBar[] {
     return bars.sort((a, b) => a.t - b.t)
   } catch {
     return []
+  }
+}
+
+/** Live OKX XAU-USDT-SWAP candles for an interval (browser CORS OK). */
+export async function fetchOkxKline(
+  bar: KlineIntervalBar,
+  limit?: number,
+  signal?: AbortSignal,
+): Promise<HourlyKlineSeries> {
+  const meta = KLINE_INTERVALS.find((i) => i.bar === bar) || KLINE_INTERVALS[1]
+  const n = limit ?? meta.limit
+  const url = `https://www.okx.com/api/v5/market/candles?instId=XAU-USDT-SWAP&bar=${encodeURIComponent(bar)}&limit=${n}`
+  const res = await fetch(url, {
+    signal,
+    cache: 'no-store',
+    mode: 'cors',
+    headers: { Accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`OKX candles HTTP ${res.status}`)
+  const json = (await res.json()) as { code?: string; msg?: string; data?: string[][] }
+  if (json.code && json.code !== '0') {
+    throw new Error(json.msg || `OKX candles code ${json.code}`)
+  }
+  const bars = okxCandles(json)
+  if (bars.length === 0) throw new Error('OKX candles empty')
+  return {
+    symbol: 'XAU-USDT-SWAP',
+    interval: bar,
+    sourceId: 'okx-candles',
+    bars,
   }
 }
 
