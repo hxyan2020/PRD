@@ -108,6 +108,8 @@ export function RagDesk() {
         </div>
       </section>
 
+      <HomeAdminStrip />
+
       {error && (
         <p className="rounded-lg border border-danger/30 bg-red-50 px-4 py-3 text-sm text-danger">{error}</p>
       )}
@@ -178,8 +180,6 @@ export function RagDesk() {
           </div>
         </section>
       )}
-
-      <HomeAdminStrip />
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
