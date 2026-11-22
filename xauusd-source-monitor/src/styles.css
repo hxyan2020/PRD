@@ -2916,8 +2916,8 @@ td.mono,
 .sources-modal {
   position: relative;
   z-index: 1;
-  width: min(480px, 100%);
-  max-height: min(78vh, 640px);
+  width: min(560px, 100%);
+  max-height: min(82vh, 720px);
   overflow: auto;
   background: #fffcf6;
   border-radius: 16px;
@@ -2986,14 +2986,80 @@ td.mono,
   min-width: 0;
 }
 
+.sources-modal-caption-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .sources-modal-caption {
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.35;
+  flex: 1;
+  min-width: 0;
+}
+
+.sources-modal-health {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+
+.sources-modal-health.health-ok {
+  color: #166534;
+  background: rgba(22, 101, 52, 0.1);
+  border-color: rgba(22, 101, 52, 0.28);
+}
+
+.sources-modal-health.health-degraded {
+  color: #c2410c;
+  background: rgba(194, 65, 12, 0.1);
+  border-color: rgba(194, 65, 12, 0.28);
+}
+
+.sources-modal-health.health-down {
+  color: #991b1b;
+  background: rgba(153, 27, 27, 0.1);
+  border-color: rgba(153, 27, 27, 0.28);
+}
+
+.sources-modal-health.health-unchecked {
+  color: #57534e;
+  background: rgba(87, 83, 78, 0.08);
+  border-color: rgba(87, 83, 78, 0.2);
+}
+
+.sources-modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: baseline;
+}
+
+.sources-modal-kind {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #78716c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .sources-modal-domain {
   font-size: 0.75rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.sources-modal-refreshed {
+  font-size: 0.72rem;
   color: var(--muted);
   font-family: var(--mono);
 }

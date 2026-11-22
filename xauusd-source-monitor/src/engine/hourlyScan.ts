@@ -6,6 +6,17 @@ import type { BriefingCitation, SourceHealth } from '../types'
 
 export type ReportSectionKind = 'tldr' | 'opportunity' | 'risk'
 
+export type SourceKind =
+  | 'news'
+  | 'exchange'
+  | 'announcement'
+  | 'api'
+  | 'price'
+  | 'macro'
+  | 'indicator'
+
+export type SourceHealthStatus = 'ok' | 'degraded' | 'down' | 'unchecked'
+
 export interface ReportSource {
   id: string
   /** Short caption under the logo */
@@ -15,6 +26,12 @@ export interface ReportSource {
   domain: string
   /** Favicon / official mark via Google s2 (no local assets required) */
   logoUrl: string
+  kind: SourceKind
+  health: SourceHealthStatus
+  /** Epoch ms when this source was last probed / refreshed */
+  checkedAt: number
+  latencyMs?: number
+  detail?: string
 }
 
 export interface RankedPoint {
@@ -69,41 +86,263 @@ const YAHOO_DXY =
   'https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?interval=1m&range=1d'
 const YAHOO_TNX =
   'https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX?interval=1m&range=1d'
+const YAHOO_GC =
+  'https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d'
 const FED_PRESS = 'https://www.federalreserve.gov/json/ne-press.json'
 const GOLD_API = 'https://api.gold-api.com/price/XAU'
 const OKX_TICKER = 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP'
+const OKX_FUNDING = 'https://www.okx.com/api/v5/public/funding-rate?instId=XAU-USDT-SWAP'
+const BITGET_TICKER =
+  'https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=XAUUSDT'
 
-/** Curated opinion / survey articles — used only when the URL probes OK. */
-const OPINION_ARTICLES = [
+type CatalogEntry = {
+  id: string
+  kind: SourceKind
+  url: string
+  captionEn: string
+  captionZh: string
+  /** Prefer JSON CORS probe when true */
+  json?: boolean
+  /** When true, a reachable opinion/news URL can feed Risk/Opportunity text */
+  opinion?: boolean
+  opinionTone?: 'risk' | 'opportunity'
+}
+
+/**
+ * Major XAUUSD-perp desk coverage: news, exchange announcements, APIs,
+ * prices, and macro/indicator feeds. Always listed with health + checkedAt.
+ */
+const SOURCE_CATALOG: CatalogEntry[] = [
+  // —— Prices / APIs / indicators ——
+  {
+    id: 'okx-ticker',
+    kind: 'api',
+    url: OKX_TICKER,
+    captionEn: 'OKX API: XAU-USDT-SWAP last price',
+    captionZh: 'OKX API：XAU-USDT-SWAP 最新價',
+    json: true,
+  },
+  {
+    id: 'okx-funding',
+    kind: 'indicator',
+    url: OKX_FUNDING,
+    captionEn: 'OKX API: XAU-USDT-SWAP funding rate',
+    captionZh: 'OKX API：XAU-USDT-SWAP 資金費率',
+    json: true,
+  },
+  {
+    id: 'bitget-ticker',
+    kind: 'api',
+    url: BITGET_TICKER,
+    captionEn: 'Bitget API: XAUUSDT perpetual ticker',
+    captionZh: 'Bitget API：XAUUSDT 永續 ticker',
+    json: true,
+  },
+  {
+    id: 'gold-api',
+    kind: 'price',
+    url: GOLD_API,
+    captionEn: 'gold-api: XAU spot USD',
+    captionZh: 'gold-api：XAU 現貨美元價',
+    json: true,
+  },
+  {
+    id: 'yahoo-gc',
+    kind: 'price',
+    url: YAHOO_GC,
+    captionEn: 'Yahoo chart: COMEX gold GC=F (1m)',
+    captionZh: 'Yahoo 圖：COMEX 黃金 GC=F（1分鐘）',
+    json: true,
+  },
+  {
+    id: 'yahoo-dxy',
+    kind: 'macro',
+    url: YAHOO_DXY,
+    captionEn: 'Yahoo chart: Dollar Index DX-Y.NYB (1m)',
+    captionZh: 'Yahoo 圖：美元指數 DX-Y.NYB（1分鐘）',
+    json: true,
+  },
+  {
+    id: 'yahoo-tnx',
+    kind: 'macro',
+    url: YAHOO_TNX,
+    captionEn: 'Yahoo chart: US 10Y yield ^TNX (1m)',
+    captionZh: 'Yahoo 圖：美債 10 年 ^TNX（1分鐘）',
+    json: true,
+  },
+  {
+    id: 'fed-press-json',
+    kind: 'announcement',
+    url: FED_PRESS,
+    captionEn: 'Federal Reserve press-release JSON index',
+    captionZh: '聯準會新聞稿 JSON 索引',
+    json: true,
+  },
+  // —— Exchange venues / official announcements ——
+  {
+    id: 'okx-trade',
+    kind: 'exchange',
+    url: 'https://www.okx.com/trade-swap/xau-usdt-swap',
+    captionEn: 'OKX trade page: XAU-USDT-SWAP',
+    captionZh: 'OKX 交易頁：XAU-USDT-SWAP',
+  },
+  {
+    id: 'okx-announcements',
+    kind: 'announcement',
+    url: 'https://www.okx.com/help/section/announcements-latest-announcements',
+    captionEn: 'OKX official announcements',
+    captionZh: 'OKX 官方公告',
+  },
+  {
+    id: 'binance-futures',
+    kind: 'exchange',
+    url: 'https://www.binance.com/en/futures/XAUUSDT',
+    captionEn: 'Binance futures: XAUUSDT',
+    captionZh: 'Binance 合約：XAUUSDT',
+  },
+  {
+    id: 'binance-announcements',
+    kind: 'announcement',
+    url: 'https://www.binance.com/en/support/announcement',
+    captionEn: 'Binance official announcements',
+    captionZh: 'Binance 官方公告',
+  },
+  {
+    id: 'bybit-trade',
+    kind: 'exchange',
+    url: 'https://www.bybit.com/trade/usdt/XAUUSDT',
+    captionEn: 'Bybit trade: XAUUSDT',
+    captionZh: 'Bybit 交易：XAUUSDT',
+  },
+  {
+    id: 'bybit-announcements',
+    kind: 'announcement',
+    url: 'https://announcements.bybit.com/',
+    captionEn: 'Bybit official announcements',
+    captionZh: 'Bybit 官方公告',
+  },
+  {
+    id: 'bitget-trade',
+    kind: 'exchange',
+    url: 'https://www.bitget.com/futures/usdt/XAUUSDT',
+    captionEn: 'Bitget futures: XAUUSDT',
+    captionZh: 'Bitget 合約：XAUUSDT',
+  },
+  {
+    id: 'bitget-announcements',
+    kind: 'announcement',
+    url: 'https://www.bitget.com/support/sections/5955811737113',
+    captionEn: 'Bitget announcements / notices',
+    captionZh: 'Bitget 公告／通知',
+  },
+  // —— Major news outlets (gold / macro) ——
+  {
+    id: 'reuters-gold',
+    kind: 'news',
+    url: 'https://www.reuters.com/markets/commodities/',
+    captionEn: 'Reuters: Commodities / markets',
+    captionZh: '路透：大宗商品／市場',
+  },
+  {
+    id: 'bloomberg-gold',
+    kind: 'news',
+    url: 'https://www.bloomberg.com/markets/commodities',
+    captionEn: 'Bloomberg: Commodities',
+    captionZh: '彭博：大宗商品',
+  },
+  {
+    id: 'cnbc-gold',
+    kind: 'news',
+    url: 'https://www.cnbc.com/gold/',
+    captionEn: 'CNBC: Gold',
+    captionZh: 'CNBC：黃金',
+  },
+  {
+    id: 'wsj-markets',
+    kind: 'news',
+    url: 'https://www.wsj.com/finance/markets',
+    captionEn: 'WSJ: Markets',
+    captionZh: '華爾街日報：市場',
+  },
+  {
+    id: 'ft-commodities',
+    kind: 'news',
+    url: 'https://www.ft.com/commodities',
+    captionEn: 'Financial Times: Commodities',
+    captionZh: '金融時報：大宗商品',
+  },
+  {
+    id: 'marketwatch-gold',
+    kind: 'news',
+    url: 'https://www.marketwatch.com/investing/future/gc00',
+    captionEn: 'MarketWatch: Gold continuous (GC00)',
+    captionZh: 'MarketWatch：黃金連續合約 GC00',
+  },
+  {
+    id: 'investing-gold',
+    kind: 'news',
+    url: 'https://www.investing.com/commodities/gold',
+    captionEn: 'Investing.com: Gold',
+    captionZh: 'Investing.com：黃金',
+  },
+  {
+    id: 'kitco-home',
+    kind: 'news',
+    url: 'https://www.kitco.com/news/category/metals',
+    captionEn: 'Kitco: Metals news desk',
+    captionZh: 'Kitco：金屬新聞台',
+  },
   {
     id: 'kitco-survey',
+    kind: 'news',
     url: 'https://www.kitco.com/news/article/2026-10-30/wall-street-abandons-ship-after-gold-sinks-below-3900oz-main-street',
     captionEn: 'Kitco survey: Wall Street turns bearish after gold sinks below $3,900',
     captionZh: 'Kitco 調查：金價跌破 3,900 後華爾街轉空',
-    domain: 'kitco.com',
+    opinion: true,
+    opinionTone: 'risk',
   },
   {
     id: 'kitco-paradox',
+    kind: 'news',
     url: 'https://www.kitco.com/news/article/2026-10-30/golds-frustrating-paradox-falling-yields-and-weaker-dollar-cant-stop',
     captionEn: "Kitco: Gold's paradox — falling yields/weaker USD can't stop selloff",
     captionZh: 'Kitco：收益率下行與美元走弱仍擋不住金價拋售',
-    domain: 'kitco.com',
+    opinion: true,
+    opinionTone: 'opportunity',
   },
   {
     id: 'kitco-hawkish-pause',
+    kind: 'news',
     url: 'https://www.kitco.com/news/article/2026-10-29/gold-remains-stuck-fed-takes-hawkish-pause-tds-melek',
     captionEn: 'Kitco / TDS: Gold stuck as Fed takes hawkish pause',
     captionZh: 'Kitco / TDS：聯準會鷹派暫停，金價受困',
-    domain: 'kitco.com',
+    opinion: true,
+    opinionTone: 'risk',
   },
   {
     id: 'kitco-rates-holdback',
+    kind: 'news',
     url: 'https://www.kitco.com/news/article/2026-10-30/gold-wants-rally-threat-higher-interest-rates-holding-it-back-catalyst',
     captionEn: 'Kitco: Higher-rate threat holding gold rally back',
     captionZh: 'Kitco：利率上行威脅壓制金價反彈',
-    domain: 'kitco.com',
+    opinion: true,
+    opinionTone: 'risk',
   },
-] as const
+  {
+    id: 'cme-comex',
+    kind: 'exchange',
+    url: 'https://www.cmegroup.com/markets/metals/precious/gold.html',
+    captionEn: 'CME Group: COMEX Gold futures',
+    captionZh: 'CME Group：COMEX 黃金期貨',
+  },
+  {
+    id: 'lbma',
+    kind: 'indicator',
+    url: 'https://www.lbma.org.uk/prices-and-data/precious-metal-prices',
+    captionEn: 'LBMA: Precious metal prices & data',
+    captionZh: 'LBMA：貴金屬價格與數據',
+  },
+]
 
 function domainOf(url: string): string {
   try {
@@ -112,8 +351,20 @@ function domainOf(url: string): string {
     if (host.includes('yahoo.com')) return 'finance.yahoo.com'
     if (host.includes('okx.com')) return 'okx.com'
     if (host.includes('bitget.com')) return 'bitget.com'
+    if (host.includes('binance.com')) return 'binance.com'
+    if (host.includes('bybit.com')) return 'bybit.com'
     if (host.includes('federalreserve.gov')) return 'federalreserve.gov'
     if (host.includes('gold-api.com')) return 'gold-api.com'
+    if (host.includes('reuters.com')) return 'reuters.com'
+    if (host.includes('bloomberg.com')) return 'bloomberg.com'
+    if (host.includes('cnbc.com')) return 'cnbc.com'
+    if (host.includes('kitco.com')) return 'kitco.com'
+    if (host.includes('cmegroup.com')) return 'cmegroup.com'
+    if (host.includes('lbma.org.uk')) return 'lbma.org.uk'
+    if (host.includes('investing.com')) return 'investing.com'
+    if (host.includes('marketwatch.com')) return 'marketwatch.com'
+    if (host.includes('wsj.com')) return 'wsj.com'
+    if (host.includes('ft.com')) return 'ft.com'
     return host
   } catch {
     return url
@@ -129,9 +380,130 @@ function makeSource(
   url: string,
   captionEn: string,
   captionZh: string,
+  kind: SourceKind,
+  health: SourceHealthStatus,
+  checkedAt: number,
+  extra?: { latencyMs?: number; detail?: string },
 ): ReportSource {
   const domain = domainOf(url)
-  return { id, captionEn, captionZh, url, domain, logoUrl: logoFor(domain) }
+  return {
+    id,
+    captionEn,
+    captionZh,
+    url,
+    domain,
+    logoUrl: logoFor(domain),
+    kind,
+    health,
+    checkedAt,
+    latencyMs: extra?.latencyMs,
+    detail: extra?.detail,
+  }
+}
+
+async function probeCatalogEntry(entry: CatalogEntry): Promise<{
+  source: ReportSource
+  json: unknown | null
+}> {
+  const started = performance.now()
+  const checkedAt = Date.now()
+  if (entry.json) {
+    try {
+      const ctrl = new AbortController()
+      const timer = setTimeout(() => ctrl.abort(), 8000)
+      const res = await fetch(entry.url, {
+        signal: ctrl.signal,
+        cache: 'no-store',
+        mode: 'cors',
+      })
+      clearTimeout(timer)
+      const latencyMs = Math.round(performance.now() - started)
+      if (!res.ok) {
+        return {
+          source: makeSource(
+            entry.id,
+            entry.url,
+            entry.captionEn,
+            entry.captionZh,
+            entry.kind,
+            res.status >= 500 ? 'down' : 'degraded',
+            checkedAt,
+            { latencyMs, detail: `HTTP ${res.status}` },
+          ),
+          json: null,
+        }
+      }
+      const json = await res.json()
+      return {
+        source: makeSource(
+          entry.id,
+          entry.url,
+          entry.captionEn,
+          entry.captionZh,
+          entry.kind,
+          'ok',
+          checkedAt,
+          { latencyMs, detail: 'JSON OK' },
+        ),
+        json,
+      }
+    } catch (e) {
+      return {
+        source: makeSource(
+          entry.id,
+          entry.url,
+          entry.captionEn,
+          entry.captionZh,
+          entry.kind,
+          'down',
+          checkedAt,
+          { detail: e instanceof Error ? e.message.slice(0, 80) : 'fetch failed' },
+        ),
+        json: null,
+      }
+    }
+  }
+
+  // HTML / announcement / news — no-cors reachability
+  try {
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), 6000)
+    await fetch(entry.url, {
+      signal: ctrl.signal,
+      cache: 'no-store',
+      mode: 'no-cors',
+      method: 'GET',
+    })
+    clearTimeout(timer)
+    const latencyMs = Math.round(performance.now() - started)
+    return {
+      source: makeSource(
+        entry.id,
+        entry.url,
+        entry.captionEn,
+        entry.captionZh,
+        entry.kind,
+        'ok',
+        checkedAt,
+        { latencyMs, detail: 'Reachable (opaque)' },
+      ),
+      json: null,
+    }
+  } catch (e) {
+    return {
+      source: makeSource(
+        entry.id,
+        entry.url,
+        entry.captionEn,
+        entry.captionZh,
+        entry.kind,
+        'down',
+        checkedAt,
+        { detail: e instanceof Error ? e.message.slice(0, 80) : 'unreachable' },
+      ),
+      json: null,
+    }
+  }
 }
 
 function hourKeySgt(ts = Date.now()): string {
@@ -164,37 +536,6 @@ function rankPoints(
     en: clampTwoSentences(r.en),
     zh: clampTwoSentences(r.zh),
   }))
-}
-
-async function fetchJson(url: string, timeoutMs = 8000): Promise<unknown | null> {
-  try {
-    const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs)
-    const res = await fetch(url, { signal: ctrl.signal, cache: 'no-store', mode: 'cors' })
-    clearTimeout(timer)
-    if (!res.ok) return null
-    return await res.json()
-  } catch {
-    return null
-  }
-}
-
-async function probeUrl(url: string, timeoutMs = 6000): Promise<boolean> {
-  try {
-    const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs)
-    // no-cors opaque still proves DNS/TLS reachability for news hosts
-    await fetch(url, {
-      signal: ctrl.signal,
-      cache: 'no-store',
-      mode: 'no-cors',
-      method: 'GET',
-    })
-    clearTimeout(timer)
-    return true
-  } catch {
-    return false
-  }
 }
 
 function yahooLastClose(data: unknown): number | null {
@@ -246,6 +587,36 @@ function goldApiPrice(data: unknown): number | null {
   }
 }
 
+function okxFundingRate(data: unknown): number | null {
+  try {
+    const row = (data as { data?: { fundingRate?: string }[] })?.data?.[0]
+    const n = Number(row?.fundingRate)
+    return Number.isFinite(n) ? n : null
+  } catch {
+    return null
+  }
+}
+
+function bitgetLast(data: unknown): number | null {
+  try {
+    const row = (data as { data?: { lastPr?: string }[] | { lastPr?: string } })?.data
+    const last = Array.isArray(row) ? row[0]?.lastPr : row?.lastPr
+    const n = Number(last)
+    return Number.isFinite(n) ? n : null
+  } catch {
+    return null
+  }
+}
+
+function normalizeSource(s: ReportSource, fallbackTs: number): ReportSource {
+  return {
+    ...s,
+    kind: s.kind || 'news',
+    health: s.health || 'unchecked',
+    checkedAt: typeof s.checkedAt === 'number' ? s.checkedAt : fallbackTs,
+  }
+}
+
 export function loadHourlyReports(): HourlyMarketReport[] {
   try {
     const raw = localStorage.getItem(REPORTS_KEY)
@@ -254,6 +625,7 @@ export function loadHourlyReports(): HourlyMarketReport[] {
     if (!Array.isArray(parsed)) return []
     return parsed.slice(0, 48).map((r) => ({
       ...r,
+      sources: (r.sources || []).map((s) => normalizeSource(s, r.createdAt)),
       sentiment: r.sentiment ?? computeSentiment(r.opportunity || [], r.risk || []),
     }))
   } catch {
@@ -303,11 +675,11 @@ export function computeSentiment(
     'Only scored from listed Opportunity/Risk points this hour — never invented. Empty lists → 0 Neutral.',
   ]
   const definitionZh = [
-    '分数区间：−100（偏空）→ 0（中性）→ +100（偏多），针对 XAUUSD 工作台语气。',
-    '每条「机会」按紧急度排名加分：#1–#4 为 +25 / +20 / +15 / +10。',
-    '每条「风险」按同样权重减分：−25 / −20 / −15 / −10。',
-    '分档：≤−50 偏空 · −49…−15 偏谨慎 · −14…+14 中性 · +15…+49 偏建设性 · ≥+50 偏多。',
-    '仅依据本小时列出的机会／风险要点计分，不编造。两边皆空 → 0 中性。',
+    '分數區間：−100（偏空）→ 0（中性）→ +100（偏多），針對 XAUUSD 工作台語氣。',
+    '每條「機會」按緊急度排名加分：#1–#4 為 +25 / +20 / +15 / +10。',
+    '每條「風險」按同樣權重減分：−25 / −20 / −15 / −10。',
+    '分檔：≤−50 偏空 · −49…−15 偏謹慎 · −14…+14 中性 · +15…+49 偏建設性 · ≥+50 偏多。',
+    '僅依據本小時列出的機會／風險要點計分，不編造。兩邊皆空 → 0 中性。',
   ]
 
   if (opportunity.length === 0 && risk.length === 0) {
@@ -353,207 +725,257 @@ export async function generateHourlyScan(args: {
   extraCitations?: BriefingCitation[]
 }): Promise<HourlyMarketReport> {
   const createdAt = Date.now()
-  const sources: ReportSource[] = []
   const opportunityRaw: Omit<RankedPoint, 'rank'>[] = []
   const riskRaw: Omit<RankedPoint, 'rank'>[] = []
 
-  const addSource = (s: ReportSource) => {
-    if (sources.some((x) => x.id === s.id || x.url === s.url)) return
-    sources.push(s)
+  // Probe full XAUUSD desk catalog in parallel — every entry stays in the source list.
+  const probed = await Promise.all(SOURCE_CATALOG.map((e) => probeCatalogEntry(e)))
+  const byId = new Map(probed.map((p) => [p.source.id, p]))
+  const sources: ReportSource[] = probed.map((p) => p.source)
+
+  const bumpCaption = (id: string, en: string, zh: string) => {
+    const hit = sources.find((s) => s.id === id)
+    if (!hit) return
+    hit.captionEn = en
+    hit.captionZh = zh
   }
 
-  // —— Macro ——
-  const [dxyJson, tnxJson, fedJson] = await Promise.all([
-    fetchJson(YAHOO_DXY),
-    fetchJson(YAHOO_TNX),
-    fetchJson(FED_PRESS),
-  ])
-
-  const dxy = yahooLastClose(dxyJson)
+  const dxy = yahooLastClose(byId.get('yahoo-dxy')?.json ?? null)
   if (dxy != null) {
-    const src = makeSource(
+    bumpCaption(
       'yahoo-dxy',
-      YAHOO_DXY,
-      `Yahoo Finance DX-Y.NYB last ${dxy.toFixed(3)}`,
-      `Yahoo Finance 美元指數 DX-Y.NYB 最新 ${dxy.toFixed(3)}`,
+      `Yahoo DX-Y.NYB last ${dxy.toFixed(3)}`,
+      `Yahoo 美元指數 DX-Y.NYB 最新 ${dxy.toFixed(3)}`,
     )
-    addSource(src)
-    // Stronger USD is typically a headwind for gold → risk; weaker → opportunity
     if (dxy >= 104) {
       riskRaw.push({
         en: `Dollar Index (DX-Y.NYB) prints ${dxy.toFixed(3)} on the live Yahoo 1m chart. A firm USD remains a headwind for XAUUSD until the print softens.`,
         zh: `美元指數（DX-Y.NYB）於 Yahoo 1 分鐘圖最新為 ${dxy.toFixed(3)}。美元偏強在回落前仍對 XAUUSD 構成逆風。`,
-        sourceIds: [src.id],
+        sourceIds: ['yahoo-dxy'],
       })
     } else if (dxy <= 100) {
       opportunityRaw.push({
         en: `Dollar Index (DX-Y.NYB) prints ${dxy.toFixed(3)} on the live Yahoo 1m chart. Softer USD removes one near-term headwind for XAUUSD.`,
         zh: `美元指數（DX-Y.NYB）於 Yahoo 1 分鐘圖最新為 ${dxy.toFixed(3)}。美元偏弱短期減輕 XAUUSD 的一項逆風。`,
-        sourceIds: [src.id],
+        sourceIds: ['yahoo-dxy'],
       })
     } else {
-      // Neutral band — still a factual macro observation for TL;DR only via risk/opp if we want;
-      // put in risk as low urgency watch without inventing direction.
       riskRaw.push({
         en: `Dollar Index (DX-Y.NYB) is ${dxy.toFixed(3)} on the live Yahoo 1m chart. No extreme USD impulse is evidenced in this print alone.`,
         zh: `美元指數（DX-Y.NYB）於 Yahoo 1 分鐘圖為 ${dxy.toFixed(3)}。單憑此讀數尚無極端美元衝動證據。`,
-        sourceIds: [src.id],
+        sourceIds: ['yahoo-dxy'],
       })
     }
   }
 
-  const tnx = yahooLastClose(tnxJson)
+  const tnx = yahooLastClose(byId.get('yahoo-tnx')?.json ?? null)
   if (tnx != null) {
-    const src = makeSource(
+    bumpCaption(
       'yahoo-tnx',
-      YAHOO_TNX,
-      `Yahoo Finance ^TNX (US 10Y) last ${tnx.toFixed(3)}%`,
-      `Yahoo Finance ^TNX（美債 10 年）最新 ${tnx.toFixed(3)}%`,
+      `Yahoo ^TNX (US 10Y) last ${tnx.toFixed(3)}%`,
+      `Yahoo ^TNX（美債 10 年）最新 ${tnx.toFixed(3)}%`,
     )
-    addSource(src)
     if (tnx >= 4.2) {
       riskRaw.push({
         en: `US 10Y (^TNX) is ${tnx.toFixed(3)}% on the live Yahoo chart. Higher real-rate pressure can weigh on gold until yields ease.`,
         zh: `美債 10 年（^TNX）於 Yahoo 圖為 ${tnx.toFixed(3)}%。實質利率偏高在收益率回落前可能壓抑金價。`,
-        sourceIds: [src.id],
+        sourceIds: ['yahoo-tnx'],
       })
     } else if (tnx <= 3.5) {
       opportunityRaw.push({
         en: `US 10Y (^TNX) is ${tnx.toFixed(3)}% on the live Yahoo chart. Softer yields are a constructive backdrop for XAUUSD when confirmed by follow-through.`,
         zh: `美債 10 年（^TNX）於 Yahoo 圖為 ${tnx.toFixed(3)}%。收益率偏軟對 XAUUSD 偏建設性，仍需後續確認。`,
-        sourceIds: [src.id],
+        sourceIds: ['yahoo-tnx'],
       })
     } else {
       riskRaw.push({
         en: `US 10Y (^TNX) is ${tnx.toFixed(3)}% on the live Yahoo chart. Mid-range yields alone do not establish a directional gold catalyst.`,
         zh: `美債 10 年（^TNX）於 Yahoo 圖為 ${tnx.toFixed(3)}%。中段收益率本身不足以構成明確金價催化。`,
-        sourceIds: [src.id],
+        sourceIds: ['yahoo-tnx'],
       })
     }
   }
 
-  const fed = fedLatestHeadline(fedJson)
+  const fed = fedLatestHeadline(byId.get('fed-press-json')?.json ?? null)
   if (fed) {
-    const src = makeSource(
-      'fed-press',
-      fed.link.startsWith('http') ? fed.link : `https://www.federalreserve.gov${fed.link}`,
-      `Fed press: ${fed.title}`,
-      `聯準會新聞：${fed.title}`,
-    )
-    // Also keep the JSON feed as a source
-    addSource(
+    const fedUrl = fed.link.startsWith('http')
+      ? fed.link
+      : `https://www.federalreserve.gov${fed.link}`
+    sources.push(
       makeSource(
-        'fed-press-json',
-        FED_PRESS,
-        'Federal Reserve ne-press.json feed',
-        '聯準會 ne-press.json 新聞源',
+        'fed-press-item',
+        fedUrl,
+        `Fed press: ${fed.title}`,
+        `聯準會新聞：${fed.title}`,
+        'announcement',
+        'ok',
+        Date.now(),
+        { detail: 'From ne-press.json' },
       ),
     )
-    addSource(src)
     riskRaw.push({
       en: `Latest Fed press item on the official JSON feed: “${fed.title}”. Treat as calendar/policy context — not an automatic XAUUSD trade signal.`,
       zh: `聯準會官方 JSON 最新新聞：「${fed.title}」。僅作日程／政策背景，非自動交易信號。`,
-      sourceIds: [src.id, 'fed-press-json'],
+      sourceIds: ['fed-press-item', 'fed-press-json'],
     })
   }
 
-  // —— Spot / venue (factual only) ——
-  const [goldJson, okxJson] = await Promise.all([fetchJson(GOLD_API), fetchJson(OKX_TICKER)])
-  const spotLive = goldApiPrice(goldJson)
+  const spotLive = goldApiPrice(byId.get('gold-api')?.json ?? null)
   if (spotLive != null) {
-    const src = makeSource(
+    bumpCaption(
       'gold-api',
-      GOLD_API,
       `gold-api XAU spot ${spotLive.toFixed(2)}`,
       `gold-api XAU 現貨 ${spotLive.toFixed(2)}`,
     )
-    addSource(src)
   }
-  const okxPx = okxLast(okxJson)
+
+  const okxPx = okxLast(byId.get('okx-ticker')?.json ?? null)
   if (okxPx != null) {
-    const src = makeSource(
-      'okx-xau-swap',
-      OKX_TICKER,
+    bumpCaption(
+      'okx-ticker',
       `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)}`,
       `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}`,
     )
-    addSource(src)
     if (spotLive != null) {
       const basisBps = ((okxPx - spotLive) / spotLive) * 10_000
-      const basisSrc = [src.id, 'gold-api']
       if (Math.abs(basisBps) >= 25) {
         riskRaw.push({
           en: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} → basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps. Wide basis needs venue/LP checks before acting.`,
           zh: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} 對 gold-api 現貨 ${spotLive.toFixed(2)} → 基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps。基差偏寬時應先核對場所／LP。`,
-          sourceIds: basisSrc,
+          sourceIds: ['okx-ticker', 'gold-api'],
         })
       } else {
         opportunityRaw.push({
           en: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} → basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps. No extreme basis dislocation in this print.`,
           zh: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} 對 gold-api 現貨 ${spotLive.toFixed(2)} → 基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps。此讀數未顯示極端基差錯位。`,
-          sourceIds: basisSrc,
+          sourceIds: ['okx-ticker', 'gold-api'],
         })
       }
     }
   }
 
-  // Live monitor health → only if we have concrete alert/watch rows
+  const funding = okxFundingRate(byId.get('okx-funding')?.json ?? null)
+  if (funding != null) {
+    const pct = funding * 100
+    bumpCaption(
+      'okx-funding',
+      `OKX XAU-USDT-SWAP funding ${pct.toFixed(4)}%`,
+      `OKX XAU-USDT-SWAP 資金費率 ${pct.toFixed(4)}%`,
+    )
+    if (Math.abs(pct) >= 0.05) {
+      riskRaw.push({
+        en: `OKX XAU-USDT-SWAP funding prints ${pct.toFixed(4)}%. Elevated funding can amplify perp positioning stress for XAUUSD desks.`,
+        zh: `OKX XAU-USDT-SWAP 資金費率為 ${pct.toFixed(4)}%。費率偏高可能放大 XAUUSD 永續持倉壓力。`,
+        sourceIds: ['okx-funding'],
+      })
+    }
+  }
+
+  const bitgetPx = bitgetLast(byId.get('bitget-ticker')?.json ?? null)
+  if (bitgetPx != null && okxPx != null) {
+    bumpCaption(
+      'bitget-ticker',
+      `Bitget XAUUSDT last ${bitgetPx.toFixed(2)}`,
+      `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)}`,
+    )
+    const crossBps = ((bitgetPx - okxPx) / okxPx) * 10_000
+    if (Math.abs(crossBps) >= 20) {
+      riskRaw.push({
+        en: `Bitget XAUUSDT ${bitgetPx.toFixed(2)} vs OKX ${okxPx.toFixed(2)} → cross-venue ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps. Check liquidity before assuming a single mid.`,
+        zh: `Bitget XAUUSDT ${bitgetPx.toFixed(2)} 對 OKX ${okxPx.toFixed(2)} → 跨所 ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps。勿預設單一中間價，先核對流動性。`,
+        sourceIds: ['bitget-ticker', 'okx-ticker'],
+      })
+    }
+  }
+
+  const gc = yahooLastClose(byId.get('yahoo-gc')?.json ?? null)
+  if (gc != null) {
+    bumpCaption(
+      'yahoo-gc',
+      `Yahoo COMEX GC=F last ${gc.toFixed(2)}`,
+      `Yahoo COMEX GC=F 最新 ${gc.toFixed(2)}`,
+    )
+  }
+
+  // Desk health from live monitor (always attach as a source with freshness)
   const alertSources = args.health.filter((h) => h.health === 'alert' || h.health === 'watch')
-  if (alertSources.length >= 2 && args.composite != null) {
-    const ids = alertSources.slice(0, 4).map((h) => h.id)
-    const src = makeSource(
+  sources.push(
+    makeSource(
       'vex-monitor-composite',
       'https://vex-llm-proxy.vercel.app/#/market/health',
-      `V Exchange desk composite ${args.composite.toFixed(2)}; breached/watch: ${ids.join(', ')}`,
-      `V Exchange 工作台綜合價 ${args.composite.toFixed(2)}；關注／警報源：${ids.join('、')}`,
-    )
-    addSource(src)
+      args.composite != null
+        ? `V Exchange desk composite ${args.composite.toFixed(2)}; watch/alert=${alertSources.length}`
+        : 'V Exchange desk composite unavailable',
+      args.composite != null
+        ? `V Exchange 工作台綜合價 ${args.composite.toFixed(2)}；關注／警報=${alertSources.length}`
+        : 'V Exchange 工作台綜合價不可用',
+      'indicator',
+      args.composite != null ? 'ok' : 'degraded',
+      createdAt,
+      { detail: 'Local monitor tick' },
+    ),
+  )
+  if (alertSources.length >= 2 && args.composite != null) {
+    const ids = alertSources.slice(0, 4).map((h) => h.id)
     riskRaw.push({
       en: `Desk health shows ${alertSources.length} sources in watch/alert (e.g. ${ids.join(', ')}) vs composite ${args.composite.toFixed(2)}. Confirm with venue pages before escalating.`,
       zh: `工作台健康度顯示 ${alertSources.length} 個源處於關注／警報（如 ${ids.join('、')}），綜合價 ${args.composite.toFixed(2)}。升級前請核對場所頁。`,
-      sourceIds: [src.id],
+      sourceIds: ['vex-monitor-composite'],
     })
   }
 
-  // —— V Exchange indicators (placeholder — never invent values) ——
   const vexNoteEn =
     'V Exchange proprietary indicators: placeholder only — feed not connected; no indicator points this hour.'
   const vexNoteZh =
     'V Exchange 自有指標：目前僅為占位，數據源未接入；本小時無指標要點。'
 
-  // —— XAUUSD opinions (only if article host responds) ——
-  const opinionHits = await Promise.all(
-    OPINION_ARTICLES.map(async (a) => ({ a, ok: await probeUrl(a.url) })),
-  )
-  for (const { a, ok } of opinionHits) {
-    if (!ok) continue
-    const src = makeSource(a.id, a.url, a.captionEn, a.captionZh)
-    addSource(src)
-    // Survey / hawkish pieces → risk; paradox/rates context → risk or opportunity by id
-    if (a.id === 'kitco-survey' || a.id === 'kitco-hawkish-pause' || a.id === 'kitco-rates-holdback') {
-      riskRaw.push({
-        en: `Opinion source reachable: ${a.captionEn}. Use the article itself for the author’s view — this desk does not invent a stance.`,
-        zh: `觀點來源可達：${a.captionZh}。作者立場以原文為準 — 本工作台不編造觀點。`,
-        sourceIds: [src.id],
+  // Opinion articles — only when health is ok
+  for (const entry of SOURCE_CATALOG.filter((e) => e.opinion)) {
+    const hit = byId.get(entry.id)
+    if (!hit || hit.source.health !== 'ok') continue
+    if (entry.opinionTone === 'opportunity') {
+      opportunityRaw.push({
+        en: `Opinion source reachable: ${entry.captionEn}. Open the article for the full argument; no desk-invented trade thesis.`,
+        zh: `觀點來源可達：${entry.captionZh}。請打開原文閱讀完整論點；工作台不編造交易命題。`,
+        sourceIds: [entry.id],
       })
     } else {
-      opportunityRaw.push({
-        en: `Opinion source reachable: ${a.captionEn}. Open the article for the full argument; no desk-invented trade thesis.`,
-        zh: `觀點來源可達：${a.captionZh}。請打開原文閱讀完整論點；工作台不編造交易命題。`,
-        sourceIds: [src.id],
+      riskRaw.push({
+        en: `Opinion source reachable: ${entry.captionEn}. Use the article itself for the author’s view — this desk does not invent a stance.`,
+        zh: `觀點來源可達：${entry.captionZh}。作者立場以原文為準 — 本工作台不編造觀點。`,
+        sourceIds: [entry.id],
       })
     }
   }
 
-  // Attach any extra briefing citations as sources only (no new points from them)
   for (const c of args.extraCitations || []) {
-    addSource(makeSource(c.id, c.url, c.label, c.label))
+    if (sources.some((s) => s.id === c.id || s.url === c.url)) continue
+    sources.push(
+      makeSource(c.id, c.url, c.label, c.label, 'news', 'unchecked', createdAt, {
+        detail: 'Imported briefing citation',
+      }),
+    )
   }
+
+  // Stable order: kind groups then id
+  const kindOrder: SourceKind[] = [
+    'price',
+    'api',
+    'indicator',
+    'macro',
+    'exchange',
+    'announcement',
+    'news',
+  ]
+  sources.sort((a, b) => {
+    const ka = kindOrder.indexOf(a.kind)
+    const kb = kindOrder.indexOf(b.kind)
+    if (ka !== kb) return ka - kb
+    return a.id.localeCompare(b.id)
+  })
 
   const opportunity = rankPoints(opportunityRaw)
   const risk = rankPoints(riskRaw)
-
-  // TL;DR = most urgent blend of risk then opportunity, max 4, no invention beyond those lists
   const tldrPool = [
     ...risk.map((p) => ({ ...p, sourceIds: p.sourceIds })),
     ...opportunity.map((p) => ({ ...p, sourceIds: p.sourceIds })),
@@ -565,7 +987,6 @@ export async function generateHourlyScan(args: {
       sourceIds: p.sourceIds,
     })),
   )
-
   const sentiment = computeSentiment(opportunity, risk)
 
   return {

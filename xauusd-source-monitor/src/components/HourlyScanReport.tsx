@@ -84,32 +84,61 @@ function SourcesModal({
           <p className="sub">{t('hourlyNoSources')}</p>
         ) : (
           <ul className="sources-modal-list">
-            {ordered.map((s) => (
-              <li key={s.id} className={hi.has(s.id) ? 'is-highlight' : undefined}>
-                <a
-                  className="sources-modal-row"
-                  href={s.url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  <img
-                    className="sources-modal-logo"
-                    src={s.logoUrl}
-                    alt=""
-                    width={28}
-                    height={28}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                  />
-                  <span className="sources-modal-copy">
-                    <span className="sources-modal-caption">
-                      {lang === 'zh-Hant' ? s.captionZh : s.captionEn}
+            {ordered.map((s) => {
+              const healthKey =
+                s.health === 'ok'
+                  ? 'hourlyHealthOk'
+                  : s.health === 'degraded'
+                    ? 'hourlyHealthDegraded'
+                    : s.health === 'down'
+                      ? 'hourlyHealthDown'
+                      : 'hourlyHealthUnchecked'
+              const kindKey = `hourlyKind_${s.kind}`
+              return (
+                <li key={s.id} className={hi.has(s.id) ? 'is-highlight' : undefined}>
+                  <a
+                    className="sources-modal-row"
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    <img
+                      className="sources-modal-logo"
+                      src={s.logoUrl}
+                      alt=""
+                      width={28}
+                      height={28}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                    />
+                    <span className="sources-modal-copy">
+                      <span className="sources-modal-caption-row">
+                        <span className="sources-modal-caption">
+                          {lang === 'zh-Hant' ? s.captionZh : s.captionEn}
+                        </span>
+                        <span
+                          className={`sources-modal-health health-${s.health || 'unchecked'}`}
+                          title={s.detail || undefined}
+                        >
+                          {t(healthKey)}
+                        </span>
+                      </span>
+                      <span className="sources-modal-meta">
+                        <span className="sources-modal-kind">{t(kindKey)}</span>
+                        <span className="sources-modal-domain">{s.domain}</span>
+                      </span>
+                      <span className="sources-modal-refreshed">
+                        {t('hourlyLastRefreshed').replace(
+                          '{time}',
+                          s.checkedAt ? `${fmtSgt(s.checkedAt)} SGT` : '—',
+                        )}
+                        {typeof s.latencyMs === 'number' ? ` · ${s.latencyMs}ms` : ''}
+                      </span>
                     </span>
-                    <span className="sources-modal-domain">{s.domain}</span>
-                  </span>
-                </a>
-              </li>
-            ))}
+                  </a>
+                </li>
+              )
+            })}
           </ul>
         )}
       </div>
