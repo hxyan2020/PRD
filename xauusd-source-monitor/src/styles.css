@@ -3025,6 +3025,8 @@ td.mono,
 .hourly-point-body p {
   margin: 0 0 4px;
   font-size: 0.95rem;
+  line-height: 1.45;
+  max-width: 62rem;
 }
 
 .hourly-sources-link {

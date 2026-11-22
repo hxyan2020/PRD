@@ -130,6 +130,9 @@ type CatalogEntry = {
   /** When true, a reachable opinion/news URL can feed Risk/Opportunity text */
   opinion?: boolean
   opinionTone?: 'risk' | 'opportunity'
+  /** Informative Opportunity/Risk bullet summarizing the article (not just the headline) */
+  summaryEn?: string
+  summaryZh?: string
 }
 
 /**
@@ -332,6 +335,10 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: 'Kitco 調查：金價跌破 3,900 後華爾街轉空',
     opinion: true,
     opinionTone: 'risk',
+    summaryEn:
+      'Kitco News Weekly Gold Survey: after spot gold broke below $3,900 (weekly low near $3,870 — weakest in over a year) amid a hawkish Fed hold, firm GDP/PCE, and Friday tech-led liquidation, Wall Street flipped sharply bearish — only 1 of 16 analysts (6%) expect a rebound next week vs 63% looking for further losses — while Main Street stayed narrowly bullish (53%); several desks flag a possible extension toward roughly $3,750–$3,850 if support fails.',
+    summaryZh:
+      'Kitco 每週黃金調查：現貨金跌破 3,900（週低約 3,870，逾一年最弱），背景是聯準會鷹派按兵不動、GDP／核心 PCE 偏強，以及週五科技股帶動的貴金屬被迫平倉；華爾街轉空明顯——16 位分析師中僅 1 位（6%）看反彈、63% 看續跌，Main Street 仍以 53% 窄幅偏多；多家機構指出若支撐失守，可能延伸至約 3,750–3,850。',
   },
   {
     id: 'kitco-paradox',
@@ -341,6 +348,10 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: 'Kitco：收益率下行與美元走弱仍擋不住金價拋售',
     opinion: true,
     opinionTone: 'opportunity',
+    summaryEn:
+      'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy and Iran-linked oil inflation; Kitco argues the long-term fundamentals are intact and frames the selloff as frustrating short-term action that still leaves lower prices as long-term buying opportunities.',
+    summaryZh:
+      'Kitco：即便聯準會按兵不動、債息明顯下行、美元走軟——傳統上利好無孳息黃金——金價仍週跌約 3%、跌破 3,900，創逾一年低位，因市場定價「更高更久」利率與伊朗相關油價通脹；文中認為長期基本面未破，將此輪拋售視為短期挫折，並把更低價位視為長期買入機會。',
   },
   {
     id: 'kitco-hawkish-pause',
@@ -350,6 +361,10 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: 'Kitco / TDS：聯準會鷹派暫停，金價受困',
     opinion: true,
     opinionTone: 'risk',
+    summaryEn:
+      'Kitco / TD Securities (Bart Melek): the Fed left rates unchanged but kept a hawkish focus on returning inflation to 2%, leaving gold consolidating near key levels with TDS seeing a roughly $3,900–$4,250 range; Melek expects higher carry and opportunity cost while long-end yields stay restrictive, so a material near-term rebound looks unlikely even though TDS is not calling for a rout.',
+    summaryZh:
+      'Kitco／道明證券（Bart Melek）：聯準會維持利率不變但仍鷹派盯住 2% 通脹目標，金價在關鍵位附近盤整，TDS 預期大致落在 3,900–4,250；Melek 認為長端利率仍偏緊、持有黃金的機會成本上升，短期難有實質反彈，但也未預期崩盤式下跌。',
   },
   {
     id: 'kitco-rates-holdback',
@@ -359,6 +374,10 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: 'Kitco：利率上行威脅壓制金價反彈',
     opinion: true,
     opinionTone: 'risk',
+    summaryEn:
+      'Kitco / Catalyst Funds (David Miller): spot gold slid below $3,900 (about −3% on the week, weakest in roughly a year) as sticky inflation and higher-for-longer rate expectations outweighed softer yields and a weaker dollar; Miller frames the move as a correction after large 2024–25 gains rather than a broken bull thesis, with speculative flows weak while longer-term holders and sovereign demand still underpin the metal.',
+    summaryZh:
+      'Kitco／Catalyst Funds（David Miller）：現貨金跌破 3,900（週跌約 3%，約一年低位），黏性通脹與「更高更久」利率預期蓋過債息回落與美元走弱；Miller 將此視為 2024–25 大漲後的回調而非多頭論述破裂，短線投機流偏弱，但長線持有者與官方部門需求仍構成支撐。',
   },
   {
     id: 'cme-comex',
@@ -375,6 +394,16 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: 'LBMA：貴金屬價格與數據',
   },
 ]
+
+/** Desk bullets are statements — drop interrogatives / trailing ? prompts. */
+function stripQuestions(text: string): string {
+  return text
+    .replace(/\?\s*/g, '. ')
+    .replace(/\s+\./g, '.')
+    .replace(/\.\s*\./g, '.')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
 
 function domainOf(url: string): string {
   try {
@@ -553,12 +582,23 @@ function hourKeySgt(ts = Date.now()): string {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}`
 }
 
-/** One line only — strip to a single sentence / clause. */
+/** TL;DR only — strip to a single sentence / clause. */
 function clampOneLine(text: string): string {
-  const trimmed = text.trim().replace(/\s+/g, ' ')
-  const parts = trimmed.split(/(?<=[.!?。！？])\s+/).filter(Boolean)
+  const trimmed = stripQuestions(text.trim().replace(/\s+/g, ' '))
+  const parts = trimmed.split(/(?<=[.!。！])\s+/).filter(Boolean)
   const first = parts[0] || trimmed
   return first.length > 160 ? `${first.slice(0, 157).trimEnd()}…` : first
+}
+
+/** Opportunity / Risk: keep a full informative summary (2–3 sentences), not a headline stub. */
+function clampSummary(text: string, maxChars = 520): string {
+  const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
+  if (cleaned.length <= maxChars) return cleaned
+  const cut = cleaned.slice(0, maxChars - 1)
+  // Prefer a real sentence end — never chop at commas / semicolons mid-thought.
+  const at = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('! '))
+  if (at > maxChars * 0.6) return cut.slice(0, at + 1).trim()
+  return `${cut.trimEnd()}…`
 }
 
 function rankPoints(
@@ -567,8 +607,8 @@ function rankPoints(
   return rows.slice(0, 4).map((r, i) => ({
     ...r,
     rank: i + 1,
-    en: clampOneLine(r.en),
-    zh: clampOneLine(r.zh),
+    en: clampSummary(r.en),
+    zh: clampSummary(r.zh),
   }))
 }
 
@@ -913,14 +953,14 @@ export async function generateHourlyScan(args: {
     )
     if (dxy >= 104) {
       riskRaw.push({
-        en: `DXY ${dxy.toFixed(3)} firm — USD headwind for XAUUSD.`,
-        zh: `美元指數 ${dxy.toFixed(3)} 偏強 — 對 XAUUSD 構成逆風。`,
+        en: `Yahoo DX-Y.NYB prints ${dxy.toFixed(3)}, a firm dollar backdrop that raises the FX opportunity cost of holding gold and typically pressures XAUUSD perps until the index cools.`,
+        zh: `Yahoo 美元指數 DX-Y.NYB 報 ${dxy.toFixed(3)}，美元偏強推高持有黃金的匯率機會成本，通常會壓抑 XAUUSD 永續，直至指數回軟。`,
         sourceIds: ['yahoo-dxy'],
       })
     } else if (dxy <= 100) {
       opportunityRaw.push({
-        en: `DXY ${dxy.toFixed(3)} soft — near-term USD headwind easing.`,
-        zh: `美元指數 ${dxy.toFixed(3)} 偏弱 — 短期美元逆風減輕。`,
+        en: `Yahoo DX-Y.NYB prints ${dxy.toFixed(3)}, a soft dollar backdrop that lowers FX headwinds for gold and is constructive for XAUUSD perps while the index stays subdued.`,
+        zh: `Yahoo 美元指數 DX-Y.NYB 報 ${dxy.toFixed(3)}，美元偏弱減輕黃金的匯率逆風，指數維持偏軟期間對 XAUUSD 永續偏建設性。`,
         sourceIds: ['yahoo-dxy'],
       })
     }
@@ -935,14 +975,14 @@ export async function generateHourlyScan(args: {
     )
     if (tnx >= 4.2) {
       riskRaw.push({
-        en: `US 10Y ${tnx.toFixed(3)}% elevated — rate pressure on gold.`,
-        zh: `美債 10 年 ${tnx.toFixed(3)}% 偏高 — 利率壓力壓抑金價。`,
+        en: `Yahoo ^TNX (US 10Y) at ${tnx.toFixed(3)}% keeps real-rate pressure elevated, increasing the opportunity cost of non-yielding gold and weighing on XAUUSD while yields stay this high.`,
+        zh: `Yahoo ^TNX（美債 10 年）報 ${tnx.toFixed(3)}%，實質利率壓力偏高，推升無孳息黃金的機會成本，收益率維持高位期間壓抑 XAUUSD。`,
         sourceIds: ['yahoo-tnx'],
       })
     } else if (tnx <= 3.5) {
       opportunityRaw.push({
-        en: `US 10Y ${tnx.toFixed(3)}% soft — constructive for XAUUSD if it holds.`,
-        zh: `美債 10 年 ${tnx.toFixed(3)}% 偏軟 — 若延續對 XAUUSD 偏建設性。`,
+        en: `Yahoo ^TNX (US 10Y) at ${tnx.toFixed(3)}% softens real-rate headwinds for gold, reducing the opportunity cost of holding XAUUSD while the 10Y stays this subdued.`,
+        zh: `Yahoo ^TNX（美債 10 年）報 ${tnx.toFixed(3)}%，實質利率逆風減輕，10 年期維持偏軟期間降低持有 XAUUSD 的機會成本。`,
         sourceIds: ['yahoo-tnx'],
       })
     }
@@ -966,8 +1006,8 @@ export async function generateHourlyScan(args: {
       ),
     )
     riskRaw.push({
-      en: `Fed press: ${fed.title} — calendar context only.`,
-      zh: `聯準會新聞：${fed.title} — 僅作日程背景。`,
+      en: `Federal Reserve press item “${fed.title}” is on the calendar feed — treat it as event/policy context for gold rates pricing this hour, not as a confirmed market catalyst yet.`,
+      zh: `聯準會新聞稿「${fed.title}」已出現在日程來源——本小時僅作黃金利率定價的事件／政策背景，尚未視為已確認的行情催化。`,
       sourceIds: ['fed-press-item', 'fed-press-json'],
     })
   }
@@ -992,14 +1032,14 @@ export async function generateHourlyScan(args: {
       const basisBps = ((okxPx - spotLive) / spotLive) * 10_000
       if (Math.abs(basisBps) >= 25) {
         riskRaw.push({
-          en: `OKX vs spot basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — wide; check venue/LP.`,
-          zh: `OKX 對現貨基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — 偏寬，核對場所／LP。`,
+          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} leaves a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps futures–spot basis — wide enough to distort mid marks, venue prints, and LP hedges until the dislocation narrows.`,
+          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，對 gold-api 現貨 ${spotLive.toFixed(2)} 的期現基差為 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——偏寬，足以扭曲中間價、場所報價與 LP 對沖，直至錯位收斂。`,
           sourceIds: ['okx-ticker', 'gold-api'],
         })
       } else {
         opportunityRaw.push({
-          en: `OKX vs spot basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — no extreme dislocation.`,
-          zh: `OKX 對現貨基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — 無極端錯位。`,
+          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} shows only a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps basis — perp and spot are aligned with no extreme dislocation this hour.`,
+          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，對 gold-api 現貨 ${spotLive.toFixed(2)} 基差僅 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——永續與現貨對齊，本小時無極端錯位。`,
           sourceIds: ['okx-ticker', 'gold-api'],
         })
       }
@@ -1016,8 +1056,8 @@ export async function generateHourlyScan(args: {
     )
     if (Math.abs(pct) >= 0.05) {
       riskRaw.push({
-        en: `OKX funding ${pct.toFixed(4)}% — elevated perp stress risk.`,
-        zh: `OKX 資金費率 ${pct.toFixed(4)}% — 永續持倉壓力偏高。`,
+        en: `OKX XAU-USDT-SWAP funding is ${pct.toFixed(4)}%, an elevated carry cost that signals crowded perp positioning and raises squeeze / rollover stress for leveraged XAUUSD books this hour.`,
+        zh: `OKX XAU-USDT-SWAP 資金費率報 ${pct.toFixed(4)}%，持有成本偏高，顯示永續倉位擁擠，本小時槓桿 XAUUSD 賬本的軋空／展期壓力上升。`,
         sourceIds: ['okx-funding'],
       })
     }
@@ -1033,8 +1073,8 @@ export async function generateHourlyScan(args: {
     const crossBps = ((bitgetPx - okxPx) / okxPx) * 10_000
     if (Math.abs(crossBps) >= 20) {
       riskRaw.push({
-        en: `Bitget vs OKX ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps — check liquidity before one mid.`,
-        zh: `Bitget 對 OKX ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps — 先核對流動性再取中間價。`,
+        en: `Bitget XAUUSDT last ${bitgetPx.toFixed(2)} vs OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} is ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps apart — a material cross-venue gap that can bias a single mid mark if liquidity is thinner on one side.`,
+        zh: `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)} 與 OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} 相差 ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps——跨場所價差偏大，若單邊流動性較薄，單一中間價可能失真。`,
         sourceIds: ['bitget-ticker', 'okx-ticker'],
       })
     }
@@ -1098,13 +1138,13 @@ export async function generateHourlyScan(args: {
   const vexNoteZh =
     'V Exchange 自有指標：目前僅為占位，數據源未接入；本小時無指標要點。'
 
-  // Opinion headlines only (one line) — full article lives in Sources, never restated in TL;DR
+  // Opinion bullets: informative article summaries (not bare headlines); never restated in TL;DR
   for (const entry of SOURCE_CATALOG.filter((e) => e.opinion)) {
     const hit = byId.get(entry.id)
     if (!hit || hit.source.health !== 'ok') continue
     const point = {
-      en: entry.captionEn,
-      zh: entry.captionZh,
+      en: stripQuestions(entry.summaryEn || entry.captionEn),
+      zh: stripQuestions(entry.summaryZh || entry.captionZh),
       sourceIds: [entry.id],
     }
     if (entry.opinionTone === 'opportunity') opportunityRaw.push(point)
