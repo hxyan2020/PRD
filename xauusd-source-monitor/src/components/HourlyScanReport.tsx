@@ -166,7 +166,7 @@ function SectionBlock({
   onOpenSources: (sourceIds: string[]) => void
   t: (k: string) => string
   lang: string
-  /** TL;DR: single one-line blurb, no numbered list */
+  /** TL;DR: single balanced blurb (prints + opp/risk), no numbered list */
   oneLine?: boolean
 }) {
   if (oneLine) {

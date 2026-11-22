@@ -582,14 +582,6 @@ function hourKeySgt(ts = Date.now()): string {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}`
 }
 
-/** TL;DR only — strip to a single sentence / clause. */
-function clampOneLine(text: string): string {
-  const trimmed = stripQuestions(text.trim().replace(/\s+/g, ' '))
-  const parts = trimmed.split(/(?<=[.!。！])\s+/).filter(Boolean)
-  const first = parts[0] || trimmed
-  return first.length > 160 ? `${first.slice(0, 157).trimEnd()}…` : first
-}
-
 /** Opportunity / Risk: keep a full informative summary (2–3 sentences), not a headline stub. */
 function clampSummary(text: string, maxChars = 520): string {
   const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
@@ -612,7 +604,18 @@ function rankPoints(
   }))
 }
 
-/** Single one-line TL;DR — synthesizes live prints; does not copy Opportunity/Risk news. */
+/** Short clause for TL;DR — first sentence / gist, not the full article dump. */
+function gistClause(text: string, maxChars = 160): string {
+  const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
+  const first =
+    cleaned.split(/(?<=[.。!！])\s+/).filter(Boolean)[0]?.replace(/[.。!！]+$/, '') || cleaned
+  if (first.length <= maxChars) return first
+  const cut = first.slice(0, maxChars - 1)
+  const at = Math.max(cut.lastIndexOf(' — '), cut.lastIndexOf(', '), cut.lastIndexOf('，'), cut.lastIndexOf(' '))
+  return `${(at > maxChars * 0.45 ? cut.slice(0, at) : cut).trimEnd()}…`
+}
+
+/** TL;DR: live prints + balanced summary of Opportunity and Risk (statements only). */
 function buildOneLineTldr(args: {
   dxy: number | null
   tnx: number | null
@@ -621,50 +624,68 @@ function buildOneLineTldr(args: {
   opportunity: RankedPoint[]
   risk: RankedPoint[]
 }): RankedPoint[] {
-  const bitsEn: string[] = []
-  const bitsZh: string[] = []
   const sourceIds: string[] = []
+  const printEn: string[] = []
+  const printZh: string[] = []
 
   if (args.okxPx != null) {
-    bitsEn.push(`OKX XAU ${args.okxPx.toFixed(2)}`)
-    bitsZh.push(`OKX 金 ${args.okxPx.toFixed(2)}`)
+    printEn.push(`OKX XAU ${args.okxPx.toFixed(2)}`)
+    printZh.push(`OKX 金 ${args.okxPx.toFixed(2)}`)
     sourceIds.push('okx-ticker')
   }
   if (args.spotLive != null) {
-    bitsEn.push(`spot ${args.spotLive.toFixed(2)}`)
-    bitsZh.push(`現貨 ${args.spotLive.toFixed(2)}`)
+    printEn.push(`spot ${args.spotLive.toFixed(2)}`)
+    printZh.push(`現貨 ${args.spotLive.toFixed(2)}`)
     sourceIds.push('gold-api')
   }
   if (args.dxy != null) {
-    bitsEn.push(`DXY ${args.dxy.toFixed(2)}`)
-    bitsZh.push(`美元指數 ${args.dxy.toFixed(2)}`)
+    printEn.push(`DXY ${args.dxy.toFixed(2)}`)
+    printZh.push(`美元指數 ${args.dxy.toFixed(2)}`)
     sourceIds.push('yahoo-dxy')
   }
   if (args.tnx != null) {
-    bitsEn.push(`10Y ${args.tnx.toFixed(2)}%`)
-    bitsZh.push(`10Y ${args.tnx.toFixed(2)}%`)
+    printEn.push(`10Y ${args.tnx.toFixed(2)}%`)
+    printZh.push(`10Y ${args.tnx.toFixed(2)}%`)
     sourceIds.push('yahoo-tnx')
   }
 
-  const nOpp = args.opportunity.length
-  const nRisk = args.risk.length
-  const tailEn =
-    nOpp || nRisk
-      ? ` · ${nRisk} risk / ${nOpp} opportunity — details below`
-      : ' · no ranked signals this hour'
-  const tailZh =
-    nOpp || nRisk
-      ? ` · ${nRisk} 風險／${nOpp} 機會 — 詳見下方`
-      : ' · 本小時無排序要點'
+  const topOpp = args.opportunity.slice(0, 2)
+  const topRisk = args.risk.slice(0, 2)
+  for (const p of [...topOpp, ...topRisk]) sourceIds.push(...p.sourceIds)
 
-  const coreEn = bitsEn.length ? bitsEn.join(' · ') : 'XAUUSD desk scan'
-  const coreZh = bitsZh.length ? bitsZh.join(' · ') : 'XAUUSD 工作台掃報'
+  const partsEn: string[] = []
+  const partsZh: string[] = []
+
+  if (printEn.length) {
+    partsEn.push(`Live: ${printEn.join(' · ')}.`)
+    partsZh.push(`即時：${printZh.join(' · ')}。`)
+  }
+
+  if (topOpp.length) {
+    const gistsEn = topOpp.map((p) => gistClause(p.en)).join('; ')
+    const gistsZh = topOpp.map((p) => gistClause(p.zh)).join('；')
+    partsEn.push(`Opportunity: ${gistsEn}.`)
+    partsZh.push(`機會面：${gistsZh}。`)
+  } else {
+    partsEn.push('Opportunity: no ranked opportunity points this hour.')
+    partsZh.push('機會面：本小時無排序機會要點。')
+  }
+
+  if (topRisk.length) {
+    const gistsEn = topRisk.map((p) => gistClause(p.en)).join('; ')
+    const gistsZh = topRisk.map((p) => gistClause(p.zh)).join('；')
+    partsEn.push(`Risk: ${gistsEn}.`)
+    partsZh.push(`風險面：${gistsZh}。`)
+  } else {
+    partsEn.push('Risk: no ranked risk points this hour.')
+    partsZh.push('風險面：本小時無排序風險要點。')
+  }
 
   return [
     {
       rank: 1,
-      en: clampOneLine(coreEn + tailEn),
-      zh: clampOneLine(coreZh + tailZh),
+      en: clampSummary(partsEn.join(' '), 560),
+      zh: clampSummary(partsZh.join(''), 560),
       sourceIds: [...new Set(sourceIds)],
     },
   ]
@@ -1179,7 +1200,7 @@ export async function generateHourlyScan(args: {
 
   const opportunity = rankPoints(opportunityRaw)
   const risk = rankPoints(riskRaw)
-  // One-line TL;DR from live prints only — does not repeat Opportunity/Risk news lines
+  // TL;DR: live prints + compressed Opportunity / Risk gists (balanced both sides)
   const tldr = buildOneLineTldr({
     dxy,
     tnx,

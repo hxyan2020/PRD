@@ -21,7 +21,7 @@ const en: Dict = {
   navArchive: 'Archive',
   hourlyTitle: 'Hourly market scan',
   hourlySub:
-    'Auto-runs each Singapore hour. One-line TL;DR from live prints (not a news dump). Opportunity / Risk: up to 4 ranked bullets that summarize the linked article or print — informative statements, no questions; empty sections say so. No invented points.',
+    'Auto-runs each Singapore hour. TL;DR blends live prints with a short summary of both Opportunity and Risk. Opportunity / Risk: up to 4 ranked bullets that summarize the linked article or print — informative statements, no questions; empty sections say so. No invented points.',
   hourlyScanNow: 'Scan now',
   hourlyScanning: 'Scanning…',
   hourlyEmpty: 'No hourly report yet — tap Scan now.',
@@ -435,7 +435,7 @@ const zhHant: Dict = {
   navArchive: '歸檔',
   hourlyTitle: '小時行情掃報',
   hourlySub:
-    '每個新加坡整點自動掃描。TL;DR 為單行即時報價摘要（不重複新聞）。機會／風險各最多 4 條排序要點，摘要關聯文章或行情（完整陳述、不含疑問句）；無要點時明示，不編造。',
+    '每個新加坡整點自動掃描。TL;DR 結合即時報價，並摘要機會與風險兩面。機會／風險各最多 4 條排序要點，摘要關聯文章或行情（完整陳述、不含疑問句）；無要點時明示，不編造。',
   hourlyScanNow: '立即掃描',
   hourlyScanning: '掃描中…',
   hourlyEmpty: '尚無小時報告 — 請點「立即掃描」。',
