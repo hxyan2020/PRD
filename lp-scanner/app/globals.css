@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg0: #eef3f8;
+  --bg1: #d9e6f2;
+  --ink: #0b1f33;
+  --accent: #0f766e;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #c7e7e2 0%, transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, #fde7d4 0%, transparent 50%),
+    linear-gradient(165deg, var(--bg0), var(--bg1) 55%, #e8eef5);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: #99f6e4;
+  color: #0b1f33;
+}
+
+.panel {
+  @apply rounded-2xl border border-line/80 bg-white/80 shadow-panel backdrop-blur;
+}
+
+.chip {
+  @apply inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium;
+}
