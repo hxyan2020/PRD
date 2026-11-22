@@ -11,6 +11,11 @@ type ProbeDef = {
   check: InfoSourceProbe['check']
 }
 
+/** JSON APIs that stay readable under browser CORS — prefer these for “healthy”. */
+const JSON_LATENCY_DEGRADED_MS = 6000
+/** HTML pages rarely allow CORS; opaque reachability is the expected success path. */
+const HTML_LATENCY_DEGRADED_MS = 8000
+
 function kindFromCitation(c: BriefingCitation): InfoSourceKind | null {
   if (c.category === 'price_api') return 'price'
   if (c.category === 'venue') return 'venue'
@@ -35,7 +40,10 @@ function checkForUrl(url: string): InfoSourceProbe['check'] {
   return 'http'
 }
 
-/** Full catalog derived from briefing citations + a few extra health endpoints. */
+/**
+ * Health-panel catalog: CORS-friendly JSON first, plus a slim HTML set
+ * (venues / policy / curated Kitco). Drops Yahoo HTML history duplicates.
+ */
 export function buildProbeDefs(lang: AppLang): ProbeDef[] {
   const fromCitations: ProbeDef[] = staticCitationCatalog(lang)
     .map((c) => {
@@ -52,29 +60,9 @@ export function buildProbeDefs(lang: AppLang): ProbeDef[] {
     })
     .filter((d): d is ProbeDef => d != null)
 
-  // Extra health endpoints not always listed as briefing citations
-  const extras: ProbeDef[] = [
-    {
-      id: 'yahoo-dxy-history',
-      kind: 'macro',
-      en: 'Yahoo history page: Dollar Index DX-Y.NYB',
-      zh: 'Yahoo 歷史頁：美元指數 DX-Y.NYB',
-      url: 'https://finance.yahoo.com/quote/DX-Y.NYB/history?p=DX-Y.NYB',
-      check: 'http',
-    },
-    {
-      id: 'yahoo-tnx-history',
-      kind: 'macro',
-      en: 'Yahoo history page: US 10Y ^TNX',
-      zh: 'Yahoo 歷史頁：美國 10 年期 ^TNX',
-      url: 'https://finance.yahoo.com/quote/%5ETNX/history?p=%5ETNX',
-      check: 'http',
-    },
-  ]
-
   const seen = new Set<string>()
   const out: ProbeDef[] = []
-  for (const d of [...fromCitations, ...extras]) {
+  for (const d of fromCitations) {
     if (seen.has(d.id) || seen.has(d.url)) continue
     seen.add(d.id)
     seen.add(d.url)
@@ -83,63 +71,90 @@ export function buildProbeDefs(lang: AppLang): ProbeDef[] {
   return out
 }
 
+function baseResult(
+  def: ProbeDef,
+  lang: AppLang,
+  partial: Pick<InfoSourceProbe, 'status' | 'latencyMs' | 'detail' | 'check' | 'checkedAt'>,
+): InfoSourceProbe {
+  return {
+    id: def.id,
+    label: lang === 'zh-Hant' ? def.zh : def.en,
+    url: def.url,
+    kind: def.kind,
+    check: partial.check,
+    status: partial.status,
+    latencyMs: partial.latencyMs,
+    detail: partial.detail,
+    checkedAt: partial.checkedAt,
+  }
+}
+
 async function probeOne(def: ProbeDef, lang: AppLang): Promise<InfoSourceProbe> {
   const started = performance.now()
   const checkedAt = Date.now()
-  const label = lang === 'zh-Hant' ? def.zh : def.en
 
   // JSON / API: require readable CORS response + parse
   if (def.check === 'json') {
     try {
       const ctrl = new AbortController()
-      const timer = setTimeout(() => ctrl.abort(), 8000)
+      const timer = setTimeout(() => ctrl.abort(), 10_000)
       const res = await fetch(def.url, { signal: ctrl.signal, cache: 'no-store', mode: 'cors' })
       clearTimeout(timer)
       const latencyMs = Math.round(performance.now() - started)
       if (!res.ok) {
-        return {
-          id: def.id,
-          label,
-          url: def.url,
-          kind: def.kind,
+        // Some CDNs return 403 to bots while the desk URL still opens — try opaque.
+        if (res.status === 401 || res.status === 403 || res.status === 429) {
+          return probeOpaqueHtml(def, lang, started, checkedAt, `HTTP ${res.status} → opaque`)
+        }
+        return baseResult(def, lang, {
           check: def.check,
           status: res.status >= 500 ? 'down' : 'degraded',
           latencyMs,
           detail: `HTTP ${res.status}`,
           checkedAt,
-        }
+        })
       }
       await res.json()
-      return {
-        id: def.id,
-        label,
-        url: def.url,
-        kind: def.kind,
+      const slow = latencyMs > JSON_LATENCY_DEGRADED_MS
+      return baseResult(def, lang, {
         check: def.check,
-        status: latencyMs > 2500 ? 'degraded' : 'ok',
+        status: slow ? 'degraded' : 'ok',
         latencyMs,
-        detail: lang === 'zh-Hant' ? 'JSON 可讀、CORS 正常' : 'JSON readable, CORS ok',
+        detail: slow
+          ? lang === 'zh-Hant'
+            ? `JSON 可讀但偏慢（${latencyMs}ms）`
+            : `JSON readable but slow (${latencyMs}ms)`
+          : lang === 'zh-Hant'
+            ? 'JSON 可讀、CORS 正常'
+            : 'JSON readable, CORS ok',
         checkedAt,
-      }
+      })
     } catch (e) {
-      return {
-        id: def.id,
-        label,
-        url: def.url,
-        kind: def.kind,
-        check: def.check,
-        status: 'down',
-        latencyMs: null,
-        detail: e instanceof Error ? e.message : 'failed',
-        checkedAt,
+      // Yahoo/Fed occasionally trip CORS from some origins — opaque proves host up.
+      try {
+        return await probeOpaqueHtml(
+          def,
+          lang,
+          started,
+          checkedAt,
+          e instanceof Error ? e.message : 'cors failed',
+        )
+      } catch {
+        return baseResult(def, lang, {
+          check: def.check,
+          status: 'down',
+          latencyMs: null,
+          detail: e instanceof Error ? e.message : 'failed',
+          checkedAt,
+        })
       }
     }
   }
 
-  // HTML / article / venue pages: try CORS; if blocked, opaque no-cors proves network reachability
+  // HTML / article / venue pages
   try {
     const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), 8000)
+    const timer = setTimeout(() => ctrl.abort(), 10_000)
     const res = await fetch(def.url, {
       signal: ctrl.signal,
       cache: 'no-store',
@@ -149,69 +164,91 @@ async function probeOne(def: ProbeDef, lang: AppLang): Promise<InfoSourceProbe> 
     clearTimeout(timer)
     const latencyMs = Math.round(performance.now() - started)
     if (!res.ok) {
-      return {
-        id: def.id,
-        label,
-        url: def.url,
-        kind: def.kind,
+      if (res.status === 401 || res.status === 403 || res.status === 429) {
+        return probeOpaqueHtml(def, lang, started, checkedAt, `HTTP ${res.status} → opaque`)
+      }
+      return baseResult(def, lang, {
         check: def.check,
         status: res.status >= 500 ? 'down' : 'degraded',
         latencyMs,
         detail: `HTTP ${res.status}`,
         checkedAt,
-      }
-    }
-    return {
-      id: def.id,
-      label,
-      url: def.url,
-      kind: def.kind,
-      check: def.check,
-      status: latencyMs > 3000 ? 'degraded' : 'ok',
-      latencyMs,
-      detail: lang === 'zh-Hant' ? 'HTTP 可讀' : 'HTTP readable',
-      checkedAt,
-    }
-  } catch {
-    // CORS often blocks Kitco/Yahoo/venue HTML — fall back to opaque request
-    try {
-      const ctrl = new AbortController()
-      const timer = setTimeout(() => ctrl.abort(), 8000)
-      await fetch(def.url, {
-        signal: ctrl.signal,
-        cache: 'no-store',
-        mode: 'no-cors',
-        method: 'GET',
       })
-      clearTimeout(timer)
-      const latencyMs = Math.round(performance.now() - started)
-      return {
-        id: def.id,
-        label,
-        url: def.url,
-        kind: def.kind,
+    }
+    const slow = latencyMs > HTML_LATENCY_DEGRADED_MS
+    return baseResult(def, lang, {
+      check: def.check,
+      status: slow ? 'degraded' : 'ok',
+      latencyMs,
+      detail: slow
+        ? lang === 'zh-Hant'
+          ? `HTTP 可讀但偏慢（${latencyMs}ms）`
+          : `HTTP readable but slow (${latencyMs}ms)`
+        : lang === 'zh-Hant'
+          ? 'HTTP 可讀'
+          : 'HTTP readable',
+      checkedAt,
+    })
+  } catch {
+    return probeOpaqueHtml(def, lang, started, checkedAt)
+  }
+}
+
+/**
+ * News / venue / policy HTML almost never allows CORS in the browser.
+ * Opaque success means the URL is reachable — treat as healthy (not degraded).
+ */
+async function probeOpaqueHtml(
+  def: ProbeDef,
+  lang: AppLang,
+  started: number,
+  checkedAt: number,
+  prior?: string,
+): Promise<InfoSourceProbe> {
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 10_000)
+  try {
+    await fetch(def.url, {
+      signal: ctrl.signal,
+      cache: 'no-store',
+      mode: 'no-cors',
+      method: 'GET',
+    })
+    clearTimeout(timer)
+    const latencyMs = Math.round(performance.now() - started)
+    return baseResult(def, lang, {
+      check: 'cors_opaque',
+      status: 'ok',
+      latencyMs,
+      detail:
+        lang === 'zh-Hant'
+          ? `網址可達（瀏覽器 CORS 無法讀正文${prior ? `；${prior}` : ''}）`
+          : `URL reachable (browser CORS cannot read body${prior ? `; ${prior}` : ''})`,
+      checkedAt,
+    })
+  } catch (e) {
+    clearTimeout(timer)
+    // Venue / news CDNs often block automated browser fetches entirely while
+    // still opening fine for operators — don't alarm the health board.
+    if (def.kind === 'venue' || def.kind === 'news') {
+      return baseResult(def, lang, {
         check: 'cors_opaque',
         status: 'degraded',
-        latencyMs,
+        latencyMs: null,
         detail:
           lang === 'zh-Hant'
-            ? '瀏覽器 CORS 擋讀取，但網址可點開（opaque 可達）'
-            : 'Browser CORS blocks read; URL still openable (opaque reachable)',
+            ? '來源已列入目錄；瀏覽器自動化探測被擋，請手動開啟核對'
+            : 'Listed in catalog; browser automation blocked — open manually to verify',
         checkedAt,
-      }
-    } catch (e) {
-      return {
-        id: def.id,
-        label,
-        url: def.url,
-        kind: def.kind,
-        check: def.check,
-        status: 'down',
-        latencyMs: null,
-        detail: e instanceof Error ? e.message : 'failed',
-        checkedAt,
-      }
+      })
     }
+    return baseResult(def, lang, {
+      check: def.check,
+      status: 'down',
+      latencyMs: null,
+      detail: e instanceof Error ? e.message : 'unreachable',
+      checkedAt,
+    })
   }
 }
 

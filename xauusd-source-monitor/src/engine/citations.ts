@@ -17,74 +17,46 @@ const YAHOO_DXY_CHART =
   'https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?interval=1m&range=1d'
 const YAHOO_TNX_CHART =
   'https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX?interval=1m&range=1d'
-const YAHOO_GC_PAGE = 'https://finance.yahoo.com/quote/GC%3DF/history?p=GC%3DF'
-const YAHOO_DXY_PAGE = 'https://finance.yahoo.com/quote/DX-Y.NYB/history?p=DX-Y.NYB'
-const YAHOO_TNX_PAGE = 'https://finance.yahoo.com/quote/%5ETNX/history?p=%5ETNX'
 const FED_PRESS_JSON = 'https://www.federalreserve.gov/json/ne-press.json'
 const FED_FOMC_FALLBACK =
   'https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm'
+const KITCO_METALS = 'https://www.kitco.com/news/category/metals'
 
-/** Specific articles (not landing pages) tied to the current gold dislocation. */
+/**
+ * Curated news deep-links for briefings + health probes.
+ * Prefer a small durable set (not every Kitco URL from one day) so the health
+ * panel stays actionable — HTML hosts block CORS and used to flood “degraded”.
+ */
 const GOLD_NEWS_ARTICLES = [
   {
-    id: 'kitco-plunge-3900',
-    en: 'Kitco: Gold plunges to one-year low below $3,900 (30 Oct 2026)',
-    zh: 'Kitco：金價跌破 3,900 美元至一年低點（2026-10-30）',
-    url: 'https://www.kitco.com/news/article/2026-10-30/gold-prices-plunge-one-year-low-below-3900-higher-oil-prices-fuel-fears',
-  },
-  {
-    id: 'kitco-pm-liquidation',
-    en: 'Kitco PM: Gold below $3,900 as Wall Street selloff triggers liquidation (30 Oct 2026)',
-    zh: 'Kitco 午後：美股拋售引發清算，金價跌破 3,900（2026-10-30）',
-    url: 'https://www.kitco.com/news/article/2026-10-30/gold-falls-below-3900-silver-tumbles-wall-street-selloff-triggers',
+    id: 'kitco-metals-hub',
+    en: 'Kitco: Metals news desk',
+    zh: 'Kitco：金屬新聞台',
+    url: KITCO_METALS,
   },
   {
     id: 'kitco-survey',
-    en: 'Kitco survey: Wall Street turns bearish after gold sinks below $3,900 (30 Oct 2026)',
-    zh: 'Kitco 調查：金價跌破 3,900 後華爾街轉空（2026-10-30）',
+    en: 'Kitco survey: Wall Street turns bearish after gold sinks below $3,900',
+    zh: 'Kitco 調查：金價跌破 3,900 後華爾街轉空',
     url: 'https://www.kitco.com/news/article/2026-10-30/wall-street-abandons-ship-after-gold-sinks-below-3900oz-main-street',
   },
   {
     id: 'kitco-paradox',
-    en: "Kitco: Gold's paradox — falling yields/weaker USD can't stop selloff (30 Oct 2026)",
-    zh: 'Kitco：收益率下行與美元走弱仍擋不住金價拋售（2026-10-30）',
+    en: "Kitco: Gold's paradox — falling yields/weaker USD can't stop selloff",
+    zh: 'Kitco：收益率下行與美元走弱仍擋不住金價拋售',
     url: 'https://www.kitco.com/news/article/2026-10-30/golds-frustrating-paradox-falling-yields-and-weaker-dollar-cant-stop',
   },
   {
-    id: 'kitco-capitulation',
-    en: 'Kitco: Gold & silver near capitulation levels — Jesse Felder (30 Oct 2026)',
-    zh: 'Kitco：金銀逼近投降價位 — Jesse Felder（2026-10-30）',
-    url: 'https://www.kitco.com/news/article/2026-10-30/gold-and-silver-prices-coming-dangerously-close-capitulation-levels-jesse',
+    id: 'kitco-hawkish-pause',
+    en: 'Kitco / TDS: Gold stuck as Fed takes hawkish pause',
+    zh: 'Kitco / TDS：聯準會鷹派暫停，金價受困',
+    url: 'https://www.kitco.com/news/article/2026-10-29/gold-remains-stuck-fed-takes-hawkish-pause-tds-melek',
   },
   {
     id: 'kitco-rates-holdback',
-    en: 'Kitco: Higher-rate threat holding gold rally back (30 Oct 2026)',
-    zh: 'Kitco：利率上行威脅壓制金價反彈（2026-10-30）',
+    en: 'Kitco: Higher-rate threat holding gold rally back',
+    zh: 'Kitco：利率上行威脅壓制金價反彈',
     url: 'https://www.kitco.com/news/article/2026-10-30/gold-wants-rally-threat-higher-interest-rates-holding-it-back-catalyst',
-  },
-  {
-    id: 'kitco-below-4000',
-    en: 'Kitco: Gold drops below $4,000 as Hormuz attack lifts oil (30 Oct 2026)',
-    zh: 'Kitco：霍爾木茲襲擊推升油價，金價跌破 4,000（2026-10-30）',
-    url: 'https://www.kitco.com/news/article/2026-10-30/gold-drops-below-4000-silver-tumbles-hormuz-attack-lifts-oil-prices-kitco',
-  },
-  {
-    id: 'kitco-rotation',
-    en: 'Kitco: Energy surges, precious metals tumble — 2026 rotation (30 Oct 2026)',
-    zh: 'Kitco：能源上漲、貴金屬下跌 — 2026 輪動（2026-10-30）',
-    url: 'https://www.kitco.com/news/article/2026-10-30/energy-surges-precious-metals-tumble-2026-rotation-strengthens',
-  },
-  {
-    id: 'kitco-fed-hike',
-    en: 'Kitco: Fed may hike once more in December (29 Oct 2026)',
-    zh: 'Kitco：聯準會或於 12 月再升息一次（2026-10-29）',
-    url: 'https://www.kitco.com/news/article/2026-10-29/fed-will-hike-once-more-december-slowing-growth-and-falling-energy-ease',
-  },
-  {
-    id: 'kitco-hawkish-pause',
-    en: 'Kitco / TDS: Gold stuck as Fed takes hawkish pause (29 Oct 2026)',
-    zh: 'Kitco / TDS：聯準會鷹派暫停，金價受困（2026-10-29）',
-    url: 'https://www.kitco.com/news/article/2026-10-29/gold-remains-stuck-fed-takes-hawkish-pause-tds-melek',
   },
 ]
 
@@ -155,14 +127,6 @@ export function staticCitationCatalog(lang: AppLang): BriefingCitation[] {
       category: 'venue',
     },
     {
-      id: 'yahoo-gc-history',
-      label: zh
-        ? 'Yahoo 歷史頁：COMEX 黃金 GC=F'
-        : 'Yahoo history page: COMEX gold GC=F',
-      url: YAHOO_GC_PAGE,
-      category: 'macro',
-    },
-    {
       id: 'yahoo-dxy-chart-api',
       label: zh
         ? 'Yahoo chart API：美元指數 DX-Y.NYB（1 分鐘 JSON）'
@@ -171,27 +135,11 @@ export function staticCitationCatalog(lang: AppLang): BriefingCitation[] {
       category: 'macro',
     },
     {
-      id: 'yahoo-dxy-history',
-      label: zh
-        ? 'Yahoo 歷史頁：美元指數 DX-Y.NYB'
-        : 'Yahoo history page: Dollar Index DX-Y.NYB',
-      url: YAHOO_DXY_PAGE,
-      category: 'macro',
-    },
-    {
       id: 'yahoo-tnx-chart-api',
       label: zh
         ? 'Yahoo chart API：美國 10 年期收益率 ^TNX（1 分鐘 JSON）'
         : 'Yahoo chart API: US 10Y yield ^TNX (1m JSON)',
       url: YAHOO_TNX_CHART,
-      category: 'macro',
-    },
-    {
-      id: 'yahoo-tnx-history',
-      label: zh
-        ? 'Yahoo 歷史頁：美國 10 年期收益率 ^TNX'
-        : 'Yahoo history page: US 10Y yield ^TNX',
-      url: YAHOO_TNX_PAGE,
       category: 'macro',
     },
     {
@@ -205,8 +153,8 @@ export function staticCitationCatalog(lang: AppLang): BriefingCitation[] {
     {
       id: 'fed-fomc',
       label: zh
-        ? '聯準會 FOMC 聲明全文（2026-10-28）'
-        : 'Federal Reserve FOMC statement full text (28 Oct 2026)',
+        ? '聯準會 FOMC 聲明全文（政策 HTML）'
+        : 'Federal Reserve FOMC statement (policy HTML)',
       url: FED_FOMC_FALLBACK,
       category: 'macro',
     },
