@@ -3,5 +3,5 @@
   "model": "gpt-4o-mini",
   "proxyBase": "https://vex-llm-proxy.vercel.app",
   "deskToken": "2602552a6687ac6b9920dadebf4640a67f6820c113460d4c",
-  "note": "Production Vercel LLM proxy — OpenAI key stays server-side; desk token required."
+  "note": "Permanent desk: https://vex-llm-proxy.vercel.app — OpenAI key is server-side only. On Vercel the SPA uses same-origin /api/chat (proxyBase ignored). On GitHub Pages, proxyBase points at that host. Never paste API keys in the browser."
 }
