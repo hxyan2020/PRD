@@ -13,8 +13,8 @@ export function SiteHeader() {
 
   const links = [
     { href: "/", label: t("nav.home") },
-    { href: "/knowledge", label: t("nav.knowledge") },
     { href: "/repository", label: t("nav.repository") },
+    { href: "/knowledge", label: t("nav.knowledge") },
     { href: "/testing", label: t("nav.testing") },
   ];
 
