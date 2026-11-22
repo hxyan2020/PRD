@@ -20,7 +20,7 @@ const EXAMPLES: Record<ProductId, { zh: string[]; en: string[] }> = {
     zh: [
       "旧价成交怎么排查？",
       "LP 到 PE 到 MT 全流程",
-      "Quote Tick 库访问地址",
+      "定价 Tick 库访问地址",
       "Latency Arbitrage 如何检测",
       "Stop-out 漏洞 RCA 步骤",
       "如何区分 Healthy 和 Abusive",

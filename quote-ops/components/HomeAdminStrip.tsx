@@ -117,7 +117,7 @@ export function HomeAdminStrip() {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder={t(
-            "例如：旧价、Markout、Quote Tick、强平…",
+            "例如：旧价、Markout、定价 Tick、强平…",
             "e.g. stale, markout, quote tick, stop-out…",
           )}
           aria-label={t("关键字", "Keyword")}
