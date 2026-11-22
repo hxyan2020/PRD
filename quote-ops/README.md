@@ -1,15 +1,20 @@
 # QuoteOps — CFD Broker Pricing Squad KB
 
-Interactive RAG knowledge base and skill library for CFD broker pricing / dealing / risk ops (Vantage-class multi-asset CFD).
+Interactive RAG knowledge base + editable skill/knowledge CMS for CFD broker pricing / dealing / risk ops.
 
 ## Features
 
-1. **RAG Desk** — local retrieval over principles, 86 risk scenarios, LP→PE→MT pipeline, DB map, and RCA skills
-2. **Pipeline** — interactive LP → Ingest → PE → Fan-out → MT → Hedge → Observe flow
-3. **Risk catalog** — 86 scenarios with H/T/A/M, F/P, detect & prevent filters
-4. **Skill library** — checklist playbooks with placeholder SQL and case creation
-5. **Data architecture** — systems, key tables, access hosts as `*.placeholder.internal`
-6. **Investigation cases** — persisted via PGlite locally / Postgres when `DATABASE_URL` is set
+1. **RAG Desk** — retrieval over the live knowledge corpus
+2. **Knowledge tree** — dynamic hierarchy of folders and pages
+3. **Admin CMS** (admins only) — create / edit / delete / append / search / sort
+4. **Rich content** — Markdown headings, lists, tables; image / video / file upload
+5. **AI insert suggest** — recommends parent folder with before/after neighbors
+6. **Lark / Feishu import** — paste doc URL (+ body for private docs) → knowledge node
+7. **Agent Markdown** — expand + one-click copy on every knowledge page
+8. **Bilingual publish** — fill missing ZH/EN on publish (mirror + review flag)
+9. **Audit** — created/updated timestamps, operator, full revision log
+10. **Pipeline / 86 risks / skills / data map** — seeded and editable as KB nodes
+11. **Mobile-friendly** nav and reading prose
 
 Principle: **Broker loss ≠ client abuse.**
 
@@ -23,14 +28,11 @@ npm run dev
 
 Open http://127.0.0.1:3020
 
+Locally, the simulated viewer in `cursor/identity.dev.ts` is a team admin (writes enabled).  
+On a published private/team app: team `admin` role, or emails in `QUOTEOPS_ADMIN_EMAILS`, may write; others are read-only.
+
 ## Scripts
 
-- `npm run dev` — Next.js on port 3020 (PGlite, `DATABASE_URL` unset)
+- `npm run dev` — port 3020 (PGlite)
 - `npm run build` — production build + migrate when `DATABASE_URL` set
-- `npm test` — corpus + RAG unit tests
-- `npm run typecheck` — TypeScript
-
-## Notes
-
-- Unknown production hosts/ports are placeholders — replace from Vantage inventory; never commit secrets.
-- RAG is on-device lexical retrieval over the shipped corpus (no external LLM required for answers).
+- `npm test` / `npm run typecheck`

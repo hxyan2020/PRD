@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <Providers>
           <SiteHeader />
-          <main className="mx-auto min-h-[70vh] max-w-6xl px-3 pb-24 pt-5 sm:px-6 sm:py-8">
+          <main className="mx-auto min-h-[70vh] max-w-6xl px-3 pb-28 pt-4 sm:px-6 sm:pb-16 sm:pt-8">
             {children}
           </main>
           <footer className="border-t border-line/70 px-3 py-5 text-center text-xs text-mist sm:px-6">

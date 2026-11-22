@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { HomeAdminStrip } from "@/components/HomeAdminStrip";
 import { useI18n } from "@/lib/i18n/context";
 import type { RagAnswer } from "@/lib/rag";
 
@@ -139,7 +140,7 @@ export function RagDesk() {
             {answer.suggestedSkills.map((s) => (
               <Link
                 key={s.slug}
-                href={`/skills/${s.slug}`}
+                href={`/kb/${s.slug}`}
                 className="rounded-md border border-sea/30 bg-sea-soft/40 px-3 py-1.5 text-xs text-sea hover:bg-sea-soft"
               >
                 Skill · {s.title}
@@ -148,7 +149,7 @@ export function RagDesk() {
             {answer.suggestedRisks.map((r) => (
               <Link
                 key={r.id}
-                href={`/risks/${r.id}`}
+                href={r.id ? `/risks/${r.id}` : "/risks"}
                 className="rounded-md border border-line bg-paper px-3 py-1.5 text-xs text-ink-2 hover:border-ink/30"
               >
                 #{r.id} {r.title}
@@ -162,12 +163,31 @@ export function RagDesk() {
                 {t("打开最相关文档", "Open top document")}
               </Link>
             )}
+            <Link
+              href="/admin"
+              className="rounded-md border border-line bg-white px-3 py-1.5 text-xs text-mist hover:border-ink/30"
+            >
+              {t("管理员编辑知识", "Admin edit KB")}
+            </Link>
+            <Link
+              href="/tree"
+              className="rounded-md border border-line bg-white px-3 py-1.5 text-xs text-mist hover:border-ink/30"
+            >
+              {t("知识树", "Knowledge tree")}
+            </Link>
           </div>
         </section>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <HomeAdminStrip />
+
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
+          {
+            href: "/tree",
+            title: t("知识树", "Knowledge tree"),
+            body: t("动态节点关系，便于观察分类与从属", "Live node relations across the catalog"),
+          },
           {
             href: "/pipeline",
             title: t("报价全流程", "Quote pipeline"),
@@ -179,9 +199,9 @@ export function RagDesk() {
             body: t("H/T/A/M 分类 · 频率 · 严重度 · 检测与防控", "H/T/A/M · frequency · severity · detect & prevent"),
           },
           {
-            href: "/skills",
-            title: t("交互 Skill 库", "Interactive skills"),
-            body: t("旧价 RCA、Bad Tick、切源、Markout、强平等排查清单", "Stale RCA, bad tick, failover, markout, stop-out checklists"),
+            href: "/admin",
+            title: t("管理台", "Admin"),
+            body: t("新增 / 编辑 / 删除 / 检索排序 / 发布双语", "Create / edit / delete / search-sort / bilingual publish"),
           },
         ].map((card, i) => (
           <Link

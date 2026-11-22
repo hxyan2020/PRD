@@ -65,7 +65,7 @@ export function RiskDetail({ risk }: { risk: RiskScenario }) {
             {relatedSkills.map((s) => (
               <Link
                 key={s.id}
-                href={`/skills/${s.slug}`}
+                href={`/kb/${s.slug}`}
                 className="rounded-md border border-sea/30 bg-white px-3 py-1.5 text-xs text-ink hover:bg-sea-soft"
               >
                 {locale === "zh-CN" ? s.titleZh : s.title}
@@ -74,6 +74,13 @@ export function RiskDetail({ risk }: { risk: RiskScenario }) {
           </div>
         </div>
       )}
+
+      <Link
+        href={`/kb/risk-${risk.id}-${risk.slug}`}
+        className="inline-flex text-sm text-sea hover:underline"
+      >
+        {t("在知识页阅读排版版 / 复制 Markdown", "Open formatted KB page / copy Markdown")}
+      </Link>
     </article>
   );
 }

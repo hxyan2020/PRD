@@ -1,6 +1,4 @@
-import { buildCorpus } from "@/lib/corpus";
-import { getRisk } from "@/lib/data/risks";
-import { getSkill } from "@/lib/data/skills";
+import { buildCorpusAsync } from "@/lib/corpus";
 import type { KnowledgeChunk } from "@/lib/types";
 
 export type Locale = "zh-CN" | "en";
@@ -21,37 +19,9 @@ export type RagAnswer = {
 };
 
 const STOP = new Set([
-  "the",
-  "a",
-  "an",
-  "and",
-  "or",
-  "of",
-  "to",
-  "in",
-  "for",
-  "on",
-  "is",
-  "are",
-  "be",
-  "with",
-  "how",
-  "what",
-  "when",
-  "which",
-  "this",
-  "that",
-  "的",
-  "了",
-  "和",
-  "是",
-  "在",
-  "与",
-  "及",
-  "一个",
-  "什么",
-  "如何",
-  "怎么",
+  "the", "a", "an", "and", "or", "of", "to", "in", "for", "on", "is", "are", "be", "with",
+  "how", "what", "when", "which", "this", "that", "的", "了", "和", "是", "在", "与", "及",
+  "一个", "什么", "如何", "怎么",
 ]);
 
 function tokenize(text: string): string[] {
@@ -60,7 +30,6 @@ function tokenize(text: string): string[] {
     .replace(/[#/→\-_:.,;()[\]{}'"!?]/g, " ")
     .split(/\s+/)
     .flatMap((t) => {
-      // keep CJK bigrams-ish by also emitting the raw token
       if (/[\u4e00-\u9fff]/.test(t)) {
         const chars = [...t];
         const grams: string[] = [t];
@@ -93,7 +62,6 @@ function scoreChunk(queryTokens: string[], chunk: KnowledgeChunk, locale: Locale
     if (lower.includes(q)) score += 0.35;
   }
 
-  // Kind boosts for intent keywords
   const qjoin = queryTokens.join(" ");
   if (/stale|旧价|ttl|quote.?age/.test(qjoin) && chunk.kind === "skill") score += 1.5;
   if (/pipeline|lp|pe|mt|链路|流程|聚合/.test(qjoin) && chunk.kind === "pipeline") score += 1.2;
@@ -102,12 +70,10 @@ function scoreChunk(queryTokens: string[], chunk: KnowledgeChunk, locale: Locale
   if (/skill|排查|rca|playbook|技能|手册/.test(qjoin) && chunk.kind === "skill") score += 1.0;
   if (/risk|套利|攻击|abuse|场景|latency|markout/.test(qjoin) && chunk.kind === "risk") score += 0.8;
 
-  // Title hits
   const title = (locale === "zh-CN" ? chunk.titleZh : chunk.title).toLowerCase();
   for (const q of queryTokens) {
     if (title.includes(q)) score += 1.8;
   }
-
   return score;
 }
 
@@ -122,40 +88,46 @@ function detectLocale(question: string, preferred?: Locale): Locale {
   return /[\u4e00-\u9fff]/.test(question) ? "zh-CN" : "en";
 }
 
-export function retrieve(question: string, localePref?: Locale, limit = 8): RagHit[] {
+export async function retrieve(
+  question: string,
+  localePref?: Locale,
+  limit = 8,
+): Promise<RagHit[]> {
   const locale = detectLocale(question, localePref);
   const tokens = tokenize(question);
-  const corpus = buildCorpus();
-  const scored = corpus
+  const corpus = await buildCorpusAsync();
+  return corpus
     .map((chunk) => ({
       chunk,
       score: scoreChunk(tokens, chunk, locale),
       snippet: snippetFrom(chunk, locale),
     }))
     .filter((h) => h.score > 0)
-    .sort((a, b) => b.score - a.score);
-  return scored.slice(0, limit);
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
 }
 
-export function answerQuestion(question: string, localePref?: Locale): RagAnswer {
+export async function answerQuestion(
+  question: string,
+  localePref?: Locale,
+): Promise<RagAnswer> {
   const locale = detectLocale(question, localePref);
   const zh = locale === "zh-CN";
   const q = question.trim();
-  const hits = retrieve(q, locale, 8);
+  const hits = await retrieve(q, locale, 8);
 
   const riskHits = hits.filter((h) => h.chunk.kind === "risk").slice(0, 5);
   const skillHits = hits.filter((h) => h.chunk.kind === "skill").slice(0, 4);
 
   const suggestedRisks = riskHits.map((h) => {
-    const id = Number(h.chunk.id.replace("risk-", ""));
-    const r = getRisk(id);
-    return { id, title: zh ? (r?.titleZh ?? h.chunk.titleZh) : (r?.title ?? h.chunk.title) };
+    const m = h.chunk.id.match(/risk-(\d+)/) || h.chunk.title.match(/#(\d+)/);
+    const id = m ? Number(m[1]) : 0;
+    return { id, title: zh ? h.chunk.titleZh : h.chunk.title };
   });
 
   const suggestedSkills = skillHits.map((h) => {
     const slug = h.chunk.href.split("/").pop() ?? h.chunk.id;
-    const s = getSkill(slug);
-    return { slug, title: zh ? (s?.titleZh ?? h.chunk.titleZh) : (s?.title ?? h.chunk.title) };
+    return { slug, title: zh ? h.chunk.titleZh : h.chunk.title };
   });
 
   const top = hits[0];
@@ -177,24 +149,25 @@ export function answerQuestion(question: string, localePref?: Locale): RagAnswer
   sections.push({
     heading: zh ? "检索摘要" : "Retrieved summary",
     paragraphs: [top.snippet],
-    bullets: hits.slice(0, 5).map((h) => `${zh ? h.chunk.titleZh : h.chunk.title} · score ${h.score.toFixed(2)}`),
+    bullets: hits.slice(0, 5).map(
+      (h) => `${zh ? h.chunk.titleZh : h.chunk.title} · score ${h.score.toFixed(2)}`,
+    ),
   });
 
   if (suggestedSkills.length) {
     sections.push({
       heading: zh ? "建议 Skills" : "Suggested skills",
-      bullets: suggestedSkills.map((s) => `${s.title} (/skills/${s.slug})`),
+      bullets: suggestedSkills.map((s) => `${s.title} (/kb/${s.slug})`),
     });
   }
 
   if (suggestedRisks.length) {
     sections.push({
       heading: zh ? "相关风险场景" : "Related risk scenarios",
-      bullets: suggestedRisks.map((r) => `#${r.id} ${r.title}`),
+      bullets: suggestedRisks.map((r) => (r.id ? `#${r.id} ${r.title}` : r.title)),
     });
   }
 
-  // Intent-specific coaching
   if (/旧价|stale|quote.?age|ttl/i.test(q)) {
     sections.push({
       heading: zh ? "处置原则" : "Disposition principle",

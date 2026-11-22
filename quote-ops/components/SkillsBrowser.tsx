@@ -24,7 +24,7 @@ export function SkillsBrowser() {
         {SKILLS.map((s, i) => (
           <Link
             key={s.id}
-            href={`/skills/${s.slug}`}
+            href={`/kb/${s.slug}`}
             className="rounded-xl border border-line bg-white/80 p-5 transition hover:border-sea/40 hover:bg-white animate-rise"
             style={{ animationDelay: `${i * 40}ms` }}
           >
@@ -45,6 +45,15 @@ export function SkillsBrowser() {
               ))}
               <span className="rounded border border-line bg-paper px-2 py-0.5 text-[11px] text-mist">
                 {s.steps.length} {t("步", "steps")}
+              </span>
+              <span
+                className="rounded border border-sea/30 bg-sea-soft/40 px-2 py-0.5 text-[11px] text-sea"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = `/skills/${s.slug}`;
+                }}
+              >
+                {t("交互清单", "Checklist")}
               </span>
             </div>
           </Link>

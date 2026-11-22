@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "question required (max 2000)" }, { status: 400 });
   }
   const locale = body.locale === "en" ? "en" : "zh-CN";
-  const answer = answerQuestion(question, locale);
+  const answer = await answerQuestion(question, locale);
   try {
     await logRagQuery(
       question,

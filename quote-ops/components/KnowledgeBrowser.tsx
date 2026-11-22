@@ -22,7 +22,7 @@ export function KnowledgeBrowser() {
         {ARTICLES.map((a) => (
           <Link
             key={a.id}
-            href={`/knowledge/${a.slug}`}
+            href={`/kb/${a.slug}`}
             className="rounded-xl border border-line bg-white/85 p-5 hover:border-sea/40"
           >
             <h2 className="font-display text-xl text-ink">
