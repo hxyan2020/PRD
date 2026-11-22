@@ -1,4 +1,5 @@
 import { localizedLpLists } from "@/lib/i18n/lp-display";
+import { enrichQualitySteps } from "@/lib/quality-evidence";
 import { formatOptimalRegions, resolveOptimalRegions } from "@/lib/regions";
 import { resolveProduct, type ProductProfile } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
@@ -9,16 +10,44 @@ export type QualityStepStatus = "pending" | "running" | "done" | "warn";
 /** Product-fit traffic light for proxy quality scores (0–100). */
 export type ScoreBand = "green" | "yellow" | "red";
 
+export type QualityDataSource = {
+  id: string;
+  name: string;
+  available: boolean;
+  url?: string;
+  howToGet?: string;
+  note?: string;
+};
+
+export type QualityChartSeries = {
+  label: string;
+  value: number;
+  band?: ScoreBand;
+};
+
+export type QualityChart = {
+  id: string;
+  title: string;
+  kind: "bar" | "hbar";
+  unit?: string;
+  series: QualityChartSeries[];
+  analysis: string;
+};
+
 export type QualityStep = {
   id: string;
   index: number;
   title: string;
   action: string;
   result: string;
+  /** Longer analysis narrative — UI types this out per step. */
+  analysis?: string;
   details: string[];
   status: QualityStepStatus;
   pros: string[];
   cons: string[];
+  dataSources?: QualityDataSource[];
+  charts?: QualityChart[];
 };
 
 export type DataBottleneck = {
@@ -765,6 +794,15 @@ export function buildQualityReport(args: {
     ],
   });
 
+  const enrichedSteps = enrichQualitySteps({
+    locale,
+    steps,
+    subjects: subjectScores,
+    lps: subjects,
+    symbol,
+    session,
+  });
+
   return {
     mode,
     subject: primary?.name ?? (mode === "product" ? symbol ?? "—" : "—"),
@@ -776,7 +814,7 @@ export function buildQualityReport(args: {
     verdict,
     summaryPros,
     summaryCons,
-    steps,
+    steps: enrichedSteps,
     subjects: subjectScores,
     dataBottleneck,
     liveFindings,
@@ -787,8 +825,8 @@ export function buildQualityReport(args: {
 }
 
 export function stepDelayMs(index: number): number {
-  // Stagger for realtime UX
-  return delayHint(450 + index * 180);
+  // Longer stagger so typing + chart reveal stay readable per step
+  return delayHint(900 + index * 220);
 }
 
 export function buildPrintableHtml(
@@ -807,6 +845,55 @@ export function buildPrintableHtml(
   const esc = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+  const chartHtml = (s: QualityStep) =>
+    (s.charts ?? [])
+      .map((c) => {
+        const max = Math.max(100, ...c.series.map((x) => x.value), 1);
+        const bars = c.series
+          .map((x) => {
+            const pct = Math.max(2, Math.round((100 * x.value) / max));
+            const color =
+              x.band === "green" || x.value >= 85
+                ? "#15803d"
+                : x.band === "yellow" || x.value >= 65
+                  ? "#c2410c"
+                  : x.band === "red"
+                    ? "#b91c1c"
+                    : "#1d4ed8";
+            return `<div class="bar-row"><span class="bar-label">${esc(x.label)}</span>
+              <span class="bar-track"><span class="bar-fill" style="width:${pct}%;background:${color}"></span></span>
+              <span class="bar-val">${x.value}${esc(c.unit ?? "")}</span></div>`;
+          })
+          .join("");
+        return `<div class="chart"><h4>${esc(c.title)}</h4>${bars}<p class="chart-note">${esc(c.analysis)}</p></div>`;
+      })
+      .join("");
+
+  const sourcesHtml = (s: QualityStep) => {
+    const list = s.dataSources ?? [];
+    if (!list.length) return "";
+    return `<div class="sources"><h4>${zh ? "数据来源" : "Data sources"}</h4><ul>${list
+      .map((ds) => {
+        const avail = ds.available
+          ? zh
+            ? "可获取"
+            : "Available"
+          : zh
+            ? "无法免费获取"
+            : "Not free here";
+        const link = ds.url
+          ? ` · <a href="${esc(ds.url)}">${esc(ds.url)}</a>`
+          : "";
+        const how =
+          !ds.available && ds.howToGet
+            ? `<br/><em>${zh ? "如何获取" : "How to get"}:</em> ${esc(ds.howToGet)}`
+            : "";
+        const note = ds.note ? ` — ${esc(ds.note)}` : "";
+        return `<li><strong>${esc(ds.name)}</strong> [${esc(avail)}]${note}${link}${how}</li>`;
+      })
+      .join("")}</ul></div>`;
+  };
+
   const stepsHtml = report.steps
     .map(
       (s) => `
@@ -814,7 +901,14 @@ export function buildPrintableHtml(
         <h3>${s.index}. ${esc(s.title)} <span class="badge">${esc(s.status)}</span></h3>
         <p><strong>${zh ? "动作" : "Action"}:</strong> ${esc(s.action)}</p>
         <p><strong>${zh ? "结果" : "Result"}:</strong> ${esc(s.result)}</p>
+        ${
+          s.analysis
+            ? `<p><strong>${zh ? "分析" : "Analysis"}:</strong> ${esc(s.analysis)}</p>`
+            : ""
+        }
         <ul>${s.details.map((d) => `<li>${esc(d)}</li>`).join("")}</ul>
+        ${chartHtml(s)}
+        ${sourcesHtml(s)}
         <div class="pc">
           <div><h4>${zh ? "优势" : "Pros"}</h4><ul>${s.pros.map((p) => `<li>${esc(p)}</li>`).join("") || `<li>—</li>`}</ul></div>
           <div><h4>${zh ? "局限" : "Cons"}</h4><ul>${s.cons.map((c) => `<li>${esc(c)}</li>`).join("") || `<li>—</li>`}</ul></div>
@@ -851,6 +945,15 @@ export function buildPrintableHtml(
   .pc div { background: #f8fafc; border-radius: 6px; padding: 8px 10px; }
   .step { break-inside: avoid; margin: 14px 0; padding-bottom: 10px; border-bottom: 1px dashed #d7e0ea; }
   .badge { font-size: 11px; color: #0f766e; font-weight: 600; text-transform: uppercase; }
+  .chart { margin: 10px 0; padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; }
+  .chart-note { font-size: 12px; color: #5a6b7c; margin: 8px 0 0; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; font-size: 12px; }
+  .bar-label { width: 96px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { flex: 1; height: 12px; background: #e8eef4; border-radius: 3px; overflow: hidden; }
+  .bar-fill { display: block; height: 100%; border-radius: 3px; }
+  .bar-val { width: 52px; font-family: ui-monospace, monospace; font-size: 11px; }
+  .sources { margin: 10px 0; font-size: 12px; }
+  .sources a { color: #0f766e; word-break: break-all; }
   ul { margin: 6px 0 0 18px; padding: 0; }
   li { margin: 2px 0; font-size: 13px; }
   ul.subjects { list-style: none; margin-left: 0; }

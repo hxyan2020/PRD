@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
+import { QualityStepBody } from "@/components/QualityStepBody";
 import { useI18n } from "@/lib/i18n/context";
 import { isZh } from "@/lib/i18n/locale";
 import {
@@ -280,43 +281,7 @@ export function QualityResearchRunner({
                     : t("quality.status.done")}
               </span>
             </div>
-            <p className="mt-2 text-sm text-mist">
-              <span className="font-medium text-navy-2">{t("quality.action")}: </span>
-              {s.action}
-            </p>
-            {s.result && (
-              <p className="mt-1 text-sm text-navy-2">
-                <span className="font-medium">{t("quality.result")}: </span>
-                {s.result}
-              </p>
-            )}
-            {s.details.length > 0 && (
-              <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-navy-2">
-                {s.details.map((d, i) => (
-                  <li key={i}>{d}</li>
-                ))}
-              </ul>
-            )}
-            {(s.pros.length > 0 || s.cons.length > 0) && (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-lg bg-teal-soft/50 px-3 py-2">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-teal">
-                    {t("quality.pros")}
-                  </p>
-                  <ul className="mt-1 list-disc pl-4 text-sm text-navy-2">
-                    {s.pros.length ? s.pros.map((p, i) => <li key={i}>{p}</li>) : <li>—</li>}
-                  </ul>
-                </div>
-                <div className="rounded-lg bg-amber-soft/60 px-3 py-2">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-amber">
-                    {t("quality.cons")}
-                  </p>
-                  <ul className="mt-1 list-disc pl-4 text-sm text-navy-2">
-                    {s.cons.length ? s.cons.map((c, i) => <li key={i}>{c}</li>) : <li>—</li>}
-                  </ul>
-                </div>
-              </div>
-            )}
+            <QualityStepBody step={s} />
           </article>
         ))}
 

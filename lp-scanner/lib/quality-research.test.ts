@@ -51,11 +51,21 @@ describe("product-relative quality scores", () => {
     expect(report.dataBottleneck.hit).toBe(true);
     expect(report.verdict).toMatch(/data availability is the bottleneck/i);
     expect(report.verdict).toMatch(/green|yellow|red/i);
+    expect(report.steps.every((s) => (s.analysis?.length ?? 0) > 0)).toBe(true);
+    expect(report.steps.every((s) => (s.dataSources?.length ?? 0) > 0)).toBe(true);
+    expect(report.steps.every((s) => (s.charts?.length ?? 0) > 0)).toBe(true);
+    const dataStep = report.steps.find((s) => s.id === "data")!;
+    expect(dataStep.dataSources!.some((d) => d.available)).toBe(true);
+    expect(dataStep.dataSources!.some((d) => !d.available && d.howToGet)).toBe(true);
     const html = buildPrintableHtml(report);
     expect(html).toContain("Liquidity Quality Research Report");
     expect(html).toContain(`score ${report.overallBand}`);
     expect(html).toContain("chip");
     expect(html).toContain("Data availability is the bottleneck");
+    expect(html).toContain("Data sources");
+    expect(html).toContain("How to get");
+    expect(html).toContain("bar-fill");
+    expect(html).toContain("Analysis");
   });
 
   it("scores crypto LP green on BTC and weaker on XAU context", () => {
