@@ -1,12 +1,14 @@
 "use client";
 
 import {
+  FINAL_METHODOLOGY,
   GUIDE_INTRO,
   GUIDE_SECTIONS,
   GUIDE_SOURCES,
   METRICS,
   PHASES,
   SCORECARD_HINTS,
+  TEST_MODES,
 } from "@/lib/data/lp-quality-testing";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -35,6 +37,12 @@ export function TestingGuide() {
       </header>
 
       <nav className="panel flex gap-2 overflow-x-auto px-3 py-3 text-sm sm:flex-wrap sm:overflow-visible sm:px-4">
+        <a
+          href={`#${FINAL_METHODOLOGY.id}`}
+          className="shrink-0 rounded-lg border border-teal/40 bg-teal/5 px-3 py-1.5 font-medium text-teal hover:border-teal"
+        >
+          {t("testing.methodology")}
+        </a>
         {GUIDE_SECTIONS.map((s) => (
           <a
             key={s.id}
@@ -63,6 +71,92 @@ export function TestingGuide() {
           {t("testing.scorecard")}
         </a>
       </nav>
+
+      <section
+        id={FINAL_METHODOLOGY.id}
+        className="panel scroll-mt-24 space-y-5 p-4 sm:p-6"
+      >
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal">
+            {t("testing.methodology.kicker")}
+          </p>
+          <h2 className="mt-1 font-display text-xl text-navy sm:text-2xl">
+            {zh ? FINAL_METHODOLOGY.titleZh : FINAL_METHODOLOGY.titleEn}
+          </h2>
+          <div className="mt-3 space-y-3 text-sm leading-relaxed text-navy-2">
+            {(zh ? FINAL_METHODOLOGY.principleZh : FINAL_METHODOLOGY.principleEn).map(
+              (p, i) => (
+                <p key={i}>{p}</p>
+              ),
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-teal/30 bg-teal/5 px-4 py-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-teal">
+            {t("testing.methodology.pipeline")}
+          </p>
+          <p className="mt-1 font-display text-base text-navy sm:text-lg">
+            {zh ? FINAL_METHODOLOGY.pipelineZh : FINAL_METHODOLOGY.pipelineEn}
+          </p>
+          <p className="mt-2 text-sm text-navy-2">
+            <span className="font-semibold text-navy">{t("testing.methodology.vantage")}: </span>
+            {zh ? FINAL_METHODOLOGY.pipelineShortZh : FINAL_METHODOLOGY.pipelineShortEn}
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-navy">{t("testing.methodology.modes")}</h3>
+          <div className="mt-3 space-y-3 md:hidden">
+            {TEST_MODES.map((m) => (
+              <article key={m.modeEn} className="rounded-xl border border-line bg-foam/80 p-3">
+                <h4 className="font-semibold text-navy">{zh ? m.modeZh : m.modeEn}</h4>
+                <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-teal">
+                  {t("testing.col.provider")}
+                </p>
+                <p className="text-sm text-navy-2">{zh ? m.providerZh : m.providerEn}</p>
+                <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-teal">
+                  {t("testing.col.tests")}
+                </p>
+                <p className="text-sm text-mist">{zh ? m.testsZh : m.testsEn}</p>
+              </article>
+            ))}
+          </div>
+          <div className="table-scroll mt-3 hidden md:block">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-slate/50 text-xs uppercase tracking-wide text-mist">
+                <tr>
+                  <th className="px-4 py-3">{t("testing.col.mode")}</th>
+                  <th className="px-4 py-3">{t("testing.col.provider")}</th>
+                  <th className="px-4 py-3">{t("testing.col.tests")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {TEST_MODES.map((m) => (
+                  <tr key={m.modeEn} className="border-t border-line/70 align-top">
+                    <td className="px-4 py-3 font-semibold text-navy">
+                      {zh ? m.modeZh : m.modeEn}
+                    </td>
+                    <td className="px-4 py-3 text-navy-2">
+                      {zh ? m.providerZh : m.providerEn}
+                    </td>
+                    <td className="px-4 py-3 text-mist">{zh ? m.testsZh : m.testsEn}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-navy">{t("testing.methodology.caveats")}</h3>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm text-navy-2">
+            {(zh ? FINAL_METHODOLOGY.caveatsZh : FINAL_METHODOLOGY.caveatsEn).map((c, i) => (
+              <li key={i}>{c}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <div className="space-y-5">
         {GUIDE_SECTIONS.map((s) => (

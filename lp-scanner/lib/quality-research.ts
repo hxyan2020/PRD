@@ -533,14 +533,14 @@ export function buildQualityReport(args: {
 
   const baseVerdict = zh
     ? overall >= 85
-      ? `${primary?.name} 对本标的呈现高优先级候选：建议进入受控 PoC（真实单量扫单 + 新闻窗）。`
+      ? `${primary?.name} 对本标的呈现高优先级候选：按最终方法论进入「影子行情 → 小额实盘」（已接入 LP 可跳过完整 UAT）；新闻窗扫单必做。`
       : overall >= 65
-        ? `${primary?.name} 可作为可用候选：先补 last look/拒单实测，再与备源对比有效成本。`
+        ? `${primary?.name} 可作为可用候选：补历史回测异常规则 + 真实行情影子，再测 last look/拒单与有效成本。`
         : `${primary?.name} 目前代理评分偏低：仅作探索；优先验证覆盖与时段，或换更高分备源。`
     : overall >= 85
-      ? `${primary?.name} looks high-priority for this subject — proceed to controlled PoC (size sweeps + news windows).`
+      ? `${primary?.name} looks high-priority — follow final methodology: live quote shadow → small live fills (skip full UAT if LP already connected); include news-window sweeps.`
       : overall >= 65
-        ? `${primary?.name} is a usable candidate — measure last-look/rejects, then compare all-in cost vs secondary.`
+        ? `${primary?.name} is a usable candidate — add historical anomaly backtest + live MD shadow, then measure last-look/rejects and all-in cost.`
         : `${primary?.name} scores soft on proxies — exploratory only; verify coverage/hours or prefer a higher-scoring peer.`;
 
   const verdict = dataBottleneck.hit
@@ -552,10 +552,10 @@ export function buildQualityReport(args: {
   steps.push({
     id: "verdict",
     index: 11,
-    title: zh ? "结论与下一步 PoC" : "Verdict & next PoC steps",
+    title: zh ? "结论与方法论下一步" : "Verdict & methodology next steps",
     action: zh
-      ? "给出综合代理评分与可执行下一步（FIX 实验室 → 准生产 PoC → 月度监控）；若数据不足则明确点出瓶颈。"
-      : "Issue composite proxy score and actionable next steps (FIX lab → PoC → monthly monitoring); name the bottleneck when data is insufficient.",
+      ? "给出综合代理评分与可执行下一步（LP UAT → 历史回测 → 影子行情 → 小额实盘 → 上线）；若数据不足则明确点出瓶颈。"
+      : "Issue composite proxy score and actionable next steps (LP UAT → backtest → live shadow → small live → go-live); name the bottleneck when data is insufficient.",
     result: verdict,
     details: zh
       ? [
@@ -563,20 +563,20 @@ export function buildQualityReport(args: {
             ? [`数据可得性瓶颈：${dataBottleneck.gaps[0]}`]
             : []),
           `综合代理分：${overall}/100`,
-          "下一步 1：FIX MD/OE + 目标机房延迟",
-          "下一步 2：按 1×/5×/20× 平均单量扫单",
-          "下一步 3：新闻窗滑点对称与拒单码分类",
-          "下一步 4：平台↔桥↔LP 对账与故障切换演练",
+          "下一步 1：LP UAT（新连接）或复用已有会话（已接入 LP）",
+          "下一步 2：历史回测价差/跳价/稳定性（不作延迟/Last Look 证明）",
+          "下一步 3：生产行情影子 — 延迟、断流、跨 LP 对比",
+          "下一步 4：小额实盘 Fill/Slippage/Last Look + 上线监控",
         ]
       : [
           ...(dataBottleneck.hit
             ? [`Data-availability bottleneck: ${dataBottleneck.gaps[0]}`]
             : []),
           `Composite proxy score: ${overall}/100`,
-          "Next 1: FIX MD/OE + colo latency",
-          "Next 2: Sweep at 1×/5×/20× average ticket",
-          "Next 3: News-window slippage symmetry + reject codes",
-          "Next 4: Platform↔bridge↔LP reconcile + failover drill",
+          "Next 1: LP UAT (new connect) or reuse live session (LP already on)",
+          "Next 2: Historical spread/jump/stability backtest (not latency/last-look proof)",
+          "Next 3: Production MD shadow — latency, gaps, cross-LP compare",
+          "Next 4: Small live fill/slippage/last look + go-live monitors",
         ],
     status: dataBottleneck.hit || overall < 65 ? "warn" : "done",
     pros: overall >= 65 ? [zh ? "值得进入 PoC 预算" : "Worth a PoC budget"] : [],
@@ -612,8 +612,8 @@ export function buildQualityReport(args: {
     })),
     dataBottleneck,
     disclaimer: zh
-      ? "本报告为知识库 + 启发式实时研究代理结果，不能替代实盘 TCA、牌照法律意见或授信审批。标注为样本/代理处需在 PoC 中验证。若报告标明数据可得性是瓶颈，须先补齐实盘样本再下质量定论。"
-      : "This report combines KB + heuristic live-research proxies. It does not replace live TCA, legal licence opinions, or credit approval. Items marked proxy/sample must be verified in PoC. When the report says data availability is the bottleneck, obtain live samples before a quality call.",
+      ? "本报告为知识库 + 启发式实时研究代理结果，不能替代实盘 TCA、牌照法律意见或授信审批。请按最终方法论（UAT + 回测 + 影子 + 小额实盘）验证标注为样本/代理的项。若报告标明数据可得性是瓶颈，须先补齐实盘样本再下质量定论。"
+      : "This report combines KB + heuristic live-research proxies. It does not replace live TCA, legal licence opinions, or credit approval. Verify proxy/sample items via the final methodology (UAT + backtest + shadow + small live). When the report says data availability is the bottleneck, obtain live samples before a quality call.",
   };
 }
 

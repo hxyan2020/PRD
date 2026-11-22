@@ -28,15 +28,94 @@ export type PhaseRow = {
   actionsZh: string[];
 };
 
+export type TestModeRow = {
+  modeEn: string;
+  modeZh: string;
+  providerEn: string;
+  providerZh: string;
+  testsEn: string;
+  testsZh: string;
+};
+
 export const GUIDE_INTRO = {
-  updatedAt: "2026-03-22",
+  updatedAt: "2026-11-22",
   titleEn: "How CFD brokers test LP quality",
   titleZh: "CFD 经纪商如何测试 LP 质量",
   leadEn:
-    "Advertised top-of-book spreads are not LP quality. Quality is what your clients receive when size, session, volatility and last-look behaviour collide. This page summarises industry practice for selecting, PoC-testing and continuously monitoring liquidity providers as a CFD broker.",
+    "Advertised top-of-book spreads are not LP quality. Quality is what your clients receive when size, session, volatility and last-look behaviour collide. Vantage’s final methodology combines LP Demo/UAT environments with broker-owned backtests, live quote shadowing and small live fills — each solves a different problem; use both, preferably together.",
   leadZh:
-    "宣传上的最优买卖价差并不等于 LP 质量。质量体现在订单规模、交易时段、波动与 last look 行为叠加时，客户实际拿到的成交结果。本页归纳 CFD 经纪商在筛选、PoC 测试与持续监控流动性提供商时的行业做法。",
+    "宣传上的最优买卖价差并不等于 LP 质量。质量体现在订单规模、交易时段、波动与 last look 行为叠加时，客户实际拿到的成交结果。Vantage 最终方法论将 LP Demo/UAT 环境与经纪商自建历史回测、实时行情影子测试、小额实盘验证结合使用——二者解决不同问题，应并用，最好串联。",
 };
+
+/** Canonical quote-quality methodology: LP env + broker tests, combined. */
+export const FINAL_METHODOLOGY = {
+  id: "methodology",
+  titleEn: "Final methodology — combine LP environments with broker tests",
+  titleZh: "最终方法论 — LP 测试环境与经纪商自测并用",
+  principleEn: [
+    "LP Demo/UAT and broker-owned backtesting answer different questions. Institutional LPs often offer Demo/UAT, but not every LP does, and UAT liquidity, latency and fill quality are not guaranteed to match production.",
+    "Prefer the combined pipeline for new symbols or new LPs. For an LP already live at Vantage where only a new product is added, reuse the existing connection: production market-data shadow first, then small live execution — full FIX/API re-certification is usually unnecessary.",
+  ],
+  principleZh: [
+    "LP Demo/UAT 与经纪商自建回测解决的是不同问题。机构级 LP 通常可提供 Demo/UAT，但不保证每家都有，也不保证测试环境与生产在流动性、延迟和成交质量上一致。",
+    "新品种或新 LP 优先走完整串联流水线。对 Vantage 而言，若 LP 已接入、只是新增商品：优先复用现有连接，取得新商品生产行情做影子测试，再做小额执行验证——通常不必每次重新做完整 LP 接口认证。",
+  ],
+  pipelineEn:
+    "LP UAT → historical backtest → live quote shadow → small live validation → go-live",
+  pipelineZh:
+    "LP UAT → 历史数据回测 → 真实行情影子测试 → 小额实盘验证 → 上线",
+  pipelineShortEn:
+    "Already-connected LP + new product: production MD shadow → small live fills → go-live (skip full UAT re-cert unless connectivity changed)",
+  pipelineShortZh:
+    "已接入 LP + 新商品：生产行情影子 → 小额实盘 → 上线（连接未变则跳过完整 UAT 复认证）",
+  caveatsEn: [
+    "Historical backtest: good for quote quality and anomaly rules; cannot reliably replay true network latency, last look or rejects.",
+    "LP UAT: mainly validates interface and trade workflow; not a proxy for production liquidity.",
+    "Live shadow: best for comparing real quote stability, gaps and latency across LPs.",
+    "Small live: final proof of fill rate, slippage, last look and hedge cost.",
+  ],
+  caveatsZh: [
+    "历史回测：可测报价质量与异常检测规则，但无法可靠还原真实网络延迟、Last Look 和成交拒绝。",
+    "LP UAT：主要验证接口与交易流程，不代表真实生产流动性。",
+    "实时影子测试：最适合比较不同 LP 的实际报价稳定性、断流与延迟。",
+    "小额实盘：最终验证真实成交率、滑点、Last Look 与对冲成本。",
+  ],
+};
+
+export const TEST_MODES: TestModeRow[] = [
+  {
+    modeEn: "LP Demo / UAT",
+    modeZh: "LP Demo / UAT",
+    providerEn: "LP (not always available)",
+    providerZh: "LP 提供（不一定都有）",
+    testsEn: "FIX/API connect, MD subscribe, simulated orders, rejects, fault handling",
+    testsZh: "FIX/API 连接、行情订阅、模拟下单、拒单、故障处理",
+  },
+  {
+    modeEn: "Historical backtest",
+    modeZh: "历史数据回测",
+    providerEn: "Broker-owned",
+    providerZh: "经纪商自己做",
+    testsEn: "Spread, price deviation, jump anomalies, volatility, quote stability",
+    testsZh: "价差、价格偏离、异常跳价、波动率、报价稳定性",
+  },
+  {
+    modeEn: "Live quote shadow",
+    modeZh: "实时行情影子测试",
+    providerEn: "Broker on live LP MD",
+    providerZh: "经纪商接入真实 LP 行情",
+    testsEn: "Live latency, gaps/dropouts, quote quality, cross-LP comparison",
+    testsZh: "实时延迟、断流、报价质量、不同 LP 表现对比",
+  },
+  {
+    modeEn: "Small live fills",
+    modeZh: "小额真实成交测试",
+    providerEn: "Broker + LP jointly",
+    providerZh: "经纪商与 LP 协作",
+    testsEn: "Fill rate, slippage, last look, hedge cost",
+    testsZh: "实际 Fill Rate、Slippage、Last Look、对冲成本",
+  },
+];
 
 export const GUIDE_SECTIONS: GuideSection[] = [
   {
@@ -230,83 +309,103 @@ export const METRICS: MetricRow[] = [
 
 export const PHASES: PhaseRow[] = [
   {
-    phaseEn: "A. Desk due diligence",
-    phaseZh: "A. 桌面尽调",
-    goalEn: "Kill non-viable counterparties early",
-    goalZh: "尽早淘汰不可行对手方",
+    phaseEn: "0. Desk due diligence",
+    phaseZh: "0. 桌面尽调",
+    goalEn: "Kill non-viable counterparties before any lab time",
+    goalZh: "在进实验室前淘汰不可行对手方",
     actionsEn: [
       "Legal entity + licence register check",
       "Instrument schedule (machine-readable)",
       "Last-look / order-handling policy in writing",
-      "90-day sample spreads + methodology if available",
       "Credit, collateral, close-out terms",
+      "Confirm whether Demo/UAT exists and how it differs from production",
     ],
     actionsZh: [
       "法律实体 + 牌照登记核查",
       "机读品种表",
       "书面 last look / 订单处理政策",
-      "如有则索取 90 天样本价差及方法说明",
       "授信、保证金、平仓条款",
+      "确认是否有 Demo/UAT 及其与生产差异",
     ],
   },
   {
-    phaseEn: "B. Controlled demo / FIX lab",
-    phaseZh: "B. 受控演示 / FIX 实验室",
-    goalEn: "Prove connectivity and policy claims",
-    goalZh: "验证连通性与政策承诺",
+    phaseEn: "1. LP Demo / UAT",
+    phaseZh: "1. LP Demo / UAT",
+    goalEn: "Validate interface and trade workflow (not production liquidity)",
+    goalZh: "验证接口与交易流程（不代表生产流动性）",
     actionsEn: [
-      "Live FIX MD + OE from your test env",
-      "Spread at your expected trade sizes",
-      "Last-look demo with timed rejects",
-      "Latency from target colo (e.g. LD4 / SG3)",
-      "Depth / multi-asset coverage for your list",
+      "FIX/API connect + sequence recovery from your path",
+      "Market-data subscribe / symbol map / digits / contract size",
+      "Simulated orders, rejects, partial fills, disconnect/reconnect",
+      "Fault handling and drop-copy if offered",
+      "Skip or shorten if LP already certified and only a new symbol is added",
     ],
     actionsZh: [
-      "自测试环境建立实时 FIX 行情+下单",
-      "按预期成交规模测价差",
-      "带计时拒单的 last look 演示",
-      "自目标机房测延迟（如 LD4 / SG3）",
-      "覆盖你清单的深度/多资产",
+      "自真实路径做 FIX/API 连接与序号恢复",
+      "行情订阅 / 品种映射 / 小数位 / 合约规模",
+      "模拟下单、拒单、部分成交、断线重连",
+      "故障处理与 drop copy（如有）",
+      "LP 已认证且仅新增品种时可跳过或缩短",
     ],
   },
   {
-    phaseEn: "C. Production-like PoC",
-    phaseZh: "C. 准生产 PoC",
-    goalEn: "Measure real execution economics",
-    goalZh: "度量真实成交经济性",
+    phaseEn: "2. Historical broker backtest",
+    phaseZh: "2. 经纪商历史数据回测",
+    goalEn: "Score quote quality and anomaly rules offline",
+    goalZh: "离线评估报价质量与异常规则",
     actionsEn: [
-      "Controlled live orders across symbols/sessions/sizes",
-      "News / open / thin-session stress windows",
-      "Partial fills + residual routing (if multi-LP)",
-      "Reconcile platform ↔ bridge ↔ LP statements",
-      "Normalise all-in cost scenarios (quiet / volatile / large ticket)",
+      "Replay / sample LP ticks for spread, deviation vs mid/benchmark",
+      "Jump / freeze / stale-tick anomaly detectors",
+      "Volatility regimes and quiet vs event windows",
+      "Quote stability scores by session (Asia / London / NY)",
+      "Do not treat results as proof of latency, last look or reject behaviour",
     ],
     actionsZh: [
-      "跨品种/时段/规模的受控实盘订单",
-      "新闻/开盘/清淡时段压力窗口",
-      "部分成交与残量路由（若多 LP）",
-      "平台 ↔ 桥 ↔ LP 账单对账",
-      "归一化综合成本情景（平静/波动/大单）",
+      "回放/采样 LP tick：价差、相对中间价/基准偏离",
+      "跳价 / 冻结 / 陈旧 tick 异常检测",
+      "波动市况与平静 vs 事件窗口",
+      "按时段（亚太/伦敦/纽约）的报价稳定性评分",
+      "结果不得当作延迟、Last Look 或拒单的证明",
     ],
   },
   {
-    phaseEn: "D. Go-live controls + monthly review",
-    phaseZh: "D. 上线控制 + 月度复盘",
-    goalEn: "Keep quality measurable and adjustable",
-    goalZh: "让质量可度量、可调整",
+    phaseEn: "3. Live quote shadow",
+    phaseZh: "3. 真实行情影子测试",
+    goalEn: "Compare live quote stability, gaps and latency across LPs",
+    goalZh: "比较各 LP 实时报价稳定性、断流与延迟",
     actionsEn: [
-      "Pre-client quote verification gates",
-      "Real-time spread / freeze / latency monitors",
-      "Weekly external price benchmarking",
-      "Slippage symmetry reports by order type",
-      "SLA review; re-weight routing after events",
+      "Subscribe production (or production-like) MD on the new symbol",
+      "Measure live latency, gap/dropout rate, freeze duration",
+      "Side-by-side LP quote quality for the same product",
+      "For already-connected Vantage LPs: reuse the live session — prefer this before new UAT",
+      "Gate client visibility until shadow pass criteria are met",
     ],
     actionsZh: [
-      "客户可见前的报价校验闸门",
-      "实时价差/冻结/延迟监控",
-      "每周外部价格对标",
-      "按订单类型的滑点对称报告",
-      "SLA 复盘；重大事件后重配路由权重",
+      "为新品种订阅生产（或准生产）行情",
+      "度量实时延迟、断流率、冻结时长",
+      "同品种多 LP 并排对比报价质量",
+      "对已接入的 Vantage LP：复用现有实盘会话——优先于重新 UAT",
+      "影子测试达标前不对客户开放可见报价",
+    ],
+  },
+  {
+    phaseEn: "4. Small live fills + go-live",
+    phaseZh: "4. 小额实盘 + 上线",
+    goalEn: "Prove fill, slippage, last look and hedge cost before scale",
+    goalZh: "放量前证明成交、滑点、Last Look 与对冲成本",
+    actionsEn: [
+      "Controlled small tickets across sessions / sizes with LP cooperation",
+      "Capture fill rate, slippage symmetry, last-look rejects, hedge PnL",
+      "News / open / thin-session stress windows on the new symbol",
+      "Reconcile platform ↔ bridge ↔ LP; enable pre-client quote gates",
+      "Monthly best-execution review; re-weight routing after events",
+    ],
+    actionsZh: [
+      "与 LP 协作，跨时段/规模做受控小额成交",
+      "记录成交率、滑点对称、last look 拒单、对冲盈亏",
+      "新品种覆盖新闻/开盘/清淡时段压力窗口",
+      "平台 ↔ 桥 ↔ LP 对账；启用客户可见前报价闸门",
+      "月度最佳执行复盘；重大事件后重配路由",
     ],
   },
 ];
@@ -335,6 +434,10 @@ export const SCORECARD_HINTS = {
 };
 
 export const GUIDE_SOURCES: { title: string; url: string }[] = [
+  {
+    title: "Ripple Liquidity Hub docs — sandbox / UAT vs production behaviour",
+    url: "https://docs.liquidity.ripple.com/",
+  },
   {
     title: "Equidity — How to Select Liquidity Providers for CFDs",
     url: "https://equidity.com/blog/how-to-select-liquidity-providers",

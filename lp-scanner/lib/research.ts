@@ -234,8 +234,8 @@ export function answerChat(
     )
   ) {
     return locale === "zh-CN"
-      ? `测 LP 质量请看「LP 测试」页：先按真实单量测可成交深度与有效成本，再查 last look/拒单原因，并在新闻/开盘/清淡时段做压力测试；上线后持续跟踪价差、冻结、延迟与滑点对称性。选中内容：「${contextText.slice(0, 120)}」。`
-      : `For LP quality testing see the LP Testing page: measure executable depth and all-in cost at real ticket sizes, interrogate last-look/reject codes, stress news/open/thin sessions, then monitor spreads, freezes, latency and slippage symmetry live. Selection: “${contextText.slice(0, 120)}”.`;
+      ? `测 LP 报价质量请看「LP 测试」最终方法论：LP UAT（接口/流程）与经纪商历史回测（价差/跳价）并用，再做真实行情影子测试与小额实盘（Fill/Slippage/Last Look）；已接入 LP 新增商品时优先复用连接做生产影子+小额验证，不必每次完整接口复认证。选中内容：「${contextText.slice(0, 120)}」。`
+      : `For LP quote quality see the LP Testing final methodology: combine LP UAT (connectivity/workflow) with broker historical backtests (spread/jumps), then live quote shadowing and small live fills (fill rate/slippage/last look). For an already-connected LP adding a new product, reuse the live session for production MD shadow + small execution — full FIX re-cert is usually unnecessary. Selection: “${contextText.slice(0, 120)}”.`;
   }
 
   if (/(xau|gold)/i.test(question) || /(xau|gold)/i.test(contextText)) {
