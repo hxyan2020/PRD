@@ -12,6 +12,19 @@ npm run dev
 
 Open http://127.0.0.1:3010
 
+## Deploy (Vercel)
+
+```bash
+cd lp-scanner
+# Permanent production URL (requires `vercel login` or VERCEL_TOKEN):
+npx vercel@latest deploy --prod --yes
+
+# Anonymous preview (temporary *.tmp.now; claim from the printed claim URL):
+npx vercel@latest deploy --temporary --yes
+```
+
+`vercel.json` lives in this folder. Local `.vercel/` is gitignored (claim tokens / project link).
+
 ## Scripts
 
 - `npm run dev` — local Next.js (PGlite, no `DATABASE_URL`)
