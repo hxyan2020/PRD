@@ -7,6 +7,8 @@ export type Actor = {
   isAdmin: boolean;
   verified: boolean;
   role: "admin" | "viewer" | "anonymous";
+  /** Temporary open mode: anyone may query and edit. */
+  openAccess: boolean;
 };
 
 function adminEmailAllowlist(): Set<string> {
@@ -23,9 +25,31 @@ function isLocalDevHost(): boolean {
   return !process.env.CURSOR_APP_ID && !process.env.VERCEL;
 }
 
+/**
+ * Temporary open collaboration mode.
+ * Default ON. Set QUOTEOPS_OPEN_ACCESS=0 (or false/off) to restore admin-gated writes.
+ */
+export function isOpenAccess(): boolean {
+  const raw = (process.env.QUOTEOPS_OPEN_ACCESS ?? "1").trim().toLowerCase();
+  return raw !== "0" && raw !== "false" && raw !== "off" && raw !== "no";
+}
+
 export async function getActor(request: Request): Promise<Actor> {
+  const openAccess = isOpenAccess();
   const identity = await getIdentity(request);
+
   if (!identity.verified) {
+    if (openAccess) {
+      return {
+        sub: "anonymous",
+        email: "",
+        name: "Anonymous editor",
+        isAdmin: true,
+        verified: false,
+        role: "admin",
+        openAccess: true,
+      };
+    }
     return {
       sub: "",
       email: "",
@@ -33,6 +57,7 @@ export async function getActor(request: Request): Promise<Actor> {
       isAdmin: false,
       verified: false,
       role: "anonymous",
+      openAccess: false,
     };
   }
 
@@ -60,6 +85,8 @@ export async function getActor(request: Request): Promise<Actor> {
     isAdmin = true;
   }
 
+  if (openAccess) isAdmin = true;
+
   return {
     sub: identity.sub,
     email: identity.email || "",
@@ -67,22 +94,24 @@ export async function getActor(request: Request): Promise<Actor> {
     isAdmin,
     verified: true,
     role: isAdmin ? "admin" : "viewer",
+    openAccess,
   };
 }
 
 /** All mutating API routes must go through this. */
 export async function requireAdmin(request: Request): Promise<Actor | Response> {
-  // Local/dev without published identity gate: allow writes for smoke tests.
-  if (isLocalDevHost()) {
+  // Temporary open mode: anyone (including anonymous) may write.
+  if (isOpenAccess() || isLocalDevHost()) {
     const actor = await getActor(request);
     return {
       ...actor,
       isAdmin: true,
-      verified: true,
+      verified: actor.verified || isLocalDevHost(),
       role: "admin",
-      sub: actor.sub || "local-dev",
-      email: actor.email || "dev@example.com",
-      name: actor.name || "Local Admin",
+      openAccess: isOpenAccess(),
+      sub: actor.sub || (isLocalDevHost() ? "local-dev" : "anonymous"),
+      email: actor.email || (isLocalDevHost() ? "dev@example.com" : ""),
+      name: actor.name || (isLocalDevHost() ? "Local Admin" : "Anonymous editor"),
     };
   }
 

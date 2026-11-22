@@ -25,17 +25,20 @@ export function SiteHeader() {
   const { def, product } = useProduct();
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [openAccess, setOpenAccess] = useState(false);
   const [roleReady, setRoleReady] = useState(false);
 
   useEffect(() => {
     void fetch("/api/me")
       .then((r) => r.json())
-      .then((d: { isAdmin?: boolean }) => {
-        setIsAdmin(!!d.isAdmin);
+      .then((d: { isAdmin?: boolean; openAccess?: boolean; canWrite?: boolean }) => {
+        setIsAdmin(!!(d.canWrite ?? d.isAdmin));
+        setOpenAccess(!!d.openAccess);
         setRoleReady(true);
       })
       .catch(() => {
         setIsAdmin(false);
+        setOpenAccess(false);
         setRoleReady(true);
       });
   }, []);
@@ -111,10 +114,18 @@ export function SiteHeader() {
               {roleReady && (
                 <span
                   className={`ml-2 rounded-md border px-2 py-1 text-[10px] uppercase tracking-wide ${
-                    isAdmin ? "border-sea/40 bg-sea-soft/50 text-sea" : "border-line bg-paper text-mist"
+                    openAccess
+                      ? "border-amber-400/60 bg-amber-50 text-amber-800"
+                      : isAdmin
+                        ? "border-sea/40 bg-sea-soft/50 text-sea"
+                        : "border-line bg-paper text-mist"
                   }`}
                 >
-                  {isAdmin ? t("管理员", "Admin") : t("只读", "Read-only")}
+                  {openAccess
+                    ? t("开放编辑", "Open edit")
+                    : isAdmin
+                      ? t("管理员", "Admin")
+                      : t("只读", "Read-only")}
                 </span>
               )}
               <div className="ml-2 flex gap-1 rounded-md border border-line bg-white p-0.5 text-xs">
@@ -175,10 +186,18 @@ export function SiteHeader() {
         {roleReady && (
           <span
             className={`mt-2 w-fit rounded-md border px-2 py-1.5 text-[10px] uppercase tracking-wide ${
-              isAdmin ? "border-sea/40 bg-sea-soft/50 text-sea" : "border-line bg-paper text-mist"
+              openAccess
+                ? "border-amber-400/60 bg-amber-50 text-amber-800"
+                : isAdmin
+                  ? "border-sea/40 bg-sea-soft/50 text-sea"
+                  : "border-line bg-paper text-mist"
             }`}
           >
-            {isAdmin ? t("管理员", "Admin") : t("只读", "Read-only")}
+            {openAccess
+              ? t("开放编辑", "Open edit")
+              : isAdmin
+                ? t("管理员", "Admin")
+                : t("只读", "Read-only")}
           </span>
         )}
         <div className="mt-2 flex gap-1 rounded-lg border border-line bg-white p-1 text-sm">

@@ -68,8 +68,8 @@ export function CasesDesk() {
         <p className="mt-2 text-sm text-mist">
           {isAdmin
             ? t(
-                "管理员可新建与更新排查案件；其他角色只读。",
-                "Admins can create and update cases; other roles are read-only.",
+                "当前开放编辑：任何人可新建与更新排查案件。",
+                "Open edit: anyone can create and update cases.",
               )
             : t(
                 "只读模式：可查看案件列表，新建与状态变更仅管理员可用。",

@@ -10,14 +10,16 @@ export function MobileBottomNav() {
   const pathname = usePathname();
   const { locale, t } = useI18n();
   const { product } = useProduct();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [canWrite, setCanWrite] = useState(true);
   const isPerp = product === "v-exchange-perp";
 
   useEffect(() => {
     void fetch("/api/me")
       .then((r) => r.json())
-      .then((d: { isAdmin?: boolean }) => setIsAdmin(!!d.isAdmin))
-      .catch(() => setIsAdmin(false));
+      .then((d: { isAdmin?: boolean; canWrite?: boolean }) =>
+        setCanWrite(!!(d.canWrite ?? d.isAdmin)),
+      )
+      .catch(() => setCanWrite(true));
   }, []);
 
   const items = [
@@ -29,7 +31,7 @@ export function MobileBottomNav() {
     isPerp
       ? { href: "/kb/ve-pricing-engine", zh: "定价", en: "Pricing" }
       : { href: "/pipeline", zh: "链路", en: "Pipe" },
-    ...(isAdmin ? [{ href: "/admin", zh: "管理", en: "Admin" }] : []),
+    ...(canWrite ? [{ href: "/admin", zh: "管理", en: "Admin" }] : []),
   ];
 
   return (
