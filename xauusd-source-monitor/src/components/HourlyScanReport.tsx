@@ -14,6 +14,7 @@ import {
 } from '../engine/hourlyScan'
 import { useLocale } from '../i18n/locale'
 import type { SourceHealth } from '../types'
+import { HourlyKlineChart } from './HourlyKlineChart'
 
 function fmtSgt(ts: number) {
   return new Date(ts).toLocaleString('en-SG', {
@@ -273,6 +274,11 @@ function ReportCard({
       </header>
 
       <SentimentMeter sentiment={sentiment} lang={lang} />
+
+      <HourlyKlineChart
+        series={report.kline}
+        onOpenSource={(id) => onOpenSources(report.sources, [id])}
+      />
 
       <div className="hourly-bilingual-note sub">{t('hourlyBilingualNote')}</div>
 

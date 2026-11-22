@@ -63,6 +63,26 @@ export interface SentimentBarometer {
   definitionZh: string[]
 }
 
+/** One OHLC bar for the report K-line chart */
+export interface KlineBar {
+  /** Candle open time (epoch ms) */
+  t: number
+  o: number
+  h: number
+  l: number
+  c: number
+  /** Optional base volume */
+  v?: number
+}
+
+export interface HourlyKlineSeries {
+  symbol: string
+  /** Exchange bar size label, e.g. 1H */
+  interval: string
+  sourceId: string
+  bars: KlineBar[]
+}
+
 export interface HourlyMarketReport {
   id: string
   createdAt: number
@@ -73,6 +93,8 @@ export interface HourlyMarketReport {
   risk: RankedPoint[]
   sources: ReportSource[]
   sentiment: SentimentBarometer
+  /** OKX XAU-USDT-SWAP 1H candles for the report chart */
+  kline: HourlyKlineSeries | null
   /** V Exchange indicators are placeholders until ops provides the feed */
   vexPlaceholder: true
   vexNoteEn: string
@@ -92,6 +114,8 @@ const FED_PRESS = 'https://www.federalreserve.gov/json/ne-press.json'
 const GOLD_API = 'https://api.gold-api.com/price/XAU'
 const OKX_TICKER = 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP'
 const OKX_FUNDING = 'https://www.okx.com/api/v5/public/funding-rate?instId=XAU-USDT-SWAP'
+const OKX_CANDLES =
+  'https://www.okx.com/api/v5/market/candles?instId=XAU-USDT-SWAP&bar=1H&limit=36'
 const BITGET_TICKER =
   'https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=XAUUSDT'
 
@@ -120,6 +144,14 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     url: OKX_TICKER,
     captionEn: 'OKX API: XAU-USDT-SWAP last price',
     captionZh: 'OKX API：XAU-USDT-SWAP 最新價',
+    json: true,
+  },
+  {
+    id: 'okx-candles',
+    kind: 'price',
+    url: OKX_CANDLES,
+    captionEn: 'OKX API: XAU-USDT-SWAP 1H K-line (36 bars)',
+    captionZh: 'OKX API：XAU-USDT-SWAP 1H K 線（36 根）',
     json: true,
   },
   {
@@ -608,6 +640,37 @@ function bitgetLast(data: unknown): number | null {
   }
 }
 
+/** OKX candles: [ts, o, h, l, c, vol, volCcy, volCcyQuote, confirm] newest-first */
+function okxCandles(data: unknown): KlineBar[] {
+  try {
+    const rows = (data as { data?: string[][] })?.data
+    if (!Array.isArray(rows)) return []
+    const bars: KlineBar[] = []
+    for (const row of rows) {
+      if (!Array.isArray(row) || row.length < 5) continue
+      const t = Number(row[0])
+      const o = Number(row[1])
+      const h = Number(row[2])
+      const l = Number(row[3])
+      const c = Number(row[4])
+      const v = Number(row[5])
+      if (![t, o, h, l, c].every((n) => Number.isFinite(n))) continue
+      bars.push({
+        t,
+        o,
+        h,
+        l,
+        c,
+        v: Number.isFinite(v) ? v : undefined,
+      })
+    }
+    // Oldest → newest for charting
+    return bars.sort((a, b) => a.t - b.t)
+  } catch {
+    return []
+  }
+}
+
 function normalizeSource(s: ReportSource, fallbackTs: number): ReportSource {
   return {
     ...s,
@@ -627,6 +690,7 @@ export function loadHourlyReports(): HourlyMarketReport[] {
       ...r,
       sources: (r.sources || []).map((s) => normalizeSource(s, r.createdAt)),
       sentiment: r.sentiment ?? computeSentiment(r.opportunity || [], r.risk || []),
+      kline: r.kline ?? null,
     }))
   } catch {
     return []
@@ -897,6 +961,23 @@ export async function generateHourlyScan(args: {
     )
   }
 
+  const candleBars = okxCandles(byId.get('okx-candles')?.json ?? null)
+  let kline: HourlyKlineSeries | null = null
+  if (candleBars.length > 0) {
+    const last = candleBars[candleBars.length - 1]
+    bumpCaption(
+      'okx-candles',
+      `OKX XAU-USDT-SWAP 1H K-line · ${candleBars.length} bars · last ${last.c.toFixed(2)}`,
+      `OKX XAU-USDT-SWAP 1H K 線 · ${candleBars.length} 根 · 最新 ${last.c.toFixed(2)}`,
+    )
+    kline = {
+      symbol: 'XAU-USDT-SWAP',
+      interval: '1H',
+      sourceId: 'okx-candles',
+      bars: candleBars,
+    }
+  }
+
   // Desk health from live monitor (always attach as a source with freshness)
   const alertSources = args.health.filter((h) => h.health === 'alert' || h.health === 'watch')
   sources.push(
@@ -998,6 +1079,7 @@ export async function generateHourlyScan(args: {
     risk,
     sources,
     sentiment,
+    kline,
     vexPlaceholder: true,
     vexNoteEn,
     vexNoteZh,
