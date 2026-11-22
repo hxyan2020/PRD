@@ -53,6 +53,14 @@ describe("product-relative quality scores", () => {
     expect(report.quotingStrategy).toBeTruthy();
     expect(["aggregation", "fv"]).toContain(report.quotingStrategy!.mode);
     expect(report.quotingStrategy!.legs.length).toBeGreaterThan(0);
+    expect(report.metricsScorecard.metrics).toHaveLength(8);
+    expect(report.metricsScorecard.dimensions.length).toBeGreaterThanOrEqual(6);
+    expect(report.metricsScorecard.unavailableCount).toBeGreaterThanOrEqual(3);
+    expect(report.metricsScorecard.measuredCount).toBeGreaterThanOrEqual(4);
+    expect(report.metricsScorecard.metrics.some((m) => m.name.match(/fill|成交/i))).toBe(true);
+    expect(report.metricsScorecard.metrics.some((m) => m.name.match(/latency|延迟|延遲/i))).toBe(
+      true,
+    );
     expect(report.liveFindings.length).toBeGreaterThan(0);
     expect(report.dataBottleneck.hit).toBe(true);
     expect(report.verdict).toMatch(/data availability is the bottleneck/i);
@@ -74,6 +82,10 @@ describe("product-relative quality scores", () => {
     expect(html).toContain("Analysis");
     expect(html).toContain("Quoting strategy");
     expect(html).toContain("Per-LP quality reports");
+    expect(html).toContain("Quantitative metrics");
+    expect(html).toContain("Effective spread");
+    expect(html).toContain("Fill ratio");
+    expect(html).toContain("Needs live");
   });
 
   it("scores crypto LP green on BTC and weaker on XAU context", () => {

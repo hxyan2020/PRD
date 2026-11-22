@@ -1,13 +1,17 @@
 import { localizedLpLists } from "@/lib/i18n/lp-display";
 import { enrichQualitySteps } from "@/lib/quality-evidence";
 import { buildQualityLpCards, type QualityLpCard } from "@/lib/quality-lp-cards";
+import {
+  buildQualityMetricsScorecard,
+  type QualityMetricsScorecard,
+} from "@/lib/quality-metrics-scorecard";
 import { buildQuotingStrategy, type QuotingStrategy } from "@/lib/quoting-strategy";
 import { formatOptimalRegions, resolveOptimalRegions } from "@/lib/regions";
 import { resolveProduct, type ProductProfile } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
 import { dateLocale, isZh } from "@/lib/i18n/locale";
 
-export type { QualityLpCard, QuotingStrategy };
+export type { QualityLpCard, QuotingStrategy, QualityMetricsScorecard };
 
 export type QualityStepStatus = "pending" | "running" | "done" | "warn";
 
@@ -89,6 +93,8 @@ export type QualityReport = {
   lpCards: QualityLpCard[];
   /** Product-level quoting recommendation after multi-LP quality run. */
   quotingStrategy?: QuotingStrategy;
+  /** Final-report quantitative metrics (METRICS + weighted scorecard). */
+  metricsScorecard: QualityMetricsScorecard;
   dataBottleneck: DataBottleneck;
   /** Extra findings from KB ranking + optional live public lookup. */
   liveFindings: string[];
@@ -857,6 +863,18 @@ export function buildQualityReport(args: {
         })
       : undefined;
 
+  const offersBySlug = Object.fromEntries(
+    subjectScores.map((s) => [s.slug, s.offersProduct]),
+  );
+  const metricsScorecard = buildQualityMetricsScorecard({
+    locale,
+    product: symbol,
+    session,
+    scoreKey,
+    lps: subjects,
+    offersBySlug,
+  });
+
   const strategyVerdict =
     quotingStrategy && zh
       ? `报价策略建议：${quotingStrategy.modeLabel}。选用 ${quotingStrategy.legs
@@ -885,6 +903,7 @@ export function buildQualityReport(args: {
     subjects: subjectScores,
     lpCards,
     quotingStrategy,
+    metricsScorecard,
     dataBottleneck,
     liveFindings,
     disclaimer: zh
@@ -1075,6 +1094,38 @@ export function buildPrintableHtml(
         ${s.reason ? ` <span class="meta">— ${esc(s.reason)}</span>` : ""}</li>`;
     })
     .join("")}</ul>
+
+  ${
+    report.metricsScorecard
+      ? `<h2>${zh ? "量化指标 / 评分卡" : "Quantitative metrics / scorecard"}</h2>
+      <p class="meta">${esc(report.metricsScorecard.subtitle)}</p>
+      <p class="score ${report.metricsScorecard.weightedBand}">${zh ? "加权评分卡" : "Weighted scorecard"}: ${report.metricsScorecard.weightedScore}/100</p>
+      <ul>${report.metricsScorecard.dimensions
+        .map(
+          (d) =>
+            `<li><strong>${esc(d.name)}</strong> (${d.weightPct}%) · ${d.score}/100 · ${esc(d.note)}</li>`,
+        )
+        .join("")}</ul>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:10px">
+        <thead><tr>
+          <th style="text-align:left;border-bottom:1px solid #c5d0db;padding:4px">${zh ? "指标" : "Metric"}</th>
+          <th style="text-align:left;border-bottom:1px solid #c5d0db;padding:4px">${zh ? "状态" : "Status"}</th>
+          <th style="text-align:left;border-bottom:1px solid #c5d0db;padding:4px">${zh ? "数值" : "Value"}</th>
+          <th style="text-align:left;border-bottom:1px solid #c5d0db;padding:4px">${zh ? "说明" : "Evidence"}</th>
+        </tr></thead>
+        <tbody>${report.metricsScorecard.metrics
+          .map(
+            (m) => `<tr>
+            <td style="padding:4px;border-bottom:1px solid #e8eef4"><strong>${esc(m.name)}</strong><br/><span class="meta">${esc(m.what)}</span></td>
+            <td style="padding:4px;border-bottom:1px solid #e8eef4">${m.status === "proxy" ? (zh ? "代理分" : "Proxy") : zh ? "需实盘" : "Needs live"}</td>
+            <td style="padding:4px;border-bottom:1px solid #e8eef4">${esc(m.valueLabel)}</td>
+            <td style="padding:4px;border-bottom:1px solid #e8eef4">${esc(m.evidence)}${m.howToGet ? `<br/><em>${zh ? "如何获取" : "How to get"}:</em> ${esc(m.howToGet)}` : ""}</td>
+          </tr>`,
+          )
+          .join("")}</tbody>
+      </table>`
+      : ""
+  }
 
   ${
     report.quotingStrategy

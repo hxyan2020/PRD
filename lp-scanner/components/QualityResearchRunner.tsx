@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
 import { QualityLpCardList } from "@/components/QualityLpCardList";
+import { QualityMetricsScorecardPanel } from "@/components/QualityMetricsScorecard";
 import { QualityStepBody } from "@/components/QualityStepBody";
 import { QuotingStrategyPanel } from "@/components/QuotingStrategyPanel";
 import { useI18n } from "@/lib/i18n/context";
@@ -278,6 +279,10 @@ export function QualityResearchRunner({
 
         {(strategy || report?.quotingStrategy) && (
           <QuotingStrategyPanel strategy={strategy ?? report!.quotingStrategy!} />
+        )}
+
+        {report?.metricsScorecard && (
+          <QualityMetricsScorecardPanel scorecard={report.metricsScorecard} />
         )}
 
         {(lpCards.length > 0 || (report?.lpCards?.length ?? 0) > 0) && (
