@@ -26,6 +26,7 @@ import { categoryColorStyle } from '../lib/categoryColors'
 import {
   downloadAllNoteImages,
   extractAllNoteImageSrcs,
+  extractNoteImageSrcsFromRoot,
 } from '../lib/noteImage'
 import { htmlToPlainText, isBlankHtml, renderNoteHtml, sanitizeHtml } from '../lib/sanitizeHtml'
 
@@ -344,23 +345,37 @@ export function Notebook() {
     setDownloadAllBusy(true)
     setDownloadAllStatus(null)
     try {
-      const result = await downloadAllNoteImages(openedNote.selectedText, {
+      const root = document.querySelector(
+        `[data-opened-note-id="${openedNote.id}"] .note-fullscreen-body`,
+      )
+      const fromDom = extractNoteImageSrcsFromRoot(root)
+      const srcs =
+        fromDom.length > 0 ? fromDom : extractAllNoteImageSrcs(openedNote.selectedText)
+      const result = await downloadAllNoteImages(srcs, {
         onProgress: (done, total) => {
           setDownloadAllStatus(t('editorImageDownloadAllProgress', { done, total }))
         },
       })
       if (result.total === 0) {
         setDownloadAllStatus(t('editorImageDownloadAllNone'))
+      } else if (result.saved === 0) {
+        setDownloadAllStatus(
+          result.error || t('editorImageDownloadAllFailed'),
+        )
       } else if (result.failed > 0) {
         setDownloadAllStatus(
           `${t('editorImageDownloadAllDone', {
-            ok: result.total - result.failed,
+            ok: result.saved,
             total: result.total,
-          })} ${t('editorImageDownloadAllFailed')}`,
+          })} ${result.error || t('editorImageDownloadAllFailed')}`,
         )
+      } else if (result.mode === 'shared') {
+        setDownloadAllStatus(t('editorImageDownloadAllShared', { n: result.saved }))
+      } else if (result.mode === 'zip') {
+        setDownloadAllStatus(t('editorImageDownloadAllZipped', { n: result.saved }))
       } else {
         setDownloadAllStatus(
-          t('editorImageDownloadAllDone', { ok: result.total, total: result.total }),
+          t('editorImageDownloadAllDone', { ok: result.saved, total: result.total }),
         )
       }
     } catch (err) {
@@ -885,7 +900,10 @@ export function Notebook() {
                   </div>
                 </div>
                 <div className="note-fullscreen-body">
-                  <NoteBody html={openedNote.selectedText} className="notebook-quote" />
+                  <NoteBody
+                    html={openedNote.selectedText}
+                    className="note-fullscreen-content notebook-rich"
+                  />
                   {openedNote.explanation ? (
                     <div className="notebook-explanation">
                       {openedNote.explanation.split(/\n\n+/).map((block, index) => (
@@ -909,13 +927,10 @@ export function Notebook() {
                   </p>
                 ) : null}
                 <div className="notebook-actions note-fullscreen-actions">
-                  <button type="button" className="btn primary" onClick={closeOpenedNote}>
-                    {t('closeNote')}
-                  </button>
                   {openedNoteImageCount > 0 ? (
                     <button
                       type="button"
-                      className="btn ghost"
+                      className="btn primary note-fullscreen-download-all"
                       disabled={downloadAllBusy}
                       onClick={() => void downloadOpenedNoteImages()}
                     >
