@@ -29,6 +29,8 @@ export default function DailyRecommend({
   onRecommend,
   collectedIds,
   collectedAt,
+  viewedIds = [],
+  recommendLog,
   onToggleCollect,
   spotify,
 }) {
@@ -39,6 +41,16 @@ export default function DailyRecommend({
   const [salt, setSalt] = useState(0);
   const [recentIds, setRecentIds] = useState([]);
   const [lyricsOpen, setLyricsOpen] = useState(false);
+
+  const historyExcludeIds = useMemo(() => {
+    const ids = new Set();
+    for (const id of viewedIds || []) if (id) ids.add(String(id));
+    for (const id of collectedIds || []) if (id) ids.add(String(id));
+    for (const entry of recommendLog?.entries || []) {
+      if (entry?.trackId) ids.add(String(entry.trackId));
+    }
+    return [...ids];
+  }, [viewedIds, collectedIds, recommendLog]);
 
   useEffect(() => {
     setPrefs(loadListenPrefs());
@@ -66,13 +78,19 @@ export default function DailyRecommend({
   }, [ready, daily?.track?.id, daily?.mode, prefs.mood, prefs.country, prefs.genre]);
 
   function surpriseMe() {
-    const exclude = [surprise?.track?.id, daily?.track?.id, ...recentIds].filter(Boolean);
+    const currentId = surprise?.track?.id || daily?.track?.id || "";
+    const exclude = [currentId, daily?.track?.id, ...recentIds, ...historyExcludeIds].filter(Boolean);
     const nextSalt = salt + 1;
-    const next = surprisePick(tracks, { prefs, excludeIds: exclude, salt: nextSalt });
+    const next = surprisePick(tracks, {
+      prefs,
+      excludeIds: exclude,
+      salt: nextSalt,
+      currentId,
+    });
     setSalt(nextSalt);
     setSurprise(next);
     if (next.track) {
-      setRecentIds((ids) => [next.track.id, ...ids].slice(0, 48));
+      setRecentIds((ids) => [next.track.id, ...ids.filter((id) => id !== next.track.id)]);
       onRecommend?.({
         trackId: next.track.id,
         name: next.track.name,
@@ -84,7 +102,8 @@ export default function DailyRecommend({
         country: prefs.country,
         genre: prefs.genre,
       });
-      onListen(next.track);
+      // Mark as viewed without opening the drawer, so Surprise me stays clickable.
+      onView?.(next.track);
     }
   }
 

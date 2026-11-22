@@ -219,7 +219,7 @@ export function candidatePool(tracks, prefs = {}) {
   return (byBoth.length && byBoth) || (byGenre.length && byGenre) || (byCountry.length && byCountry) || list;
 }
 
-export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0 } = {}) {
+export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0, currentId = "" } = {}) {
   const list = Array.isArray(tracks) ? tracks : [];
   if (!list.length) {
     return { track: null, mode: "none", reasonKey: "empty", reason: "The archive is empty." };
@@ -230,18 +230,24 @@ export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0 } =
   const genre = String(prefs.genre || "").trim();
   const hasPrefs = Boolean(mood || country || genre);
   const preferred = hasPrefs ? candidatePool(list, prefs) : list;
-  const exclude = new Set((excludeIds || []).filter(Boolean).map(String));
+  const hardExclude = new Set((excludeIds || []).filter(Boolean).map(String));
+  const showing = String(currentId || "");
+  if (showing) hardExclude.add(showing);
 
-  function choose(pool) {
-    const open = pool.filter((track) => !exclude.has(track.id));
-    const use = open.length ? open : pool;
-    if (!use.length) return null;
-    return use[hashString(`surprise|${salt}|${use.length}`) % use.length];
+  function choose(pool, blocked) {
+    const open = (pool || []).filter((track) => track?.id && !blocked.has(String(track.id)));
+    if (!open.length) return null;
+    return open[hashString(`surprise|${salt}|${open.length}|${open[0].id}`) % open.length];
   }
 
-  let track = choose(preferred);
-  if ((!track || exclude.has(track.id)) && preferred !== list) {
-    track = choose(list);
+  // Prefer never-viewed / never-recommended, still matching taste when possible.
+  let track = choose(preferred, hardExclude);
+  if (!track) track = choose(list, hardExclude);
+
+  // Infinite clicks: once every title is used, reshuffle but never repeat the one on screen.
+  if (!track) {
+    const avoidCurrent = showing ? new Set([showing]) : new Set();
+    track = choose(preferred, avoidCurrent) || choose(list, avoidCurrent) || list[0] || null;
   }
 
   const bits = [mood && `mood “${mood}”`, country && `country “${country}”`, genre && `genre “${genre}”`].filter(

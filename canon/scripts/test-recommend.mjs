@@ -138,14 +138,30 @@ assert.equal(japanSurprise.track.id, "jpop");
 
 const seen = new Set();
 let exclude = ["dance"];
-for (let salt = 0; salt < 8; salt += 1) {
-  const pick = surprisePick(tracks, { excludeIds: exclude, salt });
+let current = "dance";
+for (let salt = 0; salt < tracks.length - 1; salt += 1) {
+  const pick = surprisePick(tracks, { excludeIds: exclude, salt, currentId: current });
   assert.ok(pick.track);
-  assert.ok(!exclude.includes(pick.track.id), "surprise must show a new recording");
+  assert.notEqual(pick.track.id, current, "surprise must not repeat the title on screen");
+  assert.ok(!exclude.includes(pick.track.id), "surprise must prefer a never-shown recording");
   seen.add(pick.track.id);
-  exclude = [pick.track.id, ...exclude].slice(0, 3);
+  current = pick.track.id;
+  exclude = [pick.track.id, ...exclude];
 }
-assert.ok(seen.size >= 2, "repeated Surprise me must cycle through different works");
+assert.equal(seen.size, tracks.length - 1, "Surprise me should walk unused titles before recycling");
+
+// Once every title is excluded, keep serving infinitely but never the current card.
+const allIds = tracks.map((track) => track.id);
+const recycled = [];
+let showing = "folk";
+for (let salt = 0; salt < 12; salt += 1) {
+  const pick = surprisePick(tracks, { excludeIds: allIds, salt, currentId: showing });
+  assert.ok(pick.track, "surprise stays available after the catalog is exhausted");
+  assert.notEqual(pick.track.id, showing, "recycled surprise must still change the card");
+  recycled.push(pick.track.id);
+  showing = pick.track.id;
+}
+assert.ok(new Set(recycled).size >= 2, "infinite Surprise me must keep changing titles");
 
 const memory = {
   data: new Map(),

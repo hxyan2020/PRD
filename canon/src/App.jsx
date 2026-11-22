@@ -529,6 +529,8 @@ export default function App() {
             onRecommend={onRecommend}
             collectedIds={collectedIds}
             collectedAt={collectedAt}
+            viewedIds={viewedIds}
+            recommendLog={recommendLog}
             onToggleCollect={onToggleCollect}
             spotify={spotify}
           />
