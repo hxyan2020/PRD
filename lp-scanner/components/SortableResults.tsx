@@ -19,9 +19,15 @@ type Col =
 export function SortableResults({
   rankings,
   researchedAt,
+  product,
+  onRunProductQuality,
+  onRunLpQuality,
 }: {
   rankings: RankedLp[];
   researchedAt: string;
+  product?: string;
+  onRunProductQuality?: () => void;
+  onRunLpQuality?: (lpId: string, name: string) => void;
 }) {
   const { t, locale } = useI18n();
   const [sort, setSort] = useState<{ col: Col; dir: "asc" | "desc" }>({
@@ -72,8 +78,18 @@ export function SortableResults({
               timeZone: "Asia/Singapore",
             })}{" "}
             (SGT)
+            {product ? ` · ${product}` : ""}
           </p>
         </div>
+        {onRunProductQuality && (
+          <button
+            type="button"
+            onClick={onRunProductQuality}
+            className="rounded-lg bg-navy px-3 py-2 text-sm font-medium text-foam hover:bg-teal"
+          >
+            {t("quality.runForProduct")}
+          </button>
+        )}
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-sm">
@@ -121,10 +137,26 @@ export function SortableResults({
         .filter((r) => r.lp.id === openId)
         .map((r) => (
           <div key={r.lp.id} className="border-t border-line bg-foam/80 px-4 py-4 sm:px-5">
-            <h3 className="font-display text-xl text-navy">{r.lp.name}</h3>
-            <p className="mt-1 text-sm text-mist">
-              {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 220) : r.lp.kbBodyEn.slice(0, 220)}…
-            </p>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 className="font-display text-xl text-navy">{r.lp.name}</h3>
+                <p className="mt-1 text-sm text-mist">
+                  {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 220) : r.lp.kbBodyEn.slice(0, 220)}…
+                </p>
+              </div>
+              {onRunLpQuality && (
+                <button
+                  type="button"
+                  className="rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-navy hover:border-teal"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRunLpQuality(r.lp.id, r.lp.name);
+                  }}
+                >
+                  {t("quality.runForLp")}
+                </button>
+              )}
+            </div>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <Block title={t("detail.reasons")} items={r.reasons} />
               <Block title={t("detail.live")} items={r.liveNotes} />

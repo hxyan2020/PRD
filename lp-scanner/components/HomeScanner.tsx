@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { QualityResearchRunner } from "@/components/QualityResearchRunner";
 import { SortableResults } from "@/components/SortableResults";
 import { useI18n } from "@/lib/i18n/context";
 import type { LpResearchResult, RankedLp } from "@/lib/types";
+
+type QualityTarget =
+  | { mode: "product"; query: string }
+  | { mode: "lp"; query: string; lpId?: string };
 
 export function HomeScanner() {
   const { t, locale } = useI18n();
@@ -17,12 +22,14 @@ export function HomeScanner() {
   } | null>(null);
   const [lpResult, setLpResult] = useState<LpResearchResult | null>(null);
   const [added, setAdded] = useState(false);
+  const [quality, setQuality] = useState<QualityTarget | null>(null);
 
   async function scan() {
     const q = query.trim();
     if (!q || busy) return;
     setBusy(true);
     setAdded(false);
+    setQuality(null);
     try {
       if (mode === "product") {
         const res = await fetch(`/api/scan/product?q=${encodeURIComponent(q)}&locale=${locale}`);
@@ -123,7 +130,15 @@ export function HomeScanner() {
       )}
 
       {productResult && (
-        <SortableResults rankings={productResult.rankings} researchedAt={productResult.researchedAt} />
+        <SortableResults
+          rankings={productResult.rankings}
+          researchedAt={productResult.researchedAt}
+          product={productResult.product}
+          onRunProductQuality={() =>
+            setQuality({ mode: "product", query: productResult.product })
+          }
+          onRunLpQuality={(lpId, name) => setQuality({ mode: "lp", query: name, lpId })}
+        />
       )}
 
       {lpResult && (
@@ -144,13 +159,28 @@ export function HomeScanner() {
                 (SGT)
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => void addToRepo()}
-              className="rounded-lg bg-navy px-4 py-2 text-sm font-medium text-foam hover:bg-teal"
-            >
-              {added ? t("home.added") : t("home.addRepo")}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setQuality({
+                    mode: "lp",
+                    query: lpResult.query,
+                    lpId: lpResult.matched?.id,
+                  })
+                }
+                className="rounded-lg bg-teal px-4 py-2 text-sm font-medium text-white hover:bg-navy"
+              >
+                {t("quality.runForLp")}
+              </button>
+              <button
+                type="button"
+                onClick={() => void addToRepo()}
+                className="rounded-lg bg-navy px-4 py-2 text-sm font-medium text-foam hover:bg-teal"
+              >
+                {added ? t("home.added") : t("home.addRepo")}
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -188,6 +218,17 @@ export function HomeScanner() {
             </div>
           )}
         </section>
+      )}
+
+      {quality && (
+        <QualityResearchRunner
+          key={`${quality.mode}-${quality.query}-${"lpId" in quality ? quality.lpId : ""}`}
+          mode={quality.mode}
+          query={quality.query}
+          lpId={"lpId" in quality ? quality.lpId : undefined}
+          autoStart
+          onClose={() => setQuality(null)}
+        />
       )}
     </div>
   );
