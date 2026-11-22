@@ -31,6 +31,11 @@ export type LpRecord = {
   strengths: string[];
   weaknesses: string[];
   bestFor: string[];
+  /** Optional Chinese overrides (seeded via `LP_ZH` when empty). */
+  strengthsZh?: string[];
+  weaknessesZh?: string[];
+  bestForZh?: string[];
+  regionsZh?: string[];
   website?: string;
   /** Optional override; defaults to `/logos/{slug}.png`. */
   logoUrl?: string;

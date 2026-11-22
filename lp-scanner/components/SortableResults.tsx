@@ -3,6 +3,13 @@
 import { useMemo, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  formatLpCompactMeta,
+  labelCategory,
+  labelCost,
+  labelLatency,
+  localizedLpLists,
+} from "@/lib/i18n/lp-display";
 import type { RankedLp } from "@/lib/types";
 
 type Col =
@@ -141,10 +148,10 @@ export function SortableResults({
                       {r.lp.usedByVantage ? t("yes") : t("no")}
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-mist">
-                    {r.lp.category} · {r.lp.hours} · {r.lp.costTier} · {r.lp.latencyProfile}
+                  <p className="mt-1 text-xs text-mist">{formatLpCompactMeta(r.lp, locale)}</p>
+                  <p className="mt-0.5 truncate text-xs text-mist">
+                    {localizedLpLists(r.lp, locale).regions.join(", ")}
                   </p>
-                  <p className="mt-0.5 truncate text-xs text-mist">{r.columns.regions}</p>
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="font-semibold text-teal">{r.score}</p>
@@ -159,8 +166,14 @@ export function SortableResults({
                   <div className="mt-3 grid gap-3">
                     <Block title={t("detail.reasons")} items={r.reasons} />
                     <Block title={t("detail.live")} items={r.liveNotes} />
-                    <Block title={t("detail.strengths")} items={r.lp.strengths} />
-                    <Block title={t("detail.weaknesses")} items={r.lp.weaknesses} />
+                    <Block
+                      title={t("detail.strengths")}
+                      items={localizedLpLists(r.lp, locale).strengths}
+                    />
+                    <Block
+                      title={t("detail.weaknesses")}
+                      items={localizedLpLists(r.lp, locale).weaknesses}
+                    />
                   </div>
                   {onRunLpQuality && (
                     <button
@@ -214,12 +227,14 @@ export function SortableResults({
                     {r.lp.usedByVantage ? t("yes") : t("no")}
                   </span>
                 </td>
-                <td className="px-3 py-2">{r.lp.category}</td>
+                <td className="px-3 py-2">{labelCategory(locale, r.lp.category)}</td>
                 <td className="px-3 py-2">{r.lp.hours}</td>
-                <td className="px-3 py-2">{r.lp.costTier}</td>
+                <td className="px-3 py-2">{labelCost(locale, r.lp.costTier)}</td>
                 <td className="px-3 py-2">{r.lp.pricingQuality}/5</td>
-                <td className="max-w-[180px] truncate px-3 py-2">{r.columns.regions}</td>
-                <td className="px-3 py-2">{r.lp.latencyProfile}</td>
+                <td className="max-w-[180px] truncate px-3 py-2">
+                  {localizedLpLists(r.lp, locale).regions.join(", ")}
+                </td>
+                <td className="px-3 py-2">{labelLatency(locale, r.lp.latencyProfile)}</td>
                 <td className="px-3 py-2 font-semibold text-teal">{r.score}</td>
               </tr>
             ))}
@@ -254,8 +269,14 @@ export function SortableResults({
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <Block title={t("detail.reasons")} items={r.reasons} />
                 <Block title={t("detail.live")} items={r.liveNotes} />
-                <Block title={t("detail.strengths")} items={r.lp.strengths} />
-                <Block title={t("detail.weaknesses")} items={r.lp.weaknesses} />
+                <Block
+                  title={t("detail.strengths")}
+                  items={localizedLpLists(r.lp, locale).strengths}
+                />
+                <Block
+                  title={t("detail.weaknesses")}
+                  items={localizedLpLists(r.lp, locale).weaknesses}
+                />
               </div>
             </div>
           ))}

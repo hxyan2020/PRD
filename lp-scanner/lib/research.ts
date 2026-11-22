@@ -1,4 +1,5 @@
 import { SEED_LPS, slugifyName } from "@/lib/data/seed-lps";
+import { localizedLpLists } from "@/lib/i18n/lp-display";
 import type { Locale, LpRecord, LpResearchResult } from "@/lib/types";
 
 function normalize(s: string): string {
@@ -121,14 +122,14 @@ export async function researchLp(
         locale === "zh-CN"
           ? `${matched.name}：${matched.kbBodyZh.slice(0, 280)}`
           : `${matched.name}: ${matched.kbBodyEn.slice(0, 280)}`,
-      goodFor: matched.bestFor,
+      goodFor: localizedLpLists(matched, locale).bestFor,
       recommendedProducts: matched.products.slice(0, 8),
       competitorComparison: competitors,
       liveFindings: [
         ...(locale === "zh-CN"
           ? [
               `静态知识库已收录，Vantage 使用标记：${matched.usedByVantage ? "是" : "否"}`,
-              `区域：${matched.regions.join("、")}；监管：${matched.regulation.join("、")}`,
+              `区域：${localizedLpLists(matched, locale).regions.join("、")}；监管：${matched.regulation.join("、")}`,
             ]
           : [
               `In KB. Vantage-used: ${matched.usedByVantage ? "yes" : "no"}`,
@@ -260,9 +261,10 @@ export function answerChat(
   }
 
   if (hit) {
+    const lists = localizedLpLists(hit, locale);
     return locale === "zh-CN"
-      ? `${hit.name}：${hit.kbBodyZh.slice(0, 320)} 擅长：${hit.bestFor.join("、")}。Vantage 在用：${hit.usedByVantage ? "是" : "否"}。`
-      : `${hit.name}: ${hit.kbBodyEn.slice(0, 320)} Best for: ${hit.bestFor.join(", ")}. Used by Vantage: ${hit.usedByVantage ? "yes" : "no"}.`;
+      ? `${hit.name}：${hit.kbBodyZh.slice(0, 320)} 擅长：${lists.bestFor.join("、")}。Vantage 在用：${hit.usedByVantage ? "是" : "否"}。`
+      : `${hit.name}: ${hit.kbBodyEn.slice(0, 320)} Best for: ${lists.bestFor.join(", ")}. Used by Vantage: ${hit.usedByVantage ? "yes" : "no"}.`;
   }
 
   if (contextText.trim()) {

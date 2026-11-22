@@ -1,3 +1,4 @@
+import { localizedLpLists } from "@/lib/i18n/lp-display";
 import { resolveProduct } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
 
@@ -99,7 +100,7 @@ export function assessDataAvailability(args: {
       );
     }
 
-    if (primary.weaknesses.length === 0) {
+    if (localizedLpLists(primary, locale).weaknesses.length === 0) {
       gaps.push(
         zh
           ? "知识库缺少已知局限/订单处理政策线索"
@@ -200,8 +201,8 @@ export function buildQualityReport(args: {
     pros: primary
       ? [
           zh
-            ? `主测对象产品契合：${primary.bestFor.slice(0, 2).join("、") || primary.category}`
-            : `Primary fit: ${primary.bestFor.slice(0, 2).join(", ") || primary.category}`,
+            ? `主测对象产品契合：${localizedLpLists(primary, locale).bestFor.slice(0, 2).join("、") || primary.category}`
+            : `Primary fit: ${localizedLpLists(primary, locale).bestFor.slice(0, 2).join(", ") || primary.category}`,
         ]
       : [],
     cons: subjects.length < 2
@@ -380,10 +381,12 @@ export function buildQualityReport(args: {
       ? "从知识库弱点与类别推断风险点；要求书面 last look 时长与拒单码，并用受控流实测。"
       : "Infer risk from KB weaknesses/category; demand written last-look windows + reject codes; verify with controlled flow.",
     result: zh
-      ? `${primary?.name ?? "LP"}：${primary?.weaknesses[0] ?? "需向 LP 索取订单处理政策"} · 数据可得性瓶颈：无拒单实测`
-      : `${primary?.name ?? "LP"}: ${primary?.weaknesses[0] ?? "request order-handling policy from LP"} · data-availability bottleneck: no reject telemetry`,
+      ? `${primary?.name ?? "LP"}：${(primary ? localizedLpLists(primary, locale).weaknesses[0] : undefined) ?? "需向 LP 索取订单处理政策"} · 数据可得性瓶颈：无拒单实测`
+      : `${primary?.name ?? "LP"}: ${(primary ? localizedLpLists(primary, locale).weaknesses[0] : undefined) ?? "request order-handling policy from LP"} · data-availability bottleneck: no reject telemetry`,
     details: [
-      ...subjects.flatMap((s) => s.weaknesses.slice(0, 2).map((w) => `${s.name}: ${w}`)),
+      ...subjects.flatMap((s) =>
+        localizedLpLists(s, locale).weaknesses.slice(0, 2).map((w) => `${s.name}: ${w}`),
+      ),
       zh
         ? "已命中数据可得性瓶颈：缺少 last look / 拒单码实测，本步不能定论"
         : "Hit data-availability bottleneck: missing last-look / reject-code measurements — cannot conclude this step",
@@ -470,8 +473,9 @@ export function buildQualityReport(args: {
   });
 
   // 10 Pros cons synthesis
+  const primaryLists = primary ? localizedLpLists(primary, locale) : null;
   const summaryPros = [
-    ...(primary?.strengths.slice(0, 3) ?? []),
+    ...(primaryLists?.strengths.slice(0, 3) ?? []),
     ...(primary?.usedByVantage
       ? [zh ? "已标记 Vantage 在用，集成路径熟悉" : "Marked used by Vantage — known integration path"]
       : []),
@@ -484,7 +488,7 @@ export function buildQualityReport(args: {
             : "Data availability is the bottleneck — missing live TCA / rejects / stress-window samples",
         ]
       : []),
-    ...(primary?.weaknesses.slice(0, 3) ?? []),
+    ...(primaryLists?.weaknesses.slice(0, 3) ?? []),
     ...(primary && !hoursFit(primary.hours)
       ? [zh ? "与标的会话时段不完全匹配" : "Incomplete session match for the product"]
       : []),

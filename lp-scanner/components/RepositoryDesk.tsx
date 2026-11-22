@@ -3,12 +3,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  formatLpCompactMeta,
+  labelCategory,
+  labelCost,
+  localizedLpLists,
+} from "@/lib/i18n/lp-display";
 import type { LpRecord } from "@/lib/types";
 
 type Filter = "all" | "used" | "not";
 
 export function RepositoryDesk() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [lps, setLps] = useState<LpRecord[]>([]);
   const [filter, setFilter] = useState<Filter>("all");
   const [editing, setEditing] = useState<string | null>(null);
@@ -148,9 +154,11 @@ export function RepositoryDesk() {
                     <div className="min-w-0">
                     <h2 className="font-semibold text-navy">{lp.name}</h2>
                     <p className="mt-1 text-xs text-mist">
-                      {lp.category} · {lp.hours} · {lp.costTier} · {lp.pricingQuality}/5
+                      {formatLpCompactMeta(lp, locale)} · {lp.pricingQuality}/5
                     </p>
-                    <p className="mt-1 text-xs text-mist">{lp.regions.join(", ")}</p>
+                    <p className="mt-1 text-xs text-mist">
+                      {localizedLpLists(lp, locale).regions.join(", ")}
+                    </p>
                     <p className="mt-1 text-xs text-mist">{lp.products.slice(0, 5).join(", ")}</p>
                     </div>
                   </div>
@@ -252,7 +260,7 @@ export function RepositoryDesk() {
                       <option value="technology">technology</option>
                     </select>
                   ) : (
-                    lp.category
+                    labelCategory(locale, lp.category)
                   )}
                 </td>
                 <td className="px-3 py-3">
@@ -273,9 +281,11 @@ export function RepositoryDesk() {
                     lp.hours
                   )}
                 </td>
-                <td className="px-3 py-3">{lp.costTier}</td>
+                <td className="px-3 py-3">{labelCost(locale, lp.costTier)}</td>
                 <td className="px-3 py-3">{lp.pricingQuality}/5</td>
-                <td className="max-w-[200px] px-3 py-3 text-xs">{lp.regions.join(", ")}</td>
+                <td className="max-w-[200px] px-3 py-3 text-xs">
+                  {localizedLpLists(lp, locale).regions.join(", ")}
+                </td>
                 <td className="whitespace-nowrap px-3 py-3">
                   {editing === lp.id ? (
                     <div className="flex gap-2">
