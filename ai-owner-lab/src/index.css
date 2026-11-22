@@ -4965,6 +4965,27 @@ button.notebook-category-badge.on {
     flex: 1 1 auto;
     min-height: 2.75rem;
   }
+
+  /* Must beat later .notebook-actions flex rules for the open-note footer. */
+  .note-fullscreen .notebook-actions.note-fullscreen-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .note-fullscreen .notebook-actions.note-fullscreen-actions .btn {
+    flex: none;
+    width: 100%;
+    min-height: 2.75rem;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .note-fullscreen .notebook-actions.note-fullscreen-actions .note-fullscreen-download-all {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Copyable public HTML export page */
