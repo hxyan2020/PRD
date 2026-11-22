@@ -25,6 +25,27 @@ export interface RankedPoint {
   sourceIds: string[]
 }
 
+/** -100 (bearish) … 0 (neutral) … +100 (bullish) for XAUUSD desk tone */
+export type SentimentBandId =
+  | 'bearish'
+  | 'cautious'
+  | 'neutral'
+  | 'constructive'
+  | 'bullish'
+
+export interface SentimentBarometer {
+  /** Integer score in [-100, 100] */
+  score: number
+  band: SentimentBandId
+  labelEn: string
+  labelZh: string
+  /** CSS color token for the fill / pill */
+  color: string
+  /** How the score is defined — shown on hover */
+  definitionEn: string[]
+  definitionZh: string[]
+}
+
 export interface HourlyMarketReport {
   id: string
   createdAt: number
@@ -34,6 +55,7 @@ export interface HourlyMarketReport {
   opportunity: RankedPoint[]
   risk: RankedPoint[]
   sources: ReportSource[]
+  sentiment: SentimentBarometer
   /** V Exchange indicators are placeholders until ops provides the feed */
   vexPlaceholder: true
   vexNoteEn: string
@@ -229,7 +251,11 @@ export function loadHourlyReports(): HourlyMarketReport[] {
     const raw = localStorage.getItem(REPORTS_KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw) as HourlyMarketReport[]
-    return Array.isArray(parsed) ? parsed.slice(0, 48) : []
+    if (!Array.isArray(parsed)) return []
+    return parsed.slice(0, 48).map((r) => ({
+      ...r,
+      sentiment: r.sentiment ?? computeSentiment(r.opportunity || [], r.risk || []),
+    }))
   } catch {
     return []
   }
@@ -237,6 +263,74 @@ export function loadHourlyReports(): HourlyMarketReport[] {
 
 export function saveHourlyReports(list: HourlyMarketReport[]) {
   localStorage.setItem(REPORTS_KEY, JSON.stringify(list.slice(0, 48)))
+}
+
+/** Rank weight: #1 most urgent → 25, then 20 / 15 / 10. */
+function rankWeight(rank: number): number {
+  const w = 25 - (Math.max(1, Math.min(4, rank)) - 1) * 5
+  return w
+}
+
+export function computeSentiment(
+  opportunity: RankedPoint[],
+  risk: RankedPoint[],
+): SentimentBarometer {
+  let raw = 0
+  for (const p of opportunity) raw += rankWeight(p.rank)
+  for (const p of risk) raw -= rankWeight(p.rank)
+  const score = Math.max(-100, Math.min(100, Math.round(raw)))
+
+  let band: SentimentBandId = 'neutral'
+  if (score <= -50) band = 'bearish'
+  else if (score <= -15) band = 'cautious'
+  else if (score >= 50) band = 'bullish'
+  else if (score >= 15) band = 'constructive'
+
+  const palette: Record<SentimentBandId, { color: string; labelEn: string; labelZh: string }> = {
+    bearish: { color: '#991b1b', labelEn: 'Bearish', labelZh: '偏空' },
+    cautious: { color: '#c2410c', labelEn: 'Cautious', labelZh: '偏谨慎' },
+    neutral: { color: '#a16207', labelEn: 'Neutral', labelZh: '中性' },
+    constructive: { color: '#15803d', labelEn: 'Constructive', labelZh: '偏建设性' },
+    bullish: { color: '#166534', labelEn: 'Bullish', labelZh: '偏多' },
+  }
+
+  const meta = palette[band]
+  const definitionEn = [
+    'Score range: −100 (bearish) → 0 (neutral) → +100 (bullish) for XAUUSD desk tone.',
+    'Each Opportunity point adds +25 / +20 / +15 / +10 by urgency rank (#1–#4).',
+    'Each Risk point subtracts the same weights (−25 / −20 / −15 / −10).',
+    'Bands: ≤−50 Bearish · −49…−15 Cautious · −14…+14 Neutral · +15…+49 Constructive · ≥+50 Bullish.',
+    'Only scored from listed Opportunity/Risk points this hour — never invented. Empty lists → 0 Neutral.',
+  ]
+  const definitionZh = [
+    '分数区间：−100（偏空）→ 0（中性）→ +100（偏多），针对 XAUUSD 工作台语气。',
+    '每条「机会」按紧急度排名加分：#1–#4 为 +25 / +20 / +15 / +10。',
+    '每条「风险」按同样权重减分：−25 / −20 / −15 / −10。',
+    '分档：≤−50 偏空 · −49…−15 偏谨慎 · −14…+14 中性 · +15…+49 偏建设性 · ≥+50 偏多。',
+    '仅依据本小时列出的机会／风险要点计分，不编造。两边皆空 → 0 中性。',
+  ]
+
+  if (opportunity.length === 0 && risk.length === 0) {
+    return {
+      score: 0,
+      band: 'neutral',
+      labelEn: 'Neutral',
+      labelZh: '中性',
+      color: palette.neutral.color,
+      definitionEn,
+      definitionZh,
+    }
+  }
+
+  return {
+    score,
+    band,
+    labelEn: meta.labelEn,
+    labelZh: meta.labelZh,
+    color: meta.color,
+    definitionEn,
+    definitionZh,
+  }
 }
 
 export function msUntilNextHourSgt(now = Date.now()): number {
@@ -472,6 +566,8 @@ export async function generateHourlyScan(args: {
     })),
   )
 
+  const sentiment = computeSentiment(opportunity, risk)
+
   return {
     id: `hourly_${createdAt}`,
     createdAt,
@@ -480,6 +576,7 @@ export async function generateHourlyScan(args: {
     opportunity,
     risk,
     sources,
+    sentiment,
     vexPlaceholder: true,
     vexNoteEn,
     vexNoteZh,

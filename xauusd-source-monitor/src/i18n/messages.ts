@@ -29,6 +29,8 @@ const en: Dict = {
   hourlyReportTitle: 'Hourly report',
   hourlyBilingualNote:
     'Switch EN / 繁中 in the header to read the same ranked points in the other language.',
+  hourlySentiment: '🌡️ Sentiment',
+  hourlySentimentHow: 'How this score is defined',
   hourlyTldr: '📋 TL;DR',
   hourlyOpportunity: '✨ Opportunity',
   hourlyRisk: '⚠️ Risk',
@@ -421,6 +423,8 @@ const zhHant: Dict = {
   hourlyReportKicker: 'EN + 繁中 · 按緊急度排序',
   hourlyReportTitle: '小時報告',
   hourlyBilingualNote: '在頂部切換 EN／繁中，可閱讀同一組排序要點的另一語言。',
+  hourlySentiment: '🌡️ 情绪',
+  hourlySentimentHow: '此分数如何定义',
   hourlyTldr: '📋 TL;DR',
   hourlyOpportunity: '✨ 機會',
   hourlyRisk: '⚠️ 風險',

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   EMPTY_SECTION_EN,
   EMPTY_SECTION_ZH,
+  computeSentiment,
   generateHourlyScan,
   loadHourlyReports,
   msUntilNextHourSgt,
@@ -9,6 +10,7 @@ import {
   type HourlyMarketReport,
   type RankedPoint,
   type ReportSource,
+  type SentimentBarometer,
 } from '../engine/hourlyScan'
 import { useLocale } from '../i18n/locale'
 import type { SourceHealth } from '../types'
@@ -162,6 +164,53 @@ function SectionBlock({
   )
 }
 
+function SentimentMeter({ sentiment, lang }: { sentiment: SentimentBarometer; lang: string }) {
+  const { t } = useLocale()
+  const pct = ((sentiment.score + 100) / 200) * 100
+  const defs = lang === 'zh-Hant' ? sentiment.definitionZh : sentiment.definitionEn
+  const label = lang === 'zh-Hant' ? sentiment.labelZh : sentiment.labelEn
+  const scoreText = sentiment.score > 0 ? `+${sentiment.score}` : String(sentiment.score)
+
+  return (
+    <div className="sentiment-meter" tabIndex={0}>
+      <div className="sentiment-meter-top">
+        <span className="sentiment-meter-title">{t('hourlySentiment')}</span>
+        <span className="sentiment-meter-pill" style={{ background: sentiment.color }}>
+          {label} · {scoreText}
+        </span>
+      </div>
+      <div
+        className="sentiment-track"
+        role="meter"
+        aria-valuemin={-100}
+        aria-valuemax={100}
+        aria-valuenow={sentiment.score}
+        aria-label={`${t('hourlySentiment')}: ${label} ${scoreText}`}
+      >
+        <div className="sentiment-track-gradient" aria-hidden />
+        <div
+          className="sentiment-needle"
+          style={{ left: `calc(${pct}% - 7px)`, borderColor: sentiment.color }}
+          aria-hidden
+        />
+      </div>
+      <div className="sentiment-scale" aria-hidden>
+        <span>−100</span>
+        <span>0</span>
+        <span>+100</span>
+      </div>
+      <div className="sentiment-tooltip" role="tooltip">
+        <p className="sentiment-tooltip-title">{t('hourlySentimentHow')}</p>
+        <ul>
+          {defs.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 function ReportCard({
   report,
   onOpenSources,
@@ -171,6 +220,8 @@ function ReportCard({
 }) {
   const { t, lang } = useLocale()
   const empty = lang === 'zh-Hant' ? EMPTY_SECTION_ZH : EMPTY_SECTION_EN
+  const sentiment =
+    report.sentiment ?? computeSentiment(report.opportunity || [], report.risk || [])
 
   return (
     <article className="hourly-card">
@@ -191,6 +242,8 @@ function ReportCard({
           {t('hourlyAllSources').replace('{n}', String(report.sources.length))}
         </button>
       </header>
+
+      <SentimentMeter sentiment={sentiment} lang={lang} />
 
       <div className="hourly-bilingual-note sub">{t('hourlyBilingualNote')}</div>
 

@@ -2684,6 +2684,129 @@ td.mono,
   margin: 0 0 12px;
 }
 
+.sentiment-meter {
+  position: relative;
+  margin: 10px 0 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 252, 246, 0.95);
+  outline: none;
+}
+
+.sentiment-meter:hover,
+.sentiment-meter:focus-within {
+  border-color: rgba(161, 98, 7, 0.35);
+}
+
+.sentiment-meter-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sentiment-meter-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.sentiment-meter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.sentiment-track {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  overflow: visible;
+  background: #e7e0d4;
+}
+
+.sentiment-track-gradient {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    #991b1b 0%,
+    #c2410c 25%,
+    #a16207 50%,
+    #15803d 75%,
+    #166534 100%
+  );
+  opacity: 0.9;
+}
+
+.sentiment-needle {
+  position: absolute;
+  top: -4px;
+  width: 14px;
+  height: 20px;
+  border-radius: 4px;
+  background: #fff;
+  border: 2px solid #1c1914;
+  box-shadow: 0 1px 4px rgba(28, 25, 20, 0.25);
+  z-index: 1;
+}
+
+.sentiment-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.sentiment-tooltip {
+  display: none;
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: calc(100% + 6px);
+  z-index: 5;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #1c1914;
+  color: #f5f0e6;
+  box-shadow: 0 12px 28px rgba(28, 25, 20, 0.28);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.sentiment-meter:hover .sentiment-tooltip,
+.sentiment-meter:focus-within .sentiment-tooltip {
+  display: block;
+}
+
+.sentiment-tooltip-title {
+  margin: 0 0 6px;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.sentiment-tooltip ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.sentiment-tooltip li + li {
+  margin-top: 4px;
+}
+
 .hourly-section {
   margin: 0 0 14px;
   padding-top: 8px;
