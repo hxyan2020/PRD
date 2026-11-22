@@ -71,7 +71,11 @@ function internalSources(locale: Locale): ChatSource[] {
       url: "/testing#methodology",
     },
     {
-      title: isZh(locale) ? "知识库" : "Knowledge Base",
+      title: locale === "zh-TW" ? "LP倉庫" : isZh(locale) ? "LP仓库" : "LP Repository",
+      url: "/repository",
+    },
+    {
+      title: isZh(locale) ? (locale === "zh-TW" ? "知識庫" : "知识库") : "Knowledge Base",
       url: "/knowledge",
     },
   ];
