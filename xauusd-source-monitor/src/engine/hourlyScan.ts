@@ -8,6 +8,7 @@ export type ReportSectionKind = 'tldr' | 'opportunity' | 'risk'
 
 export type SourceKind =
   | 'news'
+  | 'social'
   | 'exchange'
   | 'announcement'
   | 'api'
@@ -136,8 +137,8 @@ type CatalogEntry = {
 }
 
 /**
- * Major XAUUSD-perp desk coverage: news, exchange announcements, APIs,
- * prices, and macro/indicator feeds. Always listed with health + checkedAt.
+ * Major XAUUSD-perp desk coverage: news, KOL social, exchange announcements,
+ * APIs, prices, and macro/indicator feeds. Always listed with health + checkedAt.
  */
 const SOURCE_CATALOG: CatalogEntry[] = [
   // —— Prices / APIs / indicators ——
@@ -393,6 +394,126 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionEn: 'LBMA: Precious metal prices & data',
     captionZh: 'LBMA：貴金屬價格與數據',
   },
+  // —— KOL / social media (gold & macro desks) ——
+  {
+    id: 'kol-x-kitco',
+    kind: 'social',
+    url: 'https://x.com/KitcoNewsNow',
+    captionEn: 'KOL · X: Kitco News (@KitcoNewsNow)',
+    captionZh: 'KOL · X：Kitco News（@KitcoNewsNow）',
+  },
+  {
+    id: 'kol-x-goldtelegraph',
+    kind: 'social',
+    url: 'https://x.com/GoldTelegraph',
+    captionEn: 'KOL · X: Gold Telegraph (@GoldTelegraph)',
+    captionZh: 'KOL · X：Gold Telegraph（@GoldTelegraph）',
+  },
+  {
+    id: 'kol-x-peterschiff',
+    kind: 'social',
+    url: 'https://x.com/PeterSchiff',
+    captionEn: 'KOL · X: Peter Schiff (@PeterSchiff)',
+    captionZh: 'KOL · X：Peter Schiff（@PeterSchiff）',
+  },
+  {
+    id: 'kol-x-lynalden',
+    kind: 'social',
+    url: 'https://x.com/LynAldenContact',
+    captionEn: 'KOL · X: Lyn Alden (@LynAldenContact)',
+    captionZh: 'KOL · X：Lyn Alden（@LynAldenContact）',
+  },
+  {
+    id: 'kol-x-lukegromen',
+    kind: 'social',
+    url: 'https://x.com/LukeGromen',
+    captionEn: 'KOL · X: Luke Gromen (@LukeGromen)',
+    captionZh: 'KOL · X：Luke Gromen（@LukeGromen）',
+  },
+  {
+    id: 'kol-x-zerohedge',
+    kind: 'social',
+    url: 'https://x.com/zerohedge',
+    captionEn: 'KOL · X: ZeroHedge (@zerohedge)',
+    captionZh: 'KOL · X：ZeroHedge（@zerohedge）',
+  },
+  {
+    id: 'kol-x-davidlin',
+    kind: 'social',
+    url: 'https://x.com/DavidLin_TV',
+    captionEn: 'KOL · X: David Lin (@DavidLin_TV)',
+    captionZh: 'KOL · X：David Lin（@DavidLin_TV）',
+  },
+  {
+    id: 'kol-x-tfmetals',
+    kind: 'social',
+    url: 'https://x.com/TFMetals',
+    captionEn: 'KOL · X: TF Metals Report (@TFMetals)',
+    captionZh: 'KOL · X：TF Metals Report（@TFMetals）',
+  },
+  {
+    id: 'kol-x-jsblokland',
+    kind: 'social',
+    url: 'https://x.com/jsblokland',
+    captionEn: 'KOL · X: Jan Nieuwenhuijs / BlindOwl (@jsblokland)',
+    captionZh: 'KOL · X：Jan Nieuwenhuijs／BlindOwl（@jsblokland）',
+  },
+  {
+    id: 'kol-x-allthingsgold',
+    kind: 'social',
+    url: 'https://x.com/AllThingsGold',
+    captionEn: 'KOL · X: All Things Gold (@AllThingsGold)',
+    captionZh: 'KOL · X：All Things Gold（@AllThingsGold）',
+  },
+  {
+    id: 'kol-x-raoulgmi',
+    kind: 'social',
+    url: 'https://x.com/RaoulGMI',
+    captionEn: 'KOL · X: Raoul Pal / Real Vision (@RaoulGMI)',
+    captionZh: 'KOL · X：Raoul Pal／Real Vision（@RaoulGMI）',
+  },
+  {
+    id: 'kol-x-adambutton',
+    kind: 'social',
+    url: 'https://x.com/AdamButton',
+    captionEn: 'KOL · X: Adam Button (@AdamButton)',
+    captionZh: 'KOL · X：Adam Button（@AdamButton）',
+  },
+  {
+    id: 'kol-x-northmantrader',
+    kind: 'social',
+    url: 'https://x.com/NorthmanTrader',
+    captionEn: 'KOL · X: NorthmanTrader (@NorthmanTrader)',
+    captionZh: 'KOL · X：NorthmanTrader（@NorthmanTrader）',
+  },
+  {
+    id: 'kol-yt-kitco',
+    kind: 'social',
+    url: 'https://www.youtube.com/kitconews',
+    captionEn: 'KOL · YouTube: Kitco NEWS',
+    captionZh: 'KOL · YouTube：Kitco NEWS',
+  },
+  {
+    id: 'kol-yt-davidlin',
+    kind: 'social',
+    url: 'https://www.youtube.com/@DavidLin',
+    captionEn: 'KOL · YouTube: David Lin',
+    captionZh: 'KOL · YouTube：David Lin',
+  },
+  {
+    id: 'kol-yt-realvision',
+    kind: 'social',
+    url: 'https://www.youtube.com/@RealVision',
+    captionEn: 'KOL · YouTube: Real Vision',
+    captionZh: 'KOL · YouTube：Real Vision',
+  },
+  {
+    id: 'kol-stocktwits-xauusd',
+    kind: 'social',
+    url: 'https://stocktwits.com/symbol/XAUUSD',
+    captionEn: 'KOL · StockTwits: XAUUSD chatter',
+    captionZh: 'KOL · StockTwits：XAUUSD 社群討論',
+  },
 ]
 
 /** Desk bullets are statements — drop interrogatives / trailing ? prompts. */
@@ -426,6 +547,9 @@ function domainOf(url: string): string {
     if (host.includes('marketwatch.com')) return 'marketwatch.com'
     if (host.includes('wsj.com')) return 'wsj.com'
     if (host.includes('ft.com')) return 'ft.com'
+    if (host === 'x.com' || host.includes('twitter.com')) return 'x.com'
+    if (host.includes('youtube.com') || host === 'youtu.be') return 'youtube.com'
+    if (host.includes('stocktwits.com')) return 'stocktwits.com'
     return host
   } catch {
     return url
@@ -551,6 +675,52 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
       json: null,
     }
   } catch (e) {
+    // X / YouTube often block automated browser probes; keep KOL rows listed.
+    if (entry.kind === 'social') {
+      try {
+        const fav = logoFor(domainOf(entry.url))
+        const ctrl2 = new AbortController()
+        const timer2 = setTimeout(() => ctrl2.abort(), 4000)
+        const res = await fetch(fav, { signal: ctrl2.signal, cache: 'no-store', mode: 'cors' })
+        clearTimeout(timer2)
+        const latencyMs = Math.round(performance.now() - started)
+        if (res.ok) {
+          return {
+            source: makeSource(
+              entry.id,
+              entry.url,
+              entry.captionEn,
+              entry.captionZh,
+              entry.kind,
+              'ok',
+              checkedAt,
+              {
+                latencyMs,
+                detail: 'KOL listed (profile probe blocked; favicon OK)',
+              },
+            ),
+            json: null,
+          }
+        }
+      } catch {
+        /* fall through to degraded */
+      }
+      return {
+        source: makeSource(
+          entry.id,
+          entry.url,
+          entry.captionEn,
+          entry.captionZh,
+          entry.kind,
+          'degraded',
+          checkedAt,
+          {
+            detail: 'KOL listed — open profile manually (host blocked probe)',
+          },
+        ),
+        json: null,
+      }
+    }
     return {
       source: makeSource(
         entry.id,
@@ -1190,6 +1360,7 @@ export async function generateHourlyScan(args: {
     'exchange',
     'announcement',
     'news',
+    'social',
   ]
   sources.sort((a, b) => {
     const ka = kindOrder.indexOf(a.kind)

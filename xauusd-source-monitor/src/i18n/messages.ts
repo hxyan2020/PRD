@@ -44,7 +44,7 @@ const en: Dict = {
   hourlyAllSources: 'All sources ({n})',
   hourlySourcesTitle: 'Data sources',
   hourlySourcesSub:
-    'Major news, exchange announcements, APIs, prices & indicators for XAUUSD perps. Each row shows health + last refresh (SGT). Tap to open.',
+    'Major news, KOL social (X / YouTube / StockTwits), exchange announcements, APIs, prices & indicators for XAUUSD perps. Each row shows health + last refresh (SGT). Tap to open.',
   hourlySourcesPointSub:
     'Showing the {n} source(s) linked to this point. Tap a row to open. Use “All sources” for the full catalog.',
   hourlyNoSources: 'No sources attached to this report.',
@@ -54,6 +54,7 @@ const en: Dict = {
   hourlyHealthDown: 'Down',
   hourlyHealthUnchecked: 'Unchecked',
   hourlyKind_news: 'News',
+  hourlyKind_social: 'KOL / Social',
   hourlyKind_exchange: 'Exchange',
   hourlyKind_announcement: 'Announcement',
   hourlyKind_api: 'API',
@@ -457,7 +458,7 @@ const zhHant: Dict = {
   hourlyAllSources: '全部來源（{n}）',
   hourlySourcesTitle: '數據來源',
   hourlySourcesSub:
-    '涵蓋主要新聞、交易所公告、API、報價與指標（XAUUSD 永續相關）。每列顯示健康狀態與上次刷新（SGT）。點擊開啟。',
+    '涵蓋主要新聞、KOL 社群（X／YouTube／StockTwits）、交易所公告、API、報價與指標（XAUUSD 永續相關）。每列顯示健康狀態與上次刷新（SGT）。點擊開啟。',
   hourlySourcesPointSub:
     '僅顯示此要點關聯的 {n} 個來源。點擊列開啟原文。完整目錄請用「全部來源」。',
   hourlyNoSources: '本報告未附來源。',
@@ -467,6 +468,7 @@ const zhHant: Dict = {
   hourlyHealthDown: '中斷',
   hourlyHealthUnchecked: '未檢查',
   hourlyKind_news: '新聞',
+  hourlyKind_social: 'KOL／社群',
   hourlyKind_exchange: '交易所',
   hourlyKind_announcement: '公告',
   hourlyKind_api: 'API',
