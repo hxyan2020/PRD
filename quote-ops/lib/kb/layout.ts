@@ -13,6 +13,10 @@ export type VizNode = {
   x: number;
   y: number;
   r: number;
+  /** Index among siblings for compact mobile labels (1-based). */
+  index?: number;
+  /** Angle from focus/hub center — used to place labels outward. */
+  angle?: number;
 };
 
 export type VizEdge = {
@@ -22,11 +26,7 @@ export type VizEdge = {
   kind: "parent" | "tag";
 };
 
-function titleOf(n: TreeNode, locale: "zh-CN" | "en") {
-  return locale === "zh-CN" ? n.titleZh : n.titleEn || n.titleZh;
-}
-
-/** Layout root folders on a ring; expand selected folder's children on an inner ring. */
+/** Layout root folders on a ring; expand selected folder's children on an outer ring. */
 export function layoutKnowledgeGraph(
   tree: TreeNode[],
   opts: {
@@ -37,16 +37,20 @@ export function layoutKnowledgeGraph(
     maxChildren?: number;
     hubTitleZh?: string;
     hubTitleEn?: string;
+    /** Narrow screens: push children farther out to reduce label collisions. */
+    compact?: boolean;
   },
 ): { nodes: VizNode[]; edges: VizEdge[]; focus: TreeNode | null } {
-  const { width, height, focusId, locale } = opts;
+  const { width, height, focusId } = opts;
+  const compact = !!opts.compact;
   const hubZh = opts.hubTitleZh ?? "QuoteOps";
   const hubEn = opts.hubTitleEn ?? "QuoteOps";
-  const maxChildren = opts.maxChildren ?? 48;
+  const maxChildren = opts.maxChildren ?? (compact ? 16 : 48);
   const cx = width / 2;
   const cy = height / 2;
   const nodes: VizNode[] = [];
   const edges: VizEdge[] = [];
+  const pad = compact ? 28 : 40;
 
   function find(nodesIn: TreeNode[], id: string | null): TreeNode | null {
     if (!id) return null;
@@ -61,29 +65,35 @@ export function layoutKnowledgeGraph(
   const focus = find(tree, focusId) ?? tree[0] ?? null;
   const roots = tree;
 
-  // Root ring
-  const rootR = Math.min(width, height) * 0.34;
-  roots.forEach((root, i) => {
-    const angle = -Math.PI / 2 + (i / Math.max(roots.length, 1)) * Math.PI * 2;
-    const x = cx + Math.cos(angle) * rootR;
-    const y = cy + Math.sin(angle) * rootR * 0.85;
-    nodes.push({
-      id: root.id,
-      parentId: null,
-      kind: root.kind,
-      titleZh: root.titleZh,
-      titleEn: root.titleEn,
-      slug: root.slug,
-      status: root.status,
-      childCount: root.children.length,
-      depth: 0,
-      x,
-      y,
-      r: root.kind === "folder" ? 28 : 18,
-    });
-  });
+  // When a single root folder (e.g. VE product tree), treat it as the focus ring
+  // and keep hub + children — avoid drawing a useless solitary root on top of kids.
+  const singleRoot = roots.length === 1;
 
-  // Center hub
+  const rootR = Math.min(width, height) * (compact ? 0.28 : 0.34);
+  if (!singleRoot) {
+    roots.forEach((root, i) => {
+      const angle = -Math.PI / 2 + (i / Math.max(roots.length, 1)) * Math.PI * 2;
+      const x = cx + Math.cos(angle) * rootR;
+      const y = cy + Math.sin(angle) * rootR * (compact ? 0.78 : 0.85);
+      nodes.push({
+        id: root.id,
+        parentId: null,
+        kind: root.kind,
+        titleZh: root.titleZh,
+        titleEn: root.titleEn,
+        slug: root.slug,
+        status: root.status,
+        childCount: root.children.length,
+        depth: 0,
+        x: clamp(x, pad, width - pad),
+        y: clamp(y, pad, height - pad),
+        r: compact ? 22 : root.kind === "folder" ? 28 : 18,
+        index: i + 1,
+        angle,
+      });
+    });
+  }
+
   nodes.push({
     id: "__hub__",
     parentId: null,
@@ -96,29 +106,39 @@ export function layoutKnowledgeGraph(
     depth: -1,
     x: cx,
     y: cy,
-    r: 36,
+    r: compact ? 28 : 36,
   });
-  for (const root of roots) {
-    edges.push({ id: `hub-${root.id}`, from: "__hub__", to: root.id, kind: "parent" });
+
+  if (!singleRoot) {
+    for (const root of roots) {
+      edges.push({ id: `hub-${root.id}`, from: "__hub__", to: root.id, kind: "parent" });
+    }
   }
 
-  // Focus children around focus node (or around center if focus is hub-like)
   if (focus) {
-    const focusViz = nodes.find((n) => n.id === focus.id);
-    const fx = focusViz?.x ?? cx;
-    const fy = focusViz?.y ?? cy;
     const kids = focus.children.slice(0, maxChildren);
-    const childR = Math.min(160, 40 + kids.length * 4);
+    const n = Math.max(kids.length, 1);
+    // Spread children on a ring sized for readable gaps on small screens.
+    const minGap = compact ? 52 : 44;
+    const neededR = (n * minGap) / (2 * Math.PI);
+    const childR = Math.min(
+      Math.min(width, height) * (compact ? 0.4 : 0.36),
+      Math.max(compact ? 110 : 90, neededR),
+    );
+
+    // Anchor ring around hub on single-root / mobile for clearer composition.
+    const focusViz = nodes.find((v) => v.id === focus.id);
+    const useHubAnchor = singleRoot || compact || !focusViz || focusViz.r < 1;
+    const fx = useHubAnchor ? cx : focusViz.x;
+    const fy = useHubAnchor ? cy : focusViz.y;
+
     kids.forEach((child, i) => {
-      const angle = -Math.PI / 2 + (i / Math.max(kids.length, 1)) * Math.PI * 2;
+      const angle = -Math.PI / 2 + (i / n) * Math.PI * 2;
       const x = fx + Math.cos(angle) * childR;
-      const y = fy + Math.sin(angle) * childR * 0.9;
-      // keep on canvas
-      const px = Math.max(40, Math.min(width - 40, x));
-      const py = Math.max(40, Math.min(height - 40, y));
+      const y = fy + Math.sin(angle) * childR * (compact ? 0.92 : 0.9);
       nodes.push({
         id: child.id,
-        parentId: focus.id,
+        parentId: useHubAnchor ? "__hub__" : focus.id,
         kind: child.kind,
         titleZh: child.titleZh,
         titleEn: child.titleEn,
@@ -126,45 +146,53 @@ export function layoutKnowledgeGraph(
         status: child.status,
         childCount: child.children.length,
         depth: 1,
-        x: px,
-        y: py,
-        r: child.kind === "folder" ? 16 : 11,
+        x: clamp(x, pad, width - pad),
+        y: clamp(y, pad + 8, height - pad),
+        r: compact ? (child.kind === "folder" ? 14 : 12) : child.kind === "folder" ? 16 : 11,
+        index: i + 1,
+        angle,
       });
       edges.push({
-        id: `${focus.id}-${child.id}`,
-        from: focus.id,
+        id: `${useHubAnchor ? "hub" : focus.id}-${child.id}`,
+        from: useHubAnchor ? "__hub__" : focus.id,
         to: child.id,
         kind: "parent",
       });
     });
 
-    // Tag co-occurrence edges among visible siblings (light relation graph)
-    const tagMap = new Map<string, string[]>();
-    for (const child of kids) {
-      for (const tag of child.tags.slice(0, 4)) {
-        const list = tagMap.get(tag) ?? [];
-        list.push(child.id);
-        tagMap.set(tag, list);
+    // Tag co-occurrence among siblings — skip on compact to reduce clutter.
+    if (!compact) {
+      const tagMap = new Map<string, string[]>();
+      for (const child of kids) {
+        for (const tag of child.tags.slice(0, 4)) {
+          const list = tagMap.get(tag) ?? [];
+          list.push(child.id);
+          tagMap.set(tag, list);
+        }
       }
-    }
-    let tagEdgeCount = 0;
-    for (const [, ids] of tagMap) {
-      if (ids.length < 2 || tagEdgeCount > 40) continue;
-      for (let i = 0; i < Math.min(ids.length - 1, 3); i++) {
-        edges.push({
-          id: `tag-${ids[i]}-${ids[i + 1]}`,
-          from: ids[i]!,
-          to: ids[i + 1]!,
-          kind: "tag",
-        });
-        tagEdgeCount++;
+      let tagEdgeCount = 0;
+      for (const [, ids] of tagMap) {
+        if (ids.length < 2 || tagEdgeCount > 40) continue;
+        for (let i = 0; i < Math.min(ids.length - 1, 3); i++) {
+          edges.push({
+            id: `tag-${ids[i]}-${ids[i + 1]}`,
+            from: ids[i]!,
+            to: ids[i + 1]!,
+            kind: "tag",
+          });
+          tagEdgeCount++;
+        }
       }
     }
   }
 
-  void titleOf; // keep helper available for callers
-  void locale;
-  return { nodes, edges, focus };
+  // Hide near-zero radius placeholder root under hub
+  const visible = nodes.filter((n) => n.r >= 1 || n.id === "__hub__");
+  return { nodes: visible, edges, focus };
+}
+
+function clamp(v: number, lo: number, hi: number) {
+  return Math.max(lo, Math.min(hi, v));
 }
 
 export function flattenTree(tree: TreeNode[]): TreeNode[] {
@@ -175,4 +203,15 @@ export function flattenTree(tree: TreeNode[]): TreeNode[] {
   }
   tree.forEach(walk);
   return out;
+}
+
+/** Short graph label — aggressive truncate for narrow canvases. */
+export function shortGraphLabel(
+  title: string,
+  opts?: { max?: number; compact?: boolean },
+): string {
+  const max = opts?.max ?? (opts?.compact ? 6 : 12);
+  const t = title.trim();
+  if (t.length <= max) return t;
+  return `${t.slice(0, Math.max(1, max - 1))}…`;
 }

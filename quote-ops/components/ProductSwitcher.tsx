@@ -51,6 +51,7 @@ export function ProductSwitcher({
             type="button"
             role="tab"
             aria-selected={active}
+            aria-label={locale === "zh-CN" ? def.brandZh : def.brandEn}
             title={locale === "zh-CN" ? def.brandZh : def.brandEn}
             onClick={() => setProduct(id)}
             className={`rounded-md px-2.5 py-1.5 touch-manipulation whitespace-nowrap ${
@@ -63,8 +64,16 @@ export function ProductSwitcher({
                   : "text-mist hover:bg-line/40 hover:text-ink"
             }`}
           >
-            <span className={fullWidth ? "sm:hidden" : "hidden"}>{shortMobile}</span>
-            <span className={fullWidth ? "hidden sm:inline" : undefined}>{label}</span>
+            {fullWidth ? (
+              <>
+                <span className="sm:hidden" aria-hidden="true">
+                  {shortMobile}
+                </span>
+                <span className="hidden sm:inline">{label}</span>
+              </>
+            ) : (
+              label
+            )}
           </button>
         );
       })}

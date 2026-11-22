@@ -11,6 +11,7 @@ export function MobileBottomNav() {
   const { locale, t } = useI18n();
   const { product } = useProduct();
   const [isAdmin, setIsAdmin] = useState(false);
+  const isPerp = product === "v-exchange-perp";
 
   useEffect(() => {
     void fetch("/api/me")
@@ -22,10 +23,10 @@ export function MobileBottomNav() {
   const items = [
     { href: "/", zh: "检索", en: "Ask" },
     { href: "/tree", zh: "知识树", en: "Tree" },
-    product === "v-exchange-perp"
+    isPerp
       ? { href: "/kb/ve-alarm-catalog", zh: "告警", en: "Alarms" }
       : { href: "/risks", zh: "风险", en: "Risks" },
-    product === "v-exchange-perp"
+    isPerp
       ? { href: "/kb/ve-pricing-engine", zh: "定价", en: "Pricing" }
       : { href: "/pipeline", zh: "链路", en: "Pipe" },
     ...(isAdmin ? [{ href: "/admin", zh: "管理", en: "Admin" }] : []),
@@ -42,15 +43,20 @@ export function MobileBottomNav() {
             item.href === "/"
               ? pathname === "/"
               : pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const activeCls = isPerp
+            ? "bg-teal-700 text-white shadow-[inset_0_2px_0_0_#99f6e4]"
+            : "bg-ink text-paper shadow-[inset_0_2px_0_0_#fff]";
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-[11px] touch-manipulation ${
-                active ? "bg-ink text-paper" : "text-ink-2"
+              className={`flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 text-[11px] touch-manipulation ${
+                active ? activeCls : "text-ink-2"
               }`}
             >
-              <span className="font-medium">{locale === "zh-CN" ? item.zh : item.en}</span>
+              <span className="max-w-full truncate font-medium">
+                {locale === "zh-CN" ? item.zh : item.en}
+              </span>
             </Link>
           );
         })}
