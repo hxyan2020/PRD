@@ -3,9 +3,11 @@ import { ACCESS_PLACEHOLDERS, DB_SYSTEMS } from "@/lib/data/databases";
 import { PIPELINE_STAGES, PIPELINE_SUMMARY } from "@/lib/data/pipeline";
 import { RISK_SCENARIOS } from "@/lib/data/risks";
 import { SKILLS } from "@/lib/data/skills";
+import { VE_DOCS, VE_META } from "@/lib/data/vexchange";
 import { sql } from "@/lib/db";
 import type { Actor } from "@/lib/auth";
 import { mirrorMissingLocale } from "@/lib/kb/bilingual";
+import { productOfNode, type ProductId } from "@/lib/kb/products";
 import type { KbKind, KbMedia, KbNode, KbNodeInput, KbRevision, TreeNode } from "@/lib/kb/types";
 
 let seeded = false;
@@ -140,6 +142,7 @@ export async function ensureKbSeeded(): Promise<void> {
   if (Number(countRows[0]?.count ?? 0) > 0) {
     seeded = true;
     await backfillMissingSeedRevisions();
+    await ensureProductLines();
     return;
   }
 
@@ -166,8 +169,8 @@ export async function ensureKbSeeded(): Promise<void> {
       bodyZh: "",
       bodyEn: "",
       sortOrder: 10,
-      tags: ["folder", "principles"],
-      payload: {},
+      tags: ["folder", "principles", "cfd-broker"],
+      payload: { product: "cfd-broker" },
       status: "published",
       createdAt: now,
       updatedAt: now,
@@ -186,8 +189,8 @@ export async function ensureKbSeeded(): Promise<void> {
       bodyZh: PIPELINE_SUMMARY.evidenceChainZh,
       bodyEn: PIPELINE_SUMMARY.evidenceChain,
       sortOrder: 20,
-      tags: ["folder", "pipeline"],
-      payload: {},
+      tags: ["folder", "pipeline", "cfd-broker"],
+      payload: { product: "cfd-broker" },
       status: "published",
       createdAt: now,
       updatedAt: now,
@@ -206,8 +209,8 @@ export async function ensureKbSeeded(): Promise<void> {
       bodyZh: "",
       bodyEn: "",
       sortOrder: 30,
-      tags: ["folder", "risks"],
-      payload: {},
+      tags: ["folder", "risks", "cfd-broker"],
+      payload: { product: "cfd-broker" },
       status: "published",
       createdAt: now,
       updatedAt: now,
@@ -226,8 +229,8 @@ export async function ensureKbSeeded(): Promise<void> {
       bodyZh: "",
       bodyEn: "",
       sortOrder: 40,
-      tags: ["folder", "skills"],
-      payload: {},
+      tags: ["folder", "skills", "cfd-broker"],
+      payload: { product: "cfd-broker" },
       status: "published",
       createdAt: now,
       updatedAt: now,
@@ -246,8 +249,8 @@ export async function ensureKbSeeded(): Promise<void> {
       bodyZh: `VPN: ${ACCESS_PLACEHOLDERS.vpn}\nBastion: ${ACCESS_PLACEHOLDERS.bastion}\nBI: ${ACCESS_PLACEHOLDERS.bi}\nGrafana: ${ACCESS_PLACEHOLDERS.grafana}`,
       bodyEn: `VPN: ${ACCESS_PLACEHOLDERS.vpn}\nBastion: ${ACCESS_PLACEHOLDERS.bastion}\nBI: ${ACCESS_PLACEHOLDERS.bi}\nGrafana: ${ACCESS_PLACEHOLDERS.grafana}`,
       sortOrder: 50,
-      tags: ["folder", "database"],
-      payload: { access: ACCESS_PLACEHOLDERS },
+      tags: ["folder", "database", "cfd-broker"],
+      payload: { access: ACCESS_PLACEHOLDERS, product: "cfd-broker" },
       status: "published",
       createdAt: now,
       updatedAt: now,
@@ -266,8 +269,8 @@ export async function ensureKbSeeded(): Promise<void> {
       bodyZh: "",
       bodyEn: "",
       sortOrder: 60,
-      tags: ["folder", "custom"],
-      payload: {},
+      tags: ["folder", "custom", "cfd-broker"],
+      payload: { product: "cfd-broker" },
       status: "published",
       createdAt: now,
       updatedAt: now,
@@ -443,10 +446,101 @@ export async function ensureKbSeeded(): Promise<void> {
 
   seeded = true;
 
+  // Tag CFD seed + add V Exchange product line.
+  await ensureProductLines();
+
   // Seed audit trail so every page has at least one operator log entry.
   const allSeeded = await sql("select * from kb_nodes");
   for (const row of allSeeded) {
     await writeRevision(rowToNode(row), "seed", system, "initial seed");
+  }
+}
+
+/**
+ * Ensure CFD nodes are tagged product=cfd-broker and V Exchange tree exists.
+ * Safe to run repeatedly.
+ */
+async function ensureProductLines(): Promise<void> {
+  const system: Actor = {
+    sub: "system",
+    email: "system@quoteops.local",
+    name: "System Seed",
+    isAdmin: true,
+    verified: true,
+    role: "admin",
+  };
+  const now = new Date().toISOString();
+
+  // Tag any node missing payload.product as CFD broker (legacy seed).
+  const all = await sql("select * from kb_nodes");
+  for (const row of all) {
+    const n = rowToNode(row);
+    if (n.id.startsWith("ve-") || n.id === "folder-v-exchange" || n.slug.startsWith("ve-")) {
+      continue;
+    }
+    if (productOfNode(n.payload, n.tags) === "cfd-broker" && n.payload?.product !== "cfd-broker") {
+      const payload = { ...n.payload, product: "cfd-broker" as const };
+      const tags = Array.from(new Set([...n.tags, "cfd-broker"]));
+      await sql(
+        `update kb_nodes set payload=$2::jsonb, tags=$3::jsonb, updated_at=$4 where id=$1`,
+        [n.id, JSON.stringify(payload), JSON.stringify(tags), now],
+      );
+    }
+  }
+
+  const existingVe = await sql("select id from kb_nodes where id = $1 limit 1", ["folder-v-exchange"]);
+  if (existingVe.length > 0) return;
+
+  const root: KbNode = {
+    id: "folder-v-exchange",
+    parentId: null,
+    kind: "folder",
+    slug: "v-exchange-perp",
+    titleZh: "V Exchange 永续合约",
+    titleEn: "V Exchange Perpetual",
+    summaryZh: `与 CFD Broker 分离的永续合约风控知识库 · ${VE_META.version} · ${VE_META.date}`,
+    summaryEn: `Perp risk KB separate from CFD Broker · ${VE_META.version} · ${VE_META.date}`,
+    bodyZh: "产品线：v-exchange-perp。勿与 CFD Broker QuoteOps 语料混淆。",
+    bodyEn: "Product line: v-exchange-perp. Do not mix with CFD Broker QuoteOps corpus.",
+    sortOrder: 200,
+    tags: ["v-exchange-perp", "perpetual", "永续"],
+    payload: { product: "v-exchange-perp" },
+    status: "published",
+    createdAt: now,
+    updatedAt: now,
+    createdBy: system.email,
+    updatedBy: system.email,
+  };
+  await insertNodeRaw(root);
+  await writeRevision(root, "seed", system, "v-exchange product root");
+
+  for (const doc of VE_DOCS) {
+    const node: KbNode = {
+      id: doc.id,
+      parentId: "folder-v-exchange",
+      kind: "article",
+      slug: doc.slug,
+      titleZh: doc.titleZh,
+      titleEn: doc.titleEn,
+      summaryZh: doc.summaryZh,
+      summaryEn: doc.summaryEn,
+      bodyZh: doc.bodyZh,
+      bodyEn: doc.bodyEn,
+      sortOrder: doc.sortOrder,
+      tags: [...doc.tags, "v-exchange-perp", "perpetual", "永续"],
+      payload: {
+        product: "v-exchange-perp",
+        version: VE_META.version,
+        contract: VE_META.contract,
+      },
+      status: "published",
+      createdAt: now,
+      updatedAt: now,
+      createdBy: system.email,
+      updatedBy: system.email,
+    };
+    await insertNodeRaw(node);
+    await writeRevision(node, "seed", system, "v-exchange seed");
   }
 }
 
@@ -476,6 +570,7 @@ export async function listNodes(opts?: {
   kind?: KbKind;
   status?: string;
   q?: string;
+  product?: ProductId;
   sort?: "updated" | "created" | "title" | "sort";
   order?: "asc" | "desc";
 }): Promise<KbNode[]> {
@@ -484,6 +579,9 @@ export async function listNodes(opts?: {
   let nodes = rows.map((r) => rowToNode(r));
   if (opts?.kind) nodes = nodes.filter((n) => n.kind === opts.kind);
   if (opts?.status) nodes = nodes.filter((n) => n.status === opts.status);
+  if (opts?.product) {
+    nodes = nodes.filter((n) => productOfNode(n.payload, n.tags) === opts.product);
+  }
   if (opts?.q?.trim()) {
     const q = opts.q.trim().toLowerCase();
     nodes = nodes.filter((n) =>
@@ -513,8 +611,8 @@ export async function getNode(idOrSlug: string): Promise<KbNode | null> {
   return rows[0] ? rowToNode(rows[0]) : null;
 }
 
-export async function getTree(): Promise<TreeNode[]> {
-  const nodes = await listNodes({ sort: "sort", order: "asc" });
+export async function getTree(product?: ProductId): Promise<TreeNode[]> {
+  const nodes = await listNodes({ sort: "sort", order: "asc", product });
   const map = new Map<string, TreeNode>();
   for (const n of nodes) map.set(n.id, { ...n, children: [] });
   const roots: TreeNode[] = [];
@@ -645,7 +743,9 @@ export async function updateNode(
     bodyZh: patch.bodyZh ?? existing.bodyZh,
     bodyEn: patch.bodyEn ?? existing.bodyEn,
     status: patch.status ?? existing.status,
-    payload: patch.payload ?? existing.payload,
+    payload: patch.payload
+      ? { ...existing.payload, ...patch.payload }
+      : existing.payload,
   };
   const bilingual = withBilingualIfPublished(merged);
   const next: KbNode = {

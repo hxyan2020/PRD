@@ -35,9 +35,13 @@ export function layoutKnowledgeGraph(
     focusId: string | null;
     locale: "zh-CN" | "en";
     maxChildren?: number;
+    hubTitleZh?: string;
+    hubTitleEn?: string;
   },
 ): { nodes: VizNode[]; edges: VizEdge[]; focus: TreeNode | null } {
   const { width, height, focusId, locale } = opts;
+  const hubZh = opts.hubTitleZh ?? "QuoteOps";
+  const hubEn = opts.hubTitleEn ?? "QuoteOps";
   const maxChildren = opts.maxChildren ?? 48;
   const cx = width / 2;
   const cy = height / 2;
@@ -84,8 +88,8 @@ export function layoutKnowledgeGraph(
     id: "__hub__",
     parentId: null,
     kind: "hub",
-    titleZh: "QuoteOps",
-    titleEn: "QuoteOps",
+    titleZh: hubZh,
+    titleEn: hubEn,
     slug: "",
     status: "published",
     childCount: roots.length,

@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ProductSwitcher } from "@/components/ProductSwitcher";
 import { useI18n } from "@/lib/i18n/context";
 import { flattenTree, layoutKnowledgeGraph, type VizNode } from "@/lib/kb/layout";
 import type { TreeNode } from "@/lib/kb/types";
+import { useProduct } from "@/lib/product/context";
 
 const KIND_COLOR: Record<string, string> = {
   hub: "#0c1520",
@@ -19,6 +21,7 @@ const KIND_COLOR: Record<string, string> = {
 
 export function KnowledgeTree() {
   const { locale, t } = useI18n();
+  const { product, def } = useProduct();
   const [tree, setTree] = useState<TreeNode[]>([]);
   const [active, setActive] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,17 +35,17 @@ export function KnowledgeTree() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch("/api/kb?mode=tree", { cache: "no-store" });
+      const res = await fetch(`/api/kb?mode=tree&product=${product}`, { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as { tree: TreeNode[] };
       const flat = flattenTree(data.tree);
-      const stamp = flat
+      const stamp = `${product}|` + flat
         .map((n) => `${n.id}:${n.updatedAt}:${n.parentId}:${n.children.length}`)
         .join("|");
       if (stamp !== stampRef.current) {
         stampRef.current = stamp;
         setTree(data.tree);
-        setActive((prev) => prev ?? data.tree[0]?.id ?? null);
+        setActive(data.tree[0]?.id ?? null);
         setLastSync(new Date().toISOString());
       } else {
         setLastSync(new Date().toISOString());
@@ -51,9 +54,10 @@ export function KnowledgeTree() {
     } catch (e) {
       setError(e instanceof Error ? e.message : "failed");
     }
-  }, []);
+  }, [product]);
 
   useEffect(() => {
+    stampRef.current = "";
     void load();
   }, [load]);
 
@@ -102,8 +106,10 @@ export function KnowledgeTree() {
         focusId: expandId,
         locale,
         maxChildren: filter.trim() ? 80 : 36,
+        hubTitleZh: product === "v-exchange-perp" ? "V Exchange" : "QuoteOps",
+        hubTitleEn: product === "v-exchange-perp" ? "V Exchange" : "QuoteOps",
       }),
-    [tree, size, expandId, locale, filter],
+    [tree, size, expandId, locale, filter, product],
   );
 
   const selectedNode = useMemo(() => {
@@ -165,17 +171,25 @@ export function KnowledgeTree() {
   return (
     <div className="space-y-5 animate-rise">
       <header className="border-b border-line/80 pb-4">
+        <div className="mb-3">
+          <ProductSwitcher />
+        </div>
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-sea">
-          {t("知识图谱 · 动态可视化", "Knowledge map · live visualisation")}
+          {locale === "zh-CN" ? def.brandZh : def.brandEn} · {t("知识图谱", "Knowledge map")}
         </p>
         <h1 className="mt-2 font-display text-3xl text-ink sm:text-4xl">
           {t("动态知识树", "Live knowledge tree")}
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-mist">
-          {t(
-            "中心为 QuoteOps；外环为分类文件夹；选中分类后展开子节点。实线=从属，虚线=标签关联。开启实时刷新可在管理员增删改后自动更新。",
-            "Center hub, outer ring = folders; select a folder to expand children. Solid = parent link, dashed = tag relation. Live refresh updates after admin edits.",
-          )}
+          {product === "v-exchange-perp"
+            ? t(
+                "中心为 V Exchange 永续；外环为告警/定价/SOP 等分类。与 CFD Broker 知识树隔离。",
+                "Hub = V Exchange Perp; rings = alarms/pricing/SOP. Isolated from CFD Broker tree.",
+              )
+            : t(
+                "中心为 QuoteOps；外环为分类文件夹；选中分类后展开子节点。实线=从属，虚线=标签关联。开启实时刷新可在管理员增删改后自动更新。",
+                "Center hub, outer ring = folders; select a folder to expand children. Solid = parent link, dashed = tag relation. Live refresh updates after admin edits.",
+              )}
         </p>
       </header>
 

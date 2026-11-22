@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LarkImportPanel } from "@/components/LarkImportPanel";
+import { ProductSwitcher } from "@/components/ProductSwitcher";
 import { formatTs } from "@/lib/kb/format";
 import { useI18n } from "@/lib/i18n/context";
 import type { KbKind, KbNode } from "@/lib/kb/types";
+import { useProduct } from "@/lib/product/context";
 
 type Suggestion = {
   parentId: string;
@@ -36,6 +38,7 @@ const emptyForm = {
 
 export function AdminDesk() {
   const { locale, t } = useI18n();
+  const { product, def } = useProduct();
   const [nodes, setNodes] = useState<KbNode[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [q, setQ] = useState("");
@@ -49,13 +52,28 @@ export function AdminDesk() {
   const load = useCallback(async () => {
     const [meRes, listRes] = await Promise.all([
       fetch("/api/me"),
-      fetch(`/api/kb?q=${encodeURIComponent(q)}&sort=${sort}&order=${order}`),
+      fetch(
+        `/api/kb?q=${encodeURIComponent(q)}&sort=${sort}&order=${order}&product=${product}`,
+      ),
     ]);
     const me = (await meRes.json()) as { isAdmin?: boolean };
     setIsAdmin(!!me.isAdmin);
     const list = (await listRes.json()) as { nodes: KbNode[] };
     setNodes(list.nodes);
-  }, [q, sort, order]);
+    const defaultParent =
+      product === "v-exchange-perp" ? "folder-v-exchange" : "folder-custom";
+    setForm((f) => ({
+      ...f,
+      parentId:
+        product === "v-exchange-perp"
+          ? f.parentId.startsWith("folder-v") || f.parentId === "folder-v-exchange"
+            ? f.parentId
+            : defaultParent
+          : f.parentId === "folder-v-exchange"
+            ? "folder-custom"
+            : f.parentId || defaultParent,
+    }));
+  }, [q, sort, order, product]);
 
   useEffect(() => {
     void load();
@@ -133,7 +151,12 @@ export function AdminDesk() {
     setBusy(true);
     setMsg(null);
     try {
-      const tags = form.tags.split(/[,，]/).map((s) => s.trim()).filter(Boolean);
+      const baseTags = form.tags.split(/[,，]/).map((s) => s.trim()).filter(Boolean);
+      const tags =
+        product === "v-exchange-perp"
+          ? Array.from(new Set([...baseTags, "v-exchange-perp", "perpetual", "永续"]))
+          : Array.from(new Set([...baseTags, "cfd-broker"]));
+      const payload = { product };
       if (form.mode === "append") {
         const target = form.appendTargetId || editingId;
         if (!target) throw new Error(t("请选择要追加的页面", "Pick a page to append"));
@@ -163,6 +186,7 @@ export function AdminDesk() {
             parentId: form.parentId,
             tags,
             status: form.status,
+            payload,
           }),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -186,6 +210,7 @@ export function AdminDesk() {
             parentId: form.parentId,
             tags,
             status: form.status,
+            payload,
           }),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -276,14 +301,19 @@ export function AdminDesk() {
   return (
     <div className="space-y-6 animate-rise">
       <header className="border-b border-line/80 pb-4">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-sea">Admin CMS</p>
+        <div className="mb-3">
+          <ProductSwitcher />
+        </div>
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-sea">
+          Admin CMS · {locale === "zh-CN" ? def.shortZh : def.shortEn}
+        </p>
         <h1 className="mt-2 font-display text-3xl text-ink sm:text-4xl">
           {t("知识库管理", "Knowledge admin")}
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-mist">
           {t(
-            "支持关键字检索与排序；可新建或追加到已有页面；支持文字/表格/列表/图片/视频/文件；发布时自动补齐中英对照。",
-            "Search & sort; create or append; text/tables/lists/images/videos/files; publish fills bilingual gaps.",
+            "列表与写入范围跟随上方产品线；CFD Broker 与 V Exchange 永续语料互不混写。",
+            "List/write scope follows the product switcher; CFD Broker and V Exchange Perp stay separate.",
           )}
         </p>
       </header>

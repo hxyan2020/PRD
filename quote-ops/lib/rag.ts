@@ -1,4 +1,10 @@
 import { buildCorpusAsync } from "@/lib/corpus";
+import {
+  DEFAULT_PRODUCT,
+  PRODUCTS,
+  inferProductFromQuery,
+  type ProductId,
+} from "@/lib/kb/products";
 import type { KnowledgeChunk } from "@/lib/types";
 
 export type Locale = "zh-CN" | "en";
@@ -16,6 +22,8 @@ export type RagAnswer = {
   hits: RagHit[];
   suggestedSkills: { slug: string; title: string }[];
   suggestedRisks: { id: number; title: string }[];
+  product: ProductId;
+  productHint?: ProductId | null;
 };
 
 const STOP = new Set([
@@ -92,10 +100,11 @@ export async function retrieve(
   question: string,
   localePref?: Locale,
   limit = 8,
+  product: ProductId = DEFAULT_PRODUCT,
 ): Promise<RagHit[]> {
   const locale = detectLocale(question, localePref);
   const tokens = tokenize(question);
-  const corpus = await buildCorpusAsync();
+  const corpus = await buildCorpusAsync(product);
   return corpus
     .map((chunk) => ({
       chunk,
@@ -110,11 +119,17 @@ export async function retrieve(
 export async function answerQuestion(
   question: string,
   localePref?: Locale,
+  productPref?: ProductId,
 ): Promise<RagAnswer> {
   const locale = detectLocale(question, localePref);
   const zh = locale === "zh-CN";
   const q = question.trim();
-  const hits = await retrieve(q, locale, 8);
+  const inferred = inferProductFromQuery(q);
+  const product = productPref ?? inferred ?? DEFAULT_PRODUCT;
+  const productHint =
+    productPref && inferred && inferred !== productPref ? inferred : null;
+  const hits = await retrieve(q, locale, 8, product);
+  const productDef = PRODUCTS[product];
 
   const riskHits = hits.filter((h) => h.chunk.kind === "risk").slice(0, 5);
   const skillHits = hits.filter((h) => h.chunk.kind === "skill").slice(0, 4);
@@ -134,15 +149,34 @@ export async function answerQuestion(
   const sections: RagAnswer["sections"] = [];
 
   if (!top) {
+    const emptyHint =
+      product === "v-exchange-perp"
+        ? zh
+          ? "请尝试：Funding 偏差、Mark vs Index、Index Fallback、DB 接仓、ADL、强平对账等关键词。"
+          : "Try Funding drift, Mark vs Index, Index Fallback, DB takeover, ADL, liquidation recon."
+        : zh
+          ? "请尝试：旧价 RCA、LP→PE→MT、Quote Tick 库、Latency Arbitrage、强平 RCA 等关键词。"
+          : "Try keywords like stale quote RCA, LP→PE→MT, quote tick store, latency arb, stop-out RCA.";
     return {
       understoodAs: zh ? `未检索到与「${q}」匹配的语料。` : `No corpus match for “${q}”.`,
-      summary: zh
-        ? "请尝试：旧价 RCA、LP→PE→MT、Quote Tick 库、Latency Arbitrage、强平 RCA 等关键词。"
-        : "Try keywords like stale quote RCA, LP→PE→MT, quote tick store, latency arb, stop-out RCA.",
-      sections: [],
+      summary: emptyHint,
+      sections: productHint
+        ? [
+            {
+              heading: zh ? "产品线提示" : "Product hint",
+              paragraphs: [
+                zh
+                  ? `当前检索范围是「${productDef.shortZh}」。问题更像「${PRODUCTS[productHint].shortZh}」——可切换产品线后再问。`
+                  : `Scoped to “${productDef.shortEn}”. Query looks more like “${PRODUCTS[productHint].shortEn}” — switch product line and retry.`,
+              ],
+            },
+          ]
+        : [],
       hits: [],
       suggestedSkills: [],
       suggestedRisks: [],
+      product,
+      productHint,
     };
   }
 
@@ -168,7 +202,18 @@ export async function answerQuestion(
     });
   }
 
-  if (/旧价|stale|quote.?age|ttl/i.test(q)) {
+  if (productHint) {
+    sections.unshift({
+      heading: zh ? "产品线提示" : "Product hint",
+      paragraphs: [
+        zh
+          ? `当前范围「${productDef.shortZh}」。关键词更像「${PRODUCTS[productHint].shortZh}」——两产品线语料已隔离，切换后再检索更准。`
+          : `Scoped to “${productDef.shortEn}”. Tokens look more like “${PRODUCTS[productHint].shortEn}” — corpora are isolated; switch product line for better hits.`,
+      ],
+    });
+  }
+
+  if (product === "cfd-broker" && /旧价|stale|quote.?age|ttl/i.test(q)) {
     sections.push({
       heading: zh ? "处置原则" : "Disposition principle",
       paragraphs: [
@@ -179,7 +224,7 @@ export async function answerQuestion(
     });
   }
 
-  if (/数据库|database|host|访问地址|clickhouse|grafana/i.test(q)) {
+  if (product === "cfd-broker" && /数据库|database|host|访问地址|clickhouse|grafana/i.test(q)) {
     sections.push({
       heading: zh ? "访问说明" : "Access note",
       paragraphs: [
@@ -190,16 +235,29 @@ export async function answerQuestion(
     });
   }
 
+  if (product === "v-exchange-perp") {
+    sections.push({
+      heading: zh ? "永续风控原则" : "Perp risk principle",
+      paragraphs: [
+        zh
+          ? "AI 只读：不得改生产参数、切价格源、停盘、注资、强平、ADL、强制成交或改账本。历史阈值须标注 [OBS]/[DESIGN]/[TBC]。"
+          : "AI is read-only: no prod param changes, source switches, halt, funding inject, liquidation, ADL, force trade, or ledger edits. Label historic thresholds [OBS]/[DESIGN]/[TBC].",
+      ],
+    });
+  }
+
   return {
     understoodAs: zh
-      ? `你在问：${q}。已从知识库 / 技能库 / 风险目录检索。`
-      : `You asked: ${q}. Retrieved from KB / skills / risk catalog.`,
+      ? `你在问：${q}。已在「${productDef.shortZh}」知识库检索。`
+      : `You asked: ${q}. Retrieved within “${productDef.shortEn}” corpus.`,
     summary: zh
-      ? `最相关：${top.chunk.titleZh}（${top.chunk.kind}）。共 ${hits.length} 条命中。`
-      : `Top hit: ${top.chunk.title} (${top.chunk.kind}). ${hits.length} hits.`,
+      ? `最相关：${top.chunk.titleZh}（${top.chunk.kind}）。共 ${hits.length} 条命中 · ${productDef.brandZh}。`
+      : `Top hit: ${top.chunk.title} (${top.chunk.kind}). ${hits.length} hits · ${productDef.brandEn}.`,
     sections,
     hits,
     suggestedSkills,
     suggestedRisks,
+    product,
+    productHint,
   };
 }

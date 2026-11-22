@@ -1,37 +1,68 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { HomeAdminStrip } from "@/components/HomeAdminStrip";
 import { HomeKnowledgeComposer } from "@/components/HomeKnowledgeComposer";
 import { LarkImportPanel } from "@/components/LarkImportPanel";
+import { ProductSwitcher } from "@/components/ProductSwitcher";
 import { useI18n } from "@/lib/i18n/context";
+import { PRODUCTS, inferProductFromQuery, type ProductId } from "@/lib/kb/products";
+import { useProduct } from "@/lib/product/context";
 import type { RagAnswer } from "@/lib/rag";
 
-const EXAMPLES_ZH = [
-  "旧价成交怎么排查？",
-  "LP 到 PE 到 MT 全流程",
-  "Quote Tick 库访问地址",
-  "Latency Arbitrage 如何检测",
-  "强平漏洞 RCA 步骤",
-  "如何区分 Healthy 和 Abusive",
-];
-
-const EXAMPLES_EN = [
-  "How to RCA a stale quote fill?",
-  "LP → PE → MT pricing flow",
-  "Quote tick store access host",
-  "Detect latency arbitrage",
-  "Stop-out gap RCA steps",
-  "Healthy vs Abusive with markout",
-];
+const EXAMPLES: Record<ProductId, { zh: string[]; en: string[] }> = {
+  "cfd-broker": {
+    zh: [
+      "旧价成交怎么排查？",
+      "LP 到 PE 到 MT 全流程",
+      "Quote Tick 库访问地址",
+      "Latency Arbitrage 如何检测",
+      "强平漏洞 RCA 步骤",
+      "如何区分 Healthy 和 Abusive",
+    ],
+    en: [
+      "How to RCA a stale quote fill?",
+      "LP → PE → MT pricing flow",
+      "Quote tick store access host",
+      "Detect latency arbitrage",
+      "Stop-out gap RCA steps",
+      "Healthy vs Abusive with markout",
+    ],
+  },
+  "v-exchange-perp": {
+    zh: [
+      "外部 Funding 偏差超过 0.1% 怎么查？",
+      "Mark Price 与 Index 偏离排查",
+      "Index 与友商价格偏离",
+      "DB 接仓失败 / ADL 异常",
+      "资金费率为正是什么意思？",
+      "周末黄金 Index 异常案例",
+    ],
+    en: [
+      "Investigate external Funding drift >0.1%",
+      "Mark vs Index divergence RCA",
+      "Index vs peer exchange drift",
+      "DB takeover / ADL failure",
+      "What does positive funding mean?",
+      "Weekend gold Index incident",
+    ],
+  },
+};
 
 export function RagDesk() {
   const { locale, t } = useI18n();
+  const { product, setProduct, def } = useProduct();
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState<RagAnswer | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const typedHint = useMemo(() => {
+    const inferred = inferProductFromQuery(q);
+    if (inferred && inferred !== product) return inferred;
+    return null;
+  }, [q, product]);
 
   async function ask(text?: string) {
     const question = (text ?? q).trim();
@@ -43,7 +74,7 @@ export function RagDesk() {
       const res = await fetch("/api/rag", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question, locale }),
+        body: JSON.stringify({ question, locale, product }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as RagAnswer;
@@ -55,21 +86,44 @@ export function RagDesk() {
     }
   }
 
-  const examples = locale === "zh-CN" ? EXAMPLES_ZH : EXAMPLES_EN;
+  const examples = locale === "zh-CN" ? EXAMPLES[product].zh : EXAMPLES[product].en;
+  const isPerp = product === "v-exchange-perp";
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-2xl border border-ink/10 bg-ink text-paper animate-rise">
+      <section
+        className={`relative overflow-hidden rounded-2xl border border-ink/10 text-paper animate-rise ${
+          isPerp ? "bg-[#0a1f1c]" : "bg-ink"
+        }`}
+      >
         <div className="grid-noise absolute inset-0 opacity-40" />
+        <div
+          className={`pointer-events-none absolute inset-0 opacity-50 ${
+            isPerp
+              ? "bg-[radial-gradient(ellipse_at_20%_20%,rgba(45,212,191,0.22),transparent_55%)]"
+              : "bg-[radial-gradient(ellipse_at_80%_10%,rgba(180,120,60,0.2),transparent_50%)]"
+          }`}
+        />
         <div className="relative px-4 py-8 sm:px-10 sm:py-14">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <ProductSwitcher />
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50">
+              {isPerp ? "XAUUSD · MVP" : "Pricing Squad"}
+            </span>
+          </div>
           <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-sea-soft/80 sm:text-xs">
-            CFD Broker · Pricing Squad
+            {locale === "zh-CN" ? def.brandZh : def.brandEn}
           </p>
-          <h1 className="font-display text-3xl leading-tight sm:text-5xl">QuoteOps</h1>
+          <h1 className="font-display text-3xl leading-tight sm:text-5xl">
+            {isPerp ? "V Exchange" : "QuoteOps"}
+          </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-paper/75 sm:mt-4 sm:text-lg">
+            {locale === "zh-CN" ? def.taglineZh : def.taglineEn}
+          </p>
+          <p className="mt-2 max-w-2xl text-xs text-paper/45">
             {t(
-              "交互式 RAG 知识库与 Skill 库：86 风险场景、LP→PE→MT 报价链路、数据架构占位、报价问题排查与修复流程。",
-              "Interactive RAG KB + skill library: 86 risk scenarios, LP→PE→MT pipeline, data architecture placeholders, pricing RCA playbooks.",
+              "与另一产品线知识库隔离检索；切换上方产品线后问答与知识树范围同步切换。",
+              "Corpus is isolated per product line; switch above to change RAG + tree scope.",
             )}
           </p>
           <form
@@ -82,17 +136,35 @@ export function RagDesk() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder={t("输入报价问题、风险场景或排查关键词…", "Ask about pricing RCA, risks, or skills…")}
+              placeholder={
+                isPerp
+                  ? t("输入永续告警、Funding / Mark / Index、接仓排查关键词…", "Ask perp alerts, Funding / Mark / Index, takeover RCA…")
+                  : t("输入报价问题、风险场景或排查关键词…", "Ask about pricing RCA, risks, or skills…")
+              }
               className="min-h-12 flex-1 rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-base text-paper outline-none ring-sea placeholder:text-paper/40 focus:ring-2 sm:text-sm"
             />
             <button
               type="submit"
               disabled={loading}
-              className="min-h-12 rounded-lg bg-copper px-5 py-3 text-sm font-medium text-white touch-manipulation transition hover:bg-copper/90 disabled:opacity-60"
+              className={`min-h-12 rounded-lg px-5 py-3 text-sm font-medium text-white touch-manipulation transition disabled:opacity-60 ${
+                isPerp ? "bg-teal-600 hover:bg-teal-500" : "bg-copper hover:bg-copper/90"
+              }`}
             >
               {loading ? t("检索中…", "Retrieving…") : t("检索回答", "Ask RAG")}
             </button>
           </form>
+          {typedHint && (
+            <button
+              type="button"
+              onClick={() => setProduct(typedHint)}
+              className="mt-3 rounded-lg border border-amber-300/40 bg-amber-400/10 px-3 py-2 text-left text-xs text-amber-100 touch-manipulation hover:bg-amber-400/20"
+            >
+              {t(
+                `检测到「${PRODUCTS[typedHint].shortZh}」关键词 — 点此切换产品线（当前：${def.shortZh}）`,
+                `Detected “${PRODUCTS[typedHint].shortEn}” tokens — switch product line (now: ${def.shortEn})`,
+              )}
+            </button>
+          )}
           <div className="chip-scroll mt-4 sm:flex-wrap">
             {examples.map((ex) => (
               <button
@@ -118,6 +190,31 @@ export function RagDesk() {
 
       {answer && (
         <section className="animate-rise space-y-4 rounded-2xl border border-line bg-white/80 p-5 sm:p-7">
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-md border px-2 py-0.5 text-[10px] uppercase tracking-wide ${
+                answer.product === "v-exchange-perp"
+                  ? "border-teal-600/30 bg-teal-50 text-teal-800"
+                  : "border-copper/30 bg-copper-soft/40 text-copper"
+              }`}
+            >
+              {locale === "zh-CN"
+                ? PRODUCTS[answer.product].shortZh
+                : PRODUCTS[answer.product].shortEn}
+            </span>
+            {answer.productHint && (
+              <button
+                type="button"
+                onClick={() => setProduct(answer.productHint!)}
+                className="text-xs text-amber-700 underline"
+              >
+                {t(
+                  `切换到 ${PRODUCTS[answer.productHint].shortZh}`,
+                  `Switch to ${PRODUCTS[answer.productHint].shortEn}`,
+                )}
+              </button>
+            )}
+          </div>
           <p className="text-sm text-mist">{answer.understoodAs}</p>
           <h2 className="font-display text-2xl text-ink">{answer.summary}</h2>
           {answer.sections.map((sec) => (
@@ -184,28 +281,52 @@ export function RagDesk() {
       )}
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          {
-            href: "/tree",
-            title: t("知识树", "Knowledge tree"),
-            body: t("动态节点关系，便于观察分类与从属", "Live node relations across the catalog"),
-          },
-          {
-            href: "/pipeline",
-            title: t("报价全流程", "Quote pipeline"),
-            body: t("LP → Ingest → PE → 分发 → MT → 对冲 → RCA", "LP → Ingest → PE → Fan-out → MT → Hedge → RCA"),
-          },
-          {
-            href: "/risks",
-            title: t("86 风险场景", "86 risk scenarios"),
-            body: t("H/T/A/M 分类 · 频率 · 严重度 · 检测与防控", "H/T/A/M · frequency · severity · detect & prevent"),
-          },
-          {
-            href: "/admin",
-            title: t("管理台", "Admin"),
-            body: t("新增 / 编辑 / 删除 / 检索排序 / 发布双语", "Create / edit / delete / search-sort / bilingual publish"),
-          },
-        ].map((card, i) => (
+        {(isPerp
+          ? [
+              {
+                href: "/tree",
+                title: t("永续知识树", "Perp knowledge tree"),
+                body: t("告警 / 定价 / Runbook / DB 做市分区", "Alarms / pricing / runbooks / DB MM"),
+              },
+              {
+                href: "/kb/ve-alarm-catalog",
+                title: t("告警目录", "Alarm catalog"),
+                body: t("阈值、频率、配置冲突标注", "Thresholds, cadence, config conflicts"),
+              },
+              {
+                href: "/kb/ve-pricing-engine",
+                title: t("定价引擎", "Pricing engine"),
+                body: t("Index / Premium / Funding / Mark", "Index / Premium / Funding / Mark"),
+              },
+              {
+                href: "/kb/ve-principles",
+                title: t("风控原则", "Risk principles"),
+                body: t("证据分级 · AI 只读限制", "Evidence grades · AI read-only limits"),
+              },
+            ]
+          : [
+              {
+                href: "/tree",
+                title: t("知识树", "Knowledge tree"),
+                body: t("动态节点关系，便于观察分类与从属", "Live node relations across the catalog"),
+              },
+              {
+                href: "/pipeline",
+                title: t("报价全流程", "Quote pipeline"),
+                body: t("LP → Ingest → PE → 分发 → MT → 对冲 → RCA", "LP → Ingest → PE → Fan-out → MT → Hedge → RCA"),
+              },
+              {
+                href: "/risks",
+                title: t("86 风险场景", "86 risk scenarios"),
+                body: t("H/T/A/M 分类 · 频率 · 严重度 · 检测与防控", "H/T/A/M · frequency · severity · detect & prevent"),
+              },
+              {
+                href: "/admin",
+                title: t("管理台", "Admin"),
+                body: t("新增 / 编辑 / 删除 / 检索排序 / 发布双语", "Create / edit / delete / search-sort / bilingual publish"),
+              },
+            ]
+        ).map((card, i) => (
           <Link
             key={card.href}
             href={card.href}

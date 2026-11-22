@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import type { KbKind, KbNode } from "@/lib/kb/types";
+import { useProduct } from "@/lib/product/context";
 
 type Suggestion = {
   parentId: string;
@@ -33,6 +34,7 @@ const SNIPPETS = {
 /** Homepage composer: create / append rich knowledge with AI placement. */
 export function HomeKnowledgeComposer() {
   const { locale, t } = useI18n();
+  const { product, def } = useProduct();
   const [isAdmin, setIsAdmin] = useState(false);
   const [nodes, setNodes] = useState<KbNode[]>([]);
   const [mode, setMode] = useState<"create" | "append">("create");
@@ -53,15 +55,21 @@ export function HomeKnowledgeComposer() {
   const loadNodes = useCallback(async () => {
     const [meRes, listRes] = await Promise.all([
       fetch("/api/me"),
-      fetch("/api/kb?sort=title&order=asc"),
+      fetch(`/api/kb?sort=title&order=asc&product=${product}`),
     ]);
     const me = (await meRes.json()) as { isAdmin?: boolean };
     setIsAdmin(!!me.isAdmin);
     const list = (await listRes.json()) as { nodes: KbNode[] };
     setNodes(list.nodes || []);
+    const foldersOnly = (list.nodes || []).filter((n) => n.kind === "folder");
     const pages = (list.nodes || []).filter((n) => n.kind !== "folder");
-    if (pages[0] && !appendTargetId) setAppendTargetId(pages[0].id);
-  }, [appendTargetId]);
+    const defaultParent =
+      product === "v-exchange-perp"
+        ? foldersOnly.find((f) => f.id === "folder-v-exchange")?.id || foldersOnly[0]?.id || "folder-v-exchange"
+        : foldersOnly.find((f) => f.id === "folder-custom")?.id || "folder-custom";
+    setParentId(defaultParent);
+    setAppendTargetId(pages[0]?.id || "");
+  }, [product]);
 
   useEffect(() => {
     void loadNodes();
@@ -170,6 +178,10 @@ export function HomeKnowledgeComposer() {
         setBodyZh("");
       } else {
         if (!titleZh.trim()) throw new Error(t("请填写标题", "Title required"));
+        const productTags =
+          product === "v-exchange-perp"
+            ? Array.from(new Set([...tagList, "v-exchange-perp", "perpetual", "永续"]))
+            : Array.from(new Set([...tagList, "cfd-broker"]));
         const res = await fetch("/api/kb", {
           method: "POST",
           headers: { "content-type": "application/json" },
@@ -179,8 +191,9 @@ export function HomeKnowledgeComposer() {
             bodyZh,
             kind,
             parentId,
-            tags: tagList,
+            tags: productTags,
             status,
+            payload: { product },
           }),
         });
         const data = await res.json();
@@ -215,6 +228,9 @@ export function HomeKnowledgeComposer() {
           <h2 className="mt-1 font-display text-2xl text-ink">
             {t("写入任意内容形成知识节点", "Turn any content into a knowledge node")}
           </h2>
+          <p className="mt-1 text-xs text-copper">
+            {t(`写入产品线：${def.shortZh}`, `Writing into: ${def.shortEn}`)}
+          </p>
           <p className="mt-1 max-w-3xl text-sm text-mist">
             {t(
               "支持长文、标题、列表、表格，以及图片 / 视频 / 文件。可新建到选定分类，或追加到已有页面；也可一键让 AI 推荐插入位置并给出前后对比。",

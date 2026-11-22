@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
+import { isProductId, type ProductId } from "@/lib/kb/products";
 import {
   createNode,
   getTree,
@@ -13,15 +14,18 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
+  const productParam = url.searchParams.get("product");
+  const product = isProductId(productParam) ? productParam : undefined;
   const mode = url.searchParams.get("mode");
   if (mode === "tree") {
-    const tree = await getTree();
+    const tree = await getTree(product);
     return NextResponse.json({ tree });
   }
   const nodes = await listNodes({
     kind: (url.searchParams.get("kind") as KbKind) || undefined,
     status: url.searchParams.get("status") || undefined,
     q: url.searchParams.get("q") || undefined,
+    product,
     sort: (url.searchParams.get("sort") as "updated" | "created" | "title" | "sort") || "updated",
     order: (url.searchParams.get("order") as "asc" | "desc") || "desc",
   });

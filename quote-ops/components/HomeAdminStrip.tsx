@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { formatTs } from "@/lib/kb/format";
 import { useI18n } from "@/lib/i18n/context";
 import type { KbKind, KbNode } from "@/lib/kb/types";
+import { useProduct } from "@/lib/product/context";
 
 type SortKey = "updated" | "created" | "title" | "sort";
 
@@ -22,6 +23,7 @@ const KINDS: Array<KbKind | "all"> = [
 /** Admin keyword search / retrieve / sort panel on the home page. */
 export function HomeAdminStrip() {
   const { locale, t } = useI18n();
+  const { product } = useProduct();
   const [isAdmin, setIsAdmin] = useState(false);
   const [q, setQ] = useState("");
   const [draft, setDraft] = useState("");
@@ -48,6 +50,7 @@ export function HomeAdminStrip() {
         q,
         sort,
         order,
+        product,
       });
       if (kind !== "all") params.set("kind", kind);
       if (status !== "all") params.set("status", status);
@@ -61,7 +64,7 @@ export function HomeAdminStrip() {
         .finally(() => setLoading(false));
     }, 180);
     return () => clearTimeout(tmr);
-  }, [isAdmin, q, sort, order, kind, status, limit]);
+  }, [isAdmin, q, sort, order, kind, status, limit, product]);
 
   const emptyHint = useMemo(() => {
     if (loading) return t("检索中…", "Searching…");

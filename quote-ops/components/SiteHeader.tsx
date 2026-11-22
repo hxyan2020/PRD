@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ProductSwitcher } from "@/components/ProductSwitcher";
 import { useI18n } from "@/lib/i18n/context";
+import { useProduct } from "@/lib/product/context";
 
 const NAV = [
   { href: "/", zh: "RAG", en: "RAG" },
@@ -20,6 +22,7 @@ const NAV = [
 export function SiteHeader() {
   const pathname = usePathname();
   const { locale, setLocale, t } = useI18n();
+  const { def, product } = useProduct();
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [roleReady, setRoleReady] = useState(false);
@@ -61,11 +64,16 @@ export function SiteHeader() {
       <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/95 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6">
           <Link href="/" className="min-w-0 shrink">
-            <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">QuoteOps</span>
+            <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">
+              {product === "v-exchange-perp" ? "V Exchange" : "QuoteOps"}
+            </span>
             <span className="ml-2 hidden text-[10px] uppercase tracking-[0.16em] text-mist md:inline">
-              {t("报价小队知识库", "Pricing Squad KB")}
+              {locale === "zh-CN" ? def.shortZh : def.shortEn}
             </span>
           </Link>
+          <div className="hidden sm:block">
+            <ProductSwitcher compact />
+          </div>
 
           <button
             type="button"
@@ -162,6 +170,10 @@ export function SiteHeader() {
             {isAdmin ? t("管理员", "Admin") : t("只读", "Read-only")}
           </span>
         )}
+        <div className="mt-3">
+          <p className="mb-1 text-[10px] uppercase tracking-wide text-mist">{t("产品线", "Product")}</p>
+          <ProductSwitcher />
+        </div>
         <div className="mt-2 flex gap-1 rounded-lg border border-line bg-white p-1 text-sm">
           <button
             type="button"

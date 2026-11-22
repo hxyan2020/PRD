@@ -36,6 +36,8 @@ export type KnowledgeChunk = {
   section: string;
   sectionZh: string;
   kind: "article" | "risk" | "skill" | "pipeline" | "database" | "playbook";
+  /** Knowledge product line — CFD broker vs V Exchange perpetual. */
+  product?: "cfd-broker" | "v-exchange-perp";
   body: string;
   bodyZh: string;
   tags: string[];
