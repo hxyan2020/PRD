@@ -14,6 +14,8 @@ Open http://127.0.0.1:3010
 
 ## Deploy (Vercel)
 
+**Production:** https://lp-scanner.vercel.app
+
 ```bash
 cd lp-scanner
 # Permanent production URL (requires `vercel login` or VERCEL_TOKEN):
