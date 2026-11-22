@@ -30,7 +30,7 @@ const TEMPLATES_DIR = path.join(__dirname, 'templates')
 const PUBLIC_DIR = path.join(__dirname, 'public')
 const DESK_BASE =
   process.env.DESK_BASE_URL ||
-  'https://hxyan2020.github.io/PRD/xauusd-source-monitor'
+  'https://vex-llm-proxy.vercel.app'
 const AUTO_ANALYZE = process.env.LARK_AUTO_ANALYZE !== '0'
 const VERIFY_TOKEN = process.env.LARK_VERIFICATION_TOKEN || ''
 const ENCRYPT_KEY = process.env.LARK_ENCRYPT_KEY || ''

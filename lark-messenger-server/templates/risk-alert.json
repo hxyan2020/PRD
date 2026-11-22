@@ -20,7 +20,7 @@
     "trigger": "multi-source alert",
     "breached": "OKX, Bitget",
     "summary": "Multiple venues breached watch/alert thresholds.",
-    "desk_url": "https://hxyan2020.github.io/PRD/xauusd-source-monitor/",
+    "desk_url": "https://vex-llm-proxy.vercel.app/",
     "alert_id": "ALT-DEMO",
     "time_sgt": ""
   }

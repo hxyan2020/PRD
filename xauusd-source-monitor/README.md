@@ -1,24 +1,27 @@
-# V Exchange Risk Tool
+# V Exchange Risk Tool（VE排查助手）
 
-Public SPA for **XAUUSD MVP perpetual** risk ops on V Exchange (formerly branded XAUUSD Source Monitor).
+Public SPA for **XAUUSD MVP perpetual** risk ops on V Exchange.
 
-## Permanent link
+## Permanent URL (Vercel)
 
-https://hxyan2020.github.io/PRD/xauusd-source-monitor/
+**https://vex-llm-proxy.vercel.app**
 
-Risk desk entry: https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate
+Investigate entry: **https://vex-llm-proxy.vercel.app/#/investigate**
+
+OpenAI runs **server-side only** (`OPENAI_API_KEY` on the Vercel project). The browser never asks for an API key.
+
+GitHub Pages mirror (proxies LLM to the Vercel host):  
+https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate
 
 ## Product tabs
 
-1. **Market Condition** — Briefings, Health, Rules, Archive (source monitor + trigger policy)
-2. **Skills** — create / edit / disable / archive L1–L2 investigation skills
-3. **Knowledge Base** — tree RAG used by Investigate
-4. **Investigate** — alert screenshot RCA desk (skills + knowledge, thinking, timeline, next steps)
-5. **Realtime Statistics** — auto-ingest every triggered RCA (archive gates weekly optimisation only)
+1. **Investigate (RCA)** — alert screenshot RCA desk (skills + knowledge, thinking, timeline, next steps)
+2. **Market Condition** — Briefings, Health, Rules, Archive
+3. **Skills** — create / edit / disable / archive L1–L2 investigation skills
+4. **Knowledge Base** — tree RAG used by Investigate
+5. **Realtime Statistics** — auto-ingest every triggered RCA
 
 ## Demo login (Hytech email)
-
-Auth is required. Seeded demo users (browser session / localStorage):
 
 | Email | Password | Role |
 | --- | --- | --- |
@@ -28,47 +31,29 @@ Auth is required. Seeded demo users (browser session / localStorage):
 
 Accepted domains: `@hytech.com`, `@hytechc.com`, `@hytechpro.com`.
 
-## Default trigger policy (Market Condition → Rules)
-
-- Watch at **8 bps**, Alert at **15 bps** vs composite median
-- Fire when **≥3 sources** are in Alert
-- Or **≥2 exchange** + **≥1 LP** at Watch/Alert
-- Or composite moves **≥35 bps** in 5 minutes
-- **10 minute** briefing cooldown (Critical escalations bypass)
-
-## Live anchors
-
-- OKX `XAU-USDT-SWAP`
-- Bitget `XAUUSDT` (when reachable)
-- gold-api XAU spot (`RC_INDEX` / LMAX-style)
-
-Other venues (BINANCE, BYBIT, indexes, ISPRIME, STARPRIME, VELOCITY) use correlated derived mirrors when browser CORS/geo blocks direct pulls.
-
 ## Local
 
 ```bash
 npm install
 npm run dev
-GITHUB_PAGES=1 npm run build
-bash scripts/deploy-gh-pages.sh
+# Optional local LLM proxy (reads OPENAI_API_KEY from env):
+# node scripts/llm-proxy.mjs
 ```
 
-## LLM proxy on Vercel (recommended)
-
-GitHub Pages serves the SPA; Vercel hosts `POST /api/chat` with the OpenAI key server-side.
-
-1. Import this repo at [vercel.com/new](https://vercel.com/new) (root directory: `xauusd-source-monitor`).
-2. Project → **Settings → Environment Variables** (Production):
-   - `OPENAI_API_KEY` — your OpenAI key
-   - `DESK_GATEWAY_TOKEN` — same value as `deskToken` in `public/llm-config.json`
-3. Deploy. Copy the production URL (e.g. `https://….vercel.app`).
-4. Set `public/llm-config.json` → `proxyBase` to that URL (no trailing slash), commit, then:
-   `bash scripts/deploy-gh-pages.sh`
-
-Or claim a one-off deploy, then link GitHub for ongoing deploys:
+## Deploy permanent Vercel host
 
 ```bash
-bash scripts/deploy-vercel.sh   # requires: npx vercel login
+cd xauusd-source-monitor
+bash scripts/deploy-vercel.sh   # requires: npx vercel login  or  VERCEL_TOKEN
 ```
 
-Optional GitHub Actions: add repo secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` (workflow `deploy-llm-vercel.yml`).
+Production env on the `vex-llm-proxy` Vercel project:
+
+| Name | Required | Purpose |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | yes | Server-side OpenAI key (never shipped to the browser) |
+| `DESK_GATEWAY_TOKEN` | yes | Must match `public/llm-config.json` → `deskToken` |
+| `DAILY_BUDGET_USD` | no | Default `10` |
+
+On Vercel the SPA uses **same-origin** `POST /api/chat`.  
+On GitHub Pages, `llm-config.json` → `proxyBase` points at `https://vex-llm-proxy.vercel.app`.

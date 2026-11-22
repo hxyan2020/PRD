@@ -111,12 +111,12 @@ export interface CopilotSettings {
   provider: LlmProvider
   /** Model id within provider, e.g. gpt-4o-mini */
   model: string
-  /** BYOK — stored only in this browser */
+  /** @deprecated Browser keys unused — server OPENAI_API_KEY only. Kept empty. */
   openaiKey: string
   anthropicKey: string
   geminiKey: string
   openrouterKey: string
-  /** Optional custom proxy base, e.g. https://xxx.vercel.app */
+  /** Managed gateway base. Empty on vex-llm-proxy.vercel.app (same-origin /api/chat). */
   proxyBase: string
   /** Desk auth token for managed LLM gateway (from llm-config.json). */
   deskToken: string

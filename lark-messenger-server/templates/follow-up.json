@@ -15,7 +15,7 @@
     "question": "Why is severity P0?",
     "answer": "Multiple L1 price skills matched and no clear macro catalyst was found — on-duty must confirm.",
     "severity": "P0",
-    "desk_url": "https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate",
+    "desk_url": "https://vex-llm-proxy.vercel.app/#/investigate",
     "time_sgt": ""
   }
 }

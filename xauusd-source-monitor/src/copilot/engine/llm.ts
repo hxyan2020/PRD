@@ -68,31 +68,30 @@ export function modelOptions(provider: LlmProvider): { id: string; label: string
   }
 }
 
-function keyFor(settings: CopilotSettings): string {
-  switch (settings.provider) {
-    case 'openai':
-      return settings.openaiKey.trim()
-    case 'anthropic':
-      return settings.anthropicKey.trim()
-    case 'gemini':
-      return settings.geminiKey.trim()
-    case 'openrouter':
-      return settings.openrouterKey.trim()
-    default:
-      return ''
+/** Permanent production host — SPA + server-side OpenAI via /api/chat. */
+export const PERM_VERCEL_ORIGIN = 'https://vex-llm-proxy.vercel.app'
+
+function proxyBases(settings: CopilotSettings): string[] {
+  const configured = settings.proxyBase.replace(/\/$/, '')
+  const bases: string[] = []
+  // Prefer same-origin when the desk is already on the Vercel host (or local Vite proxy).
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    if (host.endsWith('vercel.app') || host === 'localhost' || host === '127.0.0.1') {
+      bases.push('')
+    }
   }
+  if (configured) bases.push(configured)
+  if (!bases.includes(PERM_VERCEL_ORIGIN)) bases.push(PERM_VERCEL_ORIGIN)
+  return [...new Set(bases)]
 }
 
 async function callProxy(
   settings: CopilotSettings,
   messages: { role: string; content: string }[],
 ): Promise<string | null> {
-  const bases = [
-    settings.proxyBase.replace(/\/$/, ''),
-    typeof window !== 'undefined' ? '' : '',
-  ].filter((b, i, arr) => arr.indexOf(b) === i)
-
-  for (const base of bases) {
+  let lastErr = ''
+  for (const base of proxyBases(settings)) {
     const url = `${base}/api/chat`
     try {
       const headers: Record<string, string> = { 'Content-Type': 'application/json' }
@@ -106,105 +105,41 @@ async function callProxy(
           messages,
         }),
       })
-      if (!res.ok) continue
       const data = (await res.json()) as { text?: string; error?: string }
-      if (data.text) return data.text
-    } catch {
-      /* try next / fallback */
+      if (res.ok && data.text) return data.text
+      lastErr = data.error || `HTTP ${res.status}`
+    } catch (e) {
+      lastErr = e instanceof Error ? e.message : String(e)
     }
   }
+  if (lastErr) throw new Error(lastErr)
   return null
 }
 
-async function callGeminiDirect(
-  settings: CopilotSettings,
-  messages: { role: string; content: string }[],
-): Promise<string> {
-  const key = settings.geminiKey.trim()
-  if (!key) throw new Error('请在设置中填写 Gemini API Key（或配置 /api/chat 代理）。')
-  const model = settings.model || 'gemini-2.0-flash'
-  const system = messages.find((m) => m.role === 'system')?.content ?? SYSTEM_PROMPT_ZH
-  const contents = messages
-    .filter((m) => m.role !== 'system')
-    .map((m) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }],
-    }))
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: system }] },
-      contents,
-      generationConfig: { temperature: 0.2 },
-    }),
-  })
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Gemini 调用失败 (${res.status}): ${err.slice(0, 400)}`)
-  }
-  const data = (await res.json()) as {
-    candidates?: { content?: { parts?: { text?: string }[] } }[]
-  }
-  const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || ''
-  if (!text) throw new Error('Gemini 返回空内容')
-  return text
-}
-
-async function callOpenAiCompatible(
-  settings: CopilotSettings,
-  messages: { role: string; content: string }[],
-  kind: 'openai' | 'openrouter',
-): Promise<string> {
-  const key = kind === 'openai' ? settings.openaiKey.trim() : settings.openrouterKey.trim()
-  if (!key) {
-    throw new Error(
-      kind === 'openai'
-        ? '请在设置中填写 OpenAI API Key（或配置 /api/chat 代理）。'
-        : '请在设置中填写 OpenRouter API Key。',
-    )
-  }
-  const url =
-    kind === 'openrouter'
-      ? 'https://openrouter.ai/api/v1/chat/completions'
-      : 'https://api.openai.com/v1/chat/completions'
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${key}`,
-      ...(kind === 'openrouter'
-        ? {
-            'HTTP-Referer':
-              typeof window !== 'undefined' ? window.location.origin : 'https://hxyan2020.github.io',
-            'X-Title': 'V Exchange Risk Copilot',
-          }
-        : {}),
-    },
-    body: JSON.stringify({
-      model:
-        settings.model || (kind === 'openrouter' ? 'openai/gpt-4o-mini' : 'gpt-4o-mini'),
-      messages,
-      temperature: 0.2,
-    }),
-  })
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(
-      `${kind === 'openrouter' ? 'OpenRouter' : 'OpenAI'} 调用失败 (${res.status}): ${err.slice(0, 400)}`,
-    )
-  }
-  const data = (await res.json()) as { choices?: { message?: { content?: string } }[] }
-  const text = data.choices?.[0]?.message?.content || ''
-  if (!text) throw new Error(`${kind === 'openrouter' ? 'OpenRouter' : 'OpenAI'} 返回空内容`)
-  return text
-}
-
+/** Managed desk never asks for browser API keys — server env only. */
 export function hasLlmCredentials(settings: CopilotSettings): boolean {
   if (settings.provider === 'rules') return false
+  if (settings.deskToken.trim()) return true
   if (settings.proxyBase.trim()) return true
-  return Boolean(keyFor(settings))
+  if (typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app')) {
+    return true
+  }
+  return false
+}
+
+/** Probe managed /api/chat (GET) — used for the OpenAI connected pill. */
+export async function probeLlmGateway(settings: CopilotSettings): Promise<boolean> {
+  for (const base of proxyBases(settings)) {
+    try {
+      const headers: Record<string, string> = {}
+      if (settings.deskToken?.trim()) headers['X-Desk-Token'] = settings.deskToken.trim()
+      const res = await fetch(`${base}/api/chat`, { method: 'GET', headers, cache: 'no-store' })
+      if (res.ok) return true
+    } catch {
+      /* try next */
+    }
+  }
+  return false
 }
 
 export async function runLlm(args: {
@@ -257,12 +192,7 @@ export async function runLlm(args: {
 
   const viaProxy = await callProxy(settings, messages)
   if (viaProxy) return viaProxy
-
-  if (settings.provider === 'gemini') return callGeminiDirect(settings, messages)
-  if (settings.provider === 'openrouter') return callOpenAiCompatible(settings, messages, 'openrouter')
-  if (settings.provider === 'openai') return callOpenAiCompatible(settings, messages, 'openai')
-
   throw new Error(
-    `${settings.provider} 需服务端代理（/api/chat）或改用 Gemini / OpenRouter / OpenAI BYOK。请在「设置」填写密钥，或把 proxyBase 指到已配置密钥的部署。`,
+    'LLM proxy unavailable. This desk uses the permanent Vercel /api/chat with a server-side OpenAI key — browser API keys are not used.',
   )
 }

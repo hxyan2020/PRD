@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Deploy xauusd-source-monitor (SPA + /api/chat) to Vercel.
+# Deploy xauusd-source-monitor (SPA + /api/chat) to the permanent Vercel project.
+# Permanent URL: https://vex-llm-proxy.vercel.app
 # Requires: vercel CLI logged in, or VERCEL_TOKEN in the environment.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -16,14 +17,24 @@ if [[ -n "${VERCEL_TOKEN:-}" ]]; then
   ARGS+=(--token "$VERCEL_TOKEN")
 fi
 
+# Prefer linking to the permanent project name when unlinked.
+if [[ ! -f .vercel/project.json ]]; then
+  echo "==> Linking to permanent project vex-llm-proxy…"
+  if [[ -n "${VERCEL_TOKEN:-}" ]]; then
+    npx vercel link --yes --project vex-llm-proxy --token "$VERCEL_TOKEN"
+  else
+    npx vercel link --yes --project vex-llm-proxy
+  fi
+fi
+
+echo "==> Building SPA…"
+npm ci
+npm run build
+
 echo "==> Deploying to Vercel (production)…"
 npx vercel deploy "${ARGS[@]}"
 
 echo ""
-echo "==> Set these Environment Variables in the Vercel project (Production):"
-echo "    OPENAI_API_KEY       = (your OpenAI key)"
-echo "    DESK_GATEWAY_TOKEN   = (same as public/llm-config.json deskToken)"
-echo "    DAILY_BUDGET_USD     = 10   (optional)"
-echo ""
-echo "Then point public/llm-config.json proxyBase at https://<project>.vercel.app"
-echo "and run: bash scripts/deploy-gh-pages.sh"
+echo "==> Permanent desk: https://vex-llm-proxy.vercel.app/#/investigate"
+echo "    Env (Production): OPENAI_API_KEY, DESK_GATEWAY_TOKEN"
+echo "    Browser never asks for an OpenAI API key."

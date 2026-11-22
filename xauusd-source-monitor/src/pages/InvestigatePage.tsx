@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { matchRelevantBriefings } from '../copilot/engine/briefingMatch'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
-import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
+import { hasLlmCredentials, probeLlmGateway, runLlm } from '../copilot/engine/llm'
 import {
   applyManagedLlmConfig,
   flattenKbDocs,
@@ -107,7 +107,8 @@ export function InvestigatePage() {
       const next = await applyManagedLlmConfig(loadSettings())
       if (cancelled) return
       setSettings(next)
-      setLlmReady(hasLlmCredentials(next))
+      const ready = hasLlmCredentials(next) && (await probeLlmGateway(next))
+      if (!cancelled) setLlmReady(ready || hasLlmCredentials(next))
     })()
     return () => {
       cancelled = true

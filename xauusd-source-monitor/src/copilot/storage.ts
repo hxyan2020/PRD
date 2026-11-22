@@ -1,4 +1,5 @@
 import { DEFAULT_KB, L1_SKILLS, L2_CHAINS } from './data/catalog'
+import { PERM_VERCEL_ORIGIN } from './engine/llm'
 import type {
   CopilotSettings,
   IncidentRecord,
@@ -24,9 +25,12 @@ function builtInProxyBase(): string {
   }
   if (typeof window !== 'undefined') {
     const host = window.location.hostname
+    // Same-origin /api/chat on the permanent Vercel host.
+    if (host.endsWith('vercel.app')) return ''
     if (host === 'localhost' || host === '127.0.0.1') return 'http://127.0.0.1:8791'
   }
-  return ''
+  // GitHub Pages / other static hosts → permanent Vercel gateway.
+  return PERM_VERCEL_ORIGIN
 }
 
 const DEFAULT_SETTINGS: CopilotSettings = {
@@ -277,11 +281,19 @@ export async function applyManagedLlmConfig(
       proxyBase?: string
       deskToken?: string
     }
+    const fromCfg = (cfg.proxyBase ?? '').trim().replace(/\/$/, '')
+    let proxyBase = fromCfg
+    if (typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app')) {
+      // Permanent Vercel SPA uses same-origin /api/chat — ignore absolute proxyBase.
+      proxyBase = ''
+    } else if (!proxyBase) {
+      proxyBase = builtInProxyBase()
+    }
     const next: CopilotSettings = {
       ...current,
       provider: cfg.provider || current.provider || 'openai',
       model: cfg.model || current.model || 'gpt-4o-mini',
-      proxyBase: (cfg.proxyBase || current.proxyBase || '').replace(/\/$/, ''),
+      proxyBase,
       deskToken: (cfg.deskToken || current.deskToken || '').trim(),
       openaiKey: '',
       anthropicKey: '',

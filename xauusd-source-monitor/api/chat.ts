@@ -10,11 +10,14 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 type Msg = { role: string; content: string }
 
 const ALLOWED_ORIGINS = new Set([
+  'https://vex-llm-proxy.vercel.app',
   'https://hxyan2020.github.io',
   'http://127.0.0.1:4173',
   'http://127.0.0.1:5173',
+  'http://127.0.0.1:5180',
   'http://localhost:5173',
   'http://localhost:4173',
+  'http://localhost:5180',
 ])
 
 const DAILY_BUDGET_USD = Number(process.env.DAILY_BUDGET_USD || 10)
@@ -37,11 +40,14 @@ function safeEqual(a: string, b: string) {
 
 function applyCors(req: VercelRequest, res: VercelResponse) {
   const origin = String(req.headers.origin || '')
-  if (ALLOWED_ORIGINS.has(origin)) {
+  const allowed =
+    ALLOWED_ORIGINS.has(origin) ||
+    /^https:\/\/[\w-]+(?:-[\w]+)*\.vercel\.app$/.test(origin)
+  if (allowed) {
     res.setHeader('Access-Control-Allow-Origin', origin)
     res.setHeader('Vary', 'Origin')
   }
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Desk-Token')
 }
 
