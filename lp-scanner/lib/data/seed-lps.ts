@@ -1,8 +1,9 @@
+import { LP_OPTIMAL_REGIONS } from "@/lib/regions";
 import type { LpRecord } from "@/lib/types";
 
 const now = "2026-03-22T00:00:00.000Z";
 
-export const SEED_LPS: LpRecord[] = [
+const SEED_LPS_RAW: LpRecord[] = [
   {
     id: "finalto",
     slug: "finalto",
@@ -677,6 +678,11 @@ export const SEED_LPS: LpRecord[] = [
     updatedAt: now,
   },
 ];
+
+export const SEED_LPS: LpRecord[] = SEED_LPS_RAW.map((lp) => ({
+  ...lp,
+  optimalRegions: LP_OPTIMAL_REGIONS[lp.slug] ?? ["GLOBAL"],
+}));
 
 export function slugifyName(name: string): string {
   return name

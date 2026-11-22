@@ -2,6 +2,24 @@ export type Locale = "en" | "zh-CN";
 
 export type LpCategory = "traditional" | "crypto" | "hybrid" | "technology";
 
+/** Desk-facing optimal coverage codes (not full licence footprint). */
+export type OptimalRegionCode =
+  | "UK"
+  | "EU"
+  | "US"
+  | "SG"
+  | "AU"
+  | "AE"
+  | "JP"
+  | "HK"
+  | "CY"
+  | "ZA"
+  | "DK"
+  | "GI"
+  | "CA"
+  | "ASIA"
+  | "GLOBAL";
+
 export type AssetClass =
   | "fx"
   | "metals"
@@ -21,6 +39,8 @@ export type LpRecord = {
   category: LpCategory;
   usedByVantage: boolean;
   regions: string[];
+  /** Desk-optimal coverage regions (flags); subset of footprint where LP is strongest. */
+  optimalRegions?: OptimalRegionCode[];
   hours: "24/5" | "24/7" | "market-hours" | "mixed";
   assetClasses: AssetClass[];
   products: string[];

@@ -6,6 +6,7 @@ create table if not exists lps (
   category text not null,
   used_by_vantage boolean not null default false,
   regions jsonb not null default '[]'::jsonb,
+  optimal_regions jsonb not null default '[]'::jsonb,
   hours text not null,
   asset_classes jsonb not null default '[]'::jsonb,
   products jsonb not null default '[]'::jsonb,

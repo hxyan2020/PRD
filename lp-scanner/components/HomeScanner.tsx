@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
 import { QualityResearchRunner } from "@/components/QualityResearchRunner";
+import { RegionFlags } from "@/components/RegionFlags";
 import { SortableResults } from "@/components/SortableResults";
 import { useI18n } from "@/lib/i18n/context";
 import type { LpResearchResult, RankedLp } from "@/lib/types";
@@ -156,6 +157,15 @@ export function HomeScanner() {
               <h2 className="font-display text-3xl text-navy">{lpResult.query}</h2>
                 </div>
               </div>
+              {lpResult.matched && (
+                <RegionFlags
+                  className="mt-2"
+                  slug={lpResult.matched.slug}
+                  optimalRegions={lpResult.matched.optimalRegions}
+                  showLabel
+                  size="sm"
+                />
+              )}
               <p className="mt-2 max-w-3xl text-sm text-navy-2">{lpResult.summary}</p>
               <p className="mt-2 text-xs text-mist">
                 {t("home.liveAt")}{" "}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
+import { RegionFlags } from "@/components/RegionFlags";
 import { useI18n } from "@/lib/i18n/context";
 import {
   formatLpMeta,
@@ -75,6 +76,13 @@ export function KnowledgeDesk() {
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-mist">{formatLpMeta(lp, locale)}</p>
+                  <RegionFlags
+                    className="mt-2"
+                    slug={lp.slug}
+                    optimalRegions={lp.optimalRegions}
+                    showLabel
+                    size="sm"
+                  />
                 </div>
                 {!isEdit ? (
                   <button

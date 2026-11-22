@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
+import { RegionFlags } from "@/components/RegionFlags";
 import { useI18n } from "@/lib/i18n/context";
 import {
   formatLpCompactMeta,
@@ -70,7 +71,7 @@ export function SortableResults({
     { col: "hours", label: t("col.hours") },
     { col: "cost", label: t("col.cost") },
     { col: "pricing", label: t("col.pricing") },
-    { col: "regions", label: t("col.regions") },
+    { col: "regions", label: t("col.optimalRegions") },
     { col: "latency", label: t("col.latency") },
     { col: "score", label: t("col.score") },
   ];
@@ -149,9 +150,12 @@ export function SortableResults({
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-mist">{formatLpCompactMeta(r.lp, locale)}</p>
-                  <p className="mt-0.5 truncate text-xs text-mist">
-                    {localizedLpLists(r.lp, locale).regions.join(", ")}
-                  </p>
+                  <RegionFlags
+                    className="mt-1.5"
+                    slug={r.lp.slug}
+                    optimalRegions={r.lp.optimalRegions}
+                    size="sm"
+                  />
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="font-semibold text-teal">{r.score}</p>
@@ -231,8 +235,12 @@ export function SortableResults({
                 <td className="px-3 py-2">{r.lp.hours}</td>
                 <td className="px-3 py-2">{labelCost(locale, r.lp.costTier)}</td>
                 <td className="px-3 py-2">{r.lp.pricingQuality}/5</td>
-                <td className="max-w-[180px] truncate px-3 py-2">
-                  {localizedLpLists(r.lp, locale).regions.join(", ")}
+                <td className="max-w-[220px] px-3 py-2">
+                  <RegionFlags
+                    slug={r.lp.slug}
+                    optimalRegions={r.lp.optimalRegions}
+                    size="sm"
+                  />
                 </td>
                 <td className="px-3 py-2">{labelLatency(locale, r.lp.latencyProfile)}</td>
                 <td className="px-3 py-2 font-semibold text-teal">{r.score}</td>
@@ -249,6 +257,13 @@ export function SortableResults({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h3 className="font-display text-xl text-navy">{r.lp.name}</h3>
+                  <RegionFlags
+                    className="mt-2"
+                    slug={r.lp.slug}
+                    optimalRegions={r.lp.optimalRegions}
+                    showLabel
+                    size="sm"
+                  />
                   <p className="mt-1 text-sm text-mist">
                     {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 220) : r.lp.kbBodyEn.slice(0, 220)}…
                   </p>

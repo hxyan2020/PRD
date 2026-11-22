@@ -1,4 +1,5 @@
 import { localizedLpLists } from "@/lib/i18n/lp-display";
+import { formatOptimalRegions, resolveOptimalRegions } from "@/lib/regions";
 import { resolveProduct } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
 
@@ -335,11 +336,12 @@ export function buildQualityReport(args: {
     result: subjects
       .map((s) => `${s.name}: ${s.hours} → ${hoursFit(s.hours) ? (zh ? "匹配" : "fit") : (zh ? "不匹配" : "mismatch")}`)
       .join(zh ? "；" : "; "),
-    details: subjects.map((s) =>
-      zh
-        ? `${s.name} 区域 ${s.regions.slice(0, 4).join("、")}`
-        : `${s.name} regions ${s.regions.slice(0, 4).join(", ")}`,
-    ),
+    details: subjects.map((s) => {
+      const optimal = formatOptimalRegions(resolveOptimalRegions(s.slug, s.optimalRegions), locale);
+      return zh
+        ? `${s.name} 足迹 ${s.regions.slice(0, 4).join("、")} · 最优区域 ${optimal}`
+        : `${s.name} footprint ${s.regions.slice(0, 4).join(", ")} · optimal ${optimal}`;
+    }),
     status: primary && hoursFit(primary.hours) ? "done" : "warn",
     pros: primary && hoursFit(primary.hours) ? [zh ? "主测对象时段匹配" : "Primary hours fit"] : [],
     cons: primary && !hoursFit(primary.hours)

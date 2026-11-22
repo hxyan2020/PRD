@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
+import { RegionFlags } from "@/components/RegionFlags";
 import { useI18n } from "@/lib/i18n/context";
 import {
   formatLpCompactMeta,
@@ -159,6 +160,12 @@ export function RepositoryDesk() {
                     <p className="mt-1 text-xs text-mist">
                       {localizedLpLists(lp, locale).regions.join(", ")}
                     </p>
+                    <RegionFlags
+                      className="mt-2"
+                      slug={lp.slug}
+                      optimalRegions={lp.optimalRegions}
+                      size="sm"
+                    />
                     <p className="mt-1 text-xs text-mist">{lp.products.slice(0, 5).join(", ")}</p>
                     </div>
                   </div>
@@ -202,6 +209,7 @@ export function RepositoryDesk() {
               <th className="px-3 py-2">{t("col.cost")}</th>
               <th className="px-3 py-2">{t("col.pricing")}</th>
               <th className="px-3 py-2">{t("col.regions")}</th>
+              <th className="px-3 py-2">{t("col.optimalRegions")}</th>
               <th className="px-3 py-2" />
             </tr>
           </thead>
@@ -285,6 +293,13 @@ export function RepositoryDesk() {
                 <td className="px-3 py-3">{lp.pricingQuality}/5</td>
                 <td className="max-w-[200px] px-3 py-3 text-xs">
                   {localizedLpLists(lp, locale).regions.join(", ")}
+                </td>
+                <td className="px-3 py-3">
+                  <RegionFlags
+                    slug={lp.slug}
+                    optimalRegions={lp.optimalRegions}
+                    size="sm"
+                  />
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">
                   {editing === lp.id ? (

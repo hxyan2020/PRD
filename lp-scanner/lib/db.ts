@@ -3,7 +3,8 @@ import path from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import pg from "pg";
 import { SEED_LPS } from "@/lib/data/seed-lps";
-import type { LpRecord } from "@/lib/types";
+import { resolveOptimalRegions } from "@/lib/regions";
+import type { LpRecord, OptimalRegionCode } from "@/lib/types";
 
 const databaseUrl = process.env.DATABASE_URL?.trim() ?? "";
 let pool: pg.Pool | undefined;
@@ -56,6 +57,10 @@ function rowToLp(row: Record<string, unknown>): LpRecord {
     category: row.category as LpRecord["category"],
     usedByVantage: Boolean(row.used_by_vantage),
     regions: parse(row.regions, [] as string[]),
+    optimalRegions: resolveOptimalRegions(
+      String(row.slug),
+      parse(row.optimal_regions, undefined as OptimalRegionCode[] | undefined),
+    ),
     hours: row.hours as LpRecord["hours"],
     assetClasses: parse(row.asset_classes, [] as LpRecord["assetClasses"]),
     products: parse(row.products, [] as string[]),
@@ -109,15 +114,15 @@ export async function getLp(id: string): Promise<LpRecord | null> {
 export async function insertLp(lp: LpRecord): Promise<LpRecord> {
   await sql(
     `insert into lps (
-      id, slug, name, aliases, category, used_by_vantage, regions, hours,
+      id, slug, name, aliases, category, used_by_vantage, regions, optimal_regions, hours,
       asset_classes, products, cost_tier, pricing_quality, latency_profile,
       regulation, strengths, weaknesses, best_for, website, notes,
       kb_body_en, kb_body_zh, score_hints, updated_at
     ) values (
-      $1,$2,$3,$4::jsonb,$5,$6,$7::jsonb,$8,
-      $9::jsonb,$10::jsonb,$11,$12,$13,
-      $14::jsonb,$15::jsonb,$16::jsonb,$17::jsonb,$18,$19,
-      $20,$21,$22::jsonb,$23
+      $1,$2,$3,$4::jsonb,$5,$6,$7::jsonb,$8::jsonb,$9,
+      $10::jsonb,$11::jsonb,$12,$13,$14,
+      $15::jsonb,$16::jsonb,$17::jsonb,$18::jsonb,$19,$20,
+      $21,$22,$23::jsonb,$24
     )
     on conflict (id) do update set
       slug = excluded.slug,
@@ -126,6 +131,7 @@ export async function insertLp(lp: LpRecord): Promise<LpRecord> {
       category = excluded.category,
       used_by_vantage = excluded.used_by_vantage,
       regions = excluded.regions,
+      optimal_regions = excluded.optimal_regions,
       hours = excluded.hours,
       asset_classes = excluded.asset_classes,
       products = excluded.products,
@@ -151,6 +157,7 @@ export async function insertLp(lp: LpRecord): Promise<LpRecord> {
       lp.category,
       lp.usedByVantage,
       JSON.stringify(lp.regions),
+      JSON.stringify(resolveOptimalRegions(lp.slug, lp.optimalRegions)),
       lp.hours,
       JSON.stringify(lp.assetClasses),
       JSON.stringify(lp.products),
