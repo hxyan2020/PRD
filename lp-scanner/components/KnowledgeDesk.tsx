@@ -35,18 +35,18 @@ export function KnowledgeDesk() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="font-display text-4xl text-navy">{t("kb.title")}</h1>
-        <p className="mt-2 text-mist">{t("kb.sub")}</p>
+        <h1 className="font-display text-3xl text-navy sm:text-4xl">{t("kb.title")}</h1>
+        <p className="mt-2 text-sm text-mist sm:text-base">{t("kb.sub")}</p>
       </header>
       <div className="space-y-4">
         {lps.map((lp) => {
           const isEdit = editing === lp.id;
           return (
-            <article key={lp.id} className="panel animate-rise p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
+            <article key={lp.id} className="panel animate-rise p-4 sm:p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+                <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-display text-2xl text-navy">{lp.name}</h2>
+                    <h2 className="font-display text-xl text-navy sm:text-2xl">{lp.name}</h2>
                     <span
                       className={`chip ${lp.usedByVantage ? "bg-teal-soft text-teal" : "bg-amber-soft text-amber"}`}
                     >
@@ -62,7 +62,7 @@ export function KnowledgeDesk() {
                 {!isEdit ? (
                   <button
                     type="button"
-                    className="rounded-lg border border-line px-3 py-1.5 text-sm hover:border-teal"
+                    className="touch-target w-full rounded-lg border border-line px-3 text-sm hover:border-teal sm:w-auto"
                     onClick={() => {
                       setEditing(lp.id);
                       setDraft({
@@ -83,17 +83,17 @@ export function KnowledgeDesk() {
                     {t("kb.edit")}
                   </button>
                 ) : (
-                  <div className="flex gap-2">
+                  <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
                     <button
                       type="button"
-                      className="rounded-lg bg-teal px-3 py-1.5 text-sm text-white"
+                      className="touch-target rounded-lg bg-teal px-3 text-sm text-white"
                       onClick={() => void save()}
                     >
                       {t("kb.save")}
                     </button>
                     <button
                       type="button"
-                      className="rounded-lg border border-line px-3 py-1.5 text-sm"
+                      className="touch-target rounded-lg border border-line px-3 text-sm"
                       onClick={() => {
                         setEditing(null);
                         setDraft({});

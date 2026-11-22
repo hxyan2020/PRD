@@ -76,26 +76,26 @@ export function HomeScanner() {
 
   return (
     <div className="space-y-6">
-      <section className="panel relative overflow-hidden px-5 py-8 sm:px-8">
+      <section className="panel relative overflow-hidden px-4 py-6 sm:px-8 sm:py-8">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1 overflow-hidden">
           <div className="h-full w-1/3 bg-teal/70 animate-scan" />
         </div>
-        <h1 className="max-w-3xl font-display text-3xl leading-tight text-navy sm:text-5xl">
+        <h1 className="max-w-3xl font-display text-2xl leading-tight text-navy sm:text-5xl">
           {t("home.hero")}
         </h1>
         <p className="mt-3 max-w-2xl text-sm text-mist sm:text-base">{t("home.sub")}</p>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:flex sm:flex-wrap">
           <button
             type="button"
-            className={`rounded-lg px-3 py-1.5 text-sm ${mode === "product" ? "bg-navy text-foam" : "bg-slate/60"}`}
+            className={`touch-target rounded-lg px-3 text-sm ${mode === "product" ? "bg-navy text-foam" : "bg-slate/60"}`}
             onClick={() => setMode("product")}
           >
             {t("home.tab.product")}
           </button>
           <button
             type="button"
-            className={`rounded-lg px-3 py-1.5 text-sm ${mode === "lp" ? "bg-navy text-foam" : "bg-slate/60"}`}
+            className={`touch-target rounded-lg px-3 text-sm ${mode === "lp" ? "bg-navy text-foam" : "bg-slate/60"}`}
             onClick={() => setMode("lp")}
           >
             {t("home.tab.lp")}
@@ -110,15 +110,16 @@ export function HomeScanner() {
           }}
         >
           <input
-            className="flex-1 rounded-xl border border-line bg-white px-4 py-3 text-base outline-none focus:border-teal"
+            className="w-full flex-1 rounded-xl border border-line bg-white px-4 py-3 text-base outline-none focus:border-teal"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={mode === "product" ? t("home.product.placeholder") : t("home.lp.placeholder")}
+            enterKeyHint="search"
           />
           <button
             type="submit"
             disabled={busy}
-            className="rounded-xl bg-teal px-6 py-3 font-semibold text-white disabled:opacity-60"
+            className="touch-target w-full rounded-xl bg-teal px-6 font-semibold text-white disabled:opacity-60 sm:w-auto"
           >
             {busy ? t("home.scanning") : t("home.scan")}
           </button>
@@ -159,7 +160,7 @@ export function HomeScanner() {
                 (SGT)
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
               <button
                 type="button"
                 onClick={() =>
@@ -169,14 +170,14 @@ export function HomeScanner() {
                     lpId: lpResult.matched?.id,
                   })
                 }
-                className="rounded-lg bg-teal px-4 py-2 text-sm font-medium text-white hover:bg-navy"
+                className="touch-target w-full rounded-lg bg-teal px-4 text-sm font-medium text-white hover:bg-navy sm:w-auto"
               >
                 {t("quality.runForLp")}
               </button>
               <button
                 type="button"
                 onClick={() => void addToRepo()}
-                className="rounded-lg bg-navy px-4 py-2 text-sm font-medium text-foam hover:bg-teal"
+                className="touch-target w-full rounded-lg bg-navy px-4 text-sm font-medium text-foam hover:bg-teal sm:w-auto"
               >
                 {added ? t("home.added") : t("home.addRepo")}
               </button>

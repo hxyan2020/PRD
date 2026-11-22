@@ -171,22 +171,22 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
 
   return (
     <section className="panel animate-rise overflow-hidden">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line bg-navy px-4 py-3 text-foam sm:px-5">
-        <div>
+      <div className="flex flex-col gap-3 border-b border-line bg-navy px-3 py-3 text-foam sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:px-5">
+        <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-[0.18em] text-teal-soft">
             {t("quality.kicker")}
           </p>
-          <h2 className="font-display text-2xl">
+          <h2 className="break-words font-display text-xl sm:text-2xl">
             {t("quality.title")} · {query || lpId}
           </h2>
           {liveMsg && <p className="mt-1 text-xs text-slate">{liveMsg}</p>}
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
           <button
             type="button"
             disabled={running}
             onClick={() => void run()}
-            className="rounded-lg bg-teal px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+            className="touch-target col-span-2 rounded-lg bg-teal px-3 text-sm font-medium text-white disabled:opacity-50 sm:col-span-1"
           >
             {running ? t("quality.running") : report ? t("quality.rerun") : t("quality.start")}
           </button>
@@ -194,7 +194,7 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
             type="button"
             disabled={!report && steps.length === 0}
             onClick={() => void downloadReport()}
-            className="rounded-lg border border-slate/40 bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20 disabled:opacity-40"
+            className="touch-target rounded-lg border border-slate/40 bg-white/10 px-3 text-sm hover:bg-white/20 disabled:opacity-40"
           >
             {t("quality.download")}
           </button>
@@ -202,7 +202,7 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-slate/40 px-3 py-1.5 text-sm hover:bg-white/10"
+              className="touch-target rounded-lg border border-slate/40 px-3 text-sm hover:bg-white/10"
             >
               {t("quality.close")}
             </button>
@@ -214,7 +214,7 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
         <p className="bg-amber-soft px-4 py-2 text-sm text-amber">{error}</p>
       )}
 
-      <div className="space-y-3 px-4 py-4 sm:px-5">
+      <div className="space-y-3 px-3 py-4 sm:px-5">
         {steps.length === 0 && !running && (
           <p className="text-sm text-mist">{t("quality.idle")}</p>
         )}
@@ -222,7 +222,7 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
         {steps.map((s) => (
           <article
             key={s.id}
-            className={`rounded-xl border px-4 py-3 ${
+            className={`rounded-xl border px-3 py-3 sm:px-4 ${
               s.uiStatus === "running"
                 ? "border-teal bg-teal-soft/40"
                 : s.uiStatus === "warn"
@@ -231,7 +231,7 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
             }`}
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="font-semibold text-navy">
+              <h3 className="min-w-0 flex-1 break-words font-semibold text-navy">
                 <span className="font-mono text-xs text-teal">{s.index}.</span> {s.title}
               </h3>
               <span

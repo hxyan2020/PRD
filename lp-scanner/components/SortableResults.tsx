@@ -67,11 +67,13 @@ export function SortableResults({
     { col: "score", label: t("col.score") },
   ];
 
+  const mobileSortCols: Col[] = ["score", "pricing", "cost", "hours", "name"];
+
   return (
     <section className="panel animate-rise overflow-hidden">
-      <div className="flex flex-wrap items-end justify-between gap-2 border-b border-line px-4 py-3 sm:px-5">
-        <div>
-          <h2 className="font-display text-2xl text-navy">{t("home.results")}</h2>
+      <div className="flex flex-col gap-3 border-b border-line px-4 py-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:px-5">
+        <div className="min-w-0">
+          <h2 className="font-display text-xl text-navy sm:text-2xl">{t("home.results")}</h2>
           <p className="text-xs text-mist">
             {t("home.liveAt")}{" "}
             {new Date(researchedAt).toLocaleString(locale === "zh-CN" ? "zh-CN" : "en-SG", {
@@ -85,13 +87,97 @@ export function SortableResults({
           <button
             type="button"
             onClick={onRunProductQuality}
-            className="rounded-lg bg-navy px-3 py-2 text-sm font-medium text-foam hover:bg-teal"
+            className="touch-target w-full rounded-lg bg-navy px-3 py-2 text-sm font-medium text-foam hover:bg-teal sm:w-auto"
           >
             {t("quality.runForProduct")}
           </button>
         )}
       </div>
-      <div className="overflow-x-auto">
+
+      {/* Mobile sort chips */}
+      <div className="flex gap-2 overflow-x-auto border-b border-line px-4 py-2 md:hidden">
+        {mobileSortCols.map((col) => {
+          const label = headers.find((h) => h.col === col)?.label ?? col;
+          const active = sort.col === col;
+          return (
+            <button
+              key={col}
+              type="button"
+              onClick={() => toggle(col)}
+              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium ${
+                active ? "bg-navy text-foam" : "bg-slate/50 text-navy-2"
+              }`}
+            >
+              {label}
+              {active ? (sort.dir === "asc" ? " ↑" : " ↓") : ""}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Mobile cards */}
+      <div className="space-y-3 p-3 md:hidden">
+        {rows.map((r) => {
+          const open = openId === r.lp.id;
+          return (
+            <article
+              key={r.lp.id}
+              className="rounded-xl border border-line bg-foam/90 p-3"
+            >
+              <button
+                type="button"
+                className="flex w-full items-start justify-between gap-3 text-left"
+                onClick={() => setOpenId(open ? null : r.lp.id)}
+              >
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-xs text-mist">#{r.rank}</span>
+                    <span className="font-semibold text-navy">{r.lp.name}</span>
+                    <span
+                      className={`chip ${r.lp.usedByVantage ? "bg-teal-soft text-teal" : "bg-amber-soft text-amber"}`}
+                    >
+                      {r.lp.usedByVantage ? t("yes") : t("no")}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-mist">
+                    {r.lp.category} · {r.lp.hours} · {r.lp.costTier} · {r.lp.latencyProfile}
+                  </p>
+                  <p className="mt-0.5 truncate text-xs text-mist">{r.columns.regions}</p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="font-semibold text-teal">{r.score}</p>
+                  <p className="text-xs text-mist">{r.lp.pricingQuality}/5</p>
+                </div>
+              </button>
+              {open && (
+                <div className="mt-3 border-t border-line/70 pt-3">
+                  <p className="text-sm text-mist">
+                    {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 180) : r.lp.kbBodyEn.slice(0, 180)}…
+                  </p>
+                  <div className="mt-3 grid gap-3">
+                    <Block title={t("detail.reasons")} items={r.reasons} />
+                    <Block title={t("detail.live")} items={r.liveNotes} />
+                    <Block title={t("detail.strengths")} items={r.lp.strengths} />
+                    <Block title={t("detail.weaknesses")} items={r.lp.weaknesses} />
+                  </div>
+                  {onRunLpQuality && (
+                    <button
+                      type="button"
+                      className="touch-target mt-3 w-full rounded-lg border border-line bg-white px-3 text-sm font-medium text-navy hover:border-teal"
+                      onClick={() => onRunLpQuality(r.lp.id, r.lp.name)}
+                    >
+                      {t("quality.runForLp")}
+                    </button>
+                  )}
+                </div>
+              )}
+            </article>
+          );
+        })}
+      </div>
+
+      {/* Desktop table */}
+      <div className="table-scroll hidden md:block">
         <table className="min-w-full text-left text-sm">
           <thead className="bg-slate/50 text-xs uppercase tracking-wide text-mist">
             <tr>
@@ -133,38 +219,40 @@ export function SortableResults({
           </tbody>
         </table>
       </div>
-      {rows
-        .filter((r) => r.lp.id === openId)
-        .map((r) => (
-          <div key={r.lp.id} className="border-t border-line bg-foam/80 px-4 py-4 sm:px-5">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h3 className="font-display text-xl text-navy">{r.lp.name}</h3>
-                <p className="mt-1 text-sm text-mist">
-                  {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 220) : r.lp.kbBodyEn.slice(0, 220)}…
-                </p>
+      <div className="hidden md:block">
+        {rows
+          .filter((r) => r.lp.id === openId)
+          .map((r) => (
+            <div key={r.lp.id} className="border-t border-line bg-foam/80 px-4 py-4 sm:px-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className="font-display text-xl text-navy">{r.lp.name}</h3>
+                  <p className="mt-1 text-sm text-mist">
+                    {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 220) : r.lp.kbBodyEn.slice(0, 220)}…
+                  </p>
+                </div>
+                {onRunLpQuality && (
+                  <button
+                    type="button"
+                    className="rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-navy hover:border-teal"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRunLpQuality(r.lp.id, r.lp.name);
+                    }}
+                  >
+                    {t("quality.runForLp")}
+                  </button>
+                )}
               </div>
-              {onRunLpQuality && (
-                <button
-                  type="button"
-                  className="rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-navy hover:border-teal"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRunLpQuality(r.lp.id, r.lp.name);
-                  }}
-                >
-                  {t("quality.runForLp")}
-                </button>
-              )}
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <Block title={t("detail.reasons")} items={r.reasons} />
+                <Block title={t("detail.live")} items={r.liveNotes} />
+                <Block title={t("detail.strengths")} items={r.lp.strengths} />
+                <Block title={t("detail.weaknesses")} items={r.lp.weaknesses} />
+              </div>
             </div>
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <Block title={t("detail.reasons")} items={r.reasons} />
-              <Block title={t("detail.live")} items={r.liveNotes} />
-              <Block title={t("detail.strengths")} items={r.lp.strengths} />
-              <Block title={t("detail.weaknesses")} items={r.lp.weaknesses} />
-            </div>
-          </div>
-        ))}
+          ))}
+      </div>
     </section>
   );
 }

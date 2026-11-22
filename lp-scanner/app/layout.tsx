@@ -33,6 +33,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
   themeColor: "#0f766e",
 };
 
@@ -42,8 +44,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <Providers>
           <SiteHeader />
-          <main className="mx-auto min-h-[70vh] max-w-6xl px-4 py-8 sm:px-6">{children}</main>
-          <footer className="border-t border-line/70 py-6 text-center text-xs text-mist">
+          <main className="mx-auto min-h-[70vh] max-w-6xl px-3 pb-28 pt-5 sm:px-6 sm:py-8">
+            {children}
+          </main>
+          <footer className="border-t border-line/70 px-3 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-xs text-mist sm:px-6">
             LP Scanner · Vantage CFD
           </footer>
           <AiHoverBot />

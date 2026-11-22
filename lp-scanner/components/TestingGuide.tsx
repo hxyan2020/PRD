@@ -16,14 +16,14 @@ export function TestingGuide() {
 
   return (
     <div className="space-y-8">
-      <header className="panel relative overflow-hidden px-5 py-8 sm:px-8">
+      <header className="panel relative overflow-hidden px-4 py-6 sm:px-8 sm:py-8">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1 overflow-hidden">
           <div className="h-full w-1/3 bg-teal/70 animate-scan" />
         </div>
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
           {t("nav.testing")}
         </p>
-        <h1 className="mt-2 max-w-3xl font-display text-3xl leading-tight text-navy sm:text-5xl">
+        <h1 className="mt-2 max-w-3xl font-display text-2xl leading-tight text-navy sm:text-5xl">
           {zh ? GUIDE_INTRO.titleZh : GUIDE_INTRO.titleEn}
         </h1>
         <p className="mt-4 max-w-3xl text-sm leading-relaxed text-mist sm:text-base">
@@ -34,31 +34,31 @@ export function TestingGuide() {
         </p>
       </header>
 
-      <nav className="panel flex flex-wrap gap-2 px-4 py-3 text-sm">
+      <nav className="panel flex gap-2 overflow-x-auto px-3 py-3 text-sm sm:flex-wrap sm:overflow-visible sm:px-4">
         {GUIDE_SECTIONS.map((s) => (
           <a
             key={s.id}
             href={`#${s.id}`}
-            className="rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
+            className="shrink-0 rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
           >
             {zh ? s.titleZh : s.titleEn}
           </a>
         ))}
         <a
           href="#metrics"
-          className="rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
+          className="shrink-0 rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
         >
           {t("testing.metrics")}
         </a>
         <a
           href="#phases"
-          className="rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
+          className="shrink-0 rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
         >
           {t("testing.phases")}
         </a>
         <a
           href="#scorecard"
-          className="rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
+          className="shrink-0 rounded-lg border border-line bg-white px-3 py-1.5 text-navy-2 hover:border-teal hover:text-teal"
         >
           {t("testing.scorecard")}
         </a>
@@ -66,8 +66,8 @@ export function TestingGuide() {
 
       <div className="space-y-5">
         {GUIDE_SECTIONS.map((s) => (
-          <section key={s.id} id={s.id} className="panel scroll-mt-24 p-5 sm:p-6">
-            <h2 className="font-display text-2xl text-navy">
+          <section key={s.id} id={s.id} className="panel scroll-mt-24 p-4 sm:p-6">
+            <h2 className="font-display text-xl text-navy sm:text-2xl">
               {zh ? s.titleZh : s.titleEn}
             </h2>
             <div className="mt-3 space-y-3 text-sm leading-relaxed text-navy-2">
@@ -80,11 +80,30 @@ export function TestingGuide() {
       </div>
 
       <section id="metrics" className="panel scroll-mt-24 overflow-hidden">
-        <div className="border-b border-line px-5 py-4">
-          <h2 className="font-display text-2xl text-navy">{t("testing.metrics")}</h2>
+        <div className="border-b border-line px-4 py-4 sm:px-5">
+          <h2 className="font-display text-xl text-navy sm:text-2xl">{t("testing.metrics")}</h2>
           <p className="mt-1 text-sm text-mist">{t("testing.metricsSub")}</p>
         </div>
-        <div className="overflow-x-auto">
+        <div className="space-y-3 p-3 md:hidden">
+          {METRICS.map((m) => (
+            <article key={m.metricEn} className="rounded-xl border border-line bg-foam/80 p-3">
+              <h3 className="font-semibold text-navy">{zh ? m.metricZh : m.metricEn}</h3>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-teal">
+                {t("testing.col.what")}
+              </p>
+              <p className="text-sm text-navy-2">{zh ? m.whatZh : m.whatEn}</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-teal">
+                {t("testing.col.how")}
+              </p>
+              <p className="text-sm text-navy-2">{zh ? m.howZh : m.howEn}</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-teal">
+                {t("testing.col.target")}
+              </p>
+              <p className="text-sm text-mist">{zh ? m.targetZh : m.targetEn}</p>
+            </article>
+          ))}
+        </div>
+        <div className="table-scroll hidden md:block">
           <table className="min-w-full text-left text-sm">
             <thead className="bg-slate/50 text-xs uppercase tracking-wide text-mist">
               <tr>
