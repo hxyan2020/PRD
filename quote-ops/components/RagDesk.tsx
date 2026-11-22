@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { HomeAdminStrip } from "@/components/HomeAdminStrip";
+import { HomeKnowledgeComposer } from "@/components/HomeKnowledgeComposer";
 import { useI18n } from "@/lib/i18n/context";
 import type { RagAnswer } from "@/lib/rag";
 
@@ -108,6 +109,7 @@ export function RagDesk() {
         </div>
       </section>
 
+      <HomeKnowledgeComposer />
       <HomeAdminStrip />
 
       {error && (
