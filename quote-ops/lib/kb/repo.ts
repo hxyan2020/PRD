@@ -5,6 +5,7 @@ import { RISK_SCENARIOS } from "@/lib/data/risks";
 import { SKILLS } from "@/lib/data/skills";
 import { sql } from "@/lib/db";
 import type { Actor } from "@/lib/auth";
+import { mirrorMissingLocale } from "@/lib/kb/bilingual";
 import type { KbKind, KbMedia, KbNode, KbNodeInput, KbRevision, TreeNode } from "@/lib/kb/types";
 
 let seeded = false;
@@ -494,26 +495,70 @@ export async function getTree(): Promise<TreeNode[]> {
   return roots;
 }
 
+function withBilingualIfPublished(
+  fields: {
+    titleZh: string;
+    titleEn: string;
+    summaryZh: string;
+    summaryEn: string;
+    bodyZh: string;
+    bodyEn: string;
+    status: KbNode["status"];
+    payload: Record<string, unknown>;
+  },
+): typeof fields {
+  if (fields.status !== "published") return fields;
+  const m = mirrorMissingLocale(fields);
+  return {
+    ...fields,
+    titleZh: m.titleZh,
+    titleEn: m.titleEn,
+    summaryZh: m.summaryZh,
+    summaryEn: m.summaryEn,
+    bodyZh: m.bodyZh,
+    bodyEn: m.bodyEn,
+    payload: {
+      ...fields.payload,
+      bilingual: {
+        mirroredAt: new Date().toISOString(),
+        mirrored: m.mirrored,
+        source: m.source,
+        needsReview: m.needsReview,
+      },
+    },
+  };
+}
+
 export async function createNode(input: KbNodeInput, actor: Actor): Promise<KbNode> {
   await ensureKbSeeded();
   const now = new Date().toISOString();
   const id = input.id || `kb_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
   const slug = await uniqueSlug(input.slug?.trim() || slugify(input.titleEn || input.titleZh || id));
-  const node: KbNode = {
-    id,
-    parentId: input.parentId ?? "folder-custom",
-    kind: input.kind,
-    slug,
+  const bilingual = withBilingualIfPublished({
     titleZh: input.titleZh.trim(),
     titleEn: (input.titleEn ?? "").trim(),
     summaryZh: input.summaryZh ?? "",
     summaryEn: input.summaryEn ?? "",
     bodyZh: input.bodyZh ?? "",
     bodyEn: input.bodyEn ?? "",
+    status: input.status ?? "draft",
+    payload: input.payload ?? {},
+  });
+  const node: KbNode = {
+    id,
+    parentId: input.parentId ?? "folder-custom",
+    kind: input.kind,
+    slug,
+    titleZh: bilingual.titleZh,
+    titleEn: bilingual.titleEn,
+    summaryZh: bilingual.summaryZh,
+    summaryEn: bilingual.summaryEn,
+    bodyZh: bilingual.bodyZh,
+    bodyEn: bilingual.bodyEn,
     sortOrder: input.sortOrder ?? 1000,
     tags: input.tags ?? [],
-    payload: input.payload ?? {},
-    status: input.status ?? "draft",
+    payload: bilingual.payload,
+    status: bilingual.status,
     createdAt: now,
     updatedAt: now,
     createdBy: actor.email || actor.name,
@@ -562,21 +607,32 @@ export async function updateNode(
     patch.slug != null
       ? await uniqueSlug(patch.slug.trim() || existing.slug, existing.id)
       : existing.slug;
-  const next: KbNode = {
-    ...existing,
-    parentId: patch.parentId !== undefined ? patch.parentId : existing.parentId,
-    kind: patch.kind ?? existing.kind,
-    slug,
+  const merged = {
     titleZh: patch.titleZh?.trim() ?? existing.titleZh,
     titleEn: patch.titleEn !== undefined ? patch.titleEn.trim() : existing.titleEn,
     summaryZh: patch.summaryZh ?? existing.summaryZh,
     summaryEn: patch.summaryEn ?? existing.summaryEn,
     bodyZh: patch.bodyZh ?? existing.bodyZh,
     bodyEn: patch.bodyEn ?? existing.bodyEn,
+    status: patch.status ?? existing.status,
+    payload: patch.payload ?? existing.payload,
+  };
+  const bilingual = withBilingualIfPublished(merged);
+  const next: KbNode = {
+    ...existing,
+    parentId: patch.parentId !== undefined ? patch.parentId : existing.parentId,
+    kind: patch.kind ?? existing.kind,
+    slug,
+    titleZh: bilingual.titleZh,
+    titleEn: bilingual.titleEn,
+    summaryZh: bilingual.summaryZh,
+    summaryEn: bilingual.summaryEn,
+    bodyZh: bilingual.bodyZh,
+    bodyEn: bilingual.bodyEn,
     sortOrder: patch.sortOrder ?? existing.sortOrder,
     tags: patch.tags ?? existing.tags,
-    payload: patch.payload ?? existing.payload,
-    status: patch.status ?? existing.status,
+    payload: bilingual.payload,
+    status: bilingual.status,
     updatedAt: new Date().toISOString(),
     updatedBy: actor.email || actor.name,
   };
@@ -809,54 +865,22 @@ export function nodeToMarkdown(node: KbNode, locale: "zh-CN" | "en" = "zh-CN"): 
   ].join("\n");
 }
 
-/** On publish: fill empty counterpart language with a structured mirror + review flag. */
+/** On publish: fill empty counterpart language (ZH↔EN) with glossary-assisted draft + review flag. */
 export async function publishNode(id: string, actor: Actor): Promise<KbNode | null> {
   const node = await getNode(id);
   if (!node) return null;
-  let titleEn = node.titleEn;
-  let titleZh = node.titleZh;
-  let summaryEn = node.summaryEn;
-  let summaryZh = node.summaryZh;
-  let bodyEn = node.bodyEn;
-  let bodyZh = node.bodyZh;
-
-  if (!titleEn.trim() && titleZh.trim()) {
-    titleEn = `[EN] ${titleZh}`;
-  }
-  if (!titleZh.trim() && titleEn.trim()) {
-    titleZh = `[中文] ${titleEn}`;
-  }
-  if (!summaryEn.trim() && summaryZh.trim()) {
-    summaryEn = `[Auto from ZH — review]\n${summaryZh}`;
-  }
-  if (!summaryZh.trim() && summaryEn.trim()) {
-    summaryZh = `[由英文自动镜像 — 待审]\n${summaryEn}`;
-  }
-  if (!bodyEn.trim() && bodyZh.trim()) {
-    bodyEn = `> Auto-mirrored from Chinese on publish. Please review translation.\n\n${bodyZh}`;
-  }
-  if (!bodyZh.trim() && bodyEn.trim()) {
-    bodyZh = `> 发布时由英文自动镜像，请审阅译文。\n\n${bodyEn}`;
-  }
-
   return updateNode(
     id,
     {
-      titleZh,
-      titleEn,
-      summaryZh,
-      summaryEn,
-      bodyZh,
-      bodyEn,
+      titleZh: node.titleZh,
+      titleEn: node.titleEn,
+      summaryZh: node.summaryZh,
+      summaryEn: node.summaryEn,
+      bodyZh: node.bodyZh,
+      bodyEn: node.bodyEn,
       status: "published",
       note: "publish+bilingual-mirror",
-      payload: {
-        ...node.payload,
-        bilingual: {
-          mirroredAt: new Date().toISOString(),
-          needsReview: true,
-        },
-      },
+      payload: node.payload,
     },
     actor,
   );

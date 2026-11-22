@@ -306,7 +306,9 @@ export function HomeKnowledgeComposer() {
                   onChange={(e) => setStatus(e.target.value as "draft" | "published")}
                 >
                   <option value="draft">draft</option>
-                  <option value="published">published</option>
+                  <option value="published">
+                    {t("published（自动生成缺失语言）", "published (auto-fill missing locale)")}
+                  </option>
                 </select>
               </div>
             </label>

@@ -205,7 +205,11 @@ export function AdminDesk() {
           }),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        setMsg(t("已保存", "Saved"));
+        setMsg(
+          form.status === "published"
+            ? t("已保存并补齐中英双语", "Saved with bilingual fill")
+            : t("已保存", "Saved"),
+        );
       } else {
         const res = await fetch("/api/kb", {
           method: "POST",
@@ -224,7 +228,11 @@ export function AdminDesk() {
           }),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        setMsg(t("已新建", "Created"));
+        setMsg(
+          form.status === "published"
+            ? t("已新建并自动生成对应语言", "Created with bilingual auto-fill")
+            : t("已新建", "Created"),
+        );
         setForm(emptyForm);
       }
       await load();
@@ -244,7 +252,7 @@ export function AdminDesk() {
         body: JSON.stringify({ action: "publish" }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setMsg(t("已发布并自动镜像缺失语言", "Published with bilingual mirror"));
+      setMsg(t("已发布：缺失语言已自动生成（待审阅）", "Published: missing locale auto-generated (review)"));
       await load();
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "publish failed");

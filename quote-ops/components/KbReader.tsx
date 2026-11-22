@@ -56,6 +56,9 @@ export function KbReader({ slug }: { slug: string }) {
   const title = locale === "zh-CN" ? node.titleZh : node.titleEn || node.titleZh;
   const summary = locale === "zh-CN" ? node.summaryZh : node.summaryEn || node.summaryZh;
   const body = locale === "zh-CN" ? node.bodyZh : node.bodyEn || node.bodyZh;
+  const bilingual = node.payload?.bilingual as
+    | { needsReview?: boolean; source?: string; mirrored?: boolean }
+    | undefined;
 
   return (
     <article className="animate-rise space-y-6">
@@ -90,6 +93,16 @@ export function KbReader({ slug }: { slug: string }) {
                 {tag}
               </span>
             ))}
+            {node.titleZh && node.titleEn ? (
+              <span className="rounded border border-sea/30 bg-sea-soft/40 px-2 py-1 text-sea">
+                ZH · EN
+              </span>
+            ) : null}
+            {bilingual?.needsReview ? (
+              <span className="rounded border border-copper/40 bg-amber-50 px-2 py-1 text-copper">
+                {t("双语待审阅", "Bilingual needs review")}
+              </span>
+            ) : null}
           </>
         }
       />

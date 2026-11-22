@@ -45,9 +45,19 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ suggestions });
   }
-  if (!body.titleZh?.trim() || !body.kind) {
-    return NextResponse.json({ error: "titleZh and kind required" }, { status: 400 });
+  if (!body.kind) {
+    return NextResponse.json({ error: "kind required" }, { status: 400 });
   }
-  const node = await createNode(body, admin);
+  if (!body.titleZh?.trim() && !body.titleEn?.trim()) {
+    return NextResponse.json({ error: "titleZh or titleEn required" }, { status: 400 });
+  }
+  const node = await createNode(
+    {
+      ...body,
+      titleZh: body.titleZh?.trim() || "",
+      titleEn: body.titleEn?.trim() || "",
+    },
+    admin,
+  );
   return NextResponse.json({ node }, { status: 201 });
 }
