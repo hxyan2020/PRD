@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
 import type { LpRecord } from "@/lib/types";
 
@@ -142,13 +143,16 @@ export function RepositoryDesk() {
             ) : (
               <>
                 <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
+                  <div className="flex min-w-0 items-start gap-3">
+                    <LpLogo lp={lp} size="md" />
+                    <div className="min-w-0">
                     <h2 className="font-semibold text-navy">{lp.name}</h2>
                     <p className="mt-1 text-xs text-mist">
                       {lp.category} · {lp.hours} · {lp.costTier} · {lp.pricingQuality}/5
                     </p>
                     <p className="mt-1 text-xs text-mist">{lp.regions.join(", ")}</p>
                     <p className="mt-1 text-xs text-mist">{lp.products.slice(0, 5).join(", ")}</p>
+                    </div>
                   </div>
                   <span
                     className={`chip shrink-0 ${lp.usedByVantage ? "bg-teal-soft text-teal" : "bg-amber-soft text-amber"}`}
@@ -197,17 +201,22 @@ export function RepositoryDesk() {
             {visible.map((lp) => (
               <tr key={lp.id} className="border-t border-line/70 align-top">
                 <td className="px-3 py-3 font-semibold text-navy">
-                  {editing === lp.id ? (
-                    <input
-                      className="w-full rounded border border-line px-2 py-1"
-                      value={draft.name ?? lp.name}
-                      onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
-                    />
-                  ) : (
-                    lp.name
-                  )}
-                  <div className="mt-1 text-xs font-normal text-mist">
-                    {lp.products.slice(0, 4).join(", ")}
+                  <div className="flex items-start gap-2">
+                    <LpLogo lp={lp} size="sm" className="mt-0.5" />
+                    <div className="min-w-0">
+                      {editing === lp.id ? (
+                        <input
+                          className="w-full rounded border border-line px-2 py-1"
+                          value={draft.name ?? lp.name}
+                          onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
+                        />
+                      ) : (
+                        lp.name
+                      )}
+                      <div className="mt-1 text-xs font-normal text-mist">
+                        {lp.products.slice(0, 4).join(", ")}
+                      </div>
+                    </div>
                   </div>
                 </td>
                 <td className="px-3 py-3">

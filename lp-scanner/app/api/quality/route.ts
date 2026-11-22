@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (body.format === "html") {
-    const html = buildPrintableHtml(report);
+    const html = buildPrintableHtml(report, { assetOrigin: request.nextUrl.origin });
     return new NextResponse(html, {
       headers: {
         "content-type": "text/html; charset=utf-8",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
 import type { LpRecord } from "@/lib/types";
 
@@ -46,6 +47,7 @@ export function KnowledgeDesk() {
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
+                    <LpLogo lp={lp} size="md" />
                     <h2 className="font-display text-xl text-navy sm:text-2xl">{lp.name}</h2>
                     <span
                       className={`chip ${lp.usedByVantage ? "bg-teal-soft text-teal" : "bg-amber-soft text-amber"}`}

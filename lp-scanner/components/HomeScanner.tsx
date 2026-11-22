@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LpLogo } from "@/components/LpLogo";
 import { QualityResearchRunner } from "@/components/QualityResearchRunner";
 import { SortableResults } from "@/components/SortableResults";
 import { useI18n } from "@/lib/i18n/context";
@@ -145,11 +146,16 @@ export function HomeScanner() {
       {lpResult && (
         <section className="panel animate-rise px-5 py-6 sm:px-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-3">
+                {lpResult.matched && <LpLogo lp={lpResult.matched} size="lg" />}
+                <div>
               <p className="text-xs uppercase tracking-wide text-teal">
                 {lpResult.isNew ? t("research.new") : lpResult.matched?.name}
               </p>
               <h2 className="font-display text-3xl text-navy">{lpResult.query}</h2>
+                </div>
+              </div>
               <p className="mt-2 max-w-3xl text-sm text-navy-2">{lpResult.summary}</p>
               <p className="mt-2 text-xs text-mist">
                 {t("home.liveAt")}{" "}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
 import type { QualityReport, QualityStep } from "@/lib/quality-research";
 import type { Locale } from "@/lib/types";
@@ -315,6 +316,19 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
             <p className="text-xs font-semibold uppercase tracking-wide text-teal">
               {t("quality.verdict")}
             </p>
+            {report.subjects.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {report.subjects.map((s) => (
+                  <span
+                    key={s.slug}
+                    className="inline-flex items-center gap-2 rounded-lg border border-line/70 bg-white/80 px-2 py-1 text-xs text-navy"
+                  >
+                    <LpLogo lp={{ slug: s.slug, name: s.name, logoUrl: s.logoUrl }} size="sm" />
+                    {s.name}
+                  </span>
+                ))}
+              </div>
+            )}
             <p className="mt-1 font-display text-2xl text-navy">
               {t("quality.score")}: {report.overallScore}/100
             </p>

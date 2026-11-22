@@ -32,6 +32,8 @@ export type LpRecord = {
   weaknesses: string[];
   bestFor: string[];
   website?: string;
+  /** Optional override; defaults to `/logos/{slug}.png`. */
+  logoUrl?: string;
   notes: string;
   kbBodyEn: string;
   kbBodyZh: string;

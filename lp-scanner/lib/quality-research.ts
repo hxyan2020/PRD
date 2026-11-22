@@ -32,7 +32,7 @@ export type QualityReport = {
   summaryPros: string[];
   summaryCons: string[];
   steps: QualityStep[];
-  subjects: { name: string; score: number; usedByVantage: boolean }[];
+  subjects: { name: string; slug: string; score: number; usedByVantage: boolean; logoUrl?: string }[];
   dataBottleneck: DataBottleneck;
   disclaimer: string;
 };
@@ -599,6 +599,8 @@ export function buildQualityReport(args: {
     steps,
     subjects: subjects.map((s) => ({
       name: s.name,
+      slug: s.slug,
+      logoUrl: s.logoUrl,
       score: Math.round((s.scoreHints[scoreKey] ?? 50) + s.pricingQuality * 5),
       usedByVantage: s.usedByVantage,
     })),
@@ -614,11 +616,19 @@ export function stepDelayMs(index: number): number {
   return delayHint(450 + index * 180);
 }
 
-export function buildPrintableHtml(report: QualityReport): string {
+export function buildPrintableHtml(
+  report: QualityReport,
+  opts?: { assetOrigin?: string },
+): string {
   const zh = report.locale === "zh-CN";
   const when = new Date(report.generatedAt).toLocaleString(zh ? "zh-CN" : "en-SG", {
     timeZone: "Asia/Singapore",
   });
+  const origin = (opts?.assetOrigin ?? "").replace(/\/$/, "");
+  const assetUrl = (path: string) => {
+    if (/^https?:\/\//i.test(path)) return path;
+    return origin ? `${origin}${path.startsWith("/") ? path : `/${path}`}` : path;
+  };
   const esc = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -661,6 +671,9 @@ export function buildPrintableHtml(report: QualityReport): string {
   .badge { font-size: 11px; color: #0f766e; font-weight: 600; text-transform: uppercase; }
   ul { margin: 6px 0 0 18px; padding: 0; }
   li { margin: 2px 0; font-size: 13px; }
+  ul.subjects { list-style: none; margin-left: 0; }
+  ul.subjects li { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .logo { width: 28px; height: 28px; object-fit: contain; border: 1px solid #c5d0db; border-radius: 6px; background: #fff; padding: 1px; }
   .disclaimer { font-size: 11px; color: #5a6b7c; margin-top: 24px; }
   @media print { .no-print { display: none; } a { color: inherit; text-decoration: none; } }
 </style>
@@ -689,7 +702,12 @@ export function buildPrintableHtml(report: QualityReport): string {
   </div>
 
   <h2>${zh ? "对照对象" : "Subjects compared"}</h2>
-  <ul>${report.subjects.map((s) => `<li>${esc(s.name)} — score ${s.score}${s.usedByVantage ? (zh ? " · Vantage在用" : " · Vantage-used") : ""}</li>`).join("")}</ul>
+  <ul class="subjects">${report.subjects
+    .map((s) => {
+      const src = assetUrl(s.logoUrl || `/logos/${s.slug}.png`);
+      return `<li><img class="logo" src="${esc(src)}" alt="" width="28" height="28"/> <strong>${esc(s.name)}</strong> — score ${s.score}${s.usedByVantage ? (zh ? " · Vantage在用" : " · Vantage-used") : ""}</li>`;
+    })
+    .join("")}</ul>
 
   <h2>${zh ? "分步研究记录" : "Step-by-step research log"}</h2>
   ${stepsHtml}

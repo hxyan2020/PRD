@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
 import type { RankedLp } from "@/lib/types";
 
@@ -132,6 +133,7 @@ export function SortableResults({
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono text-xs text-mist">#{r.rank}</span>
+                    <LpLogo lp={r.lp} size="sm" />
                     <span className="font-semibold text-navy">{r.lp.name}</span>
                     <span
                       className={`chip ${r.lp.usedByVantage ? "bg-teal-soft text-teal" : "bg-amber-soft text-amber"}`}
@@ -199,7 +201,12 @@ export function SortableResults({
                 onClick={() => setOpenId(openId === r.lp.id ? null : r.lp.id)}
               >
                 <td className="px-3 py-2 font-mono text-xs">{r.rank}</td>
-                <td className="px-3 py-2 font-semibold text-navy">{r.lp.name}</td>
+                <td className="px-3 py-2 font-semibold text-navy">
+                  <span className="inline-flex items-center gap-2">
+                    <LpLogo lp={r.lp} size="sm" />
+                    {r.lp.name}
+                  </span>
+                </td>
                 <td className="px-3 py-2">
                   <span
                     className={`chip ${r.lp.usedByVantage ? "bg-teal-soft text-teal" : "bg-amber-soft text-amber"}`}
