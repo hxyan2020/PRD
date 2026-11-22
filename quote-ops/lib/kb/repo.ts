@@ -149,6 +149,7 @@ export async function ensureKbSeeded(): Promise<void> {
     name: "System Seed",
     isAdmin: true,
     verified: true,
+    role: "admin",
   };
 
   const folders: KbNode[] = [
