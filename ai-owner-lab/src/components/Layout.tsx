@@ -4,6 +4,7 @@ import { useProgress } from '../hooks/useProgress'
 import { useNotebook } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
 import { AuthBar } from './AuthBar'
+import { ScrollToTopButton } from './ScrollToTopButton'
 import { SelectionTools } from './SelectionTools'
 
 export function Layout() {
@@ -173,6 +174,7 @@ export function Layout() {
         <Outlet />
       </main>
       <SelectionTools />
+      <ScrollToTopButton />
       <footer className="footer">
         <p>{t('footer')}</p>
       </footer>

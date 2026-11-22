@@ -5124,3 +5124,71 @@ button.notebook-category-badge.on {
   border-radius: 0.75rem;
   background: #fff;
 }
+
+.scroll-to-top {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1.15rem, env(safe-area-inset-bottom));
+  z-index: 520;
+  width: 2.85rem;
+  height: 2.85rem;
+  padding: 0;
+  border: 1px solid rgba(15, 118, 110, 0.28);
+  border-radius: 999px;
+  background: rgba(245, 248, 250, 0.94);
+  color: var(--teal-deep);
+  box-shadow: 0 10px 28px rgba(11, 31, 42, 0.16);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(0.55rem) scale(0.92);
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.scroll-to-top.on {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.scroll-to-top:hover,
+.scroll-to-top:focus-visible {
+  background: #fff;
+  border-color: var(--teal-deep);
+  outline: none;
+}
+
+.scroll-to-top:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(13, 148, 136, 0.28),
+    0 10px 28px rgba(11, 31, 42, 0.16);
+}
+
+.scroll-to-top-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  background: currentColor;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 19V5'/%3E%3Cpath d='M5 12l7-7 7 7'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 19V5'/%3E%3Cpath d='M5 12l7-7 7 7'/%3E%3C/svg%3E");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
+@media (max-width: 720px) {
+  .scroll-to-top {
+    right: max(0.85rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+}
