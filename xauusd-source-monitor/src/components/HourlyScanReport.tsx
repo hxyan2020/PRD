@@ -154,6 +154,7 @@ function SectionBlock({
   onOpenSources,
   t,
   lang,
+  oneLine,
 }: {
   title: string
   points: RankedPoint[]
@@ -161,7 +162,34 @@ function SectionBlock({
   onOpenSources: (sourceIds: string[]) => void
   t: (k: string) => string
   lang: string
+  /** TL;DR: single one-line blurb, no numbered list */
+  oneLine?: boolean
 }) {
+  if (oneLine) {
+    const p = points[0]
+    return (
+      <section className="hourly-section hourly-tldr">
+        <h3>{title}</h3>
+        {!p ? (
+          <p className="hourly-empty">{emptyLabel}</p>
+        ) : (
+          <div className="hourly-tldr-line">
+            <p>{lang === 'zh-Hant' ? p.zh : p.en}</p>
+            {p.sourceIds.length ? (
+              <button
+                type="button"
+                className="text-link hourly-sources-link"
+                onClick={() => onOpenSources(p.sourceIds)}
+              >
+                {t('hourlyViewSources').replace('{n}', String(p.sourceIds.length))}
+              </button>
+            ) : null}
+          </div>
+        )}
+      </section>
+    )
+  }
+
   return (
     <section className="hourly-section">
       <h3>{title}</h3>
@@ -288,6 +316,7 @@ function ReportCard({
         emptyLabel={empty}
         t={t}
         lang={lang}
+        oneLine
         onOpenSources={(ids) => onOpenSources(report.sources, ids)}
       />
       <SectionBlock

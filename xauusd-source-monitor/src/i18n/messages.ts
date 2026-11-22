@@ -21,7 +21,7 @@ const en: Dict = {
   navArchive: 'Archive',
   hourlyTitle: 'Hourly market scan',
   hourlySub:
-    'Auto-runs each Singapore hour. Macro events, V Exchange indicators (placeholder), and XAUUSD opinions — bilingual TL;DR / Opportunity / Risk. Max 4 ranked points per section; empty sections say so. No invented points.',
+    'Auto-runs each Singapore hour. One-line TL;DR from live prints (not a news dump). Opportunity / Risk: up to 4 short ranked lines; empty sections say so. No invented points.',
   hourlyScanNow: 'Scan now',
   hourlyScanning: 'Scanning…',
   hourlyEmpty: 'No hourly report yet — tap Scan now.',
@@ -431,7 +431,7 @@ const zhHant: Dict = {
   navArchive: '歸檔',
   hourlyTitle: '小時行情掃報',
   hourlySub:
-    '每個新加坡整點自動掃描。涵蓋宏觀事件、V Exchange 指標（占位）與 XAUUSD 觀點 — 雙語 TL;DR／機會／風險。每區最多 4 條按緊急度排序；無要點時明示，不編造。',
+    '每個新加坡整點自動掃描。TL;DR 為單行即時報價摘要（不重複新聞）。機會／風險各最多 4 條短句排序；無要點時明示，不編造。',
   hourlyScanNow: '立即掃描',
   hourlyScanning: '掃描中…',
   hourlyEmpty: '尚無小時報告 — 請點「立即掃描」。',

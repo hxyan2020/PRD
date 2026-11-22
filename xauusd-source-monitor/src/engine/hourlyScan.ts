@@ -553,10 +553,12 @@ function hourKeySgt(ts = Date.now()): string {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}`
 }
 
-function clampTwoSentences(text: string): string {
+/** One line only — strip to a single sentence / clause. */
+function clampOneLine(text: string): string {
   const trimmed = text.trim().replace(/\s+/g, ' ')
   const parts = trimmed.split(/(?<=[.!?。！？])\s+/).filter(Boolean)
-  return parts.slice(0, 2).join(' ')
+  const first = parts[0] || trimmed
+  return first.length > 160 ? `${first.slice(0, 157).trimEnd()}…` : first
 }
 
 function rankPoints(
@@ -565,9 +567,67 @@ function rankPoints(
   return rows.slice(0, 4).map((r, i) => ({
     ...r,
     rank: i + 1,
-    en: clampTwoSentences(r.en),
-    zh: clampTwoSentences(r.zh),
+    en: clampOneLine(r.en),
+    zh: clampOneLine(r.zh),
   }))
+}
+
+/** Single one-line TL;DR — synthesizes live prints; does not copy Opportunity/Risk news. */
+function buildOneLineTldr(args: {
+  dxy: number | null
+  tnx: number | null
+  okxPx: number | null
+  spotLive: number | null
+  opportunity: RankedPoint[]
+  risk: RankedPoint[]
+}): RankedPoint[] {
+  const bitsEn: string[] = []
+  const bitsZh: string[] = []
+  const sourceIds: string[] = []
+
+  if (args.okxPx != null) {
+    bitsEn.push(`OKX XAU ${args.okxPx.toFixed(2)}`)
+    bitsZh.push(`OKX 金 ${args.okxPx.toFixed(2)}`)
+    sourceIds.push('okx-ticker')
+  }
+  if (args.spotLive != null) {
+    bitsEn.push(`spot ${args.spotLive.toFixed(2)}`)
+    bitsZh.push(`現貨 ${args.spotLive.toFixed(2)}`)
+    sourceIds.push('gold-api')
+  }
+  if (args.dxy != null) {
+    bitsEn.push(`DXY ${args.dxy.toFixed(2)}`)
+    bitsZh.push(`美元指數 ${args.dxy.toFixed(2)}`)
+    sourceIds.push('yahoo-dxy')
+  }
+  if (args.tnx != null) {
+    bitsEn.push(`10Y ${args.tnx.toFixed(2)}%`)
+    bitsZh.push(`10Y ${args.tnx.toFixed(2)}%`)
+    sourceIds.push('yahoo-tnx')
+  }
+
+  const nOpp = args.opportunity.length
+  const nRisk = args.risk.length
+  const tailEn =
+    nOpp || nRisk
+      ? ` · ${nRisk} risk / ${nOpp} opportunity — details below`
+      : ' · no ranked signals this hour'
+  const tailZh =
+    nOpp || nRisk
+      ? ` · ${nRisk} 風險／${nOpp} 機會 — 詳見下方`
+      : ' · 本小時無排序要點'
+
+  const coreEn = bitsEn.length ? bitsEn.join(' · ') : 'XAUUSD desk scan'
+  const coreZh = bitsZh.length ? bitsZh.join(' · ') : 'XAUUSD 工作台掃報'
+
+  return [
+    {
+      rank: 1,
+      en: clampOneLine(coreEn + tailEn),
+      zh: clampOneLine(coreZh + tailZh),
+      sourceIds: [...new Set(sourceIds)],
+    },
+  ]
 }
 
 function yahooLastClose(data: unknown): number | null {
@@ -813,20 +873,14 @@ export async function generateHourlyScan(args: {
     )
     if (dxy >= 104) {
       riskRaw.push({
-        en: `Dollar Index (DX-Y.NYB) prints ${dxy.toFixed(3)} on the live Yahoo 1m chart. A firm USD remains a headwind for XAUUSD until the print softens.`,
-        zh: `美元指數（DX-Y.NYB）於 Yahoo 1 分鐘圖最新為 ${dxy.toFixed(3)}。美元偏強在回落前仍對 XAUUSD 構成逆風。`,
+        en: `DXY ${dxy.toFixed(3)} firm — USD headwind for XAUUSD.`,
+        zh: `美元指數 ${dxy.toFixed(3)} 偏強 — 對 XAUUSD 構成逆風。`,
         sourceIds: ['yahoo-dxy'],
       })
     } else if (dxy <= 100) {
       opportunityRaw.push({
-        en: `Dollar Index (DX-Y.NYB) prints ${dxy.toFixed(3)} on the live Yahoo 1m chart. Softer USD removes one near-term headwind for XAUUSD.`,
-        zh: `美元指數（DX-Y.NYB）於 Yahoo 1 分鐘圖最新為 ${dxy.toFixed(3)}。美元偏弱短期減輕 XAUUSD 的一項逆風。`,
-        sourceIds: ['yahoo-dxy'],
-      })
-    } else {
-      riskRaw.push({
-        en: `Dollar Index (DX-Y.NYB) is ${dxy.toFixed(3)} on the live Yahoo 1m chart. No extreme USD impulse is evidenced in this print alone.`,
-        zh: `美元指數（DX-Y.NYB）於 Yahoo 1 分鐘圖為 ${dxy.toFixed(3)}。單憑此讀數尚無極端美元衝動證據。`,
+        en: `DXY ${dxy.toFixed(3)} soft — near-term USD headwind easing.`,
+        zh: `美元指數 ${dxy.toFixed(3)} 偏弱 — 短期美元逆風減輕。`,
         sourceIds: ['yahoo-dxy'],
       })
     }
@@ -841,20 +895,14 @@ export async function generateHourlyScan(args: {
     )
     if (tnx >= 4.2) {
       riskRaw.push({
-        en: `US 10Y (^TNX) is ${tnx.toFixed(3)}% on the live Yahoo chart. Higher real-rate pressure can weigh on gold until yields ease.`,
-        zh: `美債 10 年（^TNX）於 Yahoo 圖為 ${tnx.toFixed(3)}%。實質利率偏高在收益率回落前可能壓抑金價。`,
+        en: `US 10Y ${tnx.toFixed(3)}% elevated — rate pressure on gold.`,
+        zh: `美債 10 年 ${tnx.toFixed(3)}% 偏高 — 利率壓力壓抑金價。`,
         sourceIds: ['yahoo-tnx'],
       })
     } else if (tnx <= 3.5) {
       opportunityRaw.push({
-        en: `US 10Y (^TNX) is ${tnx.toFixed(3)}% on the live Yahoo chart. Softer yields are a constructive backdrop for XAUUSD when confirmed by follow-through.`,
-        zh: `美債 10 年（^TNX）於 Yahoo 圖為 ${tnx.toFixed(3)}%。收益率偏軟對 XAUUSD 偏建設性，仍需後續確認。`,
-        sourceIds: ['yahoo-tnx'],
-      })
-    } else {
-      riskRaw.push({
-        en: `US 10Y (^TNX) is ${tnx.toFixed(3)}% on the live Yahoo chart. Mid-range yields alone do not establish a directional gold catalyst.`,
-        zh: `美債 10 年（^TNX）於 Yahoo 圖為 ${tnx.toFixed(3)}%。中段收益率本身不足以構成明確金價催化。`,
+        en: `US 10Y ${tnx.toFixed(3)}% soft — constructive for XAUUSD if it holds.`,
+        zh: `美債 10 年 ${tnx.toFixed(3)}% 偏軟 — 若延續對 XAUUSD 偏建設性。`,
         sourceIds: ['yahoo-tnx'],
       })
     }
@@ -878,8 +926,8 @@ export async function generateHourlyScan(args: {
       ),
     )
     riskRaw.push({
-      en: `Latest Fed press item on the official JSON feed: “${fed.title}”. Treat as calendar/policy context — not an automatic XAUUSD trade signal.`,
-      zh: `聯準會官方 JSON 最新新聞：「${fed.title}」。僅作日程／政策背景，非自動交易信號。`,
+      en: `Fed press: ${fed.title} — calendar context only.`,
+      zh: `聯準會新聞：${fed.title} — 僅作日程背景。`,
       sourceIds: ['fed-press-item', 'fed-press-json'],
     })
   }
@@ -904,14 +952,14 @@ export async function generateHourlyScan(args: {
       const basisBps = ((okxPx - spotLive) / spotLive) * 10_000
       if (Math.abs(basisBps) >= 25) {
         riskRaw.push({
-          en: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} → basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps. Wide basis needs venue/LP checks before acting.`,
-          zh: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} 對 gold-api 現貨 ${spotLive.toFixed(2)} → 基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps。基差偏寬時應先核對場所／LP。`,
+          en: `OKX vs spot basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — wide; check venue/LP.`,
+          zh: `OKX 對現貨基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — 偏寬，核對場所／LP。`,
           sourceIds: ['okx-ticker', 'gold-api'],
         })
       } else {
         opportunityRaw.push({
-          en: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} → basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps. No extreme basis dislocation in this print.`,
-          zh: `OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} 對 gold-api 現貨 ${spotLive.toFixed(2)} → 基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps。此讀數未顯示極端基差錯位。`,
+          en: `OKX vs spot basis ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — no extreme dislocation.`,
+          zh: `OKX 對現貨基差 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps — 無極端錯位。`,
           sourceIds: ['okx-ticker', 'gold-api'],
         })
       }
@@ -928,8 +976,8 @@ export async function generateHourlyScan(args: {
     )
     if (Math.abs(pct) >= 0.05) {
       riskRaw.push({
-        en: `OKX XAU-USDT-SWAP funding prints ${pct.toFixed(4)}%. Elevated funding can amplify perp positioning stress for XAUUSD desks.`,
-        zh: `OKX XAU-USDT-SWAP 資金費率為 ${pct.toFixed(4)}%。費率偏高可能放大 XAUUSD 永續持倉壓力。`,
+        en: `OKX funding ${pct.toFixed(4)}% — elevated perp stress risk.`,
+        zh: `OKX 資金費率 ${pct.toFixed(4)}% — 永續持倉壓力偏高。`,
         sourceIds: ['okx-funding'],
       })
     }
@@ -945,8 +993,8 @@ export async function generateHourlyScan(args: {
     const crossBps = ((bitgetPx - okxPx) / okxPx) * 10_000
     if (Math.abs(crossBps) >= 20) {
       riskRaw.push({
-        en: `Bitget XAUUSDT ${bitgetPx.toFixed(2)} vs OKX ${okxPx.toFixed(2)} → cross-venue ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps. Check liquidity before assuming a single mid.`,
-        zh: `Bitget XAUUSDT ${bitgetPx.toFixed(2)} 對 OKX ${okxPx.toFixed(2)} → 跨所 ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps。勿預設單一中間價，先核對流動性。`,
+        en: `Bitget vs OKX ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps — check liquidity before one mid.`,
+        zh: `Bitget 對 OKX ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps — 先核對流動性再取中間價。`,
         sourceIds: ['bitget-ticker', 'okx-ticker'],
       })
     }
@@ -999,8 +1047,8 @@ export async function generateHourlyScan(args: {
   if (alertSources.length >= 2 && args.composite != null) {
     const ids = alertSources.slice(0, 4).map((h) => h.id)
     riskRaw.push({
-      en: `Desk health shows ${alertSources.length} sources in watch/alert (e.g. ${ids.join(', ')}) vs composite ${args.composite.toFixed(2)}. Confirm with venue pages before escalating.`,
-      zh: `工作台健康度顯示 ${alertSources.length} 個源處於關注／警報（如 ${ids.join('、')}），綜合價 ${args.composite.toFixed(2)}。升級前請核對場所頁。`,
+      en: `Desk: ${alertSources.length} watch/alert (${ids.join(', ')}) vs composite ${args.composite.toFixed(2)}.`,
+      zh: `工作台：${alertSources.length} 個關注／警報（${ids.join('、')}），綜合價 ${args.composite.toFixed(2)}。`,
       sourceIds: ['vex-monitor-composite'],
     })
   }
@@ -1010,23 +1058,17 @@ export async function generateHourlyScan(args: {
   const vexNoteZh =
     'V Exchange 自有指標：目前僅為占位，數據源未接入；本小時無指標要點。'
 
-  // Opinion articles — only when health is ok
+  // Opinion headlines only (one line) — full article lives in Sources, never restated in TL;DR
   for (const entry of SOURCE_CATALOG.filter((e) => e.opinion)) {
     const hit = byId.get(entry.id)
     if (!hit || hit.source.health !== 'ok') continue
-    if (entry.opinionTone === 'opportunity') {
-      opportunityRaw.push({
-        en: `Opinion source reachable: ${entry.captionEn}. Open the article for the full argument; no desk-invented trade thesis.`,
-        zh: `觀點來源可達：${entry.captionZh}。請打開原文閱讀完整論點；工作台不編造交易命題。`,
-        sourceIds: [entry.id],
-      })
-    } else {
-      riskRaw.push({
-        en: `Opinion source reachable: ${entry.captionEn}. Use the article itself for the author’s view — this desk does not invent a stance.`,
-        zh: `觀點來源可達：${entry.captionZh}。作者立場以原文為準 — 本工作台不編造觀點。`,
-        sourceIds: [entry.id],
-      })
+    const point = {
+      en: entry.captionEn,
+      zh: entry.captionZh,
+      sourceIds: [entry.id],
     }
+    if (entry.opinionTone === 'opportunity') opportunityRaw.push(point)
+    else riskRaw.push(point)
   }
 
   for (const c of args.extraCitations || []) {
@@ -1057,17 +1099,15 @@ export async function generateHourlyScan(args: {
 
   const opportunity = rankPoints(opportunityRaw)
   const risk = rankPoints(riskRaw)
-  const tldrPool = [
-    ...risk.map((p) => ({ ...p, sourceIds: p.sourceIds })),
-    ...opportunity.map((p) => ({ ...p, sourceIds: p.sourceIds })),
-  ]
-  const tldr = rankPoints(
-    tldrPool.slice(0, 4).map((p) => ({
-      en: p.en,
-      zh: p.zh,
-      sourceIds: p.sourceIds,
-    })),
-  )
+  // One-line TL;DR from live prints only — does not repeat Opportunity/Risk news lines
+  const tldr = buildOneLineTldr({
+    dxy,
+    tnx,
+    okxPx: okxPx ?? null,
+    spotLive: spotLive ?? null,
+    opportunity,
+    risk,
+  })
   const sentiment = computeSentiment(opportunity, risk)
 
   return {
