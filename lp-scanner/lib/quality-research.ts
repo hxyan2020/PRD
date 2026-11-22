@@ -1,9 +1,12 @@
 import { localizedLpLists } from "@/lib/i18n/lp-display";
 import { formatOptimalRegions, resolveOptimalRegions } from "@/lib/regions";
-import { resolveProduct } from "@/lib/products";
+import { resolveProduct, type ProductProfile } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
 
 export type QualityStepStatus = "pending" | "running" | "done" | "warn";
+
+/** Product-fit traffic light for proxy quality scores (0–100). */
+export type ScoreBand = "green" | "yellow" | "red";
 
 export type QualityStep = {
   id: string;
@@ -23,6 +26,18 @@ export type DataBottleneck = {
   gaps: string[];
 };
 
+export type QualitySubjectScore = {
+  name: string;
+  slug: string;
+  score: number;
+  band: ScoreBand;
+  usedByVantage: boolean;
+  logoUrl?: string;
+  offersProduct: boolean;
+  /** Short product-fit reason from ranking/KB. */
+  reason?: string;
+};
+
 export type QualityReport = {
   mode: "product" | "lp";
   subject: string;
@@ -30,14 +45,132 @@ export type QualityReport = {
   locale: Locale;
   generatedAt: string;
   overallScore: number;
+  overallBand: ScoreBand;
   verdict: string;
   summaryPros: string[];
   summaryCons: string[];
   steps: QualityStep[];
-  subjects: { name: string; slug: string; score: number; usedByVantage: boolean; logoUrl?: string }[];
+  subjects: QualitySubjectScore[];
   dataBottleneck: DataBottleneck;
+  /** Extra findings from KB ranking + optional live public lookup. */
+  liveFindings: string[];
   disclaimer: string;
 };
+
+export function scoreBand(score: number): ScoreBand {
+  if (score >= 85) return "green";
+  if (score >= 65) return "yellow";
+  return "red";
+}
+
+export function scoreBandLabel(band: ScoreBand, locale: Locale): string {
+  if (locale === "zh-CN") {
+    return band === "green" ? "绿 · 高适配" : band === "yellow" ? "黄 · 可候选" : "红 · 偏弱";
+  }
+  return band === "green" ? "Green · strong fit" : band === "yellow" ? "Yellow · usable" : "Red · weak fit";
+}
+
+function hoursFitForSession(hours: LpRecord["hours"], session: string): boolean {
+  if (session === "24/7") return hours === "24/7" || hours === "mixed";
+  if (session === "24/5") return hours === "24/5" || hours === "mixed";
+  return true;
+}
+
+function offersSymbol(
+  lp: LpRecord,
+  symbol?: string,
+  assetClass?: string,
+): boolean {
+  if (
+    symbol &&
+    lp.products.some(
+      (p) =>
+        p.toUpperCase().replace(/[\/\s-_]/g, "") ===
+        symbol.replace(/[\/\s-_]/g, ""),
+    )
+  ) {
+    return true;
+  }
+  if (assetClass && lp.assetClasses.includes(assetClass as LpRecord["assetClasses"][number])) {
+    return true;
+  }
+  return false;
+}
+
+/** Product-relative proxy quality score clamped to 0–100. */
+export function computeLpProductScore(
+  lp: LpRecord,
+  opts: {
+    scoreKey: keyof LpRecord["scoreHints"];
+    session: string;
+    symbol?: string;
+    assetClass?: string;
+  },
+): number {
+  const offers = offersSymbol(lp, opts.symbol, opts.assetClass);
+  const fit = hoursFitForSession(lp.hours, opts.session);
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(
+        (lp.scoreHints[opts.scoreKey] ?? 50) * 0.45 +
+          lp.pricingQuality * 6 +
+          (fit ? 8 : -10) +
+          (lp.usedByVantage ? 6 : 0) +
+          ({ "ultra-low": 6, low: 4, medium: 2 }[lp.latencyProfile] ?? 0) +
+          (offers ? 8 : -12),
+      ),
+    ),
+  );
+}
+
+/** Infer score family when LP quality is run without an explicit product. */
+export function inferScoreContext(lp?: LpRecord, product?: string): {
+  profile: ProductProfile | null;
+  symbol?: string;
+  scoreKey: keyof LpRecord["scoreHints"];
+  session: string;
+  assetClass?: string;
+} {
+  if (product) {
+    const profile = resolveProduct(product);
+    return {
+      profile,
+      symbol: profile?.symbol ?? product.toUpperCase(),
+      scoreKey: profile?.scoreKey ?? "fxMajors",
+      session: profile?.session ?? "mixed",
+      assetClass: profile?.assetClass,
+    };
+  }
+  if (!lp) {
+    return { profile: null, scoreKey: "fxMajors", session: "mixed" };
+  }
+  if (lp.category === "crypto" || lp.assetClasses.includes("crypto")) {
+    return {
+      profile: resolveProduct("BTCUSD"),
+      symbol: "BTCUSD",
+      scoreKey: "crypto",
+      session: "24/7",
+      assetClass: "crypto",
+    };
+  }
+  if (lp.scoreHints.gold >= 75 && lp.scoreHints.gold >= lp.scoreHints.fxMajors) {
+    return {
+      profile: resolveProduct("XAUUSD"),
+      symbol: "XAUUSD",
+      scoreKey: "gold",
+      session: "24/5",
+      assetClass: "metals",
+    };
+  }
+  return {
+    profile: null,
+    scoreKey: "fxMajors",
+    session: lp.hours === "24/7" ? "24/7" : "24/5",
+    assetClass: lp.assetClasses[0],
+  };
+}
 
 /** Critical inputs needed for a firm LP quality call that this scanner may lack. */
 export function assessDataAvailability(args: {
@@ -155,21 +288,49 @@ export function buildQualityReport(args: {
   product?: string;
   lps: LpRecord[];
   rankings?: RankedLp[];
+  /** Optional live public findings (Wikipedia/DDG etc.) already fetched by the API. */
+  liveFindings?: string[];
 }): QualityReport {
-  const { mode, locale, product, lps, rankings } = args;
+  const { mode, locale, product, lps, rankings, liveFindings: incomingLive = [] } = args;
   const zh = locale === "zh-CN";
-  const profile = product ? resolveProduct(product) : null;
-  const symbol = profile?.symbol ?? product?.toUpperCase();
-  const scoreKey = profile?.scoreKey ?? "fxMajors";
-  const session = profile?.session ?? "mixed";
 
   const subjects =
     mode === "product" && rankings
       ? rankings.slice(0, 5).map((r) => r.lp)
-      : lps.slice(0, 1);
+      : mode === "lp"
+        ? lps.slice(0, 5)
+        : lps.slice(0, 1);
 
   const primary = subjects[0];
   const peers = subjects.slice(1);
+
+  const ctx = inferScoreContext(primary, product);
+  const profile = ctx.profile;
+  const symbol = ctx.symbol;
+  const scoreKey = ctx.scoreKey;
+  const session = ctx.session;
+
+  const rankById = new Map((rankings ?? []).map((r) => [r.lp.id, r]));
+
+  const subjectScores: QualitySubjectScore[] = subjects.map((s) => {
+    const score = computeLpProductScore(s, {
+      scoreKey,
+      session,
+      symbol,
+      assetClass: ctx.assetClass ?? profile?.assetClass,
+    });
+    const ranked = rankById.get(s.id);
+    return {
+      name: s.name,
+      slug: s.slug,
+      logoUrl: s.logoUrl,
+      score,
+      band: scoreBand(score),
+      usedByVantage: s.usedByVantage,
+      offersProduct: ranked?.offersProduct ?? offersSymbol(s, symbol, ctx.assetClass ?? profile?.assetClass),
+      reason: ranked?.reasons[0] ?? ranked?.liveNotes[0],
+    };
+  });
 
   const dataBottleneck = assessDataAvailability({
     locale,
@@ -177,8 +338,13 @@ export function buildQualityReport(args: {
     subjects,
     symbol,
     scoreKey,
-    profileAssetClass: profile?.assetClass,
+    profileAssetClass: ctx.assetClass ?? profile?.assetClass,
   });
+
+  const kbLiveNotes = (rankings ?? [])
+    .slice(0, 3)
+    .flatMap((r) => r.liveNotes.slice(0, 2).map((n) => `${r.lp.name}: ${n}`));
+  const liveFindings = [...incomingLive, ...kbLiveNotes].slice(0, 8);
 
   const steps: QualityStep[] = [];
 
@@ -241,18 +407,14 @@ export function buildQualityReport(args: {
       : dataBottleneck.gaps.slice(0, 2),
   });
 
-  // 2 Executable coverage
+  // 2 Executable coverage — use actual repository product lists + family scores
   const coverageDetails = subjects.map((s) => {
     const hint = s.scoreHints[scoreKey] ?? 50;
-    const offers =
-      (symbol &&
-        s.products.some(
-          (p) => p.toUpperCase().replace(/[\/\s-_]/g, "") === symbol.replace(/[\/\s-_]/g, ""),
-        )) ||
-      (profile && s.assetClasses.includes(profile.assetClass));
+    const scored = subjectScores.find((x) => x.slug === s.slug);
+    const offers = scored?.offersProduct ?? offersSymbol(s, symbol, ctx.assetClass ?? profile?.assetClass);
     return zh
-      ? `${s.name}: 家族能力分 ${hint}/100；显式覆盖 ${offers ? "是" : "弱/否"}；深度档位代理=定价${s.pricingQuality}/5`
-      : `${s.name}: family score ${hint}/100; explicit coverage ${offers ? "yes" : "weak/no"}; depth proxy=pricing ${s.pricingQuality}/5`;
+      ? `${s.name}: 相对 ${symbol ?? "—"} 代理分 ${scored?.score ?? "—"}/100（${scoreBandLabel(scored?.band ?? "red", locale)}）；家族能力 ${hint}/100；显式覆盖 ${offers ? "是" : "弱/否"}；定价 ${s.pricingQuality}/5`
+      : `${s.name}: ${symbol ?? "—"} proxy ${scored?.score ?? "—"}/100 (${scoreBandLabel(scored?.band ?? "red", locale)}); family ${hint}/100; explicit coverage ${offers ? "yes" : "weak/no"}; pricing ${s.pricingQuality}/5`;
   });
   const coverageBlocked =
     dataBottleneck.gaps.some((g) =>
@@ -321,11 +483,6 @@ export function buildQualityReport(args: {
   });
 
   // 5 Session fit
-  const hoursFit = (hours: LpRecord["hours"]) => {
-    if (session === "24/7") return hours === "24/7" || hours === "mixed";
-    if (session === "24/5") return hours === "24/5" || hours === "mixed";
-    return true;
-  };
   steps.push({
     id: "session",
     index: 5,
@@ -334,7 +491,18 @@ export function buildQualityReport(args: {
       ? `品种会话需求 ${session}；核对各 LP hours 是否匹配（加密需 24/7）。`
       : `Product session need ${session}; check LP hours (crypto needs 24/7).`,
     result: subjects
-      .map((s) => `${s.name}: ${s.hours} → ${hoursFit(s.hours) ? (zh ? "匹配" : "fit") : (zh ? "不匹配" : "mismatch")}`)
+      .map(
+        (s) =>
+          `${s.name}: ${s.hours} → ${
+            hoursFitForSession(s.hours, session)
+              ? zh
+                ? "匹配"
+                : "fit"
+              : zh
+                ? "不匹配"
+                : "mismatch"
+          }`,
+      )
       .join(zh ? "；" : "; "),
     details: subjects.map((s) => {
       const optimal = formatOptimalRegions(resolveOptimalRegions(s.slug, s.optimalRegions), locale);
@@ -342,11 +510,15 @@ export function buildQualityReport(args: {
         ? `${s.name} 足迹 ${s.regions.slice(0, 4).join("、")} · 最优区域 ${optimal}`
         : `${s.name} footprint ${s.regions.slice(0, 4).join(", ")} · optimal ${optimal}`;
     }),
-    status: primary && hoursFit(primary.hours) ? "done" : "warn",
-    pros: primary && hoursFit(primary.hours) ? [zh ? "主测对象时段匹配" : "Primary hours fit"] : [],
-    cons: primary && !hoursFit(primary.hours)
-      ? [zh ? "时段不匹配可能导致假价/拒单" : "Session mismatch risks stale quotes / rejects"]
-      : [],
+    status: primary && hoursFitForSession(primary.hours, session) ? "done" : "warn",
+    pros:
+      primary && hoursFitForSession(primary.hours, session)
+        ? [zh ? "主测对象时段匹配" : "Primary hours fit"]
+        : [],
+    cons:
+      primary && !hoursFitForSession(primary.hours, session)
+        ? [zh ? "时段不匹配可能导致假价/拒单" : "Session mismatch risks stale quotes / rejects"]
+        : [],
   });
 
   // 6 Latency / tech
@@ -491,7 +663,7 @@ export function buildQualityReport(args: {
         ]
       : []),
     ...(primaryLists?.weaknesses.slice(0, 3) ?? []),
-    ...(primary && !hoursFit(primary.hours)
+    ...(primary && !hoursFitForSession(primary.hours, session)
       ? [zh ? "与标的会话时段不完全匹配" : "Incomplete session match for the product"]
       : []),
   ];
@@ -508,45 +680,34 @@ export function buildQualityReport(args: {
     details: [
       ...summaryPros.map((p) => (zh ? `优势: ${p}` : `Pro: ${p}`)),
       ...summaryCons.map((c) => (zh ? `局限: ${c}` : `Con: ${c}`)),
+      ...liveFindings.slice(0, 3).map((f) => (zh ? `实据: ${f}` : `Evidence: ${f}`)),
     ],
     status: "done",
     pros: summaryPros.slice(0, 4),
     cons: summaryCons.slice(0, 4),
   });
 
-  // 11 Verdict
-  const overall = primary
-    ? Math.max(
-        0,
-        Math.min(
-          100,
-          Math.round(
-            (primary.scoreHints[scoreKey] ?? 50) * 0.45 +
-              primary.pricingQuality * 6 +
-              (hoursFit(primary.hours) ? 8 : -10) +
-              (primary.usedByVantage ? 6 : 0) +
-              ({ "ultra-low": 6, low: 4, medium: 2 }[primary.latencyProfile] ?? 0),
-          ),
-        ),
-      )
-    : 0;
+  // 11 Verdict — product-relative score with traffic-light band
+  const overall = subjectScores[0]?.score ?? 0;
+  const overallBand = scoreBand(overall);
+  const bandLabel = scoreBandLabel(overallBand, locale);
 
   const baseVerdict = zh
-    ? overall >= 85
-      ? `${primary?.name} 对本标的呈现高优先级候选：按最终方法论进入「影子行情 → 小额实盘」（已接入 LP 可跳过完整 UAT）；新闻窗扫单必做。`
-      : overall >= 65
-        ? `${primary?.name} 可作为可用候选：补历史回测异常规则 + 真实行情影子，再测 last look/拒单与有效成本。`
-        : `${primary?.name} 目前代理评分偏低：仅作探索；优先验证覆盖与时段，或换更高分备源。`
-    : overall >= 85
-      ? `${primary?.name} looks high-priority — follow final methodology: live quote shadow → small live fills (skip full UAT if LP already connected); include news-window sweeps.`
-      : overall >= 65
-        ? `${primary?.name} is a usable candidate — add historical anomaly backtest + live MD shadow, then measure last-look/rejects and all-in cost.`
-        : `${primary?.name} scores soft on proxies — exploratory only; verify coverage/hours or prefer a higher-scoring peer.`;
+    ? overallBand === "green"
+      ? `${primary?.name} 对 ${symbol ?? "标的"} 呈绿色高适配（${overall}/100）：按最终方法论进入「影子行情 → 小额实盘」（已接入 LP 可跳过完整 UAT）；新闻窗扫单必做。`
+      : overallBand === "yellow"
+        ? `${primary?.name} 对 ${symbol ?? "标的"} 呈黄色可候选（${overall}/100）：补历史回测异常规则 + 真实行情影子，再测 last look/拒单与有效成本。`
+        : `${primary?.name} 对 ${symbol ?? "标的"} 呈红色偏弱（${overall}/100）：仅作探索；优先验证覆盖与时段，或换更高分备源。`
+    : overallBand === "green"
+      ? `${primary?.name} is green / strong fit for ${symbol ?? "this product"} (${overall}/100) — follow final methodology: live quote shadow → small live fills (skip full UAT if LP already connected); include news-window sweeps.`
+      : overallBand === "yellow"
+        ? `${primary?.name} is yellow / usable for ${symbol ?? "this product"} (${overall}/100) — add historical anomaly backtest + live MD shadow, then measure last-look/rejects and all-in cost.`
+        : `${primary?.name} is red / weak fit for ${symbol ?? "this product"} (${overall}/100) — exploratory only; verify coverage/hours or prefer a higher-scoring peer.`;
 
   const verdict = dataBottleneck.hit
     ? zh
-      ? `数据可得性是瓶颈。${baseVerdict} 在获得实盘 TCA / 拒单 / 压力窗样本前，请将 ${overall}/100 仅视为代理分，不作生产定论。`
-      : `Data availability is the bottleneck. ${baseVerdict} Treat ${overall}/100 as a proxy score only — not a production call — until live TCA / rejects / stress-window samples exist.`
+      ? `数据可得性是瓶颈。${baseVerdict} 在获得实盘 TCA / 拒单 / 压力窗样本前，请将 ${overall}/100（${bandLabel}）仅视为相对该品种的代理分，不作生产定论。`
+      : `Data availability is the bottleneck. ${baseVerdict} Treat ${overall}/100 (${bandLabel}) as a product-relative proxy only — not a production call — until live TCA / rejects / stress-window samples exist.`
     : baseVerdict;
 
   steps.push({
@@ -554,15 +715,18 @@ export function buildQualityReport(args: {
     index: 11,
     title: zh ? "结论与方法论下一步" : "Verdict & methodology next steps",
     action: zh
-      ? "给出综合代理评分与可执行下一步（LP UAT → 历史回测 → 影子行情 → 小额实盘 → 上线）；若数据不足则明确点出瓶颈。"
-      : "Issue composite proxy score and actionable next steps (LP UAT → backtest → live shadow → small live → go-live); name the bottleneck when data is insufficient.",
+      ? "给出相对该品种的红黄绿代理评分与可执行下一步（LP UAT → 历史回测 → 影子行情 → 小额实盘 → 上线）；若数据不足则明确点出瓶颈。"
+      : "Issue product-relative red/yellow/green proxy score and next steps (LP UAT → backtest → live shadow → small live → go-live); name the bottleneck when data is insufficient.",
     result: verdict,
     details: zh
       ? [
           ...(dataBottleneck.hit
             ? [`数据可得性瓶颈：${dataBottleneck.gaps[0]}`]
             : []),
-          `综合代理分：${overall}/100`,
+          `品种 ${symbol ?? "—"} 代理分：${overall}/100（${bandLabel}）`,
+          ...subjectScores.slice(0, 5).map(
+            (s) => `${s.name}: ${s.score}/100 · ${scoreBandLabel(s.band, locale)}`,
+          ),
           "下一步 1：LP UAT（新连接）或复用已有会话（已接入 LP）",
           "下一步 2：历史回测价差/跳价/稳定性（不作延迟/Last Look 证明）",
           "下一步 3：生产行情影子 — 延迟、断流、跨 LP 对比",
@@ -572,14 +736,17 @@ export function buildQualityReport(args: {
           ...(dataBottleneck.hit
             ? [`Data-availability bottleneck: ${dataBottleneck.gaps[0]}`]
             : []),
-          `Composite proxy score: ${overall}/100`,
+          `Product ${symbol ?? "—"} proxy score: ${overall}/100 (${bandLabel})`,
+          ...subjectScores.slice(0, 5).map(
+            (s) => `${s.name}: ${s.score}/100 · ${scoreBandLabel(s.band, locale)}`,
+          ),
           "Next 1: LP UAT (new connect) or reuse live session (LP already on)",
           "Next 2: Historical spread/jump/stability backtest (not latency/last-look proof)",
           "Next 3: Production MD shadow — latency, gaps, cross-LP compare",
           "Next 4: Small live fill/slippage/last look + go-live monitors",
         ],
-    status: dataBottleneck.hit || overall < 65 ? "warn" : "done",
-    pros: overall >= 65 ? [zh ? "值得进入 PoC 预算" : "Worth a PoC budget"] : [],
+    status: dataBottleneck.hit || overallBand === "red" ? "warn" : "done",
+    pros: overallBand !== "red" ? [zh ? "值得进入 PoC 预算" : "Worth a PoC budget"] : [],
     cons: [
       ...(dataBottleneck.hit
         ? [
@@ -588,7 +755,9 @@ export function buildQualityReport(args: {
               : "Data availability is the bottleneck — do not ramp production on proxy score alone",
           ]
         : []),
-      ...(overall < 65 ? [zh ? "不宜直接加大生产流量" : "Do not ramp production flow yet"] : []),
+      ...(overallBand === "red"
+        ? [zh ? "红色偏弱 — 不宜直接加大生产流量" : "Red / weak — do not ramp production flow yet"]
+        : []),
     ],
   });
 
@@ -599,21 +768,17 @@ export function buildQualityReport(args: {
     locale,
     generatedAt: new Date().toISOString(),
     overallScore: overall,
+    overallBand,
     verdict,
     summaryPros,
     summaryCons,
     steps,
-    subjects: subjects.map((s) => ({
-      name: s.name,
-      slug: s.slug,
-      logoUrl: s.logoUrl,
-      score: Math.round((s.scoreHints[scoreKey] ?? 50) + s.pricingQuality * 5),
-      usedByVantage: s.usedByVantage,
-    })),
+    subjects: subjectScores,
     dataBottleneck,
+    liveFindings,
     disclaimer: zh
-      ? "本报告为知识库 + 启发式实时研究代理结果，不能替代实盘 TCA、牌照法律意见或授信审批。请按最终方法论（UAT + 回测 + 影子 + 小额实盘）验证标注为样本/代理的项。若报告标明数据可得性是瓶颈，须先补齐实盘样本再下质量定论。"
-      : "This report combines KB + heuristic live-research proxies. It does not replace live TCA, legal licence opinions, or credit approval. Verify proxy/sample items via the final methodology (UAT + backtest + shadow + small live). When the report says data availability is the bottleneck, obtain live samples before a quality call.",
+      ? "本报告为知识库 + 启发式实时研究代理结果，不能替代实盘 TCA、牌照法律意见或授信审批。红/黄/绿分为相对该品种的代理适配度。请按最终方法论（UAT + 回测 + 影子 + 小额实盘）验证。若标明数据可得性是瓶颈，须先补齐实盘样本再下质量定论。"
+      : "This report combines KB + heuristic live-research proxies. It does not replace live TCA, legal licence opinions, or credit approval. Red/yellow/green scores are product-relative proxy fit only. Verify via the final methodology (UAT + backtest + shadow + small live). When data availability is the bottleneck, obtain live samples before a quality call.",
   };
 }
 
@@ -670,7 +835,14 @@ export function buildPrintableHtml(
   .verdict { background: #f4f7fa; border: 1px solid #c5d0db; padding: 12px 14px; border-radius: 8px; }
   .bottleneck { background: #fff7ed; border: 1px solid #f0b27a; padding: 12px 14px; border-radius: 8px; margin: 12px 0; }
   .bottleneck strong { color: #b45309; }
-  .score { font-size: 22px; color: #0f766e; font-weight: 700; }
+  .score { font-size: 22px; font-weight: 700; }
+  .score.green { color: #15803d; }
+  .score.yellow { color: #c2410c; }
+  .score.red { color: #b91c1c; }
+  .chip { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 6px; }
+  .chip.green { background: #dcfce7; color: #15803d; }
+  .chip.yellow { background: #ffedd5; color: #c2410c; }
+  .chip.red { background: #fee2e2; color: #b91c1c; }
   .pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .pc div { background: #f8fafc; border-radius: 6px; padding: 8px 10px; }
   .step { break-inside: avoid; margin: 14px 0; padding-bottom: 10px; border-bottom: 1px dashed #d7e0ea; }
@@ -678,7 +850,7 @@ export function buildPrintableHtml(
   ul { margin: 6px 0 0 18px; padding: 0; }
   li { margin: 2px 0; font-size: 13px; }
   ul.subjects { list-style: none; margin-left: 0; }
-  ul.subjects li { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  ul.subjects li { display: flex; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
   .logo { width: 28px; height: 28px; object-fit: contain; border: 1px solid #c5d0db; border-radius: 6px; background: #fff; padding: 1px; }
   .disclaimer { font-size: 11px; color: #5a6b7c; margin-top: 24px; }
   @media print { .no-print { display: none; } a { color: inherit; text-decoration: none; } }
@@ -691,7 +863,9 @@ export function buildPrintableHtml(
     ${report.product ? ` · ${zh ? "品种" : "Product"}: ${esc(report.product)}` : ""}
     · ${zh ? "模式" : "Mode"}: ${report.mode}
     · ${when} (SGT)</p>
-  <p class="score">${zh ? "综合代理分" : "Composite proxy score"}: ${report.overallScore}/100</p>
+  <p class="score ${report.overallBand}">${zh ? "品种适配代理分" : "Product-fit proxy score"}: ${report.overallScore}/100
+    <span class="chip ${report.overallBand}">${esc(scoreBandLabel(report.overallBand, report.locale))}</span></p>
+  <p class="meta">${zh ? "阈值" : "Bands"}: ${zh ? "绿 ≥85 · 黄 65–84 · 红 &lt;65（相对该品种）" : "Green ≥85 · Yellow 65–84 · Red &lt;65 (product-relative)"}</p>
   ${
     report.dataBottleneck.hit
       ? `<div class="bottleneck"><strong>${zh ? "数据可得性是瓶颈" : "Data availability is the bottleneck"}</strong>
@@ -707,11 +881,22 @@ export function buildPrintableHtml(
     <div><h4>${zh ? "局限" : "Cons"}</h4><ul>${report.summaryCons.map((c) => `<li>${esc(c)}</li>`).join("") || "<li>—</li>"}</ul></div>
   </div>
 
-  <h2>${zh ? "对照对象" : "Subjects compared"}</h2>
+  ${
+    report.liveFindings.length
+      ? `<h2>${zh ? "仓库 / 公开实据" : "Repository / public evidence"}</h2>
+      <ul>${report.liveFindings.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`
+      : ""
+  }
+
+  <h2>${zh ? "对照对象（按品种着色）" : "Subjects compared (coloured by product fit)"}</h2>
   <ul class="subjects">${report.subjects
     .map((s) => {
       const src = assetUrl(s.logoUrl || `/logos/${s.slug}.png`);
-      return `<li><img class="logo" src="${esc(src)}" alt="" width="28" height="28"/> <strong>${esc(s.name)}</strong> — score ${s.score}${s.usedByVantage ? (zh ? " · Vantage在用" : " · Vantage-used") : ""}</li>`;
+      return `<li><img class="logo" src="${esc(src)}" alt="" width="28" height="28"/> <strong>${esc(s.name)}</strong>
+        <span class="chip ${s.band}">${s.score}/100 · ${esc(scoreBandLabel(s.band, report.locale))}</span>
+        ${s.offersProduct ? (zh ? " · 显式覆盖" : " · covers product") : (zh ? " · 覆盖弱" : " · weak coverage")}
+        ${s.usedByVantage ? (zh ? " · Vantage在用" : " · Vantage-used") : ""}
+        ${s.reason ? ` <span class="meta">— ${esc(s.reason)}</span>` : ""}</li>`;
     })
     .join("")}</ul>
 

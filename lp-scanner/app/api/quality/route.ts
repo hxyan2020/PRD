@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { listLps } from "@/lib/db";
 import { buildPrintableHtml, buildQualityReport } from "@/lib/quality-research";
 import { rankLpsForProduct } from "@/lib/rank";
-import { findLp } from "@/lib/research";
+import { findLp, researchLp } from "@/lib/research";
 import type { Locale } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
     mode?: "product" | "lp";
     query?: string;
     lpId?: string;
+    product?: string;
     locale?: Locale;
     format?: "json" | "html";
   };
@@ -27,19 +28,24 @@ export async function POST(request: NextRequest) {
   let report;
   if (mode === "product") {
     const ranked = rankLpsForProduct(all, query, locale);
+    const primary = ranked.rankings[0]?.lp;
+    const live = primary
+      ? await researchLp(all, primary.name, locale).catch(() => null)
+      : null;
     report = buildQualityReport({
       mode: "product",
       locale,
       product: ranked.product,
       lps: ranked.rankings.map((r) => r.lp),
       rankings: ranked.rankings,
+      liveFindings: live?.liveFindings?.slice(0, 4) ?? [],
     });
   } else {
     const matched = body.lpId
       ? all.find((l) => l.id === body.lpId || l.slug === body.lpId)
       : findLp(all, query);
+    const productHint = body.product?.trim() || undefined;
     if (!matched) {
-      // Draft minimal LP shell for unknown names
       const draft = {
         id: "draft",
         slug: "draft",
@@ -71,9 +77,15 @@ export async function POST(request: NextRequest) {
         },
         updatedAt: new Date().toISOString(),
       };
-      report = buildQualityReport({ mode: "lp", locale, lps: [draft] });
+      const live = await researchLp(all, query, locale).catch(() => null);
+      report = buildQualityReport({
+        mode: "lp",
+        locale,
+        product: productHint,
+        lps: [draft],
+        liveFindings: live?.liveFindings?.slice(0, 4) ?? [],
+      });
     } else {
-      // Include peer set for comparison
       const peers = all
         .filter((l) => l.id !== matched.id)
         .filter(
@@ -82,7 +94,18 @@ export async function POST(request: NextRequest) {
             l.assetClasses.some((a) => matched.assetClasses.includes(a)),
         )
         .slice(0, 4);
-      report = buildQualityReport({ mode: "lp", locale, lps: [matched, ...peers] });
+      const live = await researchLp(all, matched.name, locale).catch(() => null);
+      const ranked = productHint
+        ? rankLpsForProduct(all, productHint, locale)
+        : undefined;
+      report = buildQualityReport({
+        mode: "lp",
+        locale,
+        product: productHint ?? ranked?.product,
+        lps: [matched, ...peers],
+        rankings: ranked?.rankings,
+        liveFindings: live?.liveFindings?.slice(0, 4) ?? [],
+      });
     }
   }
 

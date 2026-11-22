@@ -3,20 +3,46 @@
 import { useEffect, useRef, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
-import type { QualityReport, QualityStep } from "@/lib/quality-research";
+import {
+  scoreBandLabel,
+  type QualityReport,
+  type QualityStep,
+  type ScoreBand,
+} from "@/lib/quality-research";
 import type { Locale } from "@/lib/types";
 
 type Props = {
   mode: "product" | "lp";
   query: string;
   lpId?: string;
+  /** When running LP mode from a product scan, keep product context for RYG scores. */
+  product?: string;
   autoStart?: boolean;
   onClose?: () => void;
 };
 
+function bandClass(band: ScoreBand): string {
+  if (band === "green") return "bg-emerald-100 text-emerald-800 border-emerald-300";
+  if (band === "yellow") return "bg-amber-soft text-amber border-amber/40";
+  return "bg-rose-100 text-rose-800 border-rose-300";
+}
+
+function bandTextClass(band: ScoreBand): string {
+  if (band === "green") return "text-emerald-700";
+  if (band === "yellow") return "text-amber";
+  return "text-rose-700";
+}
+
 type UiStep = QualityStep & { uiStatus: "pending" | "running" | "done" | "warn" };
 
-export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }: Props) {
+export function QualityResearchRunner({
+  mode,
+  query,
+  lpId,
+  product,
+  autoStart,
+  onClose,
+}: Props) {
   const { t, locale } = useI18n();
   const [running, setRunning] = useState(false);
   const [liveMsg, setLiveMsg] = useState("");
@@ -52,6 +78,7 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
       q: query,
     });
     if (lpId) params.set("lpId", lpId);
+    if (product) params.set("product", product);
 
     try {
       const res = await fetch(`/api/quality/stream?${params.toString()}`);
@@ -148,6 +175,7 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
         mode,
         query,
         lpId,
+        product,
         locale,
         format: "html",
       }),
@@ -312,27 +340,58 @@ export function QualityResearchRunner({ mode, query, lpId, autoStart, onClose }:
         )}
 
         {report && (
-          <div className="rounded-xl border border-teal/30 bg-teal-soft/30 px-4 py-4">
+          <div
+            className={`rounded-xl border px-4 py-4 ${
+              report.overallBand === "green"
+                ? "border-emerald-300 bg-emerald-50/80"
+                : report.overallBand === "yellow"
+                  ? "border-amber/40 bg-amber-soft/40"
+                  : "border-rose-300 bg-rose-50/80"
+            }`}
+          >
             <p className="text-xs font-semibold uppercase tracking-wide text-teal">
               {t("quality.verdict")}
+              {report.product ? ` · ${report.product}` : ""}
             </p>
             {report.subjects.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {report.subjects.map((s) => (
                   <span
                     key={s.slug}
-                    className="inline-flex items-center gap-2 rounded-lg border border-line/70 bg-white/80 px-2 py-1 text-xs text-navy"
+                    className={`inline-flex items-center gap-2 rounded-lg border bg-white/90 px-2 py-1 text-xs ${bandClass(s.band)}`}
+                    title={s.reason}
                   >
                     <LpLogo lp={{ slug: s.slug, name: s.name, logoUrl: s.logoUrl }} size="sm" />
-                    {s.name}
+                    <span className="font-medium text-navy">{s.name}</span>
+                    <span className="font-mono font-semibold">
+                      {s.score}
+                    </span>
                   </span>
                 ))}
               </div>
             )}
-            <p className="mt-1 font-display text-2xl text-navy">
+            <p className={`mt-2 font-display text-2xl ${bandTextClass(report.overallBand)}`}>
               {t("quality.score")}: {report.overallScore}/100
+              <span
+                className={`ml-2 inline-flex rounded-full border px-2 py-0.5 text-xs font-semibold ${bandClass(report.overallBand)}`}
+              >
+                {scoreBandLabel(report.overallBand, locale)}
+              </span>
             </p>
+            <p className="mt-1 text-xs text-mist">{t("quality.bands")}</p>
             <p className="mt-2 text-sm text-navy-2">{report.verdict}</p>
+            {report.liveFindings?.length > 0 && (
+              <div className="mt-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-teal">
+                  {t("quality.evidence")}
+                </p>
+                <ul className="mt-1 list-disc pl-4 text-sm text-navy-2">
+                  {report.liveFindings.map((f, i) => (
+                    <li key={i}>{f}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div>
                 <p className="text-xs font-semibold text-teal">{t("quality.pros")}</p>

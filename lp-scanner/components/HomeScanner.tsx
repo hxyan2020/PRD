@@ -10,7 +10,7 @@ import type { LpResearchResult, RankedLp } from "@/lib/types";
 
 type QualityTarget =
   | { mode: "product"; query: string }
-  | { mode: "lp"; query: string; lpId?: string };
+  | { mode: "lp"; query: string; lpId?: string; product?: string };
 
 export function HomeScanner() {
   const { t, locale } = useI18n();
@@ -140,7 +140,14 @@ export function HomeScanner() {
           onRunProductQuality={() =>
             setQuality({ mode: "product", query: productResult.product })
           }
-          onRunLpQuality={(lpId, name) => setQuality({ mode: "lp", query: name, lpId })}
+          onRunLpQuality={(lpId, name) =>
+            setQuality({
+              mode: "lp",
+              query: name,
+              lpId,
+              product: productResult.product,
+            })
+          }
         />
       )}
 
@@ -184,6 +191,7 @@ export function HomeScanner() {
                     mode: "lp",
                     query: lpResult.query,
                     lpId: lpResult.matched?.id,
+                    product: lpResult.recommendedProducts[0],
                   })
                 }
                 className="touch-target w-full rounded-lg bg-teal px-4 text-sm font-medium text-white hover:bg-navy sm:w-auto"
@@ -239,10 +247,11 @@ export function HomeScanner() {
 
       {quality && (
         <QualityResearchRunner
-          key={`${quality.mode}-${quality.query}-${"lpId" in quality ? quality.lpId : ""}`}
+          key={`${quality.mode}-${quality.query}-${"lpId" in quality ? quality.lpId : ""}-${"product" in quality ? quality.product : ""}`}
           mode={quality.mode}
           query={quality.query}
           lpId={"lpId" in quality ? quality.lpId : undefined}
+          product={"product" in quality ? quality.product : undefined}
           autoStart
           onClose={() => setQuality(null)}
         />

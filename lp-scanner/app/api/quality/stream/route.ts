@@ -1,7 +1,7 @@
 import { listLps } from "@/lib/db";
 import { buildQualityReport, stepDelayMs } from "@/lib/quality-research";
 import { rankLpsForProduct } from "@/lib/rank";
-import { findLp } from "@/lib/research";
+import { findLp, researchLp } from "@/lib/research";
 import type { Locale, LpRecord } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +11,7 @@ export async function GET(request: Request) {
   const mode = (url.searchParams.get("mode") as "product" | "lp") || "product";
   const query = url.searchParams.get("q")?.trim() ?? "";
   const lpId = url.searchParams.get("lpId")?.trim() ?? "";
+  const productHint = url.searchParams.get("product")?.trim() || undefined;
   const locale = (url.searchParams.get("locale") as Locale) || "en";
 
   if (!query && !lpId) {
@@ -43,12 +44,23 @@ export async function GET(request: Request) {
                 : `Ranking candidate LPs for ${query}…`,
           });
           const ranked = rankLpsForProduct(all, query, locale);
+          send("status", {
+            phase: "live",
+            message:
+              locale === "zh-CN"
+                ? "正在拉取公开资料与仓库实据…"
+                : "Pulling public sources + repository evidence…",
+          });
+          const live = ranked.rankings[0]
+            ? await researchLp(all, ranked.rankings[0].lp.name, locale).catch(() => null)
+            : null;
           report = buildQualityReport({
             mode: "product",
             locale,
             product: ranked.product,
             lps: ranked.rankings.map((r) => r.lp),
             rankings: ranked.rankings,
+            liveFindings: live?.liveFindings?.slice(0, 4) ?? [],
           });
         } else {
           send("status", {
@@ -100,7 +112,25 @@ export async function GET(request: Request) {
                 l.assetClasses.some((a) => primary.assetClasses.includes(a)),
             )
             .slice(0, 4);
-          report = buildQualityReport({ mode: "lp", locale, lps: [primary, ...peers] });
+          send("status", {
+            phase: "live",
+            message:
+              locale === "zh-CN"
+                ? "正在拉取公开资料与品种适配分…"
+                : "Pulling public sources + product-fit scores…",
+          });
+          const live = await researchLp(all, primary.name, locale).catch(() => null);
+          const ranked = productHint
+            ? rankLpsForProduct(all, productHint, locale)
+            : undefined;
+          report = buildQualityReport({
+            mode: "lp",
+            locale,
+            product: productHint,
+            lps: [primary, ...peers],
+            rankings: ranked?.rankings,
+            liveFindings: live?.liveFindings?.slice(0, 4) ?? [],
+          });
         }
 
         send("meta", {
