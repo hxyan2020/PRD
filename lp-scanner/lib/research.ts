@@ -8,13 +8,13 @@ function normalize(s: string): string {
 
 export function findLp(lps: LpRecord[], query: string): LpRecord | undefined {
   const n = normalize(query);
+  if (!n) return undefined;
   return lps.find(
     (lp) =>
       normalize(lp.name) === n ||
       normalize(lp.slug) === n ||
       lp.aliases.some((a) => normalize(a) === n) ||
-      normalize(lp.name).includes(n) ||
-      n.includes(normalize(lp.name)),
+      (n.length >= 3 && (normalize(lp.name).includes(n) || n.includes(normalize(lp.name)))),
   );
 }
 
@@ -212,71 +212,6 @@ export function draftLpFromResearch(query: string, research: LpResearchResult): 
       : { gold: 55, fxMajors: 60, indices: 55, oil: 50, crypto: 20, asia: 55 },
     updatedAt: now,
   };
-}
-
-export function answerChat(
-  question: string,
-  contextText: string,
-  lps: LpRecord[],
-  locale: Locale,
-): string {
-  const q = question.toLowerCase();
-  const hit = lps.find(
-    (lp) =>
-      q.includes(lp.name.toLowerCase()) ||
-      lp.aliases.some((a) => q.includes(a.toLowerCase())) ||
-      contextText.toLowerCase().includes(lp.name.toLowerCase()),
-  );
-
-  if (
-    /(test|slippage|last.?look|fill ratio|reject|latency|tca|best.?execution|poc|执行质量|滑点|拒单|延迟|测试)/i.test(
-      question + contextText,
-    )
-  ) {
-    return locale === "zh-CN"
-      ? `测 LP 报价质量请看「LP 测试」最终方法论：LP UAT（接口/流程）与经纪商历史回测（价差/跳价）并用，再做真实行情影子测试与小额实盘（Fill/Slippage/Last Look）；已接入 LP 新增商品时优先复用连接做生产影子+小额验证，不必每次完整接口复认证。选中内容：「${contextText.slice(0, 120)}」。`
-      : `For LP quote quality see the LP Testing final methodology: combine LP UAT (connectivity/workflow) with broker historical backtests (spread/jumps), then live quote shadowing and small live fills (fill rate/slippage/last look). For an already-connected LP adding a new product, reuse the live session for production MD shadow + small execution — full FIX re-cert is usually unnecessary. Selection: “${contextText.slice(0, 120)}”.`;
-  }
-
-  if (/(xau|gold)/i.test(question) || /(xau|gold)/i.test(contextText)) {
-    const top = [...lps]
-      .filter((lp) => lp.scoreHints.gold >= 70)
-      .sort((a, b) => b.scoreHints.gold - a.scoreHints.gold)
-      .slice(0, 3)
-      .map((lp) => lp.name);
-    return locale === "zh-CN"
-      ? `针对黄金（XAUUSD），仓库优先推荐：${top.join("、")}。理由：贵金属定价质量、24/5 时段匹配，以及 Vantage 集成熟悉度。选中文本：「${contextText.slice(0, 120)}」。`
-      : `For gold (XAUUSD), repository prefers: ${top.join(", ")}. Reasons: metals pricing quality, 24/5 session fit, and Vantage integration familiarity. Selection: “${contextText.slice(0, 120)}”.`;
-  }
-
-  if (/(btc|eth|crypto|比特币|加密)/i.test(question + contextText)) {
-    const top = [...lps]
-      .filter((lp) => lp.category === "crypto")
-      .sort((a, b) => b.scoreHints.crypto - a.scoreHints.crypto)
-      .slice(0, 3)
-      .map((lp) => lp.name);
-    return locale === "zh-CN"
-      ? `加密品种应优先交易所 LP：${top.join("、")}（24/7、成本低、深度好）。传统 LP 的加密簿记通常仅作补充。`
-      : `Crypto products should prefer exchange LPs: ${top.join(", ")} (24/7, low cost, deeper books). Traditional LP crypto books are usually secondary.`;
-  }
-
-  if (hit) {
-    const lists = localizedLpLists(hit, locale);
-    return locale === "zh-CN"
-      ? `${hit.name}：${hit.kbBodyZh.slice(0, 320)} 擅长：${lists.bestFor.join("、")}。Vantage 在用：${hit.usedByVantage ? "是" : "否"}。`
-      : `${hit.name}: ${hit.kbBodyEn.slice(0, 320)} Best for: ${lists.bestFor.join(", ")}. Used by Vantage: ${hit.usedByVantage ? "yes" : "no"}.`;
-  }
-
-  if (contextText.trim()) {
-    return locale === "zh-CN"
-      ? `基于你选中的内容「${contextText.slice(0, 180)}」：建议对照知识库中的时段、成本档、定价质量与是否 Vantage 在用四列做排序。若要深入某家 LP，直接输入名称即可。问题：${question}`
-      : `Based on your selection “${contextText.slice(0, 180)}”: sort by hours, cost tier, pricing quality, and Vantage-used flags in the KB. Ask about a specific LP by name for depth. Question: ${question}`;
-  }
-
-  const vantage = lps.filter((lp) => lp.usedByVantage).length;
-  return locale === "zh-CN"
-    ? `LP Scanner 仓库当前含 ${lps.length} 家 LP，其中 ${vantage} 家标记为 Vantage 在用。可查询产品（如 XAUUSD）或 LP 名称。你的问题：${question}`
-    : `LP Scanner repository holds ${lps.length} LPs (${vantage} marked used by Vantage). Query a product (e.g. XAUUSD) or an LP name. Your question: ${question}`;
 }
 
 export { SEED_LPS };

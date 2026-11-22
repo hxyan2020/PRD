@@ -2,8 +2,81 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import type { ChatSection, ChatSource } from "@/lib/assistant";
 
-type Msg = { role: "user" | "assistant"; text: string };
+type Msg =
+  | { role: "user"; text: string }
+  | {
+      role: "assistant";
+      text: string;
+      understoodAs?: string;
+      sections?: ChatSection[];
+      sources?: ChatSource[];
+      disclaimer?: string | null;
+    };
+
+function AssistantBubble({
+  msg,
+  sourcesLabel,
+}: {
+  msg: Extract<Msg, { role: "assistant" }>;
+  sourcesLabel: string;
+}) {
+  const structured = msg.sections && msg.sections.length > 0;
+
+  return (
+    <div className="mr-3 space-y-2 rounded-xl bg-slate/60 px-3 py-2 text-navy sm:mr-4">
+      {msg.understoodAs && (
+        <p className="text-xs font-medium text-teal">{msg.understoodAs}</p>
+      )}
+      {structured ? (
+        msg.sections!.map((s, i) => (
+          <div key={i} className="space-y-1">
+            {s.heading && <p className="text-sm font-semibold text-navy">{s.heading}</p>}
+            {(s.paragraphs ?? []).map((p, j) => (
+              <p key={j} className="text-sm leading-relaxed text-navy-2">
+                {p}
+              </p>
+            ))}
+            {(s.bullets ?? []).length > 0 && (
+              <ul className="list-disc space-y-1 pl-4 text-sm leading-relaxed text-navy-2">
+                {s.bullets!.map((b, j) => (
+                  <li key={j}>{b}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))
+      ) : (
+        <p className="whitespace-pre-wrap text-sm leading-relaxed">{msg.text}</p>
+      )}
+      {msg.sources && msg.sources.length > 0 && (
+        <div className="border-t border-line/70 pt-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-mist">
+            {sourcesLabel}
+          </p>
+          <ul className="mt-1 space-y-1">
+            {msg.sources.map((s) => (
+              <li key={s.url}>
+                <a
+                  href={s.url}
+                  target={s.url.startsWith("http") ? "_blank" : undefined}
+                  rel={s.url.startsWith("http") ? "noreferrer" : undefined}
+                  className="text-xs text-teal underline decoration-teal/30 hover:decoration-teal"
+                >
+                  {s.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {msg.disclaimer && (
+        <p className="text-[11px] leading-snug text-mist">{msg.disclaimer}</p>
+      )}
+    </div>
+  );
+}
 
 export function AiHoverBot() {
   const { t, locale } = useI18n();
@@ -52,8 +125,26 @@ export function AiHoverBot() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ question: q, selection, locale }),
       });
-      const data = (await res.json()) as { answer?: string };
-      setMessages((m) => [...m, { role: "assistant", text: data.answer || "…" }]);
+      const data = (await res.json()) as {
+        answer?: string;
+        understoodAs?: string;
+        sections?: ChatSection[];
+        sources?: ChatSource[];
+        disclaimer?: string | null;
+        error?: string;
+      };
+      if (!res.ok) throw new Error(data.error || "chat failed");
+      setMessages((m) => [
+        ...m,
+        {
+          role: "assistant",
+          text: data.answer || "…",
+          understoodAs: data.understoodAs,
+          sections: data.sections,
+          sources: data.sources,
+          disclaimer: data.disclaimer,
+        },
+      ]);
     } catch {
       setMessages((m) => [
         ...m,
@@ -90,7 +181,7 @@ export function AiHoverBot() {
       </button>
 
       {open && (
-        <div className="panel fixed inset-x-3 bottom-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.5rem))] z-50 flex h-[min(72vh,560px)] w-auto flex-col overflow-hidden animate-rise sm:inset-x-auto sm:bottom-24 sm:right-5 sm:h-[min(70vh,520px)] sm:w-[min(92vw,380px)]">
+        <div className="panel fixed inset-x-3 bottom-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.5rem))] z-50 flex h-[min(72vh,560px)] w-auto flex-col overflow-hidden animate-rise sm:inset-x-auto sm:bottom-24 sm:right-5 sm:h-[min(70vh,520px)] sm:w-[min(92vw,420px)]">
           <div className="flex items-start justify-between gap-2 border-b border-line bg-navy px-4 py-3 text-foam">
             <div className="min-w-0">
               <p className="font-display text-xl">{t("ai.title")}</p>
@@ -114,16 +205,23 @@ export function AiHoverBot() {
           )}
           <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-3 text-sm">
             {messages.length === 0 && <p className="text-mist">{t("ai.hint")}</p>}
-            {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`rounded-xl px-3 py-2 ${
-                  m.role === "user" ? "ml-4 bg-navy text-foam sm:ml-6" : "mr-3 bg-slate/60 text-navy sm:mr-4"
-                }`}
-              >
-                {m.text}
-              </div>
-            ))}
+            {messages.map((m, i) =>
+              m.role === "user" ? (
+                <div
+                  key={i}
+                  className="ml-4 rounded-xl bg-navy px-3 py-2 text-foam sm:ml-6"
+                >
+                  {m.text}
+                </div>
+              ) : (
+                <AssistantBubble key={i} msg={m} sourcesLabel={t("ai.sources")} />
+              ),
+            )}
+            {busy && (
+              <p className="text-xs text-mist">
+                {locale === "zh-CN" ? "正在理解问题…" : "Understanding your question…"}
+              </p>
+            )}
             <div ref={endRef} />
           </div>
           <form
@@ -138,6 +236,7 @@ export function AiHoverBot() {
               placeholder={t("ai.placeholder")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              disabled={busy}
             />
             <button
               type="submit"
