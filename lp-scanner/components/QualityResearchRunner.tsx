@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LpLogo } from "@/components/LpLogo";
 import { useI18n } from "@/lib/i18n/context";
+import { isZh } from "@/lib/i18n/locale";
 import {
   scoreBandLabel,
   type QualityReport,
@@ -70,7 +71,7 @@ export function QualityResearchRunner({
     setError(null);
     setReport(null);
     setSteps([]);
-    setLiveMsg(locale === "zh-CN" ? "启动实时质量研究…" : "Starting live quality research…");
+    setLiveMsg(isZh(locale) ? "启动实时质量研究…" : "Starting live quality research…");
 
     const params = new URLSearchParams({
       mode,
@@ -125,7 +126,7 @@ export function QualityResearchRunner({
       const action = String(payload.action ?? "");
       const id = String(payload.id ?? index);
       setLiveMsg(
-        loc === "zh-CN"
+        isZh(loc)
           ? `步骤 ${index}: ${title} — 执行中…`
           : `Step ${index}: ${title} — running…`,
       );
@@ -159,7 +160,7 @@ export function QualityResearchRunner({
     if (event === "complete") {
       const full = payload.report as QualityReport;
       setReport(full);
-      setLiveMsg(loc === "zh-CN" ? "研究完成" : "Research complete");
+      setLiveMsg(isZh(loc) ? "研究完成" : "Research complete");
       return;
     }
     if (event === "error") {

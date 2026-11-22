@@ -14,5 +14,7 @@ describe("optimal regions", () => {
   it("formats bilingual flags", () => {
     expect(formatOptimalRegions(["UK", "SG"], "en")).toContain("🇬🇧");
     expect(formatOptimalRegions(["UK", "SG"], "zh-CN")).toContain("新加坡");
+    expect(formatOptimalRegions(["UK", "SG"], "zh-TW")).toContain("新加坡");
+    expect(formatOptimalRegions(["AU"], "zh-TW")).toContain("澳大利亞");
   });
 });

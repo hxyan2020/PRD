@@ -11,10 +11,11 @@ import {
   TEST_MODES,
 } from "@/lib/data/lp-quality-testing";
 import { useI18n } from "@/lib/i18n/context";
+import { isZh } from "@/lib/i18n/locale";
 
 export function TestingGuide() {
   const { t, locale } = useI18n();
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
 
   return (
     <div className="space-y-8">

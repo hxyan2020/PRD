@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import type { ChatSection, ChatSource } from "@/lib/assistant";
+import { isZh } from "@/lib/i18n/locale";
 
 type Msg =
   | { role: "user"; text: string }
@@ -150,7 +151,7 @@ export function AiHoverBot() {
         ...m,
         {
           role: "assistant",
-          text: locale === "zh-CN" ? "请求失败，请稍后重试。" : "Request failed, try again.",
+          text: isZh(locale) ? "请求失败，请稍后重试。" : "Request failed, try again.",
         },
       ]);
     } finally {
@@ -219,7 +220,7 @@ export function AiHoverBot() {
             )}
             {busy && (
               <p className="text-xs text-mist">
-                {locale === "zh-CN" ? "正在理解问题…" : "Understanding your question…"}
+                {isZh(locale) ? "正在理解问题…" : "Understanding your question…"}
               </p>
             )}
             <div ref={endRef} />

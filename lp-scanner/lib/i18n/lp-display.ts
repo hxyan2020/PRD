@@ -1,6 +1,7 @@
 import { LP_ZH } from "@/lib/data/lp-zh";
 import type { Locale, LpRecord } from "@/lib/types";
 import { t, type MessageKey } from "@/lib/i18n/messages";
+import { isZh } from "@/lib/i18n/locale";
 
 export type LocalizedLpLists = {
   bestFor: string[];
@@ -11,7 +12,7 @@ export type LocalizedLpLists = {
 
 /** Pick EN/ZH list fields for an LP (falls back to English). */
 export function localizedLpLists(lp: LpRecord, locale: Locale): LocalizedLpLists {
-  const zh = locale === "zh-CN" ? LP_ZH[lp.slug] : undefined;
+  const zh = isZh(locale) ? LP_ZH[lp.slug] : undefined;
   return {
     bestFor: (zh?.bestFor?.length ? zh.bestFor : lp.bestForZh?.length ? lp.bestForZh : lp.bestFor) ?? [],
     strengths:
@@ -50,8 +51,8 @@ export function labelVantageBadge(locale: Locale, used: boolean): string {
 
 /** Translate occasional descriptive product labels; leave tickers as-is. */
 export function localizeProducts(products: string[], locale: Locale): string[] {
-  if (locale !== "zh-CN") return products;
-  const map: Record<string, string> = {
+  if (!isZh(locale)) return products;
+  const mapCn: Record<string, string> = {
     "long-tail alts": "长尾山寨币",
     "altcoin CFDs": "山寨币 CFD",
     "equity CFDs": "股票 CFD",
@@ -59,16 +60,27 @@ export function localizeProducts(products: string[], locale: Locale): string[] {
     "multi-LP aggregation": "多 LP 聚合",
     "majors FX": "主要货币对",
   };
+  const mapTw: Record<string, string> = {
+    "long-tail alts": "長尾山寨幣",
+    "altcoin CFDs": "山寨幣 CFD",
+    "equity CFDs": "股票 CFD",
+    bonds: "債券",
+    "multi-LP aggregation": "多 LP 聚合",
+    "majors FX": "主要貨幣對",
+  };
+  const map = locale === "zh-TW" ? mapTw : mapCn;
   return products.map((p) => map[p] ?? p);
 }
 
 export function formatLpMeta(lp: LpRecord, locale: Locale): string {
   const lists = localizedLpLists(lp, locale);
-  const zh = locale === "zh-CN";
   const cost = labelCost(locale, lp.costTier);
   const latency = labelLatency(locale, lp.latencyProfile);
   const hours = labelHours(locale, lp.hours);
-  if (zh) {
+  if (locale === "zh-TW") {
+    return `${lists.regions.join(" · ")} · ${hours} · 成本 ${cost} · 定價 ${lp.pricingQuality}/5 · ${latency}`;
+  }
+  if (locale === "zh-CN") {
     return `${lists.regions.join(" · ")} · ${hours} · 成本 ${cost} · 定价 ${lp.pricingQuality}/5 · ${latency}`;
   }
   return `${lists.regions.join(" · ")} · ${hours} · cost ${cost} · pricing ${lp.pricingQuality}/5 · ${latency}`;

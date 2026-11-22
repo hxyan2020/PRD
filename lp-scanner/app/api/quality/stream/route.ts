@@ -3,6 +3,7 @@ import { buildQualityReport, stepDelayMs } from "@/lib/quality-research";
 import { rankLpsForProduct } from "@/lib/rank";
 import { findLp, researchLp } from "@/lib/research";
 import type { Locale, LpRecord } from "@/lib/types";
+import { isZh } from "@/lib/i18n/locale";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
         send("status", {
           phase: "init",
           message:
-            locale === "zh-CN" ? "正在加载仓库与知识库…" : "Loading repository & knowledge base…",
+            isZh(locale) ? "正在加载仓库与知识库…" : "Loading repository & knowledge base…",
         });
 
         const all = await listLps();
@@ -39,7 +40,7 @@ export async function GET(request: Request) {
           send("status", {
             phase: "rank",
             message:
-              locale === "zh-CN"
+              isZh(locale)
                 ? `正在对品种 ${query} 排序候选 LP…`
                 : `Ranking candidate LPs for ${query}…`,
           });
@@ -47,7 +48,7 @@ export async function GET(request: Request) {
           send("status", {
             phase: "live",
             message:
-              locale === "zh-CN"
+              isZh(locale)
                 ? "正在拉取公开资料与仓库实据…"
                 : "Pulling public sources + repository evidence…",
           });
@@ -66,7 +67,7 @@ export async function GET(request: Request) {
           send("status", {
             phase: "resolve",
             message:
-              locale === "zh-CN" ? `正在解析 LP ${query || lpId}…` : `Resolving LP ${query || lpId}…`,
+              isZh(locale) ? `正在解析 LP ${query || lpId}…` : `Resolving LP ${query || lpId}…`,
           });
           const matched = lpId
             ? all.find((l) => l.id === lpId || l.slug === lpId)
@@ -115,7 +116,7 @@ export async function GET(request: Request) {
           send("status", {
             phase: "live",
             message:
-              locale === "zh-CN"
+              isZh(locale)
                 ? "正在拉取公开资料与品种适配分…"
                 : "Pulling public sources + product-fit scores…",
           });

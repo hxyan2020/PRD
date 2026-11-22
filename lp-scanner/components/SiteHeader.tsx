@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { cycleLocale, nextLocaleLabel } from "@/lib/i18n/locale";
 
 export function SiteHeader() {
   const { t, locale, setLocale } = useI18n();
@@ -27,6 +28,9 @@ export function SiteHeader() {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  const langLabel = nextLocaleLabel(locale);
+  const cycleLang = () => setLocale(cycleLocale(locale));
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/80 bg-foam/85 backdrop-blur-md safe-top">
@@ -60,9 +64,10 @@ export function SiteHeader() {
           <button
             type="button"
             className="ml-1 rounded-md border border-line bg-white px-3 py-1.5 text-sm text-navy hover:border-teal"
-            onClick={() => setLocale(locale === "en" ? "zh-CN" : "en")}
+            onClick={cycleLang}
+            title="EN → 简中 → 繁中"
           >
-            {t("nav.lang")}
+            {langLabel}
           </button>
         </nav>
 
@@ -70,10 +75,11 @@ export function SiteHeader() {
           <button
             type="button"
             className="touch-target rounded-md border border-line bg-white px-2.5 text-sm text-navy"
-            onClick={() => setLocale(locale === "en" ? "zh-CN" : "en")}
-            aria-label={t("nav.lang")}
+            onClick={cycleLang}
+            aria-label={langLabel}
+            title="EN → 简中 → 繁中"
           >
-            {t("nav.lang")}
+            {langLabel}
           </button>
           <button
             type="button"

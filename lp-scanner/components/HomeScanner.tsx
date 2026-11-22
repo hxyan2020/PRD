@@ -7,6 +7,7 @@ import { RegionFlags } from "@/components/RegionFlags";
 import { SortableResults } from "@/components/SortableResults";
 import { useI18n } from "@/lib/i18n/context";
 import type { LpResearchResult, RankedLp } from "@/lib/types";
+import { dateLocale } from "@/lib/i18n/locale";
 
 type QualityTarget =
   | { mode: "product"; query: string }
@@ -179,10 +180,9 @@ export function HomeScanner() {
               <p className="mt-2 max-w-3xl text-sm text-navy-2">{lpResult.summary}</p>
               <p className="mt-2 text-xs text-mist">
                 {t("home.liveAt")}{" "}
-                {new Date(lpResult.researchedAt).toLocaleString(
-                  locale === "zh-CN" ? "zh-CN" : "en-SG",
-                  { timeZone: "Asia/Singapore" },
-                )}{" "}
+                {new Date(lpResult.researchedAt).toLocaleString(dateLocale(locale), {
+                  timeZone: "Asia/Singapore",
+                })}{" "}
                 (SGT)
               </p>
             </div>

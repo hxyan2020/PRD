@@ -2,6 +2,7 @@ import { localizedLpLists } from "@/lib/i18n/lp-display";
 import { formatOptimalRegions, resolveOptimalRegions } from "@/lib/regions";
 import { resolveProduct, type ProductProfile } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
+import { dateLocale, isZh } from "@/lib/i18n/locale";
 
 export type QualityStepStatus = "pending" | "running" | "done" | "warn";
 
@@ -64,6 +65,9 @@ export function scoreBand(score: number): ScoreBand {
 }
 
 export function scoreBandLabel(band: ScoreBand, locale: Locale): string {
+  if (locale === "zh-TW") {
+    return band === "green" ? "綠 · 高適配" : band === "yellow" ? "黃 · 可候選" : "紅 · 偏弱";
+  }
   if (locale === "zh-CN") {
     return band === "green" ? "绿 · 高适配" : band === "yellow" ? "黄 · 可候选" : "红 · 偏弱";
   }
@@ -182,7 +186,7 @@ export function assessDataAvailability(args: {
   profileAssetClass?: string;
 }): DataBottleneck {
   const { locale, primary, subjects, symbol, scoreKey, profileAssetClass } = args;
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const gaps: string[] = [];
 
   // Live market / fill telemetry is never available in this app — always a structural gap.
@@ -292,7 +296,7 @@ export function buildQualityReport(args: {
   liveFindings?: string[];
 }): QualityReport {
   const { mode, locale, product, lps, rankings, liveFindings: incomingLive = [] } = args;
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
 
   const subjects =
     mode === "product" && rankings
@@ -791,8 +795,8 @@ export function buildPrintableHtml(
   report: QualityReport,
   opts?: { assetOrigin?: string },
 ): string {
-  const zh = report.locale === "zh-CN";
-  const when = new Date(report.generatedAt).toLocaleString(zh ? "zh-CN" : "en-SG", {
+  const zh = isZh(report.locale);
+  const when = new Date(report.generatedAt).toLocaleString(dateLocale(report.locale), {
     timeZone: "Asia/Singapore",
   });
   const origin = (opts?.assetOrigin ?? "").replace(/\/$/, "");
