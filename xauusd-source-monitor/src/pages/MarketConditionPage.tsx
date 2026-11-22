@@ -1,6 +1,7 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { ArchivedBriefingsPage, BriefingArchive } from '../components/BriefingArchive'
 import { HealthDashboard } from '../components/HealthDashboard'
+import { HourlyScanReport } from '../components/HourlyScanReport'
 import { RulesPanel } from '../components/RulesPanel'
 import { useLocale } from '../i18n/locale'
 import type { useMonitor } from '../hooks/useMonitor'
@@ -14,8 +15,9 @@ export function MarketConditionPage({ mon }: { mon: MonitorApi }) {
     <div className="market-condition">
       <div className="subnav" role="tablist" aria-label={t('navMarket')}>
         <NavLink to="/market" end>
-          {t('navBriefings')}
+          {t('navHourly')}
         </NavLink>
+        <NavLink to="/market/briefings">{t('navBriefings')}</NavLink>
         <NavLink to="/market/health">{t('navHealth')}</NavLink>
         <NavLink to="/market/rules">{t('navRules')}</NavLink>
         <NavLink to="/market/archive">{t('navArchive')}</NavLink>
@@ -24,6 +26,16 @@ export function MarketConditionPage({ mon }: { mon: MonitorApi }) {
       <Routes>
         <Route
           index
+          element={
+            <HourlyScanReport
+              health={mon.health}
+              composite={mon.composite}
+              spot={mon.spot}
+            />
+          }
+        />
+        <Route
+          path="briefings"
           element={
             <BriefingArchive briefings={mon.briefings} onArchive={mon.archiveBriefing} />
           }
