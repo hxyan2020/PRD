@@ -84,16 +84,21 @@ export async function POST(request: Request) {
     }
   }
 
+  const firstLine =
+    content
+      .split(/\n/)
+      .map((l) => l.replace(/^#+\s*/, "").trim())
+      .find((l) => l.length >= 2 && l.length <= 120) || "";
+
   const titleZh =
     body.titleZh?.trim() ||
+    firstLine ||
     `Lark 文档导入 ${new Date().toISOString().slice(0, 10)}`;
-  const titleEn = body.titleEn?.trim() || `Imported Lark doc ${new Date().toISOString().slice(0, 10)}`;
+  const titleEn =
+    body.titleEn?.trim() ||
+    (firstLine ? `[EN] ${firstLine}` : `Imported Lark doc ${new Date().toISOString().slice(0, 10)}`);
 
-  const mdZh = [
-    `> 来源：[Lark/Feishu 文档](${url})`,
-    "",
-    content,
-  ].join("\n");
+  const mdZh = [`> 来源：[Lark/Feishu 文档](${url})`, "", content].join("\n");
 
   const node = await createNode(
     {

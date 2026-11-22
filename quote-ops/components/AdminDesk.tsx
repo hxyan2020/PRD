@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { LarkImportPanel } from "@/components/LarkImportPanel";
 import { formatTs } from "@/lib/kb/format";
 import { useI18n } from "@/lib/i18n/context";
 import type { KbKind, KbNode } from "@/lib/kb/types";
@@ -45,10 +46,6 @@ export function AdminDesk() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [larkUrl, setLarkUrl] = useState("");
-  const [larkPaste, setLarkPaste] = useState("");
-  const [larkTitle, setLarkTitle] = useState("");
-
   const load = useCallback(async () => {
     const [meRes, listRes] = await Promise.all([
       fetch("/api/me"),
@@ -65,42 +62,6 @@ export function AdminDesk() {
   }, [load]);
 
   const folders = useMemo(() => nodes.filter((n) => n.kind === "folder"), [nodes]);
-
-  async function importLark() {
-    if (!larkUrl.trim()) return;
-    setBusy(true);
-    setMsg(null);
-    try {
-      const res = await fetch("/api/kb/import-lark", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          url: larkUrl.trim(),
-          pastedContent: larkPaste,
-          titleZh: larkTitle || undefined,
-          parentId: form.parentId || "folder-custom",
-          publish: false,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || data.error || `HTTP ${res.status}`);
-      setMsg(
-        t(
-          `已从 Lark 导入为草稿：${data.node.titleZh}`,
-          `Imported from Lark as draft: ${data.node.titleEn || data.node.titleZh}`,
-        ),
-      );
-      setLarkUrl("");
-      setLarkPaste("");
-      setLarkTitle("");
-      startEdit(data.node);
-      await load();
-    } catch (e) {
-      setMsg(e instanceof Error ? e.message : "lark import failed");
-    } finally {
-      setBusy(false);
-    }
-  }
 
   async function suggest() {
     setBusy(true);
@@ -327,45 +288,17 @@ export function AdminDesk() {
         </p>
       </header>
 
-      <section className="rounded-2xl border border-copper/30 bg-copper-soft/25 p-4 sm:p-5">
-        <h2 className="font-display text-lg text-ink">
-          {t("从 Lark / 飞书文档导入", "Import from Lark / Feishu")}
-        </h2>
-        <p className="mt-1 text-xs text-mist">
-          {t(
-            "粘贴文档链接。若文档为私有（常见），请同时粘贴正文内容，系统会生成知识节点草稿。",
-            "Paste the doc link. For private docs (common), also paste the body — we create a draft node.",
-          )}
-        </p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          <input
-            className="field"
-            placeholder="https://....feishu.cn/docx/..."
-            value={larkUrl}
-            onChange={(e) => setLarkUrl(e.target.value)}
-          />
-          <input
-            className="field"
-            placeholder={t("可选：中文标题", "Optional ZH title")}
-            value={larkTitle}
-            onChange={(e) => setLarkTitle(e.target.value)}
-          />
-        </div>
-        <textarea
-          className="field mt-2 min-h-[100px]"
-          placeholder={t("粘贴文档正文（私有文档必填）", "Paste doc body (required for private docs)")}
-          value={larkPaste}
-          onChange={(e) => setLarkPaste(e.target.value)}
-        />
-        <button
-          type="button"
-          disabled={busy || !larkUrl.trim()}
-          onClick={() => void importLark()}
-          className="mt-2 rounded-lg bg-copper px-4 py-2 text-xs text-white disabled:opacity-50"
-        >
-          {t("生成知识节点", "Create knowledge node")}
-        </button>
-      </section>
+      <LarkImportPanel
+        assumeAdmin
+        defaultParentId={form.parentId || "folder-custom"}
+        onImported={(node) => {
+          startEdit(node);
+          void load();
+          setMsg(
+            t(`已从 Lark 导入：${node.titleZh}`, `Imported from Lark: ${node.titleZh}`),
+          );
+        }}
+      />
 
       <section className="rounded-2xl border border-line bg-white/90 p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap items-center gap-2">
