@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AgentDocBar } from "@/components/AgentDocBar";
+import { KbNodeAuditBySlug } from "@/components/KbNodeAuditBySlug";
 import { ClassBadge, FreqBadge, SeverityBadge } from "@/components/ClassBadge";
 import { SKILLS } from "@/lib/data/skills";
 import type { RiskScenario } from "@/lib/types";
@@ -132,6 +133,8 @@ export function RiskDetail({ risk }: { risk: RiskScenario }) {
         label={`agent.md · ${kbSlug}`}
         isAdmin={isAdmin}
       />
+
+      <KbNodeAuditBySlug slug={kbSlug} />
 
       <Link href={`/kb/${kbSlug}`} className="inline-flex text-sm text-sea hover:underline">
         {t("在知识页阅读排版版", "Open formatted KB page")}

@@ -3,16 +3,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AgentDocBar } from "@/components/AgentDocBar";
+import { KbPageAudit } from "@/components/KbPageAudit";
 import { PageHero, Prose } from "@/components/Prose";
 import { formatTs } from "@/lib/kb/format";
 import { useI18n } from "@/lib/i18n/context";
-import type { KbNode, KbRevision } from "@/lib/kb/types";
+import type { KbNode } from "@/lib/kb/types";
 
 export function KbReader({ slug }: { slug: string }) {
   const { locale, t } = useI18n();
   const [node, setNode] = useState<KbNode | null>(null);
-  const [revisions, setRevisions] = useState<KbRevision[]>([]);
-  const [showLog, setShowLog] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -33,14 +32,6 @@ export function KbReader({ slug }: { slug: string }) {
       }
     })();
   }, [slug]);
-
-  async function loadLog() {
-    if (!node) return;
-    const res = await fetch(`/api/kb/${node.id}?revisions=1`);
-    const data = (await res.json()) as { revisions: KbRevision[] };
-    setRevisions(data.revisions || []);
-    setShowLog(true);
-  }
 
   if (error) {
     return (
@@ -107,42 +98,15 @@ export function KbReader({ slug }: { slug: string }) {
         }
       />
 
-      <div className="space-y-2">
-        <AgentDocBar nodeKey={node.id} label={`agent.md · ${node.slug}`} isAdmin={isAdmin} />
-        <button
-          type="button"
-          onClick={() => void loadLog()}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-xs"
-        >
-          {t("编辑记录", "Edit history")}
-        </button>
-      </div>
+      <AgentDocBar nodeKey={node.id} label={`agent.md · ${node.slug}`} isAdmin={isAdmin} />
 
-      {showLog && (
-        <div className="rounded-xl border border-line bg-white/90 p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <h2 className="font-display text-lg">{t("完整编辑记录", "Full edit log")}</h2>
-            <button type="button" className="text-xs text-mist" onClick={() => setShowLog(false)}>
-              {t("收起", "Collapse")}
-            </button>
-          </div>
-          <ul className="space-y-2 text-sm">
-            {revisions.map((r) => (
-              <li key={r.id} className="rounded-lg border border-line/70 px-3 py-2">
-                <div className="flex flex-wrap gap-2 text-xs text-mist">
-                  <span className="font-mono text-sea">{r.action}</span>
-                  <span>{formatTs(r.createdAt, locale)}</span>
-                  <span>{r.actorEmail || r.actorName || r.actorSub || "—"}</span>
-                  {r.note && <span>· {r.note}</span>}
-                </div>
-              </li>
-            ))}
-            {revisions.length === 0 && (
-              <li className="text-mist">{t("暂无修订（种子内容无人工编辑记录）", "No revisions yet")}</li>
-            )}
-          </ul>
-        </div>
-      )}
+      <KbPageAudit
+        nodeId={node.id}
+        createdAt={node.createdAt}
+        updatedAt={node.updatedAt}
+        createdBy={node.createdBy}
+        updatedBy={node.updatedBy}
+      />
 
       <section className="rounded-2xl border border-line bg-white/90 p-5 sm:p-8">
         <Prose markdown={body || summary || t("（暂无正文）", "(Empty body)")} />

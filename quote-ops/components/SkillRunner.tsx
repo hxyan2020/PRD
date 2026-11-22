@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AgentDocBar } from "@/components/AgentDocBar";
+import { KbNodeAuditBySlug } from "@/components/KbNodeAuditBySlug";
 import { SeverityBadge } from "@/components/ClassBadge";
 import { getRisk } from "@/lib/data/risks";
 import type { Skill } from "@/lib/types";
@@ -149,6 +150,8 @@ export function SkillRunner({ skill }: { skill: Skill }) {
         label={`agent.md · ${skill.slug}`}
         isAdmin={isAdmin}
       />
+
+      <KbNodeAuditBySlug slug={skill.slug} />
 
       <ol className="space-y-3">
         {skill.steps.map((step, idx) => {

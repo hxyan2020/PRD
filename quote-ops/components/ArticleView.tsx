@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AgentDocBar } from "@/components/AgentDocBar";
+import { KbNodeAuditBySlug } from "@/components/KbNodeAuditBySlug";
 import type { Article } from "@/lib/data/articles";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -58,6 +59,7 @@ export function ArticleView({ article }: { article: Article }) {
         label={`agent.md · ${article.slug}`}
         isAdmin={isAdmin}
       />
+      <KbNodeAuditBySlug slug={article.slug} />
       <div className="prose-desk max-w-3xl whitespace-pre-wrap rounded-2xl border border-line bg-white/85 p-5 text-sm text-ink-2 sm:p-7">
         {body}
       </div>

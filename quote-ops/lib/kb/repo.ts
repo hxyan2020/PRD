@@ -139,6 +139,7 @@ export async function ensureKbSeeded(): Promise<void> {
   const countRows = await sql<{ count: string }>("select count(*)::text as count from kb_nodes");
   if (Number(countRows[0]?.count ?? 0) > 0) {
     seeded = true;
+    await backfillMissingSeedRevisions();
     return;
   }
 
@@ -441,6 +442,34 @@ export async function ensureKbSeeded(): Promise<void> {
   }
 
   seeded = true;
+
+  // Seed audit trail so every page has at least one operator log entry.
+  const allSeeded = await sql("select * from kb_nodes");
+  for (const row of allSeeded) {
+    await writeRevision(rowToNode(row), "seed", system, "initial seed");
+  }
+}
+
+/** Backfill seed revisions for DBs that were seeded before audit logging. */
+async function backfillMissingSeedRevisions(): Promise<void> {
+  const missing = await sql(
+    `select n.* from kb_nodes n
+     left join kb_revisions r on r.node_id = n.id
+     where r.id is null
+     limit 500`,
+  );
+  if (missing.length === 0) return;
+  const system: Actor = {
+    sub: "system",
+    email: "system@quoteops.local",
+    name: "System Seed",
+    isAdmin: true,
+    verified: true,
+    role: "admin",
+  };
+  for (const row of missing) {
+    await writeRevision(rowToNode(row), "seed", system, "backfill seed revision");
+  }
 }
 
 export async function listNodes(opts?: {
