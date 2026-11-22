@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg0: #e8eef4;
+  --bg1: #f5f8fb;
+  --ink: #0c1520;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(14, 116, 144, 0.16), transparent 55%),
+    radial-gradient(900px 420px at 90% 0%, rgba(180, 83, 9, 0.12), transparent 50%),
+    linear-gradient(180deg, var(--bg1), var(--bg0));
+  background-attachment: fixed;
+}
+
+.grid-noise {
+  background-image:
+    linear-gradient(rgba(12, 21, 32, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(12, 21, 32, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.prose-desk p {
+  margin-bottom: 0.75rem;
+  line-height: 1.65;
+}
+
+.prose-desk ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-desk li {
+  margin-bottom: 0.35rem;
+  line-height: 1.55;
+}
