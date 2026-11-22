@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AgentDocBar } from "@/components/AgentDocBar";
 import { SeverityBadge } from "@/components/ClassBadge";
 import { getRisk } from "@/lib/data/risks";
 import type { Skill } from "@/lib/types";
@@ -12,6 +13,14 @@ export function SkillRunner({ skill }: { skill: Skill }) {
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [creating, setCreating] = useState(false);
   const [caseMsg, setCaseMsg] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    void fetch("/api/me")
+      .then((r) => r.json())
+      .then((d: { isAdmin?: boolean }) => setIsAdmin(!!d.isAdmin))
+      .catch(() => undefined);
+  }, []);
 
   const progress = useMemo(() => {
     const total = skill.steps.length;
@@ -86,6 +95,54 @@ export function SkillRunner({ skill }: { skill: Skill }) {
           {caseMsg && <span className="text-xs text-mist">{caseMsg}</span>}
         </div>
       </div>
+
+      <AgentDocBar
+        nodeKey={skill.slug}
+        getMarkdown={async () => {
+          try {
+            const res = await fetch(
+              `/api/kb/${encodeURIComponent(skill.slug)}?markdown=1&locale=${locale === "en" ? "en" : "zh-CN"}`,
+            );
+            if (res.ok) {
+              const data = (await res.json()) as { markdown: string };
+              return data.markdown;
+            }
+          } catch {
+            /* fall through */
+          }
+          const title = locale === "zh-CN" ? skill.titleZh : skill.title;
+          const summary = locale === "zh-CN" ? skill.summaryZh : skill.summary;
+          const steps = skill.steps
+            .map((s, i) => {
+              const st = locale === "zh-CN" ? s.titleZh : s.title;
+              const detail = locale === "zh-CN" ? s.detailZh : s.detail;
+              const hint =
+                locale === "zh-CN" ? s.queryHintZh ?? s.queryHint : s.queryHint;
+              return [
+                `### ${i + 1}. ${st}`,
+                "",
+                detail,
+                hint ? `\n\`\`\`\n${hint}\n\`\`\`` : "",
+                "",
+              ].join("\n");
+            })
+            .join("\n");
+          return [
+            `# ${title}`,
+            "",
+            `> ${summary}`,
+            "",
+            `- slug: \`${skill.slug}\``,
+            `- severity: ${skill.severity}`,
+            "",
+            "## Steps",
+            "",
+            steps,
+          ].join("\n");
+        }}
+        label={`agent.md · ${skill.slug}`}
+        isAdmin={isAdmin}
+      />
 
       <ol className="space-y-3">
         {skill.steps.map((step, idx) => {

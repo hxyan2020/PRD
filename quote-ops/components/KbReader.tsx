@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { AgentDocBar } from "@/components/AgentDocBar";
 import { PageHero, Prose } from "@/components/Prose";
 import { formatTs } from "@/lib/kb/format";
 import { useI18n } from "@/lib/i18n/context";
@@ -11,9 +12,6 @@ export function KbReader({ slug }: { slug: string }) {
   const { locale, t } = useI18n();
   const [node, setNode] = useState<KbNode | null>(null);
   const [revisions, setRevisions] = useState<KbRevision[]>([]);
-  const [showMd, setShowMd] = useState(false);
-  const [markdown, setMarkdown] = useState("");
-  const [copied, setCopied] = useState(false);
   const [showLog, setShowLog] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -36,38 +34,12 @@ export function KbReader({ slug }: { slug: string }) {
     })();
   }, [slug]);
 
-  async function loadMd() {
-    if (!node) return;
-    const res = await fetch(
-      `/api/kb/${node.id}?markdown=1&locale=${locale === "en" ? "en" : "zh-CN"}`,
-    );
-    const data = (await res.json()) as { markdown: string };
-    setMarkdown(data.markdown);
-    setShowMd(true);
-  }
-
   async function loadLog() {
     if (!node) return;
     const res = await fetch(`/api/kb/${node.id}?revisions=1`);
     const data = (await res.json()) as { revisions: KbRevision[] };
     setRevisions(data.revisions || []);
     setShowLog(true);
-  }
-
-  async function copyMd() {
-    if (!markdown) await loadMd();
-    const text =
-      markdown ||
-      (
-        await (
-          await fetch(`/api/kb/${node!.id}?markdown=1&locale=${locale === "en" ? "en" : "zh-CN"}`)
-        ).json()
-      ).markdown;
-    await navigator.clipboard.writeText(text);
-    setMarkdown(text);
-    setShowMd(true);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
   }
 
   if (error) {
@@ -122,21 +94,8 @@ export function KbReader({ slug }: { slug: string }) {
         }
       />
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => void loadMd()}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-xs"
-        >
-          {t("展开 Agent 可读 Markdown", "Expand agent Markdown")}
-        </button>
-        <button
-          type="button"
-          onClick={() => void copyMd()}
-          className="rounded-lg bg-ink px-3 py-2 text-xs text-paper"
-        >
-          {copied ? t("已复制", "Copied") : t("一键复制 Markdown", "Copy Markdown")}
-        </button>
+      <div className="space-y-2">
+        <AgentDocBar nodeKey={node.id} label={`agent.md · ${node.slug}`} isAdmin={isAdmin} />
         <button
           type="button"
           onClick={() => void loadLog()}
@@ -145,20 +104,6 @@ export function KbReader({ slug }: { slug: string }) {
           {t("编辑记录", "Edit history")}
         </button>
       </div>
-
-      {showMd && (
-        <div className="rounded-xl border border-ink/20 bg-ink p-4">
-          <div className="mb-2 flex items-center justify-between text-xs text-paper/60">
-            <span>agent.md · {node.slug}</span>
-            <button type="button" className="text-sea-soft" onClick={() => setShowMd(false)}>
-              {t("收起", "Collapse")}
-            </button>
-          </div>
-          <pre className="max-h-[420px] overflow-auto whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-sea-soft">
-            {markdown}
-          </pre>
-        </div>
-      )}
 
       {showLog && (
         <div className="rounded-xl border border-line bg-white/90 p-4">

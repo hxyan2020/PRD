@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { AgentDocBar } from "@/components/AgentDocBar";
 import { ClassBadge, FreqBadge, SeverityBadge } from "@/components/ClassBadge";
 import { SKILLS } from "@/lib/data/skills";
 import type { RiskScenario } from "@/lib/types";
@@ -8,7 +10,43 @@ import { useI18n } from "@/lib/i18n/context";
 
 export function RiskDetail({ risk }: { risk: RiskScenario }) {
   const { locale, t } = useI18n();
+  const [isAdmin, setIsAdmin] = useState(false);
   const relatedSkills = SKILLS.filter((s) => s.relatedRiskIds.includes(risk.id));
+  const kbSlug = `risk-${risk.id}-${risk.slug}`;
+
+  useEffect(() => {
+    void fetch("/api/me")
+      .then((r) => r.json())
+      .then((d: { isAdmin?: boolean }) => setIsAdmin(!!d.isAdmin))
+      .catch(() => undefined);
+  }, []);
+
+  function localMarkdown() {
+    const title = locale === "zh-CN" ? risk.titleZh : risk.title;
+    const how = locale === "zh-CN" ? risk.howItWorksZh : risk.howItWorks;
+    const detect = locale === "zh-CN" ? risk.detectZh : risk.detect;
+    const prevent = locale === "zh-CN" ? risk.preventZh : risk.prevent;
+    return [
+      `# ${title}`,
+      "",
+      `> ${how}`,
+      "",
+      `- id: \`${risk.id}\``,
+      `- slug: \`${risk.slug}\``,
+      `- classes: ${risk.classes.join(", ")}`,
+      `- frequency: ${risk.frequency}`,
+      `- severity: ${risk.severity}`,
+      `- owners: ${risk.owners.join(", ")}`,
+      `- tags: ${risk.tags.join(", ") || "—"}`,
+      "",
+      "## Detect",
+      ...detect.map((d) => `- ${d}`),
+      "",
+      "## Prevent / manage",
+      ...prevent.map((p) => `- ${p}`),
+      "",
+    ].join("\n");
+  }
 
   return (
     <article className="space-y-5 animate-rise">
@@ -75,11 +113,28 @@ export function RiskDetail({ risk }: { risk: RiskScenario }) {
         </div>
       )}
 
-      <Link
-        href={`/kb/risk-${risk.id}-${risk.slug}`}
-        className="inline-flex text-sm text-sea hover:underline"
-      >
-        {t("在知识页阅读排版版 / 复制 Markdown", "Open formatted KB page / copy Markdown")}
+      <AgentDocBar
+        nodeKey={kbSlug}
+        getMarkdown={async () => {
+          try {
+            const res = await fetch(
+              `/api/kb/${encodeURIComponent(kbSlug)}?markdown=1&locale=${locale === "en" ? "en" : "zh-CN"}`,
+            );
+            if (res.ok) {
+              const data = (await res.json()) as { markdown: string };
+              return data.markdown;
+            }
+          } catch {
+            /* fall through */
+          }
+          return localMarkdown();
+        }}
+        label={`agent.md · ${kbSlug}`}
+        isAdmin={isAdmin}
+      />
+
+      <Link href={`/kb/${kbSlug}`} className="inline-flex text-sm text-sea hover:underline">
+        {t("在知识页阅读排版版", "Open formatted KB page")}
       </Link>
     </article>
   );
