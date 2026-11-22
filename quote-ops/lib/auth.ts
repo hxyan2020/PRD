@@ -8,7 +8,7 @@ export type Actor = {
   verified: boolean;
   role: "admin" | "viewer" | "anonymous";
   /** Temporary open mode: anyone may query and edit. */
-  openAccess: boolean;
+  openAccess?: boolean;
 };
 
 function adminEmailAllowlist(): Set<string> {

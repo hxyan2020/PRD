@@ -85,9 +85,14 @@ export function SiteHeader() {
               <ProductSwitcher compact />
             </div>
 
+            {roleReady && openAccess && (
+              <span className="ml-auto rounded-md border border-amber-400/60 bg-amber-50 px-2 py-1 text-[10px] uppercase tracking-wide text-amber-800 sm:hidden">
+                {t("开放编辑", "Open edit")}
+              </span>
+            )}
             <button
               type="button"
-              className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-lg border border-line text-base touch-manipulation sm:hidden"
+              className={`${roleReady && openAccess ? "ml-2" : "ml-auto"} inline-flex h-11 w-11 items-center justify-center rounded-lg border border-line text-base touch-manipulation sm:hidden`}
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="site-nav"
