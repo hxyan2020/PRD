@@ -29,13 +29,13 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-foam/90 backdrop-blur safe-top">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link href="/" className="group min-w-0 flex-1">
-          <p className="font-display text-xl tracking-tight text-navy sm:text-3xl">
+    <header className="sticky top-0 z-40 border-b border-line/80 bg-foam/85 backdrop-blur-md safe-top">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6 sm:py-4">
+        <Link href="/" className="group min-w-0 flex-1 animate-rise">
+          <p className="font-display text-[1.65rem] leading-none tracking-tight text-navy sm:text-4xl">
             {t("brand.name")}
           </p>
-          <p className="truncate text-[11px] text-mist group-hover:text-teal sm:text-xs">
+          <p className="mt-1 truncate text-[11px] uppercase tracking-[0.16em] text-mist transition group-hover:text-teal sm:text-xs">
             {t("brand.tagline")}
           </p>
         </Link>
@@ -47,8 +47,10 @@ export function SiteHeader() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`rounded-lg px-3 py-1.5 text-sm transition ${
-                  active ? "bg-navy text-foam" : "text-navy-2 hover:bg-slate/70"
+                className={`rounded-md px-3 py-1.5 text-sm transition ${
+                  active
+                    ? "bg-navy text-foam"
+                    : "text-navy-2 hover:bg-slate/70 hover:text-navy"
                 }`}
               >
                 {l.label}
@@ -57,7 +59,7 @@ export function SiteHeader() {
           })}
           <button
             type="button"
-            className="ml-1 rounded-lg border border-line bg-white px-3 py-1.5 text-sm text-navy hover:border-teal"
+            className="ml-1 rounded-md border border-line bg-white px-3 py-1.5 text-sm text-navy hover:border-teal"
             onClick={() => setLocale(locale === "en" ? "zh-CN" : "en")}
           >
             {t("nav.lang")}
@@ -67,7 +69,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 md:hidden">
           <button
             type="button"
-            className="touch-target rounded-lg border border-line bg-white px-2.5 text-sm text-navy"
+            className="touch-target rounded-md border border-line bg-white px-2.5 text-sm text-navy"
             onClick={() => setLocale(locale === "en" ? "zh-CN" : "en")}
             aria-label={t("nav.lang")}
           >
@@ -75,7 +77,7 @@ export function SiteHeader() {
           </button>
           <button
             type="button"
-            className="touch-target inline-flex items-center justify-center rounded-lg border border-line bg-white text-navy"
+            className="touch-target inline-flex items-center justify-center rounded-md border border-line bg-white text-navy"
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((v) => !v)}
@@ -99,7 +101,7 @@ export function SiteHeader() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className={`touch-target rounded-xl px-3 text-base ${
+                  className={`touch-target rounded-md px-3 text-base ${
                     active ? "bg-navy text-foam" : "text-navy hover:bg-slate/60"
                   }`}
                 >
