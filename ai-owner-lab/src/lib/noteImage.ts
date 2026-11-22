@@ -181,22 +181,40 @@ export function guessImageFilename(src: string, fallback = 'ownlab-image'): stri
 
 function mapDownloadError(err: unknown): Error {
   const message = err instanceof Error ? err.message : String(err || 'download failed')
+  if (/sign in/i.test(message)) {
+    return new Error('Sign in to download pictures')
+  }
   if (/load failed|failed to fetch|networkerror|network request failed/i.test(message)) {
     return new Error('Could not download this picture. Check sign-in and try again.')
   }
   return err instanceof Error ? err : new Error(message)
 }
 
+function decodeHtmlAttr(value: string): string {
+  return value
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#0*39;/g, "'")
+    .replace(/&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+}
+
 function dataUrlToBlob(dataUrl: string): Blob {
   const comma = dataUrl.indexOf(',')
   if (comma < 0) throw new Error('Invalid image data')
   const header = dataUrl.slice(0, comma)
-  const data = dataUrl.slice(comma + 1)
+  // Base64 in note HTML sometimes includes whitespace / newlines.
+  const data = dataUrl.slice(comma + 1).replace(/\s/g, '')
   const mime = /data:([^;]+)/i.exec(header)?.[1] || 'application/octet-stream'
-  const binary = atob(data)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i)
-  return new Blob([bytes], { type: mime })
+  try {
+    const binary = atob(data)
+    const bytes = new Uint8Array(binary.length)
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i)
+    return new Blob([bytes], { type: mime })
+  } catch {
+    throw new Error('Invalid image data')
+  }
 }
 
 function triggerDownload(href: string, filename: string): void {
@@ -220,53 +238,208 @@ async function saveBlobAsFile(blob: Blob, filename: string): Promise<void> {
   }
 }
 
+function u16(n: number): Uint8Array {
+  const out = new Uint8Array(2)
+  out[0] = n & 0xff
+  out[1] = (n >>> 8) & 0xff
+  return out
+}
+
+function u32(n: number): Uint8Array {
+  const out = new Uint8Array(4)
+  out[0] = n & 0xff
+  out[1] = (n >>> 8) & 0xff
+  out[2] = (n >>> 16) & 0xff
+  out[3] = (n >>> 24) & 0xff
+  return out
+}
+
+/** CRC-32 for store-method ZIP (no compression). */
+function crc32(data: Uint8Array): number {
+  let crc = 0xffffffff
+  for (let i = 0; i < data.length; i += 1) {
+    crc ^= data[i]!
+    for (let j = 0; j < 8; j += 1) {
+      const mask = -(crc & 1)
+      crc = (crc >>> 1) ^ (0xedb88320 & mask)
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0
+}
+
+function buildZipStore(files: Array<{ name: string; data: Uint8Array }>): Blob {
+  const locals: Uint8Array[] = []
+  const centrals: Uint8Array[] = []
+  let offset = 0
+  for (const file of files) {
+    const nameBytes = new TextEncoder().encode(file.name)
+    const crc = crc32(file.data)
+    const local = new Uint8Array(30 + nameBytes.length + file.data.length)
+    local.set([0x50, 0x4b, 0x03, 0x04], 0)
+    local.set(u16(20), 4)
+    local.set(u16(0), 6)
+    local.set(u16(0), 8)
+    local.set(u16(0), 10)
+    local.set(u16(0), 12)
+    local.set(u32(crc), 14)
+    local.set(u32(file.data.length), 18)
+    local.set(u32(file.data.length), 22)
+    local.set(u16(nameBytes.length), 26)
+    local.set(u16(0), 28)
+    local.set(nameBytes, 30)
+    local.set(file.data, 30 + nameBytes.length)
+    locals.push(local)
+
+    const central = new Uint8Array(46 + nameBytes.length)
+    central.set([0x50, 0x4b, 0x01, 0x02], 0)
+    central.set(u16(20), 4)
+    central.set(u16(20), 6)
+    central.set(u16(0), 8)
+    central.set(u16(0), 10)
+    central.set(u16(0), 12)
+    central.set(u16(0), 14)
+    central.set(u32(crc), 16)
+    central.set(u32(file.data.length), 20)
+    central.set(u32(file.data.length), 24)
+    central.set(u16(nameBytes.length), 28)
+    central.set(u16(0), 30)
+    central.set(u16(0), 32)
+    central.set(u16(0), 34)
+    central.set(u16(0), 36)
+    central.set(u32(0), 38)
+    central.set(u32(offset), 42)
+    central.set(nameBytes, 46)
+    centrals.push(central)
+    offset += local.length
+  }
+
+  const centralSize = centrals.reduce((sum, part) => sum + part.length, 0)
+  const end = new Uint8Array(22)
+  end.set([0x50, 0x4b, 0x05, 0x06], 0)
+  end.set(u16(0), 4)
+  end.set(u16(0), 6)
+  end.set(u16(files.length), 8)
+  end.set(u16(files.length), 10)
+  end.set(u32(centralSize), 12)
+  end.set(u32(offset), 16)
+  end.set(u16(0), 20)
+
+  return new Blob(
+    [...locals, ...centrals, end] as unknown as BlobPart[],
+    { type: 'application/zip' },
+  )
+}
+
+function preferMobileShareSheet(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent || ''
+  if (/iPhone|iPad|iPod/i.test(ua)) return true
+  // iPadOS desktop UA still has touch.
+  if (/Macintosh/i.test(ua) && typeof document !== 'undefined' && 'ontouchend' in document) {
+    return true
+  }
+  return /Android/i.test(ua)
+}
+
+async function shareOrDownloadFiles(
+  files: Array<{ blob: Blob; name: string }>,
+): Promise<'shared' | 'zip' | 'files'> {
+  const shareFiles = files.map(
+    ({ blob, name }) => new File([blob], name, { type: blob.type || 'application/octet-stream' }),
+  )
+  const nav = navigator as Navigator & {
+    canShare?: (data?: ShareData) => boolean
+    share?: (data?: ShareData) => Promise<void>
+  }
+  const tryShare = files.length > 1 || preferMobileShareSheet()
+  if (
+    tryShare &&
+    shareFiles.length > 0 &&
+    typeof nav.canShare === 'function' &&
+    typeof nav.share === 'function'
+  ) {
+    try {
+      if (nav.canShare({ files: shareFiles })) {
+        await nav.share({ files: shareFiles, title: 'OWNLAB images' })
+        return 'shared'
+      }
+    } catch (err) {
+      // User cancel should not count as failure.
+      if (err instanceof DOMException && err.name === 'AbortError') return 'shared'
+    }
+  }
+
+  if (files.length > 1) {
+    const zipBlob = buildZipStore(
+      await Promise.all(
+        files.map(async ({ blob, name }) => ({
+          name,
+          data: new Uint8Array(await blob.arrayBuffer()),
+        })),
+      ),
+    )
+    await saveBlobAsFile(zipBlob, `ownlab-images-${files.length}.zip`)
+    return 'zip'
+  }
+
+  await saveBlobAsFile(files[0]!.blob, files[0]!.name)
+  return 'files'
+}
+
 /** Same-origin Edge stream — avoids Safari failing on signed Blob CDN URLs. */
 async function fetchPrivateBlobFile(pathname: string): Promise<Blob> {
   const proxyUrl = `/api/blob/content?pathname=${encodeURIComponent(pathname)}`
-  try {
-    const res = await fetch(proxyUrl, {
-      credentials: 'include',
-      cache: 'no-store',
-    })
-    if (res.status === 401) throw new Error('Sign in to download pictures')
-    if (!res.ok) throw new Error(`Download failed (${res.status})`)
-    return await res.blob()
-  } catch (err) {
-    // Older deploys without /api/blob/content — try JSON signed URL once.
-    if (err instanceof Error && /Sign in/i.test(err.message)) throw err
-    const res = await fetch(notebookFileDownloadUrl(pathname), {
-      credentials: 'include',
-      headers: { Accept: 'application/json' },
-    })
-    if (!res.ok) throw mapDownloadError(err)
-    const body = (await res.json()) as { url?: string }
-    if (!body.url) throw mapDownloadError(err)
-    const fileRes = await fetch(body.url, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
-    if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
-    return fileRes.blob()
+  const proxyRes = await fetch(proxyUrl, {
+    credentials: 'include',
+    cache: 'no-store',
+  })
+  if (proxyRes.status === 401) throw new Error('Sign in to download pictures')
+  if (proxyRes.ok) return proxyRes.blob()
+
+  // Fall back to JSON signed URL (older deploys / transient proxy errors).
+  const res = await fetch(notebookFileDownloadUrl(pathname), {
+    credentials: 'include',
+    headers: { Accept: 'application/json' },
+  })
+  if (res.status === 401) throw new Error('Sign in to download pictures')
+  if (!res.ok) throw new Error(`Download failed (${proxyRes.status || res.status})`)
+  const body = (await res.json()) as { url?: string }
+  if (!body.url) throw new Error(`Download failed (${proxyRes.status || res.status})`)
+  const fileRes = await fetch(body.url, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
+  if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
+  return fileRes.blob()
+}
+
+async function resolveImageBlob(src: string): Promise<Blob> {
+  const pathname = blobPathnameFromSrc(src)
+  if (pathname) return fetchPrivateBlobFile(pathname)
+
+  if (src.startsWith('data:')) return dataUrlToBlob(src)
+
+  if (/^blob:/i.test(src)) {
+    const res = await fetch(src)
+    if (!res.ok) throw new Error('Image preview expired — open the picture again')
+    return res.blob()
   }
+
+  // Prefer cookie for same-origin private images; omit for CDN/CORS hosts.
+  try {
+    const withCreds = await fetch(src, { credentials: 'include', cache: 'no-store' })
+    if (withCreds.ok) return withCreds.blob()
+  } catch {
+    /* try without credentials */
+  }
+  const bare = await fetch(src, { credentials: 'omit', mode: 'cors', cache: 'no-store' })
+  if (!bare.ok) throw new Error(`Download failed (${bare.status})`)
+  return bare.blob()
 }
 
 /** Download the full-resolution image (data URL, https, or private Blob). */
 export async function downloadNoteImage(src: string, filename?: string): Promise<void> {
   const name = filename || guessImageFilename(src)
   try {
-    const pathname = blobPathnameFromSrc(src)
-    if (pathname) {
-      const blob = await fetchPrivateBlobFile(pathname)
-      await saveBlobAsFile(blob, name)
-      return
-    }
-
-    if (src.startsWith('data:')) {
-      // iOS often refuses <a download> on huge data: URLs — convert to a Blob first.
-      await saveBlobAsFile(dataUrlToBlob(src), name)
-      return
-    }
-
-    const fileRes = await fetch(src, { credentials: 'include', cache: 'no-store' })
-    if (!fileRes.ok) throw new Error(`Download failed (${fileRes.status})`)
-    await saveBlobAsFile(await fileRes.blob(), name)
+    const blob = await resolveImageBlob(decodeHtmlAttr(src.trim()))
+    await shareOrDownloadFiles([{ blob, name }])
   } catch (err) {
     throw mapDownloadError(err)
   }
@@ -277,10 +450,10 @@ export function extractAllNoteImageSrcs(html: string): string[] {
   if (!html) return []
   const out: string[] = []
   const seen = new Set<string>()
-  const re = /<img\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1/gi
+  const re = /<img\b[^>]*?\bsrc\s*=\s*(["'])([\s\S]*?)\1/gi
   let match: RegExpExecArray | null
   while ((match = re.exec(html))) {
-    const src = (match[2] || '').trim()
+    const src = decodeHtmlAttr((match[2] || '').trim())
     if (!src || seen.has(src) || !isSafeImageSrc(src)) continue
     seen.add(src)
     out.push(src)
@@ -288,30 +461,58 @@ export function extractAllNoteImageSrcs(html: string): string[] {
   return out
 }
 
+/** Prefer live DOM srcs (already decoded, includes successfully loaded images). */
+export function extractNoteImageSrcsFromRoot(root: ParentNode | null | undefined): string[] {
+  if (!root || typeof root.querySelectorAll !== 'function') return []
+  const out: string[] = []
+  const seen = new Set<string>()
+  for (const img of Array.from(root.querySelectorAll('img'))) {
+    const raw = (img.getAttribute('src') || img.currentSrc || '').trim()
+    const src = decodeHtmlAttr(raw)
+    if (!src || seen.has(src) || !isSafeImageSrc(src)) continue
+    // Skip broken/empty optimistic previews that never finished uploading.
+    if (/^blob:/i.test(src) && img.naturalWidth === 0) continue
+    seen.add(src)
+    out.push(src)
+  }
+  return out
+}
+
 /**
- * Download every inline image in a note, one after another.
- * Sequential + short pause so iOS does not coalesce/block multi-downloads.
+ * Download every inline image in a note.
+ * Collects blobs first, then shares (iOS) or saves one ZIP — multi `<a download>` is unreliable on mobile.
  */
 export async function downloadAllNoteImages(
-  html: string,
+  htmlOrSrcs: string | string[],
   options?: { onProgress?: (done: number, total: number) => void },
-): Promise<{ total: number; failed: number }> {
-  const srcs = extractAllNoteImageSrcs(html)
-  if (srcs.length === 0) return { total: 0, failed: 0 }
+): Promise<{ total: number; failed: number; saved: number; mode?: string; error?: string }> {
+  const srcs = Array.isArray(htmlOrSrcs) ? htmlOrSrcs : extractAllNoteImageSrcs(htmlOrSrcs)
+  if (srcs.length === 0) return { total: 0, failed: 0, saved: 0 }
+  const files: Array<{ blob: Blob; name: string }> = []
   let failed = 0
+  let firstError: string | undefined
   for (let i = 0; i < srcs.length; i += 1) {
     const src = srcs[i]!
     options?.onProgress?.(i + 1, srcs.length)
     try {
-      await downloadNoteImage(src, guessImageFilename(src, `ownlab-image-${i + 1}`))
-    } catch {
+      const blob = await resolveImageBlob(decodeHtmlAttr(src.trim()))
+      files.push({ blob, name: guessImageFilename(src, `ownlab-image-${i + 1}`) })
+    } catch (err) {
       failed += 1
-    }
-    if (i < srcs.length - 1) {
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 450)
-      })
+      if (!firstError) {
+        firstError = err instanceof Error ? err.message : String(err || 'download failed')
+      }
     }
   }
-  return { total: srcs.length, failed }
+  if (files.length === 0) {
+    return { total: srcs.length, failed, saved: 0, error: firstError }
+  }
+  const mode = await shareOrDownloadFiles(files)
+  return {
+    total: srcs.length,
+    failed,
+    saved: files.length,
+    mode,
+    error: failed ? firstError : undefined,
+  }
 }

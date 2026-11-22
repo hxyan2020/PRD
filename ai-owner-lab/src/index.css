@@ -3484,7 +3484,8 @@ body.menu-open {
 }
 
 .note-fullscreen-body .notebook-quote,
-.note-fullscreen-body .notebook-rich {
+.note-fullscreen-body .notebook-rich,
+.note-fullscreen-body .note-fullscreen-content {
   max-height: none;
   max-width: 100%;
   overflow-x: auto;
@@ -3492,6 +3493,15 @@ body.menu-open {
   display: block;
   -webkit-line-clamp: unset;
   line-clamp: unset;
+}
+
+.note-fullscreen-body .note-fullscreen-content {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  line-height: 1.55;
 }
 
 .note-fullscreen-body .note-attachments,
@@ -3504,11 +3514,16 @@ body.menu-open {
   flex: 0 0 auto;
   margin: 0;
   padding: 0.75rem 1.1rem;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
   background: #fff;
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+}
+
+.note-fullscreen-actions .btn {
+  min-height: 2.6rem;
 }
 
 .note-fullscreen-download-status {
@@ -3524,7 +3539,8 @@ body.menu-open {
 @media (max-width: 720px) {
   .note-fullscreen-toolbar,
   .note-fullscreen-body,
-  .note-fullscreen-actions {
+  .note-fullscreen-actions,
+  .note-fullscreen-download-status {
     padding-left: max(0.75rem, env(safe-area-inset-left));
     padding-right: max(0.75rem, env(safe-area-inset-right));
   }
@@ -3536,6 +3552,34 @@ body.menu-open {
 
   .note-fullscreen-close {
     min-width: 4.75rem;
+  }
+
+  .note-fullscreen-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .note-fullscreen-actions .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .note-fullscreen-actions .note-fullscreen-download-all {
+    grid-column: 1 / -1;
+  }
+
+  .note-fullscreen-body .note-fullscreen-content table,
+  .note-fullscreen-body .note-fullscreen-content table.notebook-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .note-fullscreen-body .note-fullscreen-content img {
+    max-width: 100%;
   }
 
   html,
