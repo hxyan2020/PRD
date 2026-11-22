@@ -1,33 +1,32 @@
 {
-  "day": "2026-11-21",
-  "scannedAt": "2026-11-21T03:38:58.953Z",
+  "day": "2026-11-22",
+  "scannedAt": "2026-11-22T02:44:17.521Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
-    "yassir-maghreb",
-    "harbor-legal-ops",
-    "carbonfact-fashion",
-    "brex-finance",
     "cashfree-merchant",
-    "alan-health",
-    "dub-link-os",
+    "fi-money",
+    "abridge-clinical",
+    "cape-clinic-triage",
+    "ramp-spend",
+    "heaptrace-observability",
+    "incident-ops",
+    "motherduck-analytics",
+    "atelier-carbon-ledger",
     "hanok-energy-retrofit",
-    "reef-credit-exchange",
-    "fjord-battery-secondlife",
-    "sylvera-carbon",
+    "elderloop-companion",
+    "elevenlabs-voice",
     "playpane-classroom",
     "linear-issue-ops",
-    "voltpath-depot",
-    "tabby-bnpl-gcc",
+    "clerk-auth",
+    "mono-africa-open-banking",
+    "antora-heat-battery",
+    "attio-crm",
+    "iron-dome-devsecops",
     "kiln-microfactory",
     "synthesis-school",
-    "abridge-clinical",
-    "incident-ops",
-    "mercury-banking",
-    "resend-email-api",
-    "elderloop-companion",
-    "cognition-devin",
-    "iron-dome-devsecops",
-    "fi-money"
+    "dub-link-os",
+    "sylvera-carbon",
+    "farmstack-coldchain"
   ],
   "headlineCount": 40,
   "feedsOk": 5,
@@ -37,6 +36,24 @@
     {
       "id": "techcrunch-0",
       "sourceId": "techcrunch",
+      "title": "Is selling an AI version of your face to this microdrama startup the future of Hollywood?",
+      "url": "https://techcrunch.com/2026/11/21/is-selling-an-ai-version-of-your-face-to-this-microdrama-startup-the-future-of-hollywood/",
+      "excerpt": "An actor has licensed his face to a microdrama startup — in a trend that's already popular in China. Experts question the long-term consequences if this becomes a trend in Hollywood, too.",
+      "publishedAt": "Sat, 21 Nov 2026 16:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-1",
+      "sourceId": "techcrunch",
+      "title": "Startup sues Apple in India over tap-to-share contacts feature",
+      "url": "https://techcrunch.com/2026/11/20/startup-sues-apple-in-india-over-tap-to-share-contacts-feature/",
+      "excerpt": "A U.S. startup is seeking $162 million in damages and an injunction to impact iPhone and Apple Watch imports to India.",
+      "publishedAt": "Sat, 21 Nov 2026 04:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techcrunch-2",
+      "sourceId": "techcrunch",
       "title": "Daniel Ek backs AI researcher&#8217;s fusion power startup. Here&#8217;s what they&#8217;re building.",
       "url": "https://techcrunch.com/2026/11/20/daniel-ek-backs-ai-researchers-fusion-power-startup-heres-what-theyre-building/",
       "excerpt": "Spotify founder Daniel Ek is backing Europa Fusion, a fusion power startup founded by an AI researcher. Here's what the startup is building.",
@@ -44,7 +61,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-1",
+      "id": "techcrunch-3",
       "sourceId": "techcrunch",
       "title": "California AG subpoenas Nvidia over worries about Huang&#8217;s ties with China",
       "url": "https://techcrunch.com/2026/11/20/california-ag-subpoenas-nvidia-over-worries-about-huangs-ties-with-china/",
@@ -53,7 +70,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-2",
+      "id": "techcrunch-4",
       "sourceId": "techcrunch",
       "title": "Anthropic&#8217;s 7 founders cashed out nearly $2B in record-breaking IPO",
       "url": "https://techcrunch.com/2026/11/19/anthropics-7-founders-cashed-out-nearly-2b-in-record-breaking-ipo/",
@@ -62,7 +79,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-3",
+      "id": "crunchbase-news-5",
       "sourceId": "crunchbase-news",
       "title": "The Week’s 10 Biggest Funding Rounds: $400M For Neurotech Leads, Followed By Big Deals For AI, Fintech, Biotech And More",
       "url": "https://news.crunchbase.com/venture/biggest-startup-rounds-science-neurotech-model-ml-galvanize-therapeutics/",
@@ -71,7 +88,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-4",
+      "id": "crunchbase-news-6",
       "sourceId": "crunchbase-news",
       "title": "5 Interesting Startup Deals You May Have Missed: Reflecting Sunlight From Space, Better Breathing And Smarter Garbage Trucks",
       "url": "https://news.crunchbase.com/venture/interesting-startup-deals-ai-solar-healthcare-space-tech/",
@@ -80,7 +97,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-5",
+      "id": "crunchbase-news-7",
       "sourceId": "crunchbase-news",
       "title": "The Blue Economy: The World’s Quietest Economic Engine And Its Smartest Cities",
       "url": "https://news.crunchbase.com/startups/blue-economy-technology-defense-energy-onetti-mind-the-bridge/",
@@ -89,7 +106,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-6",
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "What’s Next For Recruiting, Job Hunting And HR? More AI, Of Course",
       "url": "https://news.crunchbase.com/venture/data-recruiting-job-hunting-hr-ai-startups-mercor/",
@@ -98,7 +115,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-7",
+      "id": "crunchbase-news-9",
       "sourceId": "crunchbase-news",
       "title": "Anthropic Closes Up 17% After Massive IPO",
       "url": "https://news.crunchbase.com/public/ipo/anthropic-prices-ipo-ant-above-range/",
@@ -107,7 +124,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-10",
       "sourceId": "crunchbase-news",
       "title": "The Key Numbers I’m Watching As Anthropic Makes Its IPO Debut",
       "url": "https://news.crunchbase.com/ai/anthropic-ant-ipo-revenue-growth-risks-s1-analysis/",
@@ -116,7 +133,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
+      "id": "crunchbase-news-11",
       "sourceId": "crunchbase-news",
       "title": "Sector Snapshot: Investors Turn Up The Volume On Voice AI",
       "url": "https://news.crunchbase.com/venture/voice-ai-startup-funding-peaks-2026/",
@@ -125,7 +142,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-10",
+      "id": "sifted-12",
       "sourceId": "sifted",
       "title": "Exclusive: Storonsky-backed Aikido seeks €4bn valuation",
       "url": "https://sifted.eu/articles/exclusive-aikido-4bn-valuation/",
@@ -134,7 +151,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-11",
+      "id": "sifted-13",
       "sourceId": "sifted",
       "title": "Exclusive: Stripe founders and Paul Graham back AI agent swarm startup Hoplite with $5.5m",
       "url": "https://sifted.eu/articles/hoplite-raise-stripe-founders/",
@@ -143,7 +160,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-12",
+      "id": "sifted-14",
       "sourceId": "sifted",
       "title": "13 pre-seed fintechs to watch, according to VCs",
       "url": "https://sifted.eu/articles/pre-seed-fintechs-to-watch/",
@@ -152,7 +169,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-13",
+      "id": "sifted-15",
       "sourceId": "sifted",
       "title": "Espoo closes in on Helsinki as Finland’s startup funding race tightens",
       "url": "https://sifted.eu/articles/espoo-closes-in-on-helsinki-as-finlands-startup-funding-race-tightens/",
@@ -161,7 +178,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-14",
+      "id": "sifted-16",
       "sourceId": "sifted",
       "title": "Is AI in a bubble? Menlo Ventures’ Deedy Das on Anthropic’s IPO and Europe",
       "url": "https://sifted.eu/articles/menlo-ventures-podcast/",
@@ -170,7 +187,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-15",
+      "id": "sifted-17",
       "sourceId": "sifted",
       "title": "Exclusive: Schneider Electric's VC fund brings accelerator scheme to Europe",
       "url": "https://sifted.eu/articles/schneider-electric-ventures-accelerator-scheme-europe/",
@@ -179,7 +196,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-16",
+      "id": "sifted-18",
       "sourceId": "sifted",
       "title": "The other Staniszewski brother just raised $4.7m – and Paul Graham is a backer",
       "url": "https://sifted.eu/articles/lato-seed-round/",
@@ -188,7 +205,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-17",
+      "id": "sifted-19",
       "sourceId": "sifted",
       "title": "How Payhawk raised $280m amid fintech downturn",
       "url": "https://sifted.eu/articles/payhawk-series-c/",
@@ -197,7 +214,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-18",
+      "id": "sifted-20",
       "sourceId": "sifted",
       "title": "Anthropic’s $1.4tn IPO puts Europe’s AI boom to the test",
       "url": "https://sifted.eu/articles/anthropic-ipo-puts-europe-ai-boom-to-the-test/",
@@ -206,7 +223,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-19",
+      "id": "sifted-21",
       "sourceId": "sifted",
       "title": "Exclusive: OpenAI and Meta insiders back startup policing rogue AI agents",
       "url": "https://sifted.eu/articles/disseqt-ai-agents-rogue/",
@@ -215,7 +232,115 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-20",
+      "id": "eu-startups-22",
+      "sourceId": "eu-startups",
+      "title": "Weekly funding round-up! All of the European startup funding rounds we tracked this week (Nov.16 – Nov.20)",
+      "url": "https://www.eu-startups.com/2026/11/weekly-funding-round-up-all-of-the-european-startup-funding-rounds-we-tracked-this-week-nov-16-nov-20/",
+      "excerpt": "This article is visible for CLUB members only. If you are already a member but don’t see the content of this article, please login here. If you’re not a CLUB member yet, but you’d like to read members-only content like this one, have unrestricted access to the site and benefit fr",
+      "publishedAt": "Fri, 20 Nov 2026 16:45:27 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-23",
+      "sourceId": "eu-startups",
+      "title": "UK startup Clarity Sensors receives €2.2 million NIHR award to make advanced medical imaging more accessible",
+      "url": "https://www.eu-startups.com/2026/11/uk-startup-clarity-sensors-receives-e2-2-million-nihr-award-to-make-advanced-medical-imaging-more-accessible/",
+      "excerpt": "Cambridge-based semiconductor startup Clarity Sensors has secured a €2.2 million to support the development of a new generation of photon-counting CT detectors designed to make advanced medical imaging more affordable and accessible to hospitals. The funding came in the form of a",
+      "publishedAt": "Fri, 20 Nov 2026 14:24:23 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-24",
+      "sourceId": "eu-startups",
+      "title": "Archer raises €9.1 million to deploy AI recruiting agents for employers and job seekers",
+      "url": "https://www.eu-startups.com/2026/11/london-based-archer-raises-e9-1-million-to-deploy-ai-recruiting-agents-for-employers-and-job-seekers/",
+      "excerpt": "Archer (formerly hackajob), a London- and New York-based AI recruiting agent that works for both recruiters and job seekers, has raised €9.1 million ($10 million) in a new funding round. The round was led by Volition Capital, with participation from existing investor AVP. The com",
+      "publishedAt": "Fri, 20 Nov 2026 12:41:53 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-25",
+      "sourceId": "eu-startups",
+      "title": "Following €1 billion funding round, Quantum Systems commits over €10 million to expand drone support in Ukraine",
+      "url": "https://www.eu-startups.com/2026/11/following-e1-billion-funding-round-quantum-systems-commits-over-e10-million-to-expand-drone-support-in-ukraine/",
+      "excerpt": "Quantum Systems and Frontline Robotics will commit more than €10 million to Ukraine to strengthen long-term support capacity for unmanned systems – arriving amid over €1.8 billion in European DefenceTech financing reported by EU-Startups in 2026. The joint venture is expanding it",
+      "publishedAt": "Fri, 20 Nov 2026 12:02:50 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-26",
+      "sourceId": "eu-startups",
+      "title": "Madrid-based Wilco secures €2.5 million to scale its AI patient follow-up platform across Europe",
+      "url": "https://www.eu-startups.com/2026/11/madrid-based-wilco-secures-e2-5-million-to-scale-its-ai-patient-follow-up-platform-across-europe/",
+      "excerpt": "Wilco, a Madrid-based startup building AI voice and messaging agents for healthcare clinic groups, has announced its launch and a new €2.5 million funding round. The round was led by Samaipata, the European venture capital fund known for backing marketplace and software businesse",
+      "publishedAt": "Fri, 20 Nov 2026 09:56:25 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-27",
+      "sourceId": "eu-startups",
+      "title": "Berkshire-backed Bending Spoons to buy Mailchimp for €3.35 billion; announces €1.18 billion private placement",
+      "url": "https://www.eu-startups.com/2026/11/berkshire-hathaway-backed-bending-spoons-to-buy-mailchimp-for-e3-35-billion-announces-e1-18-billion-private-placement/",
+      "excerpt": "Bending Spoons, a Milan-based technology company that acquires and transforms digital businesses, has signed a definitive agreement to acquire Mailchimp, the email marketing automation platform, from Intuit, in a deal valued at €3.35 billion ($3.68 billion) The all-cash transacti",
+      "publishedAt": "Fri, 20 Nov 2026 08:15:41 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-28",
+      "sourceId": "eu-startups",
+      "title": "Gradyent lands €20 million EIB loan to expand digital twin technology across Europe&#8217;s heating networks",
+      "url": "https://www.eu-startups.com/2026/11/dutch-startup-gradyent-lands-e20-million-eib-loan-to-expand-digital-twin-technology-across-europes-heating-networks/",
+      "excerpt": "Gradyent, a Rotterdam-based SaaS provider for digital optimisation of district heating, cooling, and industrial networks, has secured a €20 million venture loan from the European Investment Bank (EIB). This financing follows a €28 million oversubscribed growth funding round the D",
+      "publishedAt": "Fri, 20 Nov 2026 07:41:14 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-29",
+      "sourceId": "eu-startups",
+      "title": "Mistral blazes ahead with an additional €100 million to their Series D by T.Capital",
+      "url": "https://www.eu-startups.com/2026/11/mistral-balzes-ahead-with-an-additional-e100-million-to-their-series-d-by-t-capital/",
+      "excerpt": "French AI unicorn Mistral continues their sizeable Series D with a €100 million investment from Deutsche Telekom&#8217;s investment arm, T.Capital Tech Fund &#8211; following the opening of the Mistral German hub in September. With T.Capital managing over €2 billion in assets, to",
+      "publishedAt": "Thu, 19 Nov 2026 12:14:42 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-30",
+      "sourceId": "eu-startups",
+      "title": "Munich-based Vetaion raises €5.7 million to automate control cabinet manufacturing with AI and robotics",
+      "url": "https://www.eu-startups.com/2026/11/munich-based-vetaion-raises-e5-7-million-to-automate-control-cabinet-manufacturing-with-ai-and-robotics/",
+      "excerpt": "Vetaion, a Munich-based company that automates the manufacturing of custom electrical control cabinets, has closed a €5.7 million pre-Seed financing round to scale its production in Munich and grow its team. The round was co-led by Visionaries Tomorrow and UVC Partners, with part",
+      "publishedAt": "Thu, 19 Nov 2026 11:54:27 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-31",
+      "sourceId": "techinasia",
+      "title": "These funds have not invested in China in the past year",
+      "url": "https://www.techinasia.com/funds-invested-china-year",
+      "excerpt": "Pitching your startup to an investor? First, check if they’re still active in your market.",
+      "publishedAt": "Sun, 22 Nov 2026 02:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-32",
+      "sourceId": "techinasia",
+      "title": "Mapping the dominant players in Israel&#8217;s AI field",
+      "url": "https://www.techinasia.com/visual-story/mapping-dominant-players-israels-ai-field",
+      "excerpt": "Mapping Israel's AI sector: Key players, top investors, and funding insights in one report.",
+      "publishedAt": "Sat, 21 Nov 2026 11:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-33",
+      "sourceId": "techinasia",
+      "title": "Databricks in talks to raise funds at $225b valuation: report",
+      "url": "https://www.techinasia.com/news/databricks-talks-raise-funds-225b-valuation-report",
+      "excerpt": "Databricks, which competes with Snowflake, said its revenue grew over 80% year on year.",
+      "publishedAt": "Sat, 21 Nov 2026 04:02:14 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-34",
       "sourceId": "techinasia",
       "title": "CrowdStrike in talks to acquire cybersecurity firm Zscaler",
       "url": "https://www.techinasia.com/news/crowdstrike-talks-acquire-cybersecurity-firm-zscaler",
@@ -224,7 +349,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-21",
+      "id": "techinasia-35",
       "sourceId": "techinasia",
       "title": "US fintech firm Fairmint plans trading venue under SEC exemption",
       "url": "https://www.techinasia.com/news/fintech-firm-fairmint-plans-trading-venue-sec-exemption",
@@ -233,7 +358,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-22",
+      "id": "techinasia-36",
       "sourceId": "techinasia",
       "title": "These funds have not invested in India in the past year",
       "url": "https://www.techinasia.com/funds-invested-india-year",
@@ -242,7 +367,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-23",
+      "id": "techinasia-37",
       "sourceId": "techinasia",
       "title": "Ex-Alibaba AI executive&#8217;s startup hits $5b valuation",
       "url": "https://www.techinasia.com/news/exalibaba-ai-executives-startup-hits-5b-valuation",
@@ -251,7 +376,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-24",
+      "id": "techinasia-38",
       "sourceId": "techinasia",
       "title": "ByteDance data center supplier DayOne pauses $5b US IPO",
       "url": "https://www.techinasia.com/news/bytedance-data-center-supplier-dayone-pauses-5b-ipo",
@@ -260,138 +385,12 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-25",
+      "id": "techinasia-39",
       "sourceId": "techinasia",
       "title": "It’s a post-Anthropic IPO world",
       "url": "https://www.techinasia.com/its-a-post-anthropic-ipo-world",
       "excerpt": "Agile Robots, Corma, Humyn Labs, and more raised funds this week.",
       "publishedAt": "Sat, 21 Nov 2026 00:30:09 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-26",
-      "sourceId": "techinasia",
-      "title": "SEA funding round sizes over the past 5 years",
-      "url": "https://www.techinasia.com/visual-story/sea-funding-sizes-5-years",
-      "excerpt": "For startups, understanding how much their peers are raising could be crucial when they're pitching investors.",
-      "publishedAt": "Sat, 21 Nov 2026 00:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-27",
-      "sourceId": "techinasia",
-      "title": "Mapping China&#8217;s biotech titans",
-      "url": "https://www.techinasia.com/visual-story/mapping-chinas-biotech-titans",
-      "excerpt": "Mapping China’s biotech sector: Key players, top investors, and funding insights in one report.",
-      "publishedAt": "Fri, 20 Nov 2026 11:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-28",
-      "sourceId": "techinasia",
-      "title": "Anthropic’s afterparty: Is SEA invited?",
-      "url": "https://www.techinasia.com/anthropics-afterparty-sea-invited",
-      "excerpt": "Anthropic’s IPO was a win on Wall Street. How much of that good news will reach Southeast Asia? Optimism seems low for now.",
-      "publishedAt": "Fri, 20 Nov 2026 10:30:33 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-29",
-      "sourceId": "techinasia",
-      "title": "Anthropic shares drop 6% in AI selloff after record IPO",
-      "url": "https://www.techinasia.com/news/anthropic-shares-drop-6-ai-selloff-record-ipo",
-      "excerpt": "Anthropic closed at US$97.17 on November 19 after completing an US$81 billion initial public offering that surpassed SpaceX’s June debut.",
-      "publishedAt": "Fri, 20 Nov 2026 09:27:34 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-30",
-      "sourceId": "techinasia",
-      "title": "Zhiyuan Robotics affiliate invests in China chip cooling firm",
-      "url": "https://www.techinasia.com/news/zhiyuan-robotics-affiliate-invests-in-china-chip-cooling-firm",
-      "excerpt": "Qichacha records identify Zhiyuan Innovation as an affiliate of Zhiyuan Robotics.",
-      "publishedAt": "Fri, 20 Nov 2026 07:21:39 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-31",
-      "sourceId": "techinasia",
-      "title": "Malaysia’s highest-funded tech companies in the last decade",
-      "url": "https://www.techinasia.com/visual-story/malaysias-highestfunded-tech-companies-decade",
-      "excerpt": "Find out which local players are raking in funding and might define the country’s tech future.",
-      "publishedAt": "Fri, 20 Nov 2026 07:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-32",
-      "sourceId": "techinasia",
-      "title": "Japan&#8217;s startup funding, as explained in charts",
-      "url": "https://www.techinasia.com/visual-story/capital-japan-japans-funding-landscape",
-      "excerpt": "Knowing where the money flows matters. Take a look at the current fundraising landscape in Japan.",
-      "publishedAt": "Fri, 20 Nov 2026 04:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-33",
-      "sourceId": "techinasia",
-      "title": "US stocks fall as Anthropic IPO rally loses momentum",
-      "url": "https://www.techinasia.com/news/us-stocks-fall-as-anthropic-ipo-rally-loses-momentum",
-      "excerpt": "Anthropic’s market value briefly topped US$2 trillion during a closely watched test of investor appetite for AI stocks.",
-      "publishedAt": "Fri, 20 Nov 2026 02:40:05 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-34",
-      "sourceId": "yourstory",
-      "title": "(Weekly funding roundup Nov 14-20) VC funding bounces back after record low last week",
-      "url": "https://yourstory.com/2026/11/weekly-funding-roundup-nov-14-20-vc-funding-bounces-back-after-record-low-last-week",
-      "excerpt": "Venture capital funding in Indian startups saw a sharp rise this week, propped up by a couple of deals in the $50-million range.",
-      "publishedAt": "Fri, 20 Nov 2026 14:23:14 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-35",
-      "sourceId": "yourstory",
-      "title": "PIDG invests $11.7M in dry waste recycling company NEPRA",
-      "url": "https://yourstory.com/2026/11/pidg-invests-117m-nepra-dry-waste-recycling-company",
-      "excerpt": "Ahmedabad-based NEPRA has built an integrated waste-management and recycling platform that spans the value chain from waste collection and segregation through to material recovery.",
-      "publishedAt": "Fri, 20 Nov 2026 11:58:34 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-36",
-      "sourceId": "yourstory",
-      "title": "Eazeebox co-founder Srinivas Shanbhogue passes away",
-      "url": "https://yourstory.com/2026/11/eazeebox-co-founder-srinivas-shanbhogue-passes-away",
-      "excerpt": "Shanbhogue spent two decades at Schneider Electric before building Eazeebox, a Bengaluru startup that helps neighbourhood electrical shops restock from multiple brands through a single app.",
-      "publishedAt": "Fri, 20 Nov 2026 08:17:45 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-37",
-      "sourceId": "yourstory",
-      "title": "Karnataka aims to raise its share in aerospace, defence sector to 75%: Minister",
-      "url": "https://yourstory.com/2026/11/karnataka-aims-to-raise-its-share-in-aerospace-defence-sector-to-75-per-cent-minister",
-      "excerpt": "Industries Minister M B Patil said that the government is ready to support the creation of all necessary infrastructure and facilities, including Common Facility Centres, to facilitate investments in the aerospace sector.",
-      "publishedAt": "Fri, 20 Nov 2026 05:08:27 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-38",
-      "sourceId": "yourstory",
-      "title": "Urban Company raises Rs 2,500 Cr through QIP",
-      "url": "https://yourstory.com/2026/11/urban-company-raises-rs-2500-cr-through-qip",
-      "excerpt": "Urban Company's QIP saw participation from domestic and overseas investors. The proceeds of the issue will be used to build the supply ecosystem for on-demand household help services InstaHelp and on brand marketing, business promotion, and infrastructure.",
-      "publishedAt": "Fri, 20 Nov 2026 08:47:50 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-39",
-      "sourceId": "yourstory",
-      "title": "Startup news and updates: Daily roundup (November 20, 2026)",
-      "url": "https://yourstory.com/2026/11/startup-news-updates-daily-roundup-november-20-2026",
-      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here's the roundup for Friday, November 20, 2026.",
-      "publishedAt": "Fri, 20 Nov 2026 09:31:30 GMT",
       "matchedSlugs": []
     }
   ]
