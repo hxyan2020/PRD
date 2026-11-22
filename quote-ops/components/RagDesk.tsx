@@ -131,8 +131,8 @@ export function RagDesk() {
           }`}
         />
         <div className="relative px-4 py-8 sm:px-10 sm:py-14">
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            <ProductSwitcher variant="dark" />
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+            <ProductSwitcher variant="dark" fullWidth />
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50">
               {isPerp ? "XAUUSD · Perp Exchange" : "CFD · Pricing Squad"}
             </span>

@@ -31,6 +31,19 @@ Open http://127.0.0.1:3020
 Locally, the simulated viewer in `cursor/identity.dev.ts` is a team admin (writes enabled).  
 On a published private/team app: team `admin` role, or emails in `QUOTEOPS_ADMIN_EMAILS`, may write; others are read-only.
 
+## Deploy
+
+**Cursor hosting (permanent URL):** use Publish from the agent chat / dashboard after confirming the proposal (`quote-ops` slug). Postgres is declared in `cursor-app.json`.
+
+**Vercel (`*.vercel.app`):**
+
+```bash
+cd quote-ops
+npx vercel --prod
+```
+
+Set project env: `DATABASE_URL` (Postgres), optional `QUOTEOPS_ADMIN_EMAILS` (comma-separated). `vercel.json` targets region `sin1`. Without `DATABASE_URL`, the app falls back to ephemeral PGlite (not suitable for multi-instance prod).
+
 ## Scripts
 
 - `npm run dev` — port 3020 (PGlite)

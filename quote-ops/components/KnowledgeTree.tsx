@@ -193,24 +193,26 @@ export function KnowledgeTree() {
         </p>
       </header>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <input
-          className="field max-w-xs"
+          className="field w-full sm:max-w-xs"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder={t("过滤节点标题/类型…", "Filter title/kind…")}
         />
-        <button
-          type="button"
-          onClick={() => void load()}
-          className="rounded-lg border border-line bg-white px-3 py-2 text-xs"
-        >
-          {t("立即刷新", "Refresh now")}
-        </button>
-        <label className="flex items-center gap-2 rounded-lg border border-line bg-white px-3 py-2 text-xs">
-          <input type="checkbox" checked={live} onChange={(e) => setLive(e.target.checked)} />
-          {t("实时更新 (4s)", "Live update (4s)")}
-        </label>
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <button
+            type="button"
+            onClick={() => void load()}
+            className="min-h-11 rounded-lg border border-line bg-white px-3 py-2 text-xs touch-manipulation sm:min-h-0"
+          >
+            {t("立即刷新", "Refresh now")}
+          </button>
+          <label className="flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line bg-white px-3 py-2 text-xs touch-manipulation sm:min-h-0">
+            <input type="checkbox" checked={live} onChange={(e) => setLive(e.target.checked)} />
+            {t("实时更新 (4s)", "Live update (4s)")}
+          </label>
+        </div>
         <span className="font-mono text-[11px] text-mist">
           {stats.nodes} nodes · {stats.folders} folders · {stats.edges} edges
           {stats.tagEdges ? ` · ${stats.tagEdges} tag-links` : ""}

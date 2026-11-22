@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, Sora } from "next/font/google";
 import "./globals.css";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Providers } from "@/components/Providers";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -24,9 +25,9 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QuoteOps — CFD Broker Pricing Squad KB",
+  title: "QuoteOps — CFD Broker & V Exchange Perp KB",
   description:
-    "Interactive RAG knowledge base and skill library for CFD broker pricing ops: LP→PE→MT, 86 risk scenarios, RCA playbooks.",
+    "Interactive RAG knowledge base: CFD Broker pricing (LP→PE→MT, 86 risks) and V Exchange perpetual risk (Funding / Mark / Index).",
 };
 
 export const viewport: Viewport = {
@@ -43,12 +44,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <Providers>
           <SiteHeader />
-          <main className="mx-auto min-h-[70vh] max-w-6xl px-3 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-4 sm:px-6 sm:pb-16 sm:pt-8">
+          <main className="mx-auto min-h-[70vh] max-w-6xl px-3 pb-[calc(6.5rem+env(safe-area-inset-bottom))] pt-3 sm:px-6 sm:pb-16 sm:pt-8">
             {children}
           </main>
-          <footer className="border-t border-line/70 px-3 py-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-center text-xs text-mist sm:px-6">
-            QuoteOps · CFD Broker Pricing Squad · Broker loss ≠ client abuse
+          <footer className="mb-12 border-t border-line/70 px-3 py-4 text-center text-[11px] leading-relaxed text-mist sm:mb-0 sm:px-6 sm:py-5 sm:text-xs">
+            QuoteOps · CFD Broker · V Exchange Perp · Broker loss ≠ client abuse
           </footer>
+          <MobileBottomNav />
         </Providers>
       </body>
     </html>
