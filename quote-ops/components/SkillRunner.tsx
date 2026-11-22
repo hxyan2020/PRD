@@ -84,14 +84,20 @@ export function SkillRunner({ skill }: { skill: Skill }) {
           />
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => void openCase()}
-            disabled={creating}
-            className="rounded-md bg-ink px-3 py-1.5 text-xs text-paper disabled:opacity-60"
-          >
-            {creating ? t("创建中…", "Creating…") : t("据此创建排查案件", "Open investigation case")}
-          </button>
+          {isAdmin ? (
+            <button
+              type="button"
+              onClick={() => void openCase()}
+              disabled={creating}
+              className="rounded-md bg-ink px-3 py-1.5 text-xs text-paper disabled:opacity-60"
+            >
+              {creating ? t("创建中…", "Creating…") : t("据此创建排查案件", "Open investigation case")}
+            </button>
+          ) : (
+            <span className="rounded-md border border-line bg-paper px-3 py-1.5 text-xs text-mist">
+              {t("案件创建仅管理员", "Case creation is admin-only")}
+            </span>
+          )}
           {caseMsg && <span className="text-xs text-mist">{caseMsg}</span>}
         </div>
       </div>

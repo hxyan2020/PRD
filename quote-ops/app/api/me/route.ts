@@ -6,10 +6,14 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const actor = await getActor(request);
-  const localAdmin = !process.env.CURSOR_APP_ID && !process.env.VERCEL;
+  const localDev = !process.env.CURSOR_APP_ID && !process.env.VERCEL;
+  // Local smoke/dev: treat as admin. Published hosts use real allowlist / team admin.
+  const isAdmin = localDev ? true : actor.isAdmin;
   return NextResponse.json({
     ...actor,
-    isAdmin: localAdmin ? true : actor.isAdmin,
-    localDev: localAdmin,
+    isAdmin,
+    role: isAdmin ? "admin" : actor.role,
+    localDev,
+    canWrite: isAdmin,
   });
 }

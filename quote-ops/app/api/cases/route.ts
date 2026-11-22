@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 import { createCase, listCases, updateCaseStatus } from "@/lib/db";
 import type { InvestigationCase, Severity } from "@/lib/types";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const cases = await listCases();
@@ -10,6 +12,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const admin = await requireAdmin(req);
+  if (admin instanceof Response) return admin;
+
   let body: {
     title?: string;
     symbol?: string;
@@ -39,6 +44,9 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
+  const admin = await requireAdmin(req);
+  if (admin instanceof Response) return admin;
+
   let body: { id?: string; status?: InvestigationCase["status"]; notes?: string };
   try {
     body = await req.json();

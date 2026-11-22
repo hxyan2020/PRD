@@ -6,6 +6,7 @@ export type Actor = {
   name: string;
   isAdmin: boolean;
   verified: boolean;
+  role: "admin" | "viewer" | "anonymous";
 };
 
 function adminEmailAllowlist(): Set<string> {
@@ -18,29 +19,44 @@ function adminEmailAllowlist(): Set<string> {
   );
 }
 
+function isLocalDevHost(): boolean {
+  return !process.env.CURSOR_APP_ID && !process.env.VERCEL;
+}
+
 export async function getActor(request: Request): Promise<Actor> {
   const identity = await getIdentity(request);
   if (!identity.verified) {
-    return { sub: "", email: "", name: "", isAdmin: false, verified: false };
+    return {
+      sub: "",
+      email: "",
+      name: "",
+      isAdmin: false,
+      verified: false,
+      role: "anonymous",
+    };
   }
+
   const email = (identity.email || "").toLowerCase();
   const allow = adminEmailAllowlist();
   let isAdmin = false;
 
   if (identity.kind === "person") {
     if (identity.appVisibility === "team") {
+      // Team apps: Cursor team admin role, optionally narrowed by allowlist.
       const narrowed = requireTeamRole(identity, ["admin"]);
       isAdmin = !(narrowed instanceof Response);
     } else {
-      // private app: allowlisted emails, or any verified person when allowlist empty (local/dev)
-      isAdmin = allow.size === 0 || allow.has(email);
+      // Private apps: only explicit allowlist (never “any signed-in user”).
+      isAdmin = allow.size > 0 && allow.has(email);
     }
-    if (allow.size > 0 && !allow.has(email)) isAdmin = false;
-    if (allow.size > 0 && allow.has(email)) isAdmin = true;
+    // Explicit deny / allow always wins when allowlist is configured.
+    if (allow.size > 0) {
+      isAdmin = allow.has(email);
+    }
   }
 
-  // Local simulated viewer is team admin in identity.dev
-  if (identity.simulated && identity.kind === "person") {
+  // Local simulated viewer (identity.dev) is admin for local UX only.
+  if (identity.simulated && identity.kind === "person" && isLocalDevHost()) {
     isAdmin = true;
   }
 
@@ -50,27 +66,42 @@ export async function getActor(request: Request): Promise<Actor> {
     name: identity.name || identity.email || "viewer",
     isAdmin,
     verified: true,
+    role: isAdmin ? "admin" : "viewer",
   };
 }
 
+/** All mutating API routes must go through this. */
 export async function requireAdmin(request: Request): Promise<Actor | Response> {
-  const actor = await getActor(request);
-  // Local/dev without published identity gate: allow writes
-  if (!process.env.CURSOR_APP_ID && !process.env.VERCEL) {
+  // Local/dev without published identity gate: allow writes for smoke tests.
+  if (isLocalDevHost()) {
+    const actor = await getActor(request);
     return {
       ...actor,
       isAdmin: true,
       verified: true,
+      role: "admin",
       sub: actor.sub || "local-dev",
       email: actor.email || "dev@example.com",
       name: actor.name || "Local Admin",
     };
   }
+
+  const actor = await getActor(request);
   if (!actor.verified) {
-    return Response.json({ error: "unauthorized", reason: "not_signed_in" }, { status: 401 });
+    return Response.json(
+      { error: "unauthorized", reason: "not_signed_in", message: "Sign in required" },
+      { status: 401 },
+    );
   }
   if (!actor.isAdmin) {
-    return Response.json({ error: "forbidden", reason: "admin_only" }, { status: 403 });
+    return Response.json(
+      {
+        error: "forbidden",
+        reason: "admin_only",
+        message: "Only admins can create or modify knowledge",
+      },
+      { status: 403 },
+    );
   }
   return actor;
 }

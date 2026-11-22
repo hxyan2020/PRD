@@ -22,12 +22,19 @@ export function SiteHeader() {
   const { locale, setLocale, t } = useI18n();
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [roleReady, setRoleReady] = useState(false);
 
   useEffect(() => {
     void fetch("/api/me")
       .then((r) => r.json())
-      .then((d: { isAdmin?: boolean }) => setIsAdmin(!!d.isAdmin))
-      .catch(() => setIsAdmin(false));
+      .then((d: { isAdmin?: boolean }) => {
+        setIsAdmin(!!d.isAdmin);
+        setRoleReady(true);
+      })
+      .catch(() => {
+        setIsAdmin(false);
+        setRoleReady(true);
+      });
   }, []);
 
   const items = NAV.filter((n) => n.href !== "/admin" || isAdmin);
@@ -71,6 +78,22 @@ export function SiteHeader() {
               </Link>
             );
           })}
+          {roleReady && (
+            <span
+              className={`mt-2 rounded-md border px-2 py-1 text-[10px] uppercase tracking-wide sm:mt-0 sm:ml-2 ${
+                isAdmin
+                  ? "border-sea/40 bg-sea-soft/50 text-sea"
+                  : "border-line bg-paper text-mist"
+              }`}
+              title={
+                isAdmin
+                  ? t("管理员可编辑知识库", "Admin can edit the knowledge base")
+                  : t("只读访客", "Read-only viewer")
+              }
+            >
+              {isAdmin ? t("管理员", "Admin") : t("只读", "Read-only")}
+            </span>
+          )}
           <div className="mt-2 flex gap-1 rounded-md border border-line bg-white p-0.5 text-xs sm:mt-0 sm:ml-2">
             <button
               type="button"
