@@ -78,26 +78,29 @@ export function HomeScanner() {
 
   return (
     <div className="space-y-6">
-      <section className="panel relative overflow-hidden px-4 py-6 sm:px-8 sm:py-8">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1 overflow-hidden">
-          <div className="h-full w-1/3 bg-teal/70 animate-scan" />
+      <section className="panel relative overflow-hidden px-4 py-7 sm:px-8 sm:py-9">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] overflow-hidden">
+          <div className="h-full w-1/3 bg-teal animate-scan" />
         </div>
-        <h1 className="max-w-3xl font-display text-2xl leading-tight text-navy sm:text-5xl">
+        <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-teal animate-accent-pulse">
+          {t("brand.name")}
+        </p>
+        <h1 className="max-w-3xl font-display text-[1.7rem] leading-[1.12] text-navy sm:text-5xl">
           {t("home.hero")}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm text-mist sm:text-base">{t("home.sub")}</p>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-mist sm:text-base">{t("home.sub")}</p>
 
         <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:flex sm:flex-wrap">
           <button
             type="button"
-            className={`touch-target rounded-lg px-3 text-sm ${mode === "product" ? "bg-navy text-foam" : "bg-slate/60"}`}
+            className={`touch-target rounded-md px-3 text-sm ${mode === "product" ? "bg-navy text-foam" : "bg-slate/60 text-navy-2"}`}
             onClick={() => setMode("product")}
           >
             {t("home.tab.product")}
           </button>
           <button
             type="button"
-            className={`touch-target rounded-lg px-3 text-sm ${mode === "lp" ? "bg-navy text-foam" : "bg-slate/60"}`}
+            className={`touch-target rounded-md px-3 text-sm ${mode === "lp" ? "bg-navy text-foam" : "bg-slate/60 text-navy-2"}`}
             onClick={() => setMode("lp")}
           >
             {t("home.tab.lp")}
@@ -112,7 +115,7 @@ export function HomeScanner() {
           }}
         >
           <input
-            className="w-full flex-1 rounded-xl border border-line bg-white px-4 py-3 text-base outline-none focus:border-teal"
+            className="w-full flex-1 rounded-md border border-line bg-white px-4 py-3 text-base outline-none ring-0 transition focus:border-teal focus:shadow-[0_0_0_3px_rgba(29,78,216,0.15)]"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={mode === "product" ? t("home.product.placeholder") : t("home.lp.placeholder")}
@@ -121,7 +124,7 @@ export function HomeScanner() {
           <button
             type="submit"
             disabled={busy}
-            className="touch-target w-full rounded-xl bg-teal px-6 font-semibold text-white disabled:opacity-60 sm:w-auto"
+            className="touch-target w-full rounded-md bg-teal px-6 font-semibold tracking-wide text-white transition hover:bg-navy disabled:opacity-60 sm:w-auto"
           >
             {busy ? t("home.scanning") : t("home.scan")}
           </button>

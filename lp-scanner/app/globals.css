@@ -3,10 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --bg0: #eef3f8;
-  --bg1: #d9e6f2;
-  --ink: #0b1f33;
-  --accent: #0f766e;
+  --bg0: #e6ebf2;
+  --bg1: #d5dde8;
+  --ink: #0c1222;
+  --accent: #1d4ed8;
+  --grid: rgba(12, 18, 34, 0.055);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 }
@@ -25,35 +26,58 @@ body {
 
 body {
   color: var(--ink);
-  background:
-    radial-gradient(900px 480px at 10% -10%, #c7e7e2 0%, transparent 55%),
-    radial-gradient(700px 420px at 90% 0%, #fde7d4 0%, transparent 50%),
-    linear-gradient(165deg, var(--bg0), var(--bg1) 55%, #e8eef5);
+  background-color: var(--bg0);
+  background-image:
+    radial-gradient(980px 520px at 8% -12%, rgba(29, 78, 216, 0.14), transparent 58%),
+    radial-gradient(720px 460px at 96% 4%, rgba(15, 118, 110, 0.08), transparent 52%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 42%),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    linear-gradient(165deg, var(--bg0), var(--bg1) 62%, #cfd8e6);
+  background-size:
+    auto,
+    auto,
+    auto,
+    28px 28px,
+    28px 28px,
+    auto;
+  background-attachment: scroll;
 }
 
 @media (min-width: 768px) {
   body {
-    background-attachment: fixed;
+    background-attachment: fixed, fixed, fixed, fixed, fixed, fixed;
   }
 }
 
 ::selection {
-  background: #99f6e4;
-  color: #0b1f33;
+  background: #bfdbfe;
+  color: #0c1222;
 }
 
 .panel {
-  @apply rounded-2xl border border-line/80 bg-white/80 shadow-panel backdrop-blur;
+  @apply rounded-md border border-line/90 bg-foam/90 shadow-panel backdrop-blur-[2px];
+  position: relative;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent) 18%, #0f766e 72%, transparent);
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 @media (max-width: 639px) {
   .panel {
-    @apply rounded-xl;
+    @apply rounded-md;
   }
 }
 
 .chip {
-  @apply inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium;
+  @apply inline-flex items-center rounded px-2 py-0.5 text-xs font-medium tracking-wide;
 }
 
 .touch-target {
@@ -69,7 +93,6 @@ body {
   padding-bottom: max(0px, var(--safe-bottom));
 }
 
-/* Mobile horizontal scroll hint for tables */
 .table-scroll {
   @apply -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0;
   -webkit-overflow-scrolling: touch;
@@ -85,4 +108,52 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+@keyframes ink-in {
+  from {
+    opacity: 0;
+    letter-spacing: 0.04em;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0;
+    transform: translateY(0);
+  }
+}
+
+@keyframes grid-drift {
+  from {
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      28px 14px,
+      28px 14px,
+      0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    animation: none !important;
+  }
+
+  .panel::before {
+    animation: none;
+  }
 }
