@@ -27,10 +27,16 @@ export interface NotebookEntry {
   model?: string
   /** Files stored in Vercel Blob; metadata only in local/cloud notebook JSON. */
   attachments?: NotebookAttachment[]
+  /** When set, note is hidden from the main list and lives under Archive. */
+  archivedAt?: string
 }
 
 export interface TrashedNotebookEntry extends NotebookEntry {
   deletedAt: string
+}
+
+export function isArchivedEntry(entry: NotebookEntry): boolean {
+  return Boolean(entry.archivedAt)
 }
 
 export function useNotebook() {
@@ -60,17 +66,25 @@ export function useNotebook() {
     }
   }, [])
 
+  const liveEntries = entries.filter((e) => !isArchivedEntry(e))
+  const archivedEntries = entries.filter((e) => isArchivedEntry(e))
+
   return {
     ready,
     entries,
+    liveEntries,
+    archivedEntries,
     trash,
     categories,
-    count: entries.length,
+    count: liveEntries.length,
+    archiveCount: archivedEntries.length,
     trashCount: trash.length,
     addClip: notebookStore.addClip,
     addExplanation: notebookStore.addExplanation,
     addNote: notebookStore.addNote,
     updateEntry: notebookStore.update,
+    archiveEntry: notebookStore.archive,
+    unarchiveEntry: notebookStore.unarchive,
     removeEntry: notebookStore.remove,
     restoreEntry: notebookStore.restore,
     purgeTrashEntry: notebookStore.purgeTrash,

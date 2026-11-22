@@ -123,7 +123,13 @@ function isEntryLike(e: unknown): e is NotebookEntry {
 
 function normalizeEntry(e: NotebookEntry): NotebookEntry {
   const attachments = parseAttachments(e.attachments)
-  return attachments.length ? { ...e, attachments } : { ...e, attachments: undefined }
+  const archivedAt =
+    typeof e.archivedAt === 'string' && e.archivedAt.trim() ? e.archivedAt.trim() : undefined
+  return {
+    ...e,
+    attachments: attachments.length ? attachments : undefined,
+    archivedAt,
+  }
 }
 
 function parseEntries(raw: unknown): NotebookEntry[] {
@@ -2587,6 +2593,58 @@ export const notebookStore = {
   async setAttachments(id: string, attachments: NotebookAttachment[]) {
     return notebookStore.update(id, { attachments })
   },
+  async archive(id: string) {
+    const archived = await enqueueWrite(async () => {
+      await ensureReady()
+      const index = cache.entries.findIndex((e) => e.id === id)
+      if (index < 0) return null
+      const current = cache.entries[index]!
+      if (current.archivedAt) return current
+      const now = new Date().toISOString()
+      const nextEntry: NotebookEntry = {
+        ...current,
+        archivedAt: now,
+        updatedAt: now,
+      }
+      const next = [...cache.entries]
+      next[index] = nextEntry
+      const nextEntries = sortEntries(next)
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.entries, nextEntries)
+      cache.entries = nextEntries
+      entryListeners.forEach((listener) => listener(nextEntries))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      return nextEntry
+    })
+    if (archived) kickDurableSync()
+    return archived
+  },
+  async unarchive(id: string) {
+    const restored = await enqueueWrite(async () => {
+      await ensureReady()
+      const index = cache.entries.findIndex((e) => e.id === id)
+      if (index < 0) return null
+      const current = cache.entries[index]!
+      if (!current.archivedAt) return current
+      const now = new Date().toISOString()
+      const nextEntry: NotebookEntry = {
+        ...current,
+        archivedAt: undefined,
+        updatedAt: now,
+      }
+      const next = [...cache.entries]
+      next[index] = nextEntry
+      const nextEntries = sortEntries(next)
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      await persistKey(IDB_KEYS.entries, nextEntries)
+      cache.entries = nextEntries
+      entryListeners.forEach((listener) => listener(nextEntries))
+      await saveSnapshot(cache.entries, cache.trash, cache.categories)
+      return nextEntry
+    })
+    if (restored) kickDurableSync()
+    return restored
+  },
   async remove(id: string) {
     const trashed = await enqueueWrite(async () => {
       await ensureReady()
@@ -2594,7 +2652,8 @@ export const notebookStore = {
       const entry = entries.find((e) => e.id === id)
       if (!entry) return null
       const deletedAt = new Date().toISOString()
-      const nextTrashed: TrashedNotebookEntry = { ...entry, deletedAt }
+      const { archivedAt: _archivedAt, ...rest } = entry
+      const nextTrashed: TrashedNotebookEntry = { ...rest, deletedAt }
       const nextTrash = sortTrash([nextTrashed, ...cache.trash.filter((e) => e.id !== id)])
       const nextEntries = sortEntries(entries.filter((e) => e.id !== id))
       await saveSnapshot(cache.entries, cache.trash, cache.categories)

@@ -210,12 +210,17 @@ export function Notebook() {
   const {
     ready,
     entries,
+    liveEntries,
+    archivedEntries,
     trash,
     categories,
     count,
+    archiveCount,
     trashCount,
     addNote,
     updateEntry,
+    archiveEntry,
+    unarchiveEntry,
     removeEntry,
     restoreEntry,
     purgeTrashEntry,
@@ -224,7 +229,9 @@ export function Notebook() {
     recoverFromBackups,
   } = useNotebook()
   const { lang, t } = useLanguage()
-  const [view, setView] = useState<'notes' | 'add' | 'tree' | 'categories' | 'dustbin'>('notes')
+  const [view, setView] = useState<
+    'notes' | 'add' | 'tree' | 'categories' | 'archive' | 'dustbin'
+  >('notes')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTitle, setDraftTitle] = useState('')
   const [draftText, setDraftText] = useState('')
@@ -306,21 +313,26 @@ export function Notebook() {
     return map
   }, [categories])
 
-  /** Active notes only — never show dustbin items in the tree or note list. */
+  /** Live notes only — hide archived and any dustbin leftovers from the main list/tree. */
   const activeEntries = useMemo(() => {
-    if (!trash.length) return entries
+    if (!trash.length) return liveEntries
     const trashedIds = new Set(trash.map((e) => e.id))
-    return entries.filter((e) => !trashedIds.has(e.id))
-  }, [entries, trash])
+    return liveEntries.filter((e) => !trashedIds.has(e.id))
+  }, [liveEntries, trash])
 
   const visibleEntries = useMemo(() => {
     const filtered = filterEntries(activeEntries, query, categoryFilter, categories)
     return sortEntries(filtered, sort, lang)
   }, [activeEntries, query, categoryFilter, categories, sort, lang])
 
+  const visibleArchived = useMemo(() => {
+    const filtered = filterEntries(archivedEntries, query, categoryFilter, categories)
+    return sortEntries(filtered, sort, lang)
+  }, [archivedEntries, query, categoryFilter, categories, sort, lang])
+
   const openedNote = useMemo(
-    () => (openedNoteId ? activeEntries.find((e) => e.id === openedNoteId) ?? null : null),
-    [openedNoteId, activeEntries],
+    () => (openedNoteId ? entries.find((e) => e.id === openedNoteId) ?? null : null),
+    [openedNoteId, entries],
   )
   const openedNoteImageCount = useMemo(
     () => (openedNote ? extractAllNoteImageSrcs(openedNote.selectedText).length : 0),
@@ -548,6 +560,34 @@ export function Notebook() {
     if (treeFocusId === id) setTreeFocusId(null)
   }
 
+  function archiveNote(id: string) {
+    void archiveEntry(id).catch((err) => {
+      const message =
+        err instanceof NotebookStorageError && err.code === 'quota'
+          ? t('notebookStorageFull')
+          : t('noteSaveFailed')
+      window.alert(message)
+    })
+    if (editingId === id) cancelEdit()
+    if (openedNoteId === id) setOpenedNoteId(null)
+    if (treeFocusId === id) setTreeFocusId(null)
+  }
+
+  function unarchiveNote(id: string) {
+    void unarchiveEntry(id)
+      .then((restored) => {
+        if (!restored) return
+        if (view === 'archive') setView('notes')
+      })
+      .catch((err) => {
+        const message =
+          err instanceof NotebookStorageError && err.code === 'quota'
+            ? t('notebookStorageFull')
+            : t('noteSaveFailed')
+        window.alert(message)
+      })
+  }
+
   async function recoverFromDustbin(entry: TrashedNotebookEntry) {
     try {
       const restored = await restoreEntry(entry.id)
@@ -582,7 +622,7 @@ export function Notebook() {
 
   const categoryFiltering = categoryFilter.length > 0
   const filtering =
-    view === 'notes'
+    view === 'notes' || view === 'archive'
       ? Boolean(query.trim()) || categoryFiltering
       : Boolean(query.trim())
 
@@ -593,24 +633,28 @@ export function Notebook() {
         <h1>
           {view === 'dustbin'
             ? t('dustbinTitle')
-            : view === 'tree'
-              ? t('treeTitle')
-              : view === 'categories'
-                ? t('categoriesTitle')
-                : view === 'add'
-                  ? t('viewAdd')
-                  : t('notebookTitle')}
+            : view === 'archive'
+              ? t('archiveTitle')
+              : view === 'tree'
+                ? t('treeTitle')
+                : view === 'categories'
+                  ? t('categoriesTitle')
+                  : view === 'add'
+                    ? t('viewAdd')
+                    : t('notebookTitle')}
         </h1>
         <p className="section-lede">
           {view === 'dustbin'
             ? t('dustbinLede')
-            : view === 'tree'
-              ? t('treeLede')
-              : view === 'categories'
-                ? t('categoriesLede')
-                : view === 'add'
-                  ? t('viewAddLede')
-                  : t('notebookLede')}
+            : view === 'archive'
+              ? t('archiveLede')
+              : view === 'tree'
+                ? t('treeLede')
+                : view === 'categories'
+                  ? t('categoriesLede')
+                  : view === 'add'
+                    ? t('viewAddLede')
+                    : t('notebookLede')}
         </p>
         {accountSynced ? (
           <div className="notebook-cloud-status-row">
@@ -689,6 +733,17 @@ export function Notebook() {
           <button
             type="button"
             role="tab"
+            aria-selected={view === 'archive'}
+            className={`notebook-view-tab${view === 'archive' ? ' on' : ''}`}
+            onClick={() => setView('archive')}
+          >
+            <span aria-hidden="true" className="notebook-view-icon notebook-view-icon-archive" />
+            {t('archive')}
+            <span className="notebook-view-count">{archiveCount}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
             aria-selected={view === 'dustbin'}
             className={`notebook-view-tab${view === 'dustbin' ? ' on' : ''}`}
             onClick={() => setView('dustbin')}
@@ -698,18 +753,26 @@ export function Notebook() {
             <span className="notebook-view-count">{trashCount}</span>
           </button>
         </div>
-        {view === 'notes' || view === 'dustbin' ? (
+        {view === 'notes' || view === 'archive' || view === 'dustbin' ? (
           <div className="notebook-toolbar">
             <p className="notebook-count">
               {view === 'dustbin'
                 ? filtering && trashCount > 0
                   ? t('searchShowing', { shown: visibleTrash.length, total: trashCount })
                   : t('dustbinCount', { n: trashCount })
-                : filtering && count > 0
-                  ? t('searchShowing', { shown: visibleEntries.length, total: count })
-                  : `${count} ${count === 1 ? t('note') : t('notes')}`}
+                : view === 'archive'
+                  ? filtering && archiveCount > 0
+                    ? t('searchShowing', { shown: visibleArchived.length, total: archiveCount })
+                    : t('archiveCount', { n: archiveCount })
+                  : filtering && count > 0
+                    ? t('searchShowing', { shown: visibleEntries.length, total: count })
+                    : `${count} ${count === 1 ? t('note') : t('notes')}`}
             </p>
-            {(view === 'notes' ? count > 0 : trashCount > 0) ? (
+            {(view === 'notes'
+              ? count > 0
+              : view === 'archive'
+                ? archiveCount > 0
+                : trashCount > 0) ? (
               <div className="notebook-toolbar-controls">
                 <label className="notebook-search">
                   <span className="sr-only">{t('searchNotes')}</span>
@@ -721,7 +784,7 @@ export function Notebook() {
                     aria-label={t('searchNotes')}
                   />
                 </label>
-                {view === 'notes' ? (
+                {view === 'notes' || view === 'archive' ? (
                   <label className="notebook-sort">
                     <span>{t('sortNotes')}</span>
                     <select
@@ -803,6 +866,9 @@ export function Notebook() {
                       {formatTimestamp(openedNote.createdAt, lang)}
                     </time>
                     <span className="notebook-type">{typeLabel(openedNote.type, t)}</span>
+                    {openedNote.archivedAt ? (
+                      <span className="notebook-archived-badge">{t('archivedBadge')}</span>
+                    ) : null}
                     {(openedNote.categoryIds ?? [])
                       .map((id) => categoryMap.get(id))
                       .filter((c): c is NotebookCategory => Boolean(c))
@@ -865,6 +931,23 @@ export function Notebook() {
                   >
                     {t('edit')}
                   </button>
+                  {openedNote.archivedAt ? (
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => unarchiveNote(openedNote.id)}
+                    >
+                      {t('unarchiveNote')}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => archiveNote(openedNote.id)}
+                    >
+                      {t('archiveNote')}
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="btn ghost"
@@ -879,7 +962,88 @@ export function Notebook() {
           )
         : null}
 
-      {view === 'dustbin' ? (
+      {view === 'archive' ? (
+        archiveCount === 0 ? (
+          <div className="callout archive-empty">
+            <h2>{t('archiveEmpty')}</h2>
+            <p>{t('archiveEmptyBody')}</p>
+          </div>
+        ) : visibleArchived.length === 0 ? (
+          <div className="callout">
+            <h2>{t('searchNoResults')}</h2>
+            <p>{categoryFiltering ? t('filterNoResults') : t('searchNotesPlaceholder')}</p>
+            {categoryFiltering ? (
+              <button type="button" className="btn ghost" onClick={() => setCategoryFilter([])}>
+                {t('clearCategoryFilter')}
+              </button>
+            ) : null}
+          </div>
+        ) : (
+          <ol className="notebook-timeline archive-timeline">
+            {visibleArchived.map((entry) => {
+              const entryCategories = (entry.categoryIds ?? [])
+                .map((id) => categoryMap.get(id))
+                .filter((c): c is NotebookCategory => Boolean(c))
+              const bodySummary = htmlToPlainText(entry.selectedText).trim()
+              const explanationSummary = (entry.explanation || '').replace(/\*\*/g, '').trim()
+              const summary = [bodySummary, explanationSummary].filter(Boolean).join('\n\n')
+              return (
+                <li
+                  key={entry.id}
+                  data-entry-id={entry.id}
+                  className={`notebook-entry notebook-entry-card ${entry.type} archive-entry`}
+                >
+                  <div className="notebook-meta">
+                    <time dateTime={entry.archivedAt || entry.updatedAt || entry.createdAt}>
+                      {t('archivedBadge')}{' '}
+                      {formatTimestamp(entry.archivedAt || entry.updatedAt || entry.createdAt, lang)}
+                    </time>
+                    <span className="notebook-archived-badge">{t('archivedBadge')}</span>
+                    <span className="notebook-type">{typeLabel(entry.type, t)}</span>
+                    {entryCategories.length
+                      ? entryCategories.map((cat) => (
+                          <span
+                            key={cat.id}
+                            className="notebook-category-badge"
+                            style={categoryColorStyle(cat.color) as CSSProperties}
+                          >
+                            <span className="category-dot" aria-hidden="true" />
+                            {cat.name}
+                          </span>
+                        ))
+                      : null}
+                  </div>
+                  {entry.title ? <h3 className="notebook-entry-title">{entry.title}</h3> : null}
+                  {summary ? <p className="notebook-entry-summary">{summary}</p> : null}
+                  <div className="notebook-actions notebook-entry-card-actions">
+                    <button
+                      type="button"
+                      className="btn primary"
+                      onClick={() => openNoteFullScreen(entry)}
+                    >
+                      {t('openNoteFull')}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => unarchiveNote(entry.id)}
+                    >
+                      {t('unarchiveNote')}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => moveToDustbin(entry.id)}
+                    >
+                      {t('moveToDustbin')}
+                    </button>
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        )
+      ) : view === 'dustbin' ? (
         trashCount === 0 ? (
           <div className="callout dustbin-empty">
             <h2>{t('dustbinEmpty')}</h2>
@@ -1351,6 +1515,13 @@ export function Notebook() {
                       </button>
                       <button type="button" className="btn ghost" onClick={() => startEdit(entry)}>
                         {t('edit')}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn ghost"
+                        onClick={() => archiveNote(entry.id)}
+                      >
+                        {t('archiveNote')}
                       </button>
                       <button
                         type="button"
