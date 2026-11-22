@@ -535,7 +535,7 @@ export async function createNode(input: KbNodeInput, actor: Actor): Promise<KbNo
   const id = input.id || `kb_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
   const slug = await uniqueSlug(input.slug?.trim() || slugify(input.titleEn || input.titleZh || id));
   const bilingual = withBilingualIfPublished({
-    titleZh: input.titleZh.trim(),
+    titleZh: (input.titleZh ?? "").trim(),
     titleEn: (input.titleEn ?? "").trim(),
     summaryZh: input.summaryZh ?? "",
     summaryEn: input.summaryEn ?? "",

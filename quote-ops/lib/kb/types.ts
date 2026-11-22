@@ -59,7 +59,8 @@ export type KbNodeInput = {
   parentId?: string | null;
   kind: KbKind;
   slug?: string;
-  titleZh: string;
+  /** At least one of titleZh / titleEn required; missing side filled on publish. */
+  titleZh?: string;
   titleEn?: string;
   summaryZh?: string;
   summaryEn?: string;
