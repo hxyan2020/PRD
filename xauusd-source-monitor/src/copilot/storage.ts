@@ -53,6 +53,8 @@ const DEFAULT_SETTINGS: CopilotSettings = {
   deskToken: '',
 }
 
+const AUTH_SESSION_KEY = 'vex_risk_tool_session_v1'
+
 function readJson<T>(key: string, fallback: T): T {
   try {
     const raw = localStorage.getItem(key)
@@ -65,6 +67,26 @@ function readJson<T>(key: string, fallback: T): T {
 
 function writeJson(key: string, value: unknown) {
   localStorage.setItem(key, JSON.stringify(value))
+}
+
+/** Skills / RAG knowledge / memory writes — admin session only. */
+export function canAdminWriteMemory(): boolean {
+  try {
+    const raw = localStorage.getItem(AUTH_SESSION_KEY)
+    if (!raw) return false
+    const session = JSON.parse(raw) as { role?: string }
+    return session?.role === 'admin'
+  } catch {
+    return false
+  }
+}
+
+function requireAdminWrite(): boolean {
+  if (canAdminWriteMemory()) return true
+  if (typeof console !== 'undefined') {
+    console.warn('[vex] blocked non-admin write to skills/RAG/memory')
+  }
+  return false
 }
 
 export function loadHistory(): IncidentRecord[] {
@@ -83,6 +105,7 @@ export function loadKnowledge(): KnowledgeItem[] {
 }
 
 export function saveKnowledge(list: KnowledgeItem[]) {
+  if (!requireAdminWrite()) return
   writeJson(KB_KEY, list)
 }
 
@@ -186,6 +209,7 @@ export function loadKnowledgeTree(): KbNode[] {
 }
 
 export function saveKnowledgeTree(nodes: KbNode[]) {
+  if (!requireAdminWrite()) return
   writeJson(KB_TREE_KEY, nodes)
   // Keep flat mirror for older analyze paths / RAG flatten
   const docs = nodes.filter((n) => n.parentId != null && n.body.trim())
@@ -232,6 +256,7 @@ export function loadSkillOverrides(): SkillOverrides {
 }
 
 export function saveSkillOverrides(v: SkillOverrides) {
+  if (!requireAdminWrite()) return
   writeJson(SKILL_OVERRIDES_KEY, v)
 }
 
@@ -301,6 +326,7 @@ export function loadSkills(): SkillRecord[] {
 }
 
 export function saveSkills(list: SkillRecord[]) {
+  if (!requireAdminWrite()) return
   writeJson(SKILLS_KEY, list)
 }
 

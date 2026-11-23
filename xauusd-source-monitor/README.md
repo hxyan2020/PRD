@@ -17,17 +17,21 @@ https://hxyan2020.github.io/PRD/xauusd-source-monitor/#/investigate
 
 1. **Investigate (RCA)** — alert screenshot RCA desk (skills + knowledge, thinking, timeline, next steps)
 2. **Market Condition** — Briefings, Health, Rules, Archive
-3. **Skills** — create / edit / disable / archive L1–L2 investigation skills
-4. **Knowledge Base** — tree RAG used by Investigate
-5. **Realtime Statistics** — auto-ingest every triggered RCA
+3. **Skills** — L1–L2 investigation skills (**Admin write**; others read-only)
+4. **Knowledge Base** — tree RAG / memory used by Investigate (**Admin write**)
+5. **Alerts & Reports** — past alerts / RCA board
+6. **Realtime Statistics** — auto-ingest every triggered RCA
+
+**Access:** only `admin` may change Skills, RAG knowledge (memory), and skill overrides. Ops/Analyst can Investigate and view.
 
 ## Demo login (Hytech email)
 
 | Email | Password | Role |
 | --- | --- | --- |
+| `ops@hytech.com` | `OpsDemo2026!` | risk_ops |
 | `risk.ops@hytech.com` | `RiskDemo2026!` | risk_ops |
-| `analyst@hytechc.com` | `RiskDemo2026!` | analyst |
-| `admin@hytech.com` | `RiskDemo2026!` | admin |
+| `analyst@hytech.com` | `RiskDemo2026!` | analyst |
+| `admin@hytech.com` | `AdminDemo2026!` | admin |
 
 Accepted domains: `@hytech.com`, `@hytechc.com`, `@hytechpro.com`.
 

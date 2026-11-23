@@ -30,8 +30,8 @@ function severityClass(sev: string) {
 
 export function SkillsPage() {
   const { t } = useLocale()
-  const { user } = useAuth()
-  const canWrite = Boolean(user)
+  const { isAdmin } = useAuth()
+  const canWrite = isAdmin
   const [skills, setSkills] = useState<SkillRecord[]>(() => loadSkills())
   const [q, setQ] = useState('')
   const [levelFilter, setLevelFilter] = useState<'all' | SkillLevel>('all')
@@ -120,6 +120,7 @@ export function SkillsPage() {
     <div className="panel skills-page">
       <h2>{t('skillsTitle')}</h2>
       <p className="sub">{t('skillsSub')}</p>
+      {!canWrite ? <p className="banner-warn">{t('adminOnlyWrite')}</p> : null}
 
       <div className="skills-toolbar">
         <input

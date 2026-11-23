@@ -150,9 +150,11 @@ const en: Dict = {
   authFailed: 'Email or password incorrect. Check demo credentials in README.',
   authDemoHint:
     'Demo: ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026! (also risk.ops@ / analyst@ with RiskDemo2026!)',
-  adminOnlyWrite: 'Signed-in operators can edit Skills and Knowledge in this browser.',
+  adminOnlyWrite:
+    'Read-only for your role. Only Admin can write Skills, RAG knowledge (memory), and related overrides. Ops/Analyst may still run Investigate.',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
+  roleAnalyst: 'Analyst',
   skillsTitle: 'Skills',
   skillsSub:
     'Create, edit, disable, and archive L1/L2 investigation skills. Stored in this browser; localhost/API can replace the store later.',
@@ -618,9 +620,11 @@ const zhHant: Dict = {
   authFailed: '郵箱或密碼錯誤。請查看 README 示範帳密。',
   authDemoHint:
     '示範：ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026!（另有 risk.ops@ / analyst@ 密碼 RiskDemo2026!）',
-  adminOnlyWrite: '已登入即可在本瀏覽器編輯 Skills／知識庫。',
+  adminOnlyWrite:
+    '你的角色為唯讀。僅 Admin 可寫入 Skills、RAG 知識庫（記憶）與相關覆寫。Ops／Analyst 仍可執行 Investigate。',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
+  roleAnalyst: 'Analyst',
   skillsTitle: 'Skills',
   skillsSub: '建立、編輯、停用與歸檔 L1/L2 排查技能。保存在本瀏覽器；之後可由 localhost/API 取代。',
   skillsCreate: '新建 Skill',

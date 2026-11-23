@@ -85,7 +85,12 @@ export default function App() {
             {langSwitch}
             <div className="user-chip">
               <span className="user-chip-name">
-                {user.name} · {user.email}
+                {user.name} · {user.email} ·{' '}
+                {user.role === 'admin'
+                  ? t('roleAdmin')
+                  : user.role === 'analyst'
+                    ? t('roleAnalyst')
+                    : t('roleOps')}
               </span>
               <button type="button" className="archive-btn" onClick={logout}>
                 {t('authLogout')}

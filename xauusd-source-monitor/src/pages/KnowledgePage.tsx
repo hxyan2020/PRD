@@ -63,8 +63,8 @@ function TreeNodeView({
 
 export function KnowledgePage() {
   const { t } = useLocale()
-  const { user } = useAuth()
-  const canWrite = Boolean(user)
+  const { isAdmin } = useAuth()
+  const canWrite = isAdmin
   const [nodes, setNodes] = useState<KbNode[]>(() => loadKnowledgeTree())
   const [selectedId, setSelectedId] = useState<string | null>(() => {
     const tree = loadKnowledgeTree()
@@ -222,6 +222,7 @@ export function KnowledgePage() {
     <div className="panel knowledge-page">
       <h2>{t('kbTitle')}</h2>
       <p className="sub">{t('kbSub')}</p>
+      {!canWrite ? <p className="banner-warn">{t('adminOnlyWrite')}</p> : null}
 
       <div className="kb-layout">
         <aside className="kb-tree-pane std-side">
