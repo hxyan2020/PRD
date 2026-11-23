@@ -1,15 +1,23 @@
 /**
  * Lark / Feishu Open API helpers.
- * Env: LARK_APP_ID, LARK_APP_SECRET (required for outbound replies).
- * Optional: LARK_VERIFICATION_TOKEN, LARK_ENCRYPT_KEY.
+ * Minimum secrets for live replies: LARK_APP_ID + LARK_APP_SECRET.
+ * Optional: LARK_VERIFICATION_TOKEN, LARK_BOT_OPEN_ID (auto-fetched when unset).
+ * Do NOT enable Encrypt Key in Lark console unless LARK_ENCRYPT_KEY decrypt is added.
  */
 
 let cachedToken: { token: string; expireAt: number } | null = null
+let cachedBotOpenId: { id: string; expireAt: number } | null = null
 
+/** Override with https://open.larksuite.com for international Lark tenants. */
 const LARK_HOST = process.env.LARK_API_HOST || 'https://open.feishu.cn'
 
 export function larkConfigured() {
   return Boolean(process.env.LARK_APP_ID && process.env.LARK_APP_SECRET)
+}
+
+/** True when Lark sent an encrypted envelope we cannot read without Encrypt Key support. */
+export function isEncryptedEnvelope(body: Record<string, unknown>): boolean {
+  return Boolean(body.encrypt && typeof body.encrypt === 'string' && !body.challenge && !body.header)
 }
 
 export async function getTenantToken(): Promise<string> {
@@ -114,6 +122,35 @@ export async function downloadMessageImage(messageId: string, imageKey: string):
 
 export function verifyToken(token: string | undefined): boolean {
   const expected = process.env.LARK_VERIFICATION_TOKEN || ''
-  if (!expected) return true // allow if not configured (dev)
+  if (!expected) return true // allow if not configured — ID/secret alone is enough
   return Boolean(token && token === expected)
+}
+
+/**
+ * Bot open_id for precise @-mention matching.
+ * Prefers LARK_BOT_OPEN_ID; otherwise fetches via bot/v3/info (cached).
+ */
+export async function resolveBotOpenId(): Promise<string> {
+  const fromEnv = (process.env.LARK_BOT_OPEN_ID || '').trim()
+  if (fromEnv) return fromEnv
+  if (cachedBotOpenId && Date.now() < cachedBotOpenId.expireAt) return cachedBotOpenId.id
+  if (!larkConfigured()) return ''
+  try {
+    const data = (await larkFetch('/open-apis/bot/v3/info', { method: 'GET' })) as {
+      bot?: { open_id?: string }
+      data?: { bot?: { open_id?: string }; open_id?: string }
+    }
+    const id =
+      data.bot?.open_id ||
+      data.data?.bot?.open_id ||
+      data.data?.open_id ||
+      ''
+    if (id) {
+      cachedBotOpenId = { id, expireAt: Date.now() + 6 * 60 * 60 * 1000 }
+      return id
+    }
+  } catch {
+    /* soft-fail — parse.ts falls back to any @mention */
+  }
+  return ''
 }

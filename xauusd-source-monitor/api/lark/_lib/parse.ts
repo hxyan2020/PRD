@@ -79,12 +79,12 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
   const messageType = String(message.message_type || 'text')
   const rawContent = String(message.content || '')
   const mentions = (message.mentions || []) as { id?: { open_id?: string }; name?: string; key?: string }[]
+  // Precise match when bot open_id known (env or caller-injected); else any @mention key.
   const botOpenId = process.env.LARK_BOT_OPEN_ID || ''
   const mentionedBot =
     mentions.some((m) => {
       if (botOpenId && m.id?.open_id === botOpenId) return true
-      // Without bot open_id configured, treat any @mention in group as addressing the bot
-      // when the mention key appears in text — Feishu replaces @_user_1 in content.
+      // Soft match: any @ in the message (typical when ops @ the bot in a group)
       return Boolean(m.key)
     }) || false
 

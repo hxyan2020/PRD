@@ -5,14 +5,24 @@
  *   Request URL: https://vex-llm-proxy.vercel.app/api/lark/event
  *   Events: im.message.receive_v1, card.action.trigger
  *
- * Env: LARK_APP_ID, LARK_APP_SECRET
- * Optional: LARK_VERIFICATION_TOKEN, LARK_ENCRYPT_KEY, LARK_BOT_OPEN_ID, OPENAI_API_KEY
+ * Minimum secrets: LARK_APP_ID + LARK_APP_SECRET (set on Vercel).
+ * Optional: LARK_VERIFICATION_TOKEN (recommended), LARK_BOT_OPEN_ID (auto-fetched).
+ * Keep Encrypt Key OFF in Lark console (encrypt envelope not supported).
  *
  * Web SPA remains unchanged at / — this endpoint is additive.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { handleCardAction, handleMessage } from './_lib/agent.js'
-import { larkConfigured, replyCard, replyText, sendCardToChat, sendTextToChat, verifyToken } from './_lib/client.js'
+import {
+  isEncryptedEnvelope,
+  larkConfigured,
+  replyCard,
+  replyText,
+  resolveBotOpenId,
+  sendCardToChat,
+  sendTextToChat,
+  verifyToken,
+} from './_lib/client.js'
 import { parseIncomingEvent, shouldRespond } from './_lib/parse.js'
 
 export const config = {
@@ -66,17 +76,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       larkConfigured: larkConfigured(),
       hasOpenAI: Boolean(process.env.OPENAI_API_KEY),
       hasVerificationToken: Boolean(process.env.LARK_VERIFICATION_TOKEN),
+      hasEncryptKey: Boolean(process.env.LARK_ENCRYPT_KEY),
+      encryptSupported: false,
+      readyForConversation: larkConfigured(),
+      missingSecrets: [
+        !process.env.LARK_APP_ID ? 'LARK_APP_ID' : '',
+        !process.env.LARK_APP_SECRET ? 'LARK_APP_SECRET' : '',
+      ].filter(Boolean),
+      webhook: 'https://vex-llm-proxy.vercel.app/api/lark/event',
       endpoints: {
         event: '/api/lark/event',
         incidents: '/api/lark/incidents',
       },
       web: 'https://vex-llm-proxy.vercel.app/',
+      setupHint:
+        'Set only LARK_APP_ID + LARK_APP_SECRET on Vercel to enable replies. Leave Encrypt Key OFF. OPENAI_API_KEY already improves answers when present.',
     })
   }
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' })
 
   const body = readBody(req)
+
+  if (isEncryptedEnvelope(body)) {
+    return res.status(200).json({
+      ok: false,
+      error:
+        'Encrypted Lark event received, but decrypt is not enabled. In Lark Developer Console → Event Subscription, turn Encrypt Key OFF (or leave empty), then re-save the Request URL.',
+    })
+  }
+
+  // Warm bot open_id cache (non-blocking best-effort) so group @ matching improves after first events
+  if (larkConfigured() && !process.env.LARK_BOT_OPEN_ID) {
+    void resolveBotOpenId().then((id) => {
+      if (id) process.env.LARK_BOT_OPEN_ID = id
+    })
+  }
 
   // URL verification (challenge)
   if (body.type === 'url_verification' || body.challenge) {

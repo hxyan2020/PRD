@@ -98,9 +98,13 @@ export function LarkBotPage() {
               : 'Create a Lark enterprise app; copy App ID / App Secret.'}
           </li>
           <li>
-            {zh ? '在 Vercel 專案環境變數設定：' : 'Set Vercel project env vars:'}{' '}
-            <code>LARK_APP_ID</code>, <code>LARK_APP_SECRET</code>,{' '}
-            <code>LARK_VERIFICATION_TOKEN</code>（optional）, <code>OPENAI_API_KEY</code>
+            {zh
+              ? '在 Vercel 專案 vex-llm-proxy 只需設定：'
+              : 'On Vercel project vex-llm-proxy set only:'}{' '}
+            <code>LARK_APP_ID</code>, <code>LARK_APP_SECRET</code>
+            {zh
+              ? '。Verification Token／Encrypt Key 可留空（請關閉 Encrypt）。OPENAI 已在主機上。'
+              : '. Leave Verification Token / Encrypt Key empty (keep Encrypt OFF). OPENAI is already on the host.'}
           </li>
           <li>
             {zh ? '事件訂閱 Request URL：' : 'Event subscription Request URL:'}{' '}
