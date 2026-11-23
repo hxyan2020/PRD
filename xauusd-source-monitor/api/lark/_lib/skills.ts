@@ -1,10 +1,28 @@
 import l1Raw from '../_data/l1.json' with { type: 'json' }
 import l2Raw from '../_data/l2.json' with { type: 'json' }
 import kbRaw from '../_data/kbDefaults.json' with { type: 'json' }
+import veQuoteOps from '../_data/veQuoteOps.json' with { type: 'json' }
 import type { KbHit, KbItem, SkillHit, SkillRec } from './types.js'
 
 let skillsCache: SkillRec[] | null = null
 let kbCache: KbItem[] | null = null
+
+type VePack = {
+  knowledge?: { id: string; title: string; body: string }[]
+  skills?: {
+    id: string
+    level: 'L1' | 'L2'
+    name: string
+    severity: string
+    matchHints?: string
+    linkedL1?: string
+    check: string
+    action: string
+    opt: string
+  }[]
+}
+
+const ve = veQuoteOps as VePack
 
 export function loadSkills(): SkillRec[] {
   if (skillsCache) return skillsCache
@@ -30,17 +48,35 @@ export function loadSkills(): SkillRec[] {
     action: r[4]!,
     opt: r[5]!,
   }))
-  skillsCache = [...l1, ...l2]
+  const veSkills: SkillRec[] = (ve.skills || []).map((s) => ({
+    id: s.id,
+    level: s.level,
+    name: s.name,
+    severity: s.severity,
+    matchHints: s.matchHints || `${s.id} ${s.name}`,
+    linkedL1: s.linkedL1 || '',
+    check: s.check,
+    action: s.action,
+    opt: s.opt,
+  }))
+  const seen = new Set([...l1, ...l2].map((s) => s.id))
+  skillsCache = [...l1, ...l2, ...veSkills.filter((s) => !seen.has(s.id))]
   return skillsCache
 }
 
 export function loadKnowledge(): KbItem[] {
   if (kbCache) return kbCache
-  kbCache = (kbRaw as { title: string; body: string }[]).map((k, i) => ({
+  const base = (kbRaw as { title: string; body: string }[]).map((k, i) => ({
     id: `kb_default_${i}`,
     title: k.title,
     body: k.body,
   }))
+  const veKb: KbItem[] = (ve.knowledge || []).map((k) => ({
+    id: k.id,
+    title: k.title,
+    body: k.body,
+  }))
+  kbCache = [...base, ...veKb]
   return kbCache
 }
 

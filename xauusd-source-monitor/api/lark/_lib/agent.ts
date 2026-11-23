@@ -2,6 +2,7 @@ import { investigationCard, reviewCard, simpleCard } from './cards.js'
 import { downloadMessageImage } from './client.js'
 import { chatComplete, describeImage } from './llm.js'
 import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
+import { fetchQuoteOpsRag } from './quoteOps.js'
 import {
   adaptiveNextSteps,
   preferredActions,
@@ -177,20 +178,25 @@ async function runInvestigation(args: {
   })
 
   let llmExtra = ''
+  const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
   const llm = await enrichWithLlm({
     lang: args.lang,
     question:
       args.lang === 'zh-Hant'
-        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。'
-        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps.',
+        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。'
+        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing.',
     context: [
       `FACTS:\n${blob.slice(0, 6000)}`,
       `SKILLS:\n${hits.map((h) => `${h.id} ${h.name} | ${h.check}`).join('\n')}`,
       `KB:\n${kb.map((k) => `${k.title}: ${k.body}`).join('\n')}`,
+      quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
       `NEXT:\n${nextSteps.join('\n')}`,
-    ].join('\n\n'),
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
   })
   if (llm) llmExtra = `\n\n${llm}`
+  else if (quoteOps) llmExtra = `\n\n${quoteOps.slice(0, 1800)}`
 
   const rec = persistOpenIncident({
     chatId: args.msg.chatId,
@@ -371,23 +377,34 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     })
   }
 
-  // general_risk — answer with RAG + optional LLM, offer to investigate
+  // general_risk — answer with local RAG + quote-ops V Exchange RAG + optional LLM
   const { hits, kb, severity } = retrieveRag(workingText)
+  const quoteOps = await fetchQuoteOpsRag(workingText)
   const context = [
     `severity=${severity}`,
     `skills=${hits.map((h) => h.id).join(',')}`,
     `kb=${kb.map((k) => k.title).join(',')}`,
     kb.map((k) => `${k.title}: ${k.body}`).join('\n'),
-  ].join('\n')
+    quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
+    'Use V Exchange perpetual knowledge only; do not answer from CFD broker pricing.',
+  ]
+    .filter(Boolean)
+    .join('\n')
   const llm = await enrichWithLlm({ lang, question: workingText, context })
-  if (llm) {
+  const body =
+    llm ||
+    quoteOps ||
+    (lang === 'zh-Hant'
+      ? '已命中本地 Skills／知識庫，但上游 LLM 暫不可用。請輸入 `investigate` 進入引導排查。'
+      : null)
+  if (body) {
     return {
       card: simpleCard(
         lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply',
-        `${llm}\n\n---\n${
+        `${body}\n\n---\n${
           lang === 'zh-Hant'
-            ? '_若這是事故，請回覆更多證據或輸入 `investigate` 進入引導排查。_'
-            : '_If this is an incident, reply with more evidence or type `investigate` for guided RCA._'
+            ? '_來源含 quote-ops V Exchange 永續知識庫。若這是事故，請回覆更多證據或輸入 `investigate`。_'
+            : '_Sources include quote-ops V Exchange perpetual KB. If this is an incident, add evidence or type `investigate`._'
         }`,
       ),
     }

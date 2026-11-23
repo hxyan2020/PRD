@@ -1,0 +1,292 @@
+{
+  "source": "https://quote-ops-three.vercel.app/api/kb",
+  "productLine": "v-exchange-perp",
+  "fetchedNote": "Snapshot of V Exchange perpetual folder only (excludes CFD Broker Pricing).",
+  "knowledge": [
+    {
+      "id": "ve-doc-principles",
+      "title": "0. 知识库使用原则 / 0. Knowledge base principles",
+      "body": "Summary: Audience, AI duties, evidence grades, read-only limits.\n\n摘要：适用部门、AI 四项职责、证据分级、只读限制。\n\n适用部门：Risk Ops、RC 管理层、Pricing、BIT、DB 做市商、Finance、客服、产品团队。\n\n## AI Bot 四项职责\n- 告警排查：根据告警识别关联风险、查询数据、推断根因。\n- SOP 辅助：告诉值班人员先查什么、找谁、何时升级、如何验收。\n- 业务问答：回答内部部门和交易用户有关永续合约的问题。\n- 知识沉淀：记录已确认的事故根因、解决方案及历史案例。\n\n## 证据分级\n| 标记 | 定义 |\n| --- | --- |\n| [OBS] | 历史生产配置截图或实际告警截图可见 |\n| [DESIGN] | 历史设计方案、Runbook 或建议规则 |\n| [PUBLIC] | 交易所公开资料或行业常见做法 |\n| [TBC] | 尚未确认，必须保留占位符 |\n| [INCIDENT] | 具体事件的实际观测数据 |\n\n## 重要限制\nAI **不允许**直接修改生产参数、切换价格源、停盘、注资、执行强平、强制成交或修改账本。只能提供只读分析和操作建议。\n\n> 产品线：V Exchange 永续合约（与 CFD Broker Pricing 分离）。\n\nAudience: Risk Ops, RC leadership, Pricing, BIT, DB market maker, Finance, CS, Product.\n\n## AI bot duties\n- Alert investigation\n- SOP assistance\n- Business Q&A for perp contracts\n- Knowledge capture of confirmed RCAs\n\n## Evidence grades\n[OBS] / [DESIGN] / [PUBLIC] / [TBC] / [INCIDENT]\n\n## Hard limit\nAI must NOT change production params, switch price sources, halt markets, inject funds, liquidate, force trades, or edit ledgers. Read-only analysis only.\n\n> Product line: V Exchange perpetual (separate from CFD Broker Pricing).",
+      "tags": [
+        "principles",
+        "evidence",
+        "ai-limits",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-product",
+      "title": "1. 产品与业务架构 / 1. Product & business architecture",
+      "body": "Summary: XAUUSD perp basics, risk flow, three DB accounts.\n\n摘要：XAUUSD 永续基础信息、交易风控链路、DB 三类账户。\n\n## 1.1 产品基础信息\n| 项目 | 内容 |\n| --- | --- |\n| 交易产品 | XAUUSD 永续合约 |\n| 结算币种 | USD |\n| 入金 | USDT / USDC 按 1:1 记账 USD |\n| 资金费率结算周期 | 当前截图为每 4 小时 [OBS/DESIGN] |\n| Index 主价格源 | Kraken（历史设计）[DESIGN] |\n| 备用价格源 | Binance、Bybit、OKX（历史设计）[DESIGN] |\n| Mark Price | 三个候选价格的中位数及降级逻辑 |\n| 做市商 | DB |\n| 正式上线 | 2026年11月2日 |\n| 合约乘数 / 最小下单 / 最大杠杆 / 保证金档位 | [TBC] |\n\n## 1.2 交易与风控链路\n用户注册 / KYC / 开立永续账户 → 入金 / 权益 / 可用保证金 → 订单 / 撮合 / DB 做市报价 → 持仓 / Index / Mark / Funding / 保证金监控 → 强平 / DB 接仓 / ADL / 风险处置 → 清算结算 / 流水 / 对账 / 提现。\n\n具体执行顺序以生产状态机为准 [TBC]。\n\n## 1.3 DB 三类账户\n| 账户 | 功能 | 主要风险 |\n| --- | --- | --- |\n| 01 做市账户 | 挂单、提供买卖盘流动性 | 报价中断、深度不足、库存风险 |\n| 02 接仓账户 | 承接强平后的风险头寸 | 接仓失败、处置超时、保证金不足 |\n| 03 K 线账户 | 执行 K 线相关交易策略 | 余额不足、持仓过大、策略异常 |\n\n三个账户必须通过真实 `account_id` 区分，不能把做市账户和接仓账户混为一谈。\n\n## Product basics\nXAUUSD perpetual, USD settlement, USDT/USDC 1:1, funding cycle ~4h [OBS/DESIGN], Index primary Kraken [DESIGN], backups Binance/Bybit/OKX [DESIGN], Mark = median of three candidates, MM = DB, live since 2026-11-02. Multiplier/lot/leverage/tiers [TBC].\n\n## Flow\nKYC → deposit/equity → orders/matching/DB quotes → position/Index/Mark/Funding/margin → liquidation/DB takeover/ADL → settlement/ledger/withdraw.\n\n## DB accounts\n01 MM · 02 takeover · 03 K-line — must use distinct account_id.",
+      "tags": [
+        "product",
+        "architecture",
+        "db-accounts",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-alarms",
+      "title": "2. 告警、阈值与频率 / 2. Alarms, thresholds & cadence",
+      "body": "Summary: Funding, price drift, book, Index/Mark, liq/ADL, DB account monitors.\n\n摘要：Funding / 价偏 / 盘口 / Index·Mark / 强平 ADL / DB 账户监控目录。\n\n> 历史截图配置 ≠ 当前生产全量配置。冲突值必须由 BIT 提供变更记录。\n\n## 2.1 资金费率\n| 告警 | 阈值 | 检测频率 | 状态 |\n| --- | --- | --- | --- |\n| XAUUSD 外部 Funding 偏差 | 0.1% | 历史每10分钟 | 已见生产告警 [OBS] |\n| XAUUSD 内部 Funding 上限 | +0.45% | 每10分钟 | 历史配置 [DESIGN] |\n| XAUUSD 内部 Funding 下限 | -0.45% | 每10分钟 | 历史配置 [DESIGN] |\n| BTCUSD 外部/内部 Funding | 0.1% / ±0.25% | 每10分钟 | 历史停用 |\n\n待确认：差异口径、预测 vs 已结算、同周期换算、重复推送/恢复、周末规则 [TBC]。\n\n## 2.2 价格偏离\n历史配置多为 1%/5min；**2026-11-22 生产告警 Mark vs Index ≥0.1%/1min** —— 配置冲突，不可自行认定长期有效 [INCIDENT/OBS]。\n\n其他：Last/Mid/Ask1/Bid1 vs Index 1%；Bid1 vs Ask1 0.1%。\n\n## 2.3 盘口与深度\n0.1% 范围深度 ≤300 USD；有效档位 ≤25；空簿/无成交/尖刺等多项 [TBC]。Bid1/Ask1 异常参考 5 分钟规则。\n\n## 2.4 Index / Mark\n主源异常、单源失效、有效源<2、全部失效、Fallback、观察期、平滑、Mark 降级 —— 阈值多为 [TBC]。Mark/Index 偏离：当前事件 0.1% / 1 分钟 [INCIDENT]。\n\n## 2.5 强平与 ADL\n大额爆仓预警：名义 ≥$100,000 且 MMR 95%（历史配置，口径待确认）；失败/重试/接仓超时多为事件型 [TBC]。\n\n## 2.6 DB 做市账户（9 项，P0/P1 为历史等级）\n可用余额、保证金占用、权益/注资、单方向净仓、聚合净仓、实际杠杆、聚合浮盈、24h 已实现盈亏等 —— 详见原文表；正负号口径待核实。\n\n## 2.7 K 线策略账户\n净持仓 >2 / >5 XAU；权益与可用余额多档 P2/P1/P0。注意：检测频率 ≠ 群通知频率。\n\nHistorical screenshot configs ≠ full prod. BIT must confirm conflicts.\n\nFunding external drift 0.1% (seen in prod). Internal ±0.45%. BTCUSD historically disabled.\n\nPrice drift: historic 1%; **2026-11-22 prod Mark vs Index ≥0.1%/1m** — conflict [INCIDENT].\n\nBook depth ≤300 USD in 0.1% band; ≤25 levels; many fields [TBC].\n\nLiq warning: notional ≥$100k & MMR 95% historic. DB MM / K-line account tables as in ZH body.",
+      "tags": [
+        "alarms",
+        "thresholds",
+        "funding",
+        "mark",
+        "index",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-pricing",
+      "title": "3. Index / Premium / Funding / Mark",
+      "body": "Summary: Index, premium, funding, mark formulas and risk chain.\n\n摘要：指数、溢价、资金费率、标记价格计算与风险因果链。\n\n## 3.1 Index\n多源参考价。历史设计：Kraken 主源；Binance/Bybit/OKX 备用；含异常、回退、观察期、恢复 [DESIGN]。权重/TTL/周末规则生产值 [TBC]。\n\n## 3.2 Premium（行业参考 [PUBLIC]）\n`P = (max(0,B-I) - max(0,I-A)) / I`，再平均/加权得 Average Premium。V Exchange 实际公式 [TBC]。\n\n## 3.3 Funding\n样本（高正溢价）：Funding ≈ AveragePremium − 0.05%。Clamp/Cap/Floor/舍入/周期参数 [TBC]。\n\n## 3.4 Mark\n三候选：资金费率调整公允价、市场移动平均基差公允价、最新成交价；有效数 3→中位数，2→平均，1→按类型（仅 Last 则 EMA），0→缓存或 Index 并告警。\n\n`P_fund = Index × (1 + FundingRate × 距下次结算小时 / Funding周期)` [DESIGN/BRD]。其余候选与 EMA [TBC]。\n\n## 3.5 风险因果（可能链路）\n外部价格源 + DB 订单簿 → Index/Premium → Funding → P_fund → Mark → 保证金/强平。Mark 还受基差与 Last 影响，非单向依赖。\n\nIndex multi-source with Kraken primary [DESIGN]. Premium industry ref Binance-style impact formula [PUBLIC]; VE formula [TBC]. Funding ≈ AvgPremium−0.05% in samples. Mark = median of three candidates with degradation. Risk chain as in ZH.",
+      "tags": [
+        "pricing",
+        "index",
+        "premium",
+        "funding",
+        "mark",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-admin",
+      "title": "4. 后台 Admin 与权限 / 4. Admin console & permissions",
+      "body": "Summary: Pricing/risk/order/finance/ADL pages, RBAC, data gaps.\n\n摘要：定价/风险/订单/财务/ADL 页面用途与 RBAC；数据缺口清单。\n\n原型约 56 页，部分为空/占位——**有按钮 ≠ 生产已实现**。\n\n模块含：Index Price、Market Source、Fair Price、Spread/NoTrade/Depth Monitor、Active Order/History/Deal、Position、Liquidate History、Trigger/Stop、Financial Account、FinanceFlow、Transfer、User Info、Admin ADL、Close Position（高危）。\n\n## 4.1 权限原则\n| 角色 | 允许 | 禁止 |\n| --- | --- | --- |\n| Risk Ops L1 | 查询告警/价格/订单/风险 | 改定价/资金/仓位 |\n| Risk Ops L2 | 深度排查、升级、协调验收 | 未授权生产执行 |\n| RC 管理层 | 审批风险保护建议 | 绕过正式授权 |\n| Pricing / BIT | 授权后技术修复 | 擅自改业务风险规则 |\n| Finance | 核实资金、授权资金操作 | 未授权调账本 |\n| AI Bot | 只读查询、报告、建议 | 所有生产写操作 |\n\n## 4.2 数据缺口\n订单/UID/仓位/强平 ID 查询、原始价格源、Index/Premium/Funding/Mark 重放、DB 账户实时、流水批次、完整审计 —— 未验证统一标 `[待确认:生产数据可用性、查询字段、权限、URL]`。\n\n~56 prototype pages; buttons ≠ prod. RBAC: AI bot read-only. Data gaps must be marked [TBC] until verified.",
+      "tags": [
+        "admin",
+        "rbac",
+        "console",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-sop",
+      "title": "5–6. 告警排查 SOP 与专项路径 / 5–6. Alert SOP & playbooks",
+      "body": "Summary: Seven-step workflow, record format, eight playbooks.\n\n摘要：通用七步工作流、标准记录格式、八类专项排查。\n\n## 5.1 标准工作流\n1. T0 接收告警并保存 ID/合约/时间/阈值/实际值/链接  \n2. 确认数据真实性（空值、重复、规则版本）  \n3. 定位业务系统与影响范围  \n4. 识别客户与平台风险  \n5. 升级 Owner（Pricing/BIT/DB/Finance/RC）  \n6. 授权修复（审批人、执行人、回滚）  \n7. 恢复验收（技术/交易/资金仓位/残余风险）\n\n## 5.2 标准记录字段\nAlert ID、Alarm Code、Contract、Severity、Trigger/Receive Time、Observed/Threshold、Impacted Accounts、Primary/Escalation Owner、Root Cause、Corrective Action、Recovery Evidence、Close Approval。\n\n## 6. 专项路径（摘要）\n- **外部 Funding>0.1%**：友商口径 → 原始 API → Premium → Impact → 重算 Funding → 是否已结算。  \n- **Mark vs Index**：同秒对齐 → 三候选 → 有效性 → 强平/保证金影响。  \n- **Index vs 友商**：同秒对比 → 标的口径 → 四源原始报价 → 权重/Fallback/TTL → 周末流动性 → DB 锚点。  \n- **空簿/单边/深度不足**：一档与多档 → DB 连接 → 做市账户 → Price Band 拒单码。  \n- **接仓失败/ADL**：事件 ID → 是否到账 → 权限映射 → 失败原因 → 部分成功 → 幂等。  \n- **接仓未对冲**：真实对冲订单（非仅 WS）→ 持仓时长 → 是否升级 RC；强制成交只转移账户敞口。  \n- **接仓资金不足**：自动注资 → 额度 → 流水一致性。  \n- **强平财务对账**：Mark→保证金→强平→成交→接仓/ADL→PnL→费/Funding→流水批次。\n\nSeven-step SOP + eight playbooks covering funding drift, mark/index, index vs peers, empty book, takeover/ADL, unhedged takeover, underfunded takeover, liq↔finance recon.",
+      "tags": [
+        "sop",
+        "runbook",
+        "investigation",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-data",
+      "title": "7. 数据库 / API / MCP 契约 / 7. DB / API / MCP contracts",
+      "body": "Summary: Read-only placeholders, logical entities, MCP tools, L0–L3.\n\n摘要：只读连接占位、逻辑实体、MCP 工具、L0–L3 安全层级。\n\n## 7.1 连接配置\nEnvironment/Host/Port/DB/Schema/只读用户/Vault/网络/MCP/SQL Gateway 等全部 [TBC]。**密码与 Token 不得写入知识库。**\n\n## 7.2 逻辑实体（非真实表名）\n`alert_event`、`price_source_tick`、`index_trace`、`orderbook_snapshot`、`premium_funding_trace`、`mark_trace`、`order_execution`、`position_margin`、`liquidation_adl`、`mm_hedge`、`ledger_recon`。\n\n## 7.3 建议 MCP\n`get_alert_context`、`get_price_trace`、`get_orderbook_trace`、`get_account_risk`、`get_liquidation_trace`、`get_reconciliation`、`get_admin_page_catalog` —— 契约建议，不代表已开发。\n\n## 7.4 安全\nL0 SOP；L1 授权只读风险数据；L2 PII 默认拒绝；L3 生产动作人工审批后由确定性系统执行，AI 不直接操作。\n\nAll connection fields [TBC]. No secrets in KB. Logical entities + suggested MCP tools. L0–L3 security ladder; AI never executes L3.",
+      "tags": [
+        "database",
+        "mcp",
+        "security",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-faq",
+      "title": "8. 跨部门与交易用户 FAQ / 8. Internal & trader FAQ",
+      "body": "Summary: Standard answers; trader replies must not leak internals.\n\n摘要：Funding/Premium/Mark/接仓等标准答法；用户回答不得泄密。\n\n资金费率为正：通常多头付空头；为负：空头付多头。单期 0.1%/4h 按持仓名义与实际费率计；可展示年化但不可预测全年。\n\n友商 Funding=0 而我们不是：核对合约/时间/周期/公式/溢价/价格源。Premium 多为冲击挂单口径 [PUBLIC]，VE 公式 [TBC]。Mark ≠ Index：因三候选价。无报价时限价/市价取决于状态与 Price Band。\n\nDB 接仓：接仓账户承接强平风险头寸。强制成交：历史 SOP 中接仓账户与指定做市账户按 Mark 匹配——可能只转移敞口。\n\n**面向交易用户**：通俗解释已确认事实；不得泄露 DB 库存、内部阈值、价格源敏感配置、其他客户信息或未确认根因。\n\nFAQ on funding sign, annualization, peer funding=0, premium, mark vs index, rejects, DB takeover, forced trade. Trader-facing answers must not leak inventory, internal thresholds, or unconfirmed RCAs.",
+      "tags": [
+        "faq",
+        "funding",
+        "mark",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-skill",
+      "title": "9. AI Skill 核心指令 / 9. AI Skill core rules",
+      "body": "Summary: VE risk investigation skill: role, 10 rules, flow, output schema.\n\n摘要：V Exchange 风控排查 Skill：角色、十条规则、排查流程与标准输出。\n\n你是 **V Exchange 永续合约风控排查助手**（只读）。职责：识别风险、定位异常、检索 SOP、建议修复、辅助验收、回答业务问题。不是生产执行系统。\n\n## 工作规则（摘要）\n1. 优先当前生产配置与已签署 SOP  \n2. 历史/行业资料必须标注来源  \n3. 不得把建议阈值说成已上线  \n4. 不得编造字段/API/订单/告警  \n5. 缺失标 [待确认] / DATA NOT VERIFIED  \n6. 优先授权只读查询  \n7. 时间标注 UTC + 新加坡时间  \n8. 区分已证实 / 假设 / 未排除  \n9. 影响强平/资金/连续交易/账本时建议升级  \n10. 禁止停盘、改价、切源、强平、ADL、强制成交、注资、改账本\n\n## 标准输出\n事件摘要 · 已核实证据 · 根因分析 · 排查路径 · 建议处置 · 恢复验收 · 待确认事项 ·（如需）面向交易用户的回答。\n\nRead-only V Exchange perp risk investigation skill. Ten hard rules + standard output sections. Never execute production actions.",
+      "tags": [
+        "skill",
+        "ai",
+        "rules",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-incident",
+      "title": "11. 案例 VE-INC-20261122-FUNDING-INDEX / 11. Case VE-INC-20261122-FUNDING-INDEX",
+      "body": "Summary: 2026-11-22 weekend Funding/Index anomaly: obs, hypotheses, data needs.\n\n摘要：2026-11-22 周末 Funding/Index 异常：观测、假设、所需数据。\n\n## 已观察 [INCIDENT]\n| 指标 | 实际情况 |\n| --- | --- |\n| XAUUSD Funding | 0.1019%～0.1202% |\n| Average Premium | 0.152%～0.170% |\n| Mark/Index 偏差 | 约 +0.13%～+0.17% |\n| 外部友商 Funding | 告警显示多家为 0% |\n| Index | 持续变化，非完全停更 |\n| DB | 报价正常，认为 VE Index 偏低 |\n\n## 假设\n- A：VE Index 相对外部偏低 → 正溢价抬升 Funding  \n- B：DB 盘口导致 Premium 偏高（需 Impact 验证）  \n- C：Mark 候选持续偏高  \n\n**当前结论：根因未确认。** 需同秒外部 Index、四源原始报价、DB 盘口、Premium/Mark 明细、Funding 结算与客户影响。\n\nWeekend anomaly: elevated funding/premium and Mark/Index drift while peers show 0% funding. Hypotheses A/B/C; root cause not confirmed pending raw traces.",
+      "tags": [
+        "incident",
+        "funding",
+        "index",
+        "2026-11-22",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    },
+    {
+      "id": "ve-doc-checklist",
+      "title": "12–13. 上线补齐清单与参考 / 12–13. Go-live checklist & references",
+      "body": "Summary: 11-item data checklist; references; first-wave deploy advice.\n\n摘要：11 项生产资料补齐；内部/公开参考；首批上线建议。\n\n## 生产资料补齐（0/11）\n全量告警配置 · 后台生产菜单 · Index 规则 · Premium/Funding 公式 · Mark 细节 · 订单撮合状态机 · 强平/接仓状态机 · DB 账户配置 · 财务对账 · DB/API/MCP · SOP 治理。\n\n## 参考\n内部：28 Runbooks（2026-10-18）、L1/L2 监控整合（2026-11-01）、生产告警与 Mark BRD 截图。  \n公开：告警清单、SOP、Binance Funding/Mark 参考 —— 仅行业参考，非 VE 生产规则 [PUBLIC]。\n\n## 部署建议\n首批上线：Alarm Catalog + Admin Guide + Runbooks + Database Contracts，先保证“什么告警、查哪里、谁负责、如何处理”，再开放生产只读查询。\n\n11-item go-live checklist. References are design/public unless verified. First wave: alarms + admin + runbooks + data contracts.",
+      "tags": [
+        "checklist",
+        "references",
+        "go-live",
+        "v-exchange-perp",
+        "perpetual",
+        "永续"
+      ],
+      "source": "quote-ops-three.vercel.app",
+      "productLine": "v-exchange-perp",
+      "updatedAt": 1795451771825
+    }
+  ],
+  "skills": [
+    {
+      "id": "VE-SOP-01",
+      "level": "L1",
+      "name": "External Funding >0.1%",
+      "severity": "P1",
+      "matchHints": "funding 外部 funding 友商 premium impact 资金费率 0.1%",
+      "check": "核对友商口径 → 原始 API → Premium → Impact → 重算 Funding → 是否已结算",
+      "action": "确认周期与结算状态后按审批流程处置；勿擅自改 Funding 参数",
+      "opt": "统一外部/内部 Funding 告警口径与周末规则"
+    },
+    {
+      "id": "VE-SOP-02",
+      "level": "L1",
+      "name": "Mark vs Index deviation",
+      "severity": "P1",
+      "matchHints": "mark index 偏离 偏差 mark/index 价偏",
+      "check": "同秒对齐 → 三候选有效性 → 强平/保证金影响",
+      "action": "区分观察与根因；候选价异常时升级 Pricing/BIT，禁止未授权改 Mark",
+      "opt": "固化 Mark 候选与降级告警阈值"
+    },
+    {
+      "id": "VE-SOP-03",
+      "level": "L1",
+      "name": "Index vs peer venues",
+      "severity": "P1",
+      "matchHints": "index 友商 四源 kraken binance bybit okx 权重 fallback ttl",
+      "check": "同秒对比 → 标的口径 → 四源原始报价 → 权重/Fallback/TTL → 周末流动性 → DB 锚点",
+      "action": "隔离坏源并验证备源；无有效源按预案保护",
+      "opt": "源质量评分与周末规则文档化"
+    },
+    {
+      "id": "VE-SOP-04",
+      "level": "L1",
+      "name": "Empty / one-sided book / thin depth",
+      "severity": "P1",
+      "matchHints": "空簿 单边 深度不足 orderbook depth bid ask price band",
+      "check": "一档与多档 → DB 连接 → 做市账户 → Price Band 拒单码",
+      "action": "协调 DB 做市恢复双边；必要时按审批限制新增风险",
+      "opt": "深度与有效档位监控阈值对齐生产"
+    },
+    {
+      "id": "VE-SOP-05",
+      "level": "L1",
+      "name": "Takeover fail / ADL",
+      "severity": "P0",
+      "matchHints": "接仓失败 adl 强平 takeover liquidation",
+      "check": "事件 ID → 是否到账 → 权限映射 → 失败原因 → 部分成功 → 幂等",
+      "action": "P0 升级 RC/BIT；禁止 AI 执行强平/ADL/强制成交",
+      "opt": "接仓幂等与失败码目录"
+    },
+    {
+      "id": "VE-SOP-06",
+      "level": "L1",
+      "name": "Takeover unhedged",
+      "severity": "P1",
+      "matchHints": "接仓未对冲 hedge 对冲 ws 强制成交",
+      "check": "真实对冲订单（非仅 WS）→ 持仓时长 → 是否升级 RC",
+      "action": "确认强制成交是否仅转移账户敞口；升级人工处置",
+      "opt": "对冲成交与 WS 心跳分离监控"
+    },
+    {
+      "id": "VE-SOP-07",
+      "level": "L1",
+      "name": "Takeover underfunded",
+      "severity": "P0",
+      "matchHints": "接仓资金不足 注资 额度 流水",
+      "check": "自动注资 → 额度 → 流水一致性",
+      "action": "Finance/RC 审批后注资；AI 不得执行注资或改账本",
+      "opt": "接仓账户余额水位告警"
+    },
+    {
+      "id": "VE-SOP-08",
+      "level": "L1",
+      "name": "Liquidation finance reconciliation",
+      "severity": "P1",
+      "matchHints": "强平 财务 对账 pnl funding 流水",
+      "check": "Mark→保证金→强平→成交→接仓/ADL→PnL→费/Funding→流水批次",
+      "action": "Finance 主导对账；记录 Close Approval",
+      "opt": "强平财务批次自动对账报告"
+    },
+    {
+      "id": "VE-SOP-00",
+      "level": "L2",
+      "name": "Standard 7-step alert workflow",
+      "severity": "P2",
+      "matchHints": "sop 工作流 告警排查 升级 验收",
+      "linkedL1": "VE-SOP-01 VE-SOP-02 VE-SOP-03 VE-SOP-04 VE-SOP-05 VE-SOP-06 VE-SOP-07 VE-SOP-08",
+      "check": "T0 收告警→验真→定位影响→客户/平台风险→升级 Owner→授权修复→恢复验收",
+      "action": "按标准记录字段落盘；高危动作仅人工审批执行",
+      "opt": "告警 ID 与 RCA 报告双向链接"
+    },
+    {
+      "id": "VE-AI-RULES",
+      "level": "L2",
+      "name": "V Exchange AI Skill core rules",
+      "severity": "P2",
+      "matchHints": "ai skill 只读 禁止 强平 改价 切源",
+      "linkedL1": "VE-SOP-01 VE-SOP-02 VE-SOP-05",
+      "check": "确认回答遵守十条规则：不编造、标 [TBC]/区分证实/假设、禁止生产写操作",
+      "action": "仅输出只读分析与审批建议",
+      "opt": "将证据分级 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT] 写入报告"
+    }
+  ]
+}

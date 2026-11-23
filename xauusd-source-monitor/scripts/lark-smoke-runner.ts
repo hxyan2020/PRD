@@ -1,4 +1,5 @@
 import { handleMessage } from '../api/lark/_lib/agent'
+import { loadKnowledge, loadSkills, retrieveRag } from '../api/lark/_lib/skills'
 import { clearSession, listIncidents } from '../api/lark/_lib/store'
 import type { IncomingMessage } from '../api/lark/_lib/types'
 
@@ -35,6 +36,18 @@ function assert(cond: boolean, msg: string) {
 }
 
 async function main() {
+  const skills = loadSkills()
+  const kb = loadKnowledge()
+  assert(skills.some((s) => s.id.startsWith('VE-SOP')), 'VE quote-ops skills loaded')
+  assert(kb.some((k) => k.id.startsWith('ve-doc-')), 'VE quote-ops knowledge loaded')
+  const rag = retrieveRag('Mark vs Index deviation Funding 0.1% 接仓失败')
+  assert(
+    rag.hits.some((h) => h.id.startsWith('VE-') || h.id.startsWith('MARK') || h.id.startsWith('IDX')),
+    'RAG hits VE or core skills',
+  )
+  assert(rag.kb.some((k) => k.id.startsWith('ve-doc-') || /Mark|Funding|SOP|永续/i.test(k.title)), 'RAG hits VE docs')
+  console.log(`skills=${skills.length} kb=${kb.length} ragHits=${rag.hits.map((h) => h.id).slice(0, 6).join(',')}`)
+
   clearSession('smoke_chat', 'smoke_user')
 
   const off = await turn('offtopic', 'What should I cook for dinner tonight?')

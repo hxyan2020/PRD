@@ -1,4 +1,11 @@
-import { DEFAULT_KB, L1_SKILLS, L2_CHAINS } from './data/catalog'
+import {
+  DEFAULT_KB,
+  L1_SKILLS,
+  L2_CHAINS,
+  VE_QUOTE_OPS_KB,
+  VE_QUOTE_OPS_SKILLS,
+  VE_QUOTE_OPS_SOURCE,
+} from './data/catalog'
 import { PERM_VERCEL_ORIGIN } from './engine/llm'
 import type {
   CopilotSettings,
@@ -81,7 +88,9 @@ export function saveKnowledge(list: KnowledgeItem[]) {
 
 export function defaultKnowledgeTree(): KbNode[] {
   const rootId = 'kb_root'
+  const veFolderId = 'kb_ve_quote_ops'
   const now = Date.now()
+  const legacy = DEFAULT_KB.filter((k) => !k.id.startsWith('ve-doc-'))
   const nodes: KbNode[] = [
     {
       id: rootId,
@@ -92,7 +101,7 @@ export function defaultKnowledgeTree(): KbNode[] {
       updatedAt: now,
     },
   ]
-  DEFAULT_KB.forEach((k, i) => {
+  legacy.forEach((k, i) => {
     nodes.push({
       id: k.id,
       parentId: rootId,
@@ -102,7 +111,39 @@ export function defaultKnowledgeTree(): KbNode[] {
       updatedAt: k.updatedAt || now,
     })
   })
+  nodes.push({
+    id: veFolderId,
+    parentId: rootId,
+    title: 'V Exchange 永续 · quote-ops',
+    body: `Synced from ${VE_QUOTE_OPS_SOURCE} (product line v-exchange-perp only; CFD Pricing excluded).`,
+    order: legacy.length + 1,
+    updatedAt: now,
+  })
+  VE_QUOTE_OPS_KB.forEach((k, i) => {
+    nodes.push({
+      id: k.id,
+      parentId: veFolderId,
+      title: k.title,
+      body: k.body,
+      order: i + 1,
+      updatedAt: k.updatedAt || now,
+    })
+  })
   return nodes
+}
+
+/** Ensure quote-ops V Exchange nodes exist even when an older tree is in localStorage. */
+function mergeVeQuoteOpsTree(nodes: KbNode[]): KbNode[] {
+  const byId = new Map(nodes.map((n) => [n.id, n]))
+  let changed = false
+  for (const n of defaultKnowledgeTree()) {
+    if (n.id === 'kb_root') continue
+    if (!byId.has(n.id) && (n.id === 'kb_ve_quote_ops' || n.id.startsWith('ve-doc-'))) {
+      byId.set(n.id, n)
+      changed = true
+    }
+  }
+  return changed ? [...byId.values()] : nodes
 }
 
 function migrateFlatToTree(flat: KnowledgeItem[]): KbNode[] {
@@ -130,10 +171,14 @@ function migrateFlatToTree(flat: KnowledgeItem[]): KbNode[] {
 
 export function loadKnowledgeTree(): KbNode[] {
   const stored = readJson<KbNode[] | null>(KB_TREE_KEY, null)
-  if (stored?.length) return stored
+  if (stored?.length) {
+    const merged = mergeVeQuoteOpsTree(stored)
+    if (merged !== stored) writeJson(KB_TREE_KEY, merged)
+    return merged
+  }
   const flat = readJson<KnowledgeItem[] | null>(KB_KEY, null)
   if (flat?.length) {
-    const tree = migrateFlatToTree(flat)
+    const tree = mergeVeQuoteOpsTree(migrateFlatToTree(flat))
     writeJson(KB_TREE_KEY, tree)
     return tree
   }
@@ -194,7 +239,7 @@ export function defaultSkills(): SkillRecord[] {
   const now = 0
   const l1: SkillRecord[] = L1_SKILLS.map((s) => ({
     id: s.id,
-    level: 'L1',
+    level: 'L1' as const,
     name: s.name,
     severity: s.severity,
     description: s.name,
@@ -209,7 +254,7 @@ export function defaultSkills(): SkillRecord[] {
   }))
   const l2: SkillRecord[] = L2_CHAINS.map((s) => ({
     id: s.id,
-    level: 'L2',
+    level: 'L2' as const,
     name: s.name,
     severity: 'P2',
     description: s.name,
@@ -222,21 +267,37 @@ export function defaultSkills(): SkillRecord[] {
     custom: false,
     updatedAt: now,
   }))
-  return [...l1, ...l2]
+  // quote-ops V Exchange SOP skills (ids VE-*); keep after core L1/L2
+  const seen = new Set([...l1, ...l2].map((s) => s.id))
+  const ve = VE_QUOTE_OPS_SKILLS.filter((s) => !seen.has(s.id))
+  return [...l1, ...l2, ...ve]
 }
 
 export function loadSkills(): SkillRecord[] {
   const stored = readJson<SkillRecord[] | null>(SKILLS_KEY, null)
-  if (stored?.length) return stored
-  // Migrate legacy overrides onto defaults once
   const overrides = loadSkillOverrides()
   const base = defaultSkills()
-  if (!Object.keys(overrides).length) return base
-  return base.map((s) => {
-    const o = overrides[s.id]
-    if (!o) return s
-    return { ...s, ...o, updatedAt: Date.now() }
-  })
+  const apply = (list: SkillRecord[]) =>
+    list.map((s) => {
+      const o = overrides[s.id]
+      if (!o) return s
+      return { ...s, ...o, updatedAt: Date.now() }
+    })
+
+  if (!stored?.length) return apply(base)
+
+  // Merge in any new VE-* skills missing from older localStorage snapshots
+  const byId = new Map(stored.map((s) => [s.id, s]))
+  let changed = false
+  for (const s of base) {
+    if (s.id.startsWith('VE-') && !byId.has(s.id)) {
+      byId.set(s.id, s)
+      changed = true
+    }
+  }
+  const merged = [...byId.values()]
+  if (changed) writeJson(SKILLS_KEY, merged)
+  return apply(merged)
 }
 
 export function saveSkills(list: SkillRecord[]) {
