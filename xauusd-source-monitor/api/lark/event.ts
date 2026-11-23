@@ -11,9 +11,9 @@
  * Web SPA remains unchanged at / — this endpoint is additive.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { handleCardAction, handleMessage } from './_lib/agent'
-import { larkConfigured, replyCard, replyText, sendCardToChat, sendTextToChat, verifyToken } from './_lib/client'
-import { parseIncomingEvent, shouldRespond } from './_lib/parse'
+import { handleCardAction, handleMessage } from './_lib/agent.js'
+import { larkConfigured, replyCard, replyText, sendCardToChat, sendTextToChat, verifyToken } from './_lib/client.js'
+import { parseIncomingEvent, shouldRespond } from './_lib/parse.js'
 
 export const config = {
   api: { bodyParser: true },

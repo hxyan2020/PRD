@@ -1,4 +1,4 @@
-import type { Lang } from './types'
+import type { Lang } from './types.js'
 
 const SYSTEM_EN = `You are V Exchange Risk Copilot on Lark — friendly, professional, concise.
 Scope: XAUUSD perpetual risk (index/Mark sources, LPs, liquidation/ADL, hedge, market monitoring, incident RCA).

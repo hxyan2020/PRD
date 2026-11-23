@@ -1,13 +1,13 @@
-import { investigationCard, reviewCard, simpleCard } from './cards'
-import { downloadMessageImage } from './client'
-import { chatComplete, describeImage } from './llm'
-import { fetchMarketSnapshot, formatMarketAnswer } from './market'
+import { investigationCard, reviewCard, simpleCard } from './cards.js'
+import { downloadMessageImage } from './client.js'
+import { chatComplete, describeImage } from './llm.js'
+import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
 import {
   adaptiveNextSteps,
   preferredActions,
   retrieveRag,
-} from './skills'
-import { classifyIntent, detectLang, helpReply, offtopicReply } from './scope'
+} from './skills.js'
+import { classifyIntent, detectLang, helpReply, offtopicReply } from './scope.js'
 import {
   clearSession,
   getIncident,
@@ -16,8 +16,8 @@ import {
   newIncidentId,
   saveSession,
   upsertIncident,
-} from './store'
-import type { BotReply, IncomingMessage, IncidentRecord, Lang } from './types'
+} from './store.js'
+import type { BotReply, IncomingMessage, IncidentRecord, Lang } from './types.js'
 
 function titleFromFacts(facts: string[], lang: Lang): string {
   const first = facts[0]?.replace(/\s+/g, ' ').trim().slice(0, 48) || ''

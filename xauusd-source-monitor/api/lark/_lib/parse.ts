@@ -1,4 +1,4 @@
-import type { IncomingMessage } from './types'
+import type { IncomingMessage } from './types.js'
 
 function walkPostNodes(nodes: unknown, out: string[]) {
   if (!Array.isArray(nodes)) return

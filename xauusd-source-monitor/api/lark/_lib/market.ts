@@ -1,4 +1,4 @@
-import type { Lang } from './types'
+import type { Lang } from './types.js'
 
 export interface MarketSnapshot {
   okx?: { last: number; change24hPct?: number }

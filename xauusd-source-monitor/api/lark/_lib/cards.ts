@@ -1,4 +1,4 @@
-import type { IncidentRecord, Lang } from './types'
+import type { IncidentRecord, Lang } from './types.js'
 
 export function investigationCard(args: {
   lang: Lang

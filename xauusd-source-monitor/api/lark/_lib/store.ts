@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import type { IncidentRecord, InvestigationState } from './types'
+import type { IncidentRecord, InvestigationState } from './types.js'
 
 const STORE_DIR = join(tmpdir(), 've-lark-store')
 const INCIDENTS_FILE = join(STORE_DIR, 'incidents.json')

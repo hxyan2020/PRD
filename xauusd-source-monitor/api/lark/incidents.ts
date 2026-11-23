@@ -6,9 +6,9 @@
  */
 import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { handleMessage } from './_lib/agent'
-import { listIncidents } from './_lib/store'
-import type { IncomingMessage } from './_lib/types'
+import { handleMessage } from './_lib/agent.js'
+import { listIncidents } from './_lib/store.js'
+import type { IncomingMessage } from './_lib/types.js'
 
 function safeEqual(a: string, b: string) {
   const aa = Buffer.from(a, 'utf8')

@@ -1,7 +1,7 @@
-import l1Raw from '../_data/l1.json'
-import l2Raw from '../_data/l2.json'
-import kbRaw from '../_data/kbDefaults.json'
-import type { KbHit, KbItem, SkillHit, SkillRec } from './types'
+import l1Raw from '../_data/l1.json' with { type: 'json' }
+import l2Raw from '../_data/l2.json' with { type: 'json' }
+import kbRaw from '../_data/kbDefaults.json' with { type: 'json' }
+import type { KbHit, KbItem, SkillHit, SkillRec } from './types.js'
 
 let skillsCache: SkillRec[] | null = null
 let kbCache: KbItem[] | null = null
