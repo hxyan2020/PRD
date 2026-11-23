@@ -11,13 +11,30 @@ const INVESTIGATE_RE =
 
 const REVIEW_RE = /复盘|複盤|\breview\b|\barchive\b|归档|歸檔|事故清单|事故清單|\bincidents\b|定期回顾|定期回顧/i
 
-const HELP_RE = /^(help|帮助|幫助|\?|你好|您好|hi|hello|start|开始|開始)\s*$/i
+const HELP_RE = /^(help|帮助|幫助|\?|start|开始|開始)\s*$/i
+
+/** Natural hellos / soft openers — not the full help dump. */
+const GREETING_RE =
+  /^(hi|hii+|hello|hey+|yo|howdy|sup|good\s*(morning|afternoon|evening)|morning|afternoon|evening|你好[呀啊吗嗎嘛~！!。.]?|您好[呀啊~！!。.]?|哈喽|哈囉|嗨+|早晚安|早上好|下午好|晚上好|早安|午安|晚安|在吗|在嗎|在不在|有人吗|有人嗎)\s*[!.。！？~]*\s*$/i
 
 const COMMAND_INVESTIGATE = /^(investigate|排查|開始排查|开始排查)\b/i
 const COMMAND_MARKET = /^(market|行情|趋势|趨勢)\b/i
 const COMMAND_REVIEW = /^(review|复盘|複盤|archive|归档|歸檔)\b/i
 const COMMAND_HELP = /^(help|帮助|幫助)\b/i
 const COMMAND_DONE = /^(done|完成|结束排查|結束排查|reset|重置)\b/i
+
+function singaporeHour(): number {
+  try {
+    const parts = new Intl.DateTimeFormat('en-SG', {
+      timeZone: 'Asia/Singapore',
+      hour: 'numeric',
+      hour12: false,
+    }).formatToParts(new Date())
+    return Number(parts.find((p) => p.type === 'hour')?.value || 12)
+  } catch {
+    return 12
+  }
+}
 
 /** Clearly out-of-scope topics for a V Exchange risk bot. */
 const OFFTOPIC_RE =
@@ -32,11 +49,13 @@ export function classifyIntent(
 ): Intent {
   const t = text.trim()
   if (!t) {
-    if (opts.mentionedBot) return 'ack_mention'
-    return opts.inInvestigateSession ? 'followup' : 'help'
+    // Bare @mention or empty DM open → natural greeting
+    if (opts.mentionedBot) return 'greeting'
+    return opts.inInvestigateSession ? 'followup' : 'greeting'
   }
 
   if (COMMAND_HELP.test(t) || HELP_RE.test(t)) return 'help'
+  if (GREETING_RE.test(t)) return 'greeting'
 
   // Safety before any other intent (block PII asks / abuse / politics)
   if (detectSafetyViolation(t)) return 'safety'
@@ -56,8 +75,8 @@ export function classifyIntent(
   if (MARKET_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'market'
   if (INVESTIGATE_RE.test(t)) return 'investigate'
 
-  // Vague @ mention with no content
-  if (opts.mentionedBot && t.length < 8) return 'ack_mention'
+  // Vague @ mention / short opener with no clear task
+  if (opts.mentionedBot && t.length < 12) return 'greeting'
 
   if (IN_SCOPE_HINT.test(t) || MARKET_RE.test(t) || INVESTIGATE_RE.test(t)) return 'general_risk'
   if (t.length > 24 && !IN_SCOPE_HINT.test(t) && !MARKET_RE.test(t)) return 'offtopic'
@@ -73,6 +92,79 @@ export function offtopicReply(lang: Lang): string {
     return '多謝提問 🙂 我主要服務 **V Exchange 風險管理**（XAUUSD 永續、指數／Mark、LP、強平／ADL、行情監控與事故排查）。這個問題超出我的訓練範圍，建議改問行情趨勢、告警排查或事故複盤——我很樂意協助。'
   }
   return 'Thanks for reaching out 🙂 I’m trained for **V Exchange risk management** (XAUUSD perps, index/Mark, LPs, liquidation/ADL, market monitoring, and incident investigation). That question is outside my scope — try market trends, alert investigation, or incident review, and I’ll gladly help.'
+}
+
+/** Short, conversational hello when @’d or greeted — not a command dump. */
+export function greetingReply(lang: Lang): string {
+  const hour = singaporeHour()
+  const variant = Math.floor(Date.now() / 60_000) % 3
+
+  if (lang === 'zh-Hans') {
+    const open =
+      hour < 11 ? '早上好' : hour < 17 ? '下午好' : hour < 22 ? '晚上好' : '还在线呀'
+    const lines = [
+      [
+        `${open} 🙂 我是 **V Exchange Risk Copilot**。`,
+        '盯市况、看告警、顺着证据排查，或拉事故复盘——你直接说就行。',
+        '有截图／表格也可以丢过来。需要完整指令可以说 `help`。',
+      ],
+      [
+        `${open}，**V Exchange Risk Copilot** 在这儿。`,
+        'XAUUSD 永续风险有事随时叫我：行情、告警排查、还是复盘都行。',
+        '群里记得 @我；私聊直接发就好。',
+      ],
+      [
+        `嗨～ ${open}。我是 **V Exchange Risk Copilot**。`,
+        '不闲聊天气——但 Mark／指数／LP／强平这类，我可以一起捋。',
+        '说一句你在看什么，我接着来。',
+      ],
+    ]
+    return lines[variant]!.join('\n')
+  }
+
+  if (lang === 'zh-Hant') {
+    const open =
+      hour < 11 ? '早上好' : hour < 17 ? '下午好' : hour < 22 ? '晚上好' : '還在線呀'
+    const lines = [
+      [
+        `${open} 🙂 我是 **V Exchange Risk Copilot**。`,
+        '盯市況、看告警、順著證據排查，或拉事故複盤——你直接說就行。',
+        '有截圖／表格也可以丟過來。需要完整指令可以說 `help`。',
+      ],
+      [
+        `${open}，**V Exchange Risk Copilot** 在這兒。`,
+        'XAUUSD 永續風險有事隨時叫我：行情、告警排查、還是複盤都行。',
+        '群裡記得 @我；私聊直接發就好。',
+      ],
+      [
+        `嗨～ ${open}。我是 **V Exchange Risk Copilot**。`,
+        '不閒聊天氣——但 Mark／指數／LP／強平這類，我可以一起捋。',
+        '說一句你在看什麼，我接著來。',
+      ],
+    ]
+    return lines[variant]!.join('\n')
+  }
+
+  const open =
+    hour < 11 ? 'Good morning' : hour < 17 ? 'Good afternoon' : hour < 22 ? 'Good evening' : 'Hey — still here'
+  const lines = [
+    [
+      `${open} 🙂 I’m **V Exchange Risk Copilot**.`,
+      'Market check, alert dig, or incident review — just tell me what’s up.',
+      'Screenshots and tables work too. Type `help` if you want the full command list.',
+    ],
+    [
+      `${open} — **V Exchange Risk Copilot** here.`,
+      'Happy to help with XAUUSD perp risk: trends, investigation, or a quick review.',
+      'In groups, @me; in DMs, just send it.',
+    ],
+    [
+      `Hey! ${open.toLowerCase().startsWith('good') ? open : 'Nice to see you'}. I’m **V Exchange Risk Copilot**.`,
+      'Not for small talk — but solid on Mark / index / LP / liquidation paths.',
+      'What are you looking at?',
+    ],
+  ]
+  return lines[variant]!.join('\n')
 }
 
 export function helpReply(lang: Lang): string {

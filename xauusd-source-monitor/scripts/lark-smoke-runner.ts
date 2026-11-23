@@ -60,6 +60,25 @@ async function main() {
 
   clearSession('smoke_chat', 'smoke_user')
 
+  const greet = await turn('greeting', 'hi')
+  assert(
+    Boolean(
+      greet?.text?.includes('Risk Copilot') &&
+        !greet.text.includes('Commands:') &&
+        !greet.text.includes('常用指令'),
+    ),
+    'greeting should be natural, not a command dump',
+  )
+  const greetZh = await turn('greeting-zh', '你好', 'greet_zh')
+  assert(
+    Boolean(greetZh?.text?.includes('Risk Copilot') || greetZh?.text?.includes('风险')),
+    'zh greeting',
+  )
+  const help = await turn('help', 'help')
+  assert(Boolean(help?.text?.includes('Commands:') || help?.text?.includes('常用指令')), 'help menu')
+
+  clearSession('smoke_chat', 'smoke_user')
+
   const off = await turn('offtopic', 'What should I cook for dinner tonight?')
   assert(Boolean(off?.text?.includes('V Exchange risk')), 'offtopic should reject gently')
 

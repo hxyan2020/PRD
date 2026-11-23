@@ -2,6 +2,7 @@ export type Lang = 'en' | 'zh-Hans' | 'zh-Hant'
 
 export type Intent =
   | 'help'
+  | 'greeting'
   | 'market'
   | 'investigate'
   | 'followup'

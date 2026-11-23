@@ -9,7 +9,7 @@ import {
   retrieveRag,
 } from './skills.js'
 import { detectSafetyViolation, safetyReply } from './safety.js'
-import { classifyIntent, detectLang, helpReply, offtopicReply } from './scope.js'
+import { classifyIntent, detectLang, greetingReply, helpReply, offtopicReply } from './scope.js'
 import {
   clearSession,
   getIncident,
@@ -367,7 +367,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     chatType: msg.chatType,
   })
 
-  if (intent === 'help' || intent === 'ack_mention') {
+  if (intent === 'greeting' || intent === 'ack_mention') {
+    return { text: greetingReply(lang) }
+  }
+
+  if (intent === 'help') {
     return { text: helpReply(lang) }
   }
 

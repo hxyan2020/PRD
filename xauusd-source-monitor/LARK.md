@@ -38,13 +38,14 @@ Also set the same names in Cursor Secrets if you publish via Cursor apps.
 
 ## Bot behaviour
 
-1. **Market Q&A** — OKX XAU-USDT + desk source links; friendly professional tone.
-2. **Off-topic** — gentle reject; trained for V Exchange risk management.
-3. **@ mention** — responds in groups when mentioned; always in DMs.
-4. **RAG + Skills** — desk L1/L2 + **quote-ops V Exchange perpetual** KB/skills (`https://quote-ops-three.vercel.app`, folder `v-exchange-perp` only — CFD Pricing excluded). Live RAG via upstream `/api/rag` with local snapshot fallback (`api/lark/_data/veQuoteOps.json`). Proxies: `/api/quote-ops/kb`, `/api/quote-ops/rag`.
-5. **Accumulate** — incidents stored for `review` (ephemeral per serverless instance + `/tmp`; treat as ops buffer — export regularly).
-6. **Internal + external data** — skill/KB catalog + OKX (and web desk URLs).
-7. **Adaptive guidance** — next steps re-rank from user replies / new evidence (not a mechanical full dump).
+1. **Greeting** — natural hello on @mention / hi / 你好 (time-of-day in SGT); `help` still returns the full command list.
+2. **Market Q&A** — OKX XAU-USDT + desk source links; friendly professional tone.
+3. **Off-topic** — gentle reject; trained for V Exchange risk management.
+4. **@ mention** — responds in groups when mentioned; always in DMs.
+5. **RAG + Skills** — desk L1/L2 + **quote-ops V Exchange perpetual** KB/skills (`https://quote-ops-three.vercel.app`, folder `v-exchange-perp` only — CFD Pricing excluded). Live RAG via upstream `/api/rag` with local snapshot fallback (`api/lark/_data/veQuoteOps.json`). Proxies: `/api/quote-ops/kb`, `/api/quote-ops/rag`.
+6. **Accumulate** — incidents stored for `review` (ephemeral per serverless instance + `/tmp`; treat as ops buffer — export regularly).
+7. **Internal + external data** — skill/KB catalog + OKX (and web desk URLs).
+8. **Adaptive guidance** — next steps re-rank from user replies / new evidence (not a mechanical full dump).
 
 Commands: `help` · `market` · `investigate` · `review` · `done` / `archive`
 
