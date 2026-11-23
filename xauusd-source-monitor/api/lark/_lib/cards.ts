@@ -1,3 +1,4 @@
+import { isZh } from './lang.js'
 import type { IncidentRecord, Lang } from './types.js'
 
 export function investigationCard(args: {
@@ -11,15 +12,42 @@ export function investigationCard(args: {
   knowledge: string[]
   incidentId?: string
 }): Record<string, unknown> {
-  const zh = args.lang === 'zh-Hant'
+  const zh = isZh(args.lang)
+  const hans = args.lang === 'zh-Hans'
   const stepMd = args.nextSteps.map((s, i) => `${i + 1}. ${s}`).join('\n')
-  const actionMd = args.actions.map((a) => `• ${a}`).join('\n') || (zh ? '• （暫無）' : '• (none yet)')
+  const actionMd =
+    args.actions.map((a) => `• ${a}`).join('\n') ||
+    (hans ? '• （暂无）' : zh ? '• （暫無）' : '• (none yet)')
   const skillLine = args.skills.length
     ? args.skills.join(', ')
+    : hans
+      ? '尚未匹配 Skill — 请补充证据'
+      : zh
+        ? '尚未匹配 Skill — 請補充證據'
+        : 'No skill match yet — add evidence'
+  const kbLine = args.knowledge.length
+    ? args.knowledge.join(', ')
+    : hans
+      ? '无'
+      : zh
+        ? '無'
+        : 'none'
+
+  const sevLabel = hans
+    ? `**建议严重度：** ${args.severity}（需当班确认）`
     : zh
-      ? '尚未匹配 Skill — 請補充證據'
-      : 'No skill match yet — add evidence'
-  const kbLine = args.knowledge.length ? args.knowledge.join(', ') : zh ? '無' : 'none'
+      ? `**建議嚴重度：** ${args.severity}（需當班確認）`
+      : `**Severity proposal:** ${args.severity} (on-duty confirm)`
+  const nextLabel = hans
+    ? `**建议下一步（已依你的证据调整）**\n${stepMd}`
+    : zh
+      ? `**建議下一步（已依你的證據調整）**\n${stepMd}`
+      : `**Suggested next steps (adapted to your evidence)**\n${stepMd}`
+  const prefLabel = hans
+    ? `**Preferred Action（需审批）**\n${actionMd}`
+    : zh
+      ? `**Preferred Action（需審批）**\n${actionMd}`
+      : `**Preferred Action (approval required)**\n${actionMd}`
 
   return {
     config: { wide_screen_mode: true },
@@ -32,34 +60,18 @@ export function investigationCard(args: {
         tag: 'div',
         text: {
           tag: 'lark_md',
-          content: zh
-            ? `**建議嚴重度：** ${args.severity}（需當班確認）\n\n${args.summary}`
-            : `**Severity proposal:** ${args.severity} (on-duty confirm)\n\n${args.summary}`,
+          content: `${sevLabel}\n\n${args.summary}`,
         },
       },
       { tag: 'hr' },
-      {
-        tag: 'div',
-        text: {
-          tag: 'lark_md',
-          content: zh ? `**建議下一步（已依你的證據調整）**\n${stepMd}` : `**Suggested next steps (adapted to your evidence)**\n${stepMd}`,
-        },
-      },
-      {
-        tag: 'div',
-        text: {
-          tag: 'lark_md',
-          content: zh ? `**Preferred Action（需審批）**\n${actionMd}` : `**Preferred Action (approval required)**\n${actionMd}`,
-        },
-      },
+      { tag: 'div', text: { tag: 'lark_md', content: nextLabel } },
+      { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
       {
         tag: 'note',
         elements: [
           {
             tag: 'plain_text',
-            content: zh
-              ? `Skills: ${skillLine} · RAG: ${kbLine}`
-              : `Skills: ${skillLine} · RAG: ${kbLine}`,
+            content: `Skills: ${skillLine} · RAG: ${kbLine}`,
           },
         ],
       },
@@ -68,7 +80,10 @@ export function investigationCard(args: {
         actions: [
           {
             tag: 'button',
-            text: { tag: 'plain_text', content: zh ? '已完成此步' : 'Step done' },
+            text: {
+              tag: 'plain_text',
+              content: hans ? '已完成此步' : zh ? '已完成此步' : 'Step done',
+            },
             type: 'primary',
             value: {
               action: 'step_done',
@@ -77,7 +92,10 @@ export function investigationCard(args: {
           },
           {
             tag: 'button',
-            text: { tag: 'plain_text', content: zh ? '歸檔報告' : 'Archive report' },
+            text: {
+              tag: 'plain_text',
+              content: hans ? '归档报告' : zh ? '歸檔報告' : 'Archive report',
+            },
             type: 'default',
             value: {
               action: 'archive',
@@ -86,7 +104,10 @@ export function investigationCard(args: {
           },
           {
             tag: 'button',
-            text: { tag: 'plain_text', content: zh ? '複盤清單' : 'Review list' },
+            text: {
+              tag: 'plain_text',
+              content: hans ? '复盘清单' : zh ? '複盤清單' : 'Review list',
+            },
             type: 'default',
             value: { action: 'review' },
           },
@@ -97,12 +118,15 @@ export function investigationCard(args: {
 }
 
 export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): Record<string, unknown> {
-  const zh = args.lang === 'zh-Hant'
+  const zh = isZh(args.lang)
+  const hans = args.lang === 'zh-Hans'
   const lines =
     args.incidents.length === 0
-      ? zh
-        ? '_尚無歸檔／進行中的事故。開始排查後會自動累積。_'
-        : '_No open/archived incidents yet. They accumulate as you investigate._'
+      ? hans
+        ? '_尚无归档／进行中的事故。开始排查后会自动累积。_'
+        : zh
+          ? '_尚無歸檔／進行中的事故。開始排查後會自動累積。_'
+          : '_No open/archived incidents yet. They accumulate as you investigate._'
       : args.incidents
           .slice(0, 15)
           .map((inc, i) => {
@@ -117,7 +141,7 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
       template: 'turquoise',
       title: {
         tag: 'plain_text',
-        content: zh ? '事故／報告複盤' : 'Incident & report review',
+        content: hans ? '事故／报告复盘' : zh ? '事故／報告複盤' : 'Incident & report review',
       },
     },
     elements: [
@@ -125,9 +149,11 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
         tag: 'div',
         text: {
           tag: 'lark_md',
-          content: zh
-            ? '以下為近期累積的事故與報告，供定期回顧。點開細節可繼續補充證據。'
-            : 'Recent accumulated incidents and reports for periodic review. Add evidence anytime to continue.',
+          content: hans
+            ? '以下为近期累积的事故与报告，供定期回顾。点开细节可继续补充证据。'
+            : zh
+              ? '以下為近期累積的事故與報告，供定期回顧。點開細節可繼續補充證據。'
+              : 'Recent accumulated incidents and reports for periodic review. Add evidence anytime to continue.',
         },
       },
       { tag: 'div', text: { tag: 'lark_md', content: lines } },

@@ -1,4 +1,5 @@
 import { handleMessage } from '../api/lark/_lib/agent'
+import { detectLang } from '../api/lark/_lib/lang'
 import { loadKnowledge, loadSkills, retrieveRag } from '../api/lark/_lib/skills'
 import { clearSession, listIncidents } from '../api/lark/_lib/store'
 import type { IncomingMessage } from '../api/lark/_lib/types'
@@ -48,10 +49,19 @@ async function main() {
   assert(rag.kb.some((k) => k.id.startsWith('ve-doc-') || /Mark|Funding|SOP|永续/i.test(k.title)), 'RAG hits VE docs')
   console.log(`skills=${skills.length} kb=${kb.length} ragHits=${rag.hits.map((h) => h.id).slice(0, 6).join(',')}`)
 
+  assert(detectLang('What are market trends?') === 'en', 'detect EN')
+  assert(detectLang('今天黄金行情怎么样') === 'zh-Hans', 'detect simplified')
+  assert(detectLang('今天黃金行情怎麼樣') === 'zh-Hant', 'detect traditional')
+
   clearSession('smoke_chat', 'smoke_user')
 
   const off = await turn('offtopic', 'What should I cook for dinner tonight?')
   assert(Boolean(off?.text?.includes('V Exchange risk')), 'offtopic should reject gently')
+
+  clearSession('smoke_chat', 'lang_zh')
+  const zhOff = await turn('offtopic-zh', '今晚吃什么', 'lang_zh')
+  assert(Boolean(zhOff?.text?.includes('风险管理') || zhOff?.text?.includes('風險管理')), 'zh offtopic')
+  clearSession('smoke_chat', 'smoke_user')
 
   const mkt = await turn('market', 'What are XAUUSD market trends today?')
   assert(

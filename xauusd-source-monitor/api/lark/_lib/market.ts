@@ -68,7 +68,23 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
 
 export function formatMarketAnswer(snap: MarketSnapshot, lang: Lang, question: string): string {
   const lines: string[] = []
-  if (lang === 'zh-Hant') {
+  if (lang === 'zh-Hans') {
+    lines.push('【市况摘要 · V Exchange Risk】', '')
+    if (snap.okx) {
+      const ch =
+        snap.okx.change24hPct != null ? `（约 ${snap.okx.change24hPct.toFixed(2)}% / 24h）` : ''
+      lines.push(`• OKX XAU-USDT 最新：${snap.okx.last.toFixed(2)} ${ch}`)
+    } else {
+      lines.push('• OKX 行情暂不可用 — 请稍后重试或开网页 Market 面板。')
+    }
+    for (const n of snap.notes) lines.push(`• ${n}`)
+    lines.push('', `针对你的问题：「${question.slice(0, 120)}」`)
+    lines.push(
+      '解读建议：价格异动「观察」（bps／基差／场所结构）≠「原因」（新闻／宏观）。若需事故排查，请贴告警原文或输入 `investigate`。',
+    )
+    lines.push('', '来源：')
+    for (const s of snap.sources) lines.push(`- ${s.label}: ${s.url}`)
+  } else if (lang === 'zh-Hant') {
     lines.push('【市況摘要 · V Exchange Risk】', '')
     if (snap.okx) {
       const ch =

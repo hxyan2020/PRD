@@ -1,4 +1,4 @@
-export type Lang = 'en' | 'zh-Hant'
+export type Lang = 'en' | 'zh-Hans' | 'zh-Hant'
 
 export type Intent =
   | 'help'
@@ -55,6 +55,8 @@ export interface InvestigationState {
   lastKb: KbHit[]
   lastReportId?: string
   pendingPrompt?: string
+  /** Last detected user language — card actions and short replies reuse this. */
+  preferredLang?: Lang
   updatedAt: number
 }
 

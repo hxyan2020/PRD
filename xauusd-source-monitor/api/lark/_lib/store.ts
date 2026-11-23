@@ -68,6 +68,7 @@ export function getSession(chatId: string, openId: string): InvestigationState {
     lastSeverity: '待判定',
     lastHits: [],
     lastKb: [],
+    preferredLang: 'en',
     updatedAt: Date.now(),
   }
   memSessions[key] = fresh

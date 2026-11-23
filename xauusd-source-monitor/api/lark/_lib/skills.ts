@@ -179,13 +179,14 @@ export function adaptiveNextSteps(args: {
   facts: string[]
   hits: SkillHit[]
   checkedSteps: string[]
-  lang: 'en' | 'zh-Hant'
+  lang: 'en' | 'zh-Hans' | 'zh-Hant'
   max?: number
 }): string[] {
   const max = args.max ?? 3
   const blob = args.facts.join('\n').toLowerCase()
   const checked = new Set(args.checkedSteps.map((s) => s.toLowerCase()))
   const steps: string[] = []
+  const zh = args.lang === 'zh-Hans' || args.lang === 'zh-Hant'
 
   for (const h of args.hits) {
     if (steps.length >= max) break
@@ -196,23 +197,36 @@ export function adaptiveNextSteps(args: {
     if (covered >= Math.max(2, Math.ceil(checkTokens.length * 0.4))) {
       continue
     }
-    const prefix = args.lang === 'zh-Hant' ? `【${h.id}】` : `[${h.id}]`
+    const prefix = zh ? `【${h.id}】` : `[${h.id}]`
     steps.push(`${prefix} ${h.check}`)
   }
 
   if (!steps.length) {
-    steps.push(
-      args.lang === 'zh-Hant'
-        ? '請補充：告警原文、合約、指標數值、時間戳，或貼上截圖／表格。'
-        : 'Please add: alert text, contract, metric values, timestamps — or paste a screenshot / table.',
-    )
+    if (args.lang === 'zh-Hans') {
+      steps.push('请补充：告警原文、合约、指标数值、时间戳，或贴上截图／表格。')
+    } else if (args.lang === 'zh-Hant') {
+      steps.push('請補充：告警原文、合約、指標數值、時間戳，或貼上截圖／表格。')
+    } else {
+      steps.push(
+        'Please add: alert text, contract, metric values, timestamps — or paste a screenshot / table.',
+      )
+    }
   }
   return steps
 }
 
-export function preferredActions(hits: SkillHit[], lang: 'en' | 'zh-Hant', max = 2): string[] {
+export function preferredActions(
+  hits: SkillHit[],
+  lang: 'en' | 'zh-Hans' | 'zh-Hant',
+  max = 2,
+): string[] {
   return hits.slice(0, max).map((h) => {
-    const tag = lang === 'zh-Hant' ? `建議（需審批）· ${h.id}` : `Preferred action (approval) · ${h.id}`
+    const tag =
+      lang === 'zh-Hans'
+        ? `建议（需审批）· ${h.id}`
+        : lang === 'zh-Hant'
+          ? `建議（需審批）· ${h.id}`
+          : `Preferred action (approval) · ${h.id}`
     return `${tag}: ${h.action}`
   })
 }

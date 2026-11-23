@@ -1,3 +1,4 @@
+import { isZh, languageInstruction } from './lang.js'
 import type { Lang } from './types.js'
 
 const SYSTEM_EN = `You are V Exchange Risk Copilot on Lark — friendly, professional, concise.
@@ -10,7 +11,17 @@ Rules:
 - If off-topic, politely redirect to V Exchange risk management.
 - Prefer short paragraphs suitable for chat; use bullet lists for steps.`
 
-const SYSTEM_ZH = `你是 Lark 上的 V Exchange Risk Copilot——語氣友好、專業、簡潔。
+const SYSTEM_ZH_HANS = `你是 Lark 上的 V Exchange Risk Copilot——语气友好、专业、简洁。
+业务范围：XAUUSD 永续风险（指数／Mark、LP、强平／ADL、对冲、行情监控、事故 RCA）。
+规则：
+- 不编造管理台／DB／生产数据；证据不足就说不确定。
+- 价格「观察」（bps／基差）≠「原因」（新闻／宏观）。
+- Preferred Action 需人工审批；不得声称已执行生产操作。
+- 依用户最新证据调整排查步骤，禁止机械贴整份 Skill 清单。
+- 离题时温柔导回 V Exchange 风险管理。
+- 回复适合聊天：短段落＋条列步骤。`
+
+const SYSTEM_ZH_HANT = `你是 Lark 上的 V Exchange Risk Copilot——語氣友好、專業、簡潔。
 業務範圍：XAUUSD 永續風險（指數／Mark、LP、強平／ADL、對沖、行情監控、事故 RCA）。
 規則：
 - 不編造管理台／DB／生產數據；證據不足就說不確定。
@@ -20,6 +31,12 @@ const SYSTEM_ZH = `你是 Lark 上的 V Exchange Risk Copilot——語氣友好�
 - 離題時溫柔導回 V Exchange 風險管理。
 - 回覆適合聊天：短段落＋條列步驟。`
 
+function systemFor(lang: Lang): string {
+  if (lang === 'zh-Hans') return SYSTEM_ZH_HANS
+  if (lang === 'zh-Hant') return SYSTEM_ZH_HANT
+  return SYSTEM_EN
+}
+
 export async function chatComplete(args: {
   lang: Lang
   user: string
@@ -28,7 +45,8 @@ export async function chatComplete(args: {
   const key = process.env.OPENAI_API_KEY || ''
   if (!key) return null
   const system =
-    (args.lang === 'zh-Hant' ? SYSTEM_ZH : SYSTEM_EN) +
+    systemFor(args.lang) +
+    `\n\n${languageInstruction(args.lang)}` +
     (args.systemExtra ? `\n\nContext:\n${args.systemExtra}` : '')
 
   try {
@@ -66,10 +84,11 @@ export async function describeImage(args: {
 }): Promise<string | null> {
   const key = process.env.OPENAI_API_KEY || ''
   if (!key) return null
-  const prompt =
-    args.lang === 'zh-Hant'
-      ? '這是 V Exchange 風險告警／監控截圖。請提取所有可見文字、數值、合約、時間戳與表格內容；標註不確定處。不要臆造。'
-      : 'This is a V Exchange risk alert / monitoring screenshot. Extract all visible text, numbers, contracts, timestamps, and table cells. Mark uncertainty. Do not invent.'
+  const prompt = isZh(args.lang)
+    ? args.lang === 'zh-Hans'
+      ? '这是 V Exchange 风险告警／监控截图。请提取所有可见文字、数值、合约、时间戳与表格内容；标注不确定处。不要臆造。用简体中文输出。'
+      : '這是 V Exchange 風險告警／監控截圖。請提取所有可見文字、數值、合約、時間戳與表格內容；標註不確定處。不要臆造。用繁體中文輸出。'
+    : 'This is a V Exchange risk alert / monitoring screenshot. Extract all visible text, numbers, contracts, timestamps, and table cells. Mark uncertainty. Do not invent. Reply in English.'
 
   try {
     const r = await fetch('https://api.openai.com/v1/chat/completions', {
