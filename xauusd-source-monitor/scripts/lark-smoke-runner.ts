@@ -116,7 +116,20 @@ async function main() {
     'follow-up should stay in investigation, not jump to market',
   )
 
-  await turn('review', 'review')
+  const rev = await turn('review', 'review')
+  assert(
+    Boolean(
+      rev?.card &&
+        JSON.stringify(rev.card).includes('dashboard') &&
+        JSON.stringify(rev.card).includes('/#/reports'),
+    ),
+    'review should return alerts/reports dashboard card with web link',
+  )
+  const dash = await turn('dashboard-cmd', 'dashboard')
+  assert(
+    Boolean(dash?.card && JSON.stringify(dash.card).includes('Alerts & reports dashboard')),
+    'dashboard command opens visualization card',
+  )
   console.log('\n=== incidents accumulated ===')
   console.log(JSON.stringify(listIncidents({ limit: 5 }), null, 2).slice(0, 800))
   console.log('\nSMOKE_OK')

@@ -285,7 +285,7 @@ export async function handleCardAction(args: {
   }
 
   if (action === 'review') {
-    const incidents = listIncidents({ limit: 20 })
+    const incidents = listIncidents({ limit: 50 })
     return { card: reviewCard({ lang, incidents }) }
   }
 
@@ -400,7 +400,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'review') {
-    const incidents = listIncidents({ limit: 20 })
+    const incidents = listIncidents({ limit: 50 })
     return { card: reviewCard({ lang, incidents }) }
   }
 

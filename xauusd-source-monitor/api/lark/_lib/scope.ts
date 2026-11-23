@@ -9,7 +9,9 @@ const MARKET_RE =
 const INVESTIGATE_RE =
   /排查|调查|調查|告警|报警|報警|\bincident\b|\balerts?\b|\binvestigate\b|\brca\b|根因|强平|強平|\badl\b|指数源|指數源|\bmarks?\b|\bindex\b|\blp\b|对冲|對沖|拒单|拒單|盘口|盤口|偏差|剔除|无有效源|無有效源|失败|失敗|异常|異常|截图|截圖|表格|\btable\b|\breports?\b|报告|報告/i
 
-const REVIEW_RE = /复盘|複盤|\breview\b|\barchive\b|归档|歸檔|事故清单|事故清單|\bincidents\b|定期回顾|定期回顧/i
+/** Mid-text review cues — avoid bare "alert" (collides with investigate alert paste). */
+const REVIEW_RE =
+  /复盘|複盤|\breview\b|\barchive\b|归档|歸檔|事故清单|事故清單|\bincidents\b|定期回顾|定期回顧|\bdashboard\b|看板|仪表盘|儀表盤|告警清单|告警清單|报告看板|報告看板/i
 
 const HELP_RE = /^(help|帮助|幫助|\?|start|开始|開始)\s*$/i
 
@@ -19,7 +21,9 @@ const GREETING_RE =
 
 const COMMAND_INVESTIGATE = /^(investigate|排查|開始排查|开始排查)\b/i
 const COMMAND_MARKET = /^(market|行情|趋势|趨勢)\b/i
-const COMMAND_REVIEW = /^(review|复盘|複盤|archive|归档|歸檔)\b/i
+/** Whole-message openers for the alerts/reports dashboard. */
+const COMMAND_REVIEW =
+  /^(review|复盘|複盤|archive|归档|歸檔|dashboard|alerts|alert\s*board|看板|仪表盘|儀表盤)\b/i
 const COMMAND_HELP = /^(help|帮助|幫助)\b/i
 const COMMAND_DONE = /^(done|完成|结束排查|結束排查|reset|重置)\b/i
 
@@ -60,10 +64,12 @@ export function classifyIntent(
   // Safety before any other intent (block PII asks / abuse / politics)
   if (detectSafetyViolation(t)) return 'safety'
 
-  if (COMMAND_REVIEW.test(t) || REVIEW_RE.test(t)) return 'review'
-  if (COMMAND_DONE.test(t)) return 'archive'
-  if (COMMAND_MARKET.test(t)) return 'market'
+  // Explicit commands first — investigate before review so "Alert: …" paste is not a dashboard
   if (COMMAND_INVESTIGATE.test(t)) return 'investigate'
+  if (COMMAND_MARKET.test(t)) return 'market'
+  if (COMMAND_REVIEW.test(t)) return 'review'
+  if (COMMAND_DONE.test(t)) return 'archive'
+  if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'review'
 
   // Active investigation: treat free-text as evidence/follow-up unless explicit command above
   if (opts.inInvestigateSession) return 'followup'
@@ -174,9 +180,9 @@ export function helpReply(lang: Lang): string {
       '1. 回答 XAUUSD／黄金与相关市况、趋势问题',
       '2. 读取告警文字、图片、表格，引导排查并生成报告',
       '3. 从 Skills／知识库（RAG）检索，按你回复的新证据调整下一步',
-      '4. 累积事故与报告，支持定期复盘（输入 `review`）',
+      '4. 累积事故与报告；输入 `review`／`dashboard` 打开告警看板',
       '',
-      '常用指令：`market` · `investigate` · `review` · `help`',
+      '常用指令：`market` · `investigate` · `review` · `dashboard` · `help`',
       '群聊请 @我；私聊可直接发送。语气友好、结论需人工审批。我会跟随你的语言（中／英）回复。',
     ].join('\n')
   }
@@ -186,9 +192,9 @@ export function helpReply(lang: Lang): string {
       '1. 回答 XAUUSD／黃金與相關市況、趨勢問題',
       '2. 讀取告警文字、圖片、表格，引導排查並生成報告',
       '3. 從 Skills／知識庫（RAG）檢索，按你回覆的新證據調整下一步',
-      '4. 累積事故與報告，支援定期複盤（輸入 `review`）',
+      '4. 累積事故與報告；輸入 `review`／`dashboard` 打開告警看板',
       '',
-      '常用指令：`market` · `investigate` · `review` · `help`',
+      '常用指令：`market` · `investigate` · `review` · `dashboard` · `help`',
       '群聊請 @我；私聊可直接發送。語氣友好、結論需人工審批。我會跟隨你的語言（中／英）回覆。',
     ].join('\n')
   }
@@ -197,9 +203,9 @@ export function helpReply(lang: Lang): string {
     '1. Answer XAUUSD / gold market trend & condition questions',
     '2. Read alerts, text, images, and tables; guide investigation and draft reports',
     '3. Retrieve Skills / knowledge (RAG) and adapt next steps from your new evidence',
-    '4. Accumulate incidents & reports for regular review (`review`)',
+    '4. Accumulate incidents & reports; `review` / `dashboard` opens the alerts board',
     '',
-    'Commands: `market` · `investigate` · `review` · `help`',
+    'Commands: `market` · `investigate` · `review` · `dashboard` · `help`',
     'In groups, please @me; in DMs just send a message. Friendly tone; actions need human approval. I mirror your language (EN / 中文).',
   ].join('\n')
 }

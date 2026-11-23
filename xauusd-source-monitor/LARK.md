@@ -43,7 +43,7 @@ Also set the same names in Cursor Secrets if you publish via Cursor apps.
 3. **Off-topic** — gentle reject; trained for V Exchange risk management.
 4. **@ mention** — responds in groups when mentioned; always in DMs.
 5. **RAG + Skills** — desk L1/L2 + **quote-ops V Exchange perpetual** KB/skills (`https://quote-ops-three.vercel.app`, folder `v-exchange-perp` only — CFD Pricing excluded). Live RAG via upstream `/api/rag` with local snapshot fallback (`api/lark/_data/veQuoteOps.json`). Proxies: `/api/quote-ops/kb`, `/api/quote-ops/rag`.
-6. **Accumulate** — incidents stored for `review` (ephemeral per serverless instance + `/tmp`; treat as ops buffer — export regularly).
+6. **Accumulate + dashboard** — incidents stored for `review` / `dashboard` / `alerts` (ephemeral per serverless instance + `/tmp`; treat as ops buffer — export regularly). Lark returns a KPI + list card with link to the web board: `https://vex-llm-proxy.vercel.app/#/reports` (desk RCA archive + Lark incidents, charts & filters).
 7. **Internal + external data** — skill/KB catalog + OKX (and web desk URLs).
 8. **Adaptive guidance** — next steps re-rank from user replies / new evidence (not a mechanical full dump).
 

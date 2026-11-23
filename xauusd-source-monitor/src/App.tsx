@@ -10,6 +10,7 @@ import { SkillsPage } from './pages/SkillsPage'
 import { KnowledgePage } from './pages/KnowledgePage'
 import { InvestigatePage } from './pages/InvestigatePage'
 import { StatsPage } from './pages/StatsPage'
+import { ReportsDashboardPage } from './pages/ReportsDashboardPage'
 import { LarkBotPage } from './pages/LarkBotPage'
 
 const NAV = [
@@ -17,6 +18,7 @@ const NAV = [
   { to: '/market', full: 'navMarket', short: 'navMarketShort' },
   { to: '/skills', full: 'navSkills', short: 'navSkillsShort' },
   { to: '/knowledge', full: 'navKnowledge', short: 'navKnowledgeShort' },
+  { to: '/reports', full: 'navReports', short: 'navReportsShort' },
   { to: '/stats', full: 'navStats', short: 'navStatsShort' },
   { to: '/lark', full: 'navLark', short: 'navLarkShort' },
 ] as const
@@ -181,6 +183,8 @@ export default function App() {
           <Route path="/knowledge" element={<KnowledgePage />} />
           <Route path="/investigate" element={<InvestigatePage />} />
           <Route path="/stats" element={<StatsPage />} />
+          <Route path="/reports" element={<ReportsDashboardPage />} />
+          <Route path="/alerts" element={<Navigate to="/reports" replace />} />
           <Route path="/lark" element={<LarkBotPage />} />
           <Route path="/" element={<Navigate to="/investigate" replace />} />
           <Route path="/health" element={<Navigate to="/market/health" replace />} />

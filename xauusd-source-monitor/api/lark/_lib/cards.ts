@@ -117,9 +117,22 @@ export function investigationCard(args: {
   }
 }
 
+const DASHBOARD_URL = 'https://vex-llm-proxy.vercel.app/#/reports'
+
 export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
+  const open = args.incidents.filter((i) => i.status === 'open').length
+  const archived = args.incidents.filter((i) => i.status === 'archived').length
+  const bySev: Record<string, number> = {}
+  for (const inc of args.incidents) {
+    bySev[inc.severity || '—'] = (bySev[inc.severity || '—'] || 0) + 1
+  }
+  const sevLine = Object.entries(bySev)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, n]) => `${k}×${n}`)
+    .join(' · ')
+
   const lines =
     args.incidents.length === 0
       ? hans
@@ -128,12 +141,30 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
           ? '_尚無歸檔／進行中的事故。開始排查後會自動累積。_'
           : '_No open/archived incidents yet. They accumulate as you investigate._'
       : args.incidents
-          .slice(0, 15)
+          .slice(0, 12)
           .map((inc, i) => {
-            const when = new Date(inc.updatedAt).toISOString().slice(0, 16).replace('T', ' ')
-            return `${i + 1}. **${inc.title}** · ${inc.severity} · ${inc.status} · ${when} UTC\n${inc.summary.slice(0, 160)}`
+            const when = new Date(inc.updatedAt).toLocaleString('en-SG', {
+              timeZone: 'Asia/Singapore',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+            return `${i + 1}. **${inc.title}** · ${inc.severity} · ${inc.status} · ${when} SGT\n${inc.summary.slice(0, 140)}`
           })
           .join('\n\n')
+
+  const kpi = hans
+    ? `**看板摘要** 合计 ${args.incidents.length} · 进行中 ${open} · 已归档 ${archived}${sevLine ? `\n**严重度：** ${sevLine}` : ''}`
+    : zh
+      ? `**看板摘要** 合計 ${args.incidents.length} · 進行中 ${open} · 已歸檔 ${archived}${sevLine ? `\n**嚴重度：** ${sevLine}` : ''}`
+      : `**Dashboard** total ${args.incidents.length} · open ${open} · archived ${archived}${sevLine ? `\n**Severity:** ${sevLine}` : ''}`
+
+  const intro = hans
+    ? `以下为 Lark 侧近期累积的告警与报告。完整可视化看板（桌面 RCA + Lark）：[打开看板](${DASHBOARD_URL})`
+    : zh
+      ? `以下為 Lark 側近期累積的告警與報告。完整可視化看板（桌面 RCA + Lark）：[打開看板](${DASHBOARD_URL})`
+      : `Lark-side alerts & reports below. Full visualization (desk RCA + Lark): [Open dashboard](${DASHBOARD_URL})`
 
   return {
     config: { wide_screen_mode: true },
@@ -141,22 +172,27 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
       template: 'turquoise',
       title: {
         tag: 'plain_text',
-        content: hans ? '事故／报告复盘' : zh ? '事故／報告複盤' : 'Incident & report review',
+        content: hans
+          ? '告警／报告看板'
+          : zh
+            ? '告警／報告看板'
+            : 'Alerts & reports dashboard',
       },
     },
     elements: [
-      {
-        tag: 'div',
-        text: {
-          tag: 'lark_md',
-          content: hans
-            ? '以下为近期累积的事故与报告，供定期回顾。点开细节可继续补充证据。'
-            : zh
-              ? '以下為近期累積的事故與報告，供定期回顧。點開細節可繼續補充證據。'
-              : 'Recent accumulated incidents and reports for periodic review. Add evidence anytime to continue.',
-        },
-      },
+      { tag: 'div', text: { tag: 'lark_md', content: intro } },
+      { tag: 'div', text: { tag: 'lark_md', content: kpi } },
+      { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: lines } },
+      {
+        tag: 'note',
+        elements: [
+          {
+            tag: 'plain_text',
+            content: DASHBOARD_URL,
+          },
+        ],
+      },
     ],
   }
 }
