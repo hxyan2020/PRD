@@ -1,4 +1,10 @@
 import { isZh, languageInstruction } from './lang.js'
+import {
+  SAFETY_SYSTEM_RULES_EN,
+  SAFETY_SYSTEM_RULES_ZH_HANS,
+  SAFETY_SYSTEM_RULES_ZH_HANT,
+  scrubOutgoing,
+} from './safety.js'
 import type { Lang } from './types.js'
 
 const SYSTEM_EN = `You are V Exchange Risk Copilot on Lark — friendly, professional, concise.
@@ -9,7 +15,8 @@ Rules:
 - Preferred actions require human approval; never claim you executed production changes.
 - Adapt investigation steps to the user's latest evidence — do not dump a mechanical full checklist.
 - If off-topic, politely redirect to V Exchange risk management.
-- Prefer short paragraphs suitable for chat; use bullet lists for steps.`
+- Prefer short paragraphs suitable for chat; use bullet lists for steps.
+${SAFETY_SYSTEM_RULES_EN}`
 
 const SYSTEM_ZH_HANS = `你是 Lark 上的 V Exchange Risk Copilot——语气友好、专业、简洁。
 业务范围：XAUUSD 永续风险（指数／Mark、LP、强平／ADL、对冲、行情监控、事故 RCA）。
@@ -19,7 +26,8 @@ const SYSTEM_ZH_HANS = `你是 Lark 上的 V Exchange Risk Copilot——语气�
 - Preferred Action 需人工审批；不得声称已执行生产操作。
 - 依用户最新证据调整排查步骤，禁止机械贴整份 Skill 清单。
 - 离题时温柔导回 V Exchange 风险管理。
-- 回复适合聊天：短段落＋条列步骤。`
+- 回复适合聊天：短段落＋条列步骤。
+${SAFETY_SYSTEM_RULES_ZH_HANS}`
 
 const SYSTEM_ZH_HANT = `你是 Lark 上的 V Exchange Risk Copilot——語氣友好、專業、簡潔。
 業務範圍：XAUUSD 永續風險（指數／Mark、LP、強平／ADL、對沖、行情監控、事故 RCA）。
@@ -29,7 +37,8 @@ const SYSTEM_ZH_HANT = `你是 Lark 上的 V Exchange Risk Copilot——語氣�
 - Preferred Action 需人工審批；不得聲稱已執行生產操作。
 - 依使用者最新證據調整排查步驟，禁止機械貼整份 Skill 清單。
 - 離題時溫柔導回 V Exchange 風險管理。
-- 回覆適合聊天：短段落＋條列步驟。`
+- 回覆適合聊天：短段落＋條列步驟。
+${SAFETY_SYSTEM_RULES_ZH_HANT}`
 
 function systemFor(lang: Lang): string {
   if (lang === 'zh-Hans') return SYSTEM_ZH_HANS
@@ -70,7 +79,8 @@ export async function chatComplete(args: {
       choices?: { message?: { content?: string } }[]
     }
     if (!r.ok) return null
-    return data.choices?.[0]?.message?.content?.trim() || null
+    const raw = data.choices?.[0]?.message?.content?.trim() || ''
+    return raw ? scrubOutgoing(raw) : null
   } catch {
     return null
   }
@@ -121,7 +131,8 @@ export async function describeImage(args: {
       choices?: { message?: { content?: string } }[]
     }
     if (!r.ok) return null
-    return data.choices?.[0]?.message?.content?.trim() || null
+    const raw = data.choices?.[0]?.message?.content?.trim() || ''
+    return raw ? scrubOutgoing(raw) : null
   } catch {
     return null
   }

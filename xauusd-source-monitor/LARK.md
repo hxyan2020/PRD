@@ -48,6 +48,10 @@ Also set the same names in Cursor Secrets if you publish via Cursor apps.
 
 Commands: `help` · `market` · `investigate` · `review` · `done` / `archive`
 
+## Safety
+
+The bot refuses: personal-information disclosure, cursing / abusive language, and politically sensitive topics. It stays on V Exchange risk ops (market policy / rates for XAUUSD are allowed).
+
 ## Smoke without Lark
 
 Open web desk → **Lark Bot** tab, or:

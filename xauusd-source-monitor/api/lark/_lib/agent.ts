@@ -8,6 +8,7 @@ import {
   preferredActions,
   retrieveRag,
 } from './skills.js'
+import { detectSafetyViolation, safetyReply } from './safety.js'
 import { classifyIntent, detectLang, helpReply, offtopicReply } from './scope.js'
 import {
   clearSession,
@@ -368,6 +369,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'help' || intent === 'ack_mention') {
     return { text: helpReply(lang) }
+  }
+
+  if (intent === 'safety') {
+    const hit = detectSafetyViolation(workingText) || 'pii'
+    return { text: safetyReply(lang, hit) }
   }
 
   if (intent === 'offtopic') {

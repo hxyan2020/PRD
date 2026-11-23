@@ -8,6 +8,7 @@ export type Intent =
   | 'review'
   | 'archive'
   | 'offtopic'
+  | 'safety'
   | 'ack_mention'
   | 'general_risk'
 

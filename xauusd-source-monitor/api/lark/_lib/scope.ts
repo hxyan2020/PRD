@@ -1,3 +1,4 @@
+import { detectSafetyViolation } from './safety.js'
 import type { Intent, Lang } from './types.js'
 
 export { detectLang, isZh } from './lang.js'
@@ -36,6 +37,10 @@ export function classifyIntent(
   }
 
   if (COMMAND_HELP.test(t) || HELP_RE.test(t)) return 'help'
+
+  // Safety before any other intent (block PII asks / abuse / politics)
+  if (detectSafetyViolation(t)) return 'safety'
+
   if (COMMAND_REVIEW.test(t) || REVIEW_RE.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
   if (COMMAND_MARKET.test(t)) return 'market'
