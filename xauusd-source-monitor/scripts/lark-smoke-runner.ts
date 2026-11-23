@@ -106,6 +106,15 @@ async function main() {
     'investigate Alert: XAUUSD index source IDX-01 excluded, Mark deviation 48bps, no valid source warning',
   )
   assert(Boolean(inv?.card && JSON.stringify(inv.card).includes('Investigation')), 'investigate card')
+  assert(
+    Boolean(
+      inv?.card &&
+        JSON.stringify(inv.card).includes('✅') &&
+        JSON.stringify(inv.card).includes('⚡') &&
+        JSON.stringify(inv.card).includes('📋'),
+    ),
+    'investigation card should use emoji + bold-readable sections',
+  )
 
   const follow = await turn(
     'followup-evidence',

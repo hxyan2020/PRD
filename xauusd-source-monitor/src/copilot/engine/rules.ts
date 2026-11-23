@@ -262,127 +262,127 @@ export function analyzeWithRules(args: {
 
   const lines = zh
     ? [
-        `【建議嚴重度】${sev}（僅基於輸入和規則，需當班人員覆核）`,
+        `🔴 **建議嚴重度：** **${sev}**（僅基於輸入和規則，需當班人員覆核）`,
         '',
-        '【排查路徑】',
-        ...pathLines.map((x) => `• ${x}`),
+        '🧭 **排查路徑**',
+        ...pathLines.map((x) => `• **步驟：** ${x}`),
         '',
-        '【使用的數據來源（直連連結）】',
+        '🔗 **使用的數據來源（直連連結）**',
         ...(sources.length
-          ? sources.map((s) => `• ${s.label} — ${s.url}`)
-          : ['• 尚無行情掃描引用連結；請先在「行情條件」產生簡報。']),
+          ? sources.map((s) => `• **${s.label}：** ${s.url}`)
+          : ['• **來源：** 尚無行情掃描引用連結；請先在「行情條件」產生簡報。']),
         '',
-        '【思考過程】',
+        '🧠 **思考過程**',
         ...thinking.map((x) => `• ${x}`),
         '',
-        '【時間線】',
+        '🕒 **時間線**',
         ...timeline.map(
           (e) =>
-            `• ${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT — ${e.label}`,
+            `• **${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT** — ${e.label}`,
         ),
         '',
-        '【已知事實】',
+        '📋 **已知事實**',
         args.text || '未提供告警文字。',
         '',
-        '【使用的 Skills】',
+        '🧩 **使用的 Skills**',
         ...(skillsUsed.length
           ? skillsUsed.map(
               (s) =>
-                `• [${s.level}] ${s.id} ${s.name}${s.severity ? ` (${s.severity})` : ''}`,
+                `• **[${s.level}] ${s.id}** ${s.name}${s.severity ? ` (${s.severity})` : ''}`,
             )
-          : ['• 未能可靠匹配。請補充告警原文、合約、數值和時間。']),
+          : ['• **匹配：** 未能可靠匹配。請補充告警原文、合約、數值和時間。']),
         '',
-        '【使用的知識樹節點】',
+        '📚 **使用的知識樹節點**',
         ...(knowledgeUsed.length
-          ? knowledgeUsed.map((n) => `• ${n.path}`)
-          : ['• 無關鍵詞匹配；請在知識庫補充相關節點。']),
+          ? knowledgeUsed.map((n) => `• **節點：** ${n.path}`)
+          : ['• **節點：** 無關鍵詞匹配；請在知識庫補充相關節點。']),
         '',
-        '【候選根因／驗證方向】',
+        '🔎 **候選根因／驗證方向**',
         ...(l2.length
-          ? l2.map((o) => `• ${o.x.name}：需驗證其上游故障是否早於下游異常`)
-          : ['• 數據源、報價策略、帳戶風險、撮合／結算或監控自身異常；尚無法確定。']),
+          ? l2.map((o) => `• **${o.x.name}：** 需驗證其上游故障是否早於下游異常`)
+          : ['• **方向：** 數據源、報價策略、帳戶風險、撮合／結算或監控自身異常；尚無法確定。']),
         '',
-        '【建議方案（需人工審批）】',
-        ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
+        '⚡ **建議方案（需人工審批）**',
+        ...nextSteps.map((s, i) => `${i + 1}. **${s}**`),
         '',
-        '【後續優化（僅歸檔 RCA 進入週優化輸入）】',
+        '🛠️ **後續優化（僅歸檔 RCA 進入週優化輸入）**',
         ...hits.map((h) => `• ${h.s.opt}`),
         ...l2.map((o) => `• ${o.x.opt}`),
         '',
-        '【升級與收口】',
+        '📣 **升級與收口**',
         sev === 'P0'
-          ? '• 立即通知 Risk Ops、業務 Owner 與技術值班；不等待 L2 或 AI。'
-          : '• 當班確認責任人、業務影響和下一次覆核時間。',
-        '• 恢復需核對價格／倉位／帳務／服務狀態，觀察穩定後由授權人員關閉。',
+          ? '• **立即：** 通知 Risk Ops、業務 Owner 與技術值班；不等待 L2 或 AI。'
+          : '• **當班：** 確認責任人、業務影響和下一次覆核時間。',
+        '• **恢復：** 核對價格／倉位／帳務／服務狀態，觀察穩定後由授權人員關閉。',
         '',
-        '【缺失證據／誠實邊界】',
-        '• 需要準確的 event_time、contract_id、account_id、指標原始值、閾值、上下游日誌、已採取動作。',
-        '• 內部管理台／帳戶資料庫檢索為 Phase 2 — 本助手不會編造 admin DB 答案。',
+        '🕳️ **缺失證據／誠實邊界**',
+        '• **需要：** 準確的 event_time、contract_id、account_id、指標原始值、閾值、上下游日誌、已採取動作。',
+        '• **邊界：** 內部管理台／帳戶資料庫檢索為 Phase 2 — 本助手不會編造 admin DB 答案。',
         '',
         '本段為確定性規則輔助；不構成已證實根因或自動執行指令。即時統計會計入每一次觸發的 RCA；僅歸檔後才進入週優化輸入。',
       ]
     : [
-        `【Recommended severity】${sev} (rules + input only — on-duty must confirm)`,
+        `🔴 **Recommended severity:** **${sev}** (rules + input only — on-duty must confirm)`,
         '',
-        '【Investigation path】',
-        ...pathLines.map((x) => `• ${x}`),
+        '🧭 **Investigation path**',
+        ...pathLines.map((x) => `• **Step:** ${x}`),
         '',
-        '【Data sources used (direct links)】',
+        '🔗 **Data sources used (direct links)**',
         ...(sources.length
-          ? sources.map((s) => `• ${s.label} — ${s.url}`)
-          : ['• No market-scan citation URLs yet — generate a Market Condition briefing first.']),
+          ? sources.map((s) => `• **${s.label}:** ${s.url}`)
+          : ['• **Sources:** No market-scan citation URLs yet — generate a Market Condition briefing first.']),
         '',
-        '【Thinking】',
+        '🧠 **Thinking**',
         ...thinking.map((x) => `• ${x}`),
         '',
-        '【Timeline】',
+        '🕒 **Timeline**',
         ...timeline.map(
           (e) =>
-            `• ${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT — ${e.label}`,
+            `• **${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT** — ${e.label}`,
         ),
         '',
-        '【Confirmed facts】',
+        '📋 **Confirmed facts**',
         args.text || 'No alert text provided.',
         '',
-        '【Skills used】',
+        '🧩 **Skills used**',
         ...(skillsUsed.length
           ? skillsUsed.map(
               (s) =>
-                `• [${s.level}] ${s.id} ${s.name}${s.severity ? ` (${s.severity})` : ''}`,
+                `• **[${s.level}] ${s.id}** ${s.name}${s.severity ? ` (${s.severity})` : ''}`,
             )
-          : ['• No confident match. Add alert text, contract, values, and timestamps.']),
+          : ['• **Match:** No confident match. Add alert text, contract, values, and timestamps.']),
         '',
-        '【Knowledge tree nodes】',
+        '📚 **Knowledge tree nodes**',
         ...(knowledgeUsed.length
-          ? knowledgeUsed.map((n) => `• ${n.path}`)
-          : ['• No keyword hit — add related nodes in Knowledge Base.']),
+          ? knowledgeUsed.map((n) => `• **Node:** ${n.path}`)
+          : ['• **Nodes:** No keyword hit — add related nodes in Knowledge Base.']),
         '',
-        '【Candidate root causes / verification】',
+        '🔎 **Candidate root causes / verification**',
         ...(l2.length
           ? l2.map(
               (o) =>
-                `• ${o.x.name}: verify whether upstream failure preceded downstream anomaly`,
+                `• **${o.x.name}:** verify whether upstream failure preceded downstream anomaly`,
             )
           : [
-              '• Data source, quote policy, account risk, matching/settlement, or monitor self-fault — still unconfirmed.',
+              '• **Direction:** Data source, quote policy, account risk, matching/settlement, or monitor self-fault — still unconfirmed.',
             ]),
         '',
-        '【Recommendations (approval required)】',
-        ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
+        '⚡ **Recommendations (approval required)**',
+        ...nextSteps.map((s, i) => `${i + 1}. **${s}**`),
         '',
-        '【Follow-on optimisation (archived RCAs only enter weekly opt)】',
+        '🛠️ **Follow-on optimisation (archived RCAs only enter weekly opt)**',
         ...hits.map((h) => `• ${h.s.opt}`),
         ...l2.map((o) => `• ${o.x.opt}`),
         '',
-        '【Escalation & close】',
+        '📣 **Escalation & close**',
         sev === 'P0'
-          ? '• Page Risk Ops, business owner, and tech on-call immediately — do not wait for L2/AI.'
-          : '• Confirm owner, business impact, and next review time.',
-        '• Recovery must reconcile price/position/ledger/service health; authorised staff close after stable observation.',
+          ? '• **Immediate:** Page Risk Ops, business owner, and tech on-call — do not wait for L2/AI.'
+          : '• **On-duty:** Confirm owner, business impact, and next review time.',
+        '• **Recovery:** Reconcile price/position/ledger/service health; authorised staff close after stable observation.',
         '',
-        '【Missing evidence / honesty bounds】',
-        '• Need accurate event_time, contract_id, account_id, raw metric, threshold, upstream/downstream logs, actions already taken.',
-        '• Internal admin / account DB retrieval is Phase 2 — this assistant will not invent admin DB answers.',
+        '🕳️ **Missing evidence / honesty bounds**',
+        '• **Need:** accurate event_time, contract_id, account_id, raw metric, threshold, upstream/downstream logs, actions already taken.',
+        '• **Bounds:** Internal admin / account DB retrieval is Phase 2 — this assistant will not invent admin DB answers.',
         '',
         'This block is deterministic rules assist only; it is not a confirmed root cause or an auto-executed order. Realtime stats count every triggered RCA; only archived ones enter weekly optimisation.',
       ]

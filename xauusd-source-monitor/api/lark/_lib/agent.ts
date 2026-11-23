@@ -61,32 +61,38 @@ function buildSummary(args: {
         : 'none'
   if (hans) {
     return [
-      `已摄入 ${args.facts.length} 条事实／证据。`,
-      `Skills 命中：${hitLine}。知识库：${kbLine}。`,
+      '📋 **摘要**',
+      `• **已摄入事实／证据：** **${args.facts.length}**`,
+      `• **Skills 命中：** **${hitLine}**`,
+      `• **知识库：** **${kbLine}**`,
       args.adapted
-        ? '下一步已依你最新回复／证据重新排序，而非机械贴整份清单。'
-        : '请回复你查到的结果或贴上新证据，我会调整建议。',
-      '提醒：内部 admin／DB 检索属后续阶段；我不会编造生产数据。',
-    ].join(' ')
+        ? '• **指引：** 下一步已依你最新回复／证据重新排序（非机械整份清单）'
+        : '• **指引：** 请回复你查到的结果或贴上新证据，我会调整建议',
+      '• **边界：** 内部 admin／DB 检索属后续阶段；我不会编造生产数据',
+    ].join('\n')
   }
   if (hant) {
     return [
-      `已攝入 ${args.facts.length} 條事實／證據。`,
-      `Skills 命中：${hitLine}。知識庫：${kbLine}。`,
+      '📋 **摘要**',
+      `• **已攝入事實／證據：** **${args.facts.length}**`,
+      `• **Skills 命中：** **${hitLine}**`,
+      `• **知識庫：** **${kbLine}**`,
       args.adapted
-        ? '下一步已依你最新回覆／證據重新排序，而非機械貼整份清單。'
-        : '請回覆你查到的結果或貼上新證據，我會調整建議。',
-      '提醒：內部 admin／DB 檢索屬後續階段；我不會編造生產數據。',
-    ].join(' ')
+        ? '• **指引：** 下一步已依你最新回覆／證據重新排序（非機械整份清單）'
+        : '• **指引：** 請回覆你查到的結果或貼上新證據，我會調整建議',
+      '• **邊界：** 內部 admin／DB 檢索屬後續階段；我不會編造生產數據',
+    ].join('\n')
   }
   return [
-    `Ingested ${args.facts.length} fact/evidence item(s).`,
-    `Skills hit: ${hitLine}. Knowledge: ${kbLine}.`,
+    '📋 **Summary**',
+    `• **Facts ingested:** **${args.facts.length}**`,
+    `• **Skills hit:** **${hitLine}**`,
+    `• **Knowledge:** **${kbLine}**`,
     args.adapted
-      ? 'Next steps were re-ranked from your latest replies/evidence — not a mechanical full dump.'
-      : 'Reply with findings or new evidence and I’ll adapt the guidance.',
-    'Reminder: internal admin/DB retrieval is a later phase — I will not invent production data.',
-  ].join(' ')
+      ? '• **Guidance:** Next steps re-ranked from your latest replies/evidence (not a full dump)'
+      : '• **Guidance:** Reply with findings or new evidence and I’ll adapt',
+    '• **Bounds:** Internal admin/DB retrieval is a later phase — I will not invent production data',
+  ].join('\n')
 }
 
 async function enrichWithLlm(args: {
@@ -204,10 +210,10 @@ async function runInvestigation(args: {
   const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
+      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤），每点用粗体关键词的子弹列表（• **关键词：** 说明）。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
       : args.lang === 'zh-Hant'
-        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
-        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
+        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟），每點用粗體關鍵詞的子彈列表（• **關鍵詞：** 說明）。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
+        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. 🔎 Judgement, ✅ Why these steps) and bold-keyword bullet points (`• **Keyword:** detail`). Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
@@ -479,30 +485,30 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   const fallback =
     lang === 'zh-Hans'
       ? [
-          '这看起来与 V Exchange 风险相关。我可以：',
-          '• 输入 `market` 看市况',
-          '• 贴告警／截图并输入 `investigate` 开始排查',
-          '• 输入 `review` 看已累积事故',
-          hits.length ? `初步 Skills 提示：${hits.map((h) => h.id).join(', ')}` : '',
+          '🧭 这看起来与 **V Exchange 风险**相关。我可以：',
+          '• **市况：** 输入 `market`',
+          '• **排查：** 贴告警／截图并输入 `investigate`',
+          '• **看板：** 输入 `review`／`dashboard`',
+          hits.length ? `• **Skills 提示：** **${hits.map((h) => h.id).join(', ')}**` : '',
         ]
           .filter(Boolean)
           .join('\n')
       : lang === 'zh-Hant'
         ? [
-            '這看起來與 V Exchange 風險相關。我可以：',
-            '• 輸入 `market` 看市況',
-            '• 貼告警／截圖並輸入 `investigate` 開始排查',
-            '• 輸入 `review` 看已累積事故',
-            hits.length ? `初步 Skills 提示：${hits.map((h) => h.id).join(', ')}` : '',
+            '🧭 這看起來與 **V Exchange 風險**相關。我可以：',
+            '• **市況：** 輸入 `market`',
+            '• **排查：** 貼告警／截圖並輸入 `investigate`',
+            '• **看板：** 輸入 `review`／`dashboard`',
+            hits.length ? `• **Skills 提示：** **${hits.map((h) => h.id).join(', ')}**` : '',
           ]
             .filter(Boolean)
             .join('\n')
         : [
-            'This looks risk-related. I can help with:',
-            '• `market` for conditions',
-            '• paste an alert/screenshot + `investigate` for guided RCA',
-            '• `review` for accumulated incidents',
-            hits.length ? `Early skill hints: ${hits.map((h) => h.id).join(', ')}` : '',
+            '🧭 This looks **risk-related**. I can help with:',
+            '• **Market:** `market`',
+            '• **Investigate:** paste an alert/screenshot + `investigate`',
+            '• **Dashboard:** `review` / `dashboard`',
+            hits.length ? `• **Skill hints:** **${hits.map((h) => h.id).join(', ')}**` : '',
           ]
             .filter(Boolean)
             .join('\n')

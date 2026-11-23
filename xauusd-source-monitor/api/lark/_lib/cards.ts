@@ -1,6 +1,28 @@
 import { isZh } from './lang.js'
 import type { IncidentRecord, Lang } from './types.js'
 
+function severityEmoji(sev: string): string {
+  const s = (sev || '').toUpperCase()
+  if (s.includes('P0')) return '🔴'
+  if (s.includes('P1')) return '🟠'
+  if (s.includes('P2')) return '🔵'
+  if (s.includes('P3')) return '⚪'
+  return '📌'
+}
+
+/** Bold the leading [SKILL-ID] / 【SKILL-ID】 token for scannable steps. */
+function formatStepLine(raw: string, index: number): string {
+  const m = raw.match(/^(\[[^\]]+\]|【[^】]+】)\s*(.*)$/)
+  if (m) return `${index + 1}. **${m[1]}** ${m[2]}`
+  return `${index + 1}. **${raw}**`
+}
+
+function formatActionLine(raw: string): string {
+  const m = raw.match(/^(.*?)(·\s*)([A-Z0-9_-]+)(:\s*)(.*)$/i)
+  if (m) return `• **${m[3]}** — ${m[5]}`
+  return `• **${raw}**`
+}
+
 export function investigationCard(args: {
   lang: Lang
   title: string
@@ -14,10 +36,11 @@ export function investigationCard(args: {
 }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
-  const stepMd = args.nextSteps.map((s, i) => `${i + 1}. ${s}`).join('\n')
+  const emoji = severityEmoji(args.severity)
+  const stepMd = args.nextSteps.map((s, i) => formatStepLine(s, i)).join('\n')
   const actionMd =
-    args.actions.map((a) => `• ${a}`).join('\n') ||
-    (hans ? '• （暂无）' : zh ? '• （暫無）' : '• (none yet)')
+    args.actions.map((a) => formatActionLine(a)).join('\n') ||
+    (hans ? '• **（暂无）**' : zh ? '• **（暫無）**' : '• **(none yet)**')
   const skillLine = args.skills.length
     ? args.skills.join(', ')
     : hans
@@ -34,20 +57,20 @@ export function investigationCard(args: {
         : 'none'
 
   const sevLabel = hans
-    ? `**建议严重度：** ${args.severity}（需当班确认）`
+    ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
     : zh
-      ? `**建議嚴重度：** ${args.severity}（需當班確認）`
-      : `**Severity proposal:** ${args.severity} (on-duty confirm)`
+      ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
+      : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
   const nextLabel = hans
-    ? `**建议下一步（已依你的证据调整）**\n${stepMd}`
+    ? `✅ **建议下一步**（已依你的证据调整）\n${stepMd}`
     : zh
-      ? `**建議下一步（已依你的證據調整）**\n${stepMd}`
-      : `**Suggested next steps (adapted to your evidence)**\n${stepMd}`
+      ? `✅ **建議下一步**（已依你的證據調整）\n${stepMd}`
+      : `✅ **Suggested next steps** (adapted to your evidence)\n${stepMd}`
   const prefLabel = hans
-    ? `**Preferred Action（需审批）**\n${actionMd}`
+    ? `⚡ **Preferred Action**（需审批）\n${actionMd}`
     : zh
-      ? `**Preferred Action（需審批）**\n${actionMd}`
-      : `**Preferred Action (approval required)**\n${actionMd}`
+      ? `⚡ **Preferred Action**（需審批）\n${actionMd}`
+      : `⚡ **Preferred Action** (approval required)\n${actionMd}`
 
   return {
     config: { wide_screen_mode: true },
@@ -71,7 +94,7 @@ export function investigationCard(args: {
         elements: [
           {
             tag: 'plain_text',
-            content: `Skills: ${skillLine} · RAG: ${kbLine}`,
+            content: `🧩 Skills: ${skillLine} · 📚 RAG: ${kbLine}`,
           },
         ],
       },
@@ -150,21 +173,23 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
               hour: '2-digit',
               minute: '2-digit',
             })
-            return `${i + 1}. **${inc.title}** · ${inc.severity} · ${inc.status} · ${when} SGT\n${inc.summary.slice(0, 140)}`
+            const se = severityEmoji(inc.severity)
+            const statusIcon = inc.status === 'open' ? '🟢' : '📦'
+            return `${i + 1}. ${se} **${inc.title}**\n• **Severity:** **${inc.severity}** · ${statusIcon} **${inc.status}** · 🕒 ${when} SGT\n• ${inc.summary.slice(0, 140)}`
           })
           .join('\n\n')
 
   const kpi = hans
-    ? `**看板摘要** 合计 ${args.incidents.length} · 进行中 ${open} · 已归档 ${archived}${sevLine ? `\n**严重度：** ${sevLine}` : ''}`
+    ? `📊 **看板摘要**\n• **合计：** **${args.incidents.length}**\n• **进行中：** **${open}**\n• **已归档：** **${archived}**${sevLine ? `\n• **严重度：** ${sevLine}` : ''}`
     : zh
-      ? `**看板摘要** 合計 ${args.incidents.length} · 進行中 ${open} · 已歸檔 ${archived}${sevLine ? `\n**嚴重度：** ${sevLine}` : ''}`
-      : `**Dashboard** total ${args.incidents.length} · open ${open} · archived ${archived}${sevLine ? `\n**Severity:** ${sevLine}` : ''}`
+      ? `📊 **看板摘要**\n• **合計：** **${args.incidents.length}**\n• **進行中：** **${open}**\n• **已歸檔：** **${archived}**${sevLine ? `\n• **嚴重度：** ${sevLine}` : ''}`
+      : `📊 **Dashboard**\n• **Total:** **${args.incidents.length}**\n• **Open:** **${open}**\n• **Archived:** **${archived}**${sevLine ? `\n• **Severity:** ${sevLine}` : ''}`
 
   const intro = hans
-    ? `以下为 Lark 侧近期累积的告警与报告。完整可视化看板（桌面 RCA + Lark）：[打开看板](${DASHBOARD_URL})`
+    ? `🗂️ 以下为 Lark 侧近期累积的告警与报告。\n• **完整可视化看板**（桌面 RCA + Lark）：[打开看板](${DASHBOARD_URL})`
     : zh
-      ? `以下為 Lark 側近期累積的告警與報告。完整可視化看板（桌面 RCA + Lark）：[打開看板](${DASHBOARD_URL})`
-      : `Lark-side alerts & reports below. Full visualization (desk RCA + Lark): [Open dashboard](${DASHBOARD_URL})`
+      ? `🗂️ 以下為 Lark 側近期累積的告警與報告。\n• **完整可視化看板**（桌面 RCA + Lark）：[打開看板](${DASHBOARD_URL})`
+      : `🗂️ Lark-side alerts & reports below.\n• **Full visualization** (desk RCA + Lark): [Open dashboard](${DASHBOARD_URL})`
 
   return {
     config: { wide_screen_mode: true },
