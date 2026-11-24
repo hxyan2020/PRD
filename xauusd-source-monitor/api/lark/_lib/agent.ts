@@ -547,10 +547,10 @@ async function runInvestigation(args: {
   const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据事故事实与命中的 Skills，写排查报告正文，必须含三块：🔎 可能原因、🧭 排查路径（后管／前端链路）、🌿 决策分支。可能原因分成「已证实 / 假设 / 未排除」，标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。排查路径必须展开命中 Skill 的 check 步骤（含「后管→…」菜单与字段），按序号列出，不要省略后管链路。决策分支必须展开该 Skill 的 action（若…则…／否则…），不要写「按 Runbook 分支处置」这类空话。知识库只点名标题（全文在文末链接）。用 emoji 分段 +「• **关键词：** 说明」。必须用简体中文。优先 V Exchange 永续；忽略 CFD。'
+      ? '根据事故事实与命中的 Skills，写排查报告正文，必须含三块：🔎 可能原因、🧭 排查路径（后管／前端链路）、🌿 决策分支。可能原因分成「已证实 / 假设 / 未排除」，标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。排查路径只展开 Skill.check 里已有的步骤（含「后管→…」），不要增补未写明的后管菜单或字段。决策分支只复述 Skill.action 原文；若含 [待确认]／未入库，必须原样标明「决策树未入库」，禁止自行发明若/则分支。知识库只点名标题（全文在文末链接）。用 emoji 分段。必须用简体中文。优先 V Exchange 永续；忽略 CFD。'
       : args.lang === 'zh-Hant'
-        ? '根據事故事實與命中的 Skills，寫排查報告正文，必須含三塊：🔎 可能原因、🧭 排查路徑（後管／前端鏈路）、🌿 決策分支。可能原因分成「已證實／假設／未排除」，標註 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。排查路徑必須展開命中 Skill 的 check 步驟（含「後管→…」），按序號列出。決策分支必須展開 action（若…則…），禁止「按 Runbook 分支處置」。知識庫只點名標題。用 emoji 分段。必須用繁體中文。優先 V Exchange 永續；忽略 CFD。'
-        : 'Write the investigation body with three sections: Possible causes, Investigation path (admin/desk steps from Skill check), Decision branches (from Skill action if/then). Tag causes [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]. Expand matched Skill check steps including admin console menus; expand action branches — never write “follow the Runbook”. Only name KB titles (full text in footer). Prefer V Exchange perpetual; ignore CFD. English.'
+        ? '根據事故事實與命中的 Skills，寫排查報告正文，必須含三塊：🔎 可能原因、🧭 排查路徑（後管／前端鏈路）、🌿 決策分支。排查路徑只展開 Skill.check 已有步驟，勿增補未寫明的後管菜單。決策分支只複述 Skill.action；若含 [待確認]／未入庫，必須標明「決策樹未入庫」，禁止臆造若／則分支。知識庫只點名標題。必須用繁體中文。優先 V Exchange 永續；忽略 CFD。'
+        : 'Write three sections: Possible causes, Investigation path (only steps present in Skill.check), Decision branches (only Skill.action text). If action contains [待确认]/not in repo, say the decision tree is missing — never invent if/then branches. Tag causes [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]. Only name KB titles. Prefer V Exchange perpetual; ignore CFD. English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,

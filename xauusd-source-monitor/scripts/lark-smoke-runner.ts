@@ -119,14 +119,13 @@ async function main() {
       .map((s) => s.id)
       .join(',')}`,
   )
-  const vagueActions = skills.filter((s) => /按 Runbook 分支处置/.test(s.action))
-  const missingHout = skills.filter((s) => !/后管/.test(s.check))
+  // Never ship invented Runbook trees; missing branches must be tagged [待确认]
+  const inventedPlaceholder = skills.filter((s) => /按 Runbook 分支处置/.test(s.action))
+  const missingMarked = skills.filter((s) => /未入库|禁止臆造/.test(s.action))
   record(
-    'skills.houtguan_and_decision_branches',
-    vagueActions.length === 0 &&
-      missingHout.length === 0 &&
-      skills.every((s) => /：|:|若|则|否則|否则|：/.test(s.action) || s.action.includes('；')),
-    `vague=${vagueActions.map((s) => s.id).join(',') || '-'} noHout=${missingHout.map((s) => s.id).join(',') || '-'}`,
+    'skills.no_invented_runbook_branches',
+    inventedPlaceholder.length === 0 && missingMarked.length >= 1,
+    `invented=${inventedPlaceholder.map((s) => s.id).join(',') || '-'} marked=${missingMarked.map((s) => s.id).join(',')}`,
   )
   record(
     'kb.load_ve_docs',
