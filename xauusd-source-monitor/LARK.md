@@ -55,7 +55,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | `LARK_REPLY_ALL_GROUP=1` | Reply to every group message without @ (not recommended) |
 | `LARK_ENCRYPT_KEY` | **Do not use** until decrypt is implemented — keep Encrypt Key off |
 | `DESK_GATEWAY_TOKEN` | Protects desk smoke `/api/lark/incidents` only; unrelated to Lark chat |
-| `LARK_ADMIN_OPEN_ID` | **Required for weekly + 30-min market push** — Yan Haixiang’s Feishu `open_id` (DM target) |
+| `LARK_ADMIN_OPEN_ID` | **Required for weekly + oscillation DM fallback** — Yan Haixiang’s Feishu `open_id` |
 | `LARK_ADMIN_EMAIL` | Optional fallback to resolve open_id via Contact API |
 | `CRON_SECRET` | Optional; Vercel Cron Authorization bearer for cron routes |
 
@@ -67,8 +67,9 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | GET/POST | `/api/lark/card` | Alias for **Card Request URL** (same handler) |
 | GET/POST | `/api/lark/incidents` | List / simulate turns (smoke) |
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
-| GET/POST | `/api/lark/market-report` | 30-min market scan DM to Yan; `?dry=1` preview |
+| GET/POST | `/api/lark/market-report` | Manual market scan (cron removed; on-demand / force only) |
 | GET/POST | `/api/lark/daily-market-report` | Daily 09:00 CST 24h digest → group; `?dry=1` preview |
+| GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
 
 ## Weekly report (Yan Haixiang)
 
@@ -79,15 +80,11 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token
 
-## 30-minute market report (Yan Haixiang)
+## Market report (on-demand only)
 
-- **Schedule:** every **30 minutes** (Vercel cron `*/30 * * * *`)
-- **Content:** same hourly market scan engine as chat `行情` / `market` (TL;DR / Opportunity / Risk); **always Simplified Chinese** on Lark
-- **Delivery:** Feishu card to **chat_id** `LARK_MARKET_CHAT_ID` / `LARK_ADMIN_CHAT_ID` (default Yan DM `oc_430fae67dd06b70f65b726b1673ef40e`); falls back to `LARK_ADMIN_OPEN_ID` if chat send fails
-- **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
-- **Force send:** `POST /api/lark/market-report` with `{ "force": true }` + desk token
-
-Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Production.
+- **Cron:** removed (no more 30-min auto push)
+- **Endpoint:** `/api/lark/market-report` still supports `?dry=1` / `{ "force": true }` for manual sends
+- Chat `行情` / `market` still works on demand
 
 ## Daily 24h market morning report (group)
 

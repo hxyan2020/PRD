@@ -1122,7 +1122,8 @@ async function main() {
     greetLater.includes('**周报**') &&
       greetLater.includes('**文档**') &&
       greetLater.includes('**行情**') &&
-      greetLater.includes('半小时行情') &&
+      greetLater.includes('震荡行情预警') &&
+      !greetLater.includes('半小时行情') &&
       greetLater.includes('每日 24h') &&
       greetLater.includes('Yan Haixiang') &&
       greetLater.includes('UAT') &&
@@ -1157,6 +1158,13 @@ async function main() {
       'utf8',
     ),
   ) as { crons?: { path?: string; schedule?: string }[] }
+  record(
+    'cron.no_half_hour_market',
+    !(vercelCrons.crons || []).some(
+      (c) => (c.path || '').includes('/market-report') && (c.schedule || '').includes('*/30'),
+    ),
+    JSON.stringify((vercelCrons.crons || []).map((c) => `${c.path}:${c.schedule}`)),
+  )
   const dailyCron = (vercelCrons.crons || []).find((c) =>
     (c.path || '').includes('daily-market-report'),
   )
