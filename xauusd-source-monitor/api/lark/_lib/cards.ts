@@ -455,9 +455,9 @@ export function skillsCatalogCard(args: {
     `• **${s.id}** · ${s.name}${s.severity ? ` · ${s.severity}` : ''}`
 
   const intro = hans
-    ? `🧩 **Skills＝34 个排查场景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（独立风险事件）· L2 **${l2.length}**（关联排查链路）\n\n贴告警／关键词会 RAG 命中这些场景。**监控指标／可能出现的风险**清单在知识库（发 **knowledge**），不与 Skills 混淆。`
+    ? `🧩 **技能＝34 个排查场景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（独立风险事件）· L2 **${l2.length}**（关联排查链路）\n\n贴告警／关键词会 RAG 命中这些场景。**监控指标／可能出现的风险**清单在知识库（发 **知识库**），不与技能混淆。`
     : zh
-      ? `🧩 **Skills＝34 個排查場景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（獨立風險事件）· L2 **${l2.length}**（關聯排查鏈路）\n\n貼告警／關鍵詞會 RAG 命中這些場景。**監控指標／可能出現的風險**清單在知識庫（發 **knowledge**），不與 Skills 混淆。`
+      ? `🧩 **技能＝34 個排查場景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（獨立風險事件）· L2 **${l2.length}**（關聯排查鏈路）\n\n貼告警／關鍵詞會 RAG 命中這些場景。**監控指標／可能出現的風險**清單在知識庫（發 **知識庫**），不與技能混淆。`
       : `🧩 **Skills = 34 investigation scenarios** (Runbook V18)\n\n**${args.skills.length}** total · L1 **${l1.length}** (standalone) · L2 **${l2.length}** (chains)\n\nAlerts/keywords RAG-match these. The **monitoring / possible-risks** inventory lives in Knowledge (send **knowledge**) — not Skills.`
 
   const openHint = hans

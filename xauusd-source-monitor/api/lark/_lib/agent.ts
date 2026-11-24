@@ -731,7 +731,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   if (attachmentDigest) {
     const riskRelated = attachmentLooksRiskRelated(attachmentDigest)
     const captionCmd =
-      /^(market|investigate|排查|help|帮助|幫助|skills?|knowledge|kb|review|weekly|done|完成)\b/i.test(
+      /^(?:market|investigate|help|skills?|knowledge|kb|review|dashboard|weekly|done|行情|市况|市況|排查|帮助|幫助|技能|知识库|知識庫|复盘|複盤|看板|周报|週報|完成|文档|文檔|说明|說明)(?:\s|$)/i.test(
         userCaption,
       )
     const continueAsEvidence =

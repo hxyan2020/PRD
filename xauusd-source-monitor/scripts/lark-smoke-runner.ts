@@ -310,13 +310,25 @@ async function main() {
   // 6) Greeting card: bold + spaced bullets + keyword + natural-language triggers
   for (const lang of ['en', 'zh-Hans', 'zh-Hant'] as const) {
     const g = greetingReply(lang)
+    const zhCmds =
+      g.includes('**行情**') &&
+      g.includes('**排查**') &&
+      g.includes('**技能**') &&
+      (g.includes('**知识库**') || g.includes('**知識庫**')) &&
+      (g.includes('**帮助**') || g.includes('**幫助**'))
+    const enCmds =
+      g.includes('**market**') &&
+      g.includes('investigate') &&
+      g.includes('**skills**') &&
+      (g.includes('**knowledge**') || g.includes('**kb**'))
     const triggerHint =
       lang === 'en'
         ? g.includes('group = @me + keyword') &&
-          g.includes('**market**') &&
+          enCmds &&
           (g.includes('Natural language') || g.includes('keywords not required'))
         : g.includes('群聊') &&
           g.includes('@我') &&
+          zhCmds &&
           (g.includes('自然语言') ||
             g.includes('自然語言') ||
             g.includes('不必先打出关键词') ||
@@ -330,10 +342,7 @@ async function main() {
     record(
       `greeting.template_${lang}`,
       g.includes('Risk Copilot') &&
-        g.includes('**market**') &&
-        g.includes('investigate') &&
-        g.includes('**skills**') &&
-        (g.includes('**knowledge**') || g.includes('**kb**')) &&
+        (lang === 'en' ? enCmds : zhCmds) &&
         g.includes('UAT') &&
         g.includes('Yan Haixiang') &&
         g.includes('\n\n') &&
@@ -344,6 +353,14 @@ async function main() {
       g.slice(0, 120),
     )
   }
+  record('cmd.zh_market', classifyIntent('行情', {}) === 'market', '')
+  record('cmd.zh_investigate', classifyIntent('排查', {}) === 'investigate', '')
+  record('cmd.zh_skills', classifyIntent('技能', {}) === 'skills', '')
+  record('cmd.zh_knowledge', classifyIntent('知识库', {}) === 'knowledge', '')
+  record('cmd.zh_help', classifyIntent('帮助', {}) === 'help', '')
+  record('cmd.zh_done', classifyIntent('完成', {}) === 'archive', '')
+  record('cmd.zh_weekly', classifyIntent('周报', {}) === 'weekly', '')
+  record('cmd.zh_review', classifyIntent('复盘', {}) === 'review', '')
   record(
     'intent.skills_natural_zh',
     classifyIntent('有哪些排查场景', {
@@ -393,7 +410,10 @@ async function main() {
     Boolean(
       greetZh.reply?.card &&
         greetZhBlob.includes('Risk Copilot') &&
-        greetZhBlob.includes('**market**') &&
+        greetZhBlob.includes('**行情**') &&
+        greetZhBlob.includes('**排查**') &&
+        greetZhBlob.includes('**技能**') &&
+        greetZhBlob.includes('**知识库**') &&
         greetZhBlob.includes('@我') &&
         (greetZhBlob.includes('自然语言') || greetZhBlob.includes('不必先打出关键词')) &&
         greetZhBlob.includes('[Skills](https://vex-llm-proxy.vercel.app/#/skills)') &&
@@ -402,6 +422,18 @@ async function main() {
         !greetZhBlob.includes('生产操作需人工审批'),
     ),
     greetZhBlob.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'cmd_zh')
+  const zhMarket = await turn('cmd-zh-market', '行情', 'cmd_zh')
+  record(
+    'turn.cmd_zh_market_stays_zh',
+    Boolean(zhMarket.reply?.card) &&
+      (zhMarket.blob.includes('小时行情') ||
+        zhMarket.blob.includes('行情扫报') ||
+        zhMarket.blob.includes('东八区') ||
+        zhMarket.blob.includes('最近一次扫描')) &&
+      !zhMarket.blob.includes('Hourly market scan'),
+    zhMarket.blob.slice(0, 200),
   )
   const help = await turn('help', 'help')
   const helpBlob = JSON.stringify(help.reply || {})
@@ -414,6 +446,17 @@ async function main() {
         helpBlob.includes('lark_md'),
     ),
     helpBlob.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'help_zh')
+  const helpZh = await turn('help-zh', '帮助', 'help_zh')
+  record(
+    'turn.help_zh_commands',
+    Boolean(helpZh.reply?.card) &&
+      helpZh.blob.includes('**行情**') &&
+      helpZh.blob.includes('**排查**') &&
+      helpZh.blob.includes('**知识库**') &&
+      !helpZh.blob.includes('**market**'),
+    helpZh.blob.slice(0, 200),
   )
 
   // 7) Casual chat accepted (negative-list only) + safety turns
@@ -968,12 +1011,13 @@ async function main() {
   const greetLater = greetingReply('zh-Hans')
   record(
     'later.greeting_keeps_weekly_and_uat',
-    greetLater.includes('weekly') &&
-      greetLater.includes('周报') &&
+    greetLater.includes('**周报**') &&
+      greetLater.includes('**文档**') &&
+      greetLater.includes('**行情**') &&
       greetLater.includes('Yan Haixiang') &&
       greetLater.includes('UAT') &&
       !greetLater.includes('截图欢迎直接丢过来') &&
-      greetLater.includes('wiki'),
+      !greetLater.includes('**market**'),
     greetLater.slice(0, 120),
   )
 

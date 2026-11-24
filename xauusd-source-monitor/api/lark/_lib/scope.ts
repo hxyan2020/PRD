@@ -92,27 +92,50 @@ export function accessUnavailableReply(lang: Lang, detail?: string): string {
   ].join('\n')
 }
 
-const COMMAND_INVESTIGATE = /^(investigate|排查|開始排查|开始排查)\b/i
-const COMMAND_MARKET = /^(market|行情|趋势|趨勢)\b/i
+/** End of a keyword command — `\b` does not work after CJK. */
+const CMD_END = '(?:\\s|$|[：:：])'
+
+const COMMAND_INVESTIGATE = new RegExp(
+  `^(?:investigate\\b|排查|开始排查|開始排查)${CMD_END}`,
+  'i',
+)
+const COMMAND_MARKET = new RegExp(`^(?:market\\b|行情|市况|市況|趋势|趨勢)${CMD_END}`, 'i')
 /** Whole-message openers for the alerts/reports dashboard. */
-const COMMAND_REVIEW =
-  /^(review|复盘|複盤|archive|归档|歸檔|dashboard|alerts|alert\s*board|看板|仪表盘|儀表盤)\b/i
-const COMMAND_HELP = /^(help|帮助|幫助)\b/i
-const COMMAND_DONE = /^(done|完成|结束排查|結束排查|reset|重置)\b/i
+const COMMAND_REVIEW = new RegExp(
+  `^(?:review\\b|archive\\b|dashboard\\b|alerts\\b|alert\\s*board\\b|复盘|複盤|归档|歸檔|看板|仪表盘|儀表盤)${CMD_END}`,
+  'i',
+)
+const COMMAND_HELP = new RegExp(`^(?:help\\b|帮助|幫助|说明|說明)${CMD_END}`, 'i')
+const COMMAND_DONE = new RegExp(
+  `^(?:done\\b|reset\\b|完成|结束排查|結束排查|重置)${CMD_END}`,
+  'i',
+)
 /** Mark current investigate step complete (text alternative to card button). */
 const COMMAND_STEP_DONE =
-  /^(step\s*done|next\s*step\s*done|已完成此步|完成此步|本步完成|标记完成|標記完成)\s*$/i
+  /^(?:step\s*done|next\s*step\s*done|已完成此步|完成此步|本步完成|标记完成|標記完成)\s*$/i
 
 export function isStepDoneCommand(text: string): boolean {
   return COMMAND_STEP_DONE.test(text.trim())
 }
-const COMMAND_SKILLS =
-  /^(skills?|skill\s*list|技能|技能库|技能庫|查看\s*skills?|看\s*skills?)\b|(有哪些|列出|查看|打开|打開).{0,8}(排查场景|排查場景|skills?|技能)|(排查场景|排查場景|技能目录|技能目錄)\s*(有哪些|列表|目录|目錄)?\s*$/i
-const COMMAND_KNOWLEDGE =
-  /^(knowledge|kb|rag|知识库|知識庫|知识|知識|查看\s*(知识库|知識庫|kb|rag)|看\s*(知识库|知識庫))\b|(打开|打開|查看|列出).{0,8}(知识库|知識庫|rag)|(知识库|知識庫)\s*(目录|目錄|列表)?\s*$/i
+const COMMAND_SKILLS = new RegExp(
+  `^(?:skills?\\b|skill\\s*list\\b|技能|技能库|技能庫|场景|場景|查看\\s*skills?|看\\s*skills?)${CMD_END}` +
+    `|(?:有哪些|列出|查看|打开|打開).{0,8}(?:排查场景|排查場景|skills?|技能)|(?:排查场景|排查場景|技能目录|技能目錄)\\s*(?:有哪些|列表|目录|目錄)?\\s*$`,
+  'i',
+)
+const COMMAND_KNOWLEDGE = new RegExp(
+  `^(?:knowledge\\b|kb\\b|rag\\b|知识库|知識庫|知识|知識|查看\\s*(?:知识库|知識庫|kb|rag)|看\\s*(?:知识库|知識庫))${CMD_END}` +
+    `|(?:打开|打開|查看|列出).{0,8}(?:知识库|知識庫|rag)|(?:知识库|知識庫)\\s*(?:目录|目錄|列表)?\\s*$`,
+  'i',
+)
 /** On-demand weekly digest (also cron-pushed Fridays 16:00 CST). */
 const COMMAND_WEEKLY =
   /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
+
+/** Bare wiki / docs keyword (CJK-safe). */
+const COMMAND_WIKI = new RegExp(
+  `^(?:wiki\\b|文档|文檔|飞书文档|飛書文檔|百科)${CMD_END}`,
+  'i',
+)
 
 /**
  * AIPO Lark API UAT — user asks to read Feishu Wiki / Docs (authorized, read-only).
@@ -129,7 +152,7 @@ export function isLarkWikiQuestion(text: string): boolean {
   const t = text.trim()
   if (!t) return false
   if (COMMAND_KNOWLEDGE.test(t)) return false
-  return LARK_WIKI_RE.test(t) || SHARED_DOC_READ_RE.test(t)
+  return COMMAND_WIKI.test(t) || LARK_WIKI_RE.test(t) || SHARED_DOC_READ_RE.test(t)
 }
 
 /** Soft reply when user asks if a shared doc is readable (before / instead of wiki search). */
@@ -487,28 +510,28 @@ export function greetingReply(lang: Lang): string {
     return [
       intros[variant]!,
       '',
-      '下面是我能做的事。**关键词触发：群聊 @我 + 关键词；私聊直接说关键词。**',
+      '下面是我能做的事。**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
       '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
       '',
-      '• 📈 **market** — 市况／XAUUSD 趋势',
+      '• 📈 **行情** — 市况／XAUUSD 趋势',
       '',
-      '• 🔍 **investigate** — 贴告警／截图／表格，引导排查',
+      '• 🔍 **排查** — 贴告警／截图／表格，引导排查',
       '',
-      '• 📊 **review** / **dashboard** — 告警与报告看板',
+      '• 📊 **复盘** / **看板** — 告警与报告看板',
       '',
-      '• 🧩 **skills** — 34 个排查场景（L1-01～28 + L2-A～F）',
+      '• 🧩 **技能** — 34 个排查场景（L1-01～28 + L2-A～F）',
       '',
-      '• 📚 **knowledge** / **kb** — 知识库（含「可能出现的风险」指标清单）',
+      '• 📚 **知识库** — 知识库（含「可能出现的风险」指标清单）',
       '',
-      '• 📖 **wiki** — 只读检索已授权飞书 Wiki／文档（未授权联系 **@Yan Haixiang**）',
+      '• 📖 **文档** — 只读检索已授权飞书 Wiki／文档（未授权联系 **@Yan Haixiang**）',
       '',
-      '• 📊 **weekly** / **周报** — 本周汇总；每周五 **16:00（东八区）** 自动推送给 **@Yan Haixiang**',
+      '• 📊 **周报** — 本周汇总；每周五 **16:00（东八区）** 自动推送给 **@Yan Haixiang**',
       '',
-      '• ✅ **done** — 结束并归档本次排查',
+      '• ✅ **完成** — 结束并归档本次排查',
       '',
-      '• ❓ **help** — 完整说明',
+      '• ❓ **帮助** — 完整说明',
       '',
-      '_我还在 UAT 阶段，有任何问题请报给 @Yan Haixiang。_',
+      '_说中文我会用中文回复。我还在 UAT 阶段，有问题请报给 @Yan Haixiang。_',
     ].join('\n')
   }
 
@@ -521,28 +544,28 @@ export function greetingReply(lang: Lang): string {
     return [
       intros[variant]!,
       '',
-      '下面是我能做的事。**關鍵詞觸發：群聊 @我 + 關鍵詞；私聊直接說關鍵詞。**',
+      '下面是我能做的事。**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
       '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
       '',
-      '• 📈 **market** — 市況／XAUUSD 趨勢',
+      '• 📈 **行情** — 市況／XAUUSD 趨勢',
       '',
-      '• 🔍 **investigate** — 貼告警／截圖／表格，引導排查',
+      '• 🔍 **排查** — 貼告警／截圖／表格，引導排查',
       '',
-      '• 📊 **review** / **dashboard** — 告警與報告看板',
+      '• 📊 **複盤** / **看板** — 告警與報告看板',
       '',
-      '• 🧩 **skills** — 34 個排查場景（L1-01～28 + L2-A～F）',
+      '• 🧩 **技能** — 34 個排查場景（L1-01～28 + L2-A～F）',
       '',
-      '• 📚 **knowledge** / **kb** — 知識庫（含「可能出現的風險」指標清單）',
+      '• 📚 **知識庫** — 知識庫（含「可能出現的風險」指標清單）',
       '',
-      '• 📖 **wiki** — 唯讀檢索已授權飛書 Wiki／文檔（未授權聯繫 **@Yan Haixiang**）',
+      '• 📖 **文檔** — 唯讀檢索已授權飛書 Wiki／文檔（未授權聯繫 **@Yan Haixiang**）',
       '',
-      '• 📊 **weekly** / **週報** — 本週匯總；每週五 **16:00（東八區）** 自動推送給 **@Yan Haixiang**',
+      '• 📊 **週報** — 本週匯總；每週五 **16:00（東八區）** 自動推送給 **@Yan Haixiang**',
       '',
-      '• ✅ **done** — 結束並歸檔本次排查',
+      '• ✅ **完成** — 結束並歸檔本次排查',
       '',
-      '• ❓ **help** — 完整說明',
+      '• ❓ **幫助** — 完整說明',
       '',
-      '_我還在 UAT 階段，有任何問題請報給 @Yan Haixiang。_',
+      '_說中文我會用中文回覆。我還在 UAT 階段，有問題請報給 @Yan Haixiang。_',
     ].join('\n')
   }
 
@@ -584,40 +607,40 @@ export function helpReply(lang: Lang): string {
     return [
       '你好 🙂 我是 **V Exchange Risk Copilot**（Lark）。',
       '',
-      '**关键词触发：群聊 @我 + 关键词；私聊直接说关键词。**',
+      '**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
       '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
       '',
-      '• 📈 **market** — 市况／趋势',
-      '• 🔍 **investigate** — 贴告警／截图／表格排查',
-      '• 📊 **review** / **dashboard** — 告警看板',
-      '• 🧩 **skills** — 34 个排查场景（不是监控指标清单）',
-      '• 📚 **knowledge** / **kb** — 知识库（含「可能出现的风险」）',
-      '• 📖 **wiki** — 飞书 Wiki／文档只读',
-      '• 📊 **weekly** / **周报** — 本周汇总（周五 16:00 东八区推送 @Yan Haixiang）',
-      '• ✅ **done** — 归档本次排查',
-      '• ❓ **help** — 本说明',
+      '• 📈 **行情** — 市况／趋势',
+      '• 🔍 **排查** — 贴告警／截图／表格排查',
+      '• 📊 **复盘** / **看板** — 告警看板',
+      '• 🧩 **技能** — 34 个排查场景（不是监控指标清单）',
+      '• 📚 **知识库** — 知识库（含「可能出现的风险」）',
+      '• 📖 **文档** — 飞书 Wiki／文档只读',
+      '• 📊 **周报** — 本周汇总（周五 16:00 东八区推送 @Yan Haixiang）',
+      '• ✅ **完成** — 归档本次排查',
+      '• ❓ **帮助** — 本说明',
       '',
-      '_我会跟随你的语言（中／英）回复。_',
+      '_说中文会用中文回复；English keywords 仍可用。_',
     ].join('\n')
   }
   if (lang === 'zh-Hant') {
     return [
       '你好 🙂 我是 **V Exchange Risk Copilot**（Lark）。',
       '',
-      '**關鍵詞觸發：群聊 @我 + 關鍵詞；私聊直接說關鍵詞。**',
+      '**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
       '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
       '',
-      '• 📈 **market** — 市況／趨勢',
-      '• 🔍 **investigate** — 貼告警／截圖／表格排查',
-      '• 📊 **review** / **dashboard** — 告警看板',
-      '• 🧩 **skills** — 34 個排查場景（不是監控指標清單）',
-      '• 📚 **knowledge** / **kb** — 知識庫（含「可能出現的風險」）',
-      '• 📖 **wiki** — 飛書 Wiki／文檔唯讀',
-      '• 📊 **weekly** / **週報** — 本週匯總（週五 16:00 東八區推送 @Yan Haixiang）',
-      '• ✅ **done** — 歸檔本次排查',
-      '• ❓ **help** — 本說明',
+      '• 📈 **行情** — 市況／趨勢',
+      '• 🔍 **排查** — 貼告警／截圖／表格排查',
+      '• 📊 **複盤** / **看板** — 告警看板',
+      '• 🧩 **技能** — 34 個排查場景（不是監控指標清單）',
+      '• 📚 **知識庫** — 知識庫（含「可能出現的風險」）',
+      '• 📖 **文檔** — 飛書 Wiki／文檔唯讀',
+      '• 📊 **週報** — 本週匯總（週五 16:00 東八區推送 @Yan Haixiang）',
+      '• ✅ **完成** — 歸檔本次排查',
+      '• ❓ **幫助** — 本說明',
       '',
-      '_我會跟隨你的語言（中／英）回覆。_',
+      '_說中文會用中文回覆；English keywords 仍可用。_',
     ].join('\n')
   }
   return [
