@@ -80,10 +80,16 @@ export function isCampaignDay(ts: number = Date.now()): boolean {
   return shanghaiDayKey(ts) === ALERT_NUDGE_DAY
 }
 
-/** Cron fires at 08:30 CST once — match that wall clock (or the configured start). */
+/**
+ * Cron targets 08:30 CST once. Allow 08:30–08:32 so a slightly late
+ * invocation still sends; `alreadySentToday` prevents duplicates.
+ */
 export function isNudgeSendSlot(ts: number = Date.now()): boolean {
   if (!isCampaignDay(ts)) return false
-  return shanghaiHm(ts) === ALERT_NUDGE_START_HM
+  const hm = shanghaiHm(ts)
+  if (hm === ALERT_NUDGE_START_HM) return true
+  // Default start 08:30 → accept through 08:32
+  return hm === '08:30' || hm === '08:31' || hm === '08:32'
 }
 
 export function alreadySentToday(): boolean {
