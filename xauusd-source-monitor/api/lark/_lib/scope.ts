@@ -152,6 +152,8 @@ export function greetingReply(lang: Lang): string {
       '  触发：发送 **help**',
       '',
       '_截图欢迎直接丢过来。生产操作需人工审批。_',
+      '',
+      '_我还在 UAT 阶段，有任何问题请报给 @Yan Haixiang。_',
     ].join('\n')
   }
 
@@ -193,6 +195,8 @@ export function greetingReply(lang: Lang): string {
       '  觸發：發送 **help**',
       '',
       '_截圖歡迎直接丟過來。生產操作需人工審批。_',
+      '',
+      '_我還在 UAT 階段，有任何問題請報給 @Yan Haixiang。_',
     ].join('\n')
   }
 
@@ -233,6 +237,8 @@ export function greetingReply(lang: Lang): string {
     '  Trigger: send **help**',
     '',
     '_Screenshots welcome. Production actions need human approval._',
+    '',
+    '_I’m still in UAT — please report any issues to @Yan Haixiang._',
   ].join('\n')
 }
 

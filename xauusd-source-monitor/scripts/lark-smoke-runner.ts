@@ -207,6 +207,8 @@ async function main() {
         g.includes('investigate') &&
         g.includes('**skills**') &&
         (g.includes('**knowledge**') || g.includes('**kb**')) &&
+        g.includes('UAT') &&
+        g.includes('Yan Haixiang') &&
         g.includes('\n\n') &&
         triggerHint &&
         /📈|🔍|📊|🧩|📚/.test(g),
@@ -225,6 +227,8 @@ async function main() {
         greetBlob.includes('**market**') &&
         greetBlob.includes('**skills**') &&
         greetBlob.includes('**knowledge**') &&
+        greetBlob.includes('UAT') &&
+        greetBlob.includes('Yan Haixiang') &&
         greetBlob.includes('Trigger:') &&
         greetBlob.includes('lark_md'),
     ),
