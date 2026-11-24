@@ -1166,19 +1166,20 @@ async function main() {
   )
   const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
   record(
-    'cron.alert_nudge_0830_once',
-    nudgeCron?.schedule === '30 0 * * *',
+    'cron.alert_nudge_every_minute',
+    nudgeCron?.schedule === '* * * * *',
     JSON.stringify(nudgeCron || {}),
   )
   const {
     ALERT_NUDGE_DAY,
     ALERT_NUDGE_MESSAGE,
     ackAlertNudge,
-    alreadySentToday,
     buildAlertNudgeCard,
     isCampaignDay,
-    isNudgeSendSlot,
+    isNudgeActive,
     looksLikeNudgeAck,
+    nudgeWindowExpired,
+    nudgeWindowOpen,
     writeNudgeState,
   } = await import('../api/lark/_lib/alertNudge')
   // 2026-11-25 00:30 UTC = 08:30 CST
@@ -1186,16 +1187,24 @@ async function main() {
   const before = Date.parse('2026-11-25T00:29:00Z')
   const otherDay = Date.parse('2026-11-26T00:30:00Z')
   record(
-    'nudge.only_tomorrow_0830',
+    'nudge.tomorrow_only_after_0830',
     isCampaignDay(atStart) &&
-      isNudgeSendSlot(atStart) &&
-      !isNudgeSendSlot(before) &&
-      !isCampaignDay(otherDay),
+      nudgeWindowOpen(atStart) &&
+      !nudgeWindowOpen(before) &&
+      !isCampaignDay(otherDay) &&
+      !nudgeWindowOpen(otherDay),
+    '',
+  )
+  record(
+    'nudge.expires_1800_same_day',
+    nudgeWindowExpired(Date.parse('2026-11-25T10:00:00Z')) &&
+      !nudgeWindowExpired(Date.parse('2026-11-25T09:59:00Z')),
     '',
   )
   const nudgeCard = buildAlertNudgeCard({
     openId: 'ou_smoke_haixiang',
     message: ALERT_NUDGE_MESSAGE,
+    sendCount: 3,
   })
   const nudgeJson = JSON.stringify(nudgeCard)
   record(
@@ -1203,6 +1212,7 @@ async function main() {
     nudgeJson.includes('ou_smoke_haixiang') &&
       nudgeJson.includes('alert_nudge_ack') &&
       nudgeJson.includes('知道了') &&
+      nudgeJson.includes('第 3 次') &&
       nudgeJson.includes(ALERT_NUDGE_MESSAGE) &&
       ALERT_NUDGE_DAY === '2026-11-25',
     nudgeJson.slice(0, 220),
@@ -1213,13 +1223,17 @@ async function main() {
     chatId: 'oc_smoke',
     openId: 'ou_smoke',
     message: ALERT_NUDGE_MESSAGE,
-    sent: true,
+    active: true,
     acked: false,
-    sendCount: 1,
+    sendCount: 2,
   })
-  record('nudge.already_sent_blocks_repeat', alreadySentToday(), '')
+  record('nudge.active_while_looping', isNudgeActive(), '')
   const acked = ackAlertNudge('ou_smoke')
-  record('nudge.ack_marks_done', Boolean(acked?.acked && acked.sent), JSON.stringify(acked))
+  record(
+    'nudge.ack_stops_loop',
+    Boolean(acked?.acked && !acked.active && !isNudgeActive()),
+    JSON.stringify(acked),
+  )
 
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')

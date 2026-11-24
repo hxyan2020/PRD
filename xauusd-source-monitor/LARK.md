@@ -97,15 +97,15 @@ Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Prod
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/daily-market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/daily-market-report` with `{ "force": true }` + desk token / cron header
 
-## Alert nudge (one-shot group @mention)
+## Alert nudge (tomorrow-only group @mention loop)
 
-- **Campaign:** **2026-11-25 08:30** Asia/Shanghai only — **send once**, no repeat (override `LARK_ALERT_NUDGE_DAY` / `LARK_ALERT_NUDGE_START`)
-- **Cron:** `30 0 * * *` UTC → `/api/lark/alert-nudge` (fires daily; handler no-ops except campaign day)
-- **Behavior:** @Haixiang in group +「新告警来啦 快来看看」once; optional **知道了** ack
+- **Campaign day only:** **2026-11-25** Asia/Shanghai (override `LARK_ALERT_NUDGE_DAY`)
+- **Start:** **08:30** CST; every ~1 min until **知道了** (or 18:00 safety stop)
+- **Cron:** `* * * * *` → `/api/lark/alert-nudge` (no-op on other days)
+- **Message:** @Haixiang +「新告警来啦 快来看看」
 - **Chat:** `LARK_ALERT_NUDGE_CHAT_ID` / `LARK_DAILY_MARKET_CHAT_ID` (default `oc_eb8eba24…`)
-- **Preview:** `GET /api/lark/alert-nudge?dry=1`
-- **Force send now:** `POST /api/lark/alert-nudge` `{ "force": true }`
-- Set `LARK_ADMIN_OPEN_ID` for a real @mention
+- **Preview / force:** `GET ?dry=1` · `POST { "force": true }`
+- Set `LARK_ADMIN_OPEN_ID` for a real @mention; text「知道了」also stops the loop
 
 ## Bot behaviour
 
