@@ -20,7 +20,14 @@ import {
   retrieveRag,
 } from './skills.js'
 import { detectSafetyViolation, safetyReply } from './safety.js'
-import { classifyIntent, detectLang, greetingReply, helpReply, offtopicReply } from './scope.js'
+import {
+  botMetaReply,
+  classifyIntent,
+  detectLang,
+  greetingReply,
+  helpReply,
+  offtopicReply,
+} from './scope.js'
 import {
   clearSession,
   getIncident,
@@ -476,7 +483,8 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     })
   }
 
-  // general_risk — ALWAYS retrieve Skills + KB (+ live quote-ops); LLM only enriches
+  // general_risk — answer the user's question (meta FAQ / RAG / LLM); never dump greeting
+  const meta = botMetaReply(lang, workingText)
   const { hits, kb, severity } = retrieveRag(workingText)
   const quoteOps = await fetchQuoteOpsRag(workingText)
   const ragBody = formatRagAnswer({
@@ -488,18 +496,26 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     quoteOps,
   })
   const context = [
+    meta ? `BOT_META_FACTS:\n${meta}` : '',
     `severity=${severity}`,
     `skills=${hits.map((h) => `${h.id}|${h.check}|${h.action}`).join('\n')}`,
     `kb=${kb.map((k) => `${k.title}: ${k.body.slice(0, 1200)}`).join('\n')}`,
     quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
-    'Answer ONLY from the Skills/KB/quote-ops context above. Prefer V Exchange perpetual; ignore CFD broker pricing. Cite skill ids and KB titles. Format with emoji headers and bold-keyword bullets.',
+    'Answer the user question directly and helpfully. Prefer BOT_META_FACTS when present. Otherwise use Skills/KB/quote-ops. Prefer V Exchange perpetual; ignore CFD broker pricing. Cite skill ids and KB titles when used. Format with emoji headers and bold-keyword bullets. Do NOT reply with a command menu / greeting.',
   ]
     .filter(Boolean)
     .join('\n\n')
   const llm = await enrichWithLlm({ lang, question: workingText, context })
   const replyTitle =
     lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
-  const body = llm ? `${llm}\n\n---\n${ragBody}` : ragBody
+  // Meta questions: lead with deterministic answer (even if LLM is down)
+  const body = meta
+    ? llm
+      ? `${meta}\n\n---\n${llm}`
+      : meta
+    : llm
+      ? `${llm}\n\n---\n${ragBody}`
+      : ragBody
   return {
     card: simpleCard(replyTitle, body),
   }

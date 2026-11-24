@@ -115,6 +115,30 @@ async function main() {
   record('intent.skills', classifyIntent('skills', {}) === 'skills', '')
   record('intent.knowledge', classifyIntent('knowledge', {}) === 'knowledge', '')
   record('intent.kb', classifyIntent('kb', {}) === 'knowledge', '')
+  record(
+    'intent.admin_question_not_greeting',
+    classifyIntent('谁是管理员', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'general_risk',
+    '',
+  )
+  record(
+    'intent.short_question_not_greeting',
+    classifyIntent('怎么排查', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) !== 'greeting',
+    String(
+      classifyIntent('怎么排查', {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      }),
+    ),
+  )
   record('intent.archive', classifyIntent('done', {}) === 'archive', '')
   record('intent.offtopic', classifyIntent('What should I cook tonight?', {}) === 'offtopic', '')
 
@@ -357,6 +381,19 @@ async function main() {
     'turn.followup_stays_investigation',
     Boolean(follow.blob.includes('Investigation') || follow.blob.includes('排查')),
     'must not jump to market',
+  )
+
+  // 9a) Natural question must be answered (not greeting menu)
+  clearSession('smoke_chat', 'smoke_user')
+  const adminQ = await turn('admin-q', '谁是管理员')
+  record(
+    'turn.admin_question_answers',
+    Boolean(adminQ.reply?.card) &&
+      adminQ.blob.includes('Yan Haixiang') &&
+      adminQ.blob.includes('UAT') &&
+      !adminQ.blob.includes('Hello · Risk Copilot') &&
+      !adminQ.blob.includes('你好 · Risk Copilot'),
+    adminQ.blob.slice(0, 180),
   )
 
   // 9b) Skills / knowledge catalogue cards

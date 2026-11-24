@@ -19,6 +19,14 @@ const HELP_RE = /^(help|帮助|幫助|\?|start|开始|開始)\s*$/i
 const GREETING_RE =
   /^(hi|hii+|hello|hey+|yo|howdy|sup|good\s*(morning|afternoon|evening)|morning|afternoon|evening|你好[呀啊吗嗎嘛~！!。.]?|您好[呀啊~！!。.]?|哈喽|哈囉|嗨+|早晚安|早上好|下午好|晚上好|早安|午安|晚安|在吗|在嗎|在不在|有人吗|有人嗎)\s*[!.。！？~]*\s*$/i
 
+/** Soft acks after @ — never treat real questions as greetings. */
+const SOFT_ACK_RE =
+  /^(ok|okay|k|thanks?|thx|ty|好的?|嗯+|哦+|噢+|收到|谢谢|謝謝|了解|知道了|辛苦了|可以)\s*[!.。！~]*\s*$/i
+
+/** Bot / UAT / admin meta questions — always answer, never greet. */
+const BOT_META_RE =
+  /管理员|管理員|谁负责|誰負責|负责人|負責人|报给谁|報給誰|联系谁|聯繫誰|找谁|找誰|\buat\b|\badmin\b|\bowner\b|谁维护|誰維護|客服|支持|支持人|对接人|對接人/i
+
 const COMMAND_INVESTIGATE = /^(investigate|排查|開始排查|开始排查)\b/i
 const COMMAND_MARKET = /^(market|行情|趋势|趨勢)\b/i
 /** Whole-message openers for the alerts/reports dashboard. */
@@ -87,13 +95,59 @@ export function classifyIntent(
   if (MARKET_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'market'
   if (INVESTIGATE_RE.test(t)) return 'investigate'
 
-  // Vague @ mention / short opener with no clear task
-  if (opts.mentionedBot && t.length < 12) return 'greeting'
+  // Meta questions about the bot / admin / UAT contact
+  if (BOT_META_RE.test(t)) return 'general_risk'
 
-  if (IN_SCOPE_HINT.test(t) || MARKET_RE.test(t) || INVESTIGATE_RE.test(t)) return 'general_risk'
-  if (t.length > 24 && !IN_SCOPE_HINT.test(t) && !MARKET_RE.test(t)) return 'offtopic'
+  // Soft ack after @ only — NEVER classify short real questions as greeting
+  // (DMs set mentionedBot=true, so length<12 used to swallow e.g.「谁是管理员」)
+  if (SOFT_ACK_RE.test(t)) return 'greeting'
+
+  if (IN_SCOPE_HINT.test(t) || MARKET_RE.test(t) || INVESTIGATE_RE.test(t) || BOT_META_RE.test(t)) {
+    return 'general_risk'
+  }
+  // Prefer answering over offtopic for short operational questions
+  if (t.length <= 40) return 'general_risk'
+  if (t.length > 40 && !IN_SCOPE_HINT.test(t) && !MARKET_RE.test(t) && !BOT_META_RE.test(t)) {
+    return 'offtopic'
+  }
 
   return 'general_risk'
+}
+
+/** Deterministic answer for bot/admin/UAT meta questions. */
+export function botMetaReply(lang: Lang, question: string): string | null {
+  if (!BOT_META_RE.test(question)) return null
+  if (lang === 'zh-Hans') {
+    return [
+      '🙋 **关于管理员／UAT 对接**',
+      '',
+      '• **当前阶段：** 我还在 **UAT** 阶段。',
+      '• **管理员／问题对接人：** **@Yan Haixiang**',
+      '• **怎么反馈：** 使用中有任何问题、Bug 或权限需求，请直接报给 **@Yan Haixiang**。',
+      '',
+      '_生产写操作仍需人工审批；我不会自称已执行生产变更。_',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '🙋 **關於管理員／UAT 對接**',
+      '',
+      '• **當前階段：** 我還在 **UAT** 階段。',
+      '• **管理員／問題對接人：** **@Yan Haixiang**',
+      '• **怎麼回饋：** 使用中有任何問題、Bug 或權限需求，請直接報給 **@Yan Haixiang**。',
+      '',
+      '_生產寫操作仍需人工審批；我不會自稱已執行生產變更。_',
+    ].join('\n')
+  }
+  return [
+    '🙋 **Admin / UAT contact**',
+    '',
+    '• **Stage:** I’m still in **UAT**.',
+    '• **Admin / contact:** **@Yan Haixiang**',
+    '• **How to report:** Please send any issues, bugs, or access needs to **@Yan Haixiang**.',
+    '',
+    '_Production writes still need human approval; I won’t claim I executed them._',
+  ].join('\n')
 }
 
 export function offtopicReply(lang: Lang): string {
