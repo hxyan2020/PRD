@@ -1,7 +1,8 @@
 /**
  * V Exchange 风控 Runbook V18 — ingested in four parts into the skill library.
  * Part 1: overview + admin page field baseline + L1-01..L1-06 (book/trading).
- * Parts 2–4: placeholders awaiting user content.
+ * Part 2: L1-07..L1-15 pricing / Mark / index sources.
+ * Parts 3–4: placeholders awaiting user content.
  */
 
 import type { Skill, SkillStep } from "@/lib/types";
@@ -14,12 +15,18 @@ import {
   RUNBOOK_V18_PART,
   RUNBOOK_V18_VERSION,
 } from "./part1";
+import {
+  RUNBOOK_V18_L1_PRICING_EN,
+  RUNBOOK_V18_L1_PRICING_ZH,
+  RUNBOOK_V18_PART2,
+} from "./part2";
+import { VE_RUNBOOK_PART2_SKILLS } from "./part2-skills";
 
-export { RUNBOOK_V18_PART, RUNBOOK_V18_VERSION };
+export { RUNBOOK_V18_PART, RUNBOOK_V18_VERSION, RUNBOOK_V18_PART2 };
 
-/** Registry so parts 2–4 can append without reshaping seed. */
-export const RUNBOOK_V18_INGESTED_PARTS = [1] as const;
-export const RUNBOOK_V18_PENDING_PARTS = [2, 3, 4] as const;
+/** Registry so parts 3–4 can append without reshaping seed. */
+export const RUNBOOK_V18_INGESTED_PARTS = [1, 2] as const;
+export const RUNBOOK_V18_PENDING_PARTS = [3, 4] as const;
 
 function stepsFromTable(
   rows: Array<{
@@ -39,8 +46,8 @@ function stepsFromTable(
   }));
 }
 
-/** Interactive checklist skills (source of truth for branch tables remains bodyZh markdown). */
-export const VE_RUNBOOK_SKILLS: Skill[] = [
+/** Part 1 interactive skills (overview + L1-01..06). */
+const VE_RUNBOOK_PART1_SKILLS: Skill[] = [
   {
     id: "ve-sk-runbook-v18-overview",
     slug: "ve-runbook-v18-overview",
@@ -531,25 +538,56 @@ export const VE_RUNBOOK_SKILLS: Skill[] = [
   },
 ];
 
+/** Interactive checklist skills (source of truth for branch tables remains bodyZh markdown). */
+export const VE_RUNBOOK_SKILLS: Skill[] = [...VE_RUNBOOK_PART1_SKILLS, ...VE_RUNBOOK_PART2_SKILLS];
+
+function perL1DocsFromBook(
+  skills: Skill[],
+  bookBodyZh: string,
+  part: number,
+  bookSlug: string,
+  sortBase: number,
+  partTag: string,
+): VeDoc[] {
+  return skills
+    .filter((s) => s.id.startsWith("ve-sk-l1-"))
+    .map((s, i) => {
+      const marker = s.titleZh.split("｜")[0] ?? s.titleZh;
+      const sections = bookBodyZh.split(/^## /m).filter(Boolean);
+      const match = sections.find((sec) => sec.startsWith(marker));
+      const bodyZh = match
+        ? `# ${s.titleZh}\n\n> Runbook ${RUNBOOK_V18_VERSION} · Part ${part}/4\n\n## ${match}`
+        : `# ${s.titleZh}\n\n见姊妹页完整表：/kb/${bookSlug}`;
+      return {
+        id: s.id.replace("ve-sk-", "ve-skill-"),
+        slug: s.slug,
+        titleZh: `Skill · ${s.titleZh}`,
+        titleEn: `Skill · ${s.title}`,
+        summaryZh: s.summaryZh,
+        summaryEn: s.summary,
+        tags: [...s.tags.filter((t) => t !== "v-exchange-perp"), partTag],
+        sortOrder: sortBase + i * 10,
+        kind: "skill" as const,
+        bodyZh,
+        bodyEn: `# ${s.title}\n\nFull ZH branch tables are source of truth. Interactive checklist: /skills/${s.slug}`,
+      };
+    });
+}
+
 /** Full markdown bodies (tables preserved) for KB/RAG seed. */
 export function buildVeRunbookV18Docs(): VeDoc[] {
-  const overviewBodyZh = RUNBOOK_V18_OVERVIEW_ZH;
-  const overviewBodyEn = RUNBOOK_V18_OVERVIEW_EN;
-  const bookBodyZh = RUNBOOK_V18_L1_BOOK_ZH;
-  const bookBodyEn = RUNBOOK_V18_L1_BOOK_EN;
-
   const overview: VeDoc = {
     id: "ve-skill-runbook-v18-overview",
     slug: "ve-runbook-v18-overview",
     titleZh: "Skill · Runbook V18｜总则与后管页面基准",
     titleEn: "Skill · Runbook V18 Overview & Admin Pages",
-    summaryZh: `V18 第${RUNBOOK_V18_PART}/4册：Lark告警、中文后管、可选静态配置、分支处置；含后管字段基准表。`,
-    summaryEn: `V18 part ${RUNBOOK_V18_PART}/4: Lark alerts, Chinese admin, optional static config, branch actions; admin field baseline.`,
+    summaryZh: `V18 第${RUNBOOK_V18_PART}/4册起：Lark告警、中文后管、可选静态配置、分支处置；含后管字段基准表。`,
+    summaryEn: `From V18 part ${RUNBOOK_V18_PART}/4: Lark alerts, Chinese admin, optional static config, branch actions; admin field baseline.`,
     tags: ["skill", "runbook-v18", "overview", "admin", "lark", "part1"],
     sortOrder: 200,
     kind: "skill",
-    bodyZh: overviewBodyZh,
-    bodyEn: overviewBodyEn,
+    bodyZh: RUNBOOK_V18_OVERVIEW_ZH,
+    bodyEn: RUNBOOK_V18_OVERVIEW_EN,
   };
 
   const book: VeDoc = {
@@ -562,32 +600,57 @@ export function buildVeRunbookV18Docs(): VeDoc[] {
     tags: ["skill", "runbook-v18", "l1", "book", "trading", "part1", "l1-01", "l1-02", "l1-03", "l1-04", "l1-05", "l1-06"],
     sortOrder: 210,
     kind: "skill",
-    bodyZh: bookBodyZh,
-    bodyEn: bookBodyEn,
+    bodyZh: RUNBOOK_V18_L1_BOOK_ZH,
+    bodyEn: RUNBOOK_V18_L1_BOOK_EN,
   };
 
-  // Per-L1 skill pages: body = excerpt from book for that L1 (table fidelity).
-  const perL1: VeDoc[] = VE_RUNBOOK_SKILLS.filter((s) => s.id.startsWith("ve-sk-l1-")).map((s, i) => {
-    const marker = s.titleZh.split("｜")[0] ?? s.titleZh; // e.g. L1-01
-    const sections = bookBodyZh.split(/^## /m).filter(Boolean);
-    const match = sections.find((sec) => sec.startsWith(marker));
-    const bodyZh = match
-      ? `# ${s.titleZh}\n\n> Runbook ${RUNBOOK_V18_VERSION} · Part ${RUNBOOK_V18_PART}/4\n\n## ${match}`
-      : `# ${s.titleZh}\n\n见姊妹页完整表：/kb/ve-runbook-v18-l1-01-06`;
-    return {
-      id: s.id.replace("ve-sk-", "ve-skill-"),
-      slug: s.slug,
-      titleZh: `Skill · ${s.titleZh}`,
-      titleEn: `Skill · ${s.title}`,
-      summaryZh: s.summaryZh,
-      summaryEn: s.summary,
-      tags: [...s.tags.filter((t) => t !== "v-exchange-perp"), "part1"],
-      sortOrder: 220 + i * 10,
-      kind: "skill" as const,
-      bodyZh,
-      bodyEn: `# ${s.title}\n\nFull ZH branch tables are source of truth. Interactive checklist: /skills/${s.slug}`,
-    };
-  });
+  const pricing: VeDoc = {
+    id: "ve-skill-runbook-v18-l1-07-15",
+    slug: "ve-runbook-v18-l1-07-15",
+    titleZh: "Skill · Runbook V18｜L1-07～L1-15 定价/Mark/指数源",
+    titleEn: "Skill · Runbook V18 L1-07..15 Pricing / Mark / Index",
+    summaryZh: "内部偏差、友商价差、Mark降级/观察期、线性过渡、源超时/切源、汇率失败、单源 — 完整分支表。",
+    summaryEn: "Internal/peer deviation, Mark degrade/observe, ramp, source timeout/switch, FX fail, single source — full tables.",
+    tags: [
+      "skill",
+      "runbook-v18",
+      "l1",
+      "pricing",
+      "mark",
+      "index",
+      "part2",
+      "l1-07",
+      "l1-08",
+      "l1-09",
+      "l1-10",
+      "l1-11",
+      "l1-12",
+      "l1-13",
+      "l1-14",
+      "l1-15",
+    ],
+    sortOrder: 300,
+    kind: "skill",
+    bodyZh: RUNBOOK_V18_L1_PRICING_ZH,
+    bodyEn: RUNBOOK_V18_L1_PRICING_EN,
+  };
 
-  return [overview, book, ...perL1];
+  const perL1Part1 = perL1DocsFromBook(
+    VE_RUNBOOK_PART1_SKILLS,
+    RUNBOOK_V18_L1_BOOK_ZH,
+    RUNBOOK_V18_PART,
+    "ve-runbook-v18-l1-01-06",
+    220,
+    "part1",
+  );
+  const perL1Part2 = perL1DocsFromBook(
+    VE_RUNBOOK_PART2_SKILLS,
+    RUNBOOK_V18_L1_PRICING_ZH,
+    RUNBOOK_V18_PART2,
+    "ve-runbook-v18-l1-07-15",
+    310,
+    "part2",
+  );
+
+  return [overview, book, ...perL1Part1, pricing, ...perL1Part2];
 }

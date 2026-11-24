@@ -68,4 +68,13 @@ describe("rag retrieve", () => {
     expect(/L1-01|无交易|ve-.*l1-01|runbook-v18/i.test(blob)).toBe(true);
     expect(hits.every((h) => h.chunk.product === "v-exchange-perp")).toBe(true);
   });
+
+  it("surfaces Runbook V18 L1-07 internal price deviation tables", async () => {
+    await ensureKbSeeded();
+    const hits = await retrieve("L1-07 平台内部价格偏差 Mark Index", "zh-CN", 8, "v-exchange-perp");
+    expect(hits.length).toBeGreaterThan(0);
+    const blob = hits.map((h) => h.chunk.id + h.chunk.titleZh + h.chunk.bodyZh).join("\n");
+    expect(/L1-07|内部价格偏差|ve-.*l1-07|l1-07-15/i.test(blob)).toBe(true);
+    expect(hits.every((h) => h.chunk.product === "v-exchange-perp")).toBe(true);
+  });
 });
