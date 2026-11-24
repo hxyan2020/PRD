@@ -1,6 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useLocale } from '../i18n/locale'
-import { loadHistory, weeklyOptimisationCandidates } from '../copilot/storage'
+import {
+  buildPeriodicDigest,
+  loadHistory,
+  loadPeriodicDigests,
+  savePeriodicDigest,
+  weeklyOptimisationCandidates,
+  type PeriodicDigest,
+} from '../copilot/storage'
 import type { IncidentRecord } from '../copilot/types'
 
 function refreshMs() {
@@ -9,13 +17,40 @@ function refreshMs() {
 
 export function StatsPage() {
   const { t } = useLocale()
+  const location = useLocation()
   const [tick, setTick] = useState(refreshMs)
+  const [openDigestId, setOpenDigestId] = useState<string | null>(null)
+  const [openWeeklyId, setOpenWeeklyId] = useState<string | null>(null)
   const history = useMemo(() => {
     void tick
     return loadHistory()
   }, [tick])
+  const digests = useMemo(() => {
+    void tick
+    return loadPeriodicDigests()
+  }, [tick])
 
   const stats = useMemo(() => computeStats(history), [history])
+  const weekly = useMemo(() => weeklyOptimisationCandidates(history), [history])
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const wantsReview =
+      params.get('review') === 'periodic' ||
+      params.get('focus') === 'periodic' ||
+      location.hash === '#periodic-review'
+    if (!wantsReview) return
+    const el = document.getElementById('periodic-review')
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [location.search, location.hash])
+
+  const generateDigest = () => {
+    const digest = savePeriodicDigest(
+      buildPeriodicDigest(history, t('statsPeriodicWindowNow')),
+    )
+    setOpenDigestId(digest.id)
+    setTick(refreshMs())
+  }
 
   return (
     <div className="panel stats-page">
@@ -47,6 +82,78 @@ export function StatsPage() {
           <strong className="stat-value">{stats.weeklyOpt}</strong>
         </div>
       </div>
+
+      <section id="periodic-review" className="stats-periodic">
+        <div className="investigate-head">
+          <div>
+            <h3>{t('statsPeriodicTitle')}</h3>
+            <p className="sub">{t('statsPeriodicSub')}</p>
+          </div>
+          <button type="button" className="archive-btn primary-archive" onClick={generateDigest}>
+            {t('statsPeriodicGenerate')}
+          </button>
+        </div>
+
+        <h4>{t('statsWeeklyReviewTitle')}</h4>
+        {weekly.length === 0 ? (
+          <p className="sub">{t('statsWeeklyReviewEmpty')}</p>
+        ) : (
+          <div className="stats-review-list">
+            {weekly.slice(0, 20).map((h) => {
+              const open = openWeeklyId === h.id
+              return (
+                <article key={h.id} className={`stats-review-card${open ? ' open' : ''}`}>
+                  <button
+                    type="button"
+                    className="stats-review-toggle"
+                    onClick={() => setOpenWeeklyId(open ? null : h.id)}
+                  >
+                    <span>
+                      <span className="pill sev-yellow">{h.severity}</span> {h.title}
+                    </span>
+                    <span className="sub mono">
+                      {new Date(h.archivedAt || h.createdAt).toLocaleString('en-SG', {
+                        timeZone: 'Asia/Singapore',
+                      })}{' '}
+                      SGT · {open ? '▾' : '▸'}
+                    </span>
+                  </button>
+                  {open ? (
+                    <div className="stats-review-body">
+                      <p className="sub">
+                        {(h.skillsUsed || []).map((s) => s.id).join(' · ') || t('investigateNoneMatched')}
+                      </p>
+                      <pre className="copilot-report stats-review-pre">
+                        {String(h.report || '').slice(0, 1200) || '—'}
+                      </pre>
+                      <NavLink className="archive-btn" to="/investigate">
+                        {t('statsOpenInvestigate')}
+                      </NavLink>
+                    </div>
+                  ) : null}
+                </article>
+              )
+            })}
+          </div>
+        )}
+
+        <h4>{t('statsDigestHistoryTitle')}</h4>
+        {digests.length === 0 ? (
+          <p className="sub">{t('statsDigestHistoryEmpty')}</p>
+        ) : (
+          <div className="stats-review-list">
+            {digests.map((d) => (
+              <DigestCard
+                key={d.id}
+                digest={d}
+                open={openDigestId === d.id}
+                onToggle={() => setOpenDigestId(openDigestId === d.id ? null : d.id)}
+                t={t}
+              />
+            ))}
+          </div>
+        )}
+      </section>
 
       <h3>{t('statsBySeverity')}</h3>
       <div className="stats-bars">
@@ -97,6 +204,64 @@ export function StatsPage() {
         {!stats.recent.length ? <li className="sub">{t('statsEmpty')}</li> : null}
       </ol>
     </div>
+  )
+}
+
+function DigestCard({
+  digest,
+  open,
+  onToggle,
+  t,
+}: {
+  digest: PeriodicDigest
+  open: boolean
+  onToggle: () => void
+  t: (k: string) => string
+}) {
+  return (
+    <article className={`stats-review-card${open ? ' open' : ''}`}>
+      <button type="button" className="stats-review-toggle" onClick={onToggle}>
+        <span>
+          {t('statsDigestLabel')} · {digest.windowLabel} · {digest.weeklyOptCount}{' '}
+          {t('statsWeeklyOpt')}
+        </span>
+        <span className="sub mono">
+          {new Date(digest.createdAt).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT
+          · {open ? '▾' : '▸'}
+        </span>
+      </button>
+      {open ? (
+        <div className="stats-review-body">
+          <p>
+            RCA {digest.totalRca} · open {digest.openRca} · archived {digest.archivedRca} · top{' '}
+            {digest.topSeverity}
+          </p>
+          <p className="sub">{digest.notes}</p>
+          {digest.skillHighlights.length ? (
+            <ul className="investigate-list">
+              {digest.skillHighlights.map((s) => (
+                <li key={`${s.level}-${s.id}`}>
+                  [{s.level}] {s.id} {s.name} · {s.count}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {digest.weeklyOptItems.length ? (
+            <>
+              <h4>{t('statsWeeklyReviewTitle')}</h4>
+              <ul className="investigate-list">
+                {digest.weeklyOptItems.map((item) => (
+                  <li key={item.id}>
+                    <span className="pill sev-yellow">{item.severity}</span> {item.title}
+                    {item.skills.length ? ` · ${item.skills.join(', ')}` : ''}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+    </article>
   )
 }
 

@@ -80,4 +80,30 @@ if (!archive.toast?.content || archive.handled !== 'archive') {
 }
 console.log('archive', archive.toast.content)
 
+const digest = await req('/api/stats/digest', {})
+if (!digest.digest?.id) throw new Error('digest missing id: ' + JSON.stringify(digest))
+const digestCard = digest.payload?.card?.body?.elements || []
+const digestActions = digestCard.flatMap((el) => (el.tag === 'action' ? el.actions || [] : []))
+const reviewPeriodicBtn = digestActions.find(
+  (a) => a.behaviors?.[0]?.value?.action === 'review_periodic',
+)
+if (!reviewPeriodicBtn) {
+  throw new Error('stats-digest missing review_periodic button')
+}
+
+const periodic = await trigger({
+  action: 'review_periodic',
+  digest_id: digest.digest.id,
+})
+if (!periodic.toast?.content || periodic.handled !== 'review_periodic') {
+  throw new Error('review_periodic failed: ' + JSON.stringify(periodic))
+}
+console.log('review_periodic', periodic.toast.content, periodic.digestId)
+
+const listed = await fetch(`${BASE}/api/stats/digests`).then((r) => r.json())
+if (!listed.digests?.some((d) => d.id === digest.digest.id)) {
+  throw new Error('digest not listed: ' + JSON.stringify(listed))
+}
+console.log('digests', listed.digests.length)
+
 console.log('card-callback-smoke ok')

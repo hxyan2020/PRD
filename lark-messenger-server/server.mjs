@@ -16,10 +16,13 @@ import {
   archiveIncident,
   findRecentDuplicateRca,
   getAlarm,
+  getDigest,
   getIncident,
   ingestAlarm,
+  listDigests,
   listRecent,
   pushLog,
+  saveDigest,
   saveFollowUp,
   saveIncident,
   statsSummary,
@@ -435,6 +438,7 @@ function renderLarkCard(templateId, inputVars = {}) {
   }
 
   if (templateId === 'stats-digest') {
+    const deskStatsReview = `${DESK_BASE}/#/stats?review=periodic`
     return {
       msg_type: 'interactive',
       card: {
@@ -442,7 +446,7 @@ function renderLarkCard(templateId, inputVars = {}) {
         config: { wide_screen_mode: true },
         header: {
           template: 'turquoise',
-          title: { tag: 'plain_text', content: 'Realtime stats digest' },
+          title: { tag: 'plain_text', content: 'Periodic analysis digest' },
           subtitle: {
             tag: 'plain_text',
             content: `${vars.window_label} · ${vars.time_sgt}`,
@@ -452,20 +456,26 @@ function renderLarkCard(templateId, inputVars = {}) {
           elements: [
             mdBlock(
               [
-                `**Alarms ingested:** ${vars.alarms_total}`,
-                `**RCAs total:** ${vars.rca_total} (open ${vars.rca_open} · archived ${vars.rca_archived})`,
-                `**Follow-ups answered:** ${vars.followups}`,
-                `**Top severity:** ${vars.top_severity}`,
-              ].join('\n'),
+                `Alarms ingested: ${vars.alarms_total}`,
+                `RCAs total: ${vars.rca_total} (open ${vars.rca_open} · archived ${vars.rca_archived})`,
+                `Follow-ups answered: ${vars.followups}`,
+                `Top severity: ${vars.top_severity}`,
+                vars.weekly_opt_preview
+                  ? `\nWeekly opt inputs:\n${vars.weekly_opt_preview}`
+                  : '\nWeekly opt inputs: (none archived yet)',
+                vars.digest_id ? `\nDigest id: ${vars.digest_id}` : '',
+              ]
+                .filter(Boolean)
+                .join('\n'),
             ),
             {
               tag: 'action',
               actions: [
-                actionBtn(
-                  'Open Stats',
-                  'primary',
-                  vars.desk_url.includes('#') ? vars.desk_url : `${DESK_BASE}/#/stats`,
-                ),
+                actionBtn('Review periodic analysis', 'primary', {
+                  action: 'review_periodic',
+                  digest_id: vars.digest_id || '',
+                }),
+                actionBtn('Open Stats review', 'default', deskStatsReview),
               ],
             },
           ],
@@ -1087,6 +1097,61 @@ const server = http.createServer(async (req, res) => {
         )
       }
       if (
+        parsed?.action === 'review_periodic' ||
+        parsed?.action === 'review_digest'
+      ) {
+        const digest =
+          (parsed.digest_id && getDigest(parsed.digest_id)) || listDigests(1)[0] || null
+        const lines = digest
+          ? [
+              `Periodic digest ${digest.id} (${digest.windowLabel})`,
+              `Alarms ${digest.summary?.alarmsTotal ?? '—'} · RCA ${digest.summary?.rcaTotal ?? '—'} (open ${digest.summary?.rcaOpen ?? '—'} / archived ${digest.summary?.rcaArchived ?? '—'})`,
+              `Top severity: ${digest.summary?.topSeverity ?? '—'}`,
+              digest.notes || '',
+              '',
+              'Weekly opt inputs:',
+              ...((digest.weeklyOptItems || []).length
+                ? digest.weeklyOptItems.map(
+                    (i) => `- ${i.severity} ${i.id} ${i.title}${i.skills ? ` · ${i.skills}` : ''}`,
+                  )
+                : ['- (none archived yet)']),
+              '',
+              `Open desk review: ${DESK_BASE}/#/stats?review=periodic`,
+            ]
+          : [
+              'No saved periodic digest yet.',
+              'Post /api/stats/digest first, or open the desk Stats → Periodic analysis review.',
+              `${DESK_BASE}/#/stats?review=periodic`,
+            ]
+        pushLog('periodic_review', {
+          digestId: digest?.id || null,
+          user: operatorId,
+        })
+        try {
+          await sendLark(
+            undefined,
+            renderLarkCard('follow-up', {
+              incident_id: digest?.id || 'digest',
+              question: 'Review periodic analysis',
+              answer: lines.join('\n'),
+              severity: digest?.summary?.topSeverity || '—',
+            }),
+          )
+        } catch {
+          /* optional webhook */
+        }
+        return json(
+          res,
+          200,
+          toastOk('周期性分析复盘已发送', {
+            ok: true,
+            handled: 'review_periodic',
+            digestId: digest?.id || null,
+            review: lines.join('\n'),
+          }),
+        )
+      }
+      if (
         parsed?.action === 'review_checklist' ||
         parsed?.action === '复盘清单'
       ) {
@@ -1194,6 +1259,26 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/stats/digest') {
       const body = await readBody(req)
       const summary = statsSummary(Number(body.windowMs || 86400000))
+      const weeklyPreview = (summary.weeklyOptItems || [])
+        .slice(0, 5)
+        .map((i) => `- ${i.severity} ${i.id} ${i.title}`)
+        .join('\n')
+      const digest = saveDigest({
+        windowLabel: summary.windowLabel,
+        summary: {
+          alarmsTotal: summary.alarmsTotal,
+          rcaTotal: summary.rcaTotal,
+          rcaOpen: summary.rcaOpen,
+          rcaArchived: summary.rcaArchived,
+          followups: summary.followups,
+          topSeverity: summary.topSeverity,
+        },
+        weeklyOptItems: summary.weeklyOptItems || [],
+        notes:
+          (summary.weeklyOptItems || []).length === 0
+            ? 'No archived RCAs in window — archive Investigate reports for weekly opt review.'
+            : `Review ${(summary.weeklyOptItems || []).length} archived RCA(s) as weekly optimisation inputs.`,
+      })
       const payload = renderLarkCard('stats-digest', {
         window_label: summary.windowLabel,
         alarms_total: String(summary.alarmsTotal),
@@ -1202,11 +1287,20 @@ const server = http.createServer(async (req, res) => {
         rca_archived: String(summary.rcaArchived),
         followups: String(summary.followups),
         top_severity: summary.topSeverity,
+        weekly_opt_preview: weeklyPreview || '(none)',
+        digest_id: digest.id,
         desk_url: `${DESK_BASE}/#/stats`,
       })
       const send = await sendLark(body.webhookUrl, payload)
-      pushLog('stats_digest_sent', { dryRun: Boolean(send.dryRun) })
-      return json(res, 200, { ok: true, summary, send, payload })
+      pushLog('stats_digest_sent', { dryRun: Boolean(send.dryRun), digestId: digest.id })
+      return json(res, 200, { ok: true, summary, digest, send, payload })
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/stats/digests') {
+      return json(res, 200, {
+        ok: true,
+        digests: listDigests(Number(url.searchParams.get('limit') || 20)),
+      })
     }
 
     if (req.method === 'GET' && url.pathname === '/api/recent') {

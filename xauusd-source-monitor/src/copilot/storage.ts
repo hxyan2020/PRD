@@ -13,6 +13,7 @@ const KB_TREE_KEY = 'vex_risk_copilot_kb_tree_v1'
 const SKILLS_KEY = 'vex_risk_copilot_skills_v1'
 const SKILL_OVERRIDES_KEY = 'vex_risk_copilot_skill_overrides_v1'
 const SETTINGS_KEY = 'vex_risk_copilot_settings_v1'
+const PERIODIC_DIGESTS_KEY = 'vex_risk_periodic_digests_v1'
 /** Shared with xauusd-source-monitor briefings */
 export const BRIEFINGS_KEY = 'xauusd-monitor-briefings-v8'
 
@@ -357,4 +358,93 @@ export function loadMonitorBriefings(): ImportedBriefing[] {
 /** Archived RCAs only — inputs for future weekly optimisation jobs. */
 export function weeklyOptimisationCandidates(history: IncidentRecord[]): IncidentRecord[] {
   return history.filter((h) => !!h.archivedAt)
+}
+
+/** Snapshot of a periodic / stats digest operators can re-open and review. */
+export interface PeriodicDigest {
+  id: string
+  createdAt: number
+  windowLabel: string
+  totalRca: number
+  openRca: number
+  archivedRca: number
+  weeklyOptCount: number
+  topSeverity: string
+  skillHighlights: { id: string; name: string; level: string; count: number }[]
+  weeklyOptItems: {
+    id: string
+    title: string
+    severity: string
+    archivedAt: number
+    reportExcerpt: string
+    skills: string[]
+  }[]
+  notes: string
+}
+
+export function loadPeriodicDigests(): PeriodicDigest[] {
+  return readJson<PeriodicDigest[]>(PERIODIC_DIGESTS_KEY, [])
+}
+
+export function savePeriodicDigests(list: PeriodicDigest[]) {
+  writeJson(PERIODIC_DIGESTS_KEY, list.slice(0, 40))
+}
+
+export function buildPeriodicDigest(
+  history: IncidentRecord[],
+  windowLabel = 'current browser history',
+): PeriodicDigest {
+  const weekly = weeklyOptimisationCandidates(history)
+  const open = history.filter((h) => !h.archivedAt)
+  const bySeverity: Record<string, number> = {}
+  for (const h of history) {
+    bySeverity[h.severity] = (bySeverity[h.severity] || 0) + 1
+  }
+  const topSeverity =
+    Object.entries(bySeverity).sort((a, b) => b[1] - a[1])[0]?.[0] || '—'
+
+  const hitMap = new Map<string, { id: string; name: string; level: string; count: number }>()
+  for (const h of history) {
+    for (const s of h.skillsUsed || []) {
+      const key = `${s.level}:${s.id}`
+      const cur = hitMap.get(key) || { id: s.id, name: s.name, level: s.level, count: 0 }
+      cur.count += 1
+      hitMap.set(key, cur)
+    }
+  }
+  const skillHighlights = [...hitMap.values()].sort((a, b) => b.count - a.count).slice(0, 8)
+
+  return {
+    id: `dig_${Date.now()}`,
+    createdAt: Date.now(),
+    windowLabel,
+    totalRca: history.length,
+    openRca: open.length,
+    archivedRca: weekly.length,
+    weeklyOptCount: weekly.length,
+    topSeverity,
+    skillHighlights,
+    weeklyOptItems: weekly
+      .slice()
+      .sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0))
+      .slice(0, 20)
+      .map((h) => ({
+        id: h.id,
+        title: h.title,
+        severity: h.severity,
+        archivedAt: h.archivedAt || h.createdAt,
+        reportExcerpt: String(h.report || '').slice(0, 600),
+        skills: (h.skillsUsed || []).map((s) => s.id),
+      })),
+    notes:
+      weekly.length === 0
+        ? 'No archived RCAs yet — archive Investigate reports to feed weekly optimisation review.'
+        : `Review ${weekly.length} archived RCA(s) as weekly optimisation inputs. Confirm Skill hits and approval-gated actions before changing production rules.`,
+  }
+}
+
+export function savePeriodicDigest(digest: PeriodicDigest) {
+  const next = [digest, ...loadPeriodicDigests().filter((d) => d.id !== digest.id)]
+  savePeriodicDigests(next)
+  return digest
 }

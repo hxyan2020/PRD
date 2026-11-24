@@ -16,6 +16,7 @@ function empty() {
     incidents: [],
     followups: [],
     logs: [],
+    digests: [],
   }
 }
 
@@ -204,6 +205,16 @@ export function statsSummary(windowMs = 24 * 3600_000) {
   }
   const topSeverity =
     Object.entries(sevCount).sort((a, b) => b[1] - a[1])[0]?.[0] || '—'
+  const weeklyOptItems = archived
+    .slice()
+    .sort((a, b) => (b.archivedAt || b.at) - (a.archivedAt || a.at))
+    .slice(0, 12)
+    .map((i) => ({
+      id: i.id,
+      title: i.title,
+      severity: i.severity,
+      skills: i.skills || '',
+    }))
   return {
     windowMs,
     windowLabel: windowMs >= 86400000 ? 'last 24h' : `last ${Math.round(windowMs / 3600000)}h`,
@@ -214,8 +225,36 @@ export function statsSummary(windowMs = 24 * 3600_000) {
     followups: followups.length,
     topSeverity,
     bySeverity: sevCount,
+    weeklyOptItems,
     recentLogs: data.logs.filter((l) => l.at >= since).slice(0, 40),
   }
+}
+
+export function saveDigest(digest) {
+  const data = read()
+  const row = {
+    id: digest.id || `DIG-${Date.now()}`,
+    at: Date.now(),
+    windowLabel: digest.windowLabel || 'last 24h',
+    summary: digest.summary || {},
+    weeklyOptItems: digest.weeklyOptItems || [],
+    notes: digest.notes || '',
+  }
+  data.digests = data.digests || []
+  data.digests.unshift(row)
+  data.digests = data.digests.slice(0, 40)
+  write(data)
+  pushLog('digest_saved', { digestId: row.id })
+  return row
+}
+
+export function listDigests(limit = 20) {
+  const data = read()
+  return (data.digests || []).slice(0, limit)
+}
+
+export function getDigest(id) {
+  return (read().digests || []).find((d) => d.id === id) || null
 }
 
 export function listRecent(limit = 20) {
@@ -225,6 +264,7 @@ export function listRecent(limit = 20) {
     incidents: data.incidents.slice(0, limit),
     followups: data.followups.slice(0, limit),
     logs: data.logs.slice(0, limit),
+    digests: (data.digests || []).slice(0, limit),
   }
 }
 
