@@ -14,8 +14,12 @@ import {
   sendCardToChat,
   sendCardToOpenId,
 } from './_lib/client.js'
-import { simpleCard } from './_lib/cards.js'
-import { fetchMarketSnapshot, formatMarketAnswer, shanghaiHalfHourKey } from './_lib/market.js'
+import {
+  buildMarketCard,
+  fetchMarketSnapshot,
+  formatMarketAnswer,
+  shanghaiHalfHourKey,
+} from './_lib/market.js'
 
 /** Yan Haixiang Feishu chat (DM) — override with LARK_MARKET_CHAT_ID / LARK_ADMIN_CHAT_ID. */
 export const DEFAULT_MARKET_CHAT_ID = 'oc_430fae67dd06b70f65b726b1673ef40e'
@@ -86,14 +90,6 @@ function markSent(slotKey: string) {
   }
 }
 
-function buildPushCard(markdown: string) {
-  const intro = [
-    '📬 **半小时定时行情**（自动推送给 **@Yan Haixiang**）',
-    '',
-  ].join('\n')
-  return simpleCard('半小时行情推送', `${intro}${markdown}`, 'wathet')
-}
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -128,7 +124,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const snap = await fetchMarketSnapshot()
     markdown = formatMarketAnswer(snap, 'zh-Hans', '行情')
-    card = buildPushCard(markdown)
+    card = await buildMarketCard({
+      title: '半小时行情推送',
+      snap,
+      lang: 'zh-Hans',
+      question: '行情',
+      mode: 'hourly',
+      intro: '📬 **半小时定时行情**（自动推送给 **@Yan Haixiang**）\n',
+      template: 'wathet',
+    })
   } catch (e) {
     return res.status(502).json({
       ok: false,

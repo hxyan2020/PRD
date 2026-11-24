@@ -4,7 +4,10 @@ import {
   type HourlyMarketReport,
   type KlineBar,
   type RankedPoint,
+  type ReportSource,
 } from '../../../src/engine/hourlyScan.js'
+import { larkConfigured, resolveFaviconImgKey } from './client.js'
+import { simpleCard } from './cards.js'
 import type { Lang } from './types.js'
 
 export interface MarketSnapshot {
@@ -119,80 +122,24 @@ export function compute24hStats(snap: MarketSnapshot): Day24hStats | null {
  */
 export function formatDaily24hMarketAnswer(snap: MarketSnapshot, lang: Lang = 'zh-Hans'): string {
   const hourly = snap.hourly
-  const scanAt = formatEast8(snap.fetchedAt || Date.now())
-  const stats = compute24hStats(snap)
-  const lines: string[] = []
-  const chg =
-    stats == null
-      ? '—'
-      : `${stats.changePct >= 0 ? '+' : ''}${stats.changePct.toFixed(2)}%`
-
-  if (lang === 'zh-Hans') {
-    lines.push('📊 **过去 24 小时行情报告 · V Exchange Risk**', '')
-    lines.push(
-      `⏱ **报告时间：** **${scanAt}**（东八区）`,
-      '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（OKX XAU-USDT-SWAP）+ 当日宏观／来源要点。',
-      '',
-    )
-    if (stats) {
-      lines.push(
-        '📈 **24h 价格区间**',
-        `• **开：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`,
-        `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 线数：** **${stats.bars}**`,
-        `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（东八区）`,
-        '',
-      )
-    }
-    lines.push(...renderKline(hourly?.kline, lang), '')
-    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
-    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
-    if (snap.spot) lines.push(`• **现货 XAU：** **${snap.spot.last.toFixed(2)}**`)
-    if (hourly?.sentiment) {
-      lines.push(
-        `• **情绪：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
-      )
-    }
-    lines.push('')
-    lines.push(
-      ...renderSection('📋 TL;DR', hourly?.tldr || [], '过去 24 小时暂无要点。', lang, true),
-      '',
-      ...renderSection('✨ Opportunity', hourly?.opportunity || [], '过去 24 小时暂无要点。', lang),
-      '',
-      ...renderSection('⚠️ Risk', hourly?.risk || [], '过去 24 小时暂无要点。', lang),
-      '',
-    )
-    lines.push(
-      '• **解读：** 价格观察（bps／基差）≠ 新闻／宏观原因。值班排查请贴告警或私聊机器人发 **排查**。',
-      '',
-      '🔗 **来源**',
-    )
-    for (const s of (hourly?.sources || []).filter((x) => x.health === 'ok').slice(0, 8)) {
-      lines.push(`• [${s.captionZh || s.captionEn}](${s.url})`)
-    }
-    lines.push(`• [打开网页 Market](${DESK_MARKET})`)
-    return lines.join('\n')
-  }
-
-  // Fallback EN (rarely used for this group cron)
-  lines.push('📊 **Past-24h market report · V Exchange Risk**', '')
-  lines.push(`⏱ **As of:** **${scanAt}** (UTC+8)`, '')
-  if (stats) {
-    lines.push(
-      '📈 **24h range**',
-      `• **Open:** **${stats.open.toFixed(2)}** → **Close:** **${stats.close.toFixed(2)}** (**${chg}**)`,
-      `• **High:** **${stats.high.toFixed(2)}** · **Low:** **${stats.low.toFixed(2)}** · **Bars:** **${stats.bars}**`,
-      '',
-    )
-  }
-  lines.push(...renderKline(hourly?.kline, 'en'), '')
-  lines.push(
-    ...renderSection('📋 TL;DR', hourly?.tldr || [], 'No points in the last 24h.', 'en', true),
+  const byId = sourcesById(hourly?.sources)
+  const empty =
+    lang === 'zh-Hans'
+      ? '过去 24 小时暂无要点。'
+      : lang === 'zh-Hant'
+        ? '過去 24 小時暫無要點。'
+        : 'No points in the last 24h.'
+  return [
+    pricesAndKlineBlock(snap, lang, 'daily'),
     '',
-    ...renderSection('✨ Opportunity', hourly?.opportunity || [], 'No points in the last 24h.', 'en'),
+    ...renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true, byId),
     '',
-    ...renderSection('⚠️ Risk', hourly?.risk || [], 'No points in the last 24h.', 'en'),
-  )
-  return lines.join('\n')
+    ...renderSection('✨ Opportunity', hourly?.opportunity || [], empty, lang, false, byId),
+    '',
+    ...renderSection('⚠️ Risk', hourly?.risk || [], empty, lang, false, byId),
+    '',
+    marketFooterBlock(snap, lang, '', 'daily'),
+  ].join('\n')
 }
 
 /** Compact sparkline from closes (Lark has no canvas). */
@@ -235,12 +182,44 @@ function pointText(p: RankedPoint, lang: Lang): string {
   return p.en
 }
 
+function sourcesById(sources: ReportSource[] | undefined): Map<string, ReportSource> {
+  const map = new Map<string, ReportSource>()
+  for (const s of sources || []) map.set(s.id, s)
+  return map
+}
+
+/** Unique sources for a ranked point (domain-deduped, max 4). */
+export function pointSources(
+  p: RankedPoint,
+  byId: Map<string, ReportSource>,
+): ReportSource[] {
+  const out: ReportSource[] = []
+  const seen = new Set<string>()
+  for (const id of p.sourceIds || []) {
+    const s = byId.get(id)
+    if (!s) continue
+    const key = (s.domain || s.id).toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push(s)
+    if (out.length >= 4) break
+  }
+  return out
+}
+
+/** Inline markdown chips — logo URL is not renderable in lark_md, so domain is the link label. */
+function sourceChipLine(sources: ReportSource[]): string {
+  if (!sources.length) return ''
+  return sources.map((s) => `[${s.domain}](${s.url})`).join(' · ')
+}
+
 function renderSection(
   title: string,
   points: RankedPoint[],
   empty: string,
   lang: Lang,
   oneLine = false,
+  byId?: Map<string, ReportSource>,
 ): string[] {
   const out = [`**${title}**`]
   if (!points.length) {
@@ -253,12 +232,288 @@ function renderSection(
     for (const line of raw.split(/\n+/).map((x) => x.trim()).filter(Boolean)) {
       out.push(line.startsWith('•') ? line : `• ${line}`)
     }
+    if (byId) {
+      const chips = sourceChipLine(pointSources(points[0]!, byId))
+      if (chips) out.push(`  🔗 ${chips}`)
+    }
     return out
   }
   for (const p of points.slice(0, 4)) {
     out.push(`${p.rank}. ${pointText(p, lang)}`)
+    if (byId) {
+      const chips = sourceChipLine(pointSources(p, byId))
+      if (chips) out.push(`  🔗 ${chips}`)
+    }
   }
   return out
+}
+
+/** Lark action row: each source is a button with site favicon as the clickable logo. */
+async function logoLinkActions(sources: ReportSource[]): Promise<Record<string, unknown> | null> {
+  if (!sources.length) return null
+  const slice = sources.slice(0, 5)
+  const keys = await Promise.all(slice.map((s) => resolveFaviconImgKey(s.domain, s.logoUrl)))
+  const actions: Record<string, unknown>[] = slice.map((s, i) => {
+    const label = (s.domain || 'source').slice(0, 24)
+    const btn: Record<string, unknown> = {
+      tag: 'button',
+      type: 'default',
+      text: { tag: 'plain_text', content: label },
+      multi_url: {
+        url: s.url,
+        pc_url: s.url,
+        android_url: s.url,
+        ios_url: s.url,
+      },
+    }
+    const imgKey = keys[i]
+    if (imgKey) btn.icon = { tag: 'custom_icon', img_key: imgKey }
+    return btn
+  })
+  if (!actions.length) return null
+  return { tag: 'action', actions }
+}
+
+function mdDiv(content: string): Record<string, unknown> {
+  return { tag: 'div', text: { tag: 'lark_md', content } }
+}
+
+function pricesAndKlineBlock(snap: MarketSnapshot, lang: Lang, mode: 'hourly' | 'daily'): string {
+  const hourly = snap.hourly
+  const scanAt = formatEast8(snap.fetchedAt || Date.now())
+  const lines: string[] = []
+  const hans = lang === 'zh-Hans'
+  const hant = lang === 'zh-Hant'
+
+  if (mode === 'daily') {
+    const stats = compute24hStats(snap)
+    const chg =
+      stats == null
+        ? '—'
+        : `${stats.changePct >= 0 ? '+' : ''}${stats.changePct.toFixed(2)}%`
+    if (hans) {
+      lines.push('📊 **过去 24 小时行情报告 · V Exchange Risk**', '')
+      lines.push(
+        `⏱ **报告时间：** **${scanAt}**（东八区）`,
+        '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（OKX XAU-USDT-SWAP）+ 当日宏观／来源要点。',
+        '',
+      )
+      if (stats) {
+        lines.push(
+          '📈 **24h 价格区间**',
+          `• **开：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`,
+          `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 线数：** **${stats.bars}**`,
+          `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（东八区）`,
+          '',
+        )
+      }
+    } else if (hant) {
+      lines.push('📊 **過去 24 小時行情報告 · V Exchange Risk**', '')
+      lines.push(`⏱ **報告時間：** **${scanAt}**（東八區）`, '')
+    } else {
+      lines.push('📊 **Past-24h market report · V Exchange Risk**', '')
+      lines.push(`⏱ **As of:** **${scanAt}** (UTC+8)`, '')
+    }
+  } else if (hans) {
+    lines.push('📊 **小时行情扫报 · V Exchange Risk**', '')
+    lines.push(
+      `⏱ **最近一次扫描：** **${scanAt}**（东八区）`,
+      '• 网页端 **每个整点（东八区）自动扫描**；本次为即时拉取（与网页「立即扫描」同源）。',
+      '',
+    )
+  } else if (hant) {
+    lines.push('📊 **小時行情掃報 · V Exchange Risk**', '')
+    lines.push(
+      `⏱ **最近一次掃描：** **${scanAt}**（東八區）`,
+      '• 網頁端 **每個整點（東八區）自動掃描**；本次為即時拉取（與網頁「立即掃描」同源）。',
+      '',
+    )
+  } else {
+    lines.push('📊 **Hourly market scan · V Exchange Risk**', '')
+    lines.push(
+      `⏱ **Last scan:** **${scanAt}** (UTC+8)`,
+      '• Web desk **auto-scans every hour on the hour (UTC+8)**; this reply is an on-demand pull (same engine as **Scan now**).',
+      '',
+    )
+  }
+
+  lines.push(...renderKline(hourly?.kline, lang), '')
+  if (hans) {
+    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
+    if (snap.spot) lines.push(`• **现货 XAU：** **${snap.spot.last.toFixed(2)}**`)
+    if (hourly?.sentiment) {
+      lines.push(
+        `• **情绪：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
+      )
+    }
+  } else if (hant) {
+    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
+    if (snap.spot) lines.push(`• **現貨 XAU：** **${snap.spot.last.toFixed(2)}**`)
+    if (hourly?.sentiment) {
+      lines.push(
+        `• **情緒：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
+      )
+    }
+  } else {
+    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP:** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.bitget) lines.push(`• **Bitget XAUUSDT:** **${snap.bitget.last.toFixed(2)}**`)
+    if (snap.spot) lines.push(`• **Spot XAU:** **${snap.spot.last.toFixed(2)}**`)
+    if (hourly?.sentiment) {
+      lines.push(
+        `• **Sentiment:** **${hourly.sentiment.labelEn}** (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
+      )
+    }
+  }
+  return lines.join('\n')
+}
+
+function marketFooterBlock(
+  snap: MarketSnapshot,
+  lang: Lang,
+  question: string,
+  mode: 'hourly' | 'daily',
+): string {
+  const hourly = snap.hourly
+  const bare = isBareMarketQuery(question)
+  const lines: string[] = []
+  if (mode === 'hourly' && hourly?.vexPlaceholder) {
+    if (lang === 'zh-Hans') lines.push(`📊 **V Exchange 指标**`, `• ${hourly.vexNoteZh}`, '')
+    else if (lang === 'zh-Hant') lines.push(`📊 **V Exchange 指標**`, `• ${hourly.vexNoteZh}`, '')
+    else lines.push(`📊 **V Exchange indicators**`, `• ${hourly.vexNoteEn}`, '')
+  }
+  if (mode === 'hourly' && !bare && question.trim()) {
+    if (lang === 'zh-Hans') lines.push(`❓ **针对你的问题：** 「${question.slice(0, 120)}」`, '')
+    else if (lang === 'zh-Hant') lines.push(`❓ **針對你的問題：** 「${question.slice(0, 120)}」`, '')
+    else lines.push(`❓ **On your question:** “${question.slice(0, 120)}”`, '')
+  }
+  if (lang === 'zh-Hans') {
+    lines.push(
+      mode === 'daily'
+        ? '• **解读：** 价格观察（bps／基差）≠ 新闻／宏观原因。值班排查请贴告警或私聊机器人发 **排查**。'
+        : '• **解读：** 价格观察（bps／基差）≠ 新闻／宏观原因。事故排查请贴告警或发 **investigate**。',
+      '',
+      `• [打开网页 Market](${DESK_MARKET})`,
+    )
+  } else if (lang === 'zh-Hant') {
+    lines.push(
+      '• **解讀：** 價格觀察（bps／基差）≠ 新聞／宏觀原因。事故排查請貼告警或發 **investigate**。',
+      '',
+      `• [打開網頁 Market](${DESK_MARKET})`,
+    )
+  } else {
+    lines.push(
+      '• **Guidance:** price observations (bps / basis) ≠ news/macro causes. For an incident, paste the alert or type **investigate**.',
+      '',
+      `• [Open web Market](${DESK_MARKET})`,
+    )
+  }
+  return lines.join('\n')
+}
+
+/**
+ * Interactive market card: each Opportunity / Risk / TL;DR point is followed by
+ * favicon logo buttons that open the source URL (logo = hyperlink).
+ * Falls back to a plain lark_md card when Lark upload is unavailable.
+ */
+export async function buildMarketCard(opts: {
+  title: string
+  snap: MarketSnapshot
+  lang: Lang
+  question?: string
+  mode?: 'hourly' | 'daily'
+  /** Extra markdown prepended (e.g. daily cron intro). */
+  intro?: string
+  /** Extra markdown appended (e.g. LLM enrich). */
+  appendix?: string
+  template?: string
+}): Promise<Record<string, unknown>> {
+  const {
+    title,
+    snap,
+    lang,
+    question = lang.startsWith('zh') ? '行情' : 'Market',
+    mode = 'hourly',
+    intro = '',
+    appendix = '',
+    template = 'wathet',
+  } = opts
+
+  const empty =
+    mode === 'daily'
+      ? lang === 'zh-Hans'
+        ? '过去 24 小时暂无要点。'
+        : lang === 'zh-Hant'
+          ? '過去 24 小時暫無要點。'
+          : 'No points in the last 24h.'
+      : lang === 'zh-Hans'
+        ? '本小时暂无要点。'
+        : lang === 'zh-Hant'
+          ? '本小時暫無要點。'
+          : 'No points this hour.'
+
+  const fallbackMd = [
+    intro,
+    mode === 'daily' ? formatDaily24hMarketAnswer(snap, lang) : formatMarketAnswer(snap, lang, question),
+    appendix,
+  ]
+    .filter(Boolean)
+    .join('\n')
+    .trim()
+
+  if (!larkConfigured()) {
+    return simpleCard(title, fallbackMd, template)
+  }
+
+  const hourly = snap.hourly
+  const byId = sourcesById(hourly?.sources)
+  const elements: Record<string, unknown>[] = []
+
+  if (intro.trim()) elements.push(mdDiv(intro.trim()))
+  elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode)))
+
+  // TL;DR text (beats only — logos on the next action row)
+  const tldrLines = renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true)
+  elements.push(mdDiv(tldrLines.join('\n')))
+  if (hourly?.tldr?.[0]) {
+    const row = await logoLinkActions(pointSources(hourly.tldr[0], byId))
+    if (row) elements.push(row)
+  }
+
+  elements.push(mdDiv('**✨ Opportunity**'))
+  const opps = (hourly?.opportunity || []).slice(0, 4)
+  if (!opps.length) elements.push(mdDiv(`• ${empty}`))
+  else {
+    for (const p of opps) {
+      elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
+      const row = await logoLinkActions(pointSources(p, byId))
+      if (row) elements.push(row)
+    }
+  }
+
+  elements.push(mdDiv('**⚠️ Risk**'))
+  const risks = (hourly?.risk || []).slice(0, 4)
+  if (!risks.length) elements.push(mdDiv(`• ${empty}`))
+  else {
+    for (const p of risks) {
+      elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
+      const row = await logoLinkActions(pointSources(p, byId))
+      if (row) elements.push(row)
+    }
+  }
+
+  elements.push(mdDiv(marketFooterBlock(snap, lang, question, mode)))
+  if (appendix.trim()) elements.push(mdDiv(appendix.trim()))
+
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template,
+      title: { tag: 'plain_text', content: title },
+    },
+    elements,
+  }
 }
 
 function renderKline(kline: HourlyKlineSeries | null | undefined, lang: Lang): string[] {
@@ -345,143 +600,22 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
 
 export function formatMarketAnswer(snap: MarketSnapshot, lang: Lang, question: string): string {
   const hourly = snap.hourly
-  const bare = isBareMarketQuery(question)
-  const scanAt = formatEast8(snap.fetchedAt || Date.now())
-  const lines: string[] = []
-
-  if (lang === 'zh-Hans') {
-    lines.push('📊 **小时行情扫报 · V Exchange Risk**', '')
-    lines.push(
-      `⏱ **最近一次扫描：** **${scanAt}**（东八区）`,
-      '• 网页端 **每个整点（东八区）自动扫描**；本次为即时拉取（与网页「立即扫描」同源）。',
-      '',
-    )
-    lines.push(...renderKline(hourly?.kline, lang), '')
-    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
-    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
-    if (snap.spot) lines.push(`• **现货 XAU：** **${snap.spot.last.toFixed(2)}**`)
-    if (hourly?.sentiment) {
-      lines.push(
-        `• **情绪：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
-      )
-    }
-    lines.push('')
-    lines.push(
-      ...renderSection(
-        '📋 TL;DR',
-        hourly?.tldr || [],
-        '本小时暂无要点。',
-        lang,
-        true,
-      ),
-      '',
-      ...renderSection('✨ Opportunity', hourly?.opportunity || [], '本小时暂无要点。', lang),
-      '',
-      ...renderSection('⚠️ Risk', hourly?.risk || [], '本小时暂无要点。', lang),
-      '',
-    )
-    if (hourly?.vexPlaceholder) {
-      lines.push(`📊 **V Exchange 指标**`, `• ${hourly.vexNoteZh}`, '')
-    }
-    if (!bare) {
-      lines.push(`❓ **针对你的问题：** 「${question.slice(0, 120)}」`, '')
-    }
-    lines.push(
-      '• **解读：** 价格观察（bps／基差）≠ 新闻／宏观原因。事故排查请贴告警或发 **investigate**。',
-      '',
-      '🔗 **来源**',
-    )
-    for (const s of (hourly?.sources || []).filter((x) => x.health === 'ok').slice(0, 8)) {
-      lines.push(`• [${s.captionZh || s.captionEn}](${s.url})`)
-    }
-    lines.push(`• [打开网页 Market 小时扫报](${DESK_MARKET})`)
-  } else if (lang === 'zh-Hant') {
-    lines.push('📊 **小時行情掃報 · V Exchange Risk**', '')
-    lines.push(
-      `⏱ **最近一次掃描：** **${scanAt}**（東八區）`,
-      '• 網頁端 **每個整點（東八區）自動掃描**；本次為即時拉取（與網頁「立即掃描」同源）。',
-      '',
-    )
-    lines.push(...renderKline(hourly?.kline, lang), '')
-    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
-    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
-    if (snap.spot) lines.push(`• **現貨 XAU：** **${snap.spot.last.toFixed(2)}**`)
-    if (hourly?.sentiment) {
-      lines.push(
-        `• **情緒：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
-      )
-    }
-    lines.push('')
-    lines.push(
-      ...renderSection(
-        '📋 TL;DR',
-        hourly?.tldr || [],
-        '本小時暫無要點。',
-        lang,
-        true,
-      ),
-      '',
-      ...renderSection('✨ Opportunity', hourly?.opportunity || [], '本小時暫無要點。', lang),
-      '',
-      ...renderSection('⚠️ Risk', hourly?.risk || [], '本小時暫無要點。', lang),
-      '',
-    )
-    if (hourly?.vexPlaceholder) {
-      lines.push(`📊 **V Exchange 指標**`, `• ${hourly.vexNoteZh}`, '')
-    }
-    if (!bare) {
-      lines.push(`❓ **針對你的問題：** 「${question.slice(0, 120)}」`, '')
-    }
-    lines.push(
-      '• **解讀：** 價格觀察（bps／基差）≠ 新聞／宏觀原因。事故排查請貼告警或發 **investigate**。',
-      '',
-      '🔗 **來源**',
-    )
-    for (const s of (hourly?.sources || []).filter((x) => x.health === 'ok').slice(0, 8)) {
-      lines.push(`• [${s.captionZh || s.captionEn}](${s.url})`)
-    }
-    lines.push(`• [打開網頁 Market 小時掃報](${DESK_MARKET})`)
-  } else {
-    lines.push('📊 **Hourly market scan · V Exchange Risk**', '')
-    lines.push(
-      `⏱ **Last scan:** **${scanAt}** (UTC+8)`,
-      '• Web desk **auto-scans every hour on the hour (UTC+8)**; this reply is an on-demand pull (same engine as **Scan now**).',
-      '',
-    )
-    lines.push(...renderKline(hourly?.kline, lang), '')
-    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP:** **${snap.okx.last.toFixed(2)}**`)
-    if (snap.bitget) lines.push(`• **Bitget XAUUSDT:** **${snap.bitget.last.toFixed(2)}**`)
-    if (snap.spot) lines.push(`• **Spot XAU:** **${snap.spot.last.toFixed(2)}**`)
-    if (hourly?.sentiment) {
-      lines.push(
-        `• **Sentiment:** **${hourly.sentiment.labelEn}** (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
-      )
-    }
-    lines.push('')
-    lines.push(
-      ...renderSection('📋 TL;DR', hourly?.tldr || [], 'No points this hour.', lang, true),
-      '',
-      ...renderSection('✨ Opportunity', hourly?.opportunity || [], 'No points this hour.', lang),
-      '',
-      ...renderSection('⚠️ Risk', hourly?.risk || [], 'No points this hour.', lang),
-      '',
-    )
-    if (hourly?.vexPlaceholder) {
-      lines.push(`📊 **V Exchange indicators**`, `• ${hourly.vexNoteEn}`, '')
-    }
-    if (!bare) {
-      lines.push(`❓ **On your question:** “${question.slice(0, 120)}”`, '')
-    }
-    lines.push(
-      '• **Guidance:** price observations (bps / basis) ≠ news/macro causes. For an incident, paste the alert or type **investigate**.',
-      '',
-      '🔗 **Sources**',
-    )
-    for (const s of (hourly?.sources || []).filter((x) => x.health === 'ok').slice(0, 8)) {
-      lines.push(`• [${s.captionEn}](${s.url})`)
-    }
-    lines.push(`• [Open web Market hourly scan](${DESK_MARKET})`)
-  }
-
-  return lines.join('\n')
+  const byId = sourcesById(hourly?.sources)
+  const empty =
+    lang === 'zh-Hans'
+      ? '本小时暂无要点。'
+      : lang === 'zh-Hant'
+        ? '本小時暫無要點。'
+        : 'No points this hour.'
+  return [
+    pricesAndKlineBlock(snap, lang, 'hourly'),
+    '',
+    ...renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true, byId),
+    '',
+    ...renderSection('✨ Opportunity', hourly?.opportunity || [], empty, lang, false, byId),
+    '',
+    ...renderSection('⚠️ Risk', hourly?.risk || [], empty, lang, false, byId),
+    '',
+    marketFooterBlock(snap, lang, question, 'hourly'),
+  ].join('\n')
 }

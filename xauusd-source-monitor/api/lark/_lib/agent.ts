@@ -16,7 +16,7 @@ import {
   readDocxRaw,
   searchLarkWiki,
 } from './larkDocs.js'
-import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
+import { buildMarketCard, fetchMarketSnapshot, formatMarketAnswer } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
 import {
@@ -828,7 +828,15 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
           ? '小時行情掃報'
           : 'Hourly market scan'
     return {
-      card: simpleCard(marketTitle, llm ? `${base}\n\n---\n${llm}` : base, 'wathet'),
+      card: await buildMarketCard({
+        title: marketTitle,
+        snap,
+        lang,
+        question: workingText,
+        mode: 'hourly',
+        appendix: llm ? `---\n${llm}` : '',
+        template: 'wathet',
+      }),
     }
   }
 

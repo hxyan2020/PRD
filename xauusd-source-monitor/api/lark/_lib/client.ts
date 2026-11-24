@@ -356,6 +356,80 @@ export async function downloadMessageImage(messageId: string, imageKey: string):
   return Buffer.from(await r.arrayBuffer())
 }
 
+/** In-memory favicon → Lark image_key cache (warm serverless reuse). */
+const faviconImgKeyCache = new Map<string, { key: string; expireAt: number }>()
+
+/**
+ * Upload raw image bytes for use in cards (`image_type=message`).
+ * Requires `im:resource` / bot capability.
+ */
+export async function uploadMessageImage(
+  bytes: Buffer,
+  filename = 'image.png',
+): Promise<string | null> {
+  if (!larkConfigured() || !bytes?.length) return null
+  const token = await getTenantToken()
+  const form = new FormData()
+  form.append('image_type', 'message')
+  form.append('image', new Blob([new Uint8Array(bytes)]), filename)
+  const r = await fetch(`${LARK_HOST}/open-apis/im/v1/images`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  })
+  const data = (await r.json().catch(() => ({}))) as {
+    code?: number
+    msg?: string
+    data?: { image_key?: string }
+  }
+  if (!r.ok || data.code !== 0 || !data.data?.image_key) {
+    throw new Error(data.msg || `image upload failed (${r.status})`)
+  }
+  return data.data.image_key
+}
+
+/**
+ * Fetch a site favicon and upload it to Lark so cards can show a clickable logo button.
+ * Soft-fails to null when offline / unscoped / bad favicon.
+ */
+export async function resolveFaviconImgKey(
+  domain: string,
+  logoUrl?: string,
+): Promise<string | null> {
+  const d = (domain || '').trim().toLowerCase()
+  if (!d || !larkConfigured()) return null
+  const hit = faviconImgKeyCache.get(d)
+  if (hit && Date.now() < hit.expireAt) return hit.key
+  const url =
+    (logoUrl || '').trim() ||
+    `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64`
+  try {
+    const r = await fetch(url, {
+      headers: { 'User-Agent': 'VE-Risk-Copilot/1.0 (+favicon)' },
+      signal: AbortSignal.timeout(8_000),
+    })
+    if (!r.ok) return null
+    const buf = Buffer.from(await r.arrayBuffer())
+    if (buf.length < 16 || buf.length > 1_500_000) return null
+    const ct = (r.headers.get('content-type') || '').toLowerCase()
+    const ext = ct.includes('jpeg') || ct.includes('jpg')
+      ? 'jpg'
+      : ct.includes('gif')
+        ? 'gif'
+        : ct.includes('webp')
+          ? 'webp'
+          : ct.includes('ico')
+            ? 'ico'
+            : 'png'
+    const key = await uploadMessageImage(buf, `${d.replace(/[^a-z0-9.-]/gi, '_')}.${ext}`)
+    if (!key) return null
+    faviconImgKeyCache.set(d, { key, expireAt: Date.now() + 12 * 3600_000 })
+    return key
+  } catch {
+    return null
+  }
+}
+
 export function verifyToken(token: string | undefined): boolean {
   const expected = process.env.LARK_VERIFICATION_TOKEN || ''
   if (!expected) return true // allow if not configured — ID/secret alone is enough

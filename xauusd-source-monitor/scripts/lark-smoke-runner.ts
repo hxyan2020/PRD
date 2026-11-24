@@ -645,7 +645,8 @@ async function main() {
 
   // 8) Market (EN + 简)
   clearSession('smoke_chat', 'smoke_user')
-  const { fetchMarketSnapshot, formatMarketAnswer } = await import('../api/lark/_lib/market')
+  const { buildMarketCard, fetchMarketSnapshot, formatMarketAnswer, pointSources } =
+    await import('../api/lark/_lib/market')
   const liveSnap = await fetchMarketSnapshot()
   record(
     'market.live_okx_or_fallback',
@@ -664,6 +665,35 @@ async function main() {
       !mktFmt.includes('On your question') &&
       (mktFmt.includes('OKX XAU-USDT-SWAP') || mktFmt.includes('Bitget') || mktFmt.includes('Spot XAU')),
     mktFmt.slice(0, 220),
+  )
+  // Sources sit under each point (domain markdown link), not only a bulk footer dump
+  const mktFmtZh = formatMarketAnswer(liveSnap, 'zh-Hans', '行情')
+  const byIdSmoke = new Map((liveSnap.hourly?.sources || []).map((s) => [s.id, s]))
+  const pointsWithSrc = [...(liveSnap.hourly?.opportunity || []), ...(liveSnap.hourly?.risk || [])].filter(
+    (p) => pointSources(p, byIdSmoke).length > 0,
+  )
+  const hasInlineSrc =
+    /🔗\s*\[[^\]]+\]\(https?:\/\//.test(mktFmtZh) ||
+    /🔗\s*\[[^\]]+\]\(https?:\/\//.test(mktFmt) ||
+    pointsWithSrc.length === 0
+  record(
+    'market.sources_after_each_point',
+    hasInlineSrc && !mktFmtZh.includes('🔗 **来源**'),
+    mktFmtZh.match(/Opportunity[\s\S]{0,500}/)?.[0]?.slice(0, 280) || mktFmtZh.slice(0, 200),
+  )
+  const logoCard = await buildMarketCard({
+    title: '小时行情扫报',
+    snap: liveSnap,
+    lang: 'zh-Hans',
+    question: '行情',
+    mode: 'hourly',
+  })
+  const logoEls = JSON.stringify(logoCard)
+  record(
+    'market.card_has_logo_or_domain_actions',
+    logoEls.includes('Opportunity') &&
+      (logoEls.includes('multi_url') || logoEls.includes('lark_md') || logoEls.includes('打开网页')),
+    logoEls.slice(0, 220),
   )
   record(
     'market.hourly_attached',

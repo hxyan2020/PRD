@@ -9,8 +9,8 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { larkConfigured, sendCardToChat } from './_lib/client.js'
-import { simpleCard } from './_lib/cards.js'
 import {
+  buildMarketCard,
   fetchMarketSnapshot,
   formatDaily24hMarketAnswer,
   shanghaiDayKey,
@@ -80,14 +80,6 @@ function markSent(dayKey: string) {
   }
 }
 
-function buildPushCard(markdown: string) {
-  const intro = [
-    '🌅 **每日早报 · 过去 24 小时行情**（东八区早上自动推送）',
-    '',
-  ].join('\n')
-  return simpleCard('每日 24h 行情早报', `${intro}${markdown}`, 'wathet')
-}
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -118,7 +110,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const snap = await fetchMarketSnapshot()
     markdown = formatDaily24hMarketAnswer(snap, 'zh-Hans')
-    card = buildPushCard(markdown)
+    card = await buildMarketCard({
+      title: '每日 24h 行情早报',
+      snap,
+      lang: 'zh-Hans',
+      mode: 'daily',
+      intro: '🌅 **每日早报 · 过去 24 小时行情**（东八区早上自动推送）\n',
+      template: 'wathet',
+    })
   } catch (e) {
     return res.status(502).json({
       ok: false,
