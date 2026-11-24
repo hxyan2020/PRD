@@ -28,6 +28,7 @@ import {
   preferredActions,
   resolveNodeById,
   retrieveRag,
+  tokenize,
 } from './skills.js'
 import { detectSafetyViolation, safetyReply } from './safety.js'
 import {
@@ -45,6 +46,7 @@ import {
   isStepDoneCommand,
   offtopicReply,
 } from './scope.js'
+import { formatWebSearchAnswer, searchWeb, webSearchContext } from './webSearch.js'
 import { logInbound } from './inboundLog.js'
 import {
   clearSession,
@@ -825,24 +827,68 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   // Normal / “random” Q&A: answer first; only attach highly relevant KB (never dump weak hits)
   const relevantKb = pickRelevantKb(workingText, kb)
+
+  // No local KB → auto search mode (never say “没有匹配的知识库” / dump meta principles)
+  if (!relevantKb.length) {
+    const searched = await searchWeb(workingText, lang)
+    if (searched.hits.length) {
+      const searchCtx = [
+        'This is a normal product / risk Q&A — NOT an incident investigation.',
+        'Local knowledge base had no high-relevance hit — you are in SEARCH MODE.',
+        'Answer the user question directly from the search hits below, in a warm conversational tone.',
+        'Do NOT say that the knowledge base had no match. Do NOT dump command menus.',
+        'End with an explicit 📎 **数据源** / **Sources** section listing the provided URLs as markdown links. Never invent URLs.',
+        'Prefer V Exchange perpetual framing when relevant; ignore CFD broker pricing.',
+        webSearchContext(searched),
+      ].join('\n\n')
+      const llm = await enrichWithLlm({
+        lang,
+        question: workingText,
+        context: searchCtx,
+        temperature: 0.45,
+      })
+      if (llm) {
+        const hasSources = /📎|\*\*数据源\*\*|\*\*資料來源\*\*|\*\*Sources\*\*|wikipedia\.org/i.test(llm)
+        const footer = hasSources ? '' : `\n\n---\n${formatSourcesFooter(lang, searched.hits)}`
+        return { card: simpleCard(replyTitle, `${llm}${footer}`, 'blue') }
+      }
+      return {
+        card: simpleCard(replyTitle, formatWebSearchAnswer(lang, workingText, searched), 'blue'),
+      }
+    }
+    // Search empty too — still avoid “no KB” wording
+    const llmFallback = await enrichWithLlm({
+      lang,
+      question: workingText,
+      context: [
+        'Normal Q&A. No local KB hit and web search returned nothing usable.',
+        'Answer briefly from general public knowledge if you can; otherwise ask a clarifying question.',
+        'Do NOT mention knowledge-base miss. Do NOT dump command menus.',
+      ].join('\n'),
+      temperature: 0.5,
+    })
+    if (llmFallback) {
+      return { card: simpleCard(replyTitle, llmFallback, 'blue') }
+    }
+    return {
+      card: simpleCard(replyTitle, formatWebSearchAnswer(lang, workingText, searched), 'blue'),
+    }
+  }
+
   const qaContext = [
     'This is a normal product / risk Q&A — NOT an incident investigation.',
     'Do NOT invent severity, Skills checklists, or RCA steps unless the user pasted an alert.',
     'Answer warmly and conversationally in short paragraphs — like a helpful teammate, not a command menu.',
     'Do NOT list knowledge / investigate / market / help as a fallback checklist unless the user asked for commands.',
-    'If unsure, say so briefly and offer one gentle next step (e.g. ask @Yan Haixiang, or paste an alert).',
     'Prefer V Exchange perpetual knowledge when relevant; ignore CFD broker pricing.',
     'Light emoji section headers + bold-keyword bullets are OK when structuring a real answer.',
-    relevantKb.length
-      ? `Highly relevant KB (optional support only):\n${relevantKb
-          .map((k) => `${k.title}: ${k.body.slice(0, 900)}`)
-          .join('\n')}`
-      : 'No high-relevance KB hit — answer from desk product knowledge in a natural tone; if unsure, say so briefly.',
+    `Highly relevant KB (optional support only):\n${relevantKb
+      .map((k) => `${k.title}: ${k.body.slice(0, 900)}`)
+      .join('\n')}`,
   ].join('\n\n')
   const llm = await enrichWithLlm({ lang, question: workingText, context: qaContext, temperature: 0.55 })
   if (llm) {
-    const support =
-      relevantKb.length > 0 ? `\n\n---\n${formatSoftKbAnswer(lang, workingText, relevantKb, true)}` : ''
+    const support = `\n\n---\n${formatSoftKbAnswer(lang, workingText, relevantKb, true)}`
     return { card: simpleCard(replyTitle, `${llm}${support}`, 'blue') }
   }
   return {
@@ -850,29 +896,68 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 }
 
+function formatSourcesFooter(
+  lang: Lang,
+  hits: { title: string; url: string; source?: string }[],
+): string {
+  const header =
+    lang === 'zh-Hans' ? '📎 **数据源**' : lang === 'zh-Hant' ? '📎 **資料來源**' : '📎 **Sources**'
+  const lines = [header]
+  for (const h of hits.slice(0, 4)) {
+    const label = h.source ? `${h.title} · ${h.source}` : h.title
+    lines.push(`• [${label}](${h.url})`)
+  }
+  return lines.join('\n')
+}
+
+/** Meta / ops-principle docs — only keep when the user asked about the KB itself. */
+const META_KB_TITLE =
+  /使用原则|使用原則|knowledge base principles|audience|ai duties|read-only limits|证据等级|證據等級/i
+
 /** Keep only KB hits that are actually about the question (avoid random excerpt dumps). */
 function pickRelevantKb(
   question: string,
   kb: { id: string; title: string; body: string; score: number }[],
 ): { id: string; title: string; body: string; score: number }[] {
   const q = question.toLowerCase()
-  const qTokens = new Set(
-    q
-      .split(/[^a-z0-9\u4e00-\u9fff]+/i)
-      .map((t) => t.trim())
-      .filter((t) => t.length >= 2),
-  )
-  // Drop ultra-generic tokens that match almost every VE doc
-  for (const stop of ['知识库', '知識庫', 'knowledge', 'skill', 'skills', 've', 'v', 'exchange', '永续', '永續']) {
-    qTokens.delete(stop)
-  }
+  const askingAboutKb = /知识库|知識庫|knowledge|使用原则|使用原則|skills?|rag/.test(q)
+  const stop = new Set([
+    '知识库',
+    '知識庫',
+    'knowledge',
+    'skill',
+    'skills',
+    've',
+    'v',
+    'exchange',
+    '什么是',
+    '什麼是',
+    '什么',
+    '什麼',
+    '怎么',
+    '怎麼',
+    '如何',
+    '请问',
+    '請問',
+    '有哪些',
+    '哪些',
+    '一下',
+  ])
+  // Use bi/trigram tokenize so「可能出现的风险有哪些」still overlaps title「可能出现的风险」
+  const qTokens = tokenize(question).filter((t) => t.length >= 2 && !stop.has(t))
   return kb
     .filter((k) => {
       if (k.score < 8) return false
+      if (!askingAboutKb && META_KB_TITLE.test(k.title)) return false
       const title = k.title.toLowerCase()
-      const titleHit = [...qTokens].some((t) => title.includes(t))
-      // Strong score alone can pass; otherwise require title overlap
-      return titleHit || k.score >= 16
+      const bodyHead = k.body.slice(0, 320).toLowerCase()
+      const titleHit = qTokens.some((t) => t.length >= 2 && title.includes(t))
+      const strongTitleHit = qTokens.some((t) => t.length >= 4 && title.includes(t))
+      const bodyPhraseHit = qTokens.some((t) => t.length >= 3 && bodyHead.includes(t))
+      if (strongTitleHit) return true
+      if (titleHit && k.score >= 10) return true
+      // Very strong RAG score + body phrase — still never meta principles for unrelated Q
+      return k.score >= 20 && bodyPhraseHit && qTokens.length > 0
     })
     .sort((a, b) => b.score - a.score)
     .slice(0, 2)

@@ -22,6 +22,7 @@ import {
   needsInaccessibleAccess,
 } from '../api/lark/_lib/scope'
 import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
+import { formatWebSearchAnswer, searchWeb } from '../api/lark/_lib/webSearch'
 import {
   buildWeeklyReport,
   shanghaiWeekKey,
@@ -538,6 +539,42 @@ async function main() {
       whoYouTurn.blob.includes('Risk Copilot') &&
       !whoYouTurn.blob.includes('没有命中'),
     whoYouTurn.blob.slice(0, 220),
+  )
+
+  // 9a0b) No local KB → auto web search with sources (never “没有匹配知识库” / meta principles dump)
+  const web = await searchWeb('什么是永续合约', 'zh-Hans')
+  record(
+    'search.perpetual_hits',
+    web.ok &&
+      web.hits.length > 0 &&
+      web.hits.some((h) => /wikipedia|永续|perpetual/i.test(`${h.title} ${h.url} ${h.source}`)),
+    web.hits
+      .slice(0, 2)
+      .map((h) => h.title)
+      .join(' | ') ||
+      web.error ||
+      'no hits',
+  )
+  const webFmt = formatWebSearchAnswer('zh-Hans', '什么是永续合约', web)
+  record(
+    'search.format_has_sources',
+    webFmt.includes('数据源') && /https?:\/\//.test(webFmt),
+    webFmt.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const perpTurn = await turn('what-is-perp', '什么是永续合约')
+  record(
+    'turn.perp_search_not_meta_kb',
+    Boolean(perpTurn.reply?.card) &&
+      !perpTurn.blob.includes('知识库使用原则') &&
+      !perpTurn.blob.includes('没有命中') &&
+      !perpTurn.blob.includes('没有匹配') &&
+      !perpTurn.blob.includes('没有特别贴切的现成摘录') &&
+      (perpTurn.blob.includes('数据源') ||
+        perpTurn.blob.includes('Sources') ||
+        perpTurn.blob.includes('wikipedia.org') ||
+        /永续|perpetual|合约/i.test(perpTurn.blob)),
+    perpTurn.blob.slice(0, 280),
   )
 
   // 9a1) Desk FAQ: KB edit permission — direct answer, NOT investigate Skills dump / random KB
