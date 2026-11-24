@@ -202,7 +202,7 @@ function buildRootCauses(args: {
   const out: string[] = []
 
   if (alertFacts.length) {
-    out.push(...alertFacts.map((f) => (zh ? `【已证实】${f}` : `【Confirmed】${f}`)))
+    out.push(...alertFacts.map((f) => (zh ? `已证实 · ${f}` : `Confirmed · ${f}`)))
   }
 
   const topHits = hits.slice(0, 3)
@@ -214,8 +214,8 @@ function buildRootCauses(args: {
       : ''
     out.push(
       zh
-        ? `【候选】对齐 L1 ${h.s.id} ${h.s.name}：${h.s.check}${evidence}（关键词匹配，仍需日志核验）`
-        : `【Candidate】Aligns L1 ${h.s.id} ${h.s.name}: ${h.s.check}${evidence} (keyword match — still needs log verification)`,
+        ? `候选 · 对齐 L1 ${h.s.id} ${h.s.name}：${h.s.check}${evidence}（关键词匹配，仍需日志核验）`
+        : `Candidate · Aligns L1 ${h.s.id} ${h.s.name}: ${h.s.check}${evidence} (keyword match — still needs log verification)`,
     )
   }
 
@@ -227,16 +227,16 @@ function buildRootCauses(args: {
   for (const o of tightL2) {
     out.push(
       zh
-        ? `【待验证链路】${o.x.id} ${o.x.name} — ${o.x.check}`
-        : `【Unverified chain】${o.x.id} ${o.x.name} — ${o.x.check}`,
+        ? `待验证 · ${o.x.id} ${o.x.name} — ${o.x.check}`
+        : `Unverified · ${o.x.id} ${o.x.name} — ${o.x.check}`,
     )
   }
 
   if (!hits.length) {
     out.unshift(
       zh
-        ? '【Skill 缺口】当前告警未匹配到已定义好的 L1/L2 Skill；下列仅为基于告警原文的可能 RCA 假设，需人工核验后才能当作结论。'
-        : '【Skill gap】No defined L1/L2 skill matched this alert; items below are possible RCA hypotheses from the alert text only — not confirmed conclusions.',
+        ? 'Skill 缺口 · 当前告警未匹配到已定义好的 L1/L2 Skill；下列仅为基于告警原文的可能 RCA 假设，需人工核验后才能当作结论。'
+        : 'Skill gap · No defined L1/L2 skill matched this alert; items below are possible RCA hypotheses from the alert text only — not confirmed conclusions.',
     )
   }
 
@@ -499,136 +499,136 @@ export function analyzeWithRules(args: {
 
   const lines = zh
     ? [
-        `【建議嚴重度】${sev}（僅基於輸入和規則，需當班人員覆核）`,
+        `建議嚴重度: ${sev}（僅基於輸入和規則，需當班人員覆核）`,
         '',
-        '【根因】',
-        ...rootCauses.map((x) => `• ${x}`),
+        '根因',
+        ...rootCauses.map((x) => `- ${x}`),
         '',
-        '【排查路徑】',
+        '排查路徑',
         ...pathSteps.map((x, i) => `${i + 1}. ${x}`),
         '',
-        '【下一步／建議方案（需人工審批）】',
+        '下一步 / 建議方案（需人工審批）',
         ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
         '',
-        '【使用的數據來源（直連連結）】',
+        '數據來源（直連連結）',
         ...(sources.length
-          ? sources.map((s) => `• ${s.label} — ${s.url}`)
-          : ['• 尚無行情掃描引用連結；請先在「行情條件」產生簡報。']),
+          ? sources.map((s) => `- ${s.label} — ${s.url}`)
+          : ['- 尚無行情掃描引用連結；請先在「行情條件」產生簡報。']),
         '',
-        '【思考過程】',
-        ...thinking.map((x) => `• ${x}`),
+        '思考過程',
+        ...thinking.map((x) => `- ${x}`),
         '',
-        '【時間線】',
+        '時間線',
         ...timeline.map(
           (e) =>
-            `• ${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT — ${e.label}`,
+            `- ${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT — ${e.label}`,
         ),
         '',
-        '【已知事實】',
+        '已知事實',
         args.text || '未提供告警文字。',
         '',
-        '【使用的 Skills（告警→排查技能映射）】',
+        'Skills 匹配（告警 → 排查技能）',
         ...(skillsUsed.length
-          ? skillsUsed.map((s) => `• ${formatSkillHitLine(s, true)}`)
-          : ['• 未能可靠匹配。請補充告警原文、合約、數值和時間。']),
+          ? skillsUsed.map((s) => `- ${formatSkillHitLine(s, true)}`)
+          : ['- 未能可靠匹配。請補充告警原文、合約、數值和時間。']),
         '',
-        '【使用的知識樹節點】',
+        '知識樹節點',
         ...(knowledgeUsed.length
-          ? knowledgeUsed.map((n) => `• ${n.path}`)
-          : ['• 無關鍵詞匹配；請在知識庫補充相關節點。']),
+          ? knowledgeUsed.map((n) => `- ${n.path}`)
+          : ['- 無關鍵詞匹配；請在知識庫補充相關節點。']),
         '',
-        '【後續優化（僅歸檔 RCA 進入週優化輸入）】',
-        ...hits.map((h) => `• ${h.s.opt}`),
-        ...l2.map((o) => `• ${o.x.opt}`),
+        '後續優化（僅歸檔 RCA 進入週優化輸入）',
+        ...hits.map((h) => `- ${h.s.opt}`),
+        ...l2.map((o) => `- ${o.x.opt}`),
         '',
-        '【升級與收口】',
+        '升級與收口',
         sev === 'P0'
-          ? '• 立即通知 Risk Ops、業務 Owner 與技術值班；不等待 L2 或 AI。'
-          : '• 當班確認責任人、業務影響和下一次覆核時間。',
-        '• 恢復需核對價格／倉位／帳務／服務狀態，觀察穩定後由授權人員關閉。',
+          ? '- 立即通知 Risk Ops、業務 Owner 與技術值班；不等待 L2 或 AI。'
+          : '- 當班確認責任人、業務影響和下一次覆核時間。',
+        '- 恢復需核對價格／倉位／帳務／服務狀態，觀察穩定後由授權人員關閉。',
         '',
-        '【缺失證據／誠實邊界】',
-        '• 需要準確的 event_time、contract_id、account_id、指標原始值、閾值、上下游日誌、已採取動作。',
-        '• 內部管理台／帳戶資料庫檢索為 Phase 2 — 本助手不會編造 admin DB 答案。',
+        '缺失證據 / 誠實邊界',
+        '- 需要準確的 event_time、contract_id、account_id、指標原始值、閾值、上下游日誌、已採取動作。',
+        '- 內部管理台／帳戶資料庫檢索為 Phase 2 — 本助手不會編造 admin DB 答案。',
         '',
         '本段為確定性規則輔助；不構成已證實根因或自動執行指令。即時統計會計入每一次觸發的 RCA；僅歸檔後才進入週優化輸入。',
       ]
     : [
-        `【Recommended severity】${sev} (rules + input only — on-duty must confirm)`,
+        `Recommended severity: ${sev} (rules + input only — on-duty must confirm)`,
         '',
-        '【Root cause】',
-        ...rootCauses.map((x) => `• ${x}`),
+        'Root cause',
+        ...rootCauses.map((x) => `- ${x}`),
         '',
-        '【Investigation path】',
+        'Investigation path',
         ...pathSteps.map((x, i) => `${i + 1}. ${x}`),
         '',
-        '【Next steps / recommendations (approval required)】',
+        'Next steps / recommendations (approval required)',
         ...nextSteps.map((s, i) => `${i + 1}. ${s}`),
         '',
-        '【Data sources used (direct links)】',
+        'Data sources (direct links)',
         ...(sources.length
-          ? sources.map((s) => `• ${s.label} — ${s.url}`)
-          : ['• No market-scan citation URLs yet — generate a Market Condition briefing first.']),
+          ? sources.map((s) => `- ${s.label} — ${s.url}`)
+          : ['- No market-scan citation URLs yet — generate a Market Condition briefing first.']),
         '',
-        '【Thinking】',
-        ...thinking.map((x) => `• ${x}`),
+        'Thinking',
+        ...thinking.map((x) => `- ${x}`),
         '',
-        '【Timeline】',
+        'Timeline',
         ...timeline.map(
           (e) =>
-            `• ${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT — ${e.label}`,
+            `- ${new Date(e.at).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} SGT — ${e.label}`,
         ),
         '',
-        '【Confirmed facts】',
+        'Confirmed facts',
         args.text || 'No alert text provided.',
         '',
-        '【Skills used (alert → investigation skill map)】',
+        'Skills matched (alert → investigation skill)',
         ...(skillsUsed.length
-          ? skillsUsed.map((s) => `• ${formatSkillHitLine(s, false)}`)
-          : ['• No confident match. Add alert text, contract, values, and timestamps.']),
+          ? skillsUsed.map((s) => `- ${formatSkillHitLine(s, false)}`)
+          : ['- No confident match. Add alert text, contract, values, and timestamps.']),
         '',
-        '【Knowledge tree nodes】',
+        'Knowledge tree nodes',
         ...(knowledgeUsed.length
-          ? knowledgeUsed.map((n) => `• ${n.path}`)
-          : ['• No keyword hit — add related nodes in Knowledge Base.']),
+          ? knowledgeUsed.map((n) => `- ${n.path}`)
+          : ['- No keyword hit — add related nodes in Knowledge Base.']),
         '',
-        '【Follow-on optimisation (archived RCAs only enter weekly opt)】',
-        ...hits.map((h) => `• ${h.s.opt}`),
-        ...l2.map((o) => `• ${o.x.opt}`),
+        'Follow-on optimisation (archived RCAs only enter weekly opt)',
+        ...hits.map((h) => `- ${h.s.opt}`),
+        ...l2.map((o) => `- ${o.x.opt}`),
         '',
-        '【Escalation & close】',
+        'Escalation and close',
         sev === 'P0'
-          ? '• Page Risk Ops, business owner, and tech on-call immediately — do not wait for L2/AI.'
-          : '• Confirm owner, business impact, and next review time.',
-        '• Recovery must reconcile price/position/ledger/service health; authorised staff close after stable observation.',
+          ? '- Page Risk Ops, business owner, and tech on-call immediately — do not wait for L2/AI.'
+          : '- Confirm owner, business impact, and next review time.',
+        '- Recovery must reconcile price/position/ledger/service health; authorised staff close after stable observation.',
         '',
-        '【Missing evidence / honesty bounds】',
-        '• Need accurate event_time, contract_id, account_id, raw metric, threshold, upstream/downstream logs, actions already taken.',
-        '• Internal admin / account DB retrieval is Phase 2 — this assistant will not invent admin DB answers.',
+        'Missing evidence / honesty bounds',
+        '- Need accurate event_time, contract_id, account_id, raw metric, threshold, upstream/downstream logs, actions already taken.',
+        '- Internal admin / account DB retrieval is Phase 2 — this assistant will not invent admin DB answers.',
         '',
         'This block is deterministic rules assist only; it is not a confirmed root cause or an auto-executed order. Realtime stats count every triggered RCA; only archived ones enter weekly optimisation.',
       ]
 
   const skillContext = [
-    '## Skills used (alert → skill map — be explicit which user alert/event matched which skill)',
+    'Skills used (alert → skill map — be explicit which user alert/event matched which skill)',
     ...skillsUsed.map((s) => `- ${formatSkillHitLine(s, zh)}`),
-    '## L1 detail',
+    'L1 detail',
     ...hits.map(
       (h) =>
         `- ${h.s.id} ${h.s.name} [${h.s.severity}]\n  matchedFromAlert: ${h.alertEvidence || '(token only)'}\n  tokens: ${h.matchedTokens.join(', ')}\n  check: ${h.s.check}\n  action: ${h.s.action}\n  opt: ${h.s.opt}`,
     ),
-    '## L2 detail',
+    'L2 detail',
     ...l2.map(
       (o) =>
         `- ${o.x.id} ${o.x.name}\n  linked: ${o.x.linkedL1}\n  check: ${o.x.check}\n  action: ${o.x.action}\n  opt: ${o.x.opt}`,
     ),
-    '## Data sources (direct links)',
+    'Data sources (direct links)',
     ...(sources.length
       ? sources.map((s) => `- ${s.label}: ${s.url}`)
       : ['- (none attached)']),
   ].join('\n')
 
-  const kbContext = k.map((o) => `### ${o.path}\n${o.item.body}`).join('\n\n')
+  const kbContext = k.map((o) => `${o.path}\n${o.item.body}`).join('\n\n')
 
   return {
     body: lines.join('\n'),

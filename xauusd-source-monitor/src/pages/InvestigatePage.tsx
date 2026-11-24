@@ -11,6 +11,7 @@ import {
   greetingAnswer,
 } from '../copilot/engine/relevance'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
+import { stripMarkdownNoise } from '../copilot/engine/reportFormat'
 import {
   applyManagedLlmConfig,
   flattenKbDocs,
@@ -292,55 +293,59 @@ export function InvestigatePage() {
             lang: analysisLang,
             userPrompt: [
               skillMatched
-                ? '【Mode】Defined skills matched — refine RCA using those skills; do not invent unrelated chains.'
-                : '【Mode】NO DEFINED SKILL matched. First sentence MUST state that clearly. Then give possible RCA hypotheses only (label each as unverified). Cite external page URLs provided below.',
+                ? 'Mode: Defined skills matched — refine RCA using those skills; do not invent unrelated chains.'
+                : 'Mode: NO DEFINED SKILL matched. First sentence MUST state that clearly. Then give possible RCA hypotheses only (label each as unverified). Cite external page URLs provided below.',
               '',
-              '【PRIMARY ALERT / OPERATOR FACTS — root cause MUST cite these】',
+              'PRIMARY ALERT / OPERATOR FACTS — root cause MUST cite these',
               userText || query,
               '',
-              '【Secondary context — do NOT treat as root cause unless alert agrees】',
+              'Secondary context — do NOT treat as root cause unless alert agrees',
               matched.length
                 ? `Auto-bound market events: ${matched.map((b) => b.title).join(' · ')}`
                 : 'Auto-bound market events: none',
               briefingBits ? `\n${briefingBits}` : '',
               '',
-              `【Recommended severity from local rules】${rules.sev}`,
-              `【Local root-cause draft】\n${rootCauses.map((x) => `- ${x}`).join('\n')}`,
-              `【External pages to cite (MUST list these concrete URLs)】\n${externalBlock}`,
+              `Recommended severity from local rules: ${rules.sev}`,
+              `Local root-cause draft\n${rootCauses.map((x) => `- ${x}`).join('\n')}`,
+              `External pages to cite (MUST list these concrete URLs)\n${externalBlock}`,
               dataSources.length
-                ? `【Data sources (direct links)】\n${dataSources
+                ? `Data sources (direct links)\n${dataSources
                     .map((s) => `- ${s.label}: ${s.url}`)
                     .join('\n')}`
-                : '【Data sources (direct links)】none',
+                : 'Data sources (direct links): none',
+              '',
+              'Output plain text only — no Markdown symbols.',
             ].join('\n'),
             skillContext: skillMatched
               ? rules.skillContext
-              : '## Skills used\n- (none matched — catalog gap)',
+              : 'Skills used\n- (none matched — catalog gap)',
             kbContext:
               rules.kbContext ||
-              knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
+              knowledge.map((k) => `${k.title}\n${k.body}`).join('\n\n'),
           })
           const gap =
             analysisLang === 'en'
-              ? '【Skill gap】No defined Skill matched this alert. The following is an LLM possible-RCA hypothesis.'
-              : '【Skill 缺口】未匹配到已定义 Skill。以下为 LLM 给出的可能 RCA 假设。'
+              ? 'Skill gap · No defined Skill matched this alert. The following is an LLM possible-RCA hypothesis.'
+              : 'Skill 缺口 · 未匹配到已定义 Skill。以下为 LLM 给出的可能 RCA 假设。'
           if (!skillMatched) {
             rootCauses = [gap, ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x))]
           }
-          report = [
-            skillMatched ? `# LLM RCA（${modelLabel}）` : `# ${gap}\n\n# LLM possible RCA（${modelLabel}）`,
-            '',
-            llmText,
-            '',
-            '----------',
-            '',
-            skillMatched ? '# Local skills + knowledge report' : '# Local rules draft (no skill match)',
-            '',
-            rules.body,
-            '',
-            '## External pages',
-            externalBlock,
-          ].join('\n')
+          report = stripMarkdownNoise(
+            [
+              skillMatched
+                ? `LLM RCA (${modelLabel})`
+                : `${gap}\n\nLLM possible RCA (${modelLabel})`,
+              '',
+              llmText,
+              '',
+              skillMatched ? 'Local skills + knowledge report' : 'Local rules draft (no skill match)',
+              '',
+              rules.body,
+              '',
+              'External pages',
+              externalBlock,
+            ].join('\n'),
+          )
           provider = settings.provider
           if (externalPages.length) {
             pathSteps = [
@@ -367,13 +372,13 @@ export function InvestigatePage() {
           if (!skillMatched) {
             rootCauses = [
               analysisLang === 'en'
-                ? '【Skill gap】No defined Skill matched; LLM unavailable — hypotheses limited to local rules.'
-                : '【Skill 缺口】未匹配到已定义 Skill，且 LLM 不可用 — 仅能基于本地规则给出有限假设。',
+                ? 'Skill gap · No defined Skill matched; LLM unavailable — hypotheses limited to local rules.'
+                : 'Skill 缺口 · 未匹配到已定义 Skill，且 LLM 不可用 — 仅能基于本地规则给出有限假设。',
               ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
             ]
           }
           if (externalPages.length) {
-            report = `${rules.body}\n\n## External pages\n${externalBlock}`
+            report = stripMarkdownNoise(`${rules.body}\n\nExternal pages\n${externalBlock}`)
           }
         }
       } else {
@@ -382,13 +387,13 @@ export function InvestigatePage() {
         if (!skillMatched) {
           rootCauses = [
             analysisLang === 'en'
-              ? '【Skill gap】No defined Skill matched; configure LLM gateway to get possible RCA hypotheses.'
-              : '【Skill 缺口】未匹配到已定义 Skill；请配置 LLM 网关以生成可能 RCA 假设。',
+              ? 'Skill gap · No defined Skill matched; configure LLM gateway to get possible RCA hypotheses.'
+              : 'Skill 缺口 · 未匹配到已定义 Skill；请配置 LLM 网关以生成可能 RCA 假设。',
             ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
           ]
         }
         if (externalPages.length) {
-          report = `${rules.body}\n\n## External pages\n${externalBlock}`
+          report = stripMarkdownNoise(`${rules.body}\n\nExternal pages\n${externalBlock}`)
           pathSteps = [
             ...pathSteps,
             ...externalPages.slice(0, 4).map((p) =>
@@ -486,7 +491,9 @@ export function InvestigatePage() {
         ]
         const updated: IncidentRecord = {
           ...active,
-          report: `${active.report}\n\n----\n【追问】${followUp.trim()}\n\n${relevance.message}`,
+          report: stripMarkdownNoise(
+            `${active.report}\n\n追问\n${followUp.trim()}\n\n${relevance.message}`,
+          ),
           messages,
         }
         const next = history.map((h) => (h.id === active.id ? updated : h))
@@ -535,7 +542,9 @@ export function InvestigatePage() {
       ]
       const updated: IncidentRecord = {
         ...active,
-        report: `${active.report}\n\n----\n【追问】${followUp.trim()}\n\n${reply}`,
+        report: stripMarkdownNoise(
+          `${active.report}\n\n追问\n${followUp.trim()}\n\n${reply}`,
+        ),
         messages,
       }
       const next = history.map((h) => (h.id === active.id ? updated : h))
@@ -886,7 +895,7 @@ export function InvestigatePage() {
                 </ul>
 
                 <h4>{t('investigateFullReport')}</h4>
-                <pre className="copilot-report">{active.report}</pre>
+                <pre className="copilot-report">{stripMarkdownNoise(active.report)}</pre>
               </details>
 
               <div className="copilot-actions">

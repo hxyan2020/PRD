@@ -12,12 +12,14 @@ export const SYSTEM_PROMPT_ZH = `你是 V Exchange 永續合約 Risk Copilot（�
 5) 後續優化點
 6) 缺失證據清單
 
+排版（強制）：純文字。禁止 Markdown 符號（不要用 #、**、__、\`、\`\`\`、>、---、[]() 鏈接語法）。章節只用一行普通標題＋換行；清單用「1. / 2.」或「- 」。不要用裝飾性【】包裹章節名（告警原文裡的【標題】可保留）。
+
 規則：
 - 範圍：只回答 V Exchange／XAUUSD 永續風險排查相關問題。對無關閒聊、娛樂、寫作、編程作業等請求，溫和拒絕並引導用戶貼告警／指標事實。不要硬編造 RCA。
 - 若用戶問「有沒有知識庫／skill 庫／能做什麼／help」：直接回答能力與庫的用途，給 2–4 句可用下一步；禁止回覆固定開場白或把每個問題都當成打招呼。
 - 若輸入標明「NO DEFINED SKILL」，必須先明確寫出「未匹配到已定義 Skill」，再給可能 RCA 假設（標註未證實）；並列出提供的外網頁面具體 URL。
 - 根因必須能回指用戶上傳／粘貼的告警原文（標題、成分源如 BYBIT_INDEX、觸發時間、價格）。禁止輸出與告警無關的泛化 L2 清單。
-- 先寫【已證實事實】（告警已寫明的事），再寫【候選／待驗證】；不要把行情簡報裡的新聞當成告警根因。
+- 先寫「已證實 · …」（告警已寫明的事），再寫「候選 · …／待驗證 · …」；不要把行情簡報裡的新聞當成告警根因。
 - 需要外網核驗時，只引用提示中給出的具體頁面 URL（場所交易頁、幫助文檔、新聞深鏈），不要給官網首頁。
 - 不得建議未經授權的生產操作（下單、改價、強平執行、劃轉）。
 - 價格異動「觀察」（bps/基差/場所結構）≠「原因」（新聞/宏觀/政策）。
@@ -36,6 +38,8 @@ You MUST output a structured report in this fixed order:
 4) Data sources used (MUST list direct URLs: price APIs, venue pages, news/macro articles; write "none" if unavailable)
 5) Follow-on optimisation points
 6) Missing-evidence checklist
+
+Formatting (required): plain text only. No Markdown symbols (no #, **, __, backticks, code fences, >, ---, or []() link syntax). Use a plain one-line section title then a newline; lists use "1. / 2." or "- ".
 
 Rules:
 - Scope: only answer V Exchange / XAUUSD perpetual risk-investigate questions. Gently refuse unrelated chit-chat, entertainment, writing, or homework — steer the user to paste alerts/metrics. Do not invent an RCA for off-topic asks.
@@ -246,28 +250,28 @@ export async function runLlm(args: {
       content:
         lang === 'en'
           ? [
-              '## Skill context (L1/L2)',
+              'Skill context (L1/L2)',
               args.skillContext || '(none)',
               '',
-              '## RAG knowledge excerpts',
+              'RAG knowledge excerpts',
               args.kbContext || '(no matches)',
               '',
-              '## User input / dialogue',
+              'User input / dialogue',
               args.userPrompt,
               '',
-              'Reply in the SAME language as the user input facts above (ignore UI locale). Order: (1) Root cause first, (2) Investigation path, (3) Next steps / recommendations. Keep data-source URLs and approval gates explicit. Do not paste full RAG excerpts — list matched Skill IDs and knowledge titles only at the end.',
+              'Reply in the SAME language as the user input facts above (ignore UI locale). Order: (1) Root cause first, (2) Investigation path, (3) Next steps / recommendations. Keep data-source URLs and approval gates explicit. Do not paste full RAG excerpts — list matched Skill IDs and knowledge titles only at the end. Plain text only — no Markdown symbols.',
             ].join('\n')
           : [
-              '## Skill 上下文（L1/L2）',
+              'Skill 上下文（L1/L2）',
               args.skillContext || '（無）',
               '',
-              '## RAG 知識庫摘錄',
+              'RAG 知識庫摘錄',
               args.kbContext || '（無匹配條目）',
               '',
-              '## 用戶輸入／對話',
+              '用戶輸入／對話',
               args.userPrompt,
               '',
-              '請用與上方用戶輸入相同的語言回覆（不要跟隨系統 UI 語言）。段落順序：(1) 先寫根因，(2) 排查路徑，(3) 下一步／建議方案。數據來源直連 URL 與需審批標記必須清楚列出。禁止貼上 RAG 全文；文末僅列命中的 Skill ID 與知識庫標題。',
+              '請用與上方用戶輸入相同的語言回覆（不要跟隨系統 UI 語言）。段落順序：(1) 先寫根因，(2) 排查路徑，(3) 下一步／建議方案。數據來源直連 URL 與需審批標記必須清楚列出。禁止貼上 RAG 全文；文末僅列命中的 Skill ID 與知識庫標題。純文字輸出，不要 Markdown 符號。',
             ].join('\n'),
     },
     ...(args.priorMessages || []).map((m) => ({ role: m.role, content: m.content })),
