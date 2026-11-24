@@ -8,9 +8,16 @@ import {
   assessFollowUpRelevance,
   assessRelevance,
   capabilityAnswer,
+  continueAskingFooter,
   greetingAnswer,
+  newTopicAckMessage,
 } from '../copilot/engine/relevance'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
+import { stripMarkdownNoise } from '../copilot/engine/reportFormat'
+import {
+  findRecentSameInvestigation,
+  investigationFingerprint,
+} from '../copilot/engine/fingerprint'
 import {
   applyManagedLlmConfig,
   flattenKbDocs,
@@ -156,6 +163,7 @@ export function InvestigatePage() {
   }
 
   const runAnalysis = async () => {
+    if (busy) return
     setError(null)
     const userText = facts.trim()
     if (!userText && !images.length) {
@@ -165,6 +173,18 @@ export function InvestigatePage() {
 
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
     const analysisLang = detectReplyLang(userText || query, lang)
+    const fingerprint = investigationFingerprint({
+      title: title.trim(),
+      facts: userText || query,
+      imagesCount: images.length,
+    })
+    const prior = findRecentSameInvestigation(history, fingerprint)
+    if (prior) {
+      setActive(prior)
+      setLiveThinking([])
+      setError(t('investigateAlreadyRan'))
+      return
+    }
     // Text-only off-topic asks are gently rejected; screenshot-only may still be an alert.
     // Capability / bare-greeting asks get a real reply — never a recycled greeting template.
     if (userText) {
@@ -292,55 +312,59 @@ export function InvestigatePage() {
             lang: analysisLang,
             userPrompt: [
               skillMatched
-                ? '【Mode】Defined skills matched — refine RCA using those skills; do not invent unrelated chains.'
-                : '【Mode】NO DEFINED SKILL matched. First sentence MUST state that clearly. Then give possible RCA hypotheses only (label each as unverified). Cite external page URLs provided below.',
+                ? 'Mode: Defined skills matched — refine RCA using those skills; do not invent unrelated chains.'
+                : 'Mode: NO DEFINED SKILL matched. First sentence MUST state that clearly. Then give possible RCA hypotheses only (label each as unverified). Cite external page URLs provided below.',
               '',
-              '【PRIMARY ALERT / OPERATOR FACTS — root cause MUST cite these】',
+              'PRIMARY ALERT / OPERATOR FACTS — root cause MUST cite these',
               userText || query,
               '',
-              '【Secondary context — do NOT treat as root cause unless alert agrees】',
+              'Secondary context — do NOT treat as root cause unless alert agrees',
               matched.length
                 ? `Auto-bound market events: ${matched.map((b) => b.title).join(' · ')}`
                 : 'Auto-bound market events: none',
               briefingBits ? `\n${briefingBits}` : '',
               '',
-              `【Recommended severity from local rules】${rules.sev}`,
-              `【Local root-cause draft】\n${rootCauses.map((x) => `- ${x}`).join('\n')}`,
-              `【External pages to cite (MUST list these concrete URLs)】\n${externalBlock}`,
+              `Recommended severity from local rules: ${rules.sev}`,
+              `Local root-cause draft\n${rootCauses.map((x) => `- ${x}`).join('\n')}`,
+              `External pages to cite (MUST list these concrete URLs)\n${externalBlock}`,
               dataSources.length
-                ? `【Data sources (direct links)】\n${dataSources
+                ? `Data sources (direct links)\n${dataSources
                     .map((s) => `- ${s.label}: ${s.url}`)
                     .join('\n')}`
-                : '【Data sources (direct links)】none',
+                : 'Data sources (direct links): none',
+              '',
+              'Output plain text only — no Markdown symbols.',
             ].join('\n'),
             skillContext: skillMatched
               ? rules.skillContext
-              : '## Skills used\n- (none matched — catalog gap)',
+              : 'Skills used\n- (none matched — catalog gap)',
             kbContext:
               rules.kbContext ||
-              knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
+              knowledge.map((k) => `${k.title}\n${k.body}`).join('\n\n'),
           })
           const gap =
             analysisLang === 'en'
-              ? '【Skill gap】No defined Skill matched this alert. The following is an LLM possible-RCA hypothesis.'
-              : '【Skill 缺口】未匹配到已定义 Skill。以下为 LLM 给出的可能 RCA 假设。'
+              ? 'Skill gap · No defined Skill matched this alert. The following is an LLM possible-RCA hypothesis.'
+              : 'Skill 缺口 · 未匹配到已定义 Skill。以下为 LLM 给出的可能 RCA 假设。'
           if (!skillMatched) {
             rootCauses = [gap, ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x))]
           }
-          report = [
-            skillMatched ? `# LLM RCA（${modelLabel}）` : `# ${gap}\n\n# LLM possible RCA（${modelLabel}）`,
-            '',
-            llmText,
-            '',
-            '----------',
-            '',
-            skillMatched ? '# Local skills + knowledge report' : '# Local rules draft (no skill match)',
-            '',
-            rules.body,
-            '',
-            '## External pages',
-            externalBlock,
-          ].join('\n')
+          report = stripMarkdownNoise(
+            [
+              skillMatched
+                ? `LLM RCA (${modelLabel})`
+                : `${gap}\n\nLLM possible RCA (${modelLabel})`,
+              '',
+              llmText,
+              '',
+              skillMatched ? 'Local skills + knowledge report' : 'Local rules draft (no skill match)',
+              '',
+              rules.body,
+              '',
+              'External pages',
+              externalBlock,
+            ].join('\n'),
+          )
           provider = settings.provider
           if (externalPages.length) {
             pathSteps = [
@@ -367,13 +391,13 @@ export function InvestigatePage() {
           if (!skillMatched) {
             rootCauses = [
               analysisLang === 'en'
-                ? '【Skill gap】No defined Skill matched; LLM unavailable — hypotheses limited to local rules.'
-                : '【Skill 缺口】未匹配到已定义 Skill，且 LLM 不可用 — 仅能基于本地规则给出有限假设。',
+                ? 'Skill gap · No defined Skill matched; LLM unavailable — hypotheses limited to local rules.'
+                : 'Skill 缺口 · 未匹配到已定义 Skill，且 LLM 不可用 — 仅能基于本地规则给出有限假设。',
               ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
             ]
           }
           if (externalPages.length) {
-            report = `${rules.body}\n\n## External pages\n${externalBlock}`
+            report = stripMarkdownNoise(`${rules.body}\n\nExternal pages\n${externalBlock}`)
           }
         }
       } else {
@@ -382,13 +406,13 @@ export function InvestigatePage() {
         if (!skillMatched) {
           rootCauses = [
             analysisLang === 'en'
-              ? '【Skill gap】No defined Skill matched; configure LLM gateway to get possible RCA hypotheses.'
-              : '【Skill 缺口】未匹配到已定义 Skill；请配置 LLM 网关以生成可能 RCA 假设。',
+              ? 'Skill gap · No defined Skill matched; configure LLM gateway to get possible RCA hypotheses.'
+              : 'Skill 缺口 · 未匹配到已定义 Skill；请配置 LLM 网关以生成可能 RCA 假设。',
             ...rootCauses.filter((x) => !/Skill 缺口|Skill gap/i.test(x)),
           ]
         }
         if (externalPages.length) {
-          report = `${rules.body}\n\n## External pages\n${externalBlock}`
+          report = stripMarkdownNoise(`${rules.body}\n\nExternal pages\n${externalBlock}`)
           pathSteps = [
             ...pathSteps,
             ...externalPages.slice(0, 4).map((p) =>
@@ -435,6 +459,9 @@ export function InvestigatePage() {
         pathSteps,
         replyLang: analysisLang,
         skillMatched,
+        fingerprint,
+        skillContext: rules.skillContext,
+        kbContext: rules.kbContext,
         externalPages: externalPages.map((p) => ({ label: p.label, url: p.url })),
         messages: [
           { role: 'user', content: analysisText, at: startedAt },
@@ -486,7 +513,9 @@ export function InvestigatePage() {
         ]
         const updated: IncidentRecord = {
           ...active,
-          report: `${active.report}\n\n----\n【追问】${followUp.trim()}\n\n${relevance.message}`,
+          report: stripMarkdownNoise(
+            `${active.report}\n\n追问\n${followUp.trim()}\n\n${relevance.message}`,
+          ),
           messages,
         }
         const next = history.map((h) => (h.id === active.id ? updated : h))
@@ -500,33 +529,52 @@ export function InvestigatePage() {
         reply = capabilityAnswer(followUp.trim(), followLang)
       } else if (relevance.mode === 'greeting') {
         reply = greetingAnswer(followLang)
+      } else if (relevance.thread === 'new_topic') {
+        reply = newTopicAckMessage(followLang)
       } else if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
         reply = followUpWithRules(followUp.trim(), active.facts, followLang)
       } else {
-        const skills = loadSkills()
-        const tree = loadKnowledgeTree()
-        const knowledge = flattenKbDocs(tree)
-        const rules = analyzeWithRules({
-          text: active.facts,
-          severity: '自动建议',
-          skills,
-          knowledge,
-          tree,
-          lang: followLang,
-        })
+        // Follow-up only — reuse cached context; do NOT re-trigger a full investigation.
+        const skillContext =
+          active.skillContext ||
+          (active.skillsUsed || [])
+            .map((s) => `- [${s.level}] ${s.id} ${s.name}`)
+            .join('\n') ||
+          '(none)'
+        const kbContext =
+          active.kbContext ||
+          (active.knowledgeUsed || []).map((n) => n.path || n.title).join('\n') ||
+          '(none)'
         reply = await runLlm({
           settings,
           lang: followLang,
-          userPrompt: `${followUp.trim()}\n\n[System reminder: Stay in V Exchange XAUUSD risk-investigate scope. Gently refuse off-topic asks. If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
-          skillContext: rules.skillContext,
-          kbContext:
-            rules.kbContext ||
-            knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
+          userPrompt: [
+            followUp.trim(),
+            '',
+            'System reminder:',
+            '- Stay in V Exchange XAUUSD risk-investigate scope. Gently refuse off-topic asks.',
+            '- This is a SAME-TOPIC follow-up on the open RCA. Do NOT start a new investigation.',
+            '- If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.',
+            '- End with a short invite to keep asking if anything is unclear.',
+            '',
+            'Open RCA facts:',
+            active.facts || '(none)',
+            '',
+            'Open RCA report excerpt:',
+            (active.report || '').slice(0, 1200),
+          ].join('\n'),
+          skillContext,
+          kbContext,
           priorMessages: (active.messages || [])
             .filter((m) => m.role === 'user' || m.role === 'assistant')
             .slice(-6)
             .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
         })
+        if (!/不清楚|继续|keep asking|unclear/i.test(reply)) {
+          reply = `${stripMarkdownNoise(reply)}\n\n${continueAskingFooter(followLang)}`
+        } else {
+          reply = stripMarkdownNoise(reply)
+        }
       }
       const messages = [
         ...(active.messages || []),
@@ -535,7 +583,9 @@ export function InvestigatePage() {
       ]
       const updated: IncidentRecord = {
         ...active,
-        report: `${active.report}\n\n----\n【追问】${followUp.trim()}\n\n${reply}`,
+        report: stripMarkdownNoise(
+          `${active.report}\n\n追问\n${followUp.trim()}\n\n${reply}`,
+        ),
         messages,
       }
       const next = history.map((h) => (h.id === active.id ? updated : h))
@@ -759,6 +809,66 @@ export function InvestigatePage() {
                     </ul>
                   </>
                 ) : null}
+
+                <p className="sub investigate-match-hint">{t('investigateMatchFoldHint')}</p>
+                <details className="investigate-match-fold">
+                  <summary>
+                    {t('investigateSkillsFold').replace(
+                      '{n}',
+                      String((active.skillsUsed || []).length),
+                    )}
+                  </summary>
+                  <ul className="investigate-list investigate-skill-hits">
+                    {(active.skillsUsed || []).length ? (
+                      active.skillsUsed!.map((s) => (
+                        <li key={`${s.level}-${s.id}`}>
+                          <div className="skill-hit-head">
+                            <span className="mono">
+                              [{s.level}] {s.id}
+                            </span>{' '}
+                            {s.name}
+                            {s.severity ? (
+                              <span className="pill sev-yellow">{s.severity}</span>
+                            ) : null}
+                          </div>
+                          {s.alertEvidence ? (
+                            <p className="skill-hit-evidence">
+                              {t('investigateSkillFromAlert')}
+                              <span className="mono">「{s.alertEvidence}」</span>
+                            </p>
+                          ) : null}
+                          {s.matchedTokens?.length ? (
+                            <p className="skill-hit-tokens sub">
+                              {t('investigateSkillTokens')}
+                              {s.matchedTokens.slice(0, 5).join(' · ')}
+                            </p>
+                          ) : null}
+                          {s.matchWhy ? <p className="skill-hit-why sub">{s.matchWhy}</p> : null}
+                        </li>
+                      ))
+                    ) : (
+                      <li>{t('investigateNoneMatched')}</li>
+                    )}
+                  </ul>
+                </details>
+
+                <details className="investigate-match-fold">
+                  <summary>
+                    {t('investigateKbFold').replace(
+                      '{n}',
+                      String((active.knowledgeUsed || []).length),
+                    )}
+                  </summary>
+                  <ul className="investigate-list">
+                    {(active.knowledgeUsed || []).length ? (
+                      active.knowledgeUsed!.map((n) => (
+                        <li key={n.id}>{n.path || n.title}</li>
+                      ))
+                    ) : (
+                      <li>{t('investigateNoneMatched')}</li>
+                    )}
+                  </ul>
+                </details>
               </section>
 
               <p className="sub">{t('investigateCollapseHint')}</p>
@@ -818,31 +928,6 @@ export function InvestigatePage() {
                   ))}
                 </ol>
 
-                <h4>{t('investigateSkillsUsed')}</h4>
-                <ul className="investigate-list">
-                  {(active.skillsUsed || []).length ? (
-                    active.skillsUsed!.map((s) => (
-                      <li key={`${s.level}-${s.id}`}>
-                        [{s.level}] {s.id} {s.name}
-                        {s.severity ? ` (${s.severity})` : ''}
-                      </li>
-                    ))
-                  ) : (
-                    <li>{t('investigateNoneMatched')}</li>
-                  )}
-                </ul>
-
-                <h4>{t('investigateKbUsed')}</h4>
-                <ul className="investigate-list">
-                  {(active.knowledgeUsed || []).length ? (
-                    active.knowledgeUsed!.map((n) => (
-                      <li key={n.id}>{n.path || n.title}</li>
-                    ))
-                  ) : (
-                    <li>{t('investigateNoneMatched')}</li>
-                  )}
-                </ul>
-
                 <h4>{t('investigateThinking')}</h4>
                 <ul className="investigate-list">
                   {(active.thinking || []).map((line, i) => (
@@ -851,7 +936,7 @@ export function InvestigatePage() {
                 </ul>
 
                 <h4>{t('investigateFullReport')}</h4>
-                <pre className="copilot-report">{active.report}</pre>
+                <pre className="copilot-report">{stripMarkdownNoise(active.report)}</pre>
               </details>
 
               <div className="copilot-actions">
@@ -885,6 +970,7 @@ export function InvestigatePage() {
               </div>
               <p className="sub">{t('investigateArchiveNote')}</p>
 
+              <p className="investigate-continue-ask">{t('investigateContinueAsk')}</p>
               <label className="field-label">{t('copilotFollowUp')}</label>
               <p className="sub">{t('investigateFollowUpHint')}</p>
               <textarea rows={3} value={followUp} onChange={(e) => setFollowUp(e.target.value)} />

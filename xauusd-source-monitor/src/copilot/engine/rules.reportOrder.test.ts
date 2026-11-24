@@ -18,9 +18,11 @@ describe('analyzeWithRules report order', () => {
     expect(r.rootCauses.length).toBeGreaterThan(0)
     expect(r.pathSteps.length).toBeGreaterThan(0)
     expect(r.nextSteps.length).toBeGreaterThan(0)
-    expect(r.body.indexOf('【根因】')).toBeGreaterThanOrEqual(0)
-    expect(r.body.indexOf('【根因】')).toBeLessThan(r.body.indexOf('【排查路徑】'))
-    expect(r.body.indexOf('【排查路徑】')).toBeLessThan(r.body.indexOf('【下一步'))
+    expect(r.body.indexOf('\n根因\n')).toBeGreaterThanOrEqual(0)
+    expect(r.body.indexOf('\n根因\n')).toBeLessThan(r.body.indexOf('\n排查路徑\n'))
+    expect(r.body.indexOf('\n排查路徑\n')).toBeLessThan(r.body.indexOf('\n下一步'))
+    expect(r.body).not.toMatch(/^#{1,6}\s/m)
+    expect(r.body).not.toMatch(/\*\*/)
   })
 
   it('puts root cause before path and next steps (en)', () => {
@@ -33,10 +35,11 @@ describe('analyzeWithRules report order', () => {
       startedAt: Date.now(),
       lang: 'en',
     })
-    expect(r.body.indexOf('【Root cause】')).toBeGreaterThanOrEqual(0)
-    expect(r.body.indexOf('【Root cause】')).toBeLessThan(r.body.indexOf('【Investigation path】'))
-    expect(r.body.indexOf('【Investigation path】')).toBeLessThan(
-      r.body.indexOf('【Next steps / recommendations'),
+    expect(r.body.indexOf('\nRoot cause\n')).toBeGreaterThanOrEqual(0)
+    expect(r.body.indexOf('\nRoot cause\n')).toBeLessThan(r.body.indexOf('\nInvestigation path\n'))
+    expect(r.body.indexOf('\nInvestigation path\n')).toBeLessThan(
+      r.body.indexOf('\nNext steps / recommendations'),
     )
+    expect(r.body).not.toMatch(/【Root cause】/)
   })
 })

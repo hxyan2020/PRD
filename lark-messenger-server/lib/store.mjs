@@ -7,7 +7,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DATA_DIR = path.join(__dirname, '../.data')
+/** On Vercel the function FS is read-only except /tmp. */
+const DATA_DIR =
+  process.env.LARK_DATA_DIR ||
+  (process.env.VERCEL ? '/tmp/lark-messenger-data' : path.join(__dirname, '../.data'))
 const STORE_FILE = path.join(DATA_DIR, 'events.json')
 
 function empty() {
@@ -16,6 +19,7 @@ function empty() {
     incidents: [],
     followups: [],
     logs: [],
+    digests: [],
   }
 }
 
@@ -52,8 +56,57 @@ function pushLog(kind, payload) {
   return row
 }
 
+/** Same alert content → one fingerprint so ingest / RCA only run once (id ignored). */
+export function alarmFingerprint(alarm = {}) {
+  const raw = [alarm.title, alarm.trigger, alarm.breached, alarm.summary || alarm.facts]
+    .filter(Boolean)
+    .join('|')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim()
+  let h = 2166136261
+  for (let i = 0; i < raw.length; i++) {
+    h ^= raw.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return `afp_${(h >>> 0).toString(16)}`
+}
+
+/** Recent open RCA for the same alarm id or content fingerprint (default 15 min). */
+export function findRecentDuplicateRca({
+  alarmId,
+  fingerprint,
+  windowMs = 15 * 60 * 1000,
+} = {}) {
+  const data = read()
+  const since = Date.now() - windowMs
+  return (
+    data.incidents.find(
+      (i) =>
+        !i.archivedAt &&
+        i.at >= since &&
+        ((alarmId && i.alarmId === alarmId) ||
+          (fingerprint && i.fingerprint === fingerprint)),
+    ) || null
+  )
+}
+
 export function ingestAlarm(alarm) {
   const data = read()
+  const fingerprint = alarm.fingerprint || alarmFingerprint(alarm)
+  const since = Date.now() - 15 * 60 * 1000
+  const existing = data.alarms.find(
+    (a) =>
+      a.at >= since &&
+      (a.id === alarm.id || a.fingerprint === fingerprint),
+  )
+  if (existing) {
+    pushLog('alarm_ingest_deduped', {
+      alarmId: existing.id,
+      fingerprint,
+    })
+    return existing
+  }
   const row = {
     id: alarm.id || `ALT-${Date.now()}`,
     at: Date.now(),
@@ -66,12 +119,13 @@ export function ingestAlarm(alarm) {
     facts: alarm.facts || alarm.summary || '',
     sources: alarm.sources || [],
     autoAnalyze: alarm.autoAnalyze !== false,
+    fingerprint,
     status: 'open',
   }
   data.alarms.unshift(row)
   data.alarms = data.alarms.slice(0, 200)
   write(data)
-  pushLog('alarm_ingested', { alarmId: row.id, severity: row.severity })
+  pushLog('alarm_ingested', { alarmId: row.id, severity: row.severity, fingerprint })
   return row
 }
 
@@ -89,12 +143,18 @@ export function saveIncident(incident) {
     nextSteps: incident.nextSteps || '',
     report: incident.report || '',
     sources: incident.sources || [],
+    fingerprint: incident.fingerprint || null,
     archivedAt: null,
   }
   data.incidents.unshift(row)
   data.incidents = data.incidents.slice(0, 200)
   write(data)
-  pushLog('rca_created', { incidentId: row.id, severity: row.severity, alarmId: row.alarmId })
+  pushLog('rca_created', {
+    incidentId: row.id,
+    severity: row.severity,
+    alarmId: row.alarmId,
+    fingerprint: row.fingerprint,
+  })
   return row
 }
 
@@ -148,6 +208,16 @@ export function statsSummary(windowMs = 24 * 3600_000) {
   }
   const topSeverity =
     Object.entries(sevCount).sort((a, b) => b[1] - a[1])[0]?.[0] || '—'
+  const weeklyOptItems = archived
+    .slice()
+    .sort((a, b) => (b.archivedAt || b.at) - (a.archivedAt || a.at))
+    .slice(0, 12)
+    .map((i) => ({
+      id: i.id,
+      title: i.title,
+      severity: i.severity,
+      skills: i.skills || '',
+    }))
   return {
     windowMs,
     windowLabel: windowMs >= 86400000 ? 'last 24h' : `last ${Math.round(windowMs / 3600000)}h`,
@@ -158,8 +228,36 @@ export function statsSummary(windowMs = 24 * 3600_000) {
     followups: followups.length,
     topSeverity,
     bySeverity: sevCount,
+    weeklyOptItems,
     recentLogs: data.logs.filter((l) => l.at >= since).slice(0, 40),
   }
+}
+
+export function saveDigest(digest) {
+  const data = read()
+  const row = {
+    id: digest.id || `DIG-${Date.now()}`,
+    at: Date.now(),
+    windowLabel: digest.windowLabel || 'last 24h',
+    summary: digest.summary || {},
+    weeklyOptItems: digest.weeklyOptItems || [],
+    notes: digest.notes || '',
+  }
+  data.digests = data.digests || []
+  data.digests.unshift(row)
+  data.digests = data.digests.slice(0, 40)
+  write(data)
+  pushLog('digest_saved', { digestId: row.id })
+  return row
+}
+
+export function listDigests(limit = 20) {
+  const data = read()
+  return (data.digests || []).slice(0, limit)
+}
+
+export function getDigest(id) {
+  return (read().digests || []).find((d) => d.id === id) || null
 }
 
 export function listRecent(limit = 20) {
@@ -169,6 +267,7 @@ export function listRecent(limit = 20) {
     incidents: data.incidents.slice(0, limit),
     followups: data.followups.slice(0, limit),
     logs: data.logs.slice(0, limit),
+    digests: (data.digests || []).slice(0, limit),
   }
 }
 

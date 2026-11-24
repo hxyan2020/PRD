@@ -74,6 +74,14 @@ export interface SkillHitRef {
   name: string
   level: SkillLevel
   severity?: string
+  /** Keyword match score against the operator alert / event text. */
+  score?: number
+  /** Alert/event tokens that triggered this skill (for auditability). */
+  matchedTokens?: string[]
+  /** Short snippet from the user alert/event that drove the match. */
+  alertEvidence?: string
+  /** Human-readable reason this skill was selected for this alert. */
+  matchWhy?: string
 }
 
 export interface KnowledgeHitRef {
@@ -115,6 +123,12 @@ export interface IncidentRecord {
   skillMatched?: boolean
   /** External UI / docs / news pages attached for verification. */
   externalPages?: { label: string; url: string }[]
+  /** Dedup key so the same alert is only investigated once in a short window. */
+  fingerprint?: string
+  /** Cached skill context for follow-ups — avoids re-running full investigation. */
+  skillContext?: string
+  /** Cached knowledge context for follow-ups. */
+  kbContext?: string
 }
 
 export interface CopilotSettings {

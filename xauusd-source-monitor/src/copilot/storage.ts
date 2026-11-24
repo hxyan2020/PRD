@@ -1,3 +1,4 @@
+import { canEditContentMemory, type UserRole } from '../auth/users'
 import { DEFAULT_KB, L1_SKILLS, L2_CHAINS } from './data/catalog'
 import type {
   CopilotSettings,
@@ -7,14 +8,54 @@ import type {
   SkillRecord,
 } from './types'
 
+const AUTH_SESSION_KEY = 'vex_risk_tool_session_v1'
+
+/** Hard gate for Skills / KB / skill-override writes — Yan Haixiang only. */
+function assertContentAdminWrite(surface: string) {
+  try {
+    const raw = localStorage.getItem(AUTH_SESSION_KEY)
+    if (!raw) throw new Error(`content_admin_required:${surface}`)
+    const session = JSON.parse(raw) as { email?: string; role?: UserRole }
+    if (
+      !canEditContentMemory({
+        email: String(session.email || ''),
+        role: (session.role || 'analyst') as UserRole,
+      })
+    ) {
+      throw new Error(`content_admin_required:${surface}`)
+    }
+  } catch (err) {
+    if (err instanceof Error && err.message.startsWith('content_admin_required:')) throw err
+    throw new Error(`content_admin_required:${surface}`)
+  }
+}
+
 const HISTORY_KEY = 'vex_risk_copilot_history_v1'
 const KB_KEY = 'vex_risk_copilot_kb_v1'
 const KB_TREE_KEY = 'vex_risk_copilot_kb_tree_v1'
 const SKILLS_KEY = 'vex_risk_copilot_skills_v1'
 const SKILL_OVERRIDES_KEY = 'vex_risk_copilot_skill_overrides_v1'
 const SETTINGS_KEY = 'vex_risk_copilot_settings_v1'
+const PERIODIC_DIGESTS_KEY = 'vex_risk_periodic_digests_v1'
+const CONTENT_RAISES_KEY = 'vex_risk_content_raises_v1'
 /** Shared with xauusd-source-monitor briefings */
 export const BRIEFINGS_KEY = 'xauusd-monitor-briefings-v8'
+
+export type ContentRaiseSurface = 'skills' | 'knowledge' | 'memory'
+
+export interface ContentRaiseRequest {
+  id: string
+  surface: ContentRaiseSurface
+  summary: string
+  detail: string
+  raisedByEmail: string
+  raisedByName: string
+  createdAt: number
+  status: 'open' | 'done' | 'dismissed'
+  resolvedAt?: number
+  resolvedByEmail?: string
+  adminNote?: string
+}
 
 declare const __VEX_LLM_PROXY_BASE__: string
 
@@ -72,6 +113,7 @@ export function loadKnowledge(): KnowledgeItem[] {
 }
 
 export function saveKnowledge(list: KnowledgeItem[]) {
+  assertContentAdminWrite('knowledge')
   writeJson(KB_KEY, list)
 }
 
@@ -137,6 +179,7 @@ export function loadKnowledgeTree(): KbNode[] {
 }
 
 export function saveKnowledgeTree(nodes: KbNode[]) {
+  assertContentAdminWrite('knowledge')
   writeJson(KB_TREE_KEY, nodes)
   // Keep flat mirror for older analyze paths / RAG flatten
   const docs = nodes.filter((n) => n.parentId != null && n.body.trim())
@@ -183,23 +226,44 @@ export function loadSkillOverrides(): SkillOverrides {
 }
 
 export function saveSkillOverrides(v: SkillOverrides) {
+  assertContentAdminWrite('memory')
   writeJson(SKILL_OVERRIDES_KEY, v)
 }
 
 export function defaultSkills(): SkillRecord[] {
   const now = 0
+  /** Real alert/event titles & OCR phrases → which skill owns the investigation. */
   const hintBoost: Record<string, string> = {
-    'IDX-01': '指数源变更剔除告警 剔除 BYBIT_INDEX source removal',
-    'IDX-02': '指数源变更恢复告警 恢复 BYBIT_INDEX source recovery',
-    'IDX-06': '指数价格线性过渡开始 线性过渡开始 linear transition start',
-    'IDX-07': '指数价格线性过渡结束 线性过渡结束 linear transition end',
+    'IDX-01':
+      '指数源变更剔除告警 指数源剔除 剔除告警 剔除 BYBIT_INDEX OKX_INDEX source removal removed constituent',
+    'IDX-02':
+      '指数源变更恢复告警 指数源恢复 恢复告警 恢复 BYBIT_INDEX source recovery recovered constituent',
+    'IDX-05': 'Index 无有效源 无有效源 no valid source',
+    'IDX-06':
+      '指数价格线性过渡开始 线性过渡开始 线性过渡 平滑开始 linear transition start',
+    'IDX-07':
+      '指数价格线性过渡结束 线性过渡结束 线性过渡 平滑结束 linear transition end',
+    'IDX-08': '仅一家有效指数源 单源 single source',
+    'MARK-01': 'Mark 计算降级 mark degraded Mark计算降级',
+    'PRICE-01': 'Mark vs Index mark/index Mark/Index 偏离',
+    'PRICE-10': 'Mark vs Index PRICE-10 mark index deviation',
+  }
+  const descBoost: Record<string, string> = {
+    'IDX-01': '排查「指数源变更剔除告警」类事件（成分被剔除）',
+    'IDX-02': '排查「指数源变更恢复告警」类事件（成分恢复）',
+    'IDX-05': '排查「无有效指数源」类告警',
+    'IDX-06': '排查「指数价格线性过渡开始」告警',
+    'IDX-07': '排查「指数价格线性过渡结束」告警',
+    'IDX-08': '排查「仅一家有效指数源」告警',
+    'MARK-01': '排查 Mark 计算降级类告警',
+    'PRICE-01': '排查 Mark vs Index 偏离类告警',
   }
   const l1: SkillRecord[] = L1_SKILLS.map((s) => ({
     id: s.id,
     level: 'L1',
     name: s.name,
     severity: s.severity,
-    description: s.name,
+    description: descBoost[s.id] || `排查与 ${s.name} 对齐的告警／事件`,
     matchHints: `${s.id} ${s.name} ${hintBoost[s.id] || ''}`.trim(),
     linkedL1: '',
     check: s.check,
@@ -214,7 +278,7 @@ export function defaultSkills(): SkillRecord[] {
     level: 'L2',
     name: s.name,
     severity: 'P2',
-    description: s.name,
+    description: `L2 链路：在命中 L1（${s.linkedL1 || '—'}）后展开`,
     matchHints: `${s.id} ${s.name} ${s.linkedL1}`,
     linkedL1: s.linkedL1,
     check: s.check,
@@ -242,7 +306,69 @@ export function loadSkills(): SkillRecord[] {
 }
 
 export function saveSkills(list: SkillRecord[]) {
+  assertContentAdminWrite('skills')
   writeJson(SKILLS_KEY, list)
+}
+
+export function loadContentRaises(): ContentRaiseRequest[] {
+  return readJson<ContentRaiseRequest[]>(CONTENT_RAISES_KEY, [])
+}
+
+export function saveContentRaises(list: ContentRaiseRequest[]) {
+  writeJson(CONTENT_RAISES_KEY, list.slice(0, 100))
+}
+
+/** Any signed-in operator may raise a change request to Yan Haixiang. */
+export function raiseContentChange(input: {
+  surface: ContentRaiseSurface
+  summary: string
+  detail: string
+  raisedByEmail: string
+  raisedByName: string
+}): ContentRaiseRequest {
+  const summary = input.summary.trim()
+  const detail = input.detail.trim()
+  if (!summary) throw new Error('raise_summary_required')
+  const row: ContentRaiseRequest = {
+    id: `raise_${Date.now()}`,
+    surface: input.surface,
+    summary,
+    detail,
+    raisedByEmail: input.raisedByEmail.trim().toLowerCase(),
+    raisedByName: input.raisedByName.trim() || input.raisedByEmail,
+    createdAt: Date.now(),
+    status: 'open',
+  }
+  saveContentRaises([row, ...loadContentRaises().filter((r) => r.id !== row.id)])
+  return row
+}
+
+export function resolveContentRaise(
+  id: string,
+  status: 'done' | 'dismissed',
+  admin: { email: string },
+  adminNote = '',
+) {
+  assertContentAdminWrite('memory')
+  const next = loadContentRaises().map((r) =>
+    r.id === id
+      ? {
+          ...r,
+          status,
+          resolvedAt: Date.now(),
+          resolvedByEmail: admin.email,
+          adminNote: adminNote.trim() || r.adminNote,
+        }
+      : r,
+  )
+  saveContentRaises(next)
+  return next.find((r) => r.id === id) || null
+}
+
+export function openContentRaises(surface?: ContentRaiseSurface) {
+  return loadContentRaises().filter(
+    (r) => r.status === 'open' && (!surface || r.surface === surface),
+  )
 }
 
 export function loadSettings(): CopilotSettings {
@@ -337,4 +463,93 @@ export function loadMonitorBriefings(): ImportedBriefing[] {
 /** Archived RCAs only — inputs for future weekly optimisation jobs. */
 export function weeklyOptimisationCandidates(history: IncidentRecord[]): IncidentRecord[] {
   return history.filter((h) => !!h.archivedAt)
+}
+
+/** Snapshot of a periodic / stats digest operators can re-open and review. */
+export interface PeriodicDigest {
+  id: string
+  createdAt: number
+  windowLabel: string
+  totalRca: number
+  openRca: number
+  archivedRca: number
+  weeklyOptCount: number
+  topSeverity: string
+  skillHighlights: { id: string; name: string; level: string; count: number }[]
+  weeklyOptItems: {
+    id: string
+    title: string
+    severity: string
+    archivedAt: number
+    reportExcerpt: string
+    skills: string[]
+  }[]
+  notes: string
+}
+
+export function loadPeriodicDigests(): PeriodicDigest[] {
+  return readJson<PeriodicDigest[]>(PERIODIC_DIGESTS_KEY, [])
+}
+
+export function savePeriodicDigests(list: PeriodicDigest[]) {
+  writeJson(PERIODIC_DIGESTS_KEY, list.slice(0, 40))
+}
+
+export function buildPeriodicDigest(
+  history: IncidentRecord[],
+  windowLabel = 'current browser history',
+): PeriodicDigest {
+  const weekly = weeklyOptimisationCandidates(history)
+  const open = history.filter((h) => !h.archivedAt)
+  const bySeverity: Record<string, number> = {}
+  for (const h of history) {
+    bySeverity[h.severity] = (bySeverity[h.severity] || 0) + 1
+  }
+  const topSeverity =
+    Object.entries(bySeverity).sort((a, b) => b[1] - a[1])[0]?.[0] || '—'
+
+  const hitMap = new Map<string, { id: string; name: string; level: string; count: number }>()
+  for (const h of history) {
+    for (const s of h.skillsUsed || []) {
+      const key = `${s.level}:${s.id}`
+      const cur = hitMap.get(key) || { id: s.id, name: s.name, level: s.level, count: 0 }
+      cur.count += 1
+      hitMap.set(key, cur)
+    }
+  }
+  const skillHighlights = [...hitMap.values()].sort((a, b) => b.count - a.count).slice(0, 8)
+
+  return {
+    id: `dig_${Date.now()}`,
+    createdAt: Date.now(),
+    windowLabel,
+    totalRca: history.length,
+    openRca: open.length,
+    archivedRca: weekly.length,
+    weeklyOptCount: weekly.length,
+    topSeverity,
+    skillHighlights,
+    weeklyOptItems: weekly
+      .slice()
+      .sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0))
+      .slice(0, 20)
+      .map((h) => ({
+        id: h.id,
+        title: h.title,
+        severity: h.severity,
+        archivedAt: h.archivedAt || h.createdAt,
+        reportExcerpt: String(h.report || '').slice(0, 600),
+        skills: (h.skillsUsed || []).map((s) => s.id),
+      })),
+    notes:
+      weekly.length === 0
+        ? 'No archived RCAs yet — archive Investigate reports to feed weekly optimisation review.'
+        : `Review ${weekly.length} archived RCA(s) as weekly optimisation inputs. Confirm Skill hits and approval-gated actions before changing production rules.`,
+  }
+}
+
+export function savePeriodicDigest(digest: PeriodicDigest) {
+  const next = [digest, ...loadPeriodicDigests().filter((d) => d.id !== digest.id)]
+  savePeriodicDigests(next)
+  return digest
 }

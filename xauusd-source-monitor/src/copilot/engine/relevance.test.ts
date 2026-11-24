@@ -3,6 +3,8 @@ import {
   assessFollowUpRelevance,
   assessRelevance,
   capabilityAnswer,
+  classifyThreadIntent,
+  continueAskingFooter,
   greetingAnswer,
 } from './relevance'
 
@@ -69,5 +71,43 @@ describe('assessFollowUpRelevance', () => {
     const r = assessFollowUpRelevance('你有知识库吗', 'BYBIT_INDEX XAU_USD 剔除', 'zh-Hant')
     expect(r.ok).toBe(true)
     if (r.ok) expect(r.mode).toBe('capability')
+  })
+
+  it('marks clarifying questions as same_topic', () => {
+    const r = assessFollowUpRelevance('为什么命中 IDX-01？', 'BYBIT_INDEX XAU_USD 剔除 IDX-01', 'zh-Hant')
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.thread).toBe('same_topic')
+  })
+
+  it('marks explicit new-alert cues as new_topic', () => {
+    const r = assessFollowUpRelevance(
+      '这是另一个告警：Mark vs Index 偏离 1%',
+      'BYBIT_INDEX XAU_USD 剔除',
+      'zh-Hant',
+    )
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.thread).toBe('new_topic')
+  })
+})
+
+describe('classifyThreadIntent', () => {
+  const open = '【指数源变更剔除告警】BYBIT_INDEX XAU_USD 触发时间 2026-11-08'
+
+  it('same topic for next-step style asks', () => {
+    expect(classifyThreadIntent('下一步怎么做？', open)).toBe('same_topic')
+  })
+
+  it('new topic for a different pasted alert with low overlap', () => {
+    const other = [
+      '【Mark 计算降级告警】',
+      '触发时间: 2026-11-09 10:00:00',
+      '内容: Mark degraded vs Index on XAUUSD',
+    ].join('\n')
+    expect(classifyThreadIntent(other, open)).toBe('new_topic')
+  })
+
+  it('continueAskingFooter invites more questions', () => {
+    expect(continueAskingFooter('zh-Hant')).toMatch(/继续追问|新告警/)
+    expect(continueAskingFooter('en')).toMatch(/keep asking|new alert/i)
   })
 })

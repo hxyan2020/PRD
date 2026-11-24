@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
+import { ContentAdminBanner } from '../components/ContentAdminBanner'
 import { useLocale } from '../i18n/locale'
 import { loadSkills, saveSkills } from '../copilot/storage'
 import type { SkillLevel, SkillRecord } from '../copilot/types'
@@ -30,8 +31,8 @@ function severityClass(sev: string) {
 
 export function SkillsPage() {
   const { t } = useLocale()
-  const { user } = useAuth()
-  const canWrite = Boolean(user)
+  const { canEditContent } = useAuth()
+  const canWrite = canEditContent
   const [skills, setSkills] = useState<SkillRecord[]>(() => loadSkills())
   const [q, setQ] = useState('')
   const [levelFilter, setLevelFilter] = useState<'all' | SkillLevel>('all')
@@ -120,6 +121,7 @@ export function SkillsPage() {
     <div className="panel skills-page">
       <h2>{t('skillsTitle')}</h2>
       <p className="sub">{t('skillsSub')}</p>
+      <ContentAdminBanner surface="skills" />
 
       <div className="skills-toolbar">
         <input
@@ -233,6 +235,7 @@ export function SkillsPage() {
 
             <section className="std-section">
               <h4>{t('skillsMatchHints')}</h4>
+              <p className="sub">{t('skillsMatchHintsHint')}</p>
               <p>{s.matchHints || '—'}</p>
             </section>
             {s.level === 'L2' ? (
@@ -340,10 +343,12 @@ function SkillEditorFields({
       </label>
       <label className="std-field full">
         <span>{t('skillsMatchHints')}</span>
+        <p className="sub">{t('skillsMatchHintsHint')}</p>
         <textarea
-          rows={2}
+          rows={3}
           value={editing.matchHints}
           onChange={(e) => setEditing({ ...editing, matchHints: e.target.value })}
+          placeholder="e.g. 指数源变更剔除告警 · BYBIT_INDEX · source removal"
         />
       </label>
       {editing.level === 'L2' ? (

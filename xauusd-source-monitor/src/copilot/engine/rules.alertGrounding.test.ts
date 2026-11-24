@@ -49,11 +49,29 @@ describe('alert-grounded RCA', () => {
     })
     expect(r.hits.some((id) => id.startsWith('IDX-'))).toBe(true)
     expect(r.skillMatched).toBe(true)
-    expect(r.rootCauses.some((x) => /已证实|BYBIT_INDEX|剔除/.test(x))).toBe(true)
+    expect(r.rootCauses.some((x) => /已证实|Confirmed|BYBIT_INDEX|剔除/.test(x))).toBe(true)
     expect(r.rootCauses.every((x) => !/需驗證其上游故障是否早於下游異常/.test(x))).toBe(true)
     // Noisy briefing must not force funding/kline as primary root causes
     expect(r.rootCauses.some((x) => /Funding 异常|K线策略/.test(x))).toBe(false)
     expect(r.pathSteps[0]).toMatch(/告警原文|alert text/i)
+  })
+
+  it('records explicit alert→skill metadata (evidence + tokens)', () => {
+    const r = analyzeWithRules({
+      text: ALERT,
+      matchFocus: ALERT,
+      severity: '自动建议',
+      skills: defaultSkills(),
+      knowledge: [],
+      tree: [],
+      lang: 'zh-Hant',
+    })
+    const idx01 = r.skillsUsed.find((s) => s.id === 'IDX-01')
+    expect(idx01).toBeTruthy()
+    expect(idx01?.alertEvidence).toMatch(/指数源变更剔除|剔除/)
+    expect(idx01?.matchedTokens?.length).toBeGreaterThan(0)
+    expect(idx01?.matchWhy).toMatch(/告警|事件/)
+    expect(r.body).toMatch(/Skills 匹配|告警 → 排查技能|告警原文/)
   })
 
   it('states skill gap when nothing in the catalog matches', () => {

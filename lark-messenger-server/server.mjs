@@ -12,12 +12,17 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  alarmFingerprint,
   archiveIncident,
+  findRecentDuplicateRca,
   getAlarm,
+  getDigest,
   getIncident,
   ingestAlarm,
+  listDigests,
   listRecent,
   pushLog,
+  saveDigest,
   saveFollowUp,
   saveIncident,
   statsSummary,
@@ -30,7 +35,7 @@ const TEMPLATES_DIR = path.join(__dirname, 'templates')
 const PUBLIC_DIR = path.join(__dirname, 'public')
 const DESK_BASE =
   process.env.DESK_BASE_URL ||
-  'https://hxyan2020.github.io/PRD/xauusd-source-monitor'
+  'https://vex-llm-proxy.vercel.app'
 const AUTO_ANALYZE = process.env.LARK_AUTO_ANALYZE !== '0'
 const VERIFY_TOKEN = process.env.LARK_VERIFICATION_TOKEN || ''
 const ENCRYPT_KEY = process.env.LARK_ENCRYPT_KEY || ''
@@ -112,6 +117,11 @@ function mdBlock(content) {
   return { tag: 'div', text: { tag: 'lark_md', content } }
 }
 
+/**
+ * Schema 2.0 callback buttons need an object `value` (not a JSON string) plus
+ * `behaviors: [{ type: 'callback', value }]` so Feishu/Lark actually fires
+ * card.action.trigger. URL buttons stay multi_url / url.
+ */
 function actionBtn(label, type, valueOrUrl) {
   if (typeof valueOrUrl === 'string' && valueOrUrl.startsWith('http')) {
     return {
@@ -119,14 +129,78 @@ function actionBtn(label, type, valueOrUrl) {
       text: { tag: 'plain_text', content: label },
       type,
       url: valueOrUrl,
+      multi_url: {
+        url: valueOrUrl,
+        pc_url: valueOrUrl,
+        android_url: valueOrUrl,
+        ios_url: valueOrUrl,
+      },
     }
   }
+  const value =
+    typeof valueOrUrl === 'string'
+      ? { action: valueOrUrl }
+      : valueOrUrl && typeof valueOrUrl === 'object'
+        ? valueOrUrl
+        : { action: 'noop' }
   return {
     tag: 'button',
     text: { tag: 'plain_text', content: label },
     type,
-    value: typeof valueOrUrl === 'string' ? valueOrUrl : JSON.stringify(valueOrUrl),
+    value,
+    behaviors: [{ type: 'callback', value }],
   }
+}
+
+function toastOk(content, extra = {}) {
+  return {
+    toast: { type: 'success', content: String(content || 'OK') },
+    ...extra,
+  }
+}
+
+function toastFail(content, extra = {}) {
+  return {
+    toast: { type: 'error', content: String(content || 'Failed') },
+    ...extra,
+  }
+}
+
+/** Normalize Feishu/Lark card callback + legacy event shapes into { action, ... }. */
+function extractCardAction(body) {
+  const event = body?.event || body || {}
+  const candidates = [
+    event.action?.value,
+    event.action?.option,
+    body?.action?.value,
+    typeof event.action === 'string' ? event.action : null,
+    typeof body?.action === 'string' ? body.action : null,
+  ]
+  for (const raw of candidates) {
+    if (raw == null || raw === '') continue
+    if (typeof raw === 'object') return raw
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') return parsed
+        return { action: raw }
+      } catch {
+        return { action: raw }
+      }
+    }
+  }
+  return null
+}
+
+function isCardActionRequest(body) {
+  const t =
+    body?.header?.event_type ||
+    body?.type ||
+    body?.event?.type ||
+    ''
+  if (String(t).includes('card.action')) return true
+  if (body?.event?.action || body?.action) return true
+  return false
 }
 
 /** Build Lark interactive card (schema 2.0) from template id + vars */
@@ -191,6 +265,24 @@ function renderLarkCard(templateId, inputVars = {}) {
   }
 
   if (templateId === 'rca-report') {
+    const skillsText = String(vars.skills || '').trim() || '_none matched_'
+    const knowledgeText = String(vars.knowledge || vars.rag || '').trim()
+    const foldPanel = (title, body) => ({
+      tag: 'collapsible_panel',
+      expanded: false,
+      header: {
+        title: { tag: 'plain_text', content: title },
+        vertical_align: 'center',
+        icon: {
+          tag: 'standard_icon',
+          token: 'down-round_outlined',
+        },
+        icon_position: 'right',
+        icon_expanded_angle: -180,
+      },
+      border: { color: 'grey', corner_radius: '8px' },
+      elements: [mdBlock(body)],
+    })
     return {
       msg_type: 'interactive',
       card: {
@@ -209,8 +301,6 @@ function renderLarkCard(templateId, inputVars = {}) {
             mdBlock(
               [
                 `**Investigation path:** ${vars.path || 'ingest → skills → RAG → severity'}`,
-                `**Skills:** ${vars.skills}`,
-                `**Thinking:** ${vars.thinking}`,
                 '',
                 '**Data sources (direct links)**',
                 vars.sources || '_none attached_',
@@ -222,20 +312,40 @@ function renderLarkCard(templateId, inputVars = {}) {
                 '_Ask a follow-up in the thread — answers are logged to realtime stats._',
               ].join('\n'),
             ),
+            foldPanel(`🧩 Skills matches`, skillsText),
+            foldPanel(
+              `📚 Knowledge / RAG matches`,
+              knowledgeText ||
+                '_Titles stay folded here when available; open Investigate for the full tree._',
+            ),
+            foldPanel(`Thinking`, String(vars.thinking || '_n/a_')),
+            {
+              tag: 'action',
+              actions: [
+                actionBtn('已完成此步', 'primary', {
+                  action: 'complete_step',
+                  incident_id: vars.incident_id,
+                }),
+                actionBtn('归档报告', 'default', {
+                  action: 'archive',
+                  incident_id: vars.incident_id,
+                }),
+                actionBtn('复盘清单', 'default', {
+                  action: 'review_checklist',
+                  incident_id: vars.incident_id,
+                }),
+              ],
+            },
             {
               tag: 'action',
               actions: [
                 actionBtn(
                   'Open Investigate',
-                  'primary',
+                  'default',
                   vars.desk_url.includes('#')
                     ? vars.desk_url
                     : `${DESK_BASE}/#/investigate`,
                 ),
-                actionBtn('Archive (weekly opt)', 'default', {
-                  action: 'archive',
-                  incident_id: vars.incident_id,
-                }),
                 actionBtn('Open Stats', 'default', `${DESK_BASE}/#/stats`),
               ],
             },
@@ -328,6 +438,7 @@ function renderLarkCard(templateId, inputVars = {}) {
   }
 
   if (templateId === 'stats-digest') {
+    const deskStatsReview = `${DESK_BASE}/#/stats?review=periodic`
     return {
       msg_type: 'interactive',
       card: {
@@ -335,7 +446,7 @@ function renderLarkCard(templateId, inputVars = {}) {
         config: { wide_screen_mode: true },
         header: {
           template: 'turquoise',
-          title: { tag: 'plain_text', content: 'Realtime stats digest' },
+          title: { tag: 'plain_text', content: 'Periodic analysis digest' },
           subtitle: {
             tag: 'plain_text',
             content: `${vars.window_label} · ${vars.time_sgt}`,
@@ -345,20 +456,26 @@ function renderLarkCard(templateId, inputVars = {}) {
           elements: [
             mdBlock(
               [
-                `**Alarms ingested:** ${vars.alarms_total}`,
-                `**RCAs total:** ${vars.rca_total} (open ${vars.rca_open} · archived ${vars.rca_archived})`,
-                `**Follow-ups answered:** ${vars.followups}`,
-                `**Top severity:** ${vars.top_severity}`,
-              ].join('\n'),
+                `Alarms ingested: ${vars.alarms_total}`,
+                `RCAs total: ${vars.rca_total} (open ${vars.rca_open} · archived ${vars.rca_archived})`,
+                `Follow-ups answered: ${vars.followups}`,
+                `Top severity: ${vars.top_severity}`,
+                vars.weekly_opt_preview
+                  ? `\nWeekly opt inputs:\n${vars.weekly_opt_preview}`
+                  : '\nWeekly opt inputs: (none archived yet)',
+                vars.digest_id ? `\nDigest id: ${vars.digest_id}` : '',
+              ]
+                .filter(Boolean)
+                .join('\n'),
             ),
             {
               tag: 'action',
               actions: [
-                actionBtn(
-                  'Open Stats',
-                  'primary',
-                  vars.desk_url.includes('#') ? vars.desk_url : `${DESK_BASE}/#/stats`,
-                ),
+                actionBtn('Review periodic analysis', 'primary', {
+                  action: 'review_periodic',
+                  digest_id: vars.digest_id || '',
+                }),
+                actionBtn('Open Stats review', 'default', deskStatsReview),
               ],
             },
           ],
@@ -561,6 +678,57 @@ async function maybeLlmEnhance(facts, base) {
 }
 
 async function runRcaFromAlarm(alarm, opts = {}) {
+  const fingerprint = alarm.fingerprint || alarmFingerprint(alarm)
+  const existing = findRecentDuplicateRca({
+    alarmId: alarm.id,
+    fingerprint,
+  })
+  if (existing && opts.force !== true) {
+    pushLog('rca_deduped', {
+      incidentId: existing.id,
+      alarmId: alarm.id,
+      fingerprint,
+    })
+    const payload = renderLarkCard('rca-report', {
+      title: existing.title,
+      severity: existing.severity,
+      model: existing.model,
+      skills: existing.skills,
+      thinking: existing.thinking,
+      next_steps: existing.nextSteps,
+      sources: (existing.sources || []).map((u) => `- ${u}`).join('\n'),
+      path: 'deduped — same alert already investigated once',
+      report_excerpt:
+        (existing.report || '').slice(0, 900) ||
+        'Same alert was already investigated. Continue in the thread — do not re-run.',
+      incident_id: existing.id,
+      desk_url: `${DESK_BASE}/#/investigate`,
+      knowledge: '',
+    })
+    // Do not re-send the RCA card on dedupe unless explicitly asked.
+    const send =
+      opts.send === false || opts.resendDeduped !== true
+        ? { dryRun: true, deduped: true, payload }
+        : await sendLark(opts.webhookUrl, payload)
+    return {
+      incident: existing,
+      analysis: {
+        severity: existing.severity,
+        skills: existing.skills,
+        thinking: existing.thinking,
+        nextSteps: existing.nextSteps,
+        sources: (existing.sources || []).map((u) => `- ${u}`).join('\n'),
+        path: 'deduped',
+        report: existing.report,
+        model: existing.model,
+        deduped: true,
+      },
+      send,
+      payload,
+      deduped: true,
+    }
+  }
+
   const facts =
     alarm.facts ||
     [
@@ -583,6 +751,7 @@ async function runRcaFromAlarm(alarm, opts = {}) {
     thinking: analysis.thinking,
     nextSteps: analysis.nextSteps,
     report: analysis.report,
+    fingerprint,
     sources: (alarm.sources || []).length
       ? alarm.sources
       : analysis.sources.split('\n').map((l) => l.replace(/^- /, '')),
@@ -677,7 +846,7 @@ function serveStatic(req, res, urlPath) {
   return true
 }
 
-const server = http.createServer(async (req, res) => {
+export async function handleRequest(req, res) {
   const url = new URL(req.url || '/', `http://${req.headers.host}`)
   if (req.method === 'OPTIONS') return json(res, 204, {})
 
@@ -694,6 +863,7 @@ const server = http.createServer(async (req, res) => {
         encryptKeyConfigured: Boolean(ENCRYPT_KEY),
         templates: listTemplates().map((t) => t.id),
         deskBase: DESK_BASE,
+        runtime: process.env.VERCEL ? 'vercel' : 'node',
       })
     }
 
@@ -731,7 +901,14 @@ const server = http.createServer(async (req, res) => {
         alert_id: alarm.id,
         desk_url: `${DESK_BASE}/#/investigate`,
       })
-      const alertSend = await sendLark(body.webhookUrl, alertCard)
+      const alreadyRca = findRecentDuplicateRca({
+        alarmId: alarm.id,
+        fingerprint: alarm.fingerprint,
+      })
+      // Skip re-posting the alert card when this ingest was a dedupe of an existing alarm.
+      const alertSend = alreadyRca
+        ? { dryRun: true, deduped: true }
+        : await sendLark(body.webhookUrl, alertCard)
       let rca = null
       if (AUTO_ANALYZE && alarm.autoAnalyze && body.autoAnalyze !== false) {
         rca = await runRcaFromAlarm(alarm, { webhookUrl: body.webhookUrl })
@@ -740,8 +917,14 @@ const server = http.createServer(async (req, res) => {
         ok: true,
         alarm,
         alertSend,
+        deduped: Boolean(alreadyRca || rca?.deduped),
         rca: rca
-          ? { incident: rca.incident, send: rca.send, dryRun: rca.send?.dryRun }
+          ? {
+              incident: rca.incident,
+              send: rca.send,
+              dryRun: rca.send?.dryRun,
+              deduped: Boolean(rca.deduped),
+            }
           : null,
       })
     }
@@ -793,24 +976,25 @@ const server = http.createServer(async (req, res) => {
       }
 
       const event = body.event || body
-      const action =
-        event.action?.value ||
-        event.action?.option ||
-        (typeof event.action === 'string' ? event.action : null)
-
-      let parsed = null
-      try {
-        parsed = typeof action === 'string' ? JSON.parse(action) : action
-      } catch {
-        parsed = null
-      }
+      const operatorId =
+        event.operator?.open_id ||
+        event.operator?.user_id ||
+        event.sender?.sender_id?.open_id ||
+        body.open_id ||
+        'unknown'
+      const parsed = extractCardAction(body)
+      const cardReq = isCardActionRequest(body)
 
       if (parsed?.action === 'ack' && parsed.alert_id) {
-        pushLog('alarm_acked', { alertId: parsed.alert_id, user: event.operator?.open_id })
-        return json(res, 200, { ok: true, handled: 'ack' })
+        pushLog('alarm_acked', { alertId: parsed.alert_id, user: operatorId })
+        return json(
+          res,
+          200,
+          toastOk('已确认告警 / Alert acked', { ok: true, handled: 'ack' }),
+        )
       }
       if (parsed?.action === 'escalate' && parsed.alert_id) {
-        pushLog('alarm_escalated', { alertId: parsed.alert_id, user: event.operator?.open_id })
+        pushLog('alarm_escalated', { alertId: parsed.alert_id, user: operatorId })
         const alarm = getAlarm(parsed.alert_id)
         if (alarm) {
           await sendLark(
@@ -824,16 +1008,206 @@ const server = http.createServer(async (req, res) => {
             }),
           )
         }
-        return json(res, 200, { ok: true, handled: 'escalate' })
+        return json(
+          res,
+          200,
+          toastOk('已升级为 P0 / Escalated', { ok: true, handled: 'escalate' }),
+        )
       }
       if (parsed?.action === 'run_rca' && parsed.alert_id) {
         const alarm = getAlarm(parsed.alert_id) || ingestAlarm({ id: parsed.alert_id })
         const rca = await runRcaFromAlarm(alarm)
-        return json(res, 200, { ok: true, handled: 'run_rca', incidentId: rca.incident.id })
+        return json(
+          res,
+          200,
+          toastOk(
+            rca.deduped
+              ? '已有 RCA（同告警只排查一次）'
+              : `RCA 已生成 ${rca.incident.id}`,
+            {
+              ok: true,
+              handled: 'run_rca',
+              incidentId: rca.incident.id,
+              deduped: Boolean(rca.deduped),
+            },
+          ),
+        )
       }
-      if (parsed?.action === 'archive' && parsed.incident_id) {
-        archiveIncident(parsed.incident_id)
-        return json(res, 200, { ok: true, handled: 'archive' })
+      if (parsed?.action === 'run_rca_from_briefing') {
+        const alarm = ingestAlarm({
+          title: parsed.title || 'Briefing → Investigate',
+          severity: 'P1',
+          summary: parsed.title || 'From market briefing card',
+          facts: parsed.title || 'From market briefing card',
+          trigger: 'briefing_card',
+        })
+        const rca = await runRcaFromAlarm(alarm)
+        return json(
+          res,
+          200,
+          toastOk(`已从简报启动排查 ${rca.incident.id}`, {
+            ok: true,
+            handled: 'run_rca_from_briefing',
+            incidentId: rca.incident.id,
+          }),
+        )
+      }
+      if (
+        (parsed?.action === 'archive' ||
+          parsed?.action === 'archive_report' ||
+          parsed?.action === '归档报告') &&
+        parsed.incident_id
+      ) {
+        const row = archiveIncident(parsed.incident_id)
+        if (!row) {
+          return json(
+            res,
+            200,
+            toastFail(`找不到事故 ${parsed.incident_id}`, {
+              ok: false,
+              handled: 'archive',
+            }),
+          )
+        }
+        return json(
+          res,
+          200,
+          toastOk('报告已归档（进入周优化输入）', {
+            ok: true,
+            handled: 'archive',
+            incidentId: parsed.incident_id,
+          }),
+        )
+      }
+      if (
+        parsed?.action === 'complete_step' ||
+        parsed?.action === '已完成此步'
+      ) {
+        pushLog('step_completed', {
+          incidentId: parsed.incident_id || null,
+          user: operatorId,
+        })
+        return json(
+          res,
+          200,
+          toastOk('已记录：此步完成。有不清楚可继续追问。', {
+            ok: true,
+            handled: 'complete_step',
+            incidentId: parsed.incident_id || null,
+          }),
+        )
+      }
+      if (
+        parsed?.action === 'review_periodic' ||
+        parsed?.action === 'review_digest'
+      ) {
+        const digest =
+          (parsed.digest_id && getDigest(parsed.digest_id)) || listDigests(1)[0] || null
+        const lines = digest
+          ? [
+              `Periodic digest ${digest.id} (${digest.windowLabel})`,
+              `Alarms ${digest.summary?.alarmsTotal ?? '—'} · RCA ${digest.summary?.rcaTotal ?? '—'} (open ${digest.summary?.rcaOpen ?? '—'} / archived ${digest.summary?.rcaArchived ?? '—'})`,
+              `Top severity: ${digest.summary?.topSeverity ?? '—'}`,
+              digest.notes || '',
+              '',
+              'Weekly opt inputs:',
+              ...((digest.weeklyOptItems || []).length
+                ? digest.weeklyOptItems.map(
+                    (i) => `- ${i.severity} ${i.id} ${i.title}${i.skills ? ` · ${i.skills}` : ''}`,
+                  )
+                : ['- (none archived yet)']),
+              '',
+              `Open desk review: ${DESK_BASE}/#/stats?review=periodic`,
+            ]
+          : [
+              'No saved periodic digest yet.',
+              'Post /api/stats/digest first, or open the desk Stats → Periodic analysis review.',
+              `${DESK_BASE}/#/stats?review=periodic`,
+            ]
+        pushLog('periodic_review', {
+          digestId: digest?.id || null,
+          user: operatorId,
+        })
+        try {
+          await sendLark(
+            undefined,
+            renderLarkCard('follow-up', {
+              incident_id: digest?.id || 'digest',
+              question: 'Review periodic analysis',
+              answer: lines.join('\n'),
+              severity: digest?.summary?.topSeverity || '—',
+            }),
+          )
+        } catch {
+          /* optional webhook */
+        }
+        return json(
+          res,
+          200,
+          toastOk('周期性分析复盘已发送', {
+            ok: true,
+            handled: 'review_periodic',
+            digestId: digest?.id || null,
+            review: lines.join('\n'),
+          }),
+        )
+      }
+      if (
+        parsed?.action === 'review_checklist' ||
+        parsed?.action === '复盘清单'
+      ) {
+        const incident = parsed.incident_id ? getIncident(parsed.incident_id) : null
+        const checklist = [
+          '1. 告警原文 / 触发时间 / 成分源是否已核对',
+          '2. 命中 Skill 与告警映射是否正确',
+          '3. 建议动作是否已人工审批（禁止自动执行）',
+          '4. 外网 / 行情直连链接是否已点开核验',
+          '5. 是否需要归档进周优化，或升级值班',
+        ].join('\n')
+        pushLog('review_checklist', {
+          incidentId: parsed.incident_id || null,
+          user: operatorId,
+        })
+        // Post checklist as a follow-up card when possible
+        try {
+          await sendLark(
+            undefined,
+            renderLarkCard('follow-up', {
+              incident_id: parsed.incident_id || incident?.id || 'none',
+              question: '复盘清单',
+              answer: checklist,
+              severity: incident?.severity || '—',
+            }),
+          )
+        } catch {
+          /* webhook may be unset in local */
+        }
+        return json(
+          res,
+          200,
+          toastOk('复盘清单已发送到会话', {
+            ok: true,
+            handled: 'review_checklist',
+            incidentId: parsed.incident_id || null,
+            checklist,
+          }),
+        )
+      }
+
+      if (cardReq && parsed?.action) {
+        pushLog('lark_card_action_unknown', {
+          action: parsed.action,
+          user: operatorId,
+        })
+        return json(
+          res,
+          200,
+          toastFail(`未识别的卡片动作: ${parsed.action}`, {
+            ok: false,
+            handled: 'unknown_card_action',
+            action: parsed.action,
+          }),
+        )
       }
 
       // IM message → follow-up
@@ -859,13 +1233,23 @@ const server = http.createServer(async (req, res) => {
         const result = await answerFollowUp({
           incidentId,
           question,
-          user: event.sender?.sender_id?.open_id || event.operator?.open_id,
+          user: operatorId,
         })
-        return json(res, 200, { ok: true, handled: 'followup', followUpId: result.followUp.id })
+        return json(res, 200, {
+          ok: true,
+          handled: 'followup',
+          followUpId: result.followUp.id,
+        })
       }
 
       pushLog('lark_event_unhandled', { keys: Object.keys(body) })
-      return json(res, 200, { ok: true, handled: 'noop' })
+      return json(
+        res,
+        200,
+        cardReq
+          ? toastFail('卡片回调未匹配到动作', { ok: true, handled: 'noop' })
+          : { ok: true, handled: 'noop' },
+      )
     }
 
     if (req.method === 'GET' && url.pathname === '/api/stats/summary') {
@@ -876,6 +1260,26 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/stats/digest') {
       const body = await readBody(req)
       const summary = statsSummary(Number(body.windowMs || 86400000))
+      const weeklyPreview = (summary.weeklyOptItems || [])
+        .slice(0, 5)
+        .map((i) => `- ${i.severity} ${i.id} ${i.title}`)
+        .join('\n')
+      const digest = saveDigest({
+        windowLabel: summary.windowLabel,
+        summary: {
+          alarmsTotal: summary.alarmsTotal,
+          rcaTotal: summary.rcaTotal,
+          rcaOpen: summary.rcaOpen,
+          rcaArchived: summary.rcaArchived,
+          followups: summary.followups,
+          topSeverity: summary.topSeverity,
+        },
+        weeklyOptItems: summary.weeklyOptItems || [],
+        notes:
+          (summary.weeklyOptItems || []).length === 0
+            ? 'No archived RCAs in window — archive Investigate reports for weekly opt review.'
+            : `Review ${(summary.weeklyOptItems || []).length} archived RCA(s) as weekly optimisation inputs.`,
+      })
       const payload = renderLarkCard('stats-digest', {
         window_label: summary.windowLabel,
         alarms_total: String(summary.alarmsTotal),
@@ -884,11 +1288,20 @@ const server = http.createServer(async (req, res) => {
         rca_archived: String(summary.rcaArchived),
         followups: String(summary.followups),
         top_severity: summary.topSeverity,
+        weekly_opt_preview: weeklyPreview || '(none)',
+        digest_id: digest.id,
         desk_url: `${DESK_BASE}/#/stats`,
       })
       const send = await sendLark(body.webhookUrl, payload)
-      pushLog('stats_digest_sent', { dryRun: Boolean(send.dryRun) })
-      return json(res, 200, { ok: true, summary, send, payload })
+      pushLog('stats_digest_sent', { dryRun: Boolean(send.dryRun), digestId: digest.id })
+      return json(res, 200, { ok: true, summary, digest, send, payload })
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/stats/digests') {
+      return json(res, 200, {
+        ok: true,
+        digests: listDigests(Number(url.searchParams.get('limit') || 20)),
+      })
     }
 
     if (req.method === 'GET' && url.pathname === '/api/recent') {
@@ -907,14 +1320,20 @@ const server = http.createServer(async (req, res) => {
   } catch (e) {
     return json(res, 500, { error: e instanceof Error ? e.message : 'server error' })
   }
-})
+}
 
-server.listen(PORT, HOST, () => {
-  console.log(`lark-messenger-server on http://${HOST}:${PORT}`)
-  console.log(`  playground:     http://127.0.0.1:${PORT}/`)
-  console.log(`  alarms ingest:  POST /api/alarms/ingest`)
-  console.log(`  lark events:    POST /api/lark/events`)
-  console.log(`  stats:          GET  /api/stats/summary`)
-  console.log(`  openai key:     ${process.env.OPENAI_API_KEY ? 'yes' : 'no'}`)
-  console.log(`  auto-analyze:   ${AUTO_ANALYZE ? 'on' : 'off'}`)
-})
+/** Local / container entrypoint. Skipped on Vercel (serverless uses api/index). */
+if (!process.env.VERCEL) {
+  const server = http.createServer((req, res) => {
+    void handleRequest(req, res)
+  })
+  server.listen(PORT, HOST, () => {
+    console.log(`lark-messenger-server on http://${HOST}:${PORT}`)
+    console.log(`  playground:     http://127.0.0.1:${PORT}/`)
+    console.log(`  alarms ingest:  POST /api/alarms/ingest`)
+    console.log(`  lark events:    POST /api/lark/events`)
+    console.log(`  stats:          GET  /api/stats/summary`)
+    console.log(`  openai key:     ${process.env.OPENAI_API_KEY ? 'yes' : 'no'}`)
+    console.log(`  auto-analyze:   ${AUTO_ANALYZE ? 'on' : 'off'}`)
+  })
+}
