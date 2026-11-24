@@ -1164,6 +1164,59 @@ async function main() {
     dailyCron?.schedule === '0 1 * * *',
     JSON.stringify(dailyCron || {}),
   )
+  const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
+  record(
+    'cron.alert_nudge_every_minute',
+    nudgeCron?.schedule === '* * * * *',
+    JSON.stringify(nudgeCron || {}),
+  )
+  const {
+    ALERT_NUDGE_DAY,
+    ALERT_NUDGE_MESSAGE,
+    ackAlertNudge,
+    buildAlertNudgeCard,
+    looksLikeNudgeAck,
+    nudgeWindowExpired,
+    nudgeWindowOpen,
+    writeNudgeState,
+  } = await import('../api/lark/_lib/alertNudge')
+  // 2026-11-25 00:30 UTC = 08:30 CST
+  const atStart = Date.parse('2026-11-25T00:30:00Z')
+  const before = Date.parse('2026-11-25T00:29:00Z')
+  record('nudge.window_opens_0830_cst', nudgeWindowOpen(atStart) && !nudgeWindowOpen(before), '')
+  record(
+    'nudge.window_expires_1800_cst',
+    nudgeWindowExpired(Date.parse('2026-11-25T10:00:00Z')) &&
+      !nudgeWindowExpired(Date.parse('2026-11-25T09:59:00Z')),
+    '',
+  )
+  const nudgeCard = buildAlertNudgeCard({
+    openId: 'ou_smoke_haixiang',
+    message: ALERT_NUDGE_MESSAGE,
+    sendCount: 1,
+  })
+  const nudgeJson = JSON.stringify(nudgeCard)
+  record(
+    'nudge.card_at_and_ack_button',
+    nudgeJson.includes('ou_smoke_haixiang') &&
+      nudgeJson.includes('alert_nudge_ack') &&
+      nudgeJson.includes('知道了') &&
+      nudgeJson.includes(ALERT_NUDGE_MESSAGE) &&
+      ALERT_NUDGE_DAY === '2026-11-25',
+    nudgeJson.slice(0, 220),
+  )
+  record('nudge.ack_text', looksLikeNudgeAck('知道了') && !looksLikeNudgeAck('行情'), '')
+  writeNudgeState({
+    dayKey: '2026-11-25',
+    chatId: 'oc_smoke',
+    openId: 'ou_smoke',
+    message: ALERT_NUDGE_MESSAGE,
+    active: true,
+    acked: false,
+    sendCount: 2,
+  })
+  const acked = ackAlertNudge('ou_smoke')
+  record('nudge.ack_stops_loop', Boolean(acked?.acked && !acked.active), JSON.stringify(acked))
 
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')

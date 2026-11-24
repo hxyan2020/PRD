@@ -658,6 +658,18 @@ export async function handleCardAction(args: {
     })
   }
 
+  if (action === 'alert_nudge_ack') {
+    const { ackAlertNudge } = await import('./alertNudge.js')
+    ackAlertNudge(args.openId)
+    return {
+      card: simpleCard(
+        '已收到',
+        '知道了 ✅ 已停止群提醒。有新告警再叫我。',
+        'green',
+      ),
+    }
+  }
+
   return {
     text:
       lang === 'zh-Hans'
@@ -712,6 +724,21 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
   session.preferredLang = lang
   saveSession(msg.chatId, msg.openId, session)
+
+  // Active group alert nudge — 「知道了」stops the 1-min loop (button or text)
+  {
+    const { isNudgeActive, looksLikeNudgeAck, ackAlertNudge } = await import('./alertNudge.js')
+    if (isNudgeActive() && looksLikeNudgeAck(workingText)) {
+      ackAlertNudge(msg.openId)
+      return {
+        card: simpleCard(
+          '已收到',
+          '知道了 ✅ 已停止群提醒。有新告警再叫我。',
+          'green',
+        ),
+      }
+    }
+  }
 
   const intent = classifyIntent(workingText, {
     inInvestigateSession: session.mode === 'investigate',
