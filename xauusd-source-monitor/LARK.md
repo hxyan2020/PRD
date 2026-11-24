@@ -97,6 +97,13 @@ Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Prod
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/daily-market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/daily-market-report` with `{ "force": true }` + desk token / cron header
 
+## Weekly review DEMO (group)
+
+- **Once:** **2026-11-25 16:00** Asia/Shanghai → group `oc_eb8eba24…`（【DEMO】每周复盘）
+- **Cron:** `*/15 * * * *` → `/api/lark/weekly-demo`（仅 demo 日 16:00–16:14 发送）
+- **Preview / force:** `GET ?dry=1` · `POST { "force": true }`
+- Regular Friday 16:00 weekly still goes to Yan via `/api/lark/weekly-report`
+
 ## Oscillation alert (vol / leverage / news)
 
 - **Cron:** every **15 min** (`*/15 * * * *`) → `/api/lark/oscillation-alert`

@@ -24,6 +24,10 @@
     {
       "path": "/api/lark/oscillation-alert",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/lark/weekly-demo",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

@@ -45,6 +45,7 @@ import { greetingCard, simpleCard } from '../api/lark/_lib/cards'
 import {
   buildWeeklyReport,
   shanghaiWeekKey,
+  weeklyReportCard,
   weeklyWindow,
 } from '../api/lark/_lib/weeklyReport'
 import type { IncidentRecord } from '../api/lark/_lib/types'
@@ -1271,6 +1272,33 @@ async function main() {
       oscJson.includes('OKX') &&
       (oscJson.includes('数据源') || oscJson.includes('okx.com')),
     `last=${oscSnap.last} volR=${oscSnap.volRatio} ${oscJson.slice(0, 200)}`,
+  )
+
+  const weeklyDemoCron = (vercelCrons.crons || []).find((c) =>
+    (c.path || '').includes('weekly-demo'),
+  )
+  record(
+    'cron.weekly_demo_every_15m',
+    weeklyDemoCron?.schedule === '*/15 * * * *',
+    JSON.stringify(weeklyDemoCron || {}),
+  )
+  const { WEEKLY_DEMO_DAY, isWeeklyDemoSlot } = await import('../api/lark/weekly-demo')
+  // 2026-11-25 08:00 UTC = 16:00 CST
+  record(
+    'weekly.demo_slot_1600_cst',
+    isWeeklyDemoSlot(Date.parse('2026-11-25T08:00:00Z')) &&
+      !isWeeklyDemoSlot(Date.parse('2026-11-25T07:59:00Z')) &&
+      !isWeeklyDemoSlot(Date.parse('2026-11-26T08:00:00Z')) &&
+      WEEKLY_DEMO_DAY === '2026-11-25',
+    '',
+  )
+  const wrDemo = buildWeeklyReport([], Date.parse('2026-11-25T08:00:00Z'), 'zh-Hans')
+  const wrDemoCard = weeklyReportCard(`🧪 **【DEMO】每周复盘**\n\n${wrDemo.markdown}`, wrDemo.empty)
+  const wrDemoJson = JSON.stringify(wrDemoCard)
+  record(
+    'weekly.demo_card_zh',
+    wrDemoJson.includes('周报') && wrDemo.markdown.includes('本周概览'),
+    wrDemo.markdown.slice(0, 180),
   )
 
   // 9b) Skills / knowledge catalogue cards
