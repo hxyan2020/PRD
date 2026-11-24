@@ -18,7 +18,7 @@ export type VeRiskScenario = {
 
 type DomainMeta = [string, string, number, "part1" | "part2"];
 
-const DOMAINS = catalogJson.domains as Record<string, DomainMeta>;
+const DOMAINS = catalogJson.domains as unknown as Record<string, DomainMeta>;
 export const VE_RISK_SCENARIOS = catalogJson.scenarios as VeRiskScenario[];
 
 export const VE_RISK_CATALOG_META = {
