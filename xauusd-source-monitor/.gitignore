@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+# Synced at deploy time from ../lark-messenger-server
+vendor-lark/
 
 # Editor directories and files
 .vscode/*

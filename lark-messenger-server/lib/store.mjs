@@ -7,7 +7,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DATA_DIR = path.join(__dirname, '../.data')
+/** On Vercel the function FS is read-only except /tmp. */
+const DATA_DIR =
+  process.env.LARK_DATA_DIR ||
+  (process.env.VERCEL ? '/tmp/lark-messenger-data' : path.join(__dirname, '../.data'))
 const STORE_FILE = path.join(DATA_DIR, 'events.json')
 
 function empty() {

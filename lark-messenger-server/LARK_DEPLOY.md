@@ -126,8 +126,12 @@ Mirror these into the web **Realtime Statistics** page (shared DB) when you hard
 
 1. Create Lark app + bot; create `#risk-ops-xauusd`; add bot.  
 2. Copy **webhook URL** → `LARK_WEBHOOK_URL`.  
-3. Deploy `lark-messenger-server` with HTTPS + `OPENAI_API_KEY`.  
-4. Set event subscription Request URL to `/api/lark/events`; save verification token.  
+3. Deploy via the desk Vercel project (recommended):  
+   `bash xauusd-source-monitor/scripts/deploy-vercel.sh`  
+   → Lark APIs live on `https://vex-llm-proxy.vercel.app`  
+   (or standalone: `bash lark-messenger-server/scripts/deploy-vercel.sh` → `vex-lark-messenger`).  
+4. Set event subscription Request URL to  
+   `https://vex-llm-proxy.vercel.app/api/lark/events`; save verification token.  
 5. Smoke: playground **Run full demo flow** (or `npm test`).  
 6. Point Market Condition / Admin alerts at `/api/alarms/ingest`.  
 7. Schedule stats digest; wire durable DB; optionally sync to web Stats.  

@@ -35,7 +35,7 @@ const TEMPLATES_DIR = path.join(__dirname, 'templates')
 const PUBLIC_DIR = path.join(__dirname, 'public')
 const DESK_BASE =
   process.env.DESK_BASE_URL ||
-  'https://hxyan2020.github.io/PRD/xauusd-source-monitor'
+  'https://vex-llm-proxy.vercel.app'
 const AUTO_ANALYZE = process.env.LARK_AUTO_ANALYZE !== '0'
 const VERIFY_TOKEN = process.env.LARK_VERIFICATION_TOKEN || ''
 const ENCRYPT_KEY = process.env.LARK_ENCRYPT_KEY || ''
@@ -846,7 +846,7 @@ function serveStatic(req, res, urlPath) {
   return true
 }
 
-const server = http.createServer(async (req, res) => {
+export async function handleRequest(req, res) {
   const url = new URL(req.url || '/', `http://${req.headers.host}`)
   if (req.method === 'OPTIONS') return json(res, 204, {})
 
@@ -863,6 +863,7 @@ const server = http.createServer(async (req, res) => {
         encryptKeyConfigured: Boolean(ENCRYPT_KEY),
         templates: listTemplates().map((t) => t.id),
         deskBase: DESK_BASE,
+        runtime: process.env.VERCEL ? 'vercel' : 'node',
       })
     }
 
@@ -1319,14 +1320,20 @@ const server = http.createServer(async (req, res) => {
   } catch (e) {
     return json(res, 500, { error: e instanceof Error ? e.message : 'server error' })
   }
-})
+}
 
-server.listen(PORT, HOST, () => {
-  console.log(`lark-messenger-server on http://${HOST}:${PORT}`)
-  console.log(`  playground:     http://127.0.0.1:${PORT}/`)
-  console.log(`  alarms ingest:  POST /api/alarms/ingest`)
-  console.log(`  lark events:    POST /api/lark/events`)
-  console.log(`  stats:          GET  /api/stats/summary`)
-  console.log(`  openai key:     ${process.env.OPENAI_API_KEY ? 'yes' : 'no'}`)
-  console.log(`  auto-analyze:   ${AUTO_ANALYZE ? 'on' : 'off'}`)
-})
+/** Local / container entrypoint. Skipped on Vercel (serverless uses api/index). */
+if (!process.env.VERCEL) {
+  const server = http.createServer((req, res) => {
+    void handleRequest(req, res)
+  })
+  server.listen(PORT, HOST, () => {
+    console.log(`lark-messenger-server on http://${HOST}:${PORT}`)
+    console.log(`  playground:     http://127.0.0.1:${PORT}/`)
+    console.log(`  alarms ingest:  POST /api/alarms/ingest`)
+    console.log(`  lark events:    POST /api/lark/events`)
+    console.log(`  stats:          GET  /api/stats/summary`)
+    console.log(`  openai key:     ${process.env.OPENAI_API_KEY ? 'yes' : 'no'}`)
+    console.log(`  auto-analyze:   ${AUTO_ANALYZE ? 'on' : 'off'}`)
+  })
+}

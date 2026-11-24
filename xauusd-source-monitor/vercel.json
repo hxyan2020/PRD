@@ -2,6 +2,20 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": null,
+  "functions": {
+    "api/alarms/ingest.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/lark/events.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/lark/render.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/lark/send.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/rca/run.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/followup.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/stats/summary.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/stats/digest.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/stats/digests.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/recent.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/templates.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" },
+    "api/lark-health.mjs": { "includeFiles": "{vendor-lark/**,lib/larkHandler.mjs}" }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
