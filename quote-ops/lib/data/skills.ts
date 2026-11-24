@@ -1,6 +1,8 @@
 import type { Skill } from "@/lib/types";
+import type { ProductId } from "@/lib/kb/products";
+import { VE_RUNBOOK_SKILLS } from "@/lib/data/ve-runbook-v18";
 
-/** Interactive RCA / ops skills for the pricing squad. */
+/** Interactive RCA / ops skills for the pricing squad (CFD Broker). */
 export const SKILLS: Skill[] = [
   {
     id: "sk-stale-quote-rca",
@@ -455,6 +457,13 @@ export const SKILLS: Skill[] = [
   },
 ];
 
+/** All interactive skills across product lines. */
+export const ALL_SKILLS: Skill[] = [...SKILLS, ...VE_RUNBOOK_SKILLS];
+
+export function skillsForProduct(product: ProductId): Skill[] {
+  return product === "v-exchange-perp" ? VE_RUNBOOK_SKILLS : SKILLS;
+}
+
 export function getSkill(slugOrId: string): Skill | undefined {
-  return SKILLS.find((s) => s.slug === slugOrId || s.id === slugOrId);
+  return ALL_SKILLS.find((s) => s.slug === slugOrId || s.id === slugOrId);
 }

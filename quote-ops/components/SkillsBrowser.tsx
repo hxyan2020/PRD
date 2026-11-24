@@ -2,26 +2,39 @@
 
 import Link from "next/link";
 import { SeverityBadge } from "@/components/ClassBadge";
-import { SKILLS } from "@/lib/data/skills";
+import { skillsForProduct } from "@/lib/data/skills";
 import { useI18n } from "@/lib/i18n/context";
+import { useProduct } from "@/lib/product/context";
 
 export function SkillsBrowser() {
   const { locale, t } = useI18n();
+  const { product, def } = useProduct();
+  const skills = skillsForProduct(product);
+  const isPerp = product === "v-exchange-perp";
 
   return (
     <div className="space-y-5 animate-rise">
       <header>
-        <h1 className="font-display text-3xl text-ink">{t("技能库 · 排查 Playbook", "Skill library · RCA playbooks")}</h1>
+        <h1 className="font-display text-3xl text-ink">
+          {isPerp
+            ? t("技能库 · V Exchange Runbook", "Skill library · V Exchange Runbooks")
+            : t("技能库 · 排查 Playbook", "Skill library · RCA playbooks")}
+        </h1>
         <p className="mt-2 max-w-3xl text-sm text-mist">
-          {t(
-            "可交互的步骤清单：固化证据 → 查询占位 SQL → 止血 → 客户处置。每个 Skill 关联相关风险场景。",
-            "Interactive checklists: capture evidence → placeholder SQL → contain → disposition. Each skill links related risks.",
-          )}
+          {isPerp
+            ? t(
+                `当前产品线：${def.shortZh}。Runbook V18 排查路径（表格分支保留在知识页）；交互清单逐步勾选。后续分册将继续写入。`,
+                `Product: ${def.shortEn}. Runbook V18 paths (branch tables on KB pages); interactive checklists here. More parts incoming.`,
+              )
+            : t(
+                "可交互的步骤清单：固化证据 → 查询占位 SQL → 止血 → 客户处置。每个 Skill 关联相关风险场景。",
+                "Interactive checklists: capture evidence → placeholder SQL → contain → disposition. Each skill links related risks.",
+              )}
         </p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {SKILLS.map((s, i) => (
+        {skills.map((s, i) => (
           <Link
             key={s.id}
             href={`/kb/${s.slug}`}

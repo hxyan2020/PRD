@@ -538,7 +538,7 @@ async function ensureProductLines(): Promise<void> {
       const node: KbNode = {
         id: doc.id,
         parentId: "folder-v-exchange",
-        kind: "article",
+        kind: doc.kind ?? "article",
         slug: doc.slug,
         titleZh: doc.titleZh,
         titleEn: doc.titleEn,
@@ -572,7 +572,7 @@ async function ensureProductLines(): Promise<void> {
       [
         doc.id,
         "folder-v-exchange",
-        "article",
+        doc.kind ?? "article",
         doc.slug,
         doc.titleZh,
         doc.titleEn,

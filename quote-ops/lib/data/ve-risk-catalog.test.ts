@@ -24,6 +24,6 @@ describe("VE 138 risk catalog", () => {
     expect(docs.find((d) => d.id === "ve-doc-risk-138-part2")?.bodyZh).toContain("| T01 |");
     expect(docs.find((d) => d.id === "ve-doc-risk-138-metrics")?.bodyZh).toContain("Executable Depth");
     expect(VE_DOCS.some((d) => d.id === "ve-doc-risk-138-overview")).toBe(true);
-    expect(VE_META.version).toBe("V2.0");
+    expect(VE_META.version).toBe("V2.1");
   });
 });

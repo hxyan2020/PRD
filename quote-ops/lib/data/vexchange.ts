@@ -4,6 +4,7 @@
  */
 
 import { buildVeRiskCatalogDocs } from "./ve-risk-catalog";
+import { buildVeRunbookV18Docs } from "./ve-runbook-v18";
 
 export type VeDoc = {
   id: string;
@@ -16,13 +17,15 @@ export type VeDoc = {
   bodyEn: string;
   tags: string[];
   sortOrder: number;
+  /** KB node kind; defaults to article when omitted. */
+  kind?: "article" | "skill";
 };
 
 export const VE_META = {
-  version: "V2.0",
+  version: "V2.1",
   date: "2026-11-24",
   contract: "XAUUSD",
-  status: "内部知识草案 + 138风险场景清单",
+  status: "内部知识草案 + 138风险场景 + Runbook V18 Part1 skills",
 };
 
 const VE_CORE_DOCS: VeDoc[] = [
@@ -369,5 +372,9 @@ DB 接仓：接仓账户承接强平风险头寸。强制成交：历史 SOP 中
   },
 ];
 
-/** Core articles + full 138-scenario risk inventory (V2.0). */
-export const VE_DOCS: VeDoc[] = [...VE_CORE_DOCS, ...buildVeRiskCatalogDocs()];
+/** Core articles + 138-risk inventory + Runbook V18 skills (parts append via buildVeRunbookV18Docs). */
+export const VE_DOCS: VeDoc[] = [
+  ...VE_CORE_DOCS,
+  ...buildVeRiskCatalogDocs(),
+  ...buildVeRunbookV18Docs(),
+];

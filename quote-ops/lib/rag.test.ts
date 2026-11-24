@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { RISK_SCENARIOS } from "@/lib/data/risks";
 import { SKILLS } from "@/lib/data/skills";
+import { buildVeRunbookV18Docs } from "@/lib/data/ve-runbook-v18";
 import { buildCorpusAsync } from "@/lib/corpus";
 import { answerQuestion, retrieve } from "@/lib/rag";
 import { ensureKbSeeded, listNodes } from "@/lib/kb/repo";
@@ -11,7 +12,8 @@ describe("kb seed", () => {
     expect(RISK_SCENARIOS).toHaveLength(86);
     const nodes = await listNodes();
     expect(nodes.filter((n) => n.kind === "risk")).toHaveLength(86);
-    expect(nodes.filter((n) => n.kind === "skill").length).toBe(SKILLS.length);
+    const veSkillDocs = buildVeRunbookV18Docs().filter((d) => d.kind === "skill").length;
+    expect(nodes.filter((n) => n.kind === "skill").length).toBe(SKILLS.length + veSkillDocs);
     expect(nodes.some((n) => n.kind === "pipeline")).toBe(true);
     expect(nodes.some((n) => n.kind === "database")).toBe(true);
   });
@@ -56,5 +58,14 @@ describe("rag retrieve", () => {
     expect(a.product).toBe("v-exchange-perp");
     expect(a.hits.length).toBeGreaterThan(0);
     expect(a.hits.every((h) => h.chunk.product === "v-exchange-perp")).toBe(true);
+  });
+
+  it("surfaces Runbook V18 L1-01 no-trade skill tables", async () => {
+    await ensureKbSeeded();
+    const hits = await retrieve("L1-01 无交易监控 Lark 排查", "zh-CN", 8, "v-exchange-perp");
+    expect(hits.length).toBeGreaterThan(0);
+    const blob = hits.map((h) => h.chunk.id + h.chunk.titleZh + h.chunk.bodyZh).join("\n");
+    expect(/L1-01|无交易|ve-.*l1-01|runbook-v18/i.test(blob)).toBe(true);
+    expect(hits.every((h) => h.chunk.product === "v-exchange-perp")).toBe(true);
   });
 });
