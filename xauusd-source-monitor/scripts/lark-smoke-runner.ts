@@ -741,34 +741,51 @@ async function main() {
       {
         rank: 1,
         en: 'OKX XAU-USDT-SWAP last 3633.90 vs gold-api spot 3626.90 shows only a +19.3 bps basis — perp and spot are aligned with no extreme dislocation this hour.',
-        zh: 'OKX 永續相對現貨僅約 +19.3 bps 基差，本小時無極端錯位。',
+        zh: 'OKX 永续相对现货仅约 +19.3 bps 基差，本小时无极端错位。',
         sourceIds: ['okx-ticker'],
       },
       {
         rank: 2,
         en: 'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy.',
-        zh: 'Kitco：降息預期與偏弱美元本應支撐金價，但本周金價仍回落約 3%。',
+        zh: 'Kitco：降息预期与偏弱美元本应支撑金价，但本周金价仍回落约 3%。',
         sourceIds: ['kitco'],
       },
     ],
     risk: [],
   })
   const tldrEn = tldrProbe[0]?.en || ''
+  const tldrZh = tldrProbe[0]?.zh || ''
+  const tldrLineCount = tldrEn.split('\n').filter(Boolean).length
   record(
-    'market.tldr_coherent_beats',
-    tldrEn.includes('Live:') &&
-      tldrEn.includes('Tape:') &&
-      tldrEn.includes('Context:') &&
-      tldrEn.includes('\n') &&
+    'market.tldr_max_four_lines',
+    tldrLineCount >= 2 &&
+      tldrLineCount <= 4 &&
+      tldrEn.includes('Live:') &&
+      tldrEn.includes('Trend:') &&
+      tldrEn.includes('Event:') &&
+      tldrEn.includes('Kitco') &&
+      !tldrEn.includes('Watch: no ranked') &&
       !/on the\.\.\./i.test(tldrEn) &&
-      !/Opportunity:.*Kitco: even after/i.test(tldrEn) &&
       !tldrEn.includes('Opportunity:'),
-    tldrEn.slice(0, 280),
+    `lines=${tldrLineCount} ${tldrEn.slice(0, 260)}`,
+  )
+  record(
+    'market.tldr_zh_trend_event',
+    tldrZh.includes('即时：') &&
+      tldrZh.includes('走势：') &&
+      tldrZh.includes('事件：') &&
+      tldrZh.split('\n').filter(Boolean).length <= 4,
+    tldrZh.slice(0, 220),
   )
   record(
     'market.format_tldr_multiline_bullets',
-    mktFmt.includes('• Live:') || mktFmt.includes('Live:'),
-    mktFmt.match(/TL;DR[\s\S]{0,400}/)?.[0]?.slice(0, 220) || '',
+    mktFmt.includes('• Live:') ||
+      mktFmt.includes('Live:') ||
+      mktFmtZh.includes('即时：') ||
+      mktFmtZh.includes('走势：'),
+    mktFmtZh.match(/TL;DR[\s\S]{0,400}/)?.[0]?.slice(0, 220) ||
+      mktFmt.match(/TL;DR[\s\S]{0,400}/)?.[0]?.slice(0, 220) ||
+      '',
   )
 
   const mkt = await turn('market', 'market')

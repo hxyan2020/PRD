@@ -857,9 +857,17 @@ function looksLikeTapePoint(text: string): boolean {
   return /\b(bps|basis|perp|spot|dislocation|溢价|溢價|基差|永续|永續|现货|現貨)\b/i.test(text)
 }
 
+/** News / macro / named-event style points (vs pure tape/basis). */
+function looksLikeEventPoint(text: string): boolean {
+  return /\b(Fed|FOMC|Powell|ECB|BOJ|CPI|NFP|Kitco|Bloomberg|Reuters|war|sanctions|oil|Iran|tariff|election|rate\s*cut|hold|hike|降息|加息|美联储|聯準會|央行|制裁|关税|關稅|战争|戰爭)\b/i.test(
+    text,
+  )
+}
+
 /**
- * TL;DR: coherent multi-line brief — live prints, then short tape/setup + watch.
+ * TL;DR: ≤4 lines summarizing market trend + major event (if any).
  * Does not paste truncated Opportunity bullets; details stay in Opportunity / Risk.
+ * Skips empty filler lines (“no ranked … this hour”).
  */
 export function buildOneLineTldr(args: {
   dxy: number | null
@@ -880,12 +888,12 @@ export function buildOneLineTldr(args: {
   }
   if (args.spotLive != null) {
     printEn.push(`spot ${args.spotLive.toFixed(2)}`)
-    printZh.push(`現貨 ${args.spotLive.toFixed(2)}`)
+    printZh.push(`现货 ${args.spotLive.toFixed(2)}`)
     sourceIds.push('gold-api')
   }
   if (args.dxy != null) {
     printEn.push(`DXY ${args.dxy.toFixed(2)}`)
-    printZh.push(`美元指數 ${args.dxy.toFixed(2)}`)
+    printZh.push(`美元指数 ${args.dxy.toFixed(2)}`)
     sourceIds.push('yahoo-dxy')
   }
   if (args.tnx != null) {
@@ -894,54 +902,76 @@ export function buildOneLineTldr(args: {
     sourceIds.push('yahoo-tnx')
   }
 
-  const topOpp = args.opportunity.slice(0, 2)
-  const topRisk = args.risk.slice(0, 2)
-  for (const p of [...topOpp, ...topRisk]) sourceIds.push(...p.sourceIds)
+  const ranked = [...args.opportunity, ...args.risk]
+  for (const p of ranked.slice(0, 6)) sourceIds.push(...p.sourceIds)
+
+  const tape =
+    ranked.find((p) => looksLikeTapePoint(p.en) || looksLikeTapePoint(p.zh)) || null
+  const event =
+    ranked.find(
+      (p) =>
+        p !== tape &&
+        (looksLikeEventPoint(p.en) || looksLikeEventPoint(p.zh) || !looksLikeTapePoint(p.en)),
+    ) || null
+  // Prefer a clearly event-like point when several non-tape candidates exist
+  const eventPreferred =
+    ranked.find(
+      (p) => p !== tape && (looksLikeEventPoint(p.en) || looksLikeEventPoint(p.zh)),
+    ) || event
 
   const linesEn: string[] = []
   const linesZh: string[] = []
 
+  // 1) Live prints
   if (printEn.length) {
     linesEn.push(`Live: ${printEn.join(' · ')}.`)
-    linesZh.push(`即時：${printZh.join(' · ')}。`)
+    linesZh.push(`即时：${printZh.join(' · ')}。`)
   }
 
-  const tapeOpp = topOpp.find((p) => looksLikeTapePoint(p.en) || looksLikeTapePoint(p.zh))
-  const contextOpp = topOpp.find((p) => p !== tapeOpp) || (!tapeOpp ? topOpp[0] : undefined)
-
-  if (tapeOpp) {
-    const gEn = gistClause(tapeOpp.en, 130)
-    const gZh = gistClause(tapeOpp.zh || tapeOpp.en, 130)
-    if (gEn) linesEn.push(`Tape: ${gEn}.`)
-    if (gZh) linesZh.push(`盤口：${gZh}。`)
+  // 2) Trend — tape/basis gist, else a short opportunity gist
+  const trendSrc = tape || args.opportunity[0] || null
+  if (trendSrc) {
+    const gEn = gistClause(trendSrc.en, 120)
+    const gZh = gistClause(trendSrc.zh || trendSrc.en, 120)
+    if (gEn) linesEn.push(`Trend: ${gEn}.`)
+    if (gZh) linesZh.push(`走势：${gZh}。`)
   }
 
-  if (contextOpp) {
-    const gEn = gistClause(contextOpp.en, 120)
-    const gZh = gistClause(contextOpp.zh || contextOpp.en, 120)
-    if (gEn) linesEn.push(`Context: ${gEn}.`)
-    if (gZh) linesZh.push(`背景：${gZh}。`)
-  } else if (!tapeOpp) {
-    linesEn.push('Setup: no ranked opportunity points this hour.')
-    linesZh.push('機會：本小時無排序機會要點。')
+  // 3) Major event — only when we have a distinct news/macro point
+  if (eventPreferred && eventPreferred !== trendSrc) {
+    const gEn = gistClause(eventPreferred.en, 120)
+    const gZh = gistClause(eventPreferred.zh || eventPreferred.en, 120)
+    if (gEn) linesEn.push(`Event: ${gEn}.`)
+    if (gZh) linesZh.push(`事件：${gZh}。`)
   }
 
-  if (topRisk[0]) {
-    const gEn = gistClause(topRisk[0].en, 110)
-    const gZh = gistClause(topRisk[0].zh || topRisk[0].en, 110)
+  // 4) Optional watch — top risk only if it adds something new (still within 4 lines)
+  const watch = args.risk[0]
+  if (
+    watch &&
+    watch !== trendSrc &&
+    watch !== eventPreferred &&
+    linesEn.length < 4
+  ) {
+    const gEn = gistClause(watch.en, 100)
+    const gZh = gistClause(watch.zh || watch.en, 100)
     if (gEn) linesEn.push(`Watch: ${gEn}.`)
-    if (gZh) linesZh.push(`關注：${gZh}。`)
-  } else {
-    linesEn.push('Watch: no ranked risk points this hour.')
-    linesZh.push('關注：本小時無排序風險要點。')
+    if (gZh) linesZh.push(`关注：${gZh}。`)
+  }
+
+  // Hard cap — never more than 4 lines
+  const en = linesEn.slice(0, 4)
+  const zh = linesZh.slice(0, 4)
+  if (!en.length) {
+    en.push('Trend: no live prints or ranked points this hour.')
+    zh.push('走势：本小时暂无报价或排序要点。')
   }
 
   return [
     {
       rank: 1,
-      // Newlines keep each beat intact — never clamp the joined blob mid-sentence
-      en: linesEn.join('\n'),
-      zh: linesZh.join('\n'),
+      en: en.join('\n'),
+      zh: zh.join('\n'),
       sourceIds: [...new Set(sourceIds)],
     },
   ]
