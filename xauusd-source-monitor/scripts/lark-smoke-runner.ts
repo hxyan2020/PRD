@@ -555,6 +555,45 @@ async function main() {
     Boolean(liveSnap.hourly?.tldr?.length || liveSnap.hourly?.opportunity || liveSnap.hourly?.risk),
     `tldr=${liveSnap.hourly?.tldr?.length ?? 0} kline=${liveSnap.hourly?.kline?.bars?.length ?? 0}`,
   )
+  const { buildOneLineTldr } = await import('../src/engine/hourlyScan')
+  const tldrProbe = buildOneLineTldr({
+    dxy: 104.1,
+    tnx: 4.92,
+    okxPx: 3633.9,
+    spotLive: 3626.9,
+    opportunity: [
+      {
+        rank: 1,
+        en: 'OKX XAU-USDT-SWAP last 3633.90 vs gold-api spot 3626.90 shows only a +19.3 bps basis — perp and spot are aligned with no extreme dislocation this hour.',
+        zh: 'OKX 永續相對現貨僅約 +19.3 bps 基差，本小時無極端錯位。',
+        sourceIds: ['okx-ticker'],
+      },
+      {
+        rank: 2,
+        en: 'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy.',
+        zh: 'Kitco：降息預期與偏弱美元本應支撐金價，但本周金價仍回落約 3%。',
+        sourceIds: ['kitco'],
+      },
+    ],
+    risk: [],
+  })
+  const tldrEn = tldrProbe[0]?.en || ''
+  record(
+    'market.tldr_coherent_beats',
+    tldrEn.includes('Live:') &&
+      tldrEn.includes('Tape:') &&
+      tldrEn.includes('Context:') &&
+      tldrEn.includes('\n') &&
+      !/on the\.\.\./i.test(tldrEn) &&
+      !/Opportunity:.*Kitco: even after/i.test(tldrEn) &&
+      !tldrEn.includes('Opportunity:'),
+    tldrEn.slice(0, 280),
+  )
+  record(
+    'market.format_tldr_multiline_bullets',
+    mktFmt.includes('• Live:') || mktFmt.includes('Live:'),
+    mktFmt.match(/TL;DR[\s\S]{0,400}/)?.[0]?.slice(0, 220) || '',
+  )
 
   const mkt = await turn('market', 'market')
   record(

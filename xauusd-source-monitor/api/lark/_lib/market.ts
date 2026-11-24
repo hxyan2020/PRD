@@ -91,7 +91,11 @@ function renderSection(
     return out
   }
   if (oneLine) {
-    out.push(pointText(points[0]!, lang))
+    // Coherent multi-beat TL;DR (Live / Tape / Context / Watch) — one bullet per line
+    const raw = pointText(points[0]!, lang)
+    for (const line of raw.split(/\n+/).map((x) => x.trim()).filter(Boolean)) {
+      out.push(line.startsWith('•') ? line : `• ${line}`)
+    }
     return out
   }
   for (const p of points.slice(0, 4)) {

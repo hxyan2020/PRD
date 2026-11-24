@@ -774,19 +774,37 @@ function rankPoints(
   }))
 }
 
-/** Short clause for TL;DR — first sentence / gist, not the full article dump. */
-function gistClause(text: string, maxChars = 160): string {
+/** Short clause for TL;DR — complete thought only; never “on the…”. */
+function gistClause(text: string, maxChars = 120): string {
   const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
+  if (!cleaned) return ''
   const first =
     cleaned.split(/(?<=[.。!！])\s+/).filter(Boolean)[0]?.replace(/[.。!！]+$/, '') || cleaned
-  if (first.length <= maxChars) return first
-  const cut = first.slice(0, maxChars - 1)
-  const at = Math.max(cut.lastIndexOf(' — '), cut.lastIndexOf(', '), cut.lastIndexOf('，'), cut.lastIndexOf(' '))
-  return `${(at > maxChars * 0.45 ? cut.slice(0, at) : cut).trimEnd()}…`
+  if (first.length <= maxChars) return first.trim()
+
+  // Prefer a complete left side before em-dash when that side is already a full idea
+  const em = first.indexOf(' — ')
+  if (em >= 48 && em <= maxChars) return first.slice(0, em).trim()
+
+  const cut = first.slice(0, maxChars)
+  const at = Math.max(cut.lastIndexOf(', '), cut.lastIndexOf('，'), cut.lastIndexOf('; '), cut.lastIndexOf(' '))
+  let out = (at > maxChars * 0.5 ? cut.slice(0, at) : cut).trim()
+  out = out
+    .replace(/\b(the|a|an|on|of|to|for|and|or|as|with|that|this|their|its)\s*$/i, '')
+    .replace(/[，,;；:\-—–…]+\s*$/g, '')
+    .trim()
+  return out
 }
 
-/** TL;DR: live prints + balanced summary of Opportunity and Risk (statements only). */
-function buildOneLineTldr(args: {
+function looksLikeTapePoint(text: string): boolean {
+  return /\b(bps|basis|perp|spot|dislocation|溢价|溢價|基差|永续|永續|现货|現貨)\b/i.test(text)
+}
+
+/**
+ * TL;DR: coherent multi-line brief — live prints, then short tape/setup + watch.
+ * Does not paste truncated Opportunity bullets; details stay in Opportunity / Risk.
+ */
+export function buildOneLineTldr(args: {
   dxy: number | null
   tnx: number | null
   okxPx: number | null
@@ -823,39 +841,50 @@ function buildOneLineTldr(args: {
   const topRisk = args.risk.slice(0, 2)
   for (const p of [...topOpp, ...topRisk]) sourceIds.push(...p.sourceIds)
 
-  const partsEn: string[] = []
-  const partsZh: string[] = []
+  const linesEn: string[] = []
+  const linesZh: string[] = []
 
   if (printEn.length) {
-    partsEn.push(`Live: ${printEn.join(' · ')}.`)
-    partsZh.push(`即時：${printZh.join(' · ')}。`)
+    linesEn.push(`Live: ${printEn.join(' · ')}.`)
+    linesZh.push(`即時：${printZh.join(' · ')}。`)
   }
 
-  if (topOpp.length) {
-    const gistsEn = topOpp.map((p) => gistClause(p.en)).join('; ')
-    const gistsZh = topOpp.map((p) => gistClause(p.zh)).join('；')
-    partsEn.push(`Opportunity: ${gistsEn}.`)
-    partsZh.push(`機會面：${gistsZh}。`)
-  } else {
-    partsEn.push('Opportunity: no ranked opportunity points this hour.')
-    partsZh.push('機會面：本小時無排序機會要點。')
+  const tapeOpp = topOpp.find((p) => looksLikeTapePoint(p.en) || looksLikeTapePoint(p.zh))
+  const contextOpp = topOpp.find((p) => p !== tapeOpp) || (!tapeOpp ? topOpp[0] : undefined)
+
+  if (tapeOpp) {
+    const gEn = gistClause(tapeOpp.en, 130)
+    const gZh = gistClause(tapeOpp.zh || tapeOpp.en, 130)
+    if (gEn) linesEn.push(`Tape: ${gEn}.`)
+    if (gZh) linesZh.push(`盤口：${gZh}。`)
   }
 
-  if (topRisk.length) {
-    const gistsEn = topRisk.map((p) => gistClause(p.en)).join('; ')
-    const gistsZh = topRisk.map((p) => gistClause(p.zh)).join('；')
-    partsEn.push(`Risk: ${gistsEn}.`)
-    partsZh.push(`風險面：${gistsZh}。`)
+  if (contextOpp) {
+    const gEn = gistClause(contextOpp.en, 120)
+    const gZh = gistClause(contextOpp.zh || contextOpp.en, 120)
+    if (gEn) linesEn.push(`Context: ${gEn}.`)
+    if (gZh) linesZh.push(`背景：${gZh}。`)
+  } else if (!tapeOpp) {
+    linesEn.push('Setup: no ranked opportunity points this hour.')
+    linesZh.push('機會：本小時無排序機會要點。')
+  }
+
+  if (topRisk[0]) {
+    const gEn = gistClause(topRisk[0].en, 110)
+    const gZh = gistClause(topRisk[0].zh || topRisk[0].en, 110)
+    if (gEn) linesEn.push(`Watch: ${gEn}.`)
+    if (gZh) linesZh.push(`關注：${gZh}。`)
   } else {
-    partsEn.push('Risk: no ranked risk points this hour.')
-    partsZh.push('風險面：本小時無排序風險要點。')
+    linesEn.push('Watch: no ranked risk points this hour.')
+    linesZh.push('關注：本小時無排序風險要點。')
   }
 
   return [
     {
       rank: 1,
-      en: clampSummary(partsEn.join(' '), 560),
-      zh: clampSummary(partsZh.join(''), 560),
+      // Newlines keep each beat intact — never clamp the joined blob mid-sentence
+      en: linesEn.join('\n'),
+      zh: linesZh.join('\n'),
       sourceIds: [...new Set(sourceIds)],
     },
   ]

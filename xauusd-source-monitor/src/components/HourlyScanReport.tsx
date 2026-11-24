@@ -178,7 +178,13 @@ function SectionBlock({
           <p className="hourly-empty">{emptyLabel}</p>
         ) : (
           <div className="hourly-tldr-line">
-            <p>{lang === 'zh-Hant' ? p.zh : p.en}</p>
+            {(lang === 'zh-Hant' || lang === 'zh-Hans' ? p.zh || p.en : p.en)
+              .split(/\n+/)
+              .map((line) => line.trim())
+              .filter(Boolean)
+              .map((line, i) => (
+                <p key={i}>{line}</p>
+              ))}
             {p.sourceIds.length ? (
               <button
                 type="button"
