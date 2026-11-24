@@ -4,7 +4,12 @@ import { matchRelevantBriefings } from '../copilot/engine/briefingMatch'
 import { analyzeWithRules, followUpWithRules } from '../copilot/engine/rules'
 import { detectReplyLang } from '../copilot/engine/detectReplyLang'
 import { fetchExternalPagesForAlert } from '../copilot/engine/externalSources'
-import { assessFollowUpRelevance, assessRelevance } from '../copilot/engine/relevance'
+import {
+  assessFollowUpRelevance,
+  assessRelevance,
+  capabilityAnswer,
+  greetingAnswer,
+} from '../copilot/engine/relevance'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import {
   applyManagedLlmConfig,
@@ -161,11 +166,50 @@ export function InvestigatePage() {
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
     const analysisLang = detectReplyLang(userText || query, lang)
     // Text-only off-topic asks are gently rejected; screenshot-only may still be an alert.
+    // Capability / bare-greeting asks get a real reply — never a recycled greeting template.
     if (userText) {
       const relevance = assessRelevance(userText, analysisLang)
       if (!relevance.ok) {
         setError(relevance.message)
         setLiveThinking([])
+        return
+      }
+      if (relevance.mode === 'capability' || relevance.mode === 'greeting') {
+        const reply =
+          relevance.mode === 'capability'
+            ? capabilityAnswer(userText, analysisLang)
+            : greetingAnswer(analysisLang)
+        const now = Date.now()
+        const metaTitle =
+          relevance.mode === 'capability'
+            ? analysisLang === 'en'
+              ? 'Capabilities'
+              : '能力说明'
+            : analysisLang === 'en'
+              ? 'Hello'
+              : '打招呼'
+        const record: IncidentRecord = {
+          id: `meta-${now}`,
+          title: metaTitle,
+          createdAt: now,
+          facts: userText,
+          severity: '待判定',
+          provider: 'rules',
+          modelLabel: 'local-rules',
+          report: reply,
+          hits: [],
+          l2: [],
+          imageDataUrls: images,
+          replyLang: analysisLang,
+          skillMatched: false,
+          messages: [
+            { role: 'user', content: userText, at: now },
+            { role: 'assistant', content: reply, at: now },
+          ],
+        }
+        setActive(record)
+        setLiveThinking([])
+        setError(null)
         return
       }
     }
@@ -452,7 +496,11 @@ export function InvestigatePage() {
         return
       }
       let reply: string
-      if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
+      if (relevance.mode === 'capability') {
+        reply = capabilityAnswer(followUp.trim(), followLang)
+      } else if (relevance.mode === 'greeting') {
+        reply = greetingAnswer(followLang)
+      } else if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
         reply = followUpWithRules(followUp.trim(), active.facts, followLang)
       } else {
         const skills = loadSkills()
