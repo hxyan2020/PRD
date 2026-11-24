@@ -76,11 +76,22 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
 
   const senderId = (sender?.sender_id || {}) as Record<string, string>
   const openId = senderId.open_id || senderId.user_id || 'unknown'
+  const senderType = String(sender?.sender_type || 'user').toLowerCase()
   const messageType = String(message.message_type || 'text')
+  const botOpenId = process.env.LARK_BOT_OPEN_ID || ''
+
+  // Never process our own / other app messages — they re-trigger greetings as duplicates.
+  if (senderType === 'bot' || senderType === 'app' || (botOpenId && openId === botOpenId)) {
+    return null
+  }
+  // Card posts echo as interactive; card clicks use card.action.trigger instead.
+  if (messageType === 'interactive' || messageType === 'system') {
+    return null
+  }
+
   const rawContent = String(message.content || '')
   const mentions = (message.mentions || []) as { id?: { open_id?: string }; name?: string; key?: string }[]
   // Precise match when bot open_id known (env or caller-injected); else any @mention key.
-  const botOpenId = process.env.LARK_BOT_OPEN_ID || ''
   const mentionedBot =
     mentions.some((m) => {
       if (botOpenId && m.id?.open_id === botOpenId) return true
@@ -100,8 +111,6 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
     text = ''
   } else if (messageType === 'file' || messageType === 'media') {
     text = extractFileHint(rawContent)
-  } else if (messageType === 'interactive') {
-    text = '[card interaction]'
   } else {
     text = extractTextContent(rawContent) || extractPostText(rawContent) || `[${messageType}]`
   }

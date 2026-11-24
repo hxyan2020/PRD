@@ -12,6 +12,7 @@
  * Web SPA remains unchanged at / — this endpoint is additive.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { waitUntil } from '@vercel/functions'
 import { handleCardAction, handleMessage } from './_lib/agent.js'
 import {
   isEncryptedEnvelope,
@@ -24,6 +25,7 @@ import {
   sendTextToChat,
   verifyToken,
 } from './_lib/client.js'
+import { claimOnce } from './_lib/dedupe.js'
 import { logInbound, readInbound } from './_lib/inboundLog.js'
 import { parseIncomingEvent, shouldRespond } from './_lib/parse.js'
 
@@ -51,40 +53,46 @@ function readBody(req: VercelRequest): Record<string, unknown> {
   return {}
 }
 
+/**
+ * Send exactly one outbound message. Do NOT fall back from reply→sendChat:
+ * a reply that succeeds then throws on parse would otherwise double-post.
+ */
 async function dispatchReply(
   messageId: string,
   chatId: string,
   reply: { text?: string; card?: Record<string, unknown> },
 ): Promise<{ ok: boolean; via?: string; error?: string }> {
-  if (reply.card) {
-    try {
-      await replyCard(messageId, reply.card)
-      return { ok: true, via: 'replyCard' }
-    } catch (e1) {
-      try {
-        await sendCardToChat(chatId, reply.card)
-        return { ok: true, via: 'sendCardToChat' }
-      } catch (e2) {
-        console.error('[lark/dispatch] card failed', e1, e2)
+  try {
+    if (reply.card) {
+      if (messageId) {
+        await replyCard(messageId, reply.card)
+        return { ok: true, via: 'replyCard' }
       }
+      await sendCardToChat(chatId, reply.card)
+      return { ok: true, via: 'sendCardToChat' }
     }
-  }
-  if (reply.text) {
-    try {
-      await replyText(messageId, reply.text)
-      return { ok: true, via: 'replyText' }
-    } catch (e1) {
-      try {
-        await sendTextToChat(chatId, reply.text)
-        return { ok: true, via: 'sendTextToChat' }
-      } catch (e2) {
-        const msg = e2 instanceof Error ? e2.message : String(e2)
-        console.error('[lark/dispatch] text failed', e1, e2)
-        return { ok: false, error: msg }
+    if (reply.text) {
+      if (messageId) {
+        await replyText(messageId, reply.text)
+        return { ok: true, via: 'replyText' }
       }
+      await sendTextToChat(chatId, reply.text)
+      return { ok: true, via: 'sendTextToChat' }
     }
+    return { ok: false, error: 'empty reply' }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[lark/dispatch] failed', msg)
+    return { ok: false, error: msg }
   }
-  return { ok: false, error: 'empty reply' }
+}
+
+function dedupeKey(header: Record<string, unknown>, messageId?: string, cardToken?: string) {
+  const eventId = String(header.event_id || '')
+  if (eventId) return `evt:${eventId}`
+  if (cardToken) return `card:${cardToken}`
+  if (messageId) return `msg:${messageId}`
+  return ''
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -186,8 +194,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(401).json({ error: 'invalid verification token' })
   }
 
-  // Ack immediately pattern: Vercel should finish within timeout; we process inline
-  // (Lark retries on non-2xx). Return 200 ASAP after work for typical messages.
+  // Ack 200 fast (Lark retries on slow/non-2xx → duplicate replies). Heavy work via waitUntil.
   try {
     if (eventType === 'im.message.receive_v1' || body.event) {
       const event = (body.event || body) as Record<string, unknown>
@@ -195,7 +202,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Card action (schema 2.0 may use card.action.trigger)
       if (eventType === 'card.action.trigger') {
         const operator = (event.operator || {}) as { open_id?: string }
-        const action = (event.action || {}) as { value?: Record<string, unknown> }
+        const action = (event.action || {}) as {
+          value?: Record<string, unknown>
+          tag?: string
+        }
         const context = (event.context || {}) as {
           open_message_id?: string
           open_chat_id?: string
@@ -204,33 +214,87 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           typeof action.value === 'string'
             ? (JSON.parse(action.value) as Record<string, unknown>)
             : action.value || {}
-        const reply = await handleCardAction({
-          openId: operator.open_id || 'unknown',
-          chatId: context.open_chat_id || '',
-          messageId: context.open_message_id || '',
-          value,
-        })
-        let dispatched = { ok: false as boolean, via?: string, error?: string }
-        if (context.open_message_id && context.open_chat_id) {
-          dispatched = await dispatchReply(context.open_message_id, context.open_chat_id, reply)
+        const key = dedupeKey(
+          header,
+          context.open_message_id,
+          `${context.open_message_id}:${String(value.action || '')}:${String(value.incidentId || '')}`,
+        )
+        if (key && !claimOnce(key)) {
+          logInbound({
+            at: new Date().toISOString(),
+            kind: 'card_action',
+            eventType,
+            messageId: context.open_message_id,
+            result: 'skipped:deduped',
+          })
+          return res.status(200).json({ ok: true, deduped: true })
         }
-        logInbound({
-          at: new Date().toISOString(),
-          kind: 'card_action',
-          eventType,
-          openId: operator.open_id,
-          chatId: context.open_chat_id,
-          messageId: context.open_message_id,
-          result: dispatched.ok ? `ok:${dispatched.via}` : `fail:${dispatched.error || 'no_dispatch'}`,
-        })
-        return res.status(200).json({ ok: true })
+        waitUntil(
+          (async () => {
+            try {
+              const reply = await handleCardAction({
+                openId: operator.open_id || 'unknown',
+                chatId: context.open_chat_id || '',
+                messageId: context.open_message_id || '',
+                value,
+              })
+              let dispatched = { ok: false as boolean, via?: string, error?: string }
+              if (context.open_message_id && context.open_chat_id) {
+                dispatched = await dispatchReply(
+                  context.open_message_id,
+                  context.open_chat_id,
+                  reply,
+                )
+              }
+              logInbound({
+                at: new Date().toISOString(),
+                kind: 'card_action',
+                eventType,
+                openId: operator.open_id,
+                chatId: context.open_chat_id,
+                messageId: context.open_message_id,
+                result: dispatched.ok
+                  ? `ok:${dispatched.via}`
+                  : `fail:${dispatched.error || 'no_dispatch'}`,
+              })
+            } catch (e) {
+              logInbound({
+                at: new Date().toISOString(),
+                kind: 'card_action',
+                eventType,
+                error: e instanceof Error ? e.message : 'card error',
+                result: 'error',
+              })
+            }
+          })(),
+        )
+        return res.status(200).json({ ok: true, accepted: true })
       }
 
       if (eventType === 'im.message.receive_v1' || (event as { message?: unknown }).message) {
         const msg = parseIncomingEvent(event)
         if (!msg) {
-          logInbound({ at: new Date().toISOString(), kind: 'message', eventType, result: 'skipped:parse' })
-          return res.status(200).json({ ok: true, skipped: 'parse' })
+          logInbound({
+            at: new Date().toISOString(),
+            kind: 'message',
+            eventType,
+            result: 'skipped:parse_or_bot',
+          })
+          return res.status(200).json({ ok: true, skipped: 'parse_or_bot' })
+        }
+        const key = dedupeKey(header, msg.messageId)
+        if (key && !claimOnce(key)) {
+          logInbound({
+            at: new Date().toISOString(),
+            kind: 'message',
+            eventType,
+            messageId: msg.messageId,
+            chatId: msg.chatId,
+            openId: msg.openId,
+            textPreview: msg.text.slice(0, 80),
+            result: 'skipped:deduped',
+          })
+          return res.status(200).json({ ok: true, deduped: true })
         }
         if (!shouldRespond(msg)) {
           logInbound({
@@ -257,23 +321,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             error: 'LARK_APP_ID / LARK_APP_SECRET not configured on host',
           })
         }
-        const reply = await handleMessage(msg)
-        const dispatched = reply
-          ? await dispatchReply(msg.messageId, msg.chatId, reply)
-          : { ok: false, error: 'null_reply' }
-        logInbound({
-          at: new Date().toISOString(),
-          kind: 'message',
-          eventType,
-          chatType: msg.chatType,
-          chatId: msg.chatId,
-          openId: msg.openId,
-          messageId: msg.messageId,
-          textPreview: msg.text.slice(0, 80),
-          result: dispatched.ok ? `ok:${dispatched.via}` : `fail:${dispatched.error || 'unknown'}`,
-          error: dispatched.ok ? undefined : dispatched.error,
-        })
-        return res.status(200).json({ ok: true, dispatched })
+        waitUntil(
+          (async () => {
+            try {
+              const reply = await handleMessage(msg)
+              const dispatched = reply
+                ? await dispatchReply(msg.messageId, msg.chatId, reply)
+                : { ok: false, error: 'null_reply' }
+              logInbound({
+                at: new Date().toISOString(),
+                kind: 'message',
+                eventType,
+                chatType: msg.chatType,
+                chatId: msg.chatId,
+                openId: msg.openId,
+                messageId: msg.messageId,
+                textPreview: msg.text.slice(0, 80),
+                result: dispatched.ok
+                  ? `ok:${dispatched.via}`
+                  : `fail:${dispatched.error || 'unknown'}`,
+                error: dispatched.ok ? undefined : dispatched.error,
+              })
+            } catch (e) {
+              logInbound({
+                at: new Date().toISOString(),
+                kind: 'handler_error',
+                eventType,
+                messageId: msg.messageId,
+                error: e instanceof Error ? e.message : 'handler error',
+                result: 'error',
+              })
+            }
+          })(),
+        )
+        return res.status(200).json({ ok: true, accepted: true })
       }
     }
 

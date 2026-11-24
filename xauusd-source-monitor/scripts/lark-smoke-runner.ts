@@ -161,6 +161,35 @@ async function main() {
   })
   record('parse.dm_always_respond', Boolean(dm && shouldRespond(dm)), '')
 
+  const botEcho = parseIncomingEvent({
+    message: {
+      message_id: 'm_bot',
+      chat_id: 'c2',
+      chat_type: 'p2p',
+      message_type: 'text',
+      content: JSON.stringify({ text: 'Hey from bot' }),
+    },
+    sender: { sender_type: 'app', sender_id: { open_id: 'ou_bot' } },
+  })
+  record('parse.skip_bot_sender', botEcho === null, '')
+  const cardEcho = parseIncomingEvent({
+    message: {
+      message_id: 'm_card',
+      chat_id: 'c2',
+      chat_type: 'p2p',
+      message_type: 'interactive',
+      content: '{}',
+    },
+    sender: { sender_type: 'user', sender_id: { open_id: 'u1' } },
+  })
+  record('parse.skip_interactive_echo', cardEcho === null, '')
+
+  const { claimOnce, releaseClaim } = await import('../api/lark/_lib/dedupe')
+  const dk = `smoke_dedupe_${Date.now()}`
+  record('dedupe.first_claim', claimOnce(dk) === true, '')
+  record('dedupe.second_claim_blocked', claimOnce(dk) === false, '')
+  releaseClaim(dk)
+
   // 6) Greeting card: bold + spaced bullets + how-to-trigger each command
   for (const lang of ['en', 'zh-Hans', 'zh-Hant'] as const) {
     const g = greetingReply(lang)
