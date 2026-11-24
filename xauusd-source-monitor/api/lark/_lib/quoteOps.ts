@@ -29,7 +29,7 @@ async function callQuoteOpsRag(question: string, productLine: string): Promise<s
     data.summary || '',
   ]
   for (const sec of data.sections || []) {
-    if (sec.heading) lines.push(`## ${sec.heading}`)
+    if (sec.heading) lines.push(sec.heading)
     for (const p of sec.paragraphs || []) lines.push(p)
     for (const b of sec.bullets || []) lines.push(`• ${b}`)
   }

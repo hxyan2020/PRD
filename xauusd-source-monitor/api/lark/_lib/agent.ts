@@ -62,37 +62,37 @@ function buildSummary(args: {
         : 'none'
   if (hans) {
     return [
-      '📋 **摘要**',
-      `• **已摄入事实／证据：** **${args.facts.length}**`,
-      `• **Skills 命中：** **${hitLine}**`,
-      `• **知识库：** **${kbLine}**`,
+      '📋 摘要',
+      `• 已摄入事实／证据：${args.facts.length}`,
+      `• Skills 命中：${hitLine}`,
+      `• 知识库：${kbLine}`,
       args.adapted
-        ? '• **指引：** 下一步已依你最新回复／证据重新排序（非机械整份清单）'
-        : '• **指引：** 请回复你查到的结果或贴上新证据，我会调整建议',
-      '• **边界：** 内部 admin／DB 检索属后续阶段；我不会编造生产数据',
+        ? '• 指引：下一步已依你最新回复／证据重新排序（非机械整份清单）'
+        : '• 指引：请回复你查到的结果或贴上新证据，我会调整建议',
+      '• 边界：内部 admin／DB 检索属后续阶段；我不会编造生产数据',
     ].join('\n')
   }
   if (hant) {
     return [
-      '📋 **摘要**',
-      `• **已攝入事實／證據：** **${args.facts.length}**`,
-      `• **Skills 命中：** **${hitLine}**`,
-      `• **知識庫：** **${kbLine}**`,
+      '📋 摘要',
+      `• 已攝入事實／證據：${args.facts.length}`,
+      `• Skills 命中：${hitLine}`,
+      `• 知識庫：${kbLine}`,
       args.adapted
-        ? '• **指引：** 下一步已依你最新回覆／證據重新排序（非機械整份清單）'
-        : '• **指引：** 請回覆你查到的結果或貼上新證據，我會調整建議',
-      '• **邊界：** 內部 admin／DB 檢索屬後續階段；我不會編造生產數據',
+        ? '• 指引：下一步已依你最新回覆／證據重新排序（非機械整份清單）'
+        : '• 指引：請回覆你查到的結果或貼上新證據，我會調整建議',
+      '• 邊界：內部 admin／DB 檢索屬後續階段；我不會編造生產數據',
     ].join('\n')
   }
   return [
-    '📋 **Summary**',
-    `• **Facts ingested:** **${args.facts.length}**`,
-    `• **Skills hit:** **${hitLine}**`,
-    `• **Knowledge:** **${kbLine}**`,
+    '📋 Summary',
+    `• Facts ingested: ${args.facts.length}`,
+    `• Skills hit: ${hitLine}`,
+    `• Knowledge: ${kbLine}`,
     args.adapted
-      ? '• **Guidance:** Next steps re-ranked from your latest replies/evidence (not a full dump)'
-      : '• **Guidance:** Reply with findings or new evidence and I’ll adapt',
-    '• **Bounds:** Internal admin/DB retrieval is a later phase — I will not invent production data',
+      ? '• Guidance: Next steps re-ranked from your latest replies/evidence (not a full dump)'
+      : '• Guidance: Reply with findings or new evidence and I’ll adapt',
+    '• Bounds: Internal admin/DB retrieval is a later phase — I will not invent production data',
   ].join('\n')
 }
 
@@ -219,10 +219,10 @@ async function runInvestigation(args: {
   })
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤），每点用粗体关键词的子弹列表（• **关键词：** 说明）。必须引用命中的 Skill id 与知识库标题。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
+      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤），每点用「• 关键词：说明」子弹列表。禁止使用任何 markdown 符号（不要星号粗体、反引号、井号或链接括号）。必须引用命中的 Skill id 与知识库标题。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
       : args.lang === 'zh-Hant'
-        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟），每點用粗體關鍵詞的子彈列表（• **關鍵詞：** 說明）。必須引用命中的 Skill id 與知識庫標題。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
-        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. 🔎 Judgement, ✅ Why these steps) and bold-keyword bullet points (`• **Keyword:** detail`). Cite matched Skill ids and KB titles. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
+        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟），每點用「• 關鍵詞：說明」子彈列表。禁止使用任何 markdown 符號（不要星號粗體、反引號、井號或連結括號）。必須引用命中的 Skill id 與知識庫標題。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
+        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. Judgement, Why these steps) and bullet points as "• Keyword: detail". Never use markdown symbols (no asterisks for bold, no backticks, no # headings, no markdown links). Cite matched Skill ids and KB titles. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
@@ -319,10 +319,10 @@ export async function handleCardAction(args: {
       lang === 'zh-Hans' ? '已归档' : lang === 'zh-Hant' ? '已歸檔' : 'Archived'
     const archivedBody = id
       ? lang === 'zh-Hans'
-        ? `事故 \`${id}\` 已归档，可供定期复盘。随时输入 \`review\`，或贴新告警重新开始。`
+        ? `事故 ${id} 已归档，可供定期复盘。随时输入 review，或贴新告警重新开始。`
         : lang === 'zh-Hant'
-          ? `事故 \`${id}\` 已歸檔，可供定期複盤。隨時輸入 \`review\`，或貼新告警重新開始。`
-          : `Incident \`${id}\` archived for regular review. Type \`review\` anytime, or paste a new alert to start fresh.`
+          ? `事故 ${id} 已歸檔，可供定期複盤。隨時輸入 review，或貼新告警重新開始。`
+          : `Incident ${id} archived for regular review. Type review anytime, or paste a new alert to start fresh.`
       : lang === 'zh-Hans'
         ? '会话已清除。请贴上新告警开始排查。'
         : lang === 'zh-Hant'
@@ -432,10 +432,10 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return {
       text:
         lang === 'zh-Hans'
-          ? '已结束本次排查并归档（若有报告）。输入 `review` 查看清单，或贴上新告警重新开始。'
+          ? '已结束本次排查并归档（若有报告）。输入 review 查看清单，或贴上新告警重新开始。'
           : lang === 'zh-Hant'
-            ? '已結束本次排查並歸檔（若有報告）。輸入 `review` 查看清單，或貼上新告警重新開始。'
-            : 'Investigation closed and archived (if a report existed). Type `review` for the list, or paste a new alert to start again.',
+            ? '已結束本次排查並歸檔（若有報告）。輸入 review 查看清單，或貼上新告警重新開始。'
+            : 'Investigation closed and archived (if a report existed). Type review for the list, or paste a new alert to start again.',
     }
   }
 

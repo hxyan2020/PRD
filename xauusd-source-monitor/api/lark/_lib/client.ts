@@ -5,6 +5,8 @@
  * Do NOT enable Encrypt Key in Lark console unless LARK_ENCRYPT_KEY decrypt is added.
  */
 
+import { plainCard, toPlainText } from './plain.js'
+
 let cachedToken: { token: string; expireAt: number } | null = null
 let cachedBotOpenId: { id: string; expireAt: number } | null = null
 
@@ -74,7 +76,7 @@ export async function replyText(messageId: string, text: string) {
     method: 'POST',
     body: JSON.stringify({
       msg_type: 'text',
-      content: JSON.stringify({ text }),
+      content: JSON.stringify({ text: toPlainText(text) }),
     }),
   })
 }
@@ -84,7 +86,7 @@ export async function replyCard(messageId: string, card: Record<string, unknown>
     method: 'POST',
     body: JSON.stringify({
       msg_type: 'interactive',
-      content: JSON.stringify(card),
+      content: JSON.stringify(plainCard(card)),
     }),
   })
 }
@@ -95,7 +97,7 @@ export async function sendTextToChat(chatId: string, text: string) {
     body: JSON.stringify({
       receive_id: chatId,
       msg_type: 'text',
-      content: JSON.stringify({ text }),
+      content: JSON.stringify({ text: toPlainText(text) }),
     }),
   })
 }
@@ -106,7 +108,7 @@ export async function sendCardToChat(chatId: string, card: Record<string, unknow
     body: JSON.stringify({
       receive_id: chatId,
       msg_type: 'interactive',
-      content: JSON.stringify(card),
+      content: JSON.stringify(plainCard(card)),
     }),
   })
 }

@@ -427,6 +427,29 @@ async function main() {
     formatted.includes('🧩') && formatted.includes('📚') && sample.hits.length > 0,
     `hits=${sample.hits.length} kb=${sample.kb.length}`,
   )
+  record(
+    'format.rag_answer_no_markdown',
+    !formatted.includes('**') && !formatted.includes('`') && !formatted.includes('__'),
+    formatted.slice(0, 120),
+  )
+
+  const { toPlainText, plainCard } = await import('../api/lark/_lib/plain')
+  record(
+    'plain.strip_markdown',
+    toPlainText('🔎 **Judgement**\n• **Cause:** x `y`\n[Open](https://example.com)') ===
+      '🔎 Judgement\n• Cause: x y\nOpen (https://example.com)',
+    toPlainText('🔎 **Judgement**\n• **Cause:** x `y`\n[Open](https://example.com)').slice(0, 120),
+  )
+  const cardSample = plainCard({
+    elements: [{ tag: 'div', text: { tag: 'lark_md', content: '• **Severity:** **P1**' } }],
+  }) as { elements: { text: { content: string; tag: string } }[] }
+  record(
+    'plain.card_no_markdown',
+    !JSON.stringify(cardSample).includes('**') &&
+      cardSample.elements[0].text.content.includes('Severity') &&
+      cardSample.elements[0].text.tag === 'lark_md',
+    JSON.stringify(cardSample.elements[0].text),
+  )
 
   const failed = results.filter((r) => !r.ok)
   console.log('\n=== SUMMARY ===')

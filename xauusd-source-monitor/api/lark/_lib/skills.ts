@@ -2,6 +2,7 @@ import l1Raw from '../_data/l1.json' with { type: 'json' }
 import l2Raw from '../_data/l2.json' with { type: 'json' }
 import kbRaw from '../_data/kbDefaults.json' with { type: 'json' }
 import veQuoteOps from '../_data/veQuoteOps.json' with { type: 'json' }
+import { toPlainText } from './plain.js'
 import type { KbHit, KbItem, Lang, SkillHit, SkillRec } from './types.js'
 
 let skillsCache: SkillRec[] | null = null
@@ -230,79 +231,79 @@ export function formatRagAnswer(args: {
 
   lines.push(
     hans
-      ? '📚 **知识库／Skills 检索结果**'
+      ? '📚 知识库／Skills 检索结果'
       : hant
-        ? '📚 **知識庫／Skills 檢索結果**'
-        : '📚 **Knowledge / Skills retrieval**',
+        ? '📚 知識庫／Skills 檢索結果'
+        : '📚 Knowledge / Skills retrieval',
   )
   lines.push(
     hans
-      ? `• **建议严重度：** **${args.severity}**`
+      ? `• 建议严重度：${args.severity}`
       : hant
-        ? `• **建議嚴重度：** **${args.severity}**`
-        : `• **Severity proposal:** **${args.severity}**`,
+        ? `• 建議嚴重度：${args.severity}`
+        : `• Severity proposal: ${args.severity}`,
   )
 
   if (args.hits.length) {
-    lines.push(hans || hant ? '🧩 **Skills 命中**' : '🧩 **Skills hit**')
+    lines.push(hans || hant ? '🧩 Skills 命中' : '🧩 Skills hit')
     for (const h of args.hits.slice(0, 4)) {
-      lines.push(`• **${h.id} · ${h.name}**`)
+      lines.push(`• ${h.id} · ${h.name}`)
       lines.push(
         hans
-          ? `  - **检查：** ${h.check}`
+          ? `  - 检查：${h.check}`
           : hant
-            ? `  - **檢查：** ${h.check}`
-            : `  - **Check:** ${h.check}`,
+            ? `  - 檢查：${h.check}`
+            : `  - Check: ${h.check}`,
       )
       lines.push(
         hans
-          ? `  - **建议（需审批）：** ${h.action}`
+          ? `  - 建议（需审批）：${h.action}`
           : hant
-            ? `  - **建議（需審批）：** ${h.action}`
-            : `  - **Action (approval):** ${h.action}`,
+            ? `  - 建議（需審批）：${h.action}`
+            : `  - Action (approval): ${h.action}`,
       )
     }
   } else {
     lines.push(
       hans
-        ? '• **Skills：** 无高置信命中 — 请补充告警字段或输入 `investigate`'
+        ? '• Skills：无高置信命中 — 请补充告警字段或输入 investigate'
         : hant
-          ? '• **Skills：** 無高置信命中 — 請補充告警欄位或輸入 `investigate`'
-          : '• **Skills:** no high-confidence hit — add alert fields or type `investigate`',
+          ? '• Skills：無高置信命中 — 請補充告警欄位或輸入 investigate'
+          : '• Skills: no high-confidence hit — add alert fields or type investigate',
     )
   }
 
   if (args.kb.length) {
-    lines.push(hans || hant ? '📖 **知识库摘录**' : '📖 **Knowledge excerpts**')
+    lines.push(hans || hant ? '📖 知识库摘录' : '📖 Knowledge excerpts')
     for (const k of args.kb.slice(0, 3)) {
       const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 420)
-      lines.push(`• **${k.title}**`)
+      lines.push(`• ${k.title}`)
       lines.push(`  ${excerpt}${k.body.length > 420 ? '…' : ''}`)
     }
   } else {
     lines.push(
       hans
-        ? '• **知识库：** 无直接摘录；已尝试本地 VE 永续快照'
+        ? '• 知识库：无直接摘录；已尝试本地 VE 永续快照'
         : hant
-          ? '• **知識庫：** 無直接摘錄；已嘗試本地 VE 永續快照'
-          : '• **Knowledge:** no direct excerpt; local VE perpetual snapshot was searched',
+          ? '• 知識庫：無直接摘錄；已嘗試本地 VE 永續快照'
+          : '• Knowledge: no direct excerpt; local VE perpetual snapshot was searched',
     )
   }
 
   if (args.quoteOps) {
-    lines.push(hans || hant ? '🔗 **quote-ops 实时 RAG**' : '🔗 **quote-ops live RAG**')
+    lines.push(hans || hant ? '🔗 quote-ops 实时 RAG' : '🔗 quote-ops live RAG')
     lines.push(args.quoteOps.slice(0, 1600))
   }
 
   lines.push(
     hans
-      ? '_来源：desk L1/L2 Skills + quote-ops V Exchange 永续知识（已排除 CFD）。生产写操作需人工审批。_'
+      ? '来源：desk L1/L2 Skills + quote-ops V Exchange 永续知识（已排除 CFD）。生产写操作需人工审批。'
       : hant
-        ? '_來源：desk L1/L2 Skills + quote-ops V Exchange 永續知識（已排除 CFD）。生產寫操作需人工審批。_'
-        : '_Sources: desk L1/L2 Skills + quote-ops V Exchange perpetual KB (CFD excluded). Production writes need human approval._',
+        ? '來源：desk L1/L2 Skills + quote-ops V Exchange 永續知識（已排除 CFD）。生產寫操作需人工審批。'
+        : 'Sources: desk L1/L2 Skills + quote-ops V Exchange perpetual KB (CFD excluded). Production writes need human approval.',
   )
 
-  return lines.join('\n')
+  return toPlainText(lines.join('\n'))
 }
 
 /**

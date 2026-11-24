@@ -10,17 +10,17 @@ function severityEmoji(sev: string): string {
   return '📌'
 }
 
-/** Bold the leading [SKILL-ID] / 【SKILL-ID】 token for scannable steps. */
+/** Plain-text step line (no markdown). */
 function formatStepLine(raw: string, index: number): string {
   const m = raw.match(/^(\[[^\]]+\]|【[^】]+】)\s*(.*)$/)
-  if (m) return `${index + 1}. **${m[1]}** ${m[2]}`
-  return `${index + 1}. **${raw}**`
+  if (m) return `${index + 1}. ${m[1]} ${m[2]}`
+  return `${index + 1}. ${raw}`
 }
 
 function formatActionLine(raw: string): string {
   const m = raw.match(/^(.*?)(·\s*)([A-Z0-9_-]+)(:\s*)(.*)$/i)
-  if (m) return `• **${m[3]}** — ${m[5]}`
-  return `• **${raw}**`
+  if (m) return `• ${m[3]} — ${m[5]}`
+  return `• ${raw}`
 }
 
 export function investigationCard(args: {
@@ -40,7 +40,7 @@ export function investigationCard(args: {
   const stepMd = args.nextSteps.map((s, i) => formatStepLine(s, i)).join('\n')
   const actionMd =
     args.actions.map((a) => formatActionLine(a)).join('\n') ||
-    (hans ? '• **（暂无）**' : zh ? '• **（暫無）**' : '• **(none yet)**')
+    (hans ? '• （暂无）' : zh ? '• （暫無）' : '• (none yet)')
   const skillLine = args.skills.length
     ? args.skills.join(', ')
     : hans
@@ -57,20 +57,20 @@ export function investigationCard(args: {
         : 'none'
 
   const sevLabel = hans
-    ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
+    ? `${emoji} 建议严重度：${args.severity}（需当班确认）`
     : zh
-      ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
-      : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
+      ? `${emoji} 建議嚴重度：${args.severity}（需當班確認）`
+      : `${emoji} Severity proposal: ${args.severity} (on-duty confirm)`
   const nextLabel = hans
-    ? `✅ **建议下一步**（已依你的证据调整）\n${stepMd}`
+    ? `✅ 建议下一步（已依你的证据调整）\n${stepMd}`
     : zh
-      ? `✅ **建議下一步**（已依你的證據調整）\n${stepMd}`
-      : `✅ **Suggested next steps** (adapted to your evidence)\n${stepMd}`
+      ? `✅ 建議下一步（已依你的證據調整）\n${stepMd}`
+      : `✅ Suggested next steps (adapted to your evidence)\n${stepMd}`
   const prefLabel = hans
-    ? `⚡ **Preferred Action**（需审批）\n${actionMd}`
+    ? `⚡ Preferred Action（需审批）\n${actionMd}`
     : zh
-      ? `⚡ **Preferred Action**（需審批）\n${actionMd}`
-      : `⚡ **Preferred Action** (approval required)\n${actionMd}`
+      ? `⚡ Preferred Action（需審批）\n${actionMd}`
+      : `⚡ Preferred Action (approval required)\n${actionMd}`
 
   return {
     config: { wide_screen_mode: true },
@@ -82,13 +82,13 @@ export function investigationCard(args: {
       {
         tag: 'div',
         text: {
-          tag: 'lark_md',
+          tag: 'plain_text',
           content: `${sevLabel}\n\n${args.summary}`,
         },
       },
       { tag: 'hr' },
-      { tag: 'div', text: { tag: 'lark_md', content: nextLabel } },
-      { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
+      { tag: 'div', text: { tag: 'plain_text', content: nextLabel } },
+      { tag: 'div', text: { tag: 'plain_text', content: prefLabel } },
       {
         tag: 'note',
         elements: [
@@ -159,10 +159,10 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
   const lines =
     args.incidents.length === 0
       ? hans
-        ? '_尚无归档／进行中的事故。开始排查后会自动累积。_'
+        ? '尚无归档／进行中的事故。开始排查后会自动累积。'
         : zh
-          ? '_尚無歸檔／進行中的事故。開始排查後會自動累積。_'
-          : '_No open/archived incidents yet. They accumulate as you investigate._'
+          ? '尚無歸檔／進行中的事故。開始排查後會自動累積。'
+          : 'No open/archived incidents yet. They accumulate as you investigate.'
       : args.incidents
           .slice(0, 12)
           .map((inc, i) => {
@@ -175,21 +175,21 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
             })
             const se = severityEmoji(inc.severity)
             const statusIcon = inc.status === 'open' ? '🟢' : '📦'
-            return `${i + 1}. ${se} **${inc.title}**\n• **Severity:** **${inc.severity}** · ${statusIcon} **${inc.status}** · 🕒 ${when} SGT\n• ${inc.summary.slice(0, 140)}`
+            return `${i + 1}. ${se} ${inc.title}\n• Severity: ${inc.severity} · ${statusIcon} ${inc.status} · 🕒 ${when} SGT\n• ${inc.summary.slice(0, 140)}`
           })
           .join('\n\n')
 
   const kpi = hans
-    ? `📊 **看板摘要**\n• **合计：** **${args.incidents.length}**\n• **进行中：** **${open}**\n• **已归档：** **${archived}**${sevLine ? `\n• **严重度：** ${sevLine}` : ''}`
+    ? `📊 看板摘要\n• 合计：${args.incidents.length}\n• 进行中：${open}\n• 已归档：${archived}${sevLine ? `\n• 严重度：${sevLine}` : ''}`
     : zh
-      ? `📊 **看板摘要**\n• **合計：** **${args.incidents.length}**\n• **進行中：** **${open}**\n• **已歸檔：** **${archived}**${sevLine ? `\n• **嚴重度：** ${sevLine}` : ''}`
-      : `📊 **Dashboard**\n• **Total:** **${args.incidents.length}**\n• **Open:** **${open}**\n• **Archived:** **${archived}**${sevLine ? `\n• **Severity:** ${sevLine}` : ''}`
+      ? `📊 看板摘要\n• 合計：${args.incidents.length}\n• 進行中：${open}\n• 已歸檔：${archived}${sevLine ? `\n• 嚴重度：${sevLine}` : ''}`
+      : `📊 Dashboard\n• Total: ${args.incidents.length}\n• Open: ${open}\n• Archived: ${archived}${sevLine ? `\n• Severity: ${sevLine}` : ''}`
 
   const intro = hans
-    ? `🗂️ 以下为 Lark 侧近期累积的告警与报告。\n• **完整可视化看板**（桌面 RCA + Lark）：[打开看板](${DASHBOARD_URL})`
+    ? `🗂️ 以下为 Lark 侧近期累积的告警与报告。\n• 完整可视化看板（桌面 RCA + Lark）：${DASHBOARD_URL}`
     : zh
-      ? `🗂️ 以下為 Lark 側近期累積的告警與報告。\n• **完整可視化看板**（桌面 RCA + Lark）：[打開看板](${DASHBOARD_URL})`
-      : `🗂️ Lark-side alerts & reports below.\n• **Full visualization** (desk RCA + Lark): [Open dashboard](${DASHBOARD_URL})`
+      ? `🗂️ 以下為 Lark 側近期累積的告警與報告。\n• 完整可視化看板（桌面 RCA + Lark）：${DASHBOARD_URL}`
+      : `🗂️ Lark-side alerts & reports below.\n• Full visualization (desk RCA + Lark): ${DASHBOARD_URL}`
 
   return {
     config: { wide_screen_mode: true },
@@ -205,10 +205,10 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
       },
     },
     elements: [
-      { tag: 'div', text: { tag: 'lark_md', content: intro } },
-      { tag: 'div', text: { tag: 'lark_md', content: kpi } },
+      { tag: 'div', text: { tag: 'plain_text', content: intro } },
+      { tag: 'div', text: { tag: 'plain_text', content: kpi } },
       { tag: 'hr' },
-      { tag: 'div', text: { tag: 'lark_md', content: lines } },
+      { tag: 'div', text: { tag: 'plain_text', content: lines } },
       {
         tag: 'note',
         elements: [
@@ -229,6 +229,6 @@ export function simpleCard(title: string, body: string, template = 'blue'): Reco
       template,
       title: { tag: 'plain_text', content: title },
     },
-    elements: [{ tag: 'div', text: { tag: 'lark_md', content: body } }],
+    elements: [{ tag: 'div', text: { tag: 'plain_text', content: body } }],
   }
 }
