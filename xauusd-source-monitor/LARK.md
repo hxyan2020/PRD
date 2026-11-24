@@ -97,6 +97,14 @@ Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Prod
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/daily-market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/daily-market-report` with `{ "force": true }` + desk token / cron header
 
+## Oscillation alert (vol / leverage / news)
+
+- **Cron:** every **15 min** (`*/15 * * * *`) → `/api/lark/oscillation-alert`
+- **Triggers:** OKX XAU-USDT-SWAP short-horizon amplitude ≫ dynamic mean, **or** |funding| ≫ historical mean (leverage crowding proxy), **or** breaking news keywords
+- **Delivery:** Feishu **group** + **Haixiang DM** (chat_id, open_id fallback); short 简体 card + sources + 连锁强平风险提示
+- **Demo:** **2026-11-25 10:00** Asia/Shanghai once (`LARK_OSC_DEMO_DAY` / `LARK_OSC_DEMO_START`)
+- **Preview / force:** `GET ?dry=1` · `POST { "force": true, "demo": true }`
+
 ## Alert nudge (tomorrow-only group @mention loop)
 
 - **Campaign day only:** **2026-11-25** Asia/Shanghai (override `LARK_ALERT_NUDGE_DAY`)

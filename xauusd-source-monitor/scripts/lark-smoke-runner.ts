@@ -1235,6 +1235,44 @@ async function main() {
     JSON.stringify(acked),
   )
 
+  const oscCron = (vercelCrons.crons || []).find((c) =>
+    (c.path || '').includes('oscillation-alert'),
+  )
+  record(
+    'cron.oscillation_every_15m',
+    oscCron?.schedule === '*/15 * * * *',
+    JSON.stringify(oscCron || {}),
+  )
+  const {
+    OSC_DEMO_DAY,
+    buildOscillationAlertCard,
+    evaluateOscillation,
+    isOscDemoSlot,
+    shouldFireAlert,
+  } = await import('../api/lark/_lib/oscillationAlert')
+  // 2026-11-25 02:00 UTC = 10:00 CST
+  record(
+    'osc.demo_slot_1000_cst',
+    isOscDemoSlot(Date.parse('2026-11-25T02:00:00Z')) &&
+      !isOscDemoSlot(Date.parse('2026-11-25T01:59:00Z')) &&
+      !isOscDemoSlot(Date.parse('2026-11-26T02:00:00Z')) &&
+      OSC_DEMO_DAY === '2026-11-25',
+    '',
+  )
+  const oscSnap = await evaluateOscillation({ demo: true })
+  const oscCard = buildOscillationAlertCard(oscSnap)
+  const oscJson = JSON.stringify(oscCard)
+  record(
+    'osc.demo_card_has_sources_and_liq_risk',
+    shouldFireAlert(oscSnap) &&
+      oscSnap.demo &&
+      oscJson.includes('DEMO') &&
+      oscJson.includes('连锁强平') &&
+      oscJson.includes('OKX') &&
+      (oscJson.includes('数据源') || oscJson.includes('okx.com')),
+    `last=${oscSnap.last} volR=${oscSnap.volRatio} ${oscJson.slice(0, 200)}`,
+  )
+
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')
   record(

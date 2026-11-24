@@ -20,6 +20,10 @@
     {
       "path": "/api/lark/alert-nudge",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/lark/oscillation-alert",
+      "schedule": "*/15 * * * *"
     }
   ]
 }
