@@ -33,6 +33,7 @@ import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import { formatWebSearchAnswer, searchWeb, shouldAutoWebSearch } from '../api/lark/_lib/webSearch'
 import { shanghaiHalfHourKey } from '../api/lark/_lib/market'
 import { looksLikeAdminName } from '../api/lark/_lib/client'
+import { DEFAULT_MARKET_CHAT_ID } from '../api/lark/market-report'
 import {
   extractCardTypingBody,
   isMenuOrCatalogCard,
@@ -1063,6 +1064,11 @@ async function main() {
   record('cron.half_hour_slot_30', slotB.endsWith('T20:30'), slotB)
   record('cron.admin_name_yan', looksLikeAdminName('Yan Haixiang'), '')
   record('cron.admin_name_reject', !looksLikeAdminName('Someone Else'), '')
+  record(
+    'cron.market_chat_id_default',
+    DEFAULT_MARKET_CHAT_ID === 'oc_430fae67dd06b70f65b726b1673ef40e',
+    DEFAULT_MARKET_CHAT_ID,
+  )
 
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')

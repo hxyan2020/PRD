@@ -82,11 +82,11 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 
 - **Schedule:** every **30 minutes** (Vercel cron `*/30 * * * *`)
 - **Content:** same hourly market scan engine as chat `行情` / `market` (TL;DR / Opportunity / Risk)
-- **Delivery:** Feishu DM card to `LARK_ADMIN_OPEN_ID` (Yan Haixiang)
+- **Delivery:** Feishu card to **chat_id** `LARK_MARKET_CHAT_ID` / `LARK_ADMIN_CHAT_ID` (default Yan DM `oc_430fae67dd06b70f65b726b1673ef40e`); falls back to `LARK_ADMIN_OPEN_ID` if chat send fails
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/market-report` with `{ "force": true }` + desk token
 
-Set `LARK_ADMIN_OPEN_ID` on Vercel Production (Yan’s open_id from Feishu admin / bot conversation logs).
+Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Production.
 
 ## Bot behaviour
 
