@@ -296,6 +296,22 @@ async function main() {
 
   // 8) Market (EN + 简)
   clearSession('smoke_chat', 'smoke_user')
+  const { fetchMarketSnapshot, formatMarketAnswer } = await import('../api/lark/_lib/market')
+  const liveSnap = await fetchMarketSnapshot()
+  record(
+    'market.live_okx_or_fallback',
+    Boolean(liveSnap.okx || liveSnap.bitget || liveSnap.spot),
+    `okx=${liveSnap.okx?.last ?? '-'} bitget=${liveSnap.bitget?.last ?? '-'} spot=${liveSnap.spot?.last ?? '-'}`,
+  )
+  const mktFmt = formatMarketAnswer(liveSnap, 'en', 'Market')
+  record(
+    'market.format_no_backticks_no_bare_echo',
+    !mktFmt.includes('`') &&
+      !mktFmt.includes('On your question') &&
+      (mktFmt.includes('OKX XAU-USDT-SWAP') || mktFmt.includes('Bitget') || mktFmt.includes('Spot XAU')),
+    mktFmt.slice(0, 160),
+  )
+
   const mkt = await turn('market', 'What are XAUUSD market trends today?')
   record(
     'turn.market_en',

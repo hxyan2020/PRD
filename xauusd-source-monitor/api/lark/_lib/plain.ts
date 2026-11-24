@@ -24,10 +24,12 @@ export function toPlainText(input: string): string {
   return s
 }
 
-/** Light clean for lark_md: keep bold/code/links; drop ATX leftovers from KB dumps. */
+/** Light clean for lark_md: keep bold/links; drop code backticks & ATX leftovers. */
 export function cleanLarkMd(input: string): string {
   if (!input) return input
   let s = input
+  // Prefer bold over inline code so commands don't look like monospace junk
+  s = s.replace(/`([^`]+)`/g, '**$1**')
   s = s.replace(/^#{1,6}\s+/gm, '')
   s = s.replace(/\s#{1,6}\s+/g, ' ')
   s = s.replace(/^\s*---+\s*$/gm, '')

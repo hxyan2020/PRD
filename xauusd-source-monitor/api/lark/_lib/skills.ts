@@ -266,10 +266,10 @@ export function formatRagAnswer(args: {
   } else {
     lines.push(
       hans
-        ? '• **Skills：** 无高置信命中 — 请补充告警字段或输入 `investigate`'
+        ? '• **Skills：** 无高置信命中 — 请补充告警字段或输入 **investigate**'
         : hant
-          ? '• **Skills：** 無高置信命中 — 請補充告警欄位或輸入 `investigate`'
-          : '• **Skills:** no high-confidence hit — add alert fields or type `investigate`',
+          ? '• **Skills：** 無高置信命中 — 請補充告警欄位或輸入 **investigate**'
+          : '• **Skills:** no high-confidence hit — add alert fields or type **investigate**',
     )
   }
 
