@@ -63,17 +63,43 @@ function skillMatchKeys(s: SkillRecord): string[] {
   return [...keys]
 }
 
-function matchSkills(
-  text: string,
-  skills: SkillRecord[],
-): { s: SkillRecord; score: number }[] {
+/** Pick a short line/window from the user alert that contains the strongest hit token. */
+export function alertEvidenceSnippet(text: string, matchedTokens: string[]): string {
+  const raw = String(text || '').trim()
+  if (!raw || !matchedTokens.length) return ''
+  const lines = raw.split(/\n+/).map((l) => l.trim()).filter(Boolean)
+  const ordered = [...matchedTokens].sort((a, b) => b.length - a.length)
+  for (const token of ordered) {
+    const hit = lines.find((l) => l.toLowerCase().includes(token.toLowerCase()))
+    if (hit) return hit.length > 120 ? `${hit.slice(0, 117)}…` : hit
+  }
+  const joined = raw.replace(/\s+/g, ' ')
+  const t0 = ordered[0]
+  const idx = joined.toLowerCase().indexOf(t0.toLowerCase())
+  if (idx < 0) return ''
+  const start = Math.max(0, idx - 24)
+  const end = Math.min(joined.length, idx + t0.length + 48)
+  const slice = joined.slice(start, end)
+  return `${start > 0 ? '…' : ''}${slice}${end < joined.length ? '…' : ''}`
+}
+
+type SkillMatch = {
+  s: SkillRecord
+  score: number
+  matchedTokens: string[]
+  alertEvidence: string
+}
+
+function matchSkills(text: string, skills: SkillRecord[]): SkillMatch[] {
   const t = text.toLowerCase()
   return skills
     .filter((s) => !s.disabled && !s.archivedAt)
     .map((s) => {
       let score = 0
+      const matchedTokens: string[] = []
       for (const k of skillMatchKeys(s)) {
         if (!t.includes(k)) continue
+        matchedTokens.push(k)
         // Longer / more specific tokens weigh more; short generic tokens weigh less
         if (k.length >= 8) score += 4
         else if (k.length >= 4) score += 2
@@ -82,14 +108,37 @@ function matchSkills(
       // Soft boost for check phrases only when already somewhat matched
       if (score > 0) {
         for (const w of s.check.split(/[，、；;/\s]+/).filter((x) => x.length >= 4)) {
-          if (t.includes(w.toLowerCase())) score += 1
+          if (t.includes(w.toLowerCase())) {
+            score += 1
+            if (!matchedTokens.includes(w.toLowerCase())) matchedTokens.push(w.toLowerCase())
+          }
         }
       }
-      return { s, score }
+      // Prefer longer tokens first in evidence / display
+      matchedTokens.sort((a, b) => b.length - a.length)
+      const alertEvidence = alertEvidenceSnippet(text, matchedTokens)
+      return { s, score, matchedTokens: matchedTokens.slice(0, 6), alertEvidence }
     })
     .filter((x) => x.score >= 3)
     .sort((a, b) => b.score - a.score)
     .slice(0, 6)
+}
+
+function formatSkillHitLine(s: SkillHitRef, zh: boolean): string {
+  const head = `[${s.level}] ${s.id} ${s.name}${s.severity ? ` (${s.severity})` : ''}`
+  const bits: string[] = []
+  if (s.alertEvidence) {
+    bits.push(zh ? `告警原文「${s.alertEvidence}」` : `alert「${s.alertEvidence}」`)
+  }
+  if (s.matchedTokens?.length) {
+    bits.push(
+      zh
+        ? `命中词：${s.matchedTokens.slice(0, 4).join('、')}`
+        : `tokens: ${s.matchedTokens.slice(0, 4).join(', ')}`,
+    )
+  }
+  if (s.matchWhy) bits.push(s.matchWhy)
+  return bits.length ? `${head} ← ${bits.join(' · ')}` : head
 }
 
 /** Pull confirmed facts that are literally present in the operator alert / OCR. */
@@ -146,7 +195,7 @@ export function extractAlertFacts(text: string, zh: boolean): string[] {
 function buildRootCauses(args: {
   zh: boolean
   alertFacts: string[]
-  hits: { s: SkillRecord; score: number }[]
+  hits: SkillMatch[]
   l2: { x: SkillRecord; score: number }[]
 }): string[] {
   const { zh, alertFacts, hits, l2 } = args
@@ -158,10 +207,15 @@ function buildRootCauses(args: {
 
   const topHits = hits.slice(0, 3)
   for (const h of topHits) {
+    const evidence = h.alertEvidence
+      ? zh
+        ? `；对齐告警「${h.alertEvidence}」`
+        : `; from alert「${h.alertEvidence}」`
+      : ''
     out.push(
       zh
-        ? `【候选】对齐 L1 ${h.s.id} ${h.s.name}：${h.s.check}（由告警关键词匹配，仍需日志核验）`
-        : `【Candidate】Aligns L1 ${h.s.id} ${h.s.name}: ${h.s.check} (keyword match — still needs log verification)`,
+        ? `【候选】对齐 L1 ${h.s.id} ${h.s.name}：${h.s.check}${evidence}（关键词匹配，仍需日志核验）`
+        : `【Candidate】Aligns L1 ${h.s.id} ${h.s.name}: ${h.s.check}${evidence} (keyword match — still needs log verification)`,
     )
   }
 
@@ -281,7 +335,13 @@ export function analyzeWithRules(args: {
           ? `從告警原文抽出 ${alertFacts.length} 條已證實事實。`
           : '告警原文未抽出結構化事實 — 請貼完整 Lark／監控告警標題與正文。',
         hits.length
-          ? `告警對齊已定義 Skill：${hits.map((h) => h.s.id).join(', ')}。`
+          ? `告警→Skill 映射：${hits
+              .map((h) =>
+                h.alertEvidence
+                  ? `${h.s.id}←「${h.alertEvidence.slice(0, 40)}${h.alertEvidence.length > 40 ? '…' : ''}」`
+                  : h.s.id,
+              )
+              .join('；')}。`
           : '未匹配到已定義好的 Skill — 將先說明缺口，再動用 LLM 給出可能 RCA，並附外網核驗頁面。',
         l2.length
           ? `僅保留與命中 L1 緊密關聯的 ${l2.length} 條 L2 候選（不堆砌無關鏈路）。`
@@ -298,7 +358,13 @@ export function analyzeWithRules(args: {
           ? `Extracted ${alertFacts.length} confirmed fact(s) from alert text.`
           : 'No structured facts extracted — paste the full monitor/Lark alert title and body.',
         hits.length
-          ? `Alert aligned to defined skill(s): ${hits.map((h) => h.s.id).join(', ')}.`
+          ? `Alert→Skill map: ${hits
+              .map((h) =>
+                h.alertEvidence
+                  ? `${h.s.id}←「${h.alertEvidence.slice(0, 40)}${h.alertEvidence.length > 40 ? '…' : ''}」`
+                  : h.s.id,
+              )
+              .join('; ')}.`
           : 'No defined skill matched — will state the gap, then call LLM for possible RCA and attach external verification pages.',
         l2.length
           ? `Kept ${l2.length} tightly linked L2 candidate(s) only (no unrelated chain dump).`
@@ -332,12 +398,32 @@ export function analyzeWithRules(args: {
       name: h.s.name,
       level: 'L1' as const,
       severity: h.s.severity,
+      score: h.score,
+      matchedTokens: h.matchedTokens,
+      alertEvidence: h.alertEvidence,
+      matchWhy: zh
+        ? `由你發送的告警／事件關鍵詞匹配（score ${h.score}）`
+        : `Matched from your alert/event keywords (score ${h.score})`,
     })),
     ...l2.map((o) => ({
       id: o.x.id,
       name: o.x.name,
       level: 'L2' as const,
       severity: o.x.severity,
+      score: o.score,
+      matchedTokens: o.x.linkedL1.split(/\s+/).filter((id) => ids.includes(id)),
+      alertEvidence: hits.find((h) =>
+        o.x.linkedL1.split(/\s+/).includes(h.s.id),
+      )?.alertEvidence,
+      matchWhy: zh
+        ? `因關聯已命中的 L1（${o.x.linkedL1
+            .split(/\s+/)
+            .filter((id) => ids.includes(id))
+            .join(', ')}）展開排查鏈路`
+        : `Expanded because linked L1 hit(s): ${o.x.linkedL1
+            .split(/\s+/)
+            .filter((id) => ids.includes(id))
+            .join(', ')}`,
     })),
   ]
 
@@ -441,12 +527,9 @@ export function analyzeWithRules(args: {
         '【已知事實】',
         args.text || '未提供告警文字。',
         '',
-        '【使用的 Skills】',
+        '【使用的 Skills（告警→排查技能映射）】',
         ...(skillsUsed.length
-          ? skillsUsed.map(
-              (s) =>
-                `• [${s.level}] ${s.id} ${s.name}${s.severity ? ` (${s.severity})` : ''}`,
-            )
+          ? skillsUsed.map((s) => `• ${formatSkillHitLine(s, true)}`)
           : ['• 未能可靠匹配。請補充告警原文、合約、數值和時間。']),
         '',
         '【使用的知識樹節點】',
@@ -499,12 +582,9 @@ export function analyzeWithRules(args: {
         '【Confirmed facts】',
         args.text || 'No alert text provided.',
         '',
-        '【Skills used】',
+        '【Skills used (alert → investigation skill map)】',
         ...(skillsUsed.length
-          ? skillsUsed.map(
-              (s) =>
-                `• [${s.level}] ${s.id} ${s.name}${s.severity ? ` (${s.severity})` : ''}`,
-            )
+          ? skillsUsed.map((s) => `• ${formatSkillHitLine(s, false)}`)
           : ['• No confident match. Add alert text, contract, values, and timestamps.']),
         '',
         '【Knowledge tree nodes】',
@@ -530,12 +610,12 @@ export function analyzeWithRules(args: {
       ]
 
   const skillContext = [
-    '## Skills used',
-    ...skillsUsed.map((s) => `- [${s.level}] ${s.id} ${s.name}`),
+    '## Skills used (alert → skill map — be explicit which user alert/event matched which skill)',
+    ...skillsUsed.map((s) => `- ${formatSkillHitLine(s, zh)}`),
     '## L1 detail',
     ...hits.map(
       (h) =>
-        `- ${h.s.id} ${h.s.name} [${h.s.severity}]\n  check: ${h.s.check}\n  action: ${h.s.action}\n  opt: ${h.s.opt}`,
+        `- ${h.s.id} ${h.s.name} [${h.s.severity}]\n  matchedFromAlert: ${h.alertEvidence || '(token only)'}\n  tokens: ${h.matchedTokens.join(', ')}\n  check: ${h.s.check}\n  action: ${h.s.action}\n  opt: ${h.s.opt}`,
     ),
     '## L2 detail',
     ...l2.map(

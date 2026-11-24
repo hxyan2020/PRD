@@ -56,6 +56,24 @@ describe('alert-grounded RCA', () => {
     expect(r.pathSteps[0]).toMatch(/告警原文|alert text/i)
   })
 
+  it('records explicit alert→skill metadata (evidence + tokens)', () => {
+    const r = analyzeWithRules({
+      text: ALERT,
+      matchFocus: ALERT,
+      severity: '自动建议',
+      skills: defaultSkills(),
+      knowledge: [],
+      tree: [],
+      lang: 'zh-Hant',
+    })
+    const idx01 = r.skillsUsed.find((s) => s.id === 'IDX-01')
+    expect(idx01).toBeTruthy()
+    expect(idx01?.alertEvidence).toMatch(/指数源变更剔除|剔除/)
+    expect(idx01?.matchedTokens?.length).toBeGreaterThan(0)
+    expect(idx01?.matchWhy).toMatch(/告警|事件/)
+    expect(r.body).toMatch(/告警→排查技能映射|告警原文/)
+  })
+
   it('states skill gap when nothing in the catalog matches', () => {
     const r = analyzeWithRules({
       text: '完全无关的内部代号 XYZ-999 没有技能覆盖',

@@ -768,12 +768,32 @@ export function InvestigatePage() {
                       String((active.skillsUsed || []).length),
                     )}
                   </summary>
-                  <ul className="investigate-list">
+                  <ul className="investigate-list investigate-skill-hits">
                     {(active.skillsUsed || []).length ? (
                       active.skillsUsed!.map((s) => (
                         <li key={`${s.level}-${s.id}`}>
-                          [{s.level}] {s.id} {s.name}
-                          {s.severity ? ` (${s.severity})` : ''}
+                          <div className="skill-hit-head">
+                            <span className="mono">
+                              [{s.level}] {s.id}
+                            </span>{' '}
+                            {s.name}
+                            {s.severity ? (
+                              <span className="pill sev-yellow">{s.severity}</span>
+                            ) : null}
+                          </div>
+                          {s.alertEvidence ? (
+                            <p className="skill-hit-evidence">
+                              {t('investigateSkillFromAlert')}
+                              <span className="mono">「{s.alertEvidence}」</span>
+                            </p>
+                          ) : null}
+                          {s.matchedTokens?.length ? (
+                            <p className="skill-hit-tokens sub">
+                              {t('investigateSkillTokens')}
+                              {s.matchedTokens.slice(0, 5).join(' · ')}
+                            </p>
+                          ) : null}
+                          {s.matchWhy ? <p className="skill-hit-why sub">{s.matchWhy}</p> : null}
                         </li>
                       ))
                     ) : (

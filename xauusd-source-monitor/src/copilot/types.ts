@@ -74,6 +74,14 @@ export interface SkillHitRef {
   name: string
   level: SkillLevel
   severity?: string
+  /** Keyword match score against the operator alert / event text. */
+  score?: number
+  /** Alert/event tokens that triggered this skill (for auditability). */
+  matchedTokens?: string[]
+  /** Short snippet from the user alert/event that drove the match. */
+  alertEvidence?: string
+  /** Human-readable reason this skill was selected for this alert. */
+  matchWhy?: string
 }
 
 export interface KnowledgeHitRef {

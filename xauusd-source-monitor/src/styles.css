@@ -1631,6 +1631,43 @@ td.mono,
   margin: 8px 0 0;
 }
 
+.investigate-skill-hits > li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--ink, #3b2a1a) 12%, transparent);
+}
+
+.investigate-skill-hits > li:last-child {
+  border-bottom: 0;
+}
+
+.skill-hit-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-weight: 650;
+}
+
+.skill-hit-evidence {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--ink, #3b2a1a);
+}
+
+.skill-hit-evidence .mono {
+  font-weight: 600;
+  color: var(--gold-deep, #92400e);
+}
+
+.skill-hit-tokens,
+.skill-hit-why {
+  margin: 0;
+}
+
 .thinking-panel {
   margin: 8px 0 16px;
   padding: 12px 14px;

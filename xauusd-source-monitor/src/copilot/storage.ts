@@ -188,18 +188,38 @@ export function saveSkillOverrides(v: SkillOverrides) {
 
 export function defaultSkills(): SkillRecord[] {
   const now = 0
+  /** Real alert/event titles & OCR phrases → which skill owns the investigation. */
   const hintBoost: Record<string, string> = {
-    'IDX-01': '指数源变更剔除告警 剔除 BYBIT_INDEX source removal',
-    'IDX-02': '指数源变更恢复告警 恢复 BYBIT_INDEX source recovery',
-    'IDX-06': '指数价格线性过渡开始 线性过渡开始 linear transition start',
-    'IDX-07': '指数价格线性过渡结束 线性过渡结束 linear transition end',
+    'IDX-01':
+      '指数源变更剔除告警 指数源剔除 剔除告警 剔除 BYBIT_INDEX OKX_INDEX source removal removed constituent',
+    'IDX-02':
+      '指数源变更恢复告警 指数源恢复 恢复告警 恢复 BYBIT_INDEX source recovery recovered constituent',
+    'IDX-05': 'Index 无有效源 无有效源 no valid source',
+    'IDX-06':
+      '指数价格线性过渡开始 线性过渡开始 线性过渡 平滑开始 linear transition start',
+    'IDX-07':
+      '指数价格线性过渡结束 线性过渡结束 线性过渡 平滑结束 linear transition end',
+    'IDX-08': '仅一家有效指数源 单源 single source',
+    'MARK-01': 'Mark 计算降级 mark degraded Mark计算降级',
+    'PRICE-01': 'Mark vs Index mark/index Mark/Index 偏离',
+    'PRICE-10': 'Mark vs Index PRICE-10 mark index deviation',
+  }
+  const descBoost: Record<string, string> = {
+    'IDX-01': '排查「指数源变更剔除告警」类事件（成分被剔除）',
+    'IDX-02': '排查「指数源变更恢复告警」类事件（成分恢复）',
+    'IDX-05': '排查「无有效指数源」类告警',
+    'IDX-06': '排查「指数价格线性过渡开始」告警',
+    'IDX-07': '排查「指数价格线性过渡结束」告警',
+    'IDX-08': '排查「仅一家有效指数源」告警',
+    'MARK-01': '排查 Mark 计算降级类告警',
+    'PRICE-01': '排查 Mark vs Index 偏离类告警',
   }
   const l1: SkillRecord[] = L1_SKILLS.map((s) => ({
     id: s.id,
     level: 'L1',
     name: s.name,
     severity: s.severity,
-    description: s.name,
+    description: descBoost[s.id] || `排查与 ${s.name} 对齐的告警／事件`,
     matchHints: `${s.id} ${s.name} ${hintBoost[s.id] || ''}`.trim(),
     linkedL1: '',
     check: s.check,
@@ -214,7 +234,7 @@ export function defaultSkills(): SkillRecord[] {
     level: 'L2',
     name: s.name,
     severity: 'P2',
-    description: s.name,
+    description: `L2 链路：在命中 L1（${s.linkedL1 || '—'}）后展开`,
     matchHints: `${s.id} ${s.name} ${s.linkedL1}`,
     linkedL1: s.linkedL1,
     check: s.check,
