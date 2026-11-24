@@ -9,6 +9,12 @@ import {
   skillsCatalogCard,
 } from './cards.js'
 import { chatComplete, describeImage } from './llm.js'
+import {
+  extractWikiQuery,
+  fetchChatHistory,
+  readDocxRaw,
+  searchLarkWiki,
+} from './larkDocs.js'
 import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
@@ -28,10 +34,12 @@ import {
   detectLang,
   greetingReply,
   helpReply,
+  isLarkWikiQuestion,
   looksLikeIncidentEvidence,
   needsInaccessibleAccess,
   offtopicReply,
 } from './scope.js'
+import { logInbound } from './inboundLog.js'
 import {
   clearSession,
   getIncident,
@@ -88,10 +96,12 @@ function buildSummary(args: {
       `• **已摄入事实／证据：** **${args.facts.length}**`,
       `• **Skills 命中：** **${hitLine}**`,
       `• **知识库：** **${kbLine}**`,
+      '• **证据分级（AIPO）：** **已证实** / **假设** / **未排除** — 标注 [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
       args.adapted
         ? '• **指引：** 下一步已依你最新回复／证据重新排序（非机械整份清单）'
         : '• **指引：** 请回复你查到的结果或贴上新证据，我会调整建议',
       '• **边界：** 内部 admin／DB／生产数据我无法直连；需要访问时请联系 **@Yan Haixiang**',
+      '• **只读：** AI 不执行停盘、改阈值、强平、ADL、注资或账本写操作',
     ].join('\n')
   }
   if (hant) {
@@ -101,10 +111,12 @@ function buildSummary(args: {
       `• **已攝入事實／證據：** **${args.facts.length}**`,
       `• **Skills 命中：** **${hitLine}**`,
       `• **知識庫：** **${kbLine}**`,
+      '• **證據分級（AIPO）：** **已證實** / **假設** / **未排除** — 標註 [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
       args.adapted
         ? '• **指引：** 下一步已依你最新回覆／證據重新排序（非機械整份清單）'
         : '• **指引：** 請回覆你查到的結果或貼上新證據，我會調整建議',
       '• **邊界：** 內部 admin／DB／生產資料我無法直連；需要訪問時請聯繫 **@Yan Haixiang**',
+      '• **只讀：** AI 不執行停盤、改閾值、強平、ADL、注資或帳簿寫操作',
     ].join('\n')
   }
   return [
@@ -113,10 +125,12 @@ function buildSummary(args: {
     `• **Facts ingested:** **${args.facts.length}**`,
     `• **Skills hit:** **${hitLine}**`,
     `• **Knowledge:** **${kbLine}**`,
+    '• **Evidence grades (AIPO):** **Confirmed** / **Suspected** / **Unknown** — tag [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
     args.adapted
       ? '• **Guidance:** Next steps re-ranked from your latest replies/evidence (not a full dump)'
       : '• **Guidance:** Reply with findings or new evidence and I’ll adapt',
     '• **Bounds:** I cannot reach internal admin/DB/prod directly — contact **@Yan Haixiang** when access is needed',
+    '• **Read-only:** AI never halts markets, changes thresholds, liquidates, runs ADL, injects funds, or edits ledgers',
   ].join('\n')
 }
 
@@ -198,6 +212,109 @@ function persistOpenIncident(args: {
   return rec
 }
 
+async function handleWikiAsk(lang: Lang, text: string, openId: string): Promise<BotReply> {
+  const query = extractWikiQuery(text) || text.trim().slice(0, 120)
+  const title =
+    lang === 'zh-Hans' ? '飞书 Wiki / 文档' : lang === 'zh-Hant' ? '飛書 Wiki / 文檔' : 'Lark Wiki / Docs'
+  const searched = await searchLarkWiki(query, 5)
+  logInbound({
+    at: new Date().toISOString(),
+    kind: 'wiki_search',
+    openId,
+    textPreview: query.slice(0, 80),
+    result: searched.ok ? `hits:${searched.hits.length}` : `fail:${searched.error || 'unknown'}`,
+  })
+
+  if (!searched.ok) {
+    return {
+      card: simpleCard(
+        title,
+        accessUnavailableReply(
+          lang,
+          lang === 'zh-Hans'
+            ? `飞书 Wiki／文档读取未授权或不可用（${searched.error || 'scope/凭证'}）。这是 AIPO Lark API UAT 只读项，请联系 @Yan Haixiang 开通 Wiki/Docs 只读权限。`
+            : lang === 'zh-Hant'
+              ? `飛書 Wiki／文檔讀取未授權或不可用（${searched.error || 'scope/憑證'}）。這是 AIPO Lark API UAT 唯讀項，請聯繫 @Yan Haixiang 開通 Wiki/Docs 唯讀權限。`
+              : `Lark Wiki/Docs read is unauthorized or unavailable (${searched.error || 'scope/credentials'}). AIPO Lark API UAT read-only item — contact @Yan Haixiang to grant Wiki/Docs read scopes.`,
+        ),
+        'orange',
+      ),
+    }
+  }
+
+  if (!searched.hits.length) {
+    const empty =
+      lang === 'zh-Hans'
+        ? [
+            '📚 **Wiki 检索**',
+            '',
+            `• **查询：** ${query}`,
+            '• **结果：** 未找到授权范围内的页面',
+            '• **提示：** 换关键词再试；若应有文档，请联系 **@Yan Haixiang** 确认授权范围',
+          ].join('\n')
+        : lang === 'zh-Hant'
+          ? [
+              '📚 **Wiki 檢索**',
+              '',
+              `• **查詢：** ${query}`,
+              '• **結果：** 未找到授權範圍內的頁面',
+              '• **提示：** 換關鍵詞再試；若應有文檔，請聯繫 **@Yan Haixiang** 確認授權範圍',
+            ].join('\n')
+          : [
+              '📚 **Wiki search**',
+              '',
+              `• **Query:** ${query}`,
+              '• **Result:** no pages in the authorized scope',
+              '• **Tip:** try other keywords; if a doc should exist, ask **@Yan Haixiang** to confirm the allow-list',
+            ].join('\n')
+    return { card: simpleCard(title, empty, 'blue') }
+  }
+
+  const lines: string[] = []
+  if (lang === 'zh-Hans') {
+    lines.push('📚 **授权 Wiki／文档（只读）**', '', `• **查询：** ${query}`, '')
+  } else if (lang === 'zh-Hant') {
+    lines.push('📚 **授權 Wiki／文檔（唯讀）**', '', `• **查詢：** ${query}`, '')
+  } else {
+    lines.push('📚 **Authorized Wiki/Docs (read-only)**', '', `• **Query:** ${query}`, '')
+  }
+
+  for (const hit of searched.hits.slice(0, 5)) {
+    lines.push(`• **${hit.title}**`)
+    if (hit.snippet) lines.push(`  ${hit.snippet.replace(/\s+/g, ' ').slice(0, 180)}`)
+    if (hit.url) lines.push(`  ${hit.url}`)
+  }
+
+  // Best-effort: expand first docx body (still read-only)
+  const first = searched.hits[0]
+  if (first?.objToken) {
+    const raw = await readDocxRaw(first.objToken)
+    logInbound({
+      at: new Date().toISOString(),
+      kind: 'wiki_docx',
+      openId,
+      textPreview: first.objToken.slice(0, 40),
+      result: raw.ok ? `chars:${raw.content.length}` : `fail:${raw.error || 'unknown'}`,
+    })
+    if (raw.ok && raw.content) {
+      const excerpt = raw.content.replace(/\s+/g, ' ').trim().slice(0, 900)
+      if (lang === 'zh-Hans') lines.push('', '---', '', `📄 **摘录（${first.title}）**`, '', excerpt)
+      else if (lang === 'zh-Hant') lines.push('', '---', '', `📄 **摘錄（${first.title}）**`, '', excerpt)
+      else lines.push('', '---', '', `📄 **Excerpt (${first.title})**`, '', excerpt)
+    }
+  }
+
+  lines.push(
+    '',
+    lang === 'zh-Hans'
+      ? '_未授权的 Wiki／群组不会被访问；凭证与操作可审计。_'
+      : lang === 'zh-Hant'
+        ? '_未授權的 Wiki／群組不會被訪問；憑證與操作可審計。_'
+        : '_Unauthorized Wiki/chats are not accessed; credentials and actions are auditable._',
+  )
+  return { card: simpleCard(title, lines.join('\n'), 'blue') }
+}
+
 async function runInvestigation(args: {
   msg: IncomingMessage
   lang: Lang
@@ -211,6 +328,24 @@ async function runInvestigation(args: {
   }
   if (args.markStepDone && session.pendingPrompt) {
     session.checkedSteps.push(session.pendingPrompt)
+  }
+
+  // AIPO: enrich with authorized chat history when available (group / thread context)
+  if (
+    args.msg.chatType === 'group' &&
+    !session.facts.some((f) => f.startsWith('[chat-history]'))
+  ) {
+    const hist = await fetchChatHistory(args.msg.chatId, 12)
+    logInbound({
+      at: new Date().toISOString(),
+      kind: 'chat_history',
+      chatId: args.msg.chatId,
+      openId: args.msg.openId,
+      result: hist.ok ? `lines:${hist.lines.length}` : `fail:${hist.error || 'unknown'}`,
+    })
+    if (hist.ok && hist.lines.length) {
+      session.facts.push(`[chat-history]\n${hist.lines.join('\n')}`)
+    }
   }
 
   const blob = session.facts.join('\n\n')
@@ -249,10 +384,10 @@ async function runInvestigation(args: {
   })
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤），每点用「• 关键词：说明」子弹列表。禁止使用任何 markdown 符号（不要星号粗体、反引号、井号或链接括号）。必须引用命中的 Skill id 与知识库标题。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
+      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤、📎 证据分级），每点用「• 关键词：说明」子弹列表。必须把根因分成「已证实 / 假设 / 未排除」，并尽量标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。禁止使用任何 markdown 符号（不要星号粗体、反引号、井号或链接括号）。必须引用命中的 Skill id 与知识库标题。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
       : args.lang === 'zh-Hant'
-        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟），每點用「• 關鍵詞：說明」子彈列表。禁止使用任何 markdown 符號（不要星號粗體、反引號、井號或連結括號）。必須引用命中的 Skill id 與知識庫標題。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
-        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. Judgement, Why these steps) and bullet points as "• Keyword: detail". Never use markdown symbols (no asterisks for bold, no backticks, no # headings, no markdown links). Cite matched Skill ids and KB titles. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
+        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟、📎 證據分級），每點用「• 關鍵詞：說明」子彈列表。必須把根因分成「已證實 / 假設 / 未排除」，並盡量標註 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。禁止使用任何 markdown 符號（不要星號粗體、反引號、井號或連結括號）。必須引用命中的 Skill id 與知識庫標題。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
+        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. Judgement, Why these steps, Evidence grades) and bullet points as "• Keyword: detail". Split causes into Confirmed / Suspected / Unknown and tag [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT] when possible. Never use markdown symbols (no asterisks for bold, no backticks, no # headings, no markdown links). Cite matched Skill ids and KB titles. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
@@ -284,6 +419,16 @@ async function runInvestigation(args: {
   session.lastReportId = rec.id
   session.preferredLang = args.lang
   saveSession(args.msg.chatId, args.msg.openId, session)
+
+  logInbound({
+    at: new Date().toISOString(),
+    kind: 'investigate',
+    chatId: args.msg.chatId,
+    openId: args.msg.openId,
+    messageId: args.msg.messageId,
+    textPreview: args.newFact.slice(0, 80),
+    result: `incident:${rec.id};sev:${severity};skills:${hits.map((h) => h.id).join(',')}`,
+  })
 
   const invTitle =
     args.lang === 'zh-Hans' || args.lang === 'zh-Hant'
@@ -427,6 +572,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'offtopic') {
     return { text: offtopicReply(lang) }
+  }
+
+  // AIPO Lark API UAT: Wiki / Docs read (authorized, read-only) before generic access gate
+  if (isLarkWikiQuestion(workingText)) {
+    return handleWikiAsk(lang, workingText, msg.openId)
   }
 
   // User asks for admin/DB/prod/secrets the bot cannot reach → contact @Yan Haixiang.

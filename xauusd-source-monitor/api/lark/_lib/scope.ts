@@ -107,6 +107,20 @@ const COMMAND_KNOWLEDGE =
 const COMMAND_WEEKLY =
   /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
 
+/**
+ * AIPO Lark API UAT — user asks to read Feishu Wiki / Docs (authorized, read-only).
+ * Desk **knowledge** / **kb** commands stay separate (local RAG catalogue).
+ */
+const LARK_WIKI_RE =
+  /\b(lark|feishu)\s*wiki\b|\bwiki\b|(飞书|飛書).{0,8}(wiki|文档|文檔)|(读|讀|查|搜|打开|打開|搜索).{0,16}(飞书|飛書)\s*(wiki|文档|文檔)|wiki\s*(文档|文檔|页面|頁面|node)|飞书文档|飛書文檔|\bdocx\b|知识空间|知識空間/i
+
+export function isLarkWikiQuestion(text: string): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (COMMAND_KNOWLEDGE.test(t)) return false
+  return LARK_WIKI_RE.test(t)
+}
+
 /** Clock hour in UTC+8 (Asia/Shanghai). Feishu users are east-eight. */
 export function east8Hour(now = new Date()): number {
   try {
@@ -349,6 +363,9 @@ export function greetingReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb** — 查看 RAG 知识库摘录',
       '  触发：发送 **knowledge** 或 **kb**；完整桌面页见卡片底部链接',
       '',
+      '• 📖 **wiki** — 只读检索已授权的飞书 Wiki／文档',
+      '  触发：问「查一下飞书文档 …」或带 **wiki** 关键词；未授权请联系 **@Yan Haixiang**',
+      '',
       '• 📊 **weekly** / **周报** — 本周事件与建议汇总',
       '  触发：发送 **weekly** 或 **周报**；每周五 **16:00（东八区）** 自动推送给 **@Yan Haixiang**',
       '',
@@ -393,6 +410,9 @@ export function greetingReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb** — 查看 RAG 知識庫摘錄',
       '  觸發：發送 **knowledge** 或 **kb**；完整桌面頁見卡片底部連結',
       '',
+      '• 📖 **wiki** — 唯讀檢索已授權的飛書 Wiki／文檔',
+      '  觸發：問「查一下飛書文檔 …」或帶 **wiki** 關鍵詞；未授權請聯繫 **@Yan Haixiang**',
+      '',
       '• 📊 **weekly** / **週報** — 本週事件與建議匯總',
       '  觸發：發送 **weekly** 或 **週報**；每週五 **16:00（東八區）** 自動推送給 **@Yan Haixiang**',
       '',
@@ -435,6 +455,9 @@ export function greetingReply(lang: Lang): string {
     '',
     '• 📚 **knowledge** / **kb** — browse RAG knowledge excerpts',
     '  Trigger: send **knowledge** or **kb**; full desk page link at card footer',
+    '',
+    '• 📖 **wiki** — read-only search of authorized Lark Wiki / Docs',
+    '  Trigger: ask with **wiki** / “Lark docs …”; if unauthorized, contact **@Yan Haixiang**',
     '',
     '• 📊 **weekly** — this week’s events & recommendations',
     '  Trigger: send **weekly**; auto-pushed to **@Yan Haixiang** Fridays **16:00 Asia/Shanghai**',
@@ -479,6 +502,9 @@ export function helpReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb**',
       '  发送 **knowledge** 或 **kb** 查看 RAG 知识库',
       '',
+      '• 📖 **wiki**',
+      '  问「查一下飞书文档 …」或带 **wiki**；未授权请联系 @Yan Haixiang',
+      '',
       '• 📊 **weekly** / **周报**',
       '  发送 **weekly** 或 **周报**；每周五 16:00（东八区）自动推送给 @Yan Haixiang',
       '',
@@ -518,6 +544,9 @@ export function helpReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb**',
       '  發送 **knowledge** 或 **kb** 查看 RAG 知識庫',
       '',
+      '• 📖 **wiki**',
+      '  問「查一下飛書文檔 …」或帶 **wiki**；未授權請聯繫 @Yan Haixiang',
+      '',
       '• 📊 **weekly** / **週報**',
       '  發送 **weekly** 或 **週報**；每週五 16:00（東八區）自動推送給 @Yan Haixiang',
       '',
@@ -538,6 +567,7 @@ export function helpReply(lang: Lang): string {
     '• Read alerts, text, images, and tables; guide investigation and draft reports',
     '• Retrieve Skills / knowledge (RAG) and adapt next steps from new evidence',
     '• Accumulate incidents & reports; open the alerts board',
+    '• Read-only search of authorized Lark Wiki / Docs (AIPO UAT)',
     '',
     '**How to trigger each**',
     '',
@@ -555,6 +585,9 @@ export function helpReply(lang: Lang): string {
     '',
     '• 📚 **knowledge** / **kb**',
     '  Send **knowledge** or **kb** to browse the RAG knowledge base',
+    '',
+    '• 📖 **wiki**',
+    '  Ask with **wiki** / “Lark docs …”; if unauthorized, contact @Yan Haixiang',
     '',
     '• 📊 **weekly**',
     '  Send **weekly**; auto-pushed to @Yan Haixiang Fridays 16:00 Asia/Shanghai',

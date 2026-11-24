@@ -76,11 +76,26 @@ Set `LARK_ADMIN_OPEN_ID` on Vercel Production (Yan’s open_id from Feishu admin
 1. **Greeting** — natural hello on @mention / hi / 你好 (SGT time-of-day).
 2. **Market Q&A** — OKX + desk links.
 3. **Off-topic / safety** — gentle reject; no PII, cursing, or political topics.
-4. **Investigate** — alerts/text/image/table; adaptive steps; emoji + bold bullets.
+4. **Investigate** — alerts/text/image/table; adaptive steps; emoji + bold bullets; AIPO evidence grades (Confirmed / Suspected / Unknown + [OBS]/[DESIGN]/…).
 5. **RAG + Skills** — desk + quote-ops V Exchange perpetual (`v-exchange-perp`; CFD excluded).
 6. **Dashboard** — `review` / `dashboard` → KPI card + https://vex-llm-proxy.vercel.app/#/reports
+7. **Wiki / Docs (AIPO)** — read-only Lark Wiki search + Docx excerpt when scopes allow; otherwise contact **@Yan Haixiang**.
 
-Commands: `help` · `market` · `investigate` · `review` · `dashboard` · `weekly` / `周报` · `done` / `archive`
+Commands: `help` · `market` · `investigate` · `review` · `dashboard` · `wiki` · `knowledge` / `kb` · `weekly` / `周报` · `done` / `archive`
+
+## AIPO Lark API UAT (OWNLAB「Lark API 接入需求」)
+
+| Acceptance | Prod status |
+|------------|-------------|
+| Read authorized Wiki / Docs | Implemented (read-only); needs Wiki/Docs scopes — else @Yan |
+| Read authorized group messages | Live events + best-effort history on group investigate |
+| DM / @Bot bidirectional chat | Done |
+| Active push to user/group | Done (alerts + Fri 16:00 CST weekly DM) |
+| Interactive cards + callback | Done |
+| Unauthorized data/groups blocked | Done (access gate → @Yan; min scopes) |
+| Auditable ops / credential hygiene | Inbound + investigate/wiki audit log; secrets on Vercel only |
+
+Source: OWNLAB notebook «Lark api 调用需求文档» (RC AI Agent × Lark Integration). Later polish (daypart, weekly, FAQ, greeting footer) is preserved.
 
 ## Smoke without Lark credentials
 
