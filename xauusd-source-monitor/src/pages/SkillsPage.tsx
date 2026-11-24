@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
+import { ContentAdminBanner } from '../components/ContentAdminBanner'
 import { useLocale } from '../i18n/locale'
 import { loadSkills, saveSkills } from '../copilot/storage'
 import type { SkillLevel, SkillRecord } from '../copilot/types'
@@ -30,8 +31,8 @@ function severityClass(sev: string) {
 
 export function SkillsPage() {
   const { t } = useLocale()
-  const { user } = useAuth()
-  const canWrite = Boolean(user)
+  const { canEditContent } = useAuth()
+  const canWrite = canEditContent
   const [skills, setSkills] = useState<SkillRecord[]>(() => loadSkills())
   const [q, setQ] = useState('')
   const [levelFilter, setLevelFilter] = useState<'all' | SkillLevel>('all')
@@ -120,6 +121,7 @@ export function SkillsPage() {
     <div className="panel skills-page">
       <h2>{t('skillsTitle')}</h2>
       <p className="sub">{t('skillsSub')}</p>
+      {!canWrite ? <ContentAdminBanner surface="skills" /> : null}
 
       <div className="skills-toolbar">
         <input

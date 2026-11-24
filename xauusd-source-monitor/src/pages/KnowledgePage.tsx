@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
+import { ContentAdminBanner } from '../components/ContentAdminBanner'
 import { useLocale } from '../i18n/locale'
 import { loadKnowledgeTree, saveKnowledgeTree } from '../copilot/storage'
 import type { KbNode } from '../copilot/types'
@@ -63,8 +64,8 @@ function TreeNodeView({
 
 export function KnowledgePage() {
   const { t } = useLocale()
-  const { user } = useAuth()
-  const canWrite = Boolean(user)
+  const { canEditContent } = useAuth()
+  const canWrite = canEditContent
   const [nodes, setNodes] = useState<KbNode[]>(() => loadKnowledgeTree())
   const [selectedId, setSelectedId] = useState<string | null>(() => {
     const tree = loadKnowledgeTree()
@@ -222,6 +223,7 @@ export function KnowledgePage() {
     <div className="panel knowledge-page">
       <h2>{t('kbTitle')}</h2>
       <p className="sub">{t('kbSub')}</p>
+      {!canWrite ? <ContentAdminBanner surface="knowledge" /> : null}
 
       <div className="kb-layout">
         <aside className="kb-tree-pane std-side">

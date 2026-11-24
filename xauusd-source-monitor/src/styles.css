@@ -1821,6 +1821,27 @@ td.mono,
   gap: 10px;
 }
 
+.admin-gate-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(180, 140, 60, 0.35);
+  border-radius: 12px;
+  background: rgba(255, 248, 230, 0.9);
+}
+
+.admin-gate-text {
+  margin: 0;
+  flex: 1 1 16rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .user-chip {
   display: flex;
   align-items: center;

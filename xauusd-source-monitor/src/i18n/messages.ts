@@ -50,13 +50,16 @@ const en: Dict = {
   authHytechOnly: 'Use a Hytech email (@hytech.com / @hytechc.com / @hytechpro.com).',
   authFailed: 'Email or password incorrect. Check demo credentials in README.',
   authDemoHint:
-    'Demo: ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026! (also risk.ops@ / analyst@ with RiskDemo2026!)',
-  adminOnlyWrite: 'Signed-in operators can edit Skills and Knowledge in this browser.',
+    'Demo: ops@hytech.com / OpsDemo2026! · Yan Haixiang admin haixiang.yan@hytech.com (or admin@hytech.com) / AdminDemo2026! · risk.ops@ / analyst@ with RiskDemo2026!',
+  adminOnlyWrite:
+    'View only. Only Yan Haixiang (Admin) can change Skills, Knowledge Base, and memory. Raise a change request to him.',
+  adminRaiseToYan: 'Copy raise to Yan Haixiang',
+  adminRaiseCopied: 'Raise request copied',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
   skillsTitle: 'Skills',
   skillsSub:
-    'Create, edit, disable, and archive L1/L2 investigation skills. Stored in this browser; localhost/API can replace the store later.',
+    'Browse L1/L2 investigation skills. Only Yan Haixiang (Admin) can create, edit, disable, or archive. Stored in this browser.',
   skillsCreate: 'Create skill',
   skillsEdit: 'Edit',
   skillsSave: 'Save skill',
@@ -78,7 +81,7 @@ const en: Dict = {
   skillsCount: '{n} skills shown',
   kbTitle: 'Knowledge Base (RAG)',
   kbSub:
-    'Tree of knowledge nodes used by Investigate. Expand/collapse, select a node to edit, create children, reorder, or move.',
+    'Browse the knowledge tree used by Investigate. Only Yan Haixiang (Admin) can edit nodes, create children, reorder, or move.',
   kbTree: 'Knowledge tree',
   kbEditor: 'Node editor',
   kbNewNode: 'New node',
@@ -459,12 +462,16 @@ const zhHant: Dict = {
   authHytechOnly: '請使用 Hytech 郵箱（@hytech.com / @hytechc.com / @hytechpro.com）。',
   authFailed: '郵箱或密碼錯誤。請查看 README 示範帳密。',
   authDemoHint:
-    '示範：ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026!（另有 risk.ops@ / analyst@ 密碼 RiskDemo2026!）',
-  adminOnlyWrite: '已登入即可在本瀏覽器編輯 Skills／知識庫。',
+    '示範：ops@hytech.com / OpsDemo2026! · 管理員 Yan Haixiang：haixiang.yan@hytech.com（或 admin@hytech.com）/ AdminDemo2026! · risk.ops@ / analyst@ 密碼 RiskDemo2026!',
+  adminOnlyWrite:
+    '僅可瀏覽。只有 Yan Haixiang（Admin）可修改 Skills、知識庫與記憶。如需變更請向他提出。',
+  adminRaiseToYan: '複製「提報 Yan Haixiang」',
+  adminRaiseCopied: '已複製提報內容',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
   skillsTitle: 'Skills',
-  skillsSub: '建立、編輯、停用與歸檔 L1/L2 排查技能。保存在本瀏覽器；之後可由 localhost/API 取代。',
+  skillsSub:
+    '瀏覽 L1/L2 排查技能。僅 Yan Haixiang（Admin）可建立、編輯、停用或歸檔。保存在本瀏覽器。',
   skillsCreate: '新建 Skill',
   skillsEdit: '編輯',
   skillsSave: '保存 Skill',
@@ -485,7 +492,7 @@ const zhHant: Dict = {
   skillsDisable: '停用',
   skillsCount: '顯示 {n} 個 Skill',
   kbTitle: '知識庫（RAG）',
-  kbSub: '供排查使用的知識樹。可展開/收合，選節點編輯，新增子節點、重排或移動。',
+  kbSub: '瀏覽排查用知識樹。僅 Yan Haixiang（Admin）可編輯節點、新增子節點、重排或移動。',
   kbTree: '知識樹',
   kbEditor: '節點編輯',
   kbNewNode: '新節點',

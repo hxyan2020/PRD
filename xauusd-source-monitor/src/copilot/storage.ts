@@ -1,3 +1,4 @@
+import { canEditContentMemory, type UserRole } from '../auth/users'
 import { DEFAULT_KB, L1_SKILLS, L2_CHAINS } from './data/catalog'
 import type {
   CopilotSettings,
@@ -6,6 +7,28 @@ import type {
   KnowledgeItem,
   SkillRecord,
 } from './types'
+
+const AUTH_SESSION_KEY = 'vex_risk_tool_session_v1'
+
+/** Hard gate for Skills / KB / skill-override writes — Yan Haixiang only. */
+function assertContentAdminWrite(surface: string) {
+  try {
+    const raw = localStorage.getItem(AUTH_SESSION_KEY)
+    if (!raw) throw new Error(`content_admin_required:${surface}`)
+    const session = JSON.parse(raw) as { email?: string; role?: UserRole }
+    if (
+      !canEditContentMemory({
+        email: String(session.email || ''),
+        role: (session.role || 'analyst') as UserRole,
+      })
+    ) {
+      throw new Error(`content_admin_required:${surface}`)
+    }
+  } catch (err) {
+    if (err instanceof Error && err.message.startsWith('content_admin_required:')) throw err
+    throw new Error(`content_admin_required:${surface}`)
+  }
+}
 
 const HISTORY_KEY = 'vex_risk_copilot_history_v1'
 const KB_KEY = 'vex_risk_copilot_kb_v1'
@@ -73,6 +96,7 @@ export function loadKnowledge(): KnowledgeItem[] {
 }
 
 export function saveKnowledge(list: KnowledgeItem[]) {
+  assertContentAdminWrite('knowledge')
   writeJson(KB_KEY, list)
 }
 
@@ -138,6 +162,7 @@ export function loadKnowledgeTree(): KbNode[] {
 }
 
 export function saveKnowledgeTree(nodes: KbNode[]) {
+  assertContentAdminWrite('knowledge')
   writeJson(KB_TREE_KEY, nodes)
   // Keep flat mirror for older analyze paths / RAG flatten
   const docs = nodes.filter((n) => n.parentId != null && n.body.trim())
@@ -184,6 +209,7 @@ export function loadSkillOverrides(): SkillOverrides {
 }
 
 export function saveSkillOverrides(v: SkillOverrides) {
+  assertContentAdminWrite('memory')
   writeJson(SKILL_OVERRIDES_KEY, v)
 }
 
@@ -263,6 +289,7 @@ export function loadSkills(): SkillRecord[] {
 }
 
 export function saveSkills(list: SkillRecord[]) {
+  assertContentAdminWrite('skills')
   writeJson(SKILLS_KEY, list)
 }
 

@@ -21,7 +21,7 @@ const NAV = [
 
 export default function App() {
   const { t, lang, setLang, langLabel } = useLocale()
-  const { user, logout } = useAuth()
+  const { user, logout, isAdmin } = useAuth()
   const mon = useMonitor(lang)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -81,6 +81,7 @@ export default function App() {
             {langSwitch}
             <div className="user-chip">
               <span className="user-chip-name">
+                {isAdmin ? `${t('roleAdmin')} · ` : ''}
                 {user.name} · {user.email}
               </span>
               <button type="button" className="archive-btn" onClick={logout}>
@@ -136,7 +137,10 @@ export default function App() {
 
         <section className="menu-section">
           <h3>{t('menuAccount')}</h3>
-          <p className="menu-user-name">{user.name}</p>
+          <p className="menu-user-name">
+            {isAdmin ? `${t('roleAdmin')} · ` : ''}
+            {user.name}
+          </p>
           <p className="menu-user-email">{user.email}</p>
           <button
             type="button"

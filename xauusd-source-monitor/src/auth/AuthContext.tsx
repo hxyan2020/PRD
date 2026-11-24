@@ -6,7 +6,13 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { authenticate, type DemoUser, type UserRole } from './users'
+import {
+  authenticate,
+  canEditContentMemory,
+  CONTENT_ADMIN,
+  type DemoUser,
+  type UserRole,
+} from './users'
 
 const SESSION_KEY = 'vex_risk_tool_session_v1'
 
@@ -20,25 +26,15 @@ export interface AuthSession {
 type AuthCtx = {
   user: AuthSession | null
   role: UserRole | null
+  /** Yan Haixiang only — may change Skills, Knowledge, and memory. */
   isAdmin: boolean
+  canEditContent: boolean
+  contentAdminName: string
   login: (email: string, password: string) => { ok: true } | { ok: false; error: string }
   logout: () => void
 }
 
 const Ctx = createContext<AuthCtx | null>(null)
-
-function readSession(): AuthSession | null {
-  try {
-    // Forever session: localStorage only (survives tab/browser restarts). No expiry.
-    const raw = localStorage.getItem(SESSION_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as AuthSession
-    if (!parsed?.email || !parsed?.role) return null
-    return parsed
-  } catch {
-    return null
-  }
-}
 
 function writeSession(session: AuthSession | null) {
   try {
@@ -51,6 +47,46 @@ function writeSession(session: AuthSession | null) {
     localStorage.setItem(SESSION_KEY, JSON.stringify(session))
   } catch {
     /* ignore */
+  }
+}
+
+function normalizeSession(parsed: AuthSession): AuthSession {
+  const email = String(parsed.email || '').trim().toLowerCase()
+  // Migrate legacy "Risk Admin" demo session onto Yan Haixiang identity.
+  if (canEditContentMemory({ email, role: 'admin' })) {
+    return {
+      ...parsed,
+      email,
+      name: CONTENT_ADMIN.name,
+      role: 'admin',
+    }
+  }
+  // Never keep admin role on non-allowlisted accounts (stale sessions).
+  if (parsed.role === 'admin') {
+    return { ...parsed, email, role: 'risk_ops' }
+  }
+  return { ...parsed, email: parsed.email }
+}
+
+function readSession(): AuthSession | null {
+  try {
+    // Forever session: localStorage only (survives tab/browser restarts). No expiry.
+    const raw = localStorage.getItem(SESSION_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as AuthSession
+    if (!parsed?.email || !parsed?.role) return null
+    const next = normalizeSession(parsed)
+    // Persist migration so chips / reload stay consistent.
+    if (
+      next.name !== parsed.name ||
+      next.role !== parsed.role ||
+      next.email.toLowerCase() !== String(parsed.email).toLowerCase()
+    ) {
+      writeSession(next)
+    }
+    return next
+  } catch {
+    return null
   }
 }
 
@@ -89,7 +125,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user,
       role: user?.role ?? null,
-      isAdmin: user?.role === 'admin',
+      isAdmin: canEditContentMemory(user),
+      canEditContent: canEditContentMemory(user),
+      contentAdminName: CONTENT_ADMIN.name,
       login,
       logout,
     }),
