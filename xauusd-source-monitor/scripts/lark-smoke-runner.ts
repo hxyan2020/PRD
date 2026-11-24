@@ -9,11 +9,13 @@ import { detectSafetyViolation } from '../api/lark/_lib/safety'
 import {
   accessUnavailableReply,
   botMetaReply,
+  casualChatReply,
   classifyIntent,
   deskFaqReply,
   east8Hour,
   greetingOpenForHour,
   greetingReply,
+  isCasualChat,
   isDeskFaqQuestion,
   isLarkWikiQuestion,
   looksLikeIncidentEvidence,
@@ -501,6 +503,41 @@ async function main() {
       !adminQ.blob.includes('Hello · Risk Copilot') &&
       !adminQ.blob.includes('你好 · Risk Copilot'),
     adminQ.blob.slice(0, 180),
+  )
+
+  // 9a0) Casual “我是谁” / “你是谁” — warm reply, never empty-KB command menu
+  record('casual.detect_who_me', isCasualChat('我是谁'), '')
+  record('casual.detect_who_you', isCasualChat('你是谁'), '')
+  record('casual.intent_who_me', classifyIntent('我是谁', {}) === 'general_risk', '')
+  const whoMeTpl = casualChatReply('zh-Hans', '我是谁', null) || ''
+  record(
+    'casual.who_me_template',
+    whoMeTpl.includes('值班') &&
+      !whoMeTpl.includes('没有命中') &&
+      !whoMeTpl.includes('knowledge') &&
+      !whoMeTpl.includes('investigate'),
+    whoMeTpl.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const whoMeTurn = await turn('who-am-i', '我是谁')
+  record(
+    'turn.who_am_i_natural',
+    Boolean(whoMeTurn.reply?.card) &&
+      (whoMeTurn.blob.includes('值班') || whoMeTurn.blob.includes('你是')) &&
+      !whoMeTurn.blob.includes('没有命中') &&
+      !whoMeTurn.blob.includes('高相关知识摘录') &&
+      !whoMeTurn.blob.includes('发送 **knowledge**') &&
+      !whoMeTurn.blob.includes('发 **investigate**'),
+    whoMeTurn.blob.slice(0, 220),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const whoYouTurn = await turn('who-are-you', '你是谁')
+  record(
+    'turn.who_are_you_natural',
+    Boolean(whoYouTurn.reply?.card) &&
+      whoYouTurn.blob.includes('Risk Copilot') &&
+      !whoYouTurn.blob.includes('没有命中'),
+    whoYouTurn.blob.slice(0, 220),
   )
 
   // 9a1) Desk FAQ: KB edit permission — direct answer, NOT investigate Skills dump / random KB

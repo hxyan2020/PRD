@@ -215,6 +215,9 @@ export function classifyIntent(
   // Meta / desk FAQ (roles, who can edit KB) — answer, never investigate dump
   if (BOT_META_RE.test(t) || DESK_FAQ_RE.test(t)) return 'general_risk'
 
+  // Small talk (“我是谁” / “你是谁” / thanks) — warm reply, not greeting menu
+  if (isCasualChat(t)) return 'general_risk'
+
   // Soft ack after @ only — NEVER classify short real questions as greeting
   // (DMs set mentionedBot=true, so length<12 used to swallow e.g.「谁是管理员」)
   if (SOFT_ACK_RE.test(t)) return 'greeting'
@@ -296,8 +299,6 @@ export function botMetaReply(lang: Lang, question: string): string | null {
       '• **当前阶段：** 我还在 **UAT** 阶段。',
       '• **管理员／问题对接人：** **@Yan Haixiang**',
       '• **怎么反馈：** 使用中有任何问题、Bug 或权限需求，请直接报给 **@Yan Haixiang**。',
-      '',
-      '_生产写操作仍需人工审批；我不会自称已执行生产变更。_',
     ].join('\n')
   }
   if (lang === 'zh-Hant') {
@@ -307,8 +308,6 @@ export function botMetaReply(lang: Lang, question: string): string | null {
       '• **當前階段：** 我還在 **UAT** 階段。',
       '• **管理員／問題對接人：** **@Yan Haixiang**',
       '• **怎麼回饋：** 使用中有任何問題、Bug 或權限需求，請直接報給 **@Yan Haixiang**。',
-      '',
-      '_生產寫操作仍需人工審批；我不會自稱已執行生產變更。_',
     ].join('\n')
   }
   return [
@@ -317,19 +316,113 @@ export function botMetaReply(lang: Lang, question: string): string | null {
     '• **Stage:** I’m still in **UAT**.',
     '• **Admin / contact:** **@Yan Haixiang**',
     '• **How to report:** Please send any issues, bugs, or access needs to **@Yan Haixiang**.',
-    '',
-    '_Production writes still need human approval; I won’t claim I executed them._',
   ].join('\n')
+}
+
+/** Short social / identity lines — answer warmly, never dump a command menu. */
+const CASUAL_WHO_ME =
+  /^(我是谁|我是誰|who\s+am\s+i|whoami|我叫什么|我叫什麼|你知道我是谁吗|你知道我是誰嗎)\s*[?？!！.。]*\s*$/i
+const CASUAL_WHO_YOU =
+  /^(你是谁|你是誰|你叫什么|你叫什麼|who\s+are\s+you|what(?:'s| is)\s+your\s+name)\s*[?？!！.。]*\s*$/i
+const CASUAL_THANKS =
+  /^(谢谢|謝謝|thanks?|thx|ty|感谢|感謝|多谢|多謝)\s*[!！.。~]*\s*$/i
+const CASUAL_HOW =
+  /^(怎么样|怎麼樣|最近怎么样|最近怎麼樣|在忙吗|在忙嗎|how\s+are\s+you)\s*[?？!！.。]*\s*$/i
+
+export function isCasualChat(text: string): boolean {
+  const t = text.trim()
+  return CASUAL_WHO_ME.test(t) || CASUAL_WHO_YOU.test(t) || CASUAL_THANKS.test(t) || CASUAL_HOW.test(t)
+}
+
+/** Friendly one-beat replies for small talk (optional displayName for “我是谁”). */
+export function casualChatReply(
+  lang: Lang,
+  question: string,
+  displayName?: string | null,
+): string | null {
+  const t = question.trim()
+  if (CASUAL_WHO_YOU.test(t)) {
+    if (lang === 'zh-Hans') {
+      return [
+        '🙋 我是 **V Exchange Risk Copilot**（VE AI 风控小助手）。',
+        '',
+        '平时帮你看行情、对告警做排查、翻 Skills／知识库。有风险问题直接丢给我就行 🙂',
+      ].join('\n')
+    }
+    if (lang === 'zh-Hant') {
+      return [
+        '🙋 我是 **V Exchange Risk Copilot**（VE AI 風控小助手）。',
+        '',
+        '平時幫你看行情、對告警做排查、翻 Skills／知識庫。有風險問題直接丟給我就行 🙂',
+      ].join('\n')
+    }
+    return [
+      '🙋 I’m **V Exchange Risk Copilot**.',
+      '',
+      'I help with market scans, alert investigations, and Skills / knowledge. Drop me a risk question anytime 🙂',
+    ].join('\n')
+  }
+  if (CASUAL_WHO_ME.test(t)) {
+    const name = (displayName || '').trim()
+    if (lang === 'zh-Hans') {
+      return name
+        ? [
+            `🙂 你是 **${name}**。`,
+            '',
+            '在这串对话里你是值班同学；改知识库／Skills 需要 **Admin**（找 **@Yan Haixiang** 开通）。要排查就直接贴告警给我。',
+          ].join('\n')
+        : [
+            '🙂 你是正在跟我对话的值班同学。',
+            '',
+            '我这边读不到完整花名册（或缺通讯录权限），但记得这是我们的风险会话。改知识库要 **Admin**——找 **@Yan Haixiang**；要排查直接贴告警就好。',
+          ].join('\n')
+    }
+    if (lang === 'zh-Hant') {
+      return name
+        ? [
+            `🙂 你是 **${name}**。`,
+            '',
+            '在這串對話裡你是值班同學；改知識庫／Skills 需要 **Admin**（找 **@Yan Haixiang** 開通）。要排查就直接貼告警給我。',
+          ].join('\n')
+        : [
+            '🙂 你是正在跟我對話的值班同學。',
+            '',
+            '我這邊讀不到完整花名冊（或缺通訊錄權限），但記得這是我們的風險會話。改知識庫要 **Admin**——找 **@Yan Haixiang**；要排查直接貼告警就好。',
+          ].join('\n')
+    }
+    return name
+      ? [
+          `🙂 You’re **${name}**.`,
+          '',
+          'In this chat you’re the on-duty operator. Editing knowledge / Skills needs **Admin** (ask **@Yan Haixiang**). Paste an alert anytime to investigate.',
+        ].join('\n')
+      : [
+          '🙂 You’re the on-duty operator talking to me.',
+          '',
+          'I can’t see a full HR profile from here (contact scope may be missing), but this is our risk session. Editing the KB needs **Admin** — **@Yan Haixiang**. Paste an alert to investigate.',
+        ].join('\n')
+  }
+  if (CASUAL_THANKS.test(t)) {
+    if (lang === 'zh-Hans') return '不客气 🙂 还有告警或行情要看，随时叫我。'
+    if (lang === 'zh-Hant') return '不客氣 🙂 還有告警或行情要看，隨時叫我。'
+    return 'You’re welcome 🙂 Ping me anytime for alerts or market.'
+  }
+  if (CASUAL_HOW.test(t)) {
+    if (lang === 'zh-Hans') return '还行，在线值班中 🙂 有 XAUUSD／告警问题丢过来就好。'
+    if (lang === 'zh-Hant') return '還行，在線值班中 🙂 有 XAUUSD／告警問題丟過來就好。'
+    return 'Doing fine — on duty 🙂 Send an XAUUSD / alert question whenever.'
+  }
+  return null
 }
 
 export function offtopicReply(lang: Lang): string {
   if (lang === 'zh-Hans') {
-    return '谢谢提问 🙂 我主要为 V Exchange 风险管理服务（XAUUSD 永续、指数／Mark、LP、强平／ADL、行情监控与事故排查）。这个问题超出我的训练范围，建议改问行情趋势、告警排查或事故复盘——我很乐意协助。试试 market / investigate / review。'
+    return '谢谢提问 🙂 我主要为 V Exchange 风险管理服务（XAUUSD 永续、指数／Mark、LP、强平／ADL、行情监控与事故排查）。这个问题有点偏题——你也可以直接说想看的行情或贴一条告警，我来帮你看。'
   }
   if (lang === 'zh-Hant') {
-    return '多謝提問 🙂 我主要服務 V Exchange 風險管理（XAUUSD 永續、指數／Mark、LP、強平／ADL、行情監控與事故排查）。這個問題超出我的訓練範圍，建議改問行情趨勢、告警排查或事故複盤——我很樂意協助。試試 market / investigate / review。'
+    return '謝謝提問 🙂 我主要服務 V Exchange 風險管理（XAUUSD 永續、指數／Mark、LP、強平／ADL、行情監控與事故排查）。這個問題有點偏題——你也可以直接說想看的行情或貼一條告警，我來幫你看。'
   }
-  return 'Thanks for reaching out 🙂 I’m trained for V Exchange risk management (XAUUSD perps, index/Mark, LPs, liquidation/ADL, market monitoring, and incident investigation). That question is outside my scope — try market, investigate, or review, and I’ll gladly help.'
+  return 'Thanks for asking 🙂 I mainly help with V Exchange risk (XAUUSD perps, index/Mark, LPs, liquidation/ADL, market monitoring, incident RCA). That one’s a bit off-scope — tell me a market angle you care about, or paste an alert and I’ll dig in.'
 }
 
 /**

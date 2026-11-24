@@ -166,6 +166,38 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
   return { openId: '', source: 'missing' }
 }
 
+const userNameCache = new Map<string, { name: string; expireAt: number }>()
+
+/** Best-effort display name for casual “我是谁” replies (needs contact scope). */
+export async function fetchUserDisplayName(openId: string): Promise<string | null> {
+  const id = (openId || '').trim()
+  if (!id || id === 'unknown') return null
+  const hit = userNameCache.get(id)
+  if (hit && Date.now() < hit.expireAt) return hit.name
+  if (!larkConfigured()) return null
+  try {
+    const data = (await larkFetch(
+      `/open-apis/contact/v3/users/${encodeURIComponent(id)}?user_id_type=open_id`,
+      { method: 'GET' },
+    )) as {
+      data?: {
+        user?: {
+          name?: string
+          en_name?: string
+          nickname?: string
+        }
+      }
+    }
+    const u = data.data?.user
+    const name = (u?.name || u?.nickname || u?.en_name || '').trim()
+    if (!name) return null
+    userNameCache.set(id, { name, expireAt: Date.now() + 30 * 60_000 })
+    return name
+  } catch {
+    return null
+  }
+}
+
 /** Download image bytes for a message resource (image_key). */
 export async function downloadMessageImage(messageId: string, imageKey: string): Promise<Buffer> {
   const token = await getTenantToken()

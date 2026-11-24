@@ -1,4 +1,4 @@
-import { downloadMessageImage } from './client.js'
+import { downloadMessageImage, fetchUserDisplayName } from './client.js'
 import {
   greetingCard,
   helpCard,
@@ -33,10 +33,12 @@ import { detectSafetyViolation, safetyReply } from './safety.js'
 import {
   accessUnavailableReply,
   botMetaReply,
+  casualChatReply,
   classifyIntent,
   detectLang,
   greetingReply,
   helpReply,
+  isCasualChat,
   isLarkWikiQuestion,
   looksLikeIncidentEvidence,
   needsInaccessibleAccess,
@@ -193,11 +195,13 @@ async function enrichWithLlm(args: {
   lang: Lang
   question: string
   context: string
+  temperature?: number
 }): Promise<string | null> {
   return chatComplete({
     lang: args.lang,
     user: args.question,
     systemExtra: args.context,
+    temperature: args.temperature,
   })
 }
 
@@ -774,6 +778,18 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   const replyTitle =
     lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
 
+  // Small talk first — never fall through to empty-KB command menus
+  if (isCasualChat(workingText)) {
+    const wantName = /^(我是谁|我是誰|who\s+am\s+i|whoami|我叫什么|我叫什麼|你知道我是谁吗|你知道我是誰嗎)/i.test(
+      workingText.trim(),
+    )
+    const displayName = wantName ? await fetchUserDisplayName(msg.openId) : null
+    const casual = casualChatReply(lang, workingText, displayName)
+    if (casual) {
+      return { card: simpleCard(replyTitle, casual, 'blue') }
+    }
+  }
+
   // Desk FAQ / admin meta: direct answer only — never attach investigate Skills+severity dump
   const meta = botMetaReply(lang, workingText)
   if (meta) {
@@ -812,15 +828,18 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   const qaContext = [
     'This is a normal product / risk Q&A — NOT an incident investigation.',
     'Do NOT invent severity, Skills checklists, or RCA steps unless the user pasted an alert.',
-    'Answer the question directly in a short, clear card. Use emoji section headers and bold-keyword bullets.',
+    'Answer warmly and conversationally in short paragraphs — like a helpful teammate, not a command menu.',
+    'Do NOT list knowledge / investigate / market / help as a fallback checklist unless the user asked for commands.',
+    'If unsure, say so briefly and offer one gentle next step (e.g. ask @Yan Haixiang, or paste an alert).',
     'Prefer V Exchange perpetual knowledge when relevant; ignore CFD broker pricing.',
+    'Light emoji section headers + bold-keyword bullets are OK when structuring a real answer.',
     relevantKb.length
       ? `Highly relevant KB (optional support only):\n${relevantKb
           .map((k) => `${k.title}: ${k.body.slice(0, 900)}`)
           .join('\n')}`
-      : 'No high-relevance KB hit — answer from desk product knowledge; if unsure, say so and suggest @Yan Haixiang / knowledge / investigate.',
+      : 'No high-relevance KB hit — answer from desk product knowledge in a natural tone; if unsure, say so briefly.',
   ].join('\n\n')
-  const llm = await enrichWithLlm({ lang, question: workingText, context: qaContext })
+  const llm = await enrichWithLlm({ lang, question: workingText, context: qaContext, temperature: 0.55 })
   if (llm) {
     const support =
       relevantKb.length > 0 ? `\n\n---\n${formatSoftKbAnswer(lang, workingText, relevantKb, true)}` : ''
@@ -867,37 +886,26 @@ function formatSoftKbAnswer(
   asSupportOnly: boolean,
 ): string {
   if (!kb.length) {
+    if (asSupportOnly) return ''
     if (lang === 'zh-Hans') {
       return [
-        asSupportOnly ? '' : '💬 **直接回答**',
+        '🙂 这个问题我这边没有特别贴切的现成摘录。',
         '',
-        asSupportOnly
-          ? ''
-          : `针对「${question.slice(0, 80)}」：我这边没有命中高相关知识摘录。你可以换个说法再问，或发送 **knowledge** 浏览知识库；产品／权限问题可问 **@Yan Haixiang**；告警排查请贴原文或发 **investigate**。`,
-      ]
-        .filter(Boolean)
-        .join('\n')
+        '你可以换个说法再问我；产品／权限找 **@Yan Haixiang**，或者直接贴一条告警，我帮你一起看。',
+      ].join('\n')
     }
     if (lang === 'zh-Hant') {
       return [
-        asSupportOnly ? '' : '💬 **直接回答**',
+        '🙂 這個問題我這邊沒有特別貼切的現成摘錄。',
         '',
-        asSupportOnly
-          ? ''
-          : `針對「${question.slice(0, 80)}」：我這邊沒有命中高相關知識摘錄。你可以換個說法再問，或發送 **knowledge** 瀏覽知識庫；產品／權限問題可問 **@Yan Haixiang**；告警排查請貼原文或發 **investigate**。`,
-      ]
-        .filter(Boolean)
-        .join('\n')
+        '你可以換個說法再問我；產品／權限找 **@Yan Haixiang**，或者直接貼一條告警，我幫你一起看。',
+      ].join('\n')
     }
     return [
-      asSupportOnly ? '' : '💬 **Direct answer**',
+      '🙂 I don’t have a closely matching excerpt for that.',
       '',
-      asSupportOnly
-        ? ''
-        : `On “${question.slice(0, 80)}”: no high-relevance KB excerpt. Rephrase, send **knowledge**, ask **@Yan Haixiang** for product/access, or paste an alert / **investigate** for RCA.`,
-    ]
-      .filter(Boolean)
-      .join('\n')
+      'Try rephrasing; for product / access ask **@Yan Haixiang**, or paste an alert and I’ll dig in with you.',
+    ].join('\n')
   }
   const lines: string[] = []
   if (lang === 'zh-Hans') {
