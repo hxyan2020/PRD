@@ -22,16 +22,13 @@ import {
   isEncryptedEnvelope,
   larkConfigured,
   probeLarkConnection,
-  replyCard,
-  replyText,
   resolveBotOpenId,
-  sendCardToChat,
-  sendTextToChat,
   verifyToken,
 } from './_lib/client.js'
 import { claimOnce } from './_lib/dedupe.js'
 import { logInbound, readInbound } from './_lib/inboundLog.js'
 import { parseIncomingEvent, shouldRespond } from './_lib/parse.js'
+import { dispatchReplyWithTypingEffect, startTypingSession } from './_lib/typing.js'
 
 const APP_ID = process.env.LARK_APP_ID || ''
 const BOT_APPLINK_FEISHU = APP_ID
@@ -58,37 +55,19 @@ function readBody(req: VercelRequest): Record<string, unknown> {
 }
 
 /**
- * Send exactly one outbound message. Do NOT fall back from reply→sendChat:
- * a reply that succeeds then throws on parse would otherwise double-post.
+ * Send outbound reply with typing indicator + progressive reveal.
+ * Do NOT fall back from reply→sendChat after a successful first post (double-post risk).
  */
 async function dispatchReply(
   messageId: string,
   chatId: string,
   reply: { text?: string; card?: Record<string, unknown> },
 ): Promise<{ ok: boolean; via?: string; error?: string }> {
-  try {
-    if (reply.card) {
-      if (messageId) {
-        await replyCard(messageId, reply.card)
-        return { ok: true, via: 'replyCard' }
-      }
-      await sendCardToChat(chatId, reply.card)
-      return { ok: true, via: 'sendCardToChat' }
-    }
-    if (reply.text) {
-      if (messageId) {
-        await replyText(messageId, reply.text)
-        return { ok: true, via: 'replyText' }
-      }
-      await sendTextToChat(chatId, reply.text)
-      return { ok: true, via: 'sendTextToChat' }
-    }
-    return { ok: false, error: 'empty reply' }
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    console.error('[lark/dispatch] failed', msg)
-    return { ok: false, error: msg }
+  const result = await dispatchReplyWithTypingEffect(messageId, chatId, reply)
+  if (!result.ok) {
+    console.error('[lark/dispatch] failed', result.error || 'unknown')
   }
+  return result
 }
 
 function dedupeKey(header: Record<string, unknown>, messageId?: string, cardToken?: string) {
@@ -156,6 +135,7 @@ async function handleCardActionRequest(
   }
   waitUntil(
     (async () => {
+      const typing = startTypingSession(messageId)
       try {
         const reply = await handleCardAction({
           openId,
@@ -163,6 +143,7 @@ async function handleCardActionRequest(
           messageId,
           value,
         })
+        await typing.stop()
         let dispatched = { ok: false as boolean, via?: string, error?: string }
         if (messageId || chatId) {
           dispatched = await dispatchReply(messageId, chatId, reply)
@@ -179,6 +160,7 @@ async function handleCardActionRequest(
             : `fail:${dispatched.error || 'no_dispatch'}`,
         })
       } catch (e) {
+        await typing.stop()
         logInbound({
           at: new Date().toISOString(),
           kind: 'card_action',
@@ -364,8 +346,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
         waitUntil(
           (async () => {
+            const typing = startTypingSession(msg.messageId)
             try {
               const reply = await handleMessage(msg)
+              await typing.stop()
               const dispatched = reply
                 ? await dispatchReply(msg.messageId, msg.chatId, reply)
                 : { ok: false, error: 'null_reply' }
@@ -384,6 +368,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 error: dispatched.ok ? undefined : dispatched.error,
               })
             } catch (e) {
+              await typing.stop()
               logInbound({
                 at: new Date().toISOString(),
                 kind: 'handler_error',

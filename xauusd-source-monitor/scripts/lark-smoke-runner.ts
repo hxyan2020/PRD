@@ -32,6 +32,12 @@ import {
 import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import { formatWebSearchAnswer, searchWeb, shouldAutoWebSearch } from '../api/lark/_lib/webSearch'
 import {
+  extractCardTypingBody,
+  typingPrefixes,
+  typingStepDelayMs,
+} from '../api/lark/_lib/typing'
+import { simpleCard } from '../api/lark/_lib/cards'
+import {
   buildWeeklyReport,
   shanghaiWeekKey,
   weeklyWindow,
@@ -174,6 +180,25 @@ async function main() {
   )
   record('safety.chat_ok', detectSafetyViolation('今晚吃什么') === null, '')
   record('safety.risk_ok', detectSafetyViolation('Mark vs Index 48bps investigate') === null, '')
+
+  // 3b) Typing effect helpers (progressive reveal)
+  const typed = typingPrefixes('你好，我是风控小助手，可以帮你看行情和排查告警。')
+  record(
+    'typing.prefixes_grow',
+    typed.length >= 3 &&
+      typed[0]!.length < typed[typed.length - 1]!.length &&
+      typed[typed.length - 1]!.includes('排查告警'),
+    `steps=${typed.length}`,
+  )
+  record('typing.delay_bounded', typingStepDelayMs(typed.length) >= 28 && typingStepDelayMs(20) <= 90, '')
+  const cardTyped = extractCardTypingBody(
+    simpleCard('风险助手回复', '这是一段足够长的卡片正文，用来验证打字机效果会逐步展开内容。'),
+  )
+  record(
+    'typing.card_body_extract',
+    Boolean(cardTyped && cardTyped.body.includes('打字机') && cardTyped.apply('这是').elements),
+    '',
+  )
 
   // 4) Intent routing
   record('intent.greeting', classifyIntent('hi', { mentionedBot: true }) === 'greeting', '')

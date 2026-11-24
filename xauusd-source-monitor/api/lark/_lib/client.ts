@@ -71,28 +71,40 @@ async function larkFetch(path: string, init: RequestInit = {}) {
   return data
 }
 
-export async function replyText(messageId: string, text: string) {
-  return larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
+function extractMessageId(data: unknown): string {
+  const d = data as { data?: { message_id?: string } }
+  return (d?.data?.message_id || '').trim()
+}
+
+export type LarkSendResult = { messageId: string; raw: unknown }
+
+export async function replyText(messageId: string, text: string): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
     method: 'POST',
     body: JSON.stringify({
       msg_type: 'text',
       content: JSON.stringify({ text: toPlainText(text) }),
     }),
   })
+  return { messageId: extractMessageId(raw), raw }
 }
 
-export async function replyCard(messageId: string, card: Record<string, unknown>) {
-  return larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
+export async function replyCard(
+  messageId: string,
+  card: Record<string, unknown>,
+): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
     method: 'POST',
     body: JSON.stringify({
       msg_type: 'interactive',
       content: JSON.stringify(plainCard(card)),
     }),
   })
+  return { messageId: extractMessageId(raw), raw }
 }
 
-export async function sendTextToChat(chatId: string, text: string) {
-  return larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
+export async function sendTextToChat(chatId: string, text: string): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
     method: 'POST',
     body: JSON.stringify({
       receive_id: chatId,
@@ -100,13 +112,74 @@ export async function sendTextToChat(chatId: string, text: string) {
       content: JSON.stringify({ text: toPlainText(text) }),
     }),
   })
+  return { messageId: extractMessageId(raw), raw }
 }
 
-export async function sendCardToChat(chatId: string, card: Record<string, unknown>) {
-  return larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
+export async function sendCardToChat(
+  chatId: string,
+  card: Record<string, unknown>,
+): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
     method: 'POST',
     body: JSON.stringify({
       receive_id: chatId,
+      msg_type: 'interactive',
+      content: JSON.stringify(plainCard(card)),
+    }),
+  })
+  return { messageId: extractMessageId(raw), raw }
+}
+
+/** Native “正在输入…” on the referenced user message (auto-clears ~10s). Soft-fail at call sites. */
+export async function setMessageTypingStatus(messageId: string, typing: boolean): Promise<void> {
+  await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/typing`, {
+    method: 'POST',
+    body: JSON.stringify({ typing_status: typing ? 1 : 0 }),
+  })
+}
+
+/** Fallback typing cue when native status API is unavailable. Returns reaction_id. */
+export async function addMessageReaction(
+  messageId: string,
+  emojiType = 'Typing',
+): Promise<string | null> {
+  const raw = await larkFetch(
+    `/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reactions`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ reaction_type: { emoji_type: emojiType } }),
+    },
+  )
+  const d = raw as { data?: { reaction_id?: string } }
+  return (d.data?.reaction_id || '').trim() || null
+}
+
+export async function deleteMessageReaction(messageId: string, reactionId: string): Promise<void> {
+  await larkFetch(
+    `/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reactions/${encodeURIComponent(reactionId)}`,
+    { method: 'DELETE' },
+  )
+}
+
+/** Patch an already-sent text message (progressive typing). */
+export async function updateMessageText(messageId: string, text: string): Promise<void> {
+  await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      msg_type: 'text',
+      content: JSON.stringify({ text: toPlainText(text) }),
+    }),
+  })
+}
+
+/** Patch an already-sent interactive card (progressive typing). */
+export async function updateMessageCard(
+  messageId: string,
+  card: Record<string, unknown>,
+): Promise<void> {
+  await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}`, {
+    method: 'PUT',
+    body: JSON.stringify({
       msg_type: 'interactive',
       content: JSON.stringify(plainCard(card)),
     }),
