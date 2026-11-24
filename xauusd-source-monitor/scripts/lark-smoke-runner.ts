@@ -638,6 +638,7 @@ async function main() {
     Boolean(openSkill.reply?.card) &&
       openSkill.blob.includes('L1-07') &&
       (openSkill.blob.includes('Check') || openSkill.blob.includes('**Check**')) &&
+      openSkill.blob.includes('•') &&
       (openSkill.blob.includes('Skill ·') || openSkill.blob.includes('L1-07')),
     openSkill.blob.slice(0, 160),
   )
@@ -670,8 +671,23 @@ async function main() {
     'turn.open_kb_by_id',
     Boolean(openKb.reply?.card) &&
       openKb.blob.includes('kb_default_0') &&
-      (openKb.blob.includes('知识') || openKb.blob.includes('Knowledge') || openKb.blob.includes('知識')),
+      (openKb.blob.includes('知识') || openKb.blob.includes('Knowledge') || openKb.blob.includes('知識')) &&
+      // Readable formatting: keep newlines / section bold — never one flattened wall of text
+      openKb.blob.includes('\\n') &&
+      !/告警 \| 阈值 \| 检测频率/.test(openKb.blob),
     openKb.blob.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const openAlarms = await turn('open-kb-alarms', 've-doc-alarms')
+  record(
+    'turn.open_kb_alarms_readable',
+    Boolean(openAlarms.reply?.card) &&
+      openAlarms.blob.includes('ve-doc-alarms') &&
+      openAlarms.blob.includes('•') &&
+      (openAlarms.blob.includes('**2.1') || openAlarms.blob.includes('资金费率') || openAlarms.blob.includes('Funding')) &&
+      !/\| --- \| --- \|/.test(openAlarms.blob) &&
+      openAlarms.blob.includes('\\n\\n'),
+    openAlarms.blob.slice(0, 220),
   )
 
   // 10) Review / dashboard visualization card (in-message viz; URL only in footer)

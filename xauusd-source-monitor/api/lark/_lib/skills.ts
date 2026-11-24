@@ -132,17 +132,30 @@ export function resolveNodeById(
   const skill = loadSkills().find((s) => s.id.toLowerCase() === id.toLowerCase())
   if (skill) {
     const body = [
-      `**Severity:** ${skill.severity}`,
-      skill.linkedL1 ? `**Linked L1:** ${skill.linkedL1}` : '',
+      `• **Severity：** **${skill.severity}**`,
+      `• **Level：** **${skill.level}**`,
+      skill.linkedL1 ? `• **Linked L1：** ${skill.linkedL1}` : '',
       '',
       '**Check**',
-      skill.check,
+      ...skill.check
+        .split(/[;；\n]+/)
+        .map((x) => x.trim())
+        .filter(Boolean)
+        .map((x) => `• ${x}`),
       '',
       '**Action**',
-      skill.action,
+      ...skill.action
+        .split(/[;；\n]+/)
+        .map((x) => x.trim())
+        .filter(Boolean)
+        .map((x) => `• ${x}`),
       '',
       '**Opt**',
-      skill.opt,
+      ...skill.opt
+        .split(/[;；\n]+/)
+        .map((x) => x.trim())
+        .filter(Boolean)
+        .map((x) => `• ${x}`),
     ]
       .filter(Boolean)
       .join('\n')

@@ -36,6 +36,81 @@ export function cleanLarkMd(input: string): string {
   return s
 }
 
+function splitMdRow(line: string): string[] {
+  return line
+    .trim()
+    .replace(/^\|/, '')
+    .replace(/\|$/, '')
+    .split('|')
+    .map((c) => c.trim())
+}
+
+/** Turn GFM pipe tables into bold + bullet rows (Lark cards don't render tables). */
+export function mdTablesToBullets(text: string): string {
+  const lines = text.replace(/\r\n/g, '\n').split('\n')
+  const out: string[] = []
+  let i = 0
+  while (i < lines.length) {
+    const line = lines[i] ?? ''
+    const next = lines[i + 1] ?? ''
+    const looksHeader = line.includes('|')
+    const looksSep = /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(next)
+    if (looksHeader && looksSep) {
+      const headers = splitMdRow(line)
+      i += 2
+      while (i < lines.length) {
+        const row = lines[i] ?? ''
+        if (!row.includes('|') || !row.trim()) break
+        if (/^\|?\s*:?-{3,}/.test(row.trim())) {
+          i += 1
+          continue
+        }
+        const cells = splitMdRow(row)
+        const name = cells[0] || '—'
+        const bits: string[] = []
+        for (let c = 1; c < Math.max(headers.length, cells.length); c++) {
+          const h = headers[c] || `col${c}`
+          const v = cells[c] || ''
+          if (v) bits.push(`**${h}：** ${v}`)
+        }
+        out.push(`• **${name}**`)
+        if (bits.length) out.push(`  ${bits.join(' · ')}`)
+        i += 1
+      }
+      out.push('')
+      continue
+    }
+    out.push(line)
+    i += 1
+  }
+  return out.join('\n')
+}
+
+/**
+ * Format Skills / Knowledge node bodies for Lark lark_md:
+ * preserve structure, bold headings, bullets for tables — never flatten to one line.
+ */
+export function formatNodeBodyForLark(raw: string, maxLen = 3600): string {
+  if (!raw) return ''
+  let s = raw.replace(/\r\n/g, '\n').trim()
+  s = mdTablesToBullets(s)
+  // ATX headings → bold section titles with spacing
+  s = s.replace(/^#{1,6}\s+(.+)$/gm, '\n**$1**\n')
+  // Blockquotes → italic callouts
+  s = s.replace(/^>\s?(.*)$/gm, '💬 _$1_')
+  // Lead labels
+  s = s.replace(/^(Summary|摘要|待确认|待確認|Historical|Note|备注|備註)\s*([:：])/gim, '**$1**$2')
+  // Numbered “1. foo” / “2.1 bar” already fine; ensure list markers on dash lines
+  s = s.replace(/^[•·]\s*/gm, '• ')
+  s = s.replace(/^[-*]\s+/gm, '• ')
+  // Collapse excess blank lines but keep paragraph breaks
+  s = s.replace(/\n{3,}/g, '\n\n').trim()
+  if (s.length <= maxLen) return s
+  const cut = s.slice(0, maxLen)
+  const at = Math.max(cut.lastIndexOf('\n\n'), cut.lastIndexOf('\n'))
+  return `${(at > maxLen * 0.5 ? cut.slice(0, at) : cut).trim()}\n\n…`
+}
+
 /** Deep-clean string fields inside a Lark card JSON. Preserves lark_md markup. */
 export function plainCard(card: Record<string, unknown>): Record<string, unknown> {
   return walk(card, false) as Record<string, unknown>

@@ -1,4 +1,5 @@
 import { isZh } from './lang.js'
+import { formatNodeBodyForLark } from './plain.js'
 import type { IncidentRecord, KbItem, Lang, SkillRec } from './types.js'
 
 function severityEmoji(sev: string): string {
@@ -531,17 +532,14 @@ export function nodeDetailCard(args: {
   const zh = isZh(args.lang)
   const header =
     args.kind === 'skill'
-      ? hans
-        ? `Skill · ${args.id}`
-        : zh
-          ? `Skill · ${args.id}`
-          : `Skill · ${args.id}`
+      ? `Skill · ${args.id}`
       : hans
         ? `知识节点 · ${args.id}`
         : zh
           ? `知識節點 · ${args.id}`
           : `Knowledge · ${args.id}`
-  const clipped = args.body.replace(/\s+/g, ' ').trim().slice(0, 2800)
+  // Keep structure (headings / bullets / tables→bullets). Never flatten whitespace.
+  const body = formatNodeBodyForLark(args.body, 3600)
   const hint = hans
     ? '_回复其他 ID 继续打开节点；发 **skills** / **knowledge** 返回目录。_'
     : zh
@@ -558,7 +556,7 @@ export function nodeDetailCard(args: {
         tag: 'div',
         text: {
           tag: 'lark_md',
-          content: `**${args.title}**\n\n${clipped}${args.body.length > 2800 ? '…' : ''}\n\n${hint}`,
+          content: `**${args.title}**\n\n${body}\n\n${hint}`,
         },
       },
       {
