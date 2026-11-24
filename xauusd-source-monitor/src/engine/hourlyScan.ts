@@ -123,7 +123,13 @@ const BITGET_TICKER =
 type CatalogEntry = {
   id: string
   kind: SourceKind
+  /** Probe URL (may be a JSON API). */
   url: string
+  /**
+   * Human-facing page for citations in Lark / desk (exchange K-line, news, social).
+   * When set, ReportSource.url uses this — never expose raw JSON APIs in reports.
+   */
+  linkUrl?: string
   captionEn: string
   captionZh: string
   /** Prefer JSON CORS probe when true */
@@ -136,6 +142,34 @@ type CatalogEntry = {
   summaryZh?: string
 }
 
+/** Default human UI when a JSON probe has no explicit linkUrl. */
+function humanLinkFor(id: string, probeUrl: string): string {
+  switch (id) {
+    case 'okx-ticker':
+    case 'okx-candles':
+    case 'okx-funding':
+      return 'https://www.okx.com/trade-swap/xau-usdt-swap'
+    case 'bitget-ticker':
+      return 'https://www.bitget.com/futures/usdt/XAUUSDT'
+    case 'gold-api':
+      return 'https://www.kitco.com/gold-price'
+    case 'yahoo-gc':
+      return 'https://finance.yahoo.com/quote/GC=F'
+    case 'yahoo-dxy':
+      return 'https://finance.yahoo.com/quote/DX-Y.NYB'
+    case 'yahoo-tnx':
+      return 'https://finance.yahoo.com/quote/%5ETNX'
+    case 'fed-press-json':
+      return 'https://www.federalreserve.gov/newsevents/pressreleases.htm'
+    default:
+      // Never cite query1.finance.yahoo / api.* JSON hosts in reports
+      if (/\/api\/|query1\.finance\.yahoo|gold-api\.com|ne-press\.json/i.test(probeUrl)) {
+        return 'https://vex-llm-proxy.vercel.app/#/market'
+      }
+      return probeUrl
+  }
+}
+
 /**
  * Major XAUUSD-perp desk coverage: news, KOL social, exchange announcements,
  * APIs, prices, and macro/indicator feeds. Always listed with health + checkedAt.
@@ -146,72 +180,81 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     id: 'okx-ticker',
     kind: 'api',
     url: OKX_TICKER,
-    captionEn: 'OKX API: XAU-USDT-SWAP last price',
-    captionZh: 'OKX API：XAU-USDT-SWAP 最新價',
+    linkUrl: 'https://www.okx.com/trade-swap/xau-usdt-swap',
+    captionEn: 'OKX XAU-USDT-SWAP trade / K-line',
+    captionZh: 'OKX XAU-USDT-SWAP 交易／K线',
     json: true,
   },
   {
     id: 'okx-candles',
     kind: 'price',
     url: OKX_CANDLES,
-    captionEn: 'OKX API: XAU-USDT-SWAP K-line (15m / 1H / 4H / 1D)',
-    captionZh: 'OKX API：XAU-USDT-SWAP K 線（15m / 1H / 4H / 1D）',
+    linkUrl: 'https://www.okx.com/trade-swap/xau-usdt-swap',
+    captionEn: 'OKX XAU-USDT-SWAP 1H K-line',
+    captionZh: 'OKX XAU-USDT-SWAP 1H K线',
     json: true,
   },
   {
     id: 'okx-funding',
     kind: 'indicator',
     url: OKX_FUNDING,
-    captionEn: 'OKX API: XAU-USDT-SWAP funding rate',
-    captionZh: 'OKX API：XAU-USDT-SWAP 資金費率',
+    linkUrl: 'https://www.okx.com/trade-swap/xau-usdt-swap',
+    captionEn: 'OKX XAU-USDT-SWAP funding (trade page)',
+    captionZh: 'OKX XAU-USDT-SWAP 资金费率（交易页）',
     json: true,
   },
   {
     id: 'bitget-ticker',
     kind: 'api',
     url: BITGET_TICKER,
-    captionEn: 'Bitget API: XAUUSDT perpetual ticker',
-    captionZh: 'Bitget API：XAUUSDT 永續 ticker',
+    linkUrl: 'https://www.bitget.com/futures/usdt/XAUUSDT',
+    captionEn: 'Bitget XAUUSDT perpetual / K-line',
+    captionZh: 'Bitget XAUUSDT 永续／K线',
     json: true,
   },
   {
     id: 'gold-api',
     kind: 'price',
     url: GOLD_API,
-    captionEn: 'gold-api: XAU spot USD',
-    captionZh: 'gold-api：XAU 現貨美元價',
+    linkUrl: 'https://www.kitco.com/gold-price',
+    captionEn: 'Kitco gold spot price',
+    captionZh: 'Kitco 黄金现货价',
     json: true,
   },
   {
     id: 'yahoo-gc',
     kind: 'price',
     url: YAHOO_GC,
-    captionEn: 'Yahoo chart: COMEX gold GC=F (1m)',
-    captionZh: 'Yahoo 圖：COMEX 黃金 GC=F（1分鐘）',
+    linkUrl: 'https://finance.yahoo.com/quote/GC=F',
+    captionEn: 'Yahoo COMEX gold GC=F chart',
+    captionZh: 'Yahoo COMEX 黄金 GC=F 行情',
     json: true,
   },
   {
     id: 'yahoo-dxy',
     kind: 'macro',
     url: YAHOO_DXY,
-    captionEn: 'Yahoo chart: Dollar Index DX-Y.NYB (1m)',
-    captionZh: 'Yahoo 圖：美元指數 DX-Y.NYB（1分鐘）',
+    linkUrl: 'https://finance.yahoo.com/quote/DX-Y.NYB',
+    captionEn: 'Yahoo Dollar Index chart',
+    captionZh: 'Yahoo 美元指数行情',
     json: true,
   },
   {
     id: 'yahoo-tnx',
     kind: 'macro',
     url: YAHOO_TNX,
-    captionEn: 'Yahoo chart: US 10Y yield ^TNX (1m)',
-    captionZh: 'Yahoo 圖：美債 10 年 ^TNX（1分鐘）',
+    linkUrl: 'https://finance.yahoo.com/quote/%5ETNX',
+    captionEn: 'Yahoo US 10Y yield chart',
+    captionZh: 'Yahoo 美债10年收益率行情',
     json: true,
   },
   {
     id: 'fed-press-json',
     kind: 'announcement',
     url: FED_PRESS,
-    captionEn: 'Federal Reserve press-release JSON index',
-    captionZh: '聯準會新聞稿 JSON 索引',
+    linkUrl: 'https://www.federalreserve.gov/newsevents/pressreleases.htm',
+    captionEn: 'Federal Reserve press releases',
+    captionZh: '美联储新闻稿',
     json: true,
   },
   // —— Exchange venues / official announcements ——
@@ -586,12 +629,18 @@ function makeSource(
   }
 }
 
+/** Citation URL for Lark / desk — human UI, never raw JSON probe hosts. */
+function citeUrl(entry: CatalogEntry): string {
+  return entry.linkUrl || humanLinkFor(entry.id, entry.url)
+}
+
 async function probeCatalogEntry(entry: CatalogEntry): Promise<{
   source: ReportSource
   json: unknown | null
 }> {
   const started = performance.now()
   const checkedAt = Date.now()
+  const displayUrl = citeUrl(entry)
   if (entry.json) {
     try {
       const ctrl = new AbortController()
@@ -607,7 +656,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
         return {
           source: makeSource(
             entry.id,
-            entry.url,
+            displayUrl,
             entry.captionEn,
             entry.captionZh,
             entry.kind,
@@ -622,7 +671,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
       return {
         source: makeSource(
           entry.id,
-          entry.url,
+          displayUrl,
           entry.captionEn,
           entry.captionZh,
           entry.kind,
@@ -636,7 +685,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
       return {
         source: makeSource(
           entry.id,
-          entry.url,
+          displayUrl,
           entry.captionEn,
           entry.captionZh,
           entry.kind,
@@ -664,7 +713,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
     return {
       source: makeSource(
         entry.id,
-        entry.url,
+        displayUrl,
         entry.captionEn,
         entry.captionZh,
         entry.kind,
@@ -678,7 +727,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
     // X / YouTube often block automated browser probes; keep KOL rows listed.
     if (entry.kind === 'social') {
       try {
-        const fav = logoFor(domainOf(entry.url))
+        const fav = logoFor(domainOf(displayUrl))
         const ctrl2 = new AbortController()
         const timer2 = setTimeout(() => ctrl2.abort(), 4000)
         const res = await fetch(fav, { signal: ctrl2.signal, cache: 'no-store', mode: 'cors' })
@@ -688,7 +737,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
           return {
             source: makeSource(
               entry.id,
-              entry.url,
+              displayUrl,
               entry.captionEn,
               entry.captionZh,
               entry.kind,
@@ -708,7 +757,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
       return {
         source: makeSource(
           entry.id,
-          entry.url,
+          displayUrl,
           entry.captionEn,
           entry.captionZh,
           entry.kind,
@@ -724,7 +773,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
     return {
       source: makeSource(
         entry.id,
-        entry.url,
+        displayUrl,
         entry.captionEn,
         entry.captionZh,
         entry.kind,
@@ -1256,18 +1305,18 @@ export async function generateHourlyScan(args: {
     bumpCaption(
       'yahoo-dxy',
       `Yahoo DX-Y.NYB last ${dxy.toFixed(3)}`,
-      `Yahoo 美元指數 DX-Y.NYB 最新 ${dxy.toFixed(3)}`,
+      `Yahoo 美元指数 DX-Y.NYB 最新 ${dxy.toFixed(3)}`,
     )
     if (dxy >= 104) {
       riskRaw.push({
         en: `Yahoo DX-Y.NYB prints ${dxy.toFixed(3)}, a firm dollar backdrop that raises the FX opportunity cost of holding gold and typically pressures XAUUSD perps until the index cools.`,
-        zh: `Yahoo 美元指數 DX-Y.NYB 報 ${dxy.toFixed(3)}，美元偏強推高持有黃金的匯率機會成本，通常會壓抑 XAUUSD 永續，直至指數回軟。`,
+        zh: `Yahoo 美元指数 DX-Y.NYB 报 ${dxy.toFixed(3)}，美元偏强推高持有黄金的汇率机会成本，通常会压抑 XAUUSD 永续，直至指数回软。`,
         sourceIds: ['yahoo-dxy'],
       })
     } else if (dxy <= 100) {
       opportunityRaw.push({
         en: `Yahoo DX-Y.NYB prints ${dxy.toFixed(3)}, a soft dollar backdrop that lowers FX headwinds for gold and is constructive for XAUUSD perps while the index stays subdued.`,
-        zh: `Yahoo 美元指數 DX-Y.NYB 報 ${dxy.toFixed(3)}，美元偏弱減輕黃金的匯率逆風，指數維持偏軟期間對 XAUUSD 永續偏建設性。`,
+        zh: `Yahoo 美元指数 DX-Y.NYB 报 ${dxy.toFixed(3)}，美元偏弱减轻黄金的汇率逆风，指数维持偏软期间对 XAUUSD 永续偏建设性。`,
         sourceIds: ['yahoo-dxy'],
       })
     }
@@ -1278,7 +1327,7 @@ export async function generateHourlyScan(args: {
     bumpCaption(
       'yahoo-tnx',
       `Yahoo ^TNX (US 10Y) last ${tnx.toFixed(3)}%`,
-      `Yahoo ^TNX（美債 10 年）最新 ${tnx.toFixed(3)}%`,
+      `Yahoo ^TNX（美债 10 年）最新 ${tnx.toFixed(3)}%`,
     )
     if (tnx >= 4.2) {
       riskRaw.push({
@@ -1323,8 +1372,8 @@ export async function generateHourlyScan(args: {
   if (spotLive != null) {
     bumpCaption(
       'gold-api',
-      `gold-api XAU spot ${spotLive.toFixed(2)}`,
-      `gold-api XAU 現貨 ${spotLive.toFixed(2)}`,
+      `Kitco gold spot ${spotLive.toFixed(2)}`,
+      `Kitco 黄金现货 ${spotLive.toFixed(2)}`,
     )
   }
 
@@ -1339,14 +1388,14 @@ export async function generateHourlyScan(args: {
       const basisBps = ((okxPx - spotLive) / spotLive) * 10_000
       if (Math.abs(basisBps) >= 25) {
         riskRaw.push({
-          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} leaves a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps futures–spot basis — wide enough to distort mid marks, venue prints, and LP hedges until the dislocation narrows.`,
-          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，對 gold-api 現貨 ${spotLive.toFixed(2)} 的期現基差為 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——偏寬，足以扭曲中間價、場所報價與 LP 對沖，直至錯位收斂。`,
+          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} leaves a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps futures–spot basis — wide enough to distort mid marks, venue prints, and LP hedges until the dislocation narrows.`,
+          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 的期现基差为 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——偏宽，足以扭曲中间价、场所报价与 LP 对冲，直至错位收敛。`,
           sourceIds: ['okx-ticker', 'gold-api'],
         })
       } else {
         opportunityRaw.push({
-          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} shows only a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps basis — perp and spot are aligned with no extreme dislocation this hour.`,
-          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，對 gold-api 現貨 ${spotLive.toFixed(2)} 基差僅 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——永續與現貨對齊，本小時無極端錯位。`,
+          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} shows only a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps basis — perp and spot are aligned with no extreme dislocation this hour.`,
+          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 基差仅 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——永续与现货对齐，本小时无极端错位。`,
           sourceIds: ['okx-ticker', 'gold-api'],
         })
       }
@@ -1359,7 +1408,7 @@ export async function generateHourlyScan(args: {
     bumpCaption(
       'okx-funding',
       `OKX XAU-USDT-SWAP funding ${pct.toFixed(4)}%`,
-      `OKX XAU-USDT-SWAP 資金費率 ${pct.toFixed(4)}%`,
+      `OKX XAU-USDT-SWAP 资金费率 ${pct.toFixed(4)}%`,
     )
     if (Math.abs(pct) >= 0.05) {
       riskRaw.push({
@@ -1403,7 +1452,7 @@ export async function generateHourlyScan(args: {
     bumpCaption(
       'okx-candles',
       `OKX XAU-USDT-SWAP 1H K-line · ${candleBars.length} bars · last ${last.c.toFixed(2)}`,
-      `OKX XAU-USDT-SWAP 1H K 線 · ${candleBars.length} 根 · 最新 ${last.c.toFixed(2)}`,
+      `OKX XAU-USDT-SWAP 1H K线 · ${candleBars.length} 根 · 最新 ${last.c.toFixed(2)}`,
     )
     kline = {
       symbol: 'XAU-USDT-SWAP',

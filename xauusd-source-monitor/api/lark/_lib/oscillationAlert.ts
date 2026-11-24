@@ -224,10 +224,9 @@ export function shouldFireAlert(snap: OscillationSnapshot): boolean {
 }
 
 export function oscillationSources(snap: OscillationSnapshot): OscSource[] {
+  // Cite exchange trade / K-line UI and news pages — never raw JSON API hosts.
   const src: OscSource[] = [
-    { label: 'OKX XAU-USDT-SWAP', url: OKX_TRADE },
-    { label: 'OKX ticker API', url: OKX_TICKER },
-    { label: 'OKX funding', url: OKX_FUNDING },
+    { label: 'OKX XAU-USDT-SWAP K线', url: OKX_TRADE },
   ]
   if (snap.newsUrl) {
     src.push({ label: snap.newsHeadline || '突发新闻', url: snap.newsUrl })

@@ -687,6 +687,21 @@ async function main() {
     hasInlineSrc && !mktFmtZh.includes('🔗 **来源**'),
     mktFmtZh.match(/Opportunity[\s\S]{0,500}/)?.[0]?.slice(0, 280) || mktFmtZh.slice(0, 200),
   )
+  // Citation URLs must be human UIs (exchange K-line / news / social) — never raw JSON APIs
+  const citeUrls = (liveSnap.hourly?.sources || []).map((s) => s.url)
+  const jsonApiCite = citeUrls.filter((u) =>
+    /api\.gold-api\.com|query1\.finance\.yahoo|\/api\/v5\/market|ne-press\.json|bitget\.com\/api\//i.test(
+      u,
+    ),
+  )
+  record(
+    'market.sources_human_ui_urls',
+    jsonApiCite.length === 0 &&
+      citeUrls.some((u) => /okx\.com\/trade|kitco\.com|finance\.yahoo\.com|bitget\.com\/futures/i.test(u)),
+    jsonApiCite.length
+      ? `bad=${jsonApiCite.slice(0, 3).join(' | ')}`
+      : citeUrls.slice(0, 4).join(' | '),
+  )
   const logoCard = await buildMarketCard({
     title: '小时行情扫报',
     snap: liveSnap,

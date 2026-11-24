@@ -210,10 +210,28 @@ export function pointSources(
   return out
 }
 
-/** Inline markdown chips — logo URL is not renderable in lark_md, so domain is the link label. */
+/** Short human label for a source chip (exchange / news / social host — never API path). */
+function sourceChipLabel(s: ReportSource): string {
+  const host = (s.domain || '').replace(/^www\./, '')
+  if (/okx\.com/i.test(host)) return 'OKX K线'
+  if (/bitget\.com/i.test(host)) return 'Bitget K线'
+  if (/kitco\.com/i.test(host)) return 'Kitco'
+  if (/yahoo\.com/i.test(host)) return 'Yahoo行情'
+  if (/federalreserve\.gov/i.test(host)) return '美联储'
+  if (/x\.com|twitter\.com/i.test(host)) return 'X'
+  if (/reuters\.com/i.test(host)) return '路透'
+  if (/bloomberg\.com/i.test(host)) return '彭博'
+  if (/cnbc\.com/i.test(host)) return 'CNBC'
+  if (/lbma\.org/i.test(host)) return 'LBMA'
+  if (/binance\.com/i.test(host)) return 'Binance'
+  if (/bybit\.com/i.test(host)) return 'Bybit'
+  return host.slice(0, 18) || '来源'
+}
+
+/** Inline markdown chips — human UI links (K-line / news / social), not JSON APIs. */
 function sourceChipLine(sources: ReportSource[]): string {
   if (!sources.length) return ''
-  return sources.map((s) => `[${s.domain}](${s.url})`).join(' · ')
+  return sources.map((s) => `[${sourceChipLabel(s)}](${s.url})`).join(' · ')
 }
 
 function renderSection(
@@ -257,7 +275,7 @@ async function logoLinkActions(sources: ReportSource[]): Promise<Record<string, 
   const slice = sources.slice(0, 5)
   const keys = await Promise.all(slice.map((s) => resolveFaviconImgKey(s.domain, s.logoUrl)))
   const actions: Record<string, unknown>[] = slice.map((s, i) => {
-    const label = (s.domain || 'source').slice(0, 24)
+    const label = sourceChipLabel(s).slice(0, 24)
     const btn: Record<string, unknown> = {
       tag: 'button',
       type: 'default',
@@ -593,7 +611,7 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
     spot: spotLast && Number.isFinite(spotLast) ? { last: spotLast } : undefined,
     notes,
     sources: hourly.sources.slice(0, 12).map((s) => ({
-      label: s.captionEn,
+      label: s.captionZh || s.captionEn,
       url: s.url,
     })),
     fetchedAt: hourly.createdAt,
