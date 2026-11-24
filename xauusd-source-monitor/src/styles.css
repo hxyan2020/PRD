@@ -1589,6 +1589,48 @@ td.mono,
   padding-bottom: 12px;
 }
 
+.investigate-match-hint {
+  margin: 14px 0 6px;
+}
+
+.investigate-match-fold {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--ink, #3b2a1a) 18%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, #fff 88%, #f5ebe0);
+}
+
+.investigate-match-fold > summary {
+  cursor: pointer;
+  font-weight: 650;
+  color: var(--ink, #3b2a1a);
+  list-style: none;
+  user-select: none;
+}
+
+.investigate-match-fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.investigate-match-fold > summary::before {
+  content: '▸ ';
+  color: var(--gold-deep, #92400e);
+}
+
+.investigate-match-fold[open] > summary::before {
+  content: '▾ ';
+}
+
+.investigate-match-fold[open] {
+  padding-bottom: 10px;
+  background: #fffdf8;
+}
+
+.investigate-match-fold .investigate-list {
+  margin: 8px 0 0;
+}
+
 .thinking-panel {
   margin: 8px 0 16px;
   padding: 12px 14px;

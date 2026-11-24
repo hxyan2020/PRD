@@ -759,6 +759,46 @@ export function InvestigatePage() {
                     </ul>
                   </>
                 ) : null}
+
+                <p className="sub investigate-match-hint">{t('investigateMatchFoldHint')}</p>
+                <details className="investigate-match-fold">
+                  <summary>
+                    {t('investigateSkillsFold').replace(
+                      '{n}',
+                      String((active.skillsUsed || []).length),
+                    )}
+                  </summary>
+                  <ul className="investigate-list">
+                    {(active.skillsUsed || []).length ? (
+                      active.skillsUsed!.map((s) => (
+                        <li key={`${s.level}-${s.id}`}>
+                          [{s.level}] {s.id} {s.name}
+                          {s.severity ? ` (${s.severity})` : ''}
+                        </li>
+                      ))
+                    ) : (
+                      <li>{t('investigateNoneMatched')}</li>
+                    )}
+                  </ul>
+                </details>
+
+                <details className="investigate-match-fold">
+                  <summary>
+                    {t('investigateKbFold').replace(
+                      '{n}',
+                      String((active.knowledgeUsed || []).length),
+                    )}
+                  </summary>
+                  <ul className="investigate-list">
+                    {(active.knowledgeUsed || []).length ? (
+                      active.knowledgeUsed!.map((n) => (
+                        <li key={n.id}>{n.path || n.title}</li>
+                      ))
+                    ) : (
+                      <li>{t('investigateNoneMatched')}</li>
+                    )}
+                  </ul>
+                </details>
               </section>
 
               <p className="sub">{t('investigateCollapseHint')}</p>
@@ -817,31 +857,6 @@ export function InvestigatePage() {
                     </li>
                   ))}
                 </ol>
-
-                <h4>{t('investigateSkillsUsed')}</h4>
-                <ul className="investigate-list">
-                  {(active.skillsUsed || []).length ? (
-                    active.skillsUsed!.map((s) => (
-                      <li key={`${s.level}-${s.id}`}>
-                        [{s.level}] {s.id} {s.name}
-                        {s.severity ? ` (${s.severity})` : ''}
-                      </li>
-                    ))
-                  ) : (
-                    <li>{t('investigateNoneMatched')}</li>
-                  )}
-                </ul>
-
-                <h4>{t('investigateKbUsed')}</h4>
-                <ul className="investigate-list">
-                  {(active.knowledgeUsed || []).length ? (
-                    active.knowledgeUsed!.map((n) => (
-                      <li key={n.id}>{n.path || n.title}</li>
-                    ))
-                  ) : (
-                    <li>{t('investigateNoneMatched')}</li>
-                  )}
-                </ul>
 
                 <h4>{t('investigateThinking')}</h4>
                 <ul className="investigate-list">

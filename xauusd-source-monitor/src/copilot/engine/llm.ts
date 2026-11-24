@@ -22,6 +22,7 @@ export const SYSTEM_PROMPT_ZH = `你是 V Exchange 永續合約 Risk Copilot（�
 - 不得建議未經授權的生產操作（下單、改價、強平執行、劃轉）。
 - 價格異動「觀察」（bps/基差/場所結構）≠「原因」（新聞/宏觀/政策）。
 - 優先使用用戶提供的 Skill 上下文、RAG 知識庫與簡報引用連結；沒有證據就說不確定。
+- Skills／知識庫匹配：正文只引用關鍵 Skill ID 與節點標題；禁止把 RAG 全文／長摘錄貼進回覆。文末用一行短清單標出命中的 Skills 與知識庫標題即可（細節由 UI 摺疊展開）。
 - 若輸入含 XAUUSD 源監控簡報，僅作次要上下文；根因仍以 PRIMARY ALERT 為準。`
 
 export const SYSTEM_PROMPT_EN = `You are V Exchange perpetual Risk Copilot (root-cause assistant).
@@ -45,6 +46,7 @@ Rules:
 - Do not suggest unauthorised production actions (orders, reprice, liquidation execution, transfers).
 - Price "observations" (bps/basis/venue structure) ≠ "causes" (news/macro/policy).
 - Prefer Skill context, RAG knowledge, and briefing citation URLs; say uncertain when evidence is missing.
+- Skills / knowledge matches: cite only key Skill IDs and node titles in the body — do NOT paste full RAG excerpts. End with a short Skills + knowledge title list (UI will fold/expand the detail).
 - If an XAUUSD source-monitor briefing is present, treat it as secondary context only; PRIMARY ALERT drives the root cause.`
 
 /** @deprecated Prefer systemPromptFor(lang) */
@@ -251,7 +253,7 @@ export async function runLlm(args: {
               '## User input / dialogue',
               args.userPrompt,
               '',
-              'Reply in the SAME language as the user input facts above (ignore UI locale). Order: (1) Root cause first, (2) Investigation path, (3) Next steps / recommendations. Keep data-source URLs and approval gates explicit.',
+              'Reply in the SAME language as the user input facts above (ignore UI locale). Order: (1) Root cause first, (2) Investigation path, (3) Next steps / recommendations. Keep data-source URLs and approval gates explicit. Do not paste full RAG excerpts — list matched Skill IDs and knowledge titles only at the end.',
             ].join('\n')
           : [
               '## Skill 上下文（L1/L2）',
@@ -263,7 +265,7 @@ export async function runLlm(args: {
               '## 用戶輸入／對話',
               args.userPrompt,
               '',
-              '請用與上方用戶輸入相同的語言回覆（不要跟隨系統 UI 語言）。段落順序：(1) 先寫根因，(2) 排查路徑，(3) 下一步／建議方案。數據來源直連 URL 與需審批標記必須清楚列出。',
+              '請用與上方用戶輸入相同的語言回覆（不要跟隨系統 UI 語言）。段落順序：(1) 先寫根因，(2) 排查路徑，(3) 下一步／建議方案。數據來源直連 URL 與需審批標記必須清楚列出。禁止貼上 RAG 全文；文末僅列命中的 Skill ID 與知識庫標題。',
             ].join('\n'),
     },
     ...(args.priorMessages || []).map((m) => ({ role: m.role, content: m.content })),

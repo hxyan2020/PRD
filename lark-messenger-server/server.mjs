@@ -191,6 +191,24 @@ function renderLarkCard(templateId, inputVars = {}) {
   }
 
   if (templateId === 'rca-report') {
+    const skillsText = String(vars.skills || '').trim() || '_none matched_'
+    const knowledgeText = String(vars.knowledge || vars.rag || '').trim()
+    const foldPanel = (title, body) => ({
+      tag: 'collapsible_panel',
+      expanded: false,
+      header: {
+        title: { tag: 'plain_text', content: title },
+        vertical_align: 'center',
+        icon: {
+          tag: 'standard_icon',
+          token: 'down-round_outlined',
+        },
+        icon_position: 'right',
+        icon_expanded_angle: -180,
+      },
+      border: { color: 'grey', corner_radius: '8px' },
+      elements: [mdBlock(body)],
+    })
     return {
       msg_type: 'interactive',
       card: {
@@ -209,8 +227,6 @@ function renderLarkCard(templateId, inputVars = {}) {
             mdBlock(
               [
                 `**Investigation path:** ${vars.path || 'ingest → skills → RAG → severity'}`,
-                `**Skills:** ${vars.skills}`,
-                `**Thinking:** ${vars.thinking}`,
                 '',
                 '**Data sources (direct links)**',
                 vars.sources || '_none attached_',
@@ -222,6 +238,13 @@ function renderLarkCard(templateId, inputVars = {}) {
                 '_Ask a follow-up in the thread — answers are logged to realtime stats._',
               ].join('\n'),
             ),
+            foldPanel(`🧩 Skills matches`, skillsText),
+            foldPanel(
+              `📚 Knowledge / RAG matches`,
+              knowledgeText ||
+                '_Titles stay folded here when available; open Investigate for the full tree._',
+            ),
+            foldPanel(`Thinking`, String(vars.thinking || '_n/a_')),
             {
               tag: 'action',
               actions: [
