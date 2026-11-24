@@ -55,9 +55,9 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | `LARK_REPLY_ALL_GROUP=1` | Reply to every group message without @ (not recommended) |
 | `LARK_ENCRYPT_KEY` | **Do not use** until decrypt is implemented — keep Encrypt Key off |
 | `DESK_GATEWAY_TOKEN` | Protects desk smoke `/api/lark/incidents` only; unrelated to Lark chat |
-| `LARK_ADMIN_OPEN_ID` | **Required for weekly push** — Yan Haixiang’s Feishu `open_id` (DM target) |
+| `LARK_ADMIN_OPEN_ID` | **Required for weekly + 30-min market push** — Yan Haixiang’s Feishu `open_id` (DM target) |
 | `LARK_ADMIN_EMAIL` | Optional fallback to resolve open_id via Contact API |
-| `CRON_SECRET` | Optional; Vercel Cron Authorization bearer for `/api/lark/weekly-report` |
+| `CRON_SECRET` | Optional; Vercel Cron Authorization bearer for cron routes |
 
 ## Endpoints
 
@@ -67,6 +67,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | GET/POST | `/api/lark/card` | Alias for **Card Request URL** (same handler) |
 | GET/POST | `/api/lark/incidents` | List / simulate turns (smoke) |
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
+| GET/POST | `/api/lark/market-report` | 30-min market scan DM to Yan; `?dry=1` preview |
 
 ## Weekly report (Yan Haixiang)
 
@@ -76,6 +77,14 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - **On-demand:** send `weekly` / `周报` in chat
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token
+
+## 30-minute market report (Yan Haixiang)
+
+- **Schedule:** every **30 minutes** (Vercel cron `*/30 * * * *`)
+- **Content:** same hourly market scan engine as chat `行情` / `market` (TL;DR / Opportunity / Risk)
+- **Delivery:** Feishu DM card to `LARK_ADMIN_OPEN_ID` (Yan Haixiang)
+- **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
+- **Force send:** `POST /api/lark/market-report` with `{ "force": true }` + desk token
 
 Set `LARK_ADMIN_OPEN_ID` on Vercel Production (Yan’s open_id from Feishu admin / bot conversation logs).
 

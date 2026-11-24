@@ -8,6 +8,10 @@
     {
       "path": "/api/lark/weekly-report",
       "schedule": "0 8 * * 5"
+    },
+    {
+      "path": "/api/lark/market-report",
+      "schedule": "*/30 * * * *"
     }
   ]
 }

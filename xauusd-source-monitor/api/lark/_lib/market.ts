@@ -38,6 +38,29 @@ export function formatEast8(ts: number): string {
   }
 }
 
+/** Half-hour slot key in Asia/Shanghai, e.g. `2026-11-24T20:00` / `…T20:30` (cron dedupe). */
+export function shanghaiHalfHourKey(ts: number = Date.now()): string {
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(new Date(ts))
+    const get = (t: string) => parts.find((p) => p.type === t)?.value || '00'
+    const hour = get('hour') === '24' ? '00' : get('hour')
+    const minute = String(Math.floor(Number(get('minute')) / 30) * 30).padStart(2, '0')
+    return `${get('year')}-${get('month')}-${get('day')}T${hour}:${minute}`
+  } catch {
+    const d = new Date(ts)
+    const m = Math.floor(d.getUTCMinutes() / 30) * 30
+    return `${d.toISOString().slice(0, 13)}:${String(m).padStart(2, '0')}`
+  }
+}
+
 /** Compact sparkline from closes (Lark has no canvas). */
 export function asciiCloseSpark(bars: KlineBar[], width = 16): string {
   if (!bars.length) return '—'

@@ -31,6 +31,7 @@ import {
 } from '../api/lark/_lib/scope'
 import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import { formatWebSearchAnswer, searchWeb, shouldAutoWebSearch } from '../api/lark/_lib/webSearch'
+import { shanghaiHalfHourKey } from '../api/lark/_lib/market'
 import {
   extractCardTypingBody,
   isMenuOrCatalogCard,
@@ -1048,12 +1049,17 @@ async function main() {
     greetLater.includes('**周报**') &&
       greetLater.includes('**文档**') &&
       greetLater.includes('**行情**') &&
+      greetLater.includes('半小时行情') &&
       greetLater.includes('Yan Haixiang') &&
       greetLater.includes('UAT') &&
       !greetLater.includes('截图欢迎直接丢过来') &&
       !greetLater.includes('**market**'),
     greetLater.slice(0, 120),
   )
+  const slotA = shanghaiHalfHourKey(Date.parse('2026-11-24T12:05:00Z')) // 20:05 CST → 20:00
+  const slotB = shanghaiHalfHourKey(Date.parse('2026-11-24T12:35:00Z')) // 20:35 CST → 20:30
+  record('cron.half_hour_slot_00', slotA.endsWith('T20:00'), slotA)
+  record('cron.half_hour_slot_30', slotB.endsWith('T20:30'), slotB)
 
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')
