@@ -673,7 +673,7 @@ async function main() {
   const { buildOneLineTldr, clampSummary } = await import('../src/engine/hourlyScan')
   const longKitco =
     'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy and Iran-linked oil inflation. Kitco argues the long-term fundamentals are intact and frames the selloff as frustrating short-term action that still leaves lower prices as long-term buying opportunities. Extra filler sentence one. Extra filler sentence two. Extra filler sentence three.'
-  const clamped = clampSummary(longKitco, { maxLines: 4, maxSentences: 4 })
+  const clamped = clampSummary(longKitco, { maxLines: 3, maxSentences: 3 })
   record(
     'market.opp_risk_bullet_complete',
     clamped.length > 80 &&
@@ -681,9 +681,21 @@ async function main() {
       !clamped.includes('…') &&
       !/\bon the\.$/i.test(clamped) &&
       !/\b(the|a|an|on|of|to|for|and)\.$/i.test(clamped) &&
-      clamped.split(/(?<=[.。!！?？])\s+/).filter(Boolean).length <= 4 &&
-      clamped.length <= 4 * 70 + 40,
+      clamped.split(/(?<=[.。!！?？])\s+/).filter(Boolean).length <= 3 &&
+      clamped.length <= 3 * 70 + 80,
     clamped.slice(0, 220),
+  )
+  // Never leave a half-cut last token like "on the." / hanging article
+  const midCutProbe = clampSummary(
+    'Traders watched the Fed hold closely while pricing higher-for-longer and oil shocks into gold this week without a clean sentence break here that goes on and on past three lines of mobile text for sure',
+    { maxLines: 3, maxSentences: 3 },
+  )
+  record(
+    'market.opp_risk_no_half_sentence',
+    /[.。!！?？]$/.test(midCutProbe) &&
+      !/\b(the|a|an|on|of|to|for|and|or|as|with)\.$/i.test(midCutProbe) &&
+      !midCutProbe.endsWith('…'),
+    midCutProbe.slice(0, 180),
   )
   const tldrProbe = buildOneLineTldr({
     dxy: 104.1,

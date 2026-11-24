@@ -754,18 +754,18 @@ function hourKeySgt(ts = Date.now()): string {
 
 /**
  * Opportunity / Risk bullet body:
- * - Keep highly informative complete sentences (never mid-sentence “…” cuts)
- * - Cap around ~4 mobile lines (soft char budget) and at most 4 sentences
+ * - Keep highly informative complete sentences (never mid-sentence cuts)
+ * - Cap around ~3 mobile lines (soft char budget) and at most 3 sentences
  */
 export function clampSummary(
   text: string,
   opts?: { maxChars?: number; maxSentences?: number; maxLines?: number },
 ): string {
-  const maxLines = opts?.maxLines ?? 4
-  // ~70 Latin chars / ~36 CJK chars per mobile line → soft budget for 4 lines
+  const maxLines = opts?.maxLines ?? 3
+  // ~70 Latin chars / ~36 CJK chars per mobile line → soft budget for 3 lines
   const hasCjk = /[\u4e00-\u9fff]/.test(text)
   const maxChars = opts?.maxChars ?? (hasCjk ? maxLines * 36 : maxLines * 70)
-  const maxSentences = opts?.maxSentences ?? 4
+  const maxSentences = opts?.maxSentences ?? 3
 
   const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
   if (!cleaned) return ''
@@ -775,21 +775,28 @@ export function clampSummary(
     .map((s) => s.trim())
     .filter(Boolean)
 
-  // No clear sentence breaks — keep whole text if it fits; otherwise refuse bare mid-cut
+  const finish = (s: string) => {
+    const t = s.trim()
+    if (!t) return ''
+    return /[.。!！?？]$/.test(t) ? t : `${t}.`
+  }
+
+  // No clear sentence breaks — keep whole text if it fits; never invent a mid-cut “sentence”
   if (sentences.length <= 1) {
-    if (cleaned.length <= maxChars) return cleaned
-    // Prefer ending at em-dash / semicolon only when left side is a complete clause
-    const cut = cleaned.slice(0, maxChars)
-    const em = cut.lastIndexOf(' — ')
-    if (em > maxChars * 0.55) {
-      const left = cut.slice(0, em).trim().replace(/[，,;；:]+$/g, '')
-      if (left.split(/\s+/).length >= 8) return `${left}.`
+    if (cleaned.length <= maxChars) return finish(cleaned)
+    // Prefer ending at a real sentence terminator inside the budget
+    const cut = cleaned.slice(0, Math.min(cleaned.length, Math.ceil(maxChars * 1.15)))
+    const at = Math.max(
+      cut.lastIndexOf('. '),
+      cut.lastIndexOf('。'),
+      cut.lastIndexOf('! '),
+      cut.lastIndexOf('！'),
+    )
+    if (at > maxChars * 0.35) {
+      return finish(cut.slice(0, at + 1))
     }
-    // Fall back: keep the longest prefix ending with . 。 ! 
-    const at = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('! '))
-    if (at > maxChars * 0.4) return cut.slice(0, at + 1).trim()
-    // Still no boundary — return full first “sentence-ish” blob rather than unfinished …
-    return cleaned.length <= maxChars * 1.25 ? cleaned : cleaned.slice(0, maxChars).replace(/\s+\S*$/, '').replace(/[，,;；:\-—–]+\s*$/g, '') + '.'
+    // One long run-on: keep the full clause complete rather than half-cut mid-word
+    return finish(cleaned)
   }
 
   const picked: string[] = []
@@ -799,18 +806,8 @@ export function clampSummary(
     const nextLen = picked.length === 0 ? s.length : len + 1 + s.length
     if (picked.length > 0 && nextLen > maxChars) break
     if (picked.length === 0 && s.length > maxChars) {
-      // Oversized first sentence: keep it whole if moderately long (prefer complete over trim)
-      if (s.length <= Math.ceil(maxChars * 1.35)) {
-        picked.push(s)
-        break
-      }
-      const cut = s.slice(0, maxChars)
-      const at = Math.max(cut.lastIndexOf(', '), cut.lastIndexOf('，'), cut.lastIndexOf(' — '))
-      const left = (at > maxChars * 0.5 ? cut.slice(0, at) : cut)
-        .trim()
-        .replace(/\b(the|a|an|on|of|to|for|and|or|as|with|that|this)\s*$/i, '')
-        .replace(/[，,;；:\-—–…]+\s*$/g, '')
-      picked.push(/[.。!！?？]$/.test(left) ? left : `${left}.`)
+      // Oversized first sentence: keep it whole (prefer complete over trim / mid-cut)
+      picked.push(s)
       break
     }
     picked.push(s)
@@ -829,8 +826,8 @@ function rankPoints(
   return rows.slice(0, 4).map((r, i) => ({
     ...r,
     rank: i + 1,
-    en: clampSummary(r.en, { maxLines: 4, maxSentences: 4 }),
-    zh: clampSummary(r.zh, { maxLines: 4, maxSentences: 4 }),
+    en: clampSummary(r.en, { maxLines: 3, maxSentences: 3 }),
+    zh: clampSummary(r.zh, { maxLines: 3, maxSentences: 3 }),
   }))
 }
 
