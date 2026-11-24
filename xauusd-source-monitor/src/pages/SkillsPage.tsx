@@ -121,7 +121,7 @@ export function SkillsPage() {
     <div className="panel skills-page">
       <h2>{t('skillsTitle')}</h2>
       <p className="sub">{t('skillsSub')}</p>
-      {!canWrite ? <ContentAdminBanner surface="skills" /> : null}
+      <ContentAdminBanner surface="skills" />
 
       <div className="skills-toolbar">
         <input

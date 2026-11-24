@@ -223,7 +223,7 @@ export function KnowledgePage() {
     <div className="panel knowledge-page">
       <h2>{t('kbTitle')}</h2>
       <p className="sub">{t('kbSub')}</p>
-      {!canWrite ? <ContentAdminBanner surface="knowledge" /> : null}
+      <ContentAdminBanner surface="knowledge" />
 
       <div className="kb-layout">
         <aside className="kb-tree-pane std-side">

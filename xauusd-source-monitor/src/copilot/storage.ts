@@ -37,8 +37,25 @@ const SKILLS_KEY = 'vex_risk_copilot_skills_v1'
 const SKILL_OVERRIDES_KEY = 'vex_risk_copilot_skill_overrides_v1'
 const SETTINGS_KEY = 'vex_risk_copilot_settings_v1'
 const PERIODIC_DIGESTS_KEY = 'vex_risk_periodic_digests_v1'
+const CONTENT_RAISES_KEY = 'vex_risk_content_raises_v1'
 /** Shared with xauusd-source-monitor briefings */
 export const BRIEFINGS_KEY = 'xauusd-monitor-briefings-v8'
+
+export type ContentRaiseSurface = 'skills' | 'knowledge' | 'memory'
+
+export interface ContentRaiseRequest {
+  id: string
+  surface: ContentRaiseSurface
+  summary: string
+  detail: string
+  raisedByEmail: string
+  raisedByName: string
+  createdAt: number
+  status: 'open' | 'done' | 'dismissed'
+  resolvedAt?: number
+  resolvedByEmail?: string
+  adminNote?: string
+}
 
 declare const __VEX_LLM_PROXY_BASE__: string
 
@@ -291,6 +308,67 @@ export function loadSkills(): SkillRecord[] {
 export function saveSkills(list: SkillRecord[]) {
   assertContentAdminWrite('skills')
   writeJson(SKILLS_KEY, list)
+}
+
+export function loadContentRaises(): ContentRaiseRequest[] {
+  return readJson<ContentRaiseRequest[]>(CONTENT_RAISES_KEY, [])
+}
+
+export function saveContentRaises(list: ContentRaiseRequest[]) {
+  writeJson(CONTENT_RAISES_KEY, list.slice(0, 100))
+}
+
+/** Any signed-in operator may raise a change request to Yan Haixiang. */
+export function raiseContentChange(input: {
+  surface: ContentRaiseSurface
+  summary: string
+  detail: string
+  raisedByEmail: string
+  raisedByName: string
+}): ContentRaiseRequest {
+  const summary = input.summary.trim()
+  const detail = input.detail.trim()
+  if (!summary) throw new Error('raise_summary_required')
+  const row: ContentRaiseRequest = {
+    id: `raise_${Date.now()}`,
+    surface: input.surface,
+    summary,
+    detail,
+    raisedByEmail: input.raisedByEmail.trim().toLowerCase(),
+    raisedByName: input.raisedByName.trim() || input.raisedByEmail,
+    createdAt: Date.now(),
+    status: 'open',
+  }
+  saveContentRaises([row, ...loadContentRaises().filter((r) => r.id !== row.id)])
+  return row
+}
+
+export function resolveContentRaise(
+  id: string,
+  status: 'done' | 'dismissed',
+  admin: { email: string },
+  adminNote = '',
+) {
+  assertContentAdminWrite('memory')
+  const next = loadContentRaises().map((r) =>
+    r.id === id
+      ? {
+          ...r,
+          status,
+          resolvedAt: Date.now(),
+          resolvedByEmail: admin.email,
+          adminNote: adminNote.trim() || r.adminNote,
+        }
+      : r,
+  )
+  saveContentRaises(next)
+  return next.find((r) => r.id === id) || null
+}
+
+export function openContentRaises(surface?: ContentRaiseSurface) {
+  return loadContentRaises().filter(
+    (r) => r.status === 'open' && (!surface || r.surface === surface),
+  )
 }
 
 export function loadSettings(): CopilotSettings {
