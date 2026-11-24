@@ -15,22 +15,26 @@ You only need to provide **two secrets** (never paste into chat/PR):
 | `LARK_APP_ID` | Vercel project **`vex-llm-proxy`** → Settings → Environment Variables → Production |
 | `LARK_APP_SECRET` | same |
 
-Then in **Lark / Feishu Developer Console** (no extra secrets):
+Then in **Lark / Feishu Developer Console** (required — without this, DMs stay silent):
 
 1. Enable **Bot** capability.
-2. Event subscription Request URL → `https://vex-llm-proxy.vercel.app/api/lark/event` (pass URL verification).
-3. Subscribe: `im.message.receive_v1`, `card.action.trigger`.
-4. Permissions: reply/send messages; get message resources (images) if you want screenshot OCR.
-5. **Leave Encrypt Key OFF / empty** (encrypt envelopes are not supported).
-6. Verification Token: optional — leave empty on both sides, or copy the console token into Vercel as `LARK_VERIFICATION_TOKEN`.
-7. Publish the app → add the bot to the risk group → **@bot** (DMs work without @).
+2. **Event Subscription** mode = **将事件发送至开发者服务器 / Send to developer’s server**  
+   (**Do not** use 长连接 / long connection — Vercel cannot receive that.)
+3. Request URL → `https://vex-llm-proxy.vercel.app/api/lark/event` → **Save** and pass URL verification.
+4. Subscribe: `im.message.receive_v1`, `card.action.trigger`.
+5. Permissions: `im:message` / send-as-bot; image resources if you want OCR.
+6. **Leave Encrypt Key OFF / empty**.
+7. Verification Token: optional.
+8. **Publish** the app version → open DM → send `Hi`.
 
 Check readiness:
 
 ```bash
 curl -sS https://vex-llm-proxy.vercel.app/api/lark/event
-# want: "larkConfigured": true, "readyForConversation": true, "missingSecrets": []
+# want: readyForConversation=true AND eventsDelivered=true after you message the bot
 ```
+
+If `eventsDelivered` stays `false` after messaging, the Request URL is still wrong or long-connection mode is selected.
 
 `OPENAI_API_KEY` is already on the host (`hasOpenAI: true`) — better answers + image OCR. Rules/RAG still work without it.
 
