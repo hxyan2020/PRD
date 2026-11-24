@@ -243,6 +243,8 @@ async function main() {
       lang === 'en'
         ? g.includes('Trigger:') && g.includes('**market**')
         : g.includes('触发') || g.includes('觸發')
+    const noScreenshotPitch =
+      !g.includes('截图欢迎') && !g.includes('截圖歡迎') && !g.includes('Screenshots welcome')
     record(
       `greeting.template_${lang}`,
       g.includes('Risk Copilot') &&
@@ -254,6 +256,7 @@ async function main() {
         g.includes('Yan Haixiang') &&
         g.includes('\n\n') &&
         triggerHint &&
+        noScreenshotPitch &&
         /📈|🔍|📊|🧩|📚/.test(g),
       g.slice(0, 120),
     )
@@ -273,7 +276,11 @@ async function main() {
         greetBlob.includes('UAT') &&
         greetBlob.includes('Yan Haixiang') &&
         greetBlob.includes('Trigger:') &&
-        greetBlob.includes('lark_md'),
+        greetBlob.includes('lark_md') &&
+        greetBlob.includes('vex-llm-proxy.vercel.app/#/skills') &&
+        greetBlob.includes('vex-llm-proxy.vercel.app/#/knowledge') &&
+        greetBlob.includes('"tag":"note"') &&
+        !greetBlob.includes('Screenshots welcome'),
     ),
     greetBlob.slice(0, 160),
   )
@@ -285,7 +292,10 @@ async function main() {
       greetZh.reply?.card &&
         greetZhBlob.includes('Risk Copilot') &&
         greetZhBlob.includes('**market**') &&
-        (greetZhBlob.includes('触发') || greetZhBlob.includes('觸發')),
+        (greetZhBlob.includes('触发') || greetZhBlob.includes('觸發')) &&
+        greetZhBlob.includes('vex-llm-proxy.vercel.app/#/skills') &&
+        greetZhBlob.includes('vex-llm-proxy.vercel.app/#/knowledge') &&
+        !greetZhBlob.includes('截图欢迎'),
     ),
     greetZhBlob.slice(0, 160),
   )

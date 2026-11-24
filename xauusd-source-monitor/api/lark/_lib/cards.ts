@@ -338,6 +338,24 @@ export function simpleCard(title: string, body: string, template = 'blue'): Reco
   }
 }
 
+const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
+const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
+const MARKET_URL = 'https://vex-llm-proxy.vercel.app/#/market'
+
+function deskFooterNote(lang: Lang): Record<string, unknown> {
+  const hans = lang === 'zh-Hans'
+  const zh = isZh(lang)
+  const text = hans
+    ? `桌面完整页 · Skills ${SKILLS_URL} · 知识库 ${KNOWLEDGE_URL} · 看板 ${DASHBOARD_URL} · 行情 ${MARKET_URL}`
+    : zh
+      ? `桌面完整頁 · Skills ${SKILLS_URL} · 知識庫 ${KNOWLEDGE_URL} · 看板 ${DASHBOARD_URL} · 行情 ${MARKET_URL}`
+      : `Full desk · Skills ${SKILLS_URL} · Knowledge ${KNOWLEDGE_URL} · Board ${DASHBOARD_URL} · Market ${MARKET_URL}`
+  return {
+    tag: 'note',
+    elements: [{ tag: 'plain_text', content: text }],
+  }
+}
+
 export function greetingCard(lang: Lang, body: string): Record<string, unknown> {
   const hans = lang === 'zh-Hans'
   const zh = isZh(lang)
@@ -346,18 +364,35 @@ export function greetingCard(lang: Lang, body: string): Record<string, unknown> 
     : zh
       ? '你好 · Risk Copilot'
       : 'Hello · Risk Copilot'
-  return simpleCard(title, body, 'turquoise')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'turquoise',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      deskFooterNote(lang),
+    ],
+  }
 }
 
 export function helpCard(lang: Lang, body: string): Record<string, unknown> {
   const hans = lang === 'zh-Hans'
   const zh = isZh(lang)
   const title = hans ? '使用说明' : zh ? '使用說明' : 'How to use'
-  return simpleCard(title, body, 'blue')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'blue',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      deskFooterNote(lang),
+    ],
+  }
 }
-
-const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
-const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
 
 /** In-Lark Skills catalogue preview; desk URL only in footer. */
 export function skillsCatalogCard(args: {
