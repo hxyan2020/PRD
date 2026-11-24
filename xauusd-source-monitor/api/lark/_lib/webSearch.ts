@@ -60,11 +60,41 @@ function expandQueries(question: string, lang: Lang): string[] {
     .slice(0, 5)
 }
 
-/** Drop wiki noise that only matched CJK character fragments. */
+/** Meaningful query tokens (len≥2); ignore single CJK chars that cause 帅→彭帅 collisions. */
+function queryTokens(question: string): string[] {
+  const q = question.toLowerCase().trim()
+  const out = new Set<string>()
+  for (const w of q.split(/[^a-z0-9\u4e00-\u9fff]+/i)) {
+    if (w.length >= 2) out.add(w)
+  }
+  const cjk = q.match(/[\u4e00-\u9fff]+/g) || []
+  for (const run of cjk) {
+    if (run.length >= 2) out.add(run)
+    for (let i = 0; i + 1 < run.length; i++) out.add(run.slice(i, i + 2))
+  }
+  for (const stop of ['什么', '什麼', '怎么', '怎麼', '如何', '请问', '請問', '一下', '这个', '這個', '是不是']) {
+    out.delete(stop)
+  }
+  return [...out].filter((t) => t.length >= 2)
+}
+
+/** Drop wiki noise that only matched CJK character fragments (e.g. 帅 → 彭帅). */
 function relevanceScore(question: string, hit: WebHit): number {
   const q = question.toLowerCase()
   const hay = `${hit.title} ${hit.snippet}`.toLowerCase()
+  const title = hit.title.toLowerCase()
   let score = 0
+  const tokens = queryTokens(question)
+  // Require real multi-char overlap with the title — never score on a lone character
+  const titleHits = tokens.filter((t) => title.includes(t))
+  if (!titleHits.length) {
+    // Body-only overlap is weak; only allow with finance needles also in the query
+    const bodyHits = tokens.filter((t) => t.length >= 3 && hay.includes(t))
+    if (!bodyHits.length) return 0
+  } else {
+    for (const t of titleHits) score += t.length >= 3 ? 5 : 3
+  }
+
   const needles = [
     '永续',
     '永續',
@@ -82,25 +112,44 @@ function relevanceScore(question: string, hit: WebHit): number {
     'swap',
     'mark',
     'index',
+    'xau',
+    '黄金',
+    '黃金',
   ]
   for (const n of needles) {
     if (q.includes(n) && hay.includes(n)) score += n.length >= 4 ? 4 : 3
   }
-  // Title exact-ish boosts
   if (/永续期货|perpetual futures/i.test(hit.title) && /永续|perpetual/i.test(q)) score += 12
   if (/合约|合約|futures|perp|期货|期貨/.test(q) && /永续期货|perpetual futures|perpetual swap/i.test(hit.title)) {
     score += 10
   }
-  // Noise: celebrity / ESG “可持续” pages matching the 永续 bigram
+  // Celebrity / scandal / ESG noise
   if (
-    /振永|鄭秀晶|郑秀晶|偶像|音樂|音乐|电视剧|電視劇|可持续发展|可持續發展|sustainable development/i.test(
+    /彭帅|彭帥|张高丽|張高麗|性丑闻|性醜聞|振永|鄭秀晶|郑秀晶|偶像|音樂|音乐|电视剧|電視劇|可持续发展|可持續發展|sustainable development/i.test(
       hay,
-    ) &&
-    /永续|perpetual|合约|合約|风险|風險/.test(q)
+    )
   ) {
-    score -= 25
+    score -= 40
   }
   return score
+}
+
+/** Only auto-search substantive product / risk questions — never banter like「我帅不」. */
+export function shouldAutoWebSearch(question: string): boolean {
+  const t = question.trim()
+  if (!t || t.length < 2) return false
+  // Short social / flirt / filler
+  if (
+    /^(我帅不[帅帥]?|我帅吗|我帅嗎|帅不帅|帥不帥|好看吗|好看嗎|漂亮吗|漂亮嗎|可爱吗|可愛嗎|爱我吗|愛我嗎|在吗|在嗎|哈哈+|呵呵+|嗯+|哦+|噢+|lol+|haha+)\s*[?？!！.。~]*\s*$/i.test(
+      t,
+    )
+  ) {
+    return false
+  }
+  if (t.length <= 8 && !/永续|永續|合约|合約|funding|mark|index|强平|強平|adl|风险|風險|告警|黄金|黃金|xau|perp/i.test(t)) {
+    return false
+  }
+  return true
 }
 
 async function wikiSearch(wiki: 'zh' | 'en', query: string, limit: number): Promise<WebHit[]> {
@@ -213,18 +262,13 @@ export async function searchWeb(question: string, lang: Lang): Promise<WebSearch
       if (dedupeHits(hits).length >= 4) break
     }
 
+    // Never fall back to unfiltered wiki hits — weak CJK fragment matches (帅→彭帅) stay out
     let unique = dedupeHits(hits)
       .map((h) => ({ hit: h, score: relevanceScore(q, h) }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
       .map((x) => x.hit)
       .slice(0, 5)
-    // If filters wiped everything, keep top DDG/wiki by query order but drop obvious noise
-    if (!unique.length) {
-      unique = dedupeHits(hits)
-        .filter((h) => !/振永|鄭秀晶|郑秀晶|偶像|音樂中心/.test(`${h.title}${h.snippet}`))
-        .slice(0, 4)
-    }
     // Enrich top 2 with fuller Wikipedia extracts
     for (const hit of unique.slice(0, 2)) {
       const m = hit.url.match(/https:\/\/(zh|en)\.wikipedia\.org\/wiki\/(.+)$/)

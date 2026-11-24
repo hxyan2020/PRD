@@ -21,6 +21,7 @@ import {
   east8Hour,
   greetingOpenForHour,
   greetingReply,
+  isCasualBanter,
   isCasualChat,
   isDeskFaqQuestion,
   isLarkWikiQuestion,
@@ -29,7 +30,7 @@ import {
   sharedDocReadReply,
 } from '../api/lark/_lib/scope'
 import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
-import { formatWebSearchAnswer, searchWeb } from '../api/lark/_lib/webSearch'
+import { formatWebSearchAnswer, searchWeb, shouldAutoWebSearch } from '../api/lark/_lib/webSearch'
 import {
   buildWeeklyReport,
   shanghaiWeekKey,
@@ -684,6 +685,8 @@ async function main() {
   // 9a0) Casual “我是谁” / “你是谁” — warm reply, never empty-KB command menu
   record('casual.detect_who_me', isCasualChat('我是谁'), '')
   record('casual.detect_who_you', isCasualChat('你是谁'), '')
+  record('casual.detect_handsome', isCasualChat('我帅不') && isCasualBanter('我帅不'), '')
+  record('casual.no_search_handsome', !shouldAutoWebSearch('我帅不'), '')
   record('casual.intent_who_me', classifyIntent('我是谁', {}) === 'general_risk', '')
   const whoMeTpl = casualChatReply('zh-Hans', '我是谁', null) || ''
   record(
@@ -714,6 +717,19 @@ async function main() {
       whoYouTurn.blob.includes('Risk Copilot') &&
       !whoYouTurn.blob.includes('没有命中'),
     whoYouTurn.blob.slice(0, 220),
+  )
+  clearSession('smoke_chat', 'banter_zh')
+  const handsome = await turn('banter-handsome', '我帅不', 'banter_zh')
+  record(
+    'turn.banter_no_pengshuai_search',
+    Boolean(handsome.reply?.card || handsome.reply?.text) &&
+      !handsome.blob.includes('彭帅') &&
+      !handsome.blob.includes('彭帥') &&
+      !handsome.blob.includes('张高丽') &&
+      !handsome.blob.includes('Wikipedia') &&
+      !handsome.blob.includes('检索摘要') &&
+      (handsome.blob.includes('行情') || handsome.blob.includes('告警') || handsome.blob.includes('😄')),
+    handsome.blob.slice(0, 220),
   )
 
   // 9a0b) No local KB → auto web search with sources (never “没有匹配知识库” / meta principles dump)

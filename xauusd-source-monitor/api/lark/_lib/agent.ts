@@ -40,6 +40,7 @@ import {
   detectLang,
   greetingReply,
   helpReply,
+  isCasualBanter,
   isCasualChat,
   isLarkWikiQuestion,
   looksLikeIncidentEvidence,
@@ -56,7 +57,12 @@ import {
   harvestAttachmentText,
   isAttachmentMessage,
 } from './attachment.js'
-import { formatWebSearchAnswer, searchWeb, webSearchContext } from './webSearch.js'
+import {
+  formatWebSearchAnswer,
+  searchWeb,
+  shouldAutoWebSearch,
+  webSearchContext,
+} from './webSearch.js'
 import { logInbound } from './inboundLog.js'
 import {
   clearSession,
@@ -989,8 +995,18 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   // Normal / “random” Q&A: answer first; only attach highly relevant KB (never dump weak hits)
   const relevantKb = pickRelevantKb(workingText, kb)
 
-  // No local KB → auto search mode (never say “没有匹配的知识库” / dump meta principles)
+  // No local KB → auto search only for substantive questions (never banter like「我帅不」→彭帅)
   if (!relevantKb.length) {
+    if (!shouldAutoWebSearch(workingText) || isCasualBanter(workingText)) {
+      const banter =
+        casualChatReply(lang, workingText) ||
+        (lang === 'zh-Hans'
+          ? '😄 收到。我更擅长行情、告警和风控知识——有这类问题直接问我就好。'
+          : lang === 'zh-Hant'
+            ? '😄 收到。我更擅長行情、告警和風控知識——有這類問題直接問我就好。'
+            : '😄 Got it. I’m best at markets, alerts, and risk knowledge — ask me those anytime.')
+      return { card: simpleCard(replyTitle, banter, 'blue') }
+    }
     const searched = await searchWeb(workingText, lang)
     if (searched.hits.length) {
       const searchCtx = [

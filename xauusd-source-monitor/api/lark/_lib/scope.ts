@@ -371,10 +371,24 @@ const CASUAL_THANKS =
   /^(谢谢|謝謝|thanks?|thx|ty|感谢|感謝|多谢|多謝)\s*[!！.。~]*\s*$/i
 const CASUAL_HOW =
   /^(怎么样|怎麼樣|最近怎么样|最近怎麼樣|在忙吗|在忙嗎|how\s+are\s+you)\s*[?？!！.。]*\s*$/i
+/** Banter / flirt — must NEVER trigger web search (e.g.「我帅不」≠ 彭帅). */
+const CASUAL_BANTER =
+  /^(我帅不[帅帥]?|我帅吗|我帅嗎|帅不帅|帥不帥|我好看吗|我好看嗎|好看吗|好看嗎|漂亮吗|漂亮嗎|可爱吗|可愛嗎|爱我吗|愛我嗎|想我了吗|想我了嗎|在吗|在嗎|哈哈+|呵呵+|嘿嘿+|嗯嗯+|哦+|噢+|lol+|lmao|haha+|omg)\s*[?？!！.。~]*\s*$/i
 
 export function isCasualChat(text: string): boolean {
   const t = text.trim()
-  return CASUAL_WHO_ME.test(t) || CASUAL_WHO_YOU.test(t) || CASUAL_THANKS.test(t) || CASUAL_HOW.test(t)
+  return (
+    CASUAL_WHO_ME.test(t) ||
+    CASUAL_WHO_YOU.test(t) ||
+    CASUAL_THANKS.test(t) ||
+    CASUAL_HOW.test(t) ||
+    CASUAL_BANTER.test(t)
+  )
+}
+
+/** True when free-text is short social banter that must not open search / RAG dumps. */
+export function isCasualBanter(text: string): boolean {
+  return CASUAL_BANTER.test(text.trim())
 }
 
 /** Friendly one-beat replies for small talk (optional displayName for “我是谁”). */
@@ -454,6 +468,15 @@ export function casualChatReply(
     if (lang === 'zh-Hans') return '还行，在线值班中 🙂 有 XAUUSD／告警问题丢过来就好。'
     if (lang === 'zh-Hant') return '還行，在線值班中 🙂 有 XAUUSD／告警問題丟過來就好。'
     return 'Doing fine — on duty 🙂 Send an XAUUSD / alert question whenever.'
+  }
+  if (CASUAL_BANTER.test(t)) {
+    if (lang === 'zh-Hans') {
+      return '😄 你很行——不过我更擅长看行情和排告警。有 XAUUSD／风控问题随时丢过来。'
+    }
+    if (lang === 'zh-Hant') {
+      return '😄 你很行——不過我更擅長看行情和排告警。有 XAUUSD／風控問題隨時丟過來。'
+    }
+    return '😄 You’re doing fine — I’m better at markets and alerts though. Ping me anytime on XAUUSD / risk.'
   }
   return null
 }
