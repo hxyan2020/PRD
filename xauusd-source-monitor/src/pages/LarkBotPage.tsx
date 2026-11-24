@@ -11,6 +11,8 @@ type Status = {
   hasVerificationToken?: boolean
   readyForConversation?: boolean
   chatReady?: boolean
+  eventsDelivered?: boolean
+  recentInbound?: { at?: string; kind?: string; result?: string; textPreview?: string }[]
   nextStep?: string
   bot?: {
     name?: string | null
@@ -113,8 +115,49 @@ export function LarkBotPage() {
             </code>
             {(bot?.chatNames || []).length > 0 ? ` — ${bot?.chatNames?.join(', ')}` : ''}
           </li>
+          <li>
+            {zh ? '事件送達 webhook：' : 'Events reaching webhook: '}
+            <code className={status?.eventsDelivered ? 'ok' : 'bad'}>
+              {status?.eventsDelivered ? 'yes' : 'none yet'}
+            </code>
+          </li>
         </ul>
-        {status?.nextStep ? <p className="muted">{status.nextStep}</p> : null}
+        {status?.nextStep ? (
+          <p className={status.eventsDelivered ? 'muted' : 'bad'} style={{ whiteSpace: 'pre-wrap' }}>
+            {status.nextStep}
+          </p>
+        ) : null}
+        {!status?.eventsDelivered ? (
+          <div className="lark-section" style={{ marginTop: '0.5rem', padding: 0, border: 'none' }}>
+            <p>
+              {zh
+                ? '目前伺服器已就緒，但飛書沒有把訊息推到 webhook——所以私聊沒有回覆。請在開放平台完成下方事件訂閱（最常見原因）。'
+                : 'Server is ready, but Feishu/Lark is not pushing messages to the webhook — that is why DMs stay silent. Fix Event Subscription in the Developer Console (most common cause):'}
+            </p>
+            <ol className="lark-steps">
+              <li>
+                {zh ? '事件訂閱 → 选择「将事件发送至开发者服务器」（不要用长连接）' : 'Event Subscription → “Send events to developer’s server” (NOT long connection)'}
+              </li>
+              <li>
+                Request URL = <code>{EVENT_URL}</code> → {zh ? '保存并通过校验' : 'Save & pass verification'}
+              </li>
+              <li>
+                {zh ? 'Encrypt Key 留空／关闭' : 'Encrypt Key empty / OFF'}
+              </li>
+              <li>
+                {zh ? '已订阅' : 'Subscribed:'} <code>im.message.receive_v1</code>
+              </li>
+              <li>
+                {zh ? '发布应用版本后，再给机器人发 Hi' : 'Publish the app version, then send Hi again'}
+              </li>
+            </ol>
+          </div>
+        ) : null}
+        {(status?.recentInbound || []).length > 0 ? (
+          <pre className="lark-smoke-out" style={{ maxHeight: 180 }}>
+            {JSON.stringify(status?.recentInbound, null, 2)}
+          </pre>
+        ) : null}
         <div className="lark-smoke-actions" style={{ marginTop: '0.75rem' }}>
           {bot?.openDmFeishu ? (
             <a className="archive-btn" href={bot.openDmFeishu} target="_blank" rel="noreferrer">
