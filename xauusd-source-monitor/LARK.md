@@ -68,6 +68,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | GET/POST | `/api/lark/incidents` | List / simulate turns (smoke) |
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
 | GET/POST | `/api/lark/market-report` | 30-min market scan DM to Yan; `?dry=1` preview |
+| GET/POST | `/api/lark/daily-market-report` | Daily 08:00 CST 24h digest → group; `?dry=1` preview |
 
 ## Weekly report (Yan Haixiang)
 
@@ -87,6 +88,14 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - **Force send:** `POST /api/lark/market-report` with `{ "force": true }` + desk token
 
 Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Production.
+
+## Daily 24h market morning report (group)
+
+- **Schedule:** every day **08:00 Asia/Shanghai** (Vercel cron `0 0 * * *` UTC)
+- **Content:** past-24h OKX 1H range (O/H/L/C / %) + TL;DR / Opportunity / Risk
+- **Delivery:** Feishu group `LARK_DAILY_MARKET_CHAT_ID` (default `oc_eb8eba24ff99a2c3ea3c9439750d65cd`)
+- **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/daily-market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
+- **Force send:** `POST /api/lark/daily-market-report` with `{ "force": true }` + desk token / cron header
 
 ## Bot behaviour
 

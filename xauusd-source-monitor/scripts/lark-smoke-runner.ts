@@ -31,9 +31,10 @@ import {
 } from '../api/lark/_lib/scope'
 import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import { formatWebSearchAnswer, searchWeb, shouldAutoWebSearch } from '../api/lark/_lib/webSearch'
-import { shanghaiHalfHourKey } from '../api/lark/_lib/market'
+import { shanghaiDayKey, shanghaiHalfHourKey } from '../api/lark/_lib/market'
 import { looksLikeAdminName } from '../api/lark/_lib/client'
 import { DEFAULT_MARKET_CHAT_ID } from '../api/lark/market-report'
+import { DEFAULT_DAILY_MARKET_CHAT_ID } from '../api/lark/daily-market-report'
 import {
   extractCardTypingBody,
   isMenuOrCatalogCard,
@@ -1052,6 +1053,7 @@ async function main() {
       greetLater.includes('**文档**') &&
       greetLater.includes('**行情**') &&
       greetLater.includes('半小时行情') &&
+      greetLater.includes('每日 24h') &&
       greetLater.includes('Yan Haixiang') &&
       greetLater.includes('UAT') &&
       !greetLater.includes('截图欢迎直接丢过来') &&
@@ -1068,6 +1070,16 @@ async function main() {
     'cron.market_chat_id_default',
     DEFAULT_MARKET_CHAT_ID === 'oc_430fae67dd06b70f65b726b1673ef40e',
     DEFAULT_MARKET_CHAT_ID,
+  )
+  record(
+    'cron.daily_market_chat_id',
+    DEFAULT_DAILY_MARKET_CHAT_ID === 'oc_eb8eba24ff99a2c3ea3c9439750d65cd',
+    DEFAULT_DAILY_MARKET_CHAT_ID,
+  )
+  record(
+    'cron.shanghai_day_key',
+    shanghaiDayKey(Date.parse('2026-11-24T16:00:00Z')) === '2026-11-25',
+    shanghaiDayKey(Date.parse('2026-11-24T16:00:00Z')),
   )
 
   // 9b) Skills / knowledge catalogue cards

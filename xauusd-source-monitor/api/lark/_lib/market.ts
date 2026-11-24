@@ -61,6 +61,140 @@ export function shanghaiHalfHourKey(ts: number = Date.now()): string {
   }
 }
 
+/** Calendar day key in Asia/Shanghai, e.g. `2026-11-25` (daily cron dedupe). */
+export function shanghaiDayKey(ts: number = Date.now()): string {
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date(ts))
+    const get = (t: string) => parts.find((p) => p.type === t)?.value || '00'
+    return `${get('year')}-${get('month')}-${get('day')}`
+  } catch {
+    return new Date(ts).toISOString().slice(0, 10)
+  }
+}
+
+export type Day24hStats = {
+  bars: number
+  open: number
+  high: number
+  low: number
+  close: number
+  changePct: number
+  fromTs: number
+  toTs: number
+}
+
+/** Last ~24 × 1H OKX bars → open/high/low/close + % change. */
+export function compute24hStats(snap: MarketSnapshot): Day24hStats | null {
+  const bars = snap.hourly?.kline?.bars || []
+  if (bars.length < 2) return null
+  const cutoff = Date.now() - 24 * 3600_000
+  let window = bars.filter((b) => b.t >= cutoff)
+  if (window.length < 2) window = bars.slice(-24)
+  if (window.length < 2) return null
+  const open = window[0]!.o
+  const close = window[window.length - 1]!.c
+  const high = Math.max(...window.map((b) => b.h))
+  const low = Math.min(...window.map((b) => b.l))
+  const changePct = open !== 0 ? ((close - open) / open) * 100 : 0
+  return {
+    bars: window.length,
+    open,
+    high,
+    low,
+    close,
+    changePct,
+    fromTs: window[0]!.t,
+    toTs: window[window.length - 1]!.t,
+  }
+}
+
+/**
+ * Morning group digest: past-24h XAU range + current desk TL;DR / Opp / Risk.
+ * Chinese by default (group push).
+ */
+export function formatDaily24hMarketAnswer(snap: MarketSnapshot, lang: Lang = 'zh-Hans'): string {
+  const hourly = snap.hourly
+  const scanAt = formatEast8(snap.fetchedAt || Date.now())
+  const stats = compute24hStats(snap)
+  const lines: string[] = []
+  const chg =
+    stats == null
+      ? '—'
+      : `${stats.changePct >= 0 ? '+' : ''}${stats.changePct.toFixed(2)}%`
+
+  if (lang === 'zh-Hans') {
+    lines.push('📊 **过去 24 小时行情报告 · V Exchange Risk**', '')
+    lines.push(
+      `⏱ **报告时间：** **${scanAt}**（东八区）`,
+      '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（OKX XAU-USDT-SWAP）+ 当日宏观／来源要点。',
+      '',
+    )
+    if (stats) {
+      lines.push(
+        '📈 **24h 价格区间**',
+        `• **开：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`,
+        `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 线数：** **${stats.bars}**`,
+        `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（东八区）`,
+        '',
+      )
+    }
+    lines.push(...renderKline(hourly?.kline, lang), '')
+    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
+    if (snap.spot) lines.push(`• **现货 XAU：** **${snap.spot.last.toFixed(2)}**`)
+    if (hourly?.sentiment) {
+      lines.push(
+        `• **情绪：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
+      )
+    }
+    lines.push('')
+    lines.push(
+      ...renderSection('📋 TL;DR', hourly?.tldr || [], '过去 24 小时暂无要点。', lang, true),
+      '',
+      ...renderSection('✨ Opportunity', hourly?.opportunity || [], '过去 24 小时暂无要点。', lang),
+      '',
+      ...renderSection('⚠️ Risk', hourly?.risk || [], '过去 24 小时暂无要点。', lang),
+      '',
+    )
+    lines.push(
+      '• **解读：** 价格观察（bps／基差）≠ 新闻／宏观原因。值班排查请贴告警或私聊机器人发 **排查**。',
+      '',
+      '🔗 **来源**',
+    )
+    for (const s of (hourly?.sources || []).filter((x) => x.health === 'ok').slice(0, 8)) {
+      lines.push(`• [${s.captionZh || s.captionEn}](${s.url})`)
+    }
+    lines.push(`• [打开网页 Market](${DESK_MARKET})`)
+    return lines.join('\n')
+  }
+
+  // Fallback EN (rarely used for this group cron)
+  lines.push('📊 **Past-24h market report · V Exchange Risk**', '')
+  lines.push(`⏱ **As of:** **${scanAt}** (UTC+8)`, '')
+  if (stats) {
+    lines.push(
+      '📈 **24h range**',
+      `• **Open:** **${stats.open.toFixed(2)}** → **Close:** **${stats.close.toFixed(2)}** (**${chg}**)`,
+      `• **High:** **${stats.high.toFixed(2)}** · **Low:** **${stats.low.toFixed(2)}** · **Bars:** **${stats.bars}**`,
+      '',
+    )
+  }
+  lines.push(...renderKline(hourly?.kline, 'en'), '')
+  lines.push(
+    ...renderSection('📋 TL;DR', hourly?.tldr || [], 'No points in the last 24h.', 'en', true),
+    '',
+    ...renderSection('✨ Opportunity', hourly?.opportunity || [], 'No points in the last 24h.', 'en'),
+    '',
+    ...renderSection('⚠️ Risk', hourly?.risk || [], 'No points in the last 24h.', 'en'),
+  )
+  return lines.join('\n')
+}
+
 /** Compact sparkline from closes (Lark has no canvas). */
 export function asciiCloseSpark(bars: KlineBar[], width = 16): string {
   if (!bars.length) return '—'
