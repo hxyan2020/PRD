@@ -113,6 +113,59 @@ export async function sendCardToChat(chatId: string, card: Record<string, unknow
   })
 }
 
+/** DM a user by open_id (admin weekly push). */
+export async function sendCardToOpenId(openId: string, card: Record<string, unknown>) {
+  return larkFetch(`/open-apis/im/v1/messages?receive_id_type=open_id`, {
+    method: 'POST',
+    body: JSON.stringify({
+      receive_id: openId,
+      msg_type: 'interactive',
+      content: JSON.stringify(plainCard(card)),
+    }),
+  })
+}
+
+export async function sendTextToOpenId(openId: string, text: string) {
+  return larkFetch(`/open-apis/im/v1/messages?receive_id_type=open_id`, {
+    method: 'POST',
+    body: JSON.stringify({
+      receive_id: openId,
+      msg_type: 'text',
+      content: JSON.stringify({ text: toPlainText(text) }),
+    }),
+  })
+}
+
+/**
+ * Resolve Yan Haixiang (or configured admin) open_id for weekly push.
+ * Prefers LARK_ADMIN_OPEN_ID / LARK_YAN_OPEN_ID; optional email via contact API.
+ */
+export async function resolveAdminOpenId(): Promise<{ openId: string; source: string }> {
+  const fromEnv = (
+    process.env.LARK_ADMIN_OPEN_ID ||
+    process.env.LARK_YAN_OPEN_ID ||
+    ''
+  ).trim()
+  if (fromEnv) return { openId: fromEnv, source: 'env' }
+
+  const email = (process.env.LARK_ADMIN_EMAIL || '').trim()
+  if (email && larkConfigured()) {
+    try {
+      const data = (await larkFetch('/open-apis/contact/v3/users/batch_get_id?user_id_type=open_id', {
+        method: 'POST',
+        body: JSON.stringify({ emails: [email], include_resigned: false }),
+      })) as {
+        data?: { user_list?: { email?: string; user_id?: string }[] }
+      }
+      const hit = (data.data?.user_list || []).find((u) => u.user_id)
+      if (hit?.user_id) return { openId: hit.user_id, source: 'email' }
+    } catch {
+      /* missing contact scope — fall through */
+    }
+  }
+  return { openId: '', source: 'missing' }
+}
+
 /** Download image bytes for a message resource (image_key). */
 export async function downloadMessageImage(messageId: string, imageKey: string): Promise<Buffer> {
   const token = await getTenantToken()

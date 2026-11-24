@@ -48,6 +48,9 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | `LARK_REPLY_ALL_GROUP=1` | Reply to every group message without @ (not recommended) |
 | `LARK_ENCRYPT_KEY` | **Do not use** until decrypt is implemented — keep Encrypt Key off |
 | `DESK_GATEWAY_TOKEN` | Protects desk smoke `/api/lark/incidents` only; unrelated to Lark chat |
+| `LARK_ADMIN_OPEN_ID` | **Required for weekly push** — Yan Haixiang’s Feishu `open_id` (DM target) |
+| `LARK_ADMIN_EMAIL` | Optional fallback to resolve open_id via Contact API |
+| `CRON_SECRET` | Optional; Vercel Cron Authorization bearer for `/api/lark/weekly-report` |
 
 ## Endpoints
 
@@ -55,6 +58,18 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 |--------|------|---------|
 | GET/POST | `/api/lark/event` | Webhook (challenge + messages + card actions) |
 | GET/POST | `/api/lark/incidents` | List / simulate turns (smoke) |
+| GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
+
+## Weekly report (Yan Haixiang)
+
+- **Schedule:** every **Friday 16:00 Asia/Shanghai** (Vercel cron `0 8 * * 5` UTC)
+- **Content:** this week’s handled incidents + aggregated recommendations / Skills
+- **Delivery:** Feishu DM card to `LARK_ADMIN_OPEN_ID` (Yan Haixiang)
+- **On-demand:** send `weekly` / `周报` in chat
+- **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
+- **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token
+
+Set `LARK_ADMIN_OPEN_ID` on Vercel Production (Yan’s open_id from Feishu admin / bot conversation logs).
 
 ## Bot behaviour
 
@@ -65,7 +80,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 5. **RAG + Skills** — desk + quote-ops V Exchange perpetual (`v-exchange-perp`; CFD excluded).
 6. **Dashboard** — `review` / `dashboard` → KPI card + https://vex-llm-proxy.vercel.app/#/reports
 
-Commands: `help` · `market` · `investigate` · `review` · `dashboard` · `done` / `archive`
+Commands: `help` · `market` · `investigate` · `review` · `dashboard` · `weekly` / `周报` · `done` / `archive`
 
 ## Smoke without Lark credentials
 

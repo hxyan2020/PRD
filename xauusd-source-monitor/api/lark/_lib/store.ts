@@ -98,13 +98,17 @@ export function listIncidents(opts?: {
   chatId?: string
   status?: 'open' | 'archived' | 'all'
   limit?: number
+  /** Inclusive lower bound on createdAt or updatedAt (ms). */
+  sinceMs?: number
 }): IncidentRecord[] {
   hydrate()
   const status = opts?.status ?? 'all'
   const limit = opts?.limit ?? 50
+  const since = opts?.sinceMs ?? 0
   return Object.values(memIncidents)
     .filter((r) => (opts?.chatId ? r.chatId === opts.chatId : true))
     .filter((r) => (status === 'all' ? true : r.status === status))
+    .filter((r) => (since ? Math.max(r.createdAt, r.updatedAt) >= since : true))
     .sort((a, b) => b.updatedAt - a.updatedAt)
     .slice(0, limit)
 }

@@ -92,6 +92,9 @@ const COMMAND_SKILLS =
   /^(skills?|skill\s*list|技能|技能库|技能庫|查看\s*skills?|看\s*skills?)\b/i
 const COMMAND_KNOWLEDGE =
   /^(knowledge|kb|rag|知识库|知識庫|知识|知識|查看\s*(知识库|知識庫|kb|rag)|看\s*(知识库|知識庫))\b/i
+/** On-demand weekly digest (also cron-pushed Fridays 16:00 CST). */
+const COMMAND_WEEKLY =
+  /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
 
 /** Clock hour in UTC+8 (Asia/Shanghai). Feishu users are east-eight. */
 export function east8Hour(now = new Date()): number {
@@ -162,6 +165,7 @@ export function classifyIntent(
   if (COMMAND_MARKET.test(t)) return 'market'
   if (COMMAND_SKILLS.test(t)) return 'skills'
   if (COMMAND_KNOWLEDGE.test(t)) return 'knowledge'
+  if (COMMAND_WEEKLY.test(t)) return 'weekly'
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
   if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'review'
@@ -279,6 +283,9 @@ export function greetingReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb** — 查看 RAG 知识库摘录',
       '  触发：发送 **knowledge** 或 **kb**；完整桌面页见卡片底部链接',
       '',
+      '• 📊 **weekly** / **周报** — 本周事件与建议汇总',
+      '  触发：发送 **weekly** 或 **周报**；每周五 **16:00（东八区）** 自动推送给 **@Yan Haixiang**',
+      '',
       '• ✅ **done** — 结束并归档本次排查',
       '  触发：发送 **done**（排查进行中时）',
       '',
@@ -320,6 +327,9 @@ export function greetingReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb** — 查看 RAG 知識庫摘錄',
       '  觸發：發送 **knowledge** 或 **kb**；完整桌面頁見卡片底部連結',
       '',
+      '• 📊 **weekly** / **週報** — 本週事件與建議匯總',
+      '  觸發：發送 **weekly** 或 **週報**；每週五 **16:00（東八區）** 自動推送給 **@Yan Haixiang**',
+      '',
       '• ✅ **done** — 結束並歸檔本次排查',
       '  觸發：發送 **done**（排查進行中時）',
       '',
@@ -359,6 +369,9 @@ export function greetingReply(lang: Lang): string {
     '',
     '• 📚 **knowledge** / **kb** — browse RAG knowledge excerpts',
     '  Trigger: send **knowledge** or **kb**; full desk page link at card footer',
+    '',
+    '• 📊 **weekly** — this week’s events & recommendations',
+    '  Trigger: send **weekly**; auto-pushed to **@Yan Haixiang** Fridays **16:00 Asia/Shanghai**',
     '',
     '• ✅ **done** — close and archive this investigation',
     '  Trigger: send **done** (while an investigation is open)',
@@ -400,6 +413,9 @@ export function helpReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb**',
       '  发送 **knowledge** 或 **kb** 查看 RAG 知识库',
       '',
+      '• 📊 **weekly** / **周报**',
+      '  发送 **weekly** 或 **周报**；每周五 16:00（东八区）自动推送给 @Yan Haixiang',
+      '',
       '• ✅ **done**',
       '  排查中发送 **done** 以归档',
       '',
@@ -436,6 +452,9 @@ export function helpReply(lang: Lang): string {
       '• 📚 **knowledge** / **kb**',
       '  發送 **knowledge** 或 **kb** 查看 RAG 知識庫',
       '',
+      '• 📊 **weekly** / **週報**',
+      '  發送 **weekly** 或 **週報**；每週五 16:00（東八區）自動推送給 @Yan Haixiang',
+      '',
       '• ✅ **done**',
       '  排查中發送 **done** 以歸檔',
       '',
@@ -470,6 +489,9 @@ export function helpReply(lang: Lang): string {
     '',
     '• 📚 **knowledge** / **kb**',
     '  Send **knowledge** or **kb** to browse the RAG knowledge base',
+    '',
+    '• 📊 **weekly**',
+    '  Send **weekly**; auto-pushed to @Yan Haixiang Fridays 16:00 Asia/Shanghai',
     '',
     '• ✅ **done**',
     '  During an investigation, send **done** to archive',

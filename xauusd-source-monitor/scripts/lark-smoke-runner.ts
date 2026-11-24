@@ -15,6 +15,12 @@ import {
   needsInaccessibleAccess,
 } from '../api/lark/_lib/scope'
 import {
+  buildWeeklyReport,
+  shanghaiWeekKey,
+  weeklyWindow,
+} from '../api/lark/_lib/weeklyReport'
+import type { IncidentRecord } from '../api/lark/_lib/types'
+import {
   formatRagAnswer,
   loadKnowledge,
   loadSkills,
@@ -427,6 +433,48 @@ async function main() {
       accessTurn.blob.includes('Yan Haixiang') &&
       (accessTurn.blob.includes('无法访问') || accessTurn.blob.includes('Access unavailable')),
     accessTurn.blob.slice(0, 180),
+  )
+
+  // 9a3) Weekly report builder + on-demand command
+  const win = weeklyWindow(Date.parse('2026-11-24T08:00:00Z')) // Friday 16:00 CST
+  record('weekly.window_label_cst', win.label.includes('东八区'), win.label)
+  record('weekly.week_key', /^20\d{2}-W\d{2}$/.test(shanghaiWeekKey(Date.parse('2026-11-24T08:00:00Z'))), shanghaiWeekKey(Date.parse('2026-11-24T08:00:00Z')))
+  const sampleInc: IncidentRecord = {
+    id: 'inc_smoke_week',
+    chatId: 'c1',
+    openId: 'u1',
+    title: 'IDX-01 excluded Mark 48bps',
+    facts: ['Alert paste'],
+    severity: 'P1',
+    skills: ['VE-SOP-02'],
+    knowledge: ['Mark vs Index'],
+    summary: 'Source excluded; Mark deviation elevated.',
+    recommendations: ['Align timestamps', 'Confirm remaining sources'],
+    status: 'archived',
+    createdAt: Date.parse('2026-11-22T02:00:00Z'),
+    updatedAt: Date.parse('2026-11-23T04:00:00Z'),
+    lang: 'zh-Hans',
+  }
+  const weekly = buildWeeklyReport([sampleInc], Date.parse('2026-11-24T08:00:00Z'), 'zh-Hans')
+  record(
+    'weekly.report_has_events_and_recs',
+    weekly.incidents.length === 1 &&
+      weekly.markdown.includes('周报') &&
+      weekly.markdown.includes('@Yan Haixiang') &&
+      weekly.markdown.includes('IDX-01') &&
+      weekly.markdown.includes('Align timestamps') &&
+      weekly.recommendations.length >= 1,
+    weekly.markdown.slice(0, 200),
+  )
+  record('intent.weekly_zh', classifyIntent('周报', { inInvestigateSession: false, mentionedBot: true, chatType: 'p2p' }) === 'weekly', '')
+  clearSession('smoke_chat', 'smoke_user')
+  const weeklyTurn = await turn('weekly-cmd', '周报')
+  record(
+    'turn.weekly_card',
+    Boolean(weeklyTurn.reply?.card) &&
+      weeklyTurn.blob.includes('周报') &&
+      weeklyTurn.blob.includes('Yan Haixiang'),
+    weeklyTurn.blob.slice(0, 160),
   )
 
   // 9b) Skills / knowledge catalogue cards

@@ -11,6 +11,7 @@ import {
 import { chatComplete, describeImage } from './llm.js'
 import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
+import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
 import {
   adaptiveNextSteps,
   formatRagAnswer,
@@ -465,6 +466,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'knowledge') {
     return { card: knowledgeCatalogCard({ lang, knowledge: loadKnowledge() }) }
+  }
+
+  if (intent === 'weekly') {
+    const report = buildWeeklyReport(listIncidents({ status: 'all', limit: 200 }), Date.now(), lang)
+    return { card: weeklyReportCard(report.markdown, report.empty) }
   }
 
   if (intent === 'archive') {

@@ -10,6 +10,7 @@ export type Intent =
   | 'skills'
   | 'knowledge'
   | 'archive'
+  | 'weekly'
   | 'offtopic'
   | 'safety'
   | 'ack_mention'
