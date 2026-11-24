@@ -77,4 +77,17 @@ describe("rag retrieve", () => {
     expect(/L1-07|内部价格偏差|ve-.*l1-07|l1-07-15/i.test(blob)).toBe(true);
     expect(hits.every((h) => h.chunk.product === "v-exchange-perp")).toBe(true);
   });
+
+  it("surfaces Runbook V18 L1-16 Funding and L2-A tables", async () => {
+    await ensureKbSeeded();
+    const funding = await retrieve("L1-16 外部资金费率偏差 Funding", "zh-CN", 8, "v-exchange-perp");
+    expect(funding.length).toBeGreaterThan(0);
+    const fblob = funding.map((h) => h.chunk.id + h.chunk.titleZh + h.chunk.bodyZh).join("\n");
+    expect(/L1-16|资金费率|Funding|l1-16-28/i.test(fblob)).toBe(true);
+
+    const l2a = await retrieve("L2-A 指数源切换 内部定价异常", "zh-CN", 8, "v-exchange-perp");
+    expect(l2a.length).toBeGreaterThan(0);
+    const ablob = l2a.map((h) => h.chunk.id + h.chunk.titleZh + h.chunk.bodyZh).join("\n");
+    expect(/L2-A|指数源切换|mermaid|l2-a/i.test(ablob)).toBe(true);
+  });
 });

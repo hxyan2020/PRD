@@ -2,7 +2,8 @@
  * V Exchange 风控 Runbook V18 — ingested in four parts into the skill library.
  * Part 1: overview + admin page field baseline + L1-01..L1-06 (book/trading).
  * Part 2: L1-07..L1-15 pricing / Mark / index sources.
- * Parts 3–4: placeholders awaiting user content.
+ * Part 3: L1-16..L1-28 + L2-A/B (Funding / DB / Finance / L2).
+ * Part 4: placeholder for remaining L2-C..F.
  */
 
 import type { Skill, SkillStep } from "@/lib/types";
@@ -21,12 +22,20 @@ import {
   RUNBOOK_V18_PART2,
 } from "./part2";
 import { VE_RUNBOOK_PART2_SKILLS } from "./part2-skills";
+import {
+  RUNBOOK_V18_L1_OPS_EN,
+  RUNBOOK_V18_L1_OPS_ZH,
+  RUNBOOK_V18_L2_AB_EN,
+  RUNBOOK_V18_L2_AB_ZH,
+  RUNBOOK_V18_PART3,
+} from "./part3";
+import { VE_RUNBOOK_PART3_SKILLS } from "./part3-skills";
 
-export { RUNBOOK_V18_PART, RUNBOOK_V18_VERSION, RUNBOOK_V18_PART2 };
+export { RUNBOOK_V18_PART, RUNBOOK_V18_VERSION, RUNBOOK_V18_PART2, RUNBOOK_V18_PART3 };
 
-/** Registry so parts 3–4 can append without reshaping seed. */
-export const RUNBOOK_V18_INGESTED_PARTS = [1, 2] as const;
-export const RUNBOOK_V18_PENDING_PARTS = [3, 4] as const;
+/** Registry so part 4 can append without reshaping seed. */
+export const RUNBOOK_V18_INGESTED_PARTS = [1, 2, 3] as const;
+export const RUNBOOK_V18_PENDING_PARTS = [4] as const;
 
 function stepsFromTable(
   rows: Array<{
@@ -539,7 +548,11 @@ const VE_RUNBOOK_PART1_SKILLS: Skill[] = [
 ];
 
 /** Interactive checklist skills (source of truth for branch tables remains bodyZh markdown). */
-export const VE_RUNBOOK_SKILLS: Skill[] = [...VE_RUNBOOK_PART1_SKILLS, ...VE_RUNBOOK_PART2_SKILLS];
+export const VE_RUNBOOK_SKILLS: Skill[] = [
+  ...VE_RUNBOOK_PART1_SKILLS,
+  ...VE_RUNBOOK_PART2_SKILLS,
+  ...VE_RUNBOOK_PART3_SKILLS,
+];
 
 function perL1DocsFromBook(
   skills: Skill[],
@@ -652,5 +665,90 @@ export function buildVeRunbookV18Docs(): VeDoc[] {
     "part2",
   );
 
-  return [overview, book, ...perL1Part1, pricing, ...perL1Part2];
+  const ops: VeDoc = {
+    id: "ve-skill-runbook-v18-l1-16-28",
+    slug: "ve-runbook-v18-l1-16-28",
+    titleZh: "Skill · Runbook V18｜L1-16～L1-28 Funding/DB/对账",
+    titleEn: "Skill · Runbook V18 L1-16..28 Funding / DB / Finance",
+    summaryZh: "外部/内部Funding、DB资金权益接仓心跳、大额强平、ADL、快照对账与流水映射 — 完整分支表。",
+    summaryEn: "Funding, DB funds/equity/takeover/heartbeat, large liq, ADL, snapshot recon & flow mapping — full tables.",
+    tags: [
+      "skill",
+      "runbook-v18",
+      "l1",
+      "funding",
+      "db",
+      "liquidation",
+      "adl",
+      "finance",
+      "part3",
+      "l1-16",
+      "l1-23",
+      "l1-28",
+    ],
+    sortOrder: 400,
+    kind: "skill",
+    bodyZh: RUNBOOK_V18_L1_OPS_ZH,
+    bodyEn: RUNBOOK_V18_L1_OPS_EN,
+  };
+
+  const l2ab: VeDoc = {
+    id: "ve-skill-runbook-v18-l2-a-b",
+    slug: "ve-runbook-v18-l2-a-b",
+    titleZh: "Skill · Runbook V18｜L2-A / L2-B 关联链路",
+    titleEn: "Skill · Runbook V18 L2-A / L2-B Chains",
+    summaryZh: "L2-A 切源→定价异常（含 flowchart）；L2-B 价格脱节→Funding偏差。",
+    summaryEn: "L2-A source switch→pricing (with flowchart); L2-B price disconnect→Funding.",
+    tags: ["skill", "runbook-v18", "l2", "l2-a", "l2-b", "part3"],
+    sortOrder: 500,
+    kind: "skill",
+    bodyZh: RUNBOOK_V18_L2_AB_ZH,
+    bodyEn: RUNBOOK_V18_L2_AB_EN,
+  };
+
+  const part3L1Skills = VE_RUNBOOK_PART3_SKILLS.filter((s) => s.id.startsWith("ve-sk-l1-"));
+  const part3L2Skills = VE_RUNBOOK_PART3_SKILLS.filter((s) => s.id.startsWith("ve-sk-l2-"));
+
+  const perL1Part3 = perL1DocsFromBook(
+    part3L1Skills,
+    RUNBOOK_V18_L1_OPS_ZH,
+    RUNBOOK_V18_PART3,
+    "ve-runbook-v18-l1-16-28",
+    410,
+    "part3",
+  );
+
+  const perL2 = part3L2Skills.map((s, i) => {
+    const marker = s.titleZh.split("｜")[0] ?? s.titleZh;
+    const sections = RUNBOOK_V18_L2_AB_ZH.split(/^## /m).filter(Boolean);
+    const match = sections.find((sec) => sec.startsWith(marker));
+    const bodyZh = match
+      ? `# ${s.titleZh}\n\n> Runbook ${RUNBOOK_V18_VERSION} · Part ${RUNBOOK_V18_PART3}/4\n\n## ${match}`
+      : `# ${s.titleZh}\n\n见姊妹页：/kb/ve-runbook-v18-l2-a-b`;
+    return {
+      id: s.id.replace("ve-sk-", "ve-skill-"),
+      slug: s.slug,
+      titleZh: `Skill · ${s.titleZh}`,
+      titleEn: `Skill · ${s.title}`,
+      summaryZh: s.summaryZh,
+      summaryEn: s.summary,
+      tags: [...s.tags.filter((t) => t !== "v-exchange-perp"), "part3"],
+      sortOrder: 510 + i * 10,
+      kind: "skill" as const,
+      bodyZh,
+      bodyEn: `# ${s.title}\n\nFull ZH tables are source of truth. Interactive checklist: /skills/${s.slug}`,
+    };
+  });
+
+  return [
+    overview,
+    book,
+    ...perL1Part1,
+    pricing,
+    ...perL1Part2,
+    ops,
+    ...perL1Part3,
+    l2ab,
+    ...perL2,
+  ];
 }
