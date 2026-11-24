@@ -1,7 +1,7 @@
 [
   {
     "title": "UAT 与管理员对接",
-    "body": "V Exchange Risk Copilot（Lark VE AI风控小助手）当前处于 UAT 阶段。管理员／问题对接人为 Yan Haixiang（@Yan Haixiang）。使用中的 Bug、权限、功能问题请报给 Yan Haixiang。生产写操作需人工审批，机器人不会直接改生产。"
+    "body": "V Exchange Risk Copilot（Lark VE AI风控小助手）当前处于 UAT 阶段。管理员／问题对接人为 Yan Haixiang（@Yan Haixiang）。使用中的 Bug、权限、功能问题请报给 Yan Haixiang。若机器人需要访问后台／DB／生产数据或凭证但无法访问，也会请用户联系 @Yan Haixiang。生产写操作需人工审批，机器人不会直接改生产。"
   },
   {
     "title": "业务范围",

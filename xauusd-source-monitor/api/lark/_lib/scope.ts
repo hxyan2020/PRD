@@ -27,6 +27,60 @@ const SOFT_ACK_RE =
 const BOT_META_RE =
   /管理员|管理員|谁负责|誰負責|负责人|負責人|报给谁|報給誰|联系谁|聯繫誰|找谁|找誰|\buat\b|\badmin\b|\bowner\b|谁维护|誰維護|客服|支持|支持人|对接人|對接人/i
 
+/**
+ * User asks the bot to reach something it cannot (admin/DB/prod/secrets/writes).
+ * Action-ish verbs + protected resource — avoid matching alert paste that merely mentions admin.
+ */
+const ACCESS_NEEDED_RE =
+  /(帮我|請|请|帮忙|麻煩|麻烦)?\s*(查一下|查下|查询|查詢|看看|打开|打開|登录|登入|拉取|调取|調取|访问|訪問|进入|進入|连上|連上).{0,16}(后台|後台|管理台|admin\s*console|\badmin\b|数据库|資料庫|\bdb\b|生产环境|生產環境|生产库|生產庫|生产数据|生產資料|密钥|密鑰|凭证|憑證|api\s*key|内网|內網)|开通.{0,10}(权限|權限|access)|開通.{0,10}(权限|權限|access)|给我.{0,10}(权限|權限)|給我.{0,10}(权限|權限)|帮我改.{0,12}(生产|生產|配置)|幫我改.{0,12}(生产|生產|配置)|执行.{0,8}(强平|強平|\badl\b|写操作|寫操作)|query\s+(the\s+)?(prod(uction)?\s+)?(db|database|admin)|access\s+(the\s+)?(admin|database|prod(uction)?)|grant\s+me\s+(access|permission)|pull\s+(from\s+)?prod|log\s*in\s+to\s+(admin|prod)|change\s+prod(uction)?\s+config/i
+
+/** True when the user wants the bot to access a resource it cannot reach. */
+export function needsInaccessibleAccess(text: string): boolean {
+  return ACCESS_NEEDED_RE.test(text.trim())
+}
+
+/**
+ * Standard reply when the bot needs access it does not have
+ * (admin/DB/prod APIs down / missing credentials / gated writes).
+ */
+export function accessUnavailableReply(lang: Lang, detail?: string): string {
+  const why =
+    detail?.trim() ||
+    (lang === 'zh-Hans'
+      ? '我这边需要访问的资源目前不可用，或我没有相应权限／凭证。'
+      : lang === 'zh-Hant'
+        ? '我這邊需要訪問的資源目前不可用，或我沒有相應權限／憑證。'
+        : 'I need a resource that is currently unavailable, or I lack the required permission / credentials.')
+  if (lang === 'zh-Hans') {
+    return [
+      '🔒 **无法访问**',
+      '',
+      `• **原因：** ${why}`,
+      '• **请联系：** **@Yan Haixiang**（开通权限、补凭证、或代查生产／后台／DB）',
+      '',
+      '_我不会编造生产数据，也不会在未授权时执行写操作。_',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '🔒 **無法訪問**',
+      '',
+      `• **原因：** ${why}`,
+      '• **請聯繫：** **@Yan Haixiang**（開通權限、補憑證、或代查生產／後台／DB）',
+      '',
+      '_我不會編造生產資料，也不會在未授權時執行寫操作。_',
+    ].join('\n')
+  }
+  return [
+    '🔒 **Access unavailable**',
+    '',
+    `• **Why:** ${why}`,
+    '• **Please contact:** **@Yan Haixiang** (grant access, add credentials, or look up prod / admin / DB)',
+    '',
+    '_I will not invent production data or execute writes without authorization._',
+  ].join('\n')
+}
+
 const COMMAND_INVESTIGATE = /^(investigate|排查|開始排查|开始排查)\b/i
 const COMMAND_MARKET = /^(market|行情|趋势|趨勢)\b/i
 /** Whole-message openers for the alerts/reports dashboard. */

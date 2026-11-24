@@ -21,11 +21,13 @@ import {
 } from './skills.js'
 import { detectSafetyViolation, safetyReply } from './safety.js'
 import {
+  accessUnavailableReply,
   botMetaReply,
   classifyIntent,
   detectLang,
   greetingReply,
   helpReply,
+  needsInaccessibleAccess,
   offtopicReply,
 } from './scope.js'
 import {
@@ -87,7 +89,7 @@ function buildSummary(args: {
       args.adapted
         ? '• **指引：** 下一步已依你最新回复／证据重新排序（非机械整份清单）'
         : '• **指引：** 请回复你查到的结果或贴上新证据，我会调整建议',
-      '• **边界：** 内部 admin／DB 检索属后续阶段；我不会编造生产数据',
+      '• **边界：** 内部 admin／DB／生产数据我无法直连；需要访问时请联系 **@Yan Haixiang**',
     ].join('\n')
   }
   if (hant) {
@@ -100,7 +102,7 @@ function buildSummary(args: {
       args.adapted
         ? '• **指引：** 下一步已依你最新回覆／證據重新排序（非機械整份清單）'
         : '• **指引：** 請回覆你查到的結果或貼上新證據，我會調整建議',
-      '• **邊界：** 內部 admin／DB 檢索屬後續階段；我不會編造生產數據',
+      '• **邊界：** 內部 admin／DB／生產資料我無法直連；需要訪問時請聯繫 **@Yan Haixiang**',
     ].join('\n')
   }
   return [
@@ -112,7 +114,7 @@ function buildSummary(args: {
     args.adapted
       ? '• **Guidance:** Next steps re-ranked from your latest replies/evidence (not a full dump)'
       : '• **Guidance:** Reply with findings or new evidence and I’ll adapt',
-    '• **Bounds:** Internal admin/DB retrieval is a later phase — I will not invent production data',
+    '• **Bounds:** I cannot reach internal admin/DB/prod directly — contact **@Yan Haixiang** when access is needed',
   ].join('\n')
 }
 
@@ -139,18 +141,24 @@ async function handleImage(msg: IncomingMessage, lang: Lang): Promise<string> {
     const b64 = buf.toString('base64')
     const desc = await describeImage({ lang, imageBase64: b64 })
     if (desc) return desc
-    if (lang === 'zh-Hans') {
-      return '已收到图片。目前无法自动 OCR（未配置视觉模型）。请简述图中告警重点、合约与数值。'
-    }
-    if (lang === 'zh-Hant') {
-      return '已收到圖片。目前無法自動 OCR（未配置視覺模型）。請簡述圖中告警重點、合約與數值。'
-    }
-    return 'Image received. Auto-OCR unavailable (vision model not configured). Please briefly describe the alert, contract, and values.'
+    return accessUnavailableReply(
+      lang,
+      lang === 'zh-Hans'
+        ? '图片已收到，但视觉 OCR 不可用（未配置或无法访问视觉模型）。也可直接简述图中告警重点、合约与数值。'
+        : lang === 'zh-Hant'
+          ? '圖片已收到，但視覺 OCR 不可用（未配置或無法訪問視覺模型）。也可直接簡述圖中告警重點、合約與數值。'
+          : 'Image received, but vision OCR is unavailable (not configured or unreachable). You can also briefly describe the alert, contract, and values.',
+    )
   } catch (e) {
     const err = e instanceof Error ? e.message : 'unknown'
-    if (lang === 'zh-Hans') return `图片下载失败：${err}。请改贴文字／表格。`
-    if (lang === 'zh-Hant') return `圖片下載失敗：${err}。請改貼文字／表格。`
-    return `Image download failed: ${err}. Please paste text/table instead.`
+    return accessUnavailableReply(
+      lang,
+      lang === 'zh-Hans'
+        ? `图片下载／访问失败（${err}）。也可改贴文字／表格。`
+        : lang === 'zh-Hant'
+          ? `圖片下載／訪問失敗（${err}）。也可改貼文字／表格。`
+          : `Image download/access failed (${err}). You can also paste text/table instead.`,
+    )
   }
 }
 
@@ -417,6 +425,18 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'offtopic') {
     return { text: offtopicReply(lang) }
+  }
+
+  // User asks for admin/DB/prod/secrets the bot cannot reach → contact @Yan Haixiang.
+  // Only skip when this is a long alert paste that also happens to mention admin/DB.
+  const accessAsk = needsInaccessibleAccess(workingText)
+  const looksLikeLongAlertPaste =
+    workingText.length > 200 &&
+    /告警|报警|報警|\balert\b|\bseverity\b|剔除|偏差|无有效源|無有效源|\bbps\b/i.test(workingText)
+  if (accessAsk && !looksLikeLongAlertPaste) {
+    const title =
+      lang === 'zh-Hans' ? '无法访问' : lang === 'zh-Hant' ? '無法訪問' : 'Access unavailable'
+    return { card: simpleCard(title, accessUnavailableReply(lang), 'orange') }
   }
 
   if (intent === 'market') {

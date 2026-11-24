@@ -297,10 +297,10 @@ export function formatRagAnswer(args: {
 
   lines.push(
     hans
-      ? '来源：desk L1/L2 Skills + quote-ops V Exchange 永续知识（已排除 CFD）。生产写操作需人工审批。'
+      ? '来源：desk L1/L2 Skills + quote-ops V Exchange 永续知识（已排除 CFD）。生产写操作／后台／DB 访问需人工审批 — 请联系 **@Yan Haixiang**。'
       : hant
-        ? '來源：desk L1/L2 Skills + quote-ops V Exchange 永續知識（已排除 CFD）。生產寫操作需人工審批。'
-        : 'Sources: desk L1/L2 Skills + quote-ops V Exchange perpetual KB (CFD excluded). Production writes need human approval.',
+        ? '來源：desk L1/L2 Skills + quote-ops V Exchange 永續知識（已排除 CFD）。生產寫操作／後台／DB 訪問需人工審批 — 請聯繫 **@Yan Haixiang**。'
+        : 'Sources: desk L1/L2 Skills + quote-ops V Exchange perpetual KB (CFD excluded). Production writes / admin / DB access need human approval — contact **@Yan Haixiang**.',
   )
 
   return cleanLarkMd(lines.join('\n'))
@@ -358,10 +358,10 @@ export function preferredActions(
   return hits.slice(0, max).map((h) => {
     const tag =
       lang === 'zh-Hans'
-        ? `建议（需审批）· ${h.id}`
+        ? `建议（需审批 · 联系 @Yan Haixiang）· ${h.id}`
         : lang === 'zh-Hant'
-          ? `建議（需審批）· ${h.id}`
-          : `Preferred action (approval) · ${h.id}`
+          ? `建議（需審批 · 聯繫 @Yan Haixiang）· ${h.id}`
+          : `Preferred action (approval · contact @Yan Haixiang) · ${h.id}`
     return `${tag}: ${h.action}`
   })
 }

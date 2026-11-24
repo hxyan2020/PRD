@@ -147,7 +147,9 @@ export function formatMarketAnswer(snap: MarketSnapshot, lang: Lang, question: s
       lines.push(`• **现货 XAU（gold-api）：** **${snap.spot.last.toFixed(2)}**`)
     }
     if (!hasPrint) {
-      lines.push('• **行情：** 暂不可用 — 请稍后重试或打开网页 Market 面板')
+      lines.push(
+        '• **行情：** 暂不可用（外部行情源无法访问）— 请稍后重试，或联系 **@Yan Haixiang**；也可打开网页 Market 面板',
+      )
     }
     lines.push('')
     for (const n of snap.notes) lines.push(`• **备注：** ${n}`)
@@ -178,7 +180,9 @@ export function formatMarketAnswer(snap: MarketSnapshot, lang: Lang, question: s
       lines.push(`• **現貨 XAU（gold-api）：** **${snap.spot.last.toFixed(2)}**`)
     }
     if (!hasPrint) {
-      lines.push('• **行情：** 暫不可用 — 請稍後重試或打開網頁 Market 面板')
+      lines.push(
+        '• **行情：** 暫不可用（外部行情源無法訪問）— 請稍後重試，或聯繫 **@Yan Haixiang**；也可打開網頁 Market 面板',
+      )
     }
     lines.push('')
     for (const n of snap.notes) lines.push(`• **備註：** ${n}`)
@@ -209,7 +213,9 @@ export function formatMarketAnswer(snap: MarketSnapshot, lang: Lang, question: s
       lines.push(`• **Spot XAU (gold-api):** **${snap.spot.last.toFixed(2)}**`)
     }
     if (!hasPrint) {
-      lines.push('• **Quotes:** unavailable — retry shortly or open the web Market desk')
+      lines.push(
+        '• **Quotes:** unavailable (external market feeds unreachable) — retry shortly, contact **@Yan Haixiang**, or open the web Market desk',
+      )
     }
     lines.push('')
     for (const n of snap.notes) lines.push(`• **Note:** ${n}`)

@@ -6,7 +6,14 @@ import { handleCardAction, handleMessage } from '../api/lark/_lib/agent'
 import { detectLang } from '../api/lark/_lib/lang'
 import { parseIncomingEvent, shouldRespond } from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
-import { classifyIntent, east8Hour, greetingOpenForHour, greetingReply } from '../api/lark/_lib/scope'
+import {
+  accessUnavailableReply,
+  classifyIntent,
+  east8Hour,
+  greetingOpenForHour,
+  greetingReply,
+  needsInaccessibleAccess,
+} from '../api/lark/_lib/scope'
 import {
   formatRagAnswer,
   loadKnowledge,
@@ -400,6 +407,26 @@ async function main() {
       !adminQ.blob.includes('Hello · Risk Copilot') &&
       !adminQ.blob.includes('你好 · Risk Copilot'),
     adminQ.blob.slice(0, 180),
+  )
+
+  // 9a2) Inaccessible access → contact @Yan Haixiang
+  record('access.detect_admin_ask', needsInaccessibleAccess('帮我查一下后台 Mark 配置'), '')
+  record('access.detect_db_en', needsInaccessibleAccess('please query the production database for funding'), '')
+  record('access.skip_plain_alert', !needsInaccessibleAccess('Alert: IDX-01 excluded, Mark deviation 48bps'), '')
+  const accessTpl = accessUnavailableReply('zh-Hans')
+  record(
+    'access.template_zh',
+    accessTpl.includes('@Yan Haixiang') && accessTpl.includes('无法访问'),
+    accessTpl.slice(0, 120),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const accessTurn = await turn('access-gate', '帮我查一下生产后台的 Mark 配置')
+  record(
+    'turn.access_unavailable_contacts_yan',
+    Boolean(accessTurn.reply?.card) &&
+      accessTurn.blob.includes('Yan Haixiang') &&
+      (accessTurn.blob.includes('无法访问') || accessTurn.blob.includes('Access unavailable')),
+    accessTurn.blob.slice(0, 180),
   )
 
   // 9b) Skills / knowledge catalogue cards
