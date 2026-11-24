@@ -209,9 +209,14 @@ export async function sendTextToOpenId(openId: string, text: string) {
   })
 }
 
+const ADMIN_NAME_RE = /Yan\s*Haixiang|严海翔|嚴海翔|海翔/i
+
+/** Warm-instance cache after we resolve Yan once (cron / DM). */
+let cachedAdminOpenId: { openId: string; source: string; expireAt: number } | null = null
+
 /**
- * Resolve Yan Haixiang (or configured admin) open_id for weekly push.
- * Prefers LARK_ADMIN_OPEN_ID / LARK_YAN_OPEN_ID; optional email via contact API.
+ * Resolve Yan Haixiang (or configured admin) open_id for weekly / 30-min market push.
+ * Prefers env → email → p2p chat named Yan → remembered cache.
  */
 export async function resolveAdminOpenId(): Promise<{ openId: string; source: string }> {
   const fromEnv = (
@@ -220,6 +225,10 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
     ''
   ).trim()
   if (fromEnv) return { openId: fromEnv, source: 'env' }
+
+  if (cachedAdminOpenId && Date.now() < cachedAdminOpenId.expireAt) {
+    return { openId: cachedAdminOpenId.openId, source: cachedAdminOpenId.source }
+  }
 
   const email = (process.env.LARK_ADMIN_EMAIL || '').trim()
   if (email && larkConfigured()) {
@@ -231,12 +240,79 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
         data?: { user_list?: { email?: string; user_id?: string }[] }
       }
       const hit = (data.data?.user_list || []).find((u) => u.user_id)
-      if (hit?.user_id) return { openId: hit.user_id, source: 'email' }
+      if (hit?.user_id) {
+        cachedAdminOpenId = {
+          openId: hit.user_id,
+          source: 'email',
+          expireAt: Date.now() + 6 * 3600_000,
+        }
+        return { openId: hit.user_id, source: 'email' }
+      }
     } catch {
       /* missing contact scope — fall through */
     }
   }
+
+  if (larkConfigured()) {
+    try {
+      const fromChat = await resolveAdminFromP2pChats()
+      if (fromChat) {
+        cachedAdminOpenId = {
+          openId: fromChat,
+          source: 'p2p_chat',
+          expireAt: Date.now() + 6 * 3600_000,
+        }
+        return { openId: fromChat, source: 'p2p_chat' }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
   return { openId: '', source: 'missing' }
+}
+
+/** Remember Yan’s open_id when he DMs the bot (warm cache for upcoming cron). */
+export function rememberAdminOpenId(openId: string, source = 'inbound'): void {
+  const id = (openId || '').trim()
+  if (!id || id === 'unknown') return
+  cachedAdminOpenId = { openId: id, source, expireAt: Date.now() + 24 * 3600_000 }
+}
+
+export function looksLikeAdminName(name: string | null | undefined): boolean {
+  return Boolean(name && ADMIN_NAME_RE.test(name))
+}
+
+async function resolveAdminFromP2pChats(): Promise<string | null> {
+  const botId = (await resolveBotOpenId().catch(() => '')) || ''
+  const chats = (await larkFetch('/open-apis/im/v1/chats?page_size=50', { method: 'GET' })) as {
+    data?: { items?: { chat_id?: string; name?: string; chat_mode?: string }[] }
+  }
+  const items = chats.data?.items || []
+  for (const c of items) {
+    const mode = (c.chat_mode || '').toLowerCase()
+    const name = c.name || ''
+    const looksP2p = mode === 'p2p' || ADMIN_NAME_RE.test(name)
+    if (!looksP2p && !ADMIN_NAME_RE.test(name)) continue
+    if (!ADMIN_NAME_RE.test(name) && mode !== 'p2p') continue
+    if (!c.chat_id) continue
+    try {
+      const mem = (await larkFetch(
+        `/open-apis/im/v1/chats/${encodeURIComponent(c.chat_id)}/members?member_id_type=open_id&page_size=20`,
+        { method: 'GET' },
+      )) as {
+        data?: { items?: { member_id?: string; name?: string }[] }
+      }
+      for (const m of mem.data?.items || []) {
+        const mid = (m.member_id || '').trim()
+        if (!mid || mid === botId) continue
+        if (ADMIN_NAME_RE.test(m.name || '') || ADMIN_NAME_RE.test(name)) return mid
+        if (mode === 'p2p' && ADMIN_NAME_RE.test(name)) return mid
+      }
+    } catch {
+      /* need im:chat.members scope — skip */
+    }
+  }
+  return null
 }
 
 const userNameCache = new Map<string, { name: string; expireAt: number }>()

@@ -19,9 +19,12 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { waitUntil } from '@vercel/functions'
 import { handleCardAction, handleMessage } from './_lib/agent.js'
 import {
+  fetchUserDisplayName,
   isEncryptedEnvelope,
   larkConfigured,
+  looksLikeAdminName,
   probeLarkConnection,
+  rememberAdminOpenId,
   resolveBotOpenId,
   verifyToken,
 } from './_lib/client.js'
@@ -348,6 +351,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           (async () => {
             const typing = startTypingSession(msg.messageId)
             try {
+              // Learn Yan’s open_id when he messages (name match) so cron can DM without env
+              if (msg.openId && msg.openId !== 'unknown') {
+                try {
+                  const nm = await fetchUserDisplayName(msg.openId)
+                  if (looksLikeAdminName(nm)) rememberAdminOpenId(msg.openId, 'inbound_name')
+                } catch {
+                  /* ignore */
+                }
+              }
               const reply = await handleMessage(msg)
               await typing.stop()
               const dispatched = reply

@@ -32,6 +32,7 @@ import {
 import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import { formatWebSearchAnswer, searchWeb, shouldAutoWebSearch } from '../api/lark/_lib/webSearch'
 import { shanghaiHalfHourKey } from '../api/lark/_lib/market'
+import { looksLikeAdminName } from '../api/lark/_lib/client'
 import {
   extractCardTypingBody,
   isMenuOrCatalogCard,
@@ -1060,6 +1061,8 @@ async function main() {
   const slotB = shanghaiHalfHourKey(Date.parse('2026-11-24T12:35:00Z')) // 20:35 CST → 20:30
   record('cron.half_hour_slot_00', slotA.endsWith('T20:00'), slotA)
   record('cron.half_hour_slot_30', slotB.endsWith('T20:30'), slotB)
+  record('cron.admin_name_yan', looksLikeAdminName('Yan Haixiang'), '')
+  record('cron.admin_name_reject', !looksLikeAdminName('Someone Else'), '')
 
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')
