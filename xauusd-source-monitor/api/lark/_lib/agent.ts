@@ -4,6 +4,7 @@ import {
   helpCard,
   investigationCard,
   knowledgeCatalogCard,
+  nodeDetailCard,
   reviewCard,
   simpleCard,
   skillsCatalogCard,
@@ -23,7 +24,9 @@ import {
   formatRagAnswer,
   loadKnowledge,
   loadSkills,
+  looksLikeNodeIdReply,
   preferredActions,
+  resolveNodeById,
   retrieveRag,
 } from './skills.js'
 import { detectSafetyViolation, safetyReply } from './safety.js'
@@ -617,6 +620,22 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'knowledge') {
     return { card: knowledgeCatalogCard({ lang, knowledge: loadKnowledge() }) }
+  }
+
+  // After catalogue: user replies with a node ID → open that Skills / KB entry
+  if (looksLikeNodeIdReply(workingText)) {
+    const node = resolveNodeById(workingText)
+    if (node) {
+      return {
+        card: nodeDetailCard({
+          lang,
+          kind: node.kind,
+          id: node.id,
+          title: node.title,
+          body: node.body,
+        }),
+      }
+    }
   }
 
   if (intent === 'weekly') {

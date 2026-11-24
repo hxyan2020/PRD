@@ -113,6 +113,46 @@ export function loadKnowledge(): KbItem[] {
   return kbCache
 }
 
+/** True when the message is (mostly) a catalogue node ID the user wants to open. */
+export function looksLikeNodeIdReply(text: string): boolean {
+  const t = text.trim()
+  if (!t || t.length > 64) return false
+  // Bare IDs: L1-07, L2-A, ve-doc-alarms, kb_default_0, PRICE-01, …
+  return /^(L[12]-\d{1,2}|L2-[A-F]|[A-Za-z][A-Za-z0-9_-]{1,48})$/i.test(t)
+}
+
+export function resolveNodeById(
+  raw: string,
+):
+  | { kind: 'skill'; id: string; title: string; body: string }
+  | { kind: 'knowledge'; id: string; title: string; body: string }
+  | null {
+  const id = raw.trim().replace(/^[`'"【\[]+|[`'"】\]]+$/g, '')
+  if (!id) return null
+  const skill = loadSkills().find((s) => s.id.toLowerCase() === id.toLowerCase())
+  if (skill) {
+    const body = [
+      `**Severity:** ${skill.severity}`,
+      skill.linkedL1 ? `**Linked L1:** ${skill.linkedL1}` : '',
+      '',
+      '**Check**',
+      skill.check,
+      '',
+      '**Action**',
+      skill.action,
+      '',
+      '**Opt**',
+      skill.opt,
+    ]
+      .filter(Boolean)
+      .join('\n')
+    return { kind: 'skill', id: skill.id, title: skill.name, body }
+  }
+  const kb = loadKnowledge().find((k) => k.id.toLowerCase() === id.toLowerCase())
+  if (kb) return { kind: 'knowledge', id: kb.id, title: kb.title, body: kb.body }
+  return null
+}
+
 function matchSkills(text: string, pool: SkillRec[]): SkillHit[] {
   const queryLower = text.toLowerCase()
   const queryTokens = tokenize(text)

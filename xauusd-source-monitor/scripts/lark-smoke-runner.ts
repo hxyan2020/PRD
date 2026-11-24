@@ -580,8 +580,21 @@ async function main() {
       skillsTurn.blob.includes('L2-A') &&
       !skillsTurn.blob.includes('VE-SOP') &&
       !skillsTurn.blob.includes('IDX-01') &&
+      (skillsTurn.blob.includes('打开节点') ||
+        skillsTurn.blob.includes('打開節點') ||
+        skillsTurn.blob.includes('Open a node')) &&
       (skillsTurn.blob.match(/vex-llm-proxy\.vercel\.app\/#\/skills/g) || []).length === 1,
     skillsTurn.blob.slice(0, 180),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const openSkill = await turn('open-skill-id', 'L1-07')
+  record(
+    'turn.open_skill_by_id',
+    Boolean(openSkill.reply?.card) &&
+      openSkill.blob.includes('L1-07') &&
+      (openSkill.blob.includes('Check') || openSkill.blob.includes('**Check**')) &&
+      (openSkill.blob.includes('Skill ·') || openSkill.blob.includes('L1-07')),
+    openSkill.blob.slice(0, 160),
   )
   clearSession('smoke_chat', 'smoke_user')
   const riskKb = await turn('risk-inventory-kb', '可能出现的风险有哪些')
@@ -600,8 +613,20 @@ async function main() {
     'turn.knowledge_catalog',
     Boolean(kbTurn.reply?.card) &&
       (kbTurn.blob.includes('Knowledge') || kbTurn.blob.includes('知识') || kbTurn.blob.includes('知識')) &&
+      (kbTurn.blob.includes('打开节点') ||
+        kbTurn.blob.includes('打開節點') ||
+        kbTurn.blob.includes('Open a node')) &&
       (kbTurn.blob.match(/vex-llm-proxy\.vercel\.app\/#\/knowledge/g) || []).length === 1,
     kbTurn.blob.slice(0, 120),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const openKb = await turn('open-kb-id', 'kb_default_0')
+  record(
+    'turn.open_kb_by_id',
+    Boolean(openKb.reply?.card) &&
+      openKb.blob.includes('kb_default_0') &&
+      (openKb.blob.includes('知识') || openKb.blob.includes('Knowledge') || openKb.blob.includes('知識')),
+    openKb.blob.slice(0, 160),
   )
 
   // 10) Review / dashboard visualization card (in-message viz; URL only in footer)

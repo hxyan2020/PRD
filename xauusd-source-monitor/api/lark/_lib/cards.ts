@@ -415,6 +415,12 @@ export function skillsCatalogCard(args: {
       ? `🧩 **Skills＝34 個排查場景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（獨立風險事件）· L2 **${l2.length}**（關聯排查鏈路）\n\n貼告警／關鍵詞會 RAG 命中這些場景。**監控指標／可能出現的風險**清單在知識庫（發 **knowledge**），不與 Skills 混淆。`
       : `🧩 **Skills = 34 investigation scenarios** (Runbook V18)\n\n**${args.skills.length}** total · L1 **${l1.length}** (standalone) · L2 **${l2.length}** (chains)\n\nAlerts/keywords RAG-match these. The **monitoring / possible-risks** inventory lives in Knowledge (send **knowledge**) — not Skills.`
 
+  const openHint = hans
+    ? '💬 **打开节点：** 直接回复某个 **ID**（如 `L1-07` / `L2-A`）查看该场景详情。'
+    : zh
+      ? '💬 **打開節點：** 直接回覆某個 **ID**（如 `L1-07` / `L2-A`）查看該場景詳情。'
+      : '💬 **Open a node:** reply with an **ID** (e.g. `L1-07` / `L2-A`) to open that scenario.'
+
   const body = [
     intro,
     '',
@@ -423,6 +429,8 @@ export function skillsCatalogCard(args: {
     '',
     hans || zh ? '**L2 关联链路（6）**' : '**L2 chains (6)**',
     ...l2.map(line),
+    '',
+    openHint,
   ].join('\n')
 
   const title = hans
@@ -461,19 +469,25 @@ export function knowledgeCatalogCard(args: {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
   const ve = args.knowledge.filter((k) => /^ve-doc-/i.test(k.id) || /v\s*exchange|永续|永續/i.test(k.title))
-  const pick = (ve.length ? ve : args.knowledge).slice(0, 8)
+  const pick = (ve.length ? ve : args.knowledge).slice(0, 12)
   const lines = pick
     .map((k) => {
-      const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 160)
-      return `• **${k.title}**\n  ${excerpt}${k.body.length > 160 ? '…' : ''}`
+      const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 140)
+      return `• **${k.id}** · ${k.title}\n  ${excerpt}${k.body.length > 140 ? '…' : ''}`
     })
     .join('\n\n')
 
   const intro = hans
-    ? `📚 **RAG 知识库（Lark 预览）**\n\n共 **${args.knowledge.length}** 篇（含 quote-ops V Exchange 永续知识）。排查与问答会自动检索；完整桌面知识树见卡片底部。`
+    ? `📚 **RAG 知识库（Lark 预览）**\n\n共 **${args.knowledge.length}** 篇（含「可能出现的风险」指标清单与 quote-ops 永续知识）。排查与问答会自动检索。`
     : zh
-      ? `📚 **RAG 知識庫（Lark 預覽）**\n\n共 **${args.knowledge.length}** 篇（含 quote-ops V Exchange 永續知識）。排查與問答會自動檢索；完整桌面知識樹見卡片底部。`
-      : `📚 **RAG knowledge base (Lark preview)**\n\n**${args.knowledge.length}** articles (incl. quote-ops V Exchange perpetual KB). Investigation & Q&A retrieve automatically; full desk tree is linked below.`
+      ? `📚 **RAG 知識庫（Lark 預覽）**\n\n共 **${args.knowledge.length}** 篇（含「可能出現的風險」指標清單與 quote-ops 永續知識）。排查與問答會自動檢索。`
+      : `📚 **RAG knowledge base (Lark preview)**\n\n**${args.knowledge.length}** articles (incl. possible-risks inventory + quote-ops perpetual KB).`
+
+  const openHint = hans
+    ? '💬 **打开节点：** 直接回复某个 **ID**（如 `ve-doc-alarms` / `kb_default_0`）查看全文。'
+    : zh
+      ? '💬 **打開節點：** 直接回覆某個 **ID**（如 `ve-doc-alarms` / `kb_default_0`）查看全文。'
+      : '💬 **Open a node:** reply with an **ID** (e.g. `ve-doc-alarms` / `kb_default_0`) to open the full article.'
 
   const title = hans ? '知识库／RAG' : zh ? '知識庫／RAG' : 'Knowledge / RAG'
   return {
@@ -487,7 +501,7 @@ export function knowledgeCatalogCard(args: {
         tag: 'div',
         text: {
           tag: 'lark_md',
-          content: `${intro}\n\n${hans || zh ? '**摘录**' : '**Excerpts**'}\n\n${lines || '• —'}`,
+          content: `${intro}\n\n${hans || zh ? '**节点**' : '**Nodes**'}\n\n${lines || '• —'}\n\n${openHint}`,
         },
       },
       {
@@ -499,6 +513,70 @@ export function knowledgeCatalogCard(args: {
             : zh
               ? `[打開知識庫桌面頁](${KNOWLEDGE_URL})`
               : `[Open Knowledge desk](${KNOWLEDGE_URL})`,
+        },
+      },
+    ],
+  }
+}
+
+/** Detail card when user replies with a Skills / KB node ID. */
+export function nodeDetailCard(args: {
+  lang: Lang
+  kind: 'skill' | 'knowledge'
+  id: string
+  title: string
+  body: string
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const header =
+    args.kind === 'skill'
+      ? hans
+        ? `Skill · ${args.id}`
+        : zh
+          ? `Skill · ${args.id}`
+          : `Skill · ${args.id}`
+      : hans
+        ? `知识节点 · ${args.id}`
+        : zh
+          ? `知識節點 · ${args.id}`
+          : `Knowledge · ${args.id}`
+  const clipped = args.body.replace(/\s+/g, ' ').trim().slice(0, 2800)
+  const hint = hans
+    ? '_回复其他 ID 继续打开节点；发 **skills** / **knowledge** 返回目录。_'
+    : zh
+      ? '_回覆其他 ID 繼續打開節點；發 **skills** / **knowledge** 返回目錄。_'
+      : '_Reply with another ID to open a node; send **skills** / **knowledge** for the catalogue._'
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: args.kind === 'skill' ? 'indigo' : 'purple',
+      title: { tag: 'plain_text', content: header },
+    },
+    elements: [
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: `**${args.title}**\n\n${clipped}${args.body.length > 2800 ? '…' : ''}\n\n${hint}`,
+        },
+      },
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content:
+            args.kind === 'skill'
+              ? hans
+                ? `[打开 Skills 桌面页](${SKILLS_URL})`
+                : zh
+                  ? `[打開 Skills 桌面頁](${SKILLS_URL})`
+                  : `[Open Skills desk](${SKILLS_URL})`
+              : hans
+                ? `[打开知识库桌面页](${KNOWLEDGE_URL})`
+                : zh
+                  ? `[打開知識庫桌面頁](${KNOWLEDGE_URL})`
+                  : `[Open Knowledge desk](${KNOWLEDGE_URL})`,
         },
       },
     ],
