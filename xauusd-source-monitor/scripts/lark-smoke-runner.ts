@@ -555,7 +555,21 @@ async function main() {
     Boolean(liveSnap.hourly?.tldr?.length || liveSnap.hourly?.opportunity || liveSnap.hourly?.risk),
     `tldr=${liveSnap.hourly?.tldr?.length ?? 0} kline=${liveSnap.hourly?.kline?.bars?.length ?? 0}`,
   )
-  const { buildOneLineTldr } = await import('../src/engine/hourlyScan')
+  const { buildOneLineTldr, clampSummary } = await import('../src/engine/hourlyScan')
+  const longKitco =
+    'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy and Iran-linked oil inflation. Kitco argues the long-term fundamentals are intact and frames the selloff as frustrating short-term action that still leaves lower prices as long-term buying opportunities. Extra filler sentence one. Extra filler sentence two. Extra filler sentence three.'
+  const clamped = clampSummary(longKitco, { maxLines: 4, maxSentences: 4 })
+  record(
+    'market.opp_risk_bullet_complete',
+    clamped.length > 80 &&
+      /[.。!！?？]$/.test(clamped) &&
+      !clamped.includes('…') &&
+      !/\bon the\.$/i.test(clamped) &&
+      !/\b(the|a|an|on|of|to|for|and)\.$/i.test(clamped) &&
+      clamped.split(/(?<=[.。!！?？])\s+/).filter(Boolean).length <= 4 &&
+      clamped.length <= 4 * 70 + 40,
+    clamped.slice(0, 220),
+  )
   const tldrProbe = buildOneLineTldr({
     dxy: 104.1,
     tnx: 4.92,
