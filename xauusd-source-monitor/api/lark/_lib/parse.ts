@@ -69,29 +69,32 @@ export function extractFileHint(contentJson: string): string {
   return '[file attachment]'
 }
 
-/** Doc / chat share cards — keep a short hint so language + intent stay grounded. */
+/** Doc / chat share cards — keep title / url / preview snippets when present. */
 export function extractShareHint(contentJson: string, messageType: string): string {
   try {
     const parsed = JSON.parse(contentJson) as Record<string, unknown>
-    const title =
-      (typeof parsed.title === 'string' && parsed.title) ||
-      (typeof parsed.file_name === 'string' && parsed.file_name) ||
-      (typeof parsed.name === 'string' && parsed.name) ||
-      ''
-    const url =
-      (typeof parsed.url === 'string' && parsed.url) ||
-      (typeof parsed.link === 'string' && parsed.link) ||
-      ''
-    const token =
-      (typeof parsed.document_id === 'string' && parsed.document_id) ||
-      (typeof parsed.file_key === 'string' && parsed.file_key) ||
-      (typeof parsed.share_chat_id === 'string' && parsed.share_chat_id) ||
-      ''
-    const bits = [`[share:${messageType}]`]
-    if (title) bits.push(title)
-    if (url) bits.push(url)
-    else if (token) bits.push(token)
-    return bits.join(' ').trim()
+    const bits: string[] = [`[share:${messageType}]`]
+    const push = (v: unknown) => {
+      if (typeof v === 'string' && v.trim()) bits.push(v.trim())
+    }
+    push(parsed.title)
+    push(parsed.file_name)
+    push(parsed.name)
+    push(parsed.url)
+    push(parsed.link)
+    push(parsed.document_id)
+    push(parsed.file_key)
+    // Nested preview / content fields some Feishu share payloads use
+    const preview = parsed.preview || parsed.content || parsed.extra
+    if (typeof preview === 'string') push(preview)
+    if (preview && typeof preview === 'object') {
+      const o = preview as Record<string, unknown>
+      push(o.title)
+      push(o.text)
+      push(o.summary)
+      push(o.url)
+    }
+    return bits.join('\n').replace(/\n+/g, '\n').trim()
   } catch {
     /* ignore */
   }

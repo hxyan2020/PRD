@@ -48,6 +48,13 @@ import {
   sharedDocReadReply,
 } from './scope.js'
 import { looksLikeShareOrFileMeta } from './lang.js'
+import {
+  attachmentLooksRiskRelated,
+  extractDocUrlOrToken,
+  formatAttachmentUnderstanding,
+  harvestAttachmentText,
+  isAttachmentMessage,
+} from './attachment.js'
 import { formatWebSearchAnswer, searchWeb, webSearchContext } from './webSearch.js'
 import { logInbound } from './inboundLog.js'
 import {
@@ -211,34 +218,89 @@ async function enrichWithLlm(args: {
 
 async function handleImage(msg: IncomingMessage, lang: Lang): Promise<string> {
   if (!msg.imageKey) {
-    if (lang === 'zh-Hans') return '收到图片消息，但无法解析 image_key。请再传一次，或贴上 OCR 文字。'
-    if (lang === 'zh-Hant') return '收到圖片訊息，但無法解析 image_key。請再傳一次，或貼上 OCR 文字。'
-    return 'Got an image, but could not parse image_key. Please resend or paste OCR text.'
+    if (lang === 'zh-Hans') return '收到图片，但缺少 image_key，还无法解读内容。请再传一次，或贴上图中文字。'
+    if (lang === 'zh-Hant') return '收到圖片，但缺少 image_key，還無法解讀內容。請再傳一次，或貼上圖中文字。'
+    return 'Got an image, but image_key is missing so I can’t read it yet. Please resend or paste the text.'
   }
   try {
     const buf = await downloadMessageImage(msg.messageId, msg.imageKey)
     const b64 = buf.toString('base64')
     const desc = await describeImage({ lang, imageBase64: b64 })
     if (desc) return desc
-    return accessUnavailableReply(
-      lang,
-      lang === 'zh-Hans'
-        ? '图片已收到，但视觉 OCR 不可用（未配置或无法访问视觉模型）。也可直接简述图中告警重点、合约与数值。'
-        : lang === 'zh-Hant'
-          ? '圖片已收到，但視覺 OCR 不可用（未配置或無法訪問視覺模型）。也可直接簡述圖中告警重點、合約與數值。'
-          : 'Image received, but vision OCR is unavailable (not configured or unreachable). You can also briefly describe the alert, contract, and values.',
-    )
+    if (lang === 'zh-Hans') {
+      return '图片已收到，但视觉解读暂不可用（未配置或无法访问视觉模型）。请补一句图中主题，或贴关键文字。'
+    }
+    if (lang === 'zh-Hant') {
+      return '圖片已收到，但視覺解讀暫不可用（未配置或無法訪問視覺模型）。請補一句圖中主題，或貼關鍵文字。'
+    }
+    return 'Image received, but vision is unavailable. Add one line on what it shows, or paste key text.'
   } catch (e) {
     const err = e instanceof Error ? e.message : 'unknown'
-    return accessUnavailableReply(
-      lang,
+    if (lang === 'zh-Hans') return `图片已收到，但下载／访问失败（${err}）。也可改贴文字／表格，我先按文字理解。`
+    if (lang === 'zh-Hant') return `圖片已收到，但下載／訪問失敗（${err}）。也可改貼文字／表格，我先按文字理解。`
+    return `Image received, but download/access failed (${err}). Paste text/table and I’ll work from that.`
+  }
+}
+
+/** Best-effort read of shared file / doc / card preview — understand before judging relevance. */
+async function ingestShareOrFile(msg: IncomingMessage, lang: Lang): Promise<string> {
+  const harvested = harvestAttachmentText(msg.rawContent || '', msg.text || '')
+  const { token, url, kind } = extractDocUrlOrToken(`${harvested}\n${msg.text || ''}`)
+  const lines: string[] = []
+  if (harvested) {
+    lines.push(
       lang === 'zh-Hans'
-        ? `图片下载／访问失败（${err}）。也可改贴文字／表格。`
+        ? '**附件／分享里我能直接看到的信息：**'
         : lang === 'zh-Hant'
-          ? `圖片下載／訪問失敗（${err}）。也可改貼文字／表格。`
-          : `Image download/access failed (${err}). You can also paste text/table instead.`,
+          ? '**附件／分享裡我能直接看到的資訊：**'
+          : '**What I can see from the share/file card:**',
+      harvested.slice(0, 1500),
     )
   }
+  if (token && (kind === 'docx' || !kind || kind === 'wiki')) {
+    const doc = await readDocxRaw(token)
+    if (doc.ok && doc.content) {
+      lines.push(
+        '',
+        lang === 'zh-Hans'
+          ? '**文档正文摘要（只读）：**'
+          : lang === 'zh-Hant'
+            ? '**文檔正文摘要（唯讀）：**'
+            : '**Document body excerpt (read-only):**',
+        doc.content.replace(/\s+/g, ' ').trim().slice(0, 1200),
+      )
+    } else if (url || token) {
+      lines.push(
+        '',
+        lang === 'zh-Hans'
+          ? `文档链接／token 已识别${url ? `（${url}）` : ''}，但正文读取失败或未授权${doc.error ? `：${doc.error}` : '。'}可把要点贴出来，或联系 **@Yan Haixiang** 开通只读。`
+          : lang === 'zh-Hant'
+            ? `文檔連結／token 已識別${url ? `（${url}）` : ''}，但正文讀取失敗或未授權${doc.error ? `：${doc.error}` : '。'}可把要點貼出來，或聯繫 **@Yan Haixiang** 開通唯讀。`
+            : `Doc link/token spotted${url ? ` (${url})` : ''}, but body read failed or unauthorized${doc.error ? `: ${doc.error}` : '.'} Paste key points, or ask **@Yan Haixiang** for read scope.`,
+      )
+    }
+  }
+  if (!lines.length) {
+    return lang === 'zh-Hans'
+      ? '收到附件／分享，但当前消息里几乎没有可解析的预览正文。请发文档链接，或把关键段落贴出来。'
+      : lang === 'zh-Hant'
+        ? '收到附件／分享，但當前訊息裡幾乎沒有可解析的預覽正文。請發文檔連結，或把關鍵段落貼出來。'
+        : 'Got a share/file, but almost no readable preview in this message. Send the doc link or paste key paragraphs.'
+  }
+  // Optional LLM tighten when key available
+  const draft = lines.join('\n')
+  const llm = await enrichWithLlm({
+    lang,
+    question:
+      lang === 'zh-Hans'
+        ? '请先复述这份附件／分享在讲什么，再简要说明是否像风控／报价／监控相关。不要一上来就说无关。'
+        : lang === 'zh-Hant'
+          ? '請先複述這份附件／分享在講什麼，再簡要說明是否像風控／報價／監控相關。不要一來就說無關。'
+          : 'First restate what this attachment/share is about, then note if it looks risk/pricing/monitoring related. Do not dismiss it up front.',
+    context: draft,
+    temperature: 0.3,
+  })
+  return llm ? `${llm}\n\n---\n${draft}` : draft
 }
 
 function persistOpenIncident(args: {
@@ -590,8 +652,11 @@ export async function handleCardAction(args: {
 export async function handleMessage(msg: IncomingMessage): Promise<BotReply | null> {
   if (!msg.messageId) return null
 
-  // Image / media first → OCR into investigate flow
+  // Image / file / share first → understand & reiterate before relevance judgement
   let workingText = msg.text
+  let attachmentDigest: string | null = null
+  let attachmentKind = 'share'
+  const userCaption = (msg.text || '').trim()
   const session = getSession(msg.chatId, msg.openId)
   // Prefer sticky Chinese: share-card English must not reset the session language
   const langFallback = session.preferredLang || 'en'
@@ -603,15 +668,29 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     lang = langFallback
   }
 
+  const attachmentMsg = isAttachmentMessage(msg.messageType, msg.text || '', msg.imageKey)
   if (msg.messageType === 'image' || msg.imageKey) {
-    const ocr = await handleImage(msg, lang)
-    workingText = ocr
-    lang = detectLang(ocr, lang)
+    attachmentKind = 'image'
+    attachmentDigest = await handleImage(msg, lang)
+    workingText = userCaption ? `${userCaption}\n\n${attachmentDigest}` : attachmentDigest
+    lang = detectLang(workingText, lang)
+  } else if (attachmentMsg) {
+    attachmentKind =
+      msg.messageType === 'file' || msg.messageType === 'media' ? 'file' : 'share'
+    attachmentDigest = await ingestShareOrFile(msg, lang)
+    workingText = userCaption && !looksLikeShareOrFileMeta(userCaption)
+      ? `${userCaption}\n\n${attachmentDigest}`
+      : attachmentDigest
+    lang = detectLang(`${userCaption}\n${attachmentDigest}`, lang)
   } else if (msg.messageType === 'post' && /\|/.test(msg.text)) {
     // Tables in post often flatten with spaces; keep as investigate evidence
     workingText = `[table/post]\n${msg.text}`
   }
 
+  if (attachmentDigest) {
+    session.lastAttachmentSummary = attachmentDigest.slice(0, 2000)
+    session.lastAttachmentKind = attachmentKind
+  }
   session.preferredLang = lang
   saveSession(msg.chatId, msg.openId, session)
 
@@ -634,6 +713,38 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return { text: safetyReply(lang, hit) }
   }
 
+  // Attachments: always understand & reiterate before relevance / offtopic judgement
+  if (attachmentDigest) {
+    const riskRelated = attachmentLooksRiskRelated(attachmentDigest)
+    const captionCmd =
+      /^(market|investigate|排查|help|帮助|幫助|skills?|knowledge|kb|review|weekly|done|完成)\b/i.test(
+        userCaption,
+      )
+    const continueAsEvidence =
+      session.mode === 'investigate' ||
+      intent === 'investigate' ||
+      intent === 'followup' ||
+      (riskRelated && looksLikeIncidentEvidence(attachmentDigest) && intent === 'general_risk')
+    if (!captionCmd && (!continueAsEvidence || intent === 'offtopic')) {
+      const title =
+        lang === 'zh-Hans' || lang === 'zh-Hant' ? '附件理解' : 'Attachment understanding'
+      return {
+        card: simpleCard(
+          title,
+          formatAttachmentUnderstanding({
+            lang,
+            kind: attachmentKind,
+            digest: attachmentDigest,
+            riskRelated,
+            userAsk:
+              userCaption && !looksLikeShareOrFileMeta(userCaption) ? userCaption : undefined,
+          }),
+          riskRelated ? 'blue' : 'wathet',
+        ),
+      }
+    }
+  }
+
   if (intent === 'offtopic') {
     // Last-guard: never answer Chinese users in English offtopic templates
     const offtopicLang = detectLang(workingText, lang)
@@ -641,12 +752,28 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   // AIPO Lark API UAT: Wiki / Docs read (authorized, read-only) before generic access gate
-  if (isLarkWikiQuestion(workingText)) {
-    // “你能读取这里面的数据吗” after a share — answer capability in the user's language
+  if (isLarkWikiQuestion(workingText) || isLarkWikiQuestion(userCaption)) {
+    // “你能读取这里面的数据吗” — prefer last attachment digest over capability-only FAQ
     if (
-      /(能|可以|可否|能不能).{0,8}(读|讀|读取|讀取|查看)|(can\s+you\s+read)/i.test(workingText) &&
-      !/\bwiki\b|(飞书|飛書).{0,6}(wiki|文档|文檔)/i.test(workingText)
+      /(能|可以|可否|能不能).{0,8}(读|讀|读取|讀取|查看)|(can\s+you\s+read)/i.test(userCaption || workingText) &&
+      !/\bwiki\b|(飞书|飛書).{0,6}(wiki|文档|文檔)/i.test(userCaption || workingText)
     ) {
+      const prior = session.lastAttachmentSummary
+      if (prior) {
+        return {
+          card: simpleCard(
+            lang === 'zh-Hans' ? '附件理解' : lang === 'zh-Hant' ? '附件理解' : 'Attachment understanding',
+            formatAttachmentUnderstanding({
+              lang,
+              kind: session.lastAttachmentKind || 'share',
+              digest: prior,
+              riskRelated: attachmentLooksRiskRelated(prior),
+              userAsk: userCaption || workingText,
+            }),
+            'blue',
+          ),
+        }
+      }
       return {
         card: simpleCard(
           lang === 'zh-Hans' ? '文档读取' : lang === 'zh-Hant' ? '文檔讀取' : 'Doc read',

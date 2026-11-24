@@ -3,6 +3,12 @@
  * Forces rules path (OPENAI_API_KEY cleared by parent) for deterministic asserts.
  */
 import { handleCardAction, handleMessage } from '../api/lark/_lib/agent'
+import {
+  attachmentLooksRiskRelated,
+  formatAttachmentUnderstanding,
+  harvestAttachmentText,
+  isAttachmentMessage,
+} from '../api/lark/_lib/attachment'
 import { detectLang, looksLikeShareOrFileMeta } from '../api/lark/_lib/lang'
 import { parseIncomingEvent, shouldRespond } from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
@@ -54,7 +60,13 @@ function assert(cond: boolean, msg: string) {
   if (!cond) throw new Error(`ASSERT: ${msg}`)
 }
 
-async function turn(label: string, text: string, openId = 'smoke_user', chatId = 'smoke_chat') {
+async function turn(
+  label: string,
+  text: string,
+  openId = 'smoke_user',
+  chatId = 'smoke_chat',
+  extra?: Partial<IncomingMessage>,
+) {
   const msg: IncomingMessage = {
     messageId: `smoke_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     chatId,
@@ -64,6 +76,7 @@ async function turn(label: string, text: string, openId = 'smoke_user', chatId =
     text,
     mentionedBot: true,
     rawContent: JSON.stringify({ text }),
+    ...extra,
   }
   const reply = await handleMessage(msg)
   const kind = reply?.text ? 'text' : reply?.card ? 'card' : 'empty'
@@ -401,10 +414,81 @@ async function main() {
   record(
     'turn.doc_read_zh_not_en_offtopic',
     Boolean(docRead.reply?.card) &&
-      (docRead.blob.includes('可以试着读') || docRead.blob.includes('文档')) &&
+      (docRead.blob.includes('可以试着读') || docRead.blob.includes('文档') || docRead.blob.includes('附件理解')) &&
       !docRead.blob.includes('Thanks for asking') &&
       !docRead.blob.includes('That one'),
     docRead.blob.slice(0, 200),
+  )
+
+  // Attachment-first: understand & reiterate before relevance / offtopic
+  record(
+    'attach.detect_share',
+    isAttachmentMessage('file', '[file: weekly.docx]', undefined),
+    '',
+  )
+  record(
+    'attach.risk_pricing_notes',
+    attachmentLooksRiskRelated('WC 周会 Pricing 集中式报价监控 需求对齐 DONE'),
+    '',
+  )
+  const harvested = harvestAttachmentText(
+    JSON.stringify({
+      title: 'WC & Pandy & HX 周会',
+      url: 'https://example.feishu.cn/docx/Abc123TokenX',
+      preview: { text: '1. Pricing: 集中式报价监控\n需求对齐 | DONE' },
+    }),
+    '[share:docx]',
+  )
+  record(
+    'attach.harvest_preview',
+    harvested.includes('集中式报价监控') && harvested.includes('周会'),
+    harvested.slice(0, 120),
+  )
+  const understandTpl = formatAttachmentUnderstanding({
+    lang: 'zh-Hans',
+    kind: 'share',
+    digest: '周会纪要：Pricing 集中式报价监控；需求对齐 DONE。',
+    riskRelated: true,
+    userAsk: '你能读取这里面的数据吗',
+  })
+  record(
+    'attach.format_understand_first',
+    understandTpl.includes('我先看了一下') &&
+      understandTpl.includes('相关性') &&
+      understandTpl.indexOf('我先看了一下') < understandTpl.indexOf('相关性'),
+    understandTpl.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'attach_zh')
+  const shareTurn = await turn(
+    'share-weekly-doc',
+    'WC & Pandy & HX 周会\n1. Pricing: 集中式报价监控\n需求对齐 | DONE',
+    'attach_zh',
+    'smoke_chat',
+    {
+      messageType: 'file',
+      rawContent: JSON.stringify({
+        file_name: 'WC & Pandy & HX 周会',
+        title: 'WC & Pandy & HX 周会',
+        preview: { text: '1. Pricing: 集中式报价监控\n需求对齐 | DONE' },
+      }),
+    },
+  )
+  record(
+    'turn.share_understand_before_judgement',
+    Boolean(shareTurn.reply?.card) &&
+      shareTurn.blob.includes('我先看了一下') &&
+      !shareTurn.blob.includes('Thanks for asking') &&
+      !shareTurn.blob.includes('off-scope') &&
+      !shareTurn.blob.includes('That one'),
+    shareTurn.blob.slice(0, 240),
+  )
+  const followRead = await turn('share-follow-read', '你能读取这里面的数据吗', 'attach_zh')
+  record(
+    'turn.share_followup_uses_digest',
+    Boolean(followRead.reply?.card) &&
+      (followRead.blob.includes('我先看了一下') || followRead.blob.includes('报价监控')) &&
+      !followRead.blob.includes('Thanks for asking'),
+    followRead.blob.slice(0, 240),
   )
   clearSession('smoke_chat', 'safe_user')
   const pii = await turn(

@@ -104,9 +104,9 @@ export async function describeImage(args: {
   if (!key) return null
   const prompt = isZh(args.lang)
     ? args.lang === 'zh-Hans'
-      ? '这是 V Exchange 风险告警／监控截图。请提取所有可见文字、数值、合约、时间戳与表格内容；标注不确定处。不要臆造。用简体中文输出。'
-      : '這是 V Exchange 風險告警／監控截圖。請提取所有可見文字、數值、合約、時間戳與表格內容；標註不確定處。不要臆造。用繁體中文輸出。'
-    : 'This is a V Exchange risk alert / monitoring screenshot. Extract all visible text, numbers, contracts, timestamps, and table cells. Mark uncertainty. Do not invent. Reply in English.'
+      ? '请先完整理解这张图在讲什么（不要先判定是否无关）。1) 用几句话概括主题／场景；2) 提取可见标题、正文、表格、数字、合约、时间戳；3) 最后补一句它像不像风险告警／行情监控／项目周会材料。不确定就标明。不要臆造。用简体中文。'
+      : '請先完整理解這張圖在講什麼（不要先判定是否無關）。1) 用幾句話概括主題／場景；2) 提取可見標題、正文、表格、數字、合約、時間戳；3) 最後補一句它像不像風險告警／行情監控／專案週會材料。不確定就標明。不要臆造。用繁體中文。'
+    : 'First understand what this image is about (do not dismiss it as irrelevant up front). 1) Summarize the topic/scene in a few sentences; 2) Extract visible titles, body text, tables, numbers, contracts, timestamps; 3) End with one line on whether it looks like a risk alert / market monitor / project notes. Mark uncertainty. Do not invent. Reply in English.'
 
   try {
     const r = await fetch('https://api.openai.com/v1/chat/completions', {

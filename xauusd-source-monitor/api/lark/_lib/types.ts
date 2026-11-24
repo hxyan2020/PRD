@@ -62,6 +62,9 @@ export interface InvestigationState {
   pendingPrompt?: string
   /** Last detected user language — card actions and short replies reuse this. */
   preferredLang?: Lang
+  /** Last image/file/share digest — used when user asks “能读取吗” without re-attaching. */
+  lastAttachmentSummary?: string
+  lastAttachmentKind?: string
   updatedAt: number
 }
 
