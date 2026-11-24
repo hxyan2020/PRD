@@ -28,6 +28,7 @@ import {
   preferredActions,
   resolveNodeById,
   retrieveRag,
+  splitSkillSteps,
   tokenize,
 } from './skills.js'
 import { detectSafetyViolation, safetyReply } from './safety.js'
@@ -154,7 +155,11 @@ function formatInvestigateCore(args: {
   lines.push(hans ? '🔎 **可能原因**' : hant ? '🔎 **可能原因**' : '🔎 **Possible causes**')
   if (args.hits.length) {
     for (const h of args.hits.slice(0, 4)) {
-      lines.push(`• **${h.id} · ${h.name}** — ${h.check.slice(0, 160)}${h.check.length > 160 ? '…' : ''}`)
+      lines.push(`• **${h.id} · ${h.name}**`)
+      const steps = splitSkillSteps(h.check)
+      for (const step of steps.length ? steps : [h.check]) {
+        lines.push(`  - ${step}`)
+      }
     }
   } else {
     lines.push(
@@ -169,7 +174,11 @@ function formatInvestigateCore(args: {
   lines.push(hans ? '🧭 **排查路径要点**' : hant ? '🧭 **排查路徑要點**' : '🧭 **Investigation path**')
   if (args.hits.length) {
     for (const h of args.hits.slice(0, 3)) {
-      lines.push(`• **${h.id}：** ${h.action.slice(0, 160)}${h.action.length > 160 ? '…' : ''}`)
+      lines.push(`• **${h.id}**`)
+      const steps = splitSkillSteps(h.action)
+      for (const step of steps.length ? steps : [h.action]) {
+        lines.push(`  - ${step}`)
+      }
     }
   } else {
     lines.push(

@@ -90,7 +90,7 @@ export function mdTablesToBullets(text: string): string {
  * Format Skills / Knowledge node bodies for Lark lark_md:
  * preserve structure, bold headings, bullets for tables — never flatten to one line.
  */
-export function formatNodeBodyForLark(raw: string, maxLen = 3600): string {
+export function formatNodeBodyForLark(raw: string, maxLen = 8000): string {
   if (!raw) return ''
   let s = raw.replace(/\r\n/g, '\n').trim()
   s = mdTablesToBullets(s)
@@ -106,9 +106,11 @@ export function formatNodeBodyForLark(raw: string, maxLen = 3600): string {
   // Collapse excess blank lines but keep paragraph breaks
   s = s.replace(/\n{3,}/g, '\n\n').trim()
   if (s.length <= maxLen) return s
+  // Prefer cutting after a full step/bullet, never mid-sentence with a bare ellipsis alone
   const cut = s.slice(0, maxLen)
   const at = Math.max(cut.lastIndexOf('\n\n'), cut.lastIndexOf('\n'))
-  return `${(at > maxLen * 0.5 ? cut.slice(0, at) : cut).trim()}\n\n…`
+  const kept = (at > maxLen * 0.5 ? cut.slice(0, at) : cut).trim()
+  return `${kept}\n\n_…（正文过长，已保留完整步骤开头；发 skills 打开桌面页查看全文）_`
 }
 
 /** Deep-clean string fields inside a Lark card JSON. Preserves lark_md markup. */

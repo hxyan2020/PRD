@@ -582,8 +582,8 @@ export function nodeDetailCard(args: {
         : zh
           ? `知識節點 · ${args.id}`
           : `Knowledge · ${args.id}`
-  // Keep structure (headings / bullets / tables→bullets). Never flatten whitespace.
-  const body = formatNodeBodyForLark(args.body, 3600)
+  // Skills must keep every Check/Action/Opt step — use a high cap; never omit mid-step.
+  const body = formatNodeBodyForLark(args.body, args.kind === 'skill' ? 12000 : 8000)
   const hint = hans
     ? '_回复其他 ID 继续打开节点；发 **skills** / **knowledge** 返回目录。_'
     : zh

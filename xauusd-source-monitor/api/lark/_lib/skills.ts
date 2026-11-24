@@ -121,6 +121,48 @@ export function looksLikeNodeIdReply(text: string): boolean {
   return /^(L[12]-\d{1,2}|L2-[A-F]|[A-Za-z][A-Za-z0-9_-]{1,48})$/i.test(t)
 }
 
+/** Split Runbook step chains on arrows / semicolons — never collapse into one dense line. */
+export function splitSkillSteps(text: string): string[] {
+  return (text || '')
+    .split(/\s*(?:→|->|⇒|；|;|\n)+\s*/)
+    .map((x) => x.trim())
+    .filter(Boolean)
+}
+
+/** Full Skills node body: every Check / Action / Opt step, no omission. */
+export function formatSkillDetailBody(skill: SkillRec): string {
+  const checkSteps = splitSkillSteps(skill.check)
+  const actionSteps = splitSkillSteps(skill.action)
+  const optSteps = splitSkillSteps(skill.opt)
+  const hints = (skill.matchHints || '')
+    .split(/[\s,/|]+/)
+    .map((x) => x.trim())
+    .filter((x) => x && !/^L[12]-/i.test(x) && x.toLowerCase() !== skill.id.toLowerCase())
+  const uniqHints = [...new Set(hints)].slice(0, 12)
+
+  return [
+    `• **Severity：** **${skill.severity}**`,
+    `• **Level：** **${skill.level}**`,
+    skill.linkedL1 ? `• **Linked L1：** ${skill.linkedL1}` : '',
+    uniqHints.length ? `• **Hints：** ${uniqHints.join(' · ')}` : '',
+    '',
+    '**Check**',
+    ...(checkSteps.length
+      ? checkSteps.map((x, i) => `${i + 1}. ${x}`)
+      : ['• （无 Check 详情）']),
+    '',
+    '**Action**',
+    ...(actionSteps.length
+      ? actionSteps.map((x) => `• ${x}`)
+      : ['• （无 Action 详情）']),
+    '',
+    '**Opt**',
+    ...(optSteps.length ? optSteps.map((x) => `• ${x}`) : ['• （无 Opt 详情）']),
+  ]
+    .filter(Boolean)
+    .join('\n')
+}
+
 export function resolveNodeById(
   raw: string,
 ):
@@ -131,35 +173,7 @@ export function resolveNodeById(
   if (!id) return null
   const skill = loadSkills().find((s) => s.id.toLowerCase() === id.toLowerCase())
   if (skill) {
-    const body = [
-      `• **Severity：** **${skill.severity}**`,
-      `• **Level：** **${skill.level}**`,
-      skill.linkedL1 ? `• **Linked L1：** ${skill.linkedL1}` : '',
-      '',
-      '**Check**',
-      ...skill.check
-        .split(/[;；\n]+/)
-        .map((x) => x.trim())
-        .filter(Boolean)
-        .map((x) => `• ${x}`),
-      '',
-      '**Action**',
-      ...skill.action
-        .split(/[;；\n]+/)
-        .map((x) => x.trim())
-        .filter(Boolean)
-        .map((x) => `• ${x}`),
-      '',
-      '**Opt**',
-      ...skill.opt
-        .split(/[;；\n]+/)
-        .map((x) => x.trim())
-        .filter(Boolean)
-        .map((x) => `• ${x}`),
-    ]
-      .filter(Boolean)
-      .join('\n')
-    return { kind: 'skill', id: skill.id, title: skill.name, body }
+    return { kind: 'skill', id: skill.id, title: skill.name, body: formatSkillDetailBody(skill) }
   }
   const kb = loadKnowledge().find((k) => k.id.toLowerCase() === id.toLowerCase())
   if (kb) return { kind: 'knowledge', id: kb.id, title: kb.title, body: kb.body }
@@ -284,20 +298,22 @@ export function formatRagAnswer(args: {
     lines.push(hans || hant ? '🧩 **Skills 命中**' : '🧩 **Skills hit**')
     for (const h of args.hits.slice(0, 4)) {
       lines.push(`• **${h.id} · ${h.name}**`)
-      lines.push(
-        hans
-          ? `  - **检查：** ${h.check}`
-          : hant
-            ? `  - **檢查：** ${h.check}`
-            : `  - **Check:** ${h.check}`,
-      )
-      lines.push(
-        hans
-          ? `  - **建议（需审批）：** ${h.action}`
-          : hant
-            ? `  - **建議（需審批）：** ${h.action}`
-            : `  - **Action (approval):** ${h.action}`,
-      )
+      const checkLabel = hans ? '检查' : hant ? '檢查' : 'Check'
+      const actionLabel = hans ? '建议（需审批）' : hant ? '建議（需審批）' : 'Action (approval)'
+      const checks = splitSkillSteps(h.check)
+      const actions = splitSkillSteps(h.action)
+      if (checks.length <= 1) {
+        lines.push(`  - **${checkLabel}：** ${h.check}`)
+      } else {
+        lines.push(`  - **${checkLabel}：**`)
+        for (const step of checks) lines.push(`    · ${step}`)
+      }
+      if (actions.length <= 1) {
+        lines.push(`  - **${actionLabel}：** ${h.action}`)
+      } else {
+        lines.push(`  - **${actionLabel}：**`)
+        for (const step of actions) lines.push(`    · ${step}`)
+      }
     }
   } else {
     lines.push(

@@ -38,10 +38,13 @@ import {
 import type { IncidentRecord } from '../api/lark/_lib/types'
 import {
   formatRagAnswer,
+  formatSkillDetailBody,
   loadKnowledge,
   loadSkills,
   preferredActions,
+  resolveNodeById,
   retrieveRag,
+  splitSkillSteps,
 } from '../api/lark/_lib/skills'
 import { clearSession, listIncidents } from '../api/lark/_lib/store'
 import type { IncomingMessage } from '../api/lark/_lib/types'
@@ -865,6 +868,39 @@ async function main() {
       openSkill.blob.includes('•') &&
       (openSkill.blob.includes('Skill ·') || openSkill.blob.includes('L1-07')),
     openSkill.blob.slice(0, 160),
+  )
+  // Skills detail must expand every → / ； step — no dense one-liner omission
+  const l116 = loadSkills().find((s) => s.id === 'L1-16')
+  const l116Steps = splitSkillSteps(l116?.check || '')
+  record('skills.l1_16_check_steps', l116Steps.length >= 4, `n=${l116Steps.length}`)
+  const l116Body = l116 ? formatSkillDetailBody(l116) : ''
+  record(
+    'skills.l1_16_detail_full',
+    l116Body.includes('1. ') &&
+      l116Body.includes('Average Premium Index') &&
+      l116Body.includes('资金费率管理') &&
+      l116Body.includes('成交价K线') &&
+      !l116Body.includes('…'),
+    l116Body.slice(0, 220),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const openL116 = await turn('open-skill-l1-16', 'L1-16')
+  record(
+    'turn.open_skill_l1_16_no_omit',
+    Boolean(openL116.reply?.card) &&
+      openL116.blob.includes('外部资金费率') &&
+      openL116.blob.includes('Average Premium Index') &&
+      openL116.blob.includes('资金费率管理') &&
+      openL116.blob.includes('成交价K线') &&
+      openL116.blob.includes('立即通知RC/BIT') &&
+      !/检查：.{0,80}…/.test(openL116.blob),
+    openL116.blob.slice(0, 280),
+  )
+  const resolved = resolveNodeById('L1-16')
+  record(
+    'skills.resolve_l1_16_numbered',
+    Boolean(resolved?.body.includes('1. ') && resolved.body.includes('2. ')),
+    resolved?.body.slice(0, 180) || '',
   )
   clearSession('smoke_chat', 'smoke_user')
   const riskKb = await turn('risk-inventory-kb', '可能出现的风险有哪些')
