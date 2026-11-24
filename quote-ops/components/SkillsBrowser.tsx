@@ -23,8 +23,8 @@ export function SkillsBrowser() {
         <p className="mt-2 max-w-3xl text-sm text-mist">
           {isPerp
             ? t(
-                `当前产品线：${def.shortZh}。Runbook V18 排查路径（表格分支保留在知识页）；交互清单逐步勾选。后续分册将继续写入。`,
-                `Product: ${def.shortEn}. Runbook V18 paths (branch tables on KB pages); interactive checklists here. More parts incoming.`,
+                `当前产品线：${def.shortZh}。Runbook V18 全量 34 场景（28 L1 + 6 L2）；表格分支在知识页，交互清单逐步勾选。`,
+                `Product: ${def.shortEn}. Runbook V18 complete 34 scenarios (28 L1 + 6 L2); tables on KB pages, checklists here.`,
               )
             : t(
                 "可交互的步骤清单：固化证据 → 查询占位 SQL → 止血 → 客户处置。每个 Skill 关联相关风险场景。",

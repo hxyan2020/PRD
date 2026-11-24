@@ -36,20 +36,20 @@ const EXAMPLES: Record<ProductId, { zh: string[]; en: string[] }> = {
   },
   "v-exchange-perp": {
     zh: [
+      "L2-C 深度不足叠加无交易怎么查？",
+      "L2-D 定价异常后大额强平怎么核？",
+      "L1→L2 联动入口怎么用？",
       "L1-16 外部资金费率偏差怎么查？",
       "L2-A 指数源切换导致定价异常",
       "L1-23 大额爆仓通知怎么核？",
-      "L1-01 无交易监控怎么排查？",
-      "L1-07 平台内部价格偏差怎么查？",
-      "DB 接仓超时 / ADL 异常",
     ],
     en: [
+      "L2-C depth + no-trade chain",
+      "L2-D pricing fault → large liq",
+      "How to use L1→L2 linkage table",
       "L1-16 external Funding deviation",
       "L2-A source switch → pricing fault",
       "L1-23 large liquidation notice RCA",
-      "L1-01 no-trade monitor runbook",
-      "L1-07 internal price deviation",
-      "DB takeover timeout / ADL anomaly",
     ],
   },
 };

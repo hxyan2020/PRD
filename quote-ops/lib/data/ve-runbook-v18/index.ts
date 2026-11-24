@@ -3,7 +3,7 @@
  * Part 1: overview + admin page field baseline + L1-01..L1-06 (book/trading).
  * Part 2: L1-07..L1-15 pricing / Mark / index sources.
  * Part 3: L1-16..L1-28 + L2-A/B (Funding / DB / Finance / L2).
- * Part 4: placeholder for remaining L2-C..F.
+ * Part 4: L2-C..F + L1→L2 linkage + escalation/close-out (complete 34 scenarios).
  */
 
 import type { Skill, SkillStep } from "@/lib/types";
@@ -30,12 +30,26 @@ import {
   RUNBOOK_V18_PART3,
 } from "./part3";
 import { VE_RUNBOOK_PART3_SKILLS } from "./part3-skills";
+import {
+  RUNBOOK_V18_L2_CF_EN,
+  RUNBOOK_V18_L2_CF_ZH,
+  RUNBOOK_V18_META_EN,
+  RUNBOOK_V18_META_ZH,
+  RUNBOOK_V18_PART4,
+} from "./part4";
+import { VE_RUNBOOK_PART4_SKILLS } from "./part4-skills";
 
-export { RUNBOOK_V18_PART, RUNBOOK_V18_VERSION, RUNBOOK_V18_PART2, RUNBOOK_V18_PART3 };
+export {
+  RUNBOOK_V18_PART,
+  RUNBOOK_V18_VERSION,
+  RUNBOOK_V18_PART2,
+  RUNBOOK_V18_PART3,
+  RUNBOOK_V18_PART4,
+};
 
-/** Registry so part 4 can append without reshaping seed. */
-export const RUNBOOK_V18_INGESTED_PARTS = [1, 2, 3] as const;
-export const RUNBOOK_V18_PENDING_PARTS = [4] as const;
+/** All four parts ingested — 28 L1 + 6 L2 = 34 scenarios. */
+export const RUNBOOK_V18_INGESTED_PARTS = [1, 2, 3, 4] as const;
+export const RUNBOOK_V18_PENDING_PARTS = [] as const;
 
 function stepsFromTable(
   rows: Array<{
@@ -552,6 +566,7 @@ export const VE_RUNBOOK_SKILLS: Skill[] = [
   ...VE_RUNBOOK_PART1_SKILLS,
   ...VE_RUNBOOK_PART2_SKILLS,
   ...VE_RUNBOOK_PART3_SKILLS,
+  ...VE_RUNBOOK_PART4_SKILLS,
 ];
 
 function perL1DocsFromBook(
@@ -740,6 +755,58 @@ export function buildVeRunbookV18Docs(): VeDoc[] {
     };
   });
 
+  const l2cf: VeDoc = {
+    id: "ve-skill-runbook-v18-l2-c-f",
+    slug: "ve-runbook-v18-l2-c-f",
+    titleZh: "Skill · Runbook V18｜L2-C～L2-F 关联链路",
+    titleEn: "Skill · Runbook V18 L2-C..F Chains",
+    summaryZh: "L2-C 流动性→无交易；L2-D 定价→强平；L2-E 强平→接仓积压；L2-F 深度→强平处置（含 flowchart）。",
+    summaryEn: "L2-C depth→no-trade; L2-D pricing→liq; L2-E liq→takeover backlog; L2-F depth→liq disposal (flowcharts).",
+    tags: ["skill", "runbook-v18", "l2", "l2-c", "l2-d", "l2-e", "l2-f", "part4"],
+    sortOrder: 600,
+    kind: "skill",
+    bodyZh: RUNBOOK_V18_L2_CF_ZH,
+    bodyEn: RUNBOOK_V18_L2_CF_EN,
+  };
+
+  const metaDoc: VeDoc = {
+    id: "ve-skill-runbook-v18-linkage",
+    slug: "ve-runbook-v18-l1-l2-linkage",
+    titleZh: "Skill · Runbook V18｜L1→L2联动入口与收口标准",
+    titleEn: "Skill · Runbook V18 L1→L2 Linkage & Close-out",
+    summaryZh: "9个L1联动入口表 + 升级/权限/收口矩阵；V18完整性：28 L1 + 6 L2 = 34。",
+    summaryEn: "9 L1→L2 entry table + escalation/close-out matrix; completeness 28 L1 + 6 L2 = 34.",
+    tags: ["skill", "runbook-v18", "linkage", "escalation", "part4"],
+    sortOrder: 700,
+    kind: "skill",
+    bodyZh: RUNBOOK_V18_META_ZH,
+    bodyEn: RUNBOOK_V18_META_EN,
+  };
+
+  const part4L2Skills = VE_RUNBOOK_PART4_SKILLS.filter((s) => s.id.startsWith("ve-sk-l2-"));
+  const perL2Part4 = part4L2Skills.map((s, i) => {
+    const marker = s.titleZh.split("｜")[0] ?? s.titleZh;
+    const sections = RUNBOOK_V18_L2_CF_ZH.split(/^## /m).filter(Boolean);
+    const match = sections.find((sec) => sec.startsWith(marker));
+    const bodyZh = match
+      ? `# ${s.titleZh}\n\n> Runbook ${RUNBOOK_V18_VERSION} · Part ${RUNBOOK_V18_PART4}/4\n\n## ${match}`
+      : `# ${s.titleZh}\n\n见姊妹页：/kb/ve-runbook-v18-l2-c-f`;
+    return {
+      id: s.id.replace("ve-sk-", "ve-skill-"),
+      slug: s.slug,
+      titleZh: `Skill · ${s.titleZh}`,
+      titleEn: `Skill · ${s.title}`,
+      summaryZh: s.summaryZh,
+      summaryEn: s.summary,
+      tags: [...s.tags.filter((t) => t !== "v-exchange-perp"), "part4"],
+      sortOrder: 610 + i * 10,
+      kind: "skill" as const,
+      bodyZh,
+      bodyEn: `# ${s.title}\n\nFull ZH tables are source of truth. Interactive checklist: /skills/${s.slug}`,
+    };
+  });
+
+  // Linkage skill already has dedicated metaDoc with same slug — skip duplicate from skills list.
   return [
     overview,
     book,
@@ -750,5 +817,8 @@ export function buildVeRunbookV18Docs(): VeDoc[] {
     ...perL1Part3,
     l2ab,
     ...perL2,
+    l2cf,
+    ...perL2Part4,
+    metaDoc,
   ];
 }

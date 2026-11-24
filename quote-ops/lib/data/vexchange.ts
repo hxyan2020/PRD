@@ -22,10 +22,10 @@ export type VeDoc = {
 };
 
 export const VE_META = {
-  version: "V2.3",
+  version: "V2.4",
   date: "2026-11-24",
   contract: "XAUUSD",
-  status: "内部知识草案 + 138风险场景 + Runbook V18 Part1–3 skills",
+  status: "内部知识草案 + 138风险场景 + Runbook V18完整34场景 skills",
 };
 
 const VE_CORE_DOCS: VeDoc[] = [

@@ -90,4 +90,17 @@ describe("rag retrieve", () => {
     const ablob = l2a.map((h) => h.chunk.id + h.chunk.titleZh + h.chunk.bodyZh).join("\n");
     expect(/L2-A|指数源切换|mermaid|l2-a/i.test(ablob)).toBe(true);
   });
+
+  it("surfaces Runbook V18 L2-C and L1→L2 linkage tables", async () => {
+    await ensureKbSeeded();
+    const l2c = await retrieve("L2-C 盘口流动性下降 无交易", "zh-CN", 8, "v-exchange-perp");
+    expect(l2c.length).toBeGreaterThan(0);
+    const cblob = l2c.map((h) => h.chunk.id + h.chunk.titleZh + h.chunk.bodyZh).join("\n");
+    expect(/L2-C|流动性下降|深度不足|l2-c/i.test(cblob)).toBe(true);
+
+    const link = await retrieve("L1到L2联动入口 大额爆仓 进入条件", "zh-CN", 8, "v-exchange-perp");
+    expect(link.length).toBeGreaterThan(0);
+    const lblob = link.map((h) => h.chunk.id + h.chunk.titleZh + h.chunk.bodyZh).join("\n");
+    expect(/联动入口|L2-D|L2-E|L2-F|完整性/i.test(lblob)).toBe(true);
+  });
 });

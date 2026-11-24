@@ -9,15 +9,15 @@ import {
 import { getSkill, skillsForProduct } from "@/lib/data/skills";
 
 describe("Runbook V18 part 1 skills", () => {
-  it("registers parts 1–3 and leaves part 4 pending", () => {
-    expect(RUNBOOK_V18_INGESTED_PARTS).toEqual([1, 2, 3]);
-    expect(RUNBOOK_V18_PENDING_PARTS).toEqual([4]);
+  it("registers all four parts with nothing pending", () => {
+    expect(RUNBOOK_V18_INGESTED_PARTS).toEqual([1, 2, 3, 4]);
+    expect(RUNBOOK_V18_PENDING_PARTS).toEqual([]);
   });
 
   it("builds overview + combined L1 books + per-L1/L2 skill docs with tables", () => {
     const docs = buildVeRunbookV18Docs();
-    // part1: 1+1+6=8; part2: 1+9=10; part3: 1+13+1+2=17 → 35
-    expect(docs).toHaveLength(35);
+    // part1: 8; part2: 10; part3: 17; part4: l2cf+4+meta=6 → 41
+    expect(docs).toHaveLength(41);
     expect(docs.every((d) => d.kind === "skill")).toBe(true);
 
     const overview = docs.find((d) => d.id === "ve-skill-runbook-v18-overview");
@@ -62,6 +62,17 @@ describe("Runbook V18 part 1 skills", () => {
 
     const l123 = docs.find((d) => d.slug === "ve-l1-23-large-liquidation");
     expect(l123?.bodyZh).toContain("大额爆仓通知本身不证明强平错误");
+
+    const l2cf = docs.find((d) => d.id === "ve-skill-runbook-v18-l2-c-f");
+    expect(l2cf?.bodyZh.match(/\| 步骤 \| 执行人 \|/g)?.length).toBe(4);
+    expect(l2cf?.bodyZh.match(/```mermaid/g)?.length).toBe(2);
+    expect(l2cf?.bodyZh).toContain("L2-C｜盘口流动性下降");
+    expect(l2cf?.bodyZh).toContain("L2-F｜流动性下降");
+
+    const linkage = docs.find((d) => d.id === "ve-skill-runbook-v18-linkage");
+    expect(linkage?.bodyZh).toContain("| L1事件 | 必查关联告警");
+    expect(linkage?.bodyZh).toContain("| L1 Runbook | 28 |");
+    expect(linkage?.bodyZh).toContain("不重复创建独立事件");
   });
 
   it("is included in VE_DOCS and bumps seed version", () => {
@@ -69,16 +80,20 @@ describe("Runbook V18 part 1 skills", () => {
     expect(VE_DOCS.some((d) => d.id === "ve-skill-runbook-v18-l1-07-15")).toBe(true);
     expect(VE_DOCS.some((d) => d.id === "ve-skill-runbook-v18-l1-16-28")).toBe(true);
     expect(VE_DOCS.some((d) => d.id === "ve-skill-runbook-v18-l2-a-b")).toBe(true);
-    expect(VE_META.version).toBe("V2.3");
+    expect(VE_DOCS.some((d) => d.id === "ve-skill-runbook-v18-l2-c-f")).toBe(true);
+    expect(VE_DOCS.some((d) => d.id === "ve-skill-runbook-v18-linkage")).toBe(true);
+    expect(VE_META.version).toBe("V2.4");
   });
 
   it("exposes interactive skills on VE product only", () => {
-    // overview + L1-01..28 + L2-A/B = 1+28+2 = 31
-    expect(VE_RUNBOOK_SKILLS).toHaveLength(31);
-    expect(skillsForProduct("v-exchange-perp")).toHaveLength(31);
+    // overview + L1-01..28 + L2-A..F + linkage = 1+28+6+1 = 36
+    expect(VE_RUNBOOK_SKILLS).toHaveLength(36);
+    expect(skillsForProduct("v-exchange-perp")).toHaveLength(36);
     expect(skillsForProduct("cfd-broker").some((s) => s.id.startsWith("ve-sk-"))).toBe(false);
     expect(getSkill("ve-l1-02-depth-shortfall")?.titleZh).toContain("深度不足");
     expect(getSkill("ve-l1-07-internal-price-deviation")?.titleZh).toContain("内部价格偏差");
     expect(getSkill("ve-l2-a-source-to-pricing")?.titleZh).toContain("L2-A");
+    expect(getSkill("ve-l2-c-depth-to-no-trade")?.titleZh).toContain("L2-C");
+    expect(getSkill("ve-runbook-v18-l1-l2-linkage")?.titleZh).toContain("联动入口");
   });
 });
