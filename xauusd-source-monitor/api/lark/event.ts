@@ -2,8 +2,12 @@
  * Lark / Feishu event webhook — POST /api/lark/event
  *
  * Subscribe in Lark Developer Console:
- *   Request URL: https://vex-llm-proxy.vercel.app/api/lark/event
+ *   Event Request URL: https://vex-llm-proxy.vercel.app/api/lark/event
  *   Events: im.message.receive_v1, card.action.trigger
+ *   Card Request URL (消息卡片请求网址): same URL (or /api/lark/card)
+ *   — without Card Request URL, tapping buttons shows
+ *     “Card callback isn't configured”. Prefer text commands unless
+ *     LARK_ENABLE_CARD_BUTTONS=1 after the URL is set.
  *
  * Minimum secrets: LARK_APP_ID + LARK_APP_SECRET (set on Vercel).
  * Optional: LARK_VERIFICATION_TOKEN (recommended), LARK_BOT_OPEN_ID (auto-fetched).
@@ -93,6 +97,106 @@ function dedupeKey(header: Record<string, unknown>, messageId?: string, cardToke
   if (cardToken) return `card:${cardToken}`
   if (messageId) return `msg:${messageId}`
   return ''
+}
+
+/** Shared card-action path for event subscription + Card Request URL callbacks. */
+async function handleCardActionRequest(
+  _req: VercelRequest,
+  res: VercelResponse,
+  args: {
+    header: Record<string, unknown>
+    event: Record<string, unknown>
+    eventType: string
+  },
+) {
+  const operator = (args.event.operator || {}) as { open_id?: string }
+  const action = (args.event.action || args.event) as {
+    value?: Record<string, unknown> | string
+    tag?: string
+  }
+  const context = (args.event.context || {}) as {
+    open_message_id?: string
+    open_chat_id?: string
+  }
+  // Legacy Card Request URL may put ids on the root event
+  const openId =
+    operator.open_id ||
+    String(args.event.open_id || args.event.openId || 'unknown')
+  const messageId =
+    context.open_message_id ||
+    String(args.event.open_message_id || args.event.openMessageId || '')
+  const chatId =
+    context.open_chat_id ||
+    String(args.event.open_chat_id || args.event.openChatId || args.event.chat_id || '')
+  let value: Record<string, unknown> = {}
+  try {
+    value =
+      typeof action.value === 'string'
+        ? (JSON.parse(action.value) as Record<string, unknown>)
+        : (action.value as Record<string, unknown>) || {}
+  } catch {
+    value = {}
+  }
+  const key = dedupeKey(
+    args.header,
+    messageId,
+    `${messageId}:${String(value.action || '')}:${String(value.incidentId || '')}`,
+  )
+  if (key && !claimOnce(key)) {
+    logInbound({
+      at: new Date().toISOString(),
+      kind: 'card_action',
+      eventType: args.eventType,
+      messageId,
+      result: 'skipped:deduped',
+    })
+    return res.status(200).json({
+      toast: { type: 'info', content: 'Already handled' },
+    })
+  }
+  waitUntil(
+    (async () => {
+      try {
+        const reply = await handleCardAction({
+          openId,
+          chatId,
+          messageId,
+          value,
+        })
+        let dispatched = { ok: false as boolean, via?: string, error?: string }
+        if (messageId || chatId) {
+          dispatched = await dispatchReply(messageId, chatId, reply)
+        }
+        logInbound({
+          at: new Date().toISOString(),
+          kind: 'card_action',
+          eventType: args.eventType,
+          openId,
+          chatId,
+          messageId,
+          result: dispatched.ok
+            ? `ok:${dispatched.via}`
+            : `fail:${dispatched.error || 'no_dispatch'}`,
+        })
+      } catch (e) {
+        logInbound({
+          at: new Date().toISOString(),
+          kind: 'card_action',
+          eventType: args.eventType,
+          error: e instanceof Error ? e.message : 'card error',
+          result: 'error',
+        })
+      }
+    })(),
+  )
+  // Feishu expects a toast (or card) on card callback — not only {ok:true}
+  return res.status(200).json({
+    toast: {
+      type: 'success',
+      content: 'OK',
+      i18n: { zh_cn: '已处理', zh_hk: '已處理', en_us: 'Done' },
+    },
+  })
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -199,76 +303,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (eventType === 'im.message.receive_v1' || body.event) {
       const event = (body.event || body) as Record<string, unknown>
 
-      // Card action (schema 2.0 may use card.action.trigger)
+      // Card action (schema 2.0 event subscription)
       if (eventType === 'card.action.trigger') {
-        const operator = (event.operator || {}) as { open_id?: string }
-        const action = (event.action || {}) as {
-          value?: Record<string, unknown>
-          tag?: string
-        }
-        const context = (event.context || {}) as {
-          open_message_id?: string
-          open_chat_id?: string
-        }
-        const value =
-          typeof action.value === 'string'
-            ? (JSON.parse(action.value) as Record<string, unknown>)
-            : action.value || {}
-        const key = dedupeKey(
+        return handleCardActionRequest(req, res, {
           header,
-          context.open_message_id,
-          `${context.open_message_id}:${String(value.action || '')}:${String(value.incidentId || '')}`,
-        )
-        if (key && !claimOnce(key)) {
-          logInbound({
-            at: new Date().toISOString(),
-            kind: 'card_action',
-            eventType,
-            messageId: context.open_message_id,
-            result: 'skipped:deduped',
-          })
-          return res.status(200).json({ ok: true, deduped: true })
-        }
-        waitUntil(
-          (async () => {
-            try {
-              const reply = await handleCardAction({
-                openId: operator.open_id || 'unknown',
-                chatId: context.open_chat_id || '',
-                messageId: context.open_message_id || '',
-                value,
-              })
-              let dispatched = { ok: false as boolean, via?: string, error?: string }
-              if (context.open_message_id && context.open_chat_id) {
-                dispatched = await dispatchReply(
-                  context.open_message_id,
-                  context.open_chat_id,
-                  reply,
-                )
-              }
-              logInbound({
-                at: new Date().toISOString(),
-                kind: 'card_action',
-                eventType,
-                openId: operator.open_id,
-                chatId: context.open_chat_id,
-                messageId: context.open_message_id,
-                result: dispatched.ok
-                  ? `ok:${dispatched.via}`
-                  : `fail:${dispatched.error || 'no_dispatch'}`,
-              })
-            } catch (e) {
-              logInbound({
-                at: new Date().toISOString(),
-                kind: 'card_action',
-                eventType,
-                error: e instanceof Error ? e.message : 'card error',
-                result: 'error',
-              })
-            }
-          })(),
-        )
-        return res.status(200).json({ ok: true, accepted: true })
+          event,
+          eventType,
+        })
       }
 
       if (eventType === 'im.message.receive_v1' || (event as { message?: unknown }).message) {
@@ -356,6 +397,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         )
         return res.status(200).json({ ok: true, accepted: true })
       }
+    }
+
+    // Card Request URL callback (no header.event_type) — open_message_id + action.value
+    if (
+      body.action ||
+      body.open_message_id ||
+      (body.event &&
+        typeof body.event === 'object' &&
+        ((body.event as Record<string, unknown>).action ||
+          (body.event as Record<string, unknown>).open_message_id))
+    ) {
+      const event = (body.event && typeof body.event === 'object'
+        ? body.event
+        : body) as Record<string, unknown>
+      return handleCardActionRequest(req, res, {
+        header,
+        event,
+        eventType: eventType || 'card.request_url',
+      })
     }
 
     // Older callback style: { uuid, event: { type, ... } }

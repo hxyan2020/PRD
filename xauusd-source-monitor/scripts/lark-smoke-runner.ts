@@ -749,45 +749,46 @@ async function main() {
     done.blob.slice(0, 120),
   )
 
-  // 12) Card action preferred-action human gate (no execution claim)
+  // 12) No card buttons by default (avoids “Card callback isn't configured”); text commands instead
+  record(
+    'turn.investigate_text_actions',
+    inv.blob.includes('step done') &&
+      inv.blob.includes('review') &&
+      !/"tag":"button"/.test(inv.blob),
+    'text commands without buttons',
+  )
   clearSession('smoke_chat', 'card_user')
-  const inv2 = await turn(
+  await turn(
     'investigate-for-card',
     'investigate Mark vs Index 55bps Funding spike',
     'card_user',
   )
-  const card = inv2.reply?.card as
-    | {
-        elements?: { actions?: { value?: Record<string, unknown> }[] }[]
-      }
-    | undefined
-  let actionValue: Record<string, unknown> | undefined
-  for (const el of card?.elements || []) {
-    for (const a of el.actions || []) {
-      if (a.value && (a.value as { action?: string }).action) {
-        actionValue = a.value
-        break
-      }
-    }
-    if (actionValue) break
-  }
-  if (actionValue) {
-    const cardReply = await handleCardAction({
-      openId: 'card_user',
-      chatId: 'smoke_chat',
-      messageId: 'smoke_card',
-      value: actionValue,
-    })
-    const cardBlob = cardReply?.text || (cardReply?.card ? JSON.stringify(cardReply.card) : '')
-    record(
-      'turn.card_action_human_gate',
-      /approv|human|人工|确认|確認|not execute|未执行|未執行/i.test(cardBlob) ||
-        Boolean(cardReply?.text || cardReply?.card),
-      cardBlob.slice(0, 100),
-    )
-  } else {
-    record('turn.card_action_human_gate', true, 'no button value in card (rules path); skipped soft')
-  }
+  const cardReply = await handleCardAction({
+    openId: 'card_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_card',
+    value: { action: 'step_done', incidentId: '' },
+  })
+  const cardBlob = cardReply?.text || (cardReply?.card ? JSON.stringify(cardReply.card) : '')
+  record(
+    'turn.card_action_human_gate',
+    /approv|human|人工|确认|確認|Preferred|排查|Investigation|not execute|未执行|未執行/i.test(
+      cardBlob,
+    ) || Boolean(cardReply?.text || cardReply?.card),
+    cardBlob.slice(0, 100),
+  )
+  clearSession('smoke_chat', 'step_user')
+  await turn('investigate-for-step-cmd', 'investigate Mark vs Index 40bps', 'step_user')
+  const stepCmd = await turn('step-done-cmd', 'step done', 'step_user')
+  record(
+    'turn.step_done_text_command',
+    Boolean(stepCmd.reply?.card) &&
+      (stepCmd.blob.includes('Investigation') ||
+        stepCmd.blob.includes('排查') ||
+        stepCmd.blob.includes('可能原因') ||
+        stepCmd.blob.includes('排查路径')),
+    stepCmd.blob.slice(0, 120),
+  )
 
   // 13) Investigate Chinese language mirror
   clearSession('smoke_chat', 'inv_zh')

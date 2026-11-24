@@ -99,6 +99,13 @@ const COMMAND_REVIEW =
   /^(review|复盘|複盤|archive|归档|歸檔|dashboard|alerts|alert\s*board|看板|仪表盘|儀表盤)\b/i
 const COMMAND_HELP = /^(help|帮助|幫助)\b/i
 const COMMAND_DONE = /^(done|完成|结束排查|結束排查|reset|重置)\b/i
+/** Mark current investigate step complete (text alternative to card button). */
+const COMMAND_STEP_DONE =
+  /^(step\s*done|next\s*step\s*done|已完成此步|完成此步|本步完成|标记完成|標記完成)\s*$/i
+
+export function isStepDoneCommand(text: string): boolean {
+  return COMMAND_STEP_DONE.test(text.trim())
+}
 const COMMAND_SKILLS =
   /^(skills?|skill\s*list|技能|技能库|技能庫|查看\s*skills?|看\s*skills?)\b|(有哪些|列出|查看|打开|打開).{0,8}(排查场景|排查場景|skills?|技能)|(排查场景|排查場景|技能目录|技能目錄)\s*(有哪些|列表|目录|目錄)?\s*$/i
 const COMMAND_KNOWLEDGE =

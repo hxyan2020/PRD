@@ -40,6 +40,7 @@ import {
   isLarkWikiQuestion,
   looksLikeIncidentEvidence,
   needsInaccessibleAccess,
+  isStepDoneCommand,
   offtopicReply,
 } from './scope.js'
 import { logInbound } from './inboundLog.js'
@@ -715,6 +716,16 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
             ? '已結束本次排查並歸檔（若有報告）。輸入 review 查看清單，或貼上新告警重新開始。'
             : 'Investigation closed and archived (if a report existed). Type review for the list, or paste a new alert to start again.',
     }
+  }
+
+  // Text alternative to card “Step done” button (works without Lark Card Request URL)
+  if (isStepDoneCommand(workingText)) {
+    return handleCardAction({
+      openId: msg.openId,
+      chatId: msg.chatId,
+      messageId: msg.messageId,
+      value: { action: 'step_done', incidentId: session.lastReportId || '' },
+    })
   }
 
   if (intent === 'investigate' || intent === 'followup') {

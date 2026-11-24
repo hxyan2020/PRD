@@ -20,12 +20,19 @@ Then in **Lark / Feishu Developer Console** (required — without this, DMs stay
 1. Enable **Bot** capability.
 2. **Event Subscription** mode = **将事件发送至开发者服务器 / Send to developer’s server**  
    (**Do not** use 长连接 / long connection — Vercel cannot receive that.)
-3. Request URL → `https://vex-llm-proxy.vercel.app/api/lark/event` → **Save** and pass URL verification.
+3. Event Request URL → `https://vex-llm-proxy.vercel.app/api/lark/event` → **Save** and pass URL verification.
 4. Subscribe: `im.message.receive_v1`, `card.action.trigger`.
-5. Permissions: `im:message` / send-as-bot; image resources if you want OCR.
-6. **Leave Encrypt Key OFF / empty**.
-7. Verification Token: optional.
-8. **Publish** the app version → open DM → send `Hi`.
+5. **Card Request URL（消息卡片请求网址）** → same host, either  
+   `https://vex-llm-proxy.vercel.app/api/lark/event` **or**  
+   `https://vex-llm-proxy.vercel.app/api/lark/card`  
+   → Save / verify.  
+   If this is empty, Feishu shows **“Card callback isn't configured”** when tapping buttons.  
+   Investigation cards default to **text commands** (`step done` / `done` / `review`) so UAT works without buttons.  
+   After the Card Request URL is set, optionally set Vercel env `LARK_ENABLE_CARD_BUTTONS=1` to show buttons again.
+6. Permissions: `im:message` / send-as-bot; image resources if you want OCR.
+7. **Leave Encrypt Key OFF / empty**.
+8. Verification Token: optional.
+9. **Publish** the app version → open DM → send `Hi`.
 
 Check readiness:
 
@@ -57,6 +64,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | Method | Path | Purpose |
 |--------|------|---------|
 | GET/POST | `/api/lark/event` | Webhook (challenge + messages + card actions) |
+| GET/POST | `/api/lark/card` | Alias for **Card Request URL** (same handler) |
 | GET/POST | `/api/lark/incidents` | List / simulate turns (smoke) |
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
 

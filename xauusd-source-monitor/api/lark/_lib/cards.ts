@@ -118,43 +118,75 @@ export function investigationCard(args: {
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
       {
-        tag: 'action',
-        actions: [
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '已完成此步' : zh ? '已完成此步' : 'Step done',
-            },
-            type: 'primary',
-            value: {
-              action: 'step_done',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '归档报告' : zh ? '歸檔報告' : 'Archive report',
-            },
-            type: 'default',
-            value: {
-              action: 'archive',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '复盘清单' : zh ? '複盤清單' : 'Review list',
-            },
-            type: 'default',
-            value: { action: 'review' },
-          },
-        ],
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: hans
+            ? [
+                '⌨️ **操作（文字指令，无需点卡片按钮）**',
+                '• 发 **step done** / **已完成此步** — 标记本步完成并刷新路径',
+                '• 发 **done** — 结束并归档',
+                '• 发 **review** — 打开复盘清单',
+              ].join('\n')
+            : zh
+              ? [
+                  '⌨️ **操作（文字指令，無需點卡片按鈕）**',
+                  '• 發 **step done** / **已完成此步** — 標記本步完成並刷新路徑',
+                  '• 發 **done** — 結束並歸檔',
+                  '• 發 **review** — 打開複盤清單',
+                ].join('\n')
+              : [
+                  '⌨️ **Actions (text commands — no card-button callback required)**',
+                  '• Send **step done** — mark this step complete and refresh the path',
+                  '• Send **done** — close and archive',
+                  '• Send **review** — open the review board',
+                ].join('\n'),
+        },
       },
+      // Optional interactive buttons — only when Card Request URL is configured
+      // (Lark shows “Card callback isn't configured” otherwise). Enable with LARK_ENABLE_CARD_BUTTONS=1.
+      ...(process.env.LARK_ENABLE_CARD_BUTTONS === '1'
+        ? [
+            {
+              tag: 'action',
+              actions: [
+                {
+                  tag: 'button',
+                  text: {
+                    tag: 'plain_text',
+                    content: hans ? '已完成此步' : zh ? '已完成此步' : 'Step done',
+                  },
+                  type: 'primary',
+                  value: {
+                    action: 'step_done',
+                    incidentId: args.incidentId || '',
+                  },
+                },
+                {
+                  tag: 'button',
+                  text: {
+                    tag: 'plain_text',
+                    content: hans ? '归档报告' : zh ? '歸檔報告' : 'Archive report',
+                  },
+                  type: 'default',
+                  value: {
+                    action: 'archive',
+                    incidentId: args.incidentId || '',
+                  },
+                },
+                {
+                  tag: 'button',
+                  text: {
+                    tag: 'plain_text',
+                    content: hans ? '复盘清单' : zh ? '複盤清單' : 'Review list',
+                  },
+                  type: 'default',
+                  value: { action: 'review' },
+                },
+              ],
+            },
+          ]
+        : []),
     ],
   }
 }
