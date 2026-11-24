@@ -2,7 +2,11 @@
  * Feishu / Lark “typing” UX:
  * 1) Native typing status on the user’s message (best-effort)
  * 2) Typing emoji reaction fallback
- * 3) Progressive message updates so the bot reply appears to type out
+ * 3) Progressive reveal for plain-text replies only
+ *
+ * Interactive cards (greeting menu, market, skills…) are sent in one shot —
+ * Feishu card PATCH often stalls mid-stream and left greetings stuck as
+ * “我是 **V Exchange ▍” without the command directory.
  */
 
 import {
@@ -13,7 +17,6 @@ import {
   sendCardToChat,
   sendTextToChat,
   setMessageTypingStatus,
-  updateMessageCard,
   updateMessageText,
 } from './client.js'
 import { simpleCard } from './cards.js'
@@ -43,7 +46,30 @@ export function typingStepDelayMs(steps: number): number {
   return Math.min(90, Math.max(28, Math.floor(1600 / steps)))
 }
 
-/** Prefer the first lark_md div as the “body” for progressive card typing. */
+/**
+ * Menu / catalog cards must never be progressively truncated.
+ * Kept for tests / callers that inspect card shape.
+ */
+export function isMenuOrCatalogCard(card: Record<string, unknown>): boolean {
+  const header = card.header as { title?: { content?: string } } | undefined
+  const title = header?.title?.content || ''
+  if (
+    /Risk Copilot|使用说明|How to use|小时行情|Hourly|Skills|知识库|知識庫|Knowledge|Investigation|排查|看板|Dashboard|周报|週報|Weekly/i.test(
+      title,
+    )
+  ) {
+    return true
+  }
+  const elements = card.elements
+  // Greeting / help with desk footer = 2+ blocks → full send
+  if (Array.isArray(elements) && elements.length > 1) return true
+  const body = extractCardTypingBody(card)?.body || ''
+  // Command directory bullets
+  if (/📈|🔍|🧩|📚|^\s*•\s*\*\*/m.test(body) && body.length > 200) return true
+  return false
+}
+
+/** Prefer the first lark_md div as the “body” (inspect / tests). */
 export function extractCardTypingBody(
   card: Record<string, unknown>,
 ): { body: string; apply: (partial: string) => Record<string, unknown> } | null {
@@ -137,6 +163,24 @@ export function startTypingSession(userMessageId: string): TypingHandle {
   }
 }
 
+async function sendCardOnce(args: {
+  seedMessageId: string | undefined
+  chatId: string
+  card: Record<string, unknown>
+  viaReply: boolean
+}): Promise<{ ok: boolean; via: string; error?: string }> {
+  try {
+    if (args.viaReply && args.seedMessageId) {
+      await replyCard(args.seedMessageId, args.card)
+      return { ok: true, via: 'replyCard' }
+    }
+    await sendCardToChat(args.chatId, args.card)
+    return { ok: true, via: 'sendCardToChat' }
+  } catch (e) {
+    return { ok: false, via: 'card', error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
 async function revealText(args: {
   seedMessageId: string | undefined
   chatId: string
@@ -169,78 +213,26 @@ async function revealText(args: {
     try {
       await updateMessageText(botMessageId, prefixes[i]!)
     } catch {
-      // Last resort: ignore mid-stream update failures; final content may be partial
       try {
         await updateMessageText(botMessageId, args.full)
       } catch {
-        /* ignore */
+        /* ignore — first chunk already delivered */
       }
       break
     }
+  }
+  // Guarantee final full text (no stuck cursor / truncation)
+  try {
+    await updateMessageText(botMessageId, args.full)
+  } catch {
+    /* ignore */
   }
   return { ok: true, via: args.viaReply ? 'replyText:typed' : 'sendTextToChat:typed' }
 }
 
-async function revealCard(args: {
-  seedMessageId: string | undefined
-  chatId: string
-  card: Record<string, unknown>
-  viaReply: boolean
-}): Promise<{ ok: boolean; via: string; error?: string }> {
-  const typed = extractCardTypingBody(args.card)
-  if (!typed) {
-    try {
-      if (args.viaReply && args.seedMessageId) {
-        await replyCard(args.seedMessageId, args.card)
-        return { ok: true, via: 'replyCard' }
-      }
-      await sendCardToChat(args.chatId, args.card)
-      return { ok: true, via: 'sendCardToChat' }
-    } catch (e) {
-      return { ok: false, via: 'card', error: e instanceof Error ? e.message : String(e) }
-    }
-  }
-
-  const prefixes = typingPrefixes(typed.body)
-  const delay = typingStepDelayMs(prefixes.length)
-  const firstCard = typed.apply(prefixes[0] || typed.body)
-
-  let botMessageId = ''
-  try {
-    if (args.viaReply && args.seedMessageId) {
-      const r = await replyCard(args.seedMessageId, firstCard)
-      botMessageId = r.messageId || ''
-    } else {
-      const r = await sendCardToChat(args.chatId, firstCard)
-      botMessageId = r.messageId || ''
-    }
-  } catch (e) {
-    return { ok: false, via: 'card', error: e instanceof Error ? e.message : String(e) }
-  }
-
-  if (!botMessageId || prefixes.length <= 1) {
-    return { ok: true, via: args.viaReply ? 'replyCard' : 'sendCardToChat' }
-  }
-
-  for (let i = 1; i < prefixes.length; i++) {
-    if (delay) await sleep(delay)
-    try {
-      await updateMessageCard(botMessageId, typed.apply(prefixes[i]!))
-    } catch {
-      try {
-        await updateMessageCard(botMessageId, args.card)
-      } catch {
-        /* ignore */
-      }
-      break
-    }
-  }
-  return { ok: true, via: args.viaReply ? 'replyCard:typed' : 'sendCardToChat:typed' }
-}
-
 /**
- * Dispatch reply with progressive typing. Caller should stop the inbound typing session first
- * (or right as we start) so “正在输入” becomes the growing message.
+ * Dispatch reply with typing indicator + safe reveal.
+ * Cards (esp. greeting directory) are always sent complete.
  */
 export async function dispatchReplyWithTypingEffect(
   messageId: string,
@@ -250,12 +242,12 @@ export async function dispatchReplyWithTypingEffect(
   if (process.env.LARK_TYPING_EFFECT === '0') {
     try {
       if (reply.card) {
-        if (messageId) {
-          await replyCard(messageId, reply.card)
-          return { ok: true, via: 'replyCard' }
-        }
-        await sendCardToChat(chatId, reply.card)
-        return { ok: true, via: 'sendCardToChat' }
+        return sendCardOnce({
+          seedMessageId: messageId,
+          chatId,
+          card: reply.card,
+          viaReply: Boolean(messageId),
+        })
       }
       if (reply.text) {
         if (messageId) {
@@ -272,7 +264,8 @@ export async function dispatchReplyWithTypingEffect(
   }
 
   if (reply.card) {
-    return revealCard({
+    // Never progressive-type interactive cards — greeting menus were getting stuck mid-stream
+    return sendCardOnce({
       seedMessageId: messageId,
       chatId,
       card: reply.card,

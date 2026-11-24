@@ -33,10 +33,11 @@ import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import { formatWebSearchAnswer, searchWeb, shouldAutoWebSearch } from '../api/lark/_lib/webSearch'
 import {
   extractCardTypingBody,
+  isMenuOrCatalogCard,
   typingPrefixes,
   typingStepDelayMs,
 } from '../api/lark/_lib/typing'
-import { simpleCard } from '../api/lark/_lib/cards'
+import { greetingCard, simpleCard } from '../api/lark/_lib/cards'
 import {
   buildWeeklyReport,
   shanghaiWeekKey,
@@ -197,6 +198,14 @@ async function main() {
   record(
     'typing.card_body_extract',
     Boolean(cardTyped && cardTyped.body.includes('打字机') && cardTyped.apply('这是').elements),
+    '',
+  )
+  const greetCard = greetingCard('zh-Hans', greetingReply('zh-Hans'))
+  record(
+    'typing.greeting_is_menu_card',
+    isMenuOrCatalogCard(greetCard) &&
+      greetingReply('zh-Hans').includes('**行情**') &&
+      greetingReply('zh-Hans').includes('**排查**'),
     '',
   )
 
