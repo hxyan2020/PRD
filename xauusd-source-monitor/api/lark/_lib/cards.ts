@@ -2,6 +2,11 @@ import { isZh } from './lang.js'
 import { formatNodeBodyForLark } from './plain.js'
 import type { IncidentRecord, KbItem, Lang, SkillRec } from './types.js'
 
+const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
+const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
+const MARKET_URL = 'https://vex-llm-proxy.vercel.app/#/market'
+const DASHBOARD_URL = 'https://vex-llm-proxy.vercel.app/#/reports'
+
 function severityEmoji(sev: string): string {
   const s = (sev || '').toUpperCase()
   if (s.includes('P0')) return '🔴'
@@ -45,12 +50,12 @@ export function investigationCard(args: {
   const skillLine = args.skills.length
     ? args.skills.join(', ')
     : hans
-      ? '尚未匹配 Skill — 请补充证据'
+      ? '尚未匹配'
       : zh
-        ? '尚未匹配 Skill — 請補充證據'
-        : 'No skill match yet — add evidence'
+        ? '尚未匹配'
+        : 'none matched'
   const kbLine = args.knowledge.length
-    ? args.knowledge.join(', ')
+    ? args.knowledge.slice(0, 3).join(', ')
     : hans
       ? '无'
       : zh
@@ -63,15 +68,35 @@ export function investigationCard(args: {
       ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
       : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
   const nextLabel = hans
-    ? `✅ **建议下一步**（已依你的证据调整）\n\n${stepMd}`
+    ? `🧭 **排查路径（下一步）**\n\n${stepMd}`
     : zh
-      ? `✅ **建議下一步**（已依你的證據調整）\n\n${stepMd}`
-      : `✅ **Suggested next steps** (adapted to your evidence)\n\n${stepMd}`
+      ? `🧭 **排查路徑（下一步）**\n\n${stepMd}`
+      : `🧭 **Investigation path (next)**\n\n${stepMd}`
   const prefLabel = hans
     ? `⚡ **Preferred Action**（需审批）\n\n${actionMd}`
     : zh
       ? `⚡ **Preferred Action**（需審批）\n\n${actionMd}`
       : `⚡ **Preferred Action** (approval required)\n\n${actionMd}`
+  const refsFooter = hans
+    ? [
+        '📎 **参考（文末）**',
+        `• **Skills：** ${skillLine}`,
+        `• **知识库：** ${kbLine}`,
+        `• [打开 Skills 桌面页](${SKILLS_URL}) · [打开知识库桌面页](${KNOWLEDGE_URL})`,
+      ].join('\n')
+    : zh
+      ? [
+          '📎 **參考（文末）**',
+          `• **Skills：** ${skillLine}`,
+          `• **知識庫：** ${kbLine}`,
+          `• [打開 Skills 桌面頁](${SKILLS_URL}) · [打開知識庫桌面頁](${KNOWLEDGE_URL})`,
+        ].join('\n')
+      : [
+          '📎 **References (end)**',
+          `• **Skills:** ${skillLine}`,
+          `• **Knowledge:** ${kbLine}`,
+          `• [Open Skills desk](${SKILLS_URL}) · [Open Knowledge desk](${KNOWLEDGE_URL})`,
+        ].join('\n')
 
   return {
     config: { wide_screen_mode: true },
@@ -90,15 +115,8 @@ export function investigationCard(args: {
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: nextLabel } },
       { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
-      {
-        tag: 'note',
-        elements: [
-          {
-            tag: 'plain_text',
-            content: `🧩 Skills: ${skillLine} · 📚 RAG: ${kbLine}`,
-          },
-        ],
-      },
+      { tag: 'hr' },
+      { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
       {
         tag: 'action',
         actions: [
@@ -140,8 +158,6 @@ export function investigationCard(args: {
     ],
   }
 }
-
-const DASHBOARD_URL = 'https://vex-llm-proxy.vercel.app/#/reports'
 
 /** Unicode bar for in-card charts (Lark has no canvas). */
 function bar(n: number, max: number, width = 10): string {
@@ -340,10 +356,6 @@ export function simpleCard(title: string, body: string, template = 'blue'): Reco
     elements: [{ tag: 'div', text: { tag: 'lark_md', content: body } }],
   }
 }
-
-const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
-const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
-const MARKET_URL = 'https://vex-llm-proxy.vercel.app/#/market'
 
 /** Clickable desk links (lark_md markdown links — note/plain_text is not tappable). */
 function deskFooterNote(lang: Lang): Record<string, unknown> {

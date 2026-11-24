@@ -97,14 +97,11 @@ function buildSummary(args: {
       '📋 **摘要**',
       '',
       `• **已摄入事实／证据：** **${args.facts.length}**`,
-      `• **Skills 命中：** **${hitLine}**`,
-      `• **知识库：** **${kbLine}**`,
-      '• **证据分级（AIPO）：** **已证实** / **假设** / **未排除** — 标注 [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
+      `• **本次参考：** Skills **${hitLine}** · 知识库 **${kbLine}**（文末可点开）`,
+      '• **证据分级：** **已证实** / **假设** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
       args.adapted
-        ? '• **指引：** 下一步已依你最新回复／证据重新排序（非机械整份清单）'
-        : '• **指引：** 请回复你查到的结果或贴上新证据，我会调整建议',
-      '• **边界：** 内部 admin／DB／生产数据我无法直连；需要访问时请联系 **@Yan Haixiang**',
-      '• **只读：** AI 不执行停盘、改阈值、强平、ADL、注资或账本写操作',
+        ? '• **指引：** 排查路径已依你最新证据调整；请继续回复结果'
+        : '• **指引：** 请回复排查结果或贴新证据，我会调整路径',
     ].join('\n')
   }
   if (hant) {
@@ -112,29 +109,83 @@ function buildSummary(args: {
       '📋 **摘要**',
       '',
       `• **已攝入事實／證據：** **${args.facts.length}**`,
-      `• **Skills 命中：** **${hitLine}**`,
-      `• **知識庫：** **${kbLine}**`,
-      '• **證據分級（AIPO）：** **已證實** / **假設** / **未排除** — 標註 [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
+      `• **本次參考：** Skills **${hitLine}** · 知識庫 **${kbLine}**（文末可點開）`,
+      '• **證據分級：** **已證實** / **假設** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
       args.adapted
-        ? '• **指引：** 下一步已依你最新回覆／證據重新排序（非機械整份清單）'
-        : '• **指引：** 請回覆你查到的結果或貼上新證據，我會調整建議',
-      '• **邊界：** 內部 admin／DB／生產資料我無法直連；需要訪問時請聯繫 **@Yan Haixiang**',
-      '• **只讀：** AI 不執行停盤、改閾值、強平、ADL、注資或帳簿寫操作',
+        ? '• **指引：** 排查路徑已依你最新證據調整；請繼續回覆結果'
+        : '• **指引：** 請回覆排查結果或貼新證據，我會調整路徑',
     ].join('\n')
   }
   return [
     '📋 **Summary**',
     '',
     `• **Facts ingested:** **${args.facts.length}**`,
-    `• **Skills hit:** **${hitLine}**`,
-    `• **Knowledge:** **${kbLine}**`,
-    '• **Evidence grades (AIPO):** **Confirmed** / **Suspected** / **Unknown** — tag [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
+    `• **Used this turn:** Skills **${hitLine}** · Knowledge **${kbLine}** (links at end)`,
+    '• **Evidence grades:** **Confirmed** / **Suspected** / **Unknown** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
     args.adapted
-      ? '• **Guidance:** Next steps re-ranked from your latest replies/evidence (not a full dump)'
-      : '• **Guidance:** Reply with findings or new evidence and I’ll adapt',
-    '• **Bounds:** I cannot reach internal admin/DB/prod directly — contact **@Yan Haixiang** when access is needed',
-    '• **Read-only:** AI never halts markets, changes thresholds, liquidates, runs ADL, injects funds, or edits ledgers',
+      ? '• **Guidance:** Path re-ranked from your latest evidence — reply with findings'
+      : '• **Guidance:** Reply with findings or new evidence and I’ll adapt the path',
   ].join('\n')
+}
+
+/** Lean investigate body when LLM is down: possible causes + path cues (not full Skills/KB dump). */
+function formatInvestigateCore(args: {
+  lang: Lang
+  hits: { id: string; name: string; check: string; action: string }[]
+  kb: { title: string }[]
+}): string {
+  const hans = args.lang === 'zh-Hans'
+  const hant = args.lang === 'zh-Hant'
+  const lines: string[] = []
+  lines.push(hans ? '🔎 **可能原因**' : hant ? '🔎 **可能原因**' : '🔎 **Possible causes**')
+  if (args.hits.length) {
+    for (const h of args.hits.slice(0, 4)) {
+      lines.push(`• **${h.id} · ${h.name}** — ${h.check.slice(0, 160)}${h.check.length > 160 ? '…' : ''}`)
+    }
+  } else {
+    lines.push(
+      hans
+        ? '• 暂无高置信场景命中 — 请补充告警字段（合约／指标／阈值／时间）'
+        : hant
+          ? '• 暫無高置信場景命中 — 請補充告警欄位（合約／指標／閾值／時間）'
+          : '• No high-confidence scenario yet — add alert fields (contract / metric / threshold / time)',
+    )
+  }
+  lines.push('')
+  lines.push(hans ? '🧭 **排查路径要点**' : hant ? '🧭 **排查路徑要點**' : '🧭 **Investigation path**')
+  if (args.hits.length) {
+    for (const h of args.hits.slice(0, 3)) {
+      lines.push(`• **${h.id}：** ${h.action.slice(0, 160)}${h.action.length > 160 ? '…' : ''}`)
+    }
+  } else {
+    lines.push(
+      hans
+        ? '• 先核对 Index／Mark／Funding／盘口时间戳与告警原文一致性'
+        : hant
+          ? '• 先核對 Index／Mark／Funding／盤口時間戳與告警原文一致性'
+          : '• First reconcile Index / Mark / Funding / book timestamps with the alert text',
+    )
+  }
+  if (args.kb.length) {
+    lines.push('')
+    lines.push(
+      hans
+        ? `_知识库仅作参考：${args.kb
+            .slice(0, 2)
+            .map((k) => k.title)
+            .join('、')}（全文见文末链接）_`
+        : hant
+          ? `_知識庫僅作參考：${args.kb
+              .slice(0, 2)
+              .map((k) => k.title)
+              .join('、')}（全文見文末連結）_`
+          : `_Knowledge for reference: ${args.kb
+              .slice(0, 2)
+              .map((k) => k.title)
+              .join(', ')} (full text via end links)_`,
+    )
+  }
+  return lines.join('\n')
 }
 
 async function enrichWithLlm(args: {
@@ -375,22 +426,13 @@ async function runInvestigation(args: {
     adapted: session.facts.length > 1 || session.checkedSteps.length > 0,
   })
 
-  let llmExtra = ''
   const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
-  const ragBlock = formatRagAnswer({
-    lang: args.lang,
-    question: blob.slice(0, 500),
-    hits,
-    kb,
-    severity,
-    quoteOps,
-  })
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤、📎 证据分级），每点用「• 关键词：说明」子弹列表。必须把根因分成「已证实 / 假设 / 未排除」，并尽量标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。禁止使用任何 markdown 符号（不要星号粗体、反引号、井号或链接括号）。必须引用命中的 Skill id 与知识库标题。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
+      ? '根据事故事实与命中的 Skills／知识库，写排查报告正文。正文只写两块：🔎 可能原因、🧭 排查路径。把根因分成「已证实 / 假设 / 未排除」，尽量标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。Skills／知识库只需点名 ID／标题一句带过，不要粘贴整份检查清单或知识库长摘录（链接在卡片文末）。用 emoji 分段 +「• **关键词：** 说明」。必须用简体中文。优先 quote-ops V Exchange 永续知识；忽略 CFD。'
       : args.lang === 'zh-Hant'
-        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟、📎 證據分級），每點用「• 關鍵詞：說明」子彈列表。必須把根因分成「已證實 / 假設 / 未排除」，並盡量標註 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。禁止使用任何 markdown 符號（不要星號粗體、反引號、井號或連結括號）。必須引用命中的 Skill id 與知識庫標題。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
-        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. Judgement, Why these steps, Evidence grades) and bullet points as "• Keyword: detail". Split causes into Confirmed / Suspected / Unknown and tag [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT] when possible. Never use markdown symbols (no asterisks for bold, no backticks, no # headings, no markdown links). Cite matched Skill ids and KB titles. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
+        ? '根據事故事實與命中的 Skills／知識庫，寫排查報告正文。正文只寫兩塊：🔎 可能原因、🧭 排查路徑。把根因分成「已證實／假設／未排除」，盡量標註 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。Skills／知識庫只需點名 ID／標題一句帶過，不要貼整份清單或長摘錄（連結在卡片文末）。用 emoji 分段 +「• **關鍵詞：** 說明」。必須用繁體中文。優先 quote-ops V Exchange 永續知識；忽略 CFD。'
+        : 'Write the investigation body from the facts and matched Skills/KB. Body has only two sections: Possible causes, Investigation path. Split causes into Confirmed / Suspected / Unknown and tag [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]. Only briefly name Skill ids / KB titles — do not paste full checklists or long KB excerpts (links are at the card footer). Use emoji section headers and "• **Keyword:** detail" bullets. Prefer quote-ops V Exchange perpetual KB; ignore CFD. English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
@@ -404,8 +446,10 @@ async function runInvestigation(args: {
       .filter(Boolean)
       .join('\n\n'),
   })
-  // Always attach structured Skills/KB retrieval so answers stay grounded
-  llmExtra = llm ? `\n\n${llm}\n\n---\n${ragBlock}` : `\n\n${ragBlock}`
+  // Body = causes + path. Skills/KB full dumps stay out; ids are named briefly in summary + footer links.
+  const llmExtra = llm
+    ? `\n\n${llm}`
+    : `\n\n${formatInvestigateCore({ lang: args.lang, hits, kb })}`
 
   const rec = persistOpenIncident({
     chatId: args.msg.chatId,

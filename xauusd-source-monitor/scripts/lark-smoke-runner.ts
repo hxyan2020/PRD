@@ -477,7 +477,7 @@ async function main() {
   record('turn.investigate_card', Boolean(inv.blob.includes('Investigation') || inv.blob.includes('排查')), '')
   record(
     'turn.investigate_emoji',
-    inv.blob.includes('✅') && inv.blob.includes('⚡') && inv.blob.includes('📋'),
+    inv.blob.includes('🧭') && inv.blob.includes('⚡') && inv.blob.includes('📋'),
     'emoji section headers',
   )
   const follow = await turn(
@@ -614,7 +614,11 @@ async function main() {
       (invAipo.blob.includes('已证实') ||
         invAipo.blob.includes('Confirmed') ||
         invAipo.blob.includes('[OBS]')) &&
-      (invAipo.blob.includes('只读') || invAipo.blob.includes('Read-only')),
+      (invAipo.blob.includes('Possible causes') ||
+        invAipo.blob.includes('可能原因') ||
+        invAipo.blob.includes('Investigation path') ||
+        invAipo.blob.includes('排查路径') ||
+        invAipo.blob.includes('#/skills')),
     invAipo.blob.slice(0, 220),
   )
   const greetLater = greetingReply('zh-Hans')
@@ -800,8 +804,17 @@ async function main() {
   )
   record(
     'turn.investigate_exposes_skills_kb',
-    /L1-|L2-|ve-doc-|Index|Funding|Mark|知识库|Knowledge|Skills|排查/i.test(invZh.blob),
-    invZh.blob.slice(0, 120),
+    /L1-|L2-|Skills|知识库|Knowledge|排查/i.test(invZh.blob) &&
+      (invZh.blob.includes('#/skills') || invZh.blob.includes('打开 Skills') || invZh.blob.includes('Open Skills')) &&
+      (invZh.blob.includes('#/knowledge') || invZh.blob.includes('知识库桌面') || invZh.blob.includes('Knowledge desk')) &&
+      // Full Skills/KB dump should not dominate the body (links live at the end)
+      !(invZh.blob.includes('知识库／Skills 检索结果') || invZh.blob.includes('Knowledge / Skills retrieval')),
+    invZh.blob.slice(0, 160),
+  )
+  record(
+    'turn.investigate_body_causes_path',
+    /可能原因|Possible causes|排查路径|Investigation path|研判|Judgement/i.test(invZh.blob),
+    invZh.blob.slice(0, 160),
   )
 
   // Knowledge / skill Q&A (general_risk) must surface retrieval even without LLM
