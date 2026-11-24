@@ -662,11 +662,7 @@ export async function handleCardAction(args: {
     const { ackAlertNudge } = await import('./alertNudge.js')
     ackAlertNudge(args.openId)
     return {
-      card: simpleCard(
-        '已收到',
-        '知道了 ✅ 已停止群提醒。有新告警再叫我。',
-        'green',
-      ),
+      card: simpleCard('已收到', '知道了 ✅ 已确认。有新告警再叫我。', 'green'),
     }
   }
 
@@ -725,17 +721,13 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   session.preferredLang = lang
   saveSession(msg.chatId, msg.openId, session)
 
-  // Active group alert nudge — 「知道了」stops the 1-min loop (button or text)
+  // One-shot alert nudge — optional「知道了」ack after the morning ping
   {
     const { isNudgeActive, looksLikeNudgeAck, ackAlertNudge } = await import('./alertNudge.js')
     if (isNudgeActive() && looksLikeNudgeAck(workingText)) {
       ackAlertNudge(msg.openId)
       return {
-        card: simpleCard(
-          '已收到',
-          '知道了 ✅ 已停止群提醒。有新告警再叫我。',
-          'green',
-        ),
+        card: simpleCard('已收到', '知道了 ✅ 已确认。有新告警再叫我。', 'green'),
       }
     }
   }

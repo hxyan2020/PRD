@@ -19,7 +19,7 @@
     },
     {
       "path": "/api/lark/alert-nudge",
-      "schedule": "* * * * *"
+      "schedule": "30 0 * * *"
     }
   ]
 }

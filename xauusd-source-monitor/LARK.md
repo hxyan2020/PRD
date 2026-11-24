@@ -99,13 +99,13 @@ Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Prod
 
 ## Alert nudge (one-shot group @mention)
 
-- **Campaign:** **2026-11-25 08:30** Asia/Shanghai (override `LARK_ALERT_NUDGE_DAY` / `LARK_ALERT_NUDGE_START`)
-- **Cron:** every minute (`* * * * *`) → `/api/lark/alert-nudge`
-- **Behavior:** @Haixiang in group +「新告警来啦 快来看看」; re-sends ~every 60s until **知道了** button or text reply; stops at 18:00 CST if never acked
+- **Campaign:** **2026-11-25 08:30** Asia/Shanghai only — **send once**, no repeat (override `LARK_ALERT_NUDGE_DAY` / `LARK_ALERT_NUDGE_START`)
+- **Cron:** `30 0 * * *` UTC → `/api/lark/alert-nudge` (fires daily; handler no-ops except campaign day)
+- **Behavior:** @Haixiang in group +「新告警来啦 快来看看」once; optional **知道了** ack
 - **Chat:** `LARK_ALERT_NUDGE_CHAT_ID` / `LARK_DAILY_MARKET_CHAT_ID` (default `oc_eb8eba24…`)
 - **Preview:** `GET /api/lark/alert-nudge?dry=1`
 - **Force send now:** `POST /api/lark/alert-nudge` `{ "force": true }`
-- Needs Card Request URL (or text「知道了」) to stop the loop; set `LARK_ADMIN_OPEN_ID` for a real @mention
+- Set `LARK_ADMIN_OPEN_ID` for a real @mention
 
 ## Bot behaviour
 

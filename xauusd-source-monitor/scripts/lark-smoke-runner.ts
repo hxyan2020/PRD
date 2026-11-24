@@ -1166,34 +1166,36 @@ async function main() {
   )
   const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
   record(
-    'cron.alert_nudge_every_minute',
-    nudgeCron?.schedule === '* * * * *',
+    'cron.alert_nudge_0830_once',
+    nudgeCron?.schedule === '30 0 * * *',
     JSON.stringify(nudgeCron || {}),
   )
   const {
     ALERT_NUDGE_DAY,
     ALERT_NUDGE_MESSAGE,
     ackAlertNudge,
+    alreadySentToday,
     buildAlertNudgeCard,
+    isCampaignDay,
+    isNudgeSendSlot,
     looksLikeNudgeAck,
-    nudgeWindowExpired,
-    nudgeWindowOpen,
     writeNudgeState,
   } = await import('../api/lark/_lib/alertNudge')
   // 2026-11-25 00:30 UTC = 08:30 CST
   const atStart = Date.parse('2026-11-25T00:30:00Z')
   const before = Date.parse('2026-11-25T00:29:00Z')
-  record('nudge.window_opens_0830_cst', nudgeWindowOpen(atStart) && !nudgeWindowOpen(before), '')
+  const otherDay = Date.parse('2026-11-26T00:30:00Z')
   record(
-    'nudge.window_expires_1800_cst',
-    nudgeWindowExpired(Date.parse('2026-11-25T10:00:00Z')) &&
-      !nudgeWindowExpired(Date.parse('2026-11-25T09:59:00Z')),
+    'nudge.only_tomorrow_0830',
+    isCampaignDay(atStart) &&
+      isNudgeSendSlot(atStart) &&
+      !isNudgeSendSlot(before) &&
+      !isCampaignDay(otherDay),
     '',
   )
   const nudgeCard = buildAlertNudgeCard({
     openId: 'ou_smoke_haixiang',
     message: ALERT_NUDGE_MESSAGE,
-    sendCount: 1,
   })
   const nudgeJson = JSON.stringify(nudgeCard)
   record(
@@ -1211,12 +1213,13 @@ async function main() {
     chatId: 'oc_smoke',
     openId: 'ou_smoke',
     message: ALERT_NUDGE_MESSAGE,
-    active: true,
+    sent: true,
     acked: false,
-    sendCount: 2,
+    sendCount: 1,
   })
+  record('nudge.already_sent_blocks_repeat', alreadySentToday(), '')
   const acked = ackAlertNudge('ou_smoke')
-  record('nudge.ack_stops_loop', Boolean(acked?.acked && !acked.active), JSON.stringify(acked))
+  record('nudge.ack_marks_done', Boolean(acked?.acked && acked.sent), JSON.stringify(acked))
 
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')

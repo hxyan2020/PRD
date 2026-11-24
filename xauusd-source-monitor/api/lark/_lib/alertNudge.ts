@@ -1,6 +1,6 @@
 /**
- * Group alert nudge: @mention + message, re-send every minute until「知道了」.
- * State lives in /tmp (same pattern as market cron dedupe) — best-effort on serverless.
+ * One-shot group alert nudge: @mention + message at a single Shanghai wall time.
+ * Default campaign: 2026-11-25 08:30 Asia/Shanghai — send once, no repeat.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -9,7 +9,7 @@ import { shanghaiDayKey } from './market.js'
 
 export const DEFAULT_ALERT_NUDGE_CHAT_ID = 'oc_eb8eba24ff99a2c3ea3c9439750d65cd'
 
-/** One-shot campaign: tomorrow morning 08:30 Asia/Shanghai (2026-11-25). */
+/** One-shot campaign day (Asia/Shanghai calendar). */
 export const ALERT_NUDGE_DAY =
   (process.env.LARK_ALERT_NUDGE_DAY || '').trim() || '2026-11-25'
 export const ALERT_NUDGE_START_HM =
@@ -26,13 +26,12 @@ export type AlertNudgeState = {
   chatId: string
   openId: string
   message: string
-  /** When true, cron keeps sending every ~60s */
-  active: boolean
+  /** True after the single send (or manual ack) */
+  sent: boolean
+  sentAt?: number
   acked: boolean
   ackedAt?: number
   ackedBy?: string
-  startedAt?: number
-  lastSentAt?: number
   sendCount: number
 }
 
@@ -76,43 +75,36 @@ export function shanghaiHm(ts: number = Date.now()): string {
   }
 }
 
-function hmToMinutes(hm: string): number {
-  const m = /^(\d{1,2}):(\d{2})$/.exec(hm.trim())
-  if (!m) return 0
-  return Number(m[1]) * 60 + Number(m[2])
+/** True only on the campaign calendar day in Asia/Shanghai. */
+export function isCampaignDay(ts: number = Date.now()): boolean {
+  return shanghaiDayKey(ts) === ALERT_NUDGE_DAY
 }
 
-/** True once Shanghai clock is on the campaign day and past the start HH:mm. */
-export function nudgeWindowOpen(ts: number = Date.now()): boolean {
-  const day = shanghaiDayKey(ts)
-  if (day !== ALERT_NUDGE_DAY) return false
-  return hmToMinutes(shanghaiHm(ts)) >= hmToMinutes(ALERT_NUDGE_START_HM)
+/** Cron fires at 08:30 CST once — match that wall clock (or the configured start). */
+export function isNudgeSendSlot(ts: number = Date.now()): boolean {
+  if (!isCampaignDay(ts)) return false
+  return shanghaiHm(ts) === ALERT_NUDGE_START_HM
 }
 
-/** Stop auto-nag after 18:00 CST even if never acked (safety). */
-export function nudgeWindowExpired(ts: number = Date.now()): boolean {
-  const day = shanghaiDayKey(ts)
-  if (day > ALERT_NUDGE_DAY) return true
-  if (day < ALERT_NUDGE_DAY) return false
-  return hmToMinutes(shanghaiHm(ts)) >= hmToMinutes('18:00')
+export function alreadySentToday(): boolean {
+  const s = readNudgeState()
+  return Boolean(s?.sent && s.dayKey === ALERT_NUDGE_DAY)
 }
 
 export function buildAlertNudgeCard(args: {
   openId: string
   message: string
-  sendCount: number
 }): Record<string, unknown> {
-  // Feishu lark_md @mention — open_id on `id`
   const at =
     args.openId && args.openId !== 'unknown'
       ? `<at id="${args.openId}"></at>`
       : '**@Haixiang**'
   const body = [
-    `🚨 **新告警提醒**（第 ${args.sendCount} 次）`,
+    '🚨 **新告警提醒**',
     '',
     `${at} ${args.message}`,
     '',
-    '点下面 **知道了** 停止提醒；或直接回复：**知道了**',
+    '点 **知道了** 确认收到；或直接回复：**知道了**',
   ].join('\n')
 
   return {
@@ -140,13 +132,20 @@ export function buildAlertNudgeCard(args: {
 
 export function ackAlertNudge(openId: string): AlertNudgeState | null {
   const cur = readNudgeState()
-  if (!cur) return null
+  const base: AlertNudgeState = cur || {
+    dayKey: ALERT_NUDGE_DAY,
+    chatId: DEFAULT_ALERT_NUDGE_CHAT_ID,
+    openId: openId || '',
+    message: ALERT_NUDGE_MESSAGE,
+    sent: true,
+    sendCount: 0,
+    acked: false,
+  }
   const next: AlertNudgeState = {
-    ...cur,
-    active: false,
+    ...base,
     acked: true,
     ackedAt: Date.now(),
-    ackedBy: openId || cur.ackedBy,
+    ackedBy: openId || base.ackedBy,
   }
   writeNudgeState(next)
   return next
@@ -154,10 +153,10 @@ export function ackAlertNudge(openId: string): AlertNudgeState | null {
 
 export function isNudgeActive(): boolean {
   const s = readNudgeState()
-  return Boolean(s?.active && !s.acked)
+  // Still treat as “active” for text-ack if sent but not acked (same day)
+  return Boolean(s && s.dayKey === ALERT_NUDGE_DAY && s.sent && !s.acked)
 }
 
-/** Whether the user text should stop the nudge (知道了 / got it). */
 export function looksLikeNudgeAck(text: string): boolean {
   const t = (text || '').trim()
   return /^(知道了|知道啦|收到|got\s*it|ok|okay)\s*[!.。！~]*$/i.test(t)
