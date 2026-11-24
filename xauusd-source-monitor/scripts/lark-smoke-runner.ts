@@ -112,6 +112,9 @@ async function main() {
   )
   record('intent.review', classifyIntent('review', {}) === 'review', '')
   record('intent.dashboard', classifyIntent('dashboard', {}) === 'review', '')
+  record('intent.skills', classifyIntent('skills', {}) === 'skills', '')
+  record('intent.knowledge', classifyIntent('knowledge', {}) === 'knowledge', '')
+  record('intent.kb', classifyIntent('kb', {}) === 'knowledge', '')
   record('intent.archive', classifyIntent('done', {}) === 'archive', '')
   record('intent.offtopic', classifyIntent('What should I cook tonight?', {}) === 'offtopic', '')
 
@@ -202,9 +205,11 @@ async function main() {
       g.includes('Risk Copilot') &&
         g.includes('**market**') &&
         g.includes('investigate') &&
+        g.includes('**skills**') &&
+        (g.includes('**knowledge**') || g.includes('**kb**')) &&
         g.includes('\n\n') &&
         triggerHint &&
-        /📈|🔍|📊/.test(g),
+        /📈|🔍|📊|🧩|📚/.test(g),
       g.slice(0, 120),
     )
   }
@@ -218,6 +223,8 @@ async function main() {
       greet.reply?.card &&
         greetBlob.includes('Risk Copilot') &&
         greetBlob.includes('**market**') &&
+        greetBlob.includes('**skills**') &&
+        greetBlob.includes('**knowledge**') &&
         greetBlob.includes('Trigger:') &&
         greetBlob.includes('lark_md'),
     ),
@@ -346,6 +353,25 @@ async function main() {
     'turn.followup_stays_investigation',
     Boolean(follow.blob.includes('Investigation') || follow.blob.includes('排查')),
     'must not jump to market',
+  )
+
+  // 9b) Skills / knowledge catalogue cards
+  const skillsTurn = await turn('skills-cmd', 'skills')
+  record(
+    'turn.skills_catalog',
+    Boolean(skillsTurn.reply?.card) &&
+      skillsTurn.blob.includes('Skills') &&
+      (skillsTurn.blob.match(/vex-llm-proxy\.vercel\.app\/#\/skills/g) || []).length === 1 &&
+      /VE-SOP|L1|L2/i.test(skillsTurn.blob),
+    skillsTurn.blob.slice(0, 120),
+  )
+  const kbTurn = await turn('knowledge-cmd', 'knowledge')
+  record(
+    'turn.knowledge_catalog',
+    Boolean(kbTurn.reply?.card) &&
+      (kbTurn.blob.includes('Knowledge') || kbTurn.blob.includes('知识') || kbTurn.blob.includes('知識')) &&
+      (kbTurn.blob.match(/vex-llm-proxy\.vercel\.app\/#\/knowledge/g) || []).length === 1,
+    kbTurn.blob.slice(0, 120),
   )
 
   // 10) Review / dashboard visualization card (in-message viz; URL only in footer)

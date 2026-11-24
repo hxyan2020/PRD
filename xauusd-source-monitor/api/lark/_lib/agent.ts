@@ -1,11 +1,21 @@
 import { downloadMessageImage } from './client.js'
-import { greetingCard, helpCard, investigationCard, reviewCard, simpleCard } from './cards.js'
+import {
+  greetingCard,
+  helpCard,
+  investigationCard,
+  knowledgeCatalogCard,
+  reviewCard,
+  simpleCard,
+  skillsCatalogCard,
+} from './cards.js'
 import { chatComplete, describeImage } from './llm.js'
 import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import {
   adaptiveNextSteps,
   formatRagAnswer,
+  loadKnowledge,
+  loadSkills,
   preferredActions,
   retrieveRag,
 } from './skills.js'
@@ -420,6 +430,14 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   if (intent === 'review') {
     const incidents = listIncidents({ limit: 50 })
     return { card: reviewCard({ lang, incidents }) }
+  }
+
+  if (intent === 'skills') {
+    return { card: skillsCatalogCard({ lang, skills: loadSkills() }) }
+  }
+
+  if (intent === 'knowledge') {
+    return { card: knowledgeCatalogCard({ lang, knowledge: loadKnowledge() }) }
   }
 
   if (intent === 'archive') {

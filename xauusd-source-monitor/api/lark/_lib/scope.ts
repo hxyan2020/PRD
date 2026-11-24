@@ -26,6 +26,10 @@ const COMMAND_REVIEW =
   /^(review|复盘|複盤|archive|归档|歸檔|dashboard|alerts|alert\s*board|看板|仪表盘|儀表盤)\b/i
 const COMMAND_HELP = /^(help|帮助|幫助)\b/i
 const COMMAND_DONE = /^(done|完成|结束排查|結束排查|reset|重置)\b/i
+const COMMAND_SKILLS =
+  /^(skills?|skill\s*list|技能|技能库|技能庫|查看\s*skills?|看\s*skills?)\b/i
+const COMMAND_KNOWLEDGE =
+  /^(knowledge|kb|rag|知识库|知識庫|知识|知識|查看\s*(知识库|知識庫|kb|rag)|看\s*(知识库|知識庫))\b/i
 
 function singaporeHour(): number {
   try {
@@ -67,6 +71,8 @@ export function classifyIntent(
   // Explicit commands first — investigate before review so "Alert: …" paste is not a dashboard
   if (COMMAND_INVESTIGATE.test(t)) return 'investigate'
   if (COMMAND_MARKET.test(t)) return 'market'
+  if (COMMAND_SKILLS.test(t)) return 'skills'
+  if (COMMAND_KNOWLEDGE.test(t)) return 'knowledge'
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
   if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'review'
@@ -133,6 +139,12 @@ export function greetingReply(lang: Lang): string {
       '  触发：发送 **review** 或 **dashboard**',
       '  群聊：@我 + 指令；私聊：直接发',
       '',
+      '• 🧩 **skills** — 查看 Skills 目录（L1／L2／VE-SOP）',
+      '  触发：发送 **skills**；完整桌面页见卡片底部链接',
+      '',
+      '• 📚 **knowledge** / **kb** — 查看 RAG 知识库摘录',
+      '  触发：发送 **knowledge** 或 **kb**；完整桌面页见卡片底部链接',
+      '',
       '• ✅ **done** — 结束并归档本次排查',
       '  触发：发送 **done**（排查进行中时）',
       '',
@@ -168,6 +180,12 @@ export function greetingReply(lang: Lang): string {
       '  觸發：發送 **review** 或 **dashboard**',
       '  群聊：@我 + 指令；私聊：直接發',
       '',
+      '• 🧩 **skills** — 查看 Skills 目錄（L1／L2／VE-SOP）',
+      '  觸發：發送 **skills**；完整桌面頁見卡片底部連結',
+      '',
+      '• 📚 **knowledge** / **kb** — 查看 RAG 知識庫摘錄',
+      '  觸發：發送 **knowledge** 或 **kb**；完整桌面頁見卡片底部連結',
+      '',
       '• ✅ **done** — 結束並歸檔本次排查',
       '  觸發：發送 **done**（排查進行中時）',
       '',
@@ -202,6 +220,12 @@ export function greetingReply(lang: Lang): string {
     '  Trigger: send **review** or **dashboard**',
     '  Group: @me + command · DM: just send it',
     '',
+    '• 🧩 **skills** — browse Skills catalogue (L1 / L2 / VE-SOP)',
+    '  Trigger: send **skills**; full desk page link at card footer',
+    '',
+    '• 📚 **knowledge** / **kb** — browse RAG knowledge excerpts',
+    '  Trigger: send **knowledge** or **kb**; full desk page link at card footer',
+    '',
     '• ✅ **done** — close and archive this investigation',
     '  Trigger: send **done** (while an investigation is open)',
     '',
@@ -234,6 +258,12 @@ export function helpReply(lang: Lang): string {
       '• 📊 **review** / **dashboard**',
       '  发送 **review** 或 **dashboard**；群聊请 @我',
       '',
+      '• 🧩 **skills**',
+      '  发送 **skills** 查看 Skills 目录',
+      '',
+      '• 📚 **knowledge** / **kb**',
+      '  发送 **knowledge** 或 **kb** 查看 RAG 知识库',
+      '',
       '• ✅ **done**',
       '  排查中发送 **done** 以归档',
       '',
@@ -264,6 +294,12 @@ export function helpReply(lang: Lang): string {
       '• 📊 **review** / **dashboard**',
       '  發送 **review** 或 **dashboard**；群聊請 @我',
       '',
+      '• 🧩 **skills**',
+      '  發送 **skills** 查看 Skills 目錄',
+      '',
+      '• 📚 **knowledge** / **kb**',
+      '  發送 **knowledge** 或 **kb** 查看 RAG 知識庫',
+      '',
       '• ✅ **done**',
       '  排查中發送 **done** 以歸檔',
       '',
@@ -292,6 +328,12 @@ export function helpReply(lang: Lang): string {
     '',
     '• 📊 **review** / **dashboard**',
     '  Send **review** or **dashboard**; in groups @me',
+    '',
+    '• 🧩 **skills**',
+    '  Send **skills** to browse the Skills catalogue',
+    '',
+    '• 📚 **knowledge** / **kb**',
+    '  Send **knowledge** or **kb** to browse the RAG knowledge base',
     '',
     '• ✅ **done**',
     '  During an investigation, send **done** to archive',

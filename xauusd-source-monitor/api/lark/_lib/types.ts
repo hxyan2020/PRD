@@ -7,6 +7,8 @@ export type Intent =
   | 'investigate'
   | 'followup'
   | 'review'
+  | 'skills'
+  | 'knowledge'
   | 'archive'
   | 'offtopic'
   | 'safety'

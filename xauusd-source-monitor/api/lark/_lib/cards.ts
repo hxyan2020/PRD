@@ -1,5 +1,5 @@
 import { isZh } from './lang.js'
-import type { IncidentRecord, Lang } from './types.js'
+import type { IncidentRecord, KbItem, Lang, SkillRec } from './types.js'
 
 function severityEmoji(sev: string): string {
   const s = (sev || '').toUpperCase()
@@ -354,4 +354,104 @@ export function helpCard(lang: Lang, body: string): Record<string, unknown> {
   const zh = isZh(lang)
   const title = hans ? '使用说明' : zh ? '使用說明' : 'How to use'
   return simpleCard(title, body, 'blue')
+}
+
+const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
+const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
+
+/** In-Lark Skills catalogue preview; desk URL only in footer. */
+export function skillsCatalogCard(args: {
+  lang: Lang
+  skills: SkillRec[]
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const l1 = args.skills.filter((s) => s.level === 'L1')
+  const l2 = args.skills.filter((s) => s.level === 'L2')
+  const ve = args.skills.filter((s) => /^VE-/i.test(s.id))
+  const sample = (list: SkillRec[], n: number) =>
+    list
+      .slice(0, n)
+      .map((s) => `• **${s.id}** · ${s.name}${s.severity ? ` · ${s.severity}` : ''}`)
+      .join('\n')
+
+  const intro = hans
+    ? `🧩 **Skills 目录（Lark 预览）**\n\n共 **${args.skills.length}** 条 · L1 **${l1.length}** · L2 **${l2.length}** · VE-SOP **${ve.length}**\n\n发送关键词或贴告警时会自动 RAG 命中；完整可编辑桌面页见卡片底部。`
+    : zh
+      ? `🧩 **Skills 目錄（Lark 預覽）**\n\n共 **${args.skills.length}** 條 · L1 **${l1.length}** · L2 **${l2.length}** · VE-SOP **${ve.length}**\n\n發送關鍵詞或貼告警時會自動 RAG 命中；完整可編輯桌面頁見卡片底部。`
+      : `🧩 **Skills catalogue (Lark preview)**\n\n**${args.skills.length}** total · L1 **${l1.length}** · L2 **${l2.length}** · VE-SOP **${ve.length}**\n\nKeywords / pasted alerts hit these via RAG automatically; full editable desk is linked below.`
+
+  const body = [
+    intro,
+    '',
+    hans || zh ? '**VE-SOP 样例**' : '**VE-SOP sample**',
+    sample(ve.length ? ve : args.skills, 6) || '• —',
+    '',
+    hans || zh ? '**L1 样例**' : '**L1 sample**',
+    sample(l1, 5) || '• —',
+    '',
+    hans || zh ? '**L2 样例**' : '**L2 sample**',
+    sample(l2, 5) || '• —',
+  ].join('\n')
+
+  const title = hans ? 'Skills 目录' : zh ? 'Skills 目錄' : 'Skills catalogue'
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'indigo',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'note',
+        elements: [{ tag: 'plain_text', content: SKILLS_URL }],
+      },
+    ],
+  }
+}
+
+/** In-Lark knowledge / RAG preview; desk URL only in footer. */
+export function knowledgeCatalogCard(args: {
+  lang: Lang
+  knowledge: KbItem[]
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const ve = args.knowledge.filter((k) => /^ve-doc-/i.test(k.id) || /v\s*exchange|永续|永續/i.test(k.title))
+  const pick = (ve.length ? ve : args.knowledge).slice(0, 8)
+  const lines = pick
+    .map((k) => {
+      const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 160)
+      return `• **${k.title}**\n  ${excerpt}${k.body.length > 160 ? '…' : ''}`
+    })
+    .join('\n\n')
+
+  const intro = hans
+    ? `📚 **RAG 知识库（Lark 预览）**\n\n共 **${args.knowledge.length}** 篇（含 quote-ops V Exchange 永续知识）。排查与问答会自动检索；完整桌面知识树见卡片底部。`
+    : zh
+      ? `📚 **RAG 知識庫（Lark 預覽）**\n\n共 **${args.knowledge.length}** 篇（含 quote-ops V Exchange 永續知識）。排查與問答會自動檢索；完整桌面知識樹見卡片底部。`
+      : `📚 **RAG knowledge base (Lark preview)**\n\n**${args.knowledge.length}** articles (incl. quote-ops V Exchange perpetual KB). Investigation & Q&A retrieve automatically; full desk tree is linked below.`
+
+  const title = hans ? '知识库／RAG' : zh ? '知識庫／RAG' : 'Knowledge / RAG'
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'purple',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: `${intro}\n\n${hans || zh ? '**摘录**' : '**Excerpts**'}\n\n${lines || '• —'}`,
+        },
+      },
+      {
+        tag: 'note',
+        elements: [{ tag: 'plain_text', content: KNOWLEDGE_URL }],
+      },
+    ],
+  }
 }
