@@ -11,7 +11,11 @@ import type {
   TimelineEvent,
 } from '../types'
 import type { AppLang } from '../../i18n/messages'
-import { assessFollowUpRelevance } from './relevance'
+import {
+  assessFollowUpRelevance,
+  continueAskingFooter,
+  newTopicAckMessage,
+} from './relevance'
 
 export function skillsToL1(active: SkillRecord[]): L1Skill[] {
   return active
@@ -552,6 +556,8 @@ export function analyzeWithRules(args: {
         '- 內部管理台／帳戶資料庫檢索為 Phase 2 — 本助手不會編造 admin DB 答案。',
         '',
         '本段為確定性規則輔助；不構成已證實根因或自動執行指令。即時統計會計入每一次觸發的 RCA；僅歸檔後才進入週優化輸入。',
+        '',
+        continueAskingFooter('zh-Hant'),
       ]
     : [
         `Recommended severity: ${sev} (rules + input only — on-duty must confirm)`,
@@ -607,6 +613,8 @@ export function analyzeWithRules(args: {
         '- Internal admin / account DB retrieval is Phase 2 — this assistant will not invent admin DB answers.',
         '',
         'This block is deterministic rules assist only; it is not a confirmed root cause or an auto-executed order. Realtime stats count every triggered RCA; only archived ones enter weekly optimisation.',
+        '',
+        continueAskingFooter('en'),
       ]
 
   const skillContext = [
@@ -659,14 +667,17 @@ export function followUpWithRules(
   const zh = lang === 'zh-Hant'
   const relevance = assessFollowUpRelevance(q, activeFacts, lang)
   if (!relevance.ok) return relevance.message
+  if (relevance.ok && relevance.thread === 'new_topic') {
+    return newTopicAckMessage(lang)
+  }
 
   const wantsAdmin =
     /admin|账号|账户|倉位|仓位|持仓|數據庫|数据库|db\b|sql|后台|管理台|內部數據|拉取|查詢用戶|查询用户/i.test(
       q,
     )
   const lines = zh
-    ? ['【追問回覆 · 本地規則】', '', `問題：${q}`, '']
-    : ['【Follow-up · local rules】', '', `Question: ${q}`, '']
+    ? ['追问回复 · 本地规则', '', `问题：${q}`, '']
+    : ['Follow-up · local rules', '', `Question: ${q}`, '']
 
   if (wantsAdmin) {
     lines.push(
@@ -727,5 +738,6 @@ export function followUpWithRules(
           ]),
     )
   }
+  lines.push('', continueAskingFooter(lang))
   return lines.join('\n')
 }

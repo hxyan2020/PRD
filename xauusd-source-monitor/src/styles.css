@@ -1668,6 +1668,18 @@ td.mono,
   margin: 0;
 }
 
+.investigate-continue-ask {
+  margin: 12px 0 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--gold-deep, #92400e) 28%, transparent);
+  background: color-mix(in srgb, #fff8ef 80%, #fff);
+  color: var(--ink, #3b2a1a);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
 .thinking-panel {
   margin: 8px 0 16px;
   padding: 12px 14px;

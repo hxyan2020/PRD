@@ -19,9 +19,103 @@ const BARE_GREETING_RE =
 const CAPABILITY_RE =
   /知识库|知識庫|skill\s*库|skill\s*庫|技能库|技能庫|技能表|你会什么|你會什麼|你能做什么|你能做什麼|你可以做什么|你可以做什麼|有什么功能|有什麼功能|怎么用|怎麼用|如何使用|完整指令|^help$|^\/help$|commands?|what can you do|do you have (a )?(knowledge|skill)|knowledge base|skill (base|library|catalog)|capabilities/i
 
+export type ThreadIntent = 'same_topic' | 'new_topic'
+
 export type RelevanceResult =
-  | { ok: true; mode?: 'normal' | 'capability' | 'greeting' }
+  | {
+      ok: true
+      mode?: 'normal' | 'capability' | 'greeting'
+      /** Present on follow-ups: continuing the open RCA vs starting a different alert/topic. */
+      thread?: ThreadIntent
+    }
   | { ok: false; reason: 'empty' | 'off_topic'; message: string }
+
+/** Explicit “this is a different alert / new thread” cues. */
+const NEW_TOPIC_CUE_RE =
+  /另一个告警|另一個告警|另外一条|另外一條|另外一个|另外一個|新的告警|新告警|新的事件|新事件|换一个告警|換一個告警|换条告警|換條告警|重新排查|新开|新開|不是刚才|不是剛才|无关的告警|無關的告警|different alert|another alert|new alert|separate incident|unrelated alert|new (rca|incident|case)/i
+
+/** Clarifying / continuing the open RCA. */
+const SAME_TOPIC_CUE_RE =
+  /下一步|next step|为什么|為什麼|why\b|怎么查|怎麼查|怎么做|怎麼做|how\b|严重|嚴重|severity|根因|path|skill|外网|外網|url|来源|來源|这个告警|這個告警|这条|這條|刚才|剛才|同一|继续|繼續|补充|補充|再解释|再解釋|还是那个|還是那個|命中|匹配|证据|證據|建议|建議/i
+
+/** Looks like a pasted monitor/Lark alert block. */
+const ALERT_PASTE_RE =
+  /【[^】]*告警[^】]*】|触发时间|觸發時間|当前剔除|當前剔除|当前恢复|當前恢復|线性过渡|線性過渡|trigger(?:ed)?(?:\s*time)?[：:]|BYBIT_INDEX|OKX_INDEX|BINANCE_INDEX/i
+
+export function continueAskingFooter(lang: AppLang = 'zh-Hant'): string {
+  return lang === 'en'
+    ? 'If anything is unclear, keep asking on this RCA (next step, why a Skill matched, which evidence to check). Starting a different alert? Say “new alert” or run a fresh Investigate.'
+    : '有不清楚的地方可以继续追问（下一步、为什么命中某 Skill、要核对哪条证据）。若要查另一条告警，请说明「新告警」或新开一次排查。'
+}
+
+export function newTopicAckMessage(lang: AppLang = 'zh-Hant'): string {
+  return lang === 'en'
+    ? [
+        'This looks like a new alert / new topic — not a follow-up on the open RCA.',
+        'To investigate the new alert: clear or start a new incident, paste the new facts, then Run investigation once.',
+        'If you meant the current RCA, say so (e.g. “still the previous one”) or name the Skill / root-cause line.',
+        continueAskingFooter('en'),
+      ].join('\n')
+    : [
+        '看起来你在开一个新话题／新告警，而不是追问当前这条 RCA。',
+        '要排查新告警：清空或新建事故，把新告警贴进事实框，再点一次「执行排查」即可。',
+        '若其实还是问当前这条，请补一句「还是刚才那个」或点出具体 Skill／根因。',
+        continueAskingFooter('zh-Hant'),
+      ].join('\n')
+}
+
+const WEAK_FACT_TOKEN_RE =
+  /^(20\d{2}|\d{3,}|触发时间|觸發時間|内容|內容|指数|指數|告警|预警|預警|window|price|current)$/i
+
+function meaningfulTokens(text: string): string[] {
+  return [
+    ...new Set(
+      (String(text || '').toLowerCase().match(/[a-z0-9_\u4e00-\u9fff]{3,}/g) || []).filter(
+        (t) => t.length >= 3 && !WEAK_FACT_TOKEN_RE.test(t),
+      ),
+    ),
+  ]
+}
+
+/** Token overlap between follow-up text and the open incident facts (0–1). */
+export function factOverlapRatio(question: string, activeFacts: string): number {
+  const qTokens = new Set(meaningfulTokens(question))
+  const fTokens = meaningfulTokens(activeFacts).slice(0, 80)
+  if (!qTokens.size || !fTokens.length) return 0
+  let hits = 0
+  for (const t of fTokens) {
+    if (qTokens.has(t)) hits += 1
+  }
+  return hits / Math.min(fTokens.length, 24)
+}
+
+/**
+ * Decide whether a follow-up continues the open RCA or starts a different alert/topic.
+ * Capability / greeting / off-topic are handled by assessFollowUpRelevance first.
+ */
+export function classifyThreadIntent(
+  question: string,
+  activeFacts: string,
+): ThreadIntent {
+  const q = String(question || '').trim()
+  const facts = String(activeFacts || '').trim()
+  if (!q || !facts) return 'same_topic'
+
+  if (NEW_TOPIC_CUE_RE.test(q)) return 'new_topic'
+  if (SAME_TOPIC_CUE_RE.test(q)) return 'same_topic'
+
+  const overlap = factOverlapRatio(q, facts)
+  const alertLike = ALERT_PASTE_RE.test(q) && q.length >= 40
+  // Long new alert paste with little overlap → new topic
+  if (alertLike && overlap < 0.18) return 'new_topic'
+  // Shared entities / wording with the open incident → same thread
+  if (overlap >= 0.12) return 'same_topic'
+  // Short clarifying questions default to same topic when an RCA is open
+  if (q.length < 48) return 'same_topic'
+  // Longer in-scope text that doesn't touch the open facts → treat as new topic
+  if (SCOPE_RE.test(q) && overlap < 0.08) return 'new_topic'
+  return 'same_topic'
+}
 
 export function isCapabilityQuestion(text: string): boolean {
   return CAPABILITY_RE.test(String(text || '').trim())
@@ -140,32 +234,30 @@ export function assessFollowUpRelevance(
   lang: AppLang = 'zh-Hant',
 ): RelevanceResult {
   const q = String(question || '').trim()
-  const zh = lang !== 'en'
-  if (!q) return { ok: true, mode: 'normal' }
+  if (!q) return { ok: true, mode: 'normal', thread: 'same_topic' }
 
   if (isCapabilityQuestion(q)) return { ok: true, mode: 'capability' }
   if (isBareGreeting(q)) return { ok: true, mode: 'greeting' }
 
   // Allow clarifying questions that reference the incident even without keywords
-  if (
-    /下一步|next step|为什么|為什麼|why|怎么|怎麼|how|严重|嚴重|severity|根因|path|skill|外网|外網|url|来源|來源|这个|這個|告警|刚才|剛才/i.test(
-      q,
-    ) &&
-    activeFacts.trim()
-  ) {
-    return { ok: true, mode: 'normal' }
+  if (SAME_TOPIC_CUE_RE.test(q) && activeFacts.trim()) {
+    return { ok: true, mode: 'normal', thread: 'same_topic' }
   }
 
   const direct = assessRelevance(q, lang)
-  if (direct.ok) return direct
+  if (!direct.ok) {
+    // If question tokens overlap incident facts, treat as on-topic follow-up
+    const factHits = (activeFacts.toLowerCase().match(/[a-z0-9_\u4e00-\u9fff]{3,}/g) || []).slice(
+      0,
+      40,
+    )
+    const ql = q.toLowerCase()
+    if (factHits.some((t) => t.length >= 4 && ql.includes(t))) {
+      return { ok: true, mode: 'normal', thread: 'same_topic' }
+    }
+    return direct
+  }
 
-  // If question tokens overlap incident facts, treat as on-topic
-  const factHits = (activeFacts.toLowerCase().match(/[a-z0-9_\u4e00-\u9fff]{3,}/g) || []).slice(
-    0,
-    40,
-  )
-  const ql = q.toLowerCase()
-  if (factHits.some((t) => t.length >= 4 && ql.includes(t))) return { ok: true, mode: 'normal' }
-
-  return { ok: false, reason: 'off_topic', message: gentleRejectMessage(zh) }
+  const thread = classifyThreadIntent(q, activeFacts)
+  return { ok: true, mode: direct.mode || 'normal', thread }
 }

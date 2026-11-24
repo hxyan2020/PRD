@@ -8,7 +8,9 @@ import {
   assessFollowUpRelevance,
   assessRelevance,
   capabilityAnswer,
+  continueAskingFooter,
   greetingAnswer,
+  newTopicAckMessage,
 } from '../copilot/engine/relevance'
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import { stripMarkdownNoise } from '../copilot/engine/reportFormat'
@@ -507,6 +509,8 @@ export function InvestigatePage() {
         reply = capabilityAnswer(followUp.trim(), followLang)
       } else if (relevance.mode === 'greeting') {
         reply = greetingAnswer(followLang)
+      } else if (relevance.thread === 'new_topic') {
+        reply = newTopicAckMessage(followLang)
       } else if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
         reply = followUpWithRules(followUp.trim(), active.facts, followLang)
       } else {
@@ -524,16 +528,33 @@ export function InvestigatePage() {
         reply = await runLlm({
           settings,
           lang: followLang,
-          userPrompt: `${followUp.trim()}\n\n[System reminder: Stay in V Exchange XAUUSD risk-investigate scope. Gently refuse off-topic asks. If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.]`,
+          userPrompt: [
+            followUp.trim(),
+            '',
+            'System reminder:',
+            '- Stay in V Exchange XAUUSD risk-investigate scope. Gently refuse off-topic asks.',
+            '- This message is a SAME-TOPIC follow-up on the open RCA (facts below). Answer against that incident.',
+            '- If the user had started a different alert, you would not be in this path — do not invent a second RCA.',
+            '- If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.',
+            '- End with a short invite to keep asking if anything is unclear.',
+            '',
+            'Open RCA facts:',
+            active.facts || '(none)',
+          ].join('\n'),
           skillContext: rules.skillContext,
           kbContext:
             rules.kbContext ||
-            knowledge.map((k) => `### ${k.title}\n${k.body}`).join('\n\n'),
+            knowledge.map((k) => `${k.title}\n${k.body}`).join('\n\n'),
           priorMessages: (active.messages || [])
             .filter((m) => m.role === 'user' || m.role === 'assistant')
             .slice(-6)
             .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
         })
+        if (!/不清楚|继续|keep asking|unclear/i.test(reply)) {
+          reply = `${stripMarkdownNoise(reply)}\n\n${continueAskingFooter(followLang)}`
+        } else {
+          reply = stripMarkdownNoise(reply)
+        }
       }
       const messages = [
         ...(active.messages || []),
@@ -929,6 +950,7 @@ export function InvestigatePage() {
               </div>
               <p className="sub">{t('investigateArchiveNote')}</p>
 
+              <p className="investigate-continue-ask">{t('investigateContinueAsk')}</p>
               <label className="field-label">{t('copilotFollowUp')}</label>
               <p className="sub">{t('investigateFollowUpHint')}</p>
               <textarea rows={3} value={followUp} onChange={(e) => setFollowUp(e.target.value)} />
