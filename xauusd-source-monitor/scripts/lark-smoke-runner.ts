@@ -1123,6 +1123,20 @@ async function main() {
     shanghaiDayKey(Date.parse('2026-11-24T16:00:00Z')) === '2026-11-25',
     shanghaiDayKey(Date.parse('2026-11-24T16:00:00Z')),
   )
+  const vercelCrons = JSON.parse(
+    await (await import('node:fs/promises')).readFile(
+      new URL('../vercel.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { crons?: { path?: string; schedule?: string }[] }
+  const dailyCron = (vercelCrons.crons || []).find((c) =>
+    (c.path || '').includes('daily-market-report'),
+  )
+  record(
+    'cron.daily_market_0900_cst',
+    dailyCron?.schedule === '0 1 * * *',
+    JSON.stringify(dailyCron || {}),
+  )
 
   // 9b) Skills / knowledge catalogue cards
   const skillsTurn = await turn('skills-cmd', 'skills')

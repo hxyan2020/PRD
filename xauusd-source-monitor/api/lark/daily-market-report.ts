@@ -1,6 +1,6 @@
 /**
  * GET/POST /api/lark/daily-market-report
- * - Vercel Cron every day 08:00 Asia/Shanghai (00:00 UTC) → group 24h market digest.
+ * - Vercel Cron every day 09:00 Asia/Shanghai (01:00 UTC) → group 24h market digest.
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
  */
 import { timingSafeEqual } from 'node:crypto'
@@ -115,7 +115,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       snap,
       lang: 'zh-Hans',
       mode: 'daily',
-      intro: '🌅 **每日早报 · 过去 24 小时行情**（东八区早上自动推送）\n',
+      intro: '🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送）\n',
       template: 'wathet',
     })
   } catch (e) {
@@ -133,7 +133,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       dayKey,
       markdown,
       card,
-      schedule: 'Daily 08:00 Asia/Shanghai (cron: 0 0 * * * UTC)',
+      schedule: 'Daily 09:00 Asia/Shanghai (cron: 0 1 * * * UTC)',
       chatId: chat.chatId,
       chatSource: chat.source,
     })
