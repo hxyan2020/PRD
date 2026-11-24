@@ -674,18 +674,44 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'investigate' || intent === 'followup') {
-    // Strip command prefix
+    // Strip command prefix — bare "investigate"/"排查" with no details should not open a report card
     const fact = workingText.replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '').trim()
+    if (!fact) {
+      const title =
+        lang === 'zh-Hans' ? '开始排查' : lang === 'zh-Hant' ? '開始排查' : 'Start investigation'
+      const body =
+        lang === 'zh-Hans'
+          ? [
+              '请先说明要排查的问题，例如：',
+              '',
+              '• 粘贴告警原文／截图／表格',
+              '• 或简述：合约、指标、阈值、时间、现象',
+              '',
+              '_发 **investigate** + 内容，或直接贴告警即可。_',
+            ].join('\n')
+          : lang === 'zh-Hant'
+            ? [
+                '請先說明要排查的問題，例如：',
+                '',
+                '• 貼上告警原文／截圖／表格',
+                '• 或簡述：合約、指標、閾值、時間、現象',
+                '',
+                '_發 **investigate** + 內容，或直接貼告警即可。_',
+              ].join('\n')
+            : [
+                'Please specify the issue first, for example:',
+                '',
+                '• Paste the alert text / screenshot / table',
+                '• Or briefly: contract, metric, threshold, time, symptom',
+                '',
+                '_Send **investigate** + details, or just paste the alert._',
+              ].join('\n')
+      return { card: simpleCard(title, body, 'wathet') }
+    }
     return runInvestigation({
       msg,
       lang,
-      newFact:
-        fact ||
-        (lang === 'zh-Hans'
-          ? '（用户开始排查，尚未提供细节）'
-          : lang === 'zh-Hant'
-            ? '（使用者開始排查，尚未提供細節）'
-            : '(User started investigation without details yet)'),
+      newFact: fact,
     })
   }
 

@@ -456,6 +456,20 @@ async function main() {
 
   // 9) Investigate + emoji formatting + follow-up + adaptive
   clearSession('smoke_chat', 'smoke_user')
+  const bareInv = await turn('investigate-bare', 'investigate')
+  record(
+    'turn.investigate_bare_asks_issue',
+    Boolean(bareInv.reply?.card) &&
+      (bareInv.blob.includes('specify the issue') ||
+        bareInv.blob.includes('请先说明') ||
+        bareInv.blob.includes('請先說明')) &&
+      !bareInv.blob.includes('without details yet') &&
+      !bareInv.blob.includes('尚未提供') &&
+      !bareInv.blob.includes('Severity proposal') &&
+      !bareInv.blob.includes('建议严重度'),
+    bareInv.blob.slice(0, 180),
+  )
+  clearSession('smoke_chat', 'smoke_user')
   const inv = await turn(
     'investigate',
     'investigate Alert: XAUUSD index source IDX-01 excluded, Mark deviation 48bps, no valid source warning',
