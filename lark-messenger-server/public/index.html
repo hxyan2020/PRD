@@ -345,10 +345,11 @@
 
     function extractActions(card) {
       const els = card?.body?.elements || card?.elements || []
+      const out = []
       for (const el of els) {
-        if (el.tag === 'action') return el.actions || []
+        if (el.tag === 'action' && Array.isArray(el.actions)) out.push(...el.actions)
       }
-      return []
+      return out
     }
 
     function appendCard(payload, who = 'Risk Bot') {
@@ -400,19 +401,26 @@
     }
 
     async function handleAction(a) {
-      if (a.url) {
-        window.open(a.url, '_blank', 'noopener')
+      if (a.url || a.multi_url?.url) {
+        window.open(a.url || a.multi_url.url, '_blank', 'noopener')
         return
       }
-      let value = a.value
+      let value = a.value || a.behaviors?.[0]?.value
       try { value = typeof value === 'string' ? JSON.parse(value) : value } catch {}
       const res = await fetch('/api/lark/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event: { action: { value }, operator: { open_id: 'demo-user' } } }),
+        body: JSON.stringify({
+          schema: '2.0',
+          header: { event_type: 'card.action.trigger' },
+          event: { action: { value, tag: 'button' }, operator: { open_id: 'demo-user' } },
+        }),
       })
       const data = await res.json()
-      if (data.handled === 'run_rca') {
+      if (data.toast?.content) {
+        appendUser(`[card callback] ${data.toast.type || 'info'}: ${data.toast.content}`)
+      }
+      if (data.handled === 'run_rca' || data.handled === 'run_rca_from_briefing') {
         await refresh()
         const recent = await (await fetch('/api/recent?limit=1')).json()
         const inc = recent.incidents?.[0]

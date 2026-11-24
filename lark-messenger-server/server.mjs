@@ -114,6 +114,11 @@ function mdBlock(content) {
   return { tag: 'div', text: { tag: 'lark_md', content } }
 }
 
+/**
+ * Schema 2.0 callback buttons need an object `value` (not a JSON string) plus
+ * `behaviors: [{ type: 'callback', value }]` so Feishu/Lark actually fires
+ * card.action.trigger. URL buttons stay multi_url / url.
+ */
 function actionBtn(label, type, valueOrUrl) {
   if (typeof valueOrUrl === 'string' && valueOrUrl.startsWith('http')) {
     return {
@@ -121,14 +126,78 @@ function actionBtn(label, type, valueOrUrl) {
       text: { tag: 'plain_text', content: label },
       type,
       url: valueOrUrl,
+      multi_url: {
+        url: valueOrUrl,
+        pc_url: valueOrUrl,
+        android_url: valueOrUrl,
+        ios_url: valueOrUrl,
+      },
     }
   }
+  const value =
+    typeof valueOrUrl === 'string'
+      ? { action: valueOrUrl }
+      : valueOrUrl && typeof valueOrUrl === 'object'
+        ? valueOrUrl
+        : { action: 'noop' }
   return {
     tag: 'button',
     text: { tag: 'plain_text', content: label },
     type,
-    value: typeof valueOrUrl === 'string' ? valueOrUrl : JSON.stringify(valueOrUrl),
+    value,
+    behaviors: [{ type: 'callback', value }],
   }
+}
+
+function toastOk(content, extra = {}) {
+  return {
+    toast: { type: 'success', content: String(content || 'OK') },
+    ...extra,
+  }
+}
+
+function toastFail(content, extra = {}) {
+  return {
+    toast: { type: 'error', content: String(content || 'Failed') },
+    ...extra,
+  }
+}
+
+/** Normalize Feishu/Lark card callback + legacy event shapes into { action, ... }. */
+function extractCardAction(body) {
+  const event = body?.event || body || {}
+  const candidates = [
+    event.action?.value,
+    event.action?.option,
+    body?.action?.value,
+    typeof event.action === 'string' ? event.action : null,
+    typeof body?.action === 'string' ? body.action : null,
+  ]
+  for (const raw of candidates) {
+    if (raw == null || raw === '') continue
+    if (typeof raw === 'object') return raw
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') return parsed
+        return { action: raw }
+      } catch {
+        return { action: raw }
+      }
+    }
+  }
+  return null
+}
+
+function isCardActionRequest(body) {
+  const t =
+    body?.header?.event_type ||
+    body?.type ||
+    body?.event?.type ||
+    ''
+  if (String(t).includes('card.action')) return true
+  if (body?.event?.action || body?.action) return true
+  return false
 }
 
 /** Build Lark interactive card (schema 2.0) from template id + vars */
@@ -250,17 +319,30 @@ function renderLarkCard(templateId, inputVars = {}) {
             {
               tag: 'action',
               actions: [
+                actionBtn('已完成此步', 'primary', {
+                  action: 'complete_step',
+                  incident_id: vars.incident_id,
+                }),
+                actionBtn('归档报告', 'default', {
+                  action: 'archive',
+                  incident_id: vars.incident_id,
+                }),
+                actionBtn('复盘清单', 'default', {
+                  action: 'review_checklist',
+                  incident_id: vars.incident_id,
+                }),
+              ],
+            },
+            {
+              tag: 'action',
+              actions: [
                 actionBtn(
                   'Open Investigate',
-                  'primary',
+                  'default',
                   vars.desk_url.includes('#')
                     ? vars.desk_url
                     : `${DESK_BASE}/#/investigate`,
                 ),
-                actionBtn('Archive (weekly opt)', 'default', {
-                  action: 'archive',
-                  incident_id: vars.incident_id,
-                }),
                 actionBtn('Open Stats', 'default', `${DESK_BASE}/#/stats`),
               ],
             },
@@ -883,24 +965,25 @@ const server = http.createServer(async (req, res) => {
       }
 
       const event = body.event || body
-      const action =
-        event.action?.value ||
-        event.action?.option ||
-        (typeof event.action === 'string' ? event.action : null)
-
-      let parsed = null
-      try {
-        parsed = typeof action === 'string' ? JSON.parse(action) : action
-      } catch {
-        parsed = null
-      }
+      const operatorId =
+        event.operator?.open_id ||
+        event.operator?.user_id ||
+        event.sender?.sender_id?.open_id ||
+        body.open_id ||
+        'unknown'
+      const parsed = extractCardAction(body)
+      const cardReq = isCardActionRequest(body)
 
       if (parsed?.action === 'ack' && parsed.alert_id) {
-        pushLog('alarm_acked', { alertId: parsed.alert_id, user: event.operator?.open_id })
-        return json(res, 200, { ok: true, handled: 'ack' })
+        pushLog('alarm_acked', { alertId: parsed.alert_id, user: operatorId })
+        return json(
+          res,
+          200,
+          toastOk('已确认告警 / Alert acked', { ok: true, handled: 'ack' }),
+        )
       }
       if (parsed?.action === 'escalate' && parsed.alert_id) {
-        pushLog('alarm_escalated', { alertId: parsed.alert_id, user: event.operator?.open_id })
+        pushLog('alarm_escalated', { alertId: parsed.alert_id, user: operatorId })
         const alarm = getAlarm(parsed.alert_id)
         if (alarm) {
           await sendLark(
@@ -914,16 +997,151 @@ const server = http.createServer(async (req, res) => {
             }),
           )
         }
-        return json(res, 200, { ok: true, handled: 'escalate' })
+        return json(
+          res,
+          200,
+          toastOk('已升级为 P0 / Escalated', { ok: true, handled: 'escalate' }),
+        )
       }
       if (parsed?.action === 'run_rca' && parsed.alert_id) {
         const alarm = getAlarm(parsed.alert_id) || ingestAlarm({ id: parsed.alert_id })
         const rca = await runRcaFromAlarm(alarm)
-        return json(res, 200, { ok: true, handled: 'run_rca', incidentId: rca.incident.id })
+        return json(
+          res,
+          200,
+          toastOk(
+            rca.deduped
+              ? '已有 RCA（同告警只排查一次）'
+              : `RCA 已生成 ${rca.incident.id}`,
+            {
+              ok: true,
+              handled: 'run_rca',
+              incidentId: rca.incident.id,
+              deduped: Boolean(rca.deduped),
+            },
+          ),
+        )
       }
-      if (parsed?.action === 'archive' && parsed.incident_id) {
-        archiveIncident(parsed.incident_id)
-        return json(res, 200, { ok: true, handled: 'archive' })
+      if (parsed?.action === 'run_rca_from_briefing') {
+        const alarm = ingestAlarm({
+          title: parsed.title || 'Briefing → Investigate',
+          severity: 'P1',
+          summary: parsed.title || 'From market briefing card',
+          facts: parsed.title || 'From market briefing card',
+          trigger: 'briefing_card',
+        })
+        const rca = await runRcaFromAlarm(alarm)
+        return json(
+          res,
+          200,
+          toastOk(`已从简报启动排查 ${rca.incident.id}`, {
+            ok: true,
+            handled: 'run_rca_from_briefing',
+            incidentId: rca.incident.id,
+          }),
+        )
+      }
+      if (
+        (parsed?.action === 'archive' ||
+          parsed?.action === 'archive_report' ||
+          parsed?.action === '归档报告') &&
+        parsed.incident_id
+      ) {
+        const row = archiveIncident(parsed.incident_id)
+        if (!row) {
+          return json(
+            res,
+            200,
+            toastFail(`找不到事故 ${parsed.incident_id}`, {
+              ok: false,
+              handled: 'archive',
+            }),
+          )
+        }
+        return json(
+          res,
+          200,
+          toastOk('报告已归档（进入周优化输入）', {
+            ok: true,
+            handled: 'archive',
+            incidentId: parsed.incident_id,
+          }),
+        )
+      }
+      if (
+        parsed?.action === 'complete_step' ||
+        parsed?.action === '已完成此步'
+      ) {
+        pushLog('step_completed', {
+          incidentId: parsed.incident_id || null,
+          user: operatorId,
+        })
+        return json(
+          res,
+          200,
+          toastOk('已记录：此步完成。有不清楚可继续追问。', {
+            ok: true,
+            handled: 'complete_step',
+            incidentId: parsed.incident_id || null,
+          }),
+        )
+      }
+      if (
+        parsed?.action === 'review_checklist' ||
+        parsed?.action === '复盘清单'
+      ) {
+        const incident = parsed.incident_id ? getIncident(parsed.incident_id) : null
+        const checklist = [
+          '1. 告警原文 / 触发时间 / 成分源是否已核对',
+          '2. 命中 Skill 与告警映射是否正确',
+          '3. 建议动作是否已人工审批（禁止自动执行）',
+          '4. 外网 / 行情直连链接是否已点开核验',
+          '5. 是否需要归档进周优化，或升级值班',
+        ].join('\n')
+        pushLog('review_checklist', {
+          incidentId: parsed.incident_id || null,
+          user: operatorId,
+        })
+        // Post checklist as a follow-up card when possible
+        try {
+          await sendLark(
+            undefined,
+            renderLarkCard('follow-up', {
+              incident_id: parsed.incident_id || incident?.id || 'none',
+              question: '复盘清单',
+              answer: checklist,
+              severity: incident?.severity || '—',
+            }),
+          )
+        } catch {
+          /* webhook may be unset in local */
+        }
+        return json(
+          res,
+          200,
+          toastOk('复盘清单已发送到会话', {
+            ok: true,
+            handled: 'review_checklist',
+            incidentId: parsed.incident_id || null,
+            checklist,
+          }),
+        )
+      }
+
+      if (cardReq && parsed?.action) {
+        pushLog('lark_card_action_unknown', {
+          action: parsed.action,
+          user: operatorId,
+        })
+        return json(
+          res,
+          200,
+          toastFail(`未识别的卡片动作: ${parsed.action}`, {
+            ok: false,
+            handled: 'unknown_card_action',
+            action: parsed.action,
+          }),
+        )
       }
 
       // IM message → follow-up
@@ -949,13 +1167,23 @@ const server = http.createServer(async (req, res) => {
         const result = await answerFollowUp({
           incidentId,
           question,
-          user: event.sender?.sender_id?.open_id || event.operator?.open_id,
+          user: operatorId,
         })
-        return json(res, 200, { ok: true, handled: 'followup', followUpId: result.followUp.id })
+        return json(res, 200, {
+          ok: true,
+          handled: 'followup',
+          followUpId: result.followUp.id,
+        })
       }
 
       pushLog('lark_event_unhandled', { keys: Object.keys(body) })
-      return json(res, 200, { ok: true, handled: 'noop' })
+      return json(
+        res,
+        200,
+        cardReq
+          ? toastFail('卡片回调未匹配到动作', { ok: true, handled: 'noop' })
+          : { ok: true, handled: 'noop' },
+      )
     }
 
     if (req.method === 'GET' && url.pathname === '/api/stats/summary') {
