@@ -8,10 +8,14 @@ import { parseIncomingEvent, shouldRespond } from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
 import {
   accessUnavailableReply,
+  botMetaReply,
   classifyIntent,
+  deskFaqReply,
   east8Hour,
   greetingOpenForHour,
   greetingReply,
+  isDeskFaqQuestion,
+  looksLikeIncidentEvidence,
   needsInaccessibleAccess,
 } from '../api/lark/_lib/scope'
 import {
@@ -423,6 +427,30 @@ async function main() {
       !adminQ.blob.includes('Hello · Risk Copilot') &&
       !adminQ.blob.includes('你好 · Risk Copilot'),
     adminQ.blob.slice(0, 180),
+  )
+
+  // 9a1) Desk FAQ: KB edit permission — direct answer, NOT investigate Skills dump
+  const kbEditQ = '一般用户可以编辑知识库吗'
+  record('faq.detect_kb_edit', isDeskFaqQuestion(kbEditQ), '')
+  record('faq.not_incident_evidence', !looksLikeIncidentEvidence(kbEditQ), '')
+  const kbFaq = deskFaqReply('zh-Hans', kbEditQ) || botMetaReply('zh-Hans', kbEditQ) || ''
+  record(
+    'faq.kb_edit_answer',
+    kbFaq.includes('不可以') && kbFaq.includes('Admin') && kbFaq.includes('Yan Haixiang'),
+    kbFaq.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const kbEditTurn = await turn('kb-edit-q', kbEditQ)
+  record(
+    'turn.kb_edit_no_investigate_dump',
+    Boolean(kbEditTurn.reply?.card) &&
+      kbEditTurn.blob.includes('不可以') &&
+      kbEditTurn.blob.includes('Admin') &&
+      !kbEditTurn.blob.includes('建议严重度') &&
+      !kbEditTurn.blob.includes('Skills 命中') &&
+      !kbEditTurn.blob.includes('FIN-03') &&
+      !kbEditTurn.blob.includes('MARK-02'),
+    kbEditTurn.blob.slice(0, 220),
   )
 
   // 9a2) Inaccessible access → contact @Yan Haixiang

@@ -28,6 +28,7 @@ import {
   detectLang,
   greetingReply,
   helpReply,
+  looksLikeIncidentEvidence,
   needsInaccessibleAccess,
   offtopicReply,
 } from './scope.js'
@@ -509,40 +510,87 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     })
   }
 
-  // general_risk — answer the user's question (meta FAQ / RAG / LLM); never dump greeting
+  // general_risk — answer the user's question (FAQ / RAG / LLM); never dump greeting
+  const replyTitle =
+    lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
+
+  // Desk FAQ / admin meta: direct answer only — never attach investigate Skills+severity dump
   const meta = botMetaReply(lang, workingText)
+  if (meta) {
+    return { card: simpleCard(replyTitle, meta, 'blue') }
+  }
+
+  const incidentish = looksLikeIncidentEvidence(workingText)
   const { hits, kb, severity } = retrieveRag(workingText)
-  const quoteOps = await fetchQuoteOpsRag(workingText)
-  const ragBody = formatRagAnswer({
-    lang,
-    question: workingText,
-    hits,
-    kb,
-    severity,
-    quoteOps,
-  })
+  const quoteOps = incidentish ? await fetchQuoteOpsRag(workingText) : null
+  const ragBody = incidentish
+    ? formatRagAnswer({
+        lang,
+        question: workingText,
+        hits,
+        kb,
+        severity,
+        quoteOps,
+      })
+    : formatSoftKbAnswer(lang, workingText, kb)
+
   const context = [
-    meta ? `BOT_META_FACTS:\n${meta}` : '',
-    `severity=${severity}`,
-    `skills=${hits.map((h) => `${h.id}|${h.check}|${h.action}`).join('\n')}`,
+    `severity=${incidentish ? severity : 'n/a'}`,
+    incidentish
+      ? `skills=${hits.map((h) => `${h.id}|${h.check}|${h.action}`).join('\n')}`
+      : 'Do NOT invent an investigation, severity, or Skills checklist. This is a normal Q&A.',
     `kb=${kb.map((k) => `${k.title}: ${k.body.slice(0, 1200)}`).join('\n')}`,
     quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
-    'Answer the user question directly and helpfully. Prefer BOT_META_FACTS when present. Otherwise use Skills/KB/quote-ops. Prefer V Exchange perpetual; ignore CFD broker pricing. Cite skill ids and KB titles when used. Format with emoji headers and bold-keyword bullets. Do NOT reply with a command menu / greeting.',
+    'Answer the user question directly and helpfully. Prefer V Exchange perpetual KB when relevant; ignore CFD broker pricing. Format with emoji headers and bold-keyword bullets. Do NOT reply with a command menu / greeting. Do NOT start an investigation unless the user pasted an alert.',
   ]
     .filter(Boolean)
     .join('\n\n')
   const llm = await enrichWithLlm({ lang, question: workingText, context })
-  const replyTitle =
-    lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
-  // Meta questions: lead with deterministic answer (even if LLM is down)
-  const body = meta
-    ? llm
-      ? `${meta}\n\n---\n${llm}`
-      : meta
-    : llm
-      ? `${llm}\n\n---\n${ragBody}`
-      : ragBody
+  const body = llm ? (ragBody ? `${llm}\n\n---\n${ragBody}` : llm) : ragBody
   return {
     card: simpleCard(replyTitle, body),
   }
+}
+
+/** Soft KB-only block for normal Q&A (no Skills / no severity). */
+function formatSoftKbAnswer(
+  lang: Lang,
+  question: string,
+  kb: { title: string; body: string }[],
+): string {
+  if (!kb.length) {
+    if (lang === 'zh-Hans') {
+      return [
+        '💬 **直接回答**',
+        '',
+        `针对「${question.slice(0, 80)}」：我这边没有命中高相关知识摘录。你可以换个说法再问，或发送 **knowledge** 浏览知识库；若是告警排查请贴原文或发 **investigate**。`,
+      ].join('\n')
+    }
+    if (lang === 'zh-Hant') {
+      return [
+        '💬 **直接回答**',
+        '',
+        `針對「${question.slice(0, 80)}」：我這邊沒有命中高相關知識摘錄。你可以換個說法再問，或發送 **knowledge** 瀏覽知識庫；若是告警排查請貼原文或發 **investigate**。`,
+      ].join('\n')
+    }
+    return [
+      '💬 **Direct answer**',
+      '',
+      `On “${question.slice(0, 80)}”: no high-relevance KB excerpt. Rephrase, send **knowledge** to browse, or paste an alert / **investigate** for RCA.`,
+    ].join('\n')
+  }
+  const lines: string[] = []
+  if (lang === 'zh-Hans') {
+    lines.push('📖 **相关知识摘录**', '')
+  } else if (lang === 'zh-Hant') {
+    lines.push('📖 **相關知識摘錄**', '')
+  } else {
+    lines.push('📖 **Related knowledge**', '')
+  }
+  for (const k of kb.slice(0, 3)) {
+    const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 280)
+    lines.push(`• **${k.title}**`)
+    lines.push(`  ${excerpt}${k.body.length > 280 ? '…' : ''}`)
+  }
+  return lines.join('\n')
 }

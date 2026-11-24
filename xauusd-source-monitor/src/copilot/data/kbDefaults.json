@@ -4,6 +4,10 @@
     "body": "V Exchange Risk Copilot（Lark VE AI风控小助手）当前处于 UAT 阶段。管理员／问题对接人为 Yan Haixiang（@Yan Haixiang）。使用中的 Bug、权限、功能问题请报给 Yan Haixiang。生产写操作需人工审批，机器人不会直接改生产。"
   },
   {
+    "title": "桌面角色与知识库编辑权限",
+    "body": "桌面 Skills 与 RAG 知识库：仅 Admin 可创建／编辑；一般用户、Ops、Analyst 为只读，仍可查看知识库／Skills 并运行 investigate。需要 Admin 权限请联系 @Yan Haixiang。普通问答不要当成事故排查，不要输出 Skills 严重度清单。"
+  },
+  {
     "title": "业务范围",
     "body": "V Exchange MVP：XAUUSD 永续合约，USD 计价结算；USDT/USDC 入金按 1:1 记 USD。Kraken 主价格源，Binance/Bybit/OKX 备源；友商对比还涉及 Bitget。生产实现及公式需核实。"
   },

@@ -28,6 +28,17 @@ const BOT_META_RE =
   /管理员|管理員|谁负责|誰負責|负责人|負責人|报给谁|報給誰|联系谁|聯繫誰|找谁|找誰|\buat\b|\badmin\b|\bowner\b|谁维护|誰維護|客服|支持|支持人|对接人|對接人/i
 
 /**
+ * Desk product FAQ: roles / who can edit Skills or knowledge.
+ * Must NOT fall through to investigate-style Skills+severity dumps.
+ */
+const DESK_FAQ_RE =
+  /(一般用户|普通用户|一般用戶|普通用戶|普通账号|普通帳號|一般账号|一般帳號|\bops\b|\banalyst\b|非管理员|非管理員).{0,24}(编辑|編輯|修改|改|写|寫|创建|刪除).{0,24}(知识库|知識庫|skills?|技能|rag|记忆|記憶)|(编辑|編輯|修改|改|写|寫).{0,16}(知识库|知識庫|skills?|技能).{0,16}(权限|權限|吗|嗎|可以|能不能|能否)|(谁|誰|who).{0,16}(能|可以|可).{0,8}(编辑|編輯|改|写|寫).{0,16}(知识库|知識庫|skills?|技能)|only\s+admin.{0,24}(edit|write).{0,24}(knowledge|skills?)|can\s+(a\s+)?(general|normal|regular|ops|analyst)\s*(user)?s?\s+(edit|write|change).{0,24}(knowledge|skills?|kb)|who\s+can\s+(edit|write).{0,24}(knowledge|skills?|kb)|(知识库|知識庫|skills?).{0,12}(只读|只讀|readonly|read-?only)/i
+
+/** Alert / incident evidence — OK to attach Skills retrieval + severity. */
+const INCIDENT_EVIDENCE_RE =
+  /告警|报警|報警|\balert\b|\bincident\b|\brca\b|排查|强平|強平|\badl\b|指数源|指數源|\bmarks?\b|\bindex\b|偏差|剔除|无有效源|無有效源|\bbps\b|失败|失敗|异常|異常|截图|截圖|\bseverity\b|P[0-3]\b/i
+
+/**
  * User asks the bot to reach something it cannot (admin/DB/prod/secrets/writes).
  * Action-ish verbs + protected resource — avoid matching alert paste that merely mentions admin.
  */
@@ -180,8 +191,8 @@ export function classifyIntent(
   if (MARKET_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'market'
   if (INVESTIGATE_RE.test(t)) return 'investigate'
 
-  // Meta questions about the bot / admin / UAT contact
-  if (BOT_META_RE.test(t)) return 'general_risk'
+  // Meta / desk FAQ (roles, who can edit KB) — answer, never investigate dump
+  if (BOT_META_RE.test(t) || DESK_FAQ_RE.test(t)) return 'general_risk'
 
   // Soft ack after @ only — NEVER classify short real questions as greeting
   // (DMs set mentionedBot=true, so length<12 used to swallow e.g.「谁是管理员」)
@@ -199,8 +210,63 @@ export function classifyIntent(
   return 'general_risk'
 }
 
+/** True when the question is about desk roles / edit permissions (not an incident). */
+export function isDeskFaqQuestion(text: string): boolean {
+  return DESK_FAQ_RE.test(text.trim())
+}
+
+/** True when free-text looks like alert/incident evidence (Skills dump OK). */
+export function looksLikeIncidentEvidence(text: string): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (INCIDENT_EVIDENCE_RE.test(t)) return true
+  // Long structured paste with metric-ish tokens
+  return t.length > 120 && /\d+(\.\d+)?\s*(bps|%|ms|s)\b/i.test(t)
+}
+
+/** Deterministic desk FAQ: who can edit knowledge / Skills. */
+export function deskFaqReply(lang: Lang, question: string): string | null {
+  if (!isDeskFaqQuestion(question)) return null
+  if (lang === 'zh-Hans') {
+    return [
+      '🔐 **桌面权限说明**',
+      '',
+      '• **结论：** **不可以。** 一般用户／Ops／Analyst **不能编辑** 知识库或 Skills。',
+      '• **可写角色：** 仅 **Admin** 可创建／编辑 Skills、RAG 知识库及相关覆盖项。',
+      '• **只读角色：** Ops／Analyst／一般用户可 **查看** 知识库与 Skills，并仍可做 **investigate** 排查。',
+      '• **需要开通 Admin：** 请联系 **@Yan Haixiang**。',
+      '',
+      '_桌面页：https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '🔐 **桌面權限說明**',
+      '',
+      '• **結論：** **不可以。** 一般用戶／Ops／Analyst **不能編輯** 知識庫或 Skills。',
+      '• **可寫角色：** 僅 **Admin** 可建立／編輯 Skills、RAG 知識庫及相關覆蓋項。',
+      '• **只讀角色：** Ops／Analyst／一般用戶可 **查看** 知識庫與 Skills，並仍可做 **investigate** 排查。',
+      '• **需要開通 Admin：** 請聯繫 **@Yan Haixiang**。',
+      '',
+      '_桌面頁：https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+    ].join('\n')
+  }
+  return [
+    '🔐 **Desk permissions**',
+    '',
+    '• **Answer:** **No.** General / Ops / Analyst users **cannot edit** the knowledge base or Skills.',
+    '• **Write access:** **Admin only** can create/edit Skills, RAG knowledge, and related overrides.',
+    '• **Read access:** Ops / Analyst / general users can **view** knowledge & Skills and still run **investigate**.',
+    '• **Need Admin:** contact **@Yan Haixiang**.',
+    '',
+    '_Desk: https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+  ].join('\n')
+}
+
 /** Deterministic answer for bot/admin/UAT meta questions. */
 export function botMetaReply(lang: Lang, question: string): string | null {
+  const faq = deskFaqReply(lang, question)
+  if (faq) return faq
   if (!BOT_META_RE.test(question)) return null
   if (lang === 'zh-Hans') {
     return [
