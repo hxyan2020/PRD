@@ -36,20 +36,20 @@ const EXAMPLES: Record<ProductId, { zh: string[]; en: string[] }> = {
   },
   "v-exchange-perp": {
     zh: [
+      "L1-01 无交易监控怎么排查？",
       "外部 Funding 偏差超过 0.1% 怎么查？",
       "Mark Price 与 Index 偏离排查",
       "永续合约 Index 与友商偏离",
       "DB 接仓失败 / ADL 异常",
       "资金费率为正是什么意思？",
-      "周末黄金 Index 异常案例",
     ],
     en: [
+      "L1-01 no-trade monitor runbook",
       "Investigate external Funding drift >0.1%",
       "Mark vs Index divergence RCA",
       "Perp Index vs peer exchange drift",
       "DB takeover / ADL failure",
       "What does positive funding mean?",
-      "Weekend gold Index incident",
     ],
   },
 };
