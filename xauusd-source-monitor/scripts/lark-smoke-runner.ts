@@ -119,6 +119,15 @@ async function main() {
       .map((s) => s.id)
       .join(',')}`,
   )
+  const vagueActions = skills.filter((s) => /按 Runbook 分支处置/.test(s.action))
+  const missingHout = skills.filter((s) => !/后管/.test(s.check))
+  record(
+    'skills.houtguan_and_decision_branches',
+    vagueActions.length === 0 &&
+      missingHout.length === 0 &&
+      skills.every((s) => /：|:|若|则|否則|否则|：/.test(s.action) || s.action.includes('；')),
+    `vague=${vagueActions.map((s) => s.id).join(',') || '-'} noHout=${missingHout.map((s) => s.id).join(',') || '-'}`,
+  )
   record(
     'kb.load_ve_docs',
     kb.some((k) => k.id.startsWith('ve-doc-')),
@@ -1346,7 +1355,8 @@ async function main() {
     'turn.open_skill_by_id',
     Boolean(openSkill.reply?.card) &&
       openSkill.blob.includes('L1-07') &&
-      (openSkill.blob.includes('Check') || openSkill.blob.includes('**Check**')) &&
+      (openSkill.blob.includes('后管') || openSkill.blob.includes('排查链路')) &&
+      (openSkill.blob.includes('决策分支') || openSkill.blob.includes('Decision')) &&
       openSkill.blob.includes('•') &&
       (openSkill.blob.includes('Skill ·') || openSkill.blob.includes('L1-07')),
     openSkill.blob.slice(0, 160),
@@ -1374,7 +1384,9 @@ async function main() {
       openL116.blob.includes('Average Premium Index') &&
       openL116.blob.includes('资金费率管理') &&
       openL116.blob.includes('成交价K线') &&
-      openL116.blob.includes('立即通知RC/BIT') &&
+      openL116.blob.includes('后管') &&
+      openL116.blob.includes('决策分支') &&
+      (openL116.blob.includes('结算') || openL116.blob.includes('观察')) &&
       !/检查：.{0,80}…/.test(openL116.blob),
     openL116.blob.slice(0, 280),
   )
@@ -1538,7 +1550,9 @@ async function main() {
   )
   record(
     'turn.investigate_body_causes_path',
-    /可能原因|Possible causes|排查路径|Investigation path|研判|Judgement/i.test(invZh.blob),
+    /可能原因|Possible causes|排查路径|Investigation path|决策分支|Decision branches|研判|Judgement/i.test(
+      invZh.blob,
+    ),
     invZh.blob.slice(0, 160),
   )
 

@@ -121,15 +121,21 @@ export function looksLikeNodeIdReply(text: string): boolean {
   return /^(L[12]-\d{1,2}|L2-[A-F]|[A-Za-z][A-Za-z0-9_-]{1,48})$/i.test(t)
 }
 
-/** Split Runbook step chains on arrows / semicolons — never collapse into one dense line. */
+/**
+ * Split Runbook step chains on arrows / semicolons — never collapse into one dense line.
+ * Keep admin-menu arrows intact: `后管→合理价格管理` must stay one step.
+ */
 export function splitSkillSteps(text: string): string[] {
-  return (text || '')
+  const protectedText = (text || '')
+    .replace(/后管\s*→\s*/g, '后管⟶')
+    .replace(/前端\s*→\s*/g, '前端⟶')
+  return protectedText
     .split(/\s*(?:→|->|⇒|；|;|\n)+\s*/)
-    .map((x) => x.trim())
+    .map((x) => x.replace(/⟶/g, '→').trim())
     .filter(Boolean)
 }
 
-/** Full Skills node body: every Check / Action / Opt step, no omission. */
+/** Full Skills node body: 后管排查链路 + 决策分支 + 可选，no omission. */
 export function formatSkillDetailBody(skill: SkillRec): string {
   const checkSteps = splitSkillSteps(skill.check)
   const actionSteps = splitSkillSteps(skill.action)
@@ -141,23 +147,23 @@ export function formatSkillDetailBody(skill: SkillRec): string {
   const uniqHints = [...new Set(hints)].slice(0, 12)
 
   return [
-    `• **Severity：** **${skill.severity}**`,
-    `• **Level：** **${skill.level}**`,
-    skill.linkedL1 ? `• **Linked L1：** ${skill.linkedL1}` : '',
-    uniqHints.length ? `• **Hints：** ${uniqHints.join(' · ')}` : '',
+    `• **严重度：** **${skill.severity}**`,
+    `• **级别：** **${skill.level}**`,
+    skill.linkedL1 ? `• **关联 L1：** ${skill.linkedL1}` : '',
+    uniqHints.length ? `• **关键词：** ${uniqHints.join(' · ')}` : '',
     '',
-    '**Check**',
+    '**检查（后管／前端排查链路）**',
     ...(checkSteps.length
       ? checkSteps.map((x, i) => `${i + 1}. ${x}`)
-      : ['• （无 Check 详情）']),
+      : ['• （无排查链路详情）']),
     '',
-    '**Action**',
+    '**决策分支（若 / 则 / 否则）**',
     ...(actionSteps.length
       ? actionSteps.map((x) => `• ${x}`)
-      : ['• （无 Action 详情）']),
+      : ['• （无决策分支）']),
     '',
-    '**Opt**',
-    ...(optSteps.length ? optSteps.map((x) => `• ${x}`) : ['• （无 Opt 详情）']),
+    '**可选**',
+    ...(optSteps.length ? optSteps.map((x) => `• ${x}`) : ['• （无）']),
   ]
     .filter(Boolean)
     .join('\n')
@@ -298,8 +304,16 @@ export function formatRagAnswer(args: {
     lines.push(hans || hant ? '🧩 **Skills 命中**' : '🧩 **Skills hit**')
     for (const h of args.hits.slice(0, 4)) {
       lines.push(`• **${h.id} · ${h.name}**`)
-      const checkLabel = hans ? '检查' : hant ? '檢查' : 'Check'
-      const actionLabel = hans ? '建议（需审批）' : hant ? '建議（需審批）' : 'Action (approval)'
+      const checkLabel = hans
+        ? '排查链路（后管／前端）'
+        : hant
+          ? '排查鏈路（後管／前端）'
+          : 'Path (admin / desk)'
+      const actionLabel = hans
+        ? '决策分支'
+        : hant
+          ? '決策分支'
+          : 'Decision branches'
       const checks = splitSkillSteps(h.check)
       const actions = splitSkillSteps(h.action)
       if (checks.length <= 1) {
@@ -410,10 +424,10 @@ export function preferredActions(
   return hits.slice(0, max).map((h) => {
     const tag =
       lang === 'zh-Hans'
-        ? `建议（需审批 · 联系 @Yan Haixiang）· ${h.id}`
+        ? `决策分支（需审批 · 联系 @Yan Haixiang）· ${h.id}`
         : lang === 'zh-Hant'
-          ? `建議（需審批 · 聯繫 @Yan Haixiang）· ${h.id}`
-          : `Preferred action (approval · contact @Yan Haixiang) · ${h.id}`
+          ? `決策分支（需審批 · 聯繫 @Yan Haixiang）· ${h.id}`
+          : `Decision branch (approval · contact @Yan Haixiang) · ${h.id}`
     return `${tag}: ${h.action}`
   })
 }

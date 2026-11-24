@@ -153,7 +153,10 @@ function buildSummary(args: {
   ].join('\n')
 }
 
-/** Lean investigate body when LLM is down: possible causes + path cues (not full Skills/KB dump). */
+/**
+ * Lean investigate body when LLM is down.
+ * Causes stay short; full Skill check = 后管排查链路; action = 决策分支.
+ */
 function formatInvestigateCore(args: {
   lang: Lang
   hits: { id: string; name: string; check: string; action: string }[]
@@ -165,11 +168,11 @@ function formatInvestigateCore(args: {
   lines.push(hans ? '🔎 **可能原因**' : hant ? '🔎 **可能原因**' : '🔎 **Possible causes**')
   if (args.hits.length) {
     for (const h of args.hits.slice(0, 4)) {
-      lines.push(`• **${h.id} · ${h.name}**`)
-      const steps = splitSkillSteps(h.check)
-      for (const step of steps.length ? steps : [h.check]) {
-        lines.push(`  - ${step}`)
-      }
+      lines.push(
+        hans || hant
+          ? `• **假设／待核实：** 命中场景 **${h.id} · ${h.name}**（以告警字段与后管数据核实）`
+          : `• **Suspected / to verify:** matched **${h.id} · ${h.name}** (confirm with alert fields + admin desk)`,
+      )
     }
   } else {
     lines.push(
@@ -181,7 +184,32 @@ function formatInvestigateCore(args: {
     )
   }
   lines.push('')
-  lines.push(hans ? '🧭 **排查路径要点**' : hant ? '🧭 **排查路徑要點**' : '🧭 **Investigation path**')
+  lines.push(
+    hans
+      ? '🧭 **排查路径（后管／前端链路）**'
+      : hant
+        ? '🧭 **排查路徑（後管／前端鏈路）**'
+        : '🧭 **Investigation path (admin / desk)**',
+  )
+  if (args.hits.length) {
+    for (const h of args.hits.slice(0, 3)) {
+      lines.push(`• **${h.id} · ${h.name}**`)
+      const steps = splitSkillSteps(h.check)
+      for (const step of steps.length ? steps : [h.check]) {
+        lines.push(`  - ${step}`)
+      }
+    }
+  } else {
+    lines.push(
+      hans
+        ? '• 先核对 Index／Mark／Funding／盘口时间戳与告警原文一致性'
+        : hant
+          ? '• 先核對 Index／Mark／Funding／盤口時間戳與告警原文一致性'
+          : '• First reconcile Index / Mark / Funding / book timestamps with the alert text',
+    )
+  }
+  lines.push('')
+  lines.push(hans ? '🌿 **决策分支**' : hant ? '🌿 **決策分支**' : '🌿 **Decision branches**')
   if (args.hits.length) {
     for (const h of args.hits.slice(0, 3)) {
       lines.push(`• **${h.id}**`)
@@ -193,10 +221,10 @@ function formatInvestigateCore(args: {
   } else {
     lines.push(
       hans
-        ? '• 先核对 Index／Mark／Funding／盘口时间戳与告警原文一致性'
+        ? '• 字段不足时先补齐告警原文，再决定观察／升级／归档'
         : hant
-          ? '• 先核對 Index／Mark／Funding／盤口時間戳與告警原文一致性'
-          : '• First reconcile Index / Mark / Funding / book timestamps with the alert text',
+          ? '• 欄位不足時先補齊告警原文，再決定觀察／升級／歸檔'
+          : '• If fields are missing, gather alert text first, then choose watch / escalate / close',
     )
   }
   if (args.kb.length) {
@@ -519,16 +547,18 @@ async function runInvestigation(args: {
   const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据事故事实与命中的 Skills／知识库，写排查报告正文。正文只写两块：🔎 可能原因、🧭 排查路径。把根因分成「已证实 / 假设 / 未排除」，尽量标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。Skills／知识库只需点名 ID／标题一句带过，不要粘贴整份检查清单或知识库长摘录（链接在卡片文末）。用 emoji 分段 +「• **关键词：** 说明」。必须用简体中文。优先 quote-ops V Exchange 永续知识；忽略 CFD。'
+      ? '根据事故事实与命中的 Skills，写排查报告正文，必须含三块：🔎 可能原因、🧭 排查路径（后管／前端链路）、🌿 决策分支。可能原因分成「已证实 / 假设 / 未排除」，标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。排查路径必须展开命中 Skill 的 check 步骤（含「后管→…」菜单与字段），按序号列出，不要省略后管链路。决策分支必须展开该 Skill 的 action（若…则…／否则…），不要写「按 Runbook 分支处置」这类空话。知识库只点名标题（全文在文末链接）。用 emoji 分段 +「• **关键词：** 说明」。必须用简体中文。优先 V Exchange 永续；忽略 CFD。'
       : args.lang === 'zh-Hant'
-        ? '根據事故事實與命中的 Skills／知識庫，寫排查報告正文。正文只寫兩塊：🔎 可能原因、🧭 排查路徑。把根因分成「已證實／假設／未排除」，盡量標註 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。Skills／知識庫只需點名 ID／標題一句帶過，不要貼整份清單或長摘錄（連結在卡片文末）。用 emoji 分段 +「• **關鍵詞：** 說明」。必須用繁體中文。優先 quote-ops V Exchange 永續知識；忽略 CFD。'
-        : 'Write the investigation body from the facts and matched Skills/KB. Body has only two sections: Possible causes, Investigation path. Split causes into Confirmed / Suspected / Unknown and tag [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]. Only briefly name Skill ids / KB titles — do not paste full checklists or long KB excerpts (links are at the card footer). Use emoji section headers and "• **Keyword:** detail" bullets. Prefer quote-ops V Exchange perpetual KB; ignore CFD. English.'
+        ? '根據事故事實與命中的 Skills，寫排查報告正文，必須含三塊：🔎 可能原因、🧭 排查路徑（後管／前端鏈路）、🌿 決策分支。可能原因分成「已證實／假設／未排除」，標註 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。排查路徑必須展開命中 Skill 的 check 步驟（含「後管→…」），按序號列出。決策分支必須展開 action（若…則…），禁止「按 Runbook 分支處置」。知識庫只點名標題。用 emoji 分段。必須用繁體中文。優先 V Exchange 永續；忽略 CFD。'
+        : 'Write the investigation body with three sections: Possible causes, Investigation path (admin/desk steps from Skill check), Decision branches (from Skill action if/then). Tag causes [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]. Expand matched Skill check steps including admin console menus; expand action branches — never write “follow the Runbook”. Only name KB titles (full text in footer). Prefer V Exchange perpetual; ignore CFD. English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
     context: [
       `FACTS:\n${blob.slice(0, 6000)}`,
-      `SKILLS:\n${hits.map((h) => `${h.id} ${h.name} | ${h.check} | ${h.action}`).join('\n')}`,
+      `SKILLS (check=admin path; action=decision branches):\n${hits
+        .map((h) => `${h.id} ${h.name}\nCHECK: ${h.check}\nACTION: ${h.action}`)
+        .join('\n\n')}`,
       `KB:\n${kb.map((k) => `${k.title}: ${k.body.slice(0, 1500)}`).join('\n')}`,
       quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
       `NEXT:\n${nextSteps.join('\n')}`,
@@ -536,7 +566,7 @@ async function runInvestigation(args: {
       .filter(Boolean)
       .join('\n\n'),
   })
-  // Body = causes + path. Skills/KB full dumps stay out; ids are named briefly in summary + footer links.
+  // Body = causes + 后管 path + decision branches; KB stays as footer links.
   const llmExtra = llm
     ? `\n\n${llm}`
     : `\n\n${formatInvestigateCore({ lang: args.lang, hits, kb })}`
