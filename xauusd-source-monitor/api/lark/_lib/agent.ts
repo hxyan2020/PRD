@@ -783,33 +783,80 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   const incidentish = looksLikeIncidentEvidence(workingText)
   const { hits, kb, severity } = retrieveRag(workingText)
   const quoteOps = incidentish ? await fetchQuoteOpsRag(workingText) : null
-  const ragBody = incidentish
-    ? formatRagAnswer({
-        lang,
-        question: workingText,
-        hits,
-        kb,
-        severity,
-        quoteOps,
-      })
-    : formatSoftKbAnswer(lang, workingText, kb)
 
-  const context = [
-    `severity=${incidentish ? severity : 'n/a'}`,
-    incidentish
-      ? `skills=${hits.map((h) => `${h.id}|${h.check}|${h.action}`).join('\n')}`
-      : 'Do NOT invent an investigation, severity, or Skills checklist. This is a normal Q&A.',
-    `kb=${kb.map((k) => `${k.title}: ${k.body.slice(0, 1200)}`).join('\n')}`,
-    quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
-    'Answer the user question directly and helpfully. Prefer V Exchange perpetual KB when relevant; ignore CFD broker pricing. Format with emoji headers and bold-keyword bullets. Do NOT reply with a command menu / greeting. Do NOT start an investigation unless the user pasted an alert.',
-  ]
-    .filter(Boolean)
-    .join('\n\n')
-  const llm = await enrichWithLlm({ lang, question: workingText, context })
-  const body = llm ? (ragBody ? `${llm}\n\n---\n${ragBody}` : llm) : ragBody
-  return {
-    card: simpleCard(replyTitle, body),
+  if (incidentish) {
+    const ragBody = formatRagAnswer({
+      lang,
+      question: workingText,
+      hits,
+      kb,
+      severity,
+      quoteOps,
+    })
+    const context = [
+      `severity=${severity}`,
+      `skills=${hits.map((h) => `${h.id}|${h.check}|${h.action}`).join('\n')}`,
+      `kb=${kb.map((k) => `${k.title}: ${k.body.slice(0, 1200)}`).join('\n')}`,
+      quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
+      'Answer helpfully. Prefer V Exchange perpetual KB; ignore CFD. Format with emoji headers and bold-keyword bullets.',
+    ]
+      .filter(Boolean)
+      .join('\n\n')
+    const llm = await enrichWithLlm({ lang, question: workingText, context })
+    const body = llm ? `${llm}\n\n---\n${ragBody}` : ragBody
+    return { card: simpleCard(replyTitle, body) }
   }
+
+  // Normal / “random” Q&A: answer first; only attach highly relevant KB (never dump weak hits)
+  const relevantKb = pickRelevantKb(workingText, kb)
+  const qaContext = [
+    'This is a normal product / risk Q&A — NOT an incident investigation.',
+    'Do NOT invent severity, Skills checklists, or RCA steps unless the user pasted an alert.',
+    'Answer the question directly in a short, clear card. Use emoji section headers and bold-keyword bullets.',
+    'Prefer V Exchange perpetual knowledge when relevant; ignore CFD broker pricing.',
+    relevantKb.length
+      ? `Highly relevant KB (optional support only):\n${relevantKb
+          .map((k) => `${k.title}: ${k.body.slice(0, 900)}`)
+          .join('\n')}`
+      : 'No high-relevance KB hit — answer from desk product knowledge; if unsure, say so and suggest @Yan Haixiang / knowledge / investigate.',
+  ].join('\n\n')
+  const llm = await enrichWithLlm({ lang, question: workingText, context: qaContext })
+  if (llm) {
+    const support =
+      relevantKb.length > 0 ? `\n\n---\n${formatSoftKbAnswer(lang, workingText, relevantKb, true)}` : ''
+    return { card: simpleCard(replyTitle, `${llm}${support}`, 'blue') }
+  }
+  return {
+    card: simpleCard(replyTitle, formatSoftKbAnswer(lang, workingText, relevantKb, false), 'blue'),
+  }
+}
+
+/** Keep only KB hits that are actually about the question (avoid random excerpt dumps). */
+function pickRelevantKb(
+  question: string,
+  kb: { id: string; title: string; body: string; score: number }[],
+): { id: string; title: string; body: string; score: number }[] {
+  const q = question.toLowerCase()
+  const qTokens = new Set(
+    q
+      .split(/[^a-z0-9\u4e00-\u9fff]+/i)
+      .map((t) => t.trim())
+      .filter((t) => t.length >= 2),
+  )
+  // Drop ultra-generic tokens that match almost every VE doc
+  for (const stop of ['知识库', '知識庫', 'knowledge', 'skill', 'skills', 've', 'v', 'exchange', '永续', '永續']) {
+    qTokens.delete(stop)
+  }
+  return kb
+    .filter((k) => {
+      if (k.score < 8) return false
+      const title = k.title.toLowerCase()
+      const titleHit = [...qTokens].some((t) => title.includes(t))
+      // Strong score alone can pass; otherwise require title overlap
+      return titleHit || k.score >= 16
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 2)
 }
 
 /** Soft KB-only block for normal Q&A (no Skills / no severity). */
@@ -817,40 +864,53 @@ function formatSoftKbAnswer(
   lang: Lang,
   question: string,
   kb: { title: string; body: string }[],
+  asSupportOnly: boolean,
 ): string {
   if (!kb.length) {
     if (lang === 'zh-Hans') {
       return [
-        '💬 **直接回答**',
+        asSupportOnly ? '' : '💬 **直接回答**',
         '',
-        `针对「${question.slice(0, 80)}」：我这边没有命中高相关知识摘录。你可以换个说法再问，或发送 **knowledge** 浏览知识库；若是告警排查请贴原文或发 **investigate**。`,
-      ].join('\n')
+        asSupportOnly
+          ? ''
+          : `针对「${question.slice(0, 80)}」：我这边没有命中高相关知识摘录。你可以换个说法再问，或发送 **knowledge** 浏览知识库；产品／权限问题可问 **@Yan Haixiang**；告警排查请贴原文或发 **investigate**。`,
+      ]
+        .filter(Boolean)
+        .join('\n')
     }
     if (lang === 'zh-Hant') {
       return [
-        '💬 **直接回答**',
+        asSupportOnly ? '' : '💬 **直接回答**',
         '',
-        `針對「${question.slice(0, 80)}」：我這邊沒有命中高相關知識摘錄。你可以換個說法再問，或發送 **knowledge** 瀏覽知識庫；若是告警排查請貼原文或發 **investigate**。`,
-      ].join('\n')
+        asSupportOnly
+          ? ''
+          : `針對「${question.slice(0, 80)}」：我這邊沒有命中高相關知識摘錄。你可以換個說法再問，或發送 **knowledge** 瀏覽知識庫；產品／權限問題可問 **@Yan Haixiang**；告警排查請貼原文或發 **investigate**。`,
+      ]
+        .filter(Boolean)
+        .join('\n')
     }
     return [
-      '💬 **Direct answer**',
+      asSupportOnly ? '' : '💬 **Direct answer**',
       '',
-      `On “${question.slice(0, 80)}”: no high-relevance KB excerpt. Rephrase, send **knowledge** to browse, or paste an alert / **investigate** for RCA.`,
-    ].join('\n')
+      asSupportOnly
+        ? ''
+        : `On “${question.slice(0, 80)}”: no high-relevance KB excerpt. Rephrase, send **knowledge**, ask **@Yan Haixiang** for product/access, or paste an alert / **investigate** for RCA.`,
+    ]
+      .filter(Boolean)
+      .join('\n')
   }
   const lines: string[] = []
   if (lang === 'zh-Hans') {
-    lines.push('📖 **相关知识摘录**', '')
+    lines.push(asSupportOnly ? '📎 **参考摘录**' : '📖 **相关知识摘录**', '')
   } else if (lang === 'zh-Hant') {
-    lines.push('📖 **相關知識摘錄**', '')
+    lines.push(asSupportOnly ? '📎 **參考摘錄**' : '📖 **相關知識摘錄**', '')
   } else {
-    lines.push('📖 **Related knowledge**', '')
+    lines.push(asSupportOnly ? '📎 **Supporting excerpts**' : '📖 **Related knowledge**', '')
   }
-  for (const k of kb.slice(0, 3)) {
-    const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 280)
+  for (const k of kb.slice(0, 2)) {
+    const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 220)
     lines.push(`• **${k.title}**`)
-    lines.push(`  ${excerpt}${k.body.length > 280 ? '…' : ''}`)
+    lines.push(`  ${excerpt}${k.body.length > 220 ? '…' : ''}`)
   }
   return lines.join('\n')
 }

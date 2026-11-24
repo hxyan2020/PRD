@@ -503,14 +503,16 @@ async function main() {
     adminQ.blob.slice(0, 180),
   )
 
-  // 9a1) Desk FAQ: KB edit permission — direct answer, NOT investigate Skills dump
+  // 9a1) Desk FAQ: KB edit permission — direct answer, NOT investigate Skills dump / random KB
   const kbEditQ = '一般用户可以编辑知识库吗'
+  const kbEditConfirmQ = '确定只有我能更改知识库？'
   record('faq.detect_kb_edit', isDeskFaqQuestion(kbEditQ), '')
+  record('faq.detect_kb_edit_confirm', isDeskFaqQuestion(kbEditConfirmQ), '')
   record('faq.not_incident_evidence', !looksLikeIncidentEvidence(kbEditQ), '')
   const kbFaq = deskFaqReply('zh-Hans', kbEditQ) || botMetaReply('zh-Hans', kbEditQ) || ''
   record(
     'faq.kb_edit_answer',
-    kbFaq.includes('不可以') && kbFaq.includes('Admin') && kbFaq.includes('Yan Haixiang'),
+    kbFaq.includes('Admin') && kbFaq.includes('Yan Haixiang') && /不能编辑|仅 Admin|Admin 可写/i.test(kbFaq),
     kbFaq.slice(0, 160),
   )
   clearSession('smoke_chat', 'smoke_user')
@@ -518,13 +520,24 @@ async function main() {
   record(
     'turn.kb_edit_no_investigate_dump',
     Boolean(kbEditTurn.reply?.card) &&
-      kbEditTurn.blob.includes('不可以') &&
       kbEditTurn.blob.includes('Admin') &&
       !kbEditTurn.blob.includes('建议严重度') &&
       !kbEditTurn.blob.includes('Skills 命中') &&
       !kbEditTurn.blob.includes('FIN-03') &&
-      !kbEditTurn.blob.includes('MARK-02'),
+      !kbEditTurn.blob.includes('MARK-02') &&
+      !kbEditTurn.blob.includes('数据库 / API / MCP'),
     kbEditTurn.blob.slice(0, 220),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const kbConfirmTurn = await turn('kb-edit-confirm-q', kbEditConfirmQ)
+  record(
+    'turn.kb_edit_confirm_direct',
+    Boolean(kbConfirmTurn.reply?.card) &&
+      kbConfirmTurn.blob.includes('Admin') &&
+      !kbConfirmTurn.blob.includes('相关知识摘录') &&
+      !kbConfirmTurn.blob.includes('数据库 / API / MCP') &&
+      !kbConfirmTurn.blob.includes('可能出现的风险／监控告警指标清单'),
+    kbConfirmTurn.blob.slice(0, 220),
   )
 
   // 9a2) Inaccessible access → contact @Yan Haixiang

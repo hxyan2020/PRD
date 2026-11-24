@@ -29,10 +29,10 @@ const BOT_META_RE =
 
 /**
  * Desk product FAQ: roles / who can edit Skills or knowledge.
- * Must NOT fall through to investigate-style Skills+severity dumps.
+ * Must NOT fall through to investigate-style Skills+severity dumps or random KB excerpts.
  */
 const DESK_FAQ_RE =
-  /(一般用户|普通用户|一般用戶|普通用戶|普通账号|普通帳號|一般账号|一般帳號|\bops\b|\banalyst\b|非管理员|非管理員).{0,24}(编辑|編輯|修改|改|写|寫|创建|刪除).{0,24}(知识库|知識庫|skills?|技能|rag|记忆|記憶)|(编辑|編輯|修改|改|写|寫).{0,16}(知识库|知識庫|skills?|技能).{0,16}(权限|權限|吗|嗎|可以|能不能|能否)|(谁|誰|who).{0,16}(能|可以|可).{0,8}(编辑|編輯|改|写|寫).{0,16}(知识库|知識庫|skills?|技能)|only\s+admin.{0,24}(edit|write).{0,24}(knowledge|skills?)|can\s+(a\s+)?(general|normal|regular|ops|analyst)\s*(user)?s?\s+(edit|write|change).{0,24}(knowledge|skills?|kb)|who\s+can\s+(edit|write).{0,24}(knowledge|skills?|kb)|(知识库|知識庫|skills?).{0,12}(只读|只讀|readonly|read-?only)/i
+  /(一般用户|普通用户|一般用戶|普通用戶|普通账号|普通帳號|一般账号|一般帳號|\bops\b|\banalyst\b|非管理员|非管理員).{0,24}(编辑|編輯|修改|更改|改|写|寫|创建|刪除).{0,24}(知识库|知識庫|skills?|技能|rag|记忆|記憶)|(编辑|編輯|修改|更改|改|写|寫).{0,16}(知识库|知識庫|skills?|技能).{0,16}(权限|權限|吗|嗎|可以|能不能|能否|？|\?)|(谁|誰|who).{0,16}(能|可以|可).{0,8}(编辑|編輯|更改|改|写|寫).{0,16}(知识库|知識庫|skills?|技能)|(只有|仅有|僅有|就我|只有我|仅我|僅我|就只有).{0,16}(能|可以|可).{0,10}(编辑|編輯|更改|修改|改|写|寫).{0,16}(知识库|知識庫|skills?|技能)|(确定|確定|是不是|对吗|對嗎|真的|sure).{0,24}(编辑|編輯|更改|修改|改|写|寫).{0,16}(知识库|知識庫|skills?|技能)|(知识库|知識庫|skills?).{0,16}(谁|誰).{0,10}(编辑|編輯|更改|改|写|寫)|only\s+admin.{0,24}(edit|write|change).{0,24}(knowledge|skills?)|can\s+only\s+i\s+(edit|write|change).{0,24}(knowledge|skills?|kb)|only\s+i\s+can\s+(edit|write|change).{0,24}(knowledge|skills?|kb)|can\s+(a\s+)?(general|normal|regular|ops|analyst)\s*(user)?s?\s+(edit|write|change).{0,24}(knowledge|skills?|kb)|who\s+can\s+(edit|write|change).{0,24}(knowledge|skills?|kb)|(知识库|知識庫|skills?).{0,12}(只读|只讀|readonly|read-?only|权限|權限)/i
 
 /** Alert / incident evidence — OK to attach Skills retrieval + severity. */
 const INCIDENT_EVIDENCE_RE =
@@ -252,35 +252,35 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
     return [
       '🔐 **桌面权限说明**',
       '',
-      '• **结论：** **不可以。** 一般用户／Ops／Analyst **不能编辑** 知识库或 Skills。',
-      '• **可写角色：** 仅 **Admin** 可创建／编辑 Skills、RAG 知识库及相关覆盖项。',
-      '• **只读角色：** Ops／Analyst／一般用户可 **查看** 知识库与 Skills，并仍可做 **investigate** 排查。',
+      '• **结论：** 知识库／Skills **仅 Admin 可写**；一般用户／Ops／Analyst **不能编辑**。',
+      '• **“只有我能改吗？”** 若你的账号是 **Admin**，则只有 Admin（含你）能改；否则你也改不了。',
+      '• **只读角色：** Ops／Analyst／一般用户可 **查看** 知识库与 Skills，并仍可做 **investigate**。',
       '• **需要开通 Admin：** 请联系 **@Yan Haixiang**。',
       '',
-      '_桌面页：https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+      '_桌面页：[知识库](https://vex-llm-proxy.vercel.app/#/knowledge) · [Skills](https://vex-llm-proxy.vercel.app/#/skills)_',
     ].join('\n')
   }
   if (lang === 'zh-Hant') {
     return [
       '🔐 **桌面權限說明**',
       '',
-      '• **結論：** **不可以。** 一般用戶／Ops／Analyst **不能編輯** 知識庫或 Skills。',
-      '• **可寫角色：** 僅 **Admin** 可建立／編輯 Skills、RAG 知識庫及相關覆蓋項。',
-      '• **只讀角色：** Ops／Analyst／一般用戶可 **查看** 知識庫與 Skills，並仍可做 **investigate** 排查。',
+      '• **結論：** 知識庫／Skills **僅 Admin 可寫**；一般用戶／Ops／Analyst **不能編輯**。',
+      '• **「只有我能改嗎？」** 若你的帳號是 **Admin**，則只有 Admin（含你）能改；否則你也改不了。',
+      '• **只讀角色：** Ops／Analyst／一般用戶可 **查看** 知識庫與 Skills，並仍可做 **investigate**。',
       '• **需要開通 Admin：** 請聯繫 **@Yan Haixiang**。',
       '',
-      '_桌面頁：https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+      '_桌面頁：[知識庫](https://vex-llm-proxy.vercel.app/#/knowledge) · [Skills](https://vex-llm-proxy.vercel.app/#/skills)_',
     ].join('\n')
   }
   return [
     '🔐 **Desk permissions**',
     '',
-    '• **Answer:** **No.** General / Ops / Analyst users **cannot edit** the knowledge base or Skills.',
-    '• **Write access:** **Admin only** can create/edit Skills, RAG knowledge, and related overrides.',
+    '• **Answer:** Knowledge / Skills are **Admin-write only**. General / Ops / Analyst **cannot edit**.',
+    '• **“Only I can change it?”** If your account is **Admin**, then only Admins (including you) can edit; otherwise you cannot either.',
     '• **Read access:** Ops / Analyst / general users can **view** knowledge & Skills and still run **investigate**.',
     '• **Need Admin:** contact **@Yan Haixiang**.',
     '',
-    '_Desk: https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+    '_Desk: [Knowledge](https://vex-llm-proxy.vercel.app/#/knowledge) · [Skills](https://vex-llm-proxy.vercel.app/#/skills)_',
   ].join('\n')
 }
 
