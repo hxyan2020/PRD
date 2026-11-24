@@ -15,9 +15,11 @@ import {
   greetingOpenForHour,
   greetingReply,
   isDeskFaqQuestion,
+  isLarkWikiQuestion,
   looksLikeIncidentEvidence,
   needsInaccessibleAccess,
 } from '../api/lark/_lib/scope'
+import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import {
   buildWeeklyReport,
   shanghaiWeekKey,
@@ -513,6 +515,46 @@ async function main() {
       weeklyTurn.blob.includes('周报') &&
       weeklyTurn.blob.includes('Yan Haixiang'),
     weeklyTurn.blob.slice(0, 160),
+  )
+
+  // 9a4) AIPO Lark Wiki / Docs ask (read-only; soft-fail → @Yan when scopes missing)
+  record('aipo.wiki_detect', isLarkWikiQuestion('查一下飞书文档 Mark Price'), '')
+  record('aipo.wiki_not_desk_kb', !isLarkWikiQuestion('knowledge'), '')
+  record('aipo.wiki_query_extract', extractWikiQuery('请查一下飞书文档 Mark vs Index').includes('Mark'), extractWikiQuery('请查一下飞书文档 Mark vs Index'))
+  clearSession('smoke_chat', 'smoke_user')
+  const wikiTurn = await turn('wiki-ask', '查一下飞书文档 Mark Price SOP')
+  record(
+    'turn.aipo_wiki_yan_or_hits',
+    Boolean(wikiTurn.reply?.card) &&
+      (wikiTurn.blob.includes('Yan Haixiang') ||
+        wikiTurn.blob.includes('Wiki') ||
+        wikiTurn.blob.includes('文档') ||
+        wikiTurn.blob.includes('文檔')),
+    wikiTurn.blob.slice(0, 200),
+  )
+
+  // 9a5) AIPO evidence grades appear on investigate summary (later polish preserved)
+  clearSession('smoke_chat', 'smoke_user')
+  const invAipo = await turn('aipo-investigate', 'investigate IDX-01 excluded, Mark deviation 48bps')
+  record(
+    'turn.aipo_evidence_grades',
+    Boolean(invAipo.reply?.card) &&
+      (invAipo.blob.includes('已证实') ||
+        invAipo.blob.includes('Confirmed') ||
+        invAipo.blob.includes('[OBS]')) &&
+      invAipo.blob.includes('只读'),
+    invAipo.blob.slice(0, 220),
+  )
+  const greetLater = greetingReply('zh-Hans')
+  record(
+    'later.greeting_keeps_weekly_and_uat',
+    greetLater.includes('weekly') &&
+      greetLater.includes('周报') &&
+      greetLater.includes('Yan Haixiang') &&
+      greetLater.includes('UAT') &&
+      !greetLater.includes('截图欢迎直接丢过来') &&
+      greetLater.includes('wiki'),
+    greetLater.slice(0, 120),
   )
 
   // 9b) Skills / knowledge catalogue cards
