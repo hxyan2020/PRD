@@ -100,9 +100,9 @@ const COMMAND_REVIEW =
 const COMMAND_HELP = /^(help|帮助|幫助)\b/i
 const COMMAND_DONE = /^(done|完成|结束排查|結束排查|reset|重置)\b/i
 const COMMAND_SKILLS =
-  /^(skills?|skill\s*list|技能|技能库|技能庫|查看\s*skills?|看\s*skills?)\b/i
+  /^(skills?|skill\s*list|技能|技能库|技能庫|查看\s*skills?|看\s*skills?)\b|(有哪些|列出|查看|打开|打開).{0,8}(排查场景|排查場景|skills?|技能)|(排查场景|排查場景|技能目录|技能目錄)\s*(有哪些|列表|目录|目錄)?\s*$/i
 const COMMAND_KNOWLEDGE =
-  /^(knowledge|kb|rag|知识库|知識庫|知识|知識|查看\s*(知识库|知識庫|kb|rag)|看\s*(知识库|知識庫))\b/i
+  /^(knowledge|kb|rag|知识库|知識庫|知识|知識|查看\s*(知识库|知識庫|kb|rag)|看\s*(知识库|知識庫))\b|(打开|打開|查看|列出).{0,8}(知识库|知識庫|rag)|(知识库|知識庫)\s*(目录|目錄|列表)?\s*$/i
 /** On-demand weekly digest (also cron-pushed Fridays 16:00 CST). */
 const COMMAND_WEEKLY =
   /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
@@ -343,7 +343,8 @@ export function greetingReply(lang: Lang): string {
     return [
       intros[variant]!,
       '',
-      '下面是我能做的事。**触发统一规则：群聊 @我 + 关键词；私聊直接说关键词。**',
+      '下面是我能做的事。**关键词触发：群聊 @我 + 关键词；私聊直接说关键词。**',
+      '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
       '',
       '• 📈 **market** — 市况／XAUUSD 趋势',
       '',
@@ -376,7 +377,8 @@ export function greetingReply(lang: Lang): string {
     return [
       intros[variant]!,
       '',
-      '下面是我能做的事。**觸發統一規則：群聊 @我 + 關鍵詞；私聊直接說關鍵詞。**',
+      '下面是我能做的事。**關鍵詞觸發：群聊 @我 + 關鍵詞；私聊直接說關鍵詞。**',
+      '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
       '',
       '• 📈 **market** — 市況／XAUUSD 趨勢',
       '',
@@ -408,7 +410,8 @@ export function greetingReply(lang: Lang): string {
   return [
     intros[variant]!,
     '',
-    'Here’s what I can do. **Trigger rule: group = @me + keyword; DM = just say the keyword.**',
+    'Here’s what I can do. **Keywords: group = @me + keyword; DM = just say the keyword.**',
+    '**Natural language / paste alerts / screenshots / tables also work** (keywords not required).',
     '',
     '• 📈 **market** — XAUUSD / gold market trends',
     '',
@@ -437,7 +440,8 @@ export function helpReply(lang: Lang): string {
     return [
       '你好 🙂 我是 **V Exchange Risk Copilot**（Lark）。',
       '',
-      '**触发统一规则：群聊 @我 + 关键词；私聊直接说关键词。**',
+      '**关键词触发：群聊 @我 + 关键词；私聊直接说关键词。**',
+      '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
       '',
       '• 📈 **market** — 市况／趋势',
       '• 🔍 **investigate** — 贴告警／截图／表格排查',
@@ -456,7 +460,8 @@ export function helpReply(lang: Lang): string {
     return [
       '你好 🙂 我是 **V Exchange Risk Copilot**（Lark）。',
       '',
-      '**觸發統一規則：群聊 @我 + 關鍵詞；私聊直接說關鍵詞。**',
+      '**關鍵詞觸發：群聊 @我 + 關鍵詞；私聊直接說關鍵詞。**',
+      '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
       '',
       '• 📈 **market** — 市況／趨勢',
       '• 🔍 **investigate** — 貼告警／截圖／表格排查',
@@ -474,7 +479,8 @@ export function helpReply(lang: Lang): string {
   return [
     'Hi 🙂 I’m **V Exchange Risk Copilot** on Lark.',
     '',
-    '**Trigger rule: group = @me + keyword; DM = just say the keyword.**',
+    '**Keywords: group = @me + keyword; DM = just say the keyword.**',
+    '**Natural language / paste alerts / screenshots / tables also work** (keywords not required).',
     '',
     '• 📈 **market** — market trends',
     '• 🔍 **investigate** — paste alert / screenshot / table',

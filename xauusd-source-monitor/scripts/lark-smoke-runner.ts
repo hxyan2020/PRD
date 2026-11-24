@@ -248,14 +248,20 @@ async function main() {
   record('greeting.17h_is_afternoon_en', greetingOpenForHour('en', 17) === 'Good afternoon', '')
   record('greeting.18h_is_evening_zh', greetingOpenForHour('zh-Hans', 18) === '晚上好', '')
 
-  // 6) Greeting card: bold + spaced bullets + unified trigger rule
+  // 6) Greeting card: bold + spaced bullets + keyword + natural-language triggers
   for (const lang of ['en', 'zh-Hans', 'zh-Hant'] as const) {
     const g = greetingReply(lang)
     const triggerHint =
       lang === 'en'
-        ? g.includes('group = @me + keyword') && g.includes('**market**')
-        : (g.includes('群聊') && g.includes('@我') && (g.includes('触发') || g.includes('觸發'))) ||
-          (g.includes('群聊') && g.includes('@我'))
+        ? g.includes('group = @me + keyword') &&
+          g.includes('**market**') &&
+          (g.includes('Natural language') || g.includes('keywords not required'))
+        : g.includes('群聊') &&
+          g.includes('@我') &&
+          (g.includes('自然语言') ||
+            g.includes('自然語言') ||
+            g.includes('不必先打出关键词') ||
+            g.includes('不必先打出關鍵詞'))
     const noScreenshotPitch =
       !g.includes('截图欢迎') && !g.includes('截圖歡迎') && !g.includes('Screenshots welcome')
     const noApprovalPitch =
@@ -279,6 +285,24 @@ async function main() {
       g.slice(0, 120),
     )
   }
+  record(
+    'intent.skills_natural_zh',
+    classifyIntent('有哪些排查场景', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'skills',
+    '',
+  )
+  record(
+    'intent.knowledge_natural_zh',
+    classifyIntent('打开知识库', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'knowledge',
+    '',
+  )
 
   clearSession('smoke_chat', 'smoke_user')
   const greet = await turn('greeting', 'hi')
@@ -294,6 +318,7 @@ async function main() {
         greetBlob.includes('UAT') &&
         greetBlob.includes('Yan Haixiang') &&
         greetBlob.includes('@me + keyword') &&
+        (greetBlob.includes('Natural language') || greetBlob.includes('keywords not required')) &&
         greetBlob.includes('lark_md') &&
         greetBlob.includes('[Skills](https://vex-llm-proxy.vercel.app/#/skills)') &&
         greetBlob.includes('[Knowledge](https://vex-llm-proxy.vercel.app/#/knowledge)') &&
@@ -311,6 +336,7 @@ async function main() {
         greetZhBlob.includes('Risk Copilot') &&
         greetZhBlob.includes('**market**') &&
         greetZhBlob.includes('@我') &&
+        (greetZhBlob.includes('自然语言') || greetZhBlob.includes('不必先打出关键词')) &&
         greetZhBlob.includes('[Skills](https://vex-llm-proxy.vercel.app/#/skills)') &&
         greetZhBlob.includes('[知识库](https://vex-llm-proxy.vercel.app/#/knowledge)') &&
         !greetZhBlob.includes('截图欢迎') &&
