@@ -995,17 +995,39 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   // Normal / “random” Q&A: answer first; only attach highly relevant KB (never dump weak hits)
   const relevantKb = pickRelevantKb(workingText, kb)
 
-  // No local KB → auto search only for substantive questions (never banter like「我帅不」→彭帅)
+  // No local KB → auto search for substantive / venue questions (never banter like「我帅不」→彭帅)
   if (!relevantKb.length) {
-    if (!shouldAutoWebSearch(workingText) || isCasualBanter(workingText)) {
+    if (isCasualBanter(workingText)) {
       const banter =
         casualChatReply(lang, workingText) ||
         (lang === 'zh-Hans'
-          ? '😄 收到。我更擅长行情、告警和风控知识——有这类问题直接问我就好。'
+          ? '😄 你很行——不过我更擅长看行情和排告警。有 XAUUSD／风控问题随时丢过来。'
           : lang === 'zh-Hant'
-            ? '😄 收到。我更擅長行情、告警和風控知識——有這類問題直接問我就好。'
-            : '😄 Got it. I’m best at markets, alerts, and risk knowledge — ask me those anytime.')
+            ? '😄 你很行——不過我更擅長看行情和排告警。有 XAUUSD／風控問題隨時丟過來。'
+            : '😄 You’re doing fine — I’m better at markets and alerts. Ping me on XAUUSD / risk anytime.')
       return { card: simpleCard(replyTitle, banter, 'blue') }
+    }
+    if (!shouldAutoWebSearch(workingText)) {
+      // Short non-banter with no venue/risk cue — try LLM, else gentle redirect (not fake “收到”)
+      const llmSoft = await enrichWithLlm({
+        lang,
+        question: workingText,
+        context:
+          'Short free-text. If it is about exchanges/markets/risk, answer briefly. Otherwise one warm line redirecting to XAUUSD / alerts. Do not invent news.',
+        temperature: 0.5,
+      })
+      if (llmSoft) return { card: simpleCard(replyTitle, llmSoft, 'blue') }
+      return {
+        card: simpleCard(
+          replyTitle,
+          lang === 'zh-Hans'
+            ? '可以说具体一点——比如某个交易所、合约，或贴一条告警，我来帮你看。'
+            : lang === 'zh-Hant'
+              ? '可以說具體一點——比如某個交易所、合約，或貼一條告警，我來幫你看。'
+              : 'Say a bit more — e.g. an exchange, a contract, or paste an alert — and I’ll dig in.',
+          'blue',
+        ),
+      }
     }
     const searched = await searchWeb(workingText, lang)
     if (searched.hits.length) {

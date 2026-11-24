@@ -687,6 +687,8 @@ async function main() {
   record('casual.detect_who_you', isCasualChat('你是谁'), '')
   record('casual.detect_handsome', isCasualChat('我帅不') && isCasualBanter('我帅不'), '')
   record('casual.no_search_handsome', !shouldAutoWebSearch('我帅不'), '')
+  record('venue.search_binance_short', shouldAutoWebSearch('币安你知道吗') && !isCasualBanter('币安你知道吗'), '')
+  record('venue.intent_binance_qa', classifyIntent('币安你知道吗', {}) === 'general_risk', '')
   record('casual.intent_who_me', classifyIntent('我是谁', {}) === 'general_risk', '')
   const whoMeTpl = casualChatReply('zh-Hans', '我是谁', null) || ''
   record(
@@ -730,6 +732,34 @@ async function main() {
       !handsome.blob.includes('检索摘要') &&
       (handsome.blob.includes('行情') || handsome.blob.includes('告警') || handsome.blob.includes('😄')),
     handsome.blob.slice(0, 220),
+  )
+
+  // Short venue ask「币安你知道吗」must answer (search/LLM), not soft banter redirect
+  const binanceSearch = await searchWeb('币安你知道吗', 'zh-Hans')
+  record(
+    'search.binance_hits',
+    binanceSearch.ok &&
+      binanceSearch.hits.some((h) => /binance|币安|幣安/i.test(`${h.title} ${h.url} ${h.snippet}`)),
+    binanceSearch.hits
+      .slice(0, 2)
+      .map((h) => h.title)
+      .join(' | ') ||
+      binanceSearch.error ||
+      'no hits',
+  )
+  clearSession('smoke_chat', 'venue_zh')
+  const binanceTurn = await turn('venue-binance', '币安你知道吗', 'venue_zh')
+  record(
+    'turn.binance_answers_not_soft_banter',
+    Boolean(binanceTurn.reply?.card) &&
+      !/更擅长行情、告警和风控知识|更擅長行情、告警和風控知識|Got it\. I’m best at markets|暂时没拉到可用条目|暫時沒拉到可用條目/i.test(
+        binanceTurn.blob,
+      ) &&
+      /币安|幣安|Binance/i.test(binanceTurn.blob) &&
+      (/数据源|資料來源|Sources|wikipedia|交易所|加密/i.test(binanceTurn.blob) ||
+        binanceTurn.blob.includes('检索') ||
+        binanceTurn.blob.includes('檢索')),
+    binanceTurn.blob.slice(0, 280),
   )
 
   // 9a0b) No local KB → auto web search with sources (never “没有匹配知识库” / meta principles dump)

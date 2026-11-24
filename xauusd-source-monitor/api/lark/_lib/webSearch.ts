@@ -40,6 +40,13 @@ function expandQueries(question: string, lang: Lang): string[] {
     if (lang !== 'en') out.push('永续期货', '永续合约')
     out.push('perpetual futures', 'perpetual swap')
   }
+  if (/币安|幣安|\bbinance\b/i.test(q)) {
+    out.push('Binance', '幣安', '币安')
+  }
+  if (/\bokx\b|欧易|歐易/i.test(q)) out.push('OKX', '欧易')
+  if (/\bbybit\b/i.test(q)) out.push('Bybit')
+  if (/\bkraken\b/i.test(q)) out.push('Kraken')
+  if (/\bbitget\b/i.test(q)) out.push('Bitget')
   if (/funding|资金费率|資金費率/.test(lower) || /资金费率|資金費率/.test(q)) {
     out.push('funding rate', '资金费率')
   }
@@ -60,6 +67,15 @@ function expandQueries(question: string, lang: Lang): string[] {
     .slice(0, 5)
 }
 
+/** Venue aliases so 币安 ↔ 幣安 ↔ Binance (and peers) score as the same entity. */
+const VENUE_ALIASES: { cue: RegExp; tokens: string[] }[] = [
+  { cue: /币安|幣安|\bbinance\b/i, tokens: ['binance', '币安', '幣安'] },
+  { cue: /\bokx\b|欧易|歐易/i, tokens: ['okx', '欧易', '歐易'] },
+  { cue: /\bbybit\b/i, tokens: ['bybit'] },
+  { cue: /\bkraken\b/i, tokens: ['kraken'] },
+  { cue: /\bbitget\b/i, tokens: ['bitget'] },
+]
+
 /** Meaningful query tokens (len≥2); ignore single CJK chars that cause 帅→彭帅 collisions. */
 function queryTokens(question: string): string[] {
   const q = question.toLowerCase().trim()
@@ -72,7 +88,32 @@ function queryTokens(question: string): string[] {
     if (run.length >= 2) out.add(run)
     for (let i = 0; i + 1 < run.length; i++) out.add(run.slice(i, i + 2))
   }
-  for (const stop of ['什么', '什麼', '怎么', '怎麼', '如何', '请问', '請問', '一下', '这个', '這個', '是不是']) {
+  for (const { cue, tokens } of VENUE_ALIASES) {
+    if (cue.test(question)) for (const t of tokens) out.add(t.toLowerCase())
+  }
+  for (const stop of [
+    '什么',
+    '什麼',
+    '怎么',
+    '怎麼',
+    '如何',
+    '请问',
+    '請問',
+    '一下',
+    '这个',
+    '這個',
+    '是不是',
+    '知道',
+    '知道吗',
+    '知道嗎',
+    '你知',
+    '你知道',
+    '你知道吗',
+    '你知道嗎',
+    '认识',
+    '認識',
+    '了解',
+  ]) {
     out.delete(stop)
   }
   return [...out].filter((t) => t.length >= 2)
@@ -115,14 +156,30 @@ function relevanceScore(question: string, hit: WebHit): number {
     'xau',
     '黄金',
     '黃金',
+    'binance',
+    '币安',
+    '幣安',
+    'okx',
+    'bybit',
+    'kraken',
+    'bitget',
+    '交易所',
   ]
   for (const n of needles) {
     if (q.includes(n) && hay.includes(n)) score += n.length >= 4 ? 4 : 3
+  }
+  // Cross-script venue needles (query 币安 ↔ title 幣安 / Binance)
+  for (const { cue, tokens } of VENUE_ALIASES) {
+    if (!cue.test(question)) continue
+    if (tokens.some((t) => hay.includes(t.toLowerCase()))) score += 6
   }
   if (/永续期货|perpetual futures/i.test(hit.title) && /永续|perpetual/i.test(q)) score += 12
   if (/合约|合約|futures|perp|期货|期貨/.test(q) && /永续期货|perpetual futures|perpetual swap/i.test(hit.title)) {
     score += 10
   }
+  if (/币安|幣安|binance/i.test(q) && /binance|币安|幣安/i.test(hit.title)) score += 14
+  if (/\bokx\b|欧易|歐易/i.test(q) && /okx|欧易|歐易/i.test(hit.title)) score += 14
+  if (/\bbybit\b/i.test(q) && /bybit/i.test(hit.title)) score += 14
   // Celebrity / scandal / ESG noise
   if (
     /彭帅|彭帥|张高丽|張高麗|性丑闻|性醜聞|振永|鄭秀晶|郑秀晶|偶像|音樂|音乐|电视剧|電視劇|可持续发展|可持續發展|sustainable development/i.test(
@@ -134,7 +191,10 @@ function relevanceScore(question: string, hit: WebHit): number {
   return score
 }
 
-/** Only auto-search substantive product / risk questions — never banter like「我帅不」. */
+const RISK_OR_VENUE_RE =
+  /永续|永續|合约|合約|funding|mark|index|强平|強平|adl|风险|風險|告警|黄金|黃金|xau|perp|币安|幣安|binance|okx|bybit|kraken|bitget|kitco|交易所|exchange|友商|报价|報價|基差|bps/i
+
+/** Only auto-search substantive product / risk / venue questions — never banter like「我帅不」. */
 export function shouldAutoWebSearch(question: string): boolean {
   const t = question.trim()
   if (!t || t.length < 2) return false
@@ -146,9 +206,9 @@ export function shouldAutoWebSearch(question: string): boolean {
   ) {
     return false
   }
-  if (t.length <= 8 && !/永续|永續|合约|合約|funding|mark|index|强平|強平|adl|风险|風險|告警|黄金|黃金|xau|perp/i.test(t)) {
-    return false
-  }
+  // Venue / product asks like「币安你知道吗」are always searchable
+  if (RISK_OR_VENUE_RE.test(t)) return true
+  if (t.length <= 8) return false
   return true
 }
 
