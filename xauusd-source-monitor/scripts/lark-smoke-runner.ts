@@ -161,52 +161,62 @@ async function main() {
   })
   record('parse.dm_always_respond', Boolean(dm && shouldRespond(dm)), '')
 
-  // 6) Greeting natural (not command dump)
+  // 6) Greeting card: bold + spaced bullets + how-to-trigger each command
   for (const lang of ['en', 'zh-Hans', 'zh-Hant'] as const) {
     const g = greetingReply(lang)
+    const triggerHint =
+      lang === 'en'
+        ? g.includes('Trigger:') && g.includes('**market**')
+        : g.includes('触发') || g.includes('觸發')
     record(
       `greeting.template_${lang}`,
       g.includes('Risk Copilot') &&
-        !g.includes('**') &&
-        !g.includes('`') &&
-        g.includes('market') &&
+        g.includes('**market**') &&
         g.includes('investigate') &&
+        g.includes('\n\n') &&
+        triggerHint &&
         /📈|🔍|📊/.test(g),
-      g.slice(0, 100),
+      g.slice(0, 120),
     )
   }
 
   clearSession('smoke_chat', 'smoke_user')
   const greet = await turn('greeting', 'hi')
+  const greetBlob = JSON.stringify(greet.reply || {})
   record(
     'turn.greeting_en',
     Boolean(
-      greet.reply?.text?.includes('Risk Copilot') &&
-        !greet.reply.text.includes('**') &&
-        greet.reply.text.includes('market') &&
-        greet.reply.text.includes('investigate'),
+      greet.reply?.card &&
+        greetBlob.includes('Risk Copilot') &&
+        greetBlob.includes('**market**') &&
+        greetBlob.includes('Trigger:') &&
+        greetBlob.includes('lark_md'),
     ),
-    '',
+    greetBlob.slice(0, 160),
   )
   const greetZh = await turn('greeting-zh', '你好', 'greet_zh')
+  const greetZhBlob = JSON.stringify(greetZh.reply || {})
   record(
     'turn.greeting_zh',
     Boolean(
-      (greetZh.reply?.text?.includes('Risk Copilot') || greetZh.reply?.text?.includes('风险')) &&
-        !greetZh.reply?.text?.includes('**') &&
-        greetZh.reply?.text?.includes('market'),
+      greetZh.reply?.card &&
+        greetZhBlob.includes('Risk Copilot') &&
+        greetZhBlob.includes('**market**') &&
+        (greetZhBlob.includes('触发') || greetZhBlob.includes('觸發')),
     ),
-    '',
+    greetZhBlob.slice(0, 160),
   )
   const help = await turn('help', 'help')
+  const helpBlob = JSON.stringify(help.reply || {})
   record(
     'turn.help',
     Boolean(
-      help.reply?.text?.includes('market') &&
-        help.reply?.text?.includes('investigate') &&
-        !help.reply?.text?.includes('**'),
+      help.reply?.card &&
+        helpBlob.includes('**market**') &&
+        helpBlob.includes('investigate') &&
+        helpBlob.includes('lark_md'),
     ),
-    '',
+    helpBlob.slice(0, 160),
   )
 
   // 7) Offtopic + safety turns
@@ -428,14 +438,14 @@ async function main() {
     `hits=${sample.hits.length} kb=${sample.kb.length}`,
   )
   record(
-    'format.rag_answer_no_markdown',
-    !formatted.includes('**') && !formatted.includes('`') && !formatted.includes('__'),
+    'format.rag_answer_keeps_bold',
+    formatted.includes('**') && formatted.includes('🧩'),
     formatted.slice(0, 120),
   )
 
   const { toPlainText, plainCard } = await import('../api/lark/_lib/plain')
   record(
-    'plain.strip_markdown',
+    'plain.strip_markdown_text_only',
     toPlainText('🔎 **Judgement**\n• **Cause:** x `y`\n[Open](https://example.com)') ===
       '🔎 Judgement\n• Cause: x y\nOpen (https://example.com)',
     toPlainText('🔎 **Judgement**\n• **Cause:** x `y`\n[Open](https://example.com)').slice(0, 120),
@@ -444,9 +454,8 @@ async function main() {
     elements: [{ tag: 'div', text: { tag: 'lark_md', content: '• **Severity:** **P1**' } }],
   }) as { elements: { text: { content: string; tag: string } }[] }
   record(
-    'plain.card_no_markdown',
-    !JSON.stringify(cardSample).includes('**') &&
-      cardSample.elements[0].text.content.includes('Severity') &&
+    'plain.card_keeps_lark_md_bold',
+    cardSample.elements[0].text.content.includes('**Severity:**') &&
       cardSample.elements[0].text.tag === 'lark_md',
     JSON.stringify(cardSample.elements[0].text),
   )

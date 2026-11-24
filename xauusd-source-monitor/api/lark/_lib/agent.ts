@@ -1,5 +1,5 @@
-import { investigationCard, reviewCard, simpleCard } from './cards.js'
 import { downloadMessageImage } from './client.js'
+import { greetingCard, helpCard, investigationCard, reviewCard, simpleCard } from './cards.js'
 import { chatComplete, describeImage } from './llm.js'
 import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
@@ -62,37 +62,40 @@ function buildSummary(args: {
         : 'none'
   if (hans) {
     return [
-      '📋 摘要',
-      `• 已摄入事实／证据：${args.facts.length}`,
-      `• Skills 命中：${hitLine}`,
-      `• 知识库：${kbLine}`,
+      '📋 **摘要**',
+      '',
+      `• **已摄入事实／证据：** **${args.facts.length}**`,
+      `• **Skills 命中：** **${hitLine}**`,
+      `• **知识库：** **${kbLine}**`,
       args.adapted
-        ? '• 指引：下一步已依你最新回复／证据重新排序（非机械整份清单）'
-        : '• 指引：请回复你查到的结果或贴上新证据，我会调整建议',
-      '• 边界：内部 admin／DB 检索属后续阶段；我不会编造生产数据',
+        ? '• **指引：** 下一步已依你最新回复／证据重新排序（非机械整份清单）'
+        : '• **指引：** 请回复你查到的结果或贴上新证据，我会调整建议',
+      '• **边界：** 内部 admin／DB 检索属后续阶段；我不会编造生产数据',
     ].join('\n')
   }
   if (hant) {
     return [
-      '📋 摘要',
-      `• 已攝入事實／證據：${args.facts.length}`,
-      `• Skills 命中：${hitLine}`,
-      `• 知識庫：${kbLine}`,
+      '📋 **摘要**',
+      '',
+      `• **已攝入事實／證據：** **${args.facts.length}**`,
+      `• **Skills 命中：** **${hitLine}**`,
+      `• **知識庫：** **${kbLine}**`,
       args.adapted
-        ? '• 指引：下一步已依你最新回覆／證據重新排序（非機械整份清單）'
-        : '• 指引：請回覆你查到的結果或貼上新證據，我會調整建議',
-      '• 邊界：內部 admin／DB 檢索屬後續階段；我不會編造生產數據',
+        ? '• **指引：** 下一步已依你最新回覆／證據重新排序（非機械整份清單）'
+        : '• **指引：** 請回覆你查到的結果或貼上新證據，我會調整建議',
+      '• **邊界：** 內部 admin／DB 檢索屬後續階段；我不會編造生產數據',
     ].join('\n')
   }
   return [
-    '📋 Summary',
-    `• Facts ingested: ${args.facts.length}`,
-    `• Skills hit: ${hitLine}`,
-    `• Knowledge: ${kbLine}`,
+    '📋 **Summary**',
+    '',
+    `• **Facts ingested:** **${args.facts.length}**`,
+    `• **Skills hit:** **${hitLine}**`,
+    `• **Knowledge:** **${kbLine}**`,
     args.adapted
-      ? '• Guidance: Next steps re-ranked from your latest replies/evidence (not a full dump)'
-      : '• Guidance: Reply with findings or new evidence and I’ll adapt',
-    '• Bounds: Internal admin/DB retrieval is a later phase — I will not invent production data',
+      ? '• **Guidance:** Next steps re-ranked from your latest replies/evidence (not a full dump)'
+      : '• **Guidance:** Reply with findings or new evidence and I’ll adapt',
+    '• **Bounds:** Internal admin/DB retrieval is a later phase — I will not invent production data',
   ].join('\n')
 }
 
@@ -383,11 +386,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   })
 
   if (intent === 'greeting' || intent === 'ack_mention') {
-    return { text: greetingReply(lang) }
+    return { card: greetingCard(lang, greetingReply(lang)) }
   }
 
   if (intent === 'help') {
-    return { text: helpReply(lang) }
+    return { card: helpCard(lang, helpReply(lang)) }
   }
 
   if (intent === 'safety') {

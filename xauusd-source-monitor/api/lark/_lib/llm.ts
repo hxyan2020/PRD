@@ -5,7 +5,7 @@ import {
   SAFETY_SYSTEM_RULES_ZH_HANT,
   scrubOutgoing,
 } from './safety.js'
-import { toPlainText } from './plain.js'
+import { cleanLarkMd } from './plain.js'
 import type { Lang } from './types.js'
 
 const SYSTEM_EN = `You are V Exchange Risk Copilot on Lark — friendly, professional, concise.
@@ -17,7 +17,7 @@ Rules:
 - Adapt investigation steps to the user's latest evidence — do not dump a mechanical full checklist.
 - If off-topic, politely redirect to V Exchange risk management.
 - Prefer short chat-friendly replies.
-- Formatting (required): plain text only — no markdown at all (no **, __, backticks, # headings, or [text](url)). Use light emoji section headers and keyword bullets, e.g. "🔎 Judgement" then "• Cause: …" / "✅ Next: …". Do not spam emoji; 1 emoji per section max.
+- Formatting (required for Lark cards): use light emoji section headers and bold-keyword bullets with blank lines between sections, e.g. "🔎 **Judgement**" then "• **Cause:** …" / "✅ **Next:** …". Do not spam emoji; 1 emoji per section max. Avoid # headings.
 ${SAFETY_SYSTEM_RULES_EN}`
 
 const SYSTEM_ZH_HANS = `你是 Lark 上的 V Exchange Risk Copilot——语气友好、专业、简洁。
@@ -28,7 +28,7 @@ const SYSTEM_ZH_HANS = `你是 Lark 上的 V Exchange Risk Copilot——语气�
 - Preferred Action 需人工审批；不得声称已执行生产操作。
 - 依用户最新证据调整排查步骤，禁止机械贴整份 Skill 清单。
 - 离题时温柔导回 V Exchange 风险管理。
-- 可读性格式（必须）：纯文本，禁止任何 markdown 符号（不要 **、__、反引号、#、[文字](链接)）。用少量 emoji 分段标题 + 关键词子弹，例如「🔎 研判」然后「• 根因：…」／「✅ 下一步：…」。不要刷屏 emoji；每段最多 1 个。
+- 可读性格式（必须，供 Lark 卡片渲染）：用少量 emoji 分段标题 + 粗体关键词子弹，段与段之间空一行，例如「🔎 **研判**」然后「• **根因：** …」／「✅ **下一步：** …」。不要刷屏 emoji；每段最多 1 个。避免 # 标题。
 ${SAFETY_SYSTEM_RULES_ZH_HANS}`
 
 const SYSTEM_ZH_HANT = `你是 Lark 上的 V Exchange Risk Copilot——語氣友好、專業、簡潔。
@@ -39,7 +39,7 @@ const SYSTEM_ZH_HANT = `你是 Lark 上的 V Exchange Risk Copilot——語氣�
 - Preferred Action 需人工審批；不得聲稱已執行生產操作。
 - 依使用者最新證據調整排查步驟，禁止機械貼整份 Skill 清單。
 - 離題時溫柔導回 V Exchange 風險管理。
-- 可讀性格式（必須）：純文字，禁止任何 markdown 符號（不要 **、__、反引號、#、[文字](連結)）。用少量 emoji 分段標題 + 關鍵詞子彈，例如「🔎 研判」然後「• 根因：…」／「✅ 下一步：…」。不要刷屏 emoji；每段最多 1 個。
+- 可讀性格式（必須，供 Lark 卡片渲染）：用少量 emoji 分段標題 + 粗體關鍵詞子彈，段與段之間空一行，例如「🔎 **研判**」然後「• **根因：** …」／「✅ **下一步：** …」。不要刷屏 emoji；每段最多 1 個。避免 # 標題。
 ${SAFETY_SYSTEM_RULES_ZH_HANT}`
 
 function systemFor(lang: Lang): string {
@@ -82,7 +82,7 @@ export async function chatComplete(args: {
     }
     if (!r.ok) return null
     const raw = data.choices?.[0]?.message?.content?.trim() || ''
-    return raw ? toPlainText(scrubOutgoing(raw)) : null
+    return raw ? cleanLarkMd(scrubOutgoing(raw)) : null
   } catch {
     return null
   }
@@ -134,7 +134,7 @@ export async function describeImage(args: {
     }
     if (!r.ok) return null
     const raw = data.choices?.[0]?.message?.content?.trim() || ''
-    return raw ? toPlainText(scrubOutgoing(raw)) : null
+    return raw ? cleanLarkMd(scrubOutgoing(raw)) : null
   } catch {
     return null
   }

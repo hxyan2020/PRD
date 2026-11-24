@@ -69,53 +69,53 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
 export function formatMarketAnswer(snap: MarketSnapshot, lang: Lang, question: string): string {
   const lines: string[] = []
   if (lang === 'zh-Hans') {
-    lines.push('📈 市况摘要 · V Exchange Risk', '')
+    lines.push('📈 **市况摘要 · V Exchange Risk**', '')
     if (snap.okx) {
       const ch =
         snap.okx.change24hPct != null ? `（约 ${snap.okx.change24hPct.toFixed(2)}% / 24h）` : ''
-      lines.push(`• OKX XAU-USDT 最新：${snap.okx.last.toFixed(2)} ${ch}`)
+      lines.push(`• **OKX XAU-USDT 最新：** **${snap.okx.last.toFixed(2)}** ${ch}`)
     } else {
-      lines.push('• OKX 行情：暂不可用 — 请稍后重试或开网页 Market 面板')
+      lines.push('• **OKX 行情：** 暂不可用 — 请稍后重试或开网页 Market 面板')
     }
-    for (const n of snap.notes) lines.push(`• 备注：${n}`)
-    lines.push('', `❓ 针对你的问题：「${question.slice(0, 120)}」`)
+    for (const n of snap.notes) lines.push(`• **备注：** ${n}`)
+    lines.push('', `❓ **针对你的问题：** 「${question.slice(0, 120)}」`)
     lines.push(
-      '• 解读：价格异动「观察」（bps／基差／场所结构）≠「原因」（新闻／宏观）。若需事故排查，请贴告警原文或输入 investigate。',
+      '• **解读：** 价格异动「观察」（bps／基差／场所结构）≠「原因」（新闻／宏观）。若需事故排查，请贴告警原文或输入 `investigate`。',
     )
-    lines.push('', '🔗 来源')
-    for (const s of snap.sources) lines.push(`• ${s.label}：${s.url}`)
+    lines.push('', '🔗 **来源**')
+    for (const s of snap.sources) lines.push(`• **${s.label}：** ${s.url}`)
   } else if (lang === 'zh-Hant') {
-    lines.push('📈 市況摘要 · V Exchange Risk', '')
+    lines.push('📈 **市況摘要 · V Exchange Risk**', '')
     if (snap.okx) {
       const ch =
         snap.okx.change24hPct != null ? `（約 ${snap.okx.change24hPct.toFixed(2)}% / 24h）` : ''
-      lines.push(`• OKX XAU-USDT 最新：${snap.okx.last.toFixed(2)} ${ch}`)
+      lines.push(`• **OKX XAU-USDT 最新：** **${snap.okx.last.toFixed(2)}** ${ch}`)
     } else {
-      lines.push('• OKX 行情：暫不可用 — 請稍後重試或開網頁 Market 面板')
+      lines.push('• **OKX 行情：** 暫不可用 — 請稍後重試或開網頁 Market 面板')
     }
-    for (const n of snap.notes) lines.push(`• 備註：${n}`)
-    lines.push('', `❓ 針對你的問題：「${question.slice(0, 120)}」`)
+    for (const n of snap.notes) lines.push(`• **備註：** ${n}`)
+    lines.push('', `❓ **針對你的問題：** 「${question.slice(0, 120)}」`)
     lines.push(
-      '• 解讀：價格異動「觀察」（bps／基差／場所結構）≠「原因」（新聞／宏觀）。若需事故排查，請貼告警原文或輸入 investigate。',
+      '• **解讀：** 價格異動「觀察」（bps／基差／場所結構）≠「原因」（新聞／宏觀）。若需事故排查，請貼告警原文或輸入 `investigate`。',
     )
-    lines.push('', '🔗 來源')
-    for (const s of snap.sources) lines.push(`• ${s.label}：${s.url}`)
+    lines.push('', '🔗 **來源**')
+    for (const s of snap.sources) lines.push(`• **${s.label}：** ${s.url}`)
   } else {
-    lines.push('📈 Market brief · V Exchange Risk', '')
+    lines.push('📈 **Market brief · V Exchange Risk**', '')
     if (snap.okx) {
       const ch =
         snap.okx.change24hPct != null ? ` (~${snap.okx.change24hPct.toFixed(2)}% / 24h)` : ''
-      lines.push(`• OKX XAU-USDT last: ${snap.okx.last.toFixed(2)}${ch}`)
+      lines.push(`• **OKX XAU-USDT last:** **${snap.okx.last.toFixed(2)}**${ch}`)
     } else {
-      lines.push('• OKX quotes: unavailable — retry shortly or open the web Market desk')
+      lines.push('• **OKX quotes:** unavailable — retry shortly or open the web Market desk')
     }
-    for (const n of snap.notes) lines.push(`• Note: ${n}`)
-    lines.push('', `❓ On your question: “${question.slice(0, 120)}”`)
+    for (const n of snap.notes) lines.push(`• **Note:** ${n}`)
+    lines.push('', `❓ **On your question:** “${question.slice(0, 120)}”`)
     lines.push(
-      '• Guidance: price “observations” (bps / basis / venue structure) ≠ “causes” (news / macro). For an incident, paste the alert or type investigate.',
+      '• **Guidance:** price “observations” (bps / basis / venue structure) ≠ “causes” (news / macro). For an incident, paste the alert or type `investigate`.',
     )
-    lines.push('', '🔗 Sources')
-    for (const s of snap.sources) lines.push(`• ${s.label}: ${s.url}`)
+    lines.push('', '🔗 **Sources**')
+    for (const s of snap.sources) lines.push(`• **${s.label}:** ${s.url}`)
   }
   // Callers also sanitize via reply/send; keep source free of markdown symbols.
   return lines.join('\n')
