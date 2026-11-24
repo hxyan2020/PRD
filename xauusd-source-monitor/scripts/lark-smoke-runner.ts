@@ -645,8 +645,13 @@ async function main() {
 
   // 8) Market (EN + 简)
   clearSession('smoke_chat', 'smoke_user')
-  const { buildMarketCard, fetchMarketSnapshot, formatMarketAnswer, pointSources } =
-    await import('../api/lark/_lib/market')
+  const {
+    buildMarketCard,
+    fetchMarketSnapshot,
+    formatMarketAnswer,
+    LARK_MARKET_LANG,
+    pointSources,
+  } = await import('../api/lark/_lib/market')
   const liveSnap = await fetchMarketSnapshot()
   record(
     'market.live_okx_or_fallback',
@@ -768,12 +773,15 @@ async function main() {
 
   const mkt = await turn('market', 'market')
   record(
-    'turn.market_en',
+    'turn.market_always_zh_hans',
     Boolean(
-      (mkt.blob.includes('Hourly') || mkt.blob.includes('TL;DR') || mkt.blob.includes('📈')) &&
+      mkt.blob.includes('小时行情') &&
+        mkt.blob.includes('东八区') &&
+        mkt.blob.includes('TL;DR') &&
         mkt.blob.includes('Opportunity') &&
         mkt.blob.includes('Risk') &&
-        (mkt.blob.includes('UTC+8') || mkt.blob.includes('Last scan')),
+        !mkt.blob.includes('Hourly market scan') &&
+        !mkt.blob.includes('東八區'),
     ),
     mkt.blob.slice(0, 160),
   )
@@ -782,12 +790,14 @@ async function main() {
   record(
     'turn.market_zh',
     Boolean(
-      (mktZh.blob.includes('市') || mktZh.blob.includes('📈') || mktZh.blob.includes('扫报') || mktZh.blob.includes('掃報')) &&
+      (mktZh.blob.includes('市') || mktZh.blob.includes('📈') || mktZh.blob.includes('扫报')) &&
         mktZh.blob.includes('TL;DR') &&
-        (mktZh.blob.includes('东八区') || mktZh.blob.includes('東八區')),
+        mktZh.blob.includes('东八区') &&
+        !mktZh.blob.includes('東八區'),
     ),
     mktZh.blob.slice(0, 160),
   )
+  record('market.lark_lang_zh_hans', LARK_MARKET_LANG === 'zh-Hans', LARK_MARKET_LANG)
 
   // 9) Investigate + emoji formatting + follow-up + adaptive
   clearSession('smoke_chat', 'smoke_user')

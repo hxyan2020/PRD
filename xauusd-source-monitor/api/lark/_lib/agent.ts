@@ -16,7 +16,12 @@ import {
   readDocxRaw,
   searchLarkWiki,
 } from './larkDocs.js'
-import { buildMarketCard, fetchMarketSnapshot, formatMarketAnswer } from './market.js'
+import {
+  buildMarketCard,
+  fetchMarketSnapshot,
+  formatMarketAnswer,
+  LARK_MARKET_LANG,
+} from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
 import {
@@ -809,7 +814,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'market') {
     const snap = await fetchMarketSnapshot()
-    const base = formatMarketAnswer(snap, lang, workingText)
+    const base = formatMarketAnswer(snap, LARK_MARKET_LANG, workingText)
     // Structured hourly card mirrors the web desk — only LLM-enrich when the user asked a free-form market question.
     const bareMarket = /^(market|markets|行情|市况|市況|趋势|趨勢|gold|xau|xauusd)$/i.test(
       workingText.trim(),
@@ -817,21 +822,15 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     const llm = bareMarket
       ? null
       : await enrichWithLlm({
-          lang,
+          lang: LARK_MARKET_LANG,
           question: workingText,
           context: base,
         })
-    const marketTitle =
-      lang === 'zh-Hans'
-        ? '小时行情扫报'
-        : lang === 'zh-Hant'
-          ? '小時行情掃報'
-          : 'Hourly market scan'
     return {
       card: await buildMarketCard({
-        title: marketTitle,
+        title: '小时行情扫报',
         snap,
-        lang,
+        lang: LARK_MARKET_LANG,
         question: workingText,
         mode: 'hourly',
         appendix: llm ? `---\n${llm}` : '',

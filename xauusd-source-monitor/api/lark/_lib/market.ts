@@ -24,6 +24,9 @@ export interface MarketSnapshot {
 
 const DESK_MARKET = 'https://vex-llm-proxy.vercel.app/#/market'
 
+/** All Lark-delivered market reports (chat + cron pushes) use Simplified Chinese. */
+export const LARK_MARKET_LANG: Lang = 'zh-Hans'
+
 /** Asia/Shanghai (= UTC+8) wall clock string. */
 export function formatEast8(ts: number): string {
   try {

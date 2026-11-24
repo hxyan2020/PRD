@@ -18,6 +18,7 @@ import {
   buildMarketCard,
   fetchMarketSnapshot,
   formatMarketAnswer,
+  LARK_MARKET_LANG,
   shanghaiHalfHourKey,
 } from './_lib/market.js'
 
@@ -123,11 +124,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   let card: Record<string, unknown>
   try {
     const snap = await fetchMarketSnapshot()
-    markdown = formatMarketAnswer(snap, 'zh-Hans', '行情')
+    markdown = formatMarketAnswer(snap, LARK_MARKET_LANG, '行情')
     card = await buildMarketCard({
       title: '半小时行情推送',
       snap,
-      lang: 'zh-Hans',
+      lang: LARK_MARKET_LANG,
       question: '行情',
       mode: 'hourly',
       intro: '📬 **半小时定时行情**（自动推送给 **@Yan Haixiang**）\n',

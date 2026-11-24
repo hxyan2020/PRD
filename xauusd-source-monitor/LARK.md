@@ -82,7 +82,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 ## 30-minute market report (Yan Haixiang)
 
 - **Schedule:** every **30 minutes** (Vercel cron `*/30 * * * *`)
-- **Content:** same hourly market scan engine as chat `行情` / `market` (TL;DR / Opportunity / Risk)
+- **Content:** same hourly market scan engine as chat `行情` / `market` (TL;DR / Opportunity / Risk); **always Simplified Chinese** on Lark
 - **Delivery:** Feishu card to **chat_id** `LARK_MARKET_CHAT_ID` / `LARK_ADMIN_CHAT_ID` (default Yan DM `oc_430fae67dd06b70f65b726b1673ef40e`); falls back to `LARK_ADMIN_OPEN_ID` if chat send fails
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/market-report` with `{ "force": true }` + desk token
@@ -92,7 +92,7 @@ Set `LARK_MARKET_CHAT_ID` (preferred) and/or `LARK_ADMIN_OPEN_ID` on Vercel Prod
 ## Daily 24h market morning report (group)
 
 - **Schedule:** every day **09:00 Asia/Shanghai** (Vercel cron `0 1 * * *` UTC)
-- **Content:** past-24h OKX 1H range (O/H/L/C / %) + TL;DR / Opportunity / Risk
+- **Content:** past-24h OKX 1H range (O/H/L/C / %) + TL;DR / Opportunity / Risk; **always Simplified Chinese** on Lark
 - **Delivery:** Feishu group `LARK_DAILY_MARKET_CHAT_ID` (default `oc_eb8eba24ff99a2c3ea3c9439750d65cd`)
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/daily-market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/daily-market-report` with `{ "force": true }` + desk token / cron header
