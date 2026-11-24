@@ -414,25 +414,44 @@ async function main() {
   )
   const mktFmt = formatMarketAnswer(liveSnap, 'en', 'Market')
   record(
-    'market.format_no_backticks_no_bare_echo',
-    !mktFmt.includes('`') &&
+    'market.format_hourly_sections',
+    mktFmt.includes('TL;DR') &&
+      mktFmt.includes('Opportunity') &&
+      mktFmt.includes('Risk') &&
+      mktFmt.includes('Last scan') &&
+      mktFmt.includes('UTC+8') &&
+      (mktFmt.includes('K-line') || mktFmt.includes('📈')) &&
       !mktFmt.includes('On your question') &&
       (mktFmt.includes('OKX XAU-USDT-SWAP') || mktFmt.includes('Bitget') || mktFmt.includes('Spot XAU')),
-    mktFmt.slice(0, 160),
+    mktFmt.slice(0, 220),
+  )
+  record(
+    'market.hourly_attached',
+    Boolean(liveSnap.hourly?.tldr?.length || liveSnap.hourly?.opportunity || liveSnap.hourly?.risk),
+    `tldr=${liveSnap.hourly?.tldr?.length ?? 0} kline=${liveSnap.hourly?.kline?.bars?.length ?? 0}`,
   )
 
-  const mkt = await turn('market', 'What are XAUUSD market trends today?')
+  const mkt = await turn('market', 'market')
   record(
     'turn.market_en',
-    Boolean(mkt.blob.includes('Market') || mkt.blob.includes('📈') || mkt.blob.includes('市况')),
-    '',
+    Boolean(
+      (mkt.blob.includes('Hourly') || mkt.blob.includes('TL;DR') || mkt.blob.includes('📈')) &&
+        mkt.blob.includes('Opportunity') &&
+        mkt.blob.includes('Risk') &&
+        (mkt.blob.includes('UTC+8') || mkt.blob.includes('Last scan')),
+    ),
+    mkt.blob.slice(0, 160),
   )
   clearSession('smoke_chat', 'mkt_zh')
-  const mktZh = await turn('market-zh', '行情 XAUUSD 今天怎么样', 'mkt_zh')
+  const mktZh = await turn('market-zh', '行情', 'mkt_zh')
   record(
     'turn.market_zh',
-    Boolean(mktZh.blob.includes('市') || mktZh.blob.includes('📈') || mktZh.blob.includes('行情')),
-    '',
+    Boolean(
+      (mktZh.blob.includes('市') || mktZh.blob.includes('📈') || mktZh.blob.includes('扫报') || mktZh.blob.includes('掃報')) &&
+        mktZh.blob.includes('TL;DR') &&
+        (mktZh.blob.includes('东八区') || mktZh.blob.includes('東八區')),
+    ),
+    mktZh.blob.slice(0, 160),
   )
 
   // 9) Investigate + emoji formatting + follow-up + adaptive

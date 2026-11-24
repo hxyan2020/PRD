@@ -597,13 +597,23 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   if (intent === 'market') {
     const snap = await fetchMarketSnapshot()
     const base = formatMarketAnswer(snap, lang, workingText)
-    const llm = await enrichWithLlm({
-      lang,
-      question: workingText,
-      context: base,
-    })
+    // Structured hourly card mirrors the web desk — only LLM-enrich when the user asked a free-form market question.
+    const bareMarket = /^(market|markets|行情|市况|市況|趋势|趨勢|gold|xau|xauusd)$/i.test(
+      workingText.trim(),
+    )
+    const llm = bareMarket
+      ? null
+      : await enrichWithLlm({
+          lang,
+          question: workingText,
+          context: base,
+        })
     const marketTitle =
-      lang === 'zh-Hans' ? '市况与趋势' : lang === 'zh-Hant' ? '市況與趨勢' : 'Market trends & conditions'
+      lang === 'zh-Hans'
+        ? '小时行情扫报'
+        : lang === 'zh-Hant'
+          ? '小時行情掃報'
+          : 'Hourly market scan'
     return {
       card: simpleCard(marketTitle, llm ? `${base}\n\n---\n${llm}` : base, 'wathet'),
     }
