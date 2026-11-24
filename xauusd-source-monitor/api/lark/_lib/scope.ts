@@ -204,13 +204,6 @@ export function greetingOpenForHour(lang: Lang, hour: number): string {
   return 'Hey — still here'
 }
 
-/** Clearly out-of-scope topics for a V Exchange risk bot. */
-const OFFTOPIC_RE =
-  /天气|天氣|食谱|食譜|做饭|做飯|\bcook\b|\bdinner\b|\brecipe\b|笑话|笑話|恋爱|戀愛|星座|彩票|\bfootball\b|\bnba\b|电影推荐|電影推薦|写代码作业|寫代碼作業|助记词|助記詞|\bhack\b|\bphishing\b|钓鱼|釣魚|今晚吃什么|吃什麼/i
-
-const IN_SCOPE_HINT =
-  /v\s*exchange|永续|永續|\brisk\b|风险|風險|\bxauusd\b|合约|合約|定价|定價|监控|監控|\bsource\b|源/i
-
 export function classifyIntent(
   text: string,
   opts: { inInvestigateSession: boolean; mentionedBot: boolean; chatType: string },
@@ -225,7 +218,7 @@ export function classifyIntent(
   if (COMMAND_HELP.test(t) || HELP_RE.test(t)) return 'help'
   if (GREETING_RE.test(t)) return 'greeting'
 
-  // Safety before any other intent (block PII asks / abuse / politics)
+  // Negative list only — politics / abuse / privacy / company secrets
   if (detectSafetyViolation(t)) return 'safety'
 
   // Explicit commands first — investigate before review so "Alert: …" paste is not a dashboard
@@ -241,12 +234,8 @@ export function classifyIntent(
   // Active investigation: treat free-text as evidence/follow-up unless explicit command above
   if (opts.inInvestigateSession) return 'followup'
 
-  // Shared Feishu docs / “can you read this?” — never treat as dinner-style offtopic
+  // Shared Feishu docs / “can you read this?”
   if (isLarkWikiQuestion(t) || SHARED_DOC_READ_RE.test(t)) return 'general_risk'
-
-  if (OFFTOPIC_RE.test(t) && !IN_SCOPE_HINT.test(t) && !INVESTIGATE_RE.test(t) && !MARKET_RE.test(t)) {
-    return 'offtopic'
-  }
 
   if (MARKET_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'market'
   if (INVESTIGATE_RE.test(t)) return 'investigate'
@@ -254,26 +243,14 @@ export function classifyIntent(
   // Meta / desk FAQ (roles, who can edit KB) — answer, never investigate dump
   if (BOT_META_RE.test(t) || DESK_FAQ_RE.test(t)) return 'general_risk'
 
-  // Small talk (“我是谁” / “你是谁” / thanks) — warm reply, not greeting menu
+  // Small talk / banter / dinner / anything else — chat (not offtopic refuse)
   if (isCasualChat(t)) return 'general_risk'
 
   // Soft ack after @ only — NEVER classify short real questions as greeting
   // (DMs set mentionedBot=true, so length<12 used to swallow e.g.「谁是管理员」)
   if (SOFT_ACK_RE.test(t)) return 'greeting'
 
-  if (IN_SCOPE_HINT.test(t) || MARKET_RE.test(t) || INVESTIGATE_RE.test(t) || BOT_META_RE.test(t)) {
-    return 'general_risk'
-  }
-  // Prefer answering over offtopic for short operational questions
-  if (t.length <= 40) return 'general_risk'
-  // Long English share-card dumps are not “offtopic dinner” — keep in general_risk
-  if (/\[(file|share)/i.test(t) || /Project Progress|Blockers|\bDONE\b|Weekly Meeting|周会|週會/i.test(t)) {
-    return 'general_risk'
-  }
-  if (t.length > 40 && !IN_SCOPE_HINT.test(t) && !MARKET_RE.test(t) && !BOT_META_RE.test(t)) {
-    return 'offtopic'
-  }
-
+  // Accept all remaining free-text (chat + risk Q&A). Intent `offtopic` is unused.
   return 'general_risk'
 }
 
@@ -460,35 +437,36 @@ export function casualChatReply(
         ].join('\n')
   }
   if (CASUAL_THANKS.test(t)) {
-    if (lang === 'zh-Hans') return '不客气 🙂 还有告警或行情要看，随时叫我。'
-    if (lang === 'zh-Hant') return '不客氣 🙂 還有告警或行情要看，隨時叫我。'
-    return 'You’re welcome 🙂 Ping me anytime for alerts or market.'
+    if (lang === 'zh-Hans') return '不客气 🙂 想继续聊、看行情或贴告警，都随时叫我。'
+    if (lang === 'zh-Hant') return '不客氣 🙂 想繼續聊、看行情或貼告警，都隨時叫我。'
+    return 'You’re welcome 🙂 Happy to keep chatting, or dig into markets / alerts anytime.'
   }
   if (CASUAL_HOW.test(t)) {
-    if (lang === 'zh-Hans') return '还行，在线值班中 🙂 有 XAUUSD／告警问题丢过来就好。'
-    if (lang === 'zh-Hant') return '還行，在線值班中 🙂 有 XAUUSD／告警問題丟過來就好。'
-    return 'Doing fine — on duty 🙂 Send an XAUUSD / alert question whenever.'
+    if (lang === 'zh-Hans') return '还行，在线陪聊＋值班中 🙂 想吹牛或看 XAUUSD／告警都行。'
+    if (lang === 'zh-Hant') return '還行，在線陪聊＋值班中 🙂 想吹牛或看 XAUUSD／告警都行。'
+    return 'Doing fine — on chat + duty 🙂 Banter or XAUUSD / alerts, either works.'
   }
   if (CASUAL_BANTER.test(t)) {
     if (lang === 'zh-Hans') {
-      return '😄 你很行——不过我更擅长看行情和排告警。有 XAUUSD／风控问题随时丢过来。'
+      return '😄 挺帅的呀——自信加一分。想继续贫两句，或扔个行情／告警过来，我都在。'
     }
     if (lang === 'zh-Hant') {
-      return '😄 你很行——不過我更擅長看行情和排告警。有 XAUUSD／風控問題隨時丟過來。'
+      return '😄 挺帥的呀——自信加一分。想繼續貧兩句，或扔個行情／告警過來，我都在。'
     }
-    return '😄 You’re doing fine — I’m better at markets and alerts though. Ping me anytime on XAUUSD / risk.'
+    return '😄 Looking good — confidence +1. Keep chatting, or toss me a market / alert anytime.'
   }
   return null
 }
 
+/** @deprecated Negative-list policy: free-text is no longer refused as offtopic. Kept for callers. */
 export function offtopicReply(lang: Lang): string {
   if (lang === 'zh-Hans') {
-    return '谢谢提问 🙂 我主要为 V Exchange 风险管理服务（XAUUSD 永续、指数／Mark、LP、强平／ADL、行情监控与事故排查）。这个问题有点偏题——你也可以直接说想看的行情或贴一条告警，我来帮你看。'
+    return '可以呀 🙂 我专长是 V Exchange 风控，不过闲聊也陪。你想聊什么，或者要看行情／贴告警，直接说。'
   }
   if (lang === 'zh-Hant') {
-    return '謝謝提問 🙂 我主要服務 V Exchange 風險管理（XAUUSD 永續、指數／Mark、LP、強平／ADL、行情監控與事故排查）。這個問題有點偏題——你也可以直接說想看的行情或貼一條告警，我來幫你看。'
+    return '可以呀 🙂 我專長是 V Exchange 風控，不過閒聊也陪。你想聊什麼，或者要看行情／貼告警，直接說。'
   }
-  return 'Thanks for asking 🙂 I mainly help with V Exchange risk (XAUUSD perps, index/Mark, LPs, liquidation/ADL, market monitoring, incident RCA). That one’s a bit off-scope — tell me a market angle you care about, or paste an alert and I’ll dig in.'
+  return 'Sure 🙂 Risk is my specialty, but I’m happy to chat too. What’s on your mind — or send a market / alert if you want.'
 }
 
 /**

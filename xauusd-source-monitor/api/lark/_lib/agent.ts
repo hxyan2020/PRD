@@ -46,7 +46,6 @@ import {
   looksLikeIncidentEvidence,
   needsInaccessibleAccess,
   isStepDoneCommand,
-  offtopicReply,
   sharedDocReadReply,
 } from './scope.js'
 import { looksLikeShareOrFileMeta } from './lang.js'
@@ -728,7 +727,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return { text: safetyReply(lang, hit) }
   }
 
-  // Attachments: always understand & reiterate before relevance / offtopic judgement
+  // Attachments: always understand & reiterate before relevance judgement
   if (attachmentDigest) {
     const riskRelated = attachmentLooksRiskRelated(attachmentDigest)
     const captionCmd =
@@ -740,7 +739,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       intent === 'investigate' ||
       intent === 'followup' ||
       (riskRelated && looksLikeIncidentEvidence(attachmentDigest) && intent === 'general_risk')
-    if (!captionCmd && (!continueAsEvidence || intent === 'offtopic')) {
+    if (!captionCmd && !continueAsEvidence) {
       const title =
         lang === 'zh-Hans' || lang === 'zh-Hant' ? '附件理解' : 'Attachment understanding'
       return {
@@ -760,11 +759,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     }
   }
 
-  if (intent === 'offtopic') {
-    // Last-guard: never answer Chinese users in English offtopic templates
-    const offtopicLang = detectLang(workingText, lang)
-    return { text: offtopicReply(offtopicLang) }
-  }
+  // `offtopic` intent is retired (negative-list only). Fall through to chat / Q&A.
 
   // AIPO Lark API UAT: Wiki / Docs read (authorized, read-only) before generic access gate
   if (isLarkWikiQuestion(workingText) || isLarkWikiQuestion(userCaption)) {
@@ -995,36 +990,45 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   // Normal / “random” Q&A: answer first; only attach highly relevant KB (never dump weak hits)
   const relevantKb = pickRelevantKb(workingText, kb)
 
-  // No local KB → auto search for substantive / venue questions (never banter like「我帅不」→彭帅)
+  // No local KB → chat / search (never banter like「我帅不」→ scandal wiki; negative-list already handled)
   if (!relevantKb.length) {
     if (isCasualBanter(workingText)) {
+      // Engage the banter — do NOT open web search (帅≠彭帅)
+      const llmBanter = await enrichWithLlm({
+        lang,
+        question: workingText,
+        context:
+          'Friendly banter / small talk. Reply warmly in 1–2 short beats. Do NOT search the web. Do NOT dump risk command menus. You may lightly mention you also help with markets/alerts.',
+        temperature: 0.7,
+      })
       const banter =
+        llmBanter ||
         casualChatReply(lang, workingText) ||
         (lang === 'zh-Hans'
-          ? '😄 你很行——不过我更擅长看行情和排告警。有 XAUUSD／风控问题随时丢过来。'
+          ? '😄 挺帅的呀——自信加一分。想继续贫两句，或扔个行情／告警过来，我都在。'
           : lang === 'zh-Hant'
-            ? '😄 你很行——不過我更擅長看行情和排告警。有 XAUUSD／風控問題隨時丟過來。'
-            : '😄 You’re doing fine — I’m better at markets and alerts. Ping me on XAUUSD / risk anytime.')
+            ? '😄 挺帥的呀——自信加一分。想繼續貧兩句，或扔個行情／告警過來，我都在。'
+            : '😄 Looking good — confidence +1. Keep chatting, or toss me a market / alert anytime.')
       return { card: simpleCard(replyTitle, banter, 'blue') }
     }
     if (!shouldAutoWebSearch(workingText)) {
-      // Short non-banter with no venue/risk cue — try LLM, else gentle redirect (not fake “收到”)
+      // Short free-text — chat first (accept everything outside the negative list)
       const llmSoft = await enrichWithLlm({
         lang,
         question: workingText,
         context:
-          'Short free-text. If it is about exchanges/markets/risk, answer briefly. Otherwise one warm line redirecting to XAUUSD / alerts. Do not invent news.',
-        temperature: 0.5,
+          'Free-text chat or short ask. Engage warmly. Answer if you can; otherwise ask a light clarifying question. Specialty is V Exchange risk, but casual chat is welcome. Do not invent news or secrets.',
+        temperature: 0.65,
       })
       if (llmSoft) return { card: simpleCard(replyTitle, llmSoft, 'blue') }
       return {
         card: simpleCard(
           replyTitle,
           lang === 'zh-Hans'
-            ? '可以说具体一点——比如某个交易所、合约，或贴一条告警，我来帮你看。'
+            ? '可以呀 🙂 我专长风控，闲聊也陪。多说两句，或扔个交易所／合约／告警过来都行。'
             : lang === 'zh-Hant'
-              ? '可以說具體一點——比如某個交易所、合約，或貼一條告警，我來幫你看。'
-              : 'Say a bit more — e.g. an exchange, a contract, or paste an alert — and I’ll dig in.',
+              ? '可以呀 🙂 我專長風控，閒聊也陪。多說兩句，或扔個交易所／合約／告警過來都行。'
+              : 'Sure 🙂 Risk is my specialty, but I’m happy to chat too — say a bit more, or toss an exchange / contract / alert my way.',
           'blue',
         ),
       }
@@ -1055,16 +1059,16 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
         card: simpleCard(replyTitle, formatWebSearchAnswer(lang, workingText, searched), 'blue'),
       }
     }
-    // Search empty too — still avoid “no KB” wording
+    // Search empty too — still chat / answer; avoid “no KB” wording
     const llmFallback = await enrichWithLlm({
       lang,
       question: workingText,
       context: [
-        'Normal Q&A. No local KB hit and web search returned nothing usable.',
-        'Answer briefly from general public knowledge if you can; otherwise ask a clarifying question.',
-        'Do NOT mention knowledge-base miss. Do NOT dump command menus.',
+        'Normal Q&A or casual chat. No local KB hit and web search returned nothing usable.',
+        'Answer briefly from general public knowledge if you can; otherwise chat lightly and ask a clarifying question.',
+        'Do NOT mention knowledge-base miss. Do NOT dump command menus. Do NOT refuse as offtopic.',
       ].join('\n'),
-      temperature: 0.5,
+      temperature: 0.55,
     })
     if (llmFallback) {
       return { card: simpleCard(replyTitle, llmFallback, 'blue') }
