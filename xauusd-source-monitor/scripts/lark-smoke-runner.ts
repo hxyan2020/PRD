@@ -6,7 +6,7 @@ import { handleCardAction, handleMessage } from '../api/lark/_lib/agent'
 import { detectLang } from '../api/lark/_lib/lang'
 import { parseIncomingEvent, shouldRespond } from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
-import { classifyIntent, greetingReply } from '../api/lark/_lib/scope'
+import { classifyIntent, east8Hour, greetingOpenForHour, greetingReply } from '../api/lark/_lib/scope'
 import {
   formatRagAnswer,
   loadKnowledge,
@@ -216,6 +216,12 @@ async function main() {
   record('dedupe.first_claim', claimOnce(dk) === true, '')
   record('dedupe.second_claim_blocked', claimOnce(dk) === false, '')
   releaseClaim(dk)
+
+  // 6a) Greeting daypart uses 东八区; 17:00 is still afternoon
+  record('greeting.east8_tz', east8Hour(new Date('2026-11-24T09:16:00Z')) === 17, `h=${east8Hour(new Date('2026-11-24T09:16:00Z'))}`)
+  record('greeting.17h_is_afternoon_zh', greetingOpenForHour('zh-Hans', 17) === '下午好', '')
+  record('greeting.17h_is_afternoon_en', greetingOpenForHour('en', 17) === 'Good afternoon', '')
+  record('greeting.18h_is_evening_zh', greetingOpenForHour('zh-Hans', 18) === '晚上好', '')
 
   // 6) Greeting card: bold + spaced bullets + how-to-trigger each command
   for (const lang of ['en', 'zh-Hans', 'zh-Hant'] as const) {

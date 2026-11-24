@@ -39,17 +39,44 @@ const COMMAND_SKILLS =
 const COMMAND_KNOWLEDGE =
   /^(knowledge|kb|rag|知识库|知識庫|知识|知識|查看\s*(知识库|知識庫|kb|rag)|看\s*(知识库|知識庫))\b/i
 
-function singaporeHour(): number {
+/** Clock hour in UTC+8 (Asia/Shanghai). Feishu users are east-eight. */
+export function east8Hour(now = new Date()): number {
   try {
-    const parts = new Intl.DateTimeFormat('en-SG', {
-      timeZone: 'Asia/Singapore',
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Shanghai',
       hour: 'numeric',
       hour12: false,
-    }).formatToParts(new Date())
-    return Number(parts.find((p) => p.type === 'hour')?.value || 12)
+    }).formatToParts(now)
+    const h = Number(parts.find((p) => p.type === 'hour')?.value)
+    // en-GB 24h may yield "24" at midnight on some engines → normalize
+    if (!Number.isFinite(h)) return 12
+    return h === 24 ? 0 : h
   } catch {
     return 12
   }
+}
+
+/**
+ * Daypart openers for greetings (东八区):
+ * morning before 12, afternoon until 18 (5pm is still 下午好), evening until 22.
+ */
+export function greetingOpenForHour(lang: Lang, hour: number): string {
+  if (lang === 'zh-Hans') {
+    if (hour < 12) return '早上好'
+    if (hour < 18) return '下午好'
+    if (hour < 22) return '晚上好'
+    return '还在线呀'
+  }
+  if (lang === 'zh-Hant') {
+    if (hour < 12) return '早上好'
+    if (hour < 18) return '下午好'
+    if (hour < 22) return '晚上好'
+    return '還在線呀'
+  }
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  if (hour < 22) return 'Good evening'
+  return 'Hey — still here'
 }
 
 /** Clearly out-of-scope topics for a V Exchange risk bot. */
@@ -165,12 +192,11 @@ export function offtopicReply(lang: Lang): string {
  * Uses blank lines, bold command names, bullets, and per-command trigger hints.
  */
 export function greetingReply(lang: Lang): string {
-  const hour = singaporeHour()
+  const hour = east8Hour()
+  const open = greetingOpenForHour(lang, hour)
   const variant = Math.floor(Date.now() / 60_000) % 3
 
   if (lang === 'zh-Hans') {
-    const open =
-      hour < 11 ? '早上好' : hour < 17 ? '下午好' : hour < 22 ? '晚上好' : '还在线呀'
     const intros = [
       `${open} 🙂 我是 **V Exchange Risk Copilot**。`,
       `${open} 👋 **V Exchange Risk Copilot** 在这儿。`,
@@ -212,8 +238,6 @@ export function greetingReply(lang: Lang): string {
   }
 
   if (lang === 'zh-Hant') {
-    const open =
-      hour < 11 ? '早上好' : hour < 17 ? '下午好' : hour < 22 ? '晚上好' : '還在線呀'
     const intros = [
       `${open} 🙂 我是 **V Exchange Risk Copilot**。`,
       `${open} 👋 **V Exchange Risk Copilot** 在這兒。`,
@@ -254,8 +278,6 @@ export function greetingReply(lang: Lang): string {
     ].join('\n')
   }
 
-  const open =
-    hour < 11 ? 'Good morning' : hour < 17 ? 'Good afternoon' : hour < 22 ? 'Good evening' : 'Hey — still here'
   const intros = [
     `${open} 🙂 I’m **V Exchange Risk Copilot**.`,
     `${open} 👋 **V Exchange Risk Copilot** here.`,
