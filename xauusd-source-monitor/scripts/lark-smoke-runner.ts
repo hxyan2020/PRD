@@ -166,8 +166,13 @@ async function main() {
     const g = greetingReply(lang)
     record(
       `greeting.template_${lang}`,
-      g.includes('Risk Copilot') && !g.includes('Commands:') && !g.includes('常用指令'),
-      g.slice(0, 80),
+      g.includes('Risk Copilot') &&
+        !g.includes('**') &&
+        !g.includes('`') &&
+        g.includes('market') &&
+        g.includes('investigate') &&
+        /📈|🔍|📊/.test(g),
+      g.slice(0, 100),
     )
   }
 
@@ -177,21 +182,30 @@ async function main() {
     'turn.greeting_en',
     Boolean(
       greet.reply?.text?.includes('Risk Copilot') &&
-        !greet.reply.text.includes('Commands:') &&
-        !greet.reply.text.includes('常用指令'),
+        !greet.reply.text.includes('**') &&
+        greet.reply.text.includes('market') &&
+        greet.reply.text.includes('investigate'),
     ),
     '',
   )
   const greetZh = await turn('greeting-zh', '你好', 'greet_zh')
   record(
     'turn.greeting_zh',
-    Boolean(greetZh.reply?.text?.includes('Risk Copilot') || greetZh.reply?.text?.includes('风险')),
+    Boolean(
+      (greetZh.reply?.text?.includes('Risk Copilot') || greetZh.reply?.text?.includes('风险')) &&
+        !greetZh.reply?.text?.includes('**') &&
+        greetZh.reply?.text?.includes('market'),
+    ),
     '',
   )
   const help = await turn('help', 'help')
   record(
     'turn.help',
-    Boolean(help.reply?.text?.includes('Commands:') || help.reply?.text?.includes('常用指令')),
+    Boolean(
+      help.reply?.text?.includes('market') &&
+        help.reply?.text?.includes('investigate') &&
+        !help.reply?.text?.includes('**'),
+    ),
     '',
   )
 
