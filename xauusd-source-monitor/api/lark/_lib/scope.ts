@@ -121,11 +121,47 @@ const COMMAND_WEEKLY =
 const LARK_WIKI_RE =
   /\b(lark|feishu)\s*wiki\b|\bwiki\b|(飞书|飛書).{0,8}(wiki|文档|文檔)|(读|讀|查|搜|打开|打開|搜索).{0,16}(飞书|飛書)\s*(wiki|文档|文檔)|wiki\s*(文档|文檔|页面|頁面|node)|飞书文档|飛書文檔|\bdocx\b|知识空间|知識空間/i
 
+/** User points at a just-shared doc / asks whether the bot can read it. */
+const SHARED_DOC_READ_RE =
+  /(能|可以|可否|能不能|可不可以).{0,8}(读|讀|读取|讀取|查看|打开|打開|看到).{0,16}(这里面|這裡面|这个|這個|这份|這份|里边|裡邊|里面|裡面|文档|文檔|数据|資料|内容|內容|分享)|(读|讀|读取|讀取|查看).{0,10}(一下|下)?.{0,10}(文档|文檔|这个|這個|这份|這份|分享)|(这里面|這裡面|这份文档|這份文檔|这个文档|這個文檔).{0,12}(数据|資料|内容|內容)|(can\s+you\s+read|read\s+(this|the)\s+(doc|file|data))/i
+
 export function isLarkWikiQuestion(text: string): boolean {
   const t = text.trim()
   if (!t) return false
   if (COMMAND_KNOWLEDGE.test(t)) return false
-  return LARK_WIKI_RE.test(t)
+  return LARK_WIKI_RE.test(t) || SHARED_DOC_READ_RE.test(t)
+}
+
+/** Soft reply when user asks if a shared doc is readable (before / instead of wiki search). */
+export function sharedDocReadReply(lang: Lang): string {
+  if (lang === 'zh-Hans') {
+    return [
+      '📄 **可以试着读**（只读）',
+      '',
+      '• 如果你刚分享了飞书文档，请再发一下 **文档链接**，或把要点贴出来，我按授权范围读取摘要。',
+      '• 我只能读已授权的 Wiki／文档；读不到时请联系 **@Yan Haixiang** 开通只读权限。',
+      '',
+      '_不会改文档，也不会把内容发到群外。_',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '📄 **可以試著讀**（唯讀）',
+      '',
+      '• 如果你剛分享了飛書文檔，請再發一下 **文檔連結**，或把要點貼出來，我按授權範圍讀取摘要。',
+      '• 我只能讀已授權的 Wiki／文檔；讀不到時請聯繫 **@Yan Haixiang** 開通唯讀權限。',
+      '',
+      '_不會改文檔，也不會把內容發到群外。_',
+    ].join('\n')
+  }
+  return [
+    '📄 **I can try to read it** (read-only)',
+    '',
+    '• If you just shared a Feishu doc, send the **doc link** or paste the key bits and I’ll summarize within my authorized scope.',
+    '• I only read authorized Wiki/Docs — if access fails, ask **@Yan Haixiang** to grant read scope.',
+    '',
+    '_I won’t edit the doc or send its contents outside this chat._',
+  ].join('\n')
 }
 
 /** Clock hour in UTC+8 (Asia/Shanghai). Feishu users are east-eight. */
@@ -205,6 +241,9 @@ export function classifyIntent(
   // Active investigation: treat free-text as evidence/follow-up unless explicit command above
   if (opts.inInvestigateSession) return 'followup'
 
+  // Shared Feishu docs / “can you read this?” — never treat as dinner-style offtopic
+  if (isLarkWikiQuestion(t) || SHARED_DOC_READ_RE.test(t)) return 'general_risk'
+
   if (OFFTOPIC_RE.test(t) && !IN_SCOPE_HINT.test(t) && !INVESTIGATE_RE.test(t) && !MARKET_RE.test(t)) {
     return 'offtopic'
   }
@@ -227,6 +266,10 @@ export function classifyIntent(
   }
   // Prefer answering over offtopic for short operational questions
   if (t.length <= 40) return 'general_risk'
+  // Long English share-card dumps are not “offtopic dinner” — keep in general_risk
+  if (/\[(file|share)/i.test(t) || /Project Progress|Blockers|\bDONE\b|Weekly Meeting|周会|週會/i.test(t)) {
+    return 'general_risk'
+  }
   if (t.length > 40 && !IN_SCOPE_HINT.test(t) && !MARKET_RE.test(t) && !BOT_META_RE.test(t)) {
     return 'offtopic'
   }

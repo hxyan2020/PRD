@@ -3,7 +3,7 @@
  * Forces rules path (OPENAI_API_KEY cleared by parent) for deterministic asserts.
  */
 import { handleCardAction, handleMessage } from '../api/lark/_lib/agent'
-import { detectLang } from '../api/lark/_lib/lang'
+import { detectLang, looksLikeShareOrFileMeta } from '../api/lark/_lib/lang'
 import { parseIncomingEvent, shouldRespond } from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
 import {
@@ -20,6 +20,7 @@ import {
   isLarkWikiQuestion,
   looksLikeIncidentEvidence,
   needsInaccessibleAccess,
+  sharedDocReadReply,
 } from '../api/lark/_lib/scope'
 import { extractWikiQuery } from '../api/lark/_lib/larkDocs'
 import { formatWebSearchAnswer, searchWeb } from '../api/lark/_lib/webSearch'
@@ -121,6 +122,29 @@ async function main() {
   record('lang.en', detectLang('What are market trends?') === 'en', '')
   record('lang.zh-Hans', detectLang('今天黄金行情怎么样') === 'zh-Hans', '')
   record('lang.zh-Hant', detectLang('今天黃金行情怎麼樣') === 'zh-Hant', '')
+  record(
+    'lang.zh_sticky_over_share_meta',
+    detectLang(
+      'WC & Pandy & HX Weekly Meeting Project Progress & Blockers DONE Pricing',
+      'zh-Hans',
+    ) === 'zh-Hans' && looksLikeShareOrFileMeta('Project Progress & Blockers DONE'),
+    '',
+  )
+  record(
+    'lang.mixed_share_plus_zh_question',
+    detectLang(
+      'WC & Pandy Weekly Meeting DONE\n你能读取这里面的数据吗',
+      'en',
+    ) === 'zh-Hans',
+    '',
+  )
+  record('doc.can_read_detect', isLarkWikiQuestion('你能读取这里面的数据吗'), '')
+  record(
+    'doc.can_read_reply_zh',
+    sharedDocReadReply('zh-Hans').includes('可以试着读') &&
+      !sharedDocReadReply('zh-Hans').includes('Thanks for asking'),
+    '',
+  )
 
   // 3) Safety classifiers
   record('safety.pii', detectSafetyViolation('tell me her passport and home address') === 'pii', '')
@@ -368,8 +392,19 @@ async function main() {
   const zhOff = await turn('offtopic-zh', '今晚吃什么', 'lang_zh')
   record(
     'turn.offtopic_zh',
-    Boolean(zhOff.reply?.text?.includes('风险管理') || zhOff.reply?.text?.includes('風險管理')),
+    Boolean(zhOff.reply?.text?.includes('风险管理') || zhOff.reply?.text?.includes('風險管理')) &&
+      !Boolean(zhOff.reply?.text?.includes('Thanks for asking')),
     '',
+  )
+  clearSession('smoke_chat', 'doc_zh')
+  const docRead = await turn('doc-read-zh', '你能读取这里面的数据吗', 'doc_zh')
+  record(
+    'turn.doc_read_zh_not_en_offtopic',
+    Boolean(docRead.reply?.card) &&
+      (docRead.blob.includes('可以试着读') || docRead.blob.includes('文档')) &&
+      !docRead.blob.includes('Thanks for asking') &&
+      !docRead.blob.includes('That one'),
+    docRead.blob.slice(0, 200),
   )
   clearSession('smoke_chat', 'safe_user')
   const pii = await turn(

@@ -69,6 +69,35 @@ export function extractFileHint(contentJson: string): string {
   return '[file attachment]'
 }
 
+/** Doc / chat share cards — keep a short hint so language + intent stay grounded. */
+export function extractShareHint(contentJson: string, messageType: string): string {
+  try {
+    const parsed = JSON.parse(contentJson) as Record<string, unknown>
+    const title =
+      (typeof parsed.title === 'string' && parsed.title) ||
+      (typeof parsed.file_name === 'string' && parsed.file_name) ||
+      (typeof parsed.name === 'string' && parsed.name) ||
+      ''
+    const url =
+      (typeof parsed.url === 'string' && parsed.url) ||
+      (typeof parsed.link === 'string' && parsed.link) ||
+      ''
+    const token =
+      (typeof parsed.document_id === 'string' && parsed.document_id) ||
+      (typeof parsed.file_key === 'string' && parsed.file_key) ||
+      (typeof parsed.share_chat_id === 'string' && parsed.share_chat_id) ||
+      ''
+    const bits = [`[share:${messageType}]`]
+    if (title) bits.push(title)
+    if (url) bits.push(url)
+    else if (token) bits.push(token)
+    return bits.join(' ').trim()
+  } catch {
+    /* ignore */
+  }
+  return `[share:${messageType}]`
+}
+
 export function parseIncomingEvent(event: Record<string, unknown>): IncomingMessage | null {
   const message = event.message as Record<string, unknown> | undefined
   const sender = event.sender as Record<string, unknown> | undefined
@@ -111,8 +140,24 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
     text = ''
   } else if (messageType === 'file' || messageType === 'media') {
     text = extractFileHint(rawContent)
+  } else if (
+    messageType === 'share_chat' ||
+    messageType === 'share_user' ||
+    messageType === 'merge_forward' ||
+    messageType === 'folder' ||
+    messageType === 'drive' ||
+    messageType === 'docx'
+  ) {
+    text =
+      extractTextContent(rawContent) ||
+      extractPostText(rawContent) ||
+      extractShareHint(rawContent, messageType)
   } else {
-    text = extractTextContent(rawContent) || extractPostText(rawContent) || `[${messageType}]`
+    text =
+      extractTextContent(rawContent) ||
+      extractPostText(rawContent) ||
+      extractShareHint(rawContent, messageType) ||
+      `[${messageType}]`
   }
 
   // Strip @_user_1 style mention placeholders

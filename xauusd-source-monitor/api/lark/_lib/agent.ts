@@ -45,7 +45,9 @@ import {
   needsInaccessibleAccess,
   isStepDoneCommand,
   offtopicReply,
+  sharedDocReadReply,
 } from './scope.js'
+import { looksLikeShareOrFileMeta } from './lang.js'
 import { formatWebSearchAnswer, searchWeb, webSearchContext } from './webSearch.js'
 import { logInbound } from './inboundLog.js'
 import {
@@ -591,7 +593,15 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   // Image / media first → OCR into investigate flow
   let workingText = msg.text
   const session = getSession(msg.chatId, msg.openId)
-  let lang = detectLang(msg.text || '', session.preferredLang || 'en')
+  // Prefer sticky Chinese: share-card English must not reset the session language
+  const langFallback = session.preferredLang || 'en'
+  let lang = detectLang(msg.text || '', langFallback)
+  if (
+    looksLikeShareOrFileMeta(msg.text || '') &&
+    (langFallback === 'zh-Hans' || langFallback === 'zh-Hant')
+  ) {
+    lang = langFallback
+  }
 
   if (msg.messageType === 'image' || msg.imageKey) {
     const ocr = await handleImage(msg, lang)
@@ -625,11 +635,26 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'offtopic') {
-    return { text: offtopicReply(lang) }
+    // Last-guard: never answer Chinese users in English offtopic templates
+    const offtopicLang = detectLang(workingText, lang)
+    return { text: offtopicReply(offtopicLang) }
   }
 
   // AIPO Lark API UAT: Wiki / Docs read (authorized, read-only) before generic access gate
   if (isLarkWikiQuestion(workingText)) {
+    // “你能读取这里面的数据吗” after a share — answer capability in the user's language
+    if (
+      /(能|可以|可否|能不能).{0,8}(读|讀|读取|讀取|查看)|(can\s+you\s+read)/i.test(workingText) &&
+      !/\bwiki\b|(飞书|飛書).{0,6}(wiki|文档|文檔)/i.test(workingText)
+    ) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '文档读取' : lang === 'zh-Hant' ? '文檔讀取' : 'Doc read',
+          sharedDocReadReply(lang),
+          'blue',
+        ),
+      }
+    }
     return handleWikiAsk(lang, workingText, msg.openId)
   }
 

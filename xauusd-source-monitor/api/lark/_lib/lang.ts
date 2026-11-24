@@ -98,9 +98,35 @@ const PAIRS: [string, string][] = [
 const HANT_ONLY = new Set(PAIRS.map(([t]) => t).join(''))
 const HANS_ONLY = new Set(PAIRS.map(([, s]) => s).join(''))
 
+/** English share / file card noise — must not flip an established Chinese session. */
+export function looksLikeShareOrFileMeta(text: string): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (/^\[(file|share|docx|wiki|image)/i.test(t)) return true
+  return /(share_chat|file attachment|Project Progress|Blockers|\bDONE\b|Weekly Meeting|周会|週會|WC &|Pricing:|can view)/i.test(
+    t,
+  )
+}
+
+function pickZhVariant(text: string, fallback: Lang): Lang {
+  let hant = 0
+  let hans = 0
+  for (const ch of text) {
+    if (HANT_ONLY.has(ch)) hant += 1
+    if (HANS_ONLY.has(ch)) hans += 1
+  }
+  if (hant > hans) return 'zh-Hant'
+  if (hans > hant) return 'zh-Hans'
+  if (fallback === 'zh-Hant' || fallback === 'zh-Hans') return fallback
+  // Ambiguous Chinese → Simplified (mainland / quote-ops default)
+  return 'zh-Hans'
+}
+
 /**
  * Detect reply language from the user's latest message.
  * Empty text keeps `fallback` (session preference).
+ * Chinese wins over English share titles / mixed doc cards; English-only share meta
+ * does not override an established Chinese preference.
  */
 export function detectLang(text: string, fallback: Lang = 'en'): Lang {
   const t = text.trim()
@@ -113,20 +139,31 @@ export function detectLang(text: string, fallback: Lang = 'en'): Lang {
   if (/^(中文|简体|簡體)\b/.test(t)) return 'zh-Hans'
   if (/^(繁體|繁体)\b/.test(t)) return 'zh-Hant'
 
-  if (han === 0) return latin > 0 ? 'en' : fallback
-  // Mixed tickers (XAUUSD) + Chinese → Chinese if enough CJK
-  if (han < 2 && latin > han * 4) return 'en'
+  // Any real Chinese in the message → reply in Chinese (even if the share card is English-heavy)
+  if (han >= 2) return pickZhVariant(t, fallback)
+  if (han === 1 && latin <= 8) return pickZhVariant(t, fallback)
 
-  let hant = 0
-  let hans = 0
-  for (const ch of t) {
-    if (HANT_ONLY.has(ch)) hant += 1
-    if (HANS_ONLY.has(ch)) hans += 1
+  // English-only (or latin-dominant with fewer than 2 Han)
+  if (latin > 0) {
+    const zhFallback = fallback === 'zh-Hans' || fallback === 'zh-Hant'
+    // Keep Chinese session across doc shares / short English acks / file hints
+    if (
+      zhFallback &&
+      (looksLikeShareOrFileMeta(t) ||
+        t.length <= 48 ||
+        /^(ok|okay|k|thanks?|thx|ty|got it|same|yes|no|yep|nope)[\s!.]*$/i.test(t))
+    ) {
+      return fallback
+    }
+    // Explicit English sentence while session was Chinese — switch only when clearly English prose
+    if (zhFallback && han === 0 && latin >= 24 && /\s/.test(t)) return 'en'
+    if (!zhFallback) return 'en'
+    // Short / ambiguous latin while Chinese preferred → keep Chinese
+    if (zhFallback) return fallback
+    return 'en'
   }
-  if (hant > hans) return 'zh-Hant'
-  if (hans > hant) return 'zh-Hans'
-  // Ambiguous Chinese (no distinctive chars) → Simplified (quote-ops / mainland ops default)
-  return 'zh-Hans'
+
+  return fallback
 }
 
 export function isZh(lang: Lang): boolean {
