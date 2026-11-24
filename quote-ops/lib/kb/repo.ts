@@ -489,58 +489,109 @@ async function ensureProductLines(): Promise<void> {
   }
 
   const existingVe = await sql("select id from kb_nodes where id = $1 limit 1", ["folder-v-exchange"]);
-  if (existingVe.length > 0) return;
-
-  const root: KbNode = {
-    id: "folder-v-exchange",
-    parentId: null,
-    kind: "folder",
-    slug: "v-exchange-perp",
-    titleZh: "V Exchange 永续合约",
-    titleEn: "V Exchange Perpetual",
-    summaryZh: `与 CFD Broker 分离的永续合约风控知识库 · ${VE_META.version} · ${VE_META.date}`,
-    summaryEn: `Perp risk KB separate from CFD Broker · ${VE_META.version} · ${VE_META.date}`,
-    bodyZh: "产品线：v-exchange-perp。勿与 CFD Broker Pricing 语料混淆。",
-    bodyEn: "Product line: v-exchange-perp. Do not mix with CFD Broker Pricing corpus.",
-    sortOrder: 200,
-    tags: ["v-exchange-perp", "perpetual", "永续"],
-    payload: { product: "v-exchange-perp" },
-    status: "published",
-    createdAt: now,
-    updatedAt: now,
-    createdBy: system.email,
-    updatedBy: system.email,
-  };
-  await insertNodeRaw(root);
-  await writeRevision(root, "seed", system, "v-exchange product root");
-
-  for (const doc of VE_DOCS) {
-    const node: KbNode = {
-      id: doc.id,
-      parentId: "folder-v-exchange",
-      kind: "article",
-      slug: doc.slug,
-      titleZh: doc.titleZh,
-      titleEn: doc.titleEn,
-      summaryZh: doc.summaryZh,
-      summaryEn: doc.summaryEn,
-      bodyZh: doc.bodyZh,
-      bodyEn: doc.bodyEn,
-      sortOrder: doc.sortOrder,
-      tags: [...doc.tags, "v-exchange-perp", "perpetual", "永续"],
-      payload: {
-        product: "v-exchange-perp",
-        version: VE_META.version,
-        contract: VE_META.contract,
-      },
+  if (existingVe.length === 0) {
+    const root: KbNode = {
+      id: "folder-v-exchange",
+      parentId: null,
+      kind: "folder",
+      slug: "v-exchange-perp",
+      titleZh: "V Exchange 永续合约",
+      titleEn: "V Exchange Perpetual",
+      summaryZh: `与 CFD Broker 分离的永续合约风控知识库 · ${VE_META.version} · ${VE_META.date}`,
+      summaryEn: `Perp risk KB separate from CFD Broker · ${VE_META.version} · ${VE_META.date}`,
+      bodyZh: "产品线：v-exchange-perp。勿与 CFD Broker Pricing 语料混淆。",
+      bodyEn: "Product line: v-exchange-perp. Do not mix with CFD Broker Pricing corpus.",
+      sortOrder: 200,
+      tags: ["v-exchange-perp", "perpetual", "永续"],
+      payload: { product: "v-exchange-perp" },
       status: "published",
       createdAt: now,
       updatedAt: now,
       createdBy: system.email,
       updatedBy: system.email,
     };
-    await insertNodeRaw(node);
-    await writeRevision(node, "seed", system, "v-exchange seed");
+    await insertNodeRaw(root);
+    await writeRevision(root, "seed", system, "v-exchange product root");
+  } else {
+    await sql(
+      `update kb_nodes set summary_zh=$2, summary_en=$3, updated_at=$4, updated_by=$5 where id=$1`,
+      [
+        "folder-v-exchange",
+        `与 CFD Broker 分离的永续合约风控知识库 · ${VE_META.version} · ${VE_META.date}`,
+        `Perp risk KB separate from CFD Broker · ${VE_META.version} · ${VE_META.date}`,
+        now,
+        system.email,
+      ],
+    );
+  }
+
+  // Upsert every VE seed doc so catalog additions (e.g. 138-risk V2.0) land on existing DBs.
+  for (const doc of VE_DOCS) {
+    const tags = [...doc.tags, "v-exchange-perp", "perpetual", "永续"];
+    const payload = {
+      product: "v-exchange-perp" as const,
+      version: VE_META.version,
+      contract: VE_META.contract,
+    };
+    const existing = await sql("select id, payload from kb_nodes where id = $1 limit 1", [doc.id]);
+    if (existing.length === 0) {
+      const node: KbNode = {
+        id: doc.id,
+        parentId: "folder-v-exchange",
+        kind: "article",
+        slug: doc.slug,
+        titleZh: doc.titleZh,
+        titleEn: doc.titleEn,
+        summaryZh: doc.summaryZh,
+        summaryEn: doc.summaryEn,
+        bodyZh: doc.bodyZh,
+        bodyEn: doc.bodyEn,
+        sortOrder: doc.sortOrder,
+        tags,
+        payload,
+        status: "published",
+        createdAt: now,
+        updatedAt: now,
+        createdBy: system.email,
+        updatedBy: system.email,
+      };
+      await insertNodeRaw(node);
+      await writeRevision(node, "seed", system, "v-exchange seed");
+      continue;
+    }
+    const prev = rowToNode(existing[0]!);
+    const prevVer = String(prev.payload?.version ?? "");
+    if (prevVer === VE_META.version && prev.bodyZh === doc.bodyZh) continue;
+    await sql(
+      `update kb_nodes set
+        parent_id=$2, kind=$3, slug=$4, title_zh=$5, title_en=$6,
+        summary_zh=$7, summary_en=$8, body_zh=$9, body_en=$10,
+        sort_order=$11, tags=$12::jsonb, payload=$13::jsonb, status=$14,
+        updated_at=$15, updated_by=$16
+       where id=$1`,
+      [
+        doc.id,
+        "folder-v-exchange",
+        "article",
+        doc.slug,
+        doc.titleZh,
+        doc.titleEn,
+        doc.summaryZh,
+        doc.summaryEn,
+        doc.bodyZh,
+        doc.bodyEn,
+        doc.sortOrder,
+        JSON.stringify(tags),
+        JSON.stringify(payload),
+        "published",
+        now,
+        system.email,
+      ],
+    );
+    const updated = rowToNode(
+      (await sql("select * from kb_nodes where id = $1", [doc.id]))[0]!,
+    );
+    await writeRevision(updated, "update", system, `v-exchange seed upsert ${VE_META.version}`);
   }
 }
 

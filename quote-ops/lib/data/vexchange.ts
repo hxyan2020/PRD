@@ -1,7 +1,9 @@
 /**
  * V Exchange perpetual risk KB — kept separate from CFD Broker Pricing corpus.
- * Source: internal draft V0.1 · 2026-11-22 · XAUUSD perp MVP
+ * Source: internal draft + risk inventory V2.0 · XAUUSD perp MVP
  */
+
+import { buildVeRiskCatalogDocs } from "./ve-risk-catalog";
 
 export type VeDoc = {
   id: string;
@@ -17,13 +19,13 @@ export type VeDoc = {
 };
 
 export const VE_META = {
-  version: "V0.1",
-  date: "2026-11-22",
+  version: "V2.0",
+  date: "2026-11-24",
   contract: "XAUUSD",
-  status: "内部知识草案",
+  status: "内部知识草案 + 138风险场景清单",
 };
 
-export const VE_DOCS: VeDoc[] = [
+const VE_CORE_DOCS: VeDoc[] = [
   {
     id: "ve-doc-principles",
     slug: "ve-principles",
@@ -366,3 +368,6 @@ DB 接仓：接仓账户承接强平风险头寸。强制成交：历史 SOP 中
     bodyEn: `11-item go-live checklist. References are design/public unless verified. First wave: alarms + admin + runbooks + data contracts.`,
   },
 ];
+
+/** Core articles + full 138-scenario risk inventory (V2.0). */
+export const VE_DOCS: VeDoc[] = [...VE_CORE_DOCS, ...buildVeRiskCatalogDocs()];

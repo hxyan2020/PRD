@@ -103,6 +103,12 @@ const VE_STRONG: RegExp[] = [
   /index\s*fallback/i,
   /指数源/,
   /价格源/,
+  /138\s*风险/,
+  /风险场景清单/,
+  /\b[A-H]\d{2}\b/,
+  /\bT(?:[1-9]|[1-3]\d|40)\b/,
+  /trading\s*risk/i,
+  /executable\s*depth/i,
 ];
 
 const CFD_STRONG: RegExp[] = [

@@ -373,9 +373,9 @@ export function RagDesk() {
                 body: t("告警 / 定价 / Runbook / DB 做市分区", "Alarms / pricing / runbooks / DB MM"),
               },
               {
-                href: "/kb/ve-alarm-catalog",
-                title: t("告警目录", "Alarm catalog"),
-                body: t("阈值、频率、配置冲突标注", "Thresholds, cadence, config conflicts"),
+                href: "/kb/ve-risk-scenarios-138",
+                title: t("138 风险场景", "138 risk scenarios"),
+                body: t("全平台清单 V2.0 · 原始98 + Trading40", "Full inventory V2.0 · 98 + Trading 40"),
               },
               {
                 href: "/kb/ve-pricing-engine",
@@ -383,9 +383,9 @@ export function RagDesk() {
                 body: t("Index / Premium / Funding / Mark", "Index / Premium / Funding / Mark"),
               },
               {
-                href: "/kb/ve-principles",
-                title: t("风控原则", "Risk principles"),
-                body: t("证据分级 · AI 只读限制", "Evidence grades · AI read-only limits"),
+                href: "/kb/ve-alarm-catalog",
+                title: t("告警目录", "Alarm catalog"),
+                body: t("阈值、频率、配置冲突标注", "Thresholds, cadence, config conflicts"),
               },
             ]
           : [
