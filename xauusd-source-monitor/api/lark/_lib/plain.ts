@@ -20,8 +20,12 @@ export function toPlainText(input: string): string {
   s = s.replace(/__/g, '')
   s = s.replace(/`/g, '')
   s = s.replace(/^#{1,6}\s+/gm, '')
+  // mid-line ATX leftovers from KB dumps (e.g. "…链路。 ## 1.1 产品")
+  s = s.replace(/\s#{1,6}\s+/g, ' ')
   // horizontal rules used as separators → blank line
   s = s.replace(/^\s*---+\s*$/gm, '')
+  // markdown table separators
+  s = s.replace(/\|\s*---+\s*/g, '| ')
   return s
 }
 
