@@ -148,6 +148,8 @@ const en: Dict = {
   investigateArchiveNote:
     'Archive gates weekly optimisation only. Unarchived RCAs stay out of weekly opt inputs but still count in realtime statistics.',
   investigateStatsNote: 'Every triggered RCA is auto-counted in Realtime Statistics.',
+  investigateAlreadyRan:
+    'Same alert was already investigated once — opened the existing report. Ask follow-ups below instead of running again.',
   investigateContinueAsk:
     'Anything unclear? Keep asking on this RCA. Starting a different alert? Say “new alert” or run a fresh investigation.',
   investigateFollowUpHint:
@@ -534,6 +536,8 @@ const zhHant: Dict = {
   investigateArchiveNote:
     '歸檔只決定是否進入週優化輸入。未歸檔 RCA 不進週優化，但仍計入即時統計。',
   investigateStatsNote: '每一次觸發的 RCA 都會自動計入即時統計。',
+  investigateAlreadyRan:
+    '同一条告警已排查过一次 — 已打开原报告。请在下方追问，无需再点执行排查。',
   investigateContinueAsk:
     '有不清楚的可以继续追问。若要查另一条告警，请说明「新告警」或新开一次排查。',
   investigateFollowUpHint:

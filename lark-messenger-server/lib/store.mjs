@@ -52,8 +52,57 @@ function pushLog(kind, payload) {
   return row
 }
 
+/** Same alert content → one fingerprint so ingest / RCA only run once (id ignored). */
+export function alarmFingerprint(alarm = {}) {
+  const raw = [alarm.title, alarm.trigger, alarm.breached, alarm.summary || alarm.facts]
+    .filter(Boolean)
+    .join('|')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim()
+  let h = 2166136261
+  for (let i = 0; i < raw.length; i++) {
+    h ^= raw.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return `afp_${(h >>> 0).toString(16)}`
+}
+
+/** Recent open RCA for the same alarm id or content fingerprint (default 15 min). */
+export function findRecentDuplicateRca({
+  alarmId,
+  fingerprint,
+  windowMs = 15 * 60 * 1000,
+} = {}) {
+  const data = read()
+  const since = Date.now() - windowMs
+  return (
+    data.incidents.find(
+      (i) =>
+        !i.archivedAt &&
+        i.at >= since &&
+        ((alarmId && i.alarmId === alarmId) ||
+          (fingerprint && i.fingerprint === fingerprint)),
+    ) || null
+  )
+}
+
 export function ingestAlarm(alarm) {
   const data = read()
+  const fingerprint = alarm.fingerprint || alarmFingerprint(alarm)
+  const since = Date.now() - 15 * 60 * 1000
+  const existing = data.alarms.find(
+    (a) =>
+      a.at >= since &&
+      (a.id === alarm.id || a.fingerprint === fingerprint),
+  )
+  if (existing) {
+    pushLog('alarm_ingest_deduped', {
+      alarmId: existing.id,
+      fingerprint,
+    })
+    return existing
+  }
   const row = {
     id: alarm.id || `ALT-${Date.now()}`,
     at: Date.now(),
@@ -66,12 +115,13 @@ export function ingestAlarm(alarm) {
     facts: alarm.facts || alarm.summary || '',
     sources: alarm.sources || [],
     autoAnalyze: alarm.autoAnalyze !== false,
+    fingerprint,
     status: 'open',
   }
   data.alarms.unshift(row)
   data.alarms = data.alarms.slice(0, 200)
   write(data)
-  pushLog('alarm_ingested', { alarmId: row.id, severity: row.severity })
+  pushLog('alarm_ingested', { alarmId: row.id, severity: row.severity, fingerprint })
   return row
 }
 
@@ -89,12 +139,18 @@ export function saveIncident(incident) {
     nextSteps: incident.nextSteps || '',
     report: incident.report || '',
     sources: incident.sources || [],
+    fingerprint: incident.fingerprint || null,
     archivedAt: null,
   }
   data.incidents.unshift(row)
   data.incidents = data.incidents.slice(0, 200)
   write(data)
-  pushLog('rca_created', { incidentId: row.id, severity: row.severity, alarmId: row.alarmId })
+  pushLog('rca_created', {
+    incidentId: row.id,
+    severity: row.severity,
+    alarmId: row.alarmId,
+    fingerprint: row.fingerprint,
+  })
   return row
 }
 

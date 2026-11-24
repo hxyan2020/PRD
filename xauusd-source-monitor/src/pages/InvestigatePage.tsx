@@ -15,6 +15,10 @@ import {
 import { hasLlmCredentials, runLlm } from '../copilot/engine/llm'
 import { stripMarkdownNoise } from '../copilot/engine/reportFormat'
 import {
+  findRecentSameInvestigation,
+  investigationFingerprint,
+} from '../copilot/engine/fingerprint'
+import {
   applyManagedLlmConfig,
   flattenKbDocs,
   loadHistory,
@@ -159,6 +163,7 @@ export function InvestigatePage() {
   }
 
   const runAnalysis = async () => {
+    if (busy) return
     setError(null)
     const userText = facts.trim()
     if (!userText && !images.length) {
@@ -168,6 +173,18 @@ export function InvestigatePage() {
 
     const query = [title.trim(), userText].filter(Boolean).join('\n') || 'XAUUSD alert'
     const analysisLang = detectReplyLang(userText || query, lang)
+    const fingerprint = investigationFingerprint({
+      title: title.trim(),
+      facts: userText || query,
+      imagesCount: images.length,
+    })
+    const prior = findRecentSameInvestigation(history, fingerprint)
+    if (prior) {
+      setActive(prior)
+      setLiveThinking([])
+      setError(t('investigateAlreadyRan'))
+      return
+    }
     // Text-only off-topic asks are gently rejected; screenshot-only may still be an alert.
     // Capability / bare-greeting asks get a real reply — never a recycled greeting template.
     if (userText) {
@@ -442,6 +459,9 @@ export function InvestigatePage() {
         pathSteps,
         replyLang: analysisLang,
         skillMatched,
+        fingerprint,
+        skillContext: rules.skillContext,
+        kbContext: rules.kbContext,
         externalPages: externalPages.map((p) => ({ label: p.label, url: p.url })),
         messages: [
           { role: 'user', content: analysisText, at: startedAt },
@@ -514,17 +534,17 @@ export function InvestigatePage() {
       } else if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
         reply = followUpWithRules(followUp.trim(), active.facts, followLang)
       } else {
-        const skills = loadSkills()
-        const tree = loadKnowledgeTree()
-        const knowledge = flattenKbDocs(tree)
-        const rules = analyzeWithRules({
-          text: active.facts,
-          severity: '自动建议',
-          skills,
-          knowledge,
-          tree,
-          lang: followLang,
-        })
+        // Follow-up only — reuse cached context; do NOT re-trigger a full investigation.
+        const skillContext =
+          active.skillContext ||
+          (active.skillsUsed || [])
+            .map((s) => `- [${s.level}] ${s.id} ${s.name}`)
+            .join('\n') ||
+          '(none)'
+        const kbContext =
+          active.kbContext ||
+          (active.knowledgeUsed || []).map((n) => n.path || n.title).join('\n') ||
+          '(none)'
         reply = await runLlm({
           settings,
           lang: followLang,
@@ -533,18 +553,18 @@ export function InvestigatePage() {
             '',
             'System reminder:',
             '- Stay in V Exchange XAUUSD risk-investigate scope. Gently refuse off-topic asks.',
-            '- This message is a SAME-TOPIC follow-up on the open RCA (facts below). Answer against that incident.',
-            '- If the user had started a different alert, you would not be in this path — do not invent a second RCA.',
+            '- This is a SAME-TOPIC follow-up on the open RCA. Do NOT start a new investigation.',
             '- If you do not know, say so clearly. Internal admin DB retrieval is Phase 2 — do not invent admin answers.',
             '- End with a short invite to keep asking if anything is unclear.',
             '',
             'Open RCA facts:',
             active.facts || '(none)',
+            '',
+            'Open RCA report excerpt:',
+            (active.report || '').slice(0, 1200),
           ].join('\n'),
-          skillContext: rules.skillContext,
-          kbContext:
-            rules.kbContext ||
-            knowledge.map((k) => `${k.title}\n${k.body}`).join('\n\n'),
+          skillContext,
+          kbContext,
           priorMessages: (active.messages || [])
             .filter((m) => m.role === 'user' || m.role === 'assistant')
             .slice(-6)

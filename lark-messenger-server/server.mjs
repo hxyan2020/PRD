@@ -12,7 +12,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  alarmFingerprint,
   archiveIncident,
+  findRecentDuplicateRca,
   getAlarm,
   getIncident,
   ingestAlarm,
@@ -584,6 +586,57 @@ async function maybeLlmEnhance(facts, base) {
 }
 
 async function runRcaFromAlarm(alarm, opts = {}) {
+  const fingerprint = alarm.fingerprint || alarmFingerprint(alarm)
+  const existing = findRecentDuplicateRca({
+    alarmId: alarm.id,
+    fingerprint,
+  })
+  if (existing && opts.force !== true) {
+    pushLog('rca_deduped', {
+      incidentId: existing.id,
+      alarmId: alarm.id,
+      fingerprint,
+    })
+    const payload = renderLarkCard('rca-report', {
+      title: existing.title,
+      severity: existing.severity,
+      model: existing.model,
+      skills: existing.skills,
+      thinking: existing.thinking,
+      next_steps: existing.nextSteps,
+      sources: (existing.sources || []).map((u) => `- ${u}`).join('\n'),
+      path: 'deduped — same alert already investigated once',
+      report_excerpt:
+        (existing.report || '').slice(0, 900) ||
+        'Same alert was already investigated. Continue in the thread — do not re-run.',
+      incident_id: existing.id,
+      desk_url: `${DESK_BASE}/#/investigate`,
+      knowledge: '',
+    })
+    // Do not re-send the RCA card on dedupe unless explicitly asked.
+    const send =
+      opts.send === false || opts.resendDeduped !== true
+        ? { dryRun: true, deduped: true, payload }
+        : await sendLark(opts.webhookUrl, payload)
+    return {
+      incident: existing,
+      analysis: {
+        severity: existing.severity,
+        skills: existing.skills,
+        thinking: existing.thinking,
+        nextSteps: existing.nextSteps,
+        sources: (existing.sources || []).map((u) => `- ${u}`).join('\n'),
+        path: 'deduped',
+        report: existing.report,
+        model: existing.model,
+        deduped: true,
+      },
+      send,
+      payload,
+      deduped: true,
+    }
+  }
+
   const facts =
     alarm.facts ||
     [
@@ -606,6 +659,7 @@ async function runRcaFromAlarm(alarm, opts = {}) {
     thinking: analysis.thinking,
     nextSteps: analysis.nextSteps,
     report: analysis.report,
+    fingerprint,
     sources: (alarm.sources || []).length
       ? alarm.sources
       : analysis.sources.split('\n').map((l) => l.replace(/^- /, '')),
@@ -754,7 +808,14 @@ const server = http.createServer(async (req, res) => {
         alert_id: alarm.id,
         desk_url: `${DESK_BASE}/#/investigate`,
       })
-      const alertSend = await sendLark(body.webhookUrl, alertCard)
+      const alreadyRca = findRecentDuplicateRca({
+        alarmId: alarm.id,
+        fingerprint: alarm.fingerprint,
+      })
+      // Skip re-posting the alert card when this ingest was a dedupe of an existing alarm.
+      const alertSend = alreadyRca
+        ? { dryRun: true, deduped: true }
+        : await sendLark(body.webhookUrl, alertCard)
       let rca = null
       if (AUTO_ANALYZE && alarm.autoAnalyze && body.autoAnalyze !== false) {
         rca = await runRcaFromAlarm(alarm, { webhookUrl: body.webhookUrl })
@@ -763,8 +824,14 @@ const server = http.createServer(async (req, res) => {
         ok: true,
         alarm,
         alertSend,
+        deduped: Boolean(alreadyRca || rca?.deduped),
         rca: rca
-          ? { incident: rca.incident, send: rca.send, dryRun: rca.send?.dryRun }
+          ? {
+              incident: rca.incident,
+              send: rca.send,
+              dryRun: rca.send?.dryRun,
+              deduped: Boolean(rca.deduped),
+            }
           : null,
       })
     }

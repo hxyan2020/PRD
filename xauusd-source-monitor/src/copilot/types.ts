@@ -123,6 +123,12 @@ export interface IncidentRecord {
   skillMatched?: boolean
   /** External UI / docs / news pages attached for verification. */
   externalPages?: { label: string; url: string }[]
+  /** Dedup key so the same alert is only investigated once in a short window. */
+  fingerprint?: string
+  /** Cached skill context for follow-ups — avoids re-running full investigation. */
+  skillContext?: string
+  /** Cached knowledge context for follow-ups. */
+  kbContext?: string
 }
 
 export interface CopilotSettings {
