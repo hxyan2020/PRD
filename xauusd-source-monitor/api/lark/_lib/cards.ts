@@ -142,29 +142,102 @@ export function investigationCard(args: {
 
 const DASHBOARD_URL = 'https://vex-llm-proxy.vercel.app/#/reports'
 
+/** Unicode bar for in-card charts (Lark has no canvas). */
+function bar(n: number, max: number, width = 10): string {
+  const filled = max <= 0 ? 0 : Math.max(0, Math.round((n / max) * width))
+  return `${'█'.repeat(filled)}${'░'.repeat(Math.max(0, width - filled))}`
+}
+
+function sgtDayKey(ts: number): string {
+  return new Date(ts).toLocaleDateString('en-CA', { timeZone: 'Asia/Singapore' })
+}
+
+function kpiColumn(label: string, value: string): Record<string, unknown> {
+  return {
+    tag: 'column',
+    width: 'weighted',
+    weight: 1,
+    vertical_align: 'top',
+    elements: [
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: `${label}\n**${value}**`,
+        },
+      },
+    ],
+  }
+}
+
 export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
+  const total = args.incidents.length
   const open = args.incidents.filter((i) => i.status === 'open').length
   const archived = args.incidents.filter((i) => i.status === 'archived').length
+
   const bySev: Record<string, number> = {}
   for (const inc of args.incidents) {
-    bySev[inc.severity || '—'] = (bySev[inc.severity || '—'] || 0) + 1
+    const key = (inc.severity || '—').toUpperCase()
+    bySev[key] = (bySev[key] || 0) + 1
   }
-  const sevLine = Object.entries(bySev)
-    .sort((a, b) => b[1] - a[1])
-    .map(([k, n]) => `${k}×${n}`)
-    .join(' · ')
+  // Always show P0–P3 rails so empty boards still look like a viz
+  for (const sev of ['P0', 'P1', 'P2', 'P3']) {
+    if (bySev[sev] == null) bySev[sev] = 0
+  }
+  const sevMax = Math.max(1, ...Object.values(bySev))
+  const sevOrder = ['P0', 'P1', 'P2', 'P3', ...Object.keys(bySev).filter((k) => !/^P[0-3]$/.test(k))]
+  const sevChart = sevOrder
+    .filter((k, i, arr) => arr.indexOf(k) === i)
+    .map((sev) => {
+      const n = bySev[sev] || 0
+      return `${severityEmoji(sev)} ${sev.padEnd(4)} ${bar(n, sevMax)} **${n}**`
+    })
+    .join('\n')
+
+  const statusMax = Math.max(1, open, archived)
+  const statusChart = hans
+    ? `🟢 进行中 ${bar(open, statusMax)} **${open}**\n📦 已归档 ${bar(archived, statusMax)} **${archived}**`
+    : zh
+      ? `🟢 進行中 ${bar(open, statusMax)} **${open}**\n📦 已歸檔 ${bar(archived, statusMax)} **${archived}**`
+      : `🟢 Open     ${bar(open, statusMax)} **${open}**\n📦 Archived ${bar(archived, statusMax)} **${archived}**`
+
+  // Last 7 SGT days activity sparkline
+  const dayCounts: Record<string, number> = {}
+  for (const inc of args.incidents) {
+    const d = sgtDayKey(inc.updatedAt)
+    dayCounts[d] = (dayCounts[d] || 0) + 1
+  }
+  const days: string[] = []
+  const now = Date.now()
+  for (let i = 6; i >= 0; i--) {
+    days.push(sgtDayKey(now - i * 86_400_000))
+  }
+  const dayMax = Math.max(1, ...days.map((d) => dayCounts[d] || 0))
+  const dayChart = days
+    .map((d) => {
+      const n = dayCounts[d] || 0
+      const md = d.slice(5) // MM-DD
+      return `${md} ${bar(n, dayMax, 8)} **${n}**`
+    })
+    .join('\n')
+
+  const listTitle = hans
+    ? '📋 **近期告警／报告**'
+    : zh
+      ? '📋 **近期告警／報告**'
+      : '📋 **Recent alerts & reports**'
 
   const lines =
     args.incidents.length === 0
       ? hans
-        ? '尚无归档／进行中的事故。开始排查后会自动累积。'
+        ? '_暂无记录 — 发送 **investigate** 并贴告警后，这里会累积可视化与列表。_'
         : zh
-          ? '尚無歸檔／進行中的事故。開始排查後會自動累積。'
-          : 'No open/archived incidents yet. They accumulate as you investigate.'
+          ? '_暫無記錄 — 發送 **investigate** 並貼告警後，這裡會累積可視化與列表。_'
+          : '_No records yet — type **investigate** and paste an alert; this board fills as you go._'
       : args.incidents
-          .slice(0, 12)
+          .slice(0, 8)
           .map((inc, i) => {
             const when = new Date(inc.updatedAt).toLocaleString('en-SG', {
               timeZone: 'Asia/Singapore',
@@ -179,17 +252,23 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
           })
           .join('\n\n')
 
-  const kpi = hans
-    ? `📊 **看板摘要**\n\n• **合计：** **${args.incidents.length}**\n• **进行中：** **${open}**\n• **已归档：** **${archived}**${sevLine ? `\n• **严重度：** ${sevLine}` : ''}`
-    : zh
-      ? `📊 **看板摘要**\n\n• **合計：** **${args.incidents.length}**\n• **進行中：** **${open}**\n• **已歸檔：** **${archived}**${sevLine ? `\n• **嚴重度：** ${sevLine}` : ''}`
-      : `📊 **Dashboard**\n\n• **Total:** **${args.incidents.length}**\n• **Open:** **${open}**\n• **Archived:** **${archived}**${sevLine ? `\n• **Severity:** ${sevLine}` : ''}`
-
   const intro = hans
-    ? `🗂️ 以下为 Lark 侧近期累积的告警与报告。\n\n• **完整可视化看板**（桌面 RCA + Lark）：[打开看板](${DASHBOARD_URL})`
+    ? '🗂️ **Lark 侧告警／报告可视化**（下方为看板；桌面完整版链接见卡片底部）'
     : zh
-      ? `🗂️ 以下為 Lark 側近期累積的告警與報告。\n\n• **完整可視化看板**（桌面 RCA + Lark）：[打開看板](${DASHBOARD_URL})`
-      : `🗂️ Lark-side alerts & reports below.\n\n• **Full visualization** (desk RCA + Lark): [Open dashboard](${DASHBOARD_URL})`
+      ? '🗂️ **Lark 側告警／報告可視化**（下方為看板；桌面完整版連結見卡片底部）'
+      : '🗂️ **Lark alerts & reports visualization** (board below; full desk link at the bottom)'
+
+  const sevTitle = hans ? '📉 **按严重度**' : zh ? '📉 **按嚴重度**' : '📉 **By severity**'
+  const statusTitle = hans ? '📊 **按状态**' : zh ? '📊 **按狀態**' : '📊 **By status**'
+  const dayTitle = hans
+    ? '📅 **近 7 日活跃（SGT）**'
+    : zh
+      ? '📅 **近 7 日活躍（SGT）**'
+      : '📅 **Last 7 days (SGT)**'
+
+  const labelTotal = hans ? '合计' : zh ? '合計' : 'Total'
+  const labelOpen = hans ? '进行中' : zh ? '進行中' : 'Open'
+  const labelArchived = hans ? '已归档' : zh ? '已歸檔' : 'Archived'
 
   return {
     config: { wide_screen_mode: true },
@@ -206,9 +285,34 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
     },
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: intro } },
-      { tag: 'div', text: { tag: 'lark_md', content: kpi } },
+      {
+        tag: 'column_set',
+        flex_mode: 'none',
+        background_style: 'grey',
+        columns: [
+          kpiColumn(labelTotal, String(total)),
+          kpiColumn(labelOpen, String(open)),
+          kpiColumn(labelArchived, String(archived)),
+        ],
+      },
       { tag: 'hr' },
-      { tag: 'div', text: { tag: 'lark_md', content: lines } },
+      {
+        tag: 'div',
+        text: { tag: 'lark_md', content: `${statusTitle}\n${statusChart}` },
+      },
+      {
+        tag: 'div',
+        text: { tag: 'lark_md', content: `${sevTitle}\n${sevChart}` },
+      },
+      {
+        tag: 'div',
+        text: { tag: 'lark_md', content: `${dayTitle}\n${dayChart}` },
+      },
+      { tag: 'hr' },
+      {
+        tag: 'div',
+        text: { tag: 'lark_md', content: `${listTitle}\n\n${lines}` },
+      },
       {
         tag: 'note',
         elements: [

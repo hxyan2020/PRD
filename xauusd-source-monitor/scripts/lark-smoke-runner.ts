@@ -348,19 +348,28 @@ async function main() {
     'must not jump to market',
   )
 
-  // 10) Review / dashboard visualization card
+  // 10) Review / dashboard visualization card (in-message viz; URL only in footer)
   const rev = await turn('review', 'review')
+  const revUrlCount = (rev.blob.match(/vex-llm-proxy\.vercel\.app\/#\/reports/g) || []).length
   record(
-    'turn.review_dashboard_link',
-    rev.blob.includes('/#/reports') && (rev.blob.includes('dashboard') || rev.blob.includes('看板') || rev.blob.includes('📊')),
-    '',
+    'turn.review_dashboard_viz',
+    rev.blob.includes('column_set') &&
+      (rev.blob.includes('█') || rev.blob.includes('░')) &&
+      rev.blob.includes('P0') &&
+      revUrlCount === 1 &&
+      !rev.blob.includes('Open dashboard') &&
+      !rev.blob.includes('打开看板'),
+    `urls=${revUrlCount}`,
   )
   const dash = await turn('dashboard-cmd', 'dashboard')
+  const dashUrlCount = (dash.blob.match(/vex-llm-proxy\.vercel\.app\/#\/reports/g) || []).length
   record(
     'turn.dashboard_cmd',
     Boolean(dash.reply?.card) &&
-      (dash.blob.includes('Alerts') || dash.blob.includes('看板') || dash.blob.includes('/#/reports')),
-    '',
+      dash.blob.includes('column_set') &&
+      dashUrlCount === 1 &&
+      (dash.blob.includes('Alerts') || dash.blob.includes('看板') || dash.blob.includes('By severity')),
+    `urls=${dashUrlCount}`,
   )
   record('store.incidents_accumulated', listIncidents({ limit: 20 }).length >= 1, `n=${listIncidents({ limit: 20 }).length}`)
 
