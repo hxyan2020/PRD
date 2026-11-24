@@ -76,9 +76,15 @@ async function main() {
   const skills = loadSkills()
   const kb = loadKnowledge()
   record(
-    'skills.load_ve_sop',
-    skills.some((s) => s.id.startsWith('VE-SOP')),
-    `skills=${skills.length}`,
+    'skills.load_34_scenarios',
+    skills.length === 34 &&
+      skills.filter((s) => s.id.startsWith('L1-')).length === 28 &&
+      skills.filter((s) => s.id.startsWith('L2-')).length === 6 &&
+      !skills.some((s) => s.id.startsWith('IDX-') || s.id.startsWith('VE-SOP')),
+    `skills=${skills.length} ids=${skills
+      .slice(0, 3)
+      .map((s) => s.id)
+      .join(',')}`,
   )
   record(
     'kb.load_ve_docs',
@@ -93,7 +99,7 @@ async function main() {
   const rag = retrieveRag('Mark vs Index deviation Funding 0.1% 接仓失败')
   record(
     'rag.skill_hit',
-    rag.hits.some((h) => h.id.startsWith('VE-') || h.id.startsWith('MARK') || h.id.startsWith('IDX')),
+    rag.hits.some((h) => /^L1-|^L2-/.test(h.id)),
     rag.hits.map((h) => h.id).slice(0, 5).join(','),
   )
   record(
@@ -242,15 +248,20 @@ async function main() {
   record('greeting.17h_is_afternoon_en', greetingOpenForHour('en', 17) === 'Good afternoon', '')
   record('greeting.18h_is_evening_zh', greetingOpenForHour('zh-Hans', 18) === '晚上好', '')
 
-  // 6) Greeting card: bold + spaced bullets + how-to-trigger each command
+  // 6) Greeting card: bold + spaced bullets + unified trigger rule
   for (const lang of ['en', 'zh-Hans', 'zh-Hant'] as const) {
     const g = greetingReply(lang)
     const triggerHint =
       lang === 'en'
-        ? g.includes('Trigger:') && g.includes('**market**')
-        : g.includes('触发') || g.includes('觸發')
+        ? g.includes('group = @me + keyword') && g.includes('**market**')
+        : (g.includes('群聊') && g.includes('@我') && (g.includes('触发') || g.includes('觸發'))) ||
+          (g.includes('群聊') && g.includes('@我'))
     const noScreenshotPitch =
       !g.includes('截图欢迎') && !g.includes('截圖歡迎') && !g.includes('Screenshots welcome')
+    const noApprovalPitch =
+      !g.includes('生产操作需人工审批') &&
+      !g.includes('生產操作需人工審批') &&
+      !g.includes('Production actions need human approval')
     record(
       `greeting.template_${lang}`,
       g.includes('Risk Copilot') &&
@@ -263,6 +274,7 @@ async function main() {
         g.includes('\n\n') &&
         triggerHint &&
         noScreenshotPitch &&
+        noApprovalPitch &&
         /📈|🔍|📊|🧩|📚/.test(g),
       g.slice(0, 120),
     )
@@ -281,12 +293,12 @@ async function main() {
         greetBlob.includes('**knowledge**') &&
         greetBlob.includes('UAT') &&
         greetBlob.includes('Yan Haixiang') &&
-        greetBlob.includes('Trigger:') &&
+        greetBlob.includes('@me + keyword') &&
         greetBlob.includes('lark_md') &&
-        greetBlob.includes('vex-llm-proxy.vercel.app/#/skills') &&
-        greetBlob.includes('vex-llm-proxy.vercel.app/#/knowledge') &&
-        greetBlob.includes('"tag":"note"') &&
-        !greetBlob.includes('Screenshots welcome'),
+        greetBlob.includes('[Skills](https://vex-llm-proxy.vercel.app/#/skills)') &&
+        greetBlob.includes('[Knowledge](https://vex-llm-proxy.vercel.app/#/knowledge)') &&
+        !greetBlob.includes('Screenshots welcome') &&
+        !greetBlob.includes('Production actions need human approval'),
     ),
     greetBlob.slice(0, 160),
   )
@@ -298,10 +310,11 @@ async function main() {
       greetZh.reply?.card &&
         greetZhBlob.includes('Risk Copilot') &&
         greetZhBlob.includes('**market**') &&
-        (greetZhBlob.includes('触发') || greetZhBlob.includes('觸發')) &&
-        greetZhBlob.includes('vex-llm-proxy.vercel.app/#/skills') &&
-        greetZhBlob.includes('vex-llm-proxy.vercel.app/#/knowledge') &&
-        !greetZhBlob.includes('截图欢迎'),
+        greetZhBlob.includes('@我') &&
+        greetZhBlob.includes('[Skills](https://vex-llm-proxy.vercel.app/#/skills)') &&
+        greetZhBlob.includes('[知识库](https://vex-llm-proxy.vercel.app/#/knowledge)') &&
+        !greetZhBlob.includes('截图欢迎') &&
+        !greetZhBlob.includes('生产操作需人工审批'),
     ),
     greetZhBlob.slice(0, 160),
   )
@@ -486,7 +499,7 @@ async function main() {
     title: 'IDX-01 excluded Mark 48bps',
     facts: ['Alert paste'],
     severity: 'P1',
-    skills: ['VE-SOP-02'],
+    skills: ['L1-07'],
     knowledge: ['Mark vs Index'],
     summary: 'Source excluded; Mark deviation elevated.',
     recommendations: ['Align timestamps', 'Confirm remaining sources'],
@@ -542,7 +555,7 @@ async function main() {
       (invAipo.blob.includes('已证实') ||
         invAipo.blob.includes('Confirmed') ||
         invAipo.blob.includes('[OBS]')) &&
-      invAipo.blob.includes('只读'),
+      (invAipo.blob.includes('只读') || invAipo.blob.includes('Read-only')),
     invAipo.blob.slice(0, 220),
   )
   const greetLater = greetingReply('zh-Hans')
@@ -562,10 +575,25 @@ async function main() {
   record(
     'turn.skills_catalog',
     Boolean(skillsTurn.reply?.card) &&
-      skillsTurn.blob.includes('Skills') &&
-      (skillsTurn.blob.match(/vex-llm-proxy\.vercel\.app\/#\/skills/g) || []).length === 1 &&
-      /VE-SOP|L1|L2/i.test(skillsTurn.blob),
-    skillsTurn.blob.slice(0, 120),
+      skillsTurn.blob.includes('34') &&
+      skillsTurn.blob.includes('L1-01') &&
+      skillsTurn.blob.includes('L2-A') &&
+      !skillsTurn.blob.includes('VE-SOP') &&
+      !skillsTurn.blob.includes('IDX-01') &&
+      (skillsTurn.blob.match(/vex-llm-proxy\.vercel\.app\/#\/skills/g) || []).length === 1,
+    skillsTurn.blob.slice(0, 180),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const riskKb = await turn('risk-inventory-kb', '可能出现的风险有哪些')
+  record(
+    'turn.risk_inventory_in_knowledge',
+    Boolean(riskKb.reply?.card) &&
+      (riskKb.blob.includes('监控') ||
+        riskKb.blob.includes('指标') ||
+        riskKb.blob.includes('IDX-') ||
+        riskKb.blob.includes('可能出现的风险') ||
+        riskKb.blob.includes('知识')),
+    riskKb.blob.slice(0, 200),
   )
   const kbTurn = await turn('knowledge-cmd', 'knowledge')
   record(
@@ -585,8 +613,9 @@ async function main() {
       (rev.blob.includes('█') || rev.blob.includes('░')) &&
       rev.blob.includes('P0') &&
       revUrlCount === 1 &&
-      !rev.blob.includes('Open dashboard') &&
-      !rev.blob.includes('打开看板'),
+      (rev.blob.includes('[打开看板桌面页]') ||
+        rev.blob.includes('[打開看板桌面頁]') ||
+        rev.blob.includes('[Open dashboard desk]')),
     `urls=${revUrlCount}`,
   )
   const dash = await turn('dashboard-cmd', 'dashboard')
@@ -671,7 +700,7 @@ async function main() {
   )
   record(
     'turn.investigate_exposes_skills_kb',
-    /VE-SOP|IDX-|MARK-|PRICE-|ve-doc-|Index|Funding|Mark|知识库|Knowledge|Skills/i.test(invZh.blob),
+    /L1-|L2-|ve-doc-|Index|Funding|Mark|知识库|Knowledge|Skills|排查/i.test(invZh.blob),
     invZh.blob.slice(0, 120),
   )
 
@@ -689,7 +718,7 @@ async function main() {
   )
   record(
     'turn.kb_qa_uses_skills',
-    /VE-SOP|PRICE-|MARK-|FUND-|Skills|🧩/i.test(kbQ.blob),
+    /L1-|L2-|PRICE-|MARK-|FUND-|Skills|🧩|知识/i.test(kbQ.blob),
     '',
   )
 
@@ -701,7 +730,7 @@ async function main() {
   )
   record(
     'turn.sop_qa_hits_ve_skill',
-    /VE-SOP-01|FUND-|接仓|🧩|Skills/i.test(sopQ.blob),
+    /L1-1[6-7]|L1-20|L1-24|FUND-|接仓|🧩|Skills/i.test(sopQ.blob),
     sopQ.blob.slice(0, 160),
   )
 

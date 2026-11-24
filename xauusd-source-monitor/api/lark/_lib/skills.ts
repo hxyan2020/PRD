@@ -1,6 +1,5 @@
-import l1Raw from '../_data/l1.json' with { type: 'json' }
-import l2Raw from '../_data/l2.json' with { type: 'json' }
 import kbRaw from '../_data/kbDefaults.json' with { type: 'json' }
+import skills34Raw from '../_data/skills34.json' with { type: 'json' }
 import veQuoteOps from '../_data/veQuoteOps.json' with { type: 'json' }
 import { cleanLarkMd } from './plain.js'
 import type { KbHit, KbItem, Lang, SkillHit, SkillRec } from './types.js'
@@ -10,6 +9,9 @@ let kbCache: KbItem[] | null = null
 
 type VePack = {
   knowledge?: { id: string; title: string; body: string }[]
+}
+
+type Skills34Pack = {
   skills?: {
     id: string
     level: 'L1' | 'L2'
@@ -24,6 +26,7 @@ type VePack = {
 }
 
 const ve = veQuoteOps as VePack
+const skills34 = skills34Raw as Skills34Pack
 
 /** Latin words + CJK runs / bi- / trigrams for bilingual risk text. */
 export function tokenize(text: string): string[] {
@@ -74,31 +77,13 @@ function scoreAgainst(haystack: string, queryTokens: string[], queryLower: strin
   return score
 }
 
+/**
+ * Skills = Runbook V18 的 34 个排查场景（28 L1 + 6 L2）。
+ * 监控指标／「可能出现的风险」清单在知识库，不混进 Skills。
+ */
 export function loadSkills(): SkillRec[] {
   if (skillsCache) return skillsCache
-  const l1 = (l1Raw as string[][]).map((r) => ({
-    id: r[0]!,
-    level: 'L1' as const,
-    name: r[1]!,
-    severity: r[2]!,
-    matchHints: `${r[0]} ${r[1]}`,
-    linkedL1: '',
-    check: r[3]!,
-    action: r[4]!,
-    opt: r[5]!,
-  }))
-  const l2 = (l2Raw as string[][]).map((r) => ({
-    id: r[0]!,
-    level: 'L2' as const,
-    name: r[1]!,
-    severity: 'P2',
-    matchHints: `${r[0]} ${r[1]} ${r[2]}`,
-    linkedL1: r[2]!,
-    check: r[3]!,
-    action: r[4]!,
-    opt: r[5]!,
-  }))
-  const veSkills: SkillRec[] = (ve.skills || []).map((s) => ({
+  skillsCache = (skills34.skills || []).map((s) => ({
     id: s.id,
     level: s.level,
     name: s.name,
@@ -109,8 +94,6 @@ export function loadSkills(): SkillRec[] {
     action: s.action,
     opt: s.opt,
   }))
-  const seen = new Set([...l1, ...l2].map((s) => s.id))
-  skillsCache = [...l1, ...l2, ...veSkills.filter((s) => !seen.has(s.id))]
   return skillsCache
 }
 

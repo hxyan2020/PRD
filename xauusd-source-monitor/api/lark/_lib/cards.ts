@@ -314,13 +314,15 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
         text: { tag: 'lark_md', content: `${listTitle}\n\n${lines}` },
       },
       {
-        tag: 'note',
-        elements: [
-          {
-            tag: 'plain_text',
-            content: DASHBOARD_URL,
-          },
-        ],
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: hans
+            ? `[打开看板桌面页](${DASHBOARD_URL})`
+            : zh
+              ? `[打開看板桌面頁](${DASHBOARD_URL})`
+              : `[Open dashboard desk](${DASHBOARD_URL})`,
+        },
       },
     ],
   }
@@ -342,17 +344,18 @@ const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
 const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
 const MARKET_URL = 'https://vex-llm-proxy.vercel.app/#/market'
 
+/** Clickable desk links (lark_md markdown links — note/plain_text is not tappable). */
 function deskFooterNote(lang: Lang): Record<string, unknown> {
   const hans = lang === 'zh-Hans'
   const zh = isZh(lang)
   const text = hans
-    ? `桌面完整页 · Skills ${SKILLS_URL} · 知识库 ${KNOWLEDGE_URL} · 看板 ${DASHBOARD_URL} · 行情 ${MARKET_URL}`
+    ? `桌面完整页 · [Skills](${SKILLS_URL}) · [知识库](${KNOWLEDGE_URL}) · [看板](${DASHBOARD_URL}) · [行情](${MARKET_URL})`
     : zh
-      ? `桌面完整頁 · Skills ${SKILLS_URL} · 知識庫 ${KNOWLEDGE_URL} · 看板 ${DASHBOARD_URL} · 行情 ${MARKET_URL}`
-      : `Full desk · Skills ${SKILLS_URL} · Knowledge ${KNOWLEDGE_URL} · Board ${DASHBOARD_URL} · Market ${MARKET_URL}`
+      ? `桌面完整頁 · [Skills](${SKILLS_URL}) · [知識庫](${KNOWLEDGE_URL}) · [看板](${DASHBOARD_URL}) · [行情](${MARKET_URL})`
+      : `Full desk · [Skills](${SKILLS_URL}) · [Knowledge](${KNOWLEDGE_URL}) · [Board](${DASHBOARD_URL}) · [Market](${MARKET_URL})`
   return {
-    tag: 'note',
-    elements: [{ tag: 'plain_text', content: text }],
+    tag: 'div',
+    text: { tag: 'lark_md', content: text },
   }
 }
 
@@ -401,35 +404,32 @@ export function skillsCatalogCard(args: {
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
-  const l1 = args.skills.filter((s) => s.level === 'L1')
-  const l2 = args.skills.filter((s) => s.level === 'L2')
-  const ve = args.skills.filter((s) => /^VE-/i.test(s.id))
-  const sample = (list: SkillRec[], n: number) =>
-    list
-      .slice(0, n)
-      .map((s) => `• **${s.id}** · ${s.name}${s.severity ? ` · ${s.severity}` : ''}`)
-      .join('\n')
+  const l1 = args.skills.filter((s) => s.level === 'L1' || /^L1-/i.test(s.id))
+  const l2 = args.skills.filter((s) => s.level === 'L2' || /^L2-/i.test(s.id))
+  const line = (s: SkillRec) =>
+    `• **${s.id}** · ${s.name}${s.severity ? ` · ${s.severity}` : ''}`
 
   const intro = hans
-    ? `🧩 **Skills 目录（Lark 预览）**\n\n共 **${args.skills.length}** 条 · L1 **${l1.length}** · L2 **${l2.length}** · VE-SOP **${ve.length}**\n\n发送关键词或贴告警时会自动 RAG 命中；完整可编辑桌面页见卡片底部。`
+    ? `🧩 **Skills＝34 个排查场景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（独立风险事件）· L2 **${l2.length}**（关联排查链路）\n\n贴告警／关键词会 RAG 命中这些场景。**监控指标／可能出现的风险**清单在知识库（发 **knowledge**），不与 Skills 混淆。`
     : zh
-      ? `🧩 **Skills 目錄（Lark 預覽）**\n\n共 **${args.skills.length}** 條 · L1 **${l1.length}** · L2 **${l2.length}** · VE-SOP **${ve.length}**\n\n發送關鍵詞或貼告警時會自動 RAG 命中；完整可編輯桌面頁見卡片底部。`
-      : `🧩 **Skills catalogue (Lark preview)**\n\n**${args.skills.length}** total · L1 **${l1.length}** · L2 **${l2.length}** · VE-SOP **${ve.length}**\n\nKeywords / pasted alerts hit these via RAG automatically; full editable desk is linked below.`
+      ? `🧩 **Skills＝34 個排查場景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（獨立風險事件）· L2 **${l2.length}**（關聯排查鏈路）\n\n貼告警／關鍵詞會 RAG 命中這些場景。**監控指標／可能出現的風險**清單在知識庫（發 **knowledge**），不與 Skills 混淆。`
+      : `🧩 **Skills = 34 investigation scenarios** (Runbook V18)\n\n**${args.skills.length}** total · L1 **${l1.length}** (standalone) · L2 **${l2.length}** (chains)\n\nAlerts/keywords RAG-match these. The **monitoring / possible-risks** inventory lives in Knowledge (send **knowledge**) — not Skills.`
 
   const body = [
     intro,
     '',
-    hans || zh ? '**VE-SOP 样例**' : '**VE-SOP sample**',
-    sample(ve.length ? ve : args.skills, 6) || '• —',
+    hans || zh ? '**L1 排查场景（28）**' : '**L1 scenarios (28)**',
+    ...l1.map(line),
     '',
-    hans || zh ? '**L1 样例**' : '**L1 sample**',
-    sample(l1, 5) || '• —',
-    '',
-    hans || zh ? '**L2 样例**' : '**L2 sample**',
-    sample(l2, 5) || '• —',
+    hans || zh ? '**L2 关联链路（6）**' : '**L2 chains (6)**',
+    ...l2.map(line),
   ].join('\n')
 
-  const title = hans ? 'Skills 目录' : zh ? 'Skills 目錄' : 'Skills catalogue'
+  const title = hans
+    ? 'Skills · 34 排查场景'
+    : zh
+      ? 'Skills · 34 排查場景'
+      : 'Skills · 34 scenarios'
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -439,8 +439,15 @@ export function skillsCatalogCard(args: {
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: body } },
       {
-        tag: 'note',
-        elements: [{ tag: 'plain_text', content: SKILLS_URL }],
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: hans
+            ? `[打开 Skills 桌面页](${SKILLS_URL})`
+            : zh
+              ? `[打開 Skills 桌面頁](${SKILLS_URL})`
+              : `[Open Skills desk](${SKILLS_URL})`,
+        },
       },
     ],
   }
@@ -484,8 +491,15 @@ export function knowledgeCatalogCard(args: {
         },
       },
       {
-        tag: 'note',
-        elements: [{ tag: 'plain_text', content: KNOWLEDGE_URL }],
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: hans
+            ? `[打开知识库桌面页](${KNOWLEDGE_URL})`
+            : zh
+              ? `[打開知識庫桌面頁](${KNOWLEDGE_URL})`
+              : `[Open Knowledge desk](${KNOWLEDGE_URL})`,
+        },
       },
     ],
   }
