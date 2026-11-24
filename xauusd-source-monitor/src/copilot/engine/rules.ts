@@ -25,26 +25,56 @@ export function skillsToL1(active: SkillRecord[]): L1Skill[] {
     }))
 }
 
+function tokenize(text: string): string[] {
+  const t = text.toLowerCase()
+  const out = new Set<string>()
+  for (const w of t.split(/[^a-z0-9_%.\-]+/i)) {
+    if (w.length >= 2) out.add(w)
+  }
+  const cjk = t.match(/[\u4e00-\u9fff]+/g) || []
+  for (const run of cjk) {
+    if (run.length >= 2) out.add(run)
+    for (let i = 0; i < run.length; i++) {
+      out.add(run[i]!)
+      if (i + 1 < run.length) out.add(run.slice(i, i + 2))
+      if (i + 2 < run.length) out.add(run.slice(i, i + 3))
+    }
+  }
+  return [...out]
+}
+
+function scoreHay(haystack: string, queryTokens: string[], queryLower: string): number {
+  const h = haystack.toLowerCase()
+  let score = 0
+  for (const tok of queryTokens) {
+    if (tok.length < 2 || !h.includes(tok)) continue
+    score += /[\u4e00-\u9fff]/.test(tok) ? (tok.length >= 3 ? 3 : 2) : tok.length >= 4 ? 2 : 1
+  }
+  for (const phrase of ['mark', 'index', 'funding', 'adl', '无有效源', '接仓', '强平', '偏离', '溢价', '永续']) {
+    if (queryLower.includes(phrase) && h.includes(phrase)) score += 2
+  }
+  return score
+}
+
 function matchSkills(
   text: string,
   skills: SkillRecord[],
 ): { s: SkillRecord; score: number }[] {
   const t = text.toLowerCase()
+  const tokens = tokenize(text)
   return skills
     .filter((s) => !s.disabled && !s.archivedAt)
     .map((s) => {
+      const hay = `${s.id} ${s.name} ${s.matchHints} ${s.check} ${s.action} ${s.opt}`
+      let score = scoreHay(hay, tokens, t)
       const keys = [
         s.id.toLowerCase(),
         s.name.toLowerCase(),
         ...s.name.split(/\s+/),
         ...s.matchHints.split(/[\s,/|]+/).filter(Boolean),
       ]
-      let score = 0
       for (const k of keys) {
         if (k.length >= 2 && t.includes(k.toLowerCase())) score += k.length >= 4 ? 2 : 1
-      }
-      for (const w of s.check.split(/[，、；;/\s]+/).filter((x) => x.length >= 3)) {
-        if (t.includes(w.toLowerCase())) score += 1
       }
       return { s, score }
     })
@@ -59,15 +89,10 @@ function matchKnowledge(
   tree?: KbNode[],
 ): { item: KnowledgeItem; score: number; path: string }[] {
   const t = text.toLowerCase()
+  const tokens = tokenize(text)
   return knowledge
     .map((x) => {
-      const titleHits = x.title
-        .split(/\s+/)
-        .filter((w) => w && t.includes(w.toLowerCase())).length
-      const bodyHit = x.body
-        .split(/[\s，、。；;]+/)
-        .filter((w) => w.length >= 4 && t.includes(w.toLowerCase())).length
-      const score = titleHits * 2 + Math.min(bodyHit, 3)
+      const score = scoreHay(`${x.id} ${x.title} ${x.body}`, tokens, t)
       return {
         item: x,
         score,

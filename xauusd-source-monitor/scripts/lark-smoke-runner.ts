@@ -7,7 +7,13 @@ import { detectLang } from '../api/lark/_lib/lang'
 import { parseIncomingEvent, shouldRespond } from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
 import { classifyIntent, greetingReply } from '../api/lark/_lib/scope'
-import { loadKnowledge, loadSkills, preferredActions, retrieveRag } from '../api/lark/_lib/skills'
+import {
+  formatRagAnswer,
+  loadKnowledge,
+  loadSkills,
+  preferredActions,
+  retrieveRag,
+} from '../api/lark/_lib/skills'
 import { clearSession, listIncidents } from '../api/lark/_lib/store'
 import type { IncomingMessage } from '../api/lark/_lib/types'
 
@@ -356,6 +362,56 @@ async function main() {
     Boolean(invZh.reply?.card) &&
       (/排查|结论|下一步|建议|嚴重|严重/i.test(invZh.blob) || invZh.blob.includes('📋')),
     '',
+  )
+  record(
+    'turn.investigate_exposes_skills_kb',
+    /VE-SOP|IDX-|MARK-|PRICE-|ve-doc-|Index|Funding|Mark|知识库|Knowledge|Skills/i.test(invZh.blob),
+    invZh.blob.slice(0, 120),
+  )
+
+  // Knowledge / skill Q&A (general_risk) must surface retrieval even without LLM
+  clearSession('smoke_chat', 'kb_user')
+  const kbQ = await turn(
+    'kb-qa',
+    '请说明 V Exchange 永续里 Index Premium Funding Mark 怎么算，知识库怎么说？',
+    'kb_user',
+  )
+  record(
+    'turn.kb_qa_uses_knowledge',
+    /ve-doc-pricing|Index|Premium|Funding|Mark|知识库|📖|🧩/i.test(kbQ.blob),
+    kbQ.blob.slice(0, 160),
+  )
+  record(
+    'turn.kb_qa_uses_skills',
+    /VE-SOP|PRICE-|MARK-|FUND-|Skills|🧩/i.test(kbQ.blob),
+    '',
+  )
+
+  clearSession('smoke_chat', 'sop_user')
+  const sopQ = await turn(
+    'sop-qa',
+    '接仓失败 Funding 异常应该用哪条 SOP skill？',
+    'sop_user',
+  )
+  record(
+    'turn.sop_qa_hits_ve_skill',
+    /VE-SOP-01|FUND-|接仓|🧩|Skills/i.test(sopQ.blob),
+    sopQ.blob.slice(0, 160),
+  )
+
+  // formatRagAnswer unit-level
+  const sample = retrieveRag('无有效源告警 Mark 偏离')
+  const formatted = formatRagAnswer({
+    lang: 'zh-Hans',
+    question: '无有效源告警 Mark 偏离',
+    hits: sample.hits,
+    kb: sample.kb,
+    severity: sample.severity,
+  })
+  record(
+    'format.rag_answer_has_sections',
+    formatted.includes('🧩') && formatted.includes('📚') && sample.hits.length > 0,
+    `hits=${sample.hits.length} kb=${sample.kb.length}`,
   )
 
   const failed = results.filter((r) => !r.ok)

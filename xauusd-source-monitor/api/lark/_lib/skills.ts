@@ -2,7 +2,7 @@ import l1Raw from '../_data/l1.json' with { type: 'json' }
 import l2Raw from '../_data/l2.json' with { type: 'json' }
 import kbRaw from '../_data/kbDefaults.json' with { type: 'json' }
 import veQuoteOps from '../_data/veQuoteOps.json' with { type: 'json' }
-import type { KbHit, KbItem, SkillHit, SkillRec } from './types.js'
+import type { KbHit, KbItem, Lang, SkillHit, SkillRec } from './types.js'
 
 let skillsCache: SkillRec[] | null = null
 let kbCache: KbItem[] | null = null
@@ -23,6 +23,55 @@ type VePack = {
 }
 
 const ve = veQuoteOps as VePack
+
+/** Latin words + CJK runs / bi- / trigrams for bilingual risk text. */
+export function tokenize(text: string): string[] {
+  const t = text.toLowerCase()
+  const out = new Set<string>()
+  for (const w of t.split(/[^a-z0-9_%.\-]+/i)) {
+    if (w.length >= 2) out.add(w)
+  }
+  const cjk = t.match(/[\u4e00-\u9fff]+/g) || []
+  for (const run of cjk) {
+    if (run.length >= 2) out.add(run)
+    for (let i = 0; i < run.length; i++) {
+      out.add(run[i]!)
+      if (i + 1 < run.length) out.add(run.slice(i, i + 2))
+      if (i + 2 < run.length) out.add(run.slice(i, i + 3))
+    }
+  }
+  return [...out]
+}
+
+function scoreAgainst(haystack: string, queryTokens: string[], queryLower: string): number {
+  const h = haystack.toLowerCase()
+  let score = 0
+  for (const tok of queryTokens) {
+    if (tok.length < 2) continue
+    if (!h.includes(tok)) continue
+    if (/[\u4e00-\u9fff]/.test(tok)) {
+      score += tok.length >= 3 ? 3 : 2
+    } else {
+      score += tok.length >= 4 ? 2 : 1
+    }
+  }
+  // Whole-phrase soft boosts for common VE terms
+  for (const phrase of [
+    'mark',
+    'index',
+    'funding',
+    'adl',
+    '无有效源',
+    '接仓',
+    '强平',
+    '偏离',
+    '溢价',
+    '永续',
+  ]) {
+    if (queryLower.includes(phrase) && h.includes(phrase)) score += 2
+  }
+  return score
+}
 
 export function loadSkills(): SkillRec[] {
   if (skillsCache) return skillsCache
@@ -81,21 +130,16 @@ export function loadKnowledge(): KbItem[] {
 }
 
 function matchSkills(text: string, pool: SkillRec[]): SkillHit[] {
-  const t = text.toLowerCase()
+  const queryLower = text.toLowerCase()
+  const queryTokens = tokenize(text)
   return pool
     .map((s) => {
-      const keys = [
-        s.id.toLowerCase(),
-        s.name.toLowerCase(),
-        ...s.name.split(/\s+/),
-        ...s.matchHints.split(/[\s,/|]+/).filter(Boolean),
-      ]
-      let score = 0
+      const hay = `${s.id} ${s.name} ${s.matchHints} ${s.check} ${s.action} ${s.opt}`
+      let score = scoreAgainst(hay, queryTokens, queryLower)
+      // keep legacy id/name includes for latin ids like IDX-01
+      const keys = [s.id.toLowerCase(), s.name.toLowerCase(), ...s.matchHints.split(/[\s,/|]+/).filter(Boolean)]
       for (const k of keys) {
-        if (k.length >= 2 && t.includes(k.toLowerCase())) score += k.length >= 4 ? 2 : 1
-      }
-      for (const w of s.check.split(/[，、；;/\s]+/).filter((x) => x.length >= 3)) {
-        if (t.includes(w.toLowerCase())) score += 1
+        if (k.length >= 2 && queryLower.includes(k.toLowerCase())) score += k.length >= 4 ? 2 : 1
       }
       return {
         id: s.id,
@@ -142,20 +186,17 @@ export function retrieveRag(text: string): { hits: SkillHit[]; kb: KbHit[]; seve
 
   const hits = [...l1Hits, ...linkedL2, ...directL2]
 
+  const queryLower = text.toLowerCase()
+  const queryTokens = tokenize(text)
   const kb = loadKnowledge()
     .map((item) => {
-      const t = text.toLowerCase()
-      const titleHits = item.title
-        .split(/\s+/)
-        .filter((w) => w && t.includes(w.toLowerCase())).length
-      const bodyHit = item.body
-        .split(/[\s，、。；;]+/)
-        .filter((w) => w.length >= 4 && t.includes(w.toLowerCase())).length
-      return { ...item, score: titleHits * 2 + Math.min(bodyHit, 3) }
+      const hay = `${item.id} ${item.title} ${item.body}`
+      const score = scoreAgainst(hay, queryTokens, queryLower)
+      return { ...item, score }
     })
     .filter((o) => o.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 4)
+    .slice(0, 5)
 
   const p0 =
     hits.some((h) => h.severity === 'P0') ||
@@ -169,6 +210,99 @@ export function retrieveRag(text: string): { hits: SkillHit[]; kb: KbHit[]; seve
         : '待判定'
 
   return { hits, kb, severity }
+}
+
+/**
+ * Always-on answer block from Skills + KB (+ optional live quote-ops).
+ * Used so the bot can fulfill user needs even when LLM is down.
+ */
+export function formatRagAnswer(args: {
+  lang: Lang
+  question: string
+  hits: SkillHit[]
+  kb: KbHit[]
+  severity: string
+  quoteOps?: string | null
+}): string {
+  const hans = args.lang === 'zh-Hans'
+  const hant = args.lang === 'zh-Hant'
+  const lines: string[] = []
+
+  lines.push(
+    hans
+      ? '📚 **知识库／Skills 检索结果**'
+      : hant
+        ? '📚 **知識庫／Skills 檢索結果**'
+        : '📚 **Knowledge / Skills retrieval**',
+  )
+  lines.push(
+    hans
+      ? `• **建议严重度：** **${args.severity}**`
+      : hant
+        ? `• **建議嚴重度：** **${args.severity}**`
+        : `• **Severity proposal:** **${args.severity}**`,
+  )
+
+  if (args.hits.length) {
+    lines.push(hans || hant ? '🧩 **Skills 命中**' : '🧩 **Skills hit**')
+    for (const h of args.hits.slice(0, 4)) {
+      lines.push(`• **${h.id} · ${h.name}**`)
+      lines.push(
+        hans
+          ? `  - **检查：** ${h.check}`
+          : hant
+            ? `  - **檢查：** ${h.check}`
+            : `  - **Check:** ${h.check}`,
+      )
+      lines.push(
+        hans
+          ? `  - **建议（需审批）：** ${h.action}`
+          : hant
+            ? `  - **建議（需審批）：** ${h.action}`
+            : `  - **Action (approval):** ${h.action}`,
+      )
+    }
+  } else {
+    lines.push(
+      hans
+        ? '• **Skills：** 无高置信命中 — 请补充告警字段或输入 `investigate`'
+        : hant
+          ? '• **Skills：** 無高置信命中 — 請補充告警欄位或輸入 `investigate`'
+          : '• **Skills:** no high-confidence hit — add alert fields or type `investigate`',
+    )
+  }
+
+  if (args.kb.length) {
+    lines.push(hans || hant ? '📖 **知识库摘录**' : '📖 **Knowledge excerpts**')
+    for (const k of args.kb.slice(0, 3)) {
+      const excerpt = k.body.replace(/\s+/g, ' ').trim().slice(0, 420)
+      lines.push(`• **${k.title}**`)
+      lines.push(`  ${excerpt}${k.body.length > 420 ? '…' : ''}`)
+    }
+  } else {
+    lines.push(
+      hans
+        ? '• **知识库：** 无直接摘录；已尝试本地 VE 永续快照'
+        : hant
+          ? '• **知識庫：** 無直接摘錄；已嘗試本地 VE 永續快照'
+          : '• **Knowledge:** no direct excerpt; local VE perpetual snapshot was searched',
+    )
+  }
+
+  if (args.quoteOps) {
+    lines.push(hans || hant ? '🔗 **quote-ops 实时 RAG**' : '🔗 **quote-ops live RAG**')
+    lines.push(args.quoteOps.slice(0, 1600))
+  }
+
+  lines.push(
+    hans
+      ? '_来源：desk L1/L2 Skills + quote-ops V Exchange 永续知识（已排除 CFD）。生产写操作需人工审批。_'
+      : hant
+        ? '_來源：desk L1/L2 Skills + quote-ops V Exchange 永續知識（已排除 CFD）。生產寫操作需人工審批。_'
+        : '_Sources: desk L1/L2 Skills + quote-ops V Exchange perpetual KB (CFD excluded). Production writes need human approval._',
+  )
+
+  return lines.join('\n')
 }
 
 /**
@@ -192,9 +326,9 @@ export function adaptiveNextSteps(args: {
     if (steps.length >= max) break
     const checkKey = `${h.id}:${h.check}`.toLowerCase()
     if (checked.has(checkKey) || checked.has(h.id.toLowerCase())) continue
-    const checkTokens = h.check.split(/[，、；;,/\s]+/).filter((w) => w.length >= 4)
+    const checkTokens = tokenize(h.check).filter((w) => w.length >= 2)
     const covered = checkTokens.filter((w) => blob.includes(w.toLowerCase())).length
-    if (covered >= Math.max(2, Math.ceil(checkTokens.length * 0.4))) {
+    if (covered >= Math.max(2, Math.ceil(checkTokens.length * 0.35))) {
       continue
     }
     const prefix = zh ? `【${h.id}】` : `[${h.id}]`

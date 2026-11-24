@@ -5,6 +5,7 @@ import { fetchMarketSnapshot, formatMarketAnswer } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import {
   adaptiveNextSteps,
+  formatRagAnswer,
   preferredActions,
   retrieveRag,
 } from './skills.js'
@@ -208,27 +209,35 @@ async function runInvestigation(args: {
 
   let llmExtra = ''
   const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
+  const ragBlock = formatRagAnswer({
+    lang: args.lang,
+    question: blob.slice(0, 500),
+    hits,
+    kb,
+    severity,
+    quoteOps,
+  })
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤），每点用粗体关键词的子弹列表（• **关键词：** 说明）。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
+      ? '根据下列事故事实与 RAG 命中，用友好专业语气给出简短研判（不重复整份清单），并说明为何建议这些下一步。格式要求：用 emoji 分段标题（如 🔎 研判、✅ 为何这些步骤），每点用粗体关键词的子弹列表（• **关键词：** 说明）。必须引用命中的 Skill id 与知识库标题。优先采用 quote-ops V Exchange 永续知识；忽略 CFD 经纪商定价内容。必须用简体中文回答。'
       : args.lang === 'zh-Hant'
-        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟），每點用粗體關鍵詞的子彈列表（• **關鍵詞：** 說明）。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
-        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. 🔎 Judgement, ✅ Why these steps) and bold-keyword bullet points (`• **Keyword:** detail`). Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
+        ? '根據下列事故事實與 RAG 命中，用友好專業語氣給出簡短研判（不重複整份清單），並說明為何建議這些下一步。格式要求：用 emoji 分段標題（如 🔎 研判、✅ 為何這些步驟），每點用粗體關鍵詞的子彈列表（• **關鍵詞：** 說明）。必須引用命中的 Skill id 與知識庫標題。優先採用 quote-ops V Exchange 永續知識；忽略 CFD 經紀商定價內容。必須用繁體中文回答。'
+        : 'Given the incident facts and RAG hits below, give a short friendly-professional judgement (do not dump the full checklist) and why these next steps. Format: emoji section headers (e.g. 🔎 Judgement, ✅ Why these steps) and bold-keyword bullet points (`• **Keyword:** detail`). Cite matched Skill ids and KB titles. Prefer quote-ops V Exchange perpetual knowledge; ignore CFD broker pricing. Reply in English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
     context: [
       `FACTS:\n${blob.slice(0, 6000)}`,
-      `SKILLS:\n${hits.map((h) => `${h.id} ${h.name} | ${h.check}`).join('\n')}`,
-      `KB:\n${kb.map((k) => `${k.title}: ${k.body}`).join('\n')}`,
+      `SKILLS:\n${hits.map((h) => `${h.id} ${h.name} | ${h.check} | ${h.action}`).join('\n')}`,
+      `KB:\n${kb.map((k) => `${k.title}: ${k.body.slice(0, 1500)}`).join('\n')}`,
       quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
       `NEXT:\n${nextSteps.join('\n')}`,
     ]
       .filter(Boolean)
       .join('\n\n'),
   })
-  if (llm) llmExtra = `\n\n${llm}`
-  else if (quoteOps) llmExtra = `\n\n${quoteOps.slice(0, 1800)}`
+  // Always attach structured Skills/KB retrieval so answers stay grounded
+  llmExtra = llm ? `\n\n${llm}\n\n---\n${ragBlock}` : `\n\n${ragBlock}`
 
   const rec = persistOpenIncident({
     chatId: args.msg.chatId,
@@ -446,72 +455,31 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     })
   }
 
-  // general_risk — answer with local RAG + quote-ops V Exchange RAG + optional LLM
+  // general_risk — ALWAYS retrieve Skills + KB (+ live quote-ops); LLM only enriches
   const { hits, kb, severity } = retrieveRag(workingText)
   const quoteOps = await fetchQuoteOpsRag(workingText)
+  const ragBody = formatRagAnswer({
+    lang,
+    question: workingText,
+    hits,
+    kb,
+    severity,
+    quoteOps,
+  })
   const context = [
     `severity=${severity}`,
-    `skills=${hits.map((h) => h.id).join(',')}`,
-    `kb=${kb.map((k) => k.title).join(',')}`,
-    kb.map((k) => `${k.title}: ${k.body}`).join('\n'),
+    `skills=${hits.map((h) => `${h.id}|${h.check}|${h.action}`).join('\n')}`,
+    `kb=${kb.map((k) => `${k.title}: ${k.body.slice(0, 1200)}`).join('\n')}`,
     quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
-    'Use V Exchange perpetual knowledge only; do not answer from CFD broker pricing.',
+    'Answer ONLY from the Skills/KB/quote-ops context above. Prefer V Exchange perpetual; ignore CFD broker pricing. Cite skill ids and KB titles. Format with emoji headers and bold-keyword bullets.',
   ]
     .filter(Boolean)
-    .join('\n')
+    .join('\n\n')
   const llm = await enrichWithLlm({ lang, question: workingText, context })
-  const body =
-    llm ||
-    quoteOps ||
-    (lang === 'zh-Hans'
-      ? '已命中本地 Skills／知识库，但上游 LLM 暂不可用。请输入 `investigate` 进入引导排查。'
-      : lang === 'zh-Hant'
-        ? '已命中本地 Skills／知識庫，但上游 LLM 暫不可用。請輸入 `investigate` 進入引導排查。'
-        : null)
-  if (body) {
-    const replyTitle =
-      lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
-    const footer =
-      lang === 'zh-Hans'
-        ? '_来源含 quote-ops V Exchange 永续知识库。若这是事故，请回复更多证据或输入 `investigate`。_'
-        : lang === 'zh-Hant'
-          ? '_來源含 quote-ops V Exchange 永續知識庫。若這是事故，請回覆更多證據或輸入 `investigate`。_'
-          : '_Sources include quote-ops V Exchange perpetual KB. If this is an incident, add evidence or type `investigate`._'
-    return {
-      card: simpleCard(replyTitle, `${body}\n\n---\n${footer}`),
-    }
+  const replyTitle =
+    lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
+  const body = llm ? `${llm}\n\n---\n${ragBody}` : ragBody
+  return {
+    card: simpleCard(replyTitle, body),
   }
-
-  const fallback =
-    lang === 'zh-Hans'
-      ? [
-          '🧭 这看起来与 **V Exchange 风险**相关。我可以：',
-          '• **市况：** 输入 `market`',
-          '• **排查：** 贴告警／截图并输入 `investigate`',
-          '• **看板：** 输入 `review`／`dashboard`',
-          hits.length ? `• **Skills 提示：** **${hits.map((h) => h.id).join(', ')}**` : '',
-        ]
-          .filter(Boolean)
-          .join('\n')
-      : lang === 'zh-Hant'
-        ? [
-            '🧭 這看起來與 **V Exchange 風險**相關。我可以：',
-            '• **市況：** 輸入 `market`',
-            '• **排查：** 貼告警／截圖並輸入 `investigate`',
-            '• **看板：** 輸入 `review`／`dashboard`',
-            hits.length ? `• **Skills 提示：** **${hits.map((h) => h.id).join(', ')}**` : '',
-          ]
-            .filter(Boolean)
-            .join('\n')
-        : [
-            '🧭 This looks **risk-related**. I can help with:',
-            '• **Market:** `market`',
-            '• **Investigate:** paste an alert/screenshot + `investigate`',
-            '• **Dashboard:** `review` / `dashboard`',
-            hits.length ? `• **Skill hints:** **${hits.map((h) => h.id).join(', ')}**` : '',
-          ]
-            .filter(Boolean)
-            .join('\n')
-
-  return { text: fallback }
 }
