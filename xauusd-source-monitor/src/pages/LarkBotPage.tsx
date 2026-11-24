@@ -9,6 +9,19 @@ type Status = {
   larkConfigured?: boolean
   hasOpenAI?: boolean
   hasVerificationToken?: boolean
+  readyForConversation?: boolean
+  chatReady?: boolean
+  nextStep?: string
+  bot?: {
+    name?: string | null
+    openId?: string | null
+    tokenOk?: boolean
+    chatCount?: number
+    chatNames?: string[]
+    error?: string | null
+    openDmFeishu?: string | null
+    openDmLark?: string | null
+  }
   error?: string
 }
 
@@ -55,6 +68,7 @@ export function LarkBotPage() {
   }
 
   const zh = lang === 'zh-Hant'
+  const bot = status?.bot
 
   return (
     <div className="page lark-page">
@@ -82,7 +96,37 @@ export function LarkBotPage() {
               {status?.hasOpenAI ? 'ready' : 'optional fallback = rules'}
             </code>
           </li>
+          <li>
+            Lark token:{' '}
+            <code className={bot?.tokenOk ? 'ok' : 'bad'}>
+              {bot?.tokenOk ? 'ok' : bot?.error || '…'}
+            </code>
+          </li>
+          <li>
+            Bot:{' '}
+            <code className={bot?.name ? 'ok' : 'bad'}>{bot?.name || '…'}</code>
+          </li>
+          <li>
+            {zh ? '已加入會話：' : 'Chats joined: '}
+            <code className={(bot?.chatCount || 0) > 0 ? 'ok' : 'bad'}>
+              {typeof bot?.chatCount === 'number' ? bot.chatCount : '…'}
+            </code>
+            {(bot?.chatNames || []).length > 0 ? ` — ${bot?.chatNames?.join(', ')}` : ''}
+          </li>
         </ul>
+        {status?.nextStep ? <p className="muted">{status.nextStep}</p> : null}
+        <div className="lark-smoke-actions" style={{ marginTop: '0.75rem' }}>
+          {bot?.openDmFeishu ? (
+            <a className="archive-btn" href={bot.openDmFeishu} target="_blank" rel="noreferrer">
+              {zh ? '飛書打開私聊' : 'Open DM (Feishu)'}
+            </a>
+          ) : null}
+          {bot?.openDmLark ? (
+            <a className="archive-btn" href={bot.openDmLark} target="_blank" rel="noreferrer">
+              {zh ? 'Lark 打開私聊' : 'Open DM (Lark)'}
+            </a>
+          ) : null}
+        </div>
         <p className="muted">
           {zh ? '網頁版風險台保持不變。' : 'The web risk desk stays fully available.'}{' '}
           <a href="/#/investigate">{zh ? '打開 Investigate' : 'Open Investigate'}</a>
@@ -90,41 +134,28 @@ export function LarkBotPage() {
       </section>
 
       <section className="lark-section">
-        <h3>{t('larkSetupTitle')}</h3>
+        <h3>{zh ? '開始對話' : 'Start chatting'}</h3>
         <ol className="lark-steps">
           <li>
-            {zh
-              ? '在 Lark 開放平台建立企業自建應用，取得 App ID / App Secret。'
-              : 'Create a Lark enterprise app; copy App ID / App Secret.'}
-          </li>
-          <li>
-            {zh
-              ? '在 Vercel 專案 vex-llm-proxy 只需設定：'
-              : 'On Vercel project vex-llm-proxy set only:'}{' '}
-            <code>LARK_APP_ID</code>, <code>LARK_APP_SECRET</code>
-            {zh
-              ? '。Verification Token／Encrypt Key 可留空（請關閉 Encrypt）。OPENAI 已在主機上。'
-              : '. Leave Verification Token / Encrypt Key empty (keep Encrypt OFF). OPENAI is already on the host.'}
-          </li>
-          <li>
-            {zh ? '事件訂閱 Request URL：' : 'Event subscription Request URL:'}{' '}
+            {zh ? '事件訂閱 Request URL 必須是：' : 'Event subscription Request URL must be:'}{' '}
             <code>{EVENT_URL}</code>
+            {zh ? '（Encrypt Key 關閉）' : ' (Encrypt Key OFF)'}
           </li>
           <li>
-            {zh ? '訂閱事件：' : 'Subscribe events:'} <code>im.message.receive_v1</code>,{' '}
+            {zh ? '訂閱：' : 'Subscribe:'} <code>im.message.receive_v1</code>,{' '}
             <code>card.action.trigger</code>
           </li>
           <li>
             {zh
-              ? '權限：讀寫訊息、獲取圖片資源；發布應用並加入風險群。'
-              : 'Scopes: send/reply messages, read image resources; publish and add the bot to risk chats.'}
+              ? '用上方按鈕打開私聊，或把「VE AI风控小助手」加進風險群，然後發送 hi / 你好 / help'
+              : 'Use the DM button above, or add “VE AI风控小助手” to a risk group, then send hi / 你好 / help'}
+          </li>
+          <li>
+            {zh
+              ? '群聊請 @機器人；私聊可直接發。'
+              : 'In groups @ the bot; DMs work without @.'}
           </li>
         </ol>
-        <p className="muted">
-          {zh
-            ? '群聊需 @機器人；私聊可直接對話。指令：market / investigate / review / help。'
-            : 'In groups @ the bot; DMs work directly. Commands: market / investigate / review / help.'}
-        </p>
       </section>
 
       <section className="lark-section">
@@ -159,38 +190,18 @@ export function LarkBotPage() {
             onClick={() =>
               runSmoke(
                 zh
-                  ? 'investigate 告警：XAUUSD 指数源 IDX-01 剔除，Mark 偏离 48bps'
-                  : 'investigate Alert: XAUUSD index source IDX-01 excluded, Mark deviation 48bps',
+                  ? 'investigate IDX-01 excluded，Mark 偏离 48bps'
+                  : 'investigate IDX-01 excluded, Mark 48bps',
               )
             }
           >
             {zh ? '測排查' : 'Test investigate'}
           </button>
-          <button
-            type="button"
-            className="archive-btn"
-            disabled={smokeBusy}
-            onClick={() => runSmoke(zh ? '今晚吃什么' : 'What should I cook for dinner?')}
-          >
-            {zh ? '測離題拒絕' : 'Test off-topic'}
-          </button>
-          <button
-            type="button"
-            className="archive-btn"
-            disabled={smokeBusy}
-            onClick={() => runSmoke('review')}
-          >
-            {zh ? '測複盤' : 'Test review'}
-          </button>
+          <a className="muted" href={INCIDENTS_URL} target="_blank" rel="noreferrer">
+            incidents API
+          </a>
         </div>
-        {smokeOut ? (
-          <pre className="lark-smoke-out" tabIndex={0}>
-            {smokeOut}
-          </pre>
-        ) : null}
-        <p className="muted">
-          API: <code>{INCIDENTS_URL}</code>
-        </p>
+        {smokeOut ? <pre className="lark-smoke-out">{smokeOut}</pre> : null}
       </section>
     </div>
   )

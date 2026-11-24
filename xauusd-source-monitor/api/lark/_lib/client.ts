@@ -130,27 +130,90 @@ export function verifyToken(token: string | undefined): boolean {
  * Bot open_id for precise @-mention matching.
  * Prefers LARK_BOT_OPEN_ID; otherwise fetches via bot/v3/info (cached).
  */
+type BotInfo = { openId: string; appName: string }
+
+async function fetchBotInfo(): Promise<BotInfo> {
+  const data = (await larkFetch('/open-apis/bot/v3/info', { method: 'GET' })) as {
+    bot?: { open_id?: string; app_name?: string }
+    data?: { bot?: { open_id?: string; app_name?: string }; open_id?: string }
+  }
+  const bot = data.bot || data.data?.bot || {}
+  return {
+    openId: bot.open_id || data.data?.open_id || '',
+    appName: bot.app_name || '',
+  }
+}
+
 export async function resolveBotOpenId(): Promise<string> {
   const fromEnv = (process.env.LARK_BOT_OPEN_ID || '').trim()
   if (fromEnv) return fromEnv
   if (cachedBotOpenId && Date.now() < cachedBotOpenId.expireAt) return cachedBotOpenId.id
   if (!larkConfigured()) return ''
   try {
-    const data = (await larkFetch('/open-apis/bot/v3/info', { method: 'GET' })) as {
-      bot?: { open_id?: string }
-      data?: { bot?: { open_id?: string }; open_id?: string }
-    }
-    const id =
-      data.bot?.open_id ||
-      data.data?.bot?.open_id ||
-      data.data?.open_id ||
-      ''
-    if (id) {
-      cachedBotOpenId = { id, expireAt: Date.now() + 6 * 60 * 60 * 1000 }
-      return id
+    const info = await fetchBotInfo()
+    if (info.openId) {
+      cachedBotOpenId = { id: info.openId, expireAt: Date.now() + 6 * 60 * 60 * 1000 }
+      return info.openId
     }
   } catch {
     /* soft-fail — parse.ts falls back to any @mention */
   }
   return ''
+}
+
+/** Live connectivity probe used by GET /api/lark/event. */
+export async function probeLarkConnection(): Promise<{
+  tokenOk: boolean
+  botName: string
+  botOpenId: string
+  chatCount: number
+  chatNames: string[]
+  error?: string
+}> {
+  if (!larkConfigured()) {
+    return {
+      tokenOk: false,
+      botName: '',
+      botOpenId: '',
+      chatCount: 0,
+      chatNames: [],
+      error: 'LARK_APP_ID / LARK_APP_SECRET missing',
+    }
+  }
+  try {
+    await getTenantToken()
+    const info = await fetchBotInfo()
+    if (info.openId) {
+      cachedBotOpenId = { id: info.openId, expireAt: Date.now() + 6 * 60 * 60 * 1000 }
+      if (!process.env.LARK_BOT_OPEN_ID) process.env.LARK_BOT_OPEN_ID = info.openId
+    }
+    let chatCount = 0
+    let chatNames: string[] = []
+    try {
+      const chats = (await larkFetch('/open-apis/im/v1/chats?page_size=50', { method: 'GET' })) as {
+        data?: { items?: { name?: string; chat_id?: string }[] }
+      }
+      const items = chats.data?.items || []
+      chatCount = items.length
+      chatNames = items.map((c) => c.name || c.chat_id || '').filter(Boolean).slice(0, 10)
+    } catch {
+      /* listing chats needs im:chat scope — soft fail */
+    }
+    return {
+      tokenOk: true,
+      botName: info.appName || 'VE AI风控小助手',
+      botOpenId: info.openId,
+      chatCount,
+      chatNames,
+    }
+  } catch (e) {
+    return {
+      tokenOk: false,
+      botName: '',
+      botOpenId: '',
+      chatCount: 0,
+      chatNames: [],
+      error: e instanceof Error ? e.message : 'probe failed',
+    }
+  }
 }

@@ -16,6 +16,7 @@ import { handleCardAction, handleMessage } from './_lib/agent.js'
 import {
   isEncryptedEnvelope,
   larkConfigured,
+  probeLarkConnection,
   replyCard,
   replyText,
   resolveBotOpenId,
@@ -24,6 +25,14 @@ import {
   verifyToken,
 } from './_lib/client.js'
 import { parseIncomingEvent, shouldRespond } from './_lib/parse.js'
+
+const APP_ID = process.env.LARK_APP_ID || ''
+const BOT_APPLINK_FEISHU = APP_ID
+  ? `https://applink.feishu.cn/client/bot/open?appId=${APP_ID}`
+  : ''
+const BOT_APPLINK_LARK = APP_ID
+  ? `https://applink.larksuite.com/client/bot/open?appId=${APP_ID}`
+  : ''
 
 export const config = {
   api: { bodyParser: true },
@@ -70,27 +79,46 @@ async function dispatchReply(
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'GET') {
+    const probe = await probeLarkConnection()
+    const secretsOk = larkConfigured()
+    const chatReady = probe.tokenOk && probe.chatCount > 0
     return res.status(200).json({
       ok: true,
       service: 've-lark-risk-bot',
-      larkConfigured: larkConfigured(),
+      larkConfigured: secretsOk,
       hasOpenAI: Boolean(process.env.OPENAI_API_KEY),
       hasVerificationToken: Boolean(process.env.LARK_VERIFICATION_TOKEN),
       hasEncryptKey: Boolean(process.env.LARK_ENCRYPT_KEY),
       encryptSupported: false,
-      readyForConversation: larkConfigured(),
+      readyForConversation: secretsOk && probe.tokenOk,
+      chatReady,
       missingSecrets: [
         !process.env.LARK_APP_ID ? 'LARK_APP_ID' : '',
         !process.env.LARK_APP_SECRET ? 'LARK_APP_SECRET' : '',
       ].filter(Boolean),
+      bot: {
+        name: probe.botName || null,
+        openId: probe.botOpenId || process.env.LARK_BOT_OPEN_ID || null,
+        tokenOk: probe.tokenOk,
+        chatCount: probe.chatCount,
+        chatNames: probe.chatNames,
+        error: probe.error || null,
+        openDmFeishu: BOT_APPLINK_FEISHU || null,
+        openDmLark: BOT_APPLINK_LARK || null,
+      },
       webhook: 'https://vex-llm-proxy.vercel.app/api/lark/event',
       endpoints: {
         event: '/api/lark/event',
         incidents: '/api/lark/incidents',
       },
       web: 'https://vex-llm-proxy.vercel.app/',
-      setupHint:
-        'Set only LARK_APP_ID + LARK_APP_SECRET on Vercel to enable replies. Leave Encrypt Key OFF. OPENAI_API_KEY already improves answers when present.',
+      nextStep: !secretsOk
+        ? 'Set LARK_APP_ID + LARK_APP_SECRET on Vercel.'
+        : !probe.tokenOk
+          ? `Lark token failed: ${probe.error || 'check App ID/Secret'}`
+          : probe.chatCount === 0
+            ? 'Server is connected. Open a DM with the bot (applink) or add it to a group, then ensure Event Subscription URL is set. Keep Encrypt Key OFF.'
+            : 'Connected. @ the bot in a group or message it in DM.',
     })
   }
 
