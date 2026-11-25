@@ -656,6 +656,9 @@ const CASUAL_WEATHER =
   /^(今天天气|今天天氣|天气怎么样|天氣怎麼樣|下雨了吗|下雨了嗎|how(?:'s| is)\s+the\s+weather)\s*[?？!！.。]*\s*$/i
 const CASUAL_BORED =
   /^(好无聊|好無聊|好烦|好煩|无聊|無聊|i'?m\s+bored|so\s+bored)\s*[!！.。~]*\s*$/i
+/** “Can you chat / hang out?” — warm yes, never support-ticket clarify. */
+const CASUAL_CAN_CHAT =
+  /^(你能闲聊吗|你能閒聊嗎|可以闲聊吗|可以閒聊嗎|能聊天吗|能聊天嗎|可以聊天吗|可以聊天嗎|陪我聊[会會下]?|聊会天|聊會兒天|我们聊会|我們聊會|闲聊一下|閒聊一下|can\s+you\s+chat|wanna\s+chat|let'?s\s+chat|do\s+you\s+chat)\s*[?？!！.。~]*\s*$/i
 
 export function isCasualChat(text: string): boolean {
   const t = text.trim()
@@ -667,7 +670,8 @@ export function isCasualChat(text: string): boolean {
     CASUAL_BANTER.test(t) ||
     CASUAL_FOOD.test(t) ||
     CASUAL_WEATHER.test(t) ||
-    CASUAL_BORED.test(t)
+    CASUAL_BORED.test(t) ||
+    CASUAL_CAN_CHAT.test(t)
   )
 }
 
@@ -790,6 +794,15 @@ export function casualChatReply(
     }
     return '😌 When it’s dull: one song, a quick walk for a drink, or toss me a silly question. Markets are fine too — no rush 🙂'
   }
+  if (CASUAL_CAN_CHAT.test(t)) {
+    if (lang === 'zh-Hans') {
+      return '可以呀 🙂 风控是本职，闲聊也陪。吃什么、贫两句、看行情都行——你先丢一句来。'
+    }
+    if (lang === 'zh-Hant') {
+      return '可以呀 🙂 風控是本職，閒聊也陪。吃什麼、貧兩句、看行情都行——你先丟一句來。'
+    }
+    return 'Sure 🙂 Risk is the day job, but I’m happy to chat too — food, banter, or markets. Toss me a line.'
+  }
   return null
 }
 
@@ -800,14 +813,14 @@ export function casualChatReply(
 export function isStubMenuReply(text: string): boolean {
   const t = (text || '').trim()
   if (!t) return true
-  return /专长风控，闲聊也陪|閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行|我接住了|不必发指令|不必發指令|想听我能干啥|想聽我能幹啥|Want what I can do, a market take|我可以按聊天直接答|关于「.{0,48}」——|關於「.{0,48}」——/i.test(
+  return /专长风控，闲聊也陪|專長是 V Exchange 風控，不過閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行|我接住了|不必发指令|不必發指令|想听我能干啥|想聽我能幹啥|Want what I can do, a market take|我可以按聊天直接答|关于「.{0,48}」——|關於「.{0,48}」——|这块我先接一句|這塊我先接一句|卡在哪一步|哪一层定义|哪一層定義|which step \/ which definition/i.test(
     t,
   )
 }
 
 /**
  * Last-resort only — prefer LLM / search / deterministic handlers first.
- * Never a 闲聊／行情／告警 three-way menu.
+ * Never a support-ticket clarify or 闲聊／行情／告警 menu.
  */
 export function chatbotFallbackReply(lang: Lang, question: string): string {
   const canned =
@@ -816,14 +829,27 @@ export function chatbotFallbackReply(lang: Lang, question: string): string {
     botRuntimeMetaReply(lang, question) ||
     botMetaReply(lang, question)
   if (canned) return canned
-  const q = question.trim().slice(0, 48)
+  const q = question.trim().slice(0, 40)
+  // Short social / open asks → invite chat, don't ask for "definition layer"
+  if (
+    q.length <= 24 ||
+    /聊|吃|帅|帥|天气|天氣|无聊|無聊|开心|開心|哈哈|吗$|嗎$|\?$|？$/i.test(q)
+  ) {
+    if (lang === 'zh-Hans') {
+      return `嗯，关于「${q}」——我可以直接聊。你先说你更想听啥，我接着回 🙂`
+    }
+    if (lang === 'zh-Hant') {
+      return `嗯，關於「${q}」——我可以直接聊。你先說你更想聽啥，我接著回 🙂`
+    }
+    return `On “${q}” — I can just chat. Tell me what’s on your mind and I’ll pick it up 🙂`
+  }
   if (lang === 'zh-Hans') {
-    return `「${q}」这块我先接一句：能再具体一点吗？比如你卡在哪一步、想看哪一层定义／用法，我按那个直接答。`
+    return `「${q}」我先按聊天答一版：你再补一个关键词（场景／对象），我就能说得更准。`
   }
   if (lang === 'zh-Hant') {
-    return `「${q}」這塊我先接一句：能再具體一點嗎？比如你卡在哪一步、想看哪一層定義／用法，我按那個直接答。`
+    return `「${q}」我先按聊天答一版：你再補一個關鍵詞（場景／對象），我就能說得更準。`
   }
-  return `On “${q}” — can you add one concrete detail (which step / which definition)? I’ll answer that directly.`
+  return `On “${q}” — I’ll take it as chat. Add one keyword (scene / subject) and I’ll tighten the answer.`
 }
 
 /** @deprecated Negative-list policy: free-text is no longer refused as offtopic. Kept for callers. */

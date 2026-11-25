@@ -610,14 +610,37 @@ async function main() {
     !softFb.includes('想听我能干啥') &&
       !softFb.includes('我接住了') &&
       !softFb.includes('我可以按聊天直接答') &&
-      !stubFn(softFb) &&
+      !softFb.includes('卡在哪一步') &&
+      !softFb.includes('哪一层定义') &&
       softFb.includes('宇宙'),
     softFb.slice(0, 180),
   )
   record(
     'chat.stub_detector_old_menu',
-    stubFn('关于「随便」——我可以按聊天直接答。你是想听我能干啥、看行情，还是丢条告警一起看？'),
+    stubFn('关于「随便」——我可以按聊天直接答。你是想听我能干啥、看行情，还是丢条告警一起看？') &&
+      stubFn('「你能闲聊吗」这块我先接一句：能再具体一点吗？比如你卡在哪一步、想看哪一层定义／用法，我按那个直接答。'),
     '',
+  )
+  record('casual.detect_can_chat', isCasualChat('你能闲聊吗'), '')
+  const canChatTpl = casualChatReply('zh-Hans', '你能闲聊吗') || ''
+  record(
+    'casual.can_chat_warm_yes',
+    canChatTpl.includes('可以') &&
+      !canChatTpl.includes('卡在哪一步') &&
+      !canChatTpl.includes('哪一层定义') &&
+      !canChatTpl.includes('这块我先接一句'),
+    canChatTpl.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'can_chat_q')
+  const canChatTurn = await turn('can-chat', '你能闲聊吗', 'can_chat_q')
+  record(
+    'turn.can_chat_natural',
+    Boolean(canChatTurn.reply?.card) &&
+      /可以|陪|聊/i.test(canChatTurn.blob) &&
+      !canChatTurn.blob.includes('卡在哪一步') &&
+      !canChatTurn.blob.includes('哪一层定义') &&
+      !canChatTurn.blob.includes('这块我先接一句'),
+    canChatTurn.blob.slice(0, 220),
   )
   record(
     'search.short_knowledge_ask',
