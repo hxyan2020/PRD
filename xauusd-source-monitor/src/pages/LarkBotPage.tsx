@@ -190,6 +190,11 @@ export function LarkBotPage() {
           </li>
           <li>
             {zh
+              ? '消息卡片请求网址（Card Request URL）也设为同一地址（或 /api/lark/card），否则点按钮会提示 Card callback isn’t configured。排查卡按钮：已完成此步／生成排查报告／结束归档／复盘清单。'
+              : 'Also set Card Request URL to the same host (or /api/lark/card). Otherwise taps show “Card callback isn’t configured”. Investigate card buttons: Step done / Generate report / Done / Review.'}
+          </li>
+          <li>
+            {zh
               ? '用上方按鈕打開私聊，或把「VE AI风控小助手」加進風險群，然後發送 hi / 你好 / help'
               : 'Use the DM button above, or add “VE AI风控小助手” to a risk group, then send hi / 你好 / help'}
           </li>

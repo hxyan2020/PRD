@@ -116,7 +116,7 @@ export interface CopilotSettings {
   anthropicKey: string
   geminiKey: string
   openrouterKey: string
-  /** Managed gateway base. Empty on vex-llm-proxy.vercel.app (same-origin /api/chat). */
+  /** Managed gateway base. Empty on quote-ai-troubleshooting-bot.vercel.app (same-origin /api/chat). */
   proxyBase: string
   /** Desk auth token for managed LLM gateway (from llm-config.json). */
   deskToken: string

@@ -1,9 +1,7 @@
 import {
   DEFAULT_KB,
-  L1_SKILLS,
-  L2_CHAINS,
+  SKILLS_34,
   VE_QUOTE_OPS_KB,
-  VE_QUOTE_OPS_SKILLS,
   VE_QUOTE_OPS_SOURCE,
 } from './data/catalog'
 import { PERM_VERCEL_ORIGIN } from './engine/llm'
@@ -261,41 +259,8 @@ export function saveSkillOverrides(v: SkillOverrides) {
 }
 
 export function defaultSkills(): SkillRecord[] {
-  const now = 0
-  const l1: SkillRecord[] = L1_SKILLS.map((s) => ({
-    id: s.id,
-    level: 'L1' as const,
-    name: s.name,
-    severity: s.severity,
-    description: s.name,
-    matchHints: `${s.id} ${s.name}`,
-    linkedL1: '',
-    check: s.check,
-    action: s.action,
-    opt: s.opt,
-    disabled: false,
-    custom: false,
-    updatedAt: now,
-  }))
-  const l2: SkillRecord[] = L2_CHAINS.map((s) => ({
-    id: s.id,
-    level: 'L2' as const,
-    name: s.name,
-    severity: 'P2',
-    description: s.name,
-    matchHints: `${s.id} ${s.name} ${s.linkedL1}`,
-    linkedL1: s.linkedL1,
-    check: s.check,
-    action: s.action,
-    opt: s.opt,
-    disabled: false,
-    custom: false,
-    updatedAt: now,
-  }))
-  // quote-ops V Exchange SOP skills (ids VE-*); keep after core L1/L2
-  const seen = new Set([...l1, ...l2].map((s) => s.id))
-  const ve = VE_QUOTE_OPS_SKILLS.filter((s) => !seen.has(s.id))
-  return [...l1, ...l2, ...ve]
+  // Skills = Runbook V18 的 34 个排查场景；监控指标清单在知识库
+  return SKILLS_34.map((s) => ({ ...s }))
 }
 
 export function loadSkills(): SkillRecord[] {
@@ -311,17 +276,15 @@ export function loadSkills(): SkillRecord[] {
 
   if (!stored?.length) return apply(base)
 
-  // Merge in any new VE-* skills missing from older localStorage snapshots
-  const byId = new Map(stored.map((s) => [s.id, s]))
-  let changed = false
-  for (const s of base) {
-    if (s.id.startsWith('VE-') && !byId.has(s.id)) {
-      byId.set(s.id, s)
-      changed = true
-    }
+  // Migrate old 97-metric dumps → 34 scenarios; keep only custom extras
+  const baseIds = new Set(base.map((s) => s.id))
+  const customs = stored.filter((s) => s.custom && !baseIds.has(s.id))
+  const byId = new Map(base.map((s) => [s.id, s]))
+  for (const s of stored) {
+    if (baseIds.has(s.id) && s.custom) byId.set(s.id, s)
   }
-  const merged = [...byId.values()]
-  if (changed) writeJson(SKILLS_KEY, merged)
+  const merged = [...byId.values(), ...customs]
+  writeJson(SKILLS_KEY, merged)
   return apply(merged)
 }
 

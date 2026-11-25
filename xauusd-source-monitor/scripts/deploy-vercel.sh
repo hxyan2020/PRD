@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Deploy xauusd-source-monitor (SPA + /api/chat) to the permanent Vercel project.
-# Permanent URL: https://quote-ai-troubleshooting-bot.vercel.app
+# Permanent URL: https://vex-llm-proxy.vercel.app
 # Requires: vercel CLI logged in, or VERCEL_TOKEN in the environment.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -35,6 +35,6 @@ echo "==> Deploying to Vercel (production)…"
 npx vercel deploy "${ARGS[@]}"
 
 echo ""
-echo "==> Permanent desk: https://quote-ai-troubleshooting-bot.vercel.app/#/investigate"
+echo "==> Permanent desk: https://vex-llm-proxy.vercel.app/#/investigate"
 echo "    Env (Production): OPENAI_API_KEY, DESK_GATEWAY_TOKEN"
 echo "    Browser never asks for an OpenAI API key."

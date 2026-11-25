@@ -71,28 +71,70 @@ async function larkFetch(path: string, init: RequestInit = {}) {
   return data
 }
 
-export async function replyText(messageId: string, text: string) {
-  return larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
+export type LarkMessageItem = {
+  message_id?: string
+  msg_type?: string
+  body?: { content?: string }
+  upper_message_id?: string
+  parent_id?: string
+  root_id?: string
+  deleted?: boolean
+}
+
+/**
+ * Fetch a message (and merge_forward children) by id.
+ * Pass userCardContent to get original interactive card JSON when available.
+ */
+export async function fetchMessageItems(
+  messageId: string,
+  opts?: { userCardContent?: boolean },
+): Promise<LarkMessageItem[]> {
+  const id = (messageId || '').trim()
+  if (!id || !larkConfigured()) return []
+  const q = new URLSearchParams()
+  q.set('user_id_type', 'open_id')
+  if (opts?.userCardContent) q.set('card_msg_content_type', 'user_card_content')
+  const raw = (await larkFetch(
+    `/open-apis/im/v1/messages/${encodeURIComponent(id)}?${q.toString()}`,
+    { method: 'GET' },
+  )) as { data?: { items?: LarkMessageItem[] } }
+  return Array.isArray(raw.data?.items) ? raw.data!.items! : []
+}
+
+function extractMessageId(data: unknown): string {
+  const d = data as { data?: { message_id?: string } }
+  return (d?.data?.message_id || '').trim()
+}
+
+export type LarkSendResult = { messageId: string; raw: unknown }
+
+export async function replyText(messageId: string, text: string): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
     method: 'POST',
     body: JSON.stringify({
       msg_type: 'text',
       content: JSON.stringify({ text: toPlainText(text) }),
     }),
   })
+  return { messageId: extractMessageId(raw), raw }
 }
 
-export async function replyCard(messageId: string, card: Record<string, unknown>) {
-  return larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
+export async function replyCard(
+  messageId: string,
+  card: Record<string, unknown>,
+): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reply`, {
     method: 'POST',
     body: JSON.stringify({
       msg_type: 'interactive',
       content: JSON.stringify(plainCard(card)),
     }),
   })
+  return { messageId: extractMessageId(raw), raw }
 }
 
-export async function sendTextToChat(chatId: string, text: string) {
-  return larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
+export async function sendTextToChat(chatId: string, text: string): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
     method: 'POST',
     body: JSON.stringify({
       receive_id: chatId,
@@ -100,10 +142,14 @@ export async function sendTextToChat(chatId: string, text: string) {
       content: JSON.stringify({ text: toPlainText(text) }),
     }),
   })
+  return { messageId: extractMessageId(raw), raw }
 }
 
-export async function sendCardToChat(chatId: string, card: Record<string, unknown>) {
-  return larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
+export async function sendCardToChat(
+  chatId: string,
+  card: Record<string, unknown>,
+): Promise<LarkSendResult> {
+  const raw = await larkFetch(`/open-apis/im/v1/messages?receive_id_type=chat_id`, {
     method: 'POST',
     body: JSON.stringify({
       receive_id: chatId,
@@ -111,6 +157,110 @@ export async function sendCardToChat(chatId: string, card: Record<string, unknow
       content: JSON.stringify(plainCard(card)),
     }),
   })
+  return { messageId: extractMessageId(raw), raw }
+}
+
+/** Native “正在输入…” on the referenced user message (auto-clears ~10s). Soft-fail at call sites. */
+export async function setMessageTypingStatus(messageId: string, typing: boolean): Promise<void> {
+  await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/typing`, {
+    method: 'POST',
+    body: JSON.stringify({ typing_status: typing ? 1 : 0 }),
+  })
+}
+
+/** Fallback typing cue when native status API is unavailable. Returns reaction_id. */
+export async function addMessageReaction(
+  messageId: string,
+  emojiType = 'Typing',
+): Promise<string | null> {
+  const raw = await larkFetch(
+    `/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reactions`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ reaction_type: { emoji_type: emojiType } }),
+    },
+  )
+  const d = raw as { data?: { reaction_id?: string } }
+  return (d.data?.reaction_id || '').trim() || null
+}
+
+export async function deleteMessageReaction(messageId: string, reactionId: string): Promise<void> {
+  await larkFetch(
+    `/open-apis/im/v1/messages/${encodeURIComponent(messageId)}/reactions/${encodeURIComponent(reactionId)}`,
+    { method: 'DELETE' },
+  )
+}
+
+/** Patch an already-sent text message (progressive typing). */
+export async function updateMessageText(messageId: string, text: string): Promise<void> {
+  await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      msg_type: 'text',
+      content: JSON.stringify({ text: toPlainText(text) }),
+    }),
+  })
+}
+
+/** Patch an already-sent interactive card (progressive typing). */
+export async function updateMessageCard(
+  messageId: string,
+  card: Record<string, unknown>,
+): Promise<void> {
+  await larkFetch(`/open-apis/im/v1/messages/${encodeURIComponent(messageId)}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      msg_type: 'interactive',
+      content: JSON.stringify(plainCard(card)),
+    }),
+  })
+}
+
+/**
+ * Delayed card update after a card.action.trigger toast ack.
+ * Must use the callback `token` (valid ~30 min, ≤2 uses) — message PUT often
+ * fails or gets reverted for interaction callbacks (Feishu delayed-update API).
+ * Call only AFTER responding HTTP 200 to the callback.
+ */
+export async function updateCardByCallbackToken(
+  callbackToken: string,
+  card: Record<string, unknown>,
+  opts?: { openIds?: string[] },
+): Promise<void> {
+  const token = (callbackToken || '').trim()
+  if (!token) throw new Error('card callback token missing')
+  const cleaned = plainCard(card)
+  const config = {
+    ...((cleaned.config as Record<string, unknown> | undefined) || {}),
+    // Shared update so TF switch refreshes for all viewers; avoids open_ids requirement.
+    update_multi: true,
+  }
+  const payload: Record<string, unknown> = {
+    ...cleaned,
+    config,
+  }
+  const openIds = (opts?.openIds || []).map((id) => id.trim()).filter((id) => id.startsWith('ou_'))
+  // Exclusive cards (update_multi false) require open_ids; we force shared above.
+  if (openIds.length && config.update_multi === false) {
+    payload.open_ids = openIds
+  }
+  await larkFetch('/open-apis/interactive/v1/card/update', {
+    method: 'POST',
+    body: JSON.stringify({ token, card: payload }),
+  })
+}
+
+/**
+ * Real Feishu @mention for lark_md cards. Plain `**@Name**` does not notify.
+ * Only emits `<at id>` for real open_id values (ou_…).
+ */
+export function atOpenIdMarkdown(
+  openId: string | null | undefined,
+  fallback = '**@Yan Haixiang**',
+): string {
+  const id = (openId || '').trim()
+  if (id && id.startsWith('ou_')) return `<at id="${id}"></at>`
+  return fallback
 }
 
 /** DM a user by open_id (admin weekly push). */
@@ -136,17 +286,48 @@ export async function sendTextToOpenId(openId: string, text: string) {
   })
 }
 
+const ADMIN_NAME_RE = /Yan\s*Haixiang|严海翔|嚴海翔|海翔/i
+
+/** Warm-instance cache after we resolve Yan once (cron / DM). */
+let cachedAdminOpenId: { openId: string; source: string; expireAt: number } | null = null
+
 /**
- * Resolve Yan Haixiang (or configured admin) open_id for weekly push.
- * Prefers LARK_ADMIN_OPEN_ID / LARK_YAN_OPEN_ID; optional email via contact API.
+ * Resolve Yan Haixiang (or configured admin) open_id for weekly / nudge @mention.
+ * Prefers env → durable blob → memory → email → preferChatId group → p2p chat.
  */
-export async function resolveAdminOpenId(): Promise<{ openId: string; source: string }> {
+export async function resolveAdminOpenId(opts?: {
+  preferChatId?: string
+}): Promise<{ openId: string; source: string }> {
   const fromEnv = (
     process.env.LARK_ADMIN_OPEN_ID ||
     process.env.LARK_YAN_OPEN_ID ||
     ''
   ).trim()
-  if (fromEnv) return { openId: fromEnv, source: 'env' }
+  if (fromEnv) {
+    // Keep blob/memory warm so other crons can @mention without re-reading env races
+    void persistAdminOpenId(fromEnv, 'env')
+    return { openId: fromEnv, source: 'env' }
+  }
+
+  if (cachedAdminOpenId && Date.now() < cachedAdminOpenId.expireAt) {
+    return { openId: cachedAdminOpenId.openId, source: cachedAdminOpenId.source }
+  }
+
+  try {
+    const { readDurableJson } = await import('./durableJson.js')
+    const saved = await readDurableJson<{ openId?: string; source?: string }>('admin-open-id.json')
+    const id = (saved?.openId || '').trim()
+    if (id) {
+      cachedAdminOpenId = {
+        openId: id,
+        source: saved?.source || 'blob',
+        expireAt: Date.now() + 24 * 3600_000,
+      }
+      return { openId: id, source: cachedAdminOpenId.source }
+    }
+  } catch {
+    /* ignore */
+  }
 
   const email = (process.env.LARK_ADMIN_EMAIL || '').trim()
   if (email && larkConfigured()) {
@@ -158,12 +339,163 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
         data?: { user_list?: { email?: string; user_id?: string }[] }
       }
       const hit = (data.data?.user_list || []).find((u) => u.user_id)
-      if (hit?.user_id) return { openId: hit.user_id, source: 'email' }
+      if (hit?.user_id) {
+        await persistAdminOpenId(hit.user_id, 'email')
+        return { openId: hit.user_id, source: 'email' }
+      }
     } catch {
       /* missing contact scope — fall through */
     }
   }
+
+  if (larkConfigured()) {
+    const prefer = (opts?.preferChatId || '').trim()
+    if (prefer) {
+      try {
+        const fromGroup = await resolveAdminFromChatMembers(prefer)
+        if (fromGroup) {
+          await persistAdminOpenId(fromGroup, 'group_members')
+          return { openId: fromGroup, source: 'group_members' }
+        }
+      } catch {
+        /* need im:chat.members scope */
+      }
+    }
+    try {
+      const fromChat = await resolveAdminFromP2pChats()
+      if (fromChat) {
+        await persistAdminOpenId(fromChat, 'p2p_chat')
+        return { openId: fromChat, source: 'p2p_chat' }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
   return { openId: '', source: 'missing' }
+}
+
+async function persistAdminOpenId(openId: string, source: string): Promise<void> {
+  const id = (openId || '').trim()
+  if (!id || id === 'unknown') return
+  cachedAdminOpenId = { openId: id, source, expireAt: Date.now() + 24 * 3600_000 }
+  try {
+    const { writeDurableJson } = await import('./durableJson.js')
+    await writeDurableJson('admin-open-id.json', { openId: id, source, at: Date.now() })
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Remember Yan’s open_id when he DMs the bot (durable for cron @mention). */
+export function rememberAdminOpenId(openId: string, source = 'inbound'): void {
+  const id = (openId || '').trim()
+  if (!id || id === 'unknown') return
+  cachedAdminOpenId = { openId: id, source, expireAt: Date.now() + 24 * 3600_000 }
+  void persistAdminOpenId(id, source)
+}
+
+export function looksLikeAdminName(name: string | null | undefined): boolean {
+  return Boolean(name && ADMIN_NAME_RE.test(name))
+}
+
+async function resolveAdminFromChatMembers(chatId: string): Promise<string | null> {
+  const id = (chatId || '').trim()
+  if (!id) return null
+  const botId = (await resolveBotOpenId().catch(() => '')) || ''
+  let pageToken = ''
+  for (let page = 0; page < 10; page++) {
+    const qs = new URLSearchParams({
+      member_id_type: 'open_id',
+      page_size: '50',
+    })
+    if (pageToken) qs.set('page_token', pageToken)
+    const mem = (await larkFetch(
+      `/open-apis/im/v1/chats/${encodeURIComponent(id)}/members?${qs}`,
+      { method: 'GET' },
+    )) as {
+      data?: {
+        items?: { member_id?: string; name?: string; member_id_type?: string }[]
+        page_token?: string
+        has_more?: boolean
+      }
+    }
+    for (const m of mem.data?.items || []) {
+      const mid = (m.member_id || '').trim()
+      if (!mid || mid === botId) continue
+      if (ADMIN_NAME_RE.test(m.name || '')) return mid
+    }
+    if (!mem.data?.has_more || !mem.data.page_token) break
+    pageToken = mem.data.page_token
+  }
+  return null
+}
+
+async function resolveAdminFromP2pChats(): Promise<string | null> {
+  const botId = (await resolveBotOpenId().catch(() => '')) || ''
+  const chats = (await larkFetch('/open-apis/im/v1/chats?page_size=50', { method: 'GET' })) as {
+    data?: { items?: { chat_id?: string; name?: string; chat_mode?: string }[] }
+  }
+  const items = chats.data?.items || []
+  for (const c of items) {
+    const mode = (c.chat_mode || '').toLowerCase()
+    const name = c.name || ''
+    const looksP2p = mode === 'p2p' || ADMIN_NAME_RE.test(name)
+    if (!looksP2p && !ADMIN_NAME_RE.test(name)) continue
+    if (!ADMIN_NAME_RE.test(name) && mode !== 'p2p') continue
+    if (!c.chat_id) continue
+    try {
+      const fromMembers = await resolveAdminFromChatMembers(c.chat_id)
+      if (fromMembers) return fromMembers
+      // p2p named after Yan: any non-bot member
+      if (mode === 'p2p' && ADMIN_NAME_RE.test(name)) {
+        const mem = (await larkFetch(
+          `/open-apis/im/v1/chats/${encodeURIComponent(c.chat_id)}/members?member_id_type=open_id&page_size=20`,
+          { method: 'GET' },
+        )) as {
+          data?: { items?: { member_id?: string; name?: string }[] }
+        }
+        for (const m of mem.data?.items || []) {
+          const mid = (m.member_id || '').trim()
+          if (mid && mid !== botId) return mid
+        }
+      }
+    } catch {
+      /* need im:chat.members scope — skip */
+    }
+  }
+  return null
+}
+
+const userNameCache = new Map<string, { name: string; expireAt: number }>()
+
+/** Best-effort display name for casual “我是谁” replies (needs contact scope). */
+export async function fetchUserDisplayName(openId: string): Promise<string | null> {
+  const id = (openId || '').trim()
+  if (!id || id === 'unknown') return null
+  const hit = userNameCache.get(id)
+  if (hit && Date.now() < hit.expireAt) return hit.name
+  if (!larkConfigured()) return null
+  try {
+    const data = (await larkFetch(
+      `/open-apis/contact/v3/users/${encodeURIComponent(id)}?user_id_type=open_id`,
+      { method: 'GET' },
+    )) as {
+      data?: {
+        user?: {
+          name?: string
+          en_name?: string
+          nickname?: string
+        }
+      }
+    }
+    const u = data.data?.user
+    const name = (u?.name || u?.nickname || u?.en_name || '').trim()
+    if (!name) return null
+    userNameCache.set(id, { name, expireAt: Date.now() + 30 * 60_000 })
+    return name
+  } catch {
+    return null
+  }
 }
 
 /** Download image bytes for a message resource (image_key). */
@@ -173,6 +505,80 @@ export async function downloadMessageImage(messageId: string, imageKey: string):
   const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
   if (!r.ok) throw new Error(`image download failed (${r.status})`)
   return Buffer.from(await r.arrayBuffer())
+}
+
+/** In-memory favicon → Lark image_key cache (warm serverless reuse). */
+const faviconImgKeyCache = new Map<string, { key: string; expireAt: number }>()
+
+/**
+ * Upload raw image bytes for use in cards (`image_type=message`).
+ * Requires `im:resource` / bot capability.
+ */
+export async function uploadMessageImage(
+  bytes: Buffer,
+  filename = 'image.png',
+): Promise<string | null> {
+  if (!larkConfigured() || !bytes?.length) return null
+  const token = await getTenantToken()
+  const form = new FormData()
+  form.append('image_type', 'message')
+  form.append('image', new Blob([new Uint8Array(bytes)]), filename)
+  const r = await fetch(`${LARK_HOST}/open-apis/im/v1/images`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  })
+  const data = (await r.json().catch(() => ({}))) as {
+    code?: number
+    msg?: string
+    data?: { image_key?: string }
+  }
+  if (!r.ok || data.code !== 0 || !data.data?.image_key) {
+    throw new Error(data.msg || `image upload failed (${r.status})`)
+  }
+  return data.data.image_key
+}
+
+/**
+ * Fetch a site favicon and upload it to Lark so cards can show a clickable logo button.
+ * Soft-fails to null when offline / unscoped / bad favicon.
+ */
+export async function resolveFaviconImgKey(
+  domain: string,
+  logoUrl?: string,
+): Promise<string | null> {
+  const d = (domain || '').trim().toLowerCase()
+  if (!d || !larkConfigured()) return null
+  const hit = faviconImgKeyCache.get(d)
+  if (hit && Date.now() < hit.expireAt) return hit.key
+  const url =
+    (logoUrl || '').trim() ||
+    `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64`
+  try {
+    const r = await fetch(url, {
+      headers: { 'User-Agent': 'VE-Risk-Copilot/1.0 (+favicon)' },
+      signal: AbortSignal.timeout(8_000),
+    })
+    if (!r.ok) return null
+    const buf = Buffer.from(await r.arrayBuffer())
+    if (buf.length < 16 || buf.length > 1_500_000) return null
+    const ct = (r.headers.get('content-type') || '').toLowerCase()
+    const ext = ct.includes('jpeg') || ct.includes('jpg')
+      ? 'jpg'
+      : ct.includes('gif')
+        ? 'gif'
+        : ct.includes('webp')
+          ? 'webp'
+          : ct.includes('ico')
+            ? 'ico'
+            : 'png'
+    const key = await uploadMessageImage(buf, `${d.replace(/[^a-z0-9.-]/gi, '_')}.${ext}`)
+    if (!key) return null
+    faviconImgKeyCache.set(d, { key, expireAt: Date.now() + 12 * 3600_000 })
+    return key
+  } catch {
+    return null
+  }
 }
 
 export function verifyToken(token: string | undefined): boolean {
@@ -211,7 +617,7 @@ export async function resolveBotOpenId(): Promise<string> {
       return info.openId
     }
   } catch {
-    /* soft-fail — parse.ts falls back to any @mention */
+    /* soft-fail — parse.ts falls back to bot display-name match */
   }
   return ''
 }

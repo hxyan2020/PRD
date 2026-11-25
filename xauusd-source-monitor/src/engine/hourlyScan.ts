@@ -94,7 +94,7 @@ export interface HourlyMarketReport {
   risk: RankedPoint[]
   sources: ReportSource[]
   sentiment: SentimentBarometer
-  /** OKX XAU-USDT-SWAP 1H candles for the report chart */
+  /** Primary venue K-line (Binance XAUUSDT; OKX backup) for the report chart */
   kline: HourlyKlineSeries | null
   /** V Exchange indicators are placeholders until ops provides the feed */
   vexPlaceholder: true
@@ -113,6 +113,11 @@ const YAHOO_GC =
   'https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d'
 const FED_PRESS = 'https://www.federalreserve.gov/json/ne-press.json'
 const GOLD_API = 'https://api.gold-api.com/price/XAU'
+/** Primary venue for market reports — Binance USDT-M XAUUSDT perp. */
+const BINANCE_TICKER = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=XAUUSDT'
+const BINANCE_FUNDING = 'https://fapi.binance.com/fapi/v1/premiumIndex?symbol=XAUUSDT'
+const BINANCE_CANDLES =
+  'https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=1h&limit=36'
 const OKX_TICKER = 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP'
 const OKX_FUNDING = 'https://www.okx.com/api/v5/public/funding-rate?instId=XAU-USDT-SWAP'
 const OKX_CANDLES =
@@ -123,7 +128,13 @@ const BITGET_TICKER =
 type CatalogEntry = {
   id: string
   kind: SourceKind
+  /** Probe URL (may be a JSON API). */
   url: string
+  /**
+   * Human-facing page for citations in Lark / desk (exchange K-line, news, social).
+   * When set, ReportSource.url uses this — never expose raw JSON APIs in reports.
+   */
+  linkUrl?: string
   captionEn: string
   captionZh: string
   /** Prefer JSON CORS probe when true */
@@ -137,90 +148,279 @@ type CatalogEntry = {
 }
 
 /**
+ * Human-facing Binance XAUUSDT perpetual K-line (TradingView — geo-safe).
+ */
+export const BINANCE_KLINE_URL =
+  'https://www.tradingview.com/chart/?symbol=BINANCE%3AXAUUSDT.P'
+
+/**
+ * Human-facing OKX XAU perpetual K-line (backup venue).
+ * Direct okx.com/trade-swap/… 404s in several regions (e.g. SG) — TradingView
+ * chart for OKX:XAUUSDT.P stays reachable for desk viewing.
+ */
+export const OKX_KLINE_URL =
+  'https://www.tradingview.com/chart/?symbol=OKX%3AXAUUSDT.P'
+
+/** Kitco gold chart — `/gold-price` returns HTTP 404. */
+export const KITCO_GOLD_URL = 'https://www.kitco.com/charts/gold'
+
+/** Bitget support hub — old `/support/sections/…` deep links 404. */
+export const BITGET_SUPPORT_URL = 'https://www.bitget.com/support'
+
+const CITE_PROBE_HEADERS: Record<string, string> = {
+  'User-Agent': 'Mozilla/5.0 (compatible; VE-RiskDesk/1.0; +https://quote-ai-troubleshooting-bot.vercel.app)',
+  Accept: 'text/html,application/xhtml+xml,*/*;q=0.8',
+}
+
+/** True only for proven missing pages (do not treat timeouts / bot-blocks as 404). */
+export function isMissingHttpStatus(status: number | null | undefined): boolean {
+  return status === 404 || status === 410
+}
+
+/** HEAD/GET status for a human cite URL. `null` = unreachable / aborted (not proven 404). */
+export async function probeCiteHttpStatus(url: string, timeoutMs = 8000): Promise<number | null> {
+  const target = (url || '').trim()
+  if (!/^https?:\/\//i.test(target)) return null
+  try {
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs)
+    let res = await fetch(target, {
+      method: 'HEAD',
+      redirect: 'follow',
+      signal: ctrl.signal,
+      headers: CITE_PROBE_HEADERS,
+      cache: 'no-store',
+    })
+    // Some CDNs reject HEAD — fall back to GET (body discarded).
+    if (res.status === 405 || res.status === 501 || res.status === 403) {
+      res = await fetch(target, {
+        method: 'GET',
+        redirect: 'follow',
+        signal: ctrl.signal,
+        headers: CITE_PROBE_HEADERS,
+        cache: 'no-store',
+      })
+    }
+    clearTimeout(timer)
+    return res.status
+  } catch {
+    return null
+  }
+}
+
+/** Stable public page when a deep link 404s (same desk / publisher). */
+export function citeFallbackUrl(url: string, id = ''): string | null {
+  const u = url || ''
+  const key = id.toLowerCase()
+  if (/okx\.com/i.test(u) && /trade|swap/i.test(u)) return OKX_KLINE_URL
+  if (/kitco\.com/i.test(u)) {
+    if (/\/news\//i.test(u) || key.startsWith('kitco-')) {
+      return 'https://www.kitco.com/news/category/metals'
+    }
+    return KITCO_GOLD_URL
+  }
+  if (/bitget\.com/i.test(u) && /support|announc/i.test(u)) return BITGET_SUPPORT_URL
+  if (/bitget\.com/i.test(u)) return 'https://www.bitget.com/futures/usdt/XAUUSDT'
+  if (/binance\.com/i.test(u) && /fapi|\bapi\b/i.test(u)) return BINANCE_KLINE_URL
+  if (/binance\.com/i.test(u)) return 'https://www.binance.com/en/futures/XAUUSDT'
+  if (/bybit\.com/i.test(u)) return 'https://www.bybit.com/trade/usdt/XAUUSDT'
+  if (/federalreserve\.gov/i.test(u)) {
+    return 'https://www.federalreserve.gov/newsevents/pressreleases.htm'
+  }
+  if (/ecb\.europa\.eu/i.test(u)) return 'https://www.ecb.europa.eu/press/pr/html/index.en.html'
+  if (/treasury\.gov/i.test(u)) return 'https://home.treasury.gov/news/press-releases'
+  if (/imf\.org/i.test(u)) return 'https://www.imf.org/en/News'
+  if (/bis\.org/i.test(u)) return 'https://www.bis.org/'
+  if (/bls\.gov/i.test(u)) return 'https://www.bls.gov/'
+  if (/coindesk\.com/i.test(u)) return 'https://www.coindesk.com/markets/'
+  if (/theblock\.co/i.test(u)) return 'https://www.theblock.co/latest'
+  if (/cointelegraph\.com/i.test(u)) return 'https://cointelegraph.com/tags/markets'
+  if (/decrypt\.co/i.test(u)) return 'https://decrypt.co/news'
+  if (/gold\.org/i.test(u)) return 'https://www.gold.org/goldhub'
+  if (/caixinglobal\.com/i.test(u)) return 'https://www.caixinglobal.com/'
+  if (/fred\.stlouisfed\.org|stlouisfed\.org/i.test(u)) {
+    return 'https://fred.stlouisfed.org/'
+  }
+  if (/tradingview\.com/i.test(u) && /BINANCE/i.test(u)) return BINANCE_KLINE_URL
+  if (/tradingview\.com/i.test(u)) return OKX_KLINE_URL
+  return null
+}
+
+/**
+ * Resolve a citation URL that is not HTTP 404/410.
+ * Rewrites to a stable fallback when the primary page is missing; returns null if still missing.
+ */
+export async function resolveCiteUrlOrNull(
+  url: string,
+  id = '',
+): Promise<{ url: string; status: number | null; rewritten: boolean } | null> {
+  const primary = (url || '').trim()
+  if (!primary) return null
+  const st = await probeCiteHttpStatus(primary)
+  if (!isMissingHttpStatus(st)) {
+    return { url: primary, status: st, rewritten: false }
+  }
+  const fb = citeFallbackUrl(primary, id)
+  if (!fb || fb === primary) return null
+  const st2 = await probeCiteHttpStatus(fb)
+  if (isMissingHttpStatus(st2)) return null
+  return { url: fb, status: st2, rewritten: true }
+}
+
+/** Default human UI when a JSON probe has no explicit linkUrl. */
+function humanLinkFor(id: string, probeUrl: string): string {
+  switch (id) {
+    case 'binance-ticker':
+    case 'binance-candles':
+    case 'binance-funding':
+      return BINANCE_KLINE_URL
+    case 'okx-ticker':
+    case 'okx-candles':
+    case 'okx-funding':
+      return OKX_KLINE_URL
+    case 'bitget-ticker':
+      return 'https://www.bitget.com/futures/usdt/XAUUSDT'
+    case 'gold-api':
+      return KITCO_GOLD_URL
+    case 'yahoo-gc':
+      return 'https://finance.yahoo.com/quote/GC=F'
+    case 'yahoo-dxy':
+      return 'https://finance.yahoo.com/quote/DX-Y.NYB'
+    case 'yahoo-tnx':
+      return 'https://finance.yahoo.com/quote/%5ETNX'
+    case 'fed-press-json':
+      return 'https://www.federalreserve.gov/newsevents/pressreleases.htm'
+    default:
+      // Never cite query1.finance.yahoo / api.* JSON hosts in reports
+      if (/\/api\/|query1\.finance\.yahoo|gold-api\.com|ne-press\.json/i.test(probeUrl)) {
+        return 'https://quote-ai-troubleshooting-bot.vercel.app/#/market'
+      }
+      return probeUrl
+  }
+}
+
+/**
  * Major XAUUSD-perp desk coverage: news, KOL social, exchange announcements,
  * APIs, prices, and macro/indicator feeds. Always listed with health + checkedAt.
  */
 const SOURCE_CATALOG: CatalogEntry[] = [
   // —— Prices / APIs / indicators ——
+  // Binance is primary for market reports; OKX kept as backup.
+  {
+    id: 'binance-ticker',
+    kind: 'api',
+    url: BINANCE_TICKER,
+    linkUrl: BINANCE_KLINE_URL,
+    captionEn: 'Binance XAUUSDT.P K-line (TradingView)',
+    captionZh: 'Binance XAUUSDT.P K线（TradingView）',
+    json: true,
+  },
+  {
+    id: 'binance-candles',
+    kind: 'price',
+    url: BINANCE_CANDLES,
+    linkUrl: BINANCE_KLINE_URL,
+    captionEn: 'Binance XAUUSDT.P 1H K-line (TradingView)',
+    captionZh: 'Binance XAUUSDT.P 1H K线（TradingView）',
+    json: true,
+  },
+  {
+    id: 'binance-funding',
+    kind: 'indicator',
+    url: BINANCE_FUNDING,
+    linkUrl: BINANCE_KLINE_URL,
+    captionEn: 'Binance XAUUSDT.P funding / K-line (TradingView)',
+    captionZh: 'Binance XAUUSDT.P 资金费率／K线（TradingView）',
+    json: true,
+  },
   {
     id: 'okx-ticker',
     kind: 'api',
     url: OKX_TICKER,
-    captionEn: 'OKX API: XAU-USDT-SWAP last price',
-    captionZh: 'OKX API：XAU-USDT-SWAP 最新價',
+    linkUrl: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P K-line (TradingView · backup)',
+    captionZh: 'OKX XAUUSDT.P K线（TradingView · 备用）',
     json: true,
   },
   {
     id: 'okx-candles',
     kind: 'price',
     url: OKX_CANDLES,
-    captionEn: 'OKX API: XAU-USDT-SWAP K-line (15m / 1H / 4H / 1D)',
-    captionZh: 'OKX API：XAU-USDT-SWAP K 線（15m / 1H / 4H / 1D）',
+    linkUrl: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P 1H K-line (TradingView · backup)',
+    captionZh: 'OKX XAUUSDT.P 1H K线（TradingView · 备用）',
     json: true,
   },
   {
     id: 'okx-funding',
     kind: 'indicator',
     url: OKX_FUNDING,
-    captionEn: 'OKX API: XAU-USDT-SWAP funding rate',
-    captionZh: 'OKX API：XAU-USDT-SWAP 資金費率',
+    linkUrl: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P funding / K-line (TradingView · backup)',
+    captionZh: 'OKX XAUUSDT.P 资金费率／K线（TradingView · 备用）',
     json: true,
   },
   {
     id: 'bitget-ticker',
     kind: 'api',
     url: BITGET_TICKER,
-    captionEn: 'Bitget API: XAUUSDT perpetual ticker',
-    captionZh: 'Bitget API：XAUUSDT 永續 ticker',
+    linkUrl: 'https://www.bitget.com/futures/usdt/XAUUSDT',
+    captionEn: 'Bitget XAUUSDT perpetual / K-line',
+    captionZh: 'Bitget XAUUSDT 永续／K线',
     json: true,
   },
   {
     id: 'gold-api',
     kind: 'price',
     url: GOLD_API,
-    captionEn: 'gold-api: XAU spot USD',
-    captionZh: 'gold-api：XAU 現貨美元價',
+    linkUrl: KITCO_GOLD_URL,
+    captionEn: 'Kitco gold spot price',
+    captionZh: 'Kitco 黄金现货价',
     json: true,
   },
   {
     id: 'yahoo-gc',
     kind: 'price',
     url: YAHOO_GC,
-    captionEn: 'Yahoo chart: COMEX gold GC=F (1m)',
-    captionZh: 'Yahoo 圖：COMEX 黃金 GC=F（1分鐘）',
+    linkUrl: 'https://finance.yahoo.com/quote/GC=F',
+    captionEn: 'Yahoo COMEX gold GC=F chart',
+    captionZh: 'Yahoo COMEX 黄金 GC=F 行情',
     json: true,
   },
   {
     id: 'yahoo-dxy',
     kind: 'macro',
     url: YAHOO_DXY,
-    captionEn: 'Yahoo chart: Dollar Index DX-Y.NYB (1m)',
-    captionZh: 'Yahoo 圖：美元指數 DX-Y.NYB（1分鐘）',
+    linkUrl: 'https://finance.yahoo.com/quote/DX-Y.NYB',
+    captionEn: 'Yahoo Dollar Index chart',
+    captionZh: 'Yahoo 美元指数行情',
     json: true,
   },
   {
     id: 'yahoo-tnx',
     kind: 'macro',
     url: YAHOO_TNX,
-    captionEn: 'Yahoo chart: US 10Y yield ^TNX (1m)',
-    captionZh: 'Yahoo 圖：美債 10 年 ^TNX（1分鐘）',
+    linkUrl: 'https://finance.yahoo.com/quote/%5ETNX',
+    captionEn: 'Yahoo US 10Y yield chart',
+    captionZh: 'Yahoo 美债10年收益率行情',
     json: true,
   },
   {
     id: 'fed-press-json',
     kind: 'announcement',
     url: FED_PRESS,
-    captionEn: 'Federal Reserve press-release JSON index',
-    captionZh: '聯準會新聞稿 JSON 索引',
+    linkUrl: 'https://www.federalreserve.gov/newsevents/pressreleases.htm',
+    captionEn: 'Federal Reserve press releases',
+    captionZh: '美联储新闻稿',
     json: true,
   },
   // —— Exchange venues / official announcements ——
   {
     id: 'okx-trade',
     kind: 'exchange',
-    url: 'https://www.okx.com/trade-swap/xau-usdt-swap',
-    captionEn: 'OKX trade page: XAU-USDT-SWAP',
-    captionZh: 'OKX 交易頁：XAU-USDT-SWAP',
+    url: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P K-line (TradingView)',
+    captionZh: 'OKX XAUUSDT.P K线（TradingView）',
   },
   {
     id: 'okx-announcements',
@@ -267,11 +467,18 @@ const SOURCE_CATALOG: CatalogEntry[] = [
   {
     id: 'bitget-announcements',
     kind: 'announcement',
-    url: 'https://www.bitget.com/support/sections/5955811737113',
+    url: BITGET_SUPPORT_URL,
     captionEn: 'Bitget announcements / notices',
     captionZh: 'Bitget 公告／通知',
   },
-  // —— Major news outlets (gold / macro) ——
+  // —— Major news: finance / commodities (authoritative desks) ——
+  {
+    id: 'reuters-markets',
+    kind: 'news',
+    url: 'https://www.reuters.com/markets/',
+    captionEn: 'Reuters: Markets',
+    captionZh: '路透：市場',
+  },
   {
     id: 'reuters-gold',
     kind: 'news',
@@ -280,11 +487,25 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: '路透：大宗商品／市場',
   },
   {
+    id: 'bloomberg-markets',
+    kind: 'news',
+    url: 'https://www.bloomberg.com/markets',
+    captionEn: 'Bloomberg: Markets',
+    captionZh: '彭博：市場',
+  },
+  {
     id: 'bloomberg-gold',
     kind: 'news',
     url: 'https://www.bloomberg.com/markets/commodities',
     captionEn: 'Bloomberg: Commodities',
     captionZh: '彭博：大宗商品',
+  },
+  {
+    id: 'cnbc-markets',
+    kind: 'news',
+    url: 'https://www.cnbc.com/markets/',
+    captionEn: 'CNBC: Markets',
+    captionZh: 'CNBC：市場',
   },
   {
     id: 'cnbc-gold',
@@ -301,11 +522,39 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: '華爾街日報：市場',
   },
   {
+    id: 'ft-markets',
+    kind: 'news',
+    url: 'https://www.ft.com/markets',
+    captionEn: 'Financial Times: Markets',
+    captionZh: '金融時報：市場',
+  },
+  {
     id: 'ft-commodities',
     kind: 'news',
     url: 'https://www.ft.com/commodities',
     captionEn: 'Financial Times: Commodities',
     captionZh: '金融時報：大宗商品',
+  },
+  {
+    id: 'ap-business',
+    kind: 'news',
+    url: 'https://apnews.com/business',
+    captionEn: 'AP News: Business',
+    captionZh: '美联社：商业／财经',
+  },
+  {
+    id: 'nikkei-asia-markets',
+    kind: 'news',
+    url: 'https://asia.nikkei.com/Business/Markets',
+    captionEn: 'Nikkei Asia: Markets',
+    captionZh: '日经亚洲：市场',
+  },
+  {
+    id: 'caixin-global',
+    kind: 'news',
+    url: 'https://www.caixinglobal.com/',
+    captionEn: 'Caixin Global: China finance / macro',
+    captionZh: '财新国际：中国财经／宏观',
   },
   {
     id: 'marketwatch-gold',
@@ -327,6 +576,127 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     url: 'https://www.kitco.com/news/category/metals',
     captionEn: 'Kitco: Metals news desk',
     captionZh: 'Kitco：金屬新聞台',
+  },
+  // —— Crypto desks (authoritative coin-circle coverage) ——
+  {
+    id: 'coindesk-markets',
+    kind: 'news',
+    url: 'https://www.coindesk.com/markets/',
+    captionEn: 'CoinDesk: Markets',
+    captionZh: 'CoinDesk：加密市场',
+  },
+  {
+    id: 'coindesk-policy',
+    kind: 'news',
+    url: 'https://www.coindesk.com/policy/',
+    captionEn: 'CoinDesk: Policy / regulation',
+    captionZh: 'CoinDesk：政策／监管',
+  },
+  {
+    id: 'theblock-news',
+    kind: 'news',
+    url: 'https://www.theblock.co/latest',
+    captionEn: 'The Block: Latest crypto news',
+    captionZh: 'The Block：加密新闻',
+  },
+  {
+    id: 'cointelegraph-markets',
+    kind: 'news',
+    url: 'https://cointelegraph.com/tags/markets',
+    captionEn: 'Cointelegraph: Markets',
+    captionZh: 'Cointelegraph：市场',
+  },
+  {
+    id: 'decrypt-news',
+    kind: 'news',
+    url: 'https://decrypt.co/news',
+    captionEn: 'Decrypt: Crypto news',
+    captionZh: 'Decrypt：加密新闻',
+  },
+  {
+    id: 'binance-research',
+    kind: 'news',
+    url: 'https://www.binance.com/en/research',
+    captionEn: 'Binance Research',
+    captionZh: 'Binance Research 研报',
+  },
+  {
+    id: 'coinmarketcap-news',
+    kind: 'news',
+    url: 'https://coinmarketcap.com/headlines/news/',
+    captionEn: 'CoinMarketCap: News headlines',
+    captionZh: 'CoinMarketCap：新闻头条',
+  },
+  // —— Macro / official institutions ——
+  {
+    id: 'ecb-press',
+    kind: 'announcement',
+    url: 'https://www.ecb.europa.eu/press/pr/html/index.en.html',
+    captionEn: 'ECB: Press releases',
+    captionZh: '欧洲央行：新闻稿',
+  },
+  {
+    id: 'ecb-monetary',
+    kind: 'macro',
+    url: 'https://www.ecb.europa.eu/press/press_conference/html/index.en.html',
+    captionEn: 'ECB: Monetary policy press conferences',
+    captionZh: '欧洲央行：货币政策记者会',
+  },
+  {
+    id: 'ustreasury-press',
+    kind: 'announcement',
+    url: 'https://home.treasury.gov/news/press-releases',
+    captionEn: 'US Treasury: Press releases',
+    captionZh: '美国财政部：新闻稿',
+  },
+  {
+    id: 'bls-cpi',
+    kind: 'macro',
+    url: 'https://www.bls.gov/cpi/',
+    captionEn: 'BLS: Consumer Price Index (CPI)',
+    captionZh: '美国劳工统计局：CPI 通胀',
+  },
+  {
+    id: 'bea-gdp',
+    kind: 'macro',
+    url: 'https://www.bea.gov/data/gdp/gross-domestic-product',
+    captionEn: 'BEA: US GDP',
+    captionZh: '美国经济分析局：GDP',
+  },
+  {
+    id: 'imf-news',
+    kind: 'macro',
+    url: 'https://www.imf.org/en/News',
+    captionEn: 'IMF: News',
+    captionZh: '国际货币基金组织：新闻',
+  },
+  {
+    id: 'bis-speeches',
+    kind: 'macro',
+    url: 'https://www.bis.org/',
+    captionEn: 'BIS: Bank for International Settlements',
+    captionZh: '国际清算银行（BIS）',
+  },
+  {
+    id: 'worldbank-news',
+    kind: 'macro',
+    url: 'https://www.worldbank.org/en/news',
+    captionEn: 'World Bank: News',
+    captionZh: '世界银行：新闻',
+  },
+  {
+    id: 'wgc-news',
+    kind: 'news',
+    url: 'https://www.gold.org/goldhub/gold-focus',
+    captionEn: 'World Gold Council: Gold Focus',
+    captionZh: '世界黄金协会：Gold Focus',
+  },
+  {
+    id: 'fred-home',
+    kind: 'macro',
+    url: 'https://fred.stlouisfed.org/',
+    captionEn: 'FRED: St. Louis Fed economic data',
+    captionZh: 'FRED：圣路易斯联储经济数据',
   },
   {
     id: 'kitco-survey',
@@ -473,6 +843,27 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: 'KOL · X：Raoul Pal／Real Vision（@RaoulGMI）',
   },
   {
+    id: 'kol-x-coindesk',
+    kind: 'social',
+    url: 'https://x.com/CoinDesk',
+    captionEn: 'KOL · X: CoinDesk (@CoinDesk)',
+    captionZh: 'KOL · X：CoinDesk（@CoinDesk）',
+  },
+  {
+    id: 'kol-x-theblock',
+    kind: 'social',
+    url: 'https://x.com/TheBlock__',
+    captionEn: 'KOL · X: The Block (@TheBlock__)',
+    captionZh: 'KOL · X：The Block（@TheBlock__）',
+  },
+  {
+    id: 'kol-x-wublockchain',
+    kind: 'social',
+    url: 'https://x.com/WuBlockchain',
+    captionEn: 'KOL · X: Wu Blockchain (@WuBlockchain)',
+    captionZh: 'KOL · X：吴说区块链（@WuBlockchain）',
+  },
+  {
     id: 'kol-x-adambutton',
     kind: 'social',
     url: 'https://x.com/AdamButton',
@@ -539,6 +930,17 @@ function domainOf(url: string): string {
     if (host.includes('gold-api.com')) return 'gold-api.com'
     if (host.includes('reuters.com')) return 'reuters.com'
     if (host.includes('bloomberg.com')) return 'bloomberg.com'
+    if (host.includes('coindesk.com')) return 'coindesk.com'
+    if (host.includes('theblock.co')) return 'theblock.co'
+    if (host.includes('cointelegraph.com')) return 'cointelegraph.com'
+    if (host.includes('ecb.europa.eu')) return 'ecb.europa.eu'
+    if (host.includes('treasury.gov')) return 'treasury.gov'
+    if (host.includes('imf.org')) return 'imf.org'
+    if (host.includes('bis.org')) return 'bis.org'
+    if (host.includes('gold.org')) return 'gold.org'
+    if (host.includes('stlouisfed.org') || host.includes('fred.stlouisfed.org')) {
+      return 'fred.stlouisfed.org'
+    }
     if (host.includes('cnbc.com')) return 'cnbc.com'
     if (host.includes('kitco.com')) return 'kitco.com'
     if (host.includes('cmegroup.com')) return 'cmegroup.com'
@@ -570,7 +972,13 @@ function makeSource(
   checkedAt: number,
   extra?: { latencyMs?: number; detail?: string },
 ): ReportSource {
-  const domain = domainOf(url)
+  let domain = domainOf(url)
+  // Keep venue favicon when the click-through is the geo-safe TradingView chart
+  if (/tradingview\.com/i.test(domain) && /BINANCE/i.test(url)) {
+    domain = 'binance.com'
+  } else if (/tradingview\.com/i.test(domain) && /OKX|XAUUSDT/i.test(url)) {
+    domain = 'okx.com'
+  }
   return {
     id,
     captionEn,
@@ -586,12 +994,62 @@ function makeSource(
   }
 }
 
+/** Citation URL for Lark / desk — human UI, never raw JSON probe hosts. */
+function citeUrl(entry: CatalogEntry): string {
+  return entry.linkUrl || humanLinkFor(entry.id, entry.url)
+}
+
+/**
+ * Ensure the human cite URL is not HTTP 404/410 before attaching it to a source.
+ * Missing pages rewrite to a stable fallback; still-missing → `down` (not cited in 早报).
+ */
+async function finalizeCiteSource(
+  entry: CatalogEntry,
+  base: ReportSource,
+  json: unknown | null,
+): Promise<{ source: ReportSource; json: unknown | null }> {
+  const resolved = await resolveCiteUrlOrNull(base.url, entry.id)
+  if (!resolved) {
+    return {
+      source: {
+        ...base,
+        health: 'down',
+        detail: `${base.detail || 'cite'} · cite URL HTTP 404/410 (not linked)`,
+      },
+      json,
+    }
+  }
+  if (resolved.rewritten) {
+    return {
+      source: makeSource(
+        entry.id,
+        resolved.url,
+        entry.captionEn,
+        entry.captionZh,
+        entry.kind,
+        base.health === 'ok' ? 'degraded' : base.health,
+        base.checkedAt,
+        {
+          latencyMs: base.latencyMs,
+          detail: `${base.detail || 'ok'} · cite rewritten (primary 404)`,
+        },
+      ),
+      json,
+    }
+  }
+  if (base.url !== resolved.url) {
+    return { source: { ...base, url: resolved.url }, json }
+  }
+  return { source: base, json }
+}
+
 async function probeCatalogEntry(entry: CatalogEntry): Promise<{
   source: ReportSource
   json: unknown | null
 }> {
   const started = performance.now()
   const checkedAt = Date.now()
+  const displayUrl = citeUrl(entry)
   if (entry.json) {
     try {
       const ctrl = new AbortController()
@@ -604,10 +1062,11 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
       clearTimeout(timer)
       const latencyMs = Math.round(performance.now() - started)
       if (!res.ok) {
-        return {
-          source: makeSource(
+        return finalizeCiteSource(
+          entry,
+          makeSource(
             entry.id,
-            entry.url,
+            displayUrl,
             entry.captionEn,
             entry.captionZh,
             entry.kind,
@@ -615,14 +1074,15 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
             checkedAt,
             { latencyMs, detail: `HTTP ${res.status}` },
           ),
-          json: null,
-        }
+          null,
+        )
       }
       const json = await res.json()
-      return {
-        source: makeSource(
+      return finalizeCiteSource(
+        entry,
+        makeSource(
           entry.id,
-          entry.url,
+          displayUrl,
           entry.captionEn,
           entry.captionZh,
           entry.kind,
@@ -631,12 +1091,13 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
           { latencyMs, detail: 'JSON OK' },
         ),
         json,
-      }
+      )
     } catch (e) {
-      return {
-        source: makeSource(
+      return finalizeCiteSource(
+        entry,
+        makeSource(
           entry.id,
-          entry.url,
+          displayUrl,
           entry.captionEn,
           entry.captionZh,
           entry.kind,
@@ -644,41 +1105,65 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
           checkedAt,
           { detail: e instanceof Error ? e.message.slice(0, 80) : 'fetch failed' },
         ),
-        json: null,
-      }
+        null,
+      )
     }
   }
 
-  // HTML / announcement / news — no-cors reachability
+  // HTML / announcement / news — status-aware GET (no opaque no-cors: that hides 404s)
   try {
     const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), 6000)
-    await fetch(entry.url, {
+    const timer = setTimeout(() => ctrl.abort(), 8000)
+    const res = await fetch(entry.url, {
       signal: ctrl.signal,
       cache: 'no-store',
-      mode: 'no-cors',
       method: 'GET',
+      redirect: 'follow',
+      headers: CITE_PROBE_HEADERS,
     })
     clearTimeout(timer)
     const latencyMs = Math.round(performance.now() - started)
-    return {
-      source: makeSource(
+    if (isMissingHttpStatus(res.status)) {
+      return finalizeCiteSource(
+        entry,
+        makeSource(
+          entry.id,
+          displayUrl,
+          entry.captionEn,
+          entry.captionZh,
+          entry.kind,
+          'down',
+          checkedAt,
+          { latencyMs, detail: `HTTP ${res.status}` },
+        ),
+        null,
+      )
+    }
+    // 401/403/5xx: page may still open in a browser — keep URL, mark degraded when blocked
+    const health: SourceHealthStatus =
+      res.ok || res.status === 401 || res.status === 403 ? (res.ok ? 'ok' : 'degraded') : 'degraded'
+    return finalizeCiteSource(
+      entry,
+      makeSource(
         entry.id,
-        entry.url,
+        displayUrl,
         entry.captionEn,
         entry.captionZh,
         entry.kind,
-        'ok',
+        health,
         checkedAt,
-        { latencyMs, detail: 'Reachable (opaque)' },
+        {
+          latencyMs,
+          detail: res.ok ? 'Reachable' : `HTTP ${res.status} (cite kept; not 404)`,
+        },
       ),
-      json: null,
-    }
+      null,
+    )
   } catch (e) {
     // X / YouTube often block automated browser probes; keep KOL rows listed.
     if (entry.kind === 'social') {
       try {
-        const fav = logoFor(domainOf(entry.url))
+        const fav = logoFor(domainOf(displayUrl))
         const ctrl2 = new AbortController()
         const timer2 = setTimeout(() => ctrl2.abort(), 4000)
         const res = await fetch(fav, { signal: ctrl2.signal, cache: 'no-store', mode: 'cors' })
@@ -688,7 +1173,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
           return {
             source: makeSource(
               entry.id,
-              entry.url,
+              displayUrl,
               entry.captionEn,
               entry.captionZh,
               entry.kind,
@@ -708,7 +1193,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
       return {
         source: makeSource(
           entry.id,
-          entry.url,
+          displayUrl,
           entry.captionEn,
           entry.captionZh,
           entry.kind,
@@ -721,14 +1206,15 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
         json: null,
       }
     }
+    // Timeout / network: not proven 404 — keep cite URL for end users
     return {
       source: makeSource(
         entry.id,
-        entry.url,
+        displayUrl,
         entry.captionEn,
         entry.captionZh,
         entry.kind,
-        'down',
+        'degraded',
         checkedAt,
         { detail: e instanceof Error ? e.message.slice(0, 80) : 'unreachable' },
       ),
@@ -752,15 +1238,94 @@ function hourKeySgt(ts = Date.now()): string {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}`
 }
 
-/** Opportunity / Risk: keep a full informative summary (2–3 sentences), not a headline stub. */
-function clampSummary(text: string, maxChars = 520): string {
+/** Lark mobile card ≈ chars/line (CJK wraps tighter than Latin). */
+const MOBILE_CHARS_PER_LINE_CJK = 22
+const MOBILE_CHARS_PER_LINE_LATIN = 42
+
+function mobileCharBudget(text: string, maxLines: number): number {
+  const hasCjk = /[\u4e00-\u9fff]/.test(text)
+  return maxLines * (hasCjk ? MOBILE_CHARS_PER_LINE_CJK : MOBILE_CHARS_PER_LINE_LATIN)
+}
+
+/** Cut to budget at a word / CJK boundary; always end with sentence punctuation. */
+function hardCapClause(text: string, maxChars: number): string {
+  const cleaned = text.trim().replace(/\s+/g, ' ')
+  if (!cleaned) return ''
+  if (cleaned.length <= maxChars) {
+    return /[.。!！?？]$/.test(cleaned) ? cleaned : `${cleaned.replace(/[,，;；:\-—–…]+$/g, '')}.`
+  }
+  const cut = cleaned.slice(0, maxChars)
+  const at = Math.max(
+    cut.lastIndexOf('. '),
+    cut.lastIndexOf('。'),
+    cut.lastIndexOf('! '),
+    cut.lastIndexOf('！'),
+    cut.lastIndexOf('? '),
+    cut.lastIndexOf('？'),
+    cut.lastIndexOf(', '),
+    cut.lastIndexOf('，'),
+    cut.lastIndexOf('；'),
+    cut.lastIndexOf('; '),
+    cut.lastIndexOf(' '),
+  )
+  let out = (at > maxChars * 0.4 ? cut.slice(0, at) : cut).trim()
+  out = out
+    .replace(/\b(the|a|an|on|of|to|for|and|or|as|with|that|this|their|its)\s*$/i, '')
+    .replace(/[，,;；:\-—–…]+\s*$/g, '')
+    .trim()
+  if (!out) out = cut.trim()
+  return /[.。!！?？]$/.test(out) ? out : `${out}.`
+}
+
+/**
+ * Opportunity / Risk / TL;DR beat body:
+ * - Prefer complete sentences
+ * - Hard-cap ~3 mobile lines (Lark phone width) and at most 3 sentences
+ */
+export function clampSummary(
+  text: string,
+  opts?: { maxChars?: number; maxSentences?: number; maxLines?: number },
+): string {
+  const maxLines = opts?.maxLines ?? 3
+  const maxChars = opts?.maxChars ?? mobileCharBudget(text, maxLines)
+  const maxSentences = opts?.maxSentences ?? 3
+
   const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
-  if (cleaned.length <= maxChars) return cleaned
-  const cut = cleaned.slice(0, maxChars - 1)
-  // Prefer a real sentence end — never chop at commas / semicolons mid-thought.
-  const at = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('。'), cut.lastIndexOf('! '))
-  if (at > maxChars * 0.6) return cut.slice(0, at + 1).trim()
-  return `${cut.trimEnd()}…`
+  if (!cleaned) return ''
+
+  const sentences = cleaned
+    .split(/(?<=[.。!！?？])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  const finish = (s: string) => {
+    const t = s.trim()
+    if (!t) return ''
+    return /[.。!！?？]$/.test(t) ? t : `${t}.`
+  }
+
+  // No clear sentence breaks — hard-cap to mobile budget (never keep a 5–7 line run-on)
+  if (sentences.length <= 1) {
+    return hardCapClause(cleaned, maxChars)
+  }
+
+  const picked: string[] = []
+  let len = 0
+  for (const s of sentences) {
+    if (picked.length >= maxSentences) break
+    const nextLen = picked.length === 0 ? s.length : len + 1 + s.length
+    if (picked.length > 0 && nextLen > maxChars) break
+    if (picked.length === 0 && s.length > maxChars) {
+      return hardCapClause(s, maxChars)
+    }
+    picked.push(s)
+    len = nextLen
+  }
+
+  let out = picked.join(' ').trim()
+  if (out.length > maxChars) out = hardCapClause(out, maxChars)
+  else if (out && !/[.。!！?？]$/.test(out)) out = `${out}.`
+  return finish(out)
 }
 
 function rankPoints(
@@ -769,27 +1334,64 @@ function rankPoints(
   return rows.slice(0, 4).map((r, i) => ({
     ...r,
     rank: i + 1,
-    en: clampSummary(r.en),
-    zh: clampSummary(r.zh),
+    en: clampSummary(r.en, { maxLines: 3, maxSentences: 3 }),
+    zh: clampSummary(r.zh, { maxLines: 3, maxSentences: 3 }),
   }))
 }
 
-/** Short clause for TL;DR — first sentence / gist, not the full article dump. */
-function gistClause(text: string, maxChars = 160): string {
+/** Short clause for TL;DR — ≤ ~3 mobile lines; complete thought only; never “on the…”. */
+function gistClause(text: string, maxChars?: number): string {
   const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
+  if (!cleaned) return ''
+  const budget = maxChars ?? mobileCharBudget(cleaned, 3)
   const first =
     cleaned.split(/(?<=[.。!！])\s+/).filter(Boolean)[0]?.replace(/[.。!！]+$/, '') || cleaned
-  if (first.length <= maxChars) return first
-  const cut = first.slice(0, maxChars - 1)
-  const at = Math.max(cut.lastIndexOf(' — '), cut.lastIndexOf(', '), cut.lastIndexOf('，'), cut.lastIndexOf(' '))
-  return `${(at > maxChars * 0.45 ? cut.slice(0, at) : cut).trimEnd()}…`
+  if (first.length <= budget) return first.trim()
+
+  // Prefer a complete left side before em-dash when that side is already a full idea
+  const em = first.indexOf(' — ')
+  if (em >= Math.min(36, budget * 0.4) && em <= budget) return first.slice(0, em).trim()
+
+  const cut = first.slice(0, budget)
+  const at = Math.max(
+    cut.lastIndexOf(', '),
+    cut.lastIndexOf('，'),
+    cut.lastIndexOf('; '),
+    cut.lastIndexOf('；'),
+    cut.lastIndexOf(' '),
+  )
+  let out = (at > budget * 0.45 ? cut.slice(0, at) : cut).trim()
+  out = out
+    .replace(/\b(the|a|an|on|of|to|for|and|or|as|with|that|this|their|its)\s*$/i, '')
+    .replace(/[，,;；:\-—–…]+\s*$/g, '')
+    .trim()
+  return out
 }
 
-/** TL;DR: live prints + balanced summary of Opportunity and Risk (statements only). */
-function buildOneLineTldr(args: {
+function looksLikeTapePoint(text: string): boolean {
+  return /\b(bps|basis|perp|spot|dislocation|溢价|溢價|基差|永续|永續|现货|現貨)\b/i.test(text)
+}
+
+/** News / macro / named-event style points (vs pure tape/basis). */
+function looksLikeEventPoint(text: string): boolean {
+  return /\b(Fed|FOMC|Powell|ECB|BOJ|CPI|NFP|Kitco|Bloomberg|Reuters|war|sanctions|oil|Iran|tariff|election|rate\s*cut|hold|hike|降息|加息|美联储|聯準會|央行|制裁|关税|關稅|战争|戰爭)\b/i.test(
+    text,
+  )
+}
+
+/**
+ * TL;DR: ≤4 lines summarizing market trend + major event (if any).
+ * Does not paste truncated Opportunity bullets; details stay in Opportunity / Risk.
+ * Skips empty filler lines (“no ranked … this hour”).
+ */
+export function buildOneLineTldr(args: {
   dxy: number | null
   tnx: number | null
-  okxPx: number | null
+  /** Primary venue last (Binance preferred; OKX when Binance unavailable). */
+  venuePx: number | null
+  venueLabel?: 'binance' | 'okx'
+  /** @deprecated use venuePx */
+  okxPx?: number | null
   spotLive: number | null
   opportunity: RankedPoint[]
   risk: RankedPoint[]
@@ -798,19 +1400,27 @@ function buildOneLineTldr(args: {
   const printEn: string[] = []
   const printZh: string[] = []
 
-  if (args.okxPx != null) {
-    printEn.push(`OKX XAU ${args.okxPx.toFixed(2)}`)
-    printZh.push(`OKX 金 ${args.okxPx.toFixed(2)}`)
-    sourceIds.push('okx-ticker')
+  const venuePx = args.venuePx ?? args.okxPx ?? null
+  const venue = args.venueLabel || (args.venuePx != null ? 'binance' : 'okx')
+  if (venuePx != null) {
+    if (venue === 'binance') {
+      printEn.push(`Binance XAU ${venuePx.toFixed(2)}`)
+      printZh.push(`Binance 金 ${venuePx.toFixed(2)}`)
+      sourceIds.push('binance-ticker')
+    } else {
+      printEn.push(`OKX XAU ${venuePx.toFixed(2)}`)
+      printZh.push(`OKX 金 ${venuePx.toFixed(2)}`)
+      sourceIds.push('okx-ticker')
+    }
   }
   if (args.spotLive != null) {
     printEn.push(`spot ${args.spotLive.toFixed(2)}`)
-    printZh.push(`現貨 ${args.spotLive.toFixed(2)}`)
+    printZh.push(`现货 ${args.spotLive.toFixed(2)}`)
     sourceIds.push('gold-api')
   }
   if (args.dxy != null) {
     printEn.push(`DXY ${args.dxy.toFixed(2)}`)
-    printZh.push(`美元指數 ${args.dxy.toFixed(2)}`)
+    printZh.push(`美元指数 ${args.dxy.toFixed(2)}`)
     sourceIds.push('yahoo-dxy')
   }
   if (args.tnx != null) {
@@ -819,43 +1429,82 @@ function buildOneLineTldr(args: {
     sourceIds.push('yahoo-tnx')
   }
 
-  const topOpp = args.opportunity.slice(0, 2)
-  const topRisk = args.risk.slice(0, 2)
-  for (const p of [...topOpp, ...topRisk]) sourceIds.push(...p.sourceIds)
+  const ranked = [...args.opportunity, ...args.risk]
+  for (const p of ranked.slice(0, 6)) sourceIds.push(...p.sourceIds)
 
-  const partsEn: string[] = []
-  const partsZh: string[] = []
+  const tape =
+    ranked.find((p) => looksLikeTapePoint(p.en) || looksLikeTapePoint(p.zh)) || null
+  const event =
+    ranked.find(
+      (p) =>
+        p !== tape &&
+        (looksLikeEventPoint(p.en) || looksLikeEventPoint(p.zh) || !looksLikeTapePoint(p.en)),
+    ) || null
+  // Prefer a clearly event-like point when several non-tape candidates exist
+  const eventPreferred =
+    ranked.find(
+      (p) => p !== tape && (looksLikeEventPoint(p.en) || looksLikeEventPoint(p.zh)),
+    ) || event
 
+  const linesEn: string[] = []
+  const linesZh: string[] = []
+
+  // 1) Live prints
   if (printEn.length) {
-    partsEn.push(`Live: ${printEn.join(' · ')}.`)
-    partsZh.push(`即時：${printZh.join(' · ')}。`)
+    linesEn.push(`Live: ${printEn.join(' · ')}.`)
+    linesZh.push(`即时：${printZh.join(' · ')}。`)
   }
 
-  if (topOpp.length) {
-    const gistsEn = topOpp.map((p) => gistClause(p.en)).join('; ')
-    const gistsZh = topOpp.map((p) => gistClause(p.zh)).join('；')
-    partsEn.push(`Opportunity: ${gistsEn}.`)
-    partsZh.push(`機會面：${gistsZh}。`)
-  } else {
-    partsEn.push('Opportunity: no ranked opportunity points this hour.')
-    partsZh.push('機會面：本小時無排序機會要點。')
+  // 2) Trend — tape/basis gist, else a short opportunity gist (≤3 mobile lines each)
+  const trendSrc = tape || args.opportunity[0] || null
+  if (trendSrc) {
+    const gEn = gistClause(trendSrc.en)
+    const gZh = gistClause(trendSrc.zh || trendSrc.en)
+    if (gEn) linesEn.push(`Trend: ${gEn}.`)
+    if (gZh) linesZh.push(`走势：${gZh}。`)
   }
 
-  if (topRisk.length) {
-    const gistsEn = topRisk.map((p) => gistClause(p.en)).join('; ')
-    const gistsZh = topRisk.map((p) => gistClause(p.zh)).join('；')
-    partsEn.push(`Risk: ${gistsEn}.`)
-    partsZh.push(`風險面：${gistsZh}。`)
-  } else {
-    partsEn.push('Risk: no ranked risk points this hour.')
-    partsZh.push('風險面：本小時無排序風險要點。')
+  // 3) Major event — only when we have a distinct news/macro point
+  if (eventPreferred && eventPreferred !== trendSrc) {
+    const gEn = gistClause(eventPreferred.en)
+    const gZh = gistClause(eventPreferred.zh || eventPreferred.en)
+    if (gEn) linesEn.push(`Event: ${gEn}.`)
+    if (gZh) linesZh.push(`事件：${gZh}。`)
+  }
+
+  // 4) Optional watch — top risk only if it adds something new (still within 4 lines)
+  const watch = args.risk[0]
+  if (
+    watch &&
+    watch !== trendSrc &&
+    watch !== eventPreferred &&
+    linesEn.length < 4
+  ) {
+    const gEn = gistClause(watch.en)
+    const gZh = gistClause(watch.zh || watch.en)
+    if (gEn) linesEn.push(`Watch: ${gEn}.`)
+    if (gZh) linesZh.push(`关注：${gZh}。`)
+  }
+
+  // Hard cap — never more than 4 TL;DR lines; each beat ≤3 mobile lines
+  const clampBeat = (line: string) => {
+    const m = line.match(/^(Live:|Trend:|Event:|Watch:|即时：|走势：|事件：|关注：)\s*(.*)$/)
+    if (!m) return clampSummary(line, { maxLines: 3, maxSentences: 2 })
+    const body = clampSummary(m[2] || '', { maxLines: 3, maxSentences: 2 }).replace(/^[•\s]+/, '')
+    return `${m[1]} ${body}`.replace(/\s+/g, ' ').trim()
+  }
+  const en = linesEn.slice(0, 4).map(clampBeat)
+  const zh = linesZh.slice(0, 4).map(clampBeat)
+  if (!en.length) {
+    en.push('Trend: no live prints or ranked points this hour.')
+    zh.push('走势：本小时暂无报价或排序要点。')
   }
 
   return [
     {
       rank: 1,
-      en: clampSummary(partsEn.join(' '), 560),
-      zh: clampSummary(partsZh.join(''), 560),
+      en: en.join('\n'),
+      zh: zh.join('\n'),
       sourceIds: [...new Set(sourceIds)],
     },
   ]
@@ -899,6 +1548,63 @@ function okxLast(data: unknown): number | null {
   } catch {
     return null
   }
+}
+
+/** Binance USDT-M ticker/price or 24hr lastPrice. */
+function binanceLast(data: unknown): number | null {
+  try {
+    const d = data as { price?: string; lastPrice?: string }
+    const n = Number(d.price ?? d.lastPrice)
+    return Number.isFinite(n) ? n : null
+  } catch {
+    return null
+  }
+}
+
+/** Binance premiumIndex.lastFundingRate (decimal). */
+function binanceFundingRate(data: unknown): number | null {
+  try {
+    const n = Number((data as { lastFundingRate?: string })?.lastFundingRate)
+    return Number.isFinite(n) ? n : null
+  } catch {
+    return null
+  }
+}
+
+/** Binance futures klines: [openTime, o, h, l, c, volume, ...] oldest-first. */
+export function binanceCandles(data: unknown): KlineBar[] {
+  try {
+    if (!Array.isArray(data)) return []
+    const bars: KlineBar[] = []
+    for (const row of data) {
+      if (!Array.isArray(row) || row.length < 5) continue
+      const t = Number(row[0])
+      const o = Number(row[1])
+      const h = Number(row[2])
+      const l = Number(row[3])
+      const c = Number(row[4])
+      const v = Number(row[5])
+      if (![t, o, h, l, c].every((n) => Number.isFinite(n))) continue
+      bars.push({
+        t,
+        o,
+        h,
+        l,
+        c,
+        v: Number.isFinite(v) ? v : undefined,
+      })
+    }
+    return bars.sort((a, b) => a.t - b.t)
+  } catch {
+    return []
+  }
+}
+
+function binanceInterval(bar: KlineIntervalBar): string {
+  if (bar === '15m') return '15m'
+  if (bar === '4H') return '4h'
+  if (bar === '1D') return '1d'
+  return '1h'
 }
 
 function goldApiPrice(data: unknown): number | null {
@@ -999,6 +1705,56 @@ export async function fetchOkxKline(
     interval: bar,
     sourceId: 'okx-candles',
     bars,
+  }
+}
+
+/** Live Binance XAUUSDT USDT-M candles. */
+export async function fetchBinanceKline(
+  bar: KlineIntervalBar,
+  limit?: number,
+  signal?: AbortSignal,
+): Promise<HourlyKlineSeries> {
+  const meta = KLINE_INTERVALS.find((i) => i.bar === bar) || KLINE_INTERVALS[1]
+  const n = limit ?? meta.limit
+  const interval = binanceInterval(bar)
+  const url = `https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=${encodeURIComponent(interval)}&limit=${n}`
+  const res = await fetch(url, {
+    signal,
+    cache: 'no-store',
+    mode: 'cors',
+    headers: { Accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`Binance candles HTTP ${res.status}`)
+  const json = (await res.json()) as unknown
+  if (json && typeof json === 'object' && !Array.isArray(json) && 'code' in json) {
+    const err = json as { code?: number; msg?: string }
+    if (err.code && err.code !== 200) {
+      throw new Error(err.msg || `Binance candles code ${err.code}`)
+    }
+  }
+  const bars = binanceCandles(json)
+  if (bars.length === 0) throw new Error('Binance candles empty')
+  return {
+    symbol: 'XAUUSDT',
+    interval: bar,
+    sourceId: 'binance-candles',
+    bars,
+  }
+}
+
+/**
+ * Market-report K-line: Binance primary, OKX backup.
+ * Prefer this over fetchOkxKline for cards / TF switcher.
+ */
+export async function fetchMarketKline(
+  bar: KlineIntervalBar,
+  limit?: number,
+  signal?: AbortSignal,
+): Promise<HourlyKlineSeries> {
+  try {
+    return await fetchBinanceKline(bar, limit, signal)
+  } catch {
+    return fetchOkxKline(bar, limit, signal)
   }
 }
 
@@ -1140,18 +1896,18 @@ export async function generateHourlyScan(args: {
     bumpCaption(
       'yahoo-dxy',
       `Yahoo DX-Y.NYB last ${dxy.toFixed(3)}`,
-      `Yahoo 美元指數 DX-Y.NYB 最新 ${dxy.toFixed(3)}`,
+      `Yahoo 美元指数 DX-Y.NYB 最新 ${dxy.toFixed(3)}`,
     )
     if (dxy >= 104) {
       riskRaw.push({
         en: `Yahoo DX-Y.NYB prints ${dxy.toFixed(3)}, a firm dollar backdrop that raises the FX opportunity cost of holding gold and typically pressures XAUUSD perps until the index cools.`,
-        zh: `Yahoo 美元指數 DX-Y.NYB 報 ${dxy.toFixed(3)}，美元偏強推高持有黃金的匯率機會成本，通常會壓抑 XAUUSD 永續，直至指數回軟。`,
+        zh: `Yahoo 美元指数 DX-Y.NYB 报 ${dxy.toFixed(3)}，美元偏强推高持有黄金的汇率机会成本，通常会压抑 XAUUSD 永续，直至指数回软。`,
         sourceIds: ['yahoo-dxy'],
       })
     } else if (dxy <= 100) {
       opportunityRaw.push({
         en: `Yahoo DX-Y.NYB prints ${dxy.toFixed(3)}, a soft dollar backdrop that lowers FX headwinds for gold and is constructive for XAUUSD perps while the index stays subdued.`,
-        zh: `Yahoo 美元指數 DX-Y.NYB 報 ${dxy.toFixed(3)}，美元偏弱減輕黃金的匯率逆風，指數維持偏軟期間對 XAUUSD 永續偏建設性。`,
+        zh: `Yahoo 美元指数 DX-Y.NYB 报 ${dxy.toFixed(3)}，美元偏弱减轻黄金的汇率逆风，指数维持偏软期间对 XAUUSD 永续偏建设性。`,
         sourceIds: ['yahoo-dxy'],
       })
     }
@@ -1162,7 +1918,7 @@ export async function generateHourlyScan(args: {
     bumpCaption(
       'yahoo-tnx',
       `Yahoo ^TNX (US 10Y) last ${tnx.toFixed(3)}%`,
-      `Yahoo ^TNX（美債 10 年）最新 ${tnx.toFixed(3)}%`,
+      `Yahoo ^TNX（美债 10 年）最新 ${tnx.toFixed(3)}%`,
     )
     if (tnx >= 4.2) {
       riskRaw.push({
@@ -1184,89 +1940,118 @@ export async function generateHourlyScan(args: {
     const fedUrl = fed.link.startsWith('http')
       ? fed.link
       : `https://www.federalreserve.gov${fed.link}`
-    sources.push(
-      makeSource(
-        'fed-press-item',
-        fedUrl,
-        `Fed press: ${fed.title}`,
-        `聯準會新聞：${fed.title}`,
-        'announcement',
-        'ok',
-        Date.now(),
-        { detail: 'From ne-press.json' },
-      ),
-    )
-    riskRaw.push({
-      en: `Federal Reserve press item “${fed.title}” is on the calendar feed — treat it as event/policy context for gold rates pricing this hour, not as a confirmed market catalyst yet.`,
-      zh: `聯準會新聞稿「${fed.title}」已出現在日程來源——本小時僅作黃金利率定價的事件／政策背景，尚未視為已確認的行情催化。`,
-      sourceIds: ['fed-press-item', 'fed-press-json'],
-    })
+    const fedCite = await resolveCiteUrlOrNull(fedUrl, 'fed-press-item')
+    if (fedCite) {
+      sources.push(
+        makeSource(
+          'fed-press-item',
+          fedCite.url,
+          `Fed press: ${fed.title}`,
+          `聯準會新聞：${fed.title}`,
+          'announcement',
+          fedCite.rewritten ? 'degraded' : 'ok',
+          Date.now(),
+          {
+            detail: fedCite.rewritten
+              ? 'From ne-press.json · cite rewritten (primary 404)'
+              : 'From ne-press.json',
+          },
+        ),
+      )
+      riskRaw.push({
+        en: `Federal Reserve press item “${fed.title}” is on the calendar feed — treat it as event/policy context for gold rates pricing this hour, not as a confirmed market catalyst yet.`,
+        zh: `聯準會新聞稿「${fed.title}」已出現在日程來源——本小時僅作黃金利率定價的事件／政策背景，尚未視為已確認的行情催化。`,
+        sourceIds: ['fed-press-item', 'fed-press-json'],
+      })
+    }
   }
 
   const spotLive = goldApiPrice(byId.get('gold-api')?.json ?? null)
   if (spotLive != null) {
     bumpCaption(
       'gold-api',
-      `gold-api XAU spot ${spotLive.toFixed(2)}`,
-      `gold-api XAU 現貨 ${spotLive.toFixed(2)}`,
+      `Kitco gold spot ${spotLive.toFixed(2)}`,
+      `Kitco 黄金现货 ${spotLive.toFixed(2)}`,
     )
   }
 
+  // Primary venue = Binance; OKX kept as backup when Binance probe fails.
+  const binancePx = binanceLast(byId.get('binance-ticker')?.json ?? null)
   const okxPx = okxLast(byId.get('okx-ticker')?.json ?? null)
+  const venuePx = binancePx ?? okxPx
+  const venueLabel: 'binance' | 'okx' | null =
+    binancePx != null ? 'binance' : okxPx != null ? 'okx' : null
+  const venueTickerId = venueLabel === 'binance' ? 'binance-ticker' : 'okx-ticker'
+  const venueNameEn = venueLabel === 'binance' ? 'Binance XAUUSDT' : 'OKX XAU-USDT-SWAP'
+  const venueNameZh = venueLabel === 'binance' ? 'Binance XAUUSDT' : 'OKX XAU-USDT-SWAP'
+
+  if (binancePx != null) {
+    bumpCaption(
+      'binance-ticker',
+      `Binance XAUUSDT last ${binancePx.toFixed(2)}`,
+      `Binance XAUUSDT 最新 ${binancePx.toFixed(2)}`,
+    )
+  }
   if (okxPx != null) {
     bumpCaption(
       'okx-ticker',
-      `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)}`,
-      `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}`,
+      `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} (backup)`,
+      `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}（备用）`,
     )
-    if (spotLive != null) {
-      const basisBps = ((okxPx - spotLive) / spotLive) * 10_000
-      if (Math.abs(basisBps) >= 25) {
-        riskRaw.push({
-          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} leaves a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps futures–spot basis — wide enough to distort mid marks, venue prints, and LP hedges until the dislocation narrows.`,
-          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，對 gold-api 現貨 ${spotLive.toFixed(2)} 的期現基差為 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——偏寬，足以扭曲中間價、場所報價與 LP 對沖，直至錯位收斂。`,
-          sourceIds: ['okx-ticker', 'gold-api'],
-        })
-      } else {
-        opportunityRaw.push({
-          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs gold-api spot ${spotLive.toFixed(2)} shows only a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps basis — perp and spot are aligned with no extreme dislocation this hour.`,
-          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，對 gold-api 現貨 ${spotLive.toFixed(2)} 基差僅 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——永續與現貨對齊，本小時無極端錯位。`,
-          sourceIds: ['okx-ticker', 'gold-api'],
-        })
-      }
+  }
+  if (venuePx != null && spotLive != null && venueLabel) {
+    const basisBps = ((venuePx - spotLive) / spotLive) * 10_000
+    if (Math.abs(basisBps) >= 25) {
+      riskRaw.push({
+        en: `${venueNameEn} last ${venuePx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} leaves a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps futures–spot basis — wide enough to distort mid marks, venue prints, and LP hedges until the dislocation narrows.`,
+        zh: `${venueNameZh} 最新 ${venuePx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 的期现基差为 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——偏宽，足以扭曲中间价、场所报价与 LP 对冲，直至错位收敛。`,
+        sourceIds: [venueTickerId, 'gold-api'],
+      })
+    } else {
+      opportunityRaw.push({
+        en: `${venueNameEn} last ${venuePx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} shows only a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps basis — perp and spot are aligned with no extreme dislocation this hour.`,
+        zh: `${venueNameZh} 最新 ${venuePx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 基差仅 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——永续与现货对齐，本小时无极端错位。`,
+        sourceIds: [venueTickerId, 'gold-api'],
+      })
     }
   }
 
-  const funding = okxFundingRate(byId.get('okx-funding')?.json ?? null)
+  const binanceFunding = binanceFundingRate(byId.get('binance-funding')?.json ?? null)
+  const okxFunding = okxFundingRate(byId.get('okx-funding')?.json ?? null)
+  const funding = binanceFunding ?? okxFunding
+  const fundingId = binanceFunding != null ? 'binance-funding' : 'okx-funding'
+  const fundingNameEn =
+    binanceFunding != null ? 'Binance XAUUSDT' : 'OKX XAU-USDT-SWAP'
+  const fundingNameZh = fundingNameEn
   if (funding != null) {
     const pct = funding * 100
     bumpCaption(
-      'okx-funding',
-      `OKX XAU-USDT-SWAP funding ${pct.toFixed(4)}%`,
-      `OKX XAU-USDT-SWAP 資金費率 ${pct.toFixed(4)}%`,
+      fundingId,
+      `${fundingNameEn} funding ${pct.toFixed(4)}%`,
+      `${fundingNameZh} 资金费率 ${pct.toFixed(4)}%`,
     )
     if (Math.abs(pct) >= 0.05) {
       riskRaw.push({
-        en: `OKX XAU-USDT-SWAP funding is ${pct.toFixed(4)}%, an elevated carry cost that signals crowded perp positioning and raises squeeze / rollover stress for leveraged XAUUSD books this hour.`,
-        zh: `OKX XAU-USDT-SWAP 資金費率報 ${pct.toFixed(4)}%，持有成本偏高，顯示永續倉位擁擠，本小時槓桿 XAUUSD 賬本的軋空／展期壓力上升。`,
-        sourceIds: ['okx-funding'],
+        en: `${fundingNameEn} funding is ${pct.toFixed(4)}%, an elevated carry cost that signals crowded perp positioning and raises squeeze / rollover stress for leveraged XAUUSD books this hour.`,
+        zh: `${fundingNameZh} 資金費率報 ${pct.toFixed(4)}%，持有成本偏高，顯示永續倉位擁擠，本小時槓桿 XAUUSD 賬本的軋空／展期壓力上升。`,
+        sourceIds: [fundingId],
       })
     }
   }
 
   const bitgetPx = bitgetLast(byId.get('bitget-ticker')?.json ?? null)
-  if (bitgetPx != null && okxPx != null) {
+  if (bitgetPx != null && venuePx != null && venueLabel) {
     bumpCaption(
       'bitget-ticker',
       `Bitget XAUUSDT last ${bitgetPx.toFixed(2)}`,
       `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)}`,
     )
-    const crossBps = ((bitgetPx - okxPx) / okxPx) * 10_000
+    const crossBps = ((bitgetPx - venuePx) / venuePx) * 10_000
     if (Math.abs(crossBps) >= 20) {
       riskRaw.push({
-        en: `Bitget XAUUSDT last ${bitgetPx.toFixed(2)} vs OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} is ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps apart — a material cross-venue gap that can bias a single mid mark if liquidity is thinner on one side.`,
-        zh: `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)} 與 OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} 相差 ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps——跨場所價差偏大，若單邊流動性較薄，單一中間價可能失真。`,
-        sourceIds: ['bitget-ticker', 'okx-ticker'],
+        en: `Bitget XAUUSDT last ${bitgetPx.toFixed(2)} vs ${venueNameEn} ${venuePx.toFixed(2)} is ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps apart — a material cross-venue gap that can bias a single mid mark if liquidity is thinner on one side.`,
+        zh: `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)} 與 ${venueNameZh} ${venuePx.toFixed(2)} 相差 ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps——跨場所價差偏大，若單邊流動性較薄，單一中間價可能失真。`,
+        sourceIds: ['bitget-ticker', venueTickerId],
       })
     }
   }
@@ -1280,20 +2065,34 @@ export async function generateHourlyScan(args: {
     )
   }
 
-  const candleBars = okxCandles(byId.get('okx-candles')?.json ?? null)
+  const binanceBars = binanceCandles(byId.get('binance-candles')?.json ?? null)
+  const okxBars = okxCandles(byId.get('okx-candles')?.json ?? null)
   let kline: HourlyKlineSeries | null = null
-  if (candleBars.length > 0) {
-    const last = candleBars[candleBars.length - 1]
+  if (binanceBars.length > 0) {
+    const last = binanceBars[binanceBars.length - 1]
+    bumpCaption(
+      'binance-candles',
+      `Binance XAUUSDT 1H K-line · ${binanceBars.length} bars · last ${last.c.toFixed(2)}`,
+      `Binance XAUUSDT 1H K线 · ${binanceBars.length} 根 · 最新 ${last.c.toFixed(2)}`,
+    )
+    kline = {
+      symbol: 'XAUUSDT',
+      interval: '1H',
+      sourceId: 'binance-candles',
+      bars: binanceBars,
+    }
+  } else if (okxBars.length > 0) {
+    const last = okxBars[okxBars.length - 1]
     bumpCaption(
       'okx-candles',
-      `OKX XAU-USDT-SWAP 1H K-line · ${candleBars.length} bars · last ${last.c.toFixed(2)}`,
-      `OKX XAU-USDT-SWAP 1H K 線 · ${candleBars.length} 根 · 最新 ${last.c.toFixed(2)}`,
+      `OKX XAU-USDT-SWAP 1H K-line · ${okxBars.length} bars · last ${last.c.toFixed(2)} (backup)`,
+      `OKX XAU-USDT-SWAP 1H K线 · ${okxBars.length} 根 · 最新 ${last.c.toFixed(2)}（备用）`,
     )
     kline = {
       symbol: 'XAU-USDT-SWAP',
       interval: '1H',
       sourceId: 'okx-candles',
-      bars: candleBars,
+      bars: okxBars,
     }
   }
 
@@ -1344,10 +2143,23 @@ export async function generateHourlyScan(args: {
 
   for (const c of args.extraCitations || []) {
     if (sources.some((s) => s.id === c.id || s.url === c.url)) continue
+    const cite = await resolveCiteUrlOrNull(c.url, c.id)
+    if (!cite) continue // proven 404/410 — never cite in 早报 / desk
     sources.push(
-      makeSource(c.id, c.url, c.label, c.label, 'news', 'unchecked', createdAt, {
-        detail: 'Imported briefing citation',
-      }),
+      makeSource(
+        c.id,
+        cite.url,
+        c.label,
+        c.label,
+        'news',
+        cite.rewritten ? 'degraded' : 'unchecked',
+        createdAt,
+        {
+          detail: cite.rewritten
+            ? 'Imported briefing citation · cite rewritten (primary 404)'
+            : 'Imported briefing citation',
+        },
+      ),
     )
   }
 
@@ -1375,7 +2187,8 @@ export async function generateHourlyScan(args: {
   const tldr = buildOneLineTldr({
     dxy,
     tnx,
-    okxPx: okxPx ?? null,
+    venuePx: venuePx ?? null,
+    venueLabel: venueLabel ?? undefined,
     spotLive: spotLive ?? null,
     opportunity,
     risk,

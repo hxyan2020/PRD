@@ -9,19 +9,29 @@ import { MarketConditionPage } from './pages/MarketConditionPage'
 import { SkillsPage } from './pages/SkillsPage'
 import { KnowledgePage } from './pages/KnowledgePage'
 import { InvestigatePage } from './pages/InvestigatePage'
-import { StatsPage } from './pages/StatsPage'
 import { ReportsDashboardPage } from './pages/ReportsDashboardPage'
 import { LarkBotPage } from './pages/LarkBotPage'
+import { AlertOptimizePage } from './pages/AlertOptimizePage'
 
 const NAV = [
   { to: '/investigate', full: 'navInvestigate', short: 'navInvestigateShort' },
+  { to: '/alert-optimize', full: 'navAlertOptimize', short: 'navAlertOptimizeShort' },
   { to: '/market', full: 'navMarket', short: 'navMarketShort' },
   { to: '/skills', full: 'navSkills', short: 'navSkillsShort' },
   { to: '/knowledge', full: 'navKnowledge', short: 'navKnowledgeShort' },
   { to: '/reports', full: 'navReports', short: 'navReportsShort' },
-  { to: '/stats', full: 'navStats', short: 'navStatsShort' },
   { to: '/lark', full: 'navLark', short: 'navLarkShort' },
 ] as const
+
+/** Mobile bottom bar: core ops only — Skills / KB live in the hamburger drawer. */
+const BOTTOM_NAV = NAV.filter(
+  (item) =>
+    item.to === '/investigate' ||
+    item.to === '/alert-optimize' ||
+    item.to === '/market' ||
+    item.to === '/reports' ||
+    item.to === '/lark',
+)
 
 export default function App() {
   const { t, lang, setLang, langLabel } = useLocale()
@@ -44,8 +54,12 @@ export default function App() {
 
   if (!user) return <LoginPage />
 
-  const renderNavLinks = (keyPrefix: string, onNavigate?: () => void) =>
-    NAV.map((item) => (
+  const renderNavLinks = (
+    items: typeof NAV | typeof BOTTOM_NAV,
+    keyPrefix: string,
+    onNavigate?: () => void,
+  ) =>
+    items.map((item) => (
       <NavLink
         key={`${keyPrefix}${item.to}`}
         to={item.to}
@@ -167,7 +181,7 @@ export default function App() {
         <section className="menu-section menu-nav-section">
           <h3>{t('menuNav')}</h3>
           <nav className="menu-nav" aria-label="Menu navigation">
-            {renderNavLinks('menu', () => setMenuOpen(false))}
+            {renderNavLinks(NAV, 'menu', () => setMenuOpen(false))}
           </nav>
         </section>
 
@@ -178,7 +192,7 @@ export default function App() {
       </aside>
 
       <nav className="nav main-nav desktop-nav" aria-label="Primary">
-        {renderNavLinks('d')}
+        {renderNavLinks(NAV, 'd')}
       </nav>
 
       <main className="app-main">
@@ -187,8 +201,9 @@ export default function App() {
           <Route path="/skills" element={<SkillsPage />} />
           <Route path="/knowledge" element={<KnowledgePage />} />
           <Route path="/investigate" element={<InvestigatePage />} />
-          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/alert-optimize" element={<AlertOptimizePage />} />
           <Route path="/reports" element={<ReportsDashboardPage />} />
+          <Route path="/stats" element={<Navigate to="/reports" replace />} />
           <Route path="/alerts" element={<Navigate to="/reports" replace />} />
           <Route path="/lark" element={<LarkBotPage />} />
           <Route path="/" element={<Navigate to="/investigate" replace />} />
@@ -202,7 +217,7 @@ export default function App() {
       </main>
 
       <nav className="nav bottom-nav mobile-only-flex" aria-label="Primary mobile">
-        {renderNavLinks('m')}
+        {renderNavLinks(BOTTOM_NAV, 'm')}
       </nav>
 
       <p className="footer-note desktop-copy">{t('footer')}</p>

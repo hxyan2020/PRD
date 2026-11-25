@@ -1,7 +1,6 @@
-# 报价 AI排查助手 (Quote Troubleshooting Assistant)
+# V Exchange Risk Tool（VE排查助手）
 
-V Exchange Quote & Pricing troubleshooting assistant with Lark bot integration.  
-Helps diagnose pricing discrepancies, spread issues, mark price alerts, and quote source problems.
+Public SPA for **XAUUSD MVP perpetual** risk ops on V Exchange.
 
 ## Permanent URL (Vercel)
 

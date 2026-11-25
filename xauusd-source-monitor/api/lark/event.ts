@@ -2,8 +2,12 @@
  * Lark / Feishu event webhook — POST /api/lark/event
  *
  * Subscribe in Lark Developer Console:
- *   Request URL: https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event
+ *   Event Request URL: https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event
  *   Events: im.message.receive_v1, card.action.trigger
+ *   Card Request URL (消息卡片请求网址): same URL (or /api/lark/card)
+ *   — without Card Request URL, tapping buttons shows
+ *     “Card callback isn't configured”. Investigation cards ship
+ *     step / report / archive / review buttons that call this handler.
  *
  * Minimum secrets: LARK_APP_ID + LARK_APP_SECRET (set on Vercel).
  * Optional: LARK_VERIFICATION_TOKEN (recommended), LARK_BOT_OPEN_ID (auto-fetched).
@@ -15,19 +19,19 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { waitUntil } from '@vercel/functions'
 import { handleCardAction, handleMessage } from './_lib/agent.js'
 import {
+  fetchUserDisplayName,
   isEncryptedEnvelope,
   larkConfigured,
+  looksLikeAdminName,
   probeLarkConnection,
-  replyCard,
-  replyText,
+  rememberAdminOpenId,
   resolveBotOpenId,
-  sendCardToChat,
-  sendTextToChat,
   verifyToken,
 } from './_lib/client.js'
 import { claimOnce } from './_lib/dedupe.js'
 import { logInbound, readInbound } from './_lib/inboundLog.js'
 import { parseIncomingEvent, shouldRespond } from './_lib/parse.js'
+import { dispatchReplyWithTypingEffect, startTypingSession } from './_lib/typing.js'
 
 const APP_ID = process.env.LARK_APP_ID || ''
 const BOT_APPLINK_FEISHU = APP_ID
@@ -54,37 +58,23 @@ function readBody(req: VercelRequest): Record<string, unknown> {
 }
 
 /**
- * Send exactly one outbound message. Do NOT fall back from reply→sendChat:
- * a reply that succeeds then throws on parse would otherwise double-post.
+ * Send outbound reply with typing indicator + progressive reveal.
+ * Do NOT fall back from reply→sendChat after a successful first post (double-post risk).
  */
 async function dispatchReply(
   messageId: string,
   chatId: string,
-  reply: { text?: string; card?: Record<string, unknown> },
+  reply: {
+    text?: string
+    card?: Record<string, unknown>
+    followUpCards?: Record<string, unknown>[]
+  },
 ): Promise<{ ok: boolean; via?: string; error?: string }> {
-  try {
-    if (reply.card) {
-      if (messageId) {
-        await replyCard(messageId, reply.card)
-        return { ok: true, via: 'replyCard' }
-      }
-      await sendCardToChat(chatId, reply.card)
-      return { ok: true, via: 'sendCardToChat' }
-    }
-    if (reply.text) {
-      if (messageId) {
-        await replyText(messageId, reply.text)
-        return { ok: true, via: 'replyText' }
-      }
-      await sendTextToChat(chatId, reply.text)
-      return { ok: true, via: 'sendTextToChat' }
-    }
-    return { ok: false, error: 'empty reply' }
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    console.error('[lark/dispatch] failed', msg)
-    return { ok: false, error: msg }
+  const result = await dispatchReplyWithTypingEffect(messageId, chatId, reply)
+  if (!result.ok) {
+    console.error('[lark/dispatch] failed', result.error || 'unknown')
   }
+  return result
 }
 
 function dedupeKey(header: Record<string, unknown>, messageId?: string, cardToken?: string) {
@@ -93,6 +83,260 @@ function dedupeKey(header: Record<string, unknown>, messageId?: string, cardToke
   if (cardToken) return `card:${cardToken}`
   if (messageId) return `msg:${messageId}`
   return ''
+}
+
+/** Shared card-action path for event subscription + Card Request URL callbacks. */
+async function handleCardActionRequest(
+  _req: VercelRequest,
+  res: VercelResponse,
+  args: {
+    header: Record<string, unknown>
+    event: Record<string, unknown>
+    eventType: string
+  },
+) {
+  const operator = (args.event.operator || {}) as { open_id?: string }
+  const action = (args.event.action || args.event) as {
+    value?: Record<string, unknown> | string
+    tag?: string
+  }
+  const context = (args.event.context || {}) as {
+    open_message_id?: string
+    open_chat_id?: string
+  }
+  // Legacy Card Request URL may put ids on the root event
+  const openId =
+    operator.open_id ||
+    String(args.event.open_id || args.event.openId || 'unknown')
+  const messageId =
+    context.open_message_id ||
+    String(args.event.open_message_id || args.event.openMessageId || '')
+  const chatId =
+    context.open_chat_id ||
+    String(args.event.open_chat_id || args.event.openChatId || args.event.chat_id || '')
+  let value: Record<string, unknown> = {}
+  try {
+    value =
+      typeof action.value === 'string'
+        ? (JSON.parse(action.value) as Record<string, unknown>)
+        : (action.value as Record<string, unknown>) || {}
+  } catch {
+    value = {}
+  }
+  const key = dedupeKey(
+    args.header,
+    messageId,
+    `${messageId}:${String(value.action || '')}:${String(value.incidentId || '')}:${String(value.bar || '')}`,
+  )
+  if (key && !claimOnce(key)) {
+    logInbound({
+      at: new Date().toISOString(),
+      kind: 'card_action',
+      eventType: args.eventType,
+      messageId,
+      result: 'skipped:deduped',
+    })
+    return res.status(200).json({
+      toast: { type: 'info', content: 'Already handled' },
+    })
+  }
+
+  // Market K-line interval switch — MUST ack Feishu within 3s (error 200341 on timeout).
+  // Rebuild fetches OKX + hourly scan (often >3s); toast first, then delayed-update via
+  // callback token (interactive/v1/card/update). Message PUT alone often leaves the
+  // chart stuck on the old interval after a toast-only ack.
+  const isKlineTf = String(value.action || '') === 'market_kline_tf'
+  if (isKlineTf) {
+    const bar = String(value.bar || '1H')
+    // card.action.trigger → event.token; Card Request URL → body.token on event root
+    const callbackToken = String(
+      args.event.token || (args.event as { action_token?: string }).action_token || '',
+    ).trim()
+    waitUntil(
+      (async () => {
+        try {
+          // Feishu: delayed update must run AFTER the toast HTTP response, not in parallel.
+          await new Promise((r) => setTimeout(r, 150))
+          const reply = await handleCardAction({
+            openId,
+            chatId,
+            messageId,
+            value,
+            chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+          })
+          if (!reply.card) {
+            logInbound({
+              at: new Date().toISOString(),
+              kind: 'card_action',
+              eventType: args.eventType,
+              openId,
+              chatId,
+              messageId,
+              result: 'fail:kline_tf_no_card',
+            })
+            return
+          }
+          const { updateCardByCallbackToken, updateMessageCard } = await import(
+            './_lib/client.js'
+          )
+          let via = 'callback_token'
+          if (callbackToken) {
+            await updateCardByCallbackToken(callbackToken, reply.card, {
+              openIds: openId.startsWith('ou_') ? [openId] : [],
+            })
+          } else if (messageId) {
+            via = 'message_put_fallback'
+            await updateMessageCard(messageId, reply.card)
+          } else {
+            logInbound({
+              at: new Date().toISOString(),
+              kind: 'card_action',
+              eventType: args.eventType,
+              openId,
+              chatId,
+              messageId,
+              result: 'fail:kline_tf_no_token_or_message',
+            })
+            return
+          }
+          logInbound({
+            at: new Date().toISOString(),
+            kind: 'card_action',
+            eventType: args.eventType,
+            openId,
+            chatId,
+            messageId,
+            result: `ok:kline_tf_async:${bar}:${via}`,
+          })
+        } catch (e) {
+          logInbound({
+            at: new Date().toISOString(),
+            kind: 'card_action',
+            eventType: args.eventType,
+            error: e instanceof Error ? e.message : 'kline tf error',
+            result: 'error:kline_tf_async',
+          })
+        }
+      })(),
+    )
+    return res.status(200).json({
+      toast: {
+        type: 'info',
+        content: `Switching to ${bar}…`,
+        i18n: {
+          zh_cn: `正在切换到 ${bar}…`,
+          zh_hk: `正在切換到 ${bar}…`,
+          zh_tw: `正在切換到 ${bar}…`,
+          en_us: `Switching to ${bar}…`,
+        },
+      },
+    })
+  }
+
+  // Nudge「知道了」must durable-ack BEFORE toast — waitUntil alone raced cron
+  // when Blob writes failed silently and state lived only in /tmp.
+  const isNudgeAck = String(value.action || '') === 'alert_nudge_ack'
+  if (isNudgeAck) {
+    try {
+      const reply = await handleCardAction({
+        openId,
+        chatId,
+        messageId,
+        value,
+        chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+      })
+      if (messageId || chatId) {
+        waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
+      }
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        openId,
+        chatId,
+        messageId,
+        result: 'ok:nudge_ack_sync',
+      })
+      return res.status(200).json({
+        toast: {
+          type: 'success',
+          content: 'Stopped',
+          i18n: { zh_cn: '已停止提醒', zh_hk: '已停止提醒', en_us: 'Stopped' },
+        },
+      })
+    } catch (e) {
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        error: e instanceof Error ? e.message : 'nudge ack error',
+        result: 'error',
+      })
+      return res.status(200).json({
+        toast: {
+          type: 'error',
+          content: 'Stop failed',
+          i18n: { zh_cn: '停止失败，请回复：知道了', zh_hk: '停止失敗，請回覆：知道了', en_us: 'Reply 知道了' },
+        },
+      })
+    }
+  }
+
+  waitUntil(
+    (async () => {
+      const typing = startTypingSession(messageId)
+      try {
+        const reply = await handleCardAction({
+          openId,
+          chatId,
+          messageId,
+          value,
+          chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+        })
+        await typing.stop()
+        let dispatched = { ok: false as boolean, via?: string, error?: string }
+        if (messageId || chatId) {
+          dispatched = await dispatchReply(messageId, chatId, reply)
+        }
+        logInbound({
+          at: new Date().toISOString(),
+          kind: 'card_action',
+          eventType: args.eventType,
+          openId,
+          chatId,
+          messageId,
+          result: dispatched.ok
+            ? `ok:${dispatched.via}`
+            : `fail:${dispatched.error || 'no_dispatch'}`,
+        })
+      } catch (e) {
+        await typing.stop()
+        logInbound({
+          at: new Date().toISOString(),
+          kind: 'card_action',
+          eventType: args.eventType,
+          error: e instanceof Error ? e.message : 'card error',
+          result: 'error',
+        })
+      }
+    })(),
+  )
+  const isEscalate = String(value.action || '') === 'guide_step_escalate'
+  // Feishu expects a toast (or card) on card callback — not only {ok:true}
+  return res.status(200).json({
+    toast: {
+      type: isEscalate ? 'info' : 'success',
+      content: isEscalate ? 'Escalated — awaiting feedback' : 'OK',
+      i18n: isEscalate
+        ? {
+            zh_cn: '已升级等待反馈',
+            zh_hk: '已升級等待反饋',
+            zh_tw: '已升級等待反饋',
+            en_us: 'Escalated — awaiting feedback',
+          }
+        : { zh_cn: '已处理', zh_hk: '已處理', en_us: 'Done' },
+    },
+  })
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -167,11 +411,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  // Warm bot open_id cache (non-blocking best-effort) so group @ matching improves after first events
-  if (larkConfigured() && !process.env.LARK_BOT_OPEN_ID) {
-    void resolveBotOpenId().then((id) => {
+  // Resolve bot open_id before parse so group @ matching is precise (not "any @").
+  if (larkConfigured()) {
+    try {
+      const id = await resolveBotOpenId()
       if (id) process.env.LARK_BOT_OPEN_ID = id
-    })
+    } catch {
+      /* soft-fail — parse falls back to bot display-name match */
+    }
   }
 
   // URL verification (challenge)
@@ -199,76 +446,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (eventType === 'im.message.receive_v1' || body.event) {
       const event = (body.event || body) as Record<string, unknown>
 
-      // Card action (schema 2.0 may use card.action.trigger)
+      // Card action (schema 2.0 event subscription)
       if (eventType === 'card.action.trigger') {
-        const operator = (event.operator || {}) as { open_id?: string }
-        const action = (event.action || {}) as {
-          value?: Record<string, unknown>
-          tag?: string
-        }
-        const context = (event.context || {}) as {
-          open_message_id?: string
-          open_chat_id?: string
-        }
-        const value =
-          typeof action.value === 'string'
-            ? (JSON.parse(action.value) as Record<string, unknown>)
-            : action.value || {}
-        const key = dedupeKey(
+        return handleCardActionRequest(req, res, {
           header,
-          context.open_message_id,
-          `${context.open_message_id}:${String(value.action || '')}:${String(value.incidentId || '')}`,
-        )
-        if (key && !claimOnce(key)) {
-          logInbound({
-            at: new Date().toISOString(),
-            kind: 'card_action',
-            eventType,
-            messageId: context.open_message_id,
-            result: 'skipped:deduped',
-          })
-          return res.status(200).json({ ok: true, deduped: true })
-        }
-        waitUntil(
-          (async () => {
-            try {
-              const reply = await handleCardAction({
-                openId: operator.open_id || 'unknown',
-                chatId: context.open_chat_id || '',
-                messageId: context.open_message_id || '',
-                value,
-              })
-              let dispatched = { ok: false as boolean, via?: string, error?: string }
-              if (context.open_message_id && context.open_chat_id) {
-                dispatched = await dispatchReply(
-                  context.open_message_id,
-                  context.open_chat_id,
-                  reply,
-                )
-              }
-              logInbound({
-                at: new Date().toISOString(),
-                kind: 'card_action',
-                eventType,
-                openId: operator.open_id,
-                chatId: context.open_chat_id,
-                messageId: context.open_message_id,
-                result: dispatched.ok
-                  ? `ok:${dispatched.via}`
-                  : `fail:${dispatched.error || 'no_dispatch'}`,
-              })
-            } catch (e) {
-              logInbound({
-                at: new Date().toISOString(),
-                kind: 'card_action',
-                eventType,
-                error: e instanceof Error ? e.message : 'card error',
-                result: 'error',
-              })
-            }
-          })(),
-        )
-        return res.status(200).json({ ok: true, accepted: true })
+          event,
+          eventType,
+        })
       }
 
       if (eventType === 'im.message.receive_v1' || (event as { message?: unknown }).message) {
@@ -323,8 +507,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
         waitUntil(
           (async () => {
+            const typing = startTypingSession(msg.messageId)
             try {
+              // Learn Yan’s open_id when he messages (name match) so cron can DM without env
+              if (msg.openId && msg.openId !== 'unknown') {
+                try {
+                  const nm = await fetchUserDisplayName(msg.openId)
+                  if (looksLikeAdminName(nm)) rememberAdminOpenId(msg.openId, 'inbound_name')
+                } catch {
+                  /* ignore */
+                }
+              }
               const reply = await handleMessage(msg)
+              await typing.stop()
               const dispatched = reply
                 ? await dispatchReply(msg.messageId, msg.chatId, reply)
                 : { ok: false, error: 'null_reply' }
@@ -343,6 +538,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 error: dispatched.ok ? undefined : dispatched.error,
               })
             } catch (e) {
+              await typing.stop()
               logInbound({
                 at: new Date().toISOString(),
                 kind: 'handler_error',
@@ -356,6 +552,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         )
         return res.status(200).json({ ok: true, accepted: true })
       }
+    }
+
+    // Card Request URL callback (no header.event_type) — open_message_id + action.value
+    if (
+      body.action ||
+      body.open_message_id ||
+      (body.event &&
+        typeof body.event === 'object' &&
+        ((body.event as Record<string, unknown>).action ||
+          (body.event as Record<string, unknown>).open_message_id))
+    ) {
+      const event = (body.event && typeof body.event === 'object'
+        ? body.event
+        : body) as Record<string, unknown>
+      return handleCardActionRequest(req, res, {
+        header,
+        event,
+        eventType: eventType || 'card.request_url',
+      })
     }
 
     // Older callback style: { uuid, event: { type, ... } }

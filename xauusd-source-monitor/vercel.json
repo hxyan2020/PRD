@@ -1,4 +1,14 @@
 {
+  "headers": [
+    {
+      "source": "/api/lark/(alert-nudge|oscillation-alert|market-report|daily-market-report|weekly-demo|weekly-report|cron-tick|cron-health)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0, must-revalidate" },
+        { "key": "CDN-Cache-Control", "value": "no-store" },
+        { "key": "Vercel-CDN-Cache-Control", "value": "no-store" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/api/lark/events", "destination": "/api/lark/event" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
@@ -8,6 +18,34 @@
     {
       "path": "/api/lark/weekly-report",
       "schedule": "0 8 * * 5"
+    },
+    {
+      "path": "/api/lark/daily-market-report",
+      "schedule": "0 1 * * *"
+    },
+    {
+      "path": "/api/lark/market-report",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/lark/cron-health",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/lark/alert-nudge",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/lark/cron-tick",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/lark/oscillation-alert",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/lark/weekly-demo",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLocale } from '../i18n/locale'
-import { loadHistory } from '../copilot/storage'
+import { loadHistory, weeklyOptimisationCandidates } from '../copilot/storage'
 import type { IncidentRecord as DeskIncident } from '../copilot/types'
 
 export type LarkIncident = {
@@ -13,6 +13,7 @@ export type LarkIncident = {
   knowledge: string[]
   summary: string
   recommendations: string[]
+  riskVerdict?: 'at_risk' | 'no_risk' | 'unclear'
   status: 'open' | 'archived'
   createdAt: number
   updatedAt: number
@@ -25,6 +26,7 @@ export type DashboardRow = {
   title: string
   severity: string
   status: 'open' | 'archived'
+  riskVerdict?: 'at_risk' | 'no_risk' | 'unclear' | 'unset'
   summary: string
   skills: string[]
   createdAt: number
@@ -67,6 +69,7 @@ function deskToRow(h: DeskIncident): DashboardRow {
     title: h.title || 'Untitled',
     severity: normalizeSeverity(h.severity),
     status: h.archivedAt ? 'archived' : 'open',
+    riskVerdict: 'unset',
     summary: (h.report || '').slice(0, 280),
     skills: [
       ...(h.skillsUsed?.map((s) => s.id) || []),
@@ -87,6 +90,7 @@ function larkToRow(h: LarkIncident): DashboardRow {
     title: h.title || h.id,
     severity: normalizeSeverity(h.severity),
     status: h.status === 'archived' ? 'archived' : 'open',
+    riskVerdict: h.riskVerdict || 'unset',
     summary: (h.summary || '').slice(0, 280),
     skills: h.skills || [],
     createdAt: h.createdAt,
@@ -96,14 +100,31 @@ function larkToRow(h: LarkIncident): DashboardRow {
   }
 }
 
-async function fetchLarkIncidents(): Promise<LarkIncident[]> {
+function riskVerdictLabelUi(v: DashboardRow['riskVerdict'], zh: boolean) {
+  if (v === 'at_risk') return zh ? '有风险' : 'At risk'
+  if (v === 'no_risk') return zh ? '无风险' : 'No risk'
+  if (v === 'unclear') return zh ? '尚不明确' : 'Unclear'
+  return zh ? '未判定' : 'Unset'
+}
+
+async function fetchLarkIncidents(): Promise<{
+  rows: LarkIncident[]
+  ok: boolean
+}> {
   try {
-    const r = await fetch('/api/lark/incidents?limit=100&status=all')
-    if (!r.ok) return []
+    const { loadSettings, applyManagedLlmConfig } = await import('../copilot/storage')
+    const settings = await applyManagedLlmConfig(loadSettings())
+    const headers: Record<string, string> = {}
+    if (settings.deskToken?.trim()) {
+      headers['X-Desk-Token'] = settings.deskToken.trim()
+    }
+    const r = await fetch('/api/lark/incidents?limit=100&status=all', { headers })
+    if (!r.ok) return { rows: [], ok: false }
     const data = (await r.json()) as { incidents?: LarkIncident[] }
-    return Array.isArray(data.incidents) ? data.incidents : []
+    const rows = Array.isArray(data.incidents) ? data.incidents : []
+    return { rows, ok: true }
   } catch {
-    return []
+    return { rows: [], ok: false }
   }
 }
 
@@ -128,10 +149,11 @@ export function ReportsDashboardPage() {
     let cancelled = false
     setLarkState('loading')
     ;(async () => {
-      const rows = await fetchLarkIncidents()
+      const { rows, ok } = await fetchLarkIncidents()
       if (cancelled) return
       setLark(rows)
-      setLarkState(rows.length ? 'ok' : 'empty')
+      if (!ok) setLarkState('error')
+      else setLarkState(rows.length ? 'ok' : 'empty')
     })()
     return () => {
       cancelled = true
@@ -158,33 +180,67 @@ export function ReportsDashboardPage() {
   const viz = useMemo(() => {
     const all = [...desk.map(deskToRow), ...lark.map(larkToRow)]
     const bySeverity: Record<string, number> = {}
+    const byRisk: Record<string, number> = {
+      at_risk: 0,
+      no_risk: 0,
+      unclear: 0,
+      unset: 0,
+    }
     const byDay: Record<string, number> = {}
-    const skillMap = new Map<string, number>()
+    const skillMap = new Map<string, { count: number; name?: string; level?: string }>()
     let open = 0
     let archived = 0
     for (const r of all) {
       bySeverity[r.severity] = (bySeverity[r.severity] || 0) + 1
+      const rv = r.riskVerdict || 'unset'
+      byRisk[rv] = (byRisk[rv] || 0) + 1
       if (r.status === 'open') open += 1
       else archived += 1
       const day = dayKeySgt(r.updatedAt)
       byDay[day] = (byDay[day] || 0) + 1
       for (const s of r.skills.slice(0, 8)) {
-        skillMap.set(s, (skillMap.get(s) || 0) + 1)
+        const cur = skillMap.get(s) || { count: 0 }
+        cur.count += 1
+        skillMap.set(s, cur)
+      }
+    }
+    // Enrich with desk skill names / levels when available (former Realtime Stats)
+    for (const h of desk) {
+      const used = h.skillsUsed?.length
+        ? h.skillsUsed
+        : [
+            ...h.hits.map((id) => ({ id, name: id, level: 'L1' })),
+            ...h.l2.map((id) => ({ id, name: id, level: 'L2' })),
+          ]
+      for (const s of used) {
+        const cur = skillMap.get(s.id) || { count: 0 }
+        cur.name = s.name || cur.name
+        cur.level = s.level || cur.level
+        skillMap.set(s.id, cur)
       }
     }
     const dayKeys = Object.keys(byDay).sort()
     const lastDays = dayKeys.slice(-14)
     const maxDay = Math.max(1, ...lastDays.map((d) => byDay[d] || 0))
     const skills = [...skillMap.entries()]
-      .sort((a, b) => b[1] - a[1])
+      .map(([id, meta]) => ({
+        id,
+        count: meta.count,
+        name: meta.name,
+        level: meta.level,
+        rate: all.length ? Math.round((meta.count / all.length) * 100) : 0,
+      }))
+      .sort((a, b) => b.count - a.count)
       .slice(0, 12)
     return {
       total: all.length,
       open,
       archived,
+      weeklyOpt: weeklyOptimisationCandidates(desk).length,
       desk: desk.length,
       lark: lark.length,
       bySeverity,
+      byRisk,
       lastDays,
       byDay,
       maxDay,
@@ -233,6 +289,10 @@ export function ReportsDashboardPage() {
           <strong className="stat-value">{viz.archived}</strong>
         </div>
         <div className="stat-card">
+          <span className="stat-label">{t('statsWeeklyOpt')}</span>
+          <strong className="stat-value">{viz.weeklyOpt}</strong>
+        </div>
+        <div className="stat-card">
           <span className="stat-label">{t('reportsSources')}</span>
           <strong className="stat-value reports-sources-value">
             {viz.desk}
@@ -244,6 +304,18 @@ export function ReportsDashboardPage() {
             {larkState === 'loading' ? ` · ${t('reportsLoadingLark')}` : ''}
             {larkState === 'error' ? ` · ${t('reportsLarkUnavailable')}` : ''}
           </span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">{t('reportsAtRisk')}</span>
+          <strong className="stat-value">{viz.byRisk.at_risk}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">{t('reportsNoRisk')}</span>
+          <strong className="stat-value">{viz.byRisk.no_risk}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">{t('reportsRiskUnset')}</span>
+          <strong className="stat-value">{viz.byRisk.unclear + viz.byRisk.unset}</strong>
         </div>
       </div>
 
@@ -300,15 +372,22 @@ export function ReportsDashboardPage() {
       </div>
 
       <section className="reports-viz-panel">
-        <h3>{t('reportsTopSkills')}</h3>
+        <h3>{t('statsSkillHits')}</h3>
         {viz.skills.length === 0 ? (
           <p className="sub">{t('reportsEmpty')}</p>
         ) : (
-          <div className="reports-skill-cloud">
-            {viz.skills.map(([id, n]) => (
-              <span key={id} className="reports-skill-chip">
-                {id} <em>{n}</em>
-              </span>
+          <div className="stats-table reports-skill-rates">
+            {viz.skills.map((row) => (
+              <div key={row.id} className="item-row">
+                <span>
+                  {row.level ? `[${row.level}] ` : ''}
+                  {row.id}
+                  {row.name && row.name !== row.id ? ` ${row.name}` : ''}
+                </span>
+                <span className="mono">
+                  {row.count} · {row.rate}%
+                </span>
+              </div>
             ))}
           </div>
         )}
@@ -381,6 +460,9 @@ export function ReportsDashboardPage() {
                       </span>
                       <span className="pill status-pill">
                         {r.status === 'open' ? t('reportsOpen') : t('reportsArchived')}
+                      </span>
+                      <span className="pill status-pill">
+                        {riskVerdictLabelUi(r.riskVerdict, zh)}
                       </span>
                       <span className="mono reports-list-time">{sgt(r.updatedAt)} SGT</span>
                     </div>
