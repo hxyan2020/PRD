@@ -44,8 +44,10 @@ import {
 } from '../api/lark/_lib/typing'
 import { greetingCard, simpleCard } from '../api/lark/_lib/cards'
 import {
+  buildWeeklyDemoReport,
   buildWeeklyReport,
   shanghaiWeekKey,
+  virtualWeeklyIncidents,
   weeklyReportCard,
   weeklyWindow,
 } from '../api/lark/_lib/weeklyReport'
@@ -1906,20 +1908,23 @@ async function main() {
       WEEKLY_DEMO_DAY === '2026-11-25',
     '',
   )
-  const wrDemo = buildWeeklyReport(
-    [],
+  const wrDemo = buildWeeklyDemoReport(
     Date.parse('2026-11-25T08:00:00Z'),
     'zh-Hans',
     'ou_smoke_admin',
   )
-  const wrDemoCard = weeklyReportCard(`🧪 **【DEMO】每周复盘**\n\n${wrDemo.markdown}`, wrDemo.empty)
+  const wrDemoCard = weeklyReportCard(wrDemo.markdown, wrDemo.empty)
   const wrDemoJson = JSON.stringify(wrDemoCard)
   record(
     'weekly.demo_card_zh',
-    wrDemoJson.includes('周报') &&
+    !wrDemo.empty &&
+      virtualWeeklyIncidents().length >= 5 &&
+      wrDemoJson.includes('周报') &&
+      wrDemo.markdown.includes('【DEMO】') &&
       wrDemo.markdown.includes('本周概览') &&
+      wrDemo.markdown.includes('Mark vs Index') &&
       wrDemo.markdown.includes('<at id="ou_smoke_admin"></at>'),
-    wrDemo.markdown.slice(0, 180),
+    wrDemo.markdown.slice(0, 220),
   )
 
   // 9b) Skills / knowledge catalogue cards

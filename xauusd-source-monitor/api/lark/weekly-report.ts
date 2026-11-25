@@ -9,7 +9,11 @@ import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronA
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { shanghaiDayKey } from './_lib/market.js'
 import { listIncidents } from './_lib/store.js'
-import { buildWeeklyReport, weeklyReportCard } from './_lib/weeklyReport.js'
+import {
+  buildWeeklyDemoReport,
+  buildWeeklyReport,
+  weeklyReportCard,
+} from './_lib/weeklyReport.js'
 
 /** Friday in Asia/Shanghai (0=Sun … 5=Fri). */
 function isShanghaiFriday(ts: number = Date.now()): boolean {
@@ -48,32 +52,50 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const q = req.query || {}
-  const body = (req.body || {}) as { force?: boolean; dry?: boolean; openId?: string }
+  const body = (req.body || {}) as {
+    force?: boolean
+    dry?: boolean
+    demo?: boolean
+    openId?: string
+  }
   const dry =
     String(q.dry || '') === '1' ||
     body.dry === true ||
-    (req.method === 'GET' && !cron && String(q.send || '') !== '1')
+    (req.method === 'GET' && !cron && String(q.send || '') !== '1' && String(q.demo || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
+  const demo = body.demo === true || String(q.demo || '') === '1'
 
   const now = Date.now()
   const resolvedEarly = body.openId?.trim()
     ? { openId: body.openId.trim(), source: 'request' }
     : await resolveAdminOpenId()
   const incidents = listIncidents({ status: 'all', limit: 200 })
-  const report = buildWeeklyReport(incidents, now, 'zh-Hans', resolvedEarly.openId)
+  const report = demo
+    ? buildWeeklyDemoReport(now, 'zh-Hans', resolvedEarly.openId)
+    : buildWeeklyReport(incidents, now, 'zh-Hans', resolvedEarly.openId)
   const card = weeklyReportCard(report.markdown, report.empty)
+  if (demo) {
+    const header = card.header as { template?: string; title?: { content?: string } }
+    if (header) {
+      header.template = 'orange'
+      if (header.title) header.title.content = '【DEMO】每周复盘'
+    }
+  }
 
   if (dry && !cron) {
     return res.status(200).json({
       ok: true,
       dry: true,
+      demo,
       weekKey: report.window.weekKey,
       label: report.window.label,
       count: report.incidents.length,
       empty: report.empty,
       markdown: report.markdown,
       card,
-      schedule: 'Fridays 16:00 Asia/Shanghai (cron: 0 8 * * 5 UTC)',
+      schedule: demo
+        ? 'Manual DEMO → Yan Haixiang DM (virtual incidents)'
+        : 'Fridays 16:00 Asia/Shanghai (cron: 0 8 * * 5 UTC)',
       recipient: 'Yan Haixiang',
       recipientOpenId: resolvedEarly.openId
         ? resolvedEarly.openId.slice(0, 8) + '…'
@@ -93,7 +115,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Cron schedule is Friday-only; still guard so fan-out / mistaken triggers cannot mid-week push.
-  if (cron && !force && !isShanghaiFriday(now)) {
+  // DEMO pushes are always explicit (demo=1) and skip the Friday gate.
+  if (cron && !force && !demo && !isShanghaiFriday(now)) {
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -104,7 +127,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const sent = await readSent()
-  if (!force && sent[report.window.weekKey] && cron) {
+  if (!force && !demo && sent[report.window.weekKey] && cron) {
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -128,10 +151,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await sendCardToOpenId(resolved.openId, card)
-    await markSent(report.window.weekKey)
+    // DEMO must not consume the real Friday weekly-sent slot.
+    if (!demo) await markSent(report.window.weekKey)
     return res.status(200).json({
       ok: true,
       sent: true,
+      demo,
       weekKey: report.window.weekKey,
       label: report.window.label,
       count: report.incidents.length,

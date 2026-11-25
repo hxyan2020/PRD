@@ -8,8 +8,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { larkConfigured, resolveAdminOpenId, sendCardToChat } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
-import { listIncidents } from './_lib/store.js'
-import { buildWeeklyReport, weeklyReportCard } from './_lib/weeklyReport.js'
+import { buildWeeklyDemoReport, weeklyReportCard } from './_lib/weeklyReport.js'
 import { shanghaiDayKey } from './_lib/market.js'
 import { shanghaiHm } from './_lib/oscillationAlert.js'
 
@@ -57,27 +56,15 @@ function buildDemoCard(adminOpenId?: string): {
   card: Record<string, unknown>
   empty: boolean
 } {
-  const report = buildWeeklyReport(
-    listIncidents({ status: 'all', limit: 200 }),
-    Date.now(),
-    'zh-Hans',
-    adminOpenId,
-  )
-  const intro = [
-    '🧪 **【DEMO】每周复盘**（今天东八区 16:00 演练推送）',
-    '',
-    '以下为近 7 日值班／排查汇总样例样式；正式版每周五 16:00 推送给值班。',
-    '',
-  ].join('\n')
-  const markdown = `${intro}${report.markdown}`
-  const card = weeklyReportCard(markdown, report.empty)
-  // Orange header to mark demo
+  // Virtual sample incidents — group 16:00 DEMO must not depend on empty serverless store.
+  const report = buildWeeklyDemoReport(Date.now(), 'zh-Hans', adminOpenId)
+  const card = weeklyReportCard(report.markdown, report.empty)
   const header = card.header as { template?: string; title?: { content?: string } }
   if (header) {
     header.template = 'orange'
     if (header.title) header.title.content = '【DEMO】每周复盘'
   }
-  return { markdown, card, empty: report.empty }
+  return { markdown: report.markdown, card, empty: report.empty }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

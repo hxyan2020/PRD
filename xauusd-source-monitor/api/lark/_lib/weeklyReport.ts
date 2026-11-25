@@ -98,6 +98,120 @@ export type WeeklyReportPayload = {
   empty: boolean
 }
 
+/**
+ * Synthetic week of incidents for DEMO cards (not persisted).
+ * Covers Mark/Index, Funding, LP, and source-drop style desk scenarios.
+ */
+export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
+  const day = 86_400_000
+  const mk = (
+    i: number,
+    args: {
+      title: string
+      severity: string
+      skills: string[]
+      summary: string
+      recommendations: string[]
+      status: 'open' | 'archived'
+      daysAgo: number
+    },
+  ): IncidentRecord => {
+    const t = now - args.daysAgo * day - i * 3_600_000
+    return {
+      id: `demo_wk_${i}`,
+      chatId: 'demo_chat',
+      openId: 'demo_user',
+      title: args.title,
+      facts: [args.summary],
+      severity: args.severity,
+      skills: args.skills,
+      knowledge: [],
+      summary: args.summary,
+      recommendations: args.recommendations,
+      status: args.status,
+      createdAt: t,
+      updatedAt: t + 45 * 60_000,
+      lang: 'zh-Hans',
+    }
+  }
+
+  return [
+    mk(1, {
+      title: 'Mark vs Index 偏离 48bps · IDX-01 被剔除',
+      severity: 'P0',
+      skills: ['L1-15', 'L1-13', 'L2-A'],
+      summary:
+        '指数源 IDX-01 超时后仅剩单一有效源；Mark 相对 Index 跳至 48bps，触发无有效源告警。',
+      recommendations: [
+        '核对剩余 Index 成分与权重，确认 IDX-01 剔除是否符合熔断规则',
+        '与行情／风控确认是否临时下调整合阈值直至源恢复',
+      ],
+      status: 'archived',
+      daysAgo: 1,
+    }),
+    mk(2, {
+      title: '外部 Funding 偏差超阈 · XAU-USDT-SWAP',
+      severity: 'P1',
+      skills: ['L1-16', 'L1-17', 'L2-B'],
+      summary:
+        '平台 Funding 与 OKX／Bybit 同周期差值连续 3 档超阈；Average Premium Index 同步偏高。',
+      recommendations: [
+        '比对友商结算周期与基础费率参数',
+        '确认是否需人工复核 Premium／Clamp 配置',
+      ],
+      status: 'archived',
+      daysAgo: 2,
+    }),
+    mk(3, {
+      title: 'LP 接仓失败重试堆积',
+      severity: 'P1',
+      skills: ['L1-24', 'L1-25', 'L2-E'],
+      summary: '主 LP 通道超时，备用路由接仓成功率降至 72%；风控队列出现积压告警。',
+      recommendations: [
+        '切换／限流主 LP，观察备用通道延迟与拒单率',
+        '核对 API key／IP 白名单与错误码分布',
+      ],
+      status: 'open',
+      daysAgo: 3,
+    }),
+    mk(4, {
+      title: '现货源短时断流 · Kitco／金 API',
+      severity: 'P2',
+      skills: ['L1-08', 'L1-09'],
+      summary: '现货锚点连续 2 分钟无心跳；永续 Index 仍由交易所源支撑，未触发强平异常。',
+      recommendations: ['观察源恢复后健康分是否回升', '必要时临时降低现货锚点权重'],
+      status: 'archived',
+      daysAgo: 4,
+    }),
+    mk(5, {
+      title: 'ADL 预警演练 · 模拟高杠杆拥挤',
+      severity: 'P2',
+      skills: ['L1-04', 'L1-05'],
+      summary: '演练场景：名义敞口集中度升高，ADL 队列进入观察档（未实盘触发）。',
+      recommendations: ['保留演练日志供周五复盘', '核对 ADL 阈值与通知模板'],
+      status: 'archived',
+      daysAgo: 5,
+    }),
+  ]
+}
+
+/** DEMO weekly digest: virtual incidents + orange 【DEMO】 framing. */
+export function buildWeeklyDemoReport(
+  now = Date.now(),
+  lang: Lang = 'zh-Hans',
+  adminOpenId?: string,
+): WeeklyReportPayload {
+  const report = buildWeeklyReport(virtualWeeklyIncidents(now), now, lang, adminOpenId)
+  const intro = [
+    '🧪 **【DEMO】每周复盘**（虚拟样例数据 · 非正式周报）',
+    '',
+    '以下为近 7 日值班／排查汇总**样式演练**；正式版每周五 16:00 推送给值班。',
+    '',
+  ].join('\n')
+  const markdown = `${intro}${report.markdown}`
+  return { ...report, markdown, empty: false }
+}
+
 /** Build zh-Hans weekly digest (primary audience: Yan Haixiang). */
 export function buildWeeklyReport(
   incidents: IncidentRecord[],
