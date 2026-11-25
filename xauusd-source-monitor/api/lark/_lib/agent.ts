@@ -753,17 +753,36 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   session.preferredLang = lang
   saveSession(msg.chatId, msg.openId, session)
 
-  // Tomorrow-only alert nudge —「知道了」stops the 1-min loop
+  // Tomorrow-only alert nudge —「知道了」stops;「新告警是什么」explains (not small-talk)
   {
-    const { isNudgeActiveDurable, looksLikeNudgeAck, ackAlertNudgeDurable } = await import(
-      './alertNudge.js'
-    )
+    const {
+      isNudgeActiveDurable,
+      looksLikeNudgeAck,
+      looksLikeNudgeExplainQuestion,
+      formatNudgeExplainReply,
+      ackAlertNudgeDurable,
+      loadNudgeState,
+      isCampaignDay,
+    } = await import('./alertNudge.js')
     if ((await isNudgeActiveDurable()) && looksLikeNudgeAck(workingText)) {
       const { rememberAdminOpenId } = await import('./client.js')
       rememberAdminOpenId(msg.openId, 'nudge_ack_text')
       await ackAlertNudgeDurable(msg.openId)
       return {
         card: simpleCard('已收到', '知道了 ✅ 已停止提醒。有新告警再叫我。', 'green'),
+      }
+    }
+    if (looksLikeNudgeExplainQuestion(workingText)) {
+      const st = await loadNudgeState()
+      const explainToday = isCampaignDay() || Boolean(st?.dayKey)
+      if (explainToday || (await isNudgeActiveDurable())) {
+        return {
+          card: simpleCard(
+            lang === 'zh-Hans' || lang === 'zh-Hant' ? '关于「新告警」提醒' : 'About the alert nudge',
+            formatNudgeExplainReply(lang, st),
+            'orange',
+          ),
+        }
       }
     }
   }

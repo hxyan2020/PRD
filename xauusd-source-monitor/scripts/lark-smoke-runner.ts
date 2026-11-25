@@ -1250,6 +1250,16 @@ async function main() {
     nudgeJson.slice(0, 220),
   )
   record('nudge.ack_text', looksLikeNudgeAck('知道了') && !looksLikeNudgeAck('行情'), '')
+  const { looksLikeNudgeExplainQuestion, formatNudgeExplainReply } = await import(
+    '../api/lark/_lib/alertNudge'
+  )
+  record(
+    'nudge.explain_question',
+    looksLikeNudgeExplainQuestion('新警告是什么') &&
+      looksLikeNudgeExplainQuestion('@bot 新告警是什么') &&
+      !looksLikeNudgeExplainQuestion('行情怎么样'),
+    '',
+  )
   writeNudgeState({
     dayKey: '2026-11-25',
     chatId: 'oc_smoke',
@@ -1259,6 +1269,23 @@ async function main() {
     acked: false,
     sendCount: 2,
   })
+  const explain = formatNudgeExplainReply('zh-Hans', {
+    dayKey: '2026-11-25',
+    chatId: 'oc_smoke',
+    openId: 'ou_smoke',
+    message: ALERT_NUDGE_MESSAGE,
+    active: true,
+    acked: false,
+    sendCount: 2,
+  })
+  record(
+    'nudge.explain_answers_what',
+    explain.includes('不是') &&
+      explain.includes('DEMO') &&
+      explain.includes('知道了') &&
+      !explain.includes('闲聊也陪'),
+    explain.slice(0, 180),
+  )
   record('nudge.active_while_looping', isNudgeActive(), '')
   const acked = ackAlertNudge('ou_smoke')
   record(
