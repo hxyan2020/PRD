@@ -2,11 +2,9 @@
  * GET/POST /api/lark/market-report
  * - Vercel Cron every 30 minutes → DM Yan Haixiang a market scan card.
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
+ * - Not listed in greeting / capabilities — private desk push only.
  */
 import { timingSafeEqual } from 'node:crypto'
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import {
   larkConfigured,
@@ -14,6 +12,7 @@ import {
   sendCardToChat,
   sendCardToOpenId,
 } from './_lib/client.js'
+import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   buildMarketCard,
   fetchMarketSnapshot,
@@ -42,8 +41,7 @@ export const config = {
   maxDuration: 60,
 }
 
-const MARK_DIR = join(tmpdir(), 've-lark-store')
-const SENT_FILE = join(MARK_DIR, 'market-halfhour-sent.json')
+const SENT_NAME = 'market-halfhour-sent.json'
 
 function safeEqual(a: string, b: string) {
   const aa = Buffer.from(a, 'utf8')
@@ -67,29 +65,18 @@ function isVercelCron(req: VercelRequest): boolean {
   return String(req.headers['x-vercel-cron'] || '') === '1'
 }
 
-function readSent(): Record<string, number> {
-  try {
-    if (!existsSync(SENT_FILE)) return {}
-    return JSON.parse(readFileSync(SENT_FILE, 'utf8')) as Record<string, number>
-  } catch {
-    return {}
-  }
+async function readSent(): Promise<Record<string, number>> {
+  return (await readDurableJson<Record<string, number>>(SENT_NAME)) || {}
 }
 
-function markSent(slotKey: string) {
-  try {
-    if (!existsSync(MARK_DIR)) mkdirSync(MARK_DIR, { recursive: true })
-    const map = readSent()
-    // Keep last ~48 hours of keys only
-    const cutoff = Date.now() - 48 * 3600_000
-    for (const [k, ts] of Object.entries(map)) {
-      if (typeof ts === 'number' && ts < cutoff) delete map[k]
-    }
-    map[slotKey] = Date.now()
-    writeFileSync(SENT_FILE, JSON.stringify(map))
-  } catch {
-    /* ignore */
+async function markSent(slotKey: string) {
+  const map = await readSent()
+  const cutoff = Date.now() - 48 * 3600_000
+  for (const [k, ts] of Object.entries(map)) {
+    if (typeof ts === 'number' && ts < cutoff) delete map[k]
   }
+  map[slotKey] = Date.now()
+  await writeDurableJson(SENT_NAME, map)
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -136,10 +123,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     markdown = formatMarketAnswer(snap, marketLang, qLabel)
     const intro =
       marketLang === 'en'
-        ? '📬 **Scheduled hourly market push**\n'
+        ? '📬 **Half-hourly market push**\n'
         : marketLang === 'zh-Hant'
-          ? '📬 **定時行情推送**\n'
-          : '📬 **定时行情推送**\n'
+          ? '📬 **半小時行情推送**\n'
+          : '📬 **半小时行情推送**\n'
     card = await buildMarketCard({
       title: hourlyMarketTitle(marketLang),
       snap,
@@ -181,7 +168,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  const sent = readSent()
+  const sent = await readSent()
   // Idempotent for cron and manual — only force=true re-pushes the same slot.
   if (!force && sent[slotKey]) {
     return res.status(200).json({
@@ -197,7 +184,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Prefer chat_id (oc_…) DM/group; fall back to open_id if chat send fails and open_id is known
   try {
     await sendCardToChat(chat.chatId, card)
-    markSent(slotKey)
+    await markSent(slotKey)
     return res.status(200).json({
       ok: true,
       sent: true,
@@ -221,7 +208,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     try {
       await sendCardToOpenId(resolved.openId, card)
-      markSent(slotKey)
+      await markSent(slotKey)
       return res.status(200).json({
         ok: true,
         sent: true,

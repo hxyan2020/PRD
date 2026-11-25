@@ -21,6 +21,7 @@ import {
   east8Hour,
   greetingOpenForHour,
   greetingReply,
+  helpReply,
   isCasualBanter,
   isCasualChat,
   isDeskFaqQuestion,
@@ -679,8 +680,9 @@ async function main() {
   const cronAsk = cronMetaFn('zh-Hans', '现在你有多少 cron') || ''
   record(
     'chat.cron_count_self_answer',
-    cronAsk.includes('**5**') &&
+    cronAsk.includes('**6**') &&
       cronAsk.includes('daily-market-report') &&
+      cronAsk.includes('market-report') &&
       !cronAsk.includes('没拉到可用条目') &&
       !cronAsk.includes('贴告警'),
     cronAsk.slice(0, 200),
@@ -702,8 +704,8 @@ async function main() {
   record(
     'turn.cron_count_chatty',
     Boolean(cronTurn.reply?.card) &&
-      cronTurn.blob.includes('5') &&
-      /早报|cron|09:00/i.test(cronTurn.blob) &&
+      cronTurn.blob.includes('6') &&
+      /早报|cron|09:00|半小时|market-report/i.test(cronTurn.blob) &&
       !cronTurn.blob.includes('没拉到可用条目') &&
       !cronTurn.blob.includes('贴告警让我帮你排查'),
     cronTurn.blob.slice(0, 280),
@@ -1455,11 +1457,26 @@ async function main() {
     ),
   ) as { crons?: { path?: string; schedule?: string }[] }
   record(
-    'cron.no_half_hour_market',
-    !(vercelCrons.crons || []).some(
-      (c) => (c.path || '').includes('/market-report') && (c.schedule || '').includes('*/30'),
+    'cron.half_hour_market_restored',
+    (vercelCrons.crons || []).some(
+      (c) =>
+        (c.path || '').includes('/api/lark/market-report') &&
+        (c.schedule || '').includes('*/30'),
     ),
     JSON.stringify((vercelCrons.crons || []).map((c) => `${c.path}:${c.schedule}`)),
+  )
+  const greetZhHalf = greetingReply('zh-Hans')
+  const helpZhHalf = helpReply('zh-Hans')
+  const capsZhHalf = (await import('../api/lark/_lib/scope')).botCapabilitiesReply(
+    'zh-Hans',
+    '你有什么技能',
+  ) || ''
+  record(
+    'cron.half_hour_not_in_greeting_features',
+    !/半小时|半小時|每\s*30\s*分钟|every\s*30\s*min|half-?hourly/i.test(greetZhHalf) &&
+      !/半小时|半小時|每\s*30\s*分钟|half-?hourly/i.test(helpZhHalf) &&
+      !/半小时|半小時|每\s*30\s*分钟|half-?hourly|小时扫报|小時掃報/i.test(capsZhHalf),
+    '',
   )
   const dailyCron = (vercelCrons.crons || []).find((c) =>
     (c.path || '').includes('daily-market-report'),
