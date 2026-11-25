@@ -1340,6 +1340,25 @@ async function main() {
       ? `bad=${jsonApiCite.slice(0, 3).join(' | ')}`
       : citeUrls.slice(0, 4).join(' | '),
   )
+  const catalogIds = (liveSnap.hourly?.sources || []).map((s) => s.id)
+  record(
+    'market.catalog_covers_crypto_finance_macro',
+    catalogIds.includes('coindesk-markets') &&
+      catalogIds.includes('theblock-news') &&
+      catalogIds.includes('cointelegraph-markets') &&
+      catalogIds.includes('reuters-markets') &&
+      catalogIds.includes('bloomberg-markets') &&
+      catalogIds.includes('ft-markets') &&
+      catalogIds.includes('ecb-press') &&
+      catalogIds.includes('ustreasury-press') &&
+      catalogIds.includes('imf-news') &&
+      catalogIds.includes('bls-cpi') &&
+      catalogIds.includes('wgc-news') &&
+      catalogIds.includes('fed-press-json'),
+    catalogIds.filter((id) =>
+      /coindesk|theblock|cointelegraph|reuters|bloomberg|ecb|treasury|imf|bls|wgc|fed/i.test(id),
+    ).join(','),
+  )
   const logoCard = await buildMarketCard({
     title: '小时行情扫报',
     snap: liveSnap,

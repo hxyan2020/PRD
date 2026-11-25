@@ -227,6 +227,20 @@ export function citeFallbackUrl(url: string, id = ''): string | null {
   if (/federalreserve\.gov/i.test(u)) {
     return 'https://www.federalreserve.gov/newsevents/pressreleases.htm'
   }
+  if (/ecb\.europa\.eu/i.test(u)) return 'https://www.ecb.europa.eu/press/pr/html/index.en.html'
+  if (/treasury\.gov/i.test(u)) return 'https://home.treasury.gov/news/press-releases'
+  if (/imf\.org/i.test(u)) return 'https://www.imf.org/en/News'
+  if (/bis\.org/i.test(u)) return 'https://www.bis.org/'
+  if (/bls\.gov/i.test(u)) return 'https://www.bls.gov/'
+  if (/coindesk\.com/i.test(u)) return 'https://www.coindesk.com/markets/'
+  if (/theblock\.co/i.test(u)) return 'https://www.theblock.co/latest'
+  if (/cointelegraph\.com/i.test(u)) return 'https://cointelegraph.com/tags/markets'
+  if (/decrypt\.co/i.test(u)) return 'https://decrypt.co/news'
+  if (/gold\.org/i.test(u)) return 'https://www.gold.org/goldhub'
+  if (/caixinglobal\.com/i.test(u)) return 'https://www.caixinglobal.com/'
+  if (/fred\.stlouisfed\.org|stlouisfed\.org/i.test(u)) {
+    return 'https://fred.stlouisfed.org/'
+  }
   if (/tradingview\.com/i.test(u) && /BINANCE/i.test(u)) return BINANCE_KLINE_URL
   if (/tradingview\.com/i.test(u)) return OKX_KLINE_URL
   return null
@@ -457,7 +471,14 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionEn: 'Bitget announcements / notices',
     captionZh: 'Bitget 公告／通知',
   },
-  // —— Major news outlets (gold / macro) ——
+  // —— Major news: finance / commodities (authoritative desks) ——
+  {
+    id: 'reuters-markets',
+    kind: 'news',
+    url: 'https://www.reuters.com/markets/',
+    captionEn: 'Reuters: Markets',
+    captionZh: '路透：市場',
+  },
   {
     id: 'reuters-gold',
     kind: 'news',
@@ -466,11 +487,25 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: '路透：大宗商品／市場',
   },
   {
+    id: 'bloomberg-markets',
+    kind: 'news',
+    url: 'https://www.bloomberg.com/markets',
+    captionEn: 'Bloomberg: Markets',
+    captionZh: '彭博：市場',
+  },
+  {
     id: 'bloomberg-gold',
     kind: 'news',
     url: 'https://www.bloomberg.com/markets/commodities',
     captionEn: 'Bloomberg: Commodities',
     captionZh: '彭博：大宗商品',
+  },
+  {
+    id: 'cnbc-markets',
+    kind: 'news',
+    url: 'https://www.cnbc.com/markets/',
+    captionEn: 'CNBC: Markets',
+    captionZh: 'CNBC：市場',
   },
   {
     id: 'cnbc-gold',
@@ -487,11 +522,39 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: '華爾街日報：市場',
   },
   {
+    id: 'ft-markets',
+    kind: 'news',
+    url: 'https://www.ft.com/markets',
+    captionEn: 'Financial Times: Markets',
+    captionZh: '金融時報：市場',
+  },
+  {
     id: 'ft-commodities',
     kind: 'news',
     url: 'https://www.ft.com/commodities',
     captionEn: 'Financial Times: Commodities',
     captionZh: '金融時報：大宗商品',
+  },
+  {
+    id: 'ap-business',
+    kind: 'news',
+    url: 'https://apnews.com/business',
+    captionEn: 'AP News: Business',
+    captionZh: '美联社：商业／财经',
+  },
+  {
+    id: 'nikkei-asia-markets',
+    kind: 'news',
+    url: 'https://asia.nikkei.com/Business/Markets',
+    captionEn: 'Nikkei Asia: Markets',
+    captionZh: '日经亚洲：市场',
+  },
+  {
+    id: 'caixin-global',
+    kind: 'news',
+    url: 'https://www.caixinglobal.com/',
+    captionEn: 'Caixin Global: China finance / macro',
+    captionZh: '财新国际：中国财经／宏观',
   },
   {
     id: 'marketwatch-gold',
@@ -513,6 +576,127 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     url: 'https://www.kitco.com/news/category/metals',
     captionEn: 'Kitco: Metals news desk',
     captionZh: 'Kitco：金屬新聞台',
+  },
+  // —— Crypto desks (authoritative coin-circle coverage) ——
+  {
+    id: 'coindesk-markets',
+    kind: 'news',
+    url: 'https://www.coindesk.com/markets/',
+    captionEn: 'CoinDesk: Markets',
+    captionZh: 'CoinDesk：加密市场',
+  },
+  {
+    id: 'coindesk-policy',
+    kind: 'news',
+    url: 'https://www.coindesk.com/policy/',
+    captionEn: 'CoinDesk: Policy / regulation',
+    captionZh: 'CoinDesk：政策／监管',
+  },
+  {
+    id: 'theblock-news',
+    kind: 'news',
+    url: 'https://www.theblock.co/latest',
+    captionEn: 'The Block: Latest crypto news',
+    captionZh: 'The Block：加密新闻',
+  },
+  {
+    id: 'cointelegraph-markets',
+    kind: 'news',
+    url: 'https://cointelegraph.com/tags/markets',
+    captionEn: 'Cointelegraph: Markets',
+    captionZh: 'Cointelegraph：市场',
+  },
+  {
+    id: 'decrypt-news',
+    kind: 'news',
+    url: 'https://decrypt.co/news',
+    captionEn: 'Decrypt: Crypto news',
+    captionZh: 'Decrypt：加密新闻',
+  },
+  {
+    id: 'binance-research',
+    kind: 'news',
+    url: 'https://www.binance.com/en/research',
+    captionEn: 'Binance Research',
+    captionZh: 'Binance Research 研报',
+  },
+  {
+    id: 'coinmarketcap-news',
+    kind: 'news',
+    url: 'https://coinmarketcap.com/headlines/news/',
+    captionEn: 'CoinMarketCap: News headlines',
+    captionZh: 'CoinMarketCap：新闻头条',
+  },
+  // —— Macro / official institutions ——
+  {
+    id: 'ecb-press',
+    kind: 'announcement',
+    url: 'https://www.ecb.europa.eu/press/pr/html/index.en.html',
+    captionEn: 'ECB: Press releases',
+    captionZh: '欧洲央行：新闻稿',
+  },
+  {
+    id: 'ecb-monetary',
+    kind: 'macro',
+    url: 'https://www.ecb.europa.eu/press/press_conference/html/index.en.html',
+    captionEn: 'ECB: Monetary policy press conferences',
+    captionZh: '欧洲央行：货币政策记者会',
+  },
+  {
+    id: 'ustreasury-press',
+    kind: 'announcement',
+    url: 'https://home.treasury.gov/news/press-releases',
+    captionEn: 'US Treasury: Press releases',
+    captionZh: '美国财政部：新闻稿',
+  },
+  {
+    id: 'bls-cpi',
+    kind: 'macro',
+    url: 'https://www.bls.gov/cpi/',
+    captionEn: 'BLS: Consumer Price Index (CPI)',
+    captionZh: '美国劳工统计局：CPI 通胀',
+  },
+  {
+    id: 'bea-gdp',
+    kind: 'macro',
+    url: 'https://www.bea.gov/data/gdp/gross-domestic-product',
+    captionEn: 'BEA: US GDP',
+    captionZh: '美国经济分析局：GDP',
+  },
+  {
+    id: 'imf-news',
+    kind: 'macro',
+    url: 'https://www.imf.org/en/News',
+    captionEn: 'IMF: News',
+    captionZh: '国际货币基金组织：新闻',
+  },
+  {
+    id: 'bis-speeches',
+    kind: 'macro',
+    url: 'https://www.bis.org/',
+    captionEn: 'BIS: Bank for International Settlements',
+    captionZh: '国际清算银行（BIS）',
+  },
+  {
+    id: 'worldbank-news',
+    kind: 'macro',
+    url: 'https://www.worldbank.org/en/news',
+    captionEn: 'World Bank: News',
+    captionZh: '世界银行：新闻',
+  },
+  {
+    id: 'wgc-news',
+    kind: 'news',
+    url: 'https://www.gold.org/goldhub/gold-focus',
+    captionEn: 'World Gold Council: Gold Focus',
+    captionZh: '世界黄金协会：Gold Focus',
+  },
+  {
+    id: 'fred-home',
+    kind: 'macro',
+    url: 'https://fred.stlouisfed.org/',
+    captionEn: 'FRED: St. Louis Fed economic data',
+    captionZh: 'FRED：圣路易斯联储经济数据',
   },
   {
     id: 'kitco-survey',
@@ -659,6 +843,27 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     captionZh: 'KOL · X：Raoul Pal／Real Vision（@RaoulGMI）',
   },
   {
+    id: 'kol-x-coindesk',
+    kind: 'social',
+    url: 'https://x.com/CoinDesk',
+    captionEn: 'KOL · X: CoinDesk (@CoinDesk)',
+    captionZh: 'KOL · X：CoinDesk（@CoinDesk）',
+  },
+  {
+    id: 'kol-x-theblock',
+    kind: 'social',
+    url: 'https://x.com/TheBlock__',
+    captionEn: 'KOL · X: The Block (@TheBlock__)',
+    captionZh: 'KOL · X：The Block（@TheBlock__）',
+  },
+  {
+    id: 'kol-x-wublockchain',
+    kind: 'social',
+    url: 'https://x.com/WuBlockchain',
+    captionEn: 'KOL · X: Wu Blockchain (@WuBlockchain)',
+    captionZh: 'KOL · X：吴说区块链（@WuBlockchain）',
+  },
+  {
     id: 'kol-x-adambutton',
     kind: 'social',
     url: 'https://x.com/AdamButton',
@@ -725,6 +930,17 @@ function domainOf(url: string): string {
     if (host.includes('gold-api.com')) return 'gold-api.com'
     if (host.includes('reuters.com')) return 'reuters.com'
     if (host.includes('bloomberg.com')) return 'bloomberg.com'
+    if (host.includes('coindesk.com')) return 'coindesk.com'
+    if (host.includes('theblock.co')) return 'theblock.co'
+    if (host.includes('cointelegraph.com')) return 'cointelegraph.com'
+    if (host.includes('ecb.europa.eu')) return 'ecb.europa.eu'
+    if (host.includes('treasury.gov')) return 'treasury.gov'
+    if (host.includes('imf.org')) return 'imf.org'
+    if (host.includes('bis.org')) return 'bis.org'
+    if (host.includes('gold.org')) return 'gold.org'
+    if (host.includes('stlouisfed.org') || host.includes('fred.stlouisfed.org')) {
+      return 'fred.stlouisfed.org'
+    }
     if (host.includes('cnbc.com')) return 'cnbc.com'
     if (host.includes('kitco.com')) return 'kitco.com'
     if (host.includes('cmegroup.com')) return 'cmegroup.com'
