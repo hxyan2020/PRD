@@ -1,11 +1,15 @@
 /**
  * Durable JSON across Vercel serverless instances via Blob.
  * Falls back to /tmp when BLOB_READ_WRITE_TOKEN is missing (local/smoke).
+ *
+ * Store may be private — put/get must use access:'private' + token auth.
+ * Public put fails on private stores and was silently dropping ack state
+ * (card「知道了」looked OK on one instance while cron kept firing).
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { list, put } from '@vercel/blob'
+import { get, list, put } from '@vercel/blob'
 
 const TMP_DIR = join(tmpdir(), 've-lark-store')
 
@@ -44,16 +48,35 @@ function blobPathname(name: string): string {
   return `ve-lark-durable/${name}`
 }
 
+async function readFromBlobUrl<T>(url: string, token: string): Promise<T | null> {
+  const res = await fetch(url, {
+    cache: 'no-store',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) return null
+  return (await res.json()) as T
+}
+
 export async function readDurableJson<T>(name: string): Promise<T | null> {
   const token = blobToken()
   if (token) {
     try {
+      const result = await get(blobPathname(name), { access: 'private', token })
+      if (result?.statusCode === 200 && result.stream) {
+        const text = await new Response(result.stream).text()
+        const data = JSON.parse(text) as T
+        writeTmpJson(name, data)
+        return data
+      }
+    } catch {
+      /* try list + authed fetch */
+    }
+    try {
       const { blobs } = await list({ prefix: blobPathname(name), token, limit: 5 })
       const hit = blobs.find((b) => b.pathname === blobPathname(name)) || blobs[0]
       if (hit?.url) {
-        const res = await fetch(hit.url, { cache: 'no-store' })
-        if (res.ok) {
-          const data = (await res.json()) as T
+        const data = await readFromBlobUrl<T>(hit.url, token)
+        if (data != null) {
           writeTmpJson(name, data)
           return data
         }
@@ -69,15 +92,26 @@ export async function writeDurableJson(name: string, value: unknown): Promise<vo
   writeTmpJson(name, value)
   const token = blobToken()
   if (!token) return
+  const body = JSON.stringify(value)
+  const base = {
+    addRandomSuffix: false as const,
+    allowOverwrite: true as const,
+    contentType: 'application/json',
+    token,
+  }
   try {
-    await put(blobPathname(name), JSON.stringify(value), {
-      access: 'public',
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: 'application/json',
-      token,
-    })
-  } catch {
-    /* keep tmp copy */
+    await put(blobPathname(name), body, { ...base, access: 'private' })
+    return
+  } catch (privateErr) {
+    try {
+      await put(blobPathname(name), body, { ...base, access: 'public' })
+      return
+    } catch {
+      console.error(
+        '[durableJson] blob write failed',
+        name,
+        privateErr instanceof Error ? privateErr.message : privateErr,
+      )
+    }
   }
 }

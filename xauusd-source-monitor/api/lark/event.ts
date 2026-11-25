@@ -136,6 +136,55 @@ async function handleCardActionRequest(
       toast: { type: 'info', content: 'Already handled' },
     })
   }
+
+  // Nudge「知道了」must durable-ack BEFORE toast — waitUntil alone raced cron
+  // when Blob writes failed silently and state lived only in /tmp.
+  const isNudgeAck = String(value.action || '') === 'alert_nudge_ack'
+  if (isNudgeAck) {
+    try {
+      const reply = await handleCardAction({
+        openId,
+        chatId,
+        messageId,
+        value,
+      })
+      if (messageId || chatId) {
+        waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
+      }
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        openId,
+        chatId,
+        messageId,
+        result: 'ok:nudge_ack_sync',
+      })
+      return res.status(200).json({
+        toast: {
+          type: 'success',
+          content: 'Stopped',
+          i18n: { zh_cn: '已停止提醒', zh_hk: '已停止提醒', en_us: 'Stopped' },
+        },
+      })
+    } catch (e) {
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        error: e instanceof Error ? e.message : 'nudge ack error',
+        result: 'error',
+      })
+      return res.status(200).json({
+        toast: {
+          type: 'error',
+          content: 'Stop failed',
+          i18n: { zh_cn: '停止失败，请回复：知道了', zh_hk: '停止失敗，請回覆：知道了', en_us: 'Reply 知道了' },
+        },
+      })
+    }
+  }
+
   waitUntil(
     (async () => {
       const typing = startTypingSession(messageId)

@@ -1286,6 +1286,20 @@ async function main() {
       !explain.includes('闲聊也陪'),
     explain.slice(0, 180),
   )
+  // Private Blob must round-trip ack — public put silently failed and cron kept firing
+  {
+    const { readDurableJson, writeDurableJson } = await import('../api/lark/_lib/durableJson')
+    const probeName = 'smoke-durable-probe.json'
+    const payload = { t: Date.now(), ack: true, kind: 'smoke' }
+    await writeDurableJson(probeName, payload)
+    const got = await readDurableJson<{ t: number; ack: boolean; kind: string }>(probeName)
+    const hasBlob = Boolean((process.env.BLOB_READ_WRITE_TOKEN || '').trim())
+    record(
+      'durable.private_blob_roundtrip',
+      hasBlob ? Boolean(got && got.ack === true && got.kind === 'smoke') : true,
+      hasBlob ? JSON.stringify(got).slice(0, 120) : 'skip:no_token',
+    )
+  }
   record('nudge.active_while_looping', isNudgeActive(), '')
   const acked = ackAlertNudge('ou_smoke')
   record(
