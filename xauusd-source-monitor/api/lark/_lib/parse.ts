@@ -101,6 +101,18 @@ export function extractShareHint(contentJson: string, messageType: string): stri
   return `[share:${messageType}]`
 }
 
+/** True when this mention targets our bot (open_id or known display name). */
+export function mentionIsOurBot(
+  m: { id?: { open_id?: string }; name?: string; key?: string },
+  botOpenId: string = (process.env.LARK_BOT_OPEN_ID || '').trim(),
+): boolean {
+  const oid = (m.id?.open_id || '').trim()
+  if (botOpenId) return Boolean(oid && oid === botOpenId)
+  const name = String(m.name || '').trim()
+  if (!name) return false
+  return /VE\s*AI|风控小助手|Risk\s*Copilot|vex.?llm.?proxy/i.test(name)
+}
+
 export function parseIncomingEvent(event: Record<string, unknown>): IncomingMessage | null {
   const message = event.message as Record<string, unknown> | undefined
   const sender = event.sender as Record<string, unknown> | undefined
@@ -123,13 +135,9 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
 
   const rawContent = String(message.content || '')
   const mentions = (message.mentions || []) as { id?: { open_id?: string }; name?: string; key?: string }[]
-  // Precise match when bot open_id known (env or caller-injected); else any @mention key.
-  const mentionedBot =
-    mentions.some((m) => {
-      if (botOpenId && m.id?.open_id === botOpenId) return true
-      // Soft match: any @ in the message (typical when ops @ the bot in a group)
-      return Boolean(m.key)
-    }) || false
+  // Groups must @ *this* bot — @another human must NOT trigger a reply.
+  // When LARK_BOT_OPEN_ID is unset, soft-match known bot display names only (never "any @").
+  const mentionedBot = mentions.some((m) => mentionIsOurBot(m, botOpenId))
 
   let text = ''
   let imageKey: string | undefined
@@ -182,7 +190,7 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
 export function shouldRespond(msg: IncomingMessage): boolean {
   // Always respond in DM
   if (msg.chatType === 'p2p') return true
-  // Groups: only when @mentioned (or explicit mention config soft-match)
+  // Groups: only when @ our bot (not @another person)
   if (msg.mentionedBot) return true
   // If LARK_REPLY_ALL_GROUP=1, respond to all (ops override)
   if (process.env.LARK_REPLY_ALL_GROUP === '1') return true

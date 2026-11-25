@@ -353,6 +353,8 @@ async function main() {
     Boolean(groupNoMention && !shouldRespond(groupNoMention)),
     '',
   )
+  const prevBotOid = process.env.LARK_BOT_OPEN_ID
+  process.env.LARK_BOT_OPEN_ID = 'ou_bot'
   const groupMention = parseIncomingEvent({
     message: {
       message_id: 'm2',
@@ -360,7 +362,7 @@ async function main() {
       chat_type: 'group',
       message_type: 'text',
       content: JSON.stringify({ text: '@_user_1 help' }),
-      mentions: [{ key: '@_user_1', id: { open_id: 'ou_bot' }, name: 'bot' }],
+      mentions: [{ key: '@_user_1', id: { open_id: 'ou_bot' }, name: 'VE AI 风控小助手' }],
     },
     sender: { sender_id: { open_id: 'u1' } },
   })
@@ -369,6 +371,30 @@ async function main() {
     Boolean(groupMention && shouldRespond(groupMention)),
     '',
   )
+  // @another human must not wake the bot (the bug in the screenshot)
+  const groupOtherMention = parseIncomingEvent({
+    message: {
+      message_id: 'm2b',
+      chat_id: 'c1',
+      chat_type: 'group',
+      message_type: 'text',
+      content: JSON.stringify({
+        text: '@_user_1 稍等一下 我把 investigate 路径关闭了测试它自然语言对话功能',
+      }),
+      mentions: [{ key: '@_user_1', id: { open_id: 'ou_someone_else' }, name: 'Yi Long Saw' }],
+    },
+    sender: { sender_id: { open_id: 'u1' } },
+  })
+  record(
+    'parse.group_other_at_skip',
+    Boolean(groupOtherMention && !groupOtherMention.mentionedBot && !shouldRespond(groupOtherMention)),
+    JSON.stringify({
+      mentionedBot: groupOtherMention?.mentionedBot,
+      respond: groupOtherMention ? shouldRespond(groupOtherMention) : null,
+    }),
+  )
+  if (prevBotOid === undefined) delete process.env.LARK_BOT_OPEN_ID
+  else process.env.LARK_BOT_OPEN_ID = prevBotOid
   const dm = parseIncomingEvent({
     message: {
       message_id: 'm3',

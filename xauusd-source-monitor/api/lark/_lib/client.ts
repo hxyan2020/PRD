@@ -553,7 +553,7 @@ export async function resolveBotOpenId(): Promise<string> {
       return info.openId
     }
   } catch {
-    /* soft-fail — parse.ts falls back to any @mention */
+    /* soft-fail — parse.ts falls back to bot display-name match */
   }
   return ''
 }

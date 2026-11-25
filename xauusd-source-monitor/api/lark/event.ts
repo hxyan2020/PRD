@@ -305,11 +305,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  // Warm bot open_id cache (non-blocking best-effort) so group @ matching improves after first events
-  if (larkConfigured() && !process.env.LARK_BOT_OPEN_ID) {
-    void resolveBotOpenId().then((id) => {
+  // Resolve bot open_id before parse so group @ matching is precise (not "any @").
+  if (larkConfigured()) {
+    try {
+      const id = await resolveBotOpenId()
       if (id) process.env.LARK_BOT_OPEN_ID = id
-    })
+    } catch {
+      /* soft-fail — parse falls back to bot display-name match */
+    }
   }
 
   // URL verification (challenge)
