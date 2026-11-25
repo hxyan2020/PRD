@@ -1371,10 +1371,20 @@ async function main() {
       'market.kline_tf_callback_acks_under_3s',
       eventSrc.includes('200341') &&
         eventSrc.includes('kline_tf_async') &&
+        eventSrc.includes('updateCardByCallbackToken') &&
         /正在切换到|Switching to/.test(eventSrc) &&
-        /isKlineTf[\s\S]{0,300}?waitUntil\([\s\S]{0,200}?await handleCardAction/.test(eventSrc) &&
-        /isKlineTf[\s\S]{0,2500}?return res\.status\(200\)\.json\(\{\s*\n\s*toast:/.test(eventSrc),
-      'toast-first + waitUntil updateMessageCard',
+        /isKlineTf[\s\S]{0,500}?waitUntil\([\s\S]{0,800}?await handleCardAction/.test(eventSrc) &&
+        /isKlineTf[\s\S]{0,4000}?return res\.status\(200\)\.json\(\{\s*\n\s*toast:/.test(eventSrc),
+      'toast-first + waitUntil updateCardByCallbackToken',
+    )
+    const clientSrc = await import('node:fs').then((fs) =>
+      fs.promises.readFile(new URL('../api/lark/_lib/client.ts', import.meta.url), 'utf8'),
+    )
+    record(
+      'market.kline_tf_uses_callback_token_api',
+      clientSrc.includes('updateCardByCallbackToken') &&
+        clientSrc.includes('/open-apis/interactive/v1/card/update'),
+      'delayed update via callback token',
     )
   }
   if (hasKlineBars) {
@@ -1922,8 +1932,16 @@ async function main() {
       greetLater.includes('Yan Haixiang') &&
       greetLater.includes('UAT') &&
       !greetLater.includes('截图欢迎直接丢过来') &&
-      !greetLater.includes('**market**'),
+      !greetLater.includes('**market**') &&
+      !greetLater.includes('**完成**'),
     greetLater.slice(0, 120),
+  )
+  record(
+    'greeting.no_done_archive_line',
+    !greetingReply('zh-Hans').includes('**完成**') &&
+      !greetingReply('zh-Hant').includes('**完成**') &&
+      !greetingReply('en').includes('**done**'),
+    'archive keyword kept as command; not listed in greeting',
   )
   const slotA = shanghaiHalfHourKey(Date.parse('2026-11-24T12:05:00Z')) // 20:05 CST → 20:00
   const slotB = shanghaiHalfHourKey(Date.parse('2026-11-24T12:35:00Z')) // 20:35 CST → 20:30

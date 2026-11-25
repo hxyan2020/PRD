@@ -217,6 +217,40 @@ export async function updateMessageCard(
 }
 
 /**
+ * Delayed card update after a card.action.trigger toast ack.
+ * Must use the callback `token` (valid ~30 min, ≤2 uses) — message PUT often
+ * fails or gets reverted for interaction callbacks (Feishu delayed-update API).
+ * Call only AFTER responding HTTP 200 to the callback.
+ */
+export async function updateCardByCallbackToken(
+  callbackToken: string,
+  card: Record<string, unknown>,
+  opts?: { openIds?: string[] },
+): Promise<void> {
+  const token = (callbackToken || '').trim()
+  if (!token) throw new Error('card callback token missing')
+  const cleaned = plainCard(card)
+  const config = {
+    ...((cleaned.config as Record<string, unknown> | undefined) || {}),
+    // Shared update so TF switch refreshes for all viewers; avoids open_ids requirement.
+    update_multi: true,
+  }
+  const payload: Record<string, unknown> = {
+    ...cleaned,
+    config,
+  }
+  const openIds = (opts?.openIds || []).map((id) => id.trim()).filter((id) => id.startsWith('ou_'))
+  // Exclusive cards (update_multi false) require open_ids; we force shared above.
+  if (openIds.length && config.update_multi === false) {
+    payload.open_ids = openIds
+  }
+  await larkFetch('/open-apis/interactive/v1/card/update', {
+    method: 'POST',
+    body: JSON.stringify({ token, card: payload }),
+  })
+}
+
+/**
  * Real Feishu @mention for lark_md cards. Plain `**@Name**` does not notify.
  * Only emits `<at id>` for real open_id values (ou_…).
  */
