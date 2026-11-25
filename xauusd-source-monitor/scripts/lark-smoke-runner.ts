@@ -2551,10 +2551,29 @@ async function main() {
       tokenUsageSrc.includes('TOKEN_USAGE_START_HM') &&
       tokenUsageSrc.includes('18:00') &&
       tokenUsageSrc.includes("touchCronHeartbeat('/api/lark/token-usage-report'") &&
+      tokenUsageSrc.includes('sendCardToChat') &&
+      tokenUsageSrc.includes('resolveAdminChatId') &&
       cronHealthLibSrc.includes('token-usage-report') &&
       cronTickSrc.includes('/api/lark/token-usage-report'),
     'daily 18:00 SGT → Yan DM + cron-tick + health',
   )
+  {
+    const clientSrc = await (await import('node:fs/promises')).readFile(
+      new URL('../api/lark/_lib/client.ts', import.meta.url),
+      'utf8',
+    )
+    const eventSrc = await (await import('node:fs/promises')).readFile(
+      new URL('../api/lark/event.ts', import.meta.url),
+      'utf8',
+    )
+    record(
+      'cron.learn_admin_from_p2p',
+      clientSrc.includes('learnAdminFromInbound') &&
+        clientSrc.includes('resolveAdminChatId') &&
+        eventSrc.includes('learnAdminFromInbound'),
+      'inbound p2p seeds Yan chat/open id for cron DMs',
+    )
+  }
   record(
     'cron.all_handlers_self_heartbeat',
     marketSrc.includes("touchCronHeartbeat('/api/lark/market-report'") &&

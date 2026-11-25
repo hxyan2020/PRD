@@ -24,6 +24,7 @@ import {
   larkConfigured,
   looksLikeAdminName,
   probeLarkConnection,
+  learnAdminFromInbound,
   rememberAdminOpenId,
   resolveBotOpenId,
   verifyToken,
@@ -509,13 +510,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           (async () => {
             const typing = startTypingSession(msg.messageId)
             try {
-              // Learn Yan’s open_id when he messages (name match) so cron can DM without env
+              // Learn Yan’s open_id + chat_id so cron can DM without env
+              // (name match preferred; first p2p peer seeds when none stored yet).
               if (msg.openId && msg.openId !== 'unknown') {
+                let nm: string | null = null
                 try {
-                  const nm = await fetchUserDisplayName(msg.openId)
-                  if (looksLikeAdminName(nm)) rememberAdminOpenId(msg.openId, 'inbound_name')
+                  nm = await fetchUserDisplayName(msg.openId)
                 } catch {
-                  /* ignore */
+                  /* contact scope optional */
+                }
+                await learnAdminFromInbound({
+                  openId: msg.openId,
+                  chatId: msg.chatId,
+                  chatType: msg.chatType,
+                  displayName: nm,
+                })
+                if (nm && looksLikeAdminName(nm)) {
+                  rememberAdminOpenId(msg.openId, 'inbound_name')
                 }
               }
               const reply = await handleMessage(msg)

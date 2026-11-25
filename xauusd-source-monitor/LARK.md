@@ -121,10 +121,18 @@ never-sent).
 ## Token usage daily (Yan Haixiang)
 
 - **Schedule:** every day **18:00 SGT** (Vercel cron `0 10 * * *` UTC); cron-tick catch-up after 18:00
-- **Delivery:** private Feishu DM to `LARK_ADMIN_OPEN_ID` (Yan Haixiang) only
+- **Delivery:** private Feishu DM — prefers `LARK_ADMIN_CHAT_ID` / learned p2p chat, else `LARK_ADMIN_OPEN_ID`
 - **Not** on greeting cards / capabilities — private desk push only
+- **Learn recipient:** after Yan DMs the bot once, open_id + chat_id are stored (needs `BLOB_READ_WRITE_TOKEN` to survive cold starts)
 - **Preview:** `curl -sS 'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/token-usage-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/token-usage-report` with `{ "force": true }` + desk token / cron header
+
+### Required for reliable cron DMs
+
+| Secret | Why |
+|--------|-----|
+| `BLOB_READ_WRITE_TOKEN` | Cross-instance durable state (admin id, sent-day maps, cron beats) |
+| `LARK_ADMIN_OPEN_ID` or `LARK_ADMIN_CHAT_ID` | Explicit Yan recipient (optional if he DMs once and Blob is set) |
 
 ## Weekly report (Yan Haixiang)
 

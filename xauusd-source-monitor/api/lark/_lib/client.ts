@@ -394,6 +394,124 @@ export function rememberAdminOpenId(openId: string, source = 'inbound'): void {
   void persistAdminOpenId(id, source)
 }
 
+const ADMIN_CHAT_BLOB = 'admin-chat-id.json'
+let cachedAdminChatId: { chatId: string; source: string; expireAt: number } | null = null
+
+/** Remember Yan’s p2p/group chat_id for proactive DM cards (token usage / market). */
+export function rememberAdminChatId(chatId: string, source = 'inbound'): void {
+  const id = (chatId || '').trim()
+  if (!id || !id.startsWith('oc_')) return
+  cachedAdminChatId = { chatId: id, source, expireAt: Date.now() + 24 * 3600_000 }
+  void (async () => {
+    try {
+      const { writeDurableJson } = await import('./durableJson.js')
+      await writeDurableJson(ADMIN_CHAT_BLOB, { chatId: id, source, at: Date.now() })
+    } catch {
+      /* ignore */
+    }
+  })()
+}
+
+/**
+ * Resolve chat_id for Yan private pushes.
+ * Prefers env → durable blob → memory. Does not invent a foreign bot’s oc_ default.
+ */
+export async function resolveAdminChatId(): Promise<{ chatId: string; source: string }> {
+  const fromEnv = (
+    process.env.LARK_ADMIN_CHAT_ID ||
+    process.env.LARK_MARKET_CHAT_ID ||
+    process.env.LARK_TOKEN_USAGE_CHAT_ID ||
+    ''
+  ).trim()
+  if (fromEnv) {
+    rememberAdminChatId(fromEnv, 'env')
+    return { chatId: fromEnv, source: 'env' }
+  }
+  if (cachedAdminChatId && Date.now() < cachedAdminChatId.expireAt) {
+    return { chatId: cachedAdminChatId.chatId, source: cachedAdminChatId.source }
+  }
+  try {
+    const { readDurableJson } = await import('./durableJson.js')
+    const saved = await readDurableJson<{ chatId?: string; source?: string }>(ADMIN_CHAT_BLOB)
+    const id = (saved?.chatId || '').trim()
+    if (id.startsWith('oc_')) {
+      cachedAdminChatId = {
+        chatId: id,
+        source: saved?.source || 'blob',
+        expireAt: Date.now() + 24 * 3600_000,
+      }
+      return { chatId: id, source: cachedAdminChatId.source }
+    }
+  } catch {
+    /* ignore */
+  }
+  return { chatId: '', source: 'missing' }
+}
+
+async function hasStoredAdminOpenId(): Promise<boolean> {
+  if ((process.env.LARK_ADMIN_OPEN_ID || process.env.LARK_YAN_OPEN_ID || '').trim()) return true
+  if (cachedAdminOpenId?.openId) return true
+  try {
+    const { readDurableJson } = await import('./durableJson.js')
+    const saved = await readDurableJson<{ openId?: string }>('admin-open-id.json')
+    return Boolean((saved?.openId || '').trim())
+  } catch {
+    return false
+  }
+}
+
+async function hasStoredAdminChatId(): Promise<boolean> {
+  if (
+    (
+      process.env.LARK_ADMIN_CHAT_ID ||
+      process.env.LARK_MARKET_CHAT_ID ||
+      process.env.LARK_TOKEN_USAGE_CHAT_ID ||
+      ''
+    ).trim()
+  ) {
+    return true
+  }
+  if (cachedAdminChatId?.chatId) return true
+  try {
+    const { readDurableJson } = await import('./durableJson.js')
+    const saved = await readDurableJson<{ chatId?: string }>(ADMIN_CHAT_BLOB)
+    return Boolean((saved?.chatId || '').trim().startsWith('oc_'))
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Learn admin open_id + chat_id from an inbound message.
+ * Name match preferred; otherwise first p2p peer seeds admin when none stored yet
+ * (this desk bot is private to Yan / ops).
+ */
+export async function learnAdminFromInbound(args: {
+  openId?: string | null
+  chatId?: string | null
+  chatType?: string | null
+  displayName?: string | null
+}): Promise<void> {
+  const openId = (args.openId || '').trim()
+  const chatId = (args.chatId || '').trim()
+  const isP2p = (args.chatType || '').toLowerCase() === 'p2p'
+  const nameOk = looksLikeAdminName(args.displayName)
+  if (openId && openId !== 'unknown' && (nameOk || isP2p)) {
+    if (nameOk) {
+      rememberAdminOpenId(openId, 'inbound_name')
+    } else if (!(await hasStoredAdminOpenId())) {
+      rememberAdminOpenId(openId, 'inbound_p2p_seed')
+    }
+  }
+  if (chatId.startsWith('oc_') && (nameOk || isP2p)) {
+    if (nameOk) {
+      rememberAdminChatId(chatId, 'inbound_name')
+    } else if (!(await hasStoredAdminChatId())) {
+      rememberAdminChatId(chatId, 'inbound_p2p_seed')
+    }
+  }
+}
+
 export function looksLikeAdminName(name: string | null | undefined): boolean {
   return Boolean(name && ADMIN_NAME_RE.test(name))
 }

@@ -5,10 +5,20 @@
  *   (idempotent via dayKey).
  * - Vercel Cron: `0 10 * * *` UTC (= 18:00 SGT) + cron-tick fan-out.
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
+ *
+ * Delivery order (same idea as market-report):
+ *   1) admin chat_id (env / learned from Yan’s p2p DM)
+ *   2) admin open_id (env / learned)
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { simpleCard } from './_lib/cards.js'
-import { larkConfigured, resolveAdminOpenId, sendCardToOpenId } from './_lib/client.js'
+import {
+  larkConfigured,
+  resolveAdminChatId,
+  resolveAdminOpenId,
+  sendCardToChat,
+  sendCardToOpenId,
+} from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
@@ -65,6 +75,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     force?: boolean
     dry?: boolean
     openId?: string
+    chatId?: string
     lang?: string
   }
   const dry =
@@ -86,7 +97,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const report = await formatTokenUsageDailyReport(lang, dayKey)
   const card = simpleCard(report.title, report.markdown, 'purple')
 
-  const resolvedEarly = body.openId?.trim()
+  const chat = body.chatId?.trim()
+    ? { chatId: body.chatId.trim(), source: 'request' }
+    : await resolveAdminChatId()
+  const open = body.openId?.trim()
     ? { openId: body.openId.trim(), source: 'request' }
     : await resolveAdminOpenId()
 
@@ -105,11 +119,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       card,
       schedule: 'Daily 18:00 SGT (cron: 0 10 * * * UTC; cron-tick catch-up after 18:00)',
       recipient: 'Yan Haixiang',
-      recipientOpenId: resolvedEarly.openId
-        ? resolvedEarly.openId.slice(0, 8) + '…'
-        : null,
-      recipientSource: resolvedEarly.source,
-      hasRealAt: Boolean(resolvedEarly.openId?.startsWith('ou_')),
+      recipientChatId: chat.chatId ? chat.chatId.slice(0, 10) + '…' : null,
+      recipientChatSource: chat.source,
+      recipientOpenId: open.openId ? open.openId.slice(0, 8) + '…' : null,
+      recipientOpenSource: open.source,
+      hasRecipient: Boolean(chat.chatId || open.openId),
+      hint:
+        chat.chatId || open.openId
+          ? undefined
+          : 'DM the bot once as Yan (or set LARK_ADMIN_CHAT_ID / LARK_ADMIN_OPEN_ID). Also add BLOB_READ_WRITE_TOKEN so learned ids survive cold starts.',
     })
   }
 
@@ -155,23 +173,51 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  if (!resolvedEarly.openId) {
+  if (!chat.chatId && !open.openId) {
     return res.status(400).json({
       ok: false,
       error:
-        'Admin open_id missing. Set LARK_ADMIN_OPEN_ID (Yan Haixiang) or LARK_ADMIN_EMAIL on Vercel.',
+        'No Yan recipient yet. DM the bot once, or set LARK_ADMIN_CHAT_ID / LARK_ADMIN_OPEN_ID on Vercel.',
       dayKey,
       dryPreview: report.markdown,
     })
   }
 
+  // Prefer chat_id; fall back to open_id (market-report pattern).
   try {
-    await sendCardToOpenId(resolvedEarly.openId, card)
+    if (chat.chatId) {
+      await sendCardToChat(chat.chatId, card)
+      const persisted = await markSent(dayKey)
+      await touchCronHeartbeat('/api/lark/token-usage-report', {
+        status: persisted ? 200 : 502,
+        outcome: 'sent',
+        reason: persisted ? 'chat_id' : 'chat_id_blob_failed',
+      })
+      if (!persisted) {
+        return res.status(502).json({
+          ok: false,
+          sent: true,
+          error: 'token_usage_sent_state_blob_failed',
+          dayKey,
+          via: 'chat_id',
+        })
+      }
+      return res.status(200).json({
+        ok: true,
+        sent: true,
+        dayKey,
+        via: 'chat_id',
+        recipientChatId: chat.chatId.slice(0, 10) + '…',
+        recipientSource: chat.source,
+      })
+    }
+
+    await sendCardToOpenId(open.openId, card)
     const persisted = await markSent(dayKey)
     await touchCronHeartbeat('/api/lark/token-usage-report', {
       status: persisted ? 200 : 502,
       outcome: 'sent',
-      reason: persisted ? 'healthy' : 'sent_but_blob_failed',
+      reason: persisted ? 'open_id' : 'open_id_blob_failed',
     })
     if (!persisted) {
       return res.status(502).json({
@@ -179,16 +225,59 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         sent: true,
         error: 'token_usage_sent_state_blob_failed',
         dayKey,
+        via: 'open_id',
       })
     }
     return res.status(200).json({
       ok: true,
       sent: true,
       dayKey,
-      recipientOpenId: resolvedEarly.openId.slice(0, 8) + '…',
-      recipientSource: resolvedEarly.source,
+      via: 'open_id',
+      recipientOpenId: open.openId.slice(0, 8) + '…',
+      recipientSource: open.source,
     })
   } catch (e) {
+    // chat_id failed → try open_id once
+    if (chat.chatId && open.openId) {
+      try {
+        await sendCardToOpenId(open.openId, card)
+        const persisted = await markSent(dayKey)
+        await touchCronHeartbeat('/api/lark/token-usage-report', {
+          status: persisted ? 200 : 502,
+          outcome: 'sent',
+          reason: persisted ? 'open_id_fallback' : 'open_id_fallback_blob_failed',
+        })
+        if (!persisted) {
+          return res.status(502).json({
+            ok: false,
+            sent: true,
+            error: 'token_usage_sent_state_blob_failed',
+            dayKey,
+            via: 'open_id_fallback',
+          })
+        }
+        return res.status(200).json({
+          ok: true,
+          sent: true,
+          dayKey,
+          via: 'open_id_fallback',
+          recipientOpenId: open.openId.slice(0, 8) + '…',
+          recipientSource: open.source,
+          chatError: e instanceof Error ? e.message : String(e),
+        })
+      } catch (e2) {
+        await touchCronHeartbeat('/api/lark/token-usage-report', {
+          status: 502,
+          outcome: 'error',
+          reason: e2 instanceof Error ? e2.message : 'send failed',
+        })
+        return res.status(502).json({
+          ok: false,
+          error: e2 instanceof Error ? e2.message : 'send failed',
+          dayKey,
+        })
+      }
+    }
     await touchCronHeartbeat('/api/lark/token-usage-report', {
       status: 502,
       outcome: 'error',
