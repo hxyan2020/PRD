@@ -957,8 +957,9 @@ async function main() {
       cardBlob.slice(0, 120),
     )
     const header = 'value,threshold,' + Array.from({ length: 80 }, (_, i) => `x${i}`).join(',')
+    const fatN = AO_LIMITS.sampleRows + 800
     const fatRows = Array.from(
-      { length: AO_LIMITS.sampleRows + 400 },
+      { length: fatN },
       (_, i) => `${100 + (i % 50)},${120},` + Array.from({ length: 80 }, () => '1').join(','),
     )
     const fat = parseCsvText([header, ...fatRows].join('\n'), 'fat.csv')
@@ -971,14 +972,16 @@ async function main() {
       'alert_optimize.preprocess_giant',
       Boolean(
         fat.preprocess?.triggered &&
+          fat.preprocess.scannedRowCount === fatN &&
           fat.rowCount <= AO_LIMITS.sampleRows &&
           fat.columns.length <= AO_LIMITS.maxColumns &&
-          fat.preprocess.methods.some((m) => /sample|column|numeric/i.test(m)) &&
-          local.preprocessNotes.some((x) => /preprocess|sample|P99|working set/i.test(x)) &&
+          fat.preprocess.methods.some((m) => /sample|column|numeric|stream/i.test(m)) &&
+          !/\b(refuse|refused|cap exceeded)\b/i.test(local.reportMarkdown) &&
+          local.preprocessNotes.some((x) => /preprocess|sample|P99|working set|full-scan|streamed|every row/i.test(x)) &&
           local.optimizeSuggestions.length > 0 &&
           /preprocessing|Preprocess/i.test(local.reportMarkdown),
       ),
-      `rows=${fat.rowCount} cols=${fat.columns.length} methods=${fat.preprocess?.methods.join(',')}`,
+      `scanned=${fat.preprocess?.scannedRowCount} work=${fat.rowCount} cols=${fat.columns.length} methods=${fat.preprocess?.methods.join(',')}`,
     )
   }
   record('cmd.zh_skills', classifyIntent('技能', {}) === 'skills', '')

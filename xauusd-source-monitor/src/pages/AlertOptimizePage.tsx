@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useLocale } from '../i18n/locale'
 import {
-  AO_LIMITS,
   OPTIMIZE_DIRECTIONS,
   analyzeAlertOptimize,
   analyzeLocally,
@@ -10,11 +9,11 @@ import {
   extractAlertNames,
   followUpAlertOptimize,
   initialStatusSteps,
+  parseCsvFile,
   parseCsvText,
   parseJsonPayload,
   slotLabel,
   totalRowCount,
-  wouldExceedDatasetCap,
   type AlertDataSlot,
   type AnalysisResult,
   type AoFollowUpTurn,
@@ -79,6 +78,7 @@ function MiniChart({ chart }: { chart: ChartSpec }) {
 async function fetchViaProxy(url: string, headersJson: string): Promise<{
   text: string
   json: unknown
+  truncated?: boolean
   error?: string
 }> {
   const settings = loadSettings()
@@ -107,12 +107,13 @@ async function fetchViaProxy(url: string, headersJson: string): Promise<{
     ok?: boolean
     text?: string
     json?: unknown
+    truncated?: boolean
     error?: string
   }
   if (!r.ok || body.ok === false) {
     return { text: '', json: null, error: body.error || `HTTP ${r.status}` }
   }
-  return { text: body.text || '', json: body.json ?? null }
+  return { text: body.text || '', json: body.json ?? null, truncated: Boolean(body.truncated) }
 }
 
 type SlotDraft = { paste: string; pasteName: string; apiUrl: string; apiHeaders: string; apiName: string }
@@ -191,59 +192,28 @@ export function AlertOptimizePage() {
     name: ds.name || slotLabel(slot, appLang),
   })
 
-  const canAddDatasets = (slot?: AlertDataSlot) => {
-    const current = slot ? slotSets[slot].length : datasets.length
-    const atCap = wouldExceedDatasetCap({
-      mode: slot ? 'alert_optimize' : 'general',
-      currentCount: current,
-      slot,
-    })
-    if (atCap) {
-      setError(
-        slot
-          ? t('aoLimitSlotDatasets').replace('{n}', String(AO_LIMITS.maxDatasetsPerSlot))
-          : t('aoLimitGeneralDatasets').replace('{n}', String(AO_LIMITS.maxDatasetsGeneral)),
-      )
-      return false
-    }
-    return true
-  }
-
   const onCsvFiles = async (files: FileList | null, slot?: AlertDataSlot) => {
     if (!files?.length) return
-    if (!canAddDatasets(slot)) return
     setError('')
     const next: IngestedDataset[] = []
     for (const file of Array.from(files)) {
-      if (file.size > AO_LIMITS.maxHardBytes) {
-        setError(
-          t('aoLimitFileBytes')
-            .replace('{name}', file.name)
-            .replace('{max}', AO_LIMITS.maxHardBytes.toLocaleString()),
-        )
-        continue
+      try {
+        const ds = await parseCsvFile(file, file.name)
+        next.push(slot ? tagSlot(ds, slot) : ds)
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e))
       }
-      const text = await file.text()
-      const ds = parseCsvText(text, file.name)
-      next.push(slot ? tagSlot(ds, slot) : ds)
     }
     if (!next.length) return
     if (slot) {
-      setSlotSets((s) => {
-        const room = Math.max(0, AO_LIMITS.maxDatasetsPerSlot - s[slot].length)
-        return { ...s, [slot]: [...s[slot], ...next.slice(0, room)] }
-      })
+      setSlotSets((s) => ({ ...s, [slot]: [...s[slot], ...next] }))
     } else {
-      setDatasets((d) => {
-        const room = Math.max(0, AO_LIMITS.maxDatasetsGeneral - d.length)
-        return [...d, ...next.slice(0, room)]
-      })
+      setDatasets((d) => [...d, ...next])
     }
   }
 
   const addPastedCsv = (slot?: AlertDataSlot) => {
     if (slot) {
-      if (!canAddDatasets(slot)) return
       const draft = slotDrafts[slot]
       const text = draft.paste.trim()
       if (!text) return
@@ -256,7 +226,6 @@ export function AlertOptimizePage() {
       setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], paste: '' } }))
       return
     }
-    if (!canAddDatasets()) return
     const text = csvPaste.trim()
     if (!text) return
     setError('')
@@ -266,7 +235,6 @@ export function AlertOptimizePage() {
   }
 
   const addApi = async (slot?: AlertDataSlot) => {
-    if (!canAddDatasets(slot)) return
     const url = (slot ? slotDrafts[slot].apiUrl : apiUrl).trim()
     if (!url) return
     setError('')
@@ -275,7 +243,7 @@ export function AlertOptimizePage() {
       ? slotDrafts[slot].apiName.trim() || slotLabel(slot, appLang)
       : apiName.trim() || 'API'
     try {
-      const { text, json, error: err } = await fetchViaProxy(url, headersJson)
+      const { text, json, error: err, truncated } = await fetchViaProxy(url, headersJson)
       if (err) {
         setError(err)
         return
@@ -288,12 +256,12 @@ export function AlertOptimizePage() {
         ds.kind = 'api'
         ds.sourceLabel = url
       } else {
-        ds = parseJsonPayload({ raw: text.slice(0, 50_000) }, nameHint || 'API', url)
+        ds = parseJsonPayload({ raw: text.slice(0, 200_000) }, nameHint || 'API', url)
         ds.issues.push(t('aoApiNonJson'))
       }
-      if (text.length >= AO_LIMITS.maxBytesPerIngest) {
+      if (truncated) {
         ds.issues.push(
-          `Preprocess: API stream window ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars — agent will sample/summarize`,
+          'Preprocess: upstream proxy streamed a memory-safe window; agent full-scanned every row in that window',
         )
       }
       if (slot) {

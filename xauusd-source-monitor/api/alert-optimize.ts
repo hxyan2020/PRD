@@ -107,15 +107,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         hdrs[k] = v.slice(0, 2000)
       }
     }
-    /** Soft stream window — client preprocess agent samples/summarizes; not a product hard refuse. */
-    const MAX_BYTES = 8_000_000
+    /**
+     * Proxy memory window only (serverless RAM) — not an analysis quota.
+     * Client preprocess agent full-scans whatever arrives in this window.
+     */
+    const MAX_BYTES = 32_000_000
     try {
       const r = await fetch(url, { method: 'GET', headers: hdrs, cache: 'no-store' })
       const upstreamLen = Number(r.headers.get('content-length') || 0)
-      if (Number.isFinite(upstreamLen) && upstreamLen > MAX_BYTES * 6) {
+      // Absurd bodies only — still not an AO product quota; ask upstream to page.
+      if (Number.isFinite(upstreamLen) && upstreamLen > 200_000_000) {
         return res.status(413).json({
           ok: false,
-          error: `Remote body too large for proxy memory (Content-Length ${upstreamLen}; safety > ${MAX_BYTES * 6} bytes). Pre-sample upstream, then fetch.`,
+          error: `Remote Content-Length ${upstreamLen} exceeds proxy process memory. Page/stream upstream; AO itself has no row analysis quota.`,
         })
       }
 

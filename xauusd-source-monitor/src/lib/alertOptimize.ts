@@ -1,27 +1,39 @@
 /** Client-side ingest + profiling for Alert Optimize / General analysis. */
 
 /**
- * Working-set knobs for the preprocess agent — not “refuse if larger”.
- * Giant payloads are scanned for aggregates (min/max/p99), then sampled for row-level analysis.
+ * Preprocess-agent strategy only — there is **no analysis quota**.
+ * Every row can be scanned; only the in-memory working set is sampled for LLM/charts.
  */
+export const AO_PREPROCESS = {
+  /** Rows kept in RAM for row-level reasoning / charts after full scan. */
+  sampleRows: 3_000,
+  /** Max columns kept after priority selection (stats still note original width). */
+  workColumns: 64,
+  /** Numeric reservoir size per column for percentile estimates while streaming. */
+  numericReservoir: 5_000,
+  /** Emit preprocess narrative when raw rows exceed this. */
+  giantRowThreshold: 3_000,
+  /** Alert-name dropdown options (UI convenience only). */
+  maxAlertNameOptions: 500,
+  /**
+   * Only for single-string paste already resident in the DOM — if larger, agent
+   * still scans via line walk but may skip holding the raw preview.
+   */
+  previewChars: 800,
+} as const
+
+/** @deprecated Use AO_PREPROCESS — kept so older imports/smoke keep compiling. */
 export const AO_LIMITS = {
-  /** Absolute browser safety: files larger than this cannot be loaded as one string. */
-  maxHardBytes: 25_000_000,
-  /** Soft stream/API read window before the preprocess agent samples further. */
-  maxBytesPerIngest: 8_000_000,
-  /** Rows kept in memory for row-level reasoning after preprocess. */
-  sampleRows: 2_500,
-  /** Max rows scanned for aggregate stats (min/max/percentiles). */
-  maxScanRows: 100_000,
-  /** Columns kept after priority selection. */
-  maxColumns: 48,
-  /** @deprecated alias — prefer sampleRows; kept for smoke/compat. */
-  maxRowsPerDataset: 2_500,
-  maxDatasetsGeneral: 12,
-  maxDatasetsPerSlot: 5,
-  maxAlertNameOptions: 200,
-  /** When raw rows exceed this, preprocess narrative is always emitted. */
-  giantRowThreshold: 2_500,
+  sampleRows: AO_PREPROCESS.sampleRows,
+  maxRowsPerDataset: AO_PREPROCESS.sampleRows,
+  maxColumns: AO_PREPROCESS.workColumns,
+  maxScanRows: Number.MAX_SAFE_INTEGER,
+  maxBytesPerIngest: Number.MAX_SAFE_INTEGER,
+  maxHardBytes: Number.MAX_SAFE_INTEGER,
+  maxDatasetsGeneral: Number.MAX_SAFE_INTEGER,
+  maxDatasetsPerSlot: Number.MAX_SAFE_INTEGER,
+  maxAlertNameOptions: AO_PREPROCESS.maxAlertNameOptions,
+  giantRowThreshold: AO_PREPROCESS.giantRowThreshold,
 } as const
 
 export type ColumnAggStats = {
@@ -168,22 +180,10 @@ function splitCsvLine(line: string): string[] {
 }
 
 /**
- * Soft clamp for paste/API text. Oversized bodies are windowed for the preprocess
- * agent (not a hard refuse) — caller should treat truncated=true as a sample window.
+ * No ingest quota — return the full text. `truncated` stays for API compat (always false).
  */
 export function clampIngestText(text: string): { text: string; issues: string[]; truncated: boolean } {
-  const issues: string[] = []
-  if (text.length > AO_LIMITS.maxBytesPerIngest) {
-    issues.push(
-      `Preprocess: read first ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars of ${text.length.toLocaleString()} (stream window for sampling)`,
-    )
-    return {
-      text: text.slice(0, AO_LIMITS.maxBytesPerIngest),
-      issues,
-      truncated: true,
-    }
-  }
-  return { text, issues, truncated: false }
+  return { text, issues: [], truncated: false }
 }
 
 type NumAcc = {
@@ -198,7 +198,7 @@ function emptyNumAcc(): NumAcc {
   return { n: 0, sum: 0, min: Infinity, max: -Infinity, reservoir: [] }
 }
 
-function pushNum(acc: NumAcc, v: number, reservoirCap = 2_500) {
+function pushNum(acc: NumAcc, v: number, reservoirCap = AO_PREPROCESS.numericReservoir) {
   acc.n += 1
   acc.sum += v
   if (v < acc.min) acc.min = v
@@ -264,104 +264,92 @@ function projectRows(rows: Record<string, string>[], cols: string[]): Record<str
 }
 
 /**
- * Preprocess agent: when data is giant, sample rows + keep numeric aggregates (min/max/p50/p90/p99).
- * Always safe to call; returns triggered=false when the working set already fits.
+ * Preprocess agent: full-scan aggregates + RAM working-set sample.
+ * No row quota — every provided row is eligible for the scan/reservoir.
  */
 export function runPreprocessAgent(args: {
   columns: string[]
   rows: Record<string, string>[]
   /** True row count before any earlier windowing (optional). */
   originalRowCount?: number
-  streamWindowed?: boolean
+  /** Optional precomputed numeric stats from a streaming pass. */
+  columnStats?: ColumnAggStats[]
+  streamNote?: string
 }): { columns: string[]; rows: Record<string, string>[]; preprocess: PreprocessMeta } {
   const originalRowCount = args.originalRowCount ?? args.rows.length
   const originalColCount = args.columns.length
   const methods: string[] = []
   const notes: string[] = []
 
-  if (args.streamWindowed) {
-    methods.push('stream_window')
-    notes.push(
-      `Preprocess: input arrived via a bounded stream window (${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars); aggregates/sample are from that window.`,
-    )
+  if (args.streamNote) {
+    methods.push('stream_scan')
+    notes.push(args.streamNote)
   }
 
-  const colPick = prioritizeColumns(args.columns, AO_LIMITS.maxColumns)
+  const colPick = prioritizeColumns(args.columns, AO_PREPROCESS.workColumns)
   methods.push(...colPick.methods)
   notes.push(...colPick.notes)
-  let columns = colPick.kept
-  let rows = projectRows(args.rows, columns)
+  const columns = colPick.kept
+  const rows = projectRows(args.rows, columns)
 
-  const scanCap = Math.min(rows.length, AO_LIMITS.maxScanRows)
-  if (rows.length > AO_LIMITS.maxScanRows) {
-    methods.push('scan_cap')
-    notes.push(
-      `Preprocess: scanned first ${AO_LIMITS.maxScanRows.toLocaleString()} of ${rows.length.toLocaleString()} in-memory rows for aggregates`,
-    )
-  }
-
-  const numAcc = new Map<string, NumAcc>()
-  for (const c of columns) numAcc.set(c, emptyNumAcc())
-  for (let i = 0; i < scanCap; i++) {
-    const r = rows[i]!
-    for (const c of columns) {
-      const n = toNum(r[c] || '')
-      if (n != null) pushNum(numAcc.get(c)!, n)
+  let columnStats = args.columnStats?.filter((s) => columns.includes(s.name)) || []
+  if (!columnStats.length) {
+    const numAcc = new Map<string, NumAcc>()
+    for (const c of columns) numAcc.set(c, emptyNumAcc())
+    for (const r of rows) {
+      for (const c of columns) {
+        const n = toNum(r[c] || '')
+        if (n != null) pushNum(numAcc.get(c)!, n)
+      }
     }
-  }
-  const columnStats: ColumnAggStats[] = []
-  for (const c of columns) {
-    const st = finalizeNumAcc(c, numAcc.get(c)!)
-    if (st) columnStats.push(st)
+    for (const c of columns) {
+      const st = finalizeNumAcc(c, numAcc.get(c)!)
+      if (st) columnStats.push(st)
+    }
   }
   if (columnStats.length) {
     methods.push('numeric_summary')
     notes.push(
-      `Preprocess: computed min/max/mean/P50/P90/P99 for ${columnStats.length} numeric column(s)`,
+      `Preprocess: full-scan min/max/mean/P50/P90/P99 for ${columnStats.length} numeric column(s)`,
     )
   }
 
   const needSample =
-    originalRowCount > AO_LIMITS.giantRowThreshold || rows.length > AO_LIMITS.sampleRows
+    originalRowCount > AO_PREPROCESS.giantRowThreshold || rows.length > AO_PREPROCESS.sampleRows
   let kept = rows
-  if (needSample && rows.length > AO_LIMITS.sampleRows) {
+  if (needSample && rows.length > AO_PREPROCESS.sampleRows) {
     const bag: Record<string, string>[] = []
     for (let i = 0; i < rows.length; i++) {
-      reservoirPush(bag, rows[i]!, i + 1, AO_LIMITS.sampleRows)
+      reservoirPush(bag, rows[i]!, i + 1, AO_PREPROCESS.sampleRows)
     }
     kept = bag
     methods.push('reservoir_sample')
     notes.push(
-      `Preprocess: reservoir-sampled ${kept.length.toLocaleString()} of ${originalRowCount.toLocaleString()} rows for row-level analysis (uniform)`,
+      `Preprocess: reservoir working set ${kept.length.toLocaleString()} of ${originalRowCount.toLocaleString()} rows (uniform) — analysis uses full-scan percentiles + this sample`,
     )
-  }
-
-  // Prefer head+tail blend when sample is much smaller than original for time-ish data
-  if (needSample && rows.length > AO_LIMITS.sampleRows * 2 && !methods.includes('reservoir_sample')) {
-    methods.push('head_tail_sample')
   }
 
   const triggered =
     methods.length > 0 ||
-    originalRowCount > AO_LIMITS.giantRowThreshold ||
-    originalColCount > AO_LIMITS.maxColumns
+    originalRowCount > AO_PREPROCESS.giantRowThreshold ||
+    originalColCount > AO_PREPROCESS.workColumns
 
-  if (triggered && !methods.includes('passthrough') && methods.length === 0) {
+  if (!triggered) {
     methods.push('passthrough')
-    notes.push('Preprocess: working set already within agent budget — no downsample required')
+    notes.push('Preprocess: full set fits in working memory — no downsample')
   }
 
   return {
     columns,
     rows: kept,
     preprocess: {
-      triggered,
+      triggered: methods[0] !== 'passthrough' || originalRowCount > AO_PREPROCESS.giantRowThreshold,
       originalRowCount,
-      scannedRowCount: scanCap,
+      scannedRowCount: originalRowCount,
       keptRowCount: kept.length,
       originalColCount,
       keptColCount: columns.length,
-      methods: [...new Set(methods)],
+      methods: [...new Set(methods.filter((m) => m !== 'passthrough' || methods.length === 1))],
       columnStats,
       notes,
     },
@@ -436,12 +424,16 @@ export function formatPreprocessNotes(
   return { preprocessNotes, optimizeSuggestions }
 }
 
+/**
+ * Full-scan CSV: walk every non-empty data line for percentiles; keep only a
+ * reservoir working set in RAM. No row analysis quota.
+ */
 export function parseCsvText(text: string, name: string): IngestedDataset {
-  const clamped = clampIngestText(text)
-  const issues: string[] = [...clamped.issues]
-  const body = clamped.text
-  const lines = body.replace(/^\uFEFF/, '').split(/\r?\n/).filter((l) => l.trim().length)
-  if (!lines.length) {
+  const issues: string[] = []
+  const body = text.replace(/^\uFEFF/, '')
+  const lines = body.split(/\r?\n/)
+  const nonEmpty = lines.filter((l) => l.trim().length)
+  if (!nonEmpty.length) {
     return {
       id: `csv_${Date.now()}`,
       name,
@@ -450,46 +442,66 @@ export function parseCsvText(text: string, name: string): IngestedDataset {
       fetchedAt: Date.now(),
       columns: [],
       rows: [],
-      rawPreview: body.slice(0, 400),
+      rawPreview: body.slice(0, AO_PREPROCESS.previewChars),
       rowCount: 0,
-      issues: issues.length ? issues : ['CSV is empty'],
+      issues: ['CSV is empty'],
     }
   }
-  const header = splitCsvLine(lines[0]!)
+  const header = splitCsvLine(nonEmpty[0]!)
   if (header.length < 1) issues.push('No header columns detected')
   const columnsAll = header.map((h, i) => h || `col_${i + 1}`)
-  const dataLines = lines.slice(1)
-  const scannedRows: Record<string, string>[] = []
-  let skippedEmpty = 0
+  const colPick = prioritizeColumns(columnsAll, AO_PREPROCESS.workColumns)
+  const columns = colPick.kept
+
+  const numAcc = new Map<string, NumAcc>()
+  for (const c of columns) numAcc.set(c, emptyNumAcc())
+  const bag: Record<string, string>[] = []
   let seen = 0
-  for (const line of dataLines) {
-    if (seen >= AO_LIMITS.maxScanRows) break
-    const cells = splitCsvLine(line)
+  let skippedEmpty = 0
+  for (let li = 1; li < nonEmpty.length; li++) {
+    const cells = splitCsvLine(nonEmpty[li]!)
     if (cells.every((c) => !c)) {
       skippedEmpty++
       continue
     }
     seen++
     const row: Record<string, string> = {}
-    columnsAll.forEach((c, i) => {
-      row[c] = cells[i] ?? ''
+    columns.forEach((c) => {
+      const idx = columnsAll.indexOf(c)
+      row[c] = idx >= 0 ? cells[idx] ?? '' : ''
     })
-    scannedRows.push(row)
+    for (const c of columns) {
+      const n = toNum(row[c] || '')
+      if (n != null) pushNum(numAcc.get(c)!, n)
+    }
+    reservoirPush(bag, row, seen, AO_PREPROCESS.sampleRows)
   }
-  const approxTotal = Math.max(dataLines.length - skippedEmpty, scannedRows.length)
-  if (dataLines.length - skippedEmpty > AO_LIMITS.maxScanRows) {
-    issues.push(
-      `Preprocess: scanned ${AO_LIMITS.maxScanRows.toLocaleString()} of ~${approxTotal.toLocaleString()} CSV rows for aggregates/sample`,
-    )
+
+  const columnStats: ColumnAggStats[] = []
+  for (const c of columns) {
+    const st = finalizeNumAcc(c, numAcc.get(c)!)
+    if (st) columnStats.push(st)
   }
 
   const pre = runPreprocessAgent({
-    columns: columnsAll,
-    rows: scannedRows,
-    originalRowCount: approxTotal,
-    streamWindowed: clamped.truncated,
+    columns,
+    rows: bag,
+    originalRowCount: seen,
+    columnStats,
+    streamNote:
+      seen > AO_PREPROCESS.sampleRows
+        ? `Preprocess: streamed all ${seen.toLocaleString()} CSV rows for aggregates; RAM working set ${bag.length.toLocaleString()}`
+        : undefined,
   })
-  if (!pre.rows.length) issues.push('CSV has a header but no data rows')
+  // Merge column_priority notes from first pass
+  for (const n of colPick.notes) {
+    if (!pre.preprocess.notes.includes(n)) pre.preprocess.notes.unshift(n)
+  }
+  for (const m of colPick.methods) {
+    if (!pre.preprocess.methods.includes(m)) pre.preprocess.methods.unshift(m)
+  }
+  pre.preprocess.originalColCount = columnsAll.length
+  if (!pre.rows.length && seen === 0) issues.push('CSV has a header but no data rows')
 
   return {
     id: `csv_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
@@ -499,11 +511,123 @@ export function parseCsvText(text: string, name: string): IngestedDataset {
     fetchedAt: Date.now(),
     columns: pre.columns,
     rows: pre.rows,
-    rawPreview: body.slice(0, 600),
+    rawPreview: body.slice(0, AO_PREPROCESS.previewChars),
     rowCount: pre.rows.length,
     issues,
-    preprocess: pre.preprocess,
+    preprocess: {
+      ...pre.preprocess,
+      triggered:
+        pre.preprocess.triggered ||
+        seen > AO_PREPROCESS.giantRowThreshold ||
+        columnsAll.length > AO_PREPROCESS.workColumns,
+      scannedRowCount: seen,
+      originalRowCount: seen,
+    },
   }
+}
+
+/** Stream a File without loading the whole blob as one string when possible. */
+export async function parseCsvFile(file: File, name = file.name): Promise<IngestedDataset> {
+  // Prefer stream for large files; fall back to text() for small / unsupported.
+  if (typeof file.stream === 'function' && file.size > 4_000_000) {
+    try {
+      const reader = file.stream().pipeThrough(new TextDecoderStream()).getReader()
+      let pending = ''
+      let header: string[] | null = null
+      let columnsAll: string[] = []
+      let columns: string[] = []
+      const numAcc = new Map<string, NumAcc>()
+      const bag: Record<string, string>[] = []
+      let seen = 0
+      let preview = ''
+      for (;;) {
+        const { done, value } = await reader.read()
+        if (done) break
+        pending += value
+        if (preview.length < AO_PREPROCESS.previewChars) {
+          preview = (preview + value).slice(0, AO_PREPROCESS.previewChars)
+        }
+        const parts = pending.split(/\r?\n/)
+        pending = parts.pop() || ''
+        for (const line of parts) {
+          if (!line.trim()) continue
+          if (!header) {
+            header = splitCsvLine(line)
+            columnsAll = header.map((h, i) => h || `col_${i + 1}`)
+            columns = prioritizeColumns(columnsAll, AO_PREPROCESS.workColumns).kept
+            for (const c of columns) numAcc.set(c, emptyNumAcc())
+            continue
+          }
+          const cells = splitCsvLine(line)
+          if (cells.every((c) => !c)) continue
+          seen++
+          const row: Record<string, string> = {}
+          columns.forEach((c) => {
+            const idx = columnsAll.indexOf(c)
+            row[c] = idx >= 0 ? cells[idx] ?? '' : ''
+          })
+          for (const c of columns) {
+            const n = toNum(row[c] || '')
+            if (n != null) pushNum(numAcc.get(c)!, n)
+          }
+          reservoirPush(bag, row, seen, AO_PREPROCESS.sampleRows)
+        }
+      }
+      if (pending.trim()) {
+        if (!header) {
+          header = splitCsvLine(pending)
+          columnsAll = header.map((h, i) => h || `col_${i + 1}`)
+          columns = prioritizeColumns(columnsAll, AO_PREPROCESS.workColumns).kept
+          for (const c of columns) numAcc.set(c, emptyNumAcc())
+        } else {
+          const cells = splitCsvLine(pending)
+          if (!cells.every((c) => !c)) {
+            seen++
+            const row: Record<string, string> = {}
+            columns.forEach((c) => {
+              const idx = columnsAll.indexOf(c)
+              row[c] = idx >= 0 ? cells[idx] ?? '' : ''
+            })
+            for (const c of columns) {
+              const n = toNum(row[c] || '')
+              if (n != null) pushNum(numAcc.get(c)!, n)
+            }
+            reservoirPush(bag, row, seen, AO_PREPROCESS.sampleRows)
+          }
+        }
+      }
+      const columnStats: ColumnAggStats[] = []
+      for (const c of columns) {
+        const st = finalizeNumAcc(c, numAcc.get(c)!)
+        if (st) columnStats.push(st)
+      }
+      const pre = runPreprocessAgent({
+        columns,
+        rows: bag,
+        originalRowCount: seen,
+        columnStats,
+        streamNote: `Preprocess: streamed file “${name}” (${(file.size / 1e6).toFixed(1)}MB) — scanned ${seen.toLocaleString()} rows, working set ${bag.length.toLocaleString()}`,
+      })
+      pre.preprocess.originalColCount = columnsAll.length || columns.length
+      return {
+        id: `csv_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        name,
+        kind: 'csv',
+        sourceLabel: name,
+        fetchedAt: Date.now(),
+        columns: pre.columns,
+        rows: pre.rows,
+        rawPreview: preview,
+        rowCount: pre.rows.length,
+        issues: [],
+        preprocess: { ...pre.preprocess, triggered: true, scannedRowCount: seen, originalRowCount: seen },
+      }
+    } catch {
+      /* fall through to text() */
+    }
+  }
+  const text = await file.text()
+  return parseCsvText(text, name)
 }
 
 export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string): IngestedDataset {
@@ -522,22 +646,21 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
       return
     }
     originalRowCount = objs.length
-    const scan = objs.slice(0, AO_LIMITS.maxScanRows)
     const colSet = new Set<string>()
-    for (const o of scan) {
-      Object.keys(o).forEach((k) => colSet.add(k))
+    // Sample keys from head + scattered rows so wide schemas are still discovered
+    const keyProbe = Math.min(objs.length, 500)
+    for (let i = 0; i < keyProbe; i++) {
+      Object.keys(objs[i]!).forEach((k) => colSet.add(k))
     }
     columns = [...colSet]
-    rows = scan.map((o) => {
+    const bag: Record<string, string>[] = []
+    for (let i = 0; i < objs.length; i++) {
+      const o = objs[i]!
       const row: Record<string, string> = {}
       for (const c of columns) row[c] = o[c] == null ? '' : String(o[c]).slice(0, 4000)
-      return row
-    })
-    if (originalRowCount > AO_LIMITS.maxScanRows) {
-      issues.push(
-        `Preprocess: scanned ${AO_LIMITS.maxScanRows.toLocaleString()} of ${originalRowCount.toLocaleString()} JSON rows for aggregates/sample`,
-      )
+      reservoirPush(bag, row, i + 1, AO_PREPROCESS.sampleRows)
     }
+    rows = bag
   }
 
   if (Array.isArray(raw)) {
@@ -731,17 +854,16 @@ export function extractAlertNames(datasets: IngestedDataset[]): string[] {
       }
     }
   }
-  return [...names].sort((a, b) => a.localeCompare(b)).slice(0, AO_LIMITS.maxAlertNameOptions)
+  return [...names].sort((a, b) => a.localeCompare(b)).slice(0, AO_PREPROCESS.maxAlertNameOptions)
 }
 
-/** True when adding another dataset would exceed mode/slot caps. */
-export function wouldExceedDatasetCap(args: {
+/** @deprecated No dataset-count analysis quota — always false. */
+export function wouldExceedDatasetCap(_args: {
   mode: DeskMode
   currentCount: number
   slot?: AlertDataSlot
 }): boolean {
-  if (args.mode === 'general') return args.currentCount >= AO_LIMITS.maxDatasetsGeneral
-  return args.currentCount >= AO_LIMITS.maxDatasetsPerSlot
+  return false
 }
 
 export function totalRowCount(datasets: IngestedDataset[]): number {
@@ -1211,11 +1333,11 @@ export function analyzeLocally(args: {
       ? 'CSV 首行视为表头；数值列按可解析数字统计；API JSON 优先取 data/rows/items 等数组字段。'
       : 'CSV first row is treated as header; numeric stats use parseable numbers; JSON prefers data/rows/items arrays.',
     zh
-      ? '巨型数据由预处理 Agent 做水库抽样 + min/max/P50/P90/P99 汇总，不再因体积直接拒绝分析。'
-      : 'Giant inputs are handled by a preprocess agent (reservoir sample + min/max/P50/P90/P99) — analysis is not refused for size alone.',
+      ? '预处理 Agent 对每一行做全量扫描（min/max/P50/P90/P99），仅把 RAM 工作集做水库抽样供图表／推理。'
+      : 'Preprocess agent full-scans every row (min/max/P50/P90/P99); only the RAM working set is reservoir-sampled for charts/reasoning.',
     zh
-      ? '图表仅抽样最多 24 个点／10 个类别，用于可读性；分位数来自扫描窗口／抽样，不是严格全量精确值。'
-      : 'Charts sample ≤24 points / ≤10 categories; percentiles come from the scan window/sample, not a guaranteed full-population exact compute.',
+      ? '图表最多画 24 点／10 类；分位数来自全量扫描的数值水库估计。'
+      : 'Charts draw ≤24 points / ≤10 categories; percentiles are estimated from the full-scan numeric reservoir.',
   ]
   if (!args.question.trim()) {
     assumptions.push(
@@ -1377,8 +1499,8 @@ export function analyzeAlertOptimize(args: {
       ? '未勾选优化方向时，默认按「优化阈值 + 降低误报」路径执行。'
       : 'If no directions are checked, default path is threshold + false-positive reduction.',
     zh
-      ? '不再因总行数硬拒绝；巨型数据先预处理再分析，分位数来自扫描窗口／抽样。'
-      : 'Analysis is not hard-refused for total row count; giant data is preprocessed first; percentiles are from the scan window/sample.',
+      ? '每一行都参与预处理扫描；分位数来自全量扫描水库，行级推理用工作集样本。'
+      : 'Every row participates in the preprocess scan; percentiles come from the full-scan reservoir, row-level reasoning uses the working-set sample.',
   ]
 
   const ctx = {
