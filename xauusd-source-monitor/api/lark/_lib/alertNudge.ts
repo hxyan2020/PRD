@@ -1,11 +1,11 @@
 /**
  * Tomorrow-only group alert nudge: from 08:30 CST, @mention every ~1 min
  * until「知道了」. Default day: 2026-11-25 Asia/Shanghai.
+ *
+ * State is stored in Vercel Blob (durable across instances). /tmp is only a cache.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import { shanghaiDayKey } from './market.js'
+import { readDurableJson, readTmpJson, writeDurableJson, writeTmpJson } from './durableJson.js'
 
 export const DEFAULT_ALERT_NUDGE_CHAT_ID = 'oc_eb8eba24ff99a2c3ea3c9439750d65cd'
 
@@ -17,8 +17,7 @@ export const ALERT_NUDGE_MESSAGE =
   (process.env.LARK_ALERT_NUDGE_MESSAGE || '').trim() ||
   'Haixiang 新告警来啦 快来看看'
 
-const MARK_DIR = join(tmpdir(), 've-lark-store')
-const STATE_FILE = join(MARK_DIR, 'alert-nudge-state.json')
+const STATE_NAME = 'alert-nudge-state.json'
 
 export type AlertNudgeState = {
   dayKey: string
@@ -35,26 +34,22 @@ export type AlertNudgeState = {
   sendCount: number
 }
 
-function ensureDir() {
-  if (!existsSync(MARK_DIR)) mkdirSync(MARK_DIR, { recursive: true })
-}
-
+/** Sync tmp cache — smoke / same-instance only. Prefer loadNudgeState in handlers. */
 export function readNudgeState(): AlertNudgeState | null {
-  try {
-    if (!existsSync(STATE_FILE)) return null
-    return JSON.parse(readFileSync(STATE_FILE, 'utf8')) as AlertNudgeState
-  } catch {
-    return null
-  }
+  return readTmpJson<AlertNudgeState>(STATE_NAME)
 }
 
+/** Sync tmp write — smoke only. Prefer saveNudgeState in handlers. */
 export function writeNudgeState(state: AlertNudgeState) {
-  try {
-    ensureDir()
-    writeFileSync(STATE_FILE, JSON.stringify(state))
-  } catch {
-    /* ignore */
-  }
+  writeTmpJson(STATE_NAME, state)
+}
+
+export async function loadNudgeState(): Promise<AlertNudgeState | null> {
+  return readDurableJson<AlertNudgeState>(STATE_NAME)
+}
+
+export async function saveNudgeState(state: AlertNudgeState): Promise<void> {
+  await writeDurableJson(STATE_NAME, state)
 }
 
 export function shanghaiHm(ts: number = Date.now()): string {
@@ -84,7 +79,7 @@ export function isCampaignDay(ts: number = Date.now()): boolean {
   return shanghaiDayKey(ts) === ALERT_NUDGE_DAY
 }
 
-/** Tomorrow after 08:30 CST (inclusive). */
+/** Campaign day after 08:30 CST (inclusive). */
 export function nudgeWindowOpen(ts: number = Date.now()): boolean {
   if (!isCampaignDay(ts)) return false
   return hmToMinutes(shanghaiHm(ts)) >= hmToMinutes(ALERT_NUDGE_START_HM)
@@ -138,6 +133,7 @@ export function buildAlertNudgeCard(args: {
   }
 }
 
+/** Sync ack for smoke — tmp only. */
 export function ackAlertNudge(openId: string): AlertNudgeState | null {
   const cur = readNudgeState()
   const base: AlertNudgeState = cur || {
@@ -160,8 +156,35 @@ export function ackAlertNudge(openId: string): AlertNudgeState | null {
   return next
 }
 
+export async function ackAlertNudgeDurable(openId: string): Promise<AlertNudgeState | null> {
+  const cur = await loadNudgeState()
+  const base: AlertNudgeState = cur || {
+    dayKey: ALERT_NUDGE_DAY,
+    chatId: DEFAULT_ALERT_NUDGE_CHAT_ID,
+    openId: openId || '',
+    message: ALERT_NUDGE_MESSAGE,
+    active: false,
+    acked: false,
+    sendCount: 0,
+  }
+  const next: AlertNudgeState = {
+    ...base,
+    active: false,
+    acked: true,
+    ackedAt: Date.now(),
+    ackedBy: openId || base.ackedBy,
+  }
+  await saveNudgeState(next)
+  return next
+}
+
 export function isNudgeActive(): boolean {
   const s = readNudgeState()
+  return Boolean(s?.active && !s.acked && s.dayKey === ALERT_NUDGE_DAY)
+}
+
+export async function isNudgeActiveDurable(): Promise<boolean> {
+  const s = await loadNudgeState()
   return Boolean(s?.active && !s.acked && s.dayKey === ALERT_NUDGE_DAY)
 }
 

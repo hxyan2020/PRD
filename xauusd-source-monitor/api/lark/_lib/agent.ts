@@ -689,8 +689,8 @@ export async function handleCardAction(args: {
   }
 
   if (action === 'alert_nudge_ack') {
-    const { ackAlertNudge } = await import('./alertNudge.js')
-    ackAlertNudge(args.openId)
+    const { ackAlertNudgeDurable } = await import('./alertNudge.js')
+    await ackAlertNudgeDurable(args.openId)
     return {
       card: simpleCard('已收到', '知道了 ✅ 已停止提醒。有新告警再叫我。', 'green'),
     }
@@ -753,9 +753,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   // Tomorrow-only alert nudge —「知道了」stops the 1-min loop
   {
-    const { isNudgeActive, looksLikeNudgeAck, ackAlertNudge } = await import('./alertNudge.js')
-    if (isNudgeActive() && looksLikeNudgeAck(workingText)) {
-      ackAlertNudge(msg.openId)
+    const { isNudgeActiveDurable, looksLikeNudgeAck, ackAlertNudgeDurable } = await import(
+      './alertNudge.js'
+    )
+    if ((await isNudgeActiveDurable()) && looksLikeNudgeAck(workingText)) {
+      await ackAlertNudgeDurable(msg.openId)
       return {
         card: simpleCard('已收到', '知道了 ✅ 已停止提醒。有新告警再叫我。', 'green'),
       }

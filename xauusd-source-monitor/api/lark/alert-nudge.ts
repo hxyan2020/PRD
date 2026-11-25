@@ -16,14 +16,14 @@ import {
   ALERT_NUDGE_MESSAGE,
   ALERT_NUDGE_START_HM,
   DEFAULT_ALERT_NUDGE_CHAT_ID,
-  ackAlertNudge,
+  ackAlertNudgeDurable,
   buildAlertNudgeCard,
   isCampaignDay,
+  loadNudgeState,
   nudgeWindowExpired,
   nudgeWindowOpen,
-  readNudgeState,
+  saveNudgeState,
   shanghaiHm,
-  writeNudgeState,
   type AlertNudgeState,
 } from './_lib/alertNudge.js'
 import { shanghaiDayKey } from './_lib/market.js'
@@ -70,28 +70,36 @@ async function ensureActiveState(args: {
   force: boolean
   now: number
 }): Promise<AlertNudgeState | null> {
-  const day = shanghaiDayKey(args.now)
-  let state = readNudgeState()
+  let state = await loadNudgeState()
 
   if (state?.acked && state.dayKey === ALERT_NUDGE_DAY && !args.force) return state
 
   if (args.force || (nudgeWindowOpen(args.now) && !nudgeWindowExpired(args.now))) {
-    if (!state || state.dayKey !== ALERT_NUDGE_DAY || args.force) {
-      const admin = await resolveAdminOpenId()
+    const admin = await resolveAdminOpenId()
+    if (!state || state.dayKey !== ALERT_NUDGE_DAY) {
+      // New campaign day — start count at 0
       state = {
         dayKey: ALERT_NUDGE_DAY,
         chatId: args.chatId,
-        openId: admin.openId,
+        openId: admin.openId || state?.openId || '',
         message: ALERT_NUDGE_MESSAGE,
         active: true,
         acked: false,
         startedAt: Date.now(),
         sendCount: 0,
       }
-      writeNudgeState(state)
-    } else if (!state.active && !state.acked) {
-      state = { ...state, active: true, chatId: args.chatId }
-      writeNudgeState(state)
+      await saveNudgeState(state)
+    } else {
+      // Same day: never reset sendCount; never clear acked via force
+      state = {
+        ...state,
+        chatId: args.chatId || state.chatId,
+        openId: admin.openId || state.openId,
+        message: state.message || ALERT_NUDGE_MESSAGE,
+        active: !state.acked,
+        startedAt: state.startedAt || Date.now(),
+      }
+      await saveNudgeState(state)
     }
   }
   return state
@@ -130,12 +138,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const hm = shanghaiHm(now)
 
   if (ack) {
-    const st = ackAlertNudge('manual')
+    const st = await ackAlertNudgeDurable('manual')
     return res.status(200).json({ ok: true, acked: true, state: st })
   }
 
   if (!force && !cron) {
-    const state = readNudgeState()
+    const state = await loadNudgeState()
     const card = buildAlertNudgeCard({
       openId: state?.openId || '',
       message: ALERT_NUDGE_MESSAGE,
@@ -171,9 +179,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
     }
     if (!nudgeWindowOpen(now) || nudgeWindowExpired(now)) {
-      const st = readNudgeState()
+      const st = await loadNudgeState()
       if (st?.active && nudgeWindowExpired(now)) {
-        writeNudgeState({ ...st, active: false })
+        await saveNudgeState({ ...st, active: false })
       }
       return res.status(200).json({
         ok: true,
@@ -229,7 +237,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       startedAt: state.startedAt || Date.now(),
       active: true,
     }
-    writeNudgeState(next)
+    await saveNudgeState(next)
     return res.status(200).json({
       ok: true,
       sent: true,
