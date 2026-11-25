@@ -2757,13 +2757,19 @@ async function main() {
     done.blob.slice(0, 120),
   )
 
-  // 12) No card buttons by default (avoids “Card callback isn't configured”); text commands instead
+  // 12) Investigation cards expose callback buttons + text-command fallback
   record(
-    'turn.investigate_text_actions',
-    inv.blob.includes('step done') &&
-      inv.blob.includes('review') &&
-      !/"tag":"button"/.test(inv.blob),
-    'text commands without buttons',
+    'turn.investigate_card_action_buttons',
+    inv.blob.includes('"tag":"button"') &&
+      inv.blob.includes('step_done') &&
+      inv.blob.includes('generate_report') &&
+      inv.blob.includes('archive') &&
+      inv.blob.includes('"action":"review"') &&
+      (inv.blob.includes('已完成此步') || inv.blob.includes('Step done')) &&
+      (inv.blob.includes('生成排查报告') ||
+        inv.blob.includes('生成排查報告') ||
+        inv.blob.includes('Generate report')),
+    'callback buttons for step/report/done/review',
   )
   clearSession('smoke_chat', 'card_user')
   await turn(
@@ -2784,6 +2790,25 @@ async function main() {
       cardBlob,
     ) || Boolean(cardReply?.text || cardReply?.card),
     cardBlob.slice(0, 100),
+  )
+  const reportBtnReply = await handleCardAction({
+    openId: 'card_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_card_report',
+    value: { action: 'generate_report', incidentId: '' },
+  })
+  const reportBtnBlob =
+    reportBtnReply?.text || (reportBtnReply?.card ? JSON.stringify(reportBtnReply.card) : '')
+  record(
+    'turn.card_action_generate_report',
+    Boolean(reportBtnReply?.card) &&
+      (/排查过程报告|排查過程報告|Proceed-based investigation report|Investigation report/i.test(
+        reportBtnBlob,
+      ) ||
+        reportBtnBlob.includes('互动') ||
+        reportBtnBlob.includes('timeline') ||
+        reportBtnBlob.includes('时间线')),
+    reportBtnBlob.slice(0, 120),
   )
   clearSession('smoke_chat', 'step_user')
   await turn('investigate-for-step-cmd', 'investigate Mark vs Index 40bps', 'step_user')

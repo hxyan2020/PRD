@@ -715,6 +715,56 @@ async function buildProceedInvestigationReport(args: {
   ].join('\n')
 }
 
+async function replyProceedInvestigationReport(args: {
+  session: InvestigationState
+  lang: Lang
+  chatId: string
+  openId: string
+  messageId: string
+}): Promise<BotReply> {
+  const { session, lang } = args
+  const priorInteractions = ensureSessionInteractions(session).interactions.filter(
+    (i) => i.kind !== 'report_request' && i.kind !== 'report',
+  )
+  const hasCase =
+    session.mode === 'investigate' ||
+    Boolean(session.lastReportId) ||
+    session.facts.some((f) => !f.startsWith('[chat-history]')) ||
+    priorInteractions.length > 0
+  if (!hasCase) {
+    const title =
+      lang === 'zh-Hans' ? '排查过程报告' : lang === 'zh-Hant' ? '排查過程報告' : 'Investigation report'
+    const body =
+      lang === 'zh-Hans'
+        ? '当前没有进行中的排查会话。请先贴告警或发 **investigate**，互动会被记录；完成几轮后再发 **生成排查报告**。'
+        : lang === 'zh-Hant'
+          ? '當前沒有進行中的排查會話。請先貼告警或發 **investigate**，互動會被記錄；完成幾輪後再發 **生成排查報告**。'
+          : 'No active investigation case yet. Paste an alert or send **investigate** first — turns are logged; then send **generate investigation report**.'
+    return { card: simpleCard(title, body, 'wathet') }
+  }
+  const incident = session.lastReportId ? getIncident(session.lastReportId) : undefined
+  const reportMd = await buildProceedInvestigationReport({ lang, session, incident })
+  pushInteraction(session, {
+    role: 'bot',
+    kind: 'report',
+    text: reportMd.slice(0, 2000),
+    messageId: args.messageId,
+  })
+  if (session.lastReportId && incident) {
+    incident.interactions = ensureSessionInteractions(session).interactions.slice(-80)
+    incident.updatedAt = Date.now()
+    upsertIncident(incident)
+  }
+  saveSession(args.chatId, args.openId, session)
+  const title =
+    lang === 'zh-Hans'
+      ? '排查过程报告'
+      : lang === 'zh-Hant'
+        ? '排查過程報告'
+        : 'Proceed-based investigation report'
+  return { card: simpleCard(title, reportMd, 'blue') }
+}
+
 function persistOpenIncident(args: {
   chatId: string
   openId: string
@@ -1184,6 +1234,16 @@ export async function handleCardAction(args: {
       lang,
       newFact: doneFact,
       markStepDone: true,
+    })
+  }
+
+  if (action === 'generate_report') {
+    return replyProceedInvestigationReport({
+      session,
+      lang,
+      chatId: args.chatId,
+      openId: args.openId,
+      messageId: args.messageId,
     })
   }
 
@@ -1695,46 +1755,13 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'inv_report') {
-    const priorInteractions = ensureSessionInteractions(session).interactions.filter(
-      (i) => i.kind !== 'report_request' && i.kind !== 'report',
-    )
-    const hasCase =
-      session.mode === 'investigate' ||
-      Boolean(session.lastReportId) ||
-      session.facts.some((f) => !f.startsWith('[chat-history]')) ||
-      priorInteractions.length > 0
-    if (!hasCase) {
-      const title =
-        lang === 'zh-Hans' ? '排查过程报告' : lang === 'zh-Hant' ? '排查過程報告' : 'Investigation report'
-      const body =
-        lang === 'zh-Hans'
-          ? '当前没有进行中的排查会话。请先贴告警或发 **investigate**，互动会被记录；完成几轮后再发 **生成排查报告**。'
-          : lang === 'zh-Hant'
-            ? '當前沒有進行中的排查會話。請先貼告警或發 **investigate**，互動會被記錄；完成幾輪後再發 **生成排查報告**。'
-            : 'No active investigation case yet. Paste an alert or send **investigate** first — turns are logged; then send **generate investigation report**.'
-      return { card: simpleCard(title, body, 'wathet') }
-    }
-    const incident = session.lastReportId ? getIncident(session.lastReportId) : undefined
-    const reportMd = await buildProceedInvestigationReport({ lang, session, incident })
-    pushInteraction(session, {
-      role: 'bot',
-      kind: 'report',
-      text: reportMd.slice(0, 2000),
+    return replyProceedInvestigationReport({
+      session,
+      lang,
+      chatId: inbound.chatId,
+      openId: inbound.openId,
       messageId: inbound.messageId,
     })
-    if (session.lastReportId && incident) {
-      incident.interactions = ensureSessionInteractions(session).interactions.slice(-80)
-      incident.updatedAt = Date.now()
-      upsertIncident(incident)
-    }
-    saveSession(inbound.chatId, inbound.openId, session)
-    const title =
-      lang === 'zh-Hans'
-        ? '排查过程报告'
-        : lang === 'zh-Hant'
-          ? '排查過程報告'
-          : 'Proceed-based investigation report'
-    return { card: simpleCard(title, reportMd, 'blue') }
   }
 
   if (intent === 'archive') {

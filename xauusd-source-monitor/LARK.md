@@ -27,8 +27,7 @@ Then in **Lark / Feishu Developer Console** (required — without this, DMs stay
    `https://vex-llm-proxy.vercel.app/api/lark/card`  
    → Save / verify.  
    If this is empty, Feishu shows **“Card callback isn't configured”** when tapping buttons.  
-   Investigation cards default to **text commands** (`step done` / `done` / `review`) so UAT works without buttons.  
-   After the Card Request URL is set, optionally set Vercel env `LARK_ENABLE_CARD_BUTTONS=1` to show buttons again.
+   Investigation cards ship **callback buttons** (`已完成此步` / `生成排查报告` / `结束归档` / `复盘清单`); text commands remain as fallback.
 6. Permissions: `im:message` / send-as-bot; image resources if you want OCR.
 7. **Leave Encrypt Key OFF / empty**.
 8. Verification Token: optional.

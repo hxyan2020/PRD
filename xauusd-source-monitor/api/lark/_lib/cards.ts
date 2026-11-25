@@ -152,74 +152,69 @@ export function investigationCard(args: {
         text: {
           tag: 'lark_md',
           content: hans
-            ? [
-                '⌨️ **操作（文字指令，无需点卡片按钮）**',
-                '• 发 **step done** / **已完成此步** — 标记本步完成并刷新路径',
-                '• 发 **生成排查报告** — 按本会话全部互动生成过程报告',
-                '• 发 **done** — 结束并归档',
-                '• 发 **review** — 打开复盘清单',
-              ].join('\n')
+            ? '⌨️ **操作**（点按钮；也可发文字：`step done` / `生成排查报告` / `done` / `review`）'
             : zh
-              ? [
-                  '⌨️ **操作（文字指令，無需點卡片按鈕）**',
-                  '• 發 **step done** / **已完成此步** — 標記本步完成並刷新路徑',
-                  '• 發 **生成排查報告** — 按本會話全部互動生成過程報告',
-                  '• 發 **done** — 結束並歸檔',
-                  '• 發 **review** — 打開複盤清單',
-                ].join('\n')
-              : [
-                  '⌨️ **Actions (text commands — no card-button callback required)**',
-                  '• Send **step done** — mark this step complete and refresh the path',
-                  '• Send **generate investigation report** — proceed-based report from all interactions',
-                  '• Send **done** — close and archive',
-                  '• Send **review** — open the review board',
-                ].join('\n'),
+              ? '⌨️ **操作**（點按鈕；也可發文字：`step done` / `生成排查報告` / `done` / `review`）'
+              : '⌨️ **Actions** (tap a button; or send text: `step done` / `generate report` / `done` / `review`)',
         },
       },
-      // Optional interactive buttons — only when Card Request URL is configured
-      // (Lark shows “Card callback isn't configured” otherwise). Enable with LARK_ENABLE_CARD_BUTTONS=1.
-      ...(process.env.LARK_ENABLE_CARD_BUTTONS === '1'
-        ? [
-            {
-              tag: 'action',
-              actions: [
-                {
-                  tag: 'button',
-                  text: {
-                    tag: 'plain_text',
-                    content: hans ? '已完成此步' : zh ? '已完成此步' : 'Step done',
-                  },
-                  type: 'primary',
-                  value: {
-                    action: 'step_done',
-                    incidentId: args.incidentId || '',
-                  },
-                },
-                {
-                  tag: 'button',
-                  text: {
-                    tag: 'plain_text',
-                    content: hans ? '归档报告' : zh ? '歸檔報告' : 'Archive report',
-                  },
-                  type: 'default',
-                  value: {
-                    action: 'archive',
-                    incidentId: args.incidentId || '',
-                  },
-                },
-                {
-                  tag: 'button',
-                  text: {
-                    tag: 'plain_text',
-                    content: hans ? '复盘清单' : zh ? '複盤清單' : 'Review list',
-                  },
-                  type: 'default',
-                  value: { action: 'review' },
-                },
-              ],
+      // Card Request URL must be set (same as /api/lark/event or /api/lark/card).
+      // Market TF buttons already rely on that callback path.
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '已完成此步' : zh ? '已完成此步' : 'Step done',
             },
-          ]
-        : []),
+            type: 'primary',
+            value: {
+              action: 'step_done',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '生成排查报告' : zh ? '生成排查報告' : 'Generate report',
+            },
+            type: 'default',
+            value: {
+              action: 'generate_report',
+              incidentId: args.incidentId || '',
+            },
+          },
+        ],
+      },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '结束归档' : zh ? '結束歸檔' : 'Done / archive',
+            },
+            type: 'danger',
+            value: {
+              action: 'archive',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '复盘清单' : zh ? '複盤清單' : 'Review',
+            },
+            type: 'default',
+            value: { action: 'review' },
+          },
+        ],
+      },
     ],
   }
 }
