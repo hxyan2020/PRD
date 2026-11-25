@@ -82,13 +82,8 @@ export function investigationCard(args: {
       : zh
         ? '尚未匹配'
         : 'none matched'
-  const kbLine = args.knowledge.length
-    ? args.knowledge.slice(0, 3).join(', ')
-    : hans
-      ? '无'
-      : zh
-        ? '無'
-        : 'none'
+  // Body stays lean: no 知识库 titles / 证据分级 / 指引 — desk links only at the end.
+  void args.knowledge
 
   const sevLabel = hans
     ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
@@ -109,21 +104,18 @@ export function investigationCard(args: {
     ? [
         '📎 **参考（文末）**',
         `• **Skills：** ${skillLine}`,
-        `• **知识库：** ${kbLine}`,
-        `• [打开 Skills 桌面页](${SKILLS_URL}) · [打开知识库桌面页](${KNOWLEDGE_URL})`,
+        `• [打开 Skills 桌面页](${SKILLS_URL})`,
       ].join('\n')
     : zh
       ? [
           '📎 **參考（文末）**',
           `• **Skills：** ${skillLine}`,
-          `• **知識庫：** ${kbLine}`,
-          `• [打開 Skills 桌面頁](${SKILLS_URL}) · [打開知識庫桌面頁](${KNOWLEDGE_URL})`,
+          `• [打開 Skills 桌面頁](${SKILLS_URL})`,
         ].join('\n')
       : [
           '📎 **References (end)**',
           `• **Skills:** ${skillLine}`,
-          `• **Knowledge:** ${kbLine}`,
-          `• [Open Skills desk](${SKILLS_URL}) · [Open Knowledge desk](${KNOWLEDGE_URL})`,
+          `• [Open Skills desk](${SKILLS_URL})`,
         ].join('\n')
 
   return {
@@ -336,13 +328,8 @@ export function investigationPathOverviewCard(args: {
       : zh
         ? '尚未匹配'
         : 'none matched'
-  const kbLine = args.knowledge.length
-    ? args.knowledge.slice(0, 3).join(', ')
-    : hans
-      ? '无'
-      : zh
-        ? '無'
-        : 'none'
+  // No 知识库 titles in investigate body — desk link stays for navigation only via Skills.
+  void args.knowledge
   const pathMd = formatGuidePathLines(args.steps, args.lang)
   const doneCount = args.steps.filter((s) => s.status === 'done' || s.status === 'skipped').length
   const sevLabel = hans
@@ -364,21 +351,18 @@ export function investigationPathOverviewCard(args: {
     ? [
         '📎 **参考（文末）**',
         `• **Skills：** ${skillLine}`,
-        `• **知识库：** ${kbLine}`,
-        `• [打开 Skills 桌面页](${SKILLS_URL}) · [打开知识库桌面页](${KNOWLEDGE_URL})`,
+        `• [打开 Skills 桌面页](${SKILLS_URL})`,
       ].join('\n')
     : zh
       ? [
           '📎 **參考（文末）**',
           `• **Skills：** ${skillLine}`,
-          `• **知識庫：** ${kbLine}`,
-          `• [打開 Skills 桌面頁](${SKILLS_URL}) · [打開知識庫桌面頁](${KNOWLEDGE_URL})`,
+          `• [打開 Skills 桌面頁](${SKILLS_URL})`,
         ].join('\n')
       : [
           '📎 **References (end)**',
           `• **Skills:** ${skillLine}`,
-          `• **Knowledge:** ${kbLine}`,
-          `• [Open Skills desk](${SKILLS_URL}) · [Open Knowledge desk](${KNOWLEDGE_URL})`,
+          `• [Open Skills desk](${SKILLS_URL})`,
         ].join('\n')
 
   return {

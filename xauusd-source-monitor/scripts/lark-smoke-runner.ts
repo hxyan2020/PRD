@@ -3079,10 +3079,12 @@ async function main() {
   )
   record(
     'turn.investigate_exposes_skills_kb',
-    /L1-|L2-|Skills|知识库|Knowledge|排查/i.test(invZh.blob) &&
+    /L1-|L2-|Skills|排查/i.test(invZh.blob) &&
       (invZh.blob.includes('#/skills') || invZh.blob.includes('打开 Skills') || invZh.blob.includes('Open Skills')) &&
-      (invZh.blob.includes('#/knowledge') || invZh.blob.includes('知识库桌面') || invZh.blob.includes('Knowledge desk')) &&
-      // Full Skills/KB dump should not dominate the body (links live at the end)
+      // Investigate body must not list 知识库 / 证据分级 / 指引
+      !/• \*\*知识库|• \*\*知識庫|• \*\*Knowledge|证据分级|證據分級|Evidence grades|• \*\*指引|• \*\*Guidance/i.test(
+        invZh.blob,
+      ) &&
       !(invZh.blob.includes('知识库／Skills 检索结果') || invZh.blob.includes('Knowledge / Skills retrieval')),
     invZh.blob.slice(0, 160),
   )
