@@ -902,9 +902,13 @@ async function main() {
   })
   const logoEls = JSON.stringify(logoCard)
   record(
-    'market.card_has_logo_or_domain_actions',
+    'market.card_sources_markdown_not_buttons',
     logoEls.includes('Opportunity') &&
-      (logoEls.includes('multi_url') || logoEls.includes('lark_md') || logoEls.includes('打开网页')),
+      logoEls.includes('lark_md') &&
+      !logoEls.includes('multi_url') &&
+      !/"tag":"action"/.test(logoEls) &&
+      !/"tag":"button"/.test(logoEls) &&
+      (/🔗|Kitco|OKX|Yahoo|tradingview/i.test(logoEls) || logoEls.includes('打开网页')),
     logoEls.slice(0, 220),
   )
   record(
@@ -1549,10 +1553,28 @@ async function main() {
       !dailyCardBlob.includes('THIS_SHOULD_NOT_APPEAR_IN_DAILY') &&
       dailyCardBlob.includes('OKX K线') &&
       dailyCardBlob.includes('tradingview.com') &&
-      // 早报 sources = markdown hyperlinks only, never action buttons
+      // Daily + hourly market sources = markdown hyperlinks only, never action buttons
       !dailyCardBlob.includes('multi_url') &&
-      !/"tag":"action"/.test(dailyCardBlob),
+      !/"tag":"action"/.test(dailyCardBlob) &&
+      !/"tag":"button"/.test(dailyCardBlob),
     dailyCardBlob.slice(0, 240),
+  )
+  const hourlyCardNoBtn = await buildMarketCard({
+    title: '小时行情扫报',
+    snap: liveSnap,
+    lang: 'zh-Hans',
+    mode: 'hourly',
+    question: '行情',
+  })
+  const hourlyNoBtnBlob = JSON.stringify(hourlyCardNoBtn)
+  record(
+    'cron.hourly_card_sources_markdown_not_buttons',
+    hourlyNoBtnBlob.includes('Opportunity') &&
+      hourlyNoBtnBlob.includes('lark_md') &&
+      !hourlyNoBtnBlob.includes('multi_url') &&
+      !/"tag":"action"/.test(hourlyNoBtnBlob) &&
+      !/"tag":"button"/.test(hourlyNoBtnBlob),
+    hourlyNoBtnBlob.slice(0, 220),
   )
   const { resolveMarketLang: resMktLang, dailyMarketTitle: dTitle } = await import(
     '../api/lark/_lib/market',

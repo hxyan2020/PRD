@@ -9,7 +9,7 @@ import {
   type RankedPoint,
   type ReportSource,
 } from '../../../src/engine/hourlyScan.js'
-import { larkConfigured, resolveFaviconImgKey } from './client.js'
+import { larkConfigured } from './client.js'
 import { simpleCard } from './cards.js'
 import { readDurableJson, writeDurableJson } from './durableJson.js'
 import type { Lang } from './types.js'
@@ -501,32 +501,6 @@ function renderSection(
   return out
 }
 
-/** Lark action row: each source is a button with site favicon as the clickable logo. */
-async function logoLinkActions(sources: ReportSource[]): Promise<Record<string, unknown> | null> {
-  if (!sources.length) return null
-  const slice = sources.slice(0, 5)
-  const keys = await Promise.all(slice.map((s) => resolveFaviconImgKey(s.domain, s.logoUrl)))
-  const actions: Record<string, unknown>[] = slice.map((s, i) => {
-    const label = sourceChipLabel(s).slice(0, 24)
-    const btn: Record<string, unknown> = {
-      tag: 'button',
-      type: 'default',
-      text: { tag: 'plain_text', content: label },
-      multi_url: {
-        url: s.url,
-        pc_url: s.url,
-        android_url: s.url,
-        ios_url: s.url,
-      },
-    }
-    const imgKey = keys[i]
-    if (imgKey) btn.icon = { tag: 'custom_icon', img_key: imgKey }
-    return btn
-  })
-  if (!actions.length) return null
-  return { tag: 'action', actions }
-}
-
 function mdDiv(content: string): Record<string, unknown> {
   return { tag: 'div', text: { tag: 'lark_md', content } }
 }
@@ -699,9 +673,8 @@ function marketFooterBlock(
 }
 
 /**
- * Interactive market card.
- * - hourly: TL;DR / Opp / Risk with per-point source logo button rows
- * - daily: fixed skeleton; sources only as markdown hyperlinks (no buttons)
+ * Market card (daily + half-hourly/hourly).
+ * Sources are always markdown `[label](url)` field links — never Lark action buttons.
  */
 export async function buildMarketCard(opts: {
   title: string
@@ -726,78 +699,25 @@ export async function buildMarketCard(opts: {
     template = 'wathet',
   } = opts
 
-  const empty =
-    mode === 'daily'
-      ? lang === 'zh-Hans'
-        ? '过去 24 小时暂无要点。'
-        : lang === 'zh-Hant'
-          ? '過去 24 小時暫無要點。'
-          : 'No points in the last 24h.'
-      : lang === 'zh-Hans'
-        ? '本小时暂无要点。'
-        : lang === 'zh-Hant'
-          ? '本小時暫無要點。'
-          : 'No points this hour.'
-
   // Daily: never append free-form LLM text — keeps section order identical every day.
-  const dailyAppendix = mode === 'daily' ? '' : appendix
+  const bodyAppendix = mode === 'daily' ? '' : appendix
 
-  const dailyBody =
+  const bodyMd =
     mode === 'daily'
       ? await formatDaily24hMarketAnswerAsync(snap, lang)
       : formatMarketAnswer(snap, lang, question)
 
-  const fallbackMd = [intro, dailyBody, dailyAppendix].filter(Boolean).join('\n').trim()
+  const fallbackMd = [intro, bodyMd, bodyAppendix].filter(Boolean).join('\n').trim()
 
   if (!larkConfigured()) {
     return simpleCard(title, fallbackMd, template)
   }
 
-  const hourly = snap.hourly
-  const byId = sourcesById(hourly?.sources)
   const elements: Record<string, unknown>[] = []
-
   if (intro.trim()) elements.push(mdDiv(intro.trim()))
-
-  if (mode === 'daily') {
-    // Single markdown body — sources are [label](url) fields, never action buttons.
-    // Fixed + per-point links are 404-filtered (see formatDaily24hMarketAnswerAsync / pointSources).
-    elements.push(mdDiv(dailyBody))
-  } else {
-    elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode)))
-    // Hourly: TL;DR + per-point logo rows (variable is OK for on-demand scans)
-    const tldrLines = renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true)
-    elements.push(mdDiv(tldrLines.join('\n')))
-    if (hourly?.tldr?.[0]) {
-      const row = await logoLinkActions(pointSources(hourly.tldr[0], byId))
-      if (row) elements.push(row)
-    }
-
-    elements.push(mdDiv('**✨ Opportunity**'))
-    const opps = (hourly?.opportunity || []).slice(0, 4)
-    if (!opps.length) elements.push(mdDiv(`• ${empty}`))
-    else {
-      for (const p of opps) {
-        elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
-        const row = await logoLinkActions(pointSources(p, byId))
-        if (row) elements.push(row)
-      }
-    }
-
-    elements.push(mdDiv('**⚠️ Risk**'))
-    const risks = (hourly?.risk || []).slice(0, 4)
-    if (!risks.length) elements.push(mdDiv(`• ${empty}`))
-    else {
-      for (const p of risks) {
-        elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
-        const row = await logoLinkActions(pointSources(p, byId))
-        if (row) elements.push(row)
-      }
-    }
-
-    elements.push(mdDiv(marketFooterBlock(snap, lang, question, mode)))
-    if (dailyAppendix.trim()) elements.push(mdDiv(dailyAppendix.trim()))
-  }
+  // Single markdown body for both daily and half-hourly — sources as hyperlinks only.
+  elements.push(mdDiv(bodyMd))
+  if (bodyAppendix.trim()) elements.push(mdDiv(bodyAppendix.trim()))
 
   return {
     config: { wide_screen_mode: true },
