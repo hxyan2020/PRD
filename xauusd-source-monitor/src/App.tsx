@@ -9,7 +9,6 @@ import { MarketConditionPage } from './pages/MarketConditionPage'
 import { SkillsPage } from './pages/SkillsPage'
 import { KnowledgePage } from './pages/KnowledgePage'
 import { InvestigatePage } from './pages/InvestigatePage'
-import { StatsPage } from './pages/StatsPage'
 import { ReportsDashboardPage } from './pages/ReportsDashboardPage'
 import { LarkBotPage } from './pages/LarkBotPage'
 import { AlertOptimizePage } from './pages/AlertOptimizePage'
@@ -21,7 +20,6 @@ const NAV = [
   { to: '/skills', full: 'navSkills', short: 'navSkillsShort' },
   { to: '/knowledge', full: 'navKnowledge', short: 'navKnowledgeShort' },
   { to: '/reports', full: 'navReports', short: 'navReportsShort' },
-  { to: '/stats', full: 'navStats', short: 'navStatsShort' },
   { to: '/lark', full: 'navLark', short: 'navLarkShort' },
 ] as const
 
@@ -190,8 +188,8 @@ export default function App() {
           <Route path="/knowledge" element={<KnowledgePage />} />
           <Route path="/investigate" element={<InvestigatePage />} />
           <Route path="/alert-optimize" element={<AlertOptimizePage />} />
-          <Route path="/stats" element={<StatsPage />} />
           <Route path="/reports" element={<ReportsDashboardPage />} />
+          <Route path="/stats" element={<Navigate to="/reports" replace />} />
           <Route path="/alerts" element={<Navigate to="/reports" replace />} />
           <Route path="/lark" element={<LarkBotPage />} />
           <Route path="/" element={<Navigate to="/investigate" replace />} />
