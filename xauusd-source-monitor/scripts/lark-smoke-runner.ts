@@ -157,6 +157,27 @@ async function main() {
     rag.kb.some((k) => k.id.startsWith('ve-doc-') || /Mark|Funding|SOP|永续/i.test(k.title)),
     rag.kb.map((k) => k.id).slice(0, 4).join(','),
   )
+  // Skills are authored 1:1 by alert name/code — paste should resolve to that skill, not a Mark/Index soup.
+  const byCode = retrieveRag('告警：XAU_USD Mark 偏离 48bps，IDX-01 被剔除')
+  record(
+    'rag.alert_code_deterministic',
+    byCode.hits[0]?.id === 'L1-13' &&
+      byCode.hits.filter((h) => h.level === 'L1').length <= 2 &&
+      !byCode.hits.some((h) => h.id === 'L1-08' || h.id === 'L1-07'),
+    byCode.hits.map((h) => `${h.id}:${h.score}`).join(','),
+  )
+  const byName = retrieveRag('标记价格降级告警 MARK-01 XAU_USD')
+  record(
+    'rag.alert_name_deterministic',
+    byName.hits[0]?.id === 'L1-09' && byName.hits.filter((h) => h.level === 'L1').length <= 2,
+    byName.hits.map((h) => `${h.id}:${h.score}`).join(','),
+  )
+  const byFunding = retrieveRag('外部资金费率偏差监控 Funding 超阈')
+  record(
+    'rag.alert_funding_deterministic',
+    byFunding.hits[0]?.id === 'L1-16' && !byFunding.hits.some((h) => h.id === 'L1-07'),
+    byFunding.hits.map((h) => `${h.id}:${h.score}`).join(','),
+  )
   const actions = preferredActions(rag.hits, 'en', 2)
   record(
     'preferred_actions.human_gate',

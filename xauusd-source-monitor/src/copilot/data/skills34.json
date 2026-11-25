@@ -162,7 +162,7 @@
       "level": "L1",
       "name": "指数市场异常：仅剩单一有效源",
       "severity": "P1",
-      "matchHints": "L1-15 指数市场异常：仅剩单一有效源  单一有效源 IDX-05 IDX-08",
+      "matchHints": "L1-15 指数市场异常：仅剩单一有效源  单一有效源 无有效源 no valid source single source IDX-05 IDX-08",
       "linkedL1": "",
       "check": "Lark确认仅剩1个有效指数源，核对合约及时间 → 检查Lark源超时、剔除/恢复告警 → 前端查看Index、Mark、成交价K线 → 比较可比友商Index价格",
       "action": "立即通知RC/BIT/Pricing",

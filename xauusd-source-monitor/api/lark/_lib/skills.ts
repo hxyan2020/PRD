@@ -77,6 +77,148 @@ function scoreAgainst(haystack: string, queryTokens: string[], queryLower: strin
   return score
 }
 
+/** Alert / metric codes that Skills are authored against (e.g. IDX-01, MARK-01, PRICE-02). */
+const ALERT_CODE_RE =
+  /\b(?:L[12]-\d{1,2}|L2-[A-F]|IDX-\d{1,2}|PRICE-\d{1,2}|MARK-\d{1,2}|BOOK-\d{1,2}|FUND-\d{1,2}|PEER-\d{1,2}|VE-SOP-\d{1,2})\b/gi
+
+export function extractAlertCodes(text: string): string[] {
+  return [...new Set((text.match(ALERT_CODE_RE) || []).map((x) => x.toUpperCase()))]
+}
+
+function normalizeAlertName(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[（(].*?[）)]/g, '')
+    .replace(/[\s_/·\-—–：:，,。.!！？?·•|]+/g, '')
+}
+
+/** Codes listed on a skill (id + matchHints + name). */
+function skillAlertCodes(skill: SkillRec): string[] {
+  return extractAlertCodes(`${skill.id} ${skill.name} ${skill.matchHints}`)
+}
+
+/**
+ * Skills are written 1:1 against alert names / codes.
+ * Prefer exact name or alert-code hits; only soft-token fallback when neither is present.
+ * Soft scoring uses name+hints only — never the long check/action body (that caused Mark/Index/Funding to hit half the catalogue).
+ */
+function matchSkills(text: string, pool: SkillRec[]): SkillHit[] {
+  const queryLower = text.toLowerCase()
+  const queryNorm = normalizeAlertName(text)
+  const queryCodes = new Set(extractAlertCodes(text))
+  const queryTokens = tokenize(text)
+
+  const scored = pool.map((s) => {
+    let score = 0
+    let deterministic = false
+
+    // 1) Alert-code hit (IDX-01, MARK-01, …) — strongest signal
+    const codes = skillAlertCodes(s)
+    const codeHits = codes.filter(
+      (c) => queryCodes.has(c) || queryLower.includes(c.toLowerCase()),
+    )
+    if (codeHits.length) {
+      score += 100 * codeHits.length
+      deterministic = true
+    }
+
+    // 2) Full skill / alert name appears in the pasted text
+    const name = (s.name || '').trim()
+    const nameNorm = normalizeAlertName(name)
+    if (nameNorm.length >= 4 && queryNorm.includes(nameNorm)) {
+      score += 120
+      deterministic = true
+    } else if (name.length >= 4 && queryLower.includes(name.toLowerCase())) {
+      score += 100
+      deterministic = true
+    } else {
+      // Distinctive name head (before punctuation / slash) e.g.「标记价格降级告警」
+      const nameHead = name.split(/[\/／·|]/)[0]?.trim() || ''
+      const headNorm = normalizeAlertName(nameHead)
+      if (headNorm.length >= 4 && queryNorm.includes(headNorm)) {
+        score += 110
+        deterministic = true
+      }
+    }
+
+    // 3) Soft overlap on id / name / hints only (not check / action / opt)
+    const softHay = `${s.id} ${s.name} ${s.matchHints}`
+    score += scoreAgainst(softHay, queryTokens, queryLower)
+
+    // Distinctive hint keywords / phrases (alert-name aliases). Skip shared desk words.
+    const weakHint =
+      /^(偏离|监控|告警|价格|资金|异常|失败|超时|恢复|变更|内部|外部|指数|标记|mark|index|funding|price|peer|book|last|mid)$/i
+    for (const k of s.matchHints.split(/[\s,/|]+/).filter(Boolean)) {
+      if (k.length < 4) continue
+      if (/^L[12]-/i.test(k) || extractAlertCodes(k).length) continue
+      if (weakHint.test(k)) continue
+      if (!queryLower.includes(k.toLowerCase())) continue
+      score += k.length >= 6 ? 3 : 2
+      // CJK alert aliases (≥4) are treated as name-level hits when unique enough
+      if (/[\u4e00-\u9fff]/.test(k) && k.length >= 4) {
+        score += 90
+        deterministic = true
+      }
+    }
+    // Multi-word English alert aliases in hints
+    for (const phrase of [
+      'no valid source',
+      'single source',
+      'empty book',
+      'no trade',
+    ]) {
+      if (
+        s.matchHints.toLowerCase().includes(phrase) &&
+        queryLower.includes(phrase)
+      ) {
+        score += 100
+        deterministic = true
+      }
+    }
+
+    return {
+      id: s.id,
+      name: s.name,
+      level: s.level,
+      severity: s.severity,
+      check: s.check,
+      action: s.action,
+      score,
+      deterministic,
+    }
+  })
+
+  const strong = scored
+    .filter((x) => x.deterministic && x.score >= 100)
+    .sort((a, b) => b.score - a.score)
+
+  if (strong.length) {
+    // Keep only name/code winners near the top — typically one alert → one L1 skill.
+    const best = strong[0]!.score
+    return strong
+      .filter((x) => x.score >= best - 40)
+      .slice(0, 2)
+      .map(({ deterministic: _d, ...hit }) => hit)
+  }
+
+  // Ambiguous paste (no alert name/code): soft top hits, still capped tightly.
+  // If the leader is clearly ahead, treat it as the alert-name winner (one skill).
+  const soft = scored
+    .filter((x) => x.score > 4)
+    .sort((a, b) => b.score - a.score)
+  if (!soft.length) return []
+  const bestSoft = soft[0]!.score
+  const secondSoft = soft[1]?.score ?? 0
+  if (bestSoft >= secondSoft + 5) {
+    return soft.slice(0, 1).map(({ deterministic: _d, ...hit }) => ({
+      ...hit,
+      // Promote clear soft leaders so callers treat them as alert-name matches.
+      score: Math.max(hit.score, 100),
+    }))
+  }
+  return soft.slice(0, 3).map(({ deterministic: _d, ...hit }) => hit)
+}
+
 /**
  * Skills = Runbook V18 的 34 个排查场景（28 L1 + 6 L2）。
  * 监控指标／「可能出现的风险」清单在知识库，不混进 Skills。
@@ -186,38 +328,14 @@ export function resolveNodeById(
   return null
 }
 
-function matchSkills(text: string, pool: SkillRec[]): SkillHit[] {
-  const queryLower = text.toLowerCase()
-  const queryTokens = tokenize(text)
-  return pool
-    .map((s) => {
-      const hay = `${s.id} ${s.name} ${s.matchHints} ${s.check} ${s.action} ${s.opt}`
-      let score = scoreAgainst(hay, queryTokens, queryLower)
-      // keep legacy id/name includes for latin ids like IDX-01
-      const keys = [s.id.toLowerCase(), s.name.toLowerCase(), ...s.matchHints.split(/[\s,/|]+/).filter(Boolean)]
-      for (const k of keys) {
-        if (k.length >= 2 && queryLower.includes(k.toLowerCase())) score += k.length >= 4 ? 2 : 1
-      }
-      return {
-        id: s.id,
-        name: s.name,
-        level: s.level,
-        severity: s.severity,
-        check: s.check,
-        action: s.action,
-        score,
-      }
-    })
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-}
-
 export function retrieveRag(text: string): { hits: SkillHit[]; kb: KbHit[]; severity: string } {
   const all = loadSkills()
   const l1Pool = all.filter((s) => s.level === 'L1')
   const l2Pool = all.filter((s) => s.level === 'L2')
-  const l1Hits = matchSkills(text, l1Pool).slice(0, 6)
+  // matchSkills already returns alert-name/code winners (≤2) or a tight soft top (≤3)
+  const l1Hits = matchSkills(text, l1Pool)
   const ids = new Set(l1Hits.map((h) => h.id))
+  const deterministicL1 = l1Hits.length > 0 && l1Hits[0]!.score >= 100
 
   const linkedL2 = l2Pool
     .map((s) => ({
@@ -226,7 +344,7 @@ export function retrieveRag(text: string): { hits: SkillHit[]; kb: KbHit[]; seve
     }))
     .filter((o) => o.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 3)
+    .slice(0, deterministicL1 ? 1 : 2)
     .map((o) => ({
       id: o.s.id,
       name: o.s.name,
@@ -237,9 +355,12 @@ export function retrieveRag(text: string): { hits: SkillHit[]; kb: KbHit[]; seve
       score: o.score + 2,
     }))
 
-  const directL2 = matchSkills(text, l2Pool)
-    .filter((h) => !linkedL2.some((x) => x.id === h.id))
-    .slice(0, 2)
+  // When L1 is determined by alert name/code, do not soft-pull unrelated L2.
+  const directL2 = deterministicL1
+    ? []
+    : matchSkills(text, l2Pool)
+        .filter((h) => !linkedL2.some((x) => x.id === h.id))
+        .slice(0, 1)
 
   const hits = [...l1Hits, ...linkedL2, ...directL2]
 

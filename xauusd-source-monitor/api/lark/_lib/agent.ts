@@ -116,18 +116,24 @@ function titleFromFacts(facts: string[], lang: Lang): string {
 function buildSummary(args: {
   lang: Lang
   severity: string
-  hits: { id: string; name: string }[]
+  hits: { id: string; name: string; score?: number }[]
   kb: { title: string }[]
   facts: string[]
   adapted: boolean
 }): string {
   const hans = args.lang === 'zh-Hans'
   const hant = args.lang === 'zh-Hant'
+  const byAlertName = args.hits.length > 0 && (args.hits[0]?.score ?? 0) >= 100
   const hitLine = args.hits.length
-    ? args.hits
-        .slice(0, 4)
-        .map((h) => h.id)
-        .join(', ')
+    ? byAlertName
+      ? args.hits
+          .slice(0, 2)
+          .map((h) => `${h.id}「${h.name}」`)
+          .join(' · ')
+      : args.hits
+          .slice(0, 4)
+          .map((h) => h.id)
+          .join(', ')
     : hans
       ? '无自信匹配'
       : hant
@@ -143,12 +149,19 @@ function buildSummary(args: {
       : hant
         ? '無'
         : 'none'
+  const skillLabel = byAlertName
+    ? hans
+      ? '告警名确定命中'
+      : hant
+        ? '告警名確定命中'
+        : 'alert-name match'
+    : 'Skills'
   if (hans) {
     return [
       '📋 **摘要**',
       '',
       `• **已摄入事实／证据：** **${args.facts.length}**`,
-      `• **本次参考：** Skills **${hitLine}** · 知识库 **${kbLine}**（文末可点开）`,
+      `• **${skillLabel}：** **${hitLine}** · 知识库 **${kbLine}**（文末可点开）`,
       '• **证据分级：** **已证实** / **假设** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
       args.adapted
         ? '• **指引：** 排查路径已依你最新证据调整；请继续回复结果'
@@ -160,7 +173,7 @@ function buildSummary(args: {
       '📋 **摘要**',
       '',
       `• **已攝入事實／證據：** **${args.facts.length}**`,
-      `• **本次參考：** Skills **${hitLine}** · 知識庫 **${kbLine}**（文末可點開）`,
+      `• **${skillLabel}：** **${hitLine}** · 知識庫 **${kbLine}**（文末可點開）`,
       '• **證據分級：** **已證實** / **假設** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
       args.adapted
         ? '• **指引：** 排查路徑已依你最新證據調整；請繼續回覆結果'
@@ -171,7 +184,7 @@ function buildSummary(args: {
     '📋 **Summary**',
     '',
     `• **Facts ingested:** **${args.facts.length}**`,
-    `• **Used this turn:** Skills **${hitLine}** · Knowledge **${kbLine}** (links at end)`,
+    `• **${skillLabel}:** **${hitLine}** · Knowledge **${kbLine}** (links at end)`,
     '• **Evidence grades:** **Confirmed** / **Suspected** / **Unknown** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
     args.adapted
       ? '• **Guidance:** Path re-ranked from your latest evidence — reply with findings'
@@ -778,18 +791,25 @@ async function runInvestigation(args: {
   })
 
   const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
+  const primaryByAlertName = hits.length > 0 && hits[0]!.score >= 100
   const judgePrompt =
     args.lang === 'zh-Hans'
-      ? '根据事故事实与命中的 Skills，写排查报告正文，必须含三块：🔎 可能原因、🧭 排查路径（后管／前端链路）、🌿 决策分支。可能原因分成「已证实 / 假设 / 未排除」，标注 [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]。排查路径只展开 Skill.check 里已有的步骤（含「后管→…」），不要增补未写明的后管菜单或字段。决策分支只复述 Skill.action 原文；若含 [待确认]／未入库，必须原样标明「决策树未入库」，禁止自行发明若/则分支。知识库只点名标题（全文在文末链接）。用 emoji 分段。必须用简体中文。优先 V Exchange 永续；忽略 CFD。'
+      ? primaryByAlertName
+        ? 'Skills 按告警名一一对应；本次已按告警名／告警码确定命中，只围绕下列 Skill 写排查正文（禁止再联想其它场景）。必须含三块：🔎 可能原因、🧭 排查路径（只展开该 Skill.check）、🌿 决策分支（只复述该 Skill.action）。勿增补未写明的后管菜单／字段／若则分支。用简体中文、emoji 分段。忽略 CFD。'
+        : '根据事故事实与命中的 Skills，写排查报告正文，必须含三块：🔎 可能原因、🧭 排查路径（后管／前端链路）、🌿 决策分支。排查路径只展开 Skill.check 已有步骤，不要增补未写明的后管菜单或字段。决策分支只复述 Skill.action 原文；禁止自行发明若/则分支。用简体中文。忽略 CFD。'
       : args.lang === 'zh-Hant'
-        ? '根據事故事實與命中的 Skills，寫排查報告正文，必須含三塊：🔎 可能原因、🧭 排查路徑（後管／前端鏈路）、🌿 決策分支。排查路徑只展開 Skill.check 已有步驟，勿增補未寫明的後管菜單。決策分支只複述 Skill.action；若含 [待確認]／未入庫，必須標明「決策樹未入庫」，禁止臆造若／則分支。知識庫只點名標題。必須用繁體中文。優先 V Exchange 永續；忽略 CFD。'
-        : 'Write three sections: Possible causes, Investigation path (only steps present in Skill.check), Decision branches (only Skill.action text). If action contains [待确认]/not in repo, say the decision tree is missing — never invent if/then branches. Tag causes [OBS]/[DESIGN]/[PUBLIC]/[TBC]/[INCIDENT]. Only name KB titles. Prefer V Exchange perpetual; ignore CFD. English.'
+        ? primaryByAlertName
+          ? 'Skills 按告警名一一對應；本次已確定命中，只圍繞下列 Skill 寫排查正文。必須含：可能原因、排查路徑（只展開 Skill.check）、決策分支（只複述 Skill.action）。勿臆造。繁體中文。'
+          : '根據事故事實與命中的 Skills，寫排查報告正文，必須含三塊：可能原因、排查路徑、決策分支。只展開 Skill.check／action，勿臆造。繁體中文。'
+        : primaryByAlertName
+          ? 'Skills map 1:1 to alert names. This turn has a deterministic alert-name hit — write only around the listed Skill(s). Sections: causes, path (Skill.check only), decisions (Skill.action only). Never invent menus/branches. English.'
+          : 'Write three sections from the hit Skills only: causes, path (Skill.check), decisions (Skill.action). Never invent if/then branches. English.'
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
     context: [
       `FACTS:\n${blob.slice(0, 6000)}`,
-      `SKILLS (check=admin path; action=decision branches):\n${hits
+      `${primaryByAlertName ? 'DETERMINISTIC_ALERT_SKILLS' : 'SKILLS'} (check=admin path; action=decision branches):\n${hits
         .map((h) => `${h.id} ${h.name}\nCHECK: ${h.check}\nACTION: ${h.action}`)
         .join('\n\n')}`,
       `KB:\n${kb.map((k) => `${k.title}: ${k.body.slice(0, 1500)}`).join('\n')}`,
