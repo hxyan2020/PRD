@@ -2029,7 +2029,7 @@ async function main() {
       greetLater.includes('**行情**') &&
       greetLater.includes('震荡行情预警') &&
       !greetLater.includes('半小时行情') &&
-      greetLater.includes('每日 24h') &&
+      !greetLater.includes('每日 24h') &&
       greetLater.includes('Yan Haixiang') &&
       greetLater.includes('UAT') &&
       !greetLater.includes('截图欢迎直接丢过来') &&
@@ -2043,6 +2043,13 @@ async function main() {
       !greetingReply('zh-Hant').includes('**完成**') &&
       !greetingReply('en').includes('**done**'),
     'archive keyword kept as command; not listed in greeting',
+  )
+  record(
+    'greeting.no_daily_24h_line',
+    !greetingReply('zh-Hans').includes('每日 24h') &&
+      !greetingReply('zh-Hant').includes('每日 24h') &&
+      !greetingReply('en').includes('daily 24h'),
+    'cron still pushes daily; not listed in greeting',
   )
   const slotA = shanghaiHalfHourKey(Date.parse('2026-11-24T12:05:00Z')) // 20:05 CST → 20:00
   const slotB = shanghaiHalfHourKey(Date.parse('2026-11-24T12:35:00Z')) // 20:35 CST → 20:30
