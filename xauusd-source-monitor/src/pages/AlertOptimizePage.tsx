@@ -106,6 +106,8 @@ export function AlertOptimizePage() {
   const appLang = lang === 'en' ? 'en' : 'zh-Hant'
 
   const [datasets, setDatasets] = useState<IngestedDataset[]>([])
+  const [csvPaste, setCsvPaste] = useState('')
+  const [csvPasteName, setCsvPasteName] = useState('pasted.csv')
   const [apiUrl, setApiUrl] = useState('')
   const [apiHeaders, setApiHeaders] = useState('{}')
   const [apiName, setApiName] = useState('V Exchange API')
@@ -129,6 +131,15 @@ export function AlertOptimizePage() {
       next.push(parseCsvText(text, file.name))
     }
     setDatasets((d) => [...d, ...next])
+  }
+
+  const addPastedCsv = () => {
+    const text = csvPaste.trim()
+    if (!text) return
+    setError('')
+    const name = csvPasteName.trim() || 'pasted.csv'
+    setDatasets((d) => [...d, parseCsvText(text, name)])
+    setCsvPaste('')
   }
 
   const addApi = async () => {
@@ -251,15 +262,34 @@ export function AlertOptimizePage() {
         <p className="sub">{t('aoIngestSub')}</p>
 
         <div className="ao-grid">
-          <label className="ao-field">
-            <span>{t('aoCsvUpload')}</span>
+          <div className="ao-field ao-csv-block">
+            <label className="ao-field">
+              <span>{t('aoCsvUpload')}</span>
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                multiple
+                onChange={(e) => void onCsvFiles(e.target.files)}
+              />
+            </label>
+            <span>{t('aoCsvPaste')}</span>
             <input
-              type="file"
-              accept=".csv,text/csv"
-              multiple
-              onChange={(e) => void onCsvFiles(e.target.files)}
+              type="text"
+              value={csvPasteName}
+              placeholder={t('aoCsvPasteNamePh')}
+              onChange={(e) => setCsvPasteName(e.target.value)}
             />
-          </label>
+            <textarea
+              rows={5}
+              value={csvPaste}
+              onChange={(e) => setCsvPaste(e.target.value)}
+              placeholder={t('aoCsvPastePh')}
+              aria-label={t('aoCsvPaste')}
+            />
+            <button type="button" className="archive-btn" onClick={addPastedCsv}>
+              {t('aoCsvPasteAdd')}
+            </button>
+          </div>
 
           <div className="ao-field ao-api-block">
             <span>{t('aoApiUrl')}</span>
