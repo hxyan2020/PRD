@@ -4,6 +4,8 @@ import {
   greetingCard,
   helpCard,
   incidentDetailCard,
+  investigationEscalateBriefingCard,
+  investigationEscalatedWaitingCard,
   investigationEvidencePromptCard,
   investigationGuideCompleteCard,
   investigationPathOverviewCard,
@@ -17,6 +19,14 @@ import {
   simpleCard,
   skillsCatalogCard,
 } from './cards.js'
+import {
+  clearEscalationPending,
+  clearEscalationsForOperator,
+  escalateRolesForStep,
+  getEscalationPending,
+  rememberEscalationPending,
+  resolveEscalateOpenIds,
+} from './escalate.js'
 import {
   normalizeRiskVerdict,
   riskVerdictEmoji,
@@ -1130,12 +1140,19 @@ function guideStepReply(args: {
     return { card: complete }
   }
 
+  const step = steps[idx]!
+  const skillAction =
+    args.session.lastHits.find((h) => h.id === step.skillId)?.action ||
+    loadSkills().find((s) => s.id === step.skillId)?.action ||
+    ''
+  const escalateRoles = escalateRolesForStep(step, skillAction)
   const stepCard = investigationStepGuideCard({
     lang: args.lang,
-    step: steps[idx]!,
+    step,
     stepIndex: idx,
     totalSteps: steps.length,
     incidentId: args.incidentId,
+    escalateRoles,
   })
   if (args.includeOverview) {
     return { card: overview, followUpCards: [stepCard] }
@@ -1148,7 +1165,7 @@ async function advanceGuideAfterUserInput(args: {
   lang: Lang
   session: InvestigationState
   text: string
-  kind: 'evidence' | 'required_skip_reply'
+  kind: 'evidence' | 'required_skip_reply' | 'escalate_feedback'
 }): Promise<BotReply> {
   const session = args.session
   const steps = session.pathSteps || []
@@ -1166,6 +1183,18 @@ async function advanceGuideAfterUserInput(args: {
         }),
       }
     }
+    if (args.kind === 'escalate_feedback' && step) {
+      return {
+        card: investigationEscalatedWaitingCard({
+          lang: args.lang,
+          step,
+          stepIndex: idx,
+          totalSteps: steps.length,
+          roles: session.escalation?.roles || ['RC'],
+          notifiedCount: session.escalation?.openIds?.length || 0,
+        }),
+      }
+    }
     if (step) {
       return {
         card: investigationRequiredSkipPromptCard({
@@ -1179,28 +1208,155 @@ async function advanceGuideAfterUserInput(args: {
   }
 
   if (step) {
-    step.status = args.kind === 'evidence' ? 'done' : 'skipped'
+    step.status =
+      args.kind === 'required_skip_reply' ? 'skipped' : 'done'
     if (!session.checkedSteps.some((s) => s.toLowerCase() === step.label.toLowerCase())) {
       session.checkedSteps.push(step.label)
     }
   }
   session.stepAwaiting = 'none'
+  session.escalation = undefined
   pushInteraction(session, {
     role: 'user',
-    kind: args.kind === 'evidence' ? 'evidence' : 'step_skip',
-    text: fact,
+    kind:
+      args.kind === 'evidence'
+        ? 'evidence'
+        : args.kind === 'escalate_feedback'
+          ? 'escalate_feedback'
+          : 'step_skip',
+    text:
+      args.kind === 'escalate_feedback'
+        ? `escalate_feedback:${fact}`
+        : fact,
     messageId: args.msg.messageId,
   })
+  await clearEscalationsForOperator(args.msg.chatId, args.msg.openId)
   await saveSessionDurable(args.msg.chatId, args.msg.openId, session)
+
+  const newFact =
+    args.kind === 'escalate_feedback'
+      ? args.lang === 'zh-Hans'
+        ? `升级反馈：${fact}`
+        : args.lang === 'zh-Hant'
+          ? `升級反饋：${fact}`
+          : `Escalate feedback: ${fact}`
+      : fact
 
   // Re-run investigation with the evidence/reply so coverage + incident stay in sync.
   return runInvestigation({
     msg: args.msg,
     lang: args.lang,
-    newFact: fact,
-    markStepDone: args.kind === 'evidence',
+    newFact,
+    markStepDone: args.kind !== 'required_skip_reply',
     guideAdvanceOnly: true,
   })
+}
+
+/** Escalatee replied in their own DM — fold feedback into the operator's case. */
+async function ingestEscalateeFeedback(args: {
+  escalateeOpenId: string
+  escalateeChatId: string
+  messageId: string
+  text: string
+}): Promise<BotReply | null> {
+  const pending = await getEscalationPending(args.escalateeOpenId)
+  if (!pending) return null
+  const fact = args.text.trim()
+  if (!fact) {
+    return {
+      card: simpleCard(
+        pending.lang === 'en' ? 'Need feedback' : '请补充反馈',
+        pending.lang === 'en'
+          ? 'Reply with your conclusion for the escalated step.'
+          : '请直接回复你对本步的结论／反馈。',
+        'wathet',
+      ),
+    }
+  }
+  const opSession = await getSessionDurable(
+    pending.operatorChatId,
+    pending.operatorOpenId,
+  )
+  const lang = opSession.preferredLang || pending.lang || 'zh-Hans'
+  let escalateeName = ''
+  try {
+    escalateeName = (await fetchUserDisplayName(args.escalateeOpenId)) || ''
+  } catch {
+    escalateeName = ''
+  }
+  const labeled =
+    lang === 'zh-Hans'
+      ? `【${pending.roles.join('/') || '升级'}反馈 · ${escalateeName || '同事'}】${fact}`
+      : lang === 'zh-Hant'
+        ? `【${pending.roles.join('/') || '升級'}反饋 · ${escalateeName || '同事'}】${fact}`
+        : `[${pending.roles.join('/') || 'escalate'} feedback · ${escalateeName || 'peer'}] ${fact}`
+
+  // Advance operator case as if they pasted the feedback.
+  const fakeMsg: IncomingMessage = {
+    messageId: args.messageId,
+    chatId: pending.operatorChatId,
+    chatType: 'p2p',
+    openId: pending.operatorOpenId,
+    messageType: 'text',
+    text: labeled,
+    mentionedBot: true,
+    rawContent: labeled,
+  }
+  if (opSession.mode === 'investigate') {
+    opSession.pathStepIndex =
+      opSession.pathSteps?.findIndex((s) => s.id === pending.stepId) ??
+      opSession.pathStepIndex
+    opSession.stepAwaiting = 'escalate_feedback'
+    await saveSessionDurable(pending.operatorChatId, pending.operatorOpenId, opSession)
+    const advanced = await advanceGuideAfterUserInput({
+      msg: fakeMsg,
+      lang,
+      session: opSession,
+      text: labeled,
+      kind: 'escalate_feedback',
+    })
+    // Notify operator that feedback arrived.
+    try {
+      const { sendCardToOpenId, sendCardToChat } = await import('./client.js')
+      const note = simpleCard(
+        lang === 'zh-Hans'
+          ? '收到升级反馈'
+          : lang === 'zh-Hant'
+            ? '收到升級反饋'
+            : 'Escalate feedback received',
+        labeled.slice(0, 1800),
+        'green',
+      )
+      if (pending.operatorChatId.startsWith('oc_')) {
+        await sendCardToChat(pending.operatorChatId, note)
+      } else if (pending.operatorOpenId.startsWith('ou_')) {
+        await sendCardToOpenId(pending.operatorOpenId, note)
+      }
+      void advanced
+    } catch {
+      /* best-effort */
+    }
+  } else {
+    pushInteraction(opSession, {
+      role: 'user',
+      kind: 'escalate_feedback',
+      text: labeled,
+      messageId: args.messageId,
+    })
+    await saveSessionDurable(pending.operatorChatId, pending.operatorOpenId, opSession)
+    await clearEscalationPending(args.escalateeOpenId)
+  }
+
+  await clearEscalationPending(args.escalateeOpenId)
+  return {
+    card: simpleCard(
+      pending.lang === 'en' ? 'Feedback sent' : '反馈已回传',
+      pending.lang === 'en'
+        ? 'Thanks — your reply was logged on the investigation timeline and sent to the operator.'
+        : '已记入排查时间线并通知升级方。谢谢。',
+      'green',
+    ),
+  }
 }
 
 async function runInvestigation(args: {
@@ -1718,6 +1874,142 @@ export async function handleCardAction(args: {
       markStepDone: true,
       guideAdvanceOnly: true,
     })
+  }
+
+  if (action === 'guide_step_escalate') {
+    const steps = session.pathSteps || []
+    const stepId = String(args.value.stepId || '')
+    let idx = steps.findIndex((s) => s.id === stepId)
+    if (idx < 0) idx = session.pathStepIndex ?? firstPendingGuideIndex(steps)
+    const step = idx >= 0 ? steps[idx] : undefined
+    if (!step) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '无当前步骤' : lang === 'zh-Hant' ? '無當前步驟' : 'No current step',
+          lang === 'zh-Hans'
+            ? '请先贴告警开始排查。'
+            : lang === 'zh-Hant'
+              ? '請先貼告警開始排查。'
+              : 'Paste an alert to start investigation.',
+          'wathet',
+        ),
+      }
+    }
+    const skillAction =
+      session.lastHits.find((h) => h.id === step.skillId)?.action ||
+      loadSkills().find((s) => s.id === step.skillId)?.action ||
+      ''
+    const fromBtn = String(args.value.roles || '')
+      .split(/[/,，、\s]+/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+    const roles =
+      fromBtn.length > 0 ? fromBtn : escalateRolesForStep(step, skillAction)
+    const resolved = await resolveEscalateOpenIds(roles.length ? roles : ['RC'])
+    const rolesFinal = roles.length ? roles : Object.keys(resolved.roleMap)
+    const caseId = incidentId || session.lastReportId || ''
+    const timeline = formatInteractionLog(
+      ensureSessionInteractions(session).interactions,
+      lang,
+    )
+    const factsMd = (session.facts || [])
+      .filter((f) => !f.startsWith('[chat-history]'))
+      .map((f, i) => `${i + 1}. ${f.replace(/\s+/g, ' ').trim().slice(0, 400)}`)
+      .join('\n')
+    let operatorName = ''
+    try {
+      operatorName = (await fetchUserDisplayName(args.openId)) || ''
+    } catch {
+      operatorName = ''
+    }
+    const briefing = investigationEscalateBriefingCard({
+      lang,
+      roles: rolesFinal,
+      stepLabel: step.label,
+      stepIndex: idx,
+      totalSteps: steps.length,
+      incidentId: caseId || undefined,
+      operatorName: operatorName || undefined,
+      factsMarkdown: factsMd || (lang === 'en' ? '(none)' : '（暂无）'),
+      timelineMarkdown: timeline,
+    })
+    const { sendCardToOpenId } = await import('./client.js')
+    let notified = 0
+    for (const oid of resolved.openIds) {
+      if (oid === args.openId) continue
+      try {
+        await sendCardToOpenId(oid, briefing)
+        await rememberEscalationPending(oid, {
+          operatorChatId: args.chatId,
+          operatorOpenId: args.openId,
+          incidentId: caseId || undefined,
+          stepId: step.id,
+          stepLabel: step.label,
+          stepIndex: idx,
+          totalSteps: steps.length,
+          roles: rolesFinal,
+          lang,
+          at: Date.now(),
+          factsPreview: factsMd.slice(0, 2000),
+          timelinePreview: timeline.slice(0, 3500),
+        })
+        notified += 1
+      } catch {
+        /* try next recipient */
+      }
+    }
+    // If only self matched (UAT), still DM self so the briefing is visible.
+    if (!notified && resolved.openIds[0]) {
+      try {
+        await sendCardToOpenId(resolved.openIds[0], briefing)
+        await rememberEscalationPending(resolved.openIds[0], {
+          operatorChatId: args.chatId,
+          operatorOpenId: args.openId,
+          incidentId: caseId || undefined,
+          stepId: step.id,
+          stepLabel: step.label,
+          stepIndex: idx,
+          totalSteps: steps.length,
+          roles: rolesFinal,
+          lang,
+          at: Date.now(),
+          factsPreview: factsMd.slice(0, 2000),
+          timelinePreview: timeline.slice(0, 3500),
+        })
+        notified = 1
+      } catch {
+        /* ignore */
+      }
+    }
+
+    session.pathStepIndex = idx
+    session.pendingPrompt = step.label
+    session.stepAwaiting = 'escalate_feedback'
+    session.escalation = {
+      stepId: step.id,
+      stepLabel: step.label,
+      stepIndex: idx,
+      roles: rolesFinal,
+      openIds: resolved.openIds,
+      at: Date.now(),
+    }
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'escalate',
+      text: `guide_step_escalate:${step.id}→${rolesFinal.join('/')};notified=${notified}`,
+      messageId: args.messageId,
+    })
+    await saveSessionDurable(args.chatId, args.openId, session)
+    return {
+      card: investigationEscalatedWaitingCard({
+        lang,
+        step,
+        stepIndex: idx,
+        totalSteps: steps.length,
+        roles: rolesFinal,
+        notifiedCount: notified,
+      }),
+    }
   }
 
   // Kept for older cards still in chat history
@@ -2341,20 +2633,49 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     })
   }
 
-  // After Done / required-Skip: the next user message is evidence or a skip reply.
+  // Escalatee DM: fold their reply into the operator's investigation timeline.
+  if (inbound.openId) {
+    const escPending = await getEscalationPending(inbound.openId)
+    if (
+      escPending &&
+      (escPending.operatorOpenId !== inbound.openId ||
+        escPending.operatorChatId !== inbound.chatId)
+    ) {
+      const escText = workingText
+        .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
+        .trim()
+      const ingested = await ingestEscalateeFeedback({
+        escalateeOpenId: inbound.openId,
+        escalateeChatId: inbound.chatId,
+        messageId: inbound.messageId,
+        text: escText || workingText,
+      })
+      if (ingested) return ingested
+    }
+  }
+
+  // After Done / required-Skip / Escalate: next user message is evidence, skip reply, or feedback.
   if (
     session.mode === 'investigate' &&
-    (session.stepAwaiting === 'evidence' || session.stepAwaiting === 'required_skip_reply')
+    (session.stepAwaiting === 'evidence' ||
+      session.stepAwaiting === 'required_skip_reply' ||
+      session.stepAwaiting === 'escalate_feedback')
   ) {
     const awaitingText = workingText
       .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
       .trim()
+    const kind =
+      session.stepAwaiting === 'evidence'
+        ? 'evidence'
+        : session.stepAwaiting === 'escalate_feedback'
+          ? 'escalate_feedback'
+          : 'required_skip_reply'
     return advanceGuideAfterUserInput({
       msg: inbound,
       lang,
       session,
       text: awaitingText || workingText,
-      kind: session.stepAwaiting === 'evidence' ? 'evidence' : 'required_skip_reply',
+      kind,
     })
   }
 

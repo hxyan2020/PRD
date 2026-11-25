@@ -3154,7 +3154,7 @@ async function main() {
     done.blob.slice(0, 120),
   )
 
-  // 12) Investigation cards: path overview + step Done/Skip + verdict + end_and_report
+  // 12) Investigation cards: path overview + step Done/Skip[/Escalate] + verdict + end_and_report
   record(
     'turn.investigate_card_action_buttons',
     inv.blob.includes('"tag":"button"') &&
@@ -3169,6 +3169,73 @@ async function main() {
         inv.blob.includes('結束排查並生成報告') ||
         inv.blob.includes('End & generate report')),
     'path + Done/Skip + end_and_report + verdict',
+  )
+  const {
+    parseEscalateRoles,
+    escalateRolesForStep,
+  } = await import('../api/lark/_lib/escalate')
+  record(
+    'escalate.parse_roles_from_sop',
+    parseEscalateRoles('立即通知RC/BIT/Pricing').join('/') === 'RC/BIT/Pricing' &&
+      parseEscalateRoles('立即通知RC/Finance').includes('Finance') &&
+      parseEscalateRoles('继续升级').includes('RC'),
+    parseEscalateRoles('立即通知RC/BIT/Pricing').join('/'),
+  )
+  record(
+    'escalate.roles_for_notify_rc_skill',
+    escalateRolesForStep(
+      {
+        id: 'x',
+        skillId: 'L1-01',
+        label: '【L1】核对',
+        raw: '核对',
+        required: true,
+        status: 'pending',
+      },
+      '立即通知RC',
+    ).includes('RC'),
+    'skill action 立即通知RC → escalate roles',
+  )
+  // Fresh case so pathSteps exist for escalate card action.
+  clearSession('smoke_chat', 'esc_user')
+  const escSeed = await turn(
+    'escalate-seed',
+    'investigate IDX-01 excluded, Mark deviation 48bps, no valid source',
+    'esc_user',
+  )
+  const escSeedBlob =
+    escSeed.blob +
+    (escSeed.reply?.followUpCards || []).map((c) => JSON.stringify(c)).join('')
+  record(
+    'turn.investigate_escalate_button_when_roles',
+    escSeedBlob.includes('guide_step_escalate') ||
+      escSeedBlob.includes('"action":"guide_step_escalate"'),
+    escSeedBlob.includes('guide_step_escalate')
+      ? 'escalate button on step card'
+      : escSeedBlob.slice(0, 160),
+  )
+  const escStepId =
+    (escSeedBlob.match(/"stepId":"([^"]+)"/) || [])[1] || ''
+  const escAction = await handleCardAction({
+    openId: 'esc_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_escalate',
+    value: {
+      action: 'guide_step_escalate',
+      stepId: escStepId,
+      incidentId: '',
+      roles: 'RC/BIT',
+    },
+  })
+  const escBlob =
+    escAction?.text || (escAction?.card ? JSON.stringify(escAction.card) : '') || ''
+  record(
+    'turn.investigate_escalate_waiting',
+    Boolean(escAction?.card) &&
+      (escBlob.includes('已升级等待反馈') ||
+        escBlob.includes('已升級等待反饋') ||
+        escBlob.includes('Escalated — awaiting feedback')),
+    escBlob.slice(0, 160),
   )
   record(
     'turn.investigate_path_once_and_step_guide',

@@ -509,17 +509,22 @@ export function investigationPathOverviewCard(args: {
   }
 }
 
-/** Message 2+: current step with 已完成 / 跳过. */
+/** Message 2+: current step with 已完成 / 跳过 [/ 升级]. */
 export function investigationStepGuideCard(args: {
   lang: Lang
   step: GuideStep
   stepIndex: number
   totalSteps: number
   incidentId?: string
+  /** When set, show 升级 button targeting these roles (RC/BIT/…). */
+  escalateRoles?: string[]
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
   const n = args.stepIndex + 1
+  const roles = (args.escalateRoles || []).filter(Boolean)
+  const showEscalate = roles.length > 0
+  const rolesLabel = roles.join('/')
   const optBadge = args.step.required
     ? hans
       ? '必做'
@@ -546,7 +551,12 @@ export function investigationStepGuideCard(args: {
         args.step.required
           ? '• 点 **跳过** → 必做步须回复跳过原因，才能进入下一步'
           : '• 点 **跳过** → 可选步可直接进入下一步',
-      ].join('\n')
+        showEscalate
+          ? `• 点 **升级** → 通知 **${rolesLabel}**，对方将收到本步与完整排查时间线`
+          : '',
+      ]
+        .filter(Boolean)
+        .join('\n')
     : zh
       ? [
           `📍 **當前步驟（${optBadge}）**`,
@@ -557,7 +567,12 @@ export function investigationStepGuideCard(args: {
           args.step.required
             ? '• 點 **跳過** → 必做步須回覆跳過原因'
             : '• 點 **跳過** → 可選步可直接進入下一步',
-        ].join('\n')
+          showEscalate
+            ? `• 點 **升級** → 通知 **${rolesLabel}**，對方將收到本步與完整排查時間線`
+            : '',
+        ]
+          .filter(Boolean)
+          .join('\n')
       : [
           `📍 **Current step (${optBadge})**`,
           '',
@@ -567,7 +582,57 @@ export function investigationStepGuideCard(args: {
           args.step.required
             ? '• Tap **Skip** → required steps need a short reply before continuing'
             : '• Tap **Skip** → optional steps advance immediately',
-        ].join('\n')
+          showEscalate
+            ? `• Tap **Escalate** → notify **${rolesLabel}** with this step + full timeline`
+            : '',
+        ]
+          .filter(Boolean)
+          .join('\n')
+
+  const actions: Record<string, unknown>[] = [
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans ? '已完成' : zh ? '已完成' : 'Done',
+      },
+      type: 'primary',
+      value: {
+        action: 'guide_step_done',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+      },
+    },
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans ? '跳过' : zh ? '跳過' : 'Skip',
+      },
+      type: 'default',
+      value: {
+        action: 'guide_step_skip',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+      },
+    },
+  ]
+  if (showEscalate) {
+    actions.push({
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans ? '升级' : zh ? '升級' : 'Escalate',
+      },
+      type: 'danger',
+      value: {
+        action: 'guide_step_escalate',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+        roles: rolesLabel,
+      },
+    })
+  }
 
   return {
     config: { wide_screen_mode: true },
@@ -579,34 +644,7 @@ export function investigationStepGuideCard(args: {
       { tag: 'div', text: { tag: 'lark_md', content: body } },
       {
         tag: 'action',
-        actions: [
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '已完成' : zh ? '已完成' : 'Done',
-            },
-            type: 'primary',
-            value: {
-              action: 'guide_step_done',
-              stepId: args.step.id,
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '跳过' : zh ? '跳過' : 'Skip',
-            },
-            type: 'default',
-            value: {
-              action: 'guide_step_skip',
-              stepId: args.step.id,
-              incidentId: args.incidentId || '',
-            },
-          },
-        ],
+        actions,
       },
     ],
   }
@@ -650,6 +688,132 @@ export function investigationEvidencePromptCard(args: {
           'Reply with **evidence** for this step (screenshot notes / numbers / findings). I’ll advance after that.',
         ].join('\n')
   return simpleCard(title, body, 'wathet')
+}
+
+/** Operator side after tapping 升级. */
+export function investigationEscalatedWaitingCard(args: {
+  lang: Lang
+  step: GuideStep
+  stepIndex: number
+  totalSteps: number
+  roles: string[]
+  notifiedCount: number
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const rolesLabel = args.roles.join('/') || 'RC'
+  const title = hans
+    ? '已升级等待反馈'
+    : zh
+      ? '已升級等待反饋'
+      : 'Escalated — awaiting feedback'
+  const body = hans
+    ? [
+        `🚨 第 **${args.stepIndex + 1}/${args.totalSteps}** 步已升级给 **${rolesLabel}**（已通知 ${args.notifiedCount} 人）。`,
+        '',
+        `步骤：${args.step.label}`,
+        '',
+        '对方会收到本步说明与完整排查时间线／记录。',
+        '',
+        '⏳ **已升级等待反馈** — 收到对方结论后，请直接回复本对话；我会记入时间线并继续下一步。',
+      ].join('\n')
+    : zh
+      ? [
+          `🚨 第 **${args.stepIndex + 1}/${args.totalSteps}** 步已升級給 **${rolesLabel}**（已通知 ${args.notifiedCount} 人）。`,
+          '',
+          `步驟：${args.step.label}`,
+          '',
+          '對方會收到本步說明與完整排查時間線／記錄。',
+          '',
+          '⏳ **已升級等待反饋** — 收到對方結論後，請直接回覆本對話；我會記入時間線並繼續下一步。',
+        ].join('\n')
+      : [
+          `🚨 Step **${args.stepIndex + 1}/${args.totalSteps}** escalated to **${rolesLabel}** (notified ${args.notifiedCount}).`,
+          '',
+          `Step: ${args.step.label}`,
+          '',
+          'They received this step plus the full investigation timeline.',
+          '',
+          '⏳ **Escalated — awaiting feedback.** Paste their reply here to log it and advance.',
+        ].join('\n')
+  return simpleCard(title, body, 'red')
+}
+
+/** Escalatee DM: current step + facts + full interaction timeline. */
+export function investigationEscalateBriefingCard(args: {
+  lang: Lang
+  roles: string[]
+  stepLabel: string
+  stepIndex: number
+  totalSteps: number
+  incidentId?: string
+  operatorName?: string
+  factsMarkdown: string
+  timelineMarkdown: string
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const rolesLabel = args.roles.join('/') || 'RC'
+  const who = args.operatorName || (hans || zh ? '值班同学' : 'operator')
+  const title = hans
+    ? `排查升级 · ${rolesLabel}`
+    : zh
+      ? `排查升級 · ${rolesLabel}`
+      : `Investigation escalate · ${rolesLabel}`
+  const body = hans
+    ? [
+        `📬 **${who}** 在根因排查中升级给你（角色：**${rolesLabel}**）。`,
+        '',
+        `📍 **当前步骤 ${args.stepIndex + 1}/${args.totalSteps}**`,
+        args.stepLabel,
+        args.incidentId ? `\n事故 ID：\`${args.incidentId}\`` : '',
+        '',
+        '**已摄入事实／证据：**',
+        args.factsMarkdown || '（暂无）',
+        '',
+        '**排查时间线／记录：**',
+        args.timelineMarkdown || '（暂无）',
+        '',
+        '请直接回复本 Bot 你的结论／反馈；会回传给升级方并写入时间线。',
+      ]
+        .filter((l) => l !== '')
+        .join('\n')
+    : zh
+      ? [
+          `📬 **${who}** 在根因排查中升級給你（角色：**${rolesLabel}**）。`,
+          '',
+          `📍 **當前步驟 ${args.stepIndex + 1}/${args.totalSteps}**`,
+          args.stepLabel,
+          args.incidentId ? `\n事故 ID：\`${args.incidentId}\`` : '',
+          '',
+          '**已攝入事實／證據：**',
+          args.factsMarkdown || '（暫無）',
+          '',
+          '**排查時間線／記錄：**',
+          args.timelineMarkdown || '（暫無）',
+          '',
+          '請直接回覆本 Bot 你的結論／反饋；會回傳給升級方並寫入時間線。',
+        ]
+          .filter((l) => l !== '')
+          .join('\n')
+      : [
+          `📬 **${who}** escalated this investigation to you (**${rolesLabel}**).`,
+          '',
+          `📍 **Current step ${args.stepIndex + 1}/${args.totalSteps}**`,
+          args.stepLabel,
+          args.incidentId ? `\nIncident: \`${args.incidentId}\`` : '',
+          '',
+          '**Facts / evidence:**',
+          args.factsMarkdown || '(none)',
+          '',
+          '**Timeline / records:**',
+          args.timelineMarkdown || '(none)',
+          '',
+          'Reply to this Bot with your feedback — it will be logged and sent back to the operator.',
+        ]
+          .filter((l) => l !== '')
+          .join('\n')
+  return simpleCard(title, body, 'orange')
 }
 
 /** After Skip on a required step: must reply. */
