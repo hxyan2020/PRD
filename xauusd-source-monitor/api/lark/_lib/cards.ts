@@ -1648,10 +1648,10 @@ export function greetingCard(lang: Lang, body: string): Record<string, unknown> 
   const hans = lang === 'zh-Hans'
   const zh = isZh(lang)
   const title = hans
-    ? '你好 · 报价 AI排查助手'
+    ? '你好 · 报价 AI排查助手 · CFD定价风控'
     : zh
-      ? '你好 · 报价 AI排查助手'
-      : 'Hello · 报价 AI排查助手'
+      ? '你好 · 报价 AI排查助手 · CFD定價風控'
+      : 'Hello · 报价 AI排查助手 · CFD Pricing Risk'
   return {
     config: { wide_screen_mode: true },
     header: {

@@ -6,7 +6,7 @@
  *
  * Interactive cards (greeting menu, market, skills…) are sent in one shot —
  * Feishu card PATCH often stalls mid-stream and left greetings stuck as
- * “我是 **V Exchange ▍” without the command directory.
+ * “我是 **报价 AI排查助手 ▍” without the command directory.
  */
 
 import {

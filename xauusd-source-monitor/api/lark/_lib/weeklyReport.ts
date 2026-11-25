@@ -414,7 +414,7 @@ export function weeklyReportCard(markdown: string, empty: boolean): Record<strin
     config: { wide_screen_mode: true },
     header: {
       template: empty ? 'grey' : 'blue',
-      title: { tag: 'plain_text', content: 'V Exchange · 每周周报' },
+      title: { tag: 'plain_text', content: '报价 AI排查助手 · 每周周报' },
     },
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: markdown } },

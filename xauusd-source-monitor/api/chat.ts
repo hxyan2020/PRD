@@ -141,7 +141,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${key}`,
           ...(provider === 'openrouter'
-            ? { 'HTTP-Referer': 'https://hxyan2020.github.io', 'X-Title': 'V Exchange Risk Copilot' }
+            ? { 'HTTP-Referer': 'https://hxyan2020.github.io', 'X-Title': '报价 AI排查助手 · CFD Pricing Risk' }
             : {}),
         },
         body: JSON.stringify({

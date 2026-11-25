@@ -1,6 +1,6 @@
-# V Exchange Risk Tool（VE排查助手）
+# 报价 AI排查助手（CFD Pricing Risk）
 
-报价 AI排查助手 — CFD Broker Pricing troubleshooting (LP	o PE	o MT) powered by quote-ops-three knowledge + skills.
+**CFD 定价风控专家** — CFD Broker Pricing troubleshooting (LP→PE→MT) powered by quote-ops-three knowledge + skills. Not V Exchange / not perpetual.
 
 ## Permanent URL (Vercel)
 

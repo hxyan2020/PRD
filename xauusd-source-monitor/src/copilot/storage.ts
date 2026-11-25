@@ -116,8 +116,8 @@ export function defaultKnowledgeTree(): KbNode[] {
     {
       id: rootId,
       parentId: null,
-      title: 'V Exchange Risk Knowledge',
-      body: 'Root of the RAG knowledge tree used by Investigate.',
+      title: 'CFD Pricing Risk Knowledge',
+      body: 'Root of the CFD Broker Pricing RAG knowledge tree used by Investigate.',
       order: 0,
       updatedAt: now,
     },
@@ -136,7 +136,7 @@ export function defaultKnowledgeTree(): KbNode[] {
     id: veFolderId,
     parentId: rootId,
     title: 'CFD Pricing · quote-ops',
-    body: `Synced from ${VE_QUOTE_OPS_SOURCE} (product line cfd-broker only; V Exchange perpetual excluded).`,
+    body: `Synced from ${VE_QUOTE_OPS_SOURCE} (product line cfd-broker only).`,
     order: legacy.length + 1,
     updatedAt: now,
   })
@@ -174,8 +174,8 @@ function migrateFlatToTree(flat: KnowledgeItem[]): KbNode[] {
     {
       id: rootId,
       parentId: null,
-      title: 'V Exchange Risk Knowledge',
-      body: 'Root of the RAG knowledge tree used by Investigate.',
+      title: 'CFD Pricing Risk Knowledge',
+      body: 'Root of the CFD Broker Pricing RAG knowledge tree used by Investigate.',
       order: 0,
       updatedAt: now,
     },

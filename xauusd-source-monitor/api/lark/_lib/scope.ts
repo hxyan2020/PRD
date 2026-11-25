@@ -988,22 +988,22 @@ export function casualChatReply(
   if (CASUAL_WHO_YOU.test(t)) {
     if (lang === 'zh-Hans') {
       return [
-        '🙋 我是 **报价 AI排查助手**。',
+        '🙋 我是 **报价 AI排查助手**——**CFD 定价风控专家**（与 V Exchange／永续无关）。',
         '',
-        '平时帮你看行情、对告警做排查、翻 Skills／知识库。有风险问题直接丢给我就行 🙂',
+        '专长 LP→PE→MT 报价链路、旧价成交、Bad Tick、Markout、强平／LP 切源；也会帮你看跨资产行情、翻 Skills／知识库。有定价风控问题直接丢给我就行 🙂',
       ].join('\n')
     }
     if (lang === 'zh-Hant') {
       return [
-        '🙋 我是 **报价 AI排查助手**。',
+        '🙋 我是 **报价 AI排查助手**——**CFD 定價風控專家**（與 V Exchange／永續無關）。',
         '',
-        '平時幫你看行情、對告警做排查、翻 Skills／知識庫。有風險問題直接丟給我就行 🙂',
+        '專長 LP→PE→MT 報價鏈路、舊價成交、Bad Tick、Markout、強平／LP 切源；也會幫你看跨資產行情、翻 Skills／知識庫。有定價風控問題直接丟給我就行 🙂',
       ].join('\n')
     }
     return [
-      '🙋 I’m **报价 AI排查助手**.',
+      '🙋 I’m **报价 AI排查助手** — a **CFD pricing risk-control expert** (not V Exchange / not perpetual).',
       '',
-      'I help with market scans, alert investigations, and Skills / knowledge. Drop me a risk question anytime 🙂',
+      'I focus on LP→PE→MT quote pipeline, stale quote, Bad Tick, markout, stop-out / LP failover — plus multi-asset market scans and Skills / knowledge. Drop me a pricing-risk question anytime 🙂',
     ].join('\n')
   }
   if (CASUAL_WHO_ME.test(t)) {
@@ -1028,9 +1028,9 @@ export function casualChatReply(
     return 'You’re welcome 🙂 Happy to keep chatting, or dig into markets / alerts anytime.'
   }
   if (CASUAL_HOW.test(t)) {
-    if (lang === 'zh-Hans') return '还行，在线陪聊＋值班中 🙂 想吹牛或看 XAUUSD／告警都行。'
-    if (lang === 'zh-Hant') return '還行，在線陪聊＋值班中 🙂 想吹牛或看 XAUUSD／告警都行。'
-    return 'Doing fine — on chat + duty 🙂 Banter or XAUUSD / alerts, either works.'
+    if (lang === 'zh-Hans') return '还行，在线陪聊＋值班中 🙂 想吹牛或看行情／CFD 定价告警都行。'
+    if (lang === 'zh-Hant') return '還行，在線陪聊＋值班中 🙂 想吹牛或看行情／CFD 定價告警都行。'
+    return 'Doing fine — on chat + duty 🙂 Banter or markets / CFD pricing alerts, either works.'
   }
   if (CASUAL_BANTER.test(t)) {
     if (lang === 'zh-Hans') {
@@ -1115,7 +1115,7 @@ export function casualChatReply(
 export function isStubMenuReply(text: string): boolean {
   const t = (text || '').trim()
   if (!t) return true
-  return /专长风控，闲聊也陪|專長是 V Exchange 風控，不過閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行|我接住了|不必发指令|不必發指令|想听我能干啥|想聽我能幹啥|Want what I can do, a market take|我可以按聊天直接答|关于「.{0,48}」——|關於「.{0,48}」——|这块我先接一句|這塊我先接一句|卡在哪一步|哪一层定义|哪一層定義|which step \/ which definition/i.test(
+  return /专长.*风控，闲聊也陪|專長.*風控，不過閒聊也陪|CFD 定价风控|CFD 定價風控|CFD pricing risk|I can also chat|say whatever|想说什么都行|想說什麼都行|我接住了|不必发指令|不必發指令|想听我能干啥|想聽我能幹啥|Want what I can do, a market take|我可以按聊天直接答|关于「.{0,48}」——|關於「.{0,48}」——|这块我先接一句|這塊我先接一句|卡在哪一步|哪一层定义|哪一層定義|which step \/ which definition/i.test(
     t,
   )
 }
@@ -1147,12 +1147,12 @@ export function chatbotFallbackReply(lang: Lang, question: string): string {
 /** @deprecated Negative-list policy: free-text is no longer refused as offtopic. Kept for callers. */
 export function offtopicReply(lang: Lang): string {
   if (lang === 'zh-Hans') {
-    return '可以呀 🙂 我专长是 V Exchange 风控，不过闲聊也陪。你想聊什么，或者要看行情／贴告警，直接说。'
+    return '可以呀 🙂 我专长是 **CFD 定价风控**，不过闲聊也陪。你想聊什么，或者要看行情／贴定价告警，直接说。'
   }
   if (lang === 'zh-Hant') {
-    return '可以呀 🙂 我專長是 V Exchange 風控，不過閒聊也陪。你想聊什麼，或者要看行情／貼告警，直接說。'
+    return '可以呀 🙂 我專長是 **CFD 定價風控**，不過閒聊也陪。你想聊什麼，或者要看行情／貼定價告警，直接說。'
   }
-  return 'Sure 🙂 Risk is my specialty, but I’m happy to chat too. What’s on your mind — or send a market / alert if you want.'
+  return 'Sure 🙂 CFD pricing risk is my specialty, but I’m happy to chat too. What’s on your mind — or send a market / pricing alert if you want.'
 }
 
 /**
@@ -1166,33 +1166,33 @@ export function greetingReply(lang: Lang): string {
 
   if (lang === 'zh-Hans') {
     const intros = [
-      `${open} 🙂 我是 **报价 AI排查助手**。`,
-      `${open} 👋 **报价 AI排查助手** 在这儿。`,
-      `嗨～ ${open}。我是 **报价 AI排查助手**。`,
+      `${open} 🙂 我是 **报价 AI排查助手**——**CFD 定价风控专家**。`,
+      `${open} 👋 **报价 AI排查助手**（CFD 定价风控）在这儿。`,
+      `嗨～ ${open}。我是 **报价 AI排查助手**，专做 CFD 定价风控排查。`,
     ]
     return [
       intros[variant]!,
       '',
-      '下面是我能做的事。**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
+      '与 V Exchange／永续无关。下面是我能做的事。**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
       '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
       '',
-      '• 📈 **行情** — 市况／XAUUSD 趋势',
+      '• 📈 **行情** — 加密／股指／外汇／商品跨资产市况',
       '',
-      '• 🔍 **排查** — 贴告警／截图／表格，引导排查',
+      '• 🔍 **排查** — 贴定价告警／截图／表格，引导 CFD RCA',
       '',
       '• 🛠️ **告警优化** — 桌面：告警优化（三槽数据＋方向）／通用分析',
       '',
       '• 📊 **复盘** / **看板** — 告警与报告看板',
       '',
-      '• 🧩 **技能** — 34 个排查场景（L1-01～28 + L2-A～F）',
+      '• 🧩 **技能** — CFD 定价 RCA（旧价成交／Bad Tick／LP 切源／Markout／…）',
       '',
-      '• 📚 **知识库** — 知识库（含「可能出现的风险」指标清单）',
+      '• 📚 **知识库** — CFD Broker Pricing 知识库（含风险场景）',
       '',
       '• 📖 **文档** — 只读检索已授权飞书 Wiki／文档（未授权联系 **@Yan Haixiang**）',
       '',
       '• 📊 **周报** — 本周汇总；每周五 **16:00（东八区）** 自动推送给 **@Yan Haixiang**',
       '',
-      '• ⚠️ **震荡行情预警** — Binance（OKX 备用）振幅／资金费率偏离动态均值或突发新闻时，推送群 + **@Yan Haixiang** 私聊',
+      '• ⚠️ **震荡行情预警** — 主要品种振幅／突发新闻时，推送群 + **@Yan Haixiang** 私聊',
       '',
       '• ❓ **帮助** — 完整说明',
       '',
@@ -1202,33 +1202,33 @@ export function greetingReply(lang: Lang): string {
 
   if (lang === 'zh-Hant') {
     const intros = [
-      `${open} 🙂 我是 **报价 AI排查助手**。`,
-      `${open} 👋 **报价 AI排查助手** 在這兒。`,
-      `嗨～ ${open}。我是 **报价 AI排查助手**。`,
+      `${open} 🙂 我是 **报价 AI排查助手**——**CFD 定價風控專家**。`,
+      `${open} 👋 **报价 AI排查助手**（CFD 定價風控）在這兒。`,
+      `嗨～ ${open}。我是 **报价 AI排查助手**，專做 CFD 定價風控排查。`,
     ]
     return [
       intros[variant]!,
       '',
-      '下面是我能做的事。**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
+      '與 V Exchange／永續無關。下面是我能做的事。**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
       '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
       '',
-      '• 📈 **行情** — 市況／XAUUSD 趨勢',
+      '• 📈 **行情** — 加密／股指／外匯／商品跨資產市況',
       '',
-      '• 🔍 **排查** — 貼告警／截圖／表格，引導排查',
+      '• 🔍 **排查** — 貼定價告警／截圖／表格，引導 CFD RCA',
       '',
       '• 🛠️ **告警優化** — 桌面：告警優化（三槽數據＋方向）／通用分析',
       '',
       '• 📊 **複盤** / **看板** — 告警與報告看板',
       '',
-      '• 🧩 **技能** — 34 個排查場景（L1-01～28 + L2-A～F）',
+      '• 🧩 **技能** — CFD 定價 RCA（舊價成交／Bad Tick／LP 切源／Markout／…）',
       '',
-      '• 📚 **知識庫** — 知識庫（含「可能出現的風險」指標清單）',
+      '• 📚 **知識庫** — CFD Broker Pricing 知識庫（含風險場景）',
       '',
       '• 📖 **文檔** — 唯讀檢索已授權飛書 Wiki／文檔（未授權聯繫 **@Yan Haixiang**）',
       '',
       '• 📊 **週報** — 本週匯總；每週五 **16:00（東八區）** 自動推送給 **@Yan Haixiang**',
       '',
-      '• ⚠️ **震盪行情預警** — Binance（OKX 備用）振幅／資金費率偏離動態均值或突發新聞時，推送群 + **@Yan Haixiang** 私聊',
+      '• ⚠️ **震盪行情預警** — 主要品種振幅／突發新聞時，推送群 + **@Yan Haixiang** 私聊',
       '',
       '• ❓ **幫助** — 完整說明',
       '',
@@ -1237,19 +1237,19 @@ export function greetingReply(lang: Lang): string {
   }
 
   const intros = [
-    `${open} 🙂 I’m **报价 AI排查助手**.`,
-    `${open} 👋 **报价 AI排查助手** here.`,
-    `Hey! ${open.toLowerCase().startsWith('good') ? open : 'Nice to see you'}. I’m **报价 AI排查助手**.`,
+    `${open} 🙂 I’m **报价 AI排查助手** — a **CFD pricing risk-control expert**.`,
+    `${open} 👋 **报价 AI排查助手** (CFD pricing risk) here.`,
+    `Hey! ${open.toLowerCase().startsWith('good') ? open : 'Nice to see you'}. I’m **报价 AI排查助手**, focused on CFD pricing risk RCA.`,
   ]
   return [
     intros[variant]!,
     '',
-    'Here’s what I can do. **Keywords: group = @me + keyword; DM = just say the keyword.**',
+    'Not V Exchange / not perpetual. Here’s what I can do. **Keywords: group = @me + keyword; DM = just say the keyword.**',
     '**Natural language / paste alerts / screenshots / tables also work** (keywords not required).',
     '',
-    '• 📈 **market** — XAUUSD / gold market trends',
+    '• 📈 **market** — multi-asset (crypto / equities / FX / commodities)',
     '',
-    '• 🔍 **investigate** — paste an alert, screenshot, or table to dig in',
+    '• 🔍 **investigate** — paste a pricing alert, screenshot, or table for CFD RCA',
     '',
     '• 🛠️ **alert optimize** — desk: Alert optimize (3 slots + directions) / General analysis',
     '',
@@ -1257,13 +1257,13 @@ export function greetingReply(lang: Lang): string {
     '',
     '• 🧩 **skills** — CFD pricing RCA playbooks (stale quote / Bad Tick / LP failover / …)',
     '',
-    '• 📚 **knowledge** / **kb** — knowledge base (incl. possible-risks inventory)',
+    '• 📚 **knowledge** / **kb** — CFD Broker Pricing knowledge base',
     '',
     '• 📖 **wiki** — read-only Lark Wiki / Docs (unauthorized → **@Yan Haixiang**)',
     '',
     '• 📊 **weekly** — weekly digest; auto-pushed to **@Yan Haixiang** Fridays **16:00 Asia/Shanghai**',
     '',
-    '• ⚠️ **oscillation alert** — Binance (OKX backup) vol / funding-vs-mean or breaking news → group + **@Yan Haixiang** DM',
+    '• ⚠️ **oscillation alert** — major-market vol / breaking news → group + **@Yan Haixiang** DM',
     '',
     '• ❓ **help** — full guide',
     '',
@@ -1274,20 +1274,20 @@ export function greetingReply(lang: Lang): string {
 export function helpReply(lang: Lang): string {
   if (lang === 'zh-Hans') {
     return [
-      '你好 🙂 我是 **报价 AI排查助手**（Lark）。',
+      '你好 🙂 我是 **报价 AI排查助手**——**CFD 定价风控专家**（Lark；与 V Exchange／永续无关）。',
       '',
       '**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
       '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
       '',
-      '• 📈 **行情** — 市况／趋势',
-      '• 🔍 **排查** — 贴告警／截图／表格排查',
+      '• 📈 **行情** — 加密／股指／外汇／商品跨资产市况',
+      '• 🔍 **排查** — 贴定价告警／截图／表格做 CFD RCA',
       '• 🛠️ **告警优化** — 桌面告警优化／通用分析',
       '• 📊 **复盘** / **看板** — 告警看板',
-      '• 🧩 **技能** — 34 个排查场景（不是监控指标清单）',
-      '• 📚 **知识库** — 知识库（含「可能出现的风险」）',
+      '• 🧩 **技能** — CFD 定价 RCA（旧价成交／Bad Tick／LP 切源／…）',
+      '• 📚 **知识库** — CFD Broker Pricing 知识库',
       '• 📖 **文档** — 飞书 Wiki／文档只读',
       '• 📊 **周报** — 本周汇总（周五 16:00 东八区推送 @Yan Haixiang）',
-      '• ⚠️ **震荡行情预警** — 振幅／资金费率偏离或突发新闻 → 群 + @Yan Haixiang 私聊',
+      '• ⚠️ **震荡行情预警** — 主要品种振幅／突发新闻 → 群 + @Yan Haixiang 私聊',
       '• 🌅 **每日 24h 早报** — 东八区每天 09:00 推群',
       '• ✅ **完成** — 归档本次排查',
       '• ❓ **帮助** — 本说明',
@@ -1297,20 +1297,20 @@ export function helpReply(lang: Lang): string {
   }
   if (lang === 'zh-Hant') {
     return [
-      '你好 🙂 我是 **报价 AI排查助手**（Lark）。',
+      '你好 🙂 我是 **报价 AI排查助手**——**CFD 定價風控專家**（Lark；與 V Exchange／永續無關）。',
       '',
       '**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
       '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
       '',
-      '• 📈 **行情** — 市況／趨勢',
-      '• 🔍 **排查** — 貼告警／截圖／表格排查',
+      '• 📈 **行情** — 加密／股指／外匯／商品跨資產市況',
+      '• 🔍 **排查** — 貼定價告警／截圖／表格做 CFD RCA',
       '• 🛠️ **告警優化** — 桌面告警優化／通用分析',
       '• 📊 **複盤** / **看板** — 告警看板',
-      '• 🧩 **技能** — 34 個排查場景（不是監控指標清單）',
-      '• 📚 **知識庫** — 知識庫（含「可能出現的風險」）',
+      '• 🧩 **技能** — CFD 定價 RCA（舊價成交／Bad Tick／LP 切源／…）',
+      '• 📚 **知識庫** — CFD Broker Pricing 知識庫',
       '• 📖 **文檔** — 飛書 Wiki／文檔唯讀',
       '• 📊 **週報** — 本週匯總（週五 16:00 東八區推送 @Yan Haixiang）',
-      '• ⚠️ **震盪行情預警** — 振幅／資金費率偏離或突發新聞 → 群 + @Yan Haixiang 私聊',
+      '• ⚠️ **震盪行情預警** — 主要品種振幅／突發新聞 → 群 + @Yan Haixiang 私聊',
       '• 🌅 **每日 24h 早報** — 東八區每天 09:00 推群',
       '• ✅ **完成** — 歸檔本次排查',
       '• ❓ **幫助** — 本說明',
@@ -1319,20 +1319,20 @@ export function helpReply(lang: Lang): string {
     ].join('\n')
   }
   return [
-    'Hi 🙂 I’m **报价 AI排查助手** on Lark.',
+    'Hi 🙂 I’m **报价 AI排查助手** — a **CFD pricing risk-control expert** on Lark (not V Exchange / not perpetual).',
     '',
     '**Keywords: group = @me + keyword; DM = just say the keyword.**',
     '**Natural language / paste alerts / screenshots / tables also work** (keywords not required).',
     '',
-    '• 📈 **market** — market trends',
-    '• 🔍 **investigate** — paste alert / screenshot / table',
+    '• 📈 **market** — multi-asset market trends',
+    '• 🔍 **investigate** — paste pricing alert / screenshot / table for CFD RCA',
     '• 🛠️ **alert optimize** — desk Alert optimize / General analysis',
     '• 📊 **review** / **dashboard** — alerts board',
-    '• 🧩 **skills** — CFD pricing RCA playbooks (86 risks live under **knowledge**)',
-    '• 📚 **knowledge** / **kb** — knowledge base (incl. possible risks)',
+    '• 🧩 **skills** — CFD pricing RCA playbooks (stale quote / Bad Tick / LP failover / …)',
+    '• 📚 **knowledge** / **kb** — CFD Broker Pricing knowledge base',
     '• 📖 **wiki** — Lark Wiki / Docs read-only',
     '• 📊 **weekly** — weekly digest (Fri 16:00 Asia/Shanghai → @Yan Haixiang)',
-    '• ⚠️ **oscillation alert** — vol / funding / news → group + @Yan Haixiang DM',
+    '• ⚠️ **oscillation alert** — major-market vol / news → group + @Yan Haixiang DM',
     '• 🌅 **daily 24h** — group digest at 09:00 Asia/Shanghai',
     '• ✅ **done** — archive this investigation',
     '• ❓ **help** — this guide',

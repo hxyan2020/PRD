@@ -1,4 +1,6 @@
-# V Exchange Risk Copilot — Lark bot
+# 报价 AI排查助手 — CFD Pricing Risk (Lark bot)
+
+**Identity:** CFD pricing risk-control expert (LP→PE→MT, stale quote, markout, stop-out). **Not** V Exchange / perpetual.
 
 The **web desk stays live** (`/#/investigate`, Market, Skills, KB, Stats).  
 This adds a parallel **Lark / Feishu** interaction surface on the same Vercel project.
@@ -12,7 +14,7 @@ You only need to provide **two secrets** (never paste into chat/PR):
 
 | Secret | Where |
 |--------|--------|
-| `LARK_APP_ID` | Vercel project **`vex-llm-proxy`** → Settings → Environment Variables → Production |
+| `LARK_APP_ID` | Vercel project **`quote-ai-troubleshooting-bot`** → Settings → Environment Variables → Production |
 | `LARK_APP_SECRET` | same |
 
 Then in **Lark / Feishu Developer Console** (required — without this, DMs stay silent):
@@ -172,7 +174,7 @@ never-sent).
 2. **Market Q&A** — OKX + desk links.
 3. **Off-topic / safety** — gentle reject; no PII, cursing, or political topics.
 4. **Investigate** — alerts/text/image/table; adaptive steps; emoji + bold bullets; AIPO evidence grades (Confirmed / Suspected / Unknown + [OBS]/[DESIGN]/…).
-5. **RAG + Skills** — desk + quote-ops CFD Broker Pricing (`cfd-broker`; V Exchange perpetual excluded).
+5. **RAG + Skills** — desk + quote-ops CFD Broker Pricing (`cfd-broker` only).
 6. **Dashboard** — `review` / `dashboard` → KPI card + https://quote-ai-troubleshooting-bot.vercel.app/#/reports
 7. **Wiki / Docs (AIPO)** — read-only Lark Wiki search + Docx excerpt when scopes allow; otherwise show setup steps / @Yan.
 

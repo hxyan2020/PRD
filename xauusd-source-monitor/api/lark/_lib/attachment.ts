@@ -136,7 +136,7 @@ export function formatAttachmentUnderstanding(args: {
       '',
       '🧭 **相关性**',
       args.riskRelated
-        ? '• 这和 **V Exchange 风险／报价／监控／排查** 相关，我可以继续帮你看。'
+        ? '• 这和 **CFD 定价风控／报价链路／监控／排查** 相关，我可以继续帮你看。'
         : '• 目前看起来不一定是告警／行情排查材料；若你有具体问题，直接问我即可。',
     ]
     if (args.userAsk?.trim()) {
@@ -158,7 +158,7 @@ export function formatAttachmentUnderstanding(args: {
       '',
       '🧭 **相關性**',
       args.riskRelated
-        ? '• 這和 **V Exchange 風險／報價／監控／排查** 相關，我可以繼續幫你看。'
+        ? '• 這和 **CFD 定價風控／報價鏈路／監控／排查** 相關，我可以繼續幫你看。'
         : '• 目前看起來不一定是告警／行情排查材料；若你有具體問題，直接問我即可。',
     ]
     if (args.userAsk?.trim()) {
@@ -179,7 +179,7 @@ export function formatAttachmentUnderstanding(args: {
     '',
     '🧭 **Relevance**',
     args.riskRelated
-      ? '• This looks related to **V Exchange risk / pricing / monitoring / investigation** — I can dig further.'
+      ? '• This looks related to **CFD pricing risk / quote pipeline / monitoring / investigation** — I can dig further.'
       : '• This may not be an alert/market investigation artifact; ask me anything specific you need.',
   ]
   if (args.userAsk?.trim()) {

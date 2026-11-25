@@ -1,5 +1,5 @@
 /**
- * Full planned-function smoke for the Lark Risk Copilot brain.
+ * Full planned-function smoke for the Lark 报价 AI排查助手 (CFD pricing risk) brain.
  * Forces rules path (OPENAI_API_KEY cleared by parent) for deterministic asserts.
  */
 import { handleCardAction, handleMessage } from '../api/lark/_lib/agent'
@@ -716,7 +716,7 @@ async function main() {
       (/排查|Investigation|价差|XAU_USD|告警/i.test(fwdTurn.blob) ||
         fwdTurn.blob.includes('Skills') ||
         fwdTurn.blob.includes('可能原因')) &&
-      !/你好.*Risk Copilot|Good (morning|afternoon)|我是 \*\*V Exchange Risk Copilot\*\*/i.test(
+      !/你好.*Risk Copilot|Good (morning|afternoon)|我是 \*\*V Exchange Risk Copilot\*\*|我是 \*\*报价 AI排查助手\*\*/i.test(
         fwdTurn.blob,
       ),
     fwdTurn.blob.slice(0, 280),
@@ -735,7 +735,7 @@ async function main() {
     'turn.empty_forwarded_card_not_greeting',
     Boolean(emptyFwdTurn.reply?.card) &&
       /排查|investigation|权限|scope|paste|粘贴|貼上/i.test(emptyFwdTurn.blob) &&
-      !/V Exchange Risk Copilot/.test(emptyFwdTurn.blob),
+      !/V Exchange Risk Copilot|报价 AI排查助手/.test(emptyFwdTurn.blob),
     emptyFwdTurn.blob.slice(0, 240),
   )
 
@@ -747,7 +747,10 @@ async function main() {
   ] as const) {
     clearSession('smoke_chat', label)
     const t = await turn(label, text, label)
-    const isGreet = /V Exchange Risk Copilot/.test(t.blob) && /行情|排查|帮助/.test(t.blob) && /你好|Hello|Hi[, ]/i.test(t.blob)
+    const isGreet =
+      /报价 AI排查助手|CFD 定价风控|CFD pricing risk/i.test(t.blob) &&
+      /行情|排查|帮助/.test(t.blob) &&
+      /你好|Hello|Hi[, ]/i.test(t.blob)
     const okTitle =
       /排查|Investigation|Start investigation|开始排查|開始排查/i.test(t.blob) ||
       /可能原因|Skills|告警/i.test(t.blob)
@@ -876,7 +879,9 @@ async function main() {
       !g.includes('Production actions need human approval')
     record(
       `greeting.template_${lang}`,
-      g.includes('Risk Copilot') &&
+      (g.includes('报价 AI排查助手') || /CFD pricing risk/i.test(g)) &&
+        /CFD|定价风控|定價風控/i.test(g) &&
+        !/V Exchange Risk Copilot/i.test(g) &&
         (lang === 'en' ? enCmds : zhCmds) &&
         g.includes('UAT') &&
         g.includes('Yan Haixiang') &&
@@ -1116,7 +1121,9 @@ async function main() {
     'turn.greeting_en',
     Boolean(
       greet.reply?.card &&
-        greetBlob.includes('Risk Copilot') &&
+        greetBlob.includes('报价 AI排查助手') &&
+        /CFD pricing risk/i.test(greetBlob) &&
+        !/V Exchange Risk Copilot/i.test(greetBlob) &&
         greetBlob.includes('**market**') &&
         greetBlob.includes('alert optimize') &&
         greetBlob.includes('**skills**') &&
@@ -1149,7 +1156,9 @@ async function main() {
     'turn.greeting_zh',
     Boolean(
       greetZh.reply?.card &&
-        greetZhBlob.includes('Risk Copilot') &&
+        greetZhBlob.includes('报价 AI排查助手') &&
+        /CFD 定价风控/i.test(greetZhBlob) &&
+        !/V Exchange Risk Copilot/i.test(greetZhBlob) &&
         greetZhBlob.includes('**行情**') &&
         greetZhBlob.includes('**排查**') &&
         greetZhBlob.includes('**告警优化**') &&
@@ -1996,7 +2005,9 @@ async function main() {
       adminQ.blob.includes('Yan Haixiang') &&
       adminQ.blob.includes('UAT') &&
       !adminQ.blob.includes('Hello · Risk Copilot') &&
-      !adminQ.blob.includes('你好 · Risk Copilot'),
+      !adminQ.blob.includes('你好 · Risk Copilot') &&
+      !adminQ.blob.includes('Hello · 报价 AI排查助手') &&
+      !adminQ.blob.includes('你好 · 报价 AI排查助手'),
     adminQ.blob.slice(0, 180),
   )
 
@@ -2034,7 +2045,9 @@ async function main() {
   record(
     'turn.who_are_you_natural',
     Boolean(whoYouTurn.reply?.card) &&
-      whoYouTurn.blob.includes('Risk Copilot') &&
+      whoYouTurn.blob.includes('报价 AI排查助手') &&
+      /CFD 定价风控/i.test(whoYouTurn.blob) &&
+      (/与 V Exchange|無關|无关/i.test(whoYouTurn.blob) || !/V Exchange Risk Copilot/i.test(whoYouTurn.blob)) &&
       !whoYouTurn.blob.includes('没有命中'),
     whoYouTurn.blob.slice(0, 220),
   )

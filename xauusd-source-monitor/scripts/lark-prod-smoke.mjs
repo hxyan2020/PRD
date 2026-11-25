@@ -84,7 +84,11 @@ async function main() {
     {
       name: 'prod.turn.greeting',
       text: 'hi',
-      expect: (b) => /报价 AI排查助手|Risk Copilot/i.test(b) && !/Commands:/i.test(b),
+      expect: (b) =>
+        /报价 AI排查助手/i.test(b) &&
+        /CFD|定价风控|pricing risk/i.test(b) &&
+        !/V Exchange Risk Copilot/i.test(b) &&
+        !/Commands:/i.test(b),
     },
     {
       name: 'prod.turn.help',
@@ -117,7 +121,7 @@ async function main() {
       text: 'What should I cook for dinner?',
       // Without OPENAI_API_KEY, offtopic may fall through; require either reject wording or assistant brand.
       expect: (b) =>
-        /V Exchange risk|风险管理|風險管理|报价 AI排查助手|trained for|risk management|不在我的职责|outside my scope|can.?t help with that|dinner|dinner picks/i.test(
+        /CFD 定价风控|CFD pricing risk|风险管理|風險管理|报价 AI排查助手|trained for|risk management|不在我的职责|outside my scope|can.?t help with that|dinner|dinner picks/i.test(
           b,
         ),
     },
