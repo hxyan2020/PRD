@@ -98,6 +98,7 @@ Demo catch-up windows (idempotent via durable sent-day state):
 | GET/POST | `/api/lark/daily-market-report` | Daily 09:00 CST 24h digest → group; `?dry=1` preview |
 | GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
 | GET/POST | `/api/lark/cron-tick` | Every 5 min fan-out of all push jobs on public alias |
+| GET/POST | `/api/lark/cron-health` | Every 30 min health DM to Yan; red @raise on missed schedule |
 
 ## Weekly report (Yan Haixiang)
 

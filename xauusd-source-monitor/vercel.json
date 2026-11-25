@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/api/lark/(alert-nudge|oscillation-alert|market-report|daily-market-report|weekly-demo|weekly-report|cron-tick)",
+      "source": "/api/lark/(alert-nudge|oscillation-alert|market-report|daily-market-report|weekly-demo|weekly-report|cron-tick|cron-health)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, max-age=0, must-revalidate" },
         { "key": "CDN-Cache-Control", "value": "no-store" },
@@ -25,6 +25,10 @@
     },
     {
       "path": "/api/lark/market-report",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/lark/cron-health",
       "schedule": "*/30 * * * *"
     },
     {

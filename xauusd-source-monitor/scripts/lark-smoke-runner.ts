@@ -1116,9 +1116,10 @@ async function main() {
   const cronAsk = cronMetaFn('zh-Hans', '现在你有多少 cron') || ''
   record(
     'chat.cron_count_self_answer',
-    cronAsk.includes('**7**') &&
+    cronAsk.includes('**8**') &&
       cronAsk.includes('daily-market-report') &&
       cronAsk.includes('market-report') &&
+      cronAsk.includes('cron-health') &&
       cronAsk.includes('cron-tick') &&
       !cronAsk.includes('没拉到可用条目') &&
       !cronAsk.includes('贴告警'),
@@ -1141,8 +1142,8 @@ async function main() {
   record(
     'turn.cron_count_chatty',
     Boolean(cronTurn.reply?.card) &&
-      cronTurn.blob.includes('7') &&
-      /早报|cron|09:00|半小时|market-report|cron-tick/i.test(cronTurn.blob) &&
+      cronTurn.blob.includes('8') &&
+      /早报|cron|09:00|半小时|market-report|cron-health|cron-tick/i.test(cronTurn.blob) &&
       !cronTurn.blob.includes('没拉到可用条目') &&
       !cronTurn.blob.includes('贴告警让我帮你排查'),
     cronTurn.blob.slice(0, 280),
@@ -2118,8 +2119,31 @@ async function main() {
       cronTickSrc.includes('/api/lark/market-report') &&
       cronTickSrc.includes('/api/lark/weekly-demo') &&
       cronTickSrc.includes('/api/lark/daily-market-report') &&
-      cronTickSrc.includes('/api/lark/weekly-report'),
+      cronTickSrc.includes('/api/lark/weekly-report') &&
+      cronTickSrc.includes('/api/lark/cron-health'),
     'cron-tick PATHS + vercel schedule',
+  )
+  record(
+    'cron.health_half_hour_scheduled',
+    (vercelCrons.crons || []).some(
+      (c) =>
+        (c.path || '').includes('/api/lark/cron-health') &&
+        (c.schedule || '').includes('*/30'),
+    ),
+    JSON.stringify((vercelCrons.crons || []).map((c) => `${c.path}:${c.schedule}`)),
+  )
+  const { buildCronHealthReport: buildHealth } = await import('../api/lark/_lib/cronHealth')
+  const healthRep = await buildHealth()
+  record(
+    'cron.health_report_shape',
+    Boolean(healthRep.slotKey) &&
+      healthRep.jobs.length >= 6 &&
+      healthRep.jobs.some((j) => j.id === 'cron-tick') &&
+      healthRep.jobs.some((j) => j.id === 'market-report') &&
+      healthRep.jobs.some((j) => j.id === 'bot') &&
+      typeof healthRep.allOk === 'boolean' &&
+      healthRep.markdown.includes('Cron 健康'),
+    `allOk=${healthRep.allOk} jobs=${healthRep.jobs.length} misses=${healthRep.misses.map((m) => m.id).join(',')}`,
   )
   record(
     'cron.daily_has_morning_slot_gate',

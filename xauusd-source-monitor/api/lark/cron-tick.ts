@@ -23,6 +23,7 @@ const PUBLIC_BASE = 'https://vex-llm-proxy.vercel.app'
  * - weekly-demo: 16:00 CST demo day
  * - daily-market-report: ≥09:00 CST + dayKey
  * - weekly-report: Friday CST + weekKey
+ * - cron-health: half-hour health DM to Yan (raises on miss)
  */
 const PATHS = [
   '/api/lark/alert-nudge',
@@ -31,7 +32,30 @@ const PATHS = [
   '/api/lark/weekly-demo',
   '/api/lark/daily-market-report',
   '/api/lark/weekly-report',
+  '/api/lark/cron-health',
 ] as const
+
+function parseOutcome(body: string): {
+  outcome: 'sent' | 'skipped' | 'ok' | 'error'
+  reason?: string
+} {
+  try {
+    const j = JSON.parse(body) as {
+      ok?: boolean
+      sent?: boolean
+      skipped?: boolean
+      raised?: boolean
+      reason?: string
+      error?: string
+    }
+    if (j.error || j.ok === false) return { outcome: 'error', reason: j.error || j.reason }
+    if (j.sent) return { outcome: 'sent', reason: j.raised ? 'raised' : j.reason }
+    if (j.skipped) return { outcome: 'skipped', reason: j.reason }
+    return { outcome: 'ok', reason: j.reason }
+  } catch {
+    return { outcome: 'error', reason: 'non_json' }
+  }
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setCronRouteHeaders(res)
@@ -46,7 +70,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const dry = String(q.dry || '') === '1'
 
   if (cron && !dry) {
-    await touchCronHeartbeat('/api/lark/cron-tick')
+    await touchCronHeartbeat('/api/lark/cron-tick', { outcome: 'ok' })
   }
 
   if (dry) {
@@ -73,15 +97,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
       const body = (await r.text()).slice(0, 240)
       results.push({ path, status: r.status, body })
-    } catch (e) {
-      results.push({
-        path,
-        status: 0,
-        body: e instanceof Error ? e.message : 'fetch failed',
+      const { outcome, reason } = parseOutcome(body)
+      await touchCronHeartbeat(path, {
+        status: r.status,
+        outcome: r.status >= 500 ? 'error' : outcome,
+        reason,
       })
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'fetch failed'
+      results.push({ path, status: 0, body: msg })
+      await touchCronHeartbeat(path, { status: 0, outcome: 'error', reason: msg })
     }
   }
 
   const ok = results.every((r) => r.status === 200 || r.status === 502)
+  await touchCronHeartbeat('/api/lark/cron-tick', {
+    status: ok ? 200 : 502,
+    outcome: ok ? 'ok' : 'error',
+    reason: ok ? 'fanout_ok' : 'fanout_partial_fail',
+  })
   return res.status(ok ? 200 : 502).json({ ok, via: 'cron-tick', results })
 }
