@@ -580,8 +580,40 @@ async function main() {
       !dinnerTpl.includes('想说什么都行'),
     dinnerTpl.slice(0, 160),
   )
-  const { botRuntimeMetaReply: cronMetaFn } = await import('../api/lark/_lib/scope')
+  const {
+    botRuntimeMetaReply: cronMetaFn,
+    botCapabilitiesReply: capsFn,
+    chatbotFallbackReply: chatFbFn,
+  } = await import('../api/lark/_lib/scope')
   const { formatWebSearchAnswer: fmtSearchEmpty } = await import('../api/lark/_lib/webSearch')
+  const capsAsk = capsFn('zh-Hans', '你有什么技能') || ''
+  record(
+    'chat.capabilities_self_answer',
+    capsAsk.includes('闲聊') &&
+      capsAsk.includes('行情') &&
+      capsAsk.includes('排查') &&
+      capsAsk.includes('skills') &&
+      !capsAsk.includes('我接住了') &&
+      !capsAsk.includes('不必发指令'),
+    capsAsk.slice(0, 220),
+  )
+  const capsFb = chatFbFn('zh-Hans', '你有什么技能')
+  record(
+    'chat.capabilities_fallback_not_stub',
+    capsFb.includes('闲聊') && !capsFb.includes('我接住了'),
+    capsFb.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'caps_q')
+  const capsTurn = await turn('capabilities', '你有什么技能', 'caps_q')
+  record(
+    'turn.capabilities_chatty',
+    Boolean(capsTurn.reply?.card) &&
+      /闲聊|行情|排查/i.test(capsTurn.blob) &&
+      !capsTurn.blob.includes('我接住了') &&
+      !capsTurn.blob.includes('不必发指令') &&
+      !capsTurn.blob.includes('没拉到可用条目'),
+    capsTurn.blob.slice(0, 280),
+  )
   const cronAsk = cronMetaFn('zh-Hans', '现在你有多少 cron') || ''
   record(
     'chat.cron_count_self_answer',

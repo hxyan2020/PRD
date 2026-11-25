@@ -553,10 +553,61 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
   ].join('\n')
 }
 
+/** “你有什么技能／你会什么” — capability overview, not the Skills catalogue dump. */
+const BOT_CAPABILITIES_RE =
+  /^(你有什么技能|你有什麼技能|你会什么|你會什麼|你能做什么|你能做什麼|你都会什么|你都會什麼|你会干嘛|你會幹嘛|你能干嘛|你能幹嘛|你有哪些本事|你会啥|你會啥)\s*[?？!！.。]*\s*$|(你|bot|助手).{0,6}(有什么|有什麼|会哪些|會哪些|能做).{0,8}(技能|本事|能力|功能)|what\s+can\s+you\s+do|what\s+are\s+your\s+(skills?|capabilities)|your\s+skills?\s*\??\s*$/i
+
+export function isBotCapabilitiesQuestion(text: string): boolean {
+  return BOT_CAPABILITIES_RE.test(text.trim())
+}
+
+export function botCapabilitiesReply(lang: Lang, question: string): string | null {
+  if (!isBotCapabilitiesQuestion(question)) return null
+  if (lang === 'zh-Hans') {
+    return [
+      '🙂 我能帮你这些：',
+      '',
+      '• **闲聊** — 吃饭、玩笑、随便问，我按聊天回',
+      '• **行情** — XAUUSD／早报／小时扫报（说「行情」或问黄金怎么样）',
+      '• **排查** — 贴告警／截图／表格，我对着 Skills 帮你拆',
+      '• **知识／Skills 目录** — 说 **skills** 或 **知识库** 打开清单（桌面 34 个场景）',
+      '• **定时推送** — 早报、震荡预警、周报（问「你有多少 cron」可看列表）',
+      '',
+      '想先看目录还是直接扔一条告警过来？',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '🙂 我能幫你這些：',
+      '',
+      '• **閒聊** — 吃飯、玩笑、隨便問',
+      '• **行情** — XAUUSD／早報／小時掃報',
+      '• **排查** — 貼告警／截圖／表格',
+      '• **知識／Skills 目錄** — 說 **skills** 或 **知識庫**',
+      '• **定時推送** — 早報、震盪預警、週報',
+      '',
+      '想先看目錄還是直接丟一條告警過來？',
+    ].join('\n')
+  }
+  return [
+    '🙂 Here’s what I can help with:',
+    '',
+    '• **Chat** — food, banter, random asks',
+    '• **Markets** — XAUUSD / morning digest / hourly scan',
+    '• **Investigate** — paste an alert, screenshot, or table',
+    '• **Skills / knowledge catalogue** — say **skills** or **knowledge**',
+    '• **Scheduled pushes** — morning report, oscillation, weekly (ask “how many crons”)',
+    '',
+    'Want the catalogue, or just drop an alert?',
+  ].join('\n')
+}
+
 /** Deterministic answer for bot/admin/UAT meta questions. */
 export function botMetaReply(lang: Lang, question: string): string | null {
   const runtime = botRuntimeMetaReply(lang, question)
   if (runtime) return runtime
+  const caps = botCapabilitiesReply(lang, question)
+  if (caps) return caps
   const faq = deskFaqReply(lang, question)
   if (faq) return faq
   if (!BOT_META_RE.test(question)) return null
@@ -657,41 +708,17 @@ export function casualChatReply(
     const name = (displayName || '').trim()
     if (lang === 'zh-Hans') {
       return name
-        ? [
-            `🙂 你是 **${name}**。`,
-            '',
-            '在这串对话里你是值班同学；改知识库／Skills 需要 **Admin**（找 **@Yan Haixiang** 开通）。要排查就直接贴告警给我。',
-          ].join('\n')
-        : [
-            '🙂 你是正在跟我对话的值班同学。',
-            '',
-            '我这边读不到完整花名册（或缺通讯录权限），但记得这是我们的风险会话。改知识库要 **Admin**——找 **@Yan Haixiang**；要排查直接贴告警就好。',
-          ].join('\n')
+        ? `🙂 你是 **${name}**呀。这串对话里你是跟我值班聊天的人——想闲聊、看行情或丢告警都行。`
+        : '🙂 你是正在跟我聊天的值班同学。花名册我这边不一定读得到，但不影响我们继续聊／看行情／排查。'
     }
     if (lang === 'zh-Hant') {
       return name
-        ? [
-            `🙂 你是 **${name}**。`,
-            '',
-            '在這串對話裡你是值班同學；改知識庫／Skills 需要 **Admin**（找 **@Yan Haixiang** 開通）。要排查就直接貼告警給我。',
-          ].join('\n')
-        : [
-            '🙂 你是正在跟我對話的值班同學。',
-            '',
-            '我這邊讀不到完整花名冊（或缺通訊錄權限），但記得這是我們的風險會話。改知識庫要 **Admin**——找 **@Yan Haixiang**；要排查直接貼告警就好。',
-          ].join('\n')
+        ? `🙂 你是 **${name}**呀。這串對話裡你是跟我值班聊天的人——想閒聊、看行情或丟告警都行。`
+        : '🙂 你是正在跟我聊天的值班同學。花名冊我這邊不一定讀得到，但不影響我們繼續聊／看行情／排查。'
     }
     return name
-      ? [
-          `🙂 You’re **${name}**.`,
-          '',
-          'In this chat you’re the on-duty operator. Editing knowledge / Skills needs **Admin** (ask **@Yan Haixiang**). Paste an alert anytime to investigate.',
-        ].join('\n')
-      : [
-          '🙂 You’re the on-duty operator talking to me.',
-          '',
-          'I can’t see a full HR profile from here (contact scope may be missing), but this is our risk session. Editing the KB needs **Admin** — **@Yan Haixiang**. Paste an alert to investigate.',
-        ].join('\n')
+      ? `🙂 You’re **${name}**. In this thread you’re chatting with me on duty — banter, markets, or alerts all fine.`
+      : '🙂 You’re the on-duty teammate chatting with me. I may not see a full HR profile, but we can still chat / markets / investigate.'
   }
   if (CASUAL_THANKS.test(t)) {
     if (lang === 'zh-Hans') return '不客气 🙂 想继续聊、看行情或贴告警，都随时叫我。'
@@ -766,17 +793,20 @@ export function casualChatReply(
   return null
 }
 
-/** Never use meta “I can chat” stubs — always answer the ask. */
+/** Never use meta “I received your message” stubs — always answer the ask. */
 export function chatbotFallbackReply(lang: Lang, question: string): string {
-  const canned = casualChatReply(lang, question, null)
+  const canned =
+    casualChatReply(lang, question, null) ||
+    botCapabilitiesReply(lang, question) ||
+    botRuntimeMetaReply(lang, question)
   if (canned) return canned
   if (lang === 'zh-Hans') {
-    return `嗯～「${question.slice(0, 40)}」我接住了。你再多说一句偏好／场景，我按聊天接着回；不必发指令 🙂`
+    return `关于「${question.slice(0, 40)}」——我可以按聊天直接答。你是想听我能干啥、看行情，还是丢条告警一起看？`
   }
   if (lang === 'zh-Hant') {
-    return `嗯～「${question.slice(0, 40)}」我接住了。你再多說一句偏好／場景，我按聊天接著回；不必發指令 🙂`
+    return `關於「${question.slice(0, 40)}」——我可以按聊天直接答。你是想聽我能幹啥、看行情，還是丟條告警一起看？`
   }
-  return `Got “${question.slice(0, 40)}”. Add one more detail and I’ll keep chatting — no commands needed 🙂`
+  return `On “${question.slice(0, 40)}” — I can answer in chat. Want what I can do, a market take, or dig into an alert?`
 }
 
 /** @deprecated Negative-list policy: free-text is no longer refused as offtopic. Kept for callers. */

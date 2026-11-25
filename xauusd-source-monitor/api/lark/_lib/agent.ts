@@ -39,6 +39,7 @@ import {
 import { detectSafetyViolation, safetyReply } from './safety.js'
 import {
   accessUnavailableReply,
+  botCapabilitiesReply,
   botMetaReply,
   botRuntimeMetaReply,
   casualChatReply,
@@ -1098,11 +1099,24 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   // general_risk — answer the user's question (FAQ / RAG / LLM); never dump greeting
   const replyTitle =
     lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
+  const chatTitle = lang === 'zh-Hans' || lang === 'zh-Hant' ? '聊聊' : 'Chat'
+
+  // Capabilities / cron / admin FAQ first — never LLM stub or web-search
+  const caps = botCapabilitiesReply(lang, workingText)
+  if (caps) {
+    return { card: simpleCard(chatTitle, caps, 'blue') }
+  }
+  const runtimeMeta = botRuntimeMetaReply(lang, workingText)
+  if (runtimeMeta) {
+    return { card: simpleCard(chatTitle, runtimeMeta, 'blue') }
+  }
+  const meta = botMetaReply(lang, workingText)
+  if (meta) {
+    return { card: simpleCard(replyTitle, meta, 'blue') }
+  }
 
   // Chat / random life Q — answer as a chatbot (never meta “I can chat”)
   if (looksLikePureChat(workingText) || isCasualChat(workingText)) {
-    const chatTitle =
-      lang === 'zh-Hans' ? '聊聊' : lang === 'zh-Hant' ? '聊聊' : 'Chat'
     const wantName = /^(我是谁|我是誰|who\s+am\s+i|whoami|我叫什么|我叫什麼|你知道我是谁吗|你知道我是誰嗎)/i.test(
       workingText.trim(),
     )
@@ -1126,16 +1140,6 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       return { card: simpleCard(chatTitle, llmChat, 'blue') }
     }
     return { card: simpleCard(chatTitle, chatbotFallbackReply(lang, workingText), 'blue') }
-  }
-
-  // Bot self-config / cron / admin FAQ — answer directly, never web-search
-  const runtimeMeta = botRuntimeMetaReply(lang, workingText)
-  if (runtimeMeta) {
-    return { card: simpleCard(lang === 'zh-Hans' || lang === 'zh-Hant' ? '聊聊' : 'Chat', runtimeMeta, 'blue') }
-  }
-  const meta = botMetaReply(lang, workingText)
-  if (meta) {
-    return { card: simpleCard(replyTitle, meta, 'blue') }
   }
 
   const incidentish = looksLikeIncidentEvidence(workingText)
