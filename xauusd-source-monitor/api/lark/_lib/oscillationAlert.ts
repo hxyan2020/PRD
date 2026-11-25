@@ -1,7 +1,6 @@
 /**
- * Oscillation / leverage / breaking-news market alert for XAU OKX perp.
- * Triggers when short-horizon vol or funding (leverage proxy) exceeds a
- * dynamic historical mean, or a breaking-news headline is detected.
+ * Oscillation / leverage / breaking-news market alert for XAU perp.
+ * Primary venue: Binance XAUUSDT; OKX XAU-USDT-SWAP as automatic backup.
  */
 import { shanghaiDayKey } from './market.js'
 
@@ -13,6 +12,16 @@ export const OSC_DEMO_DAY =
   (process.env.LARK_OSC_DEMO_DAY || '').trim() || '2026-11-25'
 export const OSC_DEMO_START_HM =
   (process.env.LARK_OSC_DEMO_START || '').trim() || '10:00'
+
+const BINANCE_CANDLES =
+  'https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=1h&limit=48'
+const BINANCE_TICKER = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=XAUUSDT'
+const BINANCE_FUNDING = 'https://fapi.binance.com/fapi/v1/premiumIndex?symbol=XAUUSDT'
+const BINANCE_FUNDING_HIST =
+  'https://fapi.binance.com/fapi/v1/fundingRate?symbol=XAUUSDT&limit=48'
+const BINANCE_OI = 'https://fapi.binance.com/fapi/v1/openInterest?symbol=XAUUSDT'
+const BINANCE_TRADE =
+  'https://www.tradingview.com/chart/?symbol=BINANCE%3AXAUUSDT.P'
 
 const OKX_CANDLES =
   'https://www.okx.com/api/v5/market/candles?instId=XAU-USDT-SWAP&bar=1H&limit=48'
@@ -26,6 +35,8 @@ const OKX_OI =
 /** Geo-safe K-line (okx.com/trade-swap 404s in SG and other regions). */
 const OKX_TRADE = 'https://www.tradingview.com/chart/?symbol=OKX%3AXAUUSDT.P'
 
+export type OscVenue = 'binance' | 'okx'
+
 export type OscTrigger =
   | 'vol_spike'
   | 'funding_leverage'
@@ -37,6 +48,9 @@ export type OscSource = { label: string; url: string }
 
 export type OscillationSnapshot = {
   fetchedAt: number
+  /** Venue that supplied tape metrics (Binance preferred). */
+  venue: OscVenue
+  venueLabel: string
   last: number | null
   /** Recent 6×1H mean range % */
   volRecentPct: number | null
@@ -71,8 +85,8 @@ async function fetchJson(url: string): Promise<unknown | null> {
   }
 }
 
-/** OKX candles: [ts,o,h,l,c,vol,volCcy,volCcyQuote,confirm] newest first. */
-function parseCandleRanges(data: unknown): { rangePct: number; close: number }[] {
+/** OKX candles: [ts,o,h,l,c,…] newest first. */
+function parseOkxCandleRanges(data: unknown): { rangePct: number; close: number }[] {
   const rows = (data as { data?: string[][] })?.data
   if (!Array.isArray(rows)) return []
   const out: { rangePct: number; close: number }[] = []
@@ -84,6 +98,21 @@ function parseCandleRanges(data: unknown): { rangePct: number; close: number }[]
     out.push({ rangePct: ((h - l) / c) * 100, close: c })
   }
   return out
+}
+
+/** Binance klines: [openTime,o,h,l,c,…] oldest first → return newest-first ranges. */
+function parseBinanceCandleRanges(data: unknown): { rangePct: number; close: number }[] {
+  if (!Array.isArray(data)) return []
+  const out: { rangePct: number; close: number }[] = []
+  for (const row of data) {
+    if (!Array.isArray(row) || row.length < 5) continue
+    const h = Number(row[2])
+    const l = Number(row[3])
+    const c = Number(row[4])
+    if (!(c > 0) || !Number.isFinite(h) || !Number.isFinite(l)) continue
+    out.push({ rangePct: ((h - l) / c) * 100, close: c })
+  }
+  return out.reverse()
 }
 
 function looksBreaking(title: string): boolean {
@@ -118,28 +147,88 @@ export async function fetchBreakingHeadline(): Promise<{
   }
 }
 
-export async function evaluateOscillation(opts?: {
-  demo?: boolean
-}): Promise<OscillationSnapshot> {
-  const demo = Boolean(opts?.demo)
-  const [candles, ticker, funding, fundingHist, oiJson, news] = await Promise.all([
+type VenueTape = {
+  venue: OscVenue
+  venueLabel: string
+  ranges: { rangePct: number; close: number }[]
+  last: number | null
+  fundingPct: number | null
+  fundingMeanAbsPct: number | null
+  oi: number | null
+}
+
+async function fetchBinanceTape(): Promise<VenueTape | null> {
+  const [candles, ticker, funding, fundingHist, oiJson] = await Promise.all([
+    fetchJson(BINANCE_CANDLES),
+    fetchJson(BINANCE_TICKER),
+    fetchJson(BINANCE_FUNDING),
+    fetchJson(BINANCE_FUNDING_HIST),
+    fetchJson(BINANCE_OI),
+  ])
+  const ranges = parseBinanceCandleRanges(candles)
+  if (ranges.length < 8) return null
+
+  const last = (() => {
+    try {
+      const n = Number((ticker as { price?: string })?.price)
+      return Number.isFinite(n) ? n : ranges[0]?.close ?? null
+    } catch {
+      return ranges[0]?.close ?? null
+    }
+  })()
+
+  const fundingPct = (() => {
+    try {
+      const n = Number((funding as { lastFundingRate?: string })?.lastFundingRate)
+      return Number.isFinite(n) ? n * 100 : null
+    } catch {
+      return null
+    }
+  })()
+
+  const fundingMeanAbsPct = (() => {
+    try {
+      const rows = (fundingHist as { fundingRate?: string }[]) || []
+      if (!Array.isArray(rows)) return null
+      const abs = rows
+        .map((r) => Math.abs(Number(r.fundingRate) * 100))
+        .filter((n) => Number.isFinite(n))
+      return mean(abs)
+    } catch {
+      return null
+    }
+  })()
+
+  const oi = (() => {
+    try {
+      const n = Number((oiJson as { openInterest?: string })?.openInterest)
+      return Number.isFinite(n) ? n : null
+    } catch {
+      return null
+    }
+  })()
+
+  return {
+    venue: 'binance',
+    venueLabel: 'Binance XAUUSDT',
+    ranges,
+    last,
+    fundingPct,
+    fundingMeanAbsPct,
+    oi,
+  }
+}
+
+async function fetchOkxTape(): Promise<VenueTape | null> {
+  const [candles, ticker, funding, fundingHist, oiJson] = await Promise.all([
     fetchJson(OKX_CANDLES),
     fetchJson(OKX_TICKER),
     fetchJson(OKX_FUNDING),
     fetchJson(OKX_FUNDING_HIST),
     fetchJson(OKX_OI),
-    fetchBreakingHeadline(),
   ])
-
-  const ranges = parseCandleRanges(candles)
-  const recent = ranges.slice(0, 6).map((r) => r.rangePct)
-  const hist = ranges.slice(6, 30).map((r) => r.rangePct)
-  const volRecentPct = mean(recent)
-  const volMeanPct = mean(hist)
-  const volRatio =
-    volRecentPct != null && volMeanPct != null && volMeanPct > 0
-      ? volRecentPct / volMeanPct
-      : null
+  const ranges = parseOkxCandleRanges(candles)
+  if (ranges.length < 8) return null
 
   const last = (() => {
     try {
@@ -173,11 +262,6 @@ export async function evaluateOscillation(opts?: {
     }
   })()
 
-  const fundingRatio =
-    fundingPct != null && fundingMeanAbsPct != null && fundingMeanAbsPct > 0
-      ? Math.abs(fundingPct) / fundingMeanAbsPct
-      : null
-
   const oi = (() => {
     try {
       const n = Number((oiJson as { data?: { oi?: string }[] })?.data?.[0]?.oi)
@@ -187,31 +271,84 @@ export async function evaluateOscillation(opts?: {
     }
   })()
 
+  return {
+    venue: 'okx',
+    venueLabel: 'OKX XAU-USDT-SWAP',
+    ranges,
+    last,
+    fundingPct,
+    fundingMeanAbsPct,
+    oi,
+  }
+}
+
+export async function evaluateOscillation(opts?: {
+  demo?: boolean
+}): Promise<OscillationSnapshot> {
+  const demo = Boolean(opts?.demo)
+  const [binanceTape, okxTape, news] = await Promise.all([
+    fetchBinanceTape(),
+    fetchOkxTape(),
+    fetchBreakingHeadline(),
+  ])
+  // Binance primary; OKX backup when Binance tape is thin / unreachable.
+  const tape = binanceTape || okxTape
+  if (!tape) {
+    return {
+      fetchedAt: Date.now(),
+      venue: 'binance',
+      venueLabel: 'Binance XAUUSDT',
+      last: null,
+      volRecentPct: null,
+      volMeanPct: null,
+      volRatio: null,
+      fundingPct: null,
+      fundingMeanAbsPct: null,
+      fundingRatio: null,
+      oi: null,
+      newsHeadline: news?.title || null,
+      newsUrl: news?.url || null,
+      triggers: demo ? ['demo'] : news ? ['breaking_news'] : [],
+      demo,
+    }
+  }
+
+  const recent = tape.ranges.slice(0, 6).map((r) => r.rangePct)
+  const hist = tape.ranges.slice(6, 30).map((r) => r.rangePct)
+  const volRecentPct = mean(recent)
+  const volMeanPct = mean(hist)
+  const volRatio =
+    volRecentPct != null && volMeanPct != null && volMeanPct > 0
+      ? volRecentPct / volMeanPct
+      : null
+
+  const fundingPct = tape.fundingPct
+  const fundingMeanAbsPct = tape.fundingMeanAbsPct
+  const fundingRatio =
+    fundingPct != null && fundingMeanAbsPct != null && fundingMeanAbsPct > 0
+      ? Math.abs(fundingPct) / fundingMeanAbsPct
+      : null
+
   const triggers: OscTrigger[] = []
   if (demo) triggers.push('demo')
-  // Sustained oscillation: recent range vs dynamic mean
   if (volRatio != null && volRatio >= 1.45) triggers.push('vol_spike')
-  // Funding as crowded-leverage proxy vs dynamic mean
   if (fundingRatio != null && fundingRatio >= 1.5 && Math.abs(fundingPct || 0) >= 0.01) {
     triggers.push('funding_leverage')
   }
   if (news) triggers.push('breaking_news')
 
-  // Demo path: if live didn't trip anything, still show as demo with context
-  if (demo && triggers.length === 1) {
-    // keep demo-only
-  }
-
   return {
     fetchedAt: Date.now(),
-    last,
+    venue: tape.venue,
+    venueLabel: tape.venueLabel,
+    last: tape.last,
     volRecentPct,
     volMeanPct,
     volRatio,
     fundingPct,
     fundingMeanAbsPct,
     fundingRatio,
-    oi,
+    oi: tape.oi,
     newsHeadline: news?.title || null,
     newsUrl: news?.url || null,
     triggers,
@@ -226,9 +363,16 @@ export function shouldFireAlert(snap: OscillationSnapshot): boolean {
 
 export function oscillationSources(snap: OscillationSnapshot): OscSource[] {
   // Cite exchange trade / K-line UI and news pages — never raw JSON API hosts.
-  const src: OscSource[] = [
-    { label: 'OKX XAU-USDT-SWAP K线', url: OKX_TRADE },
-  ]
+  const src: OscSource[] =
+    snap.venue === 'okx'
+      ? [
+          { label: 'OKX XAU-USDT-SWAP K线（备用）', url: OKX_TRADE },
+          { label: 'Binance XAUUSDT K线', url: BINANCE_TRADE },
+        ]
+      : [
+          { label: 'Binance XAUUSDT K线', url: BINANCE_TRADE },
+          { label: 'OKX XAU-USDT-SWAP K线（备用）', url: OKX_TRADE },
+        ]
   if (snap.newsUrl) {
     src.push({ label: snap.newsHeadline || '突发新闻', url: snap.newsUrl })
   }
@@ -238,6 +382,21 @@ export function oscillationSources(snap: OscillationSnapshot): OscSource[] {
 function fmt(n: number | null, d = 2): string {
   if (n == null || !Number.isFinite(n)) return '—'
   return n.toFixed(d)
+}
+
+function venueLine(snap: OscillationSnapshot, lang: 'en' | 'zh-Hans' | 'zh-Hant'): string {
+  const label = snap.venueLabel || (snap.venue === 'okx' ? 'OKX XAU-USDT-SWAP' : 'Binance XAUUSDT')
+  const backup =
+    snap.venue === 'okx'
+      ? lang === 'en'
+        ? ' (OKX backup — Binance unreachable)'
+        : lang === 'zh-Hant'
+          ? '（OKX 備用 · Binance 不可達）'
+          : '（OKX 备用 · Binance 不可达）'
+      : ''
+  if (lang === 'en') return `**Instrument:** ${label}${backup} · last **${fmt(snap.last)}**`
+  if (lang === 'zh-Hant') return `**標的：** ${label}${backup} · 最新 **${fmt(snap.last)}**`
+  return `**标的：** ${label}${backup} · 最新 **${fmt(snap.last)}**`
 }
 
 /**
@@ -293,11 +452,11 @@ export function buildOscillationStatusCard(
           ? '⚠️ **结论：当前满足预警条件**（与自动推送同一套规则）'
           : '✅ **结论：当前没有震荡／杠杆／突发新闻预警**',
         '',
-        `• **标的：** OKX XAU-USDT-SWAP · 最新 **${fmt(snap.last)}**`,
+        `• ${venueLine(snap, 'zh-Hans')}`,
         snap.oi != null ? `• **持仓（OI）：** ${fmt(snap.oi, 0)}` : '',
         '',
         '📌 **触发机制**（你发「震荡行情预警」会即时评估；cron 每 **15** 分钟自动跑同一套）',
-        '1. **振幅偏离** — 近 6 根 1H 振幅均值 ≥ 更早约 24 根均值的 **1.45×**',
+        '1. **振幅偏离** — 近 6 根 1H 振幅均值 ≥ 更早约 24 根均值的 **1.45×**（Binance 优先，OKX 备用）',
         '2. **资金费率／杠杆代理** — |费率| ≥ **0.01%** 且 ≥ 历史 |费率| 均值的 **1.5×**',
         '3. **突发新闻** — Fed 新闻标题命中战争／制裁／暴涨暴跌等关键词',
         '命中任一项 → 推送群 + @Yan Haixiang 私聊。',
@@ -318,11 +477,11 @@ export function buildOscillationStatusCard(
             ? '⚠️ **結論：當前滿足預警條件**（與自動推送同一套規則）'
             : '✅ **結論：當前沒有震盪／槓桿／突發新聞預警**',
           '',
-          `• **標的：** OKX XAU-USDT-SWAP · 最新 **${fmt(snap.last)}**`,
+          `• ${venueLine(snap, 'zh-Hant')}`,
           snap.oi != null ? `• **持倉（OI）：** ${fmt(snap.oi, 0)}` : '',
           '',
           '📌 **觸發機制**（你發「震盪行情預警」會即時評估；cron 每 **15** 分鐘自動跑同一套）',
-          '1. **振幅偏離** — 近 6 根 1H 振幅均值 ≥ 更早約 24 根均值的 **1.45×**',
+          '1. **振幅偏離** — 近 6 根 1H 振幅均值 ≥ 更早約 24 根均值的 **1.45×**（Binance 優先，OKX 備用）',
           '2. **資金費率／槓桿代理** — |費率| ≥ **0.01%** 且 ≥ 歷史 |費率| 均值的 **1.5×**',
           '3. **突發新聞** — Fed 新聞標題命中戰爭／制裁／暴漲暴跌等關鍵詞',
           '命中任一項 → 推送群 + @Yan Haixiang 私聊。',
@@ -342,11 +501,11 @@ export function buildOscillationStatusCard(
             ? '⚠️ **Verdict: alert conditions met** (same rules as the auto push)'
             : '✅ **Verdict: no oscillation / leverage / breaking-news alert right now**',
           '',
-          `• **Instrument:** OKX XAU-USDT-SWAP · last **${fmt(snap.last)}**`,
+          `• ${venueLine(snap, 'en')}`,
           snap.oi != null ? `• **OI:** ${fmt(snap.oi, 0)}` : '',
           '',
           '📌 **Trigger mechanism** (this command evaluates live; cron runs the same check every **15** minutes)',
-          '1. **Vol spike** — last-6×1H mean range ≥ **1.45×** the prior ~24-bar mean',
+          '1. **Vol spike** — last-6×1H mean range ≥ **1.45×** the prior ~24-bar mean (Binance primary, OKX backup)',
           '2. **Funding / leverage proxy** — |funding| ≥ **0.01%** and ≥ **1.5×** hist |funding| mean',
           '3. **Breaking news** — Fed headline matches war / sanctions / crash / surge keywords',
           'Any hit → push to the group + @Yan Haixiang DM.',
@@ -406,7 +565,7 @@ export function buildOscillationAlertCard(
     '',
     `${atAdmin} 请留意下方预警`,
     '',
-    `• **标的：** OKX XAU-USDT-SWAP · 最新 **${fmt(snap.last)}**`,
+    `• ${venueLine(snap, 'zh-Hans')}`,
     `• **原因：**`,
     ...reasons.map((r) => `  - ${r}`),
     '',
