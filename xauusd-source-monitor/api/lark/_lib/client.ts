@@ -215,10 +215,12 @@ const ADMIN_NAME_RE = /Yan\s*Haixiang|严海翔|嚴海翔|海翔/i
 let cachedAdminOpenId: { openId: string; source: string; expireAt: number } | null = null
 
 /**
- * Resolve Yan Haixiang (or configured admin) open_id for weekly / 30-min market push.
- * Prefers env → email → p2p chat named Yan → remembered cache.
+ * Resolve Yan Haixiang (or configured admin) open_id for weekly / nudge @mention.
+ * Prefers env → durable blob → memory → email → preferChatId group → p2p chat.
  */
-export async function resolveAdminOpenId(): Promise<{ openId: string; source: string }> {
+export async function resolveAdminOpenId(opts?: {
+  preferChatId?: string
+}): Promise<{ openId: string; source: string }> {
   const fromEnv = (
     process.env.LARK_ADMIN_OPEN_ID ||
     process.env.LARK_YAN_OPEN_ID ||
@@ -228,6 +230,22 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
 
   if (cachedAdminOpenId && Date.now() < cachedAdminOpenId.expireAt) {
     return { openId: cachedAdminOpenId.openId, source: cachedAdminOpenId.source }
+  }
+
+  try {
+    const { readDurableJson } = await import('./durableJson.js')
+    const saved = await readDurableJson<{ openId?: string; source?: string }>('admin-open-id.json')
+    const id = (saved?.openId || '').trim()
+    if (id) {
+      cachedAdminOpenId = {
+        openId: id,
+        source: saved?.source || 'blob',
+        expireAt: Date.now() + 24 * 3600_000,
+      }
+      return { openId: id, source: cachedAdminOpenId.source }
+    }
+  } catch {
+    /* ignore */
   }
 
   const email = (process.env.LARK_ADMIN_EMAIL || '').trim()
@@ -241,11 +259,7 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
       }
       const hit = (data.data?.user_list || []).find((u) => u.user_id)
       if (hit?.user_id) {
-        cachedAdminOpenId = {
-          openId: hit.user_id,
-          source: 'email',
-          expireAt: Date.now() + 6 * 3600_000,
-        }
+        await persistAdminOpenId(hit.user_id, 'email')
         return { openId: hit.user_id, source: 'email' }
       }
     } catch {
@@ -254,14 +268,22 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
   }
 
   if (larkConfigured()) {
+    const prefer = (opts?.preferChatId || '').trim()
+    if (prefer) {
+      try {
+        const fromGroup = await resolveAdminFromChatMembers(prefer)
+        if (fromGroup) {
+          await persistAdminOpenId(fromGroup, 'group_members')
+          return { openId: fromGroup, source: 'group_members' }
+        }
+      } catch {
+        /* need im:chat.members scope */
+      }
+    }
     try {
       const fromChat = await resolveAdminFromP2pChats()
       if (fromChat) {
-        cachedAdminOpenId = {
-          openId: fromChat,
-          source: 'p2p_chat',
-          expireAt: Date.now() + 6 * 3600_000,
-        }
+        await persistAdminOpenId(fromChat, 'p2p_chat')
         return { openId: fromChat, source: 'p2p_chat' }
       }
     } catch {
@@ -271,15 +293,60 @@ export async function resolveAdminOpenId(): Promise<{ openId: string; source: st
   return { openId: '', source: 'missing' }
 }
 
-/** Remember Yan’s open_id when he DMs the bot (warm cache for upcoming cron). */
+async function persistAdminOpenId(openId: string, source: string): Promise<void> {
+  const id = (openId || '').trim()
+  if (!id || id === 'unknown') return
+  cachedAdminOpenId = { openId: id, source, expireAt: Date.now() + 24 * 3600_000 }
+  try {
+    const { writeDurableJson } = await import('./durableJson.js')
+    await writeDurableJson('admin-open-id.json', { openId: id, source, at: Date.now() })
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Remember Yan’s open_id when he DMs the bot (durable for cron @mention). */
 export function rememberAdminOpenId(openId: string, source = 'inbound'): void {
   const id = (openId || '').trim()
   if (!id || id === 'unknown') return
   cachedAdminOpenId = { openId: id, source, expireAt: Date.now() + 24 * 3600_000 }
+  void persistAdminOpenId(id, source)
 }
 
 export function looksLikeAdminName(name: string | null | undefined): boolean {
   return Boolean(name && ADMIN_NAME_RE.test(name))
+}
+
+async function resolveAdminFromChatMembers(chatId: string): Promise<string | null> {
+  const id = (chatId || '').trim()
+  if (!id) return null
+  const botId = (await resolveBotOpenId().catch(() => '')) || ''
+  let pageToken = ''
+  for (let page = 0; page < 10; page++) {
+    const qs = new URLSearchParams({
+      member_id_type: 'open_id',
+      page_size: '50',
+    })
+    if (pageToken) qs.set('page_token', pageToken)
+    const mem = (await larkFetch(
+      `/open-apis/im/v1/chats/${encodeURIComponent(id)}/members?${qs}`,
+      { method: 'GET' },
+    )) as {
+      data?: {
+        items?: { member_id?: string; name?: string; member_id_type?: string }[]
+        page_token?: string
+        has_more?: boolean
+      }
+    }
+    for (const m of mem.data?.items || []) {
+      const mid = (m.member_id || '').trim()
+      if (!mid || mid === botId) continue
+      if (ADMIN_NAME_RE.test(m.name || '')) return mid
+    }
+    if (!mem.data?.has_more || !mem.data.page_token) break
+    pageToken = mem.data.page_token
+  }
+  return null
 }
 
 async function resolveAdminFromP2pChats(): Promise<string | null> {
@@ -296,17 +363,20 @@ async function resolveAdminFromP2pChats(): Promise<string | null> {
     if (!ADMIN_NAME_RE.test(name) && mode !== 'p2p') continue
     if (!c.chat_id) continue
     try {
-      const mem = (await larkFetch(
-        `/open-apis/im/v1/chats/${encodeURIComponent(c.chat_id)}/members?member_id_type=open_id&page_size=20`,
-        { method: 'GET' },
-      )) as {
-        data?: { items?: { member_id?: string; name?: string }[] }
-      }
-      for (const m of mem.data?.items || []) {
-        const mid = (m.member_id || '').trim()
-        if (!mid || mid === botId) continue
-        if (ADMIN_NAME_RE.test(m.name || '') || ADMIN_NAME_RE.test(name)) return mid
-        if (mode === 'p2p' && ADMIN_NAME_RE.test(name)) return mid
+      const fromMembers = await resolveAdminFromChatMembers(c.chat_id)
+      if (fromMembers) return fromMembers
+      // p2p named after Yan: any non-bot member
+      if (mode === 'p2p' && ADMIN_NAME_RE.test(name)) {
+        const mem = (await larkFetch(
+          `/open-apis/im/v1/chats/${encodeURIComponent(c.chat_id)}/members?member_id_type=open_id&page_size=20`,
+          { method: 'GET' },
+        )) as {
+          data?: { items?: { member_id?: string; name?: string }[] }
+        }
+        for (const m of mem.data?.items || []) {
+          const mid = (m.member_id || '').trim()
+          if (mid && mid !== botId) return mid
+        }
       }
     } catch {
       /* need im:chat.members scope — skip */

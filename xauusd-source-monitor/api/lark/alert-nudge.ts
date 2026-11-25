@@ -75,7 +75,7 @@ async function ensureActiveState(args: {
   if (state?.acked && state.dayKey === ALERT_NUDGE_DAY && !args.force) return state
 
   if (args.force || (nudgeWindowOpen(args.now) && !nudgeWindowExpired(args.now))) {
-    const admin = await resolveAdminOpenId()
+    const admin = await resolveAdminOpenId({ preferChatId: args.chatId })
     if (!state || state.dayKey !== ALERT_NUDGE_DAY) {
       // New campaign day — start count at 0
       state = {
