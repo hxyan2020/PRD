@@ -94,7 +94,7 @@ export interface HourlyMarketReport {
   risk: RankedPoint[]
   sources: ReportSource[]
   sentiment: SentimentBarometer
-  /** OKX XAU-USDT-SWAP 1H candles for the report chart */
+  /** Primary venue K-line (Binance XAUUSDT; OKX backup) for the report chart */
   kline: HourlyKlineSeries | null
   /** V Exchange indicators are placeholders until ops provides the feed */
   vexPlaceholder: true
@@ -113,6 +113,11 @@ const YAHOO_GC =
   'https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d'
 const FED_PRESS = 'https://www.federalreserve.gov/json/ne-press.json'
 const GOLD_API = 'https://api.gold-api.com/price/XAU'
+/** Primary venue for market reports — Binance USDT-M XAUUSDT perp. */
+const BINANCE_TICKER = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=XAUUSDT'
+const BINANCE_FUNDING = 'https://fapi.binance.com/fapi/v1/premiumIndex?symbol=XAUUSDT'
+const BINANCE_CANDLES =
+  'https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=1h&limit=36'
 const OKX_TICKER = 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP'
 const OKX_FUNDING = 'https://www.okx.com/api/v5/public/funding-rate?instId=XAU-USDT-SWAP'
 const OKX_CANDLES =
@@ -143,7 +148,13 @@ type CatalogEntry = {
 }
 
 /**
- * Human-facing OKX XAU perpetual K-line.
+ * Human-facing Binance XAUUSDT perpetual K-line (TradingView — geo-safe).
+ */
+export const BINANCE_KLINE_URL =
+  'https://www.tradingview.com/chart/?symbol=BINANCE%3AXAUUSDT.P'
+
+/**
+ * Human-facing OKX XAU perpetual K-line (backup venue).
  * Direct okx.com/trade-swap/… 404s in several regions (e.g. SG) — TradingView
  * chart for OKX:XAUUSDT.P stays reachable for desk viewing.
  */
@@ -210,11 +221,13 @@ export function citeFallbackUrl(url: string, id = ''): string | null {
   }
   if (/bitget\.com/i.test(u) && /support|announc/i.test(u)) return BITGET_SUPPORT_URL
   if (/bitget\.com/i.test(u)) return 'https://www.bitget.com/futures/usdt/XAUUSDT'
+  if (/binance\.com/i.test(u) && /fapi|\bapi\b/i.test(u)) return BINANCE_KLINE_URL
   if (/binance\.com/i.test(u)) return 'https://www.binance.com/en/futures/XAUUSDT'
   if (/bybit\.com/i.test(u)) return 'https://www.bybit.com/trade/usdt/XAUUSDT'
   if (/federalreserve\.gov/i.test(u)) {
     return 'https://www.federalreserve.gov/newsevents/pressreleases.htm'
   }
+  if (/tradingview\.com/i.test(u) && /BINANCE/i.test(u)) return BINANCE_KLINE_URL
   if (/tradingview\.com/i.test(u)) return OKX_KLINE_URL
   return null
 }
@@ -243,6 +256,10 @@ export async function resolveCiteUrlOrNull(
 /** Default human UI when a JSON probe has no explicit linkUrl. */
 function humanLinkFor(id: string, probeUrl: string): string {
   switch (id) {
+    case 'binance-ticker':
+    case 'binance-candles':
+    case 'binance-funding':
+      return BINANCE_KLINE_URL
     case 'okx-ticker':
     case 'okx-candles':
     case 'okx-funding':
@@ -274,13 +291,41 @@ function humanLinkFor(id: string, probeUrl: string): string {
  */
 const SOURCE_CATALOG: CatalogEntry[] = [
   // —— Prices / APIs / indicators ——
+  // Binance is primary for market reports; OKX kept as backup.
+  {
+    id: 'binance-ticker',
+    kind: 'api',
+    url: BINANCE_TICKER,
+    linkUrl: BINANCE_KLINE_URL,
+    captionEn: 'Binance XAUUSDT.P K-line (TradingView)',
+    captionZh: 'Binance XAUUSDT.P K线（TradingView）',
+    json: true,
+  },
+  {
+    id: 'binance-candles',
+    kind: 'price',
+    url: BINANCE_CANDLES,
+    linkUrl: BINANCE_KLINE_URL,
+    captionEn: 'Binance XAUUSDT.P 1H K-line (TradingView)',
+    captionZh: 'Binance XAUUSDT.P 1H K线（TradingView）',
+    json: true,
+  },
+  {
+    id: 'binance-funding',
+    kind: 'indicator',
+    url: BINANCE_FUNDING,
+    linkUrl: BINANCE_KLINE_URL,
+    captionEn: 'Binance XAUUSDT.P funding / K-line (TradingView)',
+    captionZh: 'Binance XAUUSDT.P 资金费率／K线（TradingView）',
+    json: true,
+  },
   {
     id: 'okx-ticker',
     kind: 'api',
     url: OKX_TICKER,
     linkUrl: OKX_KLINE_URL,
-    captionEn: 'OKX XAUUSDT.P K-line (TradingView)',
-    captionZh: 'OKX XAUUSDT.P K线（TradingView）',
+    captionEn: 'OKX XAUUSDT.P K-line (TradingView · backup)',
+    captionZh: 'OKX XAUUSDT.P K线（TradingView · 备用）',
     json: true,
   },
   {
@@ -288,8 +333,8 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     kind: 'price',
     url: OKX_CANDLES,
     linkUrl: OKX_KLINE_URL,
-    captionEn: 'OKX XAUUSDT.P 1H K-line (TradingView)',
-    captionZh: 'OKX XAUUSDT.P 1H K线（TradingView）',
+    captionEn: 'OKX XAUUSDT.P 1H K-line (TradingView · backup)',
+    captionZh: 'OKX XAUUSDT.P 1H K线（TradingView · 备用）',
     json: true,
   },
   {
@@ -297,8 +342,8 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     kind: 'indicator',
     url: OKX_FUNDING,
     linkUrl: OKX_KLINE_URL,
-    captionEn: 'OKX XAUUSDT.P funding / K-line (TradingView)',
-    captionZh: 'OKX XAUUSDT.P 资金费率／K线（TradingView）',
+    captionEn: 'OKX XAUUSDT.P funding / K-line (TradingView · backup)',
+    captionZh: 'OKX XAUUSDT.P 资金费率／K线（TradingView · 备用）',
     json: true,
   },
   {
@@ -712,8 +757,10 @@ function makeSource(
   extra?: { latencyMs?: number; detail?: string },
 ): ReportSource {
   let domain = domainOf(url)
-  // Keep OKX favicon when the click-through is the geo-safe TradingView chart
-  if (/tradingview\.com/i.test(domain) && /OKX|XAUUSDT/i.test(url)) {
+  // Keep venue favicon when the click-through is the geo-safe TradingView chart
+  if (/tradingview\.com/i.test(domain) && /BINANCE/i.test(url)) {
+    domain = 'binance.com'
+  } else if (/tradingview\.com/i.test(domain) && /OKX|XAUUSDT/i.test(url)) {
     domain = 'okx.com'
   }
   return {
@@ -1124,7 +1171,11 @@ function looksLikeEventPoint(text: string): boolean {
 export function buildOneLineTldr(args: {
   dxy: number | null
   tnx: number | null
-  okxPx: number | null
+  /** Primary venue last (Binance preferred; OKX when Binance unavailable). */
+  venuePx: number | null
+  venueLabel?: 'binance' | 'okx'
+  /** @deprecated use venuePx */
+  okxPx?: number | null
   spotLive: number | null
   opportunity: RankedPoint[]
   risk: RankedPoint[]
@@ -1133,10 +1184,18 @@ export function buildOneLineTldr(args: {
   const printEn: string[] = []
   const printZh: string[] = []
 
-  if (args.okxPx != null) {
-    printEn.push(`OKX XAU ${args.okxPx.toFixed(2)}`)
-    printZh.push(`OKX 金 ${args.okxPx.toFixed(2)}`)
-    sourceIds.push('okx-ticker')
+  const venuePx = args.venuePx ?? args.okxPx ?? null
+  const venue = args.venueLabel || (args.venuePx != null ? 'binance' : 'okx')
+  if (venuePx != null) {
+    if (venue === 'binance') {
+      printEn.push(`Binance XAU ${venuePx.toFixed(2)}`)
+      printZh.push(`Binance 金 ${venuePx.toFixed(2)}`)
+      sourceIds.push('binance-ticker')
+    } else {
+      printEn.push(`OKX XAU ${venuePx.toFixed(2)}`)
+      printZh.push(`OKX 金 ${venuePx.toFixed(2)}`)
+      sourceIds.push('okx-ticker')
+    }
   }
   if (args.spotLive != null) {
     printEn.push(`spot ${args.spotLive.toFixed(2)}`)
@@ -1275,6 +1334,63 @@ function okxLast(data: unknown): number | null {
   }
 }
 
+/** Binance USDT-M ticker/price or 24hr lastPrice. */
+function binanceLast(data: unknown): number | null {
+  try {
+    const d = data as { price?: string; lastPrice?: string }
+    const n = Number(d.price ?? d.lastPrice)
+    return Number.isFinite(n) ? n : null
+  } catch {
+    return null
+  }
+}
+
+/** Binance premiumIndex.lastFundingRate (decimal). */
+function binanceFundingRate(data: unknown): number | null {
+  try {
+    const n = Number((data as { lastFundingRate?: string })?.lastFundingRate)
+    return Number.isFinite(n) ? n : null
+  } catch {
+    return null
+  }
+}
+
+/** Binance futures klines: [openTime, o, h, l, c, volume, ...] oldest-first. */
+export function binanceCandles(data: unknown): KlineBar[] {
+  try {
+    if (!Array.isArray(data)) return []
+    const bars: KlineBar[] = []
+    for (const row of data) {
+      if (!Array.isArray(row) || row.length < 5) continue
+      const t = Number(row[0])
+      const o = Number(row[1])
+      const h = Number(row[2])
+      const l = Number(row[3])
+      const c = Number(row[4])
+      const v = Number(row[5])
+      if (![t, o, h, l, c].every((n) => Number.isFinite(n))) continue
+      bars.push({
+        t,
+        o,
+        h,
+        l,
+        c,
+        v: Number.isFinite(v) ? v : undefined,
+      })
+    }
+    return bars.sort((a, b) => a.t - b.t)
+  } catch {
+    return []
+  }
+}
+
+function binanceInterval(bar: KlineIntervalBar): string {
+  if (bar === '15m') return '15m'
+  if (bar === '4H') return '4h'
+  if (bar === '1D') return '1d'
+  return '1h'
+}
+
 function goldApiPrice(data: unknown): number | null {
   try {
     const n = Number((data as { price?: number })?.price)
@@ -1373,6 +1489,56 @@ export async function fetchOkxKline(
     interval: bar,
     sourceId: 'okx-candles',
     bars,
+  }
+}
+
+/** Live Binance XAUUSDT USDT-M candles. */
+export async function fetchBinanceKline(
+  bar: KlineIntervalBar,
+  limit?: number,
+  signal?: AbortSignal,
+): Promise<HourlyKlineSeries> {
+  const meta = KLINE_INTERVALS.find((i) => i.bar === bar) || KLINE_INTERVALS[1]
+  const n = limit ?? meta.limit
+  const interval = binanceInterval(bar)
+  const url = `https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=${encodeURIComponent(interval)}&limit=${n}`
+  const res = await fetch(url, {
+    signal,
+    cache: 'no-store',
+    mode: 'cors',
+    headers: { Accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`Binance candles HTTP ${res.status}`)
+  const json = (await res.json()) as unknown
+  if (json && typeof json === 'object' && !Array.isArray(json) && 'code' in json) {
+    const err = json as { code?: number; msg?: string }
+    if (err.code && err.code !== 200) {
+      throw new Error(err.msg || `Binance candles code ${err.code}`)
+    }
+  }
+  const bars = binanceCandles(json)
+  if (bars.length === 0) throw new Error('Binance candles empty')
+  return {
+    symbol: 'XAUUSDT',
+    interval: bar,
+    sourceId: 'binance-candles',
+    bars,
+  }
+}
+
+/**
+ * Market-report K-line: Binance primary, OKX backup.
+ * Prefer this over fetchOkxKline for cards / TF switcher.
+ */
+export async function fetchMarketKline(
+  bar: KlineIntervalBar,
+  limit?: number,
+  signal?: AbortSignal,
+): Promise<HourlyKlineSeries> {
+  try {
+    return await fetchBinanceKline(bar, limit, signal)
+  } catch {
+    return fetchOkxKline(bar, limit, signal)
   }
 }
 
@@ -1593,61 +1759,83 @@ export async function generateHourlyScan(args: {
     )
   }
 
+  // Primary venue = Binance; OKX kept as backup when Binance probe fails.
+  const binancePx = binanceLast(byId.get('binance-ticker')?.json ?? null)
   const okxPx = okxLast(byId.get('okx-ticker')?.json ?? null)
+  const venuePx = binancePx ?? okxPx
+  const venueLabel: 'binance' | 'okx' | null =
+    binancePx != null ? 'binance' : okxPx != null ? 'okx' : null
+  const venueTickerId = venueLabel === 'binance' ? 'binance-ticker' : 'okx-ticker'
+  const venueNameEn = venueLabel === 'binance' ? 'Binance XAUUSDT' : 'OKX XAU-USDT-SWAP'
+  const venueNameZh = venueLabel === 'binance' ? 'Binance XAUUSDT' : 'OKX XAU-USDT-SWAP'
+
+  if (binancePx != null) {
+    bumpCaption(
+      'binance-ticker',
+      `Binance XAUUSDT last ${binancePx.toFixed(2)}`,
+      `Binance XAUUSDT 最新 ${binancePx.toFixed(2)}`,
+    )
+  }
   if (okxPx != null) {
     bumpCaption(
       'okx-ticker',
-      `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)}`,
-      `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}`,
+      `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} (backup)`,
+      `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}（备用）`,
     )
-    if (spotLive != null) {
-      const basisBps = ((okxPx - spotLive) / spotLive) * 10_000
-      if (Math.abs(basisBps) >= 25) {
-        riskRaw.push({
-          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} leaves a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps futures–spot basis — wide enough to distort mid marks, venue prints, and LP hedges until the dislocation narrows.`,
-          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 的期现基差为 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——偏宽，足以扭曲中间价、场所报价与 LP 对冲，直至错位收敛。`,
-          sourceIds: ['okx-ticker', 'gold-api'],
-        })
-      } else {
-        opportunityRaw.push({
-          en: `OKX XAU-USDT-SWAP last ${okxPx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} shows only a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps basis — perp and spot are aligned with no extreme dislocation this hour.`,
-          zh: `OKX XAU-USDT-SWAP 最新 ${okxPx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 基差仅 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——永续与现货对齐，本小时无极端错位。`,
-          sourceIds: ['okx-ticker', 'gold-api'],
-        })
-      }
+  }
+  if (venuePx != null && spotLive != null && venueLabel) {
+    const basisBps = ((venuePx - spotLive) / spotLive) * 10_000
+    if (Math.abs(basisBps) >= 25) {
+      riskRaw.push({
+        en: `${venueNameEn} last ${venuePx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} leaves a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps futures–spot basis — wide enough to distort mid marks, venue prints, and LP hedges until the dislocation narrows.`,
+        zh: `${venueNameZh} 最新 ${venuePx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 的期现基差为 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——偏宽，足以扭曲中间价、场所报价与 LP 对冲，直至错位收敛。`,
+        sourceIds: [venueTickerId, 'gold-api'],
+      })
+    } else {
+      opportunityRaw.push({
+        en: `${venueNameEn} last ${venuePx.toFixed(2)} vs Kitco spot ${spotLive.toFixed(2)} shows only a ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps basis — perp and spot are aligned with no extreme dislocation this hour.`,
+        zh: `${venueNameZh} 最新 ${venuePx.toFixed(2)}，对 Kitco 现货 ${spotLive.toFixed(2)} 基差仅 ${basisBps >= 0 ? '+' : ''}${basisBps.toFixed(1)} bps——永续与现货对齐，本小时无极端错位。`,
+        sourceIds: [venueTickerId, 'gold-api'],
+      })
     }
   }
 
-  const funding = okxFundingRate(byId.get('okx-funding')?.json ?? null)
+  const binanceFunding = binanceFundingRate(byId.get('binance-funding')?.json ?? null)
+  const okxFunding = okxFundingRate(byId.get('okx-funding')?.json ?? null)
+  const funding = binanceFunding ?? okxFunding
+  const fundingId = binanceFunding != null ? 'binance-funding' : 'okx-funding'
+  const fundingNameEn =
+    binanceFunding != null ? 'Binance XAUUSDT' : 'OKX XAU-USDT-SWAP'
+  const fundingNameZh = fundingNameEn
   if (funding != null) {
     const pct = funding * 100
     bumpCaption(
-      'okx-funding',
-      `OKX XAU-USDT-SWAP funding ${pct.toFixed(4)}%`,
-      `OKX XAU-USDT-SWAP 资金费率 ${pct.toFixed(4)}%`,
+      fundingId,
+      `${fundingNameEn} funding ${pct.toFixed(4)}%`,
+      `${fundingNameZh} 资金费率 ${pct.toFixed(4)}%`,
     )
     if (Math.abs(pct) >= 0.05) {
       riskRaw.push({
-        en: `OKX XAU-USDT-SWAP funding is ${pct.toFixed(4)}%, an elevated carry cost that signals crowded perp positioning and raises squeeze / rollover stress for leveraged XAUUSD books this hour.`,
-        zh: `OKX XAU-USDT-SWAP 資金費率報 ${pct.toFixed(4)}%，持有成本偏高，顯示永續倉位擁擠，本小時槓桿 XAUUSD 賬本的軋空／展期壓力上升。`,
-        sourceIds: ['okx-funding'],
+        en: `${fundingNameEn} funding is ${pct.toFixed(4)}%, an elevated carry cost that signals crowded perp positioning and raises squeeze / rollover stress for leveraged XAUUSD books this hour.`,
+        zh: `${fundingNameZh} 資金費率報 ${pct.toFixed(4)}%，持有成本偏高，顯示永續倉位擁擠，本小時槓桿 XAUUSD 賬本的軋空／展期壓力上升。`,
+        sourceIds: [fundingId],
       })
     }
   }
 
   const bitgetPx = bitgetLast(byId.get('bitget-ticker')?.json ?? null)
-  if (bitgetPx != null && okxPx != null) {
+  if (bitgetPx != null && venuePx != null && venueLabel) {
     bumpCaption(
       'bitget-ticker',
       `Bitget XAUUSDT last ${bitgetPx.toFixed(2)}`,
       `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)}`,
     )
-    const crossBps = ((bitgetPx - okxPx) / okxPx) * 10_000
+    const crossBps = ((bitgetPx - venuePx) / venuePx) * 10_000
     if (Math.abs(crossBps) >= 20) {
       riskRaw.push({
-        en: `Bitget XAUUSDT last ${bitgetPx.toFixed(2)} vs OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} is ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps apart — a material cross-venue gap that can bias a single mid mark if liquidity is thinner on one side.`,
-        zh: `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)} 與 OKX XAU-USDT-SWAP ${okxPx.toFixed(2)} 相差 ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps——跨場所價差偏大，若單邊流動性較薄，單一中間價可能失真。`,
-        sourceIds: ['bitget-ticker', 'okx-ticker'],
+        en: `Bitget XAUUSDT last ${bitgetPx.toFixed(2)} vs ${venueNameEn} ${venuePx.toFixed(2)} is ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps apart — a material cross-venue gap that can bias a single mid mark if liquidity is thinner on one side.`,
+        zh: `Bitget XAUUSDT 最新 ${bitgetPx.toFixed(2)} 與 ${venueNameZh} ${venuePx.toFixed(2)} 相差 ${crossBps >= 0 ? '+' : ''}${crossBps.toFixed(1)} bps——跨場所價差偏大，若單邊流動性較薄，單一中間價可能失真。`,
+        sourceIds: ['bitget-ticker', venueTickerId],
       })
     }
   }
@@ -1661,20 +1849,34 @@ export async function generateHourlyScan(args: {
     )
   }
 
-  const candleBars = okxCandles(byId.get('okx-candles')?.json ?? null)
+  const binanceBars = binanceCandles(byId.get('binance-candles')?.json ?? null)
+  const okxBars = okxCandles(byId.get('okx-candles')?.json ?? null)
   let kline: HourlyKlineSeries | null = null
-  if (candleBars.length > 0) {
-    const last = candleBars[candleBars.length - 1]
+  if (binanceBars.length > 0) {
+    const last = binanceBars[binanceBars.length - 1]
+    bumpCaption(
+      'binance-candles',
+      `Binance XAUUSDT 1H K-line · ${binanceBars.length} bars · last ${last.c.toFixed(2)}`,
+      `Binance XAUUSDT 1H K线 · ${binanceBars.length} 根 · 最新 ${last.c.toFixed(2)}`,
+    )
+    kline = {
+      symbol: 'XAUUSDT',
+      interval: '1H',
+      sourceId: 'binance-candles',
+      bars: binanceBars,
+    }
+  } else if (okxBars.length > 0) {
+    const last = okxBars[okxBars.length - 1]
     bumpCaption(
       'okx-candles',
-      `OKX XAU-USDT-SWAP 1H K-line · ${candleBars.length} bars · last ${last.c.toFixed(2)}`,
-      `OKX XAU-USDT-SWAP 1H K线 · ${candleBars.length} 根 · 最新 ${last.c.toFixed(2)}`,
+      `OKX XAU-USDT-SWAP 1H K-line · ${okxBars.length} bars · last ${last.c.toFixed(2)} (backup)`,
+      `OKX XAU-USDT-SWAP 1H K线 · ${okxBars.length} 根 · 最新 ${last.c.toFixed(2)}（备用）`,
     )
     kline = {
       symbol: 'XAU-USDT-SWAP',
       interval: '1H',
       sourceId: 'okx-candles',
-      bars: candleBars,
+      bars: okxBars,
     }
   }
 
@@ -1769,7 +1971,8 @@ export async function generateHourlyScan(args: {
   const tldr = buildOneLineTldr({
     dxy,
     tnx,
-    okxPx: okxPx ?? null,
+    venuePx: venuePx ?? null,
+    venueLabel: venueLabel ?? undefined,
     spotLive: spotLive ?? null,
     opportunity,
     risk,
