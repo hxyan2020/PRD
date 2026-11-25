@@ -25,7 +25,7 @@ import {
   shanghaiHm,
   type AlertNudgeState,
 } from './_lib/alertNudge.js'
-import { allowCronOrDesk, isVercelCron } from './_lib/cronAuth.js'
+import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { readCronHeartbeat, touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { shanghaiDayKey } from './_lib/market.js'
 
@@ -86,9 +86,7 @@ async function ensureActiveState(args: {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Desk-Token, Authorization')
+  setCronRouteHeaders(res)
   if (req.method === 'OPTIONS') return res.status(204).end()
 
   const cron = isVercelCron(req)

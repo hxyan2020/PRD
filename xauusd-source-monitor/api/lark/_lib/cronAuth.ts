@@ -5,9 +5,12 @@
  * That host must NOT be covered by Vercel Authentication SSO, or every
  * scheduled fire gets a 302 to vercel.com/sso-api and never reaches us.
  * Prefer project SSO = preview-only (or off). Custom-domain traffic stays public.
+ *
+ * Also set Cache-Control: no-store — Vercel Cron treats cached GET responses
+ * as successful deliveries without invoking the function (no runtime logs).
  */
 import { timingSafeEqual } from 'node:crypto'
-import type { VercelRequest } from '@vercel/node'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 function safeEqual(a: string, b: string) {
   const aa = Buffer.from(a, 'utf8')
@@ -38,4 +41,14 @@ export function authorizeDeskOrCronSecret(req: VercelRequest): boolean {
 /** Allow Vercel Cron header OR desk / CRON_SECRET bearer. */
 export function allowCronOrDesk(req: VercelRequest): boolean {
   return isVercelCron(req) || authorizeDeskOrCronSecret(req)
+}
+
+/** CORS + no-store so cron GETs are never served from CDN cache. */
+export function setCronRouteHeaders(res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Desk-Token, Authorization')
+  res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate')
+  res.setHeader('CDN-Cache-Control', 'no-store')
+  res.setHeader('Vercel-CDN-Cache-Control', 'no-store')
 }

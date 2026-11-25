@@ -22,6 +22,7 @@ jobs:
         run: |
           set -euo pipefail
           paths=(
+            /api/lark/cron-tick
             /api/lark/alert-nudge
             /api/lark/oscillation-alert
             /api/lark/market-report
