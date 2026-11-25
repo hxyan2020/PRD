@@ -1284,9 +1284,9 @@ async function main() {
   } = await import('../api/lark/_lib/market')
   const liveSnap = await fetchMarketSnapshot()
   record(
-    'market.live_okx_or_fallback',
-    Boolean(liveSnap.okx || liveSnap.bitget || liveSnap.spot),
-    `okx=${liveSnap.okx?.last ?? '-'} bitget=${liveSnap.bitget?.last ?? '-'} spot=${liveSnap.spot?.last ?? '-'}`,
+    'market.live_binance_or_fallback',
+    Boolean(liveSnap.binance || liveSnap.okx || liveSnap.bitget || liveSnap.spot),
+    `binance=${liveSnap.binance?.last ?? '-'} okx=${liveSnap.okx?.last ?? '-'} bitget=${liveSnap.bitget?.last ?? '-'} spot=${liveSnap.spot?.last ?? '-'}`,
   )
   const mktFmt = formatMarketAnswer(liveSnap, 'en', 'Market')
   record(
@@ -1298,7 +1298,10 @@ async function main() {
       mktFmt.includes('UTC+8') &&
       (mktFmt.includes('K-line') || mktFmt.includes('📈')) &&
       !mktFmt.includes('On your question') &&
-      (mktFmt.includes('OKX XAU-USDT-SWAP') || mktFmt.includes('Bitget') || mktFmt.includes('Spot XAU')),
+      (mktFmt.includes('Binance XAUUSDT') ||
+        mktFmt.includes('OKX XAU-USDT-SWAP') ||
+        mktFmt.includes('Bitget') ||
+        mktFmt.includes('Spot XAU')),
     mktFmt.slice(0, 220),
   )
   // Sources sit under each point (domain markdown link), not only a bulk footer dump
@@ -1319,14 +1322,18 @@ async function main() {
   // Citation URLs must be human UIs (exchange K-line / news / social) — never raw JSON APIs
   const citeUrls = (liveSnap.hourly?.sources || []).map((s) => s.url)
   const jsonApiCite = citeUrls.filter((u) =>
-    /api\.gold-api\.com|query1\.finance\.yahoo|\/api\/v5\/market|ne-press\.json|bitget\.com\/api\//i.test(
+    /api\.gold-api\.com|query1\.finance\.yahoo|\/api\/v5\/market|fapi\.binance\.com|ne-press\.json|bitget\.com\/api\//i.test(
       u,
     ),
   )
   record(
     'market.sources_human_ui_urls',
     jsonApiCite.length === 0 &&
-      citeUrls.some((u) => /okx\.com\/trade|kitco\.com|finance\.yahoo\.com|bitget\.com\/futures/i.test(u)),
+      citeUrls.some((u) =>
+        /tradingview\.com\/chart|kitco\.com|finance\.yahoo\.com|bitget\.com\/futures|binance\.com/i.test(
+          u,
+        ),
+      ),
     jsonApiCite.length
       ? `bad=${jsonApiCite.slice(0, 3).join(' | ')}`
       : citeUrls.slice(0, 4).join(' | '),
@@ -1440,6 +1447,7 @@ async function main() {
   const {
     buildOneLineTldr,
     clampSummary,
+    BINANCE_KLINE_URL: binanceKlineUrl,
     OKX_KLINE_URL: okxKlineUrl,
     KITCO_GOLD_URL: kitcoGoldUrl,
     resolveCiteUrlOrNull,
@@ -1501,14 +1509,15 @@ async function main() {
   const tldrProbe = buildOneLineTldr({
     dxy: 104.1,
     tnx: 4.92,
-    okxPx: 3633.9,
+    venuePx: 3633.9,
+    venueLabel: 'binance',
     spotLive: 3626.9,
     opportunity: [
       {
         rank: 1,
-        en: 'OKX XAU-USDT-SWAP last 3633.90 vs gold-api spot 3626.90 shows only a +19.3 bps basis — perp and spot are aligned with no extreme dislocation this hour.',
-        zh: 'OKX 永续相对现货仅约 +19.3 bps 基差，本小时无极端错位。',
-        sourceIds: ['okx-ticker'],
+        en: 'Binance XAUUSDT last 3633.90 vs gold-api spot 3626.90 shows only a +19.3 bps basis — perp and spot are aligned with no extreme dislocation this hour.',
+        zh: 'Binance 永续相对现货仅约 +19.3 bps 基差，本小时无极端错位。',
+        sourceIds: ['binance-ticker'],
       },
       {
         rank: 2,
@@ -1558,7 +1567,12 @@ async function main() {
     tldrZh.slice(0, 220),
   )
   record(
-    'market.okx_kline_geosafe_tradingview',
+    'market.binance_kline_geosafe_tradingview',
+    /tradingview\.com\/chart\/\?symbol=BINANCE%3AXAUUSDT\.P/i.test(binanceKlineUrl),
+    binanceKlineUrl,
+  )
+  record(
+    'market.okx_kline_geosafe_tradingview_backup',
     /tradingview\.com\/chart\/\?symbol=OKX%3AXAUUSDT\.P/i.test(okxKlineUrl) &&
       !/okx\.com\/trade-swap/i.test(okxKlineUrl),
     okxKlineUrl,
@@ -2159,7 +2173,7 @@ async function main() {
       dailyMd.includes('**✨ Opportunity**') &&
       dailyMd.includes('**⚠️ Risk**') &&
       dailyMd.includes('打开网页 Market') &&
-      dailyMd.includes('OKX K线') &&
+      dailyMd.includes('Binance K线') &&
       dailyMd.includes('Kitco') &&
       // Use section headers — bare "Risk" also matches "V Exchange Risk"
       dailyMd.indexOf('**📋 TL;DR**') < dailyMd.indexOf('**✨ Opportunity**') &&
@@ -2190,7 +2204,7 @@ async function main() {
       dailyCardBlob.includes('Opportunity') &&
       dailyCardBlob.includes('**⚠️ Risk**') &&
       !dailyCardBlob.includes('THIS_SHOULD_NOT_APPEAR_IN_DAILY') &&
-      dailyCardBlob.includes('OKX K线') &&
+      dailyCardBlob.includes('Binance K线') &&
       dailyCardBlob.includes('multi_url') &&
       /"tag":"action"/.test(dailyCardBlob) &&
       /"tag":"button"/.test(dailyCardBlob),

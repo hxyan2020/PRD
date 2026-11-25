@@ -1,5 +1,6 @@
 import {
-  fetchOkxKline,
+  BINANCE_KLINE_URL,
+  fetchMarketKline,
   generateHourlyScan,
   KLINE_INTERVALS,
   KITCO_GOLD_URL,
@@ -18,6 +19,9 @@ import { readDurableJson, writeDurableJson } from './durableJson.js'
 import type { Lang } from './types.js'
 
 export interface MarketSnapshot {
+  /** Primary venue print (Binance XAUUSDT). */
+  binance?: { last: number; change24hPct?: number }
+  /** Backup venue print (OKX XAU-USDT-SWAP). */
   okx?: { last: number; change24hPct?: number }
   bitget?: { last: number; change24hPct?: number }
   spot?: { last: number }
@@ -27,6 +31,15 @@ export interface MarketSnapshot {
   fetchedAt: number
   /** Full hourly desk report (same engine as web Market → Hourly scan). */
   hourly?: HourlyMarketReport
+}
+
+/** Human venue tag from kline sourceId (Binance primary, OKX backup). */
+function klineVenueLabel(kline: HourlyKlineSeries | null | undefined): string {
+  if (kline?.sourceId?.startsWith('binance')) return 'Binance'
+  if (kline?.sourceId?.startsWith('okx')) return 'OKX'
+  if (kline?.symbol === 'XAUUSDT') return 'Binance'
+  if (kline?.symbol?.includes('OKX') || kline?.symbol === 'XAU-USDT-SWAP') return 'OKX'
+  return 'Binance'
 }
 
 const DESK_MARKET = 'https://vex-llm-proxy.vercel.app/#/market'
@@ -285,7 +298,7 @@ export function isKlineIntervalBar(v: unknown): v is KlineIntervalBar {
   return KLINE_INTERVALS.some((i) => i.bar === v)
 }
 
-/** Feishu action row — switch OKX K-line interval (same set as web Market desk). */
+/** Feishu action row — switch market K-line interval (same set as web Market desk). */
 export function klineIntervalActions(
   selected: KlineIntervalBar,
   opts: { mode: 'hourly' | 'daily'; lang: Lang },
@@ -356,7 +369,7 @@ export type Day24hStats = {
   toTs: number
 }
 
-/** Last ~24 × 1H OKX bars → open/high/low/close + % change. */
+/** Last ~24 × 1H primary-venue bars → open/high/low/close + % change. */
 export function compute24hStats(snap: MarketSnapshot): Day24hStats | null {
   const bars = snap.hourly?.kline?.bars || []
   if (bars.length < 2) return null
@@ -396,6 +409,7 @@ export const DAILY_REPORT_SECTIONS = [
 ] as const
 
 const DAILY_FIXED_LINKS: { id: string; label: string; url: string; domain: string }[] = [
+  { id: 'binance-kline', label: 'Binance K线', url: BINANCE_KLINE_URL, domain: 'binance.com' },
   { id: 'okx-kline', label: 'OKX K线', url: OKX_KLINE_URL, domain: 'okx.com' },
   { id: 'kitco', label: 'Kitco', url: KITCO_GOLD_URL, domain: 'kitco.com' },
   { id: 'yahoo-tnx', label: 'Yahoo行情', url: 'https://finance.yahoo.com/quote/%5ETNX', domain: 'yahoo.com' },
@@ -442,7 +456,15 @@ export function normalizeDailyTldrBeats(snap: MarketSnapshot, lang: Lang): strin
 
   const liveFromSnap = (() => {
     const bits: string[] = []
-    if (snap.okx) bits.push(hans || hant ? `OKX 金 ${snap.okx.last.toFixed(2)}` : `OKX ${snap.okx.last.toFixed(2)}`)
+    if (snap.binance) {
+      bits.push(
+        hans || hant
+          ? `Binance 金 ${snap.binance.last.toFixed(2)}`
+          : `Binance ${snap.binance.last.toFixed(2)}`,
+      )
+    } else if (snap.okx) {
+      bits.push(hans || hant ? `OKX 金 ${snap.okx.last.toFixed(2)}` : `OKX ${snap.okx.last.toFixed(2)}`)
+    }
     if (snap.spot) bits.push(hans || hant ? `现货 ${snap.spot.last.toFixed(2)}` : `spot ${snap.spot.last.toFixed(2)}`)
     if (!bits.length) return ''
     if (hans) return `即时：${bits.join(' · ')}。`
@@ -632,8 +654,10 @@ export function pointSources(
 function sourceChipLabel(s: ReportSource): string {
   const host = (s.domain || '').replace(/^www\./, '')
   const url = s.url || ''
-  // TradingView OKX:XAUUSDT.P is the geo-safe K-line target
+  // TradingView BINANCE/OKX:XAUUSDT.P are geo-safe K-line targets
+  if (/tradingview\.com/i.test(host) && /BINANCE/i.test(url)) return 'Binance K线'
   if (/tradingview\.com/i.test(host) && /OKX|XAUUSDT/i.test(url)) return 'OKX K线'
+  if (/binance\.com/i.test(host)) return 'Binance K线'
   if (/okx\.com/i.test(host)) return 'OKX K线'
   if (/bitget\.com/i.test(host)) return 'Bitget K线'
   if (/kitco\.com/i.test(host)) return 'Kitco'
@@ -644,7 +668,6 @@ function sourceChipLabel(s: ReportSource): string {
   if (/bloomberg\.com/i.test(host)) return '彭博'
   if (/cnbc\.com/i.test(host)) return 'CNBC'
   if (/lbma\.org/i.test(host)) return 'LBMA'
-  if (/binance\.com/i.test(host)) return 'Binance'
   if (/bybit\.com/i.test(host)) return 'Bybit'
   return host.slice(0, 18) || '来源'
 }
@@ -758,7 +781,7 @@ function pricesAndKlineBlock(
       lines.push('📊 **过去 24 小时行情报告 · V Exchange Risk**', '')
       lines.push(
         `⏱ **报告时间：** **${scanAt}**（东八区）`,
-        '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（OKX XAU-USDT-SWAP）+ 当日宏观／来源要点。',
+        '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（Binance XAUUSDT，OKX 备用）+ 当日宏观／来源要点。',
         '',
         '📈 **24h 价格区间**',
         stats
@@ -776,7 +799,7 @@ function pricesAndKlineBlock(
       lines.push('📊 **過去 24 小時行情報告 · V Exchange Risk**', '')
       lines.push(
         `⏱ **報告時間：** **${scanAt}**（東八區）`,
-        '• 每日早上自動推送；數據覆蓋近 **24 根 1H K 線**（OKX XAU-USDT-SWAP）+ 當日宏觀／來源要點。',
+        '• 每日早上自動推送；數據覆蓋近 **24 根 1H K 線**（Binance XAUUSDT，OKX 備用）+ 當日宏觀／來源要點。',
         '',
         '📈 **24h 價格區間**',
         stats
@@ -794,7 +817,7 @@ function pricesAndKlineBlock(
       lines.push('📊 **Past-24h market report · V Exchange Risk**', '')
       lines.push(
         `⏱ **As of:** **${scanAt}** (UTC+8)`,
-        '• Daily morning push; ~**24** × 1H OKX XAU-USDT-SWAP bars + macro / source notes.',
+        '• Daily morning push; ~**24** × 1H Binance XAUUSDT bars (OKX backup) + macro / source notes.',
         '',
         '📈 **24h range**',
         stats
@@ -840,7 +863,11 @@ function pricesAndKlineBlock(
     lines.push(...renderKlineCaption(hourly?.kline, lang, n), '')
   }
   if (hans) {
-    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.binance) lines.push(`• **Binance XAUUSDT：** **${snap.binance.last.toFixed(2)}**`)
+    else if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP（备用）：** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.binance && snap.okx) {
+      lines.push(`• **OKX XAU-USDT-SWAP（备用）：** **${snap.okx.last.toFixed(2)}**`)
+    }
     if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
     if (snap.spot) lines.push(`• **现货 XAU：** **${snap.spot.last.toFixed(2)}**`)
     if (hourly?.sentiment) {
@@ -849,7 +876,11 @@ function pricesAndKlineBlock(
       )
     }
   } else if (hant) {
-    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.binance) lines.push(`• **Binance XAUUSDT：** **${snap.binance.last.toFixed(2)}**`)
+    else if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP（備用）：** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.binance && snap.okx) {
+      lines.push(`• **OKX XAU-USDT-SWAP（備用）：** **${snap.okx.last.toFixed(2)}**`)
+    }
     if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
     if (snap.spot) lines.push(`• **現貨 XAU：** **${snap.spot.last.toFixed(2)}**`)
     if (hourly?.sentiment) {
@@ -858,7 +889,11 @@ function pricesAndKlineBlock(
       )
     }
   } else {
-    if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP:** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.binance) lines.push(`• **Binance XAUUSDT:** **${snap.binance.last.toFixed(2)}**`)
+    else if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP (backup):** **${snap.okx.last.toFixed(2)}**`)
+    if (snap.binance && snap.okx) {
+      lines.push(`• **OKX XAU-USDT-SWAP (backup):** **${snap.okx.last.toFixed(2)}**`)
+    }
     if (snap.bitget) lines.push(`• **Bitget XAUUSDT:** **${snap.bitget.last.toFixed(2)}**`)
     if (snap.spot) lines.push(`• **Spot XAU:** **${snap.spot.last.toFixed(2)}**`)
     if (hourly?.sentiment) {
@@ -1047,23 +1082,24 @@ function renderKlineCaption(
 ): string[] {
   const hans = lang === 'zh-Hans'
   const hant = lang === 'zh-Hant'
+  const venue = klineVenueLabel(kline)
   if (!kline?.bars?.length) {
     return [
       hans
-        ? '📈 **K线** · 本小时蜡烛不可用（OKX 源不可达）'
+        ? '📈 **K线** · 本小时蜡烛不可用（Binance／OKX 源不可达）'
         : hant
-          ? '📈 **K線** · 本小時蠟燭不可用（OKX 源不可達）'
-          : '📈 **K-line** · unavailable this hour (OKX feed unreachable)',
+          ? '📈 **K線** · 本小時蠟燭不可用（Binance／OKX 源不可達）'
+          : '📈 **K-line** · unavailable this hour (Binance / OKX feed unreachable)',
     ]
   }
   const bars = kline.bars
   const last = bars[bars.length - 1]!
   const n = Math.min(Math.max(8, width), bars.length)
   const title = hans
-    ? `📈 **K线** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盘走势（OKX · 下图可点开放大）`
+    ? `📈 **K线** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盘走势（${venue} · 下图可点开放大）`
     : hant
-      ? `📈 **K線** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盤走勢（OKX · 下圖可點開放大）`
-      : `📈 **K-line** · ${kline.symbol} · ${kline.interval} · last **${n}** closes (OKX · tap chart to enlarge)`
+      ? `📈 **K線** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盤走勢（${venue} · 下圖可點開放大）`
+      : `📈 **K-line** · ${kline.symbol} · ${kline.interval} · last **${n}** closes (${venue} · tap chart to enlarge)`
   const lastLine = hans
     ? `末根（东八区 ${formatEast8(last.t)}）：O **${last.o.toFixed(2)}** · H **${last.h.toFixed(2)}** · L **${last.l.toFixed(2)}** · C **${last.c.toFixed(2)}**`
     : hant
@@ -1075,13 +1111,14 @@ function renderKlineCaption(
 function renderKline(kline: HourlyKlineSeries | null | undefined, lang: Lang): string[] {
   const hans = lang === 'zh-Hans'
   const hant = lang === 'zh-Hant'
+  const venue = klineVenueLabel(kline)
   if (!kline?.bars?.length) {
     return [
       hans
-        ? '📈 **K线** · 本小时蜡烛不可用（OKX 源不可达）'
+        ? '📈 **K线** · 本小时蜡烛不可用（Binance／OKX 源不可达）'
         : hant
-          ? '📈 **K線** · 本小時蠟燭不可用（OKX 源不可達）'
-          : '📈 **K-line** · unavailable this hour (OKX feed unreachable)',
+          ? '📈 **K線** · 本小時蠟燭不可用（Binance／OKX 源不可達）'
+          : '📈 **K-line** · unavailable this hour (Binance / OKX feed unreachable)',
     ]
   }
   const bars = kline.bars
@@ -1091,10 +1128,10 @@ function renderKline(kline: HourlyKlineSeries | null | undefined, lang: Lang): s
   const lo = Math.min(...bars.slice(-16).map((b) => b.l))
   const hi = Math.max(...bars.slice(-16).map((b) => b.h))
   const title = hans
-    ? `📈 **K线** · ${kline.symbol} · ${kline.interval} · 近 ${Math.min(16, bars.length)} 根（OKX）`
+    ? `📈 **K线** · ${kline.symbol} · ${kline.interval} · 近 ${Math.min(16, bars.length)} 根（${venue}）`
     : hant
-      ? `📈 **K線** · ${kline.symbol} · ${kline.interval} · 近 ${Math.min(16, bars.length)} 根（OKX）`
-      : `📈 **K-line** · ${kline.symbol} · ${kline.interval} · last ${Math.min(16, bars.length)} bars (OKX)`
+      ? `📈 **K線** · ${kline.symbol} · ${kline.interval} · 近 ${Math.min(16, bars.length)} 根（${venue}）`
+      : `📈 **K-line** · ${kline.symbol} · ${kline.interval} · last ${Math.min(16, bars.length)} bars (${venue})`
   const lastLine = hans
     ? `末根（东八区 ${formatEast8(last.t)}）：O **${last.o.toFixed(2)}** · H **${last.h.toFixed(2)}** · L **${last.l.toFixed(2)}** · C **${last.c.toFixed(2)}**`
     : hant
@@ -1171,7 +1208,7 @@ export function klineCloseChartElement(
 
 /**
  * Rebuild a market card for a Feishu interval-button tap (15m / 1H / 4H / 1D).
- * Fetches OKX candles for `bar` and keeps the rest of the live snapshot.
+ * Fetches Binance candles (OKX backup) for `bar` and keeps the rest of the live snapshot.
  */
 export async function rebuildMarketCardForInterval(opts: {
   bar: KlineIntervalBar
@@ -1183,7 +1220,7 @@ export async function rebuildMarketCardForInterval(opts: {
   // Parallel — TF callback updates the message async after a fast Feishu toast ack.
   const [snap, klineFetched] = await Promise.all([
     fetchMarketSnapshot().catch(() => null),
-    fetchOkxKline(opts.bar).catch(() => null),
+    fetchMarketKline(opts.bar).catch(() => null),
   ])
   // Never fall back to a different interval (e.g. 4H tap → 1H chart looks "stuck").
   const snapKline = snap?.hourly?.kline
@@ -1192,12 +1229,29 @@ export async function rebuildMarketCardForInterval(opts: {
     (snapKline && snapKline.interval === opts.bar ? snapKline : null) ||
     null
   const lastClose = kline?.bars?.at(-1)?.c
+  const venue = klineVenueLabel(kline)
   const snapSafe: MarketSnapshot =
     snap ||
     ({
-      okx: lastClose && Number.isFinite(lastClose) ? { last: lastClose } : undefined,
-      notes: [lang === 'en' ? `OKX K-line ${opts.bar}` : `OKX K线 ${opts.bar}`],
-      sources: [{ label: 'OKX', url: 'https://www.okx.com/trade-swap/xau-usdt-swap' }],
+      binance:
+        venue === 'Binance' && lastClose && Number.isFinite(lastClose)
+          ? { last: lastClose }
+          : undefined,
+      okx:
+        venue === 'OKX' && lastClose && Number.isFinite(lastClose)
+          ? { last: lastClose }
+          : undefined,
+      notes: [
+        lang === 'en'
+          ? `${venue} K-line ${opts.bar}`
+          : `${venue} K线 ${opts.bar}`,
+      ],
+      sources: [
+        {
+          label: venue,
+          url: venue === 'Binance' ? BINANCE_KLINE_URL : OKX_KLINE_URL,
+        },
+      ],
       fetchedAt: Date.now(),
       hourly: kline
         ? ({
@@ -1250,13 +1304,26 @@ function isBareMarketQuery(question: string): boolean {
 export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
   const hourly = await generateHourlyScan({ health: [], composite: null, spot: null })
   const byId = new Map(hourly.sources.map((s) => [s.id, s]))
+  const binanceCap = byId.get('binance-ticker')?.captionEn || ''
   const okxCap = byId.get('okx-ticker')?.captionEn || ''
   const bitgetCap = byId.get('bitget-ticker')?.captionEn || ''
   const spotCap = byId.get('gold-api')?.captionEn || ''
-  const okxMatch = okxCap.match(/([\d.]+)\s*$/)
+  const binanceMatch = binanceCap.match(/([\d.]+)(?:\s*\(backup\))?\s*$/)
+  const okxMatch = okxCap.match(/([\d.]+)(?:\s*\(backup\))?\s*$/)
   const bitgetMatch = bitgetCap.match(/([\d.]+)\s*$/)
   const spotMatch = spotCap.match(/([\d.]+)\s*$/)
-  const okxLast = okxMatch ? Number(okxMatch[1]) : hourly.kline?.bars?.at(-1)?.c
+  const klineLast = hourly.kline?.bars?.at(-1)?.c
+  const fromBinanceKline = hourly.kline?.sourceId?.startsWith('binance')
+  const binanceLast = binanceMatch
+    ? Number(binanceMatch[1])
+    : fromBinanceKline
+      ? klineLast
+      : undefined
+  const okxLast = okxMatch
+    ? Number(okxMatch[1])
+    : !fromBinanceKline && klineLast != null
+      ? klineLast
+      : undefined
   const bitgetLast = bitgetMatch ? Number(bitgetMatch[1]) : undefined
   const spotLast = spotMatch ? Number(spotMatch[1]) : undefined
 
@@ -1266,9 +1333,10 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
       `Sentiment ${hourly.sentiment.labelEn} (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
     )
   }
-  notes.push('Hourly desk scan — same engine as web Market → Hourly scan.')
+  notes.push('Hourly desk scan — Binance primary, OKX backup — same engine as web Market.')
 
   return {
+    binance: binanceLast && Number.isFinite(binanceLast) ? { last: binanceLast } : undefined,
     okx: okxLast && Number.isFinite(okxLast) ? { last: okxLast } : undefined,
     bitget: bitgetLast && Number.isFinite(bitgetLast) ? { last: bitgetLast } : undefined,
     spot: spotLast && Number.isFinite(spotLast) ? { last: spotLast } : undefined,

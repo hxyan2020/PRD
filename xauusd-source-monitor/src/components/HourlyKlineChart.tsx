@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  fetchOkxKline,
+  fetchMarketKline,
   KLINE_INTERVALS,
   type HourlyKlineSeries,
   type KlineBar,
@@ -76,7 +76,7 @@ export function HourlyKlineChart({
     setLoading(true)
     setError(null)
     setHover(null)
-    fetchOkxKline(tf, undefined, ac.signal)
+    fetchMarketKline(tf, undefined, ac.signal)
       .then((next) => {
         cacheRef.current[tf] = next
         setLive(next)
