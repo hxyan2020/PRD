@@ -4,6 +4,7 @@ import {
   helpCard,
   incidentDetailCard,
   investigationCard,
+  investigationReportDraftCard,
   knowledgeCatalogCard,
   nodeDetailCard,
   reviewCard,
@@ -768,9 +769,12 @@ async function replyProceedInvestigationReport(args: {
   })
   if (session.lastReportId && incident) {
     incident.interactions = ensureSessionInteractions(session).interactions.slice(-80)
+    incident.summary = reportMd.slice(0, 1200)
     incident.updatedAt = Date.now()
     await upsertIncidentDurable(incident)
   }
+  session.mode = 'report_draft'
+  session.lastReportMarkdown = reportMd
   await saveSessionDurable(args.chatId, args.openId, session)
   const title =
     lang === 'zh-Hans'
@@ -778,7 +782,145 @@ async function replyProceedInvestigationReport(args: {
       : lang === 'zh-Hant'
         ? '排查過程報告'
         : 'Proceed-based investigation report'
-  return { card: simpleCard(title, reportMd, 'blue') }
+  return {
+    card: investigationReportDraftCard({
+      lang,
+      title,
+      body: reportMd,
+      incidentId: session.lastReportId || '',
+      riskVerdict: incident?.riskVerdict,
+    }),
+  }
+}
+
+function reviewDoneBanner(lang: Lang): string {
+  if (lang === 'zh-Hans') {
+    return [
+      '✅ **已归档并完成复盘**',
+      '本案件已写入复盘看板（含最终风险判定统计）。下方是当前看板；也可随时发 **review** 再看。',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '✅ **已歸檔並完成複盤**',
+      '本案件已寫入複盤看板（含最終風險判定統計）。下方是當前看板；也可隨時發 **review** 再看。',
+    ].join('\n')
+  }
+  return [
+    '✅ **Archived — review complete**',
+    'This case is on the review board (incl. risk-verdict stats). Board below; send **review** anytime.',
+  ].join('\n')
+}
+
+async function archiveIncidentAndShowReview(args: {
+  lang: Lang
+  chatId: string
+  openId: string
+  incidentId: string
+}): Promise<BotReply> {
+  const inc = await getIncidentDurable(args.incidentId)
+  if (inc && !inc.riskVerdict) {
+    return {
+      card: riskVerdictPromptCard({
+        lang: args.lang,
+        incidentId: args.incidentId,
+        title: inc.title,
+        thenArchive: true,
+      }),
+    }
+  }
+  if (inc) {
+    inc.status = 'archived'
+    inc.updatedAt = Date.now()
+    if (args.openId) {
+      // keep last report markdown reflected in summary if present in session — handled by caller
+    }
+    await upsertIncidentDurable(inc)
+  }
+  await clearSessionDurable(args.chatId, args.openId)
+  const incidents = await listIncidentsDurable({ limit: 50 })
+  return {
+    card: reviewCard({
+      lang: args.lang,
+      incidents,
+      doneBanner: reviewDoneBanner(args.lang),
+    }),
+  }
+}
+
+async function reviseReportDraft(args: {
+  session: InvestigationState
+  lang: Lang
+  chatId: string
+  openId: string
+  messageId: string
+  instruction: string
+}): Promise<BotReply> {
+  const { session, lang } = args
+  const current = (session.lastReportMarkdown || '').trim()
+  if (!current) {
+    return replyProceedInvestigationReport({
+      session,
+      lang,
+      chatId: args.chatId,
+      openId: args.openId,
+      messageId: args.messageId,
+    })
+  }
+  pushInteraction(session, {
+    role: 'user',
+    kind: 'note',
+    text: args.instruction.slice(0, 800),
+    messageId: args.messageId,
+  })
+  const revised =
+    (await enrichWithLlm({
+      lang,
+      question:
+        lang === 'zh-Hans'
+          ? '按用户修改意见改写排查报告全文。保留原有结构与事实，勿编造未出现的菜单／字段。输出完整报告 markdown。'
+          : lang === 'zh-Hant'
+            ? '按用戶修改意見改寫排查報告全文。保留結構與事實，勿編造。輸出完整報告 markdown。'
+            : 'Revise the full investigation report per the user instruction. Keep structure and facts; do not invent. Output the full report markdown.',
+      context: [`CURRENT_REPORT:\n${current.slice(0, 8000)}`, `USER_EDIT:\n${args.instruction.slice(0, 1500)}`].join(
+        '\n\n',
+      ),
+      temperature: 0.2,
+    })) || `${current}\n\n---\n\n✏️ **${lang === 'en' ? 'Edit note' : '修改说明'}：** ${args.instruction.slice(0, 500)}`
+  session.lastReportMarkdown = revised
+  session.mode = 'report_draft'
+  pushInteraction(session, {
+    role: 'bot',
+    kind: 'report',
+    text: revised.slice(0, 2000),
+    messageId: args.messageId,
+  })
+  if (session.lastReportId) {
+    const inc = await getIncidentDurable(session.lastReportId)
+    if (inc) {
+      inc.summary = revised.slice(0, 1200)
+      inc.interactions = ensureSessionInteractions(session).interactions.slice(-80)
+      inc.updatedAt = Date.now()
+      await upsertIncidentDurable(inc)
+    }
+  }
+  await saveSessionDurable(args.chatId, args.openId, session)
+  const title =
+    lang === 'zh-Hans'
+      ? '排查过程报告（已按你的意见更新）'
+      : lang === 'zh-Hant'
+        ? '排查過程報告（已按你的意見更新）'
+        : 'Investigation report (updated)'
+  const inc = session.lastReportId ? await getIncidentDurable(session.lastReportId) : undefined
+  return {
+    card: investigationReportDraftCard({
+      lang,
+      title,
+      body: revised,
+      incidentId: session.lastReportId || '',
+      riskVerdict: inc?.riskVerdict,
+    }),
+  }
 }
 
 async function persistOpenIncident(args: {
@@ -1288,73 +1430,72 @@ export async function handleCardAction(args: {
       messageId: args.messageId,
     })
     if (thenArchive) {
-      inc.status = 'archived'
       await upsertIncidentDurable(inc)
-      await clearSessionDurable(args.chatId, args.openId)
-      const archivedTitle =
-        lang === 'zh-Hans' ? '已归档（含风险判定）' : lang === 'zh-Hant' ? '已歸檔（含風險判定）' : 'Archived with verdict'
-      const archivedBody =
-        lang === 'zh-Hans'
-          ? [
-              `${riskVerdictEmoji(verdict)} **最终判定：** **${riskVerdictLabel(verdict, lang)}**`,
-              `事故 \`${id}\` 已归档，将计入复盘与周报统计。`,
-              '随时输入 **review**，或贴新告警重新开始。',
-            ].join('\n')
-          : lang === 'zh-Hant'
-            ? [
-                `${riskVerdictEmoji(verdict)} **最終判定：** **${riskVerdictLabel(verdict, lang)}**`,
-                `事故 \`${id}\` 已歸檔，將計入複盤與週報統計。`,
-                '隨時輸入 **review**，或貼新告警重新開始。',
-              ].join('\n')
-            : [
-                `${riskVerdictEmoji(verdict)} **Final verdict:** **${riskVerdictLabel(verdict, lang)}**`,
-                `Incident \`${id}\` archived — counted on the review board and weekly report.`,
-                'Type **review** anytime, or paste a new alert.',
-              ].join('\n')
-      return { card: simpleCard(archivedTitle, archivedBody, 'green') }
+      await saveSessionDurable(args.chatId, args.openId, session)
+      return archiveIncidentAndShowReview({
+        lang,
+        chatId: args.chatId,
+        openId: args.openId,
+        incidentId: id,
+      })
     }
     await upsertIncidentDurable(inc)
     await saveSessionDurable(args.chatId, args.openId, session)
+    if (session.mode === 'report_draft' && session.lastReportMarkdown) {
+      const title =
+        lang === 'zh-Hans'
+          ? '排查过程报告'
+          : lang === 'zh-Hant'
+            ? '排查過程報告'
+            : 'Investigation report'
+      return {
+        card: investigationReportDraftCard({
+          lang,
+          title,
+          body: session.lastReportMarkdown,
+          incidentId: id,
+          riskVerdict: inc.riskVerdict,
+        }),
+      }
+    }
     return { card: incidentDetailCard({ lang, incident: inc }) }
   }
 
   if (action === 'archive') {
     const id = incidentId || session.lastReportId
-    if (id) {
-      const inc = await getIncidentDurable(id)
-      if (inc && !inc.riskVerdict) {
-        return {
-          card: riskVerdictPromptCard({
-            lang,
-            incidentId: id,
-            title: inc.title,
-            thenArchive: true,
-          }),
-        }
-      }
-      if (inc) {
-        inc.status = 'archived'
-        inc.updatedAt = Date.now()
-        await upsertIncidentDurable(inc)
+    if (!id) {
+      await clearSessionDurable(args.chatId, args.openId)
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '已结束' : lang === 'zh-Hant' ? '已結束' : 'Closed',
+          lang === 'zh-Hans'
+            ? '会话已清除。请贴上新告警开始排查。'
+            : lang === 'zh-Hant'
+              ? '會話已清除。請貼上新告警開始排查。'
+              : 'Session cleared. Paste a new alert to start investigation.',
+          'green',
+        ),
       }
     }
-    await clearSessionDurable(args.chatId, args.openId)
-    const archivedTitle =
-      lang === 'zh-Hans' ? '已归档' : lang === 'zh-Hant' ? '已歸檔' : 'Archived'
-    const archivedBody = id
-      ? lang === 'zh-Hans'
-        ? `事故 ${id} 已归档，可供定期复盘。随时输入 review，或贴新告警重新开始。`
-        : lang === 'zh-Hant'
-          ? `事故 ${id} 已歸檔，可供定期複盤。隨時輸入 review，或貼新告警重新開始。`
-          : `Incident ${id} archived for regular review. Type review anytime, or paste a new alert to start fresh.`
-      : lang === 'zh-Hans'
-        ? '会话已清除。请贴上新告警开始排查。'
-        : lang === 'zh-Hant'
-          ? '會話已清除。請貼上新告警開始排查。'
-          : 'Session cleared. Paste a new alert to start investigation.'
-    return { card: simpleCard(archivedTitle, archivedBody, 'green') }
+    return archiveIncidentAndShowReview({
+      lang,
+      chatId: args.chatId,
+      openId: args.openId,
+      incidentId: id,
+    })
   }
 
+  if (action === 'end_and_report' || action === 'generate_report') {
+    return replyProceedInvestigationReport({
+      session,
+      lang,
+      chatId: args.chatId,
+      openId: args.openId,
+      messageId: args.messageId,
+    })
+  }
+
+  // Kept for older cards still in chat history
   if (action === 'step_done') {
     const doneFact =
       lang === 'zh-Hans'
@@ -1374,16 +1515,6 @@ export async function handleCardAction(args: {
       lang,
       newFact: doneFact,
       markStepDone: true,
-    })
-  }
-
-  if (action === 'generate_report') {
-    return replyProceedInvestigationReport({
-      session,
-      lang,
-      chatId: args.chatId,
-      openId: args.openId,
-      messageId: args.messageId,
     })
   }
 
@@ -1582,7 +1713,8 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   let intent =
     forcedIntent ||
     classifyIntent(workingText, {
-      inInvestigateSession: session.mode === 'investigate',
+      inInvestigateSession:
+        session.mode === 'investigate' || session.mode === 'report_draft',
       mentionedBot: inbound.mentionedBot,
       chatType: inbound.chatType,
     })
@@ -1597,6 +1729,54 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     looksLikeIncidentEvidence(workingText)
   ) {
     intent = 'investigate'
+  }
+
+  // Report draft: free chat revises the full report; archive finishes review.
+  if (session.mode === 'report_draft') {
+    if (intent === 'archive') {
+      return handleCardAction({
+        openId: msg.openId,
+        chatId: msg.chatId,
+        messageId: msg.messageId,
+        value: { action: 'archive', incidentId: session.lastReportId || '' },
+      })
+    }
+    if (intent === 'review') {
+      const incidents = await listIncidentsDurable({ limit: 50 })
+      return { card: reviewCard({ lang, incidents }) }
+    }
+    if (intent === 'inv_report') {
+      return replyProceedInvestigationReport({
+        session,
+        lang,
+        chatId: inbound.chatId,
+        openId: inbound.openId,
+        messageId: inbound.messageId,
+      })
+    }
+    if (
+      intent === 'greeting' ||
+      intent === 'ack_mention' ||
+      intent === 'help' ||
+      intent === 'market' ||
+      intent === 'weekly' ||
+      intent === 'oscillation' ||
+      intent === 'daily_market' ||
+      intent === 'skills' ||
+      intent === 'knowledge' ||
+      intent === 'safety'
+    ) {
+      // fall through to normal handlers
+    } else if (workingText.trim()) {
+      return reviseReportDraft({
+        session,
+        lang,
+        chatId: inbound.chatId,
+        openId: inbound.openId,
+        messageId: inbound.messageId,
+        instruction: workingText.trim(),
+      })
+    }
   }
 
   if (intent === 'greeting' || intent === 'ack_mention') {
@@ -1793,6 +1973,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   // Persist every user turn that belongs to (or starts) an investigation case.
   const shouldLogInteraction =
     session.mode === 'investigate' ||
+    session.mode === 'report_draft' ||
     intent === 'investigate' ||
     intent === 'followup' ||
     intent === 'inv_report' ||
@@ -1905,6 +2086,16 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'archive') {
+    // While still investigating, "done" ends the case and generates the full report first.
+    if (session.mode === 'investigate') {
+      return replyProceedInvestigationReport({
+        session,
+        lang,
+        chatId: inbound.chatId,
+        openId: inbound.openId,
+        messageId: inbound.messageId,
+      })
+    }
     return handleCardAction({
       openId: msg.openId,
       chatId: msg.chatId,

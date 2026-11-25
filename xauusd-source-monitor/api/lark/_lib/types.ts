@@ -76,7 +76,8 @@ export type PendingCommandIntent =
   | 'daily_market'
 
 export interface InvestigationState {
-  mode: 'idle' | 'investigate'
+  /** report_draft = full report shown; chat edits the draft until archive. */
+  mode: 'idle' | 'investigate' | 'report_draft'
   facts: string[]
   checkedSteps: string[]
   /** Full turn log for proceed-based investigation reports. */
@@ -85,6 +86,8 @@ export interface InvestigationState {
   lastHits: SkillHit[]
   lastKb: KbHit[]
   lastReportId?: string
+  /** Latest full investigation report markdown (editable in report_draft). */
+  lastReportMarkdown?: string
   pendingPrompt?: string
   /** Soft command awaiting confirm (yes → run; no → chat). */
   pendingCommand?: PendingCommandIntent

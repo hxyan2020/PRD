@@ -194,21 +194,21 @@ export function investigationCard(args: {
                 content: hans
                   ? [
                       '💡 **提示：**',
-                      '• 随时可再贴一条新告警／截图／转发卡片，我会和**当前这条一起**继续排查（同一会话即可，不必先归档）。',
-                      '• 需要过程报告时发 **生成排查报告** — 会按本会话全部互动生成。',
+                      '• 直接跟我说下一步／贴新告警／截图，我会继续协助排查（不必点「完成此步」）。',
+                      '• 排查告一段落后点 **结束排查并生成报告** — 先出全文，你可再改，再归档。',
                       '• 归档前请完成 **最终判定（有／无风险）** — 会计入复盘与周报。',
                     ].join('\n')
                   : zh
                     ? [
                         '💡 **提示：**',
-                        '• 隨時可再貼一條新告警／截圖／轉發卡片，我會和**目前這條一起**繼續排查（同一會話即可，不必先歸檔）。',
-                        '• 需要過程報告時發 **生成排查報告** — 會按本會話全部互動生成。',
+                        '• 直接跟我說下一步／貼新告警／截圖，我會繼續協助排查（不必點「完成此步」）。',
+                        '• 排查告一段落後點 **結束排查並生成報告** — 先出全文，你可再改，再歸檔。',
                         '• 歸檔前請完成 **最終判定（有／無風險）** — 會計入複盤與週報。',
                       ].join('\n')
                     : [
                         '💡 **Tip:**',
-                        '• Paste another alert / screenshot / forwarded card anytime — I’ll review it **together with this one** (same case, no archive needed).',
-                        '• For a proceed-based write-up, send **generate investigation report** — built from every interaction in this case.',
+                        '• Keep chatting / paste alerts — I’ll continue the investigation (no step-done button).',
+                        '• When ready, tap **End & generate report** — full text first, you can edit, then archive.',
                         '• Set a **final risk verdict** before archive — counted on the board and weekly report.',
                       ].join('\n'),
               },
@@ -220,10 +220,10 @@ export function investigationCard(args: {
         text: {
           tag: 'lark_md',
           content: hans
-            ? '⌨️ **操作**（点按钮；也可发文字：`step done` / `生成排查报告` / `done` / `review`）'
+            ? '⌨️ **操作** — 自由对话继续排查；结束后点下方按钮出报告全文'
             : zh
-              ? '⌨️ **操作**（點按鈕；也可發文字：`step done` / `生成排查報告` / `done` / `review`）'
-              : '⌨️ **Actions** (tap a button; or send text: `step done` / `generate report` / `done` / `review`)',
+              ? '⌨️ **操作** — 自由對話繼續排查；結束後點下方按鈕出報告全文'
+              : '⌨️ **Actions** — keep chatting to investigate; tap below when ready for the full report',
         },
       },
       {
@@ -233,27 +233,78 @@ export function investigationCard(args: {
             tag: 'button',
             text: {
               tag: 'plain_text',
-              content: hans ? '已完成此步' : zh ? '已完成此步' : 'Step done',
+              content: hans
+                ? '结束排查并生成报告'
+                : zh
+                  ? '結束排查並生成報告'
+                  : 'End & generate report',
             },
             type: 'primary',
             value: {
-              action: 'step_done',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '生成排查报告' : zh ? '生成排查報告' : 'Generate report',
-            },
-            type: 'default',
-            value: {
-              action: 'generate_report',
+              action: 'end_and_report',
               incidentId: args.incidentId || '',
             },
           },
         ],
+      },
+    ],
+  }
+}
+
+/** Full report draft after「结束排查并生成报告」— edit via chat or archive. */
+export function investigationReportDraftCard(args: {
+  lang: Lang
+  title: string
+  body: string
+  incidentId?: string
+  riskVerdict?: RiskVerdict
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const tip = hans
+    ? [
+        '📝 **排查报告草稿**',
+        '• 直接发文字告诉我怎么改（例如「把结论改成无风险」「补上 LP 延迟」），我会更新全文。',
+        '• 确认无误后点 **归档并完成复盘**。',
+        args.riskVerdict
+          ? `• 当前最终判定：${riskVerdictEmoji(args.riskVerdict)} **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+          : '• 归档前若未判定，会先请你选择有／无风险。',
+      ].join('\n')
+    : zh
+      ? [
+          '📝 **排查報告草稿**',
+          '• 直接發文字告訴我怎麼改，我會更新全文。',
+          '• 確認無誤後點 **歸檔並完成複盤**。',
+          args.riskVerdict
+            ? `• 當前最終判定：${riskVerdictEmoji(args.riskVerdict)} **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+            : '• 歸檔前若未判定，會先請你選擇有／無風險。',
+        ].join('\n')
+      : [
+          '📝 **Investigation report draft**',
+          '• Chat edits (e.g. “change conclusion to no risk”) — I’ll refresh the full text.',
+          '• When ready, tap **Archive & finish review**.',
+          args.riskVerdict
+            ? `• Current verdict: ${riskVerdictEmoji(args.riskVerdict)} **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+            : '• If verdict unset, you’ll be asked before archive.',
+        ].join('\n')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'blue',
+      title: {
+        tag: 'plain_text',
+        content: (hans ? '排查报告' : zh ? '排查報告' : 'Investigation report').slice(0, 50),
+      },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: tip } },
+      { tag: 'hr' },
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: `**${args.title}**\n\n${args.body}`.slice(0, 11000),
+        },
       },
       {
         tag: 'action',
@@ -262,22 +313,13 @@ export function investigationCard(args: {
             tag: 'button',
             text: {
               tag: 'plain_text',
-              content: hans ? '结束归档' : zh ? '結束歸檔' : 'Done / archive',
+              content: hans ? '归档并完成复盘' : zh ? '歸檔並完成複盤' : 'Archive & finish review',
             },
-            type: 'danger',
+            type: 'primary',
             value: {
               action: 'archive',
               incidentId: args.incidentId || '',
             },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '复盘清单' : zh ? '複盤清單' : 'Review',
-            },
-            type: 'default',
-            value: { action: 'review' },
           },
         ],
       },
@@ -416,7 +458,12 @@ function kpiColumn(label: string, value: string): Record<string, unknown> {
   }
 }
 
-export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): Record<string, unknown> {
+export function reviewCard(args: {
+  lang: Lang
+  incidents: IncidentRecord[]
+  /** Shown after archive — e.g. 已完成复盘 */
+  doneBanner?: string
+}): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
   const total = args.incidents.length
@@ -597,6 +644,15 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
       },
     },
     elements: [
+      ...(args.doneBanner
+        ? [
+            {
+              tag: 'div',
+              text: { tag: 'lark_md', content: args.doneBanner },
+            },
+            { tag: 'hr' },
+          ]
+        : []),
       { tag: 'div', text: { tag: 'lark_md', content: intro } },
       {
         tag: 'column_set',

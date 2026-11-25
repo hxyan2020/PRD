@@ -686,10 +686,16 @@ async function main() {
   )
   record(
     'turn.investigate_first_gen_add_alert_hint',
-    firstInv.blob.includes('一起') &&
-      (firstInv.blob.includes('再贴') || firstInv.blob.includes('新告警')) &&
-      firstInv.blob.includes('💡'),
-    firstInv.blob.match(/💡[\s\S]{0,120}/)?.[0] || firstInv.blob.slice(0, 160),
+    firstInv.blob.includes('💡') &&
+      (firstInv.blob.includes('新告警') ||
+        firstInv.blob.includes('贴') ||
+        firstInv.blob.includes('Paste')) &&
+      (firstInv.blob.includes('结束排查') ||
+        firstInv.blob.includes('結束排查') ||
+        firstInv.blob.includes('End & generate') ||
+        firstInv.blob.includes('继续排查') ||
+        firstInv.blob.includes('繼續排查')),
+    firstInv.blob.match(/💡[\s\S]{0,160}/)?.[0] || firstInv.blob.slice(0, 160),
   )
   const secondInv = await turn(
     'inv-second-no-repeat-hint',
@@ -2820,40 +2826,48 @@ async function main() {
     `found=${afterUpsert.some((r) => r.id === syncProbeId)} total=${afterUpsert.length}`,
   )
 
-  // 11) Archive / done — may prompt for risk verdict first when unset
-  const done = await turn('archive', 'done')
-  const doneLower = done.blob.toLowerCase()
+  // 11) "done" during investigate → end & full report draft (not immediate archive)
+  clearSession('smoke_chat', 'done_flow_user')
+  await turn(
+    'done-flow-seed',
+    'investigate Mark vs Index 44bps for done-flow',
+    'done_flow_user',
+  )
+  const done = await turn('archive', 'done', 'done_flow_user')
   record(
     'turn.archive_done',
     Boolean(
-      done.reply?.text?.toLowerCase().includes('archiv') ||
-        done.reply?.text?.includes('归档') ||
-        done.reply?.text?.includes('歸檔') ||
-        done.reply?.text?.includes('完成') ||
-        doneLower.includes('archiv') ||
-        done.blob.includes('归档') ||
-        done.blob.includes('歸檔') ||
-        done.blob.includes('最终判定') ||
-        done.blob.includes('最終判定') ||
-        done.blob.includes('Final risk verdict') ||
-        done.blob.includes('set_risk_verdict'),
+      done.reply?.card &&
+        (done.blob.includes('归档并完成复盘') ||
+          done.blob.includes('歸檔並完成複盤') ||
+          done.blob.includes('Archive & finish review') ||
+          done.blob.includes('排查报告') ||
+          done.blob.includes('排查報告') ||
+          done.blob.includes('Investigation report') ||
+          done.blob.includes('报告草稿') ||
+          done.blob.includes('報告草稿') ||
+          done.blob.includes('report draft') ||
+          done.blob.includes('最终判定') ||
+          done.blob.includes('最終判定') ||
+          done.blob.includes('Final risk verdict') ||
+          done.blob.includes('set_risk_verdict')),
     ),
     done.blob.slice(0, 120),
   )
 
-  // 12) Investigation cards expose callback buttons + text-command fallback
+  // 12) Investigation cards: verdict + end_and_report only
   record(
     'turn.investigate_card_action_buttons',
     inv.blob.includes('"tag":"button"') &&
-      inv.blob.includes('step_done') &&
-      inv.blob.includes('generate_report') &&
-      inv.blob.includes('archive') &&
-      inv.blob.includes('"action":"review"') &&
-      (inv.blob.includes('已完成此步') || inv.blob.includes('Step done')) &&
-      (inv.blob.includes('生成排查报告') ||
-        inv.blob.includes('生成排查報告') ||
-        inv.blob.includes('Generate report')),
-    'callback buttons for step/report/done/review',
+      inv.blob.includes('end_and_report') &&
+      inv.blob.includes('set_risk_verdict') &&
+      !inv.blob.includes('step_done') &&
+      !inv.blob.includes('generate_report') &&
+      !/"action":"review"/.test(inv.blob) &&
+      (inv.blob.includes('结束排查并生成报告') ||
+        inv.blob.includes('結束排查並生成報告') ||
+        inv.blob.includes('End & generate report')),
+    'end_and_report + verdict only',
   )
   record(
     'turn.investigate_risk_verdict_buttons',
@@ -2924,20 +2938,30 @@ async function main() {
     openId: 'card_user',
     chatId: 'smoke_chat',
     messageId: 'smoke_card_report',
-    value: { action: 'generate_report', incidentId: '' },
+    value: { action: 'end_and_report', incidentId: '' },
   })
   const reportBtnBlob =
     reportBtnReply?.text || (reportBtnReply?.card ? JSON.stringify(reportBtnReply.card) : '')
   record(
     'turn.card_action_generate_report',
     Boolean(reportBtnReply?.card) &&
-      (/排查过程报告|排查過程報告|Proceed-based investigation report|Investigation report/i.test(
-        reportBtnBlob,
-      ) ||
-        reportBtnBlob.includes('互动') ||
-        reportBtnBlob.includes('timeline') ||
-        reportBtnBlob.includes('时间线')),
+      (reportBtnBlob.includes('归档并完成复盘') ||
+        reportBtnBlob.includes('歸檔並完成複盤') ||
+        reportBtnBlob.includes('Archive & finish review') ||
+        /排查过程报告|排查過程報告|Proceed-based investigation report|Investigation report/i.test(
+          reportBtnBlob,
+        ) ||
+        reportBtnBlob.includes('报告草稿') ||
+        reportBtnBlob.includes('report draft')),
     reportBtnBlob.slice(0, 120),
+  )
+  record(
+    'turn.end_report_draft_has_archive_cta',
+    reportBtnBlob.includes('archive') &&
+      (reportBtnBlob.includes('归档并完成复盘') ||
+        reportBtnBlob.includes('歸檔並完成複盤') ||
+        reportBtnBlob.includes('Archive & finish review')),
+    'draft card archive CTA',
   )
   clearSession('smoke_chat', 'step_user')
   await turn('investigate-for-step-cmd', 'investigate Mark vs Index 40bps', 'step_user')
