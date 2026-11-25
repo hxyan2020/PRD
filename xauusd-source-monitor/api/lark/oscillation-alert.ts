@@ -5,7 +5,6 @@
  * - Demo: 2026-11-25 10:00 Asia/Shanghai — force a DEMO card once.
  * - Manual: GET ?dry=1; POST { force: true, demo: true }.
  */
-import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import {
   larkConfigured,
@@ -13,6 +12,7 @@ import {
   sendCardToChat,
   sendCardToOpenId,
 } from './_lib/client.js'
+import { allowCronOrDesk, isVercelCron } from './_lib/cronAuth.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   DEFAULT_OSC_DM_CHAT_ID,
@@ -38,27 +38,6 @@ type OscState = {
   lastAlertKey?: string
   lastAlertAt?: number
   demoSentDay?: string
-}
-
-function safeEqual(a: string, b: string) {
-  const aa = Buffer.from(a, 'utf8')
-  const bb = Buffer.from(b, 'utf8')
-  if (aa.length === 0 || aa.length !== bb.length) return false
-  return timingSafeEqual(aa, bb)
-}
-
-function authorize(req: VercelRequest): boolean {
-  const cronSecret = process.env.CRON_SECRET || ''
-  const auth = String(req.headers.authorization || '')
-  if (cronSecret && auth === `Bearer ${cronSecret}`) return true
-  const expected = process.env.DESK_GATEWAY_TOKEN || ''
-  if (!expected) return true
-  const provided = String(req.headers['x-desk-token'] || '')
-  return safeEqual(expected, provided)
-}
-
-function isVercelCron(req: VercelRequest): boolean {
-  return String(req.headers['x-vercel-cron'] || '') === '1'
 }
 
 async function readState(): Promise<OscState> {
@@ -135,7 +114,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(204).end()
 
   const cron = isVercelCron(req)
-  if (!cron && !authorize(req)) return res.status(401).json({ error: 'Unauthorized' })
+  if (!allowCronOrDesk(req)) return res.status(401).json({ error: 'Unauthorized' })
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'GET or POST only' })
   }

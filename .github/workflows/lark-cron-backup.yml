@@ -1,0 +1,44 @@
+# Backup cron: hit the public production alias so Lark pushes still fire
+# if Vercel Authentication SSO is re-enabled on deployment hostnames.
+# Vercel Cron itself targets the deployment host (see LARK.md).
+name: Lark cron backup
+
+on:
+  schedule:
+    # Every 15 minutes (UTC). Covers oscillation / weekly-demo / market half-hour.
+    - cron: '*/15 * * * *'
+    # Extra tick near the half-hour for market-report when GH delay drifts.
+    - cron: '1,31 * * * *'
+  workflow_dispatch:
+
+jobs:
+  invoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Invoke Lark cron endpoints on public alias
+        env:
+          BASE: https://vex-llm-proxy.vercel.app
+        run: |
+          set -euo pipefail
+          paths=(
+            /api/lark/alert-nudge
+            /api/lark/oscillation-alert
+            /api/lark/market-report
+            /api/lark/weekly-demo
+            /api/lark/daily-market-report
+            /api/lark/weekly-report
+          )
+          for path in "${paths[@]}"; do
+            echo "=== GET ${path} ==="
+            code=$(curl -sS -o /tmp/cron-body.json -w "%{http_code}" \
+              -H "x-vercel-cron: 1" \
+              -H "user-agent: github-actions-lark-cron-backup" \
+              "${BASE}${path}" || echo "000")
+            echo "HTTP ${code}"
+            head -c 400 /tmp/cron-body.json || true
+            echo
+            if [ "$code" != "200" ] && [ "$code" != "502" ]; then
+              echo "::warning::${path} returned ${code}"
+            fi
+          done

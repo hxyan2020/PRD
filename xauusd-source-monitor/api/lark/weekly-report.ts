@@ -3,37 +3,14 @@
  * - Vercel Cron (Fridays 08:00 UTC = 16:00 Asia/Shanghai) pushes digest to Yan Haixiang.
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
  */
-import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { larkConfigured, resolveAdminOpenId, sendCardToOpenId } from './_lib/client.js'
+import { allowCronOrDesk, isVercelCron } from './_lib/cronAuth.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { listIncidents } from './_lib/store.js'
 import { buildWeeklyReport, weeklyReportCard } from './_lib/weeklyReport.js'
 
 const SENT_NAME = 'weekly-sent.json'
-
-function safeEqual(a: string, b: string) {
-  const aa = Buffer.from(a, 'utf8')
-  const bb = Buffer.from(b, 'utf8')
-  if (aa.length === 0 || aa.length !== bb.length) return false
-  return timingSafeEqual(aa, bb)
-}
-
-function authorize(req: VercelRequest): boolean {
-  // Vercel Cron sends Authorization: Bearer <CRON_SECRET> when CRON_SECRET is set
-  const cronSecret = process.env.CRON_SECRET || ''
-  const auth = String(req.headers.authorization || '')
-  if (cronSecret && auth === `Bearer ${cronSecret}`) return true
-
-  const expected = process.env.DESK_GATEWAY_TOKEN || ''
-  if (!expected) return true
-  const provided = String(req.headers['x-desk-token'] || '')
-  return safeEqual(expected, provided)
-}
-
-function isVercelCron(req: VercelRequest): boolean {
-  return String(req.headers['x-vercel-cron'] || '') === '1'
-}
 
 async function readSent(): Promise<Record<string, number>> {
   return (await readDurableJson<Record<string, number>>(SENT_NAME)) || {}
@@ -52,7 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(204).end()
 
   const cron = isVercelCron(req)
-  if (!cron && !authorize(req)) return res.status(401).json({ error: 'Unauthorized' })
+  if (!allowCronOrDesk(req)) return res.status(401).json({ error: 'Unauthorized' })
 
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'GET or POST only' })

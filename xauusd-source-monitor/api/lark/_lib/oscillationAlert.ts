@@ -317,6 +317,7 @@ export function shanghaiHm(ts: number = Date.now()): string {
 export function isOscDemoSlot(ts: number = Date.now()): boolean {
   if (shanghaiDayKey(ts) !== OSC_DEMO_DAY) return false
   const hm = shanghaiHm(ts)
-  // 10:00–10:14 window so */15 cron catches it once
-  return hm >= '10:00' && hm <= '10:14'
+  // After start until 18:00 CST catch-up (idempotent via demoSentDay).
+  // Narrow 10:00–10:14 windows miss when a deploy overlaps the :00 cron.
+  return hm >= OSC_DEMO_START_HM && hm < '18:00'
 }

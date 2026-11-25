@@ -1834,11 +1834,14 @@ async function main() {
     isOscDemoSlot,
     shouldFireAlert,
   } = await import('../api/lark/_lib/oscillationAlert')
-  // 2026-11-25 02:00 UTC = 10:00 CST
+  // 2026-11-25 02:00 UTC = 10:00 CST; catch-up through 17:59 CST (09:59 UTC)
   record(
     'osc.demo_slot_1000_cst',
     isOscDemoSlot(Date.parse('2026-11-25T02:00:00Z')) &&
+      isOscDemoSlot(Date.parse('2026-11-25T02:15:00Z')) &&
+      isOscDemoSlot(Date.parse('2026-11-25T09:59:00Z')) &&
       !isOscDemoSlot(Date.parse('2026-11-25T01:59:00Z')) &&
+      !isOscDemoSlot(Date.parse('2026-11-25T10:00:00Z')) &&
       !isOscDemoSlot(Date.parse('2026-11-26T02:00:00Z')) &&
       OSC_DEMO_DAY === '2026-11-25',
     '',
@@ -1872,7 +1875,10 @@ async function main() {
   record(
     'weekly.demo_slot_1600_cst',
     isWeeklyDemoSlot(Date.parse('2026-11-25T08:00:00Z')) &&
+      isWeeklyDemoSlot(Date.parse('2026-11-25T08:15:00Z')) &&
+      isWeeklyDemoSlot(Date.parse('2026-11-25T09:59:00Z')) &&
       !isWeeklyDemoSlot(Date.parse('2026-11-25T07:59:00Z')) &&
+      !isWeeklyDemoSlot(Date.parse('2026-11-25T10:00:00Z')) &&
       !isWeeklyDemoSlot(Date.parse('2026-11-26T08:00:00Z')) &&
       WEEKLY_DEMO_DAY === '2026-11-25',
     '',

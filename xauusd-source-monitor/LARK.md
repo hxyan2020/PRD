@@ -59,6 +59,29 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | `LARK_ADMIN_EMAIL` | Optional fallback to resolve open_id via Contact API |
 | `CRON_SECRET` | Optional; Vercel Cron Authorization bearer for cron routes |
 
+## Cron reliability (must-read)
+
+Vercel Cron invokes the **deployment hostname**
+(`*.vercel.app` deployment URL), **not** the production alias
+`vex-llm-proxy.vercel.app`.
+
+If **Vercel Authentication (SSO)** is set to `all_except_custom_domains`
+(or `all`), those deployment URLs return **302 → vercel.com/sso-api** and
+**every cron silently misses** (no function logs). Fix:
+
+1. Project → Settings → Deployment Protection → Vercel Authentication →
+   **Preview only** (or Off). Production alias stays public either way.
+2. Confirm with:
+   `curl -sI -H 'x-vercel-cron: 1' "https://<deployment-host>/api/lark/alert-nudge"`
+   → expect **200**, not 302 SSO.
+3. Backup: `.github/workflows/lark-cron-backup.yml` hits the **public alias**
+   every 15 minutes so pushes still land if SSO is flipped back.
+
+Demo catch-up windows (idempotent via durable sent-day state):
+
+- Oscillation DEMO: after `10:00` CST until `18:00` on campaign day
+- Weekly DEMO: after `16:00` CST until `18:00` on campaign day
+
 ## Endpoints
 
 | Method | Path | Purpose |
@@ -80,11 +103,12 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token
 
-## Market report (on-demand only)
+## Market report (half-hourly DM)
 
-- **Cron:** removed (no more 30-min auto push)
-- **Endpoint:** `/api/lark/market-report` still supports `?dry=1` / `{ "force": true }` for manual sends
+- **Cron:** every **30 min** (`*/30 * * * *`) → Yan Haixiang DM (`LARK_MARKET_CHAT_ID`)
+- **Not** listed in greeting / capabilities — private desk push only
 - Chat `行情` / `market` still works on demand
+- **Preview / force:** `GET ?dry=1` · `POST { "force": true }` + desk token / cron header
 
 ## Daily 24h market morning report (group)
 
@@ -98,7 +122,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 ## Weekly review DEMO (group)
 
 - **Once:** **2026-11-25 16:00** Asia/Shanghai → group `oc_eb8eba24…`（【DEMO】每周复盘）
-- **Cron:** `*/15 * * * *` → `/api/lark/weekly-demo`（仅 demo 日 16:00–16:14 发送）
+- **Cron:** `*/15 * * * *` → `/api/lark/weekly-demo`（demo 日 16:00 起至 18:00 补发，已发送则跳过）
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true }`
 - Regular Friday 16:00 weekly still goes to Yan via `/api/lark/weekly-report`
 
@@ -107,7 +131,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - **Cron:** every **15 min** (`*/15 * * * *`) → `/api/lark/oscillation-alert`
 - **Triggers:** OKX XAU-USDT-SWAP short-horizon amplitude ≫ dynamic mean, **or** |funding| ≫ historical mean (leverage crowding proxy), **or** breaking news keywords
 - **Delivery:** Feishu **group** + **Haixiang DM** (chat_id, open_id fallback); short 简体 card + sources + 连锁强平风险提示
-- **Demo:** **2026-11-25 10:00** Asia/Shanghai once (`LARK_OSC_DEMO_DAY` / `LARK_OSC_DEMO_START`)
+- **Demo:** **2026-11-25 10:00** Asia/Shanghai once (`LARK_OSC_DEMO_DAY` / `LARK_OSC_DEMO_START`); catch-up until 18:00 CST if the :00 cron is skipped
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true, "demo": true }`
 
 ## Alert nudge (tomorrow-only group @mention loop)
