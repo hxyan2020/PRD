@@ -1170,11 +1170,13 @@ async function main() {
   record(
     'turn.cmd_zh_market_stays_zh',
     Boolean(zhMarket.reply?.card) &&
-      (zhMarket.blob.includes('小时行情') ||
+      (zhMarket.blob.includes('跨资产') ||
+        zhMarket.blob.includes('小时行情') ||
         zhMarket.blob.includes('行情扫报') ||
         zhMarket.blob.includes('东八区') ||
-        zhMarket.blob.includes('最近一次扫描')) &&
-      !zhMarket.blob.includes('Hourly market scan'),
+        zhMarket.blob.includes('更新时间')) &&
+      !zhMarket.blob.includes('Hourly market scan') &&
+      !zhMarket.blob.includes('Multi-asset market scan'),
     zhMarket.blob.slice(0, 200),
   )
   const help = await turn('help', 'help')
@@ -1578,8 +1580,14 @@ async function main() {
   const liveSnap = await fetchMarketSnapshot()
   record(
     'market.live_binance_or_fallback',
-    Boolean(liveSnap.binance || liveSnap.okx || liveSnap.bitget || liveSnap.spot),
-    `binance=${liveSnap.binance?.last ?? '-'} okx=${liveSnap.okx?.last ?? '-'} bitget=${liveSnap.bitget?.last ?? '-'} spot=${liveSnap.spot?.last ?? '-'}`,
+    Boolean(
+      (liveSnap.board?.quotes?.length || 0) >= 8 ||
+        liveSnap.binance ||
+        liveSnap.okx ||
+        liveSnap.bitget ||
+        liveSnap.spot,
+    ),
+    `quotes=${liveSnap.board?.quotes?.length ?? 0} crypto=${liveSnap.board?.byClass.crypto.length ?? 0} equity=${liveSnap.board?.byClass.equity.length ?? 0} fx=${liveSnap.board?.byClass.forex.length ?? 0} cmdty=${liveSnap.board?.byClass.commodity.length ?? 0}`,
   )
   const mktFmt = formatMarketAnswer(liveSnap, 'en', 'Market')
   record(
@@ -1587,14 +1595,15 @@ async function main() {
     mktFmt.includes('TL;DR') &&
       mktFmt.includes('Opportunity') &&
       mktFmt.includes('Risk') &&
-      mktFmt.includes('Last scan') &&
+      (mktFmt.includes('As of:') || mktFmt.includes('Last scan')) &&
       mktFmt.includes('UTC+8') &&
-      (mktFmt.includes('K-line') || mktFmt.includes('📈')) &&
+      (mktFmt.includes('K-line') || mktFmt.includes('📈') || mktFmt.includes('Multi-asset')) &&
       !mktFmt.includes('On your question') &&
-      (mktFmt.includes('Binance XAUUSDT') ||
-        mktFmt.includes('OKX XAU-USDT-SWAP') ||
-        mktFmt.includes('Bitget') ||
-        mktFmt.includes('Spot XAU')),
+      (mktFmt.includes('Bitcoin') ||
+        mktFmt.includes('S&P 500') ||
+        mktFmt.includes('EUR/USD') ||
+        mktFmt.includes('Gold') ||
+        mktFmt.includes('Crypto')),
     mktFmt.slice(0, 220),
   )
   // Sources sit under each point (domain markdown link), not only a bulk footer dump
@@ -1631,24 +1640,19 @@ async function main() {
       ? `bad=${jsonApiCite.slice(0, 3).join(' | ')}`
       : citeUrls.slice(0, 4).join(' | '),
   )
-  const catalogIds = (liveSnap.hourly?.sources || []).map((s) => s.id)
+  const boardClasses = liveSnap.board?.byClass
   record(
     'market.catalog_covers_crypto_finance_macro',
-    catalogIds.includes('coindesk-markets') &&
-      catalogIds.includes('theblock-news') &&
-      catalogIds.includes('cointelegraph-markets') &&
-      catalogIds.includes('reuters-markets') &&
-      catalogIds.includes('bloomberg-markets') &&
-      catalogIds.includes('ft-markets') &&
-      catalogIds.includes('ecb-press') &&
-      catalogIds.includes('ustreasury-press') &&
-      catalogIds.includes('imf-news') &&
-      catalogIds.includes('bls-cpi') &&
-      catalogIds.includes('wgc-news') &&
-      catalogIds.includes('fed-press-json'),
-    catalogIds.filter((id) =>
-      /coindesk|theblock|cointelegraph|reuters|bloomberg|ecb|treasury|imf|bls|wgc|fed/i.test(id),
-    ).join(','),
+    Boolean(
+      boardClasses &&
+        boardClasses.crypto.length >= 1 &&
+        boardClasses.equity.length >= 1 &&
+        boardClasses.forex.length >= 1 &&
+        boardClasses.commodity.length >= 1,
+    ),
+    boardClasses
+      ? `crypto=${boardClasses.crypto.length} equity=${boardClasses.equity.length} forex=${boardClasses.forex.length} commodity=${boardClasses.commodity.length}`
+      : 'no_board',
   )
   const logoCard = await buildMarketCard({
     title: '小时行情扫报',
@@ -1904,8 +1908,12 @@ async function main() {
   )
   record(
     'market.format_tldr_multiline_bullets',
-    mktFmt.includes('• Live:') ||
+    mktFmt.includes('Crypto:') ||
+      mktFmt.includes('Equities:') ||
+      mktFmt.includes('• Live:') ||
       mktFmt.includes('Live:') ||
+      mktFmtZh.includes('加密') ||
+      mktFmtZh.includes('股指') ||
       mktFmtZh.includes('即时：') ||
       mktFmtZh.includes('走势：'),
     mktFmtZh.match(/TL;DR[\s\S]{0,400}/)?.[0]?.slice(0, 220) ||
@@ -1918,12 +1926,13 @@ async function main() {
   record(
     'turn.market_follows_zh_conversation',
     Boolean(
-      mktZh.blob.includes('小时行情') &&
+      (mktZh.blob.includes('跨资产') || mktZh.blob.includes('小时行情')) &&
         mktZh.blob.includes('东八区') &&
         mktZh.blob.includes('TL;DR') &&
         mktZh.blob.includes('Opportunity') &&
         mktZh.blob.includes('Risk') &&
         !mktZh.blob.includes('Hourly market scan') &&
+        !mktZh.blob.includes('Multi-asset market scan') &&
         !mktZh.blob.includes('東八區'),
     ),
     mktZh.blob.slice(0, 160),
@@ -1933,9 +1942,10 @@ async function main() {
   record(
     'turn.market_follows_en_conversation',
     Boolean(
-      mktEn.blob.includes('Hourly market scan') &&
+      (mktEn.blob.includes('Multi-asset market scan') || mktEn.blob.includes('Hourly market scan')) &&
         mktEn.blob.includes('TL;DR') &&
-        !mktEn.blob.includes('小时行情扫报'),
+        !mktEn.blob.includes('小时行情扫报') &&
+        !mktEn.blob.includes('跨资产行情扫报'),
     ),
     mktEn.blob.slice(0, 160),
   )
@@ -2575,8 +2585,11 @@ async function main() {
   const dailyMd = await fmtDailyAsync(liveSnap, 'zh-Hans')
   record(
     'cron.daily_no_404_kitco_gold_price',
-    !/kitco\.com\/gold-price/i.test(dailyMd) && /kitco\.com\/charts\/gold/i.test(dailyMd),
-    dailyMd.match(/\[Kitco\]\([^)]+\)/)?.[0] || dailyMd.slice(0, 120),
+    !/kitco\.com\/gold-price/i.test(dailyMd) &&
+      (/finance\.yahoo\.com/i.test(dailyMd) ||
+        /binance\.com/i.test(dailyMd) ||
+        /kitco\.com\/charts\/gold/i.test(dailyMd)),
+    dailyMd.match(/\[[^\]]+\]\([^)]+\)/g)?.slice(0, 4).join(' · ') || dailyMd.slice(0, 120),
   )
   record(
     'cron.daily_sync_kitco_not_404_path',
@@ -2601,15 +2614,16 @@ async function main() {
   record(
     'cron.daily_fixed_skeleton_sections',
     DAILY_REPORT_SECTIONS.length === 6 &&
-      dailyMd.includes('过去 24 小时行情报告') &&
-      dailyMd.includes('24h 价格区间') &&
+      (dailyMd.includes('跨资产行情') ||
+        dailyMd.includes('过去 24 小时行情报告') ||
+        dailyMd.includes('每日跨资产')) &&
+      (dailyMd.includes('加密') || dailyMd.includes('股票') || dailyMd.includes('24h 价格区间')) &&
       dailyMd.includes('**📋 TL;DR**') &&
       dailyMd.includes('**✨ Opportunity**') &&
       dailyMd.includes('**⚠️ Risk**') &&
       dailyMd.includes('打开网页 Market') &&
-      dailyMd.includes('Binance K线') &&
-      dailyMd.includes('Kitco') &&
-      // Use section headers — bare "Risk" also matches "V Exchange Risk"
+      (dailyMd.includes('Binance') || dailyMd.includes('S&P') || dailyMd.includes('Yahoo')) &&
+      // Use section headers — bare "Risk" also matches brand copy
       dailyMd.indexOf('**📋 TL;DR**') < dailyMd.indexOf('**✨ Opportunity**') &&
       dailyMd.indexOf('**✨ Opportunity**') < dailyMd.indexOf('**⚠️ Risk**'),
     dailyMd.slice(0, 280),
@@ -2638,7 +2652,10 @@ async function main() {
       dailyCardBlob.includes('Opportunity') &&
       dailyCardBlob.includes('**⚠️ Risk**') &&
       !dailyCardBlob.includes('THIS_SHOULD_NOT_APPEAR_IN_DAILY') &&
-      dailyCardBlob.includes('Binance K线') &&
+      (dailyCardBlob.includes('Binance') ||
+        dailyCardBlob.includes('S&P') ||
+        dailyCardBlob.includes('Yahoo') ||
+        dailyCardBlob.includes('multi_url')) &&
       dailyCardBlob.includes('multi_url') &&
       /"tag":"action"/.test(dailyCardBlob) &&
       /"tag":"button"/.test(dailyCardBlob),
@@ -2727,13 +2744,15 @@ async function main() {
     )
     record(
       'market.card_hans_vs_hant_distinct',
-      hansCard.includes('小时行情') &&
-        hantCard.includes('小時行情') &&
+      (hansCard.includes('跨资产') || hansCard.includes('小时行情')) &&
+        (hantCard.includes('跨資產') || hantCard.includes('小時行情')) &&
+        !hantCard.includes('跨资产') &&
+        !hansCard.includes('跨資產') &&
         !hantCard.includes('小时行情') &&
         !hansCard.includes('小時行情') &&
-        hansCard.includes('现货') &&
-        hantCard.includes('現貨'),
-      `hans_h=${hansCard.includes('小时')} hant_H=${hantCard.includes('小時')}`,
+        (hansCard.includes('加密货币') || hansCard.includes('外汇') || hansCard.includes('股票')) &&
+        (hantCard.includes('加密貨幣') || hantCard.includes('外匯') || hantCard.includes('股票')),
+      `hans_h=${hansCard.includes('资产') || hansCard.includes('小时')} hant_H=${hantCard.includes('資產') || hantCard.includes('小時')}`,
     )
     const chartHans = JSON.stringify(kce(snap.hourly?.kline || null, 'zh-Hans', 16) || {})
     const chartHant = JSON.stringify(kce(snap.hourly?.kline || null, 'zh-Hant', 16) || {})

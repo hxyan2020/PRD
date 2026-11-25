@@ -1,10 +1,6 @@
 import {
-  BINANCE_KLINE_URL,
-  fetchMarketKline,
-  generateHourlyScan,
+  computeSentiment,
   KLINE_INTERVALS,
-  KITCO_GOLD_URL,
-  OKX_KLINE_URL,
   resolveCiteUrlOrNull,
   type HourlyKlineSeries,
   type HourlyMarketReport,
@@ -13,15 +9,21 @@ import {
   type RankedPoint,
   type ReportSource,
 } from '../../../src/engine/hourlyScan.js'
-import { larkConfigured, resolveFaviconImgKey } from './client.js'
-import { simpleCard } from './cards.js'
+import { resolveFaviconImgKey } from './client.js'
 import { readDurableJson, writeDurableJson } from './durableJson.js'
+import {
+  fetchBtcTapeKline,
+  fetchMultiAssetBoard,
+  formatMultiAssetBoard,
+  multiAssetToHourlyPoints,
+  type MultiAssetBoard,
+} from './multiAssetMarket.js'
 import type { Lang } from './types.js'
 
 export interface MarketSnapshot {
-  /** Primary venue print (Binance XAUUSDT). */
+  /** @deprecated Prefer `board` — kept for legacy XAU prints in older cards. */
   binance?: { last: number; change24hPct?: number }
-  /** Backup venue print (OKX XAU-USDT-SWAP). */
+  /** @deprecated Prefer `board`. */
   okx?: { last: number; change24hPct?: number }
   bitget?: { last: number; change24hPct?: number }
   spot?: { last: number }
@@ -29,16 +31,17 @@ export interface MarketSnapshot {
   notes: string[]
   sources: { label: string; url: string }[]
   fetchedAt: number
-  /** Full hourly desk report (same engine as web Market → Hourly scan). */
+  /** Multi-asset board (crypto / equity / FX / commodity). */
+  board?: MultiAssetBoard
+  /** Synthetic hourly sections derived from the multi-asset board (+ optional BTC tape). */
   hourly?: HourlyMarketReport
 }
 
-/** Human venue tag from kline sourceId (Binance primary, OKX backup). */
+/** Human venue tag from kline sourceId (BTC tape on Binance spot by default). */
 function klineVenueLabel(kline: HourlyKlineSeries | null | undefined): string {
+  if (kline?.sourceId?.includes('btc') || kline?.symbol === 'BTCUSDT') return 'Binance BTC'
   if (kline?.sourceId?.startsWith('binance')) return 'Binance'
   if (kline?.sourceId?.startsWith('okx')) return 'OKX'
-  if (kline?.symbol === 'XAUUSDT') return 'Binance'
-  if (kline?.symbol?.includes('OKX') || kline?.symbol === 'XAU-USDT-SWAP') return 'OKX'
   return 'Binance'
 }
 
@@ -202,25 +205,25 @@ export function marketSentimentLabel(
 }
 
 export function dailyMarketTitle(lang: Lang): string {
-  if (lang === 'zh-Hant') return '每日 24h 行情早報'
-  if (lang === 'en') return 'Daily 24h market brief'
-  return '每日 24h 行情早报'
+  if (lang === 'zh-Hant') return '每日跨資產行情早報'
+  if (lang === 'en') return 'Daily multi-asset brief'
+  return '每日跨资产行情早报'
 }
 
 export function dailyMarketIntro(lang: Lang, dayKey: string, atMarkdown: string): string {
   if (lang === 'zh-Hant') {
-    return `🌅 **每日早報 · 過去 24 小時行情**（東八區每天 **09:00** 自動推送 · **${dayKey}**）\n\n${atMarkdown} 早報來了\n`
+    return `🌅 **每日早報 · 加密／股指／外匯／商品**（東八區每天 **09:00** 自動推送 · **${dayKey}**）\n\n${atMarkdown} 早報來了\n`
   }
   if (lang === 'en') {
-    return `🌅 **Daily brief · past 24h** (auto-push **09:00** Asia/Shanghai · **${dayKey}**)\n\n${atMarkdown} morning brief is here\n`
+    return `🌅 **Daily brief · crypto / equities / FX / commodities** (auto-push **09:00** Asia/Shanghai · **${dayKey}**)\n\n${atMarkdown} morning brief is here\n`
   }
-  return `🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送 · **${dayKey}**）\n\n${atMarkdown} 早报来了\n`
+  return `🌅 **每日早报 · 加密／股指／外汇／商品**（东八区每天 **09:00** 自动推送 · **${dayKey}**）\n\n${atMarkdown} 早报来了\n`
 }
 
 export function hourlyMarketTitle(lang: Lang): string {
-  if (lang === 'zh-Hant') return '小時行情掃報'
-  if (lang === 'en') return 'Hourly market scan'
-  return '小时行情扫报'
+  if (lang === 'zh-Hant') return '跨資產行情掃報'
+  if (lang === 'en') return 'Multi-asset market scan'
+  return '跨资产行情扫报'
 }
 
 /** Asia/Shanghai (= UTC+8) wall clock string. */
@@ -409,10 +412,10 @@ export const DAILY_REPORT_SECTIONS = [
 ] as const
 
 const DAILY_FIXED_LINKS: { id: string; label: string; url: string; domain: string }[] = [
-  { id: 'binance-kline', label: 'Binance K线', url: BINANCE_KLINE_URL, domain: 'binance.com' },
-  { id: 'okx-kline', label: 'OKX K线', url: OKX_KLINE_URL, domain: 'okx.com' },
-  { id: 'kitco', label: 'Kitco', url: KITCO_GOLD_URL, domain: 'kitco.com' },
-  { id: 'yahoo-tnx', label: 'Yahoo行情', url: 'https://finance.yahoo.com/quote/%5ETNX', domain: 'yahoo.com' },
+  { id: 'binance-btc', label: 'Binance BTC', url: 'https://www.binance.com/en/trade/BTC_USDT', domain: 'binance.com' },
+  { id: 'yahoo-spx', label: 'S&P 500', url: 'https://finance.yahoo.com/quote/%5EGSPC', domain: 'yahoo.com' },
+  { id: 'yahoo-eurusd', label: 'EUR/USD', url: 'https://finance.yahoo.com/quote/EURUSD%3DX', domain: 'yahoo.com' },
+  { id: 'yahoo-gold', label: 'Gold GC=F', url: 'https://finance.yahoo.com/quote/GC%3DF', domain: 'yahoo.com' },
 ]
 
 /** Drop sources whose cite URL is proven HTTP 404/410 (or marked down for missing page). */
@@ -443,50 +446,81 @@ export async function dailySourceHyperlinksLive(): Promise<string> {
 export function normalizeDailyTldrBeats(snap: MarketSnapshot, lang: Lang): string[] {
   const hans = lang === 'zh-Hans'
   const hant = lang === 'zh-Hant'
-  const raw = pointText(
-    snap.hourly?.tldr?.[0] || { rank: 1, en: '', zh: '', sourceIds: [] },
-    lang,
-  )
-  const lines = raw
-    .split(/\n+/)
-    .map((x) => x.trim().replace(/^•\s*/, ''))
-    .filter(Boolean)
+  const board = snap.board
+  const pick = (ids: string[]) =>
+    (board?.quotes || []).filter((q) => ids.includes(q.id)).map((q) => {
+      const name = lang === 'en' ? q.nameEn : q.nameZh
+      const chg =
+        q.changePct == null || !Number.isFinite(q.changePct)
+          ? '—'
+          : `${q.changePct >= 0 ? '+' : ''}${q.changePct.toFixed(2)}%`
+      const px =
+        q.class === 'forex'
+          ? Math.abs(q.last) >= 10
+            ? q.last.toFixed(3)
+            : q.last.toFixed(5)
+          : q.last.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      return `${name} ${px} (${chg})`
+    })
 
-  const findBeat = (re: RegExp) => lines.find((l) => re.test(l))
-
-  const liveFromSnap = (() => {
-    const bits: string[] = []
-    if (snap.binance) {
-      bits.push(
-        hans || hant
-          ? `Binance 金 ${snap.binance.last.toFixed(2)}`
-          : `Binance ${snap.binance.last.toFixed(2)}`,
-      )
-    } else if (snap.okx) {
-      bits.push(hans || hant ? `OKX 金 ${snap.okx.last.toFixed(2)}` : `OKX ${snap.okx.last.toFixed(2)}`)
-    }
-    if (snap.spot) bits.push(hans || hant ? `现货 ${snap.spot.last.toFixed(2)}` : `spot ${snap.spot.last.toFixed(2)}`)
-    if (!bits.length) return ''
-    if (hans) return `即时：${bits.join(' · ')}。`
-    if (hant) return `即時：${bits.join(' · ')}。`
-    return `Live: ${bits.join(' · ')}.`
-  })()
-
+  const liveBits = pick(['btc', 'spx', 'eurusd', 'xau'])
   const live =
-    findBeat(/^(即时：|即時：|Live:)/i) ||
-    liveFromSnap ||
-    (hans ? '即时：报价暂缺。' : hant ? '即時：報價暫缺。' : 'Live: prints unavailable.')
+    liveBits.length
+      ? hans
+        ? `即时：${liveBits.join(' · ')}。`
+        : hant
+          ? `即時：${liveBits.join(' · ')}。`
+          : `Live: ${liveBits.join(' · ')}.`
+      : hans
+        ? '即时：报价暂缺。'
+        : hant
+          ? '即時：報價暫缺。'
+          : 'Live: prints unavailable.'
+
+  const up = (board?.movers.up || []).slice(0, 2).map((q) => (lang === 'en' ? q.nameEn : q.nameZh))
+  const down = (board?.movers.down || []).slice(0, 2).map((q) => (lang === 'en' ? q.nameEn : q.nameZh))
   const trend =
-    findBeat(/^(走势：|走勢：|Trend:)/i) ||
-    (hans ? '走势：本窗口暂无基差／错位要点。' : hant ? '走勢：本窗口暫無基差／錯位要點。' : 'Trend: no tape note this window.')
-  const event =
-    findBeat(/^(事件：|Event:)/i) ||
-    (hans ? '事件：本窗口暂无重大宏观要点。' : hant ? '事件：本窗口暫無重大宏觀要點。' : 'Event: no major macro note this window.')
-  const watch =
-    findBeat(/^(关注：|關注：|Watch:)/i) ||
-    (hans ? '关注：继续盯 DXY／10Y 与金价联动。' : hant ? '關注：繼續盯 DXY／10Y 與金價聯動。' : 'Watch: keep an eye on DXY / 10Y vs gold.')
+    up.length || down.length
+      ? hans
+        ? `走势：强 ${up.join('／') || '—'} · 弱 ${down.join('／') || '—'}。`
+        : hant
+          ? `走勢：強 ${up.join('／') || '—'} · 弱 ${down.join('／') || '—'}。`
+          : `Trend: firm ${up.join(' / ') || '—'} · soft ${down.join(' / ') || '—'}.`
+      : hans
+        ? '走势：本窗口暂无显著涨跌亮点。'
+        : hant
+          ? '走勢：本窗口暫無顯著漲跌亮點。'
+          : 'Trend: no standout movers this window.'
+
+  const covered = board
+    ? CLASS_COVERAGE_LABEL(lang, board)
+    : hans
+      ? '覆盖暂缺'
+      : hant
+        ? '覆蓋暫缺'
+        : 'coverage pending'
+  const event = hans
+    ? `事件：公开行情板已更新（${covered}）。`
+    : hant
+      ? `事件：公開行情板已更新（${covered}）。`
+      : `Event: public board refreshed (${covered}).`
+
+  const watch = hans
+    ? '关注：加密波动、美股开收盘、美元与贵金属／原油联动；定价排查请发 investigate。'
+    : hant
+      ? '關注：加密波動、美股開收盤、美元與貴金屬／原油聯動；定價排查請發 investigate。'
+      : 'Watch: crypto vol, US cash open/close, USD vs metals/oil; for pricing RCA type investigate.'
 
   return [live, trend, event, watch]
+}
+
+function CLASS_COVERAGE_LABEL(lang: Lang, board: MultiAssetBoard): string {
+  const parts: string[] = []
+  if (board.byClass.crypto.length) parts.push(lang === 'en' ? 'crypto' : '加密')
+  if (board.byClass.equity.length) parts.push(lang === 'en' ? 'equities' : lang === 'zh-Hant' ? '股指' : '股指')
+  if (board.byClass.forex.length) parts.push(lang === 'en' ? 'FX' : lang === 'zh-Hant' ? '外匯' : '外汇')
+  if (board.byClass.commodity.length) parts.push(lang === 'en' ? 'commodities' : '商品')
+  return parts.join(lang === 'en' ? ' + ' : '＋') || (lang === 'en' ? 'none' : '无')
 }
 
 /** Cap Opp/Risk to 3 ranked lines. Optional byId adds markdown chips (dry / text fallback). */
@@ -779,6 +813,28 @@ function pricesAndKlineBlock(
   mode: 'hourly' | 'daily',
   opts?: { asciiKline?: boolean },
 ): string {
+  // Prefer multi-asset board (crypto / equity / FX / commodity).
+  if (snap.board?.quotes?.length) {
+    const body = formatMultiAssetBoard(snap.board, lang, mode)
+    const hourly = snap.hourly
+    const extra: string[] = []
+    if (opts?.asciiKline !== false && hourly?.kline?.bars?.length) {
+      extra.push('', ...renderKline(hourly.kline, lang))
+    } else if (opts?.asciiKline === false && hourly?.kline) {
+      const n = mode === 'daily' ? 24 : 16
+      extra.push('', ...renderKlineCaption(hourly.kline, lang, n))
+    }
+    if (hourly?.sentiment) {
+      const label = marketSentimentLabel(lang, hourly.sentiment.labelZh, hourly.sentiment.labelEn)
+      const score = `${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}`
+      if (lang === 'zh-Hans') extra.push(`• **跨资产情绪：** **${label}**（${score}）`)
+      else if (lang === 'zh-Hant') extra.push(`• **跨資產情緒：** **${label}**（${score}）`)
+      else extra.push(`• **Cross-asset sentiment:** **${label}** (${score})`)
+    }
+    return [body, ...extra].join('\n')
+  }
+
+  // Legacy XAU-only fallback (should be rare after multi-asset cutover).
   const hourly = snap.hourly
   const scanAt = formatEast8(snap.fetchedAt || Date.now())
   const lines: string[] = []
@@ -791,131 +847,59 @@ function pricesAndKlineBlock(
       stats == null
         ? '—'
         : `${stats.changePct >= 0 ? '+' : ''}${stats.changePct.toFixed(2)}%`
-    // Fixed daily header skeleton — always emit the same fields (— when missing).
     if (hans) {
-      lines.push('📊 **过去 24 小时行情报告 · V Exchange Risk**', '')
+      lines.push('📊 **过去 24 小时行情报告 · 报价 AI排查助手**', '')
       lines.push(
         `⏱ **报告时间：** **${scanAt}**（东八区）`,
-        '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（Binance XAUUSDT，OKX 备用）+ 当日宏观／来源要点。',
+        '• 每日早上自动推送；跨资产快照不可用时回退到 BTC 胶带。',
         '',
-        '📈 **24h 价格区间**',
+        '📈 **24h 价格区间（胶带）**',
         stats
           ? `• **开：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`
           : '• **开：** **—** → **收：** **—**（**—**）',
-        stats
-          ? `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 线数：** **${stats.bars}**`
-          : '• **高：** **—** · **低：** **—** · **K 线数：** **—**',
-        stats
-          ? `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（东八区）`
-          : '• **窗口：** —（东八区）',
         '',
       )
     } else if (hant) {
-      lines.push('📊 **過去 24 小時行情報告 · V Exchange Risk**', '')
+      lines.push('📊 **過去 24 小時行情報告 · 報價 AI排查助手**', '')
       lines.push(
         `⏱ **報告時間：** **${scanAt}**（東八區）`,
-        '• 每日早上自動推送；數據覆蓋近 **24 根 1H K 線**（Binance XAUUSDT，OKX 備用）+ 當日宏觀／來源要點。',
+        '• 每日早上自動推送；跨資產快照不可用時回退到 BTC 膠帶。',
         '',
-        '📈 **24h 價格區間**',
+        '📈 **24h 價格區間（膠帶）**',
         stats
           ? `• **開：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`
           : '• **開：** **—** → **收：** **—**（**—**）',
-        stats
-          ? `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 線數：** **${stats.bars}**`
-          : '• **高：** **—** · **低：** **—** · **K 線數：** **—**',
-        stats
-          ? `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（東八區）`
-          : '• **窗口：** —（東八區）',
         '',
       )
     } else {
-      lines.push('📊 **Past-24h market report · V Exchange Risk**', '')
+      lines.push('📊 **Past-24h market report · Quote AI**', '')
       lines.push(
         `⏱ **As of:** **${scanAt}** (UTC+8)`,
-        '• Daily morning push; ~**24** × 1H Binance XAUUSDT bars (OKX backup) + macro / source notes.',
+        '• Daily morning push; falls back to BTC tape when the multi-asset board is empty.',
         '',
-        '📈 **24h range**',
+        '📈 **24h range (tape)**',
         stats
           ? `• **Open:** **${stats.open.toFixed(2)}** → **Close:** **${stats.close.toFixed(2)}** (**${chg}**)`
           : '• **Open:** **—** → **Close:** **—** (**—**)',
-        stats
-          ? `• **High:** **${stats.high.toFixed(2)}** · **Low:** **${stats.low.toFixed(2)}** · **Bars:** **${stats.bars}**`
-          : '• **High:** **—** · **Low:** **—** · **Bars:** **—**',
-        stats
-          ? `• **Window:** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)} (UTC+8)`
-          : '• **Window:** — (UTC+8)',
         '',
       )
     }
   } else if (hans) {
-    lines.push('📊 **小时行情扫报 · V Exchange Risk**', '')
-    lines.push(
-      `⏱ **最近一次扫描：** **${scanAt}**（东八区）`,
-      '• 网页端 **每个整点（东八区）自动扫描**；本次为即时拉取（与网页「立即扫描」同源）。',
-      '',
-    )
+    lines.push('📊 **跨资产行情扫报 · 报价 AI排查助手**', '')
+    lines.push(`⏱ **最近一次扫描：** **${scanAt}**（东八区）`, '')
   } else if (hant) {
-    lines.push('📊 **小時行情掃報 · V Exchange Risk**', '')
-    lines.push(
-      `⏱ **最近一次掃描：** **${scanAt}**（東八區）`,
-      '• 網頁端 **每個整點（東八區）自動掃描**；本次為即時拉取（與網頁「立即掃描」同源）。',
-      '',
-    )
+    lines.push('📊 **跨資產行情掃報 · 報價 AI排查助手**', '')
+    lines.push(`⏱ **最近一次掃描：** **${scanAt}**（東八區）`, '')
   } else {
-    lines.push('📊 **Hourly market scan · V Exchange Risk**', '')
-    lines.push(
-      `⏱ **Last scan:** **${scanAt}** (UTC+8)`,
-      '• Web desk **auto-scans every hour on the hour (UTC+8)**; this reply is an on-demand pull (same engine as **Scan now**).',
-      '',
-    )
+    lines.push('📊 **Multi-asset market scan · Quote AI**', '')
+    lines.push(`⏱ **Last scan:** **${scanAt}** (UTC+8)`, '')
   }
 
-  // Interactive cards use VChart instead of ASCII; text/dry keeps ASCII spark.
   if (opts?.asciiKline !== false) {
     lines.push(...renderKline(hourly?.kline, lang), '')
   } else {
     const n = mode === 'daily' ? 24 : 16
     lines.push(...renderKlineCaption(hourly?.kline, lang, n), '')
-  }
-  if (hans) {
-    if (snap.binance) lines.push(`• **Binance XAUUSDT：** **${snap.binance.last.toFixed(2)}**`)
-    else if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP（备用）：** **${snap.okx.last.toFixed(2)}**`)
-    if (snap.binance && snap.okx) {
-      lines.push(`• **OKX XAU-USDT-SWAP（备用）：** **${snap.okx.last.toFixed(2)}**`)
-    }
-    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
-    if (snap.spot) lines.push(`• **现货 XAU：** **${snap.spot.last.toFixed(2)}**`)
-    if (hourly?.sentiment) {
-      lines.push(
-        `• **情绪：** **${marketSentimentLabel(lang, hourly.sentiment.labelZh, hourly.sentiment.labelEn)}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
-      )
-    }
-  } else if (hant) {
-    if (snap.binance) lines.push(`• **Binance XAUUSDT：** **${snap.binance.last.toFixed(2)}**`)
-    else if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP（備用）：** **${snap.okx.last.toFixed(2)}**`)
-    if (snap.binance && snap.okx) {
-      lines.push(`• **OKX XAU-USDT-SWAP（備用）：** **${snap.okx.last.toFixed(2)}**`)
-    }
-    if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
-    if (snap.spot) lines.push(`• **現貨 XAU：** **${snap.spot.last.toFixed(2)}**`)
-    if (hourly?.sentiment) {
-      lines.push(
-        `• **情緒：** **${marketSentimentLabel(lang, hourly.sentiment.labelZh, hourly.sentiment.labelEn)}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
-      )
-    }
-  } else {
-    if (snap.binance) lines.push(`• **Binance XAUUSDT:** **${snap.binance.last.toFixed(2)}**`)
-    else if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP (backup):** **${snap.okx.last.toFixed(2)}**`)
-    if (snap.binance && snap.okx) {
-      lines.push(`• **OKX XAU-USDT-SWAP (backup):** **${snap.okx.last.toFixed(2)}**`)
-    }
-    if (snap.bitget) lines.push(`• **Bitget XAUUSDT:** **${snap.bitget.last.toFixed(2)}**`)
-    if (snap.spot) lines.push(`• **Spot XAU:** **${snap.spot.last.toFixed(2)}**`)
-    if (hourly?.sentiment) {
-      lines.push(
-        `• **Sentiment:** **${marketSentimentLabel(lang, hourly.sentiment.labelZh, hourly.sentiment.labelEn)}** (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
-      )
-    }
   }
   return lines.join('\n')
 }
@@ -929,11 +913,6 @@ function marketFooterBlock(
   const hourly = snap.hourly
   const bare = isBareMarketQuery(question)
   const lines: string[] = []
-  if (mode === 'hourly' && hourly?.vexPlaceholder) {
-    if (lang === 'zh-Hans') lines.push(`📊 **V Exchange 指标**`, `• ${hourly.vexNoteZh}`, '')
-    else if (lang === 'zh-Hant') lines.push(`📊 **V Exchange 指標**`, `• ${hourly.vexNoteZh}`, '')
-    else lines.push(`📊 **V Exchange indicators**`, `• ${hourly.vexNoteEn}`, '')
-  }
   if (mode === 'hourly' && !bare && question.trim()) {
     if (lang === 'zh-Hans') lines.push(`❓ **针对你的问题：** 「${question.slice(0, 120)}」`, '')
     else if (lang === 'zh-Hant') lines.push(`❓ **針對你的問題：** 「${question.slice(0, 120)}」`, '')
@@ -942,20 +921,24 @@ function marketFooterBlock(
   if (lang === 'zh-Hans') {
     lines.push(
       mode === 'daily'
-        ? '• **解读：** 价格观察（bps／基差）≠ 新闻／宏观原因。值班排查请贴告警或私聊机器人发 **排查**。'
-        : '• **解读：** 价格观察（bps／基差）≠ 新闻／宏观原因。事故排查请贴告警或发 **investigate**。',
+        ? '• **解读：** 公开行情快照 ≠ 投资建议。CFD 定价／LP→PE→MT 排查请贴告警或发 **排查**。'
+        : '• **解读：** 公开行情快照 ≠ 投资建议。定价链路排查请贴告警或发 **investigate**。',
       '',
       `• [打开网页 Market](${DESK_MARKET})`,
     )
   } else if (lang === 'zh-Hant') {
     lines.push(
-      '• **解讀：** 價格觀察（bps／基差）≠ 新聞／宏觀原因。事故排查請貼告警或發 **investigate**。',
+      mode === 'daily'
+        ? '• **解讀：** 公開行情快照 ≠ 投資建議。CFD 定價／LP→PE→MT 排查請貼告警或發 **排查**。'
+        : '• **解讀：** 公開行情快照 ≠ 投資建議。定價鏈路排查請貼告警或發 **investigate**。',
       '',
       `• [打開網頁 Market](${DESK_MARKET})`,
     )
   } else {
     lines.push(
-      '• **Guidance:** price observations (bps / basis) ≠ news/macro causes. For an incident, paste the alert or type **investigate**.',
+      mode === 'daily'
+        ? '• **Guidance:** public snapshot ≠ investment advice. For CFD pricing / LP→PE→MT RCA paste an alert or type **investigate**.'
+        : '• **Guidance:** public snapshot ≠ investment advice. For pricing-pipeline RCA paste an alert or type **investigate**.',
       '',
       `• [Open web Market](${DESK_MARKET})`,
     )
@@ -998,16 +981,8 @@ export async function buildMarketCard(opts: {
   // Daily: never append free-form LLM text — keeps section order identical every day.
   const bodyAppendix = mode === 'daily' ? '' : appendix
 
-  const bodyMd =
-    mode === 'daily'
-      ? await formatDaily24hMarketAnswerAsync(snap, lang)
-      : formatMarketAnswer(snap, lang, question)
-
-  const fallbackMd = [intro, bodyMd, bodyAppendix].filter(Boolean).join('\n').trim()
-
-  if (!larkConfigured()) {
-    return simpleCard(title, fallbackMd, template)
-  }
+  // Always build the interactive card shape (VChart + TF buttons + logo rows).
+  // Without Lark credentials, favicon upload no-ops and the card remains valid dry JSON.
 
   const hourly = snap.hourly
   const kline = klineOverride !== undefined ? klineOverride : hourly?.kline
@@ -1101,20 +1076,20 @@ function renderKlineCaption(
   if (!kline?.bars?.length) {
     return [
       hans
-        ? '📈 **K线** · 本小时蜡烛不可用（Binance／OKX 源不可达）'
+        ? '📈 **胶带 K线** · 本小时蜡烛不可用（Binance BTC 源不可达）'
         : hant
-          ? '📈 **K線** · 本小時蠟燭不可用（Binance／OKX 源不可達）'
-          : '📈 **K-line** · unavailable this hour (Binance / OKX feed unreachable)',
+          ? '📈 **膠帶 K線** · 本小時蠟燭不可用（Binance BTC 源不可達）'
+          : '📈 **Tape K-line** · unavailable this hour (Binance BTC feed unreachable)',
     ]
   }
   const bars = kline.bars
   const last = bars[bars.length - 1]!
   const n = Math.min(Math.max(8, width), bars.length)
   const title = hans
-    ? `📈 **K线** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盘走势（${venue} · 下图可点开放大）`
+    ? `📈 **胶带 K线** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盘走势（${venue} · 下图可点开放大）`
     : hant
-      ? `📈 **K線** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盤走勢（${venue} · 下圖可點開放大）`
-      : `📈 **K-line** · ${kline.symbol} · ${kline.interval} · last **${n}** closes (${venue} · tap chart to enlarge)`
+      ? `📈 **膠帶 K線** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盤走勢（${venue} · 下圖可點開放大）`
+      : `📈 **Tape K-line** · ${kline.symbol} · ${kline.interval} · last **${n}** closes (${venue} · tap chart to enlarge)`
   const lastLine = hans
     ? `末根（东八区 ${formatEast8(last.t)}）：O **${last.o.toFixed(2)}** · H **${last.h.toFixed(2)}** · L **${last.l.toFixed(2)}** · C **${last.c.toFixed(2)}**`
     : hant
@@ -1130,10 +1105,10 @@ function renderKline(kline: HourlyKlineSeries | null | undefined, lang: Lang): s
   if (!kline?.bars?.length) {
     return [
       hans
-        ? '📈 **K线** · 本小时蜡烛不可用（Binance／OKX 源不可达）'
+        ? '📈 **胶带 K线** · 本小时蜡烛不可用（Binance BTC 源不可达）'
         : hant
-          ? '📈 **K線** · 本小時蠟燭不可用（Binance／OKX 源不可達）'
-          : '📈 **K-line** · unavailable this hour (Binance / OKX feed unreachable)',
+          ? '📈 **膠帶 K線** · 本小時蠟燭不可用（Binance BTC 源不可達）'
+          : '📈 **Tape K-line** · unavailable this hour (Binance BTC feed unreachable)',
     ]
   }
   const bars = kline.bars
@@ -1223,7 +1198,7 @@ export function klineCloseChartElement(
 
 /**
  * Rebuild a market card for a Feishu interval-button tap (15m / 1H / 4H / 1D).
- * Fetches Binance candles (OKX backup) for `bar` and keeps the rest of the live snapshot.
+ * Refreshes the multi-asset board and swaps the BTC tape to the selected interval.
  */
 export async function rebuildMarketCardForInterval(opts: {
   bar: KlineIntervalBar
@@ -1235,7 +1210,7 @@ export async function rebuildMarketCardForInterval(opts: {
   // Parallel — TF callback updates the message async after a fast Feishu toast ack.
   const [snap, klineFetched] = await Promise.all([
     fetchMarketSnapshot().catch(() => null),
-    fetchMarketKline(opts.bar).catch(() => null),
+    fetchBtcTapeKline(opts.bar).catch(() => null),
   ])
   // Never fall back to a different interval (e.g. 4H tap → 1H chart looks "stuck").
   const snapKline = snap?.hourly?.kline
@@ -1244,40 +1219,35 @@ export async function rebuildMarketCardForInterval(opts: {
     (snapKline && snapKline.interval === opts.bar ? snapKline : null) ||
     null
   const lastClose = kline?.bars?.at(-1)?.c
-  const venue = klineVenueLabel(kline)
   const snapSafe: MarketSnapshot =
     snap ||
     ({
-      binance:
-        venue === 'Binance' && lastClose && Number.isFinite(lastClose)
-          ? { last: lastClose }
-          : undefined,
-      okx:
-        venue === 'OKX' && lastClose && Number.isFinite(lastClose)
-          ? { last: lastClose }
-          : undefined,
+      binance: lastClose && Number.isFinite(lastClose) ? { last: lastClose } : undefined,
       notes: [
-        lang === 'en'
-          ? `${venue} K-line ${opts.bar}`
-          : `${venue} K线 ${opts.bar}`,
+        lang === 'en' ? `Binance BTCUSDT K-line ${opts.bar}` : `Binance BTCUSDT K线 ${opts.bar}`,
       ],
       sources: [
         {
-          label: venue,
-          url: venue === 'Binance' ? BINANCE_KLINE_URL : OKX_KLINE_URL,
+          label: 'Binance BTC',
+          url: 'https://www.binance.com/en/trade/BTC_USDT',
         },
       ],
       fetchedAt: Date.now(),
       hourly: kline
         ? ({
-            asOf: Date.now(),
+            id: `btc-tape-${Date.now()}`,
+            createdAt: Date.now(),
+            hourKey: '',
             tldr: [],
             opportunity: [],
             risk: [],
             sources: [],
             kline,
-            sentiment: null,
-          } as unknown as NonNullable<MarketSnapshot['hourly']>)
+            sentiment: computeSentiment([], []),
+            vexPlaceholder: true,
+            vexNoteEn: 'BTC tape only',
+            vexNoteZh: '仅 BTC 胶带',
+          } satisfies HourlyMarketReport)
         : undefined,
     } satisfies MarketSnapshot)
   const title =
@@ -1313,54 +1283,99 @@ function isBareMarketQuery(question: string): boolean {
 }
 
 /**
- * Same hourly engine as the web Market desk (TL;DR / Opportunity / Risk / K-line).
- * Probes live prints + catalog; never invents empty-section points.
+ * Multi-asset market snapshot for 报价 AI排查助手.
+ * Crypto (Binance/OKX) + equities / FX / commodities (Yahoo Finance) + BTC tape chart.
  */
 export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
-  const hourly = await generateHourlyScan({ health: [], composite: null, spot: null })
-  const byId = new Map(hourly.sources.map((s) => [s.id, s]))
-  const binanceCap = byId.get('binance-ticker')?.captionEn || ''
-  const okxCap = byId.get('okx-ticker')?.captionEn || ''
-  const bitgetCap = byId.get('bitget-ticker')?.captionEn || ''
-  const spotCap = byId.get('gold-api')?.captionEn || ''
-  const binanceMatch = binanceCap.match(/([\d.]+)(?:\s*\(backup\))?\s*$/)
-  const okxMatch = okxCap.match(/([\d.]+)(?:\s*\(backup\))?\s*$/)
-  const bitgetMatch = bitgetCap.match(/([\d.]+)\s*$/)
-  const spotMatch = spotCap.match(/([\d.]+)\s*$/)
-  const klineLast = hourly.kline?.bars?.at(-1)?.c
-  const fromBinanceKline = hourly.kline?.sourceId?.startsWith('binance')
-  const binanceLast = binanceMatch
-    ? Number(binanceMatch[1])
-    : fromBinanceKline
-      ? klineLast
-      : undefined
-  const okxLast = okxMatch
-    ? Number(okxMatch[1])
-    : !fromBinanceKline && klineLast != null
-      ? klineLast
-      : undefined
-  const bitgetLast = bitgetMatch ? Number(bitgetMatch[1]) : undefined
-  const spotLast = spotMatch ? Number(spotMatch[1]) : undefined
+  const [board, btcKline] = await Promise.all([
+    fetchMultiAssetBoard(),
+    fetchBtcTapeKline('1H', 36).catch(() => null),
+  ])
 
-  const notes: string[] = []
-  if (hourly.sentiment) {
-    notes.push(
-      `Sentiment ${hourly.sentiment.labelEn} (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
-    )
+  const { tldrZh, tldrEn, opportunity, risk } = multiAssetToHourlyPoints(board)
+  const opportunityPts: RankedPoint[] = opportunity.map((p) => ({
+    rank: p.rank,
+    en: `**${p.titleEn}** — ${p.bodyEn}`,
+    zh: `**${p.titleZh}** — ${p.bodyZh}`,
+    sourceIds: p.sourceIds,
+  }))
+  const riskPts: RankedPoint[] = risk.map((p) => ({
+    rank: p.rank,
+    en: `**${p.titleEn}** — ${p.bodyEn}`,
+    zh: `**${p.titleZh}** — ${p.bodyZh}`,
+    sourceIds: p.sourceIds,
+  }))
+  const tldrPts: RankedPoint[] = [
+    {
+      rank: 1,
+      en: tldrEn,
+      zh: tldrZh,
+      sourceIds: [],
+    },
+  ]
+
+  const now = board.fetchedAt || Date.now()
+  const hourKey = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Singapore',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+  })
+    .format(new Date(now))
+    .replace(', ', 'T')
+    .replace(/(\d{2})$/, (_, h) => h)
+
+  const sources: ReportSource[] = board.sources.map((s, i) => {
+    let domain = 'market'
+    try {
+      domain = new URL(s.url).hostname.replace(/^www\./, '')
+    } catch {
+      /* keep default */
+    }
+    return {
+      id: `board-${i}-${domain}`,
+      captionEn: s.label,
+      captionZh: s.label,
+      url: s.url,
+      domain,
+      logoUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+      kind: 'price' as const,
+      health: 'ok' as const,
+      checkedAt: now,
+    }
+  })
+
+  const sentiment = computeSentiment(opportunityPts, riskPts)
+  const kline: HourlyKlineSeries | null = btcKline
+  const hourly: HourlyMarketReport = {
+    id: `multi-asset-${now}`,
+    createdAt: now,
+    hourKey: hourKey || `multi-${now}`,
+    tldr: tldrPts,
+    opportunity: opportunityPts,
+    risk: riskPts,
+    sources,
+    sentiment,
+    kline,
+    vexPlaceholder: true,
+    vexNoteEn: 'Multi-asset board — crypto via Binance/OKX; equities/FX/commodities via Yahoo Finance.',
+    vexNoteZh: '跨资产行情板 — 加密：Binance/OKX；股指／外汇／商品：Yahoo Finance。',
   }
-  notes.push('Hourly desk scan — Binance primary, OKX backup — same engine as web Market.')
+
+  const btc = board.quotes.find((q) => q.id === 'btc')
+  const notes = [
+    ...board.notes,
+    `Multi-asset board · ${board.quotes.length} quotes · sources: Binance/OKX + Yahoo Finance`,
+  ]
 
   return {
-    binance: binanceLast && Number.isFinite(binanceLast) ? { last: binanceLast } : undefined,
-    okx: okxLast && Number.isFinite(okxLast) ? { last: okxLast } : undefined,
-    bitget: bitgetLast && Number.isFinite(bitgetLast) ? { last: bitgetLast } : undefined,
-    spot: spotLast && Number.isFinite(spotLast) ? { last: spotLast } : undefined,
+    binance: btc ? { last: btc.last, change24hPct: btc.changePct } : undefined,
     notes,
-    sources: hourly.sources.slice(0, 12).map((s) => ({
-      label: s.captionZh || s.captionEn,
-      url: s.url,
-    })),
-    fetchedAt: hourly.createdAt,
+    sources: board.sources,
+    fetchedAt: now,
+    board,
     hourly,
   }
 }
