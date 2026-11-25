@@ -202,12 +202,15 @@ const KNOWLEDGE_ASK_RE =
 export function shouldAutoWebSearch(question: string): boolean {
   const t = question.trim()
   if (!t || t.length < 2) return false
-  // Clock / “what time” / “我意思时间” — never search (wiki hijacks「意思」→ band names)
+  // Clock / timezone / “我意思时间” — never search (wiki hijacks「意思」→ band names)
   if (
     /^(现在几点|現在幾點|现在几点了|現在幾點了|几点了|幾點了|几点啦|幾點啦|几点钟|幾點鐘|现在时间|現在時間|报时|報時|what\s+time\s+is\s+it(?:\s+now)?|what'?s\s+the\s+time|current\s+time)\s*[?？!！.。~]*\s*$/i.test(
       t,
     ) ||
     /^(我意思|我说|我是说|我是說|我指的是|意思是|就是|就是问|就是問)?\s*(时间|時間|几点|幾點|几点了|幾點了|报时|報時|the\s+time|time)\s*[?？!！.。~]*\s*$/i.test(
+      t,
+    ) ||
+    /(中国|中國|国内|國內).{0,12}(时区|時區)|(时区|時區).{0,8}(中国|中國)|what\s+(time\s*)?zone\s+is\s+china|china(?:'s)?\s+(time\s*)?zone/i.test(
       t,
     )
   ) {

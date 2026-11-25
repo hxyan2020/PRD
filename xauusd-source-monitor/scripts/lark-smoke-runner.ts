@@ -694,6 +694,38 @@ async function main() {
       !timeClarifyTurn.blob.includes('Justin Bieber'),
     timeClarifyTurn.blob.slice(0, 220),
   )
+  const {
+    looksLikeTimezoneQuestion: isTzQ,
+    timezoneReply: tzReplyFn,
+  } = await import('../api/lark/_lib/scope')
+  record(
+    'casual.detect_china_timezone',
+    isTzQ('中国在哪个时区') &&
+      isTzQ('中国是什么时区') &&
+      isTzQ('what timezone is China') &&
+      !isTzQ('什么是ADL'),
+    '',
+  )
+  const tzTpl = tzReplyFn('zh-Hans', '中国在哪个时区') || ''
+  record(
+    'casual.china_timezone_utc8',
+    tzTpl.includes('UTC+8') &&
+      tzTpl.includes('东八区') &&
+      !tzTpl.includes('完全抓准') &&
+      !tzTpl.includes('检索'),
+    tzTpl.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'tz_q')
+  const tzTurn = await turn('china-tz', '中国在哪个时区', 'tz_q')
+  record(
+    'turn.china_timezone_direct',
+    Boolean(tzTurn.reply?.card) &&
+      /UTC\+8|东八区|Asia\/Shanghai/i.test(tzTurn.blob) &&
+      !tzTurn.blob.includes('完全抓准') &&
+      !tzTurn.blob.includes('再说具体一点') &&
+      !tzTurn.blob.includes('检索摘要'),
+    tzTurn.blob.slice(0, 240),
+  )
   const canChatTpl = casualChatReply('zh-Hans', '你能闲聊吗') || ''
   record(
     'casual.can_chat_warm_yes',
@@ -1282,7 +1314,12 @@ async function main() {
   )
 
   // 9a0b) No local KB → auto web search with sources (never “没有匹配知识库” / meta principles dump)
-  const web = await searchWeb('什么是永续合约', 'zh-Hans')
+  // Retry once — full-suite runs can briefly rate-limit Wikipedia mid-smoke.
+  let web = await searchWeb('什么是永续合约', 'zh-Hans')
+  if (!web.hits.length) {
+    await new Promise((r) => setTimeout(r, 800))
+    web = await searchWeb('什么是永续合约', 'zh-Hans')
+  }
   record(
     'search.perpetual_hits',
     web.ok &&

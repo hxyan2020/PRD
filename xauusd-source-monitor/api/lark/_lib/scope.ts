@@ -801,6 +801,55 @@ export function nowTimeReply(lang: Lang, question: string, now = new Date()): st
   return `🕒 It’s **${wall}** Asia/Shanghai (UTC+8).`
 }
 
+/**
+ * “中国在哪个时区 / what timezone is China” — common knowledge, never stub or wiki.
+ * Nationwide civil time is UTC+8 (CST / Asia/Shanghai); no DST.
+ */
+const CASUAL_TIMEZONE_CN =
+  /^(中国|中國|国内|國內|大陆|大陸|我们|我們)?\s*(在|是|用)?\s*(哪个|哪個|什么|什麼)?\s*(时区|時區|时区啊|時區啊|timezone|time\s*zone)|^(中国|中國).{0,8}(时区|時區|UTC|东八|東八)|(时区|時區).{0,8}(中国|中國)|what\s+(time\s*)?zone\s+is\s+china|china(?:'s)?\s+(time\s*)?zone|is\s+china\s+(in\s+)?(utc\s*)?\+?\s*8/i
+
+export function looksLikeTimezoneQuestion(text: string): boolean {
+  const t = text.trim()
+  if (!t || t.length > 48) return false
+  return CASUAL_TIMEZONE_CN.test(t)
+}
+
+/** Deterministic timezone FAQ — China = UTC+8 / Asia/Shanghai. */
+export function timezoneReply(lang: Lang, question: string): string | null {
+  if (!looksLikeTimezoneQuestion(question)) return null
+  if (lang === 'zh-Hans') {
+    return [
+      '🌏 中国（全国统一民用时间）用 **东八区**，也就是 **UTC+8**。',
+      '',
+      '• 常用名：**中国标准时间（CST）** / **Asia/Shanghai**',
+      '• **不实行夏令时**',
+      '• 香港、澳门也是 UTC+8；台湾同样是 UTC+8',
+      '',
+      `现在东八区时间：**${formatNowEast8()}**`,
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '🌏 中國（全國統一民用時間）用 **東八區**，也就是 **UTC+8**。',
+      '',
+      '• 常用名：**中國標準時間（CST）** / **Asia/Shanghai**',
+      '• **不實行夏令時**',
+      '• 香港、澳門也是 UTC+8；台灣同樣是 UTC+8',
+      '',
+      `現在東八區時間：**${formatNowEast8()}**`,
+    ].join('\n')
+  }
+  return [
+    '🌏 China uses **UTC+8** nationwide (China Standard Time).',
+    '',
+    '• Common labels: **CST** / **Asia/Shanghai**',
+    '• **No daylight saving time**',
+    '• Hong Kong, Macau, and Taiwan are also UTC+8',
+    '',
+    `Wall clock now: **${formatNowEast8()}** Asia/Shanghai`,
+  ].join('\n')
+}
+
 export function isCasualChat(text: string): boolean {
   const t = text.trim()
   return (
@@ -813,7 +862,8 @@ export function isCasualChat(text: string): boolean {
     CASUAL_WEATHER.test(t) ||
     CASUAL_BORED.test(t) ||
     CASUAL_CAN_CHAT.test(t) ||
-    looksLikeNowTimeQuestion(t)
+    looksLikeNowTimeQuestion(t) ||
+    looksLikeTimezoneQuestion(t)
   )
 }
 
@@ -947,6 +997,8 @@ export function casualChatReply(
   }
   const time = nowTimeReply(lang, t)
   if (time) return time
+  const tz = timezoneReply(lang, t)
+  if (tz) return tz
   return null
 }
 

@@ -60,8 +60,10 @@ import {
   looksLikeIncidentEvidence,
   looksLikeNowTimeQuestion,
   looksLikePureChat,
+  looksLikeTimezoneQuestion,
   needsInaccessibleAccess,
   nowTimeReply,
+  timezoneReply,
   isStepDoneCommand,
   pendingCommandLabel,
   resolveTurnDisposition,
@@ -1181,11 +1183,15 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return { card: simpleCard(replyTitle, meta, 'blue') }
   }
 
-  // Clock / “现在几点” / “我意思时间” — Asia/Shanghai wall clock; never search or stub
+  // Clock / timezone common knowledge — never search or “说具体一点” stub
   {
     const timeReply = nowTimeReply(lang, workingText)
     if (timeReply) {
       return { card: simpleCard(chatTitle, timeReply, 'blue') }
+    }
+    const tzReply = timezoneReply(lang, workingText)
+    if (tzReply) {
+      return { card: simpleCard(chatTitle, tzReply, 'blue') }
     }
   }
 
@@ -1225,6 +1231,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     if (
       !isCasualBanter(workingText) &&
       !looksLikeNowTimeQuestion(workingText) &&
+      !looksLikeTimezoneQuestion(workingText) &&
       shouldAutoWebSearch(workingText)
     ) {
       const searched = await searchWeb(workingText, lang)
