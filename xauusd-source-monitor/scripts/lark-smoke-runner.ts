@@ -1134,14 +1134,43 @@ async function main() {
     greetBlob.slice(0, 160),
   )
   record(
-    'turn.greeting_token_usage',
+    'turn.greeting_no_token_usage',
     Boolean(
-      (/Token usage/.test(greetBlob) || /Token 消耗/.test(greetBlob)) &&
-        (/Last 24h/.test(greetBlob) || /最近 24/.test(greetBlob)) &&
-        (/All-time/.test(greetBlob) || /全历史/.test(greetBlob) || /全歷史/.test(greetBlob)) &&
-        /[▁▂▃▄▅▆▇█]/.test(greetBlob),
+      greet.reply?.card &&
+        !/Token usage/i.test(greetBlob) &&
+        !/Token 消耗/.test(greetBlob) &&
+        !/Last 24h/.test(greetBlob) &&
+        !/最近 24/.test(greetBlob),
     ),
-    /Token/.test(greetBlob) ? 'ok' : greetBlob.slice(0, 200),
+    /Token/.test(greetBlob) ? greetBlob.slice(0, 200) : 'ok',
+  )
+  const {
+    formatTokenUsageReport,
+    isTokenUsageSlot,
+    sgtDayKey,
+    sgtHm,
+    TOKEN_USAGE_START_HM,
+  } = await import('../api/lark/_lib/tokenUsage')
+  const tokenMd = await formatTokenUsageReport('en')
+  record(
+    'token_usage.daily_report_body',
+    Boolean(
+      /Token usage/.test(tokenMd) &&
+        /Last 24h/.test(tokenMd) &&
+        /All-time/.test(tokenMd) &&
+        /[▁▂▃▄▅▆▇█]/.test(tokenMd) &&
+        tokenMd.includes(TOKEN_USAGE_START_HM) &&
+        /Yan only|仅推送 Yan/i.test(tokenMd),
+    ),
+    tokenMd.slice(0, 160),
+  )
+  record(
+    'token_usage.slot_18_sgt',
+    isTokenUsageSlot(Date.parse('2026-11-25T10:00:00Z')) &&
+      !isTokenUsageSlot(Date.parse('2026-11-25T09:59:00Z')) &&
+      sgtHm(Date.parse('2026-11-25T10:00:00Z')) === '18:00' &&
+      sgtDayKey(Date.parse('2026-11-25T10:00:00Z')) === '2026-11-25',
+    `hm=${sgtHm(Date.parse('2026-11-25T10:00:00Z'))} start=${TOKEN_USAGE_START_HM}`,
   )
   const greetZh = await turn('greeting-zh', '你好', 'greet_zh')
   const greetZhBlob = JSON.stringify(greetZh.reply || {})
@@ -1159,7 +1188,7 @@ async function main() {
         (greetZhBlob.includes('自然语言') || greetZhBlob.includes('不必先打出关键词')) &&
         greetZhBlob.includes('[Skills](https://vex-llm-proxy.vercel.app/#/skills)') &&
         greetZhBlob.includes('[知识库](https://vex-llm-proxy.vercel.app/#/knowledge)') &&
-        greetZhBlob.includes('Token 消耗') &&
+        !greetZhBlob.includes('Token 消耗') &&
         !greetZhBlob.includes('截图欢迎') &&
         !greetZhBlob.includes('生产操作需人工审批'),
     ),
@@ -2445,6 +2474,7 @@ async function main() {
       cronTickSrc.includes('/api/lark/weekly-demo') &&
       cronTickSrc.includes('/api/lark/daily-market-report') &&
       cronTickSrc.includes('/api/lark/weekly-report') &&
+      cronTickSrc.includes('/api/lark/token-usage-report') &&
       cronTickSrc.includes('/api/lark/cron-health') &&
       cronTickSrc.includes('Promise.all') &&
       cronTickSrc.includes('healthFirst') &&
@@ -2470,6 +2500,10 @@ async function main() {
     new URL('../api/lark/daily-market-report.ts', import.meta.url),
     'utf8',
   )
+  const tokenUsageSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/token-usage-report.ts', import.meta.url),
+    'utf8',
+  )
   const weeklySrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/weekly-report.ts', import.meta.url),
     'utf8',
@@ -2482,10 +2516,23 @@ async function main() {
     'cron.all_handlers_self_heartbeat',
     marketSrc.includes("touchCronHeartbeat('/api/lark/market-report'") &&
       dailySrc.includes("touchCronHeartbeat('/api/lark/daily-market-report'") &&
+      tokenUsageSrc.includes("touchCronHeartbeat('/api/lark/token-usage-report'") &&
       weeklySrc.includes("touchCronHeartbeat('/api/lark/weekly-report'") &&
       weeklyDemoSrc.includes("touchCronHeartbeat('/api/lark/weekly-demo'") &&
       cronHealthSrc.includes("touchCronHeartbeat('/api/lark/cron-health'"),
     'every cron handler records a durable beat on invoke',
+  )
+  record(
+    'cron.token_usage_daily_scheduled',
+    (vercelCrons.crons || []).some(
+      (c) =>
+        (c.path || '').includes('/api/lark/token-usage-report') &&
+        (c.schedule || '') === '0 10 * * *',
+    ) &&
+      tokenUsageSrc.includes('18:00') &&
+      tokenUsageSrc.includes('Asia/Singapore') &&
+      tokenUsageSrc.includes('Yan Haixiang'),
+    'daily 18:00 SGT token DM → Yan',
   )
   record(
     'cron.health_stale_catchup',
@@ -2520,10 +2567,11 @@ async function main() {
   record(
     'cron.health_report_shape',
     Boolean(healthRep.slotKey) &&
-      healthRep.jobs.length >= 7 &&
+      healthRep.jobs.length >= 8 &&
       healthRep.jobs.some((j) => j.id === 'cron-tick') &&
       healthRep.jobs.some((j) => j.id === 'cron-health') &&
       healthRep.jobs.some((j) => j.id === 'market-report') &&
+      healthRep.jobs.some((j) => j.id === 'token-usage-report') &&
       healthRep.jobs.some((j) => j.id === 'bot') &&
       typeof healthRep.allOk === 'boolean' &&
       healthRep.markdown.includes('Cron 健康'),

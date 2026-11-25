@@ -158,18 +158,56 @@ function fmtTokens(n: number): string {
   return String(Math.round(n))
 }
 
-/** Markdown block appended to greeting cards. */
-export async function formatTokenUsageForGreeting(lang: Lang): Promise<string> {
+/** Calendar day in Asia/Singapore (SGT), e.g. `2026-11-25`. */
+export function sgtDayKey(ts: number = Date.now()): string {
+  try {
+    return new Date(ts).toLocaleDateString('en-CA', { timeZone: 'Asia/Singapore' })
+  } catch {
+    const d = new Date(ts + 8 * 3600_000)
+    return d.toISOString().slice(0, 10)
+  }
+}
+
+/** HH:MM wall clock in Asia/Singapore. */
+export function sgtHm(ts: number = Date.now()): string {
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Singapore',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(new Date(ts))
+    const get = (t: string) => parts.find((p) => p.type === t)?.value || '00'
+    const hour = get('hour') === '24' ? '00' : get('hour')
+    return `${hour}:${get('minute')}`
+  } catch {
+    const d = new Date(ts)
+    return `${String(d.getUTCHours() + 8).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`
+  }
+}
+
+/** Daily private push window start (SGT). Override with LARK_TOKEN_USAGE_START. */
+export const TOKEN_USAGE_START_HM =
+  (process.env.LARK_TOKEN_USAGE_START || '').trim() || '18:00'
+
+/** True once the 18:00 SGT slot has opened (idempotent via dayKey sent-state). */
+export function isTokenUsageSlot(ts: number = Date.now()): boolean {
+  return sgtHm(ts) >= TOKEN_USAGE_START_HM
+}
+
+/** Markdown body for the daily Yan-only token usage DM (not greeting). */
+export async function formatTokenUsageReport(lang: Lang): Promise<string> {
   const store = await loadTokenUsage()
   const last24 = sumLast24h(store)
   const series = last24hSeries(store)
   const chart = asciiLineChart(series)
   const spark = sparkline(series.map((s) => s.total))
+  const day = sgtDayKey()
 
   if (lang === 'zh-Hans') {
     return [
-      '——',
-      '📊 **Token 消耗（本 Agent）**',
+      `📬 **Token 日消耗 · ${day}**（每日 **${TOKEN_USAGE_START_HM}** SGT · 仅推送 Yan）`,
+      '',
       `• **最近 24 小时：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次调用）`,
       `• **全历史累计：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次调用）`,
       `• **24h 走势：** ${spark}`,
@@ -181,8 +219,8 @@ export async function formatTokenUsageForGreeting(lang: Lang): Promise<string> {
   }
   if (lang === 'zh-Hant') {
     return [
-      '——',
-      '📊 **Token 消耗（本 Agent）**',
+      `📬 **Token 日消耗 · ${day}**（每日 **${TOKEN_USAGE_START_HM}** SGT · 僅推送 Yan）`,
+      '',
       `• **最近 24 小時：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次呼叫）`,
       `• **全歷史累計：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次呼叫）`,
       `• **24h 走勢：** ${spark}`,
@@ -193,14 +231,25 @@ export async function formatTokenUsageForGreeting(lang: Lang): Promise<string> {
     ].join('\n')
   }
   return [
-    '——',
-    '📊 **Token usage (this agent)**',
+    `📬 **Token usage · ${day}** (daily **${TOKEN_USAGE_START_HM}** SGT · Yan only)`,
+    '',
     `• **Last 24h:** **${fmtTokens(last24.total)}** tokens (prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} calls)`,
     `• **All-time:** **${fmtTokens(store.allTime.total)}** tokens (prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} calls)`,
     `• **24h trend:** ${spark}`,
     '',
     chart,
     '',
-    '_X-axis = Asia/Shanghai hour; includes Lark LLM/vision and desk /api/chat._',
+    '_X-axis = Asia/Singapore hour; includes Lark LLM/vision and desk /api/chat._',
   ].join('\n')
+}
+
+/** @deprecated Use formatTokenUsageReport — greeting no longer embeds usage. */
+export async function formatTokenUsageForGreeting(lang: Lang): Promise<string> {
+  return formatTokenUsageReport(lang)
+}
+
+export function tokenUsageReportTitle(lang: Lang): string {
+  if (lang === 'zh-Hans') return 'Token 日消耗'
+  if (lang === 'zh-Hant') return 'Token 日消耗'
+  return 'Token usage'
 }

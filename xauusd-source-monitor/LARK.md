@@ -59,7 +59,9 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - The group shares one investigation session so later `@bot` replies continue the same case.
 | `LARK_ENCRYPT_KEY` | **Do not use** until decrypt is implemented — keep Encrypt Key off |
 | `DESK_GATEWAY_TOKEN` | Protects desk smoke `/api/lark/incidents` only; unrelated to Lark chat |
-| `LARK_ADMIN_OPEN_ID` | **Required for weekly + oscillation DM fallback** — Yan Haixiang’s Feishu `open_id` |
+| `LARK_ADMIN_OPEN_ID` | **Required for weekly + oscillation + token-usage DM fallback** — Yan Haixiang’s Feishu `open_id` |
+| `LARK_TOKEN_USAGE_CHAT_ID` | Optional Yan DM chat for daily Token report (falls back to `LARK_MARKET_CHAT_ID`) |
+| `LARK_TOKEN_USAGE_START` | Optional override for Token report start (default `18:00` SGT) |
 | `LARK_ADMIN_EMAIL` | Optional fallback to resolve open_id via Contact API |
 | `CRON_SECRET` | Optional; Vercel Cron Authorization bearer for cron routes |
 
@@ -111,6 +113,7 @@ never-sent).
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
 | GET/POST | `/api/lark/market-report` | Half-hourly market DM (`*/30`); also via cron-tick |
 | GET/POST | `/api/lark/daily-market-report` | Daily 09:00 CST 24h digest → group; `?dry=1` preview |
+| GET/POST | `/api/lark/token-usage-report` | Daily 18:00 SGT Token usage → Yan DM only; `?dry=1` preview |
 | GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
 | GET/POST | `/api/lark/cron-tick` | Every 5 min fan-out of all push jobs on public alias |
 | GET/POST | `/api/lark/cron-health` | Every 30 min health DM to Yan; red @raise on missed schedule |
@@ -129,6 +132,15 @@ never-sent).
 - **Cron:** every **30 min** (`*/30 * * * *`) → Yan Haixiang DM (`LARK_MARKET_CHAT_ID`)
 - **Not** listed in greeting / capabilities — private desk push only
 - Chat `行情` / `market` still works on demand
+- **Preview / force:** `GET ?dry=1` · `POST { "force": true }` + desk token / cron header
+
+## Token usage (Yan Haixiang daily DM)
+
+- **Schedule:** every day **18:00 Asia/Singapore** (Vercel cron `0 10 * * *` UTC)
+- **Content:** last-24h + all-time agent token totals + 24h sparkline/chart
+- **Delivery:** Feishu DM to Yan only (`LARK_TOKEN_USAGE_CHAT_ID` → `LARK_MARKET_CHAT_ID` → `LARK_ADMIN_OPEN_ID` fallback)
+- **Not** on greeting cards — private desk push only
+- **Catch-up:** cron-tick after 18:00 SGT if the :00 UTC fire was missed (idempotent dayKey)
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true }` + desk token / cron header
 
 ## Daily 24h market morning report (group)

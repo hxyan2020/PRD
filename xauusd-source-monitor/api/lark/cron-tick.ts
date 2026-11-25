@@ -37,6 +37,7 @@ const OTHER_PATHS = [
   '/api/lark/weekly-demo',
   '/api/lark/daily-market-report',
   '/api/lark/weekly-report',
+  '/api/lark/token-usage-report',
 ] as const
 
 export const PATHS = [HEALTH_PATH, ...OTHER_PATHS] as const
@@ -50,6 +51,7 @@ const STALE_MS: Record<string, number> = {
   '/api/lark/weekly-demo': 25 * 60_000,
   '/api/lark/daily-market-report': 25 * 60_000,
   '/api/lark/weekly-report': 25 * 60_000,
+  '/api/lark/token-usage-report': 25 * 60_000,
 }
 
 type HitResult = {
