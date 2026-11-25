@@ -39,6 +39,8 @@ export function investigationCard(args: {
   skills: string[]
   knowledge: string[]
   incidentId?: string
+  /** First report in a case — remind user they can paste another alert into the same review. */
+  showAddAlertHint?: boolean
 }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
@@ -117,6 +119,22 @@ export function investigationCard(args: {
       { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
+      ...(args.showAddAlertHint
+        ? [
+            { tag: 'hr' },
+            {
+              tag: 'div',
+              text: {
+                tag: 'lark_md',
+                content: hans
+                  ? '💡 **提示：** 随时可再贴一条新告警／截图／转发卡片，我会和**当前这条一起**继续排查（同一会话即可，不必先归档）。'
+                  : zh
+                    ? '💡 **提示：** 隨時可再貼一條新告警／截圖／轉發卡片，我會和**目前這條一起**繼續排查（同一會話即可，不必先歸檔）。'
+                    : '💡 **Tip:** You can paste another alert / screenshot / forwarded card anytime — I’ll review it **together with this one** in the same case (no need to archive first).',
+              },
+            },
+          ]
+        : []),
       {
         tag: 'div',
         text: {

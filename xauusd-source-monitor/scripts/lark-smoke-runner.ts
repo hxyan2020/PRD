@@ -602,6 +602,33 @@ async function main() {
     record(`turn.${label}_not_greeting`, Boolean(t.reply?.card) && okTitle && !isGreet, t.blob.slice(0, 200))
   }
 
+  // First investigation generation reminds user they can add another alert to the same case.
+  clearSession('smoke_chat', 'hint_first_zh')
+  const firstInv = await turn(
+    'inv-first-add-alert-hint',
+    '告警：XAU_USD Mark 偏离 48bps，IDX-01 被剔除',
+    'hint_first_zh',
+  )
+  record(
+    'turn.investigate_first_gen_add_alert_hint',
+    firstInv.blob.includes('一起') &&
+      (firstInv.blob.includes('再贴') || firstInv.blob.includes('新告警')) &&
+      firstInv.blob.includes('💡'),
+    firstInv.blob.match(/💡[\s\S]{0,120}/)?.[0] || firstInv.blob.slice(0, 160),
+  )
+  const secondInv = await turn(
+    'inv-second-no-repeat-hint',
+    '又一条告警：外部 Funding 偏差超阈 XAU-USDT-SWAP',
+    'hint_first_zh',
+  )
+  record(
+    'turn.investigate_second_gen_no_add_alert_hint',
+    Boolean(secondInv.reply?.card) &&
+      /排查|告警|Funding/i.test(secondInv.blob) &&
+      !secondInv.blob.includes('💡 **提示：** 随时可再贴'),
+    secondInv.blob.includes('💡') ? 'hint_still_present' : 'hint_omitted',
+  )
+
   // enrichIncomingEvidence is a no-op without live Lark credentials — still identity-safe.
   const enrichedSame = await enrichIncomingEvidence({
     messageId: 'om_x',

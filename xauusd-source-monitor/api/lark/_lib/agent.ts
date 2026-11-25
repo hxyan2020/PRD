@@ -555,9 +555,13 @@ async function runInvestigation(args: {
 }): Promise<BotReply> {
   const session = getSession(args.msg.chatId, args.msg.openId)
   session.mode = 'investigate'
+  const userFactCountBefore = session.facts.filter((f) => !f.startsWith('[chat-history]')).length
   if (args.newFact.trim()) {
     session.facts.push(args.newFact.trim())
   }
+  // First generation of a case — remind that more alerts can join this review.
+  const showAddAlertHint =
+    Boolean(args.newFact.trim()) && userFactCountBefore === 0 && !args.markStepDone
   if (args.markStepDone && session.pendingPrompt) {
     session.checkedSteps.push(session.pendingPrompt)
   }
@@ -676,6 +680,7 @@ async function runInvestigation(args: {
       skills: hits.map((h) => h.id),
       knowledge: kb.map((k) => k.title),
       incidentId: rec.id,
+      showAddAlertHint,
     }),
   }
 }
