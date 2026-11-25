@@ -493,9 +493,185 @@ export function formatRagAnswer(args: {
   return cleanLarkMd(lines.join('\n'))
 }
 
+const STEP_STOP =
+  /^(?:the|and|or|for|with|from|into|请|并|或|及|与|和|后|再|确认|檢查|检查|查看|核对|核對|可选|可選)$/i
+
+function normEvidence(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[／/]/g, '/')
+    .replace(/[、，,;；]/g, ' ')
+    .replace(/\s+/g, '')
+    .replace(/ｋ线|k线|k-line/g, 'k线')
+}
+
+function stepTokens(step: string): string[] {
+  return tokenize(step).filter((w) => w.length >= 2 && !STEP_STOP.test(w))
+}
+
+/** True when operator evidence already covers this atomic Skill.check step (order-agnostic). */
+export function evidenceCoversStep(step: string, evidenceBlob: string): boolean {
+  const blob = normEvidence(evidenceBlob)
+  const stepN = normEvidence(step)
+  if (blob.includes(stepN) && stepN.length >= 8) return true
+
+  // Phrase anchors that duty officers commonly paraphrase
+  const anchors: string[] = []
+  if (/前端/.test(step) && /index|mark|k线|成交/i.test(step)) anchors.push('前端', 'index', 'mark', 'k线')
+  if (/友商/.test(step)) anchors.push('友商')
+  if (/lark/i.test(step) && /剔除|恢复|恢復/.test(step)) anchors.push('lark', '剔除')
+  if (/后管|後管/.test(step)) anchors.push('后管', '後管')
+  if (anchors.length) {
+    const need = Math.min(2, anchors.length)
+    const got = anchors.filter((a) => blob.includes(normEvidence(a))).length
+    if (got >= need && /前端|友商/.test(step)) {
+      // Frontend / peer checks: require at least one price cue too
+      if (/前端/.test(step) && !(blob.includes('index') || blob.includes('mark') || blob.includes('k线'))) {
+        /* fall through to token overlap */
+      } else if (/友商/.test(step) && !blob.includes('友商')) {
+        /* fall through */
+      } else if (got >= need) {
+        return true
+      }
+    }
+  }
+
+  const toks = stepTokens(step)
+  if (toks.length < 2) return false
+  const hit = toks.filter((w) => blob.includes(normEvidence(w))).length
+  // Out-of-order evidence often paraphrases — solid overlap, not the full chain.
+  return hit >= Math.max(2, Math.ceil(toks.length * 0.4))
+}
+
+function overlapScore(step: string, text: string): number {
+  if (!text.trim()) return 0
+  const blob = normEvidence(text)
+  let score = 0
+  for (const w of stepTokens(step)) {
+    if (blob.includes(normEvidence(w))) score += w.length >= 3 ? 2 : 1
+  }
+  if (/前端/.test(step) && blob.includes('前端')) score += 3
+  if (/友商/.test(step) && blob.includes('友商')) score += 3
+  if (/k线/.test(normEvidence(step)) && blob.includes('k线')) score += 2
+  return score
+}
+
+export type InvestigationPathPlan = {
+  /** Remaining steps, re-ranked for this turn (not Skill.check order). */
+  nextSteps: string[]
+  /** All Skill.check atomic steps already covered (checked + inferred from evidence). */
+  covered: string[]
+  /** Newly inferred covered steps from evidence this turn (not previously in checkedSteps). */
+  newlyCovered: string[]
+  /** True when remaining order differs from Skill.check author order. */
+  reordered: boolean
+}
+
 /**
- * Adaptive next steps: skip already-checked items, prefer highest-score L1 checks,
- * and rephrase based on new evidence — never dump the full skill catalogue.
+ * Plan the next investigation prompts from Skill.check atomic steps.
+ * Duty officers paste evidence out of order — skip covered steps, boost steps that
+ * match the latest paste, and never dump the full Skill chain as one blob.
+ */
+export function planInvestigationPath(args: {
+  facts: string[]
+  hits: SkillHit[]
+  checkedSteps: string[]
+  lang: 'en' | 'zh-Hans' | 'zh-Hant'
+  max?: number
+  latestFact?: string
+}): InvestigationPathPlan {
+  const max = args.max ?? 3
+  const zh = args.lang === 'zh-Hans' || args.lang === 'zh-Hant'
+  const blob = args.facts.join('\n')
+  const latest = (args.latestFact || args.facts.filter((f) => !f.startsWith('[chat-history]')).at(-1) || '').trim()
+  const checkedLower = new Set(args.checkedSteps.map((s) => s.toLowerCase().trim()))
+
+  type Ranked = {
+    label: string
+    raw: string
+    skillId: string
+    authorIdx: number
+    covered: boolean
+    wasChecked: boolean
+    latestScore: number
+  }
+
+  const ranked: Ranked[] = []
+  let authorIdx = 0
+  for (const h of args.hits) {
+    if (h.level !== 'L1' && ranked.some((r) => r.skillId.startsWith('L1-'))) {
+      // Prefer L1 atomic path; L2 stays available if no L1 left.
+    }
+    const atoms = splitSkillSteps(h.check)
+    const parts = atoms.length ? atoms : [h.check]
+    for (const raw of parts) {
+      const prefix = zh ? `【${h.id}】` : `[${h.id}]`
+      const label = `${prefix} ${raw}`
+      const wasChecked =
+        checkedLower.has(label.toLowerCase()) ||
+        checkedLower.has(raw.toLowerCase()) ||
+        checkedLower.has(`${h.id}:${raw}`.toLowerCase()) ||
+        checkedLower.has(h.id.toLowerCase())
+      const covered = wasChecked || evidenceCoversStep(raw, blob)
+      ranked.push({
+        label,
+        raw,
+        skillId: h.id,
+        authorIdx: authorIdx++,
+        covered,
+        wasChecked,
+        latestScore: overlapScore(raw, latest),
+      })
+    }
+  }
+
+  const covered = ranked.filter((r) => r.covered).map((r) => r.label)
+  const newlyCovered = ranked.filter((r) => r.covered && !r.wasChecked).map((r) => r.label)
+  const remaining = ranked.filter((r) => !r.covered)
+
+  // Re-rank: prefer steps that the latest paste is talking about, then author order.
+  const byAuthor = [...remaining].sort((a, b) => a.authorIdx - b.authorIdx)
+  const byLatest = [...remaining].sort((a, b) => {
+    if (b.latestScore !== a.latestScore) return b.latestScore - a.latestScore
+    return a.authorIdx - b.authorIdx
+  })
+  // Only call it a reorder when the top remaining step actually changes vs Skill.check order.
+  const reordered =
+    Boolean(byLatest[0] && byAuthor[0]) &&
+    byLatest[0]!.label !== byAuthor[0]!.label &&
+    (byLatest[0]!.latestScore || 0) > (byAuthor[0]!.latestScore || 0)
+
+  const chosen = (reordered ? byLatest : byAuthor).slice(0, max)
+  const nextSteps = chosen.map((r) => r.label)
+
+  if (!nextSteps.length) {
+    if (args.lang === 'zh-Hans') {
+      nextSteps.push(
+        covered.length
+          ? '本 Skill 路径步骤已基本覆盖。请确认决策分支，或贴下一条告警／发 **生成排查报告**。'
+          : '请补充：告警原文、合约、指标数值、时间戳，或贴上截图／表格。',
+      )
+    } else if (args.lang === 'zh-Hant') {
+      nextSteps.push(
+        covered.length
+          ? '本 Skill 路徑步驟已基本覆蓋。請確認決策分支，或貼下一條告警／發 **生成排查報告**。'
+          : '請補充：告警原文、合約、指標數值、時間戳，或貼上截圖／表格。',
+      )
+    } else {
+      nextSteps.push(
+        covered.length
+          ? 'Skill path largely covered. Confirm decision branches, paste another alert, or send **generate investigation report**.'
+          : 'Please add: alert text, contract, metric values, timestamps — or paste a screenshot / table.',
+      )
+    }
+  }
+
+  return { nextSteps, covered, newlyCovered, reordered }
+}
+
+/**
+ * Adaptive next steps: skip already-checked items, re-rank from latest evidence.
+ * Duty officers may paste evidence out of Skill.check order.
  */
 export function adaptiveNextSteps(args: {
   facts: string[]
@@ -503,38 +679,9 @@ export function adaptiveNextSteps(args: {
   checkedSteps: string[]
   lang: 'en' | 'zh-Hans' | 'zh-Hant'
   max?: number
+  latestFact?: string
 }): string[] {
-  const max = args.max ?? 3
-  const blob = args.facts.join('\n').toLowerCase()
-  const checked = new Set(args.checkedSteps.map((s) => s.toLowerCase()))
-  const steps: string[] = []
-  const zh = args.lang === 'zh-Hans' || args.lang === 'zh-Hant'
-
-  for (const h of args.hits) {
-    if (steps.length >= max) break
-    const checkKey = `${h.id}:${h.check}`.toLowerCase()
-    if (checked.has(checkKey) || checked.has(h.id.toLowerCase())) continue
-    const checkTokens = tokenize(h.check).filter((w) => w.length >= 2)
-    const covered = checkTokens.filter((w) => blob.includes(w.toLowerCase())).length
-    if (covered >= Math.max(2, Math.ceil(checkTokens.length * 0.35))) {
-      continue
-    }
-    const prefix = zh ? `【${h.id}】` : `[${h.id}]`
-    steps.push(`${prefix} ${h.check}`)
-  }
-
-  if (!steps.length) {
-    if (args.lang === 'zh-Hans') {
-      steps.push('请补充：告警原文、合约、指标数值、时间戳，或贴上截图／表格。')
-    } else if (args.lang === 'zh-Hant') {
-      steps.push('請補充：告警原文、合約、指標數值、時間戳，或貼上截圖／表格。')
-    } else {
-      steps.push(
-        'Please add: alert text, contract, metric values, timestamps — or paste a screenshot / table.',
-      )
-    }
-  }
-  return steps
+  return planInvestigationPath(args).nextSteps
 }
 
 export function preferredActions(

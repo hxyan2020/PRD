@@ -27,7 +27,7 @@ import {
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
 import {
-  adaptiveNextSteps,
+  planInvestigationPath,
   formatRagAnswer,
   loadKnowledge,
   loadSkills,
@@ -120,6 +120,8 @@ function buildSummary(args: {
   kb: { title: string }[]
   facts: string[]
   adapted: boolean
+  newlyCovered?: string[]
+  reordered?: boolean
 }): string {
   const hans = args.lang === 'zh-Hans'
   const hant = args.lang === 'zh-Hant'
@@ -156,6 +158,33 @@ function buildSummary(args: {
         ? '告警名確定命中'
         : 'alert-name match'
     : 'Skills'
+  const coveredBits = (args.newlyCovered || [])
+    .slice(0, 3)
+    .map((s) => s.replace(/^(\[[^\]]+\]|【[^】]+】)\s*/, '').slice(0, 36))
+  const coveredLine = coveredBits.length
+    ? hans
+      ? `• **本轮已覆盖（证据乱序也认）：** ${coveredBits.join('；')}`
+      : hant
+        ? `• **本輪已覆蓋（證據亂序也認）：** ${coveredBits.join('；')}`
+        : `• **Covered this turn (order-agnostic):** ${coveredBits.join('; ')}`
+    : ''
+  const guide = args.reordered
+    ? hans
+      ? '• **指引：** 你这次证据不按 Skill 顺序——我已**重排下一步**，先跟你刚提供的线索'
+      : hant
+        ? '• **指引：** 你這次證據不按 Skill 順序——我已**重排下一步**，先跟你剛提供的線索'
+        : '• **Guidance:** Evidence arrived out of Skill order — I **re-ranked next steps** around what you just pasted'
+    : args.adapted
+      ? hans
+        ? '• **指引：** 排查路径已依你最新证据调整；请继续回复结果或贴下一块证据（不必按顺序）'
+        : hant
+          ? '• **指引：** 排查路徑已依你最新證據調整；請繼續回覆結果或貼下一塊證據（不必按順序）'
+          : '• **Guidance:** Path adapted to your latest evidence — reply with findings or the next chunk (any order)'
+      : hans
+        ? '• **指引：** 请回复排查结果或贴新证据（不必按 Skill 顺序），我会每次重排路径'
+        : hant
+          ? '• **指引：** 請回覆排查結果或貼新證據（不必按 Skill 順序），我會每次重排路徑'
+          : '• **Guidance:** Reply with findings or new evidence in any order — I’ll re-rank the path each turn'
   if (hans) {
     return [
       '📋 **摘要**',
@@ -163,10 +192,11 @@ function buildSummary(args: {
       `• **已摄入事实／证据：** **${args.facts.length}**`,
       `• **${skillLabel}：** **${hitLine}** · 知识库 **${kbLine}**（文末可点开）`,
       '• **证据分级：** **已证实** / **假设** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
-      args.adapted
-        ? '• **指引：** 排查路径已依你最新证据调整；请继续回复结果'
-        : '• **指引：** 请回复排查结果或贴新证据，我会调整路径',
-    ].join('\n')
+      coveredLine,
+      guide,
+    ]
+      .filter(Boolean)
+      .join('\n')
   }
   if (hant) {
     return [
@@ -175,10 +205,11 @@ function buildSummary(args: {
       `• **已攝入事實／證據：** **${args.facts.length}**`,
       `• **${skillLabel}：** **${hitLine}** · 知識庫 **${kbLine}**（文末可點開）`,
       '• **證據分級：** **已證實** / **假設** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
-      args.adapted
-        ? '• **指引：** 排查路徑已依你最新證據調整；請繼續回覆結果'
-        : '• **指引：** 請回覆排查結果或貼新證據，我會調整路徑',
-    ].join('\n')
+      coveredLine,
+      guide,
+    ]
+      .filter(Boolean)
+      .join('\n')
   }
   return [
     '📋 **Summary**',
@@ -186,10 +217,11 @@ function buildSummary(args: {
     `• **Facts ingested:** **${args.facts.length}**`,
     `• **${skillLabel}:** **${hitLine}** · Knowledge **${kbLine}** (links at end)`,
     '• **Evidence grades:** **Confirmed** / **Suspected** / **Unknown** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
-    args.adapted
-      ? '• **Guidance:** Path re-ranked from your latest evidence — reply with findings'
-      : '• **Guidance:** Reply with findings or new evidence and I’ll adapt the path',
-  ].join('\n')
+    coveredLine,
+    guide,
+  ]
+    .filter(Boolean)
+    .join('\n')
 }
 
 /**
@@ -772,13 +804,21 @@ async function runInvestigation(args: {
   session.lastKb = kb
   session.lastSeverity = severity
 
-  const nextSteps = adaptiveNextSteps({
+  const pathPlan = planInvestigationPath({
     facts: session.facts,
     hits,
     checkedSteps: session.checkedSteps,
     lang: args.lang,
     max: 3,
+    latestFact: args.newFact,
   })
+  // Persist evidence-inferred coverage so out-of-order pastes stick across turns.
+  for (const c of pathPlan.newlyCovered) {
+    if (!session.checkedSteps.some((s) => s.toLowerCase() === c.toLowerCase())) {
+      session.checkedSteps.push(c)
+    }
+  }
+  const nextSteps = pathPlan.nextSteps
   session.pendingPrompt = nextSteps[0]
   const actions = preferredActions(hits, args.lang, 2)
   const summary = buildSummary({
@@ -787,34 +827,49 @@ async function runInvestigation(args: {
     hits,
     kb,
     facts: session.facts,
-    adapted: session.facts.length > 1 || session.checkedSteps.length > 0,
+    adapted:
+      session.facts.length > 1 ||
+      session.checkedSteps.length > 0 ||
+      pathPlan.reordered ||
+      pathPlan.newlyCovered.length > 0,
+    newlyCovered: pathPlan.newlyCovered,
+    reordered: pathPlan.reordered,
   })
 
   const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
   const primaryByAlertName = hits.length > 0 && hits[0]!.score >= 100
+  const orderRule =
+    args.lang === 'zh-Hans'
+      ? '值班可能不按 Skill.check 顺序给证据：必须根据「本轮已覆盖／剩余下一步」重排回复，先跟最新证据，禁止机械复读整条检查链。'
+      : args.lang === 'zh-Hant'
+        ? '值班可能不按 Skill.check 順序給證據：必須依「本輪已覆蓋／剩餘下一步」重排回覆，先跟最新證據，禁止機械複讀整條檢查鏈。'
+        : 'Evidence may arrive out of Skill.check order — re-rank the reply around COVERED/NEXT; never dump the full chain.'
   const judgePrompt =
     args.lang === 'zh-Hans'
       ? primaryByAlertName
-        ? 'Skills 按告警名一一对应；本次已按告警名／告警码确定命中，只围绕下列 Skill 写排查正文（禁止再联想其它场景）。必须含三块：🔎 可能原因、🧭 排查路径（只展开该 Skill.check）、🌿 决策分支（只复述该 Skill.action）。勿增补未写明的后管菜单／字段／若则分支。用简体中文、emoji 分段。忽略 CFD。'
-        : '根据事故事实与命中的 Skills，写排查报告正文，必须含三块：🔎 可能原因、🧭 排查路径（后管／前端链路）、🌿 决策分支。排查路径只展开 Skill.check 已有步骤，不要增补未写明的后管菜单或字段。决策分支只复述 Skill.action 原文；禁止自行发明若/则分支。用简体中文。忽略 CFD。'
+        ? `Skills 按告警名一一对应；本次已确定命中，只围绕下列 Skill。${orderRule}必须含：🔎 可能原因、🧭 排查路径（只写剩余下一步＋点名已覆盖）、🌿 决策分支（只复述 Skill.action）。勿增补未写明菜单／若则。简体中文。`
+        : `根据命中 Skills 写排查正文。${orderRule}含：可能原因、排查路径（剩余下一步）、决策分支（Skill.action）。勿臆造。简体中文。`
       : args.lang === 'zh-Hant'
         ? primaryByAlertName
-          ? 'Skills 按告警名一一對應；本次已確定命中，只圍繞下列 Skill 寫排查正文。必須含：可能原因、排查路徑（只展開 Skill.check）、決策分支（只複述 Skill.action）。勿臆造。繁體中文。'
-          : '根據事故事實與命中的 Skills，寫排查報告正文，必須含三塊：可能原因、排查路徑、決策分支。只展開 Skill.check／action，勿臆造。繁體中文。'
+          ? `Skills 按告警名一一對應；只圍繞下列 Skill。${orderRule}含：可能原因、排查路徑、決策分支。勿臆造。繁體中文。`
+          : `根據命中 Skills 寫排查正文。${orderRule}勿臆造。繁體中文。`
         : primaryByAlertName
-          ? 'Skills map 1:1 to alert names. This turn has a deterministic alert-name hit — write only around the listed Skill(s). Sections: causes, path (Skill.check only), decisions (Skill.action only). Never invent menus/branches. English.'
-          : 'Write three sections from the hit Skills only: causes, path (Skill.check), decisions (Skill.action). Never invent if/then branches. English.'
+          ? `Deterministic alert-name Skill hit only. ${orderRule} Sections: causes, path (remaining NEXT + covered), decisions (Skill.action only). English.`
+          : `From hit Skills only. ${orderRule} Sections: causes, path, decisions. English.`
   const llm = await enrichWithLlm({
     lang: args.lang,
     question: judgePrompt,
     context: [
       `FACTS:\n${blob.slice(0, 6000)}`,
+      `LATEST_EVIDENCE:\n${args.newFact.slice(0, 1500)}`,
       `${primaryByAlertName ? 'DETERMINISTIC_ALERT_SKILLS' : 'SKILLS'} (check=admin path; action=decision branches):\n${hits
         .map((h) => `${h.id} ${h.name}\nCHECK: ${h.check}\nACTION: ${h.action}`)
         .join('\n\n')}`,
+      `COVERED_STEPS:\n${pathPlan.covered.join('\n') || '(none)'}`,
+      `NEWLY_COVERED_THIS_TURN:\n${pathPlan.newlyCovered.join('\n') || '(none)'}`,
+      `NEXT_REORDERED=${pathPlan.reordered}:\n${nextSteps.join('\n')}`,
       `KB:\n${kb.map((k) => `${k.title}: ${k.body.slice(0, 1500)}`).join('\n')}`,
       quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
-      `NEXT:\n${nextSteps.join('\n')}`,
     ]
       .filter(Boolean)
       .join('\n\n'),

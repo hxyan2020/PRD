@@ -65,6 +65,7 @@ import {
   loadSkills,
   preferredActions,
   resolveNodeById,
+  planInvestigationPath,
   retrieveRag,
   splitSkillSteps,
 } from '../api/lark/_lib/skills'
@@ -178,6 +179,53 @@ async function main() {
     byFunding.hits[0]?.id === 'L1-16' && !byFunding.hits.some((h) => h.id === 'L1-07'),
     byFunding.hits.map((h) => `${h.id}:${h.score}`).join(','),
   )
+  // Out-of-order evidence: later Skill.check steps can be covered first; path must re-rank.
+  {
+    const hit = retrieveRag('IDX-01 被剔除 指数源变更剔除').hits
+    const alert = '告警：IDX-01 被剔除'
+    const mid =
+      '我先看了前端 Index／Mark／成交价 K 线，并和友商 Index 比过，走势一致'
+    const before = planInvestigationPath({
+      facts: [alert],
+      hits: hit,
+      checkedSteps: [],
+      lang: 'zh-Hans',
+      latestFact: alert,
+    })
+    const after = planInvestigationPath({
+      facts: [alert, mid],
+      hits: hit,
+      checkedSteps: [],
+      lang: 'zh-Hans',
+      latestFact: mid,
+    })
+    record(
+      'path.out_of_order_covers_later_steps',
+      after.newlyCovered.length > 0 &&
+        after.covered.length > before.covered.length &&
+        after.nextSteps.join('|') !== before.nextSteps.join('|'),
+      `before=${before.nextSteps.length}c${before.covered.length}; after=${after.nextSteps.length}c${after.covered.length}; new=${after.newlyCovered.length}; reorder=${after.reordered}`,
+    )
+    record(
+      'path.out_of_order_next_skips_covered',
+      after.nextSteps.every((s) => !/前端查看Index/i.test(s)) &&
+        after.newlyCovered.some((s) => /前端查看Index/i.test(s)),
+      after.nextSteps.slice(0, 2).join(' | ').slice(0, 160),
+    )
+    const jump = planInvestigationPath({
+      facts: [alert, '我想先看后管→指数价格管理的权重和最小行情源数'],
+      hits: hit,
+      checkedSteps: [],
+      lang: 'zh-Hans',
+      latestFact: '我想先看后管→指数价格管理的权重和最小行情源数',
+    })
+    record(
+      'path.out_of_order_reranks_to_latest_clue',
+      jump.newlyCovered.some((s) => /后管|指数价格/i.test(s)) ||
+        (/后管|指数价格/i.test(jump.nextSteps[0] || '') && jump.reordered),
+      `reorder=${jump.reordered}; covered=${jump.newlyCovered.map((s) => s.slice(0, 40)).join('|')}; top=${(jump.nextSteps[0] || '').slice(0, 80)}`,
+    )
+  }
   const actions = preferredActions(rag.hits, 'en', 2)
   record(
     'preferred_actions.human_gate',

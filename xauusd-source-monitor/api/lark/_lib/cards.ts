@@ -70,10 +70,10 @@ export function investigationCard(args: {
       ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
       : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
   const nextLabel = hans
-    ? `🧭 **排查路径（下一步）**\n\n${stepMd}`
+    ? `🧭 **排查路径（下一步 · 已按你最新证据重排，不必按顺序贴）**\n\n${stepMd}`
     : zh
-      ? `🧭 **排查路徑（下一步）**\n\n${stepMd}`
-      : `🧭 **Investigation path (next)**\n\n${stepMd}`
+      ? `🧭 **排查路徑（下一步 · 已按你最新證據重排，不必按順序貼）**\n\n${stepMd}`
+      : `🧭 **Investigation path (next · re-ranked from your latest evidence, any order OK)**\n\n${stepMd}`
   const prefLabel = hans
     ? `⚡ **Preferred Action**（需审批）\n\n${actionMd}`
     : zh
