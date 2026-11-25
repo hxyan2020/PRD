@@ -1361,6 +1361,22 @@ async function main() {
     klineCloseChartElement,
   } = await import('../api/lark/_lib/market')
   record('market.kline_interval_bar_guard', isKlineIntervalBar('15m') && !isKlineIntervalBar('5m'), '')
+  // Feishu error 200341 = card callback >3s. K-line TF must toast-ack first (see event.ts),
+  // then patch the message async — never await OKX rebuild on the callback hot path.
+  {
+    const eventSrc = await import('node:fs').then((fs) =>
+      fs.promises.readFile(new URL('../api/lark/event.ts', import.meta.url), 'utf8'),
+    )
+    record(
+      'market.kline_tf_callback_acks_under_3s',
+      eventSrc.includes('200341') &&
+        eventSrc.includes('kline_tf_async') &&
+        /isKlineTf[\s\S]{0,400}?waitUntil/.test(eventSrc) &&
+        /正在切换到|Switching to/.test(eventSrc) &&
+        !/isKlineTf[\s\S]{0,200}?await handleCardAction/.test(eventSrc),
+      'toast-first + waitUntil updateMessageCard',
+    )
+  }
   if (hasKlineBars) {
     const tfCard = await rebuildMarketCardForInterval({
       bar: '15m',

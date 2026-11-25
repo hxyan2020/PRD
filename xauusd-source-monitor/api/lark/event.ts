@@ -137,66 +137,66 @@ async function handleCardActionRequest(
     })
   }
 
-  // Market K-line interval switch — return replacement card so Feishu updates in place.
+  // Market K-line interval switch — MUST ack Feishu within 3s (error 200341 on timeout).
+  // Rebuild fetches OKX + hourly scan (often >3s); toast first, then patch the message.
   const isKlineTf = String(value.action || '') === 'market_kline_tf'
   if (isKlineTf) {
-    try {
-      const reply = await handleCardAction({
-        openId,
-        chatId,
-        messageId,
-        value,
-      })
-      const bar = String(value.bar || '1H')
-      if (reply.card && messageId) {
+    const bar = String(value.bar || '1H')
+    waitUntil(
+      (async () => {
         try {
-          const { updateMessageCard } = await import('./_lib/client.js')
-          await updateMessageCard(messageId, reply.card)
-        } catch {
-          /* callback card below is the primary path */
+          const reply = await handleCardAction({
+            openId,
+            chatId,
+            messageId,
+            value,
+          })
+          if (reply.card && messageId) {
+            const { updateMessageCard } = await import('./_lib/client.js')
+            await updateMessageCard(messageId, reply.card)
+            logInbound({
+              at: new Date().toISOString(),
+              kind: 'card_action',
+              eventType: args.eventType,
+              openId,
+              chatId,
+              messageId,
+              result: `ok:kline_tf_async:${bar}`,
+            })
+            return
+          }
+          logInbound({
+            at: new Date().toISOString(),
+            kind: 'card_action',
+            eventType: args.eventType,
+            openId,
+            chatId,
+            messageId,
+            result: 'fail:kline_tf_no_card',
+          })
+        } catch (e) {
+          logInbound({
+            at: new Date().toISOString(),
+            kind: 'card_action',
+            eventType: args.eventType,
+            error: e instanceof Error ? e.message : 'kline tf error',
+            result: 'error:kline_tf_async',
+          })
         }
-      }
-      logInbound({
-        at: new Date().toISOString(),
-        kind: 'card_action',
-        eventType: args.eventType,
-        openId,
-        chatId,
-        messageId,
-        result: reply.card ? `ok:kline_tf:${bar}` : 'fail:kline_tf_no_card',
-      })
-      return res.status(200).json({
-        toast: {
-          type: 'success',
-          content: `K-line ${bar}`,
-          i18n: {
-            zh_cn: `已切换到 ${bar}`,
-            zh_hk: `已切換到 ${bar}`,
-            en_us: `Switched to ${bar}`,
-          },
+      })(),
+    )
+    return res.status(200).json({
+      toast: {
+        type: 'info',
+        content: `Switching to ${bar}…`,
+        i18n: {
+          zh_cn: `正在切换到 ${bar}…`,
+          zh_hk: `正在切換到 ${bar}…`,
+          zh_tw: `正在切換到 ${bar}…`,
+          en_us: `Switching to ${bar}…`,
         },
-        ...(reply.card ? { card: reply.card } : {}),
-      })
-    } catch (e) {
-      logInbound({
-        at: new Date().toISOString(),
-        kind: 'card_action',
-        eventType: args.eventType,
-        error: e instanceof Error ? e.message : 'kline tf error',
-        result: 'error',
-      })
-      return res.status(200).json({
-        toast: {
-          type: 'error',
-          content: 'K-line switch failed',
-          i18n: {
-            zh_cn: '切换失败，请稍后再试',
-            zh_hk: '切換失敗，請稍後再試',
-            en_us: 'Switch failed — try again',
-          },
-        },
-      })
-    }
+      },
+    })
   }
 
   // Nudge「知道了」must durable-ack BEFORE toast — waitUntil alone raced cron

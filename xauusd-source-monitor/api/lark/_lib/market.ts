@@ -1093,13 +1093,33 @@ export async function rebuildMarketCardForInterval(opts: {
 }): Promise<Record<string, unknown>> {
   const mode = opts.mode === 'daily' ? 'daily' : 'hourly'
   const lang = resolveMarketLang(opts.lang)
-  const snap = await fetchMarketSnapshot()
-  let kline: HourlyKlineSeries | null = null
-  try {
-    kline = await fetchOkxKline(opts.bar)
-  } catch {
-    kline = snap.hourly?.kline || null
-  }
+  // Parallel — TF callback updates the message async after a fast Feishu toast ack.
+  const [snap, klineFetched] = await Promise.all([
+    fetchMarketSnapshot().catch(() => null),
+    fetchOkxKline(opts.bar).catch(() => null),
+  ])
+  const kline: HourlyKlineSeries | null =
+    klineFetched || snap?.hourly?.kline || null
+  const lastClose = kline?.bars?.at(-1)?.c
+  const snapSafe: MarketSnapshot =
+    snap ||
+    ({
+      okx: lastClose && Number.isFinite(lastClose) ? { last: lastClose } : undefined,
+      notes: [lang === 'en' ? `OKX K-line ${opts.bar}` : `OKX K线 ${opts.bar}`],
+      sources: [{ label: 'OKX', url: 'https://www.okx.com/trade-swap/xau-usdt-swap' }],
+      fetchedAt: Date.now(),
+      hourly: kline
+        ? ({
+            asOf: Date.now(),
+            tldr: [],
+            opportunity: [],
+            risk: [],
+            sources: [],
+            kline,
+            sentiment: null,
+          } as unknown as NonNullable<MarketSnapshot['hourly']>)
+        : undefined,
+    } satisfies MarketSnapshot)
   const title =
     mode === 'daily' ? dailyMarketTitle(lang) : hourlyMarketTitle(lang)
   const intro =
@@ -1116,7 +1136,7 @@ export async function rebuildMarketCardForInterval(opts: {
           : '📬 **半小时行情推送**\n'
   return buildMarketCard({
     title,
-    snap,
+    snap: snapSafe,
     lang,
     mode,
     intro,
