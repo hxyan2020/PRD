@@ -956,18 +956,29 @@ async function main() {
         (cardBlob.includes('通用分析') || cardBlob.includes('General analysis')),
       cardBlob.slice(0, 120),
     )
-    const header = 'c,' + Array.from({ length: 80 }, (_, i) => `x${i}`).join(',')
+    const header = 'value,threshold,' + Array.from({ length: 80 }, (_, i) => `x${i}`).join(',')
     const fatRows = Array.from(
-      { length: AO_LIMITS.maxRowsPerDataset + 120 },
-      (_, i) => `r${i},` + Array.from({ length: 80 }, () => '1').join(','),
+      { length: AO_LIMITS.sampleRows + 400 },
+      (_, i) => `${100 + (i % 50)},${120},` + Array.from({ length: 80 }, () => '1').join(','),
     )
     const fat = parseCsvText([header, ...fatRows].join('\n'), 'fat.csv')
+    const local = analyzeLocally({
+      datasets: [fat],
+      question: 'threshold optimize on giant csv',
+      lang: 'en',
+    })
     record(
-      'alert_optimize.row_col_caps',
-      fat.rowCount === AO_LIMITS.maxRowsPerDataset &&
-        fat.columns.length === AO_LIMITS.maxColumns &&
-        fat.issues.some((x) => /Kept first|rows|columns/i.test(x)),
-      `rows=${fat.rowCount} cols=${fat.columns.length} issues=${fat.issues.join(';')}`,
+      'alert_optimize.preprocess_giant',
+      Boolean(
+        fat.preprocess?.triggered &&
+          fat.rowCount <= AO_LIMITS.sampleRows &&
+          fat.columns.length <= AO_LIMITS.maxColumns &&
+          fat.preprocess.methods.some((m) => /sample|column|numeric/i.test(m)) &&
+          local.preprocessNotes.some((x) => /preprocess|sample|P99|working set/i.test(x)) &&
+          local.optimizeSuggestions.length > 0 &&
+          /preprocessing|Preprocess/i.test(local.reportMarkdown),
+      ),
+      `rows=${fat.rowCount} cols=${fat.columns.length} methods=${fat.preprocess?.methods.join(',')}`,
     )
   }
   record('cmd.zh_skills', classifyIntent('技能', {}) === 'skills', '')

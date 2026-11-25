@@ -215,11 +215,11 @@ export function AlertOptimizePage() {
     setError('')
     const next: IngestedDataset[] = []
     for (const file of Array.from(files)) {
-      if (file.size > AO_LIMITS.maxBytesPerIngest) {
+      if (file.size > AO_LIMITS.maxHardBytes) {
         setError(
           t('aoLimitFileBytes')
             .replace('{name}', file.name)
-            .replace('{max}', AO_LIMITS.maxBytesPerIngest.toLocaleString()),
+            .replace('{max}', AO_LIMITS.maxHardBytes.toLocaleString()),
         )
         continue
       }
@@ -293,7 +293,7 @@ export function AlertOptimizePage() {
       }
       if (text.length >= AO_LIMITS.maxBytesPerIngest) {
         ds.issues.push(
-          `API body capped at ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars`,
+          `Preprocess: API stream window ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars — agent will sample/summarize`,
         )
       }
       if (slot) {
@@ -341,18 +341,23 @@ export function AlertOptimizePage() {
           return
         }
         const rows = totalRowCount(alertDatasets)
-        if (rows > AO_LIMITS.maxTotalRows) {
-          const msg = t('aoLimitTotalRows')
-            .replace('{n}', rows.toLocaleString())
-            .replace('{max}', AO_LIMITS.maxTotalRows.toLocaleString())
-          setStep('ingest', { state: 'error', detail: msg })
-          setError(msg)
-          setRunning(false)
-          return
-        }
+        const rawRows = alertDatasets.reduce(
+          (n, d) => n + (d.preprocess?.originalRowCount || d.rowCount),
+          0,
+        )
         setStep('ingest', {
           state: 'done',
-          detail: `${alertDatasets.length} · ${rows} rows`,
+          detail: `${alertDatasets.length} · raw ${rawRows} → work ${rows}`,
+        })
+
+        setStep('preprocess', { state: 'running' })
+        await sleep(280)
+        const ppHit = alertDatasets.filter((d) => d.preprocess?.triggered).length
+        setStep('preprocess', {
+          state: 'done',
+          detail: ppHit
+            ? t('aoPreprocessHit').replace('{n}', String(ppHit))
+            : t('aoPreprocessSkip'),
         })
 
         setStep('scope', { state: 'running' })
@@ -400,18 +405,23 @@ export function AlertOptimizePage() {
           return
         }
         const rows = totalRowCount(datasets)
-        if (rows > AO_LIMITS.maxTotalRows) {
-          const msg = t('aoLimitTotalRows')
-            .replace('{n}', rows.toLocaleString())
-            .replace('{max}', AO_LIMITS.maxTotalRows.toLocaleString())
-          setStep('ingest', { state: 'error', detail: msg })
-          setError(msg)
-          setRunning(false)
-          return
-        }
+        const rawRows = datasets.reduce(
+          (n, d) => n + (d.preprocess?.originalRowCount || d.rowCount),
+          0,
+        )
         setStep('ingest', {
           state: 'done',
-          detail: `${datasets.length} · ${rows} rows`,
+          detail: `${datasets.length} · raw ${rawRows} → work ${rows}`,
+        })
+
+        setStep('preprocess', { state: 'running' })
+        await sleep(280)
+        const ppHit = datasets.filter((d) => d.preprocess?.triggered).length
+        setStep('preprocess', {
+          state: 'done',
+          detail: ppHit
+            ? t('aoPreprocessHit').replace('{n}', String(ppHit))
+            : t('aoPreprocessSkip'),
         })
 
         setStep('profile', { state: 'running' })
@@ -897,6 +907,21 @@ export function AlertOptimizePage() {
             ) : (
               <p className="ao-muted">{t('aoNoCharts')}</p>
             )}
+          </section>
+
+          <section className="panel">
+            <h2>{t('aoPreprocessTitle')}</h2>
+            <ul className="ao-readback">
+              {result.preprocessNotes.map((line, i) => (
+                <li key={i}>{line.replace(/^\-\s*/, '')}</li>
+              ))}
+            </ul>
+            <h2>{t('aoOptimizeTitle')}</h2>
+            <ul>
+              {result.optimizeSuggestions.map((x, i) => (
+                <li key={i}>{x.replace(/^\-\s*/, '')}</li>
+              ))}
+            </ul>
           </section>
 
           <section className="panel">

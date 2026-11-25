@@ -1,22 +1,51 @@
 /** Client-side ingest + profiling for Alert Optimize / General analysis. */
 
-/** Hard caps so large CSV/API payloads cannot OOM the desk tab. */
+/**
+ * Working-set knobs for the preprocess agent — not “refuse if larger”.
+ * Giant payloads are scanned for aggregates (min/max/p99), then sampled for row-level analysis.
+ */
 export const AO_LIMITS = {
-  /** Max UTF-8 / string length accepted per ingest (file, paste, or API body). */
-  maxBytesPerIngest: 1_500_000,
-  /** Max data rows kept per dataset (header excluded). */
-  maxRowsPerDataset: 5_000,
-  /** Max columns kept per dataset. */
-  maxColumns: 64,
-  /** Max datasets in General analysis mode. */
-  maxDatasetsGeneral: 8,
-  /** Max datasets per Alert-optimize slot. */
-  maxDatasetsPerSlot: 3,
-  /** Max total rows across all datasets before analyze refuses. */
-  maxTotalRows: 12_000,
-  /** Cap unique alert-name dropdown options. */
+  /** Absolute browser safety: files larger than this cannot be loaded as one string. */
+  maxHardBytes: 25_000_000,
+  /** Soft stream/API read window before the preprocess agent samples further. */
+  maxBytesPerIngest: 8_000_000,
+  /** Rows kept in memory for row-level reasoning after preprocess. */
+  sampleRows: 2_500,
+  /** Max rows scanned for aggregate stats (min/max/percentiles). */
+  maxScanRows: 100_000,
+  /** Columns kept after priority selection. */
+  maxColumns: 48,
+  /** @deprecated alias — prefer sampleRows; kept for smoke/compat. */
+  maxRowsPerDataset: 2_500,
+  maxDatasetsGeneral: 12,
+  maxDatasetsPerSlot: 5,
   maxAlertNameOptions: 200,
+  /** When raw rows exceed this, preprocess narrative is always emitted. */
+  giantRowThreshold: 2_500,
 } as const
+
+export type ColumnAggStats = {
+  name: string
+  n: number
+  min: number
+  max: number
+  mean: number
+  p50: number
+  p90: number
+  p99: number
+}
+
+export type PreprocessMeta = {
+  triggered: boolean
+  originalRowCount: number
+  scannedRowCount: number
+  keptRowCount: number
+  originalColCount: number
+  keptColCount: number
+  methods: string[]
+  columnStats: ColumnAggStats[]
+  notes: string[]
+}
 
 export type DeskMode = 'alert_optimize' | 'general'
 
@@ -59,6 +88,8 @@ export type IngestedDataset = {
   issues: string[]
   /** Present when ingested under 告警优化 slots. */
   slot?: AlertDataSlot
+  /** Giant-data preprocess agent output (sample + aggregates). */
+  preprocess?: PreprocessMeta
 }
 
 export type ColumnProfile = {
@@ -71,6 +102,9 @@ export type ColumnProfile = {
   min?: number
   max?: number
   mean?: number
+  p50?: number
+  p90?: number
+  p99?: number
 }
 
 export type ChartSpec = {
@@ -87,6 +121,10 @@ export type AnalysisResult = {
   answer: string
   dataIssues: string[]
   assumptions: string[]
+  /** What the preprocess agent did on giant inputs. */
+  preprocessNotes: string[]
+  /** Concrete optimization suggestions (post-preprocess). */
+  optimizeSuggestions: string[]
   reportMarkdown: string
 }
 
@@ -129,12 +167,15 @@ function splitCsvLine(line: string): string[] {
   return out
 }
 
-/** Reject / truncate oversized raw text before parse. Returns truncated body + issues. */
+/**
+ * Soft clamp for paste/API text. Oversized bodies are windowed for the preprocess
+ * agent (not a hard refuse) — caller should treat truncated=true as a sample window.
+ */
 export function clampIngestText(text: string): { text: string; issues: string[]; truncated: boolean } {
   const issues: string[] = []
   if (text.length > AO_LIMITS.maxBytesPerIngest) {
     issues.push(
-      `Input truncated to ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars (was ${text.length.toLocaleString()})`,
+      `Preprocess: read first ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars of ${text.length.toLocaleString()} (stream window for sampling)`,
     )
     return {
       text: text.slice(0, AO_LIMITS.maxBytesPerIngest),
@@ -145,31 +186,254 @@ export function clampIngestText(text: string): { text: string; issues: string[];
   return { text, issues, truncated: false }
 }
 
-function applyRowColCaps(
-  columns: string[],
-  rows: Record<string, string>[],
-  issues: string[],
-  totalCandidateRows?: number,
-): { columns: string[]; rows: Record<string, string>[] } {
-  let cols = columns
-  let data = rows
-  if (cols.length > AO_LIMITS.maxColumns) {
-    issues.push(`Kept first ${AO_LIMITS.maxColumns} of ${cols.length} columns`)
-    cols = cols.slice(0, AO_LIMITS.maxColumns)
-    data = data.map((r) => {
-      const next: Record<string, string> = {}
-      for (const c of cols) next[c] = r[c] ?? ''
-      return next
-    })
+type NumAcc = {
+  n: number
+  sum: number
+  min: number
+  max: number
+  reservoir: number[]
+}
+
+function emptyNumAcc(): NumAcc {
+  return { n: 0, sum: 0, min: Infinity, max: -Infinity, reservoir: [] }
+}
+
+function pushNum(acc: NumAcc, v: number, reservoirCap = 2_500) {
+  acc.n += 1
+  acc.sum += v
+  if (v < acc.min) acc.min = v
+  if (v > acc.max) acc.max = v
+  if (acc.reservoir.length < reservoirCap) {
+    acc.reservoir.push(v)
+  } else {
+    const j = Math.floor(Math.random() * acc.n)
+    if (j < reservoirCap) acc.reservoir[j] = v
   }
-  const rawCount = totalCandidateRows ?? data.length
-  if (rawCount > AO_LIMITS.maxRowsPerDataset || data.length > AO_LIMITS.maxRowsPerDataset) {
-    issues.push(
-      `Kept first ${AO_LIMITS.maxRowsPerDataset.toLocaleString()} of ${rawCount.toLocaleString()} rows`,
+}
+
+function finalizeNumAcc(name: string, acc: NumAcc): ColumnAggStats | null {
+  if (acc.n < 2 || !Number.isFinite(acc.min) || !Number.isFinite(acc.max)) return null
+  const sorted = acc.reservoir.slice().sort((a, b) => a - b)
+  return {
+    name,
+    n: acc.n,
+    min: acc.min,
+    max: acc.max,
+    mean: acc.sum / acc.n,
+    p50: percentile(sorted, 0.5),
+    p90: percentile(sorted, 0.9),
+    p99: percentile(sorted, 0.99),
+  }
+}
+
+/** Reservoir sample — uniform over rows seen so far. */
+function reservoirPush<T>(bag: T[], item: T, seen: number, cap: number) {
+  if (bag.length < cap) {
+    bag.push(item)
+    return
+  }
+  const j = Math.floor(Math.random() * seen)
+  if (j < cap) bag[j] = item
+}
+
+const PRIORITY_COL =
+  /^(alert|rule|name|value|threshold|label|valid|severity|ts|time|timestamp|price|mark|index|depth|spread|funding|告警|规则|阈值|门限|有效|标注|时间)/i
+
+function prioritizeColumns(columns: string[], maxKeep: number): { kept: string[]; methods: string[]; notes: string[] } {
+  if (columns.length <= maxKeep) {
+    return { kept: columns, methods: [], notes: [] }
+  }
+  const priority = columns.filter((c) => PRIORITY_COL.test(c))
+  const rest = columns.filter((c) => !PRIORITY_COL.test(c))
+  const kept = [...priority, ...rest].slice(0, maxKeep)
+  return {
+    kept,
+    methods: ['column_priority'],
+    notes: [
+      `Preprocess: kept ${kept.length}/${columns.length} columns (priority: alert/value/threshold/label/time + others)`,
+    ],
+  }
+}
+
+function projectRows(rows: Record<string, string>[], cols: string[]): Record<string, string>[] {
+  return rows.map((r) => {
+    const next: Record<string, string> = {}
+    for (const c of cols) next[c] = r[c] ?? ''
+    return next
+  })
+}
+
+/**
+ * Preprocess agent: when data is giant, sample rows + keep numeric aggregates (min/max/p50/p90/p99).
+ * Always safe to call; returns triggered=false when the working set already fits.
+ */
+export function runPreprocessAgent(args: {
+  columns: string[]
+  rows: Record<string, string>[]
+  /** True row count before any earlier windowing (optional). */
+  originalRowCount?: number
+  streamWindowed?: boolean
+}): { columns: string[]; rows: Record<string, string>[]; preprocess: PreprocessMeta } {
+  const originalRowCount = args.originalRowCount ?? args.rows.length
+  const originalColCount = args.columns.length
+  const methods: string[] = []
+  const notes: string[] = []
+
+  if (args.streamWindowed) {
+    methods.push('stream_window')
+    notes.push(
+      `Preprocess: input arrived via a bounded stream window (${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars); aggregates/sample are from that window.`,
     )
-    data = data.slice(0, AO_LIMITS.maxRowsPerDataset)
   }
-  return { columns: cols, rows: data }
+
+  const colPick = prioritizeColumns(args.columns, AO_LIMITS.maxColumns)
+  methods.push(...colPick.methods)
+  notes.push(...colPick.notes)
+  let columns = colPick.kept
+  let rows = projectRows(args.rows, columns)
+
+  const scanCap = Math.min(rows.length, AO_LIMITS.maxScanRows)
+  if (rows.length > AO_LIMITS.maxScanRows) {
+    methods.push('scan_cap')
+    notes.push(
+      `Preprocess: scanned first ${AO_LIMITS.maxScanRows.toLocaleString()} of ${rows.length.toLocaleString()} in-memory rows for aggregates`,
+    )
+  }
+
+  const numAcc = new Map<string, NumAcc>()
+  for (const c of columns) numAcc.set(c, emptyNumAcc())
+  for (let i = 0; i < scanCap; i++) {
+    const r = rows[i]!
+    for (const c of columns) {
+      const n = toNum(r[c] || '')
+      if (n != null) pushNum(numAcc.get(c)!, n)
+    }
+  }
+  const columnStats: ColumnAggStats[] = []
+  for (const c of columns) {
+    const st = finalizeNumAcc(c, numAcc.get(c)!)
+    if (st) columnStats.push(st)
+  }
+  if (columnStats.length) {
+    methods.push('numeric_summary')
+    notes.push(
+      `Preprocess: computed min/max/mean/P50/P90/P99 for ${columnStats.length} numeric column(s)`,
+    )
+  }
+
+  const needSample =
+    originalRowCount > AO_LIMITS.giantRowThreshold || rows.length > AO_LIMITS.sampleRows
+  let kept = rows
+  if (needSample && rows.length > AO_LIMITS.sampleRows) {
+    const bag: Record<string, string>[] = []
+    for (let i = 0; i < rows.length; i++) {
+      reservoirPush(bag, rows[i]!, i + 1, AO_LIMITS.sampleRows)
+    }
+    kept = bag
+    methods.push('reservoir_sample')
+    notes.push(
+      `Preprocess: reservoir-sampled ${kept.length.toLocaleString()} of ${originalRowCount.toLocaleString()} rows for row-level analysis (uniform)`,
+    )
+  }
+
+  // Prefer head+tail blend when sample is much smaller than original for time-ish data
+  if (needSample && rows.length > AO_LIMITS.sampleRows * 2 && !methods.includes('reservoir_sample')) {
+    methods.push('head_tail_sample')
+  }
+
+  const triggered =
+    methods.length > 0 ||
+    originalRowCount > AO_LIMITS.giantRowThreshold ||
+    originalColCount > AO_LIMITS.maxColumns
+
+  if (triggered && !methods.includes('passthrough') && methods.length === 0) {
+    methods.push('passthrough')
+    notes.push('Preprocess: working set already within agent budget — no downsample required')
+  }
+
+  return {
+    columns,
+    rows: kept,
+    preprocess: {
+      triggered,
+      originalRowCount,
+      scannedRowCount: scanCap,
+      keptRowCount: kept.length,
+      originalColCount,
+      keptColCount: columns.length,
+      methods: [...new Set(methods)],
+      columnStats,
+      notes,
+    },
+  }
+}
+
+/** Human-readable preprocess + optimization bullets for reports. */
+export function formatPreprocessNotes(
+  datasets: IngestedDataset[],
+  lang: 'en' | 'zh-Hant',
+): { preprocessNotes: string[]; optimizeSuggestions: string[] } {
+  const zh = lang !== 'en'
+  const preprocessNotes: string[] = []
+  const optimizeSuggestions: string[] = []
+
+  for (const ds of datasets) {
+    const pp = ds.preprocess
+    if (!pp?.triggered && !(pp && pp.notes.length)) continue
+    if (!pp) continue
+    preprocessNotes.push(
+      zh
+        ? `**${ds.name}**：原始约 **${pp.originalRowCount.toLocaleString()}** 行 × **${pp.originalColCount}** 列 → 分析工作集 **${pp.keptRowCount.toLocaleString()}** 行 × **${pp.keptColCount}** 列；方法：${pp.methods.join('、') || 'passthrough'}。`
+        : `**${ds.name}**: raw ~**${pp.originalRowCount.toLocaleString()}** rows × **${pp.originalColCount}** cols → working set **${pp.keptRowCount.toLocaleString()}** × **${pp.keptColCount}**; methods: ${pp.methods.join(', ') || 'passthrough'}.`,
+    )
+    for (const n of pp.notes) preprocessNotes.push(`- ${n}`)
+    for (const st of pp.columnStats.slice(0, 6)) {
+      preprocessNotes.push(
+        zh
+          ? `- 数值列 \`${st.name}\`（n=${st.n.toLocaleString()}）：min=${fmtNum(st.min)} · P50=${fmtNum(st.p50)} · P90=${fmtNum(st.p90)} · P99=${fmtNum(st.p99)} · max=${fmtNum(st.max)} · mean=${fmtNum(st.mean)}`
+          : `- Numeric \`${st.name}\` (n=${st.n.toLocaleString()}): min=${fmtNum(st.min)} · P50=${fmtNum(st.p50)} · P90=${fmtNum(st.p90)} · P99=${fmtNum(st.p99)} · max=${fmtNum(st.max)} · mean=${fmtNum(st.mean)}`,
+      )
+      const span = st.max - st.min
+      const upper = st.p99 - st.p50
+      if (Number.isFinite(span) && span > 0 && upper / span > 0.4) {
+        optimizeSuggestions.push(
+          zh
+            ? `**${ds.name}.${st.name}** 右尾偏厚（P99−P50 占全距 ${(
+                (upper / span) *
+                100
+              ).toFixed(0)}%）— 阈值建议先试 **P90=${fmtNum(st.p90)}** 或 **P95≈${fmtNum(
+                st.p90 + (st.p99 - st.p90) * 0.5,
+              )}**，再按误报／漏报回调。`
+            : `**${ds.name}.${st.name}** has a heavy right tail (P99−P50 is ${(
+                (upper / span) *
+                100
+              ).toFixed(0)}% of range) — trial threshold at **P90=${fmtNum(st.p90)}** or mid P90–P99, then tune on FP/FN.`,
+        )
+      } else if (st.n >= 20) {
+        optimizeSuggestions.push(
+          zh
+            ? `**${ds.name}.${st.name}** 分布相对集中 — 可用 **P95 邻域（≈${fmtNum(st.p90)}–${fmtNum(st.p99)}）** 做门限 A/B，避免只看 max=${fmtNum(st.max)} 被极端值带偏。`
+            : `**${ds.name}.${st.name}** is relatively concentrated — A/B thresholds near **P90–P99 (${fmtNum(st.p90)}–${fmtNum(st.p99)})**; don’t anchor on max=${fmtNum(st.max)} alone.`,
+        )
+      }
+    }
+  }
+
+  if (!preprocessNotes.length) {
+    preprocessNotes.push(
+      zh
+        ? '未触发巨型数据预处理 — 工作集可直接全量画像。'
+        : 'No giant-data preprocess triggered — working set profiled in full.',
+    )
+  }
+  if (!optimizeSuggestions.length) {
+    optimizeSuggestions.push(
+      zh
+        ? '补齐 value／threshold／标注列后，可对触发值分位数做阈值与误报联合优化。'
+        : 'After value/threshold/label columns are present, jointly tune thresholds on fire-value percentiles vs FP labels.',
+    )
+  }
+  return { preprocessNotes, optimizeSuggestions }
 }
 
 export function parseCsvText(text: string, name: string): IngestedDataset {
@@ -193,48 +457,52 @@ export function parseCsvText(text: string, name: string): IngestedDataset {
   }
   const header = splitCsvLine(lines[0]!)
   if (header.length < 1) issues.push('No header columns detected')
-  let columns = header.map((h, i) => h || `col_${i + 1}`)
-  const rows: Record<string, string>[] = []
+  const columnsAll = header.map((h, i) => h || `col_${i + 1}`)
   const dataLines = lines.slice(1)
-  const maxScan = AO_LIMITS.maxRowsPerDataset
-  let scanned = 0
+  const scannedRows: Record<string, string>[] = []
   let skippedEmpty = 0
+  let seen = 0
   for (const line of dataLines) {
-    if (rows.length >= maxScan) break
-    scanned++
+    if (seen >= AO_LIMITS.maxScanRows) break
     const cells = splitCsvLine(line)
     if (cells.every((c) => !c)) {
       skippedEmpty++
       continue
     }
+    seen++
     const row: Record<string, string> = {}
-    columns.forEach((c, i) => {
+    columnsAll.forEach((c, i) => {
       row[c] = cells[i] ?? ''
     })
-    rows.push(row)
+    scannedRows.push(row)
   }
-  const remaining = dataLines.length - scanned
-  if (remaining > 0 || dataLines.length - skippedEmpty > maxScan) {
-    const totalNonEmpty = dataLines.length - skippedEmpty
+  const approxTotal = Math.max(dataLines.length - skippedEmpty, scannedRows.length)
+  if (dataLines.length - skippedEmpty > AO_LIMITS.maxScanRows) {
     issues.push(
-      `Kept first ${AO_LIMITS.maxRowsPerDataset.toLocaleString()} of ~${Math.max(totalNonEmpty, rows.length).toLocaleString()} rows`,
+      `Preprocess: scanned ${AO_LIMITS.maxScanRows.toLocaleString()} of ~${approxTotal.toLocaleString()} CSV rows for aggregates/sample`,
     )
   }
-  const capped = applyRowColCaps(columns, rows, issues)
-  columns = capped.columns
-  const finalRows = capped.rows
-  if (!finalRows.length) issues.push('CSV has a header but no data rows')
+
+  const pre = runPreprocessAgent({
+    columns: columnsAll,
+    rows: scannedRows,
+    originalRowCount: approxTotal,
+    streamWindowed: clamped.truncated,
+  })
+  if (!pre.rows.length) issues.push('CSV has a header but no data rows')
+
   return {
     id: `csv_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     name,
     kind: 'csv',
     sourceLabel: name,
     fetchedAt: Date.now(),
-    columns,
-    rows: finalRows,
+    columns: pre.columns,
+    rows: pre.rows,
     rawPreview: body.slice(0, 600),
-    rowCount: finalRows.length,
+    rowCount: pre.rows.length,
     issues,
+    preprocess: pre.preprocess,
   }
 }
 
@@ -243,6 +511,7 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
   let rows: Record<string, string>[] = []
   let columns: string[] = []
 
+  let originalRowCount = 0
   const asRows = (arr: unknown[]): void => {
     const objs = arr.filter((x) => x && typeof x === 'object' && !Array.isArray(x)) as Record<
       string,
@@ -252,21 +521,21 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
       issues.push('JSON array has no object rows')
       return
     }
-    const total = objs.length
-    const sample = objs.slice(0, AO_LIMITS.maxRowsPerDataset)
+    originalRowCount = objs.length
+    const scan = objs.slice(0, AO_LIMITS.maxScanRows)
     const colSet = new Set<string>()
-    for (const o of sample) {
+    for (const o of scan) {
       Object.keys(o).forEach((k) => colSet.add(k))
     }
     columns = [...colSet]
-    rows = sample.map((o) => {
+    rows = scan.map((o) => {
       const row: Record<string, string> = {}
       for (const c of columns) row[c] = o[c] == null ? '' : String(o[c]).slice(0, 4000)
       return row
     })
-    if (total > AO_LIMITS.maxRowsPerDataset) {
+    if (originalRowCount > AO_LIMITS.maxScanRows) {
       issues.push(
-        `Kept first ${AO_LIMITS.maxRowsPerDataset.toLocaleString()} of ${total.toLocaleString()} rows`,
+        `Preprocess: scanned ${AO_LIMITS.maxScanRows.toLocaleString()} of ${originalRowCount.toLocaleString()} JSON rows for aggregates/sample`,
       )
     }
   }
@@ -285,13 +554,19 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
       const row: Record<string, string> = {}
       for (const c of columns) row[c] = obj[c] == null ? '' : String(obj[c])
       rows = [row]
+      originalRowCount = 1
       issues.push('JSON root is a single object — treated as one row')
     }
   } else {
     issues.push('Unsupported JSON shape')
   }
 
-  const capped = applyRowColCaps(columns, rows, issues)
+  const pre = runPreprocessAgent({
+    columns,
+    rows,
+    originalRowCount: originalRowCount || rows.length,
+  })
+
   let preview = ''
   try {
     preview =
@@ -311,15 +586,17 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
     kind: 'api',
     sourceLabel,
     fetchedAt: Date.now(),
-    columns: capped.columns,
-    rows: capped.rows,
+    columns: pre.columns,
+    rows: pre.rows,
     rawPreview: preview,
-    rowCount: capped.rows.length,
+    rowCount: pre.rows.length,
     issues,
+    preprocess: pre.preprocess,
   }
 }
 
 export function profileColumns(dataset: IngestedDataset): ColumnProfile[] {
+  const aggByName = new Map((dataset.preprocess?.columnStats || []).map((s) => [s.name, s]))
   return dataset.columns.map((name) => {
     const vals = dataset.rows.map((r) => (r[name] || '').trim())
     const nonEmpty = vals.filter(Boolean)
@@ -335,10 +612,23 @@ export function profileColumns(dataset: IngestedDataset): ColumnProfile[] {
       numericCount: nums.length,
       sample: nonEmpty.slice(0, 5),
     }
-    if (nums.length >= 2) {
-      profile.min = Math.min(...nums)
-      profile.max = Math.max(...nums)
+    const agg = aggByName.get(name)
+    if (agg) {
+      profile.min = agg.min
+      profile.max = agg.max
+      profile.mean = agg.mean
+      profile.p50 = agg.p50
+      profile.p90 = agg.p90
+      profile.p99 = agg.p99
+      profile.numericCount = Math.max(profile.numericCount, agg.n)
+    } else if (nums.length >= 2) {
+      const sorted = nums.slice().sort((a, b) => a - b)
+      profile.min = sorted[0]
+      profile.max = sorted[sorted.length - 1]
       profile.mean = nums.reduce((a, b) => a + b, 0) / nums.length
+      profile.p50 = percentile(sorted, 0.5)
+      profile.p90 = percentile(sorted, 0.9)
+      profile.p99 = percentile(sorted, 0.99)
     }
     return profile
   })
@@ -858,6 +1148,8 @@ function buildReport(args: {
   answer: string
   dataIssues: string[]
   assumptions: string[]
+  preprocessNotes?: string[]
+  optimizeSuggestions?: string[]
   pathSteps?: string[]
 }): string {
   const { zh } = args
@@ -867,6 +1159,11 @@ function buildReport(args: {
     ...(args.pathSteps?.length
       ? [zh ? '## 排查路径' : '## Investigation path', ...args.pathSteps.map((x) => `- ${x}`), '']
       : []),
+    zh ? '## 数据预处理（Agent）' : '## Data preprocessing (agent)',
+    ...(args.preprocessNotes?.length
+      ? args.preprocessNotes.map((x) => (x.startsWith('-') || x.startsWith('**') ? x : `- ${x}`))
+      : [zh ? '- 未触发' : '- none']),
+    '',
     zh ? '## 我读到了什么' : '## What I read',
     ...args.readback.map((x) => `- ${x}`),
     '',
@@ -879,6 +1176,11 @@ function buildReport(args: {
     '',
     zh ? '## 分析结论' : '## Answer',
     args.answer,
+    '',
+    zh ? '## 优化建议' : '## Optimization suggestions',
+    ...(args.optimizeSuggestions?.length
+      ? args.optimizeSuggestions.map((x) => (x.startsWith('-') || x.startsWith('**') ? `- ${x.replace(/^-+\s*/, '')}` : `- ${x}`))
+      : [zh ? '- （暂无）' : '- (none)']),
     '',
     zh ? '## 数据问题' : '## Data issues',
     ...(args.dataIssues.length ? args.dataIssues.map((x) => `- ${x}`) : [zh ? '- 无' : '- none']),
@@ -902,14 +1204,18 @@ export function analyzeLocally(args: {
     dataIssues.push(zh ? '未提供任何 CSV 或 API 数据。' : 'No CSV or API data provided.')
   }
 
+  const { preprocessNotes, optimizeSuggestions } = formatPreprocessNotes(args.datasets, args.lang)
   const charts = buildCharts(args.datasets)
   const assumptions: string[] = [
     zh
       ? 'CSV 首行视为表头；数值列按可解析数字统计；API JSON 优先取 data/rows/items 等数组字段。'
       : 'CSV first row is treated as header; numeric stats use parseable numbers; JSON prefers data/rows/items arrays.',
     zh
-      ? '图表仅抽样最多 24 个点／10 个类别，用于可读性，不代表全量精确分布。'
-      : 'Charts sample ≤24 points / ≤10 categories for readability — not a full-population histogram.',
+      ? '巨型数据由预处理 Agent 做水库抽样 + min/max/P50/P90/P99 汇总，不再因体积直接拒绝分析。'
+      : 'Giant inputs are handled by a preprocess agent (reservoir sample + min/max/P50/P90/P99) — analysis is not refused for size alone.',
+    zh
+      ? '图表仅抽样最多 24 个点／10 个类别，用于可读性；分位数来自扫描窗口／抽样，不是严格全量精确值。'
+      : 'Charts sample ≤24 points / ≤10 categories; percentiles come from the scan window/sample, not a guaranteed full-population exact compute.',
   ]
   if (!args.question.trim()) {
     assumptions.push(
@@ -918,20 +1224,31 @@ export function analyzeLocally(args: {
   }
 
   const q = args.question.trim()
+  const rawRows = args.datasets.reduce(
+    (n, d) => n + (d.preprocess?.originalRowCount || d.rowCount),
+    0,
+  )
+  const workRows = args.datasets.reduce((n, d) => n + d.rowCount, 0)
   const answerParts: string[] = []
   if (q) {
     answerParts.push(
       zh
-        ? `针对问题「${q.slice(0, 200)}」：基于已摄入的 **${args.datasets.length}** 个数据集（合计 **${args.datasets.reduce((n, d) => n + d.rowCount, 0)}** 行）做了结构化审阅。`
-        : `For “${q.slice(0, 200)}”: reviewed **${args.datasets.length}** dataset(s) (**${args.datasets.reduce((n, d) => n + d.rowCount, 0)}** rows total).`,
+        ? `针对问题「${q.slice(0, 200)}」：基于 **${args.datasets.length}** 个数据集（原始约 **${rawRows.toLocaleString()}** 行 → 工作集 **${workRows.toLocaleString()}** 行）完成审阅。`
+        : `For “${q.slice(0, 200)}”: reviewed **${args.datasets.length}** dataset(s) (raw ~**${rawRows.toLocaleString()}** rows → working set **${workRows.toLocaleString()}**).`,
     )
   } else {
     answerParts.push(
       zh
-        ? '已完成数据摄入与画像。请补充具体分析问题以得到更定向的结论。'
-        : 'Ingest + profiling complete. Add a concrete question for a directed conclusion.',
+        ? '已完成摄入、预处理与画像。请补充具体分析问题以得到更定向的结论。'
+        : 'Ingest + preprocess + profiling complete. Add a concrete question for a directed conclusion.',
     )
   }
+
+  answerParts.push(
+    zh
+      ? '**预处理说明：** 见下方「数据预处理（Agent）」——若触发了抽样／分位数汇总，结论基于工作集 + 扫描窗口统计，并已据此给出优化建议。'
+      : '**Preprocess:** see “Data preprocessing (agent)” below — if sampling/percentile summaries ran, conclusions use the working set + scan-window stats, with optimization suggestions derived from them.',
+  )
 
   const blob = [
     q,
@@ -964,8 +1281,8 @@ export function analyzeLocally(args: {
   } else {
     answerParts.push(
       zh
-        ? '未发现严重空值／结构问题；可在图表所示分布上进一步细化。'
-        : 'No severe emptiness/structure issues; charts can support a deeper follow-up.',
+        ? '未发现严重空值／结构问题；可在图表与分位数建议上进一步细化。'
+        : 'No severe emptiness/structure issues; charts and percentile suggestions can support a deeper follow-up.',
     )
   }
 
@@ -976,6 +1293,8 @@ export function analyzeLocally(args: {
     answer,
     dataIssues,
     assumptions,
+    preprocessNotes,
+    optimizeSuggestions,
     reportMarkdown: buildReport({
       zh,
       title: zh ? '通用分析报告' : 'General analysis report',
@@ -984,6 +1303,8 @@ export function analyzeLocally(args: {
       answer,
       dataIssues,
       assumptions,
+      preprocessNotes,
+      optimizeSuggestions,
     }),
   }
 }
@@ -1020,6 +1341,7 @@ export function analyzeAlertOptimize(args: {
     if (s) readback.push(s)
   }
 
+  const { preprocessNotes, optimizeSuggestions } = formatPreprocessNotes(scoped, args.lang)
   const charts = buildCharts(scoped)
   const dirs =
     args.directions.length > 0
@@ -1029,17 +1351,19 @@ export function analyzeAlertOptimize(args: {
   const pathSteps = zh
     ? [
         '摄入：底层数据／告警日志／人工标注（至少一项）',
+        '预处理 Agent：巨型数据 → 抽样 + min/max/P50/P90/P99',
         args.alertName ? `锁定告警名称：${args.alertName}` : '未指定告警名称 — 按全体规则汇总',
         `选定优化方向：${dirs.map((d) => directionLabel(d, 'zh-Hant')).join('、')}`,
         '画像字段质量并画图',
-        '按方向输出建议，声明缺口与假设',
+        '按方向输出建议，并说明预处理与优化建议',
       ]
     : [
         'Ingest: underlying / alert logs / human labels (≥1)',
+        'Preprocess agent: giant data → sample + min/max/P50/P90/P99',
         args.alertName ? `Focus alert: ${args.alertName}` : 'No alert name — aggregate across rules',
         `Directions: ${dirs.map((d) => directionLabel(d, 'en')).join(', ')}`,
         'Profile quality + charts',
-        'Emit direction-specific recommendations; declare gaps & assumptions',
+        'Emit direction recommendations; declare preprocess + optimization suggestions',
       ]
 
   const assumptions: string[] = [
@@ -1053,8 +1377,8 @@ export function analyzeAlertOptimize(args: {
       ? '未勾选优化方向时，默认按「优化阈值 + 降低误报」路径执行。'
       : 'If no directions are checked, default path is threshold + false-positive reduction.',
     zh
-      ? '图表仅抽样最多 24 点／10 类，不代表全量精确分布。'
-      : 'Charts sample ≤24 points / ≤10 categories — not a full-population histogram.',
+      ? '不再因总行数硬拒绝；巨型数据先预处理再分析，分位数来自扫描窗口／抽样。'
+      : 'Analysis is not hard-refused for total row count; giant data is preprocessed first; percentiles are from the scan window/sample.',
   ]
 
   const ctx = {
@@ -1067,11 +1391,18 @@ export function analyzeAlertOptimize(args: {
     labels: bySlot.human_labels,
     lang: args.lang,
   }
+  const rawRows = scoped.reduce((n, d) => n + (d.preprocess?.originalRowCount || d.rowCount), 0)
+  const workRows = scoped.reduce((n, d) => n + d.rowCount, 0)
   const answerParts: string[] = [
     zh
-      ? `按排查路径完成告警优化审阅（数据源 **${scoped.filter((d) => d.rowCount).length}** 个有效集，合计 **${scoped.reduce((n, d) => n + d.rowCount, 0)}** 行）。`
-      : `Completed alert-optimize review along the investigation path (**${scoped.filter((d) => d.rowCount).length}** active sets, **${scoped.reduce((n, d) => n + d.rowCount, 0)}** rows).`,
+      ? `按排查路径完成告警优化审阅（有效集 **${scoped.filter((d) => d.rowCount).length}**；原始约 **${rawRows.toLocaleString()}** 行 → 工作集 **${workRows.toLocaleString()}** 行）。`
+      : `Completed alert-optimize review (**${scoped.filter((d) => d.rowCount).length}** active sets; raw ~**${rawRows.toLocaleString()}** → working set **${workRows.toLocaleString()}** rows).`,
   ]
+  answerParts.push(
+    zh
+      ? '**预处理说明：** 见「数据预处理（Agent）」；阈值／误报建议会结合扫描得到的分位数与抽样行。'
+      : '**Preprocess:** see “Data preprocessing (agent)”; threshold/FP suggestions incorporate scan-window percentiles and sampled rows.',
+  )
   if (args.notes.trim()) {
     answerParts.push(
       zh
@@ -1097,6 +1428,8 @@ export function analyzeAlertOptimize(args: {
     answer,
     dataIssues,
     assumptions,
+    preprocessNotes,
+    optimizeSuggestions,
     reportMarkdown: buildReport({
       zh,
       title: zh ? '告警优化分析报告' : 'Alert optimization report',
@@ -1105,6 +1438,8 @@ export function analyzeAlertOptimize(args: {
       answer,
       dataIssues,
       assumptions,
+      preprocessNotes,
+      optimizeSuggestions,
       pathSteps,
     }),
   }
@@ -1129,19 +1464,29 @@ export function initialStatusSteps(
   if (mode === 'alert_optimize') {
     return [
       { id: 'ingest', label: zh ? '摄入三槽数据源' : 'Ingest three data slots', state: 'pending' },
+      {
+        id: 'preprocess',
+        label: zh ? '预处理巨型数据（抽样／分位数）' : 'Preprocess giant data (sample / percentiles)',
+        state: 'pending',
+      },
       { id: 'scope', label: zh ? '锁定告警名称与优化方向' : 'Scope alert name & directions', state: 'pending' },
       { id: 'profile', label: zh ? '画像字段与质量' : 'Profile fields & quality', state: 'pending' },
       { id: 'chart', label: zh ? '构建图表' : 'Build charts', state: 'pending' },
       { id: 'path', label: zh ? '沿排查路径推理' : 'Reason along investigation path', state: 'pending' },
-      { id: 'draft', label: zh ? '整理结论与假设' : 'Draft answer & assumptions', state: 'pending' },
+      { id: 'draft', label: zh ? '整理结论、预处理说明与优化建议' : 'Draft answer, preprocess notes & suggestions', state: 'pending' },
     ]
   }
   return [
     { id: 'ingest', label: zh ? '摄入 CSV／API 数据' : 'Ingest CSV / API data', state: 'pending' },
+    {
+      id: 'preprocess',
+      label: zh ? '预处理巨型数据（抽样／分位数）' : 'Preprocess giant data (sample / percentiles)',
+      state: 'pending',
+    },
     { id: 'profile', label: zh ? '画像字段与质量' : 'Profile fields & quality', state: 'pending' },
     { id: 'chart', label: zh ? '构建图表' : 'Build charts', state: 'pending' },
     { id: 'reason', label: zh ? '审阅问题并推理' : 'Review question & reason', state: 'pending' },
-    { id: 'draft', label: zh ? '整理结论与假设' : 'Draft answer & assumptions', state: 'pending' },
+    { id: 'draft', label: zh ? '整理结论、预处理说明与优化建议' : 'Draft answer, preprocess notes & suggestions', state: 'pending' },
   ]
 }
 

@@ -107,15 +107,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         hdrs[k] = v.slice(0, 2000)
       }
     }
-    /** Keep ≤1.5MB so proxy + client JSON.parse cannot OOM the serverless / desk tab. */
-    const MAX_BYTES = 1_500_000
+    /** Soft stream window — client preprocess agent samples/summarizes; not a product hard refuse. */
+    const MAX_BYTES = 8_000_000
     try {
       const r = await fetch(url, { method: 'GET', headers: hdrs, cache: 'no-store' })
       const upstreamLen = Number(r.headers.get('content-length') || 0)
-      if (Number.isFinite(upstreamLen) && upstreamLen > MAX_BYTES * 8) {
+      if (Number.isFinite(upstreamLen) && upstreamLen > MAX_BYTES * 6) {
         return res.status(413).json({
           ok: false,
-          error: `Remote body too large (Content-Length ${upstreamLen}; refuse > ${MAX_BYTES * 8} bytes)`,
+          error: `Remote body too large for proxy memory (Content-Length ${upstreamLen}; safety > ${MAX_BYTES * 6} bytes). Pre-sample upstream, then fetch.`,
         })
       }
 
