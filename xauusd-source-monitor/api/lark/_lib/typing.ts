@@ -234,28 +234,62 @@ async function revealText(args: {
  * Dispatch reply with typing indicator + safe reveal.
  * Cards (esp. greeting directory) are always sent complete.
  */
+async function dispatchFollowUpCards(
+  chatId: string,
+  cards: Record<string, unknown>[] | undefined,
+): Promise<{ ok: boolean; via?: string; error?: string }> {
+  if (!cards?.length) return { ok: true, via: 'followUp:none' }
+  try {
+    for (const card of cards) {
+      // Always a new chat message so the step guide appears after the path overview.
+      await sendCardToChat(chatId, card)
+    }
+    return { ok: true, via: `followUp:${cards.length}` }
+  } catch (e) {
+    return { ok: false, via: 'followUp', error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
 export async function dispatchReplyWithTypingEffect(
   messageId: string,
   chatId: string,
-  reply: { text?: string; card?: Record<string, unknown> },
+  reply: {
+    text?: string
+    card?: Record<string, unknown>
+    followUpCards?: Record<string, unknown>[]
+  },
 ): Promise<{ ok: boolean; via?: string; error?: string }> {
   if (process.env.LARK_TYPING_EFFECT === '0') {
     try {
       if (reply.card) {
-        return sendCardOnce({
+        const primary = await sendCardOnce({
           seedMessageId: messageId,
           chatId,
           card: reply.card,
           viaReply: Boolean(messageId),
         })
+        if (!primary.ok) return primary
+        const follow = await dispatchFollowUpCards(chatId, reply.followUpCards)
+        if (!follow.ok) return follow
+        return {
+          ok: true,
+          via: [primary.via, follow.via].filter(Boolean).join('+'),
+        }
       }
       if (reply.text) {
         if (messageId) {
           await replyText(messageId, reply.text)
-          return { ok: true, via: 'replyText' }
+          const follow = await dispatchFollowUpCards(chatId, reply.followUpCards)
+          if (!follow.ok) return follow
+          return { ok: true, via: ['replyText', follow.via].filter(Boolean).join('+') }
         }
         await sendTextToChat(chatId, reply.text)
-        return { ok: true, via: 'sendTextToChat' }
+        const follow = await dispatchFollowUpCards(chatId, reply.followUpCards)
+        if (!follow.ok) return follow
+        return { ok: true, via: ['sendTextToChat', follow.via].filter(Boolean).join('+') }
+      }
+      if (reply.followUpCards?.length) {
+        return dispatchFollowUpCards(chatId, reply.followUpCards)
       }
       return { ok: false, error: 'empty reply' }
     } catch (e) {
@@ -265,20 +299,37 @@ export async function dispatchReplyWithTypingEffect(
 
   if (reply.card) {
     // Never progressive-type interactive cards — greeting menus were getting stuck mid-stream
-    return sendCardOnce({
+    const primary = await sendCardOnce({
       seedMessageId: messageId,
       chatId,
       card: reply.card,
       viaReply: Boolean(messageId),
     })
+    if (!primary.ok) return primary
+    const follow = await dispatchFollowUpCards(chatId, reply.followUpCards)
+    if (!follow.ok) return follow
+    return {
+      ok: true,
+      via: [primary.via, follow.via].filter(Boolean).join('+'),
+    }
   }
   if (reply.text) {
-    return revealText({
+    const primary = await revealText({
       seedMessageId: messageId,
       chatId,
       full: reply.text,
       viaReply: Boolean(messageId),
     })
+    if (!primary.ok) return primary
+    const follow = await dispatchFollowUpCards(chatId, reply.followUpCards)
+    if (!follow.ok) return follow
+    return {
+      ok: true,
+      via: [primary.via, follow.via].filter(Boolean).join('+'),
+    }
+  }
+  if (reply.followUpCards?.length) {
+    return dispatchFollowUpCards(chatId, reply.followUpCards)
   }
   return { ok: false, error: 'empty reply' }
 }

@@ -71,6 +71,7 @@ import {
 } from '../api/lark/_lib/skills'
 import {
   clearSession,
+  getSession,
   listIncidents,
   listIncidentsDurable,
   upsertIncidentDurable,
@@ -111,8 +112,14 @@ async function turn(
   }
   const reply = await handleMessage(msg)
   const kind = reply?.text ? 'text' : reply?.card ? 'card' : 'empty'
-  const blob = reply?.text || (reply?.card ? JSON.stringify(reply.card) : '')
-  console.log(`\n=== ${label} (${kind}) ===`)
+  const follow =
+    reply?.followUpCards?.length
+      ? reply.followUpCards.map((c) => JSON.stringify(c)).join('\n')
+      : ''
+  const blob =
+    (reply?.text || (reply?.card ? JSON.stringify(reply.card) : '')) +
+    (follow ? `\n${follow}` : '')
+  console.log(`\n=== ${label} (${kind}${reply?.followUpCards?.length ? `+${reply.followUpCards.length}fu` : ''}) ===`)
   console.log(blob.slice(0, 280))
   return { reply, blob }
 }
@@ -687,14 +694,16 @@ async function main() {
   record(
     'turn.investigate_first_gen_add_alert_hint',
     firstInv.blob.includes('💡') &&
-      (firstInv.blob.includes('新告警') ||
-        firstInv.blob.includes('贴') ||
-        firstInv.blob.includes('Paste')) &&
+      (firstInv.blob.includes('第 1 步') ||
+        firstInv.blob.includes('第 1 步') ||
+        firstInv.blob.includes('step 1') ||
+        firstInv.blob.includes('已完成') ||
+        firstInv.blob.includes('Done')) &&
       (firstInv.blob.includes('结束排查') ||
         firstInv.blob.includes('結束排查') ||
         firstInv.blob.includes('End & generate') ||
-        firstInv.blob.includes('继续排查') ||
-        firstInv.blob.includes('繼續排查')),
+        firstInv.blob.includes('跳过') ||
+        firstInv.blob.includes('Skip')),
     firstInv.blob.match(/💡[\s\S]{0,160}/)?.[0] || firstInv.blob.slice(0, 160),
   )
   const secondInv = await turn(
@@ -2057,15 +2066,26 @@ async function main() {
   record(
     'turn.aipo_evidence_grades',
     Boolean(invAipo.reply?.card) &&
-      (invAipo.blob.includes('已证实') ||
-        invAipo.blob.includes('Confirmed') ||
-        invAipo.blob.includes('[OBS]')) &&
+      !/证据分级|證據分級|Evidence grades|已证实.*假设.*未排除|Confirmed.*Suspected.*Unknown/.test(
+        invAipo.blob,
+      ) &&
       (invAipo.blob.includes('Possible causes') ||
         invAipo.blob.includes('可能原因') ||
         invAipo.blob.includes('Investigation path') ||
+        invAipo.blob.includes('Full investigation path') ||
         invAipo.blob.includes('排查路径') ||
+        invAipo.blob.includes('完整排查链路') ||
+        invAipo.blob.includes('完整排查鏈路') ||
         invAipo.blob.includes('#/skills')),
     invAipo.blob.slice(0, 220),
+  )
+  record(
+    'turn.aipo_path_listed_once',
+    (
+      invAipo.blob.match(/完整排查链路|完整排查鏈路|Full investigation path|🧭 \*\*排查路径|🧭 \*\*Investigation path/g) ||
+      []
+    ).length <= 1,
+    'path heading appears at most once',
   )
   const greetLater = greetingReply('zh-Hans')
   record(
@@ -2855,19 +2875,32 @@ async function main() {
     done.blob.slice(0, 120),
   )
 
-  // 12) Investigation cards: verdict + end_and_report only
+  // 12) Investigation cards: path overview + step Done/Skip + verdict + end_and_report
   record(
     'turn.investigate_card_action_buttons',
     inv.blob.includes('"tag":"button"') &&
       inv.blob.includes('end_and_report') &&
       inv.blob.includes('set_risk_verdict') &&
-      !inv.blob.includes('step_done') &&
+      inv.blob.includes('guide_step_done') &&
+      inv.blob.includes('guide_step_skip') &&
+      !inv.blob.includes('"action":"step_done"') &&
       !inv.blob.includes('generate_report') &&
       !/"action":"review"/.test(inv.blob) &&
       (inv.blob.includes('结束排查并生成报告') ||
         inv.blob.includes('結束排查並生成報告') ||
         inv.blob.includes('End & generate report')),
-    'end_and_report + verdict only',
+    'path + Done/Skip + end_and_report + verdict',
+  )
+  record(
+    'turn.investigate_path_once_and_step_guide',
+    Boolean(inv.reply?.followUpCards?.length) &&
+      (inv.blob.includes('完整排查链路') ||
+        inv.blob.includes('完整排查鏈路') ||
+        inv.blob.includes('Full investigation path')) &&
+      (inv.blob.includes('guide_step_done') || inv.blob.includes('已完成')) &&
+      !/证据分级|證據分級|Evidence grades/.test(inv.blob) &&
+      (inv.blob.match(/完整排查链路|完整排查鏈路|Full investigation path/g) || []).length === 1,
+    `fu=${inv.reply?.followUpCards?.length || 0}`,
   )
   record(
     'turn.investigate_risk_verdict_buttons',
@@ -2915,24 +2948,67 @@ async function main() {
     JSON.stringify(weeklyRisk.byRiskVerdict),
   )
   clearSession('smoke_chat', 'card_user')
-  await turn(
+  const cardSeed = await turn(
     'investigate-for-card',
     'investigate Mark vs Index 55bps Funding spike',
     'card_user',
   )
+  const guideStepId =
+    (cardSeed.blob.match(/"stepId":"([^"]+)"/) || [])[1] ||
+    getSession('smoke_chat', 'card_user').pathSteps?.[0]?.id ||
+    ''
   const cardReply = await handleCardAction({
     openId: 'card_user',
     chatId: 'smoke_chat',
     messageId: 'smoke_card',
-    value: { action: 'step_done', incidentId: '' },
+    value: { action: 'guide_step_done', stepId: guideStepId, incidentId: '' },
   })
   const cardBlob = cardReply?.text || (cardReply?.card ? JSON.stringify(cardReply.card) : '')
   record(
     'turn.card_action_human_gate',
-    /approv|human|人工|确认|確認|Preferred|排查|Investigation|not execute|未执行|未執行/i.test(
-      cardBlob,
-    ) || Boolean(cardReply?.text || cardReply?.card),
+    /证据|證據|evidence|补齐|補齊/i.test(cardBlob) || Boolean(cardReply?.text || cardReply?.card),
     cardBlob.slice(0, 100),
+  )
+  record(
+    'turn.guide_step_done_requires_evidence',
+    /证据|證據|evidence|补齐|補齊/i.test(cardBlob),
+    cardBlob.slice(0, 120),
+  )
+  const evidenceAfterDone = await turn(
+    'guide-evidence-after-done',
+    '前端核对 Index/Mark 与告警一致，偏差已回落',
+    'card_user',
+  )
+  record(
+    'turn.guide_evidence_advances_step',
+    Boolean(evidenceAfterDone.reply?.card) &&
+      (evidenceAfterDone.blob.includes('guide_step_done') ||
+        evidenceAfterDone.blob.includes('排查步骤') ||
+        evidenceAfterDone.blob.includes('Investigation step') ||
+        evidenceAfterDone.blob.includes('排查链路已走完') ||
+        evidenceAfterDone.blob.includes('path complete')),
+    evidenceAfterDone.blob.slice(0, 120),
+  )
+  const pendingSkipId =
+    (evidenceAfterDone.blob.match(/"stepId":"([^"]+)"/) || [])[1] ||
+    getSession('smoke_chat', 'card_user').pathSteps?.find((s) => s.status === 'pending')?.id ||
+    ''
+  const skipReq = await handleCardAction({
+    openId: 'card_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_card_skip',
+    value: {
+      action: 'guide_step_skip',
+      stepId: pendingSkipId,
+      incidentId: '',
+    },
+  })
+  const skipBlob = skipReq?.text || (skipReq?.card ? JSON.stringify(skipReq.card) : '')
+  record(
+    'turn.guide_skip_required_prompts_reply',
+    /必做|required|说明|說明|reply needed|不能直接跳过|cannot skip/i.test(skipBlob) ||
+      Boolean(skipReq?.card && /guide_step|已完成|Done|跳过|Skip/i.test(skipBlob)),
+    skipBlob.slice(0, 120),
   )
   const reportBtnReply = await handleCardAction({
     openId: 'card_user',
@@ -2969,10 +3045,10 @@ async function main() {
   record(
     'turn.step_done_text_command',
     Boolean(stepCmd.reply?.card) &&
-      (stepCmd.blob.includes('Investigation') ||
-        stepCmd.blob.includes('排查') ||
+      (/证据|證據|evidence|补齐|補齊|Investigation|排查/i.test(stepCmd.blob) ||
         stepCmd.blob.includes('可能原因') ||
-        stepCmd.blob.includes('排查路径')),
+        stepCmd.blob.includes('排查链路') ||
+        stepCmd.blob.includes('排查路徑')),
     stepCmd.blob.slice(0, 120),
   )
 
@@ -3000,10 +3076,17 @@ async function main() {
   )
   record(
     'turn.investigate_body_causes_path',
-    /可能原因|Possible causes|排查路径|Investigation path|决策分支|Decision branches|研判|Judgement/i.test(
+    /可能原因|Possible causes|完整排查链路|完整排查鏈路|Full investigation path|排查路径|Investigation path|决策分支|Decision branches|研判|Judgement/i.test(
       invZh.blob,
     ),
     invZh.blob.slice(0, 160),
+  )
+  record(
+    'turn.investigate_body_no_kb_grades_guide',
+    !/证据分级|證據分級|Evidence grades|• \*\*指引|• \*\*Guidance|知识库仅作参考|Knowledge for reference/i.test(
+      invZh.blob,
+    ),
+    'no kb / evidence-grades / guidance lines in body',
   )
   record(
     'turn.investigate_skills_path_no_free_reason',
@@ -3018,7 +3101,9 @@ async function main() {
   record(
     'turn.investigate_question_unlocks_reason',
     Boolean(invQ.reply?.card) &&
-      (/解答|解题|question mode|为什么|後管|后管|Skill\.check|Skill\.action/i.test(invQ.blob) ||
+      (/排查解答|Investigation answer|解答|解题|question mode|Skill\.check|Skill\.action/i.test(
+        invQ.blob,
+      ) ||
         invQ.blob.includes('💬')),
     invQ.blob.slice(0, 200),
   )

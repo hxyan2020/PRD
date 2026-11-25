@@ -565,6 +565,33 @@ export type InvestigationPathPlan = {
   newlyCovered: string[]
   /** True when remaining order differs from Skill.check author order. */
   reordered: boolean
+  /** Full Skill.check chain (author order) for the guided overview card. */
+  fullSteps: {
+    id: string
+    skillId: string
+    label: string
+    raw: string
+    required: boolean
+    covered: boolean
+    authorIdx: number
+    latestScore: number
+  }[]
+}
+
+/** Mark a check atom optional when the step or skill.opt says so. */
+export function isOptionalCheckStep(raw: string, skillOpt = ''): boolean {
+  if (/【?\s*可选\s*】?|【?\s*可選\s*】?|\(\s*optional\s*\)|\boptional\b/i.test(raw)) {
+    return true
+  }
+  // Skill.opt:「静态配置核查均为【可选】」→ static-config atoms are skippable.
+  if (
+    /静态配置|靜態配置|static\s*config/i.test(skillOpt) &&
+    /可选|可選|optional/i.test(skillOpt) &&
+    /静态|靜態|配置核查|配置检查|config\s*check|静态配置|靜態配置/i.test(raw)
+  ) {
+    return true
+  }
+  return false
 }
 
 /**
@@ -596,6 +623,7 @@ export function planInvestigationPath(args: {
     latestScore: number
   }
 
+  const skillOptById = new Map(loadSkills().map((s) => [s.id, s.opt || '']))
   const ranked: Ranked[] = []
   let authorIdx = 0
   for (const h of args.hits) {
@@ -666,7 +694,18 @@ export function planInvestigationPath(args: {
     }
   }
 
-  return { nextSteps, covered, newlyCovered, reordered }
+  const fullSteps = ranked.map((r) => ({
+    id: `${r.skillId}:${r.authorIdx}`,
+    skillId: r.skillId,
+    label: r.label,
+    raw: r.raw,
+    required: !isOptionalCheckStep(r.raw, skillOptById.get(r.skillId) || ''),
+    covered: r.covered,
+    authorIdx: r.authorIdx,
+    latestScore: r.latestScore,
+  }))
+
+  return { nextSteps, covered, newlyCovered, reordered, fullSteps }
 }
 
 /**
