@@ -23,6 +23,26 @@ function fmtPx(n: number) {
   return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+function fmtAxisPx(n: number, compact: boolean) {
+  if (!compact) return fmtPx(n)
+  if (Math.abs(n) >= 1000) {
+    return n.toLocaleString('en-US', { maximumFractionDigits: 0 })
+  }
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+function fmtSgtAxis(ts: number, compact: boolean) {
+  if (!compact) return fmtSgtShort(ts).replace(/,?\s*\d{4}/, '')
+  return new Date(ts).toLocaleString('en-SG', {
+    timeZone: 'Asia/Singapore',
+    hour12: false,
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).replace(',', '')
+}
+
 function isKlineBar(v: string | undefined): v is KlineIntervalBar {
   return KLINE_INTERVALS.some((i) => i.bar === v)
 }
@@ -41,7 +61,18 @@ export function HourlyKlineChart({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hover, setHover] = useState<KlineBar | null>(null)
+  const [narrow, setNarrow] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 720px)').matches,
+  )
   const cacheRef = useRef<Partial<Record<KlineIntervalBar, HourlyKlineSeries>>>({})
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 720px)')
+    const apply = () => setNarrow(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
 
   // Seed cache with the scan’s default series (usually 1H).
   useEffect(() => {
@@ -97,12 +128,13 @@ export function HourlyKlineChart({
     const bars = activeSeries?.bars || []
     if (bars.length === 0) return null
 
-    const W = 640
-    const H = 220
-    const padL = 52
-    const padR = 12
+    // Taller plot on phones so candles / axis labels stay readable when width is ~360px.
+    const W = narrow ? 360 : 640
+    const H = narrow ? 280 : 220
+    const padL = narrow ? 56 : 52
+    const padR = narrow ? 8 : 12
     const padT = 14
-    const padB = 28
+    const padB = narrow ? 34 : 28
     const plotW = W - padL - padR
     const plotH = H - padT - padB
 
@@ -137,27 +169,30 @@ export function HourlyKlineChart({
     const ticks = [hi, (hi + lo) / 2, lo].map((v) => ({
       v,
       y: yOf(v),
-      label: fmtPx(v),
+      label: fmtAxisPx(v, narrow),
     }))
 
     const timeLabels: { x: number; label: string }[] = []
-    const step = Math.max(1, Math.floor(bars.length / 4))
+    const labelSlots = narrow ? 3 : 4
+    const step = Math.max(1, Math.floor((bars.length - 1) / (labelSlots - 1)))
     for (let i = 0; i < bars.length; i += step) {
       timeLabels.push({
         x: padL + slot * (i + 0.5),
-        label: fmtSgtShort(bars[i].t).replace(/,?\s*\d{4}/, ''),
+        label: fmtSgtAxis(bars[i].t, narrow),
       })
     }
     const last = bars[bars.length - 1]
-    if (timeLabels.length === 0 || timeLabels[timeLabels.length - 1].x < padL + plotW - slot) {
+    const lastX = padL + slot * (bars.length - 0.5)
+    const prev = timeLabels[timeLabels.length - 1]
+    if (!prev || lastX - prev.x > (narrow ? 56 : 48)) {
       timeLabels.push({
-        x: padL + slot * (bars.length - 0.5),
-        label: fmtSgtShort(last.t).replace(/,?\s*\d{4}/, ''),
+        x: lastX,
+        label: fmtSgtAxis(last.t, narrow),
       })
     }
 
     return { W, H, padL, padT, plotW, plotH, candles, ticks, timeLabels, last, bodyW, hitW }
-  }, [activeSeries])
+  }, [activeSeries, narrow])
 
   const intervalSwitcher = (
     <div className="hourly-kline-intervals" role="group" aria-label={t('hourlyKlineInterval')}>
@@ -294,17 +329,22 @@ export function HourlyKlineChart({
             </g>
           ))}
 
-          {layout.timeLabels.map((tl) => (
-            <text
-              key={`${tl.x}-${tl.label}`}
-              className="hourly-kline-axis"
-              x={tl.x}
-              y={layout.H - 8}
-              textAnchor="middle"
-            >
-              {tl.label}
-            </text>
-          ))}
+          {layout.timeLabels.map((tl, i) => {
+            const nearLeft = tl.x < layout.padL + 28
+            const nearRight = tl.x > layout.padL + layout.plotW - 28
+            const anchor = nearLeft ? 'start' : nearRight || i === layout.timeLabels.length - 1 ? 'end' : 'middle'
+            return (
+              <text
+                key={`${tl.x}-${tl.label}`}
+                className="hourly-kline-axis"
+                x={tl.x}
+                y={layout.H - 8}
+                textAnchor={anchor}
+              >
+                {tl.label}
+              </text>
+            )
+          })}
         </svg>
       </div>
     </section>

@@ -14,14 +14,16 @@ export function MarketConditionPage({ mon }: { mon: MonitorApi }) {
 
   return (
     <div className="market-condition">
-      <div className="subnav" role="tablist" aria-label={t('navMarket')}>
-        <NavLink to="/market" end>
-          {t('navHourly')}
-        </NavLink>
-        <NavLink to="/market/briefings">{t('navBriefings')}</NavLink>
-        <NavLink to="/market/health">{t('navHealth')}</NavLink>
-        <NavLink to="/market/rules">{t('navRules')}</NavLink>
-        <NavLink to="/market/archive">{t('navArchive')}</NavLink>
+      <div className="subnav-scroll" data-scroll-hint="1">
+        <div className="subnav" role="tablist" aria-label={t('navMarket')}>
+          <NavLink to="/market" end>
+            {t('navHourly')}
+          </NavLink>
+          <NavLink to="/market/briefings">{t('navBriefings')}</NavLink>
+          <NavLink to="/market/health">{t('navHealth')}</NavLink>
+          <NavLink to="/market/rules">{t('navRules')}</NavLink>
+          <NavLink to="/market/archive">{t('navArchive')}</NavLink>
+        </div>
       </div>
 
       <Routes>
