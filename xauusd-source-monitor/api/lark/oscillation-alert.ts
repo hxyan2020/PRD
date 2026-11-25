@@ -1,6 +1,6 @@
 /**
  * GET/POST /api/lark/oscillation-alert
- * - Cron every 15 min: evaluate OKX vol / funding leverage / breaking news;
+ * - Cron every 15 min: evaluate Binance (OKX backup) vol / funding / news;
  *   on trigger, push card to group + Yan DM.
  * - Demo: 2026-11-25 10:00 Asia/Shanghai — force a DEMO card once.
  * - Manual: GET ?dry=1; POST { force: true, demo: true }.

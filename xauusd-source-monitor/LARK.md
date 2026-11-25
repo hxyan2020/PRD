@@ -136,7 +136,7 @@ Demo catch-up windows (idempotent via durable sent-day state):
 ## Oscillation alert (vol / leverage / news)
 
 - **Cron:** every **15 min** (`*/15 * * * *`) → `/api/lark/oscillation-alert`
-- **Triggers:** OKX XAU-USDT-SWAP short-horizon amplitude ≫ dynamic mean, **or** |funding| ≫ historical mean (leverage crowding proxy), **or** breaking news keywords
+- **Triggers:** Binance XAUUSDT (OKX backup) short-horizon amplitude ≫ dynamic mean, **or** |funding| ≫ historical mean (leverage crowding proxy), **or** breaking news keywords
 - **Delivery:** Feishu **group** + **Haixiang DM** (chat_id, open_id fallback); short 简体 card + sources + 连锁强平风险提示
 - **Demo:** **2026-11-25 10:00** Asia/Shanghai once (`LARK_OSC_DEMO_DAY` / `LARK_OSC_DEMO_START`); catch-up until 18:00 CST if the :00 cron is skipped
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true, "demo": true }`

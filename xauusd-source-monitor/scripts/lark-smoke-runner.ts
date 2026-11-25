@@ -2540,11 +2540,19 @@ async function main() {
       oscSnap.demo &&
       oscJson.includes('DEMO') &&
       oscJson.includes('连锁强平') &&
+      oscJson.includes('Binance') &&
       oscJson.includes('OKX') &&
       oscJson.includes('<at id=') &&
       oscJson.includes('ou_smoke_admin') &&
-      (oscJson.includes('数据源') || oscJson.includes('okx.com')),
-    `last=${oscSnap.last} volR=${oscSnap.volRatio} ${oscJson.slice(0, 200)}`,
+      (oscJson.includes('数据源') ||
+        oscJson.includes('BINANCE') ||
+        oscJson.includes('tradingview')),
+    `venue=${oscSnap.venue} last=${oscSnap.last} volR=${oscSnap.volRatio} ${oscJson.slice(0, 200)}`,
+  )
+  record(
+    'osc.venue_binance_primary_or_okx_backup',
+    oscSnap.venue === 'binance' || oscSnap.venue === 'okx',
+    `venue=${oscSnap.venue} label=${oscSnap.venueLabel}`,
   )
 
   const weeklyDemoCron = (vercelCrons.crons || []).find((c) =>
