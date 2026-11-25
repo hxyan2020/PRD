@@ -274,6 +274,8 @@ async function main() {
   )
   const {
     looksLikePureChat,
+    looksLikeSemanticQuestion,
+    resolveTurnDisposition,
     needsCommandConfirm,
     looksLikeCommandConfirm,
     looksLikeCommandCancel,
@@ -290,22 +292,37 @@ async function main() {
     '',
   )
   record(
-    'chat.confirm_soft_investigate',
-    classifyIntent('怎么排查', {
+    'chat.howto_investigate_is_question',
+    looksLikeSemanticQuestion('怎么排查') &&
+      classifyIntent('怎么排查', {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      }) === 'general_risk' &&
+      resolveTurnDisposition('怎么排查', 'general_risk') === 'chat',
+    '',
+  )
+  record(
+    'chat.soft_investigate_clarifies',
+    classifyIntent('帮我排查一下', {
       inInvestigateSession: false,
       mentionedBot: true,
       chatType: 'p2p',
-    }) === 'investigate' && needsCommandConfirm('怎么排查', 'investigate'),
+    }) === 'investigate' &&
+      needsCommandConfirm('帮我排查一下', 'investigate') &&
+      resolveTurnDisposition('帮我排查一下', 'investigate') === 'clarify',
     '',
   )
   record(
     'chat.no_confirm_explicit_investigate',
-    !needsCommandConfirm('investigate IDX-01 mark gap', 'investigate'),
+    !needsCommandConfirm('investigate IDX-01 mark gap', 'investigate') &&
+      resolveTurnDisposition('investigate IDX-01 mark gap', 'investigate') === 'execute',
     '',
   )
   record(
     'chat.no_confirm_clear_market',
-    !needsCommandConfirm('今天黄金行情怎么样', 'market'),
+    !needsCommandConfirm('今天黄金行情怎么样', 'market') &&
+      resolveTurnDisposition('今天黄金行情怎么样', 'market') === 'execute',
     '',
   )
   record(
@@ -314,7 +331,7 @@ async function main() {
       looksLikeCommandConfirm('yes') &&
       looksLikeCommandCancel('不用') &&
       looksLikeCommandCancel('cancel') &&
-      commandConfirmPrompt('zh-Hans', 'investigate', '怎么排查').includes('确认'),
+      commandConfirmPrompt('zh-Hans', 'investigate', '帮我排查一下').includes('确认'),
     '',
   )
 
@@ -612,7 +629,8 @@ async function main() {
       !softFb.includes('我可以按聊天直接答') &&
       !softFb.includes('卡在哪一步') &&
       !softFb.includes('哪一层定义') &&
-      softFb.includes('宇宙'),
+      !softFb.includes('关于「') &&
+      /具体|意思|吗|？/.test(softFb),
     softFb.slice(0, 180),
   )
   record(

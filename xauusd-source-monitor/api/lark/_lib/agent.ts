@@ -59,10 +59,10 @@ import {
   looksLikeCommandConfirm,
   looksLikeIncidentEvidence,
   looksLikePureChat,
-  needsCommandConfirm,
   needsInaccessibleAccess,
   isStepDoneCommand,
   pendingCommandLabel,
+  resolveTurnDisposition,
   sharedDocReadReply,
 } from './scope.js'
 import { looksLikeShareOrFileMeta } from './lang.js'
@@ -899,7 +899,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     }
   }
 
-  const intent =
+  let intent =
     forcedIntent ||
     classifyIntent(workingText, {
       inInvestigateSession: session.mode === 'investigate',
@@ -920,8 +920,22 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return { text: safetyReply(lang, hit) }
   }
 
-  // Soft-matched command without clear payload → ask before proceeding
-  if (!skipCommandConfirm && needsCommandConfirm(workingText, intent)) {
+  // Clear instruction → execute; ambiguous soft command → clarify; question/chat → no workflow
+  const disposition = resolveTurnDisposition(workingText, intent, {
+    skipConfirm: skipCommandConfirm,
+  })
+  if (
+    disposition === 'chat' &&
+    (intent === 'market' ||
+      intent === 'investigate' ||
+      intent === 'review' ||
+      intent === 'skills' ||
+      intent === 'knowledge' ||
+      intent === 'weekly')
+  ) {
+    intent = 'general_risk'
+  }
+  if (disposition === 'clarify') {
     session.pendingCommand = intent as PendingCommandIntent
     session.pendingCommandText = workingText
     session.pendingCommandAt = Date.now()
@@ -1165,31 +1179,37 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return { card: simpleCard(replyTitle, meta, 'blue') }
   }
 
-  // Chat / random life Q — answer as a chatbot (never meta “I can chat”)
+  // Pure chat / life Q — semantic LLM reply; no capability / command templates
   if (looksLikePureChat(workingText) || isCasualChat(workingText)) {
     const wantName = /^(我是谁|我是誰|who\s+am\s+i|whoami|我叫什么|我叫什麼|你知道我是谁吗|你知道我是誰嗎)/i.test(
       workingText.trim(),
     )
     const displayName = wantName ? await fetchUserDisplayName(msg.openId) : null
-    const casual = casualChatReply(lang, workingText, displayName)
-    if (casual) {
-      return { card: simpleCard(chatTitle, casual, 'blue') }
-    }
+    // Prefer LLM semantic chat; only use tiny identity/thanks canned lines if LLM misses
     const llmChat = await answerWithLlmRetry({
       lang,
       question: workingText,
       context: [
-        'CHATBOT MODE — the user is chatting or asking a life / random question.',
-        'Answer their question directly and helpfully in 1–3 short beats (e.g. if they ask what to eat, suggest 2–3 dishes and ask a preference).',
-        'FORBIDDEN: meta lines like “I can also chat”, “say whatever”, “risk is my specialty but…”, command menus, investigate/market dumps, three-way 闲聊/行情/告警 menus.',
+        'CHAT / Q&A MODE — there is no desk instruction to run.',
+        'Read the user’s meaning and reply naturally like a warm teammate (1–3 short beats).',
+        'If they ask what to eat, suggest 2–3 options and ask a preference — do not dump a fixed menu of bot capabilities.',
+        'If their ask is unclear, ask ONE short clarifying question about THAT topic — never a 闲聊/行情/告警 checklist.',
+        'FORBIDDEN: “I can also chat”, “say whatever”, “risk is my specialty but…”, command menus, investigate/market dumps.',
         'Do NOT search the web unless they clearly ask for news/facts.',
-      ].join('\n'),
+        displayName ? `Their Feishu display name is ${displayName}.` : '',
+      ]
+        .filter(Boolean)
+        .join('\n'),
       temperature: 0.75,
     })
     if (llmChat) {
       return { card: simpleCard(chatTitle, llmChat, 'blue') }
     }
-    // Factual-ish chat ask + LLM miss → search before menu stub
+    const casual = casualChatReply(lang, workingText, displayName)
+    if (casual) {
+      return { card: simpleCard(chatTitle, casual, 'blue') }
+    }
+    // Factual-ish chat ask + LLM miss → search before last-resort clarify
     if (!isCasualBanter(workingText) && shouldAutoWebSearch(workingText)) {
       const searched = await searchWeb(workingText, lang)
       if (searched.hits.length) {
@@ -1275,8 +1295,9 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
         lang,
         question: workingText,
         context: [
-          'Free-text chat or short ask. Engage warmly and ANSWER if you can.',
-          'Otherwise ask ONE clarifying question about their topic — never a 闲聊/行情/告警 menu.',
+          'Free-text question or chat — no desk command was issued.',
+          'Analyze meaning and reply naturally. ANSWER if you can; if unclear, ask ONE clarifying question on their topic.',
+          'Never a 闲聊/行情/告警 menu, never a fixed capability checklist, never “I can also chat” meta.',
           'Specialty is V Exchange risk, but casual chat is welcome. Do not invent news or secrets.',
         ].join('\n'),
         temperature: 0.65,

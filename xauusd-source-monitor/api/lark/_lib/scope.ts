@@ -227,6 +227,86 @@ export function greetingOpenForHour(lang: Lang, hour: number): string {
   return 'Hey — still here'
 }
 
+/**
+ * How / what / why / short “X吗” — a question, not an imperative desk instruction.
+ * Clear market asks with an instrument still count as market (handled by callers).
+ */
+export function looksLikeSemanticQuestion(text: string): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (isExplicitCommand(t)) return false
+  if (looksLikeIncidentEvidence(t)) return false
+  // Note: `\b` is useless after CJK — keep CJK openers separate from Latin `\b` openers.
+  if (
+    /^(怎么|如何|怎样|怎麼|什么是|什麼是|啥是|是什么|是什麼|是什么意思|是什麼意思|为什么|為什麼|为何|為何)/.test(
+      t,
+    ) ||
+    /^(how\s+(do|to|can|does|should|would)|what\s+(is|are|does|do)|why\s+|tell\s+me\s+about|explain)\b/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  // Short interrogatives that are not bare command keywords
+  if (
+    t.length <= 40 &&
+    /(?:[?？]\s*$|(?:呢|吗|嗎|呀|啊)\s*[?？!！.。~]*\s*$)/.test(t) &&
+    !/^(排查|调查|調查|行情|市况|市況|复盘|複盤|周报|週報|skills?|知识库|知識庫|help|帮助|幫助)\s*[?？!！.。~]*$/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  return false
+}
+
+/** Clear market question with instrument / desk cue — run market, don't chat-divert. */
+export function looksLikeClearMarketAsk(text: string): boolean {
+  const t = text.trim()
+  return (
+    /(xauusd|\bxau\b|gold|黄金|黃金|行情|市况|市況|trend|k线|k線|溢价|溢價|funding|bps|dxy|美元指数|美元指數)/i.test(
+      t,
+    ) && t.length >= 4
+  )
+}
+
+export type TurnDisposition = 'execute' | 'clarify' | 'chat'
+
+/**
+ * High-level turn policy:
+ * - execute — clear instruction / clear market / alert paste
+ * - clarify — soft command match but ambiguous (ask before running)
+ * - chat — question or idle talk → semantic reply, no command template
+ */
+export function resolveTurnDisposition(
+  text: string,
+  intent: Intent,
+  opts?: { skipConfirm?: boolean },
+): TurnDisposition {
+  const t = text.trim()
+  if (!t) return 'chat'
+  if (opts?.skipConfirm) return 'execute'
+  if (
+    intent === 'greeting' ||
+    intent === 'ack_mention' ||
+    intent === 'help' ||
+    intent === 'safety' ||
+    intent === 'general_risk' ||
+    intent === 'followup' ||
+    intent === 'offtopic'
+  ) {
+    return intent === 'help' || intent === 'greeting' || intent === 'ack_mention' || intent === 'safety'
+      ? 'execute'
+      : 'chat'
+  }
+  if (isExplicitCommand(t, intent)) return 'execute'
+  if (intent === 'investigate' && looksLikeIncidentEvidence(t)) return 'execute'
+  if (intent === 'market' && looksLikeClearMarketAsk(t) && t.length >= 6) return 'execute'
+  if (looksLikePureChat(t) || isCasualChat(t) || looksLikeSemanticQuestion(t)) return 'chat'
+  if (needsCommandConfirm(t, intent)) return 'clarify'
+  return 'execute'
+}
+
 export function classifyIntent(
   text: string,
   opts: { inInvestigateSession: boolean; mentionedBot: boolean; chatType: string },
@@ -252,7 +332,9 @@ export function classifyIntent(
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
-  if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t) && !looksLikePureChat(t)) return 'review'
+  if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t) && !looksLikePureChat(t) && !looksLikeSemanticQuestion(t)) {
+    return 'review'
+  }
 
   // Active investigation: treat free-text as evidence/follow-up unless explicit command above
   if (opts.inInvestigateSession) return 'followup'
@@ -262,6 +344,15 @@ export function classifyIntent(
 
   // Pure chat / random life Q — do not steal into soft market/investigate
   if (looksLikePureChat(t) && !looksLikeIncidentEvidence(t)) return 'general_risk'
+
+  // How-to / definition questions about desk topics → answer as chat/Q&A (not open a workflow)
+  if (
+    looksLikeSemanticQuestion(t) &&
+    !looksLikeIncidentEvidence(t) &&
+    !(MARKET_RE.test(t) && looksLikeClearMarketAsk(t))
+  ) {
+    return 'general_risk'
+  }
 
   if (MARKET_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'market'
   if (INVESTIGATE_RE.test(t)) return 'investigate'
@@ -343,28 +434,22 @@ const CONFIRMABLE: Intent[] = ['market', 'investigate', 'review', 'skills', 'kno
 /**
  * Soft-matched command without clear payload → ask before running.
  * Explicit keywords / alert paste / clear market ask proceed immediately.
+ * How-to / chat questions should NOT reach here (routed to general_risk / chat).
  */
 export function needsCommandConfirm(text: string, intent: Intent): boolean {
   if (!CONFIRMABLE.includes(intent)) return false
   const t = text.trim()
   if (!t) return false
   if (isExplicitCommand(t, intent)) return false
+  if (looksLikePureChat(t) || isCasualChat(t) || looksLikeSemanticQuestion(t)) return false
   if (intent === 'investigate' && looksLikeIncidentEvidence(t)) return false
-  // Clear market question with instrument / price cue — run (\b is weak for CJK)
-  if (
-    intent === 'market' &&
-    /(xauusd|\bxau\b|gold|黄金|黃金|行情|市况|市況|trend|k线|k線|溢价|溢價|funding|bps)/i.test(
-      t,
-    ) &&
-    t.length >= 6
-  ) {
-    return false
-  }
-  // Soft investigate / review / catalogue without explicit command
+  // Clear market question with instrument / price cue — run
+  if (intent === 'market' && looksLikeClearMarketAsk(t) && t.length >= 6) return false
+  // Soft investigate / review without explicit command → clarify
   if (intent === 'investigate' || intent === 'review') return true
   if (intent === 'skills' || intent === 'knowledge' || intent === 'weekly') {
-    // Soft natural-language catalogue asks are already fairly intentional — only confirm if very short/vague
-    return t.length < 10 || /[?？]|一下|看看|吗|嗎/.test(t)
+    // Soft catalogue asks that are already intentional — only confirm if very short/vague
+    return t.length < 8
   }
   // Soft market without clear instrument
   if (intent === 'market') return true
@@ -395,35 +480,29 @@ export function commandConfirmPrompt(lang: Lang, intent: Intent, userText: strin
   const snippet = userText.replace(/\s+/g, ' ').trim().slice(0, 80)
   if (lang === 'zh-Hans') {
     return [
-      `我不太确定你是在闲聊，还是想 **${action}**。`,
+      `我先确认一下：你是要我 **${action}**，还是只是问问／随便聊聊？`,
+      snippet ? `（你刚说：_「${snippet}」_）` : '',
       '',
-      snippet ? `你刚说：_「${snippet}」_` : '',
-      '',
-      '• 回复 **确认**／**是**／**好的** → 我按指令继续',
-      '• 回复 **不用**／**取消**／继续聊天 → 我当闲聊陪你',
+      '回 **确认** 我就执行；回 **不用**，或直接把问题说清楚，我按聊天答。',
     ]
       .filter(Boolean)
       .join('\n')
   }
   if (lang === 'zh-Hant') {
     return [
-      `我不太確定你是在閒聊，還是想 **${action}**。`,
+      `我先確認一下：你是要我 **${action}**，還是只是問問／隨便聊聊？`,
+      snippet ? `（你剛說：_「${snippet}」_）` : '',
       '',
-      snippet ? `你剛說：_「${snippet}」_` : '',
-      '',
-      '• 回覆 **確認**／**是**／**好的** → 我按指令繼續',
-      '• 回覆 **不用**／**取消**／繼續聊天 → 我當閒聊陪你',
+      '回 **確認** 我就執行；回 **不用**，或直接把問題說清楚，我按聊天答。',
     ]
       .filter(Boolean)
       .join('\n')
   }
   return [
-    `I’m not sure if you’re chatting, or want me to **${action}**.`,
+    `Quick check — should I **${action}**, or are you just asking / chatting?`,
+    snippet ? `(You said: _“${snippet}”_)` : '',
     '',
-    snippet ? `You said: _“${snippet}”_` : '',
-    '',
-    '• Reply **yes** / **confirm** / **ok** → I’ll run it',
-    '• Reply **no** / **cancel** / keep chatting → I’ll just chat',
+    'Reply **yes** and I’ll run it; reply **no**, or just clarify the question, and I’ll chat.',
   ]
     .filter(Boolean)
     .join('\n')
@@ -456,6 +535,19 @@ export function looksLikeIncidentEvidence(text: string): boolean {
   if (
     t.length < 48 &&
     /^(怎么|如何|怎样|怎麼).{0,6}排查|how\s+(do\s+i\s+)?investigate|what\s+is\s+investigate/i.test(t)
+  ) {
+    return false
+  }
+  // Soft “帮我排查一下” without alert payload — command ask, not evidence
+  if (
+    t.length < 40 &&
+    /排查|调查|調查|investigate|告警|报警|報警|alert/i.test(t) &&
+    !/(截图|截圖|bps|强平|強平|指数源|指數源|\bmarks?\b|\bindex\b|偏差|剔除|无有效源|無有效源|P[0-3]\b|失败|失敗|异常|異常|\brca\b|severity)/i.test(
+      t,
+    ) &&
+    /^(帮我|請|请|帮忙|麻煩|麻烦|麻烦帮|請幫|请帮)?\s*(排查|调查|調查|investigate|看看告警|看下告警)\s*(一下|下|下呗|一下吧)?\s*[!！.。~]*$/i.test(
+      t,
+    )
   ) {
     return false
   }
@@ -820,36 +912,26 @@ export function isStubMenuReply(text: string): boolean {
 
 /**
  * Last-resort only — prefer LLM / search / deterministic handlers first.
- * Never a support-ticket clarify or 闲聊／行情／告警 menu.
+ * One natural clarifying beat; never a capability menu or「关于「x」——」template.
  */
 export function chatbotFallbackReply(lang: Lang, question: string): string {
   const canned =
-    casualChatReply(lang, question, null) ||
     botCapabilitiesReply(lang, question) ||
     botRuntimeMetaReply(lang, question) ||
     botMetaReply(lang, question)
   if (canned) return canned
-  const q = question.trim().slice(0, 40)
-  // Short social / open asks → invite chat, don't ask for "definition layer"
-  if (
-    q.length <= 24 ||
-    /聊|吃|帅|帥|天气|天氣|无聊|無聊|开心|開心|哈哈|吗$|嗎$|\?$|？$/i.test(q)
-  ) {
-    if (lang === 'zh-Hans') {
-      return `嗯，关于「${q}」——我可以直接聊。你先说你更想听啥，我接着回 🙂`
-    }
-    if (lang === 'zh-Hant') {
-      return `嗯，關於「${q}」——我可以直接聊。你先說你更想聽啥，我接著回 🙂`
-    }
-    return `On “${q}” — I can just chat. Tell me what’s on your mind and I’ll pick it up 🙂`
+  // Identity / thanks still fine as tiny deterministic fallbacks
+  const identity = casualChatReply(lang, question, null)
+  if (identity && /你是谁|你是誰|我是谁|我是誰|谢谢|謝謝|thanks|can\s+you\s+chat|你能闲聊|你能閒聊/i.test(question)) {
+    return identity
   }
   if (lang === 'zh-Hans') {
-    return `「${q}」我先按聊天答一版：你再补一个关键词（场景／对象），我就能说得更准。`
+    return '我还没完全抓准你的意思——能再说具体一点吗？我想听的那一块是什么，直接说就行 🙂'
   }
   if (lang === 'zh-Hant') {
-    return `「${q}」我先按聊天答一版：你再補一個關鍵詞（場景／對象），我就能說得更準。`
+    return '我還沒完全抓準你的意思——能再說具體一點嗎？你最想弄清的那一塊是什麼，直接說就行 🙂'
   }
-  return `On “${q}” — I’ll take it as chat. Add one keyword (scene / subject) and I’ll tighten the answer.`
+  return 'I haven’t quite locked onto what you mean — can you add one concrete detail? Just say the bit you care about 🙂'
 }
 
 /** @deprecated Negative-list policy: free-text is no longer refused as offtopic. Kept for callers. */
