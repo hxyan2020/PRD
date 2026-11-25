@@ -114,7 +114,7 @@ Demo catch-up windows (idempotent via durable sent-day state):
 
 - **Schedule:** every day **09:00 Asia/Shanghai** (Vercel cron `0 1 * * *` UTC)
 - **Content:** past-24h OKX 1H range (O/H/L/C / %) + TL;DR / Opportunity / Risk; **always Simplified Chinese** on Lark
-- **Sources:** citation links open **exchange K-line / trade UIs**, **news pages**, or **social posts** (OKX/Bitget trade, Kitco, Yahoo Finance charts, Fed HTML, Kitco/X). JSON APIs are probe-only and never shown as report links.
+- **Sources:** favicon **logo buttons** (`multi_url`) after TL;DR / Opp / Risk points — open exchange K-line / news / social UIs (OKX/Bitget, Kitco, Yahoo, Fed, X). JSON APIs are probe-only and never shown as report links.
 - **Delivery:** Feishu group `LARK_DAILY_MARKET_CHAT_ID` (default `oc_eb8eba24ff99a2c3ea3c9439750d65cd`)
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/daily-market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/daily-market-report` with `{ "force": true }` + desk token / cron header
