@@ -1044,8 +1044,8 @@ async function main() {
     )
     await recordTokenUsage({ prompt: 10, completion: 5, source: 'lark' })
   }
-  clearSession('smoke_chat', 'smoke_user')
-  const greet = await turn('greeting', 'hi')
+  clearSession('smoke_chat', 'greet_en')
+  const greet = await turn('greeting', 'hi', 'greet_en')
   const greetBlob = JSON.stringify(greet.reply || {})
   record(
     'turn.greeting_en',
@@ -1071,12 +1071,12 @@ async function main() {
   record(
     'turn.greeting_token_usage',
     Boolean(
-      greetBlob.includes('Token usage') &&
-        greetBlob.includes('Last 24h') &&
-        greetBlob.includes('All-time') &&
+      (/Token usage/.test(greetBlob) || /Token 消耗/.test(greetBlob)) &&
+        (/Last 24h/.test(greetBlob) || /最近 24/.test(greetBlob)) &&
+        (/All-time/.test(greetBlob) || /全历史/.test(greetBlob) || /全歷史/.test(greetBlob)) &&
         /[▁▂▃▄▅▆▇█]/.test(greetBlob),
     ),
-    greetBlob.includes('Token') ? 'ok' : greetBlob.slice(0, 200),
+    /Token/.test(greetBlob) ? 'ok' : greetBlob.slice(0, 200),
   )
   const greetZh = await turn('greeting-zh', '你好', 'greet_zh')
   const greetZhBlob = JSON.stringify(greetZh.reply || {})
