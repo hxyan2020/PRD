@@ -3,11 +3,5 @@
     { "source": "/api/lark/events", "destination": "/api/lark/event" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ],
-  "crons": [
-    {
-      "path": "/api/lark/weekly-report",
-      "schedule": "0 8 * * 5"
-    }
   ]
 }
