@@ -65,6 +65,7 @@ export function getSession(chatId: string, openId: string): InvestigationState {
     mode: 'idle',
     facts: [],
     checkedSteps: [],
+    interactions: [],
     lastSeverity: '待判定',
     lastHits: [],
     lastKb: [],
@@ -73,6 +74,12 @@ export function getSession(chatId: string, openId: string): InvestigationState {
   }
   memSessions[key] = fresh
   return fresh
+}
+
+/** Ensure older persisted sessions have an interactions array. */
+export function ensureSessionInteractions(state: InvestigationState): InvestigationState {
+  if (!Array.isArray(state.interactions)) state.interactions = []
+  return state
 }
 
 export function saveSession(chatId: string, openId: string, state: InvestigationState) {

@@ -127,10 +127,22 @@ export function investigationCard(args: {
               text: {
                 tag: 'lark_md',
                 content: hans
-                  ? '💡 **提示：** 随时可再贴一条新告警／截图／转发卡片，我会和**当前这条一起**继续排查（同一会话即可，不必先归档）。'
+                  ? [
+                      '💡 **提示：**',
+                      '• 随时可再贴一条新告警／截图／转发卡片，我会和**当前这条一起**继续排查（同一会话即可，不必先归档）。',
+                      '• 需要过程报告时发 **生成排查报告** — 会按本会话全部互动生成。',
+                    ].join('\n')
                   : zh
-                    ? '💡 **提示：** 隨時可再貼一條新告警／截圖／轉發卡片，我會和**目前這條一起**繼續排查（同一會話即可，不必先歸檔）。'
-                    : '💡 **Tip:** You can paste another alert / screenshot / forwarded card anytime — I’ll review it **together with this one** in the same case (no need to archive first).',
+                    ? [
+                        '💡 **提示：**',
+                        '• 隨時可再貼一條新告警／截圖／轉發卡片，我會和**目前這條一起**繼續排查（同一會話即可，不必先歸檔）。',
+                        '• 需要過程報告時發 **生成排查報告** — 會按本會話全部互動生成。',
+                      ].join('\n')
+                    : [
+                        '💡 **Tip:**',
+                        '• Paste another alert / screenshot / forwarded card anytime — I’ll review it **together with this one** (same case, no archive needed).',
+                        '• For a proceed-based write-up, send **generate investigation report** — built from every interaction in this case.',
+                      ].join('\n'),
               },
             },
           ]
@@ -143,6 +155,7 @@ export function investigationCard(args: {
             ? [
                 '⌨️ **操作（文字指令，无需点卡片按钮）**',
                 '• 发 **step done** / **已完成此步** — 标记本步完成并刷新路径',
+                '• 发 **生成排查报告** — 按本会话全部互动生成过程报告',
                 '• 发 **done** — 结束并归档',
                 '• 发 **review** — 打开复盘清单',
               ].join('\n')
@@ -150,12 +163,14 @@ export function investigationCard(args: {
               ? [
                   '⌨️ **操作（文字指令，無需點卡片按鈕）**',
                   '• 發 **step done** / **已完成此步** — 標記本步完成並刷新路徑',
+                  '• 發 **生成排查報告** — 按本會話全部互動生成過程報告',
                   '• 發 **done** — 結束並歸檔',
                   '• 發 **review** — 打開複盤清單',
                 ].join('\n')
               : [
                   '⌨️ **Actions (text commands — no card-button callback required)**',
                   '• Send **step done** — mark this step complete and refresh the path',
+                  '• Send **generate investigation report** — proceed-based report from all interactions',
                   '• Send **done** — close and archive',
                   '• Send **review** — open the review board',
                 ].join('\n'),

@@ -625,8 +625,34 @@ async function main() {
     'turn.investigate_second_gen_no_add_alert_hint',
     Boolean(secondInv.reply?.card) &&
       /排查|告警|Funding/i.test(secondInv.blob) &&
-      !secondInv.blob.includes('💡 **提示：** 随时可再贴'),
+      !secondInv.blob.includes('随时可再贴') &&
+      !secondInv.blob.includes('💡 **Tip:**'),
     secondInv.blob.includes('💡') ? 'hint_still_present' : 'hint_omitted',
+  )
+
+  // Interaction log → proceed-based investigation report
+  clearSession('smoke_chat', 'inv_report_zh')
+  await turn(
+    'inv-report-seed',
+    '告警：XAU_USD Mark 偏离 52bps，IDX-02 被剔除，阈值 40bps',
+    'inv_report_zh',
+  )
+  await turn('inv-report-note', '我已核对后管报价源配置，IDX-02 权重异常', 'inv_report_zh')
+  const reportTurn = await turn('inv-report-cmd', '生成排查报告', 'inv_report_zh')
+  record(
+    'turn.inv_report_proceed_based',
+    Boolean(reportTurn.reply?.card) &&
+      /排查过程报告|互动时间线|INTERACTION|已完成步骤|摄入告警/i.test(reportTurn.blob) &&
+      /Mark|偏离|IDX-02|后管|权重/i.test(reportTurn.blob),
+    reportTurn.blob.slice(0, 280),
+  )
+  clearSession('smoke_chat', 'inv_report_empty_user')
+  const emptyReport = await turn('inv-report-empty', '生成排查报告', 'inv_report_empty_user')
+  record(
+    'turn.inv_report_no_case_prompt',
+    Boolean(emptyReport.reply?.card) &&
+      /没有进行中|No active investigation|请先贴告警/i.test(emptyReport.blob),
+    emptyReport.blob.slice(0, 160),
   )
 
   // enrichIncomingEvidence is a no-op without live Lark credentials — still identity-safe.

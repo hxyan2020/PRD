@@ -64,6 +64,7 @@ import {
   needsInaccessibleAccess,
   nowTimeReply,
   timezoneReply,
+  isInvReportCommand,
   isStepDoneCommand,
   pendingCommandLabel,
   resolveTurnDisposition,
@@ -86,6 +87,7 @@ import {
 import { logInbound } from './inboundLog.js'
 import {
   clearSession,
+  ensureSessionInteractions,
   getIncident,
   getSession,
   listIncidents,
@@ -93,7 +95,15 @@ import {
   saveSession,
   upsertIncident,
 } from './store.js'
-import type { BotReply, IncomingMessage, IncidentRecord, Lang, PendingCommandIntent } from './types.js'
+import type {
+  BotReply,
+  IncomingMessage,
+  IncidentRecord,
+  InvestigationInteraction,
+  InvestigationState,
+  Lang,
+  PendingCommandIntent,
+} from './types.js'
 
 function titleFromFacts(facts: string[], lang: Lang): string {
   const first = facts[0]?.replace(/\s+/g, ' ').trim().slice(0, 48) || ''
@@ -410,6 +420,161 @@ async function ingestShareOrFile(msg: IncomingMessage, lang: Lang): Promise<stri
   return llm ? `${llm}\n\n---\n${draft}` : draft
 }
 
+function pushInteraction(
+  session: InvestigationState,
+  entry: Omit<InvestigationInteraction, 'at'> & { at?: number },
+) {
+  ensureSessionInteractions(session)
+  const text = (entry.text || '').trim()
+  if (!text) return
+  session.interactions.push({
+    at: entry.at || Date.now(),
+    role: entry.role,
+    kind: entry.kind || 'other',
+    text: text.slice(0, 4000),
+    messageId: entry.messageId,
+  })
+  // Cap log size for ephemeral session store
+  if (session.interactions.length > 80) {
+    session.interactions = session.interactions.slice(-80)
+  }
+}
+
+function classifyUserInteractionKind(text: string): string {
+  const t = text.trim()
+  if (isInvReportCommand(t)) return 'report_request'
+  if (isStepDoneCommand(t)) return 'step_done'
+  if (/^(done|reset|完成|结束排查|結束排查|重置)\b/i.test(t)) return 'command'
+  if (looksLikeIncidentEvidence(t) || /\[(forwarded_card|merge_forward|replied_alert)\]/i.test(t)) {
+    return 'alert'
+  }
+  if (/[?？]|怎么|如何|怎样|為什麼|为什么|why|how|what/i.test(t)) return 'question'
+  return 'note'
+}
+
+function formatInteractionLog(interactions: InvestigationInteraction[], lang: Lang): string {
+  if (!interactions.length) {
+    return lang === 'en' ? '(no interactions recorded)' : '（尚无互动记录）'
+  }
+  return interactions
+    .map((it, i) => {
+      const who =
+        it.role === 'user'
+          ? lang === 'en'
+            ? 'User'
+            : '用户'
+          : it.role === 'bot'
+            ? lang === 'en'
+              ? 'Bot'
+              : '助手'
+            : 'System'
+      const when = new Date(it.at).toISOString().replace('T', ' ').slice(0, 19)
+      return `${i + 1}. [${when}] ${who}/${it.kind}: ${it.text.replace(/\s+/g, ' ').trim().slice(0, 500)}`
+    })
+    .join('\n')
+}
+
+async function buildProceedInvestigationReport(args: {
+  lang: Lang
+  session: InvestigationState
+  incident?: IncidentRecord
+}): Promise<string> {
+  const hans = args.lang === 'zh-Hans'
+  const hant = args.lang === 'zh-Hant'
+  const interactions = ensureSessionInteractions(args.session).interactions
+  const facts = args.session.facts.length
+    ? args.session.facts
+    : args.incident?.facts || []
+  const checked = args.session.checkedSteps
+  const severity = args.session.lastSeverity || args.incident?.severity || '待判定'
+  const skills =
+    args.session.lastHits.map((h) => h.id).join(', ') ||
+    (args.incident?.skills || []).join(', ') ||
+    (hans || hant ? '尚未匹配' : 'none')
+  const log = formatInteractionLog(interactions, args.lang)
+  const factBlock = facts
+    .filter((f) => !f.startsWith('[chat-history]'))
+    .map((f, i) => `${i + 1}. ${f.replace(/\s+/g, ' ').trim().slice(0, 400)}`)
+    .join('\n')
+  const stepBlock = checked.length
+    ? checked.map((s, i) => `${i + 1}. ${s}`).join('\n')
+    : hans || hant
+      ? '（尚未标记完成步骤）'
+      : '(no steps marked done)'
+
+  const llm = await enrichWithLlm({
+    lang: args.lang,
+    question: hans
+      ? '根据完整互动日志写一份「排查过程报告」。必须含：1) 时间线摘要 2) 摄入告警／证据 3) 已完成步骤 4) 当前判断与未决问题 5) 建议下一步。只依据给定日志，勿编造未出现的菜单／字段／结论。用简体中文，emoji 小标题。'
+      : hant
+        ? '根據完整互動日誌寫一份「排查過程報告」。必須含：時間線摘要、攝入告警／證據、已完成步驟、當前判斷與未決問題、建議下一步。只依據日誌，勿編造。用繁體中文。'
+        : 'Write a proceed-based investigation report from the interaction log. Include: timeline, alerts/evidence, completed steps, current judgment & open questions, recommended next steps. Use only the log — do not invent. English, emoji section headers.',
+    context: [
+      `SEVERITY=${severity}`,
+      `SKILLS=${skills}`,
+      `FACTS:\n${factBlock || '(none)'}`,
+      `CHECKED_STEPS:\n${stepBlock}`,
+      `INTERACTION_LOG:\n${log}`,
+    ].join('\n\n'),
+    temperature: 0.2,
+  })
+
+  if (llm) return llm
+
+  // Deterministic fallback when LLM unavailable
+  if (hans) {
+    return [
+      '📋 **排查过程报告**（基于本会话互动记录）',
+      '',
+      `🟠 **当前严重度：** **${severity}**`,
+      `• **命中 Skills：** ${skills}`,
+      '',
+      '🕒 **互动时间线**',
+      log,
+      '',
+      '📥 **摄入告警／证据**',
+      factBlock || '（无）',
+      '',
+      '✅ **已完成步骤**',
+      stepBlock,
+      '',
+      '🧭 **说明：** 完整过程已按上方日志归档；继续贴告警或发 **step done** 可刷新排查卡。',
+    ].join('\n')
+  }
+  if (hant) {
+    return [
+      '📋 **排查過程報告**（基於本會話互動記錄）',
+      '',
+      `🟠 **當前嚴重度：** **${severity}**`,
+      `• **命中 Skills：** ${skills}`,
+      '',
+      '🕒 **互動時間線**',
+      log,
+      '',
+      '📥 **攝入告警／證據**',
+      factBlock || '（無）',
+      '',
+      '✅ **已完成步驟**',
+      stepBlock,
+    ].join('\n')
+  }
+  return [
+    '📋 **Proceed-based investigation report** (from this case’s interaction log)',
+    '',
+    `🟠 **Severity:** **${severity}**`,
+    `• **Skills:** ${skills}`,
+    '',
+    '🕒 **Interaction timeline**',
+    log,
+    '',
+    '📥 **Alerts / evidence**',
+    factBlock || '(none)',
+    '',
+    '✅ **Completed steps**',
+    stepBlock,
+  ].join('\n')
+}
+
 function persistOpenIncident(args: {
   chatId: string
   openId: string
@@ -420,6 +585,7 @@ function persistOpenIncident(args: {
   kb: { title: string }[]
   summary: string
   recommendations: string[]
+  interactions?: InvestigationInteraction[]
   existingId?: string
 }): IncidentRecord {
   const id = args.existingId || newIncidentId()
@@ -435,6 +601,9 @@ function persistOpenIncident(args: {
     knowledge: args.kb.map((k) => k.title),
     summary: args.summary,
     recommendations: args.recommendations,
+    interactions: args.interactions?.length
+      ? args.interactions.slice(-80)
+      : prev?.interactions,
     status: prev?.status === 'archived' ? 'archived' : 'open',
     createdAt: prev?.createdAt || Date.now(),
     updatedAt: Date.now(),
@@ -645,6 +814,7 @@ async function runInvestigation(args: {
     kb,
     summary: summary + (llm ? ' (LLM-assisted)' : ''),
     recommendations: [...nextSteps, ...actions],
+    interactions: ensureSessionInteractions(session).interactions,
     existingId: session.lastReportId,
   })
   session.lastReportId = rec.id
@@ -745,6 +915,13 @@ export async function handleCardAction(args: {
         : lang === 'zh-Hant'
           ? '值班人員標記上一步建議已完成。'
           : 'Operator marked the previous recommended step as done.'
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'step_done',
+      text: doneFact,
+      messageId: args.messageId,
+    })
+    saveSession(args.chatId, args.openId, session)
     return runInvestigation({
       msg: fakeMsg,
       lang,
@@ -1150,9 +1327,70 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     }
   }
 
+  // Persist every user turn that belongs to (or starts) an investigation case.
+  const shouldLogInteraction =
+    session.mode === 'investigate' ||
+    intent === 'investigate' ||
+    intent === 'followup' ||
+    intent === 'inv_report' ||
+    intent === 'archive' ||
+    isStepDoneCommand(workingText)
+  if (shouldLogInteraction && workingText.trim()) {
+    pushInteraction(session, {
+      role: 'user',
+      kind: classifyUserInteractionKind(workingText),
+      text: workingText,
+      messageId: inbound.messageId,
+    })
+    saveSession(inbound.chatId, inbound.openId, session)
+  }
+
   if (intent === 'weekly') {
     const report = buildWeeklyReport(listIncidents({ status: 'all', limit: 200 }), Date.now(), lang)
     return { card: weeklyReportCard(report.markdown, report.empty) }
+  }
+
+  if (intent === 'inv_report') {
+    const priorInteractions = ensureSessionInteractions(session).interactions.filter(
+      (i) => i.kind !== 'report_request' && i.kind !== 'report',
+    )
+    const hasCase =
+      session.mode === 'investigate' ||
+      Boolean(session.lastReportId) ||
+      session.facts.some((f) => !f.startsWith('[chat-history]')) ||
+      priorInteractions.length > 0
+    if (!hasCase) {
+      const title =
+        lang === 'zh-Hans' ? '排查过程报告' : lang === 'zh-Hant' ? '排查過程報告' : 'Investigation report'
+      const body =
+        lang === 'zh-Hans'
+          ? '当前没有进行中的排查会话。请先贴告警或发 **investigate**，互动会被记录；完成几轮后再发 **生成排查报告**。'
+          : lang === 'zh-Hant'
+            ? '當前沒有進行中的排查會話。請先貼告警或發 **investigate**，互動會被記錄；完成幾輪後再發 **生成排查報告**。'
+            : 'No active investigation case yet. Paste an alert or send **investigate** first — turns are logged; then send **generate investigation report**.'
+      return { card: simpleCard(title, body, 'wathet') }
+    }
+    const incident = session.lastReportId ? getIncident(session.lastReportId) : undefined
+    const reportMd = await buildProceedInvestigationReport({ lang, session, incident })
+    pushInteraction(session, {
+      role: 'bot',
+      kind: 'report',
+      text: reportMd.slice(0, 2000),
+      messageId: inbound.messageId,
+    })
+    if (session.lastReportId && incident) {
+      incident.interactions = ensureSessionInteractions(session).interactions.slice(-80)
+      incident.updatedAt = Date.now()
+      upsertIncident(incident)
+    }
+    saveSession(inbound.chatId, inbound.openId, session)
+    const title =
+      lang === 'zh-Hans'
+        ? '排查过程报告'
+        : lang === 'zh-Hant'
+          ? '排查過程報告'
+          : 'Proceed-based investigation report'
+    return { card: simpleCard(title, reportMd, 'blue') }
   }
 
   if (intent === 'archive') {

@@ -11,10 +11,21 @@ export type Intent =
   | 'knowledge'
   | 'archive'
   | 'weekly'
+  | 'inv_report'
   | 'offtopic'
   | 'safety'
   | 'ack_mention'
   | 'general_risk'
+
+/** One user/bot turn captured during an investigation case. */
+export interface InvestigationInteraction {
+  at: number
+  role: 'user' | 'bot' | 'system'
+  /** alert | note | question | step_done | command | report | other */
+  kind: string
+  text: string
+  messageId?: string
+}
 
 export interface SkillRec {
   id: string
@@ -64,6 +75,8 @@ export interface InvestigationState {
   mode: 'idle' | 'investigate'
   facts: string[]
   checkedSteps: string[]
+  /** Full turn log for proceed-based investigation reports. */
+  interactions: InvestigationInteraction[]
   lastSeverity: string
   lastHits: SkillHit[]
   lastKb: KbHit[]
@@ -92,6 +105,8 @@ export interface IncidentRecord {
   knowledge: string[]
   summary: string
   recommendations: string[]
+  /** Snapshot of the interaction log when the case was last updated. */
+  interactions?: InvestigationInteraction[]
   status: 'open' | 'archived'
   createdAt: number
   updatedAt: number

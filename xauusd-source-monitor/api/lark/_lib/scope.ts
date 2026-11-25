@@ -114,6 +114,22 @@ const COMMAND_DONE = new RegExp(
 const COMMAND_STEP_DONE =
   /^(?:step\s*done|next\s*step\s*done|已完成此步|完成此步|本步完成|标记完成|標記完成)\s*$/i
 
+/**
+ * Generate a proceed-based investigation report from the recorded interaction log.
+ * Prefer matching while an investigate session is open; also allow explicit phrasing anytime.
+ */
+export const COMMAND_INV_REPORT =
+  /^(?:generate\s*(?:an?\s*)?(?:investigation\s*|case\s*|proceed(?:\s*based)?\s*)?report|investigation\s*report|proceed(?:\s*based)?\s*report|case\s*report|write\s*(?:the\s*)?report|生成(?:排查|过程|過程|进展|進展)?报告|生成(?:排查|過程|進展)?報告|排查报告|排查報告|过程报告|過程報告|进展报告|進展報告|输出报告|輸出報告|出一份报告|出一份報告)\s*[!！.。~]*$/i
+
+export function isInvReportCommand(text: string): boolean {
+  const t = text.trim()
+  if (COMMAND_INV_REPORT.test(t)) return true
+  // Soft: “根据排查过程生成报告 / generate report from this investigation”
+  return /(生成|输出|輸出|写|寫).{0,8}(排查|过程|過程|进展|進展)?报告|(generate|write).{0,12}(investigation|proceed|case).{0,8}report/i.test(
+    t,
+  )
+}
+
 export function isStepDoneCommand(text: string): boolean {
   return COMMAND_STEP_DONE.test(text.trim())
 }
@@ -286,6 +302,7 @@ export function resolveTurnDisposition(
   const t = text.trim()
   if (!t) return 'chat'
   if (opts?.skipConfirm) return 'execute'
+  if (intent === 'inv_report') return 'execute'
   if (
     intent === 'greeting' ||
     intent === 'ack_mention' ||
@@ -332,6 +349,8 @@ export function classifyIntent(
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
+  // Proceed-based report from recorded interactions (prefer during an open case)
+  if (isInvReportCommand(t)) return 'inv_report'
   if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t) && !looksLikePureChat(t) && !looksLikeSemanticQuestion(t)) {
     return 'review'
   }
@@ -383,6 +402,7 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   if (intent === 'review') return COMMAND_REVIEW.test(t)
   if (intent === 'help') return COMMAND_HELP.test(t) || HELP_RE.test(t)
   if (intent === 'archive') return COMMAND_DONE.test(t)
+  if (intent === 'inv_report') return isInvReportCommand(t)
   return (
     COMMAND_INVESTIGATE.test(t) ||
     COMMAND_MARKET.test(t) ||
@@ -391,7 +411,8 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
     COMMAND_WEEKLY.test(t) ||
     COMMAND_REVIEW.test(t) ||
     COMMAND_HELP.test(t) ||
-    COMMAND_DONE.test(t)
+    COMMAND_DONE.test(t) ||
+    isInvReportCommand(t)
   )
 }
 
