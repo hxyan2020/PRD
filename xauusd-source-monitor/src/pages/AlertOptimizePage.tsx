@@ -140,7 +140,7 @@ export function AlertOptimizePage() {
   const [csvPasteName, setCsvPasteName] = useState('pasted.csv')
   const [apiUrl, setApiUrl] = useState('')
   const [apiHeaders, setApiHeaders] = useState('{}')
-  const [apiName, setApiName] = useState('V Exchange API')
+  const [apiName, setApiName] = useState('CFD Pricing API')
   const [question, setQuestion] = useState('')
 
   // —— 告警优化 ——

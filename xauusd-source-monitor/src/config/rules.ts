@@ -1,7 +1,7 @@
 import type { MonitorRules } from '../types'
 
 /**
- * Default trigger policy for XAUUSD MVP perp.
+ * Default trigger policy for CFD pricing market-condition briefings.
  * Tuned for gold's typical venue dispersion (~2–8 bps calm; stress >15 bps).
  */
 export const DEFAULT_RULES: MonitorRules = {

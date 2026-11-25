@@ -35,7 +35,7 @@ export const DEMO_USERS: DemoUser[] = [
   },
 ]
 
-/** Hytech org emails used across V Exchange tooling. */
+/** Hytech org emails used across CFD pricing risk tooling. */
 export function isHytechEmail(email: string): boolean {
   const e = email.trim().toLowerCase()
   return /@(hytech\.com|hytechc\.com|hytechpro\.com)$/i.test(e)

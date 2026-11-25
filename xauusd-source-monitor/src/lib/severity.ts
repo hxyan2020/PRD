@@ -1,6 +1,6 @@
 import type { BriefingSeverity } from '../types'
 
-/** Traffic-light mapping for V Exchange ops. */
+/** Traffic-light mapping for CFD pricing risk ops. */
 export type SeverityTone = 'red' | 'yellow' | 'green'
 
 export function severityTone(s: BriefingSeverity): SeverityTone {

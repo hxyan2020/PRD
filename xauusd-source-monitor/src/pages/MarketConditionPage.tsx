@@ -2,6 +2,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { ArchivedBriefingsPage, BriefingArchive } from '../components/BriefingArchive'
 import { HealthDashboard } from '../components/HealthDashboard'
 import { HourlyScanReport } from '../components/HourlyScanReport'
+import { MultiAssetBoardPanel } from '../components/MultiAssetBoardPanel'
 import { RulesPanel } from '../components/RulesPanel'
 import { useLocale } from '../i18n/locale'
 import type { useMonitor } from '../hooks/useMonitor'
@@ -27,11 +28,14 @@ export function MarketConditionPage({ mon }: { mon: MonitorApi }) {
         <Route
           index
           element={
-            <HourlyScanReport
-              health={mon.health}
-              composite={mon.composite}
-              spot={mon.spot}
-            />
+            <>
+              <MultiAssetBoardPanel />
+              <HourlyScanReport
+                health={mon.health}
+                composite={mon.composite}
+                spot={mon.spot}
+              />
+            </>
           }
         />
         <Route

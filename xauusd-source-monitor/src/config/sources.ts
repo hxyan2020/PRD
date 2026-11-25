@@ -1,6 +1,6 @@
 import type { SourceDef } from '../types'
 
-/** XAUUSD MVP perp venues from V Exchange index mapping (exchanges + LPs). */
+/** Pricing venues / LP mirrors used by the CFD desk market-condition monitor. */
 export const XAUUSD_SOURCES: SourceDef[] = [
   { id: 'BINANCE', label: 'BINANCE', kind: 'exchange', basisBps: 1.2, noiseBps: 1.5 },
   { id: 'OKEX', label: 'OKEX', kind: 'exchange', basisBps: 0, noiseBps: 0.8 },

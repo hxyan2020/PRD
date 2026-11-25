@@ -96,7 +96,7 @@ export interface HourlyMarketReport {
   sentiment: SentimentBarometer
   /** Primary venue K-line (Binance XAUUSDT; OKX backup) for the report chart */
   kline: HourlyKlineSeries | null
-  /** V Exchange indicators are placeholders until ops provides the feed */
+  /** CFD pricing indicators are placeholders until ops provides the feed */
   vexPlaceholder: true
   vexNoteEn: string
   vexNoteZh: string
@@ -2103,11 +2103,11 @@ export async function generateHourlyScan(args: {
       'vex-monitor-composite',
       'https://quote-ai-troubleshooting-bot.vercel.app/#/market/health',
       args.composite != null
-        ? `V Exchange desk composite ${args.composite.toFixed(2)}; watch/alert=${alertSources.length}`
-        : 'V Exchange desk composite unavailable',
+        ? `CFD pricing desk composite ${args.composite.toFixed(2)}; watch/alert=${alertSources.length}`
+        : 'CFD pricing desk composite unavailable',
       args.composite != null
-        ? `V Exchange 工作台綜合價 ${args.composite.toFixed(2)}；關注／警報=${alertSources.length}`
-        : 'V Exchange 工作台綜合價不可用',
+        ? `CFD 定價工作台綜合價 ${args.composite.toFixed(2)}；關注／警報=${alertSources.length}`
+        : 'CFD 定價工作台綜合價不可用',
       'indicator',
       args.composite != null ? 'ok' : 'degraded',
       createdAt,
@@ -2124,9 +2124,9 @@ export async function generateHourlyScan(args: {
   }
 
   const vexNoteEn =
-    'V Exchange proprietary indicators: placeholder only — feed not connected; no indicator points this hour.'
+    'CFD pricing proprietary indicators: placeholder only — feed not connected; no indicator points this hour.'
   const vexNoteZh =
-    'V Exchange 自有指標：目前僅為占位，數據源未接入；本小時無指標要點。'
+    'CFD 定價自有指標：目前僅為占位，數據源未接入；本小時無指標要點。'
 
   // Opinion bullets: informative article summaries (not bare headlines); never restated in TL;DR
   for (const entry of SOURCE_CATALOG.filter((e) => e.opinion)) {

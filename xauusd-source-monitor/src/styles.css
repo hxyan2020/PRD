@@ -3969,3 +3969,119 @@ td.mono,
 .ao-followup-body p:last-child {
   margin-bottom: 0;
 }
+
+/* —— Multi-asset CFD pricing board —— */
+.multi-asset-board {
+  margin-bottom: 1.25rem;
+}
+.multi-asset-board .panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.multi-asset-board .panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+.multi-asset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.85rem;
+}
+@media (max-width: 960px) {
+  .multi-asset-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .multi-asset-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.multi-asset-col {
+  border: 1px solid color-mix(in srgb, var(--border, #e7e5e4) 85%, transparent);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  background: color-mix(in srgb, #fff 88%, #ecfdf5);
+}
+.multi-asset-col h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+.multi-asset-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.multi-asset-col li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.35rem 0.5rem;
+  align-items: baseline;
+  font-size: 0.82rem;
+}
+.multi-asset-col a {
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+.multi-asset-col a:hover .ma-name {
+  text-decoration: underline;
+}
+.ma-name {
+  display: block;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ma-sym {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--muted, #78716c);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+.ma-px {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-weight: 500;
+}
+.ma-chg {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.78rem;
+  min-width: 4.2rem;
+  text-align: right;
+}
+.ma-chg.up,
+.ma-chip.up {
+  color: #15803d;
+}
+.ma-chg.down,
+.ma-chip.down {
+  color: #b91c1c;
+}
+.multi-asset-movers {
+  margin: 0.85rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.85rem;
+}
+.ma-chip {
+  display: inline-flex;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #f5f5f4 70%, #fff);
+  border: 1px solid color-mix(in srgb, var(--border, #e7e5e4) 80%, transparent);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+}
