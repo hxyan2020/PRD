@@ -1932,8 +1932,16 @@ async function main() {
       greetLater.includes('Yan Haixiang') &&
       greetLater.includes('UAT') &&
       !greetLater.includes('截图欢迎直接丢过来') &&
-      !greetLater.includes('**market**'),
+      !greetLater.includes('**market**') &&
+      !greetLater.includes('**完成**'),
     greetLater.slice(0, 120),
+  )
+  record(
+    'greeting.no_done_archive_line',
+    !greetingReply('zh-Hans').includes('**完成**') &&
+      !greetingReply('zh-Hant').includes('**完成**') &&
+      !greetingReply('en').includes('**done**'),
+    'archive keyword kept as command; not listed in greeting',
   )
   const slotA = shanghaiHalfHourKey(Date.parse('2026-11-24T12:05:00Z')) // 20:05 CST → 20:00
   const slotB = shanghaiHalfHourKey(Date.parse('2026-11-24T12:35:00Z')) // 20:35 CST → 20:30
