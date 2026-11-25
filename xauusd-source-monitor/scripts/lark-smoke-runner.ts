@@ -52,8 +52,10 @@ import {
   AO_LIMITS,
   analyzeAlertOptimize,
   analyzeLocally,
+  appendFollowUpsToReport,
   buildThresholdOptimizeBullets,
   extractAlertNames,
+  followUpAlertOptimize,
   parseCsvText,
 } from '../src/lib/alertOptimize'
 import {
@@ -905,6 +907,37 @@ async function main() {
           thrBullets.includes('数据支持') &&
           /上调阈值|P75|分位/.test(thrBullets),
         thrBullets.slice(0, 220),
+      )
+      const fu = followUpAlertOptimize({
+        question: '阈值为什么要上调？',
+        result: {
+          readback: ['x'],
+          charts: [],
+          answer: thrBullets,
+          dataIssues: ['缺底层'],
+          assumptions: ['假设A'],
+          reportMarkdown: '# r\n',
+        },
+        datasets: [logsThr, labThr],
+        lang: 'zh-Hant',
+        mode: 'alert_optimize',
+        alertName: 'depth_gap_bps',
+        directions: ['threshold'],
+      })
+      const withFu = appendFollowUpsToReport(
+        '# r\n',
+        [
+          { role: 'user', content: '阈值为什么要上调？', at: 1 },
+          { role: 'assistant', content: fu, at: 2 },
+        ],
+        'zh-Hant',
+      )
+      record(
+        'alert_optimize.follow_up_chat',
+        fu.includes('优化阈值') &&
+          withFu.includes('## 追问对话') &&
+          withFu.includes('阈值为什么要上调'),
+        fu.slice(0, 160),
       )
     }
     record(

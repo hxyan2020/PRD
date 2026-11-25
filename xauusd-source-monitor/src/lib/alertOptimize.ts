@@ -90,6 +90,12 @@ export type AnalysisResult = {
   reportMarkdown: string
 }
 
+export type AoFollowUpTurn = {
+  role: 'user' | 'assistant'
+  content: string
+  at: number
+}
+
 export type StatusStep = {
   id: string
   label: string
@@ -1137,4 +1143,160 @@ export function initialStatusSteps(
     { id: 'reason', label: zh ? '审阅问题并推理' : 'Review question & reason', state: 'pending' },
     { id: 'draft', label: zh ? '整理结论与假设' : 'Draft answer & assumptions', state: 'pending' },
   ]
+}
+
+/** Compact context string for LLM / local follow-up (keeps token & memory bounded). */
+export function buildAoFollowUpContext(args: {
+  mode: DeskMode
+  result: AnalysisResult
+  datasets: IngestedDataset[]
+  alertName?: string
+  directions?: OptimizeDirectionId[]
+  question?: string
+  lang: 'en' | 'zh-Hant'
+}): string {
+  const zh = args.lang !== 'en'
+  const dsLines = args.datasets.map((d) => {
+    const slot = d.slot ? slotLabel(d.slot, args.lang) : d.kind
+    return `- [${slot}] ${d.name}: ${d.rowCount}×${d.columns.length} cols=${d.columns.slice(0, 10).join(',')}`
+  })
+  return [
+    zh ? `模式：${args.mode === 'alert_optimize' ? '告警优化' : '通用分析'}` : `Mode: ${args.mode}`,
+    args.alertName ? (zh ? `告警名：${args.alertName}` : `Alert: ${args.alertName}`) : '',
+    args.directions?.length
+      ? zh
+        ? `方向：${args.directions.map((d) => directionLabel(d, 'zh-Hant')).join('、')}`
+        : `Directions: ${args.directions.map((d) => directionLabel(d, 'en')).join(', ')}`
+      : '',
+    args.question?.trim() ? (zh ? `原问题：${args.question.trim().slice(0, 240)}` : `Question: ${args.question.trim().slice(0, 240)}`) : '',
+    zh ? '## 数据集' : '## Datasets',
+    ...dsLines,
+    zh ? '## 既有结论（截断）' : '## Prior conclusion (truncated)',
+    args.result.answer.slice(0, 3500),
+    zh ? '## 数据问题' : '## Data issues',
+    ...(args.result.dataIssues.slice(0, 12).map((x) => `- ${x}`) || ['-']),
+    zh ? '## 假设' : '## Assumptions',
+    ...args.result.assumptions.slice(0, 8).map((x) => `- ${x}`),
+  ]
+    .filter(Boolean)
+    .join('\n')
+}
+
+/**
+ * Local (no-LLM) follow-up: answer from the existing analysis + light re-stats.
+ * Always returns something useful so chat works offline.
+ */
+export function followUpAlertOptimize(args: {
+  question: string
+  result: AnalysisResult
+  datasets: IngestedDataset[]
+  lang: 'en' | 'zh-Hant'
+  mode: DeskMode
+  alertName?: string
+  directions?: OptimizeDirectionId[]
+}): string {
+  const zh = args.lang !== 'en'
+  const q = args.question.trim()
+  const qLower = q.toLowerCase()
+  const parts: string[] = []
+
+  if (/阈值|threshold|上调|下调|p75|p90|分位/i.test(q)) {
+    const thr = buildThresholdOptimizeBullets({
+      logs: args.datasets.filter((d) => d.slot === 'alert_logs' || !d.slot),
+      underlying: args.datasets.filter((d) => d.slot === 'underlying'),
+      labels: args.datasets.filter((d) => d.slot === 'human_labels'),
+      alertName: args.alertName || '',
+      lang: args.lang,
+    })
+    parts.push(
+      zh
+        ? '按你的追问，我重新整理了 **优化阈值** 要点：'
+        : 'Re-focused **threshold optimize** bullets for your follow-up:',
+    )
+    parts.push(thr)
+  } else if (/误报|false\s*pos|fp|有效|标注|label/i.test(qLower)) {
+    const labs = args.datasets.filter((d) => d.slot === 'human_labels')
+    if (!labs.length) {
+      parts.push(
+        zh
+          ? '- **缺标注数据** — 请在「人工标注」槽补 CSV／API 后再问误报率。**数据支持：** 当前 human_labels 槽为空。'
+          : '- **Missing labels** — add CSV/API to the human-labels slot.**Data:** human_labels slot empty.',
+      )
+    } else {
+      for (const ds of labs) {
+        const s = summarizeLabels(ds, zh)
+        if (s) parts.push(`- ${s}`)
+      }
+      parts.push(
+        zh
+          ? '- **下一步** — 若误报率偏高，回到「优化阈值」方向，按误报团簇上调门限；或勾选「降低误报」再分析。'
+          : '- **Next** — if FP rate is high, re-run with threshold direction to raise past FP clusters, or enable “cut false positives”.',
+      )
+    }
+  } else if (/图|chart|分布|趋势/i.test(q)) {
+    parts.push(
+      zh
+        ? `当前报告含 **${args.result.charts.length}** 张图（最多抽样 24 点／10 类）。若需更细分布，请缩小告警名称或减少行数后重跑分析。`
+        : `Report has **${args.result.charts.length}** chart(s) (≤24 points / 10 categories). Narrow alert name or trim rows, then re-analyze for finer plots.`,
+    )
+    for (const c of args.result.charts.slice(0, 4)) {
+      parts.push(`- ${c.title}: ${c.labels.slice(0, 4).join(', ')}…`)
+    }
+  } else if (/假设|assumption|数据问题|issue|缺口|缺失/i.test(qLower)) {
+    parts.push(zh ? '**数据问题：**' : '**Data issues:**')
+    for (const x of args.result.dataIssues.slice(0, 10)) parts.push(`- ${x}`)
+    if (!args.result.dataIssues.length) parts.push(zh ? '- 无' : '- none')
+    parts.push(zh ? '**假设：**' : '**Assumptions:**')
+    for (const x of args.result.assumptions.slice(0, 10)) parts.push(`- ${x}`)
+  } else {
+    // Quote relevant snippets from prior answer
+    const lines = args.result.answer.split('\n').filter((l) => l.trim())
+    const hits = lines.filter((l) => {
+      const tokens = q.replace(/[?？。！!]/g, ' ').split(/\s+/).filter((t) => t.length >= 2)
+      return tokens.some((t) => l.toLowerCase().includes(t.toLowerCase()))
+    })
+    parts.push(
+      zh
+        ? '基于上一轮结论继续回答（本地规则；接上 LLM 后可做更深推理）：'
+        : 'Continuing from the prior conclusion (local rules; LLM enables deeper reasoning):',
+    )
+    if (hits.length) {
+      for (const h of hits.slice(0, 6)) parts.push(h.startsWith('-') ? h : `- ${h}`)
+    } else {
+      parts.push(
+        zh
+          ? `- 上一轮结论摘要：${args.result.answer.replace(/\s+/g, ' ').slice(0, 420)}…`
+          : `- Prior answer digest: ${args.result.answer.replace(/\s+/g, ' ').slice(0, 420)}…`,
+      )
+      parts.push(
+        zh
+          ? '- 可追问：阈值怎么改、误报率、某告警名、数据缺口、落地步骤。'
+          : '- You can ask: how to change thresholds, FP rate, a specific alert, data gaps, rollout steps.',
+      )
+    }
+  }
+
+  parts.push(
+    zh
+      ? `\n_追问不会改动已摄入数据；若要换数据源或方向，请调整上方输入后重新点「分析」。_`
+      : `\n_Follow-ups do not mutate ingested data; change inputs above and click Analyze to refresh the base report._`,
+  )
+  return parts.join('\n')
+}
+
+export function appendFollowUpsToReport(
+  reportMarkdown: string,
+  turns: AoFollowUpTurn[],
+  lang: 'en' | 'zh-Hant',
+): string {
+  if (!turns.length) return reportMarkdown
+  const zh = lang !== 'en'
+  const lines = [reportMarkdown, '', zh ? '## 追问对话' : '## Follow-up chat', '']
+  for (const t of turns) {
+    const who = t.role === 'user' ? (zh ? '用户' : 'User') : zh ? '助手' : 'Assistant'
+    lines.push(`### ${who}`)
+    lines.push(t.content)
+    lines.push('')
+  }
+  return lines.join('\n')
 }

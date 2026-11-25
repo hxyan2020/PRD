@@ -5,7 +5,10 @@ import {
   OPTIMIZE_DIRECTIONS,
   analyzeAlertOptimize,
   analyzeLocally,
+  appendFollowUpsToReport,
+  buildAoFollowUpContext,
   extractAlertNames,
+  followUpAlertOptimize,
   initialStatusSteps,
   parseCsvText,
   parseJsonPayload,
@@ -14,13 +17,14 @@ import {
   wouldExceedDatasetCap,
   type AlertDataSlot,
   type AnalysisResult,
+  type AoFollowUpTurn,
   type ChartSpec,
   type DeskMode,
   type IngestedDataset,
   type OptimizeDirectionId,
   type StatusStep,
 } from '../lib/alertOptimize'
-import { PERM_VERCEL_ORIGIN } from '../copilot/engine/llm'
+import { hasLlmCredentials, PERM_VERCEL_ORIGIN, runLlm } from '../copilot/engine/llm'
 import { loadSettings } from '../copilot/storage'
 
 function MiniChart({ chart }: { chart: ChartSpec }) {
@@ -156,6 +160,9 @@ export function AlertOptimizePage() {
   const [steps, setSteps] = useState<StatusStep[]>(() => initialStatusSteps(appLang, 'alert_optimize'))
   const [running, setRunning] = useState(false)
   const [result, setResult] = useState<AnalysisResult | null>(null)
+  const [followUps, setFollowUps] = useState<AoFollowUpTurn[]>([])
+  const [followUpDraft, setFollowUpDraft] = useState('')
+  const [followBusy, setFollowBusy] = useState(false)
   const [copyFlash, setCopyFlash] = useState(false)
   const [error, setError] = useState('')
 
@@ -172,6 +179,8 @@ export function AlertOptimizePage() {
   const switchMode = (next: DeskMode) => {
     setMode(next)
     setResult(null)
+    setFollowUps([])
+    setFollowUpDraft('')
     setError('')
     setSteps(initialStatusSteps(appLang, next))
   }
@@ -314,6 +323,8 @@ export function AlertOptimizePage() {
   const runAnalyze = async () => {
     setRunning(true)
     setResult(null)
+    setFollowUps([])
+    setFollowUpDraft('')
     setError('')
     setSteps(initialStatusSteps(appLang, mode).map((s) => ({ ...s, state: 'pending' as const })))
 
@@ -433,7 +444,68 @@ export function AlertOptimizePage() {
     }
   }
 
-  const fullReport = useMemo(() => result?.reportMarkdown || '', [result])
+  const activeDatasets = mode === 'alert_optimize' ? alertDatasets : datasets
+
+  const fullReport = useMemo(() => {
+    if (!result) return ''
+    return appendFollowUpsToReport(result.reportMarkdown, followUps, appLang)
+  }, [result, followUps, appLang])
+
+  const sendFollowUp = async () => {
+    if (!result || !followUpDraft.trim() || followBusy) return
+    const q = followUpDraft.trim()
+    setFollowBusy(true)
+    setError('')
+    try {
+      const settings = loadSettings()
+      let reply: string
+      if (settings.provider === 'rules' || !hasLlmCredentials(settings)) {
+        reply = followUpAlertOptimize({
+          question: q,
+          result,
+          datasets: activeDatasets,
+          lang: appLang,
+          mode,
+          alertName: mode === 'alert_optimize' ? alertName : undefined,
+          directions: mode === 'alert_optimize' ? directions : undefined,
+        })
+      } else {
+        const ctx = buildAoFollowUpContext({
+          mode,
+          result,
+          datasets: activeDatasets,
+          alertName: mode === 'alert_optimize' ? alertName : undefined,
+          directions: mode === 'alert_optimize' ? directions : undefined,
+          question: mode === 'general' ? question : notes,
+          lang: appLang,
+        })
+        reply = await runLlm({
+          settings,
+          lang: appLang === 'en' ? 'en' : 'zh-Hant',
+          userPrompt: [
+            appLang === 'en'
+              ? 'Continue interactive analysis of the alert-optimize / general-analysis desk result. Answer the user follow-up using only the provided context; if unknown, say so. Prefer concrete bullets with data support.'
+              : '继续对告警优化／通用分析桌面结论做交互追问。仅依据所给上下文作答；不知道就说不知道。优先用带数据支持的具体要点。',
+            '',
+            q,
+          ].join('\n'),
+          skillContext: '(alert-optimize desk follow-up)',
+          kbContext: ctx,
+          priorMessages: followUps.slice(-8).map((m) => ({ role: m.role, content: m.content })),
+        })
+      }
+      setFollowUps((prev) => [
+        ...prev,
+        { role: 'user', content: q, at: Date.now() },
+        { role: 'assistant', content: reply, at: Date.now() + 1 },
+      ])
+      setFollowUpDraft('')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setFollowBusy(false)
+    }
+  }
 
   const copyOutput = async () => {
     if (!fullReport) return
@@ -454,6 +526,56 @@ export function AlertOptimizePage() {
     a.download = `${mode === 'alert_optimize' ? 'alert-optimize' : 'general-analysis'}-${new Date().toISOString().slice(0, 10)}.md`
     a.click()
     URL.revokeObjectURL(a.href)
+  }
+
+  const renderAssistantBody = (text: string) => {
+    const blocks = text.split(/\n\n+/)
+    return blocks.map((block, i) => {
+      const lines = block.split('\n').map((l) => l.trimEnd())
+      const isList = lines.some((l) => /^[-*]\s+/.test(l))
+      if (isList) {
+        const title = lines.find((l) => /^#{1,3}\s+/.test(l) || (!/^[-*]\s+/.test(l) && l.trim()))
+        const items = lines.filter((l) => /^[-*]\s+/.test(l))
+        return (
+          <div key={i} className="ao-answer-block">
+            {title && !/^[-*]\s+/.test(title) ? (
+              <p
+                className="ao-answer-heading"
+                dangerouslySetInnerHTML={{
+                  __html: title
+                    .replace(/^#{1,3}\s+/, '')
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/`([^`]+)`/g, '<code>$1</code>'),
+                }}
+              />
+            ) : null}
+            <ul>
+              {items.map((item, j) => (
+                <li
+                  key={j}
+                  dangerouslySetInnerHTML={{
+                    __html: item
+                      .replace(/^[-*]\s+/, '')
+                      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                      .replace(/`([^`]+)`/g, '<code>$1</code>'),
+                  }}
+                />
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      return (
+        <p
+          key={i}
+          dangerouslySetInnerHTML={{
+            __html: block
+              .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+              .replace(/`([^`]+)`/g, '<code>$1</code>'),
+          }}
+        />
+      )
+    })
   }
 
   const renderIngestControls = (opts: {
@@ -779,54 +901,7 @@ export function AlertOptimizePage() {
 
           <section className="panel">
             <h2>{t('aoAnswerTitle')}</h2>
-            <div className="ao-answer">
-              {result.answer.split(/\n\n+/).map((block, i) => {
-                const lines = block.split('\n').map((l) => l.trimEnd())
-                const isList = lines.some((l) => /^[-*]\s+/.test(l))
-                if (isList) {
-                  const title = lines.find((l) => /^#{1,3}\s+/.test(l) || (!/^[-*]\s+/.test(l) && l.trim()))
-                  const items = lines.filter((l) => /^[-*]\s+/.test(l))
-                  return (
-                    <div key={i} className="ao-answer-block">
-                      {title && !/^[-*]\s+/.test(title) ? (
-                        <p
-                          className="ao-answer-heading"
-                          dangerouslySetInnerHTML={{
-                            __html: title
-                              .replace(/^#{1,3}\s+/, '')
-                              .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                              .replace(/`([^`]+)`/g, '<code>$1</code>'),
-                          }}
-                        />
-                      ) : null}
-                      <ul>
-                        {items.map((item, j) => (
-                          <li
-                            key={j}
-                            dangerouslySetInnerHTML={{
-                              __html: item
-                                .replace(/^[-*]\s+/, '')
-                                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                                .replace(/`([^`]+)`/g, '<code>$1</code>'),
-                            }}
-                          />
-                        ))}
-                      </ul>
-                    </div>
-                  )
-                }
-                return (
-                  <p
-                    key={i}
-                    dangerouslySetInnerHTML={{
-                      __html: block
-                        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/`([^`]+)`/g, '<code>$1</code>'),
-                    }}
-                  />
-                )
-              })}
-            </div>
+            <div className="ao-answer">{renderAssistantBody(result.answer)}</div>
           </section>
 
           <section className="panel">
@@ -846,8 +921,58 @@ export function AlertOptimizePage() {
             </ul>
           </section>
 
+          <section className="panel ao-followup">
+            <h2>{t('aoFollowUpTitle')}</h2>
+            <p className="sub">{t('aoFollowUpSub')}</p>
+            {followUps.length ? (
+              <div className="ao-followup-thread">
+                {followUps.map((turn, i) => (
+                  <div key={`${turn.at}-${i}`} className={`ao-followup-turn ao-followup-${turn.role}`}>
+                    <div className="ao-followup-role">
+                      {turn.role === 'user' ? t('aoFollowUpYou') : t('aoFollowUpAssistant')}
+                    </div>
+                    <div className="ao-followup-body">
+                      {turn.role === 'assistant' ? (
+                        renderAssistantBody(turn.content)
+                      ) : (
+                        <p>{turn.content}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="ao-muted">{t('aoFollowUpEmpty')}</p>
+            )}
+            <textarea
+              className="ao-question"
+              rows={3}
+              value={followUpDraft}
+              onChange={(e) => setFollowUpDraft(e.target.value)}
+              placeholder={t('aoFollowUpPh')}
+              disabled={followBusy}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                  e.preventDefault()
+                  void sendFollowUp()
+                }
+              }}
+            />
+            <div className="copilot-actions">
+              <button
+                type="button"
+                className="archive-btn primary-archive"
+                disabled={followBusy || !followUpDraft.trim()}
+                onClick={() => void sendFollowUp()}
+              >
+                {followBusy ? t('aoFollowUpSending') : t('aoFollowUpSend')}
+              </button>
+            </div>
+          </section>
+
           <section className="panel ao-export">
             <h2>{t('aoExportTitle')}</h2>
+            <p className="sub">{t('aoExportIncludesFollowUp')}</p>
             <div className="copilot-actions">
               <button type="button" className="archive-btn primary-archive" onClick={downloadReport}>
                 {t('aoGenReport')}
