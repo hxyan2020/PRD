@@ -85,8 +85,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const now = Date.now()
   const slotKey = shanghaiHalfHourKey(now)
   const chat = resolveMarketChatId(body.chatId || String(q.chatId || ''))
-  const { lang: marketLang } = await resolveDailyMarketLang({
+  const adminEarly = body.openId?.trim()
+    ? { openId: body.openId.trim(), source: 'request' }
+    : await resolveAdminOpenId()
+  const { lang: marketLang, source: langSource } = await resolveDailyMarketLang({
     chatId: chat.chatId,
+    openId: adminEarly.openId,
     hint: body.lang || String(q.lang || '') || null,
   })
 
@@ -128,6 +132,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       slotKey,
       markdown,
       card,
+      lang: marketLang,
+      langSource,
       schedule: 'Every 30 minutes (cron: */30 * * * *)',
       recipient: 'Yan Haixiang',
       chatId: chat.chatId,
@@ -165,14 +171,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: true,
       sent: true,
       slotKey,
+      lang: marketLang,
+      langSource,
       recipientChatId: chat.chatId.slice(0, 10) + '…',
       recipientSource: chat.source,
       via: 'chat_id',
     })
   } catch (chatErr) {
-    const resolved = body.openId?.trim()
-      ? { openId: body.openId.trim(), source: 'request' }
-      : await resolveAdminOpenId()
+    const resolved = adminEarly.openId
+      ? adminEarly
+      : body.openId?.trim()
+        ? { openId: body.openId.trim(), source: 'request' }
+        : await resolveAdminOpenId()
     if (!resolved.openId) {
       return res.status(502).json({
         ok: false,

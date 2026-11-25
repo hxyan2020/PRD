@@ -2123,9 +2123,55 @@ async function main() {
       resMktLang(null) === 'zh-Hans' &&
       resMktLang('fr-FR') === 'zh-Hans' &&
       dTitle('en').includes('Daily') &&
-      dTitle('zh-Hans').includes('早报'),
+      dTitle('zh-Hans').includes('早报') &&
+      dTitle('zh-Hant').includes('早報') &&
+      !dTitle('zh-Hant').includes('早报'),
     '',
   )
+  // 简体中文 and 繁體中文 are two languages — market cards must not share copy.
+  {
+    const { buildMarketCard: bmc, fetchMarketSnapshot: fms, klineCloseChartElement: kce } =
+      await import('../api/lark/_lib/market')
+    const snap = await fms()
+    const hansCard = JSON.stringify(
+      await bmc({
+        title: 't',
+        snap,
+        lang: 'zh-Hans',
+        mode: 'hourly',
+        question: '行情',
+      }),
+    )
+    const hantCard = JSON.stringify(
+      await bmc({
+        title: 't',
+        snap,
+        lang: 'zh-Hant',
+        mode: 'hourly',
+        question: '行情',
+      }),
+    )
+    record(
+      'market.card_hans_vs_hant_distinct',
+      hansCard.includes('小时行情') &&
+        hantCard.includes('小時行情') &&
+        !hantCard.includes('小时行情') &&
+        !hansCard.includes('小時行情') &&
+        hansCard.includes('现货') &&
+        hantCard.includes('現貨'),
+      `hans_h=${hansCard.includes('小时')} hant_H=${hantCard.includes('小時')}`,
+    )
+    const chartHans = JSON.stringify(kce(snap.hourly?.kline || null, 'zh-Hans', 16) || {})
+    const chartHant = JSON.stringify(kce(snap.hourly?.kline || null, 'zh-Hant', 16) || {})
+    record(
+      'market.chart_title_hans_vs_hant',
+      !snap.hourly?.kline?.bars?.length ||
+        (chartHans.includes('收盘走势') &&
+          chartHant.includes('收盤走勢') &&
+          !chartHant.includes('收盘走势')),
+      chartHant.slice(0, 80),
+    )
+  }
   const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
   record(
     'cron.alert_nudge_every_minute',

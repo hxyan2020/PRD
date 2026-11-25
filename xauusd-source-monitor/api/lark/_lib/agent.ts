@@ -1131,7 +1131,10 @@ export async function handleCardAction(args: {
     const barRaw = String(args.value.bar || '1H')
     const bar = isKlineIntervalBar(barRaw) ? barRaw : '1H'
     const mode = String(args.value.mode || '') === 'daily' ? 'daily' : 'hourly'
-    const cardLang = resolveMarketLang(String(args.value.lang || lang || 'zh-Hans'))
+    // Prefer live session language over the lang baked into the button when the card was sent.
+    const cardLang = resolveMarketLang(
+      session.preferredLang || String(args.value.lang || lang || 'zh-Hans'),
+    )
     const card = await rebuildMarketCardForInterval({ bar, mode, lang: cardLang })
     return { card }
   }
@@ -1205,8 +1208,8 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
   session.preferredLang = lang
   saveSession(inbound.chatId, inbound.openId, session)
-  // Remember chat language for cron 早报 (unsupported → 中文 inside resolveMarketLang)
-  void rememberChatMarketLang(inbound.chatId, lang)
+  // Remember chat + user language for cron / market cards (简体 ≠ 繁體)
+  void rememberChatMarketLang(inbound.chatId, lang, inbound.openId)
 
   // Pending soft-command confirm — yes runs it; no / chat continues as chatbot
   let forcedIntent: PendingCommandIntent | null = null
@@ -1455,7 +1458,8 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'market') {
-    const marketLang = resolveMarketLang(lang)
+    // Match the user's current session language — 简体 / 繁體 / en are distinct.
+    const marketLang = resolveMarketLang(session.preferredLang || lang)
     const snap = await fetchMarketSnapshot()
     const base = formatMarketAnswer(snap, marketLang, workingText)
     // Structured hourly card mirrors the web desk — only LLM-enrich when the user asked a free-form market question.

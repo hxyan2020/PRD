@@ -78,22 +78,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const dayKey = shanghaiDayKey(now)
   const chat = resolveDailyChatId(body.chatId || String(q.chatId || ''))
   const langHint = body.lang || String(q.lang || '')
-  const { lang: marketLang, source: langSource } = await resolveDailyMarketLang({
-    chatId: chat.chatId,
-    hint: langHint || null,
-  })
-
   let markdown = ''
   let card: Record<string, unknown>
   let adminOpenId = ''
   let adminSource = 'missing'
+  let marketLang: 'en' | 'zh-Hans' | 'zh-Hant' = 'zh-Hans'
+  let langSource = 'default_zh_hans'
   try {
     const admin = await resolveAdminOpenId({ preferChatId: chat.chatId })
     adminOpenId = admin.openId
     adminSource = admin.source
+    const resolvedLang = await resolveDailyMarketLang({
+      chatId: chat.chatId,
+      openId: adminOpenId,
+      hint: langHint || null,
+    })
+    marketLang = resolvedLang.lang
+    langSource = resolvedLang.source
     const at = atOpenIdMarkdown(adminOpenId)
     const snap = await fetchMarketSnapshot()
-    // Fresh snapshot; language follows chat conversation (unsupported → 中文).
+    // Fresh snapshot; language follows user/chat (简体 ≠ 繁體 ≠ en).
     // Source links are 404-checked before cite (async).
     markdown = await formatDaily24hMarketAnswerAsync(snap, marketLang)
     card = await buildMarketCard({

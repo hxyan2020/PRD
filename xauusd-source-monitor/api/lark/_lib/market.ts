@@ -33,13 +33,22 @@ const DESK_MARKET = 'https://vex-llm-proxy.vercel.app/#/market'
 
 /**
  * Default when conversation language is missing / unsupported.
- * Supported market copy: zh-Hans · zh-Hant · en — everything else → 中文.
+ * Supported market copy: zh-Hans · zh-Hant · en as **three distinct languages**.
+ * 简体中文 ≠ 繁體中文 — never collapse one into the other.
+ * Unsupported hints → 简体中文 (mainland desk default).
  */
 export const LARK_MARKET_LANG: Lang = 'zh-Hans'
 
 const CHAT_LANG_STORE = 'lark-chat-lang.json'
 
-/** Map session / request / detected lang → supported market lang (else 中文). */
+type MarketLangStore = {
+  /** Legacy flat map chatId → lang (still read). */
+  [key: string]: string | Record<string, string> | undefined
+  byChat?: Record<string, string>
+  byOpenId?: Record<string, string>
+}
+
+/** Map session / request / detected lang → supported market lang. */
 export function resolveMarketLang(hint?: Lang | string | null): Lang {
   const raw = String(hint || '')
     .trim()
@@ -62,46 +71,121 @@ export function resolveMarketLang(hint?: Lang | string | null): Lang {
   if (raw === 'en' || raw === 'en-us' || raw === 'en-gb' || raw === 'eng') {
     return 'en'
   }
-  // Unsupported or unclear → 中文
+  // Unsupported → 简体中文 default (not 繁體)
   return LARK_MARKET_LANG
 }
 
-/** Remember the chat’s conversation language for cron 早报 (best-effort durable). */
-export async function rememberChatMarketLang(chatId: string, lang: Lang | string | null | undefined) {
-  const id = (chatId || '').trim()
-  if (!id) return
+function chatLangKey(chatId: string) {
+  return `chat:${chatId}`
+}
+function openIdLangKey(openId: string) {
+  return `user:${openId}`
+}
+
+/** Remember conversation language for cron / interactive market cards (chat + user). */
+export async function rememberChatMarketLang(
+  chatId: string,
+  lang: Lang | string | null | undefined,
+  openId?: string | null,
+) {
   const resolved = resolveMarketLang(lang)
+  const cid = (chatId || '').trim()
+  const oid = (openId || '').trim()
+  if (!cid && !oid) return
   try {
-    const map = (await readDurableJson<Record<string, string>>(CHAT_LANG_STORE)) || {}
-    if (map[id] === resolved) return
-    map[id] = resolved
-    // Keep store bounded
-    const keys = Object.keys(map)
-    if (keys.length > 200) {
-      for (const k of keys.slice(0, keys.length - 200)) delete map[k]
+    const raw = ((await readDurableJson<MarketLangStore>(CHAT_LANG_STORE)) || {}) as MarketLangStore
+    const byChat = { ...(raw.byChat || {}) }
+    const byOpenId = { ...(raw.byOpenId || {}) }
+    // Migrate legacy flat chatId → lang entries
+    for (const [k, v] of Object.entries(raw)) {
+      if (k === 'byChat' || k === 'byOpenId') continue
+      if (typeof v === 'string' && !byChat[k]) byChat[k] = v
     }
-    await writeDurableJson(CHAT_LANG_STORE, map)
+    let dirty = false
+    if (cid && byChat[cid] !== resolved) {
+      byChat[cid] = resolved
+      dirty = true
+    }
+    if (oid && byOpenId[oid] !== resolved) {
+      byOpenId[oid] = resolved
+      dirty = true
+    }
+    if (!dirty) return
+    const trim = (m: Record<string, string>, max: number) => {
+      const keys = Object.keys(m)
+      if (keys.length <= max) return m
+      for (const k of keys.slice(0, keys.length - max)) delete m[k]
+      return m
+    }
+    await writeDurableJson(CHAT_LANG_STORE, {
+      byChat: trim(byChat, 200),
+      byOpenId: trim(byOpenId, 200),
+    })
   } catch {
     /* non-fatal */
   }
 }
 
-/** Lang for a cron / group 早报: request hint → remembered chat lang → 中文. */
+/**
+ * Lang for cron / interactive market cards:
+ * request hint → remembered openId → remembered chatId → 简体中文.
+ * zh-Hans and zh-Hant stay distinct.
+ */
 export async function resolveDailyMarketLang(opts: {
   chatId: string
+  openId?: string | null
   hint?: Lang | string | null
 }): Promise<{ lang: Lang; source: string }> {
   if (opts.hint != null && String(opts.hint).trim()) {
     return { lang: resolveMarketLang(opts.hint), source: 'request' }
   }
   try {
-    const map = (await readDurableJson<Record<string, string>>(CHAT_LANG_STORE)) || {}
-    const remembered = map[(opts.chatId || '').trim()]
-    if (remembered) return { lang: resolveMarketLang(remembered), source: 'chat' }
+    const raw = ((await readDurableJson<MarketLangStore>(CHAT_LANG_STORE)) || {}) as MarketLangStore
+    const byChat = { ...(raw.byChat || {}) }
+    const byOpenId = { ...(raw.byOpenId || {}) }
+    for (const [k, v] of Object.entries(raw)) {
+      if (k === 'byChat' || k === 'byOpenId') continue
+      if (typeof v === 'string' && !byChat[k]) byChat[k] = v
+    }
+    const oid = (opts.openId || '').trim()
+    if (oid && byOpenId[oid]) {
+      return { lang: resolveMarketLang(byOpenId[oid]), source: 'open_id' }
+    }
+    const cid = (opts.chatId || '').trim()
+    if (cid && byChat[cid]) {
+      return { lang: resolveMarketLang(byChat[cid]), source: 'chat' }
+    }
+    // Legacy keys written as chat:/user: prefixes
+    if (oid && typeof raw[openIdLangKey(oid)] === 'string') {
+      return { lang: resolveMarketLang(String(raw[openIdLangKey(oid)])), source: 'open_id' }
+    }
+    if (cid && typeof raw[chatLangKey(cid)] === 'string') {
+      return { lang: resolveMarketLang(String(raw[chatLangKey(cid)])), source: 'chat' }
+    }
   } catch {
     /* fall through */
   }
-  return { lang: LARK_MARKET_LANG, source: 'default_zh' }
+  return { lang: LARK_MARKET_LANG, source: 'default_zh_hans' }
+}
+
+/** Sentiment labels from the hourly engine are 简体 — map for 繁體 cards. */
+export function marketSentimentLabel(
+  lang: Lang,
+  labelZh: string,
+  labelEn: string,
+): string {
+  if (lang === 'en') return labelEn
+  if (lang === 'zh-Hant') {
+    const map: Record<string, string> = {
+      偏空: '偏空',
+      偏谨慎: '偏謹慎',
+      中性: '中性',
+      偏建设性: '偏建設性',
+      偏多: '偏多',
+    }
+    return map[labelZh] || labelZh
+  }
+  return labelZh
 }
 
 export function dailyMarketTitle(lang: Lang): string {
@@ -761,7 +845,7 @@ function pricesAndKlineBlock(
     if (snap.spot) lines.push(`• **现货 XAU：** **${snap.spot.last.toFixed(2)}**`)
     if (hourly?.sentiment) {
       lines.push(
-        `• **情绪：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
+        `• **情绪：** **${marketSentimentLabel(lang, hourly.sentiment.labelZh, hourly.sentiment.labelEn)}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
       )
     }
   } else if (hant) {
@@ -770,7 +854,7 @@ function pricesAndKlineBlock(
     if (snap.spot) lines.push(`• **現貨 XAU：** **${snap.spot.last.toFixed(2)}**`)
     if (hourly?.sentiment) {
       lines.push(
-        `• **情緒：** **${hourly.sentiment.labelZh}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
+        `• **情緒：** **${marketSentimentLabel(lang, hourly.sentiment.labelZh, hourly.sentiment.labelEn)}**（${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score}）`,
       )
     }
   } else {
@@ -779,7 +863,7 @@ function pricesAndKlineBlock(
     if (snap.spot) lines.push(`• **Spot XAU:** **${snap.spot.last.toFixed(2)}**`)
     if (hourly?.sentiment) {
       lines.push(
-        `• **Sentiment:** **${hourly.sentiment.labelEn}** (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
+        `• **Sentiment:** **${marketSentimentLabel(lang, hourly.sentiment.labelZh, hourly.sentiment.labelEn)}** (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
       )
     }
   }
@@ -1047,10 +1131,12 @@ export function klineCloseChartElement(
   const pad = Math.max((hi - lo) * 0.08, hi * 0.0015, 0.5)
   const yMin = Number((lo - pad).toFixed(2))
   const yMax = Number((hi + pad).toFixed(2))
-  const hans = lang === 'zh-Hans' || lang === 'zh-Hant'
-  const title = hans
-    ? `${kline?.symbol || 'XAU'} · ${interval} 收盘走势（近 ${bars.length} 根）`
-    : `${kline?.symbol || 'XAU'} · ${interval} closes (last ${bars.length})`
+  const title =
+    lang === 'zh-Hans'
+      ? `${kline?.symbol || 'XAU'} · ${interval} 收盘走势（近 ${bars.length} 根）`
+      : lang === 'zh-Hant'
+        ? `${kline?.symbol || 'XAU'} · ${interval} 收盤走勢（近 ${bars.length} 根）`
+        : `${kline?.symbol || 'XAU'} · ${interval} closes (last ${bars.length})`
   return {
     tag: 'chart',
     aspect_ratio: '16:9',
