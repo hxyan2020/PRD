@@ -1,74 +1,82 @@
 {
-  "day": "2026-11-24",
-  "scannedAt": "2026-11-24T06:35:15.303Z",
+  "day": "2026-11-25",
+  "scannedAt": "2026-11-25T05:08:47.169Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
-    "ledgerlane-freight",
-    "cuecraft-ads",
-    "yassir-maghreb",
-    "piggyvest-savings",
-    "mercury-banking",
-    "alan-health",
     "sideshift-care",
-    "playpane-classroom",
-    "harbor-legal-ops",
-    "resend-email-api",
-    "posthog-product-os",
-    "iron-dome-devsecops",
-    "qonto-sme-bank",
+    "abridge-clinical",
+    "linear-issue-ops",
+    "fi-money",
+    "reef-credit-exchange",
+    "bushfire-mesh-sensors",
+    "farmstack-coldchain",
+    "antora-heat-battery",
     "synthesis-school",
-    "voltpath-depot",
+    "swan-baas",
+    "clerk-auth",
     "motherduck-analytics",
-    "kiln-microfactory",
+    "iron-dome-devsecops",
+    "posthog-product-os",
+    "perplexity-answer",
     "cursor-coding",
-    "cashfree-merchant",
-    "watershed-climate",
-    "cognition-devin",
-    "elderloop-companion"
+    "mercury-banking",
+    "mercado-voice-pos",
+    "hanok-energy-retrofit",
+    "tabby-bnpl-gcc",
+    "piggyvest-savings"
   ],
   "headlineCount": 40,
-  "feedsOk": 6,
+  "feedsOk": 7,
   "feedsTotal": 8,
   "matchedIdeaCount": 0,
   "headlines": [
     {
       "id": "techcrunch-0",
       "sourceId": "techcrunch",
-      "title": "Supertake raises $20M to let AI agents turn your market predictions into stock portfolios",
-      "url": "https://techcrunch.com/2026/11/23/supertake-raises-20m-to-let-ai-agents-turn-your-market-predictions-into-stock-portfolios/",
-      "excerpt": "Think you know where the market is headed? A startup called Supertake lets you put money behind your ideas without having to pick the stocks yourself.",
-      "publishedAt": "Mon, 23 Nov 2026 22:02:05 +0000",
+      "title": "Maple raises $5.3M to build AI products that protect your data, even from itself",
+      "url": "https://techcrunch.com/2026/11/24/maple-raises-5-3m-to-build-ai-products-that-protect-your-data-even-from-itself/",
+      "excerpt": "The startup's encrypted AI architecture is designed to prevent even the company itself from accessing users' private data.",
+      "publishedAt": "Tue, 24 Nov 2026 21:19:52 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-1",
       "sourceId": "techcrunch",
-      "title": "CrowdStrike to acquire Zscaler for $44 billion",
-      "url": "https://techcrunch.com/2026/11/23/crowdstrike-to-acquire-zscaler-for-44-billion/",
-      "excerpt": "The cybersecurity giant said that the deal to buy Zscaler, which provides zero-trust products to large enterprises, will better equip their customers to use AI agents.",
-      "publishedAt": "Mon, 23 Nov 2026 16:20:11 +0000",
+      "title": "Anthropic shares fall below IPO price, a worrying sign for AI startups",
+      "url": "https://techcrunch.com/2026/11/24/anthropic-shares-fall-below-ipo-price-a-worrying-sign-for-ai-startups/",
+      "excerpt": "Anthropic’s post-IPO slump could put pressure on AI startup valuations.",
+      "publishedAt": "Tue, 24 Nov 2026 18:30:42 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-2",
       "sourceId": "techcrunch",
-      "title": "Sierra doubles valuation to $30B within six months as demand for AI in CX takes off",
-      "url": "https://techcrunch.com/2026/11/23/sierra-doubles-valuation-to-30b-within-six-months-as-demand-for-ai-in-cx-takes-off/",
-      "excerpt": "Enterprise customer experience company Sierra, co-founded by former Salesforce co-CEO Bret Taylor, said on Monday that it has raised $1.75 billion in a Series F round.",
-      "publishedAt": "Mon, 23 Nov 2026 14:43:03 +0000",
+      "title": "Electric truck startup Harbinger gets financing boost from Palmer Luckey&#8217;s bank",
+      "url": "https://techcrunch.com/2026/11/24/electric-truck-startup-harbinger-gets-financing-boost-from-palmer-luckeys-bank/",
+      "excerpt": "Harbinger has tapped Palmer Luckey's Erebor Bank as a new source of capital as the electric truck startup looks to diversify how it funds its growth.",
+      "publishedAt": "Tue, 24 Nov 2026 17:29:09 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techcrunch-3",
       "sourceId": "techcrunch",
-      "title": "How Notable Capital, GIC, and Baillie Gifford bet big on Anthropic before its IPO",
-      "url": "https://techcrunch.com/2026/11/22/how-notable-capital-gic-and-baillie-gifford-bet-big-on-anthropic-before-its-ipo/",
-      "excerpt": "Three significant backers share what gave them conviction to bet billions on Anthropic.",
-      "publishedAt": "Mon, 23 Nov 2026 01:25:53 +0000",
+      "title": "Amazon&#8217;s Decart acquisition is a bet on using software to narrow the silicon gap with Nvidia",
+      "url": "https://techcrunch.com/2026/11/24/amazons-decart-acquisition-is-a-bet-on-using-software-to-narrow-the-gap-with-nvidia-in-the-ai-chip-race/",
+      "excerpt": "Amazon’s decision to acquire Decart for a reported $7.5 billion is part of its efforts to improve the efficiency of its Trainium chips.",
+      "publishedAt": "Tue, 24 Nov 2026 15:51:07 +0000",
       "matchedSlugs": []
     },
     {
       "id": "crunchbase-news-4",
+      "sourceId": "crunchbase-news",
+      "title": "Startups Are Picking Names That Can Work Even If The Original Business Model Doesn’t",
+      "url": "https://news.crunchbase.com/startups/startup-name-trends-2026-ai/",
+      "excerpt": "Startup naming tends to be a cyclical endeavor. For a few years, founders might be enamoured of silly monikers, made-up words, and creative misspellings. Then the pendulum swings, and startups defer to simple names that describe what they actually do. So where are we now? Probabl",
+      "publishedAt": "Tue, 24 Nov 2026 12:00:21 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "crunchbase-news-5",
       "sourceId": "crunchbase-news",
       "title": "Most Unicorns Are Worth More Than Their Last Funding-Round Valuations, Crunchbase Estimates",
       "url": "https://news.crunchbase.com/venture/unicorn-startup-current-valuations-thinking-machines-sierra-crunchbase/",
@@ -77,7 +85,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-5",
+      "id": "crunchbase-news-6",
       "sourceId": "crunchbase-news",
       "title": "The Week’s 10 Biggest Funding Rounds: $400M For Neurotech Leads, Followed By Big Deals For AI, Fintech, Biotech And More",
       "url": "https://news.crunchbase.com/venture/biggest-startup-rounds-science-neurotech-model-ml-galvanize-therapeutics/",
@@ -86,7 +94,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-6",
+      "id": "crunchbase-news-7",
       "sourceId": "crunchbase-news",
       "title": "5 Interesting Startup Deals You May Have Missed: Reflecting Sunlight From Space, Better Breathing And Smarter Garbage Trucks",
       "url": "https://news.crunchbase.com/venture/interesting-startup-deals-ai-solar-healthcare-space-tech/",
@@ -95,7 +103,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-7",
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "The Blue Economy: The World’s Quietest Economic Engine And Its Smartest Cities",
       "url": "https://news.crunchbase.com/startups/blue-economy-technology-defense-energy-onetti-mind-the-bridge/",
@@ -104,7 +112,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-9",
       "sourceId": "crunchbase-news",
       "title": "What’s Next For Recruiting, Job Hunting And HR? More AI, Of Course",
       "url": "https://news.crunchbase.com/venture/data-recruiting-job-hunting-hr-ai-startups-mercor/",
@@ -113,21 +121,12 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
+      "id": "crunchbase-news-10",
       "sourceId": "crunchbase-news",
       "title": "Anthropic Closes Up 17% After Massive IPO",
       "url": "https://news.crunchbase.com/public/ipo/anthropic-prices-ipo-ant-above-range/",
       "excerpt": "The offering promises to be the public market event of the season, with the Claude creator seeing investor demand for shares well in excess of its capital-raising goals.",
       "publishedAt": "Wed, 18 Nov 2026 22:15:36 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "crunchbase-news-10",
-      "sourceId": "crunchbase-news",
-      "title": "The Key Numbers I’m Watching As Anthropic Makes Its IPO Debut",
-      "url": "https://news.crunchbase.com/ai/anthropic-ant-ipo-revenue-growth-risks-s1-analysis/",
-      "excerpt": "Just three years after launching with zero revenue, Anthropic brought in $17 billion and says more than 11,900 customers now spend at least $100,000 a year. But its IPO filing also reveals enormous computing commitments and big questions about balancing growth with risks.",
-      "publishedAt": "Wed, 18 Nov 2026 19:39:58 +0000",
       "matchedSlugs": []
     },
     {
@@ -212,25 +211,43 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-20",
-      "sourceId": "sifted",
-      "title": "The other Staniszewski brother just raised $4.7m – and Paul Graham is a backer",
-      "url": "https://sifted.eu/articles/lato-seed-round/",
-      "excerpt": "",
-      "publishedAt": "Thu, 19 Nov 2026 05:00:14 GMT",
+      "id": "eu-startups-20",
+      "sourceId": "eu-startups",
+      "title": "Bcomp secures €20 million from EIB to scale flax fibre-based alternatives to carbon fibre, glass fibre and plastics",
+      "url": "https://www.eu-startups.com/2026/11/bcomp-secures-e20-million-from-eib-to-scale-flax-fibre-based-alternatives-to-carbon-fibre-glass-fibre-and-plastics/",
+      "excerpt": "Bcomp, a Fribourg-based CleanTech startup specialising in high-performance bio-based materials, has secured €20 million from the European Investment Bank (EIB) to build a high-volume manufacturing plant in the Romanian city of Timișoara and continue research and development in Fr",
+      "publishedAt": "Tue, 24 Nov 2026 11:34:52 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "sifted-21",
-      "sourceId": "sifted",
-      "title": "How Payhawk raised $280m amid fintech downturn",
-      "url": "https://sifted.eu/articles/payhawk-series-c/",
-      "excerpt": "",
-      "publishedAt": "Wed, 18 Nov 2026 15:03:22 GMT",
+      "id": "eu-startups-21",
+      "sourceId": "eu-startups",
+      "title": "Amsterdam’s Good Heat raises €2 million to replace industrial gas-fired steam boilers with heat batteries",
+      "url": "https://www.eu-startups.com/2026/11/amsterdams-good-heat-raises-e2-million-to-replace-industrial-gas-fired-steam-boilers-with-heat-batteries/",
+      "excerpt": "Good Heat, an Amsterdam-based startup that delivers zero-carbon heat as a service to industrial heat users, has raised €2 million to support its growing project pipeline. The round is led by SET Ventures, Europe’s leading energy VC, with participation from Shell Ventures and exis",
+      "publishedAt": "Tue, 24 Nov 2026 09:00:10 +0000",
       "matchedSlugs": []
     },
     {
       "id": "eu-startups-22",
+      "sourceId": "eu-startups",
+      "title": "Frankfurt-based CommerzVentures closes €50 million Fund IV, betting on early-stage FinTech and AI",
+      "url": "https://www.eu-startups.com/2026/11/frankfurt-based-commerzventures-closes-e50-million-fund-iv-betting-on-early-stage-fintech-and-ai/",
+      "excerpt": "CommerzVentures, a Frankfurt-based specialist venture capital firm focused on financial services, has closed its fourth fund at €50 million. The fourth fund — CommerzVentures IV (Fund IV) — is anchored by Commerzbank and is deliberately smaller than its predecessors; the firm man",
+      "publishedAt": "Tue, 24 Nov 2026 08:09:41 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-23",
+      "sourceId": "eu-startups",
+      "title": "Adyen’s co-founder Pieter van der Does to retire as Co-CEO; Ingo Uytdehaage to become sole CEO",
+      "url": "https://www.eu-startups.com/2026/11/adyens-co-founder-pieter-van-der-does-to-retire-as-co-ceo-ingo-uytdehaage-to-become-sole-ceo/",
+      "excerpt": "Pieter van der Does, co-founder and Co-CEO of Dutch Fintech Adyen, is stepping down from his executive role after 20 years at the helm of one of Europe’s most prominent technology companies. In an announcement on 23 November 2026, marking Adyen’s 20th anniversary, the company sai",
+      "publishedAt": "Tue, 24 Nov 2026 06:27:55 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "eu-startups-24",
       "sourceId": "eu-startups",
       "title": "German startup Playbook secures €8 million to help pharma companies deploy AI safely",
       "url": "https://www.eu-startups.com/2026/11/german-startup-playbook-secures-e8-million-to-help-pharma-companies-deploy-ai-safely/",
@@ -239,7 +256,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-23",
+      "id": "eu-startups-25",
       "sourceId": "eu-startups",
       "title": "UK-based Agon raises €63.98 million at €411.3 million valuation to build Europe’s sovereign defence AI infrastructure",
       "url": "https://www.eu-startups.com/2026/11/uk-based-agon-raises-e63-98-million-at-e411-3-million-valuation-to-build-europes-sovereign-defence-ai-infrastructure/",
@@ -248,52 +265,61 @@
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-24",
-      "sourceId": "eu-startups",
-      "title": "Theseus Robotics secures €455k to put robots to work in supermarkets across Europe and US",
-      "url": "https://www.eu-startups.com/2026/11/theseus-robotics-secures-e455k-to-put-robots-to-work-in-supermarkets-across-europe-and-us/",
-      "excerpt": "Theseus Robotics, a Swiss startup developing AI-powered robots to automate shelf restocking and online grocery order picking, has secured €455k ($500k) from Y Combinator and will be launching in a grocery store in Silicon Valley. The investment follows earlier backing from Founde",
-      "publishedAt": "Mon, 23 Nov 2026 11:15:57 +0000",
+      "id": "techinasia-26",
+      "sourceId": "techinasia",
+      "title": "Dutch AI chip startup Axelera seeks $400m in new funding",
+      "url": "https://www.techinasia.com/news/dutch-ai-chip-startup-axelera-seeks-400m-funding",
+      "excerpt": "Axelera has developed three chip generations, including the air-cooled Titania architecture.",
+      "publishedAt": "Wed, 25 Nov 2026 02:23:23 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-25",
-      "sourceId": "eu-startups",
-      "title": "London-based Acorda raises €2.15 million to help banks detect payment scams before money moves",
-      "url": "https://www.eu-startups.com/2026/11/london-based-acorda-raises-e2-15-million-to-help-banks-detect-payment-scams-before-money-moves/",
-      "excerpt": "Acorda, a London-based FinTech startup helping payment providers stop financial scams through shared risk data, has raised €2.15 million (£1.8 million) in a pre-Seed funding round. The round was led by Concept Ventures, the first venture capital firm to back AI unicorn Eleven Lab",
-      "publishedAt": "Mon, 23 Nov 2026 10:31:19 +0000",
+      "id": "techinasia-27",
+      "sourceId": "techinasia",
+      "title": "Who’s investing in India’s SaaS startups?",
+      "url": "https://www.techinasia.com/whos-investing-indias-saas-startups",
+      "excerpt": "We've compiled a list of investors pouring money into India’s SaaS startups.",
+      "publishedAt": "Wed, 25 Nov 2026 02:00:00 +0000",
       "matchedSlugs": []
     },
     {
-      "id": "eu-startups-26",
-      "sourceId": "eu-startups",
-      "title": "Swiss startup coprod raises €5.45 million to solve “integration hell” in robotics and physical AI hardware",
-      "url": "https://www.eu-startups.com/2026/11/swiss-startup-coprod-raises-e5-45-million-to-solve-integration-hell-in-robotics-and-physical-ai-hardware/",
-      "excerpt": "coprod, a Swiss robotics hardware startup building modular hardware components for robotics and physical AI applications, has raised €5.45 million ($6 million) in a pre-Seed funding round. The round was co-led by Founderful and PROTOTYPE, with additional backing from General Cata",
-      "publishedAt": "Mon, 23 Nov 2026 09:01:18 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-27",
-      "sourceId": "eu-startups",
-      "title": "Paris-based HoloSolis raises over €15 million to advance €1 billion solar gigafactory in France",
-      "url": "https://www.eu-startups.com/2026/11/paris-based-holosolis-raises-over-e15-million-to-advance-e1-billion-solar-gigafactory-in-france/",
-      "excerpt": "HoloSolis, a Paris-based solar manufacturing startup, has closed a Series A funding round of more than €15 million to build Europe’s next solar gigafactory. The round saw participation from four new investors: Crédit Agricole Group, through four of its regional banks; investment ",
-      "publishedAt": "Mon, 23 Nov 2026 07:48:17 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "eu-startups-28",
-      "sourceId": "eu-startups",
-      "title": "Weekly funding round-up! All of the European startup funding rounds we tracked this week (Nov.16 – Nov.20)",
-      "url": "https://www.eu-startups.com/2026/11/weekly-funding-round-up-all-of-the-european-startup-funding-rounds-we-tracked-this-week-nov-16-nov-20/",
-      "excerpt": "This article is visible for CLUB members only. If you are already a member but don’t see the content of this article, please login here. If you’re not a CLUB member yet, but you’d like to read members-only content like this one, have unrestricted access to the site and benefit fr",
-      "publishedAt": "Fri, 20 Nov 2026 16:45:27 +0000",
+      "id": "techinasia-28",
+      "sourceId": "techinasia",
+      "title": "US AI notetaker startup Plaud targets 1m India users by 2030",
+      "url": "https://www.techinasia.com/news/ai-notetaker-startup-plaud-targets-1m-india-users-2030",
+      "excerpt": "Nearly 15% of Plaud's India users work in manufacturing, about 3x the share in the US.",
+      "publishedAt": "Wed, 25 Nov 2026 01:33:36 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-29",
+      "sourceId": "techinasia",
+      "title": "Hot or not: What SEA investors are betting on and what they&#8217;re ignoring",
+      "url": "https://www.techinasia.com/visual-story/funding-overview",
+      "excerpt": "VC funding can be a leading indicator of where in the tech industry we’re going to see more spending and jobs.",
+      "publishedAt": "Wed, 25 Nov 2026 00:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-30",
+      "sourceId": "techinasia",
+      "title": "Mapping the trailblazing startups in Australia’s AI sector",
+      "url": "https://www.techinasia.com/visual-story/mapping-trailblazing-startups-australias-ai-sector",
+      "excerpt": "Mapping Australia's AI sector: Key players, top investors, and funding insights in one report.",
+      "publishedAt": "Tue, 24 Nov 2026 11:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-31",
+      "sourceId": "techinasia",
+      "title": "Malaysia to tell data hubs to shun 7 US-blacklisted firms",
+      "url": "https://www.techinasia.com/news/malaysia-data-hubs-shun-7-usblacklisted-firms",
+      "excerpt": "Malaysia’s Ministry of Investment, Trade and Industry has issued guidelines for data center development.",
+      "publishedAt": "Tue, 24 Nov 2026 09:10:54 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-32",
       "sourceId": "techinasia",
       "title": "Indian robot actuator startup Cosine raises $2.4m",
       "url": "https://www.techinasia.com/news/indian-robot-actuator-startup-cosine-raises-24m",
@@ -302,70 +328,25 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-30",
-      "sourceId": "techinasia",
-      "title": "This startup stops bleeding in 60 seconds",
-      "url": "https://www.techinasia.com/this-startup-stops-severe-bleeding-in-60-seconds",
-      "excerpt": "By mimicking natural fibrin strands, Miraqules has developed a cost-effective dressing designed to stop traumatic bleeding in 60 seconds.",
-      "publishedAt": "Tue, 24 Nov 2026 03:00:55 +0000",
+      "id": "yourstory-33",
+      "sourceId": "yourstory",
+      "title": "Aeravti Ventures launches Rs 300 Cr fund II",
+      "url": "https://yourstory.com/2026/11/aeravti-ventures-launches-rs-300-cr-fund-ii",
+      "excerpt": "The second fund of Aeravti Ventures will invest in around 10 startups in segments of food security, health infra and physical security.",
+      "publishedAt": "Wed, 25 Nov 2026 00:35:00 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-31",
-      "sourceId": "techinasia",
-      "title": "Accel leads $277m seed for AI infrastructure startup Marlowe",
-      "url": "https://www.techinasia.com/news/accel-leads-277m-seed-ai-infrastructure-startup-marlowe",
-      "excerpt": "Marlowe's first site, which uses Etched hardware, is set to go live in December 2026.",
-      "publishedAt": "Tue, 24 Nov 2026 01:46:00 +0000",
+      "id": "yourstory-34",
+      "sourceId": "yourstory",
+      "title": "CortexSpark Ventures launches Rs 1,000 Cr deeptech fund",
+      "url": "https://yourstory.com/2026/11/cortexspark-ventures-launches-rs-1000-cr-deeptech-fund",
+      "excerpt": "CortexSpark Ventures will back deeptech startups that have created IP and looking to translate this into commercial applications",
+      "publishedAt": "Tue, 24 Nov 2026 06:46:44 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-32",
-      "sourceId": "techinasia",
-      "title": "Lightspeed, Greenoaks lead $1.75b round for AI startup Sierra",
-      "url": "https://www.techinasia.com/news/lightspeed-greenoaks-lead-175b-ai-startup-sierra",
-      "excerpt": "Salesforce, where co-founder Bret Taylor was co-CEO, pits its Agentforce offering against Sierra.",
-      "publishedAt": "Tue, 24 Nov 2026 01:34:55 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-33",
-      "sourceId": "techinasia",
-      "title": "Coinbase Ventures joins $20m funding for US AI app Supertake",
-      "url": "https://www.techinasia.com/news/coinbase-ventures-joins-20m-funding-ai-app-supertake",
-      "excerpt": "Supertake said its waitlisted beta works with Coinbase and Robinhood.",
-      "publishedAt": "Tue, 24 Nov 2026 00:49:34 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-34",
-      "sourceId": "techinasia",
-      "title": "Amazon to buy Israeli AI startup Decart’s tech in $7.5b deal",
-      "url": "https://www.techinasia.com/news/amazon-buy-israeli-ai-startup-decarts-tech-75b-deal",
-      "excerpt": "Founded in 2023, Decart raised US$300M in May 2026, with Nvidia as a new investor.",
-      "publishedAt": "Tue, 24 Nov 2026 00:08:31 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-35",
-      "sourceId": "techinasia",
-      "title": "Mapping the trailblazers in Korea&#8217;s health sector",
-      "url": "https://www.techinasia.com/visual-story/mapping-trailblazers-koreas-health-sector",
-      "excerpt": "Mapping Korea's health sector: Key players, top investors, and funding insights in one report.",
-      "publishedAt": "Mon, 23 Nov 2026 11:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-36",
-      "sourceId": "techinasia",
-      "title": "Indian data security startup Matters.AI raises $12m",
-      "url": "https://www.techinasia.com/news/indian-data-security-startup-mattersai-raises-12m",
-      "excerpt": "Matters.AI said its software tracks sensitive data across enterprise systems and is used by more than 50 organizations.",
-      "publishedAt": "Mon, 23 Nov 2026 10:01:12 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-37",
+      "id": "yourstory-35",
       "sourceId": "yourstory",
       "title": "India AI funding nearly doubles to $1.6B in Jan-Sept 2026: Tracxn",
       "url": "https://yourstory.com/2026/11/india-ai-funding-nearly-doubles-jan-sept-2026-tracxn",
@@ -374,21 +355,39 @@
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-38",
+      "id": "yourstory-36",
       "sourceId": "yourstory",
-      "title": "VC funding rebounds as startups raise $255M; Women founders driving social change",
-      "url": "https://yourstory.com/2026/11/vc-funding-rebounds-women-founders-social-change",
-      "excerpt": "Venture capital funding in Indian startups saw a sharp rise this week, propped up by a couple of deals in the $50-million range.",
-      "publishedAt": "Mon, 23 Nov 2026 02:00:00 GMT",
+      "title": "Startup news and updates: Daily roundup (November 24, 2026)",
+      "url": "https://yourstory.com/2026/11/startup-news-updates-daily-roundup-november-24-2026",
+      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here's the roundup for Tuesday, November 24, 2026.",
+      "publishedAt": "Tue, 24 Nov 2026 07:39:49 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "yourstory-39",
+      "id": "yourstory-37",
       "sourceId": "yourstory",
-      "title": "Startup news and updates: Daily roundup (November 23, 2026)",
-      "url": "https://yourstory.com/2026/11/startup-news-updates-daily-roundup-november-23-2026",
-      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here's the roundup for Monday, November 23, 2026.",
-      "publishedAt": "Mon, 23 Nov 2026 07:03:12 GMT",
+      "title": "Fintech startup Vegapay to raise Rs 38.4 Cr in Series A funding round led by Prosus",
+      "url": "https://yourstory.com/2026/11/vegapay-to-raise-rs-384-cr-series-a-funding-led-by-prosus",
+      "excerpt": "The round will also see participation from existing investors Elevation Capital, Vertex Ventures and Eximius Ventures.",
+      "publishedAt": "Tue, 24 Nov 2026 12:07:53 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "inc42-38",
+      "sourceId": "inc42",
+      "title": "Shadowfax To Acquire WeFast To Expand Into Intra-City Deliveries",
+      "url": "https://inc42.com/buzz/shadowfax-to-acquire-wefast-to-expand-into-intra-city-deliveries/",
+      "excerpt": "Shadowfax has acquired the Indian entity of global same-day intra-city delivery platform Borzo (formerly known as WeFast) for ₹23.3 Cr,&#8230;",
+      "publishedAt": "Tue, 24 Nov 2026 16:17:09 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "inc42-39",
+      "sourceId": "inc42",
+      "title": "GMP Not Indicator Of Expected Returns: SEBI Seeks To Curb IPO GMP Circulation",
+      "url": "https://inc42.com/buzz/gmp-not-indicator-of-expected-returns-sebi-seeks-to-curb-ipo-gmp-circulation/",
+      "excerpt": "Markets regulator SEBI has moved to curb the publication and circulation of grey market premium (GMP) figures for upcoming IPOs.&#8230;",
+      "publishedAt": "Tue, 24 Nov 2026 13:15:41 +0000",
       "matchedSlugs": []
     }
   ]
