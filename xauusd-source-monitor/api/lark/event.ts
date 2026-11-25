@@ -6,8 +6,8 @@
  *   Events: im.message.receive_v1, card.action.trigger
  *   Card Request URL (消息卡片请求网址): same URL (or /api/lark/card)
  *   — without Card Request URL, tapping buttons shows
- *     “Card callback isn't configured”. Prefer text commands unless
- *     LARK_ENABLE_CARD_BUTTONS=1 after the URL is set.
+ *     “Card callback isn't configured”. Investigation cards ship
+ *     step / report / archive / review buttons that call this handler.
  *
  * Minimum secrets: LARK_APP_ID + LARK_APP_SECRET (set on Vercel).
  * Optional: LARK_VERIFICATION_TOKEN (recommended), LARK_BOT_OPEN_ID (auto-fetched).
