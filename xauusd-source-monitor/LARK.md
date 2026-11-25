@@ -82,12 +82,19 @@ Demo catch-up windows (idempotent via durable sent-day state):
 - Weekly DEMO: after `16:00` CST until `18:00` on campaign day
 - Daily morning: after `09:00` CST until end of day (dayKey sent-state)
 
-**cron-tick** (`*/5 * * * *`) fans out all push jobs on the public alias
-(`vex-llm-proxy.vercel.app`) so SSO / deployment-host misses still catch up.
-It **awaits cron-health first**, then runs the other jobs in parallel (per-child
-timeout); if the health beat is still stale or the primary hit failed, it
-retries with `?force=1`. **cron-health** itself re-sends after **35 minutes** of
-DM silence (including never-sent) so a quiet schedule cannot stay silent.
+**cron-tick** (`*/5 * * * *`) is the permanent keep-alive for every Lark push
+job on the public alias (`vex-llm-proxy.vercel.app`):
+1. Awaits **cron-health** first (cannot be starved by OKX / market).
+2. Fans out the other jobs in parallel (per-child timeout).
+3. **Watchdog pass** — any path that returned non-200 or still has a stale beat
+   is retried (health with `?force=1`; others idempotent without force so cards
+   cannot double-push after a late success).
+4. Tick fails closed unless every path ends HTTP 200.
+
+Each handler also writes its own durable heartbeat on invoke / skip / send, and
+sent-state Blob write failures return 502 so the next tick retries.
+**cron-health** itself re-sends after **35 minutes** of DM silence (including
+never-sent).
 
 ## Endpoints
 

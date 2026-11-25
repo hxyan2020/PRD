@@ -2397,17 +2397,44 @@ async function main() {
       cronTickSrc.includes('/api/lark/cron-health') &&
       cronTickSrc.includes('Promise.all') &&
       cronTickSrc.includes('healthFirst') &&
-      cronTickSrc.includes('HEALTH_STALE_MS') &&
+      cronTickSrc.includes('watchdog') &&
+      cronTickSrc.includes('needsWatchdog') &&
+      cronTickSrc.includes('STALE_MS') &&
       cronTickSrc.includes('hitPath(HEALTH_PATH') &&
       cronTickSrc.includes('AbortSignal.timeout') &&
       cronTickSrc.indexOf('HEALTH_PATH') < cronTickSrc.indexOf('OTHER_PATHS') &&
       cronTickSrc.indexOf("'/api/lark/cron-health'") <
         cronTickSrc.indexOf("'/api/lark/alert-nudge'"),
-    'cron-tick health-first await + force-on-stale + parallel others + vercel */5',
+    'cron-tick health-first + watchdog retry all stale/failed + vercel */5',
   )
   const cronHealthSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/cron-health.ts', import.meta.url),
     'utf8',
+  )
+  const marketSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/market-report.ts', import.meta.url),
+    'utf8',
+  )
+  const dailySrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/daily-market-report.ts', import.meta.url),
+    'utf8',
+  )
+  const weeklySrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/weekly-report.ts', import.meta.url),
+    'utf8',
+  )
+  const weeklyDemoSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/weekly-demo.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.all_handlers_self_heartbeat',
+    marketSrc.includes("touchCronHeartbeat('/api/lark/market-report'") &&
+      dailySrc.includes("touchCronHeartbeat('/api/lark/daily-market-report'") &&
+      weeklySrc.includes("touchCronHeartbeat('/api/lark/weekly-report'") &&
+      weeklyDemoSrc.includes("touchCronHeartbeat('/api/lark/weekly-demo'") &&
+      cronHealthSrc.includes("touchCronHeartbeat('/api/lark/cron-health'"),
+    'every cron handler records a durable beat on invoke',
   )
   record(
     'cron.health_stale_catchup',
@@ -2481,10 +2508,6 @@ async function main() {
     'cron.daily_market_0900_cst',
     dailyCron?.schedule === '0 1 * * *',
     JSON.stringify(dailyCron || {}),
-  )
-  const dailySrc = await (await import('node:fs/promises')).readFile(
-    new URL('../api/lark/daily-market-report.ts', import.meta.url),
-    'utf8',
   )
   record(
     'cron.daily_idempotent_without_force',

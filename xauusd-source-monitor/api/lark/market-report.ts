@@ -12,6 +12,7 @@ import {
   sendCardToOpenId,
 } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
+import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   buildMarketCard,
@@ -47,14 +48,14 @@ async function readSent(): Promise<Record<string, number>> {
   return (await readDurableJson<Record<string, number>>(SENT_NAME)) || {}
 }
 
-async function markSent(slotKey: string) {
+async function markSent(slotKey: string): Promise<boolean> {
   const map = await readSent()
   const cutoff = Date.now() - 48 * 3600_000
   for (const [k, ts] of Object.entries(map)) {
     if (typeof ts === 'number' && ts < cutoff) delete map[k]
   }
   map[slotKey] = Date.now()
-  await writeDurableJson(SENT_NAME, map)
+  return writeDurableJson(SENT_NAME, map)
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -81,6 +82,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     body.dry === true ||
     (req.method === 'GET' && !cron && String(q.send || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
+
+  if (cron && !dry) {
+    await touchCronHeartbeat('/api/lark/market-report', {
+      outcome: 'ok',
+      reason: force ? 'invoke_force' : 'invoke',
+    })
+  }
 
   const now = Date.now()
   const slotKey = shanghaiHalfHourKey(now)
@@ -153,6 +161,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const sent = await readSent()
   // Idempotent for cron and manual — only force=true re-pushes the same slot.
   if (!force && sent[slotKey]) {
+    await touchCronHeartbeat('/api/lark/market-report', {
+      status: 200,
+      outcome: 'skipped',
+      reason: 'already_sent_this_slot',
+    })
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -166,7 +179,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Prefer chat_id (oc_…) DM/group; fall back to open_id if chat send fails and open_id is known
   try {
     await sendCardToChat(chat.chatId, card)
-    await markSent(slotKey)
+    const persisted = await markSent(slotKey)
+    await touchCronHeartbeat('/api/lark/market-report', {
+      status: persisted ? 200 : 502,
+      outcome: 'sent',
+      reason: persisted ? 'healthy' : 'sent_but_blob_failed',
+    })
+    if (!persisted) {
+      return res.status(502).json({
+        ok: false,
+        sent: true,
+        error: 'market_sent_state_blob_failed',
+        slotKey,
+      })
+    }
     return res.status(200).json({
       ok: true,
       sent: true,
@@ -184,6 +210,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ? { openId: body.openId.trim(), source: 'request' }
         : await resolveAdminOpenId()
     if (!resolved.openId) {
+      await touchCronHeartbeat('/api/lark/market-report', {
+        status: 502,
+        outcome: 'error',
+        reason: chatErr instanceof Error ? chatErr.message : 'send to chat failed',
+      })
       return res.status(502).json({
         ok: false,
         error: chatErr instanceof Error ? chatErr.message : 'send to chat failed',
@@ -194,7 +225,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     try {
       await sendCardToOpenId(resolved.openId, card)
-      await markSent(slotKey)
+      const persisted = await markSent(slotKey)
+      await touchCronHeartbeat('/api/lark/market-report', {
+        status: persisted ? 200 : 502,
+        outcome: 'sent',
+        reason: persisted ? 'open_id_fallback' : 'open_id_fallback_blob_failed',
+      })
+      if (!persisted) {
+        return res.status(502).json({
+          ok: false,
+          sent: true,
+          error: 'market_sent_state_blob_failed',
+          slotKey,
+          via: 'open_id_fallback',
+        })
+      }
       return res.status(200).json({
         ok: true,
         sent: true,
@@ -205,6 +250,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         chatError: chatErr instanceof Error ? chatErr.message : String(chatErr),
       })
     } catch (e) {
+      await touchCronHeartbeat('/api/lark/market-report', {
+        status: 502,
+        outcome: 'error',
+        reason: e instanceof Error ? e.message : 'send failed',
+      })
       return res.status(502).json({
         ok: false,
         error: e instanceof Error ? e.message : 'send failed',

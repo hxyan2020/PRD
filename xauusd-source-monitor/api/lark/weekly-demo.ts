@@ -7,6 +7,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { larkConfigured, resolveAdminOpenId, sendCardToChat } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
+import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { buildWeeklyDemoReport, weeklyDemoCard } from './_lib/weeklyReport.js'
 import { shanghaiDayKey } from './_lib/market.js'
@@ -38,8 +39,8 @@ async function readSentDay(): Promise<string> {
   return j?.day || ''
 }
 
-async function markSent(day: string) {
-  await writeDurableJson(STATE_NAME, { day, at: Date.now() })
+async function markSent(day: string): Promise<boolean> {
+  return writeDurableJson(STATE_NAME, { day, at: Date.now() })
 }
 
 function resolveChatId(req?: string): string {
@@ -80,6 +81,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (req.method === 'GET' && !cron && String(q.send || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
 
+  if (cron && !dry) {
+    await touchCronHeartbeat('/api/lark/weekly-demo', {
+      outcome: 'ok',
+      reason: force ? 'invoke_force' : 'invoke',
+    })
+  }
+
   const now = Date.now()
   const day = shanghaiDayKey(now)
   const hm = shanghaiHm(now)
@@ -111,6 +119,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (cron && !force) {
     if (!isWeeklyDemoSlot(now)) {
+      await touchCronHeartbeat('/api/lark/weekly-demo', {
+        status: 200,
+        outcome: 'skipped',
+        reason: 'not_demo_slot',
+      })
       return res.status(200).json({
         ok: true,
         skipped: true,
@@ -121,6 +134,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
     }
     if (already) {
+      await touchCronHeartbeat('/api/lark/weekly-demo', {
+        status: 200,
+        outcome: 'skipped',
+        reason: 'demo_already_sent',
+      })
       return res.status(200).json({
         ok: true,
         skipped: true,
@@ -131,6 +149,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!force && already) {
+    await touchCronHeartbeat('/api/lark/weekly-demo', {
+      status: 200,
+      outcome: 'skipped',
+      reason: 'demo_already_sent',
+    })
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -144,7 +167,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const sent = await sendCardToChat(chatId, card)
-    await markSent(WEEKLY_DEMO_DAY)
+    const persisted = await markSent(WEEKLY_DEMO_DAY)
+    await touchCronHeartbeat('/api/lark/weekly-demo', {
+      status: persisted ? 200 : 502,
+      outcome: 'sent',
+      reason: persisted ? 'demo' : 'sent_but_blob_failed',
+    })
+    if (!persisted) {
+      return res.status(502).json({
+        ok: false,
+        sent: true,
+        error: 'weekly_demo_sent_state_blob_failed',
+        day,
+      })
+    }
     return res.status(200).json({
       ok: true,
       sent: true,
@@ -158,6 +194,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       hasRealAt: Boolean(admin.openId?.startsWith('ou_')),
     })
   } catch (e) {
+    await touchCronHeartbeat('/api/lark/weekly-demo', {
+      status: 502,
+      outcome: 'error',
+      reason: e instanceof Error ? e.message : 'send failed',
+    })
     return res.status(502).json({
       ok: false,
       error: e instanceof Error ? e.message : 'send failed',

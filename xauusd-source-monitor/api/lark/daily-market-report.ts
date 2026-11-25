@@ -8,6 +8,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { atOpenIdMarkdown, larkConfigured, resolveAdminOpenId, sendCardToChat } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
+import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   buildMarketCard,
@@ -50,14 +51,14 @@ async function readSent(): Promise<Record<string, number>> {
   return (await readDurableJson<Record<string, number>>(SENT_NAME)) || {}
 }
 
-async function markSent(dayKey: string) {
+async function markSent(dayKey: string): Promise<boolean> {
   const map = await readSent()
   const cutoff = Date.now() - 14 * 24 * 3600_000
   for (const [k, ts] of Object.entries(map)) {
     if (typeof ts === 'number' && ts < cutoff) delete map[k]
   }
   map[dayKey] = Date.now()
-  await writeDurableJson(SENT_NAME, map)
+  return writeDurableJson(SENT_NAME, map)
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -83,6 +84,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     body.dry === true ||
     (req.method === 'GET' && !cron && String(q.send || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
+
+  if (cron && !dry) {
+    await touchCronHeartbeat('/api/lark/daily-market-report', {
+      outcome: 'ok',
+      reason: force ? 'invoke_force' : 'invoke',
+    })
+  }
 
   const now = Date.now()
   const dayKey = shanghaiDayKey(now)
@@ -161,6 +169,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Cron / cron-tick fan-out: do not fire before 09:00 Asia/Shanghai.
   // Catch-up after 09:00 is OK (idempotent via dayKey).
   if (cron && !force && !isDailyMarketSlot(now)) {
+    await touchCronHeartbeat('/api/lark/daily-market-report', {
+      status: 200,
+      outcome: 'skipped',
+      reason: 'before_daily_slot',
+    })
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -176,6 +189,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Skip for both cron and manual unless force=true — prevents double-push from
   // verify curls / accidental POST after a successful send the same day.
   if (!force && sent[dayKey]) {
+    await touchCronHeartbeat('/api/lark/daily-market-report', {
+      status: 200,
+      outcome: 'skipped',
+      reason: 'already_sent_today',
+    })
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -188,7 +206,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await sendCardToChat(chat.chatId, card)
-    await markSent(dayKey)
+    const persisted = await markSent(dayKey)
+    await touchCronHeartbeat('/api/lark/daily-market-report', {
+      status: persisted ? 200 : 502,
+      outcome: 'sent',
+      reason: persisted ? 'healthy' : 'sent_but_blob_failed',
+    })
+    if (!persisted) {
+      return res.status(502).json({
+        ok: false,
+        sent: true,
+        error: 'daily_sent_state_blob_failed',
+        dayKey,
+      })
+    }
     return res.status(200).json({
       ok: true,
       sent: true,
@@ -198,6 +229,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       via: 'chat_id',
     })
   } catch (e) {
+    await touchCronHeartbeat('/api/lark/daily-market-report', {
+      status: 502,
+      outcome: 'error',
+      reason: e instanceof Error ? e.message : 'send failed',
+    })
     return res.status(502).json({
       ok: false,
       error: e instanceof Error ? e.message : 'send failed',
