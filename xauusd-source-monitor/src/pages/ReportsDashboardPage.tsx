@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLocale } from '../i18n/locale'
-import { loadHistory } from '../copilot/storage'
+import { loadHistory, weeklyOptimisationCandidates } from '../copilot/storage'
 import type { IncidentRecord as DeskIncident } from '../copilot/types'
 
 export type LarkIncident = {
@@ -187,7 +187,7 @@ export function ReportsDashboardPage() {
       unset: 0,
     }
     const byDay: Record<string, number> = {}
-    const skillMap = new Map<string, number>()
+    const skillMap = new Map<string, { count: number; name?: string; level?: string }>()
     let open = 0
     let archived = 0
     for (const r of all) {
@@ -199,19 +199,44 @@ export function ReportsDashboardPage() {
       const day = dayKeySgt(r.updatedAt)
       byDay[day] = (byDay[day] || 0) + 1
       for (const s of r.skills.slice(0, 8)) {
-        skillMap.set(s, (skillMap.get(s) || 0) + 1)
+        const cur = skillMap.get(s) || { count: 0 }
+        cur.count += 1
+        skillMap.set(s, cur)
+      }
+    }
+    // Enrich with desk skill names / levels when available (former Realtime Stats)
+    for (const h of desk) {
+      const used = h.skillsUsed?.length
+        ? h.skillsUsed
+        : [
+            ...h.hits.map((id) => ({ id, name: id, level: 'L1' })),
+            ...h.l2.map((id) => ({ id, name: id, level: 'L2' })),
+          ]
+      for (const s of used) {
+        const cur = skillMap.get(s.id) || { count: 0 }
+        cur.name = s.name || cur.name
+        cur.level = s.level || cur.level
+        skillMap.set(s.id, cur)
       }
     }
     const dayKeys = Object.keys(byDay).sort()
     const lastDays = dayKeys.slice(-14)
     const maxDay = Math.max(1, ...lastDays.map((d) => byDay[d] || 0))
     const skills = [...skillMap.entries()]
-      .sort((a, b) => b[1] - a[1])
+      .map(([id, meta]) => ({
+        id,
+        count: meta.count,
+        name: meta.name,
+        level: meta.level,
+        rate: all.length ? Math.round((meta.count / all.length) * 100) : 0,
+      }))
+      .sort((a, b) => b.count - a.count)
       .slice(0, 12)
     return {
       total: all.length,
       open,
       archived,
+      weeklyOpt: weeklyOptimisationCandidates(desk).length,
       desk: desk.length,
       lark: lark.length,
       bySeverity,
@@ -262,6 +287,10 @@ export function ReportsDashboardPage() {
         <div className="stat-card">
           <span className="stat-label">{t('reportsArchived')}</span>
           <strong className="stat-value">{viz.archived}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">{t('statsWeeklyOpt')}</span>
+          <strong className="stat-value">{viz.weeklyOpt}</strong>
         </div>
         <div className="stat-card">
           <span className="stat-label">{t('reportsSources')}</span>
@@ -343,15 +372,22 @@ export function ReportsDashboardPage() {
       </div>
 
       <section className="reports-viz-panel">
-        <h3>{t('reportsTopSkills')}</h3>
+        <h3>{t('statsSkillHits')}</h3>
         {viz.skills.length === 0 ? (
           <p className="sub">{t('reportsEmpty')}</p>
         ) : (
-          <div className="reports-skill-cloud">
-            {viz.skills.map(([id, n]) => (
-              <span key={id} className="reports-skill-chip">
-                {id} <em>{n}</em>
-              </span>
+          <div className="stats-table reports-skill-rates">
+            {viz.skills.map((row) => (
+              <div key={row.id} className="item-row">
+                <span>
+                  {row.level ? `[${row.level}] ` : ''}
+                  {row.id}
+                  {row.name && row.name !== row.id ? ` ${row.name}` : ''}
+                </span>
+                <span className="mono">
+                  {row.count} · {row.rate}%
+                </span>
+              </div>
             ))}
           </div>
         )}

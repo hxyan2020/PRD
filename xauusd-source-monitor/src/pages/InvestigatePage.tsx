@@ -690,8 +690,8 @@ export function InvestigatePage() {
                 >
                   {t('copilotCopy')}
                 </button>
-                <NavLink className="archive-btn" to="/stats">
-                  {t('navStats')}
+                <NavLink className="archive-btn" to="/reports">
+                  {t('navReports')}
                 </NavLink>
               </div>
               <p className="sub">{t('investigateArchiveNote')}</p>
