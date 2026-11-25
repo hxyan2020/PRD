@@ -52,12 +52,17 @@ import {
 import { alertOptimizeCard, greetingCard, simpleCard } from '../api/lark/_lib/cards'
 import {
   asciiLineChart,
+  formatTokenUsageDailyReport,
   last24hSeries,
   recordTokenUsage,
   sparkline,
   sumLast24h,
   type TokenUsageStore,
 } from '../api/lark/_lib/tokenUsage'
+import {
+  TOKEN_USAGE_START_HM,
+  isTokenUsageSlot,
+} from '../api/lark/token-usage-report'
 import { writeTmpJson } from '../api/lark/_lib/durableJson'
 import {
   AO_LIMITS,
@@ -1113,6 +1118,27 @@ async function main() {
       `24h=${last24.total}`,
     )
     await recordTokenUsage({ prompt: 10, completion: 5, source: 'lark' })
+    const daily = await formatTokenUsageDailyReport('zh-Hans', '2026-11-25')
+    record(
+      'token_usage.daily_report_zh',
+      daily.title.includes('Token') &&
+        daily.markdown.includes('18:00 SGT') &&
+        daily.markdown.includes('Yan Haixiang') &&
+        daily.markdown.includes('最近 24 小时'),
+      daily.title,
+    )
+  }
+  {
+    // 10:00 UTC = 18:00 SGT; 09:59 UTC = 17:59 SGT
+    const at1800 = Date.parse('2026-11-25T10:00:00.000Z')
+    const at1759 = Date.parse('2026-11-25T09:59:00.000Z')
+    record(
+      'token_usage.slot_18_sgt',
+      TOKEN_USAGE_START_HM === '18:00' &&
+        isTokenUsageSlot(at1800) &&
+        !isTokenUsageSlot(at1759),
+      `start=${TOKEN_USAGE_START_HM}`,
+    )
   }
   clearSession('smoke_chat', 'greet_en')
   const greet = await turn('greeting', 'hi', 'greet_en')
@@ -1141,14 +1167,16 @@ async function main() {
     greetBlob.slice(0, 160),
   )
   record(
-    'turn.greeting_token_usage',
+    'turn.greeting_no_token_usage',
     Boolean(
-      (/Token usage/.test(greetBlob) || /Token 消耗/.test(greetBlob)) &&
-        (/Last 24h/.test(greetBlob) || /最近 24/.test(greetBlob)) &&
-        (/All-time/.test(greetBlob) || /全历史/.test(greetBlob) || /全歷史/.test(greetBlob)) &&
-        /[▁▂▃▄▅▆▇█]/.test(greetBlob),
+      greet.reply?.card &&
+        !/Token usage/i.test(greetBlob) &&
+        !/Token 消耗/.test(greetBlob) &&
+        !/Token 用量/.test(greetBlob) &&
+        !/全历史累计/.test(greetBlob) &&
+        !/All-time/.test(greetBlob),
     ),
-    /Token/.test(greetBlob) ? 'ok' : greetBlob.slice(0, 200),
+    /Token/.test(greetBlob) ? greetBlob.slice(0, 200) : 'stripped',
   )
   const greetZh = await turn('greeting-zh', '你好', 'greet_zh')
   const greetZhBlob = JSON.stringify(greetZh.reply || {})
@@ -1168,7 +1196,8 @@ async function main() {
         (greetZhBlob.includes('自然语言') || greetZhBlob.includes('不必先打出关键词')) &&
         greetZhBlob.includes('[Skills](https://quote-ai-troubleshooting-bot.vercel.app/#/skills)') &&
         greetZhBlob.includes('[知识库](https://quote-ai-troubleshooting-bot.vercel.app/#/knowledge)') &&
-        greetZhBlob.includes('Token 消耗') &&
+        !greetZhBlob.includes('Token 消耗') &&
+        !greetZhBlob.includes('Token 用量') &&
         !greetZhBlob.includes('截图欢迎') &&
         !greetZhBlob.includes('生产操作需人工审批'),
     ),
@@ -2468,7 +2497,9 @@ async function main() {
       cronTickSrc.includes('/api/lark/weekly-demo') &&
       cronTickSrc.includes('/api/lark/daily-market-report') &&
       cronTickSrc.includes('/api/lark/weekly-report') &&
+      cronTickSrc.includes('/api/lark/token-usage-report') &&
       cronTickSrc.includes('/api/lark/cron-health') &&
+
       cronTickSrc.includes('Promise.all') &&
       cronTickSrc.includes('healthFirst') &&
       cronTickSrc.includes('watchdog') &&
@@ -2501,12 +2532,35 @@ async function main() {
     new URL('../api/lark/weekly-demo.ts', import.meta.url),
     'utf8',
   )
+  const tokenUsageSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/token-usage-report.ts', import.meta.url),
+    'utf8',
+  )
+  const cronHealthLibSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/_lib/cronHealth.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.token_usage_daily_18_sgt',
+    (vercelCrons.crons || []).some(
+      (c) =>
+        (c.path || '').includes('/api/lark/token-usage-report') &&
+        (c.schedule || '') === '0 10 * * *',
+    ) &&
+      tokenUsageSrc.includes('TOKEN_USAGE_START_HM') &&
+      tokenUsageSrc.includes('18:00') &&
+      tokenUsageSrc.includes("touchCronHeartbeat('/api/lark/token-usage-report'") &&
+      cronHealthLibSrc.includes('token-usage-report') &&
+      cronTickSrc.includes('/api/lark/token-usage-report'),
+    'daily 18:00 SGT → Yan DM + cron-tick + health',
+  )
   record(
     'cron.all_handlers_self_heartbeat',
     marketSrc.includes("touchCronHeartbeat('/api/lark/market-report'") &&
       dailySrc.includes("touchCronHeartbeat('/api/lark/daily-market-report'") &&
       weeklySrc.includes("touchCronHeartbeat('/api/lark/weekly-report'") &&
       weeklyDemoSrc.includes("touchCronHeartbeat('/api/lark/weekly-demo'") &&
+      tokenUsageSrc.includes("touchCronHeartbeat('/api/lark/token-usage-report'") &&
       cronHealthSrc.includes("touchCronHeartbeat('/api/lark/cron-health'"),
     'every cron handler records a durable beat on invoke',
   )

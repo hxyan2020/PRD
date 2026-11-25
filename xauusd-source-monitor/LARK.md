@@ -113,9 +113,18 @@ never-sent).
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
 | GET/POST | `/api/lark/market-report` | Half-hourly market DM (`*/30`); also via cron-tick |
 | GET/POST | `/api/lark/daily-market-report` | Daily 09:00 CST 24h digest → group; `?dry=1` preview |
+| GET/POST | `/api/lark/token-usage-report` | Daily **18:00 SGT** token digest → Yan DM only; `?dry=1` preview |
 | GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
 | GET/POST | `/api/lark/cron-tick` | Every 5 min fan-out of all push jobs on public alias |
 | GET/POST | `/api/lark/cron-health` | Every 30 min health DM to Yan; red @raise on missed schedule |
+
+## Token usage daily (Yan Haixiang)
+
+- **Schedule:** every day **18:00 SGT** (Vercel cron `0 10 * * *` UTC); cron-tick catch-up after 18:00
+- **Delivery:** private Feishu DM to `LARK_ADMIN_OPEN_ID` (Yan Haixiang) only
+- **Not** on greeting cards / capabilities — private desk push only
+- **Preview:** `curl -sS 'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/token-usage-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
+- **Force send:** `POST /api/lark/token-usage-report` with `{ "force": true }` + desk token / cron header
 
 ## Weekly report (Yan Haixiang)
 

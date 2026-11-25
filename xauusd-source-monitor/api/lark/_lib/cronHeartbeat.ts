@@ -42,6 +42,7 @@ const TRACKED_PATHS = [
   '/api/lark/weekly-demo',
   '/api/lark/daily-market-report',
   '/api/lark/weekly-report',
+  '/api/lark/token-usage-report',
   '/api/lark/cron-health',
 ] as const
 

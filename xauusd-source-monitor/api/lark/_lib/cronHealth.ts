@@ -16,6 +16,10 @@ import {
 } from './oscillationAlert.js'
 import { shanghaiWeekKey } from './weeklyReport.js'
 import { DAILY_MARKET_START_HM, isDailyMarketSlot } from '../daily-market-report.js'
+import {
+  TOKEN_USAGE_START_HM,
+  isTokenUsageSlot,
+} from '../token-usage-report.js'
 import { WEEKLY_DEMO_DAY, WEEKLY_DEMO_START_HM, isWeeklyDemoSlot } from '../weekly-demo.js'
 
 export type CronJobHealth = {
@@ -93,6 +97,7 @@ export async function buildCronHealthReport(args?: {
 
   const halfSent = await readSentMap('market-halfhour-sent.json')
   const dailySent = await readSentMap('market-daily-sent.json')
+  const tokenUsageSent = await readSentMap('token-usage-daily-sent.json')
   const weeklySent = await readSentMap('weekly-sent.json')
   const weeklyDemo = (await readDurableJson<{ day?: string; at?: number }>('weekly-demo-sent.json')) || {}
   const oscState =
@@ -202,6 +207,28 @@ export async function buildCronHealthReport(args?: {
           ? `今日 ${day} 早报未推送（应 ≥${DAILY_MARKET_START_HM}）`
           : hm < DAILY_MARKET_START_HM
             ? `未到 ${DAILY_MARKET_START_HM} 窗口`
+            : `窗口内宽限中`,
+      lastAt: sentAt,
+    })
+  }
+
+  // —— daily token usage (18:00 SGT → Yan) ——
+  {
+    const expected = isTokenUsageSlot(now) && hm >= addHmGrace(TOKEN_USAGE_START_HM, 5)
+    const sentAt = tokenUsageSent[day]
+    const ok = !expected || Boolean(sentAt)
+    jobs.push({
+      id: 'token-usage-report',
+      label: 'Token 用量日报',
+      schedule: `每天 ${TOKEN_USAGE_START_HM} SGT → Yan DM`,
+      expected,
+      ok,
+      detail: sentAt
+        ? `今日 ${day} 已推送（${formatEast8(sentAt)}）`
+        : expected
+          ? `今日 ${day} Token 日报未推送（应 ≥${TOKEN_USAGE_START_HM} SGT）`
+          : hm < TOKEN_USAGE_START_HM
+            ? `未到 ${TOKEN_USAGE_START_HM} SGT 窗口`
             : `窗口内宽限中`,
       lastAt: sentAt,
     })

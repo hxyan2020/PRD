@@ -158,49 +158,74 @@ function fmtTokens(n: number): string {
   return String(Math.round(n))
 }
 
-/** Markdown block appended to greeting cards. */
-export async function formatTokenUsageForGreeting(lang: Lang): Promise<string> {
+/**
+ * Daily token digest for Yan Haixiang (private DM at 18:00 SGT).
+ * Not shown on greeting cards.
+ */
+export async function formatTokenUsageDailyReport(
+  lang: Lang,
+  dayKey?: string,
+): Promise<{ title: string; markdown: string }> {
   const store = await loadTokenUsage()
   const last24 = sumLast24h(store)
   const series = last24hSeries(store)
   const chart = asciiLineChart(series)
   const spark = sparkline(series.map((s) => s.total))
+  const day = dayKey || new Date().toISOString().slice(0, 10)
 
   if (lang === 'zh-Hans') {
-    return [
-      '——',
-      '📊 **Token 消耗（本 Agent）**',
-      `• **最近 24 小时：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次调用）`,
-      `• **全历史累计：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次调用）`,
-      `• **24h 走势：** ${spark}`,
-      '',
-      chart,
-      '',
-      '_横轴为东八区小时；统计含 Lark 对话 LLM／识图与桌面 /api/chat。_',
-    ].join('\n')
+    return {
+      title: `Token 用量日报 · ${day}`,
+      markdown: [
+        `📊 **报价 AI排查助手 · Token 用量日报**（${day} · 18:00 SGT）`,
+        '',
+        `• **最近 24 小时：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次调用）`,
+        `• **全历史累计：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次调用）`,
+        `• **24h 走势：** ${spark}`,
+        '',
+        chart,
+        '',
+        '_横轴为 SGT（UTC+8）小时；统计含 Lark 对话 LLM／识图与桌面 /api/chat。_',
+        '_仅推送给 @Yan Haixiang · 不出现在问候卡。_',
+      ].join('\n'),
+    }
   }
   if (lang === 'zh-Hant') {
-    return [
-      '——',
-      '📊 **Token 消耗（本 Agent）**',
-      `• **最近 24 小時：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次呼叫）`,
-      `• **全歷史累計：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次呼叫）`,
-      `• **24h 走勢：** ${spark}`,
+    return {
+      title: `Token 用量日報 · ${day}`,
+      markdown: [
+        `📊 **报价 AI排查助手 · Token 用量日報**（${day} · 18:00 SGT）`,
+        '',
+        `• **最近 24 小時：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次呼叫）`,
+        `• **全歷史累計：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次呼叫）`,
+        `• **24h 走勢：** ${spark}`,
+        '',
+        chart,
+        '',
+        '_橫軸為 SGT（UTC+8）小時；統計含 Lark 對話 LLM／識圖與桌面 /api/chat。_',
+        '_僅推送給 @Yan Haixiang · 不出現在問候卡。_',
+      ].join('\n'),
+    }
+  }
+  return {
+    title: `Token usage daily · ${day}`,
+    markdown: [
+      `📊 **报价 AI排查助手 · daily token usage** (${day} · 18:00 SGT)`,
+      '',
+      `• **Last 24h:** **${fmtTokens(last24.total)}** tokens (prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} calls)`,
+      `• **All-time:** **${fmtTokens(store.allTime.total)}** tokens (prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} calls)`,
+      `• **24h trend:** ${spark}`,
       '',
       chart,
       '',
-      '_橫軸為東八區小時；統計含 Lark 對話 LLM／識圖與桌面 /api/chat。_',
-    ].join('\n')
+      '_X-axis = SGT (UTC+8) hour; includes Lark LLM/vision and desk /api/chat._',
+      '_Private DM to @Yan Haixiang only — not on greeting cards._',
+    ].join('\n'),
   }
-  return [
-    '——',
-    '📊 **Token usage (this agent)**',
-    `• **Last 24h:** **${fmtTokens(last24.total)}** tokens (prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} calls)`,
-    `• **All-time:** **${fmtTokens(store.allTime.total)}** tokens (prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} calls)`,
-    `• **24h trend:** ${spark}`,
-    '',
-    chart,
-    '',
-    '_X-axis = Asia/Shanghai hour; includes Lark LLM/vision and desk /api/chat._',
-  ].join('\n')
+}
+
+/** @deprecated Use formatTokenUsageDailyReport — greeting cards no longer include usage. */
+export async function formatTokenUsageForGreeting(lang: Lang): Promise<string> {
+  const { markdown } = await formatTokenUsageDailyReport(lang)
+  return markdown
 }
