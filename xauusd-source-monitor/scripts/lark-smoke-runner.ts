@@ -580,6 +580,40 @@ async function main() {
       !dinnerTpl.includes('想说什么都行'),
     dinnerTpl.slice(0, 160),
   )
+  const { botRuntimeMetaReply: cronMetaFn } = await import('../api/lark/_lib/scope')
+  const { formatWebSearchAnswer: fmtSearchEmpty } = await import('../api/lark/_lib/webSearch')
+  const cronAsk = cronMetaFn('zh-Hans', '现在你有多少 cron') || ''
+  record(
+    'chat.cron_count_self_answer',
+    cronAsk.includes('**5**') &&
+      cronAsk.includes('daily-market-report') &&
+      !cronAsk.includes('没拉到可用条目') &&
+      !cronAsk.includes('贴告警'),
+    cronAsk.slice(0, 200),
+  )
+  const emptySearch = fmtSearchEmpty('zh-Hans', '现在你有多少 cron', {
+    ok: true,
+    hits: [],
+    query: '现在你有多少 cron',
+  })
+  record(
+    'chat.empty_search_not_rigid',
+    !emptySearch.includes('贴告警') &&
+      !emptySearch.includes('没拉到可用条目') &&
+      (emptySearch.includes('换个说法') || emptySearch.includes('cron')),
+    emptySearch.slice(0, 180),
+  )
+  clearSession('smoke_chat', 'cron_q')
+  const cronTurn = await turn('cron-count', '现在你有多少 cron', 'cron_q')
+  record(
+    'turn.cron_count_chatty',
+    Boolean(cronTurn.reply?.card) &&
+      cronTurn.blob.includes('5') &&
+      /早报|cron|09:00/i.test(cronTurn.blob) &&
+      !cronTurn.blob.includes('没拉到可用条目') &&
+      !cronTurn.blob.includes('贴告警让我帮你排查'),
+    cronTurn.blob.slice(0, 280),
+  )
   clearSession('smoke_chat', 'doc_zh')
   const docRead = await turn('doc-read-zh', '你能读取这里面的数据吗', 'doc_zh')
   record(

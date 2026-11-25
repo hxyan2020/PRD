@@ -356,22 +356,22 @@ export function formatWebSearchAnswer(lang: Lang, question: string, result: WebS
   if (!result.hits.length) {
     if (lang === 'zh-Hans') {
       return [
-        `关于「${question.slice(0, 60)}」，我这边公开检索暂时没拉到可用条目。`,
+        `嗯，公开网上我暂时没搜到靠谱结果（「${question.slice(0, 48)}」）。`,
         '',
-        '你可以换个关键词再问，或直接贴告警让我帮你排查。产品／权限找 **@Yan Haixiang**。',
+        '你可以换个说法再问我；若是问我自己的配置／cron／推送，直接说「你有多少 cron」这类，我按本机配置答，不必走检索。',
       ].join('\n')
     }
     if (lang === 'zh-Hant') {
       return [
-        `關於「${question.slice(0, 60)}」，我這邊公開檢索暫時沒拉到可用條目。`,
+        `嗯，公開網上我暫時沒搜到靠譜結果（「${question.slice(0, 48)}」）。`,
         '',
-        '你可以換個關鍵詞再問，或直接貼告警讓我幫你排查。產品／權限找 **@Yan Haixiang**。',
+        '你可以換個說法再問我；若是問我自己的配置／cron／推送，直接問就行，我按本機配置答。',
       ].join('\n')
     }
     return [
-      `I couldn’t pull usable public results for “${question.slice(0, 60)}” just now.`,
+      `Hmm, I didn’t find solid public results for “${question.slice(0, 48)}”.`,
       '',
-      'Try another phrasing, or paste an alert. Product / access: **@Yan Haixiang**.',
+      'Try another phrasing — or if you’re asking about *my* crons / pushes, just ask that directly and I’ll answer from config.',
     ].join('\n')
   }
 

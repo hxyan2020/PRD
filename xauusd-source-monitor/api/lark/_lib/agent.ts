@@ -40,6 +40,7 @@ import { detectSafetyViolation, safetyReply } from './safety.js'
 import {
   accessUnavailableReply,
   botMetaReply,
+  botRuntimeMetaReply,
   casualChatReply,
   chatbotFallbackReply,
   classifyIntent,
@@ -1127,7 +1128,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return { card: simpleCard(chatTitle, chatbotFallbackReply(lang, workingText), 'blue') }
   }
 
-  // Desk FAQ / admin meta: direct answer only — never attach investigate Skills+severity dump
+  // Bot self-config / cron / admin FAQ — answer directly, never web-search
+  const runtimeMeta = botRuntimeMetaReply(lang, workingText)
+  if (runtimeMeta) {
+    return { card: simpleCard(lang === 'zh-Hans' || lang === 'zh-Hant' ? '聊聊' : 'Chat', runtimeMeta, 'blue') }
+  }
   const meta = botMetaReply(lang, workingText)
   if (meta) {
     return { card: simpleCard(replyTitle, meta, 'blue') }

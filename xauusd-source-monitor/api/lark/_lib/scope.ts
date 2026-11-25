@@ -503,8 +503,60 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
   ].join('\n')
 }
 
+/** Questions about this bot’s own runtime (crons, schedule, what I push). */
+const BOT_RUNTIME_META_RE =
+  /(多少|几个|幾個|有哪些|什么|什麼|哪些).{0,12}(cron|定时|定時|定时任务|定時任務|自动推送|自動推送|早晚报|早報|周报|週報)|(cron|定时|定時).{0,8}(多少|几个|幾個|列表|清单|清單)|(你|bot|助手).{0,8}(会|會|有).{0,8}(自动|自動|定时|定時|推送)|how\s+many\s+crons?|what\s+crons?|cron\s+(jobs?|list|schedule)/i
+
+export function isBotRuntimeMetaQuestion(text: string): boolean {
+  return BOT_RUNTIME_META_RE.test(text.trim())
+}
+
+/** Honest, conversational answer about configured Vercel crons (no web search). */
+export function botRuntimeMetaReply(lang: Lang, question: string): string | null {
+  if (!isBotRuntimeMetaQuestion(question)) return null
+  if (lang === 'zh-Hans') {
+    return [
+      '⏱️ 我这边现在挂了 **5** 个 Vercel Cron（都会打到本服务）：',
+      '',
+      '1. **每日早报** `daily-market-report` — 每天东八区 **09:00**（UTC 01:00）',
+      '2. **告警提醒 DEMO** `alert-nudge` — 活动日每分钟（知道了可停）',
+      '3. **震荡预警** `oscillation-alert` — 每 **15** 分钟（含今日 DEMO 槽）',
+      '4. **周报 DEMO** `weekly-demo` — 每 **15** 分钟看一次，今日 **16:00** 槽推一次',
+      '5. **正式周报** `weekly-report` — 每周五东八区 **16:00**（UTC 08:00）',
+      '',
+      '想看某一条的预览，可以说「早报 dry」或让我帮你手动推一次。',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '⏱️ 我這邊現在掛了 **5** 個 Vercel Cron：',
+      '',
+      '1. **每日早報** — 每天東八區 **09:00**',
+      '2. **告警提醒 DEMO** — 活動日每分鐘（知道了可停）',
+      '3. **震盪預警** — 每 **15** 分鐘',
+      '4. **週報 DEMO** — 每 **15** 分鐘看一次，今日 **16:00** 槽推一次',
+      '5. **正式週報** — 每週五東八區 **16:00**',
+      '',
+      '想看某一條預覽或手動推一次，直接跟我說就行。',
+    ].join('\n')
+  }
+  return [
+    '⏱️ I’ve got **5** Vercel crons wired up:',
+    '',
+    '1. **Daily morning market** — 09:00 Asia/Shanghai daily',
+    '2. **Alert nudge DEMO** — every minute on campaign day (stop with 知道了)',
+    '3. **Oscillation alert** — every 15 minutes',
+    '4. **Weekly DEMO** — polled every 15 min; fires in today’s 16:00 slot',
+    '5. **Weekly report** — Fridays 16:00 Asia/Shanghai',
+    '',
+    'Want a dry-run or a manual push of one of them? Just say which.',
+  ].join('\n')
+}
+
 /** Deterministic answer for bot/admin/UAT meta questions. */
 export function botMetaReply(lang: Lang, question: string): string | null {
+  const runtime = botRuntimeMetaReply(lang, question)
+  if (runtime) return runtime
   const faq = deskFaqReply(lang, question)
   if (faq) return faq
   if (!BOT_META_RE.test(question)) return null
