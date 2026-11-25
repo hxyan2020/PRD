@@ -14,6 +14,7 @@ export type Intent =
   | 'oscillation'
   | 'daily_market'
   | 'inv_report'
+  | 'alert_optimize'
   | 'offtopic'
   | 'safety'
   | 'ack_mention'
@@ -74,6 +75,7 @@ export type PendingCommandIntent =
   | 'weekly'
   | 'oscillation'
   | 'daily_market'
+  | 'alert_optimize'
 
 /** One atomic Skill.check step in the guided investigation path. */
 export interface GuideStep {

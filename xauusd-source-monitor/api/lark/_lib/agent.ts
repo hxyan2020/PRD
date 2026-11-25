@@ -1,5 +1,6 @@
 import { downloadMessageImage, fetchUserDisplayName } from './client.js'
 import {
+  alertOptimizeCard,
   greetingCard,
   helpCard,
   incidentDetailCard,
@@ -1978,6 +1979,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       intent === 'daily_market' ||
       intent === 'skills' ||
       intent === 'knowledge' ||
+      intent === 'alert_optimize' ||
       intent === 'safety'
     ) {
       // fall through to normal handlers
@@ -2031,7 +2033,8 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       intent === 'knowledge' ||
       intent === 'weekly' ||
       intent === 'oscillation' ||
-      intent === 'daily_market')
+      intent === 'daily_market' ||
+      intent === 'alert_optimize')
   ) {
     intent = 'general_risk'
   }
@@ -2166,6 +2169,10 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'knowledge') {
     return { card: knowledgeCatalogCard({ lang, knowledge: loadKnowledge() }) }
+  }
+
+  if (intent === 'alert_optimize') {
+    return { card: alertOptimizeCard(lang) }
   }
 
   // After catalogue: user replies with a node ID → open that Skills / KB entry

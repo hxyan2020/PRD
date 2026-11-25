@@ -47,7 +47,8 @@ import {
   typingPrefixes,
   typingStepDelayMs,
 } from '../api/lark/_lib/typing'
-import { greetingCard, simpleCard } from '../api/lark/_lib/cards'
+import { alertOptimizeCard, greetingCard, simpleCard } from '../api/lark/_lib/cards'
+import { analyzeLocally, parseCsvText } from '../src/lib/alertOptimize'
 import {
   buildWeeklyDemoReport,
   buildWeeklyReport,
@@ -776,12 +777,14 @@ async function main() {
     const zhCmds =
       g.includes('**行情**') &&
       g.includes('**排查**') &&
+      (g.includes('**告警优化**') || g.includes('**告警優化**')) &&
       g.includes('**技能**') &&
       (g.includes('**知识库**') || g.includes('**知識庫**')) &&
       (g.includes('**帮助**') || g.includes('**幫助**'))
     const enCmds =
       g.includes('**market**') &&
       g.includes('investigate') &&
+      g.includes('alert optimize') &&
       g.includes('**skills**') &&
       (g.includes('**knowledge**') || g.includes('**kb**'))
     const triggerHint =
@@ -812,12 +815,46 @@ async function main() {
         triggerHint &&
         noScreenshotPitch &&
         noApprovalPitch &&
-        /📈|🔍|📊|🧩|📚/.test(g),
+        /📈|🔍|🛠️|📊|🧩|📚/.test(g),
       g.slice(0, 120),
     )
   }
   record('cmd.zh_market', classifyIntent('行情', {}) === 'market', '')
   record('cmd.zh_investigate', classifyIntent('排查', {}) === 'investigate', '')
+  record('cmd.zh_alert_optimize', classifyIntent('告警优化', {}) === 'alert_optimize', '')
+  record(
+    'cmd.en_alert_optimize',
+    classifyIntent('alert optimize', {}) === 'alert_optimize',
+    '',
+  )
+  {
+    const csv = parseCsvText(
+      'ts,severity,threshold,value\n2026-01-01,P1,10,12\n2026-01-02,P2,10,8\n2026-01-03,P1,10,15\n',
+      'alerts.csv',
+    )
+    const ao = analyzeLocally({
+      datasets: [csv],
+      question: '阈值是否过敏？',
+      lang: 'zh-Hant',
+    })
+    const card = alertOptimizeCard('zh-Hans')
+    const cardBlob = JSON.stringify(card)
+    record(
+      'alert_optimize.csv_analyze',
+      csv.rowCount === 3 &&
+        ao.readback.length >= 1 &&
+        ao.charts.length >= 1 &&
+        ao.answer.includes('阈值') &&
+        ao.assumptions.length >= 1 &&
+        ao.reportMarkdown.includes('# 告警优化'),
+      `rows=${csv.rowCount} charts=${ao.charts.length}`,
+    )
+    record(
+      'alert_optimize.desk_card_link',
+      cardBlob.includes('alert-optimize') && cardBlob.includes('告警优化'),
+      cardBlob.slice(0, 120),
+    )
+  }
   record('cmd.zh_skills', classifyIntent('技能', {}) === 'skills', '')
   record('cmd.zh_knowledge', classifyIntent('知识库', {}) === 'knowledge', '')
   record('cmd.zh_help', classifyIntent('帮助', {}) === 'help', '')
@@ -870,6 +907,7 @@ async function main() {
       greet.reply?.card &&
         greetBlob.includes('Risk Copilot') &&
         greetBlob.includes('**market**') &&
+        greetBlob.includes('alert optimize') &&
         greetBlob.includes('**skills**') &&
         greetBlob.includes('**knowledge**') &&
         greetBlob.includes('UAT') &&
@@ -893,6 +931,7 @@ async function main() {
         greetZhBlob.includes('Risk Copilot') &&
         greetZhBlob.includes('**行情**') &&
         greetZhBlob.includes('**排查**') &&
+        greetZhBlob.includes('**告警优化**') &&
         greetZhBlob.includes('**技能**') &&
         greetZhBlob.includes('**知识库**') &&
         greetZhBlob.includes('@我') &&
@@ -924,9 +963,19 @@ async function main() {
       help.reply?.card &&
         helpBlob.includes('**market**') &&
         helpBlob.includes('investigate') &&
+        helpBlob.includes('alert optimize') &&
         helpBlob.includes('lark_md'),
     ),
     helpBlob.slice(0, 160),
+  )
+  clearSession('smoke_chat', 'ao_cmd')
+  const aoTurn = await turn('alert-optimize', '告警优化', 'ao_cmd')
+  record(
+    'turn.alert_optimize_card',
+    Boolean(aoTurn.reply?.card) &&
+      (aoTurn.blob.includes('告警优化') || aoTurn.blob.includes('Alert optimize')) &&
+      aoTurn.blob.includes('vex-llm-proxy.vercel.app/#/alert-optimize'),
+    aoTurn.blob.slice(0, 200),
   )
   clearSession('smoke_chat', 'help_zh')
   const helpZh = await turn('help-zh', '帮助', 'help_zh')
@@ -2096,6 +2145,7 @@ async function main() {
     greetLater.includes('**周报**') &&
       greetLater.includes('**文档**') &&
       greetLater.includes('**行情**') &&
+      greetLater.includes('**告警优化**') &&
       greetLater.includes('震荡行情预警') &&
       !greetLater.includes('半小时行情') &&
       !greetLater.includes('每日 24h') &&
