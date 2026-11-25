@@ -89,31 +89,113 @@ async function okxSwapTicker(instId: string): Promise<{ last: number; changePct?
 async function yahooQuote(
   yahooSymbol: string,
 ): Promise<{ last: number; changePct?: number; sourceUrl: string } | null> {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
-    yahooSymbol,
-  )}?interval=1d&range=5d`
-  const data = (await getJson(url)) as {
-    chart?: {
-      result?: {
-        meta?: {
-          regularMarketPrice?: number
-          chartPreviousClose?: number
-          previousClose?: number
-        }
-      }[]
+  const hosts = ['https://query1.finance.yahoo.com', 'https://query2.finance.yahoo.com']
+  for (const host of hosts) {
+    const url = `${host}/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=5d`
+    const data = (await getJson(url)) as {
+      chart?: {
+        result?: {
+          meta?: {
+            regularMarketPrice?: number
+            chartPreviousClose?: number
+            previousClose?: number
+          }
+        }[]
+      }
+    } | null
+    const meta = data?.chart?.result?.[0]?.meta
+    const last = Number(meta?.regularMarketPrice)
+    if (!Number.isFinite(last)) continue
+    const prev = Number(meta?.chartPreviousClose ?? meta?.previousClose)
+    const changePct =
+      Number.isFinite(prev) && prev > 0 ? ((last - prev) / prev) * 100 : undefined
+    return {
+      last,
+      changePct,
+      sourceUrl: `https://finance.yahoo.com/quote/${encodeURIComponent(yahooSymbol)}`,
     }
-  } | null
-  const meta = data?.chart?.result?.[0]?.meta
-  const last = Number(meta?.regularMarketPrice)
-  if (!Number.isFinite(last)) return null
-  const prev = Number(meta?.chartPreviousClose ?? meta?.previousClose)
-  const changePct =
-    Number.isFinite(prev) && prev > 0 ? ((last - prev) / prev) * 100 : undefined
-  return {
-    last,
-    changePct,
-    sourceUrl: `https://finance.yahoo.com/quote/${encodeURIComponent(yahooSymbol)}`,
   }
+  return null
+}
+
+/** Stooq CSV last — resilient when Yahoo rate-limits (HTTP 429). */
+async function stooqQuote(
+  stooqSymbol: string,
+): Promise<{ last: number; changePct?: number; sourceUrl: string } | null> {
+  const url = `https://stooq.com/q/l/?s=${encodeURIComponent(stooqSymbol)}&f=sd2t2ohlcv&h&e=csv`
+  try {
+    const r = await fetch(url, {
+      headers: { Accept: 'text/csv,text/plain,*/*', 'User-Agent': UA },
+      signal: AbortSignal.timeout(12_000),
+    })
+    if (!r.ok) return null
+    const text = await r.text()
+    const lines = text.trim().split(/\r?\n/)
+    if (lines.length < 2) return null
+    const cols = lines[1]!.split(',')
+    // Symbol,Date,Time,Open,High,Low,Close,Volume
+    const open = Number(cols[3])
+    const close = Number(cols[6])
+    if (!Number.isFinite(close)) return null
+    const changePct =
+      Number.isFinite(open) && open > 0 ? ((close - open) / open) * 100 : undefined
+    return {
+      last: close,
+      changePct,
+      sourceUrl: `https://stooq.com/q/?s=${encodeURIComponent(stooqSymbol)}`,
+    }
+  } catch {
+    return null
+  }
+}
+
+/** Frankfurter ECB FX — last resort for major USD crosses (no change %). */
+async function frankfurterUsdCross(
+  quote: string,
+): Promise<{ last: number; sourceUrl: string } | null> {
+  // EURUSD = EUR→USD rate; USDJPY = 1 / (EUR→USD) * (EUR→JPY) roughly via USD base.
+  try {
+    if (quote === 'EUR') {
+      const data = (await getJson('https://api.frankfurter.app/latest?from=EUR&to=USD')) as {
+        rates?: { USD?: number }
+      } | null
+      const last = Number(data?.rates?.USD)
+      return Number.isFinite(last)
+        ? { last, sourceUrl: 'https://www.frankfurter.app/' }
+        : null
+    }
+    const data = (await getJson(
+      `https://api.frankfurter.app/latest?from=USD&to=${encodeURIComponent(quote)}`,
+    )) as { rates?: Record<string, number> } | null
+    const last = Number(data?.rates?.[quote])
+    return Number.isFinite(last)
+      ? { last, sourceUrl: 'https://www.frankfurter.app/' }
+      : null
+  } catch {
+    return null
+  }
+}
+
+async function publicIndexQuote(opts: {
+  yahoo: string
+  stooq?: string
+  frankfurter?: string
+}): Promise<{ last: number; changePct?: number; source: string; sourceUrl: string } | null> {
+  const y = await yahooQuote(opts.yahoo)
+  if (y) {
+    return { last: y.last, changePct: y.changePct, source: 'Yahoo Finance', sourceUrl: y.sourceUrl }
+  }
+  if (opts.stooq) {
+    const s = await stooqQuote(opts.stooq)
+    if (s) {
+      return { last: s.last, changePct: s.changePct, source: 'Stooq', sourceUrl: s.sourceUrl }
+    }
+  }
+  if (opts.frankfurter) {
+    const f = await frankfurterUsdCross(opts.frankfurter)
+    if (f) return { last: f.last, source: 'Frankfurter / ECB', sourceUrl: f.sourceUrl }
+  }
+  return null
 }
 
 async function goldApiSpot(): Promise<{ last: number } | null> {
@@ -196,15 +278,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '标普 500',
     nameEn: 'S&P 500',
     fetch: async () => {
-      const q = await yahooQuote('^GSPC')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: '^GSPC', stooq: '^spx' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -214,15 +289,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '纳斯达克综合',
     nameEn: 'Nasdaq Composite',
     fetch: async () => {
-      const q = await yahooQuote('^IXIC')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: '^IXIC', stooq: '^ndq' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -232,15 +300,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '道琼斯工业',
     nameEn: 'Dow Jones',
     fetch: async () => {
-      const q = await yahooQuote('^DJI')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: '^DJI', stooq: '^dji' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -250,15 +311,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '恒生指数',
     nameEn: 'Hang Seng',
     fetch: async () => {
-      const q = await yahooQuote('^HSI')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: '^HSI', stooq: '^hsi' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   // —— Forex ——
@@ -269,15 +323,12 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '欧元 / 美元',
     nameEn: 'EUR/USD',
     fetch: async () => {
-      const q = await yahooQuote('EURUSD=X')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({
+        yahoo: 'EURUSD=X',
+        stooq: 'eurusd',
+        frankfurter: 'EUR',
+      })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -287,15 +338,12 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '美元 / 日元',
     nameEn: 'USD/JPY',
     fetch: async () => {
-      const q = await yahooQuote('USDJPY=X')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({
+        yahoo: 'USDJPY=X',
+        stooq: 'usdjpy',
+        frankfurter: 'JPY',
+      })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -305,15 +353,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '英镑 / 美元',
     nameEn: 'GBP/USD',
     fetch: async () => {
-      const q = await yahooQuote('GBPUSD=X')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: 'GBPUSD=X', stooq: 'gbpusd' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -323,15 +364,12 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '美元 / 离岸人民币',
     nameEn: 'USD/CNH',
     fetch: async () => {
-      const q = await yahooQuote('USDCNH=X')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({
+        yahoo: 'USDCNH=X',
+        stooq: 'usdcnh',
+        frankfurter: 'CNY',
+      })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   // —— Commodities ——
@@ -342,16 +380,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '黄金 XAU',
     nameEn: 'Gold XAU',
     fetch: async () => {
-      const y = await yahooQuote('GC=F')
-      if (y) {
-        return {
-          last: y.last,
-          changePct: y.changePct,
-          source: 'Yahoo Finance (GC=F)',
-          sourceUrl: y.sourceUrl,
-          asOf: Date.now(),
-        }
-      }
+      const q = await publicIndexQuote({ yahoo: 'GC=F', stooq: 'gc.f' })
+      if (q) return { ...q, asOf: Date.now() }
       const g = await goldApiSpot()
       if (!g) return null
       return {
@@ -369,15 +399,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: 'WTI 原油',
     nameEn: 'WTI Crude',
     fetch: async () => {
-      const q = await yahooQuote('CL=F')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance (CL=F)',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: 'CL=F', stooq: 'cl.f' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -387,15 +410,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '布伦特原油',
     nameEn: 'Brent Crude',
     fetch: async () => {
-      const q = await yahooQuote('BZ=F')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance (BZ=F)',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: 'BZ=F', stooq: 'ukoil' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
   {
@@ -405,15 +421,8 @@ const INSTRUMENTS: Instrument[] = [
     nameZh: '白银',
     nameEn: 'Silver',
     fetch: async () => {
-      const q = await yahooQuote('SI=F')
-      if (!q) return null
-      return {
-        last: q.last,
-        changePct: q.changePct,
-        source: 'Yahoo Finance (SI=F)',
-        sourceUrl: q.sourceUrl,
-        asOf: Date.now(),
-      }
+      const q = await publicIndexQuote({ yahoo: 'SI=F', stooq: 'si.f' })
+      return q ? { ...q, asOf: Date.now() } : null
     },
   },
 ]
@@ -469,25 +478,37 @@ function fmtChg(q: AssetQuote): string {
   return `${sign}${q.changePct.toFixed(2)}%`
 }
 
+async function mapPool<T, R>(items: T[], concurrency: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const out: R[] = new Array(items.length)
+  let i = 0
+  const workers = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (i < items.length) {
+      const idx = i++
+      out[idx] = await fn(items[idx]!)
+    }
+  })
+  await Promise.all(workers)
+  return out
+}
+
 export async function fetchMultiAssetBoard(): Promise<MultiAssetBoard> {
-  const settled = await Promise.all(
-    INSTRUMENTS.map(async (inst) => {
-      try {
-        const raw = await inst.fetch()
-        if (!raw) return null
-        return {
-          id: inst.id,
-          class: inst.class,
-          symbol: inst.symbol,
-          nameZh: inst.nameZh,
-          nameEn: inst.nameEn,
-          ...raw,
-        } satisfies AssetQuote
-      } catch {
-        return null
-      }
-    }),
-  )
+  // Limit concurrency so Yahoo/Stooq are less likely to 429 when many symbols load at once.
+  const settled = await mapPool(INSTRUMENTS, 3, async (inst) => {
+    try {
+      const raw = await inst.fetch()
+      if (!raw) return null
+      return {
+        id: inst.id,
+        class: inst.class,
+        symbol: inst.symbol,
+        nameZh: inst.nameZh,
+        nameEn: inst.nameEn,
+        ...raw,
+      } satisfies AssetQuote
+    } catch {
+      return null
+    }
+  })
 
   const quotes = settled.filter(Boolean) as AssetQuote[]
   const byClass = {
