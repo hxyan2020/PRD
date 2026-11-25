@@ -2,6 +2,8 @@
  * GET/POST /api/lark/daily-market-report
  * - Vercel Cron every day 09:00 Asia/Shanghai (01:00 UTC) → group 24h market digest.
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
+ * - Idempotent: without force, already-sent dayKey is skipped (cron AND manual) so
+ *   verify/retry curls cannot double-push the morning card.
  */
 import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
@@ -146,13 +148,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const sent = await readSent()
-  if (!force && sent[dayKey] && cron) {
+  // Skip for both cron and manual unless force=true — prevents double-push from
+  // verify curls / accidental POST after a successful send the same day.
+  if (!force && sent[dayKey]) {
     return res.status(200).json({
       ok: true,
       skipped: true,
       reason: 'already_sent_today',
       dayKey,
       sentAt: sent[dayKey],
+      via: cron ? 'cron' : 'manual',
     })
   }
 

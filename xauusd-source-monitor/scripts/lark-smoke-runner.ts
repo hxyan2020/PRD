@@ -1357,6 +1357,16 @@ async function main() {
     dailyCron?.schedule === '0 1 * * *',
     JSON.stringify(dailyCron || {}),
   )
+  const dailySrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/daily-market-report.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.daily_idempotent_without_force',
+    /if\s*\(\s*!force\s*&&\s*sent\[dayKey\]\s*\)/.test(dailySrc) &&
+      !/if\s*\(\s*!force\s*&&\s*sent\[dayKey\]\s*&&\s*cron\s*\)/.test(dailySrc),
+    'skip already_sent for cron AND manual unless force',
+  )
   const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
   record(
     'cron.alert_nudge_every_minute',

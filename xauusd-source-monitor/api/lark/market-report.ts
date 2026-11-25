@@ -168,13 +168,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const sent = readSent()
-  if (!force && sent[slotKey] && cron) {
+  // Idempotent for cron and manual — only force=true re-pushes the same slot.
+  if (!force && sent[slotKey]) {
     return res.status(200).json({
       ok: true,
       skipped: true,
       reason: 'already_sent_this_slot',
       slotKey,
       sentAt: sent[slotKey],
+      via: cron ? 'cron' : 'manual',
     })
   }
 
