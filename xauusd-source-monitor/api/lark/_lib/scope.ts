@@ -547,6 +547,12 @@ const CASUAL_HOW =
 /** Banter / flirt — must NEVER trigger web search (e.g.「我帅不」≠ 彭帅). */
 const CASUAL_BANTER =
   /^(我帅不[帅帥]?|我帅吗|我帅嗎|帅不帅|帥不帥|我好看吗|我好看嗎|好看吗|好看嗎|漂亮吗|漂亮嗎|可爱吗|可愛嗎|爱我吗|愛我嗎|想我了吗|想我了嗎|在吗|在嗎|哈哈+|呵呵+|嘿嘿+|嗯嗯+|哦+|噢+|lol+|lmao|haha+|omg)\s*[?？!！.。~]*\s*$/i
+const CASUAL_FOOD =
+  /^(?:今晚吃什么|今晚吃什麼|中午吃什么|中午吃什麼|吃什么|吃什麼|晚饭吃什么|晚飯吃什麼|午饭吃什么|午飯吃什麼|(?:what\s+should\s+i\s+(?:eat|cook)|what(?:'s| is)\s+for\s+(?:dinner|lunch)|dinner\s+ideas?).*)\s*[?？!！.。]*\s*$/i
+const CASUAL_WEATHER =
+  /^(今天天气|今天天氣|天气怎么样|天氣怎麼樣|下雨了吗|下雨了嗎|how(?:'s| is)\s+the\s+weather)\s*[?？!！.。]*\s*$/i
+const CASUAL_BORED =
+  /^(好无聊|好無聊|好烦|好煩|无聊|無聊|i'?m\s+bored|so\s+bored)\s*[!！.。~]*\s*$/i
 
 export function isCasualChat(text: string): boolean {
   const t = text.trim()
@@ -555,7 +561,10 @@ export function isCasualChat(text: string): boolean {
     CASUAL_WHO_YOU.test(t) ||
     CASUAL_THANKS.test(t) ||
     CASUAL_HOW.test(t) ||
-    CASUAL_BANTER.test(t)
+    CASUAL_BANTER.test(t) ||
+    CASUAL_FOOD.test(t) ||
+    CASUAL_WEATHER.test(t) ||
+    CASUAL_BORED.test(t)
   )
 }
 
@@ -651,7 +660,71 @@ export function casualChatReply(
     }
     return '😄 Looking good — confidence +1. Keep chatting, or toss me a market / alert anytime.'
   }
+  if (CASUAL_FOOD.test(t)) {
+    if (lang === 'zh-Hans') {
+      return [
+        '🍽️ 今晚可以来点轻松的：',
+        '',
+        '• **麻辣烫／冒菜** — 快、热、选择多',
+        '• **日式定食** — 牛丼或咖喱饭，稳妥不踩雷',
+        '• **清淡一点** — 番茄鸡蛋面 + 拍黄瓜',
+        '',
+        '你更想吃辣的、清淡的，还是重油重酱？我帮你收窄。',
+      ].join('\n')
+    }
+    if (lang === 'zh-Hant') {
+      return [
+        '🍽️ 今晚可以來點輕鬆的：',
+        '',
+        '• **麻辣燙／冒菜** — 快、熱、選擇多',
+        '• **日式定食** — 牛丼或咖哩飯，穩妥不踩雷',
+        '• **清淡一點** — 番茄雞蛋麵 + 拍黃瓜',
+        '',
+        '你更想吃辣的、清淡的，還是重油重醬？我幫你收窄。',
+      ].join('\n')
+    }
+    return [
+      '🍽️ Easy dinner picks:',
+      '',
+      '• **Spicy hotpot / mala** — fast and flexible',
+      '• **Rice bowl / curry** — reliable, low regret',
+      '• **Lighter** — tomato-egg noodles + a cucumber salad',
+      '',
+      'Craving spicy, light, or saucy? I’ll narrow it down.',
+    ].join('\n')
+  }
+  if (CASUAL_WEATHER.test(t)) {
+    if (lang === 'zh-Hans') {
+      return '🌤️ 我这边看不到你窗外实时天气——你那边现在是阴是晴？要出门的话记得看一眼手机天气 App；闷的话室内待着喝点热的也行 🙂'
+    }
+    if (lang === 'zh-Hant') {
+      return '🌤️ 我這邊看不到你窗外即時天氣——你那邊現在是陰是晴？要出門的話記得看一眼手機天氣 App；悶的話室內待著喝點熱的也行 🙂'
+    }
+    return '🌤️ I can’t see your local sky from here — sunny or grey on your side? Check your weather app before heading out; otherwise stay in with something warm 🙂'
+  }
+  if (CASUAL_BORED.test(t)) {
+    if (lang === 'zh-Hans') {
+      return '😌 无聊的时候可以：听首歌晃两分钟、下楼买杯喝的，或者扔个无厘头问题给我贫两句。想看行情也可以，我不催 🙂'
+    }
+    if (lang === 'zh-Hant') {
+      return '😌 無聊的時候可以：聽首歌晃兩分鐘、下樓買杯喝的，或者扔個無厘頭問題給我貧兩句。想看行情也可以，我不催 🙂'
+    }
+    return '😌 When it’s dull: one song, a quick walk for a drink, or toss me a silly question. Markets are fine too — no rush 🙂'
+  }
   return null
+}
+
+/** Never use meta “I can chat” stubs — always answer the ask. */
+export function chatbotFallbackReply(lang: Lang, question: string): string {
+  const canned = casualChatReply(lang, question, null)
+  if (canned) return canned
+  if (lang === 'zh-Hans') {
+    return `嗯～「${question.slice(0, 40)}」我接住了。你再多说一句偏好／场景，我按聊天接着回；不必发指令 🙂`
+  }
+  if (lang === 'zh-Hant') {
+    return `嗯～「${question.slice(0, 40)}」我接住了。你再多說一句偏好／場景，我按聊天接著回；不必發指令 🙂`
+  }
+  return `Got “${question.slice(0, 40)}”. Add one more detail and I’ll keep chatting — no commands needed 🙂`
 }
 
 /** @deprecated Negative-list policy: free-text is no longer refused as offtopic. Kept for callers. */

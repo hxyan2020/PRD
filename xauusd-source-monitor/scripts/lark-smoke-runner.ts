@@ -566,9 +566,19 @@ async function main() {
   record(
     'turn.chat_dinner_zh',
     Boolean(zhOff.reply?.card || zhOff.reply?.text) &&
-      !/偏题|偏題|Thanks for asking/i.test(zhOff.blob) &&
-      !Boolean(zhOff.reply?.text?.includes('Thanks for asking')),
-    zhOff.blob.slice(0, 220),
+      !/偏题|偏題|Thanks for asking|专长风控，闲聊也陪|想说什么都行/i.test(zhOff.blob) &&
+      (/麻辣|定食|面条|麵條|吃|dinner|dish|food|番茄|咖喱|咖哩/i.test(zhOff.blob) ||
+        zhOff.blob.includes('聊聊')),
+    zhOff.blob.slice(0, 280),
+  )
+  const dinnerTpl = casualChatReply('zh-Hans', '今晚吃什么') || ''
+  record(
+    'chat.dinner_template_answers',
+    dinnerTpl.includes('麻辣') &&
+      dinnerTpl.includes('定食') &&
+      !dinnerTpl.includes('闲聊也陪') &&
+      !dinnerTpl.includes('想说什么都行'),
+    dinnerTpl.slice(0, 160),
   )
   clearSession('smoke_chat', 'doc_zh')
   const docRead = await turn('doc-read-zh', '你能读取这里面的数据吗', 'doc_zh')

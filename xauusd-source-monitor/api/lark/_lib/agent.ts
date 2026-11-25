@@ -41,6 +41,7 @@ import {
   accessUnavailableReply,
   botMetaReply,
   casualChatReply,
+  chatbotFallbackReply,
   classifyIntent,
   commandConfirmPrompt,
   detectLang,
@@ -1097,35 +1098,33 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   const replyTitle =
     lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
 
-  // Chat / random life Q — chatbot reply (after wiki/access; never dump menus)
+  // Chat / random life Q — answer as a chatbot (never meta “I can chat”)
   if (looksLikePureChat(workingText) || isCasualChat(workingText)) {
+    const chatTitle =
+      lang === 'zh-Hans' ? '聊聊' : lang === 'zh-Hant' ? '聊聊' : 'Chat'
     const wantName = /^(我是谁|我是誰|who\s+am\s+i|whoami|我叫什么|我叫什麼|你知道我是谁吗|你知道我是誰嗎)/i.test(
       workingText.trim(),
     )
     const displayName = wantName ? await fetchUserDisplayName(msg.openId) : null
     const casual = casualChatReply(lang, workingText, displayName)
     if (casual) {
-      return { card: simpleCard(replyTitle, casual, 'blue') }
+      return { card: simpleCard(chatTitle, casual, 'blue') }
     }
     const llmChat = await enrichWithLlm({
       lang,
       question: workingText,
-      context:
-        'The user is chatting or asking a random / life question — NOT starting a desk command. Reply as a warm chatbot teammate in 1–3 short beats. Do NOT open investigate/market/Skills menus. Do NOT search the web unless they clearly ask for news/facts. You may lightly mention you also help with V Exchange risk if natural.',
+      context: [
+        'CHATBOT MODE — the user is chatting or asking a life / random question.',
+        'Answer their question directly and helpfully in 1–3 short beats (e.g. if they ask what to eat, suggest 2–3 dishes and ask a preference).',
+        'FORBIDDEN: meta lines like “I can also chat”, “say whatever”, “risk is my specialty but…”, command menus, investigate/market dumps.',
+        'Do NOT search the web unless they clearly ask for news/facts.',
+      ].join('\n'),
       temperature: 0.75,
     })
-    if (llmChat) return { card: simpleCard(replyTitle, llmChat, 'blue') }
-    return {
-      card: simpleCard(
-        replyTitle,
-        lang === 'zh-Hans'
-          ? '可以呀 🙂 我专长风控，闲聊也陪。想说什么都行。'
-          : lang === 'zh-Hant'
-            ? '可以呀 🙂 我專長風控，閒聊也陪。想說什麼都行。'
-            : 'Sure 🙂 Risk is my specialty, but I’m happy to chat about anything.',
-        'blue',
-      ),
+    if (llmChat && !/专长风控，闲聊也陪|閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行/i.test(llmChat)) {
+      return { card: simpleCard(chatTitle, llmChat, 'blue') }
     }
+    return { card: simpleCard(chatTitle, chatbotFallbackReply(lang, workingText), 'blue') }
   }
 
   // Desk FAQ / admin meta: direct answer only — never attach investigate Skills+severity dump
@@ -1194,17 +1193,16 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
           'Free-text chat or short ask. Engage warmly. Answer if you can; otherwise ask a light clarifying question. Specialty is V Exchange risk, but casual chat is welcome. Do not invent news or secrets.',
         temperature: 0.65,
       })
-      if (llmSoft) return { card: simpleCard(replyTitle, llmSoft, 'blue') }
+      if (
+        llmSoft &&
+        !/专长风控，闲聊也陪|閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行/i.test(
+          llmSoft,
+        )
+      ) {
+        return { card: simpleCard(replyTitle, llmSoft, 'blue') }
+      }
       return {
-        card: simpleCard(
-          replyTitle,
-          lang === 'zh-Hans'
-            ? '可以呀 🙂 我专长风控，闲聊也陪。多说两句，或扔个交易所／合约／告警过来都行。'
-            : lang === 'zh-Hant'
-              ? '可以呀 🙂 我專長風控，閒聊也陪。多說兩句，或扔個交易所／合約／告警過來都行。'
-              : 'Sure 🙂 Risk is my specialty, but I’m happy to chat too — say a bit more, or toss an exchange / contract / alert my way.',
-          'blue',
-        ),
+        card: simpleCard(replyTitle, chatbotFallbackReply(lang, workingText), 'blue'),
       }
     }
     const searched = await searchWeb(workingText, lang)
