@@ -182,21 +182,33 @@ export function normalizeDailyTldrBeats(snap: MarketSnapshot, lang: Lang): strin
   return [live, trend, event, watch]
 }
 
-/** Cap Opp/Risk to 3 ranked lines for the fixed daily layout. */
+/** Cap Opp/Risk to 3 ranked lines; sources as inline markdown hyperlinks (no buttons). */
 export function normalizeDailyRanked(
   points: RankedPoint[] | undefined,
   lang: Lang,
   empty: string,
   max = 3,
+  byId?: Map<string, ReportSource>,
 ): string[] {
   const rows = (points || []).slice(0, max)
   if (!rows.length) return [`• ${empty}`]
-  return rows.map((p, i) => `${i + 1}. ${pointText(p, lang)}`)
+  return rows.map((p, i) => {
+    const body = `${i + 1}. ${pointText(p, lang)}`
+    if (!byId) return body
+    const chips = sourceChipLine(pointSources(p, byId))
+    return chips ? `${body}\n  🔗 ${chips}` : body
+  })
+}
+
+/** Fixed desk source links as markdown only (早报 never uses action buttons). */
+export function dailySourceHyperlinks(): string {
+  return DAILY_FIXED_LINKS.map((l) => `[${l.label}](${l.url})`).join(' · ')
 }
 
 /**
  * Morning group digest: past-24h XAU range + fixed TL;DR / Opp / Risk skeleton.
  * Numbers and bullets change daily; section titles and order stay fixed.
+ * All sources are field hyperlinks — never Lark action buttons.
  */
 export function formatDaily24hMarketAnswer(snap: MarketSnapshot, lang: Lang = 'zh-Hans'): string {
   const empty =
@@ -205,20 +217,20 @@ export function formatDaily24hMarketAnswer(snap: MarketSnapshot, lang: Lang = 'z
       : lang === 'zh-Hant'
         ? '過去 24 小時暫無要點。'
         : 'No points in the last 24h.'
+  const byId = sourcesById(snap.hourly?.sources)
   const tldr = normalizeDailyTldrBeats(snap, lang)
-  const chips = DAILY_FIXED_LINKS.map((l) => `[${l.label}](${l.url})`).join(' · ')
   return [
     pricesAndKlineBlock(snap, lang, 'daily'),
     '',
     '**📋 TL;DR**',
     ...tldr.map((l) => (l.startsWith('•') ? l : `• ${l}`)),
-    `🔗 ${chips}`,
+    `🔗 ${dailySourceHyperlinks()}`,
     '',
     '**✨ Opportunity**',
-    ...normalizeDailyRanked(snap.hourly?.opportunity, lang, empty, 3),
+    ...normalizeDailyRanked(snap.hourly?.opportunity, lang, empty, 3, byId),
     '',
     '**⚠️ Risk**',
-    ...normalizeDailyRanked(snap.hourly?.risk, lang, empty, 3),
+    ...normalizeDailyRanked(snap.hourly?.risk, lang, empty, 3, byId),
     '',
     marketFooterBlock(snap, lang, '', 'daily'),
   ].join('\n')
@@ -548,26 +560,10 @@ function marketFooterBlock(
   return lines.join('\n')
 }
 
-/** Fixed source chip row for daily 早报 (OKX / Kitco / Yahoo) — always same order. */
-function dailyFixedSourceChips(): ReportSource[] {
-  const now = Date.now()
-  return DAILY_FIXED_LINKS.map((l) => ({
-    id: l.id,
-    captionEn: l.label,
-    captionZh: l.label,
-    url: l.url,
-    domain: l.domain,
-    logoUrl: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(l.domain)}&sz=64`,
-    kind: 'exchange' as const,
-    health: 'ok' as const,
-    checkedAt: now,
-  }))
-}
-
 /**
  * Interactive market card.
- * - hourly: TL;DR / Opp / Risk with per-point source logo rows
- * - daily: fixed skeleton (content changes; section order + chip row stay stable)
+ * - hourly: TL;DR / Opp / Risk with per-point source logo button rows
+ * - daily: fixed skeleton; sources only as markdown hyperlinks (no buttons)
  */
 export async function buildMarketCard(opts: {
   title: string
@@ -626,29 +622,12 @@ export async function buildMarketCard(opts: {
   const elements: Record<string, unknown>[] = []
 
   if (intro.trim()) elements.push(mdDiv(intro.trim()))
-  elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode)))
 
   if (mode === 'daily') {
-    const tldr = normalizeDailyTldrBeats(snap, lang)
-    const chipMd = DAILY_FIXED_LINKS.map((l) => `[${l.label}](${l.url})`).join(' · ')
-    elements.push(
-      mdDiv(
-        ['**📋 TL;DR**', ...tldr.map((l) => (l.startsWith('•') ? l : `• ${l}`)), `🔗 ${chipMd}`].join(
-          '\n',
-        ),
-      ),
-    )
-    const chipRow = await logoLinkActions(dailyFixedSourceChips())
-    if (chipRow) elements.push(chipRow)
-
-    elements.push(mdDiv('**✨ Opportunity**'))
-    elements.push(mdDiv(normalizeDailyRanked(hourly?.opportunity, lang, empty, 3).join('\n')))
-
-    elements.push(mdDiv('**⚠️ Risk**'))
-    elements.push(mdDiv(normalizeDailyRanked(hourly?.risk, lang, empty, 3).join('\n')))
-
-    elements.push(mdDiv(marketFooterBlock(snap, lang, question, mode)))
+    // Single markdown body — sources are [label](url) fields, never action buttons.
+    elements.push(mdDiv(formatDaily24hMarketAnswer(snap, lang)))
   } else {
+    elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode)))
     // Hourly: TL;DR + per-point logo rows (variable is OK for on-demand scans)
     const tldrLines = renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true)
     elements.push(mdDiv(tldrLines.join('\n')))

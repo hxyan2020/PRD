@@ -1484,7 +1484,10 @@ async function main() {
       dailyCardBlob.includes('**⚠️ Risk**') &&
       !dailyCardBlob.includes('THIS_SHOULD_NOT_APPEAR_IN_DAILY') &&
       dailyCardBlob.includes('OKX K线') &&
-      dailyCardBlob.includes('tradingview.com'),
+      dailyCardBlob.includes('tradingview.com') &&
+      // 早报 sources = markdown hyperlinks only, never action buttons
+      !dailyCardBlob.includes('multi_url') &&
+      !/"tag":"action"/.test(dailyCardBlob),
     dailyCardBlob.slice(0, 240),
   )
   const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
