@@ -13,7 +13,9 @@ import { detectLang, looksLikeShareOrFileMeta } from '../api/lark/_lib/lang'
 import {
   enrichIncomingEvidence,
   extractInteractiveCardText,
+  looksLikeGroupAutoAlert,
   parseIncomingEvent,
+  sessionOpenIdFor,
   shouldRespond,
 } from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
@@ -637,6 +639,55 @@ async function main() {
       forwardedAlert!.text.includes('XAU_USD') &&
       shouldRespond(forwardedAlert!),
     forwardedAlert?.text.slice(0, 200) || 'null',
+  )
+  // Group alert without @ → auto-respond / investigate; chat without @ → skip
+  const groupAlertNoAt = parseIncomingEvent({
+    message: {
+      message_id: 'm_grp_alert',
+      chat_id: 'oc_group1',
+      chat_type: 'group',
+      message_type: 'interactive',
+      content: spreadCardJson,
+      mentions: [],
+    },
+    sender: { sender_type: 'user', sender_id: { open_id: 'ou_ops' } },
+  })
+  record(
+    'parse.group_alert_auto_respond',
+    Boolean(
+      groupAlertNoAt &&
+        !groupAlertNoAt.mentionedBot &&
+        looksLikeGroupAutoAlert(groupAlertNoAt) &&
+        shouldRespond(groupAlertNoAt),
+    ),
+    groupAlertNoAt?.text.slice(0, 120) || 'null',
+  )
+  const groupAppAlert = parseIncomingEvent({
+    message: {
+      message_id: 'm_app_alert',
+      chat_id: 'oc_group1',
+      chat_type: 'group',
+      message_type: 'interactive',
+      content: spreadCardJson,
+      mentions: [],
+    },
+    sender: { sender_type: 'app', sender_id: { open_id: 'ou_alert_system' } },
+  })
+  record(
+    'parse.group_app_alert_accepted',
+    Boolean(
+      groupAppAlert &&
+        groupAppAlert.text.includes('价差预警监控') &&
+        shouldRespond(groupAppAlert),
+    ),
+    groupAppAlert?.text.slice(0, 120) || 'null',
+  )
+  record(
+    'parse.group_session_shared',
+    sessionOpenIdFor('group', 'ou_a') === '__group__' &&
+      sessionOpenIdFor('group', 'ou_b') === '__group__' &&
+      sessionOpenIdFor('p2p', 'ou_a') === 'ou_a',
+    '',
   )
   const fwdIntent = forwardedAlert
     ? classifyIntent(forwardedAlert.text, {

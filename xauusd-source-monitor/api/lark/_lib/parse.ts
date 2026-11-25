@@ -1,5 +1,46 @@
 import type { IncomingMessage } from './types.js'
 import { fetchMessageItems, type LarkMessageItem } from './client.js'
+import { looksLikeIncidentEvidence } from './scope.js'
+
+/** Our own cron / desk pushes — never treat as inbound alerts (echo loop). */
+function looksLikeOurOutboundCard(text: string): boolean {
+  return /小时行情|小時行情|Half-hourly market|每日\s*24h|每日早报|每日早報|Cron 健康|震荡行情|震盪行情|每周复盘|每週複盤|告警提醒|知道了|已升级等待反馈|已升級等待反饋|Investigation escalate|排查升级|排查升級|V Exchange Risk Copilot/i.test(
+    text,
+  )
+}
+
+/**
+ * Group auto-capture: alert cards / pastes that should start investigation
+ * without an @mention. Excludes our own outbound cards.
+ */
+export function looksLikeGroupAutoAlert(msg: {
+  text: string
+  messageType: string
+}): boolean {
+  const text = (msg.text || '').trim()
+  if (!text || looksLikeOurOutboundCard(text)) return false
+  if (
+    msg.messageType === 'interactive' ||
+    msg.messageType === 'merge_forward' ||
+    /\[(forwarded_card|merge_forward|replied_alert)\]/i.test(text)
+  ) {
+    return (
+      looksLikeIncidentEvidence(text) ||
+      /预警|預警|告警|报警|報警|价差|價差|\balert\b|监控|監控/i.test(text)
+    )
+  }
+  return looksLikeIncidentEvidence(text)
+}
+
+/**
+ * Group chats share one investigation session so an auto-captured alert and
+ * later @bot replies from any participant continue the same case.
+ */
+export function sessionOpenIdFor(chatType: string, openId: string): string {
+  const ct = (chatType || '').toLowerCase()
+  if (ct === 'group' || ct === 'topic' || ct === 'topic_group') return '__group__'
+  return openId || 'unknown'
+}
 
 function walkPostNodes(nodes: unknown, out: string[]) {
   if (!Array.isArray(nodes)) return
@@ -217,12 +258,14 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
   const messageType = String(message.message_type || 'text')
   const botOpenId = process.env.LARK_BOT_OPEN_ID || ''
 
-  // Never process our own / other app messages — they re-trigger greetings as duplicates.
-  if (senderType === 'bot' || senderType === 'app' || (botOpenId && openId === botOpenId)) {
-    return null
-  }
   // System notices only — user-forwarded interactive alert cards must still be parsed.
   if (messageType === 'system') {
+    return null
+  }
+
+  // Never process our own bot echoes (prevent greeting / card loops).
+  // Other apps may post alert cards into groups — filtered after text extraction.
+  if (botOpenId && openId === botOpenId) {
     return null
   }
 
@@ -274,6 +317,14 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
   // Strip @_user_1 style mention placeholders
   text = text.replace(/@_user_\d+/g, '').trim()
 
+  const isAppOrBot = senderType === 'bot' || senderType === 'app'
+  if (isAppOrBot) {
+    const draft = { text, messageType }
+    if (looksLikeOurOutboundCard(text) || !looksLikeGroupAutoAlert(draft)) {
+      return null
+    }
+  }
+
   const parentId = String(message.parent_id || '').trim() || undefined
   const rootId = String(message.root_id || '').trim() || undefined
 
@@ -295,9 +346,11 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
 export function shouldRespond(msg: IncomingMessage): boolean {
   // Always respond in DM
   if (msg.chatType === 'p2p') return true
-  // Groups: only when @ our bot (not @another person)
+  // Groups: @ our bot (not @another person)
   if (msg.mentionedBot) return true
-  // If LARK_REPLY_ALL_GROUP=1, respond to all (ops override)
+  // Multi-participant groups: auto-capture alert posts → investigation
+  if (looksLikeGroupAutoAlert(msg)) return true
+  // Ops override (not recommended)
   if (process.env.LARK_REPLY_ALL_GROUP === '1') return true
   return false
 }

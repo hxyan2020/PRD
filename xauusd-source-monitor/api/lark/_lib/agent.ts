@@ -27,6 +27,7 @@ import {
   rememberEscalationPending,
   resolveEscalateOpenIds,
 } from './escalate.js'
+import { looksLikeGroupAutoAlert, sessionOpenIdFor } from './parse.js'
 import {
   normalizeRiskVerdict,
   riskVerdictEmoji,
@@ -1604,16 +1605,20 @@ export async function handleCardAction(args: {
   chatId: string
   messageId: string
   value: Record<string, unknown>
+  /** When set (group), session is shared across participants. */
+  chatType?: string
 }): Promise<BotReply> {
   const action = String(args.value.action || '')
   const incidentId = String(args.value.incidentId || '')
-  const session = await getSessionDurable(args.chatId, args.openId)
+  const chatType = args.chatType || 'p2p'
+  const sessionUser = sessionOpenIdFor(chatType, args.openId)
+  const session = await getSessionDurable(args.chatId, sessionUser)
   const lang: Lang = session.preferredLang || 'en'
   const fakeMsg: IncomingMessage = {
     messageId: args.messageId,
     chatId: args.chatId,
-    chatType: 'p2p',
-    openId: args.openId,
+    chatType,
+    openId: sessionUser,
     messageType: 'interactive',
     text: '',
     mentionedBot: true,
@@ -1706,16 +1711,16 @@ export async function handleCardAction(args: {
     })
     if (thenArchive) {
       await upsertIncidentDurable(inc)
-      await saveSessionDurable(args.chatId, args.openId, session)
+      await saveSessionDurable(args.chatId, sessionUser, session)
       return archiveIncidentAndShowReview({
         lang,
         chatId: args.chatId,
-        openId: args.openId,
+        openId: sessionUser,
         incidentId: id,
       })
     }
     await upsertIncidentDurable(inc)
-    await saveSessionDurable(args.chatId, args.openId, session)
+    await saveSessionDurable(args.chatId, sessionUser, session)
     if (session.mode === 'report_draft' && session.lastReportMarkdown) {
       const title =
         lang === 'zh-Hans'
@@ -1739,7 +1744,7 @@ export async function handleCardAction(args: {
   if (action === 'archive') {
     const id = incidentId || session.lastReportId
     if (!id) {
-      await clearSessionDurable(args.chatId, args.openId)
+      await clearSessionDurable(args.chatId, sessionUser)
       return {
         card: simpleCard(
           lang === 'zh-Hans' ? '已结束' : lang === 'zh-Hant' ? '已結束' : 'Closed',
@@ -1755,7 +1760,7 @@ export async function handleCardAction(args: {
     return archiveIncidentAndShowReview({
       lang,
       chatId: args.chatId,
-      openId: args.openId,
+      openId: sessionUser,
       incidentId: id,
     })
   }
@@ -1798,7 +1803,7 @@ export async function handleCardAction(args: {
       text: `guide_step_done:${step.id}`,
       messageId: args.messageId,
     })
-    await saveSessionDurable(args.chatId, args.openId, session)
+    await saveSessionDurable(args.chatId, sessionUser, session)
     return {
       card: investigationEvidencePromptCard({
         lang,
@@ -1838,7 +1843,7 @@ export async function handleCardAction(args: {
         text: `guide_step_skip_required:${step.id}`,
         messageId: args.messageId,
       })
-      await saveSessionDurable(args.chatId, args.openId, session)
+      await saveSessionDurable(args.chatId, sessionUser, session)
       return {
         card: investigationRequiredSkipPromptCard({
           lang,
@@ -1860,7 +1865,7 @@ export async function handleCardAction(args: {
       text: `guide_step_skip_optional:${step.id}`,
       messageId: args.messageId,
     })
-    await saveSessionDurable(args.chatId, args.openId, session)
+    await saveSessionDurable(args.chatId, sessionUser, session)
     const skipFact =
       lang === 'zh-Hans'
         ? `值班人员跳过可选步骤：${step.label}`
@@ -1999,7 +2004,7 @@ export async function handleCardAction(args: {
       text: `guide_step_escalate:${step.id}→${rolesFinal.join('/')};notified=${notified}`,
       messageId: args.messageId,
     })
-    await saveSessionDurable(args.chatId, args.openId, session)
+    await saveSessionDurable(args.chatId, sessionUser, session)
     return {
       card: investigationEscalatedWaitingCard({
         lang,
@@ -2071,6 +2076,13 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     inbound = await enrichIncomingEvidence(msg)
   } catch {
     inbound = msg
+  }
+
+  // Groups share one investigation session so auto-captured alerts + later @replies
+  // from any participant continue the same case.
+  const sessionUser = sessionOpenIdFor(inbound.chatType, inbound.openId)
+  if (sessionUser !== inbound.openId) {
+    inbound = { ...inbound, openId: sessionUser }
   }
 
   // Image / file / share first → understand & reiterate before relevance judgement
@@ -2234,6 +2246,16 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     intent !== 'investigate' &&
     intent !== 'followup' &&
     looksLikeIncidentEvidence(workingText)
+  ) {
+    intent = 'investigate'
+  }
+  // Multi-participant group: alert post without @ → always open investigation.
+  if (
+    !inbound.mentionedBot &&
+    looksLikeGroupAutoAlert(inbound) &&
+    intent !== 'followup' &&
+    intent !== 'inv_report' &&
+    intent !== 'archive'
   ) {
     intent = 'investigate'
   }

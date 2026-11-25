@@ -52,6 +52,11 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 | `LARK_BOT_OPEN_ID` | Rare — auto-fetched after ID/secret work; only set if @ matching misfires |
 | `LARK_API_HOST` | International Lark: `https://open.larksuite.com` (default is `https://open.feishu.cn`) |
 | `LARK_REPLY_ALL_GROUP=1` | Reply to every group message without @ (not recommended) |
+
+**Group (many participants) behaviour:**
+- **Alert posts** (monitoring card / alert paste, including from other apps) → captured and **investigation starts automatically** (no `@` needed).
+- **Other chat** → ignored unless someone **@ the bot**.
+- The group shares one investigation session so later `@bot` replies continue the same case.
 | `LARK_ENCRYPT_KEY` | **Do not use** until decrypt is implemented — keep Encrypt Key off |
 | `DESK_GATEWAY_TOKEN` | Protects desk smoke `/api/lark/incidents` only; unrelated to Lark chat |
 | `LARK_ADMIN_OPEN_ID` | **Required for weekly + oscillation DM fallback** — Yan Haixiang’s Feishu `open_id` |
