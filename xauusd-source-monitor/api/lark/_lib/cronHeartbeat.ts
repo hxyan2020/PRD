@@ -1,12 +1,13 @@
 /**
  * Durable proof that Vercel Cron / cron-tick reached Lark handlers.
- * Stores a per-path map so health checks can verify each job.
+ * One blob file per path so concurrent serverless writers cannot wipe siblings.
  */
 import { readDurableJson, writeDurableJson } from './durableJson.js'
 import { shanghaiDayKey } from './market.js'
 import { shanghaiHm } from './oscillationAlert.js'
 
-const HEARTBEAT_NAME = 'cron-heartbeat.json'
+const LEGACY_NAME = 'cron-heartbeat.json'
+const BEAT_PREFIX = 'cron-beat__'
 
 export type CronBeatMeta = {
   at: number
@@ -33,6 +34,21 @@ export type CronBeatStore = {
   beats: Record<string, CronBeatMeta>
 }
 
+const TRACKED_PATHS = [
+  '/api/lark/cron-tick',
+  '/api/lark/alert-nudge',
+  '/api/lark/oscillation-alert',
+  '/api/lark/market-report',
+  '/api/lark/weekly-demo',
+  '/api/lark/daily-market-report',
+  '/api/lark/weekly-report',
+  '/api/lark/cron-health',
+] as const
+
+function beatFileFor(path: string): string {
+  return `${BEAT_PREFIX}${path.replace(/\W+/g, '_').replace(/^_|_$/g, '')}.json`
+}
+
 function emptyStore(): CronBeatStore {
   const now = Date.now()
   return {
@@ -46,25 +62,62 @@ function emptyStore(): CronBeatStore {
 }
 
 export async function readCronBeatStore(): Promise<CronBeatStore> {
-  const raw = await readDurableJson<CronBeatStore | CronHeartbeat>(HEARTBEAT_NAME)
-  if (!raw) return emptyStore()
-  if ('beats' in raw && raw.beats && typeof raw.beats === 'object') {
-    return raw as CronBeatStore
-  }
-  // Migrate legacy single-beat shape
-  const legacy = raw as CronHeartbeat
   const store = emptyStore()
-  if (legacy.path) {
-    store.path = legacy.path
-    store.at = legacy.at
-    store.day = legacy.day
-    store.hm = legacy.hm
-    store.updatedAt = legacy.at
-    store.beats[legacy.path] = {
-      at: legacy.at,
-      day: legacy.day,
-      hm: legacy.hm,
+  let latestAt = 0
+  let latestPath = ''
+
+  for (const path of TRACKED_PATHS) {
+    const one = await readDurableJson<CronBeatMeta & { path?: string }>(beatFileFor(path))
+    if (!one?.at) continue
+    store.beats[path] = {
+      at: one.at,
+      day: one.day || shanghaiDayKey(one.at),
+      hm: one.hm || shanghaiHm(one.at),
+      status: one.status,
+      outcome: one.outcome,
+      reason: one.reason,
     }
+    if (one.at >= latestAt) {
+      latestAt = one.at
+      latestPath = path
+    }
+  }
+
+  // Legacy single-file fallback (pre per-path migration)
+  if (!latestPath) {
+    const legacy = await readDurableJson<CronHeartbeat | CronBeatStore>(LEGACY_NAME)
+    if (legacy) {
+      if ('beats' in legacy && legacy.beats && typeof legacy.beats === 'object') {
+        for (const [p, meta] of Object.entries(legacy.beats)) {
+          if (!meta?.at) continue
+          store.beats[p] = meta
+          if (meta.at >= latestAt) {
+            latestAt = meta.at
+            latestPath = p
+          }
+        }
+      } else if ((legacy as CronHeartbeat).path) {
+        const l = legacy as CronHeartbeat
+        store.beats[l.path] = {
+          at: l.at,
+          day: l.day,
+          hm: l.hm,
+          status: l.status,
+          outcome: l.outcome,
+          reason: l.reason,
+        }
+        latestAt = l.at
+        latestPath = l.path
+      }
+    }
+  }
+
+  if (latestPath) {
+    store.path = latestPath
+    store.at = latestAt
+    store.updatedAt = latestAt
+    store.day = store.beats[latestPath]?.day || shanghaiDayKey(latestAt)
+    store.hm = store.beats[latestPath]?.hm || shanghaiHm(latestAt)
   }
   return store
 }
@@ -73,7 +126,6 @@ export async function touchCronHeartbeat(
   path: string,
   extra?: { status?: number; outcome?: CronBeatMeta['outcome']; reason?: string },
 ): Promise<CronHeartbeat> {
-  const store = await readCronBeatStore()
   const at = Date.now()
   const day = shanghaiDayKey(at)
   const hm = shanghaiHm(at)
@@ -85,13 +137,9 @@ export async function touchCronHeartbeat(
     outcome: extra?.outcome,
     reason: extra?.reason,
   }
-  store.beats[path] = meta
-  store.updatedAt = at
-  store.path = path
-  store.at = at
-  store.day = day
-  store.hm = hm
-  await writeDurableJson(HEARTBEAT_NAME, store)
+  await writeDurableJson(beatFileFor(path), { path, ...meta })
+  // Keep legacy pointer for older readers (best-effort; may race but per-path files are source of truth)
+  await writeDurableJson(LEGACY_NAME, { path, ...meta }).catch(() => undefined)
   return { path, ...meta }
 }
 

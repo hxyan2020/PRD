@@ -109,7 +109,11 @@ export async function buildCronHealthReport(args?: {
   {
     const b = beats['/api/lark/cron-tick']
     const maxAge = 10 * 60_000
-    const ok = Boolean(b?.at && now - b.at <= maxAge)
+    // Also accept any recent fan-out child beat (proves relay ran even if tick pointer raced).
+    const childFresh = Object.entries(beats).some(
+      ([p, meta]) => p !== '/api/lark/cron-tick' && meta?.at && now - meta.at <= maxAge,
+    )
+    const ok = Boolean((b?.at && now - b.at <= maxAge) || childFresh)
     jobs.push({
       id: 'cron-tick',
       label: 'cron-tick 兜底',
@@ -117,7 +121,9 @@ export async function buildCronHealthReport(args?: {
       expected: true,
       ok,
       detail: ok
-        ? `心跳正常（${ageMin(b?.at, now)}）`
+        ? b?.at && now - b.at <= maxAge
+          ? `心跳正常（${ageMin(b?.at, now)}）`
+          : `扇出子任务心跳正常（tick 指针 ${ageMin(b?.at, now)}）`
         : `心跳过期／缺失（上次 ${ageMin(b?.at, now)}）— 公网扇出可能中断`,
       lastAt: b?.at,
       lastHm: b?.hm,
