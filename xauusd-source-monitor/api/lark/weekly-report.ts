@@ -7,8 +7,22 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { larkConfigured, resolveAdminOpenId, sendCardToOpenId } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
+import { shanghaiDayKey } from './_lib/market.js'
 import { listIncidents } from './_lib/store.js'
 import { buildWeeklyReport, weeklyReportCard } from './_lib/weeklyReport.js'
+
+/** Friday in Asia/Shanghai (0=Sun … 5=Fri). */
+function isShanghaiFriday(ts: number = Date.now()): boolean {
+  try {
+    const wd = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Shanghai',
+      weekday: 'short',
+    }).format(new Date(ts))
+    return wd === 'Fri'
+  } catch {
+    return new Date(ts).getUTCDay() === 5
+  }
+}
 
 const SENT_NAME = 'weekly-sent.json'
 
@@ -75,6 +89,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       error: 'LARK_APP_ID / LARK_APP_SECRET missing',
       weekKey: report.window.weekKey,
       dryPreview: report.markdown,
+    })
+  }
+
+  // Cron schedule is Friday-only; still guard so fan-out / mistaken triggers cannot mid-week push.
+  if (cron && !force && !isShanghaiFriday(now)) {
+    return res.status(200).json({
+      ok: true,
+      skipped: true,
+      reason: 'not_friday_cst',
+      day: shanghaiDayKey(now),
+      weekKey: report.window.weekKey,
     })
   }
 

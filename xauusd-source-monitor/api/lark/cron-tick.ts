@@ -15,13 +15,12 @@ export const config = {
 
 const PUBLIC_BASE = 'https://vex-llm-proxy.vercel.app'
 
+/** Frequent / catch-up jobs only. Daily+Friday digests keep their own schedules. */
 const PATHS = [
   '/api/lark/alert-nudge',
   '/api/lark/oscillation-alert',
   '/api/lark/market-report',
   '/api/lark/weekly-demo',
-  '/api/lark/daily-market-report',
-  '/api/lark/weekly-report',
 ] as const
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

@@ -6,8 +6,8 @@ name: Lark cron backup
 on:
   schedule:
     # Every 15 minutes (UTC). Covers oscillation / weekly-demo / market half-hour.
+    # Does not fan out daily/Friday digests (those keep their own Vercel schedules).
     - cron: '*/15 * * * *'
-    # Extra tick near the half-hour for market-report when GH delay drifts.
     - cron: '1,31 * * * *'
   workflow_dispatch:
 
@@ -27,8 +27,6 @@ jobs:
             /api/lark/oscillation-alert
             /api/lark/market-report
             /api/lark/weekly-demo
-            /api/lark/daily-market-report
-            /api/lark/weekly-report
           )
           for path in "${paths[@]}"; do
             echo "=== GET ${path} ==="
