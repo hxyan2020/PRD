@@ -1,6 +1,12 @@
 import { isZh } from './lang.js'
 import { formatNodeBodyForLark } from './plain.js'
-import type { IncidentRecord, KbItem, Lang, SkillRec } from './types.js'
+import {
+  countRiskVerdicts,
+  riskVerdictEmoji,
+  riskVerdictLabel,
+  suggestRiskVerdict,
+} from './riskVerdict.js'
+import type { IncidentRecord, KbItem, Lang, RiskVerdict, SkillRec } from './types.js'
 
 const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
 const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
@@ -39,11 +45,24 @@ export function investigationCard(args: {
   skills: string[]
   knowledge: string[]
   incidentId?: string
+  riskVerdict?: RiskVerdict
   /** First report in a case — remind user they can paste another alert into the same review. */
   showAddAlertHint?: boolean
 }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
+  const suggested = suggestRiskVerdict(args.severity)
+  const verdictLine = args.riskVerdict
+    ? hans
+      ? `${riskVerdictEmoji(args.riskVerdict)} **最终判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+      : zh
+        ? `${riskVerdictEmoji(args.riskVerdict)} **最終判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+        : `${riskVerdictEmoji(args.riskVerdict)} **Final verdict:** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+    : hans
+      ? `⚖️ **最终判定（必选，计入复盘／周报）：** 尚未选定 — 建议参考严重度倾向 **${riskVerdictLabel(suggested, args.lang)}**`
+      : zh
+        ? `⚖️ **最終判定（必選，計入複盤／週報）：** 尚未選定 — 建議參考嚴重度傾向 **${riskVerdictLabel(suggested, args.lang)}**`
+        : `⚖️ **Final verdict (required for board/weekly stats):** unset — severity soft-suggests **${riskVerdictLabel(suggested, args.lang)}**`
   const emoji = severityEmoji(args.severity)
   const stepMd = args.nextSteps.map((s, i) => formatStepLine(s, i)).join('\n')
   const actionMd =
@@ -119,6 +138,52 @@ export function investigationCard(args: {
       { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
+      { tag: 'hr' },
+      { tag: 'div', text: { tag: 'lark_md', content: verdictLine } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '判定：有风险' : zh ? '判定：有風險' : 'Verdict: At risk',
+            },
+            type: args.riskVerdict === 'at_risk' ? 'primary' : 'danger',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'at_risk',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '判定：无风险' : zh ? '判定：無風險' : 'Verdict: No risk',
+            },
+            type: args.riskVerdict === 'no_risk' ? 'primary' : 'default',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'no_risk',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '尚不明确' : zh ? '尚不明確' : 'Unclear',
+            },
+            type: args.riskVerdict === 'unclear' ? 'primary' : 'default',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'unclear',
+              incidentId: args.incidentId || '',
+            },
+          },
+        ],
+      },
       ...(args.showAddAlertHint
         ? [
             { tag: 'hr' },
@@ -131,17 +196,20 @@ export function investigationCard(args: {
                       '💡 **提示：**',
                       '• 随时可再贴一条新告警／截图／转发卡片，我会和**当前这条一起**继续排查（同一会话即可，不必先归档）。',
                       '• 需要过程报告时发 **生成排查报告** — 会按本会话全部互动生成。',
+                      '• 归档前请完成 **最终判定（有／无风险）** — 会计入复盘与周报。',
                     ].join('\n')
                   : zh
                     ? [
                         '💡 **提示：**',
                         '• 隨時可再貼一條新告警／截圖／轉發卡片，我會和**目前這條一起**繼續排查（同一會話即可，不必先歸檔）。',
                         '• 需要過程報告時發 **生成排查報告** — 會按本會話全部互動生成。',
+                        '• 歸檔前請完成 **最終判定（有／無風險）** — 會計入複盤與週報。',
                       ].join('\n')
                     : [
                         '💡 **Tip:**',
                         '• Paste another alert / screenshot / forwarded card anytime — I’ll review it **together with this one** (same case, no archive needed).',
                         '• For a proceed-based write-up, send **generate investigation report** — built from every interaction in this case.',
+                        '• Set a **final risk verdict** before archive — counted on the board and weekly report.',
                       ].join('\n'),
               },
             },
@@ -158,8 +226,6 @@ export function investigationCard(args: {
               : '⌨️ **Actions** (tap a button; or send text: `step done` / `generate report` / `done` / `review`)',
         },
       },
-      // Card Request URL must be set (same as /api/lark/event or /api/lark/card).
-      // Market TF buttons already rely on that callback path.
       {
         tag: 'action',
         actions: [
@@ -219,6 +285,109 @@ export function investigationCard(args: {
   }
 }
 
+/** Shown when archiving without a final risk verdict. */
+export function riskVerdictPromptCard(args: {
+  lang: Lang
+  incidentId: string
+  title?: string
+  thenArchive?: boolean
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const then = args.thenArchive ? 'archive' : ''
+  const body = hans
+    ? [
+        '⚖️ **归档前请完成最终判定**',
+        args.title ? `• **案件：** ${args.title}` : null,
+        '该判定会计入 **复盘看板** 与 **周报** 的「有风险／无风险」统计。',
+        '请选择一项：',
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : zh
+      ? [
+          '⚖️ **歸檔前請完成最終判定**',
+          args.title ? `• **案件：** ${args.title}` : null,
+          '該判定會計入 **複盤看板** 與 **週報** 的「有風險／無風險」統計。',
+          '請選擇一項：',
+        ]
+          .filter(Boolean)
+          .join('\n')
+      : [
+          '⚖️ **Set a final risk verdict before archive**',
+          args.title ? `• **Case:** ${args.title}` : null,
+          'This is counted on the **review board** and **weekly report**.',
+          'Pick one:',
+        ]
+          .filter(Boolean)
+          .join('\n')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'orange',
+      title: {
+        tag: 'plain_text',
+        content: hans ? '最终判定' : zh ? '最終判定' : 'Final risk verdict',
+      },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '有风险并归档' : zh ? '有風險並歸檔' : 'At risk → archive',
+            },
+            type: 'danger',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'at_risk',
+              incidentId: args.incidentId,
+              then,
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '无风险并归档' : zh ? '無風險並歸檔' : 'No risk → archive',
+            },
+            type: 'primary',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'no_risk',
+              incidentId: args.incidentId,
+              then,
+            },
+          },
+        ],
+      },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '尚不明确并归档' : zh ? '尚不明確並歸檔' : 'Unclear → archive',
+            },
+            type: 'default',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'unclear',
+              incidentId: args.incidentId,
+              then,
+            },
+          },
+        ],
+      },
+    ],
+  }
+}
+
 /** Unicode bar for in-card charts (Lark has no canvas). */
 function bar(n: number, max: number, width = 10): string {
   const filled = max <= 0 ? 0 : Math.max(0, Math.round((n / max) * width))
@@ -253,6 +422,39 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
   const total = args.incidents.length
   const open = args.incidents.filter((i) => i.status === 'open').length
   const archived = args.incidents.filter((i) => i.status === 'archived').length
+  const riskCounts = countRiskVerdicts(args.incidents)
+  const riskMax = Math.max(
+    1,
+    riskCounts.at_risk,
+    riskCounts.no_risk,
+    riskCounts.unclear,
+    riskCounts.unset,
+  )
+  const riskChart = hans
+    ? [
+        `🔴 有风险 ${bar(riskCounts.at_risk, riskMax)} **${riskCounts.at_risk}**`,
+        `🟢 无风险 ${bar(riskCounts.no_risk, riskMax)} **${riskCounts.no_risk}**`,
+        `🟡 尚不明确 ${bar(riskCounts.unclear, riskMax)} **${riskCounts.unclear}**`,
+        `⚪ 未判定 ${bar(riskCounts.unset, riskMax)} **${riskCounts.unset}**`,
+      ].join('\n')
+    : zh
+      ? [
+          `🔴 有風險 ${bar(riskCounts.at_risk, riskMax)} **${riskCounts.at_risk}**`,
+          `🟢 無風險 ${bar(riskCounts.no_risk, riskMax)} **${riskCounts.no_risk}**`,
+          `🟡 尚不明確 ${bar(riskCounts.unclear, riskMax)} **${riskCounts.unclear}**`,
+          `⚪ 未判定 ${bar(riskCounts.unset, riskMax)} **${riskCounts.unset}**`,
+        ].join('\n')
+      : [
+          `🔴 At risk  ${bar(riskCounts.at_risk, riskMax)} **${riskCounts.at_risk}**`,
+          `🟢 No risk  ${bar(riskCounts.no_risk, riskMax)} **${riskCounts.no_risk}**`,
+          `🟡 Unclear  ${bar(riskCounts.unclear, riskMax)} **${riskCounts.unclear}**`,
+          `⚪ Unset    ${bar(riskCounts.unset, riskMax)} **${riskCounts.unset}**`,
+        ].join('\n')
+  const riskTitle = hans
+    ? '⚖️ **最终判定（有无风险）**'
+    : zh
+      ? '⚖️ **最終判定（有無風險）**'
+      : '⚖️ **Final risk verdict**'
 
   const bySev: Record<string, number> = {}
   for (const inc of args.incidents) {
@@ -334,7 +536,8 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
                   ? '進行中'
                   : '已歸檔'
                 : inc.status
-            return `${i + 1}. ${se} **${inc.title}**\n• **${inc.severity}** · ${statusIcon} ${statusLabel} · 🕒 ${when} SGT\n• ${inc.summary.slice(0, 120)}`
+            const rv = `${riskVerdictEmoji(inc.riskVerdict)} ${riskVerdictLabel(inc.riskVerdict, args.lang)}`
+            return `${i + 1}. ${se} **${inc.title}**\n• **${inc.severity}** · ${statusIcon} ${statusLabel} · ${rv} · 🕒 ${when} SGT\n• ${inc.summary.slice(0, 120)}`
           })
           .join('\n\n')
 
@@ -377,6 +580,8 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
   const labelTotal = hans ? '合计' : zh ? '合計' : 'Total'
   const labelOpen = hans ? '进行中' : zh ? '進行中' : 'Open'
   const labelArchived = hans ? '已归档' : zh ? '已歸檔' : 'Archived'
+  const labelAtRisk = hans ? '有风险' : zh ? '有風險' : 'At risk'
+  const labelNoRisk = hans ? '无风险' : zh ? '無風險' : 'No risk'
 
   return {
     config: { wide_screen_mode: true },
@@ -403,10 +608,27 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
           kpiColumn(labelArchived, String(archived)),
         ],
       },
+      {
+        tag: 'column_set',
+        flex_mode: 'none',
+        background_style: 'grey',
+        columns: [
+          kpiColumn(labelAtRisk, String(riskCounts.at_risk)),
+          kpiColumn(labelNoRisk, String(riskCounts.no_risk)),
+          kpiColumn(
+            hans ? '未判定' : zh ? '未判定' : 'Unset',
+            String(riskCounts.unclear + riskCounts.unset),
+          ),
+        ],
+      },
       { tag: 'hr' },
       {
         tag: 'div',
         text: { tag: 'lark_md', content: `${statusTitle}\n${statusChart}` },
+      },
+      {
+        tag: 'div',
+        text: { tag: 'lark_md', content: `${riskTitle}\n${riskChart}` },
       },
       {
         tag: 'div',
@@ -524,9 +746,11 @@ export function incidentDetailCard(args: {
           })
           .join('\n')
 
+  const verdictBlock = `${riskVerdictEmoji(inc.riskVerdict)} **${hans ? '最终判定' : zh ? '最終判定' : 'Final verdict'}:** **${riskVerdictLabel(inc.riskVerdict, args.lang)}**`
   const body = hans
     ? [
         `${se} **严重度：** **${inc.severity}** · ${statusLabel}`,
+        verdictBlock,
         `• **ID：** \`${inc.id}\``,
         `• **创建：** ${created} SGT`,
         `• **更新：** ${when} SGT`,
@@ -551,6 +775,7 @@ export function incidentDetailCard(args: {
     : zh
       ? [
           `${se} **嚴重度：** **${inc.severity}** · ${statusLabel}`,
+          verdictBlock,
           `• **ID：** \`${inc.id}\``,
           `• **建立：** ${created} SGT`,
           `• **更新：** ${when} SGT`,
@@ -574,6 +799,7 @@ export function incidentDetailCard(args: {
         ].join('\n')
       : [
           `${se} **Severity:** **${inc.severity}** · ${statusLabel}`,
+          verdictBlock,
           `• **ID:** \`${inc.id}\``,
           `• **Created:** ${created} SGT`,
           `• **Updated:** ${when} SGT`,
@@ -611,6 +837,49 @@ export function incidentDetailCard(args: {
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: body } },
       {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: hans
+            ? '⚖️ **改判／补判**（计入复盘与周报）'
+            : zh
+              ? '⚖️ **改判／補判**（計入複盤與週報）'
+              : '⚖️ **Set / change verdict** (board + weekly stats)',
+        },
+      },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '有风险' : zh ? '有風險' : 'At risk',
+            },
+            type: 'danger',
+            value: { action: 'set_risk_verdict', verdict: 'at_risk', incidentId: inc.id },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '无风险' : zh ? '無風險' : 'No risk',
+            },
+            type: 'primary',
+            value: { action: 'set_risk_verdict', verdict: 'no_risk', incidentId: inc.id },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '尚不明确' : zh ? '尚不明確' : 'Unclear',
+            },
+            type: 'default',
+            value: { action: 'set_risk_verdict', verdict: 'unclear', incidentId: inc.id },
+          },
+        ],
+      },
+      {
         tag: 'action',
         actions: [
           {
@@ -619,7 +888,7 @@ export function incidentDetailCard(args: {
               tag: 'plain_text',
               content: hans ? '返回看板' : zh ? '返回看板' : 'Back to board',
             },
-            type: 'primary',
+            type: 'default',
             value: { action: 'review' },
           },
           {

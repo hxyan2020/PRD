@@ -98,6 +98,9 @@ export interface InvestigationState {
   updatedAt: number
 }
 
+/** Final human verdict after investigation assistance. */
+export type RiskVerdict = 'at_risk' | 'no_risk' | 'unclear'
+
 export interface IncidentRecord {
   id: string
   chatId: string
@@ -111,6 +114,14 @@ export interface IncidentRecord {
   recommendations: string[]
   /** Snapshot of the interaction log when the case was last updated. */
   interactions?: InvestigationInteraction[]
+  /**
+   * Final desk judgment: is there material risk?
+   * Counted on the review board and weekly report.
+   */
+  riskVerdict?: RiskVerdict
+  riskVerdictAt?: number
+  /** open_id or 'operator' when set via card button. */
+  riskVerdictBy?: string
   status: 'open' | 'archived'
   createdAt: number
   updatedAt: number

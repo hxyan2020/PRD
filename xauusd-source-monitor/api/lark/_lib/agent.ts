@@ -7,9 +7,15 @@ import {
   knowledgeCatalogCard,
   nodeDetailCard,
   reviewCard,
+  riskVerdictPromptCard,
   simpleCard,
   skillsCatalogCard,
 } from './cards.js'
+import {
+  normalizeRiskVerdict,
+  riskVerdictEmoji,
+  riskVerdictLabel,
+} from './riskVerdict.js'
 import { chatComplete, describeImage } from './llm.js'
 import {
   extractWikiQuery,
@@ -663,11 +669,18 @@ async function buildProceedInvestigationReport(args: {
   if (llm) return llm
 
   // Deterministic fallback when LLM unavailable
+  const verdict =
+    args.incident?.riskVerdict != null
+      ? `${riskVerdictEmoji(args.incident.riskVerdict)} ${riskVerdictLabel(args.incident.riskVerdict, args.lang)}`
+      : hans || hant
+        ? '⚪ 未判定（请在排查卡点「有风险／无风险」）'
+        : '⚪ Unset (tap At risk / No risk on the investigation card)'
   if (hans) {
     return [
       '📋 **排查过程报告**（基于本会话互动记录）',
       '',
       `🟠 **当前严重度：** **${severity}**`,
+      `⚖️ **最终判定：** **${verdict}**`,
       `• **命中 Skills：** ${skills}`,
       '',
       '🕒 **互动时间线**',
@@ -679,7 +692,7 @@ async function buildProceedInvestigationReport(args: {
       '✅ **已完成步骤**',
       stepBlock,
       '',
-      '🧭 **说明：** 完整过程已按上方日志归档；继续贴告警或发 **step done** 可刷新排查卡。',
+      '🧭 **说明：** 完整过程已按上方日志归档；继续贴告警或发 **step done** 可刷新排查卡。归档前请完成最终判定，计入复盘与周报。',
     ].join('\n')
   }
   if (hant) {
@@ -687,6 +700,7 @@ async function buildProceedInvestigationReport(args: {
       '📋 **排查過程報告**（基於本會話互動記錄）',
       '',
       `🟠 **當前嚴重度：** **${severity}**`,
+      `⚖️ **最終判定：** **${verdict}**`,
       `• **命中 Skills：** ${skills}`,
       '',
       '🕒 **互動時間線**',
@@ -703,6 +717,7 @@ async function buildProceedInvestigationReport(args: {
     '📋 **Proceed-based investigation report** (from this case’s interaction log)',
     '',
     `🟠 **Severity:** **${severity}**`,
+    `⚖️ **Final verdict:** **${verdict}**`,
     `• **Skills:** ${skills}`,
     '',
     '🕒 **Interaction timeline**',
@@ -795,6 +810,9 @@ async function persistOpenIncident(args: {
     interactions: args.interactions?.length
       ? args.interactions.slice(-80)
       : prev?.interactions,
+    riskVerdict: prev?.riskVerdict,
+    riskVerdictAt: prev?.riskVerdictAt,
+    riskVerdictBy: prev?.riskVerdictBy,
     status: prev?.status === 'archived' ? 'archived' : 'open',
     createdAt: prev?.createdAt || Date.now(),
     updatedAt: Date.now(),
@@ -1158,6 +1176,7 @@ async function runInvestigation(args: {
       skills: hits.map((h) => h.id),
       knowledge: kb.map((k) => k.title),
       incidentId: rec.id,
+      riskVerdict: rec.riskVerdict,
       showAddAlertHint,
     }),
   }
@@ -1228,10 +1247,91 @@ export async function handleCardAction(args: {
     return { card: incidentDetailCard({ lang, incident: inc }) }
   }
 
+  if (action === 'set_risk_verdict') {
+    const verdict = normalizeRiskVerdict(args.value.verdict)
+    const id = incidentId || session.lastReportId || ''
+    const thenArchive = String(args.value.then || '') === 'archive'
+    if (!verdict || !id) {
+      const title =
+        lang === 'zh-Hans' ? '判定失败' : lang === 'zh-Hant' ? '判定失敗' : 'Verdict failed'
+      const body =
+        lang === 'zh-Hans'
+          ? '请从排查卡选择：有风险／无风险／尚不明确。'
+          : lang === 'zh-Hant'
+            ? '請從排查卡選擇：有風險／無風險／尚不明確。'
+            : 'Pick At risk / No risk / Unclear on the investigation card.'
+      return { card: simpleCard(title, body, 'orange') }
+    }
+    const inc = await getIncidentDurable(id)
+    if (!inc) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '事故未找到' : lang === 'zh-Hant' ? '事故未找到' : 'Not found',
+          `ID \`${id}\``,
+          'orange',
+        ),
+      }
+    }
+    inc.riskVerdict = verdict
+    inc.riskVerdictAt = Date.now()
+    inc.riskVerdictBy = args.openId || 'operator'
+    inc.updatedAt = Date.now()
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'command',
+      text:
+        lang === 'zh-Hans'
+          ? `最终判定：${riskVerdictLabel(verdict, lang)}`
+          : lang === 'zh-Hant'
+            ? `最終判定：${riskVerdictLabel(verdict, lang)}`
+            : `Final verdict: ${riskVerdictLabel(verdict, lang)}`,
+      messageId: args.messageId,
+    })
+    if (thenArchive) {
+      inc.status = 'archived'
+      await upsertIncidentDurable(inc)
+      await clearSessionDurable(args.chatId, args.openId)
+      const archivedTitle =
+        lang === 'zh-Hans' ? '已归档（含风险判定）' : lang === 'zh-Hant' ? '已歸檔（含風險判定）' : 'Archived with verdict'
+      const archivedBody =
+        lang === 'zh-Hans'
+          ? [
+              `${riskVerdictEmoji(verdict)} **最终判定：** **${riskVerdictLabel(verdict, lang)}**`,
+              `事故 \`${id}\` 已归档，将计入复盘与周报统计。`,
+              '随时输入 **review**，或贴新告警重新开始。',
+            ].join('\n')
+          : lang === 'zh-Hant'
+            ? [
+                `${riskVerdictEmoji(verdict)} **最終判定：** **${riskVerdictLabel(verdict, lang)}**`,
+                `事故 \`${id}\` 已歸檔，將計入複盤與週報統計。`,
+                '隨時輸入 **review**，或貼新告警重新開始。',
+              ].join('\n')
+            : [
+                `${riskVerdictEmoji(verdict)} **Final verdict:** **${riskVerdictLabel(verdict, lang)}**`,
+                `Incident \`${id}\` archived — counted on the review board and weekly report.`,
+                'Type **review** anytime, or paste a new alert.',
+              ].join('\n')
+      return { card: simpleCard(archivedTitle, archivedBody, 'green') }
+    }
+    await upsertIncidentDurable(inc)
+    await saveSessionDurable(args.chatId, args.openId, session)
+    return { card: incidentDetailCard({ lang, incident: inc }) }
+  }
+
   if (action === 'archive') {
     const id = incidentId || session.lastReportId
     if (id) {
       const inc = await getIncidentDurable(id)
+      if (inc && !inc.riskVerdict) {
+        return {
+          card: riskVerdictPromptCard({
+            lang,
+            incidentId: id,
+            title: inc.title,
+            thenArchive: true,
+          }),
+        }
+      }
       if (inc) {
         inc.status = 'archived'
         inc.updatedAt = Date.now()
@@ -1805,23 +1905,12 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'archive') {
-    if (session.lastReportId) {
-      const inc = await getIncidentDurable(session.lastReportId)
-      if (inc) {
-        inc.status = 'archived'
-        inc.updatedAt = Date.now()
-        await upsertIncidentDurable(inc)
-      }
-    }
-    await clearSessionDurable(msg.chatId, msg.openId)
-    return {
-      text:
-        lang === 'zh-Hans'
-          ? '已结束本次排查并归档（若有报告）。输入 review 查看清单，或贴上新告警重新开始。'
-          : lang === 'zh-Hant'
-            ? '已結束本次排查並歸檔（若有報告）。輸入 review 查看清單，或貼上新告警重新開始。'
-            : 'Investigation closed and archived (if a report existed). Type review for the list, or paste a new alert to start again.',
-    }
+    return handleCardAction({
+      openId: msg.openId,
+      chatId: msg.chatId,
+      messageId: msg.messageId,
+      value: { action: 'archive', incidentId: session.lastReportId || '' },
+    })
   }
 
   // Text alternative to card “Step done” button (works without Lark Card Request URL)

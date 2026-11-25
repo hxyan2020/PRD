@@ -2736,6 +2736,19 @@ async function main() {
     `urls=${revUrlCount}`,
   )
   record(
+    'turn.review_risk_verdict_stats',
+    (rev.blob.includes('有风险') ||
+      rev.blob.includes('有風險') ||
+      rev.blob.includes('At risk')) &&
+      (rev.blob.includes('无风险') ||
+        rev.blob.includes('無風險') ||
+        rev.blob.includes('No risk')) &&
+      (rev.blob.includes('最终判定') ||
+        rev.blob.includes('最終判定') ||
+        rev.blob.includes('Final risk verdict')),
+    'risk verdict KPIs on review board',
+  )
+  record(
     'turn.review_open_incident_buttons',
     rev.blob.includes('open_incident') &&
       (rev.blob.includes('查看完整') || rev.blob.includes('Open full')) &&
@@ -2807,8 +2820,9 @@ async function main() {
     `found=${afterUpsert.some((r) => r.id === syncProbeId)} total=${afterUpsert.length}`,
   )
 
-  // 11) Archive / done
+  // 11) Archive / done — may prompt for risk verdict first when unset
   const done = await turn('archive', 'done')
+  const doneLower = done.blob.toLowerCase()
   record(
     'turn.archive_done',
     Boolean(
@@ -2816,8 +2830,13 @@ async function main() {
         done.reply?.text?.includes('归档') ||
         done.reply?.text?.includes('歸檔') ||
         done.reply?.text?.includes('完成') ||
-        done.blob.includes('archiv') ||
-        done.blob.includes('归档'),
+        doneLower.includes('archiv') ||
+        done.blob.includes('归档') ||
+        done.blob.includes('歸檔') ||
+        done.blob.includes('最终判定') ||
+        done.blob.includes('最終判定') ||
+        done.blob.includes('Final risk verdict') ||
+        done.blob.includes('set_risk_verdict'),
     ),
     done.blob.slice(0, 120),
   )
@@ -2835,6 +2854,51 @@ async function main() {
         inv.blob.includes('生成排查報告') ||
         inv.blob.includes('Generate report')),
     'callback buttons for step/report/done/review',
+  )
+  record(
+    'turn.investigate_risk_verdict_buttons',
+    inv.blob.includes('set_risk_verdict') &&
+      inv.blob.includes('at_risk') &&
+      inv.blob.includes('no_risk') &&
+      (inv.blob.includes('最终判定') ||
+        inv.blob.includes('最終判定') ||
+        inv.blob.includes('Final verdict')),
+    'final risk verdict buttons on investigate card',
+  )
+  const verdictSet = await handleCardAction({
+    openId: 'smoke_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_verdict',
+    value: {
+      action: 'set_risk_verdict',
+      verdict: 'at_risk',
+      incidentId: (await listIncidentsDurable({ limit: 1 }))[0]?.id || '',
+    },
+  })
+  const verdictBlob =
+    verdictSet?.text || (verdictSet?.card ? JSON.stringify(verdictSet.card) : '')
+  record(
+    'turn.set_risk_verdict_persists',
+    Boolean(verdictSet?.card) &&
+      (verdictBlob.includes('有风险') ||
+        verdictBlob.includes('有風險') ||
+        verdictBlob.includes('At risk') ||
+        verdictBlob.includes('at_risk') ||
+        verdictBlob.includes('最终判定') ||
+        verdictBlob.includes('Final verdict')),
+    verdictBlob.slice(0, 120),
+  )
+  const weeklyRisk = buildWeeklyReport(await listIncidentsDurable({ limit: 50 }), Date.now(), 'zh-Hans')
+  record(
+    'weekly.risk_verdict_stats_line',
+    weeklyRisk.markdown.includes('最终判定') &&
+      typeof weeklyRisk.byRiskVerdict?.at_risk === 'number' &&
+      weeklyRisk.byRiskVerdict.at_risk +
+        weeklyRisk.byRiskVerdict.no_risk +
+        weeklyRisk.byRiskVerdict.unclear +
+        weeklyRisk.byRiskVerdict.unset >=
+        1,
+    JSON.stringify(weeklyRisk.byRiskVerdict),
   )
   clearSession('smoke_chat', 'card_user')
   await turn(

@@ -130,7 +130,7 @@ function walk(value: unknown, keepMd: boolean): unknown {
         out[k] = v
         continue
       }
-      // action values must stay exact (step_done / generate_report / archive / review / open_incident)
+      // action values must stay exact (step_done / generate_report / archive / review / open_incident / set_risk_verdict)
       if (k === 'value' || k === 'action') {
         out[k] = v
         continue
