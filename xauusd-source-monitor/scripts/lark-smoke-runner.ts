@@ -805,6 +805,24 @@ async function main() {
   record('cmd.zh_weekly', classifyIntent('周报', {}) === 'weekly', '')
   record('cmd.zh_review', classifyIntent('复盘', {}) === 'review', '')
   record(
+    'cmd.zh_oscillation_not_investigate',
+    classifyIntent('震荡行情预警', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'oscillation',
+    'must not fall through to investigate via 预警',
+  )
+  record(
+    'cmd.zh_daily_24h',
+    classifyIntent('每日 24h 早报', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'daily_market',
+    '',
+  )
+  record(
     'intent.skills_natural_zh',
     classifyIntent('有哪些排查场景', {
       inInvestigateSession: false,
@@ -1878,6 +1896,61 @@ async function main() {
     '',
   )
   record('intent.weekly_zh', classifyIntent('周报', { inInvestigateSession: false, mentionedBot: true, chatType: 'p2p' }) === 'weekly', '')
+  {
+    const { buildOscillationStatusCard, shouldFireAlert } = await import(
+      '../api/lark/_lib/oscillationAlert'
+    )
+    const idleSnap = {
+      fetchedAt: Date.now(),
+      last: 3500,
+      volRecentPct: 0.2,
+      volMeanPct: 0.25,
+      volRatio: 0.8,
+      fundingPct: 0.001,
+      fundingMeanAbsPct: 0.01,
+      fundingRatio: 0.1,
+      oi: 1000,
+      newsHeadline: null,
+      newsUrl: null,
+      triggers: [],
+      demo: false,
+    }
+    const statusCard = buildOscillationStatusCard(idleSnap, 'zh-Hans')
+    const statusBlob = JSON.stringify(statusCard)
+    record(
+      'osc.status_card_explains_mechanism',
+      !shouldFireAlert(idleSnap) &&
+        statusBlob.includes('当前没有') &&
+        statusBlob.includes('触发机制') &&
+        statusBlob.includes('1.45') &&
+        statusBlob.includes('1.5'),
+      statusBlob.slice(0, 160),
+    )
+  }
+  clearSession('smoke_chat', 'smoke_user')
+  const oscTurn = await turn('osc-cmd', '震荡行情预警')
+  record(
+    'turn.oscillation_status_not_investigate',
+    Boolean(oscTurn.reply?.card) &&
+      !oscTurn.blob.includes('排查进行中') &&
+      (oscTurn.blob.includes('触发机制') ||
+        oscTurn.blob.includes('觸發機制') ||
+        oscTurn.blob.includes('Trigger mechanism') ||
+        oscTurn.blob.includes('未触发') ||
+        oscTurn.blob.includes('已触发')),
+    oscTurn.blob.slice(0, 200),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const dailyTurn = await turn('daily-cmd', '每日 24h 早报')
+  record(
+    'turn.daily_24h_status',
+    Boolean(dailyTurn.reply?.card) &&
+      (dailyTurn.blob.includes('触发机制') ||
+        dailyTurn.blob.includes('觸發機制') ||
+        dailyTurn.blob.includes('Trigger mechanism') ||
+        dailyTurn.blob.includes('09:00')),
+    dailyTurn.blob.slice(0, 200),
+  )
   clearSession('smoke_chat', 'smoke_user')
   const weeklyTurn = await turn('weekly-cmd', '周报')
   record(

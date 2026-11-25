@@ -1435,7 +1435,9 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       intent === 'review' ||
       intent === 'skills' ||
       intent === 'knowledge' ||
-      intent === 'weekly')
+      intent === 'weekly' ||
+      intent === 'oscillation' ||
+      intent === 'daily_market')
   ) {
     intent = 'general_risk'
   }
@@ -1609,6 +1611,87 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   if (intent === 'weekly') {
     const report = buildWeeklyReport(listIncidents({ status: 'all', limit: 200 }), Date.now(), lang)
     return { card: weeklyReportCard(report.markdown, report.empty) }
+  }
+
+  if (intent === 'oscillation') {
+    const { evaluateOscillation, buildOscillationStatusCard } = await import(
+      './oscillationAlert.js'
+    )
+    const snap = await evaluateOscillation({ demo: false })
+    return { card: buildOscillationStatusCard(snap, lang) }
+  }
+
+  if (intent === 'daily_market') {
+    const { readDurableJson } = await import('./durableJson.js')
+    const {
+      buildMarketCard,
+      dailyMarketTitle,
+      fetchMarketSnapshot,
+      shanghaiDayKey,
+    } = await import('./market.js')
+    const { shanghaiHm } = await import('./oscillationAlert.js')
+    const dayKey = shanghaiDayKey(Date.now())
+    const hm = shanghaiHm(Date.now())
+    const sentMap =
+      (await readDurableJson<Record<string, number>>('market-daily-sent.json')) || {}
+    const alreadySent = Boolean(sentMap[dayKey])
+    const statusBits =
+      lang === 'zh-Hans'
+        ? [
+            '📌 **触发机制**',
+            '• 东八区每天 **09:00**（UTC 01:00）cron 自动推送到指定群',
+            '• 内容：过去 **24 小时** 行情摘要',
+            '• 你发「每日 24h 早报」= **即时预览**（不会因此再推群）',
+            '',
+            `• **今日 ${dayKey} · 东八区 ${hm}**`,
+            alreadySent
+              ? '• **今日推送：** 已发送（同日不重复）'
+              : hm < '09:00'
+                ? '• **今日推送：** 尚未到 09:00，等 cron'
+                : '• **今日推送：** 尚未记录已发送',
+            '',
+          ].join('\n')
+        : lang === 'zh-Hant'
+          ? [
+              '📌 **觸發機制**',
+              '• 東八區每天 **09:00**（UTC 01:00）cron 自動推送到指定群',
+              '• 內容：過去 **24 小時** 行情摘要',
+              '• 你發「每日 24h 早報」= **即時預覽**（不會因此再推群）',
+              '',
+              `• **今日 ${dayKey} · 東八區 ${hm}**`,
+              alreadySent
+                ? '• **今日推送：** 已發送（同日不重複）'
+                : hm < '09:00'
+                  ? '• **今日推送：** 尚未到 09:00'
+                  : '• **今日推送：** 尚未記錄已發送',
+              '',
+            ].join('\n')
+          : [
+              '📌 **Trigger mechanism**',
+              '• Cron pushes the group daily at **09:00 Asia/Shanghai** (01:00 UTC)',
+              '• Content: past-**24h** market digest',
+              '• This command = **live preview** (does not re-push the group)',
+              '',
+              `• **Today ${dayKey} · Asia/Shanghai ${hm}**`,
+              alreadySent
+                ? '• **Today’s push:** already sent (idempotent)'
+                : hm < '09:00'
+                  ? '• **Today’s push:** waiting for 09:00 cron'
+                  : '• **Today’s push:** not marked sent yet',
+              '',
+            ].join('\n')
+    const snap = await fetchMarketSnapshot()
+    return {
+      card: await buildMarketCard({
+        title: dailyMarketTitle(lang),
+        snap,
+        lang,
+        mode: 'daily',
+        intro: statusBits,
+        template: 'blue',
+        question: lang === 'en' ? 'daily 24h' : '每日 24h 早报',
+      }),
+    }
   }
 
   if (intent === 'inv_report') {

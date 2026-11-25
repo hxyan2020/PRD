@@ -11,6 +11,8 @@ export type Intent =
   | 'knowledge'
   | 'archive'
   | 'weekly'
+  | 'oscillation'
+  | 'daily_market'
   | 'inv_report'
   | 'offtopic'
   | 'safety'
@@ -70,6 +72,8 @@ export type PendingCommandIntent =
   | 'skills'
   | 'knowledge'
   | 'weekly'
+  | 'oscillation'
+  | 'daily_market'
 
 export interface InvestigationState {
   mode: 'idle' | 'investigate'
