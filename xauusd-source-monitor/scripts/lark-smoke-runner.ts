@@ -52,6 +52,7 @@ import {
   AO_LIMITS,
   analyzeAlertOptimize,
   analyzeLocally,
+  buildThresholdOptimizeBullets,
   extractAlertNames,
   parseCsvText,
 } from '../src/lib/alertOptimize'
@@ -879,6 +880,33 @@ async function main() {
         tuned.dataIssues.some((x) => /底层|Underlying/i.test(x)),
       `names=${names.join(',')} issues=${tuned.dataIssues.length}`,
     )
+    {
+      const logsThr = parseCsvText(
+        'ts,rule,threshold,value\n2026-01-01,depth_gap_bps,25,26\n2026-01-02,depth_gap_bps,25,27\n2026-01-03,depth_gap_bps,25,42\n2026-01-04,depth_gap_bps,25,28\n2026-01-05,depth_gap_bps,25,55\n',
+        'logs.csv',
+      )
+      logsThr.slot = 'alert_logs'
+      const labThr = parseCsvText(
+        'rule,valid\ndepth_gap_bps,0\ndepth_gap_bps,0\ndepth_gap_bps,1\n',
+        'labels.csv',
+      )
+      labThr.slot = 'human_labels'
+      const thrBullets = buildThresholdOptimizeBullets({
+        logs: [logsThr],
+        underlying: [],
+        labels: [labThr],
+        alertName: 'depth_gap_bps',
+        lang: 'zh-Hant',
+      })
+      record(
+        'alert_optimize.threshold_bullets',
+        thrBullets.includes('### 优化阈值') &&
+          (thrBullets.match(/^- /gm) || []).length >= 3 &&
+          thrBullets.includes('数据支持') &&
+          /上调阈值|P75|分位/.test(thrBullets),
+        thrBullets.slice(0, 220),
+      )
+    }
     record(
       'alert_optimize.desk_card_link',
       cardBlob.includes('alert-optimize') &&

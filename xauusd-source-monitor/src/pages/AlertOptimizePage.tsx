@@ -780,9 +780,52 @@ export function AlertOptimizePage() {
           <section className="panel">
             <h2>{t('aoAnswerTitle')}</h2>
             <div className="ao-answer">
-              {result.answer.split(/\n\n+/).map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
+              {result.answer.split(/\n\n+/).map((block, i) => {
+                const lines = block.split('\n').map((l) => l.trimEnd())
+                const isList = lines.some((l) => /^[-*]\s+/.test(l))
+                if (isList) {
+                  const title = lines.find((l) => /^#{1,3}\s+/.test(l) || (!/^[-*]\s+/.test(l) && l.trim()))
+                  const items = lines.filter((l) => /^[-*]\s+/.test(l))
+                  return (
+                    <div key={i} className="ao-answer-block">
+                      {title && !/^[-*]\s+/.test(title) ? (
+                        <p
+                          className="ao-answer-heading"
+                          dangerouslySetInnerHTML={{
+                            __html: title
+                              .replace(/^#{1,3}\s+/, '')
+                              .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                              .replace(/`([^`]+)`/g, '<code>$1</code>'),
+                          }}
+                        />
+                      ) : null}
+                      <ul>
+                        {items.map((item, j) => (
+                          <li
+                            key={j}
+                            dangerouslySetInnerHTML={{
+                              __html: item
+                                .replace(/^[-*]\s+/, '')
+                                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                                .replace(/`([^`]+)`/g, '<code>$1</code>'),
+                            }}
+                          />
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                }
+                return (
+                  <p
+                    key={i}
+                    dangerouslySetInnerHTML={{
+                      __html: block
+                        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/`([^`]+)`/g, '<code>$1</code>'),
+                    }}
+                  />
+                )
+              })}
             </div>
           </section>
 

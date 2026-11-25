@@ -488,10 +488,289 @@ function summarizeLabels(ds: IngestedDataset | undefined, zh: boolean): string |
     : `Human label column **${col}**: valid **${yes}** / invalid (FP) **${no}** / other **${other}** (n=${ds.rowCount}).`
 }
 
+const VALUE_COLS =
+  /^(value|val|metric[_\s-]?value|trigger[_\s-]?value|observed|actual|gap|bps|deviation|dev|depth|spread|premium)$/i
+const THRESHOLD_COLS =
+  /^(threshold|thresh|limit|cfg[_\s-]?threshold|config[_\s-]?threshold|配置阈值|阈值|门限)$/i
+
+function toNum(v: string): number | null {
+  const n = Number(String(v || '').replace(/,/g, ''))
+  return Number.isFinite(n) ? n : null
+}
+
+function percentile(sorted: number[], p: number): number {
+  if (!sorted.length) return NaN
+  if (sorted.length === 1) return sorted[0]!
+  const idx = (sorted.length - 1) * p
+  const lo = Math.floor(idx)
+  const hi = Math.ceil(idx)
+  if (lo === hi) return sorted[lo]!
+  const w = idx - lo
+  return sorted[lo]! * (1 - w) + sorted[hi]! * w
+}
+
+function fmtNum(n: number): string {
+  if (!Number.isFinite(n)) return '—'
+  const a = Math.abs(n)
+  if (a >= 1000) return n.toFixed(1)
+  if (a >= 10) return n.toFixed(2)
+  if (a >= 1) return n.toFixed(3)
+  return n.toFixed(4)
+}
+
+function pickCol(columns: string[], re: RegExp): string | undefined {
+  return columns.find((c) => re.test(c))
+}
+
+function collectNums(datasets: IngestedDataset[], colRe: RegExp): { col: string; values: number[] } | null {
+  for (const ds of datasets) {
+    const col = pickCol(ds.columns, colRe)
+    if (!col) continue
+    const values: number[] = []
+    for (const r of ds.rows) {
+      const n = toNum(r[col] || '')
+      if (n != null) values.push(n)
+    }
+    if (values.length >= 2) return { col, values }
+  }
+  return null
+}
+
+type LabelStats = { col: string; valid: number; invalid: number; other: number; total: number }
+
+function labelStats(datasets: IngestedDataset[]): LabelStats | null {
+  for (const ds of datasets) {
+    const col = pickCol(ds.columns, LABEL_VALID_COLS)
+    if (!col) continue
+    let valid = 0
+    let invalid = 0
+    let other = 0
+    for (const r of ds.rows) {
+      const v = (r[col] || '').trim().toLowerCase()
+      if (/^(1|true|yes|y|有效|true_positive|tp)$/i.test(v)) valid++
+      else if (/^(0|false|no|n|无效|误报|false_positive|fp)$/i.test(v)) invalid++
+      else other++
+    }
+    if (valid + invalid + other > 0) {
+      return { col, valid, invalid, other, total: valid + invalid + other }
+    }
+  }
+  return null
+}
+
+/** Join log rows to label validity by alert/rule name when possible. */
+function labeledValueSplit(
+  logs: IngestedDataset[],
+  labels: IngestedDataset[],
+  valueCol: string,
+): { tp: number[]; fp: number[] } {
+  const tp: number[] = []
+  const fp: number[] = []
+  const labelMap = new Map<string, boolean>()
+  for (const ds of labels) {
+    const nameCol = pickCol(ds.columns, ALERT_NAME_COLS)
+    const labCol = pickCol(ds.columns, LABEL_VALID_COLS)
+    if (!nameCol || !labCol) continue
+    for (const r of ds.rows) {
+      const key = (r[nameCol] || '').trim().toLowerCase()
+      if (!key) continue
+      const v = (r[labCol] || '').trim().toLowerCase()
+      if (/^(1|true|yes|y|有效|true_positive|tp)$/i.test(v)) labelMap.set(key, true)
+      else if (/^(0|false|no|n|无效|误报|false_positive|fp)$/i.test(v)) labelMap.set(key, false)
+    }
+  }
+  for (const ds of logs) {
+    const nameCol = pickCol(ds.columns, ALERT_NAME_COLS)
+    for (const r of ds.rows) {
+      const n = toNum(r[valueCol] || '')
+      if (n == null) continue
+      const key = nameCol ? (r[nameCol] || '').trim().toLowerCase() : ''
+      if (key && labelMap.has(key)) {
+        if (labelMap.get(key)) tp.push(n)
+        else fp.push(n)
+      }
+    }
+  }
+  return { tp, fp }
+}
+
+/**
+ * Concrete 「优化阈值」bullets with how-to + data support.
+ * Returned as a markdown-ish block (title + `-` bullets).
+ */
+export function buildThresholdOptimizeBullets(args: {
+  logs: IngestedDataset[]
+  underlying: IngestedDataset[]
+  labels: IngestedDataset[]
+  alertName: string
+  lang: 'en' | 'zh-Hant'
+}): string {
+  const zh = args.lang !== 'en'
+  const focus = args.alertName.trim()
+    ? zh
+      ? `告警「${args.alertName.trim()}」`
+      : `alert “${args.alertName.trim()}”`
+    : zh
+      ? '全体告警'
+      : 'all alerts'
+
+  const bullets: string[] = []
+  const valueHit = collectNums(args.logs.length ? args.logs : [...args.logs, ...args.underlying], VALUE_COLS)
+  const threshHit = collectNums(
+    [...args.logs, ...args.underlying],
+    THRESHOLD_COLS,
+  )
+  const labs = labelStats(args.labels)
+
+  if (!valueHit && !threshHit) {
+    bullets.push(
+      zh
+        ? `**补齐字段后再调参** — 当前日志／底层中未识别到 \`value\`／\`threshold\` 列，无法给出数值阈值。**数据支持：** 可用列需包含 value/threshold（或 阈值／门限）。`
+        : `**Backfill columns before tuning** — no \`value\`/\`threshold\` columns detected.**Data:** need value/threshold (or 阈值) fields.`,
+    )
+    bullets.push(
+      zh
+        ? `**临时动作** — 先按人工标注误报率收紧触发条件（若有标注）；否则导出含触发值与配置阈值的告警日志后重跑。`
+        : `**Interim** — tighten via human FP labels if present; otherwise re-export logs with trigger value + config threshold and re-run.`,
+    )
+  } else {
+    const values = valueHit?.values.slice().sort((a, b) => a - b) || []
+    const thresholds = threshHit?.values.slice().sort((a, b) => a - b) || []
+    const vCol = valueHit?.col
+    const tCol = threshHit?.col
+    const n = values.length
+    const vMin = values[0]
+    const vMax = values[values.length - 1]
+    const vP50 = percentile(values, 0.5)
+    const vP75 = percentile(values, 0.75)
+    const vP90 = percentile(values, 0.9)
+    const vP95 = percentile(values, 0.95)
+    const tMed = thresholds.length ? percentile(thresholds, 0.5) : NaN
+    const tMode = thresholds.length ? thresholds[Math.floor(thresholds.length / 2)]! : NaN
+
+    if (values.length) {
+      bullets.push(
+        zh
+          ? `**看触发值分布再定阈值** — 对 ${focus} 的触发值（列 \`${vCol}\`，n=${n}）先用分位数：P50=${fmtNum(vP50)}，P75=${fmtNum(vP75)}，P90=${fmtNum(vP90)}，P95=${fmtNum(vP95)}（min=${fmtNum(vMin!)}，max=${fmtNum(vMax!)}）。**数据支持：** 来自告警日志／底层数值列 \`${vCol}\`。`
+          : `**Anchor on fire-value percentiles** — for ${focus}, column \`${vCol}\` (n=${n}): P50=${fmtNum(vP50)}, P75=${fmtNum(vP75)}, P90=${fmtNum(vP90)}, P95=${fmtNum(vP95)} (min=${fmtNum(vMin!)}, max=${fmtNum(vMax!)}).**Data:** numeric column \`${vCol}\` from logs/underlying.`,
+      )
+    }
+
+    if (thresholds.length && values.length) {
+      const thr = tMed
+      const above = values.filter((v) => v >= thr).length
+      const barely = values.filter((v) => v >= thr && v < thr * 1.05).length
+      const barelyPct = Math.round((barely / Math.max(1, values.length)) * 100)
+      const slack = values.map((v) => (v - thr) / Math.max(Math.abs(thr), 1e-9))
+      const slackMed = percentile(slack.slice().sort((a, b) => a - b), 0.5)
+
+      if (barelyPct >= 30 || slackMed < 0.08) {
+        const suggest = fmtNum(vP75)
+        bullets.push(
+          zh
+            ? `**上调阈值（过敏）** — 将配置阈值从约 **${fmtNum(thr)}**（列 \`${tCol}\` 中位）上调到约 **${suggest}**（触发值 P75），减少贴线误触发。**数据支持：** ${barely}/${values.length}（${barelyPct}%）次触发仅超出阈值 <5%；中位相对余量 ${(slackMed * 100).toFixed(1)}%。`
+            : `**Raise threshold (too sensitive)** — move config ~**${fmtNum(thr)}** (median \`${tCol}\`) up to ~**${suggest}** (P75 of fire values).**Data:** ${barely}/${values.length} (${barelyPct}%) fires within <5% of threshold; median relative slack ${(slackMed * 100).toFixed(1)}%.`,
+        )
+      } else if (slackMed > 0.5 && above === values.length) {
+        const suggest = fmtNum(Math.max(thr, vP50))
+        bullets.push(
+          zh
+            ? `**核对是否过宽** — 当前阈值约 **${fmtNum(thr)}**，但触发值中位余量 ${(slackMed * 100).toFixed(0)}%，多数事件远超门限；若漏报可接受可维持，否则可试探收到 **${suggest}**（P50）并观察召回。**数据支持：** 阈值列 \`${tCol}\` n=${thresholds.length}；触发值相对余量中位 ${(slackMed * 100).toFixed(1)}%。`
+            : `**Check if too loose** — threshold ~**${fmtNum(thr)}** but median slack ${(slackMed * 100).toFixed(0)}%; keep if misses OK, else trial **${suggest}** (P50) and watch recall.**Data:** \`${tCol}\` n=${thresholds.length}; median relative slack ${(slackMed * 100).toFixed(1)}%.`,
+        )
+      } else {
+        bullets.push(
+          zh
+            ? `**阈值与触发值基本匹配** — 配置中位阈值 **${fmtNum(thr)}**（\`${tCol}\`）相对触发值余量中位 ${(slackMed * 100).toFixed(1)}%；可微调 ±5–10% 做 A/B。**数据支持：** 触发值 n=${values.length}，阈值样本 n=${thresholds.length}。`
+            : `**Threshold roughly aligned** — median config **${fmtNum(thr)}** (\`${tCol}\`) vs fire values; median slack ${(slackMed * 100).toFixed(1)}%; A/B ±5–10%.**Data:** values n=${values.length}, threshold samples n=${thresholds.length}.`,
+        )
+      }
+      void tMode
+    } else if (values.length && !thresholds.length) {
+      bullets.push(
+        zh
+          ? `**写入明确配置阈值** — 日志仅有触发值、无阈值列；建议后管将阈值设为 **${fmtNum(vP90)}**（P90）作初值，再按误报／漏报回调。**数据支持：** 仅 \`${vCol}\` 可算分位；缺 threshold／阈值 列。`
+          : `**Set an explicit config threshold** — only fire values present; start admin threshold at **${fmtNum(vP90)}** (P90), then tune on FP/FN.**Data:** \`${vCol}\` percentiles only; no threshold column.`,
+      )
+    }
+
+    if (labs && labs.total > 0) {
+      const fpRate = labs.invalid / Math.max(1, labs.valid + labs.invalid)
+      const fpPct = Math.round(fpRate * 100)
+      if (valueHit) {
+        const { tp, fp } = labeledValueSplit(args.logs, args.labels, valueHit.col)
+        const tpS = tp.slice().sort((a, b) => a - b)
+        const fpS = fp.slice().sort((a, b) => a - b)
+        if (tpS.length >= 2 && fpS.length >= 1) {
+          const cut = percentile(fpS, 0.9)
+          const tpP10 = percentile(tpS, 0.1)
+          const tpP25 = percentile(tpS, 0.25)
+          const rawSuggest = cut <= tpP25 ? (cut + tpP25) / 2 : Math.max(cut, tpP10)
+          const suggest = fmtNum(rawSuggest)
+          bullets.push(
+            zh
+              ? `**按有效／误报分离阈值** — 建议阈值设为 **${suggest}**（优先抬过误报团簇 P90=${fmtNum(cut)}，并参考有效值 P10=${fmtNum(tpP10)}／P25=${fmtNum(tpP25)}）。**数据支持：** 标注列 \`${labs.col}\` 有效 ${labs.valid}／误报 ${labs.invalid}（误报率 ${fpPct}%）；误报触发值 n=${fpS.length}；有效触发值 n=${tpS.length}。`
+              : `**Separate TP/FP with the cut** — set threshold to **${suggest}** (clear FP cluster P90=${fmtNum(cut)}; TP P10=${fmtNum(tpP10)} / P25=${fmtNum(tpP25)}).**Data:** labels \`${labs.col}\` valid ${labs.valid} / FP ${labs.invalid} (FP rate ${fpPct}%); FP values n=${fpS.length}; TP n=${tpS.length}.`,
+          )
+        } else {
+          bullets.push(
+            zh
+              ? `**结合误报率收紧** — 人工标注误报率 **${fpPct}%**（有效 ${labs.valid}／误报 ${labs.invalid}，列 \`${labs.col}\`）。若 >30%，将阈值至少上调到触发值 **P75=${fmtNum(vP75)}** 后再复盘。**数据支持：** 标注样本 n=${labs.total}；触发值 P75=${fmtNum(vP75)}。`
+              : `**Tighten using FP rate** — human FP rate **${fpPct}%** (valid ${labs.valid} / FP ${labs.invalid}, col \`${labs.col}\`). If >30%, raise at least to fire-value **P75=${fmtNum(vP75)}** then re-review.**Data:** labels n=${labs.total}; value P75=${fmtNum(vP75)}.`,
+          )
+        }
+      } else {
+        bullets.push(
+          zh
+            ? `**按误报率定性调参** — 标注误报率 **${fpPct}%**（\`${labs.col}\`：有效 ${labs.valid}／误报 ${labs.invalid}）。缺触发值列时，先对误报主导规则统一上调 10–20% 配置阈值。**数据支持：** 仅标注集 n=${labs.total}。`
+            : `**Qualitative tighten from FP rate** — FP **${fpPct}%** (\`${labs.col}\`: valid ${labs.valid} / FP ${labs.invalid}). Without value column, raise config 10–20% on FP-heavy rules.**Data:** labels only n=${labs.total}.`,
+        )
+      }
+    } else {
+      bullets.push(
+        zh
+          ? `**补人工标注以验证** — 尚无「是否有效」标注；上述分位建议为暂定。标注 ≥30 条后再用有效／误报分布锁定阈值。**数据支持：** 人工标注槽为空或缺少 valid/有效 列。`
+          : `**Add human labels to validate** — no validity labels yet; percentile suggestions are provisional. Label ≥30 rows then lock via TP/FP split.**Data:** human-label slot empty or missing valid column.`,
+      )
+    }
+
+    if (args.underlying.some((d) => d.rowCount > 0) && values.length) {
+      const uVal = collectNums(args.underlying, VALUE_COLS)
+      if (uVal && uVal.values.length >= 5) {
+        const uSorted = uVal.values.slice().sort((a, b) => a - b)
+        const uP99 = percentile(uSorted, 0.99)
+        bullets.push(
+          zh
+            ? `**与底层分布对齐** — 底层列 \`${uVal.col}\` P99=${fmtNum(uP99)}（n=${uVal.values.length}）。若告警阈值远低于底层 P99，易在正常噪声带误报；建议阈值 ≥ max(告警触发 P75, 底层 P99×0.9)。**数据支持：** 底层 \`${uVal.col}\` vs 告警触发 \`${vCol}\`。`
+            : `**Align with underlying distribution** — underlying \`${uVal.col}\` P99=${fmtNum(uP99)} (n=${uVal.values.length}). Thresholds far below underlying P99 false-fire in noise; prefer ≥ max(alert P75, underlying P99×0.9).**Data:** underlying \`${uVal.col}\` vs alert \`${vCol}\`.`,
+        )
+      }
+    }
+
+    bullets.push(
+      zh
+        ? `**落地步骤** — ① 在后管把该规则阈值改为建议值；② 灰度 24–72h；③ 对比告警量、误报率、漏报投诉；④ 有回归则回滚并记录。**数据支持：** 变更前后各用同一套日志＋标注口径复跑本页。`
+        : `**Rollout** — ① set admin threshold to the suggested value; ② canary 24–72h; ③ compare volume / FP / miss complaints; ④ roll back if regresses.**Data:** re-run this page with the same log+label schema before/after.`,
+    )
+  }
+
+  const title = zh ? `### 优化阈值（${focus}）` : `### Optimize thresholds (${focus})`
+  return [title, ...bullets.map((b) => `- ${b}`)].join('\n')
+}
+
 function directionGuidance(
   id: OptimizeDirectionId,
   zh: boolean,
-  ctx: { hasUnderlying: boolean; hasLogs: boolean; hasLabels: boolean; alertName: string },
+  ctx: {
+    hasUnderlying: boolean
+    hasLogs: boolean
+    hasLabels: boolean
+    alertName: string
+    logs: IngestedDataset[]
+    underlying: IngestedDataset[]
+    labels: IngestedDataset[]
+    lang: 'en' | 'zh-Hant'
+  },
 ): string {
   const focus = ctx.alertName
     ? zh
@@ -502,9 +781,13 @@ function directionGuidance(
       : 'Across all alerts'
   switch (id) {
     case 'threshold':
-      return zh
-        ? `${focus}：对照底层时序与告警触发点，检查阈值是否过宽／过窄；${ctx.hasLabels ? '结合人工标注的误报率' : '缺少标注时先用重复触发密度作代理'}建议分位阈值，并与后管配置字段对齐。`
-        : `${focus}: compare underlying series vs trigger points; ${ctx.hasLabels ? 'use human FP labels' : 'use repeat-fire density as a proxy without labels'} to propose percentile thresholds vs admin config.`
+      return buildThresholdOptimizeBullets({
+        logs: ctx.logs,
+        underlying: ctx.underlying,
+        labels: ctx.labels,
+        alertName: ctx.alertName,
+        lang: ctx.lang,
+      })
     case 'window':
       return zh
         ? `${focus}：评估观察窗口是否导致漏报（窗口过短）或粘滞告警（窗口过长）；建议用事件间距分布重估窗口。`
@@ -768,7 +1051,16 @@ export function analyzeAlertOptimize(args: {
       : 'Charts sample ≤24 points / ≤10 categories — not a full-population histogram.',
   ]
 
-  const ctx = { hasUnderlying, hasLogs, hasLabels, alertName: args.alertName.trim() }
+  const ctx = {
+    hasUnderlying,
+    hasLogs,
+    hasLabels,
+    alertName: args.alertName.trim(),
+    logs: bySlot.alert_logs,
+    underlying: bySlot.underlying,
+    labels: bySlot.human_labels,
+    lang: args.lang,
+  }
   const answerParts: string[] = [
     zh
       ? `按排查路径完成告警优化审阅（数据源 **${scoped.filter((d) => d.rowCount).length}** 个有效集，合计 **${scoped.reduce((n, d) => n + d.rowCount, 0)}** 行）。`

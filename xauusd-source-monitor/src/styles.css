@@ -3805,3 +3805,9 @@ td.mono,
 }
 
 .ao-limits-hint { margin: 0 0 0.85rem; font-size: 0.85rem; max-width: 72ch; }
+
+.ao-answer-block { margin: 0 0 1rem; }
+.ao-answer-heading { font-weight: 600; margin: 0 0 0.4rem; }
+.ao-answer ul { margin: 0.25rem 0 0; padding-left: 1.2rem; }
+.ao-answer li { margin: 0.35rem 0; line-height: 1.5; }
+.ao-answer code { font-size: 0.85em; }
