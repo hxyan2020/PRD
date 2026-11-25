@@ -22,6 +22,8 @@ export const config = {
 }
 
 const SENT_NAME = 'cron-health-sent.json'
+/** If no health DM for this long, push again even if slot/miss dedupe would skip. */
+const STALE_CATCHUP_MS = 35 * 60_000
 /** Same DM chat as half-hour market when set. */
 const DEFAULT_HEALTH_CHAT_ID = 'oc_430fae67dd06b70f65b726b1673ef40e'
 
@@ -117,12 +119,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const sent = await readSent()
-  // Healthy reports: once per half-hour slot. Miss alerts: always push (force or new miss).
+  const lastSentAt = Math.max(
+    0,
+    ...Object.values(sent).filter((t): t is number => typeof t === 'number' && t > 0),
+  )
+  // If the half-hour schedule / tick fan-out went quiet, catch up — do not stay silent.
+  const staleCatchup = !force && lastSentAt > 0 && now - lastSentAt >= STALE_CATCHUP_MS
+  const catchup = force || staleCatchup
+  // Healthy reports: once per half-hour slot. Miss alerts: once per miss-set per slot.
   const missKey = `miss:${slotKey}:${report.misses
     .map((m) => m.id)
     .sort()
     .join('+')}`
-  if (!force && report.allOk && sent[slotKey]) {
+  if (!catchup && report.allOk && sent[slotKey]) {
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -132,7 +141,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       via: cron ? 'cron' : 'manual',
     })
   }
-  if (!force && !report.allOk && sent[missKey]) {
+  if (!catchup && !report.allOk && sent[missKey]) {
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -146,17 +155,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     await sendCardToChat(chat.chatId, report.card)
     // Healthy: once per slot. Miss raise: dedupe by miss-set key (allow green recovery later).
+    // Stale catch-up also stamps the slot / miss key so we do not double-send within minutes.
     if (report.allOk) await markSent(slotKey)
     else await markSent(missKey)
+    if (staleCatchup) await markSent(`catchup:${slotKey}`)
     await touchCronHeartbeat('/api/lark/cron-health', {
       status: 200,
       outcome: report.allOk ? 'ok' : 'sent',
-      reason: report.allOk ? 'healthy' : `miss:${report.misses.map((m) => m.id).join(',')}`,
+      reason: staleCatchup
+        ? `stale_catchup:${report.allOk ? 'healthy' : report.misses.map((m) => m.id).join(',')}`
+        : report.allOk
+          ? 'healthy'
+          : `miss:${report.misses.map((m) => m.id).join(',')}`,
     })
     return res.status(200).json({
       ok: true,
       sent: true,
       raised: !report.allOk,
+      staleCatchup,
       slotKey,
       allOk: report.allOk,
       misses: report.misses.map((m) => m.id),
