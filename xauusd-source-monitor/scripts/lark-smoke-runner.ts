@@ -1026,6 +1026,21 @@ async function main() {
       /"tag":"button"/.test(logoEls),
     logoEls.slice(0, 220),
   )
+  const hasKlineBars = (liveSnap.hourly?.kline?.bars?.length || 0) > 0
+  record(
+    'market.card_kline_vchart_not_ascii',
+    (!hasKlineBars ||
+      (logoEls.includes('"tag":"chart"') &&
+        logoEls.includes('chart_spec') &&
+        logoEls.includes('"type":"area"') &&
+        logoEls.includes('收盘走势'))) &&
+      !/[▆▅▄▃▂▁▇█]/.test(logoEls) &&
+      !logoEls.includes('▽') &&
+      !logoEls.includes('▲'),
+    hasKlineBars
+      ? `chart=${logoEls.includes('"tag":"chart"')} bars=${liveSnap.hourly?.kline?.bars?.length}`
+      : 'no_kline_bars',
+  )
   record(
     'market.hourly_attached',
     Boolean(liveSnap.hourly?.tldr?.length || liveSnap.hourly?.opportunity || liveSnap.hourly?.risk),
@@ -1692,6 +1707,14 @@ async function main() {
       /"tag":"button"/.test(dailyCardBlob),
     dailyCardBlob.slice(0, 240),
   )
+  record(
+    'cron.daily_card_kline_vchart',
+    dailyCardBlob.includes('"tag":"chart"') &&
+      dailyCardBlob.includes('chart_spec') &&
+      dailyCardBlob.includes('"type":"area"') &&
+      !/[▆▅▄▃▂▁▇█]/.test(dailyCardBlob),
+    dailyCardBlob.includes('"tag":"chart"') ? 'vchart_ok' : 'missing_chart',
+  )
   const hourlyCardBtn = await buildMarketCard({
     title: '小时行情扫报',
     snap: liveSnap,
@@ -1708,6 +1731,14 @@ async function main() {
       /"tag":"action"/.test(hourlyBtnBlob) &&
       /"tag":"button"/.test(hourlyBtnBlob),
     hourlyBtnBlob.slice(0, 220),
+  )
+  record(
+    'cron.hourly_card_kline_vchart',
+    hourlyBtnBlob.includes('"tag":"chart"') &&
+      hourlyBtnBlob.includes('chart_spec') &&
+      hourlyBtnBlob.includes('"type":"area"') &&
+      !/[▆▅▄▃▂▁▇█]/.test(hourlyBtnBlob),
+    hourlyBtnBlob.includes('"tag":"chart"') ? 'vchart_ok' : 'missing_chart',
   )
   const { resolveMarketLang: resMktLang, dailyMarketTitle: dTitle } = await import(
     '../api/lark/_lib/market',

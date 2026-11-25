@@ -140,6 +140,24 @@ export function formatEast8(ts: number): string {
   }
 }
 
+/** Short Asia/Shanghai axis label for charts, e.g. `11:00`. */
+export function formatEast8Hm(ts: number): string {
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Shanghai',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(new Date(ts))
+    const get = (t: string) => parts.find((p) => p.type === t)?.value || '00'
+    const hour = get('hour') === '24' ? '00' : get('hour')
+    return `${hour}:${get('minute')}`
+  } catch {
+    const d = new Date(ts)
+    return `${String(d.getUTCHours() + 8).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`
+  }
+}
+
 /** Half-hour slot key in Asia/Shanghai, e.g. `2026-11-24T20:00` / `…T20:30` (cron dedupe). */
 export function shanghaiHalfHourKey(ts: number = Date.now()): string {
   try {
@@ -569,7 +587,12 @@ function marketEmptyHint(mode: 'hourly' | 'daily', lang: Lang): string {
       : 'No points this hour.'
 }
 
-function pricesAndKlineBlock(snap: MarketSnapshot, lang: Lang, mode: 'hourly' | 'daily'): string {
+function pricesAndKlineBlock(
+  snap: MarketSnapshot,
+  lang: Lang,
+  mode: 'hourly' | 'daily',
+  opts?: { asciiKline?: boolean },
+): string {
   const hourly = snap.hourly
   const scanAt = formatEast8(snap.fetchedAt || Date.now())
   const lines: string[] = []
@@ -661,7 +684,13 @@ function pricesAndKlineBlock(snap: MarketSnapshot, lang: Lang, mode: 'hourly' | 
     )
   }
 
-  lines.push(...renderKline(hourly?.kline, lang), '')
+  // Interactive cards use VChart instead of ASCII; text/dry keeps ASCII spark.
+  if (opts?.asciiKline !== false) {
+    lines.push(...renderKline(hourly?.kline, lang), '')
+  } else {
+    const n = mode === 'daily' ? 24 : 16
+    lines.push(...renderKlineCaption(hourly?.kline, lang, n), '')
+  }
   if (hans) {
     if (snap.okx) lines.push(`• **OKX XAU-USDT-SWAP：** **${snap.okx.last.toFixed(2)}**`)
     if (snap.bitget) lines.push(`• **Bitget XAUUSDT：** **${snap.bitget.last.toFixed(2)}**`)
@@ -784,7 +813,10 @@ export async function buildMarketCard(opts: {
   const elements: Record<string, unknown>[] = []
   if (intro.trim()) elements.push(mdDiv(intro.trim()))
 
-  elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode)))
+  // Header + prints without ASCII spark; real VChart K-line follows.
+  elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode, { asciiKline: false })))
+  const klineChart = klineCloseChartElement(hourly?.kline, lang, mode === 'daily' ? 24 : 16)
+  if (klineChart) elements.push(klineChart)
 
   // TL;DR text (beats only — logos on the next action row)
   if (mode === 'daily') {
@@ -843,6 +875,39 @@ export async function buildMarketCard(opts: {
   }
 }
 
+/** Title + last OHLC only (no ASCII) — used when a VChart follows. */
+function renderKlineCaption(
+  kline: HourlyKlineSeries | null | undefined,
+  lang: Lang,
+  width = 16,
+): string[] {
+  const hans = lang === 'zh-Hans'
+  const hant = lang === 'zh-Hant'
+  if (!kline?.bars?.length) {
+    return [
+      hans
+        ? '📈 **K线** · 本小时蜡烛不可用（OKX 源不可达）'
+        : hant
+          ? '📈 **K線** · 本小時蠟燭不可用（OKX 源不可達）'
+          : '📈 **K-line** · unavailable this hour (OKX feed unreachable)',
+    ]
+  }
+  const bars = kline.bars
+  const last = bars[bars.length - 1]!
+  const n = Math.min(Math.max(8, width), bars.length)
+  const title = hans
+    ? `📈 **K线** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盘走势（OKX · 下图可点开放大）`
+    : hant
+      ? `📈 **K線** · ${kline.symbol} · ${kline.interval} · 近 **${n}** 根收盤走勢（OKX · 下圖可點開放大）`
+      : `📈 **K-line** · ${kline.symbol} · ${kline.interval} · last **${n}** closes (OKX · tap chart to enlarge)`
+  const lastLine = hans
+    ? `末根（东八区 ${formatEast8(last.t)}）：O **${last.o.toFixed(2)}** · H **${last.h.toFixed(2)}** · L **${last.l.toFixed(2)}** · C **${last.c.toFixed(2)}**`
+    : hant
+      ? `末根（東八區 ${formatEast8(last.t)}）：O **${last.o.toFixed(2)}** · H **${last.h.toFixed(2)}** · L **${last.l.toFixed(2)}** · C **${last.c.toFixed(2)}**`
+      : `Last bar (${formatEast8(last.t)} UTC+8): O **${last.o.toFixed(2)}** · H **${last.h.toFixed(2)}** · L **${last.l.toFixed(2)}** · C **${last.c.toFixed(2)}**`
+  return [title, lastLine]
+}
+
 function renderKline(kline: HourlyKlineSeries | null | undefined, lang: Lang): string[] {
   const hans = lang === 'zh-Hans'
   const hant = lang === 'zh-Hant'
@@ -878,6 +943,49 @@ function renderKline(kline: HourlyKlineSeries | null | undefined, lang: Lang): s
     `\`${lo.toFixed(0)}\``,
     lastLine,
   ]
+}
+
+/**
+ * Feishu VChart area of OKX closes (candlestick not in the card's 13 types).
+ * Same shape as weekly DEMO charts — client ≥ 7.1; older clients show upgrade hint.
+ */
+export function klineCloseChartElement(
+  kline: HourlyKlineSeries | null | undefined,
+  lang: Lang,
+  width = 16,
+): Record<string, unknown> | null {
+  const bars = (kline?.bars || []).slice(-Math.max(8, width))
+  if (!bars.length) return null
+  const values = bars.map((b) => ({
+    t: formatEast8Hm(b.t),
+    close: Number(b.c.toFixed(2)),
+  }))
+  const hans = lang === 'zh-Hans' || lang === 'zh-Hant'
+  const title = hans
+    ? `${kline?.symbol || 'XAU'} · ${kline?.interval || '1H'} 收盘走势（近 ${bars.length} 根）`
+    : `${kline?.symbol || 'XAU'} · ${kline?.interval || '1H'} closes (last ${bars.length})`
+  return {
+    tag: 'chart',
+    aspect_ratio: '16:9',
+    color_theme: 'brand',
+    preview: true,
+    chart_spec: {
+      type: 'area',
+      title: { text: title },
+      data: { values },
+      xField: 't',
+      yField: 'close',
+      point: { visible: true, style: { size: 4 } },
+      line: { style: { curveType: 'monotone', lineWidth: 2 } },
+      area: { style: { fillOpacity: 0.28 } },
+      axes: [
+        { orient: 'bottom', label: { autoRotate: true } },
+        { orient: 'left', nice: true },
+      ],
+      legends: { visible: false },
+      tooltip: { visible: true },
+    },
+  }
 }
 
 /** True when the user only typed a market command / synonym — don't echo it back. */
