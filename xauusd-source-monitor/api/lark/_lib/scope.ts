@@ -147,6 +147,25 @@ const COMMAND_KNOWLEDGE = new RegExp(
 const COMMAND_WEEKLY =
   /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
 
+/**
+ * Oscillation / leverage / breaking-news alert status (cron every 15m).
+ * Must beat INVESTIGATE_RE which also matches「预警」.
+ */
+const COMMAND_OSCILLATION =
+  /^(?:oscillation(?:\s*alert)?|osc(?:illation)?\s*warn(?:ing)?|震荡行情预警|震盪行情預警|震荡预警|震盪預警|震荡预警状态|震盪預警狀態)\s*$/i
+
+/** Daily 24h morning market digest (cron 09:00 Asia/Shanghai → group). */
+const COMMAND_DAILY_MARKET =
+  /^(?:daily(?:\s*24h)?(?:\s*market)?(?:\s*report)?|morning(?:\s*report)?|每日\s*24h\s*早报|每日24h早报|每日\s*24\s*小时早报|每日24小時早報|每日早报|每日早報|24h\s*早报|24h早報|24小时早报|24小時早報)\s*$/i
+
+export function isOscillationCommand(text: string): boolean {
+  return COMMAND_OSCILLATION.test(text.trim())
+}
+
+export function isDailyMarketCommand(text: string): boolean {
+  return COMMAND_DAILY_MARKET.test(text.trim())
+}
+
 /** Bare wiki / docs keyword (CJK-safe). */
 const COMMAND_WIKI = new RegExp(
   `^(?:wiki\\b|文档|文檔|飞书文档|飛書文檔|百科)${CMD_END}`,
@@ -375,6 +394,8 @@ export function classifyIntent(
   if (COMMAND_SKILLS.test(t)) return 'skills'
   if (COMMAND_KNOWLEDGE.test(t)) return 'knowledge'
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
+  if (COMMAND_OSCILLATION.test(t)) return 'oscillation'
+  if (COMMAND_DAILY_MARKET.test(t)) return 'daily_market'
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
   // Proceed-based report from recorded interactions (prefer during an open case)
@@ -427,6 +448,8 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   if (intent === 'skills') return COMMAND_SKILLS.test(t)
   if (intent === 'knowledge') return COMMAND_KNOWLEDGE.test(t)
   if (intent === 'weekly') return COMMAND_WEEKLY.test(t)
+  if (intent === 'oscillation') return COMMAND_OSCILLATION.test(t)
+  if (intent === 'daily_market') return COMMAND_DAILY_MARKET.test(t)
   if (intent === 'review') return COMMAND_REVIEW.test(t)
   if (intent === 'help') return COMMAND_HELP.test(t) || HELP_RE.test(t)
   if (intent === 'archive') return COMMAND_DONE.test(t)
@@ -437,6 +460,8 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
     COMMAND_SKILLS.test(t) ||
     COMMAND_KNOWLEDGE.test(t) ||
     COMMAND_WEEKLY.test(t) ||
+    COMMAND_OSCILLATION.test(t) ||
+    COMMAND_DAILY_MARKET.test(t) ||
     COMMAND_REVIEW.test(t) ||
     COMMAND_HELP.test(t) ||
     COMMAND_DONE.test(t) ||
@@ -478,7 +503,16 @@ export function looksLikePureChat(text: string): boolean {
   return false
 }
 
-const CONFIRMABLE: Intent[] = ['market', 'investigate', 'review', 'skills', 'knowledge', 'weekly']
+const CONFIRMABLE: Intent[] = [
+  'market',
+  'investigate',
+  'review',
+  'skills',
+  'knowledge',
+  'weekly',
+  'oscillation',
+  'daily_market',
+]
 
 /**
  * Soft-matched command without clear payload → ask before running.
@@ -516,6 +550,8 @@ export function pendingCommandLabel(
     skills: { zh: '打开 Skills 目录', en: 'open the Skills catalogue' },
     knowledge: { zh: '打开知识库目录', en: 'open the knowledge catalogue' },
     weekly: { zh: '生成周报', en: 'build the weekly report' },
+    oscillation: { zh: '检查震荡行情预警状态', en: 'check oscillation-alert status' },
+    daily_market: { zh: '查看每日 24h 早报状态', en: 'check the daily 24h morning report' },
   }
   const row = map[intent] || { zh: '执行该操作', en: 'run that action' }
   if (lang === 'zh-Hans' || lang === 'zh-Hant') {

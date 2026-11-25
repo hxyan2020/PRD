@@ -240,6 +240,138 @@ function fmt(n: number | null, d = 2): string {
   return n.toFixed(d)
 }
 
+/**
+ * On-demand status when the user sends「震荡行情预警」.
+ * Always explains the trigger mechanism; shows live metrics vs thresholds.
+ */
+export function buildOscillationStatusCard(
+  snap: OscillationSnapshot,
+  lang: 'en' | 'zh-Hans' | 'zh-Hant' = 'zh-Hans',
+): Record<string, unknown> {
+  const firing = shouldFireAlert(snap)
+  const hans = lang === 'zh-Hans'
+  const hant = lang === 'zh-Hant'
+  const title = hans
+    ? firing
+      ? '震荡行情预警 · 已触发'
+      : '震荡行情预警 · 当前未触发'
+    : hant
+      ? firing
+        ? '震盪行情預警 · 已觸發'
+        : '震盪行情預警 · 當前未觸發'
+      : firing
+        ? 'Oscillation alert · FIRING'
+        : 'Oscillation alert · not firing'
+
+  const volLine = hans
+    ? `振幅：近 6×1H 均值 **${fmt(snap.volRecentPct, 3)}%** ÷ 历史均值 **${fmt(snap.volMeanPct, 3)}%** = **${fmt(snap.volRatio, 2)}×**（阈值 ≥ **1.45×**）`
+    : hant
+      ? `振幅：近 6×1H 均值 **${fmt(snap.volRecentPct, 3)}%** ÷ 歷史均值 **${fmt(snap.volMeanPct, 3)}%** = **${fmt(snap.volRatio, 2)}×**（閾值 ≥ **1.45×**）`
+      : `Vol: last-6×1H mean **${fmt(snap.volRecentPct, 3)}%** ÷ hist mean **${fmt(snap.volMeanPct, 3)}%** = **${fmt(snap.volRatio, 2)}×** (threshold ≥ **1.45×**)`
+
+  const fundLine = hans
+    ? `资金费率：当前 **${fmt(snap.fundingPct, 4)}%** ÷ 历史|费率|均值 **${fmt(snap.fundingMeanAbsPct, 4)}%** = **${fmt(snap.fundingRatio, 2)}×**（需 |费率|≥**0.01%** 且比值 ≥ **1.5×**）`
+    : hant
+      ? `資金費率：當前 **${fmt(snap.fundingPct, 4)}%** ÷ 歷史|費率|均值 **${fmt(snap.fundingMeanAbsPct, 4)}%** = **${fmt(snap.fundingRatio, 2)}×**（需 |費率|≥**0.01%** 且比值 ≥ **1.5×**）`
+      : `Funding: **${fmt(snap.fundingPct, 4)}%** ÷ hist |rate| mean **${fmt(snap.fundingMeanAbsPct, 4)}%** = **${fmt(snap.fundingRatio, 2)}×** (need |rate|≥**0.01%** and ratio ≥ **1.5×**)`
+
+  const newsLine = hans
+    ? snap.newsHeadline
+      ? `突发新闻：**命中** — ${snap.newsHeadline}`
+      : '突发新闻：**未命中**（Fed 新闻关键词过滤）'
+    : hant
+      ? snap.newsHeadline
+        ? `突發新聞：**命中** — ${snap.newsHeadline}`
+        : '突發新聞：**未命中**（Fed 新聞關鍵詞過濾）'
+      : snap.newsHeadline
+        ? `Breaking news: **hit** — ${snap.newsHeadline}`
+        : 'Breaking news: **no hit** (Fed headline keyword filter)'
+
+  const body = hans
+    ? [
+        firing
+          ? '⚠️ **结论：当前满足预警条件**（与自动推送同一套规则）'
+          : '✅ **结论：当前没有震荡／杠杆／突发新闻预警**',
+        '',
+        `• **标的：** OKX XAU-USDT-SWAP · 最新 **${fmt(snap.last)}**`,
+        snap.oi != null ? `• **持仓（OI）：** ${fmt(snap.oi, 0)}` : '',
+        '',
+        '📌 **触发机制**（你发「震荡行情预警」会即时评估；cron 每 **15** 分钟自动跑同一套）',
+        '1. **振幅偏离** — 近 6 根 1H 振幅均值 ≥ 更早约 24 根均值的 **1.45×**',
+        '2. **资金费率／杠杆代理** — |费率| ≥ **0.01%** 且 ≥ 历史 |费率| 均值的 **1.5×**',
+        '3. **突发新闻** — Fed 新闻标题命中战争／制裁／暴涨暴跌等关键词',
+        '命中任一项 → 推送群 + @Yan Haixiang 私聊。',
+        '',
+        '📊 **此刻读数**',
+        `• ${volLine}`,
+        `• ${fundLine}`,
+        `• ${newsLine}`,
+        '',
+        '🔗 **数据源**',
+        ...oscillationSources(snap).map((s) => `• [${s.label}](${s.url})`),
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : hant
+      ? [
+          firing
+            ? '⚠️ **結論：當前滿足預警條件**（與自動推送同一套規則）'
+            : '✅ **結論：當前沒有震盪／槓桿／突發新聞預警**',
+          '',
+          `• **標的：** OKX XAU-USDT-SWAP · 最新 **${fmt(snap.last)}**`,
+          snap.oi != null ? `• **持倉（OI）：** ${fmt(snap.oi, 0)}` : '',
+          '',
+          '📌 **觸發機制**（你發「震盪行情預警」會即時評估；cron 每 **15** 分鐘自動跑同一套）',
+          '1. **振幅偏離** — 近 6 根 1H 振幅均值 ≥ 更早約 24 根均值的 **1.45×**',
+          '2. **資金費率／槓桿代理** — |費率| ≥ **0.01%** 且 ≥ 歷史 |費率| 均值的 **1.5×**',
+          '3. **突發新聞** — Fed 新聞標題命中戰爭／制裁／暴漲暴跌等關鍵詞',
+          '命中任一項 → 推送群 + @Yan Haixiang 私聊。',
+          '',
+          '📊 **此刻讀數**',
+          `• ${volLine}`,
+          `• ${fundLine}`,
+          `• ${newsLine}`,
+          '',
+          '🔗 **資料來源**',
+          ...oscillationSources(snap).map((s) => `• [${s.label}](${s.url})`),
+        ]
+          .filter(Boolean)
+          .join('\n')
+      : [
+          firing
+            ? '⚠️ **Verdict: alert conditions met** (same rules as the auto push)'
+            : '✅ **Verdict: no oscillation / leverage / breaking-news alert right now**',
+          '',
+          `• **Instrument:** OKX XAU-USDT-SWAP · last **${fmt(snap.last)}**`,
+          snap.oi != null ? `• **OI:** ${fmt(snap.oi, 0)}` : '',
+          '',
+          '📌 **Trigger mechanism** (this command evaluates live; cron runs the same check every **15** minutes)',
+          '1. **Vol spike** — last-6×1H mean range ≥ **1.45×** the prior ~24-bar mean',
+          '2. **Funding / leverage proxy** — |funding| ≥ **0.01%** and ≥ **1.5×** hist |funding| mean',
+          '3. **Breaking news** — Fed headline matches war / sanctions / crash / surge keywords',
+          'Any hit → push to the group + @Yan Haixiang DM.',
+          '',
+          '📊 **Live readings**',
+          `• ${volLine}`,
+          `• ${fundLine}`,
+          `• ${newsLine}`,
+          '',
+          '🔗 **Sources**',
+          ...oscillationSources(snap).map((s) => `• [${s.label}](${s.url})`),
+        ]
+          .filter(Boolean)
+          .join('\n')
+
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: firing ? 'red' : 'turquoise',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [{ tag: 'div', text: { tag: 'lark_md', content: body } }],
+  }
+}
+
 export function buildOscillationAlertCard(
   snap: OscillationSnapshot,
   adminOpenId?: string,
