@@ -64,7 +64,11 @@ function readBody(req: VercelRequest): Record<string, unknown> {
 async function dispatchReply(
   messageId: string,
   chatId: string,
-  reply: { text?: string; card?: Record<string, unknown> },
+  reply: {
+    text?: string
+    card?: Record<string, unknown>
+    followUpCards?: Record<string, unknown>[]
+  },
 ): Promise<{ ok: boolean; via?: string; error?: string }> {
   const result = await dispatchReplyWithTypingEffect(messageId, chatId, reply)
   if (!result.ok) {

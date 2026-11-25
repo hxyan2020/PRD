@@ -3,8 +3,12 @@ import {
   greetingCard,
   helpCard,
   incidentDetailCard,
-  investigationCard,
+  investigationEvidencePromptCard,
+  investigationGuideCompleteCard,
+  investigationPathOverviewCard,
   investigationReportDraftCard,
+  investigationRequiredSkipPromptCard,
+  investigationStepGuideCard,
   knowledgeCatalogCard,
   nodeDetailCard,
   reviewCard,
@@ -109,6 +113,7 @@ import {
 } from './store.js'
 import type {
   BotReply,
+  GuideStep,
   IncomingMessage,
   IncidentRecord,
   InvestigationInteraction,
@@ -153,16 +158,6 @@ function buildSummary(args: {
       : hant
         ? '無自信匹配'
         : 'no confident match'
-  const kbLine = args.kb.length
-    ? args.kb
-        .map((k) => k.title)
-        .slice(0, 3)
-        .join(', ')
-    : hans
-      ? '无'
-      : hant
-        ? '無'
-        : 'none'
   const skillLabel = byAlertName
     ? hans
       ? '告警名确定命中'
@@ -175,37 +170,19 @@ function buildSummary(args: {
     .map((s) => s.replace(/^(\[[^\]]+\]|【[^】]+】)\s*/, '').slice(0, 36))
   const coveredLine = coveredBits.length
     ? hans
-      ? `• **本轮已覆盖（证据乱序也认）：** ${coveredBits.join('；')}`
+      ? `• **本轮已覆盖：** ${coveredBits.join('；')}`
       : hant
-        ? `• **本輪已覆蓋（證據亂序也認）：** ${coveredBits.join('；')}`
-        : `• **Covered this turn (order-agnostic):** ${coveredBits.join('; ')}`
+        ? `• **本輪已覆蓋：** ${coveredBits.join('；')}`
+        : `• **Covered this turn:** ${coveredBits.join('; ')}`
     : ''
-  const guide = args.reordered
-    ? hans
-      ? '• **指引：** 你这次证据不按 Skill 顺序——我已**重排下一步**，先跟你刚提供的线索'
-      : hant
-        ? '• **指引：** 你這次證據不按 Skill 順序——我已**重排下一步**，先跟你剛提供的線索'
-        : '• **Guidance:** Evidence arrived out of Skill order — I **re-ranked next steps** around what you just pasted'
-    : args.adapted
-      ? hans
-        ? '• **指引：** 排查路径已依你最新证据调整；请继续回复结果或贴下一块证据（不必按顺序）'
-        : hant
-          ? '• **指引：** 排查路徑已依你最新證據調整；請繼續回覆結果或貼下一塊證據（不必按順序）'
-          : '• **Guidance:** Path adapted to your latest evidence — reply with findings or the next chunk (any order)'
-      : hans
-        ? '• **指引：** 请回复排查结果或贴新证据（不必按 Skill 顺序），我会每次重排路径'
-        : hant
-          ? '• **指引：** 請回覆排查結果或貼新證據（不必按 Skill 順序），我會每次重排路徑'
-          : '• **Guidance:** Reply with findings or new evidence in any order — I’ll re-rank the path each turn'
+  // Keep summary lean: no 知识库 / 证据分级 / 指引 in the body (refs stay at card footer).
   if (hans) {
     return [
       '📋 **摘要**',
       '',
       `• **已摄入事实／证据：** **${args.facts.length}**`,
-      `• **${skillLabel}：** **${hitLine}** · 知识库 **${kbLine}**（文末可点开）`,
-      '• **证据分级：** **已证实** / **假设** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
+      `• **${skillLabel}：** **${hitLine}**`,
       coveredLine,
-      guide,
     ]
       .filter(Boolean)
       .join('\n')
@@ -215,10 +192,8 @@ function buildSummary(args: {
       '📋 **摘要**',
       '',
       `• **已攝入事實／證據：** **${args.facts.length}**`,
-      `• **${skillLabel}：** **${hitLine}** · 知識庫 **${kbLine}**（文末可點開）`,
-      '• **證據分級：** **已證實** / **假設** / **未排除** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
+      `• **${skillLabel}：** **${hitLine}**`,
       coveredLine,
-      guide,
     ]
       .filter(Boolean)
       .join('\n')
@@ -227,10 +202,8 @@ function buildSummary(args: {
     '📋 **Summary**',
     '',
     `• **Facts ingested:** **${args.facts.length}**`,
-    `• **${skillLabel}:** **${hitLine}** · Knowledge **${kbLine}** (links at end)`,
-    '• **Evidence grades:** **Confirmed** / **Suspected** / **Unknown** — [OBS] [DESIGN] [PUBLIC] [TBC] [INCIDENT]',
+    `• **${skillLabel}:** **${hitLine}**`,
     coveredLine,
-    guide,
   ]
     .filter(Boolean)
     .join('\n')
@@ -282,41 +255,15 @@ function formatInvestigateCore(args: {
     lines.push(hans ? '✅ **本轮已覆盖**' : hant ? '✅ **本輪已覆蓋**' : '✅ **Covered this turn**')
     for (const c of args.newlyCovered.slice(0, 4)) lines.push(`• ${c}`)
   }
-  lines.push('')
-  lines.push(
-    hans
-      ? '🧭 **排查路径（按 Skill.check · 下一步优先）**'
-      : hant
-        ? '🧭 **排查路徑（按 Skill.check · 下一步優先）**'
-        : '🧭 **Investigation path (Skill.check · next first)**',
-  )
-  if (args.nextSteps?.length) {
-    for (const s of args.nextSteps.slice(0, 4)) lines.push(`• ${s}`)
-  } else if (args.hits.length) {
-    for (const h of args.hits.slice(0, 3)) {
-      lines.push(`• **${h.id} · ${h.name}**`)
-      const steps = splitSkillSteps(h.check)
-      for (const step of steps.length ? steps : [h.check]) {
-        lines.push(`  - ${step}`)
-      }
-    }
-  } else {
-    lines.push(
-      hans
-        ? '• 先核对 Index／Mark／Funding／盘口时间戳与告警原文一致性'
-        : hant
-          ? '• 先核對 Index／Mark／Funding／盤口時間戳與告警原文一致性'
-          : '• First reconcile Index / Mark / Funding / book timestamps with the alert text',
-    )
-  }
+  // Path is shown once on the overview card — do not repeat it in the body.
   if (args.covered?.length && !args.newlyCovered?.length) {
     lines.push('')
     lines.push(
       hans
-        ? `_已覆盖 ${args.covered.length} 步（证据可乱序）_`
+        ? `_已覆盖 ${args.covered.length} 步_`
         : hant
-          ? `_已覆蓋 ${args.covered.length} 步（證據可亂序）_`
-          : `_Covered ${args.covered.length} step(s) (any order OK)_`,
+          ? `_已覆蓋 ${args.covered.length} 步_`
+          : `_Covered ${args.covered.length} step(s)_`,
     )
   }
   lines.push('')
@@ -336,33 +283,6 @@ function formatInvestigateCore(args: {
         : hant
           ? '• 欄位不足時先補齊告警原文，再決定觀察／升級／歸檔'
           : '• If fields are missing, gather alert text first, then choose watch / escalate / close',
-    )
-  }
-  lines.push('')
-  lines.push(
-    hans
-      ? '_有疑问或不解时直接问我（例如「为什么要看后管」）——那时才会启用推理与业务说明。_'
-      : hant
-        ? '_有疑問或不解時直接問我（例如「為什麼要看後管」）——那時才會啟用推理與業務說明。_'
-        : '_Ask if anything is unclear (e.g. “why check admin?”) — reasoning unlocks only then._',
-  )
-  if (args.kb.length) {
-    lines.push('')
-    lines.push(
-      hans
-        ? `_知识库仅作参考：${args.kb
-            .slice(0, 2)
-            .map((k) => k.title)
-            .join('、')}（全文见文末链接）_`
-        : hant
-          ? `_知識庫僅作參考：${args.kb
-              .slice(0, 2)
-              .map((k) => k.title)
-              .join('、')}（全文見文末連結）_`
-          : `_Knowledge for reference: ${args.kb
-              .slice(0, 2)
-              .map((k) => k.title)
-              .join(', ')} (full text via end links)_`,
     )
   }
   return lines.join('\n')
@@ -1137,11 +1057,158 @@ async function handleWikiAsk(lang: Lang, text: string, openId: string): Promise<
   return { card: simpleCard(title, lines.join('\n'), 'blue') }
 }
 
+function mergeGuideSteps(
+  planned: ReturnType<typeof planInvestigationPath>['fullSteps'],
+  previous?: GuideStep[],
+): GuideStep[] {
+  const prevById = new Map((previous || []).map((s) => [s.id, s]))
+  return planned.map((p) => {
+    const prev = prevById.get(p.id)
+    let status: GuideStep['status'] = prev?.status || 'pending'
+    if (p.covered && status === 'pending') status = 'done'
+    return {
+      id: p.id,
+      skillId: p.skillId,
+      label: p.label,
+      raw: p.raw,
+      required: p.required,
+      status,
+    }
+  })
+}
+
+function firstPendingGuideIndex(steps: GuideStep[], preferIds?: string[]): number {
+  if (preferIds?.length) {
+    for (const id of preferIds) {
+      const i = steps.findIndex((s) => s.id === id && s.status === 'pending')
+      if (i >= 0) return i
+    }
+  }
+  const i = steps.findIndex((s) => s.status === 'pending')
+  return i
+}
+
+function guideStepReply(args: {
+  lang: Lang
+  session: InvestigationState
+  incidentId?: string
+  includeOverview: boolean
+  title: string
+  severity: string
+  summary: string
+  actions: string[]
+  skills: string[]
+  knowledge: string[]
+  riskVerdict?: IncidentRecord['riskVerdict']
+  showAddAlertHint?: boolean
+}): BotReply {
+  const steps = args.session.pathSteps || []
+  const idx = args.session.pathStepIndex ?? firstPendingGuideIndex(steps)
+  const overview = investigationPathOverviewCard({
+    lang: args.lang,
+    title: args.title,
+    severity: args.severity,
+    summary: args.summary,
+    steps,
+    actions: args.actions,
+    skills: args.skills,
+    knowledge: args.knowledge,
+    incidentId: args.incidentId,
+    riskVerdict: args.riskVerdict,
+    showAddAlertHint: args.showAddAlertHint,
+  })
+
+  if (!steps.length || idx < 0) {
+    const complete = investigationGuideCompleteCard({
+      lang: args.lang,
+      incidentId: args.incidentId,
+    })
+    if (args.includeOverview) {
+      return { card: overview, followUpCards: [complete] }
+    }
+    return { card: complete }
+  }
+
+  const stepCard = investigationStepGuideCard({
+    lang: args.lang,
+    step: steps[idx]!,
+    stepIndex: idx,
+    totalSteps: steps.length,
+    incidentId: args.incidentId,
+  })
+  if (args.includeOverview) {
+    return { card: overview, followUpCards: [stepCard] }
+  }
+  return { card: stepCard }
+}
+
+async function advanceGuideAfterUserInput(args: {
+  msg: IncomingMessage
+  lang: Lang
+  session: InvestigationState
+  text: string
+  kind: 'evidence' | 'required_skip_reply'
+}): Promise<BotReply> {
+  const session = args.session
+  const steps = session.pathSteps || []
+  const idx = session.pathStepIndex ?? firstPendingGuideIndex(steps)
+  const step = idx >= 0 ? steps[idx] : undefined
+  const fact = args.text.trim()
+  if (!fact) {
+    if (args.kind === 'evidence' && step) {
+      return {
+        card: investigationEvidencePromptCard({
+          lang: args.lang,
+          step,
+          stepIndex: idx,
+          totalSteps: steps.length,
+        }),
+      }
+    }
+    if (step) {
+      return {
+        card: investigationRequiredSkipPromptCard({
+          lang: args.lang,
+          step,
+          stepIndex: idx,
+          totalSteps: steps.length,
+        }),
+      }
+    }
+  }
+
+  if (step) {
+    step.status = args.kind === 'evidence' ? 'done' : 'skipped'
+    if (!session.checkedSteps.some((s) => s.toLowerCase() === step.label.toLowerCase())) {
+      session.checkedSteps.push(step.label)
+    }
+  }
+  session.stepAwaiting = 'none'
+  pushInteraction(session, {
+    role: 'user',
+    kind: args.kind === 'evidence' ? 'evidence' : 'step_skip',
+    text: fact,
+    messageId: args.msg.messageId,
+  })
+  await saveSessionDurable(args.msg.chatId, args.msg.openId, session)
+
+  // Re-run investigation with the evidence/reply so coverage + incident stay in sync.
+  return runInvestigation({
+    msg: args.msg,
+    lang: args.lang,
+    newFact: fact,
+    markStepDone: args.kind === 'evidence',
+    guideAdvanceOnly: true,
+  })
+}
+
 async function runInvestigation(args: {
   msg: IncomingMessage
   lang: Lang
   newFact: string
   markStepDone?: boolean
+  /** After Done/Skip evidence — send only the next step card (path already shown). */
+  guideAdvanceOnly?: boolean
 }): Promise<BotReply> {
   const session = await getSessionDurable(args.msg.chatId, args.msg.openId)
   session.mode = 'investigate'
@@ -1203,9 +1270,31 @@ async function runInvestigation(args: {
       session.checkedSteps.push(c)
     }
   }
-  const nextSteps = pathPlan.nextSteps
-  session.pendingPrompt = nextSteps[0]
+  const hadPath = Boolean(session.pathSteps?.length)
+  session.pathSteps = mergeGuideSteps(pathPlan.fullSteps, session.pathSteps)
+  // Prefer re-ranked remaining steps when latest evidence points elsewhere.
+  const preferIds = pathPlan.fullSteps
+    .filter((s) => !s.covered)
+    .sort((a, b) => {
+      if (b.latestScore !== a.latestScore) return b.latestScore - a.latestScore
+      return a.authorIdx - b.authorIdx
+    })
+    .map((s) => s.id)
+  session.pathStepIndex = firstPendingGuideIndex(session.pathSteps, preferIds)
+  session.stepAwaiting = session.stepAwaiting || 'none'
+  if (session.pathStepIndex < 0) {
+    session.pendingPrompt = undefined
+  } else {
+    session.pendingPrompt = session.pathSteps[session.pathStepIndex]?.label
+  }
+  const nextSteps =
+    session.pathStepIndex >= 0 && session.pathSteps[session.pathStepIndex]
+      ? [session.pathSteps[session.pathStepIndex]!.label]
+      : pathPlan.nextSteps
   const actions = preferredActions(hits, args.lang, 2)
+  // Path overview once at case open; later turns / Done-Skip advances send only the step card.
+  const includeOverview =
+    !args.guideAdvanceOnly && (!hadPath || Boolean(showAddAlertHint))
   const summary = buildSummary({
     lang: args.lang,
     severity,
@@ -1307,21 +1396,50 @@ async function runInvestigation(args: {
   const invTitleFinal =
     args.lang === 'zh-Hant' ? `排查進行中 · ${rec.title}` : invTitle
 
-  return {
-    card: investigationCard({
+  // Mid-case questions must surface the answer — overview is often skipped after the first path push.
+  if (questionMode) {
+    const qTitle =
+      args.lang === 'zh-Hans'
+        ? '排查解答'
+        : args.lang === 'zh-Hant'
+          ? '排查解答'
+          : 'Investigation answer'
+    const stepFollow = guideStepReply({
       lang: args.lang,
+      session,
+      incidentId: rec.id,
+      includeOverview: false,
       title: invTitleFinal,
       severity,
       summary: summary + bodyExtra,
-      nextSteps,
       actions,
       skills: hits.map((h) => h.id),
       knowledge: kb.map((k) => k.title),
-      incidentId: rec.id,
       riskVerdict: rec.riskVerdict,
-      showAddAlertHint,
-    }),
+    })
+    return {
+      card: simpleCard(qTitle, (summary + bodyExtra).trim(), 'blue'),
+      followUpCards: [
+        ...(stepFollow.card ? [stepFollow.card] : []),
+        ...(stepFollow.followUpCards || []),
+      ],
+    }
   }
+
+  return guideStepReply({
+    lang: args.lang,
+    session,
+    incidentId: rec.id,
+    includeOverview,
+    title: invTitleFinal,
+    severity,
+    summary: summary + bodyExtra,
+    actions,
+    skills: hits.map((h) => h.id),
+    knowledge: kb.map((k) => k.title),
+    riskVerdict: rec.riskVerdict,
+    showAddAlertHint,
+  })
 }
 
 export async function handleCardAction(args: {
@@ -1495,26 +1613,122 @@ export async function handleCardAction(args: {
     })
   }
 
-  // Kept for older cards still in chat history
-  if (action === 'step_done') {
-    const doneFact =
-      lang === 'zh-Hans'
-        ? '值班人员标记上一步建议已完成。'
-        : lang === 'zh-Hant'
-          ? '值班人員標記上一步建議已完成。'
-          : 'Operator marked the previous recommended step as done.'
+  if (action === 'guide_step_done') {
+    const steps = session.pathSteps || []
+    const stepId = String(args.value.stepId || '')
+    let idx = steps.findIndex((s) => s.id === stepId)
+    if (idx < 0) idx = session.pathStepIndex ?? firstPendingGuideIndex(steps)
+    const step = idx >= 0 ? steps[idx] : undefined
+    if (!step) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '无当前步骤' : lang === 'zh-Hant' ? '無當前步驟' : 'No current step',
+          lang === 'zh-Hans'
+            ? '请先贴告警开始排查。'
+            : lang === 'zh-Hant'
+              ? '請先貼告警開始排查。'
+              : 'Paste an alert to start investigation.',
+          'wathet',
+        ),
+      }
+    }
+    session.pathStepIndex = idx
+    session.stepAwaiting = 'evidence'
+    session.pendingPrompt = step.label
     pushInteraction(session, {
       role: 'user',
       kind: 'step_done',
-      text: doneFact,
+      text: `guide_step_done:${step.id}`,
       messageId: args.messageId,
     })
     await saveSessionDurable(args.chatId, args.openId, session)
+    return {
+      card: investigationEvidencePromptCard({
+        lang,
+        step,
+        stepIndex: idx,
+        totalSteps: steps.length,
+      }),
+    }
+  }
+
+  if (action === 'guide_step_skip') {
+    const steps = session.pathSteps || []
+    const stepId = String(args.value.stepId || '')
+    let idx = steps.findIndex((s) => s.id === stepId)
+    if (idx < 0) idx = session.pathStepIndex ?? firstPendingGuideIndex(steps)
+    const step = idx >= 0 ? steps[idx] : undefined
+    if (!step) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '无当前步骤' : lang === 'zh-Hant' ? '無當前步驟' : 'No current step',
+          lang === 'zh-Hans'
+            ? '请先贴告警开始排查。'
+            : lang === 'zh-Hant'
+              ? '請先貼告警開始排查。'
+              : 'Paste an alert to start investigation.',
+          'wathet',
+        ),
+      }
+    }
+    session.pathStepIndex = idx
+    session.pendingPrompt = step.label
+    if (step.required) {
+      session.stepAwaiting = 'required_skip_reply'
+      pushInteraction(session, {
+        role: 'user',
+        kind: 'step_skip',
+        text: `guide_step_skip_required:${step.id}`,
+        messageId: args.messageId,
+      })
+      await saveSessionDurable(args.chatId, args.openId, session)
+      return {
+        card: investigationRequiredSkipPromptCard({
+          lang,
+          step,
+          stepIndex: idx,
+          totalSteps: steps.length,
+        }),
+      }
+    }
+    // Optional: skip immediately and advance.
+    step.status = 'skipped'
+    session.stepAwaiting = 'none'
+    if (!session.checkedSteps.some((s) => s.toLowerCase() === step.label.toLowerCase())) {
+      session.checkedSteps.push(step.label)
+    }
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'step_skip',
+      text: `guide_step_skip_optional:${step.id}`,
+      messageId: args.messageId,
+    })
+    await saveSessionDurable(args.chatId, args.openId, session)
+    const skipFact =
+      lang === 'zh-Hans'
+        ? `值班人员跳过可选步骤：${step.label}`
+        : lang === 'zh-Hant'
+          ? `值班人員跳過可選步驟：${step.label}`
+          : `Operator skipped optional step: ${step.label}`
     return runInvestigation({
       msg: fakeMsg,
       lang,
-      newFact: doneFact,
+      newFact: skipFact,
       markStepDone: true,
+      guideAdvanceOnly: true,
+    })
+  }
+
+  // Kept for older cards still in chat history
+  if (action === 'step_done') {
+    // Legacy button → same as guide Done (require evidence).
+    return handleCardAction({
+      ...args,
+      value: {
+        ...args.value,
+        action: 'guide_step_done',
+        stepId: session.pathSteps?.[session.pathStepIndex ?? 0]?.id || '',
+      },
     })
   }
 
@@ -2104,13 +2318,34 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     })
   }
 
-  // Text alternative to card “Step done” button (works without Lark Card Request URL)
-  if (isStepDoneCommand(workingText)) {
+  // Text alternative to card “已完成” (works without Lark Card Request URL)
+  if (isStepDoneCommand(workingText) && session.mode === 'investigate') {
     return handleCardAction({
       openId: msg.openId,
       chatId: msg.chatId,
       messageId: msg.messageId,
-      value: { action: 'step_done', incidentId: session.lastReportId || '' },
+      value: {
+        action: 'guide_step_done',
+        stepId: session.pathSteps?.[session.pathStepIndex ?? 0]?.id || '',
+        incidentId: session.lastReportId || '',
+      },
+    })
+  }
+
+  // After Done / required-Skip: the next user message is evidence or a skip reply.
+  if (
+    session.mode === 'investigate' &&
+    (session.stepAwaiting === 'evidence' || session.stepAwaiting === 'required_skip_reply')
+  ) {
+    const awaitingText = workingText
+      .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
+      .trim()
+    return advanceGuideAfterUserInput({
+      msg: inbound,
+      lang,
+      session,
+      text: awaitingText || workingText,
+      kind: session.stepAwaiting === 'evidence' ? 'evidence' : 'required_skip_reply',
     })
   }
 

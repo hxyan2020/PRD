@@ -6,7 +6,14 @@ import {
   riskVerdictLabel,
   suggestRiskVerdict,
 } from './riskVerdict.js'
-import type { IncidentRecord, KbItem, Lang, RiskVerdict, SkillRec } from './types.js'
+import type {
+  GuideStep,
+  IncidentRecord,
+  KbItem,
+  Lang,
+  RiskVerdict,
+  SkillRec,
+} from './types.js'
 
 const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
 const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
@@ -226,6 +233,468 @@ export function investigationCard(args: {
               : '⌨️ **Actions** — keep chatting to investigate; tap below when ready for the full report',
         },
       },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans
+                ? '结束排查并生成报告'
+                : zh
+                  ? '結束排查並生成報告'
+                  : 'End & generate report',
+            },
+            type: 'primary',
+            value: {
+              action: 'end_and_report',
+              incidentId: args.incidentId || '',
+            },
+          },
+        ],
+      },
+    ],
+  }
+}
+
+function formatGuidePathLines(steps: GuideStep[], lang: Lang): string {
+  const hans = lang === 'zh-Hans'
+  const zh = isZh(lang)
+  if (!steps.length) {
+    return hans
+      ? '_暂无 Skill.check 步骤 — 请补充告警原文。_'
+      : zh
+        ? '_暫無 Skill.check 步驟 — 請補充告警原文。_'
+        : '_No Skill.check steps yet — paste the alert text._'
+  }
+  return steps
+    .map((s, i) => {
+      const mark =
+        s.status === 'done'
+          ? '✅'
+          : s.status === 'skipped'
+            ? '⏭'
+            : '⬜'
+      const opt = s.required
+        ? hans
+          ? '必做'
+          : zh
+            ? '必做'
+            : 'required'
+        : hans
+          ? '可选'
+          : zh
+            ? '可選'
+            : 'optional'
+      const m = s.label.match(/^(\[[^\]]+\]|【[^】]+】)\s*(.*)$/)
+      const body = m ? `**${m[1]}** ${m[2]}` : s.label
+      return `${mark} ${i + 1}. ${body} _(${opt})_`
+    })
+    .join('\n')
+}
+
+/**
+ * Message 1: full排查链路 overview (path listed once).
+ * Followed by investigationStepGuideCard as a second message.
+ */
+export function investigationPathOverviewCard(args: {
+  lang: Lang
+  title: string
+  severity: string
+  summary: string
+  steps: GuideStep[]
+  actions: string[]
+  skills: string[]
+  knowledge: string[]
+  incidentId?: string
+  riskVerdict?: RiskVerdict
+  showAddAlertHint?: boolean
+}): Record<string, unknown> {
+  const zh = isZh(args.lang)
+  const hans = args.lang === 'zh-Hans'
+  const suggested = suggestRiskVerdict(args.severity)
+  const verdictLine = args.riskVerdict
+    ? hans
+      ? `${riskVerdictEmoji(args.riskVerdict)} **最终判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+      : zh
+        ? `${riskVerdictEmoji(args.riskVerdict)} **最終判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+        : `${riskVerdictEmoji(args.riskVerdict)} **Final verdict:** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
+    : hans
+      ? `⚖️ **最终判定（必选，计入复盘／周报）：** 尚未选定 — 建议参考严重度倾向 **${riskVerdictLabel(suggested, args.lang)}**`
+      : zh
+        ? `⚖️ **最終判定（必選，計入複盤／週報）：** 尚未選定 — 建議參考嚴重度傾向 **${riskVerdictLabel(suggested, args.lang)}**`
+        : `⚖️ **Final verdict (required for board/weekly stats):** unset — severity soft-suggests **${riskVerdictLabel(suggested, args.lang)}**`
+  const emoji = severityEmoji(args.severity)
+  const actionMd =
+    args.actions.map((a) => formatActionLine(a)).join('\n') ||
+    (hans ? '• （暂无）' : zh ? '• （暫無）' : '• (none yet)')
+  const skillLine = args.skills.length
+    ? args.skills.join(', ')
+    : hans
+      ? '尚未匹配'
+      : zh
+        ? '尚未匹配'
+        : 'none matched'
+  const kbLine = args.knowledge.length
+    ? args.knowledge.slice(0, 3).join(', ')
+    : hans
+      ? '无'
+      : zh
+        ? '無'
+        : 'none'
+  const pathMd = formatGuidePathLines(args.steps, args.lang)
+  const doneCount = args.steps.filter((s) => s.status === 'done' || s.status === 'skipped').length
+  const sevLabel = hans
+    ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
+    : zh
+      ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
+      : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
+  const pathLabel = hans
+    ? `🧭 **完整排查链路**（${doneCount}/${args.steps.length}）\n\n${pathMd}`
+    : zh
+      ? `🧭 **完整排查鏈路**（${doneCount}/${args.steps.length}）\n\n${pathMd}`
+      : `🧭 **Full investigation path** (${doneCount}/${args.steps.length})\n\n${pathMd}`
+  const prefLabel = hans
+    ? `⚡ **Preferred Action**（需审批）\n\n${actionMd}`
+    : zh
+      ? `⚡ **Preferred Action**（需審批）\n\n${actionMd}`
+      : `⚡ **Preferred Action** (approval required)\n\n${actionMd}`
+  const refsFooter = hans
+    ? [
+        '📎 **参考（文末）**',
+        `• **Skills：** ${skillLine}`,
+        `• **知识库：** ${kbLine}`,
+        `• [打开 Skills 桌面页](${SKILLS_URL}) · [打开知识库桌面页](${KNOWLEDGE_URL})`,
+      ].join('\n')
+    : zh
+      ? [
+          '📎 **參考（文末）**',
+          `• **Skills：** ${skillLine}`,
+          `• **知識庫：** ${kbLine}`,
+          `• [打開 Skills 桌面頁](${SKILLS_URL}) · [打開知識庫桌面頁](${KNOWLEDGE_URL})`,
+        ].join('\n')
+      : [
+          '📎 **References (end)**',
+          `• **Skills:** ${skillLine}`,
+          `• **Knowledge:** ${kbLine}`,
+          `• [Open Skills desk](${SKILLS_URL}) · [Open Knowledge desk](${KNOWLEDGE_URL})`,
+        ].join('\n')
+
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: args.severity === 'P0' ? 'red' : args.severity === 'P1' ? 'orange' : 'blue',
+      title: { tag: 'plain_text', content: args.title },
+    },
+    elements: [
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: `${sevLabel}\n\n${args.summary}`,
+        },
+      },
+      { tag: 'hr' },
+      { tag: 'div', text: { tag: 'lark_md', content: pathLabel } },
+      { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
+      { tag: 'hr' },
+      { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
+      { tag: 'hr' },
+      { tag: 'div', text: { tag: 'lark_md', content: verdictLine } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '判定：有风险' : zh ? '判定：有風險' : 'Verdict: At risk',
+            },
+            type: args.riskVerdict === 'at_risk' ? 'primary' : 'danger',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'at_risk',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '判定：无风险' : zh ? '判定：無風險' : 'Verdict: No risk',
+            },
+            type: args.riskVerdict === 'no_risk' ? 'primary' : 'default',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'no_risk',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '尚不明确' : zh ? '尚不明確' : 'Unclear',
+            },
+            type: args.riskVerdict === 'unclear' ? 'primary' : 'default',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'unclear',
+              incidentId: args.incidentId || '',
+            },
+          },
+        ],
+      },
+      ...(args.showAddAlertHint
+        ? [
+            { tag: 'hr' },
+            {
+              tag: 'div',
+              text: {
+                tag: 'lark_md',
+                content: hans
+                  ? '💡 **下一条消息**会给出第 1 步；点 **已完成** 需补证据，点 **跳过** 时必做步必须回复说明。'
+                  : zh
+                    ? '💡 **下一則訊息**會給出第 1 步；點 **已完成** 需補證據，點 **跳過** 時必做步必須回覆說明。'
+                    : '💡 **Next message** starts step 1 — **Done** needs evidence; **Skip** on required steps needs a reply.',
+              },
+            },
+          ]
+        : []),
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans
+                ? '结束排查并生成报告'
+                : zh
+                  ? '結束排查並生成報告'
+                  : 'End & generate report',
+            },
+            type: 'primary',
+            value: {
+              action: 'end_and_report',
+              incidentId: args.incidentId || '',
+            },
+          },
+        ],
+      },
+    ],
+  }
+}
+
+/** Message 2+: current step with 已完成 / 跳过. */
+export function investigationStepGuideCard(args: {
+  lang: Lang
+  step: GuideStep
+  stepIndex: number
+  totalSteps: number
+  incidentId?: string
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const n = args.stepIndex + 1
+  const optBadge = args.step.required
+    ? hans
+      ? '必做'
+      : zh
+        ? '必做'
+        : 'Required'
+    : hans
+      ? '可选'
+      : zh
+        ? '可選'
+        : 'Optional'
+  const title = hans
+    ? `排查步骤 ${n}/${args.totalSteps}`
+    : zh
+      ? `排查步驟 ${n}/${args.totalSteps}`
+      : `Investigation step ${n}/${args.totalSteps}`
+  const body = hans
+    ? [
+        `📍 **当前步骤（${optBadge}）**`,
+        '',
+        formatStepLine(args.step.label, args.stepIndex),
+        '',
+        '• 点 **已完成** → 下一条请补齐证据（截图／数值／结论）',
+        args.step.required
+          ? '• 点 **跳过** → 必做步须回复跳过原因，才能进入下一步'
+          : '• 点 **跳过** → 可选步可直接进入下一步',
+      ].join('\n')
+    : zh
+      ? [
+          `📍 **當前步驟（${optBadge}）**`,
+          '',
+          formatStepLine(args.step.label, args.stepIndex),
+          '',
+          '• 點 **已完成** → 下一則請補齊證據',
+          args.step.required
+            ? '• 點 **跳過** → 必做步須回覆跳過原因'
+            : '• 點 **跳過** → 可選步可直接進入下一步',
+        ].join('\n')
+      : [
+          `📍 **Current step (${optBadge})**`,
+          '',
+          formatStepLine(args.step.label, args.stepIndex),
+          '',
+          '• Tap **Done** → next message: paste evidence',
+          args.step.required
+            ? '• Tap **Skip** → required steps need a short reply before continuing'
+            : '• Tap **Skip** → optional steps advance immediately',
+        ].join('\n')
+
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: args.step.required ? 'orange' : 'turquoise',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '已完成' : zh ? '已完成' : 'Done',
+            },
+            type: 'primary',
+            value: {
+              action: 'guide_step_done',
+              stepId: args.step.id,
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '跳过' : zh ? '跳過' : 'Skip',
+            },
+            type: 'default',
+            value: {
+              action: 'guide_step_skip',
+              stepId: args.step.id,
+              incidentId: args.incidentId || '',
+            },
+          },
+        ],
+      },
+    ],
+  }
+}
+
+/** After Done: require evidence before advancing. */
+export function investigationEvidencePromptCard(args: {
+  lang: Lang
+  step: GuideStep
+  stepIndex: number
+  totalSteps: number
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const title = hans
+    ? '请补齐证据'
+    : zh
+      ? '請補齊證據'
+      : 'Add evidence'
+  const body = hans
+    ? [
+        `✅ 已标记第 **${args.stepIndex + 1}/${args.totalSteps}** 步完成。`,
+        '',
+        `步骤：${args.step.label}`,
+        '',
+        '请直接回复本步的 **证据**（截图说明／数值／核对结论）。收到后我会进入下一步。',
+      ].join('\n')
+    : zh
+      ? [
+          `✅ 已標記第 **${args.stepIndex + 1}/${args.totalSteps}** 步完成。`,
+          '',
+          `步驟：${args.step.label}`,
+          '',
+          '請直接回覆本步的 **證據**。收到後我會進入下一步。',
+        ].join('\n')
+      : [
+          `✅ Marked step **${args.stepIndex + 1}/${args.totalSteps}** done.`,
+          '',
+          `Step: ${args.step.label}`,
+          '',
+          'Reply with **evidence** for this step (screenshot notes / numbers / findings). I’ll advance after that.',
+        ].join('\n')
+  return simpleCard(title, body, 'wathet')
+}
+
+/** After Skip on a required step: must reply. */
+export function investigationRequiredSkipPromptCard(args: {
+  lang: Lang
+  step: GuideStep
+  stepIndex: number
+  totalSteps: number
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const title = hans
+    ? '必做步需说明'
+    : zh
+      ? '必做步需說明'
+      : 'Required step — reply needed'
+  const body = hans
+    ? [
+        `⏭ 第 **${args.stepIndex + 1}/${args.totalSteps}** 步为 **必做**，不能直接跳过。`,
+        '',
+        `步骤：${args.step.label}`,
+        '',
+        '请回复跳过原因或替代核对结论；收到后才会进入下一步。',
+      ].join('\n')
+    : zh
+      ? [
+          `⏭ 第 **${args.stepIndex + 1}/${args.totalSteps}** 步為 **必做**，不能直接跳過。`,
+          '',
+          `步驟：${args.step.label}`,
+          '',
+          '請回覆跳過原因或替代核對結論；收到後才會進入下一步。',
+        ].join('\n')
+      : [
+          `⏭ Step **${args.stepIndex + 1}/${args.totalSteps}** is **required** — cannot skip silently.`,
+          '',
+          `Step: ${args.step.label}`,
+          '',
+          'Reply with why you’re skipping or an alternate check result; then I’ll advance.',
+        ].join('\n')
+  return simpleCard(title, body, 'orange')
+}
+
+/** All guide steps finished. */
+export function investigationGuideCompleteCard(args: {
+  lang: Lang
+  incidentId?: string
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const title = hans
+    ? '排查链路已走完'
+    : zh
+      ? '排查鏈路已走完'
+      : 'Investigation path complete'
+  const body = hans
+    ? '全部步骤已完成或跳过。可点 **结束排查并生成报告** 出全文，或继续贴补充证据。'
+    : zh
+      ? '全部步驟已完成或跳過。可點 **結束排查並生成報告** 出全文，或繼續貼補充證據。'
+      : 'All steps done or skipped. Tap **End & generate report** for the full text, or keep pasting evidence.'
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'green',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
       {
         tag: 'action',
         actions: [
