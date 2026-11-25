@@ -106,12 +106,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const at = atOpenIdMarkdown(adminOpenId)
     const snap = await fetchMarketSnapshot()
     markdown = formatDaily24hMarketAnswer(snap, LARK_MARKET_LANG)
+    // Fresh snapshot every send — content changes; card skeleton is fixed in buildMarketCard(daily).
     card = await buildMarketCard({
       title: '每日 24h 行情早报',
       snap,
       lang: LARK_MARKET_LANG,
       mode: 'daily',
-      intro: `🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送）\n\n${at} 早报来了\n`,
+      intro: `🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送 · **${dayKey}**）\n\n${at} 早报来了\n`,
       template: 'wathet',
     })
   } catch (e) {

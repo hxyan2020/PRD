@@ -1,5 +1,6 @@
 import {
   generateHourlyScan,
+  OKX_KLINE_URL,
   type HourlyKlineSeries,
   type HourlyMarketReport,
   type KlineBar,
@@ -120,26 +121,104 @@ export function compute24hStats(snap: MarketSnapshot): Day24hStats | null {
 }
 
 /**
- * Morning group digest: past-24h XAU range + current desk TL;DR / Opp / Risk.
- * Chinese by default (group push).
+ * Fixed 早报 skeleton (content changes daily; section order never does):
+ * 1) Header + 24h range  2) K线 + prints  3) TL;DR (4 beats)
+ * 4) Opportunity (≤3)  5) Risk (≤3)  6) Footer
+ */
+export const DAILY_REPORT_SECTIONS = [
+  'header_24h',
+  'kline_prints',
+  'tldr',
+  'opportunity',
+  'risk',
+  'footer',
+] as const
+
+const DAILY_FIXED_LINKS: { id: string; label: string; url: string; domain: string }[] = [
+  { id: 'okx-kline', label: 'OKX K线', url: OKX_KLINE_URL, domain: 'okx.com' },
+  { id: 'kitco', label: 'Kitco', url: 'https://www.kitco.com/gold-price', domain: 'kitco.com' },
+  { id: 'yahoo-tnx', label: 'Yahoo行情', url: 'https://finance.yahoo.com/quote/%5ETNX', domain: 'yahoo.com' },
+]
+
+/** Always 4 TL;DR beats: 即时 / 走势 / 事件 / 关注 — pad missing with stable placeholders. */
+export function normalizeDailyTldrBeats(snap: MarketSnapshot, lang: Lang): string[] {
+  const hans = lang === 'zh-Hans'
+  const hant = lang === 'zh-Hant'
+  const raw = pointText(
+    snap.hourly?.tldr?.[0] || { rank: 1, en: '', zh: '', sourceIds: [] },
+    lang,
+  )
+  const lines = raw
+    .split(/\n+/)
+    .map((x) => x.trim().replace(/^•\s*/, ''))
+    .filter(Boolean)
+
+  const findBeat = (re: RegExp) => lines.find((l) => re.test(l))
+
+  const liveFromSnap = (() => {
+    const bits: string[] = []
+    if (snap.okx) bits.push(hans || hant ? `OKX 金 ${snap.okx.last.toFixed(2)}` : `OKX ${snap.okx.last.toFixed(2)}`)
+    if (snap.spot) bits.push(hans || hant ? `现货 ${snap.spot.last.toFixed(2)}` : `spot ${snap.spot.last.toFixed(2)}`)
+    if (!bits.length) return ''
+    if (hans) return `即时：${bits.join(' · ')}。`
+    if (hant) return `即時：${bits.join(' · ')}。`
+    return `Live: ${bits.join(' · ')}.`
+  })()
+
+  const live =
+    findBeat(/^(即时：|即時：|Live:)/i) ||
+    liveFromSnap ||
+    (hans ? '即时：报价暂缺。' : hant ? '即時：報價暫缺。' : 'Live: prints unavailable.')
+  const trend =
+    findBeat(/^(走势：|走勢：|Trend:)/i) ||
+    (hans ? '走势：本窗口暂无基差／错位要点。' : hant ? '走勢：本窗口暫無基差／錯位要點。' : 'Trend: no tape note this window.')
+  const event =
+    findBeat(/^(事件：|Event:)/i) ||
+    (hans ? '事件：本窗口暂无重大宏观要点。' : hant ? '事件：本窗口暫無重大宏觀要點。' : 'Event: no major macro note this window.')
+  const watch =
+    findBeat(/^(关注：|關注：|Watch:)/i) ||
+    (hans ? '关注：继续盯 DXY／10Y 与金价联动。' : hant ? '關注：繼續盯 DXY／10Y 與金價聯動。' : 'Watch: keep an eye on DXY / 10Y vs gold.')
+
+  return [live, trend, event, watch]
+}
+
+/** Cap Opp/Risk to 3 ranked lines for the fixed daily layout. */
+export function normalizeDailyRanked(
+  points: RankedPoint[] | undefined,
+  lang: Lang,
+  empty: string,
+  max = 3,
+): string[] {
+  const rows = (points || []).slice(0, max)
+  if (!rows.length) return [`• ${empty}`]
+  return rows.map((p, i) => `${i + 1}. ${pointText(p, lang)}`)
+}
+
+/**
+ * Morning group digest: past-24h XAU range + fixed TL;DR / Opp / Risk skeleton.
+ * Numbers and bullets change daily; section titles and order stay fixed.
  */
 export function formatDaily24hMarketAnswer(snap: MarketSnapshot, lang: Lang = 'zh-Hans'): string {
-  const hourly = snap.hourly
-  const byId = sourcesById(hourly?.sources)
   const empty =
     lang === 'zh-Hans'
       ? '过去 24 小时暂无要点。'
       : lang === 'zh-Hant'
         ? '過去 24 小時暫無要點。'
         : 'No points in the last 24h.'
+  const tldr = normalizeDailyTldrBeats(snap, lang)
+  const chips = DAILY_FIXED_LINKS.map((l) => `[${l.label}](${l.url})`).join(' · ')
   return [
     pricesAndKlineBlock(snap, lang, 'daily'),
     '',
-    ...renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true, byId),
+    '**📋 TL;DR**',
+    ...tldr.map((l) => (l.startsWith('•') ? l : `• ${l}`)),
+    `🔗 ${chips}`,
     '',
-    ...renderSection('✨ Opportunity', hourly?.opportunity || [], empty, lang, false, byId),
+    '**✨ Opportunity**',
+    ...normalizeDailyRanked(snap.hourly?.opportunity, lang, empty, 3),
     '',
-    ...renderSection('⚠️ Risk', hourly?.risk || [], empty, lang, false, byId),
+    '**⚠️ Risk**',
+    ...normalizeDailyRanked(snap.hourly?.risk, lang, empty, 3),
     '',
     marketFooterBlock(snap, lang, '', 'daily'),
   ].join('\n')
@@ -315,28 +394,61 @@ function pricesAndKlineBlock(snap: MarketSnapshot, lang: Lang, mode: 'hourly' | 
       stats == null
         ? '—'
         : `${stats.changePct >= 0 ? '+' : ''}${stats.changePct.toFixed(2)}%`
+    // Fixed daily header skeleton — always emit the same fields (— when missing).
     if (hans) {
       lines.push('📊 **过去 24 小时行情报告 · V Exchange Risk**', '')
       lines.push(
         `⏱ **报告时间：** **${scanAt}**（东八区）`,
         '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（OKX XAU-USDT-SWAP）+ 当日宏观／来源要点。',
         '',
+        '📈 **24h 价格区间**',
+        stats
+          ? `• **开：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`
+          : '• **开：** **—** → **收：** **—**（**—**）',
+        stats
+          ? `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 线数：** **${stats.bars}**`
+          : '• **高：** **—** · **低：** **—** · **K 线数：** **—**',
+        stats
+          ? `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（东八区）`
+          : '• **窗口：** —（东八区）',
+        '',
       )
-      if (stats) {
-        lines.push(
-          '📈 **24h 价格区间**',
-          `• **开：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`,
-          `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 线数：** **${stats.bars}**`,
-          `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（东八区）`,
-          '',
-        )
-      }
     } else if (hant) {
       lines.push('📊 **過去 24 小時行情報告 · V Exchange Risk**', '')
-      lines.push(`⏱ **報告時間：** **${scanAt}**（東八區）`, '')
+      lines.push(
+        `⏱ **報告時間：** **${scanAt}**（東八區）`,
+        '• 每日早上自動推送；數據覆蓋近 **24 根 1H K 線**（OKX XAU-USDT-SWAP）+ 當日宏觀／來源要點。',
+        '',
+        '📈 **24h 價格區間**',
+        stats
+          ? `• **開：** **${stats.open.toFixed(2)}** → **收：** **${stats.close.toFixed(2)}**（**${chg}**）`
+          : '• **開：** **—** → **收：** **—**（**—**）',
+        stats
+          ? `• **高：** **${stats.high.toFixed(2)}** · **低：** **${stats.low.toFixed(2)}** · **K 線數：** **${stats.bars}**`
+          : '• **高：** **—** · **低：** **—** · **K 線數：** **—**',
+        stats
+          ? `• **窗口：** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)}（東八區）`
+          : '• **窗口：** —（東八區）',
+        '',
+      )
     } else {
       lines.push('📊 **Past-24h market report · V Exchange Risk**', '')
-      lines.push(`⏱ **As of:** **${scanAt}** (UTC+8)`, '')
+      lines.push(
+        `⏱ **As of:** **${scanAt}** (UTC+8)`,
+        '• Daily morning push; ~**24** × 1H OKX XAU-USDT-SWAP bars + macro / source notes.',
+        '',
+        '📈 **24h range**',
+        stats
+          ? `• **Open:** **${stats.open.toFixed(2)}** → **Close:** **${stats.close.toFixed(2)}** (**${chg}**)`
+          : '• **Open:** **—** → **Close:** **—** (**—**)',
+        stats
+          ? `• **High:** **${stats.high.toFixed(2)}** · **Low:** **${stats.low.toFixed(2)}** · **Bars:** **${stats.bars}**`
+          : '• **High:** **—** · **Low:** **—** · **Bars:** **—**',
+        stats
+          ? `• **Window:** ${formatEast8(stats.fromTs)} → ${formatEast8(stats.toTs)} (UTC+8)`
+          : '• **Window:** — (UTC+8)',
+        '',
+      )
     }
   } else if (hans) {
     lines.push('📊 **小时行情扫报 · V Exchange Risk**', '')
@@ -436,10 +548,26 @@ function marketFooterBlock(
   return lines.join('\n')
 }
 
+/** Fixed source chip row for daily 早报 (OKX / Kitco / Yahoo) — always same order. */
+function dailyFixedSourceChips(): ReportSource[] {
+  const now = Date.now()
+  return DAILY_FIXED_LINKS.map((l) => ({
+    id: l.id,
+    captionEn: l.label,
+    captionZh: l.label,
+    url: l.url,
+    domain: l.domain,
+    logoUrl: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(l.domain)}&sz=64`,
+    kind: 'exchange' as const,
+    health: 'ok' as const,
+    checkedAt: now,
+  }))
+}
+
 /**
- * Interactive market card: each Opportunity / Risk / TL;DR point is followed by
- * favicon logo buttons that open the source URL (logo = hyperlink).
- * Falls back to a plain lark_md card when Lark upload is unavailable.
+ * Interactive market card.
+ * - hourly: TL;DR / Opp / Risk with per-point source logo rows
+ * - daily: fixed skeleton (content changes; section order + chip row stay stable)
  */
 export async function buildMarketCard(opts: {
   title: string
@@ -449,7 +577,7 @@ export async function buildMarketCard(opts: {
   mode?: 'hourly' | 'daily'
   /** Extra markdown prepended (e.g. daily cron intro). */
   intro?: string
-  /** Extra markdown appended (e.g. LLM enrich). */
+  /** Extra markdown appended (e.g. LLM enrich). Ignored for daily to keep format fixed. */
   appendix?: string
   template?: string
 }): Promise<Record<string, unknown>> {
@@ -477,10 +605,13 @@ export async function buildMarketCard(opts: {
           ? '本小時暫無要點。'
           : 'No points this hour.'
 
+  // Daily: never append free-form LLM text — keeps section order identical every day.
+  const dailyAppendix = mode === 'daily' ? '' : appendix
+
   const fallbackMd = [
     intro,
     mode === 'daily' ? formatDaily24hMarketAnswer(snap, lang) : formatMarketAnswer(snap, lang, question),
-    appendix,
+    dailyAppendix,
   ]
     .filter(Boolean)
     .join('\n')
@@ -497,38 +628,60 @@ export async function buildMarketCard(opts: {
   if (intro.trim()) elements.push(mdDiv(intro.trim()))
   elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode)))
 
-  // TL;DR text (beats only — logos on the next action row)
-  const tldrLines = renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true)
-  elements.push(mdDiv(tldrLines.join('\n')))
-  if (hourly?.tldr?.[0]) {
-    const row = await logoLinkActions(pointSources(hourly.tldr[0], byId))
-    if (row) elements.push(row)
-  }
+  if (mode === 'daily') {
+    const tldr = normalizeDailyTldrBeats(snap, lang)
+    const chipMd = DAILY_FIXED_LINKS.map((l) => `[${l.label}](${l.url})`).join(' · ')
+    elements.push(
+      mdDiv(
+        ['**📋 TL;DR**', ...tldr.map((l) => (l.startsWith('•') ? l : `• ${l}`)), `🔗 ${chipMd}`].join(
+          '\n',
+        ),
+      ),
+    )
+    const chipRow = await logoLinkActions(dailyFixedSourceChips())
+    if (chipRow) elements.push(chipRow)
 
-  elements.push(mdDiv('**✨ Opportunity**'))
-  const opps = (hourly?.opportunity || []).slice(0, 4)
-  if (!opps.length) elements.push(mdDiv(`• ${empty}`))
-  else {
-    for (const p of opps) {
-      elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
-      const row = await logoLinkActions(pointSources(p, byId))
+    elements.push(mdDiv('**✨ Opportunity**'))
+    elements.push(mdDiv(normalizeDailyRanked(hourly?.opportunity, lang, empty, 3).join('\n')))
+
+    elements.push(mdDiv('**⚠️ Risk**'))
+    elements.push(mdDiv(normalizeDailyRanked(hourly?.risk, lang, empty, 3).join('\n')))
+
+    elements.push(mdDiv(marketFooterBlock(snap, lang, question, mode)))
+  } else {
+    // Hourly: TL;DR + per-point logo rows (variable is OK for on-demand scans)
+    const tldrLines = renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true)
+    elements.push(mdDiv(tldrLines.join('\n')))
+    if (hourly?.tldr?.[0]) {
+      const row = await logoLinkActions(pointSources(hourly.tldr[0], byId))
       if (row) elements.push(row)
     }
-  }
 
-  elements.push(mdDiv('**⚠️ Risk**'))
-  const risks = (hourly?.risk || []).slice(0, 4)
-  if (!risks.length) elements.push(mdDiv(`• ${empty}`))
-  else {
-    for (const p of risks) {
-      elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
-      const row = await logoLinkActions(pointSources(p, byId))
-      if (row) elements.push(row)
+    elements.push(mdDiv('**✨ Opportunity**'))
+    const opps = (hourly?.opportunity || []).slice(0, 4)
+    if (!opps.length) elements.push(mdDiv(`• ${empty}`))
+    else {
+      for (const p of opps) {
+        elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
+        const row = await logoLinkActions(pointSources(p, byId))
+        if (row) elements.push(row)
+      }
     }
-  }
 
-  elements.push(mdDiv(marketFooterBlock(snap, lang, question, mode)))
-  if (appendix.trim()) elements.push(mdDiv(appendix.trim()))
+    elements.push(mdDiv('**⚠️ Risk**'))
+    const risks = (hourly?.risk || []).slice(0, 4)
+    if (!risks.length) elements.push(mdDiv(`• ${empty}`))
+    else {
+      for (const p of risks) {
+        elements.push(mdDiv(`${p.rank}. ${pointText(p, lang)}`))
+        const row = await logoLinkActions(pointSources(p, byId))
+        if (row) elements.push(row)
+      }
+    }
+
+    elements.push(mdDiv(marketFooterBlock(snap, lang, question, mode)))
+    if (dailyAppendix.trim()) elements.push(mdDiv(dailyAppendix.trim()))
+  }
 
   return {
     config: { wide_screen_mode: true },

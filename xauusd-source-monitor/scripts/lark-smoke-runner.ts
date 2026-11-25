@@ -1422,6 +1422,71 @@ async function main() {
       !/if\s*\(\s*!force\s*&&\s*sent\[dayKey\]\s*&&\s*cron\s*\)/.test(dailySrc),
     'skip already_sent for cron AND manual unless force',
   )
+  const {
+    formatDaily24hMarketAnswer: fmtDaily,
+    normalizeDailyTldrBeats,
+    DAILY_REPORT_SECTIONS,
+  } = await import('../api/lark/_lib/market')
+  const dailyMd = fmtDaily(liveSnap, 'zh-Hans')
+  const dailyBeats = normalizeDailyTldrBeats(
+    {
+      notes: [],
+      sources: [],
+      fetchedAt: Date.now(),
+      // empty tldr → placeholders still yield 4 fixed beats
+      hourly: {
+        ...(liveSnap.hourly as object),
+        tldr: [],
+        opportunity: [],
+        risk: [],
+      } as NonNullable<typeof liveSnap.hourly>,
+    },
+    'zh-Hans',
+  )
+  record(
+    'cron.daily_fixed_skeleton_sections',
+    DAILY_REPORT_SECTIONS.length === 6 &&
+      dailyMd.includes('过去 24 小时行情报告') &&
+      dailyMd.includes('24h 价格区间') &&
+      dailyMd.includes('**📋 TL;DR**') &&
+      dailyMd.includes('**✨ Opportunity**') &&
+      dailyMd.includes('**⚠️ Risk**') &&
+      dailyMd.includes('打开网页 Market') &&
+      dailyMd.includes('OKX K线') &&
+      dailyMd.includes('Kitco') &&
+      // Use section headers — bare "Risk" also matches "V Exchange Risk"
+      dailyMd.indexOf('**📋 TL;DR**') < dailyMd.indexOf('**✨ Opportunity**') &&
+      dailyMd.indexOf('**✨ Opportunity**') < dailyMd.indexOf('**⚠️ Risk**'),
+    dailyMd.slice(0, 280),
+  )
+  record(
+    'cron.daily_tldr_always_four_beats',
+    dailyBeats.length === 4 &&
+      dailyBeats[0]!.startsWith('即时：') &&
+      dailyBeats[1]!.startsWith('走势：') &&
+      dailyBeats[2]!.startsWith('事件：') &&
+      dailyBeats[3]!.startsWith('关注：'),
+    dailyBeats.join(' | '),
+  )
+  const dailyCardFixed = await buildMarketCard({
+    title: '每日 24h 行情早报',
+    snap: liveSnap,
+    lang: 'zh-Hans',
+    mode: 'daily',
+    intro: '🌅 **每日早报**',
+    appendix: 'THIS_SHOULD_NOT_APPEAR_IN_DAILY',
+  })
+  const dailyCardBlob = JSON.stringify(dailyCardFixed)
+  record(
+    'cron.daily_card_ignores_appendix_keeps_format',
+    dailyCardBlob.includes('TL;DR') &&
+      dailyCardBlob.includes('Opportunity') &&
+      dailyCardBlob.includes('**⚠️ Risk**') &&
+      !dailyCardBlob.includes('THIS_SHOULD_NOT_APPEAR_IN_DAILY') &&
+      dailyCardBlob.includes('OKX K线') &&
+      dailyCardBlob.includes('tradingview.com'),
+    dailyCardBlob.slice(0, 240),
+  )
   const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
   record(
     'cron.alert_nudge_every_minute',
