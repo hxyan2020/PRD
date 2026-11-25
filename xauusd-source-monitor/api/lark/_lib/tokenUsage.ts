@@ -9,7 +9,7 @@ const STORE_NAME = 'agent-token-usage.json'
 /** Keep ~14d of hourly buckets (chart needs 24h; buffer for gaps). */
 const RETAIN_HOURS = 24 * 14
 
-export type TokenSource = 'lark' | 'desk' | 'vision' | 'other'
+export type TokenSource = 'lark' | 'desk' | 'vision' | 'rules' | 'other'
 
 export type TokenHourBucket = {
   prompt: number
@@ -61,14 +61,14 @@ export async function recordTokenUsage(args: {
   source?: TokenSource
   model?: string
   at?: number
-}): Promise<void> {
+}): Promise<boolean> {
   const prompt = Math.max(0, Math.floor(Number(args.prompt) || 0))
   const completion = Math.max(0, Math.floor(Number(args.completion) || 0))
   const total = prompt + completion
-  if (total <= 0) return
+  if (total <= 0) return true
   const at = args.at || Date.now()
   const key = hourKey(at)
-  try {
+  const apply = async (): Promise<boolean> => {
     const store = await loadTokenUsage()
     store.allTime.prompt += prompt
     store.allTime.completion += completion
@@ -82,10 +82,52 @@ export async function recordTokenUsage(args: {
     store.hours[key] = b
     store.hours = pruneHours(store.hours, at)
     store.updatedAt = at
-    await writeDurableJson(STORE_NAME, store)
+    return writeDurableJson(STORE_NAME, store)
+  }
+  try {
+    if (await apply()) return true
+    // One retry — Blob/overwrite races on serverless.
+    return await apply()
   } catch {
     /* never break the agent on metering */
+    return false
   }
+}
+
+/**
+ * Estimate + persist usage for a Lark bot turn (rules path or LLM).
+ * Uses ~chars/4 when provider usage is unavailable — keeps the daily Yan
+ * digest non-zero for normal investigate / greeting / market replies.
+ */
+export async function recordAgentTurnUsage(args: {
+  inboundText?: string
+  reply?: { text?: string; card?: unknown; followUpCards?: unknown[] } | null
+  source?: TokenSource
+}): Promise<boolean> {
+  const outParts: string[] = []
+  if (args.reply?.text) outParts.push(args.reply.text)
+  if (args.reply?.card) {
+    try {
+      outParts.push(JSON.stringify(args.reply.card))
+    } catch {
+      /* ignore */
+    }
+  }
+  if (args.reply?.followUpCards?.length) {
+    try {
+      outParts.push(JSON.stringify(args.reply.followUpCards))
+    } catch {
+      /* ignore */
+    }
+  }
+  const prompt = estimateTokensFromText(args.inboundText || '')
+  const completion = estimateTokensFromText(...outParts)
+  if (prompt + completion <= 0) return true
+  return recordTokenUsage({
+    prompt,
+    completion,
+    source: args.source || 'rules',
+  })
 }
 
 /** Rough fallback when upstream omits usage. */
@@ -214,7 +256,7 @@ export async function formatTokenUsageReport(lang: Lang): Promise<string> {
       '',
       chart,
       '',
-      '_横轴为东八区小时；统计含 Lark 对话 LLM／识图与桌面 /api/chat。_',
+      '_横轴为东八区小时；含每次 Lark 回复估算（~字数/4）+ 识图／桌面 /api/chat 的上游 usage。_',
     ].join('\n')
   }
   if (lang === 'zh-Hant') {
@@ -227,7 +269,7 @@ export async function formatTokenUsageReport(lang: Lang): Promise<string> {
       '',
       chart,
       '',
-      '_橫軸為東八區小時；統計含 Lark 對話 LLM／識圖與桌面 /api/chat。_',
+      '_橫軸為東八區小時；含每次 Lark 回覆估算（~字數/4）+ 識圖／桌面 /api/chat 的上游 usage。_',
     ].join('\n')
   }
   return [
@@ -239,7 +281,7 @@ export async function formatTokenUsageReport(lang: Lang): Promise<string> {
     '',
     chart,
     '',
-    '_X-axis = Asia/Singapore hour; includes Lark LLM/vision and desk /api/chat._',
+    '_X-axis = Asia/Singapore hour; every Lark reply is estimated (~chars/4) plus vision / desk /api/chat provider usage._',
   ].join('\n')
 }
 

@@ -1144,6 +1144,15 @@ async function main() {
     ),
     /Token/.test(greetBlob) ? greetBlob.slice(0, 200) : 'ok',
   )
+  {
+    const { loadTokenUsage: loadTok } = await import('../api/lark/_lib/tokenUsage')
+    const afterGreet = await loadTok()
+    record(
+      'token_usage.turn_meters_greeting',
+      afterGreet.allTime.calls >= 1 && afterGreet.allTime.total > 0,
+      `calls=${afterGreet.allTime.calls} total=${afterGreet.allTime.total}`,
+    )
+  }
   const {
     formatTokenUsageReport,
     isTokenUsageSlot,

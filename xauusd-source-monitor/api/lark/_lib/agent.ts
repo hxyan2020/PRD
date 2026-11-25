@@ -1608,6 +1608,23 @@ export async function handleCardAction(args: {
   /** When set (group), session is shared across participants. */
   chatType?: string
 }): Promise<BotReply> {
+  const reply = await handleCardActionCore(args)
+  const { recordAgentTurnUsage } = await import('./tokenUsage.js')
+  await recordAgentTurnUsage({
+    inboundText: `card:${String(args.value?.action || 'action')}`,
+    reply,
+    source: 'rules',
+  })
+  return reply
+}
+
+async function handleCardActionCore(args: {
+  openId: string
+  chatId: string
+  messageId: string
+  value: Record<string, unknown>
+  chatType?: string
+}): Promise<BotReply> {
   const action = String(args.value.action || '')
   const incidentId = String(args.value.incidentId || '')
   const chatType = args.chatType || 'p2p'
@@ -2066,6 +2083,19 @@ export async function handleCardAction(args: {
 }
 
 export async function handleMessage(msg: IncomingMessage): Promise<BotReply | null> {
+  const reply = await handleMessageCore(msg)
+  if (reply) {
+    const { recordAgentTurnUsage } = await import('./tokenUsage.js')
+    await recordAgentTurnUsage({
+      inboundText: msg.text || msg.rawContent || '',
+      reply,
+      source: 'rules',
+    })
+  }
+  return reply
+}
+
+async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null> {
   if (!msg.messageId) return null
 
   // Forwarded cards / merge_forward / reply-to-alert often lack body in the event —

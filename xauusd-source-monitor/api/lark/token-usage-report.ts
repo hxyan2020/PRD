@@ -22,8 +22,11 @@ import {
   TOKEN_USAGE_START_HM,
   formatTokenUsageReport,
   isTokenUsageSlot,
+  loadTokenUsage,
+  recordTokenUsage,
   sgtDayKey,
   sgtHm,
+  sumLast24h,
   tokenUsageReportTitle,
 } from './_lib/tokenUsage.js'
 
@@ -126,6 +129,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // dry=1 always returns preview (even with x-vercel-cron) — never send / never skip.
   if (dry) {
+    // Optional blob write probe: ?touch=1 records 1+1 tokens (cron/desk only).
+    let touched = false
+    if (String(q.touch || '') === '1' || body.touch === true) {
+      touched = await recordTokenUsage({
+        prompt: 1,
+        completion: 1,
+        source: 'other',
+      })
+      markdown = await formatTokenUsageReport(lang)
+      card = simpleCard(tokenUsageReportTitle(lang), markdown, 'indigo')
+    }
+    const store = await loadTokenUsage()
+    const last24 = sumLast24h(store, now)
     return res.status(200).json({
       ok: true,
       dry: true,
@@ -133,10 +149,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       hm: sgtHm(now),
       startHm: TOKEN_USAGE_START_HM,
       isTokenSlot: isTokenUsageSlot(now),
+      touched,
       markdown,
       card,
       lang,
       langSource,
+      store: {
+        allTime: store.allTime,
+        last24,
+        hourBuckets: Object.keys(store.hours).length,
+        updatedAt: store.updatedAt,
+      },
       schedule: `Daily ${TOKEN_USAGE_START_HM} Asia/Singapore (cron: 0 10 * * * UTC; cron-tick catch-up after 18:00)`,
       recipient: 'Yan Haixiang',
       chatId: chat.chatId,

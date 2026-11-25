@@ -138,10 +138,11 @@ never-sent).
 
 - **Schedule:** every day **18:00 Asia/Singapore** (Vercel cron `0 10 * * *` UTC)
 - **Content:** last-24h + all-time agent token totals + 24h sparkline/chart
+- **Metering:** every Lark reply is estimated (~chars/4); vision + desk `/api/chat` also record provider usage when present
 - **Delivery:** Feishu DM to Yan only (`LARK_TOKEN_USAGE_CHAT_ID` → `LARK_MARKET_CHAT_ID` → `LARK_ADMIN_OPEN_ID` fallback)
 - **Not** on greeting cards — private desk push only
 - **Catch-up:** cron-tick after 18:00 SGT if the :00 UTC fire was missed (idempotent dayKey)
-- **Preview / force:** `GET ?dry=1` · `POST { "force": true }` + desk token / cron header
+- **Preview / force:** `GET ?dry=1` (works with cron header) · `POST { "force": true }` + desk token / cron header
 
 ## Daily 24h market morning report (group)
 
