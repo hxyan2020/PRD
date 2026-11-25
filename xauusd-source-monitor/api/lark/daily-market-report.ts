@@ -14,7 +14,7 @@ import {
   dailyMarketIntro,
   dailyMarketTitle,
   fetchMarketSnapshot,
-  formatDaily24hMarketAnswer,
+  formatDaily24hMarketAnswerAsync,
   resolveDailyMarketLang,
   shanghaiDayKey,
 } from './_lib/market.js'
@@ -118,7 +118,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const at = atOpenIdMarkdown(adminOpenId)
     const snap = await fetchMarketSnapshot()
     // Fresh snapshot; language follows chat conversation (unsupported → 中文).
-    markdown = formatDaily24hMarketAnswer(snap, marketLang)
+    // Source links are 404-checked before cite (async).
+    markdown = await formatDaily24hMarketAnswerAsync(snap, marketLang)
     card = await buildMarketCard({
       title: dailyMarketTitle(marketLang),
       snap,

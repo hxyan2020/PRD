@@ -1,6 +1,8 @@
 import {
   generateHourlyScan,
+  KITCO_GOLD_URL,
   OKX_KLINE_URL,
+  resolveCiteUrlOrNull,
   type HourlyKlineSeries,
   type HourlyMarketReport,
   type KlineBar,
@@ -229,9 +231,33 @@ export const DAILY_REPORT_SECTIONS = [
 
 const DAILY_FIXED_LINKS: { id: string; label: string; url: string; domain: string }[] = [
   { id: 'okx-kline', label: 'OKX K线', url: OKX_KLINE_URL, domain: 'okx.com' },
-  { id: 'kitco', label: 'Kitco', url: 'https://www.kitco.com/gold-price', domain: 'kitco.com' },
+  { id: 'kitco', label: 'Kitco', url: KITCO_GOLD_URL, domain: 'kitco.com' },
   { id: 'yahoo-tnx', label: 'Yahoo行情', url: 'https://finance.yahoo.com/quote/%5ETNX', domain: 'yahoo.com' },
 ]
+
+/** Drop sources whose cite URL is proven HTTP 404/410 (or marked down for missing page). */
+export function isCiteableSource(s: ReportSource | undefined | null): boolean {
+  if (!s?.url) return false
+  if (s.health === 'down' && /404|410|not linked/i.test(s.detail || '')) return false
+  if (s.health === 'down' && /HTTP 404|HTTP 410/i.test(s.detail || '')) return false
+  // Explicitly never cite when detail says cite was rejected as missing
+  if (/cite URL HTTP 404\/410/i.test(s.detail || '')) return false
+  return true
+}
+
+/**
+ * Fixed desk links for 早报 — skip any that currently 404/410.
+ * Timeouts / bot-blocks are kept (not proven missing for end users).
+ */
+export async function dailySourceHyperlinksLive(): Promise<string> {
+  const parts: string[] = []
+  for (const l of DAILY_FIXED_LINKS) {
+    const resolved = await resolveCiteUrlOrNull(l.url, l.id)
+    if (!resolved) continue
+    parts.push(`[${l.label}](${resolved.url})`)
+  }
+  return parts.join(' · ')
+}
 
 /** Always 4 TL;DR beats: 即时 / 走势 / 事件 / 关注 — pad missing with stable placeholders. */
 export function normalizeDailyTldrBeats(snap: MarketSnapshot, lang: Lang): string[] {
@@ -302,8 +328,26 @@ export function dailySourceHyperlinks(): string {
  * Morning group digest: past-24h XAU range + fixed TL;DR / Opp / Risk skeleton.
  * Numbers and bullets change daily; section titles and order stay fixed.
  * All sources are field hyperlinks — never Lark action buttons.
+ * Prefer `formatDaily24hMarketAnswerAsync` so fixed links are 404-checked live.
  */
 export function formatDaily24hMarketAnswer(snap: MarketSnapshot, lang: Lang = 'zh-Hans'): string {
+  return formatDaily24hMarketAnswerWithLinks(snap, lang, dailySourceHyperlinks())
+}
+
+/** Same as formatDaily24hMarketAnswer, but probes fixed links and drops proven 404/410. */
+export async function formatDaily24hMarketAnswerAsync(
+  snap: MarketSnapshot,
+  lang: Lang = 'zh-Hans',
+): Promise<string> {
+  const links = (await dailySourceHyperlinksLive()) || dailySourceHyperlinks()
+  return formatDaily24hMarketAnswerWithLinks(snap, lang, links)
+}
+
+function formatDaily24hMarketAnswerWithLinks(
+  snap: MarketSnapshot,
+  lang: Lang,
+  sourceLinks: string,
+): string {
   const empty =
     lang === 'zh-Hans'
       ? '过去 24 小时暂无要点。'
@@ -312,12 +356,13 @@ export function formatDaily24hMarketAnswer(snap: MarketSnapshot, lang: Lang = 'z
         : 'No points in the last 24h.'
   const byId = sourcesById(snap.hourly?.sources)
   const tldr = normalizeDailyTldrBeats(snap, lang)
+  const linkLine = sourceLinks.trim() ? `🔗 ${sourceLinks}` : null
   return [
     pricesAndKlineBlock(snap, lang, 'daily'),
     '',
     '**📋 TL;DR**',
     ...tldr.map((l) => (l.startsWith('•') ? l : `• ${l}`)),
-    `🔗 ${dailySourceHyperlinks()}`,
+    ...(linkLine ? [linkLine] : []),
     '',
     '**✨ Opportunity**',
     ...normalizeDailyRanked(snap.hourly?.opportunity, lang, empty, 3, byId),
@@ -375,7 +420,7 @@ function sourcesById(sources: ReportSource[] | undefined): Map<string, ReportSou
   return map
 }
 
-/** Unique sources for a ranked point (domain-deduped, max 4). */
+/** Unique sources for a ranked point (domain-deduped, max 4). Never cite proven 404 pages. */
 export function pointSources(
   p: RankedPoint,
   byId: Map<string, ReportSource>,
@@ -384,7 +429,7 @@ export function pointSources(
   const seen = new Set<string>()
   for (const id of p.sourceIds || []) {
     const s = byId.get(id)
-    if (!s) continue
+    if (!s || !isCiteableSource(s)) continue
     const key = (s.domain || s.id).toLowerCase()
     if (seen.has(key)) continue
     seen.add(key)
@@ -697,14 +742,12 @@ export async function buildMarketCard(opts: {
   // Daily: never append free-form LLM text — keeps section order identical every day.
   const dailyAppendix = mode === 'daily' ? '' : appendix
 
-  const fallbackMd = [
-    intro,
-    mode === 'daily' ? formatDaily24hMarketAnswer(snap, lang) : formatMarketAnswer(snap, lang, question),
-    dailyAppendix,
-  ]
-    .filter(Boolean)
-    .join('\n')
-    .trim()
+  const dailyBody =
+    mode === 'daily'
+      ? await formatDaily24hMarketAnswerAsync(snap, lang)
+      : formatMarketAnswer(snap, lang, question)
+
+  const fallbackMd = [intro, dailyBody, dailyAppendix].filter(Boolean).join('\n').trim()
 
   if (!larkConfigured()) {
     return simpleCard(title, fallbackMd, template)
@@ -718,7 +761,8 @@ export async function buildMarketCard(opts: {
 
   if (mode === 'daily') {
     // Single markdown body — sources are [label](url) fields, never action buttons.
-    elements.push(mdDiv(formatDaily24hMarketAnswer(snap, lang)))
+    // Fixed + per-point links are 404-filtered (see formatDaily24hMarketAnswerAsync / pointSources).
+    elements.push(mdDiv(dailyBody))
   } else {
     elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode)))
     // Hourly: TL;DR + per-point logo rows (variable is OK for on-demand scans)

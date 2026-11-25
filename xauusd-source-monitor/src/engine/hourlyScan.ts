@@ -150,6 +150,96 @@ type CatalogEntry = {
 export const OKX_KLINE_URL =
   'https://www.tradingview.com/chart/?symbol=OKX%3AXAUUSDT.P'
 
+/** Kitco gold chart — `/gold-price` returns HTTP 404. */
+export const KITCO_GOLD_URL = 'https://www.kitco.com/charts/gold'
+
+/** Bitget support hub — old `/support/sections/…` deep links 404. */
+export const BITGET_SUPPORT_URL = 'https://www.bitget.com/support'
+
+const CITE_PROBE_HEADERS: Record<string, string> = {
+  'User-Agent': 'Mozilla/5.0 (compatible; VE-RiskDesk/1.0; +https://vex-llm-proxy.vercel.app)',
+  Accept: 'text/html,application/xhtml+xml,*/*;q=0.8',
+}
+
+/** True only for proven missing pages (do not treat timeouts / bot-blocks as 404). */
+export function isMissingHttpStatus(status: number | null | undefined): boolean {
+  return status === 404 || status === 410
+}
+
+/** HEAD/GET status for a human cite URL. `null` = unreachable / aborted (not proven 404). */
+export async function probeCiteHttpStatus(url: string, timeoutMs = 8000): Promise<number | null> {
+  const target = (url || '').trim()
+  if (!/^https?:\/\//i.test(target)) return null
+  try {
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs)
+    let res = await fetch(target, {
+      method: 'HEAD',
+      redirect: 'follow',
+      signal: ctrl.signal,
+      headers: CITE_PROBE_HEADERS,
+      cache: 'no-store',
+    })
+    // Some CDNs reject HEAD — fall back to GET (body discarded).
+    if (res.status === 405 || res.status === 501 || res.status === 403) {
+      res = await fetch(target, {
+        method: 'GET',
+        redirect: 'follow',
+        signal: ctrl.signal,
+        headers: CITE_PROBE_HEADERS,
+        cache: 'no-store',
+      })
+    }
+    clearTimeout(timer)
+    return res.status
+  } catch {
+    return null
+  }
+}
+
+/** Stable public page when a deep link 404s (same desk / publisher). */
+export function citeFallbackUrl(url: string, id = ''): string | null {
+  const u = url || ''
+  const key = id.toLowerCase()
+  if (/okx\.com/i.test(u) && /trade|swap/i.test(u)) return OKX_KLINE_URL
+  if (/kitco\.com/i.test(u)) {
+    if (/\/news\//i.test(u) || key.startsWith('kitco-')) {
+      return 'https://www.kitco.com/news/category/metals'
+    }
+    return KITCO_GOLD_URL
+  }
+  if (/bitget\.com/i.test(u) && /support|announc/i.test(u)) return BITGET_SUPPORT_URL
+  if (/bitget\.com/i.test(u)) return 'https://www.bitget.com/futures/usdt/XAUUSDT'
+  if (/binance\.com/i.test(u)) return 'https://www.binance.com/en/futures/XAUUSDT'
+  if (/bybit\.com/i.test(u)) return 'https://www.bybit.com/trade/usdt/XAUUSDT'
+  if (/federalreserve\.gov/i.test(u)) {
+    return 'https://www.federalreserve.gov/newsevents/pressreleases.htm'
+  }
+  if (/tradingview\.com/i.test(u)) return OKX_KLINE_URL
+  return null
+}
+
+/**
+ * Resolve a citation URL that is not HTTP 404/410.
+ * Rewrites to a stable fallback when the primary page is missing; returns null if still missing.
+ */
+export async function resolveCiteUrlOrNull(
+  url: string,
+  id = '',
+): Promise<{ url: string; status: number | null; rewritten: boolean } | null> {
+  const primary = (url || '').trim()
+  if (!primary) return null
+  const st = await probeCiteHttpStatus(primary)
+  if (!isMissingHttpStatus(st)) {
+    return { url: primary, status: st, rewritten: false }
+  }
+  const fb = citeFallbackUrl(primary, id)
+  if (!fb || fb === primary) return null
+  const st2 = await probeCiteHttpStatus(fb)
+  if (isMissingHttpStatus(st2)) return null
+  return { url: fb, status: st2, rewritten: true }
+}
+
 /** Default human UI when a JSON probe has no explicit linkUrl. */
 function humanLinkFor(id: string, probeUrl: string): string {
   switch (id) {
@@ -160,7 +250,7 @@ function humanLinkFor(id: string, probeUrl: string): string {
     case 'bitget-ticker':
       return 'https://www.bitget.com/futures/usdt/XAUUSDT'
     case 'gold-api':
-      return 'https://www.kitco.com/gold-price'
+      return KITCO_GOLD_URL
     case 'yahoo-gc':
       return 'https://finance.yahoo.com/quote/GC=F'
     case 'yahoo-dxy':
@@ -224,7 +314,7 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     id: 'gold-api',
     kind: 'price',
     url: GOLD_API,
-    linkUrl: 'https://www.kitco.com/gold-price',
+    linkUrl: KITCO_GOLD_URL,
     captionEn: 'Kitco gold spot price',
     captionZh: 'Kitco 黄金现货价',
     json: true,
@@ -318,7 +408,7 @@ const SOURCE_CATALOG: CatalogEntry[] = [
   {
     id: 'bitget-announcements',
     kind: 'announcement',
-    url: 'https://www.bitget.com/support/sections/5955811737113',
+    url: BITGET_SUPPORT_URL,
     captionEn: 'Bitget announcements / notices',
     captionZh: 'Bitget 公告／通知',
   },
@@ -646,6 +736,50 @@ function citeUrl(entry: CatalogEntry): string {
   return entry.linkUrl || humanLinkFor(entry.id, entry.url)
 }
 
+/**
+ * Ensure the human cite URL is not HTTP 404/410 before attaching it to a source.
+ * Missing pages rewrite to a stable fallback; still-missing → `down` (not cited in 早报).
+ */
+async function finalizeCiteSource(
+  entry: CatalogEntry,
+  base: ReportSource,
+  json: unknown | null,
+): Promise<{ source: ReportSource; json: unknown | null }> {
+  const resolved = await resolveCiteUrlOrNull(base.url, entry.id)
+  if (!resolved) {
+    return {
+      source: {
+        ...base,
+        health: 'down',
+        detail: `${base.detail || 'cite'} · cite URL HTTP 404/410 (not linked)`,
+      },
+      json,
+    }
+  }
+  if (resolved.rewritten) {
+    return {
+      source: makeSource(
+        entry.id,
+        resolved.url,
+        entry.captionEn,
+        entry.captionZh,
+        entry.kind,
+        base.health === 'ok' ? 'degraded' : base.health,
+        base.checkedAt,
+        {
+          latencyMs: base.latencyMs,
+          detail: `${base.detail || 'ok'} · cite rewritten (primary 404)`,
+        },
+      ),
+      json,
+    }
+  }
+  if (base.url !== resolved.url) {
+    return { source: { ...base, url: resolved.url }, json }
+  }
+  return { source: base, json }
+}
+
 async function probeCatalogEntry(entry: CatalogEntry): Promise<{
   source: ReportSource
   json: unknown | null
@@ -665,8 +799,9 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
       clearTimeout(timer)
       const latencyMs = Math.round(performance.now() - started)
       if (!res.ok) {
-        return {
-          source: makeSource(
+        return finalizeCiteSource(
+          entry,
+          makeSource(
             entry.id,
             displayUrl,
             entry.captionEn,
@@ -676,12 +811,13 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
             checkedAt,
             { latencyMs, detail: `HTTP ${res.status}` },
           ),
-          json: null,
-        }
+          null,
+        )
       }
       const json = await res.json()
-      return {
-        source: makeSource(
+      return finalizeCiteSource(
+        entry,
+        makeSource(
           entry.id,
           displayUrl,
           entry.captionEn,
@@ -692,10 +828,11 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
           { latencyMs, detail: 'JSON OK' },
         ),
         json,
-      }
+      )
     } catch (e) {
-      return {
-        source: makeSource(
+      return finalizeCiteSource(
+        entry,
+        makeSource(
           entry.id,
           displayUrl,
           entry.captionEn,
@@ -705,36 +842,60 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
           checkedAt,
           { detail: e instanceof Error ? e.message.slice(0, 80) : 'fetch failed' },
         ),
-        json: null,
-      }
+        null,
+      )
     }
   }
 
-  // HTML / announcement / news — no-cors reachability
+  // HTML / announcement / news — status-aware GET (no opaque no-cors: that hides 404s)
   try {
     const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), 6000)
-    await fetch(entry.url, {
+    const timer = setTimeout(() => ctrl.abort(), 8000)
+    const res = await fetch(entry.url, {
       signal: ctrl.signal,
       cache: 'no-store',
-      mode: 'no-cors',
       method: 'GET',
+      redirect: 'follow',
+      headers: CITE_PROBE_HEADERS,
     })
     clearTimeout(timer)
     const latencyMs = Math.round(performance.now() - started)
-    return {
-      source: makeSource(
+    if (isMissingHttpStatus(res.status)) {
+      return finalizeCiteSource(
+        entry,
+        makeSource(
+          entry.id,
+          displayUrl,
+          entry.captionEn,
+          entry.captionZh,
+          entry.kind,
+          'down',
+          checkedAt,
+          { latencyMs, detail: `HTTP ${res.status}` },
+        ),
+        null,
+      )
+    }
+    // 401/403/5xx: page may still open in a browser — keep URL, mark degraded when blocked
+    const health: SourceHealthStatus =
+      res.ok || res.status === 401 || res.status === 403 ? (res.ok ? 'ok' : 'degraded') : 'degraded'
+    return finalizeCiteSource(
+      entry,
+      makeSource(
         entry.id,
         displayUrl,
         entry.captionEn,
         entry.captionZh,
         entry.kind,
-        'ok',
+        health,
         checkedAt,
-        { latencyMs, detail: 'Reachable (opaque)' },
+        {
+          latencyMs,
+          detail: res.ok ? 'Reachable' : `HTTP ${res.status} (cite kept; not 404)`,
+        },
       ),
-      json: null,
-    }
+      null,
+    )
   } catch (e) {
     // X / YouTube often block automated browser probes; keep KOL rows listed.
     if (entry.kind === 'social') {
@@ -782,6 +943,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
         json: null,
       }
     }
+    // Timeout / network: not proven 404 — keep cite URL for end users
     return {
       source: makeSource(
         entry.id,
@@ -789,7 +951,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
         entry.captionEn,
         entry.captionZh,
         entry.kind,
-        'down',
+        'degraded',
         checkedAt,
         { detail: e instanceof Error ? e.message.slice(0, 80) : 'unreachable' },
       ),
@@ -1396,23 +1558,30 @@ export async function generateHourlyScan(args: {
     const fedUrl = fed.link.startsWith('http')
       ? fed.link
       : `https://www.federalreserve.gov${fed.link}`
-    sources.push(
-      makeSource(
-        'fed-press-item',
-        fedUrl,
-        `Fed press: ${fed.title}`,
-        `聯準會新聞：${fed.title}`,
-        'announcement',
-        'ok',
-        Date.now(),
-        { detail: 'From ne-press.json' },
-      ),
-    )
-    riskRaw.push({
-      en: `Federal Reserve press item “${fed.title}” is on the calendar feed — treat it as event/policy context for gold rates pricing this hour, not as a confirmed market catalyst yet.`,
-      zh: `聯準會新聞稿「${fed.title}」已出現在日程來源——本小時僅作黃金利率定價的事件／政策背景，尚未視為已確認的行情催化。`,
-      sourceIds: ['fed-press-item', 'fed-press-json'],
-    })
+    const fedCite = await resolveCiteUrlOrNull(fedUrl, 'fed-press-item')
+    if (fedCite) {
+      sources.push(
+        makeSource(
+          'fed-press-item',
+          fedCite.url,
+          `Fed press: ${fed.title}`,
+          `聯準會新聞：${fed.title}`,
+          'announcement',
+          fedCite.rewritten ? 'degraded' : 'ok',
+          Date.now(),
+          {
+            detail: fedCite.rewritten
+              ? 'From ne-press.json · cite rewritten (primary 404)'
+              : 'From ne-press.json',
+          },
+        ),
+      )
+      riskRaw.push({
+        en: `Federal Reserve press item “${fed.title}” is on the calendar feed — treat it as event/policy context for gold rates pricing this hour, not as a confirmed market catalyst yet.`,
+        zh: `聯準會新聞稿「${fed.title}」已出現在日程來源——本小時僅作黃金利率定價的事件／政策背景，尚未視為已確認的行情催化。`,
+        sourceIds: ['fed-press-item', 'fed-press-json'],
+      })
+    }
   }
 
   const spotLive = goldApiPrice(byId.get('gold-api')?.json ?? null)
@@ -1556,10 +1725,23 @@ export async function generateHourlyScan(args: {
 
   for (const c of args.extraCitations || []) {
     if (sources.some((s) => s.id === c.id || s.url === c.url)) continue
+    const cite = await resolveCiteUrlOrNull(c.url, c.id)
+    if (!cite) continue // proven 404/410 — never cite in 早报 / desk
     sources.push(
-      makeSource(c.id, c.url, c.label, c.label, 'news', 'unchecked', createdAt, {
-        detail: 'Imported briefing citation',
-      }),
+      makeSource(
+        c.id,
+        cite.url,
+        c.label,
+        c.label,
+        'news',
+        cite.rewritten ? 'degraded' : 'unchecked',
+        createdAt,
+        {
+          detail: cite.rewritten
+            ? 'Imported briefing citation · cite rewritten (primary 404)'
+            : 'Imported briefing citation',
+        },
+      ),
     )
   }
 

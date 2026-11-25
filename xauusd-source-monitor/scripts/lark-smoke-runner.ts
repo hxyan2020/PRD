@@ -894,8 +894,30 @@ async function main() {
     Boolean(liveSnap.hourly?.tldr?.length || liveSnap.hourly?.opportunity || liveSnap.hourly?.risk),
     `tldr=${liveSnap.hourly?.tldr?.length ?? 0} kline=${liveSnap.hourly?.kline?.bars?.length ?? 0}`,
   )
-  const { buildOneLineTldr, clampSummary, OKX_KLINE_URL: okxKlineUrl } = await import(
-    '../src/engine/hourlyScan',
+  const {
+    buildOneLineTldr,
+    clampSummary,
+    OKX_KLINE_URL: okxKlineUrl,
+    KITCO_GOLD_URL: kitcoGoldUrl,
+    resolveCiteUrlOrNull,
+    probeCiteHttpStatus,
+    isMissingHttpStatus,
+  } = await import('../src/engine/hourlyScan')
+  const kitcoDead = await resolveCiteUrlOrNull('https://www.kitco.com/gold-price', 'gold-api')
+  record(
+    'market.kitco_gold_price_404_rewritten',
+    Boolean(kitcoDead?.rewritten && kitcoDead.url === kitcoGoldUrl) &&
+      !/kitco\.com\/gold-price/i.test(kitcoGoldUrl),
+    kitcoDead ? `${kitcoDead.url} rewritten=${kitcoDead.rewritten}` : 'null',
+  )
+  const bitgetDead = await resolveCiteUrlOrNull(
+    'https://www.bitget.com/support/sections/5955811737113',
+    'bitget-announcements',
+  )
+  record(
+    'market.bitget_support_404_rewritten',
+    Boolean(bitgetDead?.url === 'https://www.bitget.com/support' && bitgetDead.rewritten),
+    bitgetDead ? `${bitgetDead.url} rewritten=${bitgetDead.rewritten}` : 'null',
   )
   const longKitco =
     'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy and Iran-linked oil inflation. Kitco argues the long-term fundamentals are intact and frames the selloff as frustrating short-term action that still leaves lower prices as long-term buying opportunities. Extra filler sentence one. Extra filler sentence two. Extra filler sentence three.'
@@ -997,6 +1019,19 @@ async function main() {
     /tradingview\.com\/chart\/\?symbol=OKX%3AXAUUSDT\.P/i.test(okxKlineUrl) &&
       !/okx\.com\/trade-swap/i.test(okxKlineUrl),
     okxKlineUrl,
+  )
+  // No proven-404 cite URLs in live hourly sources (catalog preflight + rewrite)
+  const liveCiteBad: string[] = []
+  for (const s of (liveSnap.hourly?.sources || []).slice(0, 24)) {
+    if (!s.url || /x\.com|youtube\.com|twitter\.com/i.test(s.url)) continue
+    const st = await probeCiteHttpStatus(s.url, 6000)
+    if (isMissingHttpStatus(st)) liveCiteBad.push(`${s.id}:${st}:${s.url}`)
+  }
+  record(
+    'market.live_cites_not_http_404',
+    liveCiteBad.length === 0 &&
+      !(liveSnap.hourly?.sources || []).some((s) => /kitco\.com\/gold-price/i.test(s.url || '')),
+    liveCiteBad.length ? liveCiteBad.slice(0, 3).join(' | ') : `n=${liveSnap.hourly?.sources?.length ?? 0}`,
   )
   record(
     'market.format_tldr_multiline_bullets',
@@ -1424,10 +1459,21 @@ async function main() {
   )
   const {
     formatDaily24hMarketAnswer: fmtDaily,
+    formatDaily24hMarketAnswerAsync: fmtDailyAsync,
     normalizeDailyTldrBeats,
     DAILY_REPORT_SECTIONS,
   } = await import('../api/lark/_lib/market')
-  const dailyMd = fmtDaily(liveSnap, 'zh-Hans')
+  const dailyMd = await fmtDailyAsync(liveSnap, 'zh-Hans')
+  record(
+    'cron.daily_no_404_kitco_gold_price',
+    !/kitco\.com\/gold-price/i.test(dailyMd) && /kitco\.com\/charts\/gold/i.test(dailyMd),
+    dailyMd.match(/\[Kitco\]\([^)]+\)/)?.[0] || dailyMd.slice(0, 120),
+  )
+  record(
+    'cron.daily_sync_kitco_not_404_path',
+    !/kitco\.com\/gold-price/i.test(fmtDaily(liveSnap, 'zh-Hans')),
+    '',
+  )
   const dailyBeats = normalizeDailyTldrBeats(
     {
       notes: [],
