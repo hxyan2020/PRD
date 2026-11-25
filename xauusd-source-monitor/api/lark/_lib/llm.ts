@@ -6,6 +6,7 @@ import {
   scrubOutgoing,
 } from './safety.js'
 import { cleanLarkMd } from './plain.js'
+import { estimateTokensFromText, recordTokenUsage } from './tokenUsage.js'
 import type { Lang } from './types.js'
 
 const SYSTEM_EN = `You are V Exchange Risk Copilot on Lark — warm, conversational, concise (like a helpful teammate, not a FAQ bot).
@@ -88,9 +89,18 @@ export async function chatComplete(args: {
     })
     const data = (await r.json()) as {
       choices?: { message?: { content?: string } }[]
+      usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }
     }
     if (!r.ok) return null
     const raw = data.choices?.[0]?.message?.content?.trim() || ''
+    const prompt = Number(data.usage?.prompt_tokens || 0)
+    const completion = Number(data.usage?.completion_tokens || 0)
+    void recordTokenUsage({
+      prompt: prompt || estimateTokensFromText(system, args.user),
+      completion: completion || estimateTokensFromText(raw),
+      source: 'lark',
+      model: process.env.LARK_LLM_MODEL || 'gpt-4o-mini',
+    })
     return raw ? cleanLarkMd(scrubOutgoing(raw)) : null
   } catch {
     return null
@@ -140,9 +150,18 @@ export async function describeImage(args: {
     })
     const data = (await r.json()) as {
       choices?: { message?: { content?: string } }[]
+      usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }
     }
     if (!r.ok) return null
     const raw = data.choices?.[0]?.message?.content?.trim() || ''
+    const usagePrompt = Number(data.usage?.prompt_tokens || 0)
+    const usageCompletion = Number(data.usage?.completion_tokens || 0)
+    void recordTokenUsage({
+      prompt: usagePrompt || estimateTokensFromText(prompt),
+      completion: usageCompletion || estimateTokensFromText(raw),
+      source: 'vision',
+      model: process.env.LARK_VISION_MODEL || 'gpt-4o-mini',
+    })
     return raw ? cleanLarkMd(scrubOutgoing(raw)) : null
   } catch {
     return null

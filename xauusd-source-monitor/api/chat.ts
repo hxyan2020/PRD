@@ -6,6 +6,10 @@
  */
 import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import {
+  estimateTokensFromText,
+  recordTokenUsage,
+} from './lark/_lib/tokenUsage.js'
 
 type Msg = { role: string; content: string }
 
@@ -155,9 +159,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       text = data.choices?.[0]?.message?.content || ''
       const prompt = Number(data.usage?.prompt_tokens || 0)
       const completion = Number(data.usage?.completion_tokens || 0)
+      const promptTokens =
+        prompt || estimateTokensFromText(...messages.map((m) => m.content || ''))
+      const completionTokens = completion || estimateTokensFromText(text)
       const cost =
-        prompt + completion > 0 ? (prompt * 0.15 + completion * 0.6) / 1_000_000 : 0.01
+        promptTokens + completionTokens > 0
+          ? (promptTokens * 0.15 + completionTokens * 0.6) / 1_000_000
+          : 0.01
       addSpend(auth.caller, cost)
+      void recordTokenUsage({
+        prompt: promptTokens,
+        completion: completionTokens,
+        source: 'desk',
+        model: model || (provider === 'openrouter' ? 'openai/gpt-4o-mini' : 'gpt-4o-mini'),
+      })
     } else if (provider === 'anthropic') {
       const system = messages.find((m) => m.role === 'system')?.content || ''
       const r = await fetch('https://api.anthropic.com/v1/messages', {

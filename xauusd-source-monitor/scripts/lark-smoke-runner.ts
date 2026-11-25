@@ -49,6 +49,15 @@ import {
 } from '../api/lark/_lib/typing'
 import { alertOptimizeCard, greetingCard, simpleCard } from '../api/lark/_lib/cards'
 import {
+  asciiLineChart,
+  last24hSeries,
+  recordTokenUsage,
+  sparkline,
+  sumLast24h,
+  type TokenUsageStore,
+} from '../api/lark/_lib/tokenUsage'
+import { writeTmpJson } from '../api/lark/_lib/durableJson'
+import {
   AO_LIMITS,
   analyzeAlertOptimize,
   analyzeLocally,
@@ -1004,6 +1013,37 @@ async function main() {
     '',
   )
 
+  {
+    const now = Date.now()
+    const hours: TokenUsageStore['hours'] = {}
+    for (let i = 0; i < 24; i++) {
+      const t = now - (23 - i) * 3600_000
+      const key = new Date(t).toISOString().slice(0, 13)
+      hours[key] = {
+        prompt: 100 * (i + 1),
+        completion: 50 * (i + 1),
+        total: 150 * (i + 1),
+        calls: i + 1,
+      }
+    }
+    const seeded: TokenUsageStore = {
+      allTime: { prompt: 50_000, completion: 20_000, total: 70_000, calls: 120 },
+      hours,
+      updatedAt: now,
+    }
+    writeTmpJson('agent-token-usage.json', seeded)
+    const last24 = sumLast24h(seeded, now)
+    const series = last24hSeries(seeded, now)
+    record(
+      'token_usage.aggregates',
+      last24.total > 0 &&
+        series.length === 24 &&
+        sparkline(series.map((s) => s.total)).length === 24 &&
+        asciiLineChart(series).includes('│'),
+      `24h=${last24.total}`,
+    )
+    await recordTokenUsage({ prompt: 10, completion: 5, source: 'lark' })
+  }
   clearSession('smoke_chat', 'smoke_user')
   const greet = await turn('greeting', 'hi')
   const greetBlob = JSON.stringify(greet.reply || {})
@@ -1028,6 +1068,16 @@ async function main() {
     ),
     greetBlob.slice(0, 160),
   )
+  record(
+    'turn.greeting_token_usage',
+    Boolean(
+      greetBlob.includes('Token usage') &&
+        greetBlob.includes('Last 24h') &&
+        greetBlob.includes('All-time') &&
+        /[▁▂▃▄▅▆▇█]/.test(greetBlob),
+    ),
+    greetBlob.includes('Token') ? 'ok' : greetBlob.slice(0, 200),
+  )
   const greetZh = await turn('greeting-zh', '你好', 'greet_zh')
   const greetZhBlob = JSON.stringify(greetZh.reply || {})
   record(
@@ -1044,6 +1094,7 @@ async function main() {
         (greetZhBlob.includes('自然语言') || greetZhBlob.includes('不必先打出关键词')) &&
         greetZhBlob.includes('[Skills](https://vex-llm-proxy.vercel.app/#/skills)') &&
         greetZhBlob.includes('[知识库](https://vex-llm-proxy.vercel.app/#/knowledge)') &&
+        greetZhBlob.includes('Token 消耗') &&
         !greetZhBlob.includes('截图欢迎') &&
         !greetZhBlob.includes('生产操作需人工审批'),
     ),

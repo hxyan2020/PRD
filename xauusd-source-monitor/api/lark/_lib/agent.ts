@@ -2008,7 +2008,9 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
             : 'Got a forward/reply, but could not read the card body (or lacking message-read scope). Paste the alert text, or grant im:message:readonly.'
       return { card: simpleCard(title, body, 'orange') }
     }
-    return { card: greetingCard(lang, greetingReply(lang)) }
+    const { formatTokenUsageForGreeting } = await import('./tokenUsage.js')
+    const tokenBlock = await formatTokenUsageForGreeting(lang)
+    return { card: greetingCard(lang, `${greetingReply(lang)}\n\n${tokenBlock}`) }
   }
 
   if (intent === 'help') {
