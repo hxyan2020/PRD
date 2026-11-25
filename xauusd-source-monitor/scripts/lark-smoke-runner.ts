@@ -1116,9 +1116,10 @@ async function main() {
   const cronAsk = cronMetaFn('zh-Hans', '现在你有多少 cron') || ''
   record(
     'chat.cron_count_self_answer',
-    cronAsk.includes('**6**') &&
+    cronAsk.includes('**7**') &&
       cronAsk.includes('daily-market-report') &&
       cronAsk.includes('market-report') &&
+      cronAsk.includes('cron-tick') &&
       !cronAsk.includes('没拉到可用条目') &&
       !cronAsk.includes('贴告警'),
     cronAsk.slice(0, 200),
@@ -1140,8 +1141,8 @@ async function main() {
   record(
     'turn.cron_count_chatty',
     Boolean(cronTurn.reply?.card) &&
-      cronTurn.blob.includes('6') &&
-      /早报|cron|09:00|半小时|market-report/i.test(cronTurn.blob) &&
+      cronTurn.blob.includes('7') &&
+      /早报|cron|09:00|半小时|market-report|cron-tick/i.test(cronTurn.blob) &&
       !cronTurn.blob.includes('没拉到可用条目') &&
       !cronTurn.blob.includes('贴告警让我帮你排查'),
     cronTurn.blob.slice(0, 280),
@@ -2100,6 +2101,35 @@ async function main() {
         (c.schedule || '').includes('*/30'),
     ),
     JSON.stringify((vercelCrons.crons || []).map((c) => `${c.path}:${c.schedule}`)),
+  )
+  const cronTickSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/cron-tick.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.tick_fans_out_all_jobs',
+    (vercelCrons.crons || []).some(
+      (c) =>
+        (c.path || '').includes('/api/lark/cron-tick') &&
+        (c.schedule || '').includes('*/5'),
+    ) &&
+      cronTickSrc.includes('/api/lark/alert-nudge') &&
+      cronTickSrc.includes('/api/lark/oscillation-alert') &&
+      cronTickSrc.includes('/api/lark/market-report') &&
+      cronTickSrc.includes('/api/lark/weekly-demo') &&
+      cronTickSrc.includes('/api/lark/daily-market-report') &&
+      cronTickSrc.includes('/api/lark/weekly-report'),
+    'cron-tick PATHS + vercel schedule',
+  )
+  record(
+    'cron.daily_has_morning_slot_gate',
+    /isDailyMarketSlot|before_daily_slot|DAILY_MARKET_START_HM/.test(
+      await (await import('node:fs/promises')).readFile(
+        new URL('../api/lark/daily-market-report.ts', import.meta.url),
+        'utf8',
+      ),
+    ),
+    'daily ≥09:00 CST gate for cron fan-out',
   )
   const greetZhHalf = greetingReply('zh-Hans')
   const helpZhHalf = helpReply('zh-Hans')

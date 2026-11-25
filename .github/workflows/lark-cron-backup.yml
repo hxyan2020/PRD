@@ -5,8 +5,8 @@ name: Lark cron backup
 
 on:
   schedule:
-    # Every 15 minutes (UTC). Covers oscillation / weekly-demo / market half-hour.
-    # Does not fan out daily/Friday digests (those keep their own Vercel schedules).
+    # Every 15 minutes + :01/:31 (UTC). cron-tick alone fans out all jobs
+    # (idempotent: daily ≥09:00 CST, weekly Friday, demos/slots self-gated).
     - cron: '*/15 * * * *'
     - cron: '1,31 * * * *'
   workflow_dispatch:
@@ -16,17 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Invoke Lark cron endpoints on public alias
+      - name: Invoke Lark cron-tick on public alias
         env:
           BASE: https://vex-llm-proxy.vercel.app
         run: |
           set -euo pipefail
+          # cron-tick fans out: nudge, oscillation, market, weekly-demo,
+          # daily-market-report, weekly-report (each handler self-gated).
           paths=(
             /api/lark/cron-tick
-            /api/lark/alert-nudge
-            /api/lark/oscillation-alert
-            /api/lark/market-report
-            /api/lark/weekly-demo
           )
           for path in "${paths[@]}"; do
             echo "=== GET ${path} ==="
@@ -35,7 +33,7 @@ jobs:
               -H "user-agent: github-actions-lark-cron-backup" \
               "${BASE}${path}" || echo "000")
             echo "HTTP ${code}"
-            head -c 400 /tmp/cron-body.json || true
+            head -c 800 /tmp/cron-body.json || true
             echo
             if [ "$code" != "200" ] && [ "$code" != "502" ]; then
               echo "::warning::${path} returned ${code}"

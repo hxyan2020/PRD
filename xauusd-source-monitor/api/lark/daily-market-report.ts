@@ -18,9 +18,19 @@ import {
   resolveDailyMarketLang,
   shanghaiDayKey,
 } from './_lib/market.js'
+import { shanghaiHm } from './_lib/oscillationAlert.js'
 
 /** Target Feishu group for morning 24h digest — override with LARK_DAILY_MARKET_CHAT_ID. */
 export const DEFAULT_DAILY_MARKET_CHAT_ID = 'oc_eb8eba24ff99a2c3ea3c9439750d65cd'
+
+/** Morning push window (Asia/Shanghai): from 09:00, catch-up until end of day. */
+export const DAILY_MARKET_START_HM =
+  (process.env.LARK_DAILY_MARKET_START || '').trim() || '09:00'
+
+/** True once the 09:00 CST slot has opened (idempotent via dayKey sent-state). */
+export function isDailyMarketSlot(ts: number = Date.now()): boolean {
+  return shanghaiHm(ts) >= DAILY_MARKET_START_HM
+}
 
 function resolveDailyChatId(reqChatId?: string): { chatId: string; source: string } {
   const fromReq = (reqChatId || '').trim()
@@ -123,11 +133,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: true,
       dry: true,
       dayKey,
+      hm: shanghaiHm(now),
+      startHm: DAILY_MARKET_START_HM,
+      isDailySlot: isDailyMarketSlot(now),
       lang: marketLang,
       langSource,
       markdown,
       card,
-      schedule: 'Daily 09:00 Asia/Shanghai (cron: 0 1 * * * UTC)',
+      schedule: 'Daily 09:00 Asia/Shanghai (cron: 0 1 * * * UTC; cron-tick catch-up after 09:00)',
       chatId: chat.chatId,
       chatSource: chat.source,
       adminOpenId: adminOpenId ? adminOpenId.slice(0, 8) + '…' : null,
@@ -142,6 +155,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       error: 'LARK_APP_ID / LARK_APP_SECRET missing',
       dayKey,
       dryPreview: markdown,
+    })
+  }
+
+  // Cron / cron-tick fan-out: do not fire before 09:00 Asia/Shanghai.
+  // Catch-up after 09:00 is OK (idempotent via dayKey).
+  if (cron && !force && !isDailyMarketSlot(now)) {
+    return res.status(200).json({
+      ok: true,
+      skipped: true,
+      reason: 'before_daily_slot',
+      dayKey,
+      hm: shanghaiHm(now),
+      startHm: DAILY_MARKET_START_HM,
+      via: 'cron',
     })
   }
 
