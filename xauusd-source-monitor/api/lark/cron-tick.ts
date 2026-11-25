@@ -4,35 +4,32 @@
  * production alias (never the SSO-protected deployment host).
  *
  * Schedule: every 5 minutes. Handlers stay idempotent.
+ * Fan-out is parallel so a slow child (e.g. oscillation OKX fetch) cannot
+ * starve cron-health / market-report at the end of a sequential list.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 
 export const config = {
-  maxDuration: 60,
+  maxDuration: 120,
 }
 
 const PUBLIC_BASE = 'https://vex-llm-proxy.vercel.app'
 
 /**
- * All Lark push jobs — each handler is idempotent / self-gated:
- * - alert-nudge: campaign window + ack
- * - oscillation-alert: trigger / demo slot
- * - market-report: half-hour slot
- * - weekly-demo: 16:00 CST demo day
- * - daily-market-report: ≥09:00 CST + dayKey
- * - weekly-report: Friday CST + weekKey
- * - cron-health: half-hour health DM to Yan (raises on miss)
+ * All Lark push jobs — each handler is idempotent / self-gated.
+ * cron-health is first so half-hour status DMs still fire when other
+ * children are slow or time out.
  */
 const PATHS = [
+  '/api/lark/cron-health',
   '/api/lark/alert-nudge',
   '/api/lark/oscillation-alert',
   '/api/lark/market-report',
   '/api/lark/weekly-demo',
   '/api/lark/daily-market-report',
   '/api/lark/weekly-report',
-  '/api/lark/cron-health',
 ] as const
 
 function parseOutcome(body: string): {
@@ -54,6 +51,32 @@ function parseOutcome(body: string): {
     return { outcome: 'ok', reason: j.reason }
   } catch {
     return { outcome: 'error', reason: 'non_json' }
+  }
+}
+
+async function hitPath(path: string): Promise<{ path: string; status: number; body: string }> {
+  try {
+    const r = await fetch(`${PUBLIC_BASE}${path}`, {
+      method: 'GET',
+      headers: {
+        'x-vercel-cron': '1',
+        'user-agent': 'vex-lark-cron-tick/2',
+        'cache-control': 'no-store',
+      },
+      cache: 'no-store',
+    })
+    const body = (await r.text()).slice(0, 240)
+    const { outcome, reason } = parseOutcome(body)
+    await touchCronHeartbeat(path, {
+      status: r.status,
+      outcome: r.status >= 500 ? 'error' : outcome,
+      reason,
+    })
+    return { path, status: r.status, body }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'fetch failed'
+    await touchCronHeartbeat(path, { status: 0, outcome: 'error', reason: msg })
+    return { path, status: 0, body: msg }
   }
 }
 
@@ -79,42 +102,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       dry: true,
       paths: PATHS,
       base: PUBLIC_BASE,
-      schedule: 'Every 5 min → fan-out on public alias',
+      schedule: 'Every 5 min → parallel fan-out on public alias (cron-health first)',
+      parallel: true,
     })
   }
 
-  const results: { path: string; status: number; body: string }[] = []
-  for (const path of PATHS) {
-    try {
-      const r = await fetch(`${PUBLIC_BASE}${path}`, {
-        method: 'GET',
-        headers: {
-          'x-vercel-cron': '1',
-          'user-agent': 'vex-lark-cron-tick/1',
-          'cache-control': 'no-store',
-        },
-        cache: 'no-store',
-      })
-      const body = (await r.text()).slice(0, 240)
-      results.push({ path, status: r.status, body })
-      const { outcome, reason } = parseOutcome(body)
-      await touchCronHeartbeat(path, {
-        status: r.status,
-        outcome: r.status >= 500 ? 'error' : outcome,
-        reason,
-      })
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : 'fetch failed'
-      results.push({ path, status: 0, body: msg })
-      await touchCronHeartbeat(path, { status: 0, outcome: 'error', reason: msg })
-    }
-  }
+  // Fire all children in parallel — wall clock ≈ slowest child, not sum.
+  const settled = await Promise.all(PATHS.map((path) => hitPath(path)))
+  const results = [...settled]
 
   const ok = results.every((r) => r.status === 200 || r.status === 502)
   await touchCronHeartbeat('/api/lark/cron-tick', {
     status: ok ? 200 : 502,
     outcome: ok ? 'ok' : 'error',
-    reason: ok ? 'fanout_ok' : 'fanout_partial_fail',
+    reason: ok ? 'fanout_ok_parallel' : 'fanout_partial_fail',
   })
-  return res.status(ok ? 200 : 502).json({ ok, via: 'cron-tick', results })
+  return res.status(ok ? 200 : 502).json({
+    ok,
+    via: 'cron-tick',
+    parallel: true,
+    results,
+  })
 }

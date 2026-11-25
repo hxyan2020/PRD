@@ -2170,8 +2170,20 @@ async function main() {
       cronTickSrc.includes('/api/lark/weekly-demo') &&
       cronTickSrc.includes('/api/lark/daily-market-report') &&
       cronTickSrc.includes('/api/lark/weekly-report') &&
-      cronTickSrc.includes('/api/lark/cron-health'),
-    'cron-tick PATHS + vercel schedule',
+      cronTickSrc.includes('/api/lark/cron-health') &&
+      cronTickSrc.includes('Promise.all') &&
+      cronTickSrc.indexOf("'/api/lark/cron-health'") <
+        cronTickSrc.indexOf("'/api/lark/alert-nudge'"),
+    'cron-tick PATHS parallel + health-first + vercel schedule',
+  )
+  const cronHealthSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/cron-health.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.health_stale_catchup',
+    cronHealthSrc.includes('STALE_CATCHUP_MS') && cronHealthSrc.includes('staleCatchup'),
+    '35m silence → force health DM',
   )
   record(
     'cron.health_half_hour_scheduled',
