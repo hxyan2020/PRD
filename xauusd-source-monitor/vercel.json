@@ -1,7 +1,14 @@
 {
+  "name": "quote-troubleshooting-bot",
+  "version": 2,
   "rewrites": [
     { "source": "/api/lark/events", "destination": "/api/lark/event" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ]
+  ],
+  "env": {
+    "LARK_APP_ID": "@lark_app_id",
+    "LARK_APP_SECRET": "@lark_app_secret"
+  },
+  "regions": ["hkg1"]
 }
