@@ -23,6 +23,16 @@ const NAV = [
   { to: '/lark', full: 'navLark', short: 'navLarkShort' },
 ] as const
 
+/** Mobile bottom bar: core ops only — Skills / KB live in the hamburger drawer. */
+const BOTTOM_NAV = NAV.filter(
+  (item) =>
+    item.to === '/investigate' ||
+    item.to === '/alert-optimize' ||
+    item.to === '/market' ||
+    item.to === '/reports' ||
+    item.to === '/lark',
+)
+
 export default function App() {
   const { t, lang, setLang, langLabel } = useLocale()
   const { user, logout } = useAuth()
@@ -44,8 +54,12 @@ export default function App() {
 
   if (!user) return <LoginPage />
 
-  const renderNavLinks = (keyPrefix: string, onNavigate?: () => void) =>
-    NAV.map((item) => (
+  const renderNavLinks = (
+    items: typeof NAV | typeof BOTTOM_NAV,
+    keyPrefix: string,
+    onNavigate?: () => void,
+  ) =>
+    items.map((item) => (
       <NavLink
         key={`${keyPrefix}${item.to}`}
         to={item.to}
@@ -167,7 +181,7 @@ export default function App() {
         <section className="menu-section menu-nav-section">
           <h3>{t('menuNav')}</h3>
           <nav className="menu-nav" aria-label="Menu navigation">
-            {renderNavLinks('menu', () => setMenuOpen(false))}
+            {renderNavLinks(NAV, 'menu', () => setMenuOpen(false))}
           </nav>
         </section>
 
@@ -178,7 +192,7 @@ export default function App() {
       </aside>
 
       <nav className="nav main-nav desktop-nav" aria-label="Primary">
-        {renderNavLinks('d')}
+        {renderNavLinks(NAV, 'd')}
       </nav>
 
       <main className="app-main">
@@ -203,7 +217,7 @@ export default function App() {
       </main>
 
       <nav className="nav bottom-nav mobile-only-flex" aria-label="Primary mobile">
-        {renderNavLinks('m')}
+        {renderNavLinks(BOTTOM_NAV, 'm')}
       </nav>
 
       <p className="footer-note desktop-copy">{t('footer')}</p>

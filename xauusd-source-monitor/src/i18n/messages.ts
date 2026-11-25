@@ -70,7 +70,7 @@ const en: Dict = {
   navInvestigate: 'Investigate',
   navInvestigateShort: 'RCA',
   navAlertOptimize: 'Alert optimize',
-  navAlertOptimizeShort: 'Optimize',
+  navAlertOptimizeShort: 'Opt',
   aoTitle: 'Alert optimize / General analysis',
   aoSub:
     'Two entries: Alert optimize (three optional data slots + directions) or General analysis (free-form CSV/API + question). Both run live status → readback/charts → answer → data issues → assumptions → report/copy.',
@@ -145,7 +145,7 @@ const en: Dict = {
   aoCopyFail: 'Clipboard unavailable — download the report instead.',
   aoApiNonJson: 'Response was not JSON — stored as a single raw field.',
   navReports: 'Alerts & Reports',
-  navReportsShort: 'Reports',
+  navReportsShort: 'Board',
   reportsTitle: 'Alerts & reports dashboard',
   reportsSub:
     'Realtime RCA statistics plus past alerts and investigation reports from the desk archive and Lark bot. Call `review` / `dashboard` in Lark, or open this page anytime.',

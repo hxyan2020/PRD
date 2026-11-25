@@ -2435,9 +2435,11 @@ td.mono,
   .std-editor-grid {
     grid-template-columns: 1fr;
   }
-  .kb-layout,
-  .stats-grid {
+  .kb-layout {
     grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -2739,10 +2741,11 @@ td.mono,
     max-height: none;
     z-index: 50;
     margin: 0;
-    gap: 4px;
+    gap: 6px;
     align-items: stretch;
+    justify-content: space-between;
     overflow: visible;
-    padding: 8px 8px max(8px, env(safe-area-inset-bottom));
+    padding: 8px 10px max(10px, env(safe-area-inset-bottom));
     /* Don't inherit sticky top safe-area padding from .nav */
     padding-top: 8px;
     background: rgba(243, 239, 230, 0.96);
@@ -2756,9 +2759,10 @@ td.mono,
   .bottom-nav .nav-item {
     flex: 1 1 0;
     min-width: 0;
-    max-height: 56px;
-    padding: 10px 4px;
-    font-size: 0.72rem;
+    max-width: none;
+    max-height: 52px;
+    padding: 10px 6px;
+    font-size: 0.78rem;
     font-weight: 650;
     border-radius: 12px;
     min-height: 48px;
@@ -2891,9 +2895,79 @@ td.mono,
 
   .stats-metrics,
   .metric-grid,
-  .stats-grid {
+  .stats-grid,
+  .reports-dashboard .reports-kpi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 10px 0 12px;
+  }
+
+  .stat-card {
+    padding: 10px 12px;
+    border-radius: 12px;
+    min-height: 0;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
+
+  .stat-value {
+    font-size: 1.35rem;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+
+  .reports-sources-hint {
+    font-size: 0.7rem;
+  }
+
+  .reports-dashboard .reports-head-actions {
+    display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    width: 100%;
+  }
+
+  .reports-dashboard .investigate-head .reports-head-actions .archive-btn,
+  .reports-dashboard .investigate-head .reports-head-actions a.archive-btn {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .reports-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .reports-filters .reports-search {
+    grid-column: 1 / -1;
+  }
+
+  .reports-filters label {
+    margin: 0;
+  }
+
+  .reports-filters select,
+  .reports-filters input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .reports-list-item {
+    padding: 10px;
+  }
+
+  .reports-list-top {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .reports-viz-panel {
+    padding: 10px 0;
   }
 
   .kb-tree-pane,
@@ -2906,34 +2980,64 @@ td.mono,
   }
 
   .panel {
-    padding: 14px 12px;
+    padding: 12px 12px;
     border-radius: 14px;
   }
 
   .panel h2 {
     font-size: 1.05rem;
+    margin: 0 0 4px;
+  }
+
+  .panel > .sub,
+  .investigate-head .sub {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    margin: 0 0 8px;
   }
 
   .std-card {
     padding: 12px;
   }
 
-  .stats-page .archive-btn,
   .investigate-page .archive-btn {
     min-height: 44px;
+  }
+
+  .item-row {
+    gap: 8px;
+    padding: 8px 0;
+    font-size: 0.88rem;
   }
 }
 
 @media (max-width: 420px) {
-  .bottom-nav a {
-    font-size: 0.68rem;
-    padding: 8px 2px;
+  .bottom-nav {
+    gap: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .bottom-nav a,
+  .bottom-nav .nav-item {
+    font-size: 0.74rem;
+    padding: 8px 4px;
   }
 
   .stats-metrics,
   .metric-grid,
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .stats-grid,
+  .reports-dashboard .reports-kpi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .stat-card {
+    padding: 8px 10px;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
   }
 
   .topbar .brand {
@@ -3617,6 +3721,29 @@ td.mono,
 @media (max-width: 800px) {
   .alert-optimize-page .ao-grid {
     grid-template-columns: 1fr;
+  }
+
+  .alert-optimize-page .ao-field input,
+  .alert-optimize-page .ao-field textarea,
+  .alert-optimize-page .ao-question {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .alert-optimize-page .ao-mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .alert-optimize-page .ao-mode-tabs button {
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .alert-optimize-page .archive-btn,
+  .alert-optimize-page .primary-archive {
+    min-height: 44px;
   }
 }
 .ao-field {
