@@ -213,6 +213,9 @@ export function pointSources(
 /** Short human label for a source chip (exchange / news / social host — never API path). */
 function sourceChipLabel(s: ReportSource): string {
   const host = (s.domain || '').replace(/^www\./, '')
+  const url = s.url || ''
+  // TradingView OKX:XAUUSDT.P is the geo-safe K-line target
+  if (/tradingview\.com/i.test(host) && /OKX|XAUUSDT/i.test(url)) return 'OKX K线'
   if (/okx\.com/i.test(host)) return 'OKX K线'
   if (/bitget\.com/i.test(host)) return 'Bitget K线'
   if (/kitco\.com/i.test(host)) return 'Kitco'

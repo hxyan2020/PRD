@@ -3,7 +3,8 @@ import type { BriefingCitation, SourceHealth } from '../types'
 
 const OKX_TICKER = 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP'
 const OKX_FUNDING = 'https://www.okx.com/api/v5/public/funding-rate?instId=XAU-USDT-SWAP'
-const OKX_TRADE = 'https://www.okx.com/trade-swap/xau-usdt-swap'
+/** Geo-safe OKX XAU perpetual K-line (direct okx trade URL 404s in some regions). */
+const OKX_TRADE = 'https://www.tradingview.com/chart/?symbol=OKX%3AXAUUSDT.P'
 const BITGET_TICKER =
   'https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=XAUUSDT'
 const BITGET_TRADE = 'https://www.bitget.com/futures/usdt/XAUUSDT'

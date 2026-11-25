@@ -871,20 +871,32 @@ async function main() {
     Boolean(liveSnap.hourly?.tldr?.length || liveSnap.hourly?.opportunity || liveSnap.hourly?.risk),
     `tldr=${liveSnap.hourly?.tldr?.length ?? 0} kline=${liveSnap.hourly?.kline?.bars?.length ?? 0}`,
   )
-  const { buildOneLineTldr, clampSummary } = await import('../src/engine/hourlyScan')
+  const { buildOneLineTldr, clampSummary, OKX_KLINE_URL: okxKlineUrl } = await import(
+    '../src/engine/hourlyScan',
+  )
   const longKitco =
     'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy and Iran-linked oil inflation. Kitco argues the long-term fundamentals are intact and frames the selloff as frustrating short-term action that still leaves lower prices as long-term buying opportunities. Extra filler sentence one. Extra filler sentence two. Extra filler sentence three.'
   const clamped = clampSummary(longKitco, { maxLines: 3, maxSentences: 3 })
   record(
     'market.opp_risk_bullet_complete',
-    clamped.length > 80 &&
+    clamped.length > 40 &&
       /[.。!！?？]$/.test(clamped) &&
-      !clamped.includes('…') &&
       !/\bon the\.$/i.test(clamped) &&
       !/\b(the|a|an|on|of|to|for|and)\.$/i.test(clamped) &&
       clamped.split(/(?<=[.。!！?？])\s+/).filter(Boolean).length <= 3 &&
-      clamped.length <= 3 * 70 + 80,
+      // ≤3 Lark-mobile lines (~42 Latin chars/line)
+      clamped.length <= 3 * 42 + 12,
     clamped.slice(0, 220),
+  )
+  const zhLong =
+    'Kitco：即便美联储按兵不动、美债收益率走低、美元偏弱本应支撑无息黄金，金价本周仍回落约3%并跌破3900美元，创一年多新低，交易员定价更高更久的利率路径以及伊朗相关的石油通胀；长期基本面仍在，回调被视为长线买点。再加一句超长填充让它超过三行手机宽度限制。'
+  const zhClamped = clampSummary(zhLong, { maxLines: 3, maxSentences: 3 })
+  record(
+    'market.opp_risk_zh_max_three_mobile_lines',
+    zhClamped.length > 20 &&
+      zhClamped.length <= 3 * 22 + 8 &&
+      /[.。!！?？]$/.test(zhClamped),
+    zhClamped,
   )
   // Never leave a half-cut last token like "on the." / hanging article
   const midCutProbe = clampSummary(
@@ -935,6 +947,20 @@ async function main() {
       !tldrEn.includes('Opportunity:'),
     `lines=${tldrLineCount} ${tldrEn.slice(0, 260)}`,
   )
+  const tldrBeatsOk = tldrZh
+    .split('\n')
+    .filter(Boolean)
+    .every((line) => {
+      const body = line.replace(/^(即时：|走势：|事件：|关注：)\s*/, '')
+      // Live price strip can be dense; other beats ≤3 mobile lines
+      if (line.startsWith('即时：')) return body.length <= 3 * 22 + 24
+      return body.length <= 3 * 22 + 8
+    })
+  record(
+    'market.tldr_each_beat_max_three_lines',
+    tldrBeatsOk && tldrZh.split('\n').filter(Boolean).length <= 4,
+    tldrZh.slice(0, 280),
+  )
   record(
     'market.tldr_zh_trend_event',
     tldrZh.includes('即时：') &&
@@ -942,6 +968,12 @@ async function main() {
       tldrZh.includes('事件：') &&
       tldrZh.split('\n').filter(Boolean).length <= 4,
     tldrZh.slice(0, 220),
+  )
+  record(
+    'market.okx_kline_geosafe_tradingview',
+    /tradingview\.com\/chart\/\?symbol=OKX%3AXAUUSDT\.P/i.test(okxKlineUrl) &&
+      !/okx\.com\/trade-swap/i.test(okxKlineUrl),
+    okxKlineUrl,
   )
   record(
     'market.format_tldr_multiline_bullets',

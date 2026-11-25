@@ -23,7 +23,8 @@ const OKX_FUNDING_HIST =
   'https://www.okx.com/api/v5/public/funding-rate-history?instId=XAU-USDT-SWAP&limit=48'
 const OKX_OI =
   'https://www.okx.com/api/v5/public/open-interest?instId=XAU-USDT-SWAP'
-const OKX_TRADE = 'https://www.okx.com/trade-swap/xau-usdt-swap'
+/** Geo-safe K-line (okx.com/trade-swap 404s in SG and other regions). */
+const OKX_TRADE = 'https://www.tradingview.com/chart/?symbol=OKX%3AXAUUSDT.P'
 
 export type OscTrigger =
   | 'vol_spike'

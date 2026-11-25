@@ -142,13 +142,21 @@ type CatalogEntry = {
   summaryZh?: string
 }
 
+/**
+ * Human-facing OKX XAU perpetual K-line.
+ * Direct okx.com/trade-swap/… 404s in several regions (e.g. SG) — TradingView
+ * chart for OKX:XAUUSDT.P stays reachable for desk viewing.
+ */
+export const OKX_KLINE_URL =
+  'https://www.tradingview.com/chart/?symbol=OKX%3AXAUUSDT.P'
+
 /** Default human UI when a JSON probe has no explicit linkUrl. */
 function humanLinkFor(id: string, probeUrl: string): string {
   switch (id) {
     case 'okx-ticker':
     case 'okx-candles':
     case 'okx-funding':
-      return 'https://www.okx.com/trade-swap/xau-usdt-swap'
+      return OKX_KLINE_URL
     case 'bitget-ticker':
       return 'https://www.bitget.com/futures/usdt/XAUUSDT'
     case 'gold-api':
@@ -180,27 +188,27 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     id: 'okx-ticker',
     kind: 'api',
     url: OKX_TICKER,
-    linkUrl: 'https://www.okx.com/trade-swap/xau-usdt-swap',
-    captionEn: 'OKX XAU-USDT-SWAP trade / K-line',
-    captionZh: 'OKX XAU-USDT-SWAP 交易／K线',
+    linkUrl: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P K-line (TradingView)',
+    captionZh: 'OKX XAUUSDT.P K线（TradingView）',
     json: true,
   },
   {
     id: 'okx-candles',
     kind: 'price',
     url: OKX_CANDLES,
-    linkUrl: 'https://www.okx.com/trade-swap/xau-usdt-swap',
-    captionEn: 'OKX XAU-USDT-SWAP 1H K-line',
-    captionZh: 'OKX XAU-USDT-SWAP 1H K线',
+    linkUrl: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P 1H K-line (TradingView)',
+    captionZh: 'OKX XAUUSDT.P 1H K线（TradingView）',
     json: true,
   },
   {
     id: 'okx-funding',
     kind: 'indicator',
     url: OKX_FUNDING,
-    linkUrl: 'https://www.okx.com/trade-swap/xau-usdt-swap',
-    captionEn: 'OKX XAU-USDT-SWAP funding (trade page)',
-    captionZh: 'OKX XAU-USDT-SWAP 资金费率（交易页）',
+    linkUrl: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P funding / K-line (TradingView)',
+    captionZh: 'OKX XAUUSDT.P 资金费率／K线（TradingView）',
     json: true,
   },
   {
@@ -261,9 +269,9 @@ const SOURCE_CATALOG: CatalogEntry[] = [
   {
     id: 'okx-trade',
     kind: 'exchange',
-    url: 'https://www.okx.com/trade-swap/xau-usdt-swap',
-    captionEn: 'OKX trade page: XAU-USDT-SWAP',
-    captionZh: 'OKX 交易頁：XAU-USDT-SWAP',
+    url: OKX_KLINE_URL,
+    captionEn: 'OKX XAUUSDT.P K-line (TradingView)',
+    captionZh: 'OKX XAUUSDT.P K线（TradingView）',
   },
   {
     id: 'okx-announcements',
@@ -613,7 +621,11 @@ function makeSource(
   checkedAt: number,
   extra?: { latencyMs?: number; detail?: string },
 ): ReportSource {
-  const domain = domainOf(url)
+  let domain = domainOf(url)
+  // Keep OKX favicon when the click-through is the geo-safe TradingView chart
+  if (/tradingview\.com/i.test(domain) && /OKX|XAUUSDT/i.test(url)) {
+    domain = 'okx.com'
+  }
   return {
     id,
     captionEn,
@@ -801,19 +813,56 @@ function hourKeySgt(ts = Date.now()): string {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}`
 }
 
+/** Lark mobile card ≈ chars/line (CJK wraps tighter than Latin). */
+const MOBILE_CHARS_PER_LINE_CJK = 22
+const MOBILE_CHARS_PER_LINE_LATIN = 42
+
+function mobileCharBudget(text: string, maxLines: number): number {
+  const hasCjk = /[\u4e00-\u9fff]/.test(text)
+  return maxLines * (hasCjk ? MOBILE_CHARS_PER_LINE_CJK : MOBILE_CHARS_PER_LINE_LATIN)
+}
+
+/** Cut to budget at a word / CJK boundary; always end with sentence punctuation. */
+function hardCapClause(text: string, maxChars: number): string {
+  const cleaned = text.trim().replace(/\s+/g, ' ')
+  if (!cleaned) return ''
+  if (cleaned.length <= maxChars) {
+    return /[.。!！?？]$/.test(cleaned) ? cleaned : `${cleaned.replace(/[,，;；:\-—–…]+$/g, '')}.`
+  }
+  const cut = cleaned.slice(0, maxChars)
+  const at = Math.max(
+    cut.lastIndexOf('. '),
+    cut.lastIndexOf('。'),
+    cut.lastIndexOf('! '),
+    cut.lastIndexOf('！'),
+    cut.lastIndexOf('? '),
+    cut.lastIndexOf('？'),
+    cut.lastIndexOf(', '),
+    cut.lastIndexOf('，'),
+    cut.lastIndexOf('；'),
+    cut.lastIndexOf('; '),
+    cut.lastIndexOf(' '),
+  )
+  let out = (at > maxChars * 0.4 ? cut.slice(0, at) : cut).trim()
+  out = out
+    .replace(/\b(the|a|an|on|of|to|for|and|or|as|with|that|this|their|its)\s*$/i, '')
+    .replace(/[，,;；:\-—–…]+\s*$/g, '')
+    .trim()
+  if (!out) out = cut.trim()
+  return /[.。!！?？]$/.test(out) ? out : `${out}.`
+}
+
 /**
- * Opportunity / Risk bullet body:
- * - Keep highly informative complete sentences (never mid-sentence cuts)
- * - Cap around ~3 mobile lines (soft char budget) and at most 3 sentences
+ * Opportunity / Risk / TL;DR beat body:
+ * - Prefer complete sentences
+ * - Hard-cap ~3 mobile lines (Lark phone width) and at most 3 sentences
  */
 export function clampSummary(
   text: string,
   opts?: { maxChars?: number; maxSentences?: number; maxLines?: number },
 ): string {
   const maxLines = opts?.maxLines ?? 3
-  // ~70 Latin chars / ~36 CJK chars per mobile line → soft budget for 3 lines
-  const hasCjk = /[\u4e00-\u9fff]/.test(text)
-  const maxChars = opts?.maxChars ?? (hasCjk ? maxLines * 36 : maxLines * 70)
+  const maxChars = opts?.maxChars ?? mobileCharBudget(text, maxLines)
   const maxSentences = opts?.maxSentences ?? 3
 
   const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
@@ -830,22 +879,9 @@ export function clampSummary(
     return /[.。!！?？]$/.test(t) ? t : `${t}.`
   }
 
-  // No clear sentence breaks — keep whole text if it fits; never invent a mid-cut “sentence”
+  // No clear sentence breaks — hard-cap to mobile budget (never keep a 5–7 line run-on)
   if (sentences.length <= 1) {
-    if (cleaned.length <= maxChars) return finish(cleaned)
-    // Prefer ending at a real sentence terminator inside the budget
-    const cut = cleaned.slice(0, Math.min(cleaned.length, Math.ceil(maxChars * 1.15)))
-    const at = Math.max(
-      cut.lastIndexOf('. '),
-      cut.lastIndexOf('。'),
-      cut.lastIndexOf('! '),
-      cut.lastIndexOf('！'),
-    )
-    if (at > maxChars * 0.35) {
-      return finish(cut.slice(0, at + 1))
-    }
-    // One long run-on: keep the full clause complete rather than half-cut mid-word
-    return finish(cleaned)
+    return hardCapClause(cleaned, maxChars)
   }
 
   const picked: string[] = []
@@ -855,18 +891,16 @@ export function clampSummary(
     const nextLen = picked.length === 0 ? s.length : len + 1 + s.length
     if (picked.length > 0 && nextLen > maxChars) break
     if (picked.length === 0 && s.length > maxChars) {
-      // Oversized first sentence: keep it whole (prefer complete over trim / mid-cut)
-      picked.push(s)
-      break
+      return hardCapClause(s, maxChars)
     }
     picked.push(s)
     len = nextLen
   }
 
   let out = picked.join(' ').trim()
-  // Guarantee terminal punctuation so the bullet never looks unfinished
-  if (out && !/[.。!！?？]$/.test(out)) out = `${out}.`
-  return out
+  if (out.length > maxChars) out = hardCapClause(out, maxChars)
+  else if (out && !/[.。!！?？]$/.test(out)) out = `${out}.`
+  return finish(out)
 }
 
 function rankPoints(
@@ -880,21 +914,28 @@ function rankPoints(
   }))
 }
 
-/** Short clause for TL;DR — complete thought only; never “on the…”. */
-function gistClause(text: string, maxChars = 120): string {
+/** Short clause for TL;DR — ≤ ~3 mobile lines; complete thought only; never “on the…”. */
+function gistClause(text: string, maxChars?: number): string {
   const cleaned = stripQuestions(text.trim().replace(/\s+/g, ' '))
   if (!cleaned) return ''
+  const budget = maxChars ?? mobileCharBudget(cleaned, 3)
   const first =
     cleaned.split(/(?<=[.。!！])\s+/).filter(Boolean)[0]?.replace(/[.。!！]+$/, '') || cleaned
-  if (first.length <= maxChars) return first.trim()
+  if (first.length <= budget) return first.trim()
 
   // Prefer a complete left side before em-dash when that side is already a full idea
   const em = first.indexOf(' — ')
-  if (em >= 48 && em <= maxChars) return first.slice(0, em).trim()
+  if (em >= Math.min(36, budget * 0.4) && em <= budget) return first.slice(0, em).trim()
 
-  const cut = first.slice(0, maxChars)
-  const at = Math.max(cut.lastIndexOf(', '), cut.lastIndexOf('，'), cut.lastIndexOf('; '), cut.lastIndexOf(' '))
-  let out = (at > maxChars * 0.5 ? cut.slice(0, at) : cut).trim()
+  const cut = first.slice(0, budget)
+  const at = Math.max(
+    cut.lastIndexOf(', '),
+    cut.lastIndexOf('，'),
+    cut.lastIndexOf('; '),
+    cut.lastIndexOf('；'),
+    cut.lastIndexOf(' '),
+  )
+  let out = (at > budget * 0.45 ? cut.slice(0, at) : cut).trim()
   out = out
     .replace(/\b(the|a|an|on|of|to|for|and|or|as|with|that|this|their|its)\s*$/i, '')
     .replace(/[，,;；:\-—–…]+\s*$/g, '')
@@ -977,19 +1018,19 @@ export function buildOneLineTldr(args: {
     linesZh.push(`即时：${printZh.join(' · ')}。`)
   }
 
-  // 2) Trend — tape/basis gist, else a short opportunity gist
+  // 2) Trend — tape/basis gist, else a short opportunity gist (≤3 mobile lines each)
   const trendSrc = tape || args.opportunity[0] || null
   if (trendSrc) {
-    const gEn = gistClause(trendSrc.en, 120)
-    const gZh = gistClause(trendSrc.zh || trendSrc.en, 120)
+    const gEn = gistClause(trendSrc.en)
+    const gZh = gistClause(trendSrc.zh || trendSrc.en)
     if (gEn) linesEn.push(`Trend: ${gEn}.`)
     if (gZh) linesZh.push(`走势：${gZh}。`)
   }
 
   // 3) Major event — only when we have a distinct news/macro point
   if (eventPreferred && eventPreferred !== trendSrc) {
-    const gEn = gistClause(eventPreferred.en, 120)
-    const gZh = gistClause(eventPreferred.zh || eventPreferred.en, 120)
+    const gEn = gistClause(eventPreferred.en)
+    const gZh = gistClause(eventPreferred.zh || eventPreferred.en)
     if (gEn) linesEn.push(`Event: ${gEn}.`)
     if (gZh) linesZh.push(`事件：${gZh}。`)
   }
@@ -1002,15 +1043,21 @@ export function buildOneLineTldr(args: {
     watch !== eventPreferred &&
     linesEn.length < 4
   ) {
-    const gEn = gistClause(watch.en, 100)
-    const gZh = gistClause(watch.zh || watch.en, 100)
+    const gEn = gistClause(watch.en)
+    const gZh = gistClause(watch.zh || watch.en)
     if (gEn) linesEn.push(`Watch: ${gEn}.`)
     if (gZh) linesZh.push(`关注：${gZh}。`)
   }
 
-  // Hard cap — never more than 4 lines
-  const en = linesEn.slice(0, 4)
-  const zh = linesZh.slice(0, 4)
+  // Hard cap — never more than 4 TL;DR lines; each beat ≤3 mobile lines
+  const clampBeat = (line: string) => {
+    const m = line.match(/^(Live:|Trend:|Event:|Watch:|即时：|走势：|事件：|关注：)\s*(.*)$/)
+    if (!m) return clampSummary(line, { maxLines: 3, maxSentences: 2 })
+    const body = clampSummary(m[2] || '', { maxLines: 3, maxSentences: 2 }).replace(/^[•\s]+/, '')
+    return `${m[1]} ${body}`.replace(/\s+/g, ' ').trim()
+  }
+  const en = linesEn.slice(0, 4).map(clampBeat)
+  const zh = linesZh.slice(0, 4).map(clampBeat)
   if (!en.length) {
     en.push('Trend: no live prints or ranked points this hour.')
     zh.push('走势：本小时暂无报价或排序要点。')
