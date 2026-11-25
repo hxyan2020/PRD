@@ -584,6 +584,7 @@ async function main() {
     botRuntimeMetaReply: cronMetaFn,
     botCapabilitiesReply: capsFn,
     chatbotFallbackReply: chatFbFn,
+    isStubMenuReply: stubFn,
   } = await import('../api/lark/_lib/scope')
   const { formatWebSearchAnswer: fmtSearchEmpty } = await import('../api/lark/_lib/webSearch')
   const capsAsk = capsFn('zh-Hans', '你有什么技能') || ''
@@ -600,8 +601,28 @@ async function main() {
   const capsFb = chatFbFn('zh-Hans', '你有什么技能')
   record(
     'chat.capabilities_fallback_not_stub',
-    capsFb.includes('闲聊') && !capsFb.includes('我接住了'),
+    capsFb.includes('闲聊') && !capsFb.includes('我接住了') && !capsFb.includes('想听我能干啥'),
     capsFb.slice(0, 160),
+  )
+  const softFb = chatFbFn('zh-Hans', '随便聊聊宇宙')
+  record(
+    'chat.fallback_not_three_way_menu',
+    !softFb.includes('想听我能干啥') &&
+      !softFb.includes('我接住了') &&
+      !softFb.includes('我可以按聊天直接答') &&
+      !stubFn(softFb) &&
+      softFb.includes('宇宙'),
+    softFb.slice(0, 180),
+  )
+  record(
+    'chat.stub_detector_old_menu',
+    stubFn('关于「随便」——我可以按聊天直接答。你是想听我能干啥、看行情，还是丢条告警一起看？'),
+    '',
+  )
+  record(
+    'search.short_knowledge_ask',
+    shouldAutoWebSearch('什么是ADL') && shouldAutoWebSearch('什么是永续') && !shouldAutoWebSearch('我帅不'),
+    '',
   )
   clearSession('smoke_chat', 'caps_q')
   const capsTurn = await turn('capabilities', '你有什么技能', 'caps_q')

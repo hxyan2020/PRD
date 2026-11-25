@@ -44,6 +44,7 @@ import {
   botRuntimeMetaReply,
   casualChatReply,
   chatbotFallbackReply,
+  isStubMenuReply,
   classifyIntent,
   commandConfirmPrompt,
   detectLang,
@@ -270,6 +271,50 @@ async function enrichWithLlm(args: {
     systemExtra: args.context,
     temperature: args.temperature,
   })
+}
+
+/** Keep LLM text unless it collapsed into a rigid menu / stub. */
+function usableLlmReply(text: string | null | undefined): string | null {
+  const t = (text || '').trim()
+  if (!t || isStubMenuReply(t)) return null
+  return t
+}
+
+/**
+ * Prefer a real answer: first LLM pass, then one sharper retry.
+ * Avoids dropping into chatbotFallbackReply on a single soft miss.
+ */
+async function answerWithLlmRetry(args: {
+  lang: Lang
+  question: string
+  context: string
+  temperature?: number
+}): Promise<string | null> {
+  const first = usableLlmReply(
+    await enrichWithLlm({
+      lang: args.lang,
+      question: args.question,
+      context: args.context,
+      temperature: args.temperature,
+    }),
+  )
+  if (first) return first
+  const retryCtx = [
+    args.context,
+    '',
+    'RETRY — previous draft was empty or a rigid menu stub.',
+    'Answer the user question DIRECTLY in 1–3 short beats.',
+    'FORBIDDEN: “I received your message”, three-way menus (chat / market / alert), command checklists.',
+    'If unsure, give a best-effort take on their topic, then ask ONE clarifying question about that topic.',
+  ].join('\n')
+  return usableLlmReply(
+    await enrichWithLlm({
+      lang: args.lang,
+      question: args.question,
+      context: retryCtx,
+      temperature: Math.min(0.9, (args.temperature ?? 0.6) + 0.15),
+    }),
+  )
 }
 
 async function handleImage(msg: IncomingMessage, lang: Lang): Promise<string> {
@@ -1125,19 +1170,45 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     if (casual) {
       return { card: simpleCard(chatTitle, casual, 'blue') }
     }
-    const llmChat = await enrichWithLlm({
+    const llmChat = await answerWithLlmRetry({
       lang,
       question: workingText,
       context: [
         'CHATBOT MODE — the user is chatting or asking a life / random question.',
         'Answer their question directly and helpfully in 1–3 short beats (e.g. if they ask what to eat, suggest 2–3 dishes and ask a preference).',
-        'FORBIDDEN: meta lines like “I can also chat”, “say whatever”, “risk is my specialty but…”, command menus, investigate/market dumps.',
+        'FORBIDDEN: meta lines like “I can also chat”, “say whatever”, “risk is my specialty but…”, command menus, investigate/market dumps, three-way 闲聊/行情/告警 menus.',
         'Do NOT search the web unless they clearly ask for news/facts.',
       ].join('\n'),
       temperature: 0.75,
     })
-    if (llmChat && !/专长风控，闲聊也陪|閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行/i.test(llmChat)) {
+    if (llmChat) {
       return { card: simpleCard(chatTitle, llmChat, 'blue') }
+    }
+    // Factual-ish chat ask + LLM miss → search before menu stub
+    if (!isCasualBanter(workingText) && shouldAutoWebSearch(workingText)) {
+      const searched = await searchWeb(workingText, lang)
+      if (searched.hits.length) {
+        const llm = usableLlmReply(
+          await enrichWithLlm({
+            lang,
+            question: workingText,
+            context: [
+              'CHAT + SEARCH — answer from hits in a warm conversational tone.',
+              'Do NOT dump command menus. Cite 📎 sources with the provided URLs only.',
+              webSearchContext(searched),
+            ].join('\n\n'),
+            temperature: 0.5,
+          }),
+        )
+        if (llm) {
+          const hasSources = /📎|\*\*数据源\*\*|\*\*資料來源\*\*|\*\*Sources\*\*|wikipedia\.org/i.test(llm)
+          const footer = hasSources ? '' : `\n\n---\n${formatSourcesFooter(lang, searched.hits)}`
+          return { card: simpleCard(chatTitle, `${llm}${footer}`, 'blue') }
+        }
+        return {
+          card: simpleCard(chatTitle, formatWebSearchAnswer(lang, workingText, searched), 'blue'),
+        }
+      }
     }
     return { card: simpleCard(chatTitle, chatbotFallbackReply(lang, workingText), 'blue') }
   }
@@ -1176,39 +1247,61 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   if (!relevantKb.length) {
     if (isCasualBanter(workingText)) {
       // Engage the banter — do NOT open web search (帅≠彭帅)
-      const llmBanter = await enrichWithLlm({
+      const llmBanter = await answerWithLlmRetry({
         lang,
         question: workingText,
         context:
-          'Friendly banter / small talk. Reply warmly in 1–2 short beats. Do NOT search the web. Do NOT dump risk command menus. You may lightly mention you also help with markets/alerts.',
+          'Friendly banter / small talk. Reply warmly in 1–2 short beats. Do NOT search the web. Do NOT dump risk command menus or three-way 闲聊/行情/告警 menus.',
         temperature: 0.7,
       })
       const banter =
         llmBanter ||
         casualChatReply(lang, workingText) ||
         (lang === 'zh-Hans'
-          ? '😄 挺帅的呀——自信加一分。想继续贫两句，或扔个行情／告警过来，我都在。'
+          ? '😄 挺帅的呀——自信加一分。想继续贫两句随时来。'
           : lang === 'zh-Hant'
-            ? '😄 挺帥的呀——自信加一分。想繼續貧兩句，或扔個行情／告警過來，我都在。'
-            : '😄 Looking good — confidence +1. Keep chatting, or toss me a market / alert anytime.')
+            ? '😄 挺帥的呀——自信加一分。想繼續貧兩句隨時來。'
+            : '😄 Looking good — confidence +1. Keep the banter coming.')
       return { card: simpleCard(replyTitle, banter, 'blue') }
     }
     if (!shouldAutoWebSearch(workingText)) {
-      // Short free-text — chat first (accept everything outside the negative list)
-      const llmSoft = await enrichWithLlm({
+      // Short free-text — chat first; retry LLM; only then last-resort (no menu)
+      const llmSoft = await answerWithLlmRetry({
         lang,
         question: workingText,
-        context:
-          'Free-text chat or short ask. Engage warmly. Answer if you can; otherwise ask a light clarifying question. Specialty is V Exchange risk, but casual chat is welcome. Do not invent news or secrets.',
+        context: [
+          'Free-text chat or short ask. Engage warmly and ANSWER if you can.',
+          'Otherwise ask ONE clarifying question about their topic — never a 闲聊/行情/告警 menu.',
+          'Specialty is V Exchange risk, but casual chat is welcome. Do not invent news or secrets.',
+        ].join('\n'),
         temperature: 0.65,
       })
-      if (
-        llmSoft &&
-        !/专长风控，闲聊也陪|閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行/i.test(
-          llmSoft,
-        )
-      ) {
+      if (llmSoft) {
         return { card: simpleCard(replyTitle, llmSoft, 'blue') }
+      }
+      // Soft miss → still try search once before stub (catches borderline factual asks)
+      const softSearch = await searchWeb(workingText, lang)
+      if (softSearch.hits.length) {
+        const llm = usableLlmReply(
+          await enrichWithLlm({
+            lang,
+            question: workingText,
+            context: [
+              'Soft-ask SEARCH MODE — answer from hits conversationally. No command menus.',
+              'Cite 📎 sources with provided URLs only.',
+              webSearchContext(softSearch),
+            ].join('\n\n'),
+            temperature: 0.5,
+          }),
+        )
+        if (llm) {
+          const hasSources = /📎|\*\*数据源\*\*|\*\*資料來源\*\*|\*\*Sources\*\*|wikipedia\.org/i.test(llm)
+          const footer = hasSources ? '' : `\n\n---\n${formatSourcesFooter(lang, softSearch.hits)}`
+          return { card: simpleCard(replyTitle, `${llm}${footer}`, 'blue') }
+        }
+        return {
+          card: simpleCard(replyTitle, formatWebSearchAnswer(lang, workingText, softSearch), 'blue'),
+        }
       }
       return {
         card: simpleCard(replyTitle, chatbotFallbackReply(lang, workingText), 'blue'),
@@ -1220,17 +1313,19 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
         'This is a normal product / risk Q&A — NOT an incident investigation.',
         'Local knowledge base had no high-relevance hit — you are in SEARCH MODE.',
         'Answer the user question directly from the search hits below, in a warm conversational tone.',
-        'Do NOT say that the knowledge base had no match. Do NOT dump command menus.',
+        'Do NOT say that the knowledge base had no match. Do NOT dump command menus or three-way menus.',
         'End with an explicit 📎 **数据源** / **Sources** section listing the provided URLs as markdown links. Never invent URLs.',
         'Prefer V Exchange perpetual framing when relevant; ignore CFD broker pricing.',
         webSearchContext(searched),
       ].join('\n\n')
-      const llm = await enrichWithLlm({
-        lang,
-        question: workingText,
-        context: searchCtx,
-        temperature: 0.45,
-      })
+      const llm = usableLlmReply(
+        await enrichWithLlm({
+          lang,
+          question: workingText,
+          context: searchCtx,
+          temperature: 0.45,
+        }),
+      )
       if (llm) {
         const hasSources = /📎|\*\*数据源\*\*|\*\*資料來源\*\*|\*\*Sources\*\*|wikipedia\.org/i.test(llm)
         const footer = hasSources ? '' : `\n\n---\n${formatSourcesFooter(lang, searched.hits)}`
@@ -1241,12 +1336,12 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       }
     }
     // Search empty too — still chat / answer; avoid “no KB” wording
-    const llmFallback = await enrichWithLlm({
+    const llmFallback = await answerWithLlmRetry({
       lang,
       question: workingText,
       context: [
         'Normal Q&A or casual chat. No local KB hit and web search returned nothing usable.',
-        'Answer briefly from general public knowledge if you can; otherwise chat lightly and ask a clarifying question.',
+        'Answer briefly from general public knowledge if you can; otherwise ask ONE clarifying question about their topic.',
         'Do NOT mention knowledge-base miss. Do NOT dump command menus. Do NOT refuse as offtopic.',
       ].join('\n'),
       temperature: 0.55,
@@ -1270,7 +1365,12 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       .map((k) => `${k.title}: ${k.body.slice(0, 900)}`)
       .join('\n')}`,
   ].join('\n\n')
-  const llm = await enrichWithLlm({ lang, question: workingText, context: qaContext, temperature: 0.55 })
+  const llm = await answerWithLlmRetry({
+    lang,
+    question: workingText,
+    context: qaContext,
+    temperature: 0.55,
+  })
   if (llm) {
     const support = `\n\n---\n${formatSoftKbAnswer(lang, workingText, relevantKb, true)}`
     return { card: simpleCard(replyTitle, `${llm}${support}`, 'blue') }

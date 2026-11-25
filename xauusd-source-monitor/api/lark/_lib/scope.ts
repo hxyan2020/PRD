@@ -793,20 +793,37 @@ export function casualChatReply(
   return null
 }
 
-/** Never use meta “I received your message” stubs — always answer the ask. */
+/**
+ * True when a reply is a rigid menu / “I received you” stub — discard and retry.
+ * Used so we do not ship chatbotFallbackReply-shaped LLM output either.
+ */
+export function isStubMenuReply(text: string): boolean {
+  const t = (text || '').trim()
+  if (!t) return true
+  return /专长风控，闲聊也陪|閒聊也陪|I can also chat|say whatever|想说什么都行|想說什麼都行|我接住了|不必发指令|不必發指令|想听我能干啥|想聽我能幹啥|Want what I can do, a market take|我可以按聊天直接答|关于「.{0,48}」——|關於「.{0,48}」——/i.test(
+    t,
+  )
+}
+
+/**
+ * Last-resort only — prefer LLM / search / deterministic handlers first.
+ * Never a 闲聊／行情／告警 three-way menu.
+ */
 export function chatbotFallbackReply(lang: Lang, question: string): string {
   const canned =
     casualChatReply(lang, question, null) ||
     botCapabilitiesReply(lang, question) ||
-    botRuntimeMetaReply(lang, question)
+    botRuntimeMetaReply(lang, question) ||
+    botMetaReply(lang, question)
   if (canned) return canned
+  const q = question.trim().slice(0, 48)
   if (lang === 'zh-Hans') {
-    return `关于「${question.slice(0, 40)}」——我可以按聊天直接答。你是想听我能干啥、看行情，还是丢条告警一起看？`
+    return `「${q}」这块我先接一句：能再具体一点吗？比如你卡在哪一步、想看哪一层定义／用法，我按那个直接答。`
   }
   if (lang === 'zh-Hant') {
-    return `關於「${question.slice(0, 40)}」——我可以按聊天直接答。你是想聽我能幹啥、看行情，還是丟條告警一起看？`
+    return `「${q}」這塊我先接一句：能再具體一點嗎？比如你卡在哪一步、想看哪一層定義／用法，我按那個直接答。`
   }
-  return `On “${question.slice(0, 40)}” — I can answer in chat. Want what I can do, a market take, or dig into an alert?`
+  return `On “${q}” — can you add one concrete detail (which step / which definition)? I’ll answer that directly.`
 }
 
 /** @deprecated Negative-list policy: free-text is no longer refused as offtopic. Kept for callers. */

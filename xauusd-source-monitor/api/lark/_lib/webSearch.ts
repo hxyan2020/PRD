@@ -194,6 +194,10 @@ function relevanceScore(question: string, hit: WebHit): number {
 const RISK_OR_VENUE_RE =
   /永续|永續|合约|合約|funding|mark|index|强平|強平|adl|风险|風險|告警|黄金|黃金|xau|perp|币安|幣安|binance|okx|bybit|kraken|bitget|kitco|交易所|exchange|友商|报价|報價|基差|bps/i
 
+/** Knowledge / definition asks — search even when short (e.g.「什么是ADL」). */
+const KNOWLEDGE_ASK_RE =
+  /什么是|什麼是|什么叫|什麼叫|怎么|怎麼|为什么|為什麼|为何|為何|介绍|介紹|解释|解釋|是什么|是什麼|啥意思|什么意思|什麼意思|who\s+is\b|what\s+is\b|what\s+are\b|how\s+(do|does|to|can)\b|why\s+/i
+
 /** Only auto-search substantive product / risk / venue questions — never banter like「我帅不」. */
 export function shouldAutoWebSearch(question: string): boolean {
   const t = question.trim()
@@ -208,6 +212,8 @@ export function shouldAutoWebSearch(question: string): boolean {
   }
   // Venue / product asks like「币安你知道吗」are always searchable
   if (RISK_OR_VENUE_RE.test(t)) return true
+  // Short definition / how-why asks still search (avoid soft-chat → menu fallback)
+  if (KNOWLEDGE_ASK_RE.test(t) && t.length >= 3) return true
   if (t.length <= 8) return false
   return true
 }
