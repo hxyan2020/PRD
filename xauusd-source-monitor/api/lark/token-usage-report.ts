@@ -124,7 +124,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  if (dry && !cron) {
+  // dry=1 always returns preview (even with x-vercel-cron) — never send / never skip.
+  if (dry) {
     return res.status(200).json({
       ok: true,
       dry: true,
