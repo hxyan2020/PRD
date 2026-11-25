@@ -20,7 +20,9 @@ import {
   buildMarketCard,
   fetchMarketSnapshot,
   formatMarketAnswer,
-  LARK_MARKET_LANG,
+  hourlyMarketTitle,
+  rememberChatMarketLang,
+  resolveMarketLang,
 } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
@@ -806,6 +808,8 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
   session.preferredLang = lang
   saveSession(msg.chatId, msg.openId, session)
+  // Remember chat language for cron 早报 (unsupported → 中文 inside resolveMarketLang)
+  void rememberChatMarketLang(msg.chatId, lang)
 
   // Pending soft-command confirm — yes runs it; no / chat continues as chatbot
   let forcedIntent: PendingCommandIntent | null = null
@@ -1009,8 +1013,9 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'market') {
+    const marketLang = resolveMarketLang(lang)
     const snap = await fetchMarketSnapshot()
-    const base = formatMarketAnswer(snap, LARK_MARKET_LANG, workingText)
+    const base = formatMarketAnswer(snap, marketLang, workingText)
     // Structured hourly card mirrors the web desk — only LLM-enrich when the user asked a free-form market question.
     const bareMarket = /^(market|markets|行情|市况|市況|趋势|趨勢|gold|xau|xauusd)$/i.test(
       workingText.trim(),
@@ -1018,15 +1023,15 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     const llm = bareMarket
       ? null
       : await enrichWithLlm({
-          lang: LARK_MARKET_LANG,
+          lang: marketLang,
           question: workingText,
           context: base,
         })
     return {
       card: await buildMarketCard({
-        title: '小时行情扫报',
+        title: hourlyMarketTitle(marketLang),
         snap,
-        lang: LARK_MARKET_LANG,
+        lang: marketLang,
         question: workingText,
         mode: 'hourly',
         appendix: llm ? `---\n${llm}` : '',

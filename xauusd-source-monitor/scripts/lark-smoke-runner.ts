@@ -823,7 +823,7 @@ async function main() {
     buildMarketCard,
     fetchMarketSnapshot,
     formatMarketAnswer,
-    LARK_MARKET_LANG,
+    resolveMarketLang,
     pointSources,
   } = await import('../api/lark/_lib/market')
   const liveSnap = await fetchMarketSnapshot()
@@ -1009,33 +1009,33 @@ async function main() {
       '',
   )
 
-  const mkt = await turn('market', 'market')
-  record(
-    'turn.market_always_zh_hans',
-    Boolean(
-      mkt.blob.includes('小时行情') &&
-        mkt.blob.includes('东八区') &&
-        mkt.blob.includes('TL;DR') &&
-        mkt.blob.includes('Opportunity') &&
-        mkt.blob.includes('Risk') &&
-        !mkt.blob.includes('Hourly market scan') &&
-        !mkt.blob.includes('東八區'),
-    ),
-    mkt.blob.slice(0, 160),
-  )
   clearSession('smoke_chat', 'mkt_zh')
   const mktZh = await turn('market-zh', '行情', 'mkt_zh')
   record(
-    'turn.market_zh',
+    'turn.market_follows_zh_conversation',
     Boolean(
-      (mktZh.blob.includes('市') || mktZh.blob.includes('📈') || mktZh.blob.includes('扫报')) &&
-        mktZh.blob.includes('TL;DR') &&
+      mktZh.blob.includes('小时行情') &&
         mktZh.blob.includes('东八区') &&
+        mktZh.blob.includes('TL;DR') &&
+        mktZh.blob.includes('Opportunity') &&
+        mktZh.blob.includes('Risk') &&
+        !mktZh.blob.includes('Hourly market scan') &&
         !mktZh.blob.includes('東八區'),
     ),
     mktZh.blob.slice(0, 160),
   )
-  record('market.lark_lang_zh_hans', LARK_MARKET_LANG === 'zh-Hans', LARK_MARKET_LANG)
+  clearSession('smoke_chat', 'mkt_en')
+  const mktEn = await turn('market-en', 'market', 'mkt_en')
+  record(
+    'turn.market_follows_en_conversation',
+    Boolean(
+      mktEn.blob.includes('Hourly market scan') &&
+        mktEn.blob.includes('TL;DR') &&
+        !mktEn.blob.includes('小时行情扫报'),
+    ),
+    mktEn.blob.slice(0, 160),
+  )
+  record('market.default_lang_zh_hans', resolveMarketLang('') === 'zh-Hans', 'default → 中文')
 
   // 9) Investigate + emoji formatting + follow-up + adaptive
   clearSession('smoke_chat', 'smoke_user')
@@ -1489,6 +1489,23 @@ async function main() {
       !dailyCardBlob.includes('multi_url') &&
       !/"tag":"action"/.test(dailyCardBlob),
     dailyCardBlob.slice(0, 240),
+  )
+  const { resolveMarketLang: resMktLang, dailyMarketTitle: dTitle } = await import(
+    '../api/lark/_lib/market',
+  )
+  record(
+    'cron.market_lang_follows_chat_or_zh',
+    resMktLang('en') === 'en' &&
+      resMktLang('zh-Hant') === 'zh-Hant' &&
+      resMktLang('zh-TW') === 'zh-Hant' &&
+      resMktLang('zh-Hans') === 'zh-Hans' &&
+      resMktLang('ja') === 'zh-Hans' &&
+      resMktLang('') === 'zh-Hans' &&
+      resMktLang(null) === 'zh-Hans' &&
+      resMktLang('fr-FR') === 'zh-Hans' &&
+      dTitle('en').includes('Daily') &&
+      dTitle('zh-Hans').includes('早报'),
+    '',
   )
   const nudgeCron = (vercelCrons.crons || []).find((c) => (c.path || '').includes('alert-nudge'))
   record(

@@ -9,6 +9,7 @@ import {
 } from '../../../src/engine/hourlyScan.js'
 import { larkConfigured, resolveFaviconImgKey } from './client.js'
 import { simpleCard } from './cards.js'
+import { readDurableJson, writeDurableJson } from './durableJson.js'
 import type { Lang } from './types.js'
 
 export interface MarketSnapshot {
@@ -25,8 +26,100 @@ export interface MarketSnapshot {
 
 const DESK_MARKET = 'https://vex-llm-proxy.vercel.app/#/market'
 
-/** All Lark-delivered market reports (chat + cron pushes) use Simplified Chinese. */
+/**
+ * Default when conversation language is missing / unsupported.
+ * Supported market copy: zh-Hans · zh-Hant · en — everything else → 中文.
+ */
 export const LARK_MARKET_LANG: Lang = 'zh-Hans'
+
+const CHAT_LANG_STORE = 'lark-chat-lang.json'
+
+/** Map session / request / detected lang → supported market lang (else 中文). */
+export function resolveMarketLang(hint?: Lang | string | null): Lang {
+  const raw = String(hint || '')
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, '-')
+  if (!raw) return LARK_MARKET_LANG
+  if (raw === 'zh-hans' || raw === 'zh-cn' || raw === 'zh' || raw === 'cn' || raw === 'chs') {
+    return 'zh-Hans'
+  }
+  if (
+    raw === 'zh-hant' ||
+    raw === 'zh-tw' ||
+    raw === 'zh-hk' ||
+    raw === 'zh-mo' ||
+    raw === 'cht' ||
+    raw === 'hant'
+  ) {
+    return 'zh-Hant'
+  }
+  if (raw === 'en' || raw === 'en-us' || raw === 'en-gb' || raw === 'eng') {
+    return 'en'
+  }
+  // Unsupported or unclear → 中文
+  return LARK_MARKET_LANG
+}
+
+/** Remember the chat’s conversation language for cron 早报 (best-effort durable). */
+export async function rememberChatMarketLang(chatId: string, lang: Lang | string | null | undefined) {
+  const id = (chatId || '').trim()
+  if (!id) return
+  const resolved = resolveMarketLang(lang)
+  try {
+    const map = (await readDurableJson<Record<string, string>>(CHAT_LANG_STORE)) || {}
+    if (map[id] === resolved) return
+    map[id] = resolved
+    // Keep store bounded
+    const keys = Object.keys(map)
+    if (keys.length > 200) {
+      for (const k of keys.slice(0, keys.length - 200)) delete map[k]
+    }
+    await writeDurableJson(CHAT_LANG_STORE, map)
+  } catch {
+    /* non-fatal */
+  }
+}
+
+/** Lang for a cron / group 早报: request hint → remembered chat lang → 中文. */
+export async function resolveDailyMarketLang(opts: {
+  chatId: string
+  hint?: Lang | string | null
+}): Promise<{ lang: Lang; source: string }> {
+  if (opts.hint != null && String(opts.hint).trim()) {
+    return { lang: resolveMarketLang(opts.hint), source: 'request' }
+  }
+  try {
+    const map = (await readDurableJson<Record<string, string>>(CHAT_LANG_STORE)) || {}
+    const remembered = map[(opts.chatId || '').trim()]
+    if (remembered) return { lang: resolveMarketLang(remembered), source: 'chat' }
+  } catch {
+    /* fall through */
+  }
+  return { lang: LARK_MARKET_LANG, source: 'default_zh' }
+}
+
+export function dailyMarketTitle(lang: Lang): string {
+  if (lang === 'zh-Hant') return '每日 24h 行情早報'
+  if (lang === 'en') return 'Daily 24h market brief'
+  return '每日 24h 行情早报'
+}
+
+export function dailyMarketIntro(lang: Lang, dayKey: string, atMarkdown: string): string {
+  if (lang === 'zh-Hant') {
+    return `🌅 **每日早報 · 過去 24 小時行情**（東八區每天 **09:00** 自動推送 · **${dayKey}**）\n\n${atMarkdown} 早報來了\n`
+  }
+  if (lang === 'en') {
+    return `🌅 **Daily brief · past 24h** (auto-push **09:00** Asia/Shanghai · **${dayKey}**)\n\n${atMarkdown} morning brief is here\n`
+  }
+  return `🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送 · **${dayKey}**）\n\n${atMarkdown} 早报来了\n`
+}
+
+export function hourlyMarketTitle(lang: Lang): string {
+  if (lang === 'zh-Hant') return '小時行情掃報'
+  if (lang === 'en') return 'Hourly market scan'
+  return '小时行情扫报'
+}
 
 /** Asia/Shanghai (= UTC+8) wall clock string. */
 export function formatEast8(ts: number): string {

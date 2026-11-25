@@ -11,9 +11,11 @@ import { atOpenIdMarkdown, larkConfigured, resolveAdminOpenId, sendCardToChat } 
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   buildMarketCard,
+  dailyMarketIntro,
+  dailyMarketTitle,
   fetchMarketSnapshot,
   formatDaily24hMarketAnswer,
-  LARK_MARKET_LANG,
+  resolveDailyMarketLang,
   shanghaiDayKey,
 } from './_lib/market.js'
 
@@ -84,7 +86,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const q = req.query || {}
-  const body = (req.body || {}) as { force?: boolean; dry?: boolean; chatId?: string }
+  const body = (req.body || {}) as {
+    force?: boolean
+    dry?: boolean
+    chatId?: string
+    lang?: string
+  }
   const dry =
     String(q.dry || '') === '1' ||
     body.dry === true ||
@@ -94,6 +101,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const now = Date.now()
   const dayKey = shanghaiDayKey(now)
   const chat = resolveDailyChatId(body.chatId || String(q.chatId || ''))
+  const langHint = body.lang || String(q.lang || '')
+  const { lang: marketLang, source: langSource } = await resolveDailyMarketLang({
+    chatId: chat.chatId,
+    hint: langHint || null,
+  })
 
   let markdown = ''
   let card: Record<string, unknown>
@@ -105,14 +117,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     adminSource = admin.source
     const at = atOpenIdMarkdown(adminOpenId)
     const snap = await fetchMarketSnapshot()
-    markdown = formatDaily24hMarketAnswer(snap, LARK_MARKET_LANG)
-    // Fresh snapshot every send — content changes; card skeleton is fixed in buildMarketCard(daily).
+    // Fresh snapshot; language follows chat conversation (unsupported → 中文).
+    markdown = formatDaily24hMarketAnswer(snap, marketLang)
     card = await buildMarketCard({
-      title: '每日 24h 行情早报',
+      title: dailyMarketTitle(marketLang),
       snap,
-      lang: LARK_MARKET_LANG,
+      lang: marketLang,
       mode: 'daily',
-      intro: `🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送 · **${dayKey}**）\n\n${at} 早报来了\n`,
+      intro: dailyMarketIntro(marketLang, dayKey, at),
       template: 'wathet',
     })
   } catch (e) {
@@ -120,6 +132,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: false,
       error: e instanceof Error ? e.message : 'market fetch failed',
       dayKey,
+      lang: marketLang,
+      langSource,
     })
   }
 
@@ -128,6 +142,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: true,
       dry: true,
       dayKey,
+      lang: marketLang,
+      langSource,
       markdown,
       card,
       schedule: 'Daily 09:00 Asia/Shanghai (cron: 0 1 * * * UTC)',

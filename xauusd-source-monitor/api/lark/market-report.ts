@@ -18,7 +18,8 @@ import {
   buildMarketCard,
   fetchMarketSnapshot,
   formatMarketAnswer,
-  LARK_MARKET_LANG,
+  hourlyMarketTitle,
+  resolveDailyMarketLang,
   shanghaiHalfHourKey,
 } from './_lib/market.js'
 
@@ -110,6 +111,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     dry?: boolean
     openId?: string
     chatId?: string
+    lang?: string
   }
   const dry =
     String(q.dry || '') === '1' ||
@@ -119,19 +121,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const now = Date.now()
   const slotKey = shanghaiHalfHourKey(now)
+  const chat = resolveMarketChatId(body.chatId || String(q.chatId || ''))
+  const { lang: marketLang } = await resolveDailyMarketLang({
+    chatId: chat.chatId,
+    hint: body.lang || String(q.lang || '') || null,
+  })
 
   let markdown = ''
   let card: Record<string, unknown>
   try {
     const snap = await fetchMarketSnapshot()
-    markdown = formatMarketAnswer(snap, LARK_MARKET_LANG, '行情')
+    const qLabel =
+      marketLang === 'en' ? 'market' : marketLang === 'zh-Hant' ? '行情' : '行情'
+    markdown = formatMarketAnswer(snap, marketLang, qLabel)
+    const intro =
+      marketLang === 'en'
+        ? '📬 **Scheduled hourly market push**\n'
+        : marketLang === 'zh-Hant'
+          ? '📬 **定時行情推送**\n'
+          : '📬 **定时行情推送**\n'
     card = await buildMarketCard({
-      title: '半小时行情推送',
+      title: hourlyMarketTitle(marketLang),
       snap,
-      lang: LARK_MARKET_LANG,
-      question: '行情',
+      lang: marketLang,
+      question: qLabel,
       mode: 'hourly',
-      intro: '📬 **半小时定时行情**（自动推送给 **@Yan Haixiang**）\n',
+      intro,
       template: 'wathet',
     })
   } catch (e) {
@@ -139,10 +154,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: false,
       error: e instanceof Error ? e.message : 'market fetch failed',
       slotKey,
+      lang: marketLang,
     })
   }
-
-  const chat = resolveMarketChatId(body.chatId || String(q.chatId || ''))
 
   if (dry && !cron) {
     return res.status(200).json({
