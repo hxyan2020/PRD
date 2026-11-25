@@ -2735,6 +2735,37 @@ async function main() {
         rev.blob.includes('[Open dashboard desk]')),
     `urls=${revUrlCount}`,
   )
+  record(
+    'turn.review_open_incident_buttons',
+    rev.blob.includes('open_incident') &&
+      (rev.blob.includes('查看完整') || rev.blob.includes('Open full')) &&
+      /"tag":"button"/.test(rev.blob),
+    rev.blob.includes('open_incident') ? 'buttons present' : 'missing open_incident buttons',
+  )
+  const openFromReview = await handleCardAction({
+    openId: 'smoke_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_open_inc',
+    value: {
+      action: 'open_incident',
+      incidentId: (await listIncidentsDurable({ limit: 1 }))[0]?.id || '',
+    },
+  })
+  const openBlob =
+    openFromReview?.text || (openFromReview?.card ? JSON.stringify(openFromReview.card) : '')
+  record(
+    'turn.review_open_incident_detail',
+    Boolean(openFromReview?.card) &&
+      (openBlob.includes('完整摘要') ||
+        openBlob.includes('Full summary') ||
+        openBlob.includes('报告详情') ||
+        openBlob.includes('報告詳情') ||
+        openBlob.includes('Report ·') ||
+        openBlob.includes('互动时间线') ||
+        openBlob.includes('Interaction timeline')) &&
+      (openBlob.includes('返回看板') || openBlob.includes('Back to board')),
+    openBlob.slice(0, 140),
+  )
   const dash = await turn('dashboard-cmd', 'dashboard')
   const dashUrlCount = (dash.blob.match(/vex-llm-proxy\.vercel\.app\/#\/reports/g) || []).length
   record(

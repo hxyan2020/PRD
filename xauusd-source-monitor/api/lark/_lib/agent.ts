@@ -2,6 +2,7 @@ import { downloadMessageImage, fetchUserDisplayName } from './client.js'
 import {
   greetingCard,
   helpCard,
+  incidentDetailCard,
   investigationCard,
   knowledgeCatalogCard,
   nodeDetailCard,
@@ -1186,6 +1187,45 @@ export async function handleCardAction(args: {
   if (action === 'review') {
     const incidents = await listIncidentsDurable({ limit: 50 })
     return { card: reviewCard({ lang, incidents }) }
+  }
+
+  if (action === 'open_incident') {
+    const id = incidentId || String(args.value.incidentId || '')
+    const inc = id ? await getIncidentDurable(id) : undefined
+    if (!inc) {
+      const title =
+        lang === 'zh-Hans' ? '报告未找到' : lang === 'zh-Hant' ? '報告未找到' : 'Report not found'
+      const body =
+        lang === 'zh-Hans'
+          ? `找不到事故 \`${id || '—'}\`。请返回看板刷新后重试。`
+          : lang === 'zh-Hant'
+            ? `找不到事故 \`${id || '—'}\`。請返回看板刷新後重試。`
+            : `Incident \`${id || '—'}\` was not found. Go back to the board and refresh.`
+      return {
+        card: {
+          ...simpleCard(title, body, 'orange'),
+          elements: [
+            { tag: 'div', text: { tag: 'lark_md', content: body } },
+            {
+              tag: 'action',
+              actions: [
+                {
+                  tag: 'button',
+                  text: {
+                    tag: 'plain_text',
+                    content:
+                      lang === 'zh-Hans' || lang === 'zh-Hant' ? '返回看板' : 'Back to board',
+                  },
+                  type: 'primary',
+                  value: { action: 'review' },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    }
+    return { card: incidentDetailCard({ lang, incident: inc }) }
   }
 
   if (action === 'archive') {

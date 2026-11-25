@@ -301,20 +301,20 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
     .join('\n')
 
   const listTitle = hans
-    ? '📋 **近期告警／报告**'
+    ? '📋 **近期告警／报告**（点下方按钮查看完整内容）'
     : zh
-      ? '📋 **近期告警／報告**'
-      : '📋 **Recent alerts & reports**'
+      ? '📋 **近期告警／報告**（點下方按鈕查看完整內容）'
+      : '📋 **Recent alerts & reports** (tap a button below for the full report)'
 
+  const topIncidents = args.incidents.slice(0, 8)
   const lines =
-    args.incidents.length === 0
+    topIncidents.length === 0
       ? hans
         ? '_暂无记录 — 发送 **investigate** 并贴告警后，这里会累积可视化与列表。_'
         : zh
           ? '_暫無記錄 — 發送 **investigate** 並貼告警後，這裡會累積可視化與列表。_'
           : '_No records yet — type **investigate** and paste an alert; this board fills as you go._'
-      : args.incidents
-          .slice(0, 8)
+      : topIncidents
           .map((inc, i) => {
             const when = new Date(inc.updatedAt).toLocaleString('en-SG', {
               timeZone: 'Asia/Singapore',
@@ -325,9 +325,40 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
             })
             const se = severityEmoji(inc.severity)
             const statusIcon = inc.status === 'open' ? '🟢' : '📦'
-            return `${i + 1}. ${se} **${inc.title}**\n• **Severity:** **${inc.severity}** · ${statusIcon} **${inc.status}** · 🕒 ${when} SGT\n• ${inc.summary.slice(0, 140)}`
+            const statusLabel = hans
+              ? inc.status === 'open'
+                ? '进行中'
+                : '已归档'
+              : zh
+                ? inc.status === 'open'
+                  ? '進行中'
+                  : '已歸檔'
+                : inc.status
+            return `${i + 1}. ${se} **${inc.title}**\n• **${inc.severity}** · ${statusIcon} ${statusLabel} · 🕒 ${when} SGT\n• ${inc.summary.slice(0, 120)}`
           })
           .join('\n\n')
+
+  const openButtons = topIncidents.map((inc, i) => {
+    const label = truncateBtnLabel(
+      hans || zh ? `${i + 1}. 查看完整` : `${i + 1}. Open full`,
+      inc.title,
+      40,
+    )
+    return {
+      tag: 'button',
+      text: { tag: 'plain_text', content: label },
+      type: i === 0 ? 'primary' : 'default',
+      value: { action: 'open_incident', incidentId: inc.id },
+    }
+  })
+  // Feishu action rows: up to ~3 buttons per row for mobile readability.
+  const openActionRows: Record<string, unknown>[] = []
+  for (let i = 0; i < openButtons.length; i += 2) {
+    openActionRows.push({
+      tag: 'action',
+      actions: openButtons.slice(i, i + 2),
+    })
+  }
 
   const intro = hans
     ? '🗂️ **Lark 侧告警／报告可视化**（下方为看板；桌面完整版链接见卡片底部）'
@@ -390,6 +421,7 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
         tag: 'div',
         text: { tag: 'lark_md', content: `${listTitle}\n\n${lines}` },
       },
+      ...openActionRows,
       {
         tag: 'div',
         text: {
@@ -400,6 +432,206 @@ export function reviewCard(args: { lang: Lang; incidents: IncidentRecord[] }): R
               ? `[打開看板桌面頁](${DASHBOARD_URL})`
               : `[Open dashboard desk](${DASHBOARD_URL})`,
         },
+      },
+    ],
+  }
+}
+
+function truncateBtnLabel(prefix: string, title: string, max: number): string {
+  const clean = (title || '').replace(/\s+/g, ' ').trim()
+  const base = `${prefix} · ${clean}`
+  if (base.length <= max) return base
+  const room = Math.max(4, max - prefix.length - 3)
+  return `${prefix} · ${clean.slice(0, room)}…`
+}
+
+/** Full incident report card opened from the review board. */
+export function incidentDetailCard(args: {
+  lang: Lang
+  incident: IncidentRecord
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const inc = args.incident
+  const se = severityEmoji(inc.severity)
+  const when = new Date(inc.updatedAt).toLocaleString('en-SG', {
+    timeZone: 'Asia/Singapore',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+  const created = new Date(inc.createdAt).toLocaleString('en-SG', {
+    timeZone: 'Asia/Singapore',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+  const statusLabel = hans
+    ? inc.status === 'open'
+      ? '进行中'
+      : '已归档'
+    : zh
+      ? inc.status === 'open'
+        ? '進行中'
+        : '已歸檔'
+      : inc.status === 'open'
+        ? 'open'
+        : 'archived'
+  const facts =
+    (inc.facts || [])
+      .filter((f) => f && !f.startsWith('[chat-history]'))
+      .map((f, i) => `${i + 1}. ${f.replace(/\s+/g, ' ').trim().slice(0, 500)}`)
+      .join('\n') || (hans || zh ? '（无）' : '(none)')
+  const recs =
+    (inc.recommendations || []).map((r) => `• ${r}`).join('\n') ||
+    (hans || zh ? '• （无）' : '• (none)')
+  const skills = (inc.skills || []).join(', ') || (hans || zh ? '尚未匹配' : 'none')
+  const kb = (inc.knowledge || []).slice(0, 5).join(', ') || (hans || zh ? '无' : 'none')
+  const interactions = Array.isArray(inc.interactions) ? inc.interactions : []
+  const timeline =
+    interactions.length === 0
+      ? hans || zh
+        ? '（尚无互动日志）'
+        : '(no interaction log yet)'
+      : interactions
+          .slice(-40)
+          .map((it, i) => {
+            const who =
+              it.role === 'user'
+                ? hans || zh
+                  ? '用户'
+                  : 'User'
+                : it.role === 'bot'
+                  ? hans || zh
+                    ? '助手'
+                    : 'Bot'
+                  : 'System'
+            const at = new Date(it.at).toLocaleString('en-SG', {
+              timeZone: 'Asia/Singapore',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+            return `${i + 1}. [${at}] ${who}/${it.kind}: ${String(it.text || '')
+              .replace(/\s+/g, ' ')
+              .trim()
+              .slice(0, 400)}`
+          })
+          .join('\n')
+
+  const body = hans
+    ? [
+        `${se} **严重度：** **${inc.severity}** · ${statusLabel}`,
+        `• **ID：** \`${inc.id}\``,
+        `• **创建：** ${created} SGT`,
+        `• **更新：** ${when} SGT`,
+        '',
+        '📋 **完整摘要**',
+        inc.summary || '（无）',
+        '',
+        '📥 **摄入告警／证据**',
+        facts,
+        '',
+        '⚡ **Preferred / 建议动作**',
+        recs,
+        '',
+        `🧩 **Skills：** ${skills}`,
+        `📚 **知识库：** ${kb}`,
+        '',
+        '🕒 **互动时间线**',
+        timeline,
+        '',
+        `[打开看板桌面页](${DASHBOARD_URL})`,
+      ].join('\n')
+    : zh
+      ? [
+          `${se} **嚴重度：** **${inc.severity}** · ${statusLabel}`,
+          `• **ID：** \`${inc.id}\``,
+          `• **建立：** ${created} SGT`,
+          `• **更新：** ${when} SGT`,
+          '',
+          '📋 **完整摘要**',
+          inc.summary || '（無）',
+          '',
+          '📥 **攝入告警／證據**',
+          facts,
+          '',
+          '⚡ **Preferred / 建議動作**',
+          recs,
+          '',
+          `🧩 **Skills：** ${skills}`,
+          `📚 **知識庫：** ${kb}`,
+          '',
+          '🕒 **互動時間線**',
+          timeline,
+          '',
+          `[打開看板桌面頁](${DASHBOARD_URL})`,
+        ].join('\n')
+      : [
+          `${se} **Severity:** **${inc.severity}** · ${statusLabel}`,
+          `• **ID:** \`${inc.id}\``,
+          `• **Created:** ${created} SGT`,
+          `• **Updated:** ${when} SGT`,
+          '',
+          '📋 **Full summary**',
+          inc.summary || '(none)',
+          '',
+          '📥 **Alerts / evidence**',
+          facts,
+          '',
+          '⚡ **Preferred actions**',
+          recs,
+          '',
+          `🧩 **Skills:** ${skills}`,
+          `📚 **Knowledge:** ${kb}`,
+          '',
+          '🕒 **Interaction timeline**',
+          timeline,
+          '',
+          `[Open dashboard desk](${DASHBOARD_URL})`,
+        ].join('\n')
+
+  const title = hans
+    ? `报告详情 · ${inc.title}`.slice(0, 50)
+    : zh
+      ? `報告詳情 · ${inc.title}`.slice(0, 50)
+      : `Report · ${inc.title}`.slice(0, 50)
+
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: inc.status === 'archived' ? 'grey' : inc.severity?.includes('P0') ? 'red' : 'blue',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '返回看板' : zh ? '返回看板' : 'Back to board',
+            },
+            type: 'primary',
+            value: { action: 'review' },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '结束归档' : zh ? '結束歸檔' : 'Archive',
+            },
+            type: 'danger',
+            value: { action: 'archive', incidentId: inc.id },
+          },
+        ],
       },
     ],
   }
