@@ -252,13 +252,16 @@ export function classifyIntent(
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
-  if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'review'
+  if (REVIEW_RE.test(t) && !INVESTIGATE_RE.test(t) && !looksLikePureChat(t)) return 'review'
 
   // Active investigation: treat free-text as evidence/follow-up unless explicit command above
   if (opts.inInvestigateSession) return 'followup'
 
   // Shared Feishu docs / “can you read this?”
   if (isLarkWikiQuestion(t) || SHARED_DOC_READ_RE.test(t)) return 'general_risk'
+
+  // Pure chat / random life Q — do not steal into soft market/investigate
+  if (looksLikePureChat(t) && !looksLikeIncidentEvidence(t)) return 'general_risk'
 
   if (MARKET_RE.test(t) && !INVESTIGATE_RE.test(t)) return 'market'
   if (INVESTIGATE_RE.test(t)) return 'investigate'
@@ -277,6 +280,169 @@ export function classifyIntent(
   return 'general_risk'
 }
 
+/** Explicit keyword command (no soft regex). */
+export function isExplicitCommand(text: string, intent?: Intent): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (intent === 'investigate') return COMMAND_INVESTIGATE.test(t)
+  if (intent === 'market') return COMMAND_MARKET.test(t)
+  if (intent === 'skills') return COMMAND_SKILLS.test(t)
+  if (intent === 'knowledge') return COMMAND_KNOWLEDGE.test(t)
+  if (intent === 'weekly') return COMMAND_WEEKLY.test(t)
+  if (intent === 'review') return COMMAND_REVIEW.test(t)
+  if (intent === 'help') return COMMAND_HELP.test(t) || HELP_RE.test(t)
+  if (intent === 'archive') return COMMAND_DONE.test(t)
+  return (
+    COMMAND_INVESTIGATE.test(t) ||
+    COMMAND_MARKET.test(t) ||
+    COMMAND_SKILLS.test(t) ||
+    COMMAND_KNOWLEDGE.test(t) ||
+    COMMAND_WEEKLY.test(t) ||
+    COMMAND_REVIEW.test(t) ||
+    COMMAND_HELP.test(t) ||
+    COMMAND_DONE.test(t)
+  )
+}
+
+const PURE_CHAT_RE =
+  /今晚吃|吃什么|吃什麼|午饭|午飯|晚饭|晚飯|早餐|咖啡|奶茶|电影|電影|追剧|好看吗|好看嗎|无聊|無聊|聊聊|随便聊|隨便聊|天气|天氣|下雨|上班好累|好困|周末去哪|週末去哪|推荐.*餐厅|推薦.*餐廳|讲个笑话|講個笑話|你开心吗|你開心嗎|陪我聊|what\s+should\s+i\s+(eat|cook|watch)|how\s+was\s+your\s+day|tell\s+me\s+a\s+joke|i'?m\s+bored|let'?s\s+chat|random\s+question/i
+
+/** Venue / product asks are Q&A — not pure life chat (e.g.「币安你知道吗」). */
+const VENUE_OR_PRODUCT_ASK_RE =
+  /币安|幣安|binance|okx|bybit|kraken|bitget|永续|永續|交易所|加密货币|加密貨幣|\bbtc\b|\beth\b|bitcoin|ethereum|xauusd|黄金|黃金|funding|mark\b|index\b/i
+
+/**
+ * Life / social / random chat — not a desk command.
+ * Used so soft market/investigate keywords inside banter do not hijack the turn.
+ */
+export function looksLikePureChat(text: string): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (VENUE_OR_PRODUCT_ASK_RE.test(t)) return false
+  if (isCasualChat(t)) return true
+  if (PURE_CHAT_RE.test(t) && !looksLikeIncidentEvidence(t)) return true
+  // Short personal / opinion Q without risk tokens.
+  // Require question particle at end — do NOT match 吗 inside 怎么／什么.
+  if (
+    t.length <= 40 &&
+    /(?:[?？]\s*$|(?:呢|呀|啊|吗|嗎)\s*[?？!！.。~]*\s*$)/.test(t) &&
+    !MARKET_RE.test(t) &&
+    !INVESTIGATE_RE.test(t) &&
+    !BOT_META_RE.test(t) &&
+    !DESK_FAQ_RE.test(t) &&
+    !SHARED_DOC_READ_RE.test(t) &&
+    !LARK_WIKI_RE.test(t)
+  ) {
+    return true
+  }
+  return false
+}
+
+const CONFIRMABLE: Intent[] = ['market', 'investigate', 'review', 'skills', 'knowledge', 'weekly']
+
+/**
+ * Soft-matched command without clear payload → ask before running.
+ * Explicit keywords / alert paste / clear market ask proceed immediately.
+ */
+export function needsCommandConfirm(text: string, intent: Intent): boolean {
+  if (!CONFIRMABLE.includes(intent)) return false
+  const t = text.trim()
+  if (!t) return false
+  if (isExplicitCommand(t, intent)) return false
+  if (intent === 'investigate' && looksLikeIncidentEvidence(t)) return false
+  // Clear market question with instrument / price cue — run (\b is weak for CJK)
+  if (
+    intent === 'market' &&
+    /(xauusd|\bxau\b|gold|黄金|黃金|行情|市况|市況|trend|k线|k線|溢价|溢價|funding|bps)/i.test(
+      t,
+    ) &&
+    t.length >= 6
+  ) {
+    return false
+  }
+  // Soft investigate / review / catalogue without explicit command
+  if (intent === 'investigate' || intent === 'review') return true
+  if (intent === 'skills' || intent === 'knowledge' || intent === 'weekly') {
+    // Soft natural-language catalogue asks are already fairly intentional — only confirm if very short/vague
+    return t.length < 10 || /[?？]|一下|看看|吗|嗎/.test(t)
+  }
+  // Soft market without clear instrument
+  if (intent === 'market') return true
+  return false
+}
+
+export function pendingCommandLabel(
+  intent: Intent,
+  lang: Lang,
+): { title: string; action: string } {
+  const map: Record<string, { zh: string; en: string }> = {
+    market: { zh: '查看行情', en: 'open a market scan' },
+    investigate: { zh: '开始排查', en: 'start an investigation' },
+    review: { zh: '打开复盘／看板', en: 'open the review / dashboard' },
+    skills: { zh: '打开 Skills 目录', en: 'open the Skills catalogue' },
+    knowledge: { zh: '打开知识库目录', en: 'open the knowledge catalogue' },
+    weekly: { zh: '生成周报', en: 'build the weekly report' },
+  }
+  const row = map[intent] || { zh: '执行该操作', en: 'run that action' }
+  if (lang === 'zh-Hans' || lang === 'zh-Hant') {
+    return { title: '确认一下', action: row.zh }
+  }
+  return { title: 'Just to confirm', action: row.en }
+}
+
+export function commandConfirmPrompt(lang: Lang, intent: Intent, userText: string): string {
+  const { action } = pendingCommandLabel(intent, lang)
+  const snippet = userText.replace(/\s+/g, ' ').trim().slice(0, 80)
+  if (lang === 'zh-Hans') {
+    return [
+      `我不太确定你是在闲聊，还是想 **${action}**。`,
+      '',
+      snippet ? `你刚说：_「${snippet}」_` : '',
+      '',
+      '• 回复 **确认**／**是**／**好的** → 我按指令继续',
+      '• 回复 **不用**／**取消**／继续聊天 → 我当闲聊陪你',
+    ]
+      .filter(Boolean)
+      .join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      `我不太確定你是在閒聊，還是想 **${action}**。`,
+      '',
+      snippet ? `你剛說：_「${snippet}」_` : '',
+      '',
+      '• 回覆 **確認**／**是**／**好的** → 我按指令繼續',
+      '• 回覆 **不用**／**取消**／繼續聊天 → 我當閒聊陪你',
+    ]
+      .filter(Boolean)
+      .join('\n')
+  }
+  return [
+    `I’m not sure if you’re chatting, or want me to **${action}**.`,
+    '',
+    snippet ? `You said: _“${snippet}”_` : '',
+    '',
+    '• Reply **yes** / **confirm** / **ok** → I’ll run it',
+    '• Reply **no** / **cancel** / keep chatting → I’ll just chat',
+  ]
+    .filter(Boolean)
+    .join('\n')
+}
+
+export function looksLikeCommandConfirm(text: string): boolean {
+  const t = text.trim()
+  return /^(确认|確認|是的?|好的?|可以|行|继续|繼續|开|開|要|yes|y|ok|okay|confirm|sure|go\s*ahead|do\s*it)\s*[!.。！~]*$/i.test(
+    t,
+  )
+}
+
+export function looksLikeCommandCancel(text: string): boolean {
+  const t = text.trim()
+  return /^(不用|不要|取消|算了|否|不了|先不|闲聊|閒聊|聊天|no|n|cancel|nah|never\s*mind|chat)\s*[!.。！~]*$/i.test(
+    t,
+  )
+}
+
 /** True when the question is about desk roles / edit permissions (not an incident). */
 export function isDeskFaqQuestion(text: string): boolean {
   return DESK_FAQ_RE.test(text.trim())
@@ -286,6 +452,13 @@ export function isDeskFaqQuestion(text: string): boolean {
 export function looksLikeIncidentEvidence(text: string): boolean {
   const t = text.trim()
   if (!t) return false
+  // How-to「怎么排查」is a question, not pasted alert evidence
+  if (
+    t.length < 48 &&
+    /^(怎么|如何|怎样|怎麼).{0,6}排查|how\s+(do\s+i\s+)?investigate|what\s+is\s+investigate/i.test(t)
+  ) {
+    return false
+  }
   if (INCIDENT_EVIDENCE_RE.test(t)) return true
   // Long structured paste with metric-ish tokens
   return t.length > 120 && /\d+(\.\d+)?\s*(bps|%|ms|s)\b/i.test(t)

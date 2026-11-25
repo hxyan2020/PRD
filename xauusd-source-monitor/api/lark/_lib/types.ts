@@ -51,6 +51,15 @@ export interface KbHit {
   score: number
 }
 
+/** Soft-matched command waiting for user yes/no before running. */
+export type PendingCommandIntent =
+  | 'market'
+  | 'investigate'
+  | 'review'
+  | 'skills'
+  | 'knowledge'
+  | 'weekly'
+
 export interface InvestigationState {
   mode: 'idle' | 'investigate'
   facts: string[]
@@ -60,6 +69,10 @@ export interface InvestigationState {
   lastKb: KbHit[]
   lastReportId?: string
   pendingPrompt?: string
+  /** Soft command awaiting confirm (yes → run; no → chat). */
+  pendingCommand?: PendingCommandIntent
+  pendingCommandText?: string
+  pendingCommandAt?: number
   /** Last detected user language — card actions and short replies reuse this. */
   preferredLang?: Lang
   /** Last image/file/share digest — used when user asks “能读取吗” without re-attaching. */

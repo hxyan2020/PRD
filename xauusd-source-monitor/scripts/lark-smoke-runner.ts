@@ -272,6 +272,51 @@ async function main() {
     classifyIntent('今晚吃什么', {}) === 'general_risk',
     '',
   )
+  const {
+    looksLikePureChat,
+    needsCommandConfirm,
+    looksLikeCommandConfirm,
+    looksLikeCommandCancel,
+    commandConfirmPrompt,
+  } = await import('../api/lark/_lib/scope')
+  record(
+    'chat.pure_dinner_not_command',
+    looksLikePureChat('今晚吃什么') &&
+      classifyIntent('今晚吃什么', {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      }) === 'general_risk',
+    '',
+  )
+  record(
+    'chat.confirm_soft_investigate',
+    classifyIntent('怎么排查', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'investigate' && needsCommandConfirm('怎么排查', 'investigate'),
+    '',
+  )
+  record(
+    'chat.no_confirm_explicit_investigate',
+    !needsCommandConfirm('investigate IDX-01 mark gap', 'investigate'),
+    '',
+  )
+  record(
+    'chat.no_confirm_clear_market',
+    !needsCommandConfirm('今天黄金行情怎么样', 'market'),
+    '',
+  )
+  record(
+    'chat.confirm_yes_no',
+    looksLikeCommandConfirm('确认') &&
+      looksLikeCommandConfirm('yes') &&
+      looksLikeCommandCancel('不用') &&
+      looksLikeCommandCancel('cancel') &&
+      commandConfirmPrompt('zh-Hans', 'investigate', '怎么排查').includes('确认'),
+    '',
+  )
 
   // 5) Parse / mention gate
   const groupNoMention = parseIncomingEvent({

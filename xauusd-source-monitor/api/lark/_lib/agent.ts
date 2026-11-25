@@ -42,15 +42,21 @@ import {
   botMetaReply,
   casualChatReply,
   classifyIntent,
+  commandConfirmPrompt,
   detectLang,
   greetingReply,
   helpReply,
   isCasualBanter,
   isCasualChat,
   isLarkWikiQuestion,
+  looksLikeCommandCancel,
+  looksLikeCommandConfirm,
   looksLikeIncidentEvidence,
+  looksLikePureChat,
+  needsCommandConfirm,
   needsInaccessibleAccess,
   isStepDoneCommand,
+  pendingCommandLabel,
   sharedDocReadReply,
 } from './scope.js'
 import { looksLikeShareOrFileMeta } from './lang.js'
@@ -77,7 +83,7 @@ import {
   saveSession,
   upsertIncident,
 } from './store.js'
-import type { BotReply, IncomingMessage, IncidentRecord, Lang } from './types.js'
+import type { BotReply, IncomingMessage, IncidentRecord, Lang, PendingCommandIntent } from './types.js'
 
 function titleFromFacts(facts: string[], lang: Lang): string {
   const first = facts[0]?.replace(/\s+/g, ' ').trim().slice(0, 48) || ''
@@ -753,6 +759,49 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   session.preferredLang = lang
   saveSession(msg.chatId, msg.openId, session)
 
+  // Pending soft-command confirm — yes runs it; no / chat continues as chatbot
+  let forcedIntent: PendingCommandIntent | null = null
+  let skipCommandConfirm = false
+  if (session.pendingCommand && session.pendingCommandAt && Date.now() - session.pendingCommandAt < 15 * 60_000) {
+    const pending = session.pendingCommand
+    const pendingText = session.pendingCommandText || workingText
+    if (looksLikeCommandConfirm(workingText)) {
+      session.pendingCommand = undefined
+      session.pendingCommandText = undefined
+      session.pendingCommandAt = undefined
+      saveSession(msg.chatId, msg.openId, session)
+      workingText = pendingText
+      forcedIntent = pending
+      skipCommandConfirm = true
+    } else if (
+      looksLikeCommandCancel(workingText) ||
+      looksLikePureChat(workingText) ||
+      isCasualChat(workingText)
+    ) {
+      session.pendingCommand = undefined
+      session.pendingCommandText = undefined
+      session.pendingCommandAt = undefined
+      saveSession(msg.chatId, msg.openId, session)
+      if (looksLikeCommandCancel(workingText)) {
+        const replyTitle =
+          lang === 'zh-Hans' ? '好的，我们聊' : lang === 'zh-Hant' ? '好的，我們聊' : 'Sure — let’s chat'
+        const body =
+          lang === 'zh-Hans'
+            ? '好的，先不跑指令 🙂 想聊什么直接说；要看行情／贴告警随时叫我。'
+            : lang === 'zh-Hant'
+              ? '好的，先不跑指令 🙂 想聊什麼直接說；要看行情／貼告警隨時叫我。'
+              : 'Okay, skipping the command 🙂 Say anything — or toss a market / alert anytime.'
+        return { card: simpleCard(replyTitle, body, 'blue') }
+      }
+      // Fall through as normal chat with cleared pending
+    }
+  } else if (session.pendingCommand) {
+    session.pendingCommand = undefined
+    session.pendingCommandText = undefined
+    session.pendingCommandAt = undefined
+    saveSession(msg.chatId, msg.openId, session)
+  }
+
   // Alert nudge —「知道了」must stop (never fall through to greeting soft-ack)
   {
     const {
@@ -798,11 +847,13 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     }
   }
 
-  const intent = classifyIntent(workingText, {
-    inInvestigateSession: session.mode === 'investigate',
-    mentionedBot: msg.mentionedBot,
-    chatType: msg.chatType,
-  })
+  const intent =
+    forcedIntent ||
+    classifyIntent(workingText, {
+      inInvestigateSession: session.mode === 'investigate',
+      mentionedBot: msg.mentionedBot,
+      chatType: msg.chatType,
+    })
 
   if (intent === 'greeting' || intent === 'ack_mention') {
     return { card: greetingCard(lang, greetingReply(lang)) }
@@ -815,6 +866,18 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   if (intent === 'safety') {
     const hit = detectSafetyViolation(workingText) || 'pii'
     return { text: safetyReply(lang, hit) }
+  }
+
+  // Soft-matched command without clear payload → ask before proceeding
+  if (!skipCommandConfirm && needsCommandConfirm(workingText, intent)) {
+    session.pendingCommand = intent as PendingCommandIntent
+    session.pendingCommandText = workingText
+    session.pendingCommandAt = Date.now()
+    saveSession(msg.chatId, msg.openId, session)
+    const { title } = pendingCommandLabel(intent, lang)
+    return {
+      card: simpleCard(title, commandConfirmPrompt(lang, intent, workingText), 'wathet'),
+    }
   }
 
   // Attachments: always understand & reiterate before relevance judgement
@@ -1034,8 +1097,8 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   const replyTitle =
     lang === 'zh-Hans' ? '风险助手回复' : lang === 'zh-Hant' ? '風險助手回覆' : 'Risk assistant reply'
 
-  // Small talk first — never fall through to empty-KB command menus
-  if (isCasualChat(workingText)) {
+  // Chat / random life Q — chatbot reply (after wiki/access; never dump menus)
+  if (looksLikePureChat(workingText) || isCasualChat(workingText)) {
     const wantName = /^(我是谁|我是誰|who\s+am\s+i|whoami|我叫什么|我叫什麼|你知道我是谁吗|你知道我是誰嗎)/i.test(
       workingText.trim(),
     )
@@ -1043,6 +1106,25 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     const casual = casualChatReply(lang, workingText, displayName)
     if (casual) {
       return { card: simpleCard(replyTitle, casual, 'blue') }
+    }
+    const llmChat = await enrichWithLlm({
+      lang,
+      question: workingText,
+      context:
+        'The user is chatting or asking a random / life question — NOT starting a desk command. Reply as a warm chatbot teammate in 1–3 short beats. Do NOT open investigate/market/Skills menus. Do NOT search the web unless they clearly ask for news/facts. You may lightly mention you also help with V Exchange risk if natural.',
+      temperature: 0.75,
+    })
+    if (llmChat) return { card: simpleCard(replyTitle, llmChat, 'blue') }
+    return {
+      card: simpleCard(
+        replyTitle,
+        lang === 'zh-Hans'
+          ? '可以呀 🙂 我专长风控，闲聊也陪。想说什么都行。'
+          : lang === 'zh-Hant'
+            ? '可以呀 🙂 我專長風控，閒聊也陪。想說什麼都行。'
+            : 'Sure 🙂 Risk is my specialty, but I’m happy to chat about anything.',
+        'blue',
+      ),
     }
   }
 
