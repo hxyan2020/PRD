@@ -84,6 +84,10 @@ Demo catch-up windows (idempotent via durable sent-day state):
 
 **cron-tick** (`*/5 * * * *`) fans out all push jobs on the public alias
 (`vex-llm-proxy.vercel.app`) so SSO / deployment-host misses still catch up.
+It **awaits cron-health first**, then runs the other jobs in parallel (per-child
+timeout); if the health beat is still stale or the primary hit failed, it
+retries with `?force=1`. **cron-health** itself re-sends after **35 minutes** of
+DM silence (including never-sent) so a quiet schedule cannot stay silent.
 
 ## Endpoints
 

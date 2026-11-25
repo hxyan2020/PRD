@@ -4,26 +4,33 @@
  * production alias (never the SSO-protected deployment host).
  *
  * Schedule: every 5 minutes. Handlers stay idempotent.
- * Fan-out is parallel so a slow child (e.g. oscillation OKX fetch) cannot
- * starve cron-health / market-report at the end of a sequential list.
+ *
+ * Stability:
+ * - cron-health is awaited FIRST (not parallel) so half-hour status DMs
+ *   cannot be starved by slow OKX / market children.
+ * - If health beat is still stale after the primary hit, force=1 catch-up.
+ * - Per-child timeout so one hang cannot burn maxDuration.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
-import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
+import { readCronBeatStore, touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 
 export const config = {
   maxDuration: 120,
 }
 
 const PUBLIC_BASE = 'https://vex-llm-proxy.vercel.app'
+const HEALTH_PATH = '/api/lark/cron-health'
+/** If health beat older than this, force a catch-up DM. */
+const HEALTH_STALE_MS = 22 * 60_000
+/** Per-child HTTP budget — leave headroom under maxDuration. */
+const CHILD_TIMEOUT_MS = 25_000
 
 /**
- * All Lark push jobs — each handler is idempotent / self-gated.
- * cron-health is first so half-hour status DMs still fire when other
- * children are slow or time out.
+ * Remaining Lark push jobs — each handler is idempotent / self-gated.
+ * Health is handled separately (awaited first).
  */
-const PATHS = [
-  '/api/lark/cron-health',
+const OTHER_PATHS = [
   '/api/lark/alert-nudge',
   '/api/lark/oscillation-alert',
   '/api/lark/market-report',
@@ -31,6 +38,8 @@ const PATHS = [
   '/api/lark/daily-market-report',
   '/api/lark/weekly-report',
 ] as const
+
+export const PATHS = [HEALTH_PATH, ...OTHER_PATHS] as const
 
 function parseOutcome(body: string): {
   outcome: 'sent' | 'skipped' | 'ok' | 'error'
@@ -54,30 +63,43 @@ function parseOutcome(body: string): {
   }
 }
 
-async function hitPath(path: string): Promise<{ path: string; status: number; body: string }> {
+async function hitPath(
+  path: string,
+  opts?: { force?: boolean },
+): Promise<{ path: string; status: number; body: string; forced?: boolean }> {
+  const qs = opts?.force ? '?force=1' : ''
+  const url = `${PUBLIC_BASE}${path}${qs}`
   try {
-    const r = await fetch(`${PUBLIC_BASE}${path}`, {
+    const r = await fetch(url, {
       method: 'GET',
       headers: {
         'x-vercel-cron': '1',
-        'user-agent': 'vex-lark-cron-tick/2',
+        'user-agent': 'vex-lark-cron-tick/3',
         'cache-control': 'no-store',
       },
       cache: 'no-store',
+      signal: AbortSignal.timeout(CHILD_TIMEOUT_MS),
     })
     const body = (await r.text()).slice(0, 240)
     const { outcome, reason } = parseOutcome(body)
     await touchCronHeartbeat(path, {
       status: r.status,
       outcome: r.status >= 500 ? 'error' : outcome,
-      reason,
+      reason: opts?.force ? `force:${reason || outcome}` : reason,
     })
-    return { path, status: r.status, body }
+    return { path, status: r.status, body, forced: Boolean(opts?.force) }
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'fetch failed'
     await touchCronHeartbeat(path, { status: 0, outcome: 'error', reason: msg })
-    return { path, status: 0, body: msg }
+    return { path, status: 0, body: msg, forced: Boolean(opts?.force) }
   }
+}
+
+async function healthBeatAgeMs(now = Date.now()): Promise<number> {
+  const store = await readCronBeatStore()
+  const at = store.beats[HEALTH_PATH]?.at
+  if (!at) return Number.POSITIVE_INFINITY
+  return Math.max(0, now - at)
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -93,7 +115,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const dry = String(q.dry || '') === '1'
 
   if (cron && !dry) {
-    await touchCronHeartbeat('/api/lark/cron-tick', { outcome: 'ok' })
+    await touchCronHeartbeat('/api/lark/cron-tick', { outcome: 'ok', reason: 'tick_start' })
   }
 
   if (dry) {
@@ -102,25 +124,48 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       dry: true,
       paths: PATHS,
       base: PUBLIC_BASE,
-      schedule: 'Every 5 min → parallel fan-out on public alias (cron-health first)',
-      parallel: true,
+      schedule: 'Every 5 min → health-first then parallel others on public alias',
+      healthFirst: true,
+      childTimeoutMs: CHILD_TIMEOUT_MS,
+      healthStaleMs: HEALTH_STALE_MS,
     })
   }
 
-  // Fire all children in parallel — wall clock ≈ slowest child, not sum.
-  const settled = await Promise.all(PATHS.map((path) => hitPath(path)))
-  const results = [...settled]
+  const results: { path: string; status: number; body: string; forced?: boolean }[] = []
+
+  // Phase 1: always finish cron-health before slower siblings.
+  const healthPrimary = await hitPath(HEALTH_PATH)
+  results.push(healthPrimary)
+
+  // Phase 1b: if health proof is still stale, force a catch-up DM.
+  const age = await healthBeatAgeMs()
+  let healthForced = false
+  if (age >= HEALTH_STALE_MS || healthPrimary.status !== 200) {
+    const forced = await hitPath(HEALTH_PATH, { force: true })
+    results.push(forced)
+    healthForced = true
+  }
+
+  // Phase 2: remaining jobs in parallel (bounded per-child timeout).
+  const others = await Promise.all(OTHER_PATHS.map((path) => hitPath(path)))
+  results.push(...others)
 
   const ok = results.every((r) => r.status === 200 || r.status === 502)
   await touchCronHeartbeat('/api/lark/cron-tick', {
     status: ok ? 200 : 502,
     outcome: ok ? 'ok' : 'error',
-    reason: ok ? 'fanout_ok_parallel' : 'fanout_partial_fail',
+    reason: ok
+      ? healthForced
+        ? 'fanout_ok_health_forced'
+        : 'fanout_ok_health_first'
+      : 'fanout_partial_fail',
   })
   return res.status(ok ? 200 : 502).json({
     ok,
     via: 'cron-tick',
-    parallel: true,
+    healthFirst: true,
+    healthForced,
+    healthBeatAgeMs: age,
     results,
   })
 }

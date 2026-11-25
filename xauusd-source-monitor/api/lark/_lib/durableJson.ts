@@ -88,10 +88,16 @@ export async function readDurableJson<T>(name: string): Promise<T | null> {
   return readTmpJson<T>(name)
 }
 
-export async function writeDurableJson(name: string, value: unknown): Promise<void> {
+/**
+ * Persist JSON. Always writes /tmp. When BLOB_READ_WRITE_TOKEN is set, also
+ * writes Blob and returns whether that remote write succeeded.
+ * Callers that need cross-instance durability (cron beats / sent maps) must
+ * treat `false` as failure so the next tick can retry.
+ */
+export async function writeDurableJson(name: string, value: unknown): Promise<boolean> {
   writeTmpJson(name, value)
   const token = blobToken()
-  if (!token) return
+  if (!token) return true
   const body = JSON.stringify(value)
   const base = {
     addRandomSuffix: false as const,
@@ -101,17 +107,18 @@ export async function writeDurableJson(name: string, value: unknown): Promise<vo
   }
   try {
     await put(blobPathname(name), body, { ...base, access: 'private' })
-    return
+    return true
   } catch (privateErr) {
     try {
       await put(blobPathname(name), body, { ...base, access: 'public' })
-      return
+      return true
     } catch {
       console.error(
         '[durableJson] blob write failed',
         name,
         privateErr instanceof Error ? privateErr.message : privateErr,
       )
+      return false
     }
   }
 }

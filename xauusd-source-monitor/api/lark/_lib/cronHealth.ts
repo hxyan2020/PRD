@@ -130,6 +130,40 @@ export async function buildCronHealthReport(args?: {
     })
   }
 
+  // —— cron-health DM (every 30m; catch-up if silence ≥ 35m) ——
+  {
+    const healthSent = await readSentMap('cron-health-sent.json')
+    const delivery =
+      (typeof healthSent.__last_delivery__ === 'number' && healthSent.__last_delivery__ > 0
+        ? healthSent.__last_delivery__
+        : Math.max(
+            0,
+            ...Object.entries(healthSent)
+              .filter(([k, t]) => k !== '__last_delivery__' && typeof t === 'number' && t > 0)
+              .map(([, t]) => t as number),
+          )) || 0
+    const b = beats['/api/lark/cron-health']
+    const maxSilence = 35 * 60_000
+    const dmOk = delivery > 0 && now - delivery <= maxSilence
+    // Expected once the half-hour slot has had a few minutes to fire.
+    const slotStart = slotStartMs(slotKey)
+    const expected = now >= slotStart + GRACE_MS
+    jobs.push({
+      id: 'cron-health',
+      label: 'Cron 健康 DM',
+      schedule: '每 30 分钟 → Yan DM（35 分钟静默追发）',
+      expected,
+      ok: !expected || dmOk,
+      detail: dmOk
+        ? `最近推送 ${ageMin(delivery, now)}；心跳 ${ageMin(b?.at, now)}`
+        : delivery
+          ? `推送过期（上次 ${ageMin(delivery, now)}）— 半小时卡可能中断`
+          : `从未推送成功 — 检查 cron-tick／Vercel Cron／Blob`,
+      lastAt: delivery || b?.at,
+      lastHm: b?.hm,
+    })
+  }
+
   // —— half-hour market ——
   {
     const slotStart = slotStartMs(slotKey)

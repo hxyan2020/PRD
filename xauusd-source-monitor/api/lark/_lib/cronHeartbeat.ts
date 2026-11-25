@@ -125,7 +125,7 @@ export async function readCronBeatStore(): Promise<CronBeatStore> {
 export async function touchCronHeartbeat(
   path: string,
   extra?: { status?: number; outcome?: CronBeatMeta['outcome']; reason?: string },
-): Promise<CronHeartbeat> {
+): Promise<CronHeartbeat & { blobOk: boolean }> {
   const at = Date.now()
   const day = shanghaiDayKey(at)
   const hm = shanghaiHm(at)
@@ -137,10 +137,13 @@ export async function touchCronHeartbeat(
     outcome: extra?.outcome,
     reason: extra?.reason,
   }
-  await writeDurableJson(beatFileFor(path), { path, ...meta })
+  const blobOk = await writeDurableJson(beatFileFor(path), { path, ...meta })
   // Keep legacy pointer for older readers (best-effort; may race but per-path files are source of truth)
   await writeDurableJson(LEGACY_NAME, { path, ...meta }).catch(() => undefined)
-  return { path, ...meta }
+  if (!blobOk) {
+    console.error('[cronHeartbeat] blob write failed for', path)
+  }
+  return { path, ...meta, blobOk }
 }
 
 /** Legacy: last overall heartbeat (most recent path). */
