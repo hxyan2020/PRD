@@ -7,7 +7,7 @@
 import { timingSafeEqual } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { handleMessage } from './_lib/agent.js'
-import { listIncidents } from './_lib/store.js'
+import { listIncidentsDurable } from './_lib/store.js'
 import type { IncomingMessage } from './_lib/types.js'
 
 function safeEqual(a: string, b: string) {
@@ -37,7 +37,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const limit = Math.min(100, Number(req.query.limit || 50))
     return res.status(200).json({
       ok: true,
-      incidents: listIncidents({ status, limit }),
+      incidents: await listIncidentsDurable({ status, limit }),
     })
   }
 
@@ -66,7 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({
       ok: true,
       reply,
-      incidents: listIncidents({ limit: 10 }),
+      incidents: await listIncidentsDurable({ limit: 10 }),
     })
   }
 

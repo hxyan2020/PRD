@@ -69,7 +69,12 @@ import {
   retrieveRag,
   splitSkillSteps,
 } from '../api/lark/_lib/skills'
-import { clearSession, listIncidents } from '../api/lark/_lib/store'
+import {
+  clearSession,
+  listIncidents,
+  listIncidentsDurable,
+  upsertIncidentDurable,
+} from '../api/lark/_lib/store'
 import type { IncomingMessage } from '../api/lark/_lib/types'
 
 type Result = { name: string; ok: boolean; detail: string }
@@ -2740,7 +2745,36 @@ async function main() {
       (dash.blob.includes('Alerts') || dash.blob.includes('看板') || dash.blob.includes('By severity')),
     `urls=${dashUrlCount}`,
   )
-  record('store.incidents_accumulated', listIncidents({ limit: 20 }).length >= 1, `n=${listIncidents({ limit: 20 }).length}`)
+  const durableListed = await listIncidentsDurable({ limit: 20 })
+  record(
+    'store.incidents_accumulated',
+    durableListed.length >= 1 || listIncidents({ limit: 20 }).length >= 1,
+    `n=${durableListed.length}`,
+  )
+  // Durable round-trip: Lark upsert must survive a fresh list (web desk source).
+  const syncProbeId = `inc_sync_probe_${Date.now().toString(36)}`
+  await upsertIncidentDurable({
+    id: syncProbeId,
+    chatId: 'smoke_chat',
+    openId: 'smoke_user',
+    title: 'Lark→web sync probe',
+    facts: ['sync probe'],
+    severity: 'P2',
+    skills: ['L1-01'],
+    knowledge: [],
+    summary: 'probe',
+    recommendations: [],
+    status: 'open',
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    lang: 'zh-Hans',
+  })
+  const afterUpsert = await listIncidentsDurable({ limit: 50 })
+  record(
+    'store.incidents_durable_lark_web_sync',
+    afterUpsert.some((r) => r.id === syncProbeId),
+    `found=${afterUpsert.some((r) => r.id === syncProbeId)} total=${afterUpsert.length}`,
+  )
 
   // 11) Archive / done
   const done = await turn('archive', 'done')
