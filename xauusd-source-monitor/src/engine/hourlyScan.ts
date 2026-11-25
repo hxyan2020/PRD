@@ -1302,7 +1302,7 @@ export async function generateHourlyScan(args: {
   sources.push(
     makeSource(
       'vex-monitor-composite',
-      'https://vex-llm-proxy.vercel.app/#/market/health',
+      'https://quote-ai-troubleshooting-bot.vercel.app/#/market/health',
       args.composite != null
         ? `V Exchange desk composite ${args.composite.toFixed(2)}; watch/alert=${alertSources.length}`
         : 'V Exchange desk composite unavailable',

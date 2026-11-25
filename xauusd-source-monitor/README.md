@@ -5,9 +5,9 @@ Helps diagnose pricing discrepancies, spread issues, mark price alerts, and quot
 
 ## Permanent URL (Vercel)
 
-**https://vex-llm-proxy.vercel.app**
+**https://quote-ai-troubleshooting-bot.vercel.app**
 
-Investigate entry: **https://vex-llm-proxy.vercel.app/#/investigate**
+Investigate entry: **https://quote-ai-troubleshooting-bot.vercel.app/#/investigate**
 
 OpenAI runs **server-side only** (`OPENAI_API_KEY` on the Vercel project). The browser never asks for an API key.
 
@@ -61,4 +61,4 @@ Production env on the `vex-llm-proxy` Vercel project:
 | `DAILY_BUDGET_USD` | no | Default `10` |
 
 On Vercel the SPA uses **same-origin** `POST /api/chat`.  
-On GitHub Pages, `llm-config.json` → `proxyBase` points at `https://vex-llm-proxy.vercel.app`.
+On GitHub Pages, `llm-config.json` → `proxyBase` points at `https://quote-ai-troubleshooting-bot.vercel.app`.

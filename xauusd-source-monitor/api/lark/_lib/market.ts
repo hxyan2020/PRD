@@ -112,7 +112,7 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
       { label: 'gold-api XAU spot', url: 'https://api.gold-api.com/price/XAU' },
       { label: 'Kitco gold', url: 'https://www.kitco.com/gold-price-today-usa/' },
       { label: 'Yahoo GC=F', url: 'https://finance.yahoo.com/quote/GC=F/' },
-      { label: 'VE Risk Desk (web)', url: 'https://vex-llm-proxy.vercel.app/#/market' },
+      { label: 'VE Risk Desk (web)', url: 'https://quote-ai-troubleshooting-bot.vercel.app/#/market' },
     ],
     fetchedAt: Date.now(),
   }

@@ -23,7 +23,7 @@ Then in **Lark / Feishu Developer Console** (required — without this, DMs stay
 1. Enable **Bot** capability.
 2. **Event Subscription** mode = **将事件发送至开发者服务器 / Send to developer’s server**  
    (**Do not** use 长连接 / long connection — Vercel cannot receive that.)
-3. Request URL → `https://vex-llm-proxy.vercel.app/api/lark/event` → **Save** and pass URL verification.
+3. Request URL → `https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event` → **Save** and pass URL verification.
 4. Subscribe: `im.message.receive_v1`, `card.action.trigger`.
 5. Permissions: `im:message` / send-as-bot; image resources if you want OCR.
 6. **Leave Encrypt Key OFF / empty**.
@@ -33,7 +33,7 @@ Then in **Lark / Feishu Developer Console** (required — without this, DMs stay
 Check readiness:
 
 ```bash
-curl -sS https://vex-llm-proxy.vercel.app/api/lark/event
+curl -sS https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event
 # want: readyForConversation=true AND eventsDelivered=true after you message the bot
 ```
 
@@ -69,7 +69,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - **Content:** this week’s handled incidents + aggregated recommendations / Skills
 - **Delivery:** Feishu DM card to `LARK_ADMIN_OPEN_ID` (Yan Haixiang)
 - **On-demand:** send `weekly` / `周报` in chat
-- **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
+- **Preview:** `curl -sS 'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token
 
 Set `LARK_ADMIN_OPEN_ID` on Vercel Production (Yan’s open_id from Feishu admin / bot conversation logs).
@@ -92,7 +92,7 @@ Commands: `help` · `market` · `investigate` · `报价差异` · `价差` · `
 ## Smoke without Lark credentials
 
 ```bash
-curl -sS -X POST https://vex-llm-proxy.vercel.app/api/lark/incidents \
+curl -sS -X POST https://quote-ai-troubleshooting-bot.vercel.app/api/lark/incidents \
   -H 'Content-Type: application/json' \
   -d '{"text":"investigate IDX-01 excluded, Mark 48bps"}'
 ```

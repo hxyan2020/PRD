@@ -140,7 +140,7 @@ export function investigationCard(args: {
   }
 }
 
-const DASHBOARD_URL = 'https://vex-llm-proxy.vercel.app/#/reports'
+const DASHBOARD_URL = 'https://quote-ai-troubleshooting-bot.vercel.app/#/reports'
 
 /** Unicode bar for in-card charts (Lark has no canvas). */
 function bar(n: number, max: number, width = 10): string {
@@ -338,9 +338,9 @@ export function simpleCard(title: string, body: string, template = 'blue'): Reco
   }
 }
 
-const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
-const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
-const MARKET_URL = 'https://vex-llm-proxy.vercel.app/#/market'
+const SKILLS_URL = 'https://quote-ai-troubleshooting-bot.vercel.app/#/skills'
+const KNOWLEDGE_URL = 'https://quote-ai-troubleshooting-bot.vercel.app/#/knowledge'
+const MARKET_URL = 'https://quote-ai-troubleshooting-bot.vercel.app/#/market'
 
 function deskFooterNote(lang: Lang): Record<string, unknown> {
   const hans = lang === 'zh-Hans'

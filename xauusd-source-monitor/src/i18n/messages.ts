@@ -128,7 +128,7 @@ const en: Dict = {
   navCopilot: 'Investigate',
   llmFallbackRules: 'LLM gateway unavailable — used local rules instead.',
   llmNeedKey:
-    'Open the permanent Vercel desk (vex-llm-proxy.vercel.app). OpenAI runs server-side — no browser API key.',
+    'Open the permanent Vercel desk (quote-ai-troubleshooting-bot.vercel.app). OpenAI runs server-side — no browser API key.',
   llmOpenAiHint: 'OpenAI gpt-4o-mini via permanent Vercel /api/chat — no API key entry.',
   llmConnected: 'OpenAI connected',
   llmConnecting: 'Connecting…',
@@ -305,7 +305,7 @@ const en: Dict = {
     'OpenAI is server-managed on the permanent Vercel host. Browser API keys are not used.',
   copilotProxyBase: 'Optional LLM proxy base (Vercel)',
   copilotSettingsHint:
-    'Use https://vex-llm-proxy.vercel.app — /api/chat holds OPENAI_API_KEY. No browser key entry.',
+    'Use https://quote-ai-troubleshooting-bot.vercel.app — /api/chat holds OPENAI_API_KEY. No browser key entry.',
   healthTitle: 'Live source health — XAUUSD',
   healthSub:
     'Composite median of healthy venues. Live anchors: OKX / Bitget; Spot XAU is a basis reference only. Exchange indexes & LPs use correlated mirrors when direct public feeds are unavailable.',
@@ -598,7 +598,7 @@ const zhHant: Dict = {
   navCopilot: '排查',
   llmFallbackRules: 'LLM 閘道不可用 — 已改用本地規則。',
   llmNeedKey:
-    '請打開永久 Vercel 工作台（vex-llm-proxy.vercel.app）。OpenAI 在服務端運行 — 無需在瀏覽器輸入 API Key。',
+    '請打開永久 Vercel 工作台（quote-ai-troubleshooting-bot.vercel.app）。OpenAI 在服務端運行 — 無需在瀏覽器輸入 API Key。',
   llmOpenAiHint: 'OpenAI gpt-4o-mini 經永久 Vercel /api/chat — 無需輸入 API Key。',
   llmConnected: 'OpenAI 已連線',
   llmConnecting: '連線中…',
@@ -766,7 +766,7 @@ const zhHant: Dict = {
   copilotSettingsSub: 'OpenAI 由永久 Vercel 主機服務端管理。瀏覽器不再輸入 API Key。',
   copilotProxyBase: '可選 LLM 代理基址（Vercel）',
   copilotSettingsHint:
-    '請使用 https://vex-llm-proxy.vercel.app — /api/chat 持有 OPENAI_API_KEY。無需在瀏覽器貼 Key。',
+    '請使用 https://quote-ai-troubleshooting-bot.vercel.app — /api/chat 持有 OPENAI_API_KEY。無需在瀏覽器貼 Key。',
   healthTitle: '即時行情源健康度 — XAUUSD',
   healthSub:
     '以健康來源的中位數作為綜合價。即時錨點：OKX / Bitget；現貨 XAU 僅作基差參考。其他交易所指數與 LP 在無法直接拉取時使用相關衍生鏡像。',

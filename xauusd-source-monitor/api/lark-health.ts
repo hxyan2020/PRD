@@ -12,7 +12,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const recent = readInbound(5)
   return res.status(200).json({
     ok: true,
-    service: 've-lark-risk-bot',
+    service: 'quote-lark-bot',
     mode: 've-risk-copilot',
     openai: Boolean(process.env.OPENAI_API_KEY),
     larkWebhook: true,
@@ -20,12 +20,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     tokenOk: probe.tokenOk,
     botName: probe.botName || null,
     eventsDelivered: recent.length > 0,
-    webhook: 'https://vex-llm-proxy.vercel.app/api/lark/event',
+    webhook: 'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event',
     webhookAliases: [
-      'https://vex-llm-proxy.vercel.app/api/lark/event',
-      'https://vex-llm-proxy.vercel.app/api/lark/events',
+      'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event',
+      'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/events',
     ],
-    deskBase: 'https://vex-llm-proxy.vercel.app',
+    deskBase: 'https://quote-ai-troubleshooting-bot.vercel.app',
     runtime: 'vercel',
   })
 }

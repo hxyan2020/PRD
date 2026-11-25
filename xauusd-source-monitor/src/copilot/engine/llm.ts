@@ -73,7 +73,7 @@ export function modelOptions(provider: LlmProvider): { id: string; label: string
 }
 
 /** Permanent production host — SPA + server-side OpenAI via /api/chat. */
-export const PERM_VERCEL_ORIGIN = 'https://vex-llm-proxy.vercel.app'
+export const PERM_VERCEL_ORIGIN = 'https://quote-ai-troubleshooting-bot.vercel.app'
 
 function proxyBases(settings: CopilotSettings): string[] {
   const configured = settings.proxyBase.replace(/\/$/, '')

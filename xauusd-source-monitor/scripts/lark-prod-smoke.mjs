@@ -1,5 +1,5 @@
 /**
- * Production smoke against https://vex-llm-proxy.vercel.app
+ * Production smoke against https://quote-ai-troubleshooting-bot.vercel.app
  * Uses desk token from public/llm-config.json for /api/lark/incidents.
  */
 import { readFileSync } from 'node:fs'
@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const BASE = process.env.SMOKE_BASE || 'https://vex-llm-proxy.vercel.app'
+const BASE = process.env.SMOKE_BASE || 'https://quote-ai-troubleshooting-bot.vercel.app'
 const cfg = JSON.parse(readFileSync(join(ROOT, 'public/llm-config.json'), 'utf8'))
 const DESK = cfg.deskToken
 

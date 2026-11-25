@@ -281,8 +281,8 @@ async function main() {
         greetBlob.includes('Yan Haixiang') &&
         greetBlob.includes('Trigger:') &&
         greetBlob.includes('lark_md') &&
-        greetBlob.includes('vex-llm-proxy.vercel.app/#/skills') &&
-        greetBlob.includes('vex-llm-proxy.vercel.app/#/knowledge') &&
+        greetBlob.includes('quote-ai-troubleshooting-bot.vercel.app/#/skills') &&
+        greetBlob.includes('quote-ai-troubleshooting-bot.vercel.app/#/knowledge') &&
         greetBlob.includes('"tag":"note"') &&
         !greetBlob.includes('Screenshots welcome'),
     ),
@@ -297,8 +297,8 @@ async function main() {
         greetZhBlob.includes('Risk Copilot') &&
         greetZhBlob.includes('**market**') &&
         (greetZhBlob.includes('触发') || greetZhBlob.includes('觸發')) &&
-        greetZhBlob.includes('vex-llm-proxy.vercel.app/#/skills') &&
-        greetZhBlob.includes('vex-llm-proxy.vercel.app/#/knowledge') &&
+        greetZhBlob.includes('quote-ai-troubleshooting-bot.vercel.app/#/skills') &&
+        greetZhBlob.includes('quote-ai-troubleshooting-bot.vercel.app/#/knowledge') &&
         !greetZhBlob.includes('截图欢迎'),
     ),
     greetZhBlob.slice(0, 160),

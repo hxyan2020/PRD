@@ -233,7 +233,7 @@ function formatWeeklyMarkdown(args: {
       '',
       ...recLines,
       '',
-      '🔗 **看板：** https://vex-llm-proxy.vercel.app/#/reports',
+      '🔗 **看板：** https://quote-ai-troubleshooting-bot.vercel.app/#/reports',
       '',
       '_自动推送：每周五 16:00（东八区）。也可发送 **weekly** / **周报** 立即查看。_',
     ].join('\n')
@@ -259,7 +259,7 @@ function formatWeeklyMarkdown(args: {
     '',
     ...recLines,
     '',
-    '🔗 **Board:** https://vex-llm-proxy.vercel.app/#/reports',
+    '🔗 **Board:** https://quote-ai-troubleshooting-bot.vercel.app/#/reports',
     '',
     '_Auto-push: Fridays 16:00 Asia/Shanghai. Or send **weekly** anytime._',
   ].join('\n')

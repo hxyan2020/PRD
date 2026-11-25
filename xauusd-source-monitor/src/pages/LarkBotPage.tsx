@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useLocale } from '../i18n/locale'
 
-const EVENT_URL = 'https://vex-llm-proxy.vercel.app/api/lark/event'
-const INCIDENTS_URL = 'https://vex-llm-proxy.vercel.app/api/lark/incidents'
+const EVENT_URL = 'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event'
+const INCIDENTS_URL = 'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/incidents'
 
 type Status = {
   ok?: boolean

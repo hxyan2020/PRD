@@ -236,7 +236,7 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
       '• **只读角色：** Ops／Analyst／一般用户可 **查看** 知识库与 Skills，并仍可做 **investigate** 排查。',
       '• **需要开通 Admin：** 请联系 **@Yan Haixiang**。',
       '',
-      '_桌面页：https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+      '_桌面页：https://quote-ai-troubleshooting-bot.vercel.app/#/knowledge · https://quote-ai-troubleshooting-bot.vercel.app/#/skills_',
     ].join('\n')
   }
   if (lang === 'zh-Hant') {
@@ -248,7 +248,7 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
       '• **只讀角色：** Ops／Analyst／一般用戶可 **查看** 知識庫與 Skills，並仍可做 **investigate** 排查。',
       '• **需要開通 Admin：** 請聯繫 **@Yan Haixiang**。',
       '',
-      '_桌面頁：https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+      '_桌面頁：https://quote-ai-troubleshooting-bot.vercel.app/#/knowledge · https://quote-ai-troubleshooting-bot.vercel.app/#/skills_',
     ].join('\n')
   }
   return [
@@ -259,7 +259,7 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
     '• **Read access:** Ops / Analyst / general users can **view** knowledge & Skills and still run **investigate**.',
     '• **Need Admin:** contact **@Yan Haixiang**.',
     '',
-    '_Desk: https://vex-llm-proxy.vercel.app/#/knowledge · https://vex-llm-proxy.vercel.app/#/skills_',
+    '_Desk: https://quote-ai-troubleshooting-bot.vercel.app/#/knowledge · https://quote-ai-troubleshooting-bot.vercel.app/#/skills_',
   ].join('\n')
 }
 

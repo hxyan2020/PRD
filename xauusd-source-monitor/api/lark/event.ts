@@ -2,7 +2,7 @@
  * Lark / Feishu event webhook — POST /api/lark/event
  *
  * Subscribe in Lark Developer Console:
- *   Request URL: https://vex-llm-proxy.vercel.app/api/lark/event
+ *   Request URL: https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event
  *   Events: im.message.receive_v1, card.action.trigger
  *
  * Minimum secrets: LARK_APP_ID + LARK_APP_SECRET (set on Vercel).
@@ -104,7 +104,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const chatReady = probe.tokenOk && (probe.chatCount > 0 || eventsSeen)
     return res.status(200).json({
       ok: true,
-      service: 've-lark-risk-bot',
+      service: 'quote-lark-bot',
       larkConfigured: secretsOk,
       hasOpenAI: Boolean(process.env.OPENAI_API_KEY),
       hasVerificationToken: Boolean(process.env.LARK_VERIFICATION_TOKEN),
@@ -128,18 +128,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         openDmFeishu: BOT_APPLINK_FEISHU || null,
         openDmLark: BOT_APPLINK_LARK || null,
       },
-      webhook: 'https://vex-llm-proxy.vercel.app/api/lark/event',
+      webhook: 'https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event',
       endpoints: {
         event: '/api/lark/event',
         incidents: '/api/lark/incidents',
       },
-      web: 'https://vex-llm-proxy.vercel.app/',
+      web: 'https://quote-ai-troubleshooting-bot.vercel.app/',
       nextStep: !secretsOk
         ? 'Set LARK_APP_ID + LARK_APP_SECRET on Vercel.'
         : !probe.tokenOk
           ? `Lark token failed: ${probe.error || 'check App ID/Secret'}`
           : !eventsSeen
-            ? 'CRITICAL: No Lark events have hit this webhook. In Developer Console → Event Subscription: choose “Send to developer server” (NOT long connection), set Request URL to https://vex-llm-proxy.vercel.app/api/lark/event, pass verification, Keep Encrypt Key OFF, subscribe im.message.receive_v1, then save & publish. Message the bot again.'
+            ? 'CRITICAL: No Lark events have hit this webhook. In Developer Console → Event Subscription: choose “Send to developer server” (NOT long connection), set Request URL to https://quote-ai-troubleshooting-bot.vercel.app/api/lark/event, pass verification, Keep Encrypt Key OFF, subscribe im.message.receive_v1, then save & publish. Message the bot again.'
             : 'Events are arriving. @ the bot in a group or message it in DM.',
     })
   }

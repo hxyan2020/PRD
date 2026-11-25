@@ -10,7 +10,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 type Msg = { role: string; content: string }
 
 const ALLOWED_ORIGINS = new Set([
-  'https://vex-llm-proxy.vercel.app',
+  'https://quote-ai-troubleshooting-bot.vercel.app',
   'https://hxyan2020.github.io',
   'http://127.0.0.1:4173',
   'http://127.0.0.1:5173',
