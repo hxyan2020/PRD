@@ -1,11 +1,14 @@
 import {
+  fetchOkxKline,
   generateHourlyScan,
+  KLINE_INTERVALS,
   KITCO_GOLD_URL,
   OKX_KLINE_URL,
   resolveCiteUrlOrNull,
   type HourlyKlineSeries,
   type HourlyMarketReport,
   type KlineBar,
+  type KlineIntervalBar,
   type RankedPoint,
   type ReportSource,
 } from '../../../src/engine/hourlyScan.js'
@@ -155,6 +158,67 @@ export function formatEast8Hm(ts: number): string {
   } catch {
     const d = new Date(ts)
     return `${String(d.getUTCHours() + 8).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`
+  }
+}
+
+/** Axis tick for a K-line interval — day bars need MM-DD, intraday keep HH:mm. */
+export function formatChartAxisLabel(ts: number, interval: string): string {
+  if (interval === '1D') {
+    try {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Shanghai',
+        month: '2-digit',
+        day: '2-digit',
+      }).formatToParts(new Date(ts))
+      const get = (t: string) => parts.find((p) => p.type === t)?.value || '00'
+      return `${get('month')}-${get('day')}`
+    } catch {
+      const d = new Date(ts + 8 * 3600_000)
+      return `${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`
+    }
+  }
+  if (interval === '4H') {
+    try {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Shanghai',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).formatToParts(new Date(ts))
+      const get = (t: string) => parts.find((p) => p.type === t)?.value || '00'
+      const hour = get('hour') === '24' ? '00' : get('hour')
+      return `${get('month')}-${get('day')} ${hour}:${get('minute')}`
+    } catch {
+      return formatEast8Hm(ts)
+    }
+  }
+  return formatEast8Hm(ts)
+}
+
+export function isKlineIntervalBar(v: unknown): v is KlineIntervalBar {
+  return KLINE_INTERVALS.some((i) => i.bar === v)
+}
+
+/** Feishu action row — switch OKX K-line interval (same set as web Market desk). */
+export function klineIntervalActions(
+  selected: KlineIntervalBar,
+  opts: { mode: 'hourly' | 'daily'; lang: Lang },
+): Record<string, unknown> {
+  return {
+    tag: 'action',
+    actions: KLINE_INTERVALS.map((opt) => ({
+      tag: 'button',
+      type: opt.bar === selected ? 'primary' : 'default',
+      text: { tag: 'plain_text', content: opt.label },
+      value: {
+        action: 'market_kline_tf',
+        bar: opt.bar,
+        mode: opts.mode,
+        lang: opts.lang,
+      },
+    })),
   }
 }
 
@@ -781,6 +845,8 @@ export async function buildMarketCard(opts: {
   /** Extra markdown appended (e.g. LLM enrich). Ignored for daily to keep format fixed. */
   appendix?: string
   template?: string
+  /** Override OKX series (interval switcher). Defaults to snap.hourly.kline. */
+  kline?: HourlyKlineSeries | null
 }): Promise<Record<string, unknown>> {
   const {
     title,
@@ -791,6 +857,7 @@ export async function buildMarketCard(opts: {
     intro = '',
     appendix = '',
     template = 'wathet',
+    kline: klineOverride,
   } = opts
 
   const empty = marketEmptyHint(mode, lang)
@@ -809,14 +876,26 @@ export async function buildMarketCard(opts: {
   }
 
   const hourly = snap.hourly
+  const kline = klineOverride !== undefined ? klineOverride : hourly?.kline
+  const selectedBar: KlineIntervalBar = isKlineIntervalBar(kline?.interval)
+    ? kline.interval
+    : '1H'
+  // Merge selected series into a snap clone so caption / OHLC match the chart.
+  const snapForKline: MarketSnapshot =
+    hourly && kline
+      ? { ...snap, hourly: { ...hourly, kline } }
+      : snap
   const byId = sourcesById(hourly?.sources)
   const elements: Record<string, unknown>[] = []
   if (intro.trim()) elements.push(mdDiv(intro.trim()))
 
-  // Header + prints without ASCII spark; real VChart K-line follows.
-  elements.push(mdDiv(pricesAndKlineBlock(snap, lang, mode, { asciiKline: false })))
-  const klineChart = klineCloseChartElement(hourly?.kline, lang, mode === 'daily' ? 24 : 16)
+  // Header + prints without ASCII spark; VChart + interval buttons follow.
+  elements.push(mdDiv(pricesAndKlineBlock(snapForKline, lang, mode, { asciiKline: false })))
+  const chartWidth =
+    selectedBar === '1D' ? 30 : selectedBar === '4H' ? 24 : selectedBar === '15m' ? 32 : mode === 'daily' ? 24 : 16
+  const klineChart = klineCloseChartElement(kline, lang, chartWidth)
   if (klineChart) elements.push(klineChart)
+  elements.push(klineIntervalActions(selectedBar, { mode, lang }))
 
   // TL;DR text (beats only — logos on the next action row)
   if (mode === 'daily') {
@@ -948,22 +1027,30 @@ function renderKline(kline: HourlyKlineSeries | null | undefined, lang: Lang): s
 /**
  * Feishu VChart area of OKX closes (candlestick not in the card's 13 types).
  * Same shape as weekly DEMO charts — client ≥ 7.1; older clients show upgrade hint.
+ * Y-axis is padded around closes (zero:false) so gold does not plot from 0→4000.
  */
 export function klineCloseChartElement(
   kline: HourlyKlineSeries | null | undefined,
   lang: Lang,
   width = 16,
 ): Record<string, unknown> | null {
+  const interval = kline?.interval || '1H'
   const bars = (kline?.bars || []).slice(-Math.max(8, width))
   if (!bars.length) return null
   const values = bars.map((b) => ({
-    t: formatEast8Hm(b.t),
+    t: formatChartAxisLabel(b.t, interval),
     close: Number(b.c.toFixed(2)),
   }))
+  const closes = values.map((v) => v.close)
+  const lo = Math.min(...closes)
+  const hi = Math.max(...closes)
+  const pad = Math.max((hi - lo) * 0.08, hi * 0.0015, 0.5)
+  const yMin = Number((lo - pad).toFixed(2))
+  const yMax = Number((hi + pad).toFixed(2))
   const hans = lang === 'zh-Hans' || lang === 'zh-Hant'
   const title = hans
-    ? `${kline?.symbol || 'XAU'} · ${kline?.interval || '1H'} 收盘走势（近 ${bars.length} 根）`
-    : `${kline?.symbol || 'XAU'} · ${kline?.interval || '1H'} closes (last ${bars.length})`
+    ? `${kline?.symbol || 'XAU'} · ${interval} 收盘走势（近 ${bars.length} 根）`
+    : `${kline?.symbol || 'XAU'} · ${interval} closes (last ${bars.length})`
   return {
     tag: 'chart',
     aspect_ratio: '16:9',
@@ -980,12 +1067,63 @@ export function klineCloseChartElement(
       area: { style: { fillOpacity: 0.28 } },
       axes: [
         { orient: 'bottom', label: { autoRotate: true } },
-        { orient: 'left', nice: true },
+        {
+          orient: 'left',
+          nice: false,
+          zero: false,
+          min: yMin,
+          max: yMax,
+        },
       ],
       legends: { visible: false },
       tooltip: { visible: true },
+      label: { visible: false },
     },
   }
+}
+
+/**
+ * Rebuild a market card for a Feishu interval-button tap (15m / 1H / 4H / 1D).
+ * Fetches OKX candles for `bar` and keeps the rest of the live snapshot.
+ */
+export async function rebuildMarketCardForInterval(opts: {
+  bar: KlineIntervalBar
+  mode?: 'hourly' | 'daily'
+  lang?: Lang
+}): Promise<Record<string, unknown>> {
+  const mode = opts.mode === 'daily' ? 'daily' : 'hourly'
+  const lang = resolveMarketLang(opts.lang)
+  const snap = await fetchMarketSnapshot()
+  let kline: HourlyKlineSeries | null = null
+  try {
+    kline = await fetchOkxKline(opts.bar)
+  } catch {
+    kline = snap.hourly?.kline || null
+  }
+  const title =
+    mode === 'daily' ? dailyMarketTitle(lang) : hourlyMarketTitle(lang)
+  const intro =
+    mode === 'daily'
+      ? lang === 'en'
+        ? '🌅 **Daily market brief**\n'
+        : lang === 'zh-Hant'
+          ? '🌅 **每日早報**\n'
+          : '🌅 **每日早报**\n'
+      : lang === 'en'
+        ? '📬 **Half-hourly market push**\n'
+        : lang === 'zh-Hant'
+          ? '📬 **半小時行情推送**\n'
+          : '📬 **半小时行情推送**\n'
+  return buildMarketCard({
+    title,
+    snap,
+    lang,
+    mode,
+    intro,
+    template: mode === 'daily' ? 'blue' : 'wathet',
+    question: lang === 'en' ? 'market' : '行情',
+    kline,
+  })
 }
 
 /** True when the user only typed a market command / synonym — don't echo it back. */

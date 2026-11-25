@@ -1042,6 +1042,49 @@ async function main() {
       : 'no_kline_bars',
   )
   record(
+    'market.card_kline_interval_buttons',
+    logoEls.includes('market_kline_tf') &&
+      logoEls.includes('"bar":"15m"') &&
+      logoEls.includes('"bar":"1H"') &&
+      logoEls.includes('"bar":"4H"') &&
+      logoEls.includes('"bar":"1D"') &&
+      logoEls.includes('"zero":false'),
+    logoEls.includes('market_kline_tf') ? 'tf_buttons_ok' : 'missing_tf_buttons',
+  )
+  const {
+    rebuildMarketCardForInterval,
+    isKlineIntervalBar,
+    klineCloseChartElement,
+  } = await import('../api/lark/_lib/market')
+  record('market.kline_interval_bar_guard', isKlineIntervalBar('15m') && !isKlineIntervalBar('5m'), '')
+  if (hasKlineBars) {
+    const tfCard = await rebuildMarketCardForInterval({
+      bar: '15m',
+      mode: 'hourly',
+      lang: 'zh-Hans',
+    })
+    const tfBlob = JSON.stringify(tfCard)
+    record(
+      'market.rebuild_card_15m',
+      tfBlob.includes('"bar":"15m"') &&
+        tfBlob.includes('"type":"primary"') &&
+        tfBlob.includes('15m 收盘走势') &&
+        tfBlob.includes('"zero":false'),
+      tfBlob.includes('15m 收盘走势') ? '15m_ok' : tfBlob.slice(0, 180),
+    )
+    const chartEl = klineCloseChartElement(liveSnap.hourly?.kline, 'zh-Hans', 16)
+    const yMin = (chartEl as { chart_spec?: { axes?: { min?: number }[] } } | null)?.chart_spec
+      ?.axes?.[1]?.min
+    record(
+      'market.kline_yaxis_not_from_zero',
+      typeof yMin === 'number' && yMin > 1000,
+      `yMin=${yMin}`,
+    )
+  } else {
+    record('market.rebuild_card_15m', true, 'skipped_no_bars')
+    record('market.kline_yaxis_not_from_zero', true, 'skipped_no_bars')
+  }
+  record(
     'market.hourly_attached',
     Boolean(liveSnap.hourly?.tldr?.length || liveSnap.hourly?.opportunity || liveSnap.hourly?.risk),
     `tldr=${liveSnap.hourly?.tldr?.length ?? 0} kline=${liveSnap.hourly?.kline?.bars?.length ?? 0}`,
@@ -1739,6 +1782,12 @@ async function main() {
       hourlyBtnBlob.includes('"type":"area"') &&
       !/[▆▅▄▃▂▁▇█]/.test(hourlyBtnBlob),
     hourlyBtnBlob.includes('"tag":"chart"') ? 'vchart_ok' : 'missing_chart',
+  )
+  record(
+    'cron.hourly_card_kline_tf_buttons',
+    hourlyBtnBlob.includes('market_kline_tf') &&
+      ['15m', '1H', '4H', '1D'].every((b) => hourlyBtnBlob.includes(`"bar":"${b}"`)),
+    hourlyBtnBlob.includes('market_kline_tf') ? 'tf_ok' : 'missing',
   )
   const { resolveMarketLang: resMktLang, dailyMarketTitle: dTitle } = await import(
     '../api/lark/_lib/market',

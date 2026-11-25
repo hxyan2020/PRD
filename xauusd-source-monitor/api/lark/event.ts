@@ -122,7 +122,7 @@ async function handleCardActionRequest(
   const key = dedupeKey(
     args.header,
     messageId,
-    `${messageId}:${String(value.action || '')}:${String(value.incidentId || '')}`,
+    `${messageId}:${String(value.action || '')}:${String(value.incidentId || '')}:${String(value.bar || '')}`,
   )
   if (key && !claimOnce(key)) {
     logInbound({
@@ -135,6 +135,68 @@ async function handleCardActionRequest(
     return res.status(200).json({
       toast: { type: 'info', content: 'Already handled' },
     })
+  }
+
+  // Market K-line interval switch — return replacement card so Feishu updates in place.
+  const isKlineTf = String(value.action || '') === 'market_kline_tf'
+  if (isKlineTf) {
+    try {
+      const reply = await handleCardAction({
+        openId,
+        chatId,
+        messageId,
+        value,
+      })
+      const bar = String(value.bar || '1H')
+      if (reply.card && messageId) {
+        try {
+          const { updateMessageCard } = await import('./_lib/client.js')
+          await updateMessageCard(messageId, reply.card)
+        } catch {
+          /* callback card below is the primary path */
+        }
+      }
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        openId,
+        chatId,
+        messageId,
+        result: reply.card ? `ok:kline_tf:${bar}` : 'fail:kline_tf_no_card',
+      })
+      return res.status(200).json({
+        toast: {
+          type: 'success',
+          content: `K-line ${bar}`,
+          i18n: {
+            zh_cn: `已切换到 ${bar}`,
+            zh_hk: `已切換到 ${bar}`,
+            en_us: `Switched to ${bar}`,
+          },
+        },
+        ...(reply.card ? { card: reply.card } : {}),
+      })
+    } catch (e) {
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        error: e instanceof Error ? e.message : 'kline tf error',
+        result: 'error',
+      })
+      return res.status(200).json({
+        toast: {
+          type: 'error',
+          content: 'K-line switch failed',
+          i18n: {
+            zh_cn: '切换失败，请稍后再试',
+            zh_hk: '切換失敗，請稍後再試',
+            en_us: 'Switch failed — try again',
+          },
+        },
+      })
+    }
   }
 
   // Nudge「知道了」must durable-ack BEFORE toast — waitUntil alone raced cron

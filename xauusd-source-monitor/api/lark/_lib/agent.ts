@@ -758,6 +758,18 @@ export async function handleCardAction(args: {
     }
   }
 
+  // Market card: switch OKX K-line interval (15m / 1H / 4H / 1D) in place.
+  if (action === 'market_kline_tf') {
+    const { isKlineIntervalBar, rebuildMarketCardForInterval, resolveMarketLang } =
+      await import('./market.js')
+    const barRaw = String(args.value.bar || '1H')
+    const bar = isKlineIntervalBar(barRaw) ? barRaw : '1H'
+    const mode = String(args.value.mode || '') === 'daily' ? 'daily' : 'hourly'
+    const cardLang = resolveMarketLang(String(args.value.lang || lang || 'zh-Hans'))
+    const card = await rebuildMarketCardForInterval({ bar, mode, lang: cardLang })
+    return { card }
+  }
+
   return {
     text:
       lang === 'zh-Hans'
