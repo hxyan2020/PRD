@@ -162,6 +162,7 @@ async function handleCardActionRequest(
             chatId,
             messageId,
             value,
+            chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
           })
           if (!reply.card) {
             logInbound({
@@ -242,6 +243,7 @@ async function handleCardActionRequest(
         chatId,
         messageId,
         value,
+        chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
       })
       if (messageId || chatId) {
         waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
@@ -289,6 +291,7 @@ async function handleCardActionRequest(
           chatId,
           messageId,
           value,
+          chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
         })
         await typing.stop()
         let dispatched = { ok: false as boolean, via?: string, error?: string }
