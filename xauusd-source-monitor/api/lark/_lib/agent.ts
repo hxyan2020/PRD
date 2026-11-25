@@ -753,9 +753,10 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   session.preferredLang = lang
   saveSession(msg.chatId, msg.openId, session)
 
-  // Tomorrow-only alert nudge —「知道了」stops;「新告警是什么」explains (not small-talk)
+  // Alert nudge —「知道了」must stop (never fall through to greeting soft-ack)
   {
     const {
+      ALERT_NUDGE_DAY,
       isNudgeActiveDurable,
       looksLikeNudgeAck,
       looksLikeNudgeExplainQuestion,
@@ -764,12 +765,22 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       loadNudgeState,
       isCampaignDay,
     } = await import('./alertNudge.js')
-    if ((await isNudgeActiveDurable()) && looksLikeNudgeAck(workingText)) {
-      const { rememberAdminOpenId } = await import('./client.js')
-      rememberAdminOpenId(msg.openId, 'nudge_ack_text')
-      await ackAlertNudgeDurable(msg.openId)
-      return {
-        card: simpleCard('已收到', '知道了 ✅ 已停止提醒。有新告警再叫我。', 'green'),
+    if (looksLikeNudgeAck(workingText)) {
+      const st = await loadNudgeState()
+      const todayNudge =
+        isCampaignDay() ||
+        st?.dayKey === ALERT_NUDGE_DAY ||
+        Boolean(st?.active) ||
+        Boolean(st?.sendCount) ||
+        (await isNudgeActiveDurable())
+      // Campaign day / any nudge state: always durable-ack + confirm. Do NOT greet.
+      if (todayNudge) {
+        const { rememberAdminOpenId } = await import('./client.js')
+        rememberAdminOpenId(msg.openId, 'nudge_ack_text')
+        await ackAlertNudgeDurable(msg.openId)
+        return {
+          card: simpleCard('已收到', '知道了 ✅ 已停止提醒。有新告警再叫我。', 'green'),
+        }
       }
     }
     if (looksLikeNudgeExplainQuestion(workingText)) {

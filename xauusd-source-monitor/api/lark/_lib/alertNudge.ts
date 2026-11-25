@@ -188,9 +188,16 @@ export async function isNudgeActiveDurable(): Promise<boolean> {
   return Boolean(s?.active && !s.acked && s.dayKey === ALERT_NUDGE_DAY)
 }
 
+/**
+ * 「知道了」with optional leading @mentions (bot display names may contain spaces,
+ * e.g.「@VE AI风控小助手 知道了」). Must not match real questions.
+ */
 export function looksLikeNudgeAck(text: string): boolean {
   const t = (text || '').trim()
-  return /^(知道了|知道啦|收到|got\s*it|ok|okay)\s*[!.。！~]*$/i.test(t)
+  if (!t) return false
+  return /^(?:@_user_\d+\s+|@.+\s+)*(知道了|知道啦|收到|got\s*it|ok|okay)\s*[!.。！~]*$/i.test(
+    t,
+  )
 }
 
 /**「新告警／这个提醒是什么」— explain the nudge card, not small-talk. */

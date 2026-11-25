@@ -1249,7 +1249,14 @@ async function main() {
       ALERT_NUDGE_DAY === '2026-11-25',
     nudgeJson.slice(0, 220),
   )
-  record('nudge.ack_text', looksLikeNudgeAck('知道了') && !looksLikeNudgeAck('行情'), '')
+  record(
+    'nudge.ack_text',
+    looksLikeNudgeAck('知道了') &&
+      looksLikeNudgeAck('@VE AI风控小助手 知道了') &&
+      looksLikeNudgeAck('@_user_1 知道了') &&
+      !looksLikeNudgeAck('行情'),
+    '',
+  )
   const { looksLikeNudgeExplainQuestion, formatNudgeExplainReply } = await import(
     '../api/lark/_lib/alertNudge'
   )
