@@ -1371,9 +1371,9 @@ async function main() {
       'market.kline_tf_callback_acks_under_3s',
       eventSrc.includes('200341') &&
         eventSrc.includes('kline_tf_async') &&
-        /isKlineTf[\s\S]{0,400}?waitUntil/.test(eventSrc) &&
         /正在切换到|Switching to/.test(eventSrc) &&
-        !/isKlineTf[\s\S]{0,200}?await handleCardAction/.test(eventSrc),
+        /isKlineTf[\s\S]{0,300}?waitUntil\([\s\S]{0,200}?await handleCardAction/.test(eventSrc) &&
+        /isKlineTf[\s\S]{0,2500}?return res\.status\(200\)\.json\(\{\s*\n\s*toast:/.test(eventSrc),
       'toast-first + waitUntil updateMessageCard',
     )
   }
