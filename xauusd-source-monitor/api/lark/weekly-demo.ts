@@ -8,7 +8,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { larkConfigured, resolveAdminOpenId, sendCardToChat } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
-import { buildWeeklyDemoReport, weeklyReportCard } from './_lib/weeklyReport.js'
+import { buildWeeklyDemoReport, weeklyDemoCard } from './_lib/weeklyReport.js'
 import { shanghaiDayKey } from './_lib/market.js'
 import { shanghaiHm } from './_lib/oscillationAlert.js'
 
@@ -56,14 +56,9 @@ function buildDemoCard(adminOpenId?: string): {
   card: Record<string, unknown>
   empty: boolean
 } {
-  // Virtual sample incidents — group 16:00 DEMO must not depend on empty serverless store.
+  // Virtual sample incidents + VChart severity/trend charts.
   const report = buildWeeklyDemoReport(Date.now(), 'zh-Hans', adminOpenId)
-  const card = weeklyReportCard(report.markdown, report.empty)
-  const header = card.header as { template?: string; title?: { content?: string } }
-  if (header) {
-    header.template = 'orange'
-    if (header.title) header.title.content = '【DEMO】每周复盘'
-  }
+  const card = weeklyDemoCard(report)
   return { markdown: report.markdown, card, empty: report.empty }
 }
 

@@ -406,3 +406,97 @@ export function weeklyReportCard(markdown: string, empty: boolean): Record<strin
     ],
   }
 }
+
+/** Severity distribution — Feishu chart (VChart bar). Client ≥ 7.1. */
+export function weeklySeverityChartElement(
+  bySeverity: Record<string, number>,
+): Record<string, unknown> {
+  const values = ['P0', 'P1', 'P2', 'P3', '其他']
+    .map((sev) => ({ sev, value: bySeverity[sev] || 0 }))
+    .filter((r) => r.value > 0)
+  const data = values.length ? values : [{ sev: '无', value: 0 }]
+  return {
+    tag: 'chart',
+    aspect_ratio: '16:9',
+    color_theme: 'brand',
+    preview: true,
+    chart_spec: {
+      type: 'bar',
+      title: { text: '严重度分布（DEMO）' },
+      data: { values: data },
+      xField: 'sev',
+      yField: 'value',
+      label: { visible: true },
+    },
+  }
+}
+
+/** Events per Shanghai calendar day — Feishu chart (VChart line). */
+export function weeklyEventsTrendChartElement(
+  incidents: IncidentRecord[],
+  window: WeeklyWindow,
+): Record<string, unknown> {
+  const counts = new Map<string, number>()
+  // Fill every day in the 7-day window so the axis is continuous
+  for (let t = window.sinceMs; t <= window.untilMs; t += 86_400_000) {
+    counts.set(shanghaiDayKey(t).slice(5), 0) // MM-DD
+  }
+  for (const inc of incidents) {
+    const key = shanghaiDayKey(Math.max(inc.createdAt, inc.updatedAt)).slice(5)
+    if (!counts.has(key)) counts.set(key, 0)
+    counts.set(key, (counts.get(key) || 0) + 1)
+  }
+  const values = [...counts.entries()].map(([day, value]) => ({ day, value }))
+  return {
+    tag: 'chart',
+    aspect_ratio: '16:9',
+    color_theme: 'rainbow',
+    preview: true,
+    chart_spec: {
+      type: 'line',
+      title: { text: '近 7 日事件数（DEMO）' },
+      data: { values },
+      xField: 'day',
+      yField: 'value',
+      label: { visible: true },
+      point: { visible: true },
+    },
+  }
+}
+
+/**
+ * DEMO card with VChart severity bar + daily event line.
+ * Falls back gracefully on Feishu < 7.1 (placeholder upgrade hint).
+ */
+export function weeklyDemoCard(report: WeeklyReportPayload): Record<string, unknown> {
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'orange',
+      title: { tag: 'plain_text', content: '【DEMO】每周复盘' },
+    },
+    elements: [
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content:
+            '🧪 **图表演练**（飞书卡片 VChart · 客户端 ≥ 7.1 可交互放大）\n• 严重度柱状图 · 近 7 日事件折线',
+        },
+      },
+      weeklySeverityChartElement(report.bySeverity),
+      weeklyEventsTrendChartElement(report.incidents, report.window),
+      { tag: 'hr' },
+      { tag: 'div', text: { tag: 'lark_md', content: report.markdown } },
+      {
+        tag: 'note',
+        elements: [
+          {
+            tag: 'plain_text',
+            content: 'DEMO 虚拟数据 · 推送对象：Yan Haixiang · 东八区 · 非正式周五周报',
+          },
+        ],
+      },
+    ],
+  }
+}

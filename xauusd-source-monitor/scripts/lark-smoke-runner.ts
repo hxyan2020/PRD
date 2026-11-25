@@ -48,6 +48,7 @@ import {
   buildWeeklyReport,
   shanghaiWeekKey,
   virtualWeeklyIncidents,
+  weeklyDemoCard,
   weeklyReportCard,
   weeklyWindow,
 } from '../api/lark/_lib/weeklyReport'
@@ -1913,7 +1914,7 @@ async function main() {
     'zh-Hans',
     'ou_smoke_admin',
   )
-  const wrDemoCard = weeklyReportCard(wrDemo.markdown, wrDemo.empty)
+  const wrDemoCard = weeklyDemoCard(wrDemo)
   const wrDemoJson = JSON.stringify(wrDemoCard)
   record(
     'weekly.demo_card_zh',
@@ -1925,6 +1926,16 @@ async function main() {
       wrDemo.markdown.includes('Mark vs Index') &&
       wrDemo.markdown.includes('<at id="ou_smoke_admin"></at>'),
     wrDemo.markdown.slice(0, 220),
+  )
+  record(
+    'weekly.demo_card_has_charts',
+    wrDemoJson.includes('"tag":"chart"') &&
+      wrDemoJson.includes('严重度分布') &&
+      wrDemoJson.includes('近 7 日事件数') &&
+      wrDemoJson.includes('chart_spec') &&
+      /"type":"bar"/.test(wrDemoJson) &&
+      /"type":"line"/.test(wrDemoJson),
+    wrDemoJson.slice(0, 280),
   )
 
   // 9b) Skills / knowledge catalogue cards

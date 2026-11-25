@@ -12,6 +12,7 @@ import { listIncidents } from './_lib/store.js'
 import {
   buildWeeklyDemoReport,
   buildWeeklyReport,
+  weeklyDemoCard,
   weeklyReportCard,
 } from './_lib/weeklyReport.js'
 
@@ -73,14 +74,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const report = demo
     ? buildWeeklyDemoReport(now, 'zh-Hans', resolvedEarly.openId)
     : buildWeeklyReport(incidents, now, 'zh-Hans', resolvedEarly.openId)
-  const card = weeklyReportCard(report.markdown, report.empty)
-  if (demo) {
-    const header = card.header as { template?: string; title?: { content?: string } }
-    if (header) {
-      header.template = 'orange'
-      if (header.title) header.title.content = '【DEMO】每周复盘'
-    }
-  }
+  const card = demo ? weeklyDemoCard(report) : weeklyReportCard(report.markdown, report.empty)
 
   if (dry && !cron) {
     return res.status(200).json({
