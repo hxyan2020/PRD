@@ -2,7 +2,8 @@
  * Weekly ops digest for Yan Haixiang — events handled + recommendations.
  * Window: last 7 days ending at `now`, labeled in Asia/Shanghai (东八区).
  */
-import type { IncidentRecord, Lang } from './types.js'
+import { countRiskVerdicts, riskVerdictEmoji, riskVerdictLabel, type RiskVerdictCounts } from './riskVerdict.js'
+import type { IncidentRecord, Lang, RiskVerdict } from './types.js'
 
 export type WeeklyWindow = {
   sinceMs: number
@@ -92,6 +93,7 @@ export type WeeklyReportPayload = {
   open: number
   archived: number
   bySeverity: Record<string, number>
+  byRiskVerdict: RiskVerdictCounts
   topSkills: { id: string; count: number }[]
   recommendations: string[]
   markdown: string
@@ -114,6 +116,7 @@ export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
       recommendations: string[]
       status: 'open' | 'archived'
       daysAgo: number
+      riskVerdict: RiskVerdict
     },
   ): IncidentRecord => {
     const t = now - args.daysAgo * day - i * 3_600_000
@@ -128,6 +131,9 @@ export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
       knowledge: [],
       summary: args.summary,
       recommendations: args.recommendations,
+      riskVerdict: args.riskVerdict,
+      riskVerdictAt: t + 40 * 60_000,
+      riskVerdictBy: 'demo',
       status: args.status,
       createdAt: t,
       updatedAt: t + 45 * 60_000,
@@ -148,6 +154,7 @@ export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
       ],
       status: 'archived',
       daysAgo: 1,
+      riskVerdict: 'at_risk',
     }),
     mk(2, {
       title: '外部 Funding 偏差超阈 · XAU-USDT-SWAP',
@@ -161,6 +168,7 @@ export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
       ],
       status: 'archived',
       daysAgo: 2,
+      riskVerdict: 'at_risk',
     }),
     mk(3, {
       title: 'LP 接仓失败重试堆积',
@@ -173,6 +181,7 @@ export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
       ],
       status: 'open',
       daysAgo: 3,
+      riskVerdict: 'unclear',
     }),
     mk(4, {
       title: '现货源短时断流 · Kitco／金 API',
@@ -182,6 +191,7 @@ export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
       recommendations: ['观察源恢复后健康分是否回升', '必要时临时降低现货锚点权重'],
       status: 'archived',
       daysAgo: 4,
+      riskVerdict: 'no_risk',
     }),
     mk(5, {
       title: 'ADL 预警演练 · 模拟高杠杆拥挤',
@@ -191,6 +201,7 @@ export function virtualWeeklyIncidents(now = Date.now()): IncidentRecord[] {
       recommendations: ['保留演练日志供周五复盘', '核对 ADL 阈值与通知模板'],
       status: 'archived',
       daysAgo: 5,
+      riskVerdict: 'no_risk',
     }),
   ]
 }
@@ -227,6 +238,7 @@ export function buildWeeklyReport(
   const open = weekIncidents.filter((r) => r.status === 'open').length
   const archived = weekIncidents.filter((r) => r.status === 'archived').length
   const bySeverity: Record<string, number> = { P0: 0, P1: 0, P2: 0, P3: 0, 其他: 0 }
+  const byRiskVerdict = countRiskVerdicts(weekIncidents)
   const skillCount = new Map<string, number>()
   const recs: string[] = []
 
@@ -251,6 +263,7 @@ export function buildWeeklyReport(
     open,
     archived,
     bySeverity,
+    byRiskVerdict,
     topSkills,
     recommendations,
     adminOpenId,
@@ -262,6 +275,7 @@ export function buildWeeklyReport(
     open,
     archived,
     bySeverity,
+    byRiskVerdict,
     topSkills,
     recommendations,
     markdown,
@@ -276,6 +290,7 @@ function formatWeeklyMarkdown(args: {
   open: number
   archived: number
   bySeverity: Record<string, number>
+  byRiskVerdict: RiskVerdictCounts
   topSkills: { id: string; count: number }[]
   recommendations: string[]
   adminOpenId?: string
@@ -289,6 +304,10 @@ function formatWeeklyMarkdown(args: {
     .filter((k) => (args.bySeverity[k] || 0) > 0)
     .map((k) => `**${k}** ${args.bySeverity[k]}`)
     .join(' · ')
+  const rv = args.byRiskVerdict
+  const riskLine = hans
+    ? `🔴有风险 **${rv.at_risk}** · 🟢无风险 **${rv.no_risk}** · 🟡尚不明确 **${rv.unclear}** · ⚪未判定 **${rv.unset}**`
+    : `🔴 at risk **${rv.at_risk}** · 🟢 no risk **${rv.no_risk}** · 🟡 unclear **${rv.unclear}** · ⚪ unset **${rv.unset}**`
 
   const skillLine = args.topSkills.length
     ? args.topSkills.map((s) => `**${s.id}**×${s.count}`).join(' · ')
@@ -300,8 +319,8 @@ function formatWeeklyMarkdown(args: {
     total === 0
       ? [
           hans
-            ? '_本周暂无已记录排查事件（serverless 临时存储；若本周确有会话，请以看板为准）。_'
-            : '_No recorded investigations this week (ephemeral serverless store; check the desk board if sessions happened)._',
+            ? '_本周暂无已记录排查事件（若本周确有会话，请以看板为准）。_'
+            : '_No recorded investigations this week (check the desk board if sessions happened)._',
         ]
       : args.incidents.slice(0, 15).map((inc, i) => {
           const when = new Date(inc.updatedAt).toLocaleString(hans ? 'zh-CN' : 'en-SG', {
@@ -317,9 +336,12 @@ function formatWeeklyMarkdown(args: {
               ? '进行中'
               : '已归档'
             : inc.status
+          const verdict = `${riskVerdictEmoji(inc.riskVerdict)} ${riskVerdictLabel(inc.riskVerdict, args.lang)}`
           return [
             `${i + 1}. **${inc.title.slice(0, 64)}**`,
-            `• **严重度：** **${inc.severity}** · **状态：** ${status} · 🕒 ${when} CST`,
+            hans
+              ? `• **严重度：** **${inc.severity}** · **状态：** ${status} · **判定：** ${verdict} · 🕒 ${when} CST`
+              : `• **Severity:** **${inc.severity}** · **Status:** ${status} · **Verdict:** ${verdict} · 🕒 ${when} CST`,
             inc.skills?.length ? `• **Skills：** ${inc.skills.slice(0, 4).join(', ')}` : null,
             `• ${inc.summary.replace(/\s+/g, ' ').trim().slice(0, 160)}`,
           ]
@@ -342,6 +364,7 @@ function formatWeeklyMarkdown(args: {
       '📈 **本周概览**',
       '',
       `• **处理事件：** **${total}**（进行中 **${args.open}** / 已归档 **${args.archived}**）`,
+      `• **最终判定：** ${riskLine}`,
       `• **严重度分布：** ${sevLine || '无'}`,
       `• **高频 Skills：** ${skillLine}`,
       '',
@@ -368,6 +391,7 @@ function formatWeeklyMarkdown(args: {
     '📈 **Overview**',
     '',
     `• **Events:** **${total}** (open **${args.open}** / archived **${args.archived}**)`,
+    `• **Risk verdicts:** ${riskLine}`,
     `• **Severity:** ${sevLine || 'none'}`,
     `• **Top skills:** ${skillLine}`,
     '',

@@ -13,6 +13,7 @@ export type LarkIncident = {
   knowledge: string[]
   summary: string
   recommendations: string[]
+  riskVerdict?: 'at_risk' | 'no_risk' | 'unclear'
   status: 'open' | 'archived'
   createdAt: number
   updatedAt: number
@@ -25,6 +26,7 @@ export type DashboardRow = {
   title: string
   severity: string
   status: 'open' | 'archived'
+  riskVerdict?: 'at_risk' | 'no_risk' | 'unclear' | 'unset'
   summary: string
   skills: string[]
   createdAt: number
@@ -67,6 +69,7 @@ function deskToRow(h: DeskIncident): DashboardRow {
     title: h.title || 'Untitled',
     severity: normalizeSeverity(h.severity),
     status: h.archivedAt ? 'archived' : 'open',
+    riskVerdict: 'unset',
     summary: (h.report || '').slice(0, 280),
     skills: [
       ...(h.skillsUsed?.map((s) => s.id) || []),
@@ -87,6 +90,7 @@ function larkToRow(h: LarkIncident): DashboardRow {
     title: h.title || h.id,
     severity: normalizeSeverity(h.severity),
     status: h.status === 'archived' ? 'archived' : 'open',
+    riskVerdict: h.riskVerdict || 'unset',
     summary: (h.summary || '').slice(0, 280),
     skills: h.skills || [],
     createdAt: h.createdAt,
@@ -94,6 +98,13 @@ function larkToRow(h: LarkIncident): DashboardRow {
     recommendations: h.recommendations || [],
     factsPreview: (h.facts || []).join(' · ').slice(0, 220),
   }
+}
+
+function riskVerdictLabelUi(v: DashboardRow['riskVerdict'], zh: boolean) {
+  if (v === 'at_risk') return zh ? '有风险' : 'At risk'
+  if (v === 'no_risk') return zh ? '无风险' : 'No risk'
+  if (v === 'unclear') return zh ? '尚不明确' : 'Unclear'
+  return zh ? '未判定' : 'Unset'
 }
 
 async function fetchLarkIncidents(): Promise<{
@@ -169,12 +180,20 @@ export function ReportsDashboardPage() {
   const viz = useMemo(() => {
     const all = [...desk.map(deskToRow), ...lark.map(larkToRow)]
     const bySeverity: Record<string, number> = {}
+    const byRisk: Record<string, number> = {
+      at_risk: 0,
+      no_risk: 0,
+      unclear: 0,
+      unset: 0,
+    }
     const byDay: Record<string, number> = {}
     const skillMap = new Map<string, number>()
     let open = 0
     let archived = 0
     for (const r of all) {
       bySeverity[r.severity] = (bySeverity[r.severity] || 0) + 1
+      const rv = r.riskVerdict || 'unset'
+      byRisk[rv] = (byRisk[rv] || 0) + 1
       if (r.status === 'open') open += 1
       else archived += 1
       const day = dayKeySgt(r.updatedAt)
@@ -196,6 +215,7 @@ export function ReportsDashboardPage() {
       desk: desk.length,
       lark: lark.length,
       bySeverity,
+      byRisk,
       lastDays,
       byDay,
       maxDay,
@@ -255,6 +275,18 @@ export function ReportsDashboardPage() {
             {larkState === 'loading' ? ` · ${t('reportsLoadingLark')}` : ''}
             {larkState === 'error' ? ` · ${t('reportsLarkUnavailable')}` : ''}
           </span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">{t('reportsAtRisk')}</span>
+          <strong className="stat-value">{viz.byRisk.at_risk}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">{t('reportsNoRisk')}</span>
+          <strong className="stat-value">{viz.byRisk.no_risk}</strong>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">{t('reportsRiskUnset')}</span>
+          <strong className="stat-value">{viz.byRisk.unclear + viz.byRisk.unset}</strong>
         </div>
       </div>
 
@@ -392,6 +424,9 @@ export function ReportsDashboardPage() {
                       </span>
                       <span className="pill status-pill">
                         {r.status === 'open' ? t('reportsOpen') : t('reportsArchived')}
+                      </span>
+                      <span className="pill status-pill">
+                        {riskVerdictLabelUi(r.riskVerdict, zh)}
                       </span>
                       <span className="mono reports-list-time">{sgt(r.updatedAt)} SGT</span>
                     </div>
