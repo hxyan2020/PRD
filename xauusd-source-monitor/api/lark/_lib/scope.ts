@@ -158,12 +158,20 @@ const COMMAND_OSCILLATION =
 const COMMAND_DAILY_MARKET =
   /^(?:daily(?:\s*24h)?(?:\s*market)?(?:\s*report)?|morning(?:\s*report)?|每日\s*24h\s*早报|每日24h早报|每日\s*24\s*小时早报|每日24小時早報|每日早报|每日早報|24h\s*早报|24h早報|24小时早报|24小時早報)\s*$/i
 
+/** Alert optimize desk (CSV / API analysis) — web + Lark greeting entry. */
+const COMMAND_ALERT_OPTIMIZE =
+  /^(?:alert[\s_-]*optim(?:ize|ise)|alert[\s_-]*tuning|告警优化|告警優化|告警调参|告警調參)\s*$/i
+
 export function isOscillationCommand(text: string): boolean {
   return COMMAND_OSCILLATION.test(text.trim())
 }
 
 export function isDailyMarketCommand(text: string): boolean {
   return COMMAND_DAILY_MARKET.test(text.trim())
+}
+
+export function isAlertOptimizeCommand(text: string): boolean {
+  return COMMAND_ALERT_OPTIMIZE.test(text.trim())
 }
 
 /** Bare wiki / docs keyword (CJK-safe). */
@@ -396,6 +404,7 @@ export function classifyIntent(
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
   if (COMMAND_OSCILLATION.test(t)) return 'oscillation'
   if (COMMAND_DAILY_MARKET.test(t)) return 'daily_market'
+  if (COMMAND_ALERT_OPTIMIZE.test(t)) return 'alert_optimize'
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
   // Proceed-based report from recorded interactions (prefer during an open case)
@@ -450,6 +459,7 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   if (intent === 'weekly') return COMMAND_WEEKLY.test(t)
   if (intent === 'oscillation') return COMMAND_OSCILLATION.test(t)
   if (intent === 'daily_market') return COMMAND_DAILY_MARKET.test(t)
+  if (intent === 'alert_optimize') return COMMAND_ALERT_OPTIMIZE.test(t)
   if (intent === 'review') return COMMAND_REVIEW.test(t)
   if (intent === 'help') return COMMAND_HELP.test(t) || HELP_RE.test(t)
   if (intent === 'archive') return COMMAND_DONE.test(t)
@@ -462,6 +472,7 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
     COMMAND_WEEKLY.test(t) ||
     COMMAND_OSCILLATION.test(t) ||
     COMMAND_DAILY_MARKET.test(t) ||
+    COMMAND_ALERT_OPTIMIZE.test(t) ||
     COMMAND_REVIEW.test(t) ||
     COMMAND_HELP.test(t) ||
     COMMAND_DONE.test(t) ||
@@ -552,6 +563,7 @@ export function pendingCommandLabel(
     weekly: { zh: '生成周报', en: 'build the weekly report' },
     oscillation: { zh: '检查震荡行情预警状态', en: 'check oscillation-alert status' },
     daily_market: { zh: '查看每日 24h 早报状态', en: 'check the daily 24h morning report' },
+    alert_optimize: { zh: '打开告警优化桌面页', en: 'open the alert-optimize desk page' },
   }
   const row = map[intent] || { zh: '执行该操作', en: 'run that action' }
   if (lang === 'zh-Hans' || lang === 'zh-Hant') {
@@ -756,6 +768,7 @@ export function botCapabilitiesReply(lang: Lang, question: string): string | nul
       '• **闲聊** — 吃饭、玩笑、随便问，我按聊天回',
       '• **行情** — 说「行情」或问黄金怎么样（群早报见下方定时推送）',
       '• **排查** — 贴告警／截图／表格，我对着 Skills 帮你拆',
+      '• **告警优化** — 说「告警优化」打开桌面 CSV／API 分析页',
       '• **知识／Skills 目录** — 说 **skills** 或 **知识库** 打开清单（桌面 34 个场景）',
       '• **定时推送** — 早报、震荡预警、周报（问「你有多少 cron」可看列表）',
       '',
@@ -769,6 +782,7 @@ export function botCapabilitiesReply(lang: Lang, question: string): string | nul
       '• **閒聊** — 吃飯、玩笑、隨便問',
       '• **行情** — 說「行情」或問黃金怎麼樣（群早報見下方定時推送）',
       '• **排查** — 貼告警／截圖／表格',
+      '• **告警優化** — 說「告警優化」打開桌面 CSV／API 分析頁',
       '• **知識／Skills 目錄** — 說 **skills** 或 **知識庫**',
       '• **定時推送** — 早報、震盪預警、週報',
       '',
@@ -781,6 +795,7 @@ export function botCapabilitiesReply(lang: Lang, question: string): string | nul
     '• **Chat** — food, banter, random asks',
     '• **Markets** — say **market** or ask about gold (group morning digest is under scheduled pushes)',
     '• **Investigate** — paste an alert, screenshot, or table',
+    '• **Alert optimize** — say **alert optimize** for the CSV / API desk page',
     '• **Skills / knowledge catalogue** — say **skills** or **knowledge**',
     '• **Scheduled pushes** — morning report, oscillation, weekly (ask “how many crons”)',
     '',
@@ -1165,6 +1180,8 @@ export function greetingReply(lang: Lang): string {
       '',
       '• 🔍 **排查** — 贴告警／截图／表格，引导排查',
       '',
+      '• 🛠️ **告警优化** — 上传 CSV／链接 API 分析底层数据与阈值（桌面页）',
+      '',
       '• 📊 **复盘** / **看板** — 告警与报告看板',
       '',
       '• 🧩 **技能** — 34 个排查场景（L1-01～28 + L2-A～F）',
@@ -1199,6 +1216,8 @@ export function greetingReply(lang: Lang): string {
       '',
       '• 🔍 **排查** — 貼告警／截圖／表格，引導排查',
       '',
+      '• 🛠️ **告警優化** — 上傳 CSV／連結 API 分析底層數據與閾值（桌面頁）',
+      '',
       '• 📊 **複盤** / **看板** — 告警與報告看板',
       '',
       '• 🧩 **技能** — 34 個排查場景（L1-01～28 + L2-A～F）',
@@ -1232,6 +1251,8 @@ export function greetingReply(lang: Lang): string {
     '',
     '• 🔍 **investigate** — paste an alert, screenshot, or table to dig in',
     '',
+    '• 🛠️ **alert optimize** — upload CSV / link APIs to tune alerts on the web desk',
+    '',
     '• 📊 **review** / **dashboard** — alerts & reports board',
     '',
     '• 🧩 **skills** — 34 investigation scenarios (L1-01–28 + L2-A–F)',
@@ -1260,6 +1281,7 @@ export function helpReply(lang: Lang): string {
       '',
       '• 📈 **行情** — 市况／趋势',
       '• 🔍 **排查** — 贴告警／截图／表格排查',
+      '• 🛠️ **告警优化** — CSV／API 分析阈值（桌面）',
       '• 📊 **复盘** / **看板** — 告警看板',
       '• 🧩 **技能** — 34 个排查场景（不是监控指标清单）',
       '• 📚 **知识库** — 知识库（含「可能出现的风险」）',
@@ -1282,6 +1304,7 @@ export function helpReply(lang: Lang): string {
       '',
       '• 📈 **行情** — 市況／趨勢',
       '• 🔍 **排查** — 貼告警／截圖／表格排查',
+      '• 🛠️ **告警優化** — CSV／API 分析閾值（桌面）',
       '• 📊 **複盤** / **看板** — 告警看板',
       '• 🧩 **技能** — 34 個排查場景（不是監控指標清單）',
       '• 📚 **知識庫** — 知識庫（含「可能出現的風險」）',
@@ -1303,6 +1326,7 @@ export function helpReply(lang: Lang): string {
     '',
     '• 📈 **market** — market trends',
     '• 🔍 **investigate** — paste alert / screenshot / table',
+    '• 🛠️ **alert optimize** — CSV / API alert tuning on the web desk',
     '• 📊 **review** / **dashboard** — alerts board',
     '• 🧩 **skills** — 34 investigation scenarios (not the metric inventory)',
     '• 📚 **knowledge** / **kb** — knowledge base (incl. possible risks)',

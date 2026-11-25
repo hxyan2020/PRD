@@ -19,6 +19,50 @@ const SKILLS_URL = 'https://vex-llm-proxy.vercel.app/#/skills'
 const KNOWLEDGE_URL = 'https://vex-llm-proxy.vercel.app/#/knowledge'
 const MARKET_URL = 'https://vex-llm-proxy.vercel.app/#/market'
 const DASHBOARD_URL = 'https://vex-llm-proxy.vercel.app/#/reports'
+const ALERT_OPTIMIZE_URL = 'https://vex-llm-proxy.vercel.app/#/alert-optimize'
+
+/** Desk entry for alert-threshold / CSV+API analysis. */
+export function alertOptimizeCard(lang: Lang): Record<string, unknown> {
+  const hans = lang === 'zh-Hans'
+  const zh = isZh(lang)
+  const title = hans
+    ? '告警优化'
+    : zh
+      ? '告警優化'
+      : 'Alert optimize'
+  const body = hans
+    ? [
+        '🛠️ **告警优化（桌面）**',
+        '',
+        '在网页上传 **CSV** 或链接 **API**，拉取 V Exchange 底层数据（告警日志、后管配置字段等），输入想分析的问题后点 **分析**：',
+        '1. 先回馈读到了什么，并画图',
+        '2. 再给出答案',
+        '3. 声明数据问题与所用假设',
+        '4. 可一键生成完整报告／复制产出',
+        '',
+        `[打开告警优化页](${ALERT_OPTIMIZE_URL})`,
+      ].join('\n')
+    : zh
+      ? [
+          '🛠️ **告警優化（桌面）**',
+          '',
+          '在網頁上傳 **CSV** 或連結 **API**，拉取 V Exchange 底層數據，輸入問題後點 **分析**：先回饋讀到什麼並畫圖，再給答案，並聲明數據問題與假設；可一鍵報告／複製。',
+          '',
+          `[打開告警優化頁](${ALERT_OPTIMIZE_URL})`,
+        ].join('\n')
+      : [
+          '🛠️ **Alert optimize (web desk)**',
+          '',
+          'Upload **CSV** or link **APIs** for V Exchange underlying data (alert logs, admin config fields, …). Ask a question → **Analyze**:',
+          '1. What I read + charts',
+          '2. Answer',
+          '3. Data issues + assumptions',
+          '4. One-click full report / copy',
+          '',
+          `[Open Alert optimize](${ALERT_OPTIMIZE_URL})`,
+        ].join('\n')
+  return simpleCard(title, body, 'turquoise')
+}
 
 function severityEmoji(sev: string): string {
   const s = (sev || '').toUpperCase()
