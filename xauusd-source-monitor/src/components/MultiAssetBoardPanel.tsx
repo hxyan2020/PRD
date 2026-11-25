@@ -58,10 +58,11 @@ export function MultiAssetBoardPanel() {
     setLoading(true)
     setError(null)
     try {
-      // Prefer same-origin API on Vercel; fall back to in-browser public feeds (GitHub Pages / local).
+      // Prefer same-origin API (Vercel + Vite middleware); avoid treating SPA HTML as JSON.
       try {
         const r = await fetch('/api/market/board', { cache: 'no-store' })
-        if (r.ok) {
+        const ct = r.headers.get('content-type') || ''
+        if (r.ok && ct.includes('application/json')) {
           const data = (await r.json()) as { ok?: boolean; board?: Board; error?: string }
           if (data.ok && data.board) {
             setBoard(data.board)

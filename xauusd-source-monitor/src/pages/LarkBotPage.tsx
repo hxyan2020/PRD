@@ -195,8 +195,8 @@ export function LarkBotPage() {
           </li>
           <li>
             {zh
-              ? '用上方按鈕打開私聊，或把「VE AI风控小助手」加進風險群，然後發送 hi / 你好 / help'
-              : 'Use the DM button above, or add “VE AI风控小助手” to a risk group, then send hi / 你好 / help'}
+              ? '用上方按鈕打開私聊，或把「报价 AI排查助手」加進風險群，然後發送 hi / 你好 / help'
+              : 'Use the DM button above, or add “报价 AI排查助手” to a risk group, then send hi / 你好 / help'}
           </li>
           <li>
             {zh

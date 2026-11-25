@@ -22,7 +22,7 @@ const en: Dict = {
   multiAssetKicker: 'CFD Pricing · live board',
   multiAssetTitle: 'Multi-asset market board',
   multiAssetSub:
-    'Major crypto / equities / FX / commodities for CFD pricing risk. Sources: Binance·OKX (crypto), Yahoo Finance (equities·FX·futures).',
+    'Major crypto / equities / FX / commodities for CFD pricing risk. Sources: Binance·OKX (crypto); Yahoo / Stooq / Frankfurter (equities·FX·commodities).',
   multiAssetAsOf: 'As of {time} (SGT)',
   multiAssetRefresh: 'Refresh',
   multiAssetMovers: 'Movers',
@@ -570,7 +570,7 @@ const zhHant: Dict = {
   multiAssetKicker: 'CFD 定價 · 即時行情板',
   multiAssetTitle: '跨資產行情板',
   multiAssetSub:
-    'CFD 定價風控用的加密／股指／外匯／商品主要指數。來源：Binance·OKX（加密）、Yahoo Finance（股指·外匯·期貨）。',
+    'CFD 定價風控用的加密／股指／外匯／商品主要指數。來源：Binance·OKX（加密）；Yahoo／Stooq／Frankfurter（股指·外匯·商品）。',
   multiAssetAsOf: '更新於 {time}（SGT）',
   multiAssetRefresh: '重新整理',
   multiAssetMovers: '波動亮點',
