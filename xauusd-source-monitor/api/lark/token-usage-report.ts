@@ -90,7 +90,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ? { openId: body.openId.trim(), source: 'request' }
     : await resolveAdminOpenId()
 
-  if (dry && !cron) {
+  // Explicit ?dry=1 always previews (even with cron header) — never sends.
+  if (dry) {
     return res.status(200).json({
       ok: true,
       dry: true,
