@@ -2076,7 +2076,8 @@ async function main() {
     Boolean(whoYouTurn.reply?.card) &&
       whoYouTurn.blob.includes('报价 AI排查助手') &&
       /CFD 定价风控/i.test(whoYouTurn.blob) &&
-      (/与 V Exchange|無關|无关/i.test(whoYouTurn.blob) || !/V Exchange Risk Copilot/i.test(whoYouTurn.blob)) &&
+      !/V Exchange Risk Copilot/i.test(whoYouTurn.blob) &&
+      !/与 V Exchange／永续无关|與 V Exchange／永續無關|not perpetual/i.test(whoYouTurn.blob) &&
       !whoYouTurn.blob.includes('没有命中'),
     whoYouTurn.blob.slice(0, 220),
   )

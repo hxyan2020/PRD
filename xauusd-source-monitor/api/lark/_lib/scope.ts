@@ -988,20 +988,20 @@ export function casualChatReply(
   if (CASUAL_WHO_YOU.test(t)) {
     if (lang === 'zh-Hans') {
       return [
-        '🙋 我是 **报价 AI排查助手**——**CFD 定价风控专家**（与 V Exchange／永续无关）。',
+        '🙋 我是 **报价 AI排查助手**——**CFD 定价风控专家**。',
         '',
         '专长 LP→PE→MT 报价链路、旧价成交、Bad Tick、Markout、强平／LP 切源；也会帮你看跨资产行情、翻 Skills／知识库。有定价风控问题直接丢给我就行 🙂',
       ].join('\n')
     }
     if (lang === 'zh-Hant') {
       return [
-        '🙋 我是 **报价 AI排查助手**——**CFD 定價風控專家**（與 V Exchange／永續無關）。',
+        '🙋 我是 **报价 AI排查助手**——**CFD 定價風控專家**。',
         '',
         '專長 LP→PE→MT 報價鏈路、舊價成交、Bad Tick、Markout、強平／LP 切源；也會幫你看跨資產行情、翻 Skills／知識庫。有定價風控問題直接丟給我就行 🙂',
       ].join('\n')
     }
     return [
-      '🙋 I’m **报价 AI排查助手** — a **CFD pricing risk-control expert** (not V Exchange / not perpetual).',
+      '🙋 I’m **报价 AI排查助手** — a **CFD pricing risk-control expert**.',
       '',
       'I focus on LP→PE→MT quote pipeline, stale quote, Bad Tick, markout, stop-out / LP failover — plus multi-asset market scans and Skills / knowledge. Drop me a pricing-risk question anytime 🙂',
     ].join('\n')
@@ -1173,7 +1173,7 @@ export function greetingReply(lang: Lang): string {
     return [
       intros[variant]!,
       '',
-      '与 V Exchange／永续无关。下面是我能做的事。**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
+      '下面是我能做的事。**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
       '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
       '',
       '• 📈 **行情** — 加密／股指／外汇／商品跨资产市况',
@@ -1209,7 +1209,7 @@ export function greetingReply(lang: Lang): string {
     return [
       intros[variant]!,
       '',
-      '與 V Exchange／永續無關。下面是我能做的事。**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
+      '下面是我能做的事。**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
       '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
       '',
       '• 📈 **行情** — 加密／股指／外匯／商品跨資產市況',
@@ -1244,7 +1244,7 @@ export function greetingReply(lang: Lang): string {
   return [
     intros[variant]!,
     '',
-    'Not V Exchange / not perpetual. Here’s what I can do. **Keywords: group = @me + keyword; DM = just say the keyword.**',
+    'Here’s what I can do. **Keywords: group = @me + keyword; DM = just say the keyword.**',
     '**Natural language / paste alerts / screenshots / tables also work** (keywords not required).',
     '',
     '• 📈 **market** — multi-asset (crypto / equities / FX / commodities)',
@@ -1274,7 +1274,7 @@ export function greetingReply(lang: Lang): string {
 export function helpReply(lang: Lang): string {
   if (lang === 'zh-Hans') {
     return [
-      '你好 🙂 我是 **报价 AI排查助手**——**CFD 定价风控专家**（Lark；与 V Exchange／永续无关）。',
+      '你好 🙂 我是 **报价 AI排查助手**——**CFD 定价风控专家**（Lark）。',
       '',
       '**中文关键词：群聊 @我 + 关键词；私聊直接说。**',
       '**也可用自然语言／贴告警／截图／表格**（不必先打出关键词）。',
@@ -1297,7 +1297,7 @@ export function helpReply(lang: Lang): string {
   }
   if (lang === 'zh-Hant') {
     return [
-      '你好 🙂 我是 **报价 AI排查助手**——**CFD 定價風控專家**（Lark；與 V Exchange／永續無關）。',
+      '你好 🙂 我是 **报价 AI排查助手**——**CFD 定價風控專家**（Lark）。',
       '',
       '**中文關鍵詞：群聊 @我 + 關鍵詞；私聊直接說。**',
       '**也可用自然語言／貼告警／截圖／表格**（不必先打出關鍵詞）。',
@@ -1319,7 +1319,7 @@ export function helpReply(lang: Lang): string {
     ].join('\n')
   }
   return [
-    'Hi 🙂 I’m **报价 AI排查助手** — a **CFD pricing risk-control expert** on Lark (not V Exchange / not perpetual).',
+    'Hi 🙂 I’m **报价 AI排查助手** — a **CFD pricing risk-control expert** on Lark.',
     '',
     '**Keywords: group = @me + keyword; DM = just say the keyword.**',
     '**Natural language / paste alerts / screenshots / tables also work** (keywords not required).',
