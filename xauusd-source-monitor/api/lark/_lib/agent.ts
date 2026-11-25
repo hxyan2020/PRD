@@ -783,39 +783,54 @@ export async function handleCardAction(args: {
 export async function handleMessage(msg: IncomingMessage): Promise<BotReply | null> {
   if (!msg.messageId) return null
 
+  // Forwarded cards / merge_forward / reply-to-alert often lack body in the event —
+  // re-fetch via message API before intent routing (otherwise empty → greeting).
+  let inbound = msg
+  try {
+    const { enrichIncomingEvidence } = await import('./parse.js')
+    inbound = await enrichIncomingEvidence(msg)
+  } catch {
+    inbound = msg
+  }
+
   // Image / file / share first → understand & reiterate before relevance judgement
-  let workingText = msg.text
+  let workingText = inbound.text
   let attachmentDigest: string | null = null
   let attachmentKind = 'share'
-  const userCaption = (msg.text || '').trim()
-  const session = getSession(msg.chatId, msg.openId)
+  const userCaption = (inbound.text || '').trim()
+  const session = getSession(inbound.chatId, inbound.openId)
   // Prefer sticky Chinese: share-card English must not reset the session language
   const langFallback = session.preferredLang || 'en'
-  let lang = detectLang(msg.text || '', langFallback)
+  let lang = detectLang(inbound.text || '', langFallback)
   if (
-    looksLikeShareOrFileMeta(msg.text || '') &&
+    looksLikeShareOrFileMeta(inbound.text || '') &&
     (langFallback === 'zh-Hans' || langFallback === 'zh-Hant')
   ) {
     lang = langFallback
   }
 
-  const attachmentMsg = isAttachmentMessage(msg.messageType, msg.text || '', msg.imageKey)
-  if (msg.messageType === 'image' || msg.imageKey) {
+  const attachmentMsg = isAttachmentMessage(
+    inbound.messageType,
+    inbound.text || '',
+    inbound.imageKey,
+  )
+  if (inbound.messageType === 'image' || inbound.imageKey) {
     attachmentKind = 'image'
-    attachmentDigest = await handleImage(msg, lang)
+    attachmentDigest = await handleImage(inbound, lang)
     workingText = userCaption ? `${userCaption}\n\n${attachmentDigest}` : attachmentDigest
     lang = detectLang(workingText, lang)
-  } else if (attachmentMsg) {
+  } else if (attachmentMsg && inbound.messageType !== 'merge_forward') {
+    // merge_forward is already expanded above — don't treat placeholder as a doc share.
     attachmentKind =
-      msg.messageType === 'file' || msg.messageType === 'media' ? 'file' : 'share'
-    attachmentDigest = await ingestShareOrFile(msg, lang)
+      inbound.messageType === 'file' || inbound.messageType === 'media' ? 'file' : 'share'
+    attachmentDigest = await ingestShareOrFile(inbound, lang)
     workingText = userCaption && !looksLikeShareOrFileMeta(userCaption)
       ? `${userCaption}\n\n${attachmentDigest}`
       : attachmentDigest
     lang = detectLang(`${userCaption}\n${attachmentDigest}`, lang)
-  } else if (msg.messageType === 'post' && /\|/.test(msg.text)) {
+  } else if (inbound.messageType === 'post' && /\|/.test(inbound.text)) {
     // Tables in post often flatten with spaces; keep as investigate evidence
-    workingText = `[table/post]\n${msg.text}`
+    workingText = `[table/post]\n${inbound.text}`
   }
 
   if (attachmentDigest) {
@@ -823,9 +838,9 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     session.lastAttachmentKind = attachmentKind
   }
   session.preferredLang = lang
-  saveSession(msg.chatId, msg.openId, session)
+  saveSession(inbound.chatId, inbound.openId, session)
   // Remember chat language for cron 早报 (unsupported → 中文 inside resolveMarketLang)
-  void rememberChatMarketLang(msg.chatId, lang)
+  void rememberChatMarketLang(inbound.chatId, lang)
 
   // Pending soft-command confirm — yes runs it; no / chat continues as chatbot
   let forcedIntent: PendingCommandIntent | null = null
@@ -915,15 +930,46 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     }
   }
 
+  // Forwarded / replied alert markers must never fall through to greeting.
+  const looksForwardedEvidence =
+    inbound.messageType === 'interactive' ||
+    inbound.messageType === 'merge_forward' ||
+    Boolean(inbound.parentId || inbound.rootId) ||
+    /\[(forwarded_card|merge_forward|replied_alert)\]/i.test(workingText)
+
   let intent =
     forcedIntent ||
     classifyIntent(workingText, {
       inInvestigateSession: session.mode === 'investigate',
-      mentionedBot: msg.mentionedBot,
-      chatType: msg.chatType,
+      mentionedBot: inbound.mentionedBot,
+      chatType: inbound.chatType,
     })
 
+  if (looksForwardedEvidence && (intent === 'greeting' || intent === 'ack_mention' || !workingText.trim())) {
+    intent = 'investigate'
+  }
+  if (
+    looksForwardedEvidence &&
+    intent !== 'investigate' &&
+    intent !== 'followup' &&
+    looksLikeIncidentEvidence(workingText)
+  ) {
+    intent = 'investigate'
+  }
+
   if (intent === 'greeting' || intent === 'ack_mention') {
+    // Empty @mention / hi only — never greet on a forwarded or reply-to alert.
+    if (looksForwardedEvidence) {
+      const title =
+        lang === 'zh-Hans' ? '开始排查' : lang === 'zh-Hant' ? '開始排查' : 'Start investigation'
+      const body =
+        lang === 'zh-Hans'
+          ? '收到转发／引用的消息，但卡片正文读取失败或权限不足。请直接粘贴告警文字，或确认应用已开通「获取单聊、群组消息」读权限。'
+          : lang === 'zh-Hant'
+            ? '收到轉發／引用的訊息，但卡片正文讀取失敗或權限不足。請直接貼上告警文字，或確認應用已開通「獲取單聊、群組訊息」讀權限。'
+            : 'Got a forward/reply, but could not read the card body (or lacking message-read scope). Paste the alert text, or grant im:message:readonly.'
+      return { card: simpleCard(title, body, 'orange') }
+    }
     return { card: greetingCard(lang, greetingReply(lang)) }
   }
 
@@ -1139,7 +1185,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     // Also drop the parse-time `[forwarded_card]` marker so report titles stay clean.
     const fact = workingText
       .replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '')
-      .replace(/^\[forwarded_card\]\s*/i, '')
+      .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
       .trim()
     if (!fact) {
       const title =

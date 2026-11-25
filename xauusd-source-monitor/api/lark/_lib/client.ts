@@ -71,6 +71,36 @@ async function larkFetch(path: string, init: RequestInit = {}) {
   return data
 }
 
+export type LarkMessageItem = {
+  message_id?: string
+  msg_type?: string
+  body?: { content?: string }
+  upper_message_id?: string
+  parent_id?: string
+  root_id?: string
+  deleted?: boolean
+}
+
+/**
+ * Fetch a message (and merge_forward children) by id.
+ * Pass userCardContent to get original interactive card JSON when available.
+ */
+export async function fetchMessageItems(
+  messageId: string,
+  opts?: { userCardContent?: boolean },
+): Promise<LarkMessageItem[]> {
+  const id = (messageId || '').trim()
+  if (!id || !larkConfigured()) return []
+  const q = new URLSearchParams()
+  q.set('user_id_type', 'open_id')
+  if (opts?.userCardContent) q.set('card_msg_content_type', 'user_card_content')
+  const raw = (await larkFetch(
+    `/open-apis/im/v1/messages/${encodeURIComponent(id)}?${q.toString()}`,
+    { method: 'GET' },
+  )) as { data?: { items?: LarkMessageItem[] } }
+  return Array.isArray(raw.data?.items) ? raw.data!.items! : []
+}
+
 function extractMessageId(data: unknown): string {
   const d = data as { data?: { message_id?: string } }
   return (d?.data?.message_id || '').trim()

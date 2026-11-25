@@ -8,7 +8,7 @@ const MEDIA_TYPES = new Set([
   'video',
   'share_chat',
   'share_user',
-  'merge_forward',
+  // merge_forward is handled via enrichIncomingEvidence → investigate, not doc-share ingest
   'folder',
   'drive',
   'docx',

@@ -11,6 +11,7 @@ import {
 } from '../api/lark/_lib/attachment'
 import { detectLang, looksLikeShareOrFileMeta } from '../api/lark/_lib/lang'
 import {
+  enrichIncomingEvidence,
   extractInteractiveCardText,
   parseIncomingEvent,
   shouldRespond,
@@ -436,7 +437,43 @@ async function main() {
     },
     sender: { sender_type: 'user', sender_id: { open_id: 'u1' } },
   })
-  record('parse.skip_empty_interactive', emptyCard === null, '')
+  record(
+    'parse.keep_empty_interactive_marker',
+    Boolean(emptyCard) && emptyCard!.text.includes('[forwarded_card]'),
+    emptyCard?.text || 'null',
+  )
+  const mergeFwd = parseIncomingEvent({
+    message: {
+      message_id: 'm_merge',
+      chat_id: 'c2',
+      chat_type: 'p2p',
+      message_type: 'merge_forward',
+      content: JSON.stringify({ content: 'Merged and Forwarded Message' }),
+    },
+    sender: { sender_type: 'user', sender_id: { open_id: 'u1' } },
+  })
+  record(
+    'parse.merge_forward_marker',
+    Boolean(mergeFwd) && mergeFwd!.text.includes('[merge_forward]'),
+    mergeFwd?.text || 'null',
+  )
+  const replyToAlert = parseIncomingEvent({
+    message: {
+      message_id: 'm_reply',
+      chat_id: 'c2',
+      chat_type: 'p2p',
+      message_type: 'text',
+      content: JSON.stringify({ text: '排查' }),
+      parent_id: 'om_parent_alert',
+      root_id: 'om_parent_alert',
+    },
+    sender: { sender_type: 'user', sender_id: { open_id: 'u1' } },
+  })
+  record(
+    'parse.reply_captures_parent_id',
+    Boolean(replyToAlert?.parentId === 'om_parent_alert'),
+    replyToAlert?.parentId || 'null',
+  )
   const botInteractive = parseIncomingEvent({
     message: {
       message_id: 'm_card_bot',
@@ -526,9 +563,57 @@ async function main() {
     Boolean(fwdTurn.reply?.card) &&
       (/排查|Investigation|价差|XAU_USD|告警/i.test(fwdTurn.blob) ||
         fwdTurn.blob.includes('Skills') ||
-        fwdTurn.blob.includes('可能原因')),
+        fwdTurn.blob.includes('可能原因')) &&
+      !/你好.*Risk Copilot|Good (morning|afternoon)|我是 \*\*V Exchange Risk Copilot\*\*/i.test(
+        fwdTurn.blob,
+      ),
     fwdTurn.blob.slice(0, 280),
   )
+
+  // Bare marker (event body empty; API enrich unavailable locally) must NOT greet.
+  clearSession('smoke_chat', 'fwd_empty_zh')
+  const emptyFwdTurn = await turn(
+    'forwarded-empty-card',
+    '[forwarded_card]',
+    'fwd_empty_zh',
+    'smoke_chat',
+    { messageType: 'interactive' },
+  )
+  record(
+    'turn.empty_forwarded_card_not_greeting',
+    Boolean(emptyFwdTurn.reply?.card) &&
+      /排查|investigation|权限|scope|paste|粘贴|貼上/i.test(emptyFwdTurn.blob) &&
+      !/V Exchange Risk Copilot/.test(emptyFwdTurn.blob),
+    emptyFwdTurn.blob.slice(0, 240),
+  )
+
+  // Classic investigate triggers must stay investigate (not greeting).
+  for (const [label, text] of [
+    ['trig-investigate-en', 'investigate Alert: XAU Mark vs Index 48bps IDX-01 excluded'],
+    ['trig-排查-paste', '告警：XAU_USD 买一卖一价差 0.18%，阈值 >=0.1%，合约 XAU_USD'],
+    ['trig-investigate-cmd', 'investigate'],
+  ] as const) {
+    clearSession('smoke_chat', label)
+    const t = await turn(label, text, label)
+    const isGreet = /V Exchange Risk Copilot/.test(t.blob) && /行情|排查|帮助/.test(t.blob) && /你好|Hello|Hi[, ]/i.test(t.blob)
+    const okTitle =
+      /排查|Investigation|Start investigation|开始排查|開始排查/i.test(t.blob) ||
+      /可能原因|Skills|告警/i.test(t.blob)
+    record(`turn.${label}_not_greeting`, Boolean(t.reply?.card) && okTitle && !isGreet, t.blob.slice(0, 200))
+  }
+
+  // enrichIncomingEvidence is a no-op without live Lark credentials — still identity-safe.
+  const enrichedSame = await enrichIncomingEvidence({
+    messageId: 'om_x',
+    chatId: 'c',
+    chatType: 'p2p',
+    openId: 'u',
+    messageType: 'text',
+    text: 'hello world',
+    mentionedBot: true,
+    rawContent: '{}',
+  })
+  record('parse.enrich_passthrough_text', enrichedSame.text === 'hello world', enrichedSame.text)
 
   const { claimOnce, releaseClaim } = await import('../api/lark/_lib/dedupe')
   const dk = `smoke_dedupe_${Date.now()}`

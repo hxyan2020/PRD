@@ -113,4 +113,8 @@ export interface IncomingMessage {
   imageKey?: string
   mentionedBot: boolean
   rawContent: string
+  /** Parent message id when the user replied to another message (e.g. alert card). */
+  parentId?: string
+  /** Root message id of a reply thread, when present. */
+  rootId?: string
 }

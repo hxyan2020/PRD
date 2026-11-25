@@ -1,4 +1,5 @@
 import type { IncomingMessage } from './types.js'
+import { fetchMessageItems, type LarkMessageItem } from './client.js'
 
 function walkPostNodes(nodes: unknown, out: string[]) {
   if (!Array.isArray(nodes)) return
@@ -244,14 +245,16 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
   } else if (messageType === 'file' || messageType === 'media') {
     text = extractFileHint(rawContent)
   } else if (messageType === 'interactive') {
-    // Forwarded alert / ops cards (sender=user). Empty shells are ignored.
-    text = extractInteractiveCardText(rawContent)
-    if (!text.trim()) return null
-    text = `[forwarded_card]\n${text}`
+    // Forwarded alert / ops cards (sender=user). Keep a marker even when the event
+    // payload has no readable body — handleMessage will re-fetch via message API.
+    const flat = extractInteractiveCardText(rawContent)
+    text = flat ? `[forwarded_card]\n${flat}` : '[forwarded_card]'
+  } else if (messageType === 'merge_forward') {
+    // Event content is a fixed placeholder; expand children in handleMessage.
+    text = '[merge_forward]'
   } else if (
     messageType === 'share_chat' ||
     messageType === 'share_user' ||
-    messageType === 'merge_forward' ||
     messageType === 'folder' ||
     messageType === 'drive' ||
     messageType === 'docx'
@@ -271,6 +274,9 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
   // Strip @_user_1 style mention placeholders
   text = text.replace(/@_user_\d+/g, '').trim()
 
+  const parentId = String(message.parent_id || '').trim() || undefined
+  const rootId = String(message.root_id || '').trim() || undefined
+
   return {
     messageId: String(message.message_id || ''),
     chatId: String(message.chat_id || ''),
@@ -281,6 +287,8 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
     imageKey,
     mentionedBot: mentionedBot || String(message.chat_type) === 'p2p',
     rawContent,
+    parentId,
+    rootId,
   }
 }
 
@@ -292,4 +300,91 @@ export function shouldRespond(msg: IncomingMessage): boolean {
   // If LARK_REPLY_ALL_GROUP=1, respond to all (ops override)
   if (process.env.LARK_REPLY_ALL_GROUP === '1') return true
   return false
+}
+
+function flattenLarkMessageItem(item: LarkMessageItem): string {
+  const mt = String(item.msg_type || '')
+  const content = String(item.body?.content || '')
+  if (!content) return ''
+  if (mt === 'interactive') {
+    const flat = extractInteractiveCardText(content)
+    return flat ? `[forwarded_card]\n${flat}` : ''
+  }
+  if (mt === 'text') return extractTextContent(content)
+  if (mt === 'post') return extractPostText(content)
+  if (mt === 'image') return '[image attachment]'
+  if (mt === 'file' || mt === 'media') return extractFileHint(content)
+  if (mt === 'merge_forward') return ''
+  return (
+    extractTextContent(content) ||
+    extractPostText(content) ||
+    extractInteractiveCardText(content) ||
+    extractShareHint(content, mt)
+  )
+}
+
+/**
+ * Expand forwarded cards / merge_forward / reply-to-alert into readable evidence text.
+ * Feishu event payloads often omit card body; GET message returns it (and children).
+ */
+export async function enrichIncomingEvidence(msg: IncomingMessage): Promise<IncomingMessage> {
+  const needsCardFetch =
+    msg.messageType === 'interactive' ||
+    msg.messageType === 'merge_forward' ||
+    /^\[(forwarded_card|merge_forward)\]/i.test(msg.text || '')
+  const replyTarget = (msg.parentId || msg.rootId || '').trim()
+  const thinText =
+    !(msg.text || '').trim() ||
+    /^\[(forwarded_card|merge_forward)\]\s*$/i.test((msg.text || '').trim()) ||
+    /Merged and Forwarded Message/i.test(msg.text || '')
+
+  let enriched = (msg.text || '').trim()
+
+  if (needsCardFetch && msg.messageId) {
+    try {
+      const items = await fetchMessageItems(msg.messageId, { userCardContent: true })
+      const parts: string[] = []
+      for (const it of items) {
+        if (it.deleted) continue
+        if (String(it.msg_type || '') === 'merge_forward') continue
+        const flat = flattenLarkMessageItem(it)
+        if (flat.trim()) parts.push(flat.trim())
+      }
+      if (parts.length) {
+        enriched = parts.join('\n\n')
+        if (msg.messageType === 'merge_forward' && !enriched.startsWith('[')) {
+          enriched = `[merge_forward]\n${enriched}`
+        } else if (msg.messageType === 'interactive' && !enriched.includes('[forwarded_card]')) {
+          enriched = `[forwarded_card]\n${enriched}`
+        }
+      }
+    } catch {
+      /* keep event text — permission may be missing */
+    }
+  }
+
+  // Reply-to-alert: pull parent/root card/text when the reply body is thin.
+  if (replyTarget && thinText) {
+    try {
+      const items = await fetchMessageItems(replyTarget, { userCardContent: true })
+      const parts: string[] = []
+      for (const it of items) {
+        if (it.deleted) continue
+        if (String(it.msg_type || '') === 'merge_forward') continue
+        const flat = flattenLarkMessageItem(it)
+        if (flat.trim()) parts.push(flat.trim())
+      }
+      if (parts.length) {
+        const parentBlob = parts.join('\n\n')
+        enriched = enriched
+          ? `${enriched}\n\n[replied_alert]\n${parentBlob}`
+          : `[replied_alert]\n${parentBlob}`
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  if (enriched === (msg.text || '').trim()) return msg
+  return { ...msg, text: enriched, rawContent: enriched || msg.rawContent }
 }
