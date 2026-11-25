@@ -49,6 +49,7 @@ import {
 } from '../api/lark/_lib/typing'
 import { alertOptimizeCard, greetingCard, simpleCard } from '../api/lark/_lib/cards'
 import {
+  AO_LIMITS,
   analyzeAlertOptimize,
   analyzeLocally,
   extractAlertNames,
@@ -884,6 +885,19 @@ async function main() {
         cardBlob.includes('告警优化') &&
         (cardBlob.includes('通用分析') || cardBlob.includes('General analysis')),
       cardBlob.slice(0, 120),
+    )
+    const header = 'c,' + Array.from({ length: 80 }, (_, i) => `x${i}`).join(',')
+    const fatRows = Array.from(
+      { length: AO_LIMITS.maxRowsPerDataset + 120 },
+      (_, i) => `r${i},` + Array.from({ length: 80 }, () => '1').join(','),
+    )
+    const fat = parseCsvText([header, ...fatRows].join('\n'), 'fat.csv')
+    record(
+      'alert_optimize.row_col_caps',
+      fat.rowCount === AO_LIMITS.maxRowsPerDataset &&
+        fat.columns.length === AO_LIMITS.maxColumns &&
+        fat.issues.some((x) => /Kept first|rows|columns/i.test(x)),
+      `rows=${fat.rowCount} cols=${fat.columns.length} issues=${fat.issues.join(';')}`,
     )
   }
   record('cmd.zh_skills', classifyIntent('技能', {}) === 'skills', '')

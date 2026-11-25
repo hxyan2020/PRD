@@ -1,5 +1,23 @@
 /** Client-side ingest + profiling for Alert Optimize / General analysis. */
 
+/** Hard caps so large CSV/API payloads cannot OOM the desk tab. */
+export const AO_LIMITS = {
+  /** Max UTF-8 / string length accepted per ingest (file, paste, or API body). */
+  maxBytesPerIngest: 1_500_000,
+  /** Max data rows kept per dataset (header excluded). */
+  maxRowsPerDataset: 5_000,
+  /** Max columns kept per dataset. */
+  maxColumns: 64,
+  /** Max datasets in General analysis mode. */
+  maxDatasetsGeneral: 8,
+  /** Max datasets per Alert-optimize slot. */
+  maxDatasetsPerSlot: 3,
+  /** Max total rows across all datasets before analyze refuses. */
+  maxTotalRows: 12_000,
+  /** Cap unique alert-name dropdown options. */
+  maxAlertNameOptions: 200,
+} as const
+
 export type DeskMode = 'alert_optimize' | 'general'
 
 /** Three slots for 告警优化 (none individually required; ≥1 overall). */
@@ -105,9 +123,54 @@ function splitCsvLine(line: string): string[] {
   return out
 }
 
-export function parseCsvText(text: string, name: string): IngestedDataset {
+/** Reject / truncate oversized raw text before parse. Returns truncated body + issues. */
+export function clampIngestText(text: string): { text: string; issues: string[]; truncated: boolean } {
   const issues: string[] = []
-  const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/).filter((l) => l.trim().length)
+  if (text.length > AO_LIMITS.maxBytesPerIngest) {
+    issues.push(
+      `Input truncated to ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars (was ${text.length.toLocaleString()})`,
+    )
+    return {
+      text: text.slice(0, AO_LIMITS.maxBytesPerIngest),
+      issues,
+      truncated: true,
+    }
+  }
+  return { text, issues, truncated: false }
+}
+
+function applyRowColCaps(
+  columns: string[],
+  rows: Record<string, string>[],
+  issues: string[],
+  totalCandidateRows?: number,
+): { columns: string[]; rows: Record<string, string>[] } {
+  let cols = columns
+  let data = rows
+  if (cols.length > AO_LIMITS.maxColumns) {
+    issues.push(`Kept first ${AO_LIMITS.maxColumns} of ${cols.length} columns`)
+    cols = cols.slice(0, AO_LIMITS.maxColumns)
+    data = data.map((r) => {
+      const next: Record<string, string> = {}
+      for (const c of cols) next[c] = r[c] ?? ''
+      return next
+    })
+  }
+  const rawCount = totalCandidateRows ?? data.length
+  if (rawCount > AO_LIMITS.maxRowsPerDataset || data.length > AO_LIMITS.maxRowsPerDataset) {
+    issues.push(
+      `Kept first ${AO_LIMITS.maxRowsPerDataset.toLocaleString()} of ${rawCount.toLocaleString()} rows`,
+    )
+    data = data.slice(0, AO_LIMITS.maxRowsPerDataset)
+  }
+  return { columns: cols, rows: data }
+}
+
+export function parseCsvText(text: string, name: string): IngestedDataset {
+  const clamped = clampIngestText(text)
+  const issues: string[] = [...clamped.issues]
+  const body = clamped.text
+  const lines = body.replace(/^\uFEFF/, '').split(/\r?\n/).filter((l) => l.trim().length)
   if (!lines.length) {
     return {
       id: `csv_${Date.now()}`,
@@ -117,25 +180,44 @@ export function parseCsvText(text: string, name: string): IngestedDataset {
       fetchedAt: Date.now(),
       columns: [],
       rows: [],
-      rawPreview: text.slice(0, 400),
+      rawPreview: body.slice(0, 400),
       rowCount: 0,
-      issues: ['CSV is empty'],
+      issues: issues.length ? issues : ['CSV is empty'],
     }
   }
   const header = splitCsvLine(lines[0]!)
   if (header.length < 1) issues.push('No header columns detected')
-  const columns = header.map((h, i) => h || `col_${i + 1}`)
+  let columns = header.map((h, i) => h || `col_${i + 1}`)
   const rows: Record<string, string>[] = []
-  for (const line of lines.slice(1)) {
+  const dataLines = lines.slice(1)
+  const maxScan = AO_LIMITS.maxRowsPerDataset
+  let scanned = 0
+  let skippedEmpty = 0
+  for (const line of dataLines) {
+    if (rows.length >= maxScan) break
+    scanned++
     const cells = splitCsvLine(line)
-    if (cells.every((c) => !c)) continue
+    if (cells.every((c) => !c)) {
+      skippedEmpty++
+      continue
+    }
     const row: Record<string, string> = {}
     columns.forEach((c, i) => {
       row[c] = cells[i] ?? ''
     })
     rows.push(row)
   }
-  if (!rows.length) issues.push('CSV has a header but no data rows')
+  const remaining = dataLines.length - scanned
+  if (remaining > 0 || dataLines.length - skippedEmpty > maxScan) {
+    const totalNonEmpty = dataLines.length - skippedEmpty
+    issues.push(
+      `Kept first ${AO_LIMITS.maxRowsPerDataset.toLocaleString()} of ~${Math.max(totalNonEmpty, rows.length).toLocaleString()} rows`,
+    )
+  }
+  const capped = applyRowColCaps(columns, rows, issues)
+  columns = capped.columns
+  const finalRows = capped.rows
+  if (!finalRows.length) issues.push('CSV has a header but no data rows')
   return {
     id: `csv_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     name,
@@ -143,9 +225,9 @@ export function parseCsvText(text: string, name: string): IngestedDataset {
     sourceLabel: name,
     fetchedAt: Date.now(),
     columns,
-    rows,
-    rawPreview: text.slice(0, 600),
-    rowCount: rows.length,
+    rows: finalRows,
+    rawPreview: body.slice(0, 600),
+    rowCount: finalRows.length,
     issues,
   }
 }
@@ -164,16 +246,23 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
       issues.push('JSON array has no object rows')
       return
     }
+    const total = objs.length
+    const sample = objs.slice(0, AO_LIMITS.maxRowsPerDataset)
     const colSet = new Set<string>()
-    for (const o of objs.slice(0, 5000)) {
+    for (const o of sample) {
       Object.keys(o).forEach((k) => colSet.add(k))
     }
     columns = [...colSet]
-    rows = objs.slice(0, 5000).map((o) => {
+    rows = sample.map((o) => {
       const row: Record<string, string> = {}
-      for (const c of columns) row[c] = o[c] == null ? '' : String(o[c])
+      for (const c of columns) row[c] = o[c] == null ? '' : String(o[c]).slice(0, 4000)
       return row
     })
+    if (total > AO_LIMITS.maxRowsPerDataset) {
+      issues.push(
+        `Kept first ${AO_LIMITS.maxRowsPerDataset.toLocaleString()} of ${total.toLocaleString()} rows`,
+      )
+    }
   }
 
   if (Array.isArray(raw)) {
@@ -196,8 +285,19 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
     issues.push('Unsupported JSON shape')
   }
 
-  const preview =
-    typeof raw === 'string' ? raw.slice(0, 600) : JSON.stringify(raw).slice(0, 600)
+  const capped = applyRowColCaps(columns, rows, issues)
+  let preview = ''
+  try {
+    preview =
+      typeof raw === 'string'
+        ? raw.slice(0, 600)
+        : JSON.stringify(raw, (_k, v) => {
+            if (Array.isArray(v) && v.length > 20) return v.slice(0, 20)
+            return v
+          }).slice(0, 600)
+  } catch {
+    preview = ''
+  }
 
   return {
     id: `api_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
@@ -205,10 +305,10 @@ export function parseJsonPayload(raw: unknown, name: string, sourceLabel: string
     kind: 'api',
     sourceLabel,
     fetchedAt: Date.now(),
-    columns,
-    rows,
+    columns: capped.columns,
+    rows: capped.rows,
     rawPreview: preview,
-    rowCount: rows.length,
+    rowCount: capped.rows.length,
     issues,
   }
 }
@@ -335,7 +435,21 @@ export function extractAlertNames(datasets: IngestedDataset[]): string[] {
       }
     }
   }
-  return [...names].sort((a, b) => a.localeCompare(b)).slice(0, 200)
+  return [...names].sort((a, b) => a.localeCompare(b)).slice(0, AO_LIMITS.maxAlertNameOptions)
+}
+
+/** True when adding another dataset would exceed mode/slot caps. */
+export function wouldExceedDatasetCap(args: {
+  mode: DeskMode
+  currentCount: number
+  slot?: AlertDataSlot
+}): boolean {
+  if (args.mode === 'general') return args.currentCount >= AO_LIMITS.maxDatasetsGeneral
+  return args.currentCount >= AO_LIMITS.maxDatasetsPerSlot
+}
+
+export function totalRowCount(datasets: IngestedDataset[]): number {
+  return datasets.reduce((n, d) => n + d.rowCount, 0)
 }
 
 function filterByAlertName(datasets: IngestedDataset[], alertName: string): IngestedDataset[] {

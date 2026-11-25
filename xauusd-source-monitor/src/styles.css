@@ -3803,3 +3803,5 @@ td.mono,
 .ao-direction-chip input {
   margin: 0;
 }
+
+.ao-limits-hint { margin: 0 0 0.85rem; font-size: 0.85rem; max-width: 72ch; }

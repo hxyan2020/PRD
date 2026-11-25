@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useLocale } from '../i18n/locale'
 import {
+  AO_LIMITS,
   OPTIMIZE_DIRECTIONS,
   analyzeAlertOptimize,
   analyzeLocally,
@@ -9,6 +10,8 @@ import {
   parseCsvText,
   parseJsonPayload,
   slotLabel,
+  totalRowCount,
+  wouldExceedDatasetCap,
   type AlertDataSlot,
   type AnalysisResult,
   type ChartSpec,
@@ -179,24 +182,59 @@ export function AlertOptimizePage() {
     name: ds.name || slotLabel(slot, appLang),
   })
 
+  const canAddDatasets = (slot?: AlertDataSlot) => {
+    const current = slot ? slotSets[slot].length : datasets.length
+    const atCap = wouldExceedDatasetCap({
+      mode: slot ? 'alert_optimize' : 'general',
+      currentCount: current,
+      slot,
+    })
+    if (atCap) {
+      setError(
+        slot
+          ? t('aoLimitSlotDatasets').replace('{n}', String(AO_LIMITS.maxDatasetsPerSlot))
+          : t('aoLimitGeneralDatasets').replace('{n}', String(AO_LIMITS.maxDatasetsGeneral)),
+      )
+      return false
+    }
+    return true
+  }
+
   const onCsvFiles = async (files: FileList | null, slot?: AlertDataSlot) => {
     if (!files?.length) return
+    if (!canAddDatasets(slot)) return
     setError('')
     const next: IngestedDataset[] = []
     for (const file of Array.from(files)) {
+      if (file.size > AO_LIMITS.maxBytesPerIngest) {
+        setError(
+          t('aoLimitFileBytes')
+            .replace('{name}', file.name)
+            .replace('{max}', AO_LIMITS.maxBytesPerIngest.toLocaleString()),
+        )
+        continue
+      }
       const text = await file.text()
       const ds = parseCsvText(text, file.name)
       next.push(slot ? tagSlot(ds, slot) : ds)
     }
+    if (!next.length) return
     if (slot) {
-      setSlotSets((s) => ({ ...s, [slot]: [...s[slot], ...next] }))
+      setSlotSets((s) => {
+        const room = Math.max(0, AO_LIMITS.maxDatasetsPerSlot - s[slot].length)
+        return { ...s, [slot]: [...s[slot], ...next.slice(0, room)] }
+      })
     } else {
-      setDatasets((d) => [...d, ...next])
+      setDatasets((d) => {
+        const room = Math.max(0, AO_LIMITS.maxDatasetsGeneral - d.length)
+        return [...d, ...next.slice(0, room)]
+      })
     }
   }
 
   const addPastedCsv = (slot?: AlertDataSlot) => {
     if (slot) {
+      if (!canAddDatasets(slot)) return
       const draft = slotDrafts[slot]
       const text = draft.paste.trim()
       if (!text) return
@@ -209,6 +247,7 @@ export function AlertOptimizePage() {
       setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], paste: '' } }))
       return
     }
+    if (!canAddDatasets()) return
     const text = csvPaste.trim()
     if (!text) return
     setError('')
@@ -218,6 +257,7 @@ export function AlertOptimizePage() {
   }
 
   const addApi = async (slot?: AlertDataSlot) => {
+    if (!canAddDatasets(slot)) return
     const url = (slot ? slotDrafts[slot].apiUrl : apiUrl).trim()
     if (!url) return
     setError('')
@@ -241,6 +281,11 @@ export function AlertOptimizePage() {
       } else {
         ds = parseJsonPayload({ raw: text.slice(0, 50_000) }, nameHint || 'API', url)
         ds.issues.push(t('aoApiNonJson'))
+      }
+      if (text.length >= AO_LIMITS.maxBytesPerIngest) {
+        ds.issues.push(
+          `API body capped at ${AO_LIMITS.maxBytesPerIngest.toLocaleString()} chars`,
+        )
       }
       if (slot) {
         setSlotSets((s) => ({ ...s, [slot]: [...s[slot], tagSlot(ds, slot)] }))
@@ -284,9 +329,19 @@ export function AlertOptimizePage() {
           setRunning(false)
           return
         }
+        const rows = totalRowCount(alertDatasets)
+        if (rows > AO_LIMITS.maxTotalRows) {
+          const msg = t('aoLimitTotalRows')
+            .replace('{n}', rows.toLocaleString())
+            .replace('{max}', AO_LIMITS.maxTotalRows.toLocaleString())
+          setStep('ingest', { state: 'error', detail: msg })
+          setError(msg)
+          setRunning(false)
+          return
+        }
         setStep('ingest', {
           state: 'done',
-          detail: `${alertDatasets.length} · ${alertDatasets.reduce((n, d) => n + d.rowCount, 0)} rows`,
+          detail: `${alertDatasets.length} · ${rows} rows`,
         })
 
         setStep('scope', { state: 'running' })
@@ -333,9 +388,19 @@ export function AlertOptimizePage() {
           setRunning(false)
           return
         }
+        const rows = totalRowCount(datasets)
+        if (rows > AO_LIMITS.maxTotalRows) {
+          const msg = t('aoLimitTotalRows')
+            .replace('{n}', rows.toLocaleString())
+            .replace('{max}', AO_LIMITS.maxTotalRows.toLocaleString())
+          setStep('ingest', { state: 'error', detail: msg })
+          setError(msg)
+          setRunning(false)
+          return
+        }
         setStep('ingest', {
           state: 'done',
-          detail: `${datasets.length} · ${datasets.reduce((n, d) => n + d.rowCount, 0)} rows`,
+          detail: `${datasets.length} · ${rows} rows`,
         })
 
         setStep('profile', { state: 'running' })
@@ -510,6 +575,7 @@ export function AlertOptimizePage() {
           {t('aoModeGeneral')}
         </button>
       </div>
+      <p className="ao-muted ao-limits-hint">{t('aoLimitsHint')}</p>
 
       {mode === 'alert_optimize' ? (
         <>

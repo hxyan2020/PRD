@@ -107,9 +107,49 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         hdrs[k] = v.slice(0, 2000)
       }
     }
+    /** Keep ≤1.5MB so proxy + client JSON.parse cannot OOM the serverless / desk tab. */
+    const MAX_BYTES = 1_500_000
     try {
       const r = await fetch(url, { method: 'GET', headers: hdrs, cache: 'no-store' })
-      const text = await r.text()
+      const upstreamLen = Number(r.headers.get('content-length') || 0)
+      if (Number.isFinite(upstreamLen) && upstreamLen > MAX_BYTES * 8) {
+        return res.status(413).json({
+          ok: false,
+          error: `Remote body too large (Content-Length ${upstreamLen}; refuse > ${MAX_BYTES * 8} bytes)`,
+        })
+      }
+
+      const reader = r.body?.getReader?.()
+      let text = ''
+      let truncated = false
+      if (reader) {
+        const chunks: Uint8Array[] = []
+        let total = 0
+        for (;;) {
+          const { done, value } = await reader.read()
+          if (done) break
+          if (!value?.byteLength) continue
+          if (total + value.byteLength > MAX_BYTES) {
+            const remain = MAX_BYTES - total
+            if (remain > 0) chunks.push(value.slice(0, remain))
+            truncated = true
+            try {
+              await reader.cancel()
+            } catch {
+              /* ignore */
+            }
+            break
+          }
+          chunks.push(value)
+          total += value.byteLength
+        }
+        text = Buffer.concat(chunks.map((c) => Buffer.from(c))).toString('utf8')
+      } else {
+        const full = await r.text()
+        truncated = full.length > MAX_BYTES
+        text = full.slice(0, MAX_BYTES)
+      }
+
       const ct = r.headers.get('content-type') || ''
       let json: unknown = null
       if (/json/i.test(ct) || text.trim().startsWith('{') || text.trim().startsWith('[')) {
@@ -123,8 +163,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ok: r.ok,
         status: r.status,
         contentType: ct,
-        text: text.slice(0, 2_000_000),
+        text,
         json,
+        truncated,
+        maxBytes: MAX_BYTES,
       })
     } catch (e) {
       return res.status(502).json({
