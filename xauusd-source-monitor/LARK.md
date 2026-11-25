@@ -81,6 +81,10 @@ Demo catch-up windows (idempotent via durable sent-day state):
 
 - Oscillation DEMO: after `10:00` CST until `18:00` on campaign day
 - Weekly DEMO: after `16:00` CST until `18:00` on campaign day
+- Daily morning: after `09:00` CST until end of day (dayKey sent-state)
+
+**cron-tick** (`*/5 * * * *`) fans out all push jobs on the public alias
+(`vex-llm-proxy.vercel.app`) so SSO / deployment-host misses still catch up.
 
 ## Endpoints
 
@@ -90,9 +94,10 @@ Demo catch-up windows (idempotent via durable sent-day state):
 | GET/POST | `/api/lark/card` | Alias for **Card Request URL** (same handler) |
 | GET/POST | `/api/lark/incidents` | List / simulate turns (smoke) |
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
-| GET/POST | `/api/lark/market-report` | Manual market scan (cron removed; on-demand / force only) |
+| GET/POST | `/api/lark/market-report` | Half-hourly market DM (`*/30`); also via cron-tick |
 | GET/POST | `/api/lark/daily-market-report` | Daily 09:00 CST 24h digest → group; `?dry=1` preview |
 | GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
+| GET/POST | `/api/lark/cron-tick` | Every 5 min fan-out of all push jobs on public alias |
 
 ## Weekly report (Yan Haixiang)
 
@@ -113,8 +118,9 @@ Demo catch-up windows (idempotent via durable sent-day state):
 ## Daily 24h market morning report (group)
 
 - **Schedule:** every day **09:00 Asia/Shanghai** (Vercel cron `0 1 * * *` UTC)
-- **Content:** past-24h OKX 1H range (O/H/L/C / %) + TL;DR / Opportunity / Risk; **always Simplified Chinese** on Lark
-- **Sources:** favicon **logo buttons** (`multi_url`) after TL;DR / Opp / Risk points — open exchange K-line / news / social UIs (OKX/Bitget, Kitco, Yahoo, Fed, X). JSON APIs are probe-only and never shown as report links.
+- **Content:** past-24h Binance XAUUSDT 1H range (OKX backup) + TL;DR / Opportunity / Risk; language follows chat (简体 ≠ 繁體 ≠ en)
+- **Sources:** favicon **logo buttons** (`multi_url`) after TL;DR / Opp / Risk points — open exchange K-line / news / social UIs (Binance/OKX/Bitget, Kitco, Yahoo, Fed, X). JSON APIs are probe-only and never shown as report links.
+- **Catch-up:** cron-tick after 09:00 CST if the :00 UTC fire was missed (idempotent dayKey)
 - **Delivery:** Feishu group `LARK_DAILY_MARKET_CHAT_ID` (default `oc_eb8eba24ff99a2c3ea3c9439750d65cd`)
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/daily-market-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/daily-market-report` with `{ "force": true }` + desk token / cron header

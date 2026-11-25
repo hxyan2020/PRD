@@ -15,12 +15,22 @@ export const config = {
 
 const PUBLIC_BASE = 'https://vex-llm-proxy.vercel.app'
 
-/** Frequent / catch-up jobs only. Daily+Friday digests keep their own schedules. */
+/**
+ * All Lark push jobs — each handler is idempotent / self-gated:
+ * - alert-nudge: campaign window + ack
+ * - oscillation-alert: trigger / demo slot
+ * - market-report: half-hour slot
+ * - weekly-demo: 16:00 CST demo day
+ * - daily-market-report: ≥09:00 CST + dayKey
+ * - weekly-report: Friday CST + weekKey
+ */
 const PATHS = [
   '/api/lark/alert-nudge',
   '/api/lark/oscillation-alert',
   '/api/lark/market-report',
   '/api/lark/weekly-demo',
+  '/api/lark/daily-market-report',
+  '/api/lark/weekly-report',
 ] as const
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

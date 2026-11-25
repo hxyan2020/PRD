@@ -693,7 +693,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
   if (!isBotRuntimeMetaQuestion(question)) return null
   if (lang === 'zh-Hans') {
     return [
-      '⏱️ 我这边现在挂了 **6** 个 Vercel Cron（都会打到本服务）：',
+      '⏱️ 我这边现在挂了 **7** 个 Vercel Cron（都会打到本服务）：',
       '',
       '1. **每日早报** `daily-market-report` — 每天东八区 **09:00**（UTC 01:00）',
       '2. **半小时行情** `market-report` — 每 **30** 分钟（私聊 desk，不在欢迎语功能列表里）',
@@ -701,13 +701,14 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
       '4. **震荡预警** `oscillation-alert` — 每 **15** 分钟（含今日 DEMO 槽）',
       '5. **周报 DEMO** `weekly-demo` — 每 **15** 分钟看一次，今日 **16:00** 槽推一次',
       '6. **正式周报** `weekly-report` — 每周五东八区 **16:00**（UTC 08:00）',
+      '7. **cron-tick 兜底** — 每 **5** 分钟在公网别名上扇出上述推送（幂等）',
       '',
       '想看某一条的预览，可以说「早报 dry」或让我帮你手动推一次。',
     ].join('\n')
   }
   if (lang === 'zh-Hant') {
     return [
-      '⏱️ 我這邊現在掛了 **6** 個 Vercel Cron：',
+      '⏱️ 我這邊現在掛了 **7** 個 Vercel Cron：',
       '',
       '1. **每日早報** — 每天東八區 **09:00**',
       '2. **半小時行情** — 每 **30** 分鐘（私聊 desk，不在歡迎語功能列表裡）',
@@ -715,12 +716,13 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
       '4. **震盪預警** — 每 **15** 分鐘',
       '5. **週報 DEMO** — 每 **15** 分鐘看一次，今日 **16:00** 槽推一次',
       '6. **正式週報** — 每週五東八區 **16:00**',
+      '7. **cron-tick 兜底** — 每 **5** 分鐘扇出上述推送（冪等）',
       '',
       '想看某一條預覽或手動推一次，直接跟我說就行。',
     ].join('\n')
   }
   return [
-    '⏱️ I’ve got **6** Vercel crons wired up:',
+    '⏱️ I’ve got **7** Vercel crons wired up:',
     '',
     '1. **Daily morning market** — 09:00 Asia/Shanghai daily',
     '2. **Half-hourly market** — every 30 minutes (private desk DM; not in greeting feature list)',
@@ -728,6 +730,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
     '4. **Oscillation alert** — every 15 minutes',
     '5. **Weekly DEMO** — polled every 15 min; fires in today’s 16:00 slot',
     '6. **Weekly report** — Fridays 16:00 Asia/Shanghai',
+    '7. **cron-tick catch-up** — every 5 minutes fans out the jobs above on the public alias (idempotent)',
     '',
     'Want a dry-run or a manual push of one of them? Just say which.',
   ].join('\n')
