@@ -10,7 +10,11 @@ import {
   isAttachmentMessage,
 } from '../api/lark/_lib/attachment'
 import { detectLang, looksLikeShareOrFileMeta } from '../api/lark/_lib/lang'
-import { parseIncomingEvent, shouldRespond } from '../api/lark/_lib/parse'
+import {
+  extractInteractiveCardText,
+  parseIncomingEvent,
+  shouldRespond,
+} from '../api/lark/_lib/parse'
 import { detectSafetyViolation } from '../api/lark/_lib/safety'
 import {
   accessUnavailableReply,
@@ -422,9 +426,9 @@ async function main() {
     sender: { sender_type: 'app', sender_id: { open_id: 'ou_bot' } },
   })
   record('parse.skip_bot_sender', botEcho === null, '')
-  const cardEcho = parseIncomingEvent({
+  const emptyCard = parseIncomingEvent({
     message: {
-      message_id: 'm_card',
+      message_id: 'm_card_empty',
       chat_id: 'c2',
       chat_type: 'p2p',
       message_type: 'interactive',
@@ -432,7 +436,99 @@ async function main() {
     },
     sender: { sender_type: 'user', sender_id: { open_id: 'u1' } },
   })
-  record('parse.skip_interactive_echo', cardEcho === null, '')
+  record('parse.skip_empty_interactive', emptyCard === null, '')
+  const botInteractive = parseIncomingEvent({
+    message: {
+      message_id: 'm_card_bot',
+      chat_id: 'c2',
+      chat_type: 'p2p',
+      message_type: 'interactive',
+      content: JSON.stringify({
+        header: { title: { tag: 'plain_text', content: '小时行情扫报' } },
+      }),
+    },
+    sender: { sender_type: 'app', sender_id: { open_id: 'ou_bot' } },
+  })
+  record('parse.skip_bot_interactive', botInteractive === null, '')
+  const spreadCardJson = JSON.stringify({
+    header: {
+      template: 'orange',
+      title: { tag: 'plain_text', content: '【价差预警监控】买一与卖一之间价差' },
+    },
+    elements: [
+      {
+        tag: 'div',
+        fields: [
+          { is_short: true, text: { tag: 'lark_md', content: '**合约**\nXAU_USD' } },
+          { is_short: true, text: { tag: 'lark_md', content: '**告警类型**\n买一与卖一之间价差' } },
+          { is_short: true, text: { tag: 'lark_md', content: '**监控价格 1**\n买一价格=3854.47' } },
+          { is_short: true, text: { tag: 'lark_md', content: '**监控价格 2**\n卖一价格=3861.27' } },
+          { is_short: true, text: { tag: 'lark_md', content: '**当前价差比例**\n0.18%' } },
+          { is_short: true, text: { tag: 'lark_md', content: '**告警阈值**\n>=0.1%' } },
+          { is_short: true, text: { tag: 'lark_md', content: '**监控周期**\n5 分钟' } },
+          { is_short: true, text: { tag: 'lark_md', content: '**告警时间**\n2026-11-17 09:00:22' } },
+        ],
+      },
+    ],
+  })
+  const spreadFlat = extractInteractiveCardText(spreadCardJson)
+  record(
+    'parse.extract_forwarded_alert_card',
+    spreadFlat.includes('价差预警监控') &&
+      spreadFlat.includes('XAU_USD') &&
+      spreadFlat.includes('0.18%') &&
+      spreadFlat.includes('告警阈值'),
+    spreadFlat.slice(0, 220),
+  )
+  const forwardedAlert = parseIncomingEvent({
+    message: {
+      message_id: 'm_fwd_alert',
+      chat_id: 'c_dm',
+      chat_type: 'p2p',
+      message_type: 'interactive',
+      content: spreadCardJson,
+    },
+    sender: { sender_type: 'user', sender_id: { open_id: 'ou_yan' } },
+  })
+  record(
+    'parse.accept_user_forwarded_alert_card',
+    Boolean(forwardedAlert) &&
+      forwardedAlert!.messageType === 'interactive' &&
+      forwardedAlert!.text.includes('[forwarded_card]') &&
+      forwardedAlert!.text.includes('价差预警监控') &&
+      forwardedAlert!.text.includes('XAU_USD') &&
+      shouldRespond(forwardedAlert!),
+    forwardedAlert?.text.slice(0, 200) || 'null',
+  )
+  const fwdIntent = forwardedAlert
+    ? classifyIntent(forwardedAlert.text, {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      })
+    : 'none'
+  record(
+    'parse.forwarded_alert_intent_investigate',
+    fwdIntent === 'investigate' &&
+      Boolean(forwardedAlert && looksLikeIncidentEvidence(forwardedAlert.text)),
+    `intent=${fwdIntent}`,
+  )
+  clearSession('smoke_chat', 'fwd_alert_zh')
+  const fwdTurn = await turn(
+    'forwarded-spread-alert',
+    forwardedAlert?.text || 'missing',
+    'fwd_alert_zh',
+    'smoke_chat',
+    { messageType: 'interactive' },
+  )
+  record(
+    'turn.forwarded_alert_starts_investigate',
+    Boolean(fwdTurn.reply?.card) &&
+      (/排查|Investigation|价差|XAU_USD|告警/i.test(fwdTurn.blob) ||
+        fwdTurn.blob.includes('Skills') ||
+        fwdTurn.blob.includes('可能原因')),
+    fwdTurn.blob.slice(0, 280),
+  )
 
   const { claimOnce, releaseClaim } = await import('../api/lark/_lib/dedupe')
   const dk = `smoke_dedupe_${Date.now()}`

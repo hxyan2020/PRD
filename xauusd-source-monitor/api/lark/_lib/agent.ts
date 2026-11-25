@@ -1135,8 +1135,12 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'investigate' || intent === 'followup') {
-    // Strip command prefix — bare "investigate"/"排查" with no details should not open a report card
-    const fact = workingText.replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '').trim()
+    // Strip command prefix — bare "investigate"/"排查" with no details should not open a report card.
+    // Also drop the parse-time `[forwarded_card]` marker so report titles stay clean.
+    const fact = workingText
+      .replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '')
+      .replace(/^\[forwarded_card\]\s*/i, '')
+      .trim()
     if (!fact) {
       const title =
         lang === 'zh-Hans' ? '开始排查' : lang === 'zh-Hant' ? '開始排查' : 'Start investigation'

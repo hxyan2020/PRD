@@ -25,7 +25,7 @@ export function isAttachmentMessage(messageType: string, text: string, imageKey?
 
 /** Risk / ops cues — used only AFTER we already reiterated what the attachment is. */
 export function attachmentLooksRiskRelated(digest: string): boolean {
-  return /告警|报警|報警|\balert\b|\bincident\b|\brca\b|排查|强平|強平|\badl\b|指数|指數|\bmark\b|\bindex\b|偏离|偏差|bps|funding|行情|监控|監控|永续|永續|风险|風險|定价|定價|报价|報價|liquidity|\blp\b/i.test(
+  return /告警|报警|報警|预警|預警|\balert\b|\bincident\b|\brca\b|排查|强平|強平|\badl\b|指数|指數|\bmark\b|\bindex\b|偏离|偏差|bps|funding|行情|监控|監控|永续|永續|风险|風險|定价|定價|报价|報價|liquidity|\blp\b|价差|價差|\bspread\b|阈值|閾值|买一|賣一|卖一|\[forwarded_card\]/i.test(
     digest,
   )
 }

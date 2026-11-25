@@ -101,6 +101,98 @@ export function extractShareHint(contentJson: string, messageType: string): stri
   return `[share:${messageType}]`
 }
 
+/**
+ * Flatten a forwarded / shared Feishu interactive card into readable alert text.
+ * Received card JSON differs from builder JSON — walk common title/text/content fields.
+ */
+export function extractInteractiveCardText(contentJson: string): string {
+  const parts: string[] = []
+  const push = (v: unknown) => {
+    if (typeof v !== 'string') return
+    const s = v.trim()
+    if (
+      !s ||
+      s.length > 800 ||
+      /^https?:\/\//i.test(s) ||
+      /^[A-Za-z0-9_-]{24,}$/.test(s) ||
+      /^img_/i.test(s)
+    ) {
+      return
+    }
+    parts.push(s)
+  }
+  try {
+    const root = JSON.parse(contentJson) as Record<string, unknown>
+    const walk = (v: unknown, depth: number) => {
+      if (depth > 10 || v == null) return
+      if (typeof v === 'string') {
+        push(v)
+        return
+      }
+      if (Array.isArray(v)) {
+        for (const x of v) walk(x, depth + 1)
+        return
+      }
+      if (typeof v !== 'object') return
+      const o = v as Record<string, unknown>
+      const take = (val: unknown) => {
+        if (typeof val === 'string') push(val)
+        else if (val && typeof val === 'object') walk(val, depth + 1)
+      }
+      // Prefer human-facing keys (string or nested plain_text / lark_md objects).
+      take(o.content)
+      take(o.text)
+      take(o.title)
+      if (o.header) walk(o.header, depth + 1)
+      if (o.elements) walk(o.elements, depth + 1)
+      if (o.fields) walk(o.fields, depth + 1)
+      if (o.columns) walk(o.columns, depth + 1)
+      if (o.rows) walk(o.rows, depth + 1)
+      // Schema-2 / nested card wrappers
+      if (o.card) walk(o.card, depth + 1)
+      if (o.data) walk(o.data, depth + 1)
+      if (o.body) walk(o.body, depth + 1)
+      for (const [k, val] of Object.entries(o)) {
+        if (
+          /token|key|id|secret|cipher|url|href|multi_url|img|image|option|value|action|template|tag|type|color|behaviors|is_short/i.test(
+            k,
+          )
+        ) {
+          continue
+        }
+        if (
+          k === 'content' ||
+          k === 'text' ||
+          k === 'title' ||
+          k === 'header' ||
+          k === 'elements' ||
+          k === 'fields' ||
+          k === 'columns' ||
+          k === 'rows' ||
+          k === 'card' ||
+          k === 'data' ||
+          k === 'body'
+        ) {
+          continue
+        }
+        walk(val, depth + 1)
+      }
+    }
+    walk(root, 0)
+  } catch {
+    return ''
+  }
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const p of parts) {
+    const k = p.toLowerCase()
+    if (seen.has(k)) continue
+    seen.add(k)
+    out.push(p)
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, 4000)
+}
+
 /** True when this mention targets our bot (open_id or known display name). */
 export function mentionIsOurBot(
   m: { id?: { open_id?: string }; name?: string; key?: string },
@@ -128,8 +220,8 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
   if (senderType === 'bot' || senderType === 'app' || (botOpenId && openId === botOpenId)) {
     return null
   }
-  // Card posts echo as interactive; card clicks use card.action.trigger instead.
-  if (messageType === 'interactive' || messageType === 'system') {
+  // System notices only — user-forwarded interactive alert cards must still be parsed.
+  if (messageType === 'system') {
     return null
   }
 
@@ -151,6 +243,11 @@ export function parseIncomingEvent(event: Record<string, unknown>): IncomingMess
     text = ''
   } else if (messageType === 'file' || messageType === 'media') {
     text = extractFileHint(rawContent)
+  } else if (messageType === 'interactive') {
+    // Forwarded alert / ops cards (sender=user). Empty shells are ignored.
+    text = extractInteractiveCardText(rawContent)
+    if (!text.trim()) return null
+    text = `[forwarded_card]\n${text}`
   } else if (
     messageType === 'share_chat' ||
     messageType === 'share_user' ||

@@ -7,7 +7,7 @@ const MARKET_RE =
   /行情|趋势|趨勢|市况|市況|\bmarket\b|\btrends?\b|\bgold\b|\bxau\b|\bxauusd\b|黄金|黃金|\bdxy\b|美元|波动|波動|基差|\bbps\b|溢价|溢價|折价|折價|\bokx\b|\bbinance\b|\bbybit\b|\bkraken\b|\bkitco\b|\bspot\b|k线|k線|\bcandles?\b/i
 
 const INVESTIGATE_RE =
-  /排查|调查|調查|告警|报警|報警|\bincident\b|\balerts?\b|\binvestigate\b|\brca\b|根因|强平|強平|\badl\b|指数源|指數源|\bmarks?\b|\bindex\b|\blp\b|对冲|對沖|拒单|拒單|盘口|盤口|偏差|剔除|无有效源|無有效源|失败|失敗|异常|異常|截图|截圖|表格|\btable\b|\breports?\b|报告|報告/i
+  /排查|调查|調查|告警|报警|報警|预警|預警|\bincident\b|\balerts?\b|\binvestigate\b|\brca\b|根因|强平|強平|\badl\b|指数源|指數源|\bmarks?\b|\bindex\b|\blp\b|对冲|對沖|拒单|拒單|盘口|盤口|偏差|剔除|无有效源|無有效源|失败|失敗|异常|異常|截图|截圖|表格|\btable\b|\breports?\b|报告|報告|价差|價差|\bspread\b|\[forwarded_card\]/i
 
 /** Mid-text review cues — avoid bare "alert" (collides with investigate alert paste). */
 const REVIEW_RE =
@@ -36,7 +36,7 @@ const DESK_FAQ_RE =
 
 /** Alert / incident evidence — OK to attach Skills retrieval + severity. */
 const INCIDENT_EVIDENCE_RE =
-  /告警|报警|報警|\balert\b|\bincident\b|\brca\b|排查|强平|強平|\badl\b|指数源|指數源|\bmarks?\b|\bindex\b|偏差|剔除|无有效源|無有效源|\bbps\b|失败|失敗|异常|異常|截图|截圖|\bseverity\b|P[0-3]\b/i
+  /告警|报警|報警|预警|預警|\balert\b|\bincident\b|\brca\b|排查|强平|強平|\badl\b|指数源|指數源|\bmarks?\b|\bindex\b|偏差|剔除|无有效源|無有效源|\bbps\b|失败|失敗|异常|異常|截图|截圖|\bseverity\b|P[0-3]\b|价差|價差|\bspread\b|阈值|閾值|买一|賣一|卖一|监控周期|監控週期|\[forwarded_card\]/i
 
 /**
  * User asks the bot to reach something it cannot (admin/DB/prod/secrets/writes).
