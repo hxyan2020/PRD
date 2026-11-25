@@ -2396,9 +2396,14 @@ async function main() {
       cronTickSrc.includes('/api/lark/weekly-report') &&
       cronTickSrc.includes('/api/lark/cron-health') &&
       cronTickSrc.includes('Promise.all') &&
+      cronTickSrc.includes('healthFirst') &&
+      cronTickSrc.includes('HEALTH_STALE_MS') &&
+      cronTickSrc.includes('hitPath(HEALTH_PATH') &&
+      cronTickSrc.includes('AbortSignal.timeout') &&
+      cronTickSrc.indexOf('HEALTH_PATH') < cronTickSrc.indexOf('OTHER_PATHS') &&
       cronTickSrc.indexOf("'/api/lark/cron-health'") <
         cronTickSrc.indexOf("'/api/lark/alert-nudge'"),
-    'cron-tick PATHS parallel + health-first + vercel schedule',
+    'cron-tick health-first await + force-on-stale + parallel others + vercel */5',
   )
   const cronHealthSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/cron-health.ts', import.meta.url),
@@ -2406,8 +2411,22 @@ async function main() {
   )
   record(
     'cron.health_stale_catchup',
-    cronHealthSrc.includes('STALE_CATCHUP_MS') && cronHealthSrc.includes('staleCatchup'),
-    '35m silence → force health DM',
+    cronHealthSrc.includes('STALE_CATCHUP_MS') &&
+      cronHealthSrc.includes('staleCatchup') &&
+      cronHealthSrc.includes('__last_delivery__') &&
+      cronHealthSrc.includes('lastSentAt === 0') &&
+      cronHealthSrc.includes('health_sent_state_blob_failed'),
+    '35m silence / never-sent → catch-up DM; blob fail → 502 retry',
+  )
+  const durableSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/_lib/durableJson.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.durable_write_returns_bool',
+    /writeDurableJson[\s\S]*Promise<boolean>/.test(durableSrc) &&
+      durableSrc.includes('return false'),
+    'Blob write failure is observable',
   )
   record(
     'cron.health_half_hour_scheduled',
@@ -2423,8 +2442,9 @@ async function main() {
   record(
     'cron.health_report_shape',
     Boolean(healthRep.slotKey) &&
-      healthRep.jobs.length >= 6 &&
+      healthRep.jobs.length >= 7 &&
       healthRep.jobs.some((j) => j.id === 'cron-tick') &&
+      healthRep.jobs.some((j) => j.id === 'cron-health') &&
       healthRep.jobs.some((j) => j.id === 'market-report') &&
       healthRep.jobs.some((j) => j.id === 'bot') &&
       typeof healthRep.allOk === 'boolean' &&
