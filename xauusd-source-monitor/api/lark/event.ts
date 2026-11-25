@@ -138,22 +138,28 @@ async function handleCardActionRequest(
   }
 
   // Market K-line interval switch — MUST ack Feishu within 3s (error 200341 on timeout).
-  // Rebuild fetches OKX + hourly scan (often >3s); toast first, then patch the message.
+  // Rebuild fetches OKX + hourly scan (often >3s); toast first, then delayed-update via
+  // callback token (interactive/v1/card/update). Message PUT alone often leaves the
+  // chart stuck on the old interval after a toast-only ack.
   const isKlineTf = String(value.action || '') === 'market_kline_tf'
   if (isKlineTf) {
     const bar = String(value.bar || '1H')
+    // card.action.trigger → event.token; Card Request URL → body.token on event root
+    const callbackToken = String(
+      args.event.token || (args.event as { action_token?: string }).action_token || '',
+    ).trim()
     waitUntil(
       (async () => {
         try {
+          // Feishu: delayed update must run AFTER the toast HTTP response, not in parallel.
+          await new Promise((r) => setTimeout(r, 150))
           const reply = await handleCardAction({
             openId,
             chatId,
             messageId,
             value,
           })
-          if (reply.card && messageId) {
-            const { updateMessageCard } = await import('./_lib/client.js')
-            await updateMessageCard(messageId, reply.card)
+          if (!reply.card) {
             logInbound({
               at: new Date().toISOString(),
               kind: 'card_action',
@@ -161,7 +167,30 @@ async function handleCardActionRequest(
               openId,
               chatId,
               messageId,
-              result: `ok:kline_tf_async:${bar}`,
+              result: 'fail:kline_tf_no_card',
+            })
+            return
+          }
+          const { updateCardByCallbackToken, updateMessageCard } = await import(
+            './_lib/client.js'
+          )
+          let via = 'callback_token'
+          if (callbackToken) {
+            await updateCardByCallbackToken(callbackToken, reply.card, {
+              openIds: openId.startsWith('ou_') ? [openId] : [],
+            })
+          } else if (messageId) {
+            via = 'message_put_fallback'
+            await updateMessageCard(messageId, reply.card)
+          } else {
+            logInbound({
+              at: new Date().toISOString(),
+              kind: 'card_action',
+              eventType: args.eventType,
+              openId,
+              chatId,
+              messageId,
+              result: 'fail:kline_tf_no_token_or_message',
             })
             return
           }
@@ -172,7 +201,7 @@ async function handleCardActionRequest(
             openId,
             chatId,
             messageId,
-            result: 'fail:kline_tf_no_card',
+            result: `ok:kline_tf_async:${bar}:${via}`,
           })
         } catch (e) {
           logInbound({

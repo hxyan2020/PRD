@@ -1029,7 +1029,8 @@ export async function buildMarketCard(opts: {
   if (bodyAppendix.trim()) elements.push(mdDiv(bodyAppendix.trim()))
 
   return {
-    config: { wide_screen_mode: true },
+    // update_multi: TF buttons refresh the same card for all recipients (group + DM).
+    config: { wide_screen_mode: true, update_multi: true },
     header: {
       template,
       title: { tag: 'plain_text', content: title },
@@ -1184,8 +1185,12 @@ export async function rebuildMarketCardForInterval(opts: {
     fetchMarketSnapshot().catch(() => null),
     fetchOkxKline(opts.bar).catch(() => null),
   ])
+  // Never fall back to a different interval (e.g. 4H tap → 1H chart looks "stuck").
+  const snapKline = snap?.hourly?.kline
   const kline: HourlyKlineSeries | null =
-    klineFetched || snap?.hourly?.kline || null
+    klineFetched ||
+    (snapKline && snapKline.interval === opts.bar ? snapKline : null) ||
+    null
   const lastClose = kline?.bars?.at(-1)?.c
   const snapSafe: MarketSnapshot =
     snap ||
