@@ -122,7 +122,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ ok: true, acked: true, state: st })
   }
 
-  if (cron) {
+  // Touch heartbeat only on real cron fires (not dry probes).
+  if (cron && !dry) {
     await touchCronHeartbeat('/api/lark/alert-nudge')
     const st = await loadNudgeState()
     if (st) {
@@ -130,7 +131,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  if (!force && !cron) {
+  // dry=1 always previews (even with cron header) so we can read heartbeat.
+  if (dry && !force) {
     const state = await loadNudgeState()
     const card = buildAlertNudgeCard({
       openId: state?.openId || '',
