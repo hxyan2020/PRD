@@ -2084,8 +2084,11 @@ async function main() {
     (
       invAipo.blob.match(/完整排查链路|完整排查鏈路|Full investigation path|🧭 \*\*排查路径|🧭 \*\*Investigation path/g) ||
       []
-    ).length <= 1,
-    'path heading appears at most once',
+    ).length === 1 &&
+      !/按 Skill\.check · 下一步优先|已按你最新证据重排|re-ranked from your latest evidence/i.test(
+        invAipo.blob,
+      ),
+    'exactly one path heading; no legacy duplicate titles',
   )
   const greetLater = greetingReply('zh-Hans')
   record(

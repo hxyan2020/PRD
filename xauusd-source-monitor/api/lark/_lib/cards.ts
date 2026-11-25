@@ -71,7 +71,6 @@ export function investigationCard(args: {
         ? `⚖️ **最終判定（必選，計入複盤／週報）：** 尚未選定 — 建議參考嚴重度傾向 **${riskVerdictLabel(suggested, args.lang)}**`
         : `⚖️ **Final verdict (required for board/weekly stats):** unset — severity soft-suggests **${riskVerdictLabel(suggested, args.lang)}**`
   const emoji = severityEmoji(args.severity)
-  const stepMd = args.nextSteps.map((s, i) => formatStepLine(s, i)).join('\n')
   const actionMd =
     args.actions.map((a) => formatActionLine(a)).join('\n') ||
     (hans ? '• （暂无）' : zh ? '• （暫無）' : '• (none yet)')
@@ -82,19 +81,15 @@ export function investigationCard(args: {
       : zh
         ? '尚未匹配'
         : 'none matched'
-  // Body stays lean: no 知识库 titles / 证据分级 / 指引 — desk links only at the end.
+  // Path is rendered once on investigationPathOverviewCard — never again here.
   void args.knowledge
+  void args.nextSteps
 
   const sevLabel = hans
     ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
     : zh
       ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
       : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
-  const nextLabel = hans
-    ? `🧭 **排查路径（下一步 · 已按你最新证据重排，不必按顺序贴）**\n\n${stepMd}`
-    : zh
-      ? `🧭 **排查路徑（下一步 · 已按你最新證據重排，不必按順序貼）**\n\n${stepMd}`
-      : `🧭 **Investigation path (next · re-ranked from your latest evidence, any order OK)**\n\n${stepMd}`
   const prefLabel = hans
     ? `⚡ **Preferred Action**（需审批）\n\n${actionMd}`
     : zh
@@ -133,7 +128,6 @@ export function investigationCard(args: {
         },
       },
       { tag: 'hr' },
-      { tag: 'div', text: { tag: 'lark_md', content: nextLabel } },
       { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
