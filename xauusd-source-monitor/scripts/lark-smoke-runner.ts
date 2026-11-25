@@ -1892,6 +1892,19 @@ async function main() {
   record('aipo.wiki_detect', isLarkWikiQuestion('查一下飞书文档 Mark Price'), '')
   record('aipo.wiki_not_desk_kb', !isLarkWikiQuestion('knowledge'), '')
   record('aipo.wiki_query_extract', extractWikiQuery('请查一下飞书文档 Mark vs Index').includes('Mark'), extractWikiQuery('请查一下飞书文档 Mark vs Index'))
+  {
+    const docsSrc = await import('node:fs').then((fs) =>
+      fs.promises.readFile(new URL('../api/lark/_lib/larkDocs.ts', import.meta.url), 'utf8'),
+    )
+    record(
+      'aipo.wiki_uses_tenant_search_v2',
+      docsSrc.includes('/open-apis/search/v2/doc_wiki/search') &&
+        docsSrc.includes('wiki/v2/nodes/search') &&
+        docsSrc.includes('user_access_token only') &&
+        docsSrc.includes('wikiAccessSetupHint'),
+      'tenant search/v2 — not nodes/search',
+    )
+  }
   clearSession('smoke_chat', 'smoke_user')
   const wikiTurn = await turn('wiki-ask', '查一下飞书文档 Mark Price SOP')
   record(
@@ -1900,8 +1913,23 @@ async function main() {
       (wikiTurn.blob.includes('Yan Haixiang') ||
         wikiTurn.blob.includes('Wiki') ||
         wikiTurn.blob.includes('文档') ||
-        wikiTurn.blob.includes('文檔')),
+        wikiTurn.blob.includes('文檔') ||
+        wikiTurn.blob.includes('search:docs:read') ||
+        wikiTurn.blob.includes('开通步骤')),
     wikiTurn.blob.slice(0, 200),
+  )
+  clearSession('smoke_chat', 'smoke_user')
+  const bareDocs = await turn('wiki-bare', '文档')
+  record(
+    'turn.aipo_wiki_bare_docs_lists_or_setup',
+    Boolean(bareDocs.reply?.card) &&
+      (bareDocs.blob.includes('知识空间') ||
+        bareDocs.blob.includes('知識空間') ||
+        bareDocs.blob.includes('Wiki spaces') ||
+        bareDocs.blob.includes('开通步骤') ||
+        bareDocs.blob.includes('開通步驟') ||
+        bareDocs.blob.includes('Setup')),
+    bareDocs.blob.slice(0, 200),
   )
 
   // 9a5) AIPO evidence grades appear on investigate summary (later polish preserved)

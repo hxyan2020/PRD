@@ -13,8 +13,11 @@ import { chatComplete, describeImage } from './llm.js'
 import {
   extractWikiQuery,
   fetchChatHistory,
+  listWikiSpaces,
   readDocxRaw,
+  readLarkDocByToken,
   searchLarkWiki,
+  wikiAccessSetupHint,
 } from './larkDocs.js'
 import {
   buildMarketCard,
@@ -512,25 +515,25 @@ async function ingestShareOrFile(msg: IncomingMessage, lang: Lang): Promise<stri
     )
   }
   if (token && (kind === 'docx' || !kind || kind === 'wiki')) {
-    const doc = await readDocxRaw(token)
+    const doc = await readLarkDocByToken({ token, kind })
     if (doc.ok && doc.content) {
       lines.push(
         '',
         lang === 'zh-Hans'
-          ? '**文档正文摘要（只读）：**'
+          ? `**文档正文摘要（只读）${doc.title ? ` · ${doc.title}` : ''}：**`
           : lang === 'zh-Hant'
-            ? '**文檔正文摘要（唯讀）：**'
-            : '**Document body excerpt (read-only):**',
+            ? `**文檔正文摘要（唯讀）${doc.title ? ` · ${doc.title}` : ''}：**`
+            : `**Document body excerpt (read-only)${doc.title ? ` · ${doc.title}` : ''}:**`,
         doc.content.replace(/\s+/g, ' ').trim().slice(0, 1200),
       )
     } else if (url || token) {
       lines.push(
         '',
         lang === 'zh-Hans'
-          ? `文档链接／token 已识别${url ? `（${url}）` : ''}，但正文读取失败或未授权${doc.error ? `：${doc.error}` : '。'}可把要点贴出来，或联系 **@Yan Haixiang** 开通只读。`
+          ? `文档链接／token 已识别${url ? `（${url}）` : ''}，但正文读取失败或未授权${doc.error ? `：${doc.error}` : '。'}可把要点贴出来；或按知识库「添加文档应用／群成员」给本机器人开通只读。`
           : lang === 'zh-Hant'
-            ? `文檔連結／token 已識別${url ? `（${url}）` : ''}，但正文讀取失敗或未授權${doc.error ? `：${doc.error}` : '。'}可把要點貼出來，或聯繫 **@Yan Haixiang** 開通唯讀。`
-            : `Doc link/token spotted${url ? ` (${url})` : ''}, but body read failed or unauthorized${doc.error ? `: ${doc.error}` : '.'} Paste key points, or ask **@Yan Haixiang** for read scope.`,
+            ? `文檔連結／token 已識別${url ? `（${url}）` : ''}，但正文讀取失敗或未授權${doc.error ? `：${doc.error}` : '。'}可把要點貼出來；或依知識庫「新增文件應用／群成員」開通唯讀。`
+            : `Doc link/token spotted${url ? ` (${url})` : ''}, but body read failed or unauthorized${doc.error ? `: ${doc.error}` : '.'} Paste key points, or grant this bot Wiki/Docs read (add app / bot group as collaborator).`,
       )
     }
   }
@@ -751,9 +754,65 @@ function persistOpenIncident(args: {
 }
 
 async function handleWikiAsk(lang: Lang, text: string, openId: string): Promise<BotReply> {
-  const query = extractWikiQuery(text) || text.trim().slice(0, 120)
+  const extracted = extractWikiQuery(text)
+  const bareDocsCmd = /^(文档|文檔|wiki|飞书文档|飛書文檔|百科)$/i.test(text.trim())
+  const query = (extracted || (bareDocsCmd ? '' : text.trim())).slice(0, 120)
   const title =
     lang === 'zh-Hans' ? '飞书 Wiki / 文档' : lang === 'zh-Hant' ? '飛書 Wiki / 文檔' : 'Lark Wiki / Docs'
+
+  // Bare「文档」— show accessible spaces + how to search / paste links (no fake hits).
+  if (!query) {
+    const listed = await listWikiSpaces(20)
+    logInbound({
+      at: new Date().toISOString(),
+      kind: 'wiki_list',
+      openId,
+      result: listed.ok ? `spaces:${listed.spaces.length}` : `fail:${listed.error || 'unknown'}`,
+    })
+    const setup = wikiAccessSetupHint(lang)
+    if (!listed.ok || !listed.spaces.length) {
+      return {
+        card: simpleCard(
+          title,
+          accessUnavailableReply(
+            lang,
+            lang === 'zh-Hans'
+              ? `当前机器人还看不到任何知识空间（${listed.error || 'spaces empty'}）。\n\n${setup}`
+              : lang === 'zh-Hant'
+                ? `目前機器人還看不到任何知識空間（${listed.error || 'spaces empty'}）。\n\n${setup}`
+                : `This bot cannot see any Wiki spaces yet (${listed.error || 'spaces empty'}).\n\n${setup}`,
+          ),
+          'orange',
+        ),
+      }
+    }
+    const lines =
+      lang === 'zh-Hans'
+        ? [
+            '📚 **已授权知识空间（只读）**',
+            '',
+            ...listed.spaces.slice(0, 12).map((s) => `• **${s.name}** · \`${s.spaceId}\``),
+            '',
+            '发送关键词继续检索，例如：`文档 Mark Price`；或直接贴文档链接。',
+          ]
+        : lang === 'zh-Hant'
+          ? [
+              '📚 **已授權知識空間（唯讀）**',
+              '',
+              ...listed.spaces.slice(0, 12).map((s) => `• **${s.name}** · \`${s.spaceId}\``),
+              '',
+              '傳送關鍵詞繼續檢索，例如：`文檔 Mark Price`；或直接貼文件連結。',
+            ]
+          : [
+              '📚 **Authorized Wiki spaces (read-only)**',
+              '',
+              ...listed.spaces.slice(0, 12).map((s) => `• **${s.name}** · \`${s.spaceId}\``),
+              '',
+              'Send a keyword next (e.g. `wiki Mark Price`), or paste a doc link.',
+            ]
+    return { card: simpleCard(title, lines.join('\n'), 'blue') }
+  }
+
   const searched = await searchLarkWiki(query, 5)
   logInbound({
     at: new Date().toISOString(),
@@ -764,16 +823,17 @@ async function handleWikiAsk(lang: Lang, text: string, openId: string): Promise<
   })
 
   if (!searched.ok) {
+    const setup = wikiAccessSetupHint(lang)
     return {
       card: simpleCard(
         title,
         accessUnavailableReply(
           lang,
           lang === 'zh-Hans'
-            ? `飞书 Wiki／文档读取未授权或不可用（${searched.error || 'scope/凭证'}）。这是 AIPO Lark API UAT 只读项，请联系 @Yan Haixiang 开通 Wiki/Docs 只读权限。`
+            ? `飞书 Wiki／文档读取未授权或不可用（${searched.error || 'scope/凭证'}）。\n\n${setup}`
             : lang === 'zh-Hant'
-              ? `飛書 Wiki／文檔讀取未授權或不可用（${searched.error || 'scope/憑證'}）。這是 AIPO Lark API UAT 唯讀項，請聯繫 @Yan Haixiang 開通 Wiki/Docs 唯讀權限。`
-              : `Lark Wiki/Docs read is unauthorized or unavailable (${searched.error || 'scope/credentials'}). AIPO Lark API UAT read-only item — contact @Yan Haixiang to grant Wiki/Docs read scopes.`,
+              ? `飛書 Wiki／文檔讀取未授權或不可用（${searched.error || 'scope/憑證'}）。\n\n${setup}`
+              : `Lark Wiki/Docs read is unauthorized or unavailable (${searched.error || 'scope/credentials'}).\n\n${setup}`,
         ),
         'orange',
       ),
@@ -781,6 +841,10 @@ async function handleWikiAsk(lang: Lang, text: string, openId: string): Promise<
   }
 
   if (!searched.hits.length) {
+    const setup =
+      searched.hint === 'wiki_membership' || !(searched.spaceIds || []).length
+        ? `\n\n${wikiAccessSetupHint(lang)}`
+        : ''
     const empty =
       lang === 'zh-Hans'
         ? [
@@ -788,23 +852,32 @@ async function handleWikiAsk(lang: Lang, text: string, openId: string): Promise<
             '',
             `• **查询：** ${query}`,
             '• **结果：** 未找到授权范围内的页面',
-            '• **提示：** 换关键词再试；若应有文档，请联系 **@Yan Haixiang** 确认授权范围',
-          ].join('\n')
+            '• **提示：** 换关键词再试，或直接贴文档链接',
+            setup,
+          ]
+            .filter(Boolean)
+            .join('\n')
         : lang === 'zh-Hant'
           ? [
               '📚 **Wiki 檢索**',
               '',
               `• **查詢：** ${query}`,
               '• **結果：** 未找到授權範圍內的頁面',
-              '• **提示：** 換關鍵詞再試；若應有文檔，請聯繫 **@Yan Haixiang** 確認授權範圍',
-            ].join('\n')
+              '• **提示：** 換關鍵詞再試，或直接貼文件連結',
+              setup,
+            ]
+              .filter(Boolean)
+              .join('\n')
           : [
               '📚 **Wiki search**',
               '',
               `• **Query:** ${query}`,
               '• **Result:** no pages in the authorized scope',
-              '• **Tip:** try other keywords; if a doc should exist, ask **@Yan Haixiang** to confirm the allow-list',
-            ].join('\n')
+              '• **Tip:** try other keywords, or paste a doc link',
+              setup,
+            ]
+              .filter(Boolean)
+              .join('\n')
     return { card: simpleCard(title, empty, 'blue') }
   }
 

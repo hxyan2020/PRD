@@ -152,15 +152,24 @@ Demo catch-up windows (idempotent via durable sent-day state):
 4. **Investigate** — alerts/text/image/table; adaptive steps; emoji + bold bullets; AIPO evidence grades (Confirmed / Suspected / Unknown + [OBS]/[DESIGN]/…).
 5. **RAG + Skills** — desk + quote-ops V Exchange perpetual (`v-exchange-perp`; CFD excluded).
 6. **Dashboard** — `review` / `dashboard` → KPI card + https://vex-llm-proxy.vercel.app/#/reports
-7. **Wiki / Docs (AIPO)** — read-only Lark Wiki search + Docx excerpt when scopes allow; otherwise contact **@Yan Haixiang**.
+7. **Wiki / Docs (AIPO)** — read-only Lark Wiki search + Docx excerpt when scopes allow; otherwise show setup steps / @Yan.
 
 Commands: `help` · `market` · `investigate` · `review` · `dashboard` · `wiki` · `knowledge` / `kb` · `weekly` / `周报` · `done` / `archive`
+
+### Wiki / Docs setup (bot = tenant_access_token)
+
+`wiki/v2/nodes/search` is **user_access_token only** (error 99991663 with app token). Production path:
+
+1. App scopes (publish after enabling): `search:docs:read`, Wiki read, Docx/Docs read.
+2. Grant **resource** access: add a group that includes this bot as Wiki space **read** member, or add the app as a doc collaborator (“添加文档应用”).
+3. Optional env: `LARK_WIKI_SPACE_IDS` (comma-separated) to pin search spaces.
+4. APIs used: `GET /wiki/v2/spaces`, `POST /search/v2/doc_wiki/search`, `GET /wiki/v2/spaces/get_node`, `GET /docx/v1/documents/:id/raw_content`.
 
 ## AIPO Lark API UAT (OWNLAB「Lark API 接入需求」)
 
 | Acceptance | Prod status |
 |------------|-------------|
-| Read authorized Wiki / Docs | Implemented (read-only); needs Wiki/Docs scopes — else @Yan |
+| Read authorized Wiki / Docs | Implemented via tenant-capable search/v2 + wiki get_node; needs scopes + Wiki membership |
 | Read authorized group messages | Live events + best-effort history on group investigate |
 | DM / @Bot bidirectional chat | Done |
 | Active push to user/group | Done (alerts + Fri 16:00 CST weekly DM) |
