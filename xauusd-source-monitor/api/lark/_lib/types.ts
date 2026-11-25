@@ -90,8 +90,22 @@ export interface GuideStep {
   status: 'pending' | 'done' | 'skipped'
 }
 
-/** After Done → evidence; after Skip on required → text reply. */
-export type StepAwaiting = 'none' | 'evidence' | 'required_skip_reply'
+/** After Done → evidence; after Skip on required → text reply; after Escalate → feedback. */
+export type StepAwaiting =
+  | 'none'
+  | 'evidence'
+  | 'required_skip_reply'
+  | 'escalate_feedback'
+
+/** Active escalate handoff while waiting for role feedback. */
+export interface EscalationState {
+  stepId: string
+  stepLabel: string
+  stepIndex: number
+  roles: string[]
+  openIds: string[]
+  at: number
+}
 
 export interface InvestigationState {
   /** report_draft = full report shown; chat edits the draft until archive. */
@@ -111,8 +125,10 @@ export interface InvestigationState {
   pathSteps?: GuideStep[]
   /** Index into pathSteps for the current guide card. */
   pathStepIndex?: number
-  /** Waiting for evidence (after Done) or a required-skip reply. */
+  /** Waiting for evidence (after Done), required-skip reply, or escalate feedback. */
   stepAwaiting?: StepAwaiting
+  /** Current escalate handoff (operator side). */
+  escalation?: EscalationState
   /** Soft command awaiting confirm (yes → run; no → chat). */
   pendingCommand?: PendingCommandIntent
   pendingCommandText?: string

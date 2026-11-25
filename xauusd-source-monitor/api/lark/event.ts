@@ -318,12 +318,20 @@ async function handleCardActionRequest(
       }
     })(),
   )
+  const isEscalate = String(value.action || '') === 'guide_step_escalate'
   // Feishu expects a toast (or card) on card callback — not only {ok:true}
   return res.status(200).json({
     toast: {
-      type: 'success',
-      content: 'OK',
-      i18n: { zh_cn: '已处理', zh_hk: '已處理', en_us: 'Done' },
+      type: isEscalate ? 'info' : 'success',
+      content: isEscalate ? 'Escalated — awaiting feedback' : 'OK',
+      i18n: isEscalate
+        ? {
+            zh_cn: '已升级等待反馈',
+            zh_hk: '已升級等待反饋',
+            zh_tw: '已升級等待反饋',
+            en_us: 'Escalated — awaiting feedback',
+          }
+        : { zh_cn: '已处理', zh_hk: '已處理', en_us: 'Done' },
     },
   })
 }
