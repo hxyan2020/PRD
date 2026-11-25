@@ -352,6 +352,7 @@ async function main() {
   )
   const {
     looksLikePureChat,
+    looksLikeInvestigationQuestion,
     looksLikeSemanticQuestion,
     resolveTurnDisposition,
     needsCommandConfirm,
@@ -2542,6 +2543,30 @@ async function main() {
       invZh.blob,
     ),
     invZh.blob.slice(0, 160),
+  )
+  record(
+    'turn.investigate_skills_path_no_free_reason',
+    invZh.blob.includes('Skills 路径协助') ||
+      invZh.blob.includes('Skills-guided path') ||
+      invZh.blob.includes('未启用自由推理'),
+    invZh.blob.match(/📌[\s\S]{0,80}/)?.[0] || invZh.blob.slice(0, 120),
+  )
+
+  // Mid-case question unlocks reasoning mode (not treated as evidence).
+  const invQ = await turn('inv-question-mode', '为什么要看后管指数价格管理？我看不太懂', 'inv_zh')
+  record(
+    'turn.investigate_question_unlocks_reason',
+    Boolean(invQ.reply?.card) &&
+      (/解答|解题|question mode|为什么|後管|后管|Skill\.check|Skill\.action/i.test(invQ.blob) ||
+        invQ.blob.includes('💬')),
+    invQ.blob.slice(0, 200),
+  )
+  record(
+    'scope.investigation_question_detect',
+    looksLikeInvestigationQuestion('为什么要看后管？') &&
+      looksLikeInvestigationQuestion('看不懂这一步') &&
+      !looksLikeInvestigationQuestion('告警：IDX-01 被剔除，Mark 偏离 48bps'),
+    '',
   )
 
   // Knowledge / skill Q&A (general_risk) must surface retrieval even without LLM

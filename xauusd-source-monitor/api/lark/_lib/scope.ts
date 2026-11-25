@@ -276,6 +276,34 @@ export function looksLikeSemanticQuestion(text: string): boolean {
   return false
 }
 
+/**
+ * During an open investigation: user is confused / asking why-how, not pasting the next evidence chunk.
+ * These turns should unlock reasoning + business knowledge; normal evidence turns stay Skills-only.
+ */
+export function looksLikeInvestigationQuestion(text: string): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (isExplicitCommand(t) || isInvReportCommand(t) || isStepDoneCommand(t)) return false
+  if (looksLikeIncidentEvidence(t)) return false
+  if (looksLikeSemanticQuestion(t)) return true
+  // Confusion / “I don’t understand this step” without a trailing ?
+  if (
+    /(看不懂|不懂|不理解|不解|不太明白|搞不清|什么意思|什麼意思|为何要|為何要|为什么要|為什麼要|怎么做|怎麼做|如何操作|怎么查|怎麼查|哪里看|哪裡看|是否应该|是否應該|对吗|對嗎)/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  if (
+    /(don'?t\s+understand|confused|what\s+does\s+this\s+mean|why\s+(do|should|are)\s+we|how\s+(do|should)\s+i|where\s+(do|should)\s+i\s+(look|check)|is\s+this\s+(correct|right))/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  return false
+}
+
 /** Clear market question with instrument / desk cue — run market, don't chat-divert. */
 export function looksLikeClearMarketAsk(text: string): boolean {
   const t = text.trim()

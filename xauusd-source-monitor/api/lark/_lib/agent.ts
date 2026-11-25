@@ -58,6 +58,7 @@ import {
   looksLikeCommandCancel,
   looksLikeCommandConfirm,
   looksLikeIncidentEvidence,
+  looksLikeInvestigationQuestion,
   looksLikeNowTimeQuestion,
   looksLikePureChat,
   looksLikeTimezoneQuestion,
@@ -225,24 +226,35 @@ function buildSummary(args: {
 }
 
 /**
- * Lean investigate body when LLM is down.
- * Causes stay short; full Skill check = 后管排查链路; action = 决策分支.
+ * Skills-first investigate body (no free reasoning).
+ * Causes stay short; check = 排查链路; action = 决策分支 — only Skill text + adaptive NEXT/COVERED.
  */
 function formatInvestigateCore(args: {
   lang: Lang
   hits: { id: string; name: string; check: string; action: string }[]
   kb: { title: string }[]
+  nextSteps?: string[]
+  covered?: string[]
+  newlyCovered?: string[]
 }): string {
   const hans = args.lang === 'zh-Hans'
   const hant = args.lang === 'zh-Hant'
   const lines: string[] = []
+  lines.push(
+    hans
+      ? '📌 **模式：** Skills 路径协助（未启用自由推理）'
+      : hant
+        ? '📌 **模式：** Skills 路徑協助（未啟用自由推理）'
+        : '📌 **Mode:** Skills-guided path (no free reasoning)',
+  )
+  lines.push('')
   lines.push(hans ? '🔎 **可能原因**' : hant ? '🔎 **可能原因**' : '🔎 **Possible causes**')
   if (args.hits.length) {
     for (const h of args.hits.slice(0, 4)) {
       lines.push(
         hans || hant
-          ? `• **假设／待核实：** 命中场景 **${h.id} · ${h.name}**（以告警字段与后管数据核实）`
-          : `• **Suspected / to verify:** matched **${h.id} · ${h.name}** (confirm with alert fields + admin desk)`,
+          ? `• **假设／待核实：** 命中场景 **${h.id} · ${h.name}**（以告警字段与后管数据核实；结论以 Skill 为准）`
+          : `• **Suspected / to verify:** matched **${h.id} · ${h.name}** (confirm with alert fields + admin; Skill is source of truth)`,
       )
     }
   } else {
@@ -254,15 +266,22 @@ function formatInvestigateCore(args: {
           : '• No high-confidence scenario yet — add alert fields (contract / metric / threshold / time)',
     )
   }
+  if (args.newlyCovered?.length) {
+    lines.push('')
+    lines.push(hans ? '✅ **本轮已覆盖**' : hant ? '✅ **本輪已覆蓋**' : '✅ **Covered this turn**')
+    for (const c of args.newlyCovered.slice(0, 4)) lines.push(`• ${c}`)
+  }
   lines.push('')
   lines.push(
     hans
-      ? '🧭 **排查路径（后管／前端链路）**'
+      ? '🧭 **排查路径（按 Skill.check · 下一步优先）**'
       : hant
-        ? '🧭 **排查路徑（後管／前端鏈路）**'
-        : '🧭 **Investigation path (admin / desk)**',
+        ? '🧭 **排查路徑（按 Skill.check · 下一步優先）**'
+        : '🧭 **Investigation path (Skill.check · next first)**',
   )
-  if (args.hits.length) {
+  if (args.nextSteps?.length) {
+    for (const s of args.nextSteps.slice(0, 4)) lines.push(`• ${s}`)
+  } else if (args.hits.length) {
     for (const h of args.hits.slice(0, 3)) {
       lines.push(`• **${h.id} · ${h.name}**`)
       const steps = splitSkillSteps(h.check)
@@ -279,8 +298,18 @@ function formatInvestigateCore(args: {
           : '• First reconcile Index / Mark / Funding / book timestamps with the alert text',
     )
   }
+  if (args.covered?.length && !args.newlyCovered?.length) {
+    lines.push('')
+    lines.push(
+      hans
+        ? `_已覆盖 ${args.covered.length} 步（证据可乱序）_`
+        : hant
+          ? `_已覆蓋 ${args.covered.length} 步（證據可亂序）_`
+          : `_Covered ${args.covered.length} step(s) (any order OK)_`,
+    )
+  }
   lines.push('')
-  lines.push(hans ? '🌿 **决策分支**' : hant ? '🌿 **決策分支**' : '🌿 **Decision branches**')
+  lines.push(hans ? '🌿 **决策分支（Skill.action 原文）**' : hant ? '🌿 **決策分支（Skill.action 原文）**' : '🌿 **Decision branches (Skill.action verbatim)**')
   if (args.hits.length) {
     for (const h of args.hits.slice(0, 3)) {
       lines.push(`• **${h.id}**`)
@@ -298,6 +327,14 @@ function formatInvestigateCore(args: {
           : '• If fields are missing, gather alert text first, then choose watch / escalate / close',
     )
   }
+  lines.push('')
+  lines.push(
+    hans
+      ? '_有疑问或不解时直接问我（例如「为什么要看后管」）——那时才会启用推理与业务说明。_'
+      : hant
+        ? '_有疑問或不解時直接問我（例如「為什麼要看後管」）——那時才會啟用推理與業務說明。_'
+        : '_Ask if anything is unclear (e.g. “why check admin?”) — reasoning unlocks only then._',
+  )
   if (args.kb.length) {
     lines.push('')
     lines.push(
@@ -317,6 +354,61 @@ function formatInvestigateCore(args: {
               .join(', ')} (full text via end links)_`,
     )
   }
+  return lines.join('\n')
+}
+
+/** Deterministic answer when user asks during investigate but LLM is unavailable. */
+function formatInvestigateQuestionFallback(args: {
+  lang: Lang
+  question: string
+  hits: { id: string; name: string; check: string; action: string }[]
+  nextSteps: string[]
+}): string {
+  const hans = args.lang === 'zh-Hans'
+  const hant = args.lang === 'zh-Hant'
+  const skill = args.hits[0]
+  const lines: string[] = []
+  lines.push(
+    hans
+      ? '💬 **解答（解题模式）**'
+      : hant
+        ? '💬 **解答（解題模式）**'
+        : '💬 **Answer (question mode)**',
+  )
+  lines.push('')
+  lines.push(
+    hans
+      ? `你问：_「${args.question.replace(/\s+/g, ' ').trim().slice(0, 120)}」_`
+      : hant
+        ? `你問：_「${args.question.replace(/\s+/g, ' ').trim().slice(0, 120)}」_`
+        : `You asked: _“${args.question.replace(/\s+/g, ' ').trim().slice(0, 120)}”_`,
+  )
+  if (skill) {
+    lines.push(
+      hans || hant
+        ? `• 当前按 Skill **${skill.id} · ${skill.name}** 协助；下面仍只引用该 Skill 的检查／决策原文。`
+        : `• Still assisting via Skill **${skill.id} · ${skill.name}**; check/action below stay Skill-verbatim.`,
+    )
+    lines.push('')
+    lines.push(hans || hant ? '**Skill.check**' : '**Skill.check**')
+    for (const s of splitSkillSteps(skill.check).slice(0, 5)) lines.push(`• ${s}`)
+    lines.push('')
+    lines.push(hans || hant ? '**Skill.action**' : '**Skill.action**')
+    for (const s of splitSkillSteps(skill.action).slice(0, 4)) lines.push(`• ${s}`)
+  }
+  if (args.nextSteps.length) {
+    lines.push('')
+    lines.push(hans ? '**建议仍回到的下一步**' : hant ? '**建議仍回到的下一步**' : '**Suggested next steps**')
+    for (const s of args.nextSteps.slice(0, 3)) lines.push(`• ${s}`)
+  }
+  lines.push('')
+  lines.push(
+    hans
+      ? '_继续贴排查结果即可回到 Skills 路径模式。_'
+      : hant
+        ? '_繼續貼排查結果即可回到 Skills 路徑模式。_'
+        : '_Paste the next finding to return to Skills-path mode._',
+  )
   return lines.join('\n')
 }
 
@@ -493,7 +585,7 @@ function classifyUserInteractionKind(text: string): string {
   if (looksLikeIncidentEvidence(t) || /\[(forwarded_card|merge_forward|replied_alert)\]/i.test(t)) {
     return 'alert'
   }
-  if (/[?？]|怎么|如何|怎样|為什麼|为什么|why|how|what/i.test(t)) return 'question'
+  if (looksLikeInvestigationQuestion(t)) return 'question'
   return 'note'
 }
 
@@ -769,13 +861,22 @@ async function runInvestigation(args: {
 }): Promise<BotReply> {
   const session = getSession(args.msg.chatId, args.msg.openId)
   session.mode = 'investigate'
+  // Questions / confusion unlock reasoning; evidence pastes stay Skills-path only.
+  const questionMode =
+    !args.markStepDone &&
+    looksLikeInvestigationQuestion(args.newFact) &&
+    !looksLikeIncidentEvidence(args.newFact)
   const userFactCountBefore = session.facts.filter((f) => !f.startsWith('[chat-history]')).length
-  if (args.newFact.trim()) {
+  // Do not treat clarifying questions as investigation evidence / coverage.
+  if (args.newFact.trim() && !questionMode) {
     session.facts.push(args.newFact.trim())
   }
   // First generation of a case — remind that more alerts can join this review.
   const showAddAlertHint =
-    Boolean(args.newFact.trim()) && userFactCountBefore === 0 && !args.markStepDone
+    Boolean(args.newFact.trim()) &&
+    !questionMode &&
+    userFactCountBefore === 0 &&
+    !args.markStepDone
   if (args.markStepDone && session.pendingPrompt) {
     session.checkedSteps.push(session.pendingPrompt)
   }
@@ -836,48 +937,56 @@ async function runInvestigation(args: {
     reordered: pathPlan.reordered,
   })
 
-  const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
   const primaryByAlertName = hits.length > 0 && hits[0]!.score >= 100
-  const orderRule =
-    args.lang === 'zh-Hans'
-      ? '值班可能不按 Skill.check 顺序给证据：必须根据「本轮已覆盖／剩余下一步」重排回复，先跟最新证据，禁止机械复读整条检查链。'
-      : args.lang === 'zh-Hant'
-        ? '值班可能不按 Skill.check 順序給證據：必須依「本輪已覆蓋／剩餘下一步」重排回覆，先跟最新證據，禁止機械複讀整條檢查鏈。'
-        : 'Evidence may arrive out of Skill.check order — re-rank the reply around COVERED/NEXT; never dump the full chain.'
-  const judgePrompt =
-    args.lang === 'zh-Hans'
-      ? primaryByAlertName
-        ? `Skills 按告警名一一对应；本次已确定命中，只围绕下列 Skill。${orderRule}必须含：🔎 可能原因、🧭 排查路径（只写剩余下一步＋点名已覆盖）、🌿 决策分支（只复述 Skill.action）。勿增补未写明菜单／若则。简体中文。`
-        : `根据命中 Skills 写排查正文。${orderRule}含：可能原因、排查路径（剩余下一步）、决策分支（Skill.action）。勿臆造。简体中文。`
-      : args.lang === 'zh-Hant'
-        ? primaryByAlertName
-          ? `Skills 按告警名一一對應；只圍繞下列 Skill。${orderRule}含：可能原因、排查路徑、決策分支。勿臆造。繁體中文。`
-          : `根據命中 Skills 寫排查正文。${orderRule}勿臆造。繁體中文。`
-        : primaryByAlertName
-          ? `Deterministic alert-name Skill hit only. ${orderRule} Sections: causes, path (remaining NEXT + covered), decisions (Skill.action only). English.`
-          : `From hit Skills only. ${orderRule} Sections: causes, path, decisions. English.`
-  const llm = await enrichWithLlm({
-    lang: args.lang,
-    question: judgePrompt,
-    context: [
-      `FACTS:\n${blob.slice(0, 6000)}`,
-      `LATEST_EVIDENCE:\n${args.newFact.slice(0, 1500)}`,
-      `${primaryByAlertName ? 'DETERMINISTIC_ALERT_SKILLS' : 'SKILLS'} (check=admin path; action=decision branches):\n${hits
-        .map((h) => `${h.id} ${h.name}\nCHECK: ${h.check}\nACTION: ${h.action}`)
-        .join('\n\n')}`,
-      `COVERED_STEPS:\n${pathPlan.covered.join('\n') || '(none)'}`,
-      `NEWLY_COVERED_THIS_TURN:\n${pathPlan.newlyCovered.join('\n') || '(none)'}`,
-      `NEXT_REORDERED=${pathPlan.reordered}:\n${nextSteps.join('\n')}`,
-      `KB:\n${kb.map((k) => `${k.title}: ${k.body.slice(0, 1500)}`).join('\n')}`,
-      quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
-    ]
-      .filter(Boolean)
-      .join('\n\n'),
-  })
-  // Body = causes + 后管 path + decision branches; KB stays as footer links.
-  const llmExtra = llm
-    ? `\n\n${llm}`
-    : `\n\n${formatInvestigateCore({ lang: args.lang, hits, kb })}`
+  let bodyExtra: string
+  let assistTag = ''
+  if (questionMode) {
+    // Unlock reasoning + business knowledge only when the duty officer is stuck / asking.
+    const quoteOps = await fetchQuoteOpsRag(blob.slice(0, 1500))
+    const reasonPrompt =
+      args.lang === 'zh-Hans'
+        ? '用户在排查中提问或不解。先简短直接回答其问题（可用业务常识／推理），再引用当前 Skill.check／action 原文说明「按 Skill 应怎么做」。不要脱离命中 Skill 另开场景。末尾给出仍建议的下一步。简体中文、emoji 小标题。'
+        : args.lang === 'zh-Hant'
+          ? '使用者在排查中提問或不解。先簡短回答問題（可用業務常識／推理），再引用當前 Skill.check／action 原文。勿脫離命中 Skill。繁體中文。'
+          : 'User is asking or confused mid-investigation. Answer briefly with business reasoning, then tie back to the hit Skill.check/action verbatim. Do not invent another scenario. English.'
+    const llm = await enrichWithLlm({
+      lang: args.lang,
+      question: reasonPrompt,
+      context: [
+        `USER_QUESTION:\n${args.newFact.slice(0, 1500)}`,
+        `FACTS:\n${blob.slice(0, 4000)}`,
+        `SKILLS:\n${hits
+          .map((h) => `${h.id} ${h.name}\nCHECK: ${h.check}\nACTION: ${h.action}`)
+          .join('\n\n')}`,
+        `NEXT:\n${nextSteps.join('\n')}`,
+        `KB:\n${kb.map((k) => `${k.title}: ${k.body.slice(0, 1200)}`).join('\n')}`,
+        quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n'),
+      temperature: 0.3,
+    })
+    bodyExtra = llm
+      ? `\n\n${llm}`
+      : `\n\n${formatInvestigateQuestionFallback({
+          lang: args.lang,
+          question: args.newFact,
+          hits,
+          nextSteps,
+        })}`
+    assistTag = llm ? ' (question+LLM)' : ' (question)'
+  } else {
+    // Skills-first: no free-form reasoning — only Skill.check / action + adaptive path.
+    bodyExtra = `\n\n${formatInvestigateCore({
+      lang: args.lang,
+      hits,
+      kb,
+      nextSteps,
+      covered: pathPlan.covered,
+      newlyCovered: pathPlan.newlyCovered,
+    })}`
+    assistTag = primaryByAlertName ? ' (skills-path)' : ' (skills-path·soft)'
+  }
 
   const rec = persistOpenIncident({
     chatId: args.msg.chatId,
@@ -887,7 +996,7 @@ async function runInvestigation(args: {
     severity,
     hits,
     kb,
-    summary: summary + (llm ? ' (LLM-assisted)' : ''),
+    summary: summary + assistTag,
     recommendations: [...nextSteps, ...actions],
     interactions: ensureSessionInteractions(session).interactions,
     existingId: session.lastReportId,
@@ -919,7 +1028,7 @@ async function runInvestigation(args: {
       lang: args.lang,
       title: invTitleFinal,
       severity,
-      summary: summary + llmExtra,
+      summary: summary + bodyExtra,
       nextSteps,
       actions,
       skills: hits.map((h) => h.id),
