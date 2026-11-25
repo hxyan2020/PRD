@@ -103,6 +103,7 @@ export function buildWeeklyReport(
   incidents: IncidentRecord[],
   now = Date.now(),
   lang: Lang = 'zh-Hans',
+  adminOpenId?: string,
 ): WeeklyReportPayload {
   const window = weeklyWindow(now)
   const weekIncidents = incidents
@@ -138,6 +139,7 @@ export function buildWeeklyReport(
     bySeverity,
     topSkills,
     recommendations,
+    adminOpenId,
   })
 
   return {
@@ -162,9 +164,13 @@ function formatWeeklyMarkdown(args: {
   bySeverity: Record<string, number>
   topSkills: { id: string; count: number }[]
   recommendations: string[]
+  adminOpenId?: string
 }): string {
   const hans = args.lang === 'zh-Hans' || args.lang === 'zh-Hant'
   const total = args.incidents.length
+  const id = (args.adminOpenId || '').trim()
+  const atAdmin =
+    id && id.startsWith('ou_') ? `<at id="${id}"></at>` : '**@Yan Haixiang**'
   const sevLine = ['P0', 'P1', 'P2', 'P3', '其他']
     .filter((k) => (args.bySeverity[k] || 0) > 0)
     .map((k) => `**${k}** ${args.bySeverity[k]}`)
@@ -217,7 +223,7 @@ function formatWeeklyMarkdown(args: {
       '📊 **V Exchange Risk Copilot · 周报**',
       '',
       `• **周期：** ${args.window.label}`,
-      `• **收件人：** **@Yan Haixiang**`,
+      `• **收件人：** ${atAdmin}`,
       '',
       '📈 **本周概览**',
       '',
@@ -243,7 +249,7 @@ function formatWeeklyMarkdown(args: {
     '📊 **V Exchange Risk Copilot · Weekly report**',
     '',
     `• **Window:** ${args.window.label}`,
-    `• **To:** **@Yan Haixiang**`,
+    `• **To:** ${atAdmin}`,
     '',
     '📈 **Overview**',
     '',

@@ -239,9 +239,14 @@ function fmt(n: number | null, d = 2): string {
   return n.toFixed(d)
 }
 
-export function buildOscillationAlertCard(snap: OscillationSnapshot): Record<string, unknown> {
+export function buildOscillationAlertCard(
+  snap: OscillationSnapshot,
+  adminOpenId?: string,
+): Record<string, unknown> {
   const demo = snap.demo
   const title = demo ? '【DEMO】震荡行情预警' : '震荡行情预警'
+  const id = (adminOpenId || '').trim()
+  const atAdmin = id && id.startsWith('ou_') ? `<at id="${id}"></at>` : '**@Yan Haixiang**'
   const reasons: string[] = []
   if (snap.triggers.includes('vol_spike')) {
     reasons.push(
@@ -264,7 +269,9 @@ export function buildOscillationAlertCard(snap: OscillationSnapshot): Record<str
 
   const sources = oscillationSources(snap)
   const body = [
-    demo ? '🧪 **这是 DEMO 预警**（明天 10:00 东八区演练）' : '⚠️ **震荡／杠杆／新闻预警**',
+    demo ? '🧪 **这是 DEMO 预警**（今天 10:00 东八区演练）' : '⚠️ **震荡／杠杆／新闻预警**',
+    '',
+    `${atAdmin} 请留意下方预警`,
     '',
     `• **标的：** OKX XAU-USDT-SWAP · 最新 **${fmt(snap.last)}**`,
     `• **原因：**`,

@@ -4,16 +4,13 @@
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
  */
 import { timingSafeEqual } from 'node:crypto'
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { larkConfigured, resolveAdminOpenId, sendCardToOpenId } from './_lib/client.js'
+import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { listIncidents } from './_lib/store.js'
 import { buildWeeklyReport, weeklyReportCard } from './_lib/weeklyReport.js'
 
-const MARK_DIR = join(tmpdir(), 've-lark-store')
-const SENT_FILE = join(MARK_DIR, 'weekly-sent.json')
+const SENT_NAME = 'weekly-sent.json'
 
 function safeEqual(a: string, b: string) {
   const aa = Buffer.from(a, 'utf8')
@@ -38,24 +35,14 @@ function isVercelCron(req: VercelRequest): boolean {
   return String(req.headers['x-vercel-cron'] || '') === '1'
 }
 
-function readSent(): Record<string, number> {
-  try {
-    if (!existsSync(SENT_FILE)) return {}
-    return JSON.parse(readFileSync(SENT_FILE, 'utf8')) as Record<string, number>
-  } catch {
-    return {}
-  }
+async function readSent(): Promise<Record<string, number>> {
+  return (await readDurableJson<Record<string, number>>(SENT_NAME)) || {}
 }
 
-function markSent(weekKey: string) {
-  try {
-    if (!existsSync(MARK_DIR)) mkdirSync(MARK_DIR, { recursive: true })
-    const map = readSent()
-    map[weekKey] = Date.now()
-    writeFileSync(SENT_FILE, JSON.stringify(map))
-  } catch {
-    /* ignore */
-  }
+async function markSent(weekKey: string) {
+  const map = await readSent()
+  map[weekKey] = Date.now()
+  await writeDurableJson(SENT_NAME, map)
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -80,8 +67,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const force = body.force === true || String(q.force || '') === '1'
 
   const now = Date.now()
+  const resolvedEarly = body.openId?.trim()
+    ? { openId: body.openId.trim(), source: 'request' }
+    : await resolveAdminOpenId()
   const incidents = listIncidents({ status: 'all', limit: 200 })
-  const report = buildWeeklyReport(incidents, now, 'zh-Hans')
+  const report = buildWeeklyReport(incidents, now, 'zh-Hans', resolvedEarly.openId)
   const card = weeklyReportCard(report.markdown, report.empty)
 
   if (dry && !cron) {
@@ -96,6 +86,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       card,
       schedule: 'Fridays 16:00 Asia/Shanghai (cron: 0 8 * * 5 UTC)',
       recipient: 'Yan Haixiang',
+      recipientOpenId: resolvedEarly.openId
+        ? resolvedEarly.openId.slice(0, 8) + '…'
+        : null,
+      recipientSource: resolvedEarly.source,
+      hasRealAt: Boolean(resolvedEarly.openId?.startsWith('ou_')),
     })
   }
 
@@ -108,7 +103,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  const sent = readSent()
+  const sent = await readSent()
   if (!force && sent[report.window.weekKey] && cron) {
     return res.status(200).json({
       ok: true,
@@ -119,9 +114,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  const resolved = body.openId?.trim()
-    ? { openId: body.openId.trim(), source: 'request' }
-    : await resolveAdminOpenId()
+  const resolved = resolvedEarly
 
   if (!resolved.openId) {
     return res.status(400).json({
@@ -135,7 +128,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await sendCardToOpenId(resolved.openId, card)
-    markSent(report.window.weekKey)
+    await markSent(report.window.weekKey)
     return res.status(200).json({
       ok: true,
       sent: true,

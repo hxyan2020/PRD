@@ -1085,16 +1085,35 @@ async function main() {
     updatedAt: Date.parse('2026-11-23T04:00:00Z'),
     lang: 'zh-Hans',
   }
-  const weekly = buildWeeklyReport([sampleInc], Date.parse('2026-11-24T08:00:00Z'), 'zh-Hans')
+  const weekly = buildWeeklyReport(
+    [sampleInc],
+    Date.parse('2026-11-24T08:00:00Z'),
+    'zh-Hans',
+    'ou_smoke_admin',
+  )
   record(
     'weekly.report_has_events_and_recs',
     weekly.incidents.length === 1 &&
       weekly.markdown.includes('周报') &&
-      weekly.markdown.includes('@Yan Haixiang') &&
+      weekly.markdown.includes('<at id="ou_smoke_admin"></at>') &&
       weekly.markdown.includes('IDX-01') &&
       weekly.markdown.includes('Align timestamps') &&
       weekly.recommendations.length >= 1,
     weekly.markdown.slice(0, 200),
+  )
+  const weeklyFallback = buildWeeklyReport([sampleInc], Date.parse('2026-11-24T08:00:00Z'), 'zh-Hans')
+  record(
+    'weekly.report_fallback_plain_at',
+    weeklyFallback.markdown.includes('@Yan Haixiang') && !weeklyFallback.markdown.includes('<at id='),
+    weeklyFallback.markdown.slice(0, 120),
+  )
+  const { atOpenIdMarkdown } = await import('../api/lark/_lib/client')
+  record(
+    'cron.at_open_id_helper',
+    atOpenIdMarkdown('ou_abc123') === '<at id="ou_abc123"></at>' &&
+      atOpenIdMarkdown('') === '**@Yan Haixiang**' &&
+      atOpenIdMarkdown('manual') === '**@Yan Haixiang**',
+    '',
   )
   record('intent.weekly_zh', classifyIntent('周报', { inInvestigateSession: false, mentionedBot: true, chatType: 'p2p' }) === 'weekly', '')
   clearSession('smoke_chat', 'smoke_user')
@@ -1340,7 +1359,7 @@ async function main() {
     '',
   )
   const oscSnap = await evaluateOscillation({ demo: true })
-  const oscCard = buildOscillationAlertCard(oscSnap)
+  const oscCard = buildOscillationAlertCard(oscSnap, 'ou_smoke_admin')
   const oscJson = JSON.stringify(oscCard)
   record(
     'osc.demo_card_has_sources_and_liq_risk',
@@ -1349,6 +1368,8 @@ async function main() {
       oscJson.includes('DEMO') &&
       oscJson.includes('连锁强平') &&
       oscJson.includes('OKX') &&
+      oscJson.includes('<at id=') &&
+      oscJson.includes('ou_smoke_admin') &&
       (oscJson.includes('数据源') || oscJson.includes('okx.com')),
     `last=${oscSnap.last} volR=${oscSnap.volRatio} ${oscJson.slice(0, 200)}`,
   )
@@ -1371,12 +1392,19 @@ async function main() {
       WEEKLY_DEMO_DAY === '2026-11-25',
     '',
   )
-  const wrDemo = buildWeeklyReport([], Date.parse('2026-11-25T08:00:00Z'), 'zh-Hans')
+  const wrDemo = buildWeeklyReport(
+    [],
+    Date.parse('2026-11-25T08:00:00Z'),
+    'zh-Hans',
+    'ou_smoke_admin',
+  )
   const wrDemoCard = weeklyReportCard(`🧪 **【DEMO】每周复盘**\n\n${wrDemo.markdown}`, wrDemo.empty)
   const wrDemoJson = JSON.stringify(wrDemoCard)
   record(
     'weekly.demo_card_zh',
-    wrDemoJson.includes('周报') && wrDemo.markdown.includes('本周概览'),
+    wrDemoJson.includes('周报') &&
+      wrDemo.markdown.includes('本周概览') &&
+      wrDemo.markdown.includes('<at id="ou_smoke_admin"></at>'),
     wrDemo.markdown.slice(0, 180),
   )
 

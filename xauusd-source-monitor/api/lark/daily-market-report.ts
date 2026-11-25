@@ -4,11 +4,9 @@
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
  */
 import { timingSafeEqual } from 'node:crypto'
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { larkConfigured, sendCardToChat } from './_lib/client.js'
+import { atOpenIdMarkdown, larkConfigured, resolveAdminOpenId, sendCardToChat } from './_lib/client.js'
+import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   buildMarketCard,
   fetchMarketSnapshot,
@@ -32,8 +30,7 @@ export const config = {
   maxDuration: 60,
 }
 
-const MARK_DIR = join(tmpdir(), 've-lark-store')
-const SENT_FILE = join(MARK_DIR, 'market-daily-sent.json')
+const SENT_NAME = 'market-daily-sent.json'
 
 function safeEqual(a: string, b: string) {
   const aa = Buffer.from(a, 'utf8')
@@ -57,28 +54,18 @@ function isVercelCron(req: VercelRequest): boolean {
   return String(req.headers['x-vercel-cron'] || '') === '1'
 }
 
-function readSent(): Record<string, number> {
-  try {
-    if (!existsSync(SENT_FILE)) return {}
-    return JSON.parse(readFileSync(SENT_FILE, 'utf8')) as Record<string, number>
-  } catch {
-    return {}
-  }
+async function readSent(): Promise<Record<string, number>> {
+  return (await readDurableJson<Record<string, number>>(SENT_NAME)) || {}
 }
 
-function markSent(dayKey: string) {
-  try {
-    if (!existsSync(MARK_DIR)) mkdirSync(MARK_DIR, { recursive: true })
-    const map = readSent()
-    const cutoff = Date.now() - 14 * 24 * 3600_000
-    for (const [k, ts] of Object.entries(map)) {
-      if (typeof ts === 'number' && ts < cutoff) delete map[k]
-    }
-    map[dayKey] = Date.now()
-    writeFileSync(SENT_FILE, JSON.stringify(map))
-  } catch {
-    /* ignore */
+async function markSent(dayKey: string) {
+  const map = await readSent()
+  const cutoff = Date.now() - 14 * 24 * 3600_000
+  for (const [k, ts] of Object.entries(map)) {
+    if (typeof ts === 'number' && ts < cutoff) delete map[k]
   }
+  map[dayKey] = Date.now()
+  await writeDurableJson(SENT_NAME, map)
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -108,7 +95,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   let markdown = ''
   let card: Record<string, unknown>
+  let adminOpenId = ''
+  let adminSource = 'missing'
   try {
+    const admin = await resolveAdminOpenId({ preferChatId: chat.chatId })
+    adminOpenId = admin.openId
+    adminSource = admin.source
+    const at = atOpenIdMarkdown(adminOpenId)
     const snap = await fetchMarketSnapshot()
     markdown = formatDaily24hMarketAnswer(snap, LARK_MARKET_LANG)
     card = await buildMarketCard({
@@ -116,7 +109,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       snap,
       lang: LARK_MARKET_LANG,
       mode: 'daily',
-      intro: '🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送）\n',
+      intro: `🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送）\n\n${at} 早报来了\n`,
       template: 'wathet',
     })
   } catch (e) {
@@ -137,6 +130,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       schedule: 'Daily 09:00 Asia/Shanghai (cron: 0 1 * * * UTC)',
       chatId: chat.chatId,
       chatSource: chat.source,
+      adminOpenId: adminOpenId ? adminOpenId.slice(0, 8) + '…' : null,
+      adminSource,
+      hasRealAt: Boolean(adminOpenId?.startsWith('ou_')),
     })
   }
 
@@ -149,7 +145,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  const sent = readSent()
+  const sent = await readSent()
   if (!force && sent[dayKey] && cron) {
     return res.status(200).json({
       ok: true,
@@ -162,7 +158,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     await sendCardToChat(chat.chatId, card)
-    markSent(dayKey)
+    await markSent(dayKey)
     return res.status(200).json({
       ok: true,
       sent: true,

@@ -6,9 +6,6 @@
  * - Manual: GET ?dry=1; POST { force: true, demo: true }.
  */
 import { timingSafeEqual } from 'node:crypto'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import {
   larkConfigured,
@@ -16,6 +13,7 @@ import {
   sendCardToChat,
   sendCardToOpenId,
 } from './_lib/client.js'
+import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   DEFAULT_OSC_DM_CHAT_ID,
   DEFAULT_OSC_GROUP_CHAT_ID,
@@ -34,8 +32,7 @@ export const config = {
   maxDuration: 60,
 }
 
-const MARK_DIR = join(tmpdir(), 've-lark-store')
-const STATE_FILE = join(MARK_DIR, 'oscillation-alert-state.json')
+const OSC_STATE_NAME = 'oscillation-alert-state.json'
 
 type OscState = {
   lastAlertKey?: string
@@ -64,22 +61,12 @@ function isVercelCron(req: VercelRequest): boolean {
   return String(req.headers['x-vercel-cron'] || '') === '1'
 }
 
-function readState(): OscState {
-  try {
-    if (!existsSync(STATE_FILE)) return {}
-    return JSON.parse(readFileSync(STATE_FILE, 'utf8')) as OscState
-  } catch {
-    return {}
-  }
+async function readState(): Promise<OscState> {
+  return (await readDurableJson<OscState>(OSC_STATE_NAME)) || {}
 }
 
-function writeState(s: OscState) {
-  try {
-    if (!existsSync(MARK_DIR)) mkdirSync(MARK_DIR, { recursive: true })
-    writeFileSync(STATE_FILE, JSON.stringify(s))
-  } catch {
-    /* ignore */
-  }
+async function writeState(s: OscState): Promise<void> {
+  await writeDurableJson(OSC_STATE_NAME, s)
 }
 
 function resolveGroupChatId(req?: string): string {
@@ -173,7 +160,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const hm = shanghaiHm(now)
   const groupId = resolveGroupChatId(body.groupChatId || String(q.groupChatId || ''))
   const dmChatId = resolveDmChatId(body.dmChatId || String(q.dmChatId || ''))
-  const state = readState()
+  const state = await readState()
+  const admin = await resolveAdminOpenId({ preferChatId: groupId })
 
   const wantDemo =
     forceDemo || (cron && isOscDemoSlot(now) && state.demoSentDay !== OSC_DEMO_DAY)
@@ -189,7 +177,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  const card = buildOscillationAlertCard(snap)
+  const card = buildOscillationAlertCard(snap, admin.openId)
 
   if (dry && !cron) {
     return res.status(200).json({
@@ -205,6 +193,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       card,
       groupId,
       dmChatId,
+      adminOpenId: admin.openId ? admin.openId.slice(0, 8) + '…' : null,
+      adminSource: admin.source,
+      hasRealAt: Boolean(admin.openId?.startsWith('ou_')),
       schedule: 'Every 15 min + demo 10:00 CST on campaign day',
     })
   }
@@ -256,7 +247,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       lastAlertAt: Date.now(),
     }
     if (wantDemo || snap.demo) next.demoSentDay = OSC_DEMO_DAY
-    writeState(next)
+    await writeState(next)
   }
 
   return res.status(anyOk ? 200 : 502).json({

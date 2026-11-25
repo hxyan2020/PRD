@@ -5,11 +5,9 @@
  * - Manual: GET ?dry=1; POST { force: true }.
  */
 import { timingSafeEqual } from 'node:crypto'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { larkConfigured, sendCardToChat } from './_lib/client.js'
+import { larkConfigured, resolveAdminOpenId, sendCardToChat } from './_lib/client.js'
+import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { listIncidents } from './_lib/store.js'
 import { buildWeeklyReport, weeklyReportCard } from './_lib/weeklyReport.js'
 import { shanghaiDayKey } from './_lib/market.js'
@@ -27,8 +25,7 @@ export const config = {
   maxDuration: 60,
 }
 
-const MARK_DIR = join(tmpdir(), 've-lark-store')
-const STATE_FILE = join(MARK_DIR, 'weekly-demo-sent.json')
+const STATE_NAME = 'weekly-demo-sent.json'
 
 function safeEqual(a: string, b: string) {
   const aa = Buffer.from(a, 'utf8')
@@ -57,23 +54,13 @@ export function isWeeklyDemoSlot(ts: number = Date.now()): boolean {
   return hm >= '16:00' && hm <= '16:14'
 }
 
-function readSentDay(): string {
-  try {
-    if (!existsSync(STATE_FILE)) return ''
-    const j = JSON.parse(readFileSync(STATE_FILE, 'utf8')) as { day?: string }
-    return j.day || ''
-  } catch {
-    return ''
-  }
+async function readSentDay(): Promise<string> {
+  const j = await readDurableJson<{ day?: string }>(STATE_NAME)
+  return j?.day || ''
 }
 
-function markSent(day: string) {
-  try {
-    if (!existsSync(MARK_DIR)) mkdirSync(MARK_DIR, { recursive: true })
-    writeFileSync(STATE_FILE, JSON.stringify({ day, at: Date.now() }))
-  } catch {
-    /* ignore */
-  }
+async function markSent(day: string) {
+  await writeDurableJson(STATE_NAME, { day, at: Date.now() })
 }
 
 function resolveChatId(req?: string): string {
@@ -85,10 +72,19 @@ function resolveChatId(req?: string): string {
   )
 }
 
-function buildDemoCard(): { markdown: string; card: Record<string, unknown>; empty: boolean } {
-  const report = buildWeeklyReport(listIncidents({ status: 'all', limit: 200 }), Date.now(), 'zh-Hans')
+function buildDemoCard(adminOpenId?: string): {
+  markdown: string
+  card: Record<string, unknown>
+  empty: boolean
+} {
+  const report = buildWeeklyReport(
+    listIncidents({ status: 'all', limit: 200 }),
+    Date.now(),
+    'zh-Hans',
+    adminOpenId,
+  )
   const intro = [
-    '🧪 **【DEMO】每周复盘**（明天东八区 16:00 演练推送）',
+    '🧪 **【DEMO】每周复盘**（今天东八区 16:00 演练推送）',
     '',
     '以下为近 7 日值班／排查汇总样例样式；正式版每周五 16:00 推送给值班。',
     '',
@@ -128,8 +124,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const day = shanghaiDayKey(now)
   const hm = shanghaiHm(now)
   const chatId = resolveChatId(body.chatId || String(q.chatId || ''))
-  const { markdown, card, empty } = buildDemoCard()
-  const already = readSentDay() === WEEKLY_DEMO_DAY
+  const admin = await resolveAdminOpenId({ preferChatId: chatId })
+  const { markdown, card, empty } = buildDemoCard(admin.openId)
+  const already = (await readSentDay()) === WEEKLY_DEMO_DAY
 
   if (dry && !cron) {
     return res.status(200).json({
@@ -145,6 +142,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       empty,
       markdown,
       card,
+      adminOpenId: admin.openId ? admin.openId.slice(0, 8) + '…' : null,
+      adminSource: admin.source,
+      hasRealAt: Boolean(admin.openId?.startsWith('ou_')),
       schedule: `Once on ${WEEKLY_DEMO_DAY} ${WEEKLY_DEMO_START_HM} Asia/Shanghai → group`,
     })
   }
@@ -170,10 +170,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  if (!force && already && !cron) {
-    // allow force only
-  }
-
   if (!force && already) {
     return res.status(200).json({
       ok: true,
@@ -188,7 +184,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const sent = await sendCardToChat(chatId, card)
-    markSent(WEEKLY_DEMO_DAY)
+    await markSent(WEEKLY_DEMO_DAY)
     return res.status(200).json({
       ok: true,
       sent: true,
@@ -198,6 +194,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       day,
       hm,
       empty,
+      adminSource: admin.source,
+      hasRealAt: Boolean(admin.openId?.startsWith('ou_')),
     })
   } catch (e) {
     return res.status(502).json({

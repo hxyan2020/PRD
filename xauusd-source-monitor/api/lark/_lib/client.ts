@@ -186,6 +186,19 @@ export async function updateMessageCard(
   })
 }
 
+/**
+ * Real Feishu @mention for lark_md cards. Plain `**@Name**` does not notify.
+ * Only emits `<at id>` for real open_id values (ou_…).
+ */
+export function atOpenIdMarkdown(
+  openId: string | null | undefined,
+  fallback = '**@Yan Haixiang**',
+): string {
+  const id = (openId || '').trim()
+  if (id && id.startsWith('ou_')) return `<at id="${id}"></at>`
+  return fallback
+}
+
 /** DM a user by open_id (admin weekly push). */
 export async function sendCardToOpenId(openId: string, card: Record<string, unknown>) {
   return larkFetch(`/open-apis/im/v1/messages?receive_id_type=open_id`, {
@@ -226,7 +239,11 @@ export async function resolveAdminOpenId(opts?: {
     process.env.LARK_YAN_OPEN_ID ||
     ''
   ).trim()
-  if (fromEnv) return { openId: fromEnv, source: 'env' }
+  if (fromEnv) {
+    // Keep blob/memory warm so other crons can @mention without re-reading env races
+    void persistAdminOpenId(fromEnv, 'env')
+    return { openId: fromEnv, source: 'env' }
+  }
 
   if (cachedAdminOpenId && Date.now() < cachedAdminOpenId.expireAt) {
     return { openId: cachedAdminOpenId.openId, source: cachedAdminOpenId.source }
