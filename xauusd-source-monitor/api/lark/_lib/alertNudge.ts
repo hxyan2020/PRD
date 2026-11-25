@@ -31,6 +31,8 @@ export type AlertNudgeState = {
   ackedBy?: string
   startedAt?: number
   lastSentAt?: number
+  /** Last time Vercel Cron actually reached this handler (even if skipped). */
+  lastCronAt?: number
   sendCount: number
 }
 

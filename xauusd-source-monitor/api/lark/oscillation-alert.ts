@@ -13,6 +13,7 @@ import {
   sendCardToOpenId,
 } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron } from './_lib/cronAuth.js'
+import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   DEFAULT_OSC_DM_CHAT_ID,
@@ -118,6 +119,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'GET or POST only' })
   }
+  if (cron) await touchCronHeartbeat('/api/lark/oscillation-alert')
 
   const q = req.query || {}
   const body = (req.body || {}) as {

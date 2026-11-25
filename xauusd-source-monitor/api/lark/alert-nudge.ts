@@ -26,6 +26,7 @@ import {
   type AlertNudgeState,
 } from './_lib/alertNudge.js'
 import { allowCronOrDesk, isVercelCron } from './_lib/cronAuth.js'
+import { readCronHeartbeat, touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { shanghaiDayKey } from './_lib/market.js'
 
 export const config = {
@@ -121,6 +122,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ ok: true, acked: true, state: st })
   }
 
+  if (cron) {
+    await touchCronHeartbeat('/api/lark/alert-nudge')
+    const st = await loadNudgeState()
+    if (st) {
+      await saveNudgeState({ ...st, lastCronAt: now })
+    }
+  }
+
   if (!force && !cron) {
     const state = await loadNudgeState()
     const card = buildAlertNudgeCard({
@@ -141,6 +150,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       chatId: chat.chatId,
       chatSource: chat.source,
       state,
+      cronHeartbeat: await readCronHeartbeat(),
       card,
       schedule: `Every minute on ${ALERT_NUDGE_DAY} from ${ALERT_NUDGE_START_HM} until 知道了 (or 18:00)`,
     })
