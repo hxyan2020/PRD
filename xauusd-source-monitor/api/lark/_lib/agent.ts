@@ -58,8 +58,10 @@ import {
   looksLikeCommandCancel,
   looksLikeCommandConfirm,
   looksLikeIncidentEvidence,
+  looksLikeNowTimeQuestion,
   looksLikePureChat,
   needsInaccessibleAccess,
+  nowTimeReply,
   isStepDoneCommand,
   pendingCommandLabel,
   resolveTurnDisposition,
@@ -1179,6 +1181,14 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     return { card: simpleCard(replyTitle, meta, 'blue') }
   }
 
+  // Clock / “现在几点” / “我意思时间” — Asia/Shanghai wall clock; never search or stub
+  {
+    const timeReply = nowTimeReply(lang, workingText)
+    if (timeReply) {
+      return { card: simpleCard(chatTitle, timeReply, 'blue') }
+    }
+  }
+
   // Pure chat / life Q — semantic LLM reply; no capability / command templates
   if (looksLikePureChat(workingText) || isCasualChat(workingText)) {
     const wantName = /^(我是谁|我是誰|who\s+am\s+i|whoami|我叫什么|我叫什麼|你知道我是谁吗|你知道我是誰嗎)/i.test(
@@ -1193,6 +1203,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
         'CHAT / Q&A MODE — there is no desk instruction to run.',
         'Read the user’s meaning and reply naturally like a warm teammate (1–3 short beats).',
         'If they ask what to eat, suggest 2–3 options and ask a preference — do not dump a fixed menu of bot capabilities.',
+        'If they ask the current time, say Asia/Shanghai wall clock — never web-search for “意思/time”.',
         'If their ask is unclear, ask ONE short clarifying question about THAT topic — never a 闲聊/行情/告警 checklist.',
         'FORBIDDEN: “I can also chat”, “say whatever”, “risk is my specialty but…”, command menus, investigate/market dumps.',
         'Do NOT search the web unless they clearly ask for news/facts.',
@@ -1210,7 +1221,12 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       return { card: simpleCard(chatTitle, casual, 'blue') }
     }
     // Factual-ish chat ask + LLM miss → search before last-resort clarify
-    if (!isCasualBanter(workingText) && shouldAutoWebSearch(workingText)) {
+    // Never search clock / banter / pure chat soft misses (「我意思时间」→ band wiki).
+    if (
+      !isCasualBanter(workingText) &&
+      !looksLikeNowTimeQuestion(workingText) &&
+      shouldAutoWebSearch(workingText)
+    ) {
       const searched = await searchWeb(workingText, lang)
       if (searched.hits.length) {
         const llm = usableLlmReply(
@@ -1290,13 +1306,15 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       return { card: simpleCard(replyTitle, banter, 'blue') }
     }
     if (!shouldAutoWebSearch(workingText)) {
-      // Short free-text — chat first; retry LLM; only then last-resort (no menu)
+      // Short free-text — chat first; retry LLM; then casual / clarify.
+      // Do NOT soft-search here:「我意思时间」etc. get hijacked by unrelated wiki hits.
       const llmSoft = await answerWithLlmRetry({
         lang,
         question: workingText,
         context: [
           'Free-text question or chat — no desk command was issued.',
           'Analyze meaning and reply naturally. ANSWER if you can; if unclear, ask ONE clarifying question on their topic.',
+          'If they ask the current time, give Asia/Shanghai wall clock — never search the web for 意思/time.',
           'Never a 闲聊/行情/告警 menu, never a fixed capability checklist, never “I can also chat” meta.',
           'Specialty is V Exchange risk, but casual chat is welcome. Do not invent news or secrets.',
         ].join('\n'),
@@ -1305,29 +1323,9 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       if (llmSoft) {
         return { card: simpleCard(replyTitle, llmSoft, 'blue') }
       }
-      // Soft miss → still try search once before stub (catches borderline factual asks)
-      const softSearch = await searchWeb(workingText, lang)
-      if (softSearch.hits.length) {
-        const llm = usableLlmReply(
-          await enrichWithLlm({
-            lang,
-            question: workingText,
-            context: [
-              'Soft-ask SEARCH MODE — answer from hits conversationally. No command menus.',
-              'Cite 📎 sources with provided URLs only.',
-              webSearchContext(softSearch),
-            ].join('\n\n'),
-            temperature: 0.5,
-          }),
-        )
-        if (llm) {
-          const hasSources = /📎|\*\*数据源\*\*|\*\*資料來源\*\*|\*\*Sources\*\*|wikipedia\.org/i.test(llm)
-          const footer = hasSources ? '' : `\n\n---\n${formatSourcesFooter(lang, softSearch.hits)}`
-          return { card: simpleCard(replyTitle, `${llm}${footer}`, 'blue') }
-        }
-        return {
-          card: simpleCard(replyTitle, formatWebSearchAnswer(lang, workingText, softSearch), 'blue'),
-        }
+      const softCasual = casualChatReply(lang, workingText)
+      if (softCasual) {
+        return { card: simpleCard(replyTitle, softCasual, 'blue') }
       }
       return {
         card: simpleCard(replyTitle, chatbotFallbackReply(lang, workingText), 'blue'),

@@ -755,6 +755,52 @@ const CASUAL_BORED =
 const CASUAL_CAN_CHAT =
   /^(你能闲聊吗|你能閒聊嗎|可以闲聊吗|可以閒聊嗎|能聊天吗|能聊天嗎|可以聊天吗|可以聊天嗎|陪我聊[会會下]?|聊会天|聊會兒天|我们聊会|我們聊會|闲聊一下|閒聊一下|can\s+you\s+chat|wanna\s+chat|let'?s\s+chat|do\s+you\s+chat)\s*[?？!！.。~]*\s*$/i
 
+/** “What time is it?” — answer Asia/Shanghai wall clock; never web-search. */
+const CASUAL_NOW_TIME =
+  /^(现在几点|現在幾點|现在几点了|現在幾點了|几点了|幾點了|几点啦|幾點啦|几点钟|幾點鐘|现在时间|現在時間|现在什么时候|現在什麼時候|报一下时间|報一下時間|报时|報時|what\s+time\s+is\s+it(?:\s+now)?|what'?s\s+the\s+time|current\s+time)\s*[?？!！.。~]*\s*$/i
+
+/** Follow-up after bot missed a time ask — e.g.「我意思时间」「我说时间」. */
+const CASUAL_TIME_CLARIFY =
+  /^(我意思|我说|我是说|我是說|我指的是|意思是|就是|就是问|就是問)?\s*(时间|時間|几点|幾點|几点了|幾點了|报时|報時|the\s+time|time)\s*[?？!！.。~]*\s*$/i
+
+/** True when the user is asking (or clarifying) the current wall-clock time. */
+export function looksLikeNowTimeQuestion(text: string): boolean {
+  const t = text.trim()
+  return CASUAL_NOW_TIME.test(t) || CASUAL_TIME_CLARIFY.test(t)
+}
+
+/** Asia/Shanghai wall clock for chat replies (Feishu users are UTC+8). */
+export function formatNowEast8(now = new Date()): string {
+  try {
+    return new Intl.DateTimeFormat('zh-CN', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).format(now)
+  } catch {
+    return now.toISOString()
+  }
+}
+
+/** Deterministic clock reply — never invent, never search. */
+export function nowTimeReply(lang: Lang, question: string, now = new Date()): string | null {
+  if (!looksLikeNowTimeQuestion(question)) return null
+  const wall = formatNowEast8(now)
+  if (lang === 'zh-Hans') {
+    return `🕒 现在是 **东八区（Asia/Shanghai）** **${wall}**。`
+  }
+  if (lang === 'zh-Hant') {
+    return `🕒 現在是 **東八區（Asia/Shanghai）** **${wall}**。`
+  }
+  return `🕒 It’s **${wall}** Asia/Shanghai (UTC+8).`
+}
+
 export function isCasualChat(text: string): boolean {
   const t = text.trim()
   return (
@@ -766,7 +812,8 @@ export function isCasualChat(text: string): boolean {
     CASUAL_FOOD.test(t) ||
     CASUAL_WEATHER.test(t) ||
     CASUAL_BORED.test(t) ||
-    CASUAL_CAN_CHAT.test(t)
+    CASUAL_CAN_CHAT.test(t) ||
+    looksLikeNowTimeQuestion(t)
   )
 }
 
@@ -898,6 +945,8 @@ export function casualChatReply(
     }
     return 'Sure 🙂 Risk is the day job, but I’m happy to chat too — food, banter, or markets. Toss me a line.'
   }
+  const time = nowTimeReply(lang, t)
+  if (time) return time
   return null
 }
 

@@ -202,6 +202,17 @@ const KNOWLEDGE_ASK_RE =
 export function shouldAutoWebSearch(question: string): boolean {
   const t = question.trim()
   if (!t || t.length < 2) return false
+  // Clock / “what time” / “我意思时间” — never search (wiki hijacks「意思」→ band names)
+  if (
+    /^(现在几点|現在幾點|现在几点了|現在幾點了|几点了|幾點了|几点啦|幾點啦|几点钟|幾點鐘|现在时间|現在時間|报时|報時|what\s+time\s+is\s+it(?:\s+now)?|what'?s\s+the\s+time|current\s+time)\s*[?？!！.。~]*\s*$/i.test(
+      t,
+    ) ||
+    /^(我意思|我说|我是说|我是說|我指的是|意思是|就是|就是问|就是問)?\s*(时间|時間|几点|幾點|几点了|幾點了|报时|報時|the\s+time|time)\s*[?？!！.。~]*\s*$/i.test(
+      t,
+    )
+  ) {
+    return false
+  }
   // Short social / flirt / filler
   if (
     /^(我帅不[帅帥]?|我帅吗|我帅嗎|帅不帅|帥不帥|好看吗|好看嗎|漂亮吗|漂亮嗎|可爱吗|可愛嗎|爱我吗|愛我嗎|在吗|在嗎|哈哈+|呵呵+|嗯+|哦+|噢+|lol+|haha+)\s*[?？!！.。~]*\s*$/i.test(
@@ -213,6 +224,7 @@ export function shouldAutoWebSearch(question: string): boolean {
   // Venue / product asks like「币安你知道吗」are always searchable
   if (RISK_OR_VENUE_RE.test(t)) return true
   // Short definition / how-why asks still search (avoid soft-chat → menu fallback)
+  // But not “意思时间” style clarifications (already excluded above)
   if (KNOWLEDGE_ASK_RE.test(t) && t.length >= 3) return true
   if (t.length <= 8) return false
   return true

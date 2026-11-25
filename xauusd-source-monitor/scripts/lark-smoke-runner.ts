@@ -641,6 +641,59 @@ async function main() {
     '',
   )
   record('casual.detect_can_chat', isCasualChat('你能闲聊吗'), '')
+  const {
+    looksLikeNowTimeQuestion: isNowTime,
+    nowTimeReply: timeReplyFn,
+  } = await import('../api/lark/_lib/scope')
+  record(
+    'casual.detect_now_time',
+    isNowTime('现在几点') &&
+      isNowTime('几点了') &&
+      isNowTime('我意思时间') &&
+      isNowTime('what time is it') &&
+      !isNowTime('什么是ADL'),
+    '',
+  )
+  const timeTpl = timeReplyFn('zh-Hans', '现在几点', new Date('2026-11-25T01:47:00Z')) || ''
+  record(
+    'casual.now_time_asia_shanghai',
+    timeTpl.includes('东八区') &&
+      /09:47|9:47/.test(timeTpl.replace(/\s/g, '')) &&
+      !timeTpl.includes('检索') &&
+      !timeTpl.includes('IGotU'),
+    timeTpl.slice(0, 120),
+  )
+  record(
+    'search.no_auto_for_time_clarify',
+    !shouldAutoWebSearch('现在几点') &&
+      !shouldAutoWebSearch('我意思时间') &&
+      !shouldAutoWebSearch('我说时间') &&
+      shouldAutoWebSearch('什么是ADL'),
+    '',
+  )
+  clearSession('smoke_chat', 'now_time_q')
+  const nowTimeTurn = await turn('now-time', '现在几点', 'now_time_q')
+  record(
+    'turn.now_time_direct',
+    Boolean(nowTimeTurn.reply?.card) &&
+      /东八区|Asia\/Shanghai|🕒/i.test(nowTimeTurn.blob) &&
+      !nowTimeTurn.blob.includes('检索摘要') &&
+      !nowTimeTurn.blob.includes('那我懂你意思了') &&
+      !nowTimeTurn.blob.includes('完全抓准'),
+    nowTimeTurn.blob.slice(0, 220),
+  )
+  clearSession('smoke_chat', 'time_clarify_q')
+  const timeClarifyTurn = await turn('time-clarify', '我意思时间', 'time_clarify_q')
+  record(
+    'turn.time_clarify_not_band_wiki',
+    Boolean(timeClarifyTurn.reply?.card) &&
+      /东八区|Asia\/Shanghai|🕒/i.test(timeClarifyTurn.blob) &&
+      !timeClarifyTurn.blob.includes('检索摘要') &&
+      !timeClarifyTurn.blob.includes('那我懂你意思了') &&
+      !timeClarifyTurn.blob.includes('IGotU') &&
+      !timeClarifyTurn.blob.includes('Justin Bieber'),
+    timeClarifyTurn.blob.slice(0, 220),
+  )
   const canChatTpl = casualChatReply('zh-Hans', '你能闲聊吗') || ''
   record(
     'casual.can_chat_warm_yes',
