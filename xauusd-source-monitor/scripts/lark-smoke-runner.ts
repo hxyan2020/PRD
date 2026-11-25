@@ -148,7 +148,7 @@ async function turn(
 async function main() {
   console.log('=== Lark planned-function smoke ===\n')
 
-  // 1) RAG / Skills (desk + quote-ops VE perpetual)
+  // 1) RAG / Skills (desk + quote-ops CFD pricing)
   const skills = loadSkills()
   const kb = loadKnowledge()
   record(
@@ -176,9 +176,9 @@ async function main() {
     `kb=${kb.length}`,
   )
   record(
-    'kb.exclude_cfd',
-    !kb.some((k) => /cfd/i.test(k.id) || /cfd pricing/i.test(k.title)),
-    'no CFD Pricing folder',
+    'kb.exclude_perp',
+    !kb.some((k) => /v-exchange|perpetual|ve-doc|ve-skill/i.test(k.id) || /永续/i.test(k.title)),
+    'no V Exchange perpetual folder',
   )
   const rag = retrieveRag('Mark vs Index deviation Funding 0.1% 接仓失败')
   record(

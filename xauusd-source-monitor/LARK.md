@@ -172,7 +172,7 @@ never-sent).
 2. **Market Q&A** — OKX + desk links.
 3. **Off-topic / safety** — gentle reject; no PII, cursing, or political topics.
 4. **Investigate** — alerts/text/image/table; adaptive steps; emoji + bold bullets; AIPO evidence grades (Confirmed / Suspected / Unknown + [OBS]/[DESIGN]/…).
-5. **RAG + Skills** — desk + quote-ops V Exchange perpetual (`v-exchange-perp`; CFD excluded).
+5. **RAG + Skills** — desk + quote-ops CFD Broker Pricing (`cfd-broker`; V Exchange perpetual excluded).
 6. **Dashboard** — `review` / `dashboard` → KPI card + https://quote-ai-troubleshooting-bot.vercel.app/#/reports
 7. **Wiki / Docs (AIPO)** — read-only Lark Wiki search + Docx excerpt when scopes allow; otherwise show setup steps / @Yan.
 

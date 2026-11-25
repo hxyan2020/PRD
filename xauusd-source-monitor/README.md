@@ -1,6 +1,6 @@
 # V Exchange Risk Tool（VE排查助手）
 
-Public SPA for **XAUUSD MVP perpetual** risk ops on V Exchange.
+报价 AI排查助手 — CFD Broker Pricing troubleshooting (LP	o PE	o MT) powered by quote-ops-three knowledge + skills.
 
 ## Permanent URL (Vercel)
 

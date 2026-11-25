@@ -1,0 +1,1583 @@
+{
+  "source": "https://quote-ops-three.vercel.app/api/kb",
+  "fetchedAt": "2026-11-25T12:18:02Z",
+  "fetchedNote": "Snapshot of CFD Broker Pricing only (excludes V Exchange perpetual).",
+  "productLine": "cfd-broker",
+  "knowledge": [
+    {
+      "id": "article-art-evidence-chains",
+      "title": "三条跨部门证据链 / Three Cross-Team Evidence Chains",
+      "body": "可供 Monitor 2.0 与报价兜底复用的证据链。\n\nReusable chains for Monitor 2.0 and pricing backstop work.\n\n1) Pricing → Trading → Dealing\n报价异常 → 异常成交 → Markout → 对冲影响 → RCA\n最适合结合报价兜底项目。\n\n2) Account → Trading → Finance\n关联账户 → 反向仓位/奖励 → 返佣及资金影响 → Fraud Review\n需要 Fraud、Finance、Compliance Owner。\n\n3) Trading/API → Infrastructure → Security\n异常交易请求 → 系统负载 → 执行或资金异常 → Security Review\n需要 R&D 与 Security。\n\n86 项是广覆盖初始清单，不表示均已在 Vantage 发生，也不表示全部属于违规。正式规则库应按场景归并，避免重复告警。\n\n管理原则：Healthy 盈利客户是正常经营风险；Abusive 需要证据；Malicious 需要安全与合规响应。\n\n1) Pricing → Trading → Dealing\nquote anomaly → abnormal fill → markout → hedge impact → RCA\nBest fit for pricing backstop projects.\n\n2) Account → Trading → Finance\nlinked accounts → reverse positions/rewards → rebate & funding impact → Fraud Review\nNeeds Fraud, Finance, Compliance owners.\n\n3) Trading/API → Infrastructure → Security\nabnormal trade requests → system load → exec or funding anomalies → Security Review\nNeeds R&D + Security.\n\nThe 86 scenarios are a broad discovery checklist — not proof that all occurred at Vantage, nor that all are legal breaches. Production rules should merge overlapping mechanisms to avoid alert duplication.\n\nManagement principle: Healthy profitable clients are normal business risk; Abusive behaviour needs evidence; Malicious activity needs security and compliance response.",
+      "tags": [
+        "evidence",
+        "monitor-2.0",
+        "org",
+        "cfd-broker"
+      ],
+      "kind": "article",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "article-art-framework",
+      "title": "统一六模块检测框架 / Unified Six-Module Detection Framework",
+      "body": "不要开发 86 套独立检测。六大模块共享底层特征。\n\nDo not build 86 siloed detectors. Share underlying features across six modules.\n\n输入：客户订单/成交/资金/登录 + 报价及执行证据（LP、PE、MT、Quote ID）。\n\n模块：\n1. 交易行为 Trading Behaviour\n2. 账户关联 Account Linkage\n3. 支付与欺诈 Payment & Fraud\n4. 安全与 API 滥用 Security & API Abuse\n5. 报价利用 Pricing Exploitation\n6. 敞口与经济影响 Exposure & Economic Impact\n\n统一风险候选事件 → 处置：\n- 证据不足 → 正常交易 / 继续监控\n- 证据部分 → 人工调查\n- 证据充分 → 合规审核及授权处置\n\n最有用特征：短窗口 Markout；Quote Age + 价格偏离；账户关联；对冲滑点 + Broker PnL；订单/API 行为。\n\n滥用判定建议保留四类证据：行为模式；系统缺陷或明确规则依据；实际经济影响；人工/合规结论。不是每个案件都必须造成实际损失，但不能缺少事实基础。\n\nInputs: client orders/fills/funds/logins + quote/exec evidence (LP, PE, MT, Quote ID).\n\nModules:\n1. Trading Behaviour\n2. Account Linkage\n3. Payment & Fraud\n4. Security & API Abuse\n5. Pricing Exploitation\n6. Exposure & Economic Impact\n\nAll modules feed unified risk candidate events → disposition:\n- Insufficient evidence → healthy / keep monitoring\n- Partial evidence → human investigation\n- Sufficient evidence → compliance review & authorised action\n\nTop features: short-horizon markout; quote age + price deviation; account linkage; hedge slippage + broker PnL; order/API behaviour.\n\nAbuse adjudication should keep four evidence types: behaviour pattern; system defect or clear rule basis; economic impact; human/compliance conclusion. Loss is not required for every case, but facts are.",
+      "tags": [
+        "framework",
+        "monitor-2.0",
+        "cfd-broker"
+      ],
+      "kind": "article",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "article-art-healthy-vs-abusive",
+      "title": "Healthy vs Abusive：XAUUSD Markout 例 / Healthy vs Abusive: XAUUSD Markout Example",
+      "body": "同样正向 Markout，三种不同结论。\n\nSame positive markout, three different dispositions.\n\n多名客户在 XAUUSD 连续正向 Markout：\n\n客户 A — 正常跟随趋势，成交时价格新鲜，LP 报价合理。即使赚 10 万美元 → Healthy。\n\n客户 B — 大量交易集中在 MT 报价明显过期窗口，外部可靠参考价已变，且反复与某 Publisher 故障相关 → Potential Pricing Exploitation → 人工调查，而非直接认定欺诈。\n\n客户 C — 有独立证据证明非法控制其他账户或未经授权篡改交易请求 → Malicious/Fraud → 安全及合规流程。\n\n关键：先确认 Broker 自己有没有错误，再判断客户有没有违规。\n\nTwo (or three) clients show continuous positive markout on XAUUSD:\n\nClient A — follows trend; quotes fresh at fill; LP quotes reasonable. Even if +$100k profit → Healthy.\n\nClient B — fills concentrate in windows where MT quotes are clearly stale; external reliable mid already moved; repeatedly correlates with a publisher fault → Potential Pricing Exploitation → human investigation, not automatic fraud.\n\nClient C — independent evidence of illegal control of other accounts or unauthorised request tampering → Malicious/Fraud → security + compliance process.\n\nKey: confirm whether the broker erred first, then whether the client breached rules.",
+      "tags": [
+        "example",
+        "markout",
+        "disposition",
+        "cfd-broker"
+      ],
+      "kind": "article",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "article-art-principles",
+      "title": "判断原则：H / T / A / M / Judgment Principles: H / T / A / M",
+      "body": "Broker 亏损不是客户违规的证据。分类必须有证据。\n\nBroker loss is not proof of client abuse. Classify with evidence.\n\n核心原则：Broker 亏钱 ≠ 客户违规。客户可通过正常交易持续盈利；Broker 应通过正确报价、对冲和风险管理控制自身损失，而不是因为客户盈利就认定其恶意。\n\n分类：\n- H Healthy — 正常合法盈利，即使 Broker 亏损。正常执行，管理敞口及对冲。\n- T Toxic / Review — 不利选择风险，未必违规。监控、调查、改善报价和执行。\n- A Abusive — 利用已确认系统缺陷，或违反适用规则/合同。保留证据、修复漏洞、合规复核。\n- M Malicious / Fraud — 欺诈、未经授权操作或恶意技术攻击。安全响应、限制风险、调查及依法处置。\n\n目录中的频率 F4–F1 与严重度 P0–P3 为行业经验估计，不是 Vantage 实际事件数据。\n\n公平执行：开户与执行规则必须公平透明；不能仅因 Markout 对 Broker 不利就追溯改变交易结果。FCA 对 CFD 强调公平执行、客户利益及市场滥用监控。\n\nCore principle: Broker 亏钱 ≠ 客户违规. Clients may profit through legitimate trading; the broker manages loss via correct quoting, hedging, and risk — not by labelling profitable clients as malicious.\n\nClasses:\n- H Healthy — lawful profitable trading even if the broker loses. Execute normally; manage exposure/hedge.\n- T Toxic / Review — adverse selection risk, not necessarily a rule breach. Monitor, investigate, improve quote/exec.\n- A Abusive — confirmed use of system defects or breach of applicable rules/contracts. Preserve evidence, fix defects, compliance review.\n- M Malicious / Fraud — fraud, unauthorised ops, or technical attacks. Security response, risk containment, lawful investigation.\n\nFrequency F4–F1 and severity P0–P3 in the catalog are industry-experience estimates, not Vantage incident rates.\n\nFair execution: account opening and execution rules must be fair and transparent. Do not retrospectively alter trade outcomes solely because markout was adverse to the broker. FCA CFD supervision emphasises fair execution, client interests, and market-abuse monitoring.",
+      "tags": [
+        "principles",
+        "classification",
+        "fca",
+        "cfd-broker"
+      ],
+      "kind": "article",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "article-art-priority",
+      "title": "优先检测什么 / What to Detect First",
+      "body": "优先系统性损失与市场滥用，而不是单纯谁让 Broker 亏钱。\n\nPrioritise systemic loss and market abuse — not merely who made the broker lose money.\n\nP0 重点：\n- 旧价 / Bad Tick 成交 — Pricing + Trading — Quote Age、Quote Version、异常成交\n- 异常价格穿透及可利用性 — Pricing + Dealing — Price Deviation、Markout、Hedge Loss\n- Margin / Stop-Out 漏洞 — Trading + Admin — 保证金独立校验、持仓及强平状态\n- 未授权资金操作及账户接管 — Security + Finance — 登录风险、资金变更、异常出金\n- 关联账户规避限额造成重大敞口 — Dealing + Compliance — UBO 敞口、集中度\n- 市场操纵、洗钱、内幕交易 — Compliance — 交易行为与关联账户、异常资金流\n\nP1 重点：\n- 延迟套利候选 — Pricing + RO — Quote Age + 正向 Markout + 价格缺陷证据\n- Bonus / IB / Swap 滥用 — Fraud + Finance\n- Cross-Server / Failover 套利 — Pricing + R&D\n- API / EA 恶意流量 — R&D + Security\n\nP0 focus:\n- Stale price / bad tick fills — Pricing + Trading — Quote Age, Quote Version, abnormal fills\n- Abnormal price penetration / exploitability — Pricing + Dealing — Price Deviation, Markout, Hedge Loss\n- Margin / stop-out holes — Trading + Admin — independent margin, positions, stop-out state\n- Unauthorised fund ops & ATO — Security + Finance — login risk, fund changes, abnormal withdrawals\n- Linked accounts bypassing limits into large exposure — Dealing + Compliance — UBO exposure, concentration\n- Market manipulation, ML, insider dealing — Compliance — behaviour + linkage + fund flows\n\nP1 focus:\n- Latency arb candidates — Pricing + RO — Quote Age + positive markout + defect evidence\n- Bonus / IB / swap abuse — Fraud + Finance\n- Cross-server / failover arb — Pricing + R&D\n- API / EA malicious traffic — R&D + Security",
+      "tags": [
+        "priority",
+        "p0",
+        "monitor",
+        "cfd-broker"
+      ],
+      "kind": "article",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-account-graph",
+      "title": "账户关联 / 欺诈图谱 / Account Linkage / Fraud Graph",
+      "body": "设备、KYC、支付、IP、UBO 关联，供多账户审查。\n\nDevice, KYC, payment, IP, UBO links for multi-account reviews.\n\n## 引擎\nGraph / Postgres (placeholder)\n\n## 访问\n- Host: `FRAUD_GRAPH_HOST.placeholder.internal`\n- Port: `5432`\n\n## 说明\n关联 ≠ 串通；必须人工/合规复核。\n\n## 关键表\n- **entities** — 个人/机构节点及 KYC 状态\n- **edges** — 边类型（设备/卡/IP/受益人）、强度、证据 ID\n\n## 权限\n- Fraud\n- Compliance\n\n## Owner\nFraud\n\n## Engine\nGraph / Postgres (placeholder)\n\n## Access\n- Host: `FRAUD_GRAPH_HOST.placeholder.internal`\n- Port: `5432`\n\n## Notes\nLinkage ≠ collusion; always require human/compliance review.\n\n## Key tables\n- **entities** — Person/org nodes with KYC status\n- **edges** — edge_type (device, card, ip, beneficiary), strength, evidence_id\n\n## Access roles\n- Fraud\n- Compliance\n\n## Owner\nFraud",
+      "tags": [
+        "database",
+        "account-graph",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-config",
+      "title": "报价配置与品种主数据 / Pricing Config & Symbol Master",
+      "body": "Markup、价带、切源策略、合约乘数、账户组参数。\n\nMarkup profiles, bands, failover policy, contract size, account-group params.\n\n## 引擎\nPostgreSQL + Git-backed config (placeholder)\n\n## 访问\n- Host: `CONFIG_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## 说明\n每次发布带版本；生产读取固定版本。\n\n## 关键表\n- **markup_profiles** — profile_id, symbol, group, bid/ask markup, version\n- **price_bands** — symbol, max_jump_bps, ref_source, version\n- **failover_policy** — symbol, primary_lp, backup_lps[], protect_ms, version\n\n## 权限\n- Pricing RW (approval)\n- Admin RO\n\n## Owner\nPricing\n\n## Engine\nPostgreSQL + Git-backed config (placeholder)\n\n## Access\n- Host: `CONFIG_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## Notes\nEvery publish is versioned; production reads pinned versions.\n\n## Key tables\n- **markup_profiles** — profile_id, symbol, group, bid_markup, ask_markup, version\n- **price_bands** — symbol, max_jump_bps, ref_source, version\n- **failover_policy** — symbol, primary_lp, backup_lps[], protect_ms, version\n\n## Access roles\n- Pricing RW (approval)\n- Admin RO\n\n## Owner\nPricing",
+      "tags": [
+        "database",
+        "config",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-markout",
+      "title": "Markout / TCA 数仓 / Markout / TCA Warehouse",
+      "body": "短/中窗口 Markout、对冲延迟与不利选择分析。\n\nShort/medium horizon markout, hedge lag, and adverse selection analytics.\n\n## 引擎\nWarehouse (BigQuery/Snowflake/ClickHouse placeholder)\n\n## 访问\n- Host: `TCA_WH_HOST.placeholder.internal`\n- Port: `443`\n\n## 说明\n预聚合 100ms/1s/5s/30s/5m；关联 fills↔quotes↔hedges。\n\n## 关键表\n- **fill_markout** — fill_id, windows[], mid_move, 方向调整 PnL, sample_flags\n- **hedge_latency** — 客户成交→对冲成交时延、路由、滑点\n\n## 权限\n- Risk Ops\n- Pricing\n- Dealing\n\n## Owner\nRisk Ops\n\n## Engine\nWarehouse (BigQuery/Snowflake/ClickHouse placeholder)\n\n## Access\n- Host: `TCA_WH_HOST.placeholder.internal`\n- Port: `443`\n\n## Notes\nPre-aggregate 100ms/1s/5s/30s/5m windows; join fills↔quotes↔hedges.\n\n## Key tables\n- **fill_markout** — fill_id, windows[], mid_move, side_adjusted_pnl, sample_flags\n- **hedge_latency** — client_fill_ts → hedge_fill_ts, route, slippage\n\n## Access roles\n- Risk Ops\n- Pricing\n- Dealing\n\n## Owner\nRisk Ops",
+      "tags": [
+        "database",
+        "markout",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-monitor-alerts",
+      "title": "Monitor 2.0 告警库 / Monitor 2.0 Alert Store",
+      "body": "六大检测模块产出的统一风险候选事件。\n\nUnified risk candidate events from six detection modules.\n\n## 引擎\nPostgreSQL + Redis (placeholder)\n\n## 访问\n- Host: `MONITOR_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## 说明\n存证据指针而非仅分数；避免 86 套独立规则孤岛。\n\n## 关键表\n- **risk_events** — 模块、严重度、主体 ID、证据引用、状态\n- **investigations** — 案件、负责人、结论分类、备注\n\n## 权限\n- Pricing\n- Risk Ops\n- Fraud\n- Compliance\n\n## Owner\nRisk Ops / Pricing\n\n## Engine\nPostgreSQL + Redis (placeholder)\n\n## Access\n- Host: `MONITOR_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## Notes\nStore evidence pointers, not only scores; avoid duplicate 86-rule silos.\n\n## Key tables\n- **risk_events** — module, severity, entity_ids, evidence_refs[], status\n- **investigations** — case_id, owner, disposition (H/T/A/M), notes\n\n## Access roles\n- Pricing\n- Risk Ops\n- Fraud\n- Compliance\n\n## Owner\nRisk Ops / Pricing",
+      "tags": [
+        "database",
+        "monitor-alerts",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-mt-reports",
+      "title": "MT 报表 / 镜像库 / MT Report / Mirror DB",
+      "body": "MT 持仓、成交、权益、保证金水平，用于强平 RCA。\n\nMT server positions, deals, equity, margin level for stop-out RCA.\n\n## 引擎\nMySQL (MT reports) placeholder\n\n## 访问\n- Host: `MT_REPORT_HOST.placeholder.internal`\n- Port: `3306`\n\n## 说明\n按 Server 实例；勿当作报价血缘权威源。\n\n## 关键表\n- **mt4_trades / mt5_deals** — 各 Server 镜像成交\n- **accounts** — 组、杠杆、信用、权益快照\n\n## 权限\n- Admin RO\n- Risk Ops\n- Dealing\n\n## Owner\nAdmin / Trading\n\n## Engine\nMySQL (MT reports) placeholder\n\n## Access\n- Host: `MT_REPORT_HOST.placeholder.internal`\n- Port: `3306`\n\n## Notes\nPer-server instances; do not treat as quote lineage source of truth.\n\n## Key tables\n- **mt4_trades / mt5_deals** — Platform deals mirrored from each server\n- **accounts** — Group, leverage, credit, equity snapshots\n\n## Access roles\n- Admin RO\n- Risk Ops\n- Dealing\n\n## Owner\nAdmin / Trading",
+      "tags": [
+        "database",
+        "mt-reports",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-payments",
+      "title": "支付与资金账本 / Payments & Ledger",
+      "body": "入金、出金、拒付、可用/待确认余额。\n\nDeposits, withdrawals, chargebacks, available vs pending balance.\n\n## 引擎\nPostgreSQL (placeholder)\n\n## 访问\n- Host: `PAYMENTS_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## 说明\n待确认与可用隔离；未最终确认资金不可交易。\n\n## 关键表\n- **deposits** — 状态、PSP 引用、最终确认时间\n- **withdrawals** — 收款方、审核状态、受益人匹配\n\n## 权限\n- Finance\n- Fraud RO\n\n## Owner\nFinance\n\n## Engine\nPostgreSQL (placeholder)\n\n## Access\n- Host: `PAYMENTS_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## Notes\nSeparate pending vs available; never trade on unfinalised funds.\n\n## Key tables\n- **deposits** — status, psp_ref, finality_ts\n- **withdrawals** — payee, review_state, beneficiary_match\n\n## Access roles\n- Finance\n- Fraud RO\n\n## Owner\nFinance",
+      "tags": [
+        "database",
+        "payments",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-quote-tick",
+      "title": "报价 Tick 库 / Quote Tick Store",
+      "body": "存储 LP/PE/MT 报价版本、Age、来源与血缘，供成交时校验。\n\nStore LP + PE + MT quote versions with age, source, and lineage for fill-time validation.\n\n## 引擎\nClickHouse / Timescale (placeholder)\n\n## 访问\n- Host: `QUOTE_TICK_HOST.placeholder.internal`\n- Port: `9000`\n\n## 说明\n按日+品种分区；热数据 7–30 天，冷数据更长。\n\n## 关键表\n- **ticks_lp** — LP 原始 Tick：source_id, symbol, bid, ask, ts_src, ts_recv, seq\n- **ticks_pe** — PE 发布报价：quote_id, version, markup_profile, sources[], ttl_ms\n- **ticks_mt** — 各 MT Server 应用报价：server_id, quote_id, applied_ts, lag_ms\n\n## 权限\n- Pricing RO\n- Risk Analytics\n- R&D On-call\n\n## Owner\nPricing / R&D\n\n## Engine\nClickHouse / Timescale (placeholder)\n\n## Access\n- Host: `QUOTE_TICK_HOST.placeholder.internal`\n- Port: `9000`\n\n## Notes\nPartition by day + symbol; retain hot 7–30d, cold longer.\n\n## Key tables\n- **ticks_lp** — Raw LP ticks: source_id, symbol, bid, ask, ts_src, ts_recv, seq\n- **ticks_pe** — PE published quotes: quote_id, version, markup_profile, sources[], ttl_ms\n- **ticks_mt** — Per MT server applied quotes: server_id, quote_id, applied_ts, lag_ms\n\n## Access roles\n- Pricing RO\n- Risk Analytics\n- R&D On-call\n\n## Owner\nPricing / R&D",
+      "tags": [
+        "database",
+        "quote-tick",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-security-audit",
+      "title": "安全与审计日志 / Security & Audit Log",
+      "body": "不可变的认证、权限、API 与 Ops 变更审计。\n\nImmutable auth, privilege, API, and ops change audit trail.\n\n## 引擎\nAppend-only log store (placeholder)\n\n## 访问\n- Host: `AUDIT_LOG_HOST.placeholder.internal`\n- Port: `443`\n\n## 说明\nWORM / 独立备份；缺口即 P0 安全信号。\n\n## 关键表\n- **auth_events** — 登录、MFA、会话、地理/设备\n- **admin_actions** — 账户/资金/配置变更的 who/what/when\n\n## 权限\n- Security\n- Compliance\n\n## Owner\nSecurity\n\n## Engine\nAppend-only log store (placeholder)\n\n## Access\n- Host: `AUDIT_LOG_HOST.placeholder.internal`\n- Port: `443`\n\n## Notes\nWORM / independent backup; gaps are P0 security signals.\n\n## Key tables\n- **auth_events** — login, MFA, session, geo/device\n- **admin_actions** — who/what/when on account/fund/config\n\n## Access roles\n- Security\n- Compliance\n\n## Owner\nSecurity",
+      "tags": [
+        "database",
+        "security-audit",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "db-trade-fill",
+      "title": "成交台账 / Trade / Fill Ledger",
+      "body": "客户成交权威台账，含执行时 Quote ID 快照。\n\nAuthoritative client fills with quote_id snapshot used at execution.\n\n## 引擎\nPostgreSQL / MySQL (placeholder)\n\n## 访问\n- Host: `TRADE_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## 说明\n成交行不可变；纠正仅走冲正分录。\n\n## 关键表\n- **orders** — 订单生命周期：login, symbol, type, 状态机, request_id\n- **fills** — 成交：fill_id, order_id, price, volume, quote_id, quote_age_ms, server_id, ts\n- **rejects** — 拒单及原因码（旧价、价带、保证金、限流）\n\n## 权限\n- Trading RO\n- Dealing\n- Pricing RO\n\n## Owner\nTrading\n\n## Engine\nPostgreSQL / MySQL (placeholder)\n\n## Access\n- Host: `TRADE_DB_HOST.placeholder.internal`\n- Port: `5432`\n\n## Notes\nImmutable fill rows; corrections via compensating entries only.\n\n## Key tables\n- **orders** — Order lifecycle: login, symbol, type, state machine, request_id\n- **fills** — Fills: fill_id, order_id, price, volume, quote_id, quote_age_ms, server_id, ts\n- **rejects** — Rejects with reason codes (stale, band, margin, rate-limit)\n\n## Access roles\n- Trading RO\n- Dealing\n- Pricing RO\n\n## Owner\nTrading",
+      "tags": [
+        "database",
+        "trade-fill",
+        "cfd-broker"
+      ],
+      "kind": "database",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "pipeline-distribute",
+      "title": "分发至交易平台 / Distribute to Trading Platforms",
+      "body": "将 PE 报价带版本与 TTL 分发至 MT 等交易平台。\n\nFan-out PE quotes to MT and other platforms with versioning and TTL.\n\n## 输入\n- PE quotes\n- Server topology\n- TTL / freshness policy\n\n## 输出\n- Per-server quote streams\n- Delivery acks\n- Lag metrics\n\n## 故障模式\n- 跨 Server 不一致\n- 发布延迟\n- 部分扇出失败\n- 消费端忽略 TTL\n\n## 关键检查\n- Server×品种一致性\n- 发布延迟\n- 端到端 Quote Age\n\n## 系统\n- Quote Bus\n- MT Bridge / Gateway\n- Platform Fan-out\n\n## Inputs\n- PE quotes\n- Server topology\n- TTL / freshness policy\n\n## Outputs\n- Per-server quote streams\n- Delivery acks\n- Lag metrics\n\n## Failure modes\n- Cross-server inconsistency\n- Delayed publish\n- Partial fan-out failure\n- TTL ignored by consumer\n\n## Key checks\n- Server×symbol consistency\n- Publish lag\n- End-to-end quote age\n\n## Systems\n- Quote Bus\n- MT Bridge / Gateway\n- Platform Fan-out",
+      "tags": [
+        "pipeline",
+        "distribute",
+        "cfd-broker"
+      ],
+      "kind": "pipeline",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "pipeline-hedge",
+      "title": "对冲 / Dealing / Hedge / Dealing Desk",
+      "body": "将剩余风险路由至 LP 或 B-Book；度量 Markout 与对冲滑点。\n\nRoute residual risk to LP or B-book; measure markout and hedge slippage.\n\n## 输入\n- Client fills\n- Net exposure\n- Hedge routes\n- LP exec reports\n\n## 输出\n- Hedge orders/fills\n- Desk PnL\n- Adverse selection signals\n\n## 故障模式\n- 对冲滞后不利选择\n- Broker/LP 规则冲突\n- A/B Book 路由错误\n\n## 关键检查\n- 成交→对冲延迟\n- Hedge PnL vs Markout\n- TCA 报告\n\n## 系统\n- Dealing Engine\n- Hedge Router\n- TCA / Risk Analytics\n\n## Inputs\n- Client fills\n- Net exposure\n- Hedge routes\n- LP exec reports\n\n## Outputs\n- Hedge orders/fills\n- Desk PnL\n- Adverse selection signals\n\n## Failure modes\n- Delayed hedge adverse selection\n- Broker/LP rule conflict\n- Wrong A/B book routing\n\n## Key checks\n- Fill→hedge latency\n- Hedge PnL vs markout\n- TCA reports\n\n## Systems\n- Dealing Engine\n- Hedge Router\n- TCA / Risk Analytics",
+      "tags": [
+        "pipeline",
+        "hedge",
+        "cfd-broker"
+      ],
+      "kind": "pipeline",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "pipeline-ingest",
+      "title": "接入与标准化 / Ingest & Normalise",
+      "body": "将多 LP 行情标准化为统一 Tick 模型（时钟、品种映射）。\n\nNormalise multi-LP feeds into a common tick model with clocks and symbol maps.\n\n## 输入\n- LP raw streams\n- Symbol mapping tables\n- NTP/clock sync status\n\n## 输出\n- Normalised ticks\n- Source timestamps\n- Feed quality metrics\n\n## 故障模式\n- 适配器时钟偏差\n- 品种/合约映射错误\n- 序列丢失/空洞\n- 重复 Tick 洪泛\n\n## 关键检查\n- 序列连续性\n- 适配器延迟 SLO\n- 品种映射版本锁定\n\n## 系统\n- MD Normaliser\n- Symbol Master\n- Time Sync Service\n\n## Inputs\n- LP raw streams\n- Symbol mapping tables\n- NTP/clock sync status\n\n## Outputs\n- Normalised ticks\n- Source timestamps\n- Feed quality metrics\n\n## Failure modes\n- Clock skew across adapters\n- Wrong symbol/contract map\n- Dropped sequence / gaps\n- Duplicate tick flooding\n\n## Key checks\n- Sequence continuity\n- Adapter lag SLOs\n- Symbol map version pin\n\n## Systems\n- MD Normaliser\n- Symbol Master\n- Time Sync Service",
+      "tags": [
+        "pipeline",
+        "ingest",
+        "cfd-broker"
+      ],
+      "kind": "pipeline",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "pipeline-lp",
+      "title": "LP / 流动性场所 / LP / Liquidity Venue",
+      "body": "通过 FIX/API 行情流提供原始市场价格与流动性。\n\nPrimary market price discovery and liquidity provision via FIX/API streams.\n\n## 输入\n- Venue/market ticks\n- Depth / last look indications\n- Session calendars\n\n## 输出\n- Raw bid/ask streams\n- LP quote IDs\n- Reject / timeout signals\n\n## 故障模式\n- 行情冻结或旧价\n- Bad Tick / 尖刺\n- 买卖倒挂\n- 周末/开市不同步\n- Last Look / 拒单风暴\n\n## 关键检查\n- Quote Age 与心跳\n- 相对独立参考价的 Price Band\n- 点差合理性\n- 源健康分\n\n## 系统\n- LP FIX Gateways\n- Market Data Adapters\n- LP Health Monitor\n\n## Inputs\n- Venue/market ticks\n- Depth / last look indications\n- Session calendars\n\n## Outputs\n- Raw bid/ask streams\n- LP quote IDs\n- Reject / timeout signals\n\n## Failure modes\n- Stale or frozen feed\n- Bad ticks / spikes\n- Bid/ask inversion\n- Session desync after weekend/open\n- Last-look / reject storms\n\n## Key checks\n- Quote age & heartbeat\n- Price band vs independent ref\n- Spread sanity\n- Source health score\n\n## Systems\n- LP FIX Gateways\n- Market Data Adapters\n- LP Health Monitor",
+      "tags": [
+        "pipeline",
+        "lp",
+        "cfd-broker"
+      ],
+      "kind": "pipeline",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "pipeline-mt",
+      "title": "MT Server（执行） / MT Server (Execution)",
+      "body": "向客户展示报价，并按有效 Quote 版本执行市价/挂单。\n\nPresent quotes to clients and execute market/pending orders against active quote version.\n\n## 输入\n- Active quotes\n- Client orders\n- Account group params\n- Margin engine state\n\n## 输出\n- Fills / rejects\n- Order state transitions\n- Client tick stream\n\n## 故障模式\n- 旧价仍可成交\n- 触发价与执行价不一致\n- 竞态/重复成交\n- 行情冻结但仍可交易\n- 保证金/强平空窗\n\n## 关键检查\n- 成交时 Quote ID + Age\n- 订单幂等\n- Feed 健康交易门控\n- 独立保证金 Watchdog\n\n## 系统\n- MT4/MT5 Servers\n- Trade Servers\n- Margin Engine\n- Order Manager\n\n## Inputs\n- Active quotes\n- Client orders\n- Account group params\n- Margin engine state\n\n## Outputs\n- Fills / rejects\n- Order state transitions\n- Client tick stream\n\n## Failure modes\n- Stale quote still executable\n- Trigger vs execution mismatch\n- Race / duplicate fill\n- Feed freeze with trading enabled\n- Margin / stop-out gaps\n\n## Key checks\n- Quote ID + age at fill\n- Idempotent order handling\n- Feed-health trade gate\n- Independent margin watchdog\n\n## Systems\n- MT4/MT5 Servers\n- Trade Servers\n- Margin Engine\n- Order Manager",
+      "tags": [
+        "pipeline",
+        "mt",
+        "cfd-broker"
+      ],
+      "kind": "pipeline",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "pipeline-observe",
+      "title": "观测 / RCA 闭环 / Observe / RCA Loop",
+      "body": "关联报价证据 → 成交 → Markout → 对冲影响，完成报价 RCA。\n\nCorrelate quote evidence → fill → markout → hedge impact for pricing RCA.\n\n## 输入\n- Quote traces\n- Fills\n- Markout windows\n- Incidents / alerts\n\n## 输出\n- Risk candidates\n- RCA reports\n- Config rollbacks / fixes\n\n## 故障模式\n- 缺少报价血缘\n- 时钟不同步破坏证据链\n- 无证据链的告警噪声\n\n## 关键检查\n- 证据完整性\n- P0 告警 SLA\n- 修复后配置审计\n\n## 系统\n- Monitor 2.0\n- Quote Trace Store\n- Incident Desk\n- Config Audit\n\n## Inputs\n- Quote traces\n- Fills\n- Markout windows\n- Incidents / alerts\n\n## Outputs\n- Risk candidates\n- RCA reports\n- Config rollbacks / fixes\n\n## Failure modes\n- Missing quote lineage\n- Clock desync breaking evidence\n- Alert noise without evidence chain\n\n## Key checks\n- Evidence completeness\n- P0 alert SLAs\n- Post-fix config audit\n\n## Systems\n- Monitor 2.0\n- Quote Trace Store\n- Incident Desk\n- Config Audit",
+      "tags": [
+        "pipeline",
+        "observe",
+        "cfd-broker"
+      ],
+      "kind": "pipeline",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "pipeline-pe",
+      "title": "PE — 定价引擎 / 聚合器 / PE — Pricing Engine / Aggregator",
+      "body": "聚合多 LP、应用 Markup/保护带/切源，发布 Broker 买卖价。\n\nAggregate LP books, apply markup, bands, failover, and publish broker mid/spread.\n\n## 输入\n- Normalised multi-LP books\n- Markup / group profiles\n- Failover policy\n- Reference / fair prices\n\n## 输出\n- Broker bid/ask\n- Quote version / ID\n- Source attribution\n- Reject / protect decisions\n\n## 故障模式\n- 聚合错误定价\n- Markup 配置错误\n- 切源空窗\n- 合成价公式错误\n- 参考价门控滞后\n\n## 关键检查\n- 输入输出偏离\n- 倒挂硬拦截\n- 配置版本审计\n- 切源有效价门控\n\n## 系统\n- Pricing Engine\n- Config Service\n- Quote Publisher\n- Ref Price Service\n\n## Inputs\n- Normalised multi-LP books\n- Markup / group profiles\n- Failover policy\n- Reference / fair prices\n\n## Outputs\n- Broker bid/ask\n- Quote version / ID\n- Source attribution\n- Reject / protect decisions\n\n## Failure modes\n- Aggregator mispricing\n- Markup config error\n- Failover gap\n- Synthetic formula bugs\n- Stale reference gate\n\n## Key checks\n- Input vs output deviation\n- Crossed-market block\n- Config version audit\n- Failover valid-price gate\n\n## Systems\n- Pricing Engine\n- Config Service\n- Quote Publisher\n- Ref Price Service",
+      "tags": [
+        "pipeline",
+        "pe",
+        "cfd-broker"
+      ],
+      "kind": "pipeline",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-1",
+      "title": "#1 剥头皮短线 / #1 Scalping",
+      "body": "短时间反复获取小幅价格变化。\n\nRepeated short-horizon trades capturing small price moves.\n\n## 运作方式\n短时间反复获取小幅价格变化。\n\n## 分类\nH · F4 · P2\n\n## 如何检测\n- 持仓时间\n- 交易频率\n- PnL\n\n## 预防或管理\n- 控制对冲成本\n- 执行容量规划\n\n## 负责\n- Trading\n- Dealing\n\n## How it works\nRepeated short-horizon trades capturing small price moves.\n\n## Class\nH · F4 · P2\n\n## Detect\n- Hold time\n- Trade frequency\n- PnL concentration\n\n## Prevent\n- Hedge cost control\n- Execution capacity planning\n\n## Owners\n- Trading\n- Dealing",
+      "tags": [
+        "healthy",
+        "frequency",
+        "b-book",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-10",
+      "title": "#10 事件驱动交易 / #10 Event-Driven Trading",
+      "body": "财报、央行、公司事件交易。\n\nTrades around earnings, central banks, corporate events.\n\n## 运作方式\n财报、央行、公司事件交易。\n\n## 分类\nH · F3 · P2\n\n## 如何检测\n- 事件时间\n- 仓位变化\n\n## 预防或管理\n- 合规筛查\n- 保证金和流动性管理\n\n## 负责\n- Compliance\n- Risk Ops\n\n## How it works\nTrades around earnings, central banks, corporate events.\n\n## Class\nH · F3 · P2\n\n## Detect\n- Event timing\n- Position changes\n\n## Prevent\n- Compliance screen\n- Margin and liquidity management\n\n## Owners\n- Compliance\n- Risk Ops",
+      "tags": [
+        "healthy",
+        "events",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-11",
+      "title": "#11 网格 / 马丁格尔 / #11 Grid / Martingale",
+      "body": "按价格间隔加仓或亏损后加倍。\n\nAdds size on price intervals or doubles after losses.\n\n## 运作方式\n按价格间隔加仓或亏损后加倍。\n\n## 分类\nH · F3 · P1\n\n## 如何检测\n- 持仓层级\n- 风险集中度\n\n## 预防或管理\n- Margin\n- 仓位限额\n- 压力测试\n\n## 负责\n- Risk Ops\n- Admin\n\n## How it works\nAdds size on price intervals or doubles after losses.\n\n## Class\nH · F3 · P1\n\n## Detect\n- Position layers\n- Risk concentration\n\n## Prevent\n- Margin limits\n- Position caps\n- Stress tests\n\n## Owners\n- Risk Ops\n- Admin",
+      "tags": [
+        "healthy",
+        "margin",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-12",
+      "title": "#12 大额单边交易 / #12 Large Directional Trading",
+      "body": "大额单边交易。\n\nLarge one-sided exposure creating broker risk.\n\n## 运作方式\n大额单边交易。\n\n## 分类\nH · F3 · P1\n\n## 如何检测\n- 集中度\n- 净敞口\n- 压力损失\n\n## 预防或管理\n- 限额\n- 对冲\n- 资本及流动性管理\n\n## 负责\n- Dealing\n- Risk Ops\n\n## How it works\nLarge one-sided exposure creating broker risk.\n\n## Class\nH · F3 · P1\n\n## Detect\n- Concentration\n- Net exposure\n- Stress loss\n\n## Prevent\n- Limits\n- Hedging\n- Capital/liquidity management\n\n## Owners\n- Dealing\n- Risk Ops",
+      "tags": [
+        "healthy",
+        "exposure",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-13",
+      "title": "#13 开收盘拍卖交易 / #13 Opening/Closing Auction Trading",
+      "body": "利用开收盘市场波动交易。\n\nTrades open/close session volatility.\n\n## 运作方式\n利用开收盘市场波动交易。\n\n## 分类\nH · F3 · P2\n\n## 如何检测\n- 交易时段\n- 开收盘成交分布\n\n## 预防或管理\n- 时段规则\n- 报价质量检查\n\n## 负责\n- Pricing\n- Trading\n\n## How it works\nTrades open/close session volatility.\n\n## Class\nH · F3 · P2\n\n## Detect\n- Session timing\n- Open/close fill distribution\n\n## Prevent\n- Session rules\n- Quote quality checks\n\n## Owners\n- Pricing\n- Trading",
+      "tags": [
+        "healthy",
+        "sessions",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-14",
+      "title": "#14 跟单 / EA 交易 / #14 Copy Trading / EA Trading",
+      "body": "通过自动交易或跟单盈利。\n\nProfits via automated or copy strategies.\n\n## 运作方式\n通过自动交易或跟单盈利。\n\n## 分类\nH · F4 · P2\n\n## 如何检测\n- 账户订单相似度\n- EA 标识\n\n## 预防或管理\n- 监控容量\n- 合同限制\n\n## 负责\n- Trading\n- R&D\n\n## How it works\nProfits via automated or copy strategies.\n\n## Class\nH · F4 · P2\n\n## Detect\n- Order similarity\n- EA identifiers\n\n## Prevent\n- Capacity monitoring\n- Contract limits\n\n## Owners\n- Trading\n- R&D",
+      "tags": [
+        "healthy",
+        "ea",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-15",
+      "title": "#15 正向 Markout 交易 / #15 Positive-Markout Trading",
+      "body": "成交后价格经常朝客户有利方向移动。\n\nPrice often moves in client favour after fill — may be skill or stale quote.\n\n## 运作方式\n成交后价格经常朝客户有利方向移动。\n\n## 分类\nH / T · F3 · P1\n\n## 如何检测\n- 多窗口 Markout\n- 样本量\n\n## 预防或管理\n- 判断正常策略还是旧价缺陷\n\n## 负责\n- Pricing\n- Risk Ops\n\n## How it works\nPrice often moves in client favour after fill — may be skill or stale quote.\n\n## Class\nH / T · F3 · P1\n\n## Detect\n- Multi-window markout\n- Sample size\n\n## Prevent\n- Separate healthy edge from stale-price defects\n\n## Owners\n- Pricing\n- Risk Ops",
+      "tags": [
+        "healthy",
+        "markout",
+        "toxic-review",
+        "H",
+        "T",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-16",
+      "title": "#16 延迟套利 / #16 Latency Arbitrage",
+      "body": "利用 Broker 报价落后于外部市场。\n\nTrades when broker quotes lag external market.\n\n## 运作方式\n利用 Broker 报价落后于外部市场。\n\n## 分类\nT / A · F3 · P1\n\n## 如何检测\n- Quote Age\n- 外部价差\n- 短周期 Markout\n\n## 预防或管理\n- TTL\n- 同步保护\n- 异常价检查\n\n## 负责\n- Pricing\n- Risk Ops\n\n## How it works\nTrades when broker quotes lag external market.\n\n## Class\nT / A · F3 · P1\n\n## Detect\n- Quote age\n- External spread\n- Short-horizon markout\n\n## Prevent\n- TTL\n- Sync protection\n- Abnormal price checks\n\n## Owners\n- Pricing\n- Risk Ops",
+      "tags": [
+        "pricing",
+        "latency",
+        "markout",
+        "p1",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-17",
+      "title": "#17 旧价利用 / #17 Stale Quote Exploitation",
+      "body": "在价格已失效但仍可成交时交易。\n\nFills against quotes that are already invalid.\n\n## 运作方式\n在价格已失效但仍可成交时交易。\n\n## 分类\nT / A · F3 · P0\n\n## 如何检测\n- 成交时有效 Quote ID\n- Age\n\n## 预防或管理\n- 旧价禁止执行\n- 版本校验\n\n## 负责\n- Pricing\n- Trading\n\n## How it works\nFills against quotes that are already invalid.\n\n## Class\nT / A · F3 · P0\n\n## Detect\n- Valid Quote ID at fill\n- Quote age\n\n## Prevent\n- Reject stale quotes\n- Version checks\n\n## Owners\n- Pricing\n- Trading",
+      "tags": [
+        "pricing",
+        "stale",
+        "p0",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-18",
+      "title": "#18 跨 Server 报价不一致 / #18 Cross-Server Price Discrepancy",
+      "body": "利用不同 MT Server 更新不一致。\n\nExploits inconsistent MT server quote updates.\n\n## 运作方式\n利用不同 MT Server 更新不一致。\n\n## 分类\nT / A · F3 · P1\n\n## 如何检测\n- Server × Symbol 价格差\n- 版本\n\n## 预防或管理\n- 跨 Server 一致性监控\n\n## 负责\n- Pricing\n- R&D\n\n## How it works\nExploits inconsistent MT server quote updates.\n\n## Class\nT / A · F3 · P1\n\n## Detect\n- Server × symbol price gap\n- Quote version\n\n## Prevent\n- Cross-server consistency monitors\n\n## Owners\n- Pricing\n- R&D",
+      "tags": [
+        "pricing",
+        "mt",
+        "p1",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-19",
+      "title": "#19 LP 切源空窗套利 / #19 LP Failover Gap Exploitation",
+      "body": "利用切源期间异常报价差异。\n\nTrades abnormal spreads during LP source switch.\n\n## 运作方式\n利用切源期间异常报价差异。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 源切换时间\n- 跳价\n- 成交集中\n\n## 预防或管理\n- 切源有效价校验\n- 保护延迟\n\n## 负责\n- Pricing\n- Dealing\n\n## How it works\nTrades abnormal spreads during LP source switch.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Switch timestamps\n- Jumps\n- Fill clustering\n\n## Prevent\n- Valid-price checks on failover\n- Protective latency\n\n## Owners\n- Pricing\n- Dealing",
+      "tags": [
+        "pricing",
+        "failover",
+        "lp",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-2",
+      "title": "#2 新闻交易 / #2 News Trading",
+      "body": "围绕经济数据公布交易。\n\nTrades clustered around economic data releases.\n\n## 运作方式\n围绕经济数据公布交易。\n\n## 分类\nH · F4 · P1\n\n## 如何检测\n- 公告时间\n- 成交集中度\n\n## 预防或管理\n- 波动率压力测试\n- 合理流动性管理\n\n## 负责\n- Pricing\n- Risk Ops\n\n## How it works\nTrades clustered around economic data releases.\n\n## Class\nH · F4 · P1\n\n## Detect\n- Announcement windows\n- Fill concentration\n\n## Prevent\n- Volatility stress tests\n- Liquidity management\n\n## Owners\n- Pricing\n- Risk Ops",
+      "tags": [
+        "healthy",
+        "events",
+        "volatility",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-20",
+      "title": "#20 聚合器错误定价利用 / #20 Aggregator Mispricing Exploitation",
+      "body": "利用多 LP 错误聚合价格。\n\nExploits bad aggregation across multi-LP books.\n\n## 运作方式\n利用多 LP 错误聚合价格。\n\n## 分类\nT / A · F2 · P0\n\n## 如何检测\n- 输入 LP 与聚合输出价格差\n\n## 预防或管理\n- 异常源过滤\n- 聚合规则测试\n\n## 负责\n- Pricing\n- R&D\n\n## How it works\nExploits bad aggregation across multi-LP books.\n\n## Class\nT / A · F2 · P0\n\n## Detect\n- LP input vs aggregate output gaps\n\n## Prevent\n- Abnormal source filters\n- Aggregation rule tests\n\n## Owners\n- Pricing\n- R&D",
+      "tags": [
+        "pricing",
+        "aggregator",
+        "p0",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-21",
+      "title": "#21 Markup / 点差配置错误利用 / #21 Markup Error Exploitation",
+      "body": "利用错误价差或 Markup 配置。\n\nTrades wrong spread/markup configuration.\n\n## 运作方式\n利用错误价差或 Markup 配置。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 配置版本\n- 最终报价\n- 成交\n\n## 预防或管理\n- 参数校验\n- 发布审批\n- 回滚\n\n## 负责\n- Pricing\n- Admin\n\n## How it works\nTrades wrong spread/markup configuration.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Config version\n- Final quote\n- Fills\n\n## Prevent\n- Param validation\n- Release approval\n- Rollback\n\n## Owners\n- Pricing\n- Admin",
+      "tags": [
+        "pricing",
+        "config",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-22",
+      "title": "#22 错误尖刺价成交 / #22 Bad Tick Exploitation",
+      "body": "在明显错误尖刺价格成交。\n\nFills on obvious spike/outlier ticks.\n\n## 运作方式\n在明显错误尖刺价格成交。\n\n## 分类\nA · F2 · P0\n\n## 如何检测\n- Bad Tick\n- 成交窗口\n- 回归幅度\n\n## 预防或管理\n- Price Band\n- 异常 Tick 过滤\n\n## 负责\n- Pricing\n- Trading\n\n## How it works\nFills on obvious spike/outlier ticks.\n\n## Class\nA · F2 · P0\n\n## Detect\n- Bad tick flags\n- Fill window\n- Reversion\n\n## Prevent\n- Price bands\n- Abnormal tick filters\n\n## Owners\n- Pricing\n- Trading",
+      "tags": [
+        "pricing",
+        "bad-tick",
+        "p0",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-23",
+      "title": "#23 买卖价倒挂利用 / #23 Bid/Ask Inversion Exploitation",
+      "body": "利用不合理的买卖价倒挂。\n\nTrades crossed markets / negative spreads.\n\n## 运作方式\n利用不合理的买卖价倒挂。\n\n## 分类\nA · F2 · P0\n\n## 如何检测\n- Bid≥Ask\n- 负 Spread\n- 成交\n\n## 预防或管理\n- Crossed Market 拦截\n\n## 负责\n- Pricing\n- Trading\n\n## How it works\nTrades crossed markets / negative spreads.\n\n## Class\nA · F2 · P0\n\n## Detect\n- Bid ≥ Ask\n- Negative spread\n- Fills\n\n## Prevent\n- Crossed-market hard block\n\n## Owners\n- Pricing\n- Trading",
+      "tags": [
+        "pricing",
+        "spread",
+        "p0",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-24",
+      "title": "#24 合成商品定价错误利用 / #24 Synthetic Price Error Exploitation",
+      "body": "利用合成商品定价公式错误。\n\nExploits broken synthetic pricing formulas.\n\n## 运作方式\n利用合成商品定价公式错误。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 理论价\n- 组件价格及成交偏离\n\n## 预防或管理\n- 公式验证\n- 独立价格检查\n\n## 负责\n- Pricing\n- R&D\n\n## How it works\nExploits broken synthetic pricing formulas.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Theoretical vs component prices\n- Fill deviation\n\n## Prevent\n- Formula validation\n- Independent price checks\n\n## Owners\n- Pricing\n- R&D",
+      "tags": [
+        "pricing",
+        "synthetic",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-25",
+      "title": "#25 币种换算 / 合约乘数错误 / #25 FX Conversion Error Exploitation",
+      "body": "利用币种换算或合约乘数错误。\n\nExploits currency conversion or contract size errors.\n\n## 运作方式\n利用币种换算或合约乘数错误。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 交叉汇率\n- Contract Size\n- PnL\n\n## 预防或管理\n- 独立换算校验\n\n## 负责\n- Pricing\n- Finance\n\n## How it works\nExploits currency conversion or contract size errors.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Cross rates\n- Contract size\n- PnL\n\n## Prevent\n- Independent conversion checks\n\n## Owners\n- Pricing\n- Finance",
+      "tags": [
+        "pricing",
+        "fx",
+        "contract",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-26",
+      "title": "#26 周末 / 开市空窗套利 / #26 Weekend / Market-Open Gap Exploitation",
+      "body": "利用休市后旧价或开市价格不同步。\n\nUses stale weekend quotes or open desync.\n\n## 运作方式\n利用休市后旧价或开市价格不同步。\n\n## 分类\nT / A · F3 · P1\n\n## 如何检测\n- 开盘价差\n- Quote Age\n- 成交集中\n\n## 预防或管理\n- 开盘保护\n- 源恢复校验\n\n## 负责\n- Pricing\n- Dealing\n\n## How it works\nUses stale weekend quotes or open desync.\n\n## Class\nT / A · F3 · P1\n\n## Detect\n- Open gap\n- Quote age\n- Fill clustering\n\n## Prevent\n- Open protection\n- Source recovery checks\n\n## Owners\n- Pricing\n- Dealing",
+      "tags": [
+        "pricing",
+        "sessions",
+        "stale",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-27",
+      "title": "#27 报价冻结仍可成交 / #27 Price Feed Freeze Exploitation",
+      "body": "利用短暂报价冻结但仍可成交。\n\nTrades while feed is frozen but market moved.\n\n## 运作方式\n利用短暂报价冻结但仍可成交。\n\n## 分类\nT / A · F2 · P0\n\n## 如何检测\n- Tick 停顿\n- 外部价格移动\n- 成交\n\n## 预防或管理\n- Feed 健康与交易权限联动\n\n## 负责\n- Pricing\n- Trading\n\n## How it works\nTrades while feed is frozen but market moved.\n\n## Class\nT / A · F2 · P0\n\n## Detect\n- Tick stall\n- External move\n- Fills\n\n## Prevent\n- Feed health linked to trade permission\n\n## Owners\n- Pricing\n- Trading",
+      "tags": [
+        "pricing",
+        "feed",
+        "p0",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-28",
+      "title": "#28 止损止盈触发价与执行价不一致 / #28 Order Trigger Price Mismatch",
+      "body": "利用止损/止盈触发价和执行价规则缺陷。\n\nExploits SL/TP trigger vs execution rule defects.\n\n## 运作方式\n利用止损/止盈触发价和执行价规则缺陷。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- Trigger Price\n- Execution Price\n- 时间线\n\n## 预防或管理\n- 订单规则一致性测试\n\n## 负责\n- Trading\n- R&D\n\n## How it works\nExploits SL/TP trigger vs execution rule defects.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Trigger price\n- Execution price\n- Timeline\n\n## Prevent\n- Order-rule consistency tests\n\n## Owners\n- Trading\n- R&D",
+      "tags": [
+        "pricing",
+        "orders",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-29",
+      "title": "#29 执行竞态条件利用 / #29 Execution Race Condition Exploitation",
+      "body": "利用订单状态与成交确认不同步。\n\nExploits order-state vs fill-ack desynchronization.\n\n## 运作方式\n利用订单状态与成交确认不同步。\n\n## 分类\nA · F2 · P0\n\n## 如何检测\n- 重复回执\n- 异常订单状态序列\n\n## 预防或管理\n- 幂等\n- 状态机\n- 原子化处理\n\n## 负责\n- Trading\n- R&D\n\n## How it works\nExploits order-state vs fill-ack desynchronization.\n\n## Class\nA · F2 · P0\n\n## Detect\n- Duplicate acks\n- Abnormal state sequences\n\n## Prevent\n- Idempotency\n- State machine\n- Atomic handling\n\n## Owners\n- Trading\n- R&D",
+      "tags": [
+        "pricing",
+        "race",
+        "p0",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-3",
+      "title": "#3 趋势跟随 / #3 Trend Following",
+      "body": "持续顺势盈利。\n\nSustained directional profits following market trend.\n\n## 运作方式\n持续顺势盈利。\n\n## 分类\nH · F4 · P2\n\n## 如何检测\n- 持仓方向\n- 收益\n- 净敞口\n\n## 预防或管理\n- 管理 B-Book 集中敞口\n- 对冲路由\n\n## 负责\n- Dealing\n- Risk Ops\n\n## How it works\nSustained directional profits following market trend.\n\n## Class\nH · F4 · P2\n\n## Detect\n- Position direction\n- Returns\n- Net exposure\n\n## Prevent\n- B-book concentration limits\n- Hedge routing\n\n## Owners\n- Dealing\n- Risk Ops",
+      "tags": [
+        "healthy",
+        "exposure",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-30",
+      "title": "#30 对冲滞后不利选择 / #30 Delayed Hedge Arbitrage Exposure",
+      "body": "利用 Broker 对冲滞后形成的不利选择。\n\nAdverse selection while broker hedge is delayed.\n\n## 运作方式\n利用 Broker 对冲滞后形成的不利选择。\n\n## 分类\nT · F3 · P1\n\n## 如何检测\n- 客户成交到 Hedge 时间\n- Markout\n- Hedge PnL\n\n## 预防或管理\n- 对冲延迟监控与备用路由\n\n## 负责\n- Dealing\n- Risk Ops\n\n## How it works\nAdverse selection while broker hedge is delayed.\n\n## Class\nT · F3 · P1\n\n## Detect\n- Client fill → hedge lag\n- Markout\n- Hedge PnL\n\n## Prevent\n- Hedge latency monitors\n- Backup routes\n\n## Owners\n- Dealing\n- Risk Ops",
+      "tags": [
+        "pricing",
+        "hedge",
+        "markout",
+        "T",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-31",
+      "title": "#31 异常部分成交利用 / #31 Abnormal Fill / Partial-Fill Exploitation",
+      "body": "利用部分成交和剩余订单处理缺陷。\n\nExploits partial fill and residual order defects.\n\n## 运作方式\n利用部分成交和剩余订单处理缺陷。\n\n## 分类\nA · F2 · P1\n\n## 如何检测\n- Fill 数量\n- 订单余额\n- 回执一致性\n\n## 预防或管理\n- 执行状态核对\n- 幂等处理\n\n## 负责\n- Trading\n- R&D\n\n## How it works\nExploits partial fill and residual order defects.\n\n## Class\nA · F2 · P1\n\n## Detect\n- Fill qty\n- Order remainder\n- Ack consistency\n\n## Prevent\n- Execution state reconciliation\n- Idempotency\n\n## Owners\n- Trading\n- R&D",
+      "tags": [
+        "pricing",
+        "fills",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-32",
+      "title": "#32 报价与成交时间戳不一致 / #32 Quote/Execution Timestamp Mismatch",
+      "body": "利用报价时间与成交验证时间不一致。\n\nExploits clock/validation time inconsistencies.\n\n## 运作方式\n利用报价时间与成交验证时间不一致。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 时间戳偏差\n- Quote Version\n- Fill Trace\n\n## 预防或管理\n- 时钟同步\n- 成交前有效价校验\n\n## 负责\n- Pricing\n- R&D\n\n## How it works\nExploits clock/validation time inconsistencies.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Timestamp skew\n- Quote version\n- Fill trace\n\n## Prevent\n- Clock sync\n- Valid-price-before-fill checks\n\n## Owners\n- Pricing\n- R&D",
+      "tags": [
+        "pricing",
+        "clock",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-33",
+      "title": "#33 隔夜费计算错误利用 / #33 Rollover / Swap Calculation Error Exploitation",
+      "body": "利用隔夜费计算或更新错误。\n\nExploits incorrect overnight fee calculation/updates.\n\n## 运作方式\n利用隔夜费计算或更新错误。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- Swap 计提\n- 实际账单\n- 异常持仓\n\n## 预防或管理\n- 费用引擎独立对账\n\n## 负责\n- Finance\n- Trading\n\n## How it works\nExploits incorrect overnight fee calculation/updates.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Swap accrual\n- Actual billing\n- Odd holds\n\n## Prevent\n- Independent fee-engine reconciliation\n\n## Owners\n- Finance\n- Trading",
+      "tags": [
+        "pricing",
+        "swap",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-34",
+      "title": "#34 公司行动定价错误 / #34 Corporate Action Pricing Error Exploitation",
+      "body": "利用拆股、股息调整或股票 CFD 参数错误。\n\nExploits split/dividend/stock CFD parameter errors.\n\n## 运作方式\n利用拆股、股息调整或股票 CFD 参数错误。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- Corporate Action 前后价格和仓位\n\n## 预防或管理\n- 事件日历\n- 参数发布校验\n\n## 负责\n- Pricing\n- Admin\n\n## How it works\nExploits split/dividend/stock CFD parameter errors.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Pre/post CA prices and positions\n\n## Prevent\n- Event calendar\n- Parameter release checks\n\n## Owners\n- Pricing\n- Admin",
+      "tags": [
+        "pricing",
+        "corporate-action",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-35",
+      "title": "#35 滞后公允/参考价利用 / #35 Stale Reference Price Exploitation",
+      "body": "利用 Broker 公允价/风控参考价滞后。\n\nExploits lagging fair/risk reference prices.\n\n## 运作方式\n利用 Broker 公允价/风控参考价滞后。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- Reference Price 时效\n- 执行价及成交\n\n## 预防或管理\n- 参考源 TTL\n- 质量门控\n\n## 负责\n- Pricing\n- Risk Ops\n\n## How it works\nExploits lagging fair/risk reference prices.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Reference price freshness\n- Exec vs ref\n- Fills\n\n## Prevent\n- Reference TTL\n- Quality gates\n\n## Owners\n- Pricing\n- Risk Ops",
+      "tags": [
+        "pricing",
+        "reference",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-36",
+      "title": "#36 多账户刷奖励 / #36 Bonus Farming",
+      "body": "利用多个账户重复领取开户或交易奖励。\n\nMultiple accounts repeatedly claim signup/trading rewards.\n\n## 运作方式\n利用多个账户重复领取开户或交易奖励。\n\n## 分类\nA · F3 · P2\n\n## 如何检测\n- KYC\n- Device\n- 支付工具和奖励关联\n\n## 预防或管理\n- 一人一资格\n- 活动审核\n\n## 负责\n- Fraud\n- Finance\n\n## How it works\nMultiple accounts repeatedly claim signup/trading rewards.\n\n## Class\nA · F3 · P2\n\n## Detect\n- KYC\n- Device\n- Payment + reward linkage\n\n## Prevent\n- One entitlement per person\n- Campaign review\n\n## Owners\n- Fraud\n- Finance",
+      "tags": [
+        "account",
+        "bonus",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-37",
+      "title": "#37 关联账户对冲套奖励 / #37 Cross-Account Bonus Hedging",
+      "body": "关联账户用相反头寸降低风险并套取奖励。\n\nLinked accounts take opposite risk to farm rewards.\n\n## 运作方式\n关联账户用相反头寸降低风险并套取奖励。\n\n## 分类\nA · F3 · P1\n\n## 如何检测\n- 关联账户反向仓位与奖励记录\n\n## 预防或管理\n- 关联账户识别\n- 活动规则控制\n\n## 负责\n- Fraud\n- Compliance\n\n## How it works\nLinked accounts take opposite risk to farm rewards.\n\n## Class\nA · F3 · P1\n\n## Detect\n- Linked reverse positions + reward records\n\n## Prevent\n- Linkage detection\n- Campaign rules\n\n## Owners\n- Fraud\n- Compliance",
+      "tags": [
+        "account",
+        "linkage",
+        "bonus",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-38",
+      "title": "#38 IB 返佣刷量 / #38 IB / Affiliate Commission Churning",
+      "body": "制造不具经济意义的交易量获取返佣。\n\nEconomically meaningless volume to earn rebates.\n\n## 运作方式\n制造不具经济意义的交易量获取返佣。\n\n## 分类\nA · F3 · P1\n\n## 如何检测\n- 高频往返交易\n- 返佣与净收入比\n\n## 预防或管理\n- 返佣风控\n- 异常流量复核\n\n## 负责\n- Fraud\n- Finance\n\n## How it works\nEconomically meaningless volume to earn rebates.\n\n## Class\nA · F3 · P1\n\n## Detect\n- Round-trip churn\n- Rebate vs net revenue\n\n## Prevent\n- Rebate risk controls\n- Anomaly review\n\n## Owners\n- Fraud\n- Finance",
+      "tags": [
+        "account",
+        "ib",
+        "rebate",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-39",
+      "title": "#39 自荐奖励滥用 / #39 Self-Referral Abuse",
+      "body": "用关联身份重复获取推荐奖励。\n\nLinked identities repeatedly claim referral rewards.\n\n## 运作方式\n用关联身份重复获取推荐奖励。\n\n## 分类\nA · F3 · P2\n\n## 如何检测\n- 受益人\n- KYC\n- 设备及资金关联\n\n## 预防或管理\n- 唯一身份验证\n- 关联方审核\n\n## 负责\n- Fraud\n\n## How it works\nLinked identities repeatedly claim referral rewards.\n\n## Class\nA · F3 · P2\n\n## Detect\n- Beneficiary\n- KYC\n- Device/funding links\n\n## Prevent\n- Unique identity verification\n- Related-party review\n\n## Owners\n- Fraud",
+      "tags": [
+        "account",
+        "referral",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-4",
+      "title": "#4 均值回归 / #4 Mean Reversion",
+      "body": "交易价格向均值回归。\n\nEntries/exits aligned with reversion to mean price.\n\n## 运作方式\n交易价格向均值回归。\n\n## 分类\nH · F4 · P2\n\n## 如何检测\n- 进出场与市场均值关系\n- 持仓模式\n\n## 预防或管理\n- 正常对冲\n- 敞口限额\n\n## 负责\n- Dealing\n\n## How it works\nEntries/exits aligned with reversion to mean price.\n\n## Class\nH · F4 · P2\n\n## Detect\n- Entry/exit vs market mean\n- Holding patterns\n\n## Prevent\n- Normal hedging\n- Exposure limits\n\n## Owners\n- Dealing",
+      "tags": [
+        "healthy",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-40",
+      "title": "#40 免息账户条款滥用 / #40 Swap-Free Account Abuse",
+      "body": "违反适用账户条款长期利用免 Swap 资格。\n\nLong-term swap-free use against account terms.\n\n## 运作方式\n违反适用账户条款长期利用免 Swap 资格。\n\n## 分类\nT / A · F3 · P1\n\n## 如何检测\n- 免息资格\n- 持仓期限\n- 账户行为\n\n## 预防或管理\n- 清晰资格规则\n- 统一执行\n\n## 负责\n- Compliance\n- Finance\n\n## How it works\nLong-term swap-free use against account terms.\n\n## Class\nT / A · F3 · P1\n\n## Detect\n- Eligibility\n- Hold duration\n- Behaviour\n\n## Prevent\n- Clear eligibility rules\n- Consistent enforcement\n\n## Owners\n- Compliance\n- Finance",
+      "tags": [
+        "account",
+        "swap",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-41",
+      "title": "#41 负余额保护不当利用 / #41 Negative Balance Protection Gaming",
+      "body": "通过关联账户和极端风险头寸不当利用负余额保护。\n\nLinked accounts + extreme risk to game NBP.\n\n## 运作方式\n通过关联账户和极端风险头寸不当利用负余额保护。\n\n## 分类\nT / A · F2 · P0\n\n## 如何检测\n- 账户关联\n- 极端风险敞口\n- 负余额事件\n\n## 预防或管理\n- 合法风险限额\n- 关联账户复核\n- 保留法定保护\n\n## 负责\n- Risk Ops\n- Compliance\n\n## How it works\nLinked accounts + extreme risk to game NBP.\n\n## Class\nT / A · F2 · P0\n\n## Detect\n- Linkage\n- Extreme exposure\n- Negative balance events\n\n## Prevent\n- Legal risk limits\n- Linkage review\n- Preserve statutory protection\n\n## Owners\n- Risk Ops\n- Compliance",
+      "tags": [
+        "account",
+        "nbp",
+        "p0",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-42",
+      "title": "#42 关联账户亏损归集 / #42 Cross-Account Loss Allocation",
+      "body": "关联账户试图把亏损集中在受限责任账户。\n\nConcentrates losses into limited-liability accounts.\n\n## 运作方式\n关联账户试图把亏损集中在受限责任账户。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 反向仓位\n- 受益所有人及资金关联\n\n## 预防或管理\n- 集团客户风险视图\n- 人工审核\n\n## 负责\n- Risk Ops\n- Compliance\n\n## How it works\nConcentrates losses into limited-liability accounts.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Reverse positions\n- UBO\n- Funding links\n\n## Prevent\n- Group client risk view\n- Manual review\n\n## Owners\n- Risk Ops\n- Compliance",
+      "tags": [
+        "account",
+        "linkage",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-43",
+      "title": "#43 保证金计算缺陷利用 / #43 Margin Calculation Exploitation",
+      "body": "利用保证金、净额抵消或合约换算缺陷扩大仓位。\n\nUses margin/netting/contract defects to enlarge size.\n\n## 运作方式\n利用保证金、净额抵消或合约换算缺陷扩大仓位。\n\n## 分类\nA · F2 · P0\n\n## 如何检测\n- Margin 独立重算\n- 超额敞口\n\n## 预防或管理\n- 保证金硬校验\n- 配置测试\n\n## 负责\n- Trading\n- Admin\n\n## How it works\nUses margin/netting/contract defects to enlarge size.\n\n## Class\nA · F2 · P0\n\n## Detect\n- Independent margin recompute\n- Excess exposure\n\n## Prevent\n- Hard margin validation\n- Config tests\n\n## Owners\n- Trading\n- Admin",
+      "tags": [
+        "account",
+        "margin",
+        "p0",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-44",
+      "title": "#44 强平执行缺陷利用 / #44 Stop-Out / Liquidation Gap Exploitation",
+      "body": "利用强平或止损执行机制缺陷。\n\nExploits stop-out / liquidation mechanism gaps.\n\n## 运作方式\n利用强平或止损执行机制缺陷。\n\n## 分类\nT / A · F2 · P0\n\n## 如何检测\n- Margin Level\n- 触发与成交时间\n\n## 预防或管理\n- 独立风险 Watchdog\n- 执行恢复\n\n## 负责\n- Trading\n- Admin\n\n## How it works\nExploits stop-out / liquidation mechanism gaps.\n\n## Class\nT / A · F2 · P0\n\n## Detect\n- Margin level\n- Trigger vs fill timing\n\n## Prevent\n- Independent risk watchdog\n- Execution recovery\n\n## Owners\n- Trading\n- Admin",
+      "tags": [
+        "account",
+        "stopout",
+        "p0",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-45",
+      "title": "#45 仓位上限规避 / #45 Position Limit Circumvention",
+      "body": "通过关联账户规避单账户仓位上限。\n\nLinked accounts bypass single-account position caps.\n\n## 运作方式\n通过关联账户规避单账户仓位上限。\n\n## 分类\nA · F2 · P1\n\n## 如何检测\n- 受益人维度汇总风险\n\n## 预防或管理\n- 关联主体限额\n- 权限审核\n\n## 负责\n- Dealing\n- Compliance\n\n## How it works\nLinked accounts bypass single-account position caps.\n\n## Class\nA · F2 · P1\n\n## Detect\n- UBO aggregated risk\n\n## Prevent\n- Entity-level limits\n- Permission review\n\n## Owners\n- Dealing\n- Compliance",
+      "tags": [
+        "account",
+        "limits",
+        "linkage",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-46",
+      "title": "#46 订单频率限制规避 / #46 Order Limit / Rate Limit Circumvention",
+      "body": "分散请求规避订单数量或频率限制。\n\nSpreads requests to evade order/rate limits.\n\n## 运作方式\n分散请求规避订单数量或频率限制。\n\n## 分类\nA · F2 · P1\n\n## 如何检测\n- 账户、设备、API Key 聚合速率\n\n## 预防或管理\n- 多维限流及异常检测\n\n## 负责\n- R&D\n- Security\n\n## How it works\nSpreads requests to evade order/rate limits.\n\n## Class\nA · F2 · P1\n\n## Detect\n- Account/device/API key aggregate rate\n\n## Prevent\n- Multi-dim rate limits\n- Anomaly detection\n\n## Owners\n- R&D\n- Security",
+      "tags": [
+        "account",
+        "api",
+        "rate-limit",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-47",
+      "title": "#47 账户类型参数配置错误 / #47 Account-Type Parameter Exploitation",
+      "body": "利用账户类型、杠杆或产品参数配置错误。\n\nExploits wrong account-type leverage/product params.\n\n## 运作方式\n利用账户类型、杠杆或产品参数配置错误。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 账户组与实际参数 Diff\n\n## 预防或管理\n- 参数一致性校验与回滚\n\n## 负责\n- Admin\n- Trading\n\n## How it works\nExploits wrong account-type leverage/product params.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Group vs actual param diff\n\n## Prevent\n- Param consistency checks\n- Rollback\n\n## Owners\n- Admin\n- Trading",
+      "tags": [
+        "account",
+        "config",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-48",
+      "title": "#48 活动资格绕过 / #48 Promotion Eligibility Bypass",
+      "body": "通过不符合活动资格的账户获得奖励。\n\nIneligible accounts obtain campaign rewards.\n\n## 运作方式\n通过不符合活动资格的账户获得奖励。\n\n## 分类\nA · F2 · P2\n\n## 如何检测\n- 活动条件与账户事实比对\n\n## 预防或管理\n- 服务端资格验证\n- 审批\n\n## 负责\n- Fraud\n- Finance\n\n## How it works\nIneligible accounts obtain campaign rewards.\n\n## Class\nA · F2 · P2\n\n## Detect\n- Campaign rules vs account facts\n\n## Prevent\n- Server-side eligibility\n- Approval\n\n## Owners\n- Fraud\n- Finance",
+      "tags": [
+        "account",
+        "promo",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-49",
+      "title": "#49 返佣计算缺陷利用 / #49 Rebate / Cashback Calculation Exploitation",
+      "body": "利用重复计算或返佣规则缺陷。\n\nExploits double-count or rebate rule bugs.\n\n## 运作方式\n利用重复计算或返佣规则缺陷。\n\n## 分类\nA · F2 · P2\n\n## 如何检测\n- 交易量与返佣台账核对\n\n## 预防或管理\n- 幂等\n- 账务对账\n- 异常复核\n\n## 负责\n- Finance\n- Fraud\n\n## How it works\nExploits double-count or rebate rule bugs.\n\n## Class\nA · F2 · P2\n\n## Detect\n- Volume vs rebate ledger\n\n## Prevent\n- Idempotency\n- Ledger reconcile\n- Exception review\n\n## Owners\n- Finance\n- Fraud",
+      "tags": [
+        "account",
+        "rebate",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-5",
+      "title": "#5 高频自动化交易 / #5 High-Frequency Trading",
+      "body": "高速自动化交易。\n\nHigh-speed automated order flow with elevated fill share.\n\n## 运作方式\n高速自动化交易。\n\n## 分类\nH · F3 · P2\n\n## 如何检测\n- 订单速率\n- 成交占比\n\n## 预防或管理\n- 容量规划\n- 公平限流\n\n## 负责\n- Trading\n- R&D\n\n## How it works\nHigh-speed automated order flow with elevated fill share.\n\n## Class\nH · F3 · P2\n\n## Detect\n- Order rate\n- Fill share\n\n## Prevent\n- Capacity planning\n- Fair rate limits\n\n## Owners\n- Trading\n- R&D",
+      "tags": [
+        "healthy",
+        "api",
+        "capacity",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-50",
+      "title": "#50 费用精度套利 / #50 Fee-Rounding Arbitrage",
+      "body": "利用费用或 PnL 精度处理缺陷反复积累差额。\n\nAccumulates micro differences from fee/PnL precision bugs.\n\n## 运作方式\n利用费用或 PnL 精度处理缺陷反复积累差额。\n\n## 分类\nT / A · F2 · P2\n\n## 如何检测\n- 微额交易\n- 费用偏差\n- 账户收益\n\n## 预防或管理\n- 精度规则统一\n- 最小费用及回归测试\n\n## 负责\n- Finance\n- R&D\n\n## How it works\nAccumulates micro differences from fee/PnL precision bugs.\n\n## Class\nT / A · F2 · P2\n\n## Detect\n- Micro trades\n- Fee deviation\n- Account returns\n\n## Prevent\n- Unified precision rules\n- Min fee\n- Regression tests\n\n## Owners\n- Finance\n- R&D",
+      "tags": [
+        "account",
+        "precision",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-51",
+      "title": "#51 信用额度 / 异常杠杆促销滥用 / #51 Credit / Leverage Promotion Abuse",
+      "body": "利用促销信用额度或异常杠杆配置扩大风险。\n\nUses promo credit or abnormal leverage to amplify risk.\n\n## 运作方式\n利用促销信用额度或异常杠杆配置扩大风险。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 信用余额\n- 真实权益\n- 杠杆敞口\n\n## 预防或管理\n- 信用隔离\n- 风险限额\n- 资格验证\n\n## 负责\n- Risk Ops\n- Finance\n\n## How it works\nUses promo credit or abnormal leverage to amplify risk.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Credit balance\n- True equity\n- Leverage exposure\n\n## Prevent\n- Credit isolation\n- Risk limits\n- Eligibility checks\n\n## Owners\n- Risk Ops\n- Finance",
+      "tags": [
+        "account",
+        "credit",
+        "leverage",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-52",
+      "title": "#52 多账户协同交易 / #52 Coordinated Multi-Account Trading",
+      "body": "关联账户协同交易以规避风险控制。\n\nLinked accounts coordinate to evade controls.\n\n## 运作方式\n关联账户协同交易以规避风险控制。\n\n## 分类\nT / A · F3 · P1\n\n## 如何检测\n- 同步订单\n- 设备和资金关联\n\n## 预防或管理\n- 关联账户审核\n- 限制规避行为\n\n## 负责\n- Dealing\n- Compliance\n\n## How it works\nLinked accounts coordinate to evade controls.\n\n## Class\nT / A · F3 · P1\n\n## Detect\n- Sync orders\n- Device/funding linkage\n\n## Prevent\n- Linkage review\n- Circumvention limits\n\n## Owners\n- Dealing\n- Compliance",
+      "tags": [
+        "market",
+        "linkage",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-53",
+      "title": "#53 对倒刷量 / #53 Wash Trading",
+      "body": "制造缺乏真实经济目的的成交量。\n\nCreates volume without genuine economic purpose.\n\n## 运作方式\n制造缺乏真实经济目的的成交量。\n\n## 分类\nA · F2 · P1\n\n## 如何检测\n- 关联方成交\n- 净敞口\n- 交易量异常\n\n## 预防或管理\n- 交易监控\n- 调查及上报\n\n## 负责\n- Compliance\n\n## How it works\nCreates volume without genuine economic purpose.\n\n## Class\nA · F2 · P1\n\n## Detect\n- Related-party fills\n- Net exposure\n- Volume anomalies\n\n## Prevent\n- Trade surveillance\n- Investigation & reporting\n\n## Owners\n- Compliance",
+      "tags": [
+        "market",
+        "abuse",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-54",
+      "title": "#54 虚假挂单 / Layering / #54 Spoofing / Layering",
+      "body": "以虚假交易意图影响市场订单簿。\n\nFalse intent orders to influence book / price.\n\n## 运作方式\n以虚假交易意图影响市场订单簿。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 订单撤销模式\n- 价格影响\n- 关联成交\n\n## 预防或管理\n- 市场滥用监控\n- 合规升级\n\n## 负责\n- Compliance\n\n## How it works\nFalse intent orders to influence book / price.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Cancel patterns\n- Price impact\n- Related fills\n\n## Prevent\n- Market-abuse monitoring\n- Compliance escalation\n\n## Owners\n- Compliance",
+      "tags": [
+        "market",
+        "malicious",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-55",
+      "title": "#55 跨市场操纵 / #55 Cross-Market Manipulation",
+      "body": "在标的市场影响价格，再从相关 CFD 获利。\n\nMoves underlying market then profits related CFD.\n\n## 运作方式\n在标的市场影响价格，再从相关 CFD 获利。\n\n## 分类\nM · F1 · P0\n\n## 如何检测\n- 跨市场事件\n- 价格影响\n- 关联受益仓位\n\n## 预防或管理\n- 跨市场监测\n- 合规调查\n\n## 负责\n- Compliance\n\n## How it works\nMoves underlying market then profits related CFD.\n\n## Class\nM · F1 · P0\n\n## Detect\n- Cross-market events\n- Price impact\n- Linked beneficial positions\n\n## Prevent\n- Cross-market surveillance\n- Compliance investigation\n\n## Owners\n- Compliance",
+      "tags": [
+        "market",
+        "malicious",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-56",
+      "title": "#56 内幕交易 / #56 Insider Dealing",
+      "body": "利用非公开重大信息交易相关 CFD。\n\nTrades CFDs on material non-public information.\n\n## 运作方式\n利用非公开重大信息交易相关 CFD。\n\n## 分类\nM · F1 · P0\n\n## 如何检测\n- 事件前异常交易\n- 账户关联\n\n## 预防或管理\n- 交易监控\n- 可疑活动上报\n\n## 负责\n- Compliance\n\n## How it works\nTrades CFDs on material non-public information.\n\n## Class\nM · F1 · P0\n\n## Detect\n- Pre-event abnormal trades\n- Account linkage\n\n## Prevent\n- Surveillance\n- Suspicious activity reporting\n\n## Owners\n- Compliance",
+      "tags": [
+        "market",
+        "malicious",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-57",
+      "title": "#57 拉抬砸盘 / 价格操纵 / #57 Pump-and-Dump / Price Manipulation",
+      "body": "操纵流动性较差的标的价格。\n\nManipulates thin underlying prices.\n\n## 运作方式\n操纵流动性较差的标的价格。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 异常价格/成交量与关联账户\n\n## 预防或管理\n- 市场滥用调查\n- 风险保护\n\n## 负责\n- Compliance\n- Risk Ops\n\n## How it works\nManipulates thin underlying prices.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Abnormal price/volume + linked accounts\n\n## Prevent\n- Market-abuse investigation\n- Risk protection\n\n## Owners\n- Compliance\n- Risk Ops",
+      "tags": [
+        "market",
+        "malicious",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-58",
+      "title": "#58 串通交易 / #58 Collusive Trading",
+      "body": "多人协同转移收益或规避监控。\n\nMultiple parties collude to transfer gains or evade monitors.\n\n## 运作方式\n多人协同转移收益或规避监控。\n\n## 分类\nA / M · F2 · P1\n\n## 如何检测\n- 关联关系\n- 对向持仓及收益分布\n\n## 预防或管理\n- 关联网络分析\n- 人工复核\n\n## 负责\n- Compliance\n- Fraud\n\n## How it works\nMultiple parties collude to transfer gains or evade monitors.\n\n## Class\nA / M · F2 · P1\n\n## Detect\n- Linkage network\n- Opposite positions\n- PnL distribution\n\n## Prevent\n- Network analysis\n- Manual review\n\n## Owners\n- Compliance\n- Fraud",
+      "tags": [
+        "market",
+        "collusion",
+        "A",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-59",
+      "title": "#59 订单洪泛 / #59 Order Flooding",
+      "body": "大量无经济目的的请求影响交易系统。\n\nFloods requests without economic purpose, stressing systems.\n\n## 运作方式\n大量无经济目的的请求影响交易系统。\n\n## 分类\nA / M · F2 · P1\n\n## 如何检测\n- 请求/成交比\n- 取消率\n- 系统负载\n\n## 预防或管理\n- 公平限流\n- 异常流量隔离\n\n## 负责\n- R&D\n- Security\n\n## How it works\nFloods requests without economic purpose, stressing systems.\n\n## Class\nA / M · F2 · P1\n\n## Detect\n- Request/fill ratio\n- Cancel rate\n- System load\n\n## Prevent\n- Fair rate limits\n- Traffic isolation\n\n## Owners\n- R&D\n- Security",
+      "tags": [
+        "market",
+        "api",
+        "capacity",
+        "A",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-6",
+      "title": "#6 统计套利 / #6 Statistical Arbitrage",
+      "body": "交易产品间统计价差。\n\nTrades statistical spreads between related products.\n\n## 运作方式\n交易产品间统计价差。\n\n## 分类\nH · F3 · P2\n\n## 如何检测\n- 配对仓位\n- 相关性\n- 收益\n\n## 预防或管理\n- 组合敞口\n- 相关性监控\n\n## 负责\n- Risk Ops\n- Dealing\n\n## How it works\nTrades statistical spreads between related products.\n\n## Class\nH · F3 · P2\n\n## Detect\n- Paired positions\n- Correlation\n- Returns\n\n## Prevent\n- Portfolio exposure\n- Correlation monitoring\n\n## Owners\n- Risk Ops\n- Dealing",
+      "tags": [
+        "healthy",
+        "cross-asset",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-60",
+      "title": "#60 报价探测 / #60 Quote Probing",
+      "body": "通过密集测试订单识别系统报价或执行缺陷。\n\nDense test orders to discover quote/exec defects.\n\n## 运作方式\n通过密集测试订单识别系统报价或执行缺陷。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 高频小单\n- 拒单模式\n- 时间相关性\n\n## 预防或管理\n- 执行规则一致性\n- 反滥用监控\n\n## 负责\n- Pricing\n- Security\n\n## How it works\nDense test orders to discover quote/exec defects.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- High-freq tiny orders\n- Reject patterns\n- Time correlation\n\n## Prevent\n- Consistent exec rules\n- Anti-abuse monitoring\n\n## Owners\n- Pricing\n- Security",
+      "tags": [
+        "market",
+        "pricing",
+        "probing",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-61",
+      "title": "#61 API 会话滥用 / #61 API Session Abuse",
+      "body": "利用过量会话或请求规避服务限制。\n\nExcess sessions/requests to bypass service limits.\n\n## 运作方式\n利用过量会话或请求规避服务限制。\n\n## 分类\nA / M · F2 · P1\n\n## 如何检测\n- Session 数\n- API 调用量\n- 异常身份关联\n\n## 预防或管理\n- 身份认证\n- 配额\n- 服务端校验\n\n## 负责\n- Security\n- R&D\n\n## How it works\nExcess sessions/requests to bypass service limits.\n\n## Class\nA / M · F2 · P1\n\n## Detect\n- Session count\n- API volume\n- Identity anomalies\n\n## Prevent\n- AuthN\n- Quotas\n- Server-side checks\n\n## Owners\n- Security\n- R&D",
+      "tags": [
+        "market",
+        "api",
+        "A",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-62",
+      "title": "#62 流动性脆弱期规则弱点利用 / #62 Liquidity Stress Exploitation",
+      "body": "在流动性脆弱时利用执行或报价规则弱点。\n\nExploits quote/exec weaknesses in thin liquidity.\n\n## 运作方式\n在流动性脆弱时利用执行或报价规则弱点。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 低深度\n- 成交冲击及 Markout\n\n## 预防或管理\n- 流动性限制\n- 有效价保护\n\n## 负责\n- Pricing\n- Dealing\n\n## How it works\nExploits quote/exec weaknesses in thin liquidity.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Low depth\n- Fill impact\n- Markout\n\n## Prevent\n- Liquidity limits\n- Valid-price protection\n\n## Owners\n- Pricing\n- Dealing",
+      "tags": [
+        "market",
+        "liquidity",
+        "pricing",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-63",
+      "title": "#63 价格预言机/参考源操纵 / #63 Price Oracle Manipulation",
+      "body": "操纵或影响 Broker 使用的不可靠参考源。\n\nManipulates unreliable reference sources used by broker.\n\n## 运作方式\n操纵或影响 Broker 使用的不可靠参考源。\n\n## 分类\nM · F1 · P0\n\n## 如何检测\n- 独立价格源偏离\n- 数据血缘\n- 参考价突变\n\n## 预防或管理\n- 多源验证\n- 操纵源隔离\n\n## 负责\n- Pricing\n- Compliance\n\n## How it works\nManipulates unreliable reference sources used by broker.\n\n## Class\nM · F1 · P0\n\n## Detect\n- Independent source divergence\n- Data lineage\n- Ref spikes\n\n## Prevent\n- Multi-source validation\n- Isolate manipulated source\n\n## Owners\n- Pricing\n- Compliance",
+      "tags": [
+        "market",
+        "oracle",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-64",
+      "title": "#64 Broker/LP 规则冲突利用 / #64 Broker/LP Conflict Exploitation",
+      "body": "利用报价和对冲规则不一致获得不当优势。\n\nExploits inconsistent quote vs hedge rules.\n\n## 运作方式\n利用报价和对冲规则不一致获得不当优势。\n\n## 分类\nT / A · F2 · P1\n\n## 如何检测\n- 客户成交、LP 执行及规则差异\n\n## 预防或管理\n- 交易规则校验\n- TCA\n- 风险复核\n\n## 负责\n- Pricing\n- Dealing\n\n## How it works\nExploits inconsistent quote vs hedge rules.\n\n## Class\nT / A · F2 · P1\n\n## Detect\n- Client fill vs LP exec\n- Rule diffs\n\n## Prevent\n- Rule validation\n- TCA\n- Risk review\n\n## Owners\n- Pricing\n- Dealing",
+      "tags": [
+        "market",
+        "lp",
+        "hedge",
+        "T",
+        "A",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-65",
+      "title": "#65 多账户身份欺诈 / #65 Multi-Account Identity Fraud",
+      "body": "伪造或冒用身份注册多个账户。\n\nForged/stolen identities open multiple accounts.\n\n## 运作方式\n伪造或冒用身份注册多个账户。\n\n## 分类\nM · F3 · P1\n\n## 如何检测\n- KYC 一致性\n- 身份与设备关联\n\n## 预防或管理\n- 身份核验\n- 活体与重复身份识别\n\n## 负责\n- Fraud\n- Compliance\n\n## How it works\nForged/stolen identities open multiple accounts.\n\n## Class\nM · F3 · P1\n\n## Detect\n- KYC consistency\n- Identity-device links\n\n## Prevent\n- ID verification\n- Liveness\n- Duplicate ID detection\n\n## Owners\n- Fraud\n- Compliance",
+      "tags": [
+        "fraud",
+        "kyc",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-66",
+      "title": "#66 账户接管 / #66 Account Takeover",
+      "body": "未经授权控制客户账户并交易或转移资金。\n\nUnauthorized control of client account for trade/fund moves.\n\n## 运作方式\n未经授权控制客户账户并交易或转移资金。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 异常登录\n- 设备变化\n- 资金行为\n\n## 预防或管理\n- MFA\n- 交易验证\n- 账号保护\n\n## 负责\n- Security\n- Finance\n\n## How it works\nUnauthorized control of client account for trade/fund moves.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Login anomalies\n- Device change\n- Funding behaviour\n\n## Prevent\n- MFA\n- Trade verification\n- Account protection\n\n## Owners\n- Security\n- Finance",
+      "tags": [
+        "fraud",
+        "ato",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-67",
+      "title": "#67 撞库登录 / #67 Credential Stuffing",
+      "body": "利用泄露凭据尝试批量登录。\n\nBulk login attempts with leaked credentials.\n\n## 运作方式\n利用泄露凭据尝试批量登录。\n\n## 分类\nM · F3 · P1\n\n## 如何检测\n- 登录失败率\n- 异常设备/来源\n\n## 预防或管理\n- MFA\n- 限流\n- 凭据泄露防护\n\n## 负责\n- Security\n\n## How it works\nBulk login attempts with leaked credentials.\n\n## Class\nM · F3 · P1\n\n## Detect\n- Login failure rate\n- Abnormal device/source\n\n## Prevent\n- MFA\n- Rate limits\n- Credential-leak protection\n\n## Owners\n- Security",
+      "tags": [
+        "fraud",
+        "security",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-68",
+      "title": "#68 交易 API 密钥盗用 / #68 API Key Compromise",
+      "body": "盗用交易 API 凭据。\n\nStolen trading API credentials.\n\n## 运作方式\n盗用交易 API 凭据。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 异常 API 行为\n- 权限变化\n- 交易模式\n\n## 预防或管理\n- 最小权限\n- 密钥轮换\n- 撤销\n\n## 负责\n- Security\n- R&D\n\n## How it works\nStolen trading API credentials.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Abnormal API behaviour\n- Permission changes\n- Trade pattern\n\n## Prevent\n- Least privilege\n- Key rotation\n- Revocation\n\n## Owners\n- Security\n- R&D",
+      "tags": [
+        "fraud",
+        "api",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-69",
+      "title": "#69 会话劫持 / #69 Session Hijacking",
+      "body": "非法接管已认证会话。\n\nIllegal takeover of authenticated sessions.\n\n## 运作方式\n非法接管已认证会话。\n\n## 分类\nM · F2 · P1\n\n## 如何检测\n- 会话异常\n- 设备/行为不一致\n\n## 预防或管理\n- 会话保护\n- 重新认证\n\n## 负责\n- Security\n\n## How it works\nIllegal takeover of authenticated sessions.\n\n## Class\nM · F2 · P1\n\n## Detect\n- Session anomalies\n- Device/behaviour mismatch\n\n## Prevent\n- Session protection\n- Re-authentication\n\n## Owners\n- Security",
+      "tags": [
+        "fraud",
+        "session",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-7",
+      "title": "#7 跨券商合法报价差套利 / #7 Cross-Broker Arbitrage",
+      "body": "利用不同 Broker 合法报价差异。\n\nExploits legitimate quote differences across brokers.\n\n## 运作方式\n利用不同 Broker 合法报价差异。\n\n## 分类\nH / T · F3 · P1\n\n## 如何检测\n- 跨平台同步交易\n- Markout\n\n## 预防或管理\n- 校验自身报价质量\n- 具体行为再审查\n\n## 负责\n- Pricing\n- Risk Ops\n\n## How it works\nExploits legitimate quote differences across brokers.\n\n## Class\nH / T · F3 · P1\n\n## Detect\n- Cross-platform sync trades\n- Markout\n\n## Prevent\n- Own quote quality checks\n- Case-by-case review\n\n## Owners\n- Pricing\n- Risk Ops",
+      "tags": [
+        "healthy",
+        "toxic-review",
+        "markout",
+        "H",
+        "T",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-70",
+      "title": "#70 支付拒付欺诈 / #70 Payment Chargeback Fraud",
+      "body": "利用支付争议或盗用资金造成 Broker 垫款损失。\n\nPayment disputes/stolen funds cause broker float loss.\n\n## 运作方式\n利用支付争议或盗用资金造成 Broker 垫款损失。\n\n## 分类\nM · F3 · P1\n\n## 如何检测\n- Chargeback\n- 交易与支付时序\n\n## 预防或管理\n- PSP 风险控制\n- 入金最终性确认\n\n## 负责\n- Finance\n- Fraud\n\n## How it works\nPayment disputes/stolen funds cause broker float loss.\n\n## Class\nM · F3 · P1\n\n## Detect\n- Chargebacks\n- Trade vs payment timing\n\n## Prevent\n- PSP controls\n- Deposit finality checks\n\n## Owners\n- Finance\n- Fraud",
+      "tags": [
+        "fraud",
+        "payment",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-71",
+      "title": "#71 入金可逆窗口滥用 / #71 Deposit Reversal Abuse",
+      "body": "利用入账与支付最终确认之间的时间差。\n\nTrades in gap between credit and payment finality.\n\n## 运作方式\n利用入账与支付最终确认之间的时间差。\n\n## 分类\nM · F2 · P1\n\n## 如何检测\n- 入金状态\n- 交易权益和撤销记录\n\n## 预防或管理\n- 资金确认\n- 可用余额隔离\n\n## 负责\n- Finance\n- Trading\n\n## How it works\nTrades in gap between credit and payment finality.\n\n## Class\nM · F2 · P1\n\n## Detect\n- Deposit status\n- Trading equity\n- Reversal records\n\n## Prevent\n- Fund confirmation\n- Available-balance isolation\n\n## Owners\n- Finance\n- Trading",
+      "tags": [
+        "fraud",
+        "payment",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-72",
+      "title": "#72 出金欺诈 / #72 Withdrawal Fraud",
+      "body": "通过身份或支付信息异常实施非法出金。\n\nIllegal withdrawals via identity/payment anomalies.\n\n## 运作方式\n通过身份或支付信息异常实施非法出金。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 收款账户变化\n- 异常登录和出金模式\n\n## 预防或管理\n- 出金复核\n- 受益人校验\n\n## 负责\n- Finance\n- Security\n\n## How it works\nIllegal withdrawals via identity/payment anomalies.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Payee changes\n- Abnormal login\n- Withdrawal patterns\n\n## Prevent\n- Withdrawal review\n- Beneficiary checks\n\n## Owners\n- Finance\n- Security",
+      "tags": [
+        "fraud",
+        "withdrawal",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-73",
+      "title": "#73 利用交易洗钱 / #73 Money Laundering via Trading",
+      "body": "利用交易账户及资金流掩盖资金来源或用途。\n\nUses trading accounts/flows to obscure fund origin/purpose.\n\n## 运作方式\n利用交易账户及资金流掩盖资金来源或用途。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 资金流\n- 交易经济合理性\n- 账户关联\n\n## 预防或管理\n- AML 监控\n- 合规调查及报告\n\n## 负责\n- Compliance\n\n## How it works\nUses trading accounts/flows to obscure fund origin/purpose.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Fund flows\n- Economic rationale\n- Account linkage\n\n## Prevent\n- AML monitoring\n- Compliance investigation & reporting\n\n## Owners\n- Compliance",
+      "tags": [
+        "fraud",
+        "aml",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-74",
+      "title": "#74 第三方资金滥用 / #74 Third-Party Funding Abuse",
+      "body": "未经授权使用第三方资金或收款账户。\n\nUnauthorized third-party funding or payout accounts.\n\n## 运作方式\n未经授权使用第三方资金或收款账户。\n\n## 分类\nA / M · F2 · P1\n\n## 如何检测\n- 入金人/出金人/账户持有人不一致\n\n## 预防或管理\n- 同名规则\n- 受益人审查\n\n## 负责\n- Finance\n- Compliance\n\n## How it works\nUnauthorized third-party funding or payout accounts.\n\n## Class\nA / M · F2 · P1\n\n## Detect\n- Depositor/payee ≠ account holder\n\n## Prevent\n- Same-name rules\n- Beneficiary review\n\n## Owners\n- Finance\n- Compliance",
+      "tags": [
+        "fraud",
+        "payment",
+        "A",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-75",
+      "title": "#75 合成身份欺诈 / #75 Synthetic Identity Fraud",
+      "body": "使用拼接或虚构的身份信息开户。\n\nStitched/fictional identity data for account opening.\n\n## 运作方式\n使用拼接或虚构的身份信息开户。\n\n## 分类\nM · F2 · P1\n\n## 如何检测\n- 身份数据冲突\n- 证件异常和关联网络\n\n## 预防或管理\n- KYC\n- 身份真实性验证\n\n## 负责\n- Fraud\n- Compliance\n\n## How it works\nStitched/fictional identity data for account opening.\n\n## Class\nM · F2 · P1\n\n## Detect\n- Identity conflicts\n- Doc anomalies\n- Link networks\n\n## Prevent\n- KYC\n- Identity authenticity checks\n\n## Owners\n- Fraud\n- Compliance",
+      "tags": [
+        "fraud",
+        "kyc",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-76",
+      "title": "#76 自动化批量开户 / #76 Bot-Based Registration Abuse",
+      "body": "自动化批量开户以获取奖励或规避风控。\n\nAutomated bulk signup for rewards or control evasion.\n\n## 运作方式\n自动化批量开户以获取奖励或规避风控。\n\n## 分类\nM · F3 · P2\n\n## 如何检测\n- 注册速度\n- 设备特征\n- 行为关联\n\n## 预防或管理\n- 反自动化\n- KYC\n- 配额\n\n## 负责\n- Fraud\n- Security\n\n## How it works\nAutomated bulk signup for rewards or control evasion.\n\n## Class\nM · F3 · P2\n\n## Detect\n- Signup velocity\n- Device fingerprints\n- Behaviour links\n\n## Prevent\n- Anti-automation\n- KYC\n- Quotas\n\n## Owners\n- Fraud\n- Security",
+      "tags": [
+        "fraud",
+        "bots",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-77",
+      "title": "#77 DDoS / 应用层洪泛 / #77 DDoS / Application-Layer Flooding",
+      "body": "恶意请求影响报价或交易服务可用性。\n\nMalicious traffic impacts quote/trade availability.\n\n## 运作方式\n恶意请求影响报价或交易服务可用性。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 请求异常\n- 延迟\n- 系统资源\n\n## 预防或管理\n- WAF\n- 限流\n- DDoS 防护\n- 服务隔离\n\n## 负责\n- Security\n- R&D\n\n## How it works\nMalicious traffic impacts quote/trade availability.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Request anomalies\n- Latency\n- Resource use\n\n## Prevent\n- WAF\n- Rate limits\n- DDoS protection\n- Service isolation\n\n## Owners\n- Security\n- R&D",
+      "tags": [
+        "fraud",
+        "security",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-78",
+      "title": "#78 输入 / API 注入 / #78 Input/API Injection",
+      "body": "通过恶意输入尝试影响后端数据或执行逻辑。\n\nMalicious input to affect backend data/execution logic.\n\n## 运作方式\n通过恶意输入尝试影响后端数据或执行逻辑。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- API 异常\n- 输入校验失败\n- 安全日志\n\n## 预防或管理\n- 输入验证\n- 参数化查询\n- 权限隔离\n\n## 负责\n- Security\n- R&D\n\n## How it works\nMalicious input to affect backend data/execution logic.\n\n## Class\nM · F2 · P0\n\n## Detect\n- API anomalies\n- Validation failures\n- Security logs\n\n## Prevent\n- Input validation\n- Parameterized queries\n- Privilege isolation\n\n## Owners\n- Security\n- R&D",
+      "tags": [
+        "fraud",
+        "security",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-79",
+      "title": "#79 参数篡改 / #79 Parameter Tampering",
+      "body": "非法修改订单、资金或账户请求中的关键参数。\n\nIllegally modifies order/fund/account request fields.\n\n## 运作方式\n非法修改订单、资金或账户请求中的关键参数。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- 服务端字段一致性校验失败\n\n## 预防或管理\n- 服务端权威计算\n- 权限校验\n\n## 负责\n- Security\n- Trading\n\n## How it works\nIllegally modifies order/fund/account request fields.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Server-side field consistency failures\n\n## Prevent\n- Server-authoritative calculation\n- AuthZ checks\n\n## Owners\n- Security\n- Trading",
+      "tags": [
+        "fraud",
+        "security",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-8",
+      "title": "#8 跨资产对冲组合 / #8 Cross-Asset Hedge",
+      "body": "用黄金、美元、期货等组合对冲。\n\nCombined hedges using gold, FX, futures, etc.\n\n## 运作方式\n用黄金、美元、期货等组合对冲。\n\n## 分类\nH · F3 · P2\n\n## 如何检测\n- 跨资产相关仓位\n\n## 预防或管理\n- 多资产净风险计算\n\n## 负责\n- Risk Ops\n\n## How it works\nCombined hedges using gold, FX, futures, etc.\n\n## Class\nH · F3 · P2\n\n## Detect\n- Cross-asset related positions\n\n## Prevent\n- Multi-asset net risk calculation\n\n## Owners\n- Risk Ops",
+      "tags": [
+        "healthy",
+        "hedge",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-80",
+      "title": "#80 重放 / 重复请求滥用 / #80 Replay / Duplicate Request Abuse",
+      "body": "重复发送交易或资金请求以利用幂等缺陷。\n\nReplays trade/fund requests against idempotency gaps.\n\n## 运作方式\n重复发送交易或资金请求以利用幂等缺陷。\n\n## 分类\nM · F2 · P0\n\n## 如何检测\n- Request ID 重复\n- 账务/成交不平\n\n## 预防或管理\n- 幂等键\n- 一次性请求验证\n\n## 负责\n- R&D\n- Finance\n\n## How it works\nReplays trade/fund requests against idempotency gaps.\n\n## Class\nM · F2 · P0\n\n## Detect\n- Duplicate request IDs\n- Ledger/fill imbalance\n\n## Prevent\n- Idempotency keys\n- One-time request validation\n\n## Owners\n- R&D\n- Finance",
+      "tags": [
+        "fraud",
+        "idempotency",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-81",
+      "title": "#81 前端校验绕过 / #81 Client-Side / UI Validation Bypass",
+      "body": "绕过前端限制提交非法请求。\n\nBypasses front-end limits to submit illegal requests.\n\n## 运作方式\n绕过前端限制提交非法请求。\n\n## 分类\nM · F2 · P1\n\n## 如何检测\n- 请求与服务器规则不一致\n\n## 预防或管理\n- 全部关键规则服务端执行\n\n## 负责\n- R&D\n- Security\n\n## How it works\nBypasses front-end limits to submit illegal requests.\n\n## Class\nM · F2 · P1\n\n## Detect\n- Request vs server-rule mismatch\n\n## Prevent\n- All critical rules server-side\n\n## Owners\n- R&D\n- Security",
+      "tags": [
+        "fraud",
+        "security",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-82",
+      "title": "#82 恶意 EA 资源耗尽 / #82 Malicious EA / Script Resource Exhaustion",
+      "body": "通过自动交易程序使服务资源异常消耗。\n\nAutoscripts exhaust trading service resources.\n\n## 运作方式\n通过自动交易程序使服务资源异常消耗。\n\n## 分类\nA / M · F2 · P1\n\n## 如何检测\n- 订单风暴\n- CPU/Queue 异常\n\n## 预防或管理\n- 公平配额\n- 速率限制\n- 隔离\n\n## 负责\n- R&D\n- Security\n\n## How it works\nAutoscripts exhaust trading service resources.\n\n## Class\nA / M · F2 · P1\n\n## Detect\n- Order storms\n- CPU/queue anomalies\n\n## Prevent\n- Fair quotas\n- Rate limits\n- Isolation\n\n## Owners\n- R&D\n- Security",
+      "tags": [
+        "fraud",
+        "ea",
+        "capacity",
+        "A",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-83",
+      "title": "#83 行情抓取 / 数据滥用 / #83 Data Scraping / Market-Data Misuse",
+      "body": "未经许可大量抓取或再分发行情数据。\n\nUnauthorized bulk scrape/redistribution of market data.\n\n## 运作方式\n未经许可大量抓取或再分发行情数据。\n\n## 分类\nA / M · F3 · P2\n\n## 如何检测\n- 数据请求量\n- 异常使用模式\n\n## 预防或管理\n- API 配额\n- 授权和数据许可控制\n\n## 负责\n- Security\n- Legal\n\n## How it works\nUnauthorized bulk scrape/redistribution of market data.\n\n## Class\nA / M · F3 · P2\n\n## Detect\n- Data request volume\n- Abnormal usage patterns\n\n## Prevent\n- API quotas\n- Licensing controls\n\n## Owners\n- Security\n- Legal",
+      "tags": [
+        "fraud",
+        "market-data",
+        "A",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-84",
+      "title": "#84 内部人员与客户串通 / #84 Insider–Client Collusion",
+      "body": "内部人员与外部账户串通利用系统或权限。\n\nStaff colludes with external accounts to abuse systems/privileges.\n\n## 运作方式\n内部人员与外部账户串通利用系统或权限。\n\n## 分类\nM · F1 · P0\n\n## 如何检测\n- 特权变更与获利账户关联\n\n## 预防或管理\n- 职责分离\n- 审计\n- 独立调查\n\n## 负责\n- Compliance\n- Security\n\n## How it works\nStaff colludes with external accounts to abuse systems/privileges.\n\n## Class\nM · F1 · P0\n\n## Detect\n- Privilege changes linked to profitable accounts\n\n## Prevent\n- SoD\n- Audit\n- Independent investigation\n\n## Owners\n- Compliance\n- Security",
+      "tags": [
+        "fraud",
+        "insider",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-85",
+      "title": "#85 社工诱导 Ops / #85 Social Engineering of Operations",
+      "body": "诱导客服或 Ops 错误变更账户或资金权限。\n\nTricks support/ops into wrongful account/fund permission changes.\n\n## 运作方式\n诱导客服或 Ops 错误变更账户或资金权限。\n\n## 分类\nM · F2 · P1\n\n## 如何检测\n- 非标准请求\n- 审批异常\n\n## 预防或管理\n- 身份回拨核验\n- 双重审批\n\n## 负责\n- Ops\n- Security\n\n## How it works\nTricks support/ops into wrongful account/fund permission changes.\n\n## Class\nM · F2 · P1\n\n## Detect\n- Non-standard requests\n- Approval anomalies\n\n## Prevent\n- Callback verification\n- Dual approval\n\n## Owners\n- Ops\n- Security",
+      "tags": [
+        "fraud",
+        "social-engineering",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-86",
+      "title": "#86 审计 / 事故证据篡改 / #86 Audit / Incident Evidence Tampering",
+      "body": "试图删除或篡改交易及事故记录。\n\nAttempts to delete/alter trade or incident records.\n\n## 运作方式\n试图删除或篡改交易及事故记录。\n\n## 分类\nM · F1 · P0\n\n## 如何检测\n- 审计日志缺口\n- 异常权限操作\n\n## 预防或管理\n- 不可变日志\n- 权限隔离\n- 独立备份\n\n## 负责\n- Security\n- Compliance\n\n## How it works\nAttempts to delete/alter trade or incident records.\n\n## Class\nM · F1 · P0\n\n## Detect\n- Audit-log gaps\n- Abnormal privilege ops\n\n## Prevent\n- Immutable logs\n- Privilege isolation\n- Independent backups\n\n## Owners\n- Security\n- Compliance",
+      "tags": [
+        "fraud",
+        "audit",
+        "p0",
+        "M",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    },
+    {
+      "id": "risk-9",
+      "title": "#9 Carry / Swap 交易 / #9 Carry / Swap Trading",
+      "body": "获取融资或隔夜利差。\n\nEarns financing or overnight differential.\n\n## 运作方式\n获取融资或隔夜利差。\n\n## 分类\nH · F3 · P2\n\n## 如何检测\n- 持仓周期\n- Swap 收益\n\n## 预防或管理\n- 确保 Swap 计算及收费正确\n\n## 负责\n- Finance\n- Trading\n\n## How it works\nEarns financing or overnight differential.\n\n## Class\nH · F3 · P2\n\n## Detect\n- Hold period\n- Swap PnL\n\n## Prevent\n- Correct swap calculation and billing\n\n## Owners\n- Finance\n- Trading",
+      "tags": [
+        "healthy",
+        "swap",
+        "H",
+        "cfd-broker"
+      ],
+      "kind": "risk",
+      "updatedAt": "2026-11-25T12:03:56.882Z"
+    }
+  ],
+  "skills": [
+    {
+      "id": "sk-account-linkage",
+      "level": "L1",
+      "name": "关联账户审查 / Account Linkage Review",
+      "severity": "P2",
+      "matchHints": "关联账户审查 Account Linkage Review 为奖励/对冲/限额规避构建证据，但不把关联直接视为有罪。 Build evidence for bonus/hedge/limit circumvention without treating linkage as guilt. fraud linkage cfd-broker 奖励异常 关联反向仓位 多登录突破限额",
+      "linkedL1": "",
+      "check": "拉取关联图 → 经济行为 → 人工结论",
+      "action": "证据：关联图；仓位叠加；活动台账",
+      "opt": "关联图；仓位叠加；活动台账",
+      "body": "为奖励/对冲/限额规避构建证据，但不把关联直接视为有罪。\n\nBuild evidence for bonus/hedge/limit circumvention without treating linkage as guilt.\n\n## 摘要\n为奖励/对冲/限额规避构建证据，但不把关联直接视为有罪。\n\n## 触发\n- 奖励异常\n- 关联反向仓位\n- 多登录突破限额\n\n## 步骤\n### 1. 拉取关联图\nKYC、设备、支付、IP、受益人边及证据 ID。\n\n### 2. 经济行为\n检查对冲、刷量、资格叠加。\n\n### 3. 人工结论\n合规/Fraud 判定 Abuse 或误报；记录依据。\n\n## 证据\n- 关联图\n- 仓位叠加\n- 活动台账\n\n## Summary\nBuild evidence for bonus/hedge/limit circumvention without treating linkage as guilt.\n\n## Triggers\n- Reward anomaly\n- Opposite linked positions\n- Limit breach via multi-login\n\n## Steps\n### 1. Graph pull\nKYC, device, payment, IP, beneficiary edges with evidence IDs.\n\n### 2. Economic behaviour\nCheck reverse hedges, churn, entitlement stacking.\n\n### 3. Human disposition\nCompliance/Fraud decides A vs false positive; document basis.\n\n## Evidence\n- Linkage graph\n- Position overlay\n- Campaign ledger"
+    },
+    {
+      "id": "sk-bad-tick",
+      "level": "L1",
+      "name": "Bad Tick / 倒挂止血 / Bad Tick / Crossed Market Containment",
+      "severity": "P0",
+      "matchHints": "Bad Tick / 倒挂止血 Bad Tick / Crossed Market Containment 阻止尖刺/倒挂成交，回滚错误聚合或配置。 Stop fills on spike or inverted markets and roll back bad aggregation/config. p0 bad-tick pricing cfd-broker 尖刺成交 负点差 聚合输入输出偏离",
+      "linkedL1": "",
+      "check": "定位尖刺窗口 → 归因到源 → 硬拦截与过滤 → 回归验证",
+      "action": "证据：Tick 图 + 价带；成交列表；修复前后配置版本",
+      "opt": "Tick 图 + 价带；成交列表；修复前后配置版本",
+      "body": "阻止尖刺/倒挂成交，回滚错误聚合或配置。\n\nStop fills on spike or inverted markets and roll back bad aggregation/config.\n\n## 摘要\n阻止尖刺/倒挂成交，回滚错误聚合或配置。\n\n## 触发\n- 尖刺成交\n- 负点差\n- 聚合输入输出偏离\n\n## 步骤\n### 1. 定位尖刺窗口\n找出 |跳价| 超带或 bid≥ask 的 Tick，列出窗口内成交。\n\n### 2. 归因到源\n归因到 LP 输入、PE 聚合或 Markup 发布。\n\n### 3. 硬拦截与过滤\n启用倒挂硬拦截与 Bad Tick 过滤；必要时隔离 LP。\n\n### 4. 回归验证\n用该窗口回放聚合规则；确认无可成交坏价。\n\n## 证据\n- Tick 图 + 价带\n- 成交列表\n- 修复前后配置版本\n\n## Summary\nStop fills on spike or inverted markets and roll back bad aggregation/config.\n\n## Triggers\n- Spike fills\n- Negative spread\n- Aggregator input/output gap\n\n## Steps\n### 1. Identify spike window\nFind ticks where |jump| > band or bid≥ask; list fills inside window.\n\n### 2. Source attribution\nAttribute to LP input vs PE aggregation vs markup publish.\n\n### 3. Hard block & filter\nEnable crossed-market block and bad-tick filter; isolate LP if needed.\n\n### 4. Regression test\nReplay window through aggregator rules; confirm no executable bad quotes.\n\n## Evidence\n- Tick chart + band\n- Fill list\n- Config version before/after"
+    },
+    {
+      "id": "sk-detect-modules",
+      "level": "L1",
+      "name": "告警映射六大检测模块 / Map Alert to Six Detection Modules",
+      "severity": "P2",
+      "matchHints": "告警映射六大检测模块 Map Alert to Six Detection Modules 将 86 场景映射到共享检测模块，避免规则孤岛。 Route any of the 86 scenarios into the shared detection modules instead of siloed rules. framework monitor cfd-broker 新建检测需求 重复告警 Monitor 2.0 设计",
+      "linkedL1": "",
+      "check": "选择主模块 → 共享特征 → 处置门控",
+      "action": "证据：模块映射；特征列表；误报复核",
+      "opt": "模块映射；特征列表；误报复核",
+      "body": "将 86 场景映射到共享检测模块，避免规则孤岛。\n\nRoute any of the 86 scenarios into the shared detection modules instead of siloed rules.\n\n## 摘要\n将 86 场景映射到共享检测模块，避免规则孤岛。\n\n## 触发\n- 新建检测需求\n- 重复告警\n- Monitor 2.0 设计\n\n## 步骤\n### 1. 选择主模块\n1 交易行为 · 2 账户关联 · 3 支付与欺诈 · 4 安全与 API · 5 报价利用 · 6 敞口与经济影响\n\n### 2. 共享特征\n优先使用 Markout、Quote Age、关联、对冲滑点、API 行为特征。\n\n### 3. 处置门控\n证据不足→继续监控；部分→人工；充分→合规处置。\n\n## 证据\n- 模块映射\n- 特征列表\n- 误报复核\n\n## Summary\nRoute any of the 86 scenarios into the shared detection modules instead of siloed rules.\n\n## Triggers\n- New detector request\n- Duplicate alerts\n- Monitor 2.0 design\n\n## Steps\n### 1. Pick primary module\n1 Trading Behaviour · 2 Account Linkage · 3 Payment & Fraud · 4 Security & API · 5 Pricing Exploitation · 6 Exposure & Economic Impact\n\n### 2. Shared features\nPrefer markout, quote age, linkage, hedge slippage, API behaviour features.\n\n### 3. Disposition gate\nNo sufficient evidence → monitor; partial → human; solid → compliance action.\n\n## Evidence\n- Module mapping\n- Feature list\n- False-positive review"
+    },
+    {
+      "id": "sk-full-pricing-rca",
+      "level": "L1",
+      "name": "完整报价证据链 / Full Pricing Evidence Chain",
+      "severity": "P0",
+      "matchHints": "完整报价证据链 Full Pricing Evidence Chain 面向 Monitor 2.0 的 Pricing→Trading→Dealing 端到端证据链。 End-to-end Pricing→Trading→Dealing chain for Monitor 2.0 style RCA. rca monitor p0 cfd-broker 任意 P0 报价损失 Desk 要求 RCA 包",
+      "linkedL1": "",
+      "check": "报价异常 → 异常成交 → Markout → 对冲影响 → RCA + 修复",
+      "action": "证据：报价追踪；成交集合；Markout 表；对冲 TCA；配置 Diff",
+      "opt": "报价追踪；成交集合；Markout 表；对冲 TCA；配置 Diff",
+      "body": "面向 Monitor 2.0 的 Pricing→Trading→Dealing 端到端证据链。\n\nEnd-to-end Pricing→Trading→Dealing chain for Monitor 2.0 style RCA.\n\n## 摘要\n面向 Monitor 2.0 的 Pricing→Trading→Dealing 端到端证据链。\n\n## 触发\n- 任意 P0 报价损失\n- Desk 要求 RCA 包\n\n## 步骤\n### 1. 报价异常\n记录 Age、偏离、源、配置版本。\n\n### 2. 异常成交\n列出绑定异常报价且有 quote_id 证明的成交。\n\n### 3. Markout\n计算多窗口 Markout；注明样本量。\n\n### 4. 对冲影响\n成交→对冲延迟与 Hedge PnL 归因。\n\n### 5. RCA + 修复\n根因、止血、永久修复、关闭监控缺口。\n\n## 证据\n- 报价追踪\n- 成交集合\n- Markout 表\n- 对冲 TCA\n- 配置 Diff\n\n## Summary\nEnd-to-end Pricing→Trading→Dealing chain for Monitor 2.0 style RCA.\n\n## Triggers\n- Any P0 pricing loss\n- Desk asks for RCA pack\n\n## Steps\n### 1. Quote anomaly\nDocument age, deviation, source, config version.\n\n### 2. Abnormal fills\nList fills tied to anomalous quotes with quote_id proof.\n\n### 3. Markout\nCompute multi-window markout; note sample size.\n\n### 4. Hedge impact\nFill→hedge lag and hedge PnL attribution.\n\n### 5. RCA + fix\nRoot cause, containment, permanent fix, monitoring gap closed.\n\n## Evidence\n- Quote trace\n- Fill set\n- Markout table\n- Hedge TCA\n- Config diff"
+    },
+    {
+      "id": "sk-security-ato",
+      "level": "L1",
+      "name": "账户接管 / API 失陷响应 / ATO / API Compromise Response",
+      "severity": "P0",
+      "matchHints": "账户接管 / API 失陷响应 ATO / API Compromise Response 以可审计步骤快速遏制未授权交易或资金移动。 Contain unauthorised trading or fund movement quickly with audit-safe steps. security p0 ato cfd-broker 不可能旅行登录 API Key 异常 收款变更 + 出金",
+      "linkedL1": "",
+      "check": "冻结风险 → 重建时间线 → 客户恢复",
+      "action": "证据：认证审计；API 审计；资金流水",
+      "opt": "认证审计；API 审计；资金流水",
+      "body": "以可审计步骤快速遏制未授权交易或资金移动。\n\nContain unauthorised trading or fund movement quickly with audit-safe steps.\n\n## 摘要\n以可审计步骤快速遏制未授权交易或资金移动。\n\n## 触发\n- 不可能旅行登录\n- API Key 异常\n- 收款变更 + 出金\n\n## 步骤\n### 1. 冻结风险\n撤销会话/密钥；挂起出金；不可变保全日志。\n\n### 2. 重建时间线\n认证→交易→资金事件，含设备与 request ID。\n\n### 3. 客户恢复\n核验恢复、重置 MFA、轮换密钥；必要时合规通报。\n\n## 证据\n- 认证审计\n- API 审计\n- 资金流水\n\n## Summary\nContain unauthorised trading or fund movement quickly with audit-safe steps.\n\n## Triggers\n- Impossible travel login\n- API key anomaly\n- Payee change + withdrawal\n\n## Steps\n### 1. Freeze risk\nRevoke sessions/keys; hold withdrawals; preserve logs immutably.\n\n### 2. Timeline rebuild\nAuth → trade → fund events with device and request IDs.\n\n### 3. Client restore\nVerified recovery, MFA reset, key rotation; compliance notify if needed.\n\n## Evidence\n- Auth audit\n- API audit\n- Fund movement log"
+    },
+    {
+      "id": "sk-cross-server",
+      "level": "L1",
+      "name": "跨 Server 报价一致性 / Cross-Server Quote Consistency",
+      "severity": "P1",
+      "matchHints": "跨 Server 报价一致性 Cross-Server Quote Consistency 检测并修复同一品种在不同 MT Server 的报价分歧。 Detect and repair MT server quote divergence for the same symbol. mt consistency p1 cfd-broker Server×品种价差告警 客户跨 Server 套利",
+      "linkedL1": "",
+      "check": "矩阵快照 → 扇出路径 → 修复与监控",
+      "action": "证据：一致性矩阵；Bridge 延迟；价差窗口成交",
+      "opt": "一致性矩阵；Bridge 延迟；价差窗口成交",
+      "body": "检测并修复同一品种在不同 MT Server 的报价分歧。\n\nDetect and repair MT server quote divergence for the same symbol.\n\n## 摘要\n检测并修复同一品种在不同 MT Server 的报价分歧。\n\n## 触发\n- Server×品种价差告警\n- 客户跨 Server 套利\n\n## 步骤\n### 1. 矩阵快照\n在 T0 快照各 Server 的 bid/ask/quote_id/age。\n\n### 2. 扇出路径\n追踪 PE 发布 → 各 MT Bridge 延迟与丢包。\n\n### 3. 修复与监控\n重同步 Bridge；持续价差超阈告警。\n\n## 证据\n- 一致性矩阵\n- Bridge 延迟\n- 价差窗口成交\n\n## Summary\nDetect and repair MT server quote divergence for the same symbol.\n\n## Triggers\n- Server×symbol price gap alert\n- Client arb across servers\n\n## Steps\n### 1. Matrix snapshot\nAt T0, snapshot bid/ask/quote_id/age per server for symbol.\n\n### 2. Fan-out path\nTrace PE publish → each MT bridge lag and drop rate.\n\n### 3. Heal & monitor\nResync bridges; alert on sustained gap > threshold.\n\n## Evidence\n- Consistency matrix\n- Bridge lag\n- Gap fills"
+    },
+    {
+      "id": "sk-margin-stopout",
+      "level": "L1",
+      "name": "保证金 / 强平 RCA / Margin / Stop-Out RCA",
+      "severity": "P0",
+      "matchHints": "保证金 / 强平 RCA Margin / Stop-Out RCA 独立重算保证金，校验强平触发与执行一致性。 Independently recompute margin and validate stop-out trigger vs execution. margin stopout p0 cfd-broker 负余额事件 强平延迟 保证金计算不一致",
+      "linkedL1": "",
+      "check": "独立重算保证金 → 触发时间线 → 是否 Watchdog 空窗？",
+      "action": "证据：保证金重算表；强平时间线；配置/组别 Diff",
+      "opt": "保证金重算表；强平时间线；配置/组别 Diff",
+      "body": "独立重算保证金，校验强平触发与执行一致性。\n\nIndependently recompute margin and validate stop-out trigger vs execution.\n\n## 摘要\n独立重算保证金，校验强平触发与执行一致性。\n\n## 触发\n- 负余额事件\n- 强平延迟\n- 保证金计算不一致\n\n## 步骤\n### 1. 独立重算保证金\n用持仓、价格、合约乘数、账户组参数重算保证金。\n\n### 2. 触发时间线\n对齐保证金水平突破、强平单、成交时间、报价新鲜度。\n\n### 3. 是否 Watchdog 空窗？\n若风控引擎滞后，启用独立 Watchdog 并恢复执行。\n\n## 证据\n- 保证金重算表\n- 强平时间线\n- 配置/组别 Diff\n\n## Summary\nIndependently recompute margin and validate stop-out trigger vs execution.\n\n## Triggers\n- Negative balance event\n- Stop-out delay\n- Margin calc mismatch\n\n## Steps\n### 1. Independent margin recompute\nRebuild margin from positions, prices, contract size, group params.\n\n### 2. Trigger timeline\nAlign margin_level breach, stop-out order, fill_ts, quote freshness.\n\n### 3. Watchdog gap?\nIf risk engine lagged, enable independent watchdog and recover execution.\n\n## Evidence\n- Margin recompute sheet\n- Stop-out timeline\n- Config/group diff"
+    },
+    {
+      "id": "sk-latency-markout",
+      "level": "L1",
+      "name": "延迟 / Markout 分诊 / Latency / Markout Triage",
+      "severity": "P2",
+      "matchHints": "延迟 / Markout 分诊 Latency / Markout Triage 用 Quote Age + Markout + 参考偏离区分正常优势与延迟套利候选。 Separate healthy edge from latency arb candidates using quote age + markout + ref deviation. markout latency triage cfd-broker 正向 Markout 升高 相对外部报价滞后 对冲滑点上升",
+      "linkedL1": "",
+      "check": "客户分层 → 要求缺陷证据 → 先修 Broker 路径",
+      "action": "证据：Markout 分布；Quote Age CDF；外部中间价滞后",
+      "opt": "Markout 分布；Quote Age CDF；外部中间价滞后",
+      "body": "用 Quote Age + Markout + 参考偏离区分正常优势与延迟套利候选。\n\nSeparate healthy edge from latency arb candidates using quote age + markout + ref deviation.\n\n## 摘要\n用 Quote Age + Markout + 参考偏离区分正常优势与延迟套利候选。\n\n## 触发\n- 正向 Markout 升高\n- 相对外部报价滞后\n- 对冲滑点上升\n\n## 步骤\n### 1. 客户分层\n按 Markout、Quote Age 分布、策略特征（HFT/剥头皮/新闻）分桶。\n\n### 2. 要求缺陷证据\n仅在有旧价/滞后/缺陷证据时升级为 Toxic/Abuse——不能单凭 PnL。\n\n### 3. 先修 Broker 路径\n在任何客户限制复核前，先改善 TTL/同步/对冲路由。\n\n## 证据\n- Markout 分布\n- Quote Age CDF\n- 外部中间价滞后\n\n## Summary\nSeparate healthy edge from latency arb candidates using quote age + markout + ref deviation.\n\n## Triggers\n- Elevated positive markout\n- Quote lag vs external\n- Hedge slippage rise\n\n## Steps\n### 1. Segment clients\nBucket by markout, quote age distribution, strategy features (HFT/scalp/news).\n\n### 2. Require defect evidence\nOnly escalate to Toxic/Abusive if stale/lag/defect evidence exists — not PnL alone.\n\n### 3. Fix broker path first\nImprove TTL/sync/hedge routes before any client restriction review.\n\n## Evidence\n- Markout distribution\n- Quote age CDF\n- External mid lag"
+    },
+    {
+      "id": "sk-failover",
+      "level": "L1",
+      "name": "LP 切源空窗 RCA / LP Failover Gap RCA",
+      "severity": "P1",
+      "matchHints": "LP 切源空窗 RCA LP Failover Gap RCA 排查主→备 LP 切换期间的异常点差与成交。 Investigate abnormal spreads and fills during primary→backup LP switch. failover lp p1 cfd-broker 切源事件 切换跳价 切换时刻成交聚集",
+      "linkedL1": "",
+      "check": "对齐切源时间线 → 有效价门控审计 → 跨 Server 检查 → 调整保护延迟",
+      "action": "证据：切源日志；切换时 Quote Age；Server 一致性矩阵",
+      "opt": "切源日志；切换时 Quote Age；Server 一致性矩阵",
+      "body": "排查主→备 LP 切换期间的异常点差与成交。\n\nInvestigate abnormal spreads and fills during primary→backup LP switch.\n\n## 摘要\n排查主→备 LP 切换期间的异常点差与成交。\n\n## 触发\n- 切源事件\n- 切换跳价\n- 切换时刻成交聚集\n\n## 步骤\n### 1. 对齐切源时间线\n列出切源触发、protect_ms、主备健康状态。\n\n### 2. 有效价门控审计\n确认备源在可成交前通过 Age/价带校验。\n\n### 3. 跨 Server 检查\n确认各 MT Server 切换一致。\n\n### 4. 调整保护延迟\n若仍有空窗，增大 protect_ms 或要求双源一致。\n\n## 证据\n- 切源日志\n- 切换时 Quote Age\n- Server 一致性矩阵\n\n## Summary\nInvestigate abnormal spreads and fills during primary→backup LP switch.\n\n## Triggers\n- Failover event\n- Jump at switch\n- Fill cluster at switch\n\n## Steps\n### 1. Timeline switch events\nList failover_policy triggers, protect_ms, primary/backup health.\n\n### 2. Valid-price gate audit\nConfirm backup quotes passed age/band before becoming executable.\n\n### 3. Cross-server check\nEnsure all MT servers flipped consistently.\n\n### 4. Tune protect latency\nIncrease protect_ms or require dual-source agreement if gaps persist.\n\n## Evidence\n- Failover log\n- Quote age at flip\n- Server consistency matrix"
+    },
+    {
+      "id": "sk-stale-quote-rca",
+      "level": "L1",
+      "name": "旧价成交 RCA / Stale Quote Fill RCA",
+      "severity": "P0",
+      "matchHints": "旧价成交 RCA Stale Quote Fill RCA 证明成交是否使用过期 Quote 版本，并控制影响面。 Prove whether a fill used an expired quote version and contain the blast radius. p0 stale pricing rca cfd-broker 短窗口正向 Markout 聚集 成交时 Quote Age 超 TTL 行情冻结 / 开市告警",
+      "linkedL1": "",
+      "check": "固化成交证据 → 还原报价血缘 → 对照独立参考价 → 止血与修复 → 客户处置判定",
+      "action": "价格新鲜则为 Healthy；集中在旧价窗口为 Toxic/Review；仅有明知利用证据才为 Abuse。；证据：成交↔Quote ID 关联；Quote Age vs TTL；外部中间价偏离；与 Publisher/Feed 故障相关",
+      "opt": "成交↔Quote ID 关联；Quote Age vs TTL；外部中间价偏离；与 Publisher/Feed 故障相关",
+      "body": "证明成交是否使用过期 Quote 版本，并控制影响面。\n\nProve whether a fill used an expired quote version and contain the blast radius.\n\n## 摘要\n证明成交是否使用过期 Quote 版本，并控制影响面。\n\n## 触发\n- 短窗口正向 Markout 聚集\n- 成交时 Quote Age 超 TTL\n- 行情冻结 / 开市告警\n\n## 步骤\n### 1. 固化成交证据\n收集 fill_id、品种、server_id、成交时间、价格、方向、量、quote_id、quote_age_ms。\n\n```sql\nSELECT fill_id, symbol, server_id, fill_ts, price, side, volume, quote_id, quote_age_ms FROM fills WHERE fill_id = :fill_id\n```\n\n### 2. 还原报价血缘\n用 quote_id 关联 ticks_pe / ticks_mt；确认版本、发布/应用时间、TTL、源。\n\n```sql\nSELECT * FROM ticks_pe pe JOIN ticks_mt mt ON pe.quote_id = mt.quote_id WHERE pe.quote_id = :quote_id\n```\n\n### 3. 对照独立参考价\n在成交时刻对比 PE/MT 与独立中间价；若偏离超带且报价老化则标记。\n\n### 4. 止血与修复\n关闭旧价可成交路径；强制拒旧价；修补扇出/TTL；开启配置审计。\n\n### 5. 客户处置判定\n价格新鲜则为 Healthy；集中在旧价窗口为 Toxic/Review；仅有明知利用证据才为 Abuse。\n\n## 证据\n- 成交↔Quote ID 关联\n- Quote Age vs TTL\n- 外部中间价偏离\n- 与 Publisher/Feed 故障相关\n\n## Summary\nProve whether a fill used an expired quote version and contain the blast radius.\n\n## Triggers\n- Positive short-horizon markout cluster\n- Quote age at fill above TTL\n- Feed freeze / weekend open alerts\n\n## Steps\n### 1. Capture fill evidence\nCollect fill_id, symbol, server_id, fill_ts, price, side, volume, quote_id, quote_age_ms.\n\n```sql\nSELECT fill_id, symbol, server_id, fill_ts, price, side, volume, quote_id, quote_age_ms FROM fills WHERE fill_id = :fill_id\n```\n\n### 2. Resolve quote lineage\nJoin ticks_pe / ticks_mt on quote_id; confirm version, publish_ts, applied_ts, TTL, sources.\n\n```sql\nSELECT * FROM ticks_pe pe JOIN ticks_mt mt ON pe.quote_id = mt.quote_id WHERE pe.quote_id = :quote_id\n```\n\n### 3. Compare independent reference\nAt fill_ts, measure PE/MT vs independent mid; flag if deviation exceeds band while quote aged.\n\n### 4. Contain & fix\nDisable trading on stale path; enforce reject-on-stale; patch fan-out/TTL; open config audit.\n\n### 5. Client disposition\nHealthy if price fresh; Toxic/Review if clustered on stale windows; Abusive only with knowing-use evidence.\n\n## Evidence\n- Fill ↔ Quote ID join\n- Quote age vs TTL\n- External mid deviation\n- Publisher / feed fault correlation"
+    }
+  ]
+}

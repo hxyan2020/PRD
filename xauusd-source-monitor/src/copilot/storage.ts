@@ -109,7 +109,7 @@ export function saveKnowledge(list: KnowledgeItem[]) {
 
 export function defaultKnowledgeTree(): KbNode[] {
   const rootId = 'kb_root'
-  const veFolderId = 'kb_ve_quote_ops'
+  const veFolderId = 'kb_cfd_quote_ops'
   const now = Date.now()
   const legacy = DEFAULT_KB.filter((k) => !k.id.startsWith('ve-doc-'))
   const nodes: KbNode[] = [
@@ -135,8 +135,8 @@ export function defaultKnowledgeTree(): KbNode[] {
   nodes.push({
     id: veFolderId,
     parentId: rootId,
-    title: 'V Exchange 永续 · quote-ops',
-    body: `Synced from ${VE_QUOTE_OPS_SOURCE} (product line v-exchange-perp only; CFD Pricing excluded).`,
+    title: 'CFD Pricing · quote-ops',
+    body: `Synced from ${VE_QUOTE_OPS_SOURCE} (product line cfd-broker only; V Exchange perpetual excluded).`,
     order: legacy.length + 1,
     updatedAt: now,
   })
@@ -153,13 +153,13 @@ export function defaultKnowledgeTree(): KbNode[] {
   return nodes
 }
 
-/** Ensure quote-ops V Exchange nodes exist even when an older tree is in localStorage. */
+/** Ensure quote-ops CFD Pricing nodes exist even when an older tree is in localStorage. */
 function mergeVeQuoteOpsTree(nodes: KbNode[]): KbNode[] {
   const byId = new Map(nodes.map((n) => [n.id, n]))
   let changed = false
   for (const n of defaultKnowledgeTree()) {
     if (n.id === 'kb_root') continue
-    if (!byId.has(n.id) && (n.id === 'kb_ve_quote_ops' || n.id.startsWith('ve-doc-'))) {
+    if (!byId.has(n.id) && (n.id === 'kb_ve_quote_ops' || n.id === 'kb_cfd_quote_ops' || /^(risk-|pipeline-|db-|article-|sk-)/.test(n.id))) {
       byId.set(n.id, n)
       changed = true
     }

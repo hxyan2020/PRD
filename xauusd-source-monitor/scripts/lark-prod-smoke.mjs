@@ -90,7 +90,7 @@ async function main() {
       name: 'prod.turn.help',
       text: 'help',
       expect: (b) =>
-        /How to use|使用说明|34 investigation|alert optimize|market trends|常用指令|Commands:/i.test(b),
+        /How to use|使用说明|CFD pricing|RCA playbooks|stale quote|alert optimize|market trends|34 investigation|常用指令|Commands:/i.test(b),
     },
     {
       name: 'prod.turn.market',

@@ -2862,7 +2862,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       `skills=${hits.map((h) => `${h.id}|${h.check}|${h.action}`).join('\n')}`,
       `kb=${kb.map((k) => `${k.title}: ${k.body.slice(0, 1200)}`).join('\n')}`,
       quoteOps ? `QUOTE_OPS_RAG:\n${quoteOps}` : '',
-      'Answer helpfully. Prefer V Exchange perpetual KB; ignore CFD. Format with emoji headers and bold-keyword bullets.',
+      'Answer helpfully. Prefer CFD Broker Pricing KB (LP→PE→MT, stale quote, markout, stop-out); ignore V Exchange perpetual. Format with emoji headers and bold-keyword bullets.',
     ]
       .filter(Boolean)
       .join('\n\n')
@@ -2929,7 +2929,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
         'Answer the user question directly from the search hits below, in a warm conversational tone.',
         'Do NOT say that the knowledge base had no match. Do NOT dump command menus or three-way menus.',
         'End with an explicit 📎 **数据源** / **Sources** section listing the provided URLs as markdown links. Never invent URLs.',
-        'Prefer V Exchange perpetual framing when relevant; ignore CFD broker pricing.',
+        'Prefer CFD Broker Pricing framing (quote pipeline, markout, LP failover); ignore V Exchange perpetual.',
         webSearchContext(searched),
       ].join('\n\n')
       const llm = usableLlmReply(
@@ -2973,7 +2973,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     'Do NOT invent severity, Skills checklists, or RCA steps unless the user pasted an alert.',
     'Answer warmly and conversationally in short paragraphs — like a helpful teammate, not a command menu.',
     'Do NOT list knowledge / investigate / market / help as a fallback checklist unless the user asked for commands.',
-    'Prefer V Exchange perpetual knowledge when relevant; ignore CFD broker pricing.',
+    'Prefer CFD Broker Pricing knowledge when relevant; ignore V Exchange perpetual.',
     'Light emoji section headers + bold-keyword bullets are OK when structuring a real answer.',
     `Highly relevant KB (optional support only):\n${relevantKb
       .map((k) => `${k.title}: ${k.body.slice(0, 900)}`)

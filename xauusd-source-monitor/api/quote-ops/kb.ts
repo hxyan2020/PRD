@@ -1,14 +1,21 @@
 /**
- * GET /api/quote-ops/kb — V Exchange perpetual folder from quote-ops (live + snapshot fallback).
- * Excludes CFD Broker Pricing roots.
+ * GET /api/quote-ops/kb — CFD Broker Pricing folder from quote-ops (live + snapshot fallback).
+ * Excludes V Exchange perpetual roots.
  */
 import { readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const UPSTREAM = process.env.QUOTE_OPS_BASE || 'https://quote-ops-three.vercel.app'
-const VE_ROOT = 'folder-v-exchange'
-const VE_TAG = 'v-exchange-perp'
+const CFD_TAG = 'cfd-broker'
+const CFD_ROOTS = [
+  'folder-principles',
+  'folder-pipeline',
+  'folder-risks',
+  'folder-skills',
+  'folder-data',
+  'folder-custom',
+]
 
 type Node = {
   id: string
@@ -27,8 +34,8 @@ type Node = {
 
 function loadSnapshot() {
   const candidates = [
-    join(process.cwd(), 'api/lark/_data/veQuoteOps.json'),
-    join(process.cwd(), 'xauusd-source-monitor/api/lark/_data/veQuoteOps.json'),
+    join(process.cwd(), 'api/lark/_data/cfdQuoteOps.json'),
+    join(process.cwd(), 'xauusd-source-monitor/api/lark/_data/cfdQuoteOps.json'),
   ]
   for (const p of candidates) {
     if (existsSync(p)) {
@@ -42,7 +49,7 @@ function loadSnapshot() {
   return null
 }
 
-function extractVe(nodes: Node[]) {
+function extractCfd(nodes: Node[]) {
   const byId = new Map(nodes.map((n) => [n.id, n]))
   const children = new Map<string | null | undefined, Node[]>()
   for (const n of nodes) {
@@ -51,21 +58,20 @@ function extractVe(nodes: Node[]) {
     children.set(n.parentId, list)
   }
   const ids = new Set<string>()
-  const stack = [VE_ROOT]
+  const stack = [...CFD_ROOTS]
   while (stack.length) {
     const id = stack.pop()!
     if (ids.has(id)) continue
     ids.add(id)
     for (const c of children.get(id) || []) stack.push(c.id)
   }
-  // Also include any node tagged v-exchange-perp outside tree (safety)
   for (const n of nodes) {
-    if ((n.tags || []).includes(VE_TAG)) ids.add(n.id)
+    if ((n.tags || []).includes(CFD_TAG)) ids.add(n.id)
   }
 
-  const veNodes = [...ids].map((id) => byId.get(id)).filter(Boolean) as Node[]
-  const knowledge = veNodes
-    .filter((n) => n.kind === 'article')
+  const cfdNodes = [...ids].map((id) => byId.get(id)).filter(Boolean) as Node[]
+  const knowledge = cfdNodes
+    .filter((n) => n.kind && n.kind !== 'folder' && n.kind !== 'skill')
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
     .map((n) => {
       const titleZh = n.titleZh || n.titleEn || n.id
@@ -78,11 +84,21 @@ function extractVe(nodes: Node[]) {
         title: titleZh === titleEn ? titleZh : `${titleZh} / ${titleEn}`,
         body: bodyParts.join('\n\n'),
         tags: n.tags || [],
+        kind: n.kind,
         updatedAt: n.updatedAt || 0,
       }
     })
 
-  return { knowledge, nodeCount: veNodes.length }
+  const skills = cfdNodes
+    .filter((n) => n.kind === 'skill')
+    .map((n) => ({
+      id: n.id,
+      title: n.titleZh || n.titleEn || n.id,
+      tags: n.tags || [],
+      body: [n.bodyZh, n.bodyEn].filter(Boolean).join('\n\n'),
+    }))
+
+  return { knowledge, skills, nodeCount: cfdNodes.length }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -101,14 +117,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
     if (!r.ok) throw new Error(`upstream ${r.status}`)
     const data = (await r.json()) as { nodes?: Node[] }
-    const extracted = extractVe(data.nodes || [])
+    const extracted = extractCfd(data.nodes || [])
     return res.status(200).json({
       ok: true,
       live: true,
       source: `${UPSTREAM}/api/kb`,
-      productLine: VE_TAG,
+      productLine: CFD_TAG,
       knowledge: extracted.knowledge,
-      skills: snapshot?.skills || [],
+      skills: extracted.skills.length ? extracted.skills : snapshot?.skills || [],
       nodeCount: extracted.nodeCount,
     })
   } catch (e) {
@@ -117,7 +133,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ok: true,
         live: false,
         source: snapshot.source || 'local-snapshot',
-        productLine: VE_TAG,
+        productLine: CFD_TAG,
         knowledge: snapshot.knowledge,
         skills: snapshot.skills,
         warning: e instanceof Error ? e.message : 'upstream failed; served snapshot',

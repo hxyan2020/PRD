@@ -1695,10 +1695,10 @@ export function skillsCatalogCard(args: {
     `• **${s.id}** · ${s.name}${s.severity ? ` · ${s.severity}` : ''}`
 
   const intro = hans
-    ? `🧩 **技能＝34 个排查场景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（独立风险事件）· L2 **${l2.length}**（关联排查链路）\n\n贴告警／关键词会 RAG 命中这些场景。**监控指标／可能出现的风险**清单在知识库（发 **知识库**），不与技能混淆。`
+    ? `🧩 **技能＝CFD 定价 RCA Playbooks**（quote-ops）\n\n共 **${args.skills.length}** 个 RCA（旧价成交 / Bad Tick / LP 切源 / Markout / 强平 …）\n\n贴告警／关键词会 RAG 命中这些场景。**86 风险场景**在知识库（发 **knowledge**）。`
     : zh
-      ? `🧩 **技能＝34 個排查場景**（Runbook V18）\n\n共 **${args.skills.length}** · L1 **${l1.length}**（獨立風險事件）· L2 **${l2.length}**（關聯排查鏈路）\n\n貼告警／關鍵詞會 RAG 命中這些場景。**監控指標／可能出現的風險**清單在知識庫（發 **知識庫**），不與技能混淆。`
-      : `🧩 **Skills = 34 investigation scenarios** (Runbook V18)\n\n**${args.skills.length}** total · L1 **${l1.length}** (standalone) · L2 **${l2.length}** (chains)\n\nAlerts/keywords RAG-match these. The **monitoring / possible-risks** inventory lives in Knowledge (send **knowledge**) — not Skills.`
+      ? `🧩 **技能＝CFD 定價 RCA Playbooks**（quote-ops）\n\n共 **${args.skills.length}** 個 RCA（舊價成交 / Bad Tick / LP 切源 / Markout / 強平 …）\n\n貼告警／關鍵詞會 RAG 命中這些場景。**86 風險場景**在知識庫（發 **knowledge**）。`
+      : `🧩 **Skills = CFD Pricing RCA playbooks** (quote-ops)\n\n**${args.skills.length}** RCA skills (stale quote / Bad Tick / LP failover / markout / stop-out / …)\n\nAlerts/keywords RAG-match these. The **86 risk scenarios** inventory lives in Knowledge (send **knowledge**).`
 
   const openHint = hans
     ? '💬 **打开节点：** 直接回复某个 **ID**（如 `L1-07` / `L2-A`）查看该场景详情。'
@@ -1719,10 +1719,10 @@ export function skillsCatalogCard(args: {
   ].join('\n')
 
   const title = hans
-    ? 'Skills · 34 排查场景'
+    ? 'Skills · CFD 定价 RCA'
     : zh
-      ? 'Skills · 34 排查場景'
-      : 'Skills · 34 scenarios'
+      ? 'Skills · CFD 定價 RCA'
+      : 'Skills · CFD pricing RCA'
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -1753,7 +1753,7 @@ export function knowledgeCatalogCard(args: {
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
-  const ve = args.knowledge.filter((k) => /^ve-doc-/i.test(k.id) || /v\s*exchange|永续|永續/i.test(k.title))
+  const ve = args.knowledge.filter((k) => /^(risk-|pipeline-|db-|article-|sk-)/i.test(k.id) || /cfd|定价|定價|LP|markout|报价/i.test(k.title))
   const pick = (ve.length ? ve : args.knowledge).slice(0, 12)
   const lines = pick
     .map((k) => {
@@ -1763,10 +1763,10 @@ export function knowledgeCatalogCard(args: {
     .join('\n\n')
 
   const intro = hans
-    ? `📚 **RAG 知识库（Lark 预览）**\n\n共 **${args.knowledge.length}** 篇（含「可能出现的风险」指标清单与 quote-ops 永续知识）。排查与问答会自动检索。`
+    ? `📚 **RAG 知识库（Lark 预览）**\n\n共 **${args.knowledge.length}** 篇（CFD 定价：86 风险场景 + LP→PE→MT + DB）。排查与问答会自动检索。`
     : zh
-      ? `📚 **RAG 知識庫（Lark 預覽）**\n\n共 **${args.knowledge.length}** 篇（含「可能出現的風險」指標清單與 quote-ops 永續知識）。排查與問答會自動檢索。`
-      : `📚 **RAG knowledge base (Lark preview)**\n\n**${args.knowledge.length}** articles (incl. possible-risks inventory + quote-ops perpetual KB).`
+      ? `📚 **RAG 知識庫（Lark 預覽）**\n\n共 **${args.knowledge.length}** 篇（CFD 定價：86 風險場景 + LP→PE→MT + DB）。排查與問答會自動檢索。`
+      : `📚 **RAG knowledge base (Lark preview)**\n\n**${args.knowledge.length}** articles (CFD pricing: 86 risks + LP→PE→MT + DB).`
 
   const openHint = hans
     ? '💬 **打开节点：** 直接回复某个 **ID**（如 `ve-doc-alarms` / `kb_default_0`）查看全文。'

@@ -1,5 +1,5 @@
 /**
- * Live RAG against quote-ops V Exchange perpetual KB.
+ * Live RAG against quote-ops CFD Broker Pricing KB.
  * Falls back silently when upstream is down (local snapshot still used via skills.ts).
  */
 
@@ -20,11 +20,12 @@ async function callQuoteOpsRag(question: string, productLine: string): Promise<s
     sections?: { heading?: string; paragraphs?: string[]; bullets?: string[] }[]
   }
   const product = String(data.product || '')
-  if (/cfd|broker/i.test(product) && !/v-exchange|perpetual|永续/i.test(product)) {
-    return null // refuse CFD bleed-through
+  // Refuse perpetual bleed-through — this bot is CFD pricing only.
+  if (/v-exchange|perpetual|永续/i.test(product) && !/cfd|broker/i.test(product)) {
+    return null
   }
   const lines: string[] = [
-    '[quote-ops V Exchange RAG]',
+    '[quote-ops CFD Pricing RAG]',
     data.understoodAs || '',
     data.summary || '',
   ]
@@ -41,10 +42,10 @@ export async function fetchQuoteOpsRag(question: string): Promise<string | null>
   const q = question.trim().slice(0, 2000)
   if (!q) return null
   try {
-    // Prefer explicit perpetual product line; fall back to legacy alias.
     return (
-      (await callQuoteOpsRag(q, 'v-exchange-perp')) ||
-      (await callQuoteOpsRag(q, 'vexchange'))
+      (await callQuoteOpsRag(q, 'cfd')) ||
+      (await callQuoteOpsRag(q, 'cfd-broker')) ||
+      (await callQuoteOpsRag(q, 'pricing'))
     )
   } catch {
     return null

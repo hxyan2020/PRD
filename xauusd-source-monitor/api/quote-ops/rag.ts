@@ -1,6 +1,6 @@
 /**
- * Proxy to quote-ops V Exchange RAG — POST /api/quote-ops/rag
- * Always scopes to perpetual (v-exchange-perp); never CFD Broker Pricing.
+ * Proxy to quote-ops CFD Broker Pricing RAG — POST /api/quote-ops/rag
+ * Always scopes to CFD pricing (cfd / cfd-broker); never V Exchange perpetual.
  *
  * Body: { question: string, productLine?: string }
  */
@@ -19,8 +19,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: true,
       service: 'quote-ops-rag-proxy',
       upstream: `${UPSTREAM}/api/rag`,
-      productLine: 'v-exchange-perp',
-      note: 'POST { question } — V Exchange perpetual only',
+      productLine: 'cfd-broker',
+      note: 'POST { question } — CFD Broker Pricing only',
     })
   }
 
@@ -37,24 +37,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         question,
-        // Upstream auto-routes VE keywords to perpetual; keep explicit hint.
-        productLine: body.productLine || 'vexchange',
+        productLine: body.productLine || 'cfd',
       }),
       signal: AbortSignal.timeout(25_000),
     })
     const data = (await r.json()) as Record<string, unknown>
     if (!r.ok) return res.status(r.status).json(data)
 
-    // Soft-guard: if upstream somehow returned CFD, mark it
     const product = String(data.product || data.productHint || '')
-    const cfd =
-      /cfd|broker|pricing/i.test(product) && !/v-exchange|perpetual|永续/i.test(product)
+    const perpBleed =
+      /v-exchange|perpetual|永续/i.test(product) && !/cfd|broker/i.test(product)
     return res.status(200).json({
       ...data,
       proxy: {
         upstream: UPSTREAM,
-        productLineFilter: 'v-exchange-perp',
-        cfdRejected: cfd,
+        productLineFilter: 'cfd-broker',
+        perpetualRejected: perpBleed,
       },
     })
   } catch (e) {

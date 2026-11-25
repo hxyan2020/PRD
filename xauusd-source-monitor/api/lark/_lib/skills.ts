@@ -1,17 +1,12 @@
-import kbRaw from '../_data/kbDefaults.json' with { type: 'json' }
-import skills34Raw from '../_data/skills34.json' with { type: 'json' }
-import veQuoteOps from '../_data/veQuoteOps.json' with { type: 'json' }
+import cfdQuoteOps from '../_data/cfdQuoteOps.json' with { type: 'json' }
 import { cleanLarkMd } from './plain.js'
 import type { KbHit, KbItem, Lang, SkillHit, SkillRec } from './types.js'
 
 let skillsCache: SkillRec[] | null = null
 let kbCache: KbItem[] | null = null
 
-type VePack = {
+type CfdPack = {
   knowledge?: { id: string; title: string; body: string }[]
-}
-
-type Skills34Pack = {
   skills?: {
     id: string
     level: 'L1' | 'L2'
@@ -23,10 +18,10 @@ type Skills34Pack = {
     action: string
     opt: string
   }[]
+  productLine?: string
 }
 
-const ve = veQuoteOps as VePack
-const skills34 = skills34Raw as Skills34Pack
+const cfd = cfdQuoteOps as CfdPack
 
 /** Latin words + CJK runs / bi- / trigrams for bilingual risk text. */
 export function tokenize(text: string): string[] {
@@ -59,27 +54,31 @@ function scoreAgainst(haystack: string, queryTokens: string[], queryLower: strin
       score += tok.length >= 4 ? 2 : 1
     }
   }
-  // Whole-phrase soft boosts for common VE terms
+  // Whole-phrase soft boosts for CFD pricing terms
   for (const phrase of [
-    'mark',
-    'index',
-    'funding',
-    'adl',
-    '无有效源',
-    '接仓',
+    'stale',
+    'markout',
+    'latency',
+    'lp',
+    'pe',
+    'mt',
+    '旧价',
+    '倒挂',
+    '切源',
     '强平',
-    '偏离',
-    '溢价',
-    '永续',
+    '保证金',
+    '价差',
+    '报价',
+    '定价',
   ]) {
     if (queryLower.includes(phrase) && h.includes(phrase)) score += 2
   }
   return score
 }
 
-/** Alert / metric codes that Skills are authored against (e.g. IDX-01, MARK-01, PRICE-02). */
+/** Alert / skill codes: CFD RCA ids + legacy VE codes still accepted in pasted alerts. */
 const ALERT_CODE_RE =
-  /\b(?:L[12]-\d{1,2}|L2-[A-F]|IDX-\d{1,2}|PRICE-\d{1,2}|MARK-\d{1,2}|BOOK-\d{1,2}|FUND-\d{1,2}|PEER-\d{1,2}|VE-SOP-\d{1,2})\b/gi
+  /\b(?:sk-[a-z0-9-]+|L[12]-\d{1,2}|L2-[A-F]|IDX-\d{1,2}|PRICE-\d{1,2}|MARK-\d{1,2}|BOOK-\d{1,2}|FUND-\d{1,2}|PEER-\d{1,2}|VE-SOP-\d{1,2}|risk-\d{1,3})\b/gi
 
 export function extractAlertCodes(text: string): string[] {
   return [...new Set((text.match(ALERT_CODE_RE) || []).map((x) => x.toUpperCase()))]
@@ -220,38 +219,33 @@ function matchSkills(text: string, pool: SkillRec[]): SkillHit[] {
 }
 
 /**
- * Skills = Runbook V18 的 34 个排查场景（28 L1 + 6 L2）。
- * 监控指标／「可能出现的风险」清单在知识库，不混进 Skills。
+ * Skills = CFD Broker Pricing RCA playbooks from quote-ops-three
+ * (旧价成交 / Bad Tick / LP 切源 / Markout / Stop-out / …).
+ * 86 risk scenarios live in the knowledge base, not Skills.
  */
 export function loadSkills(): SkillRec[] {
   if (skillsCache) return skillsCache
-  skillsCache = (skills34.skills || []).map((s) => ({
+  skillsCache = (cfd.skills || []).map((s) => ({
     id: s.id,
-    level: s.level,
+    level: s.level || 'L1',
     name: s.name,
     severity: s.severity,
     matchHints: s.matchHints || `${s.id} ${s.name}`,
     linkedL1: s.linkedL1 || '',
     check: s.check,
     action: s.action,
-    opt: s.opt,
+    opt: s.opt || '',
   }))
   return skillsCache
 }
 
 export function loadKnowledge(): KbItem[] {
   if (kbCache) return kbCache
-  const base = (kbRaw as { title: string; body: string }[]).map((k, i) => ({
-    id: `kb_default_${i}`,
-    title: k.title,
-    body: k.body,
-  }))
-  const veKb: KbItem[] = (ve.knowledge || []).map((k) => ({
+  kbCache = (cfd.knowledge || []).map((k) => ({
     id: k.id,
     title: k.title,
     body: k.body,
   }))
-  kbCache = [...base, ...veKb]
   return kbCache
 }
 
@@ -470,24 +464,24 @@ export function formatRagAnswer(args: {
   } else {
     lines.push(
       hans
-        ? '• **知识库：** 无直接摘录；已尝试本地 VE 永续快照'
+        ? '• **知识库：** 无直接摘录；已尝试本地 CFD 定价快照'
         : hant
-          ? '• **知識庫：** 無直接摘錄；已嘗試本地 VE 永續快照'
-          : '• **Knowledge:** no direct excerpt; local VE perpetual snapshot was searched',
+          ? '• **知識庫：** 無直接摘錄；已嘗試本地 CFD 定價快照'
+          : '• **Knowledge:** no direct excerpt; local CFD pricing snapshot was searched',
     )
   }
 
   if (args.quoteOps) {
-    lines.push(hans || hant ? '🔗 **quote-ops 实时 RAG**' : '🔗 **quote-ops live RAG**')
+    lines.push(hans || hant ? '🔗 **quote-ops CFD 实时 RAG**' : '🔗 **quote-ops CFD live RAG**')
     lines.push(args.quoteOps.slice(0, 1600))
   }
 
   lines.push(
     hans
-      ? '来源：desk L1/L2 Skills + quote-ops V Exchange 永续知识（已排除 CFD）。生产写操作／后台／DB 访问需人工审批 — 请联系 **@Yan Haixiang**。'
+      ? '来源：CFD 定价 Skills（RCA Playbooks）+ quote-ops CFD Broker Pricing 知识库（86 风险场景 / LP→PE→MT）。生产写操作／后台／DB 访问需人工审批 — 请联系 **@Yan Haixiang**。'
       : hant
-        ? '來源：desk L1/L2 Skills + quote-ops V Exchange 永續知識（已排除 CFD）。生產寫操作／後台／DB 訪問需人工審批 — 請聯繫 **@Yan Haixiang**。'
-        : 'Sources: desk L1/L2 Skills + quote-ops V Exchange perpetual KB (CFD excluded). Production writes / admin / DB access need human approval — contact **@Yan Haixiang**.',
+        ? '來源：CFD 定價 Skills（RCA Playbooks）+ quote-ops CFD Broker Pricing 知識庫（86 風險場景 / LP→PE→MT）。生產寫操作／後台／DB 訪問需人工審批 — 請聯繫 **@Yan Haixiang**。'
+        : 'Sources: CFD pricing Skills (RCA playbooks) + quote-ops CFD Broker Pricing KB (86 risk scenarios / LP→PE→MT). Production writes / admin / DB access need human approval — contact **@Yan Haixiang**.',
   )
 
   return cleanLarkMd(lines.join('\n'))

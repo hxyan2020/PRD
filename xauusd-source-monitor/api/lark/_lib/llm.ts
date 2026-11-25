@@ -10,7 +10,7 @@ import { estimateTokensFromText, recordTokenUsage } from './tokenUsage.js'
 import type { Lang } from './types.js'
 
 const SYSTEM_EN = `You are 报价 AI排查助手 on Lark — warm, conversational, concise (like a helpful teammate, not a FAQ bot).
-Specialty: XAUUSD perpetual risk (index/Mark sources, LPs, liquidation/ADL, hedge, market monitoring, incident RCA).
+Specialty: CFD Broker Pricing (LP	o PE	o MT pipeline, stale quote, markout, stop-out, Bad Tick, 86 risk scenarios).
 You also chat casually with the user — banter, food, movies, product Q&A are welcome. Only refuse the negative list (privacy, company secrets, abuse, politics).
 Rules:
 - Never invent admin/DB/production data. Say uncertain when evidence is missing.
