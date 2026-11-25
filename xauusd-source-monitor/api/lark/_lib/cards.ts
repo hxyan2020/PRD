@@ -32,32 +32,32 @@ export function alertOptimizeCard(lang: Lang): Record<string, unknown> {
       : 'Alert optimize'
   const body = hans
     ? [
-        '🛠️ **告警优化（桌面）**',
+        '🛠️ **告警优化／通用分析（桌面）**',
         '',
-        '在网页上传 **CSV** 或链接 **API**，拉取 V Exchange 底层数据（告警日志、后管配置字段等），输入想分析的问题后点 **分析**：',
-        '1. 先回馈读到了什么，并画图',
-        '2. 再给出答案',
-        '3. 声明数据问题与所用假设',
-        '4. 可一键生成完整报告／复制产出',
+        '页面两个入口：',
+        '• **告警优化** — 三槽数据源（底层数据／告警日志／人工标注是否有效，至少一项）→ 可选告警名称 → 多选优化方向（阈值／窗口／扫描频率／未监控风险…）→ 按排查路径产出',
+        '• **通用分析** — CSV／API + 自由问题 → 读到什么／图表／答案／数据问题／假设',
+        '',
+        '均可一键报告／复制。',
         '',
         `[打开告警优化页](${ALERT_OPTIMIZE_URL})`,
       ].join('\n')
     : zh
       ? [
-          '🛠️ **告警優化（桌面）**',
+          '🛠️ **告警優化／通用分析（桌面）**',
           '',
-          '在網頁上傳 **CSV** 或連結 **API**，拉取 V Exchange 底層數據，輸入問題後點 **分析**：先回饋讀到什麼並畫圖，再給答案，並聲明數據問題與假設；可一鍵報告／複製。',
+          '兩個入口：**告警優化**（三槽數據 + 告警名／優化方向）與 **通用分析**（CSV／API + 問題）；均含圖表與一鍵報告／複製。',
           '',
           `[打開告警優化頁](${ALERT_OPTIMIZE_URL})`,
         ].join('\n')
       : [
-          '🛠️ **Alert optimize (web desk)**',
+          '🛠️ **Alert optimize / General analysis (web desk)**',
           '',
-          'Upload **CSV** or link **APIs** for V Exchange underlying data (alert logs, admin config fields, …). Ask a question → **Analyze**:',
-          '1. What I read + charts',
-          '2. Answer',
-          '3. Data issues + assumptions',
-          '4. One-click full report / copy',
+          'Two entries:',
+          '• **Alert optimize** — three slots (underlying / alert logs / human labels; ≥1) → optional alert name → multi-select directions → investigation path',
+          '• **General analysis** — CSV/API + free-form question → readback / charts / answer / issues / assumptions',
+          '',
+          'One-click report / copy on both.',
           '',
           `[Open Alert optimize](${ALERT_OPTIMIZE_URL})`,
         ].join('\n')

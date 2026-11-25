@@ -1,4 +1,30 @@
-/** Client-side ingest + profiling for Alert Optimize (告警优化). */
+/** Client-side ingest + profiling for Alert Optimize / General analysis. */
+
+export type DeskMode = 'alert_optimize' | 'general'
+
+/** Three slots for 告警优化 (none individually required; ≥1 overall). */
+export type AlertDataSlot = 'underlying' | 'alert_logs' | 'human_labels'
+
+export type OptimizeDirectionId =
+  | 'threshold'
+  | 'window'
+  | 'scan_freq'
+  | 'unmonitored'
+  | 'false_positive'
+  | 'coverage'
+
+export const OPTIMIZE_DIRECTIONS: {
+  id: OptimizeDirectionId
+  en: string
+  zh: string
+}[] = [
+  { id: 'threshold', en: 'Optimize thresholds', zh: '优化阈值' },
+  { id: 'window', en: 'Optimize observation window', zh: '优化观察窗口' },
+  { id: 'scan_freq', en: 'Optimize scan frequency', zh: '优化扫描频率' },
+  { id: 'unmonitored', en: 'Discover unmonitored risks', zh: '发现未监控风险' },
+  { id: 'false_positive', en: 'Cut false positives', zh: '降低误报' },
+  { id: 'coverage', en: 'Improve alert coverage', zh: '提升告警覆盖' },
+]
 
 export type DataSourceKind = 'csv' | 'api' | 'json'
 
@@ -13,6 +39,8 @@ export type IngestedDataset = {
   rawPreview: string
   rowCount: number
   issues: string[]
+  /** Present when ingested under 告警优化 slots. */
+  slot?: AlertDataSlot
 }
 
 export type ColumnProfile = {
@@ -268,26 +296,139 @@ export function buildCharts(datasets: IngestedDataset[]): ChartSpec[] {
   return charts.slice(0, 6)
 }
 
-export function analyzeLocally(args: {
-  datasets: IngestedDataset[]
-  question: string
-  lang: 'en' | 'zh-Hant'
-}): AnalysisResult {
-  const zh = args.lang !== 'en'
+const ALERT_NAME_COLS =
+  /^(alert[_\s-]?name|alert|rule|rule[_\s-]?name|name|告警名|告警名称|规则|规则名|metric|指标)$/i
+
+const LABEL_VALID_COLS =
+  /^(valid|is[_\s-]?valid|label|human[_\s-]?label|effective|是否有效|有效|标注|人工标注)$/i
+
+export function slotLabel(slot: AlertDataSlot, lang: 'en' | 'zh-Hant'): string {
+  const zh = lang !== 'en'
+  if (slot === 'underlying') return zh ? '底层数据' : 'Underlying data'
+  if (slot === 'alert_logs') return zh ? '告警日志' : 'Alert logs'
+  return zh ? '人工标注（是否有效）' : 'Human labels (valid?)'
+}
+
+export function directionLabel(id: OptimizeDirectionId, lang: 'en' | 'zh-Hant'): string {
+  const row = OPTIMIZE_DIRECTIONS.find((d) => d.id === id)
+  if (!row) return id
+  return lang === 'en' ? row.en : row.zh
+}
+
+/** Pull candidate alert names from any ingested rows/columns. */
+export function extractAlertNames(datasets: IngestedDataset[]): string[] {
+  const names = new Set<string>()
+  for (const ds of datasets) {
+    const cols = ds.columns.filter((c) => ALERT_NAME_COLS.test(c))
+    const useCols = cols.length ? cols : []
+    for (const row of ds.rows) {
+      for (const c of useCols) {
+        const v = (row[c] || '').trim()
+        if (v) names.add(v.slice(0, 80))
+      }
+      if (!useCols.length) {
+        // Fallback: first non-numeric-looking short string column sample
+        for (const c of ds.columns.slice(0, 4)) {
+          const v = (row[c] || '').trim()
+          if (v && !/^-?\d+(\.\d+)?$/.test(v) && v.length <= 64) names.add(v)
+        }
+      }
+    }
+  }
+  return [...names].sort((a, b) => a.localeCompare(b)).slice(0, 200)
+}
+
+function filterByAlertName(datasets: IngestedDataset[], alertName: string): IngestedDataset[] {
+  const want = alertName.trim().toLowerCase()
+  if (!want) return datasets
+  return datasets.map((ds) => {
+    const cols = ds.columns.filter((c) => ALERT_NAME_COLS.test(c))
+    if (!cols.length) return ds
+    const rows = ds.rows.filter((r) =>
+      cols.some((c) => (r[c] || '').trim().toLowerCase() === want),
+    )
+    if (!rows.length) return { ...ds, rows: [], rowCount: 0, issues: [...ds.issues, `No rows for alert "${alertName}"`] }
+    return { ...ds, rows, rowCount: rows.length }
+  })
+}
+
+function summarizeLabels(ds: IngestedDataset | undefined, zh: boolean): string | null {
+  if (!ds || !ds.rowCount) return null
+  const col = ds.columns.find((c) => LABEL_VALID_COLS.test(c))
+  if (!col) {
+    return zh
+      ? `标注集 **${ds.name}** 有 ${ds.rowCount} 行，但未识别到「是否有效」列（valid / label / 有效…）。`
+      : `Label set **${ds.name}** has ${ds.rowCount} rows, but no valid/label column detected.`
+  }
+  let yes = 0
+  let no = 0
+  let other = 0
+  for (const r of ds.rows) {
+    const v = (r[col] || '').trim().toLowerCase()
+    if (/^(1|true|yes|y|有效|true_positive|tp)$/i.test(v)) yes++
+    else if (/^(0|false|no|n|无效|误报|false_positive|fp)$/i.test(v)) no++
+    else other++
+  }
+  return zh
+    ? `人工标注列 **${col}**：有效 **${yes}**／无效（误报） **${no}**／其他 **${other}**（共 ${ds.rowCount}）。`
+    : `Human label column **${col}**: valid **${yes}** / invalid (FP) **${no}** / other **${other}** (n=${ds.rowCount}).`
+}
+
+function directionGuidance(
+  id: OptimizeDirectionId,
+  zh: boolean,
+  ctx: { hasUnderlying: boolean; hasLogs: boolean; hasLabels: boolean; alertName: string },
+): string {
+  const focus = ctx.alertName
+    ? zh
+      ? `针对告警「${ctx.alertName}」`
+      : `For alert “${ctx.alertName}”`
+    : zh
+      ? '在全体告警范围'
+      : 'Across all alerts'
+  switch (id) {
+    case 'threshold':
+      return zh
+        ? `${focus}：对照底层时序与告警触发点，检查阈值是否过宽／过窄；${ctx.hasLabels ? '结合人工标注的误报率' : '缺少标注时先用重复触发密度作代理'}建议分位阈值，并与后管配置字段对齐。`
+        : `${focus}: compare underlying series vs trigger points; ${ctx.hasLabels ? 'use human FP labels' : 'use repeat-fire density as a proxy without labels'} to propose percentile thresholds vs admin config.`
+    case 'window':
+      return zh
+        ? `${focus}：评估观察窗口是否导致漏报（窗口过短）或粘滞告警（窗口过长）；建议用事件间距分布重估窗口。`
+        : `${focus}: check if the observation window causes misses (too short) or sticky alerts (too long); re-estimate from inter-event gaps.`
+    case 'scan_freq':
+      return zh
+        ? `${focus}：对比底层采样频率与扫描频率；若底层变化快于扫描，建议提高扫描或改事件驱动；反之可降频减噪。`
+        : `${focus}: compare underlying sample rate vs scan cadence; raise scan / go event-driven if series moves faster; else lower cadence to cut noise.`
+    case 'unmonitored':
+      return zh
+        ? `${focus}：在底层字段中找告警日志未覆盖的异常形态（长尾尖刺、单源失效、费率突变等），输出「建议新增监控」清单。`
+        : `${focus}: find underlying anomalies not covered by alert logs (tail spikes, single-source loss, funding jumps) and list “suggested new monitors”.`
+    case 'false_positive':
+      return zh
+        ? `${focus}：${ctx.hasLabels ? '用人工标注直接算精确率／误报率' : '无标注时用短时重复触发与自愈回落作误报代理'}，优先收紧误报主导的规则。`
+        : `${focus}: ${ctx.hasLabels ? 'compute precision/FP from labels' : 'proxy FP via short burst+self-heal without labels'}; tighten FP-dominated rules first.`
+    case 'coverage':
+      return zh
+        ? `${focus}：对照底层风险维度与现有告警规则覆盖，标出缺口（品种／时段／源／指标）。`
+        : `${focus}: map underlying risk dimensions vs current rules; mark coverage gaps (symbol / session / source / metric).`
+    default:
+      return ''
+  }
+}
+
+function profileDatasets(
+  datasets: IngestedDataset[],
+  zh: boolean,
+): { readback: string[]; dataIssues: string[] } {
   const readback: string[] = []
   const dataIssues: string[] = []
-  const assumptions: string[] = []
-
-  if (!args.datasets.length) {
-    dataIssues.push(zh ? '未提供任何 CSV 或 API 数据。' : 'No CSV or API data provided.')
-  }
-
-  for (const ds of args.datasets) {
+  for (const ds of datasets) {
+    const slot = ds.slot ? slotLabel(ds.slot, zh ? 'zh-Hant' : 'en') : null
     const profiles = profileColumns(ds)
     readback.push(
       zh
-        ? `数据集 **${ds.name}**（${ds.kind} · ${ds.sourceLabel}）：**${ds.rowCount}** 行 × **${ds.columns.length}** 列；列：${ds.columns.slice(0, 12).join(', ')}${ds.columns.length > 12 ? '…' : ''}`
-        : `Dataset **${ds.name}** (${ds.kind} · ${ds.sourceLabel}): **${ds.rowCount}** rows × **${ds.columns.length}** cols; columns: ${ds.columns.slice(0, 12).join(', ')}${ds.columns.length > 12 ? '…' : ''}`,
+        ? `${slot ? `【${slot}】` : ''}数据集 **${ds.name}**（${ds.kind} · ${ds.sourceLabel}）：**${ds.rowCount}** 行 × **${ds.columns.length}** 列；列：${ds.columns.slice(0, 12).join(', ')}${ds.columns.length > 12 ? '…' : ''}`
+        : `${slot ? `[${slot}] ` : ''}Dataset **${ds.name}** (${ds.kind} · ${ds.sourceLabel}): **${ds.rowCount}** rows × **${ds.columns.length}** cols; columns: ${ds.columns.slice(0, 12).join(', ')}${ds.columns.length > 12 ? '…' : ''}`,
     )
     for (const p of profiles.slice(0, 8)) {
       if (p.empty > 0) {
@@ -303,18 +444,70 @@ export function analyzeLocally(args: {
     }
     for (const issue of ds.issues) dataIssues.push(`${ds.name}: ${issue}`)
   }
+  return { readback, dataIssues }
+}
+
+function buildReport(args: {
+  zh: boolean
+  title: string
+  readback: string[]
+  charts: ChartSpec[]
+  answer: string
+  dataIssues: string[]
+  assumptions: string[]
+  pathSteps?: string[]
+}): string {
+  const { zh } = args
+  return [
+    `# ${args.title}`,
+    '',
+    ...(args.pathSteps?.length
+      ? [zh ? '## 排查路径' : '## Investigation path', ...args.pathSteps.map((x) => `- ${x}`), '']
+      : []),
+    zh ? '## 我读到了什么' : '## What I read',
+    ...args.readback.map((x) => `- ${x}`),
+    '',
+    zh ? '## 图表' : '## Charts',
+    args.charts.length
+      ? args.charts.map((c) => `- ${c.title}: ${c.labels.length} points (${c.kind})`).join('\n')
+      : zh
+        ? '- （无可绘制数值／类别列）'
+        : '- (no plottable numeric/category columns)',
+    '',
+    zh ? '## 分析结论' : '## Answer',
+    args.answer,
+    '',
+    zh ? '## 数据问题' : '## Data issues',
+    ...(args.dataIssues.length ? args.dataIssues.map((x) => `- ${x}`) : [zh ? '- 无' : '- none']),
+    '',
+    zh ? '## 假设' : '## Assumptions',
+    ...args.assumptions.map((x) => `- ${x}`),
+    '',
+    zh ? `生成时间：${new Date().toISOString()}` : `Generated: ${new Date().toISOString()}`,
+  ].join('\n')
+}
+
+/** 通用分析 — free-form CSV/API + question. */
+export function analyzeLocally(args: {
+  datasets: IngestedDataset[]
+  question: string
+  lang: 'en' | 'zh-Hant'
+}): AnalysisResult {
+  const zh = args.lang !== 'en'
+  const { readback, dataIssues } = profileDatasets(args.datasets, zh)
+  if (!args.datasets.length) {
+    dataIssues.push(zh ? '未提供任何 CSV 或 API 数据。' : 'No CSV or API data provided.')
+  }
 
   const charts = buildCharts(args.datasets)
-  assumptions.push(
+  const assumptions: string[] = [
     zh
       ? 'CSV 首行视为表头；数值列按可解析数字统计；API JSON 优先取 data/rows/items 等数组字段。'
       : 'CSV first row is treated as header; numeric stats use parseable numbers; JSON prefers data/rows/items arrays.',
-  )
-  assumptions.push(
     zh
       ? '图表仅抽样最多 24 个点／10 个类别，用于可读性，不代表全量精确分布。'
       : 'Charts sample ≤24 points / ≤10 categories for readability — not a full-population histogram.',
-  )
+  ]
   if (!args.question.trim()) {
     assumptions.push(
       zh ? '未提供具体问题 — 给出数据概览与明显质量问题。' : 'No question provided — overview + data-quality notes only.',
@@ -337,7 +530,6 @@ export function analyzeLocally(args: {
     )
   }
 
-  // Heuristic keyword hooks for alert/ops language
   const blob = [
     q,
     ...args.datasets.flatMap((d) => d.columns),
@@ -356,55 +548,182 @@ export function analyzeLocally(args: {
   if (/depth|深度|spread|价差|mark|index|funding/.test(blob)) {
     answerParts.push(
       zh
-        ? '见到盘口／指数／资金费率类字段 — 优化告警时应同时看绝对阈值与相对波动（相对自身均值／友商），避免静态阈值误报。'
-        : 'Book/index/funding-like fields found — prefer relative (vs own mean / peers) alongside absolute thresholds to cut false positives.',
+        ? '见到盘口／指数／资金费率类字段 — 分析时应同时看绝对阈值与相对波动（相对自身均值／友商）。'
+        : 'Book/index/funding-like fields found — prefer relative (vs own mean / peers) alongside absolute thresholds.',
     )
   }
   if (dataIssues.length) {
     answerParts.push(
       zh
-        ? `在修复下方 **数据问题** 之前，任何阈值调参结论都应标为暂定。`
-        : 'Any threshold-tuning conclusion is provisional until the **data issues** below are addressed.',
+        ? '在修复下方 **数据问题** 之前，结论应标为暂定。'
+        : 'Conclusions are provisional until the **data issues** below are addressed.',
     )
   } else {
     answerParts.push(
       zh
-        ? '未发现严重空值／结构问题；可在图表所示分布上进一步做分位阈值建议（需业务确认）。'
-        : 'No severe emptiness/structure issues; percentile-based threshold suggestions can follow (business sign-off required).',
+        ? '未发现严重空值／结构问题；可在图表所示分布上进一步细化。'
+        : 'No severe emptiness/structure issues; charts can support a deeper follow-up.',
     )
   }
 
   const answer = answerParts.join('\n\n')
-  const reportMarkdown = [
-    zh ? '# 告警优化分析报告' : '# Alert optimization analysis',
-    '',
-    zh ? '## 我读到了什么' : '## What I read',
-    ...readback.map((x) => `- ${x}`),
-    '',
-    zh ? '## 图表' : '## Charts',
-    charts.length
-      ? charts.map((c) => `- ${c.title}: ${c.labels.length} points (${c.kind})`).join('\n')
-      : zh
-        ? '- （无可绘制数值／类别列）'
-        : '- (no plottable numeric/category columns)',
-    '',
-    zh ? '## 分析结论' : '## Answer',
+  return {
+    readback,
+    charts,
     answer,
-    '',
-    zh ? '## 数据问题' : '## Data issues',
-    ...(dataIssues.length ? dataIssues.map((x) => `- ${x}`) : [zh ? '- 无' : '- none']),
-    '',
-    zh ? '## 假设' : '## Assumptions',
-    ...assumptions.map((x) => `- ${x}`),
-    '',
-    zh ? `生成时间：${new Date().toISOString()}` : `Generated: ${new Date().toISOString()}`,
-  ].join('\n')
-
-  return { readback, charts, answer, dataIssues, assumptions, reportMarkdown }
+    dataIssues,
+    assumptions,
+    reportMarkdown: buildReport({
+      zh,
+      title: zh ? '通用分析报告' : 'General analysis report',
+      readback,
+      charts,
+      answer,
+      dataIssues,
+      assumptions,
+    }),
+  }
 }
 
-export function initialStatusSteps(lang: 'en' | 'zh-Hant'): StatusStep[] {
+/** 告警优化 — three slots + optional alert name + multi-select directions. */
+export function analyzeAlertOptimize(args: {
+  datasets: IngestedDataset[]
+  alertName: string
+  directions: OptimizeDirectionId[]
+  notes: string
+  lang: 'en' | 'zh-Hant'
+}): AnalysisResult {
+  const zh = args.lang !== 'en'
+  const scoped = filterByAlertName(args.datasets, args.alertName)
+  const { readback, dataIssues } = profileDatasets(scoped, zh)
+
+  const bySlot = {
+    underlying: scoped.filter((d) => d.slot === 'underlying'),
+    alert_logs: scoped.filter((d) => d.slot === 'alert_logs'),
+    human_labels: scoped.filter((d) => d.slot === 'human_labels'),
+  }
+  const hasUnderlying = bySlot.underlying.some((d) => d.rowCount > 0)
+  const hasLogs = bySlot.alert_logs.some((d) => d.rowCount > 0)
+  const hasLabels = bySlot.human_labels.some((d) => d.rowCount > 0)
+
+  if (!hasUnderlying) {
+    assumptionsNoteMissing(zh, dataIssues, 'underlying')
+  }
+  if (!hasLogs) assumptionsNoteMissing(zh, dataIssues, 'alert_logs')
+  if (!hasLabels) assumptionsNoteMissing(zh, dataIssues, 'human_labels')
+
+  for (const ds of bySlot.human_labels) {
+    const s = summarizeLabels(ds, zh)
+    if (s) readback.push(s)
+  }
+
+  const charts = buildCharts(scoped)
+  const dirs =
+    args.directions.length > 0
+      ? args.directions
+      : (['threshold', 'false_positive'] as OptimizeDirectionId[])
+
+  const pathSteps = zh
+    ? [
+        '摄入：底层数据／告警日志／人工标注（至少一项）',
+        args.alertName ? `锁定告警名称：${args.alertName}` : '未指定告警名称 — 按全体规则汇总',
+        `选定优化方向：${dirs.map((d) => directionLabel(d, 'zh-Hant')).join('、')}`,
+        '画像字段质量并画图',
+        '按方向输出建议，声明缺口与假设',
+      ]
+    : [
+        'Ingest: underlying / alert logs / human labels (≥1)',
+        args.alertName ? `Focus alert: ${args.alertName}` : 'No alert name — aggregate across rules',
+        `Directions: ${dirs.map((d) => directionLabel(d, 'en')).join(', ')}`,
+        'Profile quality + charts',
+        'Emit direction-specific recommendations; declare gaps & assumptions',
+      ]
+
+  const assumptions: string[] = [
+    zh
+      ? '三槽位均可选，但至少一项有数据才继续；缺槽会在「数据问题」中标明，结论标为暂定。'
+      : 'All three slots are optional, but ≥1 dataset is required; missing slots are flagged and conclusions stay provisional.',
+    zh
+      ? '告警名称按下拉所选过滤（匹配 alert/rule/告警名 等列）；未选则分析全体。'
+      : 'Alert name filters rows via alert/rule/name columns when set; otherwise all rows are used.',
+    zh
+      ? '未勾选优化方向时，默认按「优化阈值 + 降低误报」路径执行。'
+      : 'If no directions are checked, default path is threshold + false-positive reduction.',
+    zh
+      ? '图表仅抽样最多 24 点／10 类，不代表全量精确分布。'
+      : 'Charts sample ≤24 points / ≤10 categories — not a full-population histogram.',
+  ]
+
+  const ctx = { hasUnderlying, hasLogs, hasLabels, alertName: args.alertName.trim() }
+  const answerParts: string[] = [
+    zh
+      ? `按排查路径完成告警优化审阅（数据源 **${scoped.filter((d) => d.rowCount).length}** 个有效集，合计 **${scoped.reduce((n, d) => n + d.rowCount, 0)}** 行）。`
+      : `Completed alert-optimize review along the investigation path (**${scoped.filter((d) => d.rowCount).length}** active sets, **${scoped.reduce((n, d) => n + d.rowCount, 0)}** rows).`,
+  ]
+  if (args.notes.trim()) {
+    answerParts.push(
+      zh
+        ? `附加说明：「${args.notes.trim().slice(0, 240)}」`
+        : `Operator notes: “${args.notes.trim().slice(0, 240)}”`,
+    )
+  }
+  for (const id of dirs) {
+    answerParts.push(directionGuidance(id, zh, ctx))
+  }
+  if (!hasUnderlying || !hasLogs || !hasLabels) {
+    answerParts.push(
+      zh
+        ? '当前并非三槽齐全 — 建议补齐缺失源后再固化阈值／窗口／频率变更（业务确认）。'
+        : 'Not all three slots are present — backfill missing sources before locking threshold/window/cadence changes (business sign-off).',
+    )
+  }
+
+  const answer = answerParts.join('\n\n')
+  return {
+    readback,
+    charts,
+    answer,
+    dataIssues,
+    assumptions,
+    reportMarkdown: buildReport({
+      zh,
+      title: zh ? '告警优化分析报告' : 'Alert optimization report',
+      readback,
+      charts,
+      answer,
+      dataIssues,
+      assumptions,
+      pathSteps,
+    }),
+  }
+}
+
+function assumptionsNoteMissing(
+  zh: boolean,
+  dataIssues: string[],
+  slot: AlertDataSlot,
+) {
+  const label = slotLabel(slot, zh ? 'zh-Hant' : 'en')
+  dataIssues.push(
+    zh ? `未提供「${label}」— 相关结论将受限。` : `Missing “${label}” — related conclusions are limited.`,
+  )
+}
+
+export function initialStatusSteps(
+  lang: 'en' | 'zh-Hant',
+  mode: DeskMode = 'general',
+): StatusStep[] {
   const zh = lang !== 'en'
+  if (mode === 'alert_optimize') {
+    return [
+      { id: 'ingest', label: zh ? '摄入三槽数据源' : 'Ingest three data slots', state: 'pending' },
+      { id: 'scope', label: zh ? '锁定告警名称与优化方向' : 'Scope alert name & directions', state: 'pending' },
+      { id: 'profile', label: zh ? '画像字段与质量' : 'Profile fields & quality', state: 'pending' },
+      { id: 'chart', label: zh ? '构建图表' : 'Build charts', state: 'pending' },
+      { id: 'path', label: zh ? '沿排查路径推理' : 'Reason along investigation path', state: 'pending' },
+      { id: 'draft', label: zh ? '整理结论与假设' : 'Draft answer & assumptions', state: 'pending' },
+    ]
+  }
   return [
     { id: 'ingest', label: zh ? '摄入 CSV／API 数据' : 'Ingest CSV / API data', state: 'pending' },
     { id: 'profile', label: zh ? '画像字段与质量' : 'Profile fields & quality', state: 'pending' },

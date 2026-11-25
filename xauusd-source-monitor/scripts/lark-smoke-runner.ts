@@ -48,7 +48,12 @@ import {
   typingStepDelayMs,
 } from '../api/lark/_lib/typing'
 import { alertOptimizeCard, greetingCard, simpleCard } from '../api/lark/_lib/cards'
-import { analyzeLocally, parseCsvText } from '../src/lib/alertOptimize'
+import {
+  analyzeAlertOptimize,
+  analyzeLocally,
+  extractAlertNames,
+  parseCsvText,
+} from '../src/lib/alertOptimize'
 import {
   buildWeeklyDemoReport,
   buildWeeklyReport,
@@ -832,26 +837,52 @@ async function main() {
       'ts,severity,threshold,value\n2026-01-01,P1,10,12\n2026-01-02,P2,10,8\n2026-01-03,P1,10,15\n',
       'alerts.csv',
     )
-    const ao = analyzeLocally({
+    const general = analyzeLocally({
       datasets: [csv],
       question: '阈值是否过敏？',
+      lang: 'zh-Hant',
+    })
+    const logs = parseCsvText(
+      'ts,rule,severity,value\n2026-01-01,depth_gap_bps,P1,42\n2026-01-02,depth_gap_bps,P2,18\n2026-01-03,mark_index_bps,P1,48\n',
+      'logs.csv',
+    )
+    logs.slot = 'alert_logs'
+    const labels = parseCsvText(
+      'rule,valid\ndepth_gap_bps,0\nmark_index_bps,1\n',
+      'labels.csv',
+    )
+    labels.slot = 'human_labels'
+    const names = extractAlertNames([logs])
+    const tuned = analyzeAlertOptimize({
+      datasets: [logs, labels],
+      alertName: 'depth_gap_bps',
+      directions: ['threshold', 'window'],
+      notes: '',
       lang: 'zh-Hant',
     })
     const card = alertOptimizeCard('zh-Hans')
     const cardBlob = JSON.stringify(card)
     record(
-      'alert_optimize.csv_analyze',
+      'alert_optimize.general_analyze',
       csv.rowCount === 3 &&
-        ao.readback.length >= 1 &&
-        ao.charts.length >= 1 &&
-        ao.answer.includes('阈值') &&
-        ao.assumptions.length >= 1 &&
-        ao.reportMarkdown.includes('# 告警优化'),
-      `rows=${csv.rowCount} charts=${ao.charts.length}`,
+        general.readback.length >= 1 &&
+        general.charts.length >= 1 &&
+        general.reportMarkdown.includes('# 通用分析'),
+      `rows=${csv.rowCount} charts=${general.charts.length}`,
+    )
+    record(
+      'alert_optimize.slot_path',
+      names.includes('depth_gap_bps') &&
+        tuned.reportMarkdown.includes('## 排查路径') &&
+        tuned.answer.includes('阈值') &&
+        tuned.dataIssues.some((x) => /底层|Underlying/i.test(x)),
+      `names=${names.join(',')} issues=${tuned.dataIssues.length}`,
     )
     record(
       'alert_optimize.desk_card_link',
-      cardBlob.includes('alert-optimize') && cardBlob.includes('告警优化'),
+      cardBlob.includes('alert-optimize') &&
+        cardBlob.includes('告警优化') &&
+        (cardBlob.includes('通用分析') || cardBlob.includes('General analysis')),
       cardBlob.slice(0, 120),
     )
   }

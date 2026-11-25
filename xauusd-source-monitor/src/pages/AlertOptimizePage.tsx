@@ -1,13 +1,20 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useLocale } from '../i18n/locale'
 import {
+  OPTIMIZE_DIRECTIONS,
+  analyzeAlertOptimize,
   analyzeLocally,
+  extractAlertNames,
   initialStatusSteps,
   parseCsvText,
   parseJsonPayload,
+  slotLabel,
+  type AlertDataSlot,
   type AnalysisResult,
   type ChartSpec,
+  type DeskMode,
   type IngestedDataset,
+  type OptimizeDirectionId,
   type StatusStep,
 } from '../lib/alertOptimize'
 import { PERM_VERCEL_ORIGIN } from '../copilot/engine/llm'
@@ -101,10 +108,25 @@ async function fetchViaProxy(url: string, headersJson: string): Promise<{
   return { text: body.text || '', json: body.json ?? null }
 }
 
+type SlotDraft = { paste: string; pasteName: string; apiUrl: string; apiHeaders: string; apiName: string }
+
+const EMPTY_SLOT: SlotDraft = {
+  paste: '',
+  pasteName: '',
+  apiUrl: '',
+  apiHeaders: '{}',
+  apiName: '',
+}
+
+const SLOTS: AlertDataSlot[] = ['underlying', 'alert_logs', 'human_labels']
+
 export function AlertOptimizePage() {
   const { t, lang } = useLocale()
   const appLang = lang === 'en' ? 'en' : 'zh-Hant'
 
+  const [mode, setMode] = useState<DeskMode>('alert_optimize')
+
+  // —— 通用分析 ——
   const [datasets, setDatasets] = useState<IngestedDataset[]>([])
   const [csvPaste, setCsvPaste] = useState('')
   const [csvPasteName, setCsvPasteName] = useState('pasted.csv')
@@ -112,28 +134,81 @@ export function AlertOptimizePage() {
   const [apiHeaders, setApiHeaders] = useState('{}')
   const [apiName, setApiName] = useState('V Exchange API')
   const [question, setQuestion] = useState('')
-  const [steps, setSteps] = useState<StatusStep[]>(() => initialStatusSteps(appLang))
+
+  // —— 告警优化 ——
+  const [slotSets, setSlotSets] = useState<Record<AlertDataSlot, IngestedDataset[]>>({
+    underlying: [],
+    alert_logs: [],
+    human_labels: [],
+  })
+  const [slotDrafts, setSlotDrafts] = useState<Record<AlertDataSlot, SlotDraft>>({
+    underlying: { ...EMPTY_SLOT, pasteName: 'underlying.csv', apiName: 'Underlying API' },
+    alert_logs: { ...EMPTY_SLOT, pasteName: 'alert-logs.csv', apiName: 'Alert logs API' },
+    human_labels: { ...EMPTY_SLOT, pasteName: 'labels.csv', apiName: 'Labels API' },
+  })
+  const [alertName, setAlertName] = useState('')
+  const [directions, setDirections] = useState<OptimizeDirectionId[]>(['threshold'])
+  const [notes, setNotes] = useState('')
+
+  const [steps, setSteps] = useState<StatusStep[]>(() => initialStatusSteps(appLang, 'alert_optimize'))
   const [running, setRunning] = useState(false)
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [copyFlash, setCopyFlash] = useState(false)
   const [error, setError] = useState('')
 
+  const alertDatasets = useMemo(
+    () => [...slotSets.underlying, ...slotSets.alert_logs, ...slotSets.human_labels],
+    [slotSets],
+  )
+  const alertNameOptions = useMemo(() => extractAlertNames(alertDatasets), [alertDatasets])
+
   const setStep = useCallback((id: string, patch: Partial<StatusStep>) => {
     setSteps((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)))
   }, [])
 
-  const onCsvFiles = async (files: FileList | null) => {
+  const switchMode = (next: DeskMode) => {
+    setMode(next)
+    setResult(null)
+    setError('')
+    setSteps(initialStatusSteps(appLang, next))
+  }
+
+  const tagSlot = (ds: IngestedDataset, slot: AlertDataSlot): IngestedDataset => ({
+    ...ds,
+    slot,
+    name: ds.name || slotLabel(slot, appLang),
+  })
+
+  const onCsvFiles = async (files: FileList | null, slot?: AlertDataSlot) => {
     if (!files?.length) return
     setError('')
     const next: IngestedDataset[] = []
     for (const file of Array.from(files)) {
       const text = await file.text()
-      next.push(parseCsvText(text, file.name))
+      const ds = parseCsvText(text, file.name)
+      next.push(slot ? tagSlot(ds, slot) : ds)
     }
-    setDatasets((d) => [...d, ...next])
+    if (slot) {
+      setSlotSets((s) => ({ ...s, [slot]: [...s[slot], ...next] }))
+    } else {
+      setDatasets((d) => [...d, ...next])
+    }
   }
 
-  const addPastedCsv = () => {
+  const addPastedCsv = (slot?: AlertDataSlot) => {
+    if (slot) {
+      const draft = slotDrafts[slot]
+      const text = draft.paste.trim()
+      if (!text) return
+      setError('')
+      const name = draft.pasteName.trim() || `${slot}.csv`
+      setSlotSets((s) => ({
+        ...s,
+        [slot]: [...s[slot], tagSlot(parseCsvText(text, name), slot)],
+      }))
+      setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], paste: '' } }))
+      return
+    }
     const text = csvPaste.trim()
     if (!text) return
     setError('')
@@ -142,77 +217,145 @@ export function AlertOptimizePage() {
     setCsvPaste('')
   }
 
-  const addApi = async () => {
-    const url = apiUrl.trim()
+  const addApi = async (slot?: AlertDataSlot) => {
+    const url = (slot ? slotDrafts[slot].apiUrl : apiUrl).trim()
     if (!url) return
     setError('')
+    const headersJson = slot ? slotDrafts[slot].apiHeaders : apiHeaders
+    const nameHint = slot
+      ? slotDrafts[slot].apiName.trim() || slotLabel(slot, appLang)
+      : apiName.trim() || 'API'
     try {
-      const { text, json, error: err } = await fetchViaProxy(url, apiHeaders)
+      const { text, json, error: err } = await fetchViaProxy(url, headersJson)
       if (err) {
         setError(err)
         return
       }
       let ds: IngestedDataset
       if (json != null) {
-        ds = parseJsonPayload(json, apiName.trim() || 'API', url)
+        ds = parseJsonPayload(json, nameHint, url)
       } else if (/,/.test(text.split('\n')[0] || '') && text.includes('\n')) {
-        ds = parseCsvText(text, apiName.trim() || url)
+        ds = parseCsvText(text, nameHint || url)
         ds.kind = 'api'
         ds.sourceLabel = url
       } else {
-        ds = parseJsonPayload({ raw: text.slice(0, 50_000) }, apiName.trim() || 'API', url)
+        ds = parseJsonPayload({ raw: text.slice(0, 50_000) }, nameHint || 'API', url)
         ds.issues.push(t('aoApiNonJson'))
       }
-      setDatasets((d) => [...d, ds])
-      setApiUrl('')
+      if (slot) {
+        setSlotSets((s) => ({ ...s, [slot]: [...s[slot], tagSlot(ds, slot)] }))
+        setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], apiUrl: '' } }))
+      } else {
+        setDatasets((d) => [...d, ds])
+        setApiUrl('')
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     }
   }
 
-  const removeDataset = (id: string) => {
-    setDatasets((d) => d.filter((x) => x.id !== id))
+  const removeDataset = (id: string, slot?: AlertDataSlot) => {
+    if (slot) {
+      setSlotSets((s) => ({ ...s, [slot]: s[slot].filter((x) => x.id !== id) }))
+    } else {
+      setDatasets((d) => d.filter((x) => x.id !== id))
+    }
+  }
+
+  const toggleDirection = (id: OptimizeDirectionId) => {
+    setDirections((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }
 
   const runAnalyze = async () => {
     setRunning(true)
     setResult(null)
     setError('')
-    setSteps(initialStatusSteps(appLang).map((s) => ({ ...s, state: 'pending' as const })))
+    setSteps(initialStatusSteps(appLang, mode).map((s) => ({ ...s, state: 'pending' as const })))
 
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
     try {
-      setStep('ingest', { state: 'running' })
-      await sleep(280)
-      if (!datasets.length) {
-        setStep('ingest', { state: 'error', detail: t('aoNeedData') })
-        setError(t('aoNeedData'))
-        setRunning(false)
-        return
+      if (mode === 'alert_optimize') {
+        setStep('ingest', { state: 'running' })
+        await sleep(280)
+        if (!alertDatasets.length) {
+          setStep('ingest', { state: 'error', detail: t('aoNeedOneSlot') })
+          setError(t('aoNeedOneSlot'))
+          setRunning(false)
+          return
+        }
+        setStep('ingest', {
+          state: 'done',
+          detail: `${alertDatasets.length} · ${alertDatasets.reduce((n, d) => n + d.rowCount, 0)} rows`,
+        })
+
+        setStep('scope', { state: 'running' })
+        await sleep(240)
+        setStep('scope', {
+          state: 'done',
+          detail: [
+            alertName.trim() || t('aoAlertNameAny'),
+            directions.length
+              ? `${directions.length} dir`
+              : t('aoDirectionsDefault'),
+          ].join(' · '),
+        })
+
+        setStep('profile', { state: 'running' })
+        await sleep(280)
+        setStep('profile', { state: 'done' })
+
+        setStep('chart', { state: 'running' })
+        await sleep(260)
+        setStep('chart', { state: 'done' })
+
+        setStep('path', { state: 'running' })
+        await sleep(360)
+        const local = analyzeAlertOptimize({
+          datasets: alertDatasets,
+          alertName,
+          directions,
+          notes,
+          lang: appLang,
+        })
+        setStep('path', { state: 'done' })
+
+        setStep('draft', { state: 'running' })
+        await sleep(220)
+        setResult(local)
+        setStep('draft', { state: 'done' })
+      } else {
+        setStep('ingest', { state: 'running' })
+        await sleep(280)
+        if (!datasets.length) {
+          setStep('ingest', { state: 'error', detail: t('aoNeedData') })
+          setError(t('aoNeedData'))
+          setRunning(false)
+          return
+        }
+        setStep('ingest', {
+          state: 'done',
+          detail: `${datasets.length} · ${datasets.reduce((n, d) => n + d.rowCount, 0)} rows`,
+        })
+
+        setStep('profile', { state: 'running' })
+        await sleep(320)
+        setStep('profile', { state: 'done' })
+
+        setStep('chart', { state: 'running' })
+        await sleep(280)
+        setStep('chart', { state: 'done' })
+
+        setStep('reason', { state: 'running' })
+        await sleep(360)
+        const local = analyzeLocally({ datasets, question, lang: appLang })
+        setStep('reason', { state: 'done' })
+
+        setStep('draft', { state: 'running' })
+        await sleep(240)
+        setResult(local)
+        setStep('draft', { state: 'done' })
       }
-      setStep('ingest', {
-        state: 'done',
-        detail: `${datasets.length} · ${datasets.reduce((n, d) => n + d.rowCount, 0)} rows`,
-      })
-
-      setStep('profile', { state: 'running' })
-      await sleep(320)
-      setStep('profile', { state: 'done' })
-
-      setStep('chart', { state: 'running' })
-      await sleep(280)
-      setStep('chart', { state: 'done' })
-
-      setStep('reason', { state: 'running' })
-      await sleep(360)
-      const local = analyzeLocally({ datasets, question, lang: appLang })
-      setStep('reason', { state: 'done' })
-
-      setStep('draft', { state: 'running' })
-      await sleep(240)
-      setResult(local)
-      setStep('draft', { state: 'done' })
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
       setSteps((prev) =>
@@ -243,10 +386,100 @@ export function AlertOptimizePage() {
     const blob = new Blob([fullReport], { type: 'text/markdown;charset=utf-8' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = `alert-optimize-${new Date().toISOString().slice(0, 10)}.md`
+    a.download = `${mode === 'alert_optimize' ? 'alert-optimize' : 'general-analysis'}-${new Date().toISOString().slice(0, 10)}.md`
     a.click()
     URL.revokeObjectURL(a.href)
   }
+
+  const renderIngestControls = (opts: {
+    slot?: AlertDataSlot
+    paste: string
+    pasteName: string
+    onPaste: (v: string) => void
+    onPasteName: (v: string) => void
+    apiUrlVal: string
+    apiNameVal: string
+    apiHeadersVal: string
+    onApiUrl: (v: string) => void
+    onApiName: (v: string) => void
+    onApiHeaders: (v: string) => void
+  }) => (
+    <div className="ao-grid">
+      <div className="ao-field ao-csv-block">
+        <label className="ao-field">
+          <span>{t('aoCsvUpload')}</span>
+          <input
+            type="file"
+            accept=".csv,text/csv"
+            multiple
+            onChange={(e) => void onCsvFiles(e.target.files, opts.slot)}
+          />
+        </label>
+        <span>{t('aoCsvPaste')}</span>
+        <input
+          type="text"
+          value={opts.pasteName}
+          placeholder={t('aoCsvPasteNamePh')}
+          onChange={(e) => opts.onPasteName(e.target.value)}
+        />
+        <textarea
+          rows={4}
+          value={opts.paste}
+          onChange={(e) => opts.onPaste(e.target.value)}
+          placeholder={t('aoCsvPastePh')}
+          aria-label={t('aoCsvPaste')}
+        />
+        <button type="button" className="archive-btn" onClick={() => addPastedCsv(opts.slot)}>
+          {t('aoCsvPasteAdd')}
+        </button>
+      </div>
+      <div className="ao-field ao-api-block">
+        <span>{t('aoApiUrl')}</span>
+        <input
+          type="url"
+          value={opts.apiUrlVal}
+          placeholder="https://…"
+          onChange={(e) => opts.onApiUrl(e.target.value)}
+        />
+        <input
+          type="text"
+          value={opts.apiNameVal}
+          placeholder={t('aoApiNamePh')}
+          onChange={(e) => opts.onApiName(e.target.value)}
+        />
+        <textarea
+          rows={3}
+          value={opts.apiHeadersVal}
+          onChange={(e) => opts.onApiHeaders(e.target.value)}
+          placeholder='{"Authorization":"Bearer …"}'
+          aria-label={t('aoApiHeaders')}
+        />
+        <button type="button" className="archive-btn" onClick={() => void addApi(opts.slot)}>
+          {t('aoFetchApi')}
+        </button>
+      </div>
+    </div>
+  )
+
+  const renderDatasetList = (list: IngestedDataset[], slot?: AlertDataSlot) =>
+    list.length ? (
+      <ul className="ao-dataset-list">
+        {list.map((d) => (
+          <li key={d.id}>
+            <strong>{d.name}</strong>
+            <span className="ao-muted">
+              {' '}
+              · {d.kind} · {d.rowCount}×{d.columns.length} · {d.sourceLabel.slice(0, 48)}
+            </span>
+            <button type="button" className="archive-btn" onClick={() => removeDataset(d.id, slot)}>
+              {t('aoRemove')}
+            </button>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="ao-muted">{t('aoNoDatasets')}</p>
+    )
 
   return (
     <div className="alert-optimize-page">
@@ -257,109 +490,179 @@ export function AlertOptimizePage() {
         </div>
       </header>
 
-      <section className="panel ao-ingest">
-        <h2>{t('aoIngestTitle')}</h2>
-        <p className="sub">{t('aoIngestSub')}</p>
+      <div className="ao-mode-tabs" role="tablist" aria-label={t('aoModeLabel')}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'alert_optimize'}
+          className={mode === 'alert_optimize' ? 'active' : ''}
+          onClick={() => switchMode('alert_optimize')}
+        >
+          {t('aoModeAlert')}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'general'}
+          className={mode === 'general' ? 'active' : ''}
+          onClick={() => switchMode('general')}
+        >
+          {t('aoModeGeneral')}
+        </button>
+      </div>
 
-        <div className="ao-grid">
-          <div className="ao-field ao-csv-block">
+      {mode === 'alert_optimize' ? (
+        <>
+          <section className="panel ao-ingest">
+            <h2>{t('aoAlertSlotsTitle')}</h2>
+            <p className="sub">{t('aoAlertSlotsSub')}</p>
+
+            {SLOTS.map((slot) => {
+              const draft = slotDrafts[slot]
+              return (
+                <div key={slot} className="ao-slot-block">
+                  <h3>{slotLabel(slot, appLang)}</h3>
+                  <p className="ao-muted ao-slot-hint">
+                    {slot === 'underlying'
+                      ? t('aoSlotUnderlyingHint')
+                      : slot === 'alert_logs'
+                        ? t('aoSlotLogsHint')
+                        : t('aoSlotLabelsHint')}
+                  </p>
+                  {renderIngestControls({
+                    slot,
+                    paste: draft.paste,
+                    pasteName: draft.pasteName,
+                    onPaste: (v) => setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], paste: v } })),
+                    onPasteName: (v) =>
+                      setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], pasteName: v } })),
+                    apiUrlVal: draft.apiUrl,
+                    apiNameVal: draft.apiName,
+                    apiHeadersVal: draft.apiHeaders,
+                    onApiUrl: (v) => setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], apiUrl: v } })),
+                    onApiName: (v) =>
+                      setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], apiName: v } })),
+                    onApiHeaders: (v) =>
+                      setSlotDrafts((d) => ({ ...d, [slot]: { ...d[slot], apiHeaders: v } })),
+                  })}
+                  {renderDatasetList(slotSets[slot], slot)}
+                </div>
+              )
+            })}
+          </section>
+
+          <section className="panel">
+            <h2>{t('aoScopeTitle')}</h2>
+            <p className="sub">{t('aoScopeSub')}</p>
+
             <label className="ao-field">
-              <span>{t('aoCsvUpload')}</span>
-              <input
-                type="file"
-                accept=".csv,text/csv"
-                multiple
-                onChange={(e) => void onCsvFiles(e.target.files)}
+              <span>{t('aoAlertName')}</span>
+              <select
+                className="ao-select"
+                value={alertName}
+                onChange={(e) => setAlertName(e.target.value)}
+              >
+                <option value="">{t('aoAlertNameAny')}</option>
+                {alertNameOptions.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {!alertNameOptions.length ? (
+              <p className="ao-muted">{t('aoAlertNameEmpty')}</p>
+            ) : null}
+
+            <fieldset className="ao-directions">
+              <legend>{t('aoDirections')}</legend>
+              <p className="sub">{t('aoDirectionsSub')}</p>
+              <div className="ao-direction-grid">
+                {OPTIMIZE_DIRECTIONS.map((d) => {
+                  const label = appLang === 'en' ? d.en : d.zh
+                  const checked = directions.includes(d.id)
+                  return (
+                    <label key={d.id} className={`ao-direction-chip${checked ? ' on' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleDirection(d.id)}
+                      />
+                      <span>{label}</span>
+                    </label>
+                  )
+                })}
+              </div>
+            </fieldset>
+
+            <label className="ao-field">
+              <span>{t('aoNotes')}</span>
+              <textarea
+                className="ao-question"
+                rows={3}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder={t('aoNotesPh')}
               />
             </label>
-            <span>{t('aoCsvPaste')}</span>
-            <input
-              type="text"
-              value={csvPasteName}
-              placeholder={t('aoCsvPasteNamePh')}
-              onChange={(e) => setCsvPasteName(e.target.value)}
-            />
+
+            <div className="copilot-actions">
+              <button
+                type="button"
+                className="archive-btn primary-archive"
+                disabled={running}
+                onClick={() => void runAnalyze()}
+              >
+                {running ? t('aoAnalyzing') : t('aoAnalyze')}
+              </button>
+            </div>
+            {error ? <p className="ao-error">{error}</p> : null}
+          </section>
+        </>
+      ) : (
+        <>
+          <section className="panel ao-ingest">
+            <h2>{t('aoIngestTitle')}</h2>
+            <p className="sub">{t('aoIngestSub')}</p>
+            {renderIngestControls({
+              paste: csvPaste,
+              pasteName: csvPasteName,
+              onPaste: setCsvPaste,
+              onPasteName: setCsvPasteName,
+              apiUrlVal: apiUrl,
+              apiNameVal: apiName,
+              apiHeadersVal: apiHeaders,
+              onApiUrl: setApiUrl,
+              onApiName: setApiName,
+              onApiHeaders: setApiHeaders,
+            })}
+            {renderDatasetList(datasets)}
+          </section>
+
+          <section className="panel">
+            <h2>{t('aoQuestionTitle')}</h2>
+            <p className="sub">{t('aoQuestionSub')}</p>
             <textarea
-              rows={5}
-              value={csvPaste}
-              onChange={(e) => setCsvPaste(e.target.value)}
-              placeholder={t('aoCsvPastePh')}
-              aria-label={t('aoCsvPaste')}
+              className="ao-question"
+              rows={4}
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder={t('aoQuestionPh')}
             />
-            <button type="button" className="archive-btn" onClick={addPastedCsv}>
-              {t('aoCsvPasteAdd')}
-            </button>
-          </div>
-
-          <div className="ao-field ao-api-block">
-            <span>{t('aoApiUrl')}</span>
-            <input
-              type="url"
-              value={apiUrl}
-              placeholder="https://…"
-              onChange={(e) => setApiUrl(e.target.value)}
-            />
-            <input
-              type="text"
-              value={apiName}
-              placeholder={t('aoApiNamePh')}
-              onChange={(e) => setApiName(e.target.value)}
-            />
-            <textarea
-              rows={3}
-              value={apiHeaders}
-              onChange={(e) => setApiHeaders(e.target.value)}
-              placeholder='{"Authorization":"Bearer …"}'
-              aria-label={t('aoApiHeaders')}
-            />
-            <button type="button" className="archive-btn" onClick={() => void addApi()}>
-              {t('aoFetchApi')}
-            </button>
-          </div>
-        </div>
-
-        {datasets.length ? (
-          <ul className="ao-dataset-list">
-            {datasets.map((d) => (
-              <li key={d.id}>
-                <strong>{d.name}</strong>
-                <span className="ao-muted">
-                  {' '}
-                  · {d.kind} · {d.rowCount}×{d.columns.length} · {d.sourceLabel.slice(0, 48)}
-                </span>
-                <button type="button" className="archive-btn" onClick={() => removeDataset(d.id)}>
-                  {t('aoRemove')}
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="ao-muted">{t('aoNoDatasets')}</p>
-        )}
-      </section>
-
-      <section className="panel">
-        <h2>{t('aoQuestionTitle')}</h2>
-        <p className="sub">{t('aoQuestionSub')}</p>
-        <textarea
-          className="ao-question"
-          rows={4}
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder={t('aoQuestionPh')}
-        />
-        <div className="copilot-actions">
-          <button
-            type="button"
-            className="archive-btn primary-archive"
-            disabled={running}
-            onClick={() => void runAnalyze()}
-          >
-            {running ? t('aoAnalyzing') : t('aoAnalyze')}
-          </button>
-        </div>
-        {error ? <p className="ao-error">{error}</p> : null}
-      </section>
+            <div className="copilot-actions">
+              <button
+                type="button"
+                className="archive-btn primary-archive"
+                disabled={running}
+                onClick={() => void runAnalyze()}
+              >
+                {running ? t('aoAnalyzing') : t('aoAnalyze')}
+              </button>
+            </div>
+            {error ? <p className="ao-error">{error}</p> : null}
+          </section>
+        </>
+      )}
 
       <section className={`panel thinking-panel${running ? ' thinking-live' : ''}`}>
         <h4>{t('aoLiveStatus')}</h4>
@@ -382,7 +685,12 @@ export function AlertOptimizePage() {
             <h2>{t('aoReadbackTitle')}</h2>
             <ul className="ao-readback">
               {result.readback.map((line, i) => (
-                <li key={i} dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
+                <li
+                  key={i}
+                  dangerouslySetInnerHTML={{
+                    __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'),
+                  }}
+                />
               ))}
             </ul>
             {result.charts.length ? (
