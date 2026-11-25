@@ -90,14 +90,14 @@ import {
 } from './webSearch.js'
 import { logInbound } from './inboundLog.js'
 import {
-  clearSession,
+  clearSessionDurable,
   ensureSessionInteractions,
-  getIncident,
-  getSession,
-  listIncidents,
+  getIncidentDurable,
+  getSessionDurable,
+  listIncidentsDurable,
   newIncidentId,
-  saveSession,
-  upsertIncident,
+  saveSessionDurable,
+  upsertIncidentDurable,
 } from './store.js'
 import type {
   BotReply,
@@ -742,7 +742,7 @@ async function replyProceedInvestigationReport(args: {
           : 'No active investigation case yet. Paste an alert or send **investigate** first — turns are logged; then send **generate investigation report**.'
     return { card: simpleCard(title, body, 'wathet') }
   }
-  const incident = session.lastReportId ? getIncident(session.lastReportId) : undefined
+  const incident = session.lastReportId ? await getIncidentDurable(session.lastReportId) : undefined
   const reportMd = await buildProceedInvestigationReport({ lang, session, incident })
   pushInteraction(session, {
     role: 'bot',
@@ -753,9 +753,9 @@ async function replyProceedInvestigationReport(args: {
   if (session.lastReportId && incident) {
     incident.interactions = ensureSessionInteractions(session).interactions.slice(-80)
     incident.updatedAt = Date.now()
-    upsertIncident(incident)
+    await upsertIncidentDurable(incident)
   }
-  saveSession(args.chatId, args.openId, session)
+  await saveSessionDurable(args.chatId, args.openId, session)
   const title =
     lang === 'zh-Hans'
       ? '排查过程报告'
@@ -765,7 +765,7 @@ async function replyProceedInvestigationReport(args: {
   return { card: simpleCard(title, reportMd, 'blue') }
 }
 
-function persistOpenIncident(args: {
+async function persistOpenIncident(args: {
   chatId: string
   openId: string
   lang: Lang
@@ -779,7 +779,7 @@ function persistOpenIncident(args: {
   existingId?: string
 }): IncidentRecord {
   const id = args.existingId || newIncidentId()
-  const prev = args.existingId ? getIncident(args.existingId) : undefined
+  const prev = args.existingId ? await getIncidentDurable(args.existingId) : undefined
   const rec: IncidentRecord = {
     id,
     chatId: args.chatId,
@@ -799,7 +799,7 @@ function persistOpenIncident(args: {
     updatedAt: Date.now(),
     lang: args.lang,
   }
-  upsertIncident(rec)
+  await upsertIncidentDurable(rec)
   return rec
 }
 
@@ -982,7 +982,7 @@ async function runInvestigation(args: {
   newFact: string
   markStepDone?: boolean
 }): Promise<BotReply> {
-  const session = getSession(args.msg.chatId, args.msg.openId)
+  const session = await getSessionDurable(args.msg.chatId, args.msg.openId)
   session.mode = 'investigate'
   // Questions / confusion unlock reasoning; evidence pastes stay Skills-path only.
   const questionMode =
@@ -1111,7 +1111,7 @@ async function runInvestigation(args: {
     assistTag = primaryByAlertName ? ' (skills-path)' : ' (skills-path·soft)'
   }
 
-  const rec = persistOpenIncident({
+  const rec = await persistOpenIncident({
     chatId: args.msg.chatId,
     openId: args.msg.openId,
     lang: args.lang,
@@ -1126,7 +1126,7 @@ async function runInvestigation(args: {
   })
   session.lastReportId = rec.id
   session.preferredLang = args.lang
-  saveSession(args.msg.chatId, args.msg.openId, session)
+  await saveSessionDurable(args.msg.chatId, args.msg.openId, session)
 
   logInbound({
     at: new Date().toISOString(),
@@ -1170,7 +1170,7 @@ export async function handleCardAction(args: {
 }): Promise<BotReply> {
   const action = String(args.value.action || '')
   const incidentId = String(args.value.incidentId || '')
-  const session = getSession(args.chatId, args.openId)
+  const session = await getSessionDurable(args.chatId, args.openId)
   const lang: Lang = session.preferredLang || 'en'
   const fakeMsg: IncomingMessage = {
     messageId: args.messageId,
@@ -1184,21 +1184,21 @@ export async function handleCardAction(args: {
   }
 
   if (action === 'review') {
-    const incidents = listIncidents({ limit: 50 })
+    const incidents = await listIncidentsDurable({ limit: 50 })
     return { card: reviewCard({ lang, incidents }) }
   }
 
   if (action === 'archive') {
     const id = incidentId || session.lastReportId
     if (id) {
-      const inc = getIncident(id)
+      const inc = await getIncidentDurable(id)
       if (inc) {
         inc.status = 'archived'
         inc.updatedAt = Date.now()
-        upsertIncident(inc)
+        await upsertIncidentDurable(inc)
       }
     }
-    clearSession(args.chatId, args.openId)
+    await clearSessionDurable(args.chatId, args.openId)
     const archivedTitle =
       lang === 'zh-Hans' ? '已归档' : lang === 'zh-Hant' ? '已歸檔' : 'Archived'
     const archivedBody = id
@@ -1228,7 +1228,7 @@ export async function handleCardAction(args: {
       text: doneFact,
       messageId: args.messageId,
     })
-    saveSession(args.chatId, args.openId, session)
+    await saveSessionDurable(args.chatId, args.openId, session)
     return runInvestigation({
       msg: fakeMsg,
       lang,
@@ -1300,7 +1300,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   let attachmentDigest: string | null = null
   let attachmentKind = 'share'
   const userCaption = (inbound.text || '').trim()
-  const session = getSession(inbound.chatId, inbound.openId)
+  const session = await getSessionDurable(inbound.chatId, inbound.openId)
   // Prefer sticky Chinese: share-card English must not reset the session language
   const langFallback = session.preferredLang || 'en'
   let lang = detectLang(inbound.text || '', langFallback)
@@ -1340,7 +1340,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     session.lastAttachmentKind = attachmentKind
   }
   session.preferredLang = lang
-  saveSession(inbound.chatId, inbound.openId, session)
+  await saveSessionDurable(inbound.chatId, inbound.openId, session)
   // Remember chat + user language for cron / market cards (简体 ≠ 繁體)
   void rememberChatMarketLang(inbound.chatId, lang, inbound.openId)
 
@@ -1354,7 +1354,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       session.pendingCommand = undefined
       session.pendingCommandText = undefined
       session.pendingCommandAt = undefined
-      saveSession(msg.chatId, msg.openId, session)
+      await saveSessionDurable(msg.chatId, msg.openId, session)
       workingText = pendingText
       forcedIntent = pending
       skipCommandConfirm = true
@@ -1366,7 +1366,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       session.pendingCommand = undefined
       session.pendingCommandText = undefined
       session.pendingCommandAt = undefined
-      saveSession(msg.chatId, msg.openId, session)
+      await saveSessionDurable(msg.chatId, msg.openId, session)
       if (looksLikeCommandCancel(workingText)) {
         const replyTitle =
           lang === 'zh-Hans' ? '好的，我们聊' : lang === 'zh-Hant' ? '好的，我們聊' : 'Sure — let’s chat'
@@ -1384,7 +1384,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     session.pendingCommand = undefined
     session.pendingCommandText = undefined
     session.pendingCommandAt = undefined
-    saveSession(msg.chatId, msg.openId, session)
+    await saveSessionDurable(msg.chatId, msg.openId, session)
   }
 
   // Alert nudge —「知道了」must stop (never fall through to greeting soft-ack)
@@ -1505,7 +1505,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
     session.pendingCommand = intent as PendingCommandIntent
     session.pendingCommandText = workingText
     session.pendingCommandAt = Date.now()
-    saveSession(msg.chatId, msg.openId, session)
+    await saveSessionDurable(msg.chatId, msg.openId, session)
     const { title } = pendingCommandLabel(intent, lang)
     return {
       card: simpleCard(title, commandConfirmPrompt(lang, intent, workingText), 'wathet'),
@@ -1622,7 +1622,7 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
   }
 
   if (intent === 'review') {
-    const incidents = listIncidents({ limit: 50 })
+    const incidents = await listIncidentsDurable({ limit: 50 })
     return { card: reviewCard({ lang, incidents }) }
   }
 
@@ -1665,11 +1665,11 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
       text: workingText,
       messageId: inbound.messageId,
     })
-    saveSession(inbound.chatId, inbound.openId, session)
+    await saveSessionDurable(inbound.chatId, inbound.openId, session)
   }
 
   if (intent === 'weekly') {
-    const report = buildWeeklyReport(listIncidents({ status: 'all', limit: 200 }), Date.now(), lang)
+    const report = buildWeeklyReport(await listIncidentsDurable({ status: 'all', limit: 200 }), Date.now(), lang)
     return { card: weeklyReportCard(report.markdown, report.empty) }
   }
 
@@ -1766,14 +1766,14 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 
   if (intent === 'archive') {
     if (session.lastReportId) {
-      const inc = getIncident(session.lastReportId)
+      const inc = await getIncidentDurable(session.lastReportId)
       if (inc) {
         inc.status = 'archived'
         inc.updatedAt = Date.now()
-        upsertIncident(inc)
+        await upsertIncidentDurable(inc)
       }
     }
-    clearSession(msg.chatId, msg.openId)
+    await clearSessionDurable(msg.chatId, msg.openId)
     return {
       text:
         lang === 'zh-Hans'

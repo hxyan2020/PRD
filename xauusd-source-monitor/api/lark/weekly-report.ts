@@ -8,7 +8,7 @@ import { larkConfigured, resolveAdminOpenId, sendCardToOpenId } from './_lib/cli
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { shanghaiDayKey } from './_lib/market.js'
-import { listIncidents } from './_lib/store.js'
+import { listIncidentsDurable } from './_lib/store.js'
 import {
   buildWeeklyDemoReport,
   buildWeeklyReport,
@@ -70,7 +70,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const resolvedEarly = body.openId?.trim()
     ? { openId: body.openId.trim(), source: 'request' }
     : await resolveAdminOpenId()
-  const incidents = listIncidents({ status: 'all', limit: 200 })
+  const incidents = await listIncidentsDurable({ status: 'all', limit: 200 })
   const report = demo
     ? buildWeeklyDemoReport(now, 'zh-Hans', resolvedEarly.openId)
     : buildWeeklyReport(incidents, now, 'zh-Hans', resolvedEarly.openId)

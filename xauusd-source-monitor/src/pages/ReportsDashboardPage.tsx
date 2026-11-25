@@ -96,14 +96,24 @@ function larkToRow(h: LarkIncident): DashboardRow {
   }
 }
 
-async function fetchLarkIncidents(): Promise<LarkIncident[]> {
+async function fetchLarkIncidents(): Promise<{
+  rows: LarkIncident[]
+  ok: boolean
+}> {
   try {
-    const r = await fetch('/api/lark/incidents?limit=100&status=all')
-    if (!r.ok) return []
+    const { loadSettings, applyManagedLlmConfig } = await import('../copilot/storage')
+    const settings = await applyManagedLlmConfig(loadSettings())
+    const headers: Record<string, string> = {}
+    if (settings.deskToken?.trim()) {
+      headers['X-Desk-Token'] = settings.deskToken.trim()
+    }
+    const r = await fetch('/api/lark/incidents?limit=100&status=all', { headers })
+    if (!r.ok) return { rows: [], ok: false }
     const data = (await r.json()) as { incidents?: LarkIncident[] }
-    return Array.isArray(data.incidents) ? data.incidents : []
+    const rows = Array.isArray(data.incidents) ? data.incidents : []
+    return { rows, ok: true }
   } catch {
-    return []
+    return { rows: [], ok: false }
   }
 }
 
@@ -128,10 +138,11 @@ export function ReportsDashboardPage() {
     let cancelled = false
     setLarkState('loading')
     ;(async () => {
-      const rows = await fetchLarkIncidents()
+      const { rows, ok } = await fetchLarkIncidents()
       if (cancelled) return
       setLark(rows)
-      setLarkState(rows.length ? 'ok' : 'empty')
+      if (!ok) setLarkState('error')
+      else setLarkState(rows.length ? 'ok' : 'empty')
     })()
     return () => {
       cancelled = true
