@@ -3654,6 +3654,13 @@ async function main() {
         suppAck.blob.includes('對排查的幫助') ||
         suppAck.blob.includes('How it helps')) &&
       suppAck.blob.includes('12bps') &&
+      // Receipt keeps all six step options.
+      suppAck.blob.includes('guide_step_done') &&
+      suppAck.blob.includes('guide_step_skip') &&
+      suppAck.blob.includes('guide_step_escalate') &&
+      suppAck.blob.includes('end_and_report') &&
+      suppAck.blob.includes('end_without_report') &&
+      suppAck.blob.includes('guide_step_supplement') &&
       getSession('smoke_chat', 'supplement_user').stepAwaiting !== 'supplement' &&
       (getSession('smoke_chat', 'supplement_user').pathSteps || []).some(
         (s) => s.status === 'pending',

@@ -435,7 +435,104 @@ export function investigationPathOverviewCard(args: {
   }
 }
 
-/** Message 2+: current step — 已完成 / 跳过 / 升级 / 结束并出报告 / 结束不出报告. */
+/** Shared step actions: Done / Skip / Escalate / End&report / End-no-report / Add info. */
+function stepGuideActionElements(args: {
+  lang: Lang
+  step: GuideStep
+  incidentId?: string
+  escalateRoles?: string[]
+}): Record<string, unknown>[] {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const roles = (args.escalateRoles || []).filter(Boolean)
+  const rolesLabel = (roles.length ? roles : ['RC']).join('/')
+  const row1: Record<string, unknown>[] = [
+    {
+      tag: 'button',
+      text: { tag: 'plain_text', content: hans ? '已完成' : zh ? '已完成' : 'Done' },
+      type: 'primary',
+      value: {
+        action: 'guide_step_done',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+      },
+    },
+    {
+      tag: 'button',
+      text: { tag: 'plain_text', content: hans ? '跳过' : zh ? '跳過' : 'Skip' },
+      type: 'default',
+      value: {
+        action: 'guide_step_skip',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+      },
+    },
+    {
+      tag: 'button',
+      text: { tag: 'plain_text', content: hans ? '升级' : zh ? '升級' : 'Escalate' },
+      type: 'danger',
+      value: {
+        action: 'guide_step_escalate',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+        roles: rolesLabel,
+      },
+    },
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans
+          ? '结束排查并生成报告'
+          : zh
+            ? '結束排查並生成報告'
+            : 'End & generate report',
+      },
+      type: 'primary',
+      value: {
+        action: 'end_and_report',
+        incidentId: args.incidentId || '',
+      },
+    },
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans
+          ? '结束排查不生成报告'
+          : zh
+            ? '結束排查不生成報告'
+            : 'End without report',
+      },
+      type: 'default',
+      value: {
+        action: 'end_without_report',
+        incidentId: args.incidentId || '',
+      },
+    },
+  ]
+  const row2: Record<string, unknown>[] = [
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans ? '补充信息' : zh ? '補充資訊' : 'Add info',
+      },
+      type: 'default',
+      value: {
+        action: 'guide_step_supplement',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+      },
+    },
+  ]
+  return [
+    { tag: 'action', actions: row1 },
+    { tag: 'action', actions: row2 },
+  ]
+}
+
+/** Message 2+: current step — 已完成 / 跳过 / 升级 / 结束并出报告 / 结束不出报告 / 补充信息. */
 export function investigationStepGuideCard(args: {
   lang: Lang
   step: GuideStep
@@ -450,10 +547,6 @@ export function investigationStepGuideCard(args: {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
   const n = args.stepIndex + 1
-  // Always show 升级 as 3rd so end options stay 4th / 5th; default RC when SOP names none.
-  const roles = (args.escalateRoles || []).filter(Boolean)
-  const rolesFinal = roles.length ? roles : ['RC']
-  const rolesLabel = rolesFinal.join('/')
   const optBadge = args.step.required
     ? hans
       ? '必做'
@@ -504,98 +597,6 @@ export function investigationStepGuideCard(args: {
           ...decBlock,
         ].join('\n')
 
-  const actions: Record<string, unknown>[] = [
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans ? '已完成' : zh ? '已完成' : 'Done',
-      },
-      type: 'primary',
-      value: {
-        action: 'guide_step_done',
-        stepId: args.step.id,
-        incidentId: args.incidentId || '',
-      },
-    },
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans ? '跳过' : zh ? '跳過' : 'Skip',
-      },
-      type: 'default',
-      value: {
-        action: 'guide_step_skip',
-        stepId: args.step.id,
-        incidentId: args.incidentId || '',
-      },
-    },
-  ]
-  // 3rd Escalate · 4th End & report · 5th End without report (row 1, Feishu ≤5)
-  // 6th 补充信息 on row 2
-  actions.push(
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans ? '升级' : zh ? '升級' : 'Escalate',
-      },
-      type: 'danger',
-      value: {
-        action: 'guide_step_escalate',
-        stepId: args.step.id,
-        incidentId: args.incidentId || '',
-        roles: rolesLabel,
-      },
-    },
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans
-          ? '结束排查并生成报告'
-          : zh
-            ? '結束排查並生成報告'
-            : 'End & generate report',
-      },
-      type: 'primary',
-      value: {
-        action: 'end_and_report',
-        incidentId: args.incidentId || '',
-      },
-    },
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans
-          ? '结束排查不生成报告'
-          : zh
-            ? '結束排查不生成報告'
-            : 'End without report',
-      },
-      type: 'default',
-      value: {
-        action: 'end_without_report',
-        incidentId: args.incidentId || '',
-      },
-    },
-  )
-  const supplementAction = {
-    tag: 'button',
-    text: {
-      tag: 'plain_text',
-      content: hans ? '补充信息' : zh ? '補充資訊' : 'Add info',
-    },
-    type: 'default',
-    value: {
-      action: 'guide_step_supplement',
-      stepId: args.step.id,
-      incidentId: args.incidentId || '',
-    },
-  }
-
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -604,10 +605,12 @@ export function investigationStepGuideCard(args: {
     },
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: body } },
-      // 1–5: 已完成 / 跳过 / 升级 / 结束并出报告 / 结束不出报告
-      { tag: 'action', actions },
-      // 6: 补充信息
-      { tag: 'action', actions: [supplementAction] },
+      ...stepGuideActionElements({
+        lang: args.lang,
+        step: args.step,
+        incidentId: args.incidentId,
+        escalateRoles: args.escalateRoles,
+      }),
     ],
   }
 }
@@ -689,7 +692,9 @@ export function investigationSupplementAckCard(args: {
         `🧭 **对排查的帮助：**`,
         args.helpSummary,
         '',
-        `_当前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步 — 可继续补充，或点下方完成／跳过／升级。_`,
+        `📍 **当前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步** — ${args.step.label}`,
+        '',
+        '⌨️ **继续操作（六个选项）：** 已完成／跳过／升级／结束并出报告／结束不出报告／补充信息',
       ].join('\n')
     : zh
       ? [
@@ -699,7 +704,9 @@ export function investigationSupplementAckCard(args: {
           `🧭 **對排查的幫助：**`,
           args.helpSummary,
           '',
-          `_當前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步 — 可繼續補充，或點下方完成／跳過／升級。_`,
+          `📍 **當前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步** — ${args.step.label}`,
+          '',
+          '⌨️ **繼續操作（六個選項）：** 已完成／跳過／升級／結束並出報告／結束不出報告／補充資訊',
         ].join('\n')
       : [
           `📥 **You submitted:**`,
@@ -708,20 +715,11 @@ export function investigationSupplementAckCard(args: {
           `🧭 **How it helps:**`,
           args.helpSummary,
           '',
-          `_Still on step ${args.stepIndex + 1}/${args.totalSteps} — add more, or use Done / Skip / Escalate below._`,
+          `📍 **Still on step ${args.stepIndex + 1}/${args.totalSteps}** — ${args.step.label}`,
+          '',
+          '⌨️ **Continue (6 options):** Done / Skip / Escalate / End & report / End without report / Add info',
         ].join('\n')
-  // Reuse step actions under the ack so the operator can continue without hunting the prior card.
-  const stepCard = investigationStepGuideCard({
-    lang: args.lang,
-    step: args.step,
-    stepIndex: args.stepIndex,
-    totalSteps: args.totalSteps,
-    incidentId: args.incidentId,
-    escalateRoles: args.escalateRoles,
-    decisionBranches: args.decisionBranches,
-  })
-  const stepElements = (stepCard.elements as Record<string, unknown>[]) || []
-  const actionRows = stepElements.filter((e) => e.tag === 'action')
+  void args.decisionBranches
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -731,7 +729,13 @@ export function investigationSupplementAckCard(args: {
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: body } },
       { tag: 'hr' },
-      ...actionRows,
+      // Same six options as the step card — always on the receipt.
+      ...stepGuideActionElements({
+        lang: args.lang,
+        step: args.step,
+        incidentId: args.incidentId,
+        escalateRoles: args.escalateRoles,
+      }),
     ],
   }
 }
