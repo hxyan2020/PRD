@@ -911,6 +911,37 @@ function reviewDoneBanner(lang: Lang): string {
   ].join('\n')
 }
 
+/**
+ * Mid-exit / no formal archive after report → still record as investigated,
+ * classified 无风险 (no_risk). Idempotent if already archived.
+ */
+async function closeIncidentAsInvestigatedNoRisk(args: {
+  incidentId?: string
+  openId?: string
+  reason?: string
+}): Promise<boolean> {
+  const id = (args.incidentId || '').trim()
+  if (!id) return false
+  const inc = await getIncidentDurable(id)
+  if (!inc || inc.status === 'archived') return false
+  inc.status = 'archived'
+  inc.riskVerdict = 'no_risk'
+  inc.riskVerdictAt = Date.now()
+  inc.riskVerdictBy = args.openId ? `${args.openId}:auto_exit` : 'auto_exit'
+  const note = (args.reason || 'mid-exit / no archive → investigated · no_risk').slice(0, 200)
+  const marker =
+    inc.lang === 'zh-Hans'
+      ? `\n\n_[系统] 未正式归档（${note}）→ 记为排查过 · **无风险**_`
+      : inc.lang === 'zh-Hant'
+        ? `\n\n_[系統] 未正式歸檔（${note}）→ 記為排查過 · **無風險**_`
+        : `\n\n_[system] No formal archive (${note}) → investigated · **no risk**_`
+  inc.summary = `${(inc.summary || '').trim()}${marker}`.slice(0, 1400)
+  inc.updatedAt = Date.now()
+  await upsertIncidentDurable(inc)
+  return true
+}
+
+/** Report + Archive: keep user ruling (有风险 / 无风险). Prompt if missing. */
 async function archiveIncidentAndShowReview(args: {
   lang: Lang
   chatId: string
@@ -918,7 +949,8 @@ async function archiveIncidentAndShowReview(args: {
   incidentId: string
 }): Promise<BotReply> {
   const inc = await getIncidentDurable(args.incidentId)
-  if (inc && !inc.riskVerdict) {
+  // Formal archive after report must be classified 有风险 or 无风险 (not unclear/unset).
+  if (inc && inc.riskVerdict !== 'at_risk' && inc.riskVerdict !== 'no_risk') {
     return {
       card: riskVerdictPromptCard({
         lang: args.lang,
@@ -931,9 +963,6 @@ async function archiveIncidentAndShowReview(args: {
   if (inc) {
     inc.status = 'archived'
     inc.updatedAt = Date.now()
-    if (args.openId) {
-      // keep last report markdown reflected in summary if present in session — handled by caller
-    }
     await upsertIncidentDurable(inc)
   }
   await clearSessionDurable(args.chatId, args.openId)
@@ -1688,7 +1717,21 @@ async function replyAlertGather(args: {
   lang: Lang
   session: InvestigationState
   newFact: string
+  /** Starting a brand-new case — close any abandoned open incident as 无风险. */
+  freshCase?: boolean
 }): Promise<BotReply> {
+  if (args.freshCase && args.session.lastReportId) {
+    await closeIncidentAsInvestigatedNoRisk({
+      incidentId: args.session.lastReportId,
+      openId: args.msg.openId,
+      reason: 'new_alert_gather',
+    })
+    args.session.lastReportId = undefined
+    args.session.lastReportMarkdown = undefined
+    args.session.facts = args.session.facts.filter((f) => f.startsWith('[chat-history]'))
+    args.session.interactions = []
+    args.session.checkedSteps = []
+  }
   const fact = args.newFact.trim()
   if (fact) {
     args.session.facts.push(fact)
@@ -2164,6 +2207,12 @@ async function handleCardActionCore(args: {
   if (action === 'archive') {
     const id = incidentId || session.lastReportId
     if (!id) {
+      // No case id — treat any leftover open case as mid-exit · 无风险, then clear.
+      await closeIncidentAsInvestigatedNoRisk({
+        incidentId: session.lastReportId,
+        openId: args.openId,
+        reason: 'archive_without_id',
+      })
       await clearSessionDurable(args.chatId, sessionUser)
       return {
         card: simpleCard(
@@ -2203,12 +2252,20 @@ async function handleCardActionCore(args: {
       text: 'end_without_report',
       messageId: args.messageId,
     })
+    // Mid-exit: record as investigated · 无风险 (no formal archive-after-report).
+    await closeIncidentAsInvestigatedNoRisk({
+      incidentId: endedId,
+      openId: args.openId,
+      reason: 'end_without_report',
+    })
     session.mode = 'idle'
     session.pathSteps = undefined
     session.pathStepIndex = undefined
     session.stepAwaiting = 'none'
     session.pendingPrompt = undefined
     session.escalation = undefined
+    session.lastReportId = undefined
+    session.lastReportMarkdown = undefined
     await saveSessionDurable(args.chatId, sessionUser, session)
     const title =
       lang === 'zh-Hans'
@@ -2218,27 +2275,10 @@ async function handleCardActionCore(args: {
           : 'Investigation ended'
     const body =
       lang === 'zh-Hans'
-        ? '已结束排查，**未生成报告**。**下一步：** 可贴新告警重新开始；或点下方归档写入复盘看板。'
+        ? '已结束排查（未生成报告）。本案已记为 **排查过 · 无风险**。**下一步：** 可贴新告警重新开始。'
         : lang === 'zh-Hant'
-          ? '已結束排查，**未生成報告**。**下一步：** 可貼新告警重新開始；或點下方歸檔寫入複盤看板。'
-          : 'Ended without a report. **Next:** paste a new alert to restart, or archive below for the review board.'
-    const actions: Record<string, unknown>[] = []
-    if (endedId) {
-      actions.push({
-        tag: 'button',
-        text: {
-          tag: 'plain_text',
-          content:
-            lang === 'zh-Hans'
-              ? '归档并完成复盘'
-              : lang === 'zh-Hant'
-                ? '歸檔並完成複盤'
-                : 'Archive & finish review',
-        },
-        type: 'primary',
-        value: { action: 'archive', incidentId: endedId },
-      })
-    }
+          ? '已結束排查（未生成報告）。本案已記為 **排查過 · 無風險**。**下一步：** 可貼新告警重新開始。'
+          : 'Ended without a report. Recorded as **investigated · no risk**. **Next:** paste a new alert to restart.'
     return {
       card: {
         config: { wide_screen_mode: true },
@@ -2246,10 +2286,7 @@ async function handleCardActionCore(args: {
           template: 'grey',
           title: { tag: 'plain_text', content: title },
         },
-        elements: [
-          { tag: 'div', text: { tag: 'lark_md', content: body } },
-          ...(actions.length ? [{ tag: 'action', actions }] : []),
-        ],
+        elements: [{ tag: 'div', text: { tag: 'lark_md', content: body } }],
       },
     }
   }
@@ -2867,6 +2904,35 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
         messageId: inbound.messageId,
       })
     }
+    // New alert / investigate while draft open = mid-exit → investigated · 无风险, then gather.
+    if (
+      intent === 'investigate' &&
+      (looksLikeIncidentEvidence(workingText) || looksForwardedEvidence)
+    ) {
+      await closeIncidentAsInvestigatedNoRisk({
+        incidentId: session.lastReportId,
+        openId: inbound.openId,
+        reason: 'abandon_report_draft',
+      })
+      session.lastReportId = undefined
+      session.lastReportMarkdown = undefined
+      session.facts = session.facts.filter((f) => f.startsWith('[chat-history]'))
+      session.interactions = []
+      session.checkedSteps = []
+      session.mode = 'idle'
+      await saveSessionDurable(inbound.chatId, inbound.openId, session)
+      const fact = workingText
+        .replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '')
+        .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
+        .trim()
+      return replyAlertGather({
+        msg: inbound,
+        lang,
+        session,
+        newFact: fact,
+        freshCase: true,
+      })
+    }
     if (
       intent === 'greeting' ||
       intent === 'ack_mention' ||
@@ -3358,11 +3424,15 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
     }
     // Idle / gather: stash alert(s) and wait for 开始分析 — do not open the path yet.
     if (session.mode === 'idle' || session.mode === 'gather_alerts') {
+      // Idle with leftover open case (never archived) → close as 排查过 · 无风险.
+      const freshCase =
+        session.mode === 'idle' && Boolean(session.lastReportId)
       return replyAlertGather({
         msg: inbound,
         lang,
         session,
         newFact: fact,
+        freshCase,
       })
     }
     return runInvestigation({

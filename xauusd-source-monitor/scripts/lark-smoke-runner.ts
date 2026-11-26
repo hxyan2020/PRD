@@ -92,6 +92,7 @@ import {
 } from '../api/lark/_lib/skills'
 import {
   clearSession,
+  getIncidentDurable,
   getSession,
   listIncidents,
   listIncidentsDurable,
@@ -3676,23 +3677,29 @@ async function main() {
     'investigate Mark vs Index 42bps for end-without-report',
     'end_no_report_user',
   )
+  const endNoCaseId = getSession('smoke_chat', 'end_no_report_user').lastReportId || ''
   const endNoReport = await handleCardAction({
     openId: 'end_no_report_user',
     chatId: 'smoke_chat',
     messageId: 'smoke_end_no_report',
-    value: { action: 'end_without_report', incidentId: '' },
+    value: { action: 'end_without_report', incidentId: endNoCaseId },
   })
   const endNoBlob =
     endNoReport?.text || (endNoReport?.card ? JSON.stringify(endNoReport.card) : '')
+  const endNoInc = endNoCaseId ? await getIncidentDurable(endNoCaseId) : undefined
   record(
     'turn.end_without_report',
     Boolean(endNoReport?.card) &&
       (endNoBlob.includes('未生成报告') ||
         endNoBlob.includes('未生成報告') ||
         endNoBlob.includes('without a report') ||
-        endNoBlob.includes('Ended without')) &&
-      getSession('smoke_chat', 'end_no_report_user').mode === 'idle',
-    endNoBlob.slice(0, 160),
+        endNoBlob.includes('Ended without') ||
+        endNoBlob.includes('无风险') ||
+        endNoBlob.includes('no risk')) &&
+      getSession('smoke_chat', 'end_no_report_user').mode === 'idle' &&
+      endNoInc?.status === 'archived' &&
+      endNoInc?.riskVerdict === 'no_risk',
+    `status=${endNoInc?.status} verdict=${endNoInc?.riskVerdict}`,
   )
   const reportBtnReply = await handleCardAction({
     openId: 'card_user',

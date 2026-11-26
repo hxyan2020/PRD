@@ -1293,7 +1293,7 @@ export function investigationReportDraftCard(args: {
   }
 }
 
-/** Shown when archiving without a final risk verdict. */
+/** Shown when archiving without a final 有风险 / 无风险 ruling. */
 export function riskVerdictPromptCard(args: {
   lang: Lang
   incidentId: string
@@ -1305,26 +1305,29 @@ export function riskVerdictPromptCard(args: {
   const then = args.thenArchive ? 'archive' : ''
   const body = hans
     ? [
-        '⚖️ **归档前请完成最终判定**',
+        '⚖️ **归档前请裁定：有风险 或 无风险**',
         args.title ? `• **案件：** ${args.title}` : null,
-        '该判定会计入 **复盘看板** 与 **周报** 的「有风险／无风险」统计。',
+        '正式归档后按你的裁定计入 **复盘看板** 与 **周报**。',
+        '（中途退出／未点归档 → 系统记为排查过 · 无风险。）',
         '请选择一项：',
       ]
         .filter(Boolean)
         .join('\n')
     : zh
       ? [
-          '⚖️ **歸檔前請完成最終判定**',
+          '⚖️ **歸檔前請裁定：有風險 或 無風險**',
           args.title ? `• **案件：** ${args.title}` : null,
-          '該判定會計入 **複盤看板** 與 **週報** 的「有風險／無風險」統計。',
+          '正式歸檔後按你的裁定計入 **複盤看板** 與 **週報**。',
+          '（中途退出／未點歸檔 → 系統記為排查過 · 無風險。）',
           '請選擇一項：',
         ]
           .filter(Boolean)
           .join('\n')
       : [
-          '⚖️ **Set a final risk verdict before archive**',
+          '⚖️ **Before archive, rule: At risk or No risk**',
           args.title ? `• **Case:** ${args.title}` : null,
-          'This is counted on the **review board** and **weekly report**.',
+          'Formal archive counts your ruling on the **review board** / **weekly report**.',
+          '(Mid-exit / no archive → recorded as investigated · no risk.)',
           'Pick one:',
         ]
           .filter(Boolean)
@@ -1367,25 +1370,6 @@ export function riskVerdictPromptCard(args: {
             value: {
               action: 'set_risk_verdict',
               verdict: 'no_risk',
-              incidentId: args.incidentId,
-              then,
-            },
-          },
-        ],
-      },
-      {
-        tag: 'action',
-        actions: [
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '尚不明确并归档' : zh ? '尚不明確並歸檔' : 'Unclear → archive',
-            },
-            type: 'default',
-            value: {
-              action: 'set_risk_verdict',
-              verdict: 'unclear',
               incidentId: args.incidentId,
               then,
             },
