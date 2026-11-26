@@ -145,7 +145,7 @@ export async function buildCronHealthReport(args?: {
               .map(([, t]) => t as number),
           )) || 0
     const b = beats['/api/lark/cron-health']
-    const maxSilence = 35 * 60_000
+    const maxSilence = 28 * 60_000
     const dmOk = delivery > 0 && now - delivery <= maxSilence
     // Expected once the half-hour slot has had a few minutes to fire.
     const slotStart = slotStartMs(slotKey)
@@ -153,7 +153,7 @@ export async function buildCronHealthReport(args?: {
     jobs.push({
       id: 'cron-health',
       label: 'Cron 健康 DM',
-      schedule: '每 30 分钟 → Yan DM（35 分钟静默追发）',
+      schedule: '每 30 分钟 + :05/:35 → Yan（28 分钟静默追发）',
       expected,
       ok: !expected || dmOk,
       detail: dmOk
