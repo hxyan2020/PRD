@@ -769,12 +769,13 @@ async function main() {
 
   // Paste alert → gather gate (ask for more) until 开始分析.
   clearSession('smoke_chat', 'gather_zh')
+  const gatherAlertText = '告警：XAU_USD Mark 偏离 48bps，IDX-01 被剔除'
   const gather1 = await turn(
     'inv-gather-first-alert',
-    '告警：XAU_USD Mark 偏离 48bps，IDX-01 被剔除',
+    gatherAlertText,
     'gather_zh',
     'smoke_chat',
-    { keepGather: true },
+    { keepGather: true, messageId: 'smoke_gather_mid_1' },
   )
   record(
     'turn.alert_gather_asks_before_analysis',
@@ -785,6 +786,34 @@ async function main() {
         gather1.blob.includes('Start analysis')) &&
       !gather1.blob.includes('排查步骤'),
     gather1.blob.slice(0, 160),
+  )
+  const gatherFacts = () =>
+    getSession('smoke_chat', 'gather_zh').facts.filter((f) => !f.startsWith('[chat-history]'))
+  // Feishu redelivery of the same message_id must not append or re-card.
+  const dupReplay = await turn(
+    'inv-gather-dup-replay-message-id',
+    gatherAlertText,
+    'gather_zh',
+    'smoke_chat',
+    { keepGather: true, messageId: 'smoke_gather_mid_1' },
+  )
+  record(
+    'turn.alert_gather_dedupes_same_message_id',
+    !dupReplay.reply && gatherFacts().length === 1,
+    `reply=${dupReplay.reply ? 'card' : 'null'} facts=${gatherFacts().length}`,
+  )
+  // Identical alert body (new message_id) still counts as one.
+  const dupSameText = await turn(
+    'inv-gather-dup-same-text',
+    gatherAlertText,
+    'gather_zh',
+    'smoke_chat',
+    { keepGather: true, messageId: 'smoke_gather_mid_1b' },
+  )
+  record(
+    'turn.alert_gather_dedupes_identical_text',
+    !dupSameText.reply && gatherFacts().length === 1,
+    `reply=${dupSameText.reply ? 'card' : 'null'} facts=${gatherFacts().length}`,
   )
   const gather2 = await turn(
     'inv-gather-second-alert',
@@ -1021,10 +1050,17 @@ async function main() {
   })
   record('parse.enrich_passthrough_text', enrichedSame.text === 'hello world', enrichedSame.text)
 
-  const { claimOnce, releaseClaim } = await import('../api/lark/_lib/dedupe')
+  const { claimOnce, releaseClaim, dedupeKey } = await import('../api/lark/_lib/dedupe')
   const dk = `smoke_dedupe_${Date.now()}`
   record('dedupe.first_claim', claimOnce(dk) === true, '')
   record('dedupe.second_claim_blocked', claimOnce(dk) === false, '')
+  record(
+    'dedupe.message_prefers_message_id',
+    dedupeKey({ event_id: 'evt_new_on_retry' }, 'om_same') === 'msg:om_same' &&
+      dedupeKey({ event_id: 'evt_card' }, 'om_card', 'om_card:start_analysis::') ===
+        'card:om_card:start_analysis::',
+    '',
+  )
   releaseClaim(dk)
 
   // 6a) Greeting daypart uses 东八区; 17:00 is still afternoon
