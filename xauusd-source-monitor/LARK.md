@@ -179,7 +179,9 @@ never-sent).
 - **Cancel before first nudge:** any human (non-alert) group message clears the arm
 - **Cron:** `* * * * *` → `/api/lark/alert-nudge`
 - **Chat:** alert’s group chat id (fallback `LARK_ALERT_NUDGE_CHAT_ID` / `LARK_DAILY_MARKET_CHAT_ID`)
-- **Preview / force:** `GET ?dry=1` · `POST { "force": true }`
+- **Delivery:** default **group**; optional private DM demo (`delivery=p2p`)
+- **Preview / force / demo:** `GET ?dry=1` · `POST { "force": true }` · `POST { "demo": "group" }` (group) · `POST { "demo": "p2p" }` (DM Yan)
+- **Local desk scripts:** `npx tsx scripts/demo-nudge-group.ts` · `npx tsx scripts/demo-nudge-p2p.ts`
 
 ## Bot behaviour
 

@@ -18,6 +18,7 @@ import {
   ALERT_NUDGE_SILENCE_MS,
   DEFAULT_ALERT_NUDGE_CHAT_ID,
   ackAlertNudgeDurable,
+  armAlertNudgeGroupDemo,
   armAlertNudgeP2pDemo,
   buildAlertNudgeCard,
   loadNudgeState,
@@ -78,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     dry?: boolean
     chatId?: string
     ack?: boolean
-    /** Private DM demo to Yan — arms + activates p2p delivery. */
+    /** Demo: `p2p` / true → DM Yan; `group` → same loop in the alert group. */
     demo?: boolean | string
   }
   const dry =
@@ -87,11 +88,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (req.method === 'GET' && !cron && String(q.send || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
   const ack = body.ack === true || String(q.ack || '') === '1'
-  const demoP2p =
-    body.demo === true ||
-    body.demo === 'p2p' ||
-    String(q.demo || '') === '1' ||
-    String(q.demo || '') === 'p2p'
+  const demoRaw = String(body.demo ?? q.demo ?? '').trim().toLowerCase()
+  const demoP2p = demoRaw === '1' || demoRaw === 'true' || demoRaw === 'p2p'
+  const demoGroup = demoRaw === 'group'
 
   const now = Date.now()
   const chat = resolveChatId(body.chatId || String(q.chatId || ''))
@@ -113,22 +112,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   let state = await loadNudgeState()
 
-  // Private-chat demo: DM Yan immediately (skips 3min silence).
-  if (demoP2p && !dry) {
+  // Demo: activate immediately (skips 3min silence). p2p → DM Yan; group → chat card.
+  if ((demoP2p || demoGroup) && !dry) {
     const admin = await resolveAdminOpenId({ preferChatId: chat.chatId })
     if (!admin.openId || !admin.openId.startsWith('ou_')) {
       return res.status(400).json({
         ok: false,
-        error: 'LARK_ADMIN_OPEN_ID missing — cannot DM Yan for p2p demo',
+        error: 'LARK_ADMIN_OPEN_ID missing — cannot @Yan for nudge demo',
       })
     }
-    state = await armAlertNudgeP2pDemo({
-      openId: admin.openId,
-      alertPreview: 'DEMO · 私聊每分钟提醒',
-    })
+    if (demoGroup) {
+      state = await armAlertNudgeGroupDemo({
+        chatId: chat.chatId,
+        openId: admin.openId,
+        alertPreview: 'DEMO · 群聊每分钟提醒',
+      })
+    } else {
+      state = await armAlertNudgeP2pDemo({
+        openId: admin.openId,
+        alertPreview: 'DEMO · 私聊每分钟提醒',
+      })
+    }
   }
 
-  if (dry && !force && !demoP2p) {
+  if (dry && !force && !demoP2p && !demoGroup) {
     const previewCount = (state?.sendCount || 0) + 1
     const card = buildAlertNudgeCard({
       openId: state?.openId || '',
@@ -246,7 +253,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: true,
       sent: true,
       delivery,
-      demo: demoP2p || undefined,
+      demo: demoGroup ? 'group' : demoP2p ? 'p2p' : undefined,
       messageId: sent.messageId,
       state: next,
       day,

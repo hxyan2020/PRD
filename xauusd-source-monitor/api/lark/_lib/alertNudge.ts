@@ -354,6 +354,33 @@ export async function armAlertNudgeP2pDemo(args: {
   return next
 }
 
+/** Group-chat demo: arm + activate immediately; cards go to the alert group. */
+export async function armAlertNudgeGroupDemo(args: {
+  chatId: string
+  openId: string
+  alertAt?: number
+  alertPreview?: string
+  message?: string
+}): Promise<AlertNudgeState> {
+  const now = args.alertAt || Date.now() - ALERT_NUDGE_SILENCE_MS - 5_000
+  const next: AlertNudgeState = {
+    dayKey: shanghaiDayKey(Date.now()),
+    chatId: args.chatId,
+    openId: args.openId,
+    message:
+      args.message || '【群聊演示】模拟告警后 3 分钟无人响应 — 请点知道了停止',
+    delivery: 'group',
+    armed: false,
+    active: true,
+    acked: false,
+    alertAt: now,
+    alertPreview: args.alertPreview || 'DEMO · Mark vs Index 48bps（群聊）',
+    sendCount: 0,
+  }
+  await saveNudgeState(next)
+  return next
+}
+
 /** Sync variant for smoke. */
 export function armAlertNudge(args: {
   chatId: string
