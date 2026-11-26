@@ -853,6 +853,33 @@ async function main() {
           Boolean(misTyped?.followUpCards?.length)),
       misBlob.slice(0, 120),
     )
+
+    // Cold instance: no durable session — only button-stashed alerts.
+    clearSession('oc_btn_only', 'btn_only')
+    clearSession('oc_btn_only', '__group__')
+    const fromBtn = await handleCardAction({
+      openId: 'btn_only',
+      chatId: '',
+      messageId: 'smoke_start_btn_alerts',
+      value: {
+        action: 'start_analysis',
+        lang: 'zh-Hans',
+        chatId: 'oc_btn_only',
+        chatType: 'p2p',
+        alerts: ['【档位深度监控】深度告警 合约:XAU_USD 侧别:SELL'],
+      },
+      chatType: 'group',
+    })
+    const btnBlob =
+      (fromBtn?.card ? JSON.stringify(fromBtn.card) : '') +
+      (fromBtn?.followUpCards || []).map((c) => JSON.stringify(c)).join('\n')
+    record(
+      'turn.start_analysis_from_button_stashed_alerts',
+      !/No alerts yet|还没有告警/.test(btnBlob) &&
+        /排查总览|排查步骤/.test(btnBlob) &&
+        !/No alerts yet|Starting analysis|Paste an alert/.test(btnBlob),
+      btnBlob.slice(0, 120),
+    )
   }
 
   // Mid-case explicit「排查」must re-enter gather — never resume at a high step index.

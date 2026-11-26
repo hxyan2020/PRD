@@ -311,6 +311,12 @@ export function alertGatherCard(args: {
           '',
           'Any more alerts? If not, tap **Start analysis**.',
         ].join('\n')
+  // Embed truncated alerts on the button so start_analysis works even if durable
+  // session is missing on another serverless instance (Feishu value ~1KB budget).
+  const stashedAlerts = args.alerts
+    .map((a) => a.replace(/\s+/g, ' ').trim().slice(0, 220))
+    .filter(Boolean)
+    .slice(0, 4)
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -331,6 +337,8 @@ export function alertGatherCard(args: {
             type: 'primary',
             value: {
               action: 'start_analysis',
+              lang: args.lang,
+              alerts: stashedAlerts,
               ...(args.chatId ? { chatId: args.chatId } : {}),
               ...(args.chatType ? { chatType: args.chatType } : {}),
             },
@@ -438,6 +446,7 @@ function stepGuideActionElements(args: {
   const zh = isZh(args.lang)
   const roles = (args.escalateRoles || []).filter(Boolean)
   const rolesLabel = (roles.length ? roles : ['RC']).join('/')
+  const langValue = { lang: args.lang }
   const row1: Record<string, unknown>[] = [
     {
       tag: 'button',
@@ -450,6 +459,7 @@ function stepGuideActionElements(args: {
         action: 'guide_step_supplement',
         stepId: args.step.id,
         incidentId: args.incidentId || '',
+        ...langValue,
       },
     },
     {
@@ -460,6 +470,7 @@ function stepGuideActionElements(args: {
         action: 'guide_step_skip',
         stepId: args.step.id,
         incidentId: args.incidentId || '',
+        ...langValue,
       },
     },
     {
@@ -471,6 +482,7 @@ function stepGuideActionElements(args: {
         stepId: args.step.id,
         incidentId: args.incidentId || '',
         roles: rolesLabel,
+        ...langValue,
       },
     },
     {
@@ -484,6 +496,7 @@ function stepGuideActionElements(args: {
         action: 'end_investigation',
         stepId: args.step.id,
         incidentId: args.incidentId || '',
+        ...langValue,
       },
     },
   ]
@@ -496,6 +509,7 @@ function stepGuideActionElements(args: {
         action: 'guide_step_done',
         stepId: args.step.id,
         incidentId: args.incidentId || '',
+        ...langValue,
       },
     },
   ]
@@ -562,6 +576,7 @@ export function investigationEndAskReportCard(args: {
               action: 'end_and_report',
               incidentId: args.incidentId || '',
               stepId: args.stepId || '',
+              lang: args.lang,
             },
           },
           {
@@ -575,6 +590,7 @@ export function investigationEndAskReportCard(args: {
               action: 'end_without_report',
               incidentId: args.incidentId || '',
               stepId: args.stepId || '',
+              lang: args.lang,
             },
           },
         ],

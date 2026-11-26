@@ -2089,24 +2089,57 @@ async function handleCardActionCore(args: {
       session = alt
     }
   }
-  // Desk is ZH-first; never fall back to English mid-case when preferredLang unset.
-  let lang: Lang = session.preferredLang || 'zh-Hans'
+  // Prefer lang stashed on the button (user's language), then session, then ZH desk default.
+  const langFromValue = String(args.value.lang || '').trim()
+  let lang: Lang =
+    langFromValue === 'zh-Hans' || langFromValue === 'zh-Hant' || langFromValue === 'en'
+      ? (langFromValue as Lang)
+      : session.preferredLang || 'zh-Hans'
 
   if (action === 'start_analysis') {
-    const hasAlerts = session.facts.some((f) => !f.startsWith('[chat-history]'))
-    const gatherReady = session.mode === 'gather_alerts' && hasAlerts
-    if (!gatherReady && !hasAlerts) {
-      // Recover: empty/wrong chatId → look up newest gather session for this operator.
+    const stashedAlerts = (() => {
+      const raw = args.value.alerts
+      if (Array.isArray(raw)) {
+        return raw.map((a) => String(a || '').trim()).filter(Boolean)
+      }
+      if (typeof raw === 'string' && raw.trim()) {
+        try {
+          const parsed = JSON.parse(raw) as unknown
+          if (Array.isArray(parsed)) {
+            return parsed.map((a) => String(a || '').trim()).filter(Boolean)
+          }
+        } catch {
+          /* ignore */
+        }
+        return [raw.trim()]
+      }
+      return [] as string[]
+    })()
+    let hasAlerts = session.facts.some((f) => !f.startsWith('[chat-history]'))
+    if (!hasAlerts) {
+      // 1) Recover durable gather session (wrong chat key / oc_→group miss).
       const found = await findRecentGatherSession(args.openId)
       if (found) {
         chatId = found.chatId
         sessionUser = found.sessionUser
         session = found.state
-        lang = session.preferredLang || 'zh-Hans'
+        hasAlerts = session.facts.some((f) => !f.startsWith('[chat-history]'))
+        if (!langFromValue) lang = session.preferredLang || lang
       }
     }
-    const alertsNow = session.facts.some((f) => !f.startsWith('[chat-history]'))
-    if (!alertsNow) {
+    if (!hasAlerts && stashedAlerts.length) {
+      // 2) Rehydrate from button-stashed alerts (survives cross-instance session miss).
+      for (const a of stashedAlerts) {
+        if (!session.facts.some((f) => f === a || f.includes(a.slice(0, 80)))) {
+          session.facts.push(a)
+        }
+      }
+      session.mode = 'gather_alerts'
+      session.preferredLang = lang
+      hasAlerts = true
+      if (!chatId) chatId = String(args.value.chatId || args.chatId || '').trim()
+    }
+    if (!hasAlerts) {
       const title =
         lang === 'zh-Hans' ? '还没有告警' : lang === 'zh-Hant' ? '還沒有告警' : 'No alerts yet'
       const body =
@@ -2121,16 +2154,19 @@ async function handleCardActionCore(args: {
     if (session.mode !== 'gather_alerts' && session.mode !== 'investigate') {
       session.mode = 'gather_alerts'
     }
+    session.preferredLang = lang
     const fakeMsg: IncomingMessage = {
       messageId: args.messageId,
-      chatId: chatId || args.chatId,
+      chatId: chatId || args.chatId || `p2p_${args.openId}`,
       chatType,
-      openId: sessionUser,
+      openId: sessionUser === '__group__' ? args.openId : sessionUser,
       messageType: 'interactive',
       text: '',
       mentionedBot: true,
       rawContent: '',
     }
+    // Keep group shared session key when recovered as __group__.
+    const saveUser = sessionUser
     pushInteraction(session, {
       role: 'user',
       kind: 'command',
@@ -2142,9 +2178,9 @@ async function handleCardActionCore(args: {
             : 'Start analysis',
       messageId: args.messageId,
     })
-    await saveSessionDurable(fakeMsg.chatId, sessionUser, session)
+    await saveSessionDurable(fakeMsg.chatId, saveUser, session)
     return runInvestigation({
-      msg: fakeMsg,
+      msg: { ...fakeMsg, openId: saveUser },
       lang,
       newFact: '',
       fromGather: true,
@@ -2876,7 +2912,8 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
   const userCaption = (inbound.text || '').trim()
   const session = await getSessionDurable(inbound.chatId, inbound.openId)
   // Prefer sticky Chinese: share-card English must not reset the session language
-  const langFallback = session.preferredLang || 'en'
+  // Desk default ZH; detectLang switches to en when the user writes English.
+  const langFallback = session.preferredLang || 'zh-Hans'
   let lang = detectLang(inbound.text || '', langFallback)
   if (
     looksLikeShareOrFileMeta(inbound.text || '') &&
