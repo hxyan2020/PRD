@@ -233,9 +233,98 @@ async function handleCardActionRequest(
     })
   }
 
+  const actionName = String(value.action || '')
+  const callbackToken = String(
+    args.event.token || (args.event as { action_token?: string }).action_token || '',
+  ).trim()
+
+  // 「结束排查」must show 生成报告 / 不生成报告 buttons — toast alone is not enough.
+  // Sync-post ask-report as a NEW message (callback-token update must wait until
+  // after HTTP 200, so we only ack the step card in waitUntil).
+  if (actionName === 'end_investigation') {
+    try {
+      const reply = await handleCardAction({
+        openId,
+        chatId,
+        messageId,
+        value,
+        chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+      })
+      const { updateCardByCallbackToken, sendCardToChat, sendCardToOpenId } =
+        await import('./_lib/client.js')
+      const { simpleCard } = await import('./_lib/cards.js')
+      const askCard = reply?.card
+      let via = 'none'
+      if (askCard) {
+        if (chatId) {
+          await sendCardToChat(chatId, askCard)
+          via = 'new_ask_report'
+        } else if (openId.startsWith('ou_')) {
+          await sendCardToOpenId(openId, askCard)
+          via = 'new_ask_report_open_id'
+        } else {
+          waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
+          via = 'dispatch_fallback'
+        }
+      }
+      if (callbackToken) {
+        waitUntil(
+          (async () => {
+            try {
+              await new Promise((r) => setTimeout(r, 150))
+              await updateCardByCallbackToken(
+                callbackToken,
+                simpleCard(
+                  'VE Risk Copilot',
+                  '结束排查 — 请点下方选择是否生成报告',
+                  'orange',
+                ),
+                { openIds: openId.startsWith('ou_') ? [openId] : [] },
+              )
+            } catch {
+              /* non-fatal — ask-report already posted */
+            }
+          })(),
+        )
+      }
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        openId,
+        chatId,
+        messageId,
+        result: `ok:end_investigation:${via}`,
+      })
+      return res.status(200).json({
+        toast: investigationActionToast('end_investigation'),
+      })
+    } catch (e) {
+      logInbound({
+        at: new Date().toISOString(),
+        kind: 'card_action',
+        eventType: args.eventType,
+        error: e instanceof Error ? e.message : 'end_investigation error',
+        result: 'error',
+      })
+      return res.status(200).json({
+        toast: {
+          type: 'error',
+          content: '结束排查失败，请再试一次',
+          i18n: {
+            zh_cn: '结束排查失败，请再试一次',
+            zh_hk: '結束排查失敗，請再試一次',
+            zh_tw: '結束排查失敗，請再試一次',
+            en_us: 'End case failed — tap again',
+          },
+        },
+      })
+    }
+  }
+
   // Nudge「知道了」must durable-ack BEFORE toast — waitUntil alone raced cron
   // when Blob writes failed silently and state lived only in /tmp.
-  const isNudgeAck = String(value.action || '') === 'alert_nudge_ack'
+  const isNudgeAck = actionName === 'alert_nudge_ack'
   if (isNudgeAck) {
     try {
       const reply = await handleCardAction({
@@ -260,7 +349,7 @@ async function handleCardActionRequest(
       return res.status(200).json({
         toast: {
           type: 'success',
-          content: 'Stopped',
+          content: '已停止提醒',
           i18n: { zh_cn: '已停止提醒', zh_hk: '已停止提醒', en_us: 'Stopped' },
         },
       })
@@ -275,7 +364,7 @@ async function handleCardActionRequest(
       return res.status(200).json({
         toast: {
           type: 'error',
-          content: 'Stop failed',
+          content: '停止失败，请回复：知道了',
           i18n: { zh_cn: '停止失败，请回复：知道了', zh_hk: '停止失敗，請回覆：知道了', en_us: 'Reply 知道了' },
         },
       })
@@ -285,10 +374,6 @@ async function handleCardActionRequest(
   // Same pattern as K-line TF: toast within 3s, then delayed update via callback
   // token. replyCard on the interactive message often fails after toast-only ack
   // (operator saw「已处理」but never got the next step card).
-  const callbackToken = String(
-    args.event.token || (args.event as { action_token?: string }).action_token || '',
-  ).trim()
-  const actionName = String(value.action || '')
   waitUntil(
     (async () => {
       const typing = startTypingSession(messageId)
@@ -421,7 +506,10 @@ async function handleCardActionRequest(
   return res.status(200).json({ toast: investigationActionToast(actionName) })
 }
 
-/** Immediate toast for investigation (and related) card buttons. */
+/**
+ * Immediate toast for investigation (and related) card buttons.
+ * `content` is zh-Hans primary so Feishu clients that ignore i18n still match card UI.
+ */
 function investigationActionToast(action: string): {
   type: string
   content: string
@@ -432,7 +520,7 @@ function investigationActionToast(action: string): {
     case 'step_done':
       return {
         type: 'success',
-        content: 'Done — next step',
+        content: '已完成，进入下一步',
         i18n: {
           zh_cn: '已完成，进入下一步',
           zh_hk: '已完成，進入下一步',
@@ -443,7 +531,7 @@ function investigationActionToast(action: string): {
     case 'guide_step_skip':
       return {
         type: 'info',
-        content: 'Skip received',
+        content: '已跳过／请说明原因',
         i18n: {
           zh_cn: '已跳过／请说明原因',
           zh_hk: '已跳過／請說明原因',
@@ -454,7 +542,7 @@ function investigationActionToast(action: string): {
     case 'guide_step_escalate':
       return {
         type: 'info',
-        content: 'Escalated — awaiting feedback',
+        content: '已升级等待反馈',
         i18n: {
           zh_cn: '已升级等待反馈',
           zh_hk: '已升級等待反饋',
@@ -465,7 +553,7 @@ function investigationActionToast(action: string): {
     case 'guide_step_supplement':
       return {
         type: 'info',
-        content: 'Add info — reply with evidence',
+        content: '请回复补充信息',
         i18n: {
           zh_cn: '请回复补充信息',
           zh_hk: '請回覆補充資訊',
@@ -476,7 +564,7 @@ function investigationActionToast(action: string): {
     case 'guide_step_cancel_await':
       return {
         type: 'success',
-        content: 'Back to step options',
+        content: '已返回步骤选项',
         i18n: {
           zh_cn: '已返回步骤选项',
           zh_hk: '已返回步驟選項',
@@ -487,19 +575,19 @@ function investigationActionToast(action: string): {
     case 'end_investigation':
       return {
         type: 'info',
-        content: 'End case — choose report?',
+        content: '请选择是否生成报告',
         i18n: {
-          zh_cn: '结束排查 — 是否生成报告？',
-          zh_hk: '結束排查 — 是否生成報告？',
-          zh_tw: '結束排查 — 是否生成報告？',
-          en_us: 'End case — choose report?',
+          zh_cn: '请选择是否生成报告',
+          zh_hk: '請選擇是否生成報告',
+          zh_tw: '請選擇是否生成報告',
+          en_us: 'Choose whether to generate a report',
         },
       }
     case 'end_and_report':
     case 'generate_report':
       return {
         type: 'success',
-        content: 'Generating report…',
+        content: '正在生成排查报告',
         i18n: {
           zh_cn: '正在生成排查报告',
           zh_hk: '正在生成排查報告',
@@ -510,7 +598,7 @@ function investigationActionToast(action: string): {
     case 'end_without_report':
       return {
         type: 'success',
-        content: 'Ended without report',
+        content: '已结束（无报告）',
         i18n: {
           zh_cn: '已结束（无报告）',
           zh_hk: '已結束（無報告）',
@@ -521,7 +609,7 @@ function investigationActionToast(action: string): {
     case 'start_analysis':
       return {
         type: 'success',
-        content: 'Starting analysis',
+        content: '开始分析',
         i18n: {
           zh_cn: '开始分析',
           zh_hk: '開始分析',
@@ -532,7 +620,7 @@ function investigationActionToast(action: string): {
     case 'set_risk_verdict':
       return {
         type: 'success',
-        content: 'Verdict saved',
+        content: '判定已保存',
         i18n: {
           zh_cn: '判定已保存',
           zh_hk: '判定已保存',
@@ -543,7 +631,7 @@ function investigationActionToast(action: string): {
     case 'archive':
       return {
         type: 'success',
-        content: 'Archived',
+        content: '已归档',
         i18n: {
           zh_cn: '已归档',
           zh_hk: '已歸檔',
@@ -554,7 +642,7 @@ function investigationActionToast(action: string): {
     case 'open_incident':
       return {
         type: 'info',
-        content: 'Opening report',
+        content: '打开报告',
         i18n: {
           zh_cn: '打开报告',
           zh_hk: '打開報告',
@@ -565,7 +653,7 @@ function investigationActionToast(action: string): {
     case 'review':
       return {
         type: 'info',
-        content: 'Opening board',
+        content: '打开看板',
         i18n: {
           zh_cn: '打开看板',
           zh_hk: '打開看板',
@@ -576,7 +664,7 @@ function investigationActionToast(action: string): {
     case 'alert_nudge_ack':
       return {
         type: 'success',
-        content: 'Stopped',
+        content: '已停止提醒',
         i18n: {
           zh_cn: '已停止提醒',
           zh_hk: '已停止提醒',
@@ -587,7 +675,7 @@ function investigationActionToast(action: string): {
     default:
       return {
         type: 'success',
-        content: 'OK',
+        content: '已处理',
         i18n: { zh_cn: '已处理', zh_hk: '已處理', zh_tw: '已處理', en_us: 'Done' },
       }
   }
