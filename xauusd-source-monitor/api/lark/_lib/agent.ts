@@ -222,14 +222,196 @@ function buildSummary(args: {
     .join('\n')
 }
 
+/** Alert-specific cause hypotheses (not a repeat of the matched Skill id/name). */
+function alertCauseHypotheses(args: {
+  lang: Lang
+  hit: { id: string; name: string; check: string }
+  facts: string[]
+}): string[] {
+  const hans = args.lang === 'zh-Hans'
+  const hant = args.lang === 'zh-Hant'
+  const en = !hans && !hant
+  const blob = args.facts.join('\n')
+  const name = args.hit.name
+  const cue: string[] = []
+  const spreadM = blob.match(/spread\s*[:=]?\s*([0-9.]+)/i)
+  const thrM = blob.match(/(?:阈值|threshold)\s*[:=]?\s*([0-9.]+)/i)
+  if (spreadM && thrM) {
+    cue.push(
+      hans
+        ? `告警显示 Spread **${spreadM[1]}** 对阈值 **${thrM[1]}**`
+        : hant
+          ? `告警顯示 Spread **${spreadM[1]}** 對閾值 **${thrM[1]}**`
+          : `Alert shows Spread **${spreadM[1]}** vs threshold **${thrM[1]}**`,
+    )
+  }
+  const bpsM = blob.match(/(\d+(?:\.\d+)?)\s*bps/i)
+  if (bpsM) {
+    cue.push(hans || hant ? `偏离约 **${bpsM[1]} bps**` : `deviation ~**${bpsM[1]} bps**`)
+  }
+
+  const family = ((): string[] => {
+    if (/价差|價差|spread|盘口价差|盤口價差/i.test(name) || /L1-03/i.test(args.hit.id)) {
+      return hans
+        ? [
+            '做市／流动性不足：买卖盘变薄或单边撤单，Bid–Ask 被动拉宽',
+            '短时大额吃单冲击盘口，价差尖刺后尚未恢复',
+            '局部盘口异常（Index／Mark 仍正常）— 非指数源问题的可能性',
+            '异常挂单／错价委托把盘口价差撑开',
+          ]
+        : hant
+          ? [
+              '做市／流動性不足：買賣盤變薄或單邊撤單，Bid–Ask 被動拉寬',
+              '短時大額吃單衝擊盤口，價差尖刺後尚未恢復',
+              '局部盤口異常（Index／Mark 仍正常）— 非指數源問題的可能性',
+              '異常掛單／錯價委託把盤口價差撐開',
+            ]
+          : [
+              'Thin liquidity / one-sided cancels widened Bid–Ask',
+              'Short burst of aggressive fills spiked spread before recovery',
+              'Local book anomaly while Index/Mark still healthy',
+              'Mispriced resting orders holding the spread open',
+            ]
+    }
+    if (/偏离|偏離|deviation|盘口偏离/i.test(name) || /L1-04/i.test(args.hit.id)) {
+      return hans
+        ? [
+            '盘口 Mid 相对 Index 短时偏离（流动性冲击或挂单失衡）',
+            '行情源／指数更新滞后，盘口先动、Index 后跟上',
+            'Price Band／合理价配置异常导致可成交价被推离 Index',
+          ]
+        : hant
+          ? [
+              '盤口 Mid 相對 Index 短時偏離（流動性衝擊或掛單失衡）',
+              '行情源／指數更新滯後，盤口先動、Index 後跟上',
+              'Price Band／合理價配置異常導致可成交價被推離 Index',
+            ]
+          : [
+              'Book mid briefly diverged from Index (liquidity / imbalance)',
+              'Index lag: book moved first, Index caught up later',
+              'Price-band / fair-price config pushing tradable prices off Index',
+            ]
+    }
+    if (/插针|插針|spike/i.test(name) || /L1-05/i.test(args.hit.id)) {
+      return hans
+        ? [
+            '薄盘口被大单瞬间打穿，成交价尖刺',
+            '条件单／止损连锁触发放大波动',
+            '错价或异常订单造成的短暂插针（需核对委托与成交）',
+          ]
+        : hant
+          ? [
+              '薄盤口被大單瞬間打穿，成交價尖刺',
+              '條件單／止損連鎖觸發放大波動',
+              '錯價或異常訂單造成的短暫插針（需核對委託與成交）',
+            ]
+          : [
+              'Thin book swept by a large order → trade-price spike',
+              'Stop / conditional cascade amplifying the move',
+              'Mispriced order causing a brief spike (check orders & fills)',
+            ]
+    }
+    if (/funding|资金费率|資金費率/i.test(name)) {
+      return hans
+        ? [
+            '本所 Premium／基础费率计算异常或结算窗口错位',
+            '友商 Funding 短时偏离，价差监控触发',
+            '指数／持仓名义变化带动 Funding 跳变',
+          ]
+        : hant
+          ? [
+              '本所 Premium／基礎費率計算異常或結算窗口錯位',
+              '友商 Funding 短時偏離，價差監控觸發',
+              '指數／持倉名義變化帶動 Funding 跳變',
+            ]
+          : [
+              'Local premium / base-rate calc or settlement-window glitch',
+              'Peer Funding briefly diverged and tripped the monitor',
+              'Index / OI shift driving a Funding jump',
+            ]
+    }
+    if (/源|剔除|恢复|恢復|超时|超時|降级|降級|mark/i.test(name)) {
+      return hans
+        ? [
+            '行情源超时／抖动，触发剔除或降级',
+            '权重／最小源数配置使剩余源不足',
+            '切源或线性过渡期间 Index／Mark 短时不稳定',
+          ]
+        : hant
+          ? [
+              '行情源超時／抖動，觸發剔除或降級',
+              '權重／最小源數配置使剩餘源不足',
+              '切源或線性過渡期間 Index／Mark 短時不穩定',
+            ]
+          : [
+              'Source timeout / flap → exclude or degrade',
+              'Weight / min-source config left too few live sources',
+              'Switchover / linear transition briefly destabilized Index/Mark',
+            ]
+    }
+    if (/强平|爆仓|接仓|ADL/i.test(name)) {
+      return hans
+        ? [
+            '剧烈行情下保证金不足触发强平／接仓',
+            '标记价格短时偏离导致误触发风险',
+            '接仓账户额度／风控阈值触及',
+          ]
+        : hant
+          ? [
+              '劇烈行情下保證金不足觸發強平／接倉',
+              '標記價格短時偏離導致誤觸發風險',
+              '接倉帳戶額度／風控閾值觸及',
+            ]
+          : [
+              'Margin stress under a sharp move → liq / takeover',
+              'Brief mark dislocation raising false-trigger risk',
+              'Takeover-account limit / risk threshold hit',
+            ]
+    }
+    // Generic fallback from Skill.check atoms — framed as causes, not “matched skill”.
+    const atoms = splitSkillSteps(args.hit.check)
+      .map((s) => s.replace(/^【?可选】?\s*|^【?可選】?\s*|\(optional\)/gi, '').trim())
+      .filter(Boolean)
+      .slice(0, 3)
+    if (atoms.length) {
+      return atoms.map((a) =>
+        hans
+          ? `待核实：${a.slice(0, 72)}${a.length > 72 ? '…' : ''} 异常是否导致本告警`
+          : hant
+            ? `待核實：${a.slice(0, 72)}${a.length > 72 ? '…' : ''} 異常是否導致本告警`
+            : `To verify: whether anomaly in “${a.slice(0, 72)}” drove this alert`,
+      )
+    }
+    return en
+      ? ['Insufficient fields — hypotheses pending more alert detail']
+      : hans
+        ? ['字段不足，待补充告警细节后再收敛假设']
+        : ['欄位不足，待補充告警細節後再收斂假設']
+  })()
+
+  const out: string[] = []
+  if (cue.length) {
+    out.push(
+      hans
+        ? `观察：${cue.join('；')}`
+        : hant
+          ? `觀察：${cue.join('；')}`
+          : `Observation: ${cue.join('; ')}`,
+    )
+  }
+  for (const h of family.slice(0, cue.length ? 3 : 4)) out.push(h)
+  return out
+}
+
 /**
  * Skills-first investigate body (no free reasoning).
- * Causes stay short; check = 排查链路; action = 决策分支 — only Skill text + adaptive NEXT/COVERED.
+ * Causes = alert hypotheses; action = 决策分支 — Skill text + adaptive NEXT/COVERED.
  */
 function formatInvestigateCore(args: {
   lang: Lang
   hits: { id: string; name: string; check: string; action: string }[]
   kb: { title: string }[]
+  facts?: string[]
   nextSteps?: string[]
   covered?: string[]
   newlyCovered?: string[]
@@ -247,13 +429,12 @@ function formatInvestigateCore(args: {
   lines.push('')
   lines.push(hans ? '🔎 **可能原因**' : hant ? '🔎 **可能原因**' : '🔎 **Possible causes**')
   if (args.hits.length) {
-    for (const h of args.hits.slice(0, 4)) {
-      lines.push(
-        hans || hant
-          ? `• **假设／待核实：** 命中场景 **${h.id} · ${h.name}**（以告警字段与后管数据核实；结论以 Skill 为准）`
-          : `• **Suspected / to verify:** matched **${h.id} · ${h.name}** (confirm with alert fields + admin; Skill is source of truth)`,
-      )
-    }
+    const hyps = alertCauseHypotheses({
+      lang: args.lang,
+      hit: args.hits[0]!,
+      facts: args.facts || [],
+    })
+    for (const h of hyps) lines.push(`• ${h}`)
   } else {
     lines.push(
       hans
@@ -1558,6 +1739,7 @@ async function runInvestigation(args: {
       lang: args.lang,
       hits,
       kb,
+      facts: session.facts,
       nextSteps,
       covered: pathPlan.covered,
       newlyCovered: pathPlan.newlyCovered,
