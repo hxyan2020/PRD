@@ -282,10 +282,19 @@ async function handleCardActionRequest(
     }
   }
 
+  // Same pattern as K-line TF: toast within 3s, then delayed update via callback
+  // token. replyCard on the interactive message often fails after toast-only ack
+  // (operator saw「已处理」but never got the next step card).
+  const callbackToken = String(
+    args.event.token || (args.event as { action_token?: string }).action_token || '',
+  ).trim()
+  const actionName = String(value.action || '')
   waitUntil(
     (async () => {
       const typing = startTypingSession(messageId)
       try {
+        // Let the toast HTTP response flush before delayed card update.
+        await new Promise((r) => setTimeout(r, 150))
         const reply = await handleCardAction({
           openId,
           chatId,
@@ -295,8 +304,53 @@ async function handleCardActionRequest(
         })
         await typing.stop()
         let dispatched = { ok: false as boolean, via?: string, error?: string }
-        if (messageId || chatId) {
-          dispatched = await dispatchReply(messageId, chatId, reply)
+        if (reply?.card && callbackToken) {
+          try {
+            const { updateCardByCallbackToken, sendCardToChat, sendCardToOpenId } =
+              await import('./_lib/client.js')
+            await updateCardByCallbackToken(callbackToken, reply.card, {
+              openIds: openId.startsWith('ou_') ? [openId] : [],
+            })
+            dispatched = { ok: true, via: 'callback_token' }
+            // Follow-ups (e.g. overview→step) still need new messages.
+            if (reply.followUpCards?.length) {
+              if (chatId) {
+                for (const c of reply.followUpCards) await sendCardToChat(chatId, c)
+              } else if (openId.startsWith('ou_')) {
+                for (const c of reply.followUpCards) await sendCardToOpenId(openId, c)
+              }
+              dispatched = { ok: true, via: 'callback_token+followUp' }
+            }
+          } catch (e) {
+            dispatched = {
+              ok: false,
+              error: e instanceof Error ? e.message : 'callback_token_failed',
+            }
+          }
+        }
+        if (!dispatched.ok && (messageId || chatId || openId.startsWith('ou_'))) {
+          const fallback = await dispatchReply(messageId, chatId, reply || {})
+          if (fallback.ok) {
+            dispatched = fallback
+          } else if (!chatId && openId.startsWith('ou_') && reply?.card) {
+            try {
+              const { sendCardToOpenId } = await import('./_lib/client.js')
+              await sendCardToOpenId(openId, reply.card)
+              if (reply.followUpCards?.length) {
+                for (const c of reply.followUpCards) await sendCardToOpenId(openId, c)
+              }
+              dispatched = { ok: true, via: 'open_id_fallback' }
+            } catch (e) {
+              dispatched = {
+                ok: false,
+                error:
+                  fallback.error ||
+                  (e instanceof Error ? e.message : 'open_id_fallback_failed'),
+              }
+            }
+          } else {
+            dispatched = fallback
+          }
         }
         logInbound({
           at: new Date().toISOString(),
@@ -321,12 +375,17 @@ async function handleCardActionRequest(
       }
     })(),
   )
-  const isEscalate = String(value.action || '') === 'guide_step_escalate'
+  const isEscalate = actionName === 'guide_step_escalate'
+  const isDone = actionName === 'guide_step_done'
   // Feishu expects a toast (or card) on card callback — not only {ok:true}
   return res.status(200).json({
     toast: {
       type: isEscalate ? 'info' : 'success',
-      content: isEscalate ? 'Escalated — awaiting feedback' : 'OK',
+      content: isEscalate
+        ? 'Escalated — awaiting feedback'
+        : isDone
+          ? 'Marked done — next step'
+          : 'OK',
       i18n: isEscalate
         ? {
             zh_cn: '已升级等待反馈',
@@ -334,7 +393,14 @@ async function handleCardActionRequest(
             zh_tw: '已升級等待反饋',
             en_us: 'Escalated — awaiting feedback',
           }
-        : { zh_cn: '已处理', zh_hk: '已處理', en_us: 'Done' },
+        : isDone
+          ? {
+              zh_cn: '已完成，进入下一步',
+              zh_hk: '已完成，進入下一步',
+              zh_tw: '已完成，進入下一步',
+              en_us: 'Done — next step',
+            }
+          : { zh_cn: '已处理', zh_hk: '已處理', en_us: 'Done' },
     },
   })
 }

@@ -3683,16 +3683,26 @@ async function main() {
     value: { action: 'guide_step_done', stepId: guideStepId, incidentId: '' },
   })
   const cardBlob = cardReply?.text || (cardReply?.card ? JSON.stringify(cardReply.card) : '')
+  const afterDoneSession = getSession('smoke_chat', 'card_user')
+  const doneStep = afterDoneSession.pathSteps?.find((s) => s.id === guideStepId)
   record(
     'turn.card_action_human_gate',
-    /证据|證據|evidence|补齐|補齊/i.test(cardBlob) || Boolean(cardReply?.text || cardReply?.card),
+    Boolean(cardReply?.text || cardReply?.card),
     cardBlob.slice(0, 100),
   )
   record(
-    'turn.guide_step_done_requires_evidence',
-    /证据|證據|evidence|补齐|補齊/i.test(cardBlob),
-    cardBlob.slice(0, 120),
+    'turn.guide_step_done_advances_next',
+    doneStep?.status === 'done' &&
+      Boolean(cardReply?.card) &&
+      (cardBlob.includes('排查步骤') ||
+        cardBlob.includes('Investigation step') ||
+        cardBlob.includes('排查链路已走完') ||
+        cardBlob.includes('path complete') ||
+        cardBlob.includes('最终判定') ||
+        cardBlob.includes('Final risk')),
+    `status=${doneStep?.status} blob=${cardBlob.slice(0, 120)}`,
   )
+  // Mid-case evidence paste still advances / refreshes the guide.
   const evidenceAfterDone = await turn(
     'guide-evidence-after-done',
     '前端核对 Index/Mark 与告警一致，偏差已回落',
@@ -3701,11 +3711,11 @@ async function main() {
   record(
     'turn.guide_evidence_advances_step',
     Boolean(evidenceAfterDone.reply?.card) &&
-      (evidenceAfterDone.blob.includes('guide_step_done') ||
-        evidenceAfterDone.blob.includes('排查步骤') ||
+      (evidenceAfterDone.blob.includes('排查步骤') ||
         evidenceAfterDone.blob.includes('Investigation step') ||
         evidenceAfterDone.blob.includes('排查链路已走完') ||
-        evidenceAfterDone.blob.includes('path complete')),
+        evidenceAfterDone.blob.includes('path complete') ||
+        evidenceAfterDone.blob.includes('最终判定')),
     evidenceAfterDone.blob.slice(0, 120),
   )
   const pendingSkipId =
