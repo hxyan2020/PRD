@@ -111,7 +111,7 @@ never-sent).
 | GET/POST | `/api/lark/card` | Alias for **Card Request URL** (same handler) |
 | GET/POST | `/api/lark/incidents` | List / simulate turns (smoke) |
 | GET/POST | `/api/lark/weekly-report` | Weekly digest (cron Fridays 16:00 CST → Yan); `?dry=1` preview |
-| GET/POST | `/api/lark/market-report` | Half-hourly market DM (`*/30`); also via cron-tick |
+| GET/POST | `/api/lark/market-report` | Half-hourly Yan DM **disabled**; `?dry=1` / `force` only |
 | GET/POST | `/api/lark/daily-market-report` | Daily 09:00 CST 24h digest → group; `?dry=1` preview |
 | GET/POST | `/api/lark/token-usage-report` | Daily 18:00 SGT Token usage → Yan DM only; `?dry=1` preview |
 | GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
@@ -127,12 +127,11 @@ never-sent).
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token
 
-## Market report (half-hourly DM)
+## Market report (half-hourly DM) — **disabled**
 
-- **Cron:** every **30 min** (`*/30 * * * *`) → Yan Haixiang DM (`LARK_MARKET_CHAT_ID`)
-- **Not** listed in greeting / capabilities — private desk push only
+- **Status:** automatic half-hourly push to Yan is **off** (handler returns `skipped: disabled`; removed from Vercel cron + cron-tick)
 - Chat `行情` / `market` still works on demand
-- **Preview / force:** `GET ?dry=1` · `POST { "force": true }` + desk token / cron header
+- **Preview / force:** `GET ?dry=1` · `POST { "force": true }` + desk token (manual only)
 
 ## Token usage (Yan Haixiang daily DM)
 

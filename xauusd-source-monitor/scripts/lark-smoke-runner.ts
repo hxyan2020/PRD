@@ -1640,9 +1640,10 @@ async function main() {
     'chat.cron_count_self_answer',
     cronAsk.includes('**8**') &&
       cronAsk.includes('daily-market-report') &&
-      cronAsk.includes('market-report') &&
+      cronAsk.includes('token-usage-report') &&
       cronAsk.includes('cron-health') &&
       cronAsk.includes('cron-tick') &&
+      cronAsk.includes('已停用') &&
       !cronAsk.includes('没拉到可用条目') &&
       !cronAsk.includes('贴告警'),
     cronAsk.slice(0, 200),
@@ -1665,7 +1666,7 @@ async function main() {
     'turn.cron_count_chatty',
     Boolean(cronTurn.reply?.card) &&
       cronTurn.blob.includes('8') &&
-      /早报|cron|09:00|半小时|market-report|cron-health|cron-tick/i.test(cronTurn.blob) &&
+      /早报|cron|09:00|token-usage|cron-health|cron-tick|已停用/i.test(cronTurn.blob) &&
       !cronTurn.blob.includes('没拉到可用条目') &&
       !cronTurn.blob.includes('贴告警让我帮你排查'),
     cronTurn.blob.slice(0, 280),
@@ -2660,11 +2661,9 @@ async function main() {
     ),
   ) as { crons?: { path?: string; schedule?: string }[] }
   record(
-    'cron.half_hour_market_restored',
-    (vercelCrons.crons || []).some(
-      (c) =>
-        (c.path || '').includes('/api/lark/market-report') &&
-        (c.schedule || '').includes('*/30'),
+    'cron.half_hour_market_disabled_in_vercel',
+    !(vercelCrons.crons || []).some((c) =>
+      (c.path || '').includes('/api/lark/market-report'),
     ),
     JSON.stringify((vercelCrons.crons || []).map((c) => `${c.path}:${c.schedule}`)),
   )
@@ -2681,7 +2680,7 @@ async function main() {
     ) &&
       cronTickSrc.includes('/api/lark/alert-nudge') &&
       cronTickSrc.includes('/api/lark/oscillation-alert') &&
-      cronTickSrc.includes('/api/lark/market-report') &&
+      !cronTickSrc.includes("'/api/lark/market-report'") &&
       cronTickSrc.includes('/api/lark/weekly-demo') &&
       cronTickSrc.includes('/api/lark/daily-market-report') &&
       cronTickSrc.includes('/api/lark/weekly-report') &&
@@ -2697,7 +2696,7 @@ async function main() {
       cronTickSrc.indexOf('HEALTH_PATH') < cronTickSrc.indexOf('OTHER_PATHS') &&
       cronTickSrc.indexOf("'/api/lark/cron-health'") <
         cronTickSrc.indexOf("'/api/lark/alert-nudge'"),
-    'cron-tick health-first + watchdog retry all stale/failed + vercel */5',
+    'cron-tick health-first + watchdog; market-report removed from fan-out',
   )
   const cronHealthSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/cron-health.ts', import.meta.url),
@@ -2706,6 +2705,18 @@ async function main() {
   const marketSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/market-report.ts', import.meta.url),
     'utf8',
+  )
+  const cronHealthLibSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/_lib/cronHealth.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.market_halfhour_push_disabled',
+    marketSrc.includes('MARKET_HALFHOUR_PUSH_DISABLED = true') &&
+      marketSrc.includes("reason: 'disabled'") &&
+      cronHealthLibSrc.includes('已停用（不再推送 Yan）') &&
+      !(vercelCrons.crons || []).some((c) => (c.path || '').includes('/api/lark/market-report')),
+    'handler kill-switch + health marks disabled + no vercel market-report cron',
   )
   const dailySrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/daily-market-report.ts', import.meta.url),
@@ -2775,13 +2786,17 @@ async function main() {
   )
   const { buildCronHealthReport: buildHealth } = await import('../api/lark/_lib/cronHealth')
   const healthRep = await buildHealth()
+  const marketJob = healthRep.jobs.find((j) => j.id === 'market-report')
   record(
     'cron.health_report_shape',
     Boolean(healthRep.slotKey) &&
       healthRep.jobs.length >= 8 &&
       healthRep.jobs.some((j) => j.id === 'cron-tick') &&
       healthRep.jobs.some((j) => j.id === 'cron-health') &&
-      healthRep.jobs.some((j) => j.id === 'market-report') &&
+      Boolean(marketJob) &&
+      marketJob!.ok === true &&
+      marketJob!.expected === false &&
+      String(marketJob!.schedule || '').includes('已停用') &&
       healthRep.jobs.some((j) => j.id === 'token-usage-report') &&
       healthRep.jobs.some((j) => j.id === 'bot') &&
       typeof healthRep.allOk === 'boolean' &&

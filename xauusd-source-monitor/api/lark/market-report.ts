@@ -1,8 +1,8 @@
 /**
  * GET/POST /api/lark/market-report
- * - Vercel Cron every 30 minutes → DM Yan Haixiang a market scan card.
- * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
- * - Not listed in greeting / capabilities — private desk push only.
+ * - Half-hourly Yan DM is **disabled** (2026-11-26): cron / cron-tick skip.
+ * - Manual: GET ?dry=1 preview; POST { force: true } still allowed for desk ops.
+ * - On-demand `行情` / `market` chat commands are unchanged.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import {
@@ -22,6 +22,9 @@ import {
   resolveDailyMarketLang,
   shanghaiHalfHourKey,
 } from './_lib/market.js'
+
+/** Kill-switch for automatic half-hourly pushes to Yan. */
+export const MARKET_HALFHOUR_PUSH_DISABLED = true
 
 /** Yan Haixiang Feishu chat (DM) — override with LARK_MARKET_CHAT_ID / LARK_ADMIN_CHAT_ID. */
 export const DEFAULT_MARKET_CHAT_ID = 'oc_430fae67dd06b70f65b726b1673ef40e'
@@ -92,6 +95,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const now = Date.now()
   const slotKey = shanghaiHalfHourKey(now)
+
+  // Automatic half-hourly DM to Yan stopped — only dry preview or explicit force.
+  if (MARKET_HALFHOUR_PUSH_DISABLED && !dry && !force) {
+    await touchCronHeartbeat('/api/lark/market-report', {
+      status: 200,
+      outcome: 'skipped',
+      reason: 'disabled',
+    })
+    return res.status(200).json({
+      ok: true,
+      skipped: true,
+      reason: 'disabled',
+      slotKey,
+      via: cron ? 'cron' : 'manual',
+      note: 'Half-hourly market push to Yan is disabled; use force=true or chat 行情',
+    })
+  }
   const chat = resolveMarketChatId(body.chatId || String(q.chatId || ''))
   const adminEarly = body.openId?.trim()
     ? { openId: body.openId.trim(), source: 'request' }

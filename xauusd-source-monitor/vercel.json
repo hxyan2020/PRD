@@ -28,10 +28,6 @@
       "schedule": "0 10 * * *"
     },
     {
-      "path": "/api/lark/market-report",
-      "schedule": "*/30 * * * *"
-    },
-    {
       "path": "/api/lark/cron-health",
       "schedule": "*/30 * * * *"
     },

@@ -33,7 +33,7 @@ const DEFAULT_STALE_MS = 12 * 60_000
 const OTHER_PATHS = [
   '/api/lark/alert-nudge',
   '/api/lark/oscillation-alert',
-  '/api/lark/market-report',
+  // Half-hourly market DM to Yan disabled — keep handler for dry/force only.
   '/api/lark/weekly-demo',
   '/api/lark/daily-market-report',
   '/api/lark/weekly-report',
@@ -47,7 +47,6 @@ const STALE_MS: Record<string, number> = {
   [HEALTH_PATH]: 22 * 60_000,
   '/api/lark/alert-nudge': 8 * 60_000,
   '/api/lark/oscillation-alert': 18 * 60_000,
-  '/api/lark/market-report': 35 * 60_000,
   '/api/lark/weekly-demo': 25 * 60_000,
   '/api/lark/daily-market-report': 25 * 60_000,
   '/api/lark/weekly-report': 25 * 60_000,

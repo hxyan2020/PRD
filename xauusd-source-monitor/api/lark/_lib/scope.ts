@@ -708,7 +708,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
       '⏱️ 我这边现在挂了 **8** 个 Vercel Cron（都会打到本服务）：',
       '',
       '1. **每日早报** `daily-market-report` — 每天东八区 **09:00**（UTC 01:00）',
-      '2. **半小时行情** `market-report` — 每 **30** 分钟（私聊 desk，不在欢迎语功能列表里）',
+      '2. **Token 用量** `token-usage-report` — 每天东八区 **18:00**（UTC 10:00）→ Yan DM',
       '3. **Cron 健康** `cron-health` — 每 **30** 分钟推给你；漏推会红牌 @你',
       '4. **告警提醒 DEMO** `alert-nudge` — 活动日每分钟（知道了可停）',
       '5. **震荡预警** `oscillation-alert` — 每 **15** 分钟（含今日 DEMO 槽）',
@@ -716,6 +716,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
       '7. **正式周报** `weekly-report` — 每周五东八区 **16:00**（UTC 08:00）',
       '8. **cron-tick 兜底** — 每 **5** 分钟在公网别名上扇出上述推送（幂等）',
       '',
+      '（半小时行情 `market-report` 已停用，不再自动推送。）',
       '想看某一条的预览，可以说「早报 dry」或让我帮你手动推一次。',
     ].join('\n')
   }
@@ -724,7 +725,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
       '⏱️ 我這邊現在掛了 **8** 個 Vercel Cron：',
       '',
       '1. **每日早報** — 每天東八區 **09:00**',
-      '2. **半小時行情** — 每 **30** 分鐘（私聊 desk，不在歡迎語功能列表裡）',
+      '2. **Token 用量** — 每天東八區 **18:00** → Yan DM',
       '3. **Cron 健康** — 每 **30** 分鐘推給你；漏推會紅牌 @你',
       '4. **告警提醒 DEMO** — 活動日每分鐘（知道了可停）',
       '5. **震盪預警** — 每 **15** 分鐘',
@@ -732,6 +733,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
       '7. **正式週報** — 每週五東八區 **16:00**',
       '8. **cron-tick 兜底** — 每 **5** 分鐘扇出上述推送（冪等）',
       '',
+      '（半小時行情已停用，不再自動推送。）',
       '想看某一條預覽或手動推一次，直接跟我說就行。',
     ].join('\n')
   }
@@ -739,7 +741,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
     '⏱️ I’ve got **8** Vercel crons wired up:',
     '',
     '1. **Daily morning market** — 09:00 Asia/Shanghai daily',
-    '2. **Half-hourly market** — every 30 minutes (private desk DM; not in greeting feature list)',
+    '2. **Token usage** — 18:00 Asia/Shanghai daily → Yan DM',
     '3. **Cron health** — every 30 minutes to you; raises @you on missed pushes',
     '4. **Alert nudge DEMO** — every minute on campaign day (stop with 知道了)',
     '5. **Oscillation alert** — every 15 minutes',
@@ -747,6 +749,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
     '7. **Weekly report** — Fridays 16:00 Asia/Shanghai',
     '8. **cron-tick catch-up** — every 5 minutes fans out the jobs above on the public alias (idempotent)',
     '',
+    '(Half-hourly market push is disabled.)',
     'Want a dry-run or a manual push of one of them? Just say which.',
   ].join('\n')
 }

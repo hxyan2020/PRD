@@ -166,23 +166,16 @@ export async function buildCronHealthReport(args?: {
     })
   }
 
-  // —— half-hour market ——
+  // —— half-hour market (disabled — no longer expected) ——
   {
-    const slotStart = slotStartMs(slotKey)
-    const due = now >= slotStart + GRACE_MS
     const sentAt = halfSent[slotKey]
-    const ok = !due || Boolean(sentAt)
     jobs.push({
       id: 'market-report',
       label: '半小时行情',
-      schedule: '每 30 分钟 → Yan DM',
-      expected: due,
-      ok,
-      detail: sentAt
-        ? `本槽 ${slotKey} 已推送（${formatEast8(sentAt)}）`
-        : due
-          ? `本槽 ${slotKey} 未推送（应在整点／半点后推送）`
-          : `本槽 ${slotKey} 宽限中（开槽后 3 分钟内）`,
+      schedule: '已停用（不再推送 Yan）',
+      expected: false,
+      ok: true,
+      detail: `已停用自动推送${sentAt ? `；本槽曾推送（${formatEast8(sentAt)}）` : ''}`,
       lastAt: sentAt,
     })
   }
