@@ -3863,12 +3863,203 @@ async function main() {
   record(
     'turn.step_done_text_command',
     Boolean(stepCmd.reply?.card) &&
-      (/证据|證據|evidence|补齐|補齊|Investigation|排查/i.test(stepCmd.blob) ||
+      (/Investigation|排查|步骤|步驟|path complete|链路已走完|最终判定/i.test(stepCmd.blob) ||
         stepCmd.blob.includes('可能原因') ||
         stepCmd.blob.includes('排查链路') ||
         stepCmd.blob.includes('排查路徑')),
     stepCmd.blob.slice(0, 120),
   )
+
+  // Matrix: every investigation button returns a card with expected signal.
+  {
+    clearSession('smoke_chat', 'btn_matrix')
+    await turn(
+      'btn-matrix-seed',
+      'investigate Mark vs Index 51bps Bid1 Ask1 Spread for button matrix',
+      'btn_matrix',
+    )
+    const sess = getSession('smoke_chat', 'btn_matrix')
+    const step0 = sess.pathSteps?.[0]
+    const stepId = step0?.id || ''
+    const caseId = sess.lastReportId || ''
+    const blobOf = (r: Awaited<ReturnType<typeof handleCardAction>>) =>
+      r?.text || (r?.card ? JSON.stringify(r.card) : '')
+
+    // Layout: ≤3 buttons per action row (mobile-safe).
+    const stepCardBlob = JSON.stringify(
+      (await import('../api/lark/_lib/cards')).investigationStepGuideCard({
+        lang: 'zh-Hans',
+        step: step0 || {
+          id: 'x',
+          skillId: '',
+          label: 'L1',
+          raw: '',
+          required: true,
+          status: 'pending',
+        },
+        stepIndex: 0,
+        totalSteps: Math.max(1, sess.pathSteps?.length || 1),
+        incidentId: caseId,
+        escalateRoles: ['RC'],
+      }),
+    )
+    const actionRows = (stepCardBlob.match(/"tag":"action"/g) || []).length
+    record(
+      'turn.investigate_buttons_max_3_per_row',
+      actionRows >= 3 &&
+        stepCardBlob.includes('guide_step_done') &&
+        stepCardBlob.includes('guide_step_skip') &&
+        stepCardBlob.includes('guide_step_escalate') &&
+        stepCardBlob.includes('end_and_report') &&
+        stepCardBlob.includes('end_without_report') &&
+        stepCardBlob.includes('guide_step_supplement') &&
+        !/"actions":\[[^\]]*(?:"tag":"button"[^\]]*){4}/.test(stepCardBlob),
+      `actionRows=${actionRows}`,
+    )
+
+    const doneR = await handleCardAction({
+      openId: 'btn_matrix',
+      chatId: 'smoke_chat',
+      messageId: 'mx_done',
+      value: { action: 'guide_step_done', stepId, incidentId: caseId },
+    })
+    record(
+      'turn.btn_done_responds',
+      Boolean(doneR?.card) &&
+        /排查步骤|Investigation step|链路已走完|path complete|最终判定/.test(blobOf(doneR)),
+      blobOf(doneR).slice(0, 100),
+    )
+
+    // Fresh session for skip / escalate / supplement / ends (done advanced state).
+    clearSession('smoke_chat', 'btn_matrix2')
+    await turn(
+      'btn-matrix2-seed',
+      'investigate Mark vs Index 52bps for skip escalate supplement ends',
+      'btn_matrix2',
+    )
+    const s2 = getSession('smoke_chat', 'btn_matrix2')
+    const id2 = s2.pathSteps?.[0]?.id || ''
+    const case2 = s2.lastReportId || ''
+
+    // Force current step required so skip prompts for reason.
+    if (s2.pathSteps?.[0]) s2.pathSteps[0].required = true
+    saveSession('smoke_chat', 'btn_matrix2', s2)
+    const skipR = await handleCardAction({
+      openId: 'btn_matrix2',
+      chatId: 'smoke_chat',
+      messageId: 'mx_skip',
+      value: { action: 'guide_step_skip', stepId: id2, incidentId: case2 },
+    })
+    record(
+      'turn.btn_skip_responds',
+      Boolean(skipR?.card) &&
+        (/必做|required|说明|說明|不能直接跳过|cannot skip|guide_step_cancel_await/i.test(
+          blobOf(skipR),
+        ) ||
+          /排查步骤|Investigation step|跳过|Skip/.test(blobOf(skipR))),
+      blobOf(skipR).slice(0, 100),
+    )
+
+    const escR = await handleCardAction({
+      openId: 'btn_matrix2',
+      chatId: 'smoke_chat',
+      messageId: 'mx_esc',
+      value: {
+        action: 'guide_step_escalate',
+        stepId: id2,
+        incidentId: case2,
+        roles: 'RC',
+      },
+    })
+    record(
+      'turn.btn_escalate_responds',
+      Boolean(escR?.card) &&
+        /已升级|已升級|Escalated|等待反馈|awaiting feedback/i.test(blobOf(escR)),
+      blobOf(escR).slice(0, 100),
+    )
+
+    const cancelR = await handleCardAction({
+      openId: 'btn_matrix2',
+      chatId: 'smoke_chat',
+      messageId: 'mx_cancel',
+      value: { action: 'guide_step_cancel_await', stepId: id2, incidentId: case2 },
+    })
+    record(
+      'turn.btn_cancel_await_responds',
+      Boolean(cancelR?.card) &&
+        /guide_step_done|已完成|当前步骤|Current step|排查步骤/.test(blobOf(cancelR)),
+      blobOf(cancelR).slice(0, 100),
+    )
+
+    const suppR = await handleCardAction({
+      openId: 'btn_matrix2',
+      chatId: 'smoke_chat',
+      messageId: 'mx_supp',
+      value: { action: 'guide_step_supplement', stepId: id2, incidentId: case2 },
+    })
+    record(
+      'turn.btn_supplement_responds',
+      Boolean(suppR?.card) &&
+        getSession('smoke_chat', 'btn_matrix2').stepAwaiting === 'supplement' &&
+        /补充|補充|Add info|supplement|请补充|請補充/i.test(blobOf(suppR)),
+      blobOf(suppR).slice(0, 100),
+    )
+
+    const endReportR = await handleCardAction({
+      openId: 'btn_matrix2',
+      chatId: 'smoke_chat',
+      messageId: 'mx_end_report',
+      value: { action: 'end_and_report', incidentId: case2 },
+    })
+    record(
+      'turn.btn_end_and_report_responds',
+      Boolean(endReportR?.card) &&
+        /报告|報告|report|归档|歸檔|archive/i.test(blobOf(endReportR)),
+      blobOf(endReportR).slice(0, 100),
+    )
+
+    clearSession('smoke_chat', 'btn_matrix3')
+    await turn(
+      'btn-matrix3-seed',
+      'investigate Mark vs Index 53bps for end without report',
+      'btn_matrix3',
+    )
+    const case3 = getSession('smoke_chat', 'btn_matrix3').lastReportId || ''
+    const endNoR = await handleCardAction({
+      openId: 'btn_matrix3',
+      chatId: 'smoke_chat',
+      messageId: 'mx_end_no',
+      value: { action: 'end_without_report', incidentId: case3 },
+    })
+    record(
+      'turn.btn_end_without_report_responds',
+      Boolean(endNoR?.card) &&
+        getSession('smoke_chat', 'btn_matrix3').mode === 'idle' &&
+        /结束|結束|Ended|无报告|無報告|without a report|无风险/i.test(blobOf(endNoR)),
+      blobOf(endNoR).slice(0, 100),
+    )
+
+    // Toast map covers every investigation action.
+    const eventSrc = await import('node:fs').then((fs) =>
+      fs.readFileSync(new URL('../api/lark/event.ts', import.meta.url), 'utf8'),
+    )
+    record(
+      'turn.investigate_action_toasts_covered',
+      [
+        'guide_step_done',
+        'guide_step_skip',
+        'guide_step_escalate',
+        'guide_step_supplement',
+        'guide_step_cancel_await',
+        'end_and_report',
+        'end_without_report',
+        'start_analysis',
+        'set_risk_verdict',
+        'archive',
+      ].every((a) => eventSrc.includes(`case '${a}'`)),
+      'investigationActionToast cases',
+    )
+  }
 
   // 13) Investigate Chinese language mirror
   clearSession('smoke_chat', 'inv_zh')

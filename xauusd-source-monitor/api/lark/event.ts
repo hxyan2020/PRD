@@ -295,7 +295,7 @@ async function handleCardActionRequest(
       try {
         // Let the toast HTTP response flush before delayed card update.
         await new Promise((r) => setTimeout(r, 150))
-        const reply = await handleCardAction({
+        let reply = await handleCardAction({
           openId,
           chatId,
           messageId,
@@ -303,6 +303,14 @@ async function handleCardActionRequest(
           chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
         })
         await typing.stop()
+        // Callback-token update needs a card; wrap bare text so every tap updates UI.
+        if (reply && !reply.card && reply.text) {
+          const { simpleCard } = await import('./_lib/cards.js')
+          reply = {
+            ...reply,
+            card: simpleCard('VE Risk Copilot', reply.text, 'wathet'),
+          }
+        }
         let dispatched = { ok: false as boolean, via?: string, error?: string }
         if (reply?.card && callbackToken) {
           try {
@@ -375,34 +383,170 @@ async function handleCardActionRequest(
       }
     })(),
   )
-  const isEscalate = actionName === 'guide_step_escalate'
-  const isDone = actionName === 'guide_step_done'
-  // Feishu expects a toast (or card) on card callback — not only {ok:true}
-  return res.status(200).json({
-    toast: {
-      type: isEscalate ? 'info' : 'success',
-      content: isEscalate
-        ? 'Escalated — awaiting feedback'
-        : isDone
-          ? 'Marked done — next step'
-          : 'OK',
-      i18n: isEscalate
-        ? {
-            zh_cn: '已升级等待反馈',
-            zh_hk: '已升級等待反饋',
-            zh_tw: '已升級等待反饋',
-            en_us: 'Escalated — awaiting feedback',
-          }
-        : isDone
-          ? {
-              zh_cn: '已完成，进入下一步',
-              zh_hk: '已完成，進入下一步',
-              zh_tw: '已完成，進入下一步',
-              en_us: 'Done — next step',
-            }
-          : { zh_cn: '已处理', zh_hk: '已處理', en_us: 'Done' },
-    },
-  })
+  // Feishu expects a toast (or card) on card callback — not only {ok:true}.
+  // Per-action copy so every investigation tap shows the right feedback.
+  return res.status(200).json({ toast: investigationActionToast(actionName) })
+}
+
+/** Immediate toast for investigation (and related) card buttons. */
+function investigationActionToast(action: string): {
+  type: string
+  content: string
+  i18n: Record<string, string>
+} {
+  switch (action) {
+    case 'guide_step_done':
+    case 'step_done':
+      return {
+        type: 'success',
+        content: 'Done — next step',
+        i18n: {
+          zh_cn: '已完成，进入下一步',
+          zh_hk: '已完成，進入下一步',
+          zh_tw: '已完成，進入下一步',
+          en_us: 'Done — next step',
+        },
+      }
+    case 'guide_step_skip':
+      return {
+        type: 'info',
+        content: 'Skip received',
+        i18n: {
+          zh_cn: '已跳过／请说明原因',
+          zh_hk: '已跳過／請說明原因',
+          zh_tw: '已跳過／請說明原因',
+          en_us: 'Skip received',
+        },
+      }
+    case 'guide_step_escalate':
+      return {
+        type: 'info',
+        content: 'Escalated — awaiting feedback',
+        i18n: {
+          zh_cn: '已升级等待反馈',
+          zh_hk: '已升級等待反饋',
+          zh_tw: '已升級等待反饋',
+          en_us: 'Escalated — awaiting feedback',
+        },
+      }
+    case 'guide_step_supplement':
+      return {
+        type: 'info',
+        content: 'Add info — reply with evidence',
+        i18n: {
+          zh_cn: '请回复补充信息',
+          zh_hk: '請回覆補充資訊',
+          zh_tw: '請回覆補充資訊',
+          en_us: 'Add info — reply with evidence',
+        },
+      }
+    case 'guide_step_cancel_await':
+      return {
+        type: 'success',
+        content: 'Back to step options',
+        i18n: {
+          zh_cn: '已返回步骤选项',
+          zh_hk: '已返回步驟選項',
+          zh_tw: '已返回步驟選項',
+          en_us: 'Back to step options',
+        },
+      }
+    case 'end_and_report':
+    case 'generate_report':
+      return {
+        type: 'success',
+        content: 'Generating report…',
+        i18n: {
+          zh_cn: '正在生成排查报告',
+          zh_hk: '正在生成排查報告',
+          zh_tw: '正在生成排查報告',
+          en_us: 'Generating report…',
+        },
+      }
+    case 'end_without_report':
+      return {
+        type: 'success',
+        content: 'Ended without report',
+        i18n: {
+          zh_cn: '已结束（无报告）',
+          zh_hk: '已結束（無報告）',
+          zh_tw: '已結束（無報告）',
+          en_us: 'Ended without report',
+        },
+      }
+    case 'start_analysis':
+      return {
+        type: 'success',
+        content: 'Starting analysis',
+        i18n: {
+          zh_cn: '开始分析',
+          zh_hk: '開始分析',
+          zh_tw: '開始分析',
+          en_us: 'Starting analysis',
+        },
+      }
+    case 'set_risk_verdict':
+      return {
+        type: 'success',
+        content: 'Verdict saved',
+        i18n: {
+          zh_cn: '判定已保存',
+          zh_hk: '判定已保存',
+          zh_tw: '判定已保存',
+          en_us: 'Verdict saved',
+        },
+      }
+    case 'archive':
+      return {
+        type: 'success',
+        content: 'Archived',
+        i18n: {
+          zh_cn: '已归档',
+          zh_hk: '已歸檔',
+          zh_tw: '已歸檔',
+          en_us: 'Archived',
+        },
+      }
+    case 'open_incident':
+      return {
+        type: 'info',
+        content: 'Opening report',
+        i18n: {
+          zh_cn: '打开报告',
+          zh_hk: '打開報告',
+          zh_tw: '打開報告',
+          en_us: 'Opening report',
+        },
+      }
+    case 'review':
+      return {
+        type: 'info',
+        content: 'Opening board',
+        i18n: {
+          zh_cn: '打开看板',
+          zh_hk: '打開看板',
+          zh_tw: '打開看板',
+          en_us: 'Opening board',
+        },
+      }
+    case 'alert_nudge_ack':
+      return {
+        type: 'success',
+        content: 'Stopped',
+        i18n: {
+          zh_cn: '已停止提醒',
+          zh_hk: '已停止提醒',
+          zh_tw: '已停止提醒',
+          en_us: 'Stopped',
+        },
+      }
+    default:
+      return {
+        type: 'success',
+        content: 'OK',
+        i18n: { zh_cn: '已处理', zh_hk: '已處理', zh_tw: '已處理', en_us: 'Done' },
+      }
+  }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

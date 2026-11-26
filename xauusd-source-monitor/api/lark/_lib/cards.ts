@@ -446,7 +446,9 @@ function stepGuideActionElements(args: {
   const zh = isZh(args.lang)
   const roles = (args.escalateRoles || []).filter(Boolean)
   const rolesLabel = (roles.length ? roles : ['RC']).join('/')
-  const row1: Record<string, unknown>[] = [
+  // ≤3 buttons per action row — Feishu mobile often drops taps when 5 long
+  // Chinese labels share one row (desk saw toast-only / no card update).
+  const rowProgress: Record<string, unknown>[] = [
     {
       tag: 'button',
       text: { tag: 'plain_text', content: hans ? '已完成' : zh ? '已完成' : 'Done' },
@@ -478,6 +480,8 @@ function stepGuideActionElements(args: {
         roles: rolesLabel,
       },
     },
+  ]
+  const rowEnd: Record<string, unknown>[] = [
     {
       tag: 'button',
       text: {
@@ -511,7 +515,7 @@ function stepGuideActionElements(args: {
       },
     },
   ]
-  const row2: Record<string, unknown>[] = [
+  const rowExtra: Record<string, unknown>[] = [
     {
       tag: 'button',
       text: {
@@ -527,8 +531,9 @@ function stepGuideActionElements(args: {
     },
   ]
   return [
-    { tag: 'action', actions: row1 },
-    { tag: 'action', actions: row2 },
+    { tag: 'action', actions: rowProgress },
+    { tag: 'action', actions: rowEnd },
+    { tag: 'action', actions: rowExtra },
   ]
 }
 

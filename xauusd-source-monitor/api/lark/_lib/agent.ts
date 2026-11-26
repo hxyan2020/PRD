@@ -2641,7 +2641,7 @@ async function handleCardActionCore(args: {
 
   // Kept for older cards still in chat history
   if (action === 'step_done') {
-    // Legacy button → same as guide Done (require evidence).
+    // Legacy button → same as guide Done (advance to next step).
     return handleCardAction({
       ...args,
       value: {
@@ -2699,13 +2699,17 @@ async function handleCardActionCore(args: {
     return { card }
   }
 
+  // Always return a card so callback-token delivery can update the message.
   return {
-    text:
+    card: simpleCard(
+      lang === 'zh-Hans' ? '未知操作' : lang === 'zh-Hant' ? '未知操作' : 'Unknown action',
       lang === 'zh-Hans'
-        ? '未知卡片操作。'
+        ? `未识别的按钮：\`${action || '—'}\`。请重新打开步骤卡，或回复 **help**。`
         : lang === 'zh-Hant'
-          ? '未知卡片操作。'
-          : 'Unknown card action.',
+          ? `未識別的按鈕：\`${action || '—'}\`。請重新打開步驟卡，或回覆 **help**。`
+          : `Unrecognized button: \`${action || '—'}\`. Re-open the step card, or reply **help**.`,
+      'orange',
+    ),
   }
 }
 
