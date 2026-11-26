@@ -117,7 +117,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'GET or POST only' })
   }
-  if (cron) await touchCronHeartbeat('/api/lark/oscillation-alert')
 
   const q = req.query || {}
   const body = (req.body || {}) as {
@@ -133,6 +132,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (req.method === 'GET' && !cron && String(q.send || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
   const forceDemo = body.demo === true || String(q.demo || '') === '1'
+
+  // Always record a beat on real invokes (cron + desk). Dry preview stays quiet.
+  // Health treats a 20m silence as miss — no_trigger skips must still heartbeat.
+  if (!dry) {
+    await touchCronHeartbeat('/api/lark/oscillation-alert', {
+      outcome: 'ok',
+      reason: cron ? (force ? 'invoke_force' : 'invoke') : 'desk',
+    })
+  }
 
   const now = Date.now()
   const day = shanghaiDayKey(now)
@@ -150,6 +158,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     snap = await evaluateOscillation({ demo: wantDemo || (force && forceDemo) })
     if (wantDemo) snap = { ...snap, demo: true, triggers: [...new Set([...snap.triggers, 'demo' as const])] }
   } catch (e) {
+    if (!dry) {
+      await touchCronHeartbeat('/api/lark/oscillation-alert', {
+        status: 502,
+        outcome: 'error',
+        reason: e instanceof Error ? e.message : 'evaluate failed',
+      })
+    }
     return res.status(502).json({
       ok: false,
       error: e instanceof Error ? e.message : 'evaluate failed',
@@ -180,6 +195,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!wantDemo && !shouldFireAlert(snap) && !force) {
+    if (!dry) {
+      await touchCronHeartbeat('/api/lark/oscillation-alert', {
+        status: 200,
+        outcome: 'skipped',
+        reason: 'no_trigger',
+      })
+    }
     return res.status(200).json({
       ok: true,
       skipped: true,

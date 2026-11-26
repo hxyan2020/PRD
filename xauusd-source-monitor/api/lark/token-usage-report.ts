@@ -211,13 +211,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  try {
-    await sendCardToChat(chat.chatId, card)
+  const admin =
+    adminEarly.openId
+      ? adminEarly
+      : body.openId?.trim()
+        ? { openId: body.openId.trim(), source: 'request' }
+        : await resolveAdminOpenId({ preferChatId: chat.chatId })
+
+  async function finishSent(via: string, extra: Record<string, string> = {}) {
     const persisted = await markSent(dayKey)
     await touchCronHeartbeat('/api/lark/token-usage-report', {
       status: persisted ? 200 : 502,
       outcome: 'sent',
-      reason: persisted ? 'healthy' : 'sent_but_blob_failed',
+      reason: persisted ? via : 'sent_but_blob_failed',
     })
     if (!persisted) {
       return res.status(502).json({
@@ -225,6 +231,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         sent: true,
         error: 'token_usage_sent_state_blob_failed',
         dayKey,
+        via,
+        ...extra,
       })
     }
     return res.status(200).json({
@@ -233,67 +241,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       dayKey,
       lang,
       langSource,
+      via,
+      ...extra,
+    })
+  }
+
+  // Prefer Yan open_id 私聊 (same as cron-health). Chat-id is fallback only.
+  if (admin.openId) {
+    try {
+      await sendCardToOpenId(admin.openId, card)
+      return await finishSent('open_id', {
+        recipientOpenId: admin.openId.slice(0, 8) + '…',
+        recipientSource: admin.source,
+      })
+    } catch (openErr) {
+      console.error(
+        '[token-usage] open_id send failed, trying chat_id',
+        openErr instanceof Error ? openErr.message : openErr,
+      )
+    }
+  }
+
+  try {
+    await sendCardToChat(chat.chatId, card)
+    return await finishSent('chat_id', {
       recipientChatId: chat.chatId.slice(0, 10) + '…',
       recipientSource: chat.source,
-      via: 'chat_id',
     })
   } catch (chatErr) {
-    const resolved = adminEarly.openId
-      ? adminEarly
-      : body.openId?.trim()
-        ? { openId: body.openId.trim(), source: 'request' }
-        : await resolveAdminOpenId()
-    if (!resolved.openId) {
-      await touchCronHeartbeat('/api/lark/token-usage-report', {
-        status: 502,
-        outcome: 'error',
-        reason: chatErr instanceof Error ? chatErr.message : 'send to chat failed',
-      })
-      return res.status(502).json({
-        ok: false,
-        error: chatErr instanceof Error ? chatErr.message : 'send to chat failed',
-        dayKey,
-        chatId: chat.chatId,
-        hint: 'Set LARK_TOKEN_USAGE_CHAT_ID / LARK_MARKET_CHAT_ID or LARK_ADMIN_OPEN_ID on Vercel.',
-      })
-    }
-    try {
-      await sendCardToOpenId(resolved.openId, card)
-      const persisted = await markSent(dayKey)
-      await touchCronHeartbeat('/api/lark/token-usage-report', {
-        status: persisted ? 200 : 502,
-        outcome: 'sent',
-        reason: persisted ? 'open_id_fallback' : 'open_id_fallback_blob_failed',
-      })
-      if (!persisted) {
-        return res.status(502).json({
-          ok: false,
-          sent: true,
-          error: 'token_usage_sent_state_blob_failed',
-          dayKey,
-          via: 'open_id_fallback',
-        })
-      }
-      return res.status(200).json({
-        ok: true,
-        sent: true,
-        dayKey,
-        recipientOpenId: resolved.openId.slice(0, 8) + '…',
-        recipientSource: resolved.source,
-        via: 'open_id_fallback',
-        chatError: chatErr instanceof Error ? chatErr.message : String(chatErr),
-      })
-    } catch (e) {
-      await touchCronHeartbeat('/api/lark/token-usage-report', {
-        status: 502,
-        outcome: 'error',
-        reason: e instanceof Error ? e.message : 'send failed',
-      })
-      return res.status(502).json({
-        ok: false,
-        error: e instanceof Error ? e.message : 'send failed',
-        dayKey,
-      })
-    }
+    await touchCronHeartbeat('/api/lark/token-usage-report', {
+      status: 502,
+      outcome: 'error',
+      reason: chatErr instanceof Error ? chatErr.message : 'send failed',
+    })
+    return res.status(502).json({
+      ok: false,
+      error: chatErr instanceof Error ? chatErr.message : 'send failed',
+      dayKey,
+      chatId: chat.chatId,
+      triedOpenId: Boolean(admin.openId),
+      hint: 'Set LARK_ADMIN_OPEN_ID or LARK_TOKEN_USAGE_CHAT_ID on Vercel.',
+    })
   }
 }

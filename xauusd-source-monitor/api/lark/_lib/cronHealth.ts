@@ -17,7 +17,7 @@ import {
 import { shanghaiWeekKey } from './weeklyReport.js'
 import { DAILY_MARKET_START_HM, isDailyMarketSlot } from '../daily-market-report.js'
 import { WEEKLY_DEMO_DAY, WEEKLY_DEMO_START_HM, isWeeklyDemoSlot } from '../weekly-demo.js'
-import { TOKEN_USAGE_START_HM, isTokenUsageSlot } from './tokenUsage.js'
+import { TOKEN_USAGE_START_HM, isTokenUsageSlot, sgtDayKey } from './tokenUsage.js'
 
 export type CronJobHealth = {
   id: string
@@ -204,8 +204,9 @@ export async function buildCronHealthReport(args?: {
 
   // —— daily token usage (18:00 SGT → Yan only) ——
   {
+    const tokenDay = sgtDayKey(now)
     const expected = isTokenUsageSlot(now) && hm >= addHmGrace(TOKEN_USAGE_START_HM, 5)
-    const sentAt = tokenSent[day]
+    const sentAt = tokenSent[tokenDay]
     const ok = !expected || Boolean(sentAt)
     jobs.push({
       id: 'token-usage-report',
@@ -214,9 +215,9 @@ export async function buildCronHealthReport(args?: {
       expected,
       ok,
       detail: sentAt
-        ? `今日 ${day} 已推送（${formatEast8(sentAt)}）`
+        ? `今日 ${tokenDay} 已推送（${formatEast8(sentAt)}）`
         : expected
-          ? `今日 ${day} Token 日报未推送（应 ≥${TOKEN_USAGE_START_HM} SGT）`
+          ? `今日 ${tokenDay} Token 日报未推送（应 ≥${TOKEN_USAGE_START_HM} SGT）`
           : hm < TOKEN_USAGE_START_HM
             ? `未到 ${TOKEN_USAGE_START_HM} SGT 窗口`
             : `窗口内宽限中`,
