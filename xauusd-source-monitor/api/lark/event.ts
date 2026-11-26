@@ -28,7 +28,7 @@ import {
   resolveBotOpenId,
   verifyToken,
 } from './_lib/client.js'
-import { claimOnce } from './_lib/dedupe.js'
+import { claimOnce, claimOnceDurable, dedupeKey } from './_lib/dedupe.js'
 import { logInbound, readInbound } from './_lib/inboundLog.js'
 import { parseIncomingEvent, shouldRespond } from './_lib/parse.js'
 import { dispatchReplyWithTypingEffect, startTypingSession } from './_lib/typing.js'
@@ -75,14 +75,6 @@ async function dispatchReply(
     console.error('[lark/dispatch] failed', result.error || 'unknown')
   }
   return result
-}
-
-function dedupeKey(header: Record<string, unknown>, messageId?: string, cardToken?: string) {
-  const eventId = String(header.event_id || '')
-  if (eventId) return `evt:${eventId}`
-  if (cardToken) return `card:${cardToken}`
-  if (messageId) return `msg:${messageId}`
-  return ''
 }
 
 /** Shared card-action path for event subscription + Card Request URL callbacks. */
@@ -965,7 +957,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(200).json({ ok: true, skipped: 'parse_or_bot' })
         }
         const key = dedupeKey(header, msg.messageId)
-        if (key && !claimOnce(key)) {
+        if (key && !(await claimOnceDurable(key))) {
           logInbound({
             at: new Date().toISOString(),
             kind: 'message',
@@ -978,6 +970,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           })
           return res.status(200).json({ ok: true, deduped: true })
         }
+        // Also claim event_id so mixed-key retries collapse when message_id was missing once.
+        const eventId = String(header.event_id || '').trim()
+        if (eventId && key.startsWith('msg:')) void claimOnceDurable(`evt:${eventId}`)
         if (!shouldRespond(msg)) {
           logInbound({
             at: new Date().toISOString(),

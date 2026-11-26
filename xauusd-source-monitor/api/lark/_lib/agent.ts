@@ -1725,6 +1725,11 @@ async function ingestEscalateeFeedback(args: {
   }
 }
 
+/** Normalize alert text for gather dedupe (same paste / webhook retry). */
+function normalizeGatherFact(text: string): string {
+  return text.trim().replace(/\s+/g, ' ')
+}
+
 async function replyAlertGather(args: {
   msg: IncomingMessage
   lang: Lang
@@ -1732,7 +1737,7 @@ async function replyAlertGather(args: {
   newFact: string
   /** Starting a brand-new case — close any abandoned open incident as 无风险. */
   freshCase?: boolean
-}): Promise<BotReply> {
+}): Promise<BotReply | null> {
   if (args.freshCase && args.session.lastReportId) {
     await closeIncidentAsInvestigatedNoRisk({
       incidentId: args.session.lastReportId,
@@ -1746,7 +1751,19 @@ async function replyAlertGather(args: {
     args.session.checkedSteps = []
   }
   const fact = args.newFact.trim()
+  const mid = (args.msg.messageId || '').trim()
   if (fact) {
+    ensureSessionInteractions(args.session)
+    // Same Feishu message redelivered → do not append or send another gather card.
+    if (mid && args.session.interactions.some((i) => i.messageId === mid && i.kind === 'evidence')) {
+      return null
+    }
+    const norm = normalizeGatherFact(fact)
+    const already = args.session.facts.some(
+      (f) => !f.startsWith('[chat-history]') && normalizeGatherFact(f) === norm,
+    )
+    // Identical alert body already gathered (retry / double paste) → silent skip.
+    if (already) return null
     args.session.facts.push(fact)
     pushInteraction(args.session, {
       role: 'user',

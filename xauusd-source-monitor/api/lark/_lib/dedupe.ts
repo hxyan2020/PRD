@@ -1,10 +1,13 @@
 /**
  * Claim-once guard for Lark webhook retries / duplicate deliveries.
- * Uses in-memory + /tmp exclusive create so warm instances skip repeats.
+ * Local: in-memory + /tmp exclusive create (warm instance).
+ * Cross-instance: Vercel Blob exclusive put when BLOB_READ_WRITE_TOKEN is set.
  */
 import { mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
+import { put } from '@vercel/blob'
+import { readDurableJson, writeTmpJson } from './durableJson.js'
 
 const DIR = '/tmp/ve-lark-dedupe'
 const mem = new Map<string, number>()
@@ -23,10 +26,37 @@ function fileFor(key: string) {
   return join(DIR, h)
 }
 
+function hashKey(key: string) {
+  return createHash('sha1').update(key).digest('hex')
+}
+
+function durableName(key: string) {
+  return `dedupe-${hashKey(key)}.json`
+}
+
 function purge(now: number, ttlMs: number) {
   for (const [k, t] of mem) {
     if (now - t > ttlMs) mem.delete(k)
   }
+}
+
+/**
+ * Feishu delivers message events at-least-once; redelivery can mint a new
+ * `event_id` for the same `message_id`. Prefer message_id for im.message.*
+ * (cardToken present → card action path; keep composite card: key).
+ */
+export function dedupeKey(
+  header: Record<string, unknown>,
+  messageId?: string,
+  cardToken?: string,
+) {
+  const mid = (messageId || '').trim()
+  if (mid && !cardToken) return `msg:${mid}`
+  if (cardToken) return `card:${cardToken}`
+  const eventId = String(header.event_id || '').trim()
+  if (eventId) return `evt:${eventId}`
+  if (mid) return `msg:${mid}`
+  return ''
 }
 
 /**
@@ -63,6 +93,71 @@ export function claimOnce(key: string, ttlMs = DEFAULT_TTL_MS): boolean {
       mem.set(key, now)
       return true
     }
+  }
+}
+
+/**
+ * Cross-instance claim: local first, then Blob exclusive create.
+ * Falls back to local-only when Blob token is missing.
+ */
+export async function claimOnceDurable(
+  key: string,
+  ttlMs = DEFAULT_TTL_MS,
+): Promise<boolean> {
+  if (!key) return true
+  if (!claimOnce(key, ttlMs)) return false
+
+  const token = (process.env.BLOB_READ_WRITE_TOKEN || '').trim()
+  if (!token) return true
+
+  const name = durableName(key)
+  const now = Date.now()
+  try {
+    const existing = await readDurableJson<{ at: number; key: string }>(name)
+    if (existing?.at && now - existing.at < ttlMs) {
+      mem.set(key, existing.at)
+      return false
+    }
+  } catch {
+    /* try exclusive put */
+  }
+
+  const body = JSON.stringify({ at: now, key })
+  try {
+    await put(`ve-lark-durable/${name}`, body, {
+      access: 'private',
+      addRandomSuffix: false,
+      allowOverwrite: false,
+      contentType: 'application/json',
+      token,
+    })
+    writeTmpJson(name, { at: now, key })
+    return true
+  } catch {
+    // Exclusive create failed → usually another instance already claimed.
+    try {
+      const again = await readDurableJson<{ at: number; key: string }>(name)
+      if (again?.at && now - again.at < ttlMs) {
+        mem.set(key, again.at)
+        return false
+      }
+    } catch {
+      /* ignore */
+    }
+    // Blob exclusive create unsupported / flaky — keep local claim so we still process once.
+    try {
+      await put(`ve-lark-durable/${name}`, body, {
+        access: 'private',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        contentType: 'application/json',
+        token,
+      })
+      writeTmpJson(name, { at: now, key })
+    } catch {
+      /* keep local claim */
+    }
+    return true
   }
 }
 
