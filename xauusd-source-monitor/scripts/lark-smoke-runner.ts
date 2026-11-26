@@ -2917,6 +2917,7 @@ async function main() {
     ALERT_NUDGE_SILENCE_MS,
     ackAlertNudge,
     armAlertNudge,
+    armAlertNudgeGroupDemo,
     buildAlertNudgeAckCard,
     buildAlertNudgeCard,
     formatDurationMs,
@@ -3059,6 +3060,26 @@ async function main() {
       ackJson.includes('ou_smoke_haixiang'),
     ackJson.slice(0, 200),
   )
+  {
+    const groupDemo = await armAlertNudgeGroupDemo({
+      chatId: 'oc_smoke_group',
+      openId: 'ou_smoke_haixiang',
+      alertPreview: 'DEMO group',
+    })
+    record(
+      'nudge.group_demo_delivery',
+      groupDemo.delivery === 'group' &&
+        groupDemo.active === true &&
+        groupDemo.armed === false &&
+        groupDemo.chatId === 'oc_smoke_group' &&
+        groupDemo.sendCount === 0,
+      JSON.stringify({
+        delivery: groupDemo.delivery,
+        active: groupDemo.active,
+        chatId: groupDemo.chatId,
+      }),
+    )
+  }
 
   const oscCron = (vercelCrons.crons || []).find((c) =>
     (c.path || '').includes('oscillation-alert'),
