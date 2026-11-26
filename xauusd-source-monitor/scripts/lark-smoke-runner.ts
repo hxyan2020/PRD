@@ -3364,22 +3364,27 @@ async function main() {
     done.blob.slice(0, 120),
   )
 
-  // 12) Investigation cards: path overview + step Done/Skip[/Escalate] + end_and_report
+  // 12) Step card: Done / Skip / Escalate / End&report / End without report
   // (final verdict only after path complete — not mid-flow)
   record(
     'turn.investigate_card_action_buttons',
     inv.blob.includes('"tag":"button"') &&
       inv.blob.includes('end_and_report') &&
+      inv.blob.includes('end_without_report') &&
       !inv.blob.includes('set_risk_verdict') &&
       inv.blob.includes('guide_step_done') &&
       inv.blob.includes('guide_step_skip') &&
+      inv.blob.includes('guide_step_escalate') &&
       !inv.blob.includes('"action":"step_done"') &&
       !inv.blob.includes('generate_report') &&
       !/"action":"review"/.test(inv.blob) &&
       (inv.blob.includes('结束排查并生成报告') ||
         inv.blob.includes('結束排查並生成報告') ||
-        inv.blob.includes('End & generate report')),
-    'path + Done/Skip + end_and_report (no mid-flow verdict)',
+        inv.blob.includes('End & generate report')) &&
+      (inv.blob.includes('结束排查不生成报告') ||
+        inv.blob.includes('結束排查不生成報告') ||
+        inv.blob.includes('End without report')),
+    'step: Done/Skip/Escalate/End&report/End-no-report',
   )
   const {
     parseEscalateRoles,
@@ -3599,6 +3604,30 @@ async function main() {
     /必做|required|说明|說明|reply needed|不能直接跳过|cannot skip/i.test(skipBlob) ||
       Boolean(skipReq?.card && /guide_step|已完成|Done|跳过|Skip/i.test(skipBlob)),
     skipBlob.slice(0, 120),
+  )
+  clearSession('smoke_chat', 'end_no_report_user')
+  await turn(
+    'end-without-report-seed',
+    'investigate Mark vs Index 42bps for end-without-report',
+    'end_no_report_user',
+  )
+  const endNoReport = await handleCardAction({
+    openId: 'end_no_report_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_end_no_report',
+    value: { action: 'end_without_report', incidentId: '' },
+  })
+  const endNoBlob =
+    endNoReport?.text || (endNoReport?.card ? JSON.stringify(endNoReport.card) : '')
+  record(
+    'turn.end_without_report',
+    Boolean(endNoReport?.card) &&
+      (endNoBlob.includes('未生成报告') ||
+        endNoBlob.includes('未生成報告') ||
+        endNoBlob.includes('without a report') ||
+        endNoBlob.includes('Ended without')) &&
+      getSession('smoke_chat', 'end_no_report_user').mode === 'idle',
+    endNoBlob.slice(0, 160),
   )
   const reportBtnReply = await handleCardAction({
     openId: 'card_user',

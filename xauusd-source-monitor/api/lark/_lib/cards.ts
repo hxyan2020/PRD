@@ -161,10 +161,10 @@ export function investigationCard(args: {
         text: {
           tag: 'lark_md',
           content: hans
-            ? '⌨️ **操作** — 自由对话继续排查；结束后点下方按钮出报告全文'
+            ? '⌨️ **操作** — 自由对话继续排查；结束后点下方按钮'
             : zh
-              ? '⌨️ **操作** — 自由對話繼續排查；結束後點下方按鈕出報告全文'
-              : '⌨️ **Actions** — keep chatting to investigate; tap below when ready for the full report',
+              ? '⌨️ **操作** — 自由對話繼續排查；結束後點下方按鈕'
+              : '⌨️ **Actions** — keep chatting; tap below when ready to end',
         },
       },
       {
@@ -183,6 +183,22 @@ export function investigationCard(args: {
             type: 'primary',
             value: {
               action: 'end_and_report',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans
+                ? '结束排查不生成报告'
+                : zh
+                  ? '結束排查不生成報告'
+                  : 'End without report',
+            },
+            type: 'default',
+            value: {
+              action: 'end_without_report',
               incidentId: args.incidentId || '',
             },
           },
@@ -414,32 +430,12 @@ export function investigationPathOverviewCard(args: {
             },
           ]
         : []),
-      {
-        tag: 'action',
-        actions: [
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans
-                ? '结束排查并生成报告'
-                : zh
-                  ? '結束排查並生成報告'
-                  : 'End & generate report',
-            },
-            type: 'primary',
-            value: {
-              action: 'end_and_report',
-              incidentId: args.incidentId || '',
-            },
-          },
-        ],
-      },
+      // End options live on each step card (4th / 5th), not on the path overview.
     ],
   }
 }
 
-/** Message 2+: current step with 已完成 / 跳过 [/ 升级]. */
+/** Message 2+: current step — 已完成 / 跳过 / 升级 / 结束并出报告 / 结束不出报告. */
 export function investigationStepGuideCard(args: {
   lang: Lang
   step: GuideStep
@@ -454,9 +450,10 @@ export function investigationStepGuideCard(args: {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
   const n = args.stepIndex + 1
+  // Always show 升级 as 3rd so end options stay 4th / 5th; default RC when SOP names none.
   const roles = (args.escalateRoles || []).filter(Boolean)
-  const showEscalate = roles.length > 0
-  const rolesLabel = roles.join('/')
+  const rolesFinal = roles.length ? roles : ['RC']
+  const rolesLabel = rolesFinal.join('/')
   const optBadge = args.step.required
     ? hans
       ? '必做'
@@ -535,8 +532,9 @@ export function investigationStepGuideCard(args: {
       },
     },
   ]
-  if (showEscalate) {
-    actions.push({
+  // 3rd Escalate · 4th End & report · 5th End without report
+  actions.push(
+    {
       tag: 'button',
       text: {
         tag: 'plain_text',
@@ -549,8 +547,40 @@ export function investigationStepGuideCard(args: {
         incidentId: args.incidentId || '',
         roles: rolesLabel,
       },
-    })
-  }
+    },
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans
+          ? '结束排查并生成报告'
+          : zh
+            ? '結束排查並生成報告'
+            : 'End & generate report',
+      },
+      type: 'primary',
+      value: {
+        action: 'end_and_report',
+        incidentId: args.incidentId || '',
+      },
+    },
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans
+          ? '结束排查不生成报告'
+          : zh
+            ? '結束排查不生成報告'
+            : 'End without report',
+      },
+      type: 'default',
+      value: {
+        action: 'end_without_report',
+        incidentId: args.incidentId || '',
+      },
+    },
+  )
 
   return {
     config: { wide_screen_mode: true },
@@ -560,10 +590,8 @@ export function investigationStepGuideCard(args: {
     },
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: body } },
-      {
-        tag: 'action',
-        actions,
-      },
+      // Order: 已完成 / 跳过 / [升级] / 结束排查并生成报告 / 结束排查不生成报告
+      { tag: 'action', actions },
     ],
   }
 }
@@ -891,6 +919,22 @@ export function investigationGuideCompleteCard(args: {
             type: 'primary',
             value: {
               action: 'end_and_report',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans
+                ? '结束排查不生成报告'
+                : zh
+                  ? '結束排查不生成報告'
+                  : 'End without report',
+            },
+            type: 'default',
+            value: {
+              action: 'end_without_report',
               incidentId: args.incidentId || '',
             },
           },

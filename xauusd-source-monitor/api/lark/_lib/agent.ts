@@ -2065,6 +2065,37 @@ async function handleCardActionCore(args: {
     })
   }
 
+  if (action === 'end_without_report') {
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'command',
+      text: 'end_without_report',
+      messageId: args.messageId,
+    })
+    session.mode = 'idle'
+    session.pathSteps = undefined
+    session.pathStepIndex = undefined
+    session.stepAwaiting = 'none'
+    session.pendingPrompt = undefined
+    session.escalation = undefined
+    await saveSessionDurable(args.chatId, sessionUser, session)
+    return {
+      card: simpleCard(
+        lang === 'zh-Hans'
+          ? '排查已结束'
+          : lang === 'zh-Hant'
+            ? '排查已結束'
+            : 'Investigation ended',
+        lang === 'zh-Hans'
+          ? '已结束排查，**未生成报告**。可贴新告警重新开始；如需归档复盘请再说 **归档**。'
+          : lang === 'zh-Hant'
+            ? '已結束排查，**未生成報告**。可貼新告警重新開始；如需歸檔複盤請再說 **歸檔**。'
+            : 'Ended without a report. Paste a new alert to start again, or say **archive** to close the case.',
+        'grey',
+      ),
+    }
+  }
+
   if (action === 'guide_step_done') {
     const steps = session.pathSteps || []
     const stepId = String(args.value.stepId || '')
