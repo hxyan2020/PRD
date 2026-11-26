@@ -80,12 +80,6 @@ function formatStepLine(raw: string, index: number): string {
   return `${index + 1}. ${raw}`
 }
 
-function formatActionLine(raw: string): string {
-  const m = raw.match(/^(.*?)(·\s*)([A-Z0-9_-]+)(:\s*)(.*)$/i)
-  if (m) return `• **${m[3]}** — ${m[5]}`
-  return `• ${raw}`
-}
-
 export function investigationCard(args: {
   lang: Lang
   title: string
