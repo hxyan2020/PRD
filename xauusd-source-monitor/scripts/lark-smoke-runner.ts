@@ -824,6 +824,37 @@ async function main() {
     `fu=${started?.followUpCards?.length || 0} ${startedBlob.slice(0, 120)}`,
   )
 
+  // start_analysis must not show「No alerts yet」when chatType is mis-tagged group
+  // (Feishu p2p chat ids also start with oc_) or chatId is empty.
+  {
+    clearSession('oc_p2p_smoke', 'gather_p2p')
+    clearSession('oc_p2p_smoke', '__group__')
+    await turn(
+      'inv-gather-p2p-oc',
+      '告警：XAU_USD 深度告警 BUY 深度不足',
+      'gather_p2p',
+      'oc_p2p_smoke',
+      { keepGather: true, chatType: 'p2p' },
+    )
+    const misTyped = await handleCardAction({
+      openId: 'gather_p2p',
+      chatId: 'oc_p2p_smoke',
+      messageId: 'smoke_start_mistyped',
+      value: { action: 'start_analysis' },
+      chatType: 'group',
+    })
+    const misBlob =
+      (misTyped?.card ? JSON.stringify(misTyped.card) : '') +
+      (misTyped?.followUpCards || []).map((c) => JSON.stringify(c)).join('\n')
+    record(
+      'turn.start_analysis_recovers_p2p_oc_chat',
+      !/No alerts yet|还没有告警/.test(misBlob) &&
+        (/排查总览|Investigation overview|排查步骤|Investigation step/.test(misBlob) ||
+          Boolean(misTyped?.followUpCards?.length)),
+      misBlob.slice(0, 120),
+    )
+  }
+
   // Mid-case explicit「排查」must re-enter gather — never resume at a high step index.
   {
     const mid = getSession('smoke_chat', 'gather_zh')

@@ -111,9 +111,6 @@ async function handleCardActionRequest(
   const messageId =
     context.open_message_id ||
     String(args.event.open_message_id || args.event.openMessageId || '')
-  const chatId =
-    context.open_chat_id ||
-    String(args.event.open_chat_id || args.event.openChatId || args.event.chat_id || '')
   let value: Record<string, unknown> = {}
   try {
     value =
@@ -123,6 +120,17 @@ async function handleCardActionRequest(
   } catch {
     value = {}
   }
+  // Prefer context chat id; fall back to button-stashed chatId (gather → 开始分析).
+  const chatId =
+    context.open_chat_id ||
+    String(
+      args.event.open_chat_id ||
+        args.event.openChatId ||
+        args.event.chat_id ||
+        value.chatId ||
+        value.openChatId ||
+        '',
+    )
   const key = dedupeKey(
     args.header,
     messageId,
@@ -168,7 +176,11 @@ async function handleCardActionRequest(
             chatId,
             messageId,
             value,
-            chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+            // Feishu p2p chats also use oc_ ids — never infer group from prefix.
+            chatType:
+              String(value.chatType || '') === 'group' || String(value.chatType || '') === 'p2p'
+                ? String(value.chatType)
+                : 'p2p',
           })
           if (!reply.card) {
             logInbound({
@@ -264,7 +276,10 @@ async function handleCardActionRequest(
         chatId,
         messageId,
         value,
-        chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+        chatType:
+          String(value.chatType || '') === 'group' || String(value.chatType || '') === 'p2p'
+            ? String(value.chatType)
+            : 'p2p',
       })
       const { updateCardByCallbackToken, sendCardToChat, sendCardToOpenId } =
         await import('./_lib/client.js')
@@ -365,7 +380,10 @@ async function handleCardActionRequest(
         chatId,
         messageId,
         value,
-        chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+        chatType:
+          String(value.chatType || '') === 'group' || String(value.chatType || '') === 'p2p'
+            ? String(value.chatType)
+            : 'p2p',
       })
       if (messageId || chatId) {
         waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
@@ -418,7 +436,10 @@ async function handleCardActionRequest(
           chatId,
           messageId,
           value,
-          chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
+          chatType:
+          String(value.chatType || '') === 'group' || String(value.chatType || '') === 'p2p'
+            ? String(value.chatType)
+            : 'p2p',
         })
         await typing.stop()
         const { updateCardByCallbackToken, sendCardToChat, sendCardToOpenId } =

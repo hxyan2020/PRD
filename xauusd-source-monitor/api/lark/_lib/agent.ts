@@ -126,6 +126,7 @@ import { logInbound } from './inboundLog.js'
 import {
   clearSessionDurable,
   ensureSessionInteractions,
+  findRecentGatherSession,
   getIncidentDurable,
   getSessionDurable,
   listIncidentsDurable,
@@ -1764,7 +1765,14 @@ async function replyAlertGather(args: {
   args.session.escalation = undefined
   await saveSessionDurable(args.msg.chatId, args.msg.openId, args.session)
   const alerts = args.session.facts.filter((f) => !f.startsWith('[chat-history]'))
-  return { card: alertGatherCard({ lang: args.lang, alerts }) }
+  return {
+    card: alertGatherCard({
+      lang: args.lang,
+      alerts,
+      chatId: args.msg.chatId,
+      chatType: args.msg.chatType,
+    }),
+  }
 }
 
 async function runInvestigation(args: {
@@ -2057,27 +2065,48 @@ async function handleCardActionCore(args: {
 }): Promise<BotReply> {
   const action = String(args.value.action || '')
   const incidentId = String(args.value.incidentId || '')
-  const chatType = args.chatType || 'p2p'
-  const sessionUser = sessionOpenIdFor(chatType, args.openId)
-  const session = await getSessionDurable(args.chatId, sessionUser)
-  // Desk is ZH-first; never fall back to English mid-case when preferredLang unset.
-  const lang: Lang = session.preferredLang || 'zh-Hans'
-  const fakeMsg: IncomingMessage = {
-    messageId: args.messageId,
-    chatId: args.chatId,
-    chatType,
-    openId: sessionUser,
-    messageType: 'interactive',
-    text: '',
-    mentionedBot: true,
-    rawContent: '',
+  // Do NOT infer group from oc_ prefix — Feishu p2p chats also use oc_ chat ids.
+  const chatTypeFromValue = String(args.value.chatType || '').trim()
+  const chatType =
+    args.chatType ||
+    (chatTypeFromValue === 'group' || chatTypeFromValue === 'p2p'
+      ? chatTypeFromValue
+      : 'p2p')
+  // Button value may carry chatId when Feishu callback omits context.open_chat_id.
+  let chatId =
+    String(args.chatId || '').trim() ||
+    String(args.value.chatId || args.value.openChatId || '').trim()
+  let sessionUser = sessionOpenIdFor(chatType, args.openId)
+  let session = await getSessionDurable(chatId, sessionUser)
+  const sessionHasWork = (s: InvestigationState) =>
+    s.mode !== 'idle' || s.facts.some((f) => !f.startsWith('[chat-history]'))
+  // oc_→group heuristic (or missing chatType) often misses the real p2p/group key.
+  if (!sessionHasWork(session) && args.openId.startsWith('ou_') && chatId) {
+    const altUser = sessionUser === '__group__' ? args.openId : '__group__'
+    const alt = await getSessionDurable(chatId, altUser)
+    if (sessionHasWork(alt)) {
+      sessionUser = altUser
+      session = alt
+    }
   }
+  // Desk is ZH-first; never fall back to English mid-case when preferredLang unset.
+  let lang: Lang = session.preferredLang || 'zh-Hans'
 
   if (action === 'start_analysis') {
-    if (
-      session.mode !== 'gather_alerts' &&
-      !session.facts.some((f) => !f.startsWith('[chat-history]'))
-    ) {
+    const hasAlerts = session.facts.some((f) => !f.startsWith('[chat-history]'))
+    const gatherReady = session.mode === 'gather_alerts' && hasAlerts
+    if (!gatherReady && !hasAlerts) {
+      // Recover: empty/wrong chatId → look up newest gather session for this operator.
+      const found = await findRecentGatherSession(args.openId)
+      if (found) {
+        chatId = found.chatId
+        sessionUser = found.sessionUser
+        session = found.state
+        lang = session.preferredLang || 'zh-Hans'
+      }
+    }
+    const alertsNow = session.facts.some((f) => !f.startsWith('[chat-history]'))
+    if (!alertsNow) {
       const title =
         lang === 'zh-Hans' ? '还没有告警' : lang === 'zh-Hant' ? '還沒有告警' : 'No alerts yet'
       const body =
@@ -2087,6 +2116,20 @@ async function handleCardActionCore(args: {
             ? '請先貼上一條告警，再點 **開始分析**。'
             : 'Paste an alert first, then tap **Start analysis**.'
       return { card: simpleCard(title, body, 'orange') }
+    }
+    // If mode drifted (idle) but facts exist, still allow start.
+    if (session.mode !== 'gather_alerts' && session.mode !== 'investigate') {
+      session.mode = 'gather_alerts'
+    }
+    const fakeMsg: IncomingMessage = {
+      messageId: args.messageId,
+      chatId: chatId || args.chatId,
+      chatType,
+      openId: sessionUser,
+      messageType: 'interactive',
+      text: '',
+      mentionedBot: true,
+      rawContent: '',
     }
     pushInteraction(session, {
       role: 'user',
@@ -2099,13 +2142,24 @@ async function handleCardActionCore(args: {
             : 'Start analysis',
       messageId: args.messageId,
     })
-    await saveSessionDurable(args.chatId, sessionUser, session)
+    await saveSessionDurable(fakeMsg.chatId, sessionUser, session)
     return runInvestigation({
       msg: fakeMsg,
       lang,
       newFact: '',
       fromGather: true,
     })
+  }
+
+  const fakeMsg: IncomingMessage = {
+    messageId: args.messageId,
+    chatId: chatId || args.chatId,
+    chatType,
+    openId: sessionUser,
+    messageType: 'interactive',
+    text: '',
+    mentionedBot: true,
+    rawContent: '',
   }
 
   if (action === 'review') {
@@ -3568,6 +3622,8 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
           card: alertGatherCard({
             lang,
             alerts: session.facts.filter((f) => !f.startsWith('[chat-history]')),
+            chatId: inbound.chatId,
+            chatType: inbound.chatType,
           }),
         }
       }

@@ -269,6 +269,9 @@ export function formatPathWithDecisions(args: {
 export function alertGatherCard(args: {
   lang: Lang
   alerts: string[]
+  /** Stash on the button so start_analysis still finds the session if callback omits chat_id. */
+  chatId?: string
+  chatType?: string
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
@@ -326,7 +329,11 @@ export function alertGatherCard(args: {
               content: hans ? '开始分析' : zh ? '開始分析' : 'Start analysis',
             },
             type: 'primary',
-            value: { action: 'start_analysis' },
+            value: {
+              action: 'start_analysis',
+              ...(args.chatId ? { chatId: args.chatId } : {}),
+              ...(args.chatType ? { chatType: args.chatType } : {}),
+            },
           },
         ],
       },

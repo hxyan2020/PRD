@@ -167,6 +167,34 @@ export async function getSessionDurable(
   return getSession(chatId, openId)
 }
 
+/**
+ * Card callbacks sometimes omit open_chat_id → empty chatId → wrong session key.
+ * Find the newest gather_alerts session for this user (or group shared key).
+ */
+export async function findRecentGatherSession(openId: string): Promise<{
+  chatId: string
+  sessionUser: string
+  state: InvestigationState
+} | null> {
+  await ensureSessionsDurable()
+  hydrate()
+  const candidates = [openId, '__group__'].filter(Boolean)
+  let best: { chatId: string; sessionUser: string; state: InvestigationState } | null = null
+  for (const [key, state] of Object.entries(memSessions)) {
+    if (!state || state.mode !== 'gather_alerts') continue
+    if (!state.facts?.some((f) => !f.startsWith('[chat-history]'))) continue
+    const idx = key.lastIndexOf(':')
+    if (idx <= 0) continue
+    const chatId = key.slice(0, idx)
+    const sessionUser = key.slice(idx + 1)
+    if (!candidates.includes(sessionUser)) continue
+    if (!best || (state.updatedAt || 0) >= (best.state.updatedAt || 0)) {
+      best = { chatId, sessionUser, state }
+    }
+  }
+  return best
+}
+
 /** Ensure older persisted sessions have an interactions array. */
 export function ensureSessionInteractions(state: InvestigationState): InvestigationState {
   if (!Array.isArray(state.interactions)) state.interactions = []
