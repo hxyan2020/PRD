@@ -132,7 +132,7 @@ export async function buildCronHealthReport(args?: {
     })
   }
 
-  // —— cron-health DM (every 30m; catch-up if silence ≥ 35m) ——
+  // —— cron-health DM (every 30m + :05/:35; catch-up if silence ≥ 28m) ——
   {
     const healthSent = await readSentMap('cron-health-sent.json')
     const delivery =

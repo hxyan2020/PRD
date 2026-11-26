@@ -9,7 +9,8 @@
  * 1. cron-health awaited FIRST (cannot be starved by OKX / market).
  * 2. Remaining jobs in parallel with per-child timeout.
  * 3. Any non-200 OR stale beat → force=1 retry (watchdog pass).
- * 4. Overall tick fails closed unless every path ends 200.
+ * 4. Health also force-retried when lastSentAt / delivery silence ≥ 28m.
+ * 5. Overall tick fails closed unless every path ends 200.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
@@ -25,6 +26,8 @@ const HEALTH_PATH = '/api/lark/cron-health'
 const CHILD_TIMEOUT_MS = 22_000
 /** Default: if no beat for this long, force a catch-up hit. */
 const DEFAULT_STALE_MS = 12 * 60_000
+/** Force health DM when last successful delivery is older than this (never silent). */
+const HEALTH_DELIVERY_STALE_MS = 28 * 60_000
 
 /**
  * Remaining Lark push jobs — each handler is idempotent / self-gated.
@@ -44,13 +47,30 @@ export const PATHS = [HEALTH_PATH, ...OTHER_PATHS] as const
 
 /** Path → max allowed beat age before watchdog force. */
 const STALE_MS: Record<string, number> = {
-  [HEALTH_PATH]: 22 * 60_000,
+  // Tighter than a half-hour slot so a missed health fire is force-retried soon.
+  [HEALTH_PATH]: 16 * 60_000,
   '/api/lark/alert-nudge': 8 * 60_000,
   '/api/lark/oscillation-alert': 18 * 60_000,
   '/api/lark/weekly-demo': 25 * 60_000,
   '/api/lark/daily-market-report': 25 * 60_000,
   '/api/lark/weekly-report': 25 * 60_000,
   '/api/lark/token-usage-report': 25 * 60_000,
+}
+
+/** True when health JSON shows Yan has not received a DM recently. */
+function healthDeliveryStale(body: string, now = Date.now()): boolean {
+  try {
+    const j = JSON.parse(body) as {
+      lastSentAt?: number
+      skipped?: boolean
+      sent?: boolean
+    }
+    const last = typeof j.lastSentAt === 'number' ? j.lastSentAt : 0
+    if (last <= 0) return Boolean(j.skipped) // never delivered / unknown → force
+    return now - last >= HEALTH_DELIVERY_STALE_MS
+  } catch {
+    return false
+  }
 }
 
 type HitResult = {
@@ -174,8 +194,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   results.push(healthPrimary)
 
   const healthAge = await beatAgeMs(HEALTH_PATH)
-  if (needsWatchdog(HEALTH_PATH, healthPrimary, healthAge)) {
-    // Health uses force so 35m silence / miss dedupe cannot keep the DM quiet.
+  const deliveryStale = healthDeliveryStale(healthPrimary.body)
+  if (
+    needsWatchdog(HEALTH_PATH, healthPrimary, healthAge) ||
+    deliveryStale
+  ) {
+    // Force so slot/miss dedupe + delivery silence cannot keep Yan's DM quiet.
     const forced = await hitPath(HEALTH_PATH, { force: true, pass: 'watchdog' })
     results.push(forced)
     watchdogForced.push(HEALTH_PATH)

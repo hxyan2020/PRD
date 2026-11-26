@@ -1,14 +1,14 @@
 /**
  * GET/POST /api/lark/cron-health
- * - Every 30 minutes → private DM Yan Haixiang a cron/bot health card.
- * - Delivery prefers open_id (私聊); chat_id is fallback only.
+ * - Every 30 minutes (+ :05/:35 offset) → Yan Haixiang a cron/bot health card.
+ * - Delivery: open_id 私聊 first; dual open_id+chat_id on force / stale catch-up.
  * - If any scheduled push is missing, card is red and @mentions Yan.
  * - Also reachable via cron-tick (health-first fan-out + force catch-up).
  *
- * Stability:
+ * Stability (never silent):
  * - Slot / miss-set dedupe avoids spam within a half-hour window.
  * - If no successful DM for STALE_CATCHUP_MS (incl. never-sent), always
- *   re-raise — do not stay silent when the schedule / tick went quiet.
+ *   re-raise — do not stay quiet when the schedule / tick went quiet.
  * - Sent-state Blob write failures surface as 502 so the next tick retries.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
@@ -31,8 +31,11 @@ export const config = {
 const SENT_NAME = 'cron-health-sent.json'
 /** Dedicated key so slot/miss stamps cannot mask “never delivered”. */
 const DELIVERY_KEY = '__last_delivery__'
-/** If no health DM for this long, push again even if slot/miss dedupe would skip. */
-const STALE_CATCHUP_MS = 35 * 60_000
+/**
+ * If no successful DM for this long, push again even if slot/miss dedupe would skip.
+ * Keep under one half-hour slot so a missed :00/:30 fire is caught by the next tick.
+ */
+const STALE_CATCHUP_MS = 28 * 60_000
 /** Same DM chat as half-hour market when set. */
 const DEFAULT_HEALTH_CHAT_ID = 'oc_430fae67dd06b70f65b726b1673ef40e'
 
@@ -126,7 +129,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       jobs: report.jobs,
       markdown: report.markdown,
       card: report.card,
-      schedule: 'Every 30 minutes → Yan Haixiang (raise on miss); 35m silence catch-up',
+      schedule:
+        'Every 30m + :05/:35 → Yan (open_id+chat_id); 28m silence catch-up',
       chatId: chat.chatId,
       chatSource: chat.source,
       staleCatchupMs: STALE_CATCHUP_MS,
@@ -145,7 +149,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const sent = await readSent()
   const lastSentAt = lastDeliveryAt(sent)
-  // Never-sent OR silence ≥ 35m → always catch up (do not require lastSentAt > 0).
+  // Never-sent OR silence ≥ STALE_CATCHUP_MS → always catch up.
   const staleCatchup =
     !force && (lastSentAt === 0 || now - lastSentAt >= STALE_CATCHUP_MS)
   const catchup = force || staleCatchup
@@ -233,41 +237,70 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  // Prefer Yan's open_id private DM (私聊). Chat-id is fallback only —
-  // a "successful" send to a stale oc_ chat can look green while Yan sees nothing.
+  // Dual-path delivery so one channel outage cannot silence Yan:
+  // 1) open_id 私聊 (preferred)  2) chat_id companion
+  // Normal slot: open_id first; chat_id only if open_id fails (avoid double DM).
+  // force / stale catch-up: attempt BOTH so a single bad channel cannot mute.
+  const channels: string[] = []
+  const errors: string[] = []
+  const wantDual = force || staleCatchup
+
   if (admin.openId) {
     try {
       await sendCardToOpenId(admin.openId, report.card)
-      return await finishOk('open_id', {
-        recipientOpenId: admin.openId.slice(0, 8) + '…',
-        recipientSource: admin.source,
-      })
+      channels.push('open_id')
     } catch (openErr) {
-      console.error(
-        '[cron-health] open_id send failed, trying chat_id',
-        openErr instanceof Error ? openErr.message : openErr,
-      )
+      const msg = openErr instanceof Error ? openErr.message : String(openErr)
+      errors.push(`open_id:${msg}`)
+      console.error('[cron-health] open_id send failed', msg)
+    }
+  } else {
+    errors.push('open_id:missing_admin')
+  }
+
+  if (!channels.length || wantDual) {
+    try {
+      await sendCardToChat(chat.chatId, report.card)
+      channels.push('chat_id')
+    } catch (chatErr) {
+      const msg = chatErr instanceof Error ? chatErr.message : String(chatErr)
+      errors.push(`chat_id:${msg}`)
+      console.error('[cron-health] chat_id send failed', msg)
     }
   }
 
-  try {
-    await sendCardToChat(chat.chatId, report.card)
-    return await finishOk('chat_id', {
-      recipientChatId: chat.chatId.slice(0, 10) + '…',
-      recipientSource: chat.source,
-    })
-  } catch (chatErr) {
+  if (!channels.length) {
     await touchCronHeartbeat('/api/lark/cron-health', {
       status: 502,
       outcome: 'error',
-      reason: chatErr instanceof Error ? chatErr.message : 'send failed',
+      reason: errors.join('|') || 'send failed',
     })
     return res.status(502).json({
       ok: false,
-      error: chatErr instanceof Error ? chatErr.message : 'send failed',
+      error: errors.join('|') || 'send failed',
       slotKey,
       allOk: report.allOk,
       triedOpenId: Boolean(admin.openId),
+      wantDual,
     })
   }
+
+  const via = channels.includes('open_id')
+    ? channels.includes('chat_id')
+      ? 'open_id+chat_id'
+      : 'open_id'
+    : 'chat_id'
+  return await finishOk(via, {
+    channels: channels.join(','),
+    wantDual: wantDual ? '1' : '0',
+    ...(admin.openId
+      ? {
+          recipientOpenId: admin.openId.slice(0, 8) + '…',
+          recipientSource: admin.source,
+        }
+      : {}),
+    recipientChatId: chat.chatId.slice(0, 10) + '…',
+    recipientChatSource: chat.source,
+    ...(errors.length ? { channelErrors: errors.join('|') } : {}),
+  })
 }

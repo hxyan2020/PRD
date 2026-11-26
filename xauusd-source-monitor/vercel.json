@@ -32,6 +32,10 @@
       "schedule": "*/30 * * * *"
     },
     {
+      "path": "/api/lark/cron-health",
+      "schedule": "5,35 * * * *"
+    },
+    {
       "path": "/api/lark/alert-nudge",
       "schedule": "* * * * *"
     },
