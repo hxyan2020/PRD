@@ -2478,24 +2478,27 @@ async function main() {
       ) &&
       (invAipo.blob.includes('Possible causes') ||
         invAipo.blob.includes('可能原因') ||
+        invAipo.blob.includes('Path & decisions') ||
+        invAipo.blob.includes('排查路径与决策') ||
+        invAipo.blob.includes('排查路徑與決策') ||
         invAipo.blob.includes('Investigation path') ||
         invAipo.blob.includes('Full investigation path') ||
         invAipo.blob.includes('排查路径') ||
         invAipo.blob.includes('完整排查链路') ||
-        invAipo.blob.includes('完整排查鏈路') ||
-        invAipo.blob.includes('#/skills')),
+        invAipo.blob.includes('完整排查鏈路')),
     invAipo.blob.slice(0, 220),
   )
   record(
     'turn.aipo_path_listed_once',
     (
-      invAipo.blob.match(/完整排查链路|完整排查鏈路|Full investigation path|🧭 \*\*排查路径|🧭 \*\*Investigation path/g) ||
-      []
+      invAipo.blob.match(
+        /排查路径与决策|排查路徑與決策|Path & decisions|完整排查链路|完整排查鏈路|Full investigation path|🧭 \*\*排查路径|🧭 \*\*Investigation path/g,
+      ) || []
     ).length === 1 &&
-      !/按 Skill\.check · 下一步优先|已按你最新证据重排|re-ranked from your latest evidence/i.test(
+      !/按 Skill\.check · 下一步优先|已按你最新证据重排|re-ranked from your latest evidence|参考（文末）|參考（文末）/i.test(
         invAipo.blob,
       ),
-    'exactly one path heading; no legacy duplicate titles',
+    'exactly one path heading; no legacy duplicate titles / 文末',
   )
   const greetLater = greetingReply('zh-Hans')
   record(
@@ -3619,8 +3622,8 @@ async function main() {
   )
   record(
     'turn.investigate_exposes_skills_kb',
-    /L1-|L2-|Skills|排查/i.test(invZh.blob) &&
-      (invZh.blob.includes('#/skills') || invZh.blob.includes('打开 Skills') || invZh.blob.includes('Open Skills')) &&
+    /L1-|L2-|排查/i.test(invZh.blob) &&
+      !/参考（文末）|參考（文末）|References \(end\)/i.test(invZh.blob) &&
       // Investigate body must not list 知识库 / 证据分级 / 指引
       !/• \*\*知识库|• \*\*知識庫|• \*\*Knowledge|证据分级|證據分級|Evidence grades|• \*\*指引|• \*\*Guidance/i.test(
         invZh.blob,
