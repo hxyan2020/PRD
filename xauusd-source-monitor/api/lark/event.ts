@@ -451,6 +451,17 @@ function investigationActionToast(action: string): {
           en_us: 'Back to step options',
         },
       }
+    case 'end_investigation':
+      return {
+        type: 'info',
+        content: 'End case — choose report?',
+        i18n: {
+          zh_cn: '结束排查 — 是否生成报告？',
+          zh_hk: '結束排查 — 是否生成報告？',
+          zh_tw: '結束排查 — 是否生成報告？',
+          en_us: 'End case — choose report?',
+        },
+      }
     case 'end_and_report':
     case 'generate_report':
       return {

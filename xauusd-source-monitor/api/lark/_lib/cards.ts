@@ -136,7 +136,7 @@ export function investigationCard(args: {
                   ? [
                       '💡 **提示：**',
                       '• 直接跟我说下一步／贴新告警／截图，我会继续协助排查（不必点「完成此步」）。',
-                      '• 排查告一段落后点 **结束排查并生成报告** — 先出全文，你可再改，再归档。',
+                      '• 排查告一段落后点 **结束排查** — 再选是否生成报告。',
                       '• **最终判定**在链路走完后由助手推荐，再由你裁定。',
                     ].join('\n')
                   : zh
@@ -174,31 +174,11 @@ export function investigationCard(args: {
             tag: 'button',
             text: {
               tag: 'plain_text',
-              content: hans
-                ? '结束排查并生成报告'
-                : zh
-                  ? '結束排查並生成報告'
-                  : 'End & generate report',
+              content: hans ? '结束排查' : zh ? '結束排查' : 'End case',
             },
             type: 'primary',
             value: {
-              action: 'end_and_report',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans
-                ? '结束排查不生成报告'
-                : zh
-                  ? '結束排查不生成報告'
-                  : 'End without report',
-            },
-            type: 'default',
-            value: {
-              action: 'end_without_report',
+              action: 'end_investigation',
               incidentId: args.incidentId || '',
             },
           },
@@ -435,7 +415,12 @@ export function investigationPathOverviewCard(args: {
   }
 }
 
-/** Shared step actions: Done / Skip / Escalate / End&report / End-no-report / Add info. */
+/**
+ * Shared step actions.
+ * Row 1: 补充信息 / 跳过 / 升级 / 结束排查
+ * Row 2: 已完成
+ * 「结束排查」opens a follow-up asking whether to generate a report.
+ */
 function stepGuideActionElements(args: {
   lang: Lang
   step: GuideStep
@@ -446,15 +431,16 @@ function stepGuideActionElements(args: {
   const zh = isZh(args.lang)
   const roles = (args.escalateRoles || []).filter(Boolean)
   const rolesLabel = (roles.length ? roles : ['RC']).join('/')
-  // ≤3 buttons per action row — Feishu mobile often drops taps when 5 long
-  // Chinese labels share one row (desk saw toast-only / no card update).
-  const rowProgress: Record<string, unknown>[] = [
+  const row1: Record<string, unknown>[] = [
     {
       tag: 'button',
-      text: { tag: 'plain_text', content: hans ? '已完成' : zh ? '已完成' : 'Done' },
-      type: 'primary',
+      text: {
+        tag: 'plain_text',
+        content: hans ? '补充信息' : zh ? '補充資訊' : 'Add info',
+      },
+      type: 'default',
       value: {
-        action: 'guide_step_done',
+        action: 'guide_step_supplement',
         stepId: args.step.id,
         incidentId: args.incidentId || '',
       },
@@ -480,64 +466,117 @@ function stepGuideActionElements(args: {
         roles: rolesLabel,
       },
     },
-  ]
-  const rowEnd: Record<string, unknown>[] = [
     {
       tag: 'button',
       text: {
         tag: 'plain_text',
-        content: hans
-          ? '结束排查并生成报告'
-          : zh
-            ? '結束排查並生成報告'
-            : 'End & generate report',
+        content: hans ? '结束排查' : zh ? '結束排查' : 'End case',
       },
+      type: 'default',
+      value: {
+        action: 'end_investigation',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+      },
+    },
+  ]
+  const row2: Record<string, unknown>[] = [
+    {
+      tag: 'button',
+      text: { tag: 'plain_text', content: hans ? '已完成' : zh ? '已完成' : 'Done' },
       type: 'primary',
       value: {
-        action: 'end_and_report',
-        incidentId: args.incidentId || '',
-      },
-    },
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans
-          ? '结束排查不生成报告'
-          : zh
-            ? '結束排查不生成報告'
-            : 'End without report',
-      },
-      type: 'default',
-      value: {
-        action: 'end_without_report',
-        incidentId: args.incidentId || '',
-      },
-    },
-  ]
-  const rowExtra: Record<string, unknown>[] = [
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans ? '补充信息' : zh ? '補充資訊' : 'Add info',
-      },
-      type: 'default',
-      value: {
-        action: 'guide_step_supplement',
+        action: 'guide_step_done',
         stepId: args.step.id,
         incidentId: args.incidentId || '',
       },
     },
   ]
   return [
-    { tag: 'action', actions: rowProgress },
-    { tag: 'action', actions: rowEnd },
-    { tag: 'action', actions: rowExtra },
+    { tag: 'action', actions: row1 },
+    { tag: 'action', actions: row2 },
   ]
 }
 
-/** Message 2+: current step — 已完成 / 跳过 / 升级 / 结束并出报告 / 结束不出报告 / 补充信息. */
+/** After「结束排查」: ask whether to generate a report. */
+export function investigationEndAskReportCard(args: {
+  lang: Lang
+  incidentId?: string
+  stepId?: string
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const title = hans ? '结束排查' : zh ? '結束排查' : 'End investigation'
+  const body = hans
+    ? [
+        '准备结束本次排查。',
+        '',
+        '**是否需要生成排查报告？**',
+        '',
+        '• **生成报告** — 输出全文草稿，你可再改后归档',
+        '• **不生成报告** — 直接结束，记为排查过 · 无风险',
+      ].join('\n')
+    : zh
+      ? [
+          '準備結束本次排查。',
+          '',
+          '**是否需要生成排查報告？**',
+          '',
+          '• **生成報告** — 輸出全文草稿，你可再改後歸檔',
+          '• **不生成報告** — 直接結束，記為排查過 · 無風險',
+        ].join('\n')
+      : [
+          'Ready to end this investigation.',
+          '',
+          '**Generate an investigation report?**',
+          '',
+          '• **Generate report** — draft full text for edit / archive',
+          '• **No report** — end now (investigated · no risk)',
+        ].join('\n')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'orange',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '生成报告' : zh ? '生成報告' : 'Generate report',
+            },
+            type: 'primary',
+            value: {
+              action: 'end_and_report',
+              incidentId: args.incidentId || '',
+              stepId: args.stepId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '不生成报告' : zh ? '不生成報告' : 'No report',
+            },
+            type: 'default',
+            value: {
+              action: 'end_without_report',
+              incidentId: args.incidentId || '',
+              stepId: args.stepId || '',
+            },
+          },
+        ],
+      },
+    ],
+  }
+}
+
+/** Message 2+: step card — row1 补充/跳过/升级/结束排查 · row2 已完成. */
 export function investigationStepGuideCard(args: {
   lang: Lang
   step: GuideStep
@@ -699,7 +738,7 @@ export function investigationSupplementAckCard(args: {
         '',
         `📍 **当前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步** — ${args.step.label}`,
         '',
-        '⌨️ **继续操作（六个选项）：** 已完成／跳过／升级／结束并出报告／结束不出报告／补充信息',
+        '⌨️ **继续操作：** 补充信息／跳过／升级／结束排查 · 已完成',
       ].join('\n')
     : zh
       ? [
@@ -711,7 +750,7 @@ export function investigationSupplementAckCard(args: {
           '',
           `📍 **當前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步** — ${args.step.label}`,
           '',
-          '⌨️ **繼續操作（六個選項）：** 已完成／跳過／升級／結束並出報告／結束不出報告／補充資訊',
+          '⌨️ **繼續操作：** 補充資訊／跳過／升級／結束排查 · 已完成',
         ].join('\n')
       : [
           `📥 **You submitted:**`,
@@ -722,7 +761,7 @@ export function investigationSupplementAckCard(args: {
           '',
           `📍 **Still on step ${args.stepIndex + 1}/${args.totalSteps}** — ${args.step.label}`,
           '',
-          '⌨️ **Continue (6 options):** Done / Skip / Escalate / End & report / End without report / Add info',
+          '⌨️ **Continue:** Add info / Skip / Escalate / End case · Done',
         ].join('\n')
   void args.decisionBranches
   return {
@@ -771,31 +810,12 @@ function awaitingEscapeActions(args: {
       tag: 'button',
       text: {
         tag: 'plain_text',
-        content: hans
-          ? '结束排查并生成报告'
-          : zh
-            ? '結束排查並生成報告'
-            : 'End & generate report',
+        content: hans ? '结束排查' : zh ? '結束排查' : 'End case',
       },
       type: 'primary',
       value: {
-        action: 'end_and_report',
-        incidentId: args.incidentId || '',
-      },
-    },
-    {
-      tag: 'button',
-      text: {
-        tag: 'plain_text',
-        content: hans
-          ? '结束排查不生成报告'
-          : zh
-            ? '結束排查不生成報告'
-            : 'End without report',
-      },
-      type: 'default',
-      value: {
-        action: 'end_without_report',
+        action: 'end_investigation',
+        stepId: args.step.id,
         incidentId: args.incidentId || '',
       },
     },
@@ -825,7 +845,7 @@ export function investigationEvidencePromptCard(args: {
         '',
         '**下一步：** 请直接回复本步的 **证据**（截图说明／数值／核对结论）。收到后我会进入下一步。',
         '',
-        '_也可点下方返回六个选项，或结束排查。_',
+        '_也可点下方返回步骤选项，或结束排查。_',
       ].join('\n')
     : zh
       ? [
@@ -894,7 +914,7 @@ export function investigationEscalatedWaitingCard(args: {
         '',
         '**下一步：** 收到对方结论后，请直接回复本对话；我会记入时间线并继续下一步。',
         '',
-        '_也可返回步骤六个选项，或结束排查。_',
+        '_也可返回步骤选项，或结束排查。_',
       ].join('\n')
     : zh
       ? [
@@ -1039,7 +1059,7 @@ export function investigationRequiredSkipPromptCard(args: {
         '',
         '**下一步：** 请回复跳过原因或替代核对结论；收到后才会进入下一步。',
         '',
-        '_也可点下方返回六个选项，或结束排查。_',
+        '_也可点下方返回步骤选项，或结束排查。_',
       ].join('\n')
     : zh
       ? [
@@ -1110,7 +1130,7 @@ export function investigationGuideCompleteCard(args: {
         `⚖️ **助手推荐判定：** ${riskVerdictEmoji(rec)} **${riskVerdictLabel(rec, args.lang)}**`,
         `• _${reason}_ — 仅供参考，**最终由你裁定**。`,
         '',
-        '请选择最终判定，或点 **结束排查并生成报告** 先出全文。',
+        '请选择最终判定，或点 **结束排查**（再选是否生成报告）。',
       ].join('\n')
     : zh
       ? [
@@ -1119,7 +1139,7 @@ export function investigationGuideCompleteCard(args: {
           `⚖️ **助手推薦判定：** ${riskVerdictEmoji(rec)} **${riskVerdictLabel(rec, args.lang)}**`,
           `• _${reason}_ — 僅供參考，**最終由你裁定**。`,
           '',
-          '請選擇最終判定，或點 **結束排查並生成報告** 先出全文。',
+          '請選擇最終判定，或點 **結束排查**（再選是否生成報告）。',
         ].join('\n')
       : [
           'All steps done or skipped.',
@@ -1127,7 +1147,7 @@ export function investigationGuideCompleteCard(args: {
           `⚖️ **Assistant recommends:** ${riskVerdictEmoji(rec)} **${riskVerdictLabel(rec, args.lang)}**`,
           `• _${reason}_ — advisory only; **you decide**.`,
           '',
-          'Pick a final verdict, or tap **End & generate report** first.',
+          'Pick a final verdict, or tap **End case** (then choose report).',
         ].join('\n')
   return {
     config: { wide_screen_mode: true },
@@ -1188,31 +1208,11 @@ export function investigationGuideCompleteCard(args: {
             tag: 'button',
             text: {
               tag: 'plain_text',
-              content: hans
-                ? '结束排查并生成报告'
-                : zh
-                  ? '結束排查並生成報告'
-                  : 'End & generate report',
+              content: hans ? '结束排查' : zh ? '結束排查' : 'End case',
             },
             type: 'primary',
             value: {
-              action: 'end_and_report',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans
-                ? '结束排查不生成报告'
-                : zh
-                  ? '結束排查不生成報告'
-                  : 'End without report',
-            },
-            type: 'default',
-            value: {
-              action: 'end_without_report',
+              action: 'end_investigation',
               incidentId: args.incidentId || '',
             },
           },

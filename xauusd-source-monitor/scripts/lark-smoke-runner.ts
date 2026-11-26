@@ -3482,13 +3482,12 @@ async function main() {
     done.blob.slice(0, 120),
   )
 
-  // 12) Step card: Done / Skip / Escalate / End&report / End without report
+  // 12) Step card: row1 补充/跳过/升级/结束排查 · row2 已完成
   // (final verdict only after path complete — not mid-flow)
   record(
     'turn.investigate_card_action_buttons',
     inv.blob.includes('"tag":"button"') &&
-      inv.blob.includes('end_and_report') &&
-      inv.blob.includes('end_without_report') &&
+      inv.blob.includes('end_investigation') &&
       !inv.blob.includes('set_risk_verdict') &&
       inv.blob.includes('guide_step_done') &&
       inv.blob.includes('guide_step_skip') &&
@@ -3496,17 +3495,16 @@ async function main() {
       !inv.blob.includes('"action":"step_done"') &&
       !inv.blob.includes('generate_report') &&
       !/"action":"review"/.test(inv.blob) &&
-      (inv.blob.includes('结束排查并生成报告') ||
-        inv.blob.includes('結束排查並生成報告') ||
-        inv.blob.includes('End & generate report')) &&
-      (inv.blob.includes('结束排查不生成报告') ||
-        inv.blob.includes('結束排查不生成報告') ||
-        inv.blob.includes('End without report')) &&
+      (inv.blob.includes('结束排查') ||
+        inv.blob.includes('結束排查') ||
+        inv.blob.includes('End case')) &&
+      !inv.blob.includes('结束排查并生成报告') &&
+      !inv.blob.includes('结束排查不生成报告') &&
       inv.blob.includes('guide_step_supplement') &&
       (inv.blob.includes('补充信息') ||
         inv.blob.includes('補充資訊') ||
         inv.blob.includes('Add info')),
-    'step: Done/Skip/Escalate/End&report/End-no-report/Add-info',
+    'step: Add-info/Skip/Escalate/End · Done',
   )
   const {
     parseEscalateRoles,
@@ -3574,7 +3572,7 @@ async function main() {
         escBlob.includes('已升級等待反饋') ||
         escBlob.includes('Escalated — awaiting feedback')) &&
       escBlob.includes('guide_step_cancel_await') &&
-      escBlob.includes('end_and_report'),
+      escBlob.includes('end_investigation'),
     escBlob.slice(0, 160),
   )
   record(
@@ -3784,12 +3782,11 @@ async function main() {
         suppAck.blob.includes('對排查的幫助') ||
         suppAck.blob.includes('How it helps')) &&
       suppAck.blob.includes('12bps') &&
-      // Receipt keeps all six step options.
+      // Receipt keeps step options (补充/跳过/升级/结束 · 已完成).
       suppAck.blob.includes('guide_step_done') &&
       suppAck.blob.includes('guide_step_skip') &&
       suppAck.blob.includes('guide_step_escalate') &&
-      suppAck.blob.includes('end_and_report') &&
-      suppAck.blob.includes('end_without_report') &&
+      suppAck.blob.includes('end_investigation') &&
       suppAck.blob.includes('guide_step_supplement') &&
       getSession('smoke_chat', 'supplement_user').stepAwaiting !== 'supplement' &&
       (getSession('smoke_chat', 'supplement_user').pathSteps || []).some(
@@ -3885,36 +3882,40 @@ async function main() {
     const blobOf = (r: Awaited<ReturnType<typeof handleCardAction>>) =>
       r?.text || (r?.card ? JSON.stringify(r.card) : '')
 
-    // Layout: ≤3 buttons per action row (mobile-safe).
-    const stepCardBlob = JSON.stringify(
-      (await import('../api/lark/_lib/cards')).investigationStepGuideCard({
-        lang: 'zh-Hans',
-        step: step0 || {
-          id: 'x',
-          skillId: '',
-          label: 'L1',
-          raw: '',
-          required: true,
-          status: 'pending',
-        },
-        stepIndex: 0,
-        totalSteps: Math.max(1, sess.pathSteps?.length || 1),
-        incidentId: caseId,
-        escalateRoles: ['RC'],
-      }),
-    )
-    const actionRows = (stepCardBlob.match(/"tag":"action"/g) || []).length
+    // Layout: row1 补充/跳过/升级/结束排查 · row2 已完成
+    const layoutCard = (await import('../api/lark/_lib/cards')).investigationStepGuideCard({
+      lang: 'zh-Hans',
+      step: step0 || {
+        id: 'x',
+        skillId: '',
+        label: 'L1',
+        raw: '',
+        required: true,
+        status: 'pending',
+      },
+      stepIndex: 0,
+      totalSteps: Math.max(1, sess.pathSteps?.length || 1),
+      incidentId: caseId,
+      escalateRoles: ['RC'],
+    })
+    const stepCardBlob = JSON.stringify(layoutCard)
+    const actionEls = (
+      layoutCard.elements as {
+        tag?: string
+        actions?: { value?: { action?: string }; text?: { content?: string } }[]
+      }[]
+    ).filter((e) => e.tag === 'action')
+    const row1Acts = (actionEls[0]?.actions || []).map((a) => a.value?.action || '')
+    const row2Acts = (actionEls[1]?.actions || []).map((a) => a.value?.action || '')
     record(
-      'turn.investigate_buttons_max_3_per_row',
-      actionRows >= 3 &&
-        stepCardBlob.includes('guide_step_done') &&
-        stepCardBlob.includes('guide_step_skip') &&
-        stepCardBlob.includes('guide_step_escalate') &&
-        stepCardBlob.includes('end_and_report') &&
-        stepCardBlob.includes('end_without_report') &&
-        stepCardBlob.includes('guide_step_supplement') &&
-        !/"actions":\[[^\]]*(?:"tag":"button"[^\]]*){4}/.test(stepCardBlob),
-      `actionRows=${actionRows}`,
+      'turn.investigate_buttons_layout_end_then_done',
+      actionEls.length === 2 &&
+        row1Acts.join(',') ===
+          'guide_step_supplement,guide_step_skip,guide_step_escalate,end_investigation' &&
+        row2Acts.join(',') === 'guide_step_done' &&
+        stepCardBlob.includes('结束排查') &&
+        !stepCardBlob.includes('结束排查并生成报告'),
+      `r1=${row1Acts.join('|')} r2=${row2Acts.join('|')}`,
     )
 
     const doneR = await handleCardAction({
@@ -4005,6 +4006,23 @@ async function main() {
       blobOf(suppR).slice(0, 100),
     )
 
+    const endAskR = await handleCardAction({
+      openId: 'btn_matrix2',
+      chatId: 'smoke_chat',
+      messageId: 'mx_end_ask',
+      value: { action: 'end_investigation', incidentId: case2, stepId: id2 },
+    })
+    record(
+      'turn.btn_end_investigation_asks_report',
+      Boolean(endAskR?.card) &&
+        /是否需要生成|Generate an investigation report|生成报告|生成報告/.test(
+          blobOf(endAskR),
+        ) &&
+        blobOf(endAskR).includes('end_and_report') &&
+        blobOf(endAskR).includes('end_without_report'),
+      blobOf(endAskR).slice(0, 120),
+    )
+
     const endReportR = await handleCardAction({
       openId: 'btn_matrix2',
       chatId: 'smoke_chat',
@@ -4051,6 +4069,7 @@ async function main() {
         'guide_step_escalate',
         'guide_step_supplement',
         'guide_step_cancel_await',
+        'end_investigation',
         'end_and_report',
         'end_without_report',
         'start_analysis',

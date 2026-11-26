@@ -5,6 +5,7 @@ import {
   greetingCard,
   helpCard,
   incidentDetailCard,
+  investigationEndAskReportCard,
   investigationEscalateBriefingCard,
   investigationEscalatedWaitingCard,
   investigationEvidencePromptCard,
@@ -2237,6 +2238,23 @@ async function handleCardActionCore(args: {
       openId: sessionUser,
       incidentId: id,
     })
+  }
+
+  if (action === 'end_investigation') {
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'command',
+      text: 'end_investigation',
+      messageId: args.messageId,
+    })
+    await saveSessionDurable(args.chatId, sessionUser, session)
+    return {
+      card: investigationEndAskReportCard({
+        lang,
+        incidentId: incidentId || session.lastReportId || '',
+        stepId: String(args.value.stepId || ''),
+      }),
+    }
   }
 
   if (action === 'end_and_report' || action === 'generate_report') {
