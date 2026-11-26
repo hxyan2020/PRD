@@ -3383,8 +3383,12 @@ async function main() {
         inv.blob.includes('End & generate report')) &&
       (inv.blob.includes('结束排查不生成报告') ||
         inv.blob.includes('結束排查不生成報告') ||
-        inv.blob.includes('End without report')),
-    'step: Done/Skip/Escalate/End&report/End-no-report',
+        inv.blob.includes('End without report')) &&
+      inv.blob.includes('guide_step_supplement') &&
+      (inv.blob.includes('补充信息') ||
+        inv.blob.includes('補充資訊') ||
+        inv.blob.includes('Add info')),
+    'step: Done/Skip/Escalate/End&report/End-no-report/Add-info',
   )
   const {
     parseEscalateRoles,
@@ -3605,6 +3609,58 @@ async function main() {
       Boolean(skipReq?.card && /guide_step|已完成|Done|跳过|Skip/i.test(skipBlob)),
     skipBlob.slice(0, 120),
   )
+  clearSession('smoke_chat', 'supplement_user')
+  const suppSeed = await turn(
+    'supplement-seed',
+    'investigate Mark vs Index 46bps for supplement',
+    'supplement_user',
+  )
+  const suppStepId =
+    (suppSeed.blob.match(/"stepId":"([^"]+)"/) || [])[1] ||
+    getSession('smoke_chat', 'supplement_user').pathSteps?.[0]?.id ||
+    ''
+  const suppPrompt = await handleCardAction({
+    openId: 'supplement_user',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_supplement_prompt',
+    value: { action: 'guide_step_supplement', stepId: suppStepId, incidentId: '' },
+  })
+  const suppPromptBlob =
+    suppPrompt?.text || (suppPrompt?.card ? JSON.stringify(suppPrompt.card) : '')
+  record(
+    'turn.guide_step_supplement_prompts',
+    Boolean(suppPrompt?.card) &&
+      (suppPromptBlob.includes('补充信息') ||
+        suppPromptBlob.includes('補充資訊') ||
+        suppPromptBlob.includes('supplementary') ||
+        suppPromptBlob.includes('请补充') ||
+        suppPromptBlob.includes('請補充')) &&
+      getSession('smoke_chat', 'supplement_user').stepAwaiting === 'supplement',
+    suppPromptBlob.slice(0, 160),
+  )
+  const suppAck = await turn(
+    'supplement-evidence',
+    '前端核对 Index/Mark 偏差 12bps，截图已对齐告警时间戳',
+    'supplement_user',
+  )
+  record(
+    'turn.guide_step_supplement_ack',
+    Boolean(suppAck.reply?.card) &&
+      (suppAck.blob.includes('你提交了') ||
+        suppAck.blob.includes('You submitted') ||
+        suppAck.blob.includes('已收到补充') ||
+        suppAck.blob.includes('Supplement received')) &&
+      (suppAck.blob.includes('对排查的帮助') ||
+        suppAck.blob.includes('對排查的幫助') ||
+        suppAck.blob.includes('How it helps')) &&
+      suppAck.blob.includes('12bps') &&
+      getSession('smoke_chat', 'supplement_user').stepAwaiting !== 'supplement' &&
+      (getSession('smoke_chat', 'supplement_user').pathSteps || []).some(
+        (s) => s.status === 'pending',
+      ),
+    suppAck.blob.slice(0, 220),
+  )
+
   clearSession('smoke_chat', 'end_no_report_user')
   await turn(
     'end-without-report-seed',

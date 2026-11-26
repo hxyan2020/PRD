@@ -90,12 +90,13 @@ export interface GuideStep {
   status: 'pending' | 'done' | 'skipped'
 }
 
-/** After Done → evidence; after Skip on required → text reply; after Escalate → feedback. */
+/** After Done → evidence; Skip required → reply; Escalate → feedback; 补充信息 → free evidence. */
 export type StepAwaiting =
   | 'none'
   | 'evidence'
   | 'required_skip_reply'
   | 'escalate_feedback'
+  | 'supplement'
 
 /** Active escalate handoff while waiting for role feedback. */
 export interface EscalationState {

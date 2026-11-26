@@ -532,7 +532,8 @@ export function investigationStepGuideCard(args: {
       },
     },
   ]
-  // 3rd Escalate · 4th End & report · 5th End without report
+  // 3rd Escalate · 4th End & report · 5th End without report (row 1, Feishu ≤5)
+  // 6th 补充信息 on row 2
   actions.push(
     {
       tag: 'button',
@@ -581,6 +582,19 @@ export function investigationStepGuideCard(args: {
       },
     },
   )
+  const supplementAction = {
+    tag: 'button',
+    text: {
+      tag: 'plain_text',
+      content: hans ? '补充信息' : zh ? '補充資訊' : 'Add info',
+    },
+    type: 'default',
+    value: {
+      action: 'guide_step_supplement',
+      stepId: args.step.id,
+      incidentId: args.incidentId || '',
+    },
+  }
 
   return {
     config: { wide_screen_mode: true },
@@ -590,8 +604,134 @@ export function investigationStepGuideCard(args: {
     },
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: body } },
-      // Order: 已完成 / 跳过 / [升级] / 结束排查并生成报告 / 结束排查不生成报告
+      // 1–5: 已完成 / 跳过 / 升级 / 结束并出报告 / 结束不出报告
       { tag: 'action', actions },
+      // 6: 补充信息
+      { tag: 'action', actions: [supplementAction] },
+    ],
+  }
+}
+
+/** After 补充信息: guide user to send evidence (does not advance the step). */
+export function investigationSupplementPromptCard(args: {
+  lang: Lang
+  step: GuideStep
+  stepIndex: number
+  totalSteps: number
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const title = hans
+    ? '请补充信息'
+    : zh
+      ? '請補充資訊'
+      : 'Add supplementary info'
+  const body = hans
+    ? [
+        `📎 当前第 **${args.stepIndex + 1}/${args.totalSteps}** 步仍可继续。`,
+        '',
+        `步骤：${args.step.label}`,
+        '',
+        '请直接回复要补充的 **证据／截图说明／数值／核对结论**。',
+        '收到后我会说明你提交了什么、对排查有什么帮助（本步不会自动标为完成）。',
+      ].join('\n')
+    : zh
+      ? [
+          `📎 當前第 **${args.stepIndex + 1}/${args.totalSteps}** 步仍可繼續。`,
+          '',
+          `步驟：${args.step.label}`,
+          '',
+          '請直接回覆要補充的 **證據／截圖說明／數值／核對結論**。',
+          '收到後我會說明你提交了什麼、對排查有什麼幫助（本步不會自動標為完成）。',
+        ].join('\n')
+      : [
+          `📎 Still on step **${args.stepIndex + 1}/${args.totalSteps}**.`,
+          '',
+          `Step: ${args.step.label}`,
+          '',
+          'Reply with **evidence** (screenshot notes / numbers / findings).',
+          'I’ll summarize what you sent and how it helps — this step won’t auto-complete.',
+        ].join('\n')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'wathet',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [{ tag: 'div', text: { tag: 'lark_md', content: body } }],
+  }
+}
+
+/** Ack after user pasted supplement — what they sent + how it helps. */
+export function investigationSupplementAckCard(args: {
+  lang: Lang
+  step: GuideStep
+  stepIndex: number
+  totalSteps: number
+  submittedSummary: string
+  helpSummary: string
+  incidentId?: string
+  escalateRoles?: string[]
+  decisionBranches?: string[]
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const title = hans
+    ? '已收到补充信息'
+    : zh
+      ? '已收到補充資訊'
+      : 'Supplement received'
+  const body = hans
+    ? [
+        `📥 **你提交了：**`,
+        args.submittedSummary,
+        '',
+        `🧭 **对排查的帮助：**`,
+        args.helpSummary,
+        '',
+        `_当前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步 — 可继续补充，或点下方完成／跳过／升级。_`,
+      ].join('\n')
+    : zh
+      ? [
+          `📥 **你提交了：**`,
+          args.submittedSummary,
+          '',
+          `🧭 **對排查的幫助：**`,
+          args.helpSummary,
+          '',
+          `_當前仍在第 ${args.stepIndex + 1}/${args.totalSteps} 步 — 可繼續補充，或點下方完成／跳過／升級。_`,
+        ].join('\n')
+      : [
+          `📥 **You submitted:**`,
+          args.submittedSummary,
+          '',
+          `🧭 **How it helps:**`,
+          args.helpSummary,
+          '',
+          `_Still on step ${args.stepIndex + 1}/${args.totalSteps} — add more, or use Done / Skip / Escalate below._`,
+        ].join('\n')
+  // Reuse step actions under the ack so the operator can continue without hunting the prior card.
+  const stepCard = investigationStepGuideCard({
+    lang: args.lang,
+    step: args.step,
+    stepIndex: args.stepIndex,
+    totalSteps: args.totalSteps,
+    incidentId: args.incidentId,
+    escalateRoles: args.escalateRoles,
+    decisionBranches: args.decisionBranches,
+  })
+  const stepElements = (stepCard.elements as Record<string, unknown>[]) || []
+  const actionRows = stepElements.filter((e) => e.tag === 'action')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'blue',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      { tag: 'hr' },
+      ...actionRows,
     ],
   }
 }

@@ -13,6 +13,8 @@ import {
   investigationReportDraftCard,
   investigationRequiredSkipPromptCard,
   investigationStepGuideCard,
+  investigationSupplementAckCard,
+  investigationSupplementPromptCard,
   knowledgeCatalogCard,
   nodeDetailCard,
   reviewCard,
@@ -56,6 +58,7 @@ import {
 import { fetchQuoteOpsRag } from './quoteOps.js'
 import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
 import {
+  evidenceCoversStep,
   planInvestigationPath,
   formatRagAnswer,
   loadKnowledge,
@@ -1354,6 +1357,129 @@ function guideStepReply(args: {
   return { card: stepCard }
 }
 
+/** Summarize what the operator pasted and how it helps the current step. */
+function describeSupplementHelp(args: {
+  lang: Lang
+  step: GuideStep
+  text: string
+  facts: string[]
+}): { submittedSummary: string; helpSummary: string } {
+  const raw = args.text.trim().replace(/\s+/g, ' ')
+  const preview = raw.length > 280 ? `${raw.slice(0, 277)}…` : raw
+  const submittedSummary = preview ? `> ${preview}` : '_(empty)_'
+  const covers = evidenceCoversStep(args.step.label, args.text)
+  const hasNum = /\d+(\.\d+)?\s*(bps|bp|%|ms|s|秒)?/i.test(args.text)
+  const hasShot = /截图|截圖|screenshot|image|图示|圖示/i.test(args.text)
+  const hasPeer = /友商|binance|okx|bybit|peer/i.test(args.text)
+  const hasFront = /前端|index|mark|k线|k線/i.test(args.text)
+  const helps: string[] = []
+  if (args.lang === 'zh-Hans') {
+    if (covers) helps.push(`• 与当前步骤「${args.step.label}」高度相关，可直接支撑本步核对。`)
+    else helps.push(`• 已记入本案证据池，供后续步骤与报告引用（尚未完整覆盖「${args.step.label}」）。`)
+    if (hasNum) helps.push('• 含具体数值／阈值类线索，便于对照告警阈值与偏差幅度。')
+    if (hasShot) helps.push('• 含截图／画面说明，便于复盘时核对当时盘口或系统状态。')
+    if (hasPeer) helps.push('• 含友商／外部源线索，有助于交叉验证是否为单源异常。')
+    if (hasFront) helps.push('• 含前端 Index/Mark／K 线线索，有助于判断展示层与计价源是否一致。')
+    helps.push(`• 本案现有证据条数：**${args.facts.length + 1}**（含本条）。`)
+  } else if (args.lang === 'zh-Hant') {
+    if (covers) helps.push(`• 與當前步驟「${args.step.label}」高度相關，可直接支撐本步核對。`)
+    else helps.push(`• 已記入本案證據池，供後續步驟與報告引用（尚未完整覆蓋「${args.step.label}」）。`)
+    if (hasNum) helps.push('• 含具體數值／閾值類線索，便於對照告警閾值與偏差幅度。')
+    if (hasShot) helps.push('• 含截圖／畫面說明，便於複盤時核對當時盤口或系統狀態。')
+    if (hasPeer) helps.push('• 含友商／外部源線索，有助於交叉驗證是否為單源異常。')
+    if (hasFront) helps.push('• 含前端 Index/Mark／K 線線索，有助於判斷展示層與計價源是否一致。')
+    helps.push(`• 本案現有證據條數：**${args.facts.length + 1}**（含本條）。`)
+  } else {
+    if (covers) helps.push(`• Strongly matches current step “${args.step.label}” — can support this check.`)
+    else
+      helps.push(
+        `• Logged into the case evidence pool for later steps/report (doesn’t fully cover “${args.step.label}” yet).`,
+      )
+    if (hasNum) helps.push('• Includes numeric / threshold cues for comparing alert levels and deviation size.')
+    if (hasShot) helps.push('• Includes screenshot / visual notes for reconstructing desk state.')
+    if (hasPeer) helps.push('• Mentions peer / external sources — useful to check single-source failure.')
+    if (hasFront) helps.push('• Mentions frontend Index/Mark/K-line — useful for display vs pricing checks.')
+    helps.push(`• Case evidence count now: **${args.facts.length + 1}** (including this).`)
+  }
+  return { submittedSummary, helpSummary: helps.join('\n') }
+}
+
+async function ingestSupplementEvidence(args: {
+  msg: IncomingMessage
+  lang: Lang
+  session: InvestigationState
+  text: string
+}): Promise<BotReply> {
+  const session = args.session
+  const steps = session.pathSteps || []
+  const idx = session.pathStepIndex ?? firstPendingGuideIndex(steps)
+  const step = idx >= 0 ? steps[idx] : undefined
+  const fact = args.text.trim()
+  if (!fact || !step) {
+    return {
+      card: investigationSupplementPromptCard({
+        lang: args.lang,
+        step: step || {
+          id: 'unknown',
+          skillId: '',
+          label: session.pendingPrompt || '—',
+          raw: '',
+          required: true,
+          status: 'pending',
+        },
+        stepIndex: Math.max(0, idx),
+        totalSteps: Math.max(1, steps.length),
+      }),
+    }
+  }
+
+  session.facts.push(fact)
+  pushInteraction(session, {
+    role: 'user',
+    kind: 'evidence',
+    text: `supplement:${fact.slice(0, 2000)}`,
+    messageId: args.msg.messageId,
+  })
+  session.stepAwaiting = 'none'
+  session.pendingPrompt = step.label
+  await saveSessionDurable(args.msg.chatId, args.msg.openId, session)
+
+  // Keep incident facts in sync when a case id exists.
+  if (session.lastReportId) {
+    const inc = await getIncidentDurable(session.lastReportId)
+    if (inc) {
+      inc.facts = [...session.facts]
+      inc.interactions = session.interactions
+      inc.updatedAt = Date.now()
+      await upsertIncidentDurable(inc)
+    }
+  }
+
+  const { submittedSummary, helpSummary } = describeSupplementHelp({
+    lang: args.lang,
+    step,
+    text: fact,
+    facts: session.facts.slice(0, -1),
+  })
+  const skillAction =
+    session.lastHits.find((h) => h.id === step.skillId)?.action ||
+    loadSkills().find((s) => s.id === step.skillId)?.action ||
+    ''
+  return {
+    card: investigationSupplementAckCard({
+      lang: args.lang,
+      step,
+      stepIndex: idx,
+      totalSteps: steps.length,
+      submittedSummary,
+      helpSummary,
+      incidentId: session.lastReportId,
+      escalateRoles: escalateRolesForStep(step, skillAction),
+      decisionBranches: decisionBranchesForStep(session, step.skillId),
+    }),
+  }
+}
+
 async function advanceGuideAfterUserInput(args: {
   msg: IncomingMessage
   lang: Lang
@@ -2127,6 +2253,45 @@ async function handleCardActionCore(args: {
     await saveSessionDurable(args.chatId, sessionUser, session)
     return {
       card: investigationEvidencePromptCard({
+        lang,
+        step,
+        stepIndex: idx,
+        totalSteps: steps.length,
+      }),
+    }
+  }
+
+  if (action === 'guide_step_supplement') {
+    const steps = session.pathSteps || []
+    const stepId = String(args.value.stepId || '')
+    let idx = steps.findIndex((s) => s.id === stepId)
+    if (idx < 0) idx = session.pathStepIndex ?? firstPendingGuideIndex(steps)
+    const step = idx >= 0 ? steps[idx] : undefined
+    if (!step) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '无当前步骤' : lang === 'zh-Hant' ? '無當前步驟' : 'No current step',
+          lang === 'zh-Hans'
+            ? '请先贴告警开始排查。'
+            : lang === 'zh-Hant'
+              ? '請先貼告警開始排查。'
+              : 'Paste an alert to start investigation.',
+          'wathet',
+        ),
+      }
+    }
+    session.pathStepIndex = idx
+    session.stepAwaiting = 'supplement'
+    session.pendingPrompt = step.label
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'command',
+      text: `guide_step_supplement:${step.id}`,
+      messageId: args.messageId,
+    })
+    await saveSessionDurable(args.chatId, sessionUser, session)
+    return {
+      card: investigationSupplementPromptCard({
         lang,
         step,
         stepIndex: idx,
@@ -3009,6 +3174,19 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       })
       if (ingested) return ingested
     }
+  }
+
+  // After 补充信息: next message is free evidence (does not auto-complete the step).
+  if (session.mode === 'investigate' && session.stepAwaiting === 'supplement') {
+    const awaitingText = workingText
+      .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
+      .trim()
+    return ingestSupplementEvidence({
+      msg: inbound,
+      lang,
+      session,
+      text: awaitingText || workingText,
+    })
   }
 
   // After Done / required-Skip / Escalate: next user message is evidence, skip reply, or feedback.
