@@ -4,7 +4,6 @@ import {
   countRiskVerdicts,
   riskVerdictEmoji,
   riskVerdictLabel,
-  suggestRiskVerdict,
 } from './riskVerdict.js'
 import type {
   GuideStep,
@@ -96,18 +95,8 @@ export function investigationCard(args: {
 }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
-  const suggested = suggestRiskVerdict(args.severity)
-  const verdictLine = args.riskVerdict
-    ? hans
-      ? `${riskVerdictEmoji(args.riskVerdict)} **最终判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
-      : zh
-        ? `${riskVerdictEmoji(args.riskVerdict)} **最終判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
-        : `${riskVerdictEmoji(args.riskVerdict)} **Final verdict:** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
-    : hans
-      ? `⚖️ **最终判定（必选，计入复盘／周报）：** 尚未选定 — 建议参考严重度倾向 **${riskVerdictLabel(suggested, args.lang)}**`
-      : zh
-        ? `⚖️ **最終判定（必選，計入複盤／週報）：** 尚未選定 — 建議參考嚴重度傾向 **${riskVerdictLabel(suggested, args.lang)}**`
-        : `⚖️ **Final verdict (required for board/weekly stats):** unset — severity soft-suggests **${riskVerdictLabel(suggested, args.lang)}**`
+  // Final verdict is only after the path completes — not mid-investigation.
+  void args.riskVerdict
   const emoji = severityEmoji(args.severity)
   // Path is rendered once on investigationPathOverviewCard — never again here.
   // Preferred Action / 文末参考 removed from investigate cards.
@@ -136,52 +125,6 @@ export function investigationCard(args: {
           content: `${sevLabel}\n\n${args.summary}`,
         },
       },
-      { tag: 'hr' },
-      { tag: 'div', text: { tag: 'lark_md', content: verdictLine } },
-      {
-        tag: 'action',
-        actions: [
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '判定：有风险' : zh ? '判定：有風險' : 'Verdict: At risk',
-            },
-            type: args.riskVerdict === 'at_risk' ? 'primary' : 'danger',
-            value: {
-              action: 'set_risk_verdict',
-              verdict: 'at_risk',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '判定：无风险' : zh ? '判定：無風險' : 'Verdict: No risk',
-            },
-            type: args.riskVerdict === 'no_risk' ? 'primary' : 'default',
-            value: {
-              action: 'set_risk_verdict',
-              verdict: 'no_risk',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '尚不明确' : zh ? '尚不明確' : 'Unclear',
-            },
-            type: args.riskVerdict === 'unclear' ? 'primary' : 'default',
-            value: {
-              action: 'set_risk_verdict',
-              verdict: 'unclear',
-              incidentId: args.incidentId || '',
-            },
-          },
-        ],
-      },
       ...(args.showAddAlertHint
         ? [
             { tag: 'hr' },
@@ -194,20 +137,20 @@ export function investigationCard(args: {
                       '💡 **提示：**',
                       '• 直接跟我说下一步／贴新告警／截图，我会继续协助排查（不必点「完成此步」）。',
                       '• 排查告一段落后点 **结束排查并生成报告** — 先出全文，你可再改，再归档。',
-                      '• 归档前请完成 **最终判定（有／无风险）** — 会计入复盘与周报。',
+                      '• **最终判定**在链路走完后由助手推荐，再由你裁定。',
                     ].join('\n')
                   : zh
                     ? [
                         '💡 **提示：**',
                         '• 直接跟我說下一步／貼新告警／截圖，我會繼續協助排查（不必點「完成此步」）。',
                         '• 排查告一段落後點 **結束排查並生成報告** — 先出全文，你可再改，再歸檔。',
-                        '• 歸檔前請完成 **最終判定（有／無風險）** — 會計入複盤與週報。',
+                        '• **最終判定**在鏈路走完後由助手推薦，再由你裁定。',
                       ].join('\n')
                     : [
                         '💡 **Tip:**',
                         '• Keep chatting / paste alerts — I’ll continue the investigation (no step-done button).',
                         '• When ready, tap **End & generate report** — full text first, you can edit, then archive.',
-                        '• Set a **final risk verdict** before archive — counted on the board and weekly report.',
+                        '• **Final verdict** is recommended after the path completes; you still decide.',
                       ].join('\n'),
               },
             },
@@ -418,18 +361,8 @@ export function investigationPathOverviewCard(args: {
 }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
-  const suggested = suggestRiskVerdict(args.severity)
-  const verdictLine = args.riskVerdict
-    ? hans
-      ? `${riskVerdictEmoji(args.riskVerdict)} **最终判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
-      : zh
-        ? `${riskVerdictEmoji(args.riskVerdict)} **最終判定：** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
-        : `${riskVerdictEmoji(args.riskVerdict)} **Final verdict:** **${riskVerdictLabel(args.riskVerdict, args.lang)}**`
-    : hans
-      ? `⚖️ **最终判定（必选，计入复盘／周报）：** 尚未选定 — 建议参考严重度倾向 **${riskVerdictLabel(suggested, args.lang)}**`
-      : zh
-        ? `⚖️ **最終判定（必選，計入複盤／週報）：** 尚未選定 — 建議參考嚴重度傾向 **${riskVerdictLabel(suggested, args.lang)}**`
-        : `⚖️ **Final verdict (required for board/weekly stats):** unset — severity soft-suggests **${riskVerdictLabel(suggested, args.lang)}**`
+  // Final verdict only after path complete — omit mid-flow verdict UI.
+  void args.riskVerdict
   const emoji = severityEmoji(args.severity)
   // Preferred Action / 文末参考 removed — decisions live under 排查路径与决策.
   void args.knowledge
@@ -462,52 +395,6 @@ export function investigationPathOverviewCard(args: {
       },
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: pathLabel } },
-      { tag: 'hr' },
-      { tag: 'div', text: { tag: 'lark_md', content: verdictLine } },
-      {
-        tag: 'action',
-        actions: [
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '判定：有风险' : zh ? '判定：有風險' : 'Verdict: At risk',
-            },
-            type: args.riskVerdict === 'at_risk' ? 'primary' : 'danger',
-            value: {
-              action: 'set_risk_verdict',
-              verdict: 'at_risk',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '判定：无风险' : zh ? '判定：無風險' : 'Verdict: No risk',
-            },
-            type: args.riskVerdict === 'no_risk' ? 'primary' : 'default',
-            value: {
-              action: 'set_risk_verdict',
-              verdict: 'no_risk',
-              incidentId: args.incidentId || '',
-            },
-          },
-          {
-            tag: 'button',
-            text: {
-              tag: 'plain_text',
-              content: hans ? '尚不明确' : zh ? '尚不明確' : 'Unclear',
-            },
-            type: args.riskVerdict === 'unclear' ? 'primary' : 'default',
-            value: {
-              action: 'set_risk_verdict',
-              verdict: 'unclear',
-              incidentId: args.incidentId || '',
-            },
-          },
-        ],
-      },
       ...(args.showAddAlertHint
         ? [
             { tag: 'hr' },
@@ -887,23 +774,55 @@ export function investigationRequiredSkipPromptCard(args: {
   return simpleCard(title, body, 'orange')
 }
 
-/** All guide steps finished. */
+/** All guide steps finished — assistant recommends; user still rules. */
 export function investigationGuideCompleteCard(args: {
   lang: Lang
   incidentId?: string
+  /** Soft recommendation from severity / evidence — never auto-applied. */
+  recommendedVerdict?: RiskVerdict
+  recommendReason?: string
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
+  const rec = args.recommendedVerdict || 'unclear'
   const title = hans
     ? '排查链路已走完'
     : zh
       ? '排查鏈路已走完'
       : 'Investigation path complete'
+  const reason =
+    args.recommendReason ||
+    (hans
+      ? '综合本轮告警、步骤证据与严重度倾向'
+      : zh
+        ? '綜合本輪告警、步驟證據與嚴重度傾向'
+        : 'Based on alerts, step evidence, and severity')
   const body = hans
-    ? '全部步骤已完成或跳过。可点 **结束排查并生成报告** 出全文，或继续贴补充证据。'
+    ? [
+        '全部步骤已完成或跳过。',
+        '',
+        `⚖️ **助手推荐判定：** ${riskVerdictEmoji(rec)} **${riskVerdictLabel(rec, args.lang)}**`,
+        `• _${reason}_ — 仅供参考，**最终由你裁定**。`,
+        '',
+        '请选择最终判定，或点 **结束排查并生成报告** 先出全文。',
+      ].join('\n')
     : zh
-      ? '全部步驟已完成或跳過。可點 **結束排查並生成報告** 出全文，或繼續貼補充證據。'
-      : 'All steps done or skipped. Tap **End & generate report** for the full text, or keep pasting evidence.'
+      ? [
+          '全部步驟已完成或跳過。',
+          '',
+          `⚖️ **助手推薦判定：** ${riskVerdictEmoji(rec)} **${riskVerdictLabel(rec, args.lang)}**`,
+          `• _${reason}_ — 僅供參考，**最終由你裁定**。`,
+          '',
+          '請選擇最終判定，或點 **結束排查並生成報告** 先出全文。',
+        ].join('\n')
+      : [
+          'All steps done or skipped.',
+          '',
+          `⚖️ **Assistant recommends:** ${riskVerdictEmoji(rec)} **${riskVerdictLabel(rec, args.lang)}**`,
+          `• _${reason}_ — advisory only; **you decide**.`,
+          '',
+          'Pick a final verdict, or tap **End & generate report** first.',
+        ].join('\n')
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -912,6 +831,50 @@ export function investigationGuideCompleteCard(args: {
     },
     elements: [
       { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '裁定：有风险' : zh ? '裁定：有風險' : 'Rule: At risk',
+            },
+            type: 'danger',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'at_risk',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '裁定：无风险' : zh ? '裁定：無風險' : 'Rule: No risk',
+            },
+            type: 'primary',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'no_risk',
+              incidentId: args.incidentId || '',
+            },
+          },
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '裁定：尚不明确' : zh ? '裁定：尚不明確' : 'Rule: Unclear',
+            },
+            type: 'default',
+            value: {
+              action: 'set_risk_verdict',
+              verdict: 'unclear',
+              incidentId: args.incidentId || '',
+            },
+          },
+        ],
+      },
       {
         tag: 'action',
         actions: [

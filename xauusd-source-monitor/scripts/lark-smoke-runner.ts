@@ -95,6 +95,7 @@ import {
   getSession,
   listIncidents,
   listIncidentsDurable,
+  saveSession,
   upsertIncidentDurable,
 } from '../api/lark/_lib/store'
 import type { IncomingMessage } from '../api/lark/_lib/types'
@@ -3363,12 +3364,13 @@ async function main() {
     done.blob.slice(0, 120),
   )
 
-  // 12) Investigation cards: path overview + step Done/Skip[/Escalate] + verdict + end_and_report
+  // 12) Investigation cards: path overview + step Done/Skip[/Escalate] + end_and_report
+  // (final verdict only after path complete — not mid-flow)
   record(
     'turn.investigate_card_action_buttons',
     inv.blob.includes('"tag":"button"') &&
       inv.blob.includes('end_and_report') &&
-      inv.blob.includes('set_risk_verdict') &&
+      !inv.blob.includes('set_risk_verdict') &&
       inv.blob.includes('guide_step_done') &&
       inv.blob.includes('guide_step_skip') &&
       !inv.blob.includes('"action":"step_done"') &&
@@ -3377,7 +3379,7 @@ async function main() {
       (inv.blob.includes('结束排查并生成报告') ||
         inv.blob.includes('結束排查並生成報告') ||
         inv.blob.includes('End & generate report')),
-    'path + Done/Skip + end_and_report + verdict',
+    'path + Done/Skip + end_and_report (no mid-flow verdict)',
   )
   const {
     parseEscalateRoles,
@@ -3458,14 +3460,47 @@ async function main() {
     `fu=${inv.reply?.followUpCards?.length || 0}`,
   )
   record(
-    'turn.investigate_risk_verdict_buttons',
-    inv.blob.includes('set_risk_verdict') &&
-      inv.blob.includes('at_risk') &&
-      inv.blob.includes('no_risk') &&
-      (inv.blob.includes('最终判定') ||
-        inv.blob.includes('最終判定') ||
-        inv.blob.includes('Final verdict')),
-    'final risk verdict buttons on investigate card',
+    'turn.investigate_no_midflow_verdict',
+    !inv.blob.includes('set_risk_verdict') &&
+      !inv.blob.includes('助手推荐判定') &&
+      !inv.blob.includes('助手推薦判定') &&
+      !inv.blob.includes('Assistant recommends'),
+    'verdict deferred until path complete',
+  )
+  // Path complete → assistant recommends; user still rules.
+  clearSession('smoke_chat', 'verdict_complete_zh')
+  await turn(
+    'verdict-complete-seed',
+    'investigate Alert: XAUUSD index source IDX-01 excluded, Mark deviation 48bps',
+    'verdict_complete_zh',
+  )
+  {
+    const s = getSession('smoke_chat', 'verdict_complete_zh')
+    for (const st of s.pathSteps || []) st.status = 'done'
+    s.pathStepIndex = -1
+    saveSession('smoke_chat', 'verdict_complete_zh', s)
+  }
+  const pathDone = await turn(
+    'verdict-after-path-complete',
+    '前端核对 Index/Mark 与告警一致，偏差已回落',
+    'verdict_complete_zh',
+  )
+  record(
+    'turn.path_complete_recommends_verdict',
+    (pathDone.blob.includes('排查链路已走完') ||
+      pathDone.blob.includes('排查鏈路已走完') ||
+      pathDone.blob.includes('path complete')) &&
+      pathDone.blob.includes('set_risk_verdict') &&
+      pathDone.blob.includes('at_risk') &&
+      pathDone.blob.includes('no_risk') &&
+      (pathDone.blob.includes('助手推荐判定') ||
+        pathDone.blob.includes('助手推薦判定') ||
+        pathDone.blob.includes('Assistant recommends')) &&
+      (pathDone.blob.includes('最终由你裁定') ||
+        pathDone.blob.includes('最終由你裁定') ||
+        pathDone.blob.includes('you decide') ||
+        pathDone.blob.includes('裁定')),
+    pathDone.blob.slice(0, 220),
   )
   const verdictSet = await handleCardAction({
     openId: 'smoke_user',

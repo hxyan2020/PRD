@@ -33,6 +33,7 @@ import {
   normalizeRiskVerdict,
   riskVerdictEmoji,
   riskVerdictLabel,
+  suggestRiskVerdict,
 } from './riskVerdict.js'
 import { chatComplete, describeImage } from './llm.js'
 import {
@@ -1314,9 +1315,17 @@ function guideStepReply(args: {
   })
 
   if (!steps.length || idx < 0) {
+    const recommended = suggestRiskVerdict(args.severity)
     const complete = investigationGuideCompleteCard({
       lang: args.lang,
       incidentId: args.incidentId,
+      recommendedVerdict: recommended,
+      recommendReason:
+        args.lang === 'zh-Hans'
+          ? `综合已收集告警／步骤证据与严重度 **${args.severity}**`
+          : args.lang === 'zh-Hant'
+            ? `綜合已收集告警／步驟證據與嚴重度 **${args.severity}**`
+            : `From collected alerts / step evidence and severity **${args.severity}**`,
     })
     if (args.includeOverview) {
       return { card: overview, followUpCards: [complete] }
