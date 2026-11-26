@@ -6,7 +6,6 @@
  * - Not shown on greeting cards.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { simpleCard } from './_lib/cards.js'
 import {
   larkConfigured,
   resolveAdminOpenId,
@@ -20,6 +19,7 @@ import { resolveDailyMarketLang } from './_lib/market.js'
 import type { Lang } from './_lib/types.js'
 import {
   TOKEN_USAGE_START_HM,
+  buildTokenUsageCard,
   formatTokenUsageReport,
   isTokenUsageSlot,
   loadTokenUsage,
@@ -27,7 +27,6 @@ import {
   sgtDayKey,
   sgtHm,
   sumLast24h,
-  tokenUsageReportTitle,
 } from './_lib/tokenUsage.js'
 
 /** Same Yan DM chat as half-hour market when set. */
@@ -117,7 +116,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   let card: Record<string, unknown>
   try {
     markdown = await formatTokenUsageReport(lang)
-    card = simpleCard(tokenUsageReportTitle(lang), markdown, 'indigo')
+    card = await buildTokenUsageCard(lang)
   } catch (e) {
     return res.status(502).json({
       ok: false,
@@ -138,7 +137,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         source: 'other',
       })
       markdown = await formatTokenUsageReport(lang)
-      card = simpleCard(tokenUsageReportTitle(lang), markdown, 'indigo')
+      card = await buildTokenUsageCard(lang)
     }
     const store = await loadTokenUsage()
     const last24 = sumLast24h(store, now)

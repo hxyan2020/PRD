@@ -168,6 +168,7 @@ export function last24hSeries(store: TokenUsageStore, now = Date.now()): { hour:
 }
 
 const SPARK = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'] as const
+const BAR = ['░', '▒', '▓', '█'] as const
 
 export function sparkline(values: number[]): string {
   if (!values.length) return '▁'.repeat(8)
@@ -175,22 +176,43 @@ export function sparkline(values: number[]): string {
   return values.map((v) => SPARK[Math.min(SPARK.length - 1, Math.round((v / max) * (SPARK.length - 1)))]!).join('')
 }
 
+/** Compact hour-axis under a 24-char spark (labels every 3h). */
+export function sparkAxis(series: { hour: string; total: number }[]): string {
+  if (!series.length) return ''
+  return series.map((s, i) => (i % 3 === 0 ? s.hour : '··')).join('')
+}
+
+/** Top-N peak hours for a readable mobile list (replaces multi-row ASCII charts). */
+export function peakHours(
+  series: { hour: string; total: number }[],
+  n = 3,
+): { hour: string; total: number }[] {
+  return [...series]
+    .filter((s) => s.total > 0)
+    .sort((a, b) => b.total - a.total || a.hour.localeCompare(b.hour))
+    .slice(0, n)
+}
+
+function horizontalBar(value: number, max: number, width = 8): string {
+  if (max <= 0 || value <= 0) return BAR[0]!.repeat(width)
+  const filled = Math.max(1, Math.round((value / max) * width))
+  return BAR[3]!.repeat(Math.min(width, filled)) + BAR[0]!.repeat(Math.max(0, width - filled))
+}
+
+/**
+ * @deprecated Multi-row ASCII misaligns on Feishu mobile (proportional font).
+ * Prefer sparkline + peakHours. Kept for smoke / dry fallbacks.
+ */
 export function asciiLineChart(series: { hour: string; total: number }[], height = 5): string {
-  const vals = series.map((s) => s.total)
-  const max = Math.max(...vals, 1)
-  const rows: string[] = []
-  for (let h = height; h >= 1; h--) {
-    const thresh = (max * h) / height
-    let row = ''
-    for (const v of vals) {
-      row += v >= thresh ? '█' : '·'
-    }
-    const label = h === height ? String(Math.round(max)).padStart(5) : ''.padStart(5)
-    rows.push(`${label}│${row}`)
-  }
-  const axis = `${''.padStart(5)}└${'─'.repeat(vals.length)}`
-  const ticks = series.map((s, i) => (i % 3 === 0 ? s.hour : '  ')).join('')
-  return [...rows, axis, `${''.padStart(6)}${ticks}`].join('\n')
+  const spark = sparkline(series.map((s) => s.total))
+  const axis = sparkAxis(series)
+  const peaks = peakHours(series, 3)
+  const peakMax = Math.max(...peaks.map((p) => p.total), 1)
+  const peakLines = peaks.length
+    ? peaks.map((p) => `${p.hour} ${horizontalBar(p.total, peakMax)} ${fmtTokens(p.total)}`)
+    : ['—']
+  void height
+  return [`${spark}`, axis, ...peakLines].join('\n')
 }
 
 function fmtTokens(n: number): string {
@@ -237,52 +259,217 @@ export function isTokenUsageSlot(ts: number = Date.now()): boolean {
   return sgtHm(ts) >= TOKEN_USAGE_START_HM
 }
 
+function pct(part: number, whole: number): string {
+  if (whole <= 0) return '0%'
+  return `${Math.round((part / whole) * 100)}%`
+}
+
+function usageSnapshot(lang: Lang, store: TokenUsageStore, now = Date.now()) {
+  const last24 = sumLast24h(store, now)
+  const series = last24hSeries(store, now)
+  const spark = sparkline(series.map((s) => s.total))
+  const axis = sparkAxis(series)
+  const peaks = peakHours(series, 3)
+  const peakMax = Math.max(...peaks.map((p) => p.total), 1)
+  const day = sgtDayKey(now)
+  return { last24, series, spark, axis, peaks, peakMax, day, store }
+}
+
+function peakLines(
+  lang: Lang,
+  peaks: { hour: string; total: number }[],
+  peakMax: number,
+): string {
+  const hans = lang === 'zh-Hans'
+  const zh = lang === 'zh-Hant' || hans
+  if (!peaks.length) {
+    return hans ? '_近 24h 暂无用量_' : zh ? '_近 24h 暫無用量_' : '_No usage in the last 24h_'
+  }
+  return peaks
+    .map((p, i) => {
+      const bar = horizontalBar(p.total, peakMax)
+      if (hans) return `${i + 1}. **${p.hour}:00**  ${bar}  **${fmtTokens(p.total)}**`
+      if (zh) return `${i + 1}. **${p.hour}:00**  ${bar}  **${fmtTokens(p.total)}**`
+      return `${i + 1}. **${p.hour}:00**  ${bar}  **${fmtTokens(p.total)}**`
+    })
+    .join('\n')
+}
+
 /** Markdown body for the daily Yan-only token usage DM (not greeting). */
 export async function formatTokenUsageReport(lang: Lang): Promise<string> {
-  const store = await loadTokenUsage()
-  const last24 = sumLast24h(store)
-  const series = last24hSeries(store)
-  const chart = asciiLineChart(series)
-  const spark = sparkline(series.map((s) => s.total))
-  const day = sgtDayKey()
+  const snap = usageSnapshot(lang, await loadTokenUsage())
+  const { last24, spark, axis, peaks, peakMax, day, store } = snap
+  const peaksBlock = peakLines(lang, peaks, peakMax)
 
   if (lang === 'zh-Hans') {
     return [
-      `📬 **Token 日消耗 · ${day}**（每日 **${TOKEN_USAGE_START_HM}** SGT · 仅推送 Yan）`,
+      `**${day}** · 每日 **${TOKEN_USAGE_START_HM}** SGT · 仅推送 Yan`,
       '',
-      `• **最近 24 小时：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次调用）`,
-      `• **全历史累计：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次调用）`,
-      `• **24h 走势：** ${spark}`,
+      `**最近 24 小时**  ·  **${fmtTokens(last24.total)}**`,
+      `prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)}（${pct(last24.completion, last24.total)}）· ${last24.calls} 次`,
       '',
-      chart,
+      `**全历史累计**  ·  **${fmtTokens(store.allTime.total)}**`,
+      `prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)}（${pct(store.allTime.completion, store.allTime.total)}）· ${store.allTime.calls} 次`,
       '',
-      '_横轴为东八区小时；含每次 Lark 回复估算（~字数/4）+ 识图／桌面 /api/chat 的上游 usage。_',
+      `**24h 走势**（东八区小时）`,
+      spark,
+      axis,
+      '',
+      `**峰值时段**`,
+      peaksBlock,
+      '',
+      '_含 Lark 回复估算（~字数/4）+ 识图／桌面 /api/chat 上游 usage_',
     ].join('\n')
   }
   if (lang === 'zh-Hant') {
     return [
-      `📬 **Token 日消耗 · ${day}**（每日 **${TOKEN_USAGE_START_HM}** SGT · 僅推送 Yan）`,
+      `**${day}** · 每日 **${TOKEN_USAGE_START_HM}** SGT · 僅推送 Yan`,
       '',
-      `• **最近 24 小時：** **${fmtTokens(last24.total)}** tokens（prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} 次呼叫）`,
-      `• **全歷史累計：** **${fmtTokens(store.allTime.total)}** tokens（prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} 次呼叫）`,
-      `• **24h 走勢：** ${spark}`,
+      `**最近 24 小時**  ·  **${fmtTokens(last24.total)}**`,
+      `prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)}（${pct(last24.completion, last24.total)}）· ${last24.calls} 次`,
       '',
-      chart,
+      `**全歷史累計**  ·  **${fmtTokens(store.allTime.total)}**`,
+      `prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)}（${pct(store.allTime.completion, store.allTime.total)}）· ${store.allTime.calls} 次`,
       '',
-      '_橫軸為東八區小時；含每次 Lark 回覆估算（~字數/4）+ 識圖／桌面 /api/chat 的上游 usage。_',
+      `**24h 走勢**（東八區小時）`,
+      spark,
+      axis,
+      '',
+      `**峰值時段**`,
+      peaksBlock,
+      '',
+      '_含 Lark 回覆估算（~字數/4）+ 識圖／桌面 /api/chat 上游 usage_',
     ].join('\n')
   }
   return [
-    `📬 **Token usage · ${day}** (daily **${TOKEN_USAGE_START_HM}** SGT · Yan only)`,
+    `**${day}** · daily **${TOKEN_USAGE_START_HM}** SGT · Yan only`,
     '',
-    `• **Last 24h:** **${fmtTokens(last24.total)}** tokens (prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} · ${last24.calls} calls)`,
-    `• **All-time:** **${fmtTokens(store.allTime.total)}** tokens (prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} · ${store.allTime.calls} calls)`,
-    `• **24h trend:** ${spark}`,
+    `**Last 24h**  ·  **${fmtTokens(last24.total)}**`,
+    `prompt ${fmtTokens(last24.prompt)} · completion ${fmtTokens(last24.completion)} (${pct(last24.completion, last24.total)}) · ${last24.calls} calls`,
     '',
-    chart,
+    `**All-time**  ·  **${fmtTokens(store.allTime.total)}**`,
+    `prompt ${fmtTokens(store.allTime.prompt)} · completion ${fmtTokens(store.allTime.completion)} (${pct(store.allTime.completion, store.allTime.total)}) · ${store.allTime.calls} calls`,
     '',
-    '_X-axis = Asia/Singapore hour; every Lark reply is estimated (~chars/4) plus vision / desk /api/chat provider usage._',
+    `**24h trend** (Asia/Singapore hour)`,
+    spark,
+    axis,
+    '',
+    `**Peak hours**`,
+    peaksBlock,
+    '',
+    '_Includes Lark reply estimates (~chars/4) + vision / desk /api/chat provider usage_',
   ].join('\n')
+}
+
+function kpiColumn(label: string, value: string, detail: string): Record<string, unknown> {
+  return {
+    tag: 'column',
+    width: 'weighted',
+    weight: 1,
+    vertical_align: 'top',
+    elements: [
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: `${label}\n**${value}**\n${detail}`,
+        },
+      },
+    ],
+  }
+}
+
+/** Feishu VChart (client ≥ 7.1) — 24h token bars by Asia/Singapore hour. */
+export function tokenUsageChartElement(
+  series: { hour: string; total: number }[],
+  lang: Lang,
+): Record<string, unknown> {
+  const hans = lang === 'zh-Hans'
+  const zh = lang === 'zh-Hant' || hans
+  const title = hans
+    ? '近 24 小时 Token（东八区）'
+    : zh
+      ? '近 24 小時 Token（東八區）'
+      : 'Last 24h tokens (SGT hour)'
+  const values = series.map((s) => ({ hour: s.hour, value: s.total }))
+  return {
+    tag: 'chart',
+    aspect_ratio: '16:9',
+    color_theme: 'brand',
+    preview: true,
+    chart_spec: {
+      type: 'bar',
+      title: { text: title },
+      data: { values },
+      xField: 'hour',
+      yField: 'value',
+      label: { visible: false },
+    },
+  }
+}
+
+/** Structured Feishu card — KPI columns + VChart + peak hours (no multi-row ASCII). */
+export async function buildTokenUsageCard(lang: Lang): Promise<Record<string, unknown>> {
+  const snap = usageSnapshot(lang, await loadTokenUsage())
+  const { last24, series, peaks, peakMax, day, store } = snap
+  const hans = lang === 'zh-Hans'
+  const zh = lang === 'zh-Hant' || hans
+
+  const subtitle = hans
+    ? `📅 **${day}** · 每日 **${TOKEN_USAGE_START_HM}** SGT · 仅推送 Yan`
+    : zh
+      ? `📅 **${day}** · 每日 **${TOKEN_USAGE_START_HM}** SGT · 僅推送 Yan`
+      : `📅 **${day}** · daily **${TOKEN_USAGE_START_HM}** SGT · Yan only`
+
+  const label24 = hans ? '最近 24 小时' : zh ? '最近 24 小時' : 'Last 24h'
+  const labelAll = hans ? '全历史累计' : zh ? '全歷史累計' : 'All-time'
+  const detail24 = hans
+    ? `in ${fmtTokens(last24.prompt)} · out ${fmtTokens(last24.completion)}（${pct(last24.completion, last24.total)}）\n${last24.calls} 次调用`
+    : zh
+      ? `in ${fmtTokens(last24.prompt)} · out ${fmtTokens(last24.completion)}（${pct(last24.completion, last24.total)}）\n${last24.calls} 次呼叫`
+      : `in ${fmtTokens(last24.prompt)} · out ${fmtTokens(last24.completion)} (${pct(last24.completion, last24.total)})\n${last24.calls} calls`
+  const detailAll = hans
+    ? `in ${fmtTokens(store.allTime.prompt)} · out ${fmtTokens(store.allTime.completion)}（${pct(store.allTime.completion, store.allTime.total)}）\n${store.allTime.calls} 次调用`
+    : zh
+      ? `in ${fmtTokens(store.allTime.prompt)} · out ${fmtTokens(store.allTime.completion)}（${pct(store.allTime.completion, store.allTime.total)}）\n${store.allTime.calls} 次呼叫`
+      : `in ${fmtTokens(store.allTime.prompt)} · out ${fmtTokens(store.allTime.completion)} (${pct(store.allTime.completion, store.allTime.total)})\n${store.allTime.calls} calls`
+
+  const peakTitle = hans ? '**峰值时段**' : zh ? '**峰值時段**' : '**Peak hours**'
+  const note = hans
+    ? '含 Lark 回复估算（~字数/4）+ 识图／桌面 /api/chat 上游 usage · 图表需飞书 ≥ 7.1'
+    : zh
+      ? '含 Lark 回覆估算（~字數/4）+ 識圖／桌面 /api/chat 上游 usage · 圖表需飛書 ≥ 7.1'
+      : 'Includes Lark reply estimates (~chars/4) + vision / desk usage · chart needs Feishu ≥ 7.1'
+
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      // blue — avoid indigo/purple wash on the daily desk push
+      template: 'blue',
+      title: { tag: 'plain_text', content: tokenUsageReportTitle(lang) },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: subtitle } },
+      {
+        tag: 'column_set',
+        flex_mode: 'bisect',
+        background_style: 'grey',
+        columns: [
+          kpiColumn(label24, fmtTokens(last24.total), detail24),
+          kpiColumn(labelAll, fmtTokens(store.allTime.total), detailAll),
+        ],
+      },
+      tokenUsageChartElement(series, lang),
+      {
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: `${peakTitle}\n${peakLines(lang, peaks, peakMax)}`,
+        },
+      },
+      { tag: 'note', elements: [{ tag: 'plain_text', content: note }] },
+    ],
+  }
 }
 
 /** @deprecated Use formatTokenUsageReport — greeting no longer embeds usage. */

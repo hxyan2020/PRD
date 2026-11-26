@@ -1333,7 +1333,8 @@ async function main() {
       last24.total > 0 &&
         series.length === 24 &&
         sparkline(series.map((s) => s.total)).length === 24 &&
-        asciiLineChart(series).includes('│'),
+        /[▁▂▃▄▅▆▇█]/.test(asciiLineChart(series)) &&
+        asciiLineChart(series).includes(series[0]!.hour),
       `24h=${last24.total}`,
     )
     await recordTokenUsage({ prompt: 10, completion: 5, source: 'lark' })
@@ -1383,6 +1384,7 @@ async function main() {
     )
   }
   const {
+    buildTokenUsageCard,
     formatTokenUsageReport,
     isTokenUsageSlot,
     sgtDayKey,
@@ -1393,14 +1395,31 @@ async function main() {
   record(
     'token_usage.daily_report_body',
     Boolean(
-      /Token usage/.test(tokenMd) &&
-        /Last 24h/.test(tokenMd) &&
+      /Last 24h/.test(tokenMd) &&
         /All-time/.test(tokenMd) &&
+        /Peak hours/.test(tokenMd) &&
         /[▁▂▃▄▅▆▇█]/.test(tokenMd) &&
         tokenMd.includes(TOKEN_USAGE_START_HM) &&
-        /Yan only|仅推送 Yan/i.test(tokenMd),
+        /Yan only|仅推送 Yan/i.test(tokenMd) &&
+        !tokenMd.includes('│'),
     ),
     tokenMd.slice(0, 160),
+  )
+  const tokenCard = await buildTokenUsageCard('zh-Hans')
+  const tokenCardBlob = JSON.stringify(tokenCard)
+  record(
+    'token_usage.card_layout',
+    Boolean(
+      tokenCard.header &&
+        (tokenCard.header as { template?: string }).template === 'blue' &&
+        tokenCardBlob.includes('column_set') &&
+        /"tag"\s*:\s*"chart"/.test(tokenCardBlob) &&
+        tokenCardBlob.includes('峰值时段') &&
+        tokenCardBlob.includes('近 24 小时 Token') &&
+        !tokenCardBlob.includes('indigo') &&
+        !tokenCardBlob.includes('│'),
+    ),
+    tokenCardBlob.slice(0, 200),
   )
   record(
     'token_usage.slot_18_sgt',
@@ -2800,8 +2819,10 @@ async function main() {
       tokenUsageSrc.includes("finishSent('chat_id'") &&
       tokenUsageSrc.indexOf('await sendCardToOpenId(admin.openId, card)') <
         tokenUsageSrc.indexOf('await sendCardToChat(chat.chatId, card)') &&
-      tokenUsageSrc.includes('私聊'),
-    'token daily prefers Yan open_id; chat_id fallback',
+      tokenUsageSrc.includes('私聊') &&
+      tokenUsageSrc.includes('buildTokenUsageCard') &&
+      !tokenUsageSrc.includes('indigo'),
+    'token daily prefers Yan open_id; structured blue card (no indigo)',
   )
   const oscHandlerSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/oscillation-alert.ts', import.meta.url),
