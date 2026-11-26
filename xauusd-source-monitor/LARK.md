@@ -191,8 +191,8 @@ never-sent).
 2. **Market Q&A** — OKX + desk links.
 3. **Off-topic / safety** — gentle reject; no PII, cursing, or political topics.
 4. **Investigate** — alerts/text/image/table; adaptive steps; emoji + bold bullets; AIPO evidence grades (Confirmed / Suspected / Unknown + [OBS]/[DESIGN]/…).
-   - **开始分析 / case open:** posts **排查总览** (severity + summary + path/decisions) first, then **第 N 步** as a separate message. Done/Skip advances step-only.
-   - Step buttons: row1 补充信息 / 跳过 / 升级 / 结束排查 (neutral); row2 **已完成** (danger). 结束排查 sync-posts a card with **生成报告** / **不生成报告** (toast is zh-primary, not English-only).
+   - **Paste alert:** gather gate first（还有其他告警吗？）→ **开始分析** → **排查总览** then **第 1 步**. Explicit「排查 / investigate」mid-case closes the old case and re-enters gather (never resumes at step 7/13).
+   - Step buttons: row1 补充信息 / 跳过 / 升级 / 结束排查 (neutral); row2 **已完成** (danger). 结束排查 sync-posts **生成报告** / **不生成报告** (zh toast).
 5. **RAG + Skills** — desk + quote-ops V Exchange perpetual (`v-exchange-perp`; CFD excluded).
 6. **Dashboard** — `review` / `dashboard` → KPI card + https://vex-llm-proxy.vercel.app/#/reports
 7. **Wiki / Docs (AIPO)** — read-only Lark Wiki search + Docx excerpt when scopes allow; otherwise show setup steps / @Yan.

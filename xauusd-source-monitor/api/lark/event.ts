@@ -128,7 +128,9 @@ async function handleCardActionRequest(
     messageId,
     `${messageId}:${String(value.action || '')}:${String(value.incidentId || '')}:${String(value.bar || '')}`,
   )
-  if (key && !claimOnce(key)) {
+  // end_investigation: claim AFTER successful card send so Feishu retries still deliver buttons.
+  const deferDedupe = String(value.action || '') === 'end_investigation'
+  if (key && !deferDedupe && !claimOnce(key)) {
     logInbound({
       at: new Date().toISOString(),
       kind: 'card_action',
@@ -137,7 +139,11 @@ async function handleCardActionRequest(
       result: 'skipped:deduped',
     })
     return res.status(200).json({
-      toast: { type: 'info', content: 'Already handled' },
+      toast: {
+        type: 'info',
+        content: '已处理',
+        i18n: { zh_cn: '已处理', zh_hk: '已處理', zh_tw: '已處理', en_us: 'Already handled' },
+      },
     })
   }
 
@@ -239,10 +245,20 @@ async function handleCardActionRequest(
   ).trim()
 
   // 「结束排查」must show 生成报告 / 不生成报告 buttons — toast alone is not enough.
-  // Sync-post ask-report as a NEW message (callback-token update must wait until
-  // after HTTP 200, so we only ack the step card in waitUntil).
+  // Sync-post ask-report as a NEW message; also return card in the callback body so
+  // Feishu can replace the step card immediately. Claim dedupe only after send.
   if (actionName === 'end_investigation') {
     try {
+      if (key && !claimOnce(key)) {
+        // Retry after a prior success — still try to surface buttons once more.
+        logInbound({
+          at: new Date().toISOString(),
+          kind: 'card_action',
+          eventType: args.eventType,
+          messageId,
+          result: 'end_investigation:retry_after_claim',
+        })
+      }
       const reply = await handleCardAction({
         openId,
         chatId,
@@ -256,15 +272,28 @@ async function handleCardActionRequest(
       const askCard = reply?.card
       let via = 'none'
       if (askCard) {
-        if (chatId) {
-          await sendCardToChat(chatId, askCard)
-          via = 'new_ask_report'
-        } else if (openId.startsWith('ou_')) {
-          await sendCardToOpenId(openId, askCard)
-          via = 'new_ask_report_open_id'
-        } else {
-          waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
-          via = 'dispatch_fallback'
+        try {
+          if (chatId) {
+            await sendCardToChat(chatId, askCard)
+            via = 'new_ask_report'
+          } else if (openId.startsWith('ou_')) {
+            await sendCardToOpenId(openId, askCard)
+            via = 'new_ask_report_open_id'
+          }
+        } catch (sendErr) {
+          // Fall through to open_id / waitUntil
+          if (openId.startsWith('ou_') && chatId) {
+            try {
+              await sendCardToOpenId(openId, askCard)
+              via = 'new_ask_report_open_id_fallback'
+            } catch {
+              waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
+              via = `dispatch_after_send_fail:${sendErr instanceof Error ? sendErr.message : 'err'}`
+            }
+          } else {
+            waitUntil(dispatchReply(messageId, chatId, reply).then(() => undefined))
+            via = 'dispatch_fallback'
+          }
         }
       }
       if (callbackToken) {
@@ -272,17 +301,19 @@ async function handleCardActionRequest(
           (async () => {
             try {
               await new Promise((r) => setTimeout(r, 150))
-              await updateCardByCallbackToken(
-                callbackToken,
+              // Prefer replacing the step card with the ask-report buttons when possible.
+              const ackOrAsk =
+                askCard ||
                 simpleCard(
                   'VE Risk Copilot',
                   '结束排查 — 请点下方选择是否生成报告',
                   'orange',
-                ),
-                { openIds: openId.startsWith('ou_') ? [openId] : [] },
-              )
+                )
+              await updateCardByCallbackToken(callbackToken, ackOrAsk, {
+                openIds: openId.startsWith('ou_') ? [openId] : [],
+              })
             } catch {
-              /* non-fatal — ask-report already posted */
+              /* non-fatal — ask-report already posted as new message */
             }
           })(),
         )
@@ -296,8 +327,10 @@ async function handleCardActionRequest(
         messageId,
         result: `ok:end_investigation:${via}`,
       })
+      // toast + card: toast is zh-primary; card helps clients that apply callback body.
       return res.status(200).json({
         toast: investigationActionToast('end_investigation'),
+        ...(askCard ? { card: askCard } : {}),
       })
     } catch (e) {
       logInbound({
@@ -398,7 +431,7 @@ async function handleCardActionRequest(
             card: simpleCard('VE Risk Copilot', reply.text, 'wathet'),
           }
         }
-        let dispatched = { ok: false as boolean, via?: string, error?: string }
+        let dispatched: { ok: boolean; via?: string; error?: string } = { ok: false }
         const multiCard = Boolean(reply?.card && reply.followUpCards?.length)
 
         const sendNew = async (card: Record<string, unknown>) => {

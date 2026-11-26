@@ -1758,8 +1758,10 @@ async function replyAlertGather(args: {
   args.session.preferredLang = args.lang
   args.session.pathSteps = undefined
   args.session.pathStepIndex = undefined
+  args.session.checkedSteps = []
   args.session.stepAwaiting = 'none'
   args.session.pendingPrompt = undefined
+  args.session.escalation = undefined
   await saveSessionDurable(args.msg.chatId, args.msg.openId, args.session)
   const alerts = args.session.facts.filter((f) => !f.startsWith('[chat-history]'))
   return { card: alertGatherCard({ lang: args.lang, alerts }) }
@@ -1826,7 +1828,11 @@ async function runInvestigation(args: {
   // Case open: never infer coverage / never re-rank away from Skill.check step 1.
   // Opening alerts often echo Bid1/Ask1/Spread (or operator paraphrase) and would
   // otherwise mark early atoms done → tip says「第 1 步」while push is 4/4.
+  // Also drop stale checkedSteps from a previous case so we never resume at step 7/13.
   const openCaseGuide = showAddAlertHint
+  if (openCaseGuide || args.fromGather) {
+    session.checkedSteps = []
+  }
   const pathPlan = planInvestigationPath({
     facts: session.facts,
     hits,
@@ -3485,6 +3491,10 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
   if (intent === 'investigate' || intent === 'followup') {
     // Strip command prefix — bare "investigate"/"排查" with no details should not open a report card.
     // Also drop the parse-time `[forwarded_card]` marker so report titles stay clean.
+    // `\b` does not work after CJK — mirror COMMAND_INVESTIGATE (CMD_END).
+    const explicitNewCase = /^(?:investigate\b|排查|开始排查|開始排查)(?:\s|$|[：:])/i.test(
+      workingText.trim(),
+    )
     const fact = workingText
       .replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '')
       .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
@@ -3499,6 +3509,57 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
         lang,
         newFact: '',
         fromGather: true,
+      })
+    }
+    // Explicit「排查 / investigate」while mid-case → close as 无风险, then gather
+    // (ask「还有其他告警吗」). Do not resume at step 7/13 of the abandoned path.
+    if (session.mode === 'investigate' && explicitNewCase) {
+      await closeIncidentAsInvestigatedNoRisk({
+        incidentId: session.lastReportId,
+        openId: inbound.openId,
+        reason: 'explicit_new_investigate',
+      })
+      session.lastReportId = undefined
+      session.lastReportMarkdown = undefined
+      session.facts = session.facts.filter((f) => f.startsWith('[chat-history]'))
+      session.interactions = []
+      session.checkedSteps = []
+      session.pathSteps = undefined
+      session.pathStepIndex = undefined
+      session.stepAwaiting = 'none'
+      session.pendingPrompt = undefined
+      session.escalation = undefined
+      session.mode = 'idle'
+      await saveSessionDurable(inbound.chatId, inbound.openId, session)
+      if (!fact) {
+        const title =
+          lang === 'zh-Hans' ? '开始排查' : lang === 'zh-Hant' ? '開始排查' : 'Start investigation'
+        const body =
+          lang === 'zh-Hans'
+            ? [
+                '上一次排查已结束（排查过 · 无风险）。',
+                '',
+                '请粘贴新的告警原文／截图／表格；收集后会先问你还有没有更多告警，再开始分析。',
+              ].join('\n')
+            : lang === 'zh-Hant'
+              ? [
+                  '上一次排查已結束（排查過 · 無風險）。',
+                  '',
+                  '請貼上新的告警原文／截圖／表格；收集後會先問你還有沒有更多告警，再開始分析。',
+                ].join('\n')
+              : [
+                  'Previous case closed (investigated · no risk).',
+                  '',
+                  'Paste a new alert / screenshot / table. I’ll ask if there are more before analysis.',
+                ].join('\n')
+        return { card: simpleCard(title, body, 'wathet') }
+      }
+      return replyAlertGather({
+        msg: inbound,
+        lang,
+        session,
+        newFact: fact,
+        freshCase: true,
       })
     }
     if (!fact) {

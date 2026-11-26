@@ -819,9 +819,38 @@ async function main() {
         startedBlob.includes('排查路径与决策') ||
         startedBlob.includes('完整排查链路')) &&
       (startedBlob.includes('排查步骤') || startedBlob.includes('Investigation step')) &&
+      /排查步骤\s*1\s*\/|Investigation step\s*1\s*\//i.test(startedBlob) &&
       getSession('smoke_chat', 'gather_zh').mode === 'investigate',
     `fu=${started?.followUpCards?.length || 0} ${startedBlob.slice(0, 120)}`,
   )
+
+  // Mid-case explicit「排查」must re-enter gather — never resume at a high step index.
+  {
+    const mid = getSession('smoke_chat', 'gather_zh')
+    const steps = mid.pathSteps || []
+    if (steps.length >= 2) {
+      mid.checkedSteps = steps.slice(0, Math.min(6, steps.length - 1)).map((s) => s.label)
+      mid.pathStepIndex = Math.min(6, steps.length - 1)
+      saveSession('smoke_chat', 'gather_zh', mid)
+    }
+    const restart = await turn(
+      'inv-explicit-排查-reenters-gather',
+      '排查 告警：XAU_USD Mark 偏离 99bps，IDX-99 被剔除',
+      'gather_zh',
+      'smoke_chat',
+      { keepGather: true },
+    )
+    record(
+      'turn.explicit_investigate_reenters_gather',
+      restart.blob.includes('start_analysis') &&
+        (restart.blob.includes('还有其他') ||
+          restart.blob.includes('已收集') ||
+          restart.blob.includes('Start analysis')) &&
+        !/排查步骤\s*[2-9]\d*\s*\//.test(restart.blob) &&
+        getSession('smoke_chat', 'gather_zh').mode === 'gather_alerts',
+      restart.blob.slice(0, 160),
+    )
+  }
 
   // First investigation generation reminds user they can add another alert to the same case.
   clearSession('smoke_chat', 'hint_first_zh')
