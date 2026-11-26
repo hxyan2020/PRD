@@ -480,10 +480,10 @@ export function investigationPathOverviewCard(args: {
                 content: (() => {
                   const n = Math.max(1, Math.floor(args.nextStepNumber || 1))
                   return hans
-                    ? `💡 **下一条消息**会给出第 ${n} 步；点 **已完成** 需补证据，点 **跳过** 时必做步必须回复说明。`
+                    ? `💡 **下一条消息**会给出第 ${n} 步。`
                     : zh
-                      ? `💡 **下一則訊息**會給出第 ${n} 步；點 **已完成** 需補證據，點 **跳過** 時必做步必須回覆說明。`
-                      : `💡 **Next message** starts step ${n} — **Done** needs evidence; **Skip** on required steps needs a reply.`
+                      ? `💡 **下一則訊息**會給出第 ${n} 步。`
+                      : `💡 **Next message** starts step ${n}.`
                 })(),
               },
             },
@@ -546,53 +546,20 @@ export function investigationStepGuideCard(args: {
     : zh
       ? `排查步驟 ${n}/${args.totalSteps}`
       : `Investigation step ${n}/${args.totalSteps}`
+  // Buttons only — no 已完成／跳过／升级 prose under the step line.
   const body = hans
-    ? [
-        `📍 **当前步骤（${optBadge}）**`,
-        '',
-        formatStepLine(args.step.label, args.stepIndex),
-        '',
-        '• 点 **已完成** → 下一条请补齐证据（截图／数值／结论）',
-        args.step.required
-          ? '• 点 **跳过** → 必做步须回复跳过原因，才能进入下一步'
-          : '• 点 **跳过** → 可选步可直接进入下一步',
-        showEscalate
-          ? `• 点 **升级** → 通知 **${rolesLabel}**，对方将收到本步与完整排查时间线`
-          : '',
-      ]
-        .filter(Boolean)
-        .join('\n')
+    ? [`📍 **当前步骤（${optBadge}）**`, '', formatStepLine(args.step.label, args.stepIndex)].join(
+        '\n',
+      )
     : zh
-      ? [
-          `📍 **當前步驟（${optBadge}）**`,
-          '',
-          formatStepLine(args.step.label, args.stepIndex),
-          '',
-          '• 點 **已完成** → 下一則請補齊證據',
-          args.step.required
-            ? '• 點 **跳過** → 必做步須回覆跳過原因'
-            : '• 點 **跳過** → 可選步可直接進入下一步',
-          showEscalate
-            ? `• 點 **升級** → 通知 **${rolesLabel}**，對方將收到本步與完整排查時間線`
-            : '',
-        ]
-          .filter(Boolean)
-          .join('\n')
+      ? [`📍 **當前步驟（${optBadge}）**`, '', formatStepLine(args.step.label, args.stepIndex)].join(
+          '\n',
+        )
       : [
           `📍 **Current step (${optBadge})**`,
           '',
           formatStepLine(args.step.label, args.stepIndex),
-          '',
-          '• Tap **Done** → next message: paste evidence',
-          args.step.required
-            ? '• Tap **Skip** → required steps need a short reply before continuing'
-            : '• Tap **Skip** → optional steps advance immediately',
-          showEscalate
-            ? `• Tap **Escalate** → notify **${rolesLabel}** with this step + full timeline`
-            : '',
-        ]
-          .filter(Boolean)
-          .join('\n')
+        ].join('\n')
 
   const actions: Record<string, unknown>[] = [
     {
