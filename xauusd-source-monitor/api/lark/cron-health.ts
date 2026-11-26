@@ -1,6 +1,7 @@
 /**
  * GET/POST /api/lark/cron-health
- * - Every 30 minutes → DM Yan Haixiang a cron/bot health card.
+ * - Every 30 minutes → private DM Yan Haixiang a cron/bot health card.
+ * - Delivery prefers open_id (私聊); chat_id is fallback only.
  * - If any scheduled push is missing, card is red and @mentions Yan.
  * - Also reachable via cron-tick (health-first fan-out + force catch-up).
  *
@@ -187,23 +188,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const stampKey = report.allOk ? slotKey : missKey
+  const reasonBase = staleCatchup
+    ? `stale_catchup:${report.allOk ? 'healthy' : report.misses.map((m) => m.id).join(',')}`
+    : force
+      ? `force:${report.allOk ? 'healthy' : report.misses.map((m) => m.id).join(',')}`
+      : report.allOk
+        ? 'healthy'
+        : `miss:${report.misses.map((m) => m.id).join(',')}`
 
-  try {
-    await sendCardToChat(chat.chatId, report.card)
+  async function finishOk(via: string, extra: Record<string, string> = {}) {
     const persisted = await markSent(stampKey)
     if (staleCatchup) await markSent(`catchup:${slotKey}`)
     await touchCronHeartbeat('/api/lark/cron-health', {
       status: persisted ? 200 : 502,
       outcome: report.allOk ? 'ok' : 'sent',
-      reason: !persisted
-        ? 'sent_but_blob_failed'
-        : staleCatchup
-          ? `stale_catchup:${report.allOk ? 'healthy' : report.misses.map((m) => m.id).join(',')}`
-          : force
-            ? `force:${report.allOk ? 'healthy' : report.misses.map((m) => m.id).join(',')}`
-            : report.allOk
-              ? 'healthy'
-              : `miss:${report.misses.map((m) => m.id).join(',')}`,
+      reason: !persisted ? 'sent_but_blob_failed' : `${via}:${reasonBase}`,
     })
     if (!persisted) {
       return res.status(502).json({
@@ -212,9 +211,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         error: 'health_sent_state_blob_failed',
         raised: !report.allOk,
         staleCatchup,
+        force,
         slotKey,
         allOk: report.allOk,
         misses: report.misses.map((m) => m.id),
+        via,
+        ...extra,
       })
     }
     return res.status(200).json({
@@ -226,66 +228,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       slotKey,
       allOk: report.allOk,
       misses: report.misses.map((m) => m.id),
-      via: 'chat_id',
-      recipientChatId: chat.chatId.slice(0, 10) + '…',
+      via,
+      ...extra,
     })
-  } catch (chatErr) {
-    if (!admin.openId) {
-      await touchCronHeartbeat('/api/lark/cron-health', {
-        status: 502,
-        outcome: 'error',
-        reason: chatErr instanceof Error ? chatErr.message : 'send failed',
-      })
-      return res.status(502).json({
-        ok: false,
-        error: chatErr instanceof Error ? chatErr.message : 'send failed',
-        slotKey,
-        allOk: report.allOk,
-      })
-    }
+  }
+
+  // Prefer Yan's open_id private DM (私聊). Chat-id is fallback only —
+  // a "successful" send to a stale oc_ chat can look green while Yan sees nothing.
+  if (admin.openId) {
     try {
       await sendCardToOpenId(admin.openId, report.card)
-      const persisted = await markSent(stampKey)
-      await touchCronHeartbeat('/api/lark/cron-health', {
-        status: persisted ? 200 : 502,
-        outcome: report.allOk ? 'ok' : 'sent',
-        reason: persisted ? 'open_id_fallback' : 'open_id_fallback_blob_failed',
+      return await finishOk('open_id', {
+        recipientOpenId: admin.openId.slice(0, 8) + '…',
+        recipientSource: admin.source,
       })
-      if (!persisted) {
-        return res.status(502).json({
-          ok: false,
-          sent: true,
-          error: 'health_sent_state_blob_failed',
-          raised: !report.allOk,
-          slotKey,
-          allOk: report.allOk,
-          misses: report.misses.map((m) => m.id),
-          via: 'open_id_fallback',
-        })
-      }
-      return res.status(200).json({
-        ok: true,
-        sent: true,
-        raised: !report.allOk,
-        staleCatchup,
-        force,
-        slotKey,
-        allOk: report.allOk,
-        misses: report.misses.map((m) => m.id),
-        via: 'open_id_fallback',
-      })
-    } catch (e) {
-      await touchCronHeartbeat('/api/lark/cron-health', {
-        status: 502,
-        outcome: 'error',
-        reason: e instanceof Error ? e.message : 'send failed',
-      })
-      return res.status(502).json({
-        ok: false,
-        error: e instanceof Error ? e.message : 'send failed',
-        slotKey,
-        allOk: report.allOk,
-      })
+    } catch (openErr) {
+      console.error(
+        '[cron-health] open_id send failed, trying chat_id',
+        openErr instanceof Error ? openErr.message : openErr,
+      )
     }
+  }
+
+  try {
+    await sendCardToChat(chat.chatId, report.card)
+    return await finishOk('chat_id', {
+      recipientChatId: chat.chatId.slice(0, 10) + '…',
+      recipientSource: chat.source,
+    })
+  } catch (chatErr) {
+    await touchCronHeartbeat('/api/lark/cron-health', {
+      status: 502,
+      outcome: 'error',
+      reason: chatErr instanceof Error ? chatErr.message : 'send failed',
+    })
+    return res.status(502).json({
+      ok: false,
+      error: chatErr instanceof Error ? chatErr.message : 'send failed',
+      slotKey,
+      allOk: report.allOk,
+      triedOpenId: Boolean(admin.openId),
+    })
   }
 }

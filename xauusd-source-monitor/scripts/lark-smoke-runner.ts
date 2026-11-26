@@ -2801,6 +2801,16 @@ async function main() {
       cronHealthSrc.includes('health_sent_state_blob_failed'),
     '35m silence / never-sent → catch-up DM; blob fail → 502 retry',
   )
+  record(
+    'cron.health_prefers_open_id_dm',
+    cronHealthSrc.includes("sendCardToOpenId(admin.openId, report.card)") &&
+      cronHealthSrc.includes("finishOk('open_id'") &&
+      cronHealthSrc.includes("finishOk('chat_id'") &&
+      cronHealthSrc.indexOf("sendCardToOpenId(admin.openId, report.card)") <
+        cronHealthSrc.indexOf('await sendCardToChat(chat.chatId, report.card)') &&
+      cronHealthSrc.includes('私聊'),
+    'health DM prefers Yan open_id; chat_id is fallback',
+  )
   const durableSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/_lib/durableJson.ts', import.meta.url),
     'utf8',
