@@ -115,9 +115,6 @@ export function investigationCard(args: {
         ? `⚖️ **最終判定（必選，計入複盤／週報）：** 尚未選定 — 建議參考嚴重度傾向 **${riskVerdictLabel(suggested, args.lang)}**`
         : `⚖️ **Final verdict (required for board/weekly stats):** unset — severity soft-suggests **${riskVerdictLabel(suggested, args.lang)}**`
   const emoji = severityEmoji(args.severity)
-  const actionMd =
-    args.actions.map((a) => formatActionLine(a)).join('\n') ||
-    (hans ? '• （暂无）' : zh ? '• （暫無）' : '• (none yet)')
   const skillLine = args.skills.length
     ? args.skills.join(', ')
     : hans
@@ -126,19 +123,16 @@ export function investigationCard(args: {
         ? '尚未匹配'
         : 'none matched'
   // Path is rendered once on investigationPathOverviewCard — never again here.
+  // Preferred Action removed — decisions live under 排查路径与决策.
   void args.knowledge
   void args.nextSteps
+  void args.actions
 
   const sevLabel = hans
     ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
     : zh
       ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
       : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
-  const prefLabel = hans
-    ? `⚡ **Preferred Action**（需审批）\n\n${actionMd}`
-    : zh
-      ? `⚡ **Preferred Action**（需審批）\n\n${actionMd}`
-      : `⚡ **Preferred Action** (approval required)\n\n${actionMd}`
   const refsFooter = hans
     ? [
         '📎 **参考（文末）**',
@@ -171,8 +165,6 @@ export function investigationCard(args: {
           content: `${sevLabel}\n\n${args.summary}`,
         },
       },
-      { tag: 'hr' },
-      { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
       { tag: 'hr' },
@@ -470,9 +462,6 @@ export function investigationPathOverviewCard(args: {
         ? `⚖️ **最終判定（必選，計入複盤／週報）：** 尚未選定 — 建議參考嚴重度傾向 **${riskVerdictLabel(suggested, args.lang)}**`
         : `⚖️ **Final verdict (required for board/weekly stats):** unset — severity soft-suggests **${riskVerdictLabel(suggested, args.lang)}**`
   const emoji = severityEmoji(args.severity)
-  const actionMd =
-    args.actions.map((a) => formatActionLine(a)).join('\n') ||
-    (hans ? '• （暂无）' : zh ? '• （暫無）' : '• (none yet)')
   const skillLine = args.skills.length
     ? args.skills.join(', ')
     : hans
@@ -481,7 +470,9 @@ export function investigationPathOverviewCard(args: {
         ? '尚未匹配'
         : 'none matched'
   // No 知识库 titles in investigate body — desk link stays for navigation only via Skills.
+  // Preferred Action removed — decisions live under 排查路径与决策.
   void args.knowledge
+  void args.actions
   const sevLabel = hans
     ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
     : zh
@@ -492,11 +483,6 @@ export function investigationPathOverviewCard(args: {
     steps: args.steps,
     decisionBranches: args.decisionBranches,
   })
-  const prefLabel = hans
-    ? `⚡ **Preferred Action**（需审批）\n\n${actionMd}`
-    : zh
-      ? `⚡ **Preferred Action**（需審批）\n\n${actionMd}`
-      : `⚡ **Preferred Action** (approval required)\n\n${actionMd}`
   const refsFooter = hans
     ? [
         '📎 **参考（文末）**',
@@ -531,7 +517,6 @@ export function investigationPathOverviewCard(args: {
       },
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: pathLabel } },
-      { tag: 'div', text: { tag: 'lark_md', content: prefLabel } },
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: refsFooter } },
       { tag: 'hr' },
