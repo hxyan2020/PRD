@@ -169,11 +169,28 @@ async function sendCardOnce(args: {
   card: Record<string, unknown>
   viaReply: boolean
 }): Promise<{ ok: boolean; via: string; error?: string }> {
-  try {
-    if (args.viaReply && args.seedMessageId) {
+  if (args.viaReply && args.seedMessageId) {
+    try {
       await replyCard(args.seedMessageId, args.card)
       return { ok: true, via: 'replyCard' }
+    } catch (replyErr) {
+      // After card.action toast ack, reply-to-message often fails — fall through to chat send.
+      if (!args.chatId) {
+        return {
+          ok: false,
+          via: 'replyCard',
+          error: replyErr instanceof Error ? replyErr.message : String(replyErr),
+        }
+      }
+      try {
+        await sendCardToChat(args.chatId, args.card)
+        return { ok: true, via: 'sendCardToChat_after_reply_fail' }
+      } catch (e) {
+        return { ok: false, via: 'card', error: e instanceof Error ? e.message : String(e) }
+      }
     }
+  }
+  try {
     await sendCardToChat(args.chatId, args.card)
     return { ok: true, via: 'sendCardToChat' }
   } catch (e) {

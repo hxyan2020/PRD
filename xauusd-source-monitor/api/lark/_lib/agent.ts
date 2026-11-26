@@ -2045,7 +2045,8 @@ async function handleCardActionCore(args: {
   const chatType = args.chatType || 'p2p'
   const sessionUser = sessionOpenIdFor(chatType, args.openId)
   const session = await getSessionDurable(args.chatId, sessionUser)
-  const lang: Lang = session.preferredLang || 'en'
+  // Desk is ZH-first; never fall back to English mid-case when preferredLang unset.
+  const lang: Lang = session.preferredLang || 'zh-Hans'
   const fakeMsg: IncomingMessage = {
     messageId: args.messageId,
     chatId: args.chatId,
@@ -2314,9 +2315,16 @@ async function handleCardActionCore(args: {
         ),
       }
     }
+    // Done → mark complete and push the next step card immediately.
+    // (Evidence can still be added via 补充信息; requiring a paste here left
+    // operators with only a toast when card.reply failed after the callback.)
     session.pathStepIndex = idx
-    session.stepAwaiting = 'evidence'
     session.pendingPrompt = step.label
+    step.status = 'done'
+    session.stepAwaiting = 'none'
+    if (!session.checkedSteps.some((s) => s.toLowerCase() === step.label.toLowerCase())) {
+      session.checkedSteps.push(step.label)
+    }
     pushInteraction(session, {
       role: 'user',
       kind: 'step_done',
@@ -2324,15 +2332,19 @@ async function handleCardActionCore(args: {
       messageId: args.messageId,
     })
     await saveSessionDurable(args.chatId, sessionUser, session)
-    return {
-      card: investigationEvidencePromptCard({
-        lang,
-        step,
-        stepIndex: idx,
-        totalSteps: steps.length,
-        incidentId: incidentId || session.lastReportId || '',
-      }),
-    }
+    const doneFact =
+      lang === 'zh-Hans'
+        ? `值班人员已完成步骤：${step.label}`
+        : lang === 'zh-Hant'
+          ? `值班人員已完成步驟：${step.label}`
+          : `Operator marked step done: ${step.label}`
+    return runInvestigation({
+      msg: fakeMsg,
+      lang,
+      newFact: doneFact,
+      markStepDone: true,
+      guideAdvanceOnly: true,
+    })
   }
 
   if (action === 'guide_step_cancel_await') {
