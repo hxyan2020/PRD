@@ -2728,11 +2728,13 @@ async function main() {
       cronTickSrc.includes('needsWatchdog') &&
       cronTickSrc.includes('STALE_MS') &&
       cronTickSrc.includes('hitPath(HEALTH_PATH') &&
+      cronTickSrc.includes('healthDeliveryStale') &&
+      cronTickSrc.includes('HEALTH_DELIVERY_STALE_MS') &&
       cronTickSrc.includes('AbortSignal.timeout') &&
       cronTickSrc.indexOf('HEALTH_PATH') < cronTickSrc.indexOf('OTHER_PATHS') &&
       cronTickSrc.indexOf("'/api/lark/cron-health'") <
         cronTickSrc.indexOf("'/api/lark/alert-nudge'"),
-    'cron-tick health-first + watchdog; market-report removed from fan-out',
+    'cron-tick health-first + delivery-stale force; market removed from fan-out',
   )
   const cronHealthSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/cron-health.ts', import.meta.url),
@@ -2815,22 +2817,37 @@ async function main() {
   )
   record(
     'cron.health_stale_catchup',
-    cronHealthSrc.includes('STALE_CATCHUP_MS') &&
+    cronHealthSrc.includes('STALE_CATCHUP_MS = 28 * 60_000') &&
       cronHealthSrc.includes('staleCatchup') &&
       cronHealthSrc.includes('__last_delivery__') &&
       cronHealthSrc.includes('lastSentAt === 0') &&
       cronHealthSrc.includes('health_sent_state_blob_failed'),
-    '35m silence / never-sent → catch-up DM; blob fail → 502 retry',
+    '28m silence / never-sent → catch-up DM; blob fail → 502 retry',
   )
   record(
-    'cron.health_prefers_open_id_dm',
-    cronHealthSrc.includes("sendCardToOpenId(admin.openId, report.card)") &&
-      cronHealthSrc.includes("finishOk('open_id'") &&
-      cronHealthSrc.includes("finishOk('chat_id'") &&
-      cronHealthSrc.indexOf("sendCardToOpenId(admin.openId, report.card)") <
-        cronHealthSrc.indexOf('await sendCardToChat(chat.chatId, report.card)') &&
+    'cron.health_dual_delivery',
+    cronHealthSrc.includes('sendCardToOpenId(admin.openId, report.card)') &&
+      cronHealthSrc.includes('await sendCardToChat(chat.chatId, report.card)') &&
+      cronHealthSrc.includes("channels.push('open_id')") &&
+      cronHealthSrc.includes("channels.push('chat_id')") &&
+      cronHealthSrc.includes('wantDual') &&
+      cronHealthSrc.includes('open_id+chat_id') &&
+      cronHealthSrc.includes('!channels.length || wantDual') &&
+      cronHealthSrc.includes('!channels.length') &&
       cronHealthSrc.includes('私聊'),
-    'health DM prefers Yan open_id; chat_id is fallback',
+    'health: open_id first; dual open_id+chat_id on force/stale catch-up',
+  )
+  record(
+    'cron.health_offset_schedule',
+    (vercelCrons.crons || []).filter((c) =>
+      (c.path || '').includes('/api/lark/cron-health'),
+    ).length >= 2 &&
+      (vercelCrons.crons || []).some(
+        (c) =>
+          (c.path || '').includes('/api/lark/cron-health') &&
+          (c.schedule || '').includes('5,35'),
+      ),
+    'cron-health scheduled at */30 and 5,35 so one Vercel miss cannot silence',
   )
   const durableSrc = await (await import('node:fs/promises')).readFile(
     new URL('../api/lark/_lib/durableJson.ts', import.meta.url),

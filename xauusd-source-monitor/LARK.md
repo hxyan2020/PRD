@@ -96,12 +96,14 @@ job on the public alias (`vex-llm-proxy.vercel.app`):
 3. **Watchdog pass** — any path that returned non-200 or still has a stale beat
    is retried (health with `?force=1`; others idempotent without force so cards
    cannot double-push after a late success).
-4. Tick fails closed unless every path ends HTTP 200.
+4. Health is also force-retried when `lastSentAt` / delivery silence ≥ **28m**.
+5. Tick fails closed unless every path ends HTTP 200.
 
 Each handler also writes its own durable heartbeat on invoke / skip / send, and
 sent-state Blob write failures return 502 so the next tick retries.
-**cron-health** itself re-sends after **35 minutes** of DM silence (including
-never-sent).
+**cron-health** never stays silent: `open_id` 私聊 first (chat_id fallback);
+**dual** `open_id`+`chat_id` on force / 28m silence catch-up; Vercel schedules
+at `*/30` and `5,35` so one missed fire cannot mute the slot.
 
 ## Endpoints
 
@@ -116,7 +118,7 @@ never-sent).
 | GET/POST | `/api/lark/token-usage-report` | Daily 18:00 SGT Token usage → Yan DM only; `?dry=1` preview |
 | GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
 | GET/POST | `/api/lark/cron-tick` | Every 5 min fan-out of all push jobs on public alias |
-| GET/POST | `/api/lark/cron-health` | Every 30 min health DM to Yan (open_id 私聊 first); red @raise on miss |
+| GET/POST | `/api/lark/cron-health` | Every 30m + :05/:35 health DM to Yan (open_id+chat_id); red @raise on miss |
 
 ## Weekly report (Yan Haixiang)
 
