@@ -458,7 +458,7 @@ function stepGuideActionElements(args: {
     {
       tag: 'button',
       text: { tag: 'plain_text', content: hans ? '升级' : zh ? '升級' : 'Escalate' },
-      type: 'danger',
+      type: 'default',
       value: {
         action: 'guide_step_escalate',
         stepId: args.step.id,
@@ -484,7 +484,7 @@ function stepGuideActionElements(args: {
     {
       tag: 'button',
       text: { tag: 'plain_text', content: hans ? '已完成' : zh ? '已完成' : 'Done' },
-      type: 'primary',
+      type: 'danger',
       value: {
         action: 'guide_step_done',
         stepId: args.step.id,

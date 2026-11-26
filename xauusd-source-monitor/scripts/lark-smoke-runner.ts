@@ -3907,6 +3907,12 @@ async function main() {
     ).filter((e) => e.tag === 'action')
     const row1Acts = (actionEls[0]?.actions || []).map((a) => a.value?.action || '')
     const row2Acts = (actionEls[1]?.actions || []).map((a) => a.value?.action || '')
+    const row1Types = (actionEls[0]?.actions || []).map(
+      (a) => (a as { type?: string }).type || '',
+    )
+    const row2Types = (actionEls[1]?.actions || []).map(
+      (a) => (a as { type?: string }).type || '',
+    )
     record(
       'turn.investigate_buttons_layout_end_then_done',
       actionEls.length === 2 &&
@@ -3914,8 +3920,10 @@ async function main() {
           'guide_step_supplement,guide_step_skip,guide_step_escalate,end_investigation' &&
         row2Acts.join(',') === 'guide_step_done' &&
         stepCardBlob.includes('结束排查') &&
-        !stepCardBlob.includes('结束排查并生成报告'),
-      `r1=${row1Acts.join('|')} r2=${row2Acts.join('|')}`,
+        !stepCardBlob.includes('结束排查并生成报告') &&
+        row1Types.every((t) => t === 'default') &&
+        row2Types.join(',') === 'danger',
+      `r1=${row1Acts.join('|')} r2=${row2Acts.join('|')} types=${row1Types.join(',')}/${row2Types.join(',')}`,
     )
 
     const doneR = await handleCardAction({
