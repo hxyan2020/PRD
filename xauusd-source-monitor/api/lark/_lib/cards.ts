@@ -324,6 +324,45 @@ function formatGuidePathLines(steps: GuideStep[], lang: Lang): string {
     .join('\n')
 }
 
+/** Normalize Skill.action atom for display: 「若A：则B」→「A → B」. */
+export function formatDecisionBranchLine(raw: string): string {
+  const t = raw.replace(/\s+/g, ' ').trim()
+  if (!t) return t
+  const m = t.match(/^(.+?)[：:]\s*(.+)$/)
+  if (m) return `${m[1]!.trim()} → ${m[2]!.trim()}`
+  return t
+}
+
+/**
+ * One organic block: Skill.check path + Skill.action decisions together.
+ */
+export function formatPathWithDecisions(args: {
+  lang: Lang
+  steps: GuideStep[]
+  decisionBranches?: string[]
+}): string {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const pathMd = formatGuidePathLines(args.steps, args.lang)
+  const doneCount = args.steps.filter((s) => s.status === 'done' || s.status === 'skipped').length
+  const branches = (args.decisionBranches || []).map(formatDecisionBranchLine).filter(Boolean)
+  const head = hans
+    ? `🧭 **排查路径与决策**（${doneCount}/${args.steps.length}）`
+    : zh
+      ? `🧭 **排查路徑與決策**（${doneCount}/${args.steps.length}）`
+      : `🧭 **Path & decisions** (${doneCount}/${args.steps.length})`
+  if (!branches.length) {
+    return `${head}\n\n${pathMd}`
+  }
+  const decHead = hans
+    ? '↳ **决策（随本链路推进）**'
+    : zh
+      ? '↳ **決策（隨本鏈路推進）**'
+      : '↳ **Decisions (with this path)**'
+  const decLines = branches.map((b) => `• ${b}`).join('\n')
+  return `${head}\n\n${pathMd}\n\n${decHead}\n${decLines}`
+}
+
 /**
  * Pre-analysis gate: stash alert(s), ask for more, start only on button.
  */
@@ -406,6 +445,8 @@ export function investigationPathOverviewCard(args: {
   summary: string
   steps: GuideStep[]
   actions: string[]
+  /** Skill.action atoms — rendered with the path as one organic block. */
+  decisionBranches?: string[]
   skills: string[]
   knowledge: string[]
   incidentId?: string
@@ -441,18 +482,16 @@ export function investigationPathOverviewCard(args: {
         : 'none matched'
   // No 知识库 titles in investigate body — desk link stays for navigation only via Skills.
   void args.knowledge
-  const pathMd = formatGuidePathLines(args.steps, args.lang)
-  const doneCount = args.steps.filter((s) => s.status === 'done' || s.status === 'skipped').length
   const sevLabel = hans
     ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
     : zh
       ? `${emoji} **建議嚴重度：** **${args.severity}**（需當班確認）`
       : `${emoji} **Severity proposal:** **${args.severity}** (on-duty confirm)`
-  const pathLabel = hans
-    ? `🧭 **完整排查链路**（${doneCount}/${args.steps.length}）\n\n${pathMd}`
-    : zh
-      ? `🧭 **完整排查鏈路**（${doneCount}/${args.steps.length}）\n\n${pathMd}`
-      : `🧭 **Full investigation path** (${doneCount}/${args.steps.length})\n\n${pathMd}`
+  const pathLabel = formatPathWithDecisions({
+    lang: args.lang,
+    steps: args.steps,
+    decisionBranches: args.decisionBranches,
+  })
   const prefLabel = hans
     ? `⚡ **Preferred Action**（需审批）\n\n${actionMd}`
     : zh
@@ -594,6 +633,8 @@ export function investigationStepGuideCard(args: {
   incidentId?: string
   /** When set, show 升级 button targeting these roles (RC/BIT/…). */
   escalateRoles?: string[]
+  /** Skill.action atoms — shown with this step as one path+decision unit. */
+  decisionBranches?: string[]
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
@@ -617,19 +658,38 @@ export function investigationStepGuideCard(args: {
     : zh
       ? `排查步驟 ${n}/${args.totalSteps}`
       : `Investigation step ${n}/${args.totalSteps}`
+  const branches = (args.decisionBranches || []).map(formatDecisionBranchLine).filter(Boolean)
+  const decBlock = branches.length
+    ? [
+        '',
+        hans
+          ? '↳ **本链路决策（随路径）**'
+          : zh
+            ? '↳ **本鏈路決策（隨路徑）**'
+            : '↳ **Path decisions**',
+        ...branches.map((b) => `• ${b}`),
+      ]
+    : []
   // Buttons only — no 已完成／跳过／升级 prose under the step line.
   const body = hans
-    ? [`📍 **当前步骤（${optBadge}）**`, '', formatStepLine(args.step.label, args.stepIndex)].join(
-        '\n',
-      )
+    ? [
+        `📍 **当前步骤（${optBadge}）**`,
+        '',
+        formatStepLine(args.step.label, args.stepIndex),
+        ...decBlock,
+      ].join('\n')
     : zh
-      ? [`📍 **當前步驟（${optBadge}）**`, '', formatStepLine(args.step.label, args.stepIndex)].join(
-          '\n',
-        )
+      ? [
+          `📍 **當前步驟（${optBadge}）**`,
+          '',
+          formatStepLine(args.step.label, args.stepIndex),
+          ...decBlock,
+        ].join('\n')
       : [
           `📍 **Current step (${optBadge})**`,
           '',
           formatStepLine(args.step.label, args.stepIndex),
+          ...decBlock,
         ].join('\n')
 
   const actions: Record<string, unknown>[] = [

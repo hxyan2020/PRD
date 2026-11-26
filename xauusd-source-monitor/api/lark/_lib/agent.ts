@@ -449,7 +449,7 @@ function formatInvestigateCore(args: {
     lines.push(hans ? '✅ **本轮已覆盖**' : hant ? '✅ **本輪已覆蓋**' : '✅ **Covered this turn**')
     for (const c of args.newlyCovered.slice(0, 4)) lines.push(`• ${c}`)
   }
-  // Path is shown once on the overview card — do not repeat it in the body.
+  // Path + decisions are one block on the overview / step cards — not repeated here.
   if (args.covered?.length && !args.newlyCovered?.length) {
     lines.push('')
     lines.push(
@@ -458,25 +458,6 @@ function formatInvestigateCore(args: {
         : hant
           ? `_已覆蓋 ${args.covered.length} 步_`
           : `_Covered ${args.covered.length} step(s)_`,
-    )
-  }
-  lines.push('')
-  lines.push(hans ? '🌿 **决策分支（Skill.action 原文）**' : hant ? '🌿 **決策分支（Skill.action 原文）**' : '🌿 **Decision branches (Skill.action verbatim)**')
-  if (args.hits.length) {
-    for (const h of args.hits.slice(0, 3)) {
-      lines.push(`• **${h.id}**`)
-      const steps = splitSkillSteps(h.action)
-      for (const step of steps.length ? steps : [h.action]) {
-        lines.push(`  - ${step}`)
-      }
-    }
-  } else {
-    lines.push(
-      hans
-        ? '• 字段不足时先补齐告警原文，再决定观察／升级／归档'
-        : hant
-          ? '• 欄位不足時先補齊告警原文，再決定觀察／升級／歸檔'
-          : '• If fields are missing, gather alert text first, then choose watch / escalate / close',
     )
   }
   return lines.join('\n')
@@ -1282,6 +1263,20 @@ function firstPendingGuideIndex(steps: GuideStep[], preferIds?: string[]): numbe
   return i
 }
 
+function decisionBranchesForStep(
+  session: InvestigationState,
+  skillId?: string,
+): string[] {
+  const hit =
+    (skillId && session.lastHits.find((h) => h.id === skillId)) || session.lastHits[0]
+  const action =
+    hit?.action ||
+    (skillId ? loadSkills().find((s) => s.id === skillId)?.action : '') ||
+    ''
+  const atoms = splitSkillSteps(action)
+  return (atoms.length ? atoms : action ? [action] : []).map((s) => s.trim()).filter(Boolean)
+}
+
 function guideStepReply(args: {
   lang: Lang
   session: InvestigationState
@@ -1298,6 +1293,10 @@ function guideStepReply(args: {
 }): BotReply {
   const steps = args.session.pathSteps || []
   const idx = args.session.pathStepIndex ?? firstPendingGuideIndex(steps)
+  const overviewBranches = decisionBranchesForStep(
+    args.session,
+    steps[idx >= 0 ? idx : 0]?.skillId || args.session.lastHits[0]?.id,
+  )
   const overview = investigationPathOverviewCard({
     lang: args.lang,
     title: args.title,
@@ -1305,6 +1304,7 @@ function guideStepReply(args: {
     summary: args.summary,
     steps,
     actions: args.actions,
+    decisionBranches: overviewBranches,
     skills: args.skills,
     knowledge: args.knowledge,
     incidentId: args.incidentId,
@@ -1337,6 +1337,7 @@ function guideStepReply(args: {
     totalSteps: steps.length,
     incidentId: args.incidentId,
     escalateRoles,
+    decisionBranches: decisionBranchesForStep(args.session, step.skillId),
   })
   if (args.includeOverview) {
     return { card: overview, followUpCards: [stepCard] }

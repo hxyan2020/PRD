@@ -3631,10 +3631,15 @@ async function main() {
   record(
     'turn.investigate_body_causes_path',
     /可能原因|Possible causes/i.test(invZh.blob) &&
-      /完整排查链路|完整排查鏈路|Full investigation path|排查路径|Investigation path|决策分支|Decision branches/i.test(
+      /排查路径与决策|排查路徑與決策|Path & decisions|完整排查链路|完整排查鏈路|Full investigation path/i.test(
         invZh.blob,
       ) &&
-      !/命中场景|matched \*\*L1-/i.test(invZh.blob) &&
+      /决策（随本链路|決策（隨本鏈路|Decisions \(with this path\)|本链路决策|本鏈路決策|Path decisions/i.test(
+        invZh.blob,
+      ) &&
+      !/命中场景|matched \*\*L1-|决策分支（Skill\.action|Decision branches \(Skill\.action/i.test(
+        invZh.blob,
+      ) &&
       (/假设|待核实|观察：|Observation:|流动性|價差|价差|偏离|Funding|行情源|To verify/i.test(
         invZh.blob,
       ) ||
