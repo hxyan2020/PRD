@@ -1335,9 +1335,16 @@ function guideStepReply(args: {
     args.session,
     steps[idx >= 0 ? idx : 0]?.skillId || args.session.lastHits[0]?.id,
   )
+  // Clear “总览” header (not the mid-case step title) — analysis first, then step card.
+  const overviewTitle =
+    args.lang === 'zh-Hans'
+      ? `排查总览 · ${args.title.replace(/^排查进行中\s*·\s*/i, '')}`
+      : args.lang === 'zh-Hant'
+        ? `排查總覽 · ${args.title.replace(/^排查進行中\s*·\s*/i, '')}`
+        : `Investigation overview · ${args.title.replace(/^Investigation\s*·\s*/i, '')}`
   const overview = investigationPathOverviewCard({
     lang: args.lang,
-    title: args.title,
+    title: overviewTitle,
     severity: args.severity,
     summary: args.summary,
     steps,
@@ -1865,9 +1872,10 @@ async function runInvestigation(args: {
       ? [session.pathSteps[session.pathStepIndex]!.label]
       : pathPlan.nextSteps
   const actions = preferredActions(hits, args.lang, 2)
-  // Path overview once at case open; later turns / Done-Skip advances send only the step card.
+  // Path overview (= 总分析) once at case open / start_analysis; Done/Skip advances step-only.
   const includeOverview =
-    !args.guideAdvanceOnly && (!hadPath || Boolean(showAddAlertHint))
+    Boolean(args.fromGather) ||
+    (!args.guideAdvanceOnly && (!hadPath || Boolean(showAddAlertHint)))
   const summary = buildSummary({
     lang: args.lang,
     severity,

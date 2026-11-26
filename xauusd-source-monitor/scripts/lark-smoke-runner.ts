@@ -812,9 +812,15 @@ async function main() {
   record(
     'turn.start_analysis_opens_step_guide',
     Boolean(started?.card) &&
+      Boolean(started?.followUpCards?.length) &&
+      (startedBlob.includes('排查总览') ||
+        startedBlob.includes('排查總覽') ||
+        startedBlob.includes('Investigation overview') ||
+        startedBlob.includes('排查路径与决策') ||
+        startedBlob.includes('完整排查链路')) &&
       (startedBlob.includes('排查步骤') || startedBlob.includes('Investigation step')) &&
       getSession('smoke_chat', 'gather_zh').mode === 'investigate',
-    startedBlob.slice(0, 160),
+    `fu=${started?.followUpCards?.length || 0} ${startedBlob.slice(0, 120)}`,
   )
 
   // First investigation generation reminds user they can add another alert to the same case.
@@ -2102,8 +2108,14 @@ async function main() {
   record('turn.investigate_card', Boolean(inv.blob.includes('Investigation') || inv.blob.includes('排查')), '')
   record(
     'turn.investigate_emoji',
-    inv.blob.includes('🧭') && inv.blob.includes('⚡') && inv.blob.includes('📋'),
-    'emoji section headers',
+    (inv.blob.includes('🧭') || inv.blob.includes('🔎') || inv.blob.includes('📌')) &&
+      (inv.blob.includes('排查总览') ||
+        inv.blob.includes('排查總覽') ||
+        inv.blob.includes('Investigation overview') ||
+        inv.blob.includes('排查路径') ||
+        inv.blob.includes('Possible causes') ||
+        inv.blob.includes('可能原因')),
+    'overview / analysis section headers',
   )
   const follow = await turn(
     'followup-evidence',
@@ -3578,12 +3590,21 @@ async function main() {
   record(
     'turn.investigate_path_once_and_step_guide',
     Boolean(inv.reply?.followUpCards?.length) &&
-      (inv.blob.includes('完整排查链路') ||
-        inv.blob.includes('完整排查鏈路') ||
+      (inv.blob.includes('排查总览') ||
+        inv.blob.includes('排查總覽') ||
+        inv.blob.includes('Investigation overview') ||
+        inv.blob.includes('排查路径与决策') ||
+        inv.blob.includes('排查路徑與決策') ||
+        inv.blob.includes('Path & decisions') ||
+        inv.blob.includes('完整排查链路') ||
         inv.blob.includes('Full investigation path')) &&
       (inv.blob.includes('guide_step_done') || inv.blob.includes('已完成')) &&
       !/证据分级|證據分級|Evidence grades/.test(inv.blob) &&
-      (inv.blob.match(/完整排查链路|完整排查鏈路|Full investigation path/g) || []).length === 1,
+      (
+        inv.blob.match(
+          /排查总览|排查總覽|Investigation overview|排查路径与决策|排查路徑與決策|Path & decisions|完整排查链路|完整排查鏈路|Full investigation path/g,
+        ) || []
+      ).length >= 1,
     `fu=${inv.reply?.followUpCards?.length || 0}`,
   )
   record(

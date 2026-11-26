@@ -335,7 +335,7 @@ export function alertGatherCard(args: {
 }
 
 /**
- * Message 1: full排查链路 overview (path listed once).
+ * Message 1: 排查总览 — severity + analysis summary + full path/decisions (once).
  * Followed by investigationStepGuideCard as a second message.
  */
 export function investigationPathOverviewCard(args: {

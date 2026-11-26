@@ -303,32 +303,66 @@ async function handleCardActionRequest(
           chatType: chatId.startsWith('oc_') ? 'group' : 'p2p',
         })
         await typing.stop()
+        const { updateCardByCallbackToken, sendCardToChat, sendCardToOpenId } =
+          await import('./_lib/client.js')
+        const { simpleCard } = await import('./_lib/cards.js')
         // Callback-token update needs a card; wrap bare text so every tap updates UI.
         if (reply && !reply.card && reply.text) {
-          const { simpleCard } = await import('./_lib/cards.js')
           reply = {
             ...reply,
             card: simpleCard('VE Risk Copilot', reply.text, 'wathet'),
           }
         }
         let dispatched = { ok: false as boolean, via?: string, error?: string }
-        if (reply?.card && callbackToken) {
+        const multiCard = Boolean(reply?.card && reply.followUpCards?.length)
+
+        const sendNew = async (card: Record<string, unknown>) => {
+          if (chatId) {
+            await sendCardToChat(chatId, card)
+            return
+          }
+          if (openId.startsWith('ou_')) {
+            await sendCardToOpenId(openId, card)
+            return
+          }
+          throw new Error('no chatId or openId for card send')
+        }
+
+        // Multi-card (排查总览 → 步骤): always post as NEW messages in order.
+        // Do not replace the gather/button card with the overview alone — that
+        // hid the “总分析” bubble before the step card on some clients.
+        if (multiCard && reply?.card) {
           try {
-            const { updateCardByCallbackToken, sendCardToChat, sendCardToOpenId } =
-              await import('./_lib/client.js')
+            if (callbackToken && actionName === 'start_analysis') {
+              try {
+                await updateCardByCallbackToken(
+                  callbackToken,
+                  simpleCard(
+                    'VE Risk Copilot',
+                    '✅ 已开始分析 / Analysis started — 下方：**排查总览** → **第 1 步**',
+                    'green',
+                  ),
+                  { openIds: openId.startsWith('ou_') ? [openId] : [] },
+                )
+              } catch {
+                /* non-fatal — still send overview + step */
+              }
+            }
+            await sendNew(reply.card)
+            for (const c of reply.followUpCards || []) await sendNew(c)
+            dispatched = { ok: true, via: 'new_messages_overview_then_step' }
+          } catch (e) {
+            dispatched = {
+              ok: false,
+              error: e instanceof Error ? e.message : 'multi_card_send_failed',
+            }
+          }
+        } else if (reply?.card && callbackToken) {
+          try {
             await updateCardByCallbackToken(callbackToken, reply.card, {
               openIds: openId.startsWith('ou_') ? [openId] : [],
             })
             dispatched = { ok: true, via: 'callback_token' }
-            // Follow-ups (e.g. overview→step) still need new messages.
-            if (reply.followUpCards?.length) {
-              if (chatId) {
-                for (const c of reply.followUpCards) await sendCardToChat(chatId, c)
-              } else if (openId.startsWith('ou_')) {
-                for (const c of reply.followUpCards) await sendCardToOpenId(openId, c)
-              }
-              dispatched = { ok: true, via: 'callback_token+followUp' }
-            }
           } catch (e) {
             dispatched = {
               ok: false,
@@ -342,7 +376,6 @@ async function handleCardActionRequest(
             dispatched = fallback
           } else if (!chatId && openId.startsWith('ou_') && reply?.card) {
             try {
-              const { sendCardToOpenId } = await import('./_lib/client.js')
               await sendCardToOpenId(openId, reply.card)
               if (reply.followUpCards?.length) {
                 for (const c of reply.followUpCards) await sendCardToOpenId(openId, c)
